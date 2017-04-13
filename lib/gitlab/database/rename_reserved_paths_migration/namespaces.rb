@@ -16,32 +16,11 @@ module Gitlab
                        elsif type == :top_level
                          MigrationClasses::Namespace.where(parent_id: nil)
                        end
-          namespaces.where(path: paths.map(&:downcase))
+          namespaces.where('lower(path) in (?)', paths.map(&:downcase))
         end
 
         def rename_namespace(namespace)
-          old_path = namespace.path
-          old_full_path = namespace.full_path
-          # Only remove the last occurrence of the path name to get the parent namespace path
-          namespace_path = remove_last_occurrence(old_full_path, old_path)
-          new_path = rename_path(namespace_path, old_path)
-          new_full_path = if namespace_path.present?
-                            File.join(namespace_path, new_path)
-                          else
-                            new_path
-                          end
-
-          # skips callbacks & validations
-          MigrationClasses::Namespace.where(id: namespace).
-            update_all(path: new_path)
-
-          replace_statement = replace_sql(Route.arel_table[:path],
-                                          old_full_path,
-                                          new_full_path)
-
-          update_column_in_batches(:routes, :path, replace_statement)  do |table, query|
-            query.where(MigrationClasses::Route.arel_table[:path].matches("#{old_full_path}%"))
-          end
+          old_full_path, new_full_path = rename_path_for_routable(namespace)
 
           move_repositories(namespace, old_full_path, new_full_path)
           move_namespace_folders(uploads_dir, old_full_path, new_full_path) if file_storage?
@@ -90,10 +69,6 @@ module Gitlab
             child_ids_for_parent(child, ids: ids) if child.children.any?
           end
           ids
-        end
-
-        def remove_last_occurrence(string, pattern)
-          string.reverse.sub(pattern.reverse, "").reverse
         end
 
         def file_storage?

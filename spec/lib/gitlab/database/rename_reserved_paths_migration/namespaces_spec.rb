@@ -25,7 +25,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::Namespaces, :truncate d
   describe '#namespaces_for_paths' do
     context 'for wildcard namespaces' do
       it 'only returns child namespaces with the correct path' do
-        _root_namespace = create(:namespace, path: 'the-path')
+        _root_namespace = create(:namespace, path: 'THE-path')
         _other_path = create(:namespace,
                              path: 'other',
                              parent: create(:namespace))
@@ -33,13 +33,13 @@ describe Gitlab::Database::RenameReservedPathsMigration::Namespaces, :truncate d
                            path: 'the-path',
                            parent: create(:namespace))
 
-        found_ids = subject.namespaces_for_paths(['the-path'], type: :wildcard).
-                      pluck(:id)
+        found_ids = subject.namespaces_for_paths(['the-PATH'], type: :wildcard).
+                      map(&:id)
         expect(found_ids).to contain_exactly(namespace.id)
       end
     end
 
-    context 'for top level namespaces' do
+    context 'for top levelnamespaces' do
       it 'only returns child namespaces with the correct path' do
         root_namespace = create(:namespace, path: 'the-path')
         _other_path = create(:namespace, path: 'other')
@@ -48,7 +48,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::Namespaces, :truncate d
                            parent: create(:namespace))
 
         found_ids = subject.namespaces_for_paths(['the-path'], type: :top_level).
-                      pluck(:id)
+                      map(&:id)
         expect(found_ids).to contain_exactly(root_namespace.id)
       end
     end
@@ -127,35 +127,15 @@ describe Gitlab::Database::RenameReservedPathsMigration::Namespaces, :truncate d
     end
   end
 
-  describe "#remove_last_ocurrence" do
-    it "removes only the last occurance of a string" do
-      input = "this/is/a-word-to-replace/namespace/with/a-word-to-replace"
-
-      expect(subject.remove_last_occurrence(input, "a-word-to-replace"))
-        .to eq("this/is/a-word-to-replace/namespace/with/")
-    end
-  end
-
   describe "#rename_namespace" do
     let(:namespace) { create(:namespace, path: 'the-path') }
-    it "renames namespaces called the-path" do
-      subject.rename_namespace(namespace)
 
-      expect(namespace.reload.path).to eq("the-path0")
-    end
-
-    it "renames the route to the namespace" do
-      subject.rename_namespace(namespace)
-
-      expect(Namespace.find(namespace.id).full_path).to eq("the-path0")
-    end
-
-    it "renames the route for projects of the namespace" do
-      project = create(:project, path: "project-path", namespace: namespace)
+    it 'renames paths & routes for the namesapce' do
+      expect(subject).to receive(:rename_path_for_routable).
+                           with(namespace).
+                           and_call_original
 
       subject.rename_namespace(namespace)
-
-      expect(project.route.reload.path).to eq("the-path0/project-path")
     end
 
     it "moves the the repository for a project in the namespace" do
@@ -180,29 +160,26 @@ describe Gitlab::Database::RenameReservedPathsMigration::Namespaces, :truncate d
 
       subject.rename_namespace(namespace)
     end
-
-    context "the-path namespace -> subgroup -> the-path0 project" do
-      it "updates the route of the project correctly" do
-        subgroup = create(:group, path: "subgroup", parent: namespace)
-        project = create(:project, path: "the-path0", namespace: subgroup)
-
-        subject.rename_namespace(namespace)
-
-        expect(project.route.reload.path).to eq("the-path0/subgroup/the-path0")
-      end
-    end
   end
 
   describe '#rename_namespaces' do
-    context 'top level namespaces' do
-      let!(:namespace) { create(:namespace, path: 'the-path') }
+    let!(:top_level_namespace) { create(:namespace, path: 'the-path') }
+    let!(:child_namespace) do
+      create(:namespace, path: 'the-path', parent: create(:namespace))
+    end
 
-      it 'should rename the namespace' do
-        expect(subject).to receive(:rename_namespace).
-                             with(migration_namespace(namespace))
+    it 'renames top level namespaces the namespace' do
+      expect(subject).to receive(:rename_namespace).
+                           with(migration_namespace(top_level_namespace))
 
-        subject.rename_namespaces(['the-path'], type: :top_level)
-      end
+      subject.rename_namespaces(['the-path'], type: :top_level)
+    end
+
+    it 'renames child namespaces' do
+      expect(subject).to receive(:rename_namespace).
+                           with(migration_namespace(child_namespace))
+
+      subject.rename_namespaces(['the-path'], type: :wildcard)
     end
   end
 end
