@@ -200,6 +200,7 @@ GEM
     faraday_middleware-multi_json (0.0.6)
       faraday_middleware
       multi_json
+    fast_gettext (1.4.0)
     ffaker (2.4.0)
     ffi (1.9.10)
     flay (2.8.1)
@@ -253,6 +254,11 @@ GEM
     gemojione (3.0.1)
       json
     get_process_mem (0.2.0)
+    gettext (3.2.2)
+      locale (>= 2.0.5)
+      text (>= 1.3.0)
+    gettext_i18n_rails (1.8.0)
+      fast_gettext (>= 0.9.0)
     gherkin-ruby (0.3.2)
     gitaly (0.5.0)
       google-protobuf (~> 3.1)
@@ -422,6 +428,7 @@ GEM
     licensee (8.7.0)
       rugged (~> 0.24)
     little-plugger (1.1.4)
+    locale (2.1.2)
     logging (2.1.0)
       little-plugger (~> 1.1)
       multi_json (~> 1.10)
@@ -776,6 +783,7 @@ GEM
     temple (0.7.7)
     test_after_commit (1.1.0)
       activerecord (>= 3.2)
+    text (1.3.1)
     thin (1.7.0)
       daemons (~> 1.0, >= 1.0.9)
       eventmachine (~> 1.0, >= 1.0.4)
@@ -902,6 +910,8 @@ DEPENDENCIES
   fuubar (~> 2.0.0)
   gemnasium-gitlab-service (~> 0.2)
   gemojione (~> 3.0)
+  gettext (~> 3.2.2)
+  gettext_i18n_rails (~> 1.8.0)
   gitaly (~> 0.5.0)
   github-linguist (~> 4.7.0)
   gitlab-flowdock-git-hook (~> 1.0.1)
@@ -1035,4 +1045,4 @@ DEPENDENCIES
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
-   1.14.5
+   1.14.6
