@@ -151,23 +151,12 @@ module Ci
 
         open_new_tag
 
-        stream.each_line do |line|
-          s = StringScanner.new(enforce_utf8(line))
-          until s.eos?
-            if s.scan(/\e([@-_])(.*?)([@-~])/)
-              handle_sequence(s)
-            elsif s.scan(/\e(([@-_])(.*?)?)?$/)
-              break
-            elsif s.scan(/</)
-              @out << '&lt;'
-            elsif s.scan(/\r?\n/)
-              @out << '<br>'
-            else
-              @out << s.scan(/./m)
-            end
-            @offset += s.matched_size
-          end
-        end
+        # The first line could be corrupted because we might cut it
+        # in the middle, so we need to make sure the first line is ok.
+        first_line = stream.readline
+        scan_one_line(enforce_utf8(first_line))
+
+        stream.each_line(&method(:scan_one_line))
 
         close_open_tags()
 
@@ -328,6 +317,24 @@ module Ci
       end
 
       private
+
+      def scan_one_line(line)
+        s = StringScanner.new(line)
+        until s.eos?
+          if s.scan(/\e([@-_])(.*?)([@-~])/)
+            handle_sequence(s)
+          elsif s.scan(/\e(([@-_])(.*?)?)?$/)
+            break
+          elsif s.scan(/</)
+            @out << '&lt;'
+          elsif s.scan(/\r?\n/)
+            @out << '<br>'
+          else
+            @out << s.scan(/./m)
+          end
+          @offset += s.matched_size
+        end
+      end
 
       def enforce_utf8(bytes)
         bytes.encode('UTF-8', invalid: :replace, undef: :replace, replace: '?')
