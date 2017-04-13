@@ -52,7 +52,7 @@ module BlobHelper
 
     if !on_top_of_branch?(project, ref)
       button_tag label, class: "#{common_classes} disabled has-tooltip", title: "You can only #{action} files when you are on a branch", data: { container: 'body' }
-    elsif blob.lfs_pointer?
+    elsif blob.valid_lfs_pointer?
       button_tag label, class: "#{common_classes} disabled has-tooltip", title: "It is not possible to #{action} files that are stored in LFS using the web interface", data: { container: 'body' }
     elsif can_modify_blob?(blob, project, ref)
       button_tag label, class: "#{common_classes}", 'data-target' => "#modal-#{modal_type}-blob", 'data-toggle' => 'modal'
@@ -95,7 +95,7 @@ module BlobHelper
   end
 
   def can_modify_blob?(blob, project = @project, ref = @ref)
-    !blob.lfs_pointer? && can_edit_tree?(project, ref)
+    !blob.valid_lfs_pointer? && can_edit_tree?(project, ref)
   end
 
   def leave_edit_message
@@ -116,22 +116,6 @@ module BlobHelper
   # mode - File name
   def blob_icon(mode, name)
     icon("#{file_type_icon_class('file', mode, name)} fw")
-  end
-
-  def blob_text_viewable?(blob)
-    blob && blob.text? && !blob.lfs_pointer? && !blob.only_display_raw?
-  end
-
-  def blob_rendered_as_text?(blob)
-    blob_text_viewable?(blob) && blob.to_partial_path(@project) == 'text'
-  end
-
-  def blob_size(blob)
-    if blob.lfs_pointer?
-      blob.lfs_size
-    else
-      blob.size
-    end
   end
 
   def blob_raw_url

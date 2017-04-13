@@ -9,7 +9,7 @@
     = copy_file_path_button(blob.path)
 
     %small
-      = number_to_human_size(blob_size(blob))
+      = number_to_human_size(blob.raw_size)
 
   .file-actions.hidden-xs
     .btn-group{ role: "group" }<
@@ -19,7 +19,7 @@
 
     .btn-group{ role: "group" }<
       -# only show normal/blame view links for text files
-      - if blob_text_viewable?(blob)
+      - if blob.readable_text?
         - if blame
           = link_to 'Normal view', namespace_project_blob_path(@project.namespace, @project, @id),
               class: 'btn btn-sm'
@@ -34,7 +34,7 @@
           tree_join(@commit.sha, @path)), class: 'btn btn-sm js-data-file-blob-permalink-url'
 
     .btn-group{ role: "group" }<
-      = edit_blob_link if blob_text_viewable?(blob)
+      = edit_blob_link if blob.readable_text?
       - if current_user
         = replace_blob_link
         = delete_blob_link
