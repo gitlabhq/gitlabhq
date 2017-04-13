@@ -14,6 +14,7 @@ module Gitlab
 
         def initialize
           @stream = yield
+          @stream.binmode
         end
 
         def valid?
@@ -30,7 +31,7 @@ module Gitlab
             last_bytes = stream_size
           end
           stream.seek(-last_bytes, IO::SEEK_END)
-          stream.readline
+          seek_previous_line(stream_size)
         end
 
         def append(data, offset)
@@ -53,7 +54,7 @@ module Gitlab
             read_last_lines(last_lines)
           else
             stream.read
-          end
+          end.force_encoding(Encoding.default_external)
         end
 
         def html_with_state(state = nil)
@@ -115,7 +116,24 @@ module Gitlab
           end
 
           chunks.join.lines.last(last_lines).join
-            .force_encoding(Encoding.default_external)
+        end
+
+        def seek_previous_line(max = stream_size)
+          return if stream.pos.zero?
+
+          seek_size = [stream.pos, BUFFER_SIZE].min
+
+          stream.seek(-seek_size, IO::SEEK_CUR)
+
+          buf = stream.read(seek_size)
+          idx = buf.rindex("\n")
+
+          if idx
+            stream.seek(-seek_size + idx + 1, IO::SEEK_CUR)
+          else
+            stream.seek(-seek_size, IO::SEEK_CUR)
+            seek_previous_line(max)
+          end
         end
       end
     end
