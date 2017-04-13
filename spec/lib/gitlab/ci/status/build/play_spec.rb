@@ -12,7 +12,7 @@ describe Gitlab::Ci::Status::Build::Play do
 
   describe 'action details' do
     let(:user) { create(:user) }
-    let(:build) { create(:ci_build) }
+    let(:build) { create(:ci_build, :manual) }
     let(:status) { Gitlab::Ci::Status::Core.new(build, user) }
 
     describe '#has_action?' do
