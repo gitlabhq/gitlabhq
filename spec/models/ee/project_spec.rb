@@ -31,7 +31,7 @@ describe Project, models: true do
         expect(project.any_runners? { |runner| runner == shared_runner }).to be_truthy
       end
 
-      context 'with used build minutes' do
+      context 'with used pipeline minutes' do
         let(:namespace) { create(:namespace, :with_used_build_minutes_limit) }
         let(:project) do
           create(:empty_project,
@@ -49,7 +49,7 @@ describe Project, models: true do
   describe '#shared_runners_available?' do
     subject { project.shared_runners_available? }
 
-    context 'with used build minutes' do
+    context 'with used pipeline minutes' do
       let(:namespace) { create(:namespace, :with_used_build_minutes_limit) }
       let(:project) do
         create(:empty_project,

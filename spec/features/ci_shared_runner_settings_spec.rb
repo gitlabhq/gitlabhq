@@ -15,7 +15,7 @@ feature 'CI shared runner settings', feature: true do
   context 'without global shared runners quota' do
     scenario 'should display ratio with global quota' do
       visit_admin_group_path
-      expect(page).to have_content("Build minutes quota: 400 / Unlimited")
+      expect(page).to have_content("Pipeline minutes quota: 400 / Unlimited")
       expect(page).to have_selector('.shared_runners_limit_disabled')
     end
   end
@@ -27,21 +27,21 @@ feature 'CI shared runner settings', feature: true do
 
     scenario 'should display ratio with global quota' do
       visit_admin_group_path
-      expect(page).to have_content("Build minutes quota: 400 / 500")
+      expect(page).to have_content("Pipeline minutes quota: 400 / 500")
       expect(page).to have_selector('.shared_runners_limit_under_quota')
     end
 
     scenario 'should display new ratio with overridden group quota' do
       set_group_shared_runners_minutes 300
       visit_admin_group_path
-      expect(page).to have_content("Build minutes quota: 400 / 300")
+      expect(page).to have_content("Pipeline minutes quota: 400 / 300")
       expect(page).to have_selector('.shared_runners_limit_over_quota')
     end
 
     scenario 'should display unlimited ratio with overridden group quota' do
       set_group_shared_runners_minutes 0
       visit_admin_group_path
-      expect(page).to have_content("Build minutes quota: 400 / Unlimited")
+      expect(page).to have_content("Pipeline minutes quota: 400 / Unlimited")
       expect(page).to have_selector('.shared_runners_limit_disabled')
     end
   end
