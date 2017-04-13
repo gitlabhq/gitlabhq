@@ -96,6 +96,7 @@ class Note < ActiveRecord::Base
   before_validation :set_discussion_id, on: :create
   after_save :keep_around_commit, unless: :for_personal_snippet?
   after_save :expire_etag_cache
+  after_destroy :expire_etag_cache
 
   class << self
     def model_name
@@ -113,11 +114,11 @@ class Note < ActiveRecord::Base
       Discussion.build(notes)
     end
 
-    def grouped_diff_discussions
+    def grouped_diff_discussions(diff_refs = nil)
       diff_notes.
         fresh.
         discussions.
-        select(&:active?).
+        select { |n| n.active?(diff_refs) }.
         group_by(&:line_code)
     end
 
@@ -138,6 +139,10 @@ class Note < ActiveRecord::Base
 
   def active?
     true
+  end
+
+  def latest_merge_request_diff
+    nil
   end
 
   def max_attachment_size

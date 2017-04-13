@@ -1,10 +1,6 @@
 - project = event.project
 
-.profile-icon
-  - if event.action_name == "deleted"
-    = custom_icon("trash_o")
-  - else
-    = custom_icon("icon_commit")
+= icon_for_profile_event(event)
 
 .event-title
   %span.author_name= link_to_author event
