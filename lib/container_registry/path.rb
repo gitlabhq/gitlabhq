@@ -15,7 +15,7 @@ module ContainerRegistry
     LEVELS_SUPPORTED = 3
 
     def initialize(path)
-      @path = path.downcase
+      @path = path
     end
 
     def valid?
