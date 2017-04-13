@@ -31,6 +31,6 @@
 
         - if @group.shared_runners_enabled? && @group.shared_runners_minutes_limit_enabled?
           = nav_link(path: 'pipeline_quota#index') do
-            = link_to group_audit_events_path(@group), title: 'Pipelines quota' do
+            = link_to group_pipeline_quota_path(@group), title: 'Pipelines quota' do
               %span
                 Pipelines quota
