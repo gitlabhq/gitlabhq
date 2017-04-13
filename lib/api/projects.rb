@@ -23,7 +23,6 @@ module API
         optional :only_allow_merge_if_all_discussions_are_resolved, type: Boolean, desc: 'Only allow to merge if all discussions are resolved'
       end
 
-<<<<<<< HEAD
       params :optional_params_ee do
         optional :repository_storage, type: String, desc: 'Which storage shard the repository is on. Available only to admins'
         optional :approvals_before_merge, type: Integer, desc: 'How many approvers should approve merge request by default'
@@ -32,10 +31,6 @@ module API
       params :optional_params do
         use :optional_params_ce
         use :optional_params_ee
-=======
-      params :optional_params do
-        use :optional_params_ce
->>>>>>> ce/master
       end
     end
 
@@ -238,7 +233,6 @@ module API
         optional :default_branch, type: String, desc: 'The default branch of the project'
         optional :path, type: String, desc: 'The path of the repository'
 
-<<<<<<< HEAD
         # EE
         at_least_one_of_ee = [
           :approvals_before_merge,
@@ -247,10 +241,6 @@ module API
 
         use :optional_params
         at_least_one_of(*(at_least_one_of_ce + at_least_one_of_ee))
-=======
-        use :optional_params
-        at_least_one_of(*at_least_one_of_ce)
->>>>>>> ce/master
       end
       put ':id' do
         authorize_admin_project

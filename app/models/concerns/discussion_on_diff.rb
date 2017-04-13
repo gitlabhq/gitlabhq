@@ -2,15 +2,9 @@
 module DiscussionOnDiff
   extend ActiveSupport::Concern
 
-<<<<<<< HEAD
-  included do
-    NUMBER_OF_TRUNCATED_DIFF_LINES = 16
-
-=======
   NUMBER_OF_TRUNCATED_DIFF_LINES = 16
 
   included do
->>>>>>> ce/master
     delegate  :line_code,
               :original_line_code,
               :diff_file,

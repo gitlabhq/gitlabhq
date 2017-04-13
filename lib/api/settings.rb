@@ -160,7 +160,6 @@ module API
       end
       optional :terminal_max_session_time, type: Integer, desc: 'Maximum time for web terminal websocket connection (in seconds). Set to 0 for unlimited time.'
       optional :polling_interval_multiplier, type: BigDecimal, desc: 'Interval multiplier used by endpoints that perform polling. Set to 0 to disable polling.'
-<<<<<<< HEAD
       at_least_one_of :default_branch_protection, :default_project_visibility, :default_snippet_visibility,
                       :default_group_visibility, :restricted_visibility_levels, :import_sources,
                       :enabled_git_access_protocol, :gravatar_enabled, :default_projects_limit,
@@ -203,10 +202,6 @@ module API
       optional :repository_size_limit, type: Integer, desc: 'Size limit per repository (MB)'
 
       at_least_one_of(*(at_least_one_of_ce + at_least_one_of_ee))
-=======
-
-      at_least_one_of(*at_least_one_of_ce)
->>>>>>> ce/master
     end
     put "application/settings" do
       attrs = declared_params(include_missing: false)

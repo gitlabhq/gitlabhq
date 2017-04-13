@@ -382,15 +382,14 @@ class ProjectsController < Projects::ApplicationController
     project.repository.root_ref
   end
 
-<<<<<<< HEAD
   # ExtractsPath will set @id = project.path on the show route, but it has to be the
   # branch name for the tree view to work correctly.
   def assign_tree_vars
     @id = get_id
     tree
-=======
+  end
+
   def project_view_files_allowed?
     !project.empty_repo? && can?(current_user, :download_code, project)
->>>>>>> ce/master
   end
 end

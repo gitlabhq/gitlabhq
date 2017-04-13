@@ -44,12 +44,9 @@ module API
         optional :external, type: Boolean, default: false, desc: 'Filters only external users'
         optional :blocked, type: Boolean, default: false, desc: 'Filters only blocked users'
 
-<<<<<<< HEAD
         # EE
         optional :skip_ldap, type: Boolean, default: false, desc: 'Skip LDAP users'
 
-=======
->>>>>>> ce/master
         use :pagination
       end
       get do

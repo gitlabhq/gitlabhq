@@ -13,7 +13,6 @@ module API
         optional :share_with_group_lock, type: Boolean, desc: 'Prevent sharing a project with another group within this group'
       end
 
-<<<<<<< HEAD
       params :optional_params_ee do
         optional :membership_lock, type: Boolean, desc: 'Prevent adding new members to project membership within this group'
         optional :ldap_cn, type: String, desc: 'LDAP Common Name'
@@ -24,10 +23,6 @@ module API
       params :optional_params do
         use :optional_params_ce
         use :optional_params_ee
-=======
-      params :optional_params do
-        use :optional_params_ce
->>>>>>> ce/master
       end
 
       params :statistics_params do

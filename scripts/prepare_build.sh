@@ -20,32 +20,12 @@ sed -i 's/username:.*/username: root/g' config/database.yml
 sed -i 's/password:.*/password:/g' config/database.yml
 sed -i 's/# socket:.*/host: mysql/g' config/database.yml
 
-<<<<<<< HEAD
-    cp config/database_geo.yml.mysql config/database_geo.yml
-    sed -i 's/username:.*/username: root/g' config/database_geo.yml
-    sed -i 's/password:.*/password:/g' config/database_geo.yml
-    sed -i 's/# socket:.*/host: mysql/g' config/database_geo.yml
+cp config/database_geo.yml.mysql config/database_geo.yml
+sed -i 's/username:.*/username: root/g' config/database_geo.yml
+sed -i 's/password:.*/password:/g' config/database_geo.yml
+sed -i 's/# socket:.*/host: mysql/g' config/database_geo.yml
 
-    cp config/resque.yml.example config/resque.yml
-    sed -i 's/localhost/redis/g' config/resque.yml
-
-    export FLAGS="--path vendor --retry 3 --quiet"
-else
-    rnd=$(awk 'BEGIN { srand() ; printf("%d\n",rand()*5) }')
-    export PATH="$HOME/bin:/usr/local/bin:/usr/bin:/bin"
-    cp config/database.yml.mysql config/database.yml
-    sed "s/username\:.*$/username\: runner/" -i config/database.yml
-    sed "s/password\:.*$/password\: 'password'/" -i config/database.yml
-    sed "s/gitlabhq_test/gitlabhq_test_$rnd/" -i config/database.yml
-
-    cp config/database_geo.yml.mysql config/database_geo.yml
-    sed "s/username\:.*$/username\: runner/" -i config/database_geo.yml
-    sed "s/password\:.*$/password\: 'password'/" -i config/database_geo.yml
-    sed "s/gitlabhq_test/gitlabhq_test_$rnd/" -i config/database_geo.yml
-fi
-=======
 cp config/resque.yml.example config/resque.yml
 sed -i 's/localhost/redis/g' config/resque.yml
 
 export FLAGS="--path vendor --retry 3 --quiet"
->>>>>>> ce/master

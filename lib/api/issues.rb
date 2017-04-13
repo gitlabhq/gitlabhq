@@ -39,7 +39,6 @@ module API
         optional :confidential, type: Boolean, desc: 'Boolean parameter if the issue should be confidential'
       end
 
-<<<<<<< HEAD
       params :issue_params_ee do
         optional :weight, type: Integer, values: 0..9, desc: 'The weight of the issue'
       end
@@ -47,10 +46,6 @@ module API
       params :issue_params do
         use :issue_params_ce
         use :issue_params_ee
-=======
-      params :issue_params do
-        use :issue_params_ce
->>>>>>> ce/master
       end
     end
 
