@@ -10,6 +10,10 @@
   import marked from 'marked';
   import Prompt from './prompt.vue';
 
+  marked.setOptions({
+    sanitize: true,
+  });
+
   export default {
     components: {
       prompt: Prompt,
