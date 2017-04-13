@@ -157,6 +157,7 @@ describe BlobHelper do
     describe '#blob_render_error_options' do
       before do
         assign(:project, project)
+        assign(:blob, blob)
         assign(:id, File.join('master', blob.path))
 
         controller.params[:controller] = 'projects/blob'

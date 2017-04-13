@@ -119,7 +119,15 @@ module BlobHelper
   end
 
   def blob_raw_url
-    namespace_project_raw_path(@project.namespace, @project, @id)
+    if @snippet
+      if @snippet.project_id
+        raw_namespace_project_snippet_path(@project.namespace, @project, @snippet)
+      else
+        raw_snippet_path(@snippet)
+      end
+    elsif @blob
+      namespace_project_raw_path(@project.namespace, @project, @id)
+    end
   end
 
   # SVGs can contain malicious JavaScript; only include whitelisted
@@ -212,8 +220,8 @@ module BlobHelper
     clipboard_button(target: ".blob-content[data-blob-id='#{blob.id}']", class: "btn btn-sm js-copy-blob-source-btn", title: "Copy source to clipboard")
   end
 
-  def open_raw_file_button(path)
-    link_to icon('file-code-o'), path, class: 'btn btn-sm has-tooltip', target: '_blank', rel: 'noopener noreferrer', title: 'Open raw', data: { container: 'body' }
+  def open_raw_blob_button
+    link_to icon('file-code-o'), blob_raw_url, class: 'btn btn-sm has-tooltip', target: '_blank', rel: 'noopener noreferrer', title: 'Open raw', data: { container: 'body' }
   end
 
   def blob_render_error_reason(viewer)

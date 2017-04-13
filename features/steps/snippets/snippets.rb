@@ -3,6 +3,7 @@ class Spinach::Features::Snippets < Spinach::FeatureSteps
   include SharedPaths
   include SharedProject
   include SharedSnippet
+  include WaitForAjax
 
   step 'I click link "Personal snippet one"' do
     click_link "Personal snippet one"
@@ -26,9 +27,10 @@ class Spinach::Features::Snippets < Spinach::FeatureSteps
     fill_in "personal_snippet_title", with: "Personal snippet three"
     fill_in "personal_snippet_file_name", with: "my_snippet.rb"
     page.within('.file-editor') do
-      find(:xpath, "//input[@id='personal_snippet_content']").set 'Content of snippet three'
+      find('.ace_editor').native.send_keys 'Content of snippet three'
     end
     click_button "Create snippet"
+    wait_for_ajax
   end
 
   step 'I submit new internal snippet' do

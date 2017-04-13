@@ -1,13 +1,10 @@
 require 'spec_helper'
 
 feature 'File blob', :js, feature: true do
-  include TreeHelper
-  include WaitForAjax
-
   let(:project) { create(:project, :public) }
 
   def visit_blob(path, fragment = nil)
-    visit namespace_project_blob_path(project.namespace, project, tree_join('master', path), anchor: fragment)
+    visit namespace_project_blob_path(project.namespace, project, File.join('master', path), anchor: fragment)
   end
 
   context 'Ruby file' do
@@ -39,7 +36,7 @@ feature 'File blob', :js, feature: true do
         wait_for_ajax
       end
 
-      it 'displays the blob' do
+      it 'displays the blob using the rich viewer' do
         aggregate_failures do
           # hides the simple viewer
           expect(page).to have_selector('.blob-viewer[data-type="simple"]', visible: false)
@@ -63,7 +60,7 @@ feature 'File blob', :js, feature: true do
           wait_for_ajax
         end
 
-        it 'displays the blob' do
+        it 'displays the blob using the simple viewer' do
           aggregate_failures do
             # hides the rich viewer
             expect(page).to have_selector('.blob-viewer[data-type="simple"]')
@@ -84,7 +81,7 @@ feature 'File blob', :js, feature: true do
             wait_for_ajax
           end
 
-          it 'displays the blob' do
+          it 'displays the blob using the rich viewer' do
             aggregate_failures do
               # hides the simple viewer
               expect(page).to have_selector('.blob-viewer[data-type="simple"]', visible: false)
@@ -105,7 +102,7 @@ feature 'File blob', :js, feature: true do
         wait_for_ajax
       end
 
-      it 'displays the blob' do
+      it 'displays the blob using the simple viewer' do
         aggregate_failures do
           # hides the rich viewer
           expect(page).to have_selector('.blob-viewer[data-type="simple"]')

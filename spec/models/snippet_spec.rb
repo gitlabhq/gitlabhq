@@ -5,7 +5,6 @@ describe Snippet, models: true do
     subject { described_class }
 
     it { is_expected.to include_module(Gitlab::VisibilityLevel) }
-    it { is_expected.to include_module(Linguist::BlobHelper) }
     it { is_expected.to include_module(Participable) }
     it { is_expected.to include_module(Referable) }
     it { is_expected.to include_module(Sortable) }
@@ -239,6 +238,18 @@ describe Snippet, models: true do
       it 'returns false' do
         is_expected.to be_falsey
       end
+    end
+  end
+
+  describe '#blob' do
+    let(:snippet) { create(:snippet) }
+
+    it 'returns a blob representing the snippet data' do
+      blob = snippet.blob
+
+      expect(blob).to be_a(Blob)
+      expect(blob.path).to eq(snippet.file_name)
+      expect(blob.data).to eq(snippet.content)
     end
   end
 end
