@@ -126,9 +126,69 @@ module Github
             merge_request.assignee_id       = user_id(pull_request.assignee)
             merge_request.created_at        = pull_request.created_at
             merge_request.updated_at        = pull_request.updated_at
-            merge_request.save(validate: false)
+            merge_request.save!(validate: false)
 
             merge_request.merge_request_diffs.create
+
+            # Fetch review comments
+            review_comments_url = "/repos/#{owner}/#{repo}/pulls/#{pull_request.iid}/comments"
+
+            loop do
+              review_comments = Github::Client.new.get(review_comments_url)
+
+              ActiveRecord::Base.no_touching do
+                review_comments.body.each do |raw|
+                  begin
+                    comment = Github::Representation::Comment.new(raw)
+
+                    note               = Note.new
+                    note.project_id    = project.id
+                    note.noteable      = merge_request
+                    note.note          = comment.note
+                    note.commit_id     = comment.commit_id
+                    note.line_code     = comment.line_code
+                    note.author_id     = user_id(comment.author, project.creator_id)
+                    note.type          = comment.type
+                    note.created_at    = comment.created_at
+                    note.updated_at    = comment.updated_at
+                    note.save!(validate: false)
+                  rescue => e
+                    error(:review_comment, comment.url, e.message)
+                  end
+                end
+              end
+
+              break unless review_comments_url = review_comments.rels[:next]
+            end
+
+            # Fetch comments
+            comments_url = "/repos/#{owner}/#{repo}/issues/#{pull_request.iid}/comments"
+
+            loop do
+              comments = Github::Client.new.get(comments_url)
+
+              ActiveRecord::Base.no_touching do
+                comments.body.each do |raw|
+                  begin
+                    comment = Github::Representation::Comment.new(raw)
+
+                    note               = Note.new
+                    note.project_id    = project.id
+                    note.noteable      = merge_request
+                    note.note          = comment.note
+                    note.author_id     = user_id(comment.author, project.creator_id)
+                    note.created_at    = comment.created_at
+                    note.updated_at    = comment.updated_at
+                    note.save!(validate: false)
+                  rescue => e
+                    error(:comment, comment.url, e.message)
+                  end
+                end
+              end
+
+              break unless comments_url = comments.rels[:next]
+            end
+
           rescue => e
             error(:pull_request, pull_request.url, e.message)
           ensure
