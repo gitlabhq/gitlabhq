@@ -13,8 +13,8 @@ module Banzai
         issuables = extractor.extract([doc])
 
         issuables.each do |node, issuable|
-          if VISIBLE_STATES.include?(issuable.state)
-            node.children.last.content += " [#{issuable.state}]"
+          if VISIBLE_STATES.include?(issuable.state) && node.children.present?
+            node.add_child(Nokogiri::XML::Text.new(" [#{issuable.state}]", doc))
           end
         end
 
