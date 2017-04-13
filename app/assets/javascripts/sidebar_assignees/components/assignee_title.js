@@ -24,8 +24,18 @@ export default {
   template: `
     <div class="title hide-collapsed">
       {{assigneeTitle}}
-      <i v-if="loading" aria-hidden="true" class="fa fa-spinner fa-spin block-loading"></i>
-      <a v-if="editable" class="edit-link pull-right" href="#">Edit</a>
+      <i
+        v-if="loading"
+        aria-hidden="true"
+        class="fa fa-spinner fa-spin block-loading"
+      />
+      <a
+        v-if="editable"
+        class="edit-link pull-right"
+        href="#"
+      >
+        Edit
+      </a>
     </div>
   `,
 };
