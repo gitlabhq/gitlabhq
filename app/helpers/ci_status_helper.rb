@@ -121,4 +121,8 @@ module CiStatusHelper
       status.respond_to?(:label) &&
       status.respond_to?(:icon)
   end
+
+  def ci_status_favicon_path(favicon_name)
+    ActionController::Base.helpers.image_path(File.join('ci_favicons', "#{favicon_name}.ico"))
+  end
 end
