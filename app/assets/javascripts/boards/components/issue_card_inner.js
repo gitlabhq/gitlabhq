@@ -6,6 +6,10 @@ window.gl.issueBoards = window.gl.issueBoards || {};
 
 gl.issueBoards.IssueCardInner = Vue.extend({
   props: {
+    issue: {
+      type: Object,
+      required: true,
+    },
     issueLinkBase: {
       type: String,
       required: true,
