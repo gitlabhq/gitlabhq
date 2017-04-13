@@ -114,7 +114,7 @@ describe('List model', () => {
     });
 
     it('increase page number if current issue count is more than the page size', () => {
-      for (let i = 0; i < 30; i+=1) {
+      for (let i = 0; i < 30; i += 1) {
         list.issues.push(new ListIssue({
           title: 'Testing',
           iid: _.random(10000) + i,
