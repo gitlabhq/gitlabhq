@@ -1,7 +1,7 @@
 - @no_container = true
 - page_title       @milestone.title, "Milestones"
 - page_description @milestone.description
-= render "projects/issues/head"
+= render "shared/mr_head"
 
 - content_for :page_specific_javascripts do
   = page_specific_javascript_bundle_tag('simulate_drag') if Rails.env.test?
