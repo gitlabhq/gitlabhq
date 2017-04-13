@@ -41,7 +41,6 @@ require('vendor/jquery.scrollTo');
     LineHighlighter.prototype._hash = '';
 
     function LineHighlighter(hash) {
-      var range;
       if (hash == null) {
         // Initialize a LineHighlighter object
         //
@@ -51,10 +50,21 @@ require('vendor/jquery.scrollTo');
       this.setHash = bind(this.setHash, this);
       this.highlightLine = bind(this.highlightLine, this);
       this.clickHandler = bind(this.clickHandler, this);
+      this.highlightHash = this.highlightHash.bind(this);
       this._hash = hash;
       this.bindEvents();
-      if (hash !== '') {
-        range = this.hashToRange(hash);
+      this.highlightHash();
+    }
+
+    LineHighlighter.prototype.bindEvents = function() {
+      $('#blob-content-holder').on('click', 'a[data-line-number]', this.clickHandler);
+      $('#blob-content-holder').on('highlight:line', this.highlightHash);
+    };
+
+    LineHighlighter.prototype.highlightHash = function() {
+      var range;
+      if (this._hash !== '') {
+        range = this.hashToRange(this._hash);
         if (range[0]) {
           this.highlightRange(range);
           $.scrollTo("#L" + range[0], {
@@ -64,10 +74,6 @@ require('vendor/jquery.scrollTo');
           });
         }
       }
-    }
-
-    LineHighlighter.prototype.bindEvents = function() {
-      $('#blob-content-holder').on('click', 'a[data-line-number]', this.clickHandler);
     };
 
     LineHighlighter.prototype.clickHandler = function(event) {
