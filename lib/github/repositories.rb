@@ -5,7 +5,7 @@ module Github
     end
 
     def fetch
-      Collection.new(repos_url).fetch
+      Collection.new.fetch(repos_url)
     end
 
     private
