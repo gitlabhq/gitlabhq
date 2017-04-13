@@ -33,8 +33,7 @@ describe Users::BuildService, services: true do
 
       context 'when "send_user_confirmation_email" application setting is true' do
         before do
-          current_application_settings = double(:current_application_settings, send_user_confirmation_email: true, signup_enabled?: true)
-          allow(service).to receive(:current_application_settings).and_return(current_application_settings)
+          stub_application_setting(send_user_confirmation_email: true, signup_enabled?: true)
         end
 
         it 'does not confirm the user' do
@@ -44,8 +43,7 @@ describe Users::BuildService, services: true do
 
       context 'when "send_user_confirmation_email" application setting is false' do
         before do
-          current_application_settings = double(:current_application_settings, send_user_confirmation_email: false, signup_enabled?: true)
-          allow(service).to receive(:current_application_settings).and_return(current_application_settings)
+          stub_application_setting(send_user_confirmation_email: false, signup_enabled?: true)
         end
 
         it 'confirms the user' do
