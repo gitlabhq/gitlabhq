@@ -586,8 +586,8 @@ describe Projects::MergeRequestsController do
               diff_for_path(id: merge_request.iid, old_path: existing_path, new_path: existing_path)
 
               expect(assigns(:diff_notes_disabled)).to be_falsey
-              expect(assigns(:comments_target)).to eq(noteable_type: 'MergeRequest',
-                                                      noteable_id: merge_request.id)
+              expect(assigns(:new_diff_note_attrs)).to eq(noteable_type: 'MergeRequest',
+                                                          noteable_id: merge_request.id)
             end
 
             it 'only renders the diffs for the path given' do

@@ -135,6 +135,8 @@ constraints(ProjectUrlConstrainer.new) do
       end
 
       resources :protected_branches, only: [:index, :show, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
+      resources :protected_tags, only: [:index, :show, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
+
       resources :variables, only: [:index, :show, :update, :create, :destroy]
       resources :triggers, only: [:index, :create, :edit, :update, :destroy] do
         member do
@@ -221,7 +223,15 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :container_registry, only: [:index, :destroy], constraints: { id: Gitlab::Regex.container_registry_reference_regex }
+      resources :container_registry, only: [:index, :destroy],
+                                     controller: 'registry/repositories'
+
+      namespace :registry do
+        resources :repository, only: [] do
+          resources :tags, only: [:destroy],
+                           constraints: { id: Gitlab::Regex.container_registry_reference_regex }
+        end
+      end
 
       resources :milestones, constraints: { id: /\d+/ } do
         member do

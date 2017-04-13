@@ -22,7 +22,6 @@
 }
 
 @media (min-width: $screen-sm-min) {
-  .issues-filters,
   .issues_bulk_update {
     .dropdown-menu-toggle {
       width: 132px;
@@ -56,7 +55,7 @@
   }
 }
 
-.filtered-search-container {
+.filtered-search-wrapper {
   display: -webkit-flex;
   display: flex;
 
@@ -83,7 +82,7 @@
   .input-token:last-child {
     flex: 1;
     -webkit-flex: 1;
-    max-width: initial;
+    max-width: inherit;
   }
 }
 
@@ -151,11 +150,13 @@
   width: 100%;
 }
 
-.filtered-search-input-container {
+.filtered-search-box {
+  position: relative;
+  flex: 1;
   display: -webkit-flex;
   display: flex;
-  position: relative;
   width: 100%;
+  min-width: 0;
   border: 1px solid $border-color;
   background-color: $white-light;
 
@@ -163,14 +164,6 @@
     -webkit-flex: 1 1 auto;
     flex: 1 1 auto;
     margin-bottom: 10px;
-
-    .dropdown-menu {
-      width: auto;
-      left: 0;
-      right: 0;
-      max-width: none;
-      min-width: 100%;
-    }
   }
 
   &:hover {
@@ -229,6 +222,116 @@
   }
 }
 
+.filtered-search-box-input-container {
+  flex: 1;
+  position: relative;
+  // Fix PhantomJS not supporting `flex: 1;` properly.
+  // This is important because it can change the expected `e.target` when clicking things in tests.
+  // See https://gitlab.com/gitlab-org/gitlab-ce/blob/b54acba8b732688c59fe2f38510c469dc86ee499/spec/features/issues/filtered_search/visual_tokens_spec.rb#L61
+  // - With `width: 100%`: `e.target` = `.tokens-container`, https://i.imgur.com/jGq7wbx.png
+  // - Without `width: 100%`: `e.target` = `.filtered-search`, https://i.imgur.com/cNI2CyT.png
+  width: 100%;
+  min-width: 0;
+}
+
+.filtered-search-input-dropdown-menu {
+  max-width: 280px;
+
+  @media (max-width: $screen-xs-min) {
+    width: auto;
+    left: 0;
+    right: 0;
+    max-width: none;
+    min-width: 100%;
+  }
+}
+
+.filtered-search-history-dropdown-wrapper {
+  position: static;
+  display: flex;
+  flex-direction: column;
+}
+
+.filtered-search-history-dropdown-toggle-button {
+  flex: 1;
+  width: auto;
+  padding-right: 10px;
+
+  border-radius: 0;
+  border-top: 0;
+  border-left: 0;
+  border-bottom: 0;
+  border-right: 1px solid $border-color;
+
+  color: $gl-text-color-secondary;
+  line-height: 1;
+
+  transition: color 0.1s linear;
+
+  &:hover,
+  &:focus {
+    color: $gl-text-color;
+    border-color: $dropdown-input-focus-border;
+    outline: none;
+  }
+
+  .dropdown-toggle-text {
+    display: inline-block;
+    color: inherit;
+
+    .fa {
+      vertical-align: middle;
+      color: inherit;
+    }
+  }
+
+  .fa {
+    position: static;
+  }
+
+}
+
+.filtered-search-history-dropdown {
+  width: 40%;
+
+  @media (max-width: $screen-xs-min) {
+    left: 0;
+    right: 0;
+    max-width: none;
+  }
+}
+
+.filtered-search-history-dropdown-content {
+  max-height: none;
+}
+
+.filtered-search-history-dropdown-item,
+.filtered-search-history-clear-button {
+  @include dropdown-link;
+
+  overflow: hidden;
+  width: 100%;
+  margin: 0.5em 0;
+
+  background-color: transparent;
+  border: 0;
+  text-align: left;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.filtered-search-history-dropdown-token {
+  display: inline;
+
+  &:not(:last-child) {
+    margin-right: 0.3em;
+  }
+
+  & > .value {
+    font-weight: 600;
+  }
+}
+
 .filter-dropdown-container {
   display: -webkit-flex;
   display: flex;
@@ -248,10 +351,8 @@
 }
 
 @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
-  .issues-details-filters {
-    .dropdown-menu-toggle {
-      width: 100px;
-    }
+  .issue-bulk-update-dropdown-toggle {
+    width: 100px;
   }
 }
 
@@ -343,10 +444,8 @@
   }
 }
 
-.filter-dropdown-item.dropdown-active {
-  .btn {
-    @extend %filter-dropdown-item-btn-hover;
-  }
+.filter-dropdown-item.droplab-item-active .btn {
+  @extend %filter-dropdown-item-btn-hover;
 }
 
 .filter-dropdown-loading {

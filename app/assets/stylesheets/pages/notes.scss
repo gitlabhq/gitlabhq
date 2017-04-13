@@ -16,6 +16,15 @@ ul.notes {
 
   .timeline-icon {
     float: left;
+
+    svg {
+      width: 16px;
+      height: 16px;
+      fill: $gray-darkest;
+      position: absolute;
+      left: 0;
+      top: 16px;
+    }
   }
 
   .timeline-content {
@@ -31,117 +40,6 @@ ul.notes {
   .note-created-ago,
   .note-updated-at {
     white-space: nowrap;
-  }
-
-  .system-note {
-    font-size: 14px;
-    padding: 0;
-    clear: both;
-
-    &.timeline-entry::after {
-      clear: none;
-    }
-
-    .system-note-message {
-      display: inline;
-
-      &::first-letter {
-        text-transform: lowercase;
-      }
-
-      a {
-        color: $gl-link-color;
-        text-decoration: none;
-      }
-
-      p {
-        display: inline;
-        margin: 0;
-
-        &::first-letter {
-          text-transform: lowercase;
-        }
-      }
-    }
-
-    .timeline-content {
-      padding: 14px 10px;
-    }
-
-    .note-body {
-      overflow: hidden;
-
-      .system-note-commit-list-toggler {
-        color: $gl-link-color;
-        display: none;
-        padding: 10px 0 0;
-        cursor: pointer;
-        position: relative;
-        z-index: 2;
-
-        &:hover {
-          color: $gl-link-color;
-          text-decoration: underline;
-        }
-      }
-
-      .note-text {
-        & p:first-child {
-          display: none;
-        }
-
-        &.system-note-commit-list {
-          max-height: 70px;
-          overflow: hidden;
-          display: block;
-
-          ul {
-            margin: 3px 0 3px 16px !important;
-
-            .gfm-commit {
-              font-family: $monospace_font;
-              font-size: 12px;
-            }
-          }
-
-          p:first-child {
-            display: none;
-          }
-
-          &::after {
-            content: '';
-            width: 100%;
-            height: 67px;
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            background: linear-gradient(rgba($white-light, 0.1) -100px, $white-light 100%);
-          }
-
-          &.hide-shade {
-            max-height: 100%;
-            overflow: auto;
-
-            &::after {
-              display: none;
-              background: transparent;
-            }
-          }
-        }
-      }
-    }
-
-    .timeline-icon {
-      display: none;
-
-      .avatar {
-        visibility: hidden;
-
-        .discussion-body & {
-          visibility: visible;
-        }
-      }
-    }
   }
 
   .discussion-body {
@@ -239,7 +137,117 @@ ul.notes {
         }
       }
     }
+  }
 
+  .system-note {
+    font-size: 14px;
+    padding: 0;
+    clear: both;
+
+    @media (min-width: $screen-sm-min) {
+      margin-left: 65px;
+    }
+
+    &.timeline-entry::after {
+      clear: none;
+    }
+
+    .system-note-message {
+      display: inline;
+
+      &::first-letter {
+        text-transform: lowercase;
+      }
+
+      a {
+        color: $gl-link-color;
+        text-decoration: none;
+      }
+
+      p {
+        display: inline;
+        margin: 0;
+
+        &::first-letter {
+          text-transform: lowercase;
+        }
+      }
+    }
+
+    .timeline-content {
+      padding: 14px 10px;
+
+      @media (min-width: $screen-sm-min) {
+        margin-left: 20px;
+      }
+    }
+
+    .note-header {
+      padding-bottom: 0;
+    }
+
+    .note-body {
+      overflow: hidden;
+
+      .system-note-commit-list-toggler {
+        color: $gl-link-color;
+        display: none;
+        padding: 10px 0 0;
+        cursor: pointer;
+        position: relative;
+        z-index: 2;
+
+        &:hover {
+          color: $gl-link-color;
+          text-decoration: underline;
+        }
+      }
+
+      .note-text {
+        & p:first-child {
+          display: none;
+        }
+
+        &.system-note-commit-list {
+          max-height: 70px;
+          overflow: hidden;
+          display: block;
+
+          ul {
+            margin: 3px 0 3px 16px !important;
+
+            .gfm-commit {
+              font-family: $monospace_font;
+              font-size: 12px;
+            }
+          }
+
+          p:first-child {
+            display: none;
+          }
+
+          &::after {
+            content: '';
+            width: 100%;
+            height: 67px;
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            background: linear-gradient(rgba($white-light, 0.1) -100px, $white-light 100%);
+          }
+
+          &.hide-shade {
+            max-height: 100%;
+            overflow: auto;
+
+            &::after {
+              display: none;
+              background: transparent;
+            }
+          }
+        }
+      }
+    }
   }
 }
 
@@ -292,6 +300,18 @@ ul.notes {
 
       &.parallel {
         border-width: 1px;
+      }
+
+      .discussion-notes {
+        &:not(:first-child) {
+          border-top: 1px solid $white-normal;
+          margin-top: 20px;
+        }
+
+        &:not(:last-child) {
+          border-bottom: 1px solid $white-normal;
+          margin-bottom: 20px;
+        }
       }
 
       .notes {

@@ -25,4 +25,10 @@
 #blob-content-holder.blob-content-holder
   %article.file-holder
     = render "projects/blob/header", blob: blob
-    = render blob.to_partial_path(@project), blob: blob
+
+    - if blob.empty?
+      .file-content.code
+        .nothing-here-block
+          Empty file
+    - else
+      = render blob.to_partial_path(@project), blob: blob

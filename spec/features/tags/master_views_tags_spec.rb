@@ -16,7 +16,7 @@ feature 'Master views tags', feature: true do
       fill_in :commit_message, with: 'Add a README file', visible: true
       # Remove pre-receive hook so we can push without auth
       FileUtils.rm_f(File.join(project.repository.path, 'hooks', 'pre-receive'))
-      click_button 'Commit Changes'
+      click_button 'Commit changes'
       visit namespace_project_tags_path(project.namespace, project)
     end
 

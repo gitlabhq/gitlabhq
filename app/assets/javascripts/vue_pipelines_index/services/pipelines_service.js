@@ -26,7 +26,8 @@ export default class PipelinesService {
     this.pipelines = Vue.resource(endpoint);
   }
 
-  getPipelines(scope, page) {
+  getPipelines(data = {}) {
+    const { scope, page } = data;
     return this.pipelines.get({ scope, page });
   }
 

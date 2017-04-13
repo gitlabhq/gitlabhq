@@ -73,7 +73,7 @@ describe BlobHelper do
     let(:project) { create(:project, :repository, namespace: namespace) }
 
     before do
-      allow(self).to receive(:current_user).and_return(double)
+      allow(self).to receive(:current_user).and_return(nil)
       allow(self).to receive(:can_collaborate_with_project?).and_return(true)
     end
 

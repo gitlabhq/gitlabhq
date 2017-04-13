@@ -20,6 +20,7 @@ import eventHub from '../eventhub';
       list: {
         type: Object,
         required: false,
+        default: () => ({}),
       },
       rootPath: {
         type: String,
@@ -29,6 +30,26 @@ import eventHub from '../eventhub';
         type: Boolean,
         required: false,
         default: false,
+      },
+    },
+    computed: {
+      cardUrl() {
+        return `${this.issueLinkBase}/${this.issue.id}`;
+      },
+      assigneeUrl() {
+        return `${this.rootPath}${this.issue.assignee.username}`;
+      },
+      assigneeUrlTitle() {
+        return `Assigned to ${this.issue.assignee.name}`;
+      },
+      avatarUrlTitle() {
+        return `Avatar for ${this.issue.assignee.name}`;
+      },
+      issueId() {
+        return `#${this.issue.id}`;
+      },
+      showLabelFooter() {
+        return this.issue.labels.find(l => this.showLabel(l)) !== undefined;
       },
     },
     methods: {
@@ -67,35 +88,41 @@ import eventHub from '../eventhub';
     },
     template: `
       <div>
-        <h4 class="card-title">
-          <i
-            class="fa fa-eye-slash confidential-icon"
-            v-if="issue.confidential"></i>
-          <a
-            :href="issueLinkBase + '/' + issue.id"
-            :title="issue.title">
-            {{ issue.title }}
-          </a>
-        </h4>
-        <div class="card-footer">
-          <span
-            class="card-number"
-            v-if="issue.id">
-            #{{ issue.id }}
-          </span>
+        <div class="card-header">
+          <h4 class="card-title">
+            <i
+              class="fa fa-eye-slash confidential-icon"
+              v-if="issue.confidential"
+              aria-hidden="true"
+            />
+            <a
+              class="js-no-trigger"
+              :href="cardUrl"
+              :title="issue.title">{{ issue.title }}</a>
+            <span
+              class="card-number"
+              v-if="issue.id"
+            >
+              {{ issueId }}
+            </span>
+          </h4>
           <a
             class="card-assignee has-tooltip js-no-trigger"
-            :href="rootPath + issue.assignee.username"
-            :title="'Assigned to ' + issue.assignee.name"
+            :href="assigneeUrl"
+            :title="assigneeUrlTitle"
             v-if="issue.assignee"
-            data-container="body">
+            data-container="body"
+          >
             <img
               class="avatar avatar-inline s20 js-no-trigger"
               :src="issue.assignee.avatar"
               width="20"
               height="20"
-              :alt="'Avatar for ' + issue.assignee.name" />
+              :alt="avatarUrlTitle"
+            />
           </a>
+        </div>
+        <div class="card-footer" v-if="showLabelFooter">
           <button
             class="label color-label has-tooltip js-no-trigger"
             v-for="label in issue.labels"

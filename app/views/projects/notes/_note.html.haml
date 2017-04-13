@@ -5,8 +5,11 @@
 %li.timeline-entry{ id: dom_id(note), class: ["note", "note-row-#{note.id}", ('system-note' if note.system)], data: {author_id: note.author.id, editable: note_editable, note_id: note.id} }
   .timeline-entry-inner
     .timeline-icon
-      %a{ href: user_path(note.author) }
-        = image_tag avatar_icon(note.author), alt: '', class: 'avatar s40'
+      - if note.system
+        = icon_for_system_note(note)
+      - else
+        %a{ href: user_path(note.author) }
+          = image_tag avatar_icon(note.author), alt: '', class: 'avatar s40'
     .timeline-content
       .note-header
         %a.visible-xs{ href: user_path(note.author) }
@@ -31,7 +34,7 @@
             - if note.resolvable?
               - can_resolve = can?(current_user, :resolve_note, note)
               %resolve-btn{ "project-path" => project_path(note.project),
-                  "discussion-id" => note.discussion_id,
+                  "discussion-id" => note.discussion_id(@noteable),
                   ":note-id" => note.id,
                   ":resolved" => note.resolved?,
                   ":can-resolve" => can_resolve,

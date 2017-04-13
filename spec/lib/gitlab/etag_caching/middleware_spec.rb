@@ -91,6 +91,12 @@ describe Gitlab::EtagCaching::Middleware do
       expect(status).to eq 304
     end
 
+    it 'returns empty body' do
+      _, _, body = middleware.call(build_env(path, if_none_match))
+
+      expect(body).to be_empty
+    end
+
     it 'tracks "etag_caching_cache_hit" event' do
       expect(Gitlab::Metrics).to receive(:add_event)
         .with(:etag_caching_middleware_used, endpoint: 'issue_notes')

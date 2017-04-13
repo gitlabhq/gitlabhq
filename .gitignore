@@ -30,6 +30,7 @@ eslint-report.html
 /config/unicorn.rb
 /config/secrets.yml
 /config/sidekiq.yml
+/config/registry.key
 /coverage/*
 /coverage-javascript/
 /db/*.sqlite3

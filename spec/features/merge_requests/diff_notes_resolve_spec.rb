@@ -191,7 +191,7 @@ feature 'Diff notes resolve', feature: true, js: true do
 
     context 'multiple notes' do
       before do
-        create(:diff_note_on_merge_request, project: project, noteable: merge_request)
+        create(:diff_note_on_merge_request, project: project, noteable: merge_request, in_reply_to: note)
         visit_merge_request
       end
 

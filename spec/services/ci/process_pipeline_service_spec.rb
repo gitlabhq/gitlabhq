@@ -469,7 +469,9 @@ describe Ci::ProcessPipelineService, '#execute', :services do
     builds.find_by(name: name).play(user)
   end
 
-  delegate :manual_actions, to: :pipeline
+  def manual_actions
+    pipeline.manual_actions(true)
+  end
 
   def create_build(name, **opts)
     create(:ci_build, :created, pipeline: pipeline, name: name, **opts)

@@ -37,11 +37,13 @@ module API
         success Entities::UserBasic
       end
       params do
+        # CE
         optional :username, type: String, desc: 'Get a single user with a specific username'
         optional :search, type: String, desc: 'Search for a username'
         optional :active, type: Boolean, default: false, desc: 'Filters only active users'
         optional :external, type: Boolean, default: false, desc: 'Filters only external users'
         optional :blocked, type: Boolean, default: false, desc: 'Filters only blocked users'
+
         use :pagination
       end
       get do
@@ -56,10 +58,10 @@ module API
           users = users.active if params[:active]
           users = users.search(params[:search]) if params[:search].present?
           users = users.blocked if params[:blocked]
-          users = users.external if params[:external] && current_user.is_admin?
+          users = users.external if params[:external] && current_user.admin?
         end
 
-        entity = current_user.is_admin? ? Entities::UserPublic : Entities::UserBasic
+        entity = current_user.admin? ? Entities::UserPublic : Entities::UserBasic
         present paginate(users), with: entity
       end
 
@@ -73,7 +75,7 @@ module API
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
 
-        if current_user && current_user.is_admin?
+        if current_user && current_user.admin?
           present user, with: Entities::UserPublic
         elsif can?(current_user, :read_user, user)
           present user, with: Entities::User

@@ -7,9 +7,11 @@ class Projects::BlobController < Projects::ApplicationController
   # Raised when given an invalid file path
   InvalidPathError = Class.new(StandardError)
 
+  prepend_before_action :authenticate_user!, only: [:edit]
+
   before_action :require_non_empty_project, except: [:new, :create]
   before_action :authorize_download_code!
-  before_action :authorize_edit_tree!, only: [:new, :create, :edit, :update, :destroy]
+  before_action :authorize_edit_tree!, only: [:new, :create, :update, :destroy]
   before_action :assign_blob_vars
   before_action :commit, except: [:new, :create]
   before_action :blob, except: [:new, :create]
@@ -37,7 +39,11 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def edit
-    blob.load_all_data!(@repository)
+    if can_collaborate_with_project?
+      blob.load_all_data!(@repository)
+    else
+      redirect_to action: 'show'
+    end
   end
 
   def update

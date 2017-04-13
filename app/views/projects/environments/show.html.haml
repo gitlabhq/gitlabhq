@@ -8,9 +8,9 @@
       %h3.page-title= @environment.name
     .col-md-5
       .nav-controls
-        = render 'projects/environments/metrics_button', environment: @environment
         = render 'projects/environments/terminal_button', environment: @environment
         = render 'projects/environments/external_url', environment: @environment
+        = render 'projects/environments/metrics_button', environment: @environment
         - if can?(current_user, :update_environment, @environment)
           = link_to 'Edit', edit_namespace_project_environment_path(@project.namespace, @project, @environment), class: 'btn'
         - if can?(current_user, :create_deployment, @environment) && @environment.can_stop?

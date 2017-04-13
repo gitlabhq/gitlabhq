@@ -19,7 +19,7 @@ feature 'User wants to create a file', feature: true do
     file_content = find('#file-content')
     file_content.set options[:file_content] || 'Some content'
 
-    click_button 'Commit Changes'
+    click_button 'Commit changes'
   end
 
   scenario 'file name contains Chinese characters' do

@@ -237,6 +237,7 @@ class Service < ActiveRecord::Base
       slack_slash_commands
       slack
       teamcity
+      microsoft_teams
     ]
     if Rails.env.development?
       service_names += %w[mock_ci mock_deployment mock_monitoring]

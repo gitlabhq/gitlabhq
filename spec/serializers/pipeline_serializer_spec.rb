@@ -93,6 +93,44 @@ describe PipelineSerializer do
         end
       end
     end
+
+    context 'number of queries' do
+      let(:resource) { Ci::Pipeline.all }
+      let(:project) { create(:empty_project) }
+
+      before do
+        Ci::Pipeline::AVAILABLE_STATUSES.each do |status|
+          create_pipeline(status)
+        end
+
+        RequestStore.begin!
+      end
+
+      after do
+        RequestStore.end!
+        RequestStore.clear!
+      end
+
+      it "verifies number of queries" do
+        recorded = ActiveRecord::QueryRecorder.new { subject }
+        expect(recorded.count).to be_within(1).of(50)
+        expect(recorded.cached_count).to eq(0)
+      end
+
+      def create_pipeline(status)
+        create(:ci_empty_pipeline, project: project, status: status).tap do |pipeline|
+          Ci::Build::AVAILABLE_STATUSES.each do |status|
+            create_build(pipeline, status, status)
+          end
+        end
+      end
+
+      def create_build(pipeline, stage, status)
+        create(:ci_build, :tags, :triggered, :artifacts,
+          pipeline: pipeline, stage: stage,
+          name: stage, status: status)
+      end
+    end
   end
 
   describe '#represent_status' do

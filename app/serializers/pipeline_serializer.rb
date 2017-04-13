@@ -13,7 +13,15 @@ class PipelineSerializer < BaseSerializer
 
   def represent(resource, opts = {})
     if resource.is_a?(ActiveRecord::Relation)
-      resource = resource.includes(project: :namespace)
+      resource = resource.preload([
+        :retryable_builds,
+        :cancelable_statuses,
+        :trigger_requests,
+        :project,
+        { pending_builds: :project },
+        { manual_actions: :project },
+        { artifacts: :project }
+      ])
     end
 
     if paginated?

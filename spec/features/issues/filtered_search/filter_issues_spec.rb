@@ -758,10 +758,10 @@ describe 'Filter issues', js: true, feature: true do
 
         expect_issues_list_count(2)
 
-        sort_toggle = find('.filtered-search-container .dropdown-toggle')
+        sort_toggle = find('.filtered-search-wrapper .dropdown-toggle')
         sort_toggle.click
 
-        find('.filtered-search-container .dropdown-menu li a', text: 'Oldest updated').click
+        find('.filtered-search-wrapper .dropdown-menu li a', text: 'Oldest updated').click
         wait_for_ajax
 
         expect(find('.issues-list .issue:first-of-type .issue-title-text a')).to have_content(old_issue.title)

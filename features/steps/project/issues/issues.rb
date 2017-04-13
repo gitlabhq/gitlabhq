@@ -61,7 +61,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
     expect(page).to have_content "Tweet control"
   end
 
-  step 'I click link "New Issue"' do
+  step 'I click link "New issue"' do
     page.has_link?('New Issue') ? click_link('New Issue') : click_link('New issue')
   end
 

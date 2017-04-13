@@ -266,8 +266,8 @@ describe Projects::CommitController do
             diff_for_path(id: commit2.id, old_path: existing_path, new_path: existing_path)
 
             expect(assigns(:diff_notes_disabled)).to be_falsey
-            expect(assigns(:comments_target)).to eq(noteable_type: 'Commit',
-                                                    commit_id: commit2.id)
+            expect(assigns(:new_diff_note_attrs)).to eq(noteable_type: 'Commit',
+                                                        commit_id: commit2.id)
           end
 
           it 'only renders the diffs for the path given' do

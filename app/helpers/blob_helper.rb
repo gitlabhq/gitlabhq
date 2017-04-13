@@ -8,31 +8,36 @@ module BlobHelper
     %w(credits changelog news copying copyright license authors)
   end
 
-  def edit_blob_link(project = @project, ref = @ref, path = @path, options = {})
-    return unless current_user
+  def edit_path(project = @project, ref = @ref, path = @path, options = {})
+    namespace_project_edit_blob_path(project.namespace, project,
+                                     tree_join(ref, path),
+                                     options[:link_opts])
+  end
 
+  def fork_path(project = @project, ref = @ref, path = @path, options = {})
+    continue_params = {
+      to: edit_path,
+      notice: edit_in_new_fork_notice,
+      notice_now: edit_in_new_fork_notice_now
+    }
+    namespace_project_forks_path(project.namespace, project, namespace_key: current_user.namespace.id, continue: continue_params)
+  end
+
+  def edit_blob_link(project = @project, ref = @ref, path = @path, options = {})
     blob = options.delete(:blob)
     blob ||= project.repository.blob_at(ref, path) rescue nil
 
     return unless blob
 
-    edit_path = namespace_project_edit_blob_path(project.namespace, project,
-                                     tree_join(ref, path),
-                                     options[:link_opts])
+    common_classes = "btn js-edit-blob #{options[:extra_class]}"
 
     if !on_top_of_branch?(project, ref)
-      button_tag "Edit", class: "btn disabled has-tooltip", title: "You can only edit files when you are on a branch", data: { container: 'body' }
-    elsif can_edit_blob?(blob, project, ref)
-      link_to "Edit", edit_path, class: 'btn btn-sm'
-    elsif can?(current_user, :fork_project, project)
-      continue_params = {
-        to:     edit_path,
-        notice: edit_in_new_fork_notice,
-        notice_now: edit_in_new_fork_notice_now
-      }
-      fork_path = namespace_project_forks_path(project.namespace, project, namespace_key: current_user.namespace.id, continue: continue_params)
-
-      link_to "Edit", fork_path, class: 'btn', method: :post
+      button_tag 'Edit', class: "#{common_classes} disabled has-tooltip", title: "You can only edit files when you are on a branch", data: { container: 'body' }
+    # This condition applies to anonymous or users who can edit directly
+    elsif !current_user || (current_user && can_edit_blob?(blob, project, ref))
+      link_to 'Edit', edit_path(project, ref, path, options), class: "#{common_classes} btn-sm"
+    elsif current_user && can?(current_user, :fork_project, project)
+      button_tag 'Edit', class: "#{common_classes} js-edit-blob-link-fork-toggler"
     end
   end
 
@@ -97,7 +102,7 @@ module BlobHelper
     if Gitlab::MarkupHelper.previewable?(filename)
       'Preview'
     else
-      'Preview Changes'
+      'Preview changes'
     end
   end
 
@@ -111,6 +116,10 @@ module BlobHelper
 
   def blob_text_viewable?(blob)
     blob && blob.text? && !blob.lfs_pointer? && !blob.only_display_raw?
+  end
+
+  def blob_rendered_as_text?(blob)
+    blob_text_viewable?(blob) && blob.to_partial_path(@project) == 'text'
   end
 
   def blob_size(blob)
@@ -205,13 +214,13 @@ module BlobHelper
   end
 
   def copy_file_path_button(file_path)
-    clipboard_button(clipboard_text: file_path, class: 'btn-clipboard btn-transparent prepend-left-5', title: 'Copy file path to clipboard')
+    clipboard_button(text: file_path, gfm: "`#{file_path}`", class: 'btn-clipboard btn-transparent prepend-left-5', title: 'Copy file path to clipboard')
   end
 
   def copy_blob_content_button(blob)
     return if markup?(blob.name)
 
-    clipboard_button(clipboard_target: ".blob-content[data-blob-id='#{blob.id}']", class: "btn btn-sm", title: "Copy content to clipboard")
+    clipboard_button(target: ".blob-content[data-blob-id='#{blob.id}']", class: "btn btn-sm", title: "Copy content to clipboard")
   end
 
   def open_raw_file_button(path)

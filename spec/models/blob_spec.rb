@@ -55,13 +55,13 @@ describe Blob do
 
   describe '#pdf?' do
     it 'is falsey when file extension is not .pdf' do
-      git_blob = double(name: 'git_blob.txt')
+      git_blob = Gitlab::Git::Blob.new(name: 'git_blob.txt')
 
       expect(described_class.decorate(git_blob)).not_to be_pdf
     end
 
     it 'is truthy when file extension is .pdf' do
-      git_blob = double(name: 'git_blob.pdf')
+      git_blob = Gitlab::Git::Blob.new(name: 'git_blob.pdf')
 
       expect(described_class.decorate(git_blob)).to be_pdf
     end
@@ -140,7 +140,7 @@ describe Blob do
         stl?: false
       )
 
-      described_class.decorate(double).tap do |blob|
+      described_class.decorate(Gitlab::Git::Blob.new({})).tap do |blob|
         allow(blob).to receive_messages(overrides)
       end
     end
@@ -158,7 +158,7 @@ describe Blob do
 
     it 'handles SVGs' do
       blob = stubbed_blob(text?: true, svg?: true)
-      expect(blob.to_partial_path(project)).to eq 'image'
+      expect(blob.to_partial_path(project)).to eq 'svg'
     end
 
     it 'handles images' do
@@ -167,7 +167,7 @@ describe Blob do
     end
 
     it 'handles text' do
-      blob = stubbed_blob(text?: true)
+      blob = stubbed_blob(text?: true, name: 'test.txt')
       expect(blob.to_partial_path(project)).to eq 'text'
     end
 

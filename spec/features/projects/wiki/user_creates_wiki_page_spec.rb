@@ -21,8 +21,9 @@ feature 'Projects > Wiki > User creates wiki page', feature: true do
 
       scenario 'directly from the wiki home page' do
         fill_in :wiki_content, with: 'My awesome wiki!'
-        click_button 'Create page'
-
+        page.within '.wiki-form' do
+          click_button 'Create page'
+        end
         expect(page).to have_content('Home')
         expect(page).to have_content("Last edited by #{user.name}")
         expect(page).to have_content('My awesome wiki!')
@@ -36,16 +37,20 @@ feature 'Projects > Wiki > User creates wiki page', feature: true do
 
       context 'via the "new wiki page" page' do
         scenario 'when the wiki page has a single word name', js: true do
-          click_link 'New Page'
+          click_link 'New page'
 
-          fill_in :new_wiki_path, with: 'foo'
-          click_button 'Create Page'
+          page.within '#modal-new-wiki' do
+            fill_in :new_wiki_path, with: 'foo'
+            click_button 'Create page'
+          end
 
           # Commit message field should have correct value.
           expect(page).to have_field('wiki[message]', with: 'Create foo')
 
-          fill_in :wiki_content, with: 'My awesome wiki!'
-          click_button 'Create page'
+          page.within '.wiki-form' do
+            fill_in :wiki_content, with: 'My awesome wiki!'
+            click_button 'Create page'
+          end
 
           expect(page).to have_content('Foo')
           expect(page).to have_content("Last edited by #{user.name}")
@@ -53,16 +58,20 @@ feature 'Projects > Wiki > User creates wiki page', feature: true do
         end
 
         scenario 'when the wiki page has spaces in the name', js: true do
-          click_link 'New Page'
+          click_link 'New page'
 
-          fill_in :new_wiki_path, with: 'Spaces in the name'
-          click_button 'Create Page'
+          page.within '#modal-new-wiki' do
+            fill_in :new_wiki_path, with: 'Spaces in the name'
+            click_button 'Create page'
+          end
 
           # Commit message field should have correct value.
           expect(page).to have_field('wiki[message]', with: 'Create spaces in the name')
 
-          fill_in :wiki_content, with: 'My awesome wiki!'
-          click_button 'Create page'
+          page.within '.wiki-form' do
+            fill_in :wiki_content, with: 'My awesome wiki!'
+            click_button 'Create page'
+          end
 
           expect(page).to have_content('Spaces in the name')
           expect(page).to have_content("Last edited by #{user.name}")
@@ -70,16 +79,20 @@ feature 'Projects > Wiki > User creates wiki page', feature: true do
         end
 
         scenario 'when the wiki page has hyphens in the name', js: true do
-          click_link 'New Page'
+          click_link 'New page'
 
-          fill_in :new_wiki_path, with: 'hyphens-in-the-name'
-          click_button 'Create Page'
+          page.within '#modal-new-wiki' do
+            fill_in :new_wiki_path, with: 'hyphens-in-the-name'
+            click_button 'Create page'
+          end
 
           # Commit message field should have correct value.
           expect(page).to have_field('wiki[message]', with: 'Create hyphens in the name')
 
-          fill_in :wiki_content, with: 'My awesome wiki!'
-          click_button 'Create page'
+          page.within '.wiki-form' do
+            fill_in :wiki_content, with: 'My awesome wiki!'
+            click_button 'Create page'
+          end
 
           expect(page).to have_content('Hyphens in the name')
           expect(page).to have_content("Last edited by #{user.name}")
@@ -99,7 +112,9 @@ feature 'Projects > Wiki > User creates wiki page', feature: true do
 
       scenario 'directly from the wiki home page' do
         fill_in :wiki_content, with: 'My awesome wiki!'
-        click_button 'Create page'
+        page.within '.wiki-form' do
+          click_button 'Create page'
+        end
 
         expect(page).to have_content('Home')
         expect(page).to have_content("Last edited by #{user.name}")
@@ -113,16 +128,20 @@ feature 'Projects > Wiki > User creates wiki page', feature: true do
       end
 
       scenario 'via the "new wiki page" page', js: true do
-        click_link 'New Page'
+        click_link 'New page'
 
-        fill_in :new_wiki_path, with: 'foo'
-        click_button 'Create Page'
+        page.within '#modal-new-wiki' do
+          fill_in :new_wiki_path, with: 'foo'
+          click_button 'Create page'
+        end
 
         # Commit message field should have correct value.
         expect(page).to have_field('wiki[message]', with: 'Create foo')
 
-        fill_in :wiki_content, with: 'My awesome wiki!'
-        click_button 'Create page'
+        page.within '.wiki-form' do
+          fill_in :wiki_content, with: 'My awesome wiki!'
+          click_button 'Create page'
+        end
 
         expect(page).to have_content('Foo')
         expect(page).to have_content("Last edited by #{user.name}")

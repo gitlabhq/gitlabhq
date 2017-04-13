@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::GitalyClient::Ref do
   let(:project) { create(:empty_project) }
   let(:repo_path) { project.repository.path_to_repo }
-  let(:client) { Gitlab::GitalyClient::Ref.new(project.repository_storage, project.full_path + '.git') }
+  let(:client) { Gitlab::GitalyClient::Ref.new(project.repository) }
 
   before do
     allow(Gitlab.config.gitaly).to receive(:enabled).and_return(true)

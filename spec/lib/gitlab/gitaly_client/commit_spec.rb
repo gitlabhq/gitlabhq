@@ -4,7 +4,7 @@ describe Gitlab::GitalyClient::Commit do
   describe '.diff_from_parent' do
     let(:diff_stub) { double('Gitaly::Diff::Stub') }
     let(:project) { create(:project, :repository) }
-    let(:repository_message) { Gitaly::Repository.new(path: project.repository.path) }
+    let(:repository_message) { project.repository.gitaly_repository }
     let(:commit) { project.commit('913c66a37b4a45b9769037c55c2d238bd0942d2e') }
 
     before do

@@ -141,7 +141,7 @@ module SharedNote
 
     page.within(".current-note-edit-form") do
       fill_in 'note[note]', with: '+1 Awesome!'
-      click_button 'Save Comment'
+      click_button 'Save comment'
     end
   end
 

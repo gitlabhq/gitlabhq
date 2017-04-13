@@ -151,7 +151,9 @@ class GroupsController < Groups::ApplicationController
       :visibility_level,
       :parent_id,
       :create_chat_team,
-      :chat_team_name
+      :chat_team_name,
+      :require_two_factor_authentication,
+      :two_factor_grace_period
     ]
   end
 

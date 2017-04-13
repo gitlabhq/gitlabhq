@@ -35,7 +35,7 @@ had <%= failed.size %> failed <%= 'build'.pluralize(failed.size) %>.
 Stage: <%= build.stage %>
 Name: <%= build.name %>
 <% if build.has_trace? -%>
-Trace: <%= build.trace_with_state(last_lines: 10)[:text] %>
+Trace: <%= build.trace.raw(last_lines: 10) %>
 <% end -%>
 
 <% end -%>

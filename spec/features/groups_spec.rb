@@ -83,7 +83,7 @@ feature 'Group', feature: true do
     end
   end
 
-  describe 'create a nested group' do
+  describe 'create a nested group', js: true do
     let(:group) { create(:group, path: 'foo') }
 
     context 'as admin' do
@@ -153,7 +153,7 @@ feature 'Group', feature: true do
     end
 
     it 'removes group' do
-      click_link 'Remove Group'
+      click_link 'Remove group'
 
       expect(page).to have_content "scheduled for deletion"
     end

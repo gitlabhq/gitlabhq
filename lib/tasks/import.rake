@@ -48,9 +48,16 @@ class NewImporter < ::Gitlab::GithubImport::Importer
     begin
       raise 'Blocked import URL.' if Gitlab::UrlBlocker.blocked_url?(project.import_url)
 
-      gitlab_shell.import_repository(project.repository_storage_path, project.path_with_namespace, project.import_url)
+      project.create_repository
+      project.repository.add_remote(project.import_type, project.import_url)
+      project.repository.set_remote_as_mirror(project.import_type)
+      project.repository.fetch_remote(project.import_type, forced: true)
+      project.repository.remove_remote(project.import_type)
     rescue => e
-      project.repository.before_import if project.repository_exists?
+      # Expire cache to prevent scenarios such as:
+      # 1. First import failed, but the repo was imported successfully, so +exists?+ returns true
+      # 2. Retried import, repo is broken or not imported but +exists?+ still returns true
+      project.repository.expire_content_cache if project.repository_exists?
 
       raise "Error importing repository #{project.import_url} into #{project.path_with_namespace} - #{e.message}"
     end

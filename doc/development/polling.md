@@ -22,7 +22,12 @@ Instead you should use polling mechanism with ETag caching in Redis.
 
 ## How it works
 
+Cache Miss:
+
 ![Cache miss](img/cache-miss.svg)
+
+Cache Hit:
+
 ![Cache hit](img/cache-hit.svg)
 
 1. Whenever a resource changes we generate a random value and store it in
@@ -46,5 +51,6 @@ request path. By doing this we avoid query parameter ordering problems and make
 route matching easier.
 
 For more information see:
+- [`Poll-Interval` header](fe_guide/performance.md#realtime-components)
 - [RFC 7232](https://tools.ietf.org/html/rfc7232)
 - [ETag proposal](https://gitlab.com/gitlab-org/gitlab-ce/issues/26926)

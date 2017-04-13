@@ -180,6 +180,9 @@ production: &base
     # Flag stuck CI jobs as failed
     stuck_ci_jobs_worker:
       cron: "0 * * * *"
+    # Execute scheduled triggers
+    trigger_schedule_worker:
+      cron: "0 */12 * * *"
     # Remove expired build artifacts
     expire_build_artifacts_worker:
       cron: "50 * * * *"
@@ -576,9 +579,9 @@ test:
     storages:
       default:
         path: tmp/tests/repositories/
-        gitaly_address: unix:<%= Rails.root.join('tmp/sockets/private/gitaly.socket') %>
+        gitaly_address: unix:tmp/tests/gitaly/gitaly.socket
   gitaly:
-    enabled: false
+    enabled: true
   backup:
     path: tmp/tests/backups
   gitlab_shell:

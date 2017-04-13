@@ -1,13 +1,15 @@
-require('./filtered_search_dropdown');
+/* global Flash */
 
-/* global droplabAjaxFilter */
+import AjaxFilter from '~/droplab/plugins/ajax_filter';
+
+require('./filtered_search_dropdown');
 
 (() => {
   class DropdownUser extends gl.FilteredSearchDropdown {
     constructor(droplab, dropdown, input, filter) {
       super(droplab, dropdown, input, filter);
       this.config = {
-        droplabAjaxFilter: {
+        AjaxFilter: {
           endpoint: `${gon.relative_url_root || ''}/autocomplete/users.json`,
           searchKey: 'search',
           params: {
@@ -18,6 +20,11 @@ require('./filtered_search_dropdown');
           },
           searchValueFunction: this.getSearchInput.bind(this),
           loadingTemplate: this.loadingTemplate,
+          onError() {
+            /* eslint-disable no-new */
+            new Flash('An error occured fetching the dropdown data.');
+            /* eslint-enable no-new */
+          },
         },
       };
     }
@@ -28,7 +35,7 @@ require('./filtered_search_dropdown');
     }
 
     renderContent(forceShowList = false) {
-      this.droplab.changeHookList(this.hookId, this.dropdown, [droplabAjaxFilter], this.config);
+      this.droplab.changeHookList(this.hookId, this.dropdown, [AjaxFilter], this.config);
       super.renderContent(forceShowList);
     }
 
@@ -56,7 +63,7 @@ require('./filtered_search_dropdown');
     }
 
     init() {
-      this.droplab.addHook(this.input, this.dropdown, [droplabAjaxFilter], this.config).init();
+      this.droplab.addHook(this.input, this.dropdown, [AjaxFilter], this.config).init();
     }
   }
 

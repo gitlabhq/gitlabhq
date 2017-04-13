@@ -89,7 +89,8 @@ class User < ActiveRecord::Base
   has_many :subscriptions,            dependent: :destroy
   has_many :recent_events, -> { order "id DESC" }, foreign_key: :author_id,   class_name: "Event"
   has_many :oauth_applications, class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy
-  has_one  :abuse_report,             dependent: :destroy
+  has_one  :abuse_report,             dependent: :destroy, foreign_key: :user_id
+  has_many :reported_abuse_reports,   dependent: :destroy, foreign_key: :reporter_id, class_name: "AbuseReport"
   has_many :spam_logs,                dependent: :destroy
   has_many :builds,                   dependent: :nullify, class_name: 'Ci::Build'
   has_many :pipelines,                dependent: :nullify, class_name: 'Ci::Pipeline'
@@ -484,6 +485,14 @@ class User < ActiveRecord::Base
     Group.member_descendants(id)
   end
 
+  def all_expanded_groups
+    Group.member_hierarchy(id)
+  end
+
+  def expanded_groups_requiring_two_factor_authentication
+    all_expanded_groups.where(require_two_factor_authentication: true)
+  end
+
   def nested_groups_projects
     Project.joins(:namespace).where('namespaces.parent_id IS NOT NULL').
       member_descendants(id)
@@ -546,10 +555,6 @@ class User < ActiveRecord::Base
     authorized_projects(Gitlab::Access::REPORTER).non_archived.with_issues_enabled
   end
 
-  def is_admin?
-    admin
-  end
-
   def require_ssh_key?
     keys.count == 0 && Gitlab::ProtocolAccess.allowed?('ssh')
   end
@@ -580,10 +585,6 @@ class User < ActiveRecord::Base
 
   def first_name
     name.split.first unless name.blank?
-  end
-
-  def cared_merge_requests
-    MergeRequest.cared(self)
   end
 
   def projects_limit_left
@@ -953,6 +954,15 @@ class User < ActiveRecord::Base
     return unless %w(admin regular).include?(new_level)
 
     self.admin = (new_level == 'admin')
+  end
+
+  def update_two_factor_requirement
+    periods = expanded_groups_requiring_two_factor_authentication.pluck(:two_factor_grace_period)
+
+    self.require_two_factor_authentication_from_group = periods.any?
+    self.two_factor_grace_period = periods.min || User.column_defaults['two_factor_grace_period']
+
+    save
   end
 
   protected

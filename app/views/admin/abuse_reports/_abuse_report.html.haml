@@ -30,5 +30,5 @@
       = link_to 'Block user', block_admin_user_path(user), data: {confirm: 'USER WILL BE BLOCKED! Are you sure?'}, method: :put, class: "btn btn-sm btn-block"
     - else
       .btn.btn-sm.disabled.btn-block
-        Already Blocked
+        Already blocked
     = link_to 'Remove report', [:admin, abuse_report], remote: true, method: :delete, class: "btn btn-sm btn-block btn-close js-remove-tr"

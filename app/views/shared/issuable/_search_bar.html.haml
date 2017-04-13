@@ -10,85 +10,93 @@
         .check-all-holder
           = check_box_tag "check_all_issues", nil, false,
             class: "check_all_issues left"
-      .issues-other-filters.filtered-search-container
-        .filtered-search-input-container
-          .scroll-container
-            %ul.tokens-container.list-unstyled
-              %li.input-token
-                %input.form-control.filtered-search{ placeholder: 'Search or filter results...', data: { id: "filtered-search-#{type.to_s}", 'project-id' => @project.id, 'username-params' => @users.to_json(only: [:id, :username]), 'base-endpoint' => namespace_project_path(@project.namespace, @project) } }
-            = icon('filter')
-            %button.clear-search.hidden{ type: 'button' }
-              = icon('times')
-          #js-dropdown-hint.dropdown-menu.hint-dropdown
-            %ul{ data: { dropdown: true } }
-              %li.filter-dropdown-item{ data: { action: 'submit' } }
-                %button.btn.btn-link
-                  = icon('search')
-                  %span
-                    Press Enter or click to search
-            %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
-              %li.filter-dropdown-item
-                %button.btn.btn-link
-                  -# Encapsulate static class name `{{icon}}` inside #{} to bypass
-                  -# haml lint's ClassAttributeWithStaticValue
-                  %i.fa{ class: "#{'{{icon}}'}" }
-                  %span.js-filter-hint
-                    {{hint}}
-                  %span.js-filter-tag.dropdown-light-content
-                    {{tag}}
-          #js-dropdown-author.dropdown-menu{ data: { icon: 'pencil', hint: 'author', tag: '@author' } }
-            %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
-              %li.filter-dropdown-item
-                %button.btn.btn-link.dropdown-user
-                  %img.avatar{ alt: '{{name}}\'s avatar', width: '30', data: { src: '{{avatar_url}}' } }
-                  .dropdown-user-details
+      .issues-other-filters.filtered-search-wrapper
+        .filtered-search-box
+          = dropdown_tag(content_tag(:i, '', class: 'fa fa-history'),
+            options: { wrapper_class: "filtered-search-history-dropdown-wrapper",
+            toggle_class: "filtered-search-history-dropdown-toggle-button",
+            dropdown_class: "filtered-search-history-dropdown",
+            content_class: "filtered-search-history-dropdown-content",
+            title: "Recent searches" }) do
+            .js-filtered-search-history-dropdown
+          .filtered-search-box-input-container
+            .scroll-container
+              %ul.tokens-container.list-unstyled
+                %li.input-token
+                  %input.form-control.filtered-search{ id: "filtered-search-#{type.to_s}", placeholder: 'Search or filter results...', data: { 'project-id' => @project.id, 'username-params' => @users.to_json(only: [:id, :username]), 'base-endpoint' => namespace_project_path(@project.namespace, @project) } }
+              = icon('filter')
+              %button.clear-search.hidden{ type: 'button' }
+                = icon('times')
+            #js-dropdown-hint.filtered-search-input-dropdown-menu.dropdown-menu.hint-dropdown
+              %ul{ data: { dropdown: true } }
+                %li.filter-dropdown-item{ data: { action: 'submit' } }
+                  %button.btn.btn-link
+                    = icon('search')
                     %span
-                      {{name}}
-                    %span.dropdown-light-content
-                      @{{username}}
-          #js-dropdown-assignee.dropdown-menu{ data: { icon: 'user', hint: 'assignee', tag: '@assignee' } }
-            %ul{ data: { dropdown: true } }
-              %li.filter-dropdown-item{ data: { value: 'none' } }
-                %button.btn.btn-link
-                  No Assignee
-              %li.divider
-            %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
-              %li.filter-dropdown-item
-                %button.btn.btn-link.dropdown-user
-                  %img.avatar{ alt: '{{name}}\'s avatar', width: '30', data: { src: '{{avatar_url}}' } }
-                  .dropdown-user-details
-                    %span
-                      {{name}}
-                    %span.dropdown-light-content
-                      @{{username}}
-          #js-dropdown-milestone.dropdown-menu{ data: { icon: 'clock-o', hint: 'milestone', tag: '%milestone' } }
-            %ul{ data: { dropdown: true } }
-              %li.filter-dropdown-item{ data: { value: 'none' } }
-                %button.btn.btn-link
-                  No Milestone
-              %li.filter-dropdown-item{ data: { value: 'upcoming' } }
-                %button.btn.btn-link
-                  Upcoming
-              %li.filter-dropdown-item{ 'data-value' => 'started' }
-                %button.btn.btn-link
-                  Started
-              %li.divider
-            %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
-              %li.filter-dropdown-item
-                %button.btn.btn-link.js-data-value
-                  {{title}}
-          #js-dropdown-label.dropdown-menu{ data: { icon: 'tag', hint: 'label', tag: '~label', type: 'array' } }
-            %ul{ data: { dropdown: true } }
-              %li.filter-dropdown-item{ data: { value: 'none' } }
-                %button.btn.btn-link
-                  No Label
-              %li.divider
-            %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
-              %li.filter-dropdown-item
-                %button.btn.btn-link
-                  %span.dropdown-label-box{ style: 'background: {{color}}' }
-                  %span.label-title.js-data-value
+                      Press Enter or click to search
+              %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
+                %li.filter-dropdown-item
+                  %button.btn.btn-link
+                    -# Encapsulate static class name `{{icon}}` inside #{} to bypass
+                    -# haml lint's ClassAttributeWithStaticValue
+                    %i.fa{ class: "#{'{{icon}}'}" }
+                    %span.js-filter-hint
+                      {{hint}}
+                    %span.js-filter-tag.dropdown-light-content
+                      {{tag}}
+            #js-dropdown-author.filtered-search-input-dropdown-menu.dropdown-menu{ data: { icon: 'pencil', hint: 'author', tag: '@author' } }
+              %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
+                %li.filter-dropdown-item
+                  %button.btn.btn-link.dropdown-user
+                    %img.avatar{ alt: '{{name}}\'s avatar', width: '30', data: { src: '{{avatar_url}}' } }
+                    .dropdown-user-details
+                      %span
+                        {{name}}
+                      %span.dropdown-light-content
+                        @{{username}}
+            #js-dropdown-assignee.filtered-search-input-dropdown-menu.dropdown-menu{ data: { icon: 'user', hint: 'assignee', tag: '@assignee' } }
+              %ul{ data: { dropdown: true } }
+                %li.filter-dropdown-item{ data: { value: 'none' } }
+                  %button.btn.btn-link
+                    No Assignee
+                %li.divider
+              %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
+                %li.filter-dropdown-item
+                  %button.btn.btn-link.dropdown-user
+                    %img.avatar{ alt: '{{name}}\'s avatar', width: '30', data: { src: '{{avatar_url}}' } }
+                    .dropdown-user-details
+                      %span
+                        {{name}}
+                      %span.dropdown-light-content
+                        @{{username}}
+            #js-dropdown-milestone.filtered-search-input-dropdown-menu.dropdown-menu{ data: { icon: 'clock-o', hint: 'milestone', tag: '%milestone' } }
+              %ul{ data: { dropdown: true } }
+                %li.filter-dropdown-item{ data: { value: 'none' } }
+                  %button.btn.btn-link
+                    No Milestone
+                %li.filter-dropdown-item{ data: { value: 'upcoming' } }
+                  %button.btn.btn-link
+                    Upcoming
+                %li.filter-dropdown-item{ 'data-value' => 'started' }
+                  %button.btn.btn-link
+                    Started
+                %li.divider
+              %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
+                %li.filter-dropdown-item
+                  %button.btn.btn-link.js-data-value
                     {{title}}
+            #js-dropdown-label.filtered-search-input-dropdown-menu.dropdown-menu{ data: { icon: 'tag', hint: 'label', tag: '~label', type: 'array' } }
+              %ul{ data: { dropdown: true } }
+                %li.filter-dropdown-item{ data: { value: 'none' } }
+                  %button.btn.btn-link
+                    No Label
+                %li.divider
+              %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
+                %li.filter-dropdown-item
+                  %button.btn.btn-link
+                    %span.dropdown-label-box{ style: 'background: {{color}}' }
+                    %span.label-title.js-data-value
+                      {{title}}
         .filter-dropdown-container
           - if type == :boards
             - if can?(current_user, :admin_list, @project)

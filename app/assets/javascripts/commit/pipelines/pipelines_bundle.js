@@ -8,25 +8,22 @@ Vue.use(VueResource);
 
 /**
  * Commits View > Pipelines Tab > Pipelines Table.
- * Merge Request View > Pipelines Tab > Pipelines Table.
  *
  * Renders Pipelines table in pipelines tab in the commits show view.
- * Renders Pipelines table in pipelines tab in the merge request show view.
  */
 
+// export for use in merge_request_tabs.js (TODO: remove this hack)
+window.gl = window.gl || {};
+window.gl.CommitPipelinesTable = CommitPipelinesTable;
+
 $(() => {
-  window.gl = window.gl || {};
   gl.commits = gl.commits || {};
   gl.commits.pipelines = gl.commits.pipelines || {};
 
-  if (gl.commits.PipelinesTableBundle) {
-    gl.commits.PipelinesTableBundle.$destroy(true);
-  }
-
   const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
-  gl.commits.pipelines.PipelinesTableBundle = new CommitPipelinesTable();
 
   if (pipelineTableViewEl && pipelineTableViewEl.dataset.disableInitialization === undefined) {
-    gl.commits.pipelines.PipelinesTableBundle.$mount(pipelineTableViewEl);
+    gl.commits.pipelines.PipelinesTableBundle = new CommitPipelinesTable().$mount();
+    pipelineTableViewEl.appendChild(gl.commits.pipelines.PipelinesTableBundle.$el);
   }
 });

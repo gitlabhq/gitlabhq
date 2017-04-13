@@ -1,24 +1,12 @@
 module Gitlab
   module EtagCaching
     class Middleware
-      RESERVED_WORDS = NamespaceValidator::WILDCARD_ROUTES.map { |word| "/#{word}/" }.join('|')
-      ROUTES = [
-        {
-          regexp: %r(^(?!.*(#{RESERVED_WORDS})).*/noteable/issue/\d+/notes\z),
-          name: 'issue_notes'
-        },
-        {
-          regexp: %r(^(?!.*(#{RESERVED_WORDS})).*/issues/\d+/rendered_title\z),
-          name: 'issue_title'
-        }
-      ].freeze
-
       def initialize(app)
         @app = app
       end
 
       def call(env)
-        route = match_current_route(env)
+        route = Gitlab::EtagCaching::Router.match(env)
         return @app.call(env) unless route
 
         track_event(:etag_caching_middleware_used, route)
@@ -38,10 +26,6 @@ module Gitlab
       end
 
       private
-
-      def match_current_route(env)
-        ROUTES.find { |route| route[:regexp].match(env['PATH_INFO']) }
-      end
 
       def get_etag(env)
         cache_key = env['PATH_INFO']
@@ -65,7 +49,7 @@ module Gitlab
 
         status_code = Gitlab::PollingInterval.polling_enabled? ? 304 : 429
 
-        [status_code, { 'ETag' => etag }, ['']]
+        [status_code, { 'ETag' => etag }, []]
       end
 
       def track_cache_miss(if_none_match, cached_value_present, route)
@@ -79,7 +63,7 @@ module Gitlab
       end
 
       def track_event(name, route)
-        Gitlab::Metrics.add_event(name, endpoint: route[:name])
+        Gitlab::Metrics.add_event(name, endpoint: route.name)
       end
     end
   end

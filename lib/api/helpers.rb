@@ -118,7 +118,7 @@ module API
 
     def authenticated_as_admin!
       authenticate!
-      forbidden! unless current_user.is_admin?
+      forbidden! unless current_user.admin?
     end
 
     def authorize!(action, subject = :global)
@@ -358,7 +358,7 @@ module API
       return unless sudo_identifier
       return unless initial_current_user
 
-      unless initial_current_user.is_admin?
+      unless initial_current_user.admin?
         forbidden!('Must be admin to use sudo')
       end
 

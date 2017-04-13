@@ -10,6 +10,7 @@
 - Starting from GitLab 8.12, if you have 2FA enabled in your account, you need
   to pass a personal access token instead of your password in order to login to
   GitLab's Container Registry.
+- Multiple level image names support was added in GitLab 9.1
 
 With the Docker Container Registry integrated into GitLab, every project can
 have its own space to store its Docker images.
@@ -54,18 +55,25 @@ sure that you are using the Registry URL with the namespace and project name
 that is hosted on GitLab:
 
 ```
-docker build -t registry.example.com/group/project .
-docker push registry.example.com/group/project
+docker build -t registry.example.com/group/project/image .
+docker push registry.example.com/group/project/image
 ```
 
 Your image will be named after the following scheme:
 
 ```
-<registry URL>/<namespace>/<project>
+<registry URL>/<namespace>/<project>/<image>
 ```
 
-As such, the name of the image is unique, but you can differentiate the images
-using tags.
+GitLab supports up to three levels of image repository names.
+
+Following examples of image tags are valid:
+
+```
+registry.example.com/group/project:some-tag
+registry.example.com/group/project/image:latest
+registry.example.com/group/project/my/image:rc1
+```
 
 ## Use images from GitLab Container Registry
 
@@ -73,7 +81,7 @@ To download and run a container from images hosted in GitLab Container Registry,
 use `docker run`:
 
 ```
-docker run [options] registry.example.com/group/project [arguments]
+docker run [options] registry.example.com/group/project/image [arguments]
 ```
 
 For more information on running Docker containers, visit the
@@ -136,7 +144,7 @@ A user attempted to enable an S3-backed Registry. The `docker login` step went
 fine. However, when pushing an image, the output showed:
 
 ```
-The push refers to a repository [s3-testing.myregistry.com:4567/root/docker-test]
+The push refers to a repository [s3-testing.myregistry.com:4567/root/docker-test/docker-image]
 dc5e59c14160: Pushing [==================================================>] 14.85 kB
 03c20c1a019a: Pushing [==================================================>] 2.048 kB
 a08f14ef632e: Pushing [==================================================>] 2.048 kB
@@ -229,7 +237,7 @@ a container image. You may need to run as root to do this. For example:
 
 ```sh
 docker login s3-testing.myregistry.com:4567
-docker push s3-testing.myregistry.com:4567/root/docker-test
+docker push s3-testing.myregistry.com:4567/root/docker-test/docker-image
 ```
 
 In the example above, we see the following trace on the mitmproxy window:

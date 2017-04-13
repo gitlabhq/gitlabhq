@@ -39,7 +39,7 @@
     overflow-y: hidden;
     font-size: 12px;
 
-    .fa-refresh {
+    .fa-spinner {
       font-size: 24px;
       margin-left: 20px;
     }
@@ -55,6 +55,37 @@
       position: relative;
       top: 1px;
       margin-right: 5px;
+    }
+  }
+
+  .truncated-info {
+    text-align: center;
+    border-bottom: 1px solid;
+    background-color: $black-transparent;
+    height: 45px;
+
+    &.affix {
+      top: 0;
+    }
+
+    // with sidebar
+    &.affix.sidebar-expanded {
+      right: 312px;
+      left: 22px;
+    }
+
+    // without sidebar
+    &.affix.sidebar-collapsed {
+      right: 20px;
+      left: 20px;
+    }
+
+    &.affix-top {
+      position: absolute;
+      top: 0;
+      margin: 0 auto;
+      right: 5px;
+      left: 5px;
     }
   }
 }
@@ -186,8 +217,9 @@
   white-space: pre;
   overflow-x: auto;
   font-size: 12px;
+  position: relative;
 
-  .fa-refresh {
+  .fa-spinner {
     font-size: 24px;
   }
 
@@ -334,7 +366,7 @@
         background-color: $row-hover;
       }
 
-      .fa-refresh {
+      .fa-spinner {
         font-size: 13px;
         margin-left: 3px;
       }

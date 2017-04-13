@@ -150,7 +150,7 @@ describe IssuesHelper do
     describe "when passing a discussion" do
       let(:diff_note) {  create(:diff_note_on_merge_request) }
       let(:merge_request) { diff_note.noteable }
-      let(:discussion) { Discussion.new([diff_note]) }
+      let(:discussion) { diff_note.to_discussion }
 
       it "links to the merge request with first note if a single discussion was passed" do
         expected_path = Gitlab::UrlBuilder.build(diff_note)

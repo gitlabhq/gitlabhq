@@ -63,7 +63,7 @@ describe ProjectsHelper do
     end
   end
 
-  describe "#project_list_cache_key" do
+  describe "#project_list_cache_key", redis: true do
     let(:project) { create(:project) }
 
     it "includes the namespace" do
