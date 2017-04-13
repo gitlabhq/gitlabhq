@@ -27,11 +27,12 @@ module Github
       self.reset_callbacks :validate
     end
 
-    attr_reader :project, :repository, :cached_user_ids, :errors
+    attr_reader :project, :repository, :cached_label_ids, :cached_user_ids, :errors
 
     def initialize(project)
       @project = project
       @repository = project.repository
+      @cached_label_ids = {}
       @cached_user_ids = {}
       @errors  = []
     end
@@ -40,7 +41,7 @@ module Github
       # Fetch repository
       begin
         project.create_repository
-        project.repository.add_remote('github', "https://881a01d03026458e51285a4c7038c9fe4daa5561@github.com/#{owner}/#{repo}.git")
+        project.repository.add_remote('github', "https://{token}@github.com/#{owner}/#{repo}.git")
         project.repository.set_remote_as_mirror('github')
         project.repository.fetch_remote('github', forced: true)
         project.repository.remove_remote('github')
@@ -57,6 +58,8 @@ module Github
         response.body.each do |raw|
           begin
             label = Github::Representation::Label.new(raw)
+
+            # TODO: we should take group labels in account
             next if project.labels.where(title: label.title).exists?
 
             project.labels.create!(title: label.title, color: label.color)
@@ -66,6 +69,12 @@ module Github
         end
 
         break unless url = response.rels[:next]
+      end
+
+      # Cache labels
+      # TODO: we should take group labels in account
+      project.labels.select(:id, :title).find_each do |label|
+        @cached_label_ids[label.title] = label.id
       end
 
       # Fetch milestones
@@ -208,50 +217,61 @@ module Github
         response.body.each do |raw|
           representation = Github::Representation::Issue.new(raw)
 
-          next if representation.pull_request?
-          next if Issue.where(iid: representation.iid, project_id: project.id).exists?
-
           begin
-            issue              = Issue.new
-            issue.iid          = representation.iid
-            issue.project_id   = project.id
-            issue.title        = representation.title
-            issue.description  = representation.description
-            issue.state        = representation.state
-            issue.milestone_id = milestone_id(representation.milestone)
-            issue.author_id    = user_id(representation.author, project.creator_id)
-            issue.assignee_id  = user_id(representation.assignee)
-            issue.created_at   = representation.created_at
-            issue.updated_at   = representation.updated_at
-            issue.save(validate: false)
+            # Every pull request is an issue, but not every issue
+            # is a pull request. For this reason, "shared" actions
+            # for both features, like manipulating assignees, labels
+            # and milestones, are provided within the Issues API.
+            if representation.pull_request?
+              next unless representation.has_labels?
 
-            if issue.has_comments?
-              # Fetch comments
-              comments_url = "/repos/#{owner}/#{repo}/issues/#{issue.iid}/comments"
+              merge_request = MergeRequest.find_by!(target_project_id: project.id, iid: representation.iid)
+              merge_request.update_attribute(:label_ids, label_ids(representation.labels))
+            else
+              next if Issue.where(iid: representation.iid, project_id: project.id).exists?
 
-              loop do
-                comments = Github::Client.new.get(comments_url)
+              issue              = Issue.new
+              issue.iid          = representation.iid
+              issue.project_id   = project.id
+              issue.title        = representation.title
+              issue.description  = representation.description
+              issue.state        = representation.state
+              issue.label_ids    = label_ids(representation.labels)
+              issue.milestone_id = milestone_id(representation.milestone)
+              issue.author_id    = user_id(representation.author, project.creator_id)
+              issue.assignee_id  = user_id(representation.assignee)
+              issue.created_at   = representation.created_at
+              issue.updated_at   = representation.updated_at
+              issue.save(validate: false)
 
-                ActiveRecord::Base.no_touching do
-                  comments.body.each do |raw|
-                    begin
-                      comment = Github::Representation::Comment.new(raw)
+              if representation.has_comments?
+                # Fetch comments
+                comments_url = "/repos/#{owner}/#{repo}/issues/#{issue.iid}/comments"
 
-                      note               = Note.new
-                      note.project_id    = project.id
-                      note.noteable      = issue
-                      note.note          = comment.note
-                      note.author_id     = user_id(comment.author, project.creator_id)
-                      note.created_at    = comment.created_at
-                      note.updated_at    = comment.updated_at
-                      note.save!(validate: false)
-                    rescue => e
-                      error(:comment, comment.url, e.message)
+                loop do
+                  comments = Github::Client.new.get(comments_url)
+
+                  ActiveRecord::Base.no_touching do
+                    comments.body.each do |raw|
+                      begin
+                        comment = Github::Representation::Comment.new(raw)
+
+                        note               = Note.new
+                        note.project_id    = project.id
+                        note.noteable      = issue
+                        note.note          = comment.note
+                        note.author_id     = user_id(comment.author, project.creator_id)
+                        note.created_at    = comment.created_at
+                        note.updated_at    = comment.updated_at
+                        note.save!(validate: false)
+                      rescue => e
+                        error(:comment, comment.url, e.message)
+                      end
                     end
                   end
-                end
 
-                break unless comments_url = comments.rels[:next]
+                  break unless comments_url = comments.rels[:next]
+                end
               end
             end
           rescue => e
@@ -288,6 +308,10 @@ module Github
 
       remove_branch(pull_request.source_branch_name) unless pull_request.source_branch_exists?
       remove_branch(pull_request.target_branch_name) unless pull_request.target_branch_exists?
+    end
+
+    def label_ids(issuable)
+      issuable.map { |attrs| cached_label_ids[attrs.fetch('name')] }.compact
     end
 
     def milestone_id(milestone)

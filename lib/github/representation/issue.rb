@@ -13,6 +13,10 @@ module Github
         raw['body'] || ''
       end
 
+      def labels
+        raw['labels']
+      end
+
       def milestone
         return unless raw['milestone'].present?
 
@@ -51,6 +55,10 @@ module Github
 
       def has_comments?
         raw['comments'] > 0
+      end
+
+      def has_labels?
+        labels.count > 0
       end
 
       def pull_request?
