@@ -1,6 +1,5 @@
 class StatusEntity < Grape::Entity
   include RequestAwareEntity
-  include CiStatusHelper
 
   format_with(:status_favicon_path) do |favicon_name|
     ci_status_favicon_path(favicon_name)
@@ -11,5 +10,7 @@ class StatusEntity < Grape::Entity
   expose :has_details?, as: :has_details
   expose :details_path
 
-  expose :favicon, format_with: :status_favicon_path
+  expose :favicon do |status|
+    ActionController::Base.helpers.image_path(File.join('ci_favicons', "#{status.favicon}.ico"))
+  end
 end
