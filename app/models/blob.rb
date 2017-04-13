@@ -27,6 +27,8 @@ class Blob < SimpleDelegator
     BlobViewer::Image,
     BlobViewer::Sketch,
 
+    BlobViewer::Video,
+    
     BlobViewer::PDF,
 
     BlobViewer::BinarySTL,
