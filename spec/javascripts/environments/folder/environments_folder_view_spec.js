@@ -47,9 +47,10 @@ describe('Environments Folder View', () => {
 
     it('should render a table with environments', (done) => {
       setTimeout(() => {
+        expect(component.$el.querySelectorAll('table')).toBeDefined();
         expect(
-          component.$el.querySelectorAll('table tbody tr').length,
-        ).toEqual(2);
+          component.$el.querySelector('.environment-name').textContent.trim(),
+        ).toEqual(environmentsList[0].name);
         done();
       }, 0);
     });

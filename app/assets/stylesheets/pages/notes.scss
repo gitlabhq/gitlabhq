@@ -18,12 +18,12 @@ ul.notes {
     float: left;
 
     svg {
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
       fill: $gray-darkest;
       position: absolute;
-      left: 30px;
-      top: 15px;
+      left: 0;
+      top: 16px;
     }
   }
 
@@ -144,6 +144,10 @@ ul.notes {
     padding: 0;
     clear: both;
 
+    @media (min-width: $screen-sm-min) {
+      margin-left: 65px;
+    }
+
     &.timeline-entry::after {
       clear: none;
     }
@@ -172,6 +176,10 @@ ul.notes {
 
     .timeline-content {
       padding: 14px 10px;
+
+      @media (min-width: $screen-sm-min) {
+        margin-left: 20px;
+      }
     }
 
     .note-header {

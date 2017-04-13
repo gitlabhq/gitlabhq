@@ -98,9 +98,9 @@ describe('Build', () => {
 
         jasmine.clock().tick(4001);
 
-        expect($.ajax.calls.count()).toBe(2);
+        expect($.ajax.calls.count()).toBe(3);
 
-        args = $.ajax.calls.argsFor(1)[0];
+        args = $.ajax.calls.argsFor(2)[0];
         expect(args.url).toBe(`${BUILD_URL}/trace.json`);
         expect(args.dataType).toBe('json');
         expect(args.data.state).toBe('newstate');
@@ -133,7 +133,7 @@ describe('Build', () => {
         expect($('#build-trace .js-build-output').text()).toMatch(/Update/);
 
         jasmine.clock().tick(4001);
-        args = $.ajax.calls.argsFor(1)[0];
+        args = $.ajax.calls.argsFor(2)[0];
         args.success.call($, {
           html: '<span>Different</span>',
           status: 'running',

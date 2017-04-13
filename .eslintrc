@@ -13,9 +13,11 @@
   },
   "plugins": [
     "filenames",
-    "import"
+    "import",
+    "html"
   ],
   "settings": {
+    "html/html-extensions": [".html", ".html.raw", ".vue"],
     "import/resolver": {
       "webpack": {
         "config": "./config/webpack.config.js"

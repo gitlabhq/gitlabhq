@@ -90,6 +90,8 @@ window.Build = (function () {
       success: ((log) => {
         const $buildContainer = $('.js-build-output');
 
+        gl.utils.setCiStatusFavicon(`${this.pageUrl}/status.json`);
+
         if (log.state) {
           this.state = log.state;
         }

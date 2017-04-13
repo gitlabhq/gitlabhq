@@ -62,6 +62,7 @@ All technical content published by GitLab lives in the documentation, including:
 - [Migrate GitLab CI to CE/EE](migrate_ci_to_ce/README.md) Follow this guide to migrate your existing GitLab CI data to GitLab CE/EE.
 - [Monitoring uptime](user/admin_area/monitoring/health_check.md) Check the server status using the health check endpoint.
 - [Operations](administration/operations.md) Keeping GitLab up and running.
+- [Polling](administration/polling.md) Configure how often the GitLab UI polls for updates
 - [Raketasks](raketasks/README.md) Backups, maintenance, automatic webhook setup and the importing of projects.
 - [Reply by email](administration/reply_by_email.md) Allow users to comment on issues and merge requests by replying to notification emails.
 - [Repository checks](administration/repository_checks.md) Periodic Git repository checks.

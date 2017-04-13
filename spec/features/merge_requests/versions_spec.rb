@@ -36,8 +36,23 @@ feature 'Merge Request versions', js: true, feature: true do
       expect(page).to have_content '5 changed files'
     end
 
-    it 'show the message about disabled comments' do
-      expect(page).to have_content 'Comments are disabled'
+    it 'show the message about disabled comment creation' do
+      expect(page).to have_content 'comment creation is disabled'
+    end
+
+    it 'shows comments that were last relevant at that version' do
+      position = Gitlab::Diff::Position.new(
+        old_path: ".gitmodules",
+        new_path: ".gitmodules",
+        old_line: nil,
+        new_line: 4,
+        diff_refs: merge_request_diff1.diff_refs
+      )
+      outdated_diff_note = create(:diff_note_on_merge_request, project: project, noteable: merge_request, position: position)
+      outdated_diff_note.position = outdated_diff_note.original_position
+      outdated_diff_note.save!
+
+      expect(page).to have_css(".diffs .notes[data-discussion-id='#{outdated_diff_note.discussion_id}']")
     end
   end
 

@@ -6,10 +6,12 @@ var webpack = require('webpack');
 var StatsPlugin = require('stats-webpack-plugin');
 var CompressionPlugin = require('compression-webpack-plugin');
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+var WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
 
 var ROOT_PATH = path.resolve(__dirname, '..');
 var IS_PRODUCTION = process.env.NODE_ENV === 'production';
 var IS_DEV_SERVER = process.argv[1].indexOf('webpack-dev-server') !== -1;
+var DEV_SERVER_HOST = process.env.DEV_SERVER_HOST || 'localhost';
 var DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10) || 3808;
 var DEV_SERVER_LIVERELOAD = process.env.DEV_SERVER_LIVERELOAD !== 'false';
 var WEBPACK_REPORT = process.env.WEBPACK_REPORT;
@@ -65,13 +67,18 @@ var config = {
       {
         test: /\.js$/,
         exclude: /(node_modules|vendor\/assets)/,
-        loader: 'babel-loader'
+        loader: 'babel-loader',
+      },
+      {
+        test: /\.vue$/,
+        loader: 'vue-loader',
       },
       {
         test: /\.svg$/,
-        use: 'raw-loader'
-      }, {
-        test: /\.(worker.js|pdf)$/,
+        loader: 'raw-loader',
+      },
+      {
+        test: /\.(worker\.js|pdf)$/,
         exclude: /node_modules/,
         loader: 'file-loader',
       },
@@ -176,12 +183,17 @@ if (IS_PRODUCTION) {
 if (IS_DEV_SERVER) {
   config.devtool = 'cheap-module-eval-source-map';
   config.devServer = {
+    host: DEV_SERVER_HOST,
     port: DEV_SERVER_PORT,
     headers: { 'Access-Control-Allow-Origin': '*' },
     stats: 'errors-only',
     inline: DEV_SERVER_LIVERELOAD
   };
-  config.output.publicPath = '//localhost:' + DEV_SERVER_PORT + config.output.publicPath;
+  config.output.publicPath = '//' + DEV_SERVER_HOST + ':' + DEV_SERVER_PORT + config.output.publicPath;
+  config.plugins.push(
+    // watch node_modules for changes if we encounter a missing module compile error
+    new WatchMissingNodeModulesPlugin(path.join(ROOT_PATH, 'node_modules'))
+  );
 }
 
 if (WEBPACK_REPORT) {

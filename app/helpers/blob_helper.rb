@@ -118,6 +118,10 @@ module BlobHelper
     blob && blob.text? && !blob.lfs_pointer? && !blob.only_display_raw?
   end
 
+  def blob_rendered_as_text?(blob)
+    blob_text_viewable?(blob) && blob.to_partial_path(@project) == 'text'
+  end
+
   def blob_size(blob)
     if blob.lfs_pointer?
       blob.lfs_size
