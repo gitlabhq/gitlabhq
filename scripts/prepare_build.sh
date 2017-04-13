@@ -15,12 +15,12 @@ retry() {
     return 1
 }
 
-if [ -f /.dockerenv ] || [ -f ./dockerinit ]; then
-    cp config/database.yml.mysql config/database.yml
-    sed -i 's/username:.*/username: root/g' config/database.yml
-    sed -i 's/password:.*/password:/g' config/database.yml
-    sed -i 's/# socket:.*/host: mysql/g' config/database.yml
+cp config/database.yml.mysql config/database.yml
+sed -i 's/username:.*/username: root/g' config/database.yml
+sed -i 's/password:.*/password:/g' config/database.yml
+sed -i 's/# socket:.*/host: mysql/g' config/database.yml
 
+<<<<<<< HEAD
     cp config/database_geo.yml.mysql config/database_geo.yml
     sed -i 's/username:.*/username: root/g' config/database_geo.yml
     sed -i 's/password:.*/password:/g' config/database_geo.yml
@@ -43,3 +43,9 @@ else
     sed "s/password\:.*$/password\: 'password'/" -i config/database_geo.yml
     sed "s/gitlabhq_test/gitlabhq_test_$rnd/" -i config/database_geo.yml
 fi
+=======
+cp config/resque.yml.example config/resque.yml
+sed -i 's/localhost/redis/g' config/resque.yml
+
+export FLAGS="--path vendor --retry 3 --quiet"
+>>>>>>> ce/master

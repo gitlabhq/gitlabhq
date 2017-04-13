@@ -613,10 +613,6 @@ class User < ActiveRecord::Base
     name.split.first unless name.blank?
   end
 
-  def cared_merge_requests
-    MergeRequest.cared(self)
-  end
-
   def projects_limit_left
     projects_limit - personal_projects.count
   end

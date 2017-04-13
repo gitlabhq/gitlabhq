@@ -41,6 +41,7 @@ module API
           optional :remove_source_branch, type: Boolean, desc: 'Remove source branch when merging'
         end
 
+<<<<<<< HEAD
         params :optional_params_ee do
           optional :approvals_before_merge, type: Integer, desc: 'Number of approvals required before this can be merged'
           optional :squash, type: Boolean, desc: 'Squash commits when merging'
@@ -49,6 +50,10 @@ module API
         params :optional_params do
           use :optional_params_ce
           use :optional_params_ee
+=======
+        params :optional_params do
+          use :optional_params_ce
+>>>>>>> ce/master
         end
       end
 
@@ -171,6 +176,7 @@ module API
         optional :state_event, type: String, values: %w[close reopen],
                                desc: 'Status of the merge request'
 
+<<<<<<< HEAD
         # EE
         at_least_one_of_ee = [
           :squash
@@ -178,6 +184,10 @@ module API
 
         use :optional_params
         at_least_one_of(*(at_least_one_of_ce + at_least_one_of_ee))
+=======
+        use :optional_params
+        at_least_one_of(*at_least_one_of_ce)
+>>>>>>> ce/master
       end
       put ':id/merge_requests/:merge_request_iid' do
         merge_request = find_merge_request_with_access(params.delete(:merge_request_iid), :update_merge_request)

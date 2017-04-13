@@ -1,7 +1,7 @@
 - @no_container = true
 - page_title "Labels"
 - hide_class = ''
-= render "projects/issues/head"
+= render "shared/mr_head"
 
 - if @labels.exists? || @prioritized_labels.exists?
   %div{ class: container_class }

@@ -60,11 +60,14 @@ RSpec.configure do |config|
     TestEnv.init
   end
 
+<<<<<<< HEAD
   config.before(:all) do
     License.destroy_all
     TestLicense.init
   end
 
+=======
+>>>>>>> ce/master
   config.after(:suite) do
     TestEnv.cleanup
   end

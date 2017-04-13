@@ -23,7 +23,8 @@ describe GroupPolicy, models: true do
       :admin_group,
       :admin_namespace,
       :admin_group_member,
-      :change_visibility_level
+      :change_visibility_level,
+      :create_subgroup
     ]
   end
 

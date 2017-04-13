@@ -57,20 +57,25 @@ module Gitlab
       postgresql? ? "RANDOM()" : "RAND()"
     end
 
+<<<<<<< HEAD
     def self.minute_interval(value)
       postgresql? ? "#{value} * '1 minute'::interval" : "INTERVAL #{value} MINUTE"
     end
 
     def true_value
       if Gitlab::Database.postgresql?
+=======
+    def self.true_value
+      if postgresql?
+>>>>>>> ce/master
         "'t'"
       else
         1
       end
     end
 
-    def false_value
-      if Gitlab::Database.postgresql?
+    def self.false_value
+      if postgresql?
         "'f'"
       else
         0

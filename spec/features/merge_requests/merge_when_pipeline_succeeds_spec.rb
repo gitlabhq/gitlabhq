@@ -89,6 +89,19 @@ feature 'Merge When Pipeline Succeeds', :feature, :js do
         it_behaves_like 'Merge when pipeline succeeds activator'
       end
     end
+
+    describe 'enabling Merge when pipeline succeeds via dropdown' do
+      it 'activates the Merge when pipeline succeeds feature' do
+        click_button 'Select merge moment'
+        within('.js-merge-dropdown') do
+          click_link 'Merge when pipeline succeeds'
+        end
+
+        expect(page).to have_content "Set by #{user.name} to be merged automatically when the pipeline succeeds."
+        expect(page).to have_content "The source branch will not be removed."
+        expect(page).to have_link "Cancel automatic merge"
+      end
+    end
   end
 
   context 'when merge when pipeline succeeds is enabled' do
