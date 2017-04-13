@@ -42,7 +42,7 @@ milestone, and label.
 
 ## Search History
 
-You can view recent searches by clicking on the little arrow-clock icon, which is to the left of the search input. Click the search entry to run that search again. This feature is available for issues, merge requests, and issue boards. Searches are stored locally in your browser.
+You can view recent searches by clicking on the little arrow-clock icon, which is to the left of the search input. Click the search entry to run that search again. This feature is available for issues and merge requests. Searches are stored locally in your browser.
 
 ![search history](img/search_history.gif)
 
