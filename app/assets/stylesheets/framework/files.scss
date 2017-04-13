@@ -300,4 +300,27 @@ span.idiff {
   p {
     margin: 0;
   }
+  ol {
+    list-style-type: decimal;
+  }
+
+  ol > li > ol {
+      list-style-type: lower-alpha;
+  }
+
+  ol > li > ol > li > ol {
+      list-style-type: lower-roman;
+  }
+
+  ol > li > ol > li > ol > li > ol {
+      list-style-type: decimal;
+  }
+
+  ol > li > ol > li > ol > li > ol > li > ol {
+      list-style-type: lower-alpha;
+  }
+
+  ol > li > ol > li > ol > li > ol > li > ol > li > ol {
+      list-style-type: lower-roman;
+  }
 }
