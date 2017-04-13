@@ -18,8 +18,6 @@ gem 'pg', '~> 0.18.2', group: :postgres
 gem 'rugged', '~> 0.25.1.1'
 
 gem 'faraday', '~> 0.11.0'
-gem 'net-http-persistent', '~> 2.9.4'
-gem 'faraday-http-cache'
 
 # Authentication libraries
 gem 'devise', '~> 4.2'
