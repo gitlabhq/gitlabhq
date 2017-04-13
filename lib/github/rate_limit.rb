@@ -16,11 +16,11 @@ module Github
     end
 
     def remaining
-      @remaining ||= response.body.dig('rate', 'remaining').to_i
+      @remaining ||= body.dig('rate', 'remaining').to_i
     end
 
     def reset_in
-      @reset ||= response.body.dig('rate', 'reset').to_i
+      @reset ||= body.dig('rate', 'reset').to_i
     end
 
     private
@@ -30,7 +30,11 @@ module Github
     end
 
     def response
-      @response ||= connection.get(rate_limit_url)
+      connection.get(rate_limit_url)
+    end
+
+    def body
+      @body ||= Oj.load(response.body, class_cache: false, mode: :compat)
     end
 
     # GitHub Rate Limit API returns 404 when the rate limit is disabled

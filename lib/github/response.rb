@@ -1,12 +1,11 @@
 module Github
   class Response
-    attr_reader :raw, :headers, :body, :status
+    attr_reader :headers, :body, :status
 
-    def initialize(response)
-      @raw     = response
-      @headers = response.headers
-      @body    = response.body
-      @status  = response.status
+    def initialize(headers, body, status)
+      @headers = headers
+      @body    = Oj.load(body, class_cache: false, mode: :compat)
+      @status  = status
     end
 
     def rels
