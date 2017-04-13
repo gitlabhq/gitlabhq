@@ -1,0 +1,8 @@
+- hidden = local_assigns.fetch(:hidden, false)
+- url = url_for(params.merge(format: :json, viewer: viewer.type)) if viewer.server_side?
+.blob-viewer{ data: { type: viewer.type, url: url }, class: ('hidden' if hidden) }
+  - if viewer.server_side?
+    .text-center.prepend-top-default.append-bottom-default
+      = icon('spinner spin 2x', 'aria-hidden' => 'true', 'aria-label' => 'Loading content')
+  - else
+    = render 'projects/blob/viewer', viewer: viewer

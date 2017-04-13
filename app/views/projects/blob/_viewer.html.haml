@@ -1,0 +1,5 @@
+- if error = viewer.render_error(override_max_size: params[:override_max_size])
+  = render 'projects/blob/render_error', viewer: viewer, error: error
+- else
+  - viewer.prepare!
+  = render viewer.partial_path, viewer: viewer
