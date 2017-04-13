@@ -699,6 +699,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 //
 
+_marked2.default.setOptions({
+  sanitize: true
+});
+
 exports.default = {
   components: {
     prompt: _prompt2.default
