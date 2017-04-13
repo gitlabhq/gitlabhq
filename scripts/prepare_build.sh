@@ -38,6 +38,9 @@ else # Assume it's mysql
     sed -i 's/# host:.*/host: mysql/g' config/database_geo.yml
 fi
 
+cp config/resque.yml.example config/resque.yml
+sed -i 's/localhost/redis/g' config/resque.yml
+
 cp config/gitlab.yml.example config/gitlab.yml
 
 if [ "$USE_BUNDLE_INSTALL" != "false" ]; then
