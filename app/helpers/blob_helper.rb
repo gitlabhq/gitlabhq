@@ -134,12 +134,15 @@ module BlobHelper
     end
   end
 
+  def blob_raw_url
+    namespace_project_raw_path(@project.namespace, @project, @id)
+  end
+
   # SVGs can contain malicious JavaScript; only include whitelisted
   # elements and attributes. Note that this whitelist is by no means complete
   # and may omit some elements.
-  def sanitize_svg(blob)
-    blob.data = Gitlab::Sanitizers::SVG.clean(blob.data)
-    blob
+  def sanitize_svg_data(data)
+    Gitlab::Sanitizers::SVG.clean(data)
   end
 
   # If we blindly set the 'real' content type when serving a Git blob we

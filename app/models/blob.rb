@@ -6,6 +6,14 @@ class Blob < SimpleDelegator
   MAXIMUM_TEXT_HIGHLIGHT_SIZE = 1.megabyte
 
   RICH_VIEWERS = [
+    BlobViewer::Image,
+    BlobViewer::PDF,
+    BlobViewer::Sketch,
+    BlobViewer::BinarySTL,
+    BlobViewer::TextSTL,
+    BlobViewer::Notebook,
+    BlobViewer::SVG,
+    BlobViewer::Markup,
   ].freeze
 
   attr_reader :project
