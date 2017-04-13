@@ -18,9 +18,7 @@ export default {
     title() {
       const maxRender = Math.min(this.defaultRenderCount, this.users.length);
       const renderUsers = this.users.slice(0, maxRender);
-      const names = [];
-
-      renderUsers.forEach(u => names.push(u.name));
+      const names = renderUsers.map(u => u.name);
 
       if (this.users.length > maxRender) {
         names.push(`+ ${this.users.length - maxRender} more`);
@@ -58,12 +56,11 @@ export default {
       <div v-if="hasNoAssignees" class="sidebar-collapsed-icon sidebar-collapsed-user">
         <i aria-hidden="true" class="fa fa-user"></i>
       </div>
-      <div v-else class="sidebar-collapsed-icon sidebar-collapsed-user"
+      <div v-else class="sidebar-collapsed-icon sidebar-collapsed-user has-tooltip"
           :class="{'multiple-users': moreThanOneAssignees}"
           data-container="body"
           data-placement="left"
-          data-toggle="tooltip"
-          :data-original-title="title" >
+          :title="title" >
         <collapsed-avatar
           :name="users[0].name"
           :avatarUrl="users[0].avatarUrl"

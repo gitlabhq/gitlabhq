@@ -251,7 +251,6 @@ import eventHub from './sidebar_assignees/event_hub';
             defaultLabel: defaultLabel,
             hidden: function(e) {
               if ($dropdown.hasClass('js-multiselect')) {
-                // gl.sidebarAssigneesOptions.store.saveUsers();
                 eventHub.$emit('saveUsers');
               }
 

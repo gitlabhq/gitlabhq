@@ -35,6 +35,7 @@ export default {
     });
 
     return {
+      loading: false,
       store,
       service,
     };
@@ -57,14 +58,14 @@ export default {
       this.saveUsers();
     },
     saveUsers() {
-      this.store.loading = true;
+      this.loading = true;
       this.service.update(this.store.getUserIds())
         .then((response) => {
-          this.store.loading = false;
+          this.loading = false;
           this.store.setUsers(response.data.assignees);
         }).catch(() => {
-          this.store.loading = false;
-          return new Flash('An error occured while saving assignees', 'alert');
+          this.loading = false;
+          return new Flash('An error occured while saving assignees');
         });
     },
   },
@@ -79,7 +80,7 @@ export default {
     <div>
       <assignee-title
         :numberOfAssignees="store.userIds.length"
-        :loading="store.loading"
+        :loading="loading"
         :editable="store.editable"
       />
       <collapsed-assignees :users="store.users"/>

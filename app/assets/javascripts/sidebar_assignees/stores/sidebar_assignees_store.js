@@ -16,7 +16,7 @@ export default class SidebarAssigneesStore {
 
     this.setUsers(assignees);
 
-    assignees.forEach(a => this.addUserId(a.id));
+    this.userIds = assignees.map(a => a.id);
   }
 
   addUserId(id) {
@@ -41,15 +41,11 @@ export default class SidebarAssigneesStore {
   }
 
   setUsers(users) {
-    this.users = [];
-
-    users.forEach((u) => {
-      this.users.push({
-        id: u.id,
-        name: u.name,
-        username: u.username,
-        avatarUrl: u.avatar_url,
-      });
-    });
+    this.users = users.map((u) => ({
+      id: u.id,
+      name: u.name,
+      username: u.username,
+      avatarUrl: u.avatar_url,
+    }));
   }
 }
