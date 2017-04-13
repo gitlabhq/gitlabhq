@@ -627,7 +627,6 @@ ul.notes {
   }
 
   &:not(.is-disabled):hover,
-  &:not(.is-disabled):focus,
   &.is-active {
     color: $gl-text-green;
 
@@ -640,6 +639,11 @@ ul.notes {
     fill: $gray-darkest;
     height: 15px;
     width: 15px;
+  }
+
+  .loading {
+    margin: 0;
+    height: auto;
   }
 }
 
