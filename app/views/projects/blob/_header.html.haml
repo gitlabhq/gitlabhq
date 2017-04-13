@@ -12,6 +12,8 @@
       = number_to_human_size(blob.raw_size)
 
   .file-actions.hidden-xs
+    = render 'projects/blob/viewer_switcher', blob: blob unless blame
+
     .btn-group{ role: "group" }<
       = copy_blob_source_button(blob) unless blame
       = open_raw_file_button(namespace_project_raw_path(@project.namespace, @project, @id))
