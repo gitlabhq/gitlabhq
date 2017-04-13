@@ -1,6 +1,6 @@
 .user-callout
   .bordered-box.landing.content-block
-    %button.btn.btn-default.close.close-user-callout{ type: 'button',
+    %button.btn.btn-default.close.js-close-callout{ type: 'button',
       'aria-label' => 'Dismiss customize experience box' }
       = icon('times', class: 'dismiss-icon', 'aria-hidden' => 'true')
     .svg-container
@@ -10,4 +10,4 @@
         Customize your experience
       %p
         Change syntax themes, default project pages, and more in preferences.
-      = link_to 'Check it out', profile_preferences_path, class: 'btn btn-primary user-callout-btn'
+      = link_to 'Check it out', profile_preferences_path, class: 'btn btn-primary js-close-callout'
