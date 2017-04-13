@@ -427,10 +427,10 @@ bundler:audit:
   script:
     - git fetch origin v8.14.10
     - git checkout -f FETCH_HEAD
-    - bundle install --without production --jobs $(nproc) $FLAGS --retry=3
+    - bundle install $BUNDLE_INSTALL_FLAGS
     - bundle exec rake db:drop db:create db:schema:load db:seed_fu
     - git checkout $CI_COMMIT_SHA
-    - bundle install --without production --jobs $(nproc) $FLAGS --retry=3
+    - bundle install $BUNDLE_INSTALL_FLAGS
     - . scripts/prepare_build.sh
     - bundle exec rake db:migrate
 

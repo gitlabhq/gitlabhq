@@ -4,6 +4,7 @@
 
 export SETUP_DB=${SETUP_DB:-true}
 export USE_BUNDLE_INSTALL=${USE_BUNDLE_INSTALL:-true}
+export BUNDLE_INSTALL_FLAGS="--without production --jobs $(nproc) --path vendor --retry 3 --quiet"
 
 # Determine the database by looking at the job name.
 # For example, we'll get pg if the job is `rspec pg 19 20`
@@ -31,7 +32,7 @@ sed -i 's/localhost/redis/g' config/resque.yml
 cp config/gitlab.yml.example config/gitlab.yml
 
 if [ "$USE_BUNDLE_INSTALL" != "false" ]; then
-    retry bundle install --without production --jobs $(nproc) --clean $FLAGS
+    retry bundle install --clean $BUNDLE_INSTALL_FLAGS
 fi
 
 # Only install knapsack after bundle install! Otherwise oddly some native
@@ -45,5 +46,3 @@ if [ "$SETUP_DB" != "false" ]; then
         bundle exec rake add_limits_mysql
     fi
 fi
-
-export FLAGS="--path vendor --retry 3 --quiet"
