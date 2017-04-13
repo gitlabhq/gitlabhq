@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170408033905) do
+ActiveRecord::Schema.define(version: 20170413035209) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1304,6 +1304,7 @@ ActiveRecord::Schema.define(version: 20170408033905) do
     t.boolean "notified_of_own_activity"
     t.boolean "require_two_factor_authentication_from_group", default: false, null: false
     t.integer "two_factor_grace_period", default: 48, null: false
+    t.string "preferred_language"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
