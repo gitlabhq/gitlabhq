@@ -47,11 +47,11 @@ module Github
       end
 
       def diff_hunk
-        raw_data.diff_hunk
+        raw['diff_hunk']
       end
 
       def file_path
-        raw_data.path
+        raw['path']
       end
     end
   end
