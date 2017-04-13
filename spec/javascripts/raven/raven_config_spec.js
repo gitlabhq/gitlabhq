@@ -1,16 +1,13 @@
 import Raven from 'raven-js';
 import RavenConfig from '~/raven/raven_config';
-import ClassSpecHelper from '../helpers/class_spec_helper';
 
-fdescribe('RavenConfig', () => {
+describe('RavenConfig', () => {
   describe('init', () => {
     beforeEach(() => {
       spyOn(RavenConfig, 'configure');
       spyOn(RavenConfig, 'bindRavenErrors');
       spyOn(RavenConfig, 'setUser');
     });
-
-    ClassSpecHelper.itShouldBeAStaticMethod(RavenConfig, 'init');
 
     describe('when called', () => {
       let options;
@@ -58,8 +55,6 @@ fdescribe('RavenConfig', () => {
   });
 
   describe('configure', () => {
-    ClassSpecHelper.itShouldBeAStaticMethod(RavenConfig, 'configure');
-
     describe('when called', () => {
       let options;
       let raven;
@@ -112,24 +107,18 @@ fdescribe('RavenConfig', () => {
   });
 
   describe('setUser', () => {
-    ClassSpecHelper.itShouldBeAStaticMethod(RavenConfig, 'setUser');
-
     describe('when called', () => {
       beforeEach(() => {});
     });
   });
 
   describe('bindRavenErrors', () => {
-    ClassSpecHelper.itShouldBeAStaticMethod(RavenConfig, 'bindRavenErrors');
-
     describe('when called', () => {
       beforeEach(() => {});
     });
   });
 
   describe('handleRavenErrors', () => {
-    ClassSpecHelper.itShouldBeAStaticMethod(RavenConfig, 'handleRavenErrors');
-
     describe('when called', () => {
       beforeEach(() => {});
     });

@@ -1,32 +1,35 @@
 import Raven from 'raven-js';
+import $ from 'jquery';
 
-class RavenConfig {
-  static init(options = {}) {
+const RavenConfig = {
+  init(options = {}) {
     this.options = options;
 
     this.configure();
     this.bindRavenErrors();
     if (this.options.currentUserId) this.setUser();
-  }
 
-  static configure() {
+    return this;
+  },
+
+  configure() {
     Raven.config(this.options.sentryDsn, {
       whitelistUrls: this.options.whitelistUrls,
       environment: this.options.isProduction ? 'production' : 'development',
     }).install();
-  }
+  },
 
-  static setUser() {
+  setUser() {
     Raven.setUserContext({
       id: this.options.currentUserId,
     });
-  }
+  },
 
-  static bindRavenErrors() {
+  bindRavenErrors() {
     $(document).on('ajaxError.raven', this.handleRavenErrors);
-  }
+  },
 
-  static handleRavenErrors(event, req, config, err) {
+  handleRavenErrors(event, req, config, err) {
     const error = err || req.statusText;
 
     Raven.captureMessage(error, {
@@ -40,7 +43,7 @@ class RavenConfig {
         event,
       },
     });
-  }
+  },
 }
 
 export default RavenConfig;
