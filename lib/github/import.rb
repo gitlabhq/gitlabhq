@@ -9,6 +9,24 @@ module Github
       self.reset_callbacks :validate
     end
 
+    class Issue < ::Issue
+      self.table_name = 'issues'
+
+      self.reset_callbacks :save
+      self.reset_callbacks :commit
+      self.reset_callbacks :update
+      self.reset_callbacks :validate
+    end
+
+    class Note < ::Note
+      self.table_name = 'notes'
+
+      self.reset_callbacks :save
+      self.reset_callbacks :commit
+      self.reset_callbacks :update
+      self.reset_callbacks :validate
+    end
+
     attr_reader :project, :repository, :cached_user_ids, :errors
 
     def initialize(project)
@@ -22,7 +40,7 @@ module Github
       # Fetch repository
       begin
         project.create_repository
-        project.repository.add_remote('github', "https://#{token}@github.com/#{owner}/#{repo}.git")
+        project.repository.add_remote('github', "https://881a01d03026458e51285a4c7038c9fe4daa5561@github.com/#{owner}/#{repo}.git")
         project.repository.set_remote_as_mirror('github')
         project.repository.fetch_remote('github', forced: true)
         project.repository.remove_remote('github')
@@ -31,74 +49,127 @@ module Github
       end
 
       # Fetch labels
-      labels = Github::Labels.new(owner, repo).fetch
+      url = "/repos/#{owner}/#{repo}/labels"
 
-      labels.each do |raw|
-        begin
-          label = Github::Representation::Label.new(raw)
-          project.labels.create!(title: label.title, color: label.color)
-        rescue => e
-          error(:label, label.url, e.message)
+      loop do
+        response = Github::Client.new.get(url)
+
+        response.body.each do |raw|
+          begin
+            label = Github::Representation::Label.new(raw)
+            next if project.labels.where(title: label.title).exists?
+
+            project.labels.create!(title: label.title, color: label.color)
+          rescue => e
+            error(:label, label.url, e.message)
+          end
         end
+
+        break unless url = response.rels[:next]
       end
 
       # Fetch milestones
-      milestones = Github::Milestones.new(owner, repo).fetch
+      url = "/repos/#{owner}/#{repo}/milestones"
 
-      milestones.each do |raw|
-        begin
-          milestone = Github::Representation::Milestone.new(raw)
+      loop do
+        response = Github::Client.new.get(url, state: :all)
 
-          project.milestones.create!(
-            iid: milestone.iid,
-            title: milestone.title,
-            description: milestone.description,
-            due_date: milestone.due_date,
-            state: milestone.state,
-            created_at: milestone.created_at,
-            updated_at: milestone.updated_at
-          )
-        rescue => e
-          error(:milestone, milestone.url, e.message)
+        response.body.each do |raw|
+          begin
+            milestone = Github::Representation::Milestone.new(raw)
+            next if project.milestones.where(iid: milestone.iid).exists?
+
+            project.milestones.create!(
+              iid: milestone.iid,
+              title: milestone.title,
+              description: milestone.description,
+              due_date: milestone.due_date,
+              state: milestone.state,
+              created_at: milestone.created_at,
+              updated_at: milestone.updated_at
+            )
+          rescue => e
+            error(:milestone, milestone.url, e.message)
+          end
         end
+
+        break unless url = response.rels[:next]
       end
 
       # Fetch pull requests
-      pull_requests = Github::PullRequests.new(owner, repo).fetch
+      url = "/repos/#{owner}/#{repo}/pulls"
 
-      pull_requests.each do |raw|
-        pull_request = Github::Representation::PullRequest.new(project, raw)
-        next unless pull_request.valid?
+      loop do
+        response = Github::Client.new.get(url, state: :all, sort: :created, direction: :asc)
 
-        begin
-          restore_source_branch(pull_request) unless pull_request.source_branch_exists?
-          restore_target_branch(pull_request) unless pull_request.target_branch_exists?
+        response.body.each do |raw|
+          pull_request  = Github::Representation::PullRequest.new(project, raw)
+          merge_request = MergeRequest.find_or_initialize_by(iid: pull_request.iid, source_project_id: project.id)
+          next unless merge_request.new_record? && pull_request.valid?
 
-          merge_request = MergeRequest.find_or_initialize_by(iid: pull_request.iid, source_project_id: project.id) do |record|
-            record.iid               = pull_request.iid
-            record.title             = pull_request.title
-            record.description       = pull_request.description
-            record.source_project    = pull_request.source_project
-            record.source_branch     = pull_request.source_branch_name
-            record.source_branch_sha = pull_request.source_branch_sha
-            record.target_project    = pull_request.target_project
-            record.target_branch     = pull_request.target_branch_name
-            record.target_branch_sha = pull_request.target_branch_sha
-            record.state             = pull_request.state
-            record.milestone_id      = milestone_id(pull_request.milestone)
-            record.author_id         = user_id(pull_request.author, project.creator_id)
-            record.assignee_id       = user_id(pull_request.assignee)
-            record.created_at        = pull_request.created_at
-            record.updated_at        = pull_request.updated_at
+          begin
+            restore_source_branch(pull_request) unless pull_request.source_branch_exists?
+            restore_target_branch(pull_request) unless pull_request.target_branch_exists?
+
+            merge_request.iid               = pull_request.iid
+            merge_request.title             = pull_request.title
+            merge_request.description       = pull_request.description
+            merge_request.source_project    = pull_request.source_project
+            merge_request.source_branch     = pull_request.source_branch_name
+            merge_request.source_branch_sha = pull_request.source_branch_sha
+            merge_request.target_project    = pull_request.target_project
+            merge_request.target_branch     = pull_request.target_branch_name
+            merge_request.target_branch_sha = pull_request.target_branch_sha
+            merge_request.state             = pull_request.state
+            merge_request.milestone_id      = milestone_id(pull_request.milestone)
+            merge_request.author_id         = user_id(pull_request.author, project.creator_id)
+            merge_request.assignee_id       = user_id(pull_request.assignee)
+            merge_request.created_at        = pull_request.created_at
+            merge_request.updated_at        = pull_request.updated_at
+            merge_request.save(validate: false)
+
+            merge_request.merge_request_diffs.create
+          rescue => e
+            error(:pull_request, pull_request.url, e.message)
+          ensure
+            clean_up_restored_branches(pull_request)
           end
-
-          merge_request.save(validate: false)
-          merge_request.merge_request_diffs.create
-        rescue => e
-          error(:pull_request, pull_request.url, "#{e.message}\n\n#{e.exception.backtrace.join('\n')}")
-        ensure
-          clean_up_restored_branches(pull_request)
         end
+
+        break unless url = response.rels[:next]
+      end
+
+      # Fetch issues
+      url = "/repos/#{owner}/#{repo}/issues"
+
+      loop do
+        response = Github::Client.new.get(url, state: :all, sort: :created, direction: :asc)
+
+        response.body.each do |raw|
+          representation = Github::Representation::Issue.new(raw)
+
+          next if representation.pull_request?
+          next if Issue.where(iid: representation.iid, project_id: project.id).exists?
+
+          begin
+            issue              = Issue.new
+            issue.iid          = representation.iid
+            issue.project_id   = project.id
+            issue.title        = representation.title
+            issue.description  = representation.description
+            issue.state        = representation.state
+            issue.milestone_id = milestone_id(representation.milestone)
+            issue.author_id    = user_id(representation.author, project.creator_id)
+            issue.assignee_id  = user_id(representation.assignee)
+            issue.created_at   = representation.created_at
+            issue.updated_at   = representation.updated_at
+            issue.save(validate: false)
+          rescue => e
+            error(:issue, representation.url, e.message)
+          end
+        end
+
+        break unless url = response.rels[:next]
       end
 
       repository.expire_content_cache
