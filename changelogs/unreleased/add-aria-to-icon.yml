@@ -1,0 +1,4 @@
+---
+title: Update icon() to automatically include aria-hidden if aria is not found
+merge_request:
+author:
