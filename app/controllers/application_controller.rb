@@ -265,4 +265,10 @@ class ApplicationController < ActionController::Base
   def u2f_app_id
     request.base_url
   end
+
+  def set_locale
+    requested_locale = current_user&.preferred_language || request.env['HTTP_ACCEPT_LANGUAGE'] || I18n.default_locale
+    locale = FastGettext.set_locale(requested_locale)
+    I18n.locale = locale
+  end
 end

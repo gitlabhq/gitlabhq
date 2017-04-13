@@ -1,9 +1,9 @@
 module Gitlab
   module I18n
     AVAILABLE_LANGUAGES = [
-      [_('English'), 'en'],
-      [_('Spanish'), 'es'],
-      [_('Deutsch'), 'de']
+      ['English', 'en'],
+      ['Spanish', 'es'],
+      ['Deutsch', 'de']
     ]
   end
 end

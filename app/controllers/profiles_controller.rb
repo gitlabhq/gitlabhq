@@ -3,6 +3,7 @@ class ProfilesController < Profiles::ApplicationController
 
   before_action :user
   before_action :authorize_change_username!, only: :update_username
+  before_action :set_locale, only: :show
   skip_before_action :require_email, only: [:show, :update]
 
   def show
