@@ -54,6 +54,24 @@ import eventHub from './sidebar_assignees/event_hub';
           $collapsedSidebar = $block.find('.sidebar-collapsed-user');
           $loading = $block.find('.block-loading').fadeOut();
 
+          $block[0].addEventListener('assignYourself', () => {
+            // Remove unassigned selected from the DOM
+            const unassignedSelected = $dropdown.closest('.selectbox')
+              .find("input[name='" + ($dropdown.data('field-name')) + "'][value=0]");
+
+            if (unassignedSelected) {
+              unassignedSelected.remove();
+            }
+
+            // Save current selected user to the DOM
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = $dropdown.data('field-name');
+            input.value = _this.currentUser.id;
+
+            $dropdown.before(input);
+          });
+
           var getSelected = function() {
             return $selectbox
               .find(`input[name="${$dropdown.data('field-name')}"]`)

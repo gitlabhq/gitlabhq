@@ -3,11 +3,7 @@
 import eventHub from './event_hub';
 
 import AssigneeTitle from './components/assignee_title';
-import NoAssignee from './components/expanded/no_assignee';
-import SingleAssignee from './components/expanded/single_assignee';
-import MultipleAssignees from './components/expanded/multiple_assignees';
-
-import CollapsedAssignees from './components/collapsed/assignees';
+import Assignees from './components/assignees';
 
 import SidebarAssigneesService from './services/sidebar_assignees_service';
 import SidebarAssigneesStore from './stores/sidebar_assignees_store';
@@ -55,6 +51,10 @@ export default {
   methods: {
     addCurrentUser() {
       this.store.addCurrentUserId();
+
+      // Notify gl dropdown that we are now assigning to current user
+      this.$el.parentElement.dispatchEvent(new Event('assignYourself'));
+
       this.saveUsers();
     },
     saveUsers() {
@@ -63,41 +63,30 @@ export default {
         .then((response) => {
           this.loading = false;
           this.store.setUsers(response.data.assignees);
-        }).catch(() => {
+        })
+        .catch(() => {
           this.loading = false;
           return new Flash('An error occured while saving assignees');
         });
     },
   },
   components: {
-    'no-assignee': NoAssignee,
-    'single-assignee': SingleAssignee,
-    'multiple-assignees': MultipleAssignees,
     'assignee-title': AssigneeTitle,
-    'collapsed-assignees': CollapsedAssignees,
+    'assignees': Assignees,
   },
   template: `
     <div>
       <assignee-title
-        :numberOfAssignees="store.userIds.length"
+        :numberOfAssignees="store.selectedUserIds.length"
         :loading="loading"
         :editable="store.editable"
       />
-      <collapsed-assignees :users="store.users"/>
-
-      <div class="value" v-if="!store.loading">
-        <no-assignee v-if="numberOfAssignees === 0" />
-        <single-assignee
-          v-else-if="numberOfAssignees === 1"
-          :rootPath="store.rootPath"
-          :user="store.users[0]"
-        />
-        <multiple-assignees
-          v-else
-          :rootPath="store.rootPath"
-          :users="store.users"
-        />
-      </div>
+      <assignees
+        class="value"
+        v-if="!store.loading"
+        :rootPath="store.rootPath"
+        :users="store.renderedUsers"
+      />
     </div>
   `,
 };
