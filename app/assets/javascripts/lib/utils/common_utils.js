@@ -381,7 +381,7 @@
         url: pageUrl,
         dataType: 'json',
         success: function(data) {
-          if (data && data.icon) {
+          if (data && data.favicon) {
             gl.utils.setFavicon(data.favicon);
           } else {
             gl.utils.resetFavicon();
