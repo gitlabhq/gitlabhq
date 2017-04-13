@@ -107,4 +107,44 @@ describe('List model', () => {
     expect(gl.boardService.moveIssue)
       .toHaveBeenCalledWith(issue.id, list.id, listDup.id, undefined, undefined);
   });
+
+  describe('page number', () => {
+    beforeEach(() => {
+      spyOn(list, 'getIssues');
+    });
+
+    it('increase page number if current issue count is more than the page size', () => {
+      for (let i = 0; i < 30; i+=1) {
+        list.issues.push(new ListIssue({
+          title: 'Testing',
+          iid: _.random(10000) + i,
+          confidential: false,
+          labels: [list.label]
+        }));
+      }
+      list.issuesSize = 50;
+
+      expect(list.issues.length).toBe(30);
+
+      list.nextPage();
+
+      expect(list.page).toBe(2);
+      expect(list.getIssues).toHaveBeenCalled();
+    });
+
+    it('does not increase page number if issue count is less than the page size', () => {
+      list.issues.push(new ListIssue({
+        title: 'Testing',
+        iid: _.random(10000),
+        confidential: false,
+        labels: [list.label]
+      }));
+      list.issuesSize = 2;
+
+      list.nextPage();
+
+      expect(list.page).toBe(1);
+      expect(list.getIssues).toHaveBeenCalled();
+    });
+  });
 });
