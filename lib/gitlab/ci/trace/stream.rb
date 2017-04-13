@@ -131,8 +131,8 @@ module Gitlab
           if idx
             stream.seek(-seek_size + idx + 1, IO::SEEK_CUR)
           else
-            stream.seek(-seek_size, IO::SEEK_CUR)
-            seek_previous_line(max)
+            # We cannot find previous line within BUFFER_SIZE,
+            # so data could be corrupted in this case
           end
         end
       end

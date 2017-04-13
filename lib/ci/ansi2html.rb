@@ -152,7 +152,7 @@ module Ci
         open_new_tag
 
         stream.each_line do |line|
-          s = StringScanner.new(line)
+          s = StringScanner.new(enforce_utf8(line))
           until s.eos?
             if s.scan(/\e([@-_])(.*?)([@-~])/)
               handle_sequence(s)
@@ -325,6 +325,12 @@ module Ci
 
       def get_color_class(segments)
         [segments].flatten.compact.join('-')
+      end
+
+      private
+
+      def enforce_utf8(bytes)
+        bytes.encode('UTF-8', invalid: :replace, undef: :replace, replace: '?')
       end
     end
   end

@@ -144,6 +144,12 @@ describe Ci::Ansi2html, lib: true do
     expect(convert_html("\r\n")).to eq('<br>')
   end
 
+  it "replace ? for invalid UTF-8 characters" do
+    broken_cat = "😺".bytes[1..2].pack('C*').force_encoding('UTF-8')
+
+    expect(convert_html(broken_cat)).to eq('??')
+  end
+
   describe "incremental update" do
     shared_examples 'stateable converter' do
       let(:pass1_stream) { StringIO.new(pre_text) }
