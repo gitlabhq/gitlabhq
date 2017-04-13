@@ -160,7 +160,7 @@ describe 'Git HTTP requests', lib: true do
 
             it 'updates the user last activity' do
               download(path, {}) do |response|
-                expect(user.reload.last_activity_at).not_to be_nil
+                expect(user.reload.last_activity_on).not_to be_nil
               end
             end
           end
