@@ -363,7 +363,11 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def project_view_files?
-    current_user && current_user.project_view == 'files'
+    if current_user
+      current_user.project_view == 'files'
+    else
+      project_view_files_allowed?
+    end
   end
 
   # Override extract_ref from ExtractsPath, which returns the branch and file path
@@ -383,5 +387,9 @@ class ProjectsController < Projects::ApplicationController
   def assign_tree_vars
     @id = get_id
     tree
+  end
+
+  def project_view_files_allowed?
+    !project.empty_repo? && can?(current_user, :download_code, project)
   end
 end
