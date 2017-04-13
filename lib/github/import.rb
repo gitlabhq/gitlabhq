@@ -224,6 +224,36 @@ module Github
             issue.created_at   = representation.created_at
             issue.updated_at   = representation.updated_at
             issue.save(validate: false)
+
+            if issue.has_comments?
+              # Fetch comments
+              comments_url = "/repos/#{owner}/#{repo}/issues/#{issue.iid}/comments"
+
+              loop do
+                comments = Github::Client.new.get(comments_url)
+
+                ActiveRecord::Base.no_touching do
+                  comments.body.each do |raw|
+                    begin
+                      comment = Github::Representation::Comment.new(raw)
+
+                      note               = Note.new
+                      note.project_id    = project.id
+                      note.noteable      = issue
+                      note.note          = comment.note
+                      note.author_id     = user_id(comment.author, project.creator_id)
+                      note.created_at    = comment.created_at
+                      note.updated_at    = comment.updated_at
+                      note.save!(validate: false)
+                    rescue => e
+                      error(:comment, comment.url, e.message)
+                    end
+                  end
+                end
+
+                break unless comments_url = comments.rels[:next]
+              end
+            end
           rescue => e
             error(:issue, representation.url, e.message)
           end

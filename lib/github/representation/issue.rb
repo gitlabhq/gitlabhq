@@ -49,6 +49,10 @@ module Github
         raw['assignee'].present?
       end
 
+      def has_comments?
+        raw['comments'] > 0
+      end
+
       def pull_request?
         raw['pull_request'].present?
       end
