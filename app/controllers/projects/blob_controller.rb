@@ -96,7 +96,7 @@ class Projects::BlobController < Projects::ApplicationController
   private
 
   def blob
-    @blob ||= Blob.decorate(@repository.blob_at(@commit.id, @path))
+    @blob ||= Blob.decorate(@repository.blob_at(@commit.id, @path), @project)
 
     if @blob
       @blob

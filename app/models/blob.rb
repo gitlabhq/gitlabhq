@@ -6,6 +6,8 @@ class Blob < SimpleDelegator
   # The maximum size of an SVG that can be displayed.
   MAXIMUM_SVG_SIZE = 2.megabytes
 
+  attr_reader :project
+
   # Wrap a Gitlab::Git::Blob object, or return nil when given nil
   #
   # This method prevents the decorated object from evaluating to "truthy" when
@@ -16,10 +18,16 @@ class Blob < SimpleDelegator
   #
   #     blob = Blob.decorate(nil)
   #     puts "truthy" if blob # No output
-  def self.decorate(blob)
+  def self.decorate(blob, project)
     return if blob.nil?
 
-    new(blob)
+    new(blob, project)
+  end
+
+  def initialize(blob, project)
+    @project = project
+
+    super(blob)
   end
 
   # Returns the data of the blob.
