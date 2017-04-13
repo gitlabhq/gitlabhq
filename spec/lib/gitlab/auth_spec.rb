@@ -118,7 +118,7 @@ describe Gitlab::Auth, lib: true do
 
       it 'succeeds for OAuth tokens with the `api` scope' do
         expect(gl_auth).to receive(:rate_limit!).with('ip', success: true, login: 'oauth2')
-        expect(gl_auth.find_for_git_client("oauth2", token_w_api_scope.token, project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(user, nil, :oauth, read_authentication_abilities))
+        expect(gl_auth.find_for_git_client("oauth2", token_w_api_scope.token, project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(user, nil, :oauth, full_authentication_abilities))
       end
 
       it 'fails for OAuth tokens with other scopes' do
