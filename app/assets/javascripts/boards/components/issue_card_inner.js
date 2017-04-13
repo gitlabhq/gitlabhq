@@ -1,40 +1,11 @@
 import Vue from 'vue';
 import eventHub from '../eventhub';
 
-(() => {
-  window.gl = window.gl || {};
-  window.gl.issueBoards = window.gl.issueBoards || {};
+window.gl = window.gl || {};
+window.gl.issueBoards = window.gl.issueBoards || {};
 
-  gl.issueBoards.IssueCardInner = Vue.extend({
-    props: {
-      issue: {
-        type: Object,
-        required: true,
-      },
-      issueLinkBase: {
-        type: String,
-        required: true,
-      },
-      list: {
-        type: Object,
-        required: false,
-        default: () => ({}),
-      },
-      rootPath: {
-        type: String,
-        required: true,
-      },
-      updateFilters: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
-      store: {
-        type: Object,
-        required: false,
-        default: () => ({}),
-      },
-    },
+gl.issueBoards.IssueCardInner = Vue.extend({
+  props: {
     issueLinkBase: {
       type: String,
       required: true,
@@ -52,6 +23,11 @@ import eventHub from '../eventhub';
       type: Boolean,
       required: false,
       default: false,
+    },
+    store: {
+      type: Object,
+      required: false,
+      default: () => ({}),
     },
   },
   computed: {
@@ -78,16 +54,16 @@ import eventHub from '../eventhub';
     showLabel(label) {
       if (!this.list) return true;
 
-        return !this.list.label || label.id !== this.list.label.id;
-      },
-      filterByLabel(label, e) {
-        if (!this.updateFilters && this.store) return;
+      return !this.list.label || label.id !== this.list.label.id;
+    },
+    filterByLabel(label, e) {
+      if (!this.updateFilters && this.store) return;
 
-        const filterPath = this.store.filter.path.split('&');
-        const labelTitle = encodeURIComponent(label.title);
-        const param = `label_name[]=${labelTitle}`;
-        const labelIndex = filterPath.indexOf(param);
-        $(e.currentTarget).tooltip('hide');
+      const filterPath = this.store.filter.path.split('&');
+      const labelTitle = encodeURIComponent(label.title);
+      const param = `label_name[]=${labelTitle}`;
+      const labelIndex = filterPath.indexOf(param);
+      $(e.currentTarget).tooltip('hide');
 
       if (labelIndex === -1) {
         filterPath.push(param);
@@ -95,9 +71,9 @@ import eventHub from '../eventhub';
         filterPath.splice(labelIndex, 1);
       }
 
-        this.store.filter.path = filterPath.join('&');
+      this.store.filter.path = filterPath.join('&');
 
-        this.store.updateFiltersUrl();
+      this.store.updateFiltersUrl();
 
       eventHub.$emit('updateTokens');
     },

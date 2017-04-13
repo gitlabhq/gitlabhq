@@ -6,29 +6,29 @@ import Cookies from 'js-cookie';
 window.gl = window.gl || {};
 window.gl.issueBoards = window.gl.issueBoards || {};
 
-  gl.issueBoards.BoardsStore = {
-    disabled: false,
-    filter: {
-      path: '',
-    },
-    state: {
-      canAdminIssue: false,
-      canAdminList: false,
-    },
-    detail: {
-      issue: {}
-    },
-    moving: {
-      issue: {},
-      list: {}
-    },
-    create () {
-      this.state.lists = [];
-      this.filter.path = gl.utils.getUrlParamsArray().join('&');
-    },
-    addList (listObj) {
-      const list = new List(listObj);
-      this.state.lists.push(list);
+gl.issueBoards.BoardsStore = {
+  disabled: false,
+  filter: {
+    path: '',
+  },
+  state: {
+    canAdminIssue: false,
+    canAdminList: false,
+  },
+  detail: {
+    issue: {}
+  },
+  moving: {
+    issue: {},
+    list: {}
+  },
+  create () {
+    this.state.lists = [];
+    this.filter.path = gl.utils.getUrlParamsArray().join('&');
+  },
+  addList (listObj) {
+    const list = new List(listObj);
+    this.state.lists.push(list);
 
     return list;
   },
