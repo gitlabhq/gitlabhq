@@ -313,6 +313,8 @@ cron_jobs
 
 By default, GitLab will run a group sync process every hour, on the hour.
 
+>**Note**: It's recommended not to run group sync at too short intervals as this could lead to multiple syncs running concurrently. This is primarily a concern for installations with a large number of LDAP users. Please review the [LDAP group sync benchmark metrics](https://docs.gitlab.com/ee/administration/auth/ldap-ee.html#benchmarks) to see how your installation compares before proceeding.
+
 **Omnibus installations**
 
 ```ruby
