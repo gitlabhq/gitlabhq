@@ -47,6 +47,18 @@ stages:
     paths:
       - knapsack/
 
+poltergeist_requests:
+  <<: *knapsack-state
+  <<: *dedicated-runner
+  stage: post-test
+  script:
+    - ruby ./scripts/report_poltergeist_network_usage.rb
+    - head -n500 tmp/capybara/network_request_stats.txt
+  artifacts:
+    paths:
+      - tmp/capybara/all_network_requests.pstore
+      - tmp/capybara/network_request_stats.txt
+
 .use-pg: &use-pg
   services:
     - postgres:latest
