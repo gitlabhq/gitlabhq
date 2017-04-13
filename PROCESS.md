@@ -139,8 +139,6 @@ When in doubt, we err on the side of _not_ cherry-picking.
 For example, it is likely that an exception will be made for a trivial 1-5 line performance improvement
 (e.g. adding a database index or adding `includes` to a query), but not for a new feature, no matter how relatively small or thoroughly tested.
 
-Another exception example is a medium-risk feature such as a navigation change in response to significant negative community feedback from a previous release.
-
 During the feature freeze all merge requests that are meant to go into the upcoming
 release should have the correct milestone assigned _and_ have the label
 ~"Pick into Stable" set, so that release managers can find and pick them.
