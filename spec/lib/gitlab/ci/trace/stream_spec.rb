@@ -17,12 +17,12 @@ describe Gitlab::Ci::Trace::Stream do
   describe '#limit' do
     let(:stream) do
       described_class.new do
-        StringIO.new("12345678")
+        StringIO.new((1..8).to_a.join("\n"))
       end
     end
 
     it 'if size is larger we start from beginning' do
-      stream.limit(10)
+      stream.limit(20)
 
       expect(stream.tell).to eq(0)
     end
@@ -30,7 +30,7 @@ describe Gitlab::Ci::Trace::Stream do
     it 'if size is smaller we start from the end' do
       stream.limit(2)
 
-      expect(stream.tell).to eq(6)
+      expect(stream.raw).to eq("8")
     end
 
     context 'when the trace contains ANSI sequence and Unicode' do
