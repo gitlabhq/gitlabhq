@@ -8,7 +8,7 @@ module Gitlab
       # the user. We load as much as we can for encoding detection
       # (Linguist) and LFS pointer parsing. All other cases where we need full
       # blob data should use load_all_data!.
-      MAX_DATA_DISPLAY_SIZE = 10485760
+      MAX_DATA_DISPLAY_SIZE = 10.megabytes
 
       attr_accessor :name, :path, :size, :data, :mode, :id, :commit_id, :loaded_size, :binary
 
@@ -153,7 +153,7 @@ module Gitlab
       def lfs_size
         if has_lfs_version_key?
           size = data.match(/(?<=size )([0-9]+)/)
-          return size[1] if size
+          return size[1].to_i if size
         end
 
         nil
