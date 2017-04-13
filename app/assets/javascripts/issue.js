@@ -10,6 +10,12 @@ require('./task_list');
 class Issue {
   constructor() {
     if ($('a.btn-close').length) {
+      const closeButtons = $('a.btn-close');
+      const isClosedBadge = $('div.status-box-closed');
+      const isOpenBadge = $('div.status-box-open');
+      const projectIssuesCounter = $('.issue_counter');
+      const reopenButtons = $('a.btn-reopen');
+
       this.taskList = new gl.TaskList({
         dataType: 'issue',
         fieldName: 'description',
@@ -22,30 +28,35 @@ class Issue {
 
       Issuable.initStateChangeButton({
         type: 'issue',
+        beforeSend() {
+          Issue.setNewBranchButtonState(true, null);
+        },
+        errorCallback() {
+          Issue.initCanCreateBranch();
+        },
         callback(data, $btn) {
-          let total = Number($('.issue_counter').text().replace(/[^\d]/, ''));
+          const isClosed = data.state === 'closed';
 
           $btn.enable();
           $(document).trigger('issuable:change');
 
-          if (data.state === 'closed') {
-            $('a.btn-close').addClass('hidden');
-            $('a.btn-reopen').removeClass('hidden');
-            $('div.status-box-closed').removeClass('hidden');
-            $('div.status-box-open').addClass('hidden');
-            total -= 1;
-          } else {
-            $('a.btn-reopen').addClass('hidden');
-            $('a.btn-close').removeClass('hidden');
-            $('div.status-box-closed').addClass('hidden');
-            $('div.status-box-open').removeClass('hidden');
-            total += 1;
-          }
+          closeButtons.toggleClass('hidden', isClosed);
+          reopenButtons.toggleClass('hidden', !isClosed);
+          isClosedBadge.toggleClass('hidden', !isClosed);
+          isOpenBadge.toggleClass('hidden', isClosed);
 
-          $('.issue_counter').text(gl.text.addDelimiter(total));
+          let numProjectIssues = Number(projectIssuesCounter.text().replace(/[^\d]/, ''));
+          numProjectIssues = isClosed ? numProjectIssues - 1 : numProjectIssues + 1;
+
+          projectIssuesCounter.text(gl.text.addDelimiter(numProjectIssues));
+
+          Issue.initCanCreateBranch();
         },
       });
     }
+
+    Issue.$btnNewBranch = $('#new-branch');
+
     Issue.initMergeRequests();
     Issue.initRelatedBranches();
     Issue.initCanCreateBranch();
@@ -54,9 +65,9 @@ class Issue {
   static initMergeRequests() {
     var $container;
     $container = $('#merge-requests');
-    return $.getJSON($container.data('url')).error(function() {
-      return new Flash('Failed to load referenced merge requests', 'alert');
-    }).success(function(data) {
+    return $.getJSON($container.data('url')).fail(function() {
+      return new Flash('Failed to load referenced merge requests');
+    }).done(function(data) {
       if ('html' in data) {
         return $container.html(data.html);
       }
@@ -66,9 +77,9 @@ class Issue {
   static initRelatedBranches() {
     var $container;
     $container = $('#related-branches');
-    return $.getJSON($container.data('url')).error(function() {
-      return new Flash('Failed to load related branches', 'alert');
-    }).success(function(data) {
+    return $.getJSON($container.data('url')).fail(function() {
+      return new Flash('Failed to load related branches');
+    }).done(function(data) {
       if ('html' in data) {
         return $container.html(data.html);
       }
@@ -76,23 +87,26 @@ class Issue {
   }
 
   static initCanCreateBranch() {
-    var $container;
-    $container = $('#new-branch');
     // If the user doesn't have the required permissions the container isn't
     // rendered at all.
-    if ($container.length === 0) {
+    if (Issue.$btnNewBranch.length === 0) {
       return;
     }
-    return $.getJSON($container.data('path')).error(function() {
-      $container.find('.unavailable').show();
-      return new Flash('Failed to check if a new branch can be created.', 'alert');
-    }).success(function(data) {
-      if (data.can_create_branch) {
-        $container.find('.available').show();
-      } else {
-        return $container.find('.unavailable').show();
-      }
+    return $.getJSON(Issue.$btnNewBranch.data('path')).fail(function() {
+      Issue.setNewBranchButtonState(false, false);
+      new Flash('Failed to check if a new branch can be created.');
+    }).done(function(data) {
+      Issue.setNewBranchButtonState(false, data.can_create_branch);
     });
+  }
+
+  static setNewBranchButtonState(isPending, canCreate) {
+    if (Issue.$btnNewBranch.length === 0) {
+      return;
+    }
+
+    Issue.$btnNewBranch.find('.available').toggle(!isPending && canCreate);
+    Issue.$btnNewBranch.find('.unavailable').toggle(!isPending && !canCreate);
   }
 }
 

@@ -10,8 +10,12 @@
   position: relative;
 
   &.event-inline {
-    .profile-icon {
+    .system-note-image {
       top: 20px;
+    }
+
+    .user-avatar {
+      top: 14px;
     }
 
     .event-title,
@@ -24,7 +28,7 @@
     color: $gl-text-color;
   }
 
-  .profile-icon {
+  .system-note-image {
     position: absolute;
     left: 0;
     top: 14px;
@@ -35,15 +39,18 @@
       fill: $gl-text-color-secondary;
     }
 
-    &.open-icon svg {
-      fill: $green-300;
+    &.opened-icon,
+    &.created-icon {
+      svg {
+        fill: $green-300;
+      }
     }
 
     &.closed-icon svg {
       fill: $red-300;
     }
 
-    &.fork-icon svg {
+    &.accepted-icon svg {
       fill: $blue-300;
     }
   }
@@ -128,8 +135,7 @@
     li {
       &.commit {
         background: transparent;
-        padding: 3px;
-        padding-left: 0;
+        padding: 0;
         border: none;
 
         .commit-row-title {
@@ -183,7 +189,7 @@
       max-width: 100%;
     }
 
-    .profile-icon {
+    .system-note-image {
       display: none;
     }
 

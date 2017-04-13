@@ -186,12 +186,16 @@
       });
     },
 
-    initStateChangeButton({ type, callback, }) {
+    initStateChangeButton({ type, beforeSend, errorCallback, callback, }) {
       $('.btn-close, .btn-reopen').on('click', (e) => {
         const $btn = $(e.target);
 
         e.preventDefault();
         e.stopImmediatePropagation();
+
+        if (beforeSend) {
+          beforeSend();
+        }
 
         Issuable.submitIssuableNote($btn)
           .then(() => Issuable.updateIssuableStatus($btn))
@@ -199,6 +203,10 @@
           .catch(() => {
             $btn.enable();
             new Flash(`Unable to update this ${type} at this time.`);
+
+            if (errorCallback) {
+              errorCallback();
+            }
           });
       });
     },
