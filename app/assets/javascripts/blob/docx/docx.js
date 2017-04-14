@@ -84,8 +84,14 @@ export default class Docx {
 
   setPagesStyles($pageStyles) {
     if($pageStyles.length) {
+      const $container = $(this.container);
       const $pageSize = $pageStyles.find('pgSz');
-      $(this.container).css('width', $pageSize.attr('w:h')/20);
+      $container.css('width', $pageSize.attr('w:h')/20 + 'pt');
+      const $pageMargins = $pageStyles.find('pgMar');
+      $container.css('padding-top', parseInt($pageMargins.attr('w:top'))/20 + 'pt');
+      $container.css('padding-bottom', parseInt($pageMargins.attr('w:bottom'))/20 + 'pt');
+      $container.css('padding-left', parseInt($pageMargins.attr('w:left'))/20 + 'pt');
+      $container.css('padding-right', parseInt($pageMargins.attr('w:right'))/20 + 'pt');
     }
   }
 
@@ -238,7 +244,7 @@ export default class Docx {
       return $el;
     }
     size = size / 2;
-    $el.css('font-size',size + 'px');
+    $el.css('font-size',size + 'pt');
     $el.attr('data-sz', 1);
     return $el;
   }
@@ -343,7 +349,7 @@ export default class Docx {
         $p.prepend(`<span style='user-select: none;'>${increment}.</span>`);
         break;
       }
-      $p.css('margin-left', numberInfo.ind);
+      $p.css('margin-left', numberInfo.ind + 'pt');
       return $p;
     } else {
       this.listIncrements = {};

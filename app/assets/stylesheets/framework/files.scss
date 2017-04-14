@@ -306,34 +306,10 @@ span.idiff {
     margin: 0 auto;
     border: 1px solid #CCC;
     padding: 22px;
-    box-sizing: content-box;
+    box-sizing: border-box;
     background: #FFFFFF;
     -webkit-box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.30);
     -moz-box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.30);
     box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.30);
-  }
-
-  ol {
-    list-style-type: decimal;
-  }
-
-  ol > li > ol {
-      list-style-type: lower-alpha;
-  }
-
-  ol > li > ol > li > ol {
-      list-style-type: lower-roman;
-  }
-
-  ol > li > ol > li > ol > li > ol {
-      list-style-type: decimal;
-  }
-
-  ol > li > ol > li > ol > li > ol > li > ol {
-      list-style-type: lower-alpha;
-  }
-
-  ol > li > ol > li > ol > li > ol > li > ol > li > ol {
-      list-style-type: lower-roman;
   }
 }
