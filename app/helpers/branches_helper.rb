@@ -34,6 +34,15 @@ module BranchesHelper
     ProtectedBranch.protected?(project, branch.name)
   end
 
+  # Returns a hash were keys are types of access levels (user, role), and
+  # values are the number of access levels of the particular type.
+  def access_level_frequencies(access_levels)
+    access_levels.reduce(Hash.new(0)) do |frequencies, access_level|
+      frequencies[access_level.type] = frequencies[access_level.type] + 1
+      frequencies
+    end
+  end
+
   def access_levels_data(access_levels)
     access_levels.map do |level|
       if level.type == :user

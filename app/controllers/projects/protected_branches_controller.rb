@@ -23,7 +23,7 @@ class Projects::ProtectedBranchesController < Projects::ProtectedRefsController
 
   def protected_ref_params
     params.require(:protected_branch).permit(:name,
-                                             merge_access_levels_attributes: [:access_level, :id, :user_id, :_destroy, :group_id],
-                                             push_access_levels_attributes: [:access_level, :id, :user_id, :_destroy, :group_id])
+                                             merge_access_levels_attributes: access_level_attributes,
+                                             push_access_levels_attributes: access_level_attributes)
   end
 end

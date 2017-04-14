@@ -44,4 +44,10 @@ class Projects::ProtectedRefsController < Projects::ApplicationController
       format.js { head :ok }
     end
   end
+
+  protected
+
+  def access_level_attributes
+    [:access_level, :id, :user_id, :_destroy, :group_id]
+  end
 end
