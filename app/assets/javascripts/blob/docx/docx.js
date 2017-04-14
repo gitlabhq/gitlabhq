@@ -58,32 +58,51 @@ export default class Docx {
     }
   }
 
-  parseDoc() {
+  parseParagraph(el) {
+    const $paragraph = $(el);
+    const $textNodes = $paragraph.find('t');
+    var $p = $('<p></p>');
+    if(!$textNodes.length){
+      $p.html('&nbsp;');
+      $(this.container).append($p);
+      return;
+    }
+    $textNodes.each((i, el) => {
+      const $el = $(el);
+      var $span;
+      $p = this.setParagraphStyles($paragraph, $p);
+      $span = this.setListStyle($el, $p, $paragraph);
+      $span = this.setInternalStyles($el, $p);
+      $span.text($el.text());
+      $p.append($span);
+      $(this.container).append($p);
+    });
+    return;
+  }
+
+  parseDoc(cb) {
     const $xml = $($.parseXML(this.doc));
     this.setPagesStyles($xml.find('sectPr'));
     const $paragraphNodes = $xml.find('p');
-    $paragraphNodes.each((i, el) => {
-      const $paragraph = $(el);
-      const $textNodes = $paragraph.find('t');
-      var $p = $('<p></p>');
-      if(!$textNodes.length){
-        $p.html('&nbsp;');
-        $(this.container).append($p);
-        return;
-      }
-      $textNodes.each((i, el) => {
-        const $el = $(el);
-        var $span;
-        $p = this.setParagraphStyles($paragraph, $p);
-        $span = this.setListStyle($el, $p, $paragraph);
-        $span = this.setInternalStyles($el, $p);
-        $span.text($el.text());
-        $p.append($span);
-        $(this.container).append($p);
-      });
-      return;
+    const total = $paragraphNodes.length;
+    var count = 0;
+    // do everything async so it doesn't freeze up the browser.
+    const parseMore = ((el) => {
+      setTimeout(() => {
+        this.parseParagraph(el);
+        if(count < $paragraphNodes.length){
+          count++;
+          next();
+        } else {
+          cb(this.container);
+        }
+      },0);  
     });
-    return this.container;
+    const next = (() => {
+      parseMore($paragraphNodes[count]);
+    });
+
+    next();
   }
 
   setParagraphStyles($paragraph, $p) {

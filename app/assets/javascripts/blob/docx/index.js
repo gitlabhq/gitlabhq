@@ -30,7 +30,7 @@ export default class DocxRenderer {
       })
       .then((content) => {
         this.docx.setRelationships(content);
-        this.el.appendChild(this.docx.parseDoc());
+        this.docx.parseDoc((doc) => this.el.appendChild(doc));
       })
       // .catch(this.error.bind(this));
   }
