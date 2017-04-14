@@ -1,0 +1,20 @@
+- @no_container = true
+- page_title "Pipeline Schedules"
+= render "projects/pipelines/head"
+
+%div{ class: container_class }
+  .top-area
+    - schedule_path_proc = ->(scope) { project_pipeline_schedules_path(@project, scope: scope) }
+    = render "tabs", schedule_path_proc: schedule_path_proc, all_schedules: @all_schedules, scope: @scope
+
+    .nav-controls
+      = link_to new_namespace_project_pipeline_schedule_path(@project.namespace, @project), class: 'btn btn-create' do
+        %span New Schedule
+
+  - if @schedules.present?
+    %ul.content-list
+      = render partial: "pipeline_schedule", collection: @schedules
+  - else
+    .light-well
+      .nothing-here-block No schedules
+

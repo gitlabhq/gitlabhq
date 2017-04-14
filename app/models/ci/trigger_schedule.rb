@@ -12,17 +12,29 @@ module Ci
     validates :cron, unless: :importing_or_inactive?, cron: true, presence: { unless: :importing_or_inactive? }
     validates :cron_timezone, cron_timezone: true, presence: { unless: :importing_or_inactive? }
     validates :ref, presence: { unless: :importing_or_inactive? }
+    validates :description, presence: true
 
     before_save :set_next_run_at
 
     scope :active, -> { where(active: true) }
+    scope :inactive, -> { where(active: false) }
 
     def importing_or_inactive?
       importing? || !active?
     end
 
+    def inactive?
+      !active?
+    end
+
     def set_next_run_at
       self.next_run_at = Gitlab::Ci::CronParser.new(cron, cron_timezone).next_time_from(Time.now)
+    end
+
+    def schedule_first_run!
+      if next_run_at < real_next_run
+        #TODO create a schedule service to be used here and in the worker
+      end
     end
 
     def schedule_next_run!

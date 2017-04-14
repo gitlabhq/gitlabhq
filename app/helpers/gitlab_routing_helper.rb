@@ -46,6 +46,10 @@ module GitlabRoutingHelper
     namespace_project_environments_path(project.namespace, project, *args)
   end
 
+  def project_pipeline_schedules_path(project, *args)
+    namespace_project_pipeline_schedules_path(project.namespace, project, *args)
+  end
+
   def project_cycle_analytics_path(project, *args)
     namespace_project_cycle_analytics_path(project.namespace, project, *args)
   end
