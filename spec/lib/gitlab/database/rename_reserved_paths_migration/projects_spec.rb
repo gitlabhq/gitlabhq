@@ -59,6 +59,8 @@ describe Gitlab::Database::RenameReservedPathsMigration::Projects, :truncate do
 
       subject.rename_project(project)
     end
+
+    it 'invalidates the markdown cache of related projects'
   end
 
   describe '#move_repository' do

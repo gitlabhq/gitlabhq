@@ -126,6 +126,8 @@ describe Gitlab::Database::RenameReservedPathsMigration::Namespaces, :truncate d
 
       subject.rename_namespace(namespace)
     end
+
+    it 'invalidates the markdown cache of related projects'
   end
 
   describe '#rename_namespaces' do
