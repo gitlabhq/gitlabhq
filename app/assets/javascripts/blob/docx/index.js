@@ -26,6 +26,10 @@ export default class DocxRenderer {
       })
       .then((content) => {
         this.docx.setStyles(content);
+        return this.asyncResult.files['word/_rels/document.xml.rels'].async('string');
+      })
+      .then((content) => {
+        this.docx.setRelationships(content);
         this.el.appendChild(this.docx.parseDoc());
       })
       .catch(this.error.bind(this));

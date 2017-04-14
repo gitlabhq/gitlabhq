@@ -8,10 +8,10 @@ export default class Docx {
     this.$currentLists = [];
     this.commonColors = {'black': '#000','blue': '#0000FF','cyan':'#00ffff','green':'#008000','magenta':'#ff00ff','red':'#FF0000','yellow':'#ffff00','white':'#FFF','darkBlue':'#00008b','darkCyan':'#008b8b','darkGreen':'#006400','darkMagenta':'#8b008b','darkRed':'#8b0000','darkYellow':'#E5E500','darkGray':'#a9a9a9','lightGray':'#d3d3d3'};
     this.styles = {};
+    this.relationships = {};
   }
 
   setStyles(styles) {
-    console.log('set styles')
     const $xml = $($.parseXML(styles));
     const $styles = $xml.find('style');
     const attrs = ['b', 'color', 'sz', 'i', 'u'];
@@ -25,6 +25,21 @@ export default class Docx {
         }
       });
       this.styles[$style.find('name').attr('w:val')] = currentStyle;
+    });
+  }
+
+  setRelationships(relationships) {
+    const $xml = $($.parseXML(relationships));
+    const $relationships = $xml.find('Relationship');
+    $relationships.each((i, r) => {
+      const $r = $(r);
+      const id = $r.attr('Id');
+      const targetMode = $r.attr('TargetMode');
+      this.relationships[id] = {};
+      this.relationships[id].target = $r.attr('Target');
+      if(targetMode) {
+        this.relationships[id].targetMode = targetMode;
+      }
     });
   }
 
@@ -83,6 +98,7 @@ export default class Docx {
     $span = this.getUnderline($span, $r, $p);
     $span = this.getColor($span, $r, $p);
     $span = this.getHighlight($span, $r, $p);
+    $span = this.getHyperLink($span, $r, $p);
     return $span;
   }
 
@@ -164,6 +180,17 @@ export default class Docx {
     return $el;
   }
 
+  getHyperLink($span, $r, $p) {
+    const $hyperlink = $r.parent('w\\:hyperlink');
+    var $a;
+    if($hyperlink.length) {
+      $a = $span.wrap(`<a href='${this.relationships[$hyperlink.attr('r:id')].target}'></a>`).parent().get(0).outerHTML;
+      console.log($a)
+      return $($a);
+    }
+    return $span;
+  }
+
   getSavedStyle($paragraph, $p) {
     const $savedStyle = $paragraph.find('pStyle');
     var s = '';
@@ -236,7 +263,6 @@ export default class Docx {
       // was already in a list and will continue to be in a list 
       } else {
         const newListLevel = parseInt($listInfo.find('ilvl').attr('w:val'));
-        console.log(newListLevel, this.currentListLevel)
         if(newListLevel > this.currentListLevel) {
           // if we just made a sublist
           this.$currentLists.push(this.getListByType(listType));
@@ -251,7 +277,6 @@ export default class Docx {
         } else if(newListLevel < this.currentListLevel) {
           // if we just exited a sublist
           this.currentListLevel = newListLevel
-          console.log('less than', newListLevel, this.currentListLevel);
           this.$currentLists.pop();
         }
 
