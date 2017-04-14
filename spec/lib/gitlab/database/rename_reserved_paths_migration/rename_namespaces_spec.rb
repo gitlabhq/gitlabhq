@@ -1,14 +1,11 @@
 require 'spec_helper'
 
-describe Gitlab::Database::RenameReservedPathsMigration::Namespaces, :truncate do
-  let(:subject) do
-    ActiveRecord::Migration.new.extend(
-      Gitlab::Database::RenameReservedPathsMigration
-    )
-  end
+describe Gitlab::Database::RenameReservedPathsMigration::RenameNamespaces do
+  let(:migration) { FakeRenameReservedPathMigration.new }
+  let(:subject) { described_class.new(['the-path'], migration) }
 
   before do
-    allow(subject).to receive(:say)
+    allow(migration).to receive(:say)
   end
 
   def migration_namespace(namespace)
@@ -27,7 +24,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::Namespaces, :truncate d
                            path: 'the-path',
                            parent: create(:namespace))
 
-        found_ids = subject.namespaces_for_paths(['the-PATH'], type: :wildcard).
+        found_ids = subject.namespaces_for_paths(type: :wildcard).
                       map(&:id)
         expect(found_ids).to contain_exactly(namespace.id)
       end
@@ -41,7 +38,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::Namespaces, :truncate d
                                   path: 'the-path',
                                   parent: create(:namespace))
 
-        found_ids = subject.namespaces_for_paths(['the-path'], type: :top_level).
+        found_ids = subject.namespaces_for_paths(type: :top_level).
                       map(&:id)
         expect(found_ids).to contain_exactly(root_namespace.id)
       end
@@ -98,12 +95,14 @@ describe Gitlab::Database::RenameReservedPathsMigration::Namespaces, :truncate d
   describe "#rename_namespace" do
     let(:namespace) { create(:namespace, path: 'the-path') }
 
-    it 'renames paths & routes for the namesapce' do
+    it 'renames paths & routes for the namespace' do
       expect(subject).to receive(:rename_path_for_routable).
                            with(namespace).
                            and_call_original
 
       subject.rename_namespace(namespace)
+
+      expect(namespace.reload.path).to eq('the-path0')
     end
 
     it "moves the the repository for a project in the namespace" do
@@ -140,14 +139,14 @@ describe Gitlab::Database::RenameReservedPathsMigration::Namespaces, :truncate d
       expect(subject).to receive(:rename_namespace).
                            with(migration_namespace(top_level_namespace))
 
-      subject.rename_namespaces(['the-path'], type: :top_level)
+      subject.rename_namespaces(type: :top_level)
     end
 
     it 'renames child namespaces' do
       expect(subject).to receive(:rename_namespace).
                            with(migration_namespace(child_namespace))
 
-      subject.rename_namespaces(['the-path'], type: :wildcard)
+      subject.rename_namespaces(type: :wildcard)
     end
   end
 end

@@ -1,16 +1,16 @@
 module Gitlab
   module Database
     module RenameReservedPathsMigration
-      module Namespaces
+      class RenameNamespaces < RenameBase
         include Gitlab::ShellAdapter
 
-        def rename_namespaces(paths, type:)
-          namespaces_for_paths(paths, type: type).each do |namespace|
+        def rename_namespaces(type:)
+          namespaces_for_paths(type: type).each do |namespace|
             rename_namespace(namespace)
           end
         end
 
-        def namespaces_for_paths(paths, type:)
+        def namespaces_for_paths(type:)
           namespaces = if type == :wildcard
                          MigrationClasses::Namespace.where.not(parent_id: nil)
                        elsif type == :top_level
@@ -52,7 +52,7 @@ module Gitlab
           namespace_or_children = MigrationClasses::Project.
                                     arel_table[:namespace_id].
                                     in(namespace_ids)
-          MigrationClasses::Project.unscoped.where(namespace_or_children)
+          MigrationClasses::Project.where(namespace_or_children)
         end
 
         # This won't scale to huge trees, but it should do for a handful of

@@ -1,11 +1,11 @@
 module Gitlab
   module Database
     module RenameReservedPathsMigration
-      module Projects
+      class RenameProjects < RenameBase
         include Gitlab::ShellAdapter
 
-        def rename_projects(paths)
-          projects_for_paths(paths).each do |project|
+        def rename_projects
+          projects_for_paths.each do |project|
             rename_project(project)
           end
         end
@@ -27,7 +27,7 @@ module Gitlab
           end
         end
 
-        def projects_for_paths(paths)
+        def projects_for_paths
           with_paths = MigrationClasses::Project.arel_table[:path]
                        .matches_any(paths)
           MigrationClasses::Project.where(with_paths)

@@ -76,6 +76,7 @@ module Gitlab
 
         class Project < ActiveRecord::Base
           include MigrationClasses::Routable
+          has_one :route, as: :source
           self.table_name = 'projects'
 
           def repository_storage_path

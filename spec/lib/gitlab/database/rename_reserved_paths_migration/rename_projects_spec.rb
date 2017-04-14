@@ -1,14 +1,11 @@
 require 'spec_helper'
 
-describe Gitlab::Database::RenameReservedPathsMigration::Projects, :truncate do
-  let(:subject) do
-    ActiveRecord::Migration.new.extend(
-      Gitlab::Database::RenameReservedPathsMigration
-    )
-  end
+describe Gitlab::Database::RenameReservedPathsMigration::RenameProjects do
+  let(:migration) { FakeRenameReservedPathMigration.new }
+  let(:subject) { described_class.new(['the-path'], migration) }
 
   before do
-    allow(subject).to receive(:say)
+    allow(migration).to receive(:say)
   end
 
   describe '#projects_for_paths' do
@@ -16,7 +13,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::Projects, :truncate do
       project = create(:empty_project, path: 'THE-path')
       _other_project = create(:empty_project)
 
-      result_ids = subject.projects_for_paths(['the-PATH']).map(&:id)
+      result_ids = subject.projects_for_paths.map(&:id)
 
       expect(result_ids).to contain_exactly(project.id)
     end
@@ -35,6 +32,8 @@ describe Gitlab::Database::RenameReservedPathsMigration::Projects, :truncate do
                            and_call_original
 
       subject.rename_project(project)
+
+      expect(project.reload.path).to eq('the-path0')
     end
 
     it 'moves the wiki & the repo' do
