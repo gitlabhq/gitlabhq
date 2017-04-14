@@ -8,8 +8,6 @@ const RavenConfig = {
     this.configure();
     this.bindRavenErrors();
     if (this.options.currentUserId) this.setUser();
-
-    return this;
   },
 
   configure() {
@@ -44,6 +42,6 @@ const RavenConfig = {
       },
     });
   },
-}
+};
 
 export default RavenConfig;

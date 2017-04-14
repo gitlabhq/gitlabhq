@@ -1,7 +1,7 @@
 import RavenConfig from '~/raven/raven_config';
 import index from '~/raven/index';
 
-fdescribe('RavenConfig options', () => {
+describe('RavenConfig options', () => {
   let sentryDsn;
   let currentUserId;
   let gitlabUrl;
@@ -21,13 +21,13 @@ fdescribe('RavenConfig options', () => {
       is_production: isProduction,
     };
 
-    spyOn(RavenConfig.init, 'bind');
+    spyOn(RavenConfig, 'init');
 
     indexReturnValue = index();
   });
 
   it('should init with .sentryDsn, .currentUserId, .whitelistUrls and .isProduction', () => {
-    expect(RavenConfig.init.bind).toHaveBeenCalledWith(RavenConfig, {
+    expect(RavenConfig.init).toHaveBeenCalledWith({
       sentryDsn,
       currentUserId,
       whitelistUrls: [gitlabUrl],
