@@ -24,6 +24,7 @@ class RenameReservedDynamicPaths < ActiveRecord::Migration
     oauth
     sent_notifications
     -
+    users
   ]
 
   DISALLOWED_WILDCARD_PATHS = %w[objects folders file]
