@@ -185,7 +185,6 @@ export default class Docx {
     var $a;
     if($hyperlink.length) {
       $a = $span.wrap(`<a href='${this.relationships[$hyperlink.attr('r:id')].target}'></a>`).parent().get(0).outerHTML;
-      console.log($a)
       return $($a);
     }
     return $span;
