@@ -81,7 +81,13 @@ describe DynamicPathValidator do
     end
   end
 
-  describe '#valid_full_path' do
+  describe ".valid?" do
+    it 'is not case sensitive' do
+      expect(described_class.valid?("Users", type: :top_level)).to be(false)
+    end
+  end
+
+  describe '.valid_full_path' do
     it "isn't valid when the top level is reserved" do
       test_path = 'u/should-be-a/reserved-word'
 

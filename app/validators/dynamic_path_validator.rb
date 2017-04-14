@@ -94,6 +94,7 @@ class DynamicPathValidator < ActiveModel::EachValidator
   end
 
   def self.reserved?(value, type: :strict)
+    value = value.to_s.downcase
     case type
     when :wildcard
       WILDCARD_ROUTES.include?(value)
