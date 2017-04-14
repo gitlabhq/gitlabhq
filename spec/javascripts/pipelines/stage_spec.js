@@ -1,6 +1,8 @@
 import Vue from 'vue';
-import { SUCCESS_SVG } from '~/ci_status_icons';
-import Stage from '~/pipelines/components/stage';
+import { borderlessIcons } from '~/vue_shared/utils/ci_status_svg_index';
+import Stage from '~/vue_pipelines_index/components/stage';
+
+const SUCCESS_SVG = borderlessIcons.success;
 
 function minify(string) {
   return string.replace(/\s/g, '');
@@ -23,18 +25,18 @@ describe('Pipelines Stage', () => {
   });
 
   describe('computed', () => {
-    describe('svgHTML', function () {
+    describe('stageStatusSvg', function () {
       let stage;
-      let svgHTML;
+      let stageStatusSvg;
 
       beforeEach(() => {
         stage = { stage: { status: { icon: 'icon_status_success' } } };
 
-        svgHTML = Stage.computed.svgHTML.call(stage);
+        stageStatusSvg = Stage.computed.stageStatusSvg.call(stage);
       });
 
       it("should return the correct icon for the stage's status", () => {
-        expect(svgHTML).toBe(SUCCESS_SVG);
+        expect(stageStatusSvg).toBe(SUCCESS_SVG);
       });
     });
   });

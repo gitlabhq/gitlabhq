@@ -1,5 +1,5 @@
 /* global Flash */
-import StatusIconEntityMap from '../../ci_status_icons';
+import getCiStatusSvg from '../../vue_shared/utils/get_ci_status_svg';
 
 export default {
   data() {
@@ -8,7 +8,6 @@ export default {
       spinner: '<span class="fa fa-spinner fa-spin"></span>',
     };
   },
-
   props: {
     stage: {
       type: Object,
@@ -52,6 +51,9 @@ export default {
     },
   },
   computed: {
+    stageStatusSvg() {
+      return getCiStatusSvg({ status: this.stage.status.icon, borderless: true });
+    },
     buildsOrSpinner() {
       return this.builds ? this.builds : this.spinner;
     },
@@ -68,9 +70,6 @@ export default {
     triggerButtonClass() {
       return `mini-pipeline-graph-dropdown-toggle has-tooltip js-builds-dropdown-button ci-status-icon-${this.stage.status.group}`;
     },
-    svgHTML() {
-      return StatusIconEntityMap[this.stage.status.icon];
-    },
   },
   template: `
     <div>
@@ -82,7 +81,7 @@ export default {
         data-toggle="dropdown"
         type="button"
         :aria-label="stage.title">
-        <span v-html="svgHTML" aria-hidden="true"></span>
+        <span v-html="stageStatusSvg" aria-hidden="true"></span>
         <i class="fa fa-caret-down" aria-hidden="true"></i>
       </button>
       <ul class="dropdown-menu mini-pipeline-graph-dropdown-menu js-builds-dropdown-container">
