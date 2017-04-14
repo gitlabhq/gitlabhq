@@ -25,11 +25,10 @@ module Gitlab
         end
 
         def limit(last_bytes = LIMIT_SIZE)
-          stream_size = size
-          if stream_size < last_bytes
-            last_bytes = stream_size
+          if last_bytes < size
+            stream.seek(-last_bytes, IO::SEEK_END)
+            stream.readline
           end
-          stream.seek(-last_bytes, IO::SEEK_END)
         end
 
         def append(data, offset)
@@ -76,11 +75,14 @@ module Gitlab
           stream.each_line do |line|
             matches = line.scan(regex)
             next unless matches.is_a?(Array)
+            next if matches.empty?
 
             match = matches.flatten.last
             coverage = match.gsub(/\d+(\.\d+)?/).first
-            return coverage.to_f if coverage.present?
+            return coverage if coverage.present?
           end
+
+          nil
         rescue
           # if bad regex or something goes wrong we dont want to interrupt transition
           # so we just silentrly ignore error for now

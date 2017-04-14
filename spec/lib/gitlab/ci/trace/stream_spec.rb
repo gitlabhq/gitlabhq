@@ -17,12 +17,12 @@ describe Gitlab::Ci::Trace::Stream do
   describe '#limit' do
     let(:stream) do
       described_class.new do
-        StringIO.new("12345678")
+        StringIO.new((1..8).to_a.join("\n"))
       end
     end
 
-    it 'if size is larger we start from beggining' do
-      stream.limit(10)
+    it 'if size is larger we start from beginning' do
+      stream.limit(20)
 
       expect(stream.tell).to eq(0)
     end
@@ -30,7 +30,27 @@ describe Gitlab::Ci::Trace::Stream do
     it 'if size is smaller we start from the end' do
       stream.limit(2)
 
-      expect(stream.tell).to eq(6)
+      expect(stream.raw).to eq("8")
+    end
+
+    context 'when the trace contains ANSI sequence and Unicode' do
+      let(:stream) do
+        described_class.new do
+          File.open(expand_fixture_path('trace/ansi-sequence-and-unicode'))
+        end
+      end
+
+      it 'forwards to the next linefeed, case 1' do
+        stream.limit(7)
+
+        expect(stream.raw).to eq('')
+      end
+
+      it 'forwards to the next linefeed, case 2' do
+        stream.limit(29)
+
+        expect(stream.raw).to eq("\e[01;32m許功蓋\e[0m\n")
+      end
     end
   end
 
@@ -167,7 +187,7 @@ describe Gitlab::Ci::Trace::Stream do
       let(:data) { 'Coverage 1033 / 1051 LOC (98.29%) covered' }
       let(:regex) { '\(\d+.\d+\%\) covered' }
 
-      it { is_expected.to eq(98.29) }
+      it { is_expected.to eq("98.29") }
     end
 
     context 'valid content & bad regex' do
@@ -188,14 +208,14 @@ describe Gitlab::Ci::Trace::Stream do
       let(:data) { ' (98.39%) covered. (98.29%) covered' }
       let(:regex) { '\(\d+.\d+\%\) covered' }
 
-      it { is_expected.to eq(98.29) }
+      it { is_expected.to eq("98.29") }
     end
 
     context 'using a regex capture' do
       let(:data) { 'TOTAL      9926   3489    65%' }
       let(:regex) { 'TOTAL\s+\d+\s+\d+\s+(\d{1,3}\%)' }
 
-      it { is_expected.to eq(65) }
+      it { is_expected.to eq("65") }
     end
   end
 end

@@ -60,7 +60,7 @@ to use terminals. Support is currently limited to the first container in the
 first pod of your environment.
 
 When enabled, the Kubernetes service adds [web terminal](../../../ci/environments.md#web-terminals)
-support to your environments. This is based on the `exec` functionality found in
+support to your [environments](../../../ci/environments.md). This is based on the `exec` functionality found in
 Docker and Kubernetes, so you get a new shell session within your existing
 containers. To use this integration, you should deploy to Kubernetes using
 the deployment variables above, ensuring any pods you create are labelled with

@@ -1,6 +1,5 @@
 class MigrateBuildEventsToPipelineEvents < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
-  include Gitlab::Database
 
   DOWNTIME = false
 

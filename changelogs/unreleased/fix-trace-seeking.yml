@@ -1,0 +1,4 @@
+---
+title: Fix invalid encoding when showing some traces
+merge_request: 10681
+author:

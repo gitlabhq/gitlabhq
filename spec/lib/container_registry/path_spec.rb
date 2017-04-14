@@ -33,10 +33,20 @@ describe ContainerRegistry::Path do
   end
 
   describe '#to_s' do
-    let(:path) { 'some/image' }
+    context 'when path does not have uppercase characters' do
+      let(:path) { 'some/image' }
 
-    it 'return a string with a repository path' do
-      expect(subject.to_s).to eq path
+      it 'return a string with a repository path' do
+        expect(subject.to_s).to eq 'some/image'
+      end
+    end
+
+    context 'when path has uppercase characters' do
+      let(:path) { 'SoMe/ImAgE' }
+
+      it 'return a string with a repository path' do
+        expect(subject.to_s).to eq 'some/image'
+      end
     end
   end
 
@@ -67,6 +77,12 @@ describe ContainerRegistry::Path do
 
     context 'when path is related to multi-level image' do
       let(:path) { 'some/path/my/image' }
+
+      it { is_expected.to be_valid }
+    end
+
+    context 'when path contains uppercase letters' do
+      let(:path) { 'Some/Registry' }
 
       it { is_expected.to be_valid }
     end

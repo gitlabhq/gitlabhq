@@ -15,7 +15,7 @@ module ContainerRegistry
     LEVELS_SUPPORTED = 3
 
     def initialize(path)
-      @path = path
+      @path = path.to_s.downcase
     end
 
     def valid?
@@ -25,7 +25,7 @@ module ContainerRegistry
     end
 
     def components
-      @components ||= @path.to_s.split('/')
+      @components ||= @path.split('/')
     end
 
     def nodes

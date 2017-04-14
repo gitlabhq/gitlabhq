@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 16);
+/******/ 	return __webpack_require__(__webpack_require__.s = 24);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -20214,6 +20214,7 @@ var stringToUTF8String = sharedUtil.stringToUTF8String;
 var warn = sharedUtil.warn;
 var createValidAbsoluteUrl = sharedUtil.createValidAbsoluteUrl;
 var Util = sharedUtil.Util;
+var Dict = corePrimitives.Dict;
 var Ref = corePrimitives.Ref;
 var RefSet = corePrimitives.RefSet;
 var RefSetCache = corePrimitives.RefSetCache;
@@ -20233,9 +20234,10 @@ var Catalog = function CatalogClosure() {
     this.pdfManager = pdfManager;
     this.xref = xref;
     this.catDict = xref.getCatalogObj();
+    assert(isDict(this.catDict), 'catalog object is not a dictionary');
     this.fontCache = new RefSetCache();
     this.builtInCMapCache = Object.create(null);
-    assert(isDict(this.catDict), 'catalog object is not a dictionary');
+    this.pageKidsCountCache = new RefSetCache();
     this.pageFactory = pageFactory;
     this.pagePromises = [];
   }
@@ -20551,6 +20553,7 @@ var Catalog = function CatalogClosure() {
       return shadow(this, 'javaScript', javaScript);
     },
     cleanup: function Catalog_cleanup() {
+      this.pageKidsCountCache.clear();
       var promises = [];
       this.fontCache.forEach(function (promise) {
         promises.push(promise);
@@ -20577,15 +20580,25 @@ var Catalog = function CatalogClosure() {
     getPageDict: function Catalog_getPageDict(pageIndex) {
       var capability = createPromiseCapability();
       var nodesToVisit = [this.catDict.getRaw('Pages')];
-      var currentPageIndex = 0;
-      var xref = this.xref;
+      var count,
+          currentPageIndex = 0;
+      var xref = this.xref,
+          pageKidsCountCache = this.pageKidsCountCache;
       function next() {
         while (nodesToVisit.length) {
           var currentNode = nodesToVisit.pop();
           if (isRef(currentNode)) {
+            count = pageKidsCountCache.get(currentNode);
+            if (count > 0 && currentPageIndex + count < pageIndex) {
+              currentPageIndex += count;
+              continue;
+            }
             xref.fetchAsync(currentNode).then(function (obj) {
               if (isDict(obj, 'Page') || isDict(obj) && !obj.has('Kids')) {
                 if (pageIndex === currentPageIndex) {
+                  if (currentNode && !pageKidsCountCache.has(currentNode)) {
+                    pageKidsCountCache.put(currentNode, 1);
+                  }
                   capability.resolve([obj, currentNode]);
                 } else {
                   currentPageIndex++;
@@ -20599,7 +20612,11 @@ var Catalog = function CatalogClosure() {
             return;
           }
           assert(isDict(currentNode), 'page dictionary kid reference points to wrong type of object');
-          var count = currentNode.get('Count');
+          count = currentNode.get('Count');
+          var objId = currentNode.objId;
+          if (objId && !pageKidsCountCache.has(objId)) {
+            pageKidsCountCache.put(objId, count);
+          }
           if (currentPageIndex + count <= pageIndex) {
             currentPageIndex += count;
             continue;
@@ -21191,7 +21208,7 @@ var XRef = function XRefClosure() {
       var num = ref.num;
       if (num in this.cache) {
         var cacheEntry = this.cache[num];
-        if (isDict(cacheEntry) && !cacheEntry.objId) {
+        if (cacheEntry instanceof Dict && !cacheEntry.objId) {
           cacheEntry.objId = ref.toString();
         }
         return cacheEntry;
@@ -26178,7 +26195,7 @@ var CMapFactory = function CMapFactoryClosure() {
       return Promise.resolve(new IdentityCMap(true, 2));
     }
     if (BUILT_IN_CMAPS.indexOf(name) === -1) {
-      return Promise.reject(new Error('Unknown cMap name: ' + name));
+      return Promise.reject(new Error('Unknown CMap name: ' + name));
     }
     assert(fetchBuiltInCMap, 'Built-in CMap parameters are not provided.');
     return fetchBuiltInCMap(name).then(function (data) {
@@ -28458,9 +28475,6 @@ var Font = function FontClosure() {
               }
               glyphId = offsetIndex < 0 ? j : offsets[offsetIndex + j - start];
               glyphId = glyphId + delta & 0xFFFF;
-              if (glyphId === 0) {
-                continue;
-              }
               mappings.push({
                 charCode: j,
                 glyphId: glyphId
@@ -37160,8 +37174,8 @@ exports.Type1Parser = Type1Parser;
 "use strict";
 
 
-var pdfjsVersion = '1.7.395';
-var pdfjsBuild = '07f7c97b';
+var pdfjsVersion = '1.8.172';
+var pdfjsBuild = '8ff1fbe7';
 var pdfjsCoreWorker = __w_pdfjs_require__(8);
 {
   __w_pdfjs_require__(19);
@@ -37646,20 +37660,28 @@ if (typeof PDFJS === 'undefined' || !PDFJS.compatibilityChecked) {
     }
   })();
   (function checkRequestAnimationFrame() {
-    function fakeRequestAnimationFrame(callback) {
-      window.setTimeout(callback, 20);
+    function installFakeAnimationFrameFunctions() {
+      window.requestAnimationFrame = function (callback) {
+        return window.setTimeout(callback, 20);
+      };
+      window.cancelAnimationFrame = function (timeoutID) {
+        window.clearTimeout(timeoutID);
+      };
     }
     if (!hasDOM) {
       return;
     }
     if (isIOS) {
-      window.requestAnimationFrame = fakeRequestAnimationFrame;
+      installFakeAnimationFrameFunctions();
       return;
     }
     if ('requestAnimationFrame' in window) {
       return;
     }
-    window.requestAnimationFrame = window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || fakeRequestAnimationFrame;
+    window.requestAnimationFrame = window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame;
+    if (!('requestAnimationFrame' in window)) {
+      installFakeAnimationFrameFunctions();
+    }
   })();
   (function checkCanvasSizeLimitation() {
     if (isIOS || isAndroid) {
@@ -38588,7 +38610,7 @@ if (typeof PDFJS === 'undefined' || !PDFJS.compatibilityChecked) {
 
 /***/ }),
 
-/***/ 16:
+/***/ 24:
 /***/ (function(module, exports, __webpack_require__) {
 
 /* Copyright 2016 Mozilla Foundation
