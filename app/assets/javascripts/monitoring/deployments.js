@@ -57,16 +57,20 @@ export default class Deployments {
 
   createLine(chart) {
     chart.append('g')
-      .attr('class', 'deploy-info')
+      .attr({
+        class: 'deploy-info',
+      })
       .selectAll('.deploy-info')
       .data(this.data)
       .enter()
       .append('g')
-      .attr('class', d => `deploy-info-${d.id}`)
-      .attr('transform', d => `translate(${Math.floor(this.x(d.time)) + 1}, 0)`)
-      .append('line')
-      .attr('class', 'deployment-line')
       .attr({
+        class: d => `deploy-info-${d.id}`,
+        transform: d => `translate(${Math.floor(this.x(d.time)) + 1}, 0)`,
+      })
+      .append('line')
+      .attr({
+        class: 'deployment-line',
         x1: 0,
         x2: 0,
         y1: 0,
@@ -78,31 +82,47 @@ export default class Deployments {
     this.data.forEach((d) => {
       const group = chart.select(`.deploy-info-${d.id}`)
         .append('svg')
-        .attr('x', 3)
-        .attr('y', 0)
-        .attr('height', 38);
+        .attr({
+          x: 3,
+          y: 0,
+          height: 41,
+        });
 
       const rect = group.append('rect')
-        .attr('class', 'rect-text-metric deploy-info-rect rect-metric')
-        .attr('x', 1)
-        .attr('y', 1)
-        .attr('rx', 2)
-        .attr('height', 35);
+        .attr({
+          class: 'rect-text-metric deploy-info-rect rect-metric',
+          x: 1,
+          y: 1,
+          rx: 2,
+          height: group.attr('height') - 2,
+        });
 
-      const text = group.append('text')
-        .attr('x', 5)
-        .attr('y', '50%')
-        .attr('style', 'dominant-baseline: middle;')
-        .text((d) => {
+      const textGroup = group.append('g')
+        .attr({
+          transform: 'translate(5, 2)',
+        });
+
+      textGroup.append('text')
+        .attr({
+          style: 'dominant-baseline: text-before-edge;',
+        })
+        .text(() => {
           const isTag = d.tag;
           const refText = isTag ? d.ref : d.sha.slice(0, 6);
 
-          return `${refText} - ${this.timeFormat(d.time)}`;
+          return refText;
         });
 
-      group.attr('width', Math.floor(text.node().getBoundingClientRect().width) + 14);
+      textGroup.append('text')
+        .attr({
+          style: 'dominant-baseline: text-before-edge; font-weight: 600;',
+          y: 18,
+        })
+        .text(() => this.timeFormat(d.time));
 
-      rect.attr('width', Math.floor(text.node().getBoundingClientRect().width) + 10);
+      group.attr('width', Math.floor(textGroup.node().getBoundingClientRect().width) + 14);
+
+      rect.attr('width', Math.floor(textGroup.node().getBoundingClientRect().width) + 10);
     });
   }
 }

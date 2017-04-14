@@ -210,7 +210,9 @@ class PrometheusGraph {
     const d0 = valuesToPlot[timeValueIndex - 1];
     const d1 = valuesToPlot[timeValueIndex];
     const currentData = timeValueFromOverlay - d0.time > d1.time - timeValueFromOverlay ? d1 : d0;
-    const maxValueMetric = Math.floor(y(d3.max(valuesToPlot.map(metricValue => metricValue.value))));
+    const maxValueMetric = Math.floor(
+      y(d3.max(valuesToPlot.map(metricValue => metricValue.value))),
+    );
     const currentTimeCoordinate = Math.floor(x(currentData.time));
     const graphSpecifics = this.graphSpecificProperties[key];
     // Remove the current selectors
