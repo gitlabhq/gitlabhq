@@ -3,6 +3,8 @@
 import Cookies from 'js-cookie';
 import AwardsHandler from '~/awards_handler';
 
+require('~/lib/utils/common_utils');
+
 (function() {
   var awardsHandler, lazyAssert, urlRoot, openAndWaitForEmojiMenu;
 
@@ -28,7 +30,7 @@ import AwardsHandler from '~/awards_handler';
       loadFixtures('issues/issue_with_comment.html.raw');
       awardsHandler = new AwardsHandler;
       spyOn(awardsHandler, 'postEmoji').and.callFake((function(_this) {
-        return function(url, emoji, cb) {
+        return function(button, url, emoji, cb) {
           return cb();
         };
       })(this));
@@ -113,6 +115,27 @@ import AwardsHandler from '~/awards_handler';
         awardsHandler.addAwardToEmojiBar($votesBlock, 'heart', false);
         expect($emojiButton.length).toBe(1);
         return expect($emojiButton.next('.js-counter').text()).toBe('4');
+      });
+    });
+    describe('::userAuthored', function() {
+      it('should update tooltip to user authored title', function() {
+        var $thumbsUpEmoji, $votesBlock;
+        $votesBlock = $('.js-awards-block').eq(0);
+        $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').parent();
+        $thumbsUpEmoji.attr('data-title', 'sam');
+        awardsHandler.userAuthored($thumbsUpEmoji);
+        return expect($thumbsUpEmoji.data("original-title")).toBe("You cannot vote on your own issue, MR and note");
+      });
+      it('should restore tooltip back to initial vote list', function() {
+        var $thumbsUpEmoji, $votesBlock;
+        jasmine.clock().install();
+        $votesBlock = $('.js-awards-block').eq(0);
+        $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').parent();
+        $thumbsUpEmoji.attr('data-title', 'sam');
+        awardsHandler.userAuthored($thumbsUpEmoji);
+        jasmine.clock().tick(2801);
+        jasmine.clock().uninstall();
+        return expect($thumbsUpEmoji.data("original-title")).toBe("sam");
       });
     });
     describe('::getAwardUrl', function() {
