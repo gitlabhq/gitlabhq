@@ -291,7 +291,7 @@ table.u2f-registrations {
   .bordered-box {
     border: 1px solid $blue-300;
     border-radius: $border-radius-default;
-    background-color: lighten($blue-50, 3%);
+    background-color: $blue-25;
     position: relative;
     display: flex;
     justify-content: center;
