@@ -173,6 +173,7 @@ class Project < ActiveRecord::Base
   has_many :triggers, dependent: :destroy, class_name: 'Ci::Trigger'
   has_many :environments, dependent: :destroy
   has_many :deployments, dependent: :destroy
+  has_many :pipeline_schedules, class_name: 'Ci::TriggerSchedule'
 
   has_many :active_runners, -> { active }, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
 
