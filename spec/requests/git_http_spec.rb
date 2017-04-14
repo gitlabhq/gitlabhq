@@ -3,6 +3,7 @@ require "spec_helper"
 describe 'Git HTTP requests', lib: true do
   include GitHttpHelpers
   include WorkhorseHelpers
+  include UserActivitiesHelpers
 
   it "gives WWW-Authenticate hints" do
     clone_get('doesnt/exist.git')
@@ -159,8 +160,9 @@ describe 'Git HTTP requests', lib: true do
             end
 
             it 'updates the user last activity' do
+              expect(user_activity(user)).to be_nil
               download(path, {}) do |response|
-                expect(user.reload.last_activity_on).not_to be_nil
+                expect(user_activity(user)).to be_present
               end
             end
           end
