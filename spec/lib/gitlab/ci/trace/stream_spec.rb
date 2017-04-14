@@ -167,7 +167,7 @@ describe Gitlab::Ci::Trace::Stream do
       let(:data) { 'Coverage 1033 / 1051 LOC (98.29%) covered' }
       let(:regex) { '\(\d+.\d+\%\) covered' }
 
-      it { is_expected.to eq(98.29) }
+      it { is_expected.to eq("98.29") }
     end
 
     context 'valid content & bad regex' do
@@ -188,14 +188,14 @@ describe Gitlab::Ci::Trace::Stream do
       let(:data) { ' (98.39%) covered. (98.29%) covered' }
       let(:regex) { '\(\d+.\d+\%\) covered' }
 
-      it { is_expected.to eq(98.29) }
+      it { is_expected.to eq("98.29") }
     end
 
     context 'using a regex capture' do
       let(:data) { 'TOTAL      9926   3489    65%' }
       let(:regex) { 'TOTAL\s+\d+\s+\d+\s+(\d{1,3}\%)' }
 
-      it { is_expected.to eq(65) }
+      it { is_expected.to eq("65") }
     end
   end
 end

@@ -34,8 +34,6 @@ class Issue < ActiveRecord::Base
 
   validates :project, presence: true
 
-  scope :cared, ->(user) { where(assignee_id: user) }
-  scope :open_for, ->(user) { opened.assigned_to(user) }
   scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
 
   scope :without_due_date, -> { where(due_date: nil) }

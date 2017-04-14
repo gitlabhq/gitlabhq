@@ -31,6 +31,7 @@ class GroupPolicy < BasePolicy
       can! :admin_namespace
       can! :admin_group_member
       can! :change_visibility_level
+      can! :create_subgroup if @user.can_create_group
     end
 
     if globally_viewable && @subject.request_access_enabled && !member

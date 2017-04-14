@@ -432,8 +432,7 @@ namespace :gitlab do
 
     def check_repo_base_user_and_group
       gitlab_shell_ssh_user = Gitlab.config.gitlab_shell.ssh_user
-      gitlab_shell_owner_group = Gitlab.config.gitlab_shell.owner_group
-      puts "Repo paths owned by #{gitlab_shell_ssh_user}:#{gitlab_shell_owner_group}?"
+      puts "Repo paths owned by #{gitlab_shell_ssh_user}:root, or #{gitlab_shell_ssh_user}:#{Gitlab.config.gitlab_shell.owner_group}?"
 
       Gitlab.config.repositories.storages.each do |name, repository_storage|
         repo_base_path = repository_storage['path']
@@ -444,15 +443,16 @@ namespace :gitlab do
           break
         end
 
-        uid = uid_for(gitlab_shell_ssh_user)
-        gid = gid_for(gitlab_shell_owner_group)
-        if File.stat(repo_base_path).uid == uid && File.stat(repo_base_path).gid == gid
+        user_id = uid_for(gitlab_shell_ssh_user)
+        root_group_id = gid_for('root')
+        group_ids = [root_group_id, gid_for(Gitlab.config.gitlab_shell.owner_group)]
+        if File.stat(repo_base_path).uid == user_id && group_ids.include?(File.stat(repo_base_path).gid)
           puts "yes".color(:green)
         else
           puts "no".color(:red)
-          puts "  User id for #{gitlab_shell_ssh_user}: #{uid}. Groupd id for #{gitlab_shell_owner_group}: #{gid}".color(:blue)
+          puts "  User id for #{gitlab_shell_ssh_user}: #{user_id}. Groupd id for root: #{root_group_id}".color(:blue)
           try_fixing_it(
-            "sudo chown -R #{gitlab_shell_ssh_user}:#{gitlab_shell_owner_group} #{repo_base_path}"
+            "sudo chown -R #{gitlab_shell_ssh_user}:root #{repo_base_path}"
           )
           for_more_information(
             see_installation_guide_section "GitLab Shell"

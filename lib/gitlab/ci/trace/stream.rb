@@ -76,11 +76,14 @@ module Gitlab
           stream.each_line do |line|
             matches = line.scan(regex)
             next unless matches.is_a?(Array)
+            next if matches.empty?
 
             match = matches.flatten.last
             coverage = match.gsub(/\d+(\.\d+)?/).first
-            return coverage.to_f if coverage.present?
+            return coverage if coverage.present?
           end
+
+          nil
         rescue
           # if bad regex or something goes wrong we dont want to interrupt transition
           # so we just silentrly ignore error for now

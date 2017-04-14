@@ -50,6 +50,13 @@ describe ContainerRegistry::Tag do
     end
   end
 
+  describe '#location' do
+    it 'returns a full location of the tag' do
+      expect(tag.location)
+        .to eq 'registry.gitlab/group/test:tag'
+    end
+  end
+
   context 'manifest processing' do
     context 'schema v1' do
       before do
