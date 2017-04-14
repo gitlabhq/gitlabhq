@@ -7,10 +7,10 @@ namespace :gitlab do
         abort %(Please specify the directory where you want to install gitlab-workhorse:\n  rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]")
       end
 
-      tag = "v#{Gitlab::Workhorse.version}"
+      version = Gitlab::Workhorse.version
       repo = 'https://gitlab.com/gitlab-org/gitlab-workhorse.git'
 
-      checkout_or_clone_tag(tag: tag, repo: repo, target_dir: args.dir)
+      checkout_or_clone_version(version: version, repo: repo, target_dir: args.dir)
 
       _, status = Gitlab::Popen.popen(%w[which gmake])
       command = status.zero? ? 'gmake' : 'make'

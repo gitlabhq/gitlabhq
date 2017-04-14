@@ -50,20 +50,17 @@ update them are in [a separate document][omnidocker].
 
 ## Upgrading without downtime
 
-Starting with GitLab 9.1.0 it's possible to upgrade to a newer version of GitLab
+Starting with GitLab 9.1.0 it's possible to upgrade to a newer major, minor, or patch version of GitLab
 without having to take your GitLab instance offline. However, for this to work
 there are the following requirements:
 
-1. You can only upgrade 1 release at a time. For example, if 9.1.15 is the last
-   release of 9.1 then you can safely upgrade from that version to 9.2.0.
+1. You can only upgrade 1 minor release at a time. So from 9.1 to 9.2, not to 9.3.
+2. You have to be on the most recent patch release. For example, if 9.1.15 is the last
+   release of 9.1 then you can safely upgrade from that version to any 9.2.x version.
    However, if you are running 9.1.14 you first need to upgrade to 9.1.15.
 2. You have to use [post-deployment
    migrations](../development/post_deployment_migrations.md).
-3. You are using PostgreSQL. If you are using MySQL you will still need downtime
-   when upgrading.
-
-This applies to major, minor, and patch releases unless stated otherwise in a
-release post.
+3. You are using PostgreSQL. If you are using MySQL please look at the release post to see if downtime is required.
 
 ## Upgrading between editions
 

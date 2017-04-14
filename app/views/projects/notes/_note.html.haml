@@ -52,15 +52,15 @@
                     ":aria-label" => "buttonText",
                     "@click" => "resolve",
                     ":title" => "buttonText",
-                    "v-show" => "!loading",
                     ":ref" => "'button'" }
-                  = icon("spin spinner", "v-show" => "loading")
 
-                  = render "shared/icons/icon_status_success.svg"
+                  = icon("spin spinner", "v-show" => "loading", class: 'loading')
+                  %div{ 'v-show' => '!loading' }= render "shared/icons/icon_status_success.svg"
 
             - if current_user
               - if note.emoji_awardable?
-                = link_to '#', title: 'Award Emoji', class: 'note-action-button note-emoji-button js-add-award js-note-emoji', data: { position: 'right' } do
+                - user_authored = note.user_authored?(current_user)
+                = link_to '#', title: 'Award Emoji', class: "note-action-button note-emoji-button js-add-award js-note-emoji #{'js-user-authored' if user_authored}", data: { position: 'right' } do
                   = icon('spinner spin')
                   %span{ class: "link-highlight award-control-icon-neutral" }= custom_icon('emoji_slightly_smiling_face')
                   %span{ class: "link-highlight award-control-icon-positive" }= custom_icon('emoji_smiley')

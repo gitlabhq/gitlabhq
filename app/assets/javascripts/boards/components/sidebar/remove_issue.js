@@ -24,6 +24,7 @@ gl.issueBoards.RemoveIssueBtn = Vue.extend({
       const issue = this.issue;
       const lists = issue.getLists();
       const labelIds = lists.map(list => list.label.id);
+<<<<<<< HEAD
       const data = {
         remove_label_ids: labelIds,
       };
@@ -34,6 +35,13 @@ gl.issueBoards.RemoveIssueBtn = Vue.extend({
 
       // Post the remove data
       gl.boardService.bulkUpdate([issue.globalId], data).catch(() => {
+=======
+
+      // Post the remove data
+      gl.boardService.bulkUpdate([issue.globalId], {
+        remove_label_ids: labelIds,
+      }).catch(() => {
+>>>>>>> upstream/master
         new Flash('Failed to remove issue from board, please try again.', 'alert');
 
         lists.forEach((list) => {
