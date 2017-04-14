@@ -22,12 +22,12 @@ export default class DocxRenderer {
       })
       .then((content) => {
         this.docx = new Docx(content);
-        this.asyncResult.files['word/styles.xml'].async('string');
+        return this.asyncResult.files['word/styles.xml'].async('string');
+      })
+      .then((content) => {
+        this.docx.setStyles(content);
         this.el.appendChild(this.docx.parseDoc());
       })
-      // .then((content) => {
-      //   this.docx.setStyles(content);
-      // })
       .catch(this.error.bind(this));
   }
 
