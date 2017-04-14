@@ -699,6 +699,48 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 //
 
+var renderer = new _marked2.default.Renderer();
+
+/*
+  Regex to match KaTex blocks.
+
+  Supports the following:
+
+  \begin{equation}<math>\end{equation}
+  $$<math>$$
+  inline $<math>$
+
+  The matched text then goes through the KaTex renderer & then outputs the HTML
+*/
+var katexRegexString = '(\n  ^\\\\begin{[a-zA-Z]+}\\s\n  |\n  ^\\$\\$\n  |\n  \\s\\$(?!\\$)\n)\n  (.+?)\n(\n  \\s\\\\end{[a-zA-Z]+}$\n  |\n  \\$\\$$\n  |\n  \\$\n)\n'.replace(/\s/g, '').trim();
+
+renderer.paragraph = function (t) {
+  var text = t;
+  var inline = false;
+
+  if (typeof katex !== 'undefined') {
+    var katexString = text.replace(/\\/g, '\\');
+    var matches = new RegExp(katexRegexString, 'gi').exec(katexString);
+
+    if (matches && matches.length > 0) {
+      if (matches[1].trim() === '$' && matches[3].trim() === '$') {
+        inline = true;
+
+        text = katexString.replace(matches[0], '') + ' ' + katex.renderToString(matches[2]);
+      } else {
+        text = katex.renderToString(matches[2]);
+      }
+    }
+  }
+
+  return '<p class="' + (inline ? 'inline-katex' : '') + '">' + text + '</p>';
+};
+
+_marked2.default.setOptions({
+  sanitize: true,
+  renderer: renderer
+});
+
 exports.default = {
   components: {
     prompt: _prompt2.default
@@ -711,20 +753,7 @@ exports.default = {
   },
   computed: {
     markdown: function markdown() {
-      var regex = new RegExp('^\\$\\$(.*)\\$\\$$', 'g');
-
-      var source = this.cell.source.map(function (line) {
-        var matches = regex.exec(line.trim());
-
-        // Only render use the Katex library if it is actually loaded
-        if (matches && matches.length > 0 && typeof katex !== 'undefined') {
-          return katex.renderToString(matches[1]);
-        }
-
-        return line;
-      });
-
-      return (0, _marked2.default)(source.join(''));
+      return (0, _marked2.default)(this.cell.source.join(''));
     }
   }
 };
@@ -3047,7 +3076,7 @@ exports = module.exports = __webpack_require__(1)(undefined);
 
 
 // module
-exports.push([module.i, ".markdown .katex{display:block;text-align:center}", ""]);
+exports.push([module.i, ".markdown .katex{display:block;text-align:center}.markdown .inline-katex .katex{display:inline;text-align:initial}", ""]);
 
 // exports
 

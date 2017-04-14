@@ -58,6 +58,9 @@ module Projects
         fail(error: @project.errors.full_messages.join(', '))
       end
       @project
+    rescue ActiveRecord::RecordInvalid => e
+      message = "Unable to save #{e.record.type}: #{e.record.errors.full_messages.join(", ")} "
+      fail(error: message)
     rescue => e
       fail(error: e.message)
     end

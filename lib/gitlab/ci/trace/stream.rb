@@ -25,11 +25,10 @@ module Gitlab
         end
 
         def limit(last_bytes = LIMIT_SIZE)
-          stream_size = size
-          if stream_size < last_bytes
-            last_bytes = stream_size
+          if last_bytes < size
+            stream.seek(-last_bytes, IO::SEEK_END)
+            stream.readline
           end
-          stream.seek(-last_bytes, IO::SEEK_END)
         end
 
         def append(data, offset)
