@@ -4,11 +4,28 @@ export default class Docx {
     this.container.classList += 'word-doc'
     this.doc = doc;
     this.inList = false;
-    this.currentListLevel = 0;
-    this.$currentLists = [];
     this.commonColors = {'black': '#000','blue': '#0000FF','cyan':'#00ffff','green':'#008000','magenta':'#ff00ff','red':'#FF0000','yellow':'#ffff00','white':'#FFF','darkBlue':'#00008b','darkCyan':'#008b8b','darkGreen':'#006400','darkMagenta':'#8b008b','darkRed':'#8b0000','darkYellow':'#E5E500','darkGray':'#a9a9a9','lightGray':'#d3d3d3'};
     this.styles = {};
     this.relationships = {};
+    this.numberings = {};
+    this.listIncrements = {};
+    this.alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+  }
+
+  romanize (num) {
+    if (!+num){
+      return false;
+    }
+    var digits = String(+num).split(''),
+      key = ['','C','CC','CCC','CD','D','DC','DCC','DCCC','CM',
+             '','X','XX','XXX','XL','L','LX','LXX','LXXX','XC',
+             '','I','II','III','IV','V','VI','VII','VIII','IX'],
+      roman = '',
+      i = 3;
+    while (i--){
+      roman = (key[+digits.pop() + (i * 10)] || '') + roman;
+    }
+    return Array(+digits.join('') + 1).join('M') + roman;
   }
 
   setStyles(styles) {
@@ -41,6 +58,20 @@ export default class Docx {
         this.relationships[id].targetMode = targetMode;
       }
     });
+  }
+
+  setNumbering(numberings) {
+    const $xml = $($.parseXML(numberings));
+    const $levels = $xml.find('lvl');
+    $levels.each((i, l) => {
+      const $l = $(l);
+      this.numberings[$l.attr('w:ilvl')] = {
+        ind : parseInt($l.find('ind').attr('w:left'))/20,
+        lvlText: $l.find('lvlText').attr('w:val'),
+        numFmt: $l.find('numFmt').attr('w:val')
+      }
+    });
+    console.log(this.numberings);
   }
 
   setHexOrCommonColor(colorString) {
@@ -106,6 +137,7 @@ export default class Docx {
   }
 
   setParagraphStyles($paragraph, $p) {
+    $p = this.getList($paragraph, $p);
     $p = this.getJustification($paragraph, $p);
     $p = this.getSavedStyle($paragraph, $p);
     return $p;
@@ -241,7 +273,6 @@ export default class Docx {
       const style = $savedStyle.attr('w:val');
       if(this.styles.hasOwnProperty(style)) {
         for(s in this.styles[style]){
-          ['b', 'color', 'sz', 'i', 'u']
           switch(s) {
             case 'sz':
             $p = this.applySize($p, this.styles[style][s]);
@@ -274,60 +305,53 @@ export default class Docx {
     return $p;
   }
 
-  getCurrentList() {
-    return this.$currentLists[this.$currentLists.length-1];
-  }
-
-  getPrevList() {
-    return this.$currentLists[this.$currentLists.length-2];
-  }
-
-  getListByType(listType) {
-    if(listType === 1) {
-      return $('<ul></ul>');
-    } else {
-      return $('<ol></ol>');
-    }
-  }
-
-  getList($r, $p, $paragraph) {
+  getList($paragraph, $p) {
     const $listInfo = $paragraph.find('numPr');
-    var $listItem;
-    // has a list and is in a list for the first time;
     if($listInfo.length) {
-      var listType = parseInt($listInfo.find('numId').attr('w:val'));
-      // not in a list yet but will be
-      if(!this.inList) {
-        this.currentListLevel = 0;
-        this.inList = true;
-        this.$currentLists.push(this.getListByType(listType));
-        $listItem = $('<li></li>').append($p);
-        return this.getCurrentList().append($listItem);
-      // was already in a list and will continue to be in a list 
+      console.log('yes length')
+      const lvl = parseInt($listInfo.find('ilvl').attr('w:val'));
+      const numberInfo = this.numberings[lvl];
+      const numType = numberInfo.numFmt;
+      console.log('lvl', lvl);
+      console.log(this.listIncrements)
+      if(this.listIncrements.hasOwnProperty(lvl)){
+        console.log('has the hasOwnProperty', lvl);
+        this.listIncrements[lvl] = this.listIncrements[lvl] + 1;
       } else {
-        const newListLevel = parseInt($listInfo.find('ilvl').attr('w:val'));
-        if(newListLevel > this.currentListLevel) {
-          // if we just made a sublist
-          this.$currentLists.push(this.getListByType(listType));
-          $listItem = this.getPrevList().find('li:last').append(this.getCurrentList());
-          this.getPrevList().append($listItem);
-          $listItem = $('<li></li>').append($p);
-          this.getCurrentList().append($listItem);
-          this.currentListLevel = newListLevel
-          return null;
-        } else if(newListLevel === this.currentListLevel) {
-
-        } else if(newListLevel < this.currentListLevel) {
-          // if we just exited a sublist
-          this.currentListLevel = newListLevel
-          this.$currentLists.pop();
-        }
-
-        $listItem = $('<li></li>').append($p);
-        return this.getCurrentList().append($listItem);
+        this.listIncrements[lvl] = 0;
       }
+      console.log(this.listIncrements);
+      switch(numType) {
+        case 'decimal':
+        $p.prepend(`<span style='user-select: none;'>1.</span>`);
+        break;
+
+        case 'upperRoman':
+        $p.prepend(`<span style='user-select: none;'>I.</span>`);
+        break;
+
+        case 'lowerRoman':
+        $p.prepend(`<span style='user-select: none;'>i.</span>`);
+        break;
+
+        case 'upperLetter':
+        $p.prepend(`<span style='user-select: none;'>A.</span>`);
+        break;
+
+        case 'lowerLetter':
+        $p.prepend(`<span style='user-select: none;'>a.</span>`);
+        break;
+
+        default: 
+        $p.prepend(`<span style='user-select: none;'>1.</span>`);
+        break;
+      }
+      $p.css('margin-left', numberInfo.ind);
+      return $p;
     } else {
-      this.inList = false;
+      console.log('no length')
+      this.listIncrements = {};
+      return $p;
     }
   }
 }

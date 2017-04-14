@@ -30,6 +30,10 @@ export default class DocxRenderer {
       })
       .then((content) => {
         this.docx.setRelationships(content);
+        return this.asyncResult.files['word/numbering.xml'].async('string');
+      })
+      .then((content) => {
+        this.docx.setNumbering(content);
         this.docx.parseDoc((doc) => this.el.appendChild(doc));
       })
       // .catch(this.error.bind(this));
