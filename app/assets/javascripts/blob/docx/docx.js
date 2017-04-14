@@ -9,7 +9,8 @@ export default class Docx {
     this.relationships = {};
     this.numberings = {};
     this.listIncrements = {};
-    this.alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+    this.lastLevel = 0;
+    this.alphabet = ['','a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
   }
 
   romanize (num) {
@@ -71,7 +72,6 @@ export default class Docx {
         numFmt: $l.find('numFmt').attr('w:val')
       }
     });
-    console.log(this.numberings);
   }
 
   setHexOrCommonColor(colorString) {
@@ -98,11 +98,10 @@ export default class Docx {
       $(this.container).append($p);
       return;
     }
+    $p = this.setParagraphStyles($paragraph, $p);
     $textNodes.each((i, el) => {
       const $el = $(el);
       var $span;
-      $p = this.setParagraphStyles($paragraph, $p);
-      $span = this.setListStyle($el, $p, $paragraph);
       $span = this.setInternalStyles($el, $p);
       $span.text($el.text());
       $p.append($span);
@@ -141,18 +140,6 @@ export default class Docx {
     $p = this.getJustification($paragraph, $p);
     $p = this.getSavedStyle($paragraph, $p);
     return $p;
-  }
-
-  setListStyle($el, $p, $paragraph) {
-    const $r = $el.parent();
-    const $listRendered = this.getList($r, $p, $paragraph);
-    if($listRendered){
-      return $listRendered;
-    } else {
-      if(this.inList){
-        return $el;
-      }
-    }
   }
 
   setInternalStyles($el, $p) {
@@ -305,51 +292,60 @@ export default class Docx {
     return $p;
   }
 
+  eraseLevelsAboveThisOne(level) {
+    var count = level+1;
+    if(this.listIncrements.hasOwnProperty(count)) {
+      delete this.listIncrements[count];
+      this.eraseLevelsAboveThisOne(count);
+    }
+  }
+
   getList($paragraph, $p) {
     const $listInfo = $paragraph.find('numPr');
     if($listInfo.length) {
-      console.log('yes length')
       const lvl = parseInt($listInfo.find('ilvl').attr('w:val'));
       const numberInfo = this.numberings[lvl];
       const numType = numberInfo.numFmt;
-      console.log('lvl', lvl);
-      console.log(this.listIncrements)
+      if(lvl < this.lastLevel) {
+        this.eraseLevelsAboveThisOne(lvl);
+      }
+
+      this.lastLevel = lvl;
+      
       if(this.listIncrements.hasOwnProperty(lvl)){
-        console.log('has the hasOwnProperty', lvl);
         this.listIncrements[lvl] = this.listIncrements[lvl] + 1;
       } else {
         this.listIncrements[lvl] = 0;
       }
-      console.log(this.listIncrements);
+      const increment = this.listIncrements[lvl]+1;
       switch(numType) {
         case 'decimal':
-        $p.prepend(`<span style='user-select: none;'>1.</span>`);
+        $p.prepend(`<span style='user-select: none;'>${increment}.</span>`);
         break;
 
         case 'upperRoman':
-        $p.prepend(`<span style='user-select: none;'>I.</span>`);
+        $p.prepend(`<span style='user-select: none;'>${this.romanize(increment)}.</span>`);
         break;
 
         case 'lowerRoman':
-        $p.prepend(`<span style='user-select: none;'>i.</span>`);
+        $p.prepend(`<span style='user-select: none;'>${this.romanize(increment).toLowerCase()}.</span>`);
         break;
 
         case 'upperLetter':
-        $p.prepend(`<span style='user-select: none;'>A.</span>`);
+        $p.prepend(`<span style='user-select: none;'>${this.alphabet[increment].toUpperCase()}.</span>`);
         break;
 
         case 'lowerLetter':
-        $p.prepend(`<span style='user-select: none;'>a.</span>`);
+        $p.prepend(`<span style='user-select: none;'>${this.alphabet[increment]}.</span>`);
         break;
 
         default: 
-        $p.prepend(`<span style='user-select: none;'>1.</span>`);
+        $p.prepend(`<span style='user-select: none;'>${increment}.</span>`);
         break;
       }
       $p.css('margin-left', numberInfo.ind);
       return $p;
     } else {
-      console.log('no length')
       this.listIncrements = {};
       return $p;
     }
