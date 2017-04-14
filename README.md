@@ -73,7 +73,7 @@ One small thing you also have to do when installing it yourself is to copy the e
 
     cp config/unicorn.rb.example.development config/unicorn.rb
 
-Instructions on how to start GitLab and how to run the tests can be found in the [development section of the GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit#development).
+Instructions on how to start GitLab and how to run the tests can be found in the [getting started section of the GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit#getting-started).
 
 ## Software stack
 
