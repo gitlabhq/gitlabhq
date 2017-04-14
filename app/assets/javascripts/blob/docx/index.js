@@ -32,7 +32,7 @@ export default class DocxRenderer {
         this.docx.setRelationships(content);
         this.el.appendChild(this.docx.parseDoc());
       })
-      .catch(this.error.bind(this));
+      // .catch(this.error.bind(this));
   }
 
   error(e) {

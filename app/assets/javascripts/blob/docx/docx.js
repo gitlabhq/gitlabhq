@@ -51,20 +51,31 @@ export default class Docx {
     }
   }
 
+  setPagesStyles($pageStyles) {
+    if($pageStyles.length) {
+      const $pageSize = $pageStyles.find('pgSz');
+      $(this.container).css('width', $pageSize.attr('w:h')/20);
+    }
+  }
+
   parseDoc() {
     const $xml = $($.parseXML(this.doc));
+    this.setPagesStyles($xml.find('sectPr'));
     const $paragraphNodes = $xml.find('p');
     $paragraphNodes.each((i, el) => {
       const $paragraph = $(el);
       const $textNodes = $paragraph.find('t');
+      var $p = $('<p></p>');
       if(!$textNodes.length){
+        $p.html('&nbsp;');
+        $(this.container).append($p);
         return;
       }
-      var $p = $('<p></p>');
       $textNodes.each((i, el) => {
         const $el = $(el);
         var $span;
         $p = this.setParagraphStyles($paragraph, $p);
+        $span = this.setListStyle($el, $p, $paragraph);
         $span = this.setInternalStyles($el, $p);
         $span.text($el.text());
         $p.append($span);
@@ -81,15 +92,19 @@ export default class Docx {
     return $p;
   }
 
+  setListStyle($el, $p, $paragraph) {
+    const $r = $el.parent();
+    const $listRendered = this.getList($r, $p, $paragraph);
+    if($listRendered){
+      return $listRendered;
+    } else {
+      if(this.inList){
+        return $el;
+      }
+    }
+  }
+
   setInternalStyles($el, $p) {
-    // const $listRendered = this.getList($r, $p, $paragraph);
-    // if($listRendered){
-    //   $p = $listRendered;
-    // } else {
-    //   if(this.inList){
-    //     return;
-    //   }
-    // }
     const $r = $el.parent();
     var $span = $('<span></span>');
     $span = this.getSize($span, $r, $p);
@@ -110,7 +125,10 @@ export default class Docx {
     return $span;
   }
 
-  applyItalics($el) {
+  applyItalics($el,val) {
+    if(val && val !== '1'){
+      return $el;
+    }
     $el.css('font-style', 'italic');
     $el.attr('data-i', 1);
     return $el;
@@ -124,7 +142,10 @@ export default class Docx {
     return $span;
   }
 
-  applyUnderLine($el) {
+  applyUnderLine($el, val) {
+    if(val && val !== '1'){
+      return $el;
+    }
     $el.css('text-decoration', 'underline');
     $el.attr('data-u', 1);
     return $el
@@ -138,7 +159,10 @@ export default class Docx {
     return $span;
   }
 
-  applyBold($el) {
+  applyBold($el, val) {
+    if(val && val !== '1'){
+      return $el;
+    }
     $el.css('font-weight', 'bold');
     $el.attr('data-bold', 1);
     return $el;
@@ -167,14 +191,15 @@ export default class Docx {
   }
 
   getSize($span, $r, $p) {
-    const size = parseInt($r.find('sz').attr('w:val'))/2 || 11;
-    if($p.attr('data-sz')){
-      return $span;
-    }
+    const size = parseInt($r.find('sz').attr('w:val'));
     return this.applySize($span, size);
   }
 
   applySize($el, size) {
+    if(!size){
+      return $el;
+    }
+    size = size / 2;
     $el.css('font-size',size + 'px');
     $el.attr('data-sz', 1);
     return $el;
@@ -184,7 +209,7 @@ export default class Docx {
     const $hyperlink = $r.parent('w\\:hyperlink');
     var $a;
     if($hyperlink.length) {
-      $a = $span.wrap(`<a href='${this.relationships[$hyperlink.attr('r:id')].target}'></a>`).parent().get(0).outerHTML;
+      $a = $span.wrap(`<a href='${this.relationships[$hyperlink.attr('r:id')].target}' rel='nofollow noopener noreferrer' target='_blank'></a>`).parent().get(0).outerHTML;
       return $($a);
     }
     return $span;
