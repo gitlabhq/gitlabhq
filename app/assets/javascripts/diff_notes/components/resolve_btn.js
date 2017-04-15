@@ -20,8 +20,7 @@ import Vue from 'vue';
     data: function () {
       return {
         discussions: CommentsStore.state,
-        loading: false,
-        note: {},
+        loading: false
       };
     },
     watch: {
@@ -33,6 +32,9 @@ import Vue from 'vue';
     computed: {
       discussion: function () {
         return this.discussions[this.discussionId];
+      },
+      note: function () {
+        return this.discussion ? this.discussion.getNote(this.noteId) : {};
       },
       buttonText: function () {
         if (this.isResolved) {
@@ -112,8 +114,6 @@ import Vue from 'vue';
         authorAvatar: this.authorAvatar,
         noteTruncated: this.noteTruncated,
       });
-
-      this.note = this.discussion.getNote(this.noteId);
     }
   });
 
