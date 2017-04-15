@@ -203,14 +203,14 @@ ActiveRecord::Schema.define(:version => 20130614132337) do
 
   create_table "snippets", :force => true do |t|
     t.string   "title"
-    t.text     "content"
-    t.integer  "author_id",                    :null => false
+    t.text     "content",    :limit => 2147483647
+    t.integer  "author_id",                                          :null => false
     t.integer  "project_id"
-    t.datetime "created_at",                   :null => false
-    t.datetime "updated_at",                   :null => false
+    t.datetime "created_at",                                         :null => false
+    t.datetime "updated_at",                                         :null => false
     t.string   "file_name"
     t.datetime "expires_at"
-    t.boolean  "private",    :default => true, :null => false
+    t.boolean  "private",                          :default => true, :null => false
     t.string   "type"
   end
 
