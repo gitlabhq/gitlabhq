@@ -46,6 +46,7 @@ var config = {
     protected_tags:       './protected_tags',
     snippet:              './snippet/snippet_bundle.js',
     stl_viewer:           './blob/stl_viewer.js',
+    dxf_viewer:           './blob/dxf_viewer.js',
     terminal:             './terminal/terminal_bundle.js',
     u2f:                  ['vendor/u2f'],
     users:                './users/users_bundle.js',

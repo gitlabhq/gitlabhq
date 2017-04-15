@@ -1702,6 +1702,12 @@ duplexify@^3.2.0:
     readable-stream "^2.0.0"
     stream-shift "^1.0.0"
 
+dxf-parser@^0.4.6:
+  version "0.4.6"
+  resolved "https://registry.yarnpkg.com/dxf-parser/-/dxf-parser-0.4.6.tgz#fb73a9d51c53bb853a2fc0ea4d72998b131ac87a"
+  dependencies:
+    loglevel "^1.2.0"
+
 ecc-jsbn@~0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/ecc-jsbn/-/ecc-jsbn-0.1.1.tgz#0fc73a9ed5f0d53c38193398523ef7e543777505"
@@ -3510,6 +3516,10 @@ log4js@^0.6.31:
   dependencies:
     readable-stream "~1.0.2"
     semver "~4.3.3"
+
+loglevel@^1.2.0:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.4.1.tgz#95b383f91a3c2756fd4ab093667e4309161f2bcd"
 
 longest@^1.0.1:
   version "1.0.1"

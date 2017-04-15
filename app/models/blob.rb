@@ -54,6 +54,10 @@ class Blob < SimpleDelegator
     extension == 'pdf'
   end
 
+  def dxf?
+    extension == 'dxf'
+  end
+
   def ipython_notebook?
     text? && language&.name == 'Jupyter Notebook'
   end
@@ -91,6 +95,8 @@ class Blob < SimpleDelegator
       'svg'
     elsif pdf?
       'pdf'
+    elsif dxf?
+      'dxf'
     elsif ipython_notebook?
       'notebook'
     elsif sketch?
