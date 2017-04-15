@@ -15,6 +15,7 @@ var DEV_SERVER_HOST = process.env.DEV_SERVER_HOST || 'localhost';
 var DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10) || 3808;
 var DEV_SERVER_LIVERELOAD = process.env.DEV_SERVER_LIVERELOAD !== 'false';
 var WEBPACK_REPORT = process.env.WEBPACK_REPORT;
+var rewirePlugin = IS_PRODUCTION ? '?plugins=rewire' : '';
 
 var config = {
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
@@ -52,7 +53,7 @@ var config = {
     vue_pipelines:        './vue_pipelines_index/index.js',
     raven:                './raven/index.js',
     issue_show:           './issue_show/index.js',
-    group:                './group.js'
+    group:                './group.js',
   },
 
   output: {
@@ -68,7 +69,7 @@ var config = {
       {
         test: /\.js$/,
         exclude: /(node_modules|vendor\/assets)/,
-        loader: 'babel-loader?plugins=rewire',
+        loader: `babel-loader${rewirePlugin}`,
       },
       {
         test: /\.vue$/,
