@@ -47,6 +47,10 @@
       }
     };
 
+    gl.utils.updateTooltipTitle = function($tooltipEl, newTitle) {
+      return $tooltipEl.attr('title', newTitle).tooltip('fixTitle');
+    };
+
     w.gl.utils.disableButtonIfEmptyField = function(field_selector, button_selector, event_name) {
       event_name = event_name || 'input';
       var closest_submit, field, that;

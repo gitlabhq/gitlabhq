@@ -601,10 +601,10 @@ describe 'Issues', feature: true do
         expect(page.find_field("issue_description").value).to have_content 'banana_sample'
       end
 
-      it 'adds double newline to end of attachment markdown' do
+      it "doesn't add double newline to end of a single attachment markdown" do
         dropzone_file Rails.root.join('spec', 'fixtures', 'banana_sample.gif')
 
-        expect(page.find_field("issue_description").value).to match /\n\n$/
+        expect(page.find_field("issue_description").value).not_to match /\n\n$/
       end
     end
 
