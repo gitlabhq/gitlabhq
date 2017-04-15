@@ -1,0 +1,5 @@
+---
+title: Fixes HTML structure that was preventing the tooltip to disappear when hovering
+  out of the button.
+merge_request:
+author:

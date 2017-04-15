@@ -27,7 +27,7 @@ feature 'User wants to edit a file', feature: true do
   scenario 'file has been updated since the user opened the edit page' do
     Files::UpdateService.new(project, user, commit_params).execute
 
-    click_button 'Commit Changes'
+    click_button 'Commit changes'
 
     expect(page).to have_content 'Someone edited the file the same time you did.'
   end

@@ -221,24 +221,21 @@ describe SystemNoteService, services: true do
   describe '.change_status' do
     subject { described_class.change_status(noteable, project, author, status, source) }
 
-    let(:status) { 'new_status' }
-    let(:source) { nil }
+    context 'with status reopened' do
+      let(:status) { 'reopened' }
+      let(:source) { nil }
 
-    it_behaves_like 'a system note' do
-      let(:action) { 'status' }
+      it_behaves_like 'a system note' do
+        let(:action) { 'opened' }
+      end
     end
 
     context 'with a source' do
+      let(:status) { 'opened' }
       let(:source) { double('commit', gfm_reference: 'commit 123456') }
 
       it 'sets the note text' do
         expect(subject.note).to eq "#{status} via commit 123456"
-      end
-    end
-
-    context 'without a source' do
-      it 'sets the note text' do
-        expect(subject.note).to eq status
       end
     end
   end
@@ -298,9 +295,23 @@ describe SystemNoteService, services: true do
   describe '.change_issue_confidentiality' do
     subject { described_class.change_issue_confidentiality(noteable, project, author) }
 
-    context 'when noteable responds to `confidential`' do
+    context 'issue has been made confidential' do
+      before do
+        noteable.update_attribute(:confidential, true)
+      end
+
       it_behaves_like 'a system note' do
-        let(:action) { 'confidentiality' }
+        let(:action) { 'confidential' }
+      end
+
+      it 'sets the note text' do
+        expect(subject.note).to eq 'made the issue confidential'
+      end
+    end
+
+    context 'issue has been made visible' do
+      it_behaves_like 'a system note' do
+        let(:action) { 'visible' }
       end
 
       it 'sets the note text' do
@@ -785,7 +796,7 @@ describe SystemNoteService, services: true do
   end
 
   describe '.discussion_continued_in_issue' do
-    let(:discussion) { Discussion.for_diff_notes([create(:diff_note_on_merge_request)]).first }
+    let(:discussion) { create(:diff_note_on_merge_request).to_discussion }
     let(:merge_request) { discussion.noteable }
     let(:project) { merge_request.source_project }
     let(:issue) { create(:issue, project: project) }

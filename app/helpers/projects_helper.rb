@@ -407,7 +407,10 @@ module ProjectsHelper
   def sanitize_repo_path(project, message)
     return '' unless message.present?
 
-    message.strip.gsub(project.repository_storage_path.chomp('/'), "[REPOS PATH]")
+    exports_path = File.join(Settings.shared['path'], 'tmp/project_exports')
+    filtered_message = message.strip.gsub(exports_path, "[REPO EXPORT PATH]")
+
+    filtered_message.gsub(project.repository_storage_path.chomp('/'), "[REPOS PATH]")
   end
 
   def project_feature_options

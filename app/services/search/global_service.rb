@@ -8,7 +8,7 @@ module Search
 
     def execute
       group = Group.find_by(id: params[:group_id]) if params[:group_id].present?
-      projects = ProjectsFinder.new.execute(current_user)
+      projects = ProjectsFinder.new(current_user: current_user).execute
 
       if group
         projects = projects.inside_path(group.full_path)
@@ -18,7 +18,11 @@ module Search
     end
 
     def scope
-      @scope ||= %w[issues merge_requests milestones].delete(params[:scope]) { 'projects' }
+      @scope ||= begin
+        allowed_scopes = %w[issues merge_requests milestones]
+
+        allowed_scopes.delete(params[:scope]) { 'projects' }
+      end
     end
   end
 end

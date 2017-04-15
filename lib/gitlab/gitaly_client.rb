@@ -4,11 +4,23 @@ module Gitlab
   module GitalyClient
     SERVER_VERSION_FILE = 'GITALY_SERVER_VERSION'.freeze
 
-    def self.configure_channel(storage, address)
-      @addresses ||= {}
-      @addresses[storage] = address
-      @channels ||= {}
-      @channels[storage] = new_channel(address)
+    # This function is not thread-safe because it updates Hashes in instance variables.
+    def self.configure_channels
+      @addresses = {}
+      @channels = {}
+      Gitlab.config.repositories.storages.each do |name, params|
+        address = params['gitaly_address']
+        unless address.present?
+          raise "storage #{name.inspect} is missing a gitaly_address"
+        end
+
+        unless URI(address).scheme.in?(%w(tcp unix))
+          raise "Unsupported Gitaly address: #{address.inspect}"
+        end
+
+        @addresses[name] = address
+        @channels[name] = new_channel(address)
+      end
     end
 
     def self.new_channel(address)
@@ -21,10 +33,26 @@ module Gitlab
     end
 
     def self.get_channel(storage)
+      if !Rails.env.production? && @channels.nil?
+        # In development mode the Rails auto-loader may reset the instance
+        # variables of this class. What we do here is not thread-safe. In normal
+        # circumstances (including production) these instance variables have
+        # been initialized from config/initializers.
+        configure_channels
+      end
+
       @channels[storage]
     end
 
     def self.get_address(storage)
+      if !Rails.env.production? && @addresses.nil?
+        # In development mode the Rails auto-loader may reset the instance
+        # variables of this class. What we do here is not thread-safe. In normal
+        # circumstances (including development) these instance variables have
+        # been initialized from config/initializers.
+        configure_channels
+      end
+
       @addresses[storage]
     end
 

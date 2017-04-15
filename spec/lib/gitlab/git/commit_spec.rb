@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe Gitlab::Git::Commit, seed_helper: true do
-  let(:repository) { Gitlab::Git::Repository.new(TEST_REPO_PATH) }
+  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
   let(:commit) { Gitlab::Git::Commit.find(repository, SeedRepo::Commit::ID) }
   let(:rugged_commit) do
     repository.rugged.lookup(SeedRepo::Commit::ID)
@@ -9,7 +9,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
 
   describe "Commit info" do
     before do
-      repo = Gitlab::Git::Repository.new(TEST_REPO_PATH).rugged
+      repo = Gitlab::Git::Repository.new('default', TEST_REPO_PATH).rugged
 
       @committer = {
         email: 'mike@smith.com',
@@ -59,7 +59,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
 
     after do
       # Erase the new commit so other tests get the original repo
-      repo = Gitlab::Git::Repository.new(TEST_REPO_PATH).rugged
+      repo = Gitlab::Git::Repository.new('default', TEST_REPO_PATH).rugged
       repo.references.update("refs/heads/master", SeedRepo::LastCommit::ID)
     end
   end
@@ -95,7 +95,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
       end
 
       context 'with broken repo' do
-        let(:repository) { Gitlab::Git::Repository.new(TEST_BROKEN_REPO_PATH) }
+        let(:repository) { Gitlab::Git::Repository.new('default', TEST_BROKEN_REPO_PATH) }
 
         it 'returns nil' do
           expect(Gitlab::Git::Commit.find(repository, SeedRepo::Commit::ID)).to be_nil

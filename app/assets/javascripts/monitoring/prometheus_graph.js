@@ -1,12 +1,15 @@
-/* eslint-disable no-new*/
+/* eslint-disable no-new */
 /* global Flash */
 
 import d3 from 'd3';
 import statusCodes from '~/lib/utils/http_status';
-import '../lib/utils/common_utils';
+import { formatRelevantDigits } from '~/lib/utils/number_utils';
 import '../flash';
 
+const prometheusContainer = '.prometheus-container';
+const prometheusParentGraphContainer = '.prometheus-graphs';
 const prometheusGraphsContainer = '.prometheus-graph';
+const prometheusStatesContainer = '.prometheus-state';
 const metricsEndpoint = 'metrics.json';
 const timeFormat = d3.time.format('%H:%M');
 const dayFormat = d3.time.format('%b %e, %a');
@@ -14,34 +17,56 @@ const bisectDate = d3.bisector(d => d.time).left;
 const extraAddedWidthParent = 100;
 
 class PrometheusGraph {
-
   constructor() {
-    this.margin = { top: 80, right: 180, bottom: 80, left: 100 };
-    this.marginLabelContainer = { top: 40, right: 0, bottom: 40, left: 0 };
-    const parentContainerWidth = $(prometheusGraphsContainer).parent().width() +
-    extraAddedWidthParent;
-    this.originalWidth = parentContainerWidth;
-    this.originalHeight = 400;
-    this.width = parentContainerWidth - this.margin.left - this.margin.right;
-    this.height = 400 - this.margin.top - this.margin.bottom;
-    this.backOffRequestCounter = 0;
-    this.configureGraph();
-    this.init();
+    const $prometheusContainer = $(prometheusContainer);
+    const hasMetrics = $prometheusContainer.data('has-metrics');
+    this.docLink = $prometheusContainer.data('doc-link');
+    this.integrationLink = $prometheusContainer.data('prometheus-integration');
+
+    $(document).ajaxError(() => {});
+
+    if (hasMetrics) {
+      this.margin = { top: 80, right: 180, bottom: 80, left: 100 };
+      this.marginLabelContainer = { top: 40, right: 0, bottom: 40, left: 0 };
+      const parentContainerWidth = $(prometheusGraphsContainer).parent().width() +
+      extraAddedWidthParent;
+      this.originalWidth = parentContainerWidth;
+      this.originalHeight = 330;
+      this.width = parentContainerWidth - this.margin.left - this.margin.right;
+      this.height = this.originalHeight - this.margin.top - this.margin.bottom;
+      this.backOffRequestCounter = 0;
+      this.configureGraph();
+      this.init();
+    } else {
+      this.state = '.js-getting-started';
+      this.updateState();
+    }
   }
 
   createGraph() {
-    Object.keys(this.data).forEach((key) => {
-      const value = this.data[key];
-      if (value.length > 0) {
-        this.plotValues(value, key);
+    Object.keys(this.graphSpecificProperties).forEach((key) => {
+      const value = this.graphSpecificProperties[key];
+      if (value.data.length > 0) {
+        this.plotValues(key);
       }
     });
   }
 
   init() {
     this.getData().then((metricsResponse) => {
-      if (Object.keys(metricsResponse).length === 0) {
-        new Flash('Empty metrics', 'alert');
+      let enoughData = true;
+      Object.keys(metricsResponse.metrics).forEach((key) => {
+        let currentKey;
+        if (key === 'cpu_values' || key === 'memory_values') {
+          currentKey = metricsResponse.metrics[key];
+          if (Object.keys(currentKey).length === 0) {
+            enoughData = false;
+          }
+        }
+      });
+      if (!enoughData) {
+        this.state = '.js-loading';
+        this.updateState();
       } else {
         this.transformData(metricsResponse);
         this.createGraph();
@@ -49,53 +74,56 @@ class PrometheusGraph {
     });
   }
 
-  plotValues(valuesToPlot, key) {
+  plotValues(key) {
+    const graphSpecifics = this.graphSpecificProperties[key];
+
     const x = d3.time.scale()
         .range([0, this.width]);
 
     const y = d3.scale.linear()
         .range([this.height, 0]);
 
+    graphSpecifics.xScale = x;
+    graphSpecifics.yScale = y;
+
     const prometheusGraphContainer = `${prometheusGraphsContainer}[graph-type=${key}]`;
 
-    const graphSpecifics = this.graphSpecificProperties[key];
-
     const chart = d3.select(prometheusGraphContainer)
-        .attr('width', this.width + this.margin.left + this.margin.right)
-        .attr('height', this.height + this.margin.bottom + this.margin.top)
-        .append('g')
-          .attr('transform', `translate(${this.margin.left},${this.margin.top})`);
+      .attr('width', this.width + this.margin.left + this.margin.right)
+      .attr('height', this.height + this.margin.bottom + this.margin.top)
+      .append('g')
+        .attr('transform', `translate(${this.margin.left},${this.margin.top})`);
 
     const axisLabelContainer = d3.select(prometheusGraphContainer)
-      .attr('width', this.originalWidth + this.marginLabelContainer.left + this.marginLabelContainer.right)
-      .attr('height', this.originalHeight + this.marginLabelContainer.bottom + this.marginLabelContainer.top)
+      .attr('width', this.originalWidth)
+      .attr('height', this.originalHeight)
       .append('g')
         .attr('transform', `translate(${this.marginLabelContainer.left},${this.marginLabelContainer.top})`);
 
-    x.domain(d3.extent(valuesToPlot, d => d.time));
-    y.domain([0, d3.max(valuesToPlot.map(metricValue => metricValue.value))]);
+    x.domain(d3.extent(graphSpecifics.data, d => d.time));
+    y.domain([0, d3.max(graphSpecifics.data.map(metricValue => metricValue.value))]);
 
     const xAxis = d3.svg.axis()
-        .scale(x)
-        .ticks(this.commonGraphProperties.axis_no_ticks)
-        .orient('bottom');
+      .scale(x)
+      .ticks(this.commonGraphProperties.axis_no_ticks)
+      .orient('bottom');
 
     const yAxis = d3.svg.axis()
-        .scale(y)
-        .ticks(this.commonGraphProperties.axis_no_ticks)
-        .tickSize(-this.width)
-        .orient('left');
+      .scale(y)
+      .ticks(this.commonGraphProperties.axis_no_ticks)
+      .tickSize(-this.width)
+      .orient('left');
 
     this.createAxisLabelContainers(axisLabelContainer, key);
 
     chart.append('g')
-        .attr('class', 'x-axis')
-        .attr('transform', `translate(0,${this.height})`)
-        .call(xAxis);
+      .attr('class', 'x-axis')
+      .attr('transform', `translate(0,${this.height})`)
+      .call(xAxis);
 
     chart.append('g')
-        .attr('class', 'y-axis')
-        .call(yAxis);
+      .attr('class', 'y-axis')
+      .call(yAxis);
 
     const area = d3.svg.area()
       .x(d => x(d.time))
@@ -108,13 +136,13 @@ class PrometheusGraph {
     .y(d => y(d.value));
 
     chart.append('path')
-    .datum(valuesToPlot)
-    .attr('d', area)
-    .attr('class', 'metric-area')
-    .attr('fill', graphSpecifics.area_fill_color);
+      .datum(graphSpecifics.data)
+      .attr('d', area)
+      .attr('class', 'metric-area')
+      .attr('fill', graphSpecifics.area_fill_color);
 
     chart.append('path')
-      .datum(valuesToPlot)
+      .datum(graphSpecifics.data)
       .attr('class', 'metric-line')
       .attr('stroke', graphSpecifics.line_color)
       .attr('fill', 'none')
@@ -126,7 +154,7 @@ class PrometheusGraph {
       .attr('class', 'prometheus-graph-overlay')
       .attr('width', this.width)
       .attr('height', this.height)
-      .on('mousemove', this.handleMouseOverGraph.bind(this, x, y, valuesToPlot, chart, prometheusGraphContainer, key));
+      .on('mousemove', this.handleMouseOverGraph.bind(this, prometheusGraphContainer));
   }
 
   // The legends from the metric
@@ -134,128 +162,150 @@ class PrometheusGraph {
     const graphSpecifics = this.graphSpecificProperties[key];
 
     axisLabelContainer.append('line')
-        .attr('class', 'label-x-axis-line')
-        .attr('stroke', '#000000')
-        .attr('stroke-width', '1')
-        .attr({
-          x1: 0,
-          y1: this.originalHeight - this.marginLabelContainer.top,
-          x2: this.originalWidth - this.margin.right,
-          y2: this.originalHeight - this.marginLabelContainer.top,
-        });
+      .attr('class', 'label-x-axis-line')
+      .attr('stroke', '#000000')
+      .attr('stroke-width', '1')
+      .attr({
+        x1: 10,
+        y1: this.originalHeight - this.margin.top,
+        x2: (this.originalWidth - this.margin.right) + 10,
+        y2: this.originalHeight - this.margin.top,
+      });
 
     axisLabelContainer.append('line')
-          .attr('class', 'label-y-axis-line')
-          .attr('stroke', '#000000')
-          .attr('stroke-width', '1')
-          .attr({
-            x1: 0,
-            y1: 0,
-            x2: 0,
-            y2: this.originalHeight - this.marginLabelContainer.top,
-          });
-
-    axisLabelContainer.append('text')
-          .attr('class', 'label-axis-text')
-          .attr('text-anchor', 'middle')
-          .attr('transform', `translate(15, ${(this.originalHeight - this.marginLabelContainer.top) / 2}) rotate(-90)`)
-          .text(graphSpecifics.graph_legend_title);
+      .attr('class', 'label-y-axis-line')
+      .attr('stroke', '#000000')
+      .attr('stroke-width', '1')
+      .attr({
+        x1: 10,
+        y1: 0,
+        x2: 10,
+        y2: this.originalHeight - this.margin.top,
+      });
 
     axisLabelContainer.append('rect')
-          .attr('class', 'rect-axis-text')
-          .attr('x', (this.originalWidth / 2) - this.margin.right)
-          .attr('y', this.originalHeight - this.marginLabelContainer.top - 20)
-          .attr('width', 30)
-          .attr('height', 80);
+      .attr('class', 'rect-axis-text')
+      .attr('x', 0)
+      .attr('y', 50)
+      .attr('width', 30)
+      .attr('height', 150);
 
     axisLabelContainer.append('text')
-          .attr('class', 'label-axis-text')
-          .attr('x', (this.originalWidth / 2) - this.margin.right)
-          .attr('y', this.originalHeight - this.marginLabelContainer.top)
-          .attr('dy', '.35em')
-          .text('Time');
+      .attr('class', 'label-axis-text')
+      .attr('text-anchor', 'middle')
+      .attr('transform', `translate(15, ${(this.originalHeight - this.margin.top) / 2}) rotate(-90)`)
+      .text(graphSpecifics.graph_legend_title);
+
+    axisLabelContainer.append('rect')
+      .attr('class', 'rect-axis-text')
+      .attr('x', (this.originalWidth / 2) - this.margin.right)
+      .attr('y', this.originalHeight - 100)
+      .attr('width', 30)
+      .attr('height', 80);
+
+    axisLabelContainer.append('text')
+      .attr('class', 'label-axis-text')
+      .attr('x', (this.originalWidth / 2) - this.margin.right)
+      .attr('y', this.originalHeight - this.margin.top)
+      .attr('dy', '.35em')
+      .text('Time');
 
     // Legends
 
     // Metric Usage
     axisLabelContainer.append('rect')
-          .attr('x', this.originalWidth - 170)
-          .attr('y', (this.originalHeight / 2) - 60)
-          .style('fill', graphSpecifics.area_fill_color)
-          .attr('width', 20)
-          .attr('height', 35);
+      .attr('x', this.originalWidth - 170)
+      .attr('y', (this.originalHeight / 2) - 60)
+      .style('fill', graphSpecifics.area_fill_color)
+      .attr('width', 20)
+      .attr('height', 35);
 
     axisLabelContainer.append('text')
-          .attr('class', 'label-axis-text')
-          .attr('x', this.originalWidth - 140)
-          .attr('y', (this.originalHeight / 2) - 50)
-          .text('Average');
+      .attr('class', 'text-metric-title')
+      .attr('x', this.originalWidth - 140)
+      .attr('y', (this.originalHeight / 2) - 50)
+      .text('Average');
 
     axisLabelContainer.append('text')
-            .attr('class', 'text-metric-usage')
-            .attr('x', this.originalWidth - 140)
-            .attr('y', (this.originalHeight / 2) - 25);
+      .attr('class', 'text-metric-usage')
+      .attr('x', this.originalWidth - 140)
+      .attr('y', (this.originalHeight / 2) - 25);
   }
 
-  handleMouseOverGraph(x, y, valuesToPlot, chart, prometheusGraphContainer, key) {
+  handleMouseOverGraph(prometheusGraphContainer) {
     const rectOverlay = document.querySelector(`${prometheusGraphContainer} .prometheus-graph-overlay`);
-    const timeValueFromOverlay = x.invert(d3.mouse(rectOverlay)[0]);
-    const timeValueIndex = bisectDate(valuesToPlot, timeValueFromOverlay, 1);
-    const d0 = valuesToPlot[timeValueIndex - 1];
-    const d1 = valuesToPlot[timeValueIndex];
-    const currentData = timeValueFromOverlay - d0.time > d1.time - timeValueFromOverlay ? d1 : d0;
-    const maxValueMetric = y(d3.max(valuesToPlot.map(metricValue => metricValue.value)));
-    const currentTimeCoordinate = x(currentData.time);
-    const graphSpecifics = this.graphSpecificProperties[key];
-    // Remove the current selectors
-    d3.selectAll(`${prometheusGraphContainer} .selected-metric-line`).remove();
-    d3.selectAll(`${prometheusGraphContainer} .circle-metric`).remove();
-    d3.selectAll(`${prometheusGraphContainer} .rect-text-metric`).remove();
-    d3.selectAll(`${prometheusGraphContainer} .text-metric`).remove();
+    const currentXCoordinate = d3.mouse(rectOverlay)[0];
 
-    chart.append('line')
-    .attr('class', 'selected-metric-line')
-    .attr({
-      x1: currentTimeCoordinate,
-      y1: y(0),
-      x2: currentTimeCoordinate,
-      y2: maxValueMetric,
+    Object.keys(this.graphSpecificProperties).forEach((key) => {
+      const currentGraphProps = this.graphSpecificProperties[key];
+      const timeValueOverlay = currentGraphProps.xScale.invert(currentXCoordinate);
+      const overlayIndex = bisectDate(currentGraphProps.data, timeValueOverlay, 1);
+      const d0 = currentGraphProps.data[overlayIndex - 1];
+      const d1 = currentGraphProps.data[overlayIndex];
+      const evalTime = timeValueOverlay - d0.time > d1.time - timeValueOverlay;
+      const currentData = evalTime ? d1 : d0;
+      const currentTimeCoordinate = currentGraphProps.xScale(currentData.time);
+      const currentPrometheusGraphContainer = `${prometheusGraphsContainer}[graph-type=${key}]`;
+      const maxValueFromData = d3.max(currentGraphProps.data.map(metricValue => metricValue.value));
+      const maxMetricValue = currentGraphProps.yScale(maxValueFromData);
+
+      // Clear up all the pieces of the flag
+      d3.selectAll(`${currentPrometheusGraphContainer} .selected-metric-line`).remove();
+      d3.selectAll(`${currentPrometheusGraphContainer} .circle-metric`).remove();
+      d3.selectAll(`${currentPrometheusGraphContainer} .rect-text-metric`).remove();
+      d3.selectAll(`${currentPrometheusGraphContainer} .text-metric`).remove();
+
+      const currentChart = d3.select(currentPrometheusGraphContainer).select('g');
+      currentChart.append('line')
+      .attr('class', 'selected-metric-line')
+      .attr({
+        x1: currentTimeCoordinate,
+        y1: currentGraphProps.yScale(0),
+        x2: currentTimeCoordinate,
+        y2: maxMetricValue,
+      });
+
+      currentChart.append('circle')
+        .attr('class', 'circle-metric')
+        .attr('fill', currentGraphProps.line_color)
+        .attr('cx', currentTimeCoordinate)
+        .attr('cy', currentGraphProps.yScale(currentData.value))
+        .attr('r', this.commonGraphProperties.circle_radius_metric);
+
+      // The little box with text
+      const rectTextMetric = currentChart.append('g')
+        .attr('class', 'rect-text-metric')
+        .attr('translate', `(${currentTimeCoordinate}, ${currentGraphProps.yScale(currentData.value)})`);
+
+      rectTextMetric.append('rect')
+        .attr('class', 'rect-metric')
+        .attr('x', currentTimeCoordinate + 10)
+        .attr('y', maxMetricValue)
+        .attr('width', this.commonGraphProperties.rect_text_width)
+        .attr('height', this.commonGraphProperties.rect_text_height);
+
+      rectTextMetric.append('text')
+        .attr('class', 'text-metric')
+        .attr('x', currentTimeCoordinate + 35)
+        .attr('y', maxMetricValue + 35)
+        .text(timeFormat(currentData.time));
+
+      rectTextMetric.append('text')
+        .attr('class', 'text-metric-date')
+        .attr('x', currentTimeCoordinate + 15)
+        .attr('y', maxMetricValue + 15)
+        .text(dayFormat(currentData.time));
+
+      let currentMetricValue = formatRelevantDigits(currentData.value);
+      if (key === 'cpu_values') {
+        currentMetricValue = `${currentMetricValue}%`;
+      } else {
+        currentMetricValue = `${currentMetricValue} MB`;
+      }
+
+      d3.select(`${currentPrometheusGraphContainer} .text-metric-usage`)
+        .text(currentMetricValue);
     });
-
-    chart.append('circle')
-    .attr('class', 'circle-metric')
-    .attr('fill', graphSpecifics.line_color)
-    .attr('cx', currentTimeCoordinate)
-    .attr('cy', y(currentData.value))
-    .attr('r', this.commonGraphProperties.circle_radius_metric);
-
-    // The little box with text
-    const rectTextMetric = chart.append('g')
-    .attr('class', 'rect-text-metric')
-    .attr('translate', `(${currentTimeCoordinate}, ${y(currentData.value)})`);
-
-    rectTextMetric.append('rect')
-    .attr('class', 'rect-metric')
-    .attr('x', currentTimeCoordinate + 10)
-    .attr('y', maxValueMetric)
-    .attr('width', this.commonGraphProperties.rect_text_width)
-    .attr('height', this.commonGraphProperties.rect_text_height);
-
-    rectTextMetric.append('text')
-    .attr('class', 'text-metric')
-    .attr('x', currentTimeCoordinate + 35)
-    .attr('y', maxValueMetric + 35)
-    .text(timeFormat(currentData.time));
-
-    rectTextMetric.append('text')
-    .attr('class', 'text-metric-date')
-    .attr('x', currentTimeCoordinate + 15)
-    .attr('y', maxValueMetric + 15)
-    .text(dayFormat(currentData.time));
-
-    // Update the text
-    d3.select(`${prometheusGraphContainer} .text-metric-usage`)
-      .text(currentData.value.substring(0, 8));
   }
 
   configureGraph() {
@@ -263,12 +313,18 @@ class PrometheusGraph {
       cpu_values: {
         area_fill_color: '#edf3fc',
         line_color: '#5b99f7',
-        graph_legend_title: 'CPU utilization (%)',
+        graph_legend_title: 'CPU Usage (Cores)',
+        data: [],
+        xScale: {},
+        yScale: {},
       },
       memory_values: {
         area_fill_color: '#fca326',
         line_color: '#fc6d26',
-        graph_legend_title: 'Memory usage (MB)',
+        graph_legend_title: 'Memory Usage (MB)',
+        data: [],
+        xScale: {},
+        yScale: {},
       },
     };
 
@@ -314,21 +370,31 @@ class PrometheusGraph {
       }
       return resp.metrics;
     })
-    .catch(() => new Flash('An error occurred while fetching metrics.', 'alert'));
+    .catch(() => {
+      this.state = '.js-unable-to-connect';
+      this.updateState();
+    });
   }
 
   transformData(metricsResponse) {
-    const metricTypes = {};
     Object.keys(metricsResponse.metrics).forEach((key) => {
       if (key === 'cpu_values' || key === 'memory_values') {
         const metricValues = (metricsResponse.metrics[key])[0];
-        metricTypes[key] = metricValues.values.map(metric => ({
-          time: new Date(metric[0] * 1000),
-          value: metric[1],
-        }));
+        if (metricValues !== undefined) {
+          this.graphSpecificProperties[key].data = metricValues.values.map(metric => ({
+            time: new Date(metric[0] * 1000),
+            value: metric[1],
+          }));
+        }
       }
     });
-    this.data = metricTypes;
+  }
+
+  updateState() {
+    const $statesContainer = $(prometheusStatesContainer);
+    $(prometheusParentGraphContainer).hide();
+    $(`${this.state}`, $statesContainer).removeClass('hidden');
+    $(prometheusStatesContainer).show();
   }
 }
 

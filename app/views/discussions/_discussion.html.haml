@@ -5,7 +5,7 @@
       = link_to user_path(discussion.author) do
         = image_tag avatar_icon(discussion.author), class: "avatar s40"
     .timeline-content
-      .discussion.js-toggle-container{ class: discussion.id, data: { discussion_id: discussion.id } }
+      .discussion.js-toggle-container{ data: { discussion_id: discussion.id } }
         .discussion-header
           .discussion-actions
             %button.note-action-button.discussion-toggle-button.js-toggle-button{ type: "button" }
@@ -18,21 +18,24 @@
 
           .inline.discussion-headline-light
             = discussion.author.to_reference
-            started a discussion on
+            started a discussion
 
-            - if discussion.for_commit?
+            - url = discussion_diff_path(discussion)
+            - if discussion.for_commit? && @noteable != discussion.noteable
+              on
               - commit = discussion.noteable
               - if commit
                 commit
-                = link_to commit.short_id, namespace_project_commit_path(discussion.project.namespace, discussion.project, discussion.noteable, anchor: discussion.line_code), class: 'monospace'
+                = link_to commit.short_id, url, class: 'monospace'
               - else
                 a deleted commit
-            - else
-              - if discussion.active?
-                = link_to diffs_namespace_project_merge_request_path(discussion.project.namespace, discussion.project, discussion.noteable, anchor: discussion.line_code) do
+            - elsif discussion.diff_discussion?
+              on
+              = conditional_link_to url.present?, url do
+                - if discussion.active?
                   the diff
-              - else
-                an outdated diff
+                - else
+                  an outdated diff
 
             = time_ago_with_tooltip(discussion.created_at, placement: "bottom", html_class: "note-created-ago")
           = render "discussions/headline", discussion: discussion

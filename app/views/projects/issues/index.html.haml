@@ -24,9 +24,9 @@
                                                    issue: { assignee_id: issues_finder.assignee.try(:id),
                                                             milestone_id: issues_finder.milestones.first.try(:id) }),
                                                    class: "btn btn-new",
-                                                   title: "New Issue",
+                                                   title: "New issue",
                                                    id: "new_issue_link" do
-          New Issue
+          New issue
     = render 'shared/issuable/search_bar', type: :issues
 
     .issues-holder

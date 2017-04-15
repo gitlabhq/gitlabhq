@@ -10,7 +10,7 @@ GET /projects/:id/environments
 
 | Attribute | Type    | Required | Description           |
 | --------- | ------- | -------- | --------------------- |
-| `id`      | integer | yes      | The ID of the project |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/environments
@@ -41,7 +41,7 @@ POST /projects/:id/environment
 
 | Attribute     | Type    | Required | Description                  |
 | ------------- | ------- | -------- | ---------------------------- |
-| `id`          | integer | yes      | The ID of the project        |
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user        |
 | `name`        | string  | yes      | The name of the environment  |
 | `external_url` | string  | no     | Place to link to for this environment |
 
@@ -72,7 +72,7 @@ PUT /projects/:id/environments/:environments_id
 
 | Attribute       | Type    | Required                          | Description                      |
 | --------------- | ------- | --------------------------------- | -------------------------------  |
-| `id`            | integer | yes                               | The ID of the project            |
+| `id`            | integer/string | yes                               | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user            |
 | `environment_id` | integer | yes | The ID of the environment  | The ID of the environment        |
 | `name`          | string  | no                                | The new name of the environment  |
 | `external_url`  | string  | no                                | The new external_url             |
@@ -102,7 +102,7 @@ DELETE /projects/:id/environments/:environment_id
 
 | Attribute | Type    | Required | Description           |
 | --------- | ------- | -------- | --------------------- |
-| `id` | integer | yes | The ID of the project |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `environment_id` | integer | yes | The ID of the environment |
 
 ```bash
@@ -119,7 +119,7 @@ POST /projects/:id/environments/:environment_id/stop
 
 | Attribute | Type    | Required | Description           |
 | --------- | ------- | -------- | --------------------- |
-| `id` | integer | yes | The ID of the project |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `environment_id` | integer | yes | The ID of the environment |
 
 ```bash

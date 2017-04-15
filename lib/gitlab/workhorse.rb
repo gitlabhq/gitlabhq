@@ -24,18 +24,13 @@ module Gitlab
         }
 
         if Gitlab.config.gitaly.enabled
-          storage = repository.project.repository_storage
-          address = Gitlab::GitalyClient.get_address(storage)
-          # TODO: use GitalyClient code to assemble the Repository message
-          params[:Repository] = Gitaly::Repository.new(
-            path: repo_path,
-            storage_name: storage,
-            relative_path: Gitlab::RepoPath.strip_storage_path(repo_path),
-          ).to_h
+          address = Gitlab::GitalyClient.get_address(repository.project.repository_storage)
+          params[:Repository] = repository.gitaly_repository.to_h
 
           feature_enabled = case action.to_s
                             when 'git_receive_pack'
-                              Gitlab::GitalyClient.feature_enabled?(:post_receive_pack)
+                              # Disabled for now, see https://gitlab.com/gitlab-org/gitaly/issues/172
+                              false
                             when 'git_upload_pack'
                               Gitlab::GitalyClient.feature_enabled?(:post_upload_pack)
                             when 'info_refs'
@@ -44,7 +39,7 @@ module Gitlab
                               raise "Unsupported action: #{action}"
                             end
 
-          params[:GitalySocketPath] = URI(address).path if feature_enabled
+          params[:GitalyAddress] = address if feature_enabled
         end
 
         params

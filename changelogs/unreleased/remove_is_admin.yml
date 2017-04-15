@@ -1,0 +1,4 @@
+---
+title: Remove the User#is_admin? method
+merge_request: 10520
+author: blackst0ne

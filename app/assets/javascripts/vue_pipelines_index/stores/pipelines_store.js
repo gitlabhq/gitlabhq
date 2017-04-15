@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle*/
-import '../../vue_realtime_listener';
+import VueRealtimeListener from '../../vue_realtime_listener';
 
 export default class PipelinesStore {
   constructor() {
@@ -56,6 +56,6 @@ export default class PipelinesStore {
     const removeIntervals = () => clearInterval(this.timeLoopInterval);
     const startIntervals = () => startTimeLoops();
 
-    gl.VueRealtimeListener(removeIntervals, startIntervals);
+    VueRealtimeListener(removeIntervals, startIntervals);
   }
 }

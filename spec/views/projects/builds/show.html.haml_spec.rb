@@ -9,7 +9,7 @@ describe 'projects/builds/show', :view do
   end
 
   before do
-    assign(:build, build)
+    assign(:build, build.present)
     assign(:project, project)
 
     allow(view).to receive(:can?).and_return(true)

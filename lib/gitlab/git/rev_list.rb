@@ -1,41 +1,42 @@
 module Gitlab
   module Git
     class RevList
-      attr_reader :project, :env
+      attr_reader :oldrev, :newrev, :path_to_repo
 
-      ALLOWED_VARIABLES = %w[GIT_OBJECT_DIRECTORY GIT_ALTERNATE_OBJECT_DIRECTORIES].freeze
-
-      def initialize(oldrev, newrev, project:, env: nil)
-        @project = project
-        @env = env.presence || {}
-        @args = [Gitlab.config.git.bin_path,
-                 "--git-dir=#{project.repository.path_to_repo}",
-                 "rev-list",
-                 "--max-count=1",
-                 oldrev,
-                 "^#{newrev}"]
+      def initialize(path_to_repo:, newrev:, oldrev: nil)
+        @oldrev = oldrev
+        @newrev = newrev
+        @path_to_repo = path_to_repo
       end
 
-      def execute
-        Gitlab::Popen.popen(@args, nil, parse_environment_variables)
+      # This method returns an array of new references
+      def new_refs
+        execute([*base_args, newrev, '--not', '--all'])
       end
 
-      def valid?
-        environment_variables.all? do |(name, value)|
-          value.to_s.start_with?(project.repository.path_to_repo)
-        end
+      # This methods returns an array of missed references
+      def missed_ref
+        execute([*base_args, '--max-count=1', oldrev, "^#{newrev}"])
       end
 
       private
 
-      def parse_environment_variables
-        return {} unless valid?
+      def execute(args)
+        output, status = Gitlab::Popen.popen(args, nil, Gitlab::Git::Env.all.stringify_keys)
 
-        environment_variables
+        unless status.zero?
+          raise "Got a non-zero exit code while calling out `#{args.join(' ')}`."
+        end
+
+        output.split("\n")
       end
 
-      def environment_variables
-        @environment_variables ||= env.slice(*ALLOWED_VARIABLES).compact
+      def base_args
+        [
+          Gitlab.config.git.bin_path,
+          "--git-dir=#{path_to_repo}",
+          'rev-list'
+        ]
       end
     end
   end

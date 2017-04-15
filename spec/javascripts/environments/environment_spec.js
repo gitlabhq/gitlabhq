@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import '~/flash';
 import EnvironmentsComponent from '~/environments/components/environment';
-import { environment } from './mock_data';
+import { environment, folder } from './mock_data';
 
 describe('Environment', () => {
   preloadFixtures('static/environments/environments.html.raw');
@@ -83,9 +83,10 @@ describe('Environment', () => {
 
       it('should render a table with environments', (done) => {
         setTimeout(() => {
+          expect(component.$el.querySelectorAll('table')).toBeDefined();
           expect(
-            component.$el.querySelectorAll('table tbody tr').length,
-          ).toEqual(1);
+            component.$el.querySelector('.environment-name').textContent.trim(),
+          ).toEqual(environment.name);
           done();
         }, 0);
       });
@@ -177,6 +178,103 @@ describe('Environment', () => {
         ).toContain('You don\'t have any environments right now.');
         done();
       }, 0);
+    });
+  });
+
+  describe('expandable folders', () => {
+    const environmentsResponseInterceptor = (request, next) => {
+      next(request.respondWith(JSON.stringify({
+        environments: [folder],
+        stopped_count: 0,
+        available_count: 1,
+      }), {
+        status: 200,
+        headers: {
+          'X-nExt-pAge': '2',
+          'x-page': '1',
+          'X-Per-Page': '1',
+          'X-Prev-Page': '',
+          'X-TOTAL': '37',
+          'X-Total-Pages': '2',
+        },
+      }));
+    };
+
+    beforeEach(() => {
+      Vue.http.interceptors.push(environmentsResponseInterceptor);
+      component = new EnvironmentsComponent({
+        el: document.querySelector('#environments-list-view'),
+      });
+    });
+
+    afterEach(() => {
+      Vue.http.interceptors = _.without(
+        Vue.http.interceptors, environmentsResponseInterceptor,
+      );
+    });
+
+    it('should open a closed folder', (done) => {
+      setTimeout(() => {
+        component.$el.querySelector('.folder-name').click();
+
+        Vue.nextTick(() => {
+          expect(
+            component.$el.querySelector('.folder-icon i.fa-caret-right').getAttribute('style'),
+          ).toContain('display: none');
+          expect(
+            component.$el.querySelector('.folder-icon i.fa-caret-down').getAttribute('style'),
+          ).not.toContain('display: none');
+          done();
+        });
+      });
+    });
+
+    it('should close an opened folder', (done) => {
+      setTimeout(() => {
+        // open folder
+        component.$el.querySelector('.folder-name').click();
+
+        Vue.nextTick(() => {
+          // close folder
+          component.$el.querySelector('.folder-name').click();
+
+          Vue.nextTick(() => {
+            expect(
+              component.$el.querySelector('.folder-icon i.fa-caret-down').getAttribute('style'),
+            ).toContain('display: none');
+            expect(
+              component.$el.querySelector('.folder-icon i.fa-caret-right').getAttribute('style'),
+            ).not.toContain('display: none');
+            done();
+          });
+        });
+      });
+    });
+
+    it('should show children environments and a button to show all environments', (done) => {
+      setTimeout(() => {
+        // open folder
+        component.$el.querySelector('.folder-name').click();
+
+        Vue.nextTick(() => {
+          const folderInterceptor = (request, next) => {
+            next(request.respondWith(JSON.stringify({
+              environments: [environment],
+            }), { status: 200 }));
+          };
+
+          Vue.http.interceptors.push(folderInterceptor);
+
+          // wait for next async request
+          setTimeout(() => {
+            expect(component.$el.querySelectorAll('.js-child-row').length).toEqual(1);
+            expect(component.$el.querySelector('td.text-center > a.btn').textContent).toContain('Show all');
+
+            Vue.http.interceptors = _.without(Vue.http.interceptors, folderInterceptor);
+            done();
+          });
+        });
+      });
     });
   });
 });

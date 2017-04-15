@@ -2,6 +2,8 @@
 (function() {
   (function(w) {
     var base;
+    const faviconEl = document.getElementById('favicon');
+    const originalFavicon = faviconEl ? faviconEl.getAttribute('href') : null;
     w.gl || (w.gl = {});
     (base = w.gl).utils || (base.utils = {});
     w.gl.utils.isInGroupsPage = function() {
@@ -43,6 +45,10 @@
       } else {
         return val;
       }
+    };
+
+    gl.utils.updateTooltipTitle = function($tooltipEl, newTitle) {
+      return $tooltipEl.attr('title', newTitle).tooltip('fixTitle');
     };
 
     w.gl.utils.disableButtonIfEmptyField = function(field_selector, button_selector, event_name) {
@@ -359,6 +365,35 @@
         };
 
         fn(next, stop);
+      });
+    };
+
+    w.gl.utils.setFavicon = (iconName) => {
+      if (faviconEl && iconName) {
+        faviconEl.setAttribute('href', `/assets/${iconName}.ico`);
+      }
+    };
+
+    w.gl.utils.resetFavicon = () => {
+      if (faviconEl) {
+        faviconEl.setAttribute('href', originalFavicon);
+      }
+    };
+
+    w.gl.utils.setCiStatusFavicon = (pageUrl) => {
+      $.ajax({
+        url: pageUrl,
+        dataType: 'json',
+        success: function(data) {
+          if (data && data.icon) {
+            gl.utils.setFavicon(`ci_favicons/${data.icon}`);
+          } else {
+            gl.utils.resetFavicon();
+          }
+        },
+        error: function() {
+          gl.utils.resetFavicon();
+        }
       });
     };
   })(window);

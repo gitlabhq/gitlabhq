@@ -56,14 +56,16 @@ Feature: Project Issues
 
   @javascript
   Scenario: Visiting Merge Requests after being sorted the list
-    Given I visit project "Shop" issues page
+    Given project "Shop" has a "Bugfix MR" merge request open
+    And I visit project "Shop" issues page
     And I sort the list by "Oldest updated"
     And I visit project "Shop" merge requests page
     Then The list should be sorted by "Oldest updated"
 
   @javascript
   Scenario: Visiting Merge Requests from a differente Project after sorting
-    Given I visit project "Shop" merge requests page
+    Given project "Shop" has a "Bugfix MR" merge request open
+    And I visit project "Shop" merge requests page
     And I sort the list by "Oldest updated"
     And I visit dashboard merge requests page
     Then The list should be sorted by "Oldest updated"

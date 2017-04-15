@@ -3,6 +3,7 @@ require 'carrierwave/orm/activerecord'
 class Issue < ActiveRecord::Base
   include InternalId
   include Issuable
+  include Noteable
   include Referable
   include Sortable
   include Spammable
@@ -25,8 +26,6 @@ class Issue < ActiveRecord::Base
 
   validates :project, presence: true
 
-  scope :cared, ->(user) { where(assignee_id: user) }
-  scope :open_for, ->(user) { opened.assigned_to(user) }
   scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
 
   scope :without_due_date, -> { where(due_date: nil) }
@@ -39,6 +38,8 @@ class Issue < ActiveRecord::Base
   scope :created_after, -> (datetime) { where("created_at >= ?", datetime) }
 
   scope :include_associations, -> { includes(:assignee, :labels, project: :namespace) }
+
+  after_save :expire_etag_cache
 
   attr_spammable :title, spam_title: true
   attr_spammable :description, spam_description: true
@@ -58,10 +59,6 @@ class Issue < ActiveRecord::Base
 
     before_transition any => :closed do |issue|
       issue.closed_at = Time.zone.now
-    end
-
-    before_transition closed: any do |issue|
-      issue.closed_at = nil
     end
   end
 
@@ -255,5 +252,14 @@ class Issue < ActiveRecord::Base
   # Returns `true` if this Issue is visible to everybody.
   def publicly_visible?
     project.public? && !confidential?
+  end
+
+  def expire_etag_cache
+    key = Gitlab::Routing.url_helpers.rendered_title_namespace_project_issue_path(
+      project.namespace,
+      project,
+      self
+    )
+    Gitlab::EtagCaching::Store.new.touch(key)
   end
 end

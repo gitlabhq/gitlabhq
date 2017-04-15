@@ -64,6 +64,7 @@ if (process.env.BABEL_ENV === 'coverage') {
     './snippet/snippet_bundle.js',
     './terminal/terminal_bundle.js',
     './users/users_bundle.js',
+    './issue_show/index.js',
   ];
 
   describe('Uncovered files', function () {

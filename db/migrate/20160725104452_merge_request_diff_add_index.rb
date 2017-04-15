@@ -1,3 +1,4 @@
+# rubocop:disable RemoveIndex
 class MergeRequestDiffAddIndex < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
   disable_ddl_transaction!

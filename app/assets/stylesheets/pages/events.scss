@@ -4,14 +4,18 @@
  */
 .event-item {
   font-size: $gl-font-size;
-  padding: $gl-padding-top 0 $gl-padding-top ($gl-avatar-size + $gl-padding-top);
+  padding: $gl-padding-top 0 $gl-padding-top 40px;
   border-bottom: 1px solid $white-normal;
   color: $list-text-color;
+  position: relative;
 
   &.event-inline {
-    .avatar {
-      position: relative;
-      top: -2px;
+    .system-note-image {
+      top: 20px;
+    }
+
+    .user-avatar {
+      top: 14px;
     }
 
     .event-title,
@@ -24,8 +28,31 @@
     color: $gl-text-color;
   }
 
-  .avatar {
-    margin-left: -($gl-avatar-size + $gl-padding-top);
+  .system-note-image {
+    position: absolute;
+    left: 0;
+    top: 14px;
+
+    svg {
+      width: 20px;
+      height: 20px;
+      fill: $gl-text-color-secondary;
+    }
+
+    &.opened-icon,
+    &.created-icon {
+      svg {
+        fill: $green-300;
+      }
+    }
+
+    &.closed-icon svg {
+      fill: $red-300;
+    }
+
+    &.accepted-icon svg {
+      fill: $blue-300;
+    }
   }
 
   .event-title {
@@ -108,8 +135,7 @@
     li {
       &.commit {
         background: transparent;
-        padding: 3px;
-        padding-left: 0;
+        padding: 0;
         border: none;
 
         .commit-row-title {
@@ -163,7 +189,7 @@
       max-width: 100%;
     }
 
-    .avatar {
+    .system-note-image {
       display: none;
     }
 

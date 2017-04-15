@@ -49,11 +49,12 @@ describe Banzai::Filter::SanitizationFilter, lib: true do
       instance = described_class.new('Foo')
       3.times { instance.whitelist }
 
-      expect(instance.whitelist[:transformers].size).to eq 5
+      expect(instance.whitelist[:transformers].size).to eq 4
     end
 
-    it 'allows syntax highlighting' do
-      exp = act = %q{<pre class="code highlight white c"><code><span class="k">def</span></code></pre>}
+    it 'sanitizes `class` attribute from all elements' do
+      act = %q{<pre class="code highlight white c"><code>&lt;span class="k"&gt;def&lt;/span&gt;</code></pre>}
+      exp = %q{<pre><code>&lt;span class="k"&gt;def&lt;/span&gt;</code></pre>}
       expect(filter(act).to_html).to eq exp
     end
 

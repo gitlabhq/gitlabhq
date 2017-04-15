@@ -164,9 +164,7 @@ feature 'Diff note avatars', feature: true, js: true do
 
       context 'multiple comments' do
         before do
-          create(:diff_note_on_merge_request, project: project, noteable: merge_request, position: position)
-          create(:diff_note_on_merge_request, project: project, noteable: merge_request, position: position)
-          create(:diff_note_on_merge_request, project: project, noteable: merge_request, position: position)
+          create_list(:diff_note_on_merge_request, 3, project: project, noteable: merge_request, in_reply_to: note)
 
           visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request, view: view)
 

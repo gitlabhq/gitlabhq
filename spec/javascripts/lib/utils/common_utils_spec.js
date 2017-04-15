@@ -310,5 +310,56 @@ require('~/lib/utils/common_utils');
         });
       }, 10000);
     });
+
+    describe('gl.utils.setFavicon', () => {
+      it('should set page favicon to provided favicon', () => {
+        const faviconName = 'custom_favicon';
+        const fakeLink = {
+          setAttribute() {},
+        };
+
+        spyOn(window.document, 'getElementById').and.callFake(() => fakeLink);
+        spyOn(fakeLink, 'setAttribute').and.callFake((attr, val) => {
+          expect(attr).toEqual('href');
+          expect(val.indexOf('/assets/custom_favicon.ico') > -1).toBe(true);
+        });
+        gl.utils.setFavicon(faviconName);
+      });
+    });
+
+    describe('gl.utils.resetFavicon', () => {
+      it('should reset page favicon to tanuki', () => {
+        const fakeLink = {
+          setAttribute() {},
+        };
+
+        spyOn(window.document, 'getElementById').and.callFake(() => fakeLink);
+        spyOn(fakeLink, 'setAttribute').and.callFake((attr, val) => {
+          expect(attr).toEqual('href');
+          expect(val).toMatch(/favicon/);
+        });
+        gl.utils.resetFavicon();
+      });
+    });
+
+    describe('gl.utils.setCiStatusFavicon', () => {
+      it('should set page favicon to CI status favicon based on provided status', () => {
+        const BUILD_URL = `${gl.TEST_HOST}/frontend-fixtures/builds-project/builds/1/status.json`;
+        const FAVICON_PATH = 'ci_favicons/';
+        const FAVICON = 'icon_status_success';
+        const spySetFavicon = spyOn(gl.utils, 'setFavicon').and.stub();
+        const spyResetFavicon = spyOn(gl.utils, 'resetFavicon').and.stub();
+        spyOn($, 'ajax').and.callFake(function (options) {
+          options.success({ icon: FAVICON });
+          expect(spySetFavicon).toHaveBeenCalledWith(FAVICON_PATH + FAVICON);
+          options.success();
+          expect(spyResetFavicon).toHaveBeenCalled();
+          options.error();
+          expect(spyResetFavicon).toHaveBeenCalled();
+        });
+
+        gl.utils.setCiStatusFavicon(BUILD_URL);
+      });
+    });
   });
 })();

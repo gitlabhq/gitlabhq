@@ -13,10 +13,14 @@ module Ci
         forbidden! unless current_runner
       end
 
-      def authenticate_build!(build)
+      def authenticate_build!
+        build = Ci::Build.find_by_id(params[:id])
+
         validate_build!(build) do
           forbidden! unless build_token_valid?(build)
         end
+
+        build
       end
 
       def validate_build!(build)

@@ -145,7 +145,7 @@ describe 'Merge request', :feature, :js do
     before do
       allow_any_instance_of(Repository).to receive(:merge).and_return(false)
       visit namespace_project_merge_request_path(project.namespace, project, merge_request)
-      click_button 'Accept Merge Request'
+      click_button 'Accept merge request'
       wait_for_ajax
     end
 

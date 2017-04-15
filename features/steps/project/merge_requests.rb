@@ -14,7 +14,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click link "New Merge Request"' do
-    click_link "New Merge Request"
+    page.has_link?('New Merge Request') ? click_link("New Merge Request") : click_link('New merge request')
   end
 
   step 'I click link "Bug NS-04"' do
@@ -300,10 +300,10 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
       page.within('.current-note-edit-form', visible: true) do
         fill_in 'note_note', with: 'Typo, please fix'
-        click_button 'Save Comment'
+        click_button 'Save comment'
       end
 
-      expect(page).not_to have_button 'Save Comment', disabled: true, visible: true
+      expect(page).not_to have_button 'Save comment', disabled: true, visible: true
     end
   end
 
@@ -347,6 +347,9 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see a discussion by user "John Doe" has started on diff' do
+    # Trigger a refresh of notes
+    execute_script("$(document).trigger('visibilitychange');")
+    wait_for_ajax
     page.within(".notes .discussion") do
       page.should have_content "#{user_exists("John Doe").name} #{user_exists("John Doe").to_reference} started a discussion"
       page.should have_content sample_commit.line_code_path
@@ -378,7 +381,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'merge request is mergeable' do
-    expect(page).to have_button 'Accept Merge Request'
+    expect(page).to have_button 'Accept merge request'
   end
 
   step 'I modify merge commit message' do
@@ -392,7 +395,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I accept this merge request' do
     page.within '.mr-state-widget' do
-      click_button "Accept Merge Request"
+      click_button "Accept merge request"
     end
   end
 

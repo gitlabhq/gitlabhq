@@ -411,6 +411,10 @@ An [object-relational](https://en.wikipedia.org/wiki/PostgreSQL) database. Toute
 
 A [feature](https://docs.gitlab.com/ce/user/project/protected_branches.html) that protects branches from unauthorized pushes, force pushing or deletion.
 
+### Protected Tags
+
+A [feature](https://docs.gitlab.com/ce/user/project/protected_tags.html) that protects tags from unauthorized creation, update or deletion
+
 ### Pull
 
 Git command to [synchronize](https://git-scm.com/docs/git-pull) the local repository with the remote repository, by fetching all remote changes and merging them into the local repository.

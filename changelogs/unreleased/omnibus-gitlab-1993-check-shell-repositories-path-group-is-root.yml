@@ -1,0 +1,4 @@
+---
+title: "Make the `gitlab:gitlab_shell:check` task check that the repositories storage path are owned by the `root` group"
+merge_request:
+author:

@@ -99,6 +99,13 @@ describe ProcessCommitWorker do
 
       expect(metric.first_mentioned_in_commit_at).to eq(commit.committed_date)
     end
+
+    it "doesn't execute any queries with false conditions" do
+      allow(commit).to receive(:safe_message).
+        and_return("Lorem Ipsum")
+
+      expect { worker.update_issue_metrics(commit, user) }.not_to make_queries_matching(/WHERE (?:1=0|0=1)/)
+    end
   end
 
   describe '#build_commit' do

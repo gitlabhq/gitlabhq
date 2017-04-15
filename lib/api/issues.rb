@@ -26,16 +26,21 @@ module API
                         desc: 'Return issues sorted in `asc` or `desc` order.'
         optional :milestone, type: String, desc: 'Return issues for a specific milestone'
         optional :iids, type: Array[Integer], desc: 'The IID array of issues'
+        optional :search, type: String, desc: 'Search issues for text present in the title or description'
         use :pagination
       end
 
-      params :issue_params do
+      params :issue_params_ce do
         optional :description, type: String, desc: 'The description of an issue'
         optional :assignee_id, type: Integer, desc: 'The ID of a user to assign issue'
         optional :milestone_id, type: Integer, desc: 'The ID of a milestone to assign issue'
         optional :labels, type: String, desc: 'Comma-separated list of label names'
         optional :due_date, type: String, desc: 'Date time string in the format YEAR-MONTH-DAY'
         optional :confidential, type: Boolean, desc: 'Boolean parameter if the issue should be confidential'
+      end
+
+      params :issue_params do
+        use :issue_params_ce
       end
     end
 

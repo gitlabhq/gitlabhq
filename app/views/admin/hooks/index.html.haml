@@ -51,7 +51,7 @@
           = f.check_box :enable_ssl_verification
           %strong Enable SSL verification
   .form-actions
-    = f.submit "Add System Hook", class: "btn btn-create"
+    = f.submit "Add system hook", class: "btn btn-create"
 %hr
 
 - if @hooks.any?
@@ -62,7 +62,7 @@
       - @hooks.each do |hook|
         %li
           .controls
-            = link_to 'Test Hook', admin_hook_test_path(hook), class: "btn btn-sm"
+            = link_to 'Test hook', admin_hook_test_path(hook), class: "btn btn-sm"
             = link_to 'Remove', admin_hook_path(hook), data: { confirm: 'Are you sure?' }, method: :delete, class: "btn btn-remove btn-sm"
           .monospace= hook.url
           %div

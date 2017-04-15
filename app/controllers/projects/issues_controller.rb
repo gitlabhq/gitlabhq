@@ -1,5 +1,5 @@
 class Projects::IssuesController < Projects::ApplicationController
-  include NotesHelper
+  include RendersNotes
   include ToggleSubscriptionAction
   include IssuableActions
   include ToggleAwardEmoji
@@ -11,10 +11,10 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :redirect_to_external_issue_tracker, only: [:index, :new]
   before_action :module_enabled
   before_action :issue, only: [:edit, :update, :show, :referenced_merge_requests,
-                               :related_branches, :can_create_branch]
+                               :related_branches, :can_create_branch, :rendered_title]
 
   # Allow read any issue
-  before_action :authorize_read_issue!, only: [:show]
+  before_action :authorize_read_issue!, only: [:show, :rendered_title]
 
   # Allow write(create) issue
   before_action :authorize_create_issue!, only: [:new, :create]
@@ -31,7 +31,7 @@ class Projects::IssuesController < Projects::ApplicationController
     @issuable_meta_data = issuable_meta_data(@issues, @collection_type)
 
     if @issues.out_of_range? && @issues.total_pages != 0
-      return redirect_to url_for(params.merge(page: @issues.total_pages))
+      return redirect_to url_for(params.merge(page: @issues.total_pages, only_path: true))
     end
 
     if params[:label_name].present?
@@ -84,15 +84,11 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def show
-    raw_notes = @issue.notes.inc_relations_for_view.fresh
-
-    @notes = Banzai::NoteRenderer.
-      render(raw_notes, @project, current_user, @path, @project_wiki, @ref)
-
-    @note     = @project.notes.new(noteable: @issue)
     @noteable = @issue
+    @note     = @project.notes.new(noteable: @issue)
 
-    preload_max_access_for_authors(@notes, @project)
+    @discussions = @issue.discussions
+    @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes))
 
     respond_to do |format|
       format.html
@@ -198,6 +194,11 @@ class Projects::IssuesController < Projects::ApplicationController
         render json: { can_create_branch: can_create }
       end
     end
+  end
+
+  def rendered_title
+    Gitlab::PollingInterval.set_header(response, interval: 3_000)
+    render json: { title: view_context.markdown_field(@issue, :title) }
   end
 
   protected

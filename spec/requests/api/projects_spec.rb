@@ -1076,6 +1076,13 @@ describe API::Projects, :api  do
     before { project_member3 }
     before { project_member2 }
 
+    it 'returns 400 when nothing sent' do
+      project_param = {}
+      put api("/projects/#{project.id}", user), project_param
+      expect(response).to have_http_status(400)
+      expect(json_response['error']).to match('at least one parameter must be provided')
+    end
+
     context 'when unauthenticated' do
       it 'returns authentication error' do
         project_param = { name: 'bar' }

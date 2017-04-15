@@ -459,20 +459,13 @@ a.deploy-project-label {
     flex-wrap: wrap;
 
     .btn {
-      margin: 0 10px 10px 0;
       padding: 8px;
+      margin-left: 10px;
     }
 
     > div {
+      margin-bottom: 10px;
       padding-left: 0;
-
-      &:last-child {
-        margin-bottom: 0;
-
-        .btn {
-          margin-right: 0;
-        }
-      }
     }
   }
 }
@@ -751,7 +744,8 @@ pre.light-well {
   text-align: left;
 }
 
-.protected-branches-list {
+.protected-branches-list,
+.protected-tags-list {
   margin-bottom: 30px;
 
   a {
@@ -780,6 +774,17 @@ pre.light-well {
     td:not(:last-child) {
       border-right: solid 1px transparent;
     }
+  }
+}
+
+.protected-tags-list {
+  .dropdown-menu-toggle {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .flash-container {
+    padding: 0;
   }
 }
 

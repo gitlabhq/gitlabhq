@@ -121,6 +121,13 @@ module Gitlab
       git_reference_regex
     end
 
+    ##
+    # Docker Distribution Registry 2.4.1 repository name rules
+    #
+    def container_repository_name_regex
+      @container_repository_regex ||= %r{\A[a-z0-9]+(?:[-._/][a-z0-9]+)*\Z}
+    end
+
     def environment_name_regex
       @environment_name_regex ||= /\A[a-zA-Z0-9_\\\/\${}. -]+\z/.freeze
     end

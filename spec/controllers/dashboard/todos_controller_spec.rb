@@ -35,6 +35,13 @@ describe Dashboard::TodosController do
         expect(assigns(:todos).current_page).to eq(last_page)
         expect(response).to have_http_status(200)
       end
+
+      it 'does not redirect to external sites when provided a host field' do
+        external_host = "www.example.com"
+        get :index, page: (last_page + 1).to_param, host: external_host
+
+        expect(response).to redirect_to(dashboard_todos_path(page: last_page))
+      end
     end
   end
 

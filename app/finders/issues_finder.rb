@@ -9,7 +9,7 @@
 #     state: 'open' or 'closed' or 'all'
 #     group_id: integer
 #     project_id: integer
-#     milestone_id: integer
+#     milestone_title: string
 #     assignee_id: integer
 #     search: string
 #     label_name: string

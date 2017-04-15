@@ -68,7 +68,7 @@
         - elsif @build.runner
           \##{@build.runner.id}
       .btn-group.btn-group-justified{ role: :group }
-        - if @build.has_trace_file?
+        - if @build.has_trace?
           = link_to 'Raw', raw_namespace_project_build_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-default'
         - if @build.active?
           = link_to "Cancel", cancel_namespace_project_build_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-default', method: :post
@@ -136,7 +136,7 @@
               - else
                 = build.id
             - if build.retried?
-              %i.fa.fa-refresh.has-tooltip{ data: { container: 'body', placement: 'bottom' }, title: 'Job was retried' }
+              %i.fa.fa-spinner.has-tooltip{ data: { container: 'body', placement: 'bottom' }, title: 'Job was retried' }
 
 :javascript
   new Sidebar();

@@ -10,7 +10,7 @@ GET /projects/:id/jobs
 
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
-| `id`      | integer | yes      | The ID of a project |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `scope`   | string **or** array of strings | no | The scope of jobs to show, one or array of: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`; showing all jobs if none provided |
 
 ```
@@ -125,7 +125,7 @@ GET /projects/:id/pipeline/:pipeline_id/jobs
 
 | Attribute     | Type                           | Required | Description          |
 |---------------|--------------------------------|----------|----------------------|
-| `id`          | integer                        | yes      | The ID of a project  |
+| `id`          | integer/string                        | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
 | `pipeline_id` | integer                        | yes      | The ID of a pipeline |
 | `scope`       | string **or** array of strings | no       | The scope of jobs to show, one or array of: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`; showing all jobs if none provided |
 
@@ -241,7 +241,7 @@ GET /projects/:id/jobs/:job_id
 
 | Attribute  | Type    | Required | Description         |
 |------------|---------|----------|---------------------|
-| `id`       | integer | yes      | The ID of a project |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `job_id` | integer | yes      | The ID of a job   |
 
 ```
@@ -309,7 +309,7 @@ GET /projects/:id/jobs/:job_id/artifacts
 
 | Attribute  | Type    | Required | Description         |
 |------------|---------|----------|---------------------|
-| `id`       | integer | yes      | The ID of a project |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `job_id` | integer | yes      | The ID of a job   |
 
 ```
@@ -340,7 +340,7 @@ Parameters
 
 | Attribute   | Type    | Required | Description               |
 |-------------|---------|----------|-------------------------- |
-| `id`        | integer | yes      | The ID of a project       |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user       |
 | `ref_name`  | string  | yes      | The ref from a repository |
 | `job`       | string  | yes      | The name of the job       |
 
@@ -369,7 +369,7 @@ GET /projects/:id/jobs/:job_id/trace
 
 | Attribute  | Type    | Required | Description         |
 |------------|---------|----------|---------------------|
-| id         | integer | yes      | The ID of a project |
+| id         | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | job_id     | integer | yes      | The ID of a job     |
 
 ```
@@ -393,7 +393,7 @@ POST /projects/:id/jobs/:job_id/cancel
 
 | Attribute  | Type    | Required | Description         |
 |------------|---------|----------|---------------------|
-| `id`       | integer | yes      | The ID of a project |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `job_id`   | integer | yes      | The ID of a job     |
 
 ```
@@ -439,7 +439,7 @@ POST /projects/:id/jobs/:job_id/retry
 
 | Attribute  | Type    | Required | Description         |
 |------------|---------|----------|---------------------|
-| `id`       | integer | yes      | The ID of a project |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `job_id`   | integer | yes      | The ID of a job     |
 
 ```
@@ -487,7 +487,7 @@ Parameters
 
 | Attribute   | Type    | Required | Description         |
 |-------------|---------|----------|---------------------|
-| `id`        | integer | yes      | The ID of a project |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `job_id`    | integer | yes      | The ID of a job     |
 
 Example of request
@@ -537,7 +537,7 @@ Parameters
 
 | Attribute   | Type    | Required | Description         |
 |-------------|---------|----------|---------------------|
-| `id`        | integer | yes      | The ID of a project |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `job_id`    | integer | yes      | The ID of a job     |
 
 Example request:
@@ -585,7 +585,7 @@ POST /projects/:id/jobs/:job_id/play
 
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
-| `id`      | integer | yes      | The ID of a project |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `job_id`  | integer | yes      | The ID of a job     |
 
 ```

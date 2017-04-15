@@ -15,6 +15,16 @@ describe Banzai::Filter::RedactorFilter, lib: true do
     link_to('text', '', class: 'gfm', data: data)
   end
 
+  it 'skips when the skip_redaction flag is set' do
+    user = create(:user)
+    project = create(:empty_project)
+
+    link = reference_link(project: project.id, reference_type: 'test')
+    doc = filter(link, current_user: user, skip_redaction: true)
+
+    expect(doc.css('a').length).to eq 1
+  end
+
   context 'with data-project' do
     let(:parser_class) do
       Class.new(Banzai::ReferenceParser::BaseParser) do

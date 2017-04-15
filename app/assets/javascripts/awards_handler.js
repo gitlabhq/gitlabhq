@@ -1,3 +1,5 @@
+/* global Flash */
+
 import Cookies from 'js-cookie';
 
 import emojiMap from 'emojis/digests.json';
@@ -51,7 +53,7 @@ function renderCategory(name, emojiList, opts = {}) {
     <h5 class="emoji-menu-title">
       ${name}
     </h5>
-    <ul class="clearfix emoji-menu-list ${opts.menuListClass}">
+    <ul class="clearfix emoji-menu-list ${opts.menuListClass || ''}">
       ${emojiList.map(emojiName => `
         <li class="emoji-menu-list-item">
           <button class="emoji-menu-btn text-center js-emoji-btn" type="button">
@@ -124,6 +126,8 @@ AwardsHandler.prototype.showEmojiMenu = function showEmojiMenu($addBtn) {
   }
 
   const $menu = $('.emoji-menu');
+  const $thumbsBtn = $menu.find('[data-name="thumbsup"], [data-name="thumbsdown"]').parent();
+  const $userAuthored = this.isUserAuthored($addBtn);
   if ($menu.length) {
     if ($menu.is('.is-visible')) {
       $addBtn.removeClass('is-active');
@@ -147,6 +151,8 @@ AwardsHandler.prototype.showEmojiMenu = function showEmojiMenu($addBtn) {
       }, 200);
     });
   }
+
+  $thumbsBtn.toggleClass('disabled', $userAuthored);
 };
 
 // Create the emoji menu with the first category of emojis.
@@ -259,11 +265,13 @@ AwardsHandler.prototype.addAward = function addAward(
   callback,
 ) {
   const normalizedEmoji = this.normalizeEmojiName(emoji);
-  this.postEmoji(awardUrl, normalizedEmoji, () => {
+  const $emojiButton = this.findEmojiIcon(votesBlock, normalizedEmoji).parent();
+  this.postEmoji($emojiButton, awardUrl, normalizedEmoji, () => {
     this.addAwardToEmojiBar(votesBlock, normalizedEmoji, checkMutuality);
     return typeof callback === 'function' ? callback() : undefined;
   });
-  return $('.emoji-menu').removeClass('is-visible');
+  $('.emoji-menu').removeClass('is-visible');
+  $('.js-add-award.is-active').removeClass('is-active');
 };
 
 AwardsHandler.prototype.addAwardToEmojiBar = function addAwardToEmojiBar(
@@ -321,6 +329,10 @@ AwardsHandler.prototype.checkMutuality = function checkMutuality(votesBlock, emo
 
 AwardsHandler.prototype.isActive = function isActive($emojiButton) {
   return $emojiButton.hasClass('active');
+};
+
+AwardsHandler.prototype.isUserAuthored = function isUserAuthored($button) {
+  return $button.hasClass('js-user-authored');
 };
 
 AwardsHandler.prototype.decrementCounter = function decrementCounter($emojiButton, emoji) {
@@ -427,18 +439,33 @@ AwardsHandler.prototype.createEmoji = function createEmoji(votesBlock, emoji) {
   });
 };
 
-AwardsHandler.prototype.postEmoji = function postEmoji(awardUrl, emoji, callback) {
-  return $.post(awardUrl, {
-    name: emoji,
-  }, (data) => {
-    if (data.ok) {
-      callback();
-    }
-  });
+AwardsHandler.prototype.postEmoji = function postEmoji($emojiButton, awardUrl, emoji, callback) {
+  if (this.isUserAuthored($emojiButton)) {
+    this.userAuthored($emojiButton);
+  } else {
+    $.post(awardUrl, {
+      name: emoji,
+    }, (data) => {
+      if (data.ok) {
+        callback();
+      }
+    }).fail(() => new Flash('Something went wrong on our end.'));
+  }
 };
 
 AwardsHandler.prototype.findEmojiIcon = function findEmojiIcon(votesBlock, emoji) {
   return votesBlock.find(`.js-emoji-btn [data-name="${emoji}"]`);
+};
+
+AwardsHandler.prototype.userAuthored = function userAuthored($emojiButton) {
+  const oldTitle = this.getAwardTooltip($emojiButton);
+  const newTitle = 'You cannot vote on your own issue, MR and note';
+  gl.utils.updateTooltipTitle($emojiButton, newTitle).tooltip('show');
+  // Restore tooltip back to award list
+  return setTimeout(() => {
+    $emojiButton.tooltip('hide');
+    gl.utils.updateTooltipTitle($emojiButton, oldTitle);
+  }, 2800);
 };
 
 AwardsHandler.prototype.scrollToAwards = function scrollToAwards() {
@@ -476,10 +503,10 @@ AwardsHandler.prototype.setupSearch = function setupSearch() {
   this.registerEventListener('on', $('input.emoji-search'), 'input', (e) => {
     const term = $(e.target).val().trim();
     // Clean previous search results
-    $('ul.emoji-menu-search, h5.emoji-search').remove();
+    $('ul.emoji-menu-search, h5.emoji-search-title').remove();
     if (term.length > 0) {
       // Generate a search result block
-      const h5 = $('<h5 class="emoji-search" />').text('Search results');
+      const h5 = $('<h5 class="emoji-search-title"/>').text('Search results');
       const foundEmojis = this.searchEmojis(term).show();
       const ul = $('<ul>').addClass('emoji-menu-list emoji-menu-search').append(foundEmojis);
       $('.emoji-menu-content ul, .emoji-menu-content h5').hide();

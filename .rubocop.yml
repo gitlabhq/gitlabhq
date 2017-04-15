@@ -954,6 +954,10 @@ RSpec/DescribeClass:
 RSpec/DescribeMethod:
   Enabled: false
 
+# Avoid describing symbols.
+RSpec/DescribeSymbol:
+  Enabled: true
+
 # Checks that the second argument to top level describe is the tested method
 # name.
 RSpec/DescribedClass:

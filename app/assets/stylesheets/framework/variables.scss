@@ -26,6 +26,7 @@ $gray-dark: darken($gray-light, $darken-dark-factor);
 $gray-darker: #eee;
 $gray-darkest: #c4c4c4;
 
+$green-25: #f6fcf8;
 $green-50: #e4f5eb;
 $green-100: #bae6cc;
 $green-200: #8dd5aa;
@@ -37,6 +38,7 @@ $green-700: #12753a;
 $green-800: #0e5a2d;
 $green-900: #0a4020;
 
+$blue-25: #f6fafd;
 $blue-50: #e4eff9;
 $blue-100: #bcd7f1;
 $blue-200: #8fbce8;
@@ -48,6 +50,7 @@ $blue-700: #17599c;
 $blue-800: #134a81;
 $blue-900: #0f3b66;
 
+$orange-25: #fffcf8;
 $orange-50: #fff2e1;
 $orange-100: #fedfb3;
 $orange-200: #feca81;
@@ -59,6 +62,7 @@ $orange-700: #c26700;
 $orange-800: #a35100;
 $orange-900: #853b00;
 
+$red-25: #fef7f6;
 $red-50: #fbe7e4;
 $red-100: #f4c4bc;
 $red-200: #ed9d90;
@@ -147,7 +151,7 @@ $gl-sidebar-padding: 22px;
 /*
  * Misc
  */
-$row-hover: lighten($blue-50, 2%);
+$row-hover: $blue-25;
 $row-hover-border: $blue-100;
 $progress-color: #c0392b;
 $header-height: 50px;
@@ -223,18 +227,18 @@ $gl-btn-active-gradient: inset 0 2px 3px $gl-btn-active-background;
 /*
  * Commit Diff Colors
  */
-$added: $green-300;
-$deleted: $red-300;
-$line-added: $green-50;
-$line-added-dark: $green-100;
-$line-removed: $red-50;
-$line-removed-dark: $red-100;
-$line-number-old: lighten($red-100, 5%);
-$line-number-new: lighten($green-100, 5%);
-$line-number-select: lighten($orange-100, 5%);
-$line-target-blue: $blue-50;
-$line-select-yellow: $orange-50;
-$line-select-yellow-dark: $orange-100;
+$added: #63c363;
+$deleted: #f77;
+$line-added: #ecfdf0;
+$line-added-dark: #c7f0d2;
+$line-removed: #fbe9eb;
+$line-removed-dark: #fac5cd;
+$line-number-old: #f9d7dc;
+$line-number-new: #ddfbe6;
+$line-number-select: #fbf2da;
+$line-target-blue: #f6faff;
+$line-select-yellow: #fcf8e7;
+$line-select-yellow-dark: #f0e2bd;
 $dark-diff-match-bg: rgba(255, 255, 255, 0.3);
 $dark-diff-match-color: rgba(255, 255, 255, 0.1);
 $file-mode-changed: #777;
@@ -293,6 +297,8 @@ $badge-color: $gl-text-color-secondary;
  *  Award emoji
  */
 $award-emoji-menu-shadow: rgba(0,0,0,.175);
+$award-emoji-positive-add-bg: #fed159;
+$award-emoji-positive-add-lines: #bb9c13;
 
 /*
  * Search Box

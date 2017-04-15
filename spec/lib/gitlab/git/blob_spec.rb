@@ -3,7 +3,7 @@
 require "spec_helper"
 
 describe Gitlab::Git::Blob, seed_helper: true do
-  let(:repository) { Gitlab::Git::Repository.new(TEST_REPO_PATH) }
+  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
 
   describe 'initialize' do
     let(:blob) { Gitlab::Git::Blob.new(name: 'test') }

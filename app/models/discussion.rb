@@ -1,7 +1,10 @@
+# A non-diff discussion on an issue, merge request, commit, or snippet, consisting of `DiscussionNote` notes.
+#
+# A discussion of this type can be resolvable.
 class Discussion
-  NUMBER_OF_TRUNCATED_DIFF_LINES = 16
+  include ResolvableDiscussion
 
-  attr_reader :notes
+  attr_reader :notes, :context_noteable
 
   delegate  :created_at,
             :project,
@@ -11,43 +14,62 @@ class Discussion
             :for_commit?,
             :for_merge_request?,
 
-            :line_code,
-            :original_line_code,
-            :diff_file,
-            :for_line?,
-            :active?,
-
             to: :first_note
 
-  delegate  :resolved_at,
-            :resolved_by,
-
-            to: :last_resolved_note,
-            allow_nil: true
-
-  delegate  :blob,
-            :highlighted_diff_lines,
-            :diff_lines,
-
-            to: :diff_file,
-            allow_nil: true
-
-  def self.for_notes(notes)
-    notes.group_by(&:discussion_id).values.map { |notes| new(notes) }
+  def self.build(notes, context_noteable = nil)
+    notes.first.discussion_class(context_noteable).new(notes, context_noteable)
   end
 
-  def self.for_diff_notes(notes)
-    notes.group_by(&:line_code).values.map { |notes| new(notes) }
+  def self.build_collection(notes, context_noteable = nil)
+    notes.group_by { |n| n.discussion_id(context_noteable) }.values.map { |notes| build(notes, context_noteable) }
   end
 
-  def initialize(notes)
+  # Returns an alphanumeric discussion ID based on `build_discussion_id`
+  def self.discussion_id(note)
+    Digest::SHA1.hexdigest(build_discussion_id(note).join("-"))
+  end
+
+  # Returns an array of discussion ID components
+  def self.build_discussion_id(note)
+    [*base_discussion_id(note), SecureRandom.hex]
+  end
+
+  def self.base_discussion_id(note)
+    noteable_id = note.noteable_id || note.commit_id
+    [:discussion, note.noteable_type.try(:underscore), noteable_id]
+  end
+
+  # When notes on a commit are displayed in context of a merge request that contains that commit,
+  # these notes are to be displayed as if they were part of one discussion, even though they were actually
+  # individual notes on the commit with different discussion IDs, so that it's clear that these are not
+  # notes on the merge request itself.
+  #
+  # To turn a list of notes into a list of discussions, they are grouped by discussion ID, so to
+  # get these out-of-context notes to end up in the same discussion, we need to get them to return the same
+  # `discussion_id` when this grouping happens. To enable this, `Note#discussion_id` calls out
+  # to the `override_discussion_id` method on the appropriate `Discussion` subclass, as determined by
+  # the `discussion_class` method on `Note` or a subclass of `Note`.
+  #
+  # If no override is necessary, return `nil`.
+  # For the case described above, see `OutOfContextDiscussion.override_discussion_id`.
+  def self.override_discussion_id(note)
+    nil
+  end
+
+  def self.note_class
+    DiscussionNote
+  end
+
+  def initialize(notes, context_noteable = nil)
     @notes = notes
+    @context_noteable = context_noteable
   end
 
-  def last_resolved_note
-    return unless resolved?
-
-    @last_resolved_note ||= resolved_notes.sort_by(&:resolved_at).last
+  def ==(other)
+    other.class == self.class &&
+      other.context_noteable == self.context_noteable &&
+      other.id == self.id &&
+      other.notes == self.notes
   end
 
   def last_updated_at
@@ -59,91 +81,29 @@ class Discussion
   end
 
   def id
-    first_note.discussion_id
+    first_note.discussion_id(context_noteable)
   end
 
   alias_method :to_param, :id
 
   def diff_discussion?
-    first_note.diff_note?
+    false
   end
 
-  def legacy_diff_discussion?
-    notes.any?(&:legacy_diff_note?)
+  def individual_note?
+    false
   end
 
-  def resolvable?
-    return @resolvable if @resolvable.present?
-
-    @resolvable = diff_discussion? && notes.any?(&:resolvable?)
-  end
-
-  def resolved?
-    return @resolved if @resolved.present?
-
-    @resolved = resolvable? && notes.none?(&:to_be_resolved?)
-  end
-
-  def first_note
-    @first_note ||= @notes.first
-  end
-
-  def first_note_to_resolve
-    @first_note_to_resolve ||= notes.detect(&:to_be_resolved?)
+  def new_discussion?
+    notes.length == 1
   end
 
   def last_note
-    @last_note ||= @notes.last
-  end
-
-  def resolved_notes
-    notes.select(&:resolved?)
-  end
-
-  def to_be_resolved?
-    resolvable? && !resolved?
-  end
-
-  def can_resolve?(current_user)
-    return false unless current_user
-    return false unless resolvable?
-
-    current_user == self.noteable.author ||
-      current_user.can?(:resolve_note, self.project)
-  end
-
-  def resolve!(current_user)
-    return unless resolvable?
-
-    update { |notes| notes.resolve!(current_user) }
-  end
-
-  def unresolve!
-    return unless resolvable?
-
-    update { |notes| notes.unresolve! }
-  end
-
-  def for_target?(target)
-    self.noteable == target && !diff_discussion?
-  end
-
-  def active?
-    return @active if @active.present?
-
-    @active = first_note.active?
+    @last_note ||= notes.last
   end
 
   def collapsed?
-    return false unless diff_discussion?
-
-    if resolvable?
-      # New diff discussions only disappear once they are marked resolved
-      resolved?
-    else
-      # Old diff discussions disappear once they become outdated
-      !active?
-    end
+    resolved?
   end
 
   def expanded?
@@ -151,52 +111,6 @@ class Discussion
   end
 
   def reply_attributes
-    data = {
-      noteable_type: first_note.noteable_type,
-      noteable_id:   first_note.noteable_id,
-      commit_id:     first_note.commit_id,
-      discussion_id: self.id,
-    }
-
-    if diff_discussion?
-      data[:note_type] = first_note.type
-
-      data.merge!(first_note.diff_attributes)
-    end
-
-    data
-  end
-
-  # Returns an array of at most 16 highlighted lines above a diff note
-  def truncated_diff_lines(highlight: true)
-    lines = highlight ? highlighted_diff_lines : diff_lines
-    prev_lines = []
-
-    lines.each do |line|
-      if line.meta?
-        prev_lines.clear
-      else
-        prev_lines << line
-
-        break if for_line?(line)
-
-        prev_lines.shift if prev_lines.length >= NUMBER_OF_TRUNCATED_DIFF_LINES
-      end
-    end
-
-    prev_lines
-  end
-
-  private
-
-  def update
-    notes_relation = DiffNote.where(id: notes.map(&:id)).fresh
-    yield(notes_relation)
-
-    # Set the notes array to the updated notes
-    @notes = notes_relation.to_a
-
-    # Reset the memoized values
-    @last_resolved_note = @resolvable = @resolved = @first_note = @last_note = nil
+    first_note.slice(:type, :noteable_type, :noteable_id, :commit_id, :discussion_id)
   end
 end

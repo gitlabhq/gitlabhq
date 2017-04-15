@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe 'Filter issues', js: true, feature: true do
+  include Devise::Test::IntegrationHelpers
   include FilteredSearchHelpers
   include WaitForAjax
 
@@ -42,16 +43,17 @@ describe 'Filter issues', js: true, feature: true do
     project.team << [user2, :master]
     group.add_developer(user)
     group.add_developer(user2)
-    login_as(user)
-    create(:issue, project: project)
 
-    create(:issue, title: "Bug report 1", project: project)
-    create(:issue, title: "Bug report 2", project: project)
-    create(:issue, title: "issue with 'single quotes'", project: project)
-    create(:issue, title: "issue with \"double quotes\"", project: project)
-    create(:issue, title: "issue with !@\#{$%^&*()-+", project: project)
-    create(:issue, title: "issue by assignee", project: project, milestone: milestone, author: user, assignee: user)
-    create(:issue, title: "issue by assignee with searchTerm", project: project, milestone: milestone, author: user, assignee: user)
+    sign_in(user)
+
+    create(:issue, project: project)
+    create(:issue, project: project, title: "Bug report 1")
+    create(:issue, project: project, title: "Bug report 2")
+    create(:issue, project: project, title: "issue with 'single quotes'")
+    create(:issue, project: project, title: "issue with \"double quotes\"")
+    create(:issue, project: project, title: "issue with !@\#{$%^&*()-+")
+    create(:issue, project: project, title: "issue by assignee", milestone: milestone, author: user, assignee: user)
+    create(:issue, project: project, title: "issue by assignee with searchTerm", milestone: milestone, author: user, assignee: user)
 
     issue = create(:issue,
       title: "Bug 2",
@@ -756,10 +758,10 @@ describe 'Filter issues', js: true, feature: true do
 
         expect_issues_list_count(2)
 
-        sort_toggle = find('.filtered-search-container .dropdown-toggle')
+        sort_toggle = find('.filtered-search-wrapper .dropdown-toggle')
         sort_toggle.click
 
-        find('.filtered-search-container .dropdown-menu li a', text: 'Oldest updated').click
+        find('.filtered-search-wrapper .dropdown-menu li a', text: 'Oldest updated').click
         wait_for_ajax
 
         expect(find('.issues-list .issue:first-of-type .issue-title-text a')).to have_content(old_issue.title)

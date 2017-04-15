@@ -1,4 +1,0 @@
----
-title: Make CI build to use optimistic locking only on status change
-merge_request:
-author:

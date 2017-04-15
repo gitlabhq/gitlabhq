@@ -101,7 +101,7 @@ in the table below.
 | `Project key` | The short identifier for your JIRA project, all uppercase, e.g., `PROJ`. |
 | `Username` | The user name created in [configuring JIRA step](#configuring-jira). |
 | `Password` |The password of the user created in [configuring JIRA step](#configuring-jira). |
-| `JIRA issue transition` | This is the ID of a transition that moves issues to a closed state. You can find this number under JIRA workflow administration ([see screenshot](img/jira_workflow_screenshot.png)). |
+| `JIRA issue transition` | This is the ID of a transition that moves issues to a closed state. You can find this number under JIRA workflow administration ([see screenshot](img/jira_workflow_screenshot.png)). **Closing JIRA issues via commits or Merge Requests won't work if you don't set the ID correctly.** |
 
 After saving the configuration, your GitLab project will be able to interact
 with the linked JIRA project.
@@ -156,6 +156,11 @@ the same goal:
 - `Fixes PROJECT-1`
 
 where `PROJECT-1` is the issue ID of the JIRA project.
+
+>**Note:**
+- Only commits and merges into the project's default branch (usually **master**) will
+  close an issue in Jira. You can change your projects default branch under
+  [project settings](img/jira_project_settings.png).
 
 ### JIRA issue closing example
 

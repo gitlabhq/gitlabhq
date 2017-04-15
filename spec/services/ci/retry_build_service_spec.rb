@@ -16,20 +16,21 @@ describe Ci::RetryBuildService, :services do
     %i[id status user token coverage trace runner artifacts_expire_at
        artifacts_file artifacts_metadata artifacts_size created_at
        updated_at started_at finished_at queued_at erased_by
-       erased_at].freeze
+       erased_at auto_canceled_by].freeze
 
   IGNORE_ACCESSORS =
     %i[type lock_version target_url base_tags
        commit_id deployments erased_by_id last_deployment project_id
        runner_id tag_taggings taggings tags trigger_request_id
-       user_id].freeze
+       user_id auto_canceled_by_id].freeze
 
   shared_examples 'build duplication' do
     let(:build) do
       create(:ci_build, :failed, :artifacts_expired, :erased,
              :queued, :coverage, :tags, :allowed_to_fail, :on_tag,
              :teardown_environment, :triggered, :trace,
-             description: 'some build', pipeline: pipeline)
+             description: 'some build', pipeline: pipeline,
+             auto_canceled_by: create(:ci_empty_pipeline))
     end
 
     describe 'clone accessors' do

@@ -61,7 +61,7 @@ module Ci
 
           update_runner_info
 
-          build.update_attributes(trace: params[:trace]) if params[:trace]
+          build.trace.set(params[:trace]) if params[:trace]
 
           Gitlab::Metrics.add_event(:update_build,
                                     project: build.project.path_with_namespace)
@@ -86,23 +86,20 @@ module Ci
         # Example Request:
         #   PATCH /builds/:id/trace.txt
         patch ":id/trace.txt" do
-          build = Ci::Build.find_by_id(params[:id])
-          authenticate_build!(build)
+          build = authenticate_build!
 
           error!('400 Missing header Content-Range', 400) unless request.headers.has_key?('Content-Range')
           content_range = request.headers['Content-Range']
           content_range = content_range.split('-')
 
-          current_length = build.trace_length
-          unless current_length == content_range[0].to_i
-            return error!('416 Range Not Satisfiable', 416, { 'Range' => "0-#{current_length}" })
+          stream_size = build.trace.append(request.body.read, content_range[0].to_i)
+          if stream_size < 0
+            return error!('416 Range Not Satisfiable', 416, { 'Range' => "0-#{-stream_size}" })
           end
-
-          build.append_trace(request.body.read, content_range[0].to_i)
 
           status 202
           header 'Build-Status', build.status
-          header 'Range', "0-#{build.trace_length}"
+          header 'Range', "0-#{stream_size}"
         end
 
         # Authorize artifacts uploading for build - Runners only
@@ -117,8 +114,7 @@ module Ci
           require_gitlab_workhorse!
           Gitlab::Workhorse.verify_api_request!(headers)
           not_allowed! unless Gitlab.config.artifacts.enabled
-          build = Ci::Build.find_by_id(params[:id])
-          authenticate_build!(build)
+          build = authenticate_build!
           forbidden!('build is not running') unless build.running?
 
           if params[:filesize]
@@ -154,8 +150,7 @@ module Ci
         post ":id/artifacts" do
           require_gitlab_workhorse!
           not_allowed! unless Gitlab.config.artifacts.enabled
-          build = Ci::Build.find_by_id(params[:id])
-          authenticate_build!(build)
+          build = authenticate_build!
           forbidden!('Build is not running!') unless build.running?
 
           artifacts_upload_path = ArtifactUploader.artifacts_upload_path
@@ -189,8 +184,7 @@ module Ci
         # Example Request:
         #   GET /builds/:id/artifacts
         get ":id/artifacts" do
-          build = Ci::Build.find_by_id(params[:id])
-          authenticate_build!(build)
+          build = authenticate_build!
           artifacts_file = build.artifacts_file
 
           unless artifacts_file.file_storage?
@@ -214,8 +208,7 @@ module Ci
         # Example Request:
         #   DELETE /builds/:id/artifacts
         delete ":id/artifacts" do
-          build = Ci::Build.find_by_id(params[:id])
-          authenticate_build!(build)
+          build = authenticate_build!
 
           status(200)
           build.erase_artifacts!

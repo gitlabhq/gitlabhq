@@ -230,6 +230,14 @@
     font-size: 0;
   }
 
+  .fade-right {
+    right: 0;
+  }
+
+  .fade-left {
+    left: 0;
+  }
+
   @media (max-width: $screen-xs-max) {
     .cover-block {
       padding-top: 20px;

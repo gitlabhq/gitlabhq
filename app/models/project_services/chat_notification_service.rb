@@ -49,10 +49,7 @@ class ChatNotificationService < Service
 
     object_kind = data[:object_kind]
 
-    data = data.merge(
-      project_url: project_url,
-      project_name: project_name
-    )
+    data = custom_data(data)
 
     # WebHook events often have an 'update' event that follows a 'open' or
     # 'close' action. Ignore update events for now to prevent duplicate
@@ -68,8 +65,7 @@ class ChatNotificationService < Service
     opts[:channel] = channel_name if channel_name
     opts[:username] = username if username
 
-    notifier = Slack::Notifier.new(webhook, opts)
-    notifier.ping(message.pretext, attachments: message.attachments, fallback: message.fallback)
+    return false unless notify(message, opts)
 
     true
   end
@@ -91,6 +87,18 @@ class ChatNotificationService < Service
   end
 
   private
+
+  def notify(message, opts)
+    Slack::Notifier.new(webhook, opts).ping(
+      message.pretext,
+      attachments: message.attachments,
+      fallback: message.fallback
+    )
+  end
+
+  def custom_data(data)
+    data.merge(project_url: project_url, project_name: project_name)
+  end
 
   def get_message(object_kind, data)
     case object_kind

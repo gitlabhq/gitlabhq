@@ -47,6 +47,7 @@ module API
       params do
         requires :key, type: String, desc: 'The new deploy key'
         requires :title, type: String, desc: 'The name of the deploy key'
+        optional :can_push, type: Boolean, desc: "Can deploy key push to the project's repository"
       end
       post ":id/deploy_keys" do
         params[:key].strip!

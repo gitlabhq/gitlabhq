@@ -3,7 +3,7 @@ require "spec_helper"
 describe Gitlab::Git::Repository, seed_helper: true do
   include Gitlab::Git::EncodingHelper
 
-  let(:repository) { Gitlab::Git::Repository.new(TEST_REPO_PATH) }
+  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
 
   describe "Respond to" do
     subject { repository }
@@ -12,6 +12,63 @@ describe Gitlab::Git::Repository, seed_helper: true do
     it { is_expected.to respond_to(:rugged) }
     it { is_expected.to respond_to(:root_ref) }
     it { is_expected.to respond_to(:tags) }
+  end
+
+  describe '#root_ref' do
+    context 'with gitaly disabled' do
+      before { allow(Gitlab::GitalyClient).to receive(:feature_enabled?).and_return(false) }
+
+      it 'calls #discover_default_branch' do
+        expect(repository).to receive(:discover_default_branch)
+        repository.root_ref
+      end
+    end
+
+    # TODO: Uncomment when feature is reenabled
+    # context 'with gitaly enabled' do
+    #   before { stub_gitaly }
+    #
+    #   it 'gets the branch name from GitalyClient' do
+    #     expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:default_branch_name)
+    #     repository.root_ref
+    #   end
+    #
+    #   it 'wraps GRPC exceptions' do
+    #     expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:default_branch_name).
+    #       and_raise(GRPC::Unknown)
+    #     expect { repository.root_ref }.to raise_error(Gitlab::Git::CommandError)
+    #   end
+    # end
+  end
+
+  describe "#rugged" do
+    context 'with no Git env stored' do
+      before do
+        expect(Gitlab::Git::Env).to receive(:all).and_return({})
+      end
+
+      it "whitelist some variables and pass them via the alternates keyword argument" do
+        expect(Rugged::Repository).to receive(:new).with(repository.path, alternates: [])
+
+        repository.rugged
+      end
+    end
+
+    context 'with some Git env stored' do
+      before do
+        expect(Gitlab::Git::Env).to receive(:all).and_return({
+          'GIT_OBJECT_DIRECTORY' => 'foo',
+          'GIT_ALTERNATE_OBJECT_DIRECTORIES' => 'bar',
+          'GIT_OTHER' => 'another_env'
+        })
+      end
+
+      it "whitelist some variables and pass them via the alternates keyword argument" do
+        expect(Rugged::Repository).to receive(:new).with(repository.path, alternates: %w[foo bar])
+
+        repository.rugged
+      end
+    end
   end
 
   describe "#discover_default_branch" do
@@ -55,6 +112,22 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
     it { is_expected.to include("master") }
     it { is_expected.not_to include("branch-from-space") }
+
+    # TODO: Uncomment when feature is reenabled
+    # context 'with gitaly enabled' do
+    #   before { stub_gitaly }
+    #
+    #   it 'gets the branch names from GitalyClient' do
+    #     expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:branch_names)
+    #     subject
+    #   end
+    #
+    #   it 'wraps GRPC exceptions' do
+    #     expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:branch_names).
+    #       and_raise(GRPC::Unknown)
+    #     expect { subject }.to raise_error(Gitlab::Git::CommandError)
+    #   end
+    # end
   end
 
   describe '#tag_names' do
@@ -71,6 +144,22 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
     it { is_expected.to include("v1.0.0") }
     it { is_expected.not_to include("v5.0.0") }
+
+    # TODO: Uncomment when feature is reenabled
+    # context 'with gitaly enabled' do
+    #   before { stub_gitaly }
+    #
+    #   it 'gets the tag names from GitalyClient' do
+    #     expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:tag_names)
+    #     subject
+    #   end
+    #
+    #   it 'wraps GRPC exceptions' do
+    #     expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:tag_names).
+    #       and_raise(GRPC::Unknown)
+    #     expect { subject }.to raise_error(Gitlab::Git::CommandError)
+    #   end
+    # end
   end
 
   shared_examples 'archive check' do |extenstion|
@@ -221,7 +310,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   context '#submodules' do
-    let(:repository) { Gitlab::Git::Repository.new(TEST_REPO_PATH) }
+    let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
 
     context 'where repo has submodules' do
       let(:submodules) { repository.submodules('master') }
@@ -290,9 +379,9 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe "#reset" do
-    change_path = File.join(TEST_NORMAL_REPO_PATH, "CHANGELOG")
-    untracked_path = File.join(TEST_NORMAL_REPO_PATH, "UNTRACKED")
-    tracked_path = File.join(TEST_NORMAL_REPO_PATH, "files", "ruby", "popen.rb")
+    change_path = File.join(SEED_STORAGE_PATH, TEST_NORMAL_REPO_PATH, "CHANGELOG")
+    untracked_path = File.join(SEED_STORAGE_PATH, TEST_NORMAL_REPO_PATH, "UNTRACKED")
+    tracked_path = File.join(SEED_STORAGE_PATH, TEST_NORMAL_REPO_PATH, "files", "ruby", "popen.rb")
 
     change_text = "New changelog text"
     untracked_text = "This file is untracked"
@@ -311,7 +400,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
           f.write(untracked_text)
         end
 
-        @normal_repo = Gitlab::Git::Repository.new(TEST_NORMAL_REPO_PATH)
+        @normal_repo = Gitlab::Git::Repository.new('default', TEST_NORMAL_REPO_PATH)
         @normal_repo.reset("HEAD", :hard)
       end
 
@@ -354,7 +443,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     context "-b" do
       before(:all) do
-        @normal_repo = Gitlab::Git::Repository.new(TEST_NORMAL_REPO_PATH)
+        @normal_repo = Gitlab::Git::Repository.new('default', TEST_NORMAL_REPO_PATH)
         @normal_repo.checkout(new_branch, { b: true }, "origin/feature")
       end
 
@@ -382,7 +471,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     context "without -b" do
       context "and specifying a nonexistent branch" do
         it "should not do anything" do
-          normal_repo = Gitlab::Git::Repository.new(TEST_NORMAL_REPO_PATH)
+          normal_repo = Gitlab::Git::Repository.new('default', TEST_NORMAL_REPO_PATH)
 
           expect { normal_repo.checkout(new_branch) }.to raise_error(Rugged::ReferenceError)
           expect(normal_repo.rugged.branches[new_branch]).to be_nil
@@ -402,7 +491,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
       context "and with a valid branch" do
         before(:all) do
-          @normal_repo = Gitlab::Git::Repository.new(TEST_NORMAL_REPO_PATH)
+          @normal_repo = Gitlab::Git::Repository.new('default', TEST_NORMAL_REPO_PATH)
           @normal_repo.rugged.branches.create("feature", "origin/feature")
           @normal_repo.checkout("feature")
         end
@@ -414,13 +503,13 @@ describe Gitlab::Git::Repository, seed_helper: true do
         end
 
         it "should update the working directory" do
-          File.open(File.join(TEST_NORMAL_REPO_PATH, ".gitignore"), "r") do |f|
+          File.open(File.join(SEED_STORAGE_PATH, TEST_NORMAL_REPO_PATH, ".gitignore"), "r") do |f|
             expect(f.read.each_line.to_a).not_to include(".DS_Store\n")
           end
         end
 
         after(:all) do
-          FileUtils.rm_rf(TEST_NORMAL_REPO_PATH)
+          FileUtils.rm_rf(SEED_STORAGE_PATH, TEST_NORMAL_REPO_PATH)
           ensure_seeds
         end
       end
@@ -429,7 +518,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe "#delete_branch" do
     before(:all) do
-      @repo = Gitlab::Git::Repository.new(TEST_MUTABLE_REPO_PATH)
+      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH)
       @repo.delete_branch("feature")
     end
 
@@ -449,7 +538,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe "#create_branch" do
     before(:all) do
-      @repo = Gitlab::Git::Repository.new(TEST_MUTABLE_REPO_PATH)
+      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH)
     end
 
     it "should create a new branch" do
@@ -496,7 +585,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe "#remote_delete" do
     before(:all) do
-      @repo = Gitlab::Git::Repository.new(TEST_MUTABLE_REPO_PATH)
+      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH)
       @repo.remote_delete("expendable")
     end
 
@@ -512,7 +601,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe "#remote_add" do
     before(:all) do
-      @repo = Gitlab::Git::Repository.new(TEST_MUTABLE_REPO_PATH)
+      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH)
       @repo.remote_add("new_remote", SeedHelper::GITLAB_GIT_TEST_REPO_URL)
     end
 
@@ -528,7 +617,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe "#remote_update" do
     before(:all) do
-      @repo = Gitlab::Git::Repository.new(TEST_MUTABLE_REPO_PATH)
+      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH)
       @repo.remote_update("expendable", url: TEST_NORMAL_REPO_PATH)
     end
 
@@ -551,7 +640,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     before(:context) do
       # Add new commits so that there's a renamed file in the commit history
-      repo = Gitlab::Git::Repository.new(TEST_REPO_PATH).rugged
+      repo = Gitlab::Git::Repository.new('default', TEST_REPO_PATH).rugged
 
       commit_with_old_name = new_commit_edit_old_file(repo)
       rename_commit = new_commit_move_file(repo)
@@ -560,7 +649,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     after(:context) do
       # Erase our commits so other tests get the original repo
-      repo = Gitlab::Git::Repository.new(TEST_REPO_PATH).rugged
+      repo = Gitlab::Git::Repository.new('default', TEST_REPO_PATH).rugged
       repo.references.update("refs/heads/master", SeedRepo::LastCommit::ID)
     end
 
@@ -885,7 +974,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe '#autocrlf' do
     before(:all) do
-      @repo = Gitlab::Git::Repository.new(TEST_MUTABLE_REPO_PATH)
+      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH)
       @repo.rugged.config['core.autocrlf'] = true
     end
 
@@ -900,14 +989,14 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe '#autocrlf=' do
     before(:all) do
-      @repo = Gitlab::Git::Repository.new(TEST_MUTABLE_REPO_PATH)
+      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH)
       @repo.rugged.config['core.autocrlf'] = false
     end
 
     it 'should set the autocrlf option to the provided option' do
       @repo.autocrlf = :input
 
-      File.open(File.join(TEST_MUTABLE_REPO_PATH, '.git', 'config')) do |config_file|
+      File.open(File.join(SEED_STORAGE_PATH, TEST_MUTABLE_REPO_PATH, '.git', 'config')) do |config_file|
         expect(config_file.read).to match('autocrlf = input')
       end
     end
@@ -999,7 +1088,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe "#copy_gitattributes" do
-    let(:attributes_path) { File.join(TEST_REPO_PATH, 'info/attributes') }
+    let(:attributes_path) { File.join(SEED_STORAGE_PATH, TEST_REPO_PATH, 'info/attributes') }
 
     it "raises an error with invalid ref" do
       expect { repository.copy_gitattributes("invalid") }.to raise_error(Gitlab::Git::Repository::InvalidRef)
@@ -1075,7 +1164,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#diffable' do
-    info_dir_path = attributes_path = File.join(TEST_REPO_PATH, 'info')
+    info_dir_path = attributes_path = File.join(SEED_STORAGE_PATH, TEST_REPO_PATH, 'info')
     attributes_path = File.join(info_dir_path, 'attributes')
 
     before(:all) do
@@ -1143,7 +1232,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe '#local_branches' do
     before(:all) do
-      @repo = Gitlab::Git::Repository.new(TEST_MUTABLE_REPO_PATH)
+      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH)
     end
 
     after(:all) do
@@ -1234,5 +1323,12 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     sha = Rugged::Commit.create(repo, options)
     repo.lookup(sha)
+  end
+
+  def stub_gitaly
+    allow(Gitlab::GitalyClient).to receive(:feature_enabled?).and_return(true)
+
+    stub = double(:stub)
+    allow(Gitaly::Ref::Stub).to receive(:new).and_return(stub)
   end
 end

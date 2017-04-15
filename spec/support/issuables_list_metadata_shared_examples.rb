@@ -33,4 +33,19 @@ shared_examples 'issuables list meta-data' do |issuable_type, action = nil|
       expect(meta_data[id].upvotes).to eq(id + 2)
     end
   end
+
+  describe "when given empty collection" do
+    let(:project2) { create(:empty_project, :public) }
+
+    it "doesn't execute any queries with false conditions" do
+      get_action =
+        if action
+          proc { get action }
+        else
+          proc { get :index, namespace_id: project2.namespace, project_id: project2 }
+        end
+
+      expect(&get_action).not_to make_queries_matching(/WHERE (?:1=0|0=1)/)
+    end
+  end
 end

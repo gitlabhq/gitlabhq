@@ -1,4 +1,0 @@
----
-title: Remove unnecessary ORDER BY clause when updating todos
-merge_request:
-author: mhasbini

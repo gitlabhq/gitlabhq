@@ -7,7 +7,7 @@
 
   #blob-content-holder.tree-holder
     .file-holder
-      = render "projects/blob/header", blob: @blob
+      = render "projects/blob/header", blob: @blob, blame: true
 
       .table-responsive.file-content.blame.code.js-syntax-highlight
         %table
