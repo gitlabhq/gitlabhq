@@ -15,7 +15,6 @@ var DEV_SERVER_HOST = process.env.DEV_SERVER_HOST || 'localhost';
 var DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10) || 3808;
 var DEV_SERVER_LIVERELOAD = process.env.DEV_SERVER_LIVERELOAD !== 'false';
 var WEBPACK_REPORT = process.env.WEBPACK_REPORT;
-var rewirePlugin = IS_PRODUCTION ? '?plugins=rewire' : '';
 
 var config = {
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
@@ -69,7 +68,7 @@ var config = {
       {
         test: /\.js$/,
         exclude: /(node_modules|vendor\/assets)/,
-        loader: `babel-loader${rewirePlugin}`,
+        loader: 'babel-loader',
       },
       {
         test: /\.vue$/,

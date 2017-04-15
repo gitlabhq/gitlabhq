@@ -1,5 +1,4 @@
 import Raven from 'raven-js';
-import $ from 'jquery';
 
 const RavenConfig = {
   init(options = {}) {
@@ -24,11 +23,12 @@ const RavenConfig = {
   },
 
   bindRavenErrors() {
-    $(document).on('ajaxError.raven', this.handleRavenErrors);
+    window.$(document).on('ajaxError.raven', this.handleRavenErrors);
   },
 
   handleRavenErrors(event, req, config, err) {
     const error = err || req.statusText;
+    const responseText = req.responseText || 'Unknown response text';
 
     Raven.captureMessage(error, {
       extra: {
@@ -36,7 +36,7 @@ const RavenConfig = {
         url: config.url,
         data: config.data,
         status: req.status,
-        response: req.responseText.substring(0, 100),
+        response: responseText.substring(0, 100),
         error,
         event,
       },

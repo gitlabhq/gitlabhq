@@ -1,5 +1,5 @@
 import Raven from 'raven-js';
-import RavenConfig, { __RewireAPI__ as RavenConfigRewire } from '~/raven/raven_config';
+import RavenConfig from '~/raven/raven_config';
 
 describe('RavenConfig', () => {
   describe('init', () => {
@@ -122,13 +122,13 @@ describe('RavenConfig', () => {
       $document = jasmine.createSpyObj('$document', ['on']);
       $ = jasmine.createSpy('$').and.returnValue($document);
 
-      RavenConfigRewire.__set__('$', $);
+      window.$ = $;
 
       RavenConfig.bindRavenErrors();
     });
 
     it('should query for document using jquery', () => {
-      expect($).toHaveBeenCalledWith(document);
+      expect(window.$).toHaveBeenCalledWith(document);
     });
 
     it('should call .on', function () {
@@ -183,6 +183,30 @@ describe('RavenConfig', () => {
             status: req.status,
             response: req.responseText.substring(0, 100),
             error: req.statusText,
+            event,
+          },
+        });
+      });
+    });
+
+    describe('if no req.responseText is provided', () => {
+      beforeEach(() => {
+        req.responseText = undefined;
+
+        Raven.captureMessage.calls.reset();
+
+        RavenConfig.handleRavenErrors(event, req, config, err);
+      });
+
+      it('should use `Unknown response text` as the response', () => {
+        expect(Raven.captureMessage).toHaveBeenCalledWith(err, {
+          extra: {
+            type: config.type,
+            url: config.url,
+            data: config.data,
+            status: req.status,
+            response: 'Unknown response text',
+            error: err,
             event,
           },
         });
