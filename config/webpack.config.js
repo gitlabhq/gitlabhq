@@ -125,6 +125,7 @@ var config = {
         'notebook_viewer',
         'pdf_viewer',
         'vue_pipelines',
+        'issue_show',
       ],
       minChunks: function(module, count) {
         return module.resource && (/vue_shared/).test(module.resource);
