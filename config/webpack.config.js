@@ -52,6 +52,7 @@ var config = {
     vue_pipelines:        './vue_pipelines_index/index.js',
     issue_show:           './issue_show/index.js',
     group:                './group.js',
+    locale:               './locale/index.js',
   },
 
   output: {
@@ -81,6 +82,10 @@ var config = {
         test: /\.(worker\.js|pdf)$/,
         exclude: /node_modules/,
         loader: 'file-loader',
+      },
+      {
+        test: /locale\/[a-z]+\/(.*)\.js$/,
+        loader: 'exports-loader?locales',
       },
     ]
   },
