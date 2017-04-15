@@ -92,6 +92,12 @@
   %tr
     %td
       %b
+        Git Read-Only:
+    %td
+      = link_to @project.gitd_url_to_repo
+  %tr
+    %td
+      %b
         Last commit at:
     %td
       = last_commit(@project)

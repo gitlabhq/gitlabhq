@@ -16,8 +16,13 @@ class ProjectUpdateContext < BaseContext
         project.transfer(namespace)
       end
     end
-
-    project.update_attributes(params[:project], as: role)
+    
+    if params[:project]["anon_clone"].to_i.zero? == project.anon_clone
+      project.update_attributes(params[:project], as: role)
+      project.update_repository
+    else
+      project.update_attributes(params[:project], as: role)
+    end
   end
 end
 

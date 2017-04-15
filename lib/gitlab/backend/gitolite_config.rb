@@ -129,7 +129,7 @@ module Gitlab
       end
     end
 
-    def update_project_config(project, conf)
+    def update_project_config(project, conf, anon_clone = project.anon_clone)
       repo_name = project.path_with_namespace
 
       repo = if conf.has_repo?(repo_name)
@@ -157,9 +157,14 @@ module Gitlab
       # Add write permissions
       repo.add_permission("RW+", "", name_writers) unless name_writers.blank?
       repo.add_permission("RW+", "", name_masters) unless name_masters.blank?
-
-      # Add sharedRepository config
-      repo.set_git_config("core.sharedRepository", "0660")
+      
+      # Check Anon cloning and set appropriate permissions
+      if anon_clone
+        repo.add_permission("R", "", "daemon")
+        repo.set_git_config("core.sharedRepository", "0664")
+      else
+        repo.set_git_config("core.sharedRepository", "0660")
+      end
 
       repo
     end

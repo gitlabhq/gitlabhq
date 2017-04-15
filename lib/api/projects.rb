@@ -33,6 +33,7 @@ module Gitlab
       #   wall_enabled (optional) - enabled by default
       #   merge_requests_enabled (optional) - enabled by default
       #   wiki_enabled (optional) - enabled by default
+      #   anon_clone (optional) - disabled by default
       # Example Request
       #   POST /projects
       post do
@@ -42,7 +43,8 @@ module Gitlab
                                     :issues_enabled,
                                     :wall_enabled,
                                     :merge_requests_enabled,
-                                    :wiki_enabled]
+                                    :wiki_enabled,
+                                    :anon_clone]
         @project = Project.create_by_user(attrs, current_user)
         if @project.saved?
           present @project, with: Entities::Project

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121219095402) do
+ActiveRecord::Schema.define(:version => 20130110143240) do
 
   create_table "events", :force => true do |t|
     t.string   "target_type"
@@ -155,6 +155,7 @@ ActiveRecord::Schema.define(:version => 20121219095402) do
     t.boolean  "merge_requests_enabled", :default => true, :null => false
     t.boolean  "wiki_enabled",           :default => true, :null => false
     t.integer  "namespace_id"
+    t.boolean  "anon_clone",             :default => false, :null => false
   end
 
   add_index "projects", ["namespace_id"], :name => "index_projects_on_namespace_id"
