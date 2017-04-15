@@ -1,5 +1,4 @@
-import CommentTypeToggle from '~/comment_type_toggle';
-import * as dropLabSrc from '~/droplab/drop_lab';
+import CommentTypeToggle, { __RewireAPI__ as CommentTypeToggleRewire } from '~/comment_type_toggle';
 import InputSetter from '~/droplab/plugins/input_setter';
 
 describe('CommentTypeToggle', function () {
@@ -58,15 +57,16 @@ describe('CommentTypeToggle', function () {
       this.config = {};
 
       this.droplab = jasmine.createSpyObj('droplab', ['init']);
-
-      spyOn(dropLabSrc, 'default').and.returnValue(this.droplab);
+      this.DropLab = jasmine.createSpy('DropLab').and.returnValue(this.droplab);
       spyOn(this.commentTypeToggle, 'setConfig').and.returnValue(this.config);
+
+      CommentTypeToggleRewire.__set__('DropLab', this.DropLab);
 
       CommentTypeToggle.prototype.initDroplab.call(this.commentTypeToggle);
     });
 
     it('should instantiate a DropLab instance', function () {
-      expect(dropLabSrc.default).toHaveBeenCalled();
+      expect(this.DropLab).toHaveBeenCalled();
     });
 
     it('should set .droplab', function () {
@@ -77,7 +77,7 @@ describe('CommentTypeToggle', function () {
       expect(this.commentTypeToggle.setConfig).toHaveBeenCalled();
     });
 
-    it('should call DropLab.prototype.init', function () {
+    it('should call droplab.init', function () {
       expect(this.droplab.init).toHaveBeenCalledWith(
         this.commentTypeToggle.dropdownTrigger,
         this.commentTypeToggle.dropdownList,

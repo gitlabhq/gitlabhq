@@ -1,7 +1,6 @@
 /* eslint-disable */
 
-import Hook from '~/droplab/hook';
-import * as dropdownSrc from '~/droplab/drop_down';
+import Hook, { __RewireAPI__ as HookRewire } from '~/droplab/hook';
 
 describe('Hook', function () {
   describe('class constructor', function () {
@@ -12,7 +11,8 @@ describe('Hook', function () {
       this.config = {};
       this.dropdown = {};
 
-      spyOn(dropdownSrc, 'default').and.returnValue(this.dropdown);
+      this.DropDown = jasmine.createSpy('DropDown').and.returnValue(this.dropdown);
+      HookRewire.__set__('DropDown', this.DropDown);
 
       this.hook = new Hook(this.trigger, this.list, this.plugins, this.config);
     });
@@ -26,7 +26,7 @@ describe('Hook', function () {
     });
 
     it('should call DropDown constructor', function () {
-      expect(dropdownSrc.default).toHaveBeenCalledWith(this.list);
+      expect(this.DropDown).toHaveBeenCalledWith(this.list);
     });
 
     it('should set .type', function () {
