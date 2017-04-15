@@ -20,10 +20,16 @@ class AttachmentUploader < CarrierWave::Uploader::Base
     false
   end
 
-  def secure_url
-    "/files/#{model.class.to_s.underscore}/#{model.id}/#{file.filename}"
+  unless Gitlab.config.gitlab.relative_url_root.empty?
+    def secure_url
+      Gitlab.config.gitlab.relative_url_root + "/files/#{model.class.to_s.underscore}/#{model.id}/#{file.filename}"
+    end
+  else
+    def secure_url
+      "/files/#{model.class.to_s.underscore}/#{model.id}/#{file.filename}"
+    end
   end
-
+  
   def file_storage?
     self.class.storage == CarrierWave::Storage::File
   end
