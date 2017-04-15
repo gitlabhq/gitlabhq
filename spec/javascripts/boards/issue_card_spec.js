@@ -129,7 +129,7 @@ describe('Issue card component', () => {
 
       it('sets title', () => {
         expect(
-          component.$el.querySelector('.card-assignee a').getAttribute('title'),
+          component.$el.querySelector('.card-assignee img').getAttribute('data-original-title'),
         ).toContain(`Assigned to ${user.name}`);
       });
 

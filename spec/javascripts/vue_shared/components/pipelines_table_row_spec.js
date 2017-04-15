@@ -79,7 +79,7 @@ describe('Pipelines Table Row', () => {
         ).toEqual(pipeline.user.web_url);
 
         expect(
-          component.$el.querySelector('td:nth-child(2) img').getAttribute('title'),
+          component.$el.querySelector('td:nth-child(2) img').getAttribute('data-original-title'),
         ).toEqual(pipeline.user.name);
       });
     });
@@ -102,7 +102,7 @@ describe('Pipelines Table Row', () => {
       }
 
       const commitAuthorLink = commitAuthorElement.getAttribute('href');
-      const commitAuthorName = commitAuthorElement.querySelector('img.avatar').getAttribute('title');
+      const commitAuthorName = commitAuthorElement.querySelector('img.avatar').getAttribute('data-original-title');
 
       return { commitAuthorElement, commitAuthorLink, commitAuthorName };
     };
