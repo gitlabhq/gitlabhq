@@ -201,10 +201,10 @@ Make sure to update username/password in config/database.yml.
     sudo gem install charlock_holmes --version '0.6.9.4'
 
     # For MySQL (note, the option says "without")
-    sudo -u git -H bundle install --deployment --without development test postgres
+    sudo -u git -H bundle install --deployment --without development test mysql
 
     # Or for PostgreSQL
-    sudo -u git -H bundle install --deployment --without development test mysql
+    sudo -u git -H bundle install --deployment --without development test postgres
 
 
 ## Initialise Database and Activate Advanced Features
