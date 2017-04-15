@@ -1,8 +1,7 @@
-import $ from 'jquery';
 import Raven from 'raven-js';
-import RavenConfig from '~/raven/raven_config';
+import RavenConfig, { __RewireAPI__ as RavenConfigRewire } from '~/raven/raven_config';
 
-fdescribe('RavenConfig', () => {
+describe('RavenConfig', () => {
   describe('init', () => {
     let options;
 
@@ -116,21 +115,78 @@ fdescribe('RavenConfig', () => {
   });
 
   describe('bindRavenErrors', () => {
+    let $document;
+    let $;
+
     beforeEach(() => {
+      $document = jasmine.createSpyObj('$document', ['on']);
+      $ = jasmine.createSpy('$').and.returnValue($document);
+
+      RavenConfigRewire.__set__('$', $);
+
       RavenConfig.bindRavenErrors();
     });
 
     it('should query for document using jquery', () => {
-      console.log($, 'or', $.fn);
-      // expect($).toHaveBeenCalledWith()
+      expect($).toHaveBeenCalledWith(document);
     });
 
     it('should call .on', function () {
-      // expect($document.on).toHaveBeenCalledWith('ajaxError.raven', RavenConfig.handleRavenErrors);
+      expect($document.on).toHaveBeenCalledWith('ajaxError.raven', RavenConfig.handleRavenErrors);
     });
   });
 
   describe('handleRavenErrors', () => {
-    beforeEach(() => {});
+    let event;
+    let req;
+    let config;
+    let err;
+
+    beforeEach(() => {
+      event = {};
+      req = { status: 'status', responseText: 'responseText', statusText: 'statusText' };
+      config = { type: 'type', url: 'url', data: 'data' };
+      err = {};
+
+      spyOn(Raven, 'captureMessage');
+
+      RavenConfig.handleRavenErrors(event, req, config, err);
+    });
+
+    it('should call Raven.captureMessage', () => {
+      expect(Raven.captureMessage).toHaveBeenCalledWith(err, {
+        extra: {
+          type: config.type,
+          url: config.url,
+          data: config.data,
+          status: req.status,
+          response: req.responseText.substring(0, 100),
+          error: err,
+          event,
+        },
+      });
+    });
+
+    describe('if no err is provided', () => {
+      beforeEach(() => {
+        Raven.captureMessage.calls.reset();
+
+        RavenConfig.handleRavenErrors(event, req, config);
+      });
+
+      it('should use req.statusText as the error value', () => {
+        expect(Raven.captureMessage).toHaveBeenCalledWith(req.statusText, {
+          extra: {
+            type: config.type,
+            url: config.url,
+            data: config.data,
+            status: req.status,
+            response: req.responseText.substring(0, 100),
+            error: req.statusText,
+            event,
+          },
+        });
+      });
+    });
   });
 });

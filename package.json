@@ -44,6 +44,7 @@
   },
   "devDependencies": {
     "babel-plugin-istanbul": "^4.0.0",
+    "babel-plugin-rewire": "^1.1.0",
     "eslint": "^3.10.1",
     "eslint-config-airbnb-base": "^10.0.1",
     "eslint-import-resolver-webpack": "^0.8.1",

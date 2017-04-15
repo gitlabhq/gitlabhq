@@ -2,12 +2,8 @@
 %html{ lang: "en", class: "#{page_class}" }
   = render "layouts/head"
   %body{ class: @body_class, data: { page: body_data_page, project: "#{@project.path if @project}", group: "#{@group.path if @group}" } }
-    = Gon::Base.render_data
-
     = render "layouts/header/default", title: header_title
     = render 'layouts/page', sidebar: sidebar, nav: nav
 
     = yield :scripts_body
     = render "layouts/init_auto_complete" if @gfm_form
-
-    = javascript_include_tag(*webpack_asset_paths("raven")) if sentry_enabled?

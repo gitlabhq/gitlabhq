@@ -61,7 +61,7 @@ var config = {
       {
         test: /\.js$/,
         exclude: /(node_modules|vendor\/assets)/,
-        loader: 'babel-loader'
+        loader: 'babel-loader?plugins=rewire'
       },
       {
         test: /\.svg$/,

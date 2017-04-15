@@ -28,9 +28,12 @@
   = stylesheet_link_tag "application", media: "all"
   = stylesheet_link_tag "print",       media: "print"
 
+  = Gon::Base.render_data
+
   = javascript_include_tag(*webpack_asset_paths("runtime"))
   = javascript_include_tag(*webpack_asset_paths("common"))
   = javascript_include_tag(*webpack_asset_paths("main"))
+  = javascript_include_tag(*webpack_asset_paths("raven")) if sentry_enabled?
 
   - if content_for?(:page_specific_javascripts)
     = yield :page_specific_javascripts
