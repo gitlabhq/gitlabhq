@@ -3,13 +3,13 @@
 //   LEFT: Symbol('LEFT'),
 //   RIGHT: Symbol('RIGHT'),
 // };
-//
+
 // const KEY_MAP = new Map([
 //   [32, KEY_SYMBOLS.SPACE],
 //   [37, KEY_SYMBOLS.LEFT],
 //   [39, KEY_SYMBOLS.RIGHT],
 // ]);
-//
+
 // class Keyboard {
 //   init() {
 //     document.addEventListener('keydown', this.readInput.bind(this));
@@ -53,7 +53,7 @@ class Ball {
   }
 
   start() {
-    return
+    return true;
   }
 }
 
@@ -64,7 +64,7 @@ class Score {
   }
 
   start() {
-    this.points = Math.floor(this.points * 0.9);
+    this.points = Math.floor(this.points * 0.925);
 
     this.element.innerText = this.points;
 
@@ -76,8 +76,6 @@ class Pong {
   constructor(containerElement, ballElement, scoreElement) {
     this.container = containerElement;
 
-    this.setContainer();
-
     this.score = new Score(scoreElement);
     this.ball = new Ball(ballElement);
     // this.user = new User();
@@ -85,7 +83,9 @@ class Pong {
   }
 
   init() {
-    this.start(this.play.bind(this));
+    this.setContainer();
+
+    setTimeout(this.start.bind(this, this.play.bind(this)), 250);
   }
 
   start(done) {
@@ -113,7 +113,7 @@ class Pong {
   }
 
   setContainer() {
-
+    this.container.classList.add('game-active');
   }
 }
 

@@ -1,0 +1,25 @@
+#container.game-active {
+  position: relative;
+  width: 400px;
+  height: 500px;
+  margin: 0 auto;
+}
+
+.game-active #logo {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  top: 50%;
+  left: 50%;
+  margin: -25px 0 0 -25px;
+  padding: 0;
+
+}
+
+.game-active #error-code {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
