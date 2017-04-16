@@ -136,7 +136,8 @@ module Banzai
 
         nodes.each_with_object({}) do |node, hash|
           if node.has_attribute?(attribute)
-            hash[node] = objects_by_id[node.attr(attribute).to_i]
+            obj = objects_by_id[node.attr(attribute).to_i]
+            hash[node] = obj if obj
           end
         end
       end
