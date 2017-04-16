@@ -254,4 +254,42 @@ describe 'Pipeline', :feature, :js do
       it { expect(build_manual.reload).to be_pending }
     end
   end
+
+  describe 'GET /:project/pipelines/:id/failures' do
+    let(:project) { create(:project) }
+    let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id) }
+    let(:pipeline_failures_page) { failures_namespace_project_pipeline_path(project.namespace, project, pipeline) }
+    let!(:failed_build) { create(:ci_build, :failed, pipeline: pipeline) }
+
+    context 'with failed build' do
+      before do
+        failed_build.trace.set('4 examples, 1 failure')
+
+        visit pipeline_failures_page
+      end
+
+      it 'shows jobs tab pane as active' do
+        expect(page).to have_css('#js-tab-failures.active')
+      end
+
+      it 'lists failed builds' do
+        expect(page).to have_content(failed_build.name)
+        expect(page).to have_content(failed_build.stage)
+      end
+
+      it 'shows build failure logs' do
+        expect(page).to have_content('4 examples, 1 failure')
+      end
+    end
+
+    context 'when missing build logs' do
+      before do
+        visit pipeline_failures_page
+      end
+
+      it 'includes failed jobs' do
+        expect(page).to have_content('No job trace')
+      end
+    end
+  end
 end

@@ -1,4 +1,12 @@
 module BuildsHelper
+  def build_summary(build)
+    if build.has_trace?
+      build.trace.html(last_lines: 10).html_safe
+    else
+      "No job trace"
+    end
+  end
+
   def sidebar_build_class(build, current_build)
     build_class = ''
     build_class += ' active' if build.id === current_build.id
