@@ -23,3 +23,13 @@
   margin: 0;
   padding: 0;
 }
+
+.paddle {
+  width: 100px;
+  height: 20px;
+  background-color: #6b4fbb;
+}
+
+#user-paddle {}
+
+#computer-paddle {}

@@ -1,51 +1,51 @@
-// const KEY_SYMBOLS = {
-//   SPACE: Symbol('SPACE'),
-//   LEFT: Symbol('LEFT'),
-//   RIGHT: Symbol('RIGHT'),
-// };
+const KEY_SYMBOLS = {
+  SPACE: Symbol('SPACE'),
+  LEFT: Symbol('LEFT'),
+  RIGHT: Symbol('RIGHT'),
+};
 
-// const KEY_MAP = new Map([
-//   [32, KEY_SYMBOLS.SPACE],
-//   [37, KEY_SYMBOLS.LEFT],
-//   [39, KEY_SYMBOLS.RIGHT],
-// ]);
+const KEY_MAP = new Map([
+  [32, KEY_SYMBOLS.SPACE],
+  [37, KEY_SYMBOLS.LEFT],
+  [39, KEY_SYMBOLS.RIGHT],
+]);
 
-// class Keyboard {
-//   init() {
-//     document.addEventListener('keydown', this.readInput.bind(this));
-//   }
-//
-//   readInput(event) {
-//     const keyCode = event.which || event.keyCode;
-//
-//     switch (KEY_MAP.get(keyCode)) {
-//       case KEY_SYMBOLS.SPACE:
-//
-//         break;
-//       default:
-//
-//     }
-//   }
-// }
+class Keyboard {
+  init() {
+    document.addEventListener('keydown', this.readInput.bind(this));
+  }
 
-// class User {
-//   constructor() {
-//     this.paddle = new Paddle();
-//     this.keyboard = new Keyboard();
-//   }
-// }
+  readInput(event) {
+    const keyCode = event.which || event.keyCode;
 
-// class Computer {
-//   constructor() {
-//     this.paddle = new Paddle();
-//   }
-// }
+    switch (KEY_MAP.get(keyCode)) {
+      case KEY_SYMBOLS.SPACE:
+        break;
+      case KEY_SYMBOLS.LEFT:
+      case KEY_SYMBOLS.RIGHT:
+        break;
+    }
+  }
+}
 
-// class Paddle {
-//   constructor() {
-//
-//   }
-// }
+class User {
+  constructor(paddle) {
+    this.paddle = new Paddle(paddle, 'bottom');
+    this.keyboard = new Keyboard();
+  }
+}
+
+class Computer {
+  constructor(paddle) {
+    this.paddle = new Paddle(paddle, 'top');
+  }
+}
+
+class Paddle {
+  constructor(element) {
+    this.element;
+  }
+}
 
 class Ball {
   contructor(element) {
@@ -73,13 +73,13 @@ class Score {
 }
 
 class Pong {
-  constructor(containerElement, ballElement, scoreElement) {
-    this.container = containerElement;
+  constructor(container, ball, score, userPaddle, computerPaddle) {
+    this.container = container;
 
-    this.score = new Score(scoreElement);
-    this.ball = new Ball(ballElement);
-    // this.user = new User();
-    // this.computer = new Computer();
+    this.score = new Score(score);
+    this.ball = new Ball(ball);
+    this.user = new User(userPaddle);
+    this.computer = new Computer(computerPaddle);
   }
 
   init() {
@@ -120,8 +120,16 @@ class Pong {
 const logo = document.getElementById('logo');
 const errorCode = document.getElementById('error-code');
 const container = document.getElementById('container');
+const userPaddle = document.getElementById('user');
+const computerPaddle = document.getElementById('computer');
 
-const pong = new Pong(container, logo, errorCode);
+const pong = new Pong(
+  container,
+  logo,
+  errorCode,
+  userPaddle,
+  computerPaddle
+);
 
 setTimeout(() => {
   pong.init();
