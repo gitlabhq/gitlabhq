@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import Hook, { __RewireAPI__ as HookRewire } from '~/droplab/hook';
+import Hook from '~/droplab/hook';
 
 describe('Hook', function () {
   describe('class constructor', function () {
@@ -12,7 +12,7 @@ describe('Hook', function () {
       this.dropdown = {};
 
       this.DropDown = jasmine.createSpy('DropDown').and.returnValue(this.dropdown);
-      HookRewire.__set__('DropDown', this.DropDown);
+      Hook.__Rewire__('DropDown', this.DropDown);
 
       this.hook = new Hook(this.trigger, this.list, this.plugins, this.config);
     });

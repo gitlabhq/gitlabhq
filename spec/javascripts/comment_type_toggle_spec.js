@@ -1,4 +1,4 @@
-import CommentTypeToggle, { __RewireAPI__ as CommentTypeToggleRewire } from '~/comment_type_toggle';
+import CommentTypeToggle from '~/comment_type_toggle';
 import InputSetter from '~/droplab/plugins/input_setter';
 
 describe('CommentTypeToggle', function () {
@@ -60,7 +60,7 @@ describe('CommentTypeToggle', function () {
       this.DropLab = jasmine.createSpy('DropLab').and.returnValue(this.droplab);
       spyOn(this.commentTypeToggle, 'setConfig').and.returnValue(this.config);
 
-      CommentTypeToggleRewire.__set__('DropLab', this.DropLab);
+      CommentTypeToggle.__Rewire__('DropLab', this.DropLab);
 
       CommentTypeToggle.prototype.initDroplab.call(this.commentTypeToggle);
     });
