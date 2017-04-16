@@ -130,7 +130,7 @@ module Ci
     end
 
     def retried?
-      !self.pipeline.statuses.latest.include?(self)
+      !latest?
     end
 
     def expanded_environment_name

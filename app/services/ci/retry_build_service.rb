@@ -6,7 +6,7 @@ module Ci
                          description tag_list].freeze
 
     def execute(build)
-      reprocess(build).tap do |new_build|
+      reprocess!(build).tap do |new_build|
         build.pipeline.mark_as_processable_after_stage(build.stage_idx)
 
         new_build.enqueue!
@@ -17,7 +17,7 @@ module Ci
       end
     end
 
-    def reprocess(build)
+    def reprocess!(build)
       unless can?(current_user, :update_build, build)
         raise Gitlab::Access::AccessDeniedError
       end
@@ -28,7 +28,13 @@ module Ci
 
       attributes.push([:user, current_user])
 
-      project.builds.create(Hash[attributes])
+      Ci::Build.transaction do
+        # mark all other builds of that name as retried
+        pipeline.builds.where(name: build.name, latest: true).
+          update_all(latest: false)
+
+        project.builds.create!(Hash[attributes])
+      end
     end
   end
 end
