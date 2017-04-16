@@ -102,7 +102,7 @@ production: &base
     #   ##  :id                - Issue id (from commit messages)
     #   issues_url: "http://redmine.sample/issues/:id"
     #
-    #   ## If not nil, linkis to creating new issues will be replaced with this
+    #   ## If not nil, links to creating new issues will be replaced with this
     #   ## Use placeholders:
     #   ##  :project_id        - GitLab project identifier
     #   ##  :issues_tracker_id - Project Name or Id in external issue tracker
