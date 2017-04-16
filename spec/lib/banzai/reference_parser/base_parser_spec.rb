@@ -114,8 +114,27 @@ describe Banzai::ReferenceParser::BaseParser, lib: true do
       expect(hash).to eq({ link => user })
     end
 
-    it 'returns an empty Hash when the list of nodes is empty' do
-      expect(subject.grouped_objects_for_nodes([], User, 'data-user')).to eq({})
+    it 'returns an empty Hash when entry does not exist in the database' do
+      link = double(:link)
+
+      expect(link).to receive(:has_attribute?).
+          with('data-user').
+          and_return(true)
+
+      expect(link).to receive(:attr).
+          with('data-user').
+          and_return('1')
+
+      nodes = [link]
+      bad_id = user.id + 100
+
+      expect(subject).to receive(:unique_attribute_values).
+          with(nodes, 'data-user').
+          and_return([bad_id.to_s])
+
+      hash = subject.grouped_objects_for_nodes(nodes, User, 'data-user')
+
+      expect(hash).to eq({})
     end
   end
 
