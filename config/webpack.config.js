@@ -41,6 +41,7 @@ var config = {
     notebook_viewer:      './blob/notebook_viewer.js',
     sketch_viewer:        './blob/sketch_viewer.js',
     pdf_viewer:           './blob/pdf_viewer.js',
+    zip_viewer:           './blob/zip_viewer.js',
     profile:              './profile/profile_bundle.js',
     protected_branches:   './protected_branches/protected_branches_bundle.js',
     protected_tags:       './protected_tags',

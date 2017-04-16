@@ -1,0 +1,10 @@
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_bundle_tag('zip_viewer')
+
+.file-content.is-zip-loading
+  .text-center#js-zip-viewer{ data: { endpoint: namespace_project_raw_path(@project.namespace, @project, @id) } }
+    = icon('spinner spin 2x', class: 'prepend-top-default append-bottom-default hidden', 'aria-hidden' => 'true', 'aria-label' => 'Loading')
+    %table.table
+      %tr{"v-for" => "file in files"}
+        %td
+          {{file}}
