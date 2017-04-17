@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::Ci::Trace::Stream do
   describe 'delegates' do
-    subject { described_class.new { StringIO.new } }
+    subject { described_class.new { nil } }
 
     it { is_expected.to delegate_method(:close).to(:stream) }
     it { is_expected.to delegate_method(:tell).to(:stream) }
