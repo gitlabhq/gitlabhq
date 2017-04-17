@@ -1,5 +1,6 @@
 class Burndown
-  attr_accessor :start_date, :due_date, :end_date, :issues_count, :issues_weight, :has_data
+  attr_reader :start_date, :due_date, :end_date, :issues_count, :issues_weight, :accurate
+  alias_method :accurate?, :accurate
 
   def initialize(milestone)
     @milestone = milestone
@@ -7,7 +8,7 @@ class Burndown
     @due_date = @milestone.due_date
     @end_date = @milestone.due_date
     @end_date = Date.today if @end_date.present? && @end_date > Date.today
-    @has_data = issues_with_closed_at.pluck(:closed_at).compact.any?
+    @accurate = issues_with_closed_at.where(closed_at: nil).empty?
 
     @issues_count, @issues_weight = milestone.issues.reorder(nil).pluck('COUNT(*), COALESCE(SUM(weight), 0)').first
   end

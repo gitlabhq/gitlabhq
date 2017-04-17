@@ -60,7 +60,7 @@ describe Burndown, models: true do
   it "it sets attribute has_data to true" do
     burndown = described_class.new(milestone)
 
-    expect(burndown.has_data).to be_truthy
+    expect(burndown.accurate?).to be_truthy
   end
 
   context "when closed and reopened issues does not have closed_at" do
@@ -79,7 +79,7 @@ describe Burndown, models: true do
     it "it sets attribute has_data to false" do
       burndown = described_class.new(milestone)
 
-      expect(burndown.has_data).to be_falsy
+      expect(burndown.accurate?).to be_falsy
     end
   end
 
