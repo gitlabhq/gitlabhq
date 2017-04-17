@@ -158,13 +158,6 @@ describe 'Git HTTP requests', lib: true do
                 expect(response).to have_http_status(:ok)
               end
             end
-
-            it 'updates the user last activity' do
-              expect(user_activity(user)).to be_nil
-              download(path, {}) do |response|
-                expect(user_activity(user)).to be_present
-              end
-            end
           end
 
           context 'but only project members are allowed' do
@@ -261,6 +254,14 @@ describe 'Git HTTP requests', lib: true do
                   upload(path, env) do |response|
                     expect(response).to have_http_status(200)
                     expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+                  end
+                end
+
+                it 'updates the user last activity', :redis do
+                  expect(user_activity(user)).to be_nil
+
+                  download(path, env) do |response|
+                    expect(user_activity(user)).to be_present
                   end
                 end
               end
