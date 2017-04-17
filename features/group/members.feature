@@ -4,40 +4,6 @@ Feature: Group Members
     And "John Doe" is owner of group "Owned"
     And "John Doe" is guest of group "Guest"
 
-  @javascript
-  Scenario: I should add user to group "Owned"
-    Given User "Mary Jane" exists
-    When I visit group "Owned" members page
-    And I select user "Mary Jane" from list with role "Reporter"
-    Then I should see user "Mary Jane" in team list
-
-  @javascript
-  Scenario: Add user to group
-    Given gitlab user "Mike"
-    When I visit group "Owned" members page
-    When I select "Mike" as "Reporter"
-    Then I should see "Mike" in team list as "Reporter"
-
-  @javascript
-  Scenario: Ignore add user to group when is already Owner
-    Given gitlab user "Mike"
-    When I visit group "Owned" members page
-    When I select "Mike" as "Reporter"
-    Then I should see "Mike" in team list as "Owner"
-
-  @javascript
-  Scenario: Invite user to group
-    When I visit group "Owned" members page
-    When I select "sjobs@apple.com" as "Reporter"
-    Then I should see "sjobs@apple.com" in team list as invited "Reporter"
-
-  @javascript
-  Scenario: Edit group member permissions
-    Given "Mary Jane" is guest of group "Owned"
-    And I visit group "Owned" members page
-    When I change the "Mary Jane" role to "Developer"
-    Then I should see "Mary Jane" as "Developer"
-
   # Leave
 
   @javascript
