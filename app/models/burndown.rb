@@ -55,7 +55,7 @@ class Burndown
 
     closed =
       issues_with_closed_at.select do |issue|
-        (issue.closed_at&.to_date || @start_date) == current_date
+        (issue.closed_at&.to_date || start_date) == current_date
       end
 
     reopened = closed.select { |issue| issue.state == 'reopened' }

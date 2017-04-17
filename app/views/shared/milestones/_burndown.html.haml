@@ -10,7 +10,7 @@
 - unless burndown.accurate?
   #no-data-warning.settings-message.prepend-top-20
     Some issues can't be shown in the burndown chart, as they were closed before GitLab 9.1 update.
-    = link_to "More information.", help_page_path('workflow/milestones')
+    = link_to "More information.", help_page_path('workflow/milestones'), class: 'burndown_docs_link'
 
 - if can_generate_chart
   .burndown-header

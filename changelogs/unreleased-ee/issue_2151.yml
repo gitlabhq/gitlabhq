@@ -1,4 +1,4 @@
 ---
-title: Set closed and reopened issues without closed_at to milestone start date
+title: Add warning when burndown data is not accurate
 merge_request:
 author:

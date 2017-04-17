@@ -57,16 +57,18 @@ describe Burndown, models: true do
     expect(JSON.parse(subject).last[0]).to eq(Time.now.strftime("%Y-%m-%d"))
   end
 
-  it "it sets attribute has_data to true" do
+  it "sets attribute accurate to true" do
     burndown = described_class.new(milestone)
 
     expect(burndown.accurate?).to be_truthy
   end
 
   context "when closed and reopened issues does not have closed_at" do
-    before { milestone.issues.update_all(closed_at: nil) }
+    before do
+      milestone.issues.update_all(closed_at: nil)
+    end
 
-    it "it considers closed_at as milestone start date" do
+    it "considers closed_at as milestone start date" do
       expect(subject).to eq([
         ["2017-03-01", 15, 30],
         ["2017-03-02", 27, 54],
@@ -76,7 +78,7 @@ describe Burndown, models: true do
       ].to_json)
     end
 
-    it "it sets attribute has_data to false" do
+    it "setsattribute accurate to false" do
       burndown = described_class.new(milestone)
 
       expect(burndown.accurate?).to be_falsy
