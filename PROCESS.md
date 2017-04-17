@@ -57,16 +57,16 @@ star, smile, etc.). Some good tips about code reviews can be found in our
 
 [Code Review Guidelines]: https://docs.gitlab.com/ce/development/code_review.html
 
-## Feature Freeze
+## Feature freeze on the 7th for the release on the 22nd
 
-After the 7th (Pacific Standard Time Zone) of each month, RC1 of the upcoming release is created and deployed to GitLab.com and the stable branch for this release is frozen, which means master is no longer merged into it.
+After the 7th (Pacific Standard Time Zone) of each month, RC1 of the upcoming release (to be shipped on the 22nd) is created and deployed to GitLab.com and the stable branch for this release is frozen, which means master is no longer merged into it.
 Merge requests may still be merged into master during this period,
 but they will go into the _next_ release, unless they are manually cherry-picked into the stable branch.
 By freezing the stable branches 2 weeks prior to a release, we reduce the risk of a last minute merge request potentially breaking things.
 
 ### Between the 1st and the 7th
 
-These types of merge requests need special consideration:
+These types of merge requests for the upcoming release need special consideration:
 
 * **Large features**: a large feature is one that is highlighted in the kick-off
   and the release blogpost; typically this will have its own channel in Slack
@@ -114,14 +114,15 @@ subsequent EE merge, as we often merge a lot to CE on the release date. For more
 information, see
 [limit conflicts with EE when developing on CE][limit_ee_conflicts].
 
-### Between the 7th and the 22nd
+### After the 7th
 
 Once the stable branch is frozen, only fixes for regressions (bugs introduced in that same release)
 and security issues will be cherry-picked into the stable branch.
 Any merge requests cherry-picked into the stable branch for a previous release will also be picked into the latest stable branch.
-These fixes will be released in the next RC (before the 22nd) or patch release (after the 22nd).
+These fixes will be shipped in the next RC if it is before the upcoming release.
+If the fixes are are completed by after the 22nd, they will be shipped in a patch for that release.
 
-If you think a merge request should go into the upcoming release even though it does not meet these requirements,
+If you think a merge request should go into an RC or patch even though it does not meet these requirements,
 you can ask for an exception to be made. Exceptions require sign-off from 3 people besides the developer:
 
 1. a Release Manager
