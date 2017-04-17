@@ -175,12 +175,12 @@ import './wikis';
 import './zen_mode';
 
 // EE-only scripts
-require('./admin_email_select');
-require('./application_settings');
-require('./approvals');
-require('./ldap_groups_select');
-require('./path_locks');
-require('./weight_select');
+import './admin_email_select';
+import './application_settings';
+import './approvals';
+import './ldap_groups_select';
+import './path_locks';
+import './weight_select';
 
 // eslint-disable-next-line global-require
 if (process.env.NODE_ENV !== 'production') require('./test_utils/');
