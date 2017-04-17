@@ -1,3 +1,7 @@
+/* eslint-disable guard-for-in, no-restricted-syntax */
+/* global Flash */
+
+import { ACCESS_LEVELS, LEVEL_TYPES } from './';
 import ProtectedTagAccessDropdown from './protected_tag_access_dropdown';
 import ProtectedTagDropdown from './protected_tag_dropdown';
 
@@ -5,6 +9,12 @@ export default class ProtectedTagCreate {
   constructor() {
     this.$form = $('.js-new-protected-tag');
     this.buildDropdowns();
+    this.$branchTag = this.$form.find('input[name="protected_tag[name]"]');
+    this.bindEvents();
+  }
+
+  bindEvents() {
+    this.$form.on('submit', this.onFormSubmit.bind(this));
   }
 
   buildDropdowns() {
@@ -14,14 +24,12 @@ export default class ProtectedTagCreate {
     this.onSelectCallback = this.onSelect.bind(this);
 
     // Allowed to Create dropdown
-    this.protectedTagAccessDropdown = new ProtectedTagAccessDropdown({
+    this[`${ACCESS_LEVELS.CREATE}_dropdown`] = new ProtectedTagAccessDropdown({
       $dropdown: $allowedToCreateDropdown,
-      data: gon.create_access_levels,
+      accessLevelsData: gon.create_access_levels,
       onSelect: this.onSelectCallback,
+      accessLevel: ACCESS_LEVELS.CREATE,
     });
-
-    // Select default
-    $allowedToCreateDropdown.data('glDropdown').selectRowAtIndex(0);
 
     // Protected tag dropdown
     this.protectedTagDropdown = new ProtectedTagDropdown({
@@ -30,12 +38,61 @@ export default class ProtectedTagCreate {
     });
   }
 
-  // This will run after clicked callback
+  // Enable submit button after selecting an option
   onSelect() {
-    // Enable submit button
-    const $tagInput = this.$form.find('input[name="protected_tag[name]"]');
-    const $allowedToCreateInput = this.$form.find('#create_access_levels_attributes');
+    const $allowedToCreate = this[`${ACCESS_LEVELS.CREATE}_dropdown`].getSelectedItems();
+    const toggle = !(this.$form.find('input[name="protected_tag[name]"]').val() && $allowedToCreate.length);
 
-    this.$form.find('input[type="submit"]').attr('disabled', !($tagInput.val() && $allowedToCreateInput.length));
+    this.$form.find('input[type="submit"]').attr('disabled', toggle);
+  }
+
+  getFormData() {
+    const formData = {
+      authenticity_token: this.$form.find('input[name="authenticity_token"]').val(),
+      protected_tag: {
+        name: this.$form.find('input[name="protected_tag[name]"]').val(),
+      },
+    };
+
+    for (const accessLevel in ACCESS_LEVELS) {
+      const selectedItems = this[`${ACCESS_LEVELS.CREATE}_dropdown`].getSelectedItems();
+      const levelAttributes = [];
+
+      for (let i = 0; i < selectedItems.length; i += 1) {
+        const current = selectedItems[i];
+
+        if (current.type === LEVEL_TYPES.USER) {
+          levelAttributes.push({
+            user_id: selectedItems[i].user_id,
+          });
+        } else if (current.type === LEVEL_TYPES.ROLE) {
+          levelAttributes.push({
+            access_level: selectedItems[i].access_level,
+          });
+        } else if (current.type === LEVEL_TYPES.GROUP) {
+          levelAttributes.push({
+            group_id: selectedItems[i].group_id,
+          });
+        }
+      }
+
+      formData.protected_tag[`${ACCESS_LEVELS[accessLevel]}_attributes`] = levelAttributes;
+    }
+
+    return formData;
+  }
+
+  onFormSubmit(e) {
+    e.preventDefault();
+
+    $.ajax({
+      url: this.$form.attr('action'),
+      method: this.$form.attr('method'),
+      data: this.getFormData(),
+    })
+    .success(() => {
+      location.reload();
+    })
+    .fail(() => new Flash('Failed to protect the tag'));
   }
 }
