@@ -34,7 +34,7 @@ module BlobHelper
     if !on_top_of_branch?(project, ref)
       button_tag 'Edit', class: "#{common_classes} disabled has-tooltip", title: "You can only edit files when you are on a branch", data: { container: 'body' }
     # This condition applies to anonymous or users who can edit directly
-    elsif !current_user || (current_user && can_edit_blob?(blob, project, ref))
+    elsif !current_user || (current_user && can_modify_blob?(blob, project, ref))
       link_to 'Edit', edit_path(project, ref, path, options), class: "#{common_classes} btn-sm"
     elsif current_user && can?(current_user, :fork_project, project)
       button_tag 'Edit', class: "#{common_classes} js-edit-blob-link-fork-toggler"
@@ -52,7 +52,7 @@ module BlobHelper
       button_tag label, class: "btn btn-#{btn_class} disabled has-tooltip", title: "You can only #{action} files when you are on a branch", data: { container: 'body' }
     elsif blob.lfs_pointer?
       button_tag label, class: "btn btn-#{btn_class} disabled has-tooltip", title: "It is not possible to #{action} files that are stored in LFS using the web interface", data: { container: 'body' }
-    elsif can_edit_blob?(blob, project, ref)
+    elsif can_modify_blob?(blob, project, ref)
       button_tag label, class: "btn btn-#{btn_class}", 'data-target' => "#modal-#{modal_type}-blob", 'data-toggle' => 'modal'
     elsif can?(current_user, :fork_project, project)
       continue_params = {
@@ -90,7 +90,7 @@ module BlobHelper
     )
   end
 
-  def can_edit_blob?(blob, project = @project, ref = @ref)
+  def can_modify_blob?(blob, project = @project, ref = @ref)
     !blob.lfs_pointer? && can_edit_tree?(project, ref)
   end
 
