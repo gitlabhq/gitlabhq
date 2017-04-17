@@ -119,8 +119,8 @@ information, see
 Once the stable branch is frozen, only fixes for regressions (bugs introduced in that same release)
 and security issues will be cherry-picked into the stable branch.
 Any merge requests cherry-picked into the stable branch for a previous release will also be picked into the latest stable branch.
-These fixes will be shipped in the next RC if it is before the upcoming release.
-If the fixes are are completed by after the 22nd, they will be shipped in a patch for that release.
+These fixes will be shipped in the next RC for that release if it is before the 22nd.
+If the fixes are are completed on or after the 22nd, they will be shipped in a patch for that release.
 
 If you think a merge request should go into an RC or patch even though it does not meet these requirements,
 you can ask for an exception to be made. Exceptions require sign-off from 3 people besides the developer:
