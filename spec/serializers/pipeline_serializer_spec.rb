@@ -144,7 +144,7 @@ describe PipelineSerializer do
         expect(subject[:text]).to eq(status.text)
         expect(subject[:label]).to eq(status.label)
         expect(subject[:icon]).to eq(status.icon)
-        expect(subject[:favicon]).to match status.favicon
+        expect(subject[:favicon]).to eq("/assets/ci_favicons/#{status.favicon}.ico")
       end
     end
   end

@@ -60,7 +60,7 @@ describe Projects::BuildsController do
       expect(json_response['text']).to eq status.text
       expect(json_response['label']).to eq status.label
       expect(json_response['icon']).to eq status.icon
-      expect(json_response['favicon']).to match status.favicon
+      expect(json_response['favicon']).to eq "/assets/ci_favicons/#{status.favicon}.ico"
     end
   end
 end
