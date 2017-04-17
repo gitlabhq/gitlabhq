@@ -265,4 +265,27 @@ describe ProjectsHelper do
       end
     end
   end
+
+  describe "#visibility_select_options" do
+    let(:project) { create(:project, :repository) }
+    let(:user)    { create(:user) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+
+      stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
+    end
+
+    it "does not include the Public restricted level" do
+      expect(helper.send(:visibility_select_options, project, Gitlab::VisibilityLevel::PRIVATE)).not_to include('Public')
+    end
+
+    it "includes the Internal level" do
+      expect(helper.send(:visibility_select_options, project, Gitlab::VisibilityLevel::PRIVATE)).to include('Internal')
+    end
+
+    it "includes the Private level" do
+      expect(helper.send(:visibility_select_options, project, Gitlab::VisibilityLevel::PRIVATE)).to include('Private')
+    end
+  end
 end
