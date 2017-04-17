@@ -10,18 +10,6 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     redirect_to namespace_project_settings_members_path(@project.namespace, @project, sort: sort)
   end
 
-  def create
-    status = Members::CreateService.new(@project, current_user, params).execute
-
-    redirect_url = namespace_project_settings_members_path(@project.namespace, @project)
-
-    if status
-      redirect_to redirect_url, notice: 'Users were successfully added.'
-    else
-      redirect_to redirect_url, alert: 'No users or groups specified.'
-    end
-  end
-
   def update
     @project_member = @project.project_members.find(params[:id])
 

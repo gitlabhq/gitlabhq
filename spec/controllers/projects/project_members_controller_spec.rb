@@ -55,7 +55,7 @@ describe Projects::ProjectMembersController do
                       user_ids: '',
                       access_level: Gitlab::Access::GUEST
 
-        expect(response).to set_flash.to 'No users or groups specified.'
+        expect(response).to set_flash.to 'No users specified.'
         expect(response).to redirect_to(namespace_project_settings_members_path(project.namespace, project))
       end
     end

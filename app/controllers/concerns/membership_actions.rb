@@ -1,6 +1,18 @@
 module MembershipActions
   extend ActiveSupport::Concern
 
+  def create
+    status = Members::CreateService.new(membershipable, current_user, params).execute
+
+    redirect_url = polymorphic_url([membershipable, :members])
+
+    if status
+      redirect_to redirect_url, notice: 'Users were successfully added.'
+    else
+      redirect_to redirect_url, alert: 'No users specified.'
+    end
+  end
+
   def request_access
     membershipable.request_access(current_user)
 
