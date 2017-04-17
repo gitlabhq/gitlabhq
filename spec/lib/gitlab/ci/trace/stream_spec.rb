@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::Ci::Trace::Stream do
   describe 'delegates' do
-    subject { described_class.new { nil } }
+    subject { described_class.new { StringIO.new } }
 
     it { is_expected.to delegate_method(:close).to(:stream) }
     it { is_expected.to delegate_method(:tell).to(:stream) }
@@ -43,13 +43,19 @@ describe Gitlab::Ci::Trace::Stream do
       it 'forwards to the next linefeed, case 1' do
         stream.limit(7)
 
-        expect(stream.raw).to eq('')
+        result = stream.raw
+
+        expect(result).to eq('')
+        expect(result.encoding).to eq(Encoding.default_external)
       end
 
       it 'forwards to the next linefeed, case 2' do
         stream.limit(29)
 
-        expect(stream.raw).to eq("\e[01;32m許功蓋\e[0m\n")
+        result = stream.raw
+
+        expect(result).to eq("\e[01;32m許功蓋\e[0m\n")
+        expect(result.encoding).to eq(Encoding.default_external)
       end
     end
   end

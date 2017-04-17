@@ -14,6 +14,7 @@ module Gitlab
 
         def initialize
           @stream = yield
+          @stream.binmode
         end
 
         def valid?
@@ -51,7 +52,7 @@ module Gitlab
             read_last_lines(last_lines)
           else
             stream.read
-          end
+          end.force_encoding(Encoding.default_external)
         end
 
         def html_with_state(state = nil)
@@ -113,7 +114,6 @@ module Gitlab
           end
 
           chunks.join.lines.last(last_lines).join
-            .force_encoding(Encoding.default_external)
         end
       end
     end
