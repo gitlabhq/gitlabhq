@@ -2,7 +2,7 @@
 
   - **General Documentation**: written by the developers responsible by creating features. Should be submitted in the same merge request containing code. Feature proposals (by GitLab contributors) should also be accompanied by its respective documentation. They can be later improved by PMs and Technical Writers.
   - **Technical Articles**: written by any [GitLab Team](https://about.gitlab.com/team/) member, GitLab contributors, or [Community Writers](https://about.gitlab.com/handbook/product/technical-writing/community-writers/).
-  - **Indexes per topic**: initially prepared by the Technical Writing Team, and kept up-to-date by developers and PMs, in the same merge request containing code.
+  - **Indexes per topic**: initially prepared by the Technical Writing Team, and kept up-to-date by developers and PMs in the same merge request containing code. They gather all resources for that topic in a single page (user and admin documentation, articles, and third-party docs).
 
 ## Distinction between General Documentation and Technical Articles
 
@@ -18,7 +18,7 @@ They are topic-related documentation, written with an user-friendly approach and
 
 A technical article guides users and/or admins to achieve certain objectives (within guides and tutorials), or provide an overview of that particular topic or feature (within technical overviews). It can also describe the use, implementation, or integration of third-party tools with GitLab.
 
-They live under `doc/topics/topic-name/`, and can be searched per topic, within "Indexes per Topic" pages. The topics are listed on the main [Indexes per Topic](../topics/index.md) page.
+They live under `doc/articles/article-title/index.md`, and their images should be placed under `doc/articles/article-title/img/`.
 
 #### Types of Technical Articles
 
