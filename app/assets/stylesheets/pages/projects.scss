@@ -929,20 +929,24 @@ pre.light-well {
   }
 
   .variable-key {
-    width: 120px;
-    max-width: 120px;
+    /* 45px is not the actual maximum width. The
+      browser uses it to calculate cell width relative
+      to variable-value and variable-menu */
+    max-width: 45px;
+    // This is the actual min-width, makes a difference only on small screens
+    min-width: 100px;
     overflow: hidden;
     word-wrap: break-word;
-
-    // override bootstrap
-    white-space: normal!important;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   .variable-value {
-    width: 150px;
     max-width: 150px;
     overflow: hidden;
     word-wrap: break-word;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   .variable-menu {
