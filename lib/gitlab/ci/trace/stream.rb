@@ -15,6 +15,8 @@ module Gitlab
         def initialize
           @stream = yield
           @stream.binmode
+          # Ci::Ansi2html::Converter would read from @stream directly
+          @stream.set_encoding(Encoding.default_external)
         end
 
         def valid?
