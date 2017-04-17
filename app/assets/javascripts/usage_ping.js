@@ -1,16 +1,15 @@
-(global => {
-  global.gl = global.gl || {};
+function UsagePing() {
+  const usageDataUrl = $('.usage-data').data('endpoint');
 
-  gl.UsagePing = function() {
-    var usage_data_url = $('.usage-data').data('endpoint');
+  $.ajax({
+    type: 'GET',
+    url: usageDataUrl,
+    dataType: 'html',
+    success(html) {
+      $('.usage-data').html(html);
+    },
+  });
+}
 
-    $.ajax({
-      type: "GET",
-      url: usage_data_url,
-      dataType: "html",
-      success: function (html) {
-        $(".usage-data").html(html);
-      }
-    });
-  };
-})(window);
+window.gl = window.gl || {};
+window.gl.UsagePing = UsagePing;
