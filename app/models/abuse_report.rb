@@ -16,7 +16,7 @@ class AbuseReport < ActiveRecord::Base
 
   def remove_user(deleted_by:)
     user.block
-    DeleteUserWorker.perform_async(deleted_by.id, user.id, delete_solo_owned_groups: true)
+    DeleteUserWorker.perform_async(deleted_by.id, user.id, delete_solo_owned_groups: true, hard_delete: true)
   end
 
   def notify
