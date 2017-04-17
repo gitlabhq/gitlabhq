@@ -171,6 +171,27 @@ describe Repository, models: true do
     end
   end
 
+  describe '#commits' do
+    it 'sets follow when path is a single path' do
+      expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: true)).and_call_original.twice
+
+      repository.commits('master', path: 'README.md')
+      repository.commits('master', path: ['README.md'])
+    end
+
+    it 'does not set follow when path is multiple paths' do
+      expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: false)).and_call_original
+
+      repository.commits('master', path: ['README.md', 'CHANGELOG'])
+    end
+
+    it 'does not set follow when there are no paths' do
+      expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: false)).and_call_original
+
+      repository.commits('master')
+    end
+  end
+
   describe '#find_commits_by_message' do
     it 'returns commits with messages containing a given string' do
       commit_ids = repository.find_commits_by_message('submodule').map(&:id)
