@@ -929,27 +929,20 @@ pre.light-well {
   }
 
   .variable-key {
-    width: 300px;
-    max-width: 300px;
+    width: 120px;
+    max-width: 120px;
     overflow: hidden;
     word-wrap: break-word;
 
     // override bootstrap
     white-space: normal!important;
-
-    @media (max-width: $screen-md-max) {
-      width: 150px;
-      max-width: 150px;
-    }
   }
 
   .variable-value {
-    @media(max-width: $screen-sm-max) {
-      width: 150px;
-      max-width: 150px;
-      overflow: hidden;
-      word-wrap: break-word;
-    }
+    width: 150px;
+    max-width: 150px;
+    overflow: hidden;
+    word-wrap: break-word;
   }
 
   .variable-menu {
