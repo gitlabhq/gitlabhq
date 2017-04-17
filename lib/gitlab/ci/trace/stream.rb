@@ -14,7 +14,14 @@ module Gitlab
 
         def initialize
           @stream = yield
-          @stream.binmode if @stream
+          if @stream
+            @stream.binmode
+            # Ci::Ansi2html::Converter would read from @stream directly,
+            # using @stream.each_line to be specific. It's safe to set
+            # the encoding here because IO#seek(bytes) and IO#read(bytes)
+            # are not characters based, so encoding doesn't matter to them.
+            @stream.set_encoding(Encoding.default_external)
+          end
         end
 
         def valid?
@@ -56,14 +63,12 @@ module Gitlab
         end
 
         def html_with_state(state = nil)
-          set_encoding_for_ansi2html
           ::Ci::Ansi2html.convert(stream, state)
         end
 
         def html(last_lines: nil)
           text = raw(last_lines: last_lines)
           stream = StringIO.new(text)
-          set_encoding_for_ansi2html(stream)
           ::Ci::Ansi2html.convert(stream).html
         end
 
@@ -116,11 +121,6 @@ module Gitlab
           end
 
           chunks.join.lines.last(last_lines).join
-        end
-
-        def set_encoding_for_ansi2html(stream = @stream)
-          # Ci::Ansi2html::Converter would read from @stream directly
-          stream.set_encoding(Encoding.default_external)
         end
       end
     end

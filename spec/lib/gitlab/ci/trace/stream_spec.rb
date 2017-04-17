@@ -64,7 +64,7 @@ describe Gitlab::Ci::Trace::Stream do
 
         result = stream.html
 
-        expect(result.lines.first).to eq("ヾ(´༎ຶД༎ຶ`)ﾉ<br><span class=\"term-fg-green\">許功蓋</span><br>")
+        expect(result).to eq("ヾ(´༎ຶД༎ຶ`)ﾉ<br><span class=\"term-fg-green\">許功蓋</span><br>")
         expect(result.encoding).to eq(Encoding.default_external)
       end
     end
