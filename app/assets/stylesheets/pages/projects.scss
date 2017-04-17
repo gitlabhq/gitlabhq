@@ -937,19 +937,23 @@ pre.light-well {
     // override bootstrap
     white-space: normal!important;
 
-    @media (max-width: $screen-sm-max) {
+    @media (max-width: $screen-md-max) {
       width: 150px;
       max-width: 150px;
     }
   }
 
   .variable-value {
-    @media(max-width: $screen-xs-max) {
+    @media(max-width: $screen-sm-max) {
       width: 150px;
       max-width: 150px;
       overflow: hidden;
       word-wrap: break-word;
     }
+  }
+
+  .variable-menu {
+    text-align: right;
   }
 }
 
