@@ -50,6 +50,8 @@ module Gitlab
       end
 
       def read
+        return unless exist?
+
         stream = Gitlab::Ci::Trace::Stream.new do
           if current_path
             File.open(current_path, "rb")
