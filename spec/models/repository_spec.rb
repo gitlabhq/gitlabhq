@@ -1259,7 +1259,6 @@ describe Repository, models: true do
         :changelog,
         :license,
         :contributing,
-        :version,
         :gitignore,
         :koding,
         :gitlab_ci,
