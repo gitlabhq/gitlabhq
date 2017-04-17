@@ -18,7 +18,7 @@ They are topic-related documentation, written with an user-friendly approach and
 
 A technical article guides users and/or admins to achieve certain objectives (within guides and tutorials), or provide an overview of that particular topic or feature (within technical overviews). It can also describe the use, implementation, or integration of third-party tools with GitLab.
 
-They live under `doc/articles/article-title/index.md`, and their images should be placed under `doc/articles/article-title/img/`.
+They live under `doc/articles/article-title/index.md`, and their images should be placed under `doc/articles/article-title/img/`. Find a list of existing [technical articles](../articles/index.md) here.
 
 #### Types of Technical Articles
 
