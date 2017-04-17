@@ -353,6 +353,7 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
 
     initAffix() {
       const $tabs = $('.js-tabs-affix');
+      const $fixedNav = $('.navbar-gitlab');
 
       // Screen space on small screens is usually very sparse
       // So we dont affix the tabs on these
@@ -371,7 +372,7 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
         .affix({
           offset: {
             top: () => (
-              $diffTabs.offset().top - $tabs.height()
+              $diffTabs.offset().top - $tabs.height() - $fixedNav.height()
             ),
           },
         })
