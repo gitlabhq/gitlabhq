@@ -18,18 +18,6 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     @project_member.update_attributes(member_params)
   end
 
-  def destroy
-    Members::DestroyService.new(@project, current_user, params).
-      execute(:all)
-
-    respond_to do |format|
-      format.html do
-        redirect_to namespace_project_settings_members_path(@project.namespace, @project)
-      end
-      format.js { head :ok }
-    end
-  end
-
   def resend_invite
     redirect_path = namespace_project_settings_members_path(@project.namespace, @project)
 

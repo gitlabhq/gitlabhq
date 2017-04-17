@@ -225,7 +225,7 @@ describe Projects::ProjectMembersController do
                                         id: member
 
           expect(response).to redirect_to(
-            namespace_project_project_members_path(project.namespace, project)
+            namespace_project_settings_members_path(project.namespace, project)
           )
           expect(project.members).to include member
         end

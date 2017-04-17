@@ -29,15 +29,6 @@ class Groups::GroupMembersController < Groups::ApplicationController
     @group_member.update_attributes(member_params)
   end
 
-  def destroy
-    Members::DestroyService.new(@group, current_user, id: params[:id]).execute(:all)
-
-    respond_to do |format|
-      format.html { redirect_to group_group_members_path(@group), notice: 'User was successfully removed from group.' }
-      format.js { head :ok }
-    end
-  end
-
   def resend_invite
     redirect_path = group_group_members_path(@group)
 

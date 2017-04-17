@@ -4,12 +4,26 @@ module MembershipActions
   def create
     status = Members::CreateService.new(membershipable, current_user, params).execute
 
-    redirect_url = polymorphic_url([membershipable, :members])
+    redirect_url = members_page_url
 
     if status
       redirect_to redirect_url, notice: 'Users were successfully added.'
     else
       redirect_to redirect_url, alert: 'No users specified.'
+    end
+  end
+
+  def destroy
+    Members::DestroyService.new(membershipable, current_user, params).
+      execute(:all)
+
+    respond_to do |format|
+      format.html do
+        message = "User was successfully removed from #{source_type}."
+        redirect_to members_page_url, notice: message
+      end
+
+      format.js { head :ok }
     end
   end
 
@@ -23,20 +37,20 @@ module MembershipActions
   def approve_access_request
     Members::ApproveAccessRequestService.new(membershipable, current_user, params).execute
 
-    redirect_to polymorphic_url([membershipable, :members])
+    redirect_to members_page_url
   end
 
   def leave
     member = Members::DestroyService.new(membershipable, current_user, user_id: current_user.id).
       execute(:all)
 
-    source_type = membershipable.class.to_s.humanize(capitalize: false)
     notice =
       if member.request?
         "Your access request to the #{source_type} has been withdrawn."
       else
         "You left the \"#{membershipable.human_name}\" #{source_type}."
       end
+
     redirect_path = member.request? ? member.source : [:dashboard, membershipable.class.to_s.tableize]
 
     redirect_to redirect_path, notice: notice
@@ -46,5 +60,17 @@ module MembershipActions
 
   def membershipable
     raise NotImplementedError
+  end
+
+  def members_page_url
+    if membershipable.is_a?(Project)
+      project_settings_members_path(membershipable)
+    else
+      polymorphic_url([membershipable, :members])
+    end
+  end
+
+  def source_type
+    @source_type ||= membershipable.class.to_s.humanize(capitalize: false)
   end
 end
