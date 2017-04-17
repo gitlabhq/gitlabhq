@@ -9,7 +9,7 @@ feature 'Protected Tags', feature: true, js: true do
 
   before { login_as(user) }
 
-  def set_allowed_to(operation, option = 'Masters', form: '#new_protected_tag')
+  def set_allowed_to(operation, option = 'Masters', form: '.new-protected-tag')
     within form do
       find(".js-allowed-to-#{operation}").click
       wait_for_ajax
