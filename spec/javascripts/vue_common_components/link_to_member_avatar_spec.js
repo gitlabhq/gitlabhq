@@ -1,8 +1,7 @@
-/* eslint-disable guard-for-in, no-restricted-syntax */
+/* eslint-disable no-restricted-syntax */
 
 import Vue from 'vue';
-
-require('~/vue_common_component/link_to_member_avatar');
+import linkToMemberAvatar from '~/vue_shared/components/link_to_member_avatar';
 
 (() => {
   function initComponent(propsData = {}) {
@@ -12,7 +11,7 @@ require('~/vue_common_component/link_to_member_avatar');
       </div>
     `);
 
-    const LinkToMembersComponent = Vue.component('link-to-member-avatar');
+    const LinkToMembersComponent = Vue.extend(linkToMemberAvatar);
 
     this.component = new LinkToMembersComponent({
       el: '#mock-container',
@@ -63,9 +62,11 @@ require('~/vue_common_component/link_to_member_avatar');
 
         Vue.nextTick(() => {
           for (const computedKey in correctVals) {
-            const expectedVal = correctVals[computedKey];
-            const actualComputed = this.component[computedKey];
-            expect(actualComputed).toBe(expectedVal);
+            if (Object.prototype.hasOwnProperty.call(correctVals, computedKey)) {
+              const expectedVal = correctVals[computedKey];
+              const actualComputed = this.component[computedKey];
+              expect(actualComputed).toBe(expectedVal);
+            }
           }
           done();
         });
