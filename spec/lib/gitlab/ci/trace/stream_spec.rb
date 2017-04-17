@@ -34,11 +34,11 @@ describe Gitlab::Ci::Trace::Stream do
     end
 
     context 'when the trace contains ANSI sequence and Unicode' do
-      let(:io) do
-        File.open(expand_fixture_path('trace/ansi-sequence-and-unicode'))
+      let(:stream) do
+        described_class.new do
+          File.open(expand_fixture_path('trace/ansi-sequence-and-unicode'))
+        end
       end
-
-      let(:stream) { described_class.new { io } }
 
       it 'forwards to the next linefeed, case 1' do
         stream.limit(7)
@@ -60,11 +60,11 @@ describe Gitlab::Ci::Trace::Stream do
 
       # See https://gitlab.com/gitlab-org/gitlab-ce/issues/30796
       it 'reads in binary, output as Encoding.default_external' do
-        stream.limit(29)
+        stream.limit(52)
 
-        result = io.read # Ci::Ansi2html::Converter would read with each_line
+        result = stream.html
 
-        expect(result).to eq("\e[01;32m許功蓋\e[0m\n")
+        expect(result.lines.first).to eq("ヾ(´༎ຶД༎ຶ`)ﾉ<br><span class=\"term-fg-green\">許功蓋</span><br>")
         expect(result.encoding).to eq(Encoding.default_external)
       end
     end
