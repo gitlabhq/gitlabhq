@@ -43,13 +43,29 @@ describe Gitlab::Ci::Trace::Stream do
       it 'forwards to the next linefeed, case 1' do
         stream.limit(7)
 
-        expect(stream.raw).to eq('')
+        result = stream.raw
+
+        expect(result).to eq('')
+        expect(result.encoding).to eq(Encoding.default_external)
       end
 
       it 'forwards to the next linefeed, case 2' do
         stream.limit(29)
 
-        expect(stream.raw).to eq("\e[01;32m許功蓋\e[0m\n")
+        result = stream.raw
+
+        expect(result).to eq("\e[01;32m許功蓋\e[0m\n")
+        expect(result.encoding).to eq(Encoding.default_external)
+      end
+
+      # See https://gitlab.com/gitlab-org/gitlab-ce/issues/30796
+      it 'reads in binary, output as Encoding.default_external' do
+        stream.limit(52)
+
+        result = stream.html
+
+        expect(result).to eq("ヾ(´༎ຶД༎ຶ`)ﾉ<br><span class=\"term-fg-green\">許功蓋</span><br>")
+        expect(result.encoding).to eq(Encoding.default_external)
       end
     end
   end
