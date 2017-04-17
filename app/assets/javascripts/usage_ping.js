@@ -1,7 +1,7 @@
 (global => {
   global.gl = global.gl || {};
 
-  gl.ApplicationSettings = function() {
+  gl.UsagePing = function() {
     var usage_data_url = $('.usage-data').data('endpoint');
 
     $.ajax({

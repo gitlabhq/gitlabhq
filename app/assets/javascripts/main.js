@@ -165,6 +165,7 @@ import './syntax_highlight';
 import './task_list';
 import './todos';
 import './tree';
+import './usage_ping';
 import './user';
 import './user_tabs';
 import './username_validator';
