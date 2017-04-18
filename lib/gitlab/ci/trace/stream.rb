@@ -4,7 +4,7 @@ module Gitlab
       # This was inspired from: http://stackoverflow.com/a/10219411/1520132
       class Stream
         BUFFER_SIZE = 4096
-        LIMIT_SIZE = 50.kilobytes
+        LIMIT_SIZE = 500.kilobytes
 
         attr_reader :stream
 

@@ -1,11 +1,11 @@
 /* eslint-disable no-new */
 /* global Build */
-
-require('~/lib/utils/datetime_utility');
-require('~/lib/utils/url_utility');
-require('~/build');
-require('~/breakpoints');
-require('vendor/jquery.nicescroll');
+import { bytesToKiB } from '~/lib/utils/number_utils';
+import '~/lib/utils/datetime_utility';
+import '~/lib/utils/url_utility';
+import '~/build';
+import '~/breakpoints';
+import 'vendor/jquery.nicescroll';
 
 describe('Build', () => {
   const BUILD_URL = `${gl.TEST_HOST}/frontend-fixtures/builds-project/builds/1`;
@@ -144,24 +144,6 @@ describe('Build', () => {
         expect($('#build-trace .js-build-output').text()).toMatch(/Different/);
       });
 
-      it('shows information about truncated log', () => {
-        jasmine.clock().tick(4001);
-        const [{ success }] = $.ajax.calls.argsFor(0);
-
-        success.call($, {
-          html: '<span>Update</span>',
-          status: 'success',
-          append: false,
-          truncated: true,
-          size: '50',
-        });
-
-        expect(
-          $('#build-trace .js-truncated-info').text().trim(),
-        ).toContain('Showing last 50 KiB of log');
-        expect($('#build-trace .js-truncated-info-size').text()).toMatch('50');
-      });
-
       it('reloads the page when the build is done', () => {
         spyOn(gl.utils, 'visitUrl');
 
@@ -175,6 +157,107 @@ describe('Build', () => {
         });
 
         expect(gl.utils.visitUrl).toHaveBeenCalledWith(BUILD_URL);
+      });
+
+      describe('truncated information', () => {
+        describe('when size is less than total', () => {
+          it('shows information about truncated log', () => {
+            jasmine.clock().tick(4001);
+            const [{ success }] = $.ajax.calls.argsFor(0);
+
+            success.call($, {
+              html: '<span>Update</span>',
+              status: 'success',
+              append: false,
+              size: 50,
+              total: 100,
+            });
+
+            expect(document.querySelector('.js-truncated-info').classList).not.toContain('hidden');
+          });
+
+          it('shows the size in KiB', () => {
+            jasmine.clock().tick(4001);
+            const [{ success }] = $.ajax.calls.argsFor(0);
+            const size = 50;
+
+            success.call($, {
+              html: '<span>Update</span>',
+              status: 'success',
+              append: false,
+              size,
+              total: 100,
+            });
+
+            expect(
+              document.querySelector('.js-truncated-info-size').textContent.trim(),
+            ).toEqual(`${bytesToKiB(size)}`);
+          });
+
+          it('shows incremented size', () => {
+            jasmine.clock().tick(4001);
+            let args = $.ajax.calls.argsFor(0)[0];
+            args.success.call($, {
+              html: '<span>Update</span>',
+              status: 'success',
+              append: false,
+              size: 50,
+              total: 100,
+            });
+
+            expect(
+              document.querySelector('.js-truncated-info-size').textContent.trim(),
+            ).toEqual(`${bytesToKiB(50)}`);
+
+            jasmine.clock().tick(4001);
+            args = $.ajax.calls.argsFor(2)[0];
+            args.success.call($, {
+              html: '<span>Update</span>',
+              status: 'success',
+              append: true,
+              size: 10,
+              total: 100,
+            });
+
+            expect(
+              document.querySelector('.js-truncated-info-size').textContent.trim(),
+            ).toEqual(`${bytesToKiB(60)}`);
+          });
+
+          it('renders the raw link', () => {
+            jasmine.clock().tick(4001);
+            const [{ success }] = $.ajax.calls.argsFor(0);
+
+            success.call($, {
+              html: '<span>Update</span>',
+              status: 'success',
+              append: false,
+              size: 50,
+              total: 100,
+            });
+
+            expect(
+              document.querySelector('.js-raw-link').textContent.trim(),
+            ).toContain('Complete Raw');
+          });
+        });
+
+        describe('when size is equal than total', () => {
+          it('does not show the trunctated information', () => {
+            jasmine.clock().tick(4001);
+            const [{ success }] = $.ajax.calls.argsFor(0);
+
+            success.call($, {
+              html: '<span>Update</span>',
+              status: 'success',
+              append: false,
+              size: 100,
+              total: 100,
+            });
+
+            expect(document.querySelector('.js-truncated-info').classList).toContain('hidden');
+          });
+        });
       });
     });
   });
