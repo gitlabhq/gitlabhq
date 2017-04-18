@@ -9,7 +9,7 @@ const locales = {
   en,
 };
 
-const lang = document.querySelector('html').getAttribute('lang');
+const lang = document.querySelector('html').getAttribute('lang') || 'en';
 
 export { lang };
 export default new Jed(locales[lang]);
