@@ -34,6 +34,18 @@ describe Projects::PipelinesController do
     end
   end
 
+  describe 'GET show JSON' do
+    let!(:pipeline) { create(:ci_pipeline_with_one_job, project: project) }
+
+    it 'returns the pipeline' do
+      get :show, namespace_id: project.namespace, project_id: project, id: pipeline, format: :json
+
+      expect(response).to have_http_status(:ok)
+      expect(json_response).not_to be_an(Array)
+      expect(json_response['id']).to be(pipeline.id)
+    end
+  end
+
   describe 'GET stages.json' do
     let(:pipeline) { create(:ci_pipeline, project: project) }
 

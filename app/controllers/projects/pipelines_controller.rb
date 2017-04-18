@@ -57,15 +57,23 @@ class Projects::PipelinesController < Projects::ApplicationController
     @pipeline = Ci::CreatePipelineService
       .new(project, current_user, create_params)
       .execute(ignore_skip_ci: true, save_on_errors: false)
-    unless @pipeline.persisted?
-      render 'new'
-      return
-    end
 
-    redirect_to namespace_project_pipeline_path(project.namespace, project, @pipeline)
+    if @pipeline.persisted?
+      redirect_to namespace_project_pipeline_path(project.namespace, project, @pipeline)
+    else
+      render 'new'
+    end
   end
 
   def show
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: PipelineSerializer.
+          new(project: @project, user: @current_user).
+          represent(@pipeline)
+      end
+    end
   end
 
   def builds
