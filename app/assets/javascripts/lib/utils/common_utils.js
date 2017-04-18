@@ -364,9 +364,9 @@
       });
     };
 
-    w.gl.utils.setFavicon = (iconName) => {
-      if (faviconEl && iconName) {
-        faviconEl.setAttribute('href', `/assets/${iconName}.ico`);
+    w.gl.utils.setFavicon = (faviconPath) => {
+      if (faviconEl && faviconPath) {
+        faviconEl.setAttribute('href', faviconPath);
       }
     };
 
@@ -381,8 +381,8 @@
         url: pageUrl,
         dataType: 'json',
         success: function(data) {
-          if (data && data.icon) {
-            gl.utils.setFavicon(`ci_favicons/${data.icon}`);
+          if (data && data.favicon) {
+            gl.utils.setFavicon(data.favicon);
           } else {
             gl.utils.resetFavicon();
           }
