@@ -30,9 +30,9 @@ export default class Deployments {
       this.data = [];
 
       data.deployments.forEach((deployment) => {
-        const coeff = 1000 * 60;
+        const minInSeconds = 1000 * 60;
         let time = new Date(deployment.created_at);
-        time = new Date(Math.round(time.getTime() / coeff) * coeff);
+        time = new Date(Math.round(time.getTime() / minInSeconds) * minInSeconds);
         time.setSeconds(this.chartData[0].time.getSeconds());
         const xPos = Math.floor(this.x(time));
 

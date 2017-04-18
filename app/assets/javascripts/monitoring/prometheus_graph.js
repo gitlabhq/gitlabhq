@@ -222,15 +222,6 @@ class PrometheusGraph {
     d3.selectAll(`${prometheusGraphContainer} .circle-metric`).remove();
     d3.selectAll(`${prometheusGraphContainer} .rect-text-metric:not(.deploy-info-rect)`).remove();
 
-    chart.append('circle')
-    .attr('class', 'circle-metric')
-    .attr('fill', graphSpecifics.line_color)
-    .attr('cx', currentTimeCoordinate)
-    .attr('cy', y(currentData.value))
-    .attr('r', this.commonGraphProperties.circle_radius_metric);
-
-    if (shouldHideTextMetric) return;
-
     chart.append('line')
     .attr('class', 'selected-metric-line')
     .attr({
@@ -239,6 +230,15 @@ class PrometheusGraph {
       x2: currentTimeCoordinate,
       y2: maxValueMetric,
     });
+
+    chart.append('circle')
+    .attr('class', 'circle-metric')
+    .attr('fill', graphSpecifics.line_color)
+    .attr('cx', currentTimeCoordinate)
+    .attr('cy', y(currentData.value))
+    .attr('r', this.commonGraphProperties.circle_radius_metric);
+
+    if (shouldHideTextMetric) return;
 
     // The little box with text
     const rectTextMetric = chart.append('svg')
