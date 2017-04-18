@@ -147,41 +147,30 @@ module Gitlab
       Rails.env.test? ? Rails.root.join('tmp/tests') : Gitlab.config.gitlab.user_home
     end
 
-    def checkout_or_clone_tag(tag:, repo:, target_dir:)
-      if Dir.exist?(target_dir)
-        checkout_tag(tag, target_dir)
-      else
-        clone_repo(repo, target_dir)
-      end
+    def checkout_or_clone_version(version:, repo:, target_dir:)
+      version =
+        if version.starts_with?("=")
+          version.sub(/\A=/, '') # tag or branch
+        else
+          "v#{version}" # tag
+        end
 
-      reset_to_tag(tag, target_dir)
+      clone_repo(repo, target_dir) unless Dir.exist?(target_dir)
+      checkout_version(version, target_dir)
+      reset_to_version(version, target_dir)
     end
 
     def clone_repo(repo, target_dir)
       run_command!(%W[#{Gitlab.config.git.bin_path} clone -- #{repo} #{target_dir}])
     end
 
-    def checkout_tag(tag, target_dir)
-      run_command!(%W[#{Gitlab.config.git.bin_path} -C #{target_dir} fetch --tags --quiet])
-      run_command!(%W[#{Gitlab.config.git.bin_path} -C #{target_dir} checkout --quiet #{tag}])
+    def checkout_version(version, target_dir)
+      run_command!(%W[#{Gitlab.config.git.bin_path} -C #{target_dir} fetch --quiet])
+      run_command!(%W[#{Gitlab.config.git.bin_path} -C #{target_dir} checkout --quiet #{version}])
     end
 
-    def reset_to_tag(tag_wanted, target_dir)
-      tag =
-        begin
-          # First try to checkout without fetching
-          # to avoid stalling tests if the Internet is down.
-          run_command!(%W[#{Gitlab.config.git.bin_path} -C #{target_dir} describe -- #{tag_wanted}])
-        rescue Gitlab::TaskFailedError
-          run_command!(%W[#{Gitlab.config.git.bin_path} -C #{target_dir} fetch origin])
-          run_command!(%W[#{Gitlab.config.git.bin_path} -C #{target_dir} describe -- origin/#{tag_wanted}])
-        end
-
-      if tag
-        run_command!(%W[#{Gitlab.config.git.bin_path} -C #{target_dir} reset --hard #{tag.strip}])
-      else
-        raise Gitlab::TaskFailedError
-      end
+    def reset_to_version(version, target_dir)
+      run_command!(%W[#{Gitlab.config.git.bin_path} -C #{target_dir} reset --hard #{version}])
     end
   end
 end

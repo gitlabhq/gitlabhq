@@ -130,5 +130,5 @@ gl.issueBoards.BoardsStore = {
     } else {
       history.pushState(null, null, `?${this.filter.path}`);
     }
-  }
+  },
 };

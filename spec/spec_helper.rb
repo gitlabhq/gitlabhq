@@ -9,8 +9,14 @@ require 'rspec/rails'
 require 'shoulda/matchers'
 require 'rspec/retry'
 
-if (ENV['RSPEC_PROFILING_POSTGRES_URL'] || ENV['RSPEC_PROFILING']) &&
-    (!ENV.has_key?('CI') || ENV['CI_COMMIT_REF_NAME'] == 'master')
+rspec_profiling_is_configured =
+  ENV['RSPEC_PROFILING_POSTGRES_URL'] ||
+  ENV['RSPEC_PROFILING']
+branch_can_be_profiled =
+  ENV['CI_COMMIT_REF_NAME'] == 'master' ||
+  ENV['CI_COMMIT_REF_NAME'] =~ /rspec-profile/
+
+if rspec_profiling_is_configured && (!ENV.key?('CI') || branch_can_be_profiled)
   require 'rspec_profiling/rspec'
 end
 

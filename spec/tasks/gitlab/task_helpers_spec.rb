@@ -10,19 +10,38 @@ describe Gitlab::TaskHelpers do
 
   let(:repo) { 'https://gitlab.com/gitlab-org/gitlab-test.git' }
   let(:clone_path) { Rails.root.join('tmp/tests/task_helpers_tests').to_s }
+  let(:version) { '1.1.0' }
   let(:tag) { 'v1.1.0' }
 
-  describe '#checkout_or_clone_tag' do
+  describe '#checkout_or_clone_version' do
     before do
       allow(subject).to receive(:run_command!)
-      expect(subject).to receive(:reset_to_tag).with(tag, clone_path)
     end
 
-    context 'target_dir does not exist' do
-      it 'clones the repo, retrieve the tag from origin, and checkout the tag' do
+    it 'checkout the version and reset to it' do
+      expect(subject).to receive(:checkout_version).with(tag, clone_path)
+      expect(subject).to receive(:reset_to_version).with(tag, clone_path)
+
+      subject.checkout_or_clone_version(version: version, repo: repo, target_dir: clone_path)
+    end
+
+    context 'with a branch version' do
+      let(:version) { '=branch_name' }
+      let(:branch) { 'branch_name' }
+
+      it 'checkout the version and reset to it with a branch name' do
+        expect(subject).to receive(:checkout_version).with(branch, clone_path)
+        expect(subject).to receive(:reset_to_version).with(branch, clone_path)
+
+        subject.checkout_or_clone_version(version: version, repo: repo, target_dir: clone_path)
+      end
+    end
+
+    context "target_dir doesn't exist" do
+      it 'clones the repo' do
         expect(subject).to receive(:clone_repo).with(repo, clone_path)
 
-        subject.checkout_or_clone_tag(tag: tag, repo: repo, target_dir: clone_path)
+        subject.checkout_or_clone_version(version: version, repo: repo, target_dir: clone_path)
       end
     end
 
@@ -31,10 +50,10 @@ describe Gitlab::TaskHelpers do
         expect(Dir).to receive(:exist?).and_return(true)
       end
 
-      it 'fetch and checkout the tag' do
-        expect(subject).to receive(:checkout_tag).with(tag, clone_path)
+      it "doesn't clone the repository" do
+        expect(subject).not_to receive(:clone_repo)
 
-        subject.checkout_or_clone_tag(tag: tag, repo: repo, target_dir: clone_path)
+        subject.checkout_or_clone_version(version: version, repo: repo, target_dir: clone_path)
       end
     end
   end
@@ -48,49 +67,23 @@ describe Gitlab::TaskHelpers do
     end
   end
 
-  describe '#checkout_tag' do
+  describe '#checkout_version' do
     it 'clones the repo in the target dir' do
       expect(subject).
-        to receive(:run_command!).with(%W[#{Gitlab.config.git.bin_path} -C #{clone_path} fetch --tags --quiet])
+        to receive(:run_command!).with(%W[#{Gitlab.config.git.bin_path} -C #{clone_path} fetch --quiet])
       expect(subject).
         to receive(:run_command!).with(%W[#{Gitlab.config.git.bin_path} -C #{clone_path} checkout --quiet #{tag}])
 
-      subject.checkout_tag(tag, clone_path)
+      subject.checkout_version(tag, clone_path)
     end
   end
 
-  describe '#reset_to_tag' do
-    let(:tag) { 'v1.1.0' }
-    before do
+  describe '#reset_to_version' do
+    it 'resets --hard to the given version' do
       expect(subject).
         to receive(:run_command!).with(%W[#{Gitlab.config.git.bin_path} -C #{clone_path} reset --hard #{tag}])
-    end
 
-    context 'when the tag is not checked out locally' do
-      before do
-        expect(subject).
-          to receive(:run_command!).with(%W[#{Gitlab.config.git.bin_path} -C #{clone_path} describe -- #{tag}]).and_raise(Gitlab::TaskFailedError)
-      end
-
-      it 'fetch origin, ensure the tag exists, and resets --hard to the given tag' do
-        expect(subject).
-          to receive(:run_command!).with(%W[#{Gitlab.config.git.bin_path} -C #{clone_path} fetch origin])
-        expect(subject).
-          to receive(:run_command!).with(%W[#{Gitlab.config.git.bin_path} -C #{clone_path} describe -- origin/#{tag}]).and_return(tag)
-
-        subject.reset_to_tag(tag, clone_path)
-      end
-    end
-
-    context 'when the tag is checked out locally' do
-      before do
-        expect(subject).
-          to receive(:run_command!).with(%W[#{Gitlab.config.git.bin_path} -C #{clone_path} describe -- #{tag}]).and_return(tag)
-      end
-
-      it 'resets --hard to the given tag' do
-        subject.reset_to_tag(tag, clone_path)
-      end
+      subject.reset_to_version(tag, clone_path)
     end
   end
 end
