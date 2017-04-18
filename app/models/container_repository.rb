@@ -20,7 +20,8 @@ class ContainerRepository < ActiveRecord::Base
   end
 
   def path
-    @path ||= [project.full_path, name].select(&:present?).join('/')
+    @path ||= [project.full_path, name]
+      .select(&:present?).join('/').downcase
   end
 
   def location

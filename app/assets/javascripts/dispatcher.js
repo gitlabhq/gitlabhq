@@ -33,6 +33,7 @@
 /* global Labels */
 /* global Shortcuts */
 /* global Sidebar */
+/* global ShortcutsWiki */
 
 import Issue from './issue';
 
@@ -46,6 +47,7 @@ import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import UserCallout from './user_callout';
 import { ProtectedTagCreate, ProtectedTagEditList } from './protected_tags';
+import ShortcutsWiki from './shortcuts_wiki';
 
 const ShortcutsBlob = require('./shortcuts_blob');
 
@@ -416,7 +418,7 @@ const ShortcutsBlob = require('./shortcuts_blob');
               break;
             case 'wikis':
               new gl.Wikis();
-              shortcut_handler = new ShortcutsNavigation();
+              shortcut_handler = new ShortcutsWiki();
               new ZenMode();
               new gl.GLForm($('.wiki-form'));
               break;

@@ -1,3 +1,4 @@
+<script>
 import Visibility from 'visibilityjs';
 import Poll from './../lib/utils/poll';
 import Service from './services/index';
@@ -72,7 +73,9 @@ export default {
   created() {
     this.fetch();
   },
-  template: `
-    <h2 class='title' v-html='title'></h2>
-  `,
 };
+</script>
+
+<template>
+  <h2 class="title" v-html="title"></h2>
+</template>
