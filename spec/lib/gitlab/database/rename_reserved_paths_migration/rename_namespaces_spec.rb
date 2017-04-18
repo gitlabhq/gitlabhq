@@ -14,6 +14,19 @@ describe Gitlab::Database::RenameReservedPathsMigration::RenameNamespaces do
   end
 
   describe '#namespaces_for_paths' do
+    context 'nested namespaces' do
+      let(:subject) { described_class.new(['parent/the-Path'], migration) }
+
+      it 'includes the namespace' do
+        parent = create(:namespace, path: 'parent')
+        child = create(:namespace, path: 'the-path', parent: parent)
+
+        found_ids = subject.namespaces_for_paths(type: :wildcard).
+                      map(&:id)
+        expect(found_ids).to contain_exactly(child.id)
+      end
+    end
+
     context 'for wildcard namespaces' do
       it 'only returns child namespaces with the correct path' do
         _root_namespace = create(:namespace, path: 'THE-path')

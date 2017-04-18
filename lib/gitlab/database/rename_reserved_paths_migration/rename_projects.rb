@@ -28,9 +28,10 @@ module Gitlab
         end
 
         def projects_for_paths
-          with_paths = MigrationClasses::Project.arel_table[:path]
-                       .matches_any(paths)
-          MigrationClasses::Project.where(with_paths)
+          with_paths = MigrationClasses::Route.arel_table[:path]
+                         .matches_any(path_patterns)
+
+          MigrationClasses::Project.joins(:route).where(with_paths)
         end
       end
     end

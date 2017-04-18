@@ -9,6 +9,16 @@ describe Gitlab::Database::RenameReservedPathsMigration::RenameProjects do
   end
 
   describe '#projects_for_paths' do
+    it 'searches using nested paths' do
+      namespace = create(:namespace, path: 'hello')
+      project = create(:empty_project, path: 'THE-path', namespace: namespace)
+
+      result_ids = described_class.new(['Hello/the-path'], migration).
+                     projects_for_paths.map(&:id)
+
+      expect(result_ids).to contain_exactly(project.id)
+    end
+
     it 'includes the correct projects' do
       project = create(:empty_project, path: 'THE-path')
       _other_project = create(:empty_project)

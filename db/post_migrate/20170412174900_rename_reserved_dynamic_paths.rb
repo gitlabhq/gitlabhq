@@ -27,7 +27,8 @@ class RenameReservedDynamicPaths < ActiveRecord::Migration
     users
   ]
 
-  DISALLOWED_WILDCARD_PATHS = %w[objects folders file]
+  DISALLOWED_WILDCARD_PATHS = %w[info/lfs/objects gitlab-lfs/objects
+                                 environments/folders]
 
   def up
     rename_root_paths(DISALLOWED_ROOT_PATHS)

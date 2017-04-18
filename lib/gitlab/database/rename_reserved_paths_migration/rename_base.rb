@@ -13,6 +13,10 @@ module Gitlab
           @migration = migration
         end
 
+        def path_patterns
+          @path_patterns ||= paths.map { |path| "%#{path}" }
+        end
+
         def rename_path_for_routable(routable)
           old_path = routable.path
           old_full_path = routable.full_path
