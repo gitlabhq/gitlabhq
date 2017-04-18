@@ -33,12 +33,9 @@
 /* global Labels */
 /* global Shortcuts */
 /* global Sidebar */
-<<<<<<< HEAD
 /* global WeightSelect */
 /* global AdminEmailSelect */
-=======
 /* global ShortcutsWiki */
->>>>>>> aecaaa67c3d84637e6c691ed07b44115330dddcb
 
 import Issue from './issue';
 

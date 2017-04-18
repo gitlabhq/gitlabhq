@@ -119,13 +119,6 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
-<<<<<<< HEAD
-      resources :branches, only: [:index, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
-      delete :merged_branches, controller: 'branches', action: :destroy_all_merged
-      resources :tags, only: [:index, :show, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex } do
-        resource :release, only: [:edit, :update]
-      end
-
       ## EE-specific
       resources :path_locks, only: [:index, :destroy] do
         collection do
@@ -137,18 +130,6 @@ constraints(ProjectUrlConstrainer.new) do
       get '/service_desk' => 'service_desk#show', as: :service_desk
       put '/service_desk' => 'service_desk#update', as: :service_desk_refresh
 
-      resources :protected_branches, only: [:index, :show, :create, :update, :destroy, :patch], constraints: { id: Gitlab::Regex.git_reference_regex } do
-        ## EE-specific
-        scope module: :protected_branches do
-          resources :merge_access_levels, only: [:destroy]
-          resources :push_access_levels, only: [:destroy]
-        end
-      end
-
-      resources :protected_tags, only: [:index, :show, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
-
-=======
->>>>>>> aecaaa67c3d84637e6c691ed07b44115330dddcb
       resources :variables, only: [:index, :show, :update, :create, :destroy]
       resources :triggers, only: [:index, :create, :edit, :update, :destroy] do
         member do
