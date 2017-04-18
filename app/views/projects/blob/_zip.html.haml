@@ -5,6 +5,6 @@
   .text-center#js-zip-viewer{ data: { endpoint: namespace_project_raw_path(@project.namespace, @project, @id) } }
     = icon('spinner spin 2x', class: 'prepend-top-default append-bottom-default hidden', 'aria-hidden' => 'true', 'aria-label' => 'Loading')
     %table.table
-      %tr{"v-for" => "file in files"}
+      %tr{"v-for" => "(val, prop) in files"}
         %td
-          {{file}}
+          {{prop}}

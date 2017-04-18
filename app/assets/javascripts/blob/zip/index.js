@@ -5,11 +5,8 @@ import Vue from 'vue';
 export default class ZipRenderer {
   constructor(container) {
     this.el = container;
-    this.absolutePaths = [];
     this.load();
-    this.files = [];
-    this.tree = [];
-    this.addVue();
+    this.files = {};
   }
 
   load() {
@@ -20,7 +17,8 @@ export default class ZipRenderer {
         })
       })
       .then(asyncResult => {
-        this.createUsefulZipObjectStructure(asyncResult);
+        this.files = this.createUsefulZipObjectStructure(asyncResult);
+        this.addVue(this.files);
       })
   }
 
@@ -36,60 +34,73 @@ export default class ZipRenderer {
     });
   }
 
-  // Extract filename from a path
-  getFilename(path) {
-    return path.split("/").filter((i) => {
-      return i && i.length; 
-    }).reverse()
-    [0];
-  }
-
-  // Get depth of a path
-  getPathDepth(path) {
-    return path.replace(/[^\/]+|\/$/g, '').length;
-  }
-
-  // Find sub paths
-  findSubPaths(path) {
-    var subPaths = [];
-    var depth = this.getPathDepth(path);
-    return this.absolutePaths.filter((i) => {
-      var d = this.getPathDepth(i);
-      return i != path && i.startsWith(path) && (d <= depth+1);
-    });
-  }
-
-  // Build tree recursively
-  buildTree(dirPath) {
-    var tree = [];
-    var key = this.getFilename(dirPath);
-    var subPaths = this.findSubPaths(dirPath);
-    subPaths.forEach((subPath) => {
-      var subKey = this.getFilename(subPath);
-      if(/\/$/.test(subPath)) {
-        var o = {};
-        o[subKey] = this.buildTree(subPath);
-        tree.push(o);     
-      }
-      else {
-        tree.push(subKey);
-      } 
-    });
-    return tree;
-  }
 
   createUsefulZipObjectStructure(files) {
-    var tree;
-    this.absolutePaths = [];
-    files.forEach((path) => {
-      this.absolutePaths.push("/" + path);
-    });
-    tree = this.buildTree("/");
+    files = Object.keys(files.files);
+    var result = files.reduce(function(acc, record) {
+      var fields = record.match(/[^\/]+\/?/g) || [];
+      var currentDir = acc;
+         
+      fields.forEach(function (field, idx) {
+
+        // If field is a directory...
+        if (/\/$/.test(field)) {
+          
+          // If first one and not an existing directory, add it
+          if (idx == 0) {
+            if (!(field in currentDir)) {
+              currentDir[field] = [];
+            }
+            
+            // Move into subdirectory
+            currentDir = currentDir[field];
+            
+          // If not first, see if it's a subdirectory of currentDir
+          } else {
+            // Look for field as a subdirectory of currentDir
+            var subDir = currentDir.filter(function(element){
+              return typeof element == 'object' && element[field];
+            })[0];
+            
+            // If didn't find subDir, add it and set as currentDir
+            if (!subDir) {
+              var t = Object.create(null);
+              t[field] = [];
+              currentDir.push(t);
+              currentDir = t[field];
+              
+            // If found, set as currentDir
+            } else {
+              currentDir = subDir[field];
+            }
+          }
+          
+        // Otherwise it's a file. Make sure currentDir is a directory and not the root
+        } else {
+          if (Array.isArray(currentDir)) {
+            currentDir.push(field);
+            
+          // Otherwise, must be at root where files aren't allowed
+          } else {
+            throw new Error('Files not allowed in root: ' + field);
+          }
+        }
+      });
+      
+      return acc;
+      
+    }, Object.create(null));
+    return result;
   }
 
-  addVue() {
+  addVue(files) {
     this.vue = new Vue({
-
+      el: '#js-zip-viewer',
+      data() {
+        return {
+          files: files
+        }
+      }
     });
   }
 
