@@ -7,7 +7,7 @@ module IconsHelper
   # font-awesome-rails gem, but should we ever use a different icon pack in the
   # future we won't have to change hundreds of method calls.
   def icon(names, options = {})
-    if !options['aria-hidden'] and !options['aria-label']
+    if (options.keys & %w[aria-hidden aria-label]).empty?
       # Add `aria-hidden` if there are no aria's set
       options['aria-hidden'] = true
     end
