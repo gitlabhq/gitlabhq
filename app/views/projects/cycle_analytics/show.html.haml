@@ -26,7 +26,7 @@
   .wrapper{ "v-show" => "!isLoading && !hasError" }
     .panel.panel-default
       .panel-heading
-        Pipeline Health
+        {{ 'Pipeline Health' | translate }}
       .content-block
         .container-fluid
           .row
@@ -44,7 +44,7 @@
                       {{ 'Last 30 days' | translate }}
                   %li
                     %a{ "href" => "#", "data-value" => "90" }
-                      {{ 'Last 30 days' | translate }}
+                      {{ 'Last 90 days' | translate }}
     .stage-panel-container
       .panel.panel-default.stage-panel
         .panel-heading

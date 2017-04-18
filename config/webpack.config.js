@@ -34,6 +34,7 @@ var config = {
     graphs:               './graphs/graphs_bundle.js',
     groups_list:          './groups_list.js',
     issuable:             './issuable/issuable_bundle.js',
+    locale:               './locale/index.js',
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
     merge_request_widget: './merge_request_widget/ci_bundle.js',
     monitoring:           './monitoring/monitoring_bundle.js',
@@ -52,7 +53,6 @@ var config = {
     vue_pipelines:        './vue_pipelines_index/index.js',
     issue_show:           './issue_show/index.js',
     group:                './group.js',
-    locale:               './locale/index.js',
   },
 
   output: {
