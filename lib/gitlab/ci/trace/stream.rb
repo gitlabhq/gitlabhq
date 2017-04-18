@@ -14,14 +14,7 @@ module Gitlab
 
         def initialize
           @stream = yield
-          if @stream
-            @stream.binmode
-            # Ci::Ansi2html::Converter would read from @stream directly,
-            # using @stream.each_line to be specific. It's safe to set
-            # the encoding here because IO#seek(bytes) and IO#read(bytes)
-            # are not characters based, so encoding doesn't matter to them.
-            @stream.set_encoding(Encoding.default_external)
-          end
+          @stream&.binmode
         end
 
         def valid?
@@ -68,8 +61,8 @@ module Gitlab
 
         def html(last_lines: nil)
           text = raw(last_lines: last_lines)
-          stream = StringIO.new(text)
-          ::Ci::Ansi2html.convert(stream).html
+          buffer = StringIO.new(text)
+          ::Ci::Ansi2html.convert(buffer).html
         end
 
         def extract_coverage(regex)
