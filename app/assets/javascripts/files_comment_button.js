@@ -161,3 +161,5 @@ $.fn.filesCommentButton = function() {
     }
   });
 };
+
+export default FilesCommentButton;
