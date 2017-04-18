@@ -10,9 +10,10 @@
                 List
 
           = nav_link(controller: :boards) do
-            = link_to namespace_project_boards_path(@project.namespace, @project), title: 'Board' do
+            -# EE should use plural "Boards"
+            = link_to namespace_project_boards_path(@project.namespace, @project), title: 'Boards' do
               %span
-                Board
+                Boards
 
         - if project_nav_tab?(:merge_requests) && current_controller?(:merge_requests)
           = nav_link(controller: :merge_requests) do
