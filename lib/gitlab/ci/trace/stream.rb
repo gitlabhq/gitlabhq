@@ -14,14 +14,7 @@ module Gitlab
 
         def initialize
           @stream = yield
-          if @stream
-            @stream.binmode
-            # Ci::Ansi2html::Converter would read from @stream directly,
-            # using @stream.each_line to be specific. It's safe to set
-            # the encoding here because IO#seek(bytes) and IO#read(bytes)
-            # are not characters based, so encoding doesn't matter to them.
-            @stream.set_encoding(Encoding.default_external)
-          end
+          @stream.binmode if @stream
         end
 
         def valid?
@@ -63,13 +56,14 @@ module Gitlab
         end
 
         def html_with_state(state = nil)
-          ::Ci::Ansi2html.convert(stream, state)
+          buffer = create_stream_for_ansi2html(stream) if stream
+          ::Ci::Ansi2html.convert(buffer, state)
         end
 
         def html(last_lines: nil)
           text = raw(last_lines: last_lines)
-          stream = StringIO.new(text)
-          ::Ci::Ansi2html.convert(stream).html
+          buffer = create_stream_for_ansi2html(text)
+          ::Ci::Ansi2html.convert(buffer).html
         end
 
         def extract_coverage(regex)
@@ -121,6 +115,24 @@ module Gitlab
           end
 
           chunks.join.lines.last(last_lines).join
+        end
+
+        def create_stream_for_ansi2html(io_or_string)
+          buffer = StringIO.new
+
+          case io_or_string
+          when IO, StringIO
+            IO.copy_stream(io_or_string, buffer)
+          when String
+            buffer.string = io_or_string
+          else
+            raise TypeError,
+              "should be an IO or String, but got: #{io_or_string.class}"
+          end
+
+          buffer.set_encoding(Encoding.default_external)
+          buffer.rewind
+          buffer
         end
       end
     end
