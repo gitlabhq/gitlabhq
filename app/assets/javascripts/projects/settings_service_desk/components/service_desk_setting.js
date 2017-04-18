@@ -18,11 +18,6 @@ export default {
       required: false,
       default: null,
     },
-    isInstanceAdmin: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
 
   methods: {
@@ -40,7 +35,6 @@ export default {
             ref="enabled-checkbox"
             type="checkbox"
             id="service-desk-enabled-checkbox"
-            :disabled="!isInstanceAdmin"
             :checked="isEnabled"
             @change="onCheckboxToggle($event)">
           <span class="descr">
@@ -48,12 +42,6 @@ export default {
           </span>
         </label>
       </div>
-      <p
-        ref="only-instance-admin-activate-message"
-        v-if="!isInstanceAdmin"
-        class="settings-message">
-        Only instance admins can activate/deactivate Service Desk
-      </p>
       <template v-if="isEnabled">
         <div
           class="panel-slim panel-default">

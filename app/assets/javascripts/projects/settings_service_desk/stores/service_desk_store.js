@@ -4,7 +4,6 @@ class ServiceDeskStore {
       isEnabled: false,
       incomingEmail: '',
       fetchError: null,
-      isInstanceAdmin: false,
     }, initialState);
   }
 
@@ -18,10 +17,6 @@ class ServiceDeskStore {
 
   setFetchError(value) {
     this.state.fetchError = value;
-  }
-
-  setIsInstanceAdmin(value) {
-    this.state.isInstanceAdmin = value;
   }
 }
 
