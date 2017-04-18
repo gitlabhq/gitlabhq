@@ -5,7 +5,6 @@ export default {
     avatarUrl: {
       type: String,
       required: false,
-      default: '/assets/no_avatar.png',
     },
     profileUrl: {
       type: String,
