@@ -1,4 +1,4 @@
-/* eslint-disable import/prefer-default-export */
+import { BYTES_IN_KIB } from './constants';
 
 /**
  * Function that allows a number with an X amount of decimals
@@ -31,4 +31,14 @@ export function formatRelevantDigits(number) {
     formattedNumber = Number(number).toFixed(relevantDigits);
   }
   return formattedNumber;
+}
+
+/**
+ * Utility function that calculates KiB of the given bytes.
+ *
+ * @param  {Number} number bytes
+ * @return {Number}        KiB
+ */
+export function bytesToKiB(number) {
+  return number / BYTES_IN_KIB;
 }
