@@ -34,6 +34,13 @@ describe Namespace, models: true do
         let(:group) { build(:group, :nested, path: 'tree') }
 
         it { expect(group).not_to be_valid }
+
+        it 'rejects nested paths' do
+          parent = create(:group, :nested, path: 'environments')
+          namespace = build(:project, path: 'folders', namespace: parent)
+
+          expect(namespace).not_to be_valid
+        end
       end
 
       context 'top-level group' do

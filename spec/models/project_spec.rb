@@ -266,6 +266,13 @@ describe Project, models: true do
 
         expect(project).not_to be_valid
       end
+
+      it 'rejects nested paths' do
+        parent = create(:group, :nested, path: 'environments')
+        project = build(:project, path: 'folders', namespace: parent)
+
+        expect(project).not_to be_valid
+      end
     end
   end
 

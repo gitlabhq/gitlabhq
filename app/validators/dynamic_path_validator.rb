@@ -71,38 +71,40 @@ class DynamicPathValidator < ActiveModel::EachValidator
   #  without tree as reserved name routing can match 'group/project' as group name,
   #  'tree' as project name and 'deploy_keys' as route.
   #
-
   WILDCARD_ROUTES = Set.new(%w[tree commits wikis new edit create update logs_tree
                                preview blob blame raw files create_dir find_file
-                               artifacts graphs refs badges objects folders file])
+                               artifacts graphs refs badges info/lfs/objects
+                               gitlab-lfs/objects environments/folders])
 
   STRICT_RESERVED = (TOP_LEVEL_ROUTES | WILDCARD_ROUTES).freeze
 
-  def self.valid_full_path?(full_path)
-    path_segments = full_path.split('/')
-    root_segment = path_segments.shift
+  def self.valid?(path)
+    path_segments = path.split('/')
 
-    valid?(root_segment, type: :top_level) && valid_wildcard_segments?(path_segments)
+    !reserved?(path) && path_segments.all? { |value| follow_format?(value) }
   end
 
-  def self.valid_wildcard_segments?(segments)
-    segments.all? { |segment| valid?(segment, type: :wildcard) }
+  def self.reserved?(path)
+    path = path.to_s.downcase
+    top_level, wildcard_part = path.split('/', 2)
+
+    includes_reserved_top_level?(top_level) || includes_reserved_wildcard?(wildcard_part)
   end
 
-  def self.valid?(value, type: :strict)
-    !reserved?(value, type: type) && follow_format?(value)
-  end
-
-  def self.reserved?(value, type: :strict)
-    value = value.to_s.downcase
-    case type
-    when :wildcard
-      WILDCARD_ROUTES.include?(value)
-    when :top_level
-      TOP_LEVEL_ROUTES.include?(value)
-    else
-      STRICT_RESERVED.include?(value)
+  def self.includes_reserved_wildcard?(path)
+    WILDCARD_ROUTES.any? do |reserved_word|
+      contains_path_part?(path, reserved_word)
     end
+  end
+
+  def self.includes_reserved_top_level?(path)
+    TOP_LEVEL_ROUTES.any? do |reserved_route|
+      contains_path_part?(path, reserved_route)
+    end
+  end
+
+  def self.contains_path_part?(path, part)
+    path =~ /(.*\/|\A)#{Regexp.quote(part)}(\/.*|\z)/
   end
 
   def self.follow_format?(value)
@@ -116,21 +118,10 @@ class DynamicPathValidator < ActiveModel::EachValidator
       record.errors.add(attribute, Gitlab::Regex.namespace_regex_message)
     end
 
-    if reserved?(value, type: validation_type(record))
-      record.errors.add(attribute, "#{value} is a reserved name")
-    end
-  end
+    full_path = record.respond_to?(:full_path) ? record.full_path : value
 
-  def validation_type(record)
-    case record
-    when Namespace
-      record.has_parent? ? :wildcard : :top_level
-    when Project
-      :wildcard
-    when User
-      :top_level
-    else
-      :strict
+    if reserved?(full_path)
+      record.errors.add(attribute, "#{value} is a reserved name")
     end
   end
 end

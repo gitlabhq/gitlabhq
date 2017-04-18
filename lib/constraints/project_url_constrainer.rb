@@ -4,7 +4,7 @@ class ProjectUrlConstrainer
     project_path = request.params[:project_id] || request.params[:id]
     full_path = namespace_path + '/' + project_path
 
-    unless DynamicPathValidator.valid_full_path?(full_path)
+    unless DynamicPathValidator.valid?(full_path)
       return false
     end
 
