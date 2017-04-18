@@ -15,7 +15,7 @@ module Gitlab
         end
 
         unless URI(address).scheme.in?(%w(tcp unix))
-          raise "Unsupported Gitaly address: #{address.inspect}"
+          raise "Unsupported Gitaly address: #{address.inspect} does not use URL scheme 'tcp' or 'unix'"
         end
 
         @addresses[name] = address
