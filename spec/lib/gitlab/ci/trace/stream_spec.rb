@@ -71,10 +71,18 @@ describe Gitlab::Ci::Trace::Stream do
   end
 
   describe '#append' do
+    let(:tempfile) { Tempfile.new }
+
     let(:stream) do
       described_class.new do
-        StringIO.new("12345678")
+        tempfile.write("12345678")
+        tempfile.rewind
+        tempfile
       end
+    end
+
+    after do
+      tempfile.unlink
     end
 
     it "truncates and append content" do
@@ -83,6 +91,17 @@ describe Gitlab::Ci::Trace::Stream do
 
       expect(stream.size).to eq(6)
       expect(stream.raw).to eq("123489")
+    end
+
+    it 'appends in binary mode' do
+      '😺'.force_encoding('ASCII-8BIT').each_char.with_index do |byte, offset|
+        stream.append(byte, offset)
+      end
+
+      stream.seek(0)
+
+      expect(stream.size).to eq(4)
+      expect(stream.raw).to eq('😺')
     end
   end
 
