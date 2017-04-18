@@ -33,7 +33,7 @@ var config = {
     graphs:               './graphs/graphs_bundle.js',
     groups_list:          './groups_list.js',
     issues:               './issues/issues_bundle.js',
-    issuable:             './issuable/issuable_bundle.js',
+    sidebar:              './sidebar/sidebar_bundle.js',
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
     merge_request_widget: './merge_request_widget/ci_bundle.js',
     mr_widget_ee:         './merge_request_widget/widget_bundle.js',
@@ -46,7 +46,6 @@ var config = {
     u2f:                  ['vendor/u2f'],
     users:                './users/users_bundle.js',
     vue_pipelines:        './vue_pipelines_index/index.js',
-    sidebar_assignees:    './sidebar_assignees/index.js',
   },
 
   output: {
@@ -106,7 +105,7 @@ var config = {
         'diff_notes',
         'environments',
         'environments_folder',
-        'issuable',
+        'sidebar',
         'merge_conflicts',
         'mr_widget_ee',
         'vue_pipelines',

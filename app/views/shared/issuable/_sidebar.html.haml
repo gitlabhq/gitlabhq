@@ -1,10 +1,10 @@
 - todo = issuable_todo(issuable)
 - content_for :page_specific_javascripts do
   = page_specific_javascript_bundle_tag('common_vue')
-  = page_specific_javascript_bundle_tag('issuable')
+  = page_specific_javascript_bundle_tag('sidebar')
 
 %aside.right-sidebar.js-right-sidebar{ data: { "offset-top" => "101", "spy" => "affix" }, class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite' }
-  .issuable-sidebar
+  .issuable-sidebar{ data: { endpoint: "#{issuable_json_path(issuable)}" } }
     - can_edit_issuable = can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
     .block.issuable-sidebar-header
       - if current_user
@@ -24,19 +24,7 @@
     = form_for [@project.namespace.becomes(Namespace), @project, issuable], remote: true, format: :json, html: { class: 'issuable-context-form inline-update js-issuable-update' } do |f|
       .block.assignee
         - if issuable.instance_of?(Issue)
-          #js-vue-sidebar-assignees{ data: { path: issuable_json_path(issuable), field: "#{issuable.to_ability_name}[assignee_ids]",'editable' => can_edit_issuable ? true : false, user: { id: current_user.id }, root: { path: root_path } } }
-          - content_for :page_specific_javascripts do
-            = page_specific_javascript_bundle_tag('sidebar_assignees')
-          :javascript
-            gl.sidebarAssigneesData = [];
-          - issuable.assignees.each do |assignee|
-            :javascript
-              gl.sidebarAssigneesData.push({
-                id: #{assignee.id},
-                name: "#{assignee.name}",
-                username: "#{assignee.username}",
-                avatar_url: "#{assignee.avatar_url}"
-              })
+          #js-vue-sidebar-assignees{ data: { field: "#{issuable.to_ability_name}[assignee_ids]" } }
         - else
           .sidebar-collapsed-icon.sidebar-collapsed-user{ data: { toggle: "tooltip", placement: "left", container: "body" }, title: (issuable.assignee.name if issuable.assignee) }
             - if issuable.assignee
@@ -108,11 +96,10 @@
           = dropdown_tag('Milestone', options: { title: 'Assign milestone', toggle_class: 'js-milestone-select js-extra-options', filter: true, dropdown_class: 'dropdown-menu-selectable', placeholder: 'Search milestones', data: { show_no: true, field_name: "#{issuable.to_ability_name}[milestone_id]", project_id: @project.id, issuable_id: issuable.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :json), ability_name: issuable.to_ability_name, issue_update: issuable_json_path(issuable), use_id: true }})
       - if issuable.has_attribute?(:time_estimate)
         #issuable-time-tracker.block
-          %issuable-time-tracker{ ':time_estimate' => 'issuable.time_estimate', ':time_spent' => 'issuable.total_time_spent', ':human_time_estimate' => 'issuable.human_time_estimate', ':human_time_spent' => 'issuable.human_total_time_spent', 'docs-url' => help_page_path('workflow/time_tracking.md') }
-            // Fallback while content is loading
-            .title.hide-collapsed
-              Time tracking
-              = icon('spinner spin', 'aria-hidden': 'true')
+          // Fallback while content is loading
+          .title.hide-collapsed
+            Time tracking
+            = icon('spinner spin', 'aria-hidden': 'true')
       - if issuable.has_attribute?(:due_date)
         .block.due_date
           .sidebar-collapsed-icon
@@ -229,8 +216,13 @@
           = clipboard_button(clipboard_text: project_ref, title: "Copy reference to clipboard", placement: "left")
 
     :javascript
-      gl.IssuableResource = new gl.SubbableResource('#{issuable_json_path(issuable)}');
-      new gl.IssuableTimeTracking("#{escape_javascript(serialize_issuable(issuable))}");
+      gl.sidebarOptions = {
+        endpoint: "#{issuable_json_path(issuable)}",
+        editable: #{can_edit_issuable ? true : false},
+        currentUserId: #{current_user.id},
+        rootPath: "#{root_path}"
+      };
+
       new MilestoneSelect('{"full_path":"#{@project.full_path}"}');
       new LabelsSelect();
       new WeightSelect();

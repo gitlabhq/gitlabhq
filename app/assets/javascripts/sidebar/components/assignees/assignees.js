@@ -1,5 +1,3 @@
-import eventHub from '../event_hub';
-
 export default {
   name: 'Assignees',
   data() {
@@ -52,7 +50,7 @@ export default {
   },
   methods: {
     assignSelf() {
-      eventHub.$emit('addCurrentUser');
+      this.$emit('assignSelf');
     },
     toggleShowLess() {
       this.showLess = !this.showLess;
@@ -91,7 +89,7 @@ export default {
             width="24"
             class="avatar avatar-inline s24"
             :alt="assigneeAlt(user)"
-            :src="user.avatarUrl"
+            :src="user.avatar_url"
           >
           <span class="author">{{user.name}}</span>
         </button>
@@ -129,7 +127,7 @@ export default {
               width="32"
               class="avatar avatar-inline s32"
               :alt="assigneeAlt(users[0])"
-              :src="users[0].avatarUrl"
+              :src="users[0].avatar_url"
             >
             <span class="author">{{users[0].name}}</span>
             <span class="username">@{{users[0].username}}</span>
@@ -152,7 +150,7 @@ export default {
                   width="32"
                   class="avatar avatar-inline s32"
                   :alt="assigneeAlt(user)"
-                  :src="user.avatarUrl"
+                  :src="user.avatar_url"
                 />
               </a>
             </div>

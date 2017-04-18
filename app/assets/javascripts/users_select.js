@@ -3,7 +3,7 @@
 /* global ListUser */
 
 import Vue from 'vue';
-import eventHub from './sidebar_assignees/event_hub';
+import eventHub from './sidebar/event_hub';
 
 (function() {
   var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; },
@@ -54,23 +54,25 @@ import eventHub from './sidebar_assignees/event_hub';
           $collapsedSidebar = $block.find('.sidebar-collapsed-user');
           $loading = $block.find('.block-loading').fadeOut();
 
-          $block[0].addEventListener('assignYourself', () => {
-            // Remove unassigned selected from the DOM
-            const unassignedSelected = $dropdown.closest('.selectbox')
-              .find("input[name='" + ($dropdown.data('field-name')) + "'][value=0]");
+          if ($block[0]) {
+            $block[0].addEventListener('assignYourself', () => {
+              // Remove unassigned selected from the DOM
+              const unassignedSelected = $dropdown.closest('.selectbox')
+                .find("input[name='" + ($dropdown.data('field-name')) + "'][value=0]");
 
-            if (unassignedSelected) {
-              unassignedSelected.remove();
-            }
+              if (unassignedSelected) {
+                unassignedSelected.remove();
+              }
 
-            // Save current selected user to the DOM
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = $dropdown.data('field-name');
-            input.value = _this.currentUser.id;
+              // Save current selected user to the DOM
+              const input = document.createElement('input');
+              input.type = 'hidden';
+              input.name = $dropdown.data('field-name');
+              input.value = _this.currentUser.id;
 
-            $dropdown.before(input);
-          });
+              $dropdown.before(input);
+            });
+          }
 
           var getSelected = function() {
             return $selectbox
@@ -269,7 +271,7 @@ import eventHub from './sidebar_assignees/event_hub';
             defaultLabel: defaultLabel,
             hidden: function(e) {
               if ($dropdown.hasClass('js-multiselect')) {
-                eventHub.$emit('saveUsers');
+                eventHub.$emit('sidebar:saveUsers');
               }
 
               $selectbox.hide();
@@ -294,10 +296,10 @@ import eventHub from './sidebar_assignees/event_hub';
                     const id = parseInt(element.value, 10);
                     element.remove();
                   });
-                  eventHub.$emit('removeAllUsers');
+                  eventHub.$emit('sidebar:removeAllUsers');
                 } else if (isActive) {
                   // user selected
-                  eventHub.$emit('addUser', user.id);
+                  eventHub.$emit('sidebar:addUser', user.id);
 
                   // Remove unassigned selection (if it was previously selected)
                   const unassignedSelected = $dropdown.closest('.selectbox')
@@ -313,7 +315,7 @@ import eventHub from './sidebar_assignees/event_hub';
                   }
 
                   // User unselected
-                  eventHub.$emit('removeUser', user.id);
+                  eventHub.$emit('sidebar:removeUser', user.id);
                 }
               }
 
