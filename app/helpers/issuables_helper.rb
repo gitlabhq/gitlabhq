@@ -193,7 +193,8 @@ module IssuablesHelper
   private
 
   def assigned_issuables_count(assignee, issuable_type, state)
-    assignee.public_send("assigned_#{issuable_type}").public_send(state).count
+    params = { assignee_id: assignee.id, state: state }
+    Object::const_get("#{issuable_type.to_s.camelize}Finder").new(current_user, params).execute.count
   end
 
   def sidebar_gutter_collapsed?
