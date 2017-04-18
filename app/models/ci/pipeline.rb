@@ -96,8 +96,7 @@ module Ci
 
         pipeline.run_after_commit do
           PipelineHooksWorker.perform_async(id)
-          Ci::ExpirePipelineCacheService.new(project, nil)
-            .execute(pipeline)
+          ExpirePipelineCacheWorker.perform_async(pipeline.id)
         end
       end
 
@@ -383,6 +382,13 @@ module Ci
       @merge_requests ||= project.merge_requests
         .where(source_branch: self.ref)
         .select { |merge_request| merge_request.head_pipeline.try(:id) == self.id }
+    end
+
+    # All the merge requests for which the current pipeline runs/ran against
+    def all_merge_requests
+      @all_merge_requests ||= project.merge_requests
+        .where(source_branch: ref)
+        .select { |merge_request| merge_request.all_pipelines.includes(self) }
     end
 
     def detailed_status(current_user)

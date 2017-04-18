@@ -376,8 +376,8 @@ describe Ci::Pipeline, models: true do
     end
 
     describe 'pipeline caching' do
-      it 'executes ExpirePipelinesCacheService' do
-        expect_any_instance_of(Ci::ExpirePipelineCacheService).to receive(:execute).with(pipeline)
+      it 'performs ExpirePipelinesCacheWorker' do
+        expect(ExpirePipelineCacheWorker).to receive(:perform_async).with(pipeline.id)
 
         pipeline.cancel
       end
