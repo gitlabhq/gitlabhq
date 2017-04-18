@@ -2,6 +2,8 @@
 /* global FilesCommentButton */
 /* global notes */
 
+import { debounce as _debounce } from 'underscore';
+
 let $commentButtonTemplate;
 var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
 
@@ -26,12 +28,18 @@ window.FilesCommentButton = (function() {
 
   TEXT_FILE_SELECTOR = '.text-file';
 
+  const DEBOUNCE_DURATION = 100;
+
   function FilesCommentButton(filesContainerElement) {
     this.render = bind(this.render, this);
     this.hideButton = bind(this.hideButton, this);
     this.isParallelView = notes.isParallelView();
-    filesContainerElement.on('mouseover', LINE_COLUMN_CLASSES, this.render)
-      .on('mouseleave', LINE_COLUMN_CLASSES, this.hideButton);
+
+    const renderDebounce = _debounce(this.render.bind(this), DEBOUNCE_DURATION);
+
+    filesContainerElement
+      .on('mouseover', LINE_COLUMN_CLASSES, renderDebounce)
+      .on('mouseleave', LINE_COLUMN_CLASSES, e => setTimeout(this.hideButton.bind(this, e), DEBOUNCE_DURATION));
   }
 
   FilesCommentButton.prototype.render = function(e) {
@@ -41,17 +49,19 @@ window.FilesCommentButton = (function() {
     if ($currentTarget.hasClass('js-no-comment-btn')) return;
 
     lineContentElement = this.getLineContent($currentTarget);
+
+    if (!this.validateLineContent(lineContentElement)) return;
+
     buttonParentElement = this.getButtonParent($currentTarget);
 
-    if (!this.validateButtonParent(buttonParentElement) || !this.validateLineContent(lineContentElement)) return;
+    if (!this.validateButtonParent(buttonParentElement)) return;
 
     $button = $(COMMENT_BUTTON_CLASS, buttonParentElement);
+
     buttonParentElement.addClass('is-over')
       .nextUntil(`.${LINE_CONTENT_CLASS}`).addClass('is-over');
 
-    if ($button.length) {
-      return;
-    }
+    if ($button.length) return;
 
     textFileElement = this.getTextFileElement($currentTarget);
     buttonParentElement.append(this.buildButton({
@@ -74,6 +84,8 @@ window.FilesCommentButton = (function() {
   FilesCommentButton.prototype.hideButton = function(e) {
     var $currentTarget = $(e.currentTarget);
     var buttonParentElement = this.getButtonParent($currentTarget);
+
+    if (!buttonParentElement) return;
 
     buttonParentElement.removeClass('is-over')
       .nextUntil(`.${LINE_CONTENT_CLASS}`).removeClass('is-over');
