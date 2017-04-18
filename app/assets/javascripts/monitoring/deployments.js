@@ -4,7 +4,8 @@ export default class Deployments {
   constructor(width, height) {
     this.width = width;
     this.height = height;
-    this.timeFormat = d3.time.format('%b %d, %Y, %H:%M%p');
+    this.dateFormat = d3.time.format('%b %d, %Y');
+    this.timeFormat = d3.time.format('%H:%M%p');
 
     this.endpoint = document.getElementById('js-metrics').dataset.deploymentEndpoint;
   }
@@ -29,15 +30,20 @@ export default class Deployments {
       this.data = [];
 
       data.deployments.forEach((deployment) => {
-        const date = new Date(deployment.created_at);
+        const coeff = 1000 * 60;
+        let time = new Date(deployment.created_at);
+        time = new Date(Math.round(time.getTime() / coeff) * coeff);
+        time.setSeconds(this.chartData[0].time.getSeconds());
+        const xPos = Math.floor(this.x(time));
 
-        if (this.x(date) >= 0) {
+        if (xPos >= 0) {
           this.data.push({
             id: deployment.id,
-            time: new Date(deployment.created_at),
+            time,
             sha: deployment.sha,
             tag: deployment.tag,
             ref: deployment.ref.name,
+            xPos,
           });
         }
       });
@@ -66,7 +72,7 @@ export default class Deployments {
       .append('g')
       .attr({
         class: d => `deploy-info-${d.id}`,
-        transform: d => `translate(${Math.floor(this.x(d.time)) + 1}, 0)`,
+        transform: d => `translate(${Math.floor(d.xPos) + 1}, 0)`,
       })
       .append('line')
       .attr({
@@ -85,7 +91,7 @@ export default class Deployments {
         .attr({
           x: 3,
           y: 0,
-          height: 41,
+          height: 58,
         });
 
       const rect = group.append('rect')
@@ -115,14 +121,46 @@ export default class Deployments {
 
       textGroup.append('text')
         .attr({
-          style: 'dominant-baseline: text-before-edge; font-weight: 600;',
+          style: 'dominant-baseline: text-before-edge;',
           y: 18,
+        })
+        .text(() => this.dateFormat(d.time));
+
+      textGroup.append('text')
+        .attr({
+          style: 'dominant-baseline: text-before-edge;',
+          y: 36,
         })
         .text(() => this.timeFormat(d.time));
 
       group.attr('width', Math.floor(textGroup.node().getBoundingClientRect().width) + 14);
 
       rect.attr('width', Math.floor(textGroup.node().getBoundingClientRect().width) + 10);
+
+      group.attr('class', 'js-deploy-info-box hidden');
     });
+  }
+
+  static toggleDeployTextbox(deploy, showInfoBox) {
+    d3.selectAll(`.deploy-info-${deploy.id} .js-deploy-info-box`)
+      .classed('hidden', !showInfoBox);
+  }
+
+  mouseOverDeployInfo(mouseXPos) {
+    if (!this.data) return false;
+
+    let dataFound = false;
+
+    this.data.forEach((d) => {
+      if (d.xPos >= mouseXPos - 10 && d.xPos <= mouseXPos + 10 && !dataFound) {
+        dataFound = true;
+
+        Deployments.toggleDeployTextbox(d, true);
+      } else {
+        Deployments.toggleDeployTextbox(d, false);
+      }
+    });
+
+    return dataFound;
   }
 }

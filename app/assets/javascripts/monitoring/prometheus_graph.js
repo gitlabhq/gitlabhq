@@ -9,8 +9,8 @@ import '../flash';
 
 const prometheusGraphsContainer = '.prometheus-graph';
 const metricsEndpoint = 'metrics.json';
-const timeFormat = d3.time.format('%H:%M');
-const dayFormat = d3.time.format('%b %e, %a');
+const timeFormat = d3.time.format('%H:%M%p');
+const dayFormat = d3.time.format('%b %d, %Y');
 const bisectDate = d3.bisector(d => d.time).left;
 const extraAddedWidthParent = 100;
 
@@ -205,7 +205,8 @@ class PrometheusGraph {
 
   handleMouseOverGraph(x, y, valuesToPlot, chart, prometheusGraphContainer, key) {
     const rectOverlay = document.querySelector(`${prometheusGraphContainer} .prometheus-graph-overlay`);
-    const timeValueFromOverlay = x.invert(d3.mouse(rectOverlay)[0]);
+    const mouse = d3.mouse(rectOverlay)[0];
+    const timeValueFromOverlay = x.invert(mouse);
     const timeValueIndex = bisectDate(valuesToPlot, timeValueFromOverlay, 1);
     const d0 = valuesToPlot[timeValueIndex - 1];
     const d1 = valuesToPlot[timeValueIndex];
@@ -215,10 +216,20 @@ class PrometheusGraph {
     );
     const currentTimeCoordinate = Math.floor(x(currentData.time));
     const graphSpecifics = this.graphSpecificProperties[key];
+    const shouldHideTextMetric = this.deployments.mouseOverDeployInfo(mouse);
     // Remove the current selectors
     d3.selectAll(`${prometheusGraphContainer} .selected-metric-line`).remove();
     d3.selectAll(`${prometheusGraphContainer} .circle-metric`).remove();
     d3.selectAll(`${prometheusGraphContainer} .rect-text-metric:not(.deploy-info-rect)`).remove();
+
+    chart.append('circle')
+    .attr('class', 'circle-metric')
+    .attr('fill', graphSpecifics.line_color)
+    .attr('cx', currentTimeCoordinate)
+    .attr('cy', y(currentData.value))
+    .attr('r', this.commonGraphProperties.circle_radius_metric);
+
+    if (shouldHideTextMetric) return;
 
     chart.append('line')
     .attr('class', 'selected-metric-line')
@@ -229,13 +240,6 @@ class PrometheusGraph {
       y2: maxValueMetric,
     });
 
-    chart.append('circle')
-    .attr('class', 'circle-metric')
-    .attr('fill', graphSpecifics.line_color)
-    .attr('cx', currentTimeCoordinate)
-    .attr('cy', y(currentData.value))
-    .attr('r', this.commonGraphProperties.circle_radius_metric);
-
     // The little box with text
     const rectTextMetric = chart.append('svg')
     .attr('class', 'rect-text-metric')
@@ -244,20 +248,20 @@ class PrometheusGraph {
 
     rectTextMetric.append('rect')
     .attr('class', 'rect-metric')
-    .attr('x', 10)
-    .attr('y', 0)
+    .attr('x', 4)
+    .attr('y', 1)
+    .attr('rx', 2)
     .attr('width', this.commonGraphProperties.rect_text_width)
     .attr('height', this.commonGraphProperties.rect_text_height);
 
     rectTextMetric.append('text')
-    .attr('class', 'text-metric')
-    .attr('x', 35)
+    .attr('x', 8)
     .attr('y', 35)
     .text(timeFormat(currentData.time));
 
     rectTextMetric.append('text')
     .attr('class', 'text-metric-date')
-    .attr('x', 15)
+    .attr('x', 8)
     .attr('y', 15)
     .text(dayFormat(currentData.time));
 
