@@ -67,6 +67,7 @@ class Spinach::Features::Project < Spinach::FeatureSteps
     expect(page).not_to have_link('Remove avatar')
   end
 
+<<<<<<< HEAD
   step 'I fill in merge request template' do
     fill_in 'project_merge_requests_template', with: "This merge request should contain the following."
   end
@@ -95,6 +96,8 @@ class Spinach::Features::Project < Spinach::FeatureSteps
     end
   end
 
+=======
+>>>>>>> aecaaa67c3d84637e6c691ed07b44115330dddcb
   step 'change project default branch' do
     select 'fix', from: 'project_default_branch'
     click_button 'Save changes'

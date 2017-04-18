@@ -128,7 +128,11 @@ var config = {
         'notebook_viewer',
         'pdf_viewer',
         'vue_pipelines',
+<<<<<<< HEAD
         'mr_widget_ee',
+=======
+        'issue_show',
+>>>>>>> aecaaa67c3d84637e6c691ed07b44115330dddcb
       ],
       minChunks: function(module, count) {
         return module.resource && (/vue_shared/).test(module.resource);

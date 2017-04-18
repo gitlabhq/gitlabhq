@@ -970,27 +970,23 @@ a.allowed-to-push {
   }
 
   .variable-key {
-    width: 300px;
-    max-width: 300px;
+    max-width: 120px;
     overflow: hidden;
     word-wrap: break-word;
-
-    // override bootstrap
-    white-space: normal!important;
-
-    @media (max-width: $screen-sm-max) {
-      width: 150px;
-      max-width: 150px;
-    }
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   .variable-value {
-    @media(max-width: $screen-xs-max) {
-      width: 150px;
-      max-width: 150px;
-      overflow: hidden;
-      word-wrap: break-word;
-    }
+    max-width: 150px;
+    overflow: hidden;
+    word-wrap: break-word;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .variable-menu {
+    text-align: right;
   }
 }
 

@@ -42,29 +42,6 @@ constraints(ProjectUrlConstrainer.new) do
         resources :domains, only: [:show, :new, :create, :destroy], controller: 'pages_domains', constraints: { id: /[^\/]+/ }
       end
 
-      resources :compare, only: [:index, :create] do
-        collection do
-          get :diff_for_path
-        end
-      end
-
-      get '/compare/:from...:to', to: 'compare#show', as: 'compare', constraints: { from: /.+/, to: /.+/ }
-
-      # Don't use format parameter as file extension (old 3.0.x behavior)
-      # See http://guides.rubyonrails.org/routing.html#route-globbing-and-wildcard-segments
-      scope format: false do
-        resources :network, only: [:show], constraints: { id: Gitlab::Regex.git_reference_regex }
-
-        resources :graphs, only: [:show], constraints: { id: Gitlab::Regex.git_reference_regex } do
-          member do
-            get :charts
-            get :commits
-            get :ci
-            get :languages
-          end
-        end
-      end
-
       resources :snippets, concerns: :awardable, constraints: { id: /\d+/ } do
         member do
           get 'raw'
@@ -142,6 +119,7 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
+<<<<<<< HEAD
       resources :branches, only: [:index, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
       delete :merged_branches, controller: 'branches', action: :destroy_all_merged
       resources :tags, only: [:index, :show, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex } do
@@ -169,6 +147,8 @@ constraints(ProjectUrlConstrainer.new) do
 
       resources :protected_tags, only: [:index, :show, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
 
+=======
+>>>>>>> aecaaa67c3d84637e6c691ed07b44115330dddcb
       resources :variables, only: [:index, :show, :update, :create, :destroy]
       resources :triggers, only: [:index, :create, :edit, :update, :destroy] do
         member do

@@ -66,7 +66,10 @@ window.DropzoneInput = (function() {
         form_textarea.focus();
       },
       success: function(header, response) {
-        pasteText(response.link.markdown);
+        const processingFileCount = this.getQueuedFiles().length + this.getUploadingFiles().length;
+        const shouldPad = processingFileCount >= 1;
+
+        pasteText(response.link.markdown, shouldPad);
       },
       error: function(temp) {
         var checkIfMsgExists, errorAlert;
@@ -123,9 +126,10 @@ window.DropzoneInput = (function() {
       }
       return false;
     };
-    pasteText = function(text) {
+    pasteText = function(text, shouldPad) {
       var afterSelection, beforeSelection, caretEnd, caretStart, textEnd;
-      var formattedText = text + "\n\n";
+      var formattedText = text;
+      if (shouldPad) formattedText += "\n\n";
       caretStart = $(child)[0].selectionStart;
       caretEnd = $(child)[0].selectionEnd;
       textEnd = $(child).val().length;

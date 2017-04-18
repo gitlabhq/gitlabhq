@@ -33,8 +33,12 @@
 /* global Labels */
 /* global Shortcuts */
 /* global Sidebar */
+<<<<<<< HEAD
 /* global WeightSelect */
 /* global AdminEmailSelect */
+=======
+/* global ShortcutsWiki */
+>>>>>>> aecaaa67c3d84637e6c691ed07b44115330dddcb
 
 import Issue from './issue';
 
@@ -49,6 +53,7 @@ import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import UserCallout from './user_callout';
 import { ProtectedTagCreate, ProtectedTagEditList } from './protected_tags';
+import ShortcutsWiki from './shortcuts_wiki';
 
 import GeoNodes from './geo_nodes';
 import ServiceDeskRoot from './projects/settings_service_desk/service_desk_root';
@@ -446,7 +451,7 @@ const ShortcutsBlob = require('./shortcuts_blob');
               break;
             case 'wikis':
               new gl.Wikis();
-              shortcut_handler = new ShortcutsNavigation();
+              shortcut_handler = new ShortcutsWiki();
               new ZenMode();
               new gl.GLForm($('.wiki-form'));
               break;

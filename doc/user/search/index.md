@@ -40,6 +40,12 @@ The same process is valid for merge requests. Navigate to your project's **Merge
 and click **Search or filter results...**. Merge requests can be filtered by author, assignee,
 milestone, and label.
 
+## Search History
+
+You can view recent searches by clicking on the little arrow-clock icon, which is to the left of the search input. Click the search entry to run that search again. This feature is available for issues and merge requests. Searches are stored locally in your browser.
+
+![search history](img/search_history.gif)
+
 ### Shortcut
 
 You'll also find a shortcut on the search field on the top-right of the project's dashboard to
