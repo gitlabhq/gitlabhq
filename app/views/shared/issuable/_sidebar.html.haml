@@ -48,7 +48,7 @@
 
         .selectbox.hide-collapsed
           = f.hidden_field 'assignee_id', value: issuable.assignee_id, id: 'issue_assignee_id'
-          = dropdown_tag('Select assignee', options: { toggle_class: 'js-user-search js-author-search', title: 'Assign to', filter: true, dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author', placeholder: 'Search users', data: { first_user: (current_user.username if current_user), current_user: true, project_id: (@project.id if @project), author_id: issuable.author_id, field_name: "#{issuable.to_ability_name}[assignee_id]", issue_update: issuable_json_path(issuable), ability_name: issuable.to_ability_name, null_user: true } })
+          = dropdown_tag('Select assignee', options: { toggle_class: 'js-user-search js-author-search', title: 'Assign to', filter: true, dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author', placeholder: 'Search users', data: { first_user: (current_user.username if current_user), current_user: true, project_id: (@project.id if @project), author_id: issuable.author_id, field_name: "#{issuable.to_ability_name}[assignee_id]", issue_update: issuable_json_path(issuable), ability_name: issuable.to_ability_name, null_user: true, selected: issuable.assignee_id } })
 
       .block.milestone
         .sidebar-collapsed-icon

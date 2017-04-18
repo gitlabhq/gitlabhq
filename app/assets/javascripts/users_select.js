@@ -42,7 +42,6 @@
           showAnyUser = $dropdown.data('any-user');
           firstUser = $dropdown.data('first-user');
           options.authorId = $dropdown.data('author-id');
-          selectedId = $dropdown.data('selected');
           defaultLabel = $dropdown.data('default-label');
           issueURL = $dropdown.data('issueUpdate');
           $selectbox = $dropdown.closest('.selectbox');
@@ -51,6 +50,7 @@
           $value = $block.find('.value');
           $collapsedSidebar = $block.find('.sidebar-collapsed-user');
           $loading = $block.find('.block-loading').fadeOut();
+          selectedId = $dropdown.data('selected') || showNullUser ? 0 : null;
 
           var updateIssueBoardsIssue = function () {
             $loading.removeClass('hidden').fadeIn();
@@ -208,9 +208,9 @@
               page = $('body').data('page');
               isIssueIndex = page === 'projects:issues:index';
               isMRIndex = (page === page && page === 'projects:merge_requests:index');
+              selectedId = user.id;
               if ($dropdown.hasClass('js-filter-bulk-update') || $dropdown.hasClass('js-issuable-form-dropdown')) {
                 e.preventDefault();
-                selectedId = user.id;
                 if (selectedId === gon.current_user_id) {
                   $('.assign-to-me-link').hide();
                 } else {
@@ -221,7 +221,6 @@
               if ($el.closest('.add-issues-modal').length) {
                 gl.issueBoards.ModalStore.store.filter[$dropdown.data('field-name')] = user.id;
               } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
-                selectedId = user.id;
                 return Issuable.filterResults($dropdown.closest('form'));
               } else if ($dropdown.hasClass('js-filter-submit')) {
                 return $dropdown.closest('form').submit();
