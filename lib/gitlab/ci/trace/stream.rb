@@ -14,7 +14,7 @@ module Gitlab
 
         def initialize
           @stream = yield
-          @stream.binmode if @stream
+          @stream&.binmode
         end
 
         def valid?
