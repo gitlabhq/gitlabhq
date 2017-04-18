@@ -15,9 +15,9 @@
           = custom_icon('icon_cycle_analytics_splash')
         .col-sm-8.col-xs-12.inner-content
           %h4
-            Introducing Cycle Analytics
+            {{ 'Introducing Cycle Analytics' | translate }}
           %p
-            Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project.
+            {{ 'Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project.' | translate }}
 
           = link_to "Read more",  help_page_path('user/project/cycle_analytics'), target: '_blank', class: 'btn'
   = icon("spinner spin", "v-show" => "isLoading")
@@ -34,15 +34,15 @@
             .col-sm-3.col-xs-12.column
               .dropdown.inline.js-ca-dropdown
                 %button.dropdown-menu-toggle{ "data-toggle" => "dropdown", :type => "button" }
-                  %span.dropdown-label Last 30 days
+                  %span.dropdown-label {{ 'Last 30 days' | translate }}
                   %i.fa.fa-chevron-down
                 %ul.dropdown-menu.dropdown-menu-align-right
                   %li
                     %a{ "href" => "#", "data-value" => "30" }
-                      Last 30 days
+                      {{ 'Last 30 days' | translate }}
                   %li
                     %a{ "href" => "#", "data-value" => "90" }
-                      Last 90 days
+                      {{ 'Last 30 days' | translate }}
     .stage-panel-container
       .panel.panel-default.stage-panel
         .panel-heading
@@ -50,19 +50,19 @@
             %ul
               %li.stage-header
                 %span.stage-name
-                  Stage
+                  {{ 'Stage' | translate }}
                 %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: "The phase of the development lifecycle.", "aria-hidden" => "true" }
               %li.median-header
                 %span.stage-name
-                  Median
+                  {{ 'Median' | translate }}
                 %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6.", "aria-hidden" => "true" }
               %li.event-header
                 %span.stage-name
-                  {{ currentStage ? currentStage.legend : 'Related Issues' }}
+                  {{ currentStage ? currentStage.legend : 'Related Issues' | translate }}
                 %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: "The collection of events added to the data gathered for that stage.", "aria-hidden" => "true" }
               %li.total-time-header
                 %span.stage-name
-                  Total Time
+                  {{ 'Total Time' | translate }}
                 %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: "The time taken by each data entry gathered by that stage.", "aria-hidden" => "true" }
         .stage-panel-body
           %nav.stage-nav
@@ -75,10 +75,10 @@
                     %span{ "v-if" => "stage.value" }
                       {{ stage.value }}
                     %span.stage-empty{ "v-else" => true }
-                      Not enough data
+                      {{ 'Not enough data' | translate }}
                   %template{ "v-else" => true }
                     %span.not-available
-                      Not available
+                      {{ 'Not available' | translate }}
           .section.stage-events
             %template{ "v-if" => "isLoadingStage" }
               = icon("spinner spin")

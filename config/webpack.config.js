@@ -150,6 +150,14 @@ var config = {
     new webpack.optimize.CommonsChunkPlugin({
       names: ['main', 'common', 'runtime'],
     }),
+
+    // locale common library
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'locale',
+      chunks: [
+        'cycle_analytics',
+      ],
+    }),
   ],
 
   resolve: {
