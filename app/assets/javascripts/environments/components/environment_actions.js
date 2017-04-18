@@ -35,6 +35,8 @@ export default {
     onClickAction(endpoint) {
       this.isLoading = true;
 
+      $('.has-tooltip').tooltip('destroy');
+
       this.service.postAction(endpoint)
       .then(() => {
         this.isLoading = false;

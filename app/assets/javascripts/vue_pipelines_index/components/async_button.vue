@@ -65,6 +65,8 @@ export default {
     makeRequest() {
       this.isLoading = true;
 
+      $('.has-tooltip').tooltip('destroy');
+
       this.service.postAction(this.endpoint)
         .then(() => {
           this.isLoading = false;
