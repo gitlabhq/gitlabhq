@@ -3,6 +3,8 @@
 /* global ListLabel */
 import queryData from '../utils/query_data';
 
+const PER_PAGE = 20;
+
 class List {
   constructor (obj) {
     this.id = obj.id;
@@ -58,7 +60,7 @@ class List {
 
   nextPage () {
     if (this.issuesSize > this.issues.length) {
-      if (this.issues.length / 20 >= 1) {
+      if (this.issues.length / PER_PAGE >= 1) {
         this.page += 1;
       }
 
