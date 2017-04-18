@@ -1111,7 +1111,6 @@ ActiveRecord::Schema.define(version: 20170421113144) do
     t.boolean "printing_merge_request_link_enabled", default: true, null: false
     t.string "import_jid"
     t.boolean "service_desk_enabled"
-    t.string "service_desk_mail_key"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
@@ -1127,7 +1126,6 @@ ActiveRecord::Schema.define(version: 20170421113144) do
   add_index "projects", ["path"], name: "index_projects_on_path_trigram", using: :gin, opclasses: {"path"=>"gin_trgm_ops"}
   add_index "projects", ["pending_delete"], name: "index_projects_on_pending_delete", using: :btree
   add_index "projects", ["runners_token"], name: "index_projects_on_runners_token", using: :btree
-  add_index "projects", ["service_desk_mail_key"], name: "index_projects_on_service_desk_mail_key", unique: true, using: :btree
   add_index "projects", ["star_count"], name: "index_projects_on_star_count", using: :btree
   add_index "projects", ["sync_time"], name: "index_projects_on_sync_time", using: :btree
   add_index "projects", ["visibility_level"], name: "index_projects_on_visibility_level", using: :btree
