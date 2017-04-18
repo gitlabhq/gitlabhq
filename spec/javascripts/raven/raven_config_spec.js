@@ -2,6 +2,28 @@ import Raven from 'raven-js';
 import RavenConfig from '~/raven/raven_config';
 
 describe('RavenConfig', () => {
+  describe('IGNORE_ERRORS', () => {
+    it('should be an array of strings', () => {
+      const areStrings = RavenConfig.IGNORE_ERRORS.every(error => typeof error === 'string');
+
+      expect(areStrings).toBe(true);
+    });
+  });
+
+  describe('IGNORE_URLS', () => {
+    it('should be an array of regexps', () => {
+      const areRegExps = RavenConfig.IGNORE_URLS.every(url => url instanceof RegExp);
+
+      expect(areRegExps).toBe(true);
+    });
+  });
+
+  describe('SAMPLE_RATE', () => {
+    it('should be a finite number', () => {
+      expect(typeof RavenConfig.SAMPLE_RATE).toEqual('number');
+    });
+  });
+
   describe('init', () => {
     let options;
 
@@ -76,6 +98,9 @@ describe('RavenConfig', () => {
       expect(Raven.config).toHaveBeenCalledWith(options.sentryDsn, {
         whitelistUrls: options.whitelistUrls,
         environment: 'production',
+        ignoreErrors: Raven.IGNORE_ERRORS,
+        ignoreUrls: Raven.IGNORE_URLS,
+        shouldSendCallback: Raven.shouldSendSample,
       });
     });
 
@@ -93,6 +118,9 @@ describe('RavenConfig', () => {
       expect(Raven.config).toHaveBeenCalledWith(options.sentryDsn, {
         whitelistUrls: options.whitelistUrls,
         environment: 'development',
+        ignoreErrors: Raven.IGNORE_ERRORS,
+        ignoreUrls: Raven.IGNORE_URLS,
+        shouldSendCallback: Raven.shouldSendSample,
       });
     });
   });
@@ -211,6 +239,40 @@ describe('RavenConfig', () => {
           },
         });
       });
+    });
+  });
+
+  describe('shouldSendSample', () => {
+    let randomNumber;
+
+    beforeEach(() => {
+      RavenConfig.SAMPLE_RATE = 50;
+
+      spyOn(Math, 'random').and.callFake(() => randomNumber);
+    });
+
+    it('should call Math.random', () => {
+      RavenConfig.shouldSendSample();
+
+      expect(Math.random).toHaveBeenCalled();
+    });
+
+    it('should return true if the sample rate is greater than the random number * 100', () => {
+      randomNumber = 0.1;
+
+      expect(RavenConfig.shouldSendSample()).toBe(true);
+    });
+
+    it('should return false if the sample rate is less than the random number * 100', () => {
+      randomNumber = 0.9;
+
+      expect(RavenConfig.shouldSendSample()).toBe(false);
+    });
+
+    it('should return true if the sample rate is equal to the random number * 100', () => {
+      randomNumber = 0.5;
+
+      expect(RavenConfig.shouldSendSample()).toBe(true);
     });
   });
 });
