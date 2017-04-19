@@ -36,7 +36,7 @@ export default {
       if (confirm('Are you sure you want to stop this environment?')) {
         this.isLoading = true;
 
-        $('.has-tooltip').tooltip('destroy');
+        $(this.$el).tooltip('destroy');
 
         this.service.postAction(this.retryUrl)
         .then(() => {

@@ -54,7 +54,7 @@ export default {
   },
 
   methods: {
-    onClick() {
+    onClick(e) {
       if (this.confirmActionMessage && confirm(this.confirmActionMessage)) {
         this.makeRequest();
       } else if (!this.confirmActionMessage) {
@@ -65,7 +65,7 @@ export default {
     makeRequest() {
       this.isLoading = true;
 
-      $('.has-tooltip').tooltip('destroy');
+      $(this.$el).tooltip('destroy');
 
       this.service.postAction(this.endpoint)
         .then(() => {
@@ -90,9 +90,13 @@ export default {
     :aria-label="title"
     data-container="body"
     data-placement="top"
-    :disabled="isLoading"
-  >
-    <i :class="iconClass" aria-hidden="true"></i>
-    <i class="fa fa-spinner fa-spin" aria-hidden="true" v-if="isLoading"></i>
+    :disabled="isLoading">
+    <i
+      :class="iconClass"
+      aria-hidden="true" />
+    <i
+      class="fa fa-spinner fa-spin"
+      aria-hidden="true"
+      v-if="isLoading" />
   </button>
 </template>
