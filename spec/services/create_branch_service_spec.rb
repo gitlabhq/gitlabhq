@@ -20,16 +20,5 @@ describe CreateBranchService do
         expect(project.repository.branch_exists?('my-feature')).to be_truthy
       end
     end
-
-    context 'with issue' do
-      let(:project) { create(:project, :repository) }
-      let(:issue) { create(:issue, project: project) }
-
-      it 'creates a system note when branch creation is successful' do
-        service.execute('my-issue-branch', 'master', issue)
-
-        expect(issue.notes.last.note).to include('created branch [`my-issue-branch`]')
-      end
-    end
   end
 end

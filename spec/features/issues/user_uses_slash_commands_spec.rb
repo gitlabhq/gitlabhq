@@ -266,13 +266,14 @@ feature 'Issues > User uses quick actions', :js do
     end
 
     describe 'branch creation' do
+      let(:project) { create(:project, :public, :repository) }
       let(:issue) { create(:issue, project: project) }
 
       context 'when the user can create a branch' do
         it 'creates the branch' do
-          write_note("/branch")
+          write_note("/create_branch")
 
-          expect(page).not_to have_content '/branch'
+          expect(page).not_to have_content '/create_branch'
           expect(page).to have_content 'Commands applied'
           expect(page).to have_content "created branch #{issue.to_branch_name}"
         end
@@ -280,9 +281,9 @@ feature 'Issues > User uses quick actions', :js do
 
       context 'when the user specifies an invalid branch name' do
         it 'creates the branch' do
-          write_note("/branch A New Feature")
+          write_note("/create_branch A New Feature")
 
-          expect(page).not_to have_content '/branch'
+          expect(page).not_to have_content '/create_branch'
           expect(page).to have_content 'Branch name is invalid'
         end
       end
@@ -291,16 +292,15 @@ feature 'Issues > User uses quick actions', :js do
         let(:guest) { create(:user) }
 
         before do
-          project.team << [guest, :guest]
-          logout
-          login_with(guest)
-          visit namespace_project_issue_path(project.namespace, project, issue)
+          project.add_guest(guest)
+          sign_in(guest)
+          visit project_issue_path(project, issue)
         end
 
         it 'does not create a branch' do
-          write_note("/branch")
+          write_note("/create_branch")
 
-          expect(page).not_to have_content '/branch'
+          expect(page).not_to have_content '/create_branch'
           expect(page).not_to have_content 'Commands applied'
 
           expect(project.repository.branch_names).not_to include(issue.to_branch_name)

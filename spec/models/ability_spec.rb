@@ -269,7 +269,7 @@ describe Ability do
   end
 
   describe '.can_create_branch_from_issue?' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:issue) { create(:issue, project: project) }
 
     context 'users with different access' do

@@ -101,7 +101,7 @@ describe Projects::BranchesController do
         it 'redirects to newly created branch' do
           result = { status: :success, branch: double(name: branch) }
 
-          expect_any_instance_of(CreateBranchService).to receive(:execute).and_return(result)
+          expect_any_instance_of(Issues::CreateBranchService).to receive(:execute).and_return(result)
 
           post :create,
             namespace_id: project.namespace.to_param,
