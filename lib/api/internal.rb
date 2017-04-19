@@ -40,6 +40,8 @@ module API
         response = { status: access_status.status, message: access_status.message }
 
         if access_status.status
+          log_user_activity(actor)
+
           # Return the repository full path so that gitlab-shell has it when
           # handling ssh commands
           response[:repository_path] =
