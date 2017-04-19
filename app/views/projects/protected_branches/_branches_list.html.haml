@@ -1,4 +1,4 @@
-.panel.panel-default.protected-branches-list
+.panel.panel-default.protected-branches-list.js-protected-branches-list
   - if @protected_branches.empty?
     .panel-heading
       %h3.panel-title
@@ -23,6 +23,8 @@
           - if can_admin_project
             %th
       %tbody
+        %tr
+          %td.flash-container{ colspan: 5 }
         = render partial: 'projects/protected_branches/protected_branch', collection: @protected_branches, locals: { can_admin_project: can_admin_project}
 
     = paginate @protected_branches, theme: 'gitlab'
