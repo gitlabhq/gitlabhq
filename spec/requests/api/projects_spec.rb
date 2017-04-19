@@ -24,6 +24,7 @@ describe API::Projects, :api  do
     namespace: user.namespace,
     merge_requests_enabled: false,
     issues_enabled: false, wiki_enabled: false,
+    builds_enabled: false,
     snippets_enabled: false)
   end
   let(:project_member3) do
@@ -342,6 +343,7 @@ describe API::Projects, :api  do
       project = attributes_for(:project, {
         path: 'camelCasePath',
         issues_enabled: false,
+        jobs_enabled: false,
         merge_requests_enabled: false,
         wiki_enabled: false,
         only_allow_merge_if_pipeline_succeeds: false,
@@ -350,6 +352,8 @@ describe API::Projects, :api  do
       })
 
       post api('/projects', user), project
+
+      expect(response).to have_http_status(201)
 
       project.each_pair do |k, v|
         next if %i[has_external_issue_tracker issues_enabled merge_requests_enabled wiki_enabled].include?(k)
@@ -1139,6 +1143,15 @@ describe API::Projects, :api  do
 
       it 'updates path & name to existing path & name in different namespace' do
         project_param = { path: project4.path, name: project4.name }
+        put api("/projects/#{project3.id}", user), project_param
+        expect(response).to have_http_status(200)
+        project_param.each_pair do |k, v|
+          expect(json_response[k.to_s]).to eq(v)
+        end
+      end
+
+      it 'updates jobs_enabled' do
+        project_param = { jobs_enabled: true }
         put api("/projects/#{project3.id}", user), project_param
         expect(response).to have_http_status(200)
         project_param.each_pair do |k, v|
