@@ -36,6 +36,8 @@ export default {
     onClickAction(endpoint) {
       this.isLoading = true;
 
+      $(this.$refs.tooltip).tooltip('destroy');
+
       this.service.postAction(endpoint)
       .then(() => {
         this.isLoading = false;
@@ -63,6 +65,7 @@ export default {
         class="dropdown btn btn-default dropdown-new js-dropdown-play-icon-container has-tooltip"
         data-container="body"
         data-toggle="dropdown"
+        ref="tooltip"
         :title="title"
         :aria-label="title"
         :disabled="isLoading">
