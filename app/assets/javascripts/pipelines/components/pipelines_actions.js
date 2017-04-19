@@ -28,7 +28,7 @@ export default {
     onClickAction(endpoint) {
       this.isLoading = true;
 
-      $(this.$el.querySelector('.has-tooltip')).tooltip('destroy');
+      $(this.$refs.tooltip).tooltip('destroy');
 
       this.service.postAction(endpoint)
       .then(() => {
@@ -59,6 +59,7 @@ export default {
         data-toggle="dropdown"
         data-placement="top"
         aria-label="Manual job"
+        ref="tooltip"
         :disabled="isLoading">
         ${playIconSvg}
         <i
