@@ -1,0 +1,4 @@
+---
+title: Fix active user count to ignore internal users
+merge_request:
+author:

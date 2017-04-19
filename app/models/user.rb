@@ -209,7 +209,7 @@ class User < ActiveRecord::Base
   scope :admins, -> { where(admin: true) }
   scope :blocked, -> { with_states(:blocked, :ldap_blocked) }
   scope :external, -> { where(external: true) }
-  scope :active, -> { with_state(:active) }
+  scope :active, -> { with_state(:active).non_internal }
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members WHERE user_id IS NOT NULL AND requested_at IS NULL)') }
   scope :subscribed_for_admin_email, -> { where(admin_email_unsubscribed_at: nil) }
