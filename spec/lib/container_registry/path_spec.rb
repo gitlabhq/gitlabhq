@@ -191,13 +191,8 @@ describe ContainerRegistry::Path do
     context 'when project exists' do
       let(:group) { create(:group, path: 'Some_Group') }
 
-      let(:project) do
-        create(:empty_project, group: group, name: 'some_project')
-      end
-
       before do
-        allow(path).to receive(:repository_project)
-          .and_return(project)
+        create(:empty_project, group: group, name: 'some_project')
       end
 
       context 'when project path equal repository path' do
@@ -236,21 +231,15 @@ describe ContainerRegistry::Path do
     end
 
     context 'when project with uppercase characters in path exists' do
-      let(:path) { 'somegroup/someproject' }
-
+      let(:path) { 'somegroup/myproject/my/image' }
       let(:group) { create(:group, path: 'SomeGroup') }
 
-      let(:project) do
-        create(:empty_project, group: group, name: 'SomeProject')
-      end
-
       before do
-        allow(path).to receive(:repository_project)
-          .and_return(project)
+        create(:empty_project, group: group, name: 'MyProject')
       end
 
       it 'returns downcased project path' do
-        expect(subject.project_path).to eq 'somegroup/someproject'
+        expect(subject.project_path).to eq 'somegroup/myproject'
       end
     end
   end
