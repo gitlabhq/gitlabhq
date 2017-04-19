@@ -7,6 +7,7 @@ module WaitForAjax
 
   def finished_all_ajax_requests?
     return true unless javascript_test?
+    return true if page.evaluate_script('typeof jQuery === "undefined"')
 
     page.evaluate_script('jQuery.active').zero?
   end
