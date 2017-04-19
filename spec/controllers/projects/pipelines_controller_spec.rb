@@ -43,6 +43,7 @@ describe Projects::PipelinesController do
       expect(response).to have_http_status(:ok)
       expect(json_response).not_to be_an(Array)
       expect(json_response['id']).to be(pipeline.id)
+      expect(json_response).to have_key('jobs')
     end
   end
 

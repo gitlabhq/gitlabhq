@@ -71,7 +71,7 @@ class Projects::PipelinesController < Projects::ApplicationController
       format.json do
         render json: PipelineSerializer.
           new(project: @project, user: @current_user).
-          represent(@pipeline)
+          represent(@pipeline, with_jobs: true)
       end
     end
   end

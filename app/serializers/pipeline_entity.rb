@@ -11,6 +11,8 @@ class PipelineEntity < Grape::Entity
       pipeline)
   end
 
+  expose :builds, as: :jobs, if: lambda { |_, opts| opts[:with_jobs] }, with: BuildEntity
+
   expose :details do
     expose :detailed_status, as: :status, with: StatusEntity
     expose :duration
