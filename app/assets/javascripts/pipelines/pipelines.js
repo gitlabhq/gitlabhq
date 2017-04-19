@@ -47,7 +47,7 @@ export default {
       state: this.store.state,
       apiScope: 'all',
       pagenum: 1,
-      isLoading: false,
+      isLoading: true,
       hasError: false,
       isMakingRequest: false,
     };
@@ -146,7 +146,6 @@ export default {
     });
 
     if (!Visibility.hidden()) {
-      this.isLoading = true;
       poll.makeRequest();
     }
 
@@ -189,8 +188,6 @@ export default {
 
     fetchPipelines() {
       if (!this.isMakingRequest) {
-        this.isLoading = true;
-
         this.service.getPipelines({ scope: this.scopeParameter, page: this.pageParameter })
           .then(response => this.successCallback(response))
           .catch(() => this.errorCallback());
@@ -206,13 +203,11 @@ export default {
       this.store.storeCount(response.body.count);
       this.store.storePipelines(response.body.pipelines);
       this.store.storePagination(response.headers);
-
       this.isLoading = false;
     },
 
     errorCallback() {
       this.hasError = true;
-      this.isLoading = false;
     },
 
     setIsMakingRequest(isMakingRequest) {
