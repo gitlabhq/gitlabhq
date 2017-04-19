@@ -211,6 +211,14 @@ $(function () {
     }
   });
 
+  if (bootstrapBreakpoint === 'xs') {
+    const $rightSidebar = $('aside.right-sidebar, .page-with-sidebar');
+
+    $rightSidebar
+      .removeClass('right-sidebar-expanded')
+      .addClass('right-sidebar-collapsed');
+  }
+
   // prevent default action for disabled buttons
   $('.btn').click(function(e) {
     if ($(this).hasClass('disabled')) {
