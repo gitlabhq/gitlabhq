@@ -102,7 +102,7 @@ module Elastic
           }
         end
 
-        query_hash[:query][:bool][:must] << filter
+        query_hash[:query][:bool][:filter] << filter
         query_hash
       end
     end

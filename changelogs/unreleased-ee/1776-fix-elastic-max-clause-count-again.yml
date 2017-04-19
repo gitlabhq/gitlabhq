@@ -1,0 +1,5 @@
+---
+title: Fix searching for notes with elasticsearch when a user is a member of many
+  projects
+merge_request: 1675
+author:
