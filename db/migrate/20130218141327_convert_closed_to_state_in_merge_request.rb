@@ -2,6 +2,8 @@
 class ConvertClosedToStateInMergeRequest < ActiveRecord::Migration
   include Gitlab::Database
 
+  DOWNTIME = false
+
   def up
     execute "UPDATE #{table_name} SET state = 'merged' WHERE closed = #{true_value} AND merged = #{true_value}"
     execute "UPDATE #{table_name} SET state = 'closed' WHERE closed = #{true_value} AND merged = #{false_value}"
