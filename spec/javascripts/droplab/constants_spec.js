@@ -26,4 +26,10 @@ describe('constants', function () {
       expect(constants.ACTIVE_CLASS).toBe('droplab-item-active');
     });
   });
+
+  describe('IGNORE_CLASS', function () {
+    it('should be `droplab-item-ignore`', function() {
+      expect(constants.IGNORE_CLASS).toBe('droplab-item-ignore');
+    });
+  });
 });

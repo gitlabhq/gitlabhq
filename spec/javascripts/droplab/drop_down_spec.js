@@ -2,7 +2,7 @@
 
 import DropDown from '~/droplab/drop_down';
 import utils from '~/droplab/utils';
-import { SELECTED_CLASS } from '~/droplab/constants';
+import { SELECTED_CLASS, IGNORE_CLASS } from '~/droplab/constants';
 
 describe('DropDown', function () {
   describe('class constructor', function () {
@@ -128,9 +128,10 @@ describe('DropDown', function () {
 
   describe('clickEvent', function () {
     beforeEach(function () {
+      this.classList = jasmine.createSpyObj('classList', ['contains']);
       this.list = { dispatchEvent: () => {} };
       this.dropdown = { hide: () => {}, list: this.list, addSelectedClass: () => {} };
-      this.event = { preventDefault: () => {}, target: {} };
+      this.event = { preventDefault: () => {}, target: { classList: this.classList } };
       this.customEvent = {};
       this.closestElement = {};
 
@@ -140,6 +141,7 @@ describe('DropDown', function () {
       spyOn(this.event, 'preventDefault');
       spyOn(window, 'CustomEvent').and.returnValue(this.customEvent);
       spyOn(utils, 'closest').and.returnValues(this.closestElement, undefined);
+      this.classList.contains.and.returnValue(false);
 
       DropDown.prototype.clickEvent.call(this.dropdown, this.event);
     });
@@ -164,15 +166,35 @@ describe('DropDown', function () {
       expect(window.CustomEvent).toHaveBeenCalledWith('click.dl', jasmine.any(Object));
     });
 
+    it('should call .classList.contains checking for IGNORE_CLASS', function () {
+      expect(this.classList.contains).toHaveBeenCalledWith(IGNORE_CLASS);
+    });
+
     it('should call .dispatchEvent with the customEvent', function () {
       expect(this.list.dispatchEvent).toHaveBeenCalledWith(this.customEvent);
     });
 
     describe('if the target is a UL element', function () {
       beforeEach(function () {
-        this.event = { preventDefault: () => {}, target: { tagName: 'UL' } };
+        this.event = { preventDefault: () => {}, target: { tagName: 'UL', classList: this.classList } };
 
         spyOn(this.event, 'preventDefault');
+        utils.closest.calls.reset();
+
+        DropDown.prototype.clickEvent.call(this.dropdown, this.event);
+      });
+
+      it('should return immediately', function () {
+        expect(utils.closest).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('if the target has the IGNORE_CLASS class', function () {
+      beforeEach(function () {
+        this.event = { preventDefault: () => {}, target: { tagName: 'LI', classList: this.classList } };
+
+        spyOn(this.event, 'preventDefault');
+        this.classList.contains.and.returnValue(true);
         utils.closest.calls.reset();
 
         DropDown.prototype.clickEvent.call(this.dropdown, this.event);
