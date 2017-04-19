@@ -584,6 +584,13 @@ ul.notes {
 }
 
 .line-resolve-all-container {
+  margin-left: auto;
+  padding-left: $gl-padding;
+
+  > div {
+    white-space: nowrap;
+  }
+
   .btn-group {
     margin-left: -4px;
   }

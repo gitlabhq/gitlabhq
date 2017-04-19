@@ -551,6 +551,7 @@
 
 .merge-request-tabs-holder {
   background-color: $white-light;
+  border-bottom: 1px solid $border-color;
 
   &.affix {
     top: 0;
@@ -567,6 +568,16 @@
       padding-right: $gl-padding;
     }
   }
+
+  .nav-links {
+    border: 0;
+  }
+}
+
+.merge-request-tabs {
+  display: flex;
+  margin-bottom: 0;
+  padding: 0;
 }
 
 .limit-container-width {
@@ -575,6 +586,13 @@
     margin-left: auto;
     margin-right: auto;
   }
+}
+
+.merge-request-tabs-container {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
 }
 
 .limit-container-width:not(.container-limited) {
