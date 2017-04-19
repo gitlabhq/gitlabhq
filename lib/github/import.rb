@@ -27,7 +27,8 @@ module Github
       self.reset_callbacks :validate
     end
 
-    attr_reader :project, :repository, :options, :cached_label_ids, :cached_user_ids, :errors
+    attr_reader :project, :repository, :options, :cached_label_ids,
+                :cached_gitlab_users, :cached_user_ids, :errors
 
     def initialize(project, options)
       @project = project
@@ -35,6 +36,7 @@ module Github
       @options = options
       @cached_label_ids = {}
       @cached_user_ids = {}
+      @cached_gitlab_users = {}
       @errors  = []
     end
 
@@ -120,9 +122,10 @@ module Github
             restore_source_branch(pull_request) unless pull_request.source_branch_exists?
             restore_target_branch(pull_request) unless pull_request.target_branch_exists?
 
+            author_id                       = user_id(pull_request.author, project.creator_id)
             merge_request.iid               = pull_request.iid
             merge_request.title             = pull_request.title
-            merge_request.description       = pull_request.description
+            merge_request.description       = format_description(pull_request.description, pull_request.author)
             merge_request.source_project    = pull_request.source_project
             merge_request.source_branch     = pull_request.source_branch_name
             merge_request.source_branch_sha = pull_request.source_branch_sha
@@ -131,7 +134,7 @@ module Github
             merge_request.target_branch_sha = pull_request.target_branch_sha
             merge_request.state             = pull_request.state
             merge_request.milestone_id      = milestone_id(pull_request.milestone)
-            merge_request.author_id         = user_id(pull_request.author, project.creator_id)
+            merge_request.author_id         = author_id
             merge_request.assignee_id       = user_id(pull_request.assignee)
             merge_request.created_at        = pull_request.created_at
             merge_request.updated_at        = pull_request.updated_at
@@ -178,19 +181,20 @@ module Github
             else
               next if Issue.where(iid: representation.iid, project_id: project.id).exists?
 
+              author_id          = user_id(representation.author, project.creator_id)
               issue              = Issue.new
               issue.iid          = representation.iid
               issue.project_id   = project.id
               issue.title        = representation.title
-              issue.description  = representation.description
+              issue.description  = format_description(representation.description, representation.author)
               issue.state        = representation.state
               issue.label_ids    = label_ids(representation.labels)
               issue.milestone_id = milestone_id(representation.milestone)
-              issue.author_id    = user_id(representation.author, project.creator_id)
+              issue.author_id    = author_id
               issue.assignee_id  = user_id(representation.assignee)
               issue.created_at   = representation.created_at
               issue.updated_at   = representation.updated_at
-              issue.save(validate: false)
+              issue.save!(validate: false)
 
               if representation.has_comments?
                 # Fetch comments
@@ -220,15 +224,16 @@ module Github
         ActiveRecord::Base.no_touching do
           comments.body.each do |raw|
             begin
-              representation = Github::Representation::Comment.new(raw, options)
+              representation  = Github::Representation::Comment.new(raw, options)
+              author_id       = user_id(representation.author, project.creator_id)
 
               note            = Note.new
               note.project_id = project.id
               note.noteable   = noteable
-              note.note       = representation.note
+              note.note       = format_description(representation.note, representation.author)
               note.commit_id  = representation.commit_id
               note.line_code  = representation.line_code
-              note.author_id  = user_id(representation.author, project.creator_id)
+              note.author_id  = author_id
               note.type       = representation.type
               note.created_at = representation.created_at
               note.updated_at = representation.updated_at
@@ -278,7 +283,10 @@ module Github
       return unless user.present?
       return cached_user_ids[user.id] if cached_user_ids.key?(user.id)
 
-      cached_user_ids[user.id] = find_by_external_uid(user.id) || find_by_email(user.email) || fallback_id
+      gitlab_user_id = find_by_external_uid(user.id) || find_by_email(user.email)
+
+      cached_gitlab_users[user.id] = gitlab_user_id.present?
+      cached_user_ids[user.id] = gitlab_user_id || fallback_id
     end
 
     def find_by_email(email)
@@ -296,6 +304,12 @@ module Github
             .joins(:identities)
             .where(identities[:provider].eq(:github).and(identities[:extern_uid].eq(id)))
             .first&.id
+    end
+
+    def format_description(body, author)
+      return body if cached_gitlab_users[author.id]
+
+      "*Created by: #{author.username}*\n\n#{body}"
     end
 
     def error(type, url, message)
