@@ -34,17 +34,41 @@ describe Banzai::Filter::IssuableStateFilter, lib: true do
     expect(doc.css('a').last.text).to eq('')
   end
 
-  it 'adds text with standard formatting' do
+  it 'ignores issuable links with custom anchor' do
     issue = create(:issue, :closed)
+    link = create_link('something', issue: issue.id, reference_type: 'issue')
+    doc = filter(link, context)
+
+    expect(doc.css('a').last.text).to eq('something')
+  end
+
+  it 'ignores issuable links to specific comments' do
+    issue = create(:issue, :closed)
+    link = create_link("#{issue.to_reference} (comment 1)", issue: issue.id, reference_type: 'issue')
+    doc = filter(link, context)
+
+    expect(doc.css('a').last.text).to eq("#{issue.to_reference} (comment 1)")
+  end
+
+  it 'ignores merge request links to diffs tab' do
+    merge_request = create(:merge_request, :closed)
     link = create_link(
-      'something <strong>else</strong>'.html_safe,
-      issue: issue.id,
-      reference_type: 'issue'
+      "#{merge_request.to_reference} (diffs)",
+      merge_request: merge_request.id,
+      reference_type: 'merge_request'
     )
     doc = filter(link, context)
 
-    expect(doc.css('a').last.inner_html).
-      to eq('something <strong>else</strong> [closed]')
+    expect(doc.css('a').last.text).to eq("#{merge_request.to_reference} (diffs)")
+  end
+
+  it 'handles cross project references' do
+    issue = create(:issue, :closed)
+    project = create(:empty_project)
+    link = create_link(issue.to_reference(project), issue: issue.id, reference_type: 'issue')
+    doc = filter(link, context.merge(project: project))
+
+    expect(doc.css('a').last.text).to eq("#{issue.to_reference(project)} (closed)")
   end
 
   it 'does not append state when filter is not enabled' do
@@ -59,68 +83,88 @@ describe Banzai::Filter::IssuableStateFilter, lib: true do
   context 'for issue references' do
     it 'ignores open issue references' do
       issue = create(:issue)
-      link = create_link('text', issue: issue.id, reference_type: 'issue')
+      link = create_link(issue.to_reference, issue: issue.id, reference_type: 'issue')
       doc = filter(link, context)
 
-      expect(doc.css('a').last.text).to eq('text')
+      expect(doc.css('a').last.text).to eq(issue.to_reference)
     end
 
     it 'ignores reopened issue references' do
-      reopened_issue = create(:issue, :reopened)
-      link = create_link('text', issue: reopened_issue.id, reference_type: 'issue')
+      issue = create(:issue, :reopened)
+      link = create_link(issue.to_reference, issue: issue.id, reference_type: 'issue')
       doc = filter(link, context)
 
-      expect(doc.css('a').last.text).to eq('text')
+      expect(doc.css('a').last.text).to eq(issue.to_reference)
     end
 
-    it 'appends [closed] to closed issue references' do
-      closed_issue = create(:issue, :closed)
-      link = create_link('text', issue: closed_issue.id, reference_type: 'issue')
+    it 'appends state to closed issue references' do
+      issue = create(:issue, :closed)
+      link = create_link(issue.to_reference, issue: issue.id, reference_type: 'issue')
       doc = filter(link, context)
 
-      expect(doc.css('a').last.text).to eq('text [closed]')
+      expect(doc.css('a').last.text).to eq("#{issue.to_reference} (closed)")
     end
   end
 
   context 'for merge request references' do
     it 'ignores open merge request references' do
-      mr = create(:merge_request)
-      link = create_link('text', merge_request: mr.id, reference_type: 'merge_request')
+      merge_request = create(:merge_request)
+      link = create_link(
+        merge_request.to_reference,
+        merge_request: merge_request.id,
+        reference_type: 'merge_request'
+      )
       doc = filter(link, context)
 
-      expect(doc.css('a').last.text).to eq('text')
+      expect(doc.css('a').last.text).to eq(merge_request.to_reference)
     end
 
     it 'ignores reopened merge request references' do
-      mr = create(:merge_request, :reopened)
-      link = create_link('text', merge_request: mr.id, reference_type: 'merge_request')
+      merge_request = create(:merge_request, :reopened)
+      link = create_link(
+        merge_request.to_reference,
+        merge_request: merge_request.id,
+        reference_type: 'merge_request'
+      )
       doc = filter(link, context)
 
-      expect(doc.css('a').last.text).to eq('text')
+      expect(doc.css('a').last.text).to eq(merge_request.to_reference)
     end
 
     it 'ignores locked merge request references' do
-      mr = create(:merge_request, :locked)
-      link = create_link('text', merge_request: mr.id, reference_type: 'merge_request')
+      merge_request = create(:merge_request, :locked)
+      link = create_link(
+        merge_request.to_reference,
+        merge_request: merge_request.id,
+        reference_type: 'merge_request'
+      )
       doc = filter(link, context)
 
-      expect(doc.css('a').last.text).to eq('text')
+      expect(doc.css('a').last.text).to eq(merge_request.to_reference)
     end
 
-    it 'appends [closed] to closed merge request references' do
-      mr = create(:merge_request, :closed)
-      link = create_link('text', merge_request: mr.id, reference_type: 'merge_request')
+    it 'appends state to closed merge request references' do
+      merge_request = create(:merge_request, :closed)
+      link = create_link(
+        merge_request.to_reference,
+        merge_request: merge_request.id,
+        reference_type: 'merge_request'
+      )
       doc = filter(link, context)
 
-      expect(doc.css('a').last.text).to eq('text [closed]')
+      expect(doc.css('a').last.text).to eq("#{merge_request.to_reference} (closed)")
     end
 
-    it 'appends [merged] to merged merge request references' do
-      mr = create(:merge_request, :merged)
-      link = create_link('text', merge_request: mr.id, reference_type: 'merge_request')
+    it 'appends state to merged merge request references' do
+      merge_request = create(:merge_request, :merged)
+      link = create_link(
+        merge_request.to_reference,
+        merge_request: merge_request.id,
+        reference_type: 'merge_request'
+      )
       doc = filter(link, context)
 
-      expect(doc.css('a').last.text).to eq('text [merged]')
+      expect(doc.css('a').last.text).to eq("#{merge_request.to_reference} (merged)")
     end
   end
 end

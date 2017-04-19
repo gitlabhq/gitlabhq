@@ -15,8 +15,8 @@ module Banzai
         issuables = extractor.extract([doc])
 
         issuables.each do |node, issuable|
-          if VISIBLE_STATES.include?(issuable.state) && node.children.present?
-            node.add_child(Nokogiri::XML::Text.new(" [#{issuable.state}]", doc))
+          if VISIBLE_STATES.include?(issuable.state) && node.inner_html == issuable.reference_link_text(project)
+            node.content += " (#{issuable.state})"
           end
         end
 
