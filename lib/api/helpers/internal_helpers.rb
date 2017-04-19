@@ -60,6 +60,12 @@ module API
       rescue JSON::ParserError
         {}
       end
+
+      def log_user_activity(actor)
+        commands = Gitlab::GitAccess::DOWNLOAD_COMMANDS
+
+        ::Users::ActivityService.new(actor, 'Git SSH').execute if commands.include?(params[:action])
+      end
     end
   end
 end

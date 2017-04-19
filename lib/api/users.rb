@@ -534,6 +534,21 @@ module API
         email.destroy
         current_user.update_secondary_emails!
       end
+
+      desc 'Get a list of user activities'
+      params do
+        optional :from, type: DateTime, default: 6.months.ago, desc: 'Date string in the format YEAR-MONTH-DAY'
+        use :pagination
+      end
+      get "activities" do
+        authenticated_as_admin!
+
+        activities = User.
+          where(User.arel_table[:last_activity_on].gteq(params[:from])).
+          reorder(last_activity_on: :asc)
+
+        present paginate(activities), with: Entities::UserActivity
+      end
     end
   end
 end
