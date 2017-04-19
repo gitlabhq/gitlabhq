@@ -101,6 +101,22 @@ describe Note, elastic: true do
       expect(Note.elastic_search('term', options: options).total_count).to eq(1)
     end
 
+    [:admin, :auditor].each do |user_type|
+      it "finds note for #{user_type}" do
+        superuser = create(user_type)
+        issue = create(:issue, :confidential, author: create(:user))
+
+        Sidekiq::Testing.inline! do
+          create_notes_for(issue, 'bla-bla term')
+          Gitlab::Elastic::Helper.refresh_index
+        end
+
+        options = { project_ids: [issue.project.id], current_user: superuser }
+
+        expect(Note.elastic_search('term', options: options).total_count).to eq(1)
+      end
+    end
+
     it "return notes with matching content for project members" do
       user = create :user
       issue = create :issue, :confidential, author: user
