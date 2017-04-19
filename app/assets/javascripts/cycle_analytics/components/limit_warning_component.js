@@ -11,7 +11,7 @@ export default {
           aria-hidden="true"
           title="Limited to showing 50 events at most"
           data-placement="top"></i>
-      {{ 'Showing 50 events' | translate }}
+      {{ 'Showing %d event' | translate-plural('Showing %d events', 50) }}
     </span>
   `,
 };
