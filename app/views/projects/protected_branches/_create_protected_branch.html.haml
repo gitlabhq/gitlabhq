@@ -1,4 +1,4 @@
-= form_for [@project.namespace.becomes(Namespace), @project, @protected_branch] do |f|
+= form_for [@project.namespace.becomes(Namespace), @project, @protected_branch], html: { class: 'js-new-protected-branch' } do |f|
   .panel.panel-default
     .panel-heading
       %h3.panel-title
