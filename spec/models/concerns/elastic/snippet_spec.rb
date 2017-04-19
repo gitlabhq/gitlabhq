@@ -60,13 +60,15 @@ describe Snippet, elastic: true do
       expect(result.records).to match_array [public_snippet, internal_snippet, private_snippet]
     end
 
-    it 'returns all snippets for admins' do
-      admin = create(:admin)
+    [:admin, :auditor].each do |user_type|
+      it "returns all snippets for #{user_type}" do
+        superuser = create(user_type)
 
-      result = described_class.elastic_search_code('password', options: { user: admin })
+        result = described_class.elastic_search_code('password', options: { user: superuser })
 
-      expect(result.total_count).to eq(6)
-      expect(result.records).to match_array [public_snippet, internal_snippet, private_snippet, project_public_snippet, project_internal_snippet, project_private_snippet]
+        expect(result.total_count).to eq(6)
+        expect(result.records).to match_array [public_snippet, internal_snippet, private_snippet, project_public_snippet, project_internal_snippet, project_private_snippet]
+      end
     end
   end
 

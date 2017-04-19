@@ -73,7 +73,7 @@ module Elastic
       end
 
       def self.filter(query_hash, user)
-        return query_hash if user && user.admin?
+        return query_hash if user && user.admin_or_auditor?
 
         filter = if user
                    {
