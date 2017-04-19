@@ -1,3 +1,4 @@
+<script>
 /* global Flash */
 /* eslint-disable no-new, no-alert */
 /**
@@ -11,6 +12,7 @@ export default {
     stopUrl: {
       type: String,
       default: '',
+      required: false,
     },
 
     service: {
@@ -48,17 +50,24 @@ export default {
       }
     },
   },
-
-  template: `
-    <button type="button"
-      class="btn stop-env-link has-tooltip"
-      data-container="body"
-      @click="onClick"
-      :disabled="isLoading"
-      :title="title"
-      :aria-label="title">
-      <i class="fa fa-stop stop-env-icon" aria-hidden="true"></i>
-      <i v-if="isLoading" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
-    </button>
-  `,
 };
+</script>
+<template>
+  <button
+    type="button"
+    class="btn stop-env-link has-tooltip"
+    data-container="body"
+    @click="onClick"
+    :disabled="isLoading"
+    :title="title"
+    :aria-label="title">
+
+    <i
+      class="fa fa-stop stop-env-icon"
+      aria-hidden="true" />
+    <i
+      v-if="isLoading"
+      class="fa fa-spinner fa-spin"
+      aria-hidden="true" />
+  </button>
+</template>

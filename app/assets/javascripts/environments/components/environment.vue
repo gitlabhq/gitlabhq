@@ -1,22 +1,21 @@
+<script>
 /* eslint-disable no-new */
 /* global Flash */
-import Vue from 'vue';
 import EnvironmentsService from '../services/environments_service';
-import EnvironmentTable from './environments_table';
+import EnvironmentTable from './environments_table.vue';
 import EnvironmentsStore from '../stores/environments_store';
 import TablePaginationComponent from '../../vue_shared/components/table_pagination';
 import '../../lib/utils/common_utils';
 import eventHub from '../event_hub';
 
-export default Vue.component('environment-component', {
-
+export default {
   components: {
     'environment-table': EnvironmentTable,
     'table-pagination': TablePaginationComponent,
   },
 
   data() {
-    const environmentsData = document.querySelector('#environments-list-view').dataset;
+    const environmentsData = document.querySelector('#js-environments-list-view').dataset;
     const store = new EnvironmentsStore();
 
     return {
@@ -140,76 +139,88 @@ export default Vue.component('environment-component', {
         });
     },
   },
-
-  template: `
-    <div :class="cssContainerClass">
-      <div class="top-area">
-        <ul v-if="!isLoading" class="nav-links">
-          <li v-bind:class="{ 'active': scope === null || scope === 'available' }">
-            <a :href="projectEnvironmentsPath">
-              Available
-              <span class="badge js-available-environments-count">
-                {{state.availableCounter}}
-              </span>
-            </a>
-          </li>
-          <li v-bind:class="{ 'active' : scope === 'stopped' }">
-            <a :href="projectStoppedEnvironmentsPath">
-              Stopped
-              <span class="badge js-stopped-environments-count">
-                {{state.stoppedCounter}}
-              </span>
-            </a>
-          </li>
-        </ul>
-        <div v-if="canCreateEnvironmentParsed && !isLoading" class="nav-controls">
-          <a :href="newEnvironmentPath" class="btn btn-create">
-            New environment
+};
+</script>
+<template>
+  <div :class="cssContainerClass">
+    <div class="top-area">
+      <ul v-if="!isLoading"
+        class="nav-links">
+        <li v-bind:class="{ 'active': scope === null || scope === 'available' }">
+          <a :href="projectEnvironmentsPath">
+            Available
+            <span class="badge js-available-environments-count">
+              {{state.availableCounter}}
+            </span>
           </a>
-        </div>
-      </div>
-
-      <div class="content-list environments-container">
-        <div class="environments-list-loading text-center" v-if="isLoading">
-          <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
-        </div>
-
-        <div class="blank-state blank-state-no-icon"
-          v-if="!isLoading && state.environments.length === 0">
-          <h2 class="blank-state-title js-blank-state-title">
-            You don't have any environments right now.
-          </h2>
-          <p class="blank-state-text">
-            Environments are places where code gets deployed, such as staging or production.
-            <br />
-            <a :href="helpPagePath">
-              Read more about environments
-            </a>
-          </p>
-
-          <a v-if="canCreateEnvironmentParsed"
-            :href="newEnvironmentPath"
-            class="btn btn-create js-new-environment-button">
-            New Environment
+        </li>
+        <li v-bind:class="{ 'active' : scope === 'stopped' }">
+          <a :href="projectStoppedEnvironmentsPath">
+            Stopped
+            <span class="badge js-stopped-environments-count">
+              {{state.stoppedCounter}}
+            </span>
           </a>
-        </div>
-
-        <div class="table-holder"
-          v-if="!isLoading && state.environments.length > 0">
-
-          <environment-table
-            :environments="state.environments"
-            :can-create-deployment="canCreateDeploymentParsed"
-            :can-read-environment="canReadEnvironmentParsed"
-            :service="service"
-            :is-loading-folder-content="isLoadingFolderContent" />
-        </div>
-
-        <table-pagination v-if="state.paginationInformation && state.paginationInformation.totalPages > 1"
-          :change="changePage"
-          :pageInfo="state.paginationInformation">
-        </table-pagination>
+        </li>
+      </ul>
+      <div
+        v-if="canCreateEnvironmentParsed && !isLoading"
+        class="nav-controls">
+        <a
+          :href="newEnvironmentPath"
+          class="btn btn-create">
+          New environment
+        </a>
       </div>
     </div>
-  `,
-});
+
+    <div class="content-list environments-container">
+      <div
+        class="environments-list-loading text-center"
+        v-if="isLoading">
+        <i
+          class="fa fa-spinner fa-spin"
+          aria-hidden="true" />
+      </div>
+
+      <div
+        class="blank-state blank-state-no-icon"
+        v-if="!isLoading && state.environments.length === 0">
+        <h2 class="blank-state-title js-blank-state-title">
+          You don't have any environments right now.
+        </h2>
+        <p class="blank-state-text">
+          Environments are places where code gets deployed, such as staging or production.
+          <br />
+          <a :href="helpPagePath">
+            Read more about environments
+          </a>
+        </p>
+
+        <a
+          v-if="canCreateEnvironmentParsed"
+          :href="newEnvironmentPath"
+          class="btn btn-create js-new-environment-button">
+          New Environment
+        </a>
+      </div>
+
+      <div
+        class="table-holder"
+        v-if="!isLoading && state.environments.length > 0">
+
+        <environment-table
+          :environments="state.environments"
+          :can-create-deployment="canCreateDeploymentParsed"
+          :can-read-environment="canReadEnvironmentParsed"
+          :service="service"
+          :is-loading-folder-content="isLoadingFolderContent" />
+      </div>
+
+      <table-pagination
+        v-if="state.paginationInformation && state.paginationInformation.totalPages > 1"
+        :change="changePage"
+        :pageInfo="state.paginationInformation" />
+    </div>
+  </div>
+</template>

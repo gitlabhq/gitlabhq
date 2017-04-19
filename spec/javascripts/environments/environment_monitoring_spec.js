@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import monitoringComp from '~/environments/components/environment_monitoring';
+import monitoringComp from '~/environments/components/environment_monitoring.vue';
 
 describe('Monitoring Component', () => {
   let MonitoringComponent;

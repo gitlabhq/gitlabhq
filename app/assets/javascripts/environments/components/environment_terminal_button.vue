@@ -1,3 +1,4 @@
+<script>
 /**
  * Renders a terminal button to open a web terminal.
  * Used in environments table.
@@ -25,13 +26,18 @@ export default {
     },
   },
 
-  template: `
-    <a class="btn terminal-button has-tooltip"
-      data-container="body"
-      :title="title"
-      :aria-label="title"
-      :href="terminalPath">
-      ${terminalIconSvg}
-    </a>
-  `,
+  destroyed() {
+    $(this.el).tooltip('destroy');
+  },
 };
+</script>
+<template>
+  <a
+    class="btn terminal-button has-tooltip"
+    data-container="body"
+    :title="title"
+    :aria-label="title"
+    :href="terminalPath">
+    ${terminalIconSvg}
+  </a>
+</template>

@@ -1,12 +1,14 @@
 import Vue from 'vue';
 import '~/flash';
-import EnvironmentsFolderViewComponent from '~/environments/folder/environments_folder_view';
+import environmentsFolderViewComponent from '~/environments/folder/environments_folder_view.vue';
 import { environmentsList } from '../mock_data';
 
 describe('Environments Folder View', () => {
   preloadFixtures('static/environments/environments_folder_view.html.raw');
+  let EnvironmentsFolderViewComponent;
 
   beforeEach(() => {
+    EnvironmentsFolderViewComponent = Vue.extend(environmentsFolderViewComponent);
     loadFixtures('static/environments/environments_folder_view.html.raw');
     window.history.pushState({}, null, 'environments/folders/build');
   });
@@ -35,7 +37,7 @@ describe('Environments Folder View', () => {
     beforeEach(() => {
       Vue.http.interceptors.push(environmentsResponseInterceptor);
       component = new EnvironmentsFolderViewComponent({
-        el: document.querySelector('#environments-folder-list-view'),
+        el: document.querySelector('#js-environments-folder-list-view'),
       });
     });
 
@@ -163,7 +165,7 @@ describe('Environments Folder View', () => {
 
     it('should not render a table', (done) => {
       component = new EnvironmentsFolderViewComponent({
-        el: document.querySelector('#environments-folder-list-view'),
+        el: document.querySelector('#js-environments-folder-list-view'),
       });
 
       setTimeout(() => {

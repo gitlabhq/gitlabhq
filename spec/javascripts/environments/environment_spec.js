@@ -1,14 +1,16 @@
 import Vue from 'vue';
 import '~/flash';
-import EnvironmentsComponent from '~/environments/components/environment';
+import environmentsComponent from '~/environments/components/environment.vue';
 import { environment, folder } from './mock_data';
 
 describe('Environment', () => {
   preloadFixtures('static/environments/environments.html.raw');
-
+  let EnvironmentsComponent;
   let component;
 
   beforeEach(() => {
+    EnvironmentsComponent = Vue.extend(environmentsComponent);
+
     loadFixtures('static/environments/environments.html.raw');
   });
 
@@ -32,7 +34,7 @@ describe('Environment', () => {
 
       it('should render the empty state', (done) => {
         component = new EnvironmentsComponent({
-          el: document.querySelector('#environments-list-view'),
+          el: document.querySelector('#js-environments-list-view'),
         });
 
         setTimeout(() => {
@@ -71,8 +73,8 @@ describe('Environment', () => {
       beforeEach(() => {
         Vue.http.interceptors.push(environmentsResponseInterceptor);
         component = new EnvironmentsComponent({
-          el: document.querySelector('#environments-list-view'),
-        });
+          el: document.querySelector('#js-environments-list-view'),
+        }).$mount();
       });
 
       afterEach(() => {
@@ -169,7 +171,7 @@ describe('Environment', () => {
 
     it('should render empty state', (done) => {
       component = new EnvironmentsComponent({
-        el: document.querySelector('#environments-list-view'),
+        el: document.querySelector('#js-environments-list-view'),
       });
 
       setTimeout(() => {
@@ -203,7 +205,7 @@ describe('Environment', () => {
     beforeEach(() => {
       Vue.http.interceptors.push(environmentsResponseInterceptor);
       component = new EnvironmentsComponent({
-        el: document.querySelector('#environments-list-view'),
+        el: document.querySelector('#js-environments-list-view'),
       });
     });
 
