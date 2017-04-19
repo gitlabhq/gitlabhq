@@ -331,6 +331,14 @@ header {
   .dropdown-menu-nav {
     min-width: 140px;
     margin-top: -5px;
+
+    .current-user {
+      padding: 5px 18px;
+
+      .user-name {
+        display: block;
+      }
+    }
   }
 }
 
