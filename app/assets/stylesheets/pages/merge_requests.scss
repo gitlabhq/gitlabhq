@@ -696,6 +696,7 @@
   top: 0;
   z-index: 10;
   background-color: $white-light;
+  border-bottom: 1px solid $border-color;
 
   @media(min-width: $screen-sm-min) {
     position: sticky;
@@ -715,6 +716,16 @@
       padding-right: $gl-padding;
     }
   }
+
+  .nav-links {
+    border: 0;
+  }
+}
+
+.merge-request-tabs {
+  display: flex;
+  margin-bottom: 0;
+  padding: 0;
 }
 
 .limit-container-width {
@@ -722,6 +733,15 @@
     max-width: $limited-layout-width;
     margin-left: auto;
     margin-right: auto;
+  }
+}
+
+.merge-request-tabs-container {
+  display: flex;
+  justify-content: space-between;
+
+  @media (max-width: $screen-xs-max) {
+    flex-direction: column-reverse;
   }
 }
 
