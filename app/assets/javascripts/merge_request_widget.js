@@ -203,7 +203,7 @@ import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
             }
             if (data.status === "success" || data.status === "failed") {
               callback = function() {
-                return merge_request_widget.getMergeStatus();
+                return _this.getMergeStatus();
               };
               return setTimeout(callback, 2000);
             }
