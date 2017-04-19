@@ -141,6 +141,8 @@ class GeoNode < ActiveRecord::Base
     if self.primary?
       self.oauth_application = nil
       update_clone_url
+      self.system_hook.push_events = false
+      self.system_hook.tag_push_events = false
     else
       update_oauth_application!
       update_system_hook!

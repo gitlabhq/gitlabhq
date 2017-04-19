@@ -46,6 +46,20 @@ describe GeoNode, type: :model do
     end
   end
 
+  context 'system hooks' do
+    it 'primary creates a system hook with no push events' do
+      hook = primary_node.system_hook
+      expect(hook.push_events).to be_falsey
+      expect(hook.tag_push_events).to be_falsey
+    end
+
+    it 'secondary creates a system hook with push events' do
+      hook = new_node.system_hook
+      expect(hook.push_events).to be_truthy
+      expect(hook.tag_push_events).to be_truthy
+    end
+  end
+
   context 'prevent locking yourself out' do
     subject do
       GeoNode.new(host: Gitlab.config.gitlab.host,
