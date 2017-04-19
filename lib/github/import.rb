@@ -54,14 +54,12 @@ module Github
       # Fetch labels
       url = "/repos/#{owner}/#{repo}/labels"
 
-      loop do
+      while url
         response = Github::Client.new(options).get(url)
 
         response.body.each do |raw|
           begin
             label = Github::Representation::Label.new(raw)
-
-            # TODO: we should take group labels in account
             next if project.labels.where(title: label.title).exists?
 
             project.labels.create!(title: label.title, color: label.color)
@@ -70,7 +68,7 @@ module Github
           end
         end
 
-        break unless url = response.rels[:next]
+        url = response.rels[:next]
       end
 
       # Cache labels
@@ -82,7 +80,7 @@ module Github
       # Fetch milestones
       url = "/repos/#{owner}/#{repo}/milestones"
 
-      loop do
+      while url
         response = Github::Client.new(options).get(url, state: :all)
 
         response.body.each do |raw|
@@ -104,13 +102,13 @@ module Github
           end
         end
 
-        break unless url = response.rels[:next]
+        url = response.rels[:next]
       end
 
       # Fetch pull requests
       url = "/repos/#{owner}/#{repo}/pulls"
 
-      loop do
+      while url
         response = Github::Client.new(options).get(url, state: :all, sort: :created, direction: :asc)
 
         response.body.each do |raw|
@@ -156,13 +154,13 @@ module Github
           end
         end
 
-        break unless url = response.rels[:next]
+        url = response.rels[:next]
       end
 
       # Fetch issues
       url = "/repos/#{owner}/#{repo}/issues"
 
-      loop do
+      while url
         response = Github::Client.new(options).get(url, state: :all, sort: :created, direction: :asc)
 
         response.body.each do |raw|
@@ -207,7 +205,7 @@ module Github
           end
         end
 
-        break unless url = response.rels[:next]
+        url = response.rels[:next]
       end
 
       repository.expire_content_cache
@@ -218,7 +216,7 @@ module Github
     private
 
     def fetch_comments(noteable, type, url)
-      loop do
+      while url
         comments = Github::Client.new(options).get(url)
 
         ActiveRecord::Base.no_touching do
@@ -244,7 +242,7 @@ module Github
           end
         end
 
-        break unless url = comments.rels[:next]
+        url = comments.rels[:next]
       end
     end
 
