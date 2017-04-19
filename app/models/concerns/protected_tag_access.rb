@@ -3,6 +3,7 @@ module ProtectedTagAccess
 
   included do
     include ProtectedRefAccess
+    include EE::ProtectedRefAccess
 
     belongs_to :protected_tag
 

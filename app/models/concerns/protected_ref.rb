@@ -19,8 +19,8 @@ module ProtectedRef
 
         # Returns access levels that grant the specified access type to the given user / group.
         access_level_class = const_get("#{type}_access_level".camelize)
-        scope :"#{type}_access_by_user", -> (user) { access_level_class.joins(:protected_branch).where(protected_branch_id: self.ids).merge(access_level_class.by_user(user)) }
-        scope :"#{type}_access_by_group", -> (group) { access_level_class.joins(:protected_branch).where(protected_branch_id: self.ids).merge(access_level_class.by_group(group)) }
+        scope :"#{type}_access_by_user", -> (user) { access_level_class.joins(self.model_name.singular).where("#{self.model_name.singular}_id" => self.ids).merge(access_level_class.by_user(user)) }
+        scope :"#{type}_access_by_group", -> (group) { access_level_class.joins(self.model_name.singular).where("#{self.model_name.singular}_id" => self.ids).merge(access_level_class.by_group(group)) }
       end
     end
 

@@ -1,21 +1,23 @@
-# EE-specific code related to protected branch access levels.
+# EE-specific code related to protected branch/tag access levels.
 #
 # Note: Don't directly include this concern into a model class.
-# Instead, include `ProtectedBranchAccess`, which in turn includes
-# this concern. A number of methods here depend on `ProtectedBranchAccess`
-# being next up in the ancestor chain.
+# Instead, include `ProtectedBranchAccess` or `ProtectedTagAccess`, which in
+# turn include this concern. A number of methods here depend on
+# `ProtectedRefAccess` being next up in the ancestor chain.
 
 module EE
-  module ProtectedBranchAccess
+  module ProtectedRefAccess
     extend ActiveSupport::Concern
 
     included do
       belongs_to :user
       belongs_to :group
 
-      validates :group_id, uniqueness: { scope: :protected_branch, allow_nil: true }
-      validates :user_id, uniqueness: { scope: :protected_branch, allow_nil: true }
-      validates :access_level, uniqueness: { scope: :protected_branch, if: :role?,
+
+      protected_type = self.parent.model_name.singular
+      validates :group_id, uniqueness: { scope: protected_type, allow_nil: true }
+      validates :user_id, uniqueness: { scope: protected_type, allow_nil: true }
+      validates :access_level, uniqueness: { scope: protected_type, if: :role?,
                                              conditions: -> { where(user_id: nil, group_id: nil) } }
 
       scope :by_user, -> (user) { where(user: user ) }
