@@ -100,6 +100,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I click link "Close"' do
     first(:css, '.close-mr-link').click
+    find('.status-box-closed')
   end
 
   step 'I submit new merge request "Wiki Feature"' do

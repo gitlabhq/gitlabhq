@@ -193,6 +193,8 @@ shared_examples 'discussion comments' do |resource_name|
       before do
         find("#{form_selector} .js-note-target-close").click
 
+        find('.status-box-closed')
+
         find("#{form_selector} .note-textarea").send_keys('a')
       end
 
