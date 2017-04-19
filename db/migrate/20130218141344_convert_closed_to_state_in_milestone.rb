@@ -2,6 +2,8 @@
 class ConvertClosedToStateInMilestone < ActiveRecord::Migration
   include Gitlab::Database
 
+  DOWNTIME = false
+
   def up
     execute "UPDATE #{table_name} SET state = 'closed' WHERE closed = #{true_value}"
     execute "UPDATE #{table_name} SET state = 'active' WHERE closed = #{false_value}"
