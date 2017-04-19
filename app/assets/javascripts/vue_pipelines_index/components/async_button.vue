@@ -54,7 +54,7 @@ export default {
   },
 
   methods: {
-    onClick(e) {
+    onClick() {
       if (this.confirmActionMessage && confirm(this.confirmActionMessage)) {
         this.makeRequest();
       } else if (!this.confirmActionMessage) {
