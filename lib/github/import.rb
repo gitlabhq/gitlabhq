@@ -45,7 +45,6 @@ module Github
         project.repository.add_remote('github', "https://{token}@github.com/#{owner}/#{repo}.git")
         project.repository.set_remote_as_mirror('github')
         project.repository.fetch_remote('github', forced: true)
-        project.repository.remove_remote('github')
       rescue Gitlab::Shell::Error => e
         error(:project, "https://github.com/#{owner}/#{repo}.git", e.message)
       end
