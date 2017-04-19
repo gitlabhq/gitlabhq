@@ -90,3 +90,13 @@ Our accessibility standards and resources.
 [scss-lint]: https://github.com/brigade/scss-lint
 [install]: ../../install/installation.md#4-node
 [requirements]: ../../install/requirements.md#supported-web-browsers
+
+---
+
+## [DropLab](droplab/droplab.md)
+Our internal `DropLab` dropdown library.
+
+* [DropLab](droplab/droplab.md)
+* [Ajax plugin](droplab/plugins/ajax.md)
+* [Filter plugin](droplab/plugins/filter.md)
+* [InputSetter plugin](droplab/plugins/input_setter.md)
