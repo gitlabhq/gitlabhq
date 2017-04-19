@@ -12,7 +12,6 @@ module MergeRequests
       close_merge_requests
       reload_merge_requests
       reset_merge_when_pipeline_succeeds
-      reset_merge_errors
       mark_pending_todos_done
       cache_merge_requests_closing_issues
 
@@ -98,12 +97,6 @@ module MergeRequests
 
     def reset_merge_when_pipeline_succeeds
       merge_requests_for_source_branch.each(&:reset_merge_when_pipeline_succeeds)
-    end
-
-    def reset_merge_errors
-      merge_requests_for_source_branch.each do |merge_request|
-        merge_request.update_attribute(:merge_error, nil)
-      end
     end
 
     def mark_pending_todos_done
