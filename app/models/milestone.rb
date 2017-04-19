@@ -64,6 +64,14 @@ class Milestone < ActiveRecord::Base
 
       where(t[:title].matches(pattern).or(t[:description].matches(pattern)))
     end
+
+    def upcoming
+      where('due_date > ?', Time.now).order(due_date: :asc).first
+    end
+
+    def started
+      where('start_date <= ?', Time.now).order(start_date: :asc).first
+    end
   end
 
   def self.reference_prefix

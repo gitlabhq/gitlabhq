@@ -87,12 +87,29 @@ class IssuableBaseService < BaseService
 
   def filter_milestone
     milestone_id = params[:milestone_id]
-    return unless milestone_id
 
-    if milestone_id == IssuableFinder::NONE ||
-        project.milestones.find_by(id: milestone_id).nil?
-      params[:milestone_id] = ''
-    end
+    return unless milestone_id || project.milestones.find_by(id: milestone_id).nil?
+
+    params[:milestone_id] =
+      if filter_by_upcoming_milestone?
+        project.milestones.upcoming&.id
+      elsif filter_by_started_milestone?
+        project.milestones.started&.id
+      elsif filter_by_no_milestone?
+        ''
+      end
+  end
+
+  def filter_by_upcoming_milestone?
+    params[:milestone_id] == Milestone::Upcoming.id.to_s
+  end
+
+  def filter_by_started_milestone?
+    params[:milestone_id] == Milestone::Started.id.to_s
+  end
+
+  def filter_by_no_milestone?
+    params[:milestone_id] == Milestone::None.id.to_s
   end
 
   def filter_labels
