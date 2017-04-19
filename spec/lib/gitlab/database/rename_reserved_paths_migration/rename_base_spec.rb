@@ -27,6 +27,46 @@ describe Gitlab::Database::RenameReservedPathsMigration::RenameBase do
     end
   end
 
+  describe '#remove_cached_html_for_projects' do
+    let(:project) { create(:empty_project, description_html: 'Project description') }
+
+    it 'removes description_html from projects' do
+      subject.remove_cached_html_for_projects([project.id])
+
+      expect(project.reload.description_html).to be_nil
+    end
+
+    it 'removes issue descriptions' do
+      issue = create(:issue, project: project, description_html: 'Issue description')
+
+      subject.remove_cached_html_for_projects([project.id])
+
+      expect(issue.reload.description_html).to be_nil
+    end
+
+    it 'removes merge request descriptions' do
+      merge_request = create(:merge_request,
+                             source_project: project,
+                             target_project: project,
+                             description_html: 'MergeRequest description')
+
+      subject.remove_cached_html_for_projects([project.id])
+
+      expect(merge_request.reload.description_html).to be_nil
+    end
+
+    it 'removes note html' do
+      note = create(:note,
+                    project: project,
+                    noteable: create(:issue, project: project),
+                    note_html: 'note description')
+
+      subject.remove_cached_html_for_projects([project.id])
+
+      expect(note.reload.note_html).to be_nil
+    end
+  end
+
   describe '#rename_path_for_routable' do
     context 'for namespaces' do
       let(:namespace) { create(:namespace, path: 'the-path') }

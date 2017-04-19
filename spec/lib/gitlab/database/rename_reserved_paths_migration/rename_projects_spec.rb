@@ -29,6 +29,23 @@ describe Gitlab::Database::RenameReservedPathsMigration::RenameProjects do
     end
   end
 
+  describe '#rename_projects' do
+    let!(:projects) { create_list(:empty_project, 2, path: 'the-path') }
+
+    it 'renames each project' do
+      expect(subject).to receive(:rename_project).twice
+
+      subject.rename_projects
+    end
+
+    it 'invalidates the markdown cache of related projects' do
+      expect(subject).to receive(:remove_cached_html_for_projects).
+                           with(projects.map(&:id))
+
+      subject.rename_projects
+    end
+  end
+
   describe '#rename_project' do
     let(:project) do
       create(:empty_project,
@@ -68,8 +85,6 @@ describe Gitlab::Database::RenameReservedPathsMigration::RenameProjects do
 
       subject.rename_project(project)
     end
-
-    it 'invalidates the markdown cache of related projects'
   end
 
   describe '#move_repository' do

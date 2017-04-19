@@ -8,6 +8,8 @@ module Gitlab
           projects_for_paths.each do |project|
             rename_project(project)
           end
+
+          remove_cached_html_for_projects(projects_for_paths.map(&:id))
         end
 
         def rename_project(project)
@@ -28,10 +30,12 @@ module Gitlab
         end
 
         def projects_for_paths
+          return @projects_for_paths if @projects_for_paths
+
           with_paths = MigrationClasses::Route.arel_table[:path]
                          .matches_any(path_patterns)
 
-          MigrationClasses::Project.joins(:route).where(with_paths)
+          @projects_for_paths = MigrationClasses::Project.joins(:route).where(with_paths)
         end
       end
     end

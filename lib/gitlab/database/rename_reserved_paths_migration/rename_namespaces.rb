@@ -27,6 +27,7 @@ module Gitlab
           move_repositories(namespace, old_full_path, new_full_path)
           move_uploads(old_full_path, new_full_path)
           move_pages(old_full_path, new_full_path)
+          remove_cached_html_for_projects(projects_for_namespace(namespace).map(&:id))
         end
 
         def move_repositories(namespace, old_full_path, new_full_path)
@@ -55,8 +56,6 @@ module Gitlab
           MigrationClasses::Project.where(namespace_or_children)
         end
 
-        # This won't scale to huge trees, but it should do for a handful of
-        # namespaces called `system`.
         def child_ids_for_parent(namespace, ids: [])
           namespace.children.each do |child|
             ids << child.id

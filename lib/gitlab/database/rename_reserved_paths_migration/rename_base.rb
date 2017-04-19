@@ -90,6 +90,24 @@ module Gitlab
           FileUtils.mv(old_path, new_path)
         end
 
+        def remove_cached_html_for_projects(project_ids)
+          update_column_in_batches(:projects, :description_html, nil) do |table, query|
+            query.where(table[:id].in(project_ids))
+          end
+
+          update_column_in_batches(:issues, :description_html, nil) do |table, query|
+            query.where(table[:project_id].in(project_ids))
+          end
+
+          update_column_in_batches(:merge_requests, :description_html, nil) do |table, query|
+            query.where(table[:target_project_id].in(project_ids))
+          end
+
+          update_column_in_batches(:notes, :note_html, nil) do |table, query|
+            query.where(table[:project_id].in(project_ids))
+          end
+        end
+
         def file_storage?
           CarrierWave::Uploader::Base.storage == CarrierWave::Storage::File
         end
