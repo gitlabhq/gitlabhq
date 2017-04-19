@@ -72,6 +72,12 @@ describe API::Users, api: true do
         expect(json_response).to be_an Array
         expect(json_response.first['username']).to eq(omniauth_user.username)
       end
+
+      it "returns a 403 when non-admin user searches by external UID" do
+        get api("/users?extern_uid=#{omniauth_user.identities.first.extern_uid}&provider=#{omniauth_user.identities.first.provider}", user)
+
+        expect(response).to have_http_status(403)
+      end
     end
 
     context "when admin" do
@@ -99,6 +105,27 @@ describe API::Users, api: true do
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response).to all(include('external' => true))
+      end
+
+      it "returns one user by external UID" do
+        get api("/users?extern_uid=#{omniauth_user.identities.first.extern_uid}&provider=#{omniauth_user.identities.first.provider}", admin)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.size).to eq(1)
+        expect(json_response.first['username']).to eq(omniauth_user.username)
+      end
+
+      it "returns 400 error if provider with no extern_uid" do
+        get api("/users?extern_uid=#{omniauth_user.identities.first.extern_uid}", admin)
+
+        expect(response).to have_http_status(400)
+      end
+
+      it "returns 400 error if provider with no extern_uid" do
+        get api("/users?provider=#{omniauth_user.identities.first.provider}", admin)
+
+        expect(response).to have_http_status(400)
       end
     end
   end
