@@ -90,7 +90,7 @@ export default {
             class="avatar avatar-inline s24"
             :alt="assigneeAlt(user)"
             :src="user.avatar_url"
-          >
+          />
           <span class="author">{{user.name}}</span>
         </button>
         <button
@@ -128,7 +128,7 @@ export default {
               class="avatar avatar-inline s32"
               :alt="assigneeAlt(users[0])"
               :src="users[0].avatar_url"
-            >
+            />
             <span class="author">{{users[0].name}}</span>
             <span class="username">@{{users[0].username}}</span>
           </a>

@@ -2,7 +2,6 @@
 /* global Issuable */
 /* global ListUser */
 
-import Vue from 'vue';
 import eventHub from './sidebar/event_hub';
 
 (function() {

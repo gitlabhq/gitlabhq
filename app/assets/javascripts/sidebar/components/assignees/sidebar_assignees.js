@@ -1,8 +1,8 @@
 import AssigneeTitle from './assignee_title';
 import Assignees from './assignees';
 
-import store from '../../stores/sidebar_store';
-import mediator from '../../sidebar_mediator';
+import Store from '../../stores/sidebar_store';
+import Mediator from '../../sidebar_mediator';
 
 import eventHub from '../../event_hub';
 
@@ -10,7 +10,8 @@ export default {
   name: 'SidebarAssignees',
   data() {
     return {
-      store,
+      mediator: new Mediator(),
+      store: new Store(),
       loading: false,
       field: '',
     };
@@ -29,12 +30,12 @@ export default {
       // Notify gl dropdown that we are now assigning to current user
       this.$el.parentElement.dispatchEvent(new Event('assignYourself'));
 
-      mediator.assignYourself();
+      this.mediator.assignYourself();
       this.saveUsers();
     },
     saveUsers() {
       this.loading = true;
-      mediator.saveSelectedUsers(this.field).then(() => this.loading = false);
+      this.mediator.saveSelectedUsers(this.field).then(() => this.loading = false);
     }
   },
   created() {

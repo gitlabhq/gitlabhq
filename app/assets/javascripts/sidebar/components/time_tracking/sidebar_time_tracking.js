@@ -3,13 +3,14 @@ import '~/smart_interval';
 import timeTracker from './time_tracker';
 import eventHub from '../../event_hub';
 
-import store from '../../stores/sidebar_store';
-import mediator from '../../sidebar_mediator';
+import Store from '../../stores/sidebar_store';
+import Mediator from '../../sidebar_mediator';
 
 export default {
   data() {
     return {
-      store,
+      mediator: new Mediator(),
+      store: new Store(),
     };
   },
   components: {
@@ -23,7 +24,7 @@ export default {
           ? Object.keys(data.commands_changes)
           : [];
         if (changedCommands && _.intersection(subscribedCommands, changedCommands).length) {
-          mediator.fetch();
+          this.mediator.fetch();
         }
       });
     },
