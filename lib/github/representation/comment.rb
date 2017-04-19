@@ -6,7 +6,7 @@ module Github
       end
 
       def author
-        @author ||= Github::Representation::User.new(raw['user'])
+        @author ||= Github::Representation::User.new(raw['user'], options)
       end
 
       def commit_id

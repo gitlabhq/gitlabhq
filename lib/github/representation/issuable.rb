@@ -20,13 +20,13 @@ module Github
       end
 
       def author
-        @author ||= Github::Representation::User.new(raw['user'])
+        @author ||= Github::Representation::User.new(raw['user'], options)
       end
 
       def assignee
         return unless assigned?
 
-        @assignee ||= Github::Representation::User.new(raw['assignee'])
+        @assignee ||= Github::Representation::User.new(raw['assignee'], options)
       end
 
       def assigned?

@@ -1,8 +1,9 @@
 module Github
   module Representation
     class Base
-      def initialize(raw)
-        @raw = raw
+      def initialize(raw, options = {})
+        @raw     = raw
+        @options = options
       end
 
       def url
@@ -19,7 +20,7 @@ module Github
 
       private
 
-      attr_reader :raw
+      attr_reader :raw, :options
     end
   end
 end

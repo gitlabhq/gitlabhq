@@ -27,17 +27,18 @@ module Github
       self.reset_callbacks :validate
     end
 
-    attr_reader :project, :repository, :cached_label_ids, :cached_user_ids, :errors
+    attr_reader :project, :repository, :options, :cached_label_ids, :cached_user_ids, :errors
 
-    def initialize(project)
+    def initialize(project, options)
       @project = project
       @repository = project.repository
+      @options = options
       @cached_label_ids = {}
       @cached_user_ids = {}
       @errors  = []
     end
 
-    def execute(owner, repo, token)
+    def execute(owner, repo)
       # Fetch repository
       begin
         project.create_repository
@@ -53,7 +54,7 @@ module Github
       url = "/repos/#{owner}/#{repo}/labels"
 
       loop do
-        response = Github::Client.new.get(url)
+        response = Github::Client.new(options).get(url)
 
         response.body.each do |raw|
           begin
@@ -81,7 +82,7 @@ module Github
       url = "/repos/#{owner}/#{repo}/milestones"
 
       loop do
-        response = Github::Client.new.get(url, state: :all)
+        response = Github::Client.new(options).get(url, state: :all)
 
         response.body.each do |raw|
           begin
@@ -109,10 +110,10 @@ module Github
       url = "/repos/#{owner}/#{repo}/pulls"
 
       loop do
-        response = Github::Client.new.get(url, state: :all, sort: :created, direction: :asc)
+        response = Github::Client.new(options).get(url, state: :all, sort: :created, direction: :asc)
 
         response.body.each do |raw|
-          pull_request  = Github::Representation::PullRequest.new(project, raw)
+          pull_request  = Github::Representation::PullRequest.new(project, raw, options)
           merge_request = MergeRequest.find_or_initialize_by(iid: pull_request.iid, source_project_id: project.id)
           next unless merge_request.new_record? && pull_request.valid?
 
@@ -160,10 +161,10 @@ module Github
       url = "/repos/#{owner}/#{repo}/issues"
 
       loop do
-        response = Github::Client.new.get(url, state: :all, sort: :created, direction: :asc)
+        response = Github::Client.new(options).get(url, state: :all, sort: :created, direction: :asc)
 
         response.body.each do |raw|
-          representation = Github::Representation::Issue.new(raw)
+          representation = Github::Representation::Issue.new(raw, options)
 
           begin
             # Every pull request is an issue, but not every issue
@@ -215,12 +216,12 @@ module Github
 
     def fetch_comments(noteable, type, url)
       loop do
-        comments = Github::Client.new.get(url)
+        comments = Github::Client.new(options).get(url)
 
         ActiveRecord::Base.no_touching do
           comments.body.each do |raw|
             begin
-              representation = Github::Representation::Comment.new(raw)
+              representation = Github::Representation::Comment.new(raw, options)
 
               note            = Note.new
               note.project_id = project.id

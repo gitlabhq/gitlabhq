@@ -1,5 +1,11 @@
 module Github
   class Collection
+    attr_reader :options
+
+    def initialize(options)
+      @options = options
+    end
+
     def fetch(url, query = {})
       return [] if url.blank?
 
@@ -16,7 +22,7 @@ module Github
     private
 
     def client
-      @client ||= Github::Client.new
+      @client ||= Github::Client.new(options)
     end
   end
 end

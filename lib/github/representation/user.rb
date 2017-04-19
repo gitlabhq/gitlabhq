@@ -8,7 +8,7 @@ module Github
       def email
         return @email if defined?(@email)
 
-        @email = Github::User.new(username).get.fetch('email', nil)
+        @email = Github::User.new(username, options).get.fetch('email', nil)
       end
 
       def username

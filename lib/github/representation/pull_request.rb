@@ -6,9 +6,10 @@ module Github
       delegate :user, :repo, :ref, :sha, to: :source_branch, prefix: true
       delegate :user, :exists?, :repo, :ref, :sha, :short_sha, to: :target_branch, prefix: true
 
-      def initialize(project, raw)
+      def initialize(project, raw, options)
         @project = project
-        @raw = raw
+        @raw     = raw
+        @options = options
       end
 
       def source_project

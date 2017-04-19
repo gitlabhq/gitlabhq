@@ -1,9 +1,10 @@
 module Github
   class User
-    attr_reader :username
+    attr_reader :username, :options
 
-    def initialize(username)
+    def initialize(username, options)
       @username = username
+      @options  = options
     end
 
     def get
@@ -13,7 +14,7 @@ module Github
     private
 
     def client
-      @client ||= Github::Client.new
+      @client ||= Github::Client.new(options)
     end
 
     def user_url

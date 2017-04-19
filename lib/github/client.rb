@@ -2,9 +2,9 @@ module Github
   class Client
     attr_reader :connection
 
-    def initialize(token)
-      @connection = Faraday.new(url: 'https://api.github.com') do |faraday|
-        faraday.authorization 'token', token
+    def initialize(options)
+      @connection = Faraday.new(url: options.fetch(:url)) do |faraday|
+        faraday.authorization 'token', options.fetch(:token)
         faraday.adapter :net_http
       end
     end
