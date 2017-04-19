@@ -115,4 +115,21 @@ module MilestonesHelper
       end
     end
   end
+
+  def data_warning_for(burndown)
+    return unless burndown
+
+    message =
+      if burndown.empty?
+        "The burndown chart can’t be shown, as all milestone issues were closed before the GitLab 9.1 update. "
+      elsif !burndown.accurate?
+        "Some issues can’t be shown in the burndown chart, as they were closed before the GitLab 9.1 update. "
+      end
+
+    if message
+      message += link_to "More information.", help_page_path('workflow/milestones'), class: 'burndown-docs-link'
+
+      content_tag(:div, message.html_safe, id: "data-warning", class: "settings-message prepend-top-20")
+    end
+  end
 end

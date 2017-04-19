@@ -1,16 +1,14 @@
 - milestone = local_assigns[:milestone]
 - project = local_assigns[:project]
 - burndown = local_assigns[:burndown]
-- can_generate_chart = burndown&.valid?
+- can_generate_chart = burndown&.valid? && !burndown&.empty?
+- warning = data_warning_for(burndown)
 
 - content_for :page_specific_javascripts do
   = page_specific_javascript_bundle_tag('common_d3')
   = page_specific_javascript_bundle_tag('burndown_chart')
 
-- unless burndown.accurate?
-  #no-data-warning.settings-message.prepend-top-20
-    Some issues can't be shown in the burndown chart, as they were closed before GitLab 9.1 update.
-    = link_to "More information.", help_page_path('workflow/milestones'), class: 'burndown_docs_link'
+= warning
 
 - if can_generate_chart
   .burndown-header
@@ -23,7 +21,7 @@
           Issue weight
   .burndown-chart{ data: { start_date: burndown.start_date.strftime("%Y-%m-%d"), due_date: burndown.due_date.strftime("%Y-%m-%d"), chart_data: burndown.to_json } }
 
-- elsif can?(current_user, :admin_milestone, @project) && cookies['hide_burndown_message'].nil?
+- elsif can?(current_user, :admin_milestone, @project) && cookies['hide_burndown_message'].nil? && warning.nil?
   .burndown-hint.content-block.container-fluid
     = icon("times", class: "dismiss-icon")
     .row

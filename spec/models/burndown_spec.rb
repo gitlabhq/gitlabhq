@@ -60,10 +60,10 @@ describe Burndown, models: true do
   it "sets attribute accurate to true" do
     burndown = described_class.new(milestone)
 
-    expect(burndown.accurate?).to be_truthy
+    expect(burndown).to be_accurate
   end
 
-  context "when closed and reopened issues does not have closed_at" do
+  context "when all closed and reopened issues does not have closed_at" do
     before do
       milestone.issues.update_all(closed_at: nil)
     end
@@ -78,10 +78,22 @@ describe Burndown, models: true do
       ].to_json)
     end
 
-    it "setsattribute accurate to false" do
+    it "sets attribute empty to true" do
       burndown = described_class.new(milestone)
 
-      expect(burndown.accurate?).to be_falsy
+      expect(burndown).to be_empty
+    end
+  end
+
+  context "when one or more closed or reopened issues does not have closed_at" do
+    before do
+      milestone.issues.closed.first.update(closed_at: nil)
+    end
+
+    it "sets attribute accurate to false" do
+      burndown = described_class.new(milestone)
+
+      expect(burndown).not_to be_accurate
     end
   end
 
