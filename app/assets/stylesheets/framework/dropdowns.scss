@@ -564,3 +564,7 @@
     color: $gl-text-color-secondary;
   }
 }
+
+.droplab-item-ignore {
+  pointer-events: none;
+}
