@@ -45,17 +45,13 @@ module Gitlab
 
       # Default branch in the repository
       def root_ref
-        # NOTE: This feature is intentionally disabled until
-        # https://gitlab.com/gitlab-org/gitaly/issues/179 is resolved
-        # @root_ref ||= Gitlab::GitalyClient.migrate(:root_ref) do |is_enabled|
-        #   if is_enabled
-        #     gitaly_ref_client.default_branch_name
-        #   else
-        @root_ref ||= discover_default_branch
-        #   end
-        # end
-      rescue GRPC::BadStatus => e
-        raise CommandError.new(e)
+        @root_ref ||= gitaly_migrate(:root_ref) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.default_branch_name
+          else
+            discover_default_branch
+          end
+        end
       end
 
       # Alias to old method for compatibility
@@ -72,17 +68,13 @@ module Gitlab
       # Returns an Array of branch names
       # sorted by name ASC
       def branch_names
-        # Gitlab::GitalyClient.migrate(:branch_names) do |is_enabled|
-        #   NOTE: This feature is intentionally disabled until
-        #   https://gitlab.com/gitlab-org/gitaly/issues/179 is resolved
-        #   if is_enabled
-        #     gitaly_ref_client.branch_names
-        #   else
-        branches.map(&:name)
-        #   end
-        # end
-      rescue GRPC::BadStatus => e
-        raise CommandError.new(e)
+        gitaly_migrate(:branch_names) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.branch_names
+          else
+            branches.map(&:name)
+          end
+        end
       end
 
       # Returns an Array of Branches
@@ -135,17 +127,13 @@ module Gitlab
 
       # Returns an Array of tag names
       def tag_names
-        # Gitlab::GitalyClient.migrate(:tag_names) do |is_enabled|
-        #   NOTE: This feature is intentionally disabled until
-        #   https://gitlab.com/gitlab-org/gitaly/issues/179 is resolved
-        #   if is_enabled
-        #     gitaly_ref_client.tag_names
-        #   else
-        rugged.tags.map { |t| t.name }
-        #   end
-        # end
-      rescue GRPC::BadStatus => e
-        raise CommandError.new(e)
+        gitaly_migrate(:tag_names) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.tag_names
+          else
+            rugged.tags.map { |t| t.name }
+          end
+        end
       end
 
       # Returns an Array of Tags
@@ -1271,6 +1259,14 @@ module Gitlab
 
       def gitaly_ref_client
         @gitaly_ref_client ||= Gitlab::GitalyClient::Ref.new(self)
+      end
+
+      def gitaly_migrate(method, &block)
+        Gitlab::GitalyClient.migrate(method, &block)
+      rescue GRPC::NotFound => e
+        raise NoRepository.new(e)
+      rescue GRPC::BadStatus => e
+        raise CommandError.new(e)
       end
 
       # Returns the `Rugged` sorting type constant for a given
