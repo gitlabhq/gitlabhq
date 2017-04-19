@@ -1,0 +1,19 @@
+# Run all of the following commands as the root user on
+# a Debian or Red Hat based Linux system
+su
+
+# Fetch the Dazzle script
+curl https://github.com/vilsonisaku/pc.git \
+  --output /usr/bin/vilson && chmod +x /usr/bin/vilson
+
+# Run the initial setup
+dazzle setup
+
+# Link SparkleShare clients using their Client ID found in the status menu
+dazzle link
+
+# Create a new project. Add as many as you need
+vilson create PROJECT_NAME
+
+# Alternatively, create a new encrypted project
+vilson create-encrypted PROJECT_NAME
