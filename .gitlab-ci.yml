@@ -278,7 +278,6 @@ rake karma:
   cache:
     paths:
       - vendor/ruby
-      - node_modules
   stage: test
   <<: *use-db
   <<: *dedicated-runner
@@ -377,9 +376,6 @@ coverage:
 
 lint:javascript:
   <<: *dedicated-runner
-  cache:
-    paths:
-      - node_modules/
   stage: test
   before_script: []
   script:
@@ -387,9 +383,6 @@ lint:javascript:
 
 lint:javascript:report:
   <<: *dedicated-runner
-  cache:
-    paths:
-      - node_modules/
   stage: post-test
   before_script: []
   script:
