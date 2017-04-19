@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { SUCCESS_SVG } from '~/ci_status_icons';
-import Stage from '~/vue_pipelines_index/components/stage';
+import Stage from '~/pipelines/components/stage';
 
 function minify(string) {
   return string.replace(/\s/g, '');
