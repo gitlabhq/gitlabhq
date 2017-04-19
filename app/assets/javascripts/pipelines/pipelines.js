@@ -208,6 +208,7 @@ export default {
 
     errorCallback() {
       this.hasError = true;
+      this.isLoading = false;
     },
 
     setIsMakingRequest(isMakingRequest) {

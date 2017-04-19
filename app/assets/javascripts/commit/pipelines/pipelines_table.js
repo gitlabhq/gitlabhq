@@ -43,7 +43,7 @@ export default Vue.component('pipelines-table', {
       helpPagePath: null,
       store,
       state: store.state,
-      isLoading: false,
+      isLoading: true,
       hasError: false,
       isMakingRequest: false,
     };
@@ -91,7 +91,6 @@ export default Vue.component('pipelines-table', {
     });
 
     if (!Visibility.hidden()) {
-      this.isLoading = true;
       this.poll.makeRequest();
     }
 
@@ -125,8 +124,6 @@ export default Vue.component('pipelines-table', {
 
   methods: {
     fetchPipelines() {
-      this.isLoading = true;
-
       return this.service.getPipelines()
         .then(response => this.successCallback(response))
         .catch(() => this.errorCallback());

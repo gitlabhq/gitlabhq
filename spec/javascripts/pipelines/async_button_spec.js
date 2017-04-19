@@ -3,23 +3,16 @@ import asyncButtonComp from '~/pipelines/components/async_button.vue';
 
 describe('Pipelines Async Button', () => {
   let component;
-  let spy;
   let AsyncButtonComponent;
 
   beforeEach(() => {
     AsyncButtonComponent = Vue.extend(asyncButtonComp);
 
-    spy = jasmine.createSpy('spy').and.returnValue(Promise.resolve());
-
     component = new AsyncButtonComponent({
       propsData: {
-        endpoint: '/foo',
         title: 'Foo',
         icon: 'fa fa-foo',
-        cssClass: 'bar',
-        service: {
-          postAction: spy,
-        },
+        isLoading: false,
       },
     }).$mount();
   });
@@ -37,57 +30,16 @@ describe('Pipelines Async Button', () => {
     expect(component.$el.getAttribute('aria-label')).toContain('Foo');
   });
 
-  it('should render the provided cssClass', () => {
-    expect(component.$el.getAttribute('class')).toContain('bar');
+  it('should not render the spinner when not loading', () => {
+    expect(component.$el.querySelector('.fa-spinner')).toBeNull();
   });
 
-  it('should call the service when it is clicked with the provided endpoint', () => {
-    component.$el.click();
-    expect(spy).toHaveBeenCalledWith('/foo');
-  });
+  it('should render the spinner when loading state changes', (done) => {
+    component.isLoading = true;
 
-  it('should hide loading if request fails', () => {
-    spy = jasmine.createSpy('spy').and.returnValue(Promise.reject());
-
-    component = new AsyncButtonComponent({
-      propsData: {
-        endpoint: '/foo',
-        title: 'Foo',
-        icon: 'fa fa-foo',
-        cssClass: 'bar',
-        dataAttributes: {
-          'data-foo': 'foo',
-        },
-        service: {
-          postAction: spy,
-        },
-      },
-    }).$mount();
-
-    component.$el.click();
-    expect(component.$el.querySelector('.fa-spinner')).toBe(null);
-  });
-
-  describe('With confirm dialog', () => {
-    it('should call the service when confimation is positive', () => {
-      spyOn(window, 'confirm').and.returnValue(true);
-      spy = jasmine.createSpy('spy').and.returnValue(Promise.resolve());
-
-      component = new AsyncButtonComponent({
-        propsData: {
-          endpoint: '/foo',
-          title: 'Foo',
-          icon: 'fa fa-foo',
-          cssClass: 'bar',
-          service: {
-            postAction: spy,
-          },
-          confirmActionMessage: 'bar',
-        },
-      }).$mount();
-
-      component.$el.click();
-      expect(spy).toHaveBeenCalledWith('/foo');
+    Vue.nextTick(() => {
+      expect(component.$el.querySelector('.fa-spinner')).not.toBe(null);
+      done();
     });
   });
 });

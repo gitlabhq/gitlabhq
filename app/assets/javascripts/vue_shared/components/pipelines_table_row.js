@@ -1,5 +1,6 @@
-/* eslint-disable no-param-reassign */
-
+/* eslint-disable no-param-reassign, no-alert */
+import Flash from '~/flash';
+import eventHub from '../../pipelines/event_hub';
 import AsyncButtonComponent from '../../pipelines/components/async_button.vue';
 import PipelinesActionsComponent from '../../pipelines/components/pipelines_actions';
 import PipelinesArtifactsComponent from '../../pipelines/components/pipelines_artifacts';
@@ -26,7 +27,12 @@ export default {
       required: true,
     },
   },
-
+  data() {
+    return {
+      isRetrying: false,
+      isCancelling: false,
+    };
+  },
   components: {
     'async-button-component': AsyncButtonComponent,
     'pipelines-actions-component': PipelinesActionsComponent,
@@ -167,7 +173,34 @@ export default {
       return undefined;
     },
   },
+  watch: {
+    // we watch pipeline update bc we don't know when refreshPipelines is finished
+    pipeline: 'resetButtonLoadingState',
+  },
+  methods: {
+    resetButtonLoadingState() {
+      this.isCancelling = false;
+      this.isRetrying = false;
+    },
+    cancelPipeline() {
+      this.isCancelling = true;
+      const confirmCancelMessage = 'Are you sure you want to cancel this pipeline?';
+      return this.makeRequest(this.pipeline.cancel_path, confirmCancelMessage);
+    },
+    retryPipeline() {
+      this.isRetrying = true;
+      return this.makeRequest(this.pipeline.retry_path);
+    },
+    makeRequest(endpoint, confirmMessage) {
+      if (confirmMessage && !confirm(confirmMessage)) {
+        return Promise.resolve();
+      }
 
+      return this.service.postAction(endpoint)
+        .then(() => eventHub.$emit('refreshPipelines'))
+        .catch(() => new Flash('An error occured while making the request.'));
+    },
+  },
   template: `
     <tr class="commit">
       <status-scope :pipeline="pipeline"/>
@@ -207,20 +240,19 @@ export default {
 
           <async-button-component
             v-if="pipeline.flags.retryable"
-            :service="service"
-            :endpoint="pipeline.retry_path"
-            css-class="js-pipelines-retry-button btn-default btn-retry"
+            class="js-pipelines-retry-button btn-default btn-retry"
+            @click.native="retryPipeline"
+            :is-loading="isRetrying"
             title="Retry"
-            icon="repeat" />
+            icon="repeat"/>
 
           <async-button-component
             v-if="pipeline.flags.cancelable"
-            :service="service"
-            :endpoint="pipeline.cancel_path"
-            css-class="js-pipelines-cancel-button btn-remove"
+            class="js-pipelines-cancel-button btn-remove"
+            @click.native="cancelPipeline"
+            :is-loading="isCancelling"
             title="Cancel"
-            icon="remove"
-            confirm-action-message="Are you sure you want to cancel this pipeline?" />
+            icon="remove"/>
         </div>
       </td>
     </tr>
