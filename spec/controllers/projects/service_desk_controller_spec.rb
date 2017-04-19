@@ -51,10 +51,11 @@ describe Projects::ServiceDeskController do
       expect(response.status).to eq(200)
     end
 
-    context 'when user is not admin' do
-      before { user.update(admin: false) }
+    context 'when user cannot admin the project' do
+      let(:other_user) { create(:user) }
 
       it 'renders 404' do
+        sign_in(other_user)
         put :update, namespace_id: project.namespace.to_param, project_id: project, service_desk_enabled: true, format: :json
 
         expect(response.status).to eq(404)
