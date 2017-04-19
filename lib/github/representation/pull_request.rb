@@ -1,6 +1,6 @@
 module Github
   module Representation
-    class PullRequest < Representation::Base
+    class PullRequest < Representation::Issuable
       attr_reader :project
 
       delegate :user, :repo, :ref, :sha, to: :source_branch, prefix: true
@@ -9,18 +9,6 @@ module Github
       def initialize(project, raw)
         @project = project
         @raw = raw
-      end
-
-      def iid
-        raw['number']
-      end
-
-      def title
-        raw['title']
-      end
-
-      def description
-        raw['body'] || ''
       end
 
       def source_project
@@ -48,31 +36,11 @@ module Github
         @target_branch_name ||= target_branch_exists? ? target_branch_ref : target_branch_name_prefixed
       end
 
-      def milestone
-        return unless raw['milestone'].present?
-
-        @milestone ||= Github::Representation::Milestone.new(raw['milestone'])
-      end
-
-      def author
-        @author ||= Github::Representation::User.new(raw['user'])
-      end
-
-      def assignee
-        return unless assigned?
-
-        @assignee ||= Github::Representation::User.new(raw['assignee'])
-      end
-
       def state
         return 'merged' if raw['state'] == 'closed' && raw['merged_at'].present?
         return 'closed' if raw['state'] == 'closed'
 
         'opened'
-      end
-
-      def assigned?
-        raw['assignee'].present?
       end
 
       def opened?
