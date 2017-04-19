@@ -141,63 +141,11 @@ module Github
 
             # Fetch review comments
             review_comments_url = "/repos/#{owner}/#{repo}/pulls/#{pull_request.iid}/comments"
-
-            loop do
-              review_comments = Github::Client.new.get(review_comments_url)
-
-              ActiveRecord::Base.no_touching do
-                review_comments.body.each do |raw|
-                  begin
-                    comment = Github::Representation::Comment.new(raw)
-
-                    note               = Note.new
-                    note.project_id    = project.id
-                    note.noteable      = merge_request
-                    note.note          = comment.note
-                    note.commit_id     = comment.commit_id
-                    note.line_code     = comment.line_code
-                    note.author_id     = user_id(comment.author, project.creator_id)
-                    note.type          = comment.type
-                    note.created_at    = comment.created_at
-                    note.updated_at    = comment.updated_at
-                    note.save!(validate: false)
-                  rescue => e
-                    error(:review_comment, comment.url, e.message)
-                  end
-                end
-              end
-
-              break unless review_comments_url = review_comments.rels[:next]
-            end
+            fetch_comments(merge_request, :review_comment, review_comments_url)
 
             # Fetch comments
             comments_url = "/repos/#{owner}/#{repo}/issues/#{pull_request.iid}/comments"
-
-            loop do
-              comments = Github::Client.new.get(comments_url)
-
-              ActiveRecord::Base.no_touching do
-                comments.body.each do |raw|
-                  begin
-                    comment = Github::Representation::Comment.new(raw)
-
-                    note               = Note.new
-                    note.project_id    = project.id
-                    note.noteable      = merge_request
-                    note.note          = comment.note
-                    note.author_id     = user_id(comment.author, project.creator_id)
-                    note.created_at    = comment.created_at
-                    note.updated_at    = comment.updated_at
-                    note.save!(validate: false)
-                  rescue => e
-                    error(:comment, comment.url, e.message)
-                  end
-                end
-              end
-
-              break unless comments_url = comments.rels[:next]
-            end
-
+            fetch_comments(merge_request, :comment, comments_url)
           rescue => e
             error(:pull_request, pull_request.url, e.message)
           ensure
@@ -247,31 +195,7 @@ module Github
               if representation.has_comments?
                 # Fetch comments
                 comments_url = "/repos/#{owner}/#{repo}/issues/#{issue.iid}/comments"
-
-                loop do
-                  comments = Github::Client.new.get(comments_url)
-
-                  ActiveRecord::Base.no_touching do
-                    comments.body.each do |raw|
-                      begin
-                        comment = Github::Representation::Comment.new(raw)
-
-                        note               = Note.new
-                        note.project_id    = project.id
-                        note.noteable      = issue
-                        note.note          = comment.note
-                        note.author_id     = user_id(comment.author, project.creator_id)
-                        note.created_at    = comment.created_at
-                        note.updated_at    = comment.updated_at
-                        note.save!(validate: false)
-                      rescue => e
-                        error(:comment, comment.url, e.message)
-                      end
-                    end
-                  end
-
-                  break unless comments_url = comments.rels[:next]
-                end
+                fetch_comments(issue, :comment, comments_url)
               end
             end
           rescue => e
@@ -288,6 +212,36 @@ module Github
     end
 
     private
+
+    def fetch_comments(noteable, type, url)
+      loop do
+        comments = Github::Client.new.get(url)
+
+        ActiveRecord::Base.no_touching do
+          comments.body.each do |raw|
+            begin
+              representation = Github::Representation::Comment.new(raw)
+
+              note            = Note.new
+              note.project_id = project.id
+              note.noteable   = noteable
+              note.note       = representation.note
+              note.commit_id  = representation.commit_id
+              note.line_code  = representation.line_code
+              note.author_id  = user_id(representation.author, project.creator_id)
+              note.type       = representation.type
+              note.created_at = representation.created_at
+              note.updated_at = representation.updated_at
+              note.save!(validate: false)
+            rescue => e
+              error(type, representation.url, e.message)
+            end
+          end
+        end
+
+        break unless url = comments.rels[:next]
+      end
+    end
 
     def restore_source_branch(pull_request)
       repository.create_branch(pull_request.source_branch_name, pull_request.source_branch_sha)
