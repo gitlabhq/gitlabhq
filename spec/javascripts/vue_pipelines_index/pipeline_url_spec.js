@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import pipelineUrlComp from '~/vue_pipelines_index/components/pipeline_url';
+import pipelineUrlComp from '~/pipelines/components/pipeline_url';
 
 describe('Pipeline Url Component', () => {
   let PipelineUrlComponent;
