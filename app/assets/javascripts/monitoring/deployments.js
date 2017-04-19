@@ -8,6 +8,8 @@ export default class Deployments {
     this.timeFormat = d3.time.format('%H:%M%p');
 
     this.endpoint = document.getElementById('js-metrics').dataset.deploymentEndpoint;
+
+    Deployments.createGradientDef();
   }
 
   init(chartData) {
@@ -61,6 +63,36 @@ export default class Deployments {
     });
   }
 
+  static createGradientDef() {
+    const defs = d3.select('body')
+      .append('svg')
+      .attr({
+        height: 0,
+        width: 0,
+      })
+      .append('defs');
+
+    defs.append('linearGradient')
+      .attr({
+        id: 'shadow-gradient',
+      })
+      .append('stop')
+      .attr({
+        offset: '0%',
+        'stop-color': '#000',
+        'stop-opacity': 0.4,
+      })
+      .select(function selectParentNode() {
+        return this.parentNode;
+      })
+      .append('stop')
+      .attr({
+        offset: '100%',
+        'stop-color': '#000',
+        'stop-opacity': 0,
+      });
+  }
+
   createLine(chart) {
     chart.append('g')
       .attr({
@@ -73,6 +105,17 @@ export default class Deployments {
       .attr({
         class: d => `deploy-info-${d.id}`,
         transform: d => `translate(${Math.floor(d.xPos) + 1}, 0)`,
+      })
+      .append('rect')
+      .attr({
+        x: 1,
+        y: 0,
+        height: this.height,
+        width: 3,
+        fill: 'url(#shadow-gradient)',
+      })
+      .select(function selectParentNode() {
+        return this.parentNode;
       })
       .append('line')
       .attr({
@@ -110,7 +153,7 @@ export default class Deployments {
 
       textGroup.append('text')
         .attr({
-          style: 'dominant-baseline: text-before-edge;',
+          class: 'deploy-info-text deploy-info-text-bold',
         })
         .text(() => {
           const isTag = d.tag;
@@ -121,14 +164,14 @@ export default class Deployments {
 
       textGroup.append('text')
         .attr({
-          style: 'dominant-baseline: text-before-edge;',
+          class: 'deploy-info-text',
           y: 18,
         })
         .text(() => this.dateFormat(d.time));
 
       textGroup.append('text')
         .attr({
-          style: 'dominant-baseline: text-before-edge;',
+          class: 'deploy-info-text',
           y: 36,
         })
         .text(() => this.timeFormat(d.time));
@@ -153,7 +196,7 @@ export default class Deployments {
 
     this.data.forEach((d) => {
       if (d.xPos >= mouseXPos - 10 && d.xPos <= mouseXPos + 10 && !dataFound) {
-        dataFound = true;
+        dataFound = d.xPos + 1;
 
         Deployments.toggleDeployTextbox(d, true);
       } else {

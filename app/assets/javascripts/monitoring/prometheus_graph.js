@@ -214,17 +214,17 @@ class PrometheusGraph {
     const maxValueMetric = Math.floor(
       y(d3.max(valuesToPlot.map(metricValue => metricValue.value))),
     );
+    const currentDeployXPos = this.deployments.mouseOverDeployInfo(mouse);
     const currentTimeCoordinate = Math.floor(x(currentData.time));
     const graphSpecifics = this.graphSpecificProperties[key];
-    const shouldHideTextMetric = this.deployments.mouseOverDeployInfo(mouse);
     // Remove the current selectors
     d3.selectAll(`${prometheusGraphContainer} .selected-metric-line`).remove();
     d3.selectAll(`${prometheusGraphContainer} .circle-metric`).remove();
     d3.selectAll(`${prometheusGraphContainer} .rect-text-metric:not(.deploy-info-rect)`).remove();
 
     chart.append('line')
-    .attr('class', 'selected-metric-line')
     .attr({
+      class: `${currentDeployXPos ? 'hidden' : ''} selected-metric-line`,
       x1: currentTimeCoordinate,
       y1: y(0),
       x2: currentTimeCoordinate,
@@ -234,11 +234,11 @@ class PrometheusGraph {
     chart.append('circle')
     .attr('class', 'circle-metric')
     .attr('fill', graphSpecifics.line_color)
-    .attr('cx', currentTimeCoordinate)
+    .attr('cx', currentDeployXPos || currentTimeCoordinate)
     .attr('cy', y(currentData.value))
     .attr('r', this.commonGraphProperties.circle_radius_metric);
 
-    if (shouldHideTextMetric) return;
+    if (currentDeployXPos) return;
 
     // The little box with text
     const rectTextMetric = chart.append('svg')

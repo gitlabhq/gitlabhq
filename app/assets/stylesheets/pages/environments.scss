@@ -157,7 +157,7 @@
 
 .prometheus-graph {
   text {
-    fill: #525252;
+    fill: $gl-text-color;
     stroke-width: 0;
   }
 }
@@ -201,7 +201,7 @@
 .rect-text-metric {
   fill: $white-light;
   stroke-width: 1;
-  stroke: #e1e1e1;
+  stroke: $gray-darkest;
 }
 
 .rect-axis-text {
@@ -213,11 +213,19 @@
 }
 
 .selected-metric-line {
-  stroke: #8c8c8c;
+  stroke: $gl-gray-dark;
   stroke-width: 1;
 }
 
 .deployment-line {
-  stroke: #000;
+  stroke: $black;
   stroke-width: 2;
+}
+
+.deploy-info-text {
+  dominant-baseline: text-before-edge;
+}
+
+.deploy-info-text-bold {
+  font-weight: 600;
 }

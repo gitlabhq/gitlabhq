@@ -3,32 +3,10 @@ import PrometheusGraph from '~/monitoring/prometheus_graph';
 import Deployments from '~/monitoring/deployments';
 import { prometheusMockData } from './prometheus_mock_data';
 
-fdescribe('Metrics deployments', () => {
+describe('Metrics deployments', () => {
   const fixtureName = 'static/environments/metrics.html.raw';
   let deployment;
   let prometheusGraph;
-
-  const createDeploymentMockData = (done) => {
-    return {
-      deployments: [{
-        id: 1,
-        created_at: deployment.chartData[10].time,
-        sha: 'testing',
-        tag: false,
-        ref: {
-          name: 'testing',
-        },
-      }, {
-        id: 2,
-        created_at: deployment.chartData[15].time,
-        sha: '',
-        tag: true,
-        ref: {
-          name: 'tag',
-        },
-      }],
-    };
-  };
 
   const graphElement = () => document.querySelector('.prometheus-graph');
 
@@ -48,7 +26,25 @@ fdescribe('Metrics deployments', () => {
     spyOn(prometheusGraph, 'init');
     spyOn($, 'ajax').and.callFake(() => {
       const d = $.Deferred();
-      d.resolve(createDeploymentMockData());
+      d.resolve({
+        deployments: [{
+          id: 1,
+          created_at: deployment.chartData[10].time,
+          sha: 'testing',
+          tag: false,
+          ref: {
+            name: 'testing',
+          },
+        }, {
+          id: 2,
+          created_at: deployment.chartData[15].time,
+          sha: '',
+          tag: true,
+          ref: {
+            name: 'tag',
+          },
+        }],
+      });
 
       setTimeout(done);
 
