@@ -21,8 +21,8 @@ describe Members::AuthorizedDestroyService, services: true do
 
       member = group.members.find_by(user_id: member_user.id)
 
-      expect{ described_class.new(member, member_user).execute }
-        .to change{ number_of_assigned_issuables(member_user) }.from(4).to(2)
+      expect { described_class.new(member, member_user).execute }
+        .to change { number_of_assigned_issuables(member_user) }.from(4).to(2)
 
       expect(issue.reload.assignee_id).to be_nil
       expect(merge_request.reload.assignee_id).to be_nil
@@ -38,8 +38,8 @@ describe Members::AuthorizedDestroyService, services: true do
 
       member = project.members.find_by(user_id: member_user.id)
 
-      expect{ described_class.new(member, member_user).execute }
-        .to change{ number_of_assigned_issuables(member_user) }.from(2).to(0)
+      expect { described_class.new(member, member_user).execute }
+        .to change { number_of_assigned_issuables(member_user) }.from(2).to(0)
     end
   end
 end

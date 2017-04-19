@@ -165,11 +165,8 @@ module IssuablesHelper
     html.html_safe
   end
 
-  def cached_assigned_issuables_count(assignee, issuable_type, state)
-    cache_key = hexdigest(['assigned_issuables_count', assignee.id, issuable_type, state].join('-'))
-    Rails.cache.fetch(cache_key, expires_in: 2.minutes) do
-      assigned_issuables_count(assignee, issuable_type, state)
-    end
+  def assigned_issuables_count(issuable_type)
+    current_user.public_send("assigned_open_#{issuable_type}_count")
   end
 
   def issuable_filter_params
@@ -191,11 +188,6 @@ module IssuablesHelper
   end
 
   private
-
-  def assigned_issuables_count(assignee, issuable_type, state)
-    params = { assignee_id: assignee.id, state: state }
-    Object.const_get("#{issuable_type.to_s.camelize}Finder").new(current_user, params).execute.count
-  end
 
   def sidebar_gutter_collapsed?
     cookies[:collapsed_gutter] == 'true'

@@ -36,6 +36,7 @@ module Members
         project = member.source
         project.issues.opened.assigned_to(member.user).update_all(assignee_id: nil)
         project.merge_requests.opened.assigned_to(member.user).update_all(assignee_id: nil)
+        member.user.update_cache_counts
       end
     end
   end

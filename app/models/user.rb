@@ -888,8 +888,8 @@ class User < ActiveRecord::Base
     @global_notification_setting
   end
 
-  def assigned_open_merge_request_count(force: false)
-    Rails.cache.fetch(['users', id, 'assigned_open_merge_request_count'], force: force) do
+  def assigned_open_merge_requests_count(force: false)
+    Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count'], force: force) do
       MergeRequestsFinder.new(self, assignee_id: self.id, state: 'opened').execute.count
     end
   end
@@ -901,7 +901,7 @@ class User < ActiveRecord::Base
   end
 
   def update_cache_counts
-    assigned_open_merge_request_count(force: true)
+    assigned_open_merge_requests_count(force: true)
     assigned_open_issues_count(force: true)
   end
 
