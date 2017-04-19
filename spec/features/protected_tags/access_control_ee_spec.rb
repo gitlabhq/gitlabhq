@@ -113,27 +113,27 @@ RSpec.shared_examples "protected tags > access control > EE" do
       visit namespace_project_protected_tags_path(project.namespace, project)
 
       set_protected_tag_name('fix')
-      set_allowed_to('push', roles.values)
+      set_allowed_to('create', roles.values)
 
       click_on "Protect"
 
       wait_for_ajax
 
       roles.each do |(access_type_id, _)|
-        expect(ProtectedTag.last.push_access_levels.map(&:access_level)).to include(access_type_id)
+        expect(ProtectedTag.last.create_access_levels.map(&:access_level)).to include(access_type_id)
       end
 
-      expect(ProtectedTag.last.push_access_levels.map(&:access_level)).not_to include(0)
+      expect(ProtectedTag.last.create_access_levels.map(&:access_level)).not_to include(0)
 
-      set_allowed_to('push', 'No one', form: '.js-protected-tag-edit-form')
+      set_allowed_to('create', 'No one', form: '.js-protected-tag-edit-form')
 
       wait_for_ajax
 
       roles.each do |(access_type_id, _)|
-        expect(ProtectedTag.last.push_access_levels.map(&:access_level)).not_to include(access_type_id)
+        expect(ProtectedTag.last.create_access_levels.map(&:access_level)).not_to include(access_type_id)
       end
 
-      expect(ProtectedTag.last.push_access_levels.map(&:access_level)).to include(0)
+      expect(ProtectedTag.last.create_access_levels.map(&:access_level)).to include(0)
     end
   end
 
@@ -142,17 +142,17 @@ RSpec.shared_examples "protected tags > access control > EE" do
       visit namespace_project_protected_tags_path(project.namespace, project)
 
       set_protected_tag_name('master')
-      set_allowed_to('push', ProtectedTag::PushAccessLevel.human_access_levels.values) # Last item (No one) should deselect the other ones
+      set_allowed_to('create', ProtectedTag::CreateAccessLevel.human_access_levels.values) # Last item (No one) should deselect the other ones
 
       click_on "Protect"
 
       wait_for_ajax
 
       roles.each do |(access_type_id, _)|
-        expect(ProtectedTag.last.push_access_levels.map(&:access_level)).not_to include(access_type_id)
+        expect(ProtectedTag.last.create_access_levels.map(&:access_level)).not_to include(access_type_id)
       end
 
-      expect(ProtectedTag.last.push_access_levels.map(&:access_level)).to include(0)
+      expect(ProtectedTag.last.create_access_levels.map(&:access_level)).to include(0)
     end
   end
 end

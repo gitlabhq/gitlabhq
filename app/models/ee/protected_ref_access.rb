@@ -13,7 +13,6 @@ module EE
       belongs_to :user
       belongs_to :group
 
-
       protected_type = self.parent.model_name.singular
       validates :group_id, uniqueness: { scope: protected_type, allow_nil: true }
       validates :user_id, uniqueness: { scope: protected_type, allow_nil: true }
