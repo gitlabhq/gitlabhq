@@ -54,6 +54,8 @@ class SearchService
         Search::ProjectService.new(project, current_user, params)
       elsif show_snippets?
         Search::SnippetService.new(current_user, params)
+      elsif group
+        Search::GroupService.new(current_user, group, params)
       else
         Search::GlobalService.new(current_user, params)
       end
