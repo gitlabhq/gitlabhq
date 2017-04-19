@@ -20,8 +20,9 @@ describe Gitlab::UsageData do
         licensee
         license_md5
         recorded_at
-        version
         mattermost_enabled
+        edition
+        version
         uuid
       ))
     end

@@ -148,6 +148,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :version_check_enabled,
       :terminal_max_session_time,
       :polling_interval_multiplier,
+      :usage_ping_enabled,
 
       disabled_oauth_sign_in_sources: [],
       import_sources: [],
@@ -169,7 +170,6 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :elasticsearch_search,
       :repository_size_limit,
       :shared_runners_minutes,
-      :usage_ping_enabled,
       :minimum_mirror_sync_time,
       :geo_status_timeout,
       :elasticsearch_experimental_indexer,
