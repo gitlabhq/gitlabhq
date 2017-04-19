@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import navControlsComp from '~/vue_pipelines_index/components/nav_controls';
+import navControlsComp from '~/pipelines/components/nav_controls';
 
 describe('Pipelines Nav Controls', () => {
   let NavControlsComponent;
