@@ -38,6 +38,9 @@ window.DropzoneInput = (function() {
       "opacity": 0,
       "display": "none"
     });
+
+    if (!project_uploads_path) return;
+
     dropzone = form_dropzone.dropzone({
       url: project_uploads_path,
       dictDefaultMessage: "",
