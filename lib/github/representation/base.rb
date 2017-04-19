@@ -5,6 +5,18 @@ module Github
         @raw = raw
       end
 
+      def url
+        raw['url']
+      end
+
+      def created_at
+        raw['created_at']
+      end
+
+      def updated_at
+        raw['updated_at']
+      end
+
       private
 
       attr_reader :raw

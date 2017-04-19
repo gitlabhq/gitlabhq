@@ -8,10 +8,6 @@ module Github
       def title
         raw['name']
       end
-
-      def url
-        raw['url']
-      end
     end
   end
 end

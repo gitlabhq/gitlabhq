@@ -37,18 +37,6 @@ module Github
         raw['state'] == 'closed' ? 'closed' : 'opened'
       end
 
-      def url
-        raw['url']
-      end
-
-      def created_at
-        raw['created_at']
-      end
-
-      def updated_at
-        raw['updated_at']
-      end
-
       def assigned?
         raw['assignee'].present?
       end

@@ -24,18 +24,6 @@ module Github
         'LegacyDiffNote' if on_diff?
       end
 
-      def url
-        raw['url']
-      end
-
-      def created_at
-        raw['created_at']
-      end
-
-      def updated_at
-        raw['updated_at']
-      end
-
       private
 
       def generate_line_code(line)
