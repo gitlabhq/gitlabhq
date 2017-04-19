@@ -1,6 +1,10 @@
-/* eslint-disable comma-dangle, no-unused-vars */
-
-class ProtectedBranchDropdown {
+export default class ProtectedBranchDropdown {
+  /**
+   * @param {Object} options containing
+   *                         `$dropdown` target element
+   *                          `onSelect` event callback
+   * $dropdown must be an element created using `dropdown_tag()` rails helper
+   */
   constructor(options) {
     this.onSelect = options.onSelect;
     this.$dropdown = options.$dropdown;
@@ -21,7 +25,7 @@ class ProtectedBranchDropdown {
       filterable: true,
       remote: false,
       search: {
-        fields: ['title']
+        fields: ['title'],
       },
       selectable: true,
       toggleLabel(selected) {
@@ -39,7 +43,7 @@ class ProtectedBranchDropdown {
         const { $el, e } = options;
         e.preventDefault();
         this.onSelect();
-      }
+      },
     });
   }
 
@@ -67,7 +71,7 @@ class ProtectedBranchDropdown {
     this.selectedBranch = {
       title: branchName,
       id: branchName,
-      text: branchName
+      text: branchName,
     };
 
     if (branchName) {
@@ -79,5 +83,3 @@ class ProtectedBranchDropdown {
     this.$dropdownFooter.toggleClass('hidden', !branchName);
   }
 }
-
-window.ProtectedBranchDropdown = ProtectedBranchDropdown;
