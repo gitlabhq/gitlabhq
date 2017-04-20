@@ -238,6 +238,22 @@ ActiveRecord::Schema.define(version: 20170418103908) do
   add_index "ci_builds", ["status"], name: "index_ci_builds_on_status", using: :btree
   add_index "ci_builds", ["token"], name: "index_ci_builds_on_token", unique: true, using: :btree
 
+  create_table "ci_pipeline_schedules", force: :cascade do |t|
+    t.integer "project_id"
+    t.datetime "deleted_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string "cron"
+    t.string "cron_timezone"
+    t.datetime "next_run_at"
+    t.string "ref"
+    t.boolean "active"
+  end
+
+  add_index "ci_pipeline_schedules", ["active", "next_run_at"], name: "index_ci_pipeline_schedules_on_active_and_next_run_at", using: :btree
+  add_index "ci_pipeline_schedules", ["next_run_at"], name: "index_ci_pipeline_schedules_on_next_run_at", using: :btree
+  add_index "ci_pipeline_schedules", ["project_id"], name: "index_ci_pipeline_schedules_on_project_id", using: :btree
+
   create_table "ci_pipelines", force: :cascade do |t|
     t.string "ref"
     t.string "sha"
@@ -1303,10 +1319,10 @@ ActiveRecord::Schema.define(version: 20170418103908) do
     t.string "organization"
     t.boolean "authorized_projects_populated"
     t.boolean "ghost"
-    t.date "last_activity_on"
     t.boolean "notified_of_own_activity"
     t.boolean "require_two_factor_authentication_from_group", default: false, null: false
     t.integer "two_factor_grace_period", default: 48, null: false
+    t.date "last_activity_on"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

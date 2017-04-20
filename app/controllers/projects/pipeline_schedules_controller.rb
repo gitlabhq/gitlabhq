@@ -47,6 +47,7 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   end
 
   def destroy
+    @pipeline_schedule.destroy
   end
 
   private
