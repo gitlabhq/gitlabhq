@@ -63,7 +63,6 @@ module Gitlab
           service_desk_issues: Issue.where(project: projects_with_service_desk,
                                            author: User.support_bot,
                                            confidential: true).count
-          }
         }
       end
 
