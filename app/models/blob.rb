@@ -28,13 +28,13 @@ class Blob < SimpleDelegator
   #
   #     blob = Blob.decorate(nil)
   #     puts "truthy" if blob # No output
-  def self.decorate(blob, project)
+  def self.decorate(blob, project = nil)
     return if blob.nil?
 
     new(blob, project)
   end
 
-  def initialize(blob, project)
+  def initialize(blob, project = nil)
     @project = project
 
     super(blob)
