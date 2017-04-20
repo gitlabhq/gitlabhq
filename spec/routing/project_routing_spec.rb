@@ -340,14 +340,16 @@ describe 'project routing' do
   # test_project_hook GET    /:project_id/hooks/:id/test(.:format) hooks#test
   #     project_hooks GET    /:project_id/hooks(.:format)          hooks#index
   #                   POST   /:project_id/hooks(.:format)          hooks#create
-  #      project_hook DELETE /:project_id/hooks/:id(.:format)      hooks#destroy
+  # edit_project_hook GET    /:project_id/hooks/:id/edit(.:format) hooks#edit
+  #      project_hook PUT    /:project_id/hooks/:id(.:format)      hooks#update
+  #                   DELETE /:project_id/hooks/:id(.:format)      hooks#destroy
   describe Projects::HooksController, 'routing' do
     it 'to #test' do
       expect(get('/gitlab/gitlabhq/hooks/1/test')).to route_to('projects/hooks#test', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1')
     end
 
     it_behaves_like 'RESTful project resources' do
-      let(:actions)    { [:index, :create, :destroy] }
+      let(:actions)    { [:index, :create, :destroy, :edit, :update] }
       let(:controller) { 'hooks' }
     end
   end
