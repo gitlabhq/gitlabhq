@@ -4,8 +4,14 @@ describe 'projects/pipelines/show' do
   include Devise::Test::ControllerHelpers
 
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
-  let(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.id, user: user) }
+  let(:project) { create(:project, :repository) }
+
+  let(:pipeline) do
+    create(:ci_empty_pipeline,
+           project: project,
+           sha: project.commit.id,
+           user: user)
+  end
 
   before do
     controller.prepend_view_path('app/views/projects')
@@ -21,7 +27,7 @@ describe 'projects/pipelines/show' do
     create(:generic_commit_status, pipeline: pipeline, stage: 'external', name: 'jenkins', stage_idx: 3)
 
     assign(:project, project)
-    assign(:pipeline, pipeline)
+    assign(:pipeline, pipeline.present(current_user: user))
     assign(:commit, project.commit)
 
     allow(view).to receive(:can?).and_return(true)

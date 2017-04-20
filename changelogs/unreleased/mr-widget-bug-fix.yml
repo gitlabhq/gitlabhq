@@ -1,0 +1,5 @@
+---
+title: Fix MR widget bug that merged a MR when Merge when pipeline succeeds was clicked
+  via the dropdown
+merge_request: 10611
+author:

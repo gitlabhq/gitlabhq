@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import emptyStateComp from '~/vue_pipelines_index/components/empty_state';
+import emptyStateComp from '~/pipelines/components/empty_state.vue';
 
 describe('Pipelines Empty State', () => {
   let component;

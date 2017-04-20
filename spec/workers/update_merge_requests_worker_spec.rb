@@ -3,7 +3,7 @@ require 'spec_helper'
 describe UpdateMergeRequestsWorker do
   include RepoHelpers
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 
   subject { described_class.new }

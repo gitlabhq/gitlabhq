@@ -119,6 +119,46 @@
   }
 }
 
+@mixin dropdown-link {
+  display: block;
+  position: relative;
+  padding: 5px 8px;
+  color: $gl-text-color;
+  line-height: initial;
+  text-overflow: ellipsis;
+  border-radius: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+
+  &:hover,
+  &:focus,
+  &.is-focused {
+    background-color: $dropdown-link-hover-bg;
+    text-decoration: none;
+
+    .badge {
+      background-color: darken($dropdown-link-hover-bg, 5%);
+    }
+  }
+
+  &.dropdown-menu-empty-link {
+    &.is-focused {
+      background-color: $dropdown-empty-row-bg;
+    }
+  }
+
+  &.dropdown-menu-user-link {
+    line-height: 16px;
+  }
+
+  .icon-play {
+    fill: $gl-text-color-secondary;
+    margin-right: 6px;
+    height: 12px;
+    width: 11px;
+  }
+}
+
 .dropdown-menu,
 .dropdown-menu-nav {
   display: none;
@@ -137,10 +177,6 @@
   border-radius: $border-radius-base;
   box-shadow: 0 2px 4px $dropdown-shadow-color;
 
-  .filtered-search-input-container & {
-    max-width: 280px;
-  }
-
   &.is-loading {
     .dropdown-content {
       display: none;
@@ -149,6 +185,15 @@
     .dropdown-loading {
       display: block;
     }
+  }
+
+  .shortcut-mappings {
+    display: none;
+  }
+
+  &.shortcuts .shortcut-mappings {
+    display: inline-block;
+    margin-right: 5px;
   }
 
   ul {
@@ -178,43 +223,7 @@
   }
 
   a {
-    display: block;
-    position: relative;
-    padding: 5px 8px;
-    color: $gl-text-color;
-    line-height: initial;
-    text-overflow: ellipsis;
-    border-radius: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-
-    &:hover,
-    &:focus,
-    &.is-focused {
-      background-color: $dropdown-link-hover-bg;
-      text-decoration: none;
-
-      .badge {
-        background-color: darken($dropdown-link-hover-bg, 5%);
-      }
-    }
-
-    &.dropdown-menu-empty-link {
-      &.is-focused {
-        background-color: $dropdown-empty-row-bg;
-      }
-    }
-
-    &.dropdown-menu-user-link {
-      line-height: 16px;
-    }
-
-    .icon-play {
-      fill: $gl-text-color-secondary;
-      margin-right: 6px;
-      height: 12px;
-      width: 11px;
-    }
+    @include dropdown-link;
   }
 
   .dropdown-header {
@@ -463,6 +472,11 @@
   overflow-y: auto;
 }
 
+.dropdown-info-note {
+  color: $gl-text-color-secondary;
+  text-align: center;
+}
+
 .dropdown-footer {
   padding-top: 10px;
   margin-top: 10px;
@@ -549,4 +563,8 @@
   &.is-default {
     color: $gl-text-color-secondary;
   }
+}
+
+.droplab-item-ignore {
+  pointer-events: none;
 }

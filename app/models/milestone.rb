@@ -30,7 +30,7 @@ class Milestone < ActiveRecord::Base
 
   validates :title, presence: true, uniqueness: { scope: :project_id }
   validates :project, presence: true
-  validate :start_date_should_be_less_than_due_date, if: Proc.new { |m| m.start_date.present? && m.due_date.present? }
+  validate :start_date_should_be_less_than_due_date, if: proc { |m| m.start_date.present? && m.due_date.present? }
 
   strip_attributes :title
 
@@ -151,10 +151,6 @@ class Milestone < ActiveRecord::Base
 
   def can_be_closed?
     active? && issues.opened.count.zero?
-  end
-
-  def is_empty?(user = nil)
-    total_items_count(user).zero?
   end
 
   def author_id

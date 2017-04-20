@@ -16,7 +16,7 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click link "New Merge Request"' do
-    click_link "New Merge Request"
+    page.has_link?('New Merge Request') ? click_link("New Merge Request") : click_link('New merge request')
   end
 
   step 'I should see merge request "Merge Request On Forked Project"' do

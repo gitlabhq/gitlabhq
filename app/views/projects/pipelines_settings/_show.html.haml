@@ -21,7 +21,7 @@
             Git strategy for pipelines
           %p
             Choose between <code>clone</code> or <code>fetch</code> to get the recent application code
-            = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'git-strategy')
+            = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'git-strategy'), target: '_blank'
           .radio
             = f.label :build_allow_git_fetch_false do
               = f.radio_button :build_allow_git_fetch, 'false'
@@ -43,7 +43,7 @@
           = f.number_field :build_timeout_in_minutes, class: 'form-control', min: '0'
           %p.help-block
             Per job in minutes. If a job passes this threshold, it will be marked as failed.
-            = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'timeout')
+            = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'timeout'), target: '_blank'
 
         %hr
         .form-group
@@ -53,7 +53,16 @@
               %strong Public pipelines
             .help-block
               Allow everyone to access pipelines for public and internal projects
-              = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'visibility-of-pipelines')
+              = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'visibility-of-pipelines'), target: '_blank'
+        %hr
+        .form-group
+          .checkbox
+            = f.label :auto_cancel_pending_pipelines do
+              = f.check_box :auto_cancel_pending_pipelines, {}, 'enabled', 'disabled'
+              %strong Auto-cancel redundant, pending pipelines
+            .help-block
+              New pipelines will cancel older, pending pipelines on the same branch
+              = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'auto-cancel-pending-pipelines'), target: '_blank'
 
         %hr
         .form-group
@@ -65,7 +74,7 @@
           %p.help-block
             A regular expression that will be used to find the test coverage
             output in the job trace. Leave blank to disable
-            = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'test-coverage-parsing')
+            = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'test-coverage-parsing'), target: '_blank'
           .bs-callout.bs-callout-info
             %p Below are examples of regex for existing tools:
             %ul

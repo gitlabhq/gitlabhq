@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe EnvironmentSerializer do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
 
   let(:json) do
     described_class
@@ -11,20 +11,19 @@ describe EnvironmentSerializer do
   end
 
   context 'when there is a single object provided' do
-    before do
-      create(:ci_build, :manual, name: 'manual1',
-                                 pipeline: deployable.pipeline)
-    end
-
+    let(:project) { create(:project, :repository) }
+    let(:deployable) { create(:ci_build) }
     let(:deployment) do
       create(:deployment, deployable: deployable,
                           user: user,
                           project: project,
                           sha: project.commit.id)
     end
-
-    let(:deployable) { create(:ci_build) }
     let(:resource) { deployment.environment }
+
+    before do
+      create(:ci_build, :manual, name: 'manual1', pipeline: deployable.pipeline)
+    end
 
     it 'contains important elements of environment' do
       expect(json)

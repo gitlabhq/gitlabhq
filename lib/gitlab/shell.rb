@@ -35,7 +35,7 @@ module Gitlab
       end
 
       def strip_key(key)
-        key.split(/ /)[0, 2].join(' ')
+        key.split(/[ ]+/)[0, 2].join(' ')
       end
 
       private
@@ -84,6 +84,26 @@ module Gitlab
       # to silently kill the process without knowing we are timing out here.
       output, status = Popen.popen([gitlab_shell_projects_path, 'import-project',
                                     storage, "#{name}.git", url, '800'])
+      raise Error, output unless status.zero?
+      true
+    end
+
+    # Fetch remote for repository
+    #
+    # name - project path with namespace
+    # remote - remote name
+    # forced - should we use --force flag?
+    # no_tags - should we use --no-tags flag?
+    #
+    # Ex.
+    #   fetch_remote("gitlab/gitlab-ci", "upstream")
+    #
+    def fetch_remote(storage, name, remote, forced: false, no_tags: false)
+      args = [gitlab_shell_projects_path, 'fetch-remote', storage, "#{name}.git", remote, '800']
+      args << '--force' if forced
+      args << '--no-tags' if no_tags
+
+      output, status = Popen.popen(args)
       raise Error, output unless status.zero?
       true
     end
@@ -174,7 +194,10 @@ module Gitlab
     #   add_namespace("/path/to/storage", "gitlab")
     #
     def add_namespace(storage, name)
-      FileUtils.mkdir_p(full_path(storage, name), mode: 0770) unless exists?(storage, name)
+      path = full_path(storage, name)
+      FileUtils.mkdir_p(path, mode: 0770) unless exists?(storage, name)
+    rescue Errno::EEXIST => e
+      Rails.logger.warn("Directory exists as a file: #{e} at: #{path}")
     end
 
     # Remove directory from repositories storage

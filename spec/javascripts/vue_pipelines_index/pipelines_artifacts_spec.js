@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import artifactsComp from '~/vue_pipelines_index/components/pipelines_artifacts';
+import artifactsComp from '~/pipelines/components/pipelines_artifacts';
 
 describe('Pipelines Artifacts dropdown', () => {
   let component;

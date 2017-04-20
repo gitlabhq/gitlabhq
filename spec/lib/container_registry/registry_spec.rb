@@ -10,7 +10,7 @@ describe ContainerRegistry::Registry do
   it { is_expected.to respond_to(:uri) }
   it { is_expected.to respond_to(:path) }
 
-  it { expect(subject.repository('test')).not_to be_nil }
+  it { expect(subject).not_to be_nil }
 
   context '#path' do
     subject { registry.path }

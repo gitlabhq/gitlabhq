@@ -143,6 +143,7 @@ describe Gitlab::Email::Handler::CreateNoteHandler, lib: true do
       expect(new_note.author).to eq(sent_notification.recipient)
       expect(new_note.position).to eq(note.position)
       expect(new_note.note).to include("I could not disagree more.")
+      expect(new_note.in_reply_to?(note)).to be_truthy
     end
 
     it "adds all attachments" do

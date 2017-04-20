@@ -24,7 +24,9 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
 
   step 'I click to emoji in the picker' do
     page.within '.emoji-menu-content' do
-      page.first('.js-emoji-btn').click
+      emoji_button = page.first('.js-emoji-btn')
+      emoji_button.hover
+      emoji_button.click
     end
   end
 
@@ -85,7 +87,7 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
   end
 
   step 'I search "hand"' do
-    fill_in 'emoji_search', with: 'hand'
+    fill_in 'emoji-menu-search', with: 'hand'
   end
 
   step 'I see search result for "hand"' do
@@ -99,7 +101,7 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
   end
 
   step 'The search field is focused' do
-    expect(page).to have_selector('#emoji_search')
-    expect(page.evaluate_script('document.activeElement.id')).to eq('emoji_search')
+    expect(page).to have_selector('.js-emoji-menu-search')
+    expect(page.evaluate_script("document.activeElement.classList.contains('js-emoji-menu-search')")).to eq(true)
   end
 end

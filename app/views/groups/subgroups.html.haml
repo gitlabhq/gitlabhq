@@ -9,7 +9,7 @@
     .nav-controls
       = form_tag request.path, method: :get do |f|
         = search_field_tag :filter_groups, params[:filter_groups], placeholder: 'Filter by name', class: 'form-control', spellcheck: false
-      - if can? current_user, :admin_group, @group
+      - if can?(current_user, :create_subgroup, @group)
         = link_to new_group_path(parent_id: @group.id), class: 'btn btn-new pull-right' do
           New Subgroup
 

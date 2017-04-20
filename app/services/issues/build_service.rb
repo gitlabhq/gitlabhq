@@ -35,14 +35,19 @@ module Issues
     end
 
     def item_for_discussion(discussion)
-      first_note = discussion.first_note_to_resolve || discussion.first_note
-      other_note_count = discussion.notes.size - 1
-      note_url = Gitlab::UrlBuilder.build(first_note)
+      first_note_to_resolve = discussion.first_note_to_resolve || discussion.first_note
 
-      discussion_info = "- [ ] #{first_note.author.to_reference} commented on a [discussion](#{note_url}): "
+      is_very_first_note = first_note_to_resolve == discussion.first_note
+      action = is_very_first_note ? "started" : "commented on"
+
+      note_url = Gitlab::UrlBuilder.build(first_note_to_resolve)
+
+      other_note_count = discussion.notes.size - 1
+
+      discussion_info = "- [ ] #{first_note_to_resolve.author.to_reference} #{action} a [discussion](#{note_url}): "
       discussion_info << " (+#{other_note_count} #{'comment'.pluralize(other_note_count)})" if other_note_count > 0
 
-      note_without_block_quotes = Banzai::Filter::BlockquoteFenceFilter.new(first_note.note).call
+      note_without_block_quotes = Banzai::Filter::BlockquoteFenceFilter.new(first_note_to_resolve.note).call
       spaces = ' ' * 4
       quote = note_without_block_quotes.lines.map { |line| "#{spaces}> #{line}" }.join
 

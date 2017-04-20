@@ -18,6 +18,12 @@ module Gitlab
           head_sha == other.head_sha
       end
 
+      alias_method :eql?, :==
+
+      def hash
+        [base_sha, start_sha, head_sha].hash
+      end
+
       # There is only one case in which we will have `start_sha` and `head_sha`,
       # but not `base_sha`, which is when a diff is generated between an
       # orphaned branch and another branch, which means there _is_ no base, but

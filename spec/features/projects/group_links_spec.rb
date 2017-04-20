@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Project group links', feature: true, js: true do
+feature 'Project group links', :feature, :js do
   include Select2Helper
 
   let(:master) { create(:user) }
@@ -49,6 +49,26 @@ feature 'Project group links', feature: true, js: true do
         expect(page).to have_content(another_group.name)
         expect(page).not_to have_content(group.name)
       end
+    end
+  end
+
+  describe 'the groups dropdown' do
+    before do
+      group_two = create(:group)
+      group.add_owner(master)
+      group_two.add_owner(master)
+
+      visit namespace_project_settings_members_path(project.namespace, project)
+      execute_script 'GroupsSelect.PER_PAGE = 1;'
+      open_select2 '#link_group_id'
+    end
+
+    it 'should infinitely scroll' do
+      expect(find('.select2-drop .select2-results')).to have_selector('.select2-result', count: 1)
+
+      scroll_select2_to_bottom('.select2-drop .select2-results:visible')
+
+      expect(find('.select2-drop .select2-results')).to have_selector('.select2-result', count: 2)
     end
   end
 end

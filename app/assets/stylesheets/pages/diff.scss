@@ -106,6 +106,10 @@
         span {
           white-space: pre-wrap;
         }
+
+        .line {
+          word-wrap: break-word;
+        }
       }
     }
 
@@ -429,6 +433,21 @@
 
 .files-changed {
   border-bottom: none;
+}
+
+.diff-stats-summary-toggler {
+  padding: 0;
+  background-color: transparent;
+  border: 0;
+  color: $gl-link-color;
+  transition: color 0.1s linear;
+
+  &:hover,
+  &:focus {
+    outline: none;
+    text-decoration: underline;
+    color: $gl-link-hover-color;
+  }
 }
 
 // Mobile

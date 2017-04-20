@@ -1,3 +1,4 @@
+# rubocop:disable RemoveIndex
 class CreateEnvironmentNameUniqueIndex < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 

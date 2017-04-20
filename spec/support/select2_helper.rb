@@ -22,4 +22,12 @@ module Select2Helper
       execute_script("$('#{selector}').select2('val', '#{value}').trigger('change');")
     end
   end
+
+  def open_select2(selector)
+    execute_script("$('#{selector}').select2('open');")
+  end
+
+  def scroll_select2_to_bottom(selector)
+    evaluate_script "$('#{selector}').scrollTop($('#{selector}')[0].scrollHeight); $('#{selector}');"
+  end
 end

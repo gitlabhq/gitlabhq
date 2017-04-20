@@ -341,7 +341,6 @@ describe API::Projects, :api  do
     it "assigns attributes to project" do
       project = attributes_for(:project, {
         path: 'camelCasePath',
-        description: FFaker::Lorem.sentence,
         issues_enabled: false,
         merge_requests_enabled: false,
         wiki_enabled: false,
@@ -475,7 +474,6 @@ describe API::Projects, :api  do
 
     it 'assigns attributes to project' do
       project = attributes_for(:project, {
-        description: FFaker::Lorem.sentence,
         issues_enabled: false,
         merge_requests_enabled: false,
         wiki_enabled: false,
@@ -1077,6 +1075,13 @@ describe API::Projects, :api  do
     before { project4 }
     before { project_member3 }
     before { project_member2 }
+
+    it 'returns 400 when nothing sent' do
+      project_param = {}
+      put api("/projects/#{project.id}", user), project_param
+      expect(response).to have_http_status(400)
+      expect(json_response['error']).to match('at least one parameter must be provided')
+    end
 
     context 'when unauthenticated' do
       it 'returns authentication error' do

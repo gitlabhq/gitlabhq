@@ -84,3 +84,19 @@ export const environment = {
     updated_at: '2017-01-31T10:53:46.894Z',
   },
 };
+
+export const folder = {
+  folderName: 'build',
+  size: 5,
+  id: 12,
+  name: 'build/update-README',
+  state: 'available',
+  external_url: null,
+  environment_type: 'build',
+  last_deployment: null,
+  'stop_action?': false,
+  environment_path: '/root/review-app/environments/12',
+  stop_path: '/root/review-app/environments/12/stop',
+  created_at: '2017-02-01T19:42:18.400Z',
+  updated_at: '2017-02-01T19:42:18.400Z',
+};

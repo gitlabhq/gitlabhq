@@ -66,14 +66,13 @@ Below is the table of events users can be notified of:
 In all of the below cases, the notification will be sent to:
 - Participants:
   - the author and assignee of the issue/merge request
-  - the author of the pipeline
   - authors of comments on the issue/merge request
   - anyone mentioned by `@username` in the issue/merge request title or description
   - anyone mentioned by `@username` in any of the comments on the issue/merge request
 
     ...with notification level "Participating" or higher
 
-- Watchers: users with notification level "Watch" (however successful pipeline would be off for watchers)
+- Watchers: users with notification level "Watch"
 - Subscribers: anyone who manually subscribed to the issue/merge request
 - Custom: Users with notification level "custom" who turned on notifications for any of the events present in the table below
 
@@ -89,8 +88,8 @@ In all of the below cases, the notification will be sent to:
 | Reopen merge request   | |
 | Merge merge request    | |
 | New comment            | The above, plus anyone mentioned by `@username` in the comment, with notification level "Mention" or higher |
-| Failed pipeline        | The above, plus the author of the pipeline |
-| Successful pipeline    | The above, plus the author of the pipeline |
+| Failed pipeline        | The author of the pipeline |
+| Successful pipeline    | The author of the pipeline, if they have the custom notification setting for successful pipelines set |
 
 
 In addition, if the title or description of an Issue or Merge Request is

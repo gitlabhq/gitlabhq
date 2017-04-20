@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import pipelinesActionsComp from '~/vue_pipelines_index/components/pipelines_actions';
+import pipelinesActionsComp from '~/pipelines/components/pipelines_actions';
 
 describe('Pipelines Actions dropdown', () => {
   let component;
@@ -14,6 +14,11 @@ describe('Pipelines Actions dropdown', () => {
       {
         name: 'stop_review',
         path: '/root/review-app/builds/1893/play',
+      },
+      {
+        name: 'foo',
+        path: '#',
+        playable: false,
       },
     ];
 
@@ -58,5 +63,15 @@ describe('Pipelines Actions dropdown', () => {
     component.$el.querySelector('.js-pipeline-action-link').click();
 
     expect(component.$el.querySelector('.fa-spinner')).toEqual(null);
+  });
+
+  it('should render a disabled action when it\'s not playable', () => {
+    expect(
+      component.$el.querySelector('.dropdown-menu li:last-child button').getAttribute('disabled'),
+    ).toEqual('disabled');
+
+    expect(
+      component.$el.querySelector('.dropdown-menu li:last-child button').classList.contains('disabled'),
+    ).toEqual(true);
   });
 });

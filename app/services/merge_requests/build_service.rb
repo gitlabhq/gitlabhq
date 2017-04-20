@@ -21,7 +21,9 @@ module MergeRequests
     delegate :target_branch, :source_branch, :source_project, :target_project, :compare_commits, :wip_title, :description, :errors, to: :merge_request
 
     def find_source_project
-      source_project || project
+      return source_project if source_project.present? && can?(current_user, :read_project, source_project)
+
+      project
     end
 
     def find_target_project

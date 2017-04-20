@@ -3,59 +3,63 @@
 
 import Vue from 'vue';
 
-(() => {
-  const CommentAndResolveBtn = Vue.extend({
-    props: {
-      discussionId: String,
-    },
-    data() {
-      return {
-        textareaIsEmpty: true,
-        discussion: {},
-      };
-    },
-    computed: {
-      showButton: function () {
-        if (this.discussion) {
-          return this.discussion.isResolvable();
-        } else {
-          return false;
-        }
-      },
-      isDiscussionResolved: function () {
-        return this.discussion.isResolved();
-      },
-      buttonText: function () {
-        if (this.isDiscussionResolved) {
-          if (this.textareaIsEmpty) {
-            return "Unresolve discussion";
-          } else {
-            return "Comment & unresolve discussion";
-          }
-        } else {
-          if (this.textareaIsEmpty) {
-            return "Resolve discussion";
-          } else {
-            return "Comment & resolve discussion";
-          }
-        }
+const CommentAndResolveBtn = Vue.extend({
+  props: {
+    discussionId: String,
+  },
+  data() {
+    return {
+      textareaIsEmpty: true,
+      discussion: {},
+    };
+  },
+  computed: {
+    showButton: function () {
+      if (this.discussion) {
+        return this.discussion.isResolvable();
+      } else {
+        return false;
       }
     },
-    created() {
-      this.discussion = CommentsStore.state[this.discussionId];
+    isDiscussionResolved: function () {
+      return this.discussion.isResolved();
     },
-    mounted: function () {
-      const $textarea = $(`#new-discussion-note-form-${this.discussionId} .note-textarea`);
-      this.textareaIsEmpty = $textarea.val() === '';
-
-      $textarea.on('input.comment-and-resolve-btn', () => {
-        this.textareaIsEmpty = $textarea.val() === '';
-      });
-    },
-    destroyed: function () {
-      $(`#new-discussion-note-form-${this.discussionId} .note-textarea`).off('input.comment-and-resolve-btn');
+    buttonText: function () {
+      if (this.isDiscussionResolved) {
+        if (this.textareaIsEmpty) {
+          return "Unresolve discussion";
+        } else {
+          return "Comment & unresolve discussion";
+        }
+      } else {
+        if (this.textareaIsEmpty) {
+          return "Resolve discussion";
+        } else {
+          return "Comment & resolve discussion";
+        }
+      }
     }
-  });
+  },
+  created() {
+    if (this.discussionId) {
+      this.discussion = CommentsStore.state[this.discussionId];
+    }
+  },
+  mounted: function () {
+    if (!this.discussionId) return;
 
-  Vue.component('comment-and-resolve-btn', CommentAndResolveBtn);
-})(window);
+    const $textarea = $(`.js-discussion-note-form[data-discussion-id=${this.discussionId}] .note-textarea`);
+    this.textareaIsEmpty = $textarea.val() === '';
+
+    $textarea.on('input.comment-and-resolve-btn', () => {
+      this.textareaIsEmpty = $textarea.val() === '';
+    });
+  },
+  destroyed: function () {
+    if (!this.discussionId) return;
+
+    $(`.js-discussion-note-form[data-discussion-id=${this.discussionId}] .note-textarea`).off('input.comment-and-resolve-btn');
+  }
+});
+
+Vue.component('comment-and-resolve-btn', CommentAndResolveBtn);

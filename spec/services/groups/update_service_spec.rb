@@ -36,6 +36,20 @@ describe Groups::UpdateService, services: true do
         end
       end
     end
+
+    context "with parent_id user doesn't have permissions for" do
+      let(:service) { described_class.new(public_group, user, parent_id: private_group.id) }
+
+      before do
+        service.execute
+      end
+
+      it 'does not update parent_id' do
+        updated_group = public_group.reload
+
+        expect(updated_group.parent_id).to be_nil
+      end
+    end
   end
 
   context "unauthorized visibility_level validation" do

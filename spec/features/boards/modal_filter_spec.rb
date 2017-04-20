@@ -219,7 +219,7 @@ describe 'Issue Boards add issue modal filtering', :feature, :js do
   end
 
   def click_filter_link(link_text)
-    page.within('.add-issues-modal .filtered-search-input-container') do
+    page.within('.add-issues-modal .filtered-search-box') do
       expect(page).to have_button(link_text)
 
       click_button(link_text)

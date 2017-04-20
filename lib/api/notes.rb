@@ -21,7 +21,7 @@ module API
           use :pagination
         end
         get ":id/#{noteables_str}/:noteable_id/notes" do
-          noteable = user_project.send(noteables_str.to_sym).find(params[:noteable_id])
+          noteable = find_project_noteable(noteables_str, params[:noteable_id])
 
           if can?(current_user, noteable_read_ability_name(noteable), noteable)
             # We exclude notes that are cross-references and that cannot be viewed
@@ -49,7 +49,7 @@ module API
           requires :noteable_id, type: Integer, desc: 'The ID of the noteable'
         end
         get ":id/#{noteables_str}/:noteable_id/notes/:note_id" do
-          noteable = user_project.send(noteables_str.to_sym).find(params[:noteable_id])
+          noteable = find_project_noteable(noteables_str, params[:noteable_id])
           note = noteable.notes.find(params[:note_id])
           can_read_note = can?(current_user, noteable_read_ability_name(noteable), noteable) && !note.cross_reference_not_visible_for?(current_user)
 
@@ -69,16 +69,16 @@ module API
           optional :created_at, type: String, desc: 'The creation date of the note'
         end
         post ":id/#{noteables_str}/:noteable_id/notes" do
+          noteable = find_project_noteable(noteables_str, params[:noteable_id])
+
           opts = {
             note: params[:body],
             noteable_type: noteables_str.classify,
-            noteable_id: params[:noteable_id]
+            noteable_id: noteable.id
           }
 
-          noteable = user_project.send(noteables_str.to_sym).find(params[:noteable_id])
-
           if can?(current_user, noteable_read_ability_name(noteable), noteable)
-            if params[:created_at] && (current_user.is_admin? || user_project.owner == current_user)
+            if params[:created_at] && (current_user.admin? || user_project.owner == current_user)
               opts[:created_at] = params[:created_at]
             end
 
@@ -137,6 +137,10 @@ module API
     end
 
     helpers do
+      def find_project_noteable(noteables_str, noteable_id)
+        public_send("find_project_#{noteables_str.singularize}", noteable_id)
+      end
+
       def noteable_read_ability_name(noteable)
         "read_#{noteable.class.to_s.underscore}".to_sym
       end

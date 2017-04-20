@@ -1,5 +1,0 @@
----
-title: Fix bug that caused jobs that already had been retried to be retried again
-  when retrying a pipeline
-merge_request: 10249
-author:

@@ -50,10 +50,14 @@ module API
         forbidden!('Job has been erased!') if job.erased?
       end
 
-      def authenticate_job!(job)
+      def authenticate_job!
+        job = Ci::Build.find_by_id(params[:id])
+
         validate_job!(job) do
           forbidden! unless job_token_valid?(job)
         end
+
+        job
       end
 
       def job_token_valid?(job)

@@ -38,6 +38,10 @@ $(() => {
 
   Store.create();
 
+  // hack to allow sidebar scripts like milestone_select manipulate the BoardsStore
+  gl.issueBoards.boardStoreIssueSet = (...args) => Vue.set(Store.detail.issue, ...args);
+  gl.issueBoards.boardStoreIssueDelete = (...args) => Vue.delete(Store.detail.issue, ...args);
+
   gl.IssueBoardsApp = new Vue({
     el: $boardApp,
     components: {
@@ -81,6 +85,7 @@ $(() => {
 
             if (list.type === 'closed') {
               list.position = Infinity;
+              list.label = { description: 'Shows all closed issues. Moving an issue to this list closes it' };
             }
           });
 

@@ -485,8 +485,7 @@ describe API::V3::Commits, api: true do
         post v3_api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user), branch: 'markdown'
 
         expect(response).to have_http_status(400)
-        expect(json_response['message']).to eq('Sorry, we cannot cherry-pick this commit automatically.
-                     A cherry-pick may have already been performed with this commit, or a more recent commit may have updated some of its content.')
+        expect(json_response['message']).to include('Sorry, we cannot cherry-pick this commit automatically.')
       end
 
       it 'returns 400 if you are not allowed to push to the target branch' do

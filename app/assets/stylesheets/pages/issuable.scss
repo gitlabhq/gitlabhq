@@ -196,6 +196,7 @@
   transition: width .3s;
   background: $gray-light;
   padding: 10px 20px;
+  z-index: 2;
 
   &.right-sidebar-expanded {
     width: $gutter_width;
@@ -207,10 +208,6 @@
         margin-top: 10px;
         display: block;
       }
-    }
-
-    .bold {
-      font-weight: 600;
     }
 
     .light {
@@ -242,6 +239,10 @@
       margin-top: 4px;
       font-size: 13px;
       font-weight: normal;
+    }
+
+    .hide-expanded {
+      display: none;
     }
   }
 
@@ -282,16 +283,21 @@
       display: block;
       width: 100%;
       text-align: center;
-      padding-bottom: 10px;
+      margin-bottom: 10px;
       color: $issuable-sidebar-color;
 
-      &:hover {
+      &:hover,
+      &:hover .todo-undone {
         color: $gl-text-color;
       }
 
       span {
         display: block;
         margin-top: 0;
+      }
+
+      .todo-undone {
+        color: $gl-link-color;
       }
 
       .author {
@@ -580,5 +586,23 @@
   .help-state-toggle-enter,
   .help-state-toggle-leave-active {
     opacity: 0;
+  }
+}
+
+.issuable-todo-btn {
+  .fa-spinner {
+    display: none;
+  }
+
+  &.is-loading {
+    .fa-spinner {
+      display: inline-block;
+    }
+
+    &.sidebar-collapsed-icon {
+      .issuable-todo-inner {
+        display: none;
+      }
+    }
   }
 }

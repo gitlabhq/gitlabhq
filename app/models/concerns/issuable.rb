@@ -14,6 +14,7 @@ module Issuable
   include Awardable
   include Taskable
   include TimeTrackable
+  include Importable
 
   # This object is used to gather issuable meta data for displaying
   # upvotes, downvotes, notes and closing merge requests count for issues and merge requests
@@ -22,7 +23,7 @@ module Issuable
 
   included do
     cache_markdown_field :title, pipeline: :single_line
-    cache_markdown_field :description
+    cache_markdown_field :description, issuable_state_filter_enabled: true
 
     belongs_to :author, class_name: "User"
     belongs_to :assignee, class_name: "User"
@@ -99,7 +100,7 @@ module Issuable
     acts_as_paranoid
 
     after_save :update_assignee_cache_counts, if: :assignee_id_changed?
-    after_save :record_metrics
+    after_save :record_metrics, unless: :imported?
 
     def update_assignee_cache_counts
       # make sure we flush the cache for both the old *and* new assignees(if they exist)
@@ -289,17 +290,6 @@ module Issuable
   #   issuable.to_ability_name # => "merge_request"
   def to_ability_name
     self.class.to_ability_name
-  end
-
-  # Convert this Issuable class name to a format usable by notifications.
-  #
-  # Examples:
-  #
-  #   issuable.class           # => MergeRequest
-  #   issuable.human_class_name # => "merge request"
-
-  def human_class_name
-    @human_class_name ||= self.class.name.titleize.downcase
   end
 
   # Returns a Hash of attributes to be used for Twitter card metadata

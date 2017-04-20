@@ -130,8 +130,13 @@ module Gitlab
       end
 
       def create_labels
-        LABELS.each do |label|
-          @labels[label[:title]] = project.labels.create!(label)
+        LABELS.each do |label_params|
+          label = ::Labels::CreateService.new(label_params).execute(project: project)
+          if label.valid?
+            @labels[label_params[:title]] = label
+          else
+            raise "Failed to create label \"#{label_params[:title]}\" for project \"#{project.name_with_namespace}\""
+          end
         end
       end
 
@@ -144,7 +149,7 @@ module Gitlab
             description += @formatter.author_line(pull_request.author) unless find_user_id(pull_request.author)
             description += pull_request.description
 
-            merge_request = project.merge_requests.create(
+            merge_request = project.merge_requests.create!(
               iid: pull_request.iid,
               title: pull_request.title,
               description: description,
@@ -163,7 +168,7 @@ module Gitlab
 
             import_pull_request_comments(pull_request, merge_request) if merge_request.persisted?
           rescue StandardError => e
-            errors << { type: :pull_request, iid: pull_request.iid, errors: e.message }
+            errors << { type: :pull_request, iid: pull_request.iid, errors: e.message, trace: e.backtrace.join("\n"), raw_response: pull_request.raw }
           end
         end
       end

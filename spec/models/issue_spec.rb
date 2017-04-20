@@ -51,14 +51,6 @@ describe Issue, models: true do
 
       expect(issue.closed_at).to eq(now)
     end
-
-    it 'sets closed_at to nil when issue is reopened' do
-      issue = create(:issue, state: 'closed')
-
-      issue.reopen
-
-      expect(issue.closed_at).to be_nil
-    end
   end
 
   describe '#to_reference' do
@@ -139,15 +131,6 @@ describe Issue, models: true do
     end
     it 'returns false if the issue assignee has not changed' do
       expect(subject.is_being_reassigned?).to be_falsey
-    end
-  end
-
-  describe '#is_being_reassigned?' do
-    it 'returns issues assigned to user' do
-      user = create(:user)
-      create_list(:issue, 2, assignee: user)
-
-      expect(Issue.open_for(user).count).to eq 2
     end
   end
 

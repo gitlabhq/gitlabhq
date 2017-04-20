@@ -5,8 +5,7 @@
       - left = line[:left]
       - right = line[:right]
       - last_line = right.new_pos if right
-      - unless @diff_notes_disabled
-        - discussion_left, discussion_right = parallel_diff_discussions(left, right, diff_file)
+      - discussions_left, discussions_right = parallel_diff_discussions(left, right, diff_file)
       %tr.line_holder.parallel
         - if left
           - case left.type
@@ -20,6 +19,7 @@
             - left_position = diff_file.position(left)
             %td.old_line.diff-line-num.js-avatar-container{ id: left_line_code, class: left.type, data: { linenumber: left.old_pos } }
               %a{ href: "##{left_line_code}", data: { linenumber: left.old_pos } }
+              - discussion_left = discussions_left.try(:first)
               - if discussion_left && discussion_left.resolvable?
                 %diff-note-avatars{ "discussion-id" => discussion_left.id }
             %td.line_content.parallel.noteable_line{ class: left.type, data: diff_view_line_data(left_line_code, left_position, 'old') }= diff_line_content(left.text)
@@ -39,6 +39,7 @@
             - right_position = diff_file.position(right)
             %td.new_line.diff-line-num.js-avatar-container{ id: right_line_code, class: right.type, data: { linenumber: right.new_pos } }
               %a{ href: "##{right_line_code}", data: { linenumber: right.new_pos } }
+              - discussion_right = discussions_right.try(:first)
               - if discussion_right && discussion_right.resolvable?
                 %diff-note-avatars{ "discussion-id" => discussion_right.id }
             %td.line_content.parallel.noteable_line{ class: right.type, data: diff_view_line_data(right_line_code, right_position, 'new') }= diff_line_content(right.text)
@@ -46,8 +47,8 @@
           %td.old_line.diff-line-num.empty-cell
           %td.line_content.parallel
 
-      - if discussion_left || discussion_right
-        = render "discussions/parallel_diff_discussion", discussion_left: discussion_left, discussion_right: discussion_right
+      - if discussions_left || discussions_right
+        = render "discussions/parallel_diff_discussion", discussions_left: discussions_left, discussions_right: discussions_right
     - if !diff_file.new_file && !diff_file.deleted_file && diff_file.diff_lines.any?
       - last_line = diff_file.diff_lines.last
       - if last_line.new_pos < total_lines

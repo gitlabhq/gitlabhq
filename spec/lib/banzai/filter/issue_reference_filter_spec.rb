@@ -21,6 +21,19 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
     end
   end
 
+  describe 'performance' do
+    let(:another_issue) { create(:issue, project: project) }
+
+    it 'does not have a N+1 query problem' do
+      single_reference = "Issue #{issue.to_reference}"
+      multiple_references = "Issues #{issue.to_reference} and #{another_issue.to_reference}"
+
+      control_count = ActiveRecord::QueryRecorder.new { reference_filter(single_reference).to_html }.count
+
+      expect { reference_filter(multiple_references).to_html }.not_to exceed_query_limit(control_count)
+    end
+  end
+
   context 'internal reference' do
     it_behaves_like 'a reference containing an element node'
 

@@ -19,6 +19,9 @@ feature 'Projects > Wiki > User updates wiki page', feature: true do
       scenario 'success when the wiki content is not empty' do
         click_link 'Edit'
 
+        # Commit message field should have correct value.
+        expect(page).to have_field('wiki[message]', with: 'Update home')
+
         fill_in :wiki_content, with: 'My awesome wiki!'
         click_button 'Save changes'
 
@@ -47,6 +50,9 @@ feature 'Projects > Wiki > User updates wiki page', feature: true do
 
     scenario 'the home page' do
       click_link 'Edit'
+
+      # Commit message field should have correct value.
+      expect(page).to have_field('wiki[message]', with: 'Update home')
 
       fill_in :wiki_content, with: 'My awesome wiki!'
       click_button 'Save changes'

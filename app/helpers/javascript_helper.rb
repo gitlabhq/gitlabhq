@@ -3,7 +3,8 @@ module JavascriptHelper
     javascript_include_tag asset_path(js)
   end
 
-  def page_specific_javascript_bundle_tag(js)
-    javascript_include_tag(*webpack_asset_paths(js))
+  # deprecated; use webpack_bundle_tag directly instead
+  def page_specific_javascript_bundle_tag(bundle)
+    webpack_bundle_tag(bundle)
   end
 end

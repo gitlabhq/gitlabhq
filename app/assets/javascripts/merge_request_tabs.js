@@ -3,9 +3,8 @@
 /* global Flash */
 
 import Cookies from 'js-cookie';
-
-require('./breakpoints');
-require('./flash');
+import './breakpoints';
+import './flash';
 
 /* eslint-disable max-len */
 // MergeRequestTabs
@@ -88,6 +87,7 @@ require('./flash');
         .on('click', this.clickTab);
     }
 
+    // Used in tests
     unbindEvents() {
       $(document)
         .off('shown.bs.tab', '.merge-request-tabs a[data-toggle="tab"]', this.tabShown)
@@ -95,6 +95,15 @@ require('./flash');
 
       $('.merge-request-tabs a[data-toggle="tab"]')
         .off('click', this.clickTab);
+    }
+
+    destroyPipelinesView() {
+      if (this.commitPipelinesTable) {
+        this.commitPipelinesTable.$destroy();
+        this.commitPipelinesTable = null;
+
+        document.querySelector('#commit-pipeline-table-view').innerHTML = '';
+      }
     }
 
     showTab(e) {
@@ -119,6 +128,7 @@ require('./flash');
         this.loadCommits($target.attr('href'));
         this.expandView();
         this.resetViewContainer();
+        this.destroyPipelinesView();
       } else if (this.isDiffAction(action)) {
         this.loadDiff($target.attr('href'));
         if (Breakpoints.get().getBreakpointSize() !== 'lg') {
@@ -127,16 +137,14 @@ require('./flash');
         if (this.diffViewType() === 'parallel') {
           this.expandViewContainer();
         }
+        this.destroyPipelinesView();
       } else if (action === 'pipelines') {
-        if (this.pipelinesLoaded) {
-          return;
-        }
-        const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
-        gl.commits.pipelines.PipelinesTableBundle.$mount(pipelineTableViewEl);
-        this.pipelinesLoaded = true;
+        this.resetViewContainer();
+        this.mountPipelinesView();
       } else {
         this.expandView();
         this.resetViewContainer();
+        this.destroyPipelinesView();
       }
       if (this.setUrl) {
         this.setCurrentAction(action);
@@ -220,6 +228,14 @@ require('./flash');
           this.scrollToElement('#commits');
         },
       });
+    }
+
+    mountPipelinesView() {
+      this.commitPipelinesTable = new gl.CommitPipelinesTable().$mount();
+      // $mount(el) replaces the el with the new rendered component. We need it in order to mount
+      // it everytime this tab is clicked - https://vuejs.org/v2/api/#vm-mount
+      document.querySelector('#commit-pipeline-table-view')
+        .appendChild(this.commitPipelinesTable.$el);
     }
 
     loadDiff(source) {

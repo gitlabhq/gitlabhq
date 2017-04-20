@@ -10,24 +10,24 @@
         - if @pipeline && @pipeline.active?
           %span.btn-group
             = button_tag class: "btn btn-info js-merge-when-pipeline-succeeds-button merge-when-pipeline-succeeds" do
-              Merge When Pipeline Succeeds
+              Merge when pipeline succeeds
             - unless @project.only_allow_merge_if_pipeline_succeeds?
               = button_tag class: "btn btn-info dropdown-toggle", 'data-toggle' => 'dropdown' do
                 = icon('caret-down')
                 %span.sr-only
-                  Select Merge Moment
+                  Select merge moment
               %ul.js-merge-dropdown.dropdown-menu.dropdown-menu-right{ role: 'menu' }
                 %li
-                  = link_to "#", class: "merge_when_pipeline_succeeds" do
+                  = link_to "#", class: "merge-when-pipeline-succeeds" do
                     = icon('check fw')
-                    Merge When Pipeline Succeeds
+                    Merge when pipeline succeeds
                 %li
                   = link_to "#", class: "accept-merge-request" do
                     = icon('warning fw')
-                    Merge Immediately
+                    Merge immediately
         - else
           = f.button class: "btn btn-grouped js-merge-button accept-merge-request" do
-            Accept Merge Request
+            Accept merge request
       - if @merge_request.force_remove_source_branch?
         .accept-control
           The source branch will be removed.
@@ -37,7 +37,7 @@
             = check_box_tag :should_remove_source_branch
             Remove source branch
       .accept-control
-        = link_to "#", class: "modify-merge-commit-link js-toggle-button" do
+        %button.modify-merge-commit-link.js-toggle-button{ type: "button" }
           = icon('edit')
           Modify commit message
     .js-toggle-content.hide.prepend-top-default

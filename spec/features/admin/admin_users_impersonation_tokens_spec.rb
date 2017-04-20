@@ -16,7 +16,7 @@ describe 'Admin > Users > Impersonation Tokens', feature: true, js: true do
 
   describe "token creation" do
     it "allows creation of a token" do
-      name = FFaker::Product.brand
+      name = 'Hello World'
 
       visit admin_user_impersonation_tokens_path(user_id: user.username)
       fill_in "Name", with: name
@@ -30,7 +30,7 @@ describe 'Admin > Users > Impersonation Tokens', feature: true, js: true do
       check "api"
       check "read_user"
 
-      expect { click_on "Create Impersonation Token" }.to change { PersonalAccessTokensFinder.new(impersonation: true).execute.count }
+      expect { click_on "Create impersonation token" }.to change { PersonalAccessTokensFinder.new(impersonation: true).execute.count }
       expect(active_impersonation_tokens).to have_text(name)
       expect(active_impersonation_tokens).to have_text('In')
       expect(active_impersonation_tokens).to have_text('api')

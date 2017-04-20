@@ -21,9 +21,9 @@ class Projects::MilestonesController < Projects::ApplicationController
     @sort = params[:sort] || 'due_date_asc'
     @milestones = @milestones.sort(@sort)
 
-    @milestones = @milestones.includes(:project)
     respond_to do |format|
       format.html do
+        @milestones = @milestones.includes(:project)
         @milestones = @milestones.page(params[:page])
       end
       format.json do

@@ -1,10 +1,11 @@
 class Dashboard::ProjectsController < Dashboard::ApplicationController
-  include FilterProjects
+  include ParamsBackwardCompatibility
+
+  before_action :set_non_archived_param
+  before_action :default_sorting
 
   def index
-    @projects = load_projects(current_user.authorized_projects)
-    @projects = @projects.sort(@sort = params[:sort])
-    @projects = @projects.page(params[:page])
+    @projects = load_projects(params.merge(non_public: true)).page(params[:page])
 
     respond_to do |format|
       format.html { @last_push = current_user.recent_push }
@@ -21,10 +22,8 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
   end
 
   def starred
-    @projects = load_projects(current_user.viewable_starred_projects)
-    @projects = @projects.includes(:forked_from_project, :tags)
-    @projects = @projects.sort(@sort = params[:sort])
-    @projects = @projects.page(params[:page])
+    @projects = load_projects(params.merge(starred: true)).
+      includes(:forked_from_project, :tags).page(params[:page])
 
     @last_push = current_user.recent_push
     @groups = []
@@ -41,14 +40,18 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
 
   private
 
-  def load_projects(base_scope)
-    projects = base_scope.sorted_by_activity.includes(:route, namespace: :route)
+  def default_sorting
+    params[:sort] ||= 'latest_activity_desc'
+    @sort = params[:sort]
+  end
 
-    filter_projects(projects)
+  def load_projects(finder_params)
+    ProjectsFinder.new(params: finder_params, current_user: current_user).
+      execute.includes(:route, namespace: :route)
   end
 
   def load_events
-    @events = Event.in_projects(load_projects(current_user.authorized_projects))
+    @events = Event.in_projects(load_projects(params.merge(non_public: true)))
     @events = event_filter.apply_filter(@events).with_associations
     @events = @events.limit(20).offset(params[:offset] || 0)
   end

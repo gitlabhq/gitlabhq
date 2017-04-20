@@ -48,10 +48,10 @@ header {
         color: $gl-text-color-secondary;
         font-size: 18px;
         padding: 0;
-        margin: ($header-height - 28) / 2 0;
+        margin: (($header-height - 28) / 2) 3px;
         margin-left: 8px;
         height: 28px;
-        min-width: 28px;
+        min-width: 32px;
         line-height: 28px;
         text-align: center;
 
@@ -73,21 +73,29 @@ header {
           background-color: $gray-light;
           color: $gl-text-color;
 
-          .todos-pending-count {
-            background: darken($todo-alert-blue, 10%);
+          svg {
+            fill: $gl-text-color;
           }
         }
 
         .fa-caret-down {
           font-size: 14px;
         }
+
+        svg {
+          position: relative;
+          top: 2px;
+          height: 17px;
+          // hack to get SVG to line up with FA icons
+          width: 23px;
+          fill: $gl-text-color-secondary;
+        }
       }
 
       .navbar-toggle {
         color: $nav-toggle-gray;
-        margin: 7px 0;
+        margin: 5px 0;
         border-radius: 0;
-        position: absolute;
         right: -10px;
         padding: 6px 10px;
 
@@ -141,17 +149,13 @@ header {
     min-height: $header-height;
     padding-left: 30px;
 
-    @media (max-width: $screen-sm-max) {
-      padding-right: 20px;
-    }
-
     .dropdown-menu {
       margin-top: -5px;
     }
 
     .header-logo {
       display: inline-block;
-      margin: 0 7px 0 2px;
+      margin: 0 12px 0 2px;
       position: relative;
       top: 10px;
       transition-duration: .3s;
@@ -182,7 +186,7 @@ header {
       display: flex;
       align-items: flex-start;
       flex: 1 1 auto;
-      padding-top: (($header-height - 19) / 2);
+      padding-top: 14px;
       overflow: hidden;
     }
 
@@ -243,10 +247,7 @@ header {
     .navbar-collapse {
       flex: 0 0 auto;
       border-top: none;
-
-      @media (min-width: $screen-md-min) {
-        padding: 0;
-      }
+      padding: 0;
 
       @media (max-width: $screen-xs-max) {
         flex: 1 1 auto;
@@ -260,6 +261,34 @@ header {
 
   .impersonation i {
     color: $red-500;
+  }
+}
+
+.navbar-nav {
+  li {
+    .badge {
+      position: inherit;
+      top: -3px;
+      font-weight: normal;
+      margin-left: -12px;
+      font-size: 11px;
+      color: $white-light;
+      padding: 1px 5px 2px;
+      border-radius: 7px;
+      box-shadow: 0 1px 0 rgba($gl-header-color, .2);
+
+      &.issues-count {
+        background-color: $green-500;
+      }
+
+      &.merge-requests-count {
+        background-color: $orange-600;
+      }
+
+      &.todos-count {
+        background-color: $blue-500;
+      }
+    }
   }
 }
 
@@ -302,6 +331,14 @@ header {
   .dropdown-menu-nav {
     min-width: 140px;
     margin-top: -5px;
+
+    .current-user {
+      padding: 5px 18px;
+
+      .user-name {
+        display: block;
+      }
+    }
   }
 }
 

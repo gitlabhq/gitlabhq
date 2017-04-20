@@ -7,6 +7,7 @@ class CommitStatus < ActiveRecord::Base
 
   belongs_to :project
   belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :commit_id
+  belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
   belongs_to :user
 
   delegate :commit, to: :pipeline
@@ -105,6 +106,10 @@ class CommitStatus < ActiveRecord::Base
     end
   end
 
+  def locking_enabled?
+    status_changed?
+  end
+
   def before_sha
     pipeline.before_sha || Gitlab::Git::BLANK_SHA
   end
@@ -131,6 +136,10 @@ class CommitStatus < ActiveRecord::Base
 
   def has_trace?
     false
+  end
+
+  def auto_canceled?
+    canceled? && auto_canceled_by_id?
   end
 
   # Added in 9.0 to keep backward compatibility for projects exported in 8.17

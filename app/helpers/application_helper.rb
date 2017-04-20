@@ -306,4 +306,8 @@ module ApplicationHelper
   def active_when(condition)
     'active' if condition
   end
+
+  def show_user_callout?
+    cookies[:user_callout_dismissed] == 'true'
+  end
 end

@@ -1,23 +1,42 @@
 module ButtonHelper
   # Output a "Copy to Clipboard" button
   #
-  # data - Data attributes passed to `content_tag`
+  # data  - Data attributes passed to `content_tag` (default: {}):
+  #         :text   - Text to copy (optional)
+  #         :gfm    - GitLab Flavored Markdown to copy, if different from `text` (optional)
+  #         :target - Selector for target element to copy from (optional)
   #
   # Examples:
   #
   #   # Define the clipboard's text
-  #   clipboard_button(clipboard_text: "Foo")
+  #   clipboard_button(text: "Foo")
   #   # => "<button class='...' data-clipboard-text='Foo'>...</button>"
   #
   #   # Define the target element
-  #   clipboard_button(clipboard_target: "div#foo")
+  #   clipboard_button(target: "div#foo")
   #   # => "<button class='...' data-clipboard-target='div#foo'>...</button>"
   #
   # See http://clipboardjs.com/#usage
   def clipboard_button(data = {})
     css_class = data[:class] || 'btn-clipboard btn-transparent'
     title = data[:title] || 'Copy to clipboard'
+
+    # This supports code in app/assets/javascripts/copy_to_clipboard.js that
+    # works around ClipboardJS limitations to allow the context-specific copy/pasting of plain text or GFM.
+    if text = data.delete(:text)
+      data[:clipboard_text] =
+        if gfm = data.delete(:gfm)
+          { text: text, gfm: gfm }
+        else
+          text
+        end
+    end
+
+    target = data.delete(:target)
+    data[:clipboard_target] = target if target
+
     data = { toggle: 'tooltip', placement: 'bottom', container: 'body' }.merge(data)
+
     content_tag :button,
       icon('clipboard', 'aria-hidden': 'true'),
       class: "btn #{css_class}",

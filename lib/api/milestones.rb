@@ -139,7 +139,7 @@ module API
 
         finder_params = {
           project_id: user_project.id,
-          milestone_id: milestone.id,
+          milestone_title: milestone.title,
           sort: 'position_asc'
         }
 

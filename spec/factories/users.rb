@@ -1,10 +1,8 @@
 FactoryGirl.define do
-  sequence(:name) { FFaker::Name.name }
-
   factory :user, aliases: [:author, :assignee, :recipient, :owner, :creator, :resource_owner] do
-    email { FFaker::Internet.email }
-    name
-    sequence(:username) { |n| "#{FFaker::Internet.user_name}#{n}" }
+    email { generate(:email) }
+    name { generate(:name) }
+    username { generate(:username) }
     password "12345678"
     confirmed_at { Time.now }
     confirmation_token { nil }

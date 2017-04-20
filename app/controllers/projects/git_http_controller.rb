@@ -5,6 +5,8 @@ class Projects::GitHttpController < Projects::GitHttpClientController
   # GET /foo/bar.git/info/refs?service=git-receive-pack (git push)
   def info_refs
     if upload_pack? && upload_pack_allowed?
+      log_user_activity
+
       render_ok
     elsif receive_pack? && receive_pack_allowed?
       render_ok
@@ -57,7 +59,7 @@ class Projects::GitHttpController < Projects::GitHttpClientController
 
   def render_ok
     set_workhorse_internal_api_content_type
-    render json: Gitlab::Workhorse.git_http_ok(repository, user)
+    render json: Gitlab::Workhorse.git_http_ok(repository, user, action_name)
   end
 
   def render_http_not_allowed
@@ -105,5 +107,9 @@ class Projects::GitHttpController < Projects::GitHttpClientController
 
   def access_klass
     @access_klass ||= wiki? ? Gitlab::GitAccessWiki : Gitlab::GitAccess
+  end
+
+  def log_user_activity
+    Users::ActivityService.new(user, 'pull').execute
   end
 end

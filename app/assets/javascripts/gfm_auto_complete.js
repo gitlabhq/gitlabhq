@@ -50,7 +50,7 @@ window.gl.GfmAutoComplete = {
     template: '<li>${title}</li>'
   },
   Loading: {
-    template: '<li style="pointer-events: none;"><i class="fa fa-refresh fa-spin"></i> Loading...</li>'
+    template: '<li style="pointer-events: none;"><i class="fa fa-spinner fa-spin"></i> Loading...</li>'
   },
   DefaultOptions: {
     sorter: function(query, items, searchKey) {

@@ -14,6 +14,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
     @members = @members.search(params[:search]) if params[:search].present?
     @members = @members.sort(@sort)
     @members = @members.page(params[:page]).per(50)
+    @members.includes(:user)
 
     @requesters = AccessRequestsFinder.new(@group).execute(current_user)
 

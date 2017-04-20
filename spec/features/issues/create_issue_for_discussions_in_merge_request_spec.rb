@@ -4,7 +4,7 @@ feature 'Resolving all open discussions in a merge request from an issue', featu
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:merge_request) { create(:merge_request, source_project: project) }
-  let!(:discussion) { Discussion.for_diff_notes([create(:diff_note_on_merge_request, noteable: merge_request, project: project)]).first }
+  let!(:discussion) { create(:diff_note_on_merge_request, noteable: merge_request, project: project).to_discussion }
 
   describe 'as a user with access to the project' do
     before do

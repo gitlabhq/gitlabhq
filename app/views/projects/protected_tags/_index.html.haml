@@ -1,0 +1,18 @@
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_bundle_tag('protected_tags')
+
+.row.prepend-top-default.append-bottom-default
+  .col-lg-3
+    %h4.prepend-top-0
+      Protected tags
+    %p.prepend-top-20
+      By default, Protected tags are designed to:
+      %ul
+        %li Prevent tag creation by everybody except Masters
+        %li Prevent <strong>anyone</strong> from updating the tag
+        %li Prevent <strong>anyone</strong> from deleting the tag
+  .col-lg-9
+    - if can? current_user, :admin_project, @project
+      = render 'projects/protected_tags/create_protected_tag'
+
+    = render "projects/protected_tags/tags_list"

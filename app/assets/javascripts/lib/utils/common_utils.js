@@ -2,6 +2,8 @@
 (function() {
   (function(w) {
     var base;
+    const faviconEl = document.getElementById('favicon');
+    const originalFavicon = faviconEl ? faviconEl.getAttribute('href') : null;
     w.gl || (w.gl = {});
     (base = w.gl).utils || (base.utils = {});
     w.gl.utils.isInGroupsPage = function() {
@@ -43,6 +45,10 @@
       } else {
         return val;
       }
+    };
+
+    gl.utils.updateTooltipTitle = function($tooltipEl, newTitle) {
+      return $tooltipEl.attr('title', newTitle).tooltip('fixTitle');
     };
 
     w.gl.utils.disableButtonIfEmptyField = function(field_selector, button_selector, event_name) {
@@ -232,6 +238,22 @@
     };
 
     /**
+      this will take in the getAllResponseHeaders result and normalize them
+      this way we don't run into production issues when nginx gives us lowercased header keys
+    */
+    w.gl.utils.normalizeCRLFHeaders = (headers) => {
+      const headersObject = {};
+      const headersArray = headers.split('\n');
+
+      headersArray.forEach((header) => {
+        const keyValue = header.split(': ');
+        headersObject[keyValue[0]] = keyValue[1];
+      });
+
+      return w.gl.utils.normalizeHeaders(headersObject);
+    };
+
+    /**
      * Parses pagination object string values into numbers.
      *
      * @param {Object} paginationInformation
@@ -247,7 +269,7 @@
     });
 
     /**
-     * Updates the search parameter of a URL given the parameter and values provided.
+     * Updates the search parameter of a URL given the parameter and value provided.
      *
      * If no search params are present we'll add it.
      * If param for page is already present, we'll update it
@@ -262,17 +284,24 @@
       let search;
       const locationSearch = window.location.search;
 
-      if (locationSearch.length === 0) {
+      if (locationSearch.length) {
+        const parameters = locationSearch.substring(1, locationSearch.length)
+          .split('&')
+          .reduce((acc, element) => {
+            const val = element.split('=');
+            acc[val[0]] = decodeURIComponent(val[1]);
+            return acc;
+          }, {});
+
+        parameters[param] = value;
+
+        const toString = Object.keys(parameters)
+          .map(val => `${val}=${encodeURIComponent(parameters[val])}`)
+          .join('&');
+
+        search = `?${toString}`;
+      } else {
         search = `?${param}=${value}`;
-      }
-
-      if (locationSearch.indexOf(param) !== -1) {
-        const regex = new RegExp(param + '=\\d');
-        search = locationSearch.replace(regex, `${param}=${value}`);
-      }
-
-      if (locationSearch.length && locationSearch.indexOf(param) === -1) {
-        search = `${locationSearch}&${param}=${value}`;
       }
 
       return search;
@@ -336,6 +365,35 @@
         };
 
         fn(next, stop);
+      });
+    };
+
+    w.gl.utils.setFavicon = (faviconPath) => {
+      if (faviconEl && faviconPath) {
+        faviconEl.setAttribute('href', faviconPath);
+      }
+    };
+
+    w.gl.utils.resetFavicon = () => {
+      if (faviconEl) {
+        faviconEl.setAttribute('href', originalFavicon);
+      }
+    };
+
+    w.gl.utils.setCiStatusFavicon = (pageUrl) => {
+      $.ajax({
+        url: pageUrl,
+        dataType: 'json',
+        success: function(data) {
+          if (data && data.favicon) {
+            gl.utils.setFavicon(data.favicon);
+          } else {
+            gl.utils.resetFavicon();
+          }
+        },
+        error: function() {
+          gl.utils.resetFavicon();
+        }
       });
     };
   })(window);

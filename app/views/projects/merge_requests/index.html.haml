@@ -2,21 +2,27 @@
 - @bulk_edit = can?(current_user, :admin_merge_request, @project)
 
 - page_title "Merge Requests"
+- unless @project.default_issues_tracker?
+  = content_for :sub_nav do
+    = render "projects/merge_requests/head"
 = render 'projects/last_push'
 
 - content_for :page_specific_javascripts do
   = page_specific_javascript_bundle_tag('filtered_search')
 
-%div{ class: container_class }
-  .top-area
-    = render 'shared/issuable/nav', type: :merge_requests
-    .nav-controls
-      - merge_project = can?(current_user, :create_merge_request, @project) ? @project : (current_user && current_user.fork_of(@project))
-      - if merge_project
-        = link_to new_namespace_project_merge_request_path(merge_project.namespace, merge_project), class: "btn btn-new", title: "New Merge Request" do
-          New Merge Request
+- if @project.merge_requests.exists?
+  %div{ class: container_class }
+    .top-area
+      = render 'shared/issuable/nav', type: :merge_requests
+      .nav-controls
+        - merge_project = can?(current_user, :create_merge_request, @project) ? @project : (current_user && current_user.fork_of(@project))
+        - if merge_project
+          = link_to new_namespace_project_merge_request_path(merge_project.namespace, merge_project), class: "btn btn-new", title: "New merge request" do
+            New merge request
 
-  = render 'shared/issuable/search_bar', type: :merge_requests
+    = render 'shared/issuable/search_bar', type: :merge_requests
 
-  .merge-requests-holder
-    = render 'merge_requests'
+    .merge-requests-holder
+      = render 'merge_requests'
+- else
+  = render 'shared/empty_states/merge_requests', button_path: new_namespace_project_merge_request_path(@project.namespace, @project)

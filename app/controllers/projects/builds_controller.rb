@@ -19,6 +19,11 @@ class Projects::BuildsController < Projects::ApplicationController
       else
         @builds
       end
+    @builds = @builds.includes([
+      { pipeline: :project },
+      :project,
+      :tags
+    ])
     @builds = @builds.page(params[:page]).per(30)
   end
 
@@ -31,25 +36,25 @@ class Projects::BuildsController < Projects::ApplicationController
     @builds = @project.pipelines.find_by_sha(@build.sha).builds.order('id DESC')
     @builds = @builds.where("id not in (?)", @build.id)
     @pipeline = @build.pipeline
-
-    respond_to do |format|
-      format.html
-      format.json do
-        render json: {
-          id: @build.id,
-          status: @build.status,
-          trace_html: @build.trace_html
-        }
-      end
-    end
   end
 
   def trace
-    respond_to do |format|
-      format.json do
-        state = params[:state].presence
-        render json: @build.trace_with_state(state: state).
-          merge!(id: @build.id, status: @build.status)
+    build.trace.read do |stream|
+      respond_to do |format|
+        format.json do
+          result = {
+            id: @build.id, status: @build.status, complete: @build.complete?
+          }
+
+          if stream.valid?
+            stream.limit
+            state = params[:state].presence
+            trace = stream.html_with_state(state)
+            result.merge!(trace.to_h)
+          end
+
+          render json: result
+        end
       end
     end
   end
@@ -86,10 +91,12 @@ class Projects::BuildsController < Projects::ApplicationController
   end
 
   def raw
-    if @build.has_trace_file?
-      send_file @build.trace_file_path, type: 'text/plain; charset=utf-8', disposition: 'inline'
-    else
-      render_404
+    build.trace.read do |stream|
+      if stream.file?
+        send_file stream.path, type: 'text/plain; charset=utf-8', disposition: 'inline'
+      else
+        render_404
+      end
     end
   end
 

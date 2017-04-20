@@ -2,7 +2,9 @@ RSpec.shared_examples "protected branches > access control > CE" do
   ProtectedBranch::PushAccessLevel.human_access_levels.each do |(access_type_id, access_type_name)|
     it "allows creating protected branches that #{access_type_name} can push to" do
       visit namespace_project_protected_branches_path(project.namespace, project)
+
       set_protected_branch_name('master')
+
       within('.new_protected_branch') do
         allowed_to_push_button = find(".js-allowed-to-push")
 
@@ -11,6 +13,7 @@ RSpec.shared_examples "protected branches > access control > CE" do
           within(".dropdown.open .dropdown-menu") { click_on access_type_name }
         end
       end
+
       click_on "Protect"
 
       expect(ProtectedBranch.count).to eq(1)
@@ -19,7 +22,9 @@ RSpec.shared_examples "protected branches > access control > CE" do
 
     it "allows updating protected branches so that #{access_type_name} can push to them" do
       visit namespace_project_protected_branches_path(project.namespace, project)
+
       set_protected_branch_name('master')
+
       click_on "Protect"
 
       expect(ProtectedBranch.count).to eq(1)
@@ -34,6 +39,7 @@ RSpec.shared_examples "protected branches > access control > CE" do
       end
 
       wait_for_ajax
+
       expect(ProtectedBranch.last.push_access_levels.map(&:access_level)).to include(access_type_id)
     end
   end
@@ -41,7 +47,9 @@ RSpec.shared_examples "protected branches > access control > CE" do
   ProtectedBranch::MergeAccessLevel.human_access_levels.each do |(access_type_id, access_type_name)|
     it "allows creating protected branches that #{access_type_name} can merge to" do
       visit namespace_project_protected_branches_path(project.namespace, project)
+
       set_protected_branch_name('master')
+
       within('.new_protected_branch') do
         allowed_to_merge_button = find(".js-allowed-to-merge")
 
@@ -50,6 +58,7 @@ RSpec.shared_examples "protected branches > access control > CE" do
           within(".dropdown.open .dropdown-menu") { click_on access_type_name }
         end
       end
+
       click_on "Protect"
 
       expect(ProtectedBranch.count).to eq(1)
@@ -58,7 +67,9 @@ RSpec.shared_examples "protected branches > access control > CE" do
 
     it "allows updating protected branches so that #{access_type_name} can merge to them" do
       visit namespace_project_protected_branches_path(project.namespace, project)
+
       set_protected_branch_name('master')
+
       click_on "Protect"
 
       expect(ProtectedBranch.count).to eq(1)
@@ -73,6 +84,7 @@ RSpec.shared_examples "protected branches > access control > CE" do
       end
 
       wait_for_ajax
+
       expect(ProtectedBranch.last.merge_access_levels.map(&:access_level)).to include(access_type_id)
     end
   end

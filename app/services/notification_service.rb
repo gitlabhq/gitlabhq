@@ -278,11 +278,11 @@ class NotificationService
 
     return unless mailer.respond_to?(email_template)
 
-    recipients ||= NotificationRecipientService.new(pipeline.project).build_recipients(
+    recipients ||= NotificationRecipientService.new(pipeline.project).build_pipeline_recipients(
       pipeline,
       pipeline.user,
       action: pipeline.status,
-      skip_current_user: false).map(&:notification_email)
+    ).map(&:notification_email)
 
     if recipients.any?
       mailer.public_send(email_template, pipeline, recipients).deliver_later

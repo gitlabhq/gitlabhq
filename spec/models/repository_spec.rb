@@ -24,21 +24,8 @@ describe Repository, models: true do
     repository.commit(merge_commit_id)
   end
 
-  let(:author_email) { FFaker::Internet.email }
-
-  # I have to remove periods from the end of the name
-  # This happened when the user's name had a suffix (i.e. "Sr.")
-  # This seems to be what git does under the hood. For example, this commit:
-  #
-  # $ git commit --author='Foo Sr. <foo@example.com>' -m 'Where's my trailing period?'
-  #
-  # results in this:
-  #
-  # $ git show --pretty
-  # ...
-  # Author: Foo Sr <foo@example.com>
-  # ...
-  let(:author_name) { FFaker::Name.name.chomp("\.") }
+  let(:author_email) { 'user@example.org' }
+  let(:author_name) { 'John Doe' }
 
   describe '#branch_names_contains' do
     subject { repository.branch_names_contains(sample_commit.id) }
@@ -181,6 +168,27 @@ describe Repository, models: true do
 
       expect(cache).to receive(:fetch).with(key).and_return('c1acaa5')
       is_expected.to eq('c1acaa5')
+    end
+  end
+
+  describe '#commits' do
+    it 'sets follow when path is a single path' do
+      expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: true)).and_call_original.twice
+
+      repository.commits('master', path: 'README.md')
+      repository.commits('master', path: ['README.md'])
+    end
+
+    it 'does not set follow when path is multiple paths' do
+      expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: false)).and_call_original
+
+      repository.commits('master', path: ['README.md', 'CHANGELOG'])
+    end
+
+    it 'does not set follow when there are no paths' do
+      expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: false)).and_call_original
+
+      repository.commits('master')
     end
   end
 
@@ -1272,7 +1280,6 @@ describe Repository, models: true do
         :changelog,
         :license,
         :contributing,
-        :version,
         :gitignore,
         :koding,
         :gitlab_ci,
@@ -1293,19 +1300,9 @@ describe Repository, models: true do
     end
   end
 
-  describe '#before_import' do
-    it 'flushes the repository caches' do
-      expect(repository).to receive(:expire_content_cache)
-
-      repository.before_import
-    end
-  end
-
   describe '#after_import' do
     it 'flushes and builds the cache' do
       expect(repository).to receive(:expire_content_cache)
-      expect(repository).to receive(:expire_tags_cache)
-      expect(repository).to receive(:expire_branches_cache)
 
       repository.after_import
     end
@@ -1851,4 +1848,18 @@ describe Repository, models: true do
       end
     end
   end
+
+  # TODO: Uncomment when feature is reenabled
+  # describe '#is_ancestor?' do
+  #   context 'Gitaly is_ancestor feature enabled' do
+  #     it 'asks Gitaly server if it\'s an ancestor' do
+  #       commit = repository.commit
+  #       allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:is_ancestor).and_return(true)
+  #       expect(Gitlab::GitalyClient::Commit).to receive(:is_ancestor).
+  #         with(repository.raw_repository, commit.id, commit.id).and_return(true)
+  #
+  #       expect(repository.is_ancestor?(commit.id, commit.id)).to be true
+  #     end
+  #   end
+  # end
 end

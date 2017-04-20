@@ -46,7 +46,7 @@ feature 'Group', feature: true do
 
     describe 'Mattermost team creation' do
       before do
-        allow(Settings.mattermost).to receive_messages(enabled: mattermost_enabled)
+        stub_mattermost_setting(enabled: mattermost_enabled)
 
         visit new_group_path
       end
@@ -83,21 +83,54 @@ feature 'Group', feature: true do
     end
   end
 
-  describe 'create a nested group' do
+  describe 'create a nested group', js: true do
     let(:group) { create(:group, path: 'foo') }
 
-    before do
-      visit subgroups_group_path(group)
-      click_link 'New Subgroup'
+    context 'as admin' do
+      before do
+        visit subgroups_group_path(group)
+        click_link 'New Subgroup'
+      end
+
+      it 'creates a nested group' do
+        fill_in 'Group path', with: 'bar'
+        click_button 'Create group'
+
+        expect(current_path).to eq(group_path('foo/bar'))
+        expect(page).to have_content("Group 'bar' was successfully created.")
+      end
     end
 
-    it 'creates a nested group' do
-      fill_in 'Group path', with: 'bar'
-      click_button 'Create group'
+    context 'as group owner' do
+      let(:user) { create(:user) }
 
-      expect(current_path).to eq(group_path('foo/bar'))
-      expect(page).to have_content("Group 'bar' was successfully created.")
+      before do
+        group.add_owner(user)
+        logout
+        login_as(user)
+
+        visit subgroups_group_path(group)
+        click_link 'New Subgroup'
+      end
+
+      it 'creates a nested group' do
+        fill_in 'Group path', with: 'bar'
+        click_button 'Create group'
+
+        expect(current_path).to eq(group_path('foo/bar'))
+        expect(page).to have_content("Group 'bar' was successfully created.")
+      end
     end
+  end
+
+  it 'checks permissions to avoid exposing groups by parent_id' do
+    group = create(:group, :private, path: 'secret-group')
+
+    logout
+    login_as(:user)
+    visit new_group_path(parent_id: group.id)
+
+    expect(page).not_to have_content('secret-group')
   end
 
   describe 'group edit' do
@@ -120,7 +153,7 @@ feature 'Group', feature: true do
     end
 
     it 'removes group' do
-      click_link 'Remove Group'
+      click_link 'Remove group'
 
       expect(page).to have_content "scheduled for deletion"
     end

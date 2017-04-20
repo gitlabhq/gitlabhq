@@ -52,66 +52,62 @@
   }
 }
 
-.milestone-summary {
+.milestone-sidebar {
+  .gutter-toggle {
+    margin-bottom: 10px;
+  }
+
+  .milestone-progress {
+    .title {
+      padding-top: 5px;
+    }
+
+    .progress {
+      height: 6px;
+      margin: 0;
+    }
+  }
+
+  .collapsed-milestone-date {
+    font-size: 12px;
+  }
+
+  .milestone-date {
+    display: block;
+  }
+
+  .date-separator {
+    line-height: 5px;
+  }
+
+  .remaining-days strong {
+    font-weight: normal;
+  }
+
   .milestone-stat {
-    white-space: nowrap;
-    margin-right: 10px;
-
-    &.with-drilldown {
-      margin-right: 2px;
-    }
+    float: left;
+    margin-right: 14px;
   }
 
-  .remaining-days {
-    color: $orange-600;
+  .milestone-stat:last-child {
+    margin-right: 0;
   }
 
-  .milestone-stats-and-buttons {
-    display: flex;
-    justify-content: flex-start;
-    flex-wrap: wrap;
+  .milestone-progress {
+    .sidebar-collapsed-icon {
+      clear: both;
+      padding: 15px 5px 5px;
 
-    @media (min-width: $screen-xs-min) {
-      justify-content: space-between;
-      flex-wrap: nowrap;
-    }
-  }
-
-  .milestone-progress-buttons {
-    order: 1;
-    margin-top: 10px;
-
-    @media (min-width: $screen-xs-min) {
-      order: 2;
-      margin-top: 0;
-      flex-shrink: 0;
-    }
-
-    .btn {
-      float: left;
-      margin-right: $btn-side-margin;
-
-      &:last-child {
-        margin-right: 0;
+      .progress {
+        margin: 5px 0;
       }
     }
   }
 
-  .milestone-stats {
-    order: 2;
-    width: 100%;
-    padding: 7px 0;
-    flex-shrink: 1;
-
-    @media (min-width: $screen-xs-min) {
-      // when displayed on one line stats go first, buttons second
-      order: 1;
+  .right-sidebar-collapsed & {
+    .reference {
+      border-top: 1px solid $border-gray-normal;
     }
-  }
-
-  .progress {
-    width: 100%;
-    margin: 15px 0;
   }
 }
 

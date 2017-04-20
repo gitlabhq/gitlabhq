@@ -14,7 +14,7 @@ feature 'project owner sees a link to create a license file in empty project', f
     visit namespace_project_path(project.namespace, project)
     click_link 'Create empty bare repository'
     click_on 'LICENSE'
-    expect(page).to have_content('New File')
+    expect(page).to have_content('New file')
 
     expect(current_path).to eq(
       namespace_project_new_blob_path(project.namespace, project, 'master'))
@@ -30,7 +30,7 @@ feature 'project owner sees a link to create a license file in empty project', f
     fill_in :commit_message, with: 'Add a LICENSE file', visible: true
     # Remove pre-receive hook so we can push without auth
     FileUtils.rm_f(File.join(project.repository.path, 'hooks', 'pre-receive'))
-    click_button 'Commit Changes'
+    click_button 'Commit changes'
 
     expect(current_path).to eq(
       namespace_project_blob_path(project.namespace, project, 'master/LICENSE'))
@@ -40,7 +40,7 @@ feature 'project owner sees a link to create a license file in empty project', f
 
   def select_template(template)
     page.within('.js-license-selector-wrap') do
-      click_button 'Choose a License template'
+      click_button 'Apply a license template'
       click_link template
       wait_for_ajax
     end

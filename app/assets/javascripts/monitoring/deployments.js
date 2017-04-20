@@ -18,7 +18,7 @@ export default class Deployments {
     this.x = d3.time.scale().range([0, this.width]);
     this.x.domain(d3.extent(this.chartData, d => d.time));
 
-    this.charts = d3.selectAll('.prometheus-graph .graph-container');
+    this.charts = d3.selectAll('.prometheus-graph');
 
     this.getData();
   }
@@ -56,10 +56,12 @@ export default class Deployments {
 
   plotData() {
     this.charts.each((d, i) => {
-      const chart = d3.select(this.charts[0][i]);
+      const svg = d3.select(this.charts[0][i]);
+      const chart = svg.select('.graph-container');
+      const key = svg.node().getAttribute('graph-type');
 
-      this.createLine(chart);
-      this.createDeployInfoBox(chart);
+      this.createLine(chart, key);
+      this.createDeployInfoBox(chart, key);
     });
   }
 
@@ -93,7 +95,7 @@ export default class Deployments {
       });
   }
 
-  createLine(chart) {
+  createLine(chart, key) {
     chart.append('g')
       .attr({
         class: 'deploy-info',
@@ -103,14 +105,14 @@ export default class Deployments {
       .enter()
       .append('g')
       .attr({
-        class: d => `deploy-info-${d.id}`,
+        class: d => `deploy-info-${d.id}-${key}`,
         transform: d => `translate(${Math.floor(d.xPos) + 1}, 0)`,
       })
       .append('rect')
       .attr({
         x: 1,
         y: 0,
-        height: this.height,
+        height: this.height + 1,
         width: 3,
         fill: 'url(#shadow-gradient)',
       })
@@ -123,18 +125,18 @@ export default class Deployments {
         x1: 0,
         x2: 0,
         y1: 0,
-        y2: this.height,
+        y2: this.height + 1,
       });
   }
 
-  createDeployInfoBox(chart) {
+  createDeployInfoBox(chart, key) {
     this.data.forEach((d) => {
-      const group = chart.select(`.deploy-info-${d.id}`)
+      const group = chart.select(`.deploy-info-${d.id}-${key}`)
         .append('svg')
         .attr({
           x: 3,
           y: 0,
-          height: 58,
+          height: 60,
         });
 
       const rect = group.append('rect')
@@ -153,7 +155,7 @@ export default class Deployments {
 
       textGroup.append('text')
         .attr({
-          class: 'deploy-info-text deploy-info-text-bold',
+          class: 'deploy-info-text text-metric-bold',
         })
         .text(() => {
           const isTag = d.tag;
@@ -171,8 +173,8 @@ export default class Deployments {
 
       textGroup.append('text')
         .attr({
-          class: 'deploy-info-text',
-          y: 36,
+          class: 'deploy-info-text text-metric-bold',
+          y: 38,
         })
         .text(() => this.timeFormat(d.time));
 
@@ -184,12 +186,12 @@ export default class Deployments {
     });
   }
 
-  static toggleDeployTextbox(deploy, showInfoBox) {
-    d3.selectAll(`.deploy-info-${deploy.id} .js-deploy-info-box`)
+  static toggleDeployTextbox(deploy, key, showInfoBox) {
+    d3.selectAll(`.deploy-info-${deploy.id}-${key} .js-deploy-info-box`)
       .classed('hidden', !showInfoBox);
   }
 
-  mouseOverDeployInfo(mouseXPos) {
+  mouseOverDeployInfo(mouseXPos, key) {
     if (!this.data) return false;
 
     let dataFound = false;
@@ -198,9 +200,9 @@ export default class Deployments {
       if (d.xPos >= mouseXPos - 10 && d.xPos <= mouseXPos + 10 && !dataFound) {
         dataFound = d.xPos + 1;
 
-        Deployments.toggleDeployTextbox(d, true);
+        Deployments.toggleDeployTextbox(d, key, true);
       } else {
-        Deployments.toggleDeployTextbox(d, false);
+        Deployments.toggleDeployTextbox(d, key, false);
       }
     });
 

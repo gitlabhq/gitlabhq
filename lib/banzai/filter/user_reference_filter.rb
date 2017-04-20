@@ -60,7 +60,7 @@ module Banzai
         self.class.references_in(text) do |match, username|
           if username == 'all' && !skip_project_check?
             link_to_all(link_content: link_content)
-          elsif namespace = namespaces[username]
+          elsif namespace = namespaces[username.downcase]
             link_to_namespace(namespace, link_content: link_content) || match
           else
             match
@@ -74,7 +74,7 @@ module Banzai
       # The keys of this Hash are the namespace paths, the values the
       # corresponding Namespace objects.
       def namespaces
-        @namespaces ||= Namespace.where_full_path_in(usernames).index_by(&:full_path)
+        @namespaces ||= Namespace.where_full_path_in(usernames).index_by(&:full_path).transform_keys(&:downcase)
       end
 
       # Returns all usernames referenced in the current document.

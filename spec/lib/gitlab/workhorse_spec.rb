@@ -179,23 +179,71 @@ describe Gitlab::Workhorse, lib: true do
 
   describe '.git_http_ok' do
     let(:user) { create(:user) }
+    let(:repo_path) { repository.path_to_repo }
+    let(:action) { 'info_refs' }
 
-    subject { described_class.git_http_ok(repository, user) }
+    subject { described_class.git_http_ok(repository, user, action) }
 
-    it { expect(subject).to eq({ GL_ID: "user-#{user.id}", RepoPath: repository.path_to_repo }) }
+    it { expect(subject).to include({ GL_ID: "user-#{user.id}", RepoPath: repo_path }) }
 
-    context 'when Gitaly socket path is present' do
-      let(:gitaly_socket_path) { '/tmp/gitaly.sock' }
-
-      before do
-        allow(Gitlab.config.gitaly).to receive(:socket_path).and_return(gitaly_socket_path)
+    context 'when Gitaly is enabled' do
+      let(:gitaly_params) do
+        {
+          GitalyAddress: Gitlab::GitalyClient.get_address('default'),
+        }
       end
 
-      it 'includes Gitaly params in the returned value' do
-        expect(subject).to include({
-          GitalyResourcePath: "/projects/#{repository.project.id}/git-http/info-refs",
-          GitalySocketPath: gitaly_socket_path,
-        })
+      before do
+        allow(Gitlab.config.gitaly).to receive(:enabled).and_return(true)
+      end
+
+      it 'includes a Repository param' do
+        repo_param = { Repository: {
+          path: repo_path,
+          storage_name: 'default',
+          relative_path: project.full_path + '.git',
+        } }
+
+        expect(subject).to include(repo_param)
+      end
+
+      context "when git_upload_pack action is passed" do
+        let(:action) { 'git_upload_pack' }
+        let(:feature_flag) { :post_upload_pack }
+
+        context 'when action is enabled by feature flag' do
+          it 'includes Gitaly params in the returned value' do
+            allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(feature_flag).and_return(true)
+
+            expect(subject).to include(gitaly_params)
+          end
+        end
+
+        context 'when action is not enabled by feature flag' do
+          it 'does not include Gitaly params in the returned value' do
+            allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(feature_flag).and_return(false)
+
+            expect(subject).not_to include(gitaly_params)
+          end
+        end
+      end
+
+      context "when git_receive_pack action is passed" do
+        let(:action) { 'git_receive_pack' }
+
+        it { expect(subject).not_to include(gitaly_params) }
+      end
+
+      context "when info_refs action is passed" do
+        let(:action) { 'info_refs' }
+
+        it { expect(subject).to include(gitaly_params) }
+      end
+
+      context 'when action passed is not supported by Gitaly' do
+        let(:action) { 'download' }
+
+        it { expect { subject }.to raise_exception('Unsupported action: download') }
       end
     end
   end
