@@ -108,6 +108,9 @@ class FilteredSearchDropdown {
 
     if (hook) {
       const data = hook.list.data || [];
+
+      if (!data) return;
+
       const results = data.map((o) => {
         const updated = o;
         updated.droplab_hidden = false;

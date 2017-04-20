@@ -137,6 +137,8 @@ class FilteredSearchManager {
       const { lastVisualToken } = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
 
       if (this.filteredSearchInput.value === '' && lastVisualToken) {
+        if (this.canEdit && !this.canEdit(lastVisualToken)) return;
+
         this.filteredSearchInput.value = gl.FilteredSearchVisualTokens.getLastTokenPartial();
         gl.FilteredSearchVisualTokens.removeLastTokenPartial();
       }
@@ -221,6 +223,8 @@ class FilteredSearchManager {
 
   editToken(e) {
     const token = e.target.closest('.js-visual-token');
+
+    if (this.canEdit && !this.canEdit(token)) return;
 
     if (token) {
       gl.FilteredSearchVisualTokens.editToken(token);
