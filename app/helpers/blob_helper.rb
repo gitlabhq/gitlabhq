@@ -209,8 +209,6 @@ module BlobHelper
   end
 
   def copy_blob_source_button(blob)
-    return unless blob.rendered_as_text?(override_max_size: params[:override_max_size])
-
     clipboard_button(target: ".blob-content[data-blob-id='#{blob.id}']", class: "btn btn-sm js-copy-blob-source-btn", title: "Copy source to clipboard")
   end
 

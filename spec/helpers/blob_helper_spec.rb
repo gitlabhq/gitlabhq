@@ -56,15 +56,14 @@ describe BlobHelper do
     end
   end
 
-  describe "#sanitize_svg" do
+  describe "#sanitize_svg_data" do
     let(:input_svg_path) { File.join(Rails.root, 'spec', 'fixtures', 'unsanitized.svg') }
     let(:data) { open(input_svg_path).read }
     let(:expected_svg_path) { File.join(Rails.root, 'spec', 'fixtures', 'sanitized.svg') }
     let(:expected) { open(expected_svg_path).read }
 
     it 'retains essential elements' do
-      blob = OpenStruct.new(data: data)
-      expect(sanitize_svg(blob).data).to eq(expected)
+      expect(sanitize_svg_data(data)).to eq(expected)
     end
   end
 
