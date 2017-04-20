@@ -1,17 +1,29 @@
 module CreatesCommit
   extend ActiveSupport::Concern
 
+  def set_start_branch_to_branch_name
+    branch_exists = @repository.find_branch(@branch_name)
+    @start_branch = @branch_name if branch_exists
+  end
+
   def create_commit(service, success_path:, failure_path:, failure_view: nil, success_notice: nil)
-    set_commit_variables
+    if can?(current_user, :push_code, @project)
+      @project_to_commit_into = @project
+      @branch_name ||= @ref
+    else
+      @project_to_commit_into = current_user.fork_of(@project)
+      @branch_name ||= @project_to_commit_into.repository.next_branch('patch')
+    end
+
+    @start_branch ||= @ref || @branch_name
 
     commit_params = @commit_params.merge(
-      start_project: @mr_target_project,
-      start_branch: @mr_target_branch,
-      target_branch: @mr_source_branch
+      start_project: @project,
+      start_branch: @start_branch,
+      branch_name: @branch_name
     )
 
-    result = service.new(
-      @mr_source_project, current_user, commit_params).execute
+    result = service.new(@project_to_commit_into, current_user, commit_params).execute
 
     if result[:status] == :success
       update_flash_notice(success_notice)
@@ -72,30 +84,30 @@ module CreatesCommit
 
   def new_merge_request_path
     new_namespace_project_merge_request_path(
-      @mr_source_project.namespace,
-      @mr_source_project,
+      @project_to_commit_into.namespace,
+      @project_to_commit_into,
       merge_request: {
-        source_project_id: @mr_source_project.id,
-        target_project_id: @mr_target_project.id,
-        source_branch: @mr_source_branch,
-        target_branch: @mr_target_branch
+        source_project_id: @project_to_commit_into.id,
+        target_project_id: @project.id,
+        source_branch: @branch_name,
+        target_branch: @start_branch
       }
     )
   end
 
   def existing_merge_request_path
-    namespace_project_merge_request_path(@mr_target_project.namespace, @mr_target_project, @merge_request)
+    namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
   end
 
   def merge_request_exists?
     return @merge_request if defined?(@merge_request)
 
-    @merge_request = MergeRequestsFinder.new(current_user, project_id: @mr_target_project.id).execute.opened.
-      find_by(source_branch: @mr_source_branch, target_branch: @mr_target_branch, source_project_id: @mr_source_project)
+    @merge_request = MergeRequestsFinder.new(current_user, project_id: @project.id).execute.opened.
+      find_by(source_project_id: @project_to_commit_into, source_branch: @branch_name, target_branch: @start_branch)
   end
 
   def different_project?
-    @mr_source_project != @mr_target_project
+    @project_to_commit_into != @project
   end
 
   def create_merge_request?
@@ -103,22 +115,6 @@ module CreatesCommit
     # as the target branch in the same project,
     # we don't want to create a merge request.
     params[:create_merge_request].present? &&
-      (different_project? || @mr_target_branch != @mr_source_branch)
-  end
-
-  def set_commit_variables
-    if can?(current_user, :push_code, @project)
-      @mr_source_project = @project
-      @target_branch ||= @ref
-    else
-      @mr_source_project = current_user.fork_of(@project)
-      @target_branch ||= @mr_source_project.repository.next_branch('patch')
-    end
-
-    # Merge request to this project
-    @mr_target_project = @project
-    @mr_target_branch ||= @ref || @target_branch
-
-    @mr_source_branch = @target_branch
+      (different_project? || @start_branch != @branch_name)
   end
 end
