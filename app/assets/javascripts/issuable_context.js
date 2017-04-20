@@ -47,7 +47,7 @@ import Cookies from 'js-cookie';
           Cookies.set('collapsed_gutter', true);
         }
       });
-      // $(".right-sidebar").niceScroll();
+      $(".right-sidebar").niceScroll();
     }
 
     IssuableContext.prototype.initParticipants = function() {

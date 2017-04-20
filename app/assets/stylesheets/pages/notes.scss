@@ -530,6 +530,7 @@ ul.notes {
  */
 
 .add-diff-note {
+  display: none;
   margin-top: -2px;
   border-radius: 50%;
   background: $white-light;
@@ -538,6 +539,7 @@ ul.notes {
   color: $blue-500;
   margin-left: -55px;
   position: absolute;
+  z-index: 10;
   width: 23px;
   height: 23px;
   border: 1px solid $blue-500;
