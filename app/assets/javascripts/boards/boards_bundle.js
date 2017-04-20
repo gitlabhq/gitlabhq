@@ -1,5 +1,6 @@
 /* eslint-disable one-var, quote-props, comma-dangle, space-before-function-paren */
 /* global BoardService */
+/* global Flash */
 
 import Vue from 'vue';
 import VueResource from 'vue-resource';
@@ -93,7 +94,7 @@ $(() => {
 
           Store.addBlankState();
           this.loading = false;
-        });
+        }).catch(() => new Flash('An error occurred. Please try again.'));
     },
     methods: {
       updateTokens() {
