@@ -61,7 +61,7 @@ as described under the 'GitLab Configuration (>= 8.1)'.
 
 ### Configure a GitLab project
 
-Create a new GitLab project or choose an existing one. Then, go to **Services ->
+Create a new GitLab project or choose an existing one. Then, go to **Integrations ->
 Jenkins CI**.
 
 Check the 'Active' box. Select whether you want GitLab to trigger a build
