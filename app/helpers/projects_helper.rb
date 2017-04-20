@@ -291,14 +291,14 @@ module ProjectsHelper
     end
   end
 
-  def add_special_file_path(project, file_name:, commit_message: nil, target_branch: nil, context: nil)
+  def add_special_file_path(project, file_name:, commit_message: nil, branch_name: nil, context: nil)
     namespace_project_new_blob_path(
       project.namespace,
       project,
       project.default_branch || 'master',
       file_name:      file_name,
       commit_message: commit_message || "Add #{file_name.downcase}",
-      target_branch: target_branch,
+      branch_name: branch_name,
       context: context
     )
   end

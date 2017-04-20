@@ -35,7 +35,7 @@ module TreeHelper
   end
 
   def on_top_of_branch?(project = @project, ref = @ref)
-    project.repository.branch_names.include?(ref)
+    project.repository.branch_exists?(ref)
   end
 
   def can_edit_tree?(project = nil, ref = nil)

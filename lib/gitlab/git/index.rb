@@ -1,7 +1,11 @@
 module Gitlab
   module Git
     class Index
+      IndexError = Class.new(StandardError)
+
       DEFAULT_MODE = 0o100644
+
+      ACTIONS = %w(create create_dir update move delete).freeze
 
       attr_reader :repository, :raw_index
 
@@ -23,9 +27,8 @@ module Gitlab
       def create(options)
         options = normalize_options(options)
 
-        file_entry = get(options[:file_path])
-        if file_entry
-          raise Gitlab::Git::Repository::InvalidBlobName.new("Filename already exists")
+        if get(options[:file_path])
+          raise IndexError, "A file with this name already exists"
         end
 
         add_blob(options)
@@ -34,13 +37,12 @@ module Gitlab
       def create_dir(options)
         options = normalize_options(options)
 
-        file_entry = get(options[:file_path])
-        if file_entry
-          raise Gitlab::Git::Repository::InvalidBlobName.new("Directory already exists as a file")
+        if get(options[:file_path])
+          raise IndexError, "A file with this name already exists"
         end
 
         if dir_exists?(options[:file_path])
-          raise Gitlab::Git::Repository::InvalidBlobName.new("Directory already exists")
+          raise IndexError, "A directory with this name already exists"
         end
 
         options = options.dup
@@ -55,7 +57,7 @@ module Gitlab
 
         file_entry = get(options[:file_path])
         unless file_entry
-          raise Gitlab::Git::Repository::InvalidBlobName.new("File doesn't exist")
+          raise IndexError, "A file with this name doesn't exist"
         end
 
         add_blob(options, mode: file_entry[:mode])
@@ -66,7 +68,11 @@ module Gitlab
 
         file_entry = get(options[:previous_path])
         unless file_entry
-          raise Gitlab::Git::Repository::InvalidBlobName.new("File doesn't exist")
+          raise IndexError, "A file with this name doesn't exist"
+        end
+
+        if get(options[:file_path])
+          raise IndexError, "A file with this name already exists"
         end
 
         raw_index.remove(options[:previous_path])
@@ -77,9 +83,8 @@ module Gitlab
       def delete(options)
         options = normalize_options(options)
 
-        file_entry = get(options[:file_path])
-        unless file_entry
-          raise Gitlab::Git::Repository::InvalidBlobName.new("File doesn't exist")
+        unless get(options[:file_path])
+          raise IndexError, "A file with this name doesn't exist"
         end
 
         raw_index.remove(options[:file_path])
@@ -95,10 +100,20 @@ module Gitlab
       end
 
       def normalize_path(path)
+        unless path
+          raise IndexError, "You must provide a file path"
+        end
+
         pathname = Gitlab::Git::PathHelper.normalize_path(path.dup)
 
-        if pathname.each_filename.include?('..')
-          raise Gitlab::Git::Repository::InvalidBlobName.new('Invalid path')
+        pathname.each_filename do |segment|
+          if segment == '..'
+            raise IndexError, 'Path cannot include directory traversal'
+          end
+
+          unless segment =~ Gitlab::Regex.file_name_regex
+            raise IndexError, "Path #{Gitlab::Regex.file_name_regex_message}"
+          end
         end
 
         pathname.to_s
@@ -106,6 +121,10 @@ module Gitlab
 
       def add_blob(options, mode: nil)
         content = options[:content]
+        unless content
+          raise IndexError, "You must provide content"
+        end
+
         content = Base64.decode64(content) if options[:encoding] == 'base64'
 
         detect = CharlockHolmes::EncodingDetector.new.detect(content)
@@ -119,7 +138,7 @@ module Gitlab
 
         raw_index.add(path: options[:file_path], oid: oid, mode: mode || DEFAULT_MODE)
       rescue Rugged::IndexError => e
-        raise Gitlab::Git::Repository::InvalidBlobName.new(e.message)
+        raise IndexError, e.message
       end
     end
   end

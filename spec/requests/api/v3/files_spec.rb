@@ -129,7 +129,7 @@ describe API::V3::Files, api: true  do
 
     it "returns a 400 if editor fails to create file" do
       allow_any_instance_of(Repository).to receive(:create_file).
-        and_return(false)
+        and_raise(Repository::CommitError, 'Cannot create file')
 
       post v3_api("/projects/#{project.id}/repository/files", user), valid_params
 
@@ -229,8 +229,8 @@ describe API::V3::Files, api: true  do
       expect(response).to have_http_status(400)
     end
 
-    it "returns a 400 if fails to create file" do
-      allow_any_instance_of(Repository).to receive(:delete_file).and_return(false)
+    it "returns a 400 if fails to delete file" do
+      allow_any_instance_of(Repository).to receive(:delete_file).and_raise(Repository::CommitError, 'Cannot delete file')
 
       delete v3_api("/projects/#{project.id}/repository/files", user), valid_params
 
