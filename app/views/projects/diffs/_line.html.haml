@@ -34,7 +34,8 @@
         %pre= line.text
       - else
         = diff_line_content(line.text)
-
+        %button{ name: "button", type: "submit", class: "hidden add-diff-note js-add-diff-note-button", title:"Add a comment to this line"}
+        %i.fa.fa-comment-o
 - if line_discussions
   - discussion_expanded = local_assigns.fetch(:discussion_expanded, line_discussions.any?(&:expanded?))
   = render "discussions/diff_discussion", discussions: line_discussions, expanded: discussion_expanded

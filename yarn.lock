@@ -1139,6 +1139,10 @@ clone@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/clone/-/clone-1.0.2.tgz#260b7a99ebb1edfe247538175f783243cb19d149"
 
+clusterize.js@^0.17.6:
+  version "0.17.6"
+  resolved "https://registry.yarnpkg.com/clusterize.js/-/clusterize.js-0.17.6.tgz#f8211cfd4f748458ba6a18b631a059d598104917"
+
 co@^4.6.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/co/-/co-4.6.0.tgz#6ea6bdf3d853ae54ccb8e47bfa0bf3f9031fb184"

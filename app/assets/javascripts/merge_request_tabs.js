@@ -3,8 +3,10 @@
 /* global Flash */
 
 import Cookies from 'js-cookie';
+import Clusterize from 'clusterize.js';
 import './breakpoints';
 import './flash';
+
 
 /* eslint-disable max-len */
 // MergeRequestTabs
@@ -219,6 +221,7 @@ import './flash';
       if (this.commitsLoaded) {
         return;
       }
+
       this.ajaxGet({
         url: `${source}.json`,
         success: (data) => {
@@ -250,6 +253,7 @@ import './flash';
       this.ajaxGet({
         url: `${urlPathname}.json${location.search}`,
         success: (data) => {
+          // JavaScript
           $('#diffs').html(data.html);
 
           if (typeof gl.diffNotesCompileComponents !== 'undefined') {
@@ -263,9 +267,19 @@ import './flash';
             this.expandViewContainer();
           }
           this.diffsLoaded = true;
-
           new gl.Diff();
           this.scrollToElement('#diffs');
+
+          setTimeout(() => {
+            // const blocksInCluster = Math.round($('.diff-file').length / 10);
+            var clusterize = new Clusterize({
+              scrollId: 'mergeRequest',
+              contentId: 'files',
+              // rows_in_block: 25,
+              // blocks_in_cluster: blocksInCluster,
+            });
+            console.log('number of rows', clusterize.getRowsAmount());
+          }, 1000);
         },
       });
     }

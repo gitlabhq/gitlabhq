@@ -22,7 +22,7 @@
 - if render_overflow_warning?(diff_files)
   = render 'projects/diffs/warning', diff_files: diffs
 
-.files{ data: { can_create_note: can_create_note } }
+#files.files.clusterize-content{ data: { can_create_note: can_create_note } }
   - diff_files.each_with_index do |diff_file|
     - diff_commit = commit_for_diff(diff_file)
     - blob = diff_file.blob(diff_commit)

@@ -1,5 +1,4 @@
 /* eslint-disable class-methods-use-this */
-
 require('./lib/utils/url_utility');
 
 const UNFOLD_COUNT = 20;

@@ -6,32 +6,35 @@ let $commentButtonTemplate;
 var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
 
 window.FilesCommentButton = (function() {
-  var COMMENT_BUTTON_CLASS, EMPTY_CELL_CLASS, LINE_COLUMN_CLASSES, LINE_CONTENT_CLASS, LINE_HOLDER_CLASS, LINE_NUMBER_CLASS, OLD_LINE_CLASS, TEXT_FILE_SELECTOR, UNFOLDABLE_LINE_CLASS;
+  // var COMMENT_BUTTON_CLASS, EMPTY_CELL_CLASS, LINE_COLUMN_CLASSES, LINE_CONTENT_CLASS, LINE_HOLDER_CLASS, LINE_NUMBER_CLASS, OLD_LINE_CLASS, TEXT_FILE_SELECTOR, UNFOLDABLE_LINE_CLASS;
 
-  COMMENT_BUTTON_CLASS = '.add-diff-note';
+  // COMMENT_BUTTON_CLASS = '.add-diff-note';
 
-  LINE_HOLDER_CLASS = '.line_holder';
+  // LINE_HOLDER_CLASS = '.line_holder';
 
-  LINE_NUMBER_CLASS = 'diff-line-num';
+  // LINE_NUMBER_CLASS = 'diff-line-num';
 
-  LINE_CONTENT_CLASS = 'line_content';
+  // LINE_CONTENT_CLASS = 'line_content';
 
-  UNFOLDABLE_LINE_CLASS = 'js-unfold';
+  // UNFOLDABLE_LINE_CLASS = 'js-unfold';
 
-  EMPTY_CELL_CLASS = 'empty-cell';
+  // EMPTY_CELL_CLASS = 'empty-cell';
 
-  OLD_LINE_CLASS = 'old_line';
+  // OLD_LINE_CLASS = 'old_line';
 
-  LINE_COLUMN_CLASSES = "." + LINE_NUMBER_CLASS + ", .line_content";
+  // LINE_COLUMN_CLASSES = "." + LINE_NUMBER_CLASS + ", .line_content";
 
-  TEXT_FILE_SELECTOR = '.text-file';
+  // TEXT_FILE_SELECTOR = '.text-file';
 
-  function FilesCommentButton(filesContainerElement) {
-    this.render = bind(this.render, this);
-    this.hideButton = bind(this.hideButton, this);
-    this.isParallelView = notes.isParallelView();
-    filesContainerElement.on('mouseover', LINE_COLUMN_CLASSES, this.render)
-      .on('mouseleave', LINE_COLUMN_CLASSES, this.hideButton);
+  function FilesCommentButton() {
+    // this.render = bind(this.render, this);
+    // this.hideButton = bind(this.hideButton, this);
+    // this.isParallelView = notes.isParallelView();
+    // $('document').on('mouseover', '.diff-file', (e) => {
+    //   debugger;
+    // });
+    // filesContainerElement.on('mouseover', LINE_COLUMN_CLASSES, this.render)
+    //   .on('mouseleave', LINE_COLUMN_CLASSES, this.hideButton);
   }
 
   FilesCommentButton.prototype.render = function(e) {
@@ -138,14 +141,25 @@ window.FilesCommentButton = (function() {
 })();
 
 $.fn.filesCommentButton = function() {
-  $commentButtonTemplate = $('<button name="button" type="submit" class="add-diff-note js-add-diff-note-button" title="Add a comment to this line"><i class="fa fa-comment-o"></i></button>');
+  const LINE_NUMBER_CLASS = 'diff-line-num';
+  const LINE_COLUMN_CLASSES = "." + LINE_NUMBER_CLASS + ", .line_content";
+  // const $commentButtonTemplate = $('<button name="button" type="submit" class="add-diff-note js-add-diff-note-button" title="Add a comment to this line"><i class="fa fa-comment-o"></i></button>');
+  const showButton = (e) => {
+    $(e.currentTarget).parent().find('.add-diff-note').removeClass('hidden');
+  };
+  const hideButton = (e) => {
+    $(e.currentTarget).parent().find('.add-diff-note').addClass('hidden');
+  };
 
-  if (!(this && (this.parent().data('can-create-note') != null))) {
-    return;
-  }
-  return this.each(function() {
-    if (!$.data(this, 'filesCommentButton')) {
-      return $.data(this, 'filesCommentButton', new FilesCommentButton($(this)));
-    }
-  });
+  $(document).on('mouseover', `.diff-file ${LINE_COLUMN_CLASSES}`, _.debounce(showButton, 100));
+  $(document).on('mouseleave', `.diff-file ${LINE_COLUMN_CLASSES}`, _.debounce(hideButton, 100));
+
+  // if (!(this && (this.parent().data('can-create-note') != null))) {
+  //   return;
+  // }
+  // return this.each(function() {
+  //   if (!$.data(this, 'filesCommentButton')) {
+  //     return $.data(this, 'filesCommentButton', new FilesCommentButton($(this)));
+  //   }
+  // });
 };

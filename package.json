@@ -18,6 +18,7 @@
     "babel-preset-latest": "^6.24.0",
     "babel-preset-stage-2": "^6.22.0",
     "bootstrap-sass": "^3.3.6",
+    "clusterize.js": "^0.17.6",
     "compression-webpack-plugin": "^0.3.2",
     "core-js": "^2.4.1",
     "css-loader": "^0.28.0",
