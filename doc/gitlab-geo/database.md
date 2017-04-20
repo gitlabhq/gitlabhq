@@ -108,8 +108,8 @@ The following guide assumes that:
     ```
 
     You may also want to edit the `wal_keep_segments` and `max_wal_senders` to
-    match your database replication requirements.
-    See [PostgreSQL - Replication documentation](https://www.postgresql.org/docs/9.6/static/runtime-config-replication.html)
+    match your database replication requirements. Consult the [PostgreSQL - Replication documentation](https://www.postgresql.org/docs/9.6/static/runtime-config-replication.html)
+    for more information.
 
 1. Check to make sure your firewall rules are set so that the secondary nodes
    can access port 5432 on the primary node.
@@ -176,12 +176,10 @@ data before running `pg_basebackup`.
     ```
     gitlab-ctl replicate-geo-database --host=1.2.3.4
     ```
-    
+
     Change the `--host=` to the primary node IP or FQDN. You can check other possible
-    params with `--help`. `
-    
-    When prompted, enter the password you set up for the `gitlab_replicator`
-    user in the first step.
+    parameters with `--help`. When prompted, enter the password you set up for
+    the `gitlab_replicator` user in the first step.
 
 The replication process is now over.
 

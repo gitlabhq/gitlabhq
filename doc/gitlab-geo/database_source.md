@@ -75,7 +75,8 @@ The following guide assumes that:
     See the Omnibus notes above for more details of `listen_address`.
 
     You may also want to edit the `wal_keep_segments` and `max_wal_senders` to
-    match your database replication requirements.
+    match your database replication requirements. Consult the [PostgreSQL - Replication documentation](https://www.postgresql.org/docs/9.6/static/runtime-config-replication.html)
+    for more information.
 
 1. Set the access control on the primary to allow TCP connections using the
    server's public IP and set the connection from the secondary to require a
