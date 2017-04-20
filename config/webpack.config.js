@@ -130,6 +130,7 @@ var config = {
         'pdf_viewer',
         'pipelines',
         'mr_widget_ee',
+        'issue_show'
       ],
       minChunks: function(module, count) {
         return module.resource && (/vue_shared/).test(module.resource);

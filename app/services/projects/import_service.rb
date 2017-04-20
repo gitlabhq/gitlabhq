@@ -59,7 +59,6 @@ module Projects
       project.repository.add_remote(project.import_type, project.import_url)
       project.repository.set_remote_as_mirror(project.import_type)
       project.repository.fetch_remote(project.import_type, forced: true)
-      project.repository.remove_remote(project.import_type)
     end
 
     def import_data

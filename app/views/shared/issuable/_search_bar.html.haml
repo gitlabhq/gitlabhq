@@ -16,13 +16,14 @@
             class: "check_all_issues left"
       .issues-other-filters.filtered-search-wrapper
         .filtered-search-box
-          = dropdown_tag(content_tag(:i, '', class: 'fa fa-history'),
-            options: { wrapper_class: "filtered-search-history-dropdown-wrapper",
-            toggle_class: "filtered-search-history-dropdown-toggle-button",
-            dropdown_class: "filtered-search-history-dropdown",
-            content_class: "filtered-search-history-dropdown-content",
-            title: "Recent searches" }) do
-            .js-filtered-search-history-dropdown
+          - if type != :boards_modal && type != :boards
+            = dropdown_tag(content_tag(:i, '', class: 'fa fa-history'),
+              options: { wrapper_class: "filtered-search-history-dropdown-wrapper",
+              toggle_class: "filtered-search-history-dropdown-toggle-button",
+              dropdown_class: "filtered-search-history-dropdown",
+              content_class: "filtered-search-history-dropdown-content",
+              title: "Recent searches" }) do
+              .js-filtered-search-history-dropdown
           .filtered-search-box-input-container
             .scroll-container
               %ul.tokens-container.list-unstyled

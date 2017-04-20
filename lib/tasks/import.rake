@@ -52,7 +52,6 @@ class NewImporter < ::Gitlab::GithubImport::Importer
       project.repository.add_remote(project.import_type, project.import_url)
       project.repository.set_remote_as_mirror(project.import_type)
       project.repository.fetch_remote(project.import_type, forced: true)
-      project.repository.remove_remote(project.import_type)
     rescue => e
       # Expire cache to prevent scenarios such as:
       # 1. First import failed, but the repo was imported successfully, so +exists?+ returns true

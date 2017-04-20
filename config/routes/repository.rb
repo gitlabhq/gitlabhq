@@ -1,4 +1,4 @@
-# All routing related to repositoty browsing
+# All routing related to repository browsing
 
 resource :repository, only: [:create] do
   member do
@@ -6,83 +6,91 @@ resource :repository, only: [:create] do
   end
 end
 
-resources :refs, only: [] do
-  collection do
-    get 'switch'
+# Don't use format parameter as file extension (old 3.0.x behavior)
+# See http://guides.rubyonrails.org/routing.html#route-globbing-and-wildcard-segments
+scope format: false do
+  get '/compare/:from...:to', to: 'compare#show', as: 'compare', constraints: { from: /.+/, to: /.+/ }
+
+  resources :compare, only: [:index, :create] do
+    collection do
+      get :diff_for_path
+    end
   end
 
-  member do
-    # tree viewer logs
-    get 'logs_tree', constraints: { id: Gitlab::Regex.git_reference_regex }
-    # Directories with leading dots erroneously get rejected if git
-    # ref regex used in constraints. Regex verification now done in controller.
-    get 'logs_tree/*path' => 'refs#logs_tree', as: :logs_file, constraints: {
-      id: /.*/,
-      path: /.*/
-    }
+  resources :refs, only: [] do
+    collection do
+      get 'switch'
+    end
+
+    member do
+      # tree viewer logs
+      get 'logs_tree', constraints: { id: Gitlab::Regex.git_reference_regex }
+      # Directories with leading dots erroneously get rejected if git
+      # ref regex used in constraints. Regex verification now done in controller.
+      get 'logs_tree/*path', action: :logs_tree, as: :logs_file, format: false, constraints: {
+        id: /.*/,
+        path: /.*/
+      }
+    end
+  end
+
+  scope constraints: { id: Gitlab::Regex.git_reference_regex } do
+    resources :network, only: [:show]
+
+    resources :graphs, only: [:show] do
+      member do
+        get :charts
+        get :commits
+        get :ci
+        get :languages
+      end
+    end
+
+    resources :branches, only: [:index, :new, :create, :destroy]
+    delete :merged_branches, controller: 'branches', action: :destroy_all_merged
+    resources :tags, only: [:index, :show, :new, :create, :destroy] do
+      resource :release, only: [:edit, :update]
+    end
+
+    resources :protected_branches, only: [:index, :show, :create, :update, :destroy, :patch], constraints: { id: Gitlab::Regex.git_reference_regex } do
+      ## EE-specific
+      scope module: :protected_branches do
+        resources :merge_access_levels, only: [:destroy]
+        resources :push_access_levels, only: [:destroy]
+      end
+    end
+
+    resources :protected_tags, only: [:index, :show, :create, :update, :destroy]
+  end
+
+  scope constraints: { id: /.+/ }  do
+    scope controller: :blob do
+      get '/new/*id', action: :new, as: :new_blob
+      post '/create/*id', action: :create, as: :create_blob
+      get '/edit/*id', action: :edit, as: :edit_blob
+      put '/update/*id', action: :update, as: :update_blob
+      post '/preview/*id', action: :preview, as: :preview_blob
+
+      scope path: '/blob/*id', as: :blob do
+        get :diff
+        get '/', action: :show
+        delete '/', action: :destroy
+        post '/', action: :create
+        put '/', action: :update
+      end
+    end
+
+    get '/tree/*id', to: 'tree#show', as: :tree
+    get '/raw/*id', to: 'raw#show', as: :raw
+    get '/blame/*id', to: 'blame#show', as: :blame
+    get '/commits/*id', to: 'commits#show', as: :commits
+
+    post '/create_dir/*id', to: 'tree#create_dir', as: :create_dir
+
+    scope controller: :find_file do
+      get '/find_file/*id', action: :show, as: :find_file
+
+      get '/files/*id', action: :list, as: :files
+    end
   end
 end
-
-get '/new/*id', to: 'blob#new', constraints: { id: /.+/ }, as: 'new_blob'
-post '/create/*id', to: 'blob#create', constraints: { id: /.+/ }, as: 'create_blob'
-get '/edit/*id', to: 'blob#edit', constraints: { id: /.+/ }, as: 'edit_blob'
-put '/update/*id', to: 'blob#update', constraints: { id: /.+/ }, as: 'update_blob'
-post '/preview/*id', to: 'blob#preview', constraints: { id: /.+/ }, as: 'preview_blob'
-
-scope('/blob/*id', as: :blob, controller: :blob, constraints: { id: /.+/, format: false }) do
-  get :diff
-  get '/', action: :show
-  delete '/', action: :destroy
-  post '/', action: :create
-  put '/', action: :update
-end
-
-get(
-  '/raw/*id',
-  to: 'raw#show',
-  constraints: { id: /.+/, format: /(html|js)/ },
-  as: :raw
-)
-
-get(
-  '/tree/*id',
-  to: 'tree#show',
-  constraints: { id: /.+/, format: /(html|js)/ },
-  as: :tree
-)
-
-get(
-  '/find_file/*id',
-  to: 'find_file#show',
-  constraints: { id: /.+/, format: /html/ },
-  as: :find_file
-)
-
-get(
-  '/files/*id',
-  to: 'find_file#list',
-  constraints: { id: /(?:[^.]|\.(?!json$))+/, format: /json/ },
-  as: :files
-)
-
-post(
-  '/create_dir/*id',
-    to: 'tree#create_dir',
-    constraints: { id: /.+/ },
-    as: 'create_dir'
-)
-
-get(
-  '/blame/*id',
-  to: 'blame#show',
-  constraints: { id: /.+/, format: /(html|js)/ },
-  as: :blame
-)
-
-# File/dir history
-get(
-  '/commits/*id',
-  to: 'commits#show',
-  constraints: { id: /.+/, format: false },
-  as: :commits
-)

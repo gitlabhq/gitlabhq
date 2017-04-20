@@ -20,7 +20,6 @@ const ResolveBtn = Vue.extend({
     return {
       discussions: CommentsStore.state,
       loading: false,
-      note: {},
     };
   },
   watch: {
@@ -32,6 +31,9 @@ const ResolveBtn = Vue.extend({
   computed: {
     discussion: function () {
       return this.discussions[this.discussionId];
+    },
+    note: function () {
+      return this.discussion ? this.discussion.getNote(this.noteId) : {};
     },
     buttonText: function () {
       if (this.isResolved) {
@@ -111,8 +113,6 @@ const ResolveBtn = Vue.extend({
       authorAvatar: this.authorAvatar,
       noteTruncated: this.noteTruncated,
     });
-
-    this.note = this.discussion.getNote(this.noteId);
   }
 });
 
