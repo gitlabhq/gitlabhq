@@ -169,7 +169,10 @@
     w.gl.utils.getSelectedFragment = () => {
       const selection = window.getSelection();
       if (selection.rangeCount === 0) return null;
-      const documentFragment = selection.getRangeAt(0).cloneContents();
+      const documentFragment = document.createDocumentFragment();
+      for (let i = 0; i < selection.rangeCount; i += 1) {
+        documentFragment.appendChild(selection.getRangeAt(i).cloneContents());
+      }
       if (documentFragment.textContent.length === 0) return null;
 
       return documentFragment;
