@@ -135,7 +135,6 @@ ActiveRecord::Schema.define(version: 20170419001229) do
     t.integer "geo_status_timeout", default: 10
     t.string "uuid"
     t.decimal "polling_interval_multiplier", default: 1.0, null: false
-<<<<<<< HEAD
     t.boolean "elasticsearch_experimental_indexer"
   end
 
@@ -144,10 +143,6 @@ ActiveRecord::Schema.define(version: 20170419001229) do
     t.integer "user_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-=======
-    t.boolean "usage_ping_enabled", default: true, null: false
-    t.string "uuid"
->>>>>>> ce/master
   end
 
   create_table "approver_groups", force: :cascade do |t|

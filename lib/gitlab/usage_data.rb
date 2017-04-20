@@ -26,20 +26,14 @@ module Gitlab
             deploy_keys: DeployKey.count,
             deployments: Deployment.count,
             environments: Environment.count,
-<<<<<<< HEAD
             geo_nodes: GeoNode.count,
-=======
->>>>>>> ce/master
             groups: Group.count,
             issues: Issue.count,
             keys: Key.count,
             labels: Label.count,
-<<<<<<< HEAD
             ldap_group_links: LdapGroupLink.count,
             ldap_keys: LDAPKey.count,
             ldap_users: User.ldap.count,
-=======
->>>>>>> ce/master
             lfs_objects: LfsObject.count,
             merge_requests: MergeRequest.count,
             milestones: Milestone.count,
@@ -49,16 +43,12 @@ module Gitlab
             projects_prometheus_active: PrometheusService.active.count,
             protected_branches: ProtectedBranch.count,
             releases: Release.count,
-<<<<<<< HEAD
             remote_mirrors: RemoteMirror.count,
-=======
->>>>>>> ce/master
             services: Service.where(active: true).count,
             snippets: Snippet.count,
             todos: Todo.count,
             uploads: Upload.count,
             web_hooks: WebHook.count
-<<<<<<< HEAD
           }.merge(service_desk_counts)
         }
       end
@@ -73,9 +63,7 @@ module Gitlab
           service_desk_issues: Issue.where(project: projects_with_service_desk,
                                            author: User.support_bot,
                                            confidential: true).count
-=======
           }
->>>>>>> ce/master
         }
       end
 
@@ -86,7 +74,6 @@ module Gitlab
           active_user_count: User.active.count,
           recorded_at: Time.now,
           mattermost_enabled: Gitlab.config.mattermost.enabled,
-<<<<<<< HEAD
           edition: 'EE'
         }
 
@@ -116,13 +103,6 @@ module Gitlab
           'EE'
         end
       end
-=======
-          edition: 'CE'
-        }
-
-        usage_data
-      end
->>>>>>> ce/master
     end
   end
 end

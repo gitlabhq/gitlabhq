@@ -389,14 +389,8 @@ const ShortcutsBlob = require('./shortcuts_blob');
         case 'admin':
           new Admin();
           switch (path[1]) {
-<<<<<<< HEAD
-            case 'application_settings':
-            case 'cohorts':
-              new gl.ApplicationSettings();
-=======
             case 'cohorts':
               new gl.UsagePing();
->>>>>>> ce/master
               break;
             case 'groups':
               new UsersSelect();

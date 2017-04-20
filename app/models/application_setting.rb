@@ -259,7 +259,6 @@ class ApplicationSetting < ActiveRecord::Base
       user_default_external: false,
       polling_interval_multiplier: 1,
       usage_ping_enabled: true
-<<<<<<< HEAD
     }
   end
 
@@ -270,8 +269,6 @@ class ApplicationSetting < ActiveRecord::Base
       elasticsearch_aws_region: ENV['ELASTIC_REGION'] || 'us-east-1',
       minimum_mirror_sync_time: Gitlab::Mirror::FIFTEEN,
       repository_size_limit: 0
-=======
->>>>>>> ce/master
     }
   end
 
