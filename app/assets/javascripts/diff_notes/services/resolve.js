@@ -51,8 +51,10 @@ class ResolveServiceClass {
 
         discussion.updateHeadline(data);
       } else {
-        new Flash('An error occurred when trying to resolve a discussion. Please try again.', 'alert');
+        throw new Error('An error occurred when trying to resolve discussion.');
       }
+    }).catch(() => {
+      new Flash('An error occurred when trying to resolve a discussion. Please try again.');
     });
   }
 

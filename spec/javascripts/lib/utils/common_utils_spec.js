@@ -1,3 +1,5 @@
+/* eslint-disable promise/catch-or-return */
+
 require('~/lib/utils/common_utils');
 
 (() => {

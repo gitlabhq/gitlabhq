@@ -64,6 +64,8 @@ const ResolveBtn = Vue.extend({
       });
     },
     resolve: function () {
+      const errorFlashMsg = 'An error occurred when trying to resolve a comment. Please try again.';
+
       if (!this.canResolve) return;
 
       let promise;
@@ -87,10 +89,12 @@ const ResolveBtn = Vue.extend({
           CommentsStore.update(this.discussionId, this.noteId, !this.isResolved, resolved_by);
           this.discussion.updateHeadline(data);
         } else {
-          new Flash('An error occurred when trying to resolve a comment. Please try again.', 'alert');
+          new Flash(errorFlashMsg);
         }
 
         this.updateTooltip();
+      }).catch(() => {
+        new Flash(errorFlashMsg);
       });
     }
   },
