@@ -1,6 +1,6 @@
 # PlantUML & GitLab
 
-> [Introduced][ce-7810] in GitLab 8.16.
+> [Introduced][ce-8537] in GitLab 8.16.
 
 When [PlantUML](http://plantuml.com) integration is enabled and configured in
 GitLab we are able to create simple diagrams in AsciiDoc and Markdown documents
@@ -93,3 +93,5 @@ Some parameters can be added to the AsciiDoc block definition:
  - *height*: Height attribute added to the img tag.
 
 Markdown does not support any parameters and will always use PNG format.
+
+[ce-8537]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8537
