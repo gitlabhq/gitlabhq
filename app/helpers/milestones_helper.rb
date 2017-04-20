@@ -127,7 +127,7 @@ module MilestonesHelper
       end
 
     if message
-      message += link_to "More information.", help_page_path('workflow/milestones'), class: 'burndown-docs-link'
+      message += link_to "More information.", help_page_path('user/project/milestones/index', anchor: 'burndown-charts'), class: 'burndown-docs-link'
 
       content_tag(:div, message.html_safe, id: "data-warning", class: "settings-message prepend-top-20")
     end
