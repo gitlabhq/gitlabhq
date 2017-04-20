@@ -6,54 +6,6 @@ import RecentSearchesStore from './stores/recent_searches_store';
 import RecentSearchesService from './services/recent_searches_service';
 import eventHub from './event_hub';
 
-<<<<<<< HEAD
-(() => {
-  class FilteredSearchManager {
-    constructor(page) {
-      this.container = FilteredSearchContainer.container;
-      this.filteredSearchInput = this.container.querySelector('.filtered-search');
-      this.filteredSearchInputForm = this.filteredSearchInput.form;
-      this.clearSearchButton = this.container.querySelector('.clear-search');
-      this.tokensContainer = this.container.querySelector('.tokens-container');
-      this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeys;
-
-      if (page === 'issues' || page === 'boards') {
-        this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeysWithWeights;
-      }
-
-      this.recentSearchesStore = new RecentSearchesStore();
-      let recentSearchesKey = 'issue-recent-searches';
-      if (page === 'merge_requests') {
-        recentSearchesKey = 'merge-request-recent-searches';
-      }
-      this.recentSearchesService = new RecentSearchesService(recentSearchesKey);
-
-      // Fetch recent searches from localStorage
-      this.fetchingRecentSearchesPromise = this.recentSearchesService.fetch()
-        .catch(() => {
-          // eslint-disable-next-line no-new
-          new Flash('An error occured while parsing recent searches');
-          // Gracefully fail to empty array
-          return [];
-        })
-        .then((searches) => {
-          // Put any searches that may have come in before
-          // we fetched the saved searches ahead of the already saved ones
-          const resultantSearches = this.recentSearchesStore.setRecentSearches(
-            this.recentSearchesStore.state.recentSearches.concat(searches),
-          );
-          this.recentSearchesService.save(resultantSearches);
-        });
-
-      if (this.filteredSearchInput) {
-        this.tokenizer = gl.FilteredSearchTokenizer;
-        this.dropdownManager = new gl.FilteredSearchDropdownManager(this.filteredSearchInput.getAttribute('data-base-endpoint') || '', page);
-
-        this.recentSearchesRoot = new RecentSearchesRoot(
-          this.recentSearchesStore,
-          this.recentSearchesService,
-          document.querySelector('.js-filtered-search-history-dropdown'),
-=======
 class FilteredSearchManager {
   constructor(page) {
     this.container = FilteredSearchContainer.container;
@@ -62,6 +14,10 @@ class FilteredSearchManager {
     this.clearSearchButton = this.container.querySelector('.clear-search');
     this.tokensContainer = this.container.querySelector('.tokens-container');
     this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeys;
+
+    if (page === 'issues' || page === 'boards') {
+      this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeysWithWeights;
+    }
 
     this.recentSearchesStore = new RecentSearchesStore();
     let recentSearchesKey = 'issue-recent-searches';
@@ -83,7 +39,6 @@ class FilteredSearchManager {
         // we fetched the saved searches ahead of the already saved ones
         const resultantSearches = this.recentSearchesStore.setRecentSearches(
           this.recentSearchesStore.state.recentSearches.concat(searches),
->>>>>>> ce/master
         );
         this.recentSearchesService.save(resultantSearches);
       });
@@ -154,14 +109,6 @@ class FilteredSearchManager {
     eventHub.$on('recentSearchesItemSelected', this.onrecentSearchesItemSelectedWrapper);
   }
 
-<<<<<<< HEAD
-        if (this.filteredSearchInput.value === '' && lastVisualToken) {
-          if (this.canEdit && !this.canEdit(lastVisualToken)) return;
-
-          this.filteredSearchInput.value = gl.FilteredSearchVisualTokens.getLastTokenPartial();
-          gl.FilteredSearchVisualTokens.removeLastTokenPartial();
-        }
-=======
   unbindEvents() {
     this.filteredSearchInputForm.removeEventListener('submit', this.handleFormSubmit);
     this.filteredSearchInput.removeEventListener('input', this.setDropdownWrapper);
@@ -188,7 +135,6 @@ class FilteredSearchManager {
     // 46 = Delete Key
     if (e.keyCode === 8 || e.keyCode === 46) {
       const { lastVisualToken } = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
->>>>>>> ce/master
 
       if (this.filteredSearchInput.value === '' && lastVisualToken) {
         this.filteredSearchInput.value = gl.FilteredSearchVisualTokens.getLastTokenPartial();
@@ -276,18 +222,9 @@ class FilteredSearchManager {
   editToken(e) {
     const token = e.target.closest('.js-visual-token');
 
-<<<<<<< HEAD
-      if (this.canEdit && !this.canEdit(token)) return;
-
-      if (token) {
-        gl.FilteredSearchVisualTokens.editToken(token);
-        this.tokenChange();
-      }
-=======
     if (token) {
       gl.FilteredSearchVisualTokens.editToken(token);
       this.tokenChange();
->>>>>>> ce/master
     }
   }
 
@@ -335,21 +272,11 @@ class FilteredSearchManager {
 
     const removeElements = [];
 
-<<<<<<< HEAD
-      [].forEach.call(this.tokensContainer.children, (t) => {
-        if (t.classList.contains('js-visual-token')) {
-          if (this.canEdit && !this.canEdit(t)) return;
-
-          removeElements.push(t);
-        }
-      });
-=======
     [].forEach.call(this.tokensContainer.children, (t) => {
       if (t.classList.contains('js-visual-token')) {
         removeElements.push(t);
       }
     });
->>>>>>> ce/master
 
     removeElements.forEach((el) => {
       el.parentElement.removeChild(el);

@@ -1,26 +1,6 @@
 import DropLab from '~/droplab/drop_lab';
 import FilteredSearchContainer from './container';
 
-<<<<<<< HEAD
-(() => {
-  class FilteredSearchDropdownManager {
-    constructor(baseEndpoint = '', page) {
-      this.container = FilteredSearchContainer.container;
-      this.baseEndpoint = baseEndpoint.replace(/\/$/, '');
-      this.tokenizer = gl.FilteredSearchTokenizer;
-      this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeys;
-      this.filteredSearchInput = this.container.querySelector('.filtered-search');
-      this.page = page;
-
-      if (this.page === 'issues' || this.page === 'boards') {
-        this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeysWithWeights;
-      }
-
-      this.setupMapping();
-
-      this.cleanupWrapper = this.cleanup.bind(this);
-      document.addEventListener('beforeunload', this.cleanupWrapper);
-=======
 class FilteredSearchDropdownManager {
   constructor(baseEndpoint = '', page) {
     this.container = FilteredSearchContainer.container;
@@ -29,6 +9,10 @@ class FilteredSearchDropdownManager {
     this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeys;
     this.filteredSearchInput = this.container.querySelector('.filtered-search');
     this.page = page;
+
+    if (this.page === 'issues' || this.page === 'boards') {
+      this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeysWithWeights;
+    }
 
     this.setupMapping();
 
@@ -40,7 +24,6 @@ class FilteredSearchDropdownManager {
     if (this.droplab) {
       this.droplab.destroy();
       this.droplab = null;
->>>>>>> ce/master
     }
 
     this.setupMapping();
@@ -78,48 +61,16 @@ class FilteredSearchDropdownManager {
         element: this.container.querySelector('#js-dropdown-hint'),
       },
     };
+
+    if (this.page === 'issues' || this.page === 'boards') {
+      this.mapping.weight = {
+        reference: null,
+        gl: 'DropdownNonUser',
+        element: document.querySelector('#js-dropdown-weight'),
+      };
+    }
   }
 
-<<<<<<< HEAD
-    setupMapping() {
-      this.mapping = {
-        author: {
-          reference: null,
-          gl: 'DropdownUser',
-          element: this.container.querySelector('#js-dropdown-author'),
-        },
-        assignee: {
-          reference: null,
-          gl: 'DropdownUser',
-          element: this.container.querySelector('#js-dropdown-assignee'),
-        },
-        milestone: {
-          reference: null,
-          gl: 'DropdownNonUser',
-          extraArguments: [`${this.baseEndpoint}/milestones.json`, '%'],
-          element: this.container.querySelector('#js-dropdown-milestone'),
-        },
-        label: {
-          reference: null,
-          gl: 'DropdownNonUser',
-          extraArguments: [`${this.baseEndpoint}/labels.json`, '~'],
-          element: this.container.querySelector('#js-dropdown-label'),
-        },
-        hint: {
-          reference: null,
-          gl: 'DropdownHint',
-          element: this.container.querySelector('#js-dropdown-hint'),
-        },
-      };
-
-      if (this.page === 'issues' || this.page === 'boards') {
-        this.mapping.weight = {
-          reference: null,
-          gl: 'DropdownNonUser',
-          element: document.querySelector('#js-dropdown-weight'),
-        };
-      }
-=======
   static addWordToInput(tokenName, tokenValue = '', clicked = false) {
     const input = FilteredSearchContainer.container.querySelector('.filtered-search');
 
@@ -128,7 +79,6 @@ class FilteredSearchDropdownManager {
 
     if (clicked) {
       gl.FilteredSearchVisualTokens.moveInputToTheRight();
->>>>>>> ce/master
     }
   }
 

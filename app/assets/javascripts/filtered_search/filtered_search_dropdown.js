@@ -103,23 +103,6 @@ class FilteredSearchDropdown {
     }
   }
 
-<<<<<<< HEAD
-    resetFilters() {
-      const hook = this.getCurrentHook();
-
-      if (hook) {
-        const data = hook.list.data || [];
-
-        if (!data) return;
-
-        const results = data.map((o) => {
-          const updated = o;
-          updated.droplab_hidden = false;
-          return updated;
-        });
-        hook.list.render(results);
-      }
-=======
   resetFilters() {
     const hook = this.getCurrentHook();
 
@@ -131,7 +114,6 @@ class FilteredSearchDropdown {
         return updated;
       });
       hook.list.render(results);
->>>>>>> ce/master
     }
   }
 }
