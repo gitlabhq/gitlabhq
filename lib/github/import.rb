@@ -1,5 +1,6 @@
 module Github
   class Import
+
     class MergeRequest < ::MergeRequest
       self.table_name = 'merge_requests'
 
@@ -47,6 +48,7 @@ module Github
       fetch_milestones
       fetch_pull_requests
       fetch_issues
+      fetch_wiki_repository
       expire_repository_cache
 
       errors
@@ -57,11 +59,27 @@ module Github
     def fetch_repository
       begin
         project.create_repository
-        project.repository.add_remote('github', "https://{token}@github.com/#{repo}.git")
+        project.repository.add_remote('github', "https://{options.fetch(:token)}@github.com/#{repo}.git")
         project.repository.set_remote_as_mirror('github')
         project.repository.fetch_remote('github', forced: true)
       rescue Gitlab::Shell::Error => e
         error(:project, "https://github.com/#{repo}.git", e.message)
+      end
+    end
+
+    def fetch_wiki_repository
+      wiki_url  = "https://{options.fetch(:token)}@github.com/#{repo}.wiki.git"
+      wiki_path = "#{project.path_with_namespace}.wiki"
+
+      unless project.wiki.repository_exists?
+        gitlab_shell.import_repository(project.repository_storage_path, wiki_path, wiki_url)
+      end
+    rescue Gitlab::Shell::Error => e
+      # GitHub error message when the wiki repo has not been created,
+      # this means that repo has wiki enabled, but have no pages. So,
+      # we can skip the import.
+      if e.message !~ /repository not exported/
+        errors(:wiki, wiki_url, e.message)
       end
     end
 
@@ -163,6 +181,7 @@ module Github
             comments_url = "/repos/#{repo}/issues/#{pull_request.iid}/comments"
             fetch_comments(merge_request, :comment, comments_url)
           rescue => e
+            error(:pull_request, pull_request.url, e.message)
           ensure
             clean_up_restored_branches(pull_request)
           end
@@ -209,8 +228,8 @@ module Github
               issue.updated_at   = representation.updated_at
               issue.save!(validate: false)
 
+              # Fetch comments
               if representation.has_comments?
-                # Fetch comments
                 comments_url = "/repos/#{repo}/issues/#{issue.iid}/comments"
                 fetch_comments(issue, :comment, comments_url)
               end
