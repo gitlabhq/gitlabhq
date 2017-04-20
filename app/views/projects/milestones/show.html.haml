@@ -17,7 +17,7 @@
     .header-text-content
       %span.identifier
         %strong
-          Milestone #{@milestone.to_reference}
+          Milestone
       - if @milestone.due_date || @milestone.start_date
         = milestone_date_range(@milestone)
     .milestone-buttons
