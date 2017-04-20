@@ -354,6 +354,8 @@ import eventHub from './event_hub';
           const resultantSearches = this.recentSearchesStore.addRecentSearch(searchQuery);
           this.recentSearchesService.save(resultantSearches);
         }
+      }).catch(() => {
+        // https://gitlab.com/gitlab-org/gitlab-ce/issues/30821
       });
     }
 

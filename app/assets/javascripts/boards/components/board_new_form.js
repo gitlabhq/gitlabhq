@@ -100,6 +100,9 @@ const extraMilestones = require('../mixins/extra_milestones');
               const data = resp.json();
               gl.utils.visitUrl(`${Store.rootPath}/${data.id}`);
             }
+          })
+          .catch(() => {
+            // https://gitlab.com/gitlab-org/gitlab-ce/issues/30821
           });
       },
       cancel() {

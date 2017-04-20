@@ -87,6 +87,8 @@ require('./board_new_form');
           gl.boardService.allBoards().then((resp) => {
             this.loading = false;
             this.boards = resp.json();
+          }).catch(() => {
+            this.loading = false;
           });
         }
       },

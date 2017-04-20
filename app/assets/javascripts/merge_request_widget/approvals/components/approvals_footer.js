@@ -52,6 +52,8 @@ Vue.component('approvals-footer', {
       this.unapproving = true;
       gl.ApprovalsStore.unapprove().then(() => {
         this.unapproving = false;
+      }).catch(() => {
+        this.unapproving = false;
       });
     },
   },
