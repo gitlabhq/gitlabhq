@@ -1,4 +1,4 @@
-/* eslint-disable class-methods-use-this */
+/* eslint-disable class-methods-use-this, promise/catch-or-return */
 /* eslint-disable no-new */
 /* global Flash */
 (() => {

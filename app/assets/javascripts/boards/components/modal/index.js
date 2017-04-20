@@ -51,11 +51,13 @@ gl.issueBoards.IssuesModal = Vue.extend({
     showAddIssuesModal() {
       if (this.showAddIssuesModal && !this.issues.length) {
         this.loading = true;
+        const loadingDone = () => {
+          this.loading = false;
+        };
 
         this.loadIssues()
-          .then(() => {
-            this.loading = false;
-          });
+          .then(loadingDone)
+          .catch(loadingDone);
       } else if (!this.showAddIssuesModal) {
         this.issues = [];
         this.selectedIssues = [];
@@ -67,11 +69,13 @@ gl.issueBoards.IssuesModal = Vue.extend({
         if (this.$el.tagName) {
           this.page = 1;
           this.filterLoading = true;
+          const loadingDone = () => {
+            this.filterLoading = false;
+          };
 
           this.loadIssues(true)
-            .then(() => {
-              this.filterLoading = false;
-            });
+            .then(loadingDone)
+            .catch(loadingDone);
         }
       },
       deep: true,

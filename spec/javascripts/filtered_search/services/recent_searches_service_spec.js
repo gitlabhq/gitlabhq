@@ -1,3 +1,5 @@
+/* eslint-disable promise/catch-or-return */
+
 import RecentSearchesService from '~/filtered_search/services/recent_searches_service';
 
 describe('RecentSearchesService', () => {

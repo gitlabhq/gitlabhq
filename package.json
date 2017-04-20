@@ -61,6 +61,7 @@
     "eslint-plugin-filenames": "^1.1.0",
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jasmine": "^2.1.0",
+    "eslint-plugin-promise": "^3.5.0",
     "istanbul": "^0.4.5",
     "jasmine-core": "^2.5.2",
     "jasmine-jquery": "^2.1.1",
