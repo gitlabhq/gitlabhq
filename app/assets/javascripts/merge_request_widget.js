@@ -154,7 +154,7 @@ require('./smart_interval');
       $('.ci-widget-fetching').show();
       return $.getJSON(this.opts.ci_status_url, (function(_this) {
         return function(data) {
-          var message, status, title;
+          var message, status, title, callback;
           _this.status = data.status;
           _this.hasCi = data.has_ci;
           _this.updateMergeButton(_this.status, _this.hasCi);
@@ -174,6 +174,12 @@ require('./smart_interval');
             if (data.sha) {
               _this.opts.ci_sha = data.sha;
               _this.updateCommitUrls(data.sha);
+            }
+            if (data.status === "success" || data.status === "failed") {
+              callback = function() {
+                return _this.getMergeStatus();
+              };
+              return setTimeout(callback, 2000);
             }
             if (showNotification && data.status) {
               status = _this.ciLabelForStatus(data.status);

@@ -141,6 +141,27 @@ describe 'Merge request', :feature, :js do
     end
   end
 
+  context 'view merge request with MWPS enabled but automatically merge fails' do
+    before do
+      merge_request.update(
+        merge_when_pipeline_succeeds: true,
+        merge_user: merge_request.author,
+        merge_error: 'Something went wrong'
+      )
+
+      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+    end
+
+    it 'shows information about the merge error' do
+      # Wait for the `ci_status` and `merge_check` requests
+      wait_for_ajax
+
+      page.within('.mr-widget-body') do
+        expect(page).to have_content('Something went wrong')
+      end
+    end
+  end
+
   context 'merge error' do
     before do
       allow_any_instance_of(Repository).to receive(:merge).and_return(false)

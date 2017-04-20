@@ -19,6 +19,8 @@
       = render 'projects/merge_requests/widget/open/conflicts'
     - elsif @merge_request.work_in_progress?
       = render 'projects/merge_requests/widget/open/wip'
+    - elsif @merge_request.merge_when_pipeline_succeeds? && @merge_request.merge_error.present?
+      = render 'projects/merge_requests/widget/open/error'
     - elsif @merge_request.merge_when_pipeline_succeeds?
       = render 'projects/merge_requests/widget/open/merge_when_pipeline_succeeds'
     - elsif !@merge_request.can_be_merged_by?(current_user)
