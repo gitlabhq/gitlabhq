@@ -50,6 +50,7 @@ module Github
       fetch_issues
       fetch_wiki_repository
       expire_repository_cache
+      track_errors
 
       errors
     end
@@ -367,6 +368,15 @@ module Github
 
     def expire_repository_cache
       repository.expire_content_cache
+    end
+
+    def track_errors
+      return unless errors.any?
+
+      project.update_column(:import_error, {
+        message: 'The remote data could not be fully imported.',
+        errors: errors
+      }.to_json)
     end
 
     def error(type, url, message)
