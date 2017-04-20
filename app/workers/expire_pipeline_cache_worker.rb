@@ -2,8 +2,8 @@ class ExpirePipelineCacheWorker
   include Sidekiq::Worker
   include PipelineQueue
 
-  def perform(id)
-    pipeline = Ci::Pipeline.find(id)
+  def perform(pipeline_id)
+    pipeline = Ci::Pipeline.find(pipeline_id)
     project = pipeline.project
     store = Gitlab::EtagCaching::Store.new
 

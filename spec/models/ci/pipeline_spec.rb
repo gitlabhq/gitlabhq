@@ -1037,6 +1037,30 @@ describe Ci::Pipeline, models: true do
     end
   end
 
+  describe "#all_merge_requests" do
+    let(:project) { create(:project, :repository) }
+    let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: project.repository.commit('master').id) }
+
+    it "returns merge requests whose `diff_head_sha` matches the pipeline's SHA" do
+      merge_request = create(:merge_request, source_project: project, source_branch: pipeline.ref)
+
+      expect(pipeline.all_merge_requests).to eq([merge_request])
+    end
+
+    it "returns merge requests whose source branch matches the pipeline's source branch" do
+      pipeline = create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: project.repository.commit('master^').id)
+      merge_request = create(:merge_request, source_project: project, source_branch: pipeline.ref)
+
+      expect(pipeline.all_merge_requests).to eq([merge_request])
+    end
+
+    it "doesn't return merge requests whose source branch doesn't match the pipeline's ref" do
+      create(:merge_request, source_project: project, source_branch: 'feature', target_branch: 'master')
+
+      expect(pipeline.all_merge_requests).to be_empty
+    end
+  end
+
   describe '#stuck?' do
     before do
       create(:ci_build, :pending, pipeline: pipeline)

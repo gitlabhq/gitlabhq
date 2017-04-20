@@ -1,0 +1,4 @@
+---
+title: Properly expire cache for all MRs of a pipeline
+merge_request: 10770
+author:

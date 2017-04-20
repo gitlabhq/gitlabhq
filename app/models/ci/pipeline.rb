@@ -80,22 +80,22 @@ module Ci
       end
 
       after_transition [:created, :pending] => :running do |pipeline|
-        pipeline.run_after_commit { PipelineMetricsWorker.perform_async(id) }
+        pipeline.run_after_commit { PipelineMetricsWorker.perform_async(pipeline.id) }
       end
 
       after_transition any => [:success] do |pipeline|
-        pipeline.run_after_commit { PipelineMetricsWorker.perform_async(id) }
+        pipeline.run_after_commit { PipelineMetricsWorker.perform_async(pipeline.id) }
       end
 
       after_transition [:created, :pending, :running] => :success do |pipeline|
-        pipeline.run_after_commit { PipelineSuccessWorker.perform_async(id) }
+        pipeline.run_after_commit { PipelineSuccessWorker.perform_async(pipeline.id) }
       end
 
       after_transition do |pipeline, transition|
         next if transition.loopback?
 
         pipeline.run_after_commit do
-          PipelineHooksWorker.perform_async(id)
+          PipelineHooksWorker.perform_async(pipeline.id)
           ExpirePipelineCacheWorker.perform_async(pipeline.id)
         end
       end
@@ -386,9 +386,7 @@ module Ci
 
     # All the merge requests for which the current pipeline runs/ran against
     def all_merge_requests
-      @all_merge_requests ||= project.merge_requests
-        .where(source_branch: ref)
-        .select { |merge_request| merge_request.all_pipelines.includes(self) }
+      @all_merge_requests ||= project.merge_requests.where(source_branch: ref)
     end
 
     def detailed_status(current_user)
