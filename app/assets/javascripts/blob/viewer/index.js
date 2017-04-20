@@ -1,4 +1,4 @@
-``/* eslint-disable no-new */
+/* eslint-disable no-new */
 /* global Flash */
 export default class BlobViewer {
   constructor() {
@@ -50,7 +50,7 @@ export default class BlobViewer {
     if (this.simpleViewer.getAttribute('data-loaded')) {
       this.copySourceBtn.setAttribute('title', 'Copy source to clipboard');
       this.copySourceBtn.classList.remove('disabled');
-    } else if (this.activeViewer == this.simpleViewer) {
+    } else if (this.activeViewer === this.simpleViewer) {
       this.copySourceBtn.setAttribute('title', 'Wait for the source to load to copy it to the clipboard');
       this.copySourceBtn.classList.add('disabled');
     } else {
@@ -61,12 +61,11 @@ export default class BlobViewer {
     $(this.copySourceBtn).tooltip('fixTitle');
   }
 
-  loadViewer(viewerParam, resolve, reject) {
+  loadViewer(viewerParam) {
     const viewer = viewerParam;
     const url = viewer.getAttribute('data-url');
 
     if (!url || viewer.getAttribute('data-loaded') || viewer.getAttribute('data-loading')) {
-      if (resolve) resolve();
       return;
     }
 
@@ -75,9 +74,6 @@ export default class BlobViewer {
     $.ajax({
       url,
       dataType: 'JSON',
-    })
-    .fail(() => {
-      if (reject) reject();
     })
     .done((data) => {
       viewer.innerHTML = data.html;
@@ -88,16 +84,14 @@ export default class BlobViewer {
       this.$blobContentHolder.trigger('highlight:line');
 
       this.toggleCopyButtonState();
-
-      if (resolve) resolve();
     });
   }
 
   switchToViewer(name) {
     const newViewer = document.querySelector(`.blob-viewer[data-type='${name}']`);
-    if (this.activeViewer == newViewer) return;
+    if (this.activeViewer === newViewer) return;
 
-    const oldButton = document.querySelector('.js-blob-viewer-switcher.active')
+    const oldButton = document.querySelector('.js-blob-viewer-switcher.active');
     const newButton = document.querySelector(`.js-blob-viewer-switcher[data-viewer='${name}']`);
     const oldViewer = document.querySelector(`.blob-viewer:not([data-type='${name}'])`);
 
@@ -113,18 +107,13 @@ export default class BlobViewer {
     if (oldViewer) {
       oldViewer.classList.add('hidden');
     }
-    
+
     newViewer.classList.remove('hidden');
 
     this.activeViewer = newViewer;
 
     this.toggleCopyButtonState();
 
-    return new Promise((resolve, reject) => {
-      this.loadViewer(newViewer, resolve, reject);
-    })
-    .catch(() => {
-      new Flash('Error loading file');
-    });
+    this.loadViewer(newViewer);
   }
 }
