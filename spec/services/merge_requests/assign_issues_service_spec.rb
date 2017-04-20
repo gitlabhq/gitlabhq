@@ -21,11 +21,11 @@ describe MergeRequests::AssignIssuesService, services: true do
     expect(service.assignable_issues).to be_empty
   end
 
-   it 'ignores issues already assigned to any user' do
-     issue.assignees = [create(:user)]
+  it 'ignores issues already assigned to any user' do
+    issue.assignees = [create(:user)]
 
-     expect(service.assignable_issues).to be_empty
-   end
+    expect(service.assignable_issues).to be_empty
+  end
 
   it 'ignores all issues unless current_user is merge_request.author' do
     merge_request.update!(author: create(:user))
