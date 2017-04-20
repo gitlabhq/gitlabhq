@@ -28,11 +28,11 @@ global.cycleAnalytics.StageProductionComponent = Vue.extend({
             <a :href="issue.url" class="issue-link">#{{ issue.iid }}</a>
             &middot;
             <span>
-              Opened
+              {{ 'Opened' | translate }}
               <a :href="issue.url" class="issue-date">{{ issue.createdAt }}</a>
             </span>
             <span>
-            by
+            {{ 'by' | translate }}
             <a :href="issue.author.webUrl" class="issue-author-link">
               {{ issue.author.name }}
             </a>
