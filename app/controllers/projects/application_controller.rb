@@ -89,9 +89,4 @@ class Projects::ApplicationController < ApplicationController
   def builds_enabled
     return render_404 unless @project.feature_available?(:builds, current_user)
   end
-
-  def update_ref
-    branch_exists = @repository.find_branch(@target_branch)
-    @ref = @target_branch if branch_exists
-  end
 end
