@@ -36,6 +36,8 @@ export default {
     onClick() {
       this.isLoading = true;
 
+      $(this.$el).tooltip('destroy');
+
       this.service.postAction(this.retryUrl)
       .then(() => {
         this.isLoading = false;

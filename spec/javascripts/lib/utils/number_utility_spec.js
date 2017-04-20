@@ -1,4 +1,4 @@
-import { formatRelevantDigits } from '~/lib/utils/number_utils';
+import { formatRelevantDigits, bytesToKiB } from '~/lib/utils/number_utils';
 
 describe('Number Utils', () => {
   describe('formatRelevantDigits', () => {
@@ -36,6 +36,13 @@ describe('Number Utils', () => {
       const leftFromDecimal = formattedNumber.split('.')[0];
       expect(rightFromDecimal.length).toBe(1);
       expect(leftFromDecimal.length).toBe(3);
+    });
+  });
+
+  describe('bytesToKiB', () => {
+    it('calculates KiB for the given bytes', () => {
+      expect(bytesToKiB(1024)).toEqual(1);
+      expect(bytesToKiB(1000)).toEqual(0.9765625);
     });
   });
 });

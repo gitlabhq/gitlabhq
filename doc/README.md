@@ -6,10 +6,6 @@ All technical content published by GitLab lives in the documentation, including:
   - [User docs](#user-documentation): general documentation dedicated to regular users of GitLab
   - [Admin docs](#administrator-documentation): general documentation dedicated to administrators of GitLab instances
   - [Contributor docs](#contributor-documentation): general documentation on how to develop and contribute to GitLab
-- [Topics](topics/index.md): pages organized per topic, gathering all the
-  resources already published by GitLab related to a specific subject, including
-  general docs, [technical articles](development/writing_documentation.md#technical-articles),
-  blog posts and video tutorials.
 - [GitLab University](university/README.md): guides to learn Git and GitLab
   through courses and videos.
 
@@ -73,6 +69,7 @@ All technical content published by GitLab lives in the documentation, including:
 - [Sidekiq Troubleshooting](administration/troubleshooting/sidekiq.md) Debug when Sidekiq appears hung and is not processing jobs.
 - [System hooks](system_hooks/system_hooks.md) Notifications when users, projects and keys are changed.
 - [Update](update/README.md) Update guides to upgrade your installation.
+- [User cohorts](user/admin_area/user_cohorts.md) View user activity over time.
 - [Web terminals](administration/integration/terminal.md) Provide terminal access to environments from within GitLab.
 - [Welcome message](customization/welcome_message.md) Add a custom welcome message to the sign-in page.
 

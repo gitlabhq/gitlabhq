@@ -284,7 +284,11 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I see "Unable to create directory"' do
-    expect(page).to have_content('Directory already exists')
+    expect(page).to have_content('A directory with this name already exists')
+  end
+
+  step 'I see "Path can contain only..."' do
+    expect(page).to have_content('Path can contain only')
   end
 
   step 'I see a commit error message' do

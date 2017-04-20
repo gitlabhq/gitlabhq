@@ -3,6 +3,8 @@
 /* global ListLabel */
 import queryData from '../utils/query_data';
 
+const PER_PAGE = 20;
+
 class List {
   constructor (obj) {
     this.id = obj.id;
@@ -58,7 +60,9 @@ class List {
 
   nextPage () {
     if (this.issuesSize > this.issues.length) {
-      this.page += 1;
+      if (this.issues.length / PER_PAGE >= 1) {
+        this.page += 1;
+      }
 
       return this.getIssues(false);
     }
@@ -145,10 +149,7 @@ class List {
   }
 
   updateIssueLabel(issue, listFrom, moveBeforeIid, moveAfterIid) {
-    gl.boardService.moveIssue(issue.id, listFrom.id, this.id, moveBeforeIid, moveAfterIid)
-      .then(() => {
-        listFrom.getIssues(false);
-      });
+    gl.boardService.moveIssue(issue.id, listFrom.id, this.id, moveBeforeIid, moveAfterIid);
   }
 
   findIssue (id) {

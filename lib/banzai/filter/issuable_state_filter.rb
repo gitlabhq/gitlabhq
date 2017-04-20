@@ -9,6 +9,8 @@ module Banzai
       VISIBLE_STATES = %w(closed merged).freeze
 
       def call
+        return doc unless context[:issuable_state_filter_enabled]
+
         extractor = Banzai::IssuableExtractor.new(project, current_user)
         issuables = extractor.extract([doc])
 

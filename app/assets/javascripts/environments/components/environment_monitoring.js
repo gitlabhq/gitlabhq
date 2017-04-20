@@ -21,7 +21,6 @@ export default {
       class="btn monitoring-url has-tooltip"
       data-container="body"
       :href="monitoringUrl"
-      target="_blank"
       rel="noopener noreferrer nofollow"
       :title="title"
       :aria-label="title">

@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import pipelinesComp from '~/vue_pipelines_index/pipelines';
-import Store from '~/vue_pipelines_index/stores/pipelines_store';
+import pipelinesComp from '~/pipelines/pipelines';
+import Store from '~/pipelines/stores/pipelines_store';
 import pipelinesData from './mock_data';
 
 describe('Pipelines', () => {

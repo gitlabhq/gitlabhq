@@ -1208,7 +1208,7 @@ describe Projects::MergeRequestsController do
         expect(json_response['text']).to eq status.text
         expect(json_response['label']).to eq status.label
         expect(json_response['icon']).to eq status.icon
-        expect(json_response['favicon']).to eq status.favicon
+        expect(json_response['favicon']).to eq "/assets/ci_favicons/#{status.favicon}.ico"
       end
     end
 

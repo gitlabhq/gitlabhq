@@ -128,7 +128,7 @@ $(() => {
       },
       dismissOverviewDialog() {
         this.isOverviewDialogDismissed = true;
-        Cookies.set(OVERVIEW_DIALOG_COOKIE, '1');
+        Cookies.set(OVERVIEW_DIALOG_COOKIE, '1', { expires: 365 });
       },
     },
   });

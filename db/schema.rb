@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170413035209) do
+ActiveRecord::Schema.define(version: 20170419001229) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -116,6 +116,8 @@ ActiveRecord::Schema.define(version: 20170413035209) do
     t.integer "unique_ips_limit_time_window"
     t.boolean "unique_ips_limit_enabled", default: false, null: false
     t.decimal "polling_interval_multiplier", default: 1.0, null: false
+    t.boolean "usage_ping_enabled", default: true, null: false
+    t.string "uuid"
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -1140,6 +1142,8 @@ ActiveRecord::Schema.define(version: 20170413035209) do
     t.datetime "updated_at", null: false
   end
 
+  add_index "system_note_metadata", ["note_id"], name: "index_system_note_metadata_on_note_id", unique: true, using: :btree
+
   create_table "taggings", force: :cascade do |t|
     t.integer "tag_id"
     t.integer "taggable_id"
@@ -1301,6 +1305,7 @@ ActiveRecord::Schema.define(version: 20170413035209) do
     t.string "organization"
     t.boolean "authorized_projects_populated"
     t.boolean "ghost"
+    t.date "last_activity_on"
     t.boolean "notified_of_own_activity"
     t.boolean "require_two_factor_authentication_from_group", default: false, null: false
     t.integer "two_factor_grace_period", default: 48, null: false

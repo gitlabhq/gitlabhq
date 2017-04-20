@@ -211,7 +211,7 @@ describe Gitlab::GitAccess, lib: true do
         target_branch = project.repository.lookup('feature')
         source_branch = project.repository.create_file(
           user,
-          'John Doe',
+          'filename',
           'This is the file content',
           message: 'This is a good commit message',
           branch_name: unprotected_branch)
