@@ -27,11 +27,8 @@
       = render 'projects/merge_requests/widget/open/conflicts'
     - elsif @merge_request.work_in_progress?
       = render 'projects/merge_requests/widget/open/wip'
-<<<<<<< HEAD
     - elsif @merge_request.should_be_rebased?
       = render 'projects/merge_requests/widget/open/rebase'
-=======
->>>>>>> ce/master
     - elsif @merge_request.merge_when_pipeline_succeeds? && @merge_request.merge_error.present?
       = render 'projects/merge_requests/widget/open/error'
     - elsif @merge_request.merge_when_pipeline_succeeds?

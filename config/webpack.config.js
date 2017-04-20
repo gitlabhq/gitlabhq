@@ -21,10 +21,7 @@ var config = {
   entry: {
     blob:                 './blob_edit/blob_bundle.js',
     boards:               './boards/boards_bundle.js',
-<<<<<<< HEAD
     burndown_chart:       './burndown_chart/index.js',
-=======
->>>>>>> ce/master
     common:               './commons/index.js',
     common_vue:           ['vue', './vue_shared/common_vue.js'],
     common_d3:            ['d3'],
@@ -132,11 +129,8 @@ var config = {
         'notebook_viewer',
         'pdf_viewer',
         'pipelines',
-<<<<<<< HEAD
         'mr_widget_ee',
         'issue_show'
-=======
->>>>>>> ce/master
       ],
       minChunks: function(module, count) {
         return module.resource && (/vue_shared/).test(module.resource);

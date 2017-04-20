@@ -136,11 +136,6 @@ window.DropzoneInput = (function() {
       const textarea = child.get(0);
       caretStart = textarea.selectionStart;
       caretEnd = textarea.selectionEnd;
-<<<<<<< HEAD
-      caretStart = textarea.selectionStart;
-      caretEnd = textarea.selectionEnd;
-=======
->>>>>>> ce/master
       textEnd = $(child).val().length;
       beforeSelection = $(child).val().substring(0, caretStart);
       afterSelection = $(child).val().substring(caretEnd, textEnd);

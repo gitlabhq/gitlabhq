@@ -57,17 +57,6 @@ module API
           render_api_error!("Not authorized.", 403)
         end
 
-<<<<<<< HEAD
-        if params[:username].present?
-          users = User.where(username: params[:username])
-        else
-          users = User.all
-          users = users.active if params[:active]
-          users = users.non_ldap if params[:skip_ldap]
-          users = users.search(params[:search]) if params[:search].present?
-          users = users.blocked if params[:blocked]
-          users = users.external if params[:external] && current_user.admin?
-=======
         authenticated_as_admin! if params[:external].present? || (params[:extern_uid].present? && params[:provider].present?)
 
         users = User.all
@@ -75,11 +64,11 @@ module API
         users = users.active if params[:active]
         users = users.search(params[:search]) if params[:search].present?
         users = users.blocked if params[:blocked]
+        users = users.non_ldap if params[:skip_ldap]
 
         if current_user.admin?
           users = users.joins(:identities).merge(Identity.with_extern_uid(params[:provider], params[:extern_uid])) if params[:extern_uid] && params[:provider]
           users = users.external if params[:external]
->>>>>>> ce/master
         end
 
         entity = current_user.admin? ? Entities::UserPublic : Entities::UserBasic

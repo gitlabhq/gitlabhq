@@ -1006,12 +1006,7 @@ Parameters:
 
 ### Get user activities (admin only)
 
-<<<<<<< HEAD
->**Note:** This API endpoint is only available on 8.15 EE and above.
-
-=======
 >**Note:** This API endpoint is only available on 8.15 (EE) and 9.1 (CE) and above.
->>>>>>> ce/master
 
 Get the last activity date for all users, sorted from oldest to newest.
 
@@ -1034,11 +1029,7 @@ Parameters:
 | `from` | string | no | Date string in the format YEAR-MONTH-DAY, e.g. `2016-03-11`. Defaults to 6 months ago. |
 
 ```bash
-<<<<<<< HEAD
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/user/activities
-=======
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/user/activities
->>>>>>> ce/master
 ```
 
 Example response:

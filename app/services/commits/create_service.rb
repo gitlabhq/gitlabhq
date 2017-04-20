@@ -37,10 +37,7 @@ module Commits
 
     def validate!
       validate_permissions!
-<<<<<<< HEAD
       validate_repository_size!
-=======
->>>>>>> ce/master
       validate_on_branch!
       validate_branch_existance!
 
@@ -55,15 +52,12 @@ module Commits
       end
     end
 
-<<<<<<< HEAD
     def validate_repository_size!
       if project.above_size_limit?
         raise_error(Gitlab::RepositorySizeError.new(project).commit_error)
       end
     end
 
-=======
->>>>>>> ce/master
     def validate_on_branch!
       if !@start_project.empty_repo? && !@start_project.repository.branch_exists?(@start_branch)
         raise_error('You can only create or edit files when you are on a branch')

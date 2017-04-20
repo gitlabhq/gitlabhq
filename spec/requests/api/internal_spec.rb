@@ -147,7 +147,6 @@ describe API::Internal, api: true  do
     end
   end
 
-<<<<<<< HEAD
   describe "GET /internal/authorized_keys" do
     context "unsing an existing key's fingerprint" do
       it "finds the key" do
@@ -196,8 +195,6 @@ describe API::Internal, api: true  do
     end
   end
 
-=======
->>>>>>> ce/master
   describe "POST /internal/allowed", :redis do
     context "access granted" do
       before do
@@ -207,7 +204,6 @@ describe API::Internal, api: true  do
 
       after do
         Timecop.return
-<<<<<<< HEAD
       end
 
       context 'with env passed as a JSON' do
@@ -224,8 +220,6 @@ describe API::Internal, api: true  do
 
           expect(response).to have_http_status(200)
         end
-=======
->>>>>>> ce/master
       end
 
       context 'with env passed as a JSON' do

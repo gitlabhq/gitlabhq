@@ -19,11 +19,7 @@ const ResolveBtn = Vue.extend({
   data: function () {
     return {
       discussions: CommentsStore.state,
-<<<<<<< HEAD
-      loading: false,
-=======
       loading: false
->>>>>>> ce/master
     };
   },
   watch: {

@@ -162,7 +162,6 @@ describe 'Merge request', :feature, :js do
     end
   end
 
-<<<<<<< HEAD
   context 'view merge request with MWPS enabled but fast-forward merge is not possible' do
     before do
       project.update(merge_requests_ff_only_enabled: true)
@@ -186,8 +185,6 @@ describe 'Merge request', :feature, :js do
     end
   end
 
-=======
->>>>>>> ce/master
   context 'merge error' do
     before do
       allow_any_instance_of(Repository).to receive(:merge).and_return(false)
