@@ -58,7 +58,7 @@ See [our current .eslintrc][eslintrc] for specific rules and patterns.
   import Bar from './bar';
   ```
 
-- **Never** disable the `no-undef` rule.  Declare globals with `/* global Foo */` instead.
+- **Never** disable the `no-undef` rule. Declare globals with `/* global Foo */` instead.
 
 - When declaring multiple globals, always use one `/* global [name] */` line per variable.
 
@@ -183,6 +183,19 @@ See [our current .eslintrc][eslintrc] for specific rules and patterns.
   parseInt('10', 10);
   ```
 
+#### CSS classes used for JavaScript
+- If the class is being used in Javascript it needs to be prepend with `js-`
+  ```html
+    // bad
+    <button class="add-user">
+      Add User
+    </button>
+
+    // good
+    <button class="js-add-user">
+      Add User
+    </button>
+  ```
 
 ### Vue.js
 
@@ -200,6 +213,7 @@ See [our current .eslintrc][eslintrc] for specific rules and patterns.
 #### Naming
 - **Extensions**: Use `.vue` extension for Vue components.
 - **Reference Naming**: Use PascalCase for Vue components and camelCase for their instances:
+
   ```javascript
   // bad
   import cardBoard from 'cardBoard';
@@ -217,6 +231,7 @@ See [our current .eslintrc][eslintrc] for specific rules and patterns.
     cardBoard: CardBoard
   };
   ```
+
 - **Props Naming:**
 - Avoid using DOM component prop names.
 - Use kebab-case instead of camelCase to provide props in templates.
@@ -243,11 +258,17 @@ See [our current .eslintrc][eslintrc] for specific rules and patterns.
   <component v-if="bar"
       param="baz" />
 
+  <button class="btn">Click me</button>
+
   // good
   <component
     v-if="bar"
     param="baz"
   />
+
+  <button class="btn">
+    Click me
+  </button>
 
   // if props fit in one line then keep it on the same line
   <component bar="bar" />
