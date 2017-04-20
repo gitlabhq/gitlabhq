@@ -11,7 +11,7 @@ export default class ProtectedTagEdit {
     this.$wrap = options.$wrap;
     this.$allowedToCreateDropdownButton = this.$wrap.find('.js-allowed-to-create');
 
-    this.$wraps[ACCESS_LEVELS.CREATE] = this.$allowedToCreateDropdown.closest(`.${ACCESS_LEVELS.CREATE}-container`);
+    this.$wrap[ACCESS_LEVELS.CREATE] = this.$allowedToCreateDropdownButton.closest(`.${ACCESS_LEVELS.CREATE}-container`);
 
     this.buildDropdowns();
   }
