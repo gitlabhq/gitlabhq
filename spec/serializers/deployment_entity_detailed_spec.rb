@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe DeploymentEntity do
+describe DeploymentEntityDetailed do
   let(:user) { create(:user) }
   let(:request) { double('request') }
   let(:deployment) { create(:deployment) }
@@ -17,6 +17,7 @@ describe DeploymentEntity do
 
   it 'exposes nested information about branch' do
     expect(subject[:ref][:name]).to eq 'master'
+    expect(subject[:ref][:ref_path]).not_to be_empty
   end
 
   it 'exposes creation date' do
