@@ -1106,6 +1106,7 @@ describe API::Projects, :api  do
         put api("/projects/#{project.id}", user), project_param
 
         expect(response).to have_http_status(200)
+
         project_param.each_pair do |k, v|
           expect(json_response[k.to_s]).to eq(v)
         end
@@ -1117,6 +1118,7 @@ describe API::Projects, :api  do
         put api("/projects/#{project3.id}", user), project_param
 
         expect(response).to have_http_status(200)
+
         project_param.each_pair do |k, v|
           expect(json_response[k.to_s]).to eq(v)
         end
@@ -1129,9 +1131,11 @@ describe API::Projects, :api  do
         put api("/projects/#{project3.id}", user), project_param
 
         expect(response).to have_http_status(200)
+
         project_param.each_pair do |k, v|
           expect(json_response[k.to_s]).to eq(v)
         end
+
         expect(json_response['visibility']).to eq('private')
       end
 
@@ -1159,6 +1163,7 @@ describe API::Projects, :api  do
         put api("/projects/#{project3.id}", user), project_param
 
         expect(response).to have_http_status(200)
+
         project_param.each_pair do |k, v|
           expect(json_response[k.to_s]).to eq(v)
         end
@@ -1170,6 +1175,7 @@ describe API::Projects, :api  do
         put api("/projects/#{project3.id}", user), project_param
 
         expect(response).to have_http_status(200)
+
         project_param.each_pair do |k, v|
           expect(json_response[k.to_s]).to eq(v)
         end
