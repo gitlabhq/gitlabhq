@@ -30,7 +30,7 @@
 - [Time tracking](time_tracking.md)
 - [Web Editor](../user/project/repository/web_editor.md)
 - [Releases](releases.md)
-- [Milestones](milestones.md)
+- [Milestones](../user/project/milestones/index.md)
 - [Merge Requests](../user/project/merge_requests/index.md)
   - [Authorization for merge requests](../user/project/merge_requests/authorization_for_merge_requests.md)
   - [Cherry-pick changes](../user/project/merge_requests/cherry_pick_changes.md)

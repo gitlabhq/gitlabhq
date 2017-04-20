@@ -1,4 +1,4 @@
 # Analytics
 
 - [Contribution Analytics](contribution_analytics.md)
-- (EE) [Burndown](../workflow/milestones.md#burndown-ee-only) 
+- (EE) [Burndown charts](../user/project/milestones/index.md#burndown-charts)
