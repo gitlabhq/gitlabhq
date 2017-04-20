@@ -35,10 +35,6 @@ module Search
       true
     end
 
-    def projects
-      @projects ||= ProjectsFinder.new(current_user: current_user).execute
-    end
-
     def scope
       @scope ||= begin
         allowed_scopes = %w[issues merge_requests milestones]
