@@ -1082,7 +1082,9 @@ describe API::Projects, :api  do
 
     it 'returns 400 when nothing sent' do
       project_param = {}
+
       put api("/projects/#{project.id}", user), project_param
+
       expect(response).to have_http_status(400)
       expect(json_response['error']).to match('at least one parameter must be provided')
     end
@@ -1090,7 +1092,9 @@ describe API::Projects, :api  do
     context 'when unauthenticated' do
       it 'returns authentication error' do
         project_param = { name: 'bar' }
+
         put api("/projects/#{project.id}"), project_param
+
         expect(response).to have_http_status(401)
       end
     end
@@ -1098,7 +1102,9 @@ describe API::Projects, :api  do
     context 'when authenticated as project owner' do
       it 'updates name' do
         project_param = { name: 'bar' }
+
         put api("/projects/#{project.id}", user), project_param
+
         expect(response).to have_http_status(200)
         project_param.each_pair do |k, v|
           expect(json_response[k.to_s]).to eq(v)
@@ -1107,7 +1113,9 @@ describe API::Projects, :api  do
 
       it 'updates visibility_level' do
         project_param = { visibility: 'public' }
+
         put api("/projects/#{project3.id}", user), project_param
+
         expect(response).to have_http_status(200)
         project_param.each_pair do |k, v|
           expect(json_response[k.to_s]).to eq(v)
@@ -1117,7 +1125,9 @@ describe API::Projects, :api  do
       it 'updates visibility_level from public to private' do
         project3.update_attributes({ visibility_level: Gitlab::VisibilityLevel::PUBLIC })
         project_param = { visibility: 'private' }
+
         put api("/projects/#{project3.id}", user), project_param
+
         expect(response).to have_http_status(200)
         project_param.each_pair do |k, v|
           expect(json_response[k.to_s]).to eq(v)
@@ -1127,7 +1137,9 @@ describe API::Projects, :api  do
 
       it 'does not update name to existing name' do
         project_param = { name: project3.name }
+
         put api("/projects/#{project.id}", user), project_param
+
         expect(response).to have_http_status(400)
         expect(json_response['message']['name']).to eq(['has already been taken'])
       end
@@ -1143,7 +1155,9 @@ describe API::Projects, :api  do
 
       it 'updates path & name to existing path & name in different namespace' do
         project_param = { path: project4.path, name: project4.name }
+
         put api("/projects/#{project3.id}", user), project_param
+
         expect(response).to have_http_status(200)
         project_param.each_pair do |k, v|
           expect(json_response[k.to_s]).to eq(v)
@@ -1152,7 +1166,9 @@ describe API::Projects, :api  do
 
       it 'updates jobs_enabled' do
         project_param = { jobs_enabled: true }
+
         put api("/projects/#{project3.id}", user), project_param
+
         expect(response).to have_http_status(200)
         project_param.each_pair do |k, v|
           expect(json_response[k.to_s]).to eq(v)
