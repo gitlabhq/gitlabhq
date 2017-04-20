@@ -75,7 +75,7 @@ module BlobViewer
     end
 
     def server_side_but_stored_in_lfs?
-      !client_side? && blob.valid_lfs_pointer?
+      server_side? && blob.valid_lfs_pointer?
     end
   end
 end
