@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170418103908) do
+ActiveRecord::Schema.define(version: 20170420085345) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -240,6 +240,7 @@ ActiveRecord::Schema.define(version: 20170418103908) do
 
   create_table "ci_pipeline_schedules", force: :cascade do |t|
     t.integer "project_id"
+    t.integer "trigger_id", null: false
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -1375,6 +1376,7 @@ ActiveRecord::Schema.define(version: 20170418103908) do
   add_foreign_key "boards", "projects"
   add_foreign_key "chat_teams", "namespaces", on_delete: :cascade
   add_foreign_key "ci_builds", "ci_pipelines", column: "auto_canceled_by_id", name: "fk_a2141b1522", on_delete: :nullify
+  add_foreign_key "ci_pipeline_schedules", "ci_triggers", column: "trigger_id", name: "fk_f786baca2c", on_delete: :cascade
   add_foreign_key "ci_pipelines", "ci_pipelines", column: "auto_canceled_by_id", name: "fk_262d4c2d19", on_delete: :nullify
   add_foreign_key "ci_trigger_requests", "ci_triggers", column: "trigger_id", name: "fk_b8ec8b7245", on_delete: :cascade
   add_foreign_key "ci_trigger_schedules", "ci_triggers", column: "trigger_id", name: "fk_90a406cc94", on_delete: :cascade
