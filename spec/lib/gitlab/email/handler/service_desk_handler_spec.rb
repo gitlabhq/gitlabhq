@@ -21,6 +21,8 @@ describe Gitlab::Email::Handler::EE::ServiceDeskHandler do
 
       allow_any_instance_of(License).to receive(:add_on?).and_call_original
       allow_any_instance_of(License).to receive(:add_on?).with('GitLab_ServiceDesk') { true }
+      allow(::Gitlab::IncomingEmail).to receive(:enabled?) { true }
+      allow(::Gitlab::IncomingEmail).to receive(:supports_wildcard?) { true }
     end
 
     it 'sends thank you the email and creates issue' do
