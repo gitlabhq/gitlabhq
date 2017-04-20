@@ -1343,6 +1343,8 @@ ActiveRecord::Schema.define(version: 20170419065104) do
     t.datetime "updated_at", null: false
   end
 
+  add_index "system_note_metadata", ["note_id"], name: "index_system_note_metadata_on_note_id", unique: true, using: :btree
+
   create_table "taggings", force: :cascade do |t|
     t.integer "tag_id"
     t.integer "taggable_id"

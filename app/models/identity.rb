@@ -8,6 +8,7 @@ class Identity < ActiveRecord::Base
   validates :user_id, uniqueness: { scope: :provider }
 
   scope :with_provider, ->(provider) { where(provider: provider) }
+  scope :with_extern_uid, ->(provider, extern_uid) { where(extern_uid: extern_uid, provider: provider) }
 
   def ldap?
     provider.starts_with?('ldap')

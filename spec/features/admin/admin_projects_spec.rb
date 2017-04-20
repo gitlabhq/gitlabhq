@@ -109,7 +109,7 @@ describe "Admin::Projects", feature: true  do
         expect(page).to have_content('Developer')
       end
 
-      find(:css, 'li', text: current_user.name).find(:css, 'a.btn-remove').click
+      find(:css, '.content-list li', text: current_user.name).find(:css, 'a.btn-remove').click
 
       expect(page).not_to have_selector(:css, '.content-list')
     end

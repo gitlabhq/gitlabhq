@@ -75,6 +75,7 @@ The total number of the following is sent back to GitLab Inc.:
 - Remote mirrors
 - Service Desk projects
 - Service Desk issues
+- Uploads
 - Web hooks
 
 Also, we track if you've installed Mattermost with GitLab.
@@ -96,7 +97,7 @@ GitLab Inc. does **not** collect any sensitive information, like project names
 or the content of the comments. GitLab Inc. does not disclose or otherwise make
 available any of the data collected on a customer specific basis.
 
-Read more in about the [Privacy policy](https://about.gitlab.com/privacy).
+Read more about this in the [Privacy policy](https://about.gitlab.com/privacy).
 
 [ee-557]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/557
 [ee-735]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/735

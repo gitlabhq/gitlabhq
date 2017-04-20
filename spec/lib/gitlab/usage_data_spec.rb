@@ -6,7 +6,7 @@ describe Gitlab::UsageData do
   let!(:board) { create(:board, project: project) }
 
   describe '#data' do
-    subject { described_class.data }
+    subject { Gitlab::UsageData.data }
 
     it "gathers usage data" do
       expect(subject.keys).to match_array(%i(
@@ -69,8 +69,8 @@ describe Gitlab::UsageData do
     end
   end
 
-  describe '.license_usage_data' do
-    subject { described_class.license_usage_data }
+  describe '#license_usage_data' do
+    subject { Gitlab::UsageData.license_usage_data }
 
     it "gathers license data" do
       license = ::License.current

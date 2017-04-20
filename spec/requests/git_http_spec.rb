@@ -3,6 +3,7 @@ require "spec_helper"
 describe 'Git HTTP requests', lib: true do
   include GitHttpHelpers
   include WorkhorseHelpers
+  include UserActivitiesHelpers
 
   it "gives WWW-Authenticate hints" do
     clone_get('doesnt/exist.git')
@@ -381,6 +382,14 @@ describe 'Git HTTP requests', lib: true do
                   upload(path, env) do |response|
                     expect(response).to have_http_status(200)
                     expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+                  end
+                end
+
+                it 'updates the user last activity', :redis do
+                  expect(user_activity(user)).to be_nil
+
+                  download(path, env) do |response|
+                    expect(user_activity(user)).to be_present
                   end
                 end
               end

@@ -515,11 +515,12 @@
             = f.check_box :usage_ping_enabled
             Usage ping enabled
             = link_to icon('question-circle'), help_page_path("user/admin_area/settings/usage_statistics", anchor: "usage-data")
-          .container
-            .help-block
-              Every week GitLab will report license usage back to GitLab, Inc.
-              Disable this option if you do not want this to occur. This is the JSON payload that will be sent:
-              %pre.usage-data.js-syntax-highlight.code.highlight{ "data-endpoint" => usage_data_admin_application_settings_path(format: :html) }
+          .help-block
+            Every week GitLab will report license usage back to GitLab, Inc.
+            Disable this option if you do not want this to occur. To see the
+            JSON payload that will be sent, visit the
+            = succeed '.' do
+              = link_to "Cohorts page", admin_cohorts_path(anchor: 'usage-ping')
 
   %fieldset
     %legend Email
