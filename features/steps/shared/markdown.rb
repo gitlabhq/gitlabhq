@@ -3,7 +3,7 @@ module SharedMarkdown
 
   def header_should_have_correct_id_and_link(level, text, id, parent = ".wiki")
     node = find("#{parent} h#{level} a#user-content-#{id}")
-    expect(node[:href]).to eq "##{id}"
+    expect(node[:href]).to end_with "##{id}"
 
     # Work around a weird Capybara behavior where calling `parent` on a node
     # returns the whole document, not the node's actual parent element
