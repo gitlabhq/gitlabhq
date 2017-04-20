@@ -60,6 +60,14 @@ anyone and those logged in respectively. If you wish to hide it so that only
 the members of the project or group have access to it, uncheck the **Public
 pipelines** checkbox and save the changes.
 
+## Auto-cancel pending pipelines
+
+> [Introduced][ce-9362] in GitLab 9.1.
+
+If you want to auto-cancel all pending non-HEAD pipelines on branch, when 
+new pipeline will be created (after your git push or manually from UI), 
+check **Auto-cancel pending pipelines** checkbox and save the changes.
+
 ## Badges
 
 In the pipelines settings page you can find pipeline status and test coverage
@@ -111,3 +119,4 @@ into your `README.md`:
 
 [var]: ../../../ci/yaml/README.md#git-strategy
 [coverage report]: #test-coverage-parsing
+[ce-9362]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9362

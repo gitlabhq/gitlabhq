@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'projects/generic_commit_statuses/_generic_commit_status.html.haml' do
   include Devise::Test::ControllerHelpers
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:pipeline) { create(:ci_empty_pipeline, id: 1337, project: project, sha: project.commit.id) }
   let(:generic_commit_status) { create(:generic_commit_status, pipeline: pipeline, stage: 'external', name: 'jenkins', stage_idx: 3) }
 

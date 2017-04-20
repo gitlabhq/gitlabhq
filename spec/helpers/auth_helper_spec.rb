@@ -62,4 +62,18 @@ describe AuthHelper do
       end
     end
   end
+
+  describe 'unlink_allowed?' do
+    [:saml, :cas3].each do |provider|
+      it "returns true if the provider is #{provider}" do
+        expect(helper.unlink_allowed?(provider)).to be false
+      end
+    end
+
+    [:twitter, :facebook, :google_oauth2, :gitlab, :github, :bitbucket, :crowd, :auth0].each do |provider|
+      it "returns false if the provider is #{provider}" do
+        expect(helper.unlink_allowed?(provider)).to be true
+      end
+    end
+  end
 end

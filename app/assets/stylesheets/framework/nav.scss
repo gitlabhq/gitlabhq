@@ -146,6 +146,10 @@
       display: block;
     }
 
+    &.scrolling-tabs {
+      float: left;
+    }
+
     li a {
       padding: 16px 15px 11px;
     }
@@ -473,6 +477,47 @@
       .controls-item-full {
         flex: 1 1 100%;
       }
+    }
+  }
+}
+
+.inner-page-scroll-tabs {
+  position: relative;
+
+  .nav-links {
+    padding-bottom: 1px;
+  }
+
+  .fade-right {
+    @include fade(left, $white-light);
+    right: 0;
+    text-align: right;
+
+    .fa {
+      right: 5px;
+    }
+  }
+
+  .fade-left {
+    @include fade(right, $white-light);
+    left: 0;
+    text-align: left;
+
+    .fa {
+      left: 5px;
+    }
+  }
+
+  .fade-right,
+  .fade-left {
+    top: 16px;
+    bottom: auto;
+  }
+
+  &.is-smaller {
+    .fade-right,
+    .fade-left {
+      top: 11px;
     }
   }
 }

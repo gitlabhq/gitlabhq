@@ -245,14 +245,28 @@ describe Note, models: true do
     end
   end
 
+  describe '.find_discussion' do
+    let!(:note) { create(:discussion_note_on_merge_request) }
+    let!(:note2) { create(:discussion_note_on_merge_request, in_reply_to: note) }
+    let(:merge_request) { note.noteable }
+
+    it 'returns a discussion with multiple notes' do
+      discussion = merge_request.notes.find_discussion(note.discussion_id)
+
+      expect(discussion).not_to be_nil
+      expect(discussion.notes).to match_array([note, note2])
+      expect(discussion.first_note.discussion_id).to eq(note.discussion_id)
+    end
+  end
+
   describe ".grouped_diff_discussions" do
     let!(:merge_request) { create(:merge_request) }
     let(:project) { merge_request.project }
     let!(:active_diff_note1) { create(:diff_note_on_merge_request, project: project, noteable: merge_request) }
-    let!(:active_diff_note2) { create(:diff_note_on_merge_request, project: project, noteable: merge_request) }
+    let!(:active_diff_note2) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, in_reply_to: active_diff_note1) }
     let!(:active_diff_note3) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, position: active_position2) }
     let!(:outdated_diff_note1) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, position: outdated_position) }
-    let!(:outdated_diff_note2) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, position: outdated_position) }
+    let!(:outdated_diff_note2) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, in_reply_to: outdated_diff_note1) }
 
     let(:active_position2) do
       Gitlab::Diff::Position.new(
@@ -277,7 +291,7 @@ describe Note, models: true do
     subject { merge_request.notes.grouped_diff_discussions }
 
     it "includes active discussions" do
-      discussions = subject.values
+      discussions = subject.values.flatten
 
       expect(discussions.count).to eq(2)
       expect(discussions.map(&:id)).to eq([active_diff_note1.discussion_id, active_diff_note3.discussion_id])
@@ -288,37 +302,12 @@ describe Note, models: true do
     end
 
     it "doesn't include outdated discussions" do
-      expect(subject.values.map(&:id)).not_to include(outdated_diff_note1.discussion_id)
+      expect(subject.values.flatten.map(&:id)).not_to include(outdated_diff_note1.discussion_id)
     end
 
     it "groups the discussions by line code" do
-      expect(subject[active_diff_note1.line_code].id).to eq(active_diff_note1.discussion_id)
-      expect(subject[active_diff_note3.line_code].id).to eq(active_diff_note3.discussion_id)
-    end
-  end
-
-  describe "#discussion_id" do
-    let(:note) { create(:note) }
-
-    context "when it is newly created" do
-      it "has a discussion id" do
-        expect(note.discussion_id).not_to be_nil
-        expect(note.discussion_id).to match(/\A\h{40}\z/)
-      end
-    end
-
-    context "when it didn't store a discussion id before" do
-      before do
-        note.update_column(:discussion_id, nil)
-      end
-
-      it "has a discussion id" do
-        # The discussion_id is set in `after_initialize`, so `reload` won't work
-        reloaded_note = Note.find(note.id)
-
-        expect(reloaded_note.discussion_id).not_to be_nil
-        expect(reloaded_note.discussion_id).to match(/\A\h{40}\z/)
-      end
+      expect(subject[active_diff_note1.line_code].first.id).to eq(active_diff_note1.discussion_id)
+      expect(subject[active_diff_note3.line_code].first.id).to eq(active_diff_note3.discussion_id)
     end
   end
 
@@ -388,15 +377,267 @@ describe Note, models: true do
     end
   end
 
+  describe '#can_be_discussion_note?' do
+    context 'for a note on a merge request' do
+      it 'returns true' do
+        note = build(:note_on_merge_request)
+
+        expect(note.can_be_discussion_note?).to be_truthy
+      end
+    end
+
+    context 'for a note on an issue' do
+      it 'returns true' do
+        note = build(:note_on_issue)
+
+        expect(note.can_be_discussion_note?).to be_truthy
+      end
+    end
+
+    context 'for a note on a commit' do
+      it 'returns true' do
+        note = build(:note_on_commit)
+
+        expect(note.can_be_discussion_note?).to be_truthy
+      end
+    end
+
+    context 'for a note on a snippet' do
+      it 'returns true' do
+        note = build(:note_on_project_snippet)
+
+        expect(note.can_be_discussion_note?).to be_truthy
+      end
+    end
+
+    context 'for a diff note on merge request' do
+      it 'returns false' do
+        note = build(:diff_note_on_merge_request)
+
+        expect(note.can_be_discussion_note?).to be_falsey
+      end
+    end
+
+    context 'for a diff note on commit' do
+      it 'returns false' do
+        note = build(:diff_note_on_commit)
+
+        expect(note.can_be_discussion_note?).to be_falsey
+      end
+    end
+
+    context 'for a discussion note' do
+      it 'returns false' do
+        note = build(:discussion_note_on_merge_request)
+
+        expect(note.can_be_discussion_note?).to be_falsey
+      end
+    end
+  end
+
+  describe '#discussion_class' do
+    let(:note) { build(:note_on_commit) }
+    let(:merge_request) { create(:merge_request) }
+
+    context 'when the note is displayed out of context' do
+      it 'returns OutOfContextDiscussion' do
+        expect(note.discussion_class(merge_request)).to be(OutOfContextDiscussion)
+      end
+    end
+
+    context 'when the note is displayed in the original context' do
+      it 'returns IndividualNoteDiscussion' do
+        expect(note.discussion_class(note.noteable)).to be(IndividualNoteDiscussion)
+      end
+    end
+  end
+
+  describe "#discussion_id" do
+    let(:note) { create(:note_on_commit) }
+
+    context "when it is newly created" do
+      it "has a discussion id" do
+        expect(note.discussion_id).not_to be_nil
+        expect(note.discussion_id).to match(/\A\h{40}\z/)
+      end
+    end
+
+    context "when it didn't store a discussion id before" do
+      before do
+        note.update_column(:discussion_id, nil)
+      end
+
+      it "has a discussion id" do
+        # The discussion_id is set in `after_initialize`, so `reload` won't work
+        reloaded_note = Note.find(note.id)
+
+        expect(reloaded_note.discussion_id).not_to be_nil
+        expect(reloaded_note.discussion_id).to match(/\A\h{40}\z/)
+      end
+    end
+
+    context 'when the note is displayed out of context' do
+      let(:merge_request) { create(:merge_request) }
+
+      it 'overrides the discussion id' do
+        expect(note.discussion_id(merge_request)).not_to eq(note.discussion_id)
+      end
+    end
+  end
+
+  describe '#to_discussion' do
+    subject { create(:discussion_note_on_merge_request) }
+    let!(:note2) { create(:discussion_note_on_merge_request, project: subject.project, noteable: subject.noteable, in_reply_to: subject) }
+
+    it "returns a discussion with just this note" do
+      discussion = subject.to_discussion
+
+      expect(discussion.id).to eq(subject.discussion_id)
+      expect(discussion.notes).to eq([subject])
+    end
+  end
+
+  describe "#discussion" do
+    let!(:note1) { create(:discussion_note_on_merge_request) }
+    let!(:note2) { create(:diff_note_on_merge_request, project: note1.project, noteable: note1.noteable) }
+
+    context 'when the note is part of a discussion' do
+      subject { create(:discussion_note_on_merge_request, project: note1.project, noteable: note1.noteable, in_reply_to: note1) }
+
+      it "returns the discussion this note is in" do
+        discussion = subject.discussion
+
+        expect(discussion.id).to eq(subject.discussion_id)
+        expect(discussion.notes).to eq([note1, subject])
+      end
+    end
+
+    context 'when the note is not part of a discussion' do
+      subject { create(:note) }
+
+      it "returns a discussion with just this note" do
+        discussion = subject.discussion
+
+        expect(discussion.id).to eq(subject.discussion_id)
+        expect(discussion.notes).to eq([subject])
+      end
+    end
+  end
+
+  describe "#part_of_discussion?" do
+    context 'for a regular note' do
+      let(:note) { build(:note) }
+
+      it 'returns false' do
+        expect(note.part_of_discussion?).to be_falsey
+      end
+    end
+
+    context 'for a diff note' do
+      let(:note) { build(:diff_note_on_commit) }
+
+      it 'returns true' do
+        expect(note.part_of_discussion?).to be_truthy
+      end
+    end
+
+    context 'for a discussion note' do
+      let(:note) { build(:discussion_note_on_merge_request) }
+
+      it 'returns true' do
+        expect(note.part_of_discussion?).to be_truthy
+      end
+    end
+  end
+
+  describe '#in_reply_to?' do
+    context 'for a note' do
+      context 'when part of a discussion' do
+        subject { create(:discussion_note_on_issue) }
+        let(:note) { create(:discussion_note_on_issue, in_reply_to: subject) }
+
+        it 'checks if the note is in reply to the other discussion' do
+          expect(subject).to receive(:in_reply_to?).with(note).and_call_original
+          expect(subject).to receive(:in_reply_to?).with(note.noteable).and_call_original
+          expect(subject).to receive(:in_reply_to?).with(note.to_discussion).and_call_original
+
+          subject.in_reply_to?(note)
+        end
+      end
+
+      context 'when not part of a discussion' do
+        subject { create(:note) }
+        let(:note) { create(:note, in_reply_to: subject) }
+
+        it 'checks if the note is in reply to the other noteable' do
+          expect(subject).to receive(:in_reply_to?).with(note).and_call_original
+          expect(subject).to receive(:in_reply_to?).with(note.noteable).and_call_original
+
+          subject.in_reply_to?(note)
+        end
+      end
+    end
+
+    context 'for a discussion' do
+      context 'when part of the same discussion' do
+        subject { create(:diff_note_on_merge_request) }
+        let(:note) { create(:diff_note_on_merge_request, in_reply_to: subject) }
+
+        it 'returns true' do
+          expect(subject.in_reply_to?(note.to_discussion)).to be_truthy
+        end
+      end
+
+      context 'when not part of the same discussion' do
+        subject { create(:diff_note_on_merge_request) }
+        let(:note) { create(:diff_note_on_merge_request) }
+
+        it 'returns false' do
+          expect(subject.in_reply_to?(note.to_discussion)).to be_falsey
+        end
+      end
+    end
+
+    context 'for a noteable' do
+      context 'when a comment on the same noteable' do
+        subject { create(:note) }
+        let(:note) { create(:note, in_reply_to: subject) }
+
+        it 'returns true' do
+          expect(subject.in_reply_to?(note.noteable)).to be_truthy
+        end
+      end
+
+      context 'when not a comment on the same noteable' do
+        subject { create(:note) }
+        let(:note) { create(:note) }
+
+        it 'returns false' do
+          expect(subject.in_reply_to?(note.noteable)).to be_falsey
+        end
+      end
+    end
+  end
+
   describe 'expiring ETag cache' do
     let(:note) { build(:note_on_issue) }
 
-    it "expires cache for note's issue when note is saved" do
+    def expect_expiration(note)
       expect_any_instance_of(Gitlab::EtagCaching::Store)
         .to receive(:touch)
         .with("/#{note.project.namespace.to_param}/#{note.project.to_param}/noteable/issue/#{note.noteable.id}/notes")
+    end
+
+    it "expires cache for note's issue when note is saved" do
+      expect_expiration(note)
 
       note.save!
+    end
+
+    it "expires cache for note's issue when note is destroyed" do
+      expect_expiration(note)
+
+      note.destroy!
     end
   end
 end

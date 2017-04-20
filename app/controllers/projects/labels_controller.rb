@@ -29,7 +29,7 @@ class Projects::LabelsController < Projects::ApplicationController
   end
 
   def create
-    @label = @project.labels.create(label_params)
+    @label = Labels::CreateService.new(label_params).execute(project: @project)
 
     if @label.valid?
       respond_to do |format|
@@ -48,7 +48,9 @@ class Projects::LabelsController < Projects::ApplicationController
   end
 
   def update
-    if @label.update_attributes(label_params)
+    @label = Labels::UpdateService.new(label_params).execute(@label)
+
+    if @label.valid?
       redirect_to namespace_project_labels_path(@project.namespace, @project)
     else
       render :edit

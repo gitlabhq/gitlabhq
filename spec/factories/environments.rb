@@ -32,5 +32,10 @@ FactoryGirl.define do
         environment.update_attribute(:deployments, [deployment])
       end
     end
+
+    trait :non_playable do
+      status 'created'
+      self.when 'manual'
+    end
   end
 end

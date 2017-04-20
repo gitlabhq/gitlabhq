@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :project_hook do
-    url { FFaker::Internet.uri('http') }
+    url { generate(:url) }
 
     trait :token do
       token { SecureRandom.hex(10) }

@@ -292,6 +292,10 @@
   }
 
   @media(min-width: $screen-xs-max) {
+    &.merge-requests .text-content {
+      margin-top: 40px;
+    }
+
     &.labels .text-content {
       margin-top: 70px;
     }

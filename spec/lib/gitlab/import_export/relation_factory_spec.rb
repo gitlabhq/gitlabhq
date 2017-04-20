@@ -9,7 +9,7 @@ describe Gitlab::ImportExport::RelationFactory, lib: true do
                            relation_hash: relation_hash,
                            members_mapper: members_mapper,
                            user: user,
-                           project_id: project.id)
+                           project: project)
   end
 
   context 'hook object' do

@@ -3,8 +3,8 @@ const UI_LIMIT = 6;
 const SPREAD = '...';
 const PREV = 'Prev';
 const NEXT = 'Next';
-const FIRST = '<< First';
-const LAST = 'Last >>';
+const FIRST = '« First';
+const LAST = 'Last »';
 
 export default {
   props: {

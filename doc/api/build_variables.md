@@ -10,7 +10,7 @@ GET /projects/:id/variables
 
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
-| `id`      | integer | yes      | The ID of a project |
+| `id`      | integer/string | yes      | The ID of a project or [urlencoded NAMESPACE/PROJECT_NAME of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 
 ```
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/variables"
@@ -39,7 +39,7 @@ GET /projects/:id/variables/:key
 
 | Attribute | Type    | required | Description           |
 |-----------|---------|----------|-----------------------|
-| `id`      | integer | yes      | The ID of a project   |
+| `id`      | integer/string | yes      | The ID of a project or [urlencoded NAMESPACE/PROJECT_NAME of the project](README.md#namespaced-path-encoding) owned by the authenticated user   |
 | `key`     | string  | yes      | The `key` of a variable |
 
 ```
@@ -63,7 +63,7 @@ POST /projects/:id/variables
 
 | Attribute | Type    | required | Description           |
 |-----------|---------|----------|-----------------------|
-| `id`      | integer | yes      | The ID of a project   |
+| `id`      | integer/string | yes      | The ID of a project or [urlencoded NAMESPACE/PROJECT_NAME of the project](README.md#namespaced-path-encoding) owned by the authenticated user   |
 | `key`     | string  | yes      | The `key` of a variable; must have no more than 255 characters; only `A-Z`, `a-z`, `0-9`, and `_` are allowed |
 | `value`   | string  | yes      | The `value` of a variable |
 
@@ -88,7 +88,7 @@ PUT /projects/:id/variables/:key
 
 | Attribute | Type    | required | Description             |
 |-----------|---------|----------|-------------------------|
-| `id`      | integer | yes      | The ID of a project     |
+| `id`      | integer/string | yes      | The ID of a project or [urlencoded NAMESPACE/PROJECT_NAME of the project](README.md#namespaced-path-encoding) owned by the authenticated user     |
 | `key`     | string  | yes      | The `key` of a variable   |
 | `value`   | string  | yes      | The `value` of a variable |
 
@@ -113,7 +113,7 @@ DELETE /projects/:id/variables/:key
 
 | Attribute | Type    | required | Description             |
 |-----------|---------|----------|-------------------------|
-| `id`      | integer | yes      | The ID of a project     |
+| `id`      | integer/string | yes      | The ID of a project or [urlencoded NAMESPACE/PROJECT_NAME of the project](README.md#namespaced-path-encoding) owned by the authenticated user     |
 | `key`     | string  | yes      | The `key` of a variable |
 
 ```

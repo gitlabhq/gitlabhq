@@ -5,6 +5,7 @@
 /* global mrRefreshWidgetUrl */
 
 import Cookies from 'js-cookie';
+import CommentTypeToggle from './comment_type_toggle';
 
 require('./autosave');
 window.autosize = require('vendor/autosize');
@@ -110,7 +111,6 @@ require('./task_list');
       $(document).on("visibilitychange", this.visibilityChange);
       // when issue status changes, we need to refresh data
       $(document).on("issuable:change", this.refresh);
-
       // when a key is clicked on the notes
       return $(document).on("keydown", ".js-note-text", this.keydownNoteText);
     };
@@ -135,6 +135,26 @@ require('./task_list');
       $(document).off("keydown", ".js-note-text");
       $(document).off('click', '.js-comment-resolve-button');
       $(document).off("click", '.system-note-commit-list-toggler');
+    };
+
+    Notes.initCommentTypeToggle = function (form) {
+      const dropdownTrigger = form.querySelector('.js-comment-type-dropdown .dropdown-toggle');
+      const dropdownList = form.querySelector('.js-comment-type-dropdown .dropdown-menu');
+      const noteTypeInput = form.querySelector('#note_type');
+      const submitButton = form.querySelector('.js-comment-type-dropdown .js-comment-submit-button');
+      const closeButton = form.querySelector('.js-note-target-close');
+      const reopenButton = form.querySelector('.js-note-target-reopen');
+
+      const commentTypeToggle = new CommentTypeToggle({
+        dropdownTrigger,
+        dropdownList,
+        noteTypeInput,
+        submitButton,
+        closeButton,
+        reopenButton,
+      });
+
+      commentTypeToggle.initDroplab();
     };
 
     Notes.prototype.keydownNoteText = function(e) {
@@ -192,7 +212,7 @@ require('./task_list');
     };
 
     Notes.prototype.refresh = function() {
-      if (!document.hidden && document.URL.indexOf(this.noteable_url) === 0) {
+      if (!document.hidden) {
         return this.getContent();
       }
     };
@@ -213,11 +233,7 @@ require('./task_list');
             _this.last_fetched_at = data.last_fetched_at;
             _this.setPollingInterval(data.notes.length);
             return $.each(notes, function(i, note) {
-              if (note.discussion_html != null) {
-                return _this.renderDiscussionNote(note);
-              } else {
-                return _this.renderNote(note);
-              }
+              _this.renderNote(note);
             });
           };
         })(this)
@@ -276,8 +292,12 @@ require('./task_list');
     Note: for rendering inline notes use renderDiscussionNote
      */
 
-    Notes.prototype.renderNote = function(note) {
+    Notes.prototype.renderNote = function(note, $form) {
       var $notesList;
+      if (note.discussion_html != null) {
+        return this.renderDiscussionNote(note, $form);
+      }
+
       if (!note.valid) {
         if (note.errors.commands_only) {
           new Flash(note.errors.commands_only, 'notice', this.parentTimeline);
@@ -288,8 +308,10 @@ require('./task_list');
 
       if (this.isNewNote(note)) {
         this.note_ids.push(note.id);
-        $notesList = $('ul.main-notes-list');
-        $notesList.append(note.html).syntaxHighlight();
+
+        $notesList = window.$('ul.main-notes-list');
+        Notes.animateAppendNote(note.html, $notesList);
+
         // Update datetime format on the recent note
         gl.utils.localTimeAgo($notesList.find("#note_" + note.id + " .js-timeago"), false);
         this.collapseLongCommitList();
@@ -317,61 +339,49 @@ require('./task_list');
     Note: for rendering inline notes use renderDiscussionNote
      */
 
-    Notes.prototype.renderDiscussionNote = function(note) {
-      var discussionContainer, form, note_html, row, lineType, diffAvatarContainer;
+    Notes.prototype.renderDiscussionNote = function(note, $form) {
+      var discussionContainer, form, row, lineType, diffAvatarContainer;
       if (!this.isNewNote(note)) {
         return;
       }
       this.note_ids.push(note.id);
-      form = $("#new-discussion-note-form-" + note.discussion_id);
-      if ((note.original_discussion_id != null) && form.length === 0) {
-        form = $("#new-discussion-note-form-" + note.original_discussion_id);
-      }
+      form = $form || $(".js-discussion-note-form[data-discussion-id='" + note.discussion_id + "']");
       row = form.closest("tr");
       lineType = this.isParallelView() ? form.find('#line_type').val() : 'old';
       diffAvatarContainer = row.prevAll('.line_holder').first().find('.js-avatar-container.' + lineType + '_line');
-      note_html = $(note.html);
-      note_html.renderGFM();
       // is this the first note of discussion?
-      discussionContainer = $(".notes[data-discussion-id='" + note.discussion_id + "']");
-      if ((note.original_discussion_id != null) && discussionContainer.length === 0) {
-        discussionContainer = $(".notes[data-discussion-id='" + note.original_discussion_id + "']");
+      discussionContainer = window.$(`.notes[data-discussion-id="${note.discussion_id}"]`);
+      if (!discussionContainer.length) {
+        discussionContainer = form.closest('.discussion').find('.notes');
       }
       if (discussionContainer.length === 0) {
-        if (!this.isParallelView() || row.hasClass('js-temp-notes-holder')) {
-          // insert the note and the reply button after the temp row
-          row.after(note.diff_discussion_html);
+        if (note.diff_discussion_html) {
+          var $discussion = $(note.diff_discussion_html).renderGFM();
 
-          // remove the note (will be added again below)
-          row.next().find(".note").remove();
-        } else {
-          // Merge new discussion HTML in
-          var $discussion = $(note.diff_discussion_html);
-          var $notes = $discussion.find('.notes[data-discussion-id="' + note.discussion_id + '"]');
-          var contentContainerClass = '.' + $notes.closest('.notes_content')
-            .attr('class')
-            .split(' ')
-            .join('.');
+          if (!this.isParallelView() || row.hasClass('js-temp-notes-holder')) {
+            // insert the note and the reply button after the temp row
+            row.after($discussion);
+          } else {
+            // Merge new discussion HTML in
+            var $notes = $discussion.find('.notes[data-discussion-id="' + note.discussion_id + '"]');
+            var contentContainerClass = '.' + $notes.closest('.notes_content')
+              .attr('class')
+              .split(' ')
+              .join('.');
 
-          // remove the note (will be added again below)
-          $notes.find('.note').remove();
-
-          row.find(contentContainerClass + ' .content').append($notes.closest('.content').children());
+            row.find(contentContainerClass + ' .content').append($notes.closest('.content').children());
+          }
         }
-        // Before that, the container didn't exist
-        discussionContainer = $(".notes[data-discussion-id='" + note.discussion_id + "']");
-        // Add note to 'Changes' page discussions
-        discussionContainer.append(note_html);
         // Init discussion on 'Discussion' page if it is merge request page
-        if ($('body').attr('data-page').indexOf('projects:merge_request') === 0) {
-          $('ul.main-notes-list').append(note.discussion_html).renderGFM();
+        if (window.$('body').attr('data-page').indexOf('projects:merge_request') === 0 || !note.diff_discussion_html) {
+          Notes.animateAppendNote(note.discussion_html, window.$('ul.main-notes-list'));
         }
       } else {
         // append new note to all matching discussions
-        discussionContainer.append(note_html);
+        Notes.animateAppendNote(note.html, discussionContainer);
       }
 
-      if (typeof gl.diffNotesCompileComponents !== 'undefined' && note.discussion_id) {
+      if (typeof gl.diffNotesCompileComponents !== 'undefined' && note.discussion_resolvable) {
         gl.diffNotesCompileComponents();
         this.renderDiscussionAvatar(diffAvatarContainer, note);
       }
@@ -455,9 +465,14 @@ require('./task_list');
       form.addClass("js-main-target-form");
       form.find("#note_line_code").remove();
       form.find("#note_position").remove();
-      form.find("#note_type").remove();
+      form.find("#note_type").val('');
+      form.find("#in_reply_to_discussion_id").remove();
       form.find('.js-comment-resolve-button').closest('comment-and-resolve-btn').remove();
-      return this.parentTimeline = form.parents('.timeline');
+      this.parentTimeline = form.parents('.timeline');
+
+      if (form.length) {
+        Notes.initCommentTypeToggle(form.get(0));
+      }
     };
 
     /*
@@ -470,10 +485,24 @@ require('./task_list');
      */
 
     Notes.prototype.setupNoteForm = function(form) {
-      var textarea;
+      var textarea, key;
       new gl.GLForm(form);
       textarea = form.find(".js-note-text");
-      return new Autosave(textarea, ["Note", form.find("#note_noteable_type").val(), form.find("#note_noteable_id").val(), form.find("#note_commit_id").val(), form.find("#note_type").val(), form.find("#note_line_code").val(), form.find("#note_position").val()]);
+      key = [
+        "Note",
+        form.find("#note_noteable_type").val(),
+        form.find("#note_noteable_id").val(),
+        form.find("#note_commit_id").val(),
+        form.find("#note_type").val(),
+        form.find("#in_reply_to_discussion_id").val(),
+
+        // LegacyDiffNote
+        form.find("#note_line_code").val(),
+
+        // DiffNote
+        form.find("#note_position").val()
+      ];
+      return new Autosave(textarea, key);
     };
 
     /*
@@ -510,7 +539,7 @@ require('./task_list');
         }
       }
 
-      this.renderDiscussionNote(note);
+      this.renderNote(note, $form);
       // cleanup after successfully creating a diff/discussion note
       this.removeDiscussionNoteForm($form);
     };
@@ -656,7 +685,7 @@ require('./task_list');
         return function(i, el) {
           var note, notes;
           note = $(el);
-          notes = note.closest(".notes");
+          notes = note.closest(".discussion-notes");
 
           if (typeof gl.diffNotesCompileComponents !== 'undefined') {
             if (gl.diffNoteApps[noteElId]) {
@@ -673,14 +702,13 @@ require('./task_list');
             // "Discussions" tab
             notes.closest(".timeline-entry").remove();
 
-            if (!_this.isParallelView() || notesTr.find('.note').length === 0) {
-              // "Changes" tab / commit view
-              notesTr.remove();
+            // The notes tr can contain multiple lists of notes, like on the parallel diff
+            if (notesTr.find('.discussion-notes').length > 1) {
+              notes.remove();
             } else {
-              notes.closest('.content').empty();
+              notesTr.remove();
             }
           }
-          return note.remove();
         };
       })(this));
       // Decrement the "Discussions" counter only once
@@ -711,7 +739,7 @@ require('./task_list');
 
     Notes.prototype.replyToDiscussionNote = function(e) {
       var form, replyLink;
-      form = this.formClone.clone();
+      form = this.cleanForm(this.formClone.clone());
       replyLink = $(e.target).closest(".js-discussion-reply-button");
       // insert the form after the button
       replyLink
@@ -727,29 +755,44 @@ require('./task_list');
 
     Sets some hidden fields in the form.
 
-    Note: dataHolder must have the "discussionId", "lineCode", "noteableType"
-    and "noteableId" data attributes set.
+    Note: dataHolder must have the "discussionId" and "lineCode" data attributes set.
      */
 
     Notes.prototype.setupDiscussionNoteForm = function(dataHolder, form) {
       // setup note target
-      form.attr('id', "new-discussion-note-form-" + (dataHolder.data("discussionId")));
+      var discussionID = dataHolder.data("discussionId");
+
+      if (discussionID) {
+        form.attr("data-discussion-id", discussionID);
+        form.find("#in_reply_to_discussion_id").val(discussionID);
+      }
+
       form.attr("data-line-code", dataHolder.data("lineCode"));
-      form.find("#note_type").val(dataHolder.data("noteType"));
       form.find("#line_type").val(dataHolder.data("lineType"));
-      form.find("#note_commit_id").val(dataHolder.data("commitId"));
-      form.find("#note_line_code").val(dataHolder.data("lineCode"));
-      form.find("#note_position").val(dataHolder.attr("data-position"));
+
       form.find("#note_noteable_type").val(dataHolder.data("noteableType"));
       form.find("#note_noteable_id").val(dataHolder.data("noteableId"));
+      form.find("#note_commit_id").val(dataHolder.data("commitId"));
+      form.find("#note_type").val(dataHolder.data("noteType"));
+
+      // LegacyDiffNote
+      form.find("#note_line_code").val(dataHolder.data("lineCode"));
+
+      // DiffNote
+      form.find("#note_position").val(dataHolder.attr("data-position"));
+
       form.find('.js-note-discard').show().removeClass('js-note-discard').addClass('js-close-discussion-note-form').text(form.find('.js-close-discussion-note-form').data('cancel-text'));
       form.find('.js-note-target-close').remove();
+      form.find('.js-note-new-discussion').remove();
       this.setupNoteForm(form);
+
+      form
+        .removeClass('js-main-target-form')
+        .addClass("discussion-form js-discussion-note-form");
 
       if (typeof gl.diffNotesCompileComponents !== 'undefined') {
         var $commentBtn = form.find('comment-and-resolve-btn');
-        $commentBtn
-          .attr(':discussion-id', "'" + dataHolder.data('discussionId') + "'");
+        $commentBtn.attr(':discussion-id', `'${discussionID}'`);
 
         gl.diffNotesCompileComponents();
       }
@@ -757,10 +800,7 @@ require('./task_list');
       form.find(".js-note-text").focus();
       form
         .find('.js-comment-resolve-button')
-        .attr('data-discussion-id', dataHolder.data('discussionId'));
-      form
-        .removeClass('js-main-target-form')
-        .addClass("discussion-form js-discussion-note-form");
+        .attr('data-discussion-id', discussionID);
     };
 
     /*
@@ -823,7 +863,7 @@ require('./task_list');
       }
 
       if (addForm) {
-        newForm = this.formClone.clone();
+        newForm = this.cleanForm(this.formClone.clone());
         newForm.appendTo(notesContent);
         // show the form
         return this.setupDiscussionNoteForm($link, newForm);
@@ -900,9 +940,10 @@ require('./task_list');
       reopenbtn = form.find('.js-note-target-reopen');
       closebtn = form.find('.js-note-target-close');
       discardbtn = form.find('.js-note-discard');
+
       if (textarea.val().trim().length > 0) {
-        reopentext = reopenbtn.data('alternative-text');
-        closetext = closebtn.data('alternative-text');
+        reopentext = reopenbtn.attr('data-alternative-text');
+        closetext = closebtn.attr('data-alternative-text');
         if (reopenbtn.text() !== reopentext) {
           reopenbtn.text(reopentext);
         }
@@ -1007,6 +1048,27 @@ require('./task_list');
           $systemNote.find('.note-text').addClass('system-note-commit-list hide-shade');
         }
       });
+    };
+
+    Notes.prototype.cleanForm = function($form) {
+      // Remove JS classes that are not needed here
+      $form
+        .find('.js-comment-type-dropdown')
+        .removeClass('btn-group');
+
+      // Remove dropdown
+      $form
+        .find('.dropdown-menu')
+        .remove();
+
+      return $form;
+    };
+
+    Notes.animateAppendNote = function(noteHTML, $notesList) {
+      const $note = window.$(noteHTML);
+
+      $note.addClass('fade-in').renderGFM();
+      $notesList.append($note);
     };
 
     return Notes;

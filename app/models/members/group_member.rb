@@ -3,10 +3,15 @@ class GroupMember < Member
 
   belongs_to :group, foreign_key: 'source_id'
 
+  delegate :update_two_factor_requirement, to: :user
+
   # Make sure group member points only to group as it source
   default_value_for :source_type, SOURCE_TYPE
   validates :source_type, format: { with: /\ANamespace\z/ }
   default_scope { where(source_type: SOURCE_TYPE) }
+
+  after_create :update_two_factor_requirement, unless: :invite?
+  after_destroy :update_two_factor_requirement, unless: :invite?
 
   def self.access_level_roles
     Gitlab::Access.options_with_owner

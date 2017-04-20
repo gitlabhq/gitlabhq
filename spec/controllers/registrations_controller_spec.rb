@@ -68,4 +68,20 @@ describe RegistrationsController do
       end
     end
   end
+
+  describe '#destroy' do
+    let(:user) { create(:user) }
+
+    before do
+      sign_in(user)
+    end
+
+    it 'schedules the user for destruction' do
+      expect(DeleteUserWorker).to receive(:perform_async).with(user.id, user.id)
+
+      post(:destroy)
+
+      expect(response.status).to eq(302)
+    end
+  end
 end

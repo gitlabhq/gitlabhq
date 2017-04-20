@@ -1,12 +1,14 @@
 import Vue from 'vue';
+import Visibility from 'visibilityjs';
 import PipelinesTableComponent from '../../vue_shared/components/pipelines_table';
-import PipelinesService from '../../vue_pipelines_index/services/pipelines_service';
-import PipelineStore from '../../vue_pipelines_index/stores/pipelines_store';
-import eventHub from '../../vue_pipelines_index/event_hub';
-import EmptyState from '../../vue_pipelines_index/components/empty_state';
-import ErrorState from '../../vue_pipelines_index/components/error_state';
+import PipelinesService from '../../pipelines/services/pipelines_service';
+import PipelineStore from '../../pipelines/stores/pipelines_store';
+import eventHub from '../../pipelines/event_hub';
+import EmptyState from '../../pipelines/components/empty_state.vue';
+import ErrorState from '../../pipelines/components/error_state.vue';
 import '../../lib/utils/common_utils';
 import '../../vue_shared/vue_resource_interceptor';
+import Poll from '../../lib/utils/poll';
 
 /**
  *
@@ -20,6 +22,7 @@ import '../../vue_shared/vue_resource_interceptor';
  */
 
 export default Vue.component('pipelines-table', {
+
   components: {
     'pipelines-table-component': PipelinesTableComponent,
     'error-state': ErrorState,
@@ -33,16 +36,16 @@ export default Vue.component('pipelines-table', {
    * @return {Object}
    */
   data() {
-    const pipelinesTableData = document.querySelector('#commit-pipeline-table-view').dataset;
     const store = new PipelineStore();
 
     return {
-      endpoint: pipelinesTableData.endpoint,
-      helpPagePath: pipelinesTableData.helpPagePath,
+      endpoint: null,
+      helpPagePath: null,
       store,
       state: store.state,
       isLoading: false,
       hasError: false,
+      isMakingRequest: false,
     };
   },
 
@@ -65,15 +68,41 @@ export default Vue.component('pipelines-table', {
    *
    */
   beforeMount() {
+    const element = document.querySelector('#commit-pipeline-table-view');
+
+    this.endpoint = element.dataset.endpoint;
+    this.helpPagePath = element.dataset.helpPagePath;
     this.service = new PipelinesService(this.endpoint);
 
-    this.fetchPipelines();
+    this.poll = new Poll({
+      resource: this.service,
+      method: 'getPipelines',
+      successCallback: this.successCallback,
+      errorCallback: this.errorCallback,
+      notificationCallback: this.setIsMakingRequest,
+    });
+
+    if (!Visibility.hidden()) {
+      this.isLoading = true;
+      this.poll.makeRequest();
+    }
+
+    Visibility.change(() => {
+      if (!Visibility.hidden()) {
+        this.poll.restart();
+      } else {
+        this.poll.stop();
+      }
+    });
 
     eventHub.$on('refreshPipelines', this.fetchPipelines);
   },
 
   beforeUpdate() {
-    if (this.state.pipelines.length && this.$children) {
+    if (this.state.pipelines.length &&
+        this.$children &&
+        !this.isMakingRequest &&
+        !this.isLoading) {
       this.store.startTimeAgoLoops.call(this, Vue);
     }
   },
@@ -82,21 +111,35 @@ export default Vue.component('pipelines-table', {
     eventHub.$off('refreshPipelines');
   },
 
+  destroyed() {
+    this.poll.stop();
+  },
+
   methods: {
     fetchPipelines() {
       this.isLoading = true;
+
       return this.service.getPipelines()
-        .then(response => response.json())
-        .then((json) => {
-          // depending of the endpoint the response can either bring a `pipelines` key or not.
-          const pipelines = json.pipelines || json;
-          this.store.storePipelines(pipelines);
-          this.isLoading = false;
-        })
-        .catch(() => {
-          this.hasError = true;
-          this.isLoading = false;
-        });
+        .then(response => this.successCallback(response))
+        .catch(() => this.errorCallback());
+    },
+
+    successCallback(resp) {
+      const response = resp.json();
+
+      // depending of the endpoint the response can either bring a `pipelines` key or not.
+      const pipelines = response.pipelines || response;
+      this.store.storePipelines(pipelines);
+      this.isLoading = false;
+    },
+
+    errorCallback() {
+      this.hasError = true;
+      this.isLoading = false;
+    },
+
+    setIsMakingRequest(isMakingRequest) {
+      this.isMakingRequest = isMakingRequest;
     },
   },
 

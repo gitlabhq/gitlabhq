@@ -25,6 +25,20 @@ describe AwardEmoji, models: true do
 
         expect(new_award).not_to be_valid
       end
+
+      # Assume User A and User B both created award emoji of the same name
+      # on the same awardable. When User A is deleted, User A's award emoji
+      # is moved to the ghost user. When User B is deleted, User B's award emoji
+      # also needs to be moved to the ghost user - this cannot happen unless
+      # the uniqueness validation is disabled for ghost users.
+      it "allows duplicate award emoji for ghost users" do
+        user  = create(:user, :ghost)
+        issue = create(:issue)
+        create(:award_emoji, user: user, awardable: issue)
+        new_award = build(:award_emoji, user: user, awardable: issue)
+
+        expect(new_award).to be_valid
+      end
     end
   end
 end

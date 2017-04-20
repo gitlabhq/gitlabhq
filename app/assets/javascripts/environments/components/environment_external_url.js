@@ -9,13 +9,21 @@ export default {
     },
   },
 
+  computed: {
+    title() {
+      return 'Open';
+    },
+  },
+
   template: `
     <a
-      class="btn external_url"
+      class="btn external-url has-tooltip"
+      data-container="body"
       :href="externalUrl"
       target="_blank"
-      rel="noopener noreferrer"
-      title="Environment external URL">
+      rel="noopener noreferrer nofollow"
+      :title="title"
+      :aria-label="title">
       <i class="fa fa-external-link" aria-hidden="true"></i>
     </a>
   `,

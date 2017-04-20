@@ -131,6 +131,10 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
+  validates :polling_interval_multiplier,
+            presence: true,
+            numericality: { greater_than_or_equal_to: 0 }
+
   validates_each :restricted_visibility_levels do |record, attr, value|
     value&.each do |level|
       unless Gitlab::VisibilityLevel.options.has_value?(level)
@@ -233,7 +237,9 @@ class ApplicationSetting < ActiveRecord::Base
       signup_enabled: Settings.gitlab['signup_enabled'],
       terminal_max_session_time: 0,
       two_factor_grace_period: 48,
-      user_default_external: false
+      user_default_external: false,
+      polling_interval_multiplier: 1,
+      usage_ping_enabled: true
     }
   end
 

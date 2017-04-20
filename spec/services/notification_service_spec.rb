@@ -113,7 +113,7 @@ describe NotificationService, services: true do
         project.add_master(issue.assignee)
         project.add_master(note.author)
         create(:note_on_issue, noteable: issue, project_id: issue.project_id, note: '@subscribed_participant cc this guy')
-        update_custom_notification(:new_note, @u_guest_custom, project)
+        update_custom_notification(:new_note, @u_guest_custom, resource: project)
         update_custom_notification(:new_note, @u_custom_global)
       end
 
@@ -379,7 +379,7 @@ describe NotificationService, services: true do
         build_team(note.project)
         reset_delivered_emails!
         allow_any_instance_of(Commit).to receive(:author).and_return(@u_committer)
-        update_custom_notification(:new_note, @u_guest_custom, project)
+        update_custom_notification(:new_note, @u_guest_custom, resource: project)
         update_custom_notification(:new_note, @u_custom_global)
       end
 
@@ -439,7 +439,7 @@ describe NotificationService, services: true do
 
           notification.new_note(note)
 
-          expect(SentNotification.last.position).to eq(note.position)
+          expect(SentNotification.last.in_reply_to_discussion_id).to eq(note.discussion_id)
         end
       end
     end
@@ -457,7 +457,7 @@ describe NotificationService, services: true do
 
       add_users_with_subscription(issue.project, issue)
       reset_delivered_emails!
-      update_custom_notification(:new_issue, @u_guest_custom, project)
+      update_custom_notification(:new_issue, @u_guest_custom, resource: project)
       update_custom_notification(:new_issue, @u_custom_global)
     end
 
@@ -567,7 +567,7 @@ describe NotificationService, services: true do
 
     describe '#reassigned_issue' do
       before do
-        update_custom_notification(:reassign_issue, @u_guest_custom, project)
+        update_custom_notification(:reassign_issue, @u_guest_custom, resource: project)
         update_custom_notification(:reassign_issue, @u_custom_global)
       end
 
@@ -760,7 +760,7 @@ describe NotificationService, services: true do
 
     describe '#close_issue' do
       before do
-        update_custom_notification(:close_issue, @u_guest_custom, project)
+        update_custom_notification(:close_issue, @u_guest_custom, resource: project)
         update_custom_notification(:close_issue, @u_custom_global)
       end
 
@@ -791,7 +791,7 @@ describe NotificationService, services: true do
 
     describe '#reopen_issue' do
       before do
-        update_custom_notification(:reopen_issue, @u_guest_custom, project)
+        update_custom_notification(:reopen_issue, @u_guest_custom, resource: project)
         update_custom_notification(:reopen_issue, @u_custom_global)
       end
 
@@ -856,14 +856,14 @@ describe NotificationService, services: true do
     before do
       build_team(merge_request.target_project)
       add_users_with_subscription(merge_request.target_project, merge_request)
-      update_custom_notification(:new_merge_request, @u_guest_custom, project)
+      update_custom_notification(:new_merge_request, @u_guest_custom, resource: project)
       update_custom_notification(:new_merge_request, @u_custom_global)
       reset_delivered_emails!
     end
 
     describe '#new_merge_request' do
       before do
-        update_custom_notification(:new_merge_request, @u_guest_custom, project)
+        update_custom_notification(:new_merge_request, @u_guest_custom, resource: project)
         update_custom_notification(:new_merge_request, @u_custom_global)
       end
 
@@ -952,7 +952,7 @@ describe NotificationService, services: true do
 
     describe '#reassigned_merge_request' do
       before do
-        update_custom_notification(:reassign_merge_request, @u_guest_custom, project)
+        update_custom_notification(:reassign_merge_request, @u_guest_custom, resource: project)
         update_custom_notification(:reassign_merge_request, @u_custom_global)
       end
 
@@ -1026,7 +1026,7 @@ describe NotificationService, services: true do
 
     describe '#closed_merge_request' do
       before do
-        update_custom_notification(:close_merge_request, @u_guest_custom, project)
+        update_custom_notification(:close_merge_request, @u_guest_custom, resource: project)
         update_custom_notification(:close_merge_request, @u_custom_global)
       end
 
@@ -1056,7 +1056,7 @@ describe NotificationService, services: true do
 
     describe '#merged_merge_request' do
       before do
-        update_custom_notification(:merge_merge_request, @u_guest_custom, project)
+        update_custom_notification(:merge_merge_request, @u_guest_custom, resource: project)
         update_custom_notification(:merge_merge_request, @u_custom_global)
       end
 
@@ -1108,7 +1108,7 @@ describe NotificationService, services: true do
 
     describe '#reopen_merge_request' do
       before do
-        update_custom_notification(:reopen_merge_request, @u_guest_custom, project)
+        update_custom_notification(:reopen_merge_request, @u_guest_custom, resource: project)
         update_custom_notification(:reopen_merge_request, @u_custom_global)
       end
 
@@ -1179,6 +1179,22 @@ describe NotificationService, services: true do
         should_not_email(@u_guest_watcher)
         should_not_email(@u_guest_custom)
         should_not_email(@u_disabled)
+      end
+    end
+
+    describe '#project_exported' do
+      it do
+        notification.project_exported(project, @u_disabled)
+
+        should_only_email(@u_disabled)
+      end
+    end
+
+    describe '#project_not_exported' do
+      it do
+        notification.project_not_exported(project, @u_disabled, ['error'])
+
+        should_only_email(@u_disabled)
       end
     end
   end
@@ -1281,40 +1297,172 @@ describe NotificationService, services: true do
   describe 'Pipelines' do
     describe '#pipeline_finished' do
       let(:project) { create(:project, :public, :repository) }
-      let(:current_user) { create(:user) }
       let(:u_member) { create(:user) }
-      let(:u_other) { create(:user) }
+      let(:u_watcher) { create_user_with_notification(:watch, 'watcher') }
+
+      let(:u_custom_notification_unset) do
+        create_user_with_notification(:custom, 'custom_unset')
+      end
+
+      let(:u_custom_notification_enabled) do
+        user = create_user_with_notification(:custom, 'custom_enabled')
+        update_custom_notification(:success_pipeline, user, resource: project)
+        update_custom_notification(:failed_pipeline, user, resource: project)
+        user
+      end
+
+      let(:u_custom_notification_disabled) do
+        user = create_user_with_notification(:custom, 'custom_disabled')
+        update_custom_notification(:success_pipeline, user, resource: project, value: false)
+        update_custom_notification(:failed_pipeline, user, resource: project, value: false)
+        user
+      end
 
       let(:commit) { project.commit }
-      let(:pipeline) do
-        create(:ci_pipeline, :success,
+
+      def create_pipeline(user, status)
+        create(:ci_pipeline, status,
                project: project,
-               user: current_user,
+               user: user,
                ref: 'refs/heads/master',
                sha: commit.id,
                before_sha: '00000000')
       end
 
       before do
-        project.add_master(current_user)
         project.add_master(u_member)
+        project.add_master(u_watcher)
+        project.add_master(u_custom_notification_unset)
+        project.add_master(u_custom_notification_enabled)
+        project.add_master(u_custom_notification_disabled)
+
         reset_delivered_emails!
       end
 
-      context 'without custom recipients' do
-        it 'notifies the pipeline user' do
-          notification.pipeline_finished(pipeline)
+      context 'with a successful pipeline' do
+        context 'when the creator has default settings' do
+          before do
+            pipeline = create_pipeline(u_member, :success)
+            notification.pipeline_finished(pipeline)
+          end
 
-          should_only_email(current_user, kind: :bcc)
+          it 'notifies nobody' do
+            should_not_email_anyone
+          end
+        end
+
+        context 'when the creator has watch set' do
+          before do
+            pipeline = create_pipeline(u_watcher, :success)
+            notification.pipeline_finished(pipeline)
+          end
+
+          it 'notifies nobody' do
+            should_not_email_anyone
+          end
+        end
+
+        context 'when the creator has custom notifications, but without any set' do
+          before do
+            pipeline = create_pipeline(u_custom_notification_unset, :success)
+            notification.pipeline_finished(pipeline)
+          end
+
+          it 'notifies nobody' do
+            should_not_email_anyone
+          end
+        end
+
+        context 'when the creator has custom notifications disabled' do
+          before do
+            pipeline = create_pipeline(u_custom_notification_disabled, :success)
+            notification.pipeline_finished(pipeline)
+          end
+
+          it 'notifies nobody' do
+            should_not_email_anyone
+          end
+        end
+
+        context 'when the creator has custom notifications enabled' do
+          before do
+            pipeline = create_pipeline(u_custom_notification_enabled, :success)
+            notification.pipeline_finished(pipeline)
+          end
+
+          it 'emails only the creator' do
+            should_only_email(u_custom_notification_enabled, kind: :bcc)
+          end
         end
       end
 
-      context 'with custom recipients' do
-        it 'notifies the custom recipients' do
-          users = [u_member, u_other]
-          notification.pipeline_finished(pipeline, users.map(&:notification_email))
+      context 'with a failed pipeline' do
+        context 'when the creator has no custom notification set' do
+          before do
+            pipeline = create_pipeline(u_member, :failed)
+            notification.pipeline_finished(pipeline)
+          end
 
-          should_only_email(*users, kind: :bcc)
+          it 'emails only the creator' do
+            should_only_email(u_member, kind: :bcc)
+          end
+        end
+
+        context 'when the creator has watch set' do
+          before do
+            pipeline = create_pipeline(u_watcher, :failed)
+            notification.pipeline_finished(pipeline)
+          end
+
+          it 'emails only the creator' do
+            should_only_email(u_watcher, kind: :bcc)
+          end
+        end
+
+        context 'when the creator has custom notifications, but without any set' do
+          before do
+            pipeline = create_pipeline(u_custom_notification_unset, :failed)
+            notification.pipeline_finished(pipeline)
+          end
+
+          it 'emails only the creator' do
+            should_only_email(u_custom_notification_unset, kind: :bcc)
+          end
+        end
+
+        context 'when the creator has custom notifications disabled' do
+          before do
+            pipeline = create_pipeline(u_custom_notification_disabled, :failed)
+            notification.pipeline_finished(pipeline)
+          end
+
+          it 'notifies nobody' do
+            should_not_email_anyone
+          end
+        end
+
+        context 'when the creator has custom notifications set' do
+          before do
+            pipeline = create_pipeline(u_custom_notification_enabled, :failed)
+            notification.pipeline_finished(pipeline)
+          end
+
+          it 'emails only the creator' do
+            should_only_email(u_custom_notification_enabled, kind: :bcc)
+          end
+        end
+
+        context 'when the creator has no read_build access' do
+          before do
+            pipeline = create_pipeline(u_member, :failed)
+            project.update(public_builds: false)
+            project.team.truncate
+            notification.pipeline_finished(pipeline)
+          end
+
+          it 'does not send emails' do
+            should_not_email_anyone
+          end
         end
       end
     end
@@ -1385,9 +1533,9 @@ describe NotificationService, services: true do
 
   # Create custom notifications
   # When resource is nil it means global notification
-  def update_custom_notification(event, user, resource = nil)
+  def update_custom_notification(event, user, resource: nil, value: true)
     setting = user.notification_settings_for(resource)
-    setting.events[event] = true
+    setting.events[event] = value
     setting.save
   end
 

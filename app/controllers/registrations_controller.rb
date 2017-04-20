@@ -25,12 +25,12 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def destroy
-    Users::DestroyService.new(current_user).execute(current_user)
+    DeleteUserWorker.perform_async(current_user.id, current_user.id)
 
     respond_to do |format|
       format.html do
         session.try(:destroy)
-        redirect_to new_user_session_path, notice: "Account successfully removed."
+        redirect_to new_user_session_path, notice: "Account scheduled for removal."
       end
     end
   end
@@ -60,7 +60,7 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def resource
-    @resource ||= Users::CreateService.new(current_user, sign_up_params).build
+    @resource ||= Users::BuildService.new(current_user, sign_up_params).execute
   end
 
   def devise_mapping

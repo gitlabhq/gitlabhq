@@ -119,13 +119,15 @@ describe "Search", feature: true  do
       visit namespace_project_path(project.namespace, project)
 
       page.within '.search' do
-        fill_in 'search', with: 'def'
+        fill_in 'search', with: 'application.js'
         click_button 'Go'
       end
 
       click_link "Code"
 
       expect(page).to have_selector('.file-content .code')
+
+      expect(page).to have_selector("span.line[lang='javascript']")
     end
   end
 
@@ -162,6 +164,8 @@ describe "Search", feature: true  do
       end
 
       context 'click the links in the category search dropdown', js: true do
+        let!(:merge_request) { create(:merge_request, source_project: project, author: user, assignee: user) }
+
         before do
           page.find('#search').click
         end

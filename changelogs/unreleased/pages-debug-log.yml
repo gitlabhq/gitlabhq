@@ -1,0 +1,4 @@
+---
+title: Log errors during generating of Gitlab Pages to debug log
+merge_request: 10335
+author: Danilo Bargen

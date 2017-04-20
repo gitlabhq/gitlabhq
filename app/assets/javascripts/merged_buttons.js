@@ -1,11 +1,13 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, max-len */
 
-(function() {
-  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
+import '~/lib/utils/url_utility';
 
+(function() {
   this.MergedButtons = (function() {
     function MergedButtons() {
-      this.removeSourceBranch = bind(this.removeSourceBranch, this);
+      this.removeSourceBranch = this.removeSourceBranch.bind(this);
+      this.removeBranchSuccess = this.removeBranchSuccess.bind(this);
+      this.removeBranchError = this.removeBranchError.bind(this);
       this.$removeBranchWidget = $('.remove_source_branch_widget');
       this.$removeBranchProgress = $('.remove_source_branch_in_progress');
       this.$removeBranchFailed = $('.remove_source_branch_widget.failed');
@@ -22,7 +24,7 @@
     MergedButtons.prototype.initEventListeners = function() {
       $(document).on('click', '.remove_source_branch', this.removeSourceBranch);
       $(document).on('ajax:success', '.remove_source_branch', this.removeBranchSuccess);
-      return $(document).on('ajax:error', '.remove_source_branch', this.removeBranchError);
+      $(document).on('ajax:error', '.remove_source_branch', this.removeBranchError);
     };
 
     MergedButtons.prototype.removeSourceBranch = function() {
@@ -31,7 +33,7 @@
     };
 
     MergedButtons.prototype.removeBranchSuccess = function() {
-      return location.reload();
+      gl.utils.refreshCurrentPage();
     };
 
     MergedButtons.prototype.removeBranchError = function() {

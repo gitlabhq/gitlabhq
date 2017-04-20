@@ -1,9 +1,9 @@
 class MergeRequest < ActiveRecord::Base
   include InternalId
   include Issuable
+  include Noteable
   include Referable
   include Sortable
-  include Importable
 
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
@@ -104,7 +104,6 @@ class MergeRequest < ActiveRecord::Base
   scope :by_source_or_target_branch, ->(branch_name) do
     where("source_branch = :branch OR target_branch = :branch", branch: branch_name)
   end
-  scope :cared, ->(user) { where('assignee_id = :user OR author_id = :user', user: user.id) }
   scope :by_milestone, ->(milestone) { where(milestone_id: milestone) }
   scope :of_projects, ->(ids) { where(target_project_id: ids) }
   scope :from_project, ->(project) { where(source_project_id: project.id) }
@@ -367,6 +366,14 @@ class MergeRequest < ActiveRecord::Base
     merge_request_diff(true)
   end
 
+  def merge_request_diff_for(diff_refs)
+    @merge_request_diffs_by_diff_refs ||= Hash.new do |h, diff_refs|
+      h[diff_refs] = merge_request_diffs.viewable.select_without_diff.find_by_diff_refs(diff_refs)
+    end
+
+    @merge_request_diffs_by_diff_refs[diff_refs]
+  end
+
   def reload_diff_if_branch_changed
     if source_branch_changed? || target_branch_changed?
       reload_diff
@@ -443,7 +450,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def can_remove_source_branch?(current_user)
-    !source_project.protected_branch?(source_branch) &&
+    !ProtectedBranch.protected?(source_project, source_branch) &&
       !source_project.root_ref?(source_branch) &&
       Ability.allowed?(current_user, :push_code, source_project) &&
       diff_head_commit == source_branch_head
@@ -476,43 +483,7 @@ class MergeRequest < ActiveRecord::Base
     )
   end
 
-  def discussions
-    @discussions ||= self.related_notes.
-      inc_relations_for_view.
-      fresh.
-      discussions
-  end
-
-  def diff_discussions
-    @diff_discussions ||= self.notes.diff_notes.discussions
-  end
-
-  def resolvable_discussions
-    @resolvable_discussions ||= diff_discussions.select(&:to_be_resolved?)
-  end
-
-  def discussions_can_be_resolved_by?(user)
-    resolvable_discussions.all? { |discussion| discussion.can_resolve?(user) }
-  end
-
-  def find_diff_discussion(discussion_id)
-    notes = self.notes.diff_notes.where(discussion_id: discussion_id).fresh.to_a
-    return if notes.empty?
-
-    Discussion.new(notes)
-  end
-
-  def discussions_resolvable?
-    diff_discussions.any?(&:resolvable?)
-  end
-
-  def discussions_resolved?
-    discussions_resolvable? && diff_discussions.none?(&:to_be_resolved?)
-  end
-
-  def discussions_to_be_resolved?
-    discussions_resolvable? && !discussions_resolved?
-  end
+  alias_method :discussion_notes, :related_notes
 
   def mergeable_discussions_state?
     return true unless project.only_allow_merge_if_all_discussions_are_resolved?
@@ -858,8 +829,8 @@ class MergeRequest < ActiveRecord::Base
     return unless has_complete_diff_refs?
     return if new_diff_refs == old_diff_refs
 
-    active_diff_notes = self.notes.diff_notes.select do |note|
-      note.new_diff_note? && note.active?(old_diff_refs)
+    active_diff_notes = self.notes.new_diff_notes.select do |note|
+      note.active?(old_diff_refs)
     end
 
     return if active_diff_notes.empty?

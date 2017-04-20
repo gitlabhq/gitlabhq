@@ -1,20 +1,22 @@
+require_relative 'test_env'
+
 # This file is specific to specs in spec/lib/gitlab/git/
 
-SEED_REPOSITORY_PATH   = File.expand_path('../../tmp/repositories', __dir__)
-TEST_REPO_PATH         = File.join(SEED_REPOSITORY_PATH, 'gitlab-git-test.git')
-TEST_NORMAL_REPO_PATH  = File.join(SEED_REPOSITORY_PATH, "not-bare-repo.git")
-TEST_MUTABLE_REPO_PATH = File.join(SEED_REPOSITORY_PATH, "mutable-repo.git")
-TEST_BROKEN_REPO_PATH  = File.join(SEED_REPOSITORY_PATH, "broken-repo.git")
+SEED_STORAGE_PATH      = TestEnv.repos_path
+TEST_REPO_PATH         = 'gitlab-git-test.git'.freeze
+TEST_NORMAL_REPO_PATH  = 'not-bare-repo.git'.freeze
+TEST_MUTABLE_REPO_PATH = 'mutable-repo.git'.freeze
+TEST_BROKEN_REPO_PATH  = 'broken-repo.git'.freeze
 
 module SeedHelper
   GITLAB_GIT_TEST_REPO_URL = ENV.fetch('GITLAB_GIT_TEST_REPO_URL', 'https://gitlab.com/gitlab-org/gitlab-git-test.git').freeze
 
   def ensure_seeds
-    if File.exist?(SEED_REPOSITORY_PATH)
-      FileUtils.rm_r(SEED_REPOSITORY_PATH)
+    if File.exist?(SEED_STORAGE_PATH)
+      FileUtils.rm_r(SEED_STORAGE_PATH)
     end
 
-    FileUtils.mkdir_p(SEED_REPOSITORY_PATH)
+    FileUtils.mkdir_p(SEED_STORAGE_PATH)
 
     create_bare_seeds
     create_normal_seeds
@@ -26,41 +28,45 @@ module SeedHelper
 
   def create_bare_seeds
     system(git_env, *%W(#{Gitlab.config.git.bin_path} clone --bare #{GITLAB_GIT_TEST_REPO_URL}),
-           chdir: SEED_REPOSITORY_PATH,
+           chdir: SEED_STORAGE_PATH,
            out:   '/dev/null',
            err:   '/dev/null')
   end
 
   def create_normal_seeds
     system(git_env, *%W(#{Gitlab.config.git.bin_path} clone #{TEST_REPO_PATH} #{TEST_NORMAL_REPO_PATH}),
+           chdir: SEED_STORAGE_PATH,
            out: '/dev/null',
            err: '/dev/null')
   end
 
   def create_mutable_seeds
     system(git_env, *%W(#{Gitlab.config.git.bin_path} clone #{TEST_REPO_PATH} #{TEST_MUTABLE_REPO_PATH}),
+           chdir: SEED_STORAGE_PATH,
            out: '/dev/null',
            err: '/dev/null')
 
-    system(git_env, *%w(git branch -t feature origin/feature),
-           chdir: TEST_MUTABLE_REPO_PATH, out: '/dev/null', err: '/dev/null')
+    mutable_repo_full_path = File.join(SEED_STORAGE_PATH, TEST_MUTABLE_REPO_PATH)
+    system(git_env, *%W(#{Gitlab.config.git.bin_path} branch -t feature origin/feature),
+           chdir: mutable_repo_full_path, out: '/dev/null', err: '/dev/null')
 
     system(git_env, *%W(#{Gitlab.config.git.bin_path} remote add expendable #{GITLAB_GIT_TEST_REPO_URL}),
-           chdir: TEST_MUTABLE_REPO_PATH, out: '/dev/null', err: '/dev/null')
+           chdir: mutable_repo_full_path, out: '/dev/null', err: '/dev/null')
   end
 
   def create_broken_seeds
     system(git_env, *%W(#{Gitlab.config.git.bin_path} clone --bare #{TEST_REPO_PATH} #{TEST_BROKEN_REPO_PATH}),
+           chdir: SEED_STORAGE_PATH,
            out: '/dev/null',
            err: '/dev/null')
 
-    refs_path = File.join(TEST_BROKEN_REPO_PATH, 'refs')
+    refs_path = File.join(SEED_STORAGE_PATH, TEST_BROKEN_REPO_PATH, 'refs')
 
     FileUtils.rm_r(refs_path)
   end
 
   def create_git_attributes
-    dir = File.join(SEED_REPOSITORY_PATH, 'with-git-attributes.git', 'info')
+    dir = File.join(SEED_STORAGE_PATH, 'with-git-attributes.git', 'info')
 
     FileUtils.mkdir_p(dir)
 
@@ -85,7 +91,7 @@ bla/bla.txt
   end
 
   def create_invalid_git_attributes
-    dir = File.join(SEED_REPOSITORY_PATH, 'with-invalid-git-attributes.git', 'info')
+    dir = File.join(SEED_STORAGE_PATH, 'with-invalid-git-attributes.git', 'info')
 
     FileUtils.mkdir_p(dir)
 

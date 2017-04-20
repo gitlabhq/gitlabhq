@@ -56,14 +56,16 @@ Feature: Project Issues
 
   @javascript
   Scenario: Visiting Merge Requests after being sorted the list
-    Given I visit project "Shop" issues page
+    Given project "Shop" has a "Bugfix MR" merge request open
+    And I visit project "Shop" issues page
     And I sort the list by "Oldest updated"
     And I visit project "Shop" merge requests page
     Then The list should be sorted by "Oldest updated"
 
   @javascript
   Scenario: Visiting Merge Requests from a differente Project after sorting
-    Given I visit project "Shop" merge requests page
+    Given project "Shop" has a "Bugfix MR" merge request open
+    And I visit project "Shop" merge requests page
     And I sort the list by "Oldest updated"
     And I visit dashboard merge requests page
     Then The list should be sorted by "Oldest updated"
@@ -175,9 +177,3 @@ Feature: Project Issues
     And I should not see labels field
     And I submit new issue "500 error on profile"
     Then I should see issue "500 error on profile"
-
-  @javascript
-  Scenario: Another user adds a comment to issue I'm currently viewing
-    Given I visit issue page "Release 0.4"
-    And another user adds a comment with text "Yay!" to issue "Release 0.4"
-    Then I should see a new comment with text "Yay!"

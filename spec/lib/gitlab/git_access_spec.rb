@@ -183,7 +183,7 @@ describe Gitlab::GitAccess, lib: true do
 
   describe '#check_push_access!' do
     before { merge_into_protected_branch }
-    let(:unprotected_branch) { FFaker::Internet.user_name }
+    let(:unprotected_branch) { 'unprotected_branch' }
 
     let(:changes) do
       { push_new_branch: "#{Gitlab::Git::BLANK_SHA} 570e7b2ab refs/heads/wow",
@@ -211,9 +211,9 @@ describe Gitlab::GitAccess, lib: true do
         target_branch = project.repository.lookup('feature')
         source_branch = project.repository.create_file(
           user,
-          FFaker::InternetSE.login_user_name,
-          FFaker::HipsterIpsum.paragraph,
-          message: FFaker::HipsterIpsum.sentence,
+          'filename',
+          'This is the file content',
+          message: 'This is a good commit message',
           branch_name: unprotected_branch)
         rugged = project.repository.rugged
         author = { email: "email@example.com", time: Time.now, name: "Example Git User" }

@@ -1,110 +1,121 @@
 require 'spec_helper'
 
 describe ContainerRegistry::Blob do
-  let(:digest) { 'sha256:0123456789012345' }
-  let(:config) do
-    {
-      'digest' => digest,
-      'mediaType' => 'binary',
-      'size' => 1000
-    }
+  let(:group) { create(:group, name: 'group') }
+  let(:project) { create(:empty_project, path: 'test', group: group) }
+
+  let(:repository) do
+    create(:container_repository, name: 'image',
+                                  tags: %w[latest rc1],
+                                  project: project)
   end
-  let(:token) { 'authorization-token' }
-  
-  let(:registry) { ContainerRegistry::Registry.new('http://example.com', token: token) }
-  let(:repository) { registry.repository('group/test') }
-  let(:blob) { repository.blob(config) }
+
+  let(:config) do
+    { 'digest' => 'sha256:0123456789012345',
+      'mediaType' => 'binary',
+      'size' => 1000 }
+  end
+
+  let(:blob) { described_class.new(repository, config) }
+
+  before do
+    stub_container_registry_config(enabled: true,
+                                   api_url: 'http://registry.gitlab',
+                                   host_port: 'registry.gitlab')
+  end
 
   it { expect(blob).to respond_to(:repository) }
   it { expect(blob).to delegate_method(:registry).to(:repository) }
   it { expect(blob).to delegate_method(:client).to(:repository) }
 
-  context '#path' do
-    subject { blob.path }
-
-    it { is_expected.to eq('example.com/group/test@sha256:0123456789012345') }
+  describe '#path' do
+    it 'returns a valid path to the blob' do
+      expect(blob.path).to eq('group/test/image@sha256:0123456789012345')
+    end
   end
 
-  context '#digest' do
-    subject { blob.digest }
-
-    it { is_expected.to eq(digest) }
+  describe '#digest' do
+    it 'return correct digest value' do
+      expect(blob.digest).to eq 'sha256:0123456789012345'
+    end
   end
 
-  context '#type' do
-    subject { blob.type }
-
-    it { is_expected.to eq('binary') }
+  describe '#type' do
+    it 'returns a correct type' do
+      expect(blob.type).to eq 'binary'
+    end
   end
 
-  context '#revision' do
-    subject { blob.revision }
-
-    it { is_expected.to eq('0123456789012345') }
+  describe '#revision' do
+    it 'returns a correct blob SHA' do
+      expect(blob.revision).to eq '0123456789012345'
+    end
   end
 
-  context '#short_revision' do
-    subject { blob.short_revision }
-
-    it { is_expected.to eq('012345678') }
+  describe '#short_revision' do
+    it 'return a short SHA' do
+      expect(blob.short_revision).to eq '012345678'
+    end
   end
 
-  context '#delete' do
+  describe '#delete' do
     before do
-      stub_request(:delete, 'http://example.com/v2/group/test/blobs/sha256:0123456789012345').
-        to_return(status: 200)
+      stub_request(:delete, 'http://registry.gitlab/v2/group/test/image/blobs/sha256:0123456789012345')
+        .to_return(status: 200)
     end
 
-    subject { blob.delete }
-
-    it { is_expected.to be_truthy }
+    it 'returns true when blob has been successfuly deleted' do
+      expect(blob.delete).to be_truthy
+    end
   end
 
-  context '#data' do
-    let(:data) { '{"key":"value"}' }
-
-    subject { blob.data }
-
+  describe '#data' do
     context 'when locally stored' do
       before do
-        stub_request(:get, 'http://example.com/v2/group/test/blobs/sha256:0123456789012345').
+        stub_request(:get, 'http://registry.gitlab/v2/group/test/image/blobs/sha256:0123456789012345').
           to_return(
             status: 200,
             headers: { 'Content-Type' => 'application/json' },
-            body: data)
+            body: '{"key":"value"}')
       end
 
-      it { is_expected.to eq(data) }
+      it 'returns a correct blob data' do
+        expect(blob.data).to eq '{"key":"value"}'
+      end
     end
 
     context 'when externally stored' do
+      let(:location) { 'http://external.com/blob/file' }
+
       before do
-        stub_request(:get, 'http://example.com/v2/group/test/blobs/sha256:0123456789012345').
-          with(headers: { 'Authorization' => "bearer #{token}" }).
-          to_return(
+        stub_request(:get, 'http://registry.gitlab/v2/group/test/image/blobs/sha256:0123456789012345')
+          .with(headers: { 'Authorization' => 'bearer token' })
+          .to_return(
             status: 307,
             headers: { 'Location' => location })
       end
 
       context 'for a valid address' do
-        let(:location) { 'http://external.com/blob/file' }
-
         before do
           stub_request(:get, location).
             with(headers: { 'Authorization' => nil }).
             to_return(
               status: 200,
               headers: { 'Content-Type' => 'application/json' },
-              body: data)
+              body: '{"key":"value"}')
         end
 
-        it { is_expected.to eq(data) }
+        it 'returns correct data' do
+          expect(blob.data).to eq '{"key":"value"}'
+        end
       end
 
       context 'for invalid file' do
         let(:location) { 'file:///etc/passwd' }
 
-        it { expect{ subject }.to raise_error(ArgumentError, 'invalid address') }
+        it 'raises an error' do
+          expect { blob.data }.to raise_error(ArgumentError, 'invalid address')
+        end
       end
     end
   end

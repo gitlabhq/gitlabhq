@@ -180,6 +180,9 @@ production: &base
     # Flag stuck CI jobs as failed
     stuck_ci_jobs_worker:
       cron: "0 * * * *"
+    # Execute scheduled triggers
+    trigger_schedule_worker:
+      cron: "0 */12 * * *"
     # Remove expired build artifacts
     expire_build_artifacts_worker:
       cron: "50 * * * *"
@@ -443,14 +446,10 @@ production: &base
 
   # Gitaly settings
   gitaly:
-    # The socket_path setting is optional and obsolete. When this is set
-    # GitLab assumes it can reach a Gitaly services via a Unix socket at
-    # this path. When this is commented out GitLab will not use Gitaly.
-    # 
-    # This setting is obsolete because we expect it to be moved under
-    # repositories/storages in GitLab 9.1.
-    #
-    # socket_path: tmp/sockets/private/gitaly.socket
+    # This setting controls whether GitLab uses Gitaly (new component
+    # introduced in 9.0). Eventually Gitaly use will become mandatory and
+    # this option will disappear.
+    enabled: false
 
   #
   # 4. Advanced settings
@@ -465,6 +464,7 @@ production: &base
     storages: # You must have at least a `default` storage path.
       default:
         path: /home/git/repositories/
+        gitaly_address: unix:/home/git/gitlab/tmp/sockets/private/gitaly.socket # TCP connections are supported too (e.g. tcp://host:port)
 
   ## Backup settings
   backup:
@@ -573,10 +573,15 @@ test:
     # In order to setup it correctly you need to specify
     # your system username you use to run GitLab
     # user: YOUR_USERNAME
+  pages:
+    path: tmp/tests/pages
   repositories:
     storages:
       default:
         path: tmp/tests/repositories/
+        gitaly_address: unix:tmp/tests/gitaly/gitaly.socket
+  gitaly:
+    enabled: true
   backup:
     path: tmp/tests/backups
   gitlab_shell:

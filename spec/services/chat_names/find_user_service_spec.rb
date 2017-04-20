@@ -18,9 +18,16 @@ describe ChatNames::FindUserService, services: true do
         end
 
         it 'updates when last time chat name was used' do
+          expect(chat_name.last_used_at).to be_nil
+
           subject
 
-          expect(chat_name.reload.last_used_at).to be_like_time(Time.now)
+          initial_last_used = chat_name.reload.last_used_at
+          expect(initial_last_used).to be_present
+
+          Timecop.travel(2.days.from_now) { described_class.new(service, params).execute }
+
+          expect(chat_name.reload.last_used_at).to be > initial_last_used
         end
       end
 

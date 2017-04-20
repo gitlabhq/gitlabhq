@@ -138,7 +138,7 @@ module API
           not_found!('User') unless user
 
           events = user.events.
-            merge(ProjectsFinder.new.execute(current_user)).
+            merge(ProjectsFinder.new(current_user: current_user).execute).
             references(:project).
             with_associations.
             recent

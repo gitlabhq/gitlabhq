@@ -23,5 +23,9 @@ FactoryGirl.define do
       factory :another_deploy_key, class: 'DeployKey' do
       end
     end
+
+    factory :write_access_key, class: 'DeployKey' do
+      can_push true
+    end
   end
 end

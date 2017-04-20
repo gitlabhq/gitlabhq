@@ -8,7 +8,7 @@ describe 'gitlab:workhorse namespace rake task' do
   describe 'install' do
     let(:repo) { 'https://gitlab.com/gitlab-org/gitlab-workhorse.git' }
     let(:clone_path) { Rails.root.join('tmp/tests/gitlab-workhorse').to_s }
-    let(:tag) { "v#{File.read(Rails.root.join(Gitlab::Workhorse::VERSION_FILE)).chomp}" }
+    let(:version) { File.read(Rails.root.join(Gitlab::Workhorse::VERSION_FILE)).chomp }
 
     context 'no dir given' do
       it 'aborts and display a help message' do
@@ -21,7 +21,7 @@ describe 'gitlab:workhorse namespace rake task' do
     context 'when an underlying Git command fail' do
       it 'aborts and display a help message' do
         expect_any_instance_of(Object).
-          to receive(:checkout_or_clone_tag).and_raise 'Git error'
+          to receive(:checkout_or_clone_version).and_raise 'Git error'
 
         expect { run_rake_task('gitlab:workhorse:install', clone_path) }.to raise_error 'Git error'
       end
@@ -32,9 +32,9 @@ describe 'gitlab:workhorse namespace rake task' do
         expect(Dir).to receive(:chdir).with(clone_path)
       end
 
-      it 'calls checkout_or_clone_tag with the right arguments' do
+      it 'calls checkout_or_clone_version with the right arguments' do
         expect_any_instance_of(Object).
-          to receive(:checkout_or_clone_tag).with(tag: tag, repo: repo, target_dir: clone_path)
+          to receive(:checkout_or_clone_version).with(version: version, repo: repo, target_dir: clone_path)
 
         run_rake_task('gitlab:workhorse:install', clone_path)
       end
@@ -48,7 +48,7 @@ describe 'gitlab:workhorse namespace rake task' do
 
       context 'gmake is available' do
         before do
-          expect_any_instance_of(Object).to receive(:checkout_or_clone_tag)
+          expect_any_instance_of(Object).to receive(:checkout_or_clone_version)
           allow_any_instance_of(Object).to receive(:run_command!).with(['gmake']).and_return(true)
         end
 
@@ -62,7 +62,7 @@ describe 'gitlab:workhorse namespace rake task' do
 
       context 'gmake is not available' do
         before do
-          expect_any_instance_of(Object).to receive(:checkout_or_clone_tag)
+          expect_any_instance_of(Object).to receive(:checkout_or_clone_version)
           allow_any_instance_of(Object).to receive(:run_command!).with(['make']).and_return(true)
         end
 

@@ -1,21 +1,8 @@
 require 'spec_helper'
 
 describe Gitlab::Git, lib: true do
-  let(:committer_email) { FFaker::Internet.email }
-
-  # I have to remove periods from the end of the name
-  # This happened when the user's name had a suffix (i.e. "Sr.")
-  # This seems to be what git does under the hood. For example, this commit:
-  #
-  # $ git commit --author='Foo Sr. <foo@example.com>' -m 'Where's my trailing period?'
-  #
-  # results in this:
-  #
-  # $ git show --pretty
-  # ...
-  # Author: Foo Sr <foo@example.com>
-  # ...
-  let(:committer_name) { FFaker::Name.name.chomp("\.") }
+  let(:committer_email) { 'user@example.org' }
+  let(:committer_name) { 'John Doe' }
 
   describe 'committer_hash' do
     it "returns a hash containing the given email and name" do

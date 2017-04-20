@@ -223,7 +223,9 @@ class Gitlab::Seeder::CycleAnalytics
 end
 
 Gitlab::Seeder.quiet do
-  if ENV['SEED_CYCLE_ANALYTICS']
+  flag = 'SEED_CYCLE_ANALYTICS'
+
+  if ENV[flag]
     Project.all.each do |project|
       seeder = Gitlab::Seeder::CycleAnalytics.new(project)
       seeder.seed!
@@ -235,6 +237,6 @@ Gitlab::Seeder.quiet do
     seeder = Gitlab::Seeder::CycleAnalytics.new(Project.order(:id).first, perf: true)
     seeder.seed_metrics!
   else
-    puts "Not running the cycle analytics seed file. Use the `SEED_CYCLE_ANALYTICS` environment variable to enable it."
+    puts "Skipped. Use the `#{flag}` environment variable to enable."
   end
 end

@@ -215,9 +215,9 @@ describe Gitlab::GithubImport::Importer, lib: true do
   let(:updated_at) { DateTime.strptime('2011-01-27T19:01:12Z') }
   let(:repository) { double(id: 1, fork: false) }
   let(:source_sha) { create(:commit, project: project).id }
-  let(:source_branch) { double(ref: 'branch-merged', repo: repository, sha: source_sha) }
+  let(:source_branch) { double(ref: 'branch-merged', repo: repository, sha: source_sha, user: octocat) }
   let(:target_sha) { create(:commit, project: project, git_commit: RepoHelpers.another_sample_commit).id }
-  let(:target_branch) { double(ref: 'master', repo: repository, sha: target_sha) }
+  let(:target_branch) { double(ref: 'master', repo: repository, sha: target_sha, user: octocat) }
   let(:pull_request) do
     double(
       number: 1347,

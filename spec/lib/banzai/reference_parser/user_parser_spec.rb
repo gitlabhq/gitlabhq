@@ -180,6 +180,15 @@ describe Banzai::ReferenceParser::UserParser, lib: true do
 
         expect(subject.nodes_user_can_reference(user, [link])).to eq([])
       end
+
+      it 'returns the nodes if the project attribute value equals the current project ID' do
+        other_user = create(:user)
+
+        link['data-project'] = project.id.to_s
+        link['data-author'] = other_user.id.to_s
+
+        expect(subject.nodes_user_can_reference(user, [link])).to eq([link])
+      end
     end
 
     context 'when the link does not have a data-author attribute' do

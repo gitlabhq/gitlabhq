@@ -12,10 +12,11 @@
   = cache(cache_key) do
     - if avatar
       .avatar-container.s40
-        - if use_creator_avatar
-          = image_tag avatar_icon(project.creator.email, 40), class: "avatar s40", alt:''
-        - else
-          = project_icon(project, alt: '', class: 'avatar project-avatar s40')
+        = link_to project_path(project), class: dom_class(project) do
+          - if use_creator_avatar
+            = image_tag avatar_icon(project.creator.email, 40), class: "avatar s40", alt:''
+          - else
+            = project_icon(project, alt: '', class: 'avatar project-avatar s40')
     .project-details
       %h3.prepend-top-0.append-bottom-0
         = link_to project_path(project), class: dom_class(project) do
@@ -24,7 +25,7 @@
               - if project.namespace && !skip_namespace
                 = project.namespace.human_name
                 \/
-            %span.project-name.filter-title
+            %span.project-name
               = project.name
 
       - if show_last_commit_as_description

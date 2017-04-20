@@ -64,6 +64,10 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
         expect(ProtectedBranch.first.push_access_levels).not_to be_empty
       end
 
+      it 'contains the create access levels on a protected tag' do
+        expect(ProtectedTag.first.create_access_levels).not_to be_empty
+      end
+
       context 'event at forth level of the tree' do
         let(:event) { Event.where(title: 'test levels').first }
 
@@ -80,6 +84,12 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
         # makes sure we are renaming the custom method +utf8_st_diffs+ into +st_diffs+
 
         expect(MergeRequestDiff.where.not(st_diffs: nil).count).to eq(9)
+      end
+
+      it 'has the correct time for merge request st_commits' do
+        st_commits = MergeRequestDiff.where.not(st_commits: nil).first.st_commits
+
+        expect(st_commits.first[:committed_date]).to be_kind_of(Time)
       end
 
       it 'has labels associated to label links, associated to issues' do

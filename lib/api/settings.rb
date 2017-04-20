@@ -20,6 +20,55 @@ module API
       success Entities::ApplicationSetting
     end
     params do
+      # CE
+      at_least_one_of_ce = [
+        :admin_notification_email,
+        :after_sign_out_path,
+        :after_sign_up_text,
+        :akismet_enabled,
+        :container_registry_token_expire_delay,
+        :default_artifacts_expire_in,
+        :default_branch_protection,
+        :default_group_visibility,
+        :default_project_visibility,
+        :default_projects_limit,
+        :default_snippet_visibility,
+        :disabled_oauth_sign_in_sources,
+        :domain_blacklist_enabled,
+        :domain_whitelist,
+        :email_author_in_body,
+        :enabled_git_access_protocol,
+        :gravatar_enabled,
+        :help_page_text,
+        :home_page_url,
+        :housekeeping_enabled,
+        :html_emails_enabled,
+        :import_sources,
+        :koding_enabled,
+        :max_artifacts_size,
+        :max_attachment_size,
+        :max_pages_size,
+        :metrics_enabled,
+        :plantuml_enabled,
+        :polling_interval_multiplier,
+        :recaptcha_enabled,
+        :repository_checks_enabled,
+        :repository_storage,
+        :require_two_factor_authentication,
+        :restricted_visibility_levels,
+        :send_user_confirmation_email,
+        :sentry_enabled,
+        :session_expire_delay,
+        :shared_runners_enabled,
+        :sidekiq_throttling_enabled,
+        :sign_in_text,
+        :signin_enabled,
+        :signup_enabled,
+        :terminal_max_session_time,
+        :user_default_external,
+        :user_oauth_applications,
+        :version_check_enabled
+      ]
       optional :default_branch_protection, type: Integer, values: [0, 1, 2], desc: 'Determine if developers can push to master'
       optional :default_project_visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The default project visibility'
       optional :default_snippet_visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The default snippet visibility'
@@ -110,22 +159,9 @@ module API
         requires :housekeeping_gc_period, type: Integer, desc: "Number of Git pushes after which 'git gc' is run."
       end
       optional :terminal_max_session_time, type: Integer, desc: 'Maximum time for web terminal websocket connection (in seconds). Set to 0 for unlimited time.'
-      at_least_one_of :default_branch_protection, :default_project_visibility, :default_snippet_visibility,
-                      :default_group_visibility, :restricted_visibility_levels, :import_sources,
-                      :enabled_git_access_protocol, :gravatar_enabled, :default_projects_limit,
-                      :max_attachment_size, :session_expire_delay, :disabled_oauth_sign_in_sources,
-                      :user_oauth_applications, :user_default_external, :signup_enabled,
-                      :send_user_confirmation_email, :domain_whitelist, :domain_blacklist_enabled,
-                      :after_sign_up_text, :signin_enabled, :require_two_factor_authentication,
-                      :home_page_url, :after_sign_out_path, :sign_in_text, :help_page_text,
-                      :shared_runners_enabled, :max_artifacts_size,
-                      :default_artifacts_expire_in, :max_pages_size,
-                      :container_registry_token_expire_delay,
-                      :metrics_enabled, :sidekiq_throttling_enabled, :recaptcha_enabled,
-                      :akismet_enabled, :admin_notification_email, :sentry_enabled,
-                      :repository_storage, :repository_checks_enabled, :koding_enabled, :plantuml_enabled,
-                      :version_check_enabled, :email_author_in_body, :html_emails_enabled,
-                      :housekeeping_enabled, :terminal_max_session_time
+      optional :polling_interval_multiplier, type: BigDecimal, desc: 'Interval multiplier used by endpoints that perform polling. Set to 0 to disable polling.'
+
+      at_least_one_of(*at_least_one_of_ce)
     end
     put "application/settings" do
       attrs = declared_params(include_missing: false)

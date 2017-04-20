@@ -11,7 +11,7 @@ class DeleteBranchService < BaseService
       return error('Cannot remove HEAD branch', 405)
     end
 
-    if project.protected_branch?(branch_name)
+    if ProtectedBranch.protected?(project, branch_name)
       return error('Protected branch cant be removed', 405)
     end
 

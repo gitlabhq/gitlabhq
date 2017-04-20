@@ -5,8 +5,6 @@ module Ci
     def execute(pipeline)
       @pipeline = pipeline
 
-      ensure_created_builds! # TODO, remove me in 9.0
-
       new_builds =
         stage_indexes_of_created_builds.map do |index|
           process_stage(index)
@@ -72,19 +70,6 @@ module Ci
 
     def created_builds
       pipeline.builds.created
-    end
-
-    # This method is DEPRECATED and should be removed in 9.0.
-    #
-    # We need it to maintain backwards compatibility with  previous versions
-    # when builds were not created within one transaction with the pipeline.
-    #
-    def ensure_created_builds!
-      return if created_builds.any?
-
-      Ci::CreatePipelineBuildsService
-        .new(project, current_user)
-        .execute(pipeline)
     end
   end
 end

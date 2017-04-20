@@ -92,20 +92,49 @@ describe Banzai::ReferenceParser::BaseParser, lib: true do
   end
 
   describe '#grouped_objects_for_nodes' do
-    it 'returns a Hash grouping objects per ID' do
-      nodes = [double(:node)]
+    it 'returns a Hash grouping objects per node' do
+      link = double(:link)
+
+      expect(link).to receive(:has_attribute?).
+        with('data-user').
+        and_return(true)
+
+      expect(link).to receive(:attr).
+        with('data-user').
+        and_return(user.id.to_s)
+
+      nodes = [link]
 
       expect(subject).to receive(:unique_attribute_values).
         with(nodes, 'data-user').
-        and_return([user.id])
+        and_return([user.id.to_s])
 
       hash = subject.grouped_objects_for_nodes(nodes, User, 'data-user')
 
-      expect(hash).to eq({ user.id => user })
+      expect(hash).to eq({ link => user })
     end
 
-    it 'returns an empty Hash when the list of nodes is empty' do
-      expect(subject.grouped_objects_for_nodes([], User, 'data-user')).to eq({})
+    it 'returns an empty Hash when entry does not exist in the database' do
+      link = double(:link)
+
+      expect(link).to receive(:has_attribute?).
+          with('data-user').
+          and_return(true)
+
+      expect(link).to receive(:attr).
+          with('data-user').
+          and_return('1')
+
+      nodes = [link]
+      bad_id = user.id + 100
+
+      expect(subject).to receive(:unique_attribute_values).
+          with(nodes, 'data-user').
+          and_return([bad_id.to_s])
+
+      hash = subject.grouped_objects_for_nodes(nodes, User, 'data-user')
+
+      expect(hash).to eq({})
     end
   end
 

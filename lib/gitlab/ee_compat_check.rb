@@ -125,7 +125,7 @@ module Gitlab
       end
 
       puts
-      puts applies_cleanly_msg(ee_branch)
+      puts applies_cleanly_msg(ee_branch_found)
     end
 
     def check_patch(patch_path)
@@ -215,7 +215,7 @@ module Gitlab
     end
 
     def ee_patch_name
-      @ee_patch_name ||= patch_name_from_branch(ee_branch)
+      @ee_patch_name ||= patch_name_from_branch(ee_branch_found)
     end
 
     def ee_patch_full_path

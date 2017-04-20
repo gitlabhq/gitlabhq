@@ -1,0 +1,4 @@
+---
+title: Fix redirection after login when the referer have params
+merge_request:
+author: mhasbini

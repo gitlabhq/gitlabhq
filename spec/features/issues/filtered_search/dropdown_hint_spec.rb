@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Dropdown hint', js: true, feature: true do
+describe 'Dropdown hint', :js, :feature do
   include FilteredSearchHelpers
   include WaitForAjax
 
@@ -8,10 +8,6 @@ describe 'Dropdown hint', js: true, feature: true do
   let!(:user) { create(:user) }
   let(:filtered_search) { find('.filtered-search') }
   let(:js_dropdown_hint) { '#js-dropdown-hint' }
-
-  def dropdown_hint_size
-    page.all('#js-dropdown-hint .filter-dropdown .filter-dropdown-item').size
-  end
 
   def click_hint(text)
     find('#js-dropdown-hint .filter-dropdown .filter-dropdown-item', text: text).click
@@ -43,17 +39,19 @@ describe 'Dropdown hint', js: true, feature: true do
   end
 
   describe 'filtering' do
-    it 'does not filter `Keep typing and press Enter`' do
+    it 'does not filter `Press Enter or click to search`' do
       filtered_search.set('randomtext')
 
-      expect(page).to have_css(js_dropdown_hint, text: 'Keep typing and press Enter', visible: false)
-      expect(dropdown_hint_size).to eq(0)
+      hint_dropdown = find(js_dropdown_hint)
+
+      expect(hint_dropdown).to have_content('Press Enter or click to search')
+      expect(hint_dropdown).to have_selector('.filter-dropdown .filter-dropdown-item', count: 0)
     end
 
     it 'filters with text' do
       filtered_search.set('a')
 
-      expect(dropdown_hint_size).to eq(3)
+      expect(find(js_dropdown_hint)).to have_selector('.filter-dropdown .filter-dropdown-item', count: 3)
     end
   end
 

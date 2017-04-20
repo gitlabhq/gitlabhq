@@ -132,34 +132,54 @@ module Ci
 
       STATE_PARAMS = [:offset, :n_open_tags, :fg_color, :bg_color, :style_mask].freeze
 
-      def convert(raw, new_state)
+      def convert(stream, new_state)
         reset_state
-        restore_state(raw, new_state) if new_state.present?
+        restore_state(new_state, stream) if new_state.present?
 
-        start = @offset
-        ansi = raw[@offset..-1]
+        append = false
+        truncated = false
+
+        cur_offset = stream.tell
+        if cur_offset > @offset
+          @offset = cur_offset
+          truncated = true
+        else
+          stream.seek(@offset)
+          append = @offset > 0
+        end
+        start_offset = @offset
 
         open_new_tag
 
-        s = StringScanner.new(ansi)
-        until s.eos?
-          if s.scan(/\e([@-_])(.*?)([@-~])/)
-            handle_sequence(s)
-          elsif s.scan(/\e(([@-_])(.*?)?)?$/)
-            break
-          elsif s.scan(/</)
-            @out << '&lt;'
-          elsif s.scan(/\r?\n/)
-            @out << '<br>'
-          else
-            @out << s.scan(/./m)
+        stream.each_line do |line|
+          s = StringScanner.new(line)
+          until s.eos?
+            if s.scan(/\e([@-_])(.*?)([@-~])/)
+              handle_sequence(s)
+            elsif s.scan(/\e(([@-_])(.*?)?)?$/)
+              break
+            elsif s.scan(/</)
+              @out << '&lt;'
+            elsif s.scan(/\r?\n/)
+              @out << '<br>'
+            else
+              @out << s.scan(/./m)
+            end
+            @offset += s.matched_size
           end
-          @offset += s.matched_size
         end
 
         close_open_tags()
 
-        { state: state, html: @out, text: ansi[0, @offset - start], append: start > 0 }
+        OpenStruct.new(
+          html: @out.force_encoding(Encoding.default_external),
+          state: state,
+          append: append,
+          truncated: truncated,
+          offset: start_offset,
+          size: stream.tell - start_offset,
+          total: stream.size
+        )
       end
 
       def handle_sequence(s)
@@ -240,10 +260,10 @@ module Ci
         Base64.urlsafe_encode64(state.to_json)
       end
 
-      def restore_state(raw, new_state)
+      def restore_state(new_state, stream)
         state = Base64.urlsafe_decode64(new_state)
         state = JSON.parse(state, symbolize_names: true)
-        return if state[:offset].to_i > raw.length
+        return if state[:offset].to_i > stream.size
 
         STATE_PARAMS.each do |param|
           send("#{param}=".to_sym, state[param])

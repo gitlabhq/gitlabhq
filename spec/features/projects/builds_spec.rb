@@ -205,19 +205,11 @@ feature 'Builds', :feature do
         it 'loads job trace' do
           expect(page).to have_content 'BUILD TRACE'
 
-          build.append_trace(' and more trace', 11)
+          build.trace.write do |stream|
+            stream.append(' and more trace', 11)
+          end
 
           expect(page).to have_content 'BUILD TRACE and more trace'
-        end
-      end
-
-      context 'when build does not have an initial trace' do
-        let(:build) { create(:ci_build, pipeline: pipeline) }
-
-        it 'loads new trace' do
-          build.append_trace('build trace', 0)
-
-          expect(page).to have_content 'build trace'
         end
       end
     end
@@ -390,7 +382,7 @@ feature 'Builds', :feature do
         it 'sends the right headers' do
           expect(page.status_code).to eq(200)
           expect(page.response_headers['Content-Type']).to eq('text/plain; charset=utf-8')
-          expect(page.response_headers['X-Sendfile']).to eq(build.path_to_trace)
+          expect(page.response_headers['X-Sendfile']).to eq(build.trace.send(:current_path))
         end
       end
 
@@ -409,43 +401,24 @@ feature 'Builds', :feature do
 
     context 'storage form' do
       let(:existing_file) { Tempfile.new('existing-trace-file').path }
-      let(:non_existing_file) do
-        file = Tempfile.new('non-existing-trace-file')
-        path = file.path
-        file.unlink
-        path
+
+      before do
+        Capybara.current_session.driver.header('X-Sendfile-Type', 'X-Sendfile')
+
+        build.run!
+
+        allow_any_instance_of(Gitlab::Ci::Trace).to receive(:paths)
+          .and_return(paths)
+
+        visit namespace_project_build_path(project.namespace, project, build)
       end
 
       context 'when build has trace in file' do
-        before do
-          Capybara.current_session.driver.header('X-Sendfile-Type', 'X-Sendfile')
-          build.run!
-          visit namespace_project_build_path(project.namespace, project, build)
-
-          allow_any_instance_of(Project).to receive(:ci_id).and_return(nil)
-          allow_any_instance_of(Ci::Build).to receive(:path_to_trace).and_return(existing_file)
-          allow_any_instance_of(Ci::Build).to receive(:old_path_to_trace).and_return(non_existing_file)
-
-          page.within('.js-build-sidebar') { click_link 'Raw' }
+        let(:paths) do
+          [existing_file]
         end
 
-        it 'sends the right headers' do
-          expect(page.status_code).to eq(200)
-          expect(page.response_headers['Content-Type']).to eq('text/plain; charset=utf-8')
-          expect(page.response_headers['X-Sendfile']).to eq(existing_file)
-        end
-      end
-
-      context 'when build has trace in old file' do
         before do
-          Capybara.current_session.driver.header('X-Sendfile-Type', 'X-Sendfile')
-          build.run!
-          visit namespace_project_build_path(project.namespace, project, build)
-
-          allow_any_instance_of(Project).to receive(:ci_id).and_return(999)
-          allow_any_instance_of(Ci::Build).to receive(:path_to_trace).and_return(non_existing_file)
-          allow_any_instance_of(Ci::Build).to receive(:old_path_to_trace).and_return(existing_file)
-
           page.within('.js-build-sidebar') { click_link 'Raw' }
         end
 
@@ -457,20 +430,10 @@ feature 'Builds', :feature do
       end
 
       context 'when build has trace in DB' do
-        before do
-          Capybara.current_session.driver.header('X-Sendfile-Type', 'X-Sendfile')
-          build.run!
-          visit namespace_project_build_path(project.namespace, project, build)
-
-          allow_any_instance_of(Project).to receive(:ci_id).and_return(nil)
-          allow_any_instance_of(Ci::Build).to receive(:path_to_trace).and_return(non_existing_file)
-          allow_any_instance_of(Ci::Build).to receive(:old_path_to_trace).and_return(non_existing_file)
-
-          page.within('.js-build-sidebar') { click_link 'Raw' }
-        end
+        let(:paths) { [] }
 
         it 'sends the right headers' do
-          expect(page.status_code).to eq(404)
+          expect(page.status_code).not_to have_link('Raw')
         end
       end
     end

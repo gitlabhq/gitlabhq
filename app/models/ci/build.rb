@@ -103,16 +103,11 @@ module Ci
     end
 
     def playable?
-      project.builds_enabled? && has_commands? &&
-        action? && manual?
+      action? && manual?
     end
 
     def action?
       self.when == 'manual'
-    end
-
-    def has_commands?
-      commands.present?
     end
 
     def play(current_user)
@@ -131,8 +126,7 @@ module Ci
     end
 
     def retryable?
-      project.builds_enabled? && has_commands? &&
-        (success? || failed? || canceled?)
+      success? || failed? || canceled?
     end
 
     def retried?
@@ -169,19 +163,6 @@ module Ci
 
       # Return builds from previous stages
       latest_builds.where('stage_idx < ?', stage_idx)
-    end
-
-    def trace_html(**args)
-      trace_with_state(**args)[:html] || ''
-    end
-
-    def trace_with_state(state: nil, last_lines: nil)
-      trace_ansi = trace(last_lines: last_lines)
-      if trace_ansi.present?
-        Ci::Ansi2html.convert(trace_ansi, state)
-      else
-        {}
-      end
     end
 
     def timeout
@@ -244,134 +225,33 @@ module Ci
     end
 
     def update_coverage
-      coverage = extract_coverage(trace, coverage_regex)
+      coverage = trace.extract_coverage(coverage_regex)
       update_attributes(coverage: coverage) if coverage.present?
     end
 
-    def extract_coverage(text, regex)
-      return unless regex
-
-      matches = text.scan(Regexp.new(regex)).last
-      matches = matches.last if matches.is_a?(Array)
-      coverage = matches.gsub(/\d+(\.\d+)?/).first
-
-      if coverage.present?
-        coverage.to_f
-      end
-    rescue
-      # if bad regex or something goes wrong we dont want to interrupt transition
-      # so we just silentrly ignore error for now
-    end
-
-    def has_trace_file?
-      File.exist?(path_to_trace) || has_old_trace_file?
+    def trace
+      Gitlab::Ci::Trace.new(self)
     end
 
     def has_trace?
-      raw_trace.present?
+      trace.exist?
     end
 
-    def raw_trace(last_lines: nil)
-      if File.exist?(trace_file_path)
-        Gitlab::Ci::TraceReader.new(trace_file_path).
-          read(last_lines: last_lines)
-      else
-        # backward compatibility
-        read_attribute :trace
-      end
+    def trace=(data)
+      raise NotImplementedError
     end
 
-    ##
-    # Deprecated
-    #
-    # This is a hotfix for CI build data integrity, see #4246
-    def has_old_trace_file?
-      project.ci_id && File.exist?(old_path_to_trace)
+    def old_trace
+      read_attribute(:trace)
     end
 
-    def trace(last_lines: nil)
-      hide_secrets(raw_trace(last_lines: last_lines))
-    end
-
-    def trace_length
-      if raw_trace
-        raw_trace.bytesize
-      else
-        0
-      end
-    end
-
-    def trace=(trace)
-      recreate_trace_dir
-      trace = hide_secrets(trace)
-      File.write(path_to_trace, trace)
-    end
-
-    def recreate_trace_dir
-      unless Dir.exist?(dir_to_trace)
-        FileUtils.mkdir_p(dir_to_trace)
-      end
-    end
-    private :recreate_trace_dir
-
-    def append_trace(trace_part, offset)
-      recreate_trace_dir
-      touch if needs_touch?
-
-      trace_part = hide_secrets(trace_part)
-
-      File.truncate(path_to_trace, offset) if File.exist?(path_to_trace)
-      File.open(path_to_trace, 'ab') do |f|
-        f.write(trace_part)
-      end
+    def erase_old_trace!
+      write_attribute(:trace, nil)
+      save
     end
 
     def needs_touch?
       Time.now - updated_at > 15.minutes.to_i
-    end
-
-    def trace_file_path
-      if has_old_trace_file?
-        old_path_to_trace
-      else
-        path_to_trace
-      end
-    end
-
-    def dir_to_trace
-      File.join(
-        Settings.gitlab_ci.builds_path,
-        created_at.utc.strftime("%Y_%m"),
-        project.id.to_s
-      )
-    end
-
-    def path_to_trace
-      "#{dir_to_trace}/#{id}.log"
-    end
-
-    ##
-    # Deprecated
-    #
-    # This is a hotfix for CI build data integrity, see #4246
-    # Should be removed in 8.4, after CI files migration has been done.
-    #
-    def old_dir_to_trace
-      File.join(
-        Settings.gitlab_ci.builds_path,
-        created_at.utc.strftime("%Y_%m"),
-        project.ci_id.to_s
-      )
-    end
-
-    ##
-    # Deprecated
-    #
-    # This is a hotfix for CI build data integrity, see #4246
-    # Should be removed in 8.4, after CI files migration has been done.
-    #
-    def old_path_to_trace
-      "#{old_dir_to_trace}/#{id}.log"
     end
 
     ##
@@ -540,6 +420,8 @@ module Ci
     end
 
     def dependencies
+      return [] if empty_dependencies?
+
       depended_jobs = depends_on_builds
 
       return depended_jobs unless options[:dependencies].present?
@@ -547,6 +429,19 @@ module Ci
       depended_jobs.select do |job|
         options[:dependencies].include?(job.name)
       end
+    end
+
+    def empty_dependencies?
+      options[:dependencies]&.empty?
+    end
+
+    def hide_secrets(trace)
+      return unless trace
+
+      trace = trace.dup
+      Ci::MaskSecret.mask!(trace, project.runners_token) if project
+      Ci::MaskSecret.mask!(trace, token)
+      trace
     end
 
     private
@@ -560,7 +455,7 @@ module Ci
     end
 
     def erase_trace!
-      self.trace = nil
+      trace.erase!
     end
 
     def update_erased!(user = nil)
@@ -620,15 +515,6 @@ module Ci
       return {} unless pipeline.config_processor
 
       pipeline.config_processor.build_attributes(name)
-    end
-
-    def hide_secrets(trace)
-      return unless trace
-
-      trace = trace.dup
-      Ci::MaskSecret.mask!(trace, project.runners_token) if project
-      Ci::MaskSecret.mask!(trace, token)
-      trace
     end
 
     def update_project_statistics

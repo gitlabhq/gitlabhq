@@ -7,13 +7,25 @@ describe 'User Callouts', js: true do
 
   before do
     login_as(user)
-    project.team << [user, :master]    
+    project.team << [user, :master]
   end
 
-  it 'takes you to the profile preferences when the link is clicked' do    
+  it 'takes you to the profile preferences when the link is clicked' do
     visit dashboard_projects_path
     click_link 'Check it out'
     expect(current_path).to eq profile_preferences_path
+  end
+
+  it 'does not show when cookie is set' do
+    visit dashboard_projects_path
+
+    within('.user-callout') do
+      find('.close').click
+    end
+
+    visit dashboard_projects_path
+
+    expect(page).not_to have_selector('.user-callout')
   end
 
   describe 'user callout should appear in two routes' do
@@ -31,7 +43,7 @@ describe 'User Callouts', js: true do
   it 'hides the user callout when click on the dismiss icon' do
     visit user_path(user)
     within('.user-callout') do
-      find('.close-user-callout').click
+      find('.close').click
     end
     expect(page).not_to have_selector('.user-callout')
   end

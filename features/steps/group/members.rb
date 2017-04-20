@@ -87,7 +87,7 @@ class Spinach::Features::GroupMembers < Spinach::FeatureSteps
   end
 
   step 'I click on the "Remove User From Group" button for "John Doe"' do
-    find(:css, 'li', text: "John Doe").find(:css, 'a.btn-remove').click
+    find(:css, '.project-members-page li', text: "John Doe").find(:css, 'a.btn-remove').click
     # poltergeist always confirms popups.
   end
 
@@ -97,7 +97,7 @@ class Spinach::Features::GroupMembers < Spinach::FeatureSteps
   end
 
   step 'I should not see the "Remove User From Group" button for "John Doe"' do
-    expect(find(:css, 'li', text: "John Doe")).not_to have_selector(:css, 'a.btn-remove')
+    expect(find(:css, '.project-members-page li', text: "John Doe")).not_to have_selector(:css, 'a.btn-remove')
     # poltergeist always confirms popups.
   end
 

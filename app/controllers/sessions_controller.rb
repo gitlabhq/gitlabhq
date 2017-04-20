@@ -3,7 +3,7 @@ class SessionsController < Devise::SessionsController
   include Devise::Controllers::Rememberable
   include Recaptcha::ClientHelper
 
-  skip_before_action :check_2fa_requirement, only: [:destroy]
+  skip_before_action :check_two_factor_requirement, only: [:destroy]
 
   prepend_before_action :check_initial_setup, only: [:new]
   prepend_before_action :authenticate_with_two_factor,
@@ -35,6 +35,7 @@ class SessionsController < Devise::SessionsController
       # hide the signed-in notification
       flash[:notice] = nil
       log_audit_event(current_user, with: authentication_method)
+      log_user_activity(current_user)
     end
   end
 
@@ -79,7 +80,7 @@ class SessionsController < Devise::SessionsController
       if request.referer.present? && (params['redirect_to_referer'] == 'yes')
         referer_uri = URI(request.referer)
         if referer_uri.host == Gitlab.config.gitlab.host
-          referer_uri.path
+          referer_uri.request_uri
         else
           request.fullpath
         end
@@ -121,6 +122,10 @@ class SessionsController < Devise::SessionsController
   def log_audit_event(user, options = {})
     AuditEventService.new(user, user, options).
       for_authentication.security_event
+  end
+
+  def log_user_activity(user)
+    Users::ActivityService.new(user, 'login').execute
   end
 
   def load_recaptcha

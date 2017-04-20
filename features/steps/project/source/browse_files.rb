@@ -56,11 +56,15 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I click button "Edit"' do
-    click_link 'Edit'
+    find('.js-edit-blob').click
   end
 
   step 'I cannot see the edit button' do
     expect(page).not_to have_link 'edit'
+  end
+
+  step 'I click button "Fork"' do
+    click_link 'Fork'
   end
 
   step 'I can edit code' do
@@ -101,11 +105,11 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I click link "Diff"' do
-    click_link 'Preview Changes'
+    click_link 'Preview changes'
   end
 
-  step 'I click on "Commit Changes"' do
-    click_button 'Commit Changes'
+  step 'I click on "Commit changes"' do
+    click_button 'Commit changes'
   end
 
   step 'I click on "Changes" tab' do
@@ -280,7 +284,11 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I see "Unable to create directory"' do
-    expect(page).to have_content('Directory already exists')
+    expect(page).to have_content('A directory with this name already exists')
+  end
+
+  step 'I see "Path can contain only..."' do
+    expect(page).to have_content('Path can contain only')
   end
 
   step 'I see a commit error message' do
@@ -364,6 +372,12 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
       expect(page).to have_content 'Delete'
       expect(page).to have_content 'Replace'
     end
+  end
+
+  step 'I should see a Fork/Cancel combo' do
+    expect(page).to have_link 'Fork'
+    expect(page).to have_button 'Cancel'
+    expect(page).to have_content 'You don\'t have permission to edit this file. Try forking this project to edit the file.'
   end
 
   step 'I should see a notice about a new fork having been created' do

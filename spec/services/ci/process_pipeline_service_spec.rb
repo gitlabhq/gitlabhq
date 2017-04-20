@@ -418,65 +418,6 @@ describe Ci::ProcessPipelineService, '#execute', :services do
     end
   end
 
-  context 'when there are builds that are not created yet' do
-    let(:pipeline) do
-      create(:ci_pipeline, config: config)
-    end
-
-    let(:config) do
-      { rspec: { stage: 'test', script: 'rspec' },
-        deploy: { stage: 'deploy', script: 'rsync' } }
-    end
-
-    before do
-      create_build('linux', stage: 'build', stage_idx: 0)
-      create_build('mac', stage: 'build', stage_idx: 0)
-    end
-
-    it 'processes the pipeline' do
-      # Currently we have five builds with state created
-      #
-      expect(builds.count).to eq(0)
-      expect(all_builds.count).to eq(2)
-
-      # Process builds service will enqueue builds from the first stage.
-      #
-      process_pipeline
-
-      expect(builds.count).to eq(2)
-      expect(all_builds.count).to eq(2)
-
-      # When builds succeed we will enqueue remaining builds.
-      #
-      # We will have 2 succeeded, 1 pending (from stage test), total 4 (two
-      # additional build from `.gitlab-ci.yml`).
-      #
-      succeed_pending
-      process_pipeline
-
-      expect(builds.success.count).to eq(2)
-      expect(builds.pending.count).to eq(1)
-      expect(all_builds.count).to eq(4)
-
-      # When pending merge_when_pipeline_succeeds in stage test, we enqueue deploy stage.
-      #
-      succeed_pending
-      process_pipeline
-
-      expect(builds.pending.count).to eq(1)
-      expect(builds.success.count).to eq(3)
-      expect(all_builds.count).to eq(4)
-
-      # When the last one succeeds we have 4 successful builds.
-      #
-      succeed_pending
-      process_pipeline
-
-      expect(builds.success.count).to eq(4)
-      expect(all_builds.count).to eq(4)
-    end
-  end
-
   def process_pipeline
     described_class.new(pipeline.project, user).execute(pipeline)
   end
@@ -521,7 +462,9 @@ describe Ci::ProcessPipelineService, '#execute', :services do
     builds.find_by(name: name).play(user)
   end
 
-  delegate :manual_actions, to: :pipeline
+  def manual_actions
+    pipeline.manual_actions(true)
+  end
 
   def create_build(name, **opts)
     create(:ci_build, :created, pipeline: pipeline, name: name, **opts)

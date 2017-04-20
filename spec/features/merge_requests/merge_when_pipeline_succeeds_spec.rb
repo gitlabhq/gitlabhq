@@ -28,25 +28,25 @@ feature 'Merge When Pipeline Succeeds', :feature, :js do
       visit_merge_request(merge_request)
     end
 
-    it 'displays the Merge When Pipeline Succeeds button' do
-      expect(page).to have_button "Merge When Pipeline Succeeds"
+    it 'displays the Merge when pipeline succeeds button' do
+      expect(page).to have_button "Merge when pipeline succeeds"
     end
 
-    describe 'enabling Merge When Pipeline Succeeds' do
-      shared_examples 'Merge When Pipeline Succeeds activator' do
-        it 'activates the Merge When Pipeline Succeeds feature' do
-          click_button "Merge When Pipeline Succeeds"
+    describe 'enabling Merge when pipeline succeeds' do
+      shared_examples 'Merge when pipeline succeeds activator' do
+        it 'activates the Merge when pipeline succeeds feature' do
+          click_button "Merge when pipeline succeeds"
 
           expect(page).to have_content "Set by #{user.name} to be merged automatically when the pipeline succeeds."
           expect(page).to have_content "The source branch will not be removed."
-          expect(page).to have_link "Cancel Automatic Merge"
+          expect(page).to have_link "Cancel automatic merge"
           visit_merge_request(merge_request) # Needed to refresh the page
           expect(page).to have_content /enabled an automatic merge when the pipeline for \h{8} succeeds/i
         end
       end
 
       context "when enabled immediately" do
-        it_behaves_like 'Merge When Pipeline Succeeds activator'
+        it_behaves_like 'Merge when pipeline succeeds activator'
       end
 
       context 'when enabled after pipeline status changed' do
@@ -60,16 +60,16 @@ feature 'Merge When Pipeline Succeeds', :feature, :js do
           expect(page).to have_content "Pipeline ##{pipeline.id} running"
         end
 
-        it_behaves_like 'Merge When Pipeline Succeeds activator'
+        it_behaves_like 'Merge when pipeline succeeds activator'
       end
 
       context 'when enabled after it was previously canceled' do
         before do
-          click_button "Merge When Pipeline Succeeds"
-          click_link "Cancel Automatic Merge"
+          click_button "Merge when pipeline succeeds"
+          click_link "Cancel automatic merge"
         end
 
-        it_behaves_like 'Merge When Pipeline Succeeds activator'
+        it_behaves_like 'Merge when pipeline succeeds activator'
       end
 
       context 'when it was enabled and then canceled' do
@@ -83,10 +83,23 @@ feature 'Merge When Pipeline Succeeds', :feature, :js do
         end
 
         before do
-          click_link "Cancel Automatic Merge"
+          click_link "Cancel automatic merge"
         end
 
-        it_behaves_like 'Merge When Pipeline Succeeds activator'
+        it_behaves_like 'Merge when pipeline succeeds activator'
+      end
+    end
+
+    describe 'enabling Merge when pipeline succeeds via dropdown' do
+      it 'activates the Merge when pipeline succeeds feature' do
+        click_button 'Select merge moment'
+        within('.js-merge-dropdown') do
+          click_link 'Merge when pipeline succeeds'
+        end
+
+        expect(page).to have_content "Set by #{user.name} to be merged automatically when the pipeline succeeds."
+        expect(page).to have_content "The source branch will not be removed."
+        expect(page).to have_link "Cancel automatic merge"
       end
     end
   end
@@ -110,18 +123,18 @@ feature 'Merge When Pipeline Succeeds', :feature, :js do
     end
 
     it 'allows to cancel the automatic merge' do
-      click_link "Cancel Automatic Merge"
+      click_link "Cancel automatic merge"
 
-      expect(page).to have_button "Merge When Pipeline Succeeds"
+      expect(page).to have_button "Merge when pipeline succeeds"
 
       visit_merge_request(merge_request) # refresh the page
       expect(page).to have_content "canceled the automatic merge"
     end
 
     it "allows the user to remove the source branch" do
-      expect(page).to have_link "Remove Source Branch When Merged"
+      expect(page).to have_link "Remove source branch when merged"
 
-      click_link "Remove Source Branch When Merged"
+      click_link "Remove source branch when merged"
       expect(page).to have_content "The source branch will be removed"
     end
 
@@ -141,7 +154,7 @@ feature 'Merge When Pipeline Succeeds', :feature, :js do
     it "does not allow to enable merge when pipeline succeeds" do
       visit_merge_request(merge_request)
 
-      expect(page).not_to have_link 'Merge When Pipeline Succeeds'
+      expect(page).not_to have_link 'Merge when pipeline succeeds'
     end
   end
 

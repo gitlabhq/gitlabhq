@@ -16,6 +16,7 @@ class BuildEntity < Grape::Entity
     path_to(:play_namespace_project_build, build)
   end
 
+  expose :playable?, as: :playable
   expose :created_at
   expose :updated_at
   expose :detailed_status, as: :status, with: StatusEntity

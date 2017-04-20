@@ -21,11 +21,11 @@ module Issues
       @discussions_to_resolve ||=
         if discussion_to_resolve_id
           discussion_or_nil = merge_request_to_resolve_discussions_of
-                                .find_diff_discussion(discussion_to_resolve_id)
+                                .find_discussion(discussion_to_resolve_id)
           Array(discussion_or_nil)
         else
           merge_request_to_resolve_discussions_of
-            .resolvable_discussions
+            .discussions_to_be_resolved
         end
     end
   end

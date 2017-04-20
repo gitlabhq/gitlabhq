@@ -3,9 +3,9 @@ module SidekiqHelper
     (?<pid>\d+)\s+
     (?<cpu>[\d\.,]+)\s+
     (?<mem>[\d\.,]+)\s+
-    (?<state>[DRSTWXZNLsl\+<]+)\s+
-    (?<start>.+)\s+
-    (?<command>sidekiq.*\])
+    (?<state>[DIEKNRSTVWXZNLpsl\+<>\/\d]+)\s+
+    (?<start>.+?)\s+
+    (?<command>(?:ruby\d+:\s+)?sidekiq.*\].*)
     \z/x
 
   def parse_sidekiq_ps(line)

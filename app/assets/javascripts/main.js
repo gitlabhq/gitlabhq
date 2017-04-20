@@ -37,14 +37,7 @@ import './shortcuts_issuable';
 import './shortcuts_network';
 
 // behaviors
-import './behaviors/autosize';
-import './behaviors/details_behavior';
-import './behaviors/quick_submit';
-import './behaviors/requires_input';
-import './behaviors/toggler_behavior';
-import './behaviors/bind_in_out';
-import { installGlEmojiElement } from './behaviors/gl_emoji';
-installGlEmojiElement();
+import './behaviors/';
 
 // blob
 import './blob/create_branch_dropdown';
@@ -74,12 +67,6 @@ import './u2f/authenticate';
 import './u2f/error';
 import './u2f/register';
 import './u2f/util';
-
-// droplab
-import './droplab/droplab';
-import './droplab/droplab_ajax';
-import './droplab/droplab_ajax_filter';
-import './droplab/droplab_filter';
 
 // everything else
 import './abuse_reports';
@@ -178,6 +165,7 @@ import './syntax_highlight';
 import './task_list';
 import './todos';
 import './tree';
+import './usage_ping';
 import './user';
 import './user_tabs';
 import './username_validator';
@@ -186,6 +174,9 @@ import './version_check_image';
 import './visibility_select';
 import './wikis';
 import './zen_mode';
+
+// eslint-disable-next-line global-require
+if (process.env.NODE_ENV !== 'production') require('./test_utils/');
 
 document.addEventListener('beforeunload', function () {
   // Unbind scroll events
@@ -219,6 +210,14 @@ $(function () {
       setTimeout(gl.utils.handleLocationHash, 1);
     }
   });
+
+  if (bootstrapBreakpoint === 'xs') {
+    const $rightSidebar = $('aside.right-sidebar, .page-with-sidebar');
+
+    $rightSidebar
+      .removeClass('right-sidebar-expanded')
+      .addClass('right-sidebar-collapsed');
+  }
 
   // prevent default action for disabled buttons
   $('.btn').click(function(e) {
@@ -282,7 +281,7 @@ $(function () {
   // Disable form buttons while a form is submitting
   $body.on('ajax:complete, ajax:beforeSend, submit', 'form', function (e) {
     var buttons;
-    buttons = $('[type="submit"]', this);
+    buttons = $('[type="submit"], .js-disable-on-submit', this);
     switch (e.type) {
       case 'ajax:beforeSend':
       case 'submit':
@@ -370,4 +369,6 @@ $(function () {
   new Aside();
 
   gl.utils.initTimeagoTimeout();
+
+  $(document).trigger('init.scrolling-tabs');
 });

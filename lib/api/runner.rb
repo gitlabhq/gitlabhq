@@ -113,10 +113,9 @@ module API
         optional :state, type: String, desc: %q(Job's status: success, failed)
       end
       put '/:id' do
-        job = Ci::Build.find_by_id(params[:id])
-        authenticate_job!(job)
+        job = authenticate_job!
 
-        job.update_attributes(trace: params[:trace]) if params[:trace]
+        job.trace.set(params[:trace]) if params[:trace]
 
         Gitlab::Metrics.add_event(:update_build,
                                   project: job.project.path_with_namespace)
@@ -140,23 +139,20 @@ module API
         optional :token, type: String, desc: %q(Job's authentication token)
       end
       patch '/:id/trace' do
-        job = Ci::Build.find_by_id(params[:id])
-        authenticate_job!(job)
+        job = authenticate_job!
 
         error!('400 Missing header Content-Range', 400) unless request.headers.has_key?('Content-Range')
         content_range = request.headers['Content-Range']
         content_range = content_range.split('-')
 
-        current_length = job.trace_length
-        unless current_length == content_range[0].to_i
-          return error!('416 Range Not Satisfiable', 416, { 'Range' => "0-#{current_length}" })
+        stream_size = job.trace.append(request.body.read, content_range[0].to_i)
+        if stream_size < 0
+          return error!('416 Range Not Satisfiable', 416, { 'Range' => "0-#{-stream_size}" })
         end
-
-        job.append_trace(request.body.read, content_range[0].to_i)
 
         status 202
         header 'Job-Status', job.status
-        header 'Range', "0-#{job.trace_length}"
+        header 'Range', "0-#{stream_size}"
       end
 
       desc 'Authorize artifacts uploading for job' do
@@ -175,8 +171,7 @@ module API
         require_gitlab_workhorse!
         Gitlab::Workhorse.verify_api_request!(headers)
 
-        job = Ci::Build.find_by_id(params[:id])
-        authenticate_job!(job)
+        job = authenticate_job!
         forbidden!('Job is not running') unless job.running?
 
         if params[:filesize]
@@ -212,8 +207,7 @@ module API
         not_allowed! unless Gitlab.config.artifacts.enabled
         require_gitlab_workhorse!
 
-        job = Ci::Build.find_by_id(params[:id])
-        authenticate_job!(job)
+        job = authenticate_job!
         forbidden!('Job is not running!') unless job.running?
 
         artifacts_upload_path = ArtifactUploader.artifacts_upload_path
@@ -245,8 +239,7 @@ module API
         optional :token, type: String, desc: %q(Job's authentication token)
       end
       get '/:id/artifacts' do
-        job = Ci::Build.find_by_id(params[:id])
-        authenticate_job!(job)
+        job = authenticate_job!
 
         artifacts_file = job.artifacts_file
         unless artifacts_file.file_storage?

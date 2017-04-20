@@ -1,4 +1,4 @@
-image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-git-2.7-phantomjs-2.1-node-7.1"
+image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.7-phantomjs-2.1-node-7.1"
 
 cache:
   key: "ruby-233"
@@ -8,14 +8,15 @@ cache:
 variables:
   MYSQL_ALLOW_EMPTY_PASSWORD: "1"
   RAILS_ENV: "test"
+  NODE_ENV: "test"
   SIMPLECOV: "true"
   SETUP_DB: "true"
   USE_BUNDLE_INSTALL: "true"
   GIT_DEPTH: "20"
   PHANTOMJS_VERSION: "2.1.1"
   GET_SOURCES_ATTEMPTS: "3"
-  KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/rspec_report-${CI_COMMIT_REF_SLUG}.json
-  KNAPSACK_SPINACH_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/spinach_report-${CI_COMMIT_REF_SLUG}.json
+  KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/rspec_report-master.json
+  KNAPSACK_SPINACH_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/spinach_report-master.json
 
 before_script:
   - source ./scripts/prepare_build.sh
@@ -66,6 +67,7 @@ stages:
     - export CI_NODE_TOTAL=${JOB_NAME[2]}
     - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - export KNAPSACK_GENERATE_REPORT=true
+    - export CACHE_CLASSES=true
     - cp ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} ${KNAPSACK_REPORT_PATH}
     - knapsack rspec "--color --format documentation"
   artifacts:
@@ -86,6 +88,7 @@ stages:
     - export CI_NODE_TOTAL=${JOB_NAME[2]}
     - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - export KNAPSACK_GENERATE_REPORT=true
+    - export CACHE_CLASSES=true
     - cp ${KNAPSACK_SPINACH_SUITE_REPORT_PATH} ${KNAPSACK_REPORT_PATH}
     - knapsack spinach "-r rerun" || retry '[[ -e tmp/spinach-rerun.txt ]] && bundle exec spinach -r rerun $(cat tmp/spinach-rerun.txt)'
   artifacts:
@@ -129,9 +132,7 @@ setup-test-env:
   stage: prepare
   script:
     - node --version
-    - yarn --version
     - yarn install --pure-lockfile
-    - yarn check # ensure that yarn.lock matches package.json
     - bundle exec rake gitlab:assets:compile
     - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
   artifacts:
@@ -277,7 +278,6 @@ rake karma:
   cache:
     paths:
       - vendor/ruby
-      - node_modules
   stage: test
   <<: *use-db
   <<: *dedicated-runner
@@ -292,13 +292,30 @@ rake karma:
     paths:
     - coverage-javascript/
 
-lint-doc:
+docs:check:apilint:
+  image: "phusion/baseimage"
   stage: test
   <<: *dedicated-runner
-  image: "phusion/baseimage:latest"
+  cache: {}
+  dependencies: []
   before_script: []
   script:
     - scripts/lint-doc.sh
+
+docs:check:links:
+  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:nanoc-bootstrap-ruby-2.4-alpine"
+  stage: test
+  <<: *dedicated-runner
+  cache: {}
+  dependencies: []
+  before_script: []
+  script:
+    - mv doc/ /nanoc/content/
+    - cd /nanoc
+    # Build HTML from Markdown
+    - bundle exec nanoc
+    # Check the internal links
+    - bundle exec nanoc check internal_links
 
 bundler:check:
   stage: test
@@ -331,10 +348,8 @@ migration paths:
     - master@gitlab/gitlabhq
     - master@gitlab/gitlab-ee
   script:
-    - git fetch origin v8.5.9
+    - git fetch origin v8.14.10
     - git checkout -f FETCH_HEAD
-    - cp config/resque.yml.example config/resque.yml
-    - sed -i 's/localhost/redis/g' config/resque.yml
     - bundle install --without postgres production --jobs $(nproc) $FLAGS --retry=3
     - bundle exec rake db:drop db:create db:schema:load db:seed_fu
     - git checkout $CI_COMMIT_SHA
@@ -361,9 +376,6 @@ coverage:
 
 lint:javascript:
   <<: *dedicated-runner
-  cache:
-    paths:
-      - node_modules/
   stage: test
   before_script: []
   script:
@@ -371,9 +383,6 @@ lint:javascript:
 
 lint:javascript:report:
   <<: *dedicated-runner
-  cache:
-    paths:
-      - node_modules/
   stage: post-test
   before_script: []
   script:

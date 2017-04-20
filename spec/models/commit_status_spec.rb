@@ -16,6 +16,7 @@ describe CommitStatus, :models do
   it { is_expected.to belong_to(:pipeline) }
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:project) }
+  it { is_expected.to belong_to(:auto_canceled_by) }
 
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_inclusion_of(:status).in_array(%w(pending running failed success canceled)) }
@@ -97,6 +98,32 @@ describe CommitStatus, :models do
         before { commit_status.status = state }
 
         it { is_expected.to be_falsey }
+      end
+    end
+  end
+
+  describe '#auto_canceled?' do
+    subject { commit_status.auto_canceled? }
+
+    context 'when it is canceled' do
+      before do
+        commit_status.update(status: 'canceled')
+      end
+
+      context 'when there is auto_canceled_by' do
+        before do
+          commit_status.update(auto_canceled_by: create(:ci_empty_pipeline))
+        end
+
+        it 'is auto canceled' do
+          is_expected.to be_truthy
+        end
+      end
+
+      context 'when there is no auto_canceled_by' do
+        it 'is not auto canceled' do
+          is_expected.to be_falsey
+        end
       end
     end
   end
@@ -294,6 +321,42 @@ describe CommitStatus, :models do
       it "'#{name}' sorts as '#{sortable_name}'" do
         commit_status.name = name
         expect(commit_status.sortable_name).to eq(sortable_name)
+      end
+    end
+  end
+
+  describe '#locking_enabled?' do
+    before do
+      commit_status.lock_version = 100
+    end
+
+    subject { commit_status.locking_enabled? }
+
+    context "when changing status" do
+      before do
+        commit_status.status = "running"
+      end
+
+      it "lock" do
+        is_expected.to be true
+      end
+
+      it "raise exception when trying to update" do
+        expect{ commit_status.save }.to raise_error(ActiveRecord::StaleObjectError)
+      end
+    end
+
+    context "when changing description" do
+      before do
+        commit_status.description = "test"
+      end
+
+      it "do not lock" do
+        is_expected.to be false
+      end
+
+      it "save correctly" do
+        expect(commit_status.save).to be true
       end
     end
   end

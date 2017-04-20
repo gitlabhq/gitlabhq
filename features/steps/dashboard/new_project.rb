@@ -3,9 +3,9 @@ class Spinach::Features::NewProject < Spinach::FeatureSteps
   include SharedPaths
   include SharedProject
 
-  step 'I click "New Project" link' do
+  step 'I click "New project" link' do
     page.within('.content') do
-      click_link "New Project"
+      click_link "New project"
     end
   end
 
@@ -19,7 +19,7 @@ class Spinach::Features::NewProject < Spinach::FeatureSteps
     expect(page).to have_link('Bitbucket')
     expect(page).to have_link('GitLab.com')
     expect(page).to have_link('Google Code')
-    expect(page).to have_link('Repo by URL')
+    expect(page).to have_button('Repo by URL')
     expect(page).to have_link('GitLab export')
   end
 

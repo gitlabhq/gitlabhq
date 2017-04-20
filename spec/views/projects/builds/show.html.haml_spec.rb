@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'projects/builds/show', :view do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:build) { create(:ci_build, pipeline: pipeline) }
 
   let(:pipeline) do
@@ -9,7 +9,7 @@ describe 'projects/builds/show', :view do
   end
 
   before do
-    assign(:build, build)
+    assign(:build, build.present)
     assign(:project, project)
 
     allow(view).to receive(:can?).and_return(true)

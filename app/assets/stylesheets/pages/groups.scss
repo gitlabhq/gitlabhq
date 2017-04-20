@@ -17,15 +17,7 @@
 }
 
 .group-row {
-  .stats {
-    float: right;
-    line-height: $list-text-height;
-    color: $gl-text-color;
-
-    span {
-      margin-right: 15px;
-    }
-  }
+  @include basic-list-stats;
 }
 
 .ldap-group-links {

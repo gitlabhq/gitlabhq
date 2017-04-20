@@ -182,7 +182,9 @@ module Backup
 
       dir_entries = Dir.entries(path)
 
-      yield('custom_hooks') if dir_entries.include?('custom_hooks')
+      if dir_entries.include?('custom_hooks') || dir_entries.include?('custom_hooks.tar')
+        yield('custom_hooks')
+      end
     end
 
     def prepare

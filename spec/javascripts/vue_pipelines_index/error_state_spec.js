@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import errorStateComp from '~/vue_pipelines_index/components/error_state';
+import errorStateComp from '~/pipelines/components/error_state.vue';
 
 describe('Pipelines Error State', () => {
   let component;
