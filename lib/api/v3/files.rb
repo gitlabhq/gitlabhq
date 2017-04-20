@@ -6,7 +6,7 @@ module API
           {
             file_path: attrs[:file_path],
             start_branch: attrs[:branch],
-            target_branch: attrs[:branch],
+            branch_name: attrs[:branch],
             commit_message: attrs[:commit_message],
             file_content: attrs[:content],
             file_content_encoding: attrs[:encoding],
@@ -123,7 +123,7 @@ module API
           file_params = declared_params(include_missing: false)
           file_params[:branch] = file_params.delete(:branch_name)
 
-          result = ::Files::DestroyService.new(user_project, current_user, commit_params(file_params)).execute
+          result = ::Files::DeleteService.new(user_project, current_user, commit_params(file_params)).execute
 
           if result[:status] == :success
             status(200)

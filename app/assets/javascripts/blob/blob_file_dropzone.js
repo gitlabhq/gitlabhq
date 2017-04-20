@@ -35,7 +35,7 @@ export default class BlobFileDropzone {
           this.removeFile(file);
         });
         this.on('sending', function (file, xhr, formData) {
-          formData.append('target_branch', form.find('input[name="target_branch"]').val());
+          formData.append('branch_name', form.find('input[name="branch_name"]').val());
           formData.append('create_merge_request', form.find('.js-create-merge-request').val());
           formData.append('commit_message', form.find('.js-commit-message').val());
         });
