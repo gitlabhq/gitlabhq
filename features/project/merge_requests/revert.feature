@@ -25,7 +25,5 @@ Feature: Revert Merge Requests
   @javascript
   Scenario: I revert a merge request in a new merge request
     Given I click on the revert button
-    And I am on the Merge Request detail page
-    And I click on the revert button
     And I revert the changes in a new merge request
     Then I should see the new merge request notice

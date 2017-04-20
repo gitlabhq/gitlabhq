@@ -4,7 +4,7 @@ module Gitlab
       # This was inspired from: http://stackoverflow.com/a/10219411/1520132
       class Stream
         BUFFER_SIZE = 4096
-        LIMIT_SIZE = 50.kilobytes
+        LIMIT_SIZE = 500.kilobytes
 
         attr_reader :stream
 
@@ -14,6 +14,7 @@ module Gitlab
 
         def initialize
           @stream = yield
+          @stream&.binmode
         end
 
         def valid?
@@ -51,7 +52,7 @@ module Gitlab
             read_last_lines(last_lines)
           else
             stream.read
-          end
+          end.force_encoding(Encoding.default_external)
         end
 
         def html_with_state(state = nil)
@@ -60,8 +61,8 @@ module Gitlab
 
         def html(last_lines: nil)
           text = raw(last_lines: last_lines)
-          stream = StringIO.new(text)
-          ::Ci::Ansi2html.convert(stream).html
+          buffer = StringIO.new(text)
+          ::Ci::Ansi2html.convert(buffer).html
         end
 
         def extract_coverage(regex)
@@ -113,7 +114,6 @@ module Gitlab
           end
 
           chunks.join.lines.last(last_lines).join
-            .force_encoding(Encoding.default_external)
         end
       end
     end

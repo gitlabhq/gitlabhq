@@ -152,6 +152,12 @@ describe Users::DestroyService, services: true do
 
         service.execute(user)
       end
+
+      it 'does not run `MigrateToGhostUser` if hard_delete option is given' do
+        expect_any_instance_of(Users::MigrateToGhostUserService).not_to receive(:execute)
+
+        service.execute(user, hard_delete: true)
+      end
     end
   end
 end

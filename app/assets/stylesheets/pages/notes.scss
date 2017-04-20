@@ -123,6 +123,9 @@ ul.notes {
     }
 
     .note-emoji-button {
+      position: relative;
+      line-height: 1;
+
       .fa-spinner {
         display: none;
       }
@@ -352,6 +355,15 @@ ul.notes {
   font-size: 14px;
 }
 
+.note-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.note-header-info {
+  min-width: 0;
+}
+
 .note-headline-light {
   display: inline;
 
@@ -371,21 +383,27 @@ ul.notes {
   }
 }
 
+.note-headline-meta {
+  display: inline-block;
+  white-space: nowrap;
+}
+
 /**
  * Actions for Discussions/Notes
  */
 
-.discussion-actions,
-.note-actions {
+.discussion-actions {
   float: right;
   margin-left: 10px;
   color: $gray-darkest;
 }
 
 .note-actions {
-  position: absolute;
-  right: 0;
-  top: 0;
+  flex-shrink: 0;
+  // For PhantomJS that does not support flex
+  float: right;
+  margin-left: 10px;
+  color: $gray-darkest;
 
   .note-action-button {
     margin-left: 8px;
@@ -428,7 +446,8 @@ ul.notes {
   .award-control-icon-positive,
   .award-control-icon-super-positive {
     position: absolute;
-    margin-left: -20px;
+    top: 0;
+    left: 0;
     opacity: 0;
   }
 

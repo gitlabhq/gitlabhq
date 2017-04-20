@@ -1,6 +1,6 @@
 # GitLab Groups
 
-GitLab groups allow you to group projects into directories and give users to several projects at once.
+GitLab groups allow you to group projects into directories and give users access to several projects at once.
 
 When you create a new project in GitLab, the default namespace for the project is the personal namespace associated with your GitLab user.
 In this document we will see how to create groups, put projects in groups and manage who can access the projects in a group.

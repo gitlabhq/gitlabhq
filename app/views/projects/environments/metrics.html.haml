@@ -13,9 +13,6 @@
           Environment:
           = link_to @environment.name, environment_path(@environment)
 
-      .col-sm-6
-        .nav-controls
-          = render 'projects/deployments/actions', deployment: @environment.last_deployment
   .prometheus-state
     .js-getting-started.hidden
       .row

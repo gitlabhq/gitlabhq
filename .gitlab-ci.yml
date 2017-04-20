@@ -67,6 +67,7 @@ stages:
     - export CI_NODE_TOTAL=${JOB_NAME[2]}
     - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - export KNAPSACK_GENERATE_REPORT=true
+    - export CACHE_CLASSES=true
     - cp ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} ${KNAPSACK_REPORT_PATH}
     - knapsack rspec "--color --format documentation"
   artifacts:
@@ -87,6 +88,7 @@ stages:
     - export CI_NODE_TOTAL=${JOB_NAME[2]}
     - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - export KNAPSACK_GENERATE_REPORT=true
+    - export CACHE_CLASSES=true
     - cp ${KNAPSACK_SPINACH_SUITE_REPORT_PATH} ${KNAPSACK_REPORT_PATH}
     - knapsack spinach "-r rerun" || retry '[[ -e tmp/spinach-rerun.txt ]] && bundle exec spinach -r rerun $(cat tmp/spinach-rerun.txt)'
   artifacts:
@@ -276,7 +278,6 @@ rake karma:
   cache:
     paths:
       - vendor/ruby
-      - node_modules
   stage: test
   <<: *use-db
   <<: *dedicated-runner
@@ -375,9 +376,6 @@ coverage:
 
 lint:javascript:
   <<: *dedicated-runner
-  cache:
-    paths:
-      - node_modules/
   stage: test
   before_script: []
   script:
@@ -385,9 +383,6 @@ lint:javascript:
 
 lint:javascript:report:
   <<: *dedicated-runner
-  cache:
-    paths:
-      - node_modules/
   stage: post-test
   before_script: []
   script:

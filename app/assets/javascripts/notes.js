@@ -308,8 +308,10 @@ require('./task_list');
 
       if (this.isNewNote(note)) {
         this.note_ids.push(note.id);
-        $notesList = $('ul.main-notes-list');
-        $notesList.append(note.html).syntaxHighlight();
+
+        $notesList = window.$('ul.main-notes-list');
+        Notes.animateAppendNote(note.html, $notesList);
+
         // Update datetime format on the recent note
         gl.utils.localTimeAgo($notesList.find("#note_" + note.id + " .js-timeago"), false);
         this.collapseLongCommitList();
@@ -348,7 +350,7 @@ require('./task_list');
       lineType = this.isParallelView() ? form.find('#line_type').val() : 'old';
       diffAvatarContainer = row.prevAll('.line_holder').first().find('.js-avatar-container.' + lineType + '_line');
       // is this the first note of discussion?
-      discussionContainer = $(".notes[data-discussion-id='" + note.discussion_id + "']");
+      discussionContainer = window.$(`.notes[data-discussion-id="${note.discussion_id}"]`);
       if (!discussionContainer.length) {
         discussionContainer = form.closest('.discussion').find('.notes');
       }
@@ -370,14 +372,13 @@ require('./task_list');
             row.find(contentContainerClass + ' .content').append($notes.closest('.content').children());
           }
         }
-
         // Init discussion on 'Discussion' page if it is merge request page
-        if ($('body').attr('data-page').indexOf('projects:merge_request') === 0 || !note.diff_discussion_html) {
-          $('ul.main-notes-list').append($(note.discussion_html).renderGFM());
+        if (window.$('body').attr('data-page').indexOf('projects:merge_request') === 0 || !note.diff_discussion_html) {
+          Notes.animateAppendNote(note.discussion_html, window.$('ul.main-notes-list'));
         }
       } else {
         // append new note to all matching discussions
-        discussionContainer.append($(note.html).renderGFM());
+        Notes.animateAppendNote(note.html, discussionContainer);
       }
 
       if (typeof gl.diffNotesCompileComponents !== 'undefined' && note.discussion_resolvable) {
@@ -1061,6 +1062,13 @@ require('./task_list');
         .remove();
 
       return $form;
+    };
+
+    Notes.animateAppendNote = function(noteHTML, $notesList) {
+      const $note = window.$(noteHTML);
+
+      $note.addClass('fade-in').renderGFM();
+      $notesList.append($note);
     };
 
     return Notes;

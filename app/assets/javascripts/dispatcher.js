@@ -33,6 +33,7 @@
 /* global Labels */
 /* global Shortcuts */
 /* global Sidebar */
+/* global ShortcutsWiki */
 
 import Issue from './issue';
 
@@ -46,6 +47,7 @@ import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import UserCallout from './user_callout';
 import { ProtectedTagCreate, ProtectedTagEditList } from './protected_tags';
+import ShortcutsWiki from './shortcuts_wiki';
 
 const ShortcutsBlob = require('./shortcuts_blob');
 
@@ -148,12 +150,12 @@ const ShortcutsBlob = require('./shortcuts_blob');
         case 'projects:milestones:new':
         case 'projects:milestones:edit':
         case 'projects:milestones:update':
+        case 'groups:milestones:new':
+        case 'groups:milestones:edit':
+        case 'groups:milestones:update':
           new ZenMode();
           new gl.DueDateSelectors();
           new gl.GLForm($('.milestone-form'));
-          break;
-        case 'groups:milestones:new':
-          new ZenMode();
           break;
         case 'projects:compare:show':
           new gl.Diff();
@@ -365,6 +367,9 @@ const ShortcutsBlob = require('./shortcuts_blob');
         case 'admin':
           new Admin();
           switch (path[1]) {
+            case 'cohorts':
+              new gl.UsagePing();
+              break;
             case 'groups':
               new UsersSelect();
               break;
@@ -416,7 +421,7 @@ const ShortcutsBlob = require('./shortcuts_blob');
               break;
             case 'wikis':
               new gl.Wikis();
-              shortcut_handler = new ShortcutsNavigation();
+              shortcut_handler = new ShortcutsWiki();
               new ZenMode();
               new gl.GLForm($('.wiki-form'));
               break;
