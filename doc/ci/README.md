@@ -67,6 +67,8 @@ learn how to leverage its potential even more.
 - [Auto deploy](autodeploy/index.md)
 - [Use SSH keys in your build environment](ssh_keys/README.md)
 - [Trigger jobs through the GitLab API](triggers/README.md)
+- [Deploy Boards](../user/project/deploy_boards.md) - Check the current health
+  and status of each CI environment running on Kubernetes
 
 ## Review Apps
 
