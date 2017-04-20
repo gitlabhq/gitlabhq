@@ -11,7 +11,7 @@ class Burndown
     @end_date = Date.today if @end_date.present? && @end_date > Date.today
 
     @accurate = milestone_closed_issues.all?(&:closed_at)
-    @legacy_data = milestone_closed_issues.any? && !milestone_closed_issues.any?(&:closed_at)
+    @legacy_data = milestone_closed_issues.any? && milestone_closed_issues.none?(&:closed_at)
 
     @issues_count, @issues_weight = milestone.issues.reorder(nil).pluck('COUNT(*), COALESCE(SUM(weight), 0)').first
   end
