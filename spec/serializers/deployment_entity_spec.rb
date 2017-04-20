@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe DeploymentEntity do
+describe DeploymentEntityDetailed do
   let(:user) { create(:user) }
   let(:request) { double('request') }
 
