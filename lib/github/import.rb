@@ -27,12 +27,13 @@ module Github
       self.reset_callbacks :validate
     end
 
-    attr_reader :project, :repository, :options, :cached_label_ids,
-                :cached_gitlab_users, :cached_user_ids, :errors
+    attr_reader :project, :repository, :repo, :options, :errors,
+                :cached_label_ids, :cached_gitlab_users, :cached_user_ids
 
     def initialize(project, options)
       @project = project
       @repository = project.repository
+      @repo = project.import_source
       @options = options
       @cached_label_ids = {}
       @cached_user_ids = {}
@@ -40,19 +41,32 @@ module Github
       @errors  = []
     end
 
-    def execute(owner, repo)
-      # Fetch repository
+    def execute
+      fetch_repository
+      fetch_labels
+      fetch_milestones
+      fetch_pull_requests
+      fetch_issues
+      expire_repository_cache
+
+      errors
+    end
+
+    private
+
+    def fetch_repository
       begin
         project.create_repository
-        project.repository.add_remote('github', "https://{token}@github.com/#{owner}/#{repo}.git")
+        project.repository.add_remote('github', "https://{token}@github.com/#{repo}.git")
         project.repository.set_remote_as_mirror('github')
         project.repository.fetch_remote('github', forced: true)
       rescue Gitlab::Shell::Error => e
-        error(:project, "https://github.com/#{owner}/#{repo}.git", e.message)
+        error(:project, "https://github.com/#{repo}.git", e.message)
       end
+    end
 
-      # Fetch labels
-      url = "/repos/#{owner}/#{repo}/labels"
+    def fetch_labels
+      url = "/repos/#{repo}/labels"
 
       while url
         response = Github::Client.new(options).get(url)
@@ -72,13 +86,13 @@ module Github
       end
 
       # Cache labels
-      # TODO: we should take group labels in account
       project.labels.select(:id, :title).find_each do |label|
         @cached_label_ids[label.title] = label.id
       end
+    end
 
-      # Fetch milestones
-      url = "/repos/#{owner}/#{repo}/milestones"
+    def fetch_milestones
+      url = "/repos/#{repo}/milestones"
 
       while url
         response = Github::Client.new(options).get(url, state: :all)
@@ -104,9 +118,10 @@ module Github
 
         url = response.rels[:next]
       end
+    end
 
-      # Fetch pull requests
-      url = "/repos/#{owner}/#{repo}/pulls"
+    def fetch_pull_requests
+      url = "/repos/#{repo}/pulls"
 
       while url
         response = Github::Client.new(options).get(url, state: :all, sort: :created, direction: :asc)
@@ -141,14 +156,13 @@ module Github
             merge_request.merge_request_diffs.create
 
             # Fetch review comments
-            review_comments_url = "/repos/#{owner}/#{repo}/pulls/#{pull_request.iid}/comments"
+            review_comments_url = "/repos/#{repo}/pulls/#{pull_request.iid}/comments"
             fetch_comments(merge_request, :review_comment, review_comments_url)
 
             # Fetch comments
-            comments_url = "/repos/#{owner}/#{repo}/issues/#{pull_request.iid}/comments"
+            comments_url = "/repos/#{repo}/issues/#{pull_request.iid}/comments"
             fetch_comments(merge_request, :comment, comments_url)
           rescue => e
-            error(:pull_request, pull_request.url, e.message)
           ensure
             clean_up_restored_branches(pull_request)
           end
@@ -156,9 +170,10 @@ module Github
 
         url = response.rels[:next]
       end
+    end
 
-      # Fetch issues
-      url = "/repos/#{owner}/#{repo}/issues"
+    def fetch_issues
+      url = "/repos/#{repo}/issues"
 
       while url
         response = Github::Client.new(options).get(url, state: :all, sort: :created, direction: :asc)
@@ -196,7 +211,7 @@ module Github
 
               if representation.has_comments?
                 # Fetch comments
-                comments_url = "/repos/#{owner}/#{repo}/issues/#{issue.iid}/comments"
+                comments_url = "/repos/#{repo}/issues/#{issue.iid}/comments"
                 fetch_comments(issue, :comment, comments_url)
               end
             end
@@ -207,13 +222,7 @@ module Github
 
         url = response.rels[:next]
       end
-
-      repository.expire_content_cache
-
-      errors
     end
-
-    private
 
     def fetch_comments(noteable, type, url)
       while url
@@ -308,6 +317,10 @@ module Github
       return body if cached_gitlab_users[author.id]
 
       "*Created by: #{author.username}*\n\n#{body}"
+    end
+
+    def expire_repository_cache
+      repository.expire_content_cache
     end
 
     def error(type, url, message)
