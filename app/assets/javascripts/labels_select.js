@@ -332,6 +332,9 @@
           vue: $dropdown.hasClass('js-issue-board-sidebar'),
           clicked: function(label, $el, e, isMarking) {
             var isIssueIndex, isMRIndex, page, boardsModel;
+            var fadeOutLoader = () => {
+              $loading.fadeOut();
+            };
 
             page = $('body').data('page');
             isIssueIndex = page === 'projects:issues:index';
@@ -396,9 +399,8 @@
               $loading.fadeIn();
 
               gl.issueBoards.BoardsStore.detail.issue.update($dropdown.attr('data-issue-update'))
-                .then(function () {
-                  $loading.fadeOut();
-                });
+                .then(fadeOutLoader)
+                .catch(fadeOutLoader);
             }
             else {
               if ($dropdown.hasClass('js-multiselect')) {

@@ -1,4 +1,5 @@
-/* eslint-disable comma-dangle, func-names, no-new, space-before-function-paren, one-var */
+/* eslint-disable comma-dangle, func-names, no-new, space-before-function-paren, one-var,
+   promise/catch-or-return */
 
 window.gl = window.gl || {};
 window.gl.issueBoards = window.gl.issueBoards || {};

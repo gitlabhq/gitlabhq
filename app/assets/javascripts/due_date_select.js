@@ -115,11 +115,13 @@ class DueDateSelect {
     this.$dropdown.trigger('loading.gl.dropdown');
     this.$selectbox.hide();
     this.$value.css('display', '');
+    const fadeOutLoader = () => {
+      this.$loading.fadeOut();
+    };
 
     gl.issueBoards.BoardsStore.detail.issue.update(this.$dropdown.attr('data-issue-update'))
-      .then(() => {
-        this.$loading.fadeOut();
-      });
+      .then(fadeOutLoader)
+      .catch(fadeOutLoader);
   }
 
   submitSelectedDate(isDropdown) {
