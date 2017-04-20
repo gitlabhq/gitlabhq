@@ -3,11 +3,8 @@ class UpdateUserActivityWorker
   include DedicatedSidekiqQueue
 
   def perform(pairs)
-<<<<<<< HEAD
     return if Gitlab::Geo.secondary?
 
-=======
->>>>>>> ce/master
     pairs = cast_data(pairs)
     ids = pairs.keys
     conditions = 'WHEN id = ? THEN ? ' * ids.length

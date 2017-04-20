@@ -1,5 +1,4 @@
 class CreateUserActivities < ActiveRecord::Migration
-<<<<<<< HEAD
   # Set this constant to true if this migration requires downtime.
   DOWNTIME = true
 
@@ -24,11 +23,6 @@ class CreateUserActivities < ActiveRecord::Migration
       t.belongs_to :user, index: { unique: true }, foreign_key: { on_delete: :cascade }
       t.datetime :last_activity_at, null: false
     end
-=======
-  DOWNTIME = false
-
-  # This migration is a no-op. It just exists to match EE.
-  def change
->>>>>>> ce/master
   end
 end
+

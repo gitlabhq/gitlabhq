@@ -54,7 +54,6 @@
   - [pages, 1]
   - [system_hook_push, 1]
   - [update_user_activity, 1]
-<<<<<<< HEAD
   # EE specific queues
   - [geo, 1]
   - [project_mirror, 1]
@@ -65,5 +64,4 @@
   - [elastic_indexer, 1]
   - [elastic_commit_indexer, 1]
   - [export_csv, 1]
-=======
->>>>>>> ce/master
+
