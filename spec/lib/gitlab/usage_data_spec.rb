@@ -6,12 +6,17 @@ describe Gitlab::UsageData do
   let!(:board) { create(:board, project: project) }
 
   describe '#data' do
+<<<<<<< HEAD
     subject { described_class.data }
+=======
+    subject { Gitlab::UsageData.data }
+>>>>>>> ce/master
 
     it "gathers usage data" do
       expect(subject.keys).to match_array(%i(
         active_user_count
         counts
+<<<<<<< HEAD
         historical_max_users
         license_add_ons
         license_expires_at
@@ -19,6 +24,8 @@ describe Gitlab::UsageData do
         license_user_count
         licensee
         license_md5
+=======
+>>>>>>> ce/master
         recorded_at
         mattermost_enabled
         edition
@@ -42,14 +49,20 @@ describe Gitlab::UsageData do
         deploy_keys
         deployments
         environments
+<<<<<<< HEAD
         geo_nodes
+=======
+>>>>>>> ce/master
         groups
         issues
         keys
         labels
+<<<<<<< HEAD
         ldap_group_links
         ldap_keys
         ldap_users
+=======
+>>>>>>> ce/master
         lfs_objects
         merge_requests
         milestones
@@ -59,7 +72,10 @@ describe Gitlab::UsageData do
         pages_domains
         protected_branches
         releases
+<<<<<<< HEAD
         remote_mirrors
+=======
+>>>>>>> ce/master
         services
         snippets
         todos
@@ -69,6 +85,7 @@ describe Gitlab::UsageData do
     end
   end
 
+<<<<<<< HEAD
   describe '.license_usage_data' do
     subject { described_class.license_usage_data }
 
@@ -113,4 +130,16 @@ describe Gitlab::UsageData do
       end
     end
   end
+=======
+  describe '#license_usage_data' do
+    subject { Gitlab::UsageData.license_usage_data }
+
+    it "gathers license data" do
+      expect(subject[:uuid]).to eq(current_application_settings.uuid)
+      expect(subject[:version]).to eq(Gitlab::VERSION)
+      expect(subject[:active_user_count]).to eq(User.active.count)
+      expect(subject[:recorded_at]).to be_a(Time)
+    end
+  end
+>>>>>>> ce/master
 end

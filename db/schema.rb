@@ -11,7 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20170419065104) do
+=======
+ActiveRecord::Schema.define(version: 20170419001229) do
+>>>>>>> ce/master
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -131,6 +135,7 @@ ActiveRecord::Schema.define(version: 20170419065104) do
     t.integer "geo_status_timeout", default: 10
     t.string "uuid"
     t.decimal "polling_interval_multiplier", default: 1.0, null: false
+<<<<<<< HEAD
     t.boolean "elasticsearch_experimental_indexer"
   end
 
@@ -139,6 +144,10 @@ ActiveRecord::Schema.define(version: 20170419065104) do
     t.integer "user_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+=======
+    t.boolean "usage_ping_enabled", default: true, null: false
+    t.string "uuid"
+>>>>>>> ce/master
   end
 
   create_table "approver_groups", force: :cascade do |t|
@@ -1342,6 +1351,8 @@ ActiveRecord::Schema.define(version: 20170419065104) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  add_index "system_note_metadata", ["note_id"], name: "index_system_note_metadata_on_note_id", unique: true, using: :btree
 
   create_table "taggings", force: :cascade do |t|
     t.integer "tag_id"

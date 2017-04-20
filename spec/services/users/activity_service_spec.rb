@@ -38,6 +38,7 @@ describe Users::ActivityService, services: true do
         end
       end
     end
+<<<<<<< HEAD
 
     context 'when in Geo secondary node' do
       before { allow(Gitlab::Geo).to receive(:secondary?).and_return(true) }
@@ -48,6 +49,8 @@ describe Users::ActivityService, services: true do
         expect(last_hour_user_ids).to eq([])
       end
     end
+=======
+>>>>>>> ce/master
   end
 
   def last_hour_user_ids

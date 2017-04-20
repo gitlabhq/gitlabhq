@@ -11,13 +11,17 @@
           Project
 
     - if project_nav_tab? :files
+<<<<<<< HEAD
       = nav_link(controller: %w(tree blob blame edit_tree new_tree find_file commit commits compare repositories tags branches releases graphs network path_locks)) do
+=======
+      = nav_link(controller: %w(tree blob blame edit_tree new_tree find_file commit commits compare projects/repositories tags branches releases graphs network)) do
+>>>>>>> ce/master
         = link_to project_files_path(@project), title: 'Repository',  class: 'shortcuts-tree' do
           %span
             Repository
 
     - if project_nav_tab? :container_registry
-      = nav_link(controller: %w(container_registry)) do
+      = nav_link(controller: %w[projects/registry/repositories]) do
         = link_to project_container_registry_path(@project), title: 'Container Registry', class: 'shortcuts-container-registry' do
           %span
             Registry

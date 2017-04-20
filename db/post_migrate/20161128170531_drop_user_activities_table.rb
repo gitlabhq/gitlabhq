@@ -1,11 +1,15 @@
+<<<<<<< HEAD
 # See http://doc.gitlab.com/ce/development/migration_style_guide.html
 # for more information on how to write migrations for GitLab.
 
+=======
+>>>>>>> ce/master
 class DropUserActivitiesTable < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
 
+<<<<<<< HEAD
   # When using the methods "add_concurrent_index" or "add_column_with_default"
   # you must disable the use of transactions as these methods can not run in an
   # existing transaction. When using "add_concurrent_index" make sure that this
@@ -30,5 +34,9 @@ class DropUserActivitiesTable < ActiveRecord::Migration
 
       add_index "user_activities", ["user_id"], name: "index_user_activities_on_user_id", unique: true, using: :btree
     end
+=======
+  # This migration is a no-op. It just exists to match EE.
+  def change
+>>>>>>> ce/master
   end
 end

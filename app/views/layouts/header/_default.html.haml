@@ -79,6 +79,11 @@
                 = icon('caret-down')
               .dropdown-menu-nav.dropdown-menu-align-right
                 %ul
+                  %li.current-user
+                    .user-name.bold
+                      = current_user.name
+                    @#{current_user.username}
+                  %li.divider
                   %li
                     = link_to "Profile", current_user, class: 'profile-link', aria: { label: "Profile" }, data: { user: current_user.username }
                   %li

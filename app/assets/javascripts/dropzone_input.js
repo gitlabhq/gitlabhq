@@ -38,6 +38,9 @@ window.DropzoneInput = (function() {
       "opacity": 0,
       "display": "none"
     });
+
+    if (!project_uploads_path) return;
+
     dropzone = form_dropzone.dropzone({
       url: project_uploads_path,
       dictDefaultMessage: "",
@@ -133,8 +136,11 @@ window.DropzoneInput = (function() {
       const textarea = child.get(0);
       caretStart = textarea.selectionStart;
       caretEnd = textarea.selectionEnd;
+<<<<<<< HEAD
       caretStart = textarea.selectionStart;
       caretEnd = textarea.selectionEnd;
+=======
+>>>>>>> ce/master
       textEnd = $(child).val().length;
       beforeSelection = $(child).val().substring(0, caretStart);
       afterSelection = $(child).val().substring(caretEnd, textEnd);

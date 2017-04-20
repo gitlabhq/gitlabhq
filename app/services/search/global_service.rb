@@ -9,6 +9,7 @@ module Search
     end
 
     def execute
+<<<<<<< HEAD
       if current_application_settings.elasticsearch_search?
         Gitlab::Elastic::SearchResults.new(current_user, params[:search], elastic_projects, elastic_global)
       else
@@ -33,6 +34,13 @@ module Search
 
     def elastic_global
       true
+=======
+      Gitlab::SearchResults.new(current_user, projects, params[:search])
+>>>>>>> ce/master
+    end
+
+    def projects
+      @projects ||= ProjectsFinder.new(current_user: current_user).execute
     end
 
     def scope
