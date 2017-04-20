@@ -75,7 +75,7 @@ import './flash';
 
       this.bindEvents();
       this.activateTab(action);
-      this.initAffix();
+      // this.initAffix();
     }
 
     bindEvents() {
@@ -347,13 +347,12 @@ import './flash';
       if (Breakpoints.get().getBreakpointSize() === 'xs' || !$tabs.length) return;
 
       const $diffTabs = $('#diff-notes-app');
+      const top = $diffTabs.offset().top - $tabs.height();
 
       $tabs.off('affix.bs.affix affix-top.bs.affix')
         .affix({
           offset: {
-            top: () => (
-              $diffTabs.offset().top - $tabs.height()
-            ),
+            top,
           },
         })
         .on('affix.bs.affix', () => $diffTabs.css({ marginTop: $tabs.height() }))

@@ -75,7 +75,7 @@ $red-800: #8b2615;
 $red-900: #711e11;
 
 $black: #000;
-$black-transparent: rgba(0, 0, 0, 0.3);
+$black-transparent: #b3b3b3;
 
 $border-white-light: darken($white-light, $darken-border-factor);
 $border-white-normal: darken($white-normal, $darken-border-factor);
@@ -98,7 +98,7 @@ $well-light-text-color: #5b6169;
  * Text
  */
 $gl-font-size: 14px;
-$gl-text-color: rgba(0, 0, 0, .85);
+$gl-text-color: #262626;
 $gl-text-color-secondary: rgba(0, 0, 0, .55);
 $gl-text-color-disabled: rgba(0, 0, 0, .35);
 $gl-text-green: $green-600;

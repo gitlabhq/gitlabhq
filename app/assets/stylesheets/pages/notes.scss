@@ -530,7 +530,6 @@ ul.notes {
  */
 
 .add-diff-note {
-  display: none;
   margin-top: -2px;
   border-radius: 50%;
   background: $white-light;
@@ -543,6 +542,7 @@ ul.notes {
   width: 23px;
   height: 23px;
   border: 1px solid $blue-500;
+  opacity: 0;
   transition: transform .1s ease-in-out;
 
   &:hover {
@@ -560,7 +560,7 @@ ul.notes {
 .diff-file {
   .is-over {
     .add-diff-note {
-      display: inline-block;
+      opacity: 01
     }
   }
 }

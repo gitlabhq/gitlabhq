@@ -8,7 +8,13 @@ import Cookies from 'js-cookie';
   this.Sidebar = (function() {
     function Sidebar(currentUser) {
       this.toggleTodo = bind(this.toggleTodo, this);
+      this.window = window;
       this.sidebar = $('aside');
+      this.navBar = document.querySelector('.navbar-gitlab');
+      this.layoutNav = document.querySelector('.layout-nav');
+      this.rightSidebar = document.querySelector('.js-right-sidebar');
+      this.navHeight = this.navBar.clientHeight + this.layoutNav.clientHeight + 1;
+      this.setSidebarHeight();
       this.removeListeners();
       this.addEventListeners();
     }
@@ -23,7 +29,7 @@ import Cookies from 'js-cookie';
 
     Sidebar.prototype.addEventListeners = function() {
       const $document = $(document);
-      const throttledSetSidebarHeight = _.throttle(this.setSidebarHeight, 10);
+      const throttledSetSidebarHeight = this.setSidebarHeight.bind(this);
 
       this.sidebar.on('click', '.sidebar-collapsed-icon', this, this.sidebarCollapseClicked);
       $('.dropdown').on('hidden.gl.dropdown', this, this.onSidebarDropdownHidden);
@@ -209,14 +215,10 @@ import Cookies from 'js-cookie';
     };
 
     Sidebar.prototype.setSidebarHeight = function() {
-      const $navHeight = $('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight() + $('.sub-nav-scroll').outerHeight();
-      const $rightSidebar = $('.js-right-sidebar');
-      const diff = $navHeight - $(window).scrollTop();
-      if (diff > 0) {
-        $rightSidebar.outerHeight($(window).height() - diff);
-      } else {
-        $rightSidebar.outerHeight('100%');
-      }
+      let diff = this.navHeight - this.window.scrollY;
+      diff = diff < 0 ? 0 : diff;
+
+      this.rightSidebar.style.transform = `translateY(${diff}px)`;
     };
 
     Sidebar.prototype.isOpen = function() {

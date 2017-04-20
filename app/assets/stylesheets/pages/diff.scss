@@ -99,10 +99,6 @@
         line-height: $code_line_height;
         font-size: $code_font_size;
 
-        &.noteable_line {
-          position: relative;
-        }
-
         span {
           white-space: pre-wrap;
         }
@@ -153,11 +149,9 @@
     }
 
     .line_content {
-      display: block;
       margin: 0;
       padding: 0 1.5em;
       border: none;
-      position: relative;
 
       &.parallel {
         display: table-cell;
@@ -171,7 +165,7 @@
         &::before {
           content: '-';
           position: absolute;
-          left: 0.5em;
+          margin-left: -15px;
         }
       }
 
@@ -179,13 +173,13 @@
         &::before {
           content: '+';
           position: absolute;
-          left: 0.5em;
+          margin-left: -15px;
         }
       }
     }
 
     .text-file.diff-wrap-lines table .line_holder td span {
-      white-space: pre-wrap;
+      // white-space: pre-wrap;
     }
   }
 
