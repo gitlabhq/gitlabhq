@@ -37,7 +37,6 @@ describe Search::GroupService, services: true do
   describe 'basic search' do
     include_examples 'group search'
   end
-<<<<<<< HEAD
 
   describe 'elasticsearch' do
     before(:each) do
@@ -59,6 +58,4 @@ describe Search::GroupService, services: true do
 
     include_examples 'group search'
   end
-=======
->>>>>>> ce/master
 end
