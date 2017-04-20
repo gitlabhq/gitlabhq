@@ -33,17 +33,6 @@ export default {
     };
   },
   methods: {
-    fetch() {
-      this.poll.makeRequest();
-
-      Visibility.change(() => {
-        if (!Visibility.hidden()) {
-          this.poll.restart();
-        } else {
-          this.poll.stop();
-        }
-      });
-    },
     renderResponse(res) {
       const body = JSON.parse(res.body);
       this.triggerAnimation(body);
@@ -70,7 +59,17 @@ export default {
     },
   },
   created() {
-    this.fetch();
+    if (!Visibility.hidden()) {
+      this.poll.makeRequest();
+    }
+
+    Visibility.change(() => {
+      if (!Visibility.hidden()) {
+        this.poll.restart();
+      } else {
+        this.poll.stop();
+      }
+    });
   },
   template: `
     <h2 class='title' v-html='title'></h2>
