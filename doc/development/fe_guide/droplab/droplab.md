@@ -183,6 +183,8 @@ For example,
 either by a mouse click or by enter key selection.
 * The `droplab-item-active` css class is added to items that have been selected
 using arrow key navigation.
+* You can add the `droplab-item-ignore` css class to any item that you do not want to be selectable. For example,
+an `<li class="divider"></li>` list divider element that should not be interactive.
 
 ## Internal events
 
