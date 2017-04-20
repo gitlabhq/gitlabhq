@@ -16,7 +16,7 @@ user cohorts.
 ![User cohort example](img/cohorts.png)
 
 For the cohort of June 2016, 163 users have been added on this server and have
-actually been active during this month. One month later, in July 2016, out of
+been active since this month. One month later, in July 2016, out of
 these 163 users, 155 users (or 95% of the June cohort) are still active. Two
 months later, 139 users (or 85%) are still active. 9 months later, we can see
 that only 6% of this cohort are still active.
