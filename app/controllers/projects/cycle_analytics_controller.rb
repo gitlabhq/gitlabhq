@@ -4,6 +4,7 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
   include CycleAnalyticsParams
 
   before_action :authorize_read_cycle_analytics!
+  before_action :set_locale, only: :show
 
   def show
     @cycle_analytics = ::CycleAnalytics.new(@project, options(cycle_analytics_params))
