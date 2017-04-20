@@ -99,9 +99,6 @@ class User < ActiveRecord::Base
   has_many :award_emoji,              dependent: :destroy
   has_many :triggers,                 dependent: :destroy, class_name: 'Ci::Trigger', foreign_key: :owner_id
 
-  has_many :assigned_issues,          dependent: :nullify, foreign_key: :assignee_id, class_name: "Issue"
-  has_many :assigned_merge_requests,  dependent: :nullify, foreign_key: :assignee_id, class_name: "MergeRequest"
-
   # Issues that a user owns are expected to be moved to the "ghost" user before
   # the user is destroyed. If the user owns any issues during deletion, this
   # should be treated as an exceptional condition.
@@ -891,20 +888,20 @@ class User < ActiveRecord::Base
     @global_notification_setting
   end
 
-  def assigned_open_merge_request_count(force: false)
-    Rails.cache.fetch(['users', id, 'assigned_open_merge_request_count'], force: force) do
-      assigned_merge_requests.opened.count
+  def assigned_open_merge_requests_count(force: false)
+    Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count'], force: force) do
+      MergeRequestsFinder.new(self, assignee_id: self.id, state: 'opened').execute.count
     end
   end
 
   def assigned_open_issues_count(force: false)
     Rails.cache.fetch(['users', id, 'assigned_open_issues_count'], force: force) do
-      assigned_issues.opened.count
+      IssuesFinder.new(self, assignee_id: self.id, state: 'opened').execute.count
     end
   end
 
   def update_cache_counts
-    assigned_open_merge_request_count(force: true)
+    assigned_open_merge_requests_count(force: true)
     assigned_open_issues_count(force: true)
   end
 
