@@ -32,4 +32,3 @@ class DropUserActivitiesTable < ActiveRecord::Migration
     end
   end
 end
-

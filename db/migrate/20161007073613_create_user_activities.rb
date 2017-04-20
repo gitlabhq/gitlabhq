@@ -25,4 +25,3 @@ class CreateUserActivities < ActiveRecord::Migration
     end
   end
 end
-
