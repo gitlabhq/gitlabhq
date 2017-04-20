@@ -93,3 +93,5 @@ Some parameters can be added to the AsciiDoc block definition:
  - *height*: Height attribute added to the img tag.
 
 Markdown does not support any parameters and will always use PNG format.
+
+[ce-8537]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8537
