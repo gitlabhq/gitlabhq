@@ -71,6 +71,16 @@ See [our current .eslintrc][eslintrc] for specific rules and patterns.
   /* global Cookies */
   /* global jQuery */
   ```
+  
+- Use up to 3 parameters for a function or class. If you need more accept an Object instead.
+
+  ```javascript
+  // bad
+  fn(p1, p2, p3, p4) {}
+
+  // good
+  fn(options) {}
+  ```
 
 #### Modules, Imports, and Exports
 - Use ES module syntax to import modules
