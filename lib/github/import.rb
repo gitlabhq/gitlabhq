@@ -255,6 +255,33 @@ module Github
       end
     end
 
+    def fetch_releases
+      url = "/repos/#{repo}/releases"
+
+      while url
+        response = Github::Client.new(options).get(url)
+
+        response.body.each do |raw|
+          representation = Github::Representation::Release.new(raw)
+          next unless representation.valid?
+
+          release = ::Release.find_or_initialize_by(project_id: project.id, tag: representation.tag)
+          next unless relese.new_record?
+
+          begin
+            release.description = representation.description
+            release.created_at  = representation.created_at
+            release.updated_at  = representation.updated_at
+            release.save!(validate: false)
+          rescue => e
+            error(:release, representation.url, e.message)
+          end
+        end
+
+        url = response.rels[:next]
+      end
+    end
+
     def restore_source_branch(pull_request)
       repository.create_branch(pull_request.source_branch_name, pull_request.source_branch_sha)
     end
