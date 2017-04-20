@@ -1,5 +1,6 @@
 module Github
   class Import
+    include Gitlab::ShellAdapter
 
     class MergeRequest < ::MergeRequest
       self.table_name = 'merge_requests'

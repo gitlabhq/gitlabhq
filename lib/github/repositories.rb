@@ -1,11 +1,13 @@
 module Github
   class Repositories
-    def initialize(username)
-      @username = username
+    attr_reader :options
+
+    def initialize(options)
+      @options = options
     end
 
     def fetch
-      Collection.new.fetch(repos_url)
+      Collection.new(options).fetch(repos_url)
     end
 
     private
