@@ -168,6 +168,23 @@ See [our current .eslintrc][eslintrc] for specific rules and patterns.
 
 - Avoid constructors with side-effects
 
+- Prefer `.map`, `.reduce` or `.filter` over `.forEach`
+A forEach will cause side effects, it will be mutating the array being iterated. Prefer using `.map`,
+`.reduce` or `.filter`
+
+  ```javascript
+  const users = [ { name: 'Foo' }, { name: 'Bar' } ];
+
+  // bad
+  users.forEach((user, index) => {
+    user.id = index;
+  });
+
+  // good
+  const usersWithId = users.map((user, index) => {
+    return Object.assign({}, user, { id: index });
+  });
+  ```
 
 #### Parse Strings into Numbers
 - `parseInt()` is preferable over `Number()` or `+`
