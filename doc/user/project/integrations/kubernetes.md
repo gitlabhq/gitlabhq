@@ -40,6 +40,13 @@ Fill in the service token and namespace according to the values you just got.
 If the API is using a self-signed TLS certificate, you'll also need to include
 the `ca.crt` contents as the `Custom CA bundle`.
 
+## Kubernetes namespace
+
+Kubernetes namespace is auto-generated if not specified.
+The default value is `<project_name>-<project_id>`.
+You can overwrite to use different one, if needed.
+Otherwise `KUBE_NAMESPACE` will receive the default.
+
 ## Deployment variables
 
 The Kubernetes service exposes following
