@@ -20,7 +20,7 @@ describe PipelineEntity do
 
       it 'contains required fields' do
         expect(subject).to include :id, :user, :path
-        expect(subject).to include :ref, :commit
+        expect(subject).to include :ref, :commit, :stages
         expect(subject).to include :updated_at, :created_at
       end
 
@@ -29,7 +29,7 @@ describe PipelineEntity do
         expect(subject[:details])
           .to include :duration, :finished_at
         expect(subject[:details])
-          .to include :stages, :artifacts, :manual_actions
+          .to include :artifacts, :manual_actions
         expect(subject[:details][:status]).to include :icon, :favicon, :text, :label
       end
 

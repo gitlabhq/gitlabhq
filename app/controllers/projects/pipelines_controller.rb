@@ -8,6 +8,8 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   wrap_parameters Ci::Pipeline
 
+  POLLING_INTERVAL = 10_000
+
   def index
     @scope = params[:scope]
     @pipelines = PipelinesFinder
@@ -31,7 +33,7 @@ class Projects::PipelinesController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        Gitlab::PollingInterval.set_header(response, interval: 10_000)
+        Gitlab::PollingInterval.set_header(response, interval: POLLING_INTERVAL)
 
         render json: {
           pipelines: PipelineSerializer
@@ -69,9 +71,11 @@ class Projects::PipelinesController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
+        Gitlab::PollingInterval.set_header(response, interval: POLLING_INTERVAL)
+
         render json: PipelineSerializer.
           new(project: @project, user: @current_user).
-          represent(@pipeline, with_jobs: true)
+          represent(@pipeline)
       end
     end
   end

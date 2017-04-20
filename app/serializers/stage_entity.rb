@@ -7,9 +7,7 @@ class StageEntity < Grape::Entity
     "#{stage.name}: #{detailed_status.label}"
   end
 
-  expose :detailed_status,
-    as: :status,
-    with: StatusEntity
+  expose :detailed_status, as: :status, with: StatusEntity
 
   expose :path do |stage|
     namespace_project_pipeline_path(
@@ -27,6 +25,8 @@ class StageEntity < Grape::Entity
       stage: stage.name,
       format: :json)
   end
+
+  expose :builds, as: :jobs, using: BuildEntity
 
   private
 
