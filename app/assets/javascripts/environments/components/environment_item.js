@@ -1,10 +1,10 @@
 import Timeago from 'timeago.js';
 import '../../lib/utils/text_utility';
 import ActionsComponent from './environment_actions';
-import ExternalUrlComponent from './environment_external_url';
-import StopComponent from './environment_stop';
+import ExternalUrlComponent from './environment_external_url.vue';
+import StopComponent from './environment_stop.vue';
 import RollbackComponent from './environment_rollback';
-import TerminalButtonComponent from './environment_terminal_button';
+import TerminalButtonComponent from './environment_terminal_button.vue';
 import MonitoringButtonComponent from './environment_monitoring';
 import CommitComponent from '../../vue_shared/components/commit';
 import eventHub from '../event_hub';
