@@ -222,22 +222,6 @@ describe API::Internal, api: true  do
         end
       end
 
-      context 'with env passed as a JSON' do
-        it 'sets env in RequestStore' do
-          expect(Gitlab::Git::Env).to receive(:set).with({
-            'GIT_OBJECT_DIRECTORY' => 'foo',
-            'GIT_ALTERNATE_OBJECT_DIRECTORIES' => 'bar'
-          })
-
-          push(key, project.wiki, env: {
-            GIT_OBJECT_DIRECTORY: 'foo',
-            GIT_ALTERNATE_OBJECT_DIRECTORIES: 'bar'
-          }.to_json)
-
-          expect(response).to have_http_status(200)
-        end
-      end
-
       context "git push with project.wiki" do
         it 'responds with success' do
           push(key, project.wiki)
