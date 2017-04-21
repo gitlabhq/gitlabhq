@@ -42,6 +42,19 @@ describe Banzai::Redactor do
       end
     end
 
+    context 'when project is in pending delete' do
+      it 'redacts an issue attached' do
+        project.pending_delete = true
+        project.save
+        issue = create(:issue, project: project)
+        redactor = described_class.new(project, user)
+        doc = Nokogiri::HTML.fragment("<a class='gfm' data-reference-type='issue' data-project=\"#{project.id}\" data-issue=\"#{issue.id}\">foo</a>")
+        redactor.redact([doc])
+
+        expect(doc.to_html).to eq('foo')
+      end
+    end
+
     context 'when reference visible to user' do
       it 'does not redact an array of documents' do
         doc1_html = '<a class="gfm" data-reference-type="issue">foo</a>'
