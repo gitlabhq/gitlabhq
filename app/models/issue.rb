@@ -201,7 +201,7 @@ class Issue < ActiveRecord::Base
   # Returns `true` if the current issue can be viewed by either a logged in User
   # or an anonymous user.
   def visible_to_user?(user = nil)
-    return false unless project.feature_available?(:issues, user)
+    return false unless project && project.feature_available?(:issues, user)
 
     user ? readable_by?(user) : publicly_visible?
   end
