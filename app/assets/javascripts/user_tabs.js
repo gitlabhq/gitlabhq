@@ -99,7 +99,7 @@ content on the Users#show page.
       };
     }
 
-    showEmptyState(tabSelector, action) {
+    showEmptyState(action) {
       if (this.emptyStates[action]) this.emptyStates[action].classList.remove('hidden');
       this.loaded[action] = true;
     }
@@ -141,7 +141,7 @@ content on the Users#show page.
     }
 
     loadTab(action, endpoint) {
-      if (this.emptyStates[endpoint]) this.emptyStates[endpoint].classList.add('hidden');
+      if (this.emptyStates[action]) this.emptyStates[action].classList.add('hidden');
 
       return $.ajax({
         beforeSend: () => this.toggleLoading(true),
@@ -152,7 +152,7 @@ content on the Users#show page.
         success: (data) => {
           const tabSelector = `div#${action}`;
 
-          if (!data.html) return this.showEmptyState(tabSelector, action);
+          if (!data.html) return this.showEmptyState(action);
 
           this.$parentEl.find(tabSelector).html(data.html);
           this.loaded[action] = true;
