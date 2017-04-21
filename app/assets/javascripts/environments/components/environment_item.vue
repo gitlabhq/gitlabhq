@@ -1,12 +1,7 @@
-/**
- * Environment Item Component
- *
- * Renders a table row for each environment.
- */
-
+<script>
 import Timeago from 'timeago.js';
 import '../../lib/utils/text_utility';
-import ActionsComponent from './environment_actions';
+import ActionsComponent from './environment_actions.vue';
 import ExternalUrlComponent from './environment_external_url.vue';
 import StopComponent from './environment_stop.vue';
 import RollbackComponent from './environment_rollback';
@@ -441,133 +436,156 @@ export default {
       eventHub.$emit('toggleFolder', this.model, this.folderUrl);
     },
   },
+};
+</script>
+<template>
+  <tr :class="{ 'js-child-row': model.isChildren }">
+    <td>
+      <span
+        class="deploy-board-icon"
+        v-if="model.hasDeployBoard"
+        @click="toggleDeployBoard(model)">
 
-  template: `
-    <tr :class="{ 'js-child-row': model.isChildren }">
-      <td>
-        <span class="deploy-board-icon"
-          v-if="model.hasDeployBoard"
-          @click="toggleDeployBoard(model)">
+        <i
+          v-show="!model.isDeployBoardVisible"
+          class="fa fa-caret-right"
+          aria-hidden="true" />
 
-          <i v-show="!model.isDeployBoardVisible"
-            class="fa fa-caret-right"
-            aria-hidden="true" />
+        <i
+          v-show="model.isDeployBoardVisible"
+          class="fa fa-caret-down"
+          aria-hidden="true" />
+      </span>
 
+      <a
+        v-if="!model.isFolder"
+        class="environment-name"
+        :class="{ 'prepend-left-default': model.isChildren }"
+        :href="environmentPath">
+        {{model.name}}
+      </a>
+      <span
+        v-else
+        class="folder-name"
+        @click="onClickFolder"
+        role="button">
 
-          <i v-show="model.isDeployBoardVisible"
+        <span class="folder-icon">
+          <i
+            v-show="model.isOpen"
             class="fa fa-caret-down"
             aria-hidden="true" />
-
+          <i
+            v-show="!model.isOpen"
+            class="fa fa-caret-right"
+            aria-hidden="true"/>
         </span>
 
-        <a v-if="!model.isFolder"
-          class="environment-name"
-          :class="{ 'prepend-left-default': model.isChildren }"
-          :href="environmentPath">
-          {{model.name}}
+        <span class="folder-icon">
+          <i
+            class="fa fa-folder"
+            aria-hidden="true" />
+        </span>
+
+        <span>
+          {{model.folderName}}
+        </span>
+
+        <span class="badge">
+          {{model.size}}
+        </span>
+      </span>
+    </td>
+
+    <td class="deployment-column">
+      <span v-if="shouldRenderDeploymentID">
+        {{deploymentInternalId}}
+      </span>
+
+      <span v-if="!model.isFolder && deploymentHasUser">
+        by
+        <a
+          :href="deploymentUser.web_url"
+          class="js-deploy-user-container">
+          <img
+            class="avatar has-tooltip s20"
+            :src="deploymentUser.avatar_url"
+            :alt="userImageAltDescription"
+            :title="deploymentUser.username" />
         </a>
+      </span>
+    </td>
 
-        <span v-if="model.isFolder"
-          class="folder-name"
-          @click="onClickFolder"
-          role="button">
+    <td class="environments-build-cell">
+      <a
+        v-if="shouldRenderBuildName"
+        class="build-link"
+        :href="buildPath">
+        {{buildName}}
+      </a>
+    </td>
 
-          <span class="folder-icon">
-            <i
-              v-show="model.isOpen"
-              class="fa fa-caret-down"
-              aria-hidden="true" />
-            <i
-              v-show="!model.isOpen"
-              class="fa fa-caret-right"
-              aria-hidden="true"/>
-          </span>
+    <td>
+      <div
+        v-if="!model.isFolder && hasLastDeploymentKey"
+        class="js-commit-component">
+        <commit-component
+          :tag="commitTag"
+          :commit-ref="commitRef"
+          :commit-url="commitUrl"
+          :short-sha="commitShortSha"
+          :title="commitTitle"
+          :author="commitAuthor"/>
+      </div>
+      <p
+        v-if="!model.isFolder && !hasLastDeploymentKey"
+        class="commit-title">
+        No deployments yet
+      </p>
+    </td>
 
-          <span class="folder-icon">
-            <i class="fa fa-folder" aria-hidden="true"></i>
-          </span>
+    <td>
+      <span
+        v-if="!model.isFolder && canShowDate"
+        class="environment-created-date-timeago">
+        {{createdDate}}
+      </span>
+    </td>
 
-          <span>
-            {{model.folderName}}
-          </span>
+    <td class="environments-actions">
+      <div
+        v-if="!model.isFolder"
+        class="btn-group pull-right"
+        role="group">
 
-          <span class="badge">
-            {{model.size}}
-          </span>
-        </span>
-      </td>
+        <actions-component
+          v-if="hasManualActions && canCreateDeployment"
+          :service="service"
+          :actions="manualActions"/>
 
-      <td class="deployment-column">
-        <span v-if="shouldRenderDeploymentID">
-          {{deploymentInternalId}}
-        </span>
+        <external-url-component
+          v-if="externalURL && canReadEnvironment"
+          :external-url="externalURL"/>
 
-        <span v-if="!model.isFolder && deploymentHasUser">
-          by
-          <a :href="deploymentUser.web_url" class="js-deploy-user-container">
-            <img class="avatar has-tooltip s20"
-              :src="deploymentUser.avatar_url"
-              :alt="userImageAltDescription"
-              :title="deploymentUser.username" />
-          </a>
-        </span>
-      </td>
+        <monitoring-button-component
+          v-if="monitoringUrl && canReadEnvironment"
+          :monitoring-url="monitoringUrl"/>
 
-      <td class="environments-build-cell">
-        <a v-if="shouldRenderBuildName"
-          class="build-link"
-          :href="buildPath">
-          {{buildName}}
-        </a>
-      </td>
+        <terminal-button-component
+          v-if="model && model.terminal_path"
+          :terminal-path="model.terminal_path"/>
 
-      <td>
-        <div v-if="!model.isFolder && hasLastDeploymentKey" class="js-commit-component">
-          <commit-component
-            :tag="commitTag"
-            :commit-ref="commitRef"
-            :commit-url="commitUrl"
-            :short-sha="commitShortSha"
-            :title="commitTitle"
-            :author="commitAuthor"/>
-        </div>
-        <p v-if="!model.isFolder && !hasLastDeploymentKey" class="commit-title">
-          No deployments yet
-        </p>
-      </td>
+        <stop-component
+          v-if="hasStopAction && canCreateDeployment"
+          :stop-url="model.stop_path"
+          :service="service"/>
 
-      <td>
-        <span v-if="!model.isFolder && canShowDate"
-          class="environment-created-date-timeago">
-          {{createdDate}}
-        </span>
-      </td>
-
-      <td class="environments-actions">
-        <div v-if="!model.isFolder" class="btn-group pull-right" role="group">
-          <actions-component v-if="hasManualActions && canCreateDeployment"
-            :service="service"
-            :actions="manualActions"/>
-
-          <external-url-component v-if="externalURL && canReadEnvironment"
-            :external-url="externalURL"/>
-
-          <monitoring-button-component v-if="monitoringUrl && canReadEnvironment"
-            :monitoring-url="monitoringUrl"/>
-
-          <terminal-button-component v-if="model && model.terminal_path"
-            :terminal-path="model.terminal_path"/>
-
-          <stop-component v-if="hasStopAction && canCreateDeployment"
-            :stop-url="model.stop_path"
-            :service="service"/>
-
-          <rollback-component v-if="canRetry && canCreateDeployment"
-            :is-last-deployment="isLastDeployment"
-            :retry-url="retryUrl"
-            :service="service"/>
-        </div>
-      </td>
-    </tr>
-  `,
-};
+        <rollback-component
+          v-if="canRetry && canCreateDeployment"
+          :is-last-deployment="isLastDeployment"
+          :retry-url="retryUrl"
+          :service="service"/>
+      </div>
+    </td>
+  </tr>
+</template>
