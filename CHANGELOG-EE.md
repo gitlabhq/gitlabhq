@@ -1,5 +1,12 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 9.0.6 (2017-04-21)
+
+- Cache Gitlab::Geo queries. !1507
+- Fix searching for notes with elasticsearch when a user is a member of many projects. !1675
+- Fix 500 error when selecting a mirror user.
+- Fix active user count to ignore internal users.
+
 ## 9.0.5 (2017-04-10)
 
 - Return 404 instead of a 500 error on API status endpoint if Geo tracking DB is not enabled.
