@@ -35,6 +35,8 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def show
+    @blob.override_max_size! if params[:override_max_size] == 'true'
+
     respond_to do |format|
       format.html do
         environment_params = @repository.branch_exists?(@ref) ? { ref: @ref } : { commit: @commit }

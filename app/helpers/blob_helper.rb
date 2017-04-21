@@ -219,7 +219,13 @@ module BlobHelper
   def blob_render_error_reason(viewer, error)
     case error
     when :too_large
-      "it is larger than #{number_to_human_size(viewer.relevant_max_size)}"
+      max_size =
+        if viewer.absolutely_too_large?
+          viewer.absolute_max_size
+        elsif viewer.too_large?
+          viewer.max_size
+        end
+      "it is larger than #{number_to_human_size(max_size)}"
     when :server_side_but_stored_in_lfs
       "it is stored in LFS"
     end
@@ -232,7 +238,7 @@ module BlobHelper
       options << link_to('load it anyway', url_for(params.merge(viewer: viewer.type, override_max_size: true, format: nil)))
     end
 
-    if viewer.rich? && viewer.blob.rendered_as_text?(override_max_size: true)
+    if viewer.rich? && viewer.blob.rendered_as_text?
       options << link_to('view the source', '#', class: 'js-blob-viewer-switch-btn', data: { viewer: 'simple' })
     end
 

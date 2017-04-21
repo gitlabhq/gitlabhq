@@ -5,6 +5,7 @@ module BlobViewer
     delegate :partial_path, :rich?, :simple?, :client_side?, :server_side?, :text_based?, to: :class
 
     attr_reader :blob
+    attr_accessor :override_max_size
 
     def initialize(blob)
       @blob = blob
@@ -38,20 +39,20 @@ module BlobViewer
       !extensions || extensions.include?(blob.extension)
     end
 
+    def too_large?
+      blob.raw_size > max_size
+    end
+
+    def absolutely_too_large?
+      blob.raw_size > absolute_max_size
+    end
+
     def can_override_max_size?
-      too_large? && !too_large?(override_max_size: true)
+      too_large? && !absolutely_too_large?
     end
 
-    def relevant_max_size
-      if too_large?(override_max_size: true)
-        absolute_max_size
-      elsif too_large?
-        max_size
-      end
-    end
-
-    def render_error(override_max_size: false)
-      if too_large?(override_max_size: override_max_size)
+    def render_error
+      if override_max_size ? absolutely_too_large? : too_large?
         :too_large
       elsif server_side_but_stored_in_lfs?
         :server_side_but_stored_in_lfs
@@ -65,14 +66,6 @@ module BlobViewer
     end
 
     private
-
-    def too_large?(override_max_size: false)
-      if override_max_size
-        blob.raw_size > absolute_max_size
-      else
-        blob.raw_size > max_size
-      end
-    end
 
     def server_side_but_stored_in_lfs?
       server_side? && blob.valid_lfs_pointer?

@@ -1,5 +1,5 @@
 - hidden = local_assigns.fetch(:hidden, false)
-- render_error = viewer.render_error(override_max_size: params[:override_max_size])
+- render_error = viewer.render_error
 - load_asynchronously = local_assigns.fetch(:load_asynchronously, viewer.server_side?) && render_error.nil?
 
 - url = url_for(params.merge(viewer: viewer.type, format: :json)) if load_asynchronously

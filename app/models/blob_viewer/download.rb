@@ -9,7 +9,7 @@ module BlobViewer
     self.partial_name = 'download'
     self.text_based = false
 
-    def render_error(*)
+    def render_error
       nil
     end
   end

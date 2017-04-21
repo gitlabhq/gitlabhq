@@ -15,7 +15,7 @@
     = render 'projects/blob/viewer_switcher', blob: blob unless blame
 
     .btn-group{ role: "group" }<
-      = copy_blob_source_button(blob) if !blame && blob.rendered_as_text?(override_max_size: params[:override_max_size])
+      = copy_blob_source_button(blob) if !blame && blob.rendered_as_text?(ignore_errors: false)
       = open_raw_file_button(namespace_project_raw_path(@project.namespace, @project, @id))
       = view_on_environment_button(@commit.sha, @path, @environment) if @environment
 

@@ -122,12 +122,17 @@ class Blob < SimpleDelegator
     @rich_viewer ||= rich_viewer_class&.new(self)
   end
 
-  def rendered_as_text?(override_max_size: false)
-    simple_viewer.is_a?(BlobViewer::Text) && !simple_viewer.render_error(override_max_size: override_max_size)
+  def rendered_as_text?(ignore_errors: true)
+    simple_viewer.is_a?(BlobViewer::Text) && (ignore_errors || simple_viewer.render_error.nil?)
   end
 
   def show_viewer_switcher?
-    simple_viewer.is_a?(BlobViewer::Text) && rich_viewer
+    rendered_as_text? && rich_viewer
+  end
+
+  def override_max_size!
+    simple_viewer&.override_max_size = true
+    rich_viewer&.override_max_size = true
   end
 
   private
