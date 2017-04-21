@@ -51,9 +51,10 @@ describe('Metrics deployments', () => {
       return d.promise();
     });
 
+    prometheusGraph.configureGraph();
     prometheusGraph.transformData(prometheusMockData.metrics);
 
-    deployment.init(prometheusGraph.data.memory_values);
+    deployment.init(prometheusGraph.graphSpecificProperties.memory_values.data);
   });
 
   it('creates line on graph for deploment', () => {
@@ -76,37 +77,37 @@ describe('Metrics deployments', () => {
 
   it('shows sha short code when tag is false', () => {
     expect(
-      graphElement().querySelector('.deploy-info-1 .js-deploy-info-box').textContent.trim(),
+      graphElement().querySelector('.deploy-info-1-cpu_values .js-deploy-info-box').textContent.trim(),
     ).toContain('testin');
   });
 
   it('shows ref name when tag is true', () => {
     expect(
-      graphElement().querySelector('.deploy-info-2 .js-deploy-info-box').textContent.trim(),
+      graphElement().querySelector('.deploy-info-2-cpu_values .js-deploy-info-box').textContent.trim(),
     ).toContain('tag');
   });
 
   it('shows info box when moving mouse over line', () => {
-    deployment.mouseOverDeployInfo(deployment.data[0].xPos);
+    deployment.mouseOverDeployInfo(deployment.data[0].xPos, 'cpu_values');
 
     expect(
       graphElement().querySelectorAll('.prometheus-graph .js-deploy-info-box.hidden').length,
     ).toBe(1);
 
     expect(
-      graphElement().querySelector('.deploy-info-1 .js-deploy-info-box.hidden'),
+      graphElement().querySelector('.deploy-info-1-cpu_values .js-deploy-info-box.hidden'),
     ).toBeNull();
   });
 
   it('hides previously visible info box when moving mouse away', () => {
-    deployment.mouseOverDeployInfo(500);
+    deployment.mouseOverDeployInfo(500, 'cpu_values');
 
     expect(
       graphElement().querySelectorAll('.prometheus-graph .js-deploy-info-box.hidden').length,
     ).toBe(2);
 
     expect(
-      graphElement().querySelector('.deploy-info-1 .js-deploy-info-box.hidden'),
+      graphElement().querySelector('.deploy-info-1-cpu_values .js-deploy-info-box.hidden'),
     ).not.toBeNull();
   });
 });
