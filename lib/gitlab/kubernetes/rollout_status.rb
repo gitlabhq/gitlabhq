@@ -20,6 +20,7 @@ module Gitlab
         return new([], valid: false) if specs.empty?
 
         deployments = specs.map { |spec| ::Gitlab::Kubernetes::Deployment.new(spec) }
+        deployments.sort_by!(&:order)
         new(deployments)
       end
 

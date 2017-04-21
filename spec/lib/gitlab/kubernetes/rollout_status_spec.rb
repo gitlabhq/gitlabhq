@@ -53,12 +53,12 @@ describe Gitlab::Kubernetes::RolloutStatus do
 
       it 'stores the union of deployment instances' do
         expected = [
-          { status: 'finished', tooltip: 'one (pod 0) Finished', track: 'stable', stable: true },
-          { status: 'finished', tooltip: 'one (pod 1) Finished', track: 'stable', stable: true },
-          { status: 'finished', tooltip: 'one (pod 2) Finished', track: 'stable', stable: true },
           { status: 'finished', tooltip: 'two (pod 0) Finished', track: 'canary', stable: false },
           { status: 'finished', tooltip: 'two (pod 1) Finished', track: 'canary', stable: false },
           { status: 'finished', tooltip: 'two (pod 2) Finished', track: 'canary', stable: false },
+          { status: 'finished', tooltip: 'one (pod 0) Finished', track: 'stable', stable: true },
+          { status: 'finished', tooltip: 'one (pod 1) Finished', track: 'stable', stable: true },
+          { status: 'finished', tooltip: 'one (pod 2) Finished', track: 'stable', stable: true },
         ]
 
         expect(rollout_status.instances).to eq(expected)
