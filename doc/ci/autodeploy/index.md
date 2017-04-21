@@ -1,6 +1,7 @@
 # Auto deploy
 
 > [Introduced][mr-8135] in GitLab 8.15.
+> Auto deploy is an experimental feature and is not recommended for Production use at this time.
 
 Auto deploy is an easy way to configure GitLab CI for the deployment of your
 application. GitLab Community maintains a list of `.gitlab-ci.yml`
@@ -113,13 +114,15 @@ Finally, the Nginx pod is created from the definition of the
 `nginx-deployment.yaml` file.
 
 ## Private Project Support
+
 > Experimental support [introduced][mr-2] in GitLab 9.1.
 
-When a project has been marked as private, GitLab's [Container Registry][container-registry] requires authentication when downloading containers. Auto deploy will automatically provide required authentication information to Kubernetes, allowing temporary access to the registry. Authentication credentials will be valid while the pipeline is running, allowing for a successful initial deployment.
+When a project has been marked as private, GitLab's [Container Registry][container-registry] requires authentication when downloading containers. Auto deploy will automatically provide the required authentication information to Kubernetes, allowing temporary access to the registry. Authentication credentials will be valid while the pipeline is running, allowing for a successful initial deployment.
 
 After the pipeline completes, Kubernetes will no longer be able to access the container registry. Restarting a pod, scaling a service, or other actions which require on-going access to the registry will fail. On-going secure access is planned for a subsequent release.
 
 ## PostgreSQL Database Support
+
 > Experimental support [introduced][mr-8] in GitLab 9.1.
 
 In order to support applications that require a database, [PostgreSQL][postgresql] is provisioned by default. Credentials to access the database are preconfigured, but can be customized by setting the associated [variables](#postgresql-variables). These credentials can be used for defining a `DATABASE_URL` of the format: `postgres://user:password@postgres-host:postgres-port/postgres-database`. It is important to note that the database itself is temporary, and contents will be not be saved.
