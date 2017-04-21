@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import actionsComp from '~/environments/components/environment_actions';
+import actionsComp from '~/environments/components/environment_actions.vue';
 
 describe('Actions Component', () => {
   let ActionsComponent;
