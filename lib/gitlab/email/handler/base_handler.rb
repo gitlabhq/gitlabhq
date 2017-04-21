@@ -16,6 +16,10 @@ module Gitlab
         def execute
           raise NotImplementedError
         end
+
+        def metrics_params
+          { handler: self.class.name }
+        end
       end
     end
   end
