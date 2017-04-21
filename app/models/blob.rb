@@ -107,11 +107,9 @@ class Blob < SimpleDelegator
   end
 
   def rich_viewer_class
-    if invalid_lfs_pointer? || empty?
-      nil
-    else
-      rich_viewers_classes.find { |viewer_class| viewer_class.can_render?(self) }
-    end
+    return if invalid_lfs_pointer? || empty?
+
+    rich_viewers_classes.find { |viewer_class| viewer_class.can_render?(self) }
   end
 
   def simple_viewer

@@ -224,4 +224,20 @@ module BlobHelper
       "it is stored in LFS"
     end
   end
+
+  def blob_render_error_options(viewer, error)
+    options = []
+
+    if error == :too_large && viewer.can_override_max_size?
+      options << link_to('load it anyway', url_for(params.merge(viewer: viewer.type, override_max_size: true, format: nil)))
+    end
+
+    if viewer.rich? && viewer.blob.rendered_as_text?(override_max_size: true)
+      options << link_to('view the source', '#', class: 'js-blob-viewer-switcher', data: { viewer: 'simple' })
+    end
+
+    options << link_to('download it', blob_raw_url, target: '_blank', rel: 'noopener noreferrer')
+
+    options
+  end
 end
