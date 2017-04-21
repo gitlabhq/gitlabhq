@@ -62,19 +62,21 @@ module DiffHelper
   end
 
   def parallel_diff_discussions(left, right, diff_file)
-    discussion_left = discussion_right = nil
+    return unless @grouped_diff_discussions
+    
+    discussions_left = discussions_right = nil
 
     if left && (left.unchanged? || left.removed?)
       line_code = diff_file.line_code(left)
-      discussion_left = @grouped_diff_discussions[line_code]
+      discussions_left = @grouped_diff_discussions[line_code]
     end
 
     if right && right.added?
       line_code = diff_file.line_code(right)
-      discussion_right = @grouped_diff_discussions[line_code]
+      discussions_right = @grouped_diff_discussions[line_code]
     end
 
-    [discussion_left, discussion_right]
+    [discussions_left, discussions_right]
   end
 
   def inline_diff_btn

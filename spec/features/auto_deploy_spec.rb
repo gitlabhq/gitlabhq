@@ -56,7 +56,7 @@ describe 'Auto deploy' do
         click_on 'OpenShift'
       end
       wait_for_ajax
-      click_button 'Commit Changes'
+      click_button 'Commit changes'
 
       expect(page).to have_content('New Merge Request From auto-deploy into master')
     end

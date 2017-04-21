@@ -73,6 +73,9 @@ gem 'grape', '~> 0.19.0'
 gem 'grape-entity', '~> 0.6.0'
 gem 'rack-cors', '~> 0.4.0', require: 'rack/cors'
 
+# Disable strong_params so that Mash does not respond to :permitted?
+gem 'hashie-forbidden_attributes'
+
 # Pagination
 gem 'kaminari', '~> 0.17.0'
 
@@ -143,6 +146,9 @@ gem 'sidekiq', '~> 4.2.7'
 gem 'sidekiq-cron', '~> 0.4.4'
 gem 'redis-namespace', '~> 1.5.2'
 gem 'sidekiq-limit_fetch', '~> 3.4'
+
+# Cron Parser
+gem 'rufus-scheduler', '~> 3.1.10'
 
 # HTTP requests
 gem 'httparty', '~> 0.13.3'
@@ -301,7 +307,7 @@ group :development, :test do
   gem 'spring-commands-spinach', '~> 1.1.0'
 
   gem 'rubocop', '~> 0.47.1', require: false
-  gem 'rubocop-rspec', '~> 1.12.0', require: false
+  gem 'rubocop-rspec', '~> 1.15.0', require: false
   gem 'scss_lint', '~> 0.47.0', require: false
   gem 'haml_lint', '~> 0.21.0', require: false
   gem 'simplecov', '~> 0.14.0', require: false
@@ -353,3 +359,5 @@ gem 'sys-filesystem', '~> 1.1.6'
 
 # Gitaly GRPC client
 gem 'gitaly', '~> 0.5.0'
+
+gem 'toml-rb', '~> 0.3.15', require: false

@@ -1,3 +1,4 @@
+# rubocop:disable RemoveIndex
 class AddIndexToLabelsForTitleAndProject < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 

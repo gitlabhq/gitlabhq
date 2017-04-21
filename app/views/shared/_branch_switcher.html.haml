@@ -1,8 +1,8 @@
-- dropdown_toggle_text = @target_branch || tree_edit_branch
-= hidden_field_tag 'target_branch', dropdown_toggle_text
+- dropdown_toggle_text = @branch_name || tree_edit_branch
+= hidden_field_tag 'branch_name', dropdown_toggle_text
 
 .dropdown
-  = dropdown_toggle dropdown_toggle_text, { toggle: 'dropdown', selected: dropdown_toggle_text, field_name: 'target_branch', form_id: '.js-edit-blob-form', refs_url: namespace_project_branches_path(@project.namespace, @project) }, { toggle_class: 'js-project-branches-dropdown js-target-branch' }
+  = dropdown_toggle dropdown_toggle_text, { toggle: 'dropdown', selected: dropdown_toggle_text, field_name: 'branch_name', form_id: '.js-edit-blob-form', refs_url: namespace_project_branches_path(@project.namespace, @project) }, { toggle_class: 'js-project-branches-dropdown js-target-branch' }
   .dropdown-menu.dropdown-menu-selectable.dropdown-menu-paging.dropdown-menu-branches
     = render partial: 'shared/projects/blob/branch_page_default'
     = render partial: 'shared/projects/blob/branch_page_create'

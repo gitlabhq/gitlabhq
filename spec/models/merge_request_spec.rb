@@ -441,7 +441,7 @@ describe MergeRequest, models: true do
     end
 
     it "can't be removed when its a protected branch" do
-      allow(subject.source_project).to receive(:protected_branch?).and_return(true)
+      allow(ProtectedBranch).to receive(:protected?).and_return(true)
       expect(subject.can_remove_source_branch?(user)).to be_falsey
     end
 
@@ -820,15 +820,17 @@ describe MergeRequest, models: true do
       user1 = create(:user)
       user2 = create(:user)
       mr = create(:merge_request, assignee: user1)
+      mr.project.add_developer(user1)
+      mr.project.add_developer(user2)
 
-      expect(user1.assigned_open_merge_request_count).to eq(1)
-      expect(user2.assigned_open_merge_request_count).to eq(0)
+      expect(user1.assigned_open_merge_requests_count).to eq(1)
+      expect(user2.assigned_open_merge_requests_count).to eq(0)
 
       mr.assignee = user2
       mr.save
 
-      expect(user1.assigned_open_merge_request_count).to eq(0)
-      expect(user2.assigned_open_merge_request_count).to eq(1)
+      expect(user1.assigned_open_merge_requests_count).to eq(0)
+      expect(user2.assigned_open_merge_requests_count).to eq(1)
     end
   end
 
@@ -1220,182 +1222,6 @@ describe MergeRequest, models: true do
         )
 
         expect(subject.diff_sha_refs).to eq(expected_diff_refs)
-      end
-    end
-  end
-
-  context "discussion status" do
-    let(:first_discussion) { Discussion.new([create(:diff_note_on_merge_request)]) }
-    let(:second_discussion) { Discussion.new([create(:diff_note_on_merge_request)]) }
-    let(:third_discussion) { Discussion.new([create(:diff_note_on_merge_request)]) }
-
-    before do
-      allow(subject).to receive(:diff_discussions).and_return([first_discussion, second_discussion, third_discussion])
-    end
-
-    describe '#resolvable_discussions' do
-      before do
-        allow(first_discussion).to receive(:to_be_resolved?).and_return(true)
-        allow(second_discussion).to receive(:to_be_resolved?).and_return(false)
-        allow(third_discussion).to receive(:to_be_resolved?).and_return(false)
-      end
-
-      it 'includes only discussions that need to be resolved' do
-        expect(subject.resolvable_discussions).to eq([first_discussion])
-      end
-    end
-
-    describe '#discussions_can_be_resolved_by? user' do
-      let(:user) { build(:user) }
-
-      context 'all discussions can be resolved by the user' do
-        before do
-          allow(first_discussion).to receive(:can_resolve?).with(user).and_return(true)
-          allow(second_discussion).to receive(:can_resolve?).with(user).and_return(true)
-          allow(third_discussion).to receive(:can_resolve?).with(user).and_return(true)
-        end
-
-        it 'allows a user to resolve the discussions' do
-          expect(subject.discussions_can_be_resolved_by?(user)).to be(true)
-        end
-      end
-
-      context 'one discussion cannot be resolved by the user' do
-        before do
-          allow(first_discussion).to receive(:can_resolve?).with(user).and_return(true)
-          allow(second_discussion).to receive(:can_resolve?).with(user).and_return(true)
-          allow(third_discussion).to receive(:can_resolve?).with(user).and_return(false)
-        end
-
-        it 'allows a user to resolve the discussions' do
-          expect(subject.discussions_can_be_resolved_by?(user)).to be(false)
-        end
-      end
-    end
-
-    describe "#discussions_resolvable?" do
-      context "when all discussions are unresolvable" do
-        before do
-          allow(first_discussion).to receive(:resolvable?).and_return(false)
-          allow(second_discussion).to receive(:resolvable?).and_return(false)
-          allow(third_discussion).to receive(:resolvable?).and_return(false)
-        end
-
-        it "returns false" do
-          expect(subject.discussions_resolvable?).to be false
-        end
-      end
-
-      context "when some discussions are unresolvable and some discussions are resolvable" do
-        before do
-          allow(first_discussion).to receive(:resolvable?).and_return(true)
-          allow(second_discussion).to receive(:resolvable?).and_return(false)
-          allow(third_discussion).to receive(:resolvable?).and_return(true)
-        end
-
-        it "returns true" do
-          expect(subject.discussions_resolvable?).to be true
-        end
-      end
-
-      context "when all discussions are resolvable" do
-        before do
-          allow(first_discussion).to receive(:resolvable?).and_return(true)
-          allow(second_discussion).to receive(:resolvable?).and_return(true)
-          allow(third_discussion).to receive(:resolvable?).and_return(true)
-        end
-
-        it "returns true" do
-          expect(subject.discussions_resolvable?).to be true
-        end
-      end
-    end
-
-    describe "#discussions_resolved?" do
-      context "when discussions are not resolvable" do
-        before do
-          allow(subject).to receive(:discussions_resolvable?).and_return(false)
-        end
-
-        it "returns false" do
-          expect(subject.discussions_resolved?).to be false
-        end
-      end
-
-      context "when discussions are resolvable" do
-        before do
-          allow(subject).to receive(:discussions_resolvable?).and_return(true)
-
-          allow(first_discussion).to receive(:resolvable?).and_return(true)
-          allow(second_discussion).to receive(:resolvable?).and_return(false)
-          allow(third_discussion).to receive(:resolvable?).and_return(true)
-        end
-
-        context "when all resolvable discussions are resolved" do
-          before do
-            allow(first_discussion).to receive(:resolved?).and_return(true)
-            allow(third_discussion).to receive(:resolved?).and_return(true)
-          end
-
-          it "returns true" do
-            expect(subject.discussions_resolved?).to be true
-          end
-        end
-
-        context "when some resolvable discussions are not resolved" do
-          before do
-            allow(first_discussion).to receive(:resolved?).and_return(true)
-            allow(third_discussion).to receive(:resolved?).and_return(false)
-          end
-
-          it "returns false" do
-            expect(subject.discussions_resolved?).to be false
-          end
-        end
-      end
-    end
-
-    describe "#discussions_to_be_resolved?" do
-      context "when discussions are not resolvable" do
-        before do
-          allow(subject).to receive(:discussions_resolvable?).and_return(false)
-        end
-
-        it "returns false" do
-          expect(subject.discussions_to_be_resolved?).to be false
-        end
-      end
-
-      context "when discussions are resolvable" do
-        before do
-          allow(subject).to receive(:discussions_resolvable?).and_return(true)
-
-          allow(first_discussion).to receive(:resolvable?).and_return(true)
-          allow(second_discussion).to receive(:resolvable?).and_return(false)
-          allow(third_discussion).to receive(:resolvable?).and_return(true)
-        end
-
-        context "when all resolvable discussions are resolved" do
-          before do
-            allow(first_discussion).to receive(:resolved?).and_return(true)
-            allow(third_discussion).to receive(:resolved?).and_return(true)
-          end
-
-          it "returns false" do
-            expect(subject.discussions_to_be_resolved?).to be false
-          end
-        end
-
-        context "when some resolvable discussions are not resolved" do
-          before do
-            allow(first_discussion).to receive(:resolved?).and_return(true)
-            allow(third_discussion).to receive(:resolved?).and_return(false)
-          end
-
-          it "returns true" do
-            expect(subject.discussions_to_be_resolved?).to be true
-          end
-        end
       end
     end
   end

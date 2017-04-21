@@ -83,7 +83,7 @@ class LabelsFinder < UnionFinder
   def projects
     return @projects if defined?(@projects)
 
-    @projects = skip_authorization ? Project.all : ProjectsFinder.new.execute(current_user)
+    @projects = skip_authorization ? Project.all : ProjectsFinder.new(current_user: current_user).execute
     @projects = @projects.in_namespace(params[:group_id]) if group?
     @projects = @projects.where(id: params[:project_ids]) if projects?
     @projects = @projects.reorder(nil)

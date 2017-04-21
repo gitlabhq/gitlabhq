@@ -60,7 +60,7 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def resource
-    @resource ||= Users::CreateService.new(current_user, sign_up_params).build
+    @resource ||= Users::BuildService.new(current_user, sign_up_params).execute
   end
 
   def devise_mapping

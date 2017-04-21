@@ -27,6 +27,59 @@ For our currently-supported browsers, see our [requirements][requirements].
 
 ---
 
+## Development Process
+
+When you are assigned an issue please follow the next steps:
+
+### Divide a big feature into small Merge Requests
+1. Big Merge Request are painful to review. In order to make this process easier we
+must break a big feature into smaller ones and create a Merge Request for each step.
+1. First step is to create a branch from `master`, let's call it `new-feature`. This branch
+will be the recipient of all the smaller Merge Requests. Only this one will be merged to master.
+1. Don't do any work on this one, let's keep it synced with master.
+1. Create a new branch from `new-feature`, let's call it `new-feature-step-1`. We advise you
+to clearly identify which step the branch represents.
+1. Do the first part of the modifications in this branch. The target branch of this Merge Request
+should be `new-feature`.
+1. Once `new-feature-step-1` gets merged into `new-feature` we can continue our work. Create a new
+branch from `new-feature`, let's call it `new-feature-step-2` and repeat the process done before.
+
+```shell
+* master
+|\
+| * new-feature
+| |\
+| | * new-feature-step-1
+| |\
+| | * new-feature-step-2
+| |\
+| | * new-feature-step-3
+```
+
+**Tips**
+- Make sure `new-feature` branch is always synced with `master`: merge master frequently.
+- Do the same for the feature branch you have opened. This can be accomplished by merging `master` into `new-feature` and `new-feature` into `new-feature-step-*`
+- Avoid rewriting history.
+
+### Share your work early
+1. Before writing code guarantee your vision of the architecture is aligned with
+GitLab's architecture.
+1. Add a diagram to the issue and ask a Frontend Architecture about it.
+
+  ![Diagram of Issue Boards Architecture](img/boards_diagram.png)
+
+1. Don't take more than one week between starting work on a feature and
+sharing a Merge Request with a reviewer or a maintainer.
+
+### Vue features
+1. Follow the steps in [Vue.js Best Practices](vue.md)
+1. Follow the style guide.
+1. Only a handful of people are allowed to merge Vue related features.
+Reach out to @jschatz, @iamphill, @fatihacet or @filipa early in this process.
+
+
+---
+
 ## [Architecture](architecture.md)
 How we go about making fundamental design decisions in GitLab's frontend team
 or make changes to our frontend development guidelines.
@@ -90,3 +143,13 @@ Our accessibility standards and resources.
 [scss-lint]: https://github.com/brigade/scss-lint
 [install]: ../../install/installation.md#4-node
 [requirements]: ../../install/requirements.md#supported-web-browsers
+
+---
+
+## [DropLab](droplab/droplab.md)
+Our internal `DropLab` dropdown library.
+
+* [DropLab](droplab/droplab.md)
+* [Ajax plugin](droplab/plugins/ajax.md)
+* [Filter plugin](droplab/plugins/filter.md)
+* [InputSetter plugin](droplab/plugins/input_setter.md)

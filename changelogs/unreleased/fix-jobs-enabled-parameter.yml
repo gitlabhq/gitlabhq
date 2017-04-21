@@ -1,0 +1,4 @@
+---
+title: Replace builds_enabled with jobs_enabled in projects API v4
+merge_request: 10786
+author: winniehell

@@ -12,7 +12,7 @@ module Gitlab
         value = -1
       end
 
-      response.headers[HEADER_NAME] = value
+      response.headers[HEADER_NAME] = value.to_s
     end
 
     def self.polling_enabled?

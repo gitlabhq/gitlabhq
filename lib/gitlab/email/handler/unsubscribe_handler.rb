@@ -4,6 +4,8 @@ module Gitlab
   module Email
     module Handler
       class UnsubscribeHandler < BaseHandler
+        delegate :project, to: :sent_notification, allow_nil: true
+
         def can_handle?
           mail_key =~ /\A\w+#{Regexp.escape(Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX)}\z/
         end

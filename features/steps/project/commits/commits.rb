@@ -13,7 +13,7 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'I click atom feed link' do
-    click_link "Commits Feed"
+    click_link "Commits feed"
   end
 
   step 'I see commits atom feed' do
@@ -110,16 +110,16 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'I see button to create a new merge request' do
-    expect(page).to have_link 'Create Merge Request'
+    expect(page).to have_link 'Create merge request'
   end
 
   step 'I should not see button to create a new merge request' do
-    expect(page).not_to have_link 'Create Merge Request'
+    expect(page).not_to have_link 'Create merge request'
   end
 
   step 'I should see button to the merge request' do
     merge_request = MergeRequest.find_by(title: 'Feature')
-    expect(page).to have_link "View Open Merge Request", href: namespace_project_merge_request_path(@project.namespace, @project, merge_request)
+    expect(page).to have_link "View open merge request", href: namespace_project_merge_request_path(@project.namespace, @project, merge_request)
   end
 
   step 'I see breadcrumb links' do

@@ -2,6 +2,8 @@ class RepositoryImportWorker
   include Sidekiq::Worker
   include DedicatedSidekiqQueue
 
+  sidekiq_options status_expiration: StuckImportJobsWorker::IMPORT_EXPIRATION
+
   attr_accessor :project, :current_user
 
   def perform(project_id)
@@ -12,7 +14,7 @@ class RepositoryImportWorker
                               import_url: @project.import_url,
                               path: @project.path_with_namespace)
 
-    project.update_column(:import_error, nil)
+    project.update_columns(import_jid: self.jid, import_error: nil)
 
     result = Projects::ImportService.new(project, current_user).execute
 

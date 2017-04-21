@@ -233,6 +233,15 @@
   stroke-width: 1;
 }
 
+.prometheus-state {
+  margin-top: 10px;
+  display: none;
+
+  .state-button-section {
+    margin-top: 10px;
+  }
+}
+
 .environments-actions {
   .external-url,
   .monitoring-url,

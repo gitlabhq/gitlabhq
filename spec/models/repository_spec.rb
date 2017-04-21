@@ -171,6 +171,27 @@ describe Repository, models: true do
     end
   end
 
+  describe '#commits' do
+    it 'sets follow when path is a single path' do
+      expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: true)).and_call_original.twice
+
+      repository.commits('master', path: 'README.md')
+      repository.commits('master', path: ['README.md'])
+    end
+
+    it 'does not set follow when path is multiple paths' do
+      expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: false)).and_call_original
+
+      repository.commits('master', path: ['README.md', 'CHANGELOG'])
+    end
+
+    it 'does not set follow when there are no paths' do
+      expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: false)).and_call_original
+
+      repository.commits('master')
+    end
+  end
+
   describe '#find_commits_by_message' do
     it 'returns commits with messages containing a given string' do
       commit_ids = repository.find_commits_by_message('submodule').map(&:id)
@@ -1259,7 +1280,6 @@ describe Repository, models: true do
         :changelog,
         :license,
         :contributing,
-        :version,
         :gitignore,
         :koding,
         :gitlab_ci,
@@ -1283,8 +1303,6 @@ describe Repository, models: true do
   describe '#after_import' do
     it 'flushes and builds the cache' do
       expect(repository).to receive(:expire_content_cache)
-      expect(repository).to receive(:expire_tags_cache)
-      expect(repository).to receive(:expire_branches_cache)
 
       repository.after_import
     end
@@ -1831,16 +1849,17 @@ describe Repository, models: true do
     end
   end
 
-  describe '#is_ancestor?' do
-    context 'Gitaly is_ancestor feature enabled' do
-      it 'asks Gitaly server if it\'s an ancestor' do
-        commit = repository.commit
-        allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:is_ancestor).and_return(true)
-        expect(Gitlab::GitalyClient::Commit).to receive(:is_ancestor).
-          with(repository.raw_repository, commit.id, commit.id).and_return(true)
-
-        expect(repository.is_ancestor?(commit.id, commit.id)).to be true
-      end
-    end
-  end
+  # TODO: Uncomment when feature is reenabled
+  # describe '#is_ancestor?' do
+  #   context 'Gitaly is_ancestor feature enabled' do
+  #     it 'asks Gitaly server if it\'s an ancestor' do
+  #       commit = repository.commit
+  #       allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:is_ancestor).and_return(true)
+  #       expect(Gitlab::GitalyClient::Commit).to receive(:is_ancestor).
+  #         with(repository.raw_repository, commit.id, commit.id).and_return(true)
+  #
+  #       expect(repository.is_ancestor?(commit.id, commit.id)).to be true
+  #     end
+  #   end
+  # end
 end

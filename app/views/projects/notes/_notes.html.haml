@@ -1,7 +1,7 @@
-- if @discussions.present?
+- if defined?(@discussions)
   - @discussions.each do |discussion|
-    - if discussion.for_target?(@noteable)
-      = render partial: "projects/notes/note", object: discussion.first_note, as: :note
+    - if discussion.individual_note?
+      = render partial: "projects/notes/note", collection: discussion.notes, as: :note
     - else
       = render 'discussions/discussion', discussion: discussion
 - else

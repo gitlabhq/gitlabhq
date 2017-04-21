@@ -38,11 +38,13 @@ import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
     function MergeRequestWidget(opts) {
       // Initialize MergeRequestWidget behavior
       //
-      //   check_enable           - Boolean, whether to check automerge status
-      //   merge_check_url - String, URL to use to check automerge status
+      //   check_enable         - Boolean, whether to check automerge status
+      //   merge_check_url      - String, URL to use to check automerge status
       //   ci_status_url        - String, URL to use to check CI status
+      //   pipeline_status_url  - String, URL to use to get CI status for Favicon
       //
       this.opts = opts;
+      this.opts.pipeline_status_url = `${this.opts.pipeline_status_url}.json`;
       this.$widgetBody = $('.mr-widget-body');
       $('#modal_merge_info').modal({
         show: false
@@ -155,10 +157,11 @@ import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
       $('.ci-widget-fetching').show();
       return $.getJSON(this.opts.ci_status_url, (function(_this) {
         return function(data) {
-          var message, status, title;
+          var message, status, title, callback;
           _this.status = data.status;
           _this.hasCi = data.has_ci;
           _this.updateMergeButton(_this.status, _this.hasCi);
+          gl.utils.setCiStatusFavicon(_this.opts.pipeline_status_url);
           if (data.environments && data.environments.length) _this.renderEnvironments(data.environments);
           if (data.status !== _this.opts.ci_status ||
               data.sha !== _this.opts.ci_sha ||
@@ -175,6 +178,12 @@ import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
             if (data.sha) {
               _this.opts.ci_sha = data.sha;
               _this.updateCommitUrls(data.sha);
+            }
+            if (data.status === "success" || data.status === "failed") {
+              callback = function() {
+                return _this.getMergeStatus();
+              };
+              return setTimeout(callback, 2000);
             }
             if (showNotification && data.status) {
               status = _this.ciLabelForStatus(data.status);

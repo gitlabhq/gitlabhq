@@ -5,10 +5,12 @@ module Gitlab
                     pipelines: 'Ci::Pipeline',
                     statuses: 'commit_status',
                     triggers: 'Ci::Trigger',
+                    trigger_schedule: 'Ci::TriggerSchedule',
                     builds: 'Ci::Build',
                     hooks: 'ProjectHook',
                     merge_access_levels: 'ProtectedBranch::MergeAccessLevel',
                     push_access_levels: 'ProtectedBranch::PushAccessLevel',
+                    create_access_levels: 'ProtectedTag::CreateAccessLevel',
                     labels: :project_labels,
                     priorities: :label_priorities,
                     label: :project_label }.freeze
@@ -184,7 +186,7 @@ module Gitlab
       end
 
       def admin_user?
-        @user.is_admin?
+        @user.admin?
       end
 
       def parsed_relation_hash

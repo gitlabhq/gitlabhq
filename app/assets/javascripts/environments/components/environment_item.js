@@ -1,11 +1,11 @@
 import Timeago from 'timeago.js';
 import '../../lib/utils/text_utility';
 import ActionsComponent from './environment_actions';
-import ExternalUrlComponent from './environment_external_url';
-import StopComponent from './environment_stop';
-import RollbackComponent from './environment_rollback';
-import TerminalButtonComponent from './environment_terminal_button';
-import MonitoringButtonComponent from './environment_monitoring';
+import ExternalUrlComponent from './environment_external_url.vue';
+import StopComponent from './environment_stop.vue';
+import RollbackComponent from './environment_rollback.vue';
+import TerminalButtonComponent from './environment_terminal_button.vue';
+import MonitoringButtonComponent from './environment_monitoring.vue';
 import CommitComponent from '../../vue_shared/components/commit';
 import eventHub from '../event_hub';
 
@@ -142,6 +142,7 @@ export default {
           const parsedAction = {
             name: gl.text.humanize(action.name),
             play_path: action.play_path,
+            playable: action.playable,
           };
           return parsedAction;
         });

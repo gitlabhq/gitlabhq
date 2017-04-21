@@ -2,15 +2,10 @@ require 'rails_helper'
 
 describe Projects::BlobController do
   let(:project) { create(:project, :public, :repository) }
-  let(:user)    { create(:user) }
-
-  before do
-    project.team << [user, :master]
-
-    sign_in(user)
-  end
 
   describe 'GET diff' do
+    let(:user) { create(:user) }
+
     render_views
 
     def do_get(opts = {})
@@ -18,6 +13,12 @@ describe Projects::BlobController do
                  project_id: project,
                  id: 'master/CHANGELOG' }
       get :diff, params.merge(opts)
+    end
+
+    before do
+      project.team << [user, :master]
+
+      sign_in(user)
     end
 
     context 'when essential params are missing' do
@@ -37,13 +38,75 @@ describe Projects::BlobController do
     end
   end
 
+  describe 'GET edit' do
+    let(:default_params) do
+      {
+        namespace_id: project.namespace,
+        project_id: project,
+        id: 'master/CHANGELOG'
+      }
+    end
+
+    context 'anonymous' do
+      before do
+        get :edit, default_params
+      end
+
+      it 'redirects to sign in and returns' do
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+
+    context 'as guest' do
+      let(:guest) { create(:user) }
+
+      before do
+        sign_in(guest)
+        get :edit, default_params
+      end
+
+      it 'redirects to blob show' do
+        expect(response).to redirect_to(namespace_project_blob_path(project.namespace, project, 'master/CHANGELOG'))
+      end
+    end
+
+    context 'as developer' do
+      let(:developer) { create(:user) }
+
+      before do
+        project.team << [developer, :developer]
+        sign_in(developer)
+        get :edit, default_params
+      end
+
+      it 'redirects to blob show' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'as master' do
+      let(:master) { create(:user) }
+
+      before do
+        project.team << [master, :master]
+        sign_in(master)
+        get :edit, default_params
+      end
+
+      it 'redirects to blob show' do
+        expect(response).to have_http_status(200)
+      end
+    end
+  end
+
   describe 'PUT update' do
+    let(:user) { create(:user) }
     let(:default_params) do
       {
         namespace_id: project.namespace,
         project_id: project,
         id: 'master/CHANGELOG',
-        target_branch: 'master',
+        branch_name: 'master',
         content: 'Added changes',
         commit_message: 'Update CHANGELOG'
       }
@@ -51,6 +114,12 @@ describe Projects::BlobController do
 
     def blob_after_edit_path
       namespace_project_blob_path(project.namespace, project, 'master/CHANGELOG')
+    end
+
+    before do
+      project.team << [user, :master]
+
+      sign_in(user)
     end
 
     it 'redirects to blob' do
@@ -109,7 +178,7 @@ describe Projects::BlobController do
 
       context 'when editing on the original repository' do
         it "redirects to forked project new merge request" do
-          default_params[:target_branch] = "fork-test-1"
+          default_params[:branch_name] = "fork-test-1"
           default_params[:create_merge_request] = 1
 
           put :update, default_params

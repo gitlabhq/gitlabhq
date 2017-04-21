@@ -18,7 +18,7 @@ RSpec.describe 'admin deploy keys', type: :feature do
   describe 'create new deploy key' do
     before do
       visit admin_deploy_keys_path
-      click_link 'New Deploy Key'
+      click_link 'New deploy key'
     end
 
     it 'creates new deploy key' do

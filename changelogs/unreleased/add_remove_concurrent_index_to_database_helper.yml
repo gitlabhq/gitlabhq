@@ -1,0 +1,4 @@
+---
+title: Add remove_concurrent_index to database helper
+merge_request: 10441
+author: blackst0ne

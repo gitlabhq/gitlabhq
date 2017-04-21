@@ -17,7 +17,7 @@ feature 'Template Undo Button', js: true do
     end
     
     scenario 'reverts template application' do
-      try_template_undo('http://www.apache.org/licenses/', 'Apply a License template')
+      try_template_undo('http://www.apache.org/licenses/', 'Apply a license template')
     end
   end
   
@@ -29,7 +29,7 @@ feature 'Template Undo Button', js: true do
     end
 
     scenario 'reverts template application' do
-      try_template_undo('http://www.apache.org/licenses/', 'Apply a License template')
+      try_template_undo('http://www.apache.org/licenses/', 'Apply a license template')
     end
   end
 end

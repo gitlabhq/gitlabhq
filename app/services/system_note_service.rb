@@ -228,12 +228,10 @@ module SystemNoteService
 
   def discussion_continued_in_issue(discussion, project, author, issue)
     body = "created #{issue.to_reference} to continue this discussion"
+    note_attributes = discussion.reply_attributes.merge(project: project, author: author, note: body)
 
-    note_params = discussion.reply_attributes.merge(project: project, author: author, note: body)
-    note_params[:type] = note_params.delete(:note_type)
-
-    note = Note.create(note_params.merge(system: true))
-    note.system_note_metadata = SystemNoteMetadata.new({ action: 'discussion' })
+    note = Note.create(note_attributes.merge(system: true))
+    note.system_note_metadata = SystemNoteMetadata.new(action: 'discussion')
 
     note
   end

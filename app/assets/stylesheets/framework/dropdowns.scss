@@ -177,10 +177,6 @@
   border-radius: $border-radius-base;
   box-shadow: 0 2px 4px $dropdown-shadow-color;
 
-  .filtered-search-input-container & {
-    max-width: 280px;
-  }
-
   &.is-loading {
     .dropdown-content {
       display: none;
@@ -189,6 +185,15 @@
     .dropdown-loading {
       display: block;
     }
+  }
+
+  .shortcut-mappings {
+    display: none;
+  }
+
+  &.shortcuts .shortcut-mappings {
+    display: inline-block;
+    margin-right: 5px;
   }
 
   ul {
@@ -467,6 +472,11 @@
   overflow-y: auto;
 }
 
+.dropdown-info-note {
+  color: $gl-text-color-secondary;
+  text-align: center;
+}
+
 .dropdown-footer {
   padding-top: 10px;
   margin-top: 10px;
@@ -553,4 +563,8 @@
   &.is-default {
     color: $gl-text-color-secondary;
   }
+}
+
+.droplab-item-ignore {
+  pointer-events: none;
 }

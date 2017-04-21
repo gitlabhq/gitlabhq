@@ -5,7 +5,7 @@
     .template-type-selector.js-template-type-selector-wrap.hidden
       = dropdown_tag("Choose type", options: { toggle_class: 'btn js-template-type-selector', title: "Choose a template type" } )
     .license-selector.js-license-selector-wrap.js-template-selector-wrap.hidden
-      = dropdown_tag("Apply a License template", options: { toggle_class: 'btn js-license-selector', title: "Apply a license", filter: true, placeholder: "Filter", data: { data: licenses_for_select, project: @project.name, fullname: @project.namespace.human_name } } )
+      = dropdown_tag("Apply a license template", options: { toggle_class: 'btn js-license-selector', title: "Apply a license", filter: true, placeholder: "Filter", data: { data: licenses_for_select, project: @project.name, fullname: @project.namespace.human_name } } )
     .gitignore-selector.js-gitignore-selector-wrap.js-template-selector-wrap.hidden
       = dropdown_tag("Apply a .gitignore template", options: { toggle_class: 'btn js-gitignore-selector', title: "Apply a template", filter: true, placeholder: "Filter", data: { data: gitignore_names } } )
     .gitlab-ci-yml-selector.js-gitlab-ci-yml-selector-wrap.js-template-selector-wrap.hidden

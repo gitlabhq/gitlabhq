@@ -3,7 +3,7 @@
 require "spec_helper"
 
 describe Gitlab::Git::Blob, seed_helper: true do
-  let(:repository) { Gitlab::Git::Repository.new(TEST_REPO_PATH) }
+  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
 
   describe 'initialize' do
     let(:blob) { Gitlab::Git::Blob.new(name: 'test') }
@@ -234,7 +234,7 @@ describe Gitlab::Git::Blob, seed_helper: true do
 
       it { expect(blob.lfs_pointer?).to eq(true) }
       it { expect(blob.lfs_oid).to eq("4206f951d2691c78aac4c0ce9f2b23580b2c92cdcc4336e1028742c0274938e0") }
-      it { expect(blob.lfs_size).to eq("19548") }
+      it { expect(blob.lfs_size).to eq(19548) }
       it { expect(blob.id).to eq("f4d76af13003d1106be7ac8c5a2a3d37ddf32c2a") }
       it { expect(blob.name).to eq("image.jpg") }
       it { expect(blob.path).to eq("files/lfs/image.jpg") }
@@ -273,7 +273,7 @@ describe Gitlab::Git::Blob, seed_helper: true do
 
         it { expect(blob.lfs_pointer?).to eq(false) }
         it { expect(blob.lfs_oid).to eq(nil) }
-        it { expect(blob.lfs_size).to eq("1575078") }
+        it { expect(blob.lfs_size).to eq(1575078) }
         it { expect(blob.id).to eq("5ae35296e1f95c1ef9feda1241477ed29a448572") }
         it { expect(blob.name).to eq("picture-invalid.png") }
         it { expect(blob.path).to eq("files/lfs/picture-invalid.png") }

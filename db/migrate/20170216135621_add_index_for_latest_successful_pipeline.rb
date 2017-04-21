@@ -1,3 +1,4 @@
+# rubocop:disable RemoveIndex
 class AddIndexForLatestSuccessfulPipeline < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
   DOWNTIME = false

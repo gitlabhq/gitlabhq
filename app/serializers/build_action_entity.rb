@@ -11,4 +11,6 @@ class BuildActionEntity < Grape::Entity
       build.project,
       build)
   end
+
+  expose :playable?, as: :playable
 end

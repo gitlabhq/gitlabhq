@@ -4,13 +4,8 @@ module Emails
       setup_note_mail(note_id, recipient_id)
 
       @commit = @note.noteable
-      @discussion = @note.to_discussion if @note.diff_note?
       @target_url = namespace_project_commit_url(*note_target_url_options)
-
-      mail_answer_thread(@commit,
-                         from: sender(@note.author_id),
-                         to: recipient(recipient_id),
-                         subject: subject("#{@commit.title} (#{@commit.short_id})"))
+      mail_answer_thread(@commit, note_thread_options(recipient_id))
     end
 
     def note_issue_email(recipient_id, note_id)
@@ -25,7 +20,6 @@ module Emails
       setup_note_mail(note_id, recipient_id)
 
       @merge_request = @note.noteable
-      @discussion = @note.to_discussion if @note.diff_note?
       @target_url = namespace_project_merge_request_url(*note_target_url_options)
       mail_answer_thread(@merge_request, note_thread_options(recipient_id))
     end
@@ -56,15 +50,18 @@ module Emails
       {
         from: sender(@note.author_id),
         to: recipient(recipient_id),
-        subject: subject("#{@note.noteable.title} (#{@note.noteable.to_reference})")
+        subject: subject("#{@note.noteable.title} (#{@note.noteable.reference_link_text})")
       }
     end
 
     def setup_note_mail(note_id, recipient_id)
-      @note = Note.find(note_id)
+      # `note_id` is a `Note` when originating in `NotifyPreview`
+      @note = note_id.is_a?(Note) ? note_id : Note.find(note_id)
       @project = @note.project
 
-      @sent_notification = SentNotification.record_note(@note, recipient_id, reply_key)
+      if @project && @note.persisted?
+        @sent_notification = SentNotification.record_note(@note, recipient_id, reply_key)
+      end
     end
   end
 end

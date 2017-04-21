@@ -4,6 +4,8 @@ module Gitlab
     TAG_REF_PREFIX = "refs/tags/".freeze
     BRANCH_REF_PREFIX = "refs/heads/".freeze
 
+    CommandError = Class.new(StandardError)
+
     class << self
       def ref_name(ref)
         ref.sub(/\Arefs\/(tags|heads)\//, '')

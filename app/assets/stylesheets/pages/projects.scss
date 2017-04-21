@@ -596,6 +596,10 @@ pre.light-well {
 
   .avatar-container {
     align-self: flex-start;
+
+    > a {
+      width: 100%;
+    }
   }
 
   .project-details {
@@ -744,7 +748,8 @@ pre.light-well {
   text-align: left;
 }
 
-.protected-branches-list {
+.protected-branches-list,
+.protected-tags-list {
   margin-bottom: 30px;
 
   a {
@@ -773,6 +778,17 @@ pre.light-well {
     td:not(:last-child) {
       border-right: solid 1px transparent;
     }
+  }
+}
+
+.protected-tags-list {
+  .dropdown-menu-toggle {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .flash-container {
+    padding: 0;
   }
 }
 
@@ -917,27 +933,23 @@ pre.light-well {
   }
 
   .variable-key {
-    width: 300px;
-    max-width: 300px;
+    max-width: 120px;
     overflow: hidden;
     word-wrap: break-word;
-
-    // override bootstrap
-    white-space: normal!important;
-
-    @media (max-width: $screen-sm-max) {
-      width: 150px;
-      max-width: 150px;
-    }
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   .variable-value {
-    @media(max-width: $screen-xs-max) {
-      width: 150px;
-      max-width: 150px;
-      overflow: hidden;
-      word-wrap: break-word;
-    }
+    max-width: 150px;
+    overflow: hidden;
+    word-wrap: break-word;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .variable-menu {
+    text-align: right;
   }
 }
 

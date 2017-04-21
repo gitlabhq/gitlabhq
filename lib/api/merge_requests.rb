@@ -33,12 +33,16 @@ module API
           end
         end
 
-        params :optional_params do
+        params :optional_params_ce do
           optional :description, type: String, desc: 'The description of the merge request'
           optional :assignee_id, type: Integer, desc: 'The ID of a user to assign the merge request'
           optional :milestone_id, type: Integer, desc: 'The ID of a milestone to assign the merge request'
           optional :labels, type: String, desc: 'Comma-separated list of label names'
           optional :remove_source_branch, type: Boolean, desc: 'Remove source branch when merging'
+        end
+
+        params :optional_params do
+          use :optional_params_ce
         end
       end
 
@@ -145,14 +149,24 @@ module API
         success Entities::MergeRequest
       end
       params do
+        # CE
+        at_least_one_of_ce = [
+          :assignee_id,
+          :description,
+          :labels,
+          :milestone_id,
+          :remove_source_branch,
+          :state_event,
+          :target_branch,
+          :title
+        ]
         optional :title, type: String, allow_blank: false, desc: 'The title of the merge request'
         optional :target_branch, type: String, allow_blank: false, desc: 'The target branch'
         optional :state_event, type: String, values: %w[close reopen],
                                desc: 'Status of the merge request'
+
         use :optional_params
-        at_least_one_of :title, :target_branch, :description, :assignee_id,
-                        :milestone_id, :labels, :state_event,
-                        :remove_source_branch
+        at_least_one_of(*at_least_one_of_ce)
       end
       put ':id/merge_requests/:merge_request_iid' do
         merge_request = find_merge_request_with_access(params.delete(:merge_request_iid), :update_merge_request)
@@ -173,6 +187,7 @@ module API
         success Entities::MergeRequest
       end
       params do
+        # CE
         optional :merge_commit_message, type: String, desc: 'Custom merge commit message'
         optional :should_remove_source_branch, type: Boolean,
                                                desc: 'When true, the source branch will be deleted if possible'

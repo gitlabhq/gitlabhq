@@ -22,7 +22,12 @@ Instead you should use polling mechanism with ETag caching in Redis.
 
 ## How it works
 
+Cache Miss:
+
 ![Cache miss](img/cache-miss.svg)
+
+Cache Hit:
+
 ![Cache hit](img/cache-hit.svg)
 
 1. Whenever a resource changes we generate a random value and store it in
@@ -39,6 +44,13 @@ Instead you should use polling mechanism with ETag caching in Redis.
 1. If the `If-None-Match` header does not match the current value in Redis
    we have to generate a new response, because the resource changed.
 
+Do not use query parameters (for example `?scope=all`) for endpoints where you
+want to enable ETag caching. The middleware takes into account only the request
+path and ignores query parameters. All parameters should be included in the
+request path. By doing this we avoid query parameter ordering problems and make
+route matching easier.
+
 For more information see:
+- [`Poll-Interval` header](fe_guide/performance.md#realtime-components)
 - [RFC 7232](https://tools.ietf.org/html/rfc7232)
 - [ETag proposal](https://gitlab.com/gitlab-org/gitlab-ce/issues/26926)

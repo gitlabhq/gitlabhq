@@ -4,7 +4,7 @@
   - if diff_file.too_large?
     .nothing-here-block This diff could not be displayed because it is too large.
   - elsif blob.only_display_raw?
-    .nothing-here-block This file is too large to display.
+    .nothing-here-block The file could not be displayed because it is too large.
   - elsif blob_text_viewable?(blob)
     - if !project.repository.diffable?(blob)
       .nothing-here-block This diff was suppressed by a .gitattributes entry.

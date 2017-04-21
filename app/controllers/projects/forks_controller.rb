@@ -9,7 +9,7 @@ class Projects::ForksController < Projects::ApplicationController
   def index
     base_query = project.forks.includes(:creator)
 
-    @forks               = base_query.merge(ProjectsFinder.new.execute(current_user))
+    @forks               = base_query.merge(ProjectsFinder.new(current_user: current_user).execute)
     @total_forks_count   = base_query.size
     @private_forks_count = @total_forks_count - @forks.size
     @public_forks_count  = @total_forks_count - @private_forks_count

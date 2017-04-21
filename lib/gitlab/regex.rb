@@ -73,22 +73,6 @@ module Gitlab
       "can contain only letters, digits, '_', '-', '@', '+' and '.'."
     end
 
-    def file_path_regex
-      @file_path_regex ||= /\A[[[:alnum:]]_\-\.\/\@]*\z/.freeze
-    end
-
-    def file_path_regex_message
-      "can contain only letters, digits, '_', '-', '@' and '.'. Separate directories with a '/'."
-    end
-
-    def directory_traversal_regex
-      @directory_traversal_regex ||= /\.{2}/.freeze
-    end
-
-    def directory_traversal_regex_message
-      "cannot include directory traversal."
-    end
-
     def archive_formats_regex
       #                           |zip|tar|    tar.gz    |         tar.bz2         |
       @archive_formats_regex ||= /(zip|tar|tar\.gz|tgz|gz|tar\.bz2|tbz|tbz2|tb2|bz2)/.freeze
@@ -119,6 +103,13 @@ module Gitlab
 
     def container_registry_reference_regex
       git_reference_regex
+    end
+
+    ##
+    # Docker Distribution Registry 2.4.1 repository name rules
+    #
+    def container_repository_name_regex
+      @container_repository_regex ||= %r{\A[a-z0-9]+(?:[-._/][a-z0-9]+)*\Z}
     end
 
     def environment_name_regex

@@ -1,4 +1,3 @@
-
 require 'gitlab/email/handler/base_handler'
 require 'gitlab/email/handler/reply_processing'
 
@@ -7,6 +6,8 @@ module Gitlab
     module Handler
       class CreateNoteHandler < BaseHandler
         include ReplyProcessing
+
+        delegate :project, to: :sent_notification, allow_nil: true
 
         def can_handle?
           mail_key =~ /\A\w+\z/
@@ -33,26 +34,12 @@ module Gitlab
           sent_notification.recipient
         end
 
-        def project
-          sent_notification.project
-        end
-
         def sent_notification
           @sent_notification ||= SentNotification.for(mail_key)
         end
 
         def create_note
-          Notes::CreateService.new(
-            project,
-            author,
-            note:           message,
-            noteable_type:  sent_notification.noteable_type,
-            noteable_id:    sent_notification.noteable_id,
-            commit_id:      sent_notification.commit_id,
-            line_code:      sent_notification.line_code,
-            position:       sent_notification.position,
-            type:           sent_notification.note_type
-          ).execute
+          sent_notification.create_reply(message)
         end
       end
     end

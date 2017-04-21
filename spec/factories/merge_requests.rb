@@ -40,8 +40,16 @@ FactoryGirl.define do
       state :closed
     end
 
+    trait :opened do
+      state :opened
+    end
+
     trait :reopened do
       state :reopened
+    end
+
+    trait :locked do
+      state :locked
     end
 
     trait :simple do

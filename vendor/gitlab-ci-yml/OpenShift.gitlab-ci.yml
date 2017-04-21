@@ -41,7 +41,7 @@ review:
     APP: $CI_COMMIT_REF_NAME
     APP_HOST: $CI_PROJECT_NAME-$CI_ENVIRONMENT_SLUG.$OPENSHIFT_DOMAIN
   environment:
-    name: review/$CI_COMMIT_REF_SLUG
+    name: review/$CI_COMMIT_REF_NAME
     url: http://$CI_PROJECT_NAME-$CI_ENVIRONMENT_SLUG.$OPENSHIFT_DOMAIN
     on_stop: stop-review
   only:
@@ -59,7 +59,7 @@ stop-review:
     APP: $CI_COMMIT_REF_NAME
     GIT_STRATEGY: none
   environment:
-    name: review/$CI_COMMIT_REF_SLUG
+    name: review/$CI_COMMIT_REF_NAME
     action: stop
   only:
     - branches

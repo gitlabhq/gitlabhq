@@ -25,8 +25,8 @@
           - if @labels_url
             adjust your #{link_to 'label subscriptions', @labels_url}.
           - else
-            - if @sent_notification_url
-              = link_to "unsubscribe", @sent_notification_url
+            - if @unsubscribe_url
+              = link_to "unsubscribe", @unsubscribe_url
               from this thread or
             adjust your notification settings.
 

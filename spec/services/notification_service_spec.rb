@@ -439,7 +439,7 @@ describe NotificationService, services: true do
 
           notification.new_note(note)
 
-          expect(SentNotification.last.position).to eq(note.position)
+          expect(SentNotification.last.in_reply_to_discussion_id).to eq(note.discussion_id)
         end
       end
     end
@@ -1179,6 +1179,22 @@ describe NotificationService, services: true do
         should_not_email(@u_guest_watcher)
         should_not_email(@u_guest_custom)
         should_not_email(@u_disabled)
+      end
+    end
+
+    describe '#project_exported' do
+      it do
+        notification.project_exported(project, @u_disabled)
+
+        should_only_email(@u_disabled)
+      end
+    end
+
+    describe '#project_not_exported' do
+      it do
+        notification.project_not_exported(project, @u_disabled, ['error'])
+
+        should_only_email(@u_disabled)
       end
     end
   end

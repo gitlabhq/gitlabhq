@@ -49,7 +49,34 @@ describe MergeRequests::RefreshService, services: true do
 
     context 'push to origin repo source branch' do
       let(:refresh_service) { service.new(@project, @user) }
+
       before do
+        allow(refresh_service).to receive(:execute_hooks)
+        refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+        reload_mrs
+      end
+
+      it 'executes hooks with update action' do
+        expect(refresh_service).to have_received(:execute_hooks).
+          with(@merge_request, 'update', @oldrev)
+
+        expect(@merge_request.notes).not_to be_empty
+        expect(@merge_request).to be_open
+        expect(@merge_request.merge_when_pipeline_succeeds).to be_falsey
+        expect(@merge_request.diff_head_sha).to eq(@newrev)
+        expect(@fork_merge_request).to be_open
+        expect(@fork_merge_request.notes).to be_empty
+        expect(@build_failed_todo).to be_done
+        expect(@fork_build_failed_todo).to be_done
+      end
+    end
+
+    context 'push to origin repo source branch when an MR was reopened' do
+      let(:refresh_service) { service.new(@project, @user) }
+
+      before do
+        @merge_request.update(state: :reopened)
+
         allow(refresh_service).to receive(:execute_hooks)
         refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
         reload_mrs

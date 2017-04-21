@@ -71,6 +71,22 @@ feature "New project", feature: true do
         end
       end
     end
+
+    context "with subgroup namespace" do
+      let(:group) { create(:group, :private, owner: user) }
+      let(:subgroup) { create(:group, parent: group) }
+
+      before do
+        group.add_master(user)
+        visit new_project_path(namespace_id: subgroup.id)
+      end
+
+      it "selects the group namespace" do
+        namespace = find("#project_namespace_id option[selected]")
+
+        expect(namespace.text).to eq subgroup.full_path
+      end
+    end
   end
 
   context 'Import project options' do

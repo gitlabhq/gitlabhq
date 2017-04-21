@@ -196,6 +196,7 @@
   transition: width .3s;
   background: $gray-light;
   padding: 10px 20px;
+  z-index: 2;
 
   &.right-sidebar-expanded {
     width: $gutter_width;
@@ -207,10 +208,6 @@
         margin-top: 10px;
         display: block;
       }
-    }
-
-    .bold {
-      font-weight: 600;
     }
 
     .light {

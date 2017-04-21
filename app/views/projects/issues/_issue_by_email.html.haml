@@ -16,7 +16,7 @@
         .email-modal-input-group.input-group
           = text_field_tag :issue_email, email, class: "monospace js-select-on-focus form-control", readonly: true
           .input-group-btn
-            = clipboard_button(clipboard_target: '#issue_email')
+            = clipboard_button(target: '#issue_email')
         %p
           The subject will be used as the title of the new issue, and the message will be the description.
 

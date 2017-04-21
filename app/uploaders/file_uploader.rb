@@ -38,10 +38,6 @@ class FileUploader < GitlabUploader
     File.join(dynamic_path_segment, @secret)
   end
 
-  def cache_dir
-    File.join(base_dir, 'tmp', @project.path_with_namespace, @secret)
-  end
-
   def model
     project
   end

@@ -164,6 +164,8 @@ describe "Search", feature: true  do
       end
 
       context 'click the links in the category search dropdown', js: true do
+        let!(:merge_request) { create(:merge_request, source_project: project, author: user, assignee: user) }
+
         before do
           page.find('#search').click
         end

@@ -191,13 +191,15 @@ feature 'Diff notes resolve', feature: true, js: true do
 
     context 'multiple notes' do
       before do
-        create(:diff_note_on_merge_request, project: project, noteable: merge_request)
+        create(:diff_note_on_merge_request, project: project, noteable: merge_request, in_reply_to: note)
         visit_merge_request
       end
 
       it 'does not mark discussion as resolved when resolving single note' do
         page.first '.diff-content .note' do
           first('.line-resolve-btn').click
+
+          expect(page).to have_selector('.note-action-button .loading')
           expect(first('.line-resolve-btn')['data-original-title']).to eq("Resolved by #{user.name}")
         end
 

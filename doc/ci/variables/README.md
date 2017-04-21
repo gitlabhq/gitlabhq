@@ -311,7 +311,7 @@ Running on runner-8a2f473d-project-1796893-concurrent-0 via runner-8a2f473d-mach
 ++ export GITLAB_USER_ID=42
 ++ GITLAB_USER_ID=42
 ++ export GITLAB_USER_EMAIL=user@example.com
-++ GITLAB_USER_EMAIL=axilleas@axilleas.me
+++ GITLAB_USER_EMAIL=user@example.com
 ++ export VERY_SECURE_VARIABLE=imaverysecurevariable
 ++ VERY_SECURE_VARIABLE=imaverysecurevariable
 ++ mkdir -p /builds/gitlab-examples/ci-debug-trace.tmp

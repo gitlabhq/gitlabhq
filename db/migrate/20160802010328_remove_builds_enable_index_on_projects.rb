@@ -1,3 +1,4 @@
+# rubocop:disable RemoveIndex
 class RemoveBuildsEnableIndexOnProjects < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 

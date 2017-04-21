@@ -111,7 +111,7 @@ FactoryGirl.define do
 
     trait :trace do
       after(:create) do |build, evaluator|
-        build.trace = 'BUILD TRACE'
+        build.trace.set('BUILD TRACE')
       end
     end
 
@@ -191,6 +191,11 @@ FactoryGirl.define do
 
     trait :no_options do
       options { {} }
+    end
+
+    trait :non_playable do
+      status 'created'
+      self.when 'manual'
     end
   end
 end

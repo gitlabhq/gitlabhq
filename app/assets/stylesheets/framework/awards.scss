@@ -38,6 +38,15 @@
     height: 300px;
     overflow-y: scroll;
   }
+
+  .disabled {
+    cursor: default;
+    opacity: 0.5;
+
+    &:hover {
+      transform: none;
+    }
+  }
 }
 
 .emoji-search {
@@ -91,7 +100,7 @@
 
 .award-menu-holder {
   display: inline-block;
-  position: relative;
+  position: absolute;
 
   .tooltip {
     white-space: nowrap;
@@ -117,11 +126,52 @@
 
   &.active,
   &:hover,
-  &:active {
+  &:active,
+  &.is-active {
     background-color: $row-hover;
     border-color: $row-hover-border;
     box-shadow: none;
     outline: 0;
+
+    .award-control-icon svg {
+      background: $award-emoji-positive-add-bg;
+
+      path {
+        fill: $award-emoji-positive-add-lines;
+      }
+    }
+
+    .award-control-icon-neutral {
+      opacity: 0;
+    }
+
+    .award-control-icon-positive {
+      opacity: 1;
+      transform: scale(1.15);
+    }
+  }
+
+  &.is-active {
+    .award-control-icon-positive {
+      opacity: 0;
+      transform: scale(1);
+    }
+
+    .award-control-icon-super-positive {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  &.user-authored {
+    cursor: default;
+    opacity: 0.65;
+
+    &:hover,
+    &:active {
+      background-color: $white-light;
+      border-color: $border-color;
+    }
   }
 
   &.btn {
@@ -162,9 +212,33 @@
     color: $border-gray-normal;
     margin-top: 1px;
     padding: 0 2px;
+
+    svg {
+      margin-bottom: 1px;
+      height: 18px;
+      width: 18px;
+      border-radius: 50%;
+
+      path {
+        fill: $border-gray-normal;
+      }
+    }
+  }
+
+  .award-control-icon-positive,
+  .award-control-icon-super-positive {
+    position: absolute;
+    left: 7px;
+    bottom: 9px;
+    opacity: 0;
+    @include transition(opacity, transform);
   }
 
   .award-control-text {
     vertical-align: middle;
   }
+}
+
+.note-awards .award-control-icon-positive {
+  left: 6px;
 }

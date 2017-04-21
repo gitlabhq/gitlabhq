@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe Gitlab::Git::Tree, seed_helper: true do
   context :repo do
-    let(:repository) { Gitlab::Git::Repository.new(TEST_REPO_PATH) }
+    let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
     let(:tree) { Gitlab::Git::Tree.where(repository, SeedRepo::Commit::ID) }
 
     it { expect(tree).to be_kind_of Array }

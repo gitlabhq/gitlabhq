@@ -17,7 +17,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a project |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `iids` | Array[integer] | optional | Return only the milestones having the given `iids` |
 | `state` | string | optional | Return only `active` or `closed` milestones` |
 | `search` | string | optional | Return only milestones with a title or description matching the provided string |
@@ -56,8 +56,8 @@ GET /projects/:id/milestones/:milestone_id
 
 Parameters:
 
-- `id` (required) - The ID of a project
-- `milestone_id` (required) - The ID of a project milestone
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
+- `milestone_id` (required) - The ID of the project's milestone
 
 ## Create new milestone
 
@@ -69,7 +69,7 @@ POST /projects/:id/milestones
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `title` (required) - The title of an milestone
 - `description` (optional) - The description of the milestone
 - `due_date` (optional) - The due date of the milestone
@@ -85,7 +85,7 @@ PUT /projects/:id/milestones/:milestone_id
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `milestone_id` (required) - The ID of a project milestone
 - `title` (optional) - The title of a milestone
 - `description` (optional) - The description of a milestone
@@ -103,7 +103,7 @@ GET /projects/:id/milestones/:milestone_id/issues
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `milestone_id` (required) - The ID of a project milestone
 
 ## Get all merge requests assigned to a single milestone
@@ -116,5 +116,5 @@ GET /projects/:id/milestones/:milestone_id/merge_requests
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `milestone_id` (required) - The ID of a project milestone

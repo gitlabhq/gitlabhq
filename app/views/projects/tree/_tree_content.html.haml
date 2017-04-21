@@ -10,7 +10,7 @@
               %i.fa.fa-angle-right
               %small.light
                 = link_to @commit.short_id, namespace_project_commit_path(@project.namespace, @project, @commit), class: "monospace"
-                = clipboard_button(clipboard_text: @commit.id, title: "Copy commit SHA to clipboard")
+                = clipboard_button(text: @commit.id, title: "Copy commit SHA to clipboard")
                 = time_ago_with_tooltip(@commit.committed_date)
                 \-
                 = @commit.full_title

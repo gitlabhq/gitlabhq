@@ -116,7 +116,7 @@
         group members
         %span.badge= @group.members.size
         .pull-right
-          = link_to icon('pencil-square-o', text: 'Manage Access'), polymorphic_url([@group, :members]), class: "btn btn-xs"
+          = link_to icon('pencil-square-o', text: 'Manage access'), polymorphic_url([@group, :members]), class: "btn btn-xs"
       %ul.well-list.group-users-list.content-list
         = render partial: 'shared/members/member', collection: @members, as: :member, locals: { show_controls: false }
       .panel-footer

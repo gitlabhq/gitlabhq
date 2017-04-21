@@ -19,6 +19,11 @@ describe('Actions Component', () => {
         name: 'foo',
         play_path: '#',
       },
+      {
+        name: 'foo bar',
+        play_path: 'url',
+        playable: false,
+      },
     ];
 
     spy = jasmine.createSpy('spy').and.returnValue(Promise.resolve());
@@ -48,5 +53,15 @@ describe('Actions Component', () => {
     component.$el.querySelector('.js-manual-action-link').click();
 
     expect(spy).toHaveBeenCalledWith(actionsMock[0].play_path);
+  });
+
+  it('should render a disabled action when it\'s not playable', () => {
+    expect(
+      component.$el.querySelector('.dropdown-menu li:last-child button').getAttribute('disabled'),
+    ).toEqual('disabled');
+
+    expect(
+      component.$el.querySelector('.dropdown-menu li:last-child button').classList.contains('disabled'),
+    ).toEqual(true);
   });
 });

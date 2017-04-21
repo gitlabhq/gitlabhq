@@ -16,6 +16,15 @@ ul.notes {
 
   .timeline-icon {
     float: left;
+
+    svg {
+      width: 16px;
+      height: 16px;
+      fill: $gray-darkest;
+      position: absolute;
+      left: 0;
+      top: 16px;
+    }
   }
 
   .timeline-content {
@@ -31,117 +40,6 @@ ul.notes {
   .note-created-ago,
   .note-updated-at {
     white-space: nowrap;
-  }
-
-  .system-note {
-    font-size: 14px;
-    padding: 0;
-    clear: both;
-
-    &.timeline-entry::after {
-      clear: none;
-    }
-
-    .system-note-message {
-      display: inline;
-
-      &::first-letter {
-        text-transform: lowercase;
-      }
-
-      a {
-        color: $gl-link-color;
-        text-decoration: none;
-      }
-
-      p {
-        display: inline;
-        margin: 0;
-
-        &::first-letter {
-          text-transform: lowercase;
-        }
-      }
-    }
-
-    .timeline-content {
-      padding: 14px 10px;
-    }
-
-    .note-body {
-      overflow: hidden;
-
-      .system-note-commit-list-toggler {
-        color: $gl-link-color;
-        display: none;
-        padding: 10px 0 0;
-        cursor: pointer;
-        position: relative;
-        z-index: 2;
-
-        &:hover {
-          color: $gl-link-color;
-          text-decoration: underline;
-        }
-      }
-
-      .note-text {
-        & p:first-child {
-          display: none;
-        }
-
-        &.system-note-commit-list {
-          max-height: 70px;
-          overflow: hidden;
-          display: block;
-
-          ul {
-            margin: 3px 0 3px 16px !important;
-
-            .gfm-commit {
-              font-family: $monospace_font;
-              font-size: 12px;
-            }
-          }
-
-          p:first-child {
-            display: none;
-          }
-
-          &::after {
-            content: '';
-            width: 100%;
-            height: 67px;
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            background: linear-gradient(rgba($white-light, 0.1) -100px, $white-light 100%);
-          }
-
-          &.hide-shade {
-            max-height: 100%;
-            overflow: auto;
-
-            &::after {
-              display: none;
-              background: transparent;
-            }
-          }
-        }
-      }
-    }
-
-    .timeline-icon {
-      display: none;
-
-      .avatar {
-        visibility: hidden;
-
-        .discussion-body & {
-          visibility: visible;
-        }
-      }
-    }
   }
 
   .discussion-body {
@@ -225,6 +123,9 @@ ul.notes {
     }
 
     .note-emoji-button {
+      position: relative;
+      line-height: 1;
+
       .fa-spinner {
         display: none;
       }
@@ -239,7 +140,117 @@ ul.notes {
         }
       }
     }
+  }
 
+  .system-note {
+    font-size: 14px;
+    padding: 0;
+    clear: both;
+
+    @media (min-width: $screen-sm-min) {
+      margin-left: 65px;
+    }
+
+    &.timeline-entry::after {
+      clear: none;
+    }
+
+    .system-note-message {
+      display: inline;
+
+      &::first-letter {
+        text-transform: lowercase;
+      }
+
+      a {
+        color: $gl-link-color;
+        text-decoration: none;
+      }
+
+      p {
+        display: inline;
+        margin: 0;
+
+        &::first-letter {
+          text-transform: lowercase;
+        }
+      }
+    }
+
+    .timeline-content {
+      padding: 14px 10px;
+
+      @media (min-width: $screen-sm-min) {
+        margin-left: 20px;
+      }
+    }
+
+    .note-header {
+      padding-bottom: 0;
+    }
+
+    .note-body {
+      overflow: hidden;
+
+      .system-note-commit-list-toggler {
+        color: $gl-link-color;
+        display: none;
+        padding: 10px 0 0;
+        cursor: pointer;
+        position: relative;
+        z-index: 2;
+
+        &:hover {
+          color: $gl-link-color;
+          text-decoration: underline;
+        }
+      }
+
+      .note-text {
+        & p:first-child {
+          display: none;
+        }
+
+        &.system-note-commit-list {
+          max-height: 70px;
+          overflow: hidden;
+          display: block;
+
+          ul {
+            margin: 3px 0 3px 16px !important;
+
+            .gfm-commit {
+              font-family: $monospace_font;
+              font-size: 12px;
+            }
+          }
+
+          p:first-child {
+            display: none;
+          }
+
+          &::after {
+            content: '';
+            width: 100%;
+            height: 67px;
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            background: linear-gradient(rgba($white-light, 0.1) -100px, $white-light 100%);
+          }
+
+          &.hide-shade {
+            max-height: 100%;
+            overflow: auto;
+
+            &::after {
+              display: none;
+              background: transparent;
+            }
+          }
+        }
+      }
+    }
   }
 }
 
@@ -294,6 +305,18 @@ ul.notes {
         border-width: 1px;
       }
 
+      .discussion-notes {
+        &:not(:first-child) {
+          border-top: 1px solid $white-normal;
+          margin-top: 20px;
+        }
+
+        &:not(:last-child) {
+          border-bottom: 1px solid $white-normal;
+          margin-bottom: 20px;
+        }
+      }
+
       .notes {
         background-color: $white-light;
       }
@@ -332,6 +355,15 @@ ul.notes {
   font-size: 14px;
 }
 
+.note-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.note-header-info {
+  min-width: 0;
+}
+
 .note-headline-light {
   display: inline;
 
@@ -351,21 +383,27 @@ ul.notes {
   }
 }
 
+.note-headline-meta {
+  display: inline-block;
+  white-space: nowrap;
+}
+
 /**
  * Actions for Discussions/Notes
  */
 
-.discussion-actions,
-.note-actions {
+.discussion-actions {
   float: right;
   margin-left: 10px;
   color: $gray-darkest;
 }
 
 .note-actions {
-  position: absolute;
-  right: 0;
-  top: 0;
+  flex-shrink: 0;
+  // For PhantomJS that does not support flex
+  float: right;
+  margin-left: 10px;
+  color: $gray-darkest;
 
   .note-action-button {
     margin-left: 8px;
@@ -398,13 +436,51 @@ ul.notes {
     font-size: 17px;
   }
 
-  &:hover {
+  svg {
+    height: 16px;
+    width: 16px;
+    fill: $gray-darkest;
+    vertical-align: text-top;
+  }
+
+  .award-control-icon-positive,
+  .award-control-icon-super-positive {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+  }
+
+  &:hover,
+  &.is-active {
     .danger-highlight {
       color: $gl-text-red;
     }
 
     .link-highlight {
       color: $gl-link-color;
+
+      svg {
+        fill: $gl-link-color;
+      }
+    }
+
+    .award-control-icon-neutral {
+      opacity: 0;
+    }
+
+    .award-control-icon-positive {
+      opacity: 1;
+    }
+  }
+
+  &.is-active {
+    .award-control-icon-positive {
+      opacity: 0;
+    }
+
+    .award-control-icon-super-positive {
+      opacity: 1;
     }
   }
 }
@@ -508,7 +584,6 @@ ul.notes {
 }
 
 .line-resolve-all-container {
-
   .btn-group {
     margin-left: -4px;
   }
@@ -537,7 +612,6 @@ ul.notes {
       fill: $gray-darkest;
     }
   }
-
 }
 
 .line-resolve-all {
@@ -572,7 +646,6 @@ ul.notes {
   }
 
   &:not(.is-disabled):hover,
-  &:not(.is-disabled):focus,
   &.is-active {
     color: $gl-text-green;
 
@@ -585,6 +658,11 @@ ul.notes {
     fill: $gray-darkest;
     height: 15px;
     width: 15px;
+  }
+
+  .loading {
+    margin: 0;
+    height: auto;
   }
 }
 

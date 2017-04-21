@@ -1,8 +1,1 @@
-New comment for Snippet <%= @snippet.id %>
-
-<%= url_for(snippet_url(@snippet, anchor: "note_#{@note.id}")) %>
-
-
-Author: <%= @note.author_name %>
-
-<%= @note.note %>
+<%= render 'note_email' %>

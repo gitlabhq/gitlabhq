@@ -1,4 +1,4 @@
-image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-git-2.7-phantomjs-2.1-node-7.1"
+image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.7-phantomjs-2.1-node-7.1"
 
 cache:
   key: "ruby-233"
@@ -67,6 +67,7 @@ stages:
     - export CI_NODE_TOTAL=${JOB_NAME[2]}
     - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - export KNAPSACK_GENERATE_REPORT=true
+    - export CACHE_CLASSES=true
     - cp ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} ${KNAPSACK_REPORT_PATH}
     - knapsack rspec "--color --format documentation"
   artifacts:
@@ -87,6 +88,7 @@ stages:
     - export CI_NODE_TOTAL=${JOB_NAME[2]}
     - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - export KNAPSACK_GENERATE_REPORT=true
+    - export CACHE_CLASSES=true
     - cp ${KNAPSACK_SPINACH_SUITE_REPORT_PATH} ${KNAPSACK_REPORT_PATH}
     - knapsack spinach "-r rerun" || retry '[[ -e tmp/spinach-rerun.txt ]] && bundle exec spinach -r rerun $(cat tmp/spinach-rerun.txt)'
   artifacts:
@@ -199,7 +201,13 @@ rake config_lint: *exec
 rake brakeman: *exec
 rake flay: *exec
 license_finder: *exec
-rake downtime_check: *exec
+rake downtime_check:
+  <<: *exec
+  except:
+    - master
+    - tags
+    - /^[\d-]+-stable(-ee)?$/
+
 rake ee_compat_check:
   <<: *exec
   only:
@@ -276,7 +284,6 @@ rake karma:
   cache:
     paths:
       - vendor/ruby
-      - node_modules
   stage: test
   <<: *use-db
   <<: *dedicated-runner
@@ -347,10 +354,8 @@ migration paths:
     - master@gitlab/gitlabhq
     - master@gitlab/gitlab-ee
   script:
-    - git fetch origin v8.5.9
+    - git fetch origin v8.14.10
     - git checkout -f FETCH_HEAD
-    - cp config/resque.yml.example config/resque.yml
-    - sed -i 's/localhost/redis/g' config/resque.yml
     - bundle install --without postgres production --jobs $(nproc) $FLAGS --retry=3
     - bundle exec rake db:drop db:create db:schema:load db:seed_fu
     - git checkout $CI_COMMIT_SHA
@@ -377,9 +382,6 @@ coverage:
 
 lint:javascript:
   <<: *dedicated-runner
-  cache:
-    paths:
-      - node_modules/
   stage: test
   before_script: []
   script:
@@ -387,9 +389,6 @@ lint:javascript:
 
 lint:javascript:report:
   <<: *dedicated-runner
-  cache:
-    paths:
-      - node_modules/
   stage: post-test
   before_script: []
   script:
