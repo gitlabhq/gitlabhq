@@ -44,8 +44,12 @@ special options available when filtering by milestone:
 
 ## Burndown charts
 
-> [Introduced][ee-1540] in GitLab Enterprise Edition 9.1 and is available for
+>**Notes:**
+- [Introduced][ee-1540] in GitLab Enterprise Edition 9.1 and is available for
   [Enterprise Edition Starter][ee] users.
+- Closed or reopened issues prior to GitLab 9.1 won't have a `closed_at`
+  value, so the burndown chart considers them as closed on the milestone
+  `start_date`. In that case, a warning will be displayed.
 
 A burndown chart is available for every project milestone that has a set start
 date and a set due date and is located on the project's milestone page.
@@ -63,12 +67,6 @@ been properly assigned, since an open issue with no weight adds zero to the
 cumulative value.
 
 ![burndown chart](img/burndown_chart.png)
-
-Closed or reopened issues prior to GitLab 9.1 version won't have a `closed_at`
-value, so the burndown chart considers it as closed on the milestone `start_date`.
-In that case, a warning will be displayed.
-
-![burndown chart warning](img/burndown_warning.png)
 
 [ee-1540]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1540
 [ee]: https://about.gitlab.com/gitlab-ee

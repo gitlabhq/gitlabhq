@@ -121,13 +121,13 @@ module MilestonesHelper
 
     message =
       if burndown.empty?
-        "The burndown chart can’t be shown, as all milestone issues were closed before the GitLab 9.1 update. "
+        "The burndown chart can’t be shown, as all issues assigned to this milestone were closed on an older GitLab version before data was recorded. "
       elsif !burndown.accurate?
-        "Some issues can’t be shown in the burndown chart, as they were closed before the GitLab 9.1 update. "
+        "Some issues can’t be shown in the burndown chart, as they were closed on an older GitLab version before data was recorded. "
       end
 
     if message
-      message += link_to "More information.", help_page_path('user/project/milestones/index', anchor: 'burndown-charts'), class: 'burndown-docs-link'
+      message += link_to "Find out about burndown charts.", help_page_path('user/project/milestones/index', anchor: 'burndown-charts'), class: 'burndown-docs-link'
 
       content_tag(:div, message.html_safe, id: "data-warning", class: "settings-message prepend-top-20")
     end
