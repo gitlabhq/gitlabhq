@@ -1,6 +1,6 @@
 import 'timeago.js';
 import Vue from 'vue';
-import environmentItemComp from '~/environments/components/environment_item';
+import environmentItemComp from '~/environments/components/environment_item.vue';
 
 describe('Environment item', () => {
   let EnvironmentItem;

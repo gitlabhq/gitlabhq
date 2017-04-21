@@ -1,6 +1,5 @@
 class Projects::ServiceDeskController < Projects::ApplicationController
-  before_action :authorize_admin_instance!, only: :update
-  before_action :authorize_admin_project!, only: :show
+  before_action :authorize_admin_project!
 
   def show
     json_response
@@ -21,9 +20,5 @@ class Projects::ServiceDeskController < Projects::ApplicationController
 
       format.json { render json: service_desk_attributes }
     end
-  end
-
-  def authorize_admin_instance!
-    return render_404 unless current_user.admin?
   end
 end

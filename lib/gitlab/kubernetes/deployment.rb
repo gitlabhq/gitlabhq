@@ -21,6 +21,10 @@ module Gitlab
         track == 'stable'
       end
 
+      def order
+        stable? ? 1 : 0
+      end
+
       def outdated?
         observed_generation < generation
       end

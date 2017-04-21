@@ -9,18 +9,20 @@ describe Gitlab::Email::Handler::EE::ServiceDeskHandler do
   end
 
   let(:email_raw) { fixture_file('emails/service_desk.eml') }
-  let(:project) { create(:project, :public) }
+  let(:namespace) { create(:namespace, name: "email") }
+  let(:project) { create(:project, :public, namespace: namespace, path: "test") }
 
   context 'when service desk is enabled' do
     before do
       project.update(service_desk_enabled: true)
-      project.update(service_desk_mail_key: 'somemailkey')
 
       allow(Notify).to receive(:service_desk_thank_you_email)
         .with(kind_of(Integer)).and_return(double(deliver_later!: true))
 
       allow_any_instance_of(License).to receive(:add_on?).and_call_original
       allow_any_instance_of(License).to receive(:add_on?).with('GitLab_ServiceDesk') { true }
+      allow(::Gitlab::IncomingEmail).to receive(:enabled?) { true }
+      allow(::Gitlab::IncomingEmail).to receive(:supports_wildcard?) { true }
     end
 
     it 'sends thank you the email and creates issue' do
@@ -68,10 +70,7 @@ describe Gitlab::Email::Handler::EE::ServiceDeskHandler do
 
   context 'when service desk is not enabled' do
     before do
-      project.update_attributes(
-        service_desk_enabled: false,
-        service_desk_mail_key: 'somemailkey',
-      )
+      project.update_attributes(service_desk_enabled: false)
     end
 
     it 'bounces the email' do

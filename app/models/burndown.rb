@@ -1,5 +1,7 @@
 class Burndown
-  attr_accessor :start_date, :due_date, :end_date, :issues_count, :issues_weight
+  attr_reader :start_date, :due_date, :end_date, :issues_count, :issues_weight, :accurate, :legacy_data
+  alias_method :accurate?, :accurate
+  alias_method :empty?, :legacy_data
 
   def initialize(milestone)
     @milestone = milestone
@@ -7,6 +9,9 @@ class Burndown
     @due_date = @milestone.due_date
     @end_date = @milestone.due_date
     @end_date = Date.today if @end_date.present? && @end_date > Date.today
+
+    @accurate = milestone_closed_issues.all?(&:closed_at)
+    @legacy_data = milestone_closed_issues.any? && milestone_closed_issues.none?(&:closed_at)
 
     @issues_count, @issues_weight = milestone.issues.reorder(nil).pluck('COUNT(*), COALESCE(SUM(weight), 0)').first
   end
@@ -51,16 +56,20 @@ class Burndown
   def closed_and_reopened_issues_by(date)
     current_date = date.to_date
 
-    closed   = issues_with_closed_at.select { |issue| issue.closed_at.to_date == current_date }
+    closed =
+      milestone_closed_issues.select do |issue|
+        (issue.closed_at&.to_date || start_date) == current_date
+      end
+
     reopened = closed.select { |issue| issue.state == 'reopened' }
 
     [closed, reopened]
   end
 
-  def issues_with_closed_at
-    @issues_with_closed_at ||=
-      @milestone.issues.select('closed_at, weight, state').
-        where('closed_at IS NOT NULL').
-        order('closed_at ASC')
+  def milestone_closed_issues
+    @milestone_closed_issues ||=
+      @milestone.issues.select("closed_at, weight, state").
+        where("state IN ('reopened', 'closed')").
+        order("closed_at ASC")
   end
 end

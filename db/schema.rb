@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170419065104) do
+ActiveRecord::Schema.define(version: 20170421113144) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -140,6 +140,8 @@ ActiveRecord::Schema.define(version: 20170419065104) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "approvals", ["merge_request_id"], name: "index_approvals_on_merge_request_id", using: :btree
 
   create_table "approver_groups", force: :cascade do |t|
     t.integer "target_id", null: false
@@ -1109,7 +1111,6 @@ ActiveRecord::Schema.define(version: 20170419065104) do
     t.boolean "printing_merge_request_link_enabled", default: true, null: false
     t.string "import_jid"
     t.boolean "service_desk_enabled"
-    t.string "service_desk_mail_key"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
@@ -1125,7 +1126,6 @@ ActiveRecord::Schema.define(version: 20170419065104) do
   add_index "projects", ["path"], name: "index_projects_on_path_trigram", using: :gin, opclasses: {"path"=>"gin_trgm_ops"}
   add_index "projects", ["pending_delete"], name: "index_projects_on_pending_delete", using: :btree
   add_index "projects", ["runners_token"], name: "index_projects_on_runners_token", using: :btree
-  add_index "projects", ["service_desk_mail_key"], name: "index_projects_on_service_desk_mail_key", unique: true, using: :btree
   add_index "projects", ["star_count"], name: "index_projects_on_star_count", using: :btree
   add_index "projects", ["sync_time"], name: "index_projects_on_sync_time", using: :btree
   add_index "projects", ["visibility_level"], name: "index_projects_on_visibility_level", using: :btree

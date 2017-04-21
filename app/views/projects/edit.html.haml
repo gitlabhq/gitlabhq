@@ -134,8 +134,7 @@
               = link_to icon('question-circle'), help_page_path('user/project/service_desk')
             .js-service-desk-setting-root{ data: { endpoint: namespace_project_service_desk_path(@project.namespace, @project),
               enabled: @project.service_desk_enabled,
-              incoming_email: (@project.service_desk_address if @project.service_desk_enabled),
-              is_instance_admin: current_user.admin? } }
+              incoming_email: (@project.service_desk_address if @project.service_desk_enabled) } }
 
         %hr
         %fieldset.features.append-bottom-default
