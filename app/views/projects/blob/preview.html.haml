@@ -6,7 +6,7 @@
           = markdown(@content)
     - elsif markup?(@blob.name)
       .file-content.wiki
-        = raw render_markup(@blob.name, @content)
+        = raw markup(@blob.name, @content)
     - else
       .file-content.code.js-syntax-highlight
         - unless @diff_lines.empty?

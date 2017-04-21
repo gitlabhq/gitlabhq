@@ -530,7 +530,7 @@ class Repository
   end
 
   def rendered_readme
-    markup_render(readme.name, readme.data) if readme
+    markup_unsafe(readme.name, readme.data, project: project) if readme
   end
   cache_method :rendered_readme
 

@@ -14,15 +14,9 @@ module Gitlab
     # Public: Converts the provided Asciidoc markup into HTML.
     #
     # input         - the source text in Asciidoc format
-    # context       - a Hash with the template context:
-    #                 :commit
-    #                 :project
-    #                 :project_wiki
-    #                 :requested_path
-    #                 :ref
     # asciidoc_opts - a Hash of options to pass to the Asciidoctor converter
     #
-    def self.render(input, context, asciidoc_opts = {})
+    def self.render(input, asciidoc_opts = {})
       asciidoc_opts.reverse_merge!(
         safe: :secure,
         backend: :gitlab_html5,

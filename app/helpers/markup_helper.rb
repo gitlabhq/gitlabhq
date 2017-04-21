@@ -59,65 +59,6 @@ module MarkupHelper
     fragment.to_html.html_safe
   end
 
-  def markdown(text, context = {})
-    html = markdown_render(text, context)
-
-    markup_postprocess(html, context)
-  end
-
-  def markdown_render(text, context = {})
-    return "" unless text.present?
-
-    context[:project] ||= @project
-
-    Banzai.render(text, context)
-  end
-
-  def markdown_field(object, field)
-    object = object.for_display if object.respond_to?(:for_display)
-    return "" unless object.present?
-
-    html = Banzai.render_field(object, field)
-    banzai_postprocess(html, object.banzai_render_context(field))
-  end
-
-  def asciidoc_render(text)
-    Gitlab::Asciidoc.render(
-      text,
-      project:      @project,
-      current_user: (current_user if defined?(current_user)),
-
-      # RelativeLinkFilter
-      project_wiki:   @project_wiki,
-      requested_path: @path,
-      ref:            @ref,
-      commit:         @commit
-    )
-  end
-
-  def other_markup_render(file_name, text)
-    Gitlab::OtherMarkup.render(
-      file_name,
-      text,
-      project:      @project,
-      current_user: (current_user if defined?(current_user)),
-
-      # RelativeLinkFilter
-      project_wiki:   @project_wiki,
-      requested_path: @path,
-      ref:            @ref,
-      commit:         @commit
-    )
-  end
-
-  def markup_postprocess(html, context = {})
-    return "" unless html.present?
-
-    context[:project] ||= @project
-
-    banzai_postprocess(html, context)
-  end
-
   # Return the first line of +text+, up to +max_chars+, after parsing the line
   # as Markdown.  HTML tags in the parsed output are not counted toward the
   # +max_chars+ limit.  If the length limit falls within a tag's contents, then
@@ -128,38 +69,75 @@ module MarkupHelper
     truncate_visible(md, max_chars || md.length) if md.present?
   end
 
+  def markdown(text, context = {})
+    return "" unless text.present?
+
+    context[:project] ||= @project
+    html = context.delete(:rendered) || markdown_unsafe(text, context)
+    banzai_postprocess(html, context)
+  end
+
+  def markdown_field(object, field)
+    object = object.for_display if object.respond_to?(:for_display)
+    return "" unless object.present?
+
+    html = Banzai.render_field(object, field)
+    banzai_postprocess(html, object.banzai_render_context(field))
+  end
+
+  def markup(file_name, text, context = {})
+    context[:project] ||= @project
+    html = context.delete(:rendered) || markup_unsafe(file_name, text, context)
+    banzai_postprocess(html, context)
+  end
+
   def render_wiki_content(wiki_page)
-    context = { pipeline: :wiki, project_wiki: @project_wiki, page_slug: wiki_page.slug }
-    case wiki_page.format
-    when :markdown
-      html = markdown_render(wiki_page.content, context)
-    when :asciidoc
-      html = asciidoc_render(wiki_page.content)
-    else
-      return wiki_page.formatted_content.html_safe
-    end
-    markup_postprocess(html, context)
+    text = wiki_page.content
+    return "" unless text.present?
+
+    context = { pipeline: :wiki, project: @project, project_wiki: @project_wiki, page_slug: wiki_page.slug }
+
+    html =
+      case wiki_page.format
+      when :markdown
+        markdown_unsafe(text, context)
+      when :asciidoc
+        asciidoc_unsafe(text)
+      else
+        wiki_page.formatted_content.html_safe
+      end
+
+    banzai_postprocess(html, context)
   end
 
-  def render_markup(file_name, file_content)
-    html = markup_render(file_name, file_content)
-    markup_postprocess(html)
-  end
+  def markup_unsafe(file_name, text, context = {})
+    return "" unless text.present?
 
-  def markup_render(file_name, file_content)
     if gitlab_markdown?(file_name)
-      Hamlit::RailsHelpers.preserve(markdown_render(file_content))
+      Hamlit::RailsHelpers.preserve(markdown_unsafe(text, context))
     elsif asciidoc?(file_name)
-      asciidoc_render(file_content)
+      asciidoc_unsafe(text)
     elsif plain?(file_name)
       content_tag :pre, class: 'plain-readme' do
-        file_content
+        text
       end
     else
-      other_markup_render(file_name, file_content)
+      other_markup_unsafe(file_name, text)
     end
   rescue RuntimeError
-    simple_format(file_content)
+    simple_format(text)
+  end
+
+  def markdown_unsafe(text, context = {})
+    Banzai.render(text, context)
+  end
+
+  def asciidoc_unsafe(text)
+    Gitlab::Asciidoc.render(text)
+  end
+
+  def other_markup_unsafe(file_name, text)
+    Gitlab::OtherMarkup.render(file_name, text)
   end
 
   # Returns the text necessary to reference `entity` across projects
@@ -249,6 +227,8 @@ module MarkupHelper
 
   # Calls Banzai.post_process with some common context options
   def banzai_postprocess(html, context = {})
+    return "" unless html.present?
+
     context.merge!(
       current_user:   (current_user if defined?(current_user)),
 

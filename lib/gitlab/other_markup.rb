@@ -4,14 +4,8 @@ module Gitlab
     # Public: Converts the provided markup into HTML.
     #
     # input         - the source text in a markup format
-    # context       - a Hash with the template context:
-    #                 :commit
-    #                 :project
-    #                 :project_wiki
-    #                 :requested_path
-    #                 :ref
     #
-    def self.render(file_name, input, context)
+    def self.render(file_name, input)
       html = GitHub::Markup.render(file_name, input).
         force_encoding(input.encoding)
 
