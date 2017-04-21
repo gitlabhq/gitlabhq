@@ -18,6 +18,15 @@
   }
 }
 
+.issue-realtime-pre-pulse {
+  opacity: 0;
+}
+
+.issue-realtime-trigger-pulse {
+  transition: opacity 0.2s ease;
+  opacity: 1;
+}
+
 .check-all-holder {
   line-height: 36px;
   float: left;

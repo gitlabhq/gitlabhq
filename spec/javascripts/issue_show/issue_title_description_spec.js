@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import issueTitle from '~/issue_show/issue_title.vue';
+import issueTitle from '~/issue_show/issue_title_description.vue';
 
 describe('Issue Title', () => {
   let IssueTitleComponent;
