@@ -2,6 +2,7 @@
 
 > [Introduced][mr-8135] in GitLab 8.15.
 > Auto deploy is an experimental feature and is not recommended for Production use at this time.
+> As of GitLab 9.1, access to the container registry is only available while the Pipeline is running. Restarting a pod, scaling a service, or other actions which require on-going access will fail. On-going secure access is planned for a subsequent release.
 
 Auto deploy is an easy way to configure GitLab CI for the deployment of your
 application. GitLab Community maintains a list of `.gitlab-ci.yml`
