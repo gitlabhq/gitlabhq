@@ -1,4 +1,4 @@
-= form_for @pipeline_schedule, as: :pipeline_schedule, url: namespace_project_pipeline_schedules_path(@project.namespace, @project), html: { id: "new-pipeline-schedule-form", class: "form-horizontal js-pipeline-schedule-form js-requires-input" } do |f|
+= form_for [@project.namespace.becomes(Namespace), @project, @pipeline_schedule], as: :pipeline_schedule, html: { id: "new-pipeline-schedule-form", class: "form-horizontal js-pipeline-schedule-form js-requires-input" } do |f|
   = form_errors(@pipeline_schedule)
   .form-group
     = f.label :description, 'Description', class: 'control-label'
@@ -16,6 +16,10 @@
     = f.label :ref, 'Branch', class: 'control-label'
     .col-sm-10
       = f.text_field :ref, class: 'form-control', required: true, autofocus: true, value: @project.default_branch
+  .form-group
+    = f.label :active, 'Active', class: 'control-label'
+    .col-sm-10
+      = f.check_box :active, class: 'form-control', required: false, value: @pipeline_schedule.active?
   .form-actions
-    = f.submit 'Create pipeline schedule', class: 'btn btn-create', tabindex: 3
-    = link_to 'Cancel', project_pipeline_schedules_path(@project), class: 'btn btn-cancel'
+    = f.submit 'Save pipeline schedule', class: 'btn btn-create', tabindex: 3
+    = link_to 'Cancel', pipeline_schedules_path(@project), class: 'btn btn-cancel'

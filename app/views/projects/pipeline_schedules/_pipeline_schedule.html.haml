@@ -1,2 +1,36 @@
-%li
-  = pipeline_schedule.id
+- schedule = pipeline_schedule
+
+%tr
+  %td
+    = schedule.description
+
+  %td
+    = schedule.ref
+
+  %td
+    - # Keep in mind, this is `nil` when there is none
+    = schedule.last_pipeline&.id
+
+  %td
+    - # Keep in mind, this is `nil` when there is none
+    = schedule.last_trigger&.created_at
+
+  %td
+    - if schedule.active?
+      = schedule.next_run_at
+    - else
+      Inactive
+
+  %td
+    = schedule.owner.name
+
+  %td
+    - if can?(current_user, :update_pipeline, @project) && !pipeline_schedule.owned_by?(current_user)
+      = link_to take_ownership_pipeline_schedule_path(schedule), method: :post, title: 'Take Ownership', class: 'btn' do
+        Take ownership
+    - if true #can?(current_user, :update_pipeline_schedule, pipeline_schedule)
+      = link_to edit_pipeline_schedule_path(schedule), title: 'Edit', class: 'btn' do
+        = icon('pencil')
+    - if true # can?(current_user, :destroy_pipeline_schedule, schedule)
+      = link_to pipeline_schedule_path(schedule), title: 'Delete', method: :delete, class: 'btn' do
+        = icon('trash')

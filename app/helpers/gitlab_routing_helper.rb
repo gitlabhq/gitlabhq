@@ -46,10 +46,6 @@ module GitlabRoutingHelper
     namespace_project_environments_path(project.namespace, project, *args)
   end
 
-  def project_pipeline_schedules_path(project, *args)
-    namespace_project_pipeline_schedules_path(project.namespace, project, *args)
-  end
-
   def project_cycle_analytics_path(project, *args)
     namespace_project_cycle_analytics_path(project.namespace, project, *args)
   end
@@ -213,6 +209,26 @@ module GitlabRoutingHelper
     when 'file'
       file_namespace_project_build_artifacts_path(*args)
     end
+  end
+
+  # Pipeline Schedules
+  def pipeline_schedules_path(project, *args)
+    namespace_project_pipeline_schedules_path(project.namespace, project, *args)
+  end
+
+  def pipeline_schedule_path(schedule, *args)
+    project = schedule.project
+    namespace_project_pipeline_schedule_path(project.namespace, project, schedule, *args)
+  end
+
+  def edit_pipeline_schedule_path(schedule)
+    project = schedule.project
+    edit_namespace_project_pipeline_schedule_path(project.namespace, project, schedule)
+  end
+
+  def take_ownership_pipeline_schedule_path(schedule, *args)
+    project = schedule.project
+    take_ownership_namespace_project_pipeline_schedule_path(project.namespace, project, schedule, *args)
   end
 
   # Settings

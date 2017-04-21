@@ -1,7 +1,9 @@
 class Projects::PipelineSchedulesController < Projects::ApplicationController
-  before_action :authorize_create_pipeline!, only: [:new, :create, :edit]
-  before_action :authorize_update_pipeline!, only: [:retry, :cancel] # TODO set this right, its own authorize method
-  before_action :pipeline_schedule, only: [:edit, :update, :destroy]
+  before_action :authorize_read_pipeline!
+  before_action :authorize_create_pipeline!, only: [:new, :create, :edit, :take_ownership]
+  before_action :authorize_admin_pipeline!, only: [:destroy]
+
+  before_action :pipeline_schedule, only: [:edit, :update, :destroy, :take_ownership]
 
   # TODO test for N+1 queries
   def index
@@ -29,7 +31,7 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
       execute
 
     if @pipeline_schedule.persisted?
-      redirect_to project_pipeline_schedules_path(@project)
+      redirect_to pipeline_schedules_path(@project)
     else
       render :new
     end
@@ -39,15 +41,23 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   end
 
   def update
-    if @pipeline_schedule.update_attributes(pipeline_schedule_params).valid?
-      redirect_to project_pipeline_schedules_path(@project)
+    if @pipeline_schedule.update(pipeline_schedule_params)
+      redirect_to pipeline_schedules_path(@project)
     else
       render :edit
     end
   end
 
+  def take_ownership
+    @pipeline_schedule.own!(current_user)
+
+    redirect_to pipeline_schedules_path(@project)
+  end
+
   def destroy
     @pipeline_schedule.destroy
+
+    redirect_to pipeline_schedules_path(@project)
   end
 
   private
@@ -58,7 +68,6 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
 
   def pipeline_schedule_params
     params.require(:pipeline_schedule).
-      permit(:description, :cron, :cron_timezone, :ref).
-      reverse_merge(active: true, cron_timezone: 'UTC')
+      permit(:description, :cron, :cron_timezone, :ref, :active)
   end
 end

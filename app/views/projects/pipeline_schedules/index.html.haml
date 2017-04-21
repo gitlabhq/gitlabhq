@@ -4,7 +4,7 @@
 
 %div{ class: container_class }
   .top-area
-    - schedule_path_proc = ->(scope) { project_pipeline_schedules_path(@project, scope: scope) }
+    - schedule_path_proc = ->(scope) { pipeline_schedules_path(@project, scope: scope) }
     = render "tabs", schedule_path_proc: schedule_path_proc, all_schedules: @all_schedules, scope: @scope
 
     .nav-controls
@@ -13,7 +13,7 @@
 
   - if @schedules.present?
     %ul.content-list
-      = render partial: "pipeline_schedule", collection: @schedules
+      = render partial: "table"
   - else
     .light-well
       .nothing-here-block No schedules
