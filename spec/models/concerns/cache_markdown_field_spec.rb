@@ -1,9 +1,6 @@
 require 'spec_helper'
 
 describe CacheMarkdownField do
-  caching_classes = CacheMarkdownField::CACHING_CLASSES
-  CacheMarkdownField::CACHING_CLASSES = ["ThingWithMarkdownFields"].freeze
-
   # The minimum necessary ActiveModel to test this concern
   class ThingWithMarkdownFields
     include ActiveModel::Model
@@ -27,18 +24,19 @@ describe CacheMarkdownField do
     cache_markdown_field :foo
     cache_markdown_field :baz, pipeline: :single_line
 
-    def self.add_attr(attr_name)
-      self.attribute_names += [attr_name]
-      define_attribute_methods(attr_name)
-      attr_reader(attr_name)
-      define_method("#{attr_name}=") do |val|
-        send("#{attr_name}_will_change!") unless val == send(attr_name)
-        instance_variable_set("@#{attr_name}", val)
+    def self.add_attr(name)
+      self.attribute_names += [name]
+      define_attribute_methods(name)
+      attr_reader(name)
+      define_method("#{name}=") do |value|
+        write_attribute(name, value)
       end
     end
 
-    [:foo, :foo_html, :bar, :baz, :baz_html].each do |attr_name|
-      add_attr(attr_name)
+    add_attr :cached_markdown_version
+
+    [:foo, :foo_html, :bar, :baz, :baz_html].each do |name|
+      add_attr(name)
     end
 
     def initialize(*)
@@ -48,6 +46,15 @@ describe CacheMarkdownField do
       clear_changes_information
     end
 
+    def read_attribute(name)
+      instance_variable_get("@#{name}")
+    end
+
+    def write_attribute(name, value)
+      send("#{name}_will_change!") unless value == read_attribute(name)
+      instance_variable_set("@#{name}", value)
+    end
+
     def save
       run_callbacks :save do
         changes_applied
@@ -55,127 +62,236 @@ describe CacheMarkdownField do
     end
   end
 
-  CacheMarkdownField::CACHING_CLASSES = caching_classes
-
   def thing_subclass(new_attr)
     Class.new(ThingWithMarkdownFields) { add_attr(new_attr) }
   end
 
-  let(:markdown) { "`Foo`" }
-  let(:html) { "<p><code>Foo</code></p>" }
+  let(:markdown) { '`Foo`' }
+  let(:html) { '<p dir="auto"><code>Foo</code></p>' }
 
-  let(:updated_markdown) { "`Bar`" }
-  let(:updated_html) { "<p dir=\"auto\"><code>Bar</code></p>" }
+  let(:updated_markdown) { '`Bar`' }
+  let(:updated_html) { '<p dir="auto"><code>Bar</code></p>' }
 
-  subject { ThingWithMarkdownFields.new(foo: markdown, foo_html: html) }
+  let(:thing) { ThingWithMarkdownFields.new(foo: markdown, foo_html: html, cached_markdown_version: CacheMarkdownField::CACHE_VERSION) }
 
-  describe ".attributes" do
-    it "excludes cache attributes" do
-      expect(thing_subclass(:qux).new.attributes.keys.sort).to eq(%w[bar baz foo qux])
+  describe '.attributes' do
+    it 'excludes cache attributes' do
+      expect(thing.attributes.keys.sort).to eq(%w[bar baz foo])
     end
   end
 
-  describe ".cache_markdown_field" do
-    it "refuses to allow untracked classes" do
-      expect { thing_subclass(:qux).__send__(:cache_markdown_field, :qux) }.to raise_error(RuntimeError)
-    end
-  end
-
-  context "an unchanged markdown field" do
+  context 'an unchanged markdown field' do
     before do
-      subject.foo = subject.foo
-      subject.save
+      thing.foo = thing.foo
+      thing.save
     end
 
-    it { expect(subject.foo).to eq(markdown) }
-    it { expect(subject.foo_html).to eq(html) }
-    it { expect(subject.foo_html_changed?).not_to be_truthy }
+    it { expect(thing.foo).to eq(markdown) }
+    it { expect(thing.foo_html).to eq(html) }
+    it { expect(thing.foo_html_changed?).not_to be_truthy }
+    it { expect(thing.cached_markdown_version).to eq(CacheMarkdownField::CACHE_VERSION) }
   end
 
-  context "a changed markdown field" do
+  context 'a changed markdown field' do
     before do
-      subject.foo = updated_markdown
-      subject.save
+      thing.foo = updated_markdown
+      thing.save
     end
 
-    it { expect(subject.foo_html).to eq(updated_html) }
+    it { expect(thing.foo_html).to eq(updated_html) }
+    it { expect(thing.cached_markdown_version).to eq(CacheMarkdownField::CACHE_VERSION) }
   end
 
-  context "a non-markdown field changed" do
+  context 'a non-markdown field changed' do
     before do
-      subject.bar = "OK"
-      subject.save
+      thing.bar = 'OK'
+      thing.save
     end
 
-    it { expect(subject.bar).to eq("OK") }
-    it { expect(subject.foo).to eq(markdown) }
-    it { expect(subject.foo_html).to eq(html) }
+    it { expect(thing.bar).to eq('OK') }
+    it { expect(thing.foo).to eq(markdown) }
+    it { expect(thing.foo_html).to eq(html) }
+    it { expect(thing.cached_markdown_version).to eq(CacheMarkdownField::CACHE_VERSION) }
+  end
+
+  context 'version is out of date' do
+    let(:thing) { ThingWithMarkdownFields.new(foo: updated_markdown, foo_html: html, cached_markdown_version: nil) }
+
+    before do
+      thing.save
+    end
+
+    it { expect(thing.foo_html).to eq(updated_html) }
+    it { expect(thing.cached_markdown_version).to eq(CacheMarkdownField::CACHE_VERSION) }
+  end
+
+  describe '#cached_html_up_to_date?' do
+    subject { thing.cached_html_up_to_date?(:foo) }
+
+    it 'returns false when the version is absent' do
+      thing.cached_markdown_version = nil
+
+      is_expected.to be_falsy
+    end
+
+    it 'returns false when the version is too early' do
+      thing.cached_markdown_version -= 1
+
+      is_expected.to be_falsy
+    end
+
+    it 'returns false when the version is too late' do
+      thing.cached_markdown_version += 1
+
+      is_expected.to be_falsy
+    end
+
+    it 'returns true when the version is just right' do
+      thing.cached_markdown_version = CacheMarkdownField::CACHE_VERSION
+
+      is_expected.to be_truthy
+    end
+
+    it 'returns false if markdown has been changed but html has not' do
+      thing.foo = updated_html
+
+      is_expected.to be_falsy
+    end
+
+    it 'returns true if markdown has not been changed but html has' do
+      thing.foo_html = updated_html
+
+      is_expected.to be_truthy
+    end
+
+    it 'returns true if markdown and html have both been changed' do
+      thing.foo = updated_markdown
+      thing.foo_html = updated_html
+
+      is_expected.to be_truthy
+    end
+  end
+
+  describe '#refresh_markdown_cache!' do
+    before do
+      thing.foo = updated_markdown
+    end
+
+    context 'do_update: false' do
+      it 'fills all html fields' do
+        thing.refresh_markdown_cache!
+
+        expect(thing.foo_html).to eq(updated_html)
+        expect(thing.foo_html_changed?).to be_truthy
+        expect(thing.baz_html_changed?).to be_truthy
+      end
+
+      it 'does not save the result' do
+        expect(thing).not_to receive(:update_columns)
+
+        thing.refresh_markdown_cache!
+      end
+
+      it 'updates the markdown cache version' do
+        thing.cached_markdown_version = nil
+        thing.refresh_markdown_cache!
+
+        expect(thing.cached_markdown_version).to eq(CacheMarkdownField::CACHE_VERSION)
+      end
+    end
+
+    context 'do_update: true' do
+      it 'fills all html fields' do
+        thing.refresh_markdown_cache!(do_update: true)
+
+        expect(thing.foo_html).to eq(updated_html)
+        expect(thing.foo_html_changed?).to be_truthy
+        expect(thing.baz_html_changed?).to be_truthy
+      end
+
+      it 'skips saving if not persisted' do
+        expect(thing).to receive(:persisted?).and_return(false)
+        expect(thing).not_to receive(:update_columns)
+
+        thing.refresh_markdown_cache!(do_update: true)
+      end
+
+      it 'saves the changes using #update_columns' do
+        expect(thing).to receive(:persisted?).and_return(true)
+        expect(thing).to receive(:update_columns)
+          .with("foo_html" => updated_html, "baz_html" => "", "cached_markdown_version" => CacheMarkdownField::CACHE_VERSION)
+
+        thing.refresh_markdown_cache!(do_update: true)
+      end
+    end
   end
 
   describe '#banzai_render_context' do
-    it "sets project to nil if the object lacks a project" do
-      context = subject.banzai_render_context(:foo)
-      expect(context).to have_key(:project)
+    subject(:context) { thing.banzai_render_context(:foo) }
+
+    it 'sets project to nil if the object lacks a project' do
+      is_expected.to have_key(:project)
       expect(context[:project]).to be_nil
     end
 
-    it "excludes author if the object lacks an author" do
-      context = subject.banzai_render_context(:foo)
-      expect(context).not_to have_key(:author)
+    it 'excludes author if the object lacks an author' do
+      is_expected.not_to have_key(:author)
     end
 
-    it "raises if the context for an unrecognised field is requested" do
-      expect{subject.banzai_render_context(:not_found)}.to raise_error(ArgumentError)
+    it 'raises if the context for an unrecognised field is requested' do
+      expect { thing.banzai_render_context(:not_found) }.to raise_error(ArgumentError)
     end
 
-    it "includes the pipeline" do
-      context = subject.banzai_render_context(:baz)
-      expect(context[:pipeline]).to eq(:single_line)
+    it 'includes the pipeline' do
+      baz = thing.banzai_render_context(:baz)
+
+      expect(baz[:pipeline]).to eq(:single_line)
     end
 
-    it "returns copies of the context template" do
-      template = subject.cached_markdown_fields[:baz]
-      copy = subject.banzai_render_context(:baz)
+    it 'returns copies of the context template' do
+      template = thing.cached_markdown_fields[:baz]
+      copy = thing.banzai_render_context(:baz)
+
       expect(copy).not_to be(template)
     end
 
-    context "with a project" do
-      subject { thing_subclass(:project).new(foo: markdown, foo_html: html, project: :project) }
+    context 'with a project' do
+      let(:thing) { thing_subclass(:project).new(foo: markdown, foo_html: html, project: :project_value) }
 
-      it "sets the project in the context" do
-        context = subject.banzai_render_context(:foo)
-        expect(context).to have_key(:project)
-        expect(context[:project]).to eq(:project)
+      it 'sets the project in the context' do
+        is_expected.to have_key(:project)
+        expect(context[:project]).to eq(:project_value)
       end
 
-      it "invalidates the cache when project changes" do
-        subject.project = :new_project
+      it 'invalidates the cache when project changes' do
+        thing.project = :new_project
         allow(Banzai::Renderer).to receive(:cacheless_render_field).and_return(updated_html)
 
-        subject.save
+        thing.save
 
-        expect(subject.foo_html).to eq(updated_html)
-        expect(subject.baz_html).to eq(updated_html)
+        expect(thing.foo_html).to eq(updated_html)
+        expect(thing.baz_html).to eq(updated_html)
+        expect(thing.cached_markdown_version).to eq(CacheMarkdownField::CACHE_VERSION)
       end
     end
 
-    context "with an author" do
-      subject { thing_subclass(:author).new(foo: markdown, foo_html: html, author: :author) }
+    context 'with an author' do
+      let(:thing) { thing_subclass(:author).new(foo: markdown, foo_html: html, author: :author_value) }
 
-      it "sets the author in the context" do
-        context = subject.banzai_render_context(:foo)
-        expect(context).to have_key(:author)
-        expect(context[:author]).to eq(:author)
+      it 'sets the author in the context' do
+        is_expected.to have_key(:author)
+        expect(context[:author]).to eq(:author_value)
       end
 
-      it "invalidates the cache when author changes" do
-        subject.author = :new_author
+      it 'invalidates the cache when author changes' do
+        thing.author = :new_author
         allow(Banzai::Renderer).to receive(:cacheless_render_field).and_return(updated_html)
 
-        subject.save
+        thing.save
 
-        expect(subject.foo_html).to eq(updated_html)
-        expect(subject.baz_html).to eq(updated_html)
+        expect(thing.foo_html).to eq(updated_html)
+        expect(thing.baz_html).to eq(updated_html)
+        expect(thing.cached_markdown_version).to eq(CacheMarkdownField::CACHE_VERSION)
       end
     end
   end
