@@ -50,6 +50,7 @@ var config = {
     balsamiq_viewer:      './blob/balsamiq_viewer.js',
     pipelines_graph:      './pipelines/graph_bundle.js',
     profile:              './profile/profile_bundle.js',
+    protected_refs:       './protected_refs',
     protected_branches:   './protected_branches/',
     protected_tags:       './protected_tags',
     sidebar:              './sidebar/sidebar_bundle.js',
