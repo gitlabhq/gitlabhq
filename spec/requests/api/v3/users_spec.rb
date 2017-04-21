@@ -276,5 +276,11 @@ describe API::V3::Users, api: true  do
 
       expect(new_user).to be_confirmed
     end
+
+    it 'does not reveal the `is_admin` flag of the user' do
+      post v3_api('/users', admin), attributes_for(:user)
+
+      expect(json_response['is_admin']).to be_nil
+    end
   end
 end

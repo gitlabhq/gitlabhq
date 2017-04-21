@@ -34,6 +34,12 @@ describe API::Keys, api: true  do
         expect(json_response['user']['id']).to eq(user.id)
         expect(json_response['user']['username']).to eq(user.username)
       end
+
+      it "does not include the user's `is_admin` flag" do
+        get api("/keys/#{key.id}", admin)
+
+        expect(json_response['user']['is_admin']).to be_nil
+      end
     end
   end
 end

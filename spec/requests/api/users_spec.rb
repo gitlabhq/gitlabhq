@@ -137,6 +137,12 @@ describe API::Users, api: true do
       expect(json_response['username']).to eq(user.username)
     end
 
+    it "does not return the user's `is_admin` flag" do
+      get api("/users/#{user.id}", user)
+
+      expect(json_response['is_admin']).to be_nil
+    end
+
     it "returns a 401 if unauthenticated" do
       get api("/users/9998")
       expect(response).to have_http_status(401)
@@ -399,7 +405,6 @@ describe API::Users, api: true do
     it "updates admin status" do
       put api("/users/#{user.id}", admin), { admin: true }
       expect(response).to have_http_status(200)
-      expect(json_response['is_admin']).to eq(true)
       expect(user.reload.admin).to eq(true)
     end
 
@@ -413,7 +418,6 @@ describe API::Users, api: true do
     it "does not update admin status" do
       put api("/users/#{admin_user.id}", admin), { can_create_group: false }
       expect(response).to have_http_status(200)
-      expect(json_response['is_admin']).to eq(true)
       expect(admin_user.reload.admin).to eq(true)
       expect(admin_user.can_create_group).to eq(false)
     end
