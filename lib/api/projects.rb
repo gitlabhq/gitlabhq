@@ -11,7 +11,7 @@ module API
         optional :issues_enabled, type: Boolean, desc: 'Flag indication if the issue tracker is enabled'
         optional :merge_requests_enabled, type: Boolean, desc: 'Flag indication if merge requests are enabled'
         optional :wiki_enabled, type: Boolean, desc: 'Flag indication if the wiki is enabled'
-        optional :builds_enabled, type: Boolean, desc: 'Flag indication if builds are enabled'
+        optional :jobs_enabled, type: Boolean, desc: 'Flag indication if jobs are enabled'
         optional :snippets_enabled, type: Boolean, desc: 'Flag indication if snippets are enabled'
         optional :shared_runners_enabled, type: Boolean, desc: 'Flag indication if shared runners are enabled for that project'
         optional :container_registry_enabled, type: Boolean, desc: 'Flag indication if the container registry is enabled for that project'
@@ -99,6 +99,7 @@ module API
       end
       post do
         attrs = declared_params(include_missing: false)
+        attrs[:builds_enabled] = attrs.delete(:jobs_enabled) if attrs.has_key?(:jobs_enabled)
         project = ::Projects::CreateService.new(current_user, attrs).execute
 
         if project.saved?
@@ -203,7 +204,7 @@ module API
         optional :path, type: String, desc: 'The path of the repository'
         use :optional_params
         at_least_one_of :name, :description, :issues_enabled, :merge_requests_enabled,
-                        :wiki_enabled, :builds_enabled, :snippets_enabled,
+                        :wiki_enabled, :jobs_enabled, :snippets_enabled,
                         :shared_runners_enabled, :container_registry_enabled,
                         :lfs_enabled, :visibility, :public_builds,
                         :request_access_enabled, :only_allow_merge_if_pipeline_succeeds,
@@ -215,6 +216,8 @@ module API
         attrs = declared_params(include_missing: false)
         authorize! :rename_project, user_project if attrs[:name].present?
         authorize! :change_visibility_level, user_project if attrs[:visibility].present?
+
+        attrs[:builds_enabled] = attrs.delete(:jobs_enabled) if attrs.has_key?(:jobs_enabled)
 
         result = ::Projects::UpdateService.new(user_project, current_user, attrs).execute
 
