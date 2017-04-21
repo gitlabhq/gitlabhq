@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { borderlessIcons } from '~/vue_shared/utils/ci_status_svg_index';
-import Stage from '~/vue_pipelines_index/components/stage';
+import Stage from '~/pipelines/components/stage';
 
 const SUCCESS_SVG = borderlessIcons.success;
 
