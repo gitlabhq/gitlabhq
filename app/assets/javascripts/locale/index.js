@@ -1,7 +1,7 @@
 import Jed from 'jed';
-import de from './de/app';
-import es from './es/app';
-import en from './en/app';
+import { de } from './de/app';
+import { es } from './es/app';
+import { en } from './en/app';
 
 const locales = {
   de,

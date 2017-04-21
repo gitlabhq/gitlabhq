@@ -36,6 +36,7 @@ var config = {
     issuable:             './issuable/issuable_bundle.js',
     locale:               './locale/index.js',
     issue_show:           './issue_show/index.js',
+    locale:               './locale/index.js',
     main:                 './main.js',
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
     merge_request_widget: './merge_request_widget/ci_bundle.js',

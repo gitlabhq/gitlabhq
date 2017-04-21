@@ -17,11 +17,47 @@ msgstr ""
 "Last-Translator: \n"
 "X-Generator: Poedit 2.0.1\n"
 
+msgid "Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project."
+msgstr ""
+
 msgid "Deutsch"
 msgstr "Alemán"
 
 msgid "English"
 msgstr "Inglés"
 
+msgid "Introducing Cycle Analytics"
+msgstr ""
+
+msgid "Last 30 days"
+msgstr ""
+
+msgid "Last 90 days"
+msgstr ""
+
+msgid "Median"
+msgstr ""
+
+msgid "Not available"
+msgstr ""
+
+msgid "Not enough data"
+msgstr ""
+
+msgid "Pipeline Health"
+msgstr ""
+
+msgid "Read more"
+msgstr ""
+
 msgid "Spanish"
 msgstr "Español"
+
+msgid "Stage"
+msgstr ""
+
+msgid "Total Time"
+msgstr ""
+
+msgid "Want to see the data? Please ask administrator for access."
+msgstr ""

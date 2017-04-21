@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-13 00:01-0500\n"
-"PO-Revision-Date: 2017-04-13 00:01-0500\n"
+"POT-Creation-Date: 2017-04-21 09:01+0100\n"
+"PO-Revision-Date: 2017-04-21 09:01+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -18,11 +18,47 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
+msgid "Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project."
+msgstr ""
+
 msgid "Deutsch"
 msgstr ""
 
 msgid "English"
 msgstr ""
 
+msgid "Introducing Cycle Analytics"
+msgstr ""
+
+msgid "Last 30 days"
+msgstr ""
+
+msgid "Last 90 days"
+msgstr ""
+
+msgid "Median"
+msgstr ""
+
+msgid "Not available"
+msgstr ""
+
+msgid "Not enough data"
+msgstr ""
+
+msgid "Pipeline Health"
+msgstr ""
+
+msgid "Read more"
+msgstr ""
+
 msgid "Spanish"
+msgstr ""
+
+msgid "Stage"
+msgstr ""
+
+msgid "Total Time"
+msgstr ""
+
+msgid "Want to see the data? Please ask administrator for access."
 msgstr ""
