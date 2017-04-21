@@ -36,6 +36,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
         setTimeout(() => {
           expect(this.component.$el.querySelector('.empty-state')).toBeDefined();
           expect(this.component.$el.querySelector('.realtime-loading')).toBe(null);
+          expect(this.component.$el.querySelector('.js-pipelines-error-state')).toBe(null);
           done();
         }, 1);
       });
@@ -67,6 +68,8 @@ describe('Pipelines table in Commits and Merge requests', () => {
         setTimeout(() => {
           expect(this.component.$el.querySelectorAll('table > tbody > tr').length).toEqual(1);
           expect(this.component.$el.querySelector('.realtime-loading')).toBe(null);
+          expect(this.component.$el.querySelector('.empty-state')).toBe(null);
+          expect(this.component.$el.querySelector('.js-pipelines-error-state')).toBe(null);
           done();
         }, 0);
       });
@@ -99,6 +102,8 @@ describe('Pipelines table in Commits and Merge requests', () => {
       setTimeout(() => {
         expect(this.component.$el.querySelector('.js-pipelines-error-state')).toBeDefined();
         expect(this.component.$el.querySelector('.realtime-loading')).toBe(null);
+        expect(this.component.$el.querySelector('.js-empty-state')).toBe(null);
+        expect(this.component.$el.querySelector('table')).toBe(null);
         done();
       }, 0);
     });

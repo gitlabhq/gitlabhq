@@ -55,7 +55,15 @@ export default Vue.component('pipelines-table', {
     },
 
     shouldRenderEmptyState() {
-      return !this.state.pipelines.length && !this.isLoading;
+      return !this.state.pipelines.length &&
+        !this.isLoading &&
+        !this.hasError;
+    },
+
+    shouldRenderTable() {
+      return !this.isLoading &&
+        this.state.pipelines.length > 0 &&
+        !this.hasError;
     },
   },
 
@@ -145,8 +153,12 @@ export default Vue.component('pipelines-table', {
 
   template: `
     <div class="content-list pipelines">
-      <div class="realtime-loading" v-if="isLoading">
-        <i class="fa fa-spinner fa-spin"></i>
+      <div
+        class="realtime-loading"
+        v-if="isLoading">
+        <i
+          class="fa fa-spinner fa-spin"
+          aria-hidden="true" />
       </div>
 
       <empty-state
@@ -155,8 +167,9 @@ export default Vue.component('pipelines-table', {
 
       <error-state v-if="shouldRenderErrorState" />
 
-      <div class="table-holder"
-        v-if="!isLoading && state.pipelines.length > 0">
+      <div
+        class="table-holder"
+        v-if="shouldRenderTable">
         <pipelines-table-component
           :pipelines="state.pipelines"
           :service="service" />

@@ -9,7 +9,7 @@ export default {
   },
 
   template: `
-    <div class="row empty-state">
+    <div class="row empty-state js-empty-state">
       <div class="col-xs-12">
         <div class="svg-content">
           ${pipelinesEmptyStateSVG}
