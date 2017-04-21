@@ -26,12 +26,12 @@ describe('Blob viewer', () => {
   });
 
   it('loads source file after switching views', (done) => {
-    document.querySelector('.js-blob-viewer-switcher[data-viewer="simple"]').click();
+    document.querySelector('.js-blob-viewer-switch-btn[data-viewer="simple"]').click();
 
     setTimeout(() => {
       expect($.ajax).toHaveBeenCalled();
       expect(
-        document.querySelector('.js-blob-viewer-switcher[data-viewer="simple"]')
+        document.querySelector('.js-blob-viewer-switch-btn[data-viewer="simple"]')
           .classList.contains('hidden'),
       ).toBeFalsy();
 
@@ -47,7 +47,7 @@ describe('Blob viewer', () => {
     setTimeout(() => {
       expect($.ajax).toHaveBeenCalled();
       expect(
-        document.querySelector('.js-blob-viewer-switcher[data-viewer="simple"]')
+        document.querySelector('.js-blob-viewer-switch-btn[data-viewer="simple"]')
           .classList.contains('hidden'),
       ).toBeFalsy();
 
@@ -57,7 +57,7 @@ describe('Blob viewer', () => {
 
   it('doesnt reload file if already loaded', (done) => {
     const asyncClick = () => new Promise((resolve) => {
-      document.querySelector('.js-blob-viewer-switcher[data-viewer="simple"]').click();
+      document.querySelector('.js-blob-viewer-switch-btn[data-viewer="simple"]').click();
 
       setTimeout(resolve);
     });
@@ -91,7 +91,7 @@ describe('Blob viewer', () => {
     });
 
     it('enables after switching to simple view', (done) => {
-      document.querySelector('.js-blob-viewer-switcher[data-viewer="simple"]').click();
+      document.querySelector('.js-blob-viewer-switch-btn[data-viewer="simple"]').click();
 
       setTimeout(() => {
         expect($.ajax).toHaveBeenCalled();
@@ -104,7 +104,7 @@ describe('Blob viewer', () => {
     });
 
     it('updates tooltip after switching to simple view', (done) => {
-      document.querySelector('.js-blob-viewer-switcher[data-viewer="simple"]').click();
+      document.querySelector('.js-blob-viewer-switch-btn[data-viewer="simple"]').click();
 
       setTimeout(() => {
         expect($.ajax).toHaveBeenCalled();

@@ -233,7 +233,7 @@ module BlobHelper
     end
 
     if viewer.rich? && viewer.blob.rendered_as_text?(override_max_size: true)
-      options << link_to('view the source', '#', class: 'js-blob-viewer-switcher', data: { viewer: 'simple' })
+      options << link_to('view the source', '#', class: 'js-blob-viewer-switch-btn', data: { viewer: 'simple' })
     end
 
     options << link_to('download it', blob_raw_url, target: '_blank', rel: 'noopener noreferrer')

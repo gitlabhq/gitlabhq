@@ -2,7 +2,8 @@
 /* global Flash */
 export default class BlobViewer {
   constructor() {
-    this.switcherBtns = document.querySelectorAll('.js-blob-viewer-switcher');
+    this.switcher = document.querySelector('.js-blob-viewer-switcher');
+    this.switcherBtns = document.querySelectorAll('.js-blob-viewer-switch-btn');
     this.copySourceBtn = document.querySelector('.js-copy-blob-source-btn');
     this.simpleViewer = document.querySelector('.blob-viewer[data-type="simple"]');
     this.richViewer = document.querySelector('.blob-viewer[data-type="rich"]');
@@ -10,22 +11,22 @@ export default class BlobViewer {
 
     let initialViewerName = document.querySelector('.blob-viewer:not(.hidden)').getAttribute('data-type');
 
-    if (this.switcherBtns.length) {
-      this.initBindings();
+    this.initBindings();
 
-      if (location.hash.indexOf('#L') === 0) {
-        initialViewerName = 'simple';
-      }
+    if (this.switcher && location.hash.indexOf('#L') === 0) {
+      initialViewerName = 'simple';
     }
 
     this.switchToViewer(initialViewerName);
   }
 
   initBindings() {
-    Array.from(this.switcherBtns)
-      .forEach((el) => {
-        el.addEventListener('click', this.switchViewHandler.bind(this));
-      });
+    if (this.switcherBtns.length) {
+      Array.from(this.switcherBtns)
+        .forEach((el) => {
+          el.addEventListener('click', this.switchViewHandler.bind(this));
+        });
+    }
 
     if (this.copySourceBtn) {
       this.copySourceBtn.addEventListener('click', () => {
@@ -91,8 +92,8 @@ export default class BlobViewer {
     const newViewer = document.querySelector(`.blob-viewer[data-type='${name}']`);
     if (this.activeViewer === newViewer) return;
 
-    const oldButton = document.querySelector('.js-blob-viewer-switcher.active');
-    const newButton = document.querySelector(`.js-blob-viewer-switcher[data-viewer='${name}']`);
+    const oldButton = document.querySelector('.js-blob-viewer-switch-btn.active');
+    const newButton = document.querySelector(`.js-blob-viewer-switch-btn[data-viewer='${name}']`);
     const oldViewer = document.querySelector(`.blob-viewer:not([data-type='${name}'])`);
 
     if (oldButton) {

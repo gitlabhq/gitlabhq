@@ -19,7 +19,7 @@ feature 'File blob', feature: true do
     it 'switches to code view' do
       visit_blob('files/images/wm.svg')
 
-      first('.js-blob-viewer-switcher').click
+      first('.js-blob-viewer-switch-btn').click
 
       expect(page).to have_selector('.blob-viewer[data-type="rich"]', visible: false)
       expect(page).to have_selector('.blob-viewer[data-type="simple"]')
