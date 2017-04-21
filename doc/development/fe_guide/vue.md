@@ -103,6 +103,21 @@ The Service is a class used only to communicate with the server.
 It does not store or manipulate any data. It is not aware of the store or the components.
 We use [vue-resource][vue-resource-repo] to communicate with the server.
 
+Vue Resource should only be imported in the service file.
+
+  ```javascript
+  import Vue from 'vue';
+  import VueResource from 'vue-resource';
+
+  Vue.use(VueResource);
+  ```
+
+### CSRF token
+We use a Vue Resource interceptor to manage the CSRF token.
+`app/assets/javascripts/vue_shared/vue_resource_interceptor.js` holds all our common interceptors.
+Note: You don't need to load `app/assets/javascripts/vue_shared/vue_resource_interceptor.js`
+since it's already being loaded by `common_vue.js`.
+
 ### End Result
 
 The following example shows an  application:
@@ -288,7 +303,8 @@ new Vue({
 
 ```
 
-The [issue boards service][issue-boards-service] is a good example of this pattern.
+The [issue boards service][issue-boards-service]
+is a good example of this pattern.
 
 ## Style guide
 
