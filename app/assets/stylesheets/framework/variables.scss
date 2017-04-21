@@ -561,3 +561,8 @@ $filter-name-text-color: rgba(0, 0, 0, 0.55);
 $filter-value-text-color: rgba(0, 0, 0, 0.85);
 $filter-name-selected-color: #ebebeb;
 $filter-value-selected-color: #d7d7d7;
+
+/*
+Animation Functions
+*/
+$dropdown-animation-timing: cubic-bezier(0.23, 1, 0.32, 1);
