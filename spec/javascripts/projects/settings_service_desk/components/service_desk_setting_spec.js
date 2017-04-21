@@ -31,12 +31,8 @@ describe('ServiceDeskSetting', () => {
           el = vm.$el;
         });
 
-        it('should see disabled activation checkbox', () => {
-          expect(vm.$refs['enabled-checkbox'].getAttribute('disabled')).toEqual('disabled');
-        });
-
-        it('should see only instance admin can activate/deactivate message', () => {
-          expect(vm.$refs['only-instance-admin-activate-message']).toBeDefined();
+        it('should see activation checkbox (not disabled)', () => {
+          expect(vm.$refs['enabled-checkbox'].getAttribute('disabled')).toEqual(null);
         });
 
         it('should see main panel with the email info', () => {
@@ -51,20 +47,6 @@ describe('ServiceDeskSetting', () => {
 
         it('should see warning message', () => {
           expect(vm.$refs['recommend-protect-email-from-spam-message']).toBeDefined();
-        });
-      });
-
-      describe('as instance admin', () => {
-        beforeEach(() => {
-          vm = createComponent({
-            isEnabled: true,
-            isInstanceAdmin: true,
-          });
-          el = vm.$el;
-        });
-
-        it('should see activation checkbox (not disabled)', () => {
-          expect(vm.$refs['enabled-checkbox'].getAttribute('disabled')).toEqual(null);
         });
       });
     });
