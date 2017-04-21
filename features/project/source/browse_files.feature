@@ -135,7 +135,7 @@ Feature: Project Source Browse Files
     And I fill the commit message
     And I click on "Commit changes"
     Then I am on the new file page
-    And I see a commit error message
+    And I see "Path can contain only..."
 
   @javascript
   Scenario: I can create file with a directory name

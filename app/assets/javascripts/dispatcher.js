@@ -150,12 +150,12 @@ const ShortcutsBlob = require('./shortcuts_blob');
         case 'projects:milestones:new':
         case 'projects:milestones:edit':
         case 'projects:milestones:update':
+        case 'groups:milestones:new':
+        case 'groups:milestones:edit':
+        case 'groups:milestones:update':
           new ZenMode();
           new gl.DueDateSelectors();
           new gl.GLForm($('.milestone-form'));
-          break;
-        case 'groups:milestones:new':
-          new ZenMode();
           break;
         case 'projects:compare:show':
           new gl.Diff();
@@ -367,6 +367,9 @@ const ShortcutsBlob = require('./shortcuts_blob');
         case 'admin':
           new Admin();
           switch (path[1]) {
+            case 'cohorts':
+              new gl.UsagePing();
+              break;
             case 'groups':
               new UsersSelect();
               break;

@@ -65,6 +65,8 @@ export default {
     makeRequest() {
       this.isLoading = true;
 
+      $(this.$el).tooltip('destroy');
+
       this.service.postAction(this.endpoint)
         .then(() => {
           this.isLoading = false;
@@ -88,9 +90,13 @@ export default {
     :aria-label="title"
     data-container="body"
     data-placement="top"
-    :disabled="isLoading"
-  >
-    <i :class="iconClass" aria-hidden="true"></i>
-    <i class="fa fa-spinner fa-spin" aria-hidden="true" v-if="isLoading"></i>
+    :disabled="isLoading">
+    <i
+      :class="iconClass"
+      aria-hidden="true" />
+    <i
+      class="fa fa-spinner fa-spin"
+      aria-hidden="true"
+      v-if="isLoading" />
   </button>
 </template>

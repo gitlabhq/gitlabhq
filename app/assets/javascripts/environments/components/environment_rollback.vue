@@ -1,3 +1,4 @@
+<script>
 /* global Flash */
 /* eslint-disable no-new */
 /**
@@ -36,6 +37,8 @@ export default {
     onClick() {
       this.isLoading = true;
 
+      $(this.$el).tooltip('destroy');
+
       this.service.postAction(this.retryUrl)
       .then(() => {
         this.isLoading = false;
@@ -47,21 +50,25 @@ export default {
       });
     },
   },
-
-  template: `
-    <button type="button"
-      class="btn"
-      @click="onClick"
-      :disabled="isLoading">
-
-      <span v-if="isLastDeployment">
-        Re-deploy
-      </span>
-      <span v-else>
-        Rollback
-      </span>
-
-      <i v-if="isLoading" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
-    </button>
-  `,
 };
+</script>
+<template>
+  <button
+    type="button"
+    class="btn"
+    @click="onClick"
+    :disabled="isLoading">
+
+    <span v-if="isLastDeployment">
+      Re-deploy
+    </span>
+    <span v-else>
+      Rollback
+    </span>
+
+    <i
+      v-if="isLoading"
+      class="fa fa-spinner fa-spin"
+      aria-hidden="true" />
+  </button>
+</template>

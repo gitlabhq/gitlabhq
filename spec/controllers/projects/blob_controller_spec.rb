@@ -106,7 +106,7 @@ describe Projects::BlobController do
         namespace_id: project.namespace,
         project_id: project,
         id: 'master/CHANGELOG',
-        target_branch: 'master',
+        branch_name: 'master',
         content: 'Added changes',
         commit_message: 'Update CHANGELOG'
       }
@@ -178,7 +178,7 @@ describe Projects::BlobController do
 
       context 'when editing on the original repository' do
         it "redirects to forked project new merge request" do
-          default_params[:target_branch] = "fork-test-1"
+          default_params[:branch_name] = "fork-test-1"
           default_params[:create_merge_request] = 1
 
           put :update, default_params

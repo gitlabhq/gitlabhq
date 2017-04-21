@@ -164,6 +164,9 @@
                 .then(function () {
                   $dropdown.trigger('loaded.gl.dropdown');
                   $loading.fadeOut();
+                })
+                .catch(() => {
+                  $loading.fadeOut();
                 });
             } else {
               selected = $selectbox.find('input[type="hidden"]').val();

@@ -71,6 +71,8 @@ class PrometheusGraph {
         this.transformData(metricsResponse);
         this.createGraph();
       }
+    }).catch(() => {
+      new Flash('An error occurred when trying to load metrics. Please try again.');
     });
   }
 

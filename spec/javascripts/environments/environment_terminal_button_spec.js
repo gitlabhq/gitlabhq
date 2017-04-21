@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import terminalComp from '~/environments/components/environment_terminal_button';
+import terminalComp from '~/environments/components/environment_terminal_button.vue';
 
 describe('Stop Component', () => {
   let TerminalComponent;

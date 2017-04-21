@@ -56,9 +56,7 @@ class Projects::CommitController < Projects::ApplicationController
 
     return render_404 if @start_branch.blank?
 
-    @target_branch = create_new_branch? ? @commit.revert_branch_name : @start_branch
-
-    @mr_target_branch = @start_branch
+    @branch_name = create_new_branch? ? @commit.revert_branch_name : @start_branch
 
     create_commit(Commits::RevertService, success_notice: "The #{@commit.change_type_title(current_user)} has been successfully reverted.",
                                           success_path: -> { successful_change_path }, failure_path: failed_change_path)
@@ -69,9 +67,7 @@ class Projects::CommitController < Projects::ApplicationController
 
     return render_404 if @start_branch.blank?
 
-    @target_branch = create_new_branch? ? @commit.cherry_pick_branch_name : @start_branch
-
-    @mr_target_branch = @start_branch
+    @branch_name = create_new_branch? ? @commit.cherry_pick_branch_name : @start_branch
 
     create_commit(Commits::CherryPickService, success_notice: "The #{@commit.change_type_title(current_user)} has been successfully cherry-picked.",
                                               success_path: -> { successful_change_path }, failure_path: failed_change_path)
@@ -84,7 +80,7 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def successful_change_path
-    referenced_merge_request_url || namespace_project_commits_url(@project.namespace, @project, @target_branch)
+    referenced_merge_request_url || namespace_project_commits_url(@project.namespace, @project, @branch_name)
   end
 
   def failed_change_path

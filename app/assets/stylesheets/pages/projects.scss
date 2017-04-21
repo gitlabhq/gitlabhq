@@ -596,6 +596,10 @@ pre.light-well {
 
   .avatar-container {
     align-self: flex-start;
+
+    > a {
+      width: 100%;
+    }
   }
 
   .project-details {

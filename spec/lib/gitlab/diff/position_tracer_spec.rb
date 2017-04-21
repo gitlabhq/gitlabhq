@@ -100,7 +100,7 @@ describe Gitlab::Diff::PositionTracer, lib: true do
       project,
       current_user,
       start_branch: branch_name,
-      target_branch: branch_name,
+      branch_name: branch_name,
       commit_message: "Create file",
       file_path: file_name,
       file_content: content
@@ -113,7 +113,7 @@ describe Gitlab::Diff::PositionTracer, lib: true do
       project,
       current_user,
       start_branch: branch_name,
-      target_branch: branch_name,
+      branch_name: branch_name,
       commit_message: "Update file",
       file_path: file_name,
       file_content: content
@@ -122,11 +122,11 @@ describe Gitlab::Diff::PositionTracer, lib: true do
   end
 
   def delete_file(branch_name, file_name)
-    Files::DestroyService.new(
+    Files::DeleteService.new(
       project,
       current_user,
       start_branch: branch_name,
-      target_branch: branch_name,
+      branch_name: branch_name,
       commit_message: "Delete file",
       file_path: file_name
     ).execute
