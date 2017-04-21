@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign, no-alert */
-import Flash from '~/flash';
+import Flash from '../../flash';
 import eventHub from '../../pipelines/event_hub';
 import AsyncButtonComponent from '../../pipelines/components/async_button.vue';
 import PipelinesActionsComponent from '../../pipelines/components/pipelines_actions';
