@@ -3,14 +3,18 @@ class ExpirePipelineCacheWorker
   include PipelineQueue
 
   def perform(pipeline_id)
-    pipeline = Ci::Pipeline.find(pipeline_id)
+    pipeline = Ci::Pipeline.find_by(id: pipeline_id)
+    return unless pipeline
+
     project = pipeline.project
     store = Gitlab::EtagCaching::Store.new
 
     store.touch(project_pipelines_path(project))
     store.touch(commit_pipelines_path(project, pipeline.commit)) if pipeline.commit
     store.touch(new_merge_request_pipelines_path(project))
-    merge_requests_pipelines_paths(project, pipeline).each { |path| store.touch(path) }
+    each_pipelines_merge_request_path(project, pipeline) do |path|
+      store.touch(path)
+    end
 
     Gitlab::Cache::Ci::ProjectPipelineStatus.update_for_pipeline(pipeline)
   end
@@ -39,13 +43,15 @@ class ExpirePipelineCacheWorker
       format: :json)
   end
 
-  def merge_requests_pipelines_paths(project, pipeline)
-    pipeline.all_merge_requests.collect do |merge_request|
-      Gitlab::Routing.url_helpers.pipelines_namespace_project_merge_request_path(
+  def each_pipelines_merge_request_path(project, pipeline)
+    pipeline.all_merge_requests.each do |merge_request|
+      path = Gitlab::Routing.url_helpers.pipelines_namespace_project_merge_request_path(
         project.namespace,
         project,
         merge_request,
         format: :json)
+
+      yield(path)
     end
   end
 end

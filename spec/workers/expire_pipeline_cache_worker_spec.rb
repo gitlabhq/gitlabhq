@@ -29,6 +29,12 @@ describe ExpirePipelineCacheWorker do
       subject.perform(pipeline.id)
     end
 
+    it "doesn't do anything if the pipeline not exist" do
+      expect_any_instance_of(Gitlab::EtagCaching::Store).not_to receive(:touch)
+
+      subject.perform(617748)
+    end
+
     it 'updates the cached status for a project' do
       expect(Gitlab::Cache::Ci::ProjectPipelineStatus).to receive(:update_for_pipeline).
                                                             with(pipeline)
