@@ -1,85 +1,18 @@
-export default class ProtectedBranchDropdown {
+import { ProtectedRefDropdown } from '../protected_refs';
+
+export default class ProtectedBranchDropdown extends ProtectedRefDropdown {
   /**
-   * @param {Object} options containing
-   *                         `$dropdown` target element
-   *                          `onSelect` event callback
-   * $dropdown must be an element created using `dropdown_tag()` rails helper
+   * @param {Object} options matching ProtectedRefDropdown's constructor.
    */
   constructor(options) {
-    this.onSelect = options.onSelect;
-    this.$dropdown = options.$dropdown;
-    this.$dropdownContainer = this.$dropdown.parent();
-    this.$dropdownFooter = this.$dropdownContainer.find('.dropdown-footer');
-    this.$protectedBranch = this.$dropdownContainer.find('.js-create-new-protected-branch');
+    const $dropdownContainer = options.$dropdown.parent();
 
-    this.buildDropdown();
-    this.bindEvents();
-
-    // Hide footer
-    this.$dropdownFooter.addClass('hidden');
-  }
-
-  buildDropdown() {
-    this.$dropdown.glDropdown({
-      data: this.getProtectedBranches.bind(this),
-      filterable: true,
-      remote: false,
-      search: {
-        fields: ['title'],
-      },
-      selectable: true,
-      toggleLabel(selected) {
-        return (selected && 'id' in selected) ? selected.title : 'Protected Branch';
-      },
-      fieldName: 'protected_branch[name]',
-      text(protectedBranch) {
-        return _.escape(protectedBranch.title);
-      },
-      id(protectedBranch) {
-        return _.escape(protectedBranch.id);
-      },
-      onFilter: this.toggleCreateNewButton.bind(this),
-      clicked: (options) => {
-        const { $el, e } = options;
-        e.preventDefault();
-        this.onSelect();
-      },
+    super(options, {
+      $dropdownFooter: $dropdownContainer.find('.dropdown-footer'),
+      $createNewProtectedRef: $dropdownContainer.find('.js-create-new-protected-branch'),
+      protectedRefFieldName: 'protected_branch[name]',
+      dropdownLabel: 'Protected Branch',
+      protectedRefsList: gon.open_branches,
     });
-  }
-
-  bindEvents() {
-    this.$protectedBranch.on('click', this.onClickCreateWildcard.bind(this));
-  }
-
-  onClickCreateWildcard(e) {
-    e.preventDefault();
-
-    // Refresh the dropdown's data, which ends up calling `getProtectedBranches`
-    this.$dropdown.data('glDropdown').remote.execute();
-    this.$dropdown.data('glDropdown').selectRowAtIndex();
-  }
-
-  getProtectedBranches(term, callback) {
-    if (this.selectedBranch) {
-      callback(gon.open_branches.concat(this.selectedBranch));
-    } else {
-      callback(gon.open_branches);
-    }
-  }
-
-  toggleCreateNewButton(branchName) {
-    this.selectedBranch = {
-      title: branchName,
-      id: branchName,
-      text: branchName,
-    };
-
-    if (branchName) {
-      this.$dropdownContainer
-        .find('.js-create-new-protected-branch code')
-        .text(branchName);
-    }
-
-    this.$dropdownFooter.toggleClass('hidden', !branchName);
   }
 }
