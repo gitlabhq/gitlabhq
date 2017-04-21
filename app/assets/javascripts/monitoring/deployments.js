@@ -1,12 +1,14 @@
+/* global Flash */
 import d3 from 'd3';
+import {
+  dateFormat,
+  timeFormat,
+} from './constants';
 
 export default class Deployments {
   constructor(width, height) {
     this.width = width;
     this.height = height;
-    this.data = [];
-    this.dateFormat = d3.time.format('%b %d, %Y');
-    this.timeFormat = d3.time.format('%H:%M%p');
 
     this.endpoint = document.getElementById('js-metrics').dataset.deploymentEndpoint;
 
@@ -29,15 +31,16 @@ export default class Deployments {
       url: this.endpoint,
       dataType: 'JSON',
     })
+    .fail(() => new Flash('Error getting deployment information.'))
     .done((data) => {
-      data.deployments.forEach((deployment) => {
+      this.data = data.deployments.reduce((deploymentDataArray, deployment) => {
         const time = new Date(deployment.created_at);
         const xPos = Math.floor(this.x(time));
 
         time.setSeconds(this.chartData[0].time.getSeconds());
 
         if (xPos >= 0) {
-          this.data.push({
+          deploymentDataArray.push({
             id: deployment.id,
             time,
             sha: deployment.sha,
@@ -46,7 +49,9 @@ export default class Deployments {
             xPos,
           });
         }
-      });
+
+        return deploymentDataArray;
+      }, []);
 
       this.plotData();
     });
@@ -162,14 +167,14 @@ export default class Deployments {
         class: 'deploy-info-text',
         y: 18,
       })
-      .text(d => this.dateFormat(d.time))
+      .text(d => dateFormat(d.time))
       .select(this.selectParentNode)
       .append('text')
       .attr({
         class: 'deploy-info-text text-metric-bold',
         y: 38,
       })
-      .text(d => this.timeFormat(d.time));
+      .text(d => timeFormat(d.time));
   }
 
   static toggleDeployTextbox(deploy, key, showInfoBox) {
@@ -201,9 +206,6 @@ export default class Deployments {
   }
 
   static refText(d) {
-    const isTag = d.tag;
-    const refText = isTag ? d.ref : d.sha.slice(0, 6);
-
-    return refText;
+    return d.tag ? d.ref : d.sha.slice(0, 6);
   }
 }

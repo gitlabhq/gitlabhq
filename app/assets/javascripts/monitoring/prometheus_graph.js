@@ -7,14 +7,16 @@ import Deployments from './deployments';
 import '../lib/utils/common_utils';
 import { formatRelevantDigits } from '../lib/utils/number_utils';
 import '../flash';
+import {
+  dateFormat,
+  timeFormat,
+} from './constants';
 
 const prometheusContainer = '.prometheus-container';
 const prometheusParentGraphContainer = '.prometheus-graphs';
 const prometheusGraphsContainer = '.prometheus-graph';
 const prometheusStatesContainer = '.prometheus-state';
 const metricsEndpoint = 'metrics.json';
-const timeFormat = d3.time.format('%H:%M%p');
-const dayFormat = d3.time.format('%b %d, %Y');
 const bisectDate = d3.bisector(d => d.time).left;
 const extraAddedWidthParent = 100;
 
@@ -256,7 +258,7 @@ class PrometheusGraph {
       const evalTime = timeValueOverlay - d0.time > d1.time - timeValueOverlay;
       const currentData = evalTime ? d1 : d0;
       const currentTimeCoordinate = Math.floor(currentGraphProps.xScale(currentData.time));
-      const currentDeployXPos = this.deployments.mouseOverDeployInfo(currentTimeCoordinate, key);
+      const currentDeployXPos = this.deployments.mouseOverDeployInfo(currentXCoordinate, key);
       const currentPrometheusGraphContainer = `${prometheusGraphsContainer}[graph-type=${key}]`;
       const maxValueFromData = d3.max(currentGraphProps.data.map(metricValue => metricValue.value));
       const maxMetricValue = currentGraphProps.yScale(maxValueFromData);
@@ -317,7 +319,7 @@ class PrometheusGraph {
           x: 8,
           y: 15,
         })
-        .text(dayFormat(currentData.time));
+        .text(dateFormat(currentData.time));
 
       let currentMetricValue = formatRelevantDigits(currentData.value);
       if (key === 'cpu_values') {
