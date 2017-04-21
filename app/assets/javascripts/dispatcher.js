@@ -89,11 +89,13 @@ const ShortcutsBlob = require('./shortcuts_blob');
           fileBlobPermalinkUrl,
         });
 
-        new BlobForkSuggestion(
-          document.querySelector('.js-edit-blob-link-fork-toggler'),
-          document.querySelector('.js-cancel-fork-suggestion'),
-          document.querySelector('.js-file-fork-suggestion-section'),
-        );
+        new BlobForkSuggestion({
+          openButtons: document.querySelectorAll('.js-edit-blob-link-fork-toggler'),
+          forkButtons: document.querySelectorAll('.js-fork-suggestion-button'),
+          cancelButtons: document.querySelectorAll('.js-cancel-fork-suggestion-button'),
+          suggestionSections: document.querySelectorAll('.js-file-fork-suggestion-section'),
+          actionTextPieces: document.querySelectorAll('.js-file-fork-suggestion-section-action'),
+        });
       }
 
       switch (page) {
