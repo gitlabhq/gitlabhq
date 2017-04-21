@@ -1,9 +1,7 @@
 require 'spec_helper'
 
-describe API::Users, api: true do
-  include ApiHelpers
-
-  let(:user) { create(:user) }
+describe API::Users do
+  let(:user)  { create(:user) }
   let(:admin) { create(:admin) }
   let(:key) { create(:key, user: user) }
   let(:email) { create(:email, user: user) }

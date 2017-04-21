@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 RSpec.describe 'admin issues labels' do
-  include WaitForAjax
-
   let!(:bug_label) { Label.create(title: 'bug', template: true) }
   let!(:feature_label) { Label.create(title: 'feature', template: true) }
 

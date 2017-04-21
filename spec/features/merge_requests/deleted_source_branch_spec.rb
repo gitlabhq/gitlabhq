@@ -4,8 +4,6 @@ require 'spec_helper'
 # message to be shown by JavaScript when the source branch was deleted.
 # Please do not remove "js: true".
 describe 'Deleted source branch', feature: true, js: true do
-  include WaitForAjax
-
   let(:user) { create(:user) }
   let(:merge_request) { create(:merge_request) }
 

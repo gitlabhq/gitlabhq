@@ -4,7 +4,6 @@ describe 'Issues', feature: true do
   include DropzoneHelper
   include IssueHelpers
   include SortingHelper
-  include WaitForAjax
 
   let(:project) { create(:project, :public) }
 

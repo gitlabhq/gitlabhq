@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 feature 'User wants to add a Dockerfile file', feature: true do
-  include WaitForAjax
-
   before do
     user = create(:user)
     project = create(:project)

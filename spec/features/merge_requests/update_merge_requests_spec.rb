@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 feature 'Multiple merge requests updating from merge_requests#index', feature: true do
-  include WaitForAjax
-
   let!(:user)    { create(:user)}
   let!(:project) { create(:project) }
   let!(:merge_request) { create(:merge_request, source_project: project, target_project: project) }

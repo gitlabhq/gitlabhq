@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe Projects::BuildsController do
-  include ApiHelpers
-
   let(:project) { create(:empty_project, :public) }
 
   describe 'GET trace.json' do

@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 feature 'Tooltips on .timeago dates', feature: true, js: true do
-  include WaitForAjax
-
   let(:user)            { create(:user) }
   let(:project)         { create(:project, name: 'test', namespace: user.namespace) }
   let(:created_date)    { Date.yesterday.to_time }

@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 feature 'GFM autocomplete', feature: true, js: true do
-  include WaitForAjax
   let(:user)    { create(:user, name: '💃speciąl someone💃', username: 'someone.special') }
   let(:project) { create(:project) }
   let(:label) { create(:label, project: project, title: 'special+') }

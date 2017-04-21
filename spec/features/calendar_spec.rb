@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 feature 'Contributions Calendar', :feature, :js do
-  include WaitForAjax
-
   let(:user) { create(:user) }
   let(:contributed_project) { create(:project, :public) }
   let(:issue_note) { create(:note, project: contributed_project) }
