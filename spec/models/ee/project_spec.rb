@@ -122,6 +122,7 @@ describe Project, models: true do
     before do
       allow_any_instance_of(License).to receive(:add_on?).and_call_original
       allow_any_instance_of(License).to receive(:add_on?).with('GitLab_ServiceDesk') { true }
+      allow(Gitlab.config.incoming_email).to receive(:enabled).and_return(true)
       allow(Gitlab.config.incoming_email).to receive(:address).and_return("test+%{key}@mail.com")
     end
 

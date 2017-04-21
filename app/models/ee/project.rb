@@ -36,8 +36,9 @@ module EE
     private
 
     def service_desk_available?
-      @service_desk_available ||=
-        EE::Gitlab::ServiceDesk.enabled? && service_desk_enabled?
+      return @service_desk_available if defined?(@service_desk_available)
+
+      @service_desk_available = EE::Gitlab::ServiceDesk.enabled? && service_desk_enabled?
     end
   end
 end
