@@ -296,32 +296,56 @@ describe Ci::Pipeline, models: true do
 
   describe 'state machine' do
     let(:current) { Time.now.change(usec: 0) }
-    let(:build) { create_build('build1', 0) }
-    let(:build_b) { create_build('build2', 0) }
-    let(:build_c) { create_build('build3', 0) }
+    let(:build) { create_build('build1', queued_at: 0) }
+    let(:build_b) { create_build('build2', queued_at: 0) }
+    let(:build_c) { create_build('build3', queued_at: 0) }
 
     describe '#duration' do
-      before do
-        travel_to(current + 30) do
-          build.run!
-          build.success!
-          build_b.run!
-          build_c.run!
+      context 'when multiple builds are finished' do
+        before do
+          travel_to(current + 30) do
+            build.run!
+            build.success!
+            build_b.run!
+            build_c.run!
+          end
+
+          travel_to(current + 40) do
+            build_b.drop!
+          end
+
+          travel_to(current + 70) do
+            build_c.success!
+          end
         end
 
-        travel_to(current + 40) do
-          build_b.drop!
-        end
+        it 'matches sum of builds duration' do
+          pipeline.reload
 
-        travel_to(current + 70) do
-          build_c.success!
+          expect(pipeline.duration).to eq(40)
         end
       end
 
-      it 'matches sum of builds duration' do
-        pipeline.reload
+      context 'when pipeline becomes blocked' do
+        let!(:build) { create_build('build:1') }
+        let!(:action) { create(:ci_build, :manual, pipeline: pipeline) }
 
-        expect(pipeline.duration).to eq(40)
+        before do
+          travel_to(current + 1.minute) do
+            build.run!
+          end
+
+          travel_to(current + 5.minutes) do
+            build.success!
+          end
+        end
+
+        it 'recalculates pipeline duration' do
+          pipeline.reload
+
+          expect(pipeline).to be_manual
+          expect(pipeline.duration).to eq 4.minutes
+        end
       end
     end
 
@@ -383,12 +407,13 @@ describe Ci::Pipeline, models: true do
       end
     end
 
-    def create_build(name, queued_at = current, started_from = 0)
+    def create_build(name, queued_at: current, started_from: 0, **opts)
       create(:ci_build,
              name: name,
              pipeline: pipeline,
              queued_at: queued_at,
-             started_at: queued_at + started_from)
+             started_at: queued_at + started_from,
+             **opts)
     end
   end
 
