@@ -248,6 +248,7 @@ ActiveRecord::Schema.define(version: 20170420092524) do
     t.string "cron_timezone"
     t.datetime "next_run_at"
     t.string "ref"
+    t.string "description"
     t.boolean "active"
   end
 

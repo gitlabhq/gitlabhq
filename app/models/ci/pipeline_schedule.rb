@@ -1,5 +1,5 @@
 module Ci
-  class TriggerSchedule < ActiveRecord::Base
+  class PipelineSchedule < ActiveRecord::Base
     extend Ci::Model
     include Importable
 
@@ -15,28 +15,40 @@ module Ci
     validates :description, presence: true
 
     before_save :set_next_run_at
-    after_create :schedule_first_run!
 
     scope :active, -> { where(active: true) }
     scope :inactive, -> { where.not(active: true) } # cover for active = nil
 
-    def importing_or_inactive?
-      importing? || inactive?
+    def owner
+      trigger.owner
+    end
+
+    def own!(current_user)
+      trigger.update(owner: current_user)
+    end
+
+    def owned_by?(current_user)
+      owner == current_user
+    end
+
+    def last_trigger
+      trigger.last_trigger_request
+    end
+
+    def last_pipeline
+      last_trigger&.pipeline
     end
 
     def inactive?
       !active?
     end
 
-    def set_next_run_at
-      self.next_run_at = Gitlab::Ci::CronParser.new(cron, cron_timezone).next_time_from(Time.now)
+    def importing_or_inactive?
+      importing? || inactive?
     end
 
-    def schedule_first_run!
-      if next_run_at < real_next_run
-        Project::SchedulePipelineService.new(self).execute
-        #TODO create a schedule service to be used here and in the worker
-      end
+    def set_next_run_at
+      self.next_run_at = Gitlab::Ci::CronParser.new(cron, cron_timezone).next_time_from(Time.now)
     end
 
     def schedule_next_run!
