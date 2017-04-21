@@ -328,7 +328,7 @@ describe Ci::Pipeline, models: true do
 
       context 'when pipeline becomes blocked' do
         let!(:build) { create_build('build:1') }
-        let!(:action) { create(:ci_build, :manual, pipeline: pipeline) }
+        let!(:action) { create_build('manual:action', :manual) }
 
         before do
           travel_to(current + 1.minute) do
@@ -407,8 +407,8 @@ describe Ci::Pipeline, models: true do
       end
     end
 
-    def create_build(name, queued_at: current, started_from: 0, **opts)
-      create(:ci_build,
+    def create_build(name, *traits, queued_at: current, started_from: 0, **opts)
+      create(:ci_build, *traits,
              name: name,
              pipeline: pipeline,
              queued_at: queued_at,
