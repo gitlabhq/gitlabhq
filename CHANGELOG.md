@@ -2,6 +2,18 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.0.6 (2017-04-21)
+
+- Bugfix: POST /projects/:id/hooks and PUT /projects/:id/hook/:hook_id no longer ignore the the job_events param in the V4 API. !10586
+- Fix MR widget bug that merged a MR when Merge when pipeline succeeds was clicked via the dropdown. !10611
+- Fix PlantUML integration in GFM. !10651
+- Show sub-nav under Merge Requests when issue tracker is non-default. !10658
+- Fix restricted project visibility setting available to users.
+- Removed orphaned notification settings without a namespace.
+- Fix issue's note cache expiration after delete. (mhasbini)
+- Display custom hook error messages when automatic merge is enabled.
+- Fix filtered search input width for IE.
+
 ## 9.0.5 (2017-04-10)
 
 - Add shortcuts and counters to MRs and issues in navbar.
