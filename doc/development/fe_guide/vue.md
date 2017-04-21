@@ -290,6 +290,91 @@ new Vue({
 
 The [issue boards service][issue-boards-service] is a good example of this pattern.
 
+## Information hiding
+
+To make components more reusable, readable, and performant, aim to only pass props that 
+the child component needs. 
+
+Instead of this:
+
+```
+const ParentComponent = {
+    data: bigGiantObject,
+    template: `<child-component :big-giant-object='bigGiantObject'/>`,
+}
+
+const ChildComponent = {
+    props: {
+       bigGiantObject: { type: Object } 
+    },
+    template: `
+      <div> 
+         {{ bigGiantObject.littlePropertyOne }} 
+         {{ bigGiantObject.littlePropertyTwo }} 
+         {{ bigGiantObject.littlePropertyThree }}
+     </div>` 
+};
+```
+
+Component props should be passed explicitly, like this:
+
+```
+const BetterParentComponent = {
+    data: bigGiantObject,
+    template: `
+      <child-component 
+        :little-property-one='bigGiantObject.littlePropertyOne'
+        :little-property-two='bigGiantObject.littlePropertyTwo'
+        :little-property-three='bigGiantObject.littlePropertyThree'/>
+    `,
+};
+
+const BetterChildComponent = {
+    props: {
+       littlePropertyOne: { type: String },
+       littlePropertyTwo: { type: String },
+    },
+    template: `
+      <div> 
+         {{ littlePropertyOne }} {{ littlePropertyTwo }}
+     </div>` 
+};
+```
+
+For deeper models, still try to encapsulate the data conservatively. An example 
+would look like this:
+
+```
+const DeepModelParentComponent = {
+    data: bigGiantObject,
+    template: `
+      <child-component 
+        :tier-one='bigGiantObject.tierOne.tierTwo'
+        :tier-two='bigGiantObject.tierThree'/>
+    `,
+};
+
+const DeepModelChildComponent = {
+    props: {
+        tierTwo: { type: Object },
+        tierThree: { type: Object },
+    },
+    template: `
+      <div> 
+         {{ tierTwo.littlePropertyOne }} {{ tierTwo: littlePropertyTwo }}
+     </div>
+    <div> 
+        {{ tierThree.littlePropertyOne }} {{ tierThree: littlePropertyTwo }}
+    </div>
+     ` 
+};
+```
+
+If the number of props you need to pass is very large or you need to pass a group of 
+properties down many layers, it may be simpler and more maintainable to just pass 
+a single object. If you're not sure, ask a Frontend Architecture expert.
+
+
 ## Style guide
 
 Please refer to the Vue section of our [style guide](style_guide_js.md#vuejs)
