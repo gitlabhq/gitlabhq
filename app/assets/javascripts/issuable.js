@@ -187,7 +187,7 @@
     },
 
     initStateChangeButton({ type, beforeSend, errorCallback, callback, }) {
-      $('.btn-close, .btn-reopen').on('click', (e) => {
+      $('.btn-close, .btn-reopen', $('.issuable-actions, .note-form-actions')).on('click', (e) => {
         const $btn = $(e.target);
 
         e.preventDefault();
