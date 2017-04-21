@@ -14,8 +14,6 @@ module EE
 
       delegate :actual_shared_runners_minutes_limit,
         :shared_runners_minutes_used?, to: :namespace
-
-      before_validation :auto_refresh_service_desk_key
     end
 
     def shared_runners_available?
@@ -29,16 +27,10 @@ module EE
     def service_desk_address
       return nil unless service_desk_available?
 
-      refresh_service_desk_key! if service_desk_mail_key.blank?
+      config = ::Gitlab.config.incoming_email
+      wildcard = ::Gitlab::IncomingEmail::WILDCARD_PLACEHOLDER
 
-      from = "service_desk+#{service_desk_mail_key}"
-      ::Gitlab::IncomingEmail.reply_address(from)
-    end
-
-    def refresh_service_desk_key!
-      return unless service_desk_available?
-
-      self.service_desk_mail_key = SentNotification.reply_key
+      config.address&.gsub(wildcard, full_path)
     end
 
     private
@@ -46,12 +38,6 @@ module EE
     def service_desk_available?
       @service_desk_available ||=
         EE::Gitlab::ServiceDesk.enabled? && service_desk_enabled?
-    end
-
-    def auto_refresh_service_desk_key
-      if service_desk_mail_key.blank? || service_desk_enabled_changed?
-        refresh_service_desk_key!
-      end
     end
   end
 end

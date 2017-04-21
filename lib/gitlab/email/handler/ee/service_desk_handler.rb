@@ -19,20 +19,17 @@ module Gitlab
           private
 
           def service_desk_key
-            @service_desk_key ||=
-              begin
-                mail_key =~ /\Aservice_desk[+](\w+)\z/
-                $1
-              end
+            return unless mail_key.include?("/")
+
+            mail_key
           end
 
           def project
             return @project if instance_variable_defined?(:@project)
 
-            @project = Project.find_by(
-              service_desk_enabled: true,
-              service_desk_mail_key: service_desk_key
-            )
+            @project =
+              Project.where(service_desk_enabled: true)
+                .find_by_full_path(service_desk_key)
           end
 
           def create_issue!
