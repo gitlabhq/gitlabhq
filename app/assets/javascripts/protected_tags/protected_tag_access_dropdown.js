@@ -1,26 +1,11 @@
-export default class ProtectedTagAccessDropdown {
-  constructor(options) {
-    this.options = options;
-    this.initDropdown();
-  }
+import { ProtectedRefAccessDropdown } from '../protected_refs';
 
-  initDropdown() {
-    const { onSelect } = this.options;
-    this.options.$dropdown.glDropdown({
-      data: this.options.data,
-      selectable: true,
-      inputId: this.options.$dropdown.data('input-id'),
-      fieldName: this.options.$dropdown.data('field-name'),
-      toggleLabel(item, $el) {
-        if ($el.is('.is-active')) {
-          return item.text;
-        }
-        return 'Select';
-      },
-      clicked(options) {
-        options.e.preventDefault();
-        onSelect();
-      },
+export default class ProtectedTagAccessDropdown extends ProtectedRefAccessDropdown {
+  constructor(options) {
+    super(options, {
+      inputId: 'input-id',
+      fieldName: 'field-name',
+      activeCls: '.is-active',
     });
   }
 }
