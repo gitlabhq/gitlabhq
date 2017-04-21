@@ -4,12 +4,13 @@ export default class Deployments {
   constructor(width, height) {
     this.width = width;
     this.height = height;
+    this.data = [];
     this.dateFormat = d3.time.format('%b %d, %Y');
     this.timeFormat = d3.time.format('%H:%M%p');
 
     this.endpoint = document.getElementById('js-metrics').dataset.deploymentEndpoint;
 
-    Deployments.createGradientDef();
+    this.createGradientDef();
   }
 
   init(chartData) {
@@ -29,14 +30,11 @@ export default class Deployments {
       dataType: 'JSON',
     })
     .done((data) => {
-      this.data = [];
-
       data.deployments.forEach((deployment) => {
-        const minInSeconds = 1000 * 60;
-        let time = new Date(deployment.created_at);
-        time = new Date(Math.round(time.getTime() / minInSeconds) * minInSeconds);
-        time.setSeconds(this.chartData[0].time.getSeconds());
+        const time = new Date(deployment.created_at);
         const xPos = Math.floor(this.x(time));
+
+        time.setSeconds(this.chartData[0].time.getSeconds());
 
         if (xPos >= 0) {
           this.data.push({
@@ -65,7 +63,7 @@ export default class Deployments {
     });
   }
 
-  static createGradientDef() {
+  createGradientDef() {
     const defs = d3.select('body')
       .append('svg')
       .attr({
@@ -84,9 +82,7 @@ export default class Deployments {
         'stop-color': '#000',
         'stop-opacity': 0.4,
       })
-      .select(function selectParentNode() {
-        return this.parentNode;
-      })
+      .select(this.selectParentNode)
       .append('stop')
       .attr({
         offset: '100%',
@@ -116,9 +112,7 @@ export default class Deployments {
         width: 3,
         fill: 'url(#shadow-gradient)',
       })
-      .select(function selectParentNode() {
-        return this.parentNode;
-      })
+      .select(this.selectParentNode)
       .append('line')
       .attr({
         class: 'deployment-line',
@@ -130,60 +124,52 @@ export default class Deployments {
   }
 
   createDeployInfoBox(chart, key) {
-    this.data.forEach((d) => {
-      const group = chart.select(`.deploy-info-${d.id}-${key}`)
-        .append('svg')
-        .attr({
-          x: 3,
-          y: 0,
-          height: 60,
-        });
-
-      const rect = group.append('rect')
-        .attr({
-          class: 'rect-text-metric deploy-info-rect rect-metric',
-          x: 1,
-          y: 1,
-          rx: 2,
-          height: group.attr('height') - 2,
-        });
-
-      const textGroup = group.append('g')
-        .attr({
-          transform: 'translate(5, 2)',
-        });
-
-      textGroup.append('text')
-        .attr({
-          class: 'deploy-info-text text-metric-bold',
-        })
-        .text(() => {
-          const isTag = d.tag;
-          const refText = isTag ? d.ref : d.sha.slice(0, 6);
-
-          return refText;
-        });
-
-      textGroup.append('text')
-        .attr({
-          class: 'deploy-info-text',
-          y: 18,
-        })
-        .text(() => this.dateFormat(d.time));
-
-      textGroup.append('text')
-        .attr({
-          class: 'deploy-info-text text-metric-bold',
-          y: 38,
-        })
-        .text(() => this.timeFormat(d.time));
-
-      group.attr('width', Math.floor(textGroup.node().getBoundingClientRect().width) + 14);
-
-      rect.attr('width', Math.floor(textGroup.node().getBoundingClientRect().width) + 10);
-
-      group.attr('class', 'js-deploy-info-box hidden');
-    });
+    chart.selectAll('.deploy-info')
+      .selectAll('.js-deploy-info-box')
+      .data(this.data)
+      .enter()
+      .select(d => document.querySelector(`.deploy-info-${d.id}-${key}`))
+      .append('svg')
+      .attr({
+        class: 'js-deploy-info-box hidden',
+        x: 3,
+        y: 0,
+        width: 92,
+        height: 60,
+      })
+      .append('rect')
+      .attr({
+        class: 'rect-text-metric deploy-info-rect rect-metric',
+        x: 1,
+        y: 1,
+        rx: 2,
+        width: 90,
+        height: 58,
+      })
+      .select(this.selectParentNode)
+      .append('g')
+      .attr({
+        transform: 'translate(5, 2)',
+      })
+      .append('text')
+      .attr({
+        class: 'deploy-info-text text-metric-bold',
+      })
+      .text(Deployments.refText)
+      .select(this.selectParentNode)
+      .append('text')
+      .attr({
+        class: 'deploy-info-text',
+        y: 18,
+      })
+      .text(d => this.dateFormat(d.time))
+      .select(this.selectParentNode)
+      .append('text')
+      .attr({
+        class: 'deploy-info-text text-metric-bold',
+        y: 38,
+      })
+      .text(d => this.timeFormat(d.time));
   }
 
   static toggleDeployTextbox(deploy, key, showInfoBox) {
@@ -207,5 +193,17 @@ export default class Deployments {
     });
 
     return dataFound;
+  }
+
+  /* `this` is bound to the D3 node */
+  selectParentNode() {
+    return this.parentNode;
+  }
+
+  static refText(d) {
+    const isTag = d.tag;
+    const refText = isTag ? d.ref : d.sha.slice(0, 6);
+
+    return refText;
   }
 }

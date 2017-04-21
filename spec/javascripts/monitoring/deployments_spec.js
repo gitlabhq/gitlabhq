@@ -110,4 +110,24 @@ describe('Metrics deployments', () => {
       graphElement().querySelector('.deploy-info-1-cpu_values .js-deploy-info-box.hidden'),
     ).not.toBeNull();
   });
+
+  describe('refText', () => {
+    it('returns shortened SHA', () => {
+      expect(
+        Deployments.refText({
+          tag: false,
+          sha: '123456789',
+        }),
+      ).toBe('123456');
+    });
+
+    it('returns tag name', () => {
+      expect(
+        Deployments.refText({
+          tag: true,
+          ref: 'v1.0',
+        }),
+      ).toBe('v1.0');
+    });
+  });
 });
