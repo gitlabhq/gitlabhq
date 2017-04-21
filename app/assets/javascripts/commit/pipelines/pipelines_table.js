@@ -43,7 +43,7 @@ export default Vue.component('pipelines-table', {
       helpPagePath: null,
       store,
       state: store.state,
-      isLoading: true,
+      isLoading: false,
       hasError: false,
       isMakingRequest: false,
     };

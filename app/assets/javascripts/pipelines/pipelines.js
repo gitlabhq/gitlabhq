@@ -47,7 +47,7 @@ export default {
       state: this.store.state,
       apiScope: 'all',
       pagenum: 1,
-      isLoading: true,
+      isLoading: false,
       hasError: false,
       isMakingRequest: false,
     };
