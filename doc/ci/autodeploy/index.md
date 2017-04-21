@@ -1,6 +1,6 @@
 # Auto deploy
 
-> [Introduced][mr-8135] in GitLab 8.15. Currently requires a [Public project][project-settings].
+> [Introduced][mr-8135] in GitLab 8.15.
 
 Auto deploy is an easy way to configure GitLab CI for the deployment of your
 application. GitLab Community maintains a list of `.gitlab-ci.yml`
@@ -112,64 +112,30 @@ Next, we replace `__CI_ENVIRONMENT_SLUG__` with the content of the
 Finally, the Nginx pod is created from the definition of the
 `nginx-deployment.yaml` file.
 
----
+## Private Project Support
+> Experimental support [introduced][mr-2] in GitLab 9.1.
 
-Expanding on the [Kubernetes deploy example above](#using-the-kubernetes-deploy-example-project-with-Nginx),
-you can also use it to expose canary deployments. Canary deployments should
-include `track: canary` and have a different deployment name than normal
-deployments.
+When a project has been marked as private, GitLab's [Container Registry][container-registry] requires authentication when downloading containers. Auto deploy will automatically provide required authentication information to Kubernetes, allowing temporary access to the registry. Authentication credentials will be valid while the pipeline is running, allowing for a successful initial deployment.
 
-```yaml
-apiVersion: extensions/v1beta1
-kind: Deployment
-metadata:
-  name: __CI_ENVIRONMENT_SLUG__-canary
-  labels:
-    app: __CI_ENVIRONMENT_SLUG__
-    track: canary
-spec:
-  replicas: 3
-  template:
-    metadata:
-      labels:
-        app: __CI_ENVIRONMENT_SLUG__
-        track: canary
-    spec:
-      containers:
-      - name: nginx
-        image: nginx:1.7.9
-        ports:
-        - containerPort: 80
-```
+After the pipeline completes, Kubernetes will no longer be able to access the container registry. Restarting a pod, scaling a service, or other actions which require on-going access to the registry will fail. On-going secure access is planned for a subsequent release.
 
-The `.gitlab-ci.yml` would be:
+## PostgreSQL Database Support
+> Experimental support [introduced][mr-8] in GitLab 9.1.
 
-```yaml
-image: registry.gitlab.com/gitlab-examples/kubernetes-deploy
+In order to support applications that require a database, [PostgreSQL][postgresql] is provisioned by default. Credentials to access the database are preconfigured, but can be customized by setting the associated [variables](#postgresql-variables). These credentials can be used for defining a `DATABASE_URL` of the format: `postgres://user:password@postgres-host:postgres-port/postgres-database`. It is important to note that the database itself is temporary, and contents will be not be saved.
 
-stages:
-  - canary
+PostgreSQL provisioning can be disabled by setting the variable `DISABLE_POSTGRES` to `"yes"`.
 
-kubernetes canary deploy:
-  stage: canary
-  environment:
-    name: production
-  script:
-    - echo "$KUBE_CA_PEM" > kube_ca.pem
-    - cat kube_ca.pem
-    - kubectl config set-cluster default-cluster --server=$KUBE_URL --certificate-authority="$(pwd)/kube_ca.pem"
-    - kubectl config set-credentials default-admin --token=$KUBE_TOKEN
-    - kubectl config set-context default-system --cluster=default-cluster --user=default-admin --namespace $KUBE_NAMESPACE
-    - kubectl config use-context default-system
+### PostgreSQL Variables
 
-    - sed -i "s/__CI_ENVIRONMENT_SLUG__/$CI_ENVIRONMENT_SLUG/" nginx-deployment.yaml
-    - cat nginx-deployment.yaml
-    - kubectl cluster-info
-    - kubectl get deployments -l app=$CI_ENVIRONMENT_SLUG
-    - kubectl create -f nginx-deployment-canary.yaml || kubectl replace -f nginx-deployment-canary.yaml
-```
+1. `DISABLE_POSTGRES: "yes"`: disable automatic deployment of PostgreSQL
+1. `POSTGRES_USER: "my-user"`: use custom username for PostgreSQL
+1. `POSTGRES_PASSWORD: "password"`: use custom password for PostgreSQL
+1. `POSTGRES_DB: "my database"`: use custom database name for PostgreSQL
 
 [mr-8135]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8135
+[mr-2]: https://gitlab.com/gitlab-examples/kubernetes-deploy/merge_requests/2
+[mr-8]: https://gitlab.com/gitlab-examples/kubernetes-deploy/merge_requests/8
 [project-settings]: https://docs.gitlab.com/ce/public_access/public_access.html
 [project-services]: ../../user/project/integrations/project_services.md
 [auto-deploy-templates]: https://gitlab.com/gitlab-org/gitlab-ci-yml/tree/master/autodeploy
@@ -178,3 +144,5 @@ kubernetes canary deploy:
 [review-app]: ../review_apps/index.md
 [kube-image]: https://gitlab.com/gitlab-examples/kubernetes-deploy/container_registry "Kubernetes deploy Container Registry"
 [kube-deploy]: https://gitlab.com/gitlab-examples/kubernetes-deploy "Kubernetes deploy example project"
+[container-registry]: https://docs.gitlab.com/ce/user/project/container_registry.html
+[postgresql]: https://www.postgresql.org/
