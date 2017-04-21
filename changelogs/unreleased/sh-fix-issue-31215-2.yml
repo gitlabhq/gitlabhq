@@ -1,0 +1,4 @@
+---
+title: Fix error when an issue reference has a pending deleting project
+merge_request: 10843
+author:
