@@ -42,7 +42,7 @@ feature 'Dashboard shortcuts', feature: true, js: true do
 
       find('body').native.send_keys([:shift, 'S'])
 
-      expect(page).to have_selector('.snippets-list-holder')
+      expect(page).to have_content('There are no snippets to show.')
     end
   end
 
