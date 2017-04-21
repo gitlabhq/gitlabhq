@@ -11,6 +11,7 @@ describe('CI status icons index', () => {
     'skipped',
     'success',
     'warning',
+    'blocked',
   ];
 
   statuses.forEach((status) => {

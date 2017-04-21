@@ -28,6 +28,7 @@ export const baseIcons = {
   skipped: skippedBase,
   success: successBase,
   warning: warningBase,
+  blocked: warningBase,
 };
 
 export const borderlessIcons = {
@@ -40,4 +41,5 @@ export const borderlessIcons = {
   skipped: skippedBorderless,
   success: successBorderless,
   warning: warningBorderless,
+  blocked: warningBorderless,
 };

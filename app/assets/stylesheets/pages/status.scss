@@ -113,7 +113,8 @@
     }
 
     &.ci-created,
-    &.ci-skipped {
+    &.ci-skipped,
+    &.ci-blocked {
       color: $gl-text-color-secondary;
       border-color: $gl-text-color-secondary;
 
