@@ -22,6 +22,23 @@ module CiStatusHelper
     end
   end
 
+  def ci_text_for_status(status)
+    if detailed_status?(status)
+      return status.text
+    end
+
+    case status
+    when 'success'
+      'passed'
+    when 'success_with_warnings'
+      'passed'
+    when 'manual'
+      'blocked'
+    else
+      status
+    end
+  end
+
   def ci_status_for_statuseable(subject)
     status = subject.try(:status) || 'not found'
     status.humanize
