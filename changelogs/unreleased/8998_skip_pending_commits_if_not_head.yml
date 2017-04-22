@@ -1,4 +1,0 @@
----
-title: Cancel pending pipelines if commits not HEAD
-merge_request: 9362
-author: Rydkin Maxim
