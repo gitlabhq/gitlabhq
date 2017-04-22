@@ -17,12 +17,12 @@ describe Gitlab::Ci::Trace::Stream do
   describe '#limit' do
     let(:stream) do
       described_class.new do
-        StringIO.new("12345678")
+        StringIO.new((1..8).to_a.join("\n"))
       end
     end
 
-    it 'if size is larger we start from beggining' do
-      stream.limit(10)
+    it 'if size is larger we start from beginning' do
+      stream.limit(20)
 
       expect(stream.tell).to eq(0)
     end
@@ -30,15 +30,59 @@ describe Gitlab::Ci::Trace::Stream do
     it 'if size is smaller we start from the end' do
       stream.limit(2)
 
-      expect(stream.tell).to eq(6)
+      expect(stream.raw).to eq("8")
+    end
+
+    context 'when the trace contains ANSI sequence and Unicode' do
+      let(:stream) do
+        described_class.new do
+          File.open(expand_fixture_path('trace/ansi-sequence-and-unicode'))
+        end
+      end
+
+      it 'forwards to the next linefeed, case 1' do
+        stream.limit(7)
+
+        result = stream.raw
+
+        expect(result).to eq('')
+        expect(result.encoding).to eq(Encoding.default_external)
+      end
+
+      it 'forwards to the next linefeed, case 2' do
+        stream.limit(29)
+
+        result = stream.raw
+
+        expect(result).to eq("\e[01;32m許功蓋\e[0m\n")
+        expect(result.encoding).to eq(Encoding.default_external)
+      end
+
+      # See https://gitlab.com/gitlab-org/gitlab-ce/issues/30796
+      it 'reads in binary, output as Encoding.default_external' do
+        stream.limit(52)
+
+        result = stream.html
+
+        expect(result).to eq("ヾ(´༎ຶД༎ຶ`)ﾉ<br><span class=\"term-fg-green\">許功蓋</span><br>")
+        expect(result.encoding).to eq(Encoding.default_external)
+      end
     end
   end
 
   describe '#append' do
+    let(:tempfile) { Tempfile.new }
+
     let(:stream) do
       described_class.new do
-        StringIO.new("12345678")
+        tempfile.write("12345678")
+        tempfile.rewind
+        tempfile
       end
+    end
+
+    after do
+      tempfile.unlink
     end
 
     it "truncates and append content" do
@@ -47,6 +91,17 @@ describe Gitlab::Ci::Trace::Stream do
 
       expect(stream.size).to eq(6)
       expect(stream.raw).to eq("123489")
+    end
+
+    it 'appends in binary mode' do
+      '😺'.force_encoding('ASCII-8BIT').each_char.with_index do |byte, offset|
+        stream.append(byte, offset)
+      end
+
+      stream.seek(0)
+
+      expect(stream.size).to eq(4)
+      expect(stream.raw).to eq('😺')
     end
   end
 

@@ -72,5 +72,157 @@ require('~/lib/utils/text_utility');
         expect(this.autoSizeSpy).toHaveBeenTriggered();
       });
     });
+
+    describe('renderNote', () => {
+      let notes;
+      let note;
+      let $notesList;
+
+      beforeEach(() => {
+        note = {
+          discussion_html: null,
+          valid: true,
+          html: '<div></div>',
+        };
+        $notesList = jasmine.createSpyObj('$notesList', ['find']);
+
+        notes = jasmine.createSpyObj('notes', [
+          'refresh',
+          'isNewNote',
+          'collapseLongCommitList',
+          'updateNotesCount',
+        ]);
+        notes.taskList = jasmine.createSpyObj('tasklist', ['init']);
+        notes.note_ids = [];
+
+        spyOn(window, '$').and.returnValue($notesList);
+        spyOn(gl.utils, 'localTimeAgo');
+        spyOn(Notes, 'animateAppendNote');
+        notes.isNewNote.and.returnValue(true);
+
+        Notes.prototype.renderNote.call(notes, note);
+      });
+
+      it('should query for the notes list', () => {
+        expect(window.$).toHaveBeenCalledWith('ul.main-notes-list');
+      });
+
+      it('should call .animateAppendNote', () => {
+        expect(Notes.animateAppendNote).toHaveBeenCalledWith(note.html, $notesList);
+      });
+    });
+
+    describe('renderDiscussionNote', () => {
+      let discussionContainer;
+      let note;
+      let notes;
+      let $form;
+      let row;
+
+      beforeEach(() => {
+        note = {
+          html: '<li></li>',
+          discussion_html: '<div></div>',
+          discussion_id: 1,
+          discussion_resolvable: false,
+          diff_discussion_html: false,
+        };
+        $form = jasmine.createSpyObj('$form', ['closest', 'find']);
+        row = jasmine.createSpyObj('row', ['prevAll', 'first', 'find']);
+
+        notes = jasmine.createSpyObj('notes', [
+          'isNewNote',
+          'isParallelView',
+          'updateNotesCount',
+        ]);
+        notes.note_ids = [];
+
+        spyOn(gl.utils, 'localTimeAgo');
+        spyOn(Notes, 'animateAppendNote');
+        notes.isNewNote.and.returnValue(true);
+        notes.isParallelView.and.returnValue(false);
+        row.prevAll.and.returnValue(row);
+        row.first.and.returnValue(row);
+        row.find.and.returnValue(row);
+      });
+
+      describe('Discussion root note', () => {
+        let $notesList;
+        let body;
+
+        beforeEach(() => {
+          body = jasmine.createSpyObj('body', ['attr']);
+          discussionContainer = { length: 0 };
+
+          spyOn(window, '$').and.returnValues(discussionContainer, body, $notesList);
+          $form.closest.and.returnValues(row, $form);
+          $form.find.and.returnValues(discussionContainer);
+          body.attr.and.returnValue('');
+
+          Notes.prototype.renderDiscussionNote.call(notes, note, $form);
+        });
+
+        it('should query for the notes list', () => {
+          expect(window.$.calls.argsFor(2)).toEqual(['ul.main-notes-list']);
+        });
+
+        it('should call Notes.animateAppendNote', () => {
+          expect(Notes.animateAppendNote).toHaveBeenCalledWith(note.discussion_html, $notesList);
+        });
+      });
+
+      describe('Discussion sub note', () => {
+        beforeEach(() => {
+          discussionContainer = { length: 1 };
+
+          spyOn(window, '$').and.returnValues(discussionContainer);
+          $form.closest.and.returnValues(row);
+
+          Notes.prototype.renderDiscussionNote.call(notes, note, $form);
+        });
+
+        it('should query foor the discussion container', () => {
+          expect(window.$).toHaveBeenCalledWith(`.notes[data-discussion-id="${note.discussion_id}"]`);
+        });
+
+        it('should call Notes.animateAppendNote', () => {
+          expect(Notes.animateAppendNote).toHaveBeenCalledWith(note.html, discussionContainer);
+        });
+      });
+    });
+
+    describe('animateAppendNote', () => {
+      let noteHTML;
+      let $note;
+      let $notesList;
+
+      beforeEach(() => {
+        noteHTML = '<div></div>';
+        $note = jasmine.createSpyObj('$note', ['addClass', 'renderGFM', 'removeClass']);
+        $notesList = jasmine.createSpyObj('$notesList', ['append']);
+
+        spyOn(window, '$').and.returnValue($note);
+        spyOn(window, 'setTimeout').and.callThrough();
+        $note.addClass.and.returnValue($note);
+        $note.renderGFM.and.returnValue($note);
+
+        Notes.animateAppendNote(noteHTML, $notesList);
+      });
+
+      it('should init the note jquery object', () => {
+        expect(window.$).toHaveBeenCalledWith(noteHTML);
+      });
+
+      it('should call addClass', () => {
+        expect($note.addClass).toHaveBeenCalledWith('fade-in');
+      });
+      it('should call renderGFM', () => {
+        expect($note.renderGFM).toHaveBeenCalledWith();
+      });
+
+      it('should append note to the notes list', () => {
+        expect($notesList.append).toHaveBeenCalledWith($note);
+      });
+    });
   });
 }).call(window);

@@ -1,4 +1,0 @@
----
-title: Fix projects_limit RangeError on user create
-merge_request:
-author: Alexander Randa

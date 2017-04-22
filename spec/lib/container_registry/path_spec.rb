@@ -33,10 +33,20 @@ describe ContainerRegistry::Path do
   end
 
   describe '#to_s' do
-    let(:path) { 'some/image' }
+    context 'when path does not have uppercase characters' do
+      let(:path) { 'some/image' }
 
-    it 'return a string with a repository path' do
-      expect(subject.to_s).to eq path
+      it 'return a string with a repository path' do
+        expect(subject.to_s).to eq 'some/image'
+      end
+    end
+
+    context 'when path has uppercase characters' do
+      let(:path) { 'SoMe/ImAgE' }
+
+      it 'return a string with a repository path' do
+        expect(subject.to_s).to eq 'some/image'
+      end
     end
   end
 
@@ -67,6 +77,12 @@ describe ContainerRegistry::Path do
 
     context 'when path is related to multi-level image' do
       let(:path) { 'some/path/my/image' }
+
+      it { is_expected.to be_valid }
+    end
+
+    context 'when path contains uppercase letters' do
+      let(:path) { 'Some/Registry' }
 
       it { is_expected.to be_valid }
     end
@@ -173,15 +189,10 @@ describe ContainerRegistry::Path do
     end
 
     context 'when project exists' do
-      let(:group) { create(:group, path: 'some_group') }
-
-      let(:project) do
-        create(:empty_project, group: group, name: 'some_project')
-      end
+      let(:group) { create(:group, path: 'Some_Group') }
 
       before do
-        allow(path).to receive(:repository_project)
-          .and_return(project)
+        create(:empty_project, group: group, name: 'some_project')
       end
 
       context 'when project path equal repository path' do
@@ -206,6 +217,29 @@ describe ContainerRegistry::Path do
         it 'returns a correct repository name' do
           expect(subject.repository_name).to eq 'repository/image'
         end
+      end
+    end
+  end
+
+  describe '#project_path' do
+    context 'when project does not exist' do
+      let(:path) { 'some/name' }
+
+      it 'returns nil' do
+        expect(subject.project_path).to be_nil
+      end
+    end
+
+    context 'when project with uppercase characters in path exists' do
+      let(:path) { 'somegroup/myproject/my/image' }
+      let(:group) { create(:group, path: 'SomeGroup') }
+
+      before do
+        create(:empty_project, group: group, name: 'MyProject')
+      end
+
+      it 'returns downcased project path' do
+        expect(subject.project_path).to eq 'somegroup/myproject'
       end
     end
   end

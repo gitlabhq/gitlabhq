@@ -172,7 +172,7 @@ module Ci
         close_open_tags()
 
         OpenStruct.new(
-          html: @out,
+          html: @out.force_encoding(Encoding.default_external),
           state: state,
           append: append,
           truncated: truncated,

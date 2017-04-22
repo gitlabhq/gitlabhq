@@ -26,6 +26,10 @@ browser and you will not have access to certain APIs, such as
 [`Notification`](https://developer.mozilla.org/en-US/docs/Web/API/notification),
 which will have to be stubbed.
 
+### Writing tests
+### Vue.js unit tests
+See this [section][vue-test].
+
 ### Running frontend tests
 
 `rake karma` runs the frontend-only (JavaScript) tests.
@@ -134,3 +138,4 @@ Scenario: Developer can approve merge request
 [jasmine-focus]: https://jasmine.github.io/2.5/focused_specs.html
 [jasmine-jquery]: https://github.com/velesin/jasmine-jquery
 [karma]: http://karma-runner.github.io/
+[vue-test]:https://docs.gitlab.com/ce/development/fe_guide/vue.html#testing-vue-components

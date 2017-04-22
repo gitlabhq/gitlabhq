@@ -18,6 +18,12 @@ module API
       expose :bio, :location, :skype, :linkedin, :twitter, :website_url, :organization
     end
 
+    class UserActivity < Grape::Entity
+      expose :username
+      expose :last_activity_on
+      expose :last_activity_on, as: :last_activity_at # Back-compat
+    end
+
     class Identity < Grape::Entity
       expose :provider, :extern_uid
     end
@@ -25,6 +31,7 @@ module API
     class UserPublic < User
       expose :last_sign_in_at
       expose :confirmed_at
+      expose :last_activity_on
       expose :email
       expose :color_scheme_id, :projects_limit, :current_sign_in_at
       expose :identities, using: Entities::Identity

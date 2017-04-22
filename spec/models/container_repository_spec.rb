@@ -34,8 +34,18 @@ describe ContainerRepository do
   end
 
   describe '#path' do
-    it 'returns a full path to the repository' do
-      expect(repository.path).to eq('group/test/my_image')
+    context 'when project path does not contain uppercase letters' do
+      it 'returns a full path to the repository' do
+        expect(repository.path).to eq('group/test/my_image')
+      end
+    end
+
+    context 'when path contains uppercase letters' do
+      let(:project) { create(:project, path: 'MY_PROJECT', group: group) }
+
+      it 'returns a full path without capital letters' do
+        expect(repository.path).to eq('group/my_project/my_image')
+      end
     end
   end
 

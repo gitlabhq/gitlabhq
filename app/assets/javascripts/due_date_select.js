@@ -115,11 +115,13 @@ class DueDateSelect {
     this.$dropdown.trigger('loading.gl.dropdown');
     this.$selectbox.hide();
     this.$value.css('display', '');
+    const fadeOutLoader = () => {
+      this.$loading.fadeOut();
+    };
 
     gl.issueBoards.BoardsStore.detail.issue.update(this.$dropdown.attr('data-issue-update'))
-      .then(() => {
-        this.$loading.fadeOut();
-      });
+      .then(fadeOutLoader)
+      .catch(fadeOutLoader);
   }
 
   submitSelectedDate(isDropdown) {
@@ -168,8 +170,9 @@ class DueDateSelectors {
       const $datePicker = $(this);
       const calendar = new Pikaday({
         field: $datePicker.get(0),
-        theme: 'gitlab-theme',
+        theme: 'gitlab-theme animate-picker',
         format: 'yyyy-mm-dd',
+        container: $datePicker.parent().get(0),
         onSelect(dateText) {
           $datePicker.val(dateFormat(new Date(dateText), 'yyyy-mm-dd'));
         }

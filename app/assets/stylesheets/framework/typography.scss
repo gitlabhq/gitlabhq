@@ -158,6 +158,7 @@
     li.task-list-item {
       list-style-type: none;
       position: relative;
+      min-height: 22px;
       padding-left: 28px;
       margin-left: 0 !important;
 
@@ -336,4 +337,33 @@ h4 {
 
 .idiff.addition {
   background: $line-added-dark;
+}
+
+
+/**
+ * form text input i.e. search bar, comments, forms, etc.
+ */
+input,
+textarea {
+  &::-webkit-input-placeholder {
+    color: $placeholder-text-color;
+  }
+
+  // support firefox 19+ vendor prefix
+  &::-moz-placeholder {
+    color: $placeholder-text-color;
+    opacity: 1; // FF defaults to 0.54
+  }
+
+  // scss-lint:disable PseudoElement
+  // support Edge vendor prefix
+  &::-ms-input-placeholder {
+    color: $placeholder-text-color;
+  }
+
+  // scss-lint:disable PseudoElement
+  // support IE vendor prefix
+  &:-ms-input-placeholder {
+    color: $placeholder-text-color;
+  }
 }

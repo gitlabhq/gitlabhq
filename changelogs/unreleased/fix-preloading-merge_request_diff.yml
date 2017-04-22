@@ -1,4 +1,0 @@
----
-title: Fix bad query for PostgreSQL showing merge requests list
-merge_request: 10666
-author:
