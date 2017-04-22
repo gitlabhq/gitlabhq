@@ -26,6 +26,16 @@ export default {
       type: Object,
       required: true,
     },
+
+    isRetryable: {
+      type: Boolean,
+      required: true,
+    },
+
+    isCancelable: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
@@ -175,27 +185,31 @@ export default {
   },
   watch: {
     // we watch pipeline update bc we don't know when refreshPipelines is finished
-    pipeline: 'resetButtonLoadingState',
+    isRetryable() {
+      this.resetRequestingState();
+    },
+    isCancelable() {
+      this.resetRequestingState();
+    },
   },
   methods: {
-    resetButtonLoadingState() {
-      this.isCancelling = false;
+    resetRequestingState() {
       this.isRetrying = false;
+      this.isCancelling = false;
     },
     cancelPipeline() {
-      this.isCancelling = true;
-      const confirmCancelMessage = 'Are you sure you want to cancel this pipeline?';
-      return this.makeRequest(this.pipeline.cancel_path, confirmCancelMessage);
+      const confirmMessage = 'Are you sure you want to cancel this pipeline?';
+
+      if (confirmMessage && confirm(confirmMessage)) {
+        this.isCancelling = true;
+        this.makeRequest(this.pipeline.cancel_path);
+      }
     },
     retryPipeline() {
       this.isRetrying = true;
-      return this.makeRequest(this.pipeline.retry_path);
+      this.makeRequest(this.pipeline.retry_path);
     },
-    makeRequest(endpoint, confirmMessage) {
-      if (confirmMessage && !confirm(confirmMessage)) {
-        return Promise.resolve();
-      }
-
+    makeRequest(endpoint) {
       return this.service.postAction(endpoint)
         .then(() => eventHub.$emit('refreshPipelines'))
         .catch(() => new Flash('An error occured while making the request.'));
@@ -239,7 +253,7 @@ export default {
             :artifacts="pipeline.details.artifacts" />
 
           <async-button-component
-            v-if="pipeline.flags.retryable"
+            v-if="isRetryable"
             class="js-pipelines-retry-button btn-default btn-retry"
             @click.native="retryPipeline"
             :is-loading="isRetrying"
@@ -247,7 +261,7 @@ export default {
             icon="repeat"/>
 
           <async-button-component
-            v-if="pipeline.flags.cancelable"
+            v-if="isCancelable"
             class="js-pipelines-cancel-button btn-remove"
             @click.native="cancelPipeline"
             :is-loading="isCancelling"
