@@ -34,7 +34,7 @@ the given environment. Hovering above each square you can see the state of a
 deploy rolling out. The percentage is the percent of the pods that are updated
 to the latest release. The squares with dots represent canary deployment pods.
 
-## Deploy Board requirements
+## Requirements
 
 In order to gather the deployment status you need to label your deployments,
 replica sets, and pods with the `app` key and use the `CI_ENVIRONMENT_SLUG` as
@@ -56,9 +56,7 @@ The complete requirements for Deploy Boards to display for a specific [environme
    cluster/namespace which may have more than one. These resources should be
    contained in the namespace defined in the Kubernetes service setting.
    You can use an [Autodeploy] `.gitlab-ci.yml` template which has predefined
-   stages and commands to use, and automatically applies the labeling. GitLab
-   also has a [Kubernetes deployment example](#using-the-kubernetes-deploy-example-project)
-   which can simplify the build and deployment process.
+   stages and commands to use, and automatically applies the labeling.
 1. To track canary deployments you need to label your deployments and pods
    with `track: canary`. This allows GitLab to discover whether deployment
    is stable or canary (temporary). Read more in the [Canary deployments](#canary-deployments)
@@ -67,7 +65,7 @@ The complete requirements for Deploy Boards to display for a specific [environme
 Once all of the above are set up and the pipeline has run at least once,
 navigate to the environments page under **Pipelines ➔ Environments**.
 
-Deploy Boards is visible by default. You can explicitly click
+Deploy Boards are visible by default. You can explicitly click
 the triangle next to their respective environment name in order to hide them.
 GitLab will then query Kubernetes for the state of each node (e.g., waiting,
 deploying, finished, unknown), and the Deploy Board status will finally appear.
@@ -75,84 +73,6 @@ deploying, finished, unknown), and the Deploy Board status will finally appear.
 GitLab will only display a Deploy Board for top-level environments. Foldered
 environments like `review/*` (usually used for [Review Apps]) won't have a
 Deploy Board attached to them.
-
-## Using the Kubernetes deploy example project
-
-The [kubernetes-deploy][kube-deploy] project is used to simplify the deployment
-process to Kubernetes by providing intelligent `build`, `deploy` and `destroy`
-commands which you can use in your `.gitlab-ci.yml` as-is. It uses Heroku'ish
-build packs to do some of the work, plus some of GitLab's own tools to package
-it all up. For your convenience, a [Docker image][kube-image] is also provided.
-
----
-
-Another simple example would be the deployment of Nginx on Kubernetes.
-Consider a `nginx-deployment.yaml` file in your project with contents:
-
-```yaml
-apiVersion: extensions/v1beta1
-kind: Deployment
-metadata:
-  name: __CI_ENVIRONMENT_SLUG__
-  labels:
-    app: __CI_ENVIRONMENT_SLUG__
-    track: stable
-spec:
-  replicas: 3
-  template:
-    metadata:
-      labels:
-        app: __CI_ENVIRONMENT_SLUG__
-        track: stable
-    spec:
-      containers:
-      - name: nginx
-        image: nginx:1.7.9
-        ports:
-        - containerPort: 80
-```
-
-The important part is where we set up `app: __CI_ENVIRONMENT_SLUG__`. As you'll
-see later this is replaced by the [`CI_ENVIRONMENT_SLUG` env variable][variables].
-
-The `.gitlab-ci.yml` would be:
-
-```yaml
-image: registry.gitlab.com/gitlab-examples/kubernetes-deploy
-
-stages:
-  - deploy
-
-kubernetes deploy:
-  stage: deploy
-  environment:
-    name: production
-  script:
-    - echo "$KUBE_CA_PEM" > kube_ca.pem
-    - cat kube_ca.pem
-    - kubectl config set-cluster default-cluster --server=$KUBE_URL --certificate-authority="$(pwd)/kube_ca.pem"
-    - kubectl config set-credentials default-admin --token=$KUBE_TOKEN
-    - kubectl config set-context default-system --cluster=default-cluster --user=default-admin --namespace $KUBE_NAMESPACE
-    - kubectl config use-context default-system
-
-    - sed -i "s/__CI_ENVIRONMENT_SLUG__/$CI_ENVIRONMENT_SLUG/" nginx-deployment.yaml
-    - cat nginx-deployment.yaml
-    - kubectl cluster-info
-    - kubectl get deployments -l app=$CI_ENVIRONMENT_SLUG
-    - kubectl create -f nginx-deployment.yaml || kubectl replace -f nginx-deployment.yaml
-```
-
-Notice that we use a couple of environment Kubernetes variables to configure
-the Kubernetes cluster. These are exposed from the
-[Kubernetes service](integrations/kubernetes.md#deployment-variables).
-The most important one is the `$KUBE_NAMESPACE` which should be unique for
-every project.
-
-Next, we replace `__CI_ENVIRONMENT_SLUG__` with the content of the
-`CI_ENVIRONMENT_SLUG` variable, so that the `app` label has the correct value.
-
-Finally, the Nginx pod is created from the definition of the
-`nginx-deployment.yaml` file.
 
 ## Canary deployments
 
@@ -165,75 +85,26 @@ If there is a problem with the new version of the application, only a small
 percentage of users are affected and the change can either be fixed or quickly
 reverted.
 
----
-
 To start using canary deployments, in addition to the
-[requirements of Deploy Boards](#deploy-boards-requirements), you also need
-to label your deployments and pods with `track: canary`. This allows GitLab to
-discover whether deployment is stable or canary (temporary).
+[requirements of Deploy Boards](#requirements), you also need to label your
+deployments and pods with the `canary` label (`track: canary`).
 
-Expanding on the [Kubernetes deploy example above](#using-the-kubernetes-deploy-example-project),
-you can also use it to expose canary deployments. Canary deployments should
-include `track: canary` and have a different deployment name than normal
-deployments.
+In the end, depending on the deploy, the label should be either `stable` or `canary`.
+This allows GitLab to discover whether deployment is stable or canary (temporary).
+To get started quickly, you can use the [Autodeploy] template for canary deployments
+that GitLab provides.
 
-```yaml
-apiVersion: extensions/v1beta1
-kind: Deployment
-metadata:
-  name: __CI_ENVIRONMENT_SLUG__-canary
-  labels:
-    app: __CI_ENVIRONMENT_SLUG__
-    track: canary
-spec:
-  replicas: 3
-  template:
-    metadata:
-      labels:
-        app: __CI_ENVIRONMENT_SLUG__
-        track: canary
-    spec:
-      containers:
-      - name: nginx
-        image: nginx:1.7.9
-        ports:
-        - containerPort: 80
-```
+Canary deployments are marked with a yellow dot in the Deploy Board so that you
+can easily notice them.
 
-The `.gitlab-ci.yml` would be:
-
-```yaml
-image: registry.gitlab.com/gitlab-examples/kubernetes-deploy
-
-stages:
-  - canary
-
-kubernetes canary deploy:
-  stage: canary
-  environment:
-    name: production
-  script:
-    - echo "$KUBE_CA_PEM" > kube_ca.pem
-    - cat kube_ca.pem
-    - kubectl config set-cluster default-cluster --server=$KUBE_URL --certificate-authority="$(pwd)/kube_ca.pem"
-    - kubectl config set-credentials default-admin --token=$KUBE_TOKEN
-    - kubectl config set-context default-system --cluster=default-cluster --user=default-admin --namespace $KUBE_NAMESPACE
-    - kubectl config use-context default-system
-
-    - sed -i "s/__CI_ENVIRONMENT_SLUG__/$CI_ENVIRONMENT_SLUG/" nginx-deployment.yaml
-    - cat nginx-deployment.yaml
-    - kubectl cluster-info
-    - kubectl get deployments -l app=$CI_ENVIRONMENT_SLUG
-    - kubectl create -f nginx-deployment-canary.yaml || kubectl replace -f nginx-deployment-canary.yaml
-```
+![Canary deployments on Deploy Board](img/deploy_boards_canary_deployments.png)
 
 ## Further reading
 
+- [GitLab Autodeploy][autodeploy]
 - [GitLab CI environment variables][variables]
 - [Environments and deployments][environment]
-- [Kubernetes project service][kube-service]
 - [Kubernetes deploy example][kube-deploy]
-- [GitLab Autodeploy][autodeploy]
 
 [ce-1589]: https://gitlab.com/gitlab-org/gitlab-ee/issues/1589 "Deploy Boards intial issue"
 [ee]: https://about.gitlab.com/gitlab-ee/ "GitLab Enterprise Edition landing page"
