@@ -1,4 +1,0 @@
----
-title: Add /-/readiness /-/liveness and /-/metrics endpoints to track application health
-merge_request: 10416
-author:
