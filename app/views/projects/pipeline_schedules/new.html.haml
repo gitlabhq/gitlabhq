@@ -1,7 +1,15 @@
+- @no_container = true
 - page_title "New Pipeline Schedule"
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_bundle_tag('pipeline_schedules')
+  
+%div
+  = @timezones
+%div{ class: container_class }
+  %h3.page-title
+    Schedule a new pipeline
+  %hr
 
-%h3.page-title
-  Schedule a new pipeline
-%hr
+  = render "form"
 
-= render "form"
+  

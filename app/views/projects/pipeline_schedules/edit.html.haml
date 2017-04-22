@@ -1,7 +1,10 @@
+- @no_container = true
 - page_title "Edit", @pipeline_schedule.description, "Pipeline Schedule"
+= render "projects/pipelines/head"
 
-%h3.page-title
-  Edit Pipeline Schedule #{@pipeline_schedule.id}
-%hr
+%div{ class: container_class }
+  %h3.page-title
+    Edit Pipeline Schedule #{@pipeline_schedule.id}
+  %hr
 
-= render "form"
+  = render "form"

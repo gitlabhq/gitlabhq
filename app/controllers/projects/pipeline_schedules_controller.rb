@@ -26,6 +26,8 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   end
 
   def create
+    @timezones = TZInfo::Timezone.all.json
+
     @pipeline_schedule = Ci::CreatePipelineScheduleService.
       new(@project, current_user, pipeline_schedule_params).
       execute

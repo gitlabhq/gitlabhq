@@ -43,6 +43,7 @@ var config = {
     notebook_viewer:      './blob/notebook_viewer.js',
     pdf_viewer:           './blob/pdf_viewer.js',
     pipelines:            './pipelines/index.js',
+    pipeline_schedules:   './pipeline_schedules/pipeline_schedules_bundle.js',
     profile:              './profile/profile_bundle.js',
     protected_branches:   './protected_branches/protected_branches_bundle.js',
     protected_tags:       './protected_tags',
