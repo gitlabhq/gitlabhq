@@ -1,4 +1,0 @@
----
-title: Fix squashing MRs when the repository contains a ref named HEAD
-merge_request:
-author:

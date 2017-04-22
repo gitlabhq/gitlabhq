@@ -1,4 +1,0 @@
----
-title: Fix 500 errors caused by elasticsearch results referencing garbage-collected commits
-merge_request: 1430
-author:

@@ -1,4 +1,0 @@
----
-title: Fix pre-receive hooks when using Git 2.11 or later.
-merge_request: 1525
-author:

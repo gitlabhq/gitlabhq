@@ -1,4 +1,0 @@
----
-title: Fix Elasticsearch not working when URL ends with a forward slash
-merge_request: 1566
-author:
