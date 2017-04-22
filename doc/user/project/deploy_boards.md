@@ -87,10 +87,11 @@ reverted.
 
 To start using canary deployments, in addition to the
 [requirements of Deploy Boards](#requirements), you also need to label your
-deployments and pods with `track: canary`. This allows GitLab to discover
-whether deployment is stable or canary (temporary).
+deployments and pods with the `canary` label (`track: canary`).
 
-To quickly start, you can use the [Autodeploy] template for canary deployments
+In the end, depending on the deploy, the label should be either `stable` or `canary`.
+This allows GitLab to discover whether deployment is stable or canary (temporary).
+To get started quickly, you can use the [Autodeploy] template for canary deployments
 that GitLab provides.
 
 Canary deployments are marked with a yellow dot in the Deploy Board so that you

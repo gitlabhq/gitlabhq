@@ -102,7 +102,7 @@ kubernetes deploy:
     - kubectl create -f nginx-deployment.yaml || kubectl replace -f nginx-deployment.yaml
 ```
 
-Notice that we use a couple of environment Kubernetes variables to configure
+Notice that we use a couple of Kubernetes environment variables to configure
 the Kubernetes cluster. These are exposed from the
 [Kubernetes service](../../user/project/integrations/kubernetes.md#deployment-variables).
 The most important one is the `$KUBE_NAMESPACE` which should be unique for
