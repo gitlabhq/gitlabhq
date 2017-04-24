@@ -43,7 +43,7 @@ class Spinach::Features::ProjectMergeRequestsAcceptance < Spinach::FeatureSteps
   end
 
   step 'I am signed in as a developer of the project' do
-    login_as(@user)
+    sign_in(@user)
   end
 
   step 'I should see merge request merged' do
