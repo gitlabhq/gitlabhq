@@ -211,6 +211,18 @@ describe Gitlab::Saml::User, lib: true do
           end
         end
       end
+
+      context 'when signup is disabled' do
+        before do
+          stub_application_setting signup_enabled: false
+        end
+
+        it 'creates the user' do
+          saml_user.save
+
+          expect(gl_user).to be_persisted
+        end
+      end
     end
 
     describe 'blocking' do

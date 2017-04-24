@@ -108,6 +108,18 @@ describe Gitlab::LDAP::User, lib: true do
     it "creates a new user if not found" do
       expect{ ldap_user.save }.to change{ User.count }.by(1)
     end
+
+    context 'when signup is disabled' do
+      before do
+        stub_application_setting signup_enabled: false
+      end
+
+      it 'creates the user' do
+        ldap_user.save
+
+        expect(gl_user).to be_persisted
+      end
+    end
   end
 
   describe 'updating email' do

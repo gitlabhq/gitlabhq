@@ -148,7 +148,7 @@ module Gitlab
 
       def build_new_user
         user_params = user_attributes.merge(extern_uid: auth_hash.uid, provider: auth_hash.provider, skip_confirmation: true)
-        Users::BuildService.new(nil, user_params).execute
+        Users::BuildService.new(nil, user_params).execute(skip_authorization: true)
       end
 
       def user_attributes
