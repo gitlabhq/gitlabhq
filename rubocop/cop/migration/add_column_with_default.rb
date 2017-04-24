@@ -8,25 +8,26 @@ module RuboCop
       class AddColumnWithDefault < RuboCop::Cop::Cop
         include MigrationHelpers
 
+        def_node_matcher :add_column_with_default?, <<~PATTERN
+          (send nil :add_column_with_default $...)
+        PATTERN
+
+        def_node_matcher :defines_change?, <<~PATTERN
+          (def :change ...)
+        PATTERN
+
         MSG = '`add_column_with_default` is not reversible so you must manually define ' \
           'the `up` and `down` methods in your migration class, using `remove_column` in `down`'.freeze
 
         def on_send(node)
           return unless in_migration?(node)
-
-          name = node.children[1]
-
-          return unless name == :add_column_with_default
+          return unless add_column_with_default?(node)
 
           node.each_ancestor(:def) do |def_node|
-            next unless method_name(def_node) == :change
+            next unless defines_change?(def_node)
 
             add_offense(def_node, :name)
           end
-        end
-
-        def method_name(node)
-          node.children.first
         end
       end
     end
