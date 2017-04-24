@@ -1,6 +1,6 @@
 namespace :gemojione do
   desc 'Generates Emoji SHA256 digests'
-  task digests: ['environment'] do
+  task digests: ['yarn:check', 'environment'] do
     require 'digest/sha2'
     require 'json'
 
