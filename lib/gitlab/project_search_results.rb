@@ -82,6 +82,8 @@ module Gitlab
     private
 
     def blobs
+      return [] unless Ability.allowed?(@current_user, :download_code, @project)
+
       @blobs ||= begin
         blobs = project.repository.search_files_by_content(query, repository_ref).first(100)
         found_file_names = Set.new
@@ -102,6 +104,8 @@ module Gitlab
     end
 
     def wiki_blobs
+      return [] unless Ability.allowed?(@current_user, :read_wiki, @project)
+
       @wiki_blobs ||= begin
         if project.wiki_enabled? && query.present?
           project_wiki = ProjectWiki.new(project)
