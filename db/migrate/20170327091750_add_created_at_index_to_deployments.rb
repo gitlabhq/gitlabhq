@@ -10,6 +10,6 @@ class AddCreatedAtIndexToDeployments < ActiveRecord::Migration
   end
 
   def down
-    remove_index :deployments, :created_at
+    remove_concurrent_index :deployments, :created_at
   end
 end
