@@ -338,19 +338,19 @@ module Github
       return unless user.present?
       return cached_user_ids[user.id] if cached_user_ids.key?(user.id)
 
-      gitlab_user_id = find_by_external_uid(user.id) || find_by_email(user.email)
+      gitlab_user_id = user_id_by_external_uid(user.id) || user_id_by_email(user.email)
 
       cached_gitlab_users[user.id] = gitlab_user_id.present?
       cached_user_ids[user.id] = gitlab_user_id || fallback_id
     end
 
-    def find_by_email(email)
+    def user_id_by_email(email)
       return nil unless email
 
       ::User.find_by_any_email(email)&.id
     end
 
-    def find_by_external_uid(id)
+    def user_id_by_external_uid(id)
       return nil unless id
 
       identities = ::Identity.arel_table
