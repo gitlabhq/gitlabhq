@@ -1268,6 +1268,9 @@ class Project < ActiveRecord::Base
     else
       update_attribute(name, value)
     end
+
+  rescue ActiveRecord::RecordNotSaved => e
+    handle_update_attribute_error(e, value)
   end
 
   def pushes_since_gc
@@ -1380,5 +1383,17 @@ class Project < ActiveRecord::Base
     return false unless Gitlab.config.registry.enabled
 
     ContainerRepository.build_root_repository(self).has_tags?
+  end
+
+  def handle_update_attribute_error(e, value)
+    if e.message.start_with?('Failed to replace')
+      if value.respond_to?(:each)
+        invalid = value.detect(&:invalid?)
+
+        raise $!, ([$!] + invalid.errors.full_messages).join(' ') if invalid
+      end
+    end
+
+    raise e
   end
 end
