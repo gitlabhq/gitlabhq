@@ -13,6 +13,8 @@ describe('#getCiStatusSvg', () => {
     'passed',
     'warning',
     'success_with_warnings',
+    'failed_with_warnings',
+    'info',
     'blocked',
   ];
 
