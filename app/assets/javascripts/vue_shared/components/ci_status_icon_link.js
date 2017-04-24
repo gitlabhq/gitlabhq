@@ -10,6 +10,7 @@ export default {
     href: {
       type: String,
       required: false,
+      default: '',
     },
     borderless: {
       type: Boolean,
