@@ -9,7 +9,7 @@ export default class ProtectedTagDropdown extends ProtectedRefDropdown {
 
     super(options, {
       $dropdownFooter: $dropdownContainer.find('.dropdown-footer'),
-      $createNewProtectedRef: $dropdownContainer.find('.create-new-protected-tag'),
+      $createNewProtectedRef: $dropdownContainer.find('.js-create-new-protected-tag'),
       protectedRefFieldName: 'protected_tag[name]',
       dropdownLabel: 'Protected Tag',
       protectedRefsList: gon.open_tags,
