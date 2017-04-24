@@ -63,11 +63,15 @@ feature 'Task Lists', feature: true do
   end
 
   describe 'for Issues' do
-    describe 'multiple tasks' do
+    include WaitForVueResource
+
+    describe 'multiple tasks', js: true do
       let!(:issue) { create(:issue, description: markdown, author: user, project: project) }
 
       it 'renders' do
         visit_issue(project, issue)
+
+        wait_for_vue_resource
 
         expect(page).to have_selector('ul.task-list',      count: 1)
         expect(page).to have_selector('li.task-list-item', count: 6)
@@ -79,6 +83,8 @@ feature 'Task Lists', feature: true do
 
         container = '.detail-page-description .description.js-task-list-container'
 
+        wait_for_vue_resource
+
         expect(page).to have_selector(container)
         expect(page).to have_selector("#{container} .wiki .task-list .task-list-item .task-list-item-checkbox")
         expect(page).to have_selector("#{container} .js-task-list-field")
@@ -88,12 +94,17 @@ feature 'Task Lists', feature: true do
 
       it 'is only editable by author' do
         visit_issue(project, issue)
+
+        wait_for_vue_resource
+
         expect(page).to have_selector('.js-task-list-container')
 
         logout(:user)
 
         login_as(user2)
         visit current_path
+
+        wait_for_vue_resource
         expect(page).not_to have_selector('.js-task-list-container')
       end
 
@@ -108,6 +119,8 @@ feature 'Task Lists', feature: true do
 
       it 'renders' do
         visit_issue(project, issue)
+
+        wait_for_vue_resource
 
         expect(page).to have_selector('ul.task-list',      count: 1)
         expect(page).to have_selector('li.task-list-item', count: 1)
@@ -126,6 +139,8 @@ feature 'Task Lists', feature: true do
       it 'renders' do
         visit_issue(project, issue)
 
+        wait_for_vue_resource
+
         expect(page).to have_selector('ul.task-list',      count: 1)
         expect(page).to have_selector('li.task-list-item', count: 1)
         expect(page).to have_selector('ul input[checked]', count: 1)
@@ -143,6 +158,9 @@ feature 'Task Lists', feature: true do
       before { visit_issue(project, issue) }
 
       it 'renders' do
+
+        wait_for_vue_resource
+
         expect(page).to have_selector('ul.task-list',      count: 2)
         expect(page).to have_selector('li.task-list-item', count: 7)
         expect(page).to have_selector('ul input[checked]', count: 1)
@@ -152,6 +170,8 @@ feature 'Task Lists', feature: true do
       it 'solves tasks' do
         expect(page).to have_content("2 of 7 tasks completed")
 
+        wait_for_vue_resource
+
         page.find('li.task-list-item', text: 'Task b').find('input').click
         page.find('li.task-list-item ul li.task-list-item', text: 'Task a.2').find('input').click
         page.find('li.task-list-item ol li.task-list-item', text: 'Task 1.1').find('input').click
@@ -159,6 +179,8 @@ feature 'Task Lists', feature: true do
         expect(page).to have_content("5 of 7 tasks completed")
 
         visit_issue(project, issue) # reload to see new system notes
+
+        wait_for_vue_resource
 
         expect(page).to have_content('marked the task Task b as complete')
         expect(page).to have_content('marked the task Task a.2 as complete')

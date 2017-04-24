@@ -68,6 +68,8 @@ export default {
 
       this.timeoutId = setTimeout(() => {
         this.title = title;
+        document.querySelector('title').innerText = title;
+
         this.description = description;
 
         elementsToVisualize.forEach((element) => {
@@ -98,13 +100,15 @@ export default {
     });
   },
   updated() {
-    new gl.TaskList({
+    const tl = new gl.TaskList({
       dataType: 'issue',
       fieldName: 'description',
       selector: '.detail-page-description',
-    }).init();
+    });
 
     $(this.$refs['issue-content-container-gfm-entry']).renderGFM();
+
+    return tl;
   },
 };
 </script>
