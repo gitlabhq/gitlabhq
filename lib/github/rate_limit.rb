@@ -1,7 +1,7 @@
 module Github
   class RateLimit
-    SAFE_REMAINING_REQUESTS = 100.freeze
-    SAFE_RESET_TIME         = 500.freeze
+    SAFE_REMAINING_REQUESTS = 100
+    SAFE_RESET_TIME         = 500
 
     attr_reader :connection
 
