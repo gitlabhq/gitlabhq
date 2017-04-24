@@ -44,7 +44,7 @@ describe('#getCiStatusSvg', () => {
     });
   });
 
-  it('returns undefined for invalid status strings', () => {
-    expect(getCiStatusSvg({ status: 'a-wop-dop-a-doo' })).toBeUndefined();
+  it('still returns an svg for invalid status strings', () => {
+    expect(getCiStatusSvg({ status: 'a-wop-dop-a-doo' })).toContain('<svg');
   });
 });
