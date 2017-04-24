@@ -233,9 +233,10 @@ module MarkupHelper
       current_user:   (current_user if defined?(current_user)),
 
       # RelativeLinkFilter
-      requested_path: @path,
+      commit:         @commit,
       project_wiki:   @project_wiki,
-      ref:            @ref
+      ref:            @ref,
+      requested_path: @path
     )
 
     Banzai.post_process(html, context)
