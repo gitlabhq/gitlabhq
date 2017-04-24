@@ -2,6 +2,7 @@ module Github
   class RateLimit
     SAFE_REMAINING_REQUESTS = 100
     SAFE_RESET_TIME         = 500
+    RATE_LIMIT_URL          = '/rate_limit'.freeze
 
     attr_reader :connection
 
@@ -25,12 +26,8 @@ module Github
 
     private
 
-    def rate_limit_url
-      '/rate_limit'
-    end
-
     def response
-      connection.get(rate_limit_url)
+      connection.get(RATE_LIMIT_URL)
     end
 
     def body
