@@ -277,7 +277,7 @@ import eventHub from './sidebar/event_hub';
             defaultLabel: defaultLabel,
             hidden: function(e) {
               if ($dropdown.hasClass('js-multiselect')) {
-                eventHub.$emit('sidebar:saveUsers');
+                eventHub.$emit('sidebar.saveUsers');
               }
 
               $selectbox.hide();
@@ -302,10 +302,10 @@ import eventHub from './sidebar/event_hub';
                     const id = parseInt(element.value, 10);
                     element.remove();
                   });
-                  eventHub.$emit('sidebar:removeAllUsers');
+                  eventHub.$emit('sidebar.removeAllUsers');
                 } else if (isActive) {
                   // user selected
-                  eventHub.$emit('sidebar:addUser', user.id);
+                  eventHub.$emit('sidebar.addUser', user.id);
 
                   // Remove unassigned selection (if it was previously selected)
                   const unassignedSelected = $dropdown.closest('.selectbox')
@@ -321,7 +321,7 @@ import eventHub from './sidebar/event_hub';
                   }
 
                   // User unselected
-                  eventHub.$emit('sidebar:removeUser', user.id);
+                  eventHub.$emit('sidebar.removeUser', user.id);
                 }
               }
 

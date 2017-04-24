@@ -42,10 +42,10 @@ export default {
   },
   created() {
     // Get events from glDropdown
-    eventHub.$on('sidebar:removeUser', this.store.removeUserId.bind(this.store));
-    eventHub.$on('sidebar:addUser', this.store.addUserId.bind(this.store));
-    eventHub.$on('sidebar:removeAllUsers', this.store.removeAllUserIds.bind(this.store));
-    eventHub.$on('sidebar:saveUsers', this.saveUsers);
+    eventHub.$on('sidebar.removeUser', this.store.removeUserId.bind(this.store));
+    eventHub.$on('sidebar.addUser', this.store.addUserId.bind(this.store));
+    eventHub.$on('sidebar.removeAllUsers', this.store.removeAllUserIds.bind(this.store));
+    eventHub.$on('sidebar.saveUsers', this.saveUsers);
   },
   beforeMount() {
     const element = this.$el;
