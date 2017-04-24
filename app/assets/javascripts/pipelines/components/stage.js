@@ -1,5 +1,5 @@
 /* global Flash */
-import getCiStatusSvg from '../../vue_shared/utils/get_ci_status_svg';
+import { getCiStatusSvg } from '../../vue_shared/utils/get_ci_status_svg';
 
 export default {
   data() {

@@ -1,4 +1,4 @@
-import getCiStatusSvg from '../../vue_shared/utils/get_ci_status_svg';
+import { getCiStatusSvg, normalizeStatus } from '../../vue_shared/utils/get_ci_status_svg';
 
 export default {
   name: 'CIStatusIconLink',
@@ -19,8 +19,11 @@ export default {
     },
   },
   computed: {
-    ciStatusClasses() {
-      return `ci-status ci-${this.status}`;
+    statusText() {
+      return normalizeStatus(this.status);
+    },
+    statusCss() {
+      return `ci-status ci-${this.statusText}`;
     },
     statusSvg() {
       return getCiStatusSvg({
@@ -28,16 +31,17 @@ export default {
         borderless: this.borderless,
       });
     },
-    // appends the status string to the svg by default
+    // appends the status string to the svg by default. These
+    // may need to be decoupled at some point
     iconSvg() {
-      return `${this.statusSvg}${this.status}`;
+      return `${this.statusSvg}${this.statusText}`;
     },
   },
   template: `
       <a 
         v-html="iconSvg"
         :href="href"
-        :class="ciStatusClasses">
+        :class="statusCss">
       </a>
   `,
 };

@@ -15,7 +15,7 @@ export default {
       const { status } = this.pipeline.details;
       return status.has_details ? status.details_path : false;
     },
-    pipelineStatus() {
+    statusIcon() {
       return this.pipeline.details.status.icon;
     },
   },
@@ -23,7 +23,7 @@ export default {
     <td class="commit-link">
       <ci-status-icon-link
         :href="detailsPath"
-        :status="pipelineStatus"
+        :status="statusIcon"
         :borderless="false"/>
     </td>
   `,

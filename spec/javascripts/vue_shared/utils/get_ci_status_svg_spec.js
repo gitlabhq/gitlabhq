@@ -1,4 +1,4 @@
-import getCiStatusSvg from '~/vue_shared/utils/get_ci_status_svg';
+import { getCiStatusSvg, normalizeStatus } from '~/vue_shared/utils/get_ci_status_svg';
 
 describe('#getCiStatusSvg', () => {
   const ciStatuses = [
@@ -41,5 +41,15 @@ describe('#getCiStatusSvg', () => {
 
   it('still returns an svg for invalid status strings', () => {
     expect(getCiStatusSvg({ status: 'a-wop-dop-a-doo' })).toContain('<svg');
+  });
+
+  describe('#normalizeStatus', () => {
+    it('returns the normalized status for ruby syntax', () => {
+      expect(normalizeStatus('icon_status_success')).toBe('success');
+    });
+
+    it('returns the normalized status for a plain status string', () => {
+      expect(normalizeStatus('success')).toBe('success');
+    });
   });
 });
