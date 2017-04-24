@@ -441,7 +441,6 @@ export default {
 <template>
   <tr :class="{ 'js-child-row': model.isChildren }">
     <td>
-<<<<<<< HEAD:app/assets/javascripts/environments/components/environment_item.vue
       <span
         class="deploy-board-icon"
         v-if="model.hasDeployBoard"
@@ -458,8 +457,6 @@ export default {
           aria-hidden="true" />
       </span>
 
-=======
->>>>>>> ce-com/master:app/assets/javascripts/environments/components/environment_item.vue
       <a
         v-if="!model.isFolder"
         class="environment-name"

@@ -38,15 +38,13 @@ feature 'Projects > Audit Events', js: true, feature: true do
     end
 
     it "appears in the project's audit events" do
-      visit namespace_project_path(project.namespace, project)
-
-      click_link 'Members'
+      visit namespace_project_settings_members_path(project.namespace, project)
 
       project_member = project.project_member(pete)
+
       page.within "#project_member_#{project_member.id}" do
-        click_button 'Edit access level'
-        select 'Master', from: 'project_member_access_level'
-        click_button 'Save'
+        click_button('Developer')
+        click_link('Reporter')
       end
 
       # This is to avoid a Capybara::Poltergeist::MouseEventFailed error

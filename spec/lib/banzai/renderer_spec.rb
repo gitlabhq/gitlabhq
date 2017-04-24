@@ -14,7 +14,6 @@ describe Banzai::Renderer do
     let(:renderer) { Banzai::Renderer }
     subject { renderer.render_field(object, :field) }
 
-<<<<<<< HEAD
     context "with an empty cache" do
       let(:object) { fake_object(:markdown) }
       it "caches and returns the result" do
@@ -30,10 +29,9 @@ describe Banzai::Renderer do
         expect(subject).to eq(:html)
       end
     end
-=======
+
     context 'with a stale cache' do
       let(:object) { fake_object(fresh: false) }
->>>>>>> ce-com/master
 
       it 'caches and returns the result' do
         expect(object).to receive(:refresh_markdown_cache!).with(do_update: true)

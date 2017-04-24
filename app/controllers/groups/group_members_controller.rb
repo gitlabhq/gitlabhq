@@ -24,30 +24,6 @@ class Groups::GroupMembersController < Groups::ApplicationController
     @group_member = @group.group_members.new
   end
 
-<<<<<<< HEAD
-  def create
-    if params[:user_ids].blank?
-      return redirect_to(group_group_members_path(@group), alert: 'No users specified.')
-    end
-
-    @group.add_users(
-      params[:user_ids].split(','),
-      params[:access_level],
-      current_user: current_user,
-      expires_at: params[:expires_at]
-    )
-
-    group_members = @group.group_members.where(user_id: params[:user_ids].split(','))
-
-    group_members.each do |group_member|
-      log_audit_event(group_member, action: :create)
-    end
-
-    redirect_to group_group_members_path(@group), notice: 'Users were successfully added.'
-  end
-
-=======
->>>>>>> ce-com/master
   def update
     @group_member = @group.group_members.find(params[:id])
 
@@ -60,20 +36,6 @@ class Groups::GroupMembersController < Groups::ApplicationController
     end
   end
 
-<<<<<<< HEAD
-  def destroy
-    member = Members::DestroyService.new(@group, current_user, id: params[:id]).execute(:all)
-
-    log_audit_event(member, action: :destroy)
-
-    respond_to do |format|
-      format.html { redirect_to group_group_members_path(@group), notice: 'User was successfully removed from group.' }
-      format.js { head :ok }
-    end
-  end
-
-=======
->>>>>>> ce-com/master
   def resend_invite
     redirect_path = group_group_members_path(@group)
 

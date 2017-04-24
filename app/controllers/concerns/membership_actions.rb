@@ -53,11 +53,8 @@ module MembershipActions
         "You left the \"#{membershipable.human_name}\" #{source_type}."
       end
 
-<<<<<<< HEAD
     log_audit_event(member, action: :destroy) unless member.request?
 
-=======
->>>>>>> ce-com/master
     redirect_path = member.request? ? member.source : [:dashboard, membershipable.class.to_s.tableize]
 
     redirect_to redirect_path, notice: notice
@@ -69,11 +66,11 @@ module MembershipActions
     raise NotImplementedError
   end
 
-<<<<<<< HEAD
   def log_audit_event(member, options = {})
     AuditEventService.new(current_user, membershipable, options)
       .for_member(member).security_event
-=======
+  end
+
   def members_page_url
     if membershipable.is_a?(Project)
       project_settings_members_path(membershipable)
@@ -84,6 +81,5 @@ module MembershipActions
 
   def source_type
     @source_type ||= membershipable.class.to_s.humanize(capitalize: false)
->>>>>>> ce-com/master
   end
 end
