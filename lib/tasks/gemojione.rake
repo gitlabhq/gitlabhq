@@ -1,6 +1,6 @@
 namespace :gemojione do
   desc 'Generates Emoji SHA256 digests'
-  task digests: ['yarn:check', 'environment'] do
+  task digests: ['environment'] do
     require 'digest/sha2'
     require 'json'
 
@@ -19,6 +19,7 @@ namespace :gemojione do
         entry = {
           category: emoji_hash['category'],
           moji: emoji_hash['moji'],
+          description: emoji_hash['description'],
           unicodeVersion: Gitlab::Emoji.emoji_unicode_version(name),
           digest: hash_digest,
         }

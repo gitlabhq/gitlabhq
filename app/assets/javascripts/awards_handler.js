@@ -29,11 +29,18 @@ const categoryLabelMap = {
   flags: 'Flags',
 };
 
+function createEmojiObject(alias) {
+  return {
+    alias,
+    description: emojiMap[alias].description,
+  };
+};
+
 function buildCategoryMap() {
   return Object.keys(emojiMap).reduce((currentCategoryMap, emojiNameKey) => {
     const emojiInfo = emojiMap[emojiNameKey];
     if (currentCategoryMap[emojiInfo.category]) {
-      currentCategoryMap[emojiInfo.category].push(emojiNameKey);
+      currentCategoryMap[emojiInfo.category].push(createEmojiObject(emojiNameKey));
     }
 
     return currentCategoryMap;
@@ -55,10 +62,10 @@ function renderCategory(name, emojiList, opts = {}) {
       ${name}
     </h5>
     <ul class="clearfix emoji-menu-list ${opts.menuListClass || ''}">
-      ${emojiList.map(emojiName => `
+      ${emojiList.map(emoji => `
         <li class="emoji-menu-list-item">
-          <button class="emoji-menu-btn text-center js-emoji-btn" type="button">
-            ${glEmojiTag(emojiName, {
+          <button class="emoji-menu-btn text-center js-emoji-btn" type="button" title="${emoji.description}">
+            ${glEmojiTag(emoji.alias, {
               sprite: true,
             })}
           </button>
@@ -498,7 +505,7 @@ AwardsHandler.prototype.getFrequentlyUsedEmojis = function getFrequentlyUsedEmoj
     const frequentlyUsedEmojis = _.uniq((Cookies.get('frequently_used_emojis') || '').split(','));
     this.frequentlyUsedEmojis = frequentlyUsedEmojis.filter(
       inputName => isEmojiNameValid(inputName),
-    );
+    ).map(emojiNameKey => createEmojiObject(emojiNameKey));
 
     return this.frequentlyUsedEmojis;
   })();
