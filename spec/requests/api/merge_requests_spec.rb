@@ -1,7 +1,6 @@
 require "spec_helper"
 
-describe API::MergeRequests, api: true  do
-  include ApiHelpers
+describe API::MergeRequests do
   let(:base_time)   { Time.now }
   let(:user)        { create(:user) }
   let(:admin)       { create(:user, :admin) }

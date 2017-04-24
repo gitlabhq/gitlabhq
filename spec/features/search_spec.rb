@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe "Search", feature: true  do
   include FilteredSearchHelpers
-  include WaitForAjax
 
   let(:user) { create(:user) }
   let(:project) { create(:empty_project, namespace: user.namespace) }

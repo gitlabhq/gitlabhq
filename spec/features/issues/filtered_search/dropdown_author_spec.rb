@@ -2,7 +2,6 @@ require 'rails_helper'
 
 describe 'Dropdown author', js: true, feature: true do
   include FilteredSearchHelpers
-  include WaitForAjax
 
   let!(:project) { create(:empty_project) }
   let!(:user) { create(:user, name: 'administrator', username: 'root') }

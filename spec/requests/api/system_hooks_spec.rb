@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe API::SystemHooks, api: true  do
-  include ApiHelpers
-
+describe API::SystemHooks do
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
   let!(:hook) { create(:system_hook, url: "http://example.com") }

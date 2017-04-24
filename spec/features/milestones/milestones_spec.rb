@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe 'Milestone draggable', feature: true, js: true do
-  include WaitForAjax
   include DragTo
 
   let(:milestone) { create(:milestone, project: project, title: 8.14) }
