@@ -1,4 +1,5 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, no-unused-vars, one-var, one-var-declaration-per-line, vars-on-top, max-len */
+import _ from 'underscore';
 
 (function() {
   var hideEndFade;
@@ -45,4 +46,14 @@
       }
     });
   });
+
+  function applyScrollNavClass() {
+    if ($(window).scrollTop() > 0) {
+      $('.navbar-gitlab').addClass('scroll');
+    } else {
+      $('.navbar-gitlab').removeClass('scroll');
+    }
+  }
+
+  $(window).scroll( _.throttle(applyScrollNavClass, 250));
 }).call(window);

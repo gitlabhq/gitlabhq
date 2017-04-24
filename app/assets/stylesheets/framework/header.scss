@@ -42,6 +42,10 @@ header {
       border-bottom: none;
     }
 
+    &.scroll {
+      border-bottom: 1px solid $border-color;
+    }
+
     .container-fluid {
       width: 100% !important;
       filter: none;
