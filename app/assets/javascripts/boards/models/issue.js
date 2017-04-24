@@ -15,13 +15,8 @@ class ListIssue {
     this.subscribed = obj.subscribed;
     this.labels = [];
     this.selected = false;
-    this.assignee = false;
     this.position = obj.relative_position || Infinity;
     this.milestone_id = obj.milestone_id;
-
-    if (obj.assignee) {
-      this.assignee = new ListUser(obj.assignee);
-    }
 
     if (obj.milestone) {
       this.milestone = new ListMilestone(obj.milestone);
@@ -30,6 +25,8 @@ class ListIssue {
     obj.labels.forEach((label) => {
       this.labels.push(new ListLabel(label));
     });
+
+    this.assignees = obj.assignees.map(a => new ListUser(a));
   }
 
   addLabel (label) {
