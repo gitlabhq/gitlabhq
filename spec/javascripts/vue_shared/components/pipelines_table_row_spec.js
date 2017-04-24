@@ -79,7 +79,7 @@ describe('Pipelines Table Row', () => {
     });
   });
 
-  fdescribe('actions column', () => {
+  describe('actions column', () => {
     it('should render the provided actions', () => {
       expect(this.component.$el.querySelectorAll('td:nth-child(6) ul li').length)
         .toEqual(pipeline.details.manual_actions.length);
