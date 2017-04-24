@@ -10,33 +10,18 @@ module Github
       @connection = connection
     end
 
-    def exceed?
-      return false unless enabled?
+    def get
+      response = connection.get(RATE_LIMIT_URL)
 
-      remaining <= SAFE_REMAINING_REQUESTS
-    end
+      # GitHub Rate Limit API returns 404 when the rate limit is disabled
+      return false unless response.status != 404
 
-    def remaining
-      @remaining ||= body.dig('rate', 'remaining').to_i
-    end
+      body      = Oj.load(response.body, class_cache: false, mode: :compat)
+      remaining = body.dig('rate', 'remaining').to_i
+      reset_in  = body.dig('rate', 'reset').to_i
+      exceed    = remaining <= SAFE_REMAINING_REQUESTS
 
-    def reset_in
-      @reset ||= body.dig('rate', 'reset').to_i
-    end
-
-    private
-
-    def response
-      connection.get(RATE_LIMIT_URL)
-    end
-
-    def body
-      @body ||= Oj.load(response.body, class_cache: false, mode: :compat)
-    end
-
-    # GitHub Rate Limit API returns 404 when the rate limit is disabled
-    def enabled?
-      response.status != 404
+      [exceed, reset_in]
     end
   end
 end
