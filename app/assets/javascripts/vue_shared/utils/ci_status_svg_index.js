@@ -18,7 +18,7 @@ import skippedBorderless from 'icons/_icon_status_skipped_borderless.svg';
 import successBorderless from 'icons/_icon_status_success_borderless.svg';
 import warningBorderless from 'icons/_icon_status_warning_borderless.svg';
 
-// note that some svgs are reused for more than one state (e.g. successBase)
+// The source of truth for supported icons is in `app/helpers/ci_status_helper.rb`
 
 export const baseIcons = {
   canceled: canceledBase,
