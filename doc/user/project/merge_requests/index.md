@@ -35,7 +35,6 @@ Resolving comments prevents you from forgetting to address feedback and lets
 you hide discussions that are no longer relevant.
 
 [Read more about resolving discussion comments in merge requests reviews.](../../discussions/index.md)
-<<<<<<< HEAD
 
 ## Squash and merge
 
@@ -43,8 +42,6 @@ GitLab allows you to squash all changes present in a merge request into a single
 commit when merging, to allow for a neater commit history.
 
 [Learn more about squash and merge.](squash_and_merge.md)
-=======
->>>>>>> ce-com/master
 
 ## Resolve conflicts
 
