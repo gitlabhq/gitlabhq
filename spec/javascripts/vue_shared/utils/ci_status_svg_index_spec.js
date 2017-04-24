@@ -1,6 +1,6 @@
 import { borderlessIcons, baseIcons } from '~/vue_shared/utils/ci_status_svg_index';
 
-fdescribe('CI status icons index', () => {
+describe('CI status icons index', () => {
   const statuses = [
     'canceled',
     'created',
