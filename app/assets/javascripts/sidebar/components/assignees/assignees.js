@@ -18,6 +18,24 @@ export default {
     },
   },
   computed: {
+    firstUser() {
+      return this.users[0];
+    },
+    hasMoreThanTwoAssignees() {
+      return this.users.length > 2;
+    },
+    hasMoreThanOneAssignee() {
+      return this.users.length > 1;
+    },
+    hasAssignees() {
+      return this.users.length > 0;
+    },
+    hasNoUsers() {
+      return !this.users.length;
+    },
+    hasOneUser() {
+      return this.users.length === 1;
+    },
     renderShowMoreSection() {
       return this.users.length > this.defaultRenderCount;
     },
@@ -26,6 +44,9 @@ export default {
     },
     isHiddenAssignees() {
       return this.numberOfHiddenAssignees > 0;
+    },
+    hiddenAssigneesLabel() {
+      return `+ ${this.numberOfHiddenAssignees} more`;
     },
     collapsedTooltipTitle() {
       const maxRender = Math.min(this.defaultRenderCount, this.users.length);
@@ -64,26 +85,32 @@ export default {
     assigneeAlt(user) {
       return `${user.name}'s avatar`;
     },
+    assigneeUsername(user) {
+      return `@${user.username}`;
+    },
+    shouldRenderCollapsedAssignee(index) {
+      return index === 0 || this.users.length <= 2 && index <= 2
+    }
   },
   template: `
     <div>
       <div
         class="sidebar-collapsed-icon sidebar-collapsed-user"
-        :class="{ 'multiple-users': users.length > 1, 'has-tooltip': users.length > 0}"
+        :class="{ 'multiple-users': hasMoreThanOneAssignee, 'has-tooltip': hasAssignees }"
         data-container="body"
         data-placement="left"
         :title="collapsedTooltipTitle"
       >
         <i
-          v-if="users.length === 0"
-          aria-hidden="true"
+          v-if="hasNoUsers"
+          aria-label="No Assignee"
           class="fa fa-user"
         />
         <button
           type="button"
           class="btn-link"
           v-for="(user, index) in users"
-          v-if="index === 0 || users.length <= 2 && index <= 2"
+          v-if="shouldRenderCollapsedAssignee(index)"
         >
           <img
             width="24"
@@ -91,22 +118,24 @@ export default {
             :alt="assigneeAlt(user)"
             :src="user.avatar_url"
           />
-          <span class="author">{{user.name}}</span>
+          <span class="author">
+            {{ user.name }}
+          </span>
         </button>
         <button
-          v-if="users.length > 2"
+          v-if="hasMoreThanTwoAssignees"
           class="btn-link"
           type="button"
         >
           <span
             class="avatar-counter sidebar-avatar-counter"
           >
-            {{sidebarAvatarCounter}}
+            {{ sidebarAvatarCounter }}
           </span>
         </button>
       </div>
       <div class="value hide-collapsed">
-        <template v-if="users.length === 0">
+        <template v-if="hasNoUsers">
           <span class="assign-yourself no-value">
             No assignee -
             <button
@@ -118,19 +147,23 @@ export default {
             </button>
           </span>
         </template>
-        <template v-else-if="users.length === 1">
+        <template v-else-if="hasOneUser">
           <a
             class="author_link bold"
-            :href="assigneeUrl(users[0])"
+            :href="assigneeUrl(firstUser)"
           >
             <img
               width="32"
               class="avatar avatar-inline s32"
-              :alt="assigneeAlt(users[0])"
-              :src="users[0].avatar_url"
+              :alt="assigneeAlt(firstUser)"
+              :src="firstUser.avatar_url"
             />
-            <span class="author">{{users[0].name}}</span>
-            <span class="username">@{{users[0].username}}</span>
+            <span class="author">
+              {{ firstUser.name }}
+            </span>
+            <span class="username">
+              {{ assigneeUsername(firstUser) }}
+            </span>
           </a>
         </template>
         <template v-else>
@@ -165,7 +198,7 @@ export default {
               @click="toggleShowLess"
             >
               <template v-if="showLess">
-                + {{numberOfHiddenAssignees}} more
+                {{ hiddenAssigneesLabel }}
               </template>
               <template v-else>
                 - show less
