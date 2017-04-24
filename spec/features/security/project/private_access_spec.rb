@@ -419,7 +419,7 @@ describe "Private Project Access", feature: true  do
 
   describe "GET /:project_path/environments/:id/deployments" do
     let(:environment) { create(:environment, project: project) }
-    subject { namespace_project_environment_path(project.namespace, project, environment) }
+    subject { namespace_project_environment_deployments_path(project.namespace, project, environment) }
 
     it { is_expected.to be_allowed_for(:admin) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
