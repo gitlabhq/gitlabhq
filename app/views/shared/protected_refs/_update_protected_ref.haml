@@ -1,0 +1,5 @@
+%td
+  = hidden_field_tag protected_ref_field_name, protected_ref_first_access_level.access_level
+  = dropdown_tag( (protected_ref_first_access_level.humanize || 'Select') ,
+                 options: { toggle_class: protected_ref_toggle_class, dropdown_class: "dropdown-menu-selectable #{protected_ref_container_class}",
+                 data: { field_name: protected_ref_field_name, access_level_id: protected_ref_first_access_level.id }})

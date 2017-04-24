@@ -1,0 +1,15 @@
+= f.hidden_field(:name)
+
+= dropdown_tag(dropdown_placeholder,
+               options: { toggle_class: "#{dropdown_toggle_class} js-filter-submit wide",
+                          filter: true, dropdown_class: "dropdown-menu-selectable", placeholder: dropdown_filter_placeholder,
+                          footer_content: true,
+                          data: { show_no: true, show_any: true, show_upcoming: true,
+                                  selected: protected_ref_param,
+                                  project_id: @project.try(:id) } }) do
+
+  %ul.dropdown-footer-list
+    %li
+      %button{ class: new_protected_ref_class, title: new_protected_ref_title }
+        Create wildcard
+        %code

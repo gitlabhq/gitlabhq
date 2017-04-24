@@ -1,0 +1,9 @@
+.form-group
+  %label.col-md-2.text-right{ for: access_level_type }
+    = access_level_label
+  .col-md-10
+    %div{ class: access_level_container_class }
+      = dropdown_tag('Select',
+                     options: { toggle_class: "#{access_level_toggle_class} wide",
+                     dropdown_class: 'dropdown-menu-selectable',
+                     data: { field_name: access_level_field_name, input_id: access_level_input_id }})
