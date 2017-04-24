@@ -197,14 +197,15 @@ module API
       end
       put ':id/merge_requests/:merge_request_iid/merge' do
         merge_request = find_project_merge_request(params[:merge_request_iid])
+        merge_when_pipeline_succeeds = to_boolean(params[:merge_when_pipeline_succeeds])
 
         # Merge request can not be merged
         # because user dont have permissions to push into target branch
         unauthorized! unless merge_request.can_be_merged_by?(current_user)
 
-        not_allowed! unless merge_request.mergeable_state?
+        not_allowed! unless merge_request.mergeable_state?(skip_ci_check: merge_when_pipeline_succeeds)
 
-        render_api_error!('Branch cannot be merged', 406) unless merge_request.mergeable?
+        render_api_error!('Branch cannot be merged', 406) unless merge_request.mergeable?(skip_ci_check: merge_when_pipeline_succeeds)
 
         if params[:sha] && merge_request.diff_head_sha != params[:sha]
           render_api_error!("SHA does not match HEAD of source branch: #{merge_request.diff_head_sha}", 409)
@@ -215,7 +216,7 @@ module API
           should_remove_source_branch: params[:should_remove_source_branch]
         }
 
-        if params[:merge_when_pipeline_succeeds] && merge_request.head_pipeline && merge_request.head_pipeline.active?
+        if merge_when_pipeline_succeeds && merge_request.head_pipeline && merge_request.head_pipeline.active?
           ::MergeRequests::MergeWhenPipelineSucceedsService
             .new(merge_request.target_project, current_user, merge_params)
             .execute(merge_request)
