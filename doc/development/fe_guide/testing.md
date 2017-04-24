@@ -14,10 +14,8 @@ for more information on general testing practices at GitLab.
 
 GitLab uses the [Karma][karma] test runner with [Jasmine][jasmine] as its test
 framework for our JavaScript unit tests. For tests that rely on DOM
-manipulation, we generate HTML files using RSpec suites (see `spec/javascripts/fixtures/*.rb` for examples).
-Some fixtures are still HAML templates that are translated to HTML files using the same mechanism (see `static_fixtures.rb`).
-Those will be migrated over time.
-Fixtures are served during testing by the [jasmine-jquery][jasmine-jquery] plugin.
+manipulation we use fixtures which are pre-compiled from HAML source files and
+served during testing by the [jasmine-jquery][jasmine-jquery] plugin.
 
 JavaScript tests live in `spec/javascripts/`, matching the folder structure
 of `app/assets/javascripts/`: `app/assets/javascripts/behaviors/autosize.js`

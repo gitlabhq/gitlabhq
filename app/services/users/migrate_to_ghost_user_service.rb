@@ -15,38 +15,26 @@ module Users
     end
 
     def execute
-      transition = user.block_transition
+      # Block the user before moving records to prevent a data race.
+      # For example, if the user creates an issue after `migrate_issues`
+      # runs and before the user is destroyed, the destroy will fail with
+      # an exception.
+      user.block
 
       user.transaction do
-        # Block the user before moving records to prevent a data race.
-        # For example, if the user creates an issue after `migrate_issues`
-        # runs and before the user is destroyed, the destroy will fail with
-        # an exception.
-        user.block
-
-        # Reverse the user block if record migration fails
-        if !migrate_records && transition
-          transition.rollback
-          user.save!
-        end
-      end
-
-      user.reload
-    end
-
-    private
-
-    def migrate_records
-      user.transaction(requires_new: true) do
         @ghost_user = User.ghost
 
         migrate_issues
         migrate_merge_requests
         migrate_notes
         migrate_abuse_reports
-        migrate_award_emojis
+        migrate_award_emoji
       end
+
+      user.reload
     end
+
+    private
 
     def migrate_issues
       user.issues.update_all(author_id: ghost_user.id)
@@ -64,7 +52,7 @@ module Users
       user.reported_abuse_reports.update_all(reporter_id: ghost_user.id)
     end
 
-    def migrate_award_emojis
+    def migrate_award_emoji
       user.award_emoji.update_all(user_id: ghost_user.id)
     end
   end

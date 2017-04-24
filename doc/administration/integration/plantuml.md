@@ -28,7 +28,7 @@ using Tomcat:
 sudo apt-get install tomcat7
 sudo cp target/plantuml.war /var/lib/tomcat7/webapps/plantuml.war
 sudo chown tomcat7:tomcat7 /var/lib/tomcat7/webapps/plantuml.war
-sudo service tomcat7 restart
+sudo service restart tomcat7
 ```
 
 Once the Tomcat service restarts the PlantUML service will be ready and
