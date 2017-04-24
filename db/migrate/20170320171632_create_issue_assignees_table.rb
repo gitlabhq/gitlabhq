@@ -26,7 +26,7 @@ class CreateIssueAssigneesTable < ActiveRecord::Migration
   # disable_ddl_transaction!
 
   def up
-    create_table :issue_assignees do |t|
+    create_table :issue_assignees, id: false do |t|
       t.references :user, foreign_key: { on_delete: :cascade }, index: true, null: false
       t.references :issue, foreign_key: { on_delete: :cascade }, null: false
     end
@@ -35,10 +35,6 @@ class CreateIssueAssigneesTable < ActiveRecord::Migration
   end
 
   def down
-    if index_exists?(:issue_assignees, name: INDEX_NAME)
-      remove_index :issue_assignees, name: INDEX_NAME
-    end
-
     drop_table :issue_assignees
   end
 end

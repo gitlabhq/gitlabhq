@@ -34,13 +34,11 @@ class Issue < ActiveRecord::Base
 
   validates :project, presence: true
 
-  scope :cared, ->(user) { with_assignees.where("issue_assignees.user_id IN(?)", user.id) }
   scope :open_for, ->(user) { opened.assigned_to(user) }
   scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
-  scope :with_assignees, -> { joins("LEFT JOIN issue_assignees ON issue_id = issues.id") }
-  scope :assigned, -> { with_assignees.where('issue_assignees.user_id IS NOT NULL') }
-  scope :unassigned, -> { with_assignees.where('issue_assignees.user_id IS NULL') }
-  scope :assigned_to, ->(u) { with_assignees.where('issue_assignees.user_id = ?', u.id)}
+  scope :assigned, -> { where('EXISTS (SELECT TRUE FROM issue_assignees WHERE issue_id = issues.id)') }
+  scope :unassigned, -> { where('NOT EXISTS (SELECT TRUE FROM issue_assignees WHERE issue_id = issues.id)') }
+  scope :assigned_to, ->(u) { where('EXISTS (SELECT TRUE FROM issue_assignees WHERE user_id = ? AND issue_id = issues.id)', u.id)}
 
   scope :without_due_date, -> { where(due_date: nil) }
   scope :due_before, ->(date) { where('issues.due_date < ?', date) }

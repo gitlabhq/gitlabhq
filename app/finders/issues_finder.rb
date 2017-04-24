@@ -28,40 +28,26 @@ class IssuesFinder < IssuableFinder
 
   def by_assignee(items)
     if assignee
-      items = items.where("issue_assignees.user_id = ?", assignee.id)
+      items.assigned_to(assignee)
     elsif no_assignee?
-      items = items.where("issue_assignees.user_id is NULL")
+      items.unassigned
     elsif assignee_id? || assignee_username? # assignee not found
-      items = items.none
-    end
-
-    items
-  end
-
-  def by_scope(items)
-    case params[:scope]
-    when 'created-by-me', 'authored'
-      items.where(author_id: current_user.id)
-    when 'assigned-to-me'
-      items.where("issue_assignees.user_id = ?", current_user.id)
+      items.none
     else
       items
     end
   end
 
   def self.not_restricted_by_confidentiality(user)
-    issues = Issue.with_assignees
+    return Issue.where('issues.confidential IS NOT TRUE') if user.blank?
 
-    return issues.where('issues.confidential IS NULL OR issues.confidential IS FALSE') if user.blank?
+    return Issue.all if user.admin_or_auditor?
 
-    return issues.all if user.admin_or_auditor?
-
-    issues.where('
-      issues.confidential IS NULL
-      OR issues.confidential IS FALSE
+    Issue.where('
+      issues.confidential IS NOT TRUE
       OR (issues.confidential = TRUE
         AND (issues.author_id = :user_id
-          OR issue_assignees.user_id = :user_id
+          OR EXISTS (SELECT TRUE FROM issue_assignees WHERE user_id = :user_id AND issue_id = issues.id)
           OR issues.project_id IN(:project_ids)))',
       user_id: user.id,
       project_ids: user.authorized_projects(Gitlab::Access::REPORTER).select(:id))
