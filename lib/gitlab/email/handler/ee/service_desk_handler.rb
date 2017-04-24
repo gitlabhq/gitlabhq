@@ -16,6 +16,10 @@ module Gitlab
             send_thank_you_email! if from_address
           end
 
+          def metrics_params
+            super.merge(project: project)
+          end
+
           private
 
           def service_desk_key

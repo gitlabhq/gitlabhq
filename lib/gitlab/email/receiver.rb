@@ -1,4 +1,3 @@
-
 require_dependency 'gitlab/email/handler'
 
 # Inspired in great part by Discourse's Email::Receiver
@@ -31,6 +30,8 @@ module Gitlab
         handler = Handler.for(mail, mail_key)
 
         raise UnknownIncomingEmail unless handler
+
+        Gitlab::Metrics.add_event(:receive_email, handler.metrics_params)
 
         handler.execute
       end
