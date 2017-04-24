@@ -1,7 +1,6 @@
 import '~/smart_interval';
 
 import timeTracker from './time_tracker';
-import eventHub from '../../event_hub';
 
 import Store from '../../stores/sidebar_store';
 import Mediator from '../../sidebar_mediator';

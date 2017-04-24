@@ -46,4 +46,4 @@ export default class SidebarStore {
   removeAllUserIds() {
     this.selectedUserIds = [];
   }
-};
+}

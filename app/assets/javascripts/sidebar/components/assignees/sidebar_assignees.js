@@ -18,7 +18,7 @@ export default {
   },
   components: {
     'assignee-title': AssigneeTitle,
-    'assignees': Assignees,
+    assignees: Assignees,
   },
   computed: {
     numberOfAssignees() {
@@ -35,8 +35,10 @@ export default {
     },
     saveUsers() {
       this.loading = true;
-      this.mediator.saveSelectedUsers(this.field).then(() => this.loading = false);
-    }
+      this.mediator.saveSelectedUsers(this.field).then(() => {
+        this.loading = false;
+      });
+    },
   },
   created() {
     // Get events from glDropdown

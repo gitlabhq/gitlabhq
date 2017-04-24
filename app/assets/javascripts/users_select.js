@@ -2,6 +2,7 @@
 /* global Issuable */
 /* global ListUser */
 
+import Vue from 'vue';
 import eventHub from './sidebar/event_hub';
 
 (function() {
@@ -163,7 +164,13 @@ import eventHub from './sidebar/event_hub';
               }.bind(this));
             },
             processData: function(term, users, callback) {
-              var anyUser, index, j, len, name, obj, showDivider;
+              let anyUser;
+              let index;
+              let j;
+              let len;
+              let name;
+              let obj;
+              let showDivider;
               if (term.length === 0) {
                 showDivider = 0;
                 if (firstUser) {

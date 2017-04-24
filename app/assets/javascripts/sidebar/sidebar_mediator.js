@@ -1,3 +1,5 @@
+/* global Flash */
+
 import Service from './services/sidebar_service';
 import Store from './stores/sidebar_store';
 
@@ -12,8 +14,8 @@ export default class SidebarMediator {
     return SidebarMediator.singleton;
   }
 
-  assignYourself(field) {
-    this.store.addUserId(store.currentUserId);
+  assignYourself() {
+    this.store.addUserId(this.store.currentUserId);
   }
 
   saveSelectedUsers(field) {
