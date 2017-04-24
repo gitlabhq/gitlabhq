@@ -4,7 +4,7 @@ feature 'Resolve an open discussion in a merge request by creating an issue', fe
   let(:user) { create(:user) }
   let(:project) { create(:project, only_allow_merge_if_all_discussions_are_resolved: true) }
   let(:merge_request) { create(:merge_request, source_project: project) }
-  let!(:discussion) { Discussion.for_diff_notes([create(:diff_note_on_merge_request, noteable: merge_request, project: project)]).first }
+  let!(:discussion) { create(:diff_note_on_merge_request, noteable: merge_request, project: project).to_discussion }
 
   describe 'As a user with access to the project' do
     before do
@@ -74,8 +74,8 @@ feature 'Resolve an open discussion in a merge request by creating an issue', fe
 
     it 'Shows a notice to ask someone else to resolve the discussions' do
       expect(page).to have_content("The discussion at #{merge_request.to_reference}"\
-                                   "(discussion #{discussion.first_note.id}) will stay unresolved."\
-                                   "Ask someone with permission to resolve it.")
+                                   " (discussion #{discussion.first_note.id}) will stay unresolved."\
+                                   " Ask someone with permission to resolve it.")
     end
   end
 end

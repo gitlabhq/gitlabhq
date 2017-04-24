@@ -1,12 +1,14 @@
 require 'spec_helper'
 
 describe Gitlab::OtherMarkup, lib: true do
+  let(:context) { {} }
+
   context "XSS Checks" do
     links = {
       'links' => {
         file: 'file.rdoc',
         input: 'XSS[JaVaScriPt:alert(1)]',
-        output: '<p><a>XSS</a></p>'
+        output: "\n" + '<p><a>XSS</a></p>' + "\n"
       }
     }
     links.each do |name, data|
