@@ -128,18 +128,6 @@ module MarkupHelper
     simple_format(text)
   end
 
-  def markdown_unsafe(text, context = {})
-    Banzai.render(text, context)
-  end
-
-  def asciidoc_unsafe(text)
-    Gitlab::Asciidoc.render(text)
-  end
-
-  def other_markup_unsafe(file_name, text)
-    Gitlab::OtherMarkup.render(file_name, text)
-  end
-
   # Returns the text necessary to reference `entity` across projects
   #
   # project - Project to reference
@@ -223,6 +211,18 @@ module MarkupHelper
       aria: { label: options[:title] } do
       icon(options[:icon])
     end
+  end
+
+  def markdown_unsafe(text, context = {})
+    Banzai.render(text, context)
+  end
+
+  def asciidoc_unsafe(text)
+    Gitlab::Asciidoc.render(text)
+  end
+
+  def other_markup_unsafe(file_name, text)
+    Gitlab::OtherMarkup.render(file_name, text)
   end
 
   # Calls Banzai.post_process with some common context options
