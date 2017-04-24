@@ -1304,6 +1304,15 @@ ActiveRecord::Schema.define(version: 20170602003304) do
   add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path_text_pattern_ops", using: :btree, opclasses: {"path"=>"varchar_pattern_ops"}
   add_index "redirect_routes", ["source_type", "source_id"], name: "index_redirect_routes_on_source_type_and_source_id", using: :btree
 
+  create_table "related_issues", force: :cascade do |t|
+    t.integer "issue_id", null: false
+    t.integer "related_issue_id", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "related_issues", ["issue_id", "related_issue_id"], name: "index_related_issues_on_issue_id_and_related_issue_id", unique: true, using: :btree
+
   create_table "releases", force: :cascade do |t|
     t.string "tag"
     t.text "description"
