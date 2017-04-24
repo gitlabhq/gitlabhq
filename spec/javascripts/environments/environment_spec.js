@@ -34,10 +34,9 @@ describe('Environment', () => {
       });
 
       it('should render the empty state', (done) => {
-        console.log(EnvironmentsComponent);
         component = new EnvironmentsComponent({
           el: document.querySelector('#environments-list-view'),
-        }).$mount();
+        });
 
         setTimeout(() => {
           expect(
