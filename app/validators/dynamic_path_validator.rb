@@ -104,7 +104,7 @@ class DynamicPathValidator < ActiveModel::EachValidator
   end
 
   def self.contains_path_part?(path, part)
-    path =~ /(.*\/|\A)#{Regexp.quote(part)}(\/.*|\z)/
+    path =~ %r{(/|\A)#{Regexp.quote(part)}(/|\z)}
   end
 
   def self.follow_format?(value)
