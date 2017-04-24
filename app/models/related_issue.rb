@@ -4,6 +4,4 @@ class RelatedIssue < ActiveRecord::Base
 
   validates :issue, presence: true, uniqueness: { scope: :related_issue_id }
   validates :related_issue, presence: true
-
-  validates :issue_id, uniqueness: { scope: :related_issue_id }
 end
