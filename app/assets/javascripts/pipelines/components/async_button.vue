@@ -20,7 +20,7 @@ export default {
       return `fa fa-${this.icon}`;
     },
     buttonClass() {
-      return `btn has-tooltip`;
+      return 'btn has-tooltip';
     },
   },
   updated() {

@@ -3,9 +3,8 @@ import tableRowComp from '~/vue_shared/components/pipelines_table_row';
 import pipeline from '../../commit/pipelines/mock_data';
 
 describe('Pipelines Table Row', () => {
-  const postActionSpy = jasmine.createSpy('spy').and.returnValue(Promise.resolve());
-
   beforeEach(() => {
+    const postActionSpy = jasmine.createSpy('spy').and.returnValue(Promise.resolve());
     const PipelinesTableRowComponent = Vue.extend(tableRowComp);
 
     this.component = new PipelinesTableRowComponent({
@@ -165,10 +164,11 @@ describe('Pipelines Table Row', () => {
       });
     });
 
-
     it('pipeline cancelable update triggers watcher to reset isCancelling', (done) => {
       this.isCancelling = true;
-      this.component.$props.pipeline = Object.assign({}, pipeline, { flags: { cancelable: false } });
+      this.component.$props.pipeline = Object.assign({}, pipeline, {
+        flags: { cancelable: false },
+      });
 
       Vue.nextTick(() => {
         expect(this.component.isCancelling).toBe(false);
@@ -178,7 +178,9 @@ describe('Pipelines Table Row', () => {
 
     it('pipeline retryable update triggers watcher to reset isRetrying', (done) => {
       this.isRetrying = true;
-      this.component.$props.pipeline = Object.assign({}, pipeline, { flags: { retryable: false } });
+      this.component.$props.pipeline = Object.assign({}, pipeline, {
+        flags: { retryable: false },
+      });
 
       Vue.nextTick(() => {
         expect(this.component.isRetrying).toBe(false);
