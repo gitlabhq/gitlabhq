@@ -28,7 +28,7 @@ module Banzai
       issue_parser = Banzai::ReferenceParser::IssueParser.new(project, user)
       merge_request_parser = Banzai::ReferenceParser::MergeRequestParser.new(project, user)
 
-      issue_parser.issues_for_nodes(nodes).merge(
+      issue_parser.issues_for_nodes_visible_to_user(user, nodes).merge(
         merge_request_parser.merge_requests_for_nodes(nodes)
       )
     end

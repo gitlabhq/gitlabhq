@@ -7,13 +7,17 @@ module Banzai
         # It is not possible to check access rights for external issue trackers
         return nodes if project && project.external_issue_tracker
 
-        issues = issues_for_nodes(nodes)
+        issues_for_nodes_visible_to_user(user, nodes).values
+      end
+
+      def issues_for_nodes_visible_to_user(user, nodes)
+        nodes2issues = issues_for_nodes(nodes)
 
         readable_issues = Ability.
-          issues_readable_by_user(issues.values, user).to_set
+          issues_readable_by_user(nodes2issues.values, user).to_set
 
-        nodes.select do |node|
-          readable_issues.include?(issues[node])
+        nodes2issues.each.with_object({}) do |(node, issue), result|
+          result[node] = issue if readable_issues.include?(issue)
         end
       end
 
@@ -23,6 +27,7 @@ module Banzai
         nodes.map { |node| issues[node] }.compact.uniq
       end
 
+      # FIXME: We should not memories values which could ignore arguments!
       def issues_for_nodes(nodes)
         @issues_for_nodes ||= grouped_objects_for_nodes(
           nodes,
