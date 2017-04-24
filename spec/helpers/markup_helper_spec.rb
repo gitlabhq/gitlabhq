@@ -126,7 +126,7 @@ describe MarkupHelper do
     it "uses Wiki pipeline for markdown files" do
       allow(@wiki).to receive(:format).and_return(:markdown)
 
-      expect(helper).to receive(:markdown_unsafe).with('wiki content', pipeline: :wiki, project_wiki: @wiki, page_slug: "nested/page")
+      expect(helper).to receive(:markdown_unsafe).with('wiki content', pipeline: :wiki, project: project, project_wiki: @wiki, page_slug: "nested/page")
 
       helper.render_wiki_content(@wiki)
     end
