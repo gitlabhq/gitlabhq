@@ -740,7 +740,8 @@ pre.light-well {
   }
 }
 
-.create-new-protected-branch-button {
+.create-new-protected-branch-button,
+.create-new-protected-tag-button {
   @include dropdown-link;
 
   width: 100%;
