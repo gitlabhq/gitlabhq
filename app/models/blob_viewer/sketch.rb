@@ -5,7 +5,7 @@ module BlobViewer
 
     self.partial_name = 'sketch'
     self.extensions = %w(sketch)
-    self.text_based = false
+    self.binary = true
     self.switcher_icon = 'file-image-o'
     self.switcher_title = 'preview'
   end

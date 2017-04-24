@@ -5,6 +5,6 @@ module BlobViewer
 
     self.partial_name = 'stl'
     self.extensions = %w(stl)
-    self.text_based = false
+    self.binary = true
   end
 end

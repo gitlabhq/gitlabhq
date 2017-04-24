@@ -5,7 +5,7 @@ module BlobViewer
     
     self.partial_name = 'notebook'
     self.extensions = %w(ipynb)
-    self.text_based = true
+    self.binary = false
     self.switcher_icon = 'file-text-o'
     self.switcher_title = 'notebook'
   end

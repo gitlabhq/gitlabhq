@@ -7,7 +7,7 @@ module BlobViewer
     include ClientSide
 
     self.partial_name = 'download'
-    self.text_based = false
+    self.binary = true
 
     def render_error
       nil

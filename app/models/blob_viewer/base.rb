@@ -1,6 +1,6 @@
 module BlobViewer
   class Base
-    class_attribute :partial_name, :type, :extensions, :client_side, :text_based, :switcher_icon, :switcher_title, :max_size, :absolute_max_size
+    class_attribute :partial_name, :type, :extensions, :client_side, :binary, :switcher_icon, :switcher_title, :max_size, :absolute_max_size
 
     delegate :partial_path, :rich?, :simple?, :client_side?, :server_side?, :text?, :binary?, to: :class
 
@@ -31,12 +31,12 @@ module BlobViewer
       !client_side?
     end
 
-    def self.text?
-      text_based
+    def self.binary?
+      binary
     end
 
-    def self.binary?
-      !text?
+    def self.text?
+      !binary?
     end
 
     def self.can_render?(blob)

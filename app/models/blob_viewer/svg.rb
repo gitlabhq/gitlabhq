@@ -5,7 +5,7 @@ module BlobViewer
 
     self.partial_name = 'svg'
     self.extensions = %w(svg)
-    self.text_based = true
+    self.binary = false
     self.switcher_icon = 'picture-o'
     self.switcher_title = 'image'
   end
