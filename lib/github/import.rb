@@ -29,17 +29,14 @@ module Github
       self.reset_callbacks :validate
     end
 
-    attr_reader :project, :repository, :repo, :options, :errors,
-                :cached_label_ids, :cached_gitlab_users, :cached_user_ids
+    attr_reader :project, :repository, :repo, :options, :errors, :cached
 
     def initialize(project, options)
       @project = project
       @repository = project.repository
       @repo = project.import_source
       @options = options
-      @cached_label_ids = {}
-      @cached_user_ids = {}
-      @cached_gitlab_users = {}
+      @cached  = Hash.new { |hash, key| hash[key] = Hash.new }
       @errors  = []
     end
 
@@ -107,7 +104,7 @@ module Github
 
       # Cache labels
       project.labels.select(:id, :title).find_each do |label|
-        @cached_label_ids[label.title] = label.id
+        cached[:label_ids][label.title] = label.id
       end
     end
 
@@ -325,7 +322,7 @@ module Github
     end
 
     def label_ids(issuable)
-      issuable.map { |attrs| cached_label_ids[attrs.fetch('name')] }.compact
+      issuable.map { |attrs| cached[:label_ids][attrs.fetch('name')] }.compact
     end
 
     def milestone_id(milestone)
@@ -336,12 +333,12 @@ module Github
 
     def user_id(user, fallback_id = nil)
       return unless user.present?
-      return cached_user_ids[user.id] if cached_user_ids.key?(user.id)
+      return cached[:user_ids][user.id] if cached[:user_ids].key?(user.id)
 
       gitlab_user_id = user_id_by_external_uid(user.id) || user_id_by_email(user.email)
 
-      cached_gitlab_users[user.id] = gitlab_user_id.present?
-      cached_user_ids[user.id] = gitlab_user_id || fallback_id
+      cached[:gitlab_user_ids][user.id] = gitlab_user_id.present?
+      cached[:user_ids][user.id] = gitlab_user_id || fallback_id
     end
 
     def user_id_by_email(email)
@@ -362,7 +359,7 @@ module Github
     end
 
     def format_description(body, author)
-      return body if cached_gitlab_users[author.id]
+      return body if cached[:gitlab_user_ids][author.id]
 
       "*Created by: #{author.username}*\n\n#{body}"
     end
