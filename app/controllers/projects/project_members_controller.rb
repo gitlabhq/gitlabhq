@@ -10,36 +10,12 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     redirect_to namespace_project_settings_members_path(@project.namespace, @project, sort: sort)
   end
 
-  def create
-    status = Members::CreateService.new(@project, current_user, params).execute
-
-    redirect_url = namespace_project_settings_members_path(@project.namespace, @project)
-
-    if status
-      redirect_to redirect_url, notice: 'Users were successfully added.'
-    else
-      redirect_to redirect_url, alert: 'No users or groups specified.'
-    end
-  end
-
   def update
     @project_member = @project.project_members.find(params[:id])
 
     return render_403 unless can?(current_user, :update_project_member, @project_member)
 
     @project_member.update_attributes(member_params)
-  end
-
-  def destroy
-    Members::DestroyService.new(@project, current_user, params).
-      execute(:all)
-
-    respond_to do |format|
-      format.html do
-        redirect_to namespace_project_settings_members_path(@project.namespace, @project)
-      end
-      format.js { head :ok }
-    end
   end
 
   def resend_invite

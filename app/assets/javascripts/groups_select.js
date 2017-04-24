@@ -1,4 +1,8 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, wrap-iife, one-var, camelcase, one-var-declaration-per-line, quotes, object-shorthand, prefer-arrow-callback, comma-dangle, consistent-return, yoda, prefer-rest-params, prefer-spread, no-unused-vars, prefer-template, max-len */
+/* eslint-disable func-names, space-before-function-paren, no-var, wrap-iife, one-var,
+                  camelcase, one-var-declaration-per-line, quotes, object-shorthand,
+                  prefer-arrow-callback, comma-dangle, consistent-return, yoda,
+                  prefer-rest-params, prefer-spread, no-unused-vars, prefer-template,
+                  promise/catch-or-return */
 /* global Api */
 
 var slice = [].slice;

@@ -3,6 +3,7 @@ const DATA_DROPDOWN = 'data-dropdown';
 const SELECTED_CLASS = 'droplab-item-selected';
 const ACTIVE_CLASS = 'droplab-item-active';
 const TEMPLATE_REGEX = /\{\{(.+?)\}\}/g;
+const IGNORE_CLASS = 'droplab-item-ignore';
 
 export {
   DATA_TRIGGER,
@@ -10,4 +11,5 @@ export {
   SELECTED_CLASS,
   ACTIVE_CLASS,
   TEMPLATE_REGEX,
+  IGNORE_CLASS,
 };

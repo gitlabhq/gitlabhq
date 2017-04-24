@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 import utils from './utils';
-import { SELECTED_CLASS } from './constants';
+import { SELECTED_CLASS, IGNORE_CLASS } from './constants';
 
 var DropDown = function(list) {
   this.currentIndex = 0;
@@ -36,6 +36,7 @@ Object.assign(DropDown.prototype, {
 
   clickEvent: function(e) {
     if (e.target.tagName === 'UL') return;
+    if (e.target.classList.contains(IGNORE_CLASS)) return;
 
     var selected = utils.closest(e.target, 'LI');
     if (!selected) return;

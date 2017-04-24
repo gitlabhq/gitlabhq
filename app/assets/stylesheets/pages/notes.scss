@@ -123,6 +123,9 @@ ul.notes {
     }
 
     .note-emoji-button {
+      position: relative;
+      line-height: 1;
+
       .fa-spinner {
         display: none;
       }
@@ -443,7 +446,8 @@ ul.notes {
   .award-control-icon-positive,
   .award-control-icon-super-positive {
     position: absolute;
-    margin-left: -20px;
+    top: 0;
+    left: 0;
     opacity: 0;
   }
 

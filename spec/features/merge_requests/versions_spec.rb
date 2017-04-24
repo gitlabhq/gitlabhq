@@ -107,14 +107,13 @@ feature 'Merge Request versions', js: true, feature: true do
 
     it 'should have 0 chages between versions' do
       page.within '.mr-version-compare-dropdown' do
-        expect(page).to have_content 'version 1'
+        expect(find('.dropdown-toggle')).to have_content 'version 1'
       end
 
       page.within '.mr-version-dropdown' do
         find('.btn-default').click
-        find(:link, 'version 1').trigger('click')
+        click_link 'version 1'
       end
-
       expect(page).to have_content '0 changed files'
     end
   end
@@ -129,12 +128,12 @@ feature 'Merge Request versions', js: true, feature: true do
 
     it 'should set the compared versions to be the same' do
       page.within '.mr-version-compare-dropdown' do
-        expect(page).to have_content 'version 2'
+        expect(find('.dropdown-toggle')).to have_content 'version 2'
       end
 
       page.within '.mr-version-dropdown' do
         find('.btn-default').click
-        find(:link, 'version 1').trigger('click')
+        click_link 'version 1'
       end
 
       page.within '.mr-version-compare-dropdown' do

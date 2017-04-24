@@ -1,4 +1,0 @@
----
-title: Add foreign key for ci_trigger_requests on ci_triggers
-merge_request: 10537
-author:

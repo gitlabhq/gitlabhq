@@ -386,6 +386,31 @@ describe Member, models: true do
     end
   end
 
+  describe '.add_users' do
+    %w[project group].each do |source_type|
+      context "when source is a #{source_type}" do
+        let!(:source) { create(source_type, :public, :access_requestable) }
+        let!(:user) { create(:user) }
+        let!(:admin) { create(:admin) }
+
+        it 'returns a <Source>Member objects' do
+          members = described_class.add_users(source, [user], :master)
+
+          expect(members).to be_a Array
+          expect(members.first).to be_a "#{source_type.classify}Member".constantize
+          expect(members.first).to be_persisted
+        end
+
+        it 'returns an empty array' do
+          members = described_class.add_users(source, [], :master)
+
+          expect(members).to be_a Array
+          expect(members).to be_empty
+        end
+      end
+    end
+  end
+
   describe '#accept_request' do
     let(:member) { create(:project_member, requested_at: Time.now.utc) }
 

@@ -1,4 +1,0 @@
----
-title: Fix for open redirect vulnerability using continue[to] in URL when requesting project import status.
-merge_request: 
-author:

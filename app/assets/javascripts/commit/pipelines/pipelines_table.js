@@ -1,11 +1,11 @@
 import Vue from 'vue';
 import Visibility from 'visibilityjs';
 import PipelinesTableComponent from '../../vue_shared/components/pipelines_table';
-import PipelinesService from '../../vue_pipelines_index/services/pipelines_service';
-import PipelineStore from '../../vue_pipelines_index/stores/pipelines_store';
-import eventHub from '../../vue_pipelines_index/event_hub';
-import EmptyState from '../../vue_pipelines_index/components/empty_state.vue';
-import ErrorState from '../../vue_pipelines_index/components/error_state.vue';
+import PipelinesService from '../../pipelines/services/pipelines_service';
+import PipelineStore from '../../pipelines/stores/pipelines_store';
+import eventHub from '../../pipelines/event_hub';
+import EmptyState from '../../pipelines/components/empty_state.vue';
+import ErrorState from '../../pipelines/components/error_state.vue';
 import '../../lib/utils/common_utils';
 import '../../vue_shared/vue_resource_interceptor';
 import Poll from '../../lib/utils/poll';
@@ -55,7 +55,15 @@ export default Vue.component('pipelines-table', {
     },
 
     shouldRenderEmptyState() {
-      return !this.state.pipelines.length && !this.isLoading;
+      return !this.state.pipelines.length &&
+        !this.isLoading &&
+        !this.hasError;
+    },
+
+    shouldRenderTable() {
+      return !this.isLoading &&
+        this.state.pipelines.length > 0 &&
+        !this.hasError;
     },
   },
 
@@ -145,8 +153,12 @@ export default Vue.component('pipelines-table', {
 
   template: `
     <div class="content-list pipelines">
-      <div class="realtime-loading" v-if="isLoading">
-        <i class="fa fa-spinner fa-spin"></i>
+      <div
+        class="realtime-loading"
+        v-if="isLoading">
+        <i
+          class="fa fa-spinner fa-spin"
+          aria-hidden="true" />
       </div>
 
       <empty-state
@@ -155,8 +167,9 @@ export default Vue.component('pipelines-table', {
 
       <error-state v-if="shouldRenderErrorState" />
 
-      <div class="table-holder"
-        v-if="!isLoading && state.pipelines.length > 0">
+      <div
+        class="table-holder"
+        v-if="shouldRenderTable">
         <pipelines-table-component
           :pipelines="state.pipelines"
           :service="service" />

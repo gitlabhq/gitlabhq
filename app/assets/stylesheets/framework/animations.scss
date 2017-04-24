@@ -145,3 +145,17 @@ a {
 .dropdown-menu-nav a {
   transition: none;
 }
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fadeIn $fade-in-duration 1;
+}

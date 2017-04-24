@@ -40,27 +40,6 @@ describe Search::GlobalService, services: true do
 
         expect(results.objects('projects')).to match_array [found_project]
       end
-
-      context 'nested group' do
-        let!(:nested_group) { create(:group, :nested) }
-        let!(:project) { create(:empty_project, namespace: nested_group) }
-
-        before do
-          project.add_master(user)
-        end
-
-        it 'returns result from nested group' do
-          results = Search::GlobalService.new(user, search: project.path).execute
-
-          expect(results.objects('projects')).to match_array [project]
-        end
-
-        it 'returns result from descendants when search inside group' do
-          results = Search::GlobalService.new(user, search: project.path, group_id: nested_group.parent).execute
-
-          expect(results.objects('projects')).to match_array [project]
-        end
-      end
     end
   end
 end

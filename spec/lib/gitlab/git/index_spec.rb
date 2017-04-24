@@ -33,7 +33,7 @@ describe Gitlab::Git::Index, seed_helper: true do
       end
 
       it 'raises an error' do
-        expect { index.create(options) }.to raise_error('Filename already exists')
+        expect { index.create(options) }.to raise_error('A file with this name already exists')
       end
     end
 
@@ -89,7 +89,7 @@ describe Gitlab::Git::Index, seed_helper: true do
       end
 
       it 'raises an error' do
-        expect { index.create_dir(options) }.to raise_error('Directory already exists as a file')
+        expect { index.create_dir(options) }.to raise_error('A file with this name already exists')
       end
     end
 
@@ -99,7 +99,7 @@ describe Gitlab::Git::Index, seed_helper: true do
       end
 
       it 'raises an error' do
-        expect { index.create_dir(options) }.to raise_error('Directory already exists')
+        expect { index.create_dir(options) }.to raise_error('A directory with this name already exists')
       end
     end
   end
@@ -118,7 +118,7 @@ describe Gitlab::Git::Index, seed_helper: true do
       end
 
       it 'raises an error' do
-        expect { index.update(options) }.to raise_error("File doesn't exist")
+        expect { index.update(options) }.to raise_error("A file with this name doesn't exist")
       end
     end
 
@@ -156,7 +156,15 @@ describe Gitlab::Git::Index, seed_helper: true do
       it 'raises an error' do
         options[:previous_path] = 'documents/story.txt'
 
-        expect { index.move(options) }.to raise_error("File doesn't exist")
+        expect { index.move(options) }.to raise_error("A file with this name doesn't exist")
+      end
+    end
+
+    context 'when a file at the new path already exists' do
+      it 'raises an error' do
+        options[:file_path] = 'CHANGELOG'
+
+        expect { index.move(options) }.to raise_error("A file with this name already exists")
       end
     end
 
@@ -203,7 +211,7 @@ describe Gitlab::Git::Index, seed_helper: true do
       end
 
       it 'raises an error' do
-        expect { index.delete(options) }.to raise_error("File doesn't exist")
+        expect { index.delete(options) }.to raise_error("A file with this name doesn't exist")
       end
     end
 

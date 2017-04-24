@@ -333,7 +333,7 @@ A [platform](https://www.meteor.com) for building javascript apps.
 
 ### Milestones
 
-Allow you to [organize issues](https://docs.gitlab.com/ce/workflow/milestones.html) and merge requests in GitLab into a cohesive group, optionally setting a due date. A common use is keeping track of an upcoming software version. Milestones are created per-project.
+Allow you to [organize issues](../../user/project/milestones/index.md) and merge requests in GitLab into a cohesive group, optionally setting a due date. A common use is keeping track of an upcoming software version. Milestones are created per-project.
 
 ### Mirror Repositories
 

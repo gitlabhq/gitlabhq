@@ -1,4 +1,0 @@
----
-title: Fix project creation failure due to race condition in namespace directory creation
-merge_request: 10268
-author: Robin Bobbitt

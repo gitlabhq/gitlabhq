@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import rollbackComp from '~/environments/components/environment_rollback';
+import rollbackComp from '~/environments/components/environment_rollback.vue';
 
 describe('Rollback Component', () => {
   const retryURL = 'https://gitlab.com/retry';

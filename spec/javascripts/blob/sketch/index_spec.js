@@ -1,4 +1,4 @@
-/* eslint-disable no-new */
+/* eslint-disable no-new, promise/catch-or-return */
 import JSZip from 'jszip';
 import SketchLoader from '~/blob/sketch';
 
