@@ -1,3 +1,4 @@
+require_relative 'error'
 module Github
   class Import
     include Gitlab::ShellAdapter
@@ -48,9 +49,12 @@ module Github
       fetch_issues
       fetch_wiki_repository
       expire_repository_cache
-      track_errors
 
-      errors
+      true
+    rescue Github::RepositoryFetchError
+      false
+    ensure
+      keep_track_of_errors
     end
 
     private
@@ -63,6 +67,7 @@ module Github
         project.repository.fetch_remote('github', forced: true)
       rescue Gitlab::Shell::Error => e
         error(:project, "https://github.com/#{repo}.git", e.message)
+        raise Github::RepositoryFetchError
       end
     end
 
@@ -368,7 +373,7 @@ module Github
       repository.expire_content_cache
     end
 
-    def track_errors
+    def keep_track_of_errors
       return unless errors.any?
 
       project.update_column(:import_error, {
