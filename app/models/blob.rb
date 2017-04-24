@@ -70,7 +70,11 @@ class Blob < SimpleDelegator
 
   def raw_binary?
     if valid_lfs_pointer?
-      !rich_viewer&.text_based?
+      if rich_viewer
+        rich_viewer.binary?
+      else
+        true
+      end
     else
       binary?
     end
@@ -96,22 +100,6 @@ class Blob < SimpleDelegator
     lfs_pointer? && !project.lfs_enabled?
   end
 
-  def simple_viewer_class
-    if empty?
-      BlobViewer::Empty
-    elsif raw_binary?
-      BlobViewer::Download
-    else # text
-      BlobViewer::Text
-    end
-  end
-
-  def rich_viewer_class
-    return if invalid_lfs_pointer? || empty?
-
-    rich_viewers_classes.find { |viewer_class| viewer_class.can_render?(self) }
-  end
-
   def simple_viewer
     @simple_viewer ||= simple_viewer_class.new(self)
   end
@@ -123,7 +111,7 @@ class Blob < SimpleDelegator
   end
 
   def rendered_as_text?(ignore_errors: true)
-    simple_viewer.is_a?(BlobViewer::Text) && (ignore_errors || simple_viewer.render_error.nil?)
+    simple_viewer.text? && (ignore_errors || simple_viewer.render_error.nil?)
   end
 
   def show_viewer_switcher?
@@ -137,13 +125,29 @@ class Blob < SimpleDelegator
 
   private
 
+  def simple_viewer_class
+    if empty?
+      BlobViewer::Empty
+    elsif raw_binary?
+      BlobViewer::Download
+    else # text
+      BlobViewer::Text
+    end
+  end
+
   def rich_viewers_classes
     if valid_lfs_pointer?
       RICH_VIEWERS
     elsif binary?
-      RICH_VIEWERS.reject(&:text_based?)
+      RICH_VIEWERS.select(&:binary?)
     else # text
-      RICH_VIEWERS.select(&:text_based?)
+      RICH_VIEWERS.select(&:text?)
     end
+  end
+
+  def rich_viewer_class
+    return if invalid_lfs_pointer? || empty?
+
+    rich_viewers_classes.find { |viewer_class| viewer_class.can_render?(self) }
   end
 end
