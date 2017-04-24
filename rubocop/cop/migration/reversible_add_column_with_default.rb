@@ -5,7 +5,7 @@ module RuboCop
     module Migration
       # Cop that checks if `add_column_with_default` is used with `up`/`down` methods
       # and not `change`.
-      class AddColumnWithDefault < RuboCop::Cop::Cop
+      class ReversibleAddColumnWithDefault < RuboCop::Cop::Cop
         include MigrationHelpers
 
         def_node_matcher :add_column_with_default?, <<~PATTERN
