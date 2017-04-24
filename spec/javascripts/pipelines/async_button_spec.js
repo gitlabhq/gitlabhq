@@ -11,7 +11,7 @@ describe('Pipelines Async Button', () => {
     component = new AsyncButtonComponent({
       propsData: {
         title: 'Foo',
-        icon: 'fa fa-foo',
+        icon: 'foo',
         isLoading: false,
       },
     }).$mount();
@@ -19,6 +19,10 @@ describe('Pipelines Async Button', () => {
 
   it('should render a button', () => {
     expect(component.$el.tagName).toEqual('BUTTON');
+  });
+
+  it('#iconClass computed should return the provided icon', () => {
+    expect(component.iconClass).toBe('fa fa-foo');
   });
 
   it('should render the provided icon', () => {

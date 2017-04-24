@@ -175,10 +175,10 @@ export default {
     /* These computed's allow us to track changes specifically to these values
      and not update loading state everytime `pipeline` is updated */
     isRetryable() {
-      return this.pipeline.flags.retryable;
+      return !!this.pipeline.flags.retryable;
     },
     isCancelable() {
-      return this.pipeline.flags.cancelable;
+      return !!this.pipeline.flags.cancelable;
     },
   },
   watch: {

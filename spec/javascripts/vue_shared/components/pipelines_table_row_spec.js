@@ -79,11 +79,18 @@ describe('Pipelines Table Row', () => {
     });
   });
 
-  describe('actions column', () => {
+  fdescribe('actions column', () => {
     it('should render the provided actions', () => {
-      expect(
-        this.component.$el.querySelectorAll('td:nth-child(6) ul li').length,
-      ).toEqual(pipeline.details.manual_actions.length);
+      expect(this.component.$el.querySelectorAll('td:nth-child(6) ul li').length)
+        .toEqual(pipeline.details.manual_actions.length);
+    });
+
+    it('renders the cancel button', () => {
+      expect(this.component.$el.querySelectorAll('.js-pipelines-cancel-button')).not.toBeNull();
+    });
+
+    it('renders the retry button', () => {
+      expect(this.component.$el.querySelectorAll('.js-pipelines-retry-button')).not.toBeNull();
     });
   });
 
@@ -92,10 +99,10 @@ describe('Pipelines Table Row', () => {
       spyOn(window, 'confirm').and.returnValue(true);
     });
 
-    it('#resetButtonLoadingState resets isCancelling', (done) => {
+    it('#resetRequestingState resets isCancelling', (done) => {
       this.component.isCancelling = true;
 
-      this.component.resetButtonLoadingState();
+      this.component.resetRequestingState();
 
       Vue.nextTick(() => {
         expect(this.component.isCancelling).toBe(false);
@@ -103,10 +110,10 @@ describe('Pipelines Table Row', () => {
       });
     });
 
-    it('#resetButtonLoadingState resets isRetrying', (done) => {
+    it('#resetRequestingState resets isRetrying', (done) => {
       this.component.isRetrying = true;
 
-      this.component.resetButtonLoadingState();
+      this.component.resetRequestingState();
 
       Vue.nextTick(() => {
         expect(this.component.isRetrying).toBe(false);
@@ -159,9 +166,9 @@ describe('Pipelines Table Row', () => {
     });
 
 
-    it('pipeline update triggers watcher to reset isCancelling', (done) => {
+    it('pipeline cancelable update triggers watcher to reset isCancelling', (done) => {
       this.isCancelling = true;
-      this.component.$props.pipeline = Object.assign({}, pipeline, { created_at: new Date() });
+      this.component.$props.pipeline = Object.assign({}, pipeline, { flags: { cancelable: false } });
 
       Vue.nextTick(() => {
         expect(this.component.isCancelling).toBe(false);
@@ -169,9 +176,9 @@ describe('Pipelines Table Row', () => {
       });
     });
 
-    it('pipeline update triggers watcher to reset isRetrying', (done) => {
+    it('pipeline retryable update triggers watcher to reset isRetrying', (done) => {
       this.isRetrying = true;
-      this.component.$props.pipeline = Object.assign({}, pipeline, { created_at: new Date() });
+      this.component.$props.pipeline = Object.assign({}, pipeline, { flags: { retryable: false } });
 
       Vue.nextTick(() => {
         expect(this.component.isRetrying).toBe(false);
