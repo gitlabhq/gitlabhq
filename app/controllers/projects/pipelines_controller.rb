@@ -6,6 +6,8 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
   before_action :builds_enabled, only: :charts
 
+  wrap_parameters Ci::Pipeline
+
   def index
     @scope = params[:scope]
     @pipelines = PipelinesFinder
