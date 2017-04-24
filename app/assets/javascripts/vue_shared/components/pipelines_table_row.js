@@ -26,16 +26,6 @@ export default {
       type: Object,
       required: true,
     },
-
-    isRetryable: {
-      type: Boolean,
-      required: true,
-    },
-
-    isCancelable: {
-      type: Boolean,
-      required: true,
-    },
   },
   data() {
     return {
@@ -182,9 +172,16 @@ export default {
       }
       return undefined;
     },
+    /* These computed's allow us to track changes specifically to these values
+     and not update loading state everytime `pipeline` is updated */
+    isRetryable() {
+      return this.pipeline.flags.retryable;
+    },
+    isCancelable() {
+      return this.pipeline.flags.cancelable;
+    },
   },
   watch: {
-    // we watch pipeline update bc we don't know when refreshPipelines is finished
     isRetryable() {
       this.resetRequestingState();
     },

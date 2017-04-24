@@ -169,9 +169,7 @@ export default Vue.component('pipelines-table', {
         v-if="shouldRenderTable">
         <pipelines-table-component
           :pipelines="state.pipelines"
-          :service="service"
-          :is-cancelable="state.pipeline.flags.cancelable"
-          :is-retryable="state.pipeline.flags.retryable"/>
+          :service="service"/>
       </div>
     </div>
   `,

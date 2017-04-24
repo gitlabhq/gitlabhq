@@ -40,9 +40,7 @@ export default {
           v-bind:model="model">
           <tr is="pipelines-table-row-component"
             :pipeline="model"
-            :service="service"
-            :is-cancelable="model.flags.cancelable"
-            :is-retryable="model.flags.retryable"></tr>
+            :service="service"></tr>
         </template>
       </tbody>
     </table>
