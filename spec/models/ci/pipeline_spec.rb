@@ -400,8 +400,8 @@ describe Ci::Pipeline, models: true do
     end
 
     describe 'pipeline caching' do
-      it 'executes ExpirePipelinesCacheService' do
-        expect_any_instance_of(Ci::ExpirePipelineCacheService).to receive(:execute).with(pipeline)
+      it 'performs ExpirePipelinesCacheWorker' do
+        expect(ExpirePipelineCacheWorker).to receive(:perform_async).with(pipeline.id)
 
         pipeline.cancel
       end
@@ -1039,11 +1039,12 @@ describe Ci::Pipeline, models: true do
   end
 
   describe "#merge_requests" do
-    let(:project) { create(:project, :repository) }
-    let(:pipeline) { FactoryGirl.create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: project.repository.commit('master').id) }
+    let(:project) { create(:empty_project) }
+    let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: 'a288a022a53a5a944fae87bcec6efc87b7061808') }
 
     it "returns merge requests whose `diff_head_sha` matches the pipeline's SHA" do
       merge_request = create(:merge_request, source_project: project, source_branch: pipeline.ref)
+      allow_any_instance_of(MergeRequest).to receive(:diff_head_sha) { 'a288a022a53a5a944fae87bcec6efc87b7061808' }
 
       expect(pipeline.merge_requests).to eq([merge_request])
     end
@@ -1059,6 +1060,23 @@ describe Ci::Pipeline, models: true do
       allow_any_instance_of(MergeRequest).to receive(:diff_head_sha) { '97de212e80737a608d939f648d959671fb0a0142b' }
 
       expect(pipeline.merge_requests).to be_empty
+    end
+  end
+
+  describe "#all_merge_requests" do
+    let(:project) { create(:empty_project) }
+    let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master') }
+
+    it "returns all merge requests having the same source branch" do
+      merge_request = create(:merge_request, source_project: project, source_branch: pipeline.ref)
+
+      expect(pipeline.all_merge_requests).to eq([merge_request])
+    end
+
+    it "doesn't return merge requests having a different source branch" do
+      create(:merge_request, source_project: project, source_branch: 'feature', target_branch: 'master')
+
+      expect(pipeline.all_merge_requests).to be_empty
     end
   end
 
