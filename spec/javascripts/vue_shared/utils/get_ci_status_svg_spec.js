@@ -1,8 +1,19 @@
 import getCiStatusSvg from '~/vue_shared/utils/get_ci_status_svg';
 
 describe('#getCiStatusSvg', () => {
-  const ciStatuses = ['canceled', 'created', 'failed', 'manual',
-    'pending', 'running', 'skipped', 'success', 'warning',
+  const ciStatuses = [
+    'canceled',
+    'created',
+    'failed',
+    'manual',
+    'pending',
+    'running',
+    'skipped',
+    'success',
+    'passed',
+    'warning',
+    'success_with_warnings',
+    'blocked',
   ];
 
   ciStatuses.forEach((status) => {
