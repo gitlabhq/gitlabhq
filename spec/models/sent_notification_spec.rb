@@ -69,6 +69,7 @@ describe SentNotification, model: true do
       it 'creates a comment on the issue' do
         new_note = subject.create_reply('Test')
         expect(new_note.in_reply_to?(note)).to be_truthy
+        expect(new_note.discussion_id).not_to eq(note.discussion_id)
       end
     end
 
@@ -79,6 +80,7 @@ describe SentNotification, model: true do
       it 'creates a reply on the discussion' do
         new_note = subject.create_reply('Test')
         expect(new_note.in_reply_to?(note)).to be_truthy
+        expect(new_note.discussion_id).to eq(note.discussion_id)
       end
     end
 
@@ -99,6 +101,7 @@ describe SentNotification, model: true do
       it 'creates a comment on the merge request' do
         new_note = subject.create_reply('Test')
         expect(new_note.in_reply_to?(note)).to be_truthy
+        expect(new_note.discussion_id).not_to eq(note.discussion_id)
       end
     end
 
@@ -109,6 +112,7 @@ describe SentNotification, model: true do
       it 'creates a reply on the discussion' do
         new_note = subject.create_reply('Test')
         expect(new_note.in_reply_to?(note)).to be_truthy
+        expect(new_note.discussion_id).to eq(note.discussion_id)
       end
     end
 
@@ -119,6 +123,7 @@ describe SentNotification, model: true do
       it 'creates a reply on the discussion' do
         new_note = subject.create_reply('Test')
         expect(new_note.in_reply_to?(note)).to be_truthy
+        expect(new_note.discussion_id).to eq(note.discussion_id)
       end
     end
 
@@ -140,6 +145,7 @@ describe SentNotification, model: true do
       it 'creates a comment on the commit' do
         new_note = subject.create_reply('Test')
         expect(new_note.in_reply_to?(note)).to be_truthy
+        expect(new_note.discussion_id).not_to eq(note.discussion_id)
       end
     end
 
@@ -150,6 +156,7 @@ describe SentNotification, model: true do
       it 'creates a reply on the discussion' do
         new_note = subject.create_reply('Test')
         expect(new_note.in_reply_to?(note)).to be_truthy
+        expect(new_note.discussion_id).to eq(note.discussion_id)
       end
     end
 
@@ -160,6 +167,7 @@ describe SentNotification, model: true do
       it 'creates a reply on the discussion' do
         new_note = subject.create_reply('Test')
         expect(new_note.in_reply_to?(note)).to be_truthy
+        expect(new_note.discussion_id).to eq(note.discussion_id)
       end
     end
   end
