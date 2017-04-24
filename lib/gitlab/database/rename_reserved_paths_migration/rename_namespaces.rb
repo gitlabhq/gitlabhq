@@ -11,13 +11,14 @@ module Gitlab
         end
 
         def namespaces_for_paths(type:)
-          namespaces = if type == :wildcard
+          namespaces = case type
+                       when :wildcard
                          MigrationClasses::Namespace.where.not(parent_id: nil)
-                       elsif type == :top_level
+                       when :top_level
                          MigrationClasses::Namespace.where(parent_id: nil)
                        end
           with_paths = MigrationClasses::Route.arel_table[:path].
-                        matches_any(path_patterns)
+                         matches_any(path_patterns)
           namespaces.joins(:route).where(with_paths)
         end
 

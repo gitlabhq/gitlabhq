@@ -16,20 +16,33 @@ class DynamicPathValidator < ActiveModel::EachValidator
   #  the path `api` shouldn't be allowed because it would be masked by `api/*`
   #
   TOP_LEVEL_ROUTES = Set.new(%w[
+    -
     .well-known
+    abuse_reports
     admin
     all
+    api
     assets
+    autocomplete
     ci
     dashboard
+    explore
     files
     groups
+    health_check
     help
     hooks
+    import
+    invites
     issues
+    jwt
+    koding
+    member
     merge_requests
     new
     notes
+    notification_settings
+    oauth
     profile
     projects
     public
@@ -37,29 +50,14 @@ class DynamicPathValidator < ActiveModel::EachValidator
     robots.txt
     s
     search
+    sent_notifications
     services
     snippets
     teams
     u
     unsubscribes
-    users
-    api
-    autocomplete
-    search
-    member
-    explore
     uploads
-    import
-    notification_settings
-    abuse_reports
-    invites
-    help
-    koding
-    health_check
-    jwt
-    oauth
-    sent_notifications
-    -
+    users
   ]).freeze
 
   # All project routes with wildcard argument must be listed here.
@@ -71,10 +69,30 @@ class DynamicPathValidator < ActiveModel::EachValidator
   #  without tree as reserved name routing can match 'group/project' as group name,
   #  'tree' as project name and 'deploy_keys' as route.
   #
-  WILDCARD_ROUTES = Set.new(%w[tree commits wikis new edit create update logs_tree
-                               preview blob blame raw files create_dir find_file
-                               artifacts graphs refs badges info/lfs/objects
-                               gitlab-lfs/objects environments/folders])
+  WILDCARD_ROUTES = Set.new(%w[
+    artifacts
+    badges
+    blame
+    blob
+    commits
+    create
+    create_dir
+    edit
+    environments/folders
+    files
+    find_file
+    gitlab-lfs/objects
+    graphs
+    info/lfs/objects
+    logs_tree
+    new
+    preview
+    raw
+    refs
+    tree
+    update
+    wikis
+  ]).freeze
 
   STRICT_RESERVED = (TOP_LEVEL_ROUTES | WILDCARD_ROUTES).freeze
 
