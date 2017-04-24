@@ -60,6 +60,9 @@ class Blob < SimpleDelegator
     size && truncated?
   end
 
+  # Returns the size of the file that this blob represents. If this blob is an
+  # LFS pointer, this is the size of the file stored in LFS. Otherwise, this is
+  # the size of the blob itself.
   def raw_size
     if valid_lfs_pointer?
       lfs_size
@@ -68,6 +71,10 @@ class Blob < SimpleDelegator
     end
   end
 
+  # Returns whether the file that this blob represents is binary. If this blob is
+  # an LFS pointer, we assume the file stored in LFS is binary, unless a
+  # text-based rich blob viewer matched on the file's extension. Otherwise, this
+  # depends on the type of the blob itself.
   def raw_binary?
     if valid_lfs_pointer?
       if rich_viewer
@@ -107,7 +114,7 @@ class Blob < SimpleDelegator
   def rich_viewer
     return @rich_viewer if defined?(@rich_viewer)
 
-    @rich_viewer ||= rich_viewer_class&.new(self)
+    @rich_viewer = rich_viewer_class&.new(self)
   end
 
   def rendered_as_text?(ignore_errors: true)
@@ -135,19 +142,18 @@ class Blob < SimpleDelegator
     end
   end
 
-  def rich_viewers_classes
-    if valid_lfs_pointer?
-      RICH_VIEWERS
-    elsif binary?
-      RICH_VIEWERS.select(&:binary?)
-    else # text
-      RICH_VIEWERS.select(&:text?)
-    end
-  end
-
   def rich_viewer_class
     return if invalid_lfs_pointer? || empty?
 
-    rich_viewers_classes.find { |viewer_class| viewer_class.can_render?(self) }
+    classes =
+      if valid_lfs_pointer?
+        RICH_VIEWERS
+      elsif binary?
+        RICH_VIEWERS.select(&:binary?)
+      else # text
+        RICH_VIEWERS.select(&:text?)
+      end
+
+    classes.find { |viewer_class| viewer_class.can_render?(self) }
   end
 end
