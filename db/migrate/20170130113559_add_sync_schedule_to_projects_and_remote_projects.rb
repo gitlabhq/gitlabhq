@@ -1,3 +1,4 @@
+# rubocop:disable Migration/AddColumnWithDefaultToLargeTable
 class AddSyncScheduleToProjectsAndRemoteProjects < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
