@@ -93,6 +93,14 @@ RSpec.configure do |config|
     Gitlab::Redis.with(&:flushall)
     Sidekiq.redis(&:flushall)
   end
+
+  config.around(:each, :nested_groups) do |example|
+    example.run if Gitlab::GroupHierarchy.supports_nested_groups?
+  end
+
+  config.around(:each, :postgresql) do |example|
+    example.run if Gitlab::Database.postgresql?
+  end
 end
 
 FactoryGirl::SyntaxRunner.class_eval do

@@ -287,21 +287,21 @@ describe Namespace, models: true do
     end
   end
 
-  describe '#ancestors' do
+  describe '#ancestors', :nested_groups do
     let(:group) { create(:group) }
     let(:nested_group) { create(:group, parent: group) }
     let(:deep_nested_group) { create(:group, parent: nested_group) }
     let(:very_deep_nested_group) { create(:group, parent: deep_nested_group) }
 
     it 'returns the correct ancestors' do
-      expect(very_deep_nested_group.ancestors).to eq([group, nested_group, deep_nested_group])
-      expect(deep_nested_group.ancestors).to eq([group, nested_group])
-      expect(nested_group.ancestors).to eq([group])
+      expect(very_deep_nested_group.ancestors).to include(group, nested_group, deep_nested_group)
+      expect(deep_nested_group.ancestors).to include(group, nested_group)
+      expect(nested_group.ancestors).to include(group)
       expect(group.ancestors).to eq([])
     end
   end
 
-  describe '#descendants' do
+  describe '#descendants', :nested_groups do
     let!(:group) { create(:group, path: 'git_lab') }
     let!(:nested_group) { create(:group, parent: group) }
     let!(:deep_nested_group) { create(:group, parent: nested_group) }
@@ -311,9 +311,9 @@ describe Namespace, models: true do
 
     it 'returns the correct descendants' do
       expect(very_deep_nested_group.descendants.to_a).to eq([])
-      expect(deep_nested_group.descendants.to_a).to eq([very_deep_nested_group])
-      expect(nested_group.descendants.to_a).to eq([deep_nested_group, very_deep_nested_group])
-      expect(group.descendants.to_a).to eq([nested_group, deep_nested_group, very_deep_nested_group])
+      expect(deep_nested_group.descendants.to_a).to include(very_deep_nested_group)
+      expect(nested_group.descendants.to_a).to include(deep_nested_group, very_deep_nested_group)
+      expect(group.descendants.to_a).to include(nested_group, deep_nested_group, very_deep_nested_group)
     end
   end
 

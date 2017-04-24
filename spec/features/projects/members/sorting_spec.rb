@@ -3,10 +3,9 @@ require 'spec_helper'
 feature 'Projects > Members > Sorting', feature: true do
   let(:master)    { create(:user, name: 'John Doe') }
   let(:developer) { create(:user, name: 'Mary Jane', last_sign_in_at: 5.days.ago) }
-  let(:project)   { create(:empty_project) }
+  let(:project)   { create(:empty_project, namespace: master.namespace, creator: master) }
 
   background do
-    create(:project_member, :master, user: master, project: project, created_at: 5.days.ago)
     create(:project_member, :developer, user: developer, project: project, created_at: 3.days.ago)
 
     login_as(master)
@@ -39,16 +38,16 @@ feature 'Projects > Members > Sorting', feature: true do
   scenario 'sorts by last joined' do
     visit_members_list(sort: :last_joined)
 
-    expect(first_member).to include(developer.name)
-    expect(second_member).to include(master.name)
+    expect(first_member).to include(master.name)
+    expect(second_member).to include(developer.name)
     expect(page).to have_css('.member-sort-dropdown .dropdown-toggle-text', text: 'Last joined')
   end
 
   scenario 'sorts by oldest joined' do
     visit_members_list(sort: :oldest_joined)
 
-    expect(first_member).to include(master.name)
-    expect(second_member).to include(developer.name)
+    expect(first_member).to include(developer.name)
+    expect(second_member).to include(master.name)
     expect(page).to have_css('.member-sort-dropdown .dropdown-toggle-text', text: 'Oldest joined')
   end
 

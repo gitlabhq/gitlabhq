@@ -22,7 +22,7 @@ feature 'Group name toggle', feature: true, js: true do
     expect(page).not_to have_css('.group-name-toggle')
   end
 
-  it 'is present if the title is longer than the container' do
+  it 'is present if the title is longer than the container', :nested_groups do
     visit group_path(nested_group_3)
     title_width = page.evaluate_script("$('.title')[0].offsetWidth")
 
@@ -35,7 +35,7 @@ feature 'Group name toggle', feature: true, js: true do
     expect(title_width).to be > container_width
   end
 
-  it 'should show the full group namespace when toggled' do
+  it 'should show the full group namespace when toggled', :nested_groups do
     page_height = page.current_window.size[1]
     page.current_window.resize_to(SMALL_SCREEN, page_height)
     visit group_path(nested_group_3)

@@ -107,7 +107,7 @@ describe GroupPolicy, models: true do
     end
   end
 
-  describe 'private nested group inherit permissions' do
+  describe 'private nested group inherit permissions', :nested_groups do
     let(:nested_group) { create(:group, :private, parent: group) }
 
     subject { described_class.abilities(current_user, nested_group).to_set }

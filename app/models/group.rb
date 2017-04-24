@@ -38,6 +38,10 @@ class Group < Namespace
   after_save :update_two_factor_requirement
 
   class << self
+    def supports_nested_groups?
+      Gitlab::Database.postgresql?
+    end
+
     # Searches for groups matching the given query.
     #
     # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
@@ -78,7 +82,7 @@ class Group < Namespace
       if current_scope.joins_values.include?(:shared_projects)
         joins('INNER JOIN namespaces project_namespace ON project_namespace.id = projects.namespace_id')
           .where('project_namespace.share_with_group_lock = ?',  false)
-          .select("members.user_id, projects.id AS project_id, LEAST(project_group_links.group_access, members.access_level) AS access_level")
+          .select("projects.id AS project_id, LEAST(project_group_links.group_access, members.access_level) AS access_level")
       else
         super
       end

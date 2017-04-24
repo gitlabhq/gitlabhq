@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe Gitlab::ImportExport::MembersMapper, services: true do
   describe 'map members' do
-    let(:user) { create(:admin, authorized_projects_populated: true) }
+    let(:user) { create(:admin) }
     let(:project) { create(:empty_project, :public, name: 'searchable_project') }
-    let(:user2) { create(:user, authorized_projects_populated: true) }
+    let(:user2) { create(:user) }
     let(:exported_user_id) { 99 }
     let(:exported_members) do
       [{
@@ -74,7 +74,7 @@ describe Gitlab::ImportExport::MembersMapper, services: true do
     end
 
     context 'user is not an admin' do
-      let(:user) { create(:user, authorized_projects_populated: true) }
+      let(:user) { create(:user) }
 
       it 'does not map a project member' do
         expect(members_mapper.map[exported_user_id]).to eq(user.id)
@@ -94,7 +94,7 @@ describe Gitlab::ImportExport::MembersMapper, services: true do
     end
 
     context 'importer same as group member' do
-      let(:user2) { create(:admin, authorized_projects_populated: true) }
+      let(:user2) { create(:admin) }
       let(:group) { create(:group) }
       let(:project) { create(:empty_project, :public, name: 'searchable_project', namespace: group) }
       let(:members_mapper) do

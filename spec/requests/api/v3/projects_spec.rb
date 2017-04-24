@@ -10,8 +10,7 @@ describe API::V3::Projects do
   let(:project) { create(:empty_project, creator_id: user.id, namespace: user.namespace) }
   let(:project2) { create(:empty_project, path: 'project2', creator_id: user.id, namespace: user.namespace) }
   let(:snippet) { create(:project_snippet, :public, author: user, project: project, title: 'example') }
-  let(:project_member) { create(:project_member, :master, user: user, project: project) }
-  let(:project_member2) { create(:project_member, :developer, user: user3, project: project) }
+  let(:project_member) { create(:project_member, :developer, user: user3, project: project) }
   let(:user4) { create(:user) }
   let(:project3) do
     create(:project,
@@ -25,7 +24,7 @@ describe API::V3::Projects do
     issues_enabled: false, wiki_enabled: false,
     snippets_enabled: false)
   end
-  let(:project_member3) do
+  let(:project_member2) do
     create(:project_member,
     user: user4,
     project: project3,
@@ -286,7 +285,7 @@ describe API::V3::Projects do
     let(:public_project) { create(:empty_project, :public) }
 
     before do
-      project_member2
+      project_member
       user3.update_attributes(starred_projects: [project, project2, project3, public_project])
     end
 
@@ -622,7 +621,6 @@ describe API::V3::Projects do
     context 'when authenticated' do
       before do
         project
-        project_member
       end
 
       it 'returns a project by id' do
@@ -814,8 +812,7 @@ describe API::V3::Projects do
   describe 'GET /projects/:id/users' do
     shared_examples_for 'project users response' do
       it 'returns the project users' do
-        member = create(:user)
-        create(:project_member, :developer, user: member, project: project)
+        member = project.owner
 
         get v3_api("/projects/#{project.id}/users", current_user)
 
@@ -1163,8 +1160,8 @@ describe API::V3::Projects do
     before { user4 }
     before { project3 }
     before { project4 }
-    before { project_member3 }
     before { project_member2 }
+    before { project_member }
 
     context 'when unauthenticated' do
       it 'returns authentication error' do

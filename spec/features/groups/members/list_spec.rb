@@ -12,7 +12,7 @@ feature 'Groups members list', feature: true do
     login_as(user1)
   end
 
-  scenario 'show members from current group and parent' do
+  scenario 'show members from current group and parent', :nested_groups do
     group.add_developer(user1)
     nested_group.add_developer(user2)
 
@@ -22,7 +22,7 @@ feature 'Groups members list', feature: true do
     expect(second_row.text).to include(user2.name)
   end
 
-  scenario 'show user once if member of both current group and parent' do
+  scenario 'show user once if member of both current group and parent', :nested_groups do
     group.add_developer(user1)
     nested_group.add_developer(user1)
 

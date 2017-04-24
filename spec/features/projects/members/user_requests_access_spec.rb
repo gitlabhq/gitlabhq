@@ -2,11 +2,10 @@ require 'spec_helper'
 
 feature 'Projects > Members > User requests access', feature: true do
   let(:user) { create(:user) }
-  let(:master) { create(:user) }
   let(:project) { create(:project, :public, :access_requestable) }
+  let(:master) { project.owner }
 
   background do
-    project.team << [master, :master]
     login_as(user)
     visit namespace_project_path(project.namespace, project)
   end
