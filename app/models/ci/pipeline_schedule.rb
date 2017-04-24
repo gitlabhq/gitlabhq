@@ -63,11 +63,5 @@ module Ci
       Gitlab::Ci::CronParser.new(worker_cron, worker_time_zone)
                             .next_time_from(next_run_at)
     end
-
-    def self.next_schedular_run
-      Gitlab::Ci::CronParser.new(Settings.cron_jobs['trigger_schedule_worker']['cron'],
-                                 Time.zone.name).
-                                 next_time_from(Time.now)
-    end
   end
 end

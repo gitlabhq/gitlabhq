@@ -13,8 +13,6 @@ class Projects::ServicesController < Projects::ApplicationController
   end
 
   def update
-    byebug
-
     @service.assign_attributes(service_params[:service])
     if @service.save(context: :manual_change)
       redirect_to(

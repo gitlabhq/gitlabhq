@@ -8,7 +8,7 @@ module Ci
     private
 
     def pipeline_schedule_params(trigger)
-      { trigger: trigger }.merge(params)
+      params.merge(trigger: trigger)
     end
   end
 end

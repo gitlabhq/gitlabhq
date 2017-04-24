@@ -5,7 +5,6 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
 
   before_action :pipeline_schedule, only: [:edit, :update, :destroy, :take_ownership]
 
-  # TODO test for N+1 queries
   def index
     @all_schedules = @project.pipeline_schedules.order('created_at DESC')
 
