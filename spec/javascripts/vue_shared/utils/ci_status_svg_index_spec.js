@@ -1,6 +1,6 @@
 import { borderlessIcons, baseIcons } from '~/vue_shared/utils/ci_status_svg_index';
 
-describe('CI status icons index', () => {
+fdescribe('CI status icons index', () => {
   const statuses = [
     'canceled',
     'created',
@@ -10,7 +10,9 @@ describe('CI status icons index', () => {
     'running',
     'skipped',
     'success',
+    'passed',
     'warning',
+    'success_with_warnings',
     'blocked',
   ];
 

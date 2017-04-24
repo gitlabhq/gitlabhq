@@ -18,6 +18,8 @@ import skippedBorderless from 'icons/_icon_status_skipped_borderless.svg';
 import successBorderless from 'icons/_icon_status_success_borderless.svg';
 import warningBorderless from 'icons/_icon_status_warning_borderless.svg';
 
+// note that some svgs are reused for more than one state (e.g. successBase)
+
 export const baseIcons = {
   canceled: canceledBase,
   created: createdBase,
@@ -27,7 +29,9 @@ export const baseIcons = {
   running: runningBase,
   skipped: skippedBase,
   success: successBase,
+  passed: successBase,
   warning: warningBase,
+  success_with_warnings: warningBase,
   blocked: warningBase,
 };
 
@@ -40,6 +44,8 @@ export const borderlessIcons = {
   running: runningBorderless,
   skipped: skippedBorderless,
   success: successBorderless,
+  passed: successBorderless,
   warning: warningBorderless,
+  success_with_warnings: warningBorderless,
   blocked: warningBorderless,
 };
