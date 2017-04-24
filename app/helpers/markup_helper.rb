@@ -27,7 +27,7 @@ module MarkupHelper
   # explicitly produce the correct linking behavior (i.e.
   # "<a>outer text </a><a>gfm ref</a><a> more outer text</a>").
   def link_to_gfm(body, url, html_options = {})
-    return "" if body.blank?
+    return '' if body.blank?
 
     context = {
       project: @project,
@@ -70,7 +70,7 @@ module MarkupHelper
   end
 
   def markdown(text, context = {})
-    return "" unless text.present?
+    return '' unless text.present?
 
     context[:project] ||= @project
     html = context.delete(:rendered) || markdown_unsafe(text, context)
@@ -79,7 +79,7 @@ module MarkupHelper
 
   def markdown_field(object, field)
     object = object.for_display if object.respond_to?(:for_display)
-    return "" unless object.present?
+    return '' unless object.present?
 
     html = Banzai.render_field(object, field)
     banzai_postprocess(html, object.banzai_render_context(field))
@@ -93,7 +93,7 @@ module MarkupHelper
 
   def render_wiki_content(wiki_page)
     text = wiki_page.content
-    return "" unless text.present?
+    return '' unless text.present?
 
     context = { pipeline: :wiki, project: @project, project_wiki: @project_wiki, page_slug: wiki_page.slug }
 
@@ -111,7 +111,7 @@ module MarkupHelper
   end
 
   def markup_unsafe(file_name, text, context = {})
-    return "" unless text.present?
+    return '' unless text.present?
 
     if gitlab_markdown?(file_name)
       Hamlit::RailsHelpers.preserve(markdown_unsafe(text, context))
@@ -213,10 +213,10 @@ module MarkupHelper
   end
 
   def markdown_toolbar_button(options = {})
-    data = options[:data].merge({ container: "body" })
+    data = options[:data].merge({ container: 'body' })
     content_tag :button,
-      type: "button",
-      class: "toolbar-btn js-md has-tooltip hidden-xs",
+      type: 'button',
+      class: 'toolbar-btn js-md has-tooltip hidden-xs',
       tabindex: -1,
       data: data,
       title: options[:title],
@@ -227,7 +227,7 @@ module MarkupHelper
 
   # Calls Banzai.post_process with some common context options
   def banzai_postprocess(html, context = {})
-    return "" unless html.present?
+    return '' unless html.present?
 
     context.merge!(
       current_user:   (current_user if defined?(current_user)),
