@@ -9,8 +9,8 @@
         .form-group
           = f.label :name, class: 'col-md-2 text-right' do
             Tag:
-          .col-md-10.protected-tags-dropdown
-            = render partial: "projects/protected_tags/dropdown", locals: { f: f }
+          .col-md-10
+            = render partial: "shared/protected_refs/dropdown", locals: { f: f, dropdown_placeholder: 'Select tag or create wildcard', dropdown_toggle_class: 'js-protected-tag-select', dropdown_filter_placeholder: 'Search protected tags', protected_ref_param: params[:protected_tag_name], new_protected_ref_class: 'create-new-protected-tag-button js-create-new-protected-tag', new_protected_ref_title: 'New Protected Tag' }
             .help-block
               = link_to 'Wildcards', help_page_path('user/project/protected_tags', anchor: 'wildcard-protected-tags')
               such as
@@ -18,15 +18,7 @@
               or
               %code *-release
               are supported
-        .form-group
-          %label.col-md-2.text-right{ for: 'create_access_levels_attributes' }
-            Allowed to create:
-          .col-md-10
-            .create_access_levels-container
-              = dropdown_tag('Select',
-                             options: { toggle_class: 'js-allowed-to-create wide',
-                             dropdown_class: 'dropdown-menu-selectable',
-                             data: { field_name: 'protected_tag[create_access_levels_attributes][0][access_level]', input_id: 'create_access_levels_attributes' }})
+        = render partial: "shared/protected_refs/access_level_dropdown", locals: { access_level_type: 'create_access_levels_attributes', access_level_label: 'Allowed to create:', access_level_container_class: 'create_access_levels-container', access_level_toggle_class: 'js-allowed-to-create', access_level_field_name: 'protected_tag[create_access_levels_attributes][0][access_level]', access_level_input_id: 'create_access_levels_attributes' }
 
     .panel-footer
       = f.submit 'Protect', class: 'btn-create btn', disabled: true

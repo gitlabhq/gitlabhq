@@ -14,7 +14,7 @@
       - else
         (tag was removed from repository)
 
-  = render partial: 'projects/protected_tags/update_protected_tag', locals: { protected_tag: protected_tag }
+  = render partial: 'shared/protected_refs/update_protected_ref', locals: { protected_ref_field_name: "allowed_to_create_#{protected_tag.id}", protected_ref_first_access_level: protected_tag.create_access_levels.first, protected_ref_toggle_class: 'js-allowed-to-create', protected_ref_container_class: 'js-allowed-to-create-container' }
 
   - if can_admin_project
     %td

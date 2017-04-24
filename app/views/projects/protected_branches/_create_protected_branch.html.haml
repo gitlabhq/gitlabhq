@@ -10,7 +10,7 @@
           = f.label :name, class: 'col-md-2 text-right' do
             Branch:
           .col-md-10
-            = render partial: "projects/protected_branches/dropdown", locals: { f: f }
+            = render partial: "shared/protected_refs/dropdown", locals: { f: f, dropdown_placeholder: 'Select branch or create wildcard', dropdown_toggle_class: 'js-protected-branch-select', dropdown_filter_placeholder: 'Search protected branches', protected_ref_param: params[:protected_branch_name], new_protected_ref_class: 'create-new-protected-branch-button js-create-new-protected-branch', new_protected_ref_title: 'New Protected Branch' }
             .help-block
               = link_to 'Wildcards', help_page_path('user/project/protected_branches', anchor: 'wildcard-protected-branches')
               such as
@@ -18,24 +18,8 @@
               or
               %code production/*
               are supported
-        .form-group
-          %label.col-md-2.text-right{ for: 'merge_access_levels_attributes' }
-            Allowed to merge:
-          .col-md-10
-            .merge_access_levels-container
-              = dropdown_tag('Select',
-                             options: { toggle_class: 'js-allowed-to-merge wide',
-                             dropdown_class: 'dropdown-menu-selectable capitalize-header',
-                             data: { field_name: 'protected_branch[merge_access_levels_attributes][0][access_level]', input_id: 'merge_access_levels_attributes' }})
-        .form-group
-          %label.col-md-2.text-right{ for: 'push_access_levels_attributes' }
-            Allowed to push:
-          .col-md-10
-            .push_access_levels-container
-              = dropdown_tag('Select',
-                             options: { toggle_class: 'js-allowed-to-push wide',
-                             dropdown_class: 'dropdown-menu-selectable capitalize-header',
-                             data: { field_name: 'protected_branch[push_access_levels_attributes][0][access_level]', input_id: 'push_access_levels_attributes' }})
+        = render partial: "shared/protected_refs/access_level_dropdown", locals: { access_level_type: 'merge_access_levels_attributes', access_level_label: 'Allowed to merge:', access_level_container_class: 'merge_access_levels-container', access_level_toggle_class: 'js-allowed-to-merge', access_level_field_name: 'protected_branch[merge_access_levels_attributes][0][access_level]', access_level_input_id: 'merge_access_levels_attributes' }
+        = render partial: "shared/protected_refs/access_level_dropdown", locals: { access_level_type: 'push_access_levels_attributes', access_level_label: 'Allowed to push:', access_level_container_class: 'push_access_levels-container', access_level_toggle_class: 'js-allowed-to-push', access_level_field_name: 'protected_branch[push_access_levels_attributes][0][access_level]', access_level_input_id: 'merge_access_levels_attributes' }
 
     .panel-footer
       = f.submit 'Protect', class: 'btn-create btn', disabled: true
