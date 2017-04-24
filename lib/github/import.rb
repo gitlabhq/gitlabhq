@@ -355,11 +355,9 @@ module Github
     def user_id_by_external_uid(id)
       return nil unless id
 
-      identities = ::Identity.arel_table
-
       ::User.select(:id)
             .joins(:identities)
-            .where(identities[:provider].eq(:github).and(identities[:extern_uid].eq(id)))
+            .merge(::Identity.where(provider: :github, extern_uid: id))
             .first&.id
     end
 
