@@ -7,7 +7,7 @@ class Projects::DeploymentsController < Projects::ApplicationController
     deployments = deployments.where('created_at > ?', params[:after].to_time) if params[:after]&.to_time
 
     render json: { deployments: DeploymentSerializer.new(user: @current_user, project: project)
-                                  .represent(deployments) }
+                                  .represent_concise(deployments) }
   end
 
   private
