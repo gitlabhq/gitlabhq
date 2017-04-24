@@ -1040,23 +1040,15 @@ describe Ci::Pipeline, models: true do
 
   describe "#all_merge_requests" do
     let(:project) { create(:empty_project) }
-    let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: 'a288a022a53a5a944fae87bcec6efc87b7061808') }
+    let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master') }
 
-    it "returns merge request if pipeline runs on `diff_head_sha`" do
+    it "returns all merge requests having the same source branch" do
       merge_request = create(:merge_request, source_project: project, source_branch: pipeline.ref)
-      allow_any_instance_of(MergeRequest).to receive(:diff_head_sha) { 'a288a022a53a5a944fae87bcec6efc87b7061808' }
 
       expect(pipeline.all_merge_requests).to eq([merge_request])
     end
 
-    it "returns merge request if pipeline runs any commit of the `source_branch`" do
-      merge_request = create(:merge_request, source_project: project, source_branch: pipeline.ref)
-      allow_any_instance_of(MergeRequest).to receive(:diff_head_sha) { '97de212e80737a608d939f648d959671fb0a0142b' }
-
-      expect(pipeline.all_merge_requests).to eq([merge_request])
-    end
-
-    it "doesn't return merge request if pipeline runs on a different `source_branch`" do
+    it "doesn't return merge requests having a different source branch" do
       create(:merge_request, source_project: project, source_branch: 'feature', target_branch: 'master')
 
       expect(pipeline.all_merge_requests).to be_empty

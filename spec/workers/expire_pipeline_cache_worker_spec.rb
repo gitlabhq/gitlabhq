@@ -18,8 +18,7 @@ describe ExpirePipelineCacheWorker do
     end
 
     it 'invalidates Etag caching for merge request pipelines if pipeline runs on any commit of that source branch' do
-      project = create(:project, :repository)
-      pipeline = create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: project.repository.commit('master^').id)
+      pipeline = create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master')
       merge_request = create(:merge_request, source_project: project, source_branch: pipeline.ref)
       merge_request_pipelines_path = "/#{project.full_path}/merge_requests/#{merge_request.iid}/pipelines.json"
 
