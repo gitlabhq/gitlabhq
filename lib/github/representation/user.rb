@@ -1,10 +1,6 @@
 module Github
   module Representation
     class User < Representation::Base
-      def id
-        raw['id']
-      end
-
       def email
         return @email if defined?(@email)
 

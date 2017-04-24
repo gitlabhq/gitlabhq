@@ -6,6 +6,10 @@ module Github
         @options = options
       end
 
+      def id
+        raw['id']
+      end
+
       def url
         raw['url']
       end
