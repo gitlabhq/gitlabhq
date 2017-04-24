@@ -425,13 +425,6 @@ table {
 }
 
 .str-truncated {
-  &-30 {
-    @include str-truncated(30%);
-    @media (max-width: $screen-xs-max){
-      max-width: 90%;
-    }
-  }
-
   &-60 {
     @include str-truncated(60%);
   }
