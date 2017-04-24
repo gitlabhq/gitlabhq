@@ -13,12 +13,12 @@ describe GroupMember, models: true do
     end
   end
 
-  describe '.add_users_to_group' do
+  describe '.add_users' do
     it 'adds the given users to the given group' do
       group = create(:group)
       users = create_list(:user, 2)
 
-      described_class.add_users_to_group(
+      described_class.add_users(
         group,
         [users.first.id, users.second],
         described_class::MASTER

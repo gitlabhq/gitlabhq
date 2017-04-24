@@ -141,7 +141,7 @@ class Group < Namespace
   end
 
   def add_users(users, access_level, current_user: nil, expires_at: nil)
-    GroupMember.add_users_to_group(
+    GroupMember.add_users(
       self,
       users,
       access_level,

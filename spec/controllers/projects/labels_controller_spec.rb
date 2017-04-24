@@ -127,7 +127,7 @@ describe Projects::LabelsController do
 
     context 'group owner' do
       before do
-        GroupMember.add_users_to_group(group, [user], :owner)
+        GroupMember.add_users(group, [user], :owner)
       end
 
       it 'gives access' do
