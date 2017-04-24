@@ -23,6 +23,8 @@ module Members
 
       AuditEventService.new(@current_user, @source, action: :destroy)
         .for_member(member).security_event
+
+      member
     end
 
     private
