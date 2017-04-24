@@ -73,7 +73,7 @@ module MarkupHelper
     return '' unless text.present?
 
     context[:project] ||= @project
-    html = context.delete(:rendered) || markdown_unsafe(text, context)
+    html = markdown_unsafe(text, context)
     banzai_postprocess(html, context)
   end
 
