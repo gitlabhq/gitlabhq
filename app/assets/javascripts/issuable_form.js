@@ -41,8 +41,9 @@
       if ($issuableDueDate.length) {
         calendar = new Pikaday({
           field: $issuableDueDate.get(0),
-          theme: 'gitlab-theme',
+          theme: 'gitlab-theme animate-picker',
           format: 'yyyy-mm-dd',
+          container: $issuableDueDate.parent().get(0),
           onSelect: function(dateText) {
             $issuableDueDate.val(dateFormat(new Date(dateText), 'yyyy-mm-dd'));
           }

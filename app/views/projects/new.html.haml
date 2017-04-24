@@ -145,10 +145,16 @@
     }
   });
 
+  $('#project_import_url').disable();
   $('.import_git').click(function( event ) {
+<<<<<<< HEAD
     $projectImportUrl = $('#project_import_url')
     $projectMirror = $('#project_mirror')
 
     $projectImportUrl.attr('disabled', !$projectImportUrl.attr('disabled'))
     $projectMirror.attr('disabled', !$projectMirror.attr('disabled'))
+=======
+    $projectImportUrl = $('#project_import_url');
+    $projectImportUrl.attr('disabled', !$projectImportUrl.attr('disabled'));
+>>>>>>> ce-com/master
   });

@@ -178,11 +178,13 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   def select_using_dropdown(dropdown_type, selection, is_commit = false)
     dropdown = find(".js-compare-#{dropdown_type}-dropdown")
     dropdown.find(".compare-dropdown-toggle").click
+    dropdown.find('.dropdown-menu', visible: true)
     dropdown.fill_in("Filter by Git revision", with: selection)
     if is_commit
       dropdown.find('input[type="search"]').send_keys(:return)
     else
       find_link(selection, visible: true).click
     end
+    dropdown.find('.dropdown-menu', visible: false)
   end
 end

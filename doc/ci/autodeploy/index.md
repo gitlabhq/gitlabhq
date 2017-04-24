@@ -35,6 +35,7 @@ enable [Kubernetes service][kubernetes-service].
 1. Test your deployment configuration using a [Review App][review-app] that was
 created automatically for you.
 
+<<<<<<< HEAD
 ## Using the Kubernetes deploy example project with Nginx
 
 The Autodeploy templates are based on the [kubernetes-deploy][kube-deploy]
@@ -114,6 +115,8 @@ Next, we replace `__CI_ENVIRONMENT_SLUG__` with the content of the
 Finally, the Nginx pod is created from the definition of the
 `nginx-deployment.yaml` file.
 
+=======
+>>>>>>> ce-com/master
 ## Private Project Support
 
 > Experimental support [introduced][mr-2] in GitLab 9.1.
@@ -146,7 +149,10 @@ PostgreSQL provisioning can be disabled by setting the variable `DISABLE_POSTGRE
 [kubernetes-service]: ../../user/project/integrations/kubernetes.md
 [docker-in-docker]: ../docker/using_docker_build.md#use-docker-in-docker-executor
 [review-app]: ../review_apps/index.md
+<<<<<<< HEAD
 [kube-image]: https://gitlab.com/gitlab-examples/kubernetes-deploy/container_registry "Kubernetes deploy Container Registry"
 [kube-deploy]: https://gitlab.com/gitlab-examples/kubernetes-deploy "Kubernetes deploy example project"
+=======
+>>>>>>> ce-com/master
 [container-registry]: https://docs.gitlab.com/ce/user/project/container_registry.html
 [postgresql]: https://www.postgresql.org/

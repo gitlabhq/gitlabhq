@@ -24,6 +24,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
     @group_member = @group.group_members.new
   end
 
+<<<<<<< HEAD
   def create
     if params[:user_ids].blank?
       return redirect_to(group_group_members_path(@group), alert: 'No users specified.')
@@ -45,6 +46,8 @@ class Groups::GroupMembersController < Groups::ApplicationController
     redirect_to group_group_members_path(@group), notice: 'Users were successfully added.'
   end
 
+=======
+>>>>>>> ce-com/master
   def update
     @group_member = @group.group_members.find(params[:id])
 
@@ -57,6 +60,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
     end
   end
 
+<<<<<<< HEAD
   def destroy
     member = Members::DestroyService.new(@group, current_user, id: params[:id]).execute(:all)
 
@@ -68,6 +72,8 @@ class Groups::GroupMembersController < Groups::ApplicationController
     end
   end
 
+=======
+>>>>>>> ce-com/master
   def resend_invite
     redirect_path = group_group_members_path(@group)
 

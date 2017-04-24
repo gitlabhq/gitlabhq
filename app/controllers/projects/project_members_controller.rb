@@ -10,6 +10,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     redirect_to namespace_project_settings_members_path(@project.namespace, @project, sort: sort)
   end
 
+<<<<<<< HEAD
   def create
     status = Members::CreateService.new(@project, current_user, params).execute
 
@@ -28,6 +29,8 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     end
   end
 
+=======
+>>>>>>> ce-com/master
   def update
     @project_member = @project.project_members.find(params[:id])
 
@@ -40,6 +43,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     end
   end
 
+<<<<<<< HEAD
   def destroy
     member = Members::DestroyService.new(@project, current_user, params).
       execute(:all)
@@ -54,6 +58,8 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     end
   end
 
+=======
+>>>>>>> ce-com/master
   def resend_invite
     redirect_path = namespace_project_settings_members_path(@project.namespace, @project)
 

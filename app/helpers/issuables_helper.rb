@@ -162,6 +162,7 @@ module IssuablesHelper
     html.html_safe
   end
 
+<<<<<<< HEAD
   def cached_issuables_count_for_state(issuable_type, state)
     Rails.cache.fetch(issuables_state_counter_cache_key(issuable_type, state), expires_in: 2.minutes) do
       issuables_count_for_state(issuable_type, state)
@@ -173,6 +174,10 @@ module IssuablesHelper
     Rails.cache.fetch(cache_key, expires_in: 2.minutes) do
       assigned_issuables_count(assignee, issuable_type, state)
     end
+=======
+  def assigned_issuables_count(issuable_type)
+    current_user.public_send("assigned_open_#{issuable_type}_count")
+>>>>>>> ce-com/master
   end
 
   def issuable_filter_params
@@ -195,10 +200,6 @@ module IssuablesHelper
   end
 
   private
-
-  def assigned_issuables_count(assignee, issuable_type, state)
-    assignee.public_send("assigned_#{issuable_type}").public_send(state).count
-  end
 
   def sidebar_gutter_collapsed?
     cookies[:collapsed_gutter] == 'true'

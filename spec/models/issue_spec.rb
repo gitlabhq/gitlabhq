@@ -361,7 +361,10 @@ describe Issue, models: true do
     it 'updates when assignees change' do
       user1 = create(:user)
       user2 = create(:user)
-      issue = create(:issue, assignee: user1)
+      project = create(:empty_project)
+      issue = create(:issue, assignee: user1, project: project)
+      project.add_developer(user1)
+      project.add_developer(user2)
 
       expect(user1.assigned_open_issues_count).to eq(1)
       expect(user2.assigned_open_issues_count).to eq(0)

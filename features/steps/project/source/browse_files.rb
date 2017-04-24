@@ -87,9 +87,9 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
 
   step 'I fill the new branch name' do
     first('button.js-target-branch', visible: true).click
-    first('.create-new-branch', visible: true).click
-    first('#new_branch_name', visible: true).set('new_branch_name')
-    first('.js-new-branch-btn', visible: true).click
+    find('.create-new-branch', visible: true).click
+    find('#new_branch_name', visible: true).set('new_branch_name')
+    find('.js-new-branch-btn', visible: true).click
   end
 
   step 'I fill the new file name with an illegal name' do
@@ -377,7 +377,6 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   step 'I should see a Fork/Cancel combo' do
     expect(page).to have_link 'Fork'
     expect(page).to have_button 'Cancel'
-    expect(page).to have_content 'You don\'t have permission to edit this file. Try forking this project to edit the file.'
   end
 
   step 'I should see a notice about a new fork having been created' do

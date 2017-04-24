@@ -47,6 +47,7 @@ Click on the service links to see further configuration instructions and details
 | [Kubernetes](kubernetes.md) | A containerized deployment service |
 | [Mattermost slash commands](mattermost_slash_commands.md) | Mattermost chat and ChatOps slash commands |
 | [Mattermost Notifications](mattermost.md) | Receive event notifications in Mattermost |
+| [Microsoft teams](microsoft_teams.md) |  Receive notifications for actions that happen on GitLab into a room on Microsoft Teams using Office 365 Connectors |
 | Pipelines emails | Email the pipeline status to a list of recipients |
 | [Slack Notifications](slack.md) | Receive event notifications in Slack |
 | [Slack slash commands](slack_slash_commands.md) | Slack chat and ChatOps slash commands |
