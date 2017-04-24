@@ -4,7 +4,7 @@ feature 'Contributions Calendar', :feature, :js do
   include WaitForAjax
 
   let(:user) { create(:user) }
-  let(:contributed_project) { create(:project, :public) }
+  let(:contributed_project) { create(:empty_project, :public) }
   let(:issue_note) { create(:note, project: contributed_project) }
 
   # Ex/ Sunday Jan 1, 2016

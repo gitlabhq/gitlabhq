@@ -5,7 +5,7 @@ feature 'Cycle Analytics', feature: true, js: true do
 
   let(:user) { create(:user) }
   let(:guest) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:issue) { create(:issue, project: project, created_at: 2.days.ago) }
   let(:milestone) { create(:milestone, project: project) }
   let(:mr) { create_merge_request_closing_issue(issue) }
