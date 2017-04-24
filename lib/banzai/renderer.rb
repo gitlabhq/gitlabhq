@@ -157,13 +157,9 @@ module Banzai
       Rails.cache.send(:expanded_key, full_cache_key(cache_key, pipeline_name))
     end
 
-    def update_object(object, html_field, html)
-      object.update_column(html_field, html) unless Gitlab::Geo.secondary?
-    end
-
     # GitLab EE needs to disable updates on GET requests in Geo
     def self.update_object?(object)
-      true
+      !Gitlab::Geo.secondary?
     end
   end
 end
