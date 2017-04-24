@@ -386,6 +386,10 @@ ul.notes {
 .note-headline-meta {
   display: inline-block;
   white-space: nowrap;
+
+  .system-note-message {
+    white-space: normal;
+  }
 }
 
 /**
