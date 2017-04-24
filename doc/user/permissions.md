@@ -7,6 +7,9 @@ project itself, the highest permission level is used.
 On public and internal projects the Guest role is not enforced. All users will
 be able to create issues, leave comments, and pull or download the project code.
 
+When a member leaves the team the all assigned Issues and Merge Requests
+will be unassigned automatically.
+
 GitLab administrators receive all permissions.
 
 To add or import a user, you can follow the [project users and members

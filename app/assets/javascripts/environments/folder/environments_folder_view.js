@@ -2,7 +2,7 @@
 /* global Flash */
 import Vue from 'vue';
 import EnvironmentsService from '../services/environments_service';
-import EnvironmentTable from '../components/environments_table';
+import EnvironmentTable from '../components/environments_table.vue';
 import EnvironmentsStore from '../stores/environments_store';
 import TablePaginationComponent from '../../vue_shared/components/table_pagination';
 import '../../lib/utils/common_utils';

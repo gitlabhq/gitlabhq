@@ -1,27 +1,49 @@
 require 'spec_helper'
 
 feature 'Dashboard shortcuts', feature: true, js: true do
-  before do
-    login_as :user
-    visit root_dashboard_path
+  context 'logged in' do
+    before do
+      login_as :user
+      visit root_dashboard_path
+    end
+
+    scenario 'Navigate to tabs' do
+      find('body').native.send_keys([:shift, 'P'])
+
+      check_page_title('Projects')
+
+      find('body').native.send_key([:shift, 'I'])
+
+      check_page_title('Issues')
+
+      find('body').native.send_key([:shift, 'M'])
+
+      check_page_title('Merge Requests')
+
+      find('body').native.send_keys([:shift, 'T'])
+
+      check_page_title('Todos')
+    end
   end
 
-  scenario 'Navigate to tabs' do
-    find('body').native.send_keys([:shift, 'P'])
+  context 'logged out' do
+    before do
+      visit explore_root_path
+    end
 
-    check_page_title('Projects')
+    scenario 'Navigate to tabs' do
+      find('body').native.send_keys([:shift, 'P'])
 
-    find('body').native.send_key([:shift, 'I'])
+      expect(page).to have_content('No projects found')
 
-    check_page_title('Issues')
+      find('body').native.send_keys([:shift, 'G'])
 
-    find('body').native.send_key([:shift, 'M'])
+      expect(page).to have_content('No public groups')
 
-    check_page_title('Merge Requests')
+      find('body').native.send_keys([:shift, 'S'])
 
-    find('body').native.send_keys([:shift, 'T'])
-
-    check_page_title('Todos')
+      expect(page).to have_selector('.snippets-list-holder')
+    end
   end
 
   def check_page_title(title)

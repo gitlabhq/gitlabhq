@@ -6,10 +6,6 @@ All technical content published by GitLab lives in the documentation, including:
   - [User docs](#user-documentation): general documentation dedicated to regular users of GitLab
   - [Admin docs](#administrator-documentation): general documentation dedicated to administrators of GitLab instances
   - [Contributor docs](#contributor-documentation): general documentation on how to develop and contribute to GitLab
-- [Topics](topics/index.md): pages organized per topic, gathering all the
-  resources already published by GitLab related to a specific subject, including
-  general docs, [technical articles](development/writing_documentation.md#technical-articles),
-  blog posts and video tutorials.
 - [GitLab University](university/README.md): guides to learn Git and GitLab
   through courses and videos.
 
@@ -19,6 +15,7 @@ All technical content published by GitLab lives in the documentation, including:
 - [API](api/README.md) Automate GitLab via a simple and powerful API.
 - [CI/CD](ci/README.md) GitLab Continuous Integration (CI) and Continuous Delivery (CD) getting started, `.gitlab-ci.yml` options, and examples.
 - [Container Registry](user/project/container_registry.md) Learn how to use GitLab Container Registry.
+- [Discussions](user/discussions/index.md) Threads, comments, and resolvable discussions in issues, commits, and  merge requests.
 - [Git Attributes](user/project/git_attributes.md) Managing Git attributes using a `.gitattributes` file.
 - [Git cheatsheet](https://gitlab.com/gitlab-com/marketing/raw/master/design/print/git-cheatsheet/print-pdf/git-cheatsheet.pdf) Download a PDF describing the most used Git operations.
 - [GitLab as OAuth2 authentication service provider](integration/oauth_provider.md). It allows you to login to other applications from GitLab.
@@ -62,6 +59,7 @@ All technical content published by GitLab lives in the documentation, including:
 - [Migrate GitLab CI to CE/EE](migrate_ci_to_ce/README.md) Follow this guide to migrate your existing GitLab CI data to GitLab CE/EE.
 - [Monitoring uptime](user/admin_area/monitoring/health_check.md) Check the server status using the health check endpoint.
 - [Operations](administration/operations.md) Keeping GitLab up and running.
+- [Polling](administration/polling.md) Configure how often the GitLab UI polls for updates
 - [Raketasks](raketasks/README.md) Backups, maintenance, automatic webhook setup and the importing of projects.
 - [Reply by email](administration/reply_by_email.md) Allow users to comment on issues and merge requests by replying to notification emails.
 - [Repository checks](administration/repository_checks.md) Periodic Git repository checks.
@@ -72,6 +70,7 @@ All technical content published by GitLab lives in the documentation, including:
 - [Sidekiq Troubleshooting](administration/troubleshooting/sidekiq.md) Debug when Sidekiq appears hung and is not processing jobs.
 - [System hooks](system_hooks/system_hooks.md) Notifications when users, projects and keys are changed.
 - [Update](update/README.md) Update guides to upgrade your installation.
+- [User cohorts](user/admin_area/user_cohorts.md) View user activity over time.
 - [Web terminals](administration/integration/terminal.md) Provide terminal access to environments from within GitLab.
 - [Welcome message](customization/welcome_message.md) Add a custom welcome message to the sign-in page.
 

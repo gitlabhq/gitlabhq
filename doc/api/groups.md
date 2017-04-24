@@ -53,7 +53,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or path of a group |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `archived` | boolean | no | Limit by archived status |
 | `visibility` | string | no | Limit by visibility `public`, `internal`, or `private` |
 | `order_by` | string | no | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at` |
@@ -119,7 +119,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or path of a group |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/4
@@ -299,7 +299,7 @@ POST  /groups/:id/projects/:project_id
 
 Parameters:
 
-- `id` (required) - The ID or path of a group
+- `id` (required) - The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user
 - `project_id` (required) - The ID or path of a project
 
 ## Update group

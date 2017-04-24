@@ -1,40 +1,12 @@
 module Gitlab
   module EtagCaching
     class Middleware
-      RESERVED_WORDS = NamespaceValidator::WILDCARD_ROUTES.map { |word| "/#{word}/" }.join('|')
-      ROUTES = [
-        {
-          regexp: %r(^(?!.*(#{RESERVED_WORDS})).*/noteable/issue/\d+/notes\z),
-          name: 'issue_notes'
-        },
-        {
-          regexp: %r(^(?!.*(#{RESERVED_WORDS})).*/issues/\d+/rendered_title\z),
-          name: 'issue_title'
-        },
-        {
-          regexp: %r(^(?!.*(#{RESERVED_WORDS})).*/pipelines\.json\z),
-          name: 'project_pipelines'
-        },
-        {
-          regexp: %r(^(?!.*(#{RESERVED_WORDS})).*/commit/\s+/pipelines\.json\z),
-          name: 'commit_pipelines'
-        },
-        {
-          regexp: %r(^(?!.*(#{RESERVED_WORDS})).*/merge_requests/new\.json\z),
-          name: 'new_merge_request_pipelines'
-        },
-        {
-          regexp: %r(^(?!.*(#{RESERVED_WORDS})).*/merge_requests/\d+/pipelines\.json\z),
-          name: 'merge_request_pipelines'
-        }
-      ].freeze
-
       def initialize(app)
         @app = app
       end
 
       def call(env)
-        route = match_current_route(env)
+        route = Gitlab::EtagCaching::Router.match(env)
         return @app.call(env) unless route
 
         track_event(:etag_caching_middleware_used, route)
@@ -54,10 +26,6 @@ module Gitlab
       end
 
       private
-
-      def match_current_route(env)
-        ROUTES.find { |route| route[:regexp].match(env['PATH_INFO']) }
-      end
 
       def get_etag(env)
         cache_key = env['PATH_INFO']
@@ -95,7 +63,7 @@ module Gitlab
       end
 
       def track_event(name, route)
-        Gitlab::Metrics.add_event(name, endpoint: route[:name])
+        Gitlab::Metrics.add_event(name, endpoint: route.name)
       end
     end
   end

@@ -42,7 +42,7 @@ module SnippetsHelper
         0,
         lined_content.size,
         surrounding_lines
-      ) if line.include?(query)
+      ) if line.downcase.include?(query.downcase)
     end
 
     used_lines.uniq.sort

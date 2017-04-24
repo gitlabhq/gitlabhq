@@ -4,71 +4,6 @@ class Spinach::Features::GroupMembers < Spinach::FeatureSteps
   include SharedPaths
   include SharedGroup
   include SharedUser
-  include Select2Helper
-
-  step 'I select "Mike" as "Reporter"' do
-    user = User.find_by(name: "Mike")
-
-    page.within ".users-group-form" do
-      select2(user.id, from: "#user_ids", multiple: true)
-      select "Reporter", from: "access_level"
-    end
-
-    click_button "Add to group"
-  end
-
-  step 'I select "Mike" as "Master"' do
-    user = User.find_by(name: "Mike")
-
-    page.within ".users-group-form" do
-      select2(user.id, from: "#user_ids", multiple: true)
-      select "Master", from: "access_level"
-    end
-
-    click_button "Add to group"
-  end
-
-  step 'I should see "Mike" in team list as "Reporter"' do
-    page.within '.content-list' do
-      expect(page).to have_content('Mike')
-      expect(page).to have_content('Reporter')
-    end
-  end
-
-  step 'I should see "Mike" in team list as "Owner"' do
-    page.within '.content-list' do
-      expect(page).to have_content('Mike')
-      expect(page).to have_content('Owner')
-    end
-  end
-
-  step 'I select "sjobs@apple.com" as "Reporter"' do
-    page.within ".users-group-form" do
-      select2("sjobs@apple.com", from: "#user_ids", multiple: true)
-      select "Reporter", from: "access_level"
-    end
-
-    click_button "Add to group"
-  end
-
-  step 'I should see "sjobs@apple.com" in team list as invited "Reporter"' do
-    page.within '.content-list' do
-      expect(page).to have_content('sjobs@apple.com')
-      expect(page).to have_content('Invited')
-      expect(page).to have_content('Reporter')
-    end
-  end
-
-  step 'I select user "Mary Jane" from list with role "Reporter"' do
-    user = User.find_by(name: "Mary Jane") || create(:user, name: "Mary Jane")
-
-    page.within ".users-group-form" do
-      select2(user.id, from: "#user_ids", multiple: true)
-      select "Reporter", from: "access_level"
-    end
-
-    click_button "Add to group"
-  end
 
   step 'I should see user "John Doe" in team list' do
     expect(group_members_list).to have_content("John Doe")
@@ -87,7 +22,7 @@ class Spinach::Features::GroupMembers < Spinach::FeatureSteps
   end
 
   step 'I click on the "Remove User From Group" button for "John Doe"' do
-    find(:css, 'li', text: "John Doe").find(:css, 'a.btn-remove').click
+    find(:css, '.project-members-page li', text: "John Doe").find(:css, 'a.btn-remove').click
     # poltergeist always confirms popups.
   end
 
@@ -97,7 +32,7 @@ class Spinach::Features::GroupMembers < Spinach::FeatureSteps
   end
 
   step 'I should not see the "Remove User From Group" button for "John Doe"' do
-    expect(find(:css, 'li', text: "John Doe")).not_to have_selector(:css, 'a.btn-remove')
+    expect(find(:css, '.project-members-page li', text: "John Doe")).not_to have_selector(:css, 'a.btn-remove')
     # poltergeist always confirms popups.
   end
 

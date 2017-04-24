@@ -15,16 +15,14 @@
       .dropdown.inline>
         %button.dropdown-menu-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
           %span.light
-            = projects_sort_options_hash[@sort]
+            = branches_sort_options_hash[@sort]
           = icon('chevron-down')
-        %ul.dropdown-menu.dropdown-menu-align-right
-          %li
-            = link_to filter_branches_path(sort: sort_value_name) do
-              = sort_title_name
-            = link_to filter_branches_path(sort: sort_value_recently_updated) do
-              = sort_title_recently_updated
-            = link_to filter_branches_path(sort: sort_value_oldest_updated) do
-              = sort_title_oldest_updated
+        %ul.dropdown-menu.dropdown-menu-align-right.dropdown-menu-selectable
+          %li.dropdown-header
+            Sort by
+          - branches_sort_options_hash.each do |value, title|
+            %li
+              = link_to title, filter_branches_path(sort: value), class: ("is-active" if @sort == value)
 
       - if can? current_user, :push_code, @project
         = link_to namespace_project_merged_branches_path(@project.namespace, @project), class: 'btn btn-inverted btn-remove has-tooltip', title: "Delete all branches that are merged into '#{@project.repository.root_ref}'", method: :delete, data: { confirm: "Deleting the merged branches cannot be undone. Are you sure?", container: 'body' } do

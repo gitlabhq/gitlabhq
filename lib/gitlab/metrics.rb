@@ -138,6 +138,11 @@ module Gitlab
       @series_prefix ||= Sidekiq.server? ? 'sidekiq_' : 'rails_'
     end
 
+    # Allow access from other metrics related middlewares
+    def self.current_transaction
+      Transaction.current
+    end
+
     # When enabled this should be set before being used as the usual pattern
     # "@foo ||= bar" is _not_ thread-safe.
     if enabled?
@@ -148,11 +153,6 @@ module Gitlab
         InfluxDB::Client.
           new(udp: { host: host, port: port })
       end
-    end
-
-    # Allow access from other metrics related middlewares
-    def self.current_transaction
-      Transaction.current
     end
   end
 end

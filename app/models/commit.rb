@@ -326,14 +326,13 @@ class Commit
   end
 
   def raw_diffs(*args)
-    use_gitaly = Gitlab::GitalyClient.feature_enabled?(:commit_raw_diffs)
-    deltas_only = args.last.is_a?(Hash) && args.last[:deltas_only]
-
-    if use_gitaly && !deltas_only
-      Gitlab::GitalyClient::Commit.diff_from_parent(self, *args)
-    else
-      raw.diffs(*args)
-    end
+    # NOTE: This feature is intentionally disabled until
+    # https://gitlab.com/gitlab-org/gitaly/issues/178 is resolved
+    # if Gitlab::GitalyClient.feature_enabled?(:commit_raw_diffs)
+    #   Gitlab::GitalyClient::Commit.diff_from_parent(self, *args)
+    # else
+    raw.diffs(*args)
+    # end
   end
 
   def diffs(diff_options = nil)

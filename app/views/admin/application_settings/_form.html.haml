@@ -477,7 +477,7 @@
           diagrams in Asciidoc documents using an external PlantUML service.
 
   %fieldset
-    %legend Usage statistics
+    %legend#usage-statistics Usage statistics
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
@@ -486,6 +486,19 @@
             Version check enabled
           .help-block
             Let GitLab inform you when an update is available.
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :usage_ping_enabled do
+            = f.check_box :usage_ping_enabled
+            Usage ping enabled
+            = link_to icon('question-circle'), help_page_path("user/admin_area/settings/usage_statistics", anchor: "usage-data")
+          .help-block
+            Every week GitLab will report license usage back to GitLab, Inc.
+            Disable this option if you do not want this to occur. To see the
+            JSON payload that will be sent, visit the
+            = succeed '.' do
+              = link_to "Cohorts page", admin_cohorts_path(anchor: 'usage-ping')
 
   %fieldset
     %legend Email
@@ -571,6 +584,7 @@
           The multiplier can also have a decimal value.
           The default value (1) is a reasonable choice for the majority of GitLab
           installations. Set to 0 to completely disable polling.
+          = link_to icon('question-circle'), help_page_path('administration/polling')
 
   .form-actions
     = f.submit 'Save', class: 'btn btn-save'

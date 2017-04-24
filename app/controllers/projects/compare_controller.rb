@@ -61,7 +61,6 @@ class Projects::CompareController < Projects::ApplicationController
       @environment = EnvironmentsFinder.new(@project, current_user, environment_params).execute.last
 
       @diff_notes_disabled = true
-      @grouped_diff_discussions = {}
     end
   end
 

@@ -1,0 +1,4 @@
+---
+title: Refactor Admin::GroupsController#members_update method and add some specs
+merge_request: 10735
+author:

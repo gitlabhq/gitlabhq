@@ -40,12 +40,24 @@ describe Gitlab::Ci::Trace do
   describe '#extract_coverage' do
     let(:regex) { '\(\d+.\d+\%\) covered' }
 
-    before do
-      trace.set('Coverage 1033 / 1051 LOC (98.29%) covered')
+    context 'matching coverage' do
+      before do
+        trace.set('Coverage 1033 / 1051 LOC (98.29%) covered')
+      end
+
+      it "returns valid coverage" do
+        expect(trace.extract_coverage(regex)).to eq("98.29")
+      end
     end
 
-    it "returns valid coverage" do
-      expect(trace.extract_coverage(regex)).to eq(98.29)
+    context 'no coverage' do
+      before do
+        trace.set('No coverage')
+      end
+
+      it 'returs nil' do
+        expect(trace.extract_coverage(regex)).to be_nil
+      end
     end
   end
 

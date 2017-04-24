@@ -117,6 +117,8 @@ Feature: Project Source Browse Files
     And I click on ".gitignore" file in repo
     And I see the ".gitignore"
     And I click on "Replace"
+    Then I should see a Fork/Cancel combo
+    And I click button "Fork"
     Then I should see a notice about a new fork having been created
     When I click on "Replace"
     And I replace it with a text file
@@ -135,7 +137,7 @@ Feature: Project Source Browse Files
     And I fill the commit message
     And I click on "Commit changes"
     Then I am on the new file page
-    And I see a commit error message
+    And I see "Path can contain only..."
 
   @javascript
   Scenario: I can create file with a directory name
@@ -265,6 +267,8 @@ Feature: Project Source Browse Files
     And I click on ".gitignore" file in repo
     And I see the ".gitignore"
     And I click on "Delete"
+    Then I should see a Fork/Cancel combo
+    And I click button "Fork"
     Then I should see a notice about a new fork having been created
     When I click on "Delete"
     And I fill the commit message

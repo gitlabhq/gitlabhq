@@ -18,7 +18,7 @@ export default class UserCallout {
   dismissCallout(e) {
     const $currentTarget = $(e.currentTarget);
 
-    Cookies.set(USER_CALLOUT_COOKIE, 'true');
+    Cookies.set(USER_CALLOUT_COOKIE, 'true', { expires: 365 });
 
     if ($currentTarget.hasClass('close')) {
       this.userCalloutBody.remove();

@@ -53,12 +53,18 @@ module API
         ]
       end
 
-      def parse_allowed_environment_variables
-        return if params[:env].blank?
+      def parse_env
+        return {} if params[:env].blank?
 
         JSON.parse(params[:env])
-
       rescue JSON::ParserError
+        {}
+      end
+
+      def log_user_activity(actor)
+        commands = Gitlab::GitAccess::DOWNLOAD_COMMANDS
+
+        ::Users::ActivityService.new(actor, 'Git SSH').execute if commands.include?(params[:action])
       end
     end
   end

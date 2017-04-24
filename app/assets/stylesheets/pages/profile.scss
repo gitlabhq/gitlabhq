@@ -289,8 +289,12 @@ table.u2f-registrations {
   margin: 0 auto;
 
   .bordered-box {
-    border: 1px solid $border-color;
+    border: 1px solid $blue-300;
     border-radius: $border-radius-default;
+    background-color: $blue-25;
+    position: relative;
+    display: flex;
+    justify-content: center;
   }
 
   .landing {
@@ -298,28 +302,59 @@ table.u2f-registrations {
     margin-bottom: $gl-padding;
 
     .close {
-      margin-right: 20px;
-    }
+      position: absolute;
+      right: 20px;
+      opacity: 1;
 
-    .dismiss-icon {
-      float: right;
-      cursor: pointer;
-      color: $cycle-analytics-dismiss-icon-color;
+      .dismiss-icon {
+        float: right;
+        cursor: pointer;
+        color: $blue-300;
+      }
+
+      &:hover {
+        background-color: transparent;
+        border: 0;
+
+        .dismiss-icon {
+          color: $blue-400;
+        }
+      }
     }
 
     .svg-container {
-      text-align: center;
+      margin-right: 30px;
+      display: inline-block;
 
       svg {
-        width: 136px;
-        height: 136px;
+        height: 110px;
+        vertical-align: top;
       }
+    }
+
+    .user-callout-copy {
+      display: inline-block;
+      vertical-align: top;
     }
   }
 
   @media(max-width: $screen-xs-max) {
-    .inner-content {
-      padding-left: 30px;
+    text-align: center;
+
+    .bordered-box {
+      display: block;
+    }
+
+    .landing {
+      .svg-container,
+      .user-callout-copy {
+        margin: 0;
+        display: block;
+
+        svg {
+          height: 75px;
+        }
+      }
     }
   }
 }

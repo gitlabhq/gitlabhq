@@ -47,6 +47,10 @@
       }
     };
 
+    gl.utils.updateTooltipTitle = function($tooltipEl, newTitle) {
+      return $tooltipEl.attr('title', newTitle).tooltip('fixTitle');
+    };
+
     w.gl.utils.disableButtonIfEmptyField = function(field_selector, button_selector, event_name) {
       event_name = event_name || 'input';
       var closest_submit, field, that;
@@ -165,7 +169,10 @@
     w.gl.utils.getSelectedFragment = () => {
       const selection = window.getSelection();
       if (selection.rangeCount === 0) return null;
-      const documentFragment = selection.getRangeAt(0).cloneContents();
+      const documentFragment = document.createDocumentFragment();
+      for (let i = 0; i < selection.rangeCount; i += 1) {
+        documentFragment.appendChild(selection.getRangeAt(i).cloneContents());
+      }
       if (documentFragment.textContent.length === 0) return null;
 
       return documentFragment;
@@ -364,9 +371,9 @@
       });
     };
 
-    w.gl.utils.setFavicon = (iconName) => {
-      if (faviconEl && iconName) {
-        faviconEl.setAttribute('href', `/assets/${iconName}.ico`);
+    w.gl.utils.setFavicon = (faviconPath) => {
+      if (faviconEl && faviconPath) {
+        faviconEl.setAttribute('href', faviconPath);
       }
     };
 
@@ -381,8 +388,8 @@
         url: pageUrl,
         dataType: 'json',
         success: function(data) {
-          if (data && data.icon) {
-            gl.utils.setFavicon(`ci_favicons/${data.icon}`);
+          if (data && data.favicon) {
+            gl.utils.setFavicon(data.favicon);
           } else {
             gl.utils.resetFavicon();
           }

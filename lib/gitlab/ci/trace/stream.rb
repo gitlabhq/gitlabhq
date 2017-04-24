@@ -4,7 +4,7 @@ module Gitlab
       # This was inspired from: http://stackoverflow.com/a/10219411/1520132
       class Stream
         BUFFER_SIZE = 4096
-        LIMIT_SIZE = 50.kilobytes
+        LIMIT_SIZE = 500.kilobytes
 
         attr_reader :stream
 
@@ -14,6 +14,7 @@ module Gitlab
 
         def initialize
           @stream = yield
+          @stream&.binmode
         end
 
         def valid?
@@ -25,11 +26,10 @@ module Gitlab
         end
 
         def limit(last_bytes = LIMIT_SIZE)
-          stream_size = size
-          if stream_size < last_bytes
-            last_bytes = stream_size
+          if last_bytes < size
+            stream.seek(-last_bytes, IO::SEEK_END)
+            stream.readline
           end
-          stream.seek(-last_bytes, IO::SEEK_END)
         end
 
         def append(data, offset)
@@ -52,7 +52,7 @@ module Gitlab
             read_last_lines(last_lines)
           else
             stream.read
-          end
+          end.force_encoding(Encoding.default_external)
         end
 
         def html_with_state(state = nil)
@@ -61,8 +61,8 @@ module Gitlab
 
         def html(last_lines: nil)
           text = raw(last_lines: last_lines)
-          stream = StringIO.new(text)
-          ::Ci::Ansi2html.convert(stream).html
+          buffer = StringIO.new(text)
+          ::Ci::Ansi2html.convert(buffer).html
         end
 
         def extract_coverage(regex)
@@ -76,11 +76,14 @@ module Gitlab
           stream.each_line do |line|
             matches = line.scan(regex)
             next unless matches.is_a?(Array)
+            next if matches.empty?
 
             match = matches.flatten.last
             coverage = match.gsub(/\d+(\.\d+)?/).first
-            return coverage.to_f if coverage.present?
+            return coverage if coverage.present?
           end
+
+          nil
         rescue
           # if bad regex or something goes wrong we dont want to interrupt transition
           # so we just silentrly ignore error for now
@@ -111,7 +114,6 @@ module Gitlab
           end
 
           chunks.join.lines.last(last_lines).join
-            .force_encoding(Encoding.default_external)
         end
       end
     end

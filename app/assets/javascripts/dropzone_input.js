@@ -38,6 +38,9 @@ window.DropzoneInput = (function() {
       "opacity": 0,
       "display": "none"
     });
+
+    if (!project_uploads_path) return;
+
     dropzone = form_dropzone.dropzone({
       url: project_uploads_path,
       dictDefaultMessage: "",
@@ -66,7 +69,10 @@ window.DropzoneInput = (function() {
         form_textarea.focus();
       },
       success: function(header, response) {
-        pasteText(response.link.markdown);
+        const processingFileCount = this.getQueuedFiles().length + this.getUploadingFiles().length;
+        const shouldPad = processingFileCount >= 1;
+
+        pasteText(response.link.markdown, shouldPad);
       },
       error: function(temp) {
         var checkIfMsgExists, errorAlert;
@@ -123,16 +129,19 @@ window.DropzoneInput = (function() {
       }
       return false;
     };
-    pasteText = function(text) {
+    pasteText = function(text, shouldPad) {
       var afterSelection, beforeSelection, caretEnd, caretStart, textEnd;
-      var formattedText = text + "\n\n";
-      caretStart = $(child)[0].selectionStart;
-      caretEnd = $(child)[0].selectionEnd;
+      var formattedText = text;
+      if (shouldPad) formattedText += "\n\n";
+      const textarea = child.get(0);
+      caretStart = textarea.selectionStart;
+      caretEnd = textarea.selectionEnd;
       textEnd = $(child).val().length;
       beforeSelection = $(child).val().substring(0, caretStart);
       afterSelection = $(child).val().substring(caretEnd, textEnd);
       $(child).val(beforeSelection + formattedText + afterSelection);
-      child.get(0).setSelectionRange(caretStart + formattedText.length, caretEnd + formattedText.length);
+      textarea.setSelectionRange(caretStart + formattedText.length, caretEnd + formattedText.length);
+      textarea.style.height = `${textarea.scrollHeight}px`;
       return form_textarea.trigger("input");
     };
     getFilename = function(e) {
@@ -176,7 +185,7 @@ window.DropzoneInput = (function() {
     };
     insertToTextArea = function(filename, url) {
       return $(child).val(function(index, val) {
-        return val.replace("{{" + filename + "}}", url + "\n");
+        return val.replace("{{" + filename + "}}", url);
       });
     };
     appendToTextArea = function(url) {
@@ -211,6 +220,7 @@ window.DropzoneInput = (function() {
     form.find(".markdown-selector").click(function(e) {
       e.preventDefault();
       $(this).closest('.gfm-form').find('.div-dropzone').click();
+      form_textarea.focus();
     });
   }
 

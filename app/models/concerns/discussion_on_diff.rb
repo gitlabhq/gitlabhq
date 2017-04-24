@@ -2,11 +2,9 @@
 module DiscussionOnDiff
   extend ActiveSupport::Concern
 
+  NUMBER_OF_TRUNCATED_DIFF_LINES = 16
+
   included do
-    NUMBER_OF_TRUNCATED_DIFF_LINES = 16
-
-    memoized_values << :active
-
     delegate  :line_code,
               :original_line_code,
               :diff_file,
@@ -27,12 +25,6 @@ module DiscussionOnDiff
 
   def diff_discussion?
     true
-  end
-
-  def active?
-    return @active if @active.present?
-
-    @active = first_note.active?
   end
 
   # Returns an array of at most 16 highlighted lines above a diff note

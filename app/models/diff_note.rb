@@ -65,18 +65,16 @@ class DiffNote < Note
     self.position.diff_refs == diff_refs
   end
 
+  def latest_merge_request_diff
+    return unless for_merge_request?
+
+    self.noteable.merge_request_diff_for(self.position.diff_refs)
+  end
+
   private
 
   def supported?
     for_commit? || self.noteable.has_complete_diff_refs?
-  end
-
-  def noteable_diff_refs
-    if noteable.respond_to?(:diff_sha_refs)
-      noteable.diff_sha_refs
-    else
-      noteable.diff_refs
-    end
   end
 
   def set_original_position

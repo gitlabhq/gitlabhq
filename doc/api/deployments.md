@@ -10,7 +10,7 @@ GET /projects/:id/deployments
 
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
-| `id`      | integer | yes      | The ID of a project |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/deployments"
@@ -147,7 +147,7 @@ GET /projects/:id/deployments/:deployment_id
 
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
-| `id`      | integer | yes      | The ID of a project |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `deployment_id` | integer | yes      | The ID of the deployment |
 
 ```bash

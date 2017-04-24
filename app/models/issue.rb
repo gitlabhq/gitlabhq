@@ -26,8 +26,6 @@ class Issue < ActiveRecord::Base
 
   validates :project, presence: true
 
-  scope :cared, ->(user) { where(assignee_id: user) }
-  scope :open_for, ->(user) { opened.assigned_to(user) }
   scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
 
   scope :without_due_date, -> { where(due_date: nil) }
@@ -201,7 +199,7 @@ class Issue < ActiveRecord::Base
   # Returns `true` if the current issue can be viewed by either a logged in User
   # or an anonymous user.
   def visible_to_user?(user = nil)
-    return false unless project.feature_available?(:issues, user)
+    return false unless project && project.feature_available?(:issues, user)
 
     user ? readable_by?(user) : publicly_visible?
   end
