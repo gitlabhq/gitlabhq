@@ -48,8 +48,7 @@
       - if @build.merge_request
         %p.build-detail-row
           %span.build-light-text Merge Request:
-          = link_to merge_request_path(@build.merge_request) do
-            %strong= "#{@build.merge_request.to_reference}"
+          = link_to "#{@build.merge_request.to_reference}", merge_request_path(@build.merge_request), class: 'bold'
       - if @build.duration
         %p.build-detail-row
           %span.build-light-text Duration:
