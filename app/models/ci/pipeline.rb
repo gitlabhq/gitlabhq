@@ -84,24 +84,23 @@ module Ci
       end
 
       after_transition [:created, :pending] => :running do |pipeline|
-        pipeline.run_after_commit { PipelineMetricsWorker.perform_async(id) }
+        pipeline.run_after_commit { PipelineMetricsWorker.perform_async(pipeline.id) }
       end
 
       after_transition any => [:success] do |pipeline|
-        pipeline.run_after_commit { PipelineMetricsWorker.perform_async(id) }
+        pipeline.run_after_commit { PipelineMetricsWorker.perform_async(pipeline.id) }
       end
 
       after_transition [:created, :pending, :running] => :success do |pipeline|
-        pipeline.run_after_commit { PipelineSuccessWorker.perform_async(id) }
+        pipeline.run_after_commit { PipelineSuccessWorker.perform_async(pipeline.id) }
       end
 
       after_transition do |pipeline, transition|
         next if transition.loopback?
 
         pipeline.run_after_commit do
-          PipelineHooksWorker.perform_async(id)
-          Ci::ExpirePipelineCacheService.new(project, nil)
-            .execute(pipeline)
+          PipelineHooksWorker.perform_async(pipeline.id)
+          ExpirePipelineCacheWorker.perform_async(pipeline.id)
         end
       end
 
@@ -387,6 +386,11 @@ module Ci
       @merge_requests ||= project.merge_requests
         .where(source_branch: self.ref)
         .select { |merge_request| merge_request.head_pipeline.try(:id) == self.id }
+    end
+
+    # All the merge requests for which the current pipeline runs/ran against
+    def all_merge_requests
+      @all_merge_requests ||= project.merge_requests.where(source_branch: ref)
     end
 
     def detailed_status(current_user)
