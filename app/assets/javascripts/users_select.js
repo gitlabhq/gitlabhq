@@ -33,6 +33,7 @@
           var $block, $collapsedSidebar, $dropdown, $loading, $selectbox, $value, abilityName, assignTo, assigneeTemplate, collapsedAssigneeTemplate, defaultLabel, firstUser, issueURL, selectedId, showAnyUser, showNullUser, showMenuAbove;
           $dropdown = $(dropdown);
           options.projectId = $dropdown.data('project-id');
+          options.groupId = $dropdown.data('group-id');
           options.showCurrentUser = $dropdown.data('current-user');
           options.todoFilter = $dropdown.data('todo-filter');
           options.todoStateFilter = $dropdown.data('todo-state-filter');
