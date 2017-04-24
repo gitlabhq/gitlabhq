@@ -11,10 +11,10 @@ describe ChatNotificationService, models: true do
 
   describe '#can_test?' do
     context 'with empty repository' do
-      it 'returns false' do
+      it 'returns true' do
         subject.project = create(:empty_project, :empty_repo)
 
-        expect(subject.can_test?).to be false
+        expect(subject.can_test?).to be true
       end
     end
 
