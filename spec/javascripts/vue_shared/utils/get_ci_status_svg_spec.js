@@ -10,12 +10,7 @@ describe('#getCiStatusSvg', () => {
     'running',
     'skipped',
     'success',
-    'passed',
     'warning',
-    'success_with_warnings',
-    'failed_with_warnings',
-    'info',
-    'blocked',
   ];
 
   ciStatuses.forEach((status) => {

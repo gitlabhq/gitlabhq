@@ -16,7 +16,7 @@ export default {
       return status.has_details ? status.details_path : false;
     },
     pipelineStatus() {
-      return this.pipeline.details.status.text;
+      return this.pipeline.details.status.icon;
     },
   },
   template: `
