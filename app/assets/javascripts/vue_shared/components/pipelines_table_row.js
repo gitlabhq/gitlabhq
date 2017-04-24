@@ -182,6 +182,8 @@ export default {
     },
   },
   watch: {
+    /* When these values change, it's a signal that the retry/cancel 
+    was successful **and** that all pipelines have been refreshed */
     isRetryable() {
       this.resetRequestingState();
     },
