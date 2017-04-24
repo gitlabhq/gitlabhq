@@ -6,8 +6,8 @@ module Users
       @params = params.dup
     end
 
-    def build
-      raise Gitlab::Access::AccessDeniedError unless can_create_user?
+    def build(skip_authorization: false)
+      raise Gitlab::Access::AccessDeniedError unless skip_authorization || can_create_user?
 
       user = User.new(build_user_params)
 
@@ -32,8 +32,8 @@ module Users
       user
     end
 
-    def execute
-      user = build
+    def execute(skip_authorization: false)
+      user = build(skip_authorization: skip_authorization)
 
       if user.save
         log_info("User \"#{user.name}\" (#{user.email}) was created")
