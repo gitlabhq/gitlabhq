@@ -28,13 +28,13 @@ module Banzai
       issue_parser = Banzai::ReferenceParser::IssueParser.new(project, user)
       merge_request_parser = Banzai::ReferenceParser::MergeRequestParser.new(project, user)
 
-      hash = issue_parser.issues_for_nodes(nodes).merge(
+      issues_for_nodes = issue_parser.issues_for_nodes(nodes).merge(
         merge_request_parser.merge_requests_for_nodes(nodes)
       )
 
-      hash.each_with_object({}) do |(node, issuable), result|
-        result[node] = issuable if issuable.project
-      end
+      # The project for the issue might be pending for deletion!
+      # Filter them out because we don't care about them.
+      issues_for_nodes.select { |node, issuable| issuable.project }
     end
   end
 end

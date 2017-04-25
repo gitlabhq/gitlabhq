@@ -6,23 +6,19 @@ describe Banzai::Filter::IssuableStateFilter, lib: true do
 
   let(:user) { create(:user) }
   let(:context) { { current_user: user, issuable_state_filter_enabled: true } }
-  let(:closed_issue) { create_issue(:closed, project) }
-  let(:project) { create_project }
-  let(:other_project) { create_project }
+  let(:closed_issue) { create_issue(:closed) }
+  let(:project) { create(:empty_project, :public) }
+  let(:other_project) { create(:empty_project, :public) }
 
   def create_link(text, data)
     link_to(text, '', class: 'gfm has-tooltip', data: data)
   end
 
-  def create_project
-    create(:empty_project, :public)
+  def create_issue(state)
+    create(:issue, state, project: project)
   end
 
-  def create_issue(state, the_project = project)
-    create(:issue, state, project: the_project)
-  end
-
-  def create_merge_request(state, the_project = project)
+  def create_merge_request(state)
     create(:merge_request, state,
       source_project: project, target_project: project)
   end
@@ -91,7 +87,7 @@ describe Banzai::Filter::IssuableStateFilter, lib: true do
 
   context 'when project is in pending delete' do
     before do
-      project.update(pending_delete: true)
+      project.update!(pending_delete: true)
     end
 
     it 'does not append issue state' do
@@ -128,7 +124,9 @@ describe Banzai::Filter::IssuableStateFilter, lib: true do
   end
 
   context 'for merge request references' do
-    def expect_link_text(merge_request, text)
+    it 'ignores open merge request references' do
+      merge_request = create_merge_request(:opened)
+
       link = create_link(
         merge_request.to_reference,
         merge_request: merge_request.id,
@@ -137,37 +135,63 @@ describe Banzai::Filter::IssuableStateFilter, lib: true do
 
       doc = filter(link, context)
 
-      expect(doc.css('a').last.text).to eq(text)
-    end
-
-    it 'ignores open merge request references' do
-      merge_request = create_merge_request(:opened)
-
-      expect_link_text(merge_request, merge_request.to_reference)
+      expect(doc.css('a').last.text).to eq(merge_request.to_reference)
     end
 
     it 'ignores reopened merge request references' do
       merge_request = create_merge_request(:reopened)
 
-      expect_link_text(merge_request, merge_request.to_reference)
+      link = create_link(
+        merge_request.to_reference,
+        merge_request: merge_request.id,
+        reference_type: 'merge_request'
+      )
+
+      doc = filter(link, context)
+
+      expect(doc.css('a').last.text).to eq(merge_request.to_reference)
     end
 
     it 'ignores locked merge request references' do
       merge_request = create_merge_request(:locked)
 
-      expect_link_text(merge_request, merge_request.to_reference)
+      link = create_link(
+        merge_request.to_reference,
+        merge_request: merge_request.id,
+        reference_type: 'merge_request'
+      )
+
+      doc = filter(link, context)
+
+      expect(doc.css('a').last.text).to eq(merge_request.to_reference)
     end
 
     it 'appends state to closed merge request references' do
       merge_request = create_merge_request(:closed)
 
-      expect_link_text(merge_request, "#{merge_request.to_reference} (closed)")
+      link = create_link(
+        merge_request.to_reference,
+        merge_request: merge_request.id,
+        reference_type: 'merge_request'
+      )
+
+      doc = filter(link, context)
+
+      expect(doc.css('a').last.text).to eq("#{merge_request.to_reference} (closed)")
     end
 
     it 'appends state to merged merge request references' do
       merge_request = create_merge_request(:merged)
 
-      expect_link_text(merge_request, "#{merge_request.to_reference} (merged)")
+      link = create_link(
+        merge_request.to_reference,
+        merge_request: merge_request.id,
+        reference_type: 'merge_request'
+      )
+
+      doc = filter(link, context)
+
+      expect(doc.css('a').last.text).to eq("#{merge_request.to_reference} (merged)")
     end
   end
 end
