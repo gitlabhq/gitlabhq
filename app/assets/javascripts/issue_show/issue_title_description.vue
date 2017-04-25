@@ -46,7 +46,7 @@ export default {
 
       /**
       * since opacity is changed, even if there is no diff for Vue to update
-      * we must check the title even on a 304 to ensure no visual change
+      * we must check the title/description even on a 304 to ensure no visual change
       */
       const noTitleChange = this.title === title;
       const noDescriptionChange = this.description === description;
