@@ -40,6 +40,7 @@ class ProjectPolicy < BasePolicy
     can! :read_wiki
     can! :read_issue
     can! :read_label
+    can! :read_related_issue
     can! :read_milestone
     can! :read_project_snippet
     can! :read_project_member
@@ -66,6 +67,7 @@ class ProjectPolicy < BasePolicy
     can! :admin_issue
     can! :admin_label
     can! :admin_board
+    can! :admin_related_issue
     can! :admin_list
     can! :read_commit_status
     can! :read_build
@@ -306,6 +308,7 @@ class ProjectPolicy < BasePolicy
     can! :read_list
     can! :read_wiki
     can! :read_label
+    can! :read_related_issue
     can! :read_milestone
     can! :read_project_snippet
     can! :read_project_member

@@ -37,8 +37,6 @@ describe Projects::RelatedIssuesController, type: :controller do
                   issue_id: issue,
                   format: :json
 
-
-
       expect(json_response.size).to eq(3)
 
       expect(json_response[0]).to eq(
@@ -74,9 +72,10 @@ describe Projects::RelatedIssuesController, type: :controller do
     let(:service) { double(CreateRelatedIssueService, execute: service_response) }
     let(:service_response) { { 'message' => 'yay' } }
     let(:issue_references) { double }
+    let(:user_role) { :developer }
 
     before do
-      project.team << [user, :developer]
+      project.team << [user, user_role]
 
       allow(CreateRelatedIssueService).to receive(:new)
         .with(issue, user, { issue_references: issue_references })
@@ -101,6 +100,14 @@ describe Projects::RelatedIssuesController, type: :controller do
     end
 
     context 'with failure' do
+      context 'when unauthorized' do
+        let(:user_role) { :guest }
+
+        it 'returns 404' do
+          is_expected.to have_http_status(404)
+        end
+      end
+
       context 'when failure service result' do
         let(:service_response) { { 'http_status' => 401 } }
 

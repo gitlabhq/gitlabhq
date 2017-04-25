@@ -2,7 +2,8 @@ module Projects
   class RelatedIssuesController < ApplicationController
     include IssuesHelper
 
-    before_action :authorize_read_issue!, only: [:index, :create]
+    before_action :authorize_read_related_issue!
+    before_action :authorize_admin_related_issue!, only: [:create]
 
     def index
       render json: serialize_as_json
@@ -16,6 +17,14 @@ module Projects
     end
 
     private
+
+    def authorize_admin_related_issue!
+      return render_404 unless can?(current_user, :admin_related_issue, @project)
+    end
+
+    def authorize_read_related_issue!
+      return render_404 unless can?(current_user, :read_related_issue, @project)
+    end
 
     # TODO: Move to service class
     def serialize_as_json
