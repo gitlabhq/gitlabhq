@@ -28,9 +28,13 @@ module Banzai
       issue_parser = Banzai::ReferenceParser::IssueParser.new(project, user)
       merge_request_parser = Banzai::ReferenceParser::MergeRequestParser.new(project, user)
 
-      issue_parser.issues_for_nodes(nodes).merge(
+      hash = issue_parser.issues_for_nodes(nodes).merge(
         merge_request_parser.merge_requests_for_nodes(nodes)
       )
+
+      hash.each_with_object({}) do |(node, issuable), result|
+        result[node] = issuable if issuable.project
+      end
     end
   end
 end
