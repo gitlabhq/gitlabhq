@@ -11,7 +11,7 @@ module Projects
 
     def create
       opts = { issue_references: params[:issue_references] }
-      result = CreateRelatedIssueService.new(issue, current_user, opts).execute
+      result = RelatedIssues::CreateService.new(issue, current_user, opts).execute
 
       render json: result, status: result['http_status']
     end

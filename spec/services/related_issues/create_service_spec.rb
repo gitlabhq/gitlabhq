@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CreateRelatedIssueService, service: true do
+describe RelatedIssues::CreateService, service: true do
   describe '#execute' do
     let(:namespace) { create :namespace }
     let(:project) { create :empty_project, namespace: namespace }

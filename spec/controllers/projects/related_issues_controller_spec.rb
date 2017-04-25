@@ -69,7 +69,7 @@ describe Projects::RelatedIssuesController, type: :controller do
   end
 
   describe 'POST #create' do
-    let(:service) { double(CreateRelatedIssueService, execute: service_response) }
+    let(:service) { double(RelatedIssues::CreateService, execute: service_response) }
     let(:service_response) { { 'message' => 'yay' } }
     let(:issue_references) { double }
     let(:user_role) { :developer }
@@ -77,7 +77,7 @@ describe Projects::RelatedIssuesController, type: :controller do
     before do
       project.team << [user, user_role]
 
-      allow(CreateRelatedIssueService).to receive(:new)
+      allow(RelatedIssues::CreateService).to receive(:new)
         .with(issue, user, { issue_references: issue_references })
         .and_return(service)
     end
