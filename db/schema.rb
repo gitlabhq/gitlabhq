@@ -242,6 +242,7 @@ ActiveRecord::Schema.define(version: 20170424142900) do
   add_index "ci_builds", ["status"], name: "index_ci_builds_on_status", using: :btree
   add_index "ci_builds", ["token"], name: "index_ci_builds_on_token", unique: true, using: :btree
   add_index "ci_builds", ["updated_at"], name: "index_ci_builds_on_updated_at", using: :btree
+  add_index "ci_builds", ["user_id"], name: "index_ci_builds_on_user_id", using: :btree
 
   create_table "ci_pipelines", force: :cascade do |t|
     t.string "ref"
