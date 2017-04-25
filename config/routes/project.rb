@@ -205,6 +205,9 @@ constraints(ProjectUrlConstrainer.new) do
         member do
           put :sort_issues
           put :sort_merge_requests
+          get :merge_requests
+          get :participants
+          get :labels
         end
       end
 

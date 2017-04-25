@@ -81,9 +81,7 @@
     };
 
     function Milestone() {
-      var oldMouseStart;
       this.bindIssuesSorting();
-      this.bindMergeRequestSorting();
       this.bindTabsSwitching();
     }
 
@@ -100,13 +98,14 @@
     };
 
     Milestone.prototype.bindTabsSwitching = function() {
-      return $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
-        var currentTabClass, previousTabClass;
-        currentTabClass = $(e.target).data('show');
-        previousTabClass = $(e.relatedTarget).data('show');
-        $(previousTabClass).hide();
-        $(currentTabClass).removeClass('hidden');
-        return $(currentTabClass).show();
+      return $('a[data-toggle="tab"]').on('show.bs.tab', (e) => {
+        const $target = $(e.target);
+        const endpoint = $target.data('endpoint');
+
+        if (endpoint && !$target.hasClass('is-loaded')) {
+          this.loadMergeRequests($target.attr('href'), endpoint)
+            .done(() => $target.addClass('is-loaded'));
+        }
       });
     };
 
@@ -166,6 +165,18 @@
           opts.updateCallback(e.item, issuableUrl, data);
           this.options.onUpdate.call(this, e);
         }
+      });
+    };
+
+    Milestone.prototype.loadMergeRequests = function(elId, url) {
+      return $.ajax({
+        url,
+        dataType: 'JSON',
+      })
+      .fail(() => new Flash('Error loading merge requests'))
+      .done((data) => {
+        $(elId).html(data.html);
+        this.bindMergeRequestSorting();
       });
     };
 

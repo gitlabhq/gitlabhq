@@ -115,4 +115,28 @@ module MilestonesHelper
       end
     end
   end
+
+  def milestone_merge_request_path(milestone)
+    if @project
+      merge_requests_namespace_project_milestone_path(@project.namespace, @project, milestone, format: :json)
+    elsif @group
+      merge_requests_group_milestone_path(@group, milestone.safe_title, title: milestone.title, format: :json)
+    end
+  end
+
+  def milestone_participants_path(milestone)
+    if @project
+      participants_namespace_project_milestone_path(@project.namespace, @project, milestone, format: :json)
+    elsif @group
+      participants_group_milestone_path(@group, milestone.safe_title, title: milestone.title, format: :json)
+    end
+  end
+
+  def milestone_labels_path(milestone)
+    if @project
+      labels_namespace_project_milestone_path(@project.namespace, @project, milestone, format: :json)
+    elsif @group
+      labels_group_milestone_path(@group, milestone.safe_title, title: milestone.title, format: :json)
+    end
+  end
 end
