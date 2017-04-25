@@ -34,6 +34,7 @@ var config = {
     group:                './group.js',
     groups_list:          './groups_list.js',
     issuable:             './issuable/issuable_bundle.js',
+    locale:               './locale/index.js',
     issue_show:           './issue_show/index.js',
     locale:               './locale/index.js',
     main:                 './main.js',

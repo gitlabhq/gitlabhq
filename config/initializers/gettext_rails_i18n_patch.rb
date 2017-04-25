@@ -16,4 +16,3 @@ module GettextI18nRails
     end
   end
 end
-
