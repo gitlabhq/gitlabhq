@@ -13,6 +13,7 @@ module Github
         loop do
           response = client.get(url, query)
           response.body.each { |item| yielder << item }
+
           raise StopIteration unless response.rels.key?(:next)
           url = response.rels[:next]
         end
