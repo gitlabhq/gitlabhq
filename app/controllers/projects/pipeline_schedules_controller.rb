@@ -1,7 +1,7 @@
 class Projects::PipelineSchedulesController < Projects::ApplicationController
-  before_action :authorize_read_pipeline!
-  before_action :authorize_create_pipeline!, only: [:new, :create, :edit, :take_ownership]
-  before_action :authorize_admin_pipeline!, only: [:destroy]
+  before_action :authorize_read_pipeline_schedule!
+  before_action :authorize_create_pipeline_schedule!, only: [:new, :create, :edit, :take_ownership]
+  before_action :authorize_admin_pipeline_schedule!, only: [:destroy]
 
   before_action :pipeline_schedule, only: [:edit, :update, :destroy, :take_ownership]
 
