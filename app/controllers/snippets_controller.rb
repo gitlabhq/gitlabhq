@@ -90,20 +90,20 @@ class SnippetsController < ApplicationController
   protected
 
   def snippet
-    @snippet ||= if current_user
-                   PersonalSnippet.where("author_id = ? OR visibility_level IN (?)",
-                     current_user.id,
-                     [Snippet::PUBLIC, Snippet::INTERNAL]).
-                     find(params[:id])
-                 else
-                   PersonalSnippet.find(params[:id])
-                 end
+    @snippet ||= PersonalSnippet.find_by(id: params[:id])
   end
+
   alias_method :awardable, :snippet
   alias_method :spammable, :snippet
 
   def authorize_read_snippet!
-    authenticate_user! unless can?(current_user, :read_personal_snippet, @snippet)
+    return if can?(current_user, :read_personal_snippet, @snippet)
+
+    if current_user
+      render_404
+    else
+      authenticate_user!
+    end
   end
 
   def authorize_update_snippet!
