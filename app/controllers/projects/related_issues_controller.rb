@@ -2,13 +2,17 @@ module Projects
   class RelatedIssuesController < ApplicationController
     include IssuesHelper
 
-    before_action :authorize_read_issue!, only: [:index]
+    before_action :authorize_read_issue!, only: [:index, :create]
 
     def index
       render json: serialize_as_json
     end
 
     def create
+      opts = { issue_references: params[:issue_references] }
+      result = CreateRelatedIssueService.new(issue, current_user, opts).execute
+
+      render json: result, status: result['http_status']
     end
 
     private

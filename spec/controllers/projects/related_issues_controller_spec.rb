@@ -5,7 +5,7 @@ describe Projects::RelatedIssuesController, type: :controller do
   let(:project) { create(:project_empty_repo) }
   let(:issue) { create :issue, project: project }
 
-  describe "GET #index" do
+  describe 'GET #index' do
     let(:issue_b) { create :issue, project: project }
     let(:issue_c) { create :issue, project: project }
     let(:issue_d) { create :issue, project: project }
@@ -28,7 +28,7 @@ describe Projects::RelatedIssuesController, type: :controller do
                              created_at: Date.today)
     end
 
-    it "returns related issues JSON" do
+    it 'returns related issues JSON' do
       sign_in user
       project.team << [user, :developer]
 
@@ -70,10 +70,45 @@ describe Projects::RelatedIssuesController, type: :controller do
     end
   end
 
-  xdescribe "GET #create" do
-    it "returns http success" do
-      get :create
-      expect(response).to have_http_status(:success)
+  describe 'POST #create' do
+    let(:service) { double(CreateRelatedIssueService, execute: service_response) }
+    let(:service_response) { { 'message' => 'yay' } }
+    let(:issue_references) { double }
+
+    before do
+      project.team << [user, :developer]
+
+      allow(CreateRelatedIssueService).to receive(:new)
+        .with(issue, user, { issue_references: issue_references })
+        .and_return(service)
+    end
+
+    subject do
+      sign_in user
+
+      post :create, namespace_id: issue.project.namespace,
+                    project_id: issue.project,
+                    issue_id: issue,
+                    issue_references: issue_references,
+                    format: :json
+    end
+
+    context 'with success' do
+      it 'returns success JSON' do
+        is_expected.to have_http_status(200)
+        expect(json_response).to eq(service_response)
+      end
+    end
+
+    context 'with failure' do
+      context 'when failure service result' do
+        let(:service_response) { { 'http_status' => 401 } }
+
+        it 'returns failure JSON' do
+          is_expected.to have_http_status(401)
+          expect(json_response).to eq(service_response)
+        end
+      end
     end
   end
 end
