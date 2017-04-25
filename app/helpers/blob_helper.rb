@@ -29,7 +29,7 @@ module BlobHelper
       link_to 'Edit', edit_path(project, ref, path, options), class: "#{common_classes} btn-sm"
     elsif current_user && can?(current_user, :fork_project, project)
       continue_params = {
-        to: edit_path,
+        to: edit_path(project, ref, path, options),
         notice: edit_in_new_fork_notice,
         notice_now: edit_in_new_fork_notice_now
       }
