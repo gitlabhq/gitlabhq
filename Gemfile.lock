@@ -482,7 +482,7 @@ GEM
       tool (~> 0.2)
     mustermann-grape (0.4.0)
       mustermann (= 0.4.0)
-    mysql2 (0.3.20)
+    mysql2 (0.4.5)
     net-ldap (0.12.1)
     net-ssh (3.0.1)
     netrc (0.11.0)
@@ -984,7 +984,7 @@ DEPENDENCIES
   method_source (~> 0.8)
   minitest (~> 5.7.0)
   mousetrap-rails (~> 1.4.6)
-  mysql2 (~> 0.3.16)
+  mysql2 (~> 0.4.5)
   net-ldap
   net-ssh (~> 3.0.1)
   nokogiri (~> 1.6.7, >= 1.6.7.2)
