@@ -1,4 +1,3 @@
 module Github
-  Error = Class.new(StandardError)
-  RepositoryFetchError = Class.new(Github::Error)
+  RepositoryFetchError = Class.new(StandardError)
 end
