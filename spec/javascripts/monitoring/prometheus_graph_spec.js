@@ -77,7 +77,7 @@ describe('PrometheusGraph', () => {
 });
 
 describe('PrometheusGraphs UX states', () => {
-  const fixtureName = 'static/environments/metrics.html.raw';
+  const fixtureName = 'environments/metrics/metrics.html.raw';
   preloadFixtures(fixtureName);
 
   beforeEach(() => {
