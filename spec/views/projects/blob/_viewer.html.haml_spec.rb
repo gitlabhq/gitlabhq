@@ -43,7 +43,6 @@ describe 'projects/blob/_viewer.html.haml', :view do
       it 'adds a URL to the blob viewer element' do
         render_view
 
-
         expect(rendered).to have_css('.blob-viewer[data-url]')
       end
 

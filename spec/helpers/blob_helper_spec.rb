@@ -196,7 +196,6 @@ describe BlobHelper do
         end
       end
 
-
       context 'when the viewer is not rich' do
         before do
           viewer_class.type = :simple
