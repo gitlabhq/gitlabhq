@@ -30,26 +30,8 @@ module Gitlab
             def prepare_route
               route || build_route(source: self)
               route.path = build_full_path
-              route.name = build_full_name
               @full_path = nil
-              @full_name = nil
             end
-
-            def build_full_name
-              if parent && name
-                parent.human_name + ' / ' + name
-              else
-                name
-              end
-            end
-
-            def human_name
-              owner&.name
-            end
-          end
-
-          class User < ActiveRecord::Base
-            self.table_name = 'users'
           end
 
           class Namespace < ActiveRecord::Base
@@ -61,8 +43,6 @@ module Gitlab
             has_many :children,
                      class_name: "#{MigrationClasses.name}::Namespace",
                      foreign_key: :parent_id
-            belongs_to :owner,
-                       class_name: "#{MigrationClasses.name}::User"
 
             # Overridden to have the correct `source_type` for the `route` relation
             def self.name
