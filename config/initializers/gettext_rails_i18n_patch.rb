@@ -10,7 +10,11 @@ module GettextI18nRails
     # in a HAML file we convert it to "= _('Stage')", that way
     # it can be processed by the "rake gettext:find" script.
     def self.convert_to_code(text)
+      # {{ 'Stage' | translate }} => = _('Stage')
       text.gsub!(/{{ (.*)( \| translate) }}/, "= _(\\1)")
+
+      # {{ 'user' | translate-plural('users', users.size) }} => = n_('user', 'users', users.size)
+      text.gsub!(/{{ (.*)( \| translate-plural\((.*), (.*)\)) }}/, "= n_(\\1, \\3, \\4)")
 
       old_convert_to_code(text)
     end
