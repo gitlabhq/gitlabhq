@@ -13,7 +13,7 @@ const issueShowInterceptor = (request, next) => {
   }));
 };
 
-describe('Issue Title', () => {
+fdescribe('Issue Title', () => {
   const comps = {
     IssueTitleComponent: {},
   };
@@ -39,8 +39,14 @@ describe('Issue Title', () => {
 
     // need setTimeout because actual setTimeout in code :P
     setTimeout(() => {
-      expect(issueShowComponent.$el.querySelector('.title').innerHTML)
+      expect(document.querySelector('title').innerText)
         .toContain('this is a title');
+      expect(issueShowComponent.$el.querySelector('.title').innerHTML)
+        .toContain('<p>this is a title</p>');
+      expect(issueShowComponent.$el.querySelector('.wiki').innerHTML)
+        .toContain('<p>this is a description!</p>');
+      expect(issueShowComponent.$el.querySelector('.js-task-list-field').innerText)
+        .toContain('this is a description');
       done();
     }, 10);
     // 10ms is just long enough for the update hook to fire
