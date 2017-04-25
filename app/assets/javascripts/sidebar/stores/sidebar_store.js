@@ -19,10 +19,12 @@ export default class SidebarStore {
   }
 
   processUserData(data) {
-    this.renderedUsers = data.assignees;
+    if (data.assignees) {
+      this.renderedUsers = data.assignees;
 
-    this.removeAllUserIds();
-    this.renderedUsers.map(u => this.addUserId(u.id));
+      this.removeAllUserIds();
+      this.renderedUsers.map(u => this.addUserId(u.id));
+    }
   }
 
   processTimeTrackingData(data) {
