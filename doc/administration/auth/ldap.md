@@ -298,7 +298,7 @@ By default, GitLab will run a worker once per day at 01:30 a.m. server time to c
 ```ruby
 gitlab_rails['ldap_sync_worker_cron'] = "* */12 * * *"
 ```
-[Reconfigure GitLab](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/doc/administration/restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+[Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
 **Source installations**
 
@@ -307,20 +307,20 @@ cron_jobs
   ldap_sync_worker_cron:
     "* */12 * * *"
 ```
-[Restart GitLab](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/doc/administration/restart_gitlab.md#installations-from-source) for the changes to take effect.
+[Restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
 
 ### Adjusting LDAP group sync schedule
 
 By default, GitLab will run a group sync process every hour, on the hour.
 
->**Note**: It's recommended not to run group sync at too short intervals as this could lead to multiple syncs running concurrently. This is primarily a concern for installations with a large number of LDAP users. Please review the [LDAP group sync benchmark metrics](https://docs.gitlab.com/ee/administration/auth/ldap-ee.html#benchmarks) to see how your installation compares before proceeding.
+>**Note**: It's recommended not to run group sync at too short intervals as this could lead to multiple syncs running concurrently. This is primarily a concern for installations with a large number of LDAP users. Please review the [LDAP group sync benchmark metrics](../auth/ldap-ee.md#benchmarks) to see how your installation compares before proceeding.
 
 **Omnibus installations**
 
 ```ruby
 gitlab_rails['ldap_group_sync_worker_cron'] = "*/30 * * * *"
 ```
-[Reconfigure GitLab](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/doc/administration/restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+[Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
 **Source installations**
 
@@ -330,7 +330,7 @@ cron_jobs
     "*/30 * * * *"
 ```
 
-[Restart GitLab](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/doc/administration/restart_gitlab.md#installations-from-source) for the changes to take effect.
+[Restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
 
 ## Limitations
 
