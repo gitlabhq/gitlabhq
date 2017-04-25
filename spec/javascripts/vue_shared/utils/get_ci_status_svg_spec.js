@@ -39,10 +39,6 @@ describe('#getCiStatusSvg', () => {
     });
   });
 
-  it('still returns an svg for invalid status strings', () => {
-    expect(getCiStatusSvg({ status: 'a-wop-dop-a-doo' })).toContain('<svg');
-  });
-
   describe('#normalizeStatus', () => {
     it('returns the normalized status for ruby syntax', () => {
       expect(normalizeStatus('icon_status_success')).toBe('success');

@@ -22,13 +22,13 @@ describe('CI Status Icon Link Component', () => {
     });
   });
 
-  describe('#ciStatusClasses', () => {
+  describe('#statusCss', () => {
     it('contains "ci-status"', () => {
-      expect(this.component.ciStatusClasses).toContain('ci-status');
+      expect(this.component.statusCss).toContain('ci-status');
     });
 
     it('contains computed ci status', () => {
-      expect(this.component.ciStatusClasses).toContain('ci-failed');
+      expect(this.component.statusCss).toContain('ci-failed');
     });
   });
 
