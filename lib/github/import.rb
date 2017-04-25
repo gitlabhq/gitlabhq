@@ -324,8 +324,8 @@ module Github
       remove_branch(pull_request.target_branch_name) unless pull_request.target_branch_exists?
     end
 
-    def label_ids(issuable)
-      issuable.map { |attrs| cached[:label_ids][attrs.fetch('name')] }.compact
+    def label_ids(labels)
+      labels.map { |attrs| cached[:label_ids][attrs.fetch('name')] }.compact
     end
 
     def milestone_id(milestone)
