@@ -18,10 +18,10 @@ feature 'Groups > Audit Events', js: true, feature: true do
       click_link 'Members'
 
       group_member = group.members.find_by(user_id: pete)
+
       page.within "#group_member_#{group_member.id}" do
-        click_button 'Edit access level'
-        select 'Master', from: 'group_member_access_level'
-        click_button 'Save'
+        click_button 'Developer'
+        click_link 'Master'
       end
 
       # This is to avoid a Capybara::Poltergeist::MouseEventFailed error

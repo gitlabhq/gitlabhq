@@ -1,3 +1,4 @@
+<script>
 /* eslint-disable no-new, no-undef */
 /* global Flash */
 /**
@@ -22,7 +23,7 @@ import statusCodes from '~/lib/utils/http_status';
 import '~/flash';
 import '~/lib/utils/common_utils';
 import deployBoardSvg from 'empty_states/icons/_deploy_board.svg';
-import instanceComponent from './deploy_board_instance_component';
+import instanceComponent from './deploy_board_instance_component.vue';
 
 export default {
 
@@ -160,72 +161,81 @@ export default {
       return '<projectname>';
     },
   },
-
-  template: `
-    <div class="js-deploy-board deploy-board">
-
-      <div v-if="isLoading">
-        <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
-      </div>
-
-      <div v-if="canRenderDeployBoard">
-
-        <section class="deploy-board-information">
-          <span>
-            <span class="percentage">{{deployBoardData.completion}}%</span>
-            <span class="text">Complete</span>
-          </span>
-        </section>
-
-        <section class="deploy-board-instances">
-          <p class="text">{{instanceTitle}}</p>
-
-          <div class="deploy-board-instances-container">
-            <template v-for="instance in deployBoardData.instances">
-              <instance-component
-                :status="instance.status"
-                :tooltip-text="instance.tooltip"
-                :stable="instance.stable" />
-            </template>
-          </div>
-        </section>
-
-        <section class="deploy-board-actions" v-if="deployBoardData.rollback_url || deployBoardData.abort_url">
-          <a class="btn"
-            data-method="post"
-            rel="nofollow"
-            v-if="deployBoardData.rollback_url"
-            :href="deployBoardData.rollback_url">
-            Rollback
-          </a>
-
-          <a class="btn btn-red btn-inverted"
-            data-method="post"
-            rel="nofollow"
-            v-if="deployBoardData.abort_url"
-            :href="deployBoardData.abort_url">
-            Abort
-          </a>
-        </section>
-      </div>
-
-      <div v-if="canRenderEmptyState">
-        <section class="deploy-board-empty-state-svg">
-          ${deployBoardSvg}
-        </section>
-
-        <section class="deploy-board-empty-state-text">
-          <span class="title">Kubernetes deployment not found</span>
-          <span>
-            To see deployment progress for your environments, make sure your deployments are in Kubernetes namespace
-            <code>{{projectName}}</code> and labeled with <code>app=$CI_ENVIRONMENT_SLUG</code>.
-          </span>
-        </section>
-      </div>
-
-      <div v-if="canRenderErrorState" class="deploy-board-error-message">
-        We can't fetch the data right now. Please try again later.
-      </div>
-    </div>
-  `,
 };
+</script>
+<template>
+  <div class="js-deploy-board deploy-board">
+
+    <div v-if="isLoading">
+      <i
+        class="fa fa-spinner fa-spin"
+        aria-hidden="true" />
+    </div>
+
+    <div v-if="canRenderDeployBoard">
+
+      <section class="deploy-board-information">
+        <span>
+          <span class="percentage">{{deployBoardData.completion}}%</span>
+          <span class="text">Complete</span>
+        </span>
+      </section>
+
+      <section class="deploy-board-instances">
+        <p class="text">{{instanceTitle}}</p>
+
+        <div class="deploy-board-instances-container">
+          <template v-for="instance in deployBoardData.instances">
+            <instance-component
+              :status="instance.status"
+              :tooltip-text="instance.tooltip"
+              :stable="instance.stable" />
+          </template>
+        </div>
+      </section>
+
+      <section
+        class="deploy-board-actions"
+        v-if="deployBoardData.rollback_url || deployBoardData.abort_url">
+        <a
+          class="btn"
+          data-method="post"
+          rel="nofollow"
+          v-if="deployBoardData.rollback_url"
+          :href="deployBoardData.rollback_url">
+          Rollback
+        </a>
+
+        <a
+          class="btn btn-red btn-inverted"
+          data-method="post"
+          rel="nofollow"
+          v-if="deployBoardData.abort_url"
+          :href="deployBoardData.abort_url">
+          Abort
+        </a>
+      </section>
+    </div>
+
+    <div v-if="canRenderEmptyState">
+      <section
+        class="deploy-board-empty-state-svg"
+        v-html="deployBoardSvg">
+      </section>
+
+      <section class="deploy-board-empty-state-text">
+        <span class="title">Kubernetes deployment not found</span>
+        <span>
+          To see deployment progress for your environments, make sure your deployments are in Kubernetes namespace
+          <code>{{projectName}}</code> and labeled with <code>app=$CI_ENVIRONMENT_SLUG</code>.
+        </span>
+      </section>
+    </div>
+
+    <div
+      v-if="canRenderErrorState"
+      class="deploy-board-error-message">
+      We can't fetch the data right now. Please try again later.
+    </div>
+  </div>
+</script>
