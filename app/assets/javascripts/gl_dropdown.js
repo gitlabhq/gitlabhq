@@ -350,7 +350,12 @@ GitLabDropdown = (function() {
         selectedObj = selected ? selected[0] : null;
         isMarking = selected ? selected[1] : null;
         if (this.options.clicked) {
-          this.options.clicked.call(this, selectedObj, $el, e, isMarking);
+          this.options.clicked.call(this, {
+            user: selectedObj,
+            $el,
+            e,
+            isMarking,
+          });
         }
 
         // Update label right after all modifications in dropdown has been done
