@@ -329,23 +329,6 @@ ActiveRecord::Schema.define(version: 20170426181740) do
 
   add_index "ci_trigger_requests", ["commit_id"], name: "index_ci_trigger_requests_on_commit_id", using: :btree
 
-  create_table "ci_trigger_schedules", force: :cascade do |t|
-    t.integer "project_id"
-    t.integer "trigger_id", null: false
-    t.datetime "deleted_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string "cron"
-    t.string "cron_timezone"
-    t.datetime "next_run_at"
-    t.string "ref"
-    t.boolean "active"
-  end
-
-  add_index "ci_trigger_schedules", ["active", "next_run_at"], name: "index_ci_trigger_schedules_on_active_and_next_run_at", using: :btree
-  add_index "ci_trigger_schedules", ["next_run_at"], name: "index_ci_trigger_schedules_on_next_run_at", using: :btree
-  add_index "ci_trigger_schedules", ["project_id"], name: "index_ci_trigger_schedules_on_project_id", using: :btree
-
   create_table "ci_triggers", force: :cascade do |t|
     t.string "token"
     t.datetime "deleted_at"
@@ -1399,7 +1382,6 @@ ActiveRecord::Schema.define(version: 20170426181740) do
   add_foreign_key "ci_pipeline_schedules", "projects", name: "fk_8ead60fcc4", on_delete: :cascade
   add_foreign_key "ci_pipelines", "ci_pipelines", column: "auto_canceled_by_id", name: "fk_262d4c2d19", on_delete: :nullify
   add_foreign_key "ci_trigger_requests", "ci_triggers", column: "trigger_id", name: "fk_b8ec8b7245", on_delete: :cascade
-  add_foreign_key "ci_trigger_schedules", "ci_triggers", column: "trigger_id", name: "fk_90a406cc94", on_delete: :cascade
   add_foreign_key "ci_triggers", "users", column: "owner_id", name: "fk_e8e10d1964", on_delete: :cascade
   add_foreign_key "container_repositories", "projects"
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
