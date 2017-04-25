@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe 'Dashboard Todos', feature: true do
-  include WaitForAjax
-
   let(:user)    { create(:user) }
   let(:author)  { create(:user) }
   let(:project) { create(:project, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }

@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-describe API::Milestones, api: true  do
-  include ApiHelpers
+describe API::Milestones do
   let(:user) { create(:user) }
   let!(:project) { create(:empty_project, namespace: user.namespace ) }
   let!(:closed_milestone) { create(:closed_milestone, project: project, title: 'version1', description: 'closed milestone') }

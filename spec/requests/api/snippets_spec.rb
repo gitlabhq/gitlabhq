@@ -1,7 +1,6 @@
 require 'rails_helper'
 
-describe API::Snippets, api: true do
-  include ApiHelpers
+describe API::Snippets do
   let!(:user) { create(:user) }
 
   describe 'GET /snippets/' do

@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe API::Jobs, api: true do
-  include ApiHelpers
-
+describe API::Jobs do
   let(:user) { create(:user) }
   let(:api_user) { user }
   let!(:project) { create(:project, :repository, creator: user, public_builds: false) }

@@ -194,6 +194,24 @@ describe Group, 'Routable' do
 
     it { expect(group.full_path).to eq(group.path) }
     it { expect(nested_group.full_path).to eq("#{group.full_path}/#{nested_group.path}") }
+
+    context 'with RequestStore active' do
+      before do
+        RequestStore.begin!
+      end
+
+      after do
+        RequestStore.end!
+        RequestStore.clear!
+      end
+
+      it 'does not load the route table more than once' do
+        expect(group).to receive(:uncached_full_path).once.and_call_original
+
+        3.times { group.full_path }
+        expect(group.full_path).to eq(group.path)
+      end
+    end
   end
 
   describe '#full_name' do
