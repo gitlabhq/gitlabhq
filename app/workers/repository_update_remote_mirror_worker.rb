@@ -4,20 +4,19 @@ class RepositoryUpdateRemoteMirrorWorker
   include Sidekiq::Worker
   include Gitlab::ShellAdapter
 
-  sidekiq_options queue: :project_mirror, retry: RemoteMirror::MAX_RETRIES
+  BACKOFF_DELAY = 5.minutes.to_i
+  MAX_RETRIES = 5
 
-  sidekiq_retry_in do |count|
-    RemoteMirror::BACKOFF_DELAY**count
-  end
+  sidekiq_options queue: :project_mirror, retry: MAX_RETRIES
+  sidekiq_retry_in { |count| BACKOFF_DELAY**count }
 
   def perform(remote_mirror_id, current_time)
     begin
-      remote_mirror  = RemoteMirror.find(remote_mirror_id)
-      last_update_at = remote_mirror.last_update_at
-      project        = remote_mirror.project
-      current_user   = project.creator
+      remote_mirror = RemoteMirror.find(remote_mirror_id)
+      return if remote_mirror&.last_update_at.to_i > current_time.to_i
 
-      return if last_update_at && last_update_at > current_time
+      project = remote_mirror.project
+      current_user = project.creator
 
       result = Projects::UpdateRemoteMirrorService.new(project, current_user).execute(remote_mirror)
 

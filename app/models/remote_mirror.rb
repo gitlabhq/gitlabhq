@@ -2,9 +2,6 @@ class RemoteMirror < ActiveRecord::Base
   include AfterCommitQueue
   include IgnorableColumn
 
-  BACKOFF_DELAY = 5
-  MAX_RETRIES = 5
-
   attr_encrypted :credentials,
                  key: Gitlab::Application.secrets.db_key_base,
                  marshal: true,
@@ -40,10 +37,6 @@ class RemoteMirror < ActiveRecord::Base
 
     event :update_fail do
       transition started: :failed
-    end
-
-    event :update_retry do
-      transition failed: :started
     end
 
     state :started

@@ -205,7 +205,7 @@ describe Project, models: true do
         )
 
         expect do
-          project.mark_as_failed_stuck_remote_mirrors('some message')
+          project.mark_stuck_remote_mirrors_as_failed!
         end.to change { project.remote_mirrors.stuck.count }.from(1).to(0)
       end
     end

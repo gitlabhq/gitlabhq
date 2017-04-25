@@ -74,6 +74,7 @@
             = rm_form.label :enabled, "Remote mirror repository", class: "label-light append-bottom-0"
             %p.light.append-bottom-0
               Automatically update the remote mirror's branches, tags, and commits from this repository five minutes after every push.
+              In case of failure the mirroring will be retried 5 more times each adding a longer backoff period.
         .form-group.has-feedback
           = rm_form.label :url, "Git repository URL", class: "label-light"
           = rm_form.text_field :url, class: "form-control", placeholder: 'https://username:password@gitlab.company.com/group/project.git'

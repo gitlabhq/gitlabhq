@@ -1241,12 +1241,10 @@ ActiveRecord::Schema.define(version: 20170426175636) do
     t.string "encrypted_credentials_salt"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "sync_time", default: 60, null: false
   end
 
   add_index "remote_mirrors", ["last_successful_update_at"], name: "index_remote_mirrors_on_last_successful_update_at", using: :btree
   add_index "remote_mirrors", ["project_id"], name: "index_remote_mirrors_on_project_id", using: :btree
-  add_index "remote_mirrors", ["sync_time"], name: "index_remote_mirrors_on_sync_time", using: :btree
 
   create_table "routes", force: :cascade do |t|
     t.integer "source_id", null: false

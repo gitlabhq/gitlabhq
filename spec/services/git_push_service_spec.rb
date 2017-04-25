@@ -25,13 +25,13 @@ describe GitPushService, services: true do
     end
 
     it 'fails stuck remote mirrors' do
-      expect(subject).to receive(:update_remote_mirrors)
+      expect(project).to receive(:mark_stuck_remote_mirrors_as_failed!)
 
       subject.execute
     end
 
     it 'updates remote mirrors' do
-      expect(subject).to receive(:update_remote_mirrors)
+      expect(project).to receive(:update_remote_mirrors)
 
       subject.execute
     end
