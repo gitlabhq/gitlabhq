@@ -48,8 +48,7 @@ export default {
     eventHub.$on('sidebar.saveUsers', this.saveUsers);
   },
   beforeMount() {
-    const element = this.$el;
-    this.field = element.dataset.field;
+    this.field = this.$el.dataset.field;
   },
   template: `
     <div>

@@ -24,10 +24,12 @@ export default {
     timeSpentHumanReadable: {
       type: String,
       required: false,
+      default: '',
     },
     timeEstimateHumanReadable: {
       type: String,
       required: false,
+      default: '',
     },
   },
   methods: {

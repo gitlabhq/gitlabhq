@@ -13,24 +13,25 @@ export default {
     time_estimate: {
       type: Number,
       required: true,
-      default: 0,
     },
     time_spent: {
       type: Number,
       required: true,
-      default: 0,
     },
     human_time_estimate: {
       type: String,
       required: false,
+      default: '',
     },
     human_time_spent: {
       type: String,
       required: false,
+      default: '',
     },
     rootPath: {
       type: String,
       required: true,
+      default: '',
     },
   },
   data() {
