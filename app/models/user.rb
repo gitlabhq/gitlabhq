@@ -141,6 +141,8 @@ class User < ActiveRecord::Base
   after_initialize :set_projects_limit
   after_destroy :post_destroy_hook
 
+  before_validation :skip_internal_confirmation
+
   # User's Layout preference
   enum layout: [:fixed, :fluid]
 
@@ -368,6 +370,10 @@ class User < ActiveRecord::Base
 
   def self.non_internal
     where(Hash[internal_attributes.zip([[false, nil]] * internal_attributes.size)])
+  end
+
+  def skip_internal_confirmation
+    skip_confirmation! if internal?
   end
 
   #
