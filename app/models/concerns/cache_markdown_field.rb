@@ -120,7 +120,9 @@ module CacheMarkdownField
       attrs
     end
 
-    before_save :refresh_markdown_cache!, if: :invalidated_markdown_cache?
+    # Using before_update here conflicts with elasticsearch-model somehow
+    before_create :refresh_markdown_cache!, if: :invalidated_markdown_cache?
+    before_update :refresh_markdown_cache!, if: :invalidated_markdown_cache?
   end
 
   class_methods do
