@@ -10,7 +10,6 @@ describe RelatedIssues::ListService, service: true do
     let(:issue_c) { create :issue, project: project }
     let(:issue_d) { create :issue, project: project }
 
-
     let!(:related_issue_c) do
       create(:related_issue, issue: issue_d,
                              related_issue: issue,
