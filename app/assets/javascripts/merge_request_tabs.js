@@ -5,6 +5,7 @@
 import Cookies from 'js-cookie';
 import './breakpoints';
 import './flash';
+import BlobForkSuggestion from './blob/blob_fork_suggestion';
 
 /* eslint-disable max-len */
 // MergeRequestTabs
@@ -266,6 +267,17 @@ import './flash';
 
           new gl.Diff();
           this.scrollToElement('#diffs');
+
+          $('.diff-file').each((i, el) => {
+            new BlobForkSuggestion({
+              openButtons: $(el).find('.js-edit-blob-link-fork-toggler'),
+              forkButtons: $(el).find('.js-fork-suggestion-button'),
+              cancelButtons: $(el).find('.js-cancel-fork-suggestion-button'),
+              suggestionSections: $(el).find('.js-file-fork-suggestion-section'),
+              actionTextPieces: $(el).find('.js-file-fork-suggestion-section-action'),
+            })
+              .init();
+          });
         },
       });
     }
