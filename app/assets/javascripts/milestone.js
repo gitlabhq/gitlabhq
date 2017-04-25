@@ -84,11 +84,11 @@
       this.bindIssuesSorting();
       this.bindTabsSwitching();
 
-      this.loadInitialTab();
-
       // Load merge request tab if it is active
       // merge request tab is active based on different conditions in the backend
       this.loadTab($('.js-milestone-tabs .active a'));
+
+      this.loadInitialTab();
     }
 
     Milestone.prototype.bindIssuesSorting = function() {
