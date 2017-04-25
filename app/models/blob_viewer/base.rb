@@ -56,10 +56,10 @@ module BlobViewer
     end
 
     def render_error
-      if override_max_size ? absolutely_too_large? : too_large?
-        :too_large
-      elsif server_side_but_stored_in_lfs?
+      if server_side_but_stored_in_lfs?
         :server_side_but_stored_in_lfs
+      elsif override_max_size ? absolutely_too_large? : too_large?
+        :too_large
       end
     end
 

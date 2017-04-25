@@ -100,11 +100,11 @@ class Blob < SimpleDelegator
   end
 
   def valid_lfs_pointer?
-    lfs_pointer? && project.lfs_enabled?
+    lfs_pointer? && project&.lfs_enabled?
   end
 
   def invalid_lfs_pointer?
-    lfs_pointer? && !project.lfs_enabled?
+    lfs_pointer? && !project&.lfs_enabled?
   end
 
   def simple_viewer

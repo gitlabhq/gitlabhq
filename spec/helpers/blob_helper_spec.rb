@@ -104,4 +104,114 @@ describe BlobHelper do
       expect(Capybara.string(link).find_link('Edit')[:href]).to eq('/gitlab/gitlabhq/edit/master/README.md?mr_id=10')
     end
   end
+
+  context 'viewer related' do
+    include FakeBlobHelpers
+
+    let(:project) { build(:empty_project) }
+
+    let(:viewer_class) do
+      Class.new(BlobViewer::Base) do
+        self.max_size = 1.megabyte
+        self.absolute_max_size = 5.megabytes
+        self.type = :rich
+        self.client_side = false
+      end
+    end
+
+    let(:viewer) { viewer_class.new(blob) }
+    let(:blob) { fake_blob }
+
+    before do
+      assign(:project, project)
+      assign(:id, File.join('master', blob.path))
+
+      controller.params[:controller] = 'projects/blob'
+      controller.params[:action] = 'show'
+      controller.params[:namespace_id] = project.namespace.to_param
+      controller.params[:project_id] = project.to_param
+      controller.params[:id] = File.join('master', blob.path)
+    end
+
+    describe '#blob_render_error_reason' do
+      context 'for error :too_large' do
+        context 'when the blob size is larger than the absolute max size' do
+          let(:blob) { fake_blob(size: 10.megabytes) }
+
+          it 'returns an error message' do
+            expect(helper.blob_render_error_reason(viewer, :too_large)).to eq('it is larger than 5 MB')
+          end
+        end
+
+        context 'when the blob size is larger than the max size' do
+          let(:blob) { fake_blob(size: 2.megabytes) }
+
+          it 'returns an error message' do
+            expect(helper.blob_render_error_reason(viewer, :too_large)).to eq('it is larger than 1 MB')
+          end
+        end
+      end
+
+      context 'for error :server_side_but_stored_in_lfs' do
+        it 'returns an error message' do
+          expect(helper.blob_render_error_reason(viewer, :server_side_but_stored_in_lfs)).to eq('it is stored in LFS')
+        end
+      end
+    end
+
+    describe '#blob_render_error_options' do
+      context 'for error :too_large' do
+        context 'when the max size can be overridden' do
+          let(:blob) { fake_blob(size: 2.megabytes) }
+
+          it 'includes a "load it anyway" link' do
+            expect(helper.blob_render_error_options(viewer, :too_large)).to include(/load it anyway/)
+          end
+        end
+
+        context 'when the max size cannot be overridden' do
+          let(:blob) { fake_blob(size: 10.megabytes) }
+
+          it 'does not include a "load it anyway" link' do
+            expect(helper.blob_render_error_options(viewer, :too_large)).not_to include(/load it anyway/)
+          end
+        end
+      end
+
+      context 'when the viewer is rich' do
+        context 'the blob is rendered as text' do
+          let(:blob) { fake_blob(path: 'file.md') }
+
+          it 'includes a "view the source" link' do
+            expect(helper.blob_render_error_options(viewer, :server_side_but_stored_in_lfs)).to include(/view the source/)
+          end
+        end
+
+        context 'the blob is not rendered as text' do
+          let(:blob) { fake_blob(path: 'file.pdf', binary: true) }
+
+          it 'does not include a "view the source" link' do
+            expect(helper.blob_render_error_options(viewer, :server_side_but_stored_in_lfs)).not_to include(/view the source/)
+          end
+        end
+      end
+
+
+      context 'when the viewer is not rich' do
+        before do
+          viewer_class.type = :simple
+        end
+
+        let(:blob) { fake_blob(path: 'file.md') }
+
+        it 'does not include a "view the source" link' do
+          expect(helper.blob_render_error_options(viewer, :server_side_but_stored_in_lfs)).not_to include(/view the source/)
+        end
+      end
+
+      it 'includes a "download it" link' do
+        expect(helper.blob_render_error_options(viewer, :server_side_but_stored_in_lfs)).to include(/download it/)
+      end
+    end
+  end
 end
