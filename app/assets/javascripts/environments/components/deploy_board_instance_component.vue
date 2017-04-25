@@ -1,3 +1,4 @@
+<script>
 /**
  * An instance in deploy board is represented by a square in this mockup:
  * https://gitlab.com/gitlab-org/gitlab-ce/uploads/2f655655c0eadf655d0ae7467b53002a/environments__deploy-graphic.png
@@ -50,14 +51,14 @@ export default {
       return cssClassName;
     },
   },
-
-  template: `
-    <div
-      class="deploy-board-instance has-tooltip"
-      :class="cssClass"
-      :data-title="tooltipText"
-      data-toggle="tooltip"
-      data-placement="top">
-    </div>
-  `,
 };
+</script>
+<template>
+  <div
+    class="deploy-board-instance has-tooltip"
+    :class="cssClass"
+    :data-title="tooltipText"
+    data-toggle="tooltip"
+    data-placement="top">
+  </div>
+</template>
