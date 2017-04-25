@@ -56,6 +56,28 @@ feature 'Global elastic search', feature: true do
     end
   end
 
+  describe 'I search through the wiki blobs' do
+    before do
+      project.wiki.create_page('test.md', '# term')
+      project.wiki.index_blobs
+
+      Gitlab::Elastic::Helper.refresh_index
+    end
+
+    it "finds files" do
+      visit dashboard_projects_path
+
+      fill_in "search", with: "term"
+      click_button "Go"
+
+      select_filter("Wiki")
+
+      expect(page).to have_selector('.file-content .code')
+
+      expect(page).to have_selector("span.line[lang='markdown']")
+    end
+  end
+
   describe 'I search through the commits' do
     before do
       project.repository.index_commits
