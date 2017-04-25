@@ -31,7 +31,7 @@ export default () => {
       },
     },
     template: `
-      <div class="container-fluid md prepend-top-default append-bottom-default">
+      <div class="js-pdf-viewer container-fluid md prepend-top-default append-bottom-default">
         <div
           class="text-center loading"
           v-if="loading && !error">
