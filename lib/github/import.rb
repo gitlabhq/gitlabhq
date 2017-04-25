@@ -103,7 +103,7 @@ module Github
 
             cached[:label_ids][label.title] = label.id
           rescue => e
-            error(:label, label.url, e.message)
+            error(:label, representation.url, e.message)
           end
         end
 
