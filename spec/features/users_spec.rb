@@ -68,7 +68,6 @@ feature 'Users', feature: true, js: true do
   end
 
   feature 'username validation' do
-    include WaitForAjax
     let(:loading_icon) { '.fa.fa-spinner' }
     let(:username_input) { 'new_user_username' }
 

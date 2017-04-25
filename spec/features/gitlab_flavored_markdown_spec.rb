@@ -1,28 +1,28 @@
 require 'spec_helper'
 
 describe "GitLab Flavored Markdown", feature: true do
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
   let(:issue) { create(:issue, project: project) }
-  let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let(:fred) do
-    u = create(:user, name: "fred")
-    project.team << [u, :master]
-    u
+    create(:user, name: 'fred') do |user|
+      project.add_master(user)
+    end
   end
 
   before do
-    allow_any_instance_of(Commit).to receive(:title).
-      and_return("fix #{issue.to_reference}\n\nask #{fred.to_reference} for details")
-  end
-
-  let(:commit) { project.commit }
-
-  before do
-    login_as :user
-    project.team << [@user, :developer]
+    login_as(:user)
+    project.add_developer(@user)
   end
 
   describe "for commits" do
+    let(:project) { create(:project, :repository) }
+    let(:commit) { project.commit }
+
+    before do
+      allow_any_instance_of(Commit).to receive(:title).
+        and_return("fix #{issue.to_reference}\n\nask #{fred.to_reference} for details")
+    end
+
     it "renders title in commits#index" do
       visit namespace_project_commits_path(project.namespace, project, 'master', limit: 1)
 
@@ -92,6 +92,8 @@ describe "GitLab Flavored Markdown", feature: true do
   end
 
   describe "for merge requests" do
+    let(:project) { create(:project, :repository) }
+
     before do
       @merge_request = create(:merge_request, source_project: project, target_project: project, title: "fix #{issue.to_reference}")
     end

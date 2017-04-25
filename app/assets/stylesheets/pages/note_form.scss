@@ -387,6 +387,7 @@
   @media (max-width: $screen-xs-max) {
     display: flex;
     width: 100%;
+    margin-bottom: 10px;
 
     .comment-btn {
       flex-grow: 1;

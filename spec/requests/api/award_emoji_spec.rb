@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-describe API::AwardEmoji, api: true  do
-  include ApiHelpers
+describe API::AwardEmoji do
   let(:user)            { create(:user) }
   let!(:project)        { create(:empty_project) }
   let(:issue)           { create(:issue, project: project) }

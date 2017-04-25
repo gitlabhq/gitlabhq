@@ -6,10 +6,13 @@ module WaitForAjax
   end
 
   def finished_all_ajax_requests?
+    return true unless javascript_test?
+    return true if page.evaluate_script('typeof jQuery === "undefined"')
+
     page.evaluate_script('jQuery.active').zero?
   end
 
   def javascript_test?
-    [:selenium, :webkit, :chrome, :poltergeist].include?(Capybara.current_driver)
+    Capybara.current_driver == Capybara.javascript_driver
   end
 end

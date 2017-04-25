@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-describe API::V3::Projects, api: true do
-  include ApiHelpers
+describe API::V3::Projects do
   include Gitlab::CurrentSettings
 
   let(:user) { create(:user) }
