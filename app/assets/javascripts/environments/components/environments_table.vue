@@ -3,7 +3,7 @@
  * Render environments table.
  */
 import EnvironmentTableRowComponent from './environment_item.vue';
-import DeployBoard from './deploy_board_component';
+import DeployBoard from './deploy_board_component.vue';
 
 export default {
   components: {

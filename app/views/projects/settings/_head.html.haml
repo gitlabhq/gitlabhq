@@ -31,3 +31,9 @@
             = link_to namespace_project_pages_path(@project.namespace, @project), title: 'Pages' do
               %span
                 Pages
+
+          = nav_link(controller: :audit_events) do
+            = link_to namespace_project_audit_events_path(@project.namespace, @project), title: "Audit Events" do
+              %span
+                Audit Events
+
