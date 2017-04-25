@@ -13,7 +13,7 @@ const issueShowInterceptor = (request, next) => {
   }));
 };
 
-fdescribe('Issue Title', () => {
+describe('Issue Title', () => {
   const comps = {
     IssueTitleComponent: {},
   };
