@@ -147,7 +147,7 @@ module Github
         response = Github::Client.new(options).get(url, state: :all, sort: :created, direction: :asc)
 
         response.body.each do |raw|
-          pull_request  = Github::Representation::PullRequest.new(project, raw, options)
+          pull_request  = Github::Representation::PullRequest.new(raw, options.merge(project: project))
           merge_request = MergeRequest.find_or_initialize_by(iid: pull_request.iid, source_project_id: project.id)
           next unless merge_request.new_record? && pull_request.valid?
 

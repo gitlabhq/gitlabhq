@@ -6,12 +6,6 @@ module Github
       delegate :user, :repo, :ref, :sha, to: :source_branch, prefix: true
       delegate :user, :exists?, :repo, :ref, :sha, :short_sha, to: :target_branch, prefix: true
 
-      def initialize(project, raw, options)
-        @project = project
-        @raw     = raw
-        @options = options
-      end
-
       def source_project
         project
       end
@@ -54,8 +48,12 @@ module Github
 
       private
 
+      def project
+        @project ||= options.fetch(:project)
+      end
+
       def source_branch
-        @source_branch ||= Representation::Branch.new(project.repository, raw['head'])
+        @source_branch ||= Representation::Branch.new(raw['head'], repository: project.repository)
       end
 
       def source_branch_name_prefixed
@@ -63,7 +61,7 @@ module Github
       end
 
       def target_branch
-        @target_branch ||= Representation::Branch.new(project.repository, raw['base'])
+        @target_branch ||= Representation::Branch.new(raw['base'], repository: project.repository)
       end
 
       def target_branch_name_prefixed

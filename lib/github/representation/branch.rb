@@ -3,11 +3,6 @@ module Github
     class Branch < Representation::Base
       attr_reader :repository
 
-      def initialize(repository, raw)
-        @repository = repository
-        @raw = raw
-      end
-
       def user
         raw.dig('user', 'login') || 'unknown'
       end
@@ -46,6 +41,10 @@ module Github
 
       def commit_exists?
         repository.branch_names_contains(sha).include?(ref)
+      end
+
+      def repository
+        @repository ||= options.fetch(:repository)
       end
     end
   end
