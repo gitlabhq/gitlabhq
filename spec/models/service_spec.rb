@@ -7,7 +7,7 @@ describe Service, models: true do
   end
 
   describe 'Validations' do
-    it { is_expected.to validate_presence_of(:type).on(:create) }
+    it { is_expected.to validate_presence_of(:type) }
   end
 
   describe "Test Button" do
