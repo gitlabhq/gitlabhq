@@ -4,7 +4,7 @@ import Deployments from '~/monitoring/deployments';
 import { prometheusMockData } from './prometheus_mock_data';
 
 describe('Metrics deployments', () => {
-  const fixtureName = 'static/environments/metrics.html.raw';
+  const fixtureName = 'environments/metrics/metrics.html.raw';
   let deployment;
   let prometheusGraph;
 
