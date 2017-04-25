@@ -12,19 +12,21 @@
           = image_tag avatar_icon(note.author), alt: '', class: 'avatar s40'
     .timeline-content
       .note-header
-        %a.visible-xs{ href: user_path(note.author) }
-          = note.author.to_reference
-        = link_to_member(note.project, note.author, avatar: false, extra_class: 'hidden-xs')
-        .note-headline-light
-          %span.hidden-xs
-            = note.author.to_reference
-          - unless note.system
-            commented
-          - if note.system
-            %span.system-note-message
-              = note.redacted_note_html
-          %a{ href: "##{dom_id(note)}" }
-            = time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note-created-ago')
+        .note-header-info
+          %a{ href: user_path(note.author) }
+            %span.hidden-xs
+              = sanitize(note.author.name)
+            %span.note-headline-light
+              = note.author.to_reference
+          %span.note-headline-light
+            %span.note-headline-meta
+              - unless note.system
+                commented
+              - if note.system
+                %span.system-note-message
+                  = note.redacted_note_html
+              %a{ href: "##{dom_id(note)}" }
+                = time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note-created-ago')
         - unless note.system?
           .note-actions
             - access = note_max_access_for_user(note)
