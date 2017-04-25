@@ -46,13 +46,8 @@ feature 'Projects > Audit Events', js: true, feature: true do
       project_member = project.project_member(pete)
 
       page.within "#project_member_#{project_member.id}" do
-<<<<<<< HEAD:spec/features/projects/audit_events.rb
-        click_button('Developer')
-        click_link('Reporter')
-=======
         click_button 'Developer'
         click_link 'Master'
->>>>>>> 847790478f8d85607eacedcdb693cfcd25c415af:spec/features/projects/audit_events_spec.rb
       end
 
       # This is to avoid a Capybara::Poltergeist::MouseEventFailed error

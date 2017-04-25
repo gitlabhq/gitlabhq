@@ -18,13 +18,8 @@ feature 'Groups > Audit Events', js: true, feature: true do
       group_member = group.members.find_by(user_id: pete)
 
       page.within "#group_member_#{group_member.id}" do
-<<<<<<< HEAD:spec/features/groups/audit_events.rb
-        click_button('Developer')
-        click_link('Master')
-=======
         click_button 'Developer'
         click_link 'Master'
->>>>>>> 847790478f8d85607eacedcdb693cfcd25c415af:spec/features/groups/audit_events_spec.rb
       end
 
       # This is to avoid a Capybara::Poltergeist::MouseEventFailed error

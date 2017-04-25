@@ -103,12 +103,8 @@ const ShortcutsBlob = require('./shortcuts_blob');
           cancelButtons: document.querySelectorAll('.js-cancel-fork-suggestion-button'),
           suggestionSections: document.querySelectorAll('.js-file-fork-suggestion-section'),
           actionTextPieces: document.querySelectorAll('.js-file-fork-suggestion-section-action'),
-<<<<<<< HEAD
-        });
-=======
         })
           .init();
->>>>>>> 847790478f8d85607eacedcdb693cfcd25c415af
       }
 
       switch (page) {

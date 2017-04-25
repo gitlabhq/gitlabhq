@@ -16,32 +16,6 @@ const defaults = {
 class BlobForkSuggestion {
   constructor(options) {
     this.elementMap = Object.assign({}, defaults, options);
-<<<<<<< HEAD
-    this.onClickWrapper = this.onClick.bind(this);
-
-    document.addEventListener('click', this.onClickWrapper);
-  }
-
-  showSuggestionSection(forkPath, action = 'edit') {
-    [].forEach.call(this.elementMap.suggestionSections, (suggestionSection) => {
-      suggestionSection.classList.remove('hidden');
-    });
-
-    [].forEach.call(this.elementMap.forkButtons, (forkButton) => {
-      forkButton.setAttribute('href', forkPath);
-    });
-
-    [].forEach.call(this.elementMap.actionTextPieces, (actionTextPiece) => {
-      // eslint-disable-next-line no-param-reassign
-      actionTextPiece.textContent = action;
-    });
-  }
-
-  hideSuggestionSection() {
-    [].forEach.call(this.elementMap.suggestionSections, (suggestionSection) => {
-      suggestionSection.classList.add('hidden');
-    });
-=======
     this.onOpenButtonClick = this.onOpenButtonClick.bind(this);
     this.onCancelButtonClick = this.onCancelButtonClick.bind(this);
   }
@@ -80,7 +54,6 @@ class BlobForkSuggestion {
   destroy() {
     $(this.elementMap.openButtons).off('click', this.onOpenButtonClick);
     $(this.elementMap.cancelButtons).off('click', this.onCancelButtonClick);
->>>>>>> 847790478f8d85607eacedcdb693cfcd25c415af
   }
 
   onClick(e) {
