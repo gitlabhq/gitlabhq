@@ -9,6 +9,7 @@ module Ci
     belongs_to :project
     belongs_to :user
     belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
+    belongs_to :pipeline_schedule, class_name: 'Ci::PipelineSchedule'
 
     has_many :auto_canceled_pipelines, class_name: 'Ci::Pipeline', foreign_key: 'auto_canceled_by_id'
     has_many :auto_canceled_jobs, class_name: 'CommitStatus', foreign_key: 'auto_canceled_by_id'

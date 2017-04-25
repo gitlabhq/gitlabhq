@@ -6,9 +6,9 @@ module Ci
     acts_as_paranoid
 
     belongs_to :project
-    belongs_to :trigger
+    belongs_to :owner, class_name: 'User'
+    has_many :pipelines
 
-    validates :trigger, presence: { unless: :importing? }
     validates :cron, unless: :importing_or_inactive?, cron: true, presence: { unless: :importing_or_inactive? }
     validates :cron_timezone, cron_timezone: true, presence: { unless: :importing_or_inactive? }
     validates :ref, presence: { unless: :importing_or_inactive? }
@@ -17,26 +17,18 @@ module Ci
     before_save :set_next_run_at
 
     scope :active, -> { where(active: true) }
-    scope :inactive, -> { where.not(active: true) } # cover for active = nil
-
-    def owner
-      trigger.owner
-    end
+    scope :inactive, -> { where(active: false) }
 
     def own!(current_user)
-      trigger.update(owner: current_user)
+      update(owner: current_user)
     end
 
     def owned_by?(current_user)
       owner == current_user
     end
 
-    def last_trigger
-      trigger.last_trigger_request
-    end
-
     def last_pipeline
-      last_trigger&.pipeline
+      pipelines.last
     end
 
     def inactive?

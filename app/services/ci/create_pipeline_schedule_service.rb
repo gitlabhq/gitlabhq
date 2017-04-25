@@ -1,14 +1,13 @@
 module Ci
   class CreatePipelineScheduleService < BaseService
     def execute
-      trigger = project.triggers.create(owner: current_user)
-      project.pipeline_schedules.create(pipeline_schedule_params(trigger))
+      project.pipeline_schedules.create(pipeline_schedule_params)
     end
 
     private
 
-    def pipeline_schedule_params(trigger)
-      params.merge(trigger: trigger)
+    def pipeline_schedule_params
+      params.merge(owner: current_user)
     end
   end
 end

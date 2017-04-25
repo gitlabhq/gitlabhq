@@ -2,8 +2,16 @@ require 'spec_helper'
 
 describe Ci::PipelineSchedule, models: true do
   it { is_expected.to belong_to(:project) }
-  it { is_expected.to belong_to(:trigger) }
+  it { is_expected.to belong_to(:owner) }
+
+  it { is_expected.to have_many(:pipelines) }
+
   it { is_expected.to respond_to(:ref) }
+  it { is_expected.to respond_to(:cron) }
+  it { is_expected.to respond_to(:cron_timezone) }
+  it { is_expected.to respond_to(:description) }
+  it { is_expected.to respond_to(:next_run_at) }
+  it { is_expected.to respond_to(:deleted_at) }
 
   describe 'validations' do
     it 'does not allow invalid cron patters' do

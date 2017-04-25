@@ -1,15 +1,11 @@
 FactoryGirl.define do
   factory :ci_pipeline_schedule, class: Ci::PipelineSchedule do
-    trigger factory: :ci_trigger
     cron '0 1 * * *'
     cron_timezone Gitlab::Ci::CronParser::VALID_SYNTAX_SAMPLE_TIME_ZONE
     ref 'master'
     active true
     description "trigger schedule"
-
-    after(:build) do |trigger_schedule, evaluator|
-      trigger_schedule.project ||= trigger_schedule.trigger.project
-    end
+    project factory: :empty_project
 
     trait :nightly do
       cron '0 1 * * *'

@@ -12,16 +12,13 @@
     = schedule.last_pipeline&.id
 
   %td
-    - # Keep in mind, this is `nil` when there is none
-    = schedule.last_trigger&.created_at
-
-  %td
     - if schedule.active?
       = schedule.next_run_at
     - else
       Inactive
 
   %td
+    - # mind you: in theory a user can be destroyed, but the pipeline still exist!
     = schedule.owner.name
 
   %td

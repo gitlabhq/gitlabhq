@@ -15,21 +15,10 @@ describe Projects::PipelineSchedulesController do
     let!(:inactive_pipeline_schedule) { create(:ci_pipeline_schedule, :inactive, project: project) }
     let(:scope) { nil }
 
-    before do
-    end
+    it 'includes all pipeline schedules' do
+      visit_pipelines_schedules
 
-    context 'without scope' do
-      it 'includes all pipeline schedules' do
-        visit_pipelines_schedules
-
-        expect(assigns(:schedules)).to include(pipeline_schedule, inactive_pipeline_schedule)
-      end
-
-      it 'counts all schedules' do
-        visit_pipelines_schedules
-
-        expect(assigns(:all_schedules).count).to eq(2)
-      end
+      expect(response).to have_http_status(:ok)
     end
 
     context 'scope is set to active' do
@@ -40,12 +29,9 @@ describe Projects::PipelineSchedulesController do
       end
 
       it 'only shows active pipeline schedules' do
+        expect(response).to have_http_status(:ok)
         expect(assigns(:schedules)).to include(pipeline_schedule)
         expect(assigns(:schedules)).not_to include(inactive_pipeline_schedule)
-      end
-
-      it 'counts all schedules' do
-        expect(assigns(:all_schedules).count).to eq(2)
       end
     end
 
@@ -58,6 +44,7 @@ describe Projects::PipelineSchedulesController do
     it 'loads the pipeline schedule' do
       get :edit, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
 
+      expect(response).to have_http_status(:ok)
       expect(assigns(:pipeline_schedule)).to eq(pipeline_schedule)
     end
   end

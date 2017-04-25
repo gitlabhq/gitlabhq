@@ -6,18 +6,9 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   before_action :pipeline_schedule, only: [:edit, :update, :destroy, :take_ownership]
 
   def index
-    @all_schedules = @project.pipeline_schedules.order('created_at DESC')
-
     @scope = params[:scope]
-    @schedules =
-      case @scope
-      when 'active'
-        @all_schedules.active
-      when 'inactive'
-        @all_schedules.inactive
-      else
-        @all_schedules
-      end
+    @all_schedules = PipelineSchedulesFinder.new(@project).execute
+    @schedules = PipelineSchedulesFinder.new(@project).execute(scope: params[:scope])
   end
 
   def new

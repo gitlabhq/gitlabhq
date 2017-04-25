@@ -13,6 +13,7 @@ describe Ci::Pipeline, models: true do
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:auto_canceled_by) }
+  it { is_expected.to belong_to(:pipeline_schedule) }
 
   it { is_expected.to have_many(:statuses) }
   it { is_expected.to have_many(:trigger_requests) }
