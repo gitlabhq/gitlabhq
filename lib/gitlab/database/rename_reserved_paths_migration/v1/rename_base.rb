@@ -107,6 +107,10 @@ module Gitlab
             update_column_in_batches(:notes, :note_html, nil) do |table, query|
               query.where(table[:project_id].in(project_ids))
             end
+
+            update_column_in_batches(:milestones, :description_html, nil) do |table, query|
+              query.where(table[:project_id].in(project_ids))
+            end
           end
 
           def file_storage?

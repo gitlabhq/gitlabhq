@@ -65,6 +65,16 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase do
 
       expect(note.reload.note_html).to be_nil
     end
+
+    it 'removes milestone description' do
+      milestone = create(:milestone,
+                    project: project,
+                    description_html: 'milestone description')
+
+      subject.remove_cached_html_for_projects([project.id])
+
+      expect(milestone.reload.description_html).to be_nil
+    end
   end
 
   describe '#rename_path_for_routable' do
