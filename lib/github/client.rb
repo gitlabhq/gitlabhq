@@ -4,6 +4,8 @@ module Github
 
     def initialize(options)
       @connection = Faraday.new(url: options.fetch(:url)) do |faraday|
+        faraday.options.open_timeout = options.fetch(:timeout, 60)
+        faraday.options.timeout = options.fetch(:timeout, 60)
         faraday.authorization 'token', options.fetch(:token)
         faraday.adapter :net_http
       end
