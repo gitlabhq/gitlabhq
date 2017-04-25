@@ -278,6 +278,7 @@ ActiveRecord::Schema.define(version: 20170426181740) do
     t.integer "user_id"
     t.integer "lock_version"
     t.integer "auto_canceled_by_id"
+    t.integer "pipeline_schedule_id"
   end
 
   add_index "ci_pipelines", ["project_id", "ref", "status"], name: "index_ci_pipelines_on_project_id_and_ref_and_status", using: :btree
