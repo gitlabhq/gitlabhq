@@ -116,7 +116,7 @@ module MilestonesHelper
     end
   end
 
-  def milestone_merge_request_path(milestone)
+  def milestone_merge_request_tab_path(milestone)
     if @project
       merge_requests_namespace_project_milestone_path(@project.namespace, @project, milestone, format: :json)
     elsif @group
@@ -124,7 +124,7 @@ module MilestonesHelper
     end
   end
 
-  def milestone_participants_path(milestone)
+  def milestone_participants_tab_path(milestone)
     if @project
       participants_namespace_project_milestone_path(@project.namespace, @project, milestone, format: :json)
     elsif @group
@@ -132,7 +132,7 @@ module MilestonesHelper
     end
   end
 
-  def milestone_labels_path(milestone)
+  def milestone_labels_tab_path(milestone)
     if @project
       labels_namespace_project_milestone_path(@project.namespace, @project, milestone, format: :json)
     elsif @group

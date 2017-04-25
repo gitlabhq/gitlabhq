@@ -21,7 +21,7 @@
 
     Milestone.sortIssues = function(data) {
       var sort_issues_url;
-      sort_issues_url = location.href + "/sort_issues";
+      sort_issues_url = location.pathname + "/sort_issues";
       return $.ajax({
         type: "PUT",
         url: sort_issues_url,
@@ -38,7 +38,7 @@
 
     Milestone.sortMergeRequests = function(data) {
       var sort_mr_url;
-      sort_mr_url = location.href + "/sort_merge_requests";
+      sort_mr_url = location.pathname + "/sort_merge_requests";
       return $.ajax({
         type: "PUT",
         url: sort_mr_url,
@@ -83,6 +83,12 @@
     function Milestone() {
       this.bindIssuesSorting();
       this.bindTabsSwitching();
+
+      this.loadInitialTab();
+
+      // Load merge request tab if it is active
+      // merge request tab is active based on different conditions in the backend
+      this.loadTab($('.js-milestone-tabs .active a'));
     }
 
     Milestone.prototype.bindIssuesSorting = function() {
@@ -100,12 +106,9 @@
     Milestone.prototype.bindTabsSwitching = function() {
       return $('a[data-toggle="tab"]').on('show.bs.tab', (e) => {
         const $target = $(e.target);
-        const endpoint = $target.data('endpoint');
 
-        if (endpoint && !$target.hasClass('is-loaded')) {
-          this.loadMergeRequests($target.attr('href'), endpoint)
-            .done(() => $target.addClass('is-loaded'));
-        }
+        location.hash = $target.attr('href');
+        this.loadTab($target);
       });
     };
 
@@ -168,16 +171,33 @@
       });
     };
 
-    Milestone.prototype.loadMergeRequests = function(elId, url) {
-      return $.ajax({
-        url,
-        dataType: 'JSON',
-      })
-      .fail(() => new Flash('Error loading merge requests'))
-      .done((data) => {
-        $(elId).html(data.html);
-        this.bindMergeRequestSorting();
-      });
+    Milestone.prototype.loadInitialTab = function() {
+      const $target = $(`.js-milestone-tabs a[href="${location.hash}"]`);
+
+      if ($target.length) {
+        $target.tab('show');
+      }
+    };
+
+    Milestone.prototype.loadTab = function($target) {
+      const endpoint = $target.data('endpoint');
+      const tabElId = $target.attr('href');
+
+      if (endpoint && !$target.hasClass('is-loaded')) {
+        $.ajax({
+          url: endpoint,
+          dataType: 'JSON',
+        })
+        .fail(() => new Flash('Error loading milestone tab'))
+        .done((data) => {
+          $(tabElId).html(data.html);
+          $target.addClass('is-loaded');
+
+          if (tabElId === '#tab-merge-requests') {
+            this.bindMergeRequestSorting();
+          }
+        });
+      }
     };
 
     return Milestone;
