@@ -1,8 +1,12 @@
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_bundle_tag('schedules_index')
+
 - @no_container = true
 - page_title "Pipeline Schedules"
 = render "projects/pipelines/head"
 
 %div{ class: container_class }
+  #scheduling-pipelines-intro-message
   .top-area
     - schedule_path_proc = ->(scope) { pipeline_schedules_path(@project, scope: scope) }
     = render "tabs", schedule_path_proc: schedule_path_proc, all_schedules: @all_schedules, scope: @scope

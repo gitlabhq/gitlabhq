@@ -33,7 +33,7 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
 
   def update
     if schedule.update(schedule_params)
-      redirect_to pipeline_schedules_path(@project)
+      redirect_to rake edit_namespace_project_pipeline_schedule_path(@project)
     else
       render :edit
     end
@@ -62,7 +62,7 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   end
 
   def schedule_params
-    params.require(:pipeline_schedule)
+    params.require(:schedule)
       .permit(:description, :cron, :cron_timezone, :ref, :active)
   end
 end

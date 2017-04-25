@@ -1,33 +1,32 @@
-- schedule = pipeline_schedule
+- if pipeline_schedule
+  %tr
+    %td
+      = pipeline_schedule.description
 
-%tr
-  %td
-    = schedule.description
+    %td
+      = pipeline_schedule.ref
 
-  %td
-    = schedule.ref
+    %td
+      - # Keep in mind, this is `nil` when there is none
+      = pipeline_schedule.last_pipeline&.id
 
-  %td
-    - # Keep in mind, this is `nil` when there is none
-    = schedule.last_pipeline&.id
+    %td
+      - if pipeline_schedule.active?
+        = pipeline_schedule.next_run_at
+      - else
+        Inactive
 
-  %td
-    - if schedule.active?
-      = schedule.next_run_at
-    - else
-      Inactive
+    %td
+      - # mind you: in theory a user can be destroyed, but the pipeline still exist!
+      = pipeline_schedule.owner&.name
 
-  %td
-    - # mind you: in theory a user can be destroyed, but the pipeline still exist!
-    = schedule.owner&.name
-
-  %td
-    - if schedule.can_take_ownership?(current_user)
-      = link_to take_ownership_pipeline_schedule_path(schedule), method: :post, title: 'Take Ownership', class: 'btn' do
-        Take ownership
-    - if true #can?(current_user, :update_pipeline_schedule, pipeline_schedule)
-      = link_to edit_pipeline_schedule_path(schedule), title: 'Edit', class: 'btn' do
-        = icon('pencil')
-    - if true # can?(current_user, :destroy_pipeline_schedule, schedule)
-      = link_to pipeline_schedule_path(schedule), title: 'Delete', method: :delete, class: 'btn' do
-        = icon('trash')
+    %td
+      - if pipeline_schedule.can_take_ownership?(current_user)
+        = link_to take_ownership_pipeline_schedule_path(pipeline_schedule), method: :post, title: 'Take Ownership', class: 'btn' do
+          Take ownership
+      - if can?(current_user, :update_pipeline_schedule, pipeline_schedule)
+        = link_to edit_pipeline_schedule_path(pipeline_schedule), title: 'Edit', class: 'btn' do
+          = icon('pencil')
+      - if can?(current_user, :destroy_pipeline_schedule, pipeline_schedule)
+        = link_to pipeline_schedule_path(pipeline_schedule), title: 'Delete', method: :delete, class: 'btn' do
+          = icon('trash')

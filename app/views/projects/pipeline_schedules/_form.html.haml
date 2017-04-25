@@ -1,25 +1,34 @@
-= form_for [@project.namespace.becomes(Namespace), @project, @pipeline_schedule], as: :pipeline_schedule, html: { id: "new-pipeline-schedule-form", class: "form-horizontal js-pipeline-schedule-form js-requires-input" } do |f|
-  = form_errors(@pipeline_schedule)
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_bundle_tag('schedules_form')
+
+- timezones = ActiveSupport::TimeZone.all.map { |timezone| { name: timezone.name, offset: timezone.utc_offset, identifier: timezone.tzinfo.identifier } }
+
+= form_for [@project.namespace.becomes(Namespace), @project, @schedule], as: :schedule, html: { id: "new-pipeline-schedule-form", class: "form-horizontal js-pipeline-schedule-form gl-show-field-errors" } do |f|
+  = form_errors(@schedule)
   .form-group
-    = f.label :description, 'Description', class: 'control-label'
-    .col-sm-10
-      = f.text_field :description, class: 'form-control', required: true, autofocus: true
+    .col-md-6
+      = f.label :description, 'Description', class: 'label-light'
+      = f.text_field :description, class: 'form-control', required: true, autofocus: true, placeholder: 'Provide a short description for this pipeline'
   .form-group
-    = f.label :cron, 'Cron Pattern', class: 'control-label'
-    .col-sm-10
-      = f.text_field :cron, class: 'form-control', required: false, autofocus: true, value: "0 0 * * *"
+    .col-md-8
+      = f.label :cron, 'Interval Pattern', class: 'label-light'
+      #interval-pattern-input 
   .form-group
-    = f.label :cron_timezone, 'Cron Timezone', class: 'control-label'
-    .col-sm-10
-      = f.text_field :cron_timezone, class: 'form-control', required: false, autofocus: true, value: 'UTC'
+    .col-md-6
+      = f.label :cron_timezone, 'Cron Timezone', class: 'label-light'
+      = hidden_field_tag(:cron_timezone, params[:cron_timezone], id: 'schedule_cron_timezone', name: 'schedule[cron_timezone]')
+      = dropdown_tag("Select a timezone", options: { toggle_class: 'btn js-timezone-dropdown', title: "Select a timezone", filter: true, placeholder: "Filter", data: { data: timezones } } )
   .form-group
-    = f.label :ref, 'Branch', class: 'control-label'
-    .col-sm-10
-      = f.text_field :ref, class: 'form-control', required: true, autofocus: true, value: @project.default_branch
+    .col-md-6
+      = f.label :ref, 'Target Branch', class: 'label-light'
+      = f.select(:ref, @project.repository.branch_names, {}, {class: 'select2 select-wide'})
   .form-group
-    = f.label :active, 'Active', class: 'control-label'
-    .col-sm-10
-      = f.check_box :active, class: 'form-control', required: false, value: @pipeline_schedule.active?
-  .form-actions
+    .col-md-6
+      = f.label  :active, 'Activated', class: 'label-light'
+      %div
+        = f.check_box :active, required: false, value: @schedule.active?
+        active
+  .footer-block.row-content-block
     = f.submit 'Save pipeline schedule', class: 'btn btn-create', tabindex: 3
     = link_to 'Cancel', pipeline_schedules_path(@project), class: 'btn btn-cancel'
+  #mutable-input-list

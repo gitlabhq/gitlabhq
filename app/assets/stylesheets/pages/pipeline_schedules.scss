@@ -1,0 +1,29 @@
+.interval-pattern-form-group {
+  label {
+    margin-right: 10px;
+    font-size: 12px;
+    &[for='custom'] {
+      margin-right: 0;
+    }
+  }
+
+  .cron-interval-input {
+    width: 75%;
+    margin: 10px 10px 0 0;
+  }
+
+  .cron-syntax-link-wrap {
+    margin-right: 10px;
+    font-size: 12px;
+  }
+
+  .cron-unset-status {
+    color: $gl-text-color-secondary;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .dropdown-select {
+    width: 100%;
+  }
+}
