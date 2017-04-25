@@ -8,7 +8,7 @@ class Projects::MilestonesController < Projects::ApplicationController
   before_action :authorize_read_milestone!
 
   # Allow admin milestone
-  before_action :authorize_admin_milestone!, except: [:index, :show]
+  before_action :authorize_admin_milestone!, except: [:index, :show, :merge_requests, :participants, :labels]
 
   respond_to :html
 
