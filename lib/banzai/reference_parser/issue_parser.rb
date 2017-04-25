@@ -16,7 +16,7 @@ module Banzai
         readable_issues = Ability.
           issues_readable_by_user(nodes2issues.values, user).to_set
 
-        nodes2issues.each.with_object({}) do |(node, issue), result|
+        nodes2issues.each_with_object({}) do |(node, issue), result|
           result[node] = issue if readable_issues.include?(issue)
         end
       end
@@ -27,7 +27,7 @@ module Banzai
         nodes.map { |node| issues[node] }.compact.uniq
       end
 
-      # FIXME: We should not memories values which could ignore arguments!
+      # FIXME: We should not memorize values which could ignore arguments!
       def issues_for_nodes(nodes)
         @issues_for_nodes ||= grouped_objects_for_nodes(
           nodes,

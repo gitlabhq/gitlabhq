@@ -1,0 +1,4 @@
+---
+title: Fix 500 error due to trying to show issues from pending deleting projects
+merge_request: 10894
+author:
