@@ -61,7 +61,7 @@ module Github
 
     def fetch_repository
       begin
-        project.create_repository
+        project.create_repository unless project.repository.exists?
         project.repository.add_remote('github', "https://{options.fetch(:token)}@github.com/#{repo}.git")
         project.repository.set_remote_as_mirror('github')
         project.repository.fetch_remote('github', forced: true)
