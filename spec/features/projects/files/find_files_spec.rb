@@ -14,6 +14,7 @@ feature 'Find files button in the tree header', feature: true do
       project.namespace,
       project
     )
+
     expect(page).to have_selector('.tree-controls .shortcuts-find-file')
   end
 
@@ -23,6 +24,7 @@ feature 'Find files button in the tree header', feature: true do
       project,
       project.default_branch
     )
+
     expect(page).to have_selector('.tree-controls .shortcuts-find-file')
   end
 end
