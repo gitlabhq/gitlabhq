@@ -160,8 +160,7 @@ module Github
           next unless merge_request.new_record? && pull_request.valid?
 
           begin
-            restore_source_branch(pull_request) unless pull_request.source_branch_exists?
-            restore_target_branch(pull_request) unless pull_request.target_branch_exists?
+            restore_branches(pull_request)
 
             author_id                       = user_id(pull_request.author, project.creator_id)
             merge_request.iid               = pull_request.iid
@@ -308,6 +307,11 @@ module Github
 
         url = response.rels[:next]
       end
+    end
+
+    def restore_branches(pull_request)
+      restore_source_branch(pull_request) unless pull_request.source_branch_exists?
+      restore_target_branch(pull_request) unless pull_request.target_branch_exists?
     end
 
     def restore_source_branch(pull_request)
