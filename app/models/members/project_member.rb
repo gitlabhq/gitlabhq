@@ -16,7 +16,7 @@ class ProjectMember < Member
   before_destroy :delete_member_todos
 
   class << self
-    # Add users to project teams with passed access option
+    # Add users to projects with passed access option
     #
     # access can be an integer representing a access code
     # or symbol like :master representing role
@@ -39,7 +39,7 @@ class ProjectMember < Member
         project_ids.each do |project_id|
           project = Project.find(project_id)
 
-          add_users_to_source(
+          add_users(
             project,
             users,
             access_level,

@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 feature 'New directory creation', feature: true, js: true do
-  include WaitForAjax
   include TargetBranchHelpers
 
   given(:user) { create(:user) }

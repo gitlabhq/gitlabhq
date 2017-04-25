@@ -168,7 +168,7 @@ module Gitlab
       end
 
       def secret_path
-        Rails.root.join('.gitlab_workhorse_secret')
+        Gitlab.config.workhorse.secret_file
       end
 
       def set_key_and_notify(key, value, expire: nil, overwrite: true)

@@ -470,10 +470,8 @@ with setting up Gitaly until you upgrade to GitLab 9.2 or later.
     sudo chmod 0700 /home/git/gitlab/tmp/sockets/private
     sudo chown git /home/git/gitlab/tmp/sockets/private
 
-    # Configure Gitaly
-    cd /home/git/gitaly
-    sudo -u git cp config.toml.example config.toml
     # If you are using non-default settings you need to update config.toml
+    cd /home/git/gitaly
     sudo -u git -H editor config.toml
 
     # Enable Gitaly in the init script

@@ -1,10 +1,16 @@
+##
+# DEPRECATED
+#
+# These helpers are deprecated in favor of detailed CI/CD statuses.
+#
+# See 'detailed_status?` method and `Gitlab::Ci::Status` module.
+#
 module CiStatusHelper
   def ci_status_path(pipeline)
     project = pipeline.project
     namespace_project_pipeline_path(project.namespace, project, pipeline)
   end
 
-  # Is used by Commit and Merge Request Widget
   def ci_label_for_status(status)
     if detailed_status?(status)
       return status.label
@@ -17,6 +23,23 @@ module CiStatusHelper
       'passed with warnings'
     when 'manual'
       'waiting for manual action'
+    else
+      status
+    end
+  end
+
+  def ci_text_for_status(status)
+    if detailed_status?(status)
+      return status.text
+    end
+
+    case status
+    when 'success'
+      'passed'
+    when 'success_with_warnings'
+      'passed'
+    when 'manual'
+      'blocked'
     else
       status
     end

@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe API::V3::Users, api: true  do
-  include ApiHelpers
-
+describe API::V3::Users do
   let(:user)  { create(:user) }
   let(:admin) { create(:admin) }
   let(:key)   { create(:key, user: user) }
@@ -275,6 +273,12 @@ describe API::V3::Users, api: true  do
       new_user = User.find(user_id)
 
       expect(new_user).to be_confirmed
+    end
+
+    it 'does not reveal the `is_admin` flag of the user' do
+      post v3_api('/users', admin), attributes_for(:user)
+
+      expect(json_response['is_admin']).to be_nil
     end
   end
 end

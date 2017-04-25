@@ -18,4 +18,6 @@
         = view_file_button(diff_commit.id, diff_file.new_path, project)
         = view_on_environment_button(diff_commit.id, diff_file.new_path, environment) if environment
 
+  = render 'projects/fork_suggestion'
+
   = render 'projects/diffs/content', diff_file: diff_file, diff_commit: diff_commit, blob: blob, project: project

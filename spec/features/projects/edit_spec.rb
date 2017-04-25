@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 feature 'Project edit', feature: true, js: true do
-  include WaitForAjax
-
   let(:user)    { create(:user) }
   let(:project) { create(:project) }
 

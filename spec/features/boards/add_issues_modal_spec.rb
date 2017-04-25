@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe 'Issue Boards add issue modal', :feature, :js do
-  include WaitForAjax
   include WaitForVueResource
 
   let(:project) { create(:empty_project, :public) }

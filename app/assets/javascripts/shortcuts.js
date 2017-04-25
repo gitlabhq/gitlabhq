@@ -57,8 +57,11 @@ import findAndFollowLink from './shortcuts_dashboard_navigation';
 
     Shortcuts.prototype.toggleMarkdownPreview = function(e) {
       // Check if short-cut was triggered while in Write Mode
-      if ($(e.target).hasClass('js-note-text')) {
-        $('.js-md-preview-button').focus();
+      const $target = $(e.target);
+      const $form = $target.closest('form');
+
+      if ($target.hasClass('js-note-text')) {
+        $('.js-md-preview-button', $form).focus();
       }
       return $(document).triggerHandler('markdown-preview:toggle', [e]);
     };

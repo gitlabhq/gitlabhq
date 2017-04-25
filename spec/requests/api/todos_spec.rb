@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe API::Todos, api: true do
-  include ApiHelpers
-
+describe API::Todos do
   let(:project_1) { create(:empty_project, :test_repo) }
   let(:project_2) { create(:empty_project) }
   let(:author_1) { create(:user) }

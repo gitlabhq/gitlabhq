@@ -14,9 +14,6 @@ To create a new milestone, simply click the **New milestone** button when in the
 milestones page. A milestone can have a title, a description and start/due dates.
 Once you fill in all the details, hit the **Create milestone** button.
 
->**Note:**
-The start/due dates are required if you intend to use [Burndown charts](#burndown-charts).
-
 ![Creating a milestone](img/milestone_create.png)
 
 ## Creating a group milestone

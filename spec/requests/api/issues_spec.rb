@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-describe API::Issues, api: true  do
-  include ApiHelpers
+describe API::Issues do
   include EmailHelpers
 
   let(:user)        { create(:user) }

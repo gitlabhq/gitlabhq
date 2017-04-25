@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 feature 'Diff note avatars', feature: true, js: true do
-  include WaitForAjax
-
   let(:user)          { create(:user) }
   let(:project)       { create(:project, :public) }
   let(:merge_request) { create(:merge_request_with_diffs, source_project: project, author: user, title: "Bug NS-04") }

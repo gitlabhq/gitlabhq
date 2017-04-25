@@ -16,47 +16,44 @@ const defaults = {
 class BlobForkSuggestion {
   constructor(options) {
     this.elementMap = Object.assign({}, defaults, options);
-    this.onClickWrapper = this.onClick.bind(this);
+    this.onOpenButtonClick = this.onOpenButtonClick.bind(this);
+    this.onCancelButtonClick = this.onCancelButtonClick.bind(this);
+  }
 
-    document.addEventListener('click', this.onClickWrapper);
+  init() {
+    this.bindEvents();
+
+    return this;
+  }
+
+  bindEvents() {
+    $(this.elementMap.openButtons).on('click', this.onOpenButtonClick);
+    $(this.elementMap.cancelButtons).on('click', this.onCancelButtonClick);
   }
 
   showSuggestionSection(forkPath, action = 'edit') {
-    [].forEach.call(this.elementMap.suggestionSections, (suggestionSection) => {
-      suggestionSection.classList.remove('hidden');
-    });
-
-    [].forEach.call(this.elementMap.forkButtons, (forkButton) => {
-      forkButton.setAttribute('href', forkPath);
-    });
-
-    [].forEach.call(this.elementMap.actionTextPieces, (actionTextPiece) => {
-      // eslint-disable-next-line no-param-reassign
-      actionTextPiece.textContent = action;
-    });
+    $(this.elementMap.suggestionSections).removeClass('hidden');
+    $(this.elementMap.forkButtons).attr('href', forkPath);
+    $(this.elementMap.actionTextPieces).text(action);
   }
 
   hideSuggestionSection() {
-    [].forEach.call(this.elementMap.suggestionSections, (suggestionSection) => {
-      suggestionSection.classList.add('hidden');
-    });
+    $(this.elementMap.suggestionSections).addClass('hidden');
   }
 
-  onClick(e) {
-    const el = e.target;
+  onOpenButtonClick(e) {
+    const forkPath = $(e.currentTarget).attr('data-fork-path');
+    const action = $(e.currentTarget).attr('data-action');
+    this.showSuggestionSection(forkPath, action);
+  }
 
-    if ([].includes.call(this.elementMap.openButtons, el)) {
-      const { forkPath, action } = el.dataset;
-      this.showSuggestionSection(forkPath, action);
-    }
-
-    if ([].includes.call(this.elementMap.cancelButtons, el)) {
-      this.hideSuggestionSection();
-    }
+  onCancelButtonClick() {
+    this.hideSuggestionSection();
   }
 
   destroy() {
-    document.removeEventListener('click', this.onClickWrapper);
+    $(this.elementMap.openButtons).off('click', this.onOpenButtonClick);
+    $(this.elementMap.cancelButtons).off('click', this.onCancelButtonClick);
   }
 }
 

@@ -1,8 +1,6 @@
 require('spec_helper')
 
 describe Projects::TodosController do
-  include ApiHelpers
-
   let(:user)          { create(:user) }
   let(:project)       { create(:empty_project) }
   let(:issue)         { create(:issue, project: project) }

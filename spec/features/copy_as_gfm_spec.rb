@@ -433,7 +433,7 @@ describe 'Copy as GFM', feature: true, js: true do
   end
 
   describe 'Copying code' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
     context 'from a diff' do
       before do
