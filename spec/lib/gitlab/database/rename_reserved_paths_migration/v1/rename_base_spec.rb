@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Gitlab::Database::RenameReservedPathsMigration::RenameBase do
-  let(:migration) { FakeRenameReservedPathMigration.new }
+describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase do
+  let(:migration) { FakeRenameReservedPathMigrationV1.new }
   let(:subject) { described_class.new(['the-path'], migration) }
 
   before do
@@ -9,12 +9,12 @@ describe Gitlab::Database::RenameReservedPathsMigration::RenameBase do
   end
 
   def migration_namespace(namespace)
-    Gitlab::Database::RenameReservedPathsMigration::MigrationClasses::
+    Gitlab::Database::RenameReservedPathsMigration::V1::MigrationClasses::
       Namespace.find(namespace.id)
   end
 
   def migration_project(project)
-    Gitlab::Database::RenameReservedPathsMigration::MigrationClasses::
+    Gitlab::Database::RenameReservedPathsMigration::V1::MigrationClasses::
       Project.find(project.id)
   end
 

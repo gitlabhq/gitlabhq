@@ -2,33 +2,36 @@
 # for more information on how to write migrations for GitLab.
 
 class RenameReservedDynamicPaths < ActiveRecord::Migration
-  include Gitlab::Database::RenameReservedPathsMigration
+  include Gitlab::Database::RenameReservedPathsMigration::V1
 
   DOWNTIME = false
 
   disable_ddl_transaction!
 
   DISALLOWED_ROOT_PATHS = %w[
+    -
+    abuse_reports
     api
     autocomplete
-    member
     explore
-    uploads
-    import
-    notification_settings
-    abuse_reports
-    invites
-    koding
     health_check
+    import
+    invites
     jwt
+    koding
+    member
+    notification_settings
     oauth
     sent_notifications
-    -
+    uploads
     users
   ]
 
-  DISALLOWED_WILDCARD_PATHS = %w[info/lfs/objects gitlab-lfs/objects
-                                 environments/folders]
+  DISALLOWED_WILDCARD_PATHS = %w[
+    environments/folders
+    gitlab-lfs/objects
+    info/lfs/objects
+  ]
 
   def up
     rename_root_paths(DISALLOWED_ROOT_PATHS)
