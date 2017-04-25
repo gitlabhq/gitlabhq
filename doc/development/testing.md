@@ -448,12 +448,21 @@ is used for Spinach tests as well.
 
 ### Monitoring
 
-The GitLab test suite is [monitored] and a [public dashboard] is available for
-everyone to see. Feel free to look at the slowest test files and try to improve
-them.
+The GitLab test suite is [monitored] for the `master` branch, and any branch
+that includes `rspec-profile` in their name.
+
+A [public dashboard] is available for everyone to see. Feel free to look at the
+slowest test files and try to improve them.
 
 [monitored]: ./performance.md#rspec-profiling
 [public dashboard]: https://redash.gitlab.com/public/dashboards/l1WhHXaxrCWM5Ai9D7YDqHKehq6OU3bx5gssaiWe?org_slug=default
+
+## CI setup
+
+- On CE, the test suite only runs against PostgreSQL by default. We additionally
+  run the suite against MySQL for tags, `master`, and any branch that includes
+  `mysql` in the name.
+- On EE, the test suite always runs both PostgreSQL and MySQL.
 
 ## Spinach (feature) tests
 
