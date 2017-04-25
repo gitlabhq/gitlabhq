@@ -1,22 +1,49 @@
 import Vue from 'vue';
+import $ from 'jquery';
+import '~/render_math';
+import '~/render_gfm';
 import issueTitle from '~/issue_show/issue_title_description.vue';
+import issueShowData from './mock_data';
+
+window.$ = $;
+
+const issueShowInterceptor = (request, next) => {
+  console.log(issueShowData);
+  next(request.respondWith(JSON.stringify(issueShowData), {
+    status: 200,
+  }));
+};
 
 describe('Issue Title', () => {
-  let IssueTitleComponent;
+  const comps = {
+    IssueTitleComponent: {},
+  };
 
   beforeEach(() => {
-    IssueTitleComponent = Vue.extend(issueTitle);
+    comps.IssueTitleComponent = Vue.extend(issueTitle);
+    Vue.http.interceptors.push(issueShowInterceptor);
   });
 
-  it('should render a title', () => {
-    const component = new IssueTitleComponent({
+  afterEach(() => {
+    Vue.http.interceptors = _.without(
+      Vue.http.interceptors, issueShowInterceptor,
+    );
+  });
+
+  it('should render a title', (done) => {
+    const issueShowComponent = new comps.IssueTitleComponent({
       propsData: {
-        initialTitle: 'wow',
+        candescription: '.css-stuff',
         endpoint: '/gitlab-org/gitlab-shell/issues/9/rendered_title',
       },
     }).$mount();
 
-    expect(component.$el.classList).toContain('title');
-    expect(component.$el.innerHTML).toContain('wow');
+    // need setTimeout because actual setTimeout in code :P
+    setTimeout(() => {
+      expect(issueShowComponent.$el.querySelector('.title').innerHTML)
+        .toContain('this is a title');
+      done();
+    }, 300);
+    // 300 is just three times the Vue comps setTimeout to ensure pass
   });
 });

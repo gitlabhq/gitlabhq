@@ -20,7 +20,7 @@ export default {
       errorCallback: (err) => {
         if (process.env.NODE_ENV !== 'production') {
           // eslint-disable-next-line no-console
-          console.error('ISSUE SHOW TITLE REALTIME ERROR', err);
+          console.error('ISSUE SHOW REALTIME ERROR', err);
         } else {
           throw new Error(err);
         }

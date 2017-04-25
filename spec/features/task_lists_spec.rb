@@ -70,7 +70,6 @@ feature 'Task Lists', feature: true do
 
       it 'renders' do
         visit_issue(project, issue)
-
         wait_for_vue_resource
 
         expect(page).to have_selector('ul.task-list',      count: 1)
@@ -80,10 +79,9 @@ feature 'Task Lists', feature: true do
 
       it 'contains the required selectors' do
         visit_issue(project, issue)
+        wait_for_vue_resource
 
         container = '.detail-page-description .description.js-task-list-container'
-
-        wait_for_vue_resource
 
         expect(page).to have_selector(container)
         expect(page).to have_selector("#{container} .wiki .task-list .task-list-item .task-list-item-checkbox")
@@ -94,16 +92,13 @@ feature 'Task Lists', feature: true do
 
       it 'is only editable by author' do
         visit_issue(project, issue)
-
         wait_for_vue_resource
 
         expect(page).to have_selector('.js-task-list-container')
 
         logout(:user)
-
         login_as(user2)
         visit current_path
-
         wait_for_vue_resource
         expect(page).not_to have_selector('.js-task-list-container')
       end
@@ -119,7 +114,6 @@ feature 'Task Lists', feature: true do
 
       it 'renders' do
         visit_issue(project, issue)
-
         wait_for_vue_resource
 
         expect(page).to have_selector('ul.task-list',      count: 1)
@@ -138,7 +132,6 @@ feature 'Task Lists', feature: true do
 
       it 'renders' do
         visit_issue(project, issue)
-
         wait_for_vue_resource
 
         expect(page).to have_selector('ul.task-list',      count: 1)
