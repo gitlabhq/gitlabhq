@@ -9,9 +9,32 @@ describe GitPushService, services: true do
   before do
     project.team << [user, :master]
     @blankrev = Gitlab::Git::BLANK_SHA
-    @oldrev = sample_commit.parent_id
-    @newrev = sample_commit.id
-    @ref = 'refs/heads/master'
+    @oldrev   = sample_commit.parent_id
+    @newrev   = sample_commit.id
+    @ref      = 'refs/heads/master'
+  end
+
+  describe 'with remote mirrors' do
+    let(:project)  { create(:project, :remote_mirror) }
+    let(:oldrev)   { @oldrev }
+    let(:newrev)   { @newrev }
+    let(:ref)      { @ref }
+
+    subject do
+      described_class.new(project, user, oldrev: oldrev, newrev: newrev, ref: ref )
+    end
+
+    it 'fails stuck remote mirrors' do
+      expect(subject).to receive(:update_remote_mirrors)
+
+      subject.execute
+    end
+
+    it 'updates remote mirrors' do
+      expect(subject).to receive(:update_remote_mirrors)
+
+      subject.execute
+    end
   end
 
   describe 'Push branches' do
@@ -19,7 +42,7 @@ describe GitPushService, services: true do
     let(:newrev) { @newrev }
 
     subject do
-      execute_service(project, user, oldrev, newrev, @ref )
+      execute_service(project, user, oldrev, newrev, @ref)
     end
 
     context 'new branch' do

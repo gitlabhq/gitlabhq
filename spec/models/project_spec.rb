@@ -195,6 +195,21 @@ describe Project, models: true do
       end
     end
 
+    context '#mark_stuck_remote_mirrors_as_failed!' do
+      it 'fails stuck remote mirrors' do
+        project = create(:project, :remote_mirror)
+
+        project.remote_mirrors.first.update_attributes(
+          update_status: :started,
+          last_update_at: 2.days.ago
+        )
+
+        expect do
+          project.mark_as_failed_stuck_remote_mirrors('some message')
+        end.to change { project.remote_mirrors.stuck.count }.from(1).to(0)
+      end
+    end
+
     context 'mirror' do
       subject { build(:project, mirror: true) }
 

@@ -182,7 +182,7 @@ class ApplicationSetting < ActiveRecord::Base
   before_save :ensure_runners_registration_token
   before_save :ensure_health_check_access_token
 
-  after_update :update_mirror_cron_jobs, if: :minimum_mirror_sync_time_changed?
+  after_update :update_mirror_cron_job, if: :minimum_mirror_sync_time_changed?
 
   after_commit do
     Rails.cache.write(CACHE_KEY, self)
@@ -291,13 +291,11 @@ class ApplicationSetting < ActiveRecord::Base
     end
   end
 
-  def update_mirror_cron_jobs
+  def update_mirror_cron_job
     Project.mirror.where('sync_time < ?', minimum_mirror_sync_time)
       .update_all(sync_time: minimum_mirror_sync_time)
-    RemoteMirror.where('sync_time < ?', minimum_mirror_sync_time)
-      .update_all(sync_time: minimum_mirror_sync_time)
 
-    Gitlab::Mirror.configure_cron_jobs!
+    Gitlab::Mirror.configure_cron_job!
   end
 
   def elasticsearch_url

@@ -639,6 +639,14 @@ class Project < ActiveRecord::Base
     remote_mirrors.each(&:sync)
   end
 
+  def mark_stuck_remote_mirrors_as_failed!
+    remote_mirrors.stuck.update_all(
+      update_status: :failed,
+      last_error: 'The remote mirror took to long to complete.',
+      last_update_at: Time.now
+    )
+  end
+
   def fetch_mirror
     return unless mirror?
 

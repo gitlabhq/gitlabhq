@@ -75,6 +75,9 @@ to the mirrored repository. Instead, any commits should be pushed to GitLab,
 and will end up in the mirrored repository automatically within the configured time,
 or when a [forced update](#forcing-an-update) is initiated.
 
+Push mirroring unlike pull mirroring, does not have any synchronization options available,
+therefore triggering the update whenever a push happens to the respective GitLab repository.
+
 In case of a diverged branch, you will see an error indicated at the
 **Mirror repository** settings.
 
