@@ -15,7 +15,7 @@ module Backup
       s[:gitlab_version]     = Gitlab::VERSION
       s[:tar_version]        = tar_version
       s[:skipped]            = ENV["SKIP"]
-      tar_file = "#{s[:backup_created_at].strftime('%s_%Y_%m_%d')}#{FILE_NAME_SUFFIX}"
+      tar_file = "#{s[:backup_created_at].strftime('%s_%Y_%m_%d_')}#{s[:gitlab_version]}#{FILE_NAME_SUFFIX}"
 
       Dir.chdir(Gitlab.config.backup.path) do
         File.open("#{Gitlab.config.backup.path}/backup_information.yml",
