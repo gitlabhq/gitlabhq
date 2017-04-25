@@ -36,7 +36,7 @@
       %a.btn.btn-default.btn-grouped.pull-right.visible-xs-block.js-sidebar-toggle{ href: "#" }
         = icon('angle-double-left')
 
-  .detail-page-description.milestone-detail{ class: ('hide-bottom-border' unless @milestone.description.present? ) }
+  .detail-page-description.milestone-detail
     %h2.title
       = markdown_field(@milestone, :title)
     %div
