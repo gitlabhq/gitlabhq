@@ -55,23 +55,6 @@ class BlobForkSuggestion {
     $(this.elementMap.openButtons).off('click', this.onOpenButtonClick);
     $(this.elementMap.cancelButtons).off('click', this.onCancelButtonClick);
   }
-
-  onClick(e) {
-    const el = e.target;
-
-    if ([].includes.call(this.elementMap.openButtons, el)) {
-      const { forkPath, action } = el.dataset;
-      this.showSuggestionSection(forkPath, action);
-    }
-
-    if ([].includes.call(this.elementMap.cancelButtons, el)) {
-      this.hideSuggestionSection();
-    }
-  }
-
-  destroy() {
-    document.removeEventListener('click', this.onClickWrapper);
-  }
 }
 
 export default BlobForkSuggestion;
