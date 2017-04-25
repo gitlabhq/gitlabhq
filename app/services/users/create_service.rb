@@ -9,12 +9,11 @@ module Users
     def build(skip_authorization: false)
       raise Gitlab::Access::AccessDeniedError unless skip_authorization || can_create_user?
 
-      user = User.new(build_user_params)
+      user = User.new(build_user_params(skip_authorization: skip_authorization))
 
       if current_user&.admin?
         if params[:reset_password]
           @reset_token = user.generate_reset_token
-          params[:force_random_password] = true
         end
 
         if params[:force_random_password]
@@ -93,7 +92,7 @@ module Users
       ]
     end
 
-    def build_user_params
+    def build_user_params(skip_authorization:)
       if current_user&.admin?
         user_params = params.slice(*admin_create_params)
         user_params[:created_by_id] = current_user&.id
@@ -103,7 +102,8 @@ module Users
         end
       else
         user_params = params.slice(*signup_params)
-        user_params[:skip_confirmation] = !current_application_settings.send_user_confirmation_email
+        user_params[:skip_confirmation] = params[:skip_confirmation] if skip_authorization
+        user_params[:skip_confirmation] ||= !current_application_settings.send_user_confirmation_email
       end
 
       user_params
