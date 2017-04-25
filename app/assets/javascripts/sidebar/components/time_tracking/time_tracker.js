@@ -31,7 +31,6 @@ export default {
     rootPath: {
       type: String,
       required: true,
-      default: '',
     },
   },
   data() {
@@ -97,61 +96,65 @@ export default {
     eventHub.$on('timeTracker:updateData', this.update);
   },
   template: `
-    <div class='time_tracker time-tracking-component-wrap' v-cloak>
+    <div
+      class="time_tracker time-tracking-component-wrap"
+      v-cloak
+    >
       <time-tracking-collapsed-state
-        :show-comparison-state='showComparisonState'
-        :show-no-time-tracking-state='showNoTimeTrackingState'
-        :show-help-state='showHelpState'
-        :show-spent-only-state='showSpentOnlyState'
-        :show-estimate-only-state='showEstimateOnlyState'
-        :time-spent-human-readable='timeSpentHumanReadable'
-        :time-estimate-human-readable='timeEstimateHumanReadable'
+        :show-comparison-state="showComparisonState"
+        :show-no-time-tracking-state="showNoTimeTrackingState"
+        :show-help-state="showHelpState"
+        :show-spent-only-state="showSpentOnlyState"
+        :show-estimate-only-state="showEstimateOnlyState"
+        :time-spent-human-readable="timeSpentHumanReadable"
+        :time-estimate-human-readable="timeEstimateHumanReadable"
       />
-      <div class='title hide-collapsed'>
+      <div class="title hide-collapsed">
         Time tracking
         <div
-          class='help-button pull-right'
-          v-if='!showHelpState'
-          @click='toggleHelpState(true)'
+          class="help-button pull-right"
+          v-if="!showHelpState"
+          @click="toggleHelpState(true)"
         >
             <i
-              class='fa fa-question-circle'
-              aria-hidden='true'
+              class="fa fa-question-circle"
+              aria-hidden="true"
             />
         </div>
         <div
-          class='close-help-button pull-right'
-          v-if='showHelpState'
-          @click='toggleHelpState(false)'>
+          class="close-help-button pull-right"
+          v-if="showHelpState"
+          @click="toggleHelpState(false)"
+        >
           <i
-            class='fa fa-close'
-            aria-hidden='true'
+            class="fa fa-close"
+            aria-hidden="true"
           />
         </div>
       </div>
-      <div class='time-tracking-content hide-collapsed'>
+      <div class="time-tracking-content hide-collapsed">
         <time-tracking-estimate-only-pane
-          v-if='showEstimateOnlyState'
-          :time-estimate-human-readable='timeEstimateHumanReadable'
+          v-if="showEstimateOnlyState"
+          :time-estimate-human-readable="timeEstimateHumanReadable"
         />
         <time-tracking-spent-only-pane
-          v-if='showSpentOnlyState'
-          :time-spent-human-readable='timeSpentHumanReadable'
+          v-if="showSpentOnlyState"
+          :time-spent-human-readable="timeSpentHumanReadable"
         />
         <time-tracking-no-tracking-pane
-          v-if='showNoTimeTrackingState'
+          v-if="showNoTimeTrackingState"
         />
         <time-tracking-comparison-pane
-          v-if='showComparisonState'
-          :time-estimate='timeEstimate'
-          :time-spent='timeSpent'
-          :time-spent-human-readable='timeSpentHumanReadable'
-          :time-estimate-human-readable='timeEstimateHumanReadable'
+          v-if="showComparisonState"
+          :time-estimate="timeEstimate"
+          :time-spent="timeSpent"
+          :time-spent-human-readable="timeSpentHumanReadable"
+          :time-estimate-human-readable="timeEstimateHumanReadable"
         />
-        <transition name='help-state-toggle'>
+        <transition name="help-state-toggle">
           <time-tracking-help-state
-            v-if='showHelpState'
-            :rootPath='rootPath'
+            v-if="showHelpState"
+            :rootPath="rootPath"
           />
         </transition>
       </div>

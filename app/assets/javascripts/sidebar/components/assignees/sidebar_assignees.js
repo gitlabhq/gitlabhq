@@ -53,16 +53,15 @@ export default {
   template: `
     <div>
       <assignee-title
-        :numberOfAssignees="store.selectedUserIds.length"
+        :number-of-assignees="store.selectedUserIds.length"
         :loading="loading"
         :editable="store.editable"
       />
       <assignees
         class="value"
         v-if="!loading"
-        :rootPath="store.rootPath"
+        :root-path="store.rootPath"
         :users="store.renderedUsers"
-        @assignSelf="assignSelf"
       />
     </div>
   `,

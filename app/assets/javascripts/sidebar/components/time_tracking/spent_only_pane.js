@@ -7,8 +7,8 @@ export default {
     },
   },
   template: `
-    <div class='time-tracking-spend-only-pane'>
-      <span class='bold'>Spent:</span>
+    <div class="time-tracking-spend-only-pane">
+      <span class="bold">Spent:</span>
       {{ timeSpentHumanReadable }}
     </div>
   `,

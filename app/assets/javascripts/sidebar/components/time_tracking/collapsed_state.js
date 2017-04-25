@@ -32,26 +32,58 @@ export default {
       default: '',
     },
   },
+  computed: {
+    timeSpent() {
+      return this.abbreviateTime(this.timeSpentHumanReadable);
+    },
+    timeEstimate() {
+      return this.abbreviateTime(this.timeEstimateHumanReadable);
+    },
+    divClass() {
+      if (this.showComparisonState) {
+        return 'compare';
+      } else if (this.showEstimateOnlyState) {
+        return 'estimate-only';
+      } else if (this.showSpentOnlyState) {
+        return 'spend-only';
+      } else if (this.showNoTimeTrackingState) {
+        return 'no-tracking';
+      }
+    },
+    spanClass() {
+      if (this.showComparisonState) {
+        return '';
+      } else if (this.showEstimateOnlyState || this.showSpentOnlyState) {
+        return 'bold';
+      } else if (this.showNoTimeTrackingState) {
+        return 'no-value';
+      }
+    },
+    text() {
+      if (this.showComparisonState) {
+        return `${this.timeSpent} / ${this.timeEstimate}`;
+      } else if (this.showEstimateOnlyState) {
+        return `-- / ${this.timeEstimate}`;
+      } else if (this.showSpentOnlyState) {
+        return `${this.timeSpent} / --`;
+      } else if (this.showNoTimeTrackingState) {
+        return 'None';
+      }
+    }
+  },
   methods: {
     abbreviateTime(timeStr) {
       return gl.utils.prettyTime.abbreviateTime(timeStr);
     },
   },
   template: `
-    <div class='sidebar-collapsed-icon'>
+    <div class="sidebar-collapsed-icon">
       ${stopwatchSvg}
-      <div class='time-tracking-collapsed-summary'>
-        <div class='compare' v-if='showComparisonState'>
-          <span>{{ abbreviateTime(timeSpentHumanReadable) }} / {{ abbreviateTime(timeEstimateHumanReadable) }}</span>
-        </div>
-        <div class='estimate-only' v-if='showEstimateOnlyState'>
-          <span class='bold'>-- / {{ abbreviateTime(timeEstimateHumanReadable) }}</span>
-        </div>
-        <div class='spend-only' v-if='showSpentOnlyState'>
-          <span class='bold'>{{ abbreviateTime(timeSpentHumanReadable) }} / --</span>
-        </div>
-        <div class='no-tracking' v-if='showNoTimeTrackingState'>
-          <span class='no-value'>None</span>
+      <div class="time-tracking-collapsed-summary">
+        <div :class="divClass">
+          <span :class="spanClass">
+            {{ text }}
+          </span>
         </div>
       </div>
     </div>

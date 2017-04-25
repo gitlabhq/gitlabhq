@@ -7,8 +7,10 @@ export default {
     },
   },
   template: `
-    <div class='time-tracking-estimate-only-pane'>
-      <span class='bold'>Estimated:</span>
+    <div class="time-tracking-estimate-only-pane">
+      <span class="bold">
+        Estimated:
+      </span>
       {{ timeEstimateHumanReadable }}
     </div>
   `,
