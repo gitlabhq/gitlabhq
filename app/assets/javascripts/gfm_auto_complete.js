@@ -3,6 +3,7 @@
 import emojiMap from 'emojis/digests.json';
 import emojiAliases from 'emojis/aliases.json';
 import { glEmojiTag } from '~/behaviors/gl_emoji';
+import glRegexp from '~/lib/utils/regexp';
 
 // Creates the variables for setting up GFM auto-completion
 window.gl = window.gl || {};
@@ -127,7 +128,15 @@ window.gl.GfmAutoComplete = {
       callbacks: {
         sorter: this.DefaultOptions.sorter,
         beforeInsert: this.DefaultOptions.beforeInsert,
-        filter: this.DefaultOptions.filter
+        filter: this.DefaultOptions.filter,
+
+        matcher: (flag, subtext) => {
+          const relevantText = subtext.trim().split(/\s/).pop();
+          const regexp = new RegExp(`(?:[^${glRegexp.unicodeLetters}0-9:]|\n|^):([^:]*)$`, 'gi');
+          const match = regexp.exec(relevantText);
+
+          return match && match.length ? match[1] : null;
+        }
       }
     });
     // Team Members
