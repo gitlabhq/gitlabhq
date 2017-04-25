@@ -1,13 +1,8 @@
 require 'spec_helper'
 
 feature 'Diffs URL', js: true, feature: true do
-  include ApplicationHelper
-
-  let(:author_user) { create(:user) }
-  let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
-  let(:forked_project) { Projects::ForkService.new(project, author_user).execute }
-  let(:merge_request) { create(:merge_request_with_diffs, source_project: forked_project, target_project: project, author: author_user) }
+  let(:merge_request) { create(:merge_request, source_project: project) }
 
   context 'when visit with */* as accept header' do
     before(:each) do
@@ -27,20 +22,23 @@ feature 'Diffs URL', js: true, feature: true do
 
   context 'when merge request has overflow' do
     it 'displays warning' do
-      allow_any_instance_of(MergeRequestDiff).to receive(:overflow?).and_return(true)
-      allow(Commit).to receive(:max_diff_options).and_return(max_files: 20, max_lines: 20)
+      allow(Commit).to receive(:max_diff_options).and_return(max_files: 3)
 
       visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)
 
       page.within('.alert') do
         expect(page).to have_text("Too many changes to show. Plain diff Email patch To preserve
-          performance only 3 of 3 files are displayed.")
+          performance only 3 of 3+ files are displayed.")
       end
     end
   end
 
-  describe 'when editing file' do
-    let(:changelog_id) { hexdigest("CHANGELOG") }
+  context 'when editing file' do
+    let(:author_user) { create(:user) }
+    let(:user) { create(:user) }
+    let(:forked_project) { Projects::ForkService.new(project, author_user).execute }
+    let(:merge_request) { create(:merge_request_with_diffs, source_project: forked_project, target_project: project, author: author_user) }
+    let(:changelog_id) { Digest::SHA1.hexdigest("CHANGELOG") }
 
     context 'as author' do
       it 'shows direct edit link' do
