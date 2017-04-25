@@ -394,7 +394,7 @@
     width: 23px;
   }
 
-  &.unsubscribed {
+  &.is-unsubscribed {
     background-color: $gl-text-color-disabled;
 
     &::before {
@@ -402,7 +402,7 @@
     }
   }
 
-  &.subscribed {
+  &.is-subscribed {
     background-color: $active-item-blue;
 
     &::before {

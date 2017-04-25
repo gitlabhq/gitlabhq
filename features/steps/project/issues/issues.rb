@@ -20,11 +20,11 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I should see that I am subscribed' do
-    page.find('.issuable-subscribe-button')[:class].include?('subscribed')
+    expect(find('.issuable-subscribe-button')).to have_css('is-subscribed')
   end
 
   step 'I should see that I am unsubscribed' do
-    page.find('.issuable-subscribe-button')[:class].include?('unsubscribed')
+    expect(find('.issuable-subscribe-button')).to have_css('is-unsubscribed')
   end
 
   step 'I click link "Closed"' do

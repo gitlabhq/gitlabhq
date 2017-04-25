@@ -304,7 +304,7 @@ describe 'Issue Boards', feature: true, js: true do
       page.within('.subscription') do
         page.find('.issuable-subscribe-button').click
         wait_for_ajax
-        expect(page).to have_selector('.subscribed')
+        expect(page).to have_selector('.is-subscribed')
       end
     end
   end

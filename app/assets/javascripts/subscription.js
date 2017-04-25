@@ -24,8 +24,8 @@
 
       $.post(toggleActionUrl, () => {
         button.classList.remove('disabled');
-        toggleButton.toggleClass('subscribed unsubscribed');
-        toggleIcon.toggleClass('subscribed unsubscribed');
+        toggleButton.toggleClass('is-subscribed is-unsubscribed');
+        toggleIcon.toggleClass('is-subscribed is-unsubscribed');
 
         // hack to allow this to work with the issue boards Vue object
         if (document.querySelector('html').classList.contains('issue-boards-page')) {
