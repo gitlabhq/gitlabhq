@@ -132,7 +132,7 @@ describe SnippetsController do
         it 'responds with status 404' do
           get :show, id: 'doesntexist'
 
-          expect(response).to have_http_status(404)
+          expect(response).to redirect_to(new_user_session_path)
         end
       end
     end
@@ -478,10 +478,10 @@ describe SnippetsController do
       end
 
       context 'when not signed in' do
-        it 'responds with status 404' do
+        it 'redirects to the sign in path' do
           get :raw, id: 'doesntexist'
 
-          expect(response).to have_http_status(404)
+          expect(response).to redirect_to(new_user_session_path)
         end
       end
     end
