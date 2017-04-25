@@ -30,6 +30,14 @@ module Github
       self.reset_callbacks :validate
     end
 
+    class LegacyDiffNote < ::LegacyDiffNote
+      self.table_name = 'notes'
+
+      self.reset_callbacks :commit
+      self.reset_callbacks :update
+      self.reset_callbacks :validate
+    end
+
     attr_reader :project, :repository, :repo, :options, :errors, :cached
 
     def initialize(project, options)
@@ -177,7 +185,7 @@ module Github
 
             # Fetch review comments
             review_comments_url = "/repos/#{repo}/pulls/#{pull_request.iid}/comments"
-            fetch_comments(merge_request, :review_comment, review_comments_url)
+            fetch_comments(merge_request, :review_comment, review_comments_url, LegacyDiffNote)
 
             # Fetch comments
             comments_url = "/repos/#{repo}/issues/#{pull_request.iid}/comments"
@@ -245,7 +253,7 @@ module Github
       end
     end
 
-    def fetch_comments(noteable, type, url)
+    def fetch_comments(noteable, type, url, klass = Note)
       while url
         comments = Github::Client.new(options).get(url)
 
@@ -255,14 +263,13 @@ module Github
               representation  = Github::Representation::Comment.new(raw, options)
               author_id       = user_id(representation.author, project.creator_id)
 
-              note            = Note.new
+              note            = klass.new
               note.project_id = project.id
               note.noteable   = noteable
               note.note       = format_description(representation.note, representation.author)
               note.commit_id  = representation.commit_id
               note.line_code  = representation.line_code
               note.author_id  = author_id
-              note.type       = representation.type
               note.created_at = representation.created_at
               note.updated_at = representation.updated_at
               note.save!(validate: false)

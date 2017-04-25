@@ -20,10 +20,6 @@ module Github
         generate_line_code(parsed_lines.to_a.last)
       end
 
-      def type
-        'LegacyDiffNote' if on_diff?
-      end
-
       private
 
       def generate_line_code(line)

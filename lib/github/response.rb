@@ -9,7 +9,7 @@ module Github
     end
 
     def body
-      @body ||= Oj.load(raw.body, class_cache: false, mode: :compat)
+      Oj.load(raw.body, class_cache: false, mode: :compat)
     end
 
     def rels
