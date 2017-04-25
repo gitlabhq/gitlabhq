@@ -95,21 +95,19 @@ module Github
 
         response.body.each do |raw|
           begin
-            label = Github::Representation::Label.new(raw)
-            next if project.labels.where(title: label.title).exists?
+            representation = Github::Representation::Label.new(raw)
 
-            project.labels.create!(title: label.title, color: label.color)
+            label = project.labels.find_or_create_by!(title: representation.title) do |label|
+              label.color = representation.color
+            end
+
+            cached[:label_ids][label.title] = label.id
           rescue => e
             error(:label, label.url, e.message)
           end
         end
 
         url = response.rels[:next]
-      end
-
-      # Cache labels
-      project.labels.select(:id, :title).find_each do |label|
-        cached[:label_ids][label.title] = label.id
       end
     end
 
