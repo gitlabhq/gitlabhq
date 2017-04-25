@@ -78,7 +78,7 @@ export default {
         });
 
         clearTimeout(this.timeoutId);
-      }, 100);
+      }, 0);
     },
   },
   computed: {

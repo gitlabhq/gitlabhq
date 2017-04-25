@@ -8,7 +8,6 @@ import issueShowData from './mock_data';
 window.$ = $;
 
 const issueShowInterceptor = (request, next) => {
-  console.log(issueShowData);
   next(request.respondWith(JSON.stringify(issueShowData), {
     status: 200,
   }));
@@ -43,7 +42,7 @@ describe('Issue Title', () => {
       expect(issueShowComponent.$el.querySelector('.title').innerHTML)
         .toContain('this is a title');
       done();
-    }, 300);
-    // 300 is just three times the Vue comps setTimeout to ensure pass
+    }, 10);
+    // 10ms is just long enough for the update hook to fire
   });
 });
