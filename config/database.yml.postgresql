@@ -10,10 +10,13 @@ production:
   # password:
   # host: localhost
   # port: 5432
+<<<<<<< HEAD
   # load_balancing:
   #   hosts:
   #     - host1.example.com
   #     - host2.example.com
+=======
+>>>>>>> upstream/master
 
 #
 # Development specific

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature 'Global search', feature: true do
   let(:user) { create(:user) }
-  let(:project) { create(:project, namespace: user.namespace) }
+  let(:project) { create(:empty_project, namespace: user.namespace) }
 
   before do
     project.team << [user, :master]

@@ -1,23 +1,33 @@
-require Rails.root.join('spec', 'support', 'login_helpers')
+require Rails.root.join('features', 'support', 'login_helpers')
 
 module SharedAuthentication
   include Spinach::DSL
   include LoginHelpers
 
   step 'I sign in as a user' do
-    login_as :user
+    sign_out(@user) if @user
+
+    @user = create(:user)
+    sign_in(@user)
+  end
+
+  step 'I sign in via the UI' do
+    gitlab_sign_in(create(:user))
   end
 
   step 'I sign in as an admin' do
-    login_as :admin
+    sign_out(@user) if @user
+
+    @user = create(:admin)
+    sign_in(@user)
   end
 
   step 'I sign in as "John Doe"' do
-    login_with(user_exists("John Doe"))
+    gitlab_sign_in(user_exists("John Doe"))
   end
 
   step 'I sign in as "Mary Jane"' do
-    login_with(user_exists("Mary Jane"))
+    gitlab_sign_in(user_exists("Mary Jane"))
   end
 
   step 'I sign in as "Pete Peters"' do
@@ -29,14 +39,41 @@ module SharedAuthentication
   end
 
   step "I logout" do
-    logout
+    gitlab_sign_out
   end
 
   step "I logout directly" do
-    logout_direct
+    gitlab_sign_out
   end
 
   def current_user
     @user || User.reorder(nil).first
+  end
+
+  private
+
+  def gitlab_sign_in(user)
+    visit new_user_session_path
+
+    fill_in "user_login", with: user.email
+    fill_in "user_password", with: "12345678"
+    check 'user_remember_me'
+    click_button "Sign in"
+
+    @user = user
+  end
+
+  def gitlab_sign_out
+    return unless @user
+
+    if Capybara.current_driver == Capybara.javascript_driver
+      find('.header-user-dropdown-toggle').click
+      click_link 'Sign out'
+      expect(page).to have_button('Sign in')
+    else
+      sign_out(@user)
+    end
+
+    @user = nil
   end
 end

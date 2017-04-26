@@ -2,10 +2,8 @@ require 'spec_helper'
 Dir["./spec/features/protected_tags/*.rb"].sort.each { |f| require f }
 
 feature 'Projected Tags', feature: true, js: true do
-  include WaitForAjax
-
   let(:user) { create(:user, :admin) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
   before { login_as(user) }
 

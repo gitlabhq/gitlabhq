@@ -1,0 +1,4 @@
+---
+title: Fixed Prometheus monitoring graphs not showing empty states in certain scenarios
+merge_request:
+author:

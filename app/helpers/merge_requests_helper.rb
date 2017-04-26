@@ -56,11 +56,12 @@ module MergeRequestsHelper
   end
 
   def issues_sentence(issues)
-    # Sorting based on the `#123` or `group/project#123` reference will sort
-    # local issues first.
-    issues.map do |issue|
+    # Issuable sorter will sort local issues, then issues from the same
+    # namespace, then all other issues.
+    issues = Gitlab::IssuableSorter.sort(@project, issues).map do |issue|
       issue.to_reference(@project)
-    end.sort.to_sentence
+    end
+    issues.to_sentence
   end
 
   def mr_closes_issues

@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe API::V3::DeployKeys, api: true  do
-  include ApiHelpers
-
+describe API::V3::DeployKeys do
   let(:user)        { create(:user) }
   let(:admin)       { create(:admin) }
   let(:project)     { create(:empty_project, creator_id: user.id) }

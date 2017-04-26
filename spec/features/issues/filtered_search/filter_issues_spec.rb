@@ -3,7 +3,6 @@ require 'spec_helper'
 describe 'Filter issues', js: true, feature: true do
   include Devise::Test::IntegrationHelpers
   include FilteredSearchHelpers
-  include WaitForAjax
 
   let!(:group) { create(:group) }
   let!(:project) { create(:project, group: group) }

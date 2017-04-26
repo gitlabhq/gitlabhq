@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 feature 'Issue Sidebar', feature: true do
-  include WaitForAjax
   include MobileHelpers
 
   let(:project) { create(:project, :public) }

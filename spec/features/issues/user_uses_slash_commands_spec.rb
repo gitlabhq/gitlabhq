@@ -2,7 +2,6 @@ require 'rails_helper'
 
 feature 'Issues > User uses slash commands', feature: true, js: true do
   include SlashCommandsHelpers
-  include WaitForAjax
 
   it_behaves_like 'issuable record that supports slash commands in its description and notes', :issue do
     let(:issuable) { create(:issue, project: project) }

@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 feature 'Diffs URL', js: true, feature: true do
+<<<<<<< HEAD
   include ApplicationHelper
 
   let(:author_user) { create(:user) }
@@ -8,6 +9,10 @@ feature 'Diffs URL', js: true, feature: true do
   let(:project) { create(:project, :public) }
   let(:forked_project) { Projects::ForkService.new(project, author_user).execute }
   let(:merge_request) { create(:merge_request_with_diffs, source_project: forked_project, target_project: project, author: author_user) }
+=======
+  let(:project) { create(:project, :public) }
+  let(:merge_request) { create(:merge_request, source_project: project) }
+>>>>>>> upstream/master
 
   context 'when visit with */* as accept header' do
     before(:each) do
@@ -27,8 +32,7 @@ feature 'Diffs URL', js: true, feature: true do
 
   context 'when merge request has overflow' do
     it 'displays warning' do
-      allow_any_instance_of(MergeRequestDiff).to receive(:overflow?).and_return(true)
-      allow(Commit).to receive(:max_diff_options).and_return(max_files: 20, max_lines: 20)
+      allow(Commit).to receive(:max_diff_options).and_return(max_files: 3)
 
       visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)
 
@@ -41,6 +45,37 @@ feature 'Diffs URL', js: true, feature: true do
 
   describe 'when editing file' do
     let(:changelog_id) { hexdigest("CHANGELOG") }
+
+    context 'as author' do
+      it 'shows direct edit link' do
+        login_as(author_user)
+        visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)
+
+        # Throws `Capybara::Poltergeist::InvalidSelector` if we try to use `#hash` syntax
+        expect(page).to have_selector("[id=\"#{changelog_id}\"] a.js-edit-blob")
+      end
+    end
+
+    context 'as user who needs to fork' do
+      it 'shows fork/cancel confirmation' do
+        login_as(user)
+        visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)
+
+        # Throws `Capybara::Poltergeist::InvalidSelector` if we try to use `#hash` syntax
+        find("[id=\"#{changelog_id}\"] .js-edit-blob").click
+
+        expect(page).to have_selector('.js-fork-suggestion-button', count: 1)
+        expect(page).to have_selector('.js-cancel-fork-suggestion-button', count: 1)
+      end
+    end
+  end
+
+  context 'when editing file' do
+    let(:author_user) { create(:user) }
+    let(:user) { create(:user) }
+    let(:forked_project) { Projects::ForkService.new(project, author_user).execute }
+    let(:merge_request) { create(:merge_request_with_diffs, source_project: forked_project, target_project: project, author: author_user) }
+    let(:changelog_id) { Digest::SHA1.hexdigest("CHANGELOG") }
 
     context 'as author' do
       it 'shows direct edit link' do

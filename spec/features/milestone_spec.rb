@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 feature 'Milestone', feature: true do
-  include WaitForAjax
-
   let(:project) { create(:empty_project, :public) }
   let(:user)   { create(:user) }
 

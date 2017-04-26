@@ -23,6 +23,7 @@ class Projects::MilestonesController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
+        @project_namespace = @project.namespace.becomes(Namespace)
         @milestones = @milestones.includes(:project)
         @milestones = @milestones.page(params[:page])
       end
