@@ -12,7 +12,7 @@ describe 'Filter issues', js: true, feature: true do
   let!(:wontfix) { create(:label, project: project, title: "Won't fix") }
 
   let!(:bug_label) { create(:label, project: project, title: 'bug') }
-  let!(:caps_sensitive_label) { create(:label, project: project, title: 'CAPS_sensitive') }
+  let!(:caps_sensitive_label) { create(:label, project: project, title: 'CaPs') }
   let!(:milestone) { create(:milestone, title: "8", project: project, start_date: 2.days.ago) }
   let!(:multiple_words_label) { create(:label, project: project, title: "Two words") }
 
