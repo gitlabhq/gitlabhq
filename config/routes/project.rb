@@ -312,7 +312,7 @@ constraints(ProjectUrlConstrainer.new) do
           post :export_csv
         end
 
-        resources :related_issues, only: [:index, :create]
+        resources :related_issues, only: [:index, :create, :destroy]
       end
 
       resources :project_members, except: [:show, :new, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ }, concerns: :access_requestable do

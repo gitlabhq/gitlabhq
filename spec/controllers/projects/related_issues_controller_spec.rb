@@ -80,4 +80,45 @@ describe Projects::RelatedIssuesController, type: :controller do
       end
     end
   end
+
+  describe 'DELETE #destroy' do
+    let(:related_issue) { create :related_issue }
+    let(:service) { double(RelatedIssues::DestroyService, execute: service_response) }
+    let(:service_response) { { 'message' => 'yay' } }
+    let(:user_role) { :developer }
+
+    subject do
+      delete :destroy, namespace_id: issue.project.namespace,
+                       project_id: issue.project,
+                       issue_id: issue,
+                       id: related_issue,
+                       format: :json
+    end
+
+    before do
+      project.team << [user, user_role]
+      sign_in user
+
+      allow(RelatedIssues::DestroyService).to receive(:new)
+        .with(related_issue, user)
+        .and_return(service)
+    end
+
+    context 'when unauthorized' do
+      let(:user_role) { :guest }
+
+      it 'returns 404' do
+        is_expected.to have_http_status(404)
+      end
+    end
+
+    context 'when authorized' do
+      let(:user_role) { :developer }
+
+      it 'returns success JSON' do
+        is_expected.to have_http_status(200)
+        expect(json_response).to eq(service_response)
+      end
+    end
+  end
 end

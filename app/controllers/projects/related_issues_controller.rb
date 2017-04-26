@@ -1,7 +1,7 @@
 module Projects
   class RelatedIssuesController < ApplicationController
     before_action :authorize_read_related_issue!
-    before_action :authorize_admin_related_issue!, only: [:create]
+    before_action :authorize_admin_related_issue!, only: [:create, :destroy]
 
     def index
       render json: RelatedIssues::ListService.new(issue, current_user).execute
@@ -12,6 +12,13 @@ module Projects
       result = RelatedIssues::CreateService.new(issue, current_user, opts).execute
 
       render json: result, status: result['http_status']
+    end
+
+    def destroy
+      related_issue = RelatedIssue.find(params[:id])
+      result = RelatedIssues::DestroyService.new(related_issue, current_user).execute
+
+      render json: result
     end
 
     private
