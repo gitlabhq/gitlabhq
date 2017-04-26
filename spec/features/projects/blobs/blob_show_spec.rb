@@ -149,7 +149,7 @@ feature 'File blob', :js, feature: true do
         wait_for_ajax
       end
 
-      it 'displays the blob' do
+      it 'displays an error' do
         aggregate_failures do
           # hides the simple viewer
           expect(page).to have_selector('.blob-viewer[data-type="simple"]', visible: false)
@@ -173,7 +173,7 @@ feature 'File blob', :js, feature: true do
           wait_for_ajax
         end
 
-        it 'displays the blob' do
+        it 'displays an error' do
           aggregate_failures do
             # hides the rich viewer
             expect(page).to have_selector('.blob-viewer[data-type="simple"]')
