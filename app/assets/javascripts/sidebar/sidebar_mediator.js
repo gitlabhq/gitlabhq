@@ -38,18 +38,14 @@ export default class SidebarMediator {
   }
 
   fetch() {
-    return new Promise((resolve, reject) => {
-      this.service.get()
-        .then((response) => {
-          const data = response.json();
-          this.store.processUserData(data);
-          this.store.processTimeTrackingData(data);
-          return resolve();
-        })
-        .catch(() => {
-          reject();
-          return new Flash('Error occured when fetching sidebar data');
-        });
-    });
+    this.service.get()
+      .then((response) => {
+        const data = response.json();
+        this.store.processUserData(data);
+        this.store.processTimeTrackingData(data);
+      })
+      .catch(() => {
+        return new Flash('Error occured when fetching sidebar data');
+      });
   }
 }
