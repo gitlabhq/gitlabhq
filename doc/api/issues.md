@@ -76,6 +76,14 @@ Example response:
          "avatar_url" : null,
          "username" : "root"
       }],
+      "assignee" : {
+         "state" : "active",
+         "id" : 1,
+         "name" : "Administrator",
+         "web_url" : "https://gitlab.example.com/root",
+         "avatar_url" : null,
+         "username" : "root"
+      },
       "updated_at" : "2016-01-04T15:31:51.081Z",
       "id" : 76,
       "title" : "Consequatur vero maxime deserunt laboriosam est voluptas dolorem.",
@@ -90,6 +98,8 @@ Example response:
    }
 ]
 ```
+
+**Note**: `assignee` column is deprecated, it shows a first assignee only.
 
 ## List group issues
 
@@ -158,6 +168,14 @@ Example response:
          "id" : 9,
          "name" : "Dr. Luella Kovacek"
       }],
+      "assignee" : {
+         "avatar_url" : null,
+         "web_url" : "https://gitlab.example.com/lennie",
+         "state" : "active",
+         "username" : "lennie",
+         "id" : 9,
+         "name" : "Dr. Luella Kovacek"
+      },
       "labels" : [],
       "id" : 41,
       "title" : "Ut commodi ullam eos dolores perferendis nihil sunt.",
@@ -171,6 +189,8 @@ Example response:
    }
 ]
 ```
+
+**Note**: `assignee` column is deprecated, it shows a first assignee only.
 
 ## List project issues
 
@@ -239,6 +259,14 @@ Example response:
          "id" : 9,
          "name" : "Dr. Luella Kovacek"
       }],
+      "assignee" : {
+         "avatar_url" : null,
+         "web_url" : "https://gitlab.example.com/lennie",
+         "state" : "active",
+         "username" : "lennie",
+         "id" : 9,
+         "name" : "Dr. Luella Kovacek"
+      },
       "labels" : [],
       "id" : 41,
       "title" : "Ut commodi ullam eos dolores perferendis nihil sunt.",
@@ -252,6 +280,8 @@ Example response:
    }
 ]
 ```
+
+**Note**: `assignee` column is deprecated, it shows a first assignee only.
 
 ## Single issue
 
@@ -305,6 +335,14 @@ Example response:
       "id" : 9,
       "name" : "Dr. Luella Kovacek"
    }],
+   "assignee" : {
+      "avatar_url" : null,
+      "web_url" : "https://gitlab.example.com/lennie",
+      "state" : "active",
+      "username" : "lennie",
+      "id" : 9,
+      "name" : "Dr. Luella Kovacek"
+   },
    "labels" : [],
    "id" : 41,
    "title" : "Ut commodi ullam eos dolores perferendis nihil sunt.",
@@ -318,6 +356,8 @@ Example response:
    "weight": null
 }
 ```
+
+**Note**: `assignee` column is deprecated, it shows a first assignee only.
 
 ## New issue
 
@@ -357,6 +397,7 @@ Example response:
    "title" : "Issues with auth",
    "state" : "opened",
    "assignees" : [],
+   "assignee" : null,
    "labels" : [
       "bug"
    ],
@@ -379,6 +420,8 @@ Example response:
    "weight": null
 }
 ```
+
+**Note**: `assignee` column is deprecated, it shows a first assignee only.
 
 ## Edit issue
 
@@ -432,6 +475,7 @@ Example response:
    ],
    "id" : 85,
    "assignees" : [],
+   "assignee" : null,
    "milestone" : null,
    "subscribed" : true,
    "user_notes_count": 0,
@@ -441,6 +485,8 @@ Example response:
    "weight": null
 }
 ```
+
+**Note**: `assignee` column is deprecated, it shows a first assignee only.
 
 ## Delete an issue
 
@@ -504,6 +550,14 @@ Example response:
     "avatar_url": "http://www.gravatar.com/avatar/46f6f7dc858ada7be1853f7fb96e81da?s=80&d=identicon",
     "web_url": "https://gitlab.example.com/axel.block"
   }],
+  "assignee": {
+    "name": "Miss Monserrate Beier",
+    "username": "axel.block",
+    "id": 12,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/46f6f7dc858ada7be1853f7fb96e81da?s=80&d=identicon",
+    "web_url": "https://gitlab.example.com/axel.block"
+  },
   "author": {
     "name": "Kris Steuber",
     "username": "solon.cremin",
@@ -518,6 +572,8 @@ Example response:
   "weight": null
 }
 ```
+
+**Note**: `assignee` column is deprecated, it shows a first assignee only.
 
 ## Subscribe to an issue
 
@@ -560,6 +616,14 @@ Example response:
     "avatar_url": "http://www.gravatar.com/avatar/46f6f7dc858ada7be1853f7fb96e81da?s=80&d=identicon",
     "web_url": "https://gitlab.example.com/axel.block"
   }],
+  "assignee": {
+    "name": "Miss Monserrate Beier",
+    "username": "axel.block",
+    "id": 12,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/46f6f7dc858ada7be1853f7fb96e81da?s=80&d=identicon",
+    "web_url": "https://gitlab.example.com/axel.block"
+  },
   "author": {
     "name": "Kris Steuber",
     "username": "solon.cremin",
@@ -574,6 +638,8 @@ Example response:
   "weight": null
 }
 ```
+
+**Note**: `assignee` column is deprecated, it shows a first assignee only.
 
 ## Unsubscribe from an issue
 
@@ -664,6 +730,14 @@ Example response:
       "avatar_url": "http://www.gravatar.com/avatar/a7fa515d53450023c83d62986d0658a8?s=80&d=identicon",
       "web_url": "https://gitlab.example.com/francisca"
     }],
+    "assignee": {
+      "name": "Jarret O'Keefe",
+      "username": "francisca",
+      "id": 14,
+      "state": "active",
+      "avatar_url": "http://www.gravatar.com/avatar/a7fa515d53450023c83d62986d0658a8?s=80&d=identicon",
+      "web_url": "https://gitlab.example.com/francisca"
+    },
     "author": {
       "name": "Maxie Medhurst",
       "username": "craig_rutherford",
@@ -687,6 +761,8 @@ Example response:
   "created_at": "2016-07-01T11:09:13.992Z"
 }
 ```
+
+**Note**: `assignee` column is deprecated, it shows a first assignee only.
 
 ## Set a time estimate for an issue
 

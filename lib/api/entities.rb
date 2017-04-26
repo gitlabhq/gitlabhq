@@ -281,6 +281,10 @@ module API
       expose :milestone, using: Entities::Milestone
       expose :assignees, :author, using: Entities::UserBasic
 
+      expose :assignee, using: ::API::Entities::UserBasic do |issue, options|
+        issue.assignees.first
+      end
+
       expose :user_notes_count
       expose :upvotes, :downvotes
       expose :due_date
