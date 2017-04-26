@@ -29,7 +29,7 @@ class NotificationRecipientService
       recipients << target.assignee
     when :reassign_issue
       previous_assignees = Array(previous_assignee)
-      recipients.concat(previous_assignees) if previous_assignees.any?
+      recipients.concat(previous_assignees)
       recipients.concat(target.assignees)
     end
 

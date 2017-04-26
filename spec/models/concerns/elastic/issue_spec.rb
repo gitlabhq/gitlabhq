@@ -31,13 +31,14 @@ describe Issue, elastic: true do
   end
 
   it "returns json with all needed elements" do
-    issue = create :issue, project: project
+    assignee = create(:user)
+    issue = create :issue, project: project, assignees: [assignee]
 
     expected_hash = issue.attributes.extract!('id', 'iid', 'title', 'description', 'created_at',
                                                 'updated_at', 'state', 'project_id', 'author_id',
                                                 'confidential')
 
-    expected_hash['assignee_id'] = []
+    expected_hash['assignee_id'] = [assignee.id]
 
     expect(issue.as_indexed_json).to eq(expected_hash)
   end

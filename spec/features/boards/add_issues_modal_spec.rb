@@ -131,7 +131,7 @@ describe 'Issue Boards add issue modal', :feature, :js do
     context 'selecing issues' do
       it 'selects single issue' do
         page.within('.add-issues-modal') do
-          first('.card').click
+          first('.card .card-number').click
 
           page.within('.nav-links') do
             expect(page).to have_content('Selected issues 1')
@@ -141,7 +141,7 @@ describe 'Issue Boards add issue modal', :feature, :js do
 
       it 'changes button text' do
         page.within('.add-issues-modal') do
-          first('.card').click
+          first('.card .card-number').click
 
           expect(first('.add-issues-footer .btn')).to have_content('Add 1 issue')
         end
@@ -149,7 +149,7 @@ describe 'Issue Boards add issue modal', :feature, :js do
 
       it 'changes button text with plural' do
         page.within('.add-issues-modal') do
-          all('.card').each do |el|
+          all('.card .card-number').each do |el|
             el.click
           end
 
@@ -159,7 +159,7 @@ describe 'Issue Boards add issue modal', :feature, :js do
 
       it 'shows only selected issues on selected tab' do
         page.within('.add-issues-modal') do
-          first('.card').click
+          first('.card .card-number').click
 
           click_link 'Selected issues'
 
@@ -189,7 +189,7 @@ describe 'Issue Boards add issue modal', :feature, :js do
 
       it 'selects all that arent already selected' do
         page.within('.add-issues-modal') do
-          first('.card').click
+          first('.card .card-number').click
 
           expect(page).to have_selector('.is-active', count: 1)
 
@@ -201,11 +201,11 @@ describe 'Issue Boards add issue modal', :feature, :js do
 
       it 'unselects from selected tab' do
         page.within('.add-issues-modal') do
-          first('.card').click
+          first('.card .card-number').click
 
           click_link 'Selected issues'
 
-          first('.card').click
+          first('.card .card-number').click
 
           expect(page).not_to have_selector('.is-active')
         end
@@ -215,7 +215,7 @@ describe 'Issue Boards add issue modal', :feature, :js do
     context 'adding issues' do
       it 'adds to board' do
         page.within('.add-issues-modal') do
-          first('.card').click
+          first('.card .card-number').click
 
           click_button 'Add 1 issue'
         end
@@ -227,7 +227,7 @@ describe 'Issue Boards add issue modal', :feature, :js do
 
       it 'adds to second list' do
         page.within('.add-issues-modal') do
-          first('.card').click
+          first('.card .card-number').click
 
           click_button planning.title
 

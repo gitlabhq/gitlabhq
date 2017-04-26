@@ -20,6 +20,7 @@ import eventHub from '../eventhub';
       list: {
         type: Object,
         required: false,
+        default: () => ({}),
       },
       rootPath: {
         type: String,
@@ -31,7 +32,67 @@ import eventHub from '../eventhub';
         default: false,
       },
     },
+    data() {
+      return {
+        limitBeforeCounter: 3,
+        maxRender: 4,
+        maxCounter: 99,
+      };
+    },
+    computed: {
+      numberOverLimit() {
+        return this.issue.assignees.length - this.limitBeforeCounter;
+      },
+      assigneeCounterTooltip() {
+        return `${this.assigneeCounterLabel} more`;
+      },
+      assigneeCounterLabel() {
+        if (this.numberOverLimit > this.maxCounter) {
+          return `${this.maxCounter}+`;
+        }
+
+        return `+${this.numberOverLimit}`;
+      },
+      shouldRenderCounter() {
+        if (this.issue.assignees.length <= this.maxRender) {
+          return false;
+        }
+
+        return this.issue.assignees.length > this.numberOverLimit;
+      },
+      cardUrl() {
+        return `${this.issueLinkBase}/${this.issue.id}`;
+      },
+      issueId() {
+        return `#${this.issue.id}`;
+      },
+      showLabelFooter() {
+        return this.issue.labels.find(l => this.showLabel(l)) !== undefined;
+      },
+    },
     methods: {
+      isIndexLessThanlimit(index) {
+        return index < this.limitBeforeCounter;
+      },
+      shouldRenderAssignee(index) {
+        // Eg. maxRender is 4,
+        // Render up to all 4 assignees if there are only 4 assigness
+        // Otherwise render up to the limitBeforeCounter
+        if (this.issue.assignees.length <= this.maxRender) {
+          return index < this.maxRender;
+        }
+
+        return index < this.limitBeforeCounter;
+      },
+      assigneeUrl(assignee) {
+        return `${this.rootPath}${assignee.username}`;
+      },
+      assigneeUrlTitle(assignee) {
+        return `Assigned to ${assignee.name}`;
+      },
+      avatarUrlTitle(assignee) {
+        return `Avatar for ${assignee.name}`;
+      },
       showLabel(label) {
         if (!this.list) return true;
 
@@ -67,35 +128,55 @@ import eventHub from '../eventhub';
     },
     template: `
       <div>
-        <h4 class="card-title">
-          <i
-            class="fa fa-eye-slash confidential-icon"
-            v-if="issue.confidential"></i>
-          <a
-            :href="issueLinkBase + '/' + issue.id"
-            :title="issue.title">
-            {{ issue.title }}
-          </a>
-        </h4>
-        <div class="card-footer">
-          <span
-            class="card-number"
-            v-if="issue.id">
-            #{{ issue.id }}
-          </span>
-          <a
-            class="card-assignee has-tooltip"
-            :href="rootPath + issue.assignee.username"
-            :title="'Assigned to ' + issue.assignee.name"
-            v-if="issue.assignee"
-            data-container="body">
-            <img
-              class="avatar avatar-inline s20"
-              :src="issue.assignee.avatar"
-              width="20"
-              height="20"
-              :alt="'Avatar for ' + issue.assignee.name" />
-          </a>
+        <div class="card-header">
+          <h4 class="card-title">
+            <i
+              class="fa fa-eye-slash confidential-icon"
+              v-if="issue.confidential"
+              aria-hidden="true"
+            />
+            <a
+              class="js-no-trigger"
+              :href="cardUrl"
+              :title="issue.title">{{ issue.title }}</a>
+            <span
+              class="card-number"
+              v-if="issue.id"
+            >
+              {{ issueId }}
+            </span>
+          </h4>
+          <div class="card-assignee">
+            <a
+              class="has-tooltip js-no-trigger"
+              :href="assigneeUrl(assignee)"
+              :title="assigneeUrlTitle(assignee)"
+              v-for="(assignee, index) in issue.assignees"
+              v-if="shouldRenderAssignee(index)"
+              data-container="body"
+              data-placement="bottom"
+            >
+              <img
+                class="avatar avatar-inline s20"
+                :src="assignee.avatar"
+                width="20"
+                height="20"
+                :alt="avatarUrlTitle(assignee)"
+              />
+            </a>
+            <span
+              class="avatar-counter has-tooltip"
+              :title="assigneeCounterTooltip"
+              v-if="shouldRenderCounter"
+            >
+             {{ assigneeCounterLabel }}
+            </span>
+          </div>
+        </div>
+        <div
+          class="card-footer"
+          v-if="showLabelFooter"
+        >
           <button
             class="label color-label has-tooltip"
             v-for="label in issue.labels"

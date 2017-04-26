@@ -7,6 +7,6 @@
 - if @issue.description
   = markdown(@issue.description, pipeline: :email, author: @issue.author)
 
-- if @issue.assignees.any?
+- if @issue.assignees.present?
   %p
     Assignee: #{@issue.assignee_list}

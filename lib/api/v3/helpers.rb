@@ -14,6 +14,14 @@ module API
         authorize! access_level, merge_request
         merge_request
       end
+
+      def convert_parameters_from_legacy_format(params)
+        if params[:assignee_id].present?
+          params[:assignee_ids] = [params.delete(:assignee_id)]
+        end
+
+        params
+      end
     end
   end
 end
