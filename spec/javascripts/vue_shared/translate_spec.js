@@ -17,7 +17,7 @@ describe('Vue translate filter', () => {
       el,
       template: `
         <span>
-          {{ 'testing' | t }}
+          {{ __('testing') }}
         </span>
       `,
     }).$mount();
@@ -36,7 +36,7 @@ describe('Vue translate filter', () => {
       el,
       template: `
         <span>
-          {{ '%d day' | nt('%d days', 1) }}
+          {{ n__('%d day', '%d days', 1) }}
         </span>
       `,
     }).$mount();
@@ -55,7 +55,7 @@ describe('Vue translate filter', () => {
       el,
       template: `
         <span>
-          {{ '%d day' | nt('%d days', 2) }}
+          {{ n__('%d day', '%d days', 2) }}
         </span>
       `,
     }).$mount();
@@ -74,7 +74,7 @@ describe('Vue translate filter', () => {
       el,
       template: `
         <span>
-          {{ 'day' | nt('days', 2) }}
+          {{ n__('day', 'days', 2) }}
         </span>
       `,
     }).$mount();

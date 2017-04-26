@@ -17,24 +17,43 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "\n"
 
+msgid "Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project."
+msgstr ""
+
 msgid "Deutsch"
 msgstr ""
 
 msgid "English"
 msgstr ""
 
-msgid "First"
+msgid "Introducing Cycle Analytics"
 msgstr ""
 
-msgid "Opened"
+msgid "Last 30 days"
 msgstr ""
 
-msgid "Showing %d event"
-msgid_plural "Showing %d events"
-msgstr[0] ""
-msgstr[1] ""
+msgid "Last 90 days"
+msgstr ""
+
+msgid "Median"
+msgstr ""
+
+msgid "Not available"
+msgstr ""
+
+msgid "Not enough data"
+msgstr ""
+
+msgid "Pipeline Health"
+msgstr ""
+
+msgid "Read more"
+msgstr ""
 
 msgid "Spanish"
+msgstr ""
+
+msgid "Stage"
 msgstr ""
 
 msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
@@ -58,24 +77,8 @@ msgstr ""
 msgid "The testing stage shows the time GitLab CI takes to run every pipeline for the related merge request. The data will automatically be added after your first pipeline finishes running."
 msgstr ""
 
+msgid "Total Time"
+msgstr ""
+
 msgid "Want to see the data? Please ask administrator for access."
-msgstr ""
-
-msgid "by"
-msgstr ""
-
-msgid "day"
-msgid_plural "days"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "hr"
-msgstr ""
-
-msgid "min"
-msgid_plural "mins"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "pushed by"
 msgstr ""
