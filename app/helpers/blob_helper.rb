@@ -216,8 +216,8 @@ module BlobHelper
     link_to icon('file-code-o'), path, class: 'btn btn-sm has-tooltip', target: '_blank', rel: 'noopener noreferrer', title: 'Open raw', data: { container: 'body' }
   end
 
-  def blob_render_error_reason(viewer, error)
-    case error
+  def blob_render_error_reason(viewer)
+    case viewer.render_error
     when :too_large
       max_size =
         if viewer.absolutely_too_large?
@@ -231,10 +231,10 @@ module BlobHelper
     end
   end
 
-  def blob_render_error_options(viewer, error)
+  def blob_render_error_options(viewer)
     options = []
 
-    if error == :too_large && viewer.can_override_max_size?
+    if viewer.render_error == :too_large && viewer.can_override_max_size?
       options << link_to('load it anyway', url_for(params.merge(viewer: viewer.type, override_max_size: true, format: nil)))
     end
 

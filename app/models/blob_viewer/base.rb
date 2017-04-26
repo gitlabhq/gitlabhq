@@ -67,15 +67,18 @@ module BlobViewer
     # binary from `blob_raw_url` and does its own format validation and error
     # rendering, especially for potentially large binary formats.
     def render_error
-      if server_side_but_stored_in_lfs?
-        # Files stored in LFS can only be rendered using a client-side viewer,
-        # since we do not want to read large amounts of data into memory on the
-        # server side. Client-side viewers use JS and can fetch the file from
-        # `blob_raw_url` using AJAX.
-        :server_side_but_stored_in_lfs
-      elsif override_max_size ? absolutely_too_large? : too_large?
-        :too_large
-      end
+      return @render_error if defined?(@render_error)
+
+      @render_error =
+        if server_side_but_stored_in_lfs?
+          # Files stored in LFS can only be rendered using a client-side viewer,
+          # since we do not want to read large amounts of data into memory on the
+          # server side. Client-side viewers use JS and can fetch the file from
+          # `blob_raw_url` using AJAX.
+          :server_side_but_stored_in_lfs
+        elsif override_max_size ? absolutely_too_large? : too_large?
+          :too_large
+        end
     end
 
     def prepare!

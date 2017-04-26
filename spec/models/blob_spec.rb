@@ -39,7 +39,7 @@ describe Blob do
     context 'if the blob is a valid LFS pointer' do
       context 'if the extension has a rich viewer' do
         context 'if the viewer is binary' do
-          it 'return true' do
+          it 'returns true' do
             blob = fake_blob(path: 'file.pdf', lfs: true)
 
             expect(blob.raw_binary?).to be_truthy
@@ -66,7 +66,7 @@ describe Blob do
 
     context 'if the blob is not an LFS pointer' do
       context 'if the blob is binary' do
-        it 'return true' do
+        it 'returns true' do
           blob = fake_blob(path: 'file.pdf', binary: true)
 
           expect(blob.raw_binary?).to be_truthy

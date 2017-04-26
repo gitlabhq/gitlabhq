@@ -8,7 +8,7 @@
     .text-center.prepend-top-default.append-bottom-default
       = icon('spinner spin 2x', 'aria-hidden' => 'true', 'aria-label' => 'Loading content')
   - elsif render_error
-    = render 'projects/blob/render_error', viewer: viewer, error: render_error
+    = render 'projects/blob/render_error', viewer: viewer
   - else
     - viewer.prepare!
     = render viewer.partial_path, viewer: viewer
