@@ -5,7 +5,13 @@ Vue.use(VueResource);
 
 export default class SidebarService {
   constructor(endpoint) {
-    this.endpoint = endpoint;
+    if (!SidebarService.singleton) {
+      this.endpoint = endpoint;
+
+      SidebarService.singleton = this;
+    }
+
+    return SidebarService.singleton;
   }
 
   get() {
