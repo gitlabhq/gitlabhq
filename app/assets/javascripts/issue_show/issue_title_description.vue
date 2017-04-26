@@ -32,7 +32,9 @@ export default {
       timeoutId: null,
       title: '<span></span>',
       description: '<span></span>',
+      descriptionText: '',
       descriptionChange: false,
+      taskStatus: '',
     };
   },
   methods: {
@@ -40,14 +42,51 @@ export default {
       const body = JSON.parse(res.body);
       this.triggerAnimation(body);
     },
+    updateTaskHTML(body) {
+      this.taskStatus = body.task_status;
+      document.querySelector('#task_status').innerText = this.taskStatus;
+    },
+    elementsToVisualize(noTitleChange, noDescriptionChange) {
+      const elementStack = [];
+
+      if (!noTitleChange) {
+        elementStack.push(this.$el.querySelector('.title'));
+      }
+
+      if (!noDescriptionChange) {
+        // only change to true when we need to bind TaskLists the html of description
+        this.descriptionChange = true;
+        elementStack.push(this.$el.querySelector('.wiki'));
+      }
+
+      elementStack.forEach((element) => {
+        element.classList.remove('issue-realtime-trigger-pulse');
+        element.classList.add('issue-realtime-pre-pulse');
+      });
+
+      return elementStack;
+    },
+    animate(title, description, elementsToVisualize) {
+      this.timeoutId = setTimeout(() => {
+        this.title = title;
+        this.description = description;
+        document.querySelector('title').innerText = title;
+
+        elementsToVisualize.forEach((element) => {
+          element.classList.remove('issue-realtime-pre-pulse');
+          element.classList.add('issue-realtime-trigger-pulse');
+        });
+
+        clearTimeout(this.timeoutId);
+      }, 0);
+    },
     triggerAnimation(body) {
       // always reset to false before checking the change
       this.descriptionChange = false;
 
       const { title, description } = body;
-
       this.descriptionText = body.description_text;
-
+      this.updateTaskHTML(body);
       /**
       * since opacity is changed, even if there is no diff for Vue to update
       * we must check the title/description even on a 304 to ensure no visual change
@@ -57,37 +96,12 @@ export default {
 
       if (noTitleChange && noDescriptionChange) return;
 
-      const elementsToVisualize = [];
+      const elementsToVisualize = this.elementsToVisualize(
+        noTitleChange,
+        noDescriptionChange,
+      );
 
-      if (!noTitleChange) {
-        elementsToVisualize.push(this.$el.querySelector('.title'));
-      }
-
-      if (!noDescriptionChange) {
-        // only change to true when we need to bind TaskLists the html of description
-        this.descriptionChange = true;
-
-        elementsToVisualize.push(this.$el.querySelector('.wiki'));
-      }
-
-      elementsToVisualize.forEach((element) => {
-        element.classList.remove('issue-realtime-trigger-pulse');
-        element.classList.add('issue-realtime-pre-pulse');
-      });
-
-      this.timeoutId = setTimeout(() => {
-        this.title = title;
-        document.querySelector('title').innerText = title;
-
-        this.description = description;
-
-        elementsToVisualize.forEach((element) => {
-          element.classList.remove('issue-realtime-pre-pulse');
-          element.classList.add('issue-realtime-trigger-pulse');
-        });
-
-        clearTimeout(this.timeoutId);
-      }, 0);
+      this.animate(title, description, elementsToVisualize);
     },
   },
   computed: {
@@ -118,7 +132,6 @@ export default {
       });
 
       $(this.$refs['issue-content-container-gfm-entry']).renderGFM();
-
       return tl;
     }
     return null;
