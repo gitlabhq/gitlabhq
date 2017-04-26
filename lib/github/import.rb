@@ -38,24 +38,33 @@ module Github
       self.reset_callbacks :validate
     end
 
-    attr_reader :project, :repository, :repo, :options, :errors, :cached
+    attr_reader :project, :repository, :repo, :options, :errors, :cached, :verbose
 
     def initialize(project, options)
       @project = project
       @repository = project.repository
       @repo = project.import_source
       @options = options
+      @verbose = options.fetch(:verbose, false)
       @cached  = Hash.new { |hash, key| hash[key] = Hash.new }
       @errors  = []
     end
 
+    # rubocop: disable Rails/Output
     def execute
+      puts 'Fetching repository...'.color(:aqua) if verbose
       fetch_repository
+      puts 'Fetching labels...'.color(:aqua) if verbose
       fetch_labels
+      puts 'Fetching milestones...'.color(:aqua) if verbose
       fetch_milestones
+      puts 'Fetching pull requests...'.color(:aqua) if verbose
       fetch_pull_requests
+      puts 'Fetching issues...'.color(:aqua) if verbose
       fetch_issues
+      puts 'Cloning wiki repository...'.color(:aqua) if verbose
       fetch_wiki_repository
+      puts 'Expiring repository cache...'.color(:aqua) if verbose
       expire_repository_cache
 
       true

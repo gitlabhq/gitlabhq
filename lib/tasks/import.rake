@@ -7,7 +7,7 @@ class GithubImport
   end
 
   def initialize(token, gitlab_username, project_path, extras)
-    @options = { url: 'https://api.github.com', token: token }
+    @options = { url: 'https://api.github.com', token: token, verbose: true }
     @project_path = project_path
     @current_user = User.find_by_username(gitlab_username)
     @github_repo = extras.empty? ? nil : extras.first
@@ -28,7 +28,7 @@ class GithubImport
   private
 
   def show_warning!
-    puts "This will import GH #{@repo['full_name'].bright} into GL #{@project_path.bright} as #{@current_user.name}"
+    puts "This will import GitHub #{@repo['full_name'].bright} into GitLab #{@project_path.bright} as #{@current_user.name}"
     puts "Permission checks are ignored. Press any key to continue.".color(:red)
 
     STDIN.getch
