@@ -17,7 +17,7 @@ class JobsSerializer < BaseSerializer
         { name: item.name,
           size: item.size,
           list: super(item.list, opts),
-          status: represent_status(item.status) }
+          status: represent_status(item.list) }
       end
     else
       super(resource, opts)
