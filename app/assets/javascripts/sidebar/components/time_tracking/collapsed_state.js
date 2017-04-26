@@ -49,6 +49,8 @@ export default {
       } else if (this.showNoTimeTrackingState) {
         return 'no-tracking';
       }
+
+      return '';
     },
     spanClass() {
       if (this.showComparisonState) {
@@ -58,6 +60,8 @@ export default {
       } else if (this.showNoTimeTrackingState) {
         return 'no-value';
       }
+
+      return '';
     },
     text() {
       if (this.showComparisonState) {
@@ -69,7 +73,9 @@ export default {
       } else if (this.showNoTimeTrackingState) {
         return 'None';
       }
-    }
+
+      return '';
+    },
   },
   methods: {
     abbreviateTime(timeStr) {
