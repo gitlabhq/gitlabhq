@@ -6,7 +6,7 @@
 #   current_user - which user use
 #   params:
 #     scope: 'created-by-me' or 'assigned-to-me' or 'all'
-#     state: 'open' or 'closed' or 'all'
+#     state: 'open', 'closed', 'merged', or 'all'
 #     group_id: integer
 #     project_id: integer
 #     milestone_title: string
