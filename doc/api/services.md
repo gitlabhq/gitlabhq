@@ -490,13 +490,78 @@ Remove all previously JIRA settings from a project.
 DELETE /projects/:id/services/jira
 ```
 
-## Mattermost Slash Commands
+## Slack slash commands
+
+Ability to receive slash commands from a Slack chat instance.
+
+### Get Slack slash command service settings
+
+Get Slack slash command service settings for a project.
+
+```
+GET /projects/:id/services/slack-slash-commands
+```
+
+Example response:
+
+```json
+{
+  "id": 4,
+  "title": "Slack slash commands",
+  "created_at": "2017-06-27T05:51:39-07:00",
+  "updated_at": "2017-06-27T05:51:39-07:00",
+  "active": true,
+  "push_events": true,
+  "issues_events": true,
+  "merge_requests_events": true,
+  "tag_push_events": true,
+  "note_events": true,
+  "build_events": true,
+  "pipeline_events": true,
+  "properties": {
+    "token": "9koXpg98eAheJpvBs5tK"
+  }
+}
+```
+
+### Create/Edit Slack slash command service
+
+Set Slack slash command for a project.
+
+```
+PUT /projects/:id/services/slack-slash-commands
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `token` | string | yes | The Slack token |
+
+
+### Delete Slack slash command service
+
+Delete Slack slash command service for a project.
+
+```
+DELETE /projects/:id/services/slack-slash-commands
+```
+
+## Mattermost slash commands
 
 Ability to receive slash commands from a Mattermost chat instance.
 
-### Create/Edit Mattermost Slash Command service
+### Get Mattermost slash command service settings
 
-Set Mattermost Slash Command for a project.
+Get Mattermost slash command service settings for a project.
+
+```
+GET /projects/:id/services/mattermost-slash-commands
+```
+
+### Create/Edit Mattermost slash command service
+
+Set Mattermost slash command for a project.
 
 ```
 PUT /projects/:id/services/mattermost-slash-commands
@@ -509,20 +574,12 @@ Parameters:
 | `token` | string | yes | The Mattermost token |
 
 
-### Delete Mattermost Slash Command service
+### Delete Mattermost slash command service
 
-Delete Mattermost Slash Command service for a project.
+Delete Mattermost slash command service for a project.
 
 ```
 DELETE /projects/:id/services/mattermost-slash-commands
-```
-
-### Get Mattermost Slash Command service settings
-
-Get Mattermost Slash Command service settings for a project.
-
-```
-GET /projects/:id/services/mattermost-slash-commands
 ```
 
 ## Pipeline-Emails

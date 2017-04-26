@@ -50,8 +50,8 @@ class ProjectTeam
   end
 
   def add_users(users, access_level, current_user: nil, expires_at: nil)
-    ProjectMember.add_users_to_projects(
-      [project.id],
+    ProjectMember.add_users(
+      project,
       users,
       access_level,
       current_user: current_user,

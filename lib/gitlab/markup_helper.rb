@@ -1,6 +1,11 @@
 module Gitlab
   module MarkupHelper
-    module_function
+    extend self
+
+    MARKDOWN_EXTENSIONS = %w(mdown mkd mkdn md markdown).freeze
+    ASCIIDOC_EXTENSIONS = %w(adoc ad asciidoc).freeze
+    OTHER_EXTENSIONS = %w(textile rdoc org creole wiki mediawiki rst).freeze
+    EXTENSIONS = MARKDOWN_EXTENSIONS + ASCIIDOC_EXTENSIONS + OTHER_EXTENSIONS
 
     # Public: Determines if a given filename is compatible with GitHub::Markup.
     #
@@ -8,10 +13,7 @@ module Gitlab
     #
     # Returns boolean
     def markup?(filename)
-      gitlab_markdown?(filename) ||
-        asciidoc?(filename) ||
-        filename.downcase.end_with?(*%w(.textile .rdoc .org .creole .wiki
-                                        .mediawiki .rst))
+      EXTENSIONS.include?(extension(filename))
     end
 
     # Public: Determines if a given filename is compatible with
@@ -21,7 +23,7 @@ module Gitlab
     #
     # Returns boolean
     def gitlab_markdown?(filename)
-      filename.downcase.end_with?(*%w(.mdown .mkd .mkdn .md .markdown))
+      MARKDOWN_EXTENSIONS.include?(extension(filename))
     end
 
     # Public: Determines if the given filename has AsciiDoc extension.
@@ -30,7 +32,7 @@ module Gitlab
     #
     # Returns boolean
     def asciidoc?(filename)
-      filename.downcase.end_with?(*%w(.adoc .ad .asciidoc))
+      ASCIIDOC_EXTENSIONS.include?(extension(filename))
     end
 
     # Public: Determines if the given filename is plain text.
@@ -39,12 +41,17 @@ module Gitlab
     #
     # Returns boolean
     def plain?(filename)
-      filename.downcase.end_with?('.txt') ||
-        filename.casecmp('readme').zero?
+      extension(filename) == 'txt' || filename.casecmp('readme').zero?
     end
 
     def previewable?(filename)
       markup?(filename)
+    end
+
+    private
+
+    def extension(filename)
+      File.extname(filename).downcase.delete('.')
     end
   end
 end

@@ -62,7 +62,6 @@ GET /users
     "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
     "web_url": "http://localhost:3000/john_smith",
     "created_at": "2012-05-23T08:00:58Z",
-    "is_admin": false,
     "bio": null,
     "location": null,
     "skype": "",
@@ -72,6 +71,7 @@ GET /users
     "organization": "",
     "last_sign_in_at": "2012-06-01T11:41:01Z",
     "confirmed_at": "2012-05-23T09:05:22Z",
+    "last_activity_on": "2012-05-23",
     "color_scheme_id": 2,
     "projects_limit": 100,
     "current_sign_in_at": "2012-06-02T06:36:55Z",
@@ -94,7 +94,6 @@ GET /users
     "avatar_url": "http://localhost:3000/uploads/user/avatar/2/index.jpg",
     "web_url": "http://localhost:3000/jack_smith",
     "created_at": "2012-05-23T08:01:01Z",
-    "is_admin": false,
     "bio": null,
     "location": null,
     "skype": "",
@@ -104,6 +103,7 @@ GET /users
     "organization": "",
     "last_sign_in_at": null,
     "confirmed_at": "2012-05-30T16:53:06.148Z",
+    "last_activity_on": "2012-05-23",
     "color_scheme_id": 3,
     "projects_limit": 100,
     "current_sign_in_at": "2014-03-19T17:54:13Z",
@@ -128,6 +128,18 @@ For example:
 
 ```
 GET /users?username=jack_smith
+```
+
+You can also lookup users by external UID and provider:
+
+```
+GET /users?extern_uid=:extern_uid&provider=:provider
+```
+
+For example:
+
+```
+GET /users?extern_uid=1234567&provider=github
 ```
 
 You can search for users who are external with: `/users?external=true`
@@ -155,7 +167,6 @@ Parameters:
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/cd8.jpeg",
   "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
-  "is_admin": false,
   "bio": null,
   "location": null,
   "skype": "",
@@ -186,7 +197,6 @@ Parameters:
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
   "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
-  "is_admin": false,
   "bio": null,
   "location": null,
   "skype": "",
@@ -196,6 +206,7 @@ Parameters:
   "organization": "",
   "last_sign_in_at": "2012-06-01T11:41:01Z",
   "confirmed_at": "2012-05-23T09:05:22Z",
+  "last_activity_on": "2012-05-23",
   "color_scheme_id": 2,
   "projects_limit": 100,
   "current_sign_in_at": "2012-06-02T06:36:55Z",
@@ -310,7 +321,6 @@ GET /user
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
   "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
-  "is_admin": false,
   "bio": null,
   "location": null,
   "skype": "",
@@ -320,6 +330,7 @@ GET /user
   "organization": "",
   "last_sign_in_at": "2012-06-01T11:41:01Z",
   "confirmed_at": "2012-05-23T09:05:22Z",
+  "last_activity_on": "2012-05-23",
   "color_scheme_id": 2,
   "projects_limit": 100,
   "current_sign_in_at": "2012-06-02T06:36:55Z",
@@ -365,6 +376,7 @@ GET /user
   "organization": "",
   "last_sign_in_at": "2012-06-01T11:41:01Z",
   "confirmed_at": "2012-05-23T09:05:22Z",
+  "last_activity_on": "2012-05-23",
   "color_scheme_id": 2,
   "projects_limit": 100,
   "current_sign_in_at": "2012-06-02T06:36:55Z",
@@ -986,3 +998,55 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `user_id` | integer | yes | The ID of the user |
 | `impersonation_token_id` | integer | yes | The ID of the impersonation token |
+
+### Get user activities (admin only)
+
+>**Note:** This API endpoint is only available on 8.15 (EE) and 9.1 (CE) and above.
+
+Get the last activity date for all users, sorted from oldest to newest.
+
+The activities that update the timestamp are:
+
+  - Git HTTP/SSH activities (such as clone, push)
+  - User logging in into GitLab
+
+By default, it shows the activity for all users in the last 6 months, but this can be
+amended by using the `from` parameter.
+
+```
+GET /user/activities
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `from` | string | no | Date string in the format YEAR-MONTH-DAY, e.g. `2016-03-11`. Defaults to 6 months ago. |
+
+```bash
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/user/activities
+```
+
+Example response:
+
+```json
+[
+  {
+    "username": "user1",
+    "last_activity_on": "2015-12-14",
+    "last_activity_at": "2015-12-14"
+  },
+  {
+    "username": "user2",
+    "last_activity_on": "2015-12-15",
+    "last_activity_at": "2015-12-15"
+  },
+  {
+    "username": "user3",
+    "last_activity_on": "2015-12-16",
+    "last_activity_at": "2015-12-16"
+  }
+]
+```
+
+Please note that `last_activity_at` is deprecated, please use `last_activity_on`.

@@ -15,7 +15,7 @@ module ContainerRegistry
     LEVELS_SUPPORTED = 3
 
     def initialize(path)
-      @path = path
+      @path = path.to_s.downcase
     end
 
     def valid?
@@ -25,7 +25,7 @@ module ContainerRegistry
     end
 
     def components
-      @components ||= @path.to_s.split('/')
+      @components ||= @path.split('/')
     end
 
     def nodes
@@ -48,7 +48,7 @@ module ContainerRegistry
     end
 
     def root_repository?
-      @path == repository_project.full_path
+      @path == project_path
     end
 
     def repository_project
@@ -60,7 +60,13 @@ module ContainerRegistry
     def repository_name
       return unless has_project?
 
-      @path.remove(%r(^#{Regexp.escape(repository_project.full_path)}/?))
+      @path.remove(%r(^#{Regexp.escape(project_path)}/?))
+    end
+
+    def project_path
+      return unless has_project?
+
+      repository_project.full_path.downcase
     end
 
     def to_s

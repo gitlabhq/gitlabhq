@@ -21,12 +21,7 @@ namespace :cache do
       end
     end
 
-    desc "GitLab | Clear database cache (in the background)"
-    task db: :environment do
-      ClearDatabaseCacheWorker.perform_async
-    end
-
-    task all: [:db, :redis]
+    task all: [:redis]
   end
 
   task clear: 'cache:clear:redis'

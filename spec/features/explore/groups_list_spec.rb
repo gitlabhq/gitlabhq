@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe 'Explore Groups page', js: true, feature: true do
-  include WaitForAjax
-
   let!(:user) { create :user }
   let!(:group) { create(:group) }
   let!(:public_group) { create(:group, :public) }

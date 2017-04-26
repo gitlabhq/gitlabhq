@@ -39,7 +39,7 @@
     overflow-y: hidden;
     font-size: 12px;
 
-    .fa-refresh {
+    .fa-spinner {
       font-size: 24px;
       margin-left: 20px;
     }
@@ -61,8 +61,9 @@
   .truncated-info {
     text-align: center;
     border-bottom: 1px solid;
-    background-color: $black-transparent;
+    background-color: $black;
     height: 45px;
+    padding: 15px;
 
     &.affix {
       top: 0;
@@ -86,6 +87,16 @@
       margin: 0 auto;
       right: 5px;
       left: 5px;
+    }
+
+    .truncated-info-size {
+      margin: 0 5px;
+    }
+
+    .raw-link {
+      color: inherit;
+      margin-left: 5px;
+      text-decoration: underline;
     }
   }
 }
@@ -219,7 +230,7 @@
   font-size: 12px;
   position: relative;
 
-  .fa-refresh {
+  .fa-spinner {
     font-size: 24px;
   }
 
@@ -366,7 +377,7 @@
         background-color: $row-hover;
       }
 
-      .fa-refresh {
+      .fa-spinner {
         font-size: 13px;
         margin-left: 3px;
       }

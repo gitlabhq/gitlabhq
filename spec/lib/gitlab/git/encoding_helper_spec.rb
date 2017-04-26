@@ -56,6 +56,10 @@ describe Gitlab::Git::EncodingHelper do
         expect(r.encoding.name).to eq('UTF-8')
       end
     end
+
+    it 'returns empty string on conversion errors' do
+      expect { ext_class.encode_utf8('') }.not_to raise_error(ArgumentError)
+    end
   end
 
   describe '#clean' do

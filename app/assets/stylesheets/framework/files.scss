@@ -73,14 +73,6 @@
 
     &.wiki {
       padding: 30px $gl-padding;
-
-      .highlight {
-        margin-bottom: 9px;
-
-        > pre {
-          margin: 0;
-        }
-      }
     }
 
     &.blob-no-preview {

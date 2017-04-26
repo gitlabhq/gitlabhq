@@ -1,4 +1,0 @@
----
-title: "Fixes an issue in the new merge request form, where a tag would be selected instead of a branch when they have the same names"
-merge_request: 9535
-author: Weiqing Chu

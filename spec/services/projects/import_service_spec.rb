@@ -54,6 +54,15 @@ describe Projects::ImportService, services: true do
           expect(result[:status]).to eq :error
           expect(result[:message]).to eq "Error importing repository #{project.import_url} into #{project.path_with_namespace} - Failed to import the repository"
         end
+
+        it 'does not remove the GitHub remote' do
+          expect_any_instance_of(Repository).to receive(:fetch_remote).and_return(true)
+          expect_any_instance_of(Gitlab::GithubImport::Importer).to receive(:execute).and_return(true)
+
+          subject.execute
+
+          expect(project.repository.raw_repository.remote_names).to include('github')
+        end
       end
 
       context 'with a non Github repository' do

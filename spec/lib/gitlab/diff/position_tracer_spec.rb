@@ -100,7 +100,7 @@ describe Gitlab::Diff::PositionTracer, lib: true do
       project,
       current_user,
       start_branch: branch_name,
-      target_branch: branch_name,
+      branch_name: branch_name,
       commit_message: "Create file",
       file_path: file_name,
       file_content: content
@@ -113,7 +113,7 @@ describe Gitlab::Diff::PositionTracer, lib: true do
       project,
       current_user,
       start_branch: branch_name,
-      target_branch: branch_name,
+      branch_name: branch_name,
       commit_message: "Update file",
       file_path: file_name,
       file_content: content
@@ -122,11 +122,11 @@ describe Gitlab::Diff::PositionTracer, lib: true do
   end
 
   def delete_file(branch_name, file_name)
-    Files::DestroyService.new(
+    Files::DeleteService.new(
       project,
       current_user,
       start_branch: branch_name,
-      target_branch: branch_name,
+      branch_name: branch_name,
       commit_message: "Delete file",
       file_path: file_name
     ).execute
@@ -569,13 +569,8 @@ describe Gitlab::Diff::PositionTracer, lib: true do
               # 1 1   BB
               # 2 2   A
 
-              it "returns the new position" do
-                expect_new_position(
-                  old_path: file_name,
-                  new_path: new_file_name,
-                  old_line: old_position.new_line,
-                  new_line: old_position.new_line
-                )
+              it "returns nil since the line doesn't exist in the new diffs anymore" do
+                expect(subject).to be_nil
               end
             end
 

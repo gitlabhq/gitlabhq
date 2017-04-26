@@ -15,8 +15,12 @@ class OutOfContextDiscussion < Discussion
   def self.override_discussion_id(note)
     discussion_id(note)
   end
-  
+
   def self.note_class
     Note
+  end
+
+  def reply_attributes
+    super.tap { |attrs| attrs.delete(:discussion_id) }
   end
 end

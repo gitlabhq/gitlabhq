@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 feature 'project owner sees a link to create a license file in empty project', feature: true, js: true do
-  include WaitForAjax
-
   let(:project_master) { create(:user) }
   let(:project) { create(:empty_project) }
   background do

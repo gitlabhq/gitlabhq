@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 feature 'User views files page', feature: true do
-  include WaitForAjax
-
   let(:user) { create(:user) }
   let(:project) { create(:forked_project_with_submodules) }
 

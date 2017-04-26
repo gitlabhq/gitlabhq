@@ -7,6 +7,8 @@ module Gitlab
       class CreateNoteHandler < BaseHandler
         include ReplyProcessing
 
+        delegate :project, to: :sent_notification, allow_nil: true
+
         def can_handle?
           mail_key =~ /\A\w+\z/
         end
@@ -26,14 +28,14 @@ module Gitlab
             record_name: 'comment')
         end
 
+        def metrics_params
+          super.merge(project: project)
+        end
+
         private
 
         def author
           sent_notification.recipient
-        end
-
-        def project
-          sent_notification.project
         end
 
         def sent_notification

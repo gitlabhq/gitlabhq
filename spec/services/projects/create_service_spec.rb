@@ -144,6 +144,20 @@ describe Projects::CreateService, '#execute', services: true do
     end
   end
 
+  context 'when a bad service template is created' do
+    before do
+      create(:service, type: 'DroneCiService', project: nil, template: true, active: true)
+    end
+
+    it 'reports an error in the imported project' do
+      opts[:import_url] = 'http://www.gitlab.com/gitlab-org/gitlab-ce'
+      project = create_project(user, opts)
+
+      expect(project.errors.full_messages_for(:base).first).to match /Unable to save project. Error: Unable to save DroneCiService/
+      expect(project.services.count).to eq 0
+    end
+  end
+
   def create_project(user, opts)
     Projects::CreateService.new(user, opts).execute
   end

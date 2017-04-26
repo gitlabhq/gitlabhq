@@ -14,7 +14,6 @@ describe('UserCallout', function () {
     this.userCallout = new UserCallout();
     this.closeButton = $('.js-close-callout.close');
     this.userCalloutBtn = $('.js-close-callout:not(.close)');
-    this.userCalloutContainer = $('.user-callout');
   });
 
   it('hides when user clicks on the dismiss-icon', (done) => {

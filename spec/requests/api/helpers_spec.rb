@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::Helpers, api: true do
+describe API::Helpers do
   include API::APIGuard::HelperMethods
   include API::Helpers
   include SentryHelper

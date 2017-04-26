@@ -1,4 +1,0 @@
----
-title: Remove useless queries with false conditions (e.g 1=0)
-merge_request: 10141
-author: mhasbini

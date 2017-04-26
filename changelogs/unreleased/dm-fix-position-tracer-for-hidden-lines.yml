@@ -1,0 +1,5 @@
+---
+title: Fix commenting on an existing discussion on an unchanged line that is no longer
+  in the diff
+merge_request:
+author:

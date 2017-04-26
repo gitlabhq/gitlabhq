@@ -1,3 +1,5 @@
+/* global Flash */
+
 import Cookies from 'js-cookie';
 
 import emojiMap from 'emojis/digests.json';
@@ -6,6 +8,7 @@ import { glEmojiTag } from './behaviors/gl_emoji';
 import isEmojiNameValid from './behaviors/gl_emoji/is_emoji_name_valid';
 
 const animationEndEventString = 'animationend webkitAnimationEnd MSAnimationEnd oAnimationEnd';
+const transitionEndEventString = 'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd';
 const requestAnimationFrame = window.requestAnimationFrame ||
   window.webkitRequestAnimationFrame ||
   window.mozRequestAnimationFrame ||
@@ -103,8 +106,9 @@ function AwardsHandler() {
     const $glEmojiElement = $target.find('gl-emoji');
     const $spriteIconElement = $target.find('.icon');
     const emoji = ($glEmojiElement.length ? $glEmojiElement : $spriteIconElement).data('name');
+
     $target.closest('.js-awards-block').addClass('current');
-    return this.addAward(this.getVotesBlock(), this.getAwardUrl(), emoji);
+    this.addAward(this.getVotesBlock(), this.getAwardUrl(), emoji);
   });
 }
 
@@ -124,16 +128,18 @@ AwardsHandler.prototype.showEmojiMenu = function showEmojiMenu($addBtn) {
   }
 
   const $menu = $('.emoji-menu');
+  const $thumbsBtn = $menu.find('[data-name="thumbsup"], [data-name="thumbsdown"]').parent();
+  const $userAuthored = this.isUserAuthored($addBtn);
   if ($menu.length) {
     if ($menu.is('.is-visible')) {
       $addBtn.removeClass('is-active');
       $menu.removeClass('is-visible');
-      $('#emoji_search').blur();
+      $('.js-emoji-menu-search').blur();
     } else {
       $addBtn.addClass('is-active');
       this.positionMenu($menu, $addBtn);
       $menu.addClass('is-visible');
-      $('#emoji_search').focus();
+      $('.js-emoji-menu-search').focus();
     }
   } else {
     $addBtn.addClass('is-loading is-active');
@@ -143,10 +149,12 @@ AwardsHandler.prototype.showEmojiMenu = function showEmojiMenu($addBtn) {
       this.positionMenu($createdMenu, $addBtn);
       return setTimeout(() => {
         $createdMenu.addClass('is-visible');
-        $('#emoji_search').focus();
+        $('.js-emoji-menu-search').focus();
       }, 200);
     });
   }
+
+  $thumbsBtn.toggleClass('disabled', $userAuthored);
 };
 
 // Create the emoji menu with the first category of emojis.
@@ -174,7 +182,7 @@ AwardsHandler.prototype.createEmojiMenu = function createEmojiMenu(callback) {
 
   const emojiMenuMarkup = `
     <div class="emoji-menu">
-      <input type="text" name="emoji_search" id="emoji_search" value="" class="emoji-search search-input form-control" placeholder="Search emoji" />
+      <input type="text" name="emoji-menu-search" value="" class="js-emoji-menu-search emoji-search search-input form-control" placeholder="Search emoji" />
 
       <div class="emoji-menu-content">
         ${frequentlyUsedCatgegory}
@@ -231,6 +239,9 @@ AwardsHandler
       if (menu) {
         menu.dispatchEvent(new CustomEvent('build-emoji-menu-finish'));
       }
+    }).catch((err) => {
+      emojiContentElement.insertAdjacentHTML('beforeend', '<p>We encountered an error while adding the remaining categories</p>');
+      throw new Error(`Error occurred in addRemainingEmojiMenuCategories: ${err.message}`);
     });
   };
 
@@ -259,7 +270,8 @@ AwardsHandler.prototype.addAward = function addAward(
   callback,
 ) {
   const normalizedEmoji = this.normalizeEmojiName(emoji);
-  this.postEmoji(awardUrl, normalizedEmoji, () => {
+  const $emojiButton = this.findEmojiIcon(votesBlock, normalizedEmoji).parent();
+  this.postEmoji($emojiButton, awardUrl, normalizedEmoji, () => {
     this.addAwardToEmojiBar(votesBlock, normalizedEmoji, checkMutuality);
     return typeof callback === 'function' ? callback() : undefined;
   });
@@ -322,6 +334,10 @@ AwardsHandler.prototype.checkMutuality = function checkMutuality(votesBlock, emo
 
 AwardsHandler.prototype.isActive = function isActive($emojiButton) {
   return $emojiButton.hasClass('active');
+};
+
+AwardsHandler.prototype.isUserAuthored = function isUserAuthored($button) {
+  return $button.hasClass('js-user-authored');
 };
 
 AwardsHandler.prototype.decrementCounter = function decrementCounter($emojiButton, emoji) {
@@ -428,18 +444,33 @@ AwardsHandler.prototype.createEmoji = function createEmoji(votesBlock, emoji) {
   });
 };
 
-AwardsHandler.prototype.postEmoji = function postEmoji(awardUrl, emoji, callback) {
-  return $.post(awardUrl, {
-    name: emoji,
-  }, (data) => {
-    if (data.ok) {
-      callback();
-    }
-  });
+AwardsHandler.prototype.postEmoji = function postEmoji($emojiButton, awardUrl, emoji, callback) {
+  if (this.isUserAuthored($emojiButton)) {
+    this.userAuthored($emojiButton);
+  } else {
+    $.post(awardUrl, {
+      name: emoji,
+    }, (data) => {
+      if (data.ok) {
+        callback();
+      }
+    }).fail(() => new Flash('Something went wrong on our end.'));
+  }
 };
 
 AwardsHandler.prototype.findEmojiIcon = function findEmojiIcon(votesBlock, emoji) {
   return votesBlock.find(`.js-emoji-btn [data-name="${emoji}"]`);
+};
+
+AwardsHandler.prototype.userAuthored = function userAuthored($emojiButton) {
+  const oldTitle = this.getAwardTooltip($emojiButton);
+  const newTitle = 'You cannot vote on your own issue, MR and note';
+  gl.utils.updateTooltipTitle($emojiButton, newTitle).tooltip('show');
+  // Restore tooltip back to award list
+  return setTimeout(() => {
+    $emojiButton.tooltip('hide');
+    gl.utils.updateTooltipTitle($emojiButton, oldTitle);
+  }, 2800);
 };
 
 AwardsHandler.prototype.scrollToAwards = function scrollToAwards() {
@@ -474,24 +505,41 @@ AwardsHandler.prototype.getFrequentlyUsedEmojis = function getFrequentlyUsedEmoj
 };
 
 AwardsHandler.prototype.setupSearch = function setupSearch() {
-  this.registerEventListener('on', $('input.emoji-search'), 'input', (e) => {
+  const $search = $('.js-emoji-menu-search');
+
+  this.registerEventListener('on', $search, 'input', (e) => {
     const term = $(e.target).val().trim();
-    // Clean previous search results
-    $('ul.emoji-menu-search, h5.emoji-search-title').remove();
-    if (term.length > 0) {
-      // Generate a search result block
-      const h5 = $('<h5 class="emoji-search-title"/>').text('Search results');
-      const foundEmojis = this.searchEmojis(term).show();
-      const ul = $('<ul>').addClass('emoji-menu-list emoji-menu-search').append(foundEmojis);
-      $('.emoji-menu-content ul, .emoji-menu-content h5').hide();
-      $('.emoji-menu-content').append(h5).append(ul);
-    } else {
-      $('.emoji-menu-content').children().show();
+    this.searchEmojis(term);
+  });
+
+  const $menu = $('.emoji-menu');
+  this.registerEventListener('on', $menu, transitionEndEventString, (e) => {
+    if (e.target === e.currentTarget) {
+      // Clear the search
+      this.searchEmojis('');
     }
   });
 };
 
 AwardsHandler.prototype.searchEmojis = function searchEmojis(term) {
+  const $search = $('.js-emoji-menu-search');
+  $search.val(term);
+
+  // Clean previous search results
+  $('ul.emoji-menu-search, h5.emoji-search-title').remove();
+  if (term.length > 0) {
+    // Generate a search result block
+    const h5 = $('<h5 class="emoji-search-title"/>').text('Search results');
+    const foundEmojis = this.findMatchingEmojiElements(term).show();
+    const ul = $('<ul>').addClass('emoji-menu-list emoji-menu-search').append(foundEmojis);
+    $('.emoji-menu-content ul, .emoji-menu-content h5').hide();
+    $('.emoji-menu-content').append(h5).append(ul);
+  } else {
+    $('.emoji-menu-content').children().show();
+  }
+};
+
+AwardsHandler.prototype.findMatchingEmojiElements = function findMatchingEmojiElements(term) {
   const safeTerm = term.toLowerCase();
 
   const namesMatchingAlias = [];

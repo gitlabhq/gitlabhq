@@ -1,18 +1,17 @@
-/* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, no-use-before-define, comma-dangle, max-len */
+/* eslint-disable space-before-function-paren, one-var, one-var-declaration-per-line, no-use-before-define, comma-dangle, max-len */
 import Issue from '~/issue';
 
 require('~/lib/utils/text_utility');
 
 describe('Issue', function() {
-  var INVALID_URL = 'http://goesnowhere.nothing/whereami';
-  var $boxClosed, $boxOpen, $btnClose, $btnReopen;
+  let $boxClosed, $boxOpen, $btnClose, $btnReopen;
 
   preloadFixtures('issues/closed-issue.html.raw');
   preloadFixtures('issues/issue-with-task-list.html.raw');
   preloadFixtures('issues/open-issue.html.raw');
 
   function expectErrorMessage() {
-    var $flashMessage = $('div.flash-alert');
+    const $flashMessage = $('div.flash-alert');
     expect($flashMessage).toExist();
     expect($flashMessage).toBeVisible();
     expect($flashMessage).toHaveText('Unable to update this issue at this time.');
@@ -26,10 +25,28 @@ describe('Issue', function() {
     expectVisibility($btnReopen, !isIssueOpen);
   }
 
-  function expectPendingRequest(req, $triggeredButton) {
-    expect(req.type).toBe('PUT');
-    expect(req.url).toBe($triggeredButton.attr('href'));
-    expect($triggeredButton).toHaveProp('disabled', true);
+  function expectNewBranchButtonState(isPending, canCreate) {
+    if (Issue.$btnNewBranch.length === 0) {
+      return;
+    }
+
+    const $available = Issue.$btnNewBranch.find('.available');
+    expect($available).toHaveText('New branch');
+
+    if (!isPending && canCreate) {
+      expect($available).toBeVisible();
+    } else {
+      expect($available).toBeHidden();
+    }
+
+    const $unavailable = Issue.$btnNewBranch.find('.unavailable');
+    expect($unavailable).toHaveText('New branch unavailable');
+
+    if (!isPending && !canCreate) {
+      expect($unavailable).toBeVisible();
+    } else {
+      expect($unavailable).toBeHidden();
+    }
   }
 
   function expectVisibility($element, shouldBeVisible) {
@@ -81,100 +98,107 @@ describe('Issue', function() {
     });
   });
 
-  describe('close issue', function() {
-    beforeEach(function() {
-      loadFixtures('issues/open-issue.html.raw');
-      findElements();
-      this.issue = new Issue();
+  [true, false].forEach((isIssueInitiallyOpen) => {
+    describe(`with ${isIssueInitiallyOpen ? 'open' : 'closed'} issue`, function() {
+      const action = isIssueInitiallyOpen ? 'close' : 'reopen';
 
-      expectIssueState(true);
-    });
+      function ajaxSpy(req) {
+        if (req.url === this.$triggeredButton.attr('href')) {
+          expect(req.type).toBe('PUT');
+          expect(this.$triggeredButton).toHaveProp('disabled', true);
+          expectNewBranchButtonState(true, false);
+          return this.issueStateDeferred;
+        } else if (req.url === Issue.$btnNewBranch.data('path')) {
+          expect(req.type).toBe('get');
+          expectNewBranchButtonState(true, false);
+          return this.canCreateBranchDeferred;
+        }
 
-    it('closes an issue', function() {
-      spyOn(jQuery, 'ajax').and.callFake(function(req) {
-        expectPendingRequest(req, $btnClose);
-        req.success({
-          id: 34
-        });
+        expect(req.url).toBe('unexpected');
+        return null;
+      }
+
+      beforeEach(function() {
+        if (isIssueInitiallyOpen) {
+          loadFixtures('issues/open-issue.html.raw');
+        } else {
+          loadFixtures('issues/closed-issue.html.raw');
+        }
+
+        findElements();
+        this.issue = new Issue();
+        expectIssueState(isIssueInitiallyOpen);
+        this.$triggeredButton = isIssueInitiallyOpen ? $btnClose : $btnReopen;
+
+        this.$projectIssuesCounter = $('.issue_counter');
+        this.$projectIssuesCounter.text('1,001');
+
+        this.issueStateDeferred = new jQuery.Deferred();
+        this.canCreateBranchDeferred = new jQuery.Deferred();
+
+        spyOn(jQuery, 'ajax').and.callFake(ajaxSpy.bind(this));
       });
 
-      $btnClose.trigger('click');
+      it(`${action}s the issue`, function() {
+        this.$triggeredButton.trigger('click');
+        this.issueStateDeferred.resolve({
+          id: 34
+        });
+        this.canCreateBranchDeferred.resolve({
+          can_create_branch: !isIssueInitiallyOpen
+        });
 
-      expectIssueState(false);
-      expect($btnClose).toHaveProp('disabled', false);
-      expect($('.issue_counter')).toHaveText(0);
-    });
+        expectIssueState(!isIssueInitiallyOpen);
+        expect(this.$triggeredButton).toHaveProp('disabled', false);
+        expect(this.$projectIssuesCounter.text()).toBe(isIssueInitiallyOpen ? '1,000' : '1,002');
+        expectNewBranchButtonState(false, !isIssueInitiallyOpen);
+      });
 
-    it('fails to close an issue with success:false', function() {
-      spyOn(jQuery, 'ajax').and.callFake(function(req) {
-        expectPendingRequest(req, $btnClose);
-        req.success({
+      it(`fails to ${action} the issue if saved:false`, function() {
+        this.$triggeredButton.trigger('click');
+        this.issueStateDeferred.resolve({
           saved: false
         });
-      });
-
-      $btnClose.attr('href', INVALID_URL);
-      $btnClose.trigger('click');
-
-      expectIssueState(true);
-      expect($btnClose).toHaveProp('disabled', false);
-      expectErrorMessage();
-      expect($('.issue_counter')).toHaveText(1);
-    });
-
-    it('fails to closes an issue with HTTP error', function() {
-      spyOn(jQuery, 'ajax').and.callFake(function(req) {
-        expectPendingRequest(req, $btnClose);
-        req.error();
-      });
-
-      $btnClose.attr('href', INVALID_URL);
-      $btnClose.trigger('click');
-
-      expectIssueState(true);
-      expect($btnClose).toHaveProp('disabled', true);
-      expectErrorMessage();
-      expect($('.issue_counter')).toHaveText(1);
-    });
-
-    it('updates counter', () => {
-      spyOn(jQuery, 'ajax').and.callFake(function(req) {
-        expectPendingRequest(req, $btnClose);
-        req.success({
-          id: 34
+        this.canCreateBranchDeferred.resolve({
+          can_create_branch: isIssueInitiallyOpen
         });
+
+        expectIssueState(isIssueInitiallyOpen);
+        expect(this.$triggeredButton).toHaveProp('disabled', false);
+        expectErrorMessage();
+        expect(this.$projectIssuesCounter.text()).toBe('1,001');
+        expectNewBranchButtonState(false, isIssueInitiallyOpen);
       });
 
-      expect($('.issue_counter')).toHaveText(1);
-      $('.issue_counter').text('1,001');
-      expect($('.issue_counter').text()).toEqual('1,001');
-      $btnClose.trigger('click');
-      expect($('.issue_counter').text()).toEqual('1,000');
-    });
-  });
-
-  describe('reopen issue', function() {
-    beforeEach(function() {
-      loadFixtures('issues/closed-issue.html.raw');
-      findElements();
-      this.issue = new Issue();
-
-      expectIssueState(false);
-    });
-
-    it('reopens an issue', function() {
-      spyOn(jQuery, 'ajax').and.callFake(function(req) {
-        expectPendingRequest(req, $btnReopen);
-        req.success({
-          id: 34
+      it(`fails to ${action} the issue if HTTP error occurs`, function() {
+        this.$triggeredButton.trigger('click');
+        this.issueStateDeferred.reject();
+        this.canCreateBranchDeferred.resolve({
+          can_create_branch: isIssueInitiallyOpen
         });
+
+        expectIssueState(isIssueInitiallyOpen);
+        expect(this.$triggeredButton).toHaveProp('disabled', true);
+        expectErrorMessage();
+        expect(this.$projectIssuesCounter.text()).toBe('1,001');
+        expectNewBranchButtonState(false, isIssueInitiallyOpen);
       });
 
-      $btnReopen.trigger('click');
+      it('disables the new branch button if Ajax call fails', function() {
+        this.$triggeredButton.trigger('click');
+        this.issueStateDeferred.reject();
+        this.canCreateBranchDeferred.reject();
 
-      expectIssueState(true);
-      expect($btnReopen).toHaveProp('disabled', false);
-      expect($('.issue_counter')).toHaveText(1);
+        expectNewBranchButtonState(false, false);
+      });
+
+      it('does not trigger Ajax call if new branch button is missing', function() {
+        Issue.$btnNewBranch = $();
+        this.canCreateBranchDeferred = null;
+
+        this.$triggeredButton.trigger('click');
+        this.issueStateDeferred.reject();
+      });
     });
   });
 });

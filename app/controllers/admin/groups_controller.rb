@@ -28,7 +28,7 @@ class Admin::GroupsController < Admin::ApplicationController
 
     if @group.save
       @group.add_owner(current_user)
-      redirect_to [:admin, @group], notice: 'Group was successfully created.'
+      redirect_to [:admin, @group], notice: "Group '#{@group.name}' was successfully created."
     else
       render "new"
     end
@@ -43,9 +43,13 @@ class Admin::GroupsController < Admin::ApplicationController
   end
 
   def members_update
-    @group.add_users(params[:user_ids].split(','), params[:access_level], current_user: current_user)
+    status = Members::CreateService.new(@group, current_user, params).execute
 
-    redirect_to [:admin, @group], notice: 'Users were successfully added.'
+    if status
+      redirect_to [:admin, @group], notice: 'Users were successfully added.'
+    else
+      redirect_to [:admin, @group], alert: 'No users specified.'
+    end
   end
 
   def destroy

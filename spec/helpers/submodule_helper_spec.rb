@@ -70,10 +70,12 @@ describe SubmoduleHelper do
         expect(submodule_links(submodule_item)).to eq(['https://github.com/gitlab-org/gitlab-ce', 'https://github.com/gitlab-org/gitlab-ce/tree/hash'])
       end
 
-      it 'returns original with non-standard url' do
+      it 'handles urls with no .git on the end' do
         stub_url('http://github.com/gitlab-org/gitlab-ce')
-        expect(submodule_links(submodule_item)).to eq([repo.submodule_url_for, nil])
+        expect(submodule_links(submodule_item)).to eq(['https://github.com/gitlab-org/gitlab-ce', 'https://github.com/gitlab-org/gitlab-ce/tree/hash'])
+      end
 
+      it 'returns original with non-standard url' do
         stub_url('http://github.com/another/gitlab-org/gitlab-ce.git')
         expect(submodule_links(submodule_item)).to eq([repo.submodule_url_for, nil])
       end
@@ -95,10 +97,12 @@ describe SubmoduleHelper do
         expect(submodule_links(submodule_item)).to eq(['https://gitlab.com/gitlab-org/gitlab-ce', 'https://gitlab.com/gitlab-org/gitlab-ce/tree/hash'])
       end
 
-      it 'returns original with non-standard url' do
+      it 'handles urls with no .git on the end' do
         stub_url('http://gitlab.com/gitlab-org/gitlab-ce')
-        expect(submodule_links(submodule_item)).to eq([repo.submodule_url_for, nil])
+        expect(submodule_links(submodule_item)).to eq(['https://gitlab.com/gitlab-org/gitlab-ce', 'https://gitlab.com/gitlab-org/gitlab-ce/tree/hash'])
+      end
 
+      it 'returns original with non-standard url' do
         stub_url('http://gitlab.com/another/gitlab-org/gitlab-ce.git')
         expect(submodule_links(submodule_item)).to eq([repo.submodule_url_for, nil])
       end

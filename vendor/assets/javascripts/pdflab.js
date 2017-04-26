@@ -71,17 +71,10 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 		if(installedChunks[chunkId] === 0)
 /******/ 			return Promise.resolve();
 /******/
-/******/ 		// a Promise means "currently loading".
+/******/ 		// an Promise means "currently loading".
 /******/ 		if(installedChunks[chunkId]) {
 /******/ 			return installedChunks[chunkId][2];
 /******/ 		}
-/******/
-/******/ 		// setup Promise in chunk cache
-/******/ 		var promise = new Promise(function(resolve, reject) {
-/******/ 			installedChunks[chunkId] = [resolve, reject];
-/******/ 		});
-/******/ 		installedChunks[chunkId][2] = promise;
-/******/
 /******/ 		// start chunk loading
 /******/ 		var head = document.getElementsByTagName('head')[0];
 /******/ 		var script = document.createElement('script');
@@ -106,8 +99,13 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 				installedChunks[chunkId] = undefined;
 /******/ 			}
 /******/ 		};
-/******/ 		head.appendChild(script);
 /******/
+/******/ 		var promise = new Promise(function(resolve, reject) {
+/******/ 			installedChunks[chunkId] = [resolve, reject];
+/******/ 		});
+/******/ 		installedChunks[chunkId][2] = promise;
+/******/
+/******/ 		head.appendChild(script);
 /******/ 		return promise;
 /******/ 	};
 /******/
@@ -150,7 +148,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.oe = function(err) { console.error(err); throw err; };
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 7);
+/******/ 	return __webpack_require__(__webpack_require__.s = 23);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1615,7 +1613,10 @@ var DOMCMapReaderFactory = function DOMCMapReaderFactoryClosure() {
           request.responseType = 'arraybuffer';
         }
         request.onreadystatechange = function () {
-          if (request.readyState === XMLHttpRequest.DONE && (request.status === 200 || request.status === 0)) {
+          if (request.readyState !== XMLHttpRequest.DONE) {
+            return;
+          }
+          if (request.status === 200 || request.status === 0) {
             var data;
             if (this.isCompressed && request.response) {
               data = new Uint8Array(request.response);
@@ -1629,8 +1630,8 @@ var DOMCMapReaderFactory = function DOMCMapReaderFactoryClosure() {
               });
               return;
             }
-            reject(new Error('Unable to load ' + (this.isCompressed ? 'binary ' : '') + 'CMap at: ' + url));
           }
+          reject(new Error('Unable to load ' + (this.isCompressed ? 'binary ' : '') + 'CMap at: ' + url));
         }.bind(this);
         request.send(null);
       }.bind(this));
@@ -1669,6 +1670,16 @@ var CustomStyle = function CustomStyleClosure() {
     }
   };
   return CustomStyle;
+}();
+var RenderingCancelledException = function RenderingCancelledException() {
+  function RenderingCancelledException(msg, type) {
+    this.message = msg;
+    this.type = type;
+  }
+  RenderingCancelledException.prototype = new Error();
+  RenderingCancelledException.prototype.name = 'RenderingCancelledException';
+  RenderingCancelledException.constructor = RenderingCancelledException;
+  return RenderingCancelledException;
 }();
 var hasCanvasTypedArrays;
 hasCanvasTypedArrays = function hasCanvasTypedArrays() {
@@ -1762,6 +1773,8 @@ function getDefaultSetting(id) {
       return globalSettings ? globalSettings.externalLinkRel : DEFAULT_LINK_REL;
     case 'enableStats':
       return !!(globalSettings && globalSettings.enableStats);
+    case 'pdfjsNext':
+      return !!(globalSettings && globalSettings.pdfjsNext);
     default:
       throw new Error('Unknown default setting: ' + id);
   }
@@ -1789,6 +1802,7 @@ exports.isExternalLinkTargetSet = isExternalLinkTargetSet;
 exports.isValidUrl = isValidUrl;
 exports.getFilenameFromUrl = getFilenameFromUrl;
 exports.LinkTarget = LinkTarget;
+exports.RenderingCancelledException = RenderingCancelledException;
 exports.hasCanvasTypedArrays = hasCanvasTypedArrays;
 exports.getDefaultSetting = getDefaultSetting;
 exports.DEFAULT_LINK_REL = DEFAULT_LINK_REL;
@@ -2450,6 +2464,7 @@ var FontFaceObject = displayFontLoader.FontFaceObject;
 var FontLoader = displayFontLoader.FontLoader;
 var CanvasGraphics = displayCanvas.CanvasGraphics;
 var Metadata = displayMetadata.Metadata;
+var RenderingCancelledException = displayDOMUtils.RenderingCancelledException;
 var getDefaultSetting = displayDOMUtils.getDefaultSetting;
 var DOMCanvasFactory = displayDOMUtils.DOMCanvasFactory;
 var DOMCMapReaderFactory = displayDOMUtils.DOMCMapReaderFactory;
@@ -3711,7 +3726,11 @@ var InternalRenderTask = function InternalRenderTaskClosure() {
     cancel: function InternalRenderTask_cancel() {
       this.running = false;
       this.cancelled = true;
-      this.callback('cancelled');
+      if (getDefaultSetting('pdfjsNext')) {
+        this.callback(new RenderingCancelledException('Rendering cancelled, page ' + this.pageNumber, 'canvas'));
+      } else {
+        this.callback('cancelled');
+      }
     },
     operatorListChanged: function InternalRenderTask_operatorListChanged() {
       if (!this.graphicsReady) {
@@ -3776,8 +3795,8 @@ var _UnsupportedManager = function UnsupportedManagerClosure() {
     }
   };
 }();
-exports.version = '1.7.395';
-exports.build = '07f7c97b';
+exports.version = '1.8.172';
+exports.build = '8ff1fbe7';
 exports.getDocument = getDocument;
 exports.PDFDataRangeTransport = PDFDataRangeTransport;
 exports.PDFWorker = PDFWorker;
@@ -5716,8 +5735,8 @@ if (!globalScope.PDFJS) {
   globalScope.PDFJS = {};
 }
 var PDFJS = globalScope.PDFJS;
-PDFJS.version = '1.7.395';
-PDFJS.build = '07f7c97b';
+PDFJS.version = '1.8.172';
+PDFJS.build = '8ff1fbe7';
 PDFJS.pdfBug = false;
 if (PDFJS.verbosity !== undefined) {
   sharedUtil.setVerbosityLevel(PDFJS.verbosity);
@@ -5777,6 +5796,7 @@ PDFJS.disableWebGL = PDFJS.disableWebGL === undefined ? true : PDFJS.disableWebG
 PDFJS.externalLinkTarget = PDFJS.externalLinkTarget === undefined ? LinkTarget.NONE : PDFJS.externalLinkTarget;
 PDFJS.externalLinkRel = PDFJS.externalLinkRel === undefined ? DEFAULT_LINK_REL : PDFJS.externalLinkRel;
 PDFJS.isEvalSupported = PDFJS.isEvalSupported === undefined ? true : PDFJS.isEvalSupported;
+PDFJS.pdfjsNext = PDFJS.pdfjsNext === undefined ? false : PDFJS.pdfjsNext;
 var savedOpenExternalLinksInNewWindow = PDFJS.openExternalLinksInNewWindow;
 delete PDFJS.openExternalLinksInNewWindow;
 Object.defineProperty(PDFJS, 'openExternalLinksInNewWindow', {
@@ -8227,8 +8247,8 @@ exports.TilingPattern = TilingPattern;
 "use strict";
 
 
-var pdfjsVersion = '1.7.395';
-var pdfjsBuild = '07f7c97b';
+var pdfjsVersion = '1.8.172';
+var pdfjsBuild = '8ff1fbe7';
 var pdfjsSharedUtil = __w_pdfjs_require__(0);
 var pdfjsDisplayGlobal = __w_pdfjs_require__(9);
 var pdfjsDisplayAPI = __w_pdfjs_require__(3);
@@ -8259,6 +8279,7 @@ exports.createObjectURL = pdfjsSharedUtil.createObjectURL;
 exports.removeNullCharacters = pdfjsSharedUtil.removeNullCharacters;
 exports.shadow = pdfjsSharedUtil.shadow;
 exports.createBlob = pdfjsSharedUtil.createBlob;
+exports.RenderingCancelledException = pdfjsDisplayDOMUtils.RenderingCancelledException;
 exports.getFilenameFromUrl = pdfjsDisplayDOMUtils.getFilenameFromUrl;
 exports.addLinkAttributes = pdfjsDisplayDOMUtils.addLinkAttributes;
 
@@ -8740,20 +8761,28 @@ if (typeof PDFJS === 'undefined' || !PDFJS.compatibilityChecked) {
     }
   })();
   (function checkRequestAnimationFrame() {
-    function fakeRequestAnimationFrame(callback) {
-      window.setTimeout(callback, 20);
+    function installFakeAnimationFrameFunctions() {
+      window.requestAnimationFrame = function (callback) {
+        return window.setTimeout(callback, 20);
+      };
+      window.cancelAnimationFrame = function (timeoutID) {
+        window.clearTimeout(timeoutID);
+      };
     }
     if (!hasDOM) {
       return;
     }
     if (isIOS) {
-      window.requestAnimationFrame = fakeRequestAnimationFrame;
+      installFakeAnimationFrameFunctions();
       return;
     }
     if ('requestAnimationFrame' in window) {
       return;
     }
-    window.requestAnimationFrame = window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || fakeRequestAnimationFrame;
+    window.requestAnimationFrame = window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame;
+    if (!('requestAnimationFrame' in window)) {
+      installFakeAnimationFrameFunctions();
+    }
   })();
   (function checkCanvasSizeLimitation() {
     if (isIOS || isAndroid) {
@@ -9760,7 +9789,7 @@ function toComment(sourceMap) {
   return '/*# ' + data + ' */';
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10).Buffer))
 
 /***/ }),
 /* 4 */
@@ -9839,7 +9868,7 @@ if (typeof DEBUG !== 'undefined' && DEBUG) {
   ) }
 }
 
-var listToStyles = __webpack_require__(23)
+var listToStyles = __webpack_require__(21)
 
 /*
 type StyleObject = {
@@ -10046,59 +10075,24 @@ function applyToTag (styleElement, obj) {
 
 
 /* styles */
-__webpack_require__(21)
+__webpack_require__(19)
 
 var Component = __webpack_require__(4)(
   /* script */
-  __webpack_require__(8),
+  __webpack_require__(7),
   /* template */
-  __webpack_require__(19),
+  __webpack_require__(17),
   /* scopeId */
   null,
   /* cssModules */
   null
 )
-Component.options.__file = "/Users/samrose/Projects/pdflab/src/index.vue"
-if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
-if (Component.options.functional) {console.error("[vue-loader] index.vue: functional components are not supported with templates, they should use render functions.")}
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-7c7bed7e", Component.options)
-  } else {
-    hotAPI.reload("data-v-7c7bed7e", Component.options)
-  }
-})()}
 
 module.exports = Component.exports
 
 
 /***/ }),
 /* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var PDF = __webpack_require__(6);
-var pdfjsLib = __webpack_require__(2);
-
-module.exports = {
-  install: function install(_vue, _ref) {
-    var workerSrc = _ref.workerSrc;
-
-    pdfjsLib.PDFJS.workerSrc = workerSrc;
-    _vue.component('pdf-lab', PDF);
-  }
-};
-
-/***/ }),
-/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10112,7 +10106,7 @@ var _pdfjsDist = __webpack_require__(2);
 
 var _pdfjsDist2 = _interopRequireDefault(_pdfjsDist);
 
-var _index = __webpack_require__(18);
+var _index = __webpack_require__(16);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -10138,7 +10132,7 @@ exports.default = {
   },
   data: function data() {
     return {
-      isLoading: false,
+      loading: false,
       pages: []
     };
   },
@@ -10163,17 +10157,17 @@ exports.default = {
       }).catch(function (error) {
         return _this.$emit('pdflaberror', error);
       }).then(function () {
-        return _this.isLoading = false;
+        _this.loading = false;
       });
     },
     renderPages: function renderPages(pdf) {
       var _this2 = this;
 
       var pagePromises = [];
-      this.isLoading = true;
-      for (var num = 1; num <= pdf.numPages; num++) {
-        pagePromises.push(pdf.getPage(num).then(function (page) {
-          return _this2.pages.push(page);
+      this.loading = true;
+      for (var num = 1; num <= pdf.numPages; num += 1) {
+        pagePromises.push(pdf.getPage(num).then(function (p) {
+          return _this2.pages.push(p);
         }));
       }
       return Promise.all(pagePromises);
@@ -10185,7 +10179,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10213,10 +10207,16 @@ exports.default = {
       required: true
     }
   },
+  data: function data() {
+    return {
+      scale: 4,
+      rendering: false
+    };
+  },
+
   computed: {
     viewport: function viewport() {
-      var scale = 4;
-      return this.page.getViewport(scale);
+      return this.page.getViewport(this.scale);
     },
     context: function context() {
       return this.$refs.canvas.getContext('2d');
@@ -10229,14 +10229,19 @@ exports.default = {
     }
   },
   mounted: function mounted() {
+    var _this = this;
+
     this.$refs.canvas.height = this.viewport.height;
     this.$refs.canvas.width = this.viewport.width;
-    this.page.render(this.renderContext);
+    this.rendering = true;
+    this.page.render(this.renderContext).then(function () {
+      _this.rendering = false;
+    });
   }
 };
 
 /***/ }),
-/* 10 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10357,7 +10362,7 @@ function fromByteArray (uint8) {
 
 
 /***/ }),
-/* 11 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10371,9 +10376,9 @@ function fromByteArray (uint8) {
 
 
 
-var base64 = __webpack_require__(10)
-var ieee754 = __webpack_require__(14)
-var isArray = __webpack_require__(15)
+var base64 = __webpack_require__(9)
+var ieee754 = __webpack_require__(13)
+var isArray = __webpack_require__(14)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -12151,7 +12156,21 @@ function isnan (val) {
   return val !== val // eslint-disable-line no-self-compare
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(22)))
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(3)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, ".pdf-viewer{background:url(" + __webpack_require__(15) + ");display:flex;flex-flow:column nowrap}", ""]);
+
+// exports
+
 
 /***/ }),
 /* 12 */
@@ -12162,27 +12181,13 @@ exports = module.exports = __webpack_require__(3)(undefined);
 
 
 // module
-exports.push([module.i, "\n.pdf-viewer {\n  background: url(" + __webpack_require__(17) + ");\n  display: flex;\n  flex-flow: column nowrap;\n}\n", ""]);
+exports.push([module.i, ".pdf-page{margin:8px auto 0;border-top:1px solid #ddd;border-bottom:1px solid #ddd;width:100%}.pdf-page:first-child{margin-top:0;border-top:0}.pdf-page:last-child{margin-bottom:0;border-bottom:0}", ""]);
 
 // exports
 
 
 /***/ }),
 /* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(3)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "\n.pdf-page {\n  margin: 8px auto 0 auto;\n  border-top: 1px #ddd solid;\n  border-bottom: 1px #ddd solid;\n  width: 100%;\n}\n.pdf-page:first-child {\n  margin-top: 0px;\n  border-top: 0px;\n}\n.pdf-page:last-child {\n  margin-bottom: 0px;\n  border-bottom: 0px;\n}\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 14 */
 /***/ (function(module, exports) {
 
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -12272,7 +12277,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 /***/ }),
-/* 15 */
+/* 14 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -12283,53 +12288,36 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 16 */,
-/* 17 */
+/* 15 */
 /***/ (function(module, exports) {
 
 module.exports = "data:image/gif;base64,R0lGODlhCgAKAIAAAOXl5f///yH5BAAAAAAALAAAAAAKAAoAAAIRhB2ZhxoM3GMSykqd1VltzxQAOw=="
 
 /***/ }),
-/* 18 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
 /* styles */
-__webpack_require__(22)
+__webpack_require__(20)
 
 var Component = __webpack_require__(4)(
   /* script */
-  __webpack_require__(9),
+  __webpack_require__(8),
   /* template */
-  __webpack_require__(20),
+  __webpack_require__(18),
   /* scopeId */
   null,
   /* cssModules */
   null
 )
-Component.options.__file = "/Users/samrose/Projects/pdflab/src/page/index.vue"
-if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
-if (Component.options.functional) {console.error("[vue-loader] index.vue: functional components are not supported with templates, they should use render functions.")}
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-7e912b1a", Component.options)
-  } else {
-    hotAPI.reload("data-v-7e912b1a", Component.options)
-  }
-})()}
 
 module.exports = Component.exports
 
 
 /***/ }),
-/* 19 */
-/***/ (function(module, exports, __webpack_require__) {
+/* 17 */
+/***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return (_vm.hasPDF) ? _c('div', {
@@ -12338,24 +12326,17 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     return _c('page', {
       key: index,
       attrs: {
-        "v-if": !_vm.isLoading,
+        "v-if": !_vm.loading,
         "page": page,
         "number": index + 1
       }
     })
   })) : _vm._e()
 },staticRenderFns: []}
-module.exports.render._withStripped = true
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-7c7bed7e", module.exports)
-  }
-}
 
 /***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
+/* 18 */
+/***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('canvas', {
@@ -12366,16 +12347,35 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   })
 },staticRenderFns: []}
-module.exports.render._withStripped = true
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-7e912b1a", module.exports)
-  }
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(11);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(5)("59cf066f", content, true);
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../node_modules/css-loader/index.js?minimize!../node_modules/vue-loader/lib/style-compiler/index.js?{\"id\":\"data-v-7c7bed7e\",\"scoped\":false,\"hasInlineConfig\":false}!../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./index.vue", function() {
+     var newContent = require("!!../node_modules/css-loader/index.js?minimize!../node_modules/vue-loader/lib/style-compiler/index.js?{\"id\":\"data-v-7c7bed7e\",\"scoped\":false,\"hasInlineConfig\":false}!../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./index.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
 }
 
 /***/ }),
-/* 21 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
@@ -12385,13 +12385,13 @@ var content = __webpack_require__(12);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(5)("8018213c", content, false);
+var update = __webpack_require__(5)("09f1e2d8", content, true);
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
  if(!content.locals) {
-   module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-compiler/index.js?{\"id\":\"data-v-7c7bed7e\",\"scoped\":false,\"hasInlineConfig\":false}!../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./index.vue", function() {
-     var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-compiler/index.js?{\"id\":\"data-v-7c7bed7e\",\"scoped\":false,\"hasInlineConfig\":false}!../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./index.vue");
+   module.hot.accept("!!../../node_modules/css-loader/index.js?minimize!../../node_modules/vue-loader/lib/style-compiler/index.js?{\"id\":\"data-v-7e912b1a\",\"scoped\":false,\"hasInlineConfig\":false}!../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./index.vue", function() {
+     var newContent = require("!!../../node_modules/css-loader/index.js?minimize!../../node_modules/vue-loader/lib/style-compiler/index.js?{\"id\":\"data-v-7e912b1a\",\"scoped\":false,\"hasInlineConfig\":false}!../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./index.vue");
      if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
      update(newContent);
    });
@@ -12401,33 +12401,7 @@ if(false) {
 }
 
 /***/ }),
-/* 22 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(13);
-if(typeof content === 'string') content = [[module.i, content, '']];
-if(content.locals) module.exports = content.locals;
-// add the styles to the DOM
-var update = __webpack_require__(5)("6d9dea59", content, false);
-// Hot Module Replacement
-if(false) {
- // When the styles change, update the <style> tags
- if(!content.locals) {
-   module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-compiler/index.js?{\"id\":\"data-v-7e912b1a\",\"scoped\":false,\"hasInlineConfig\":false}!../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./index.vue", function() {
-     var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-compiler/index.js?{\"id\":\"data-v-7e912b1a\",\"scoped\":false,\"hasInlineConfig\":false}!../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./index.vue");
-     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-     update(newContent);
-   });
- }
- // When the module is disposed, remove the <style> tags
- module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 23 */
+/* 21 */
 /***/ (function(module, exports) {
 
 /**
@@ -12460,7 +12434,7 @@ module.exports = function listToStyles (parentId, list) {
 
 
 /***/ }),
-/* 24 */
+/* 22 */
 /***/ (function(module, exports) {
 
 var g;
@@ -12485,6 +12459,25 @@ try {
 
 module.exports = g;
 
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var PDF = __webpack_require__(6);
+var pdfjsLib = __webpack_require__(2);
+
+module.exports = {
+  install: function install(_vue) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    pdfjsLib.PDFJS.workerSrc = options.workerSrc || '';
+    _vue.component('pdf-lab', PDF);
+  }
+};
 
 /***/ })
 /******/ ]);

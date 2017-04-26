@@ -1,4 +1,8 @@
 module MobileHelpers
+  def resize_screen_xs
+    resize_window(767, 768)
+  end
+
   def resize_screen_sm
     resize_window(900, 768)
   end

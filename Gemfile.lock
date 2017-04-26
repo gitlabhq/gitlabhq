@@ -346,6 +346,8 @@ GEM
       tilt
     hashdiff (0.3.2)
     hashie (3.5.5)
+    hashie-forbidden_attributes (0.1.1)
+      hashie (>= 3.0)
     health_check (2.6.0)
       rails (>= 4.0)
     hipchat (1.5.2)
@@ -714,7 +716,7 @@ GEM
       rack
     shoulda-matchers (2.8.0)
       activesupport (>= 3.0.0)
-    sidekiq (4.2.7)
+    sidekiq (4.2.10)
       concurrent-ruby (~> 1.0)
       connection_pool (~> 2.2, >= 2.2.0)
       rack-protection (>= 1.5.0)
@@ -915,6 +917,7 @@ DEPENDENCIES
   grape-entity (~> 0.6.0)
   haml_lint (~> 0.21.0)
   hamlit (~> 2.6.1)
+  hashie-forbidden_attributes
   health_check (~> 2.6.0)
   hipchat (~> 1.5.0)
   html-pipeline (~> 1.11.0)
@@ -1035,4 +1038,4 @@ DEPENDENCIES
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
-   1.14.5
+   1.14.6

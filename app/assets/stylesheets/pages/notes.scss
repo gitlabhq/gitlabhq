@@ -18,12 +18,12 @@ ul.notes {
     float: left;
 
     svg {
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
       fill: $gray-darkest;
       position: absolute;
-      left: 30px;
-      top: 15px;
+      left: 0;
+      top: 16px;
     }
   }
 
@@ -102,13 +102,12 @@ ul.notes {
 
     .note-awards {
       .js-awards-block {
-        padding: 2px;
-        margin-top: 10px;
+        margin-bottom: 16px;
       }
     }
 
     .note-header {
-      padding-bottom: 3px;
+      padding-bottom: 8px;
       padding-right: 20px;
 
       @media (min-width: $screen-sm-min) {
@@ -123,6 +122,9 @@ ul.notes {
     }
 
     .note-emoji-button {
+      position: relative;
+      line-height: 1;
+
       .fa-spinner {
         display: none;
       }
@@ -143,6 +145,14 @@ ul.notes {
     font-size: 14px;
     padding: 0;
     clear: both;
+
+    @media (min-width: $screen-sm-min) {
+      margin-left: 65px;
+    }
+
+    .note-header {
+      padding-bottom: 0;
+    }
 
     &.timeline-entry::after {
       clear: none;
@@ -172,6 +182,10 @@ ul.notes {
 
     .timeline-content {
       padding: 14px 10px;
+
+      @media (min-width: $screen-sm-min) {
+        margin-left: 20px;
+      }
     }
 
     .note-header {
@@ -344,6 +358,15 @@ ul.notes {
   font-size: 14px;
 }
 
+.note-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.note-header-info {
+  min-width: 0;
+}
+
 .note-headline-light {
   display: inline;
 
@@ -363,21 +386,31 @@ ul.notes {
   }
 }
 
+.note-headline-meta {
+  display: inline-block;
+  white-space: nowrap;
+
+  .system-note-message {
+    white-space: normal;
+  }
+}
+
 /**
  * Actions for Discussions/Notes
  */
 
-.discussion-actions,
-.note-actions {
+.discussion-actions {
   float: right;
   margin-left: 10px;
   color: $gray-darkest;
 }
 
 .note-actions {
-  position: absolute;
-  right: 0;
-  top: 0;
+  flex-shrink: 0;
+  // For PhantomJS that does not support flex
+  float: right;
+  margin-left: 10px;
+  color: $gray-darkest;
 
   .note-action-button {
     margin-left: 8px;
@@ -420,7 +453,8 @@ ul.notes {
   .award-control-icon-positive,
   .award-control-icon-super-positive {
     position: absolute;
-    margin-left: -20px;
+    top: 0;
+    left: 0;
     opacity: 0;
   }
 
@@ -619,7 +653,6 @@ ul.notes {
   }
 
   &:not(.is-disabled):hover,
-  &:not(.is-disabled):focus,
   &.is-active {
     color: $gl-text-green;
 
@@ -632,6 +665,11 @@ ul.notes {
     fill: $gray-darkest;
     height: 15px;
     width: 15px;
+  }
+
+  .loading {
+    margin: 0;
+    height: auto;
   }
 }
 

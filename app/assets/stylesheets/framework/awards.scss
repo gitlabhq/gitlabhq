@@ -38,6 +38,15 @@
     height: 300px;
     overflow-y: scroll;
   }
+
+  .disabled {
+    cursor: default;
+    opacity: 0.5;
+
+    &:hover {
+      transform: none;
+    }
+  }
 }
 
 .emoji-search {
@@ -99,8 +108,7 @@
 }
 
 .award-control {
-  margin: 3px 5px 3px 0;
-  padding: .35em .4em;
+  margin-right: 5px;
   outline: 0;
 
   &.disabled {
@@ -151,6 +159,17 @@
     .award-control-icon-super-positive {
       opacity: 1;
       transform: scale(1);
+    }
+  }
+
+  &.user-authored {
+    cursor: default;
+    opacity: 0.65;
+
+    &:hover,
+    &:active {
+      background-color: $white-light;
+      border-color: $border-color;
     }
   }
 

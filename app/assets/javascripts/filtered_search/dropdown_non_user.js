@@ -5,48 +5,46 @@ import Filter from '~/droplab/plugins/filter';
 
 require('./filtered_search_dropdown');
 
-(() => {
-  class DropdownNonUser extends gl.FilteredSearchDropdown {
-    constructor(droplab, dropdown, input, filter, endpoint, symbol) {
-      super(droplab, dropdown, input, filter);
-      this.symbol = symbol;
-      this.config = {
-        Ajax: {
-          endpoint,
-          method: 'setData',
-          loadingTemplate: this.loadingTemplate,
-          onError() {
-            /* eslint-disable no-new */
-            new Flash('An error occured fetching the dropdown data.');
-            /* eslint-enable no-new */
-          },
+class DropdownNonUser extends gl.FilteredSearchDropdown {
+  constructor(droplab, dropdown, input, filter, endpoint, symbol) {
+    super(droplab, dropdown, input, filter);
+    this.symbol = symbol;
+    this.config = {
+      Ajax: {
+        endpoint,
+        method: 'setData',
+        loadingTemplate: this.loadingTemplate,
+        onError() {
+          /* eslint-disable no-new */
+          new Flash('An error occured fetching the dropdown data.');
+          /* eslint-enable no-new */
         },
-        Filter: {
-          filterFunction: gl.DropdownUtils.filterWithSymbol.bind(null, this.symbol, input),
-          template: 'title',
-        },
-      };
-    }
-
-    itemClicked(e) {
-      super.itemClicked(e, (selected) => {
-        const title = selected.querySelector('.js-data-value').innerText.trim();
-        return `${this.symbol}${gl.DropdownUtils.getEscapedText(title)}`;
-      });
-    }
-
-    renderContent(forceShowList = false) {
-      this.droplab
-        .changeHookList(this.hookId, this.dropdown, [Ajax, Filter], this.config);
-      super.renderContent(forceShowList);
-    }
-
-    init() {
-      this.droplab
-        .addHook(this.input, this.dropdown, [Ajax, Filter], this.config).init();
-    }
+      },
+      Filter: {
+        filterFunction: gl.DropdownUtils.filterWithSymbol.bind(null, this.symbol, input),
+        template: 'title',
+      },
+    };
   }
 
-  window.gl = window.gl || {};
-  gl.DropdownNonUser = DropdownNonUser;
-})();
+  itemClicked(e) {
+    super.itemClicked(e, (selected) => {
+      const title = selected.querySelector('.js-data-value').innerText.trim();
+      return `${this.symbol}${gl.DropdownUtils.getEscapedText(title)}`;
+    });
+  }
+
+  renderContent(forceShowList = false) {
+    this.droplab
+      .changeHookList(this.hookId, this.dropdown, [Ajax, Filter], this.config);
+    super.renderContent(forceShowList);
+  }
+
+  init() {
+    this.droplab
+      .addHook(this.input, this.dropdown, [Ajax, Filter], this.config).init();
+  }
+}
+
+window.gl = window.gl || {};
+gl.DropdownNonUser = DropdownNonUser;

@@ -19,7 +19,7 @@ class Repository
   #
   # For example, for entry `:readme` there's a method called `readme` which
   # stores its data in the `readme` cache key.
-  CACHED_METHODS = %i(size commit_count readme version contribution_guide
+  CACHED_METHODS = %i(size commit_count readme contribution_guide
                       changelog license_blob license_key gitignore koding_yml
                       gitlab_ci_yml branch_names tag_names branch_count
                       tag_count avatar exists? empty? root_ref).freeze
@@ -32,7 +32,6 @@ class Repository
     changelog: :changelog,
     license: %i(license_blob license_key),
     contributing: :contribution_guide,
-    version: :version,
     gitignore: :gitignore,
     koding: :koding_yml,
     gitlab_ci: :gitlab_ci_yml,
@@ -109,7 +108,7 @@ class Repository
       offset: offset,
       after: after,
       before: before,
-      follow: path.present?,
+      follow: Array(path).length == 1,
       skip_merges: skip_merges
     }
 
@@ -529,11 +528,6 @@ class Repository
     end
   end
   cache_method :readme
-
-  def version
-    file_on_head(:version)
-  end
-  cache_method :version
 
   def contribution_guide
     file_on_head(:contributing)
@@ -963,13 +957,15 @@ class Repository
   end
 
   def is_ancestor?(ancestor_id, descendant_id)
-    Gitlab::GitalyClient.migrate(:is_ancestor) do |is_enabled|
-      if is_enabled
-        raw_repository.is_ancestor?(ancestor_id, descendant_id)
-      else
-        merge_base_commit(ancestor_id, descendant_id) == ancestor_id
-      end
-    end
+    # NOTE: This feature is intentionally disabled until
+    # https://gitlab.com/gitlab-org/gitlab-ce/issues/30586 is resolved
+    # Gitlab::GitalyClient.migrate(:is_ancestor) do |is_enabled|
+    #   if is_enabled
+    #     raw_repository.is_ancestor?(ancestor_id, descendant_id)
+    #   else
+    merge_base_commit(ancestor_id, descendant_id) == ancestor_id
+    #   end
+    # end
   end
 
   def empty_repo?

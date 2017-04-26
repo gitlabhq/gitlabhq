@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
-  include WaitForAjax
-
   before { allow_any_instance_of(U2fHelper).to receive(:inject_u2f_api?).and_return(true) }
 
   def manage_two_factor_authentication
