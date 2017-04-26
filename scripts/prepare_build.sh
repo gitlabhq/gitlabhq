@@ -32,7 +32,7 @@ sed -i 's/localhost/redis/g' config/resque.yml
 cp config/gitlab.yml.example config/gitlab.yml
 
 if [ "$USE_BUNDLE_INSTALL" != "false" ]; then
-    retry bundle install --clean $BUNDLE_INSTALL_FLAGS
+    retry bundle install --clean $BUNDLE_INSTALL_FLAGS && bundle check
 fi
 
 # Only install knapsack after bundle install! Otherwise oddly some native
