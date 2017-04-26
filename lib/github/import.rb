@@ -171,10 +171,13 @@ module Github
           begin
             restore_branches(pull_request)
 
+            author_id   = user_id(pull_request.author, project.creator_id)
+            description = format_description(pull_request.description, pull_request.author)
+
             merge_request.attributes = {
               iid: pull_request.iid,
               title: pull_request.title,
-              description: format_description(pull_request.description, pull_request.author),
+              description: description,
               source_project: pull_request.source_project,
               source_branch: pull_request.source_branch_name,
               source_branch_sha: pull_request.source_branch_sha,
@@ -183,13 +186,13 @@ module Github
               target_branch_sha: pull_request.target_branch_sha,
               state: pull_request.state,
               milestone_id: milestone_id(pull_request.milestone),
-              author_id: user_id(pull_request.author, project.creator_id),
+              author_id: author_id,
               assignee_id: user_id(pull_request.assignee),
               created_at: pull_request.created_at,
               updated_at: pull_request.updated_at
             }
-            merge_request.save!(validate: false)
 
+            merge_request.save!(validate: false)
             merge_request.merge_request_diffs.create
 
             # Fetch review comments
