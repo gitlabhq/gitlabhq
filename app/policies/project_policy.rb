@@ -4,9 +4,6 @@ class ProjectPolicy < BasePolicy
   def rules
     team_access!(user)
 
-    owner = project.owner == user ||
-      (project.group && project.group.has_owner?(user))
-
     owner_access! if user.admin? || owner
     auditor_access! if user.auditor?
     team_member_owner_access! if owner
@@ -14,11 +11,7 @@ class ProjectPolicy < BasePolicy
     if project.public? || (project.internal? && !user.external?)
       guest_access!
       public_access!
-
-      if project.request_access_enabled &&
-          !(owner || user.admin? || project.team.member?(user) || project_group_member?(user))
-        can! :request_access
-      end
+      can! :request_access if access_requestable?
     end
 
     archived_access! if project.archived?
@@ -31,6 +24,11 @@ class ProjectPolicy < BasePolicy
 
   def project
     @subject
+  end
+
+  def owner
+    @owner ||= project.owner == user ||
+      (project.group && project.group.has_owner?(user))
   end
 
   def guest_access!
@@ -251,14 +249,6 @@ class ProjectPolicy < BasePolicy
     disabled_features!
   end
 
-  def project_group_member?(user)
-    project.group &&
-      (
-        project.group.members_with_parents.exists?(user_id: user.id) ||
-        project.group.requesters.exists?(user_id: user.id)
-      )
-  end
-
   def block_issues_abilities
     unless project.feature_available?(:issues, user)
       cannot! :read_issue if project.default_issues_tracker?
@@ -278,6 +268,22 @@ class ProjectPolicy < BasePolicy
   end
 
   private
+
+  def project_group_member?(user)
+    project.group &&
+      (
+        project.group.members_with_parents.exists?(user_id: user.id) ||
+        project.group.requesters.exists?(user_id: user.id)
+      )
+  end
+
+  def access_requestable?
+    project.request_access_enabled &&
+      !owner &&
+      !user.admin? &&
+      !project.team.member?(user) &&
+      !project_group_member?(user)
+  end
 
   # A base set of abilities for read-only users, which
   # is then augmented as necessary for anonymous and other
