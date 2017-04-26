@@ -20,7 +20,12 @@ export default class SidebarStore {
 
   processUserData(data) {
     if (data.assignees) {
-      this.renderedUsers = data.assignees;
+      this.renderedUsers = data.assignees.map(a => {
+        a.avatarUrl = a.avatar_url;
+        delete a.avatar_url;
+
+        return a;
+      });
 
       this.removeAllUserIds();
       this.renderedUsers.map(u => this.addUserId(u.id));
