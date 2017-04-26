@@ -299,6 +299,22 @@ import eventHub from './sidebar/event_hub';
                 const previouslySelected = $dropdown.closest('.selectbox')
                     .find("input[name='" + ($dropdown.data('field-name')) + "'][value!=0]");
 
+                // Enables support for limiting the number of users selected
+                // Automatically removes the first on the list if more users are selected
+                const maxSelect = $dropdown.data('max-select');
+                if (maxSelect) {
+                  const selected = getSelected();
+
+                  if (selected.length > maxSelect) {
+                    const firstSelectedId = selected[0];
+                    const firstSelected = $dropdown.closest('.selectbox')
+                      .find(`input[name='${$dropdown.data('field-name')}'][value=${firstSelectedId}]`);
+
+                    firstSelected.remove();
+                    eventHub.$emit('sidebar.removeUser', firstSelectedId);
+                  }
+                }
+
                 if (user.beforeDivider && user.name.toLowerCase() === 'unassigned') {
                   // Unassigned selected
                   previouslySelected.each((index, element) => {
