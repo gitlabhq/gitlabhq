@@ -311,12 +311,12 @@ ee_compat_check:
   script:
     - bundle exec rake db:migrate:reset
 
-rake pg db:migrate:reset:
+db:migrate:reset pg:
   <<: *db-migrate-reset
   <<: *use-pg
   <<: *except-docs
 
-rake mysql db:migrate:reset:
+db:migrate:reset mysql:
   <<: *db-migrate-reset
   <<: *use-mysql
   <<: *except-docs
@@ -328,12 +328,12 @@ rake mysql db:migrate:reset:
     - bundle exec rake db:rollback STEP=120
     - bundle exec rake db:migrate
 
-rake pg db:rollback:
+db:rollback pg:
   <<: *db-rollback
   <<: *use-pg
   <<: *except-docs
 
-rake mysql db:rollback:
+db:rollback mysql:
   <<: *db-rollback
   <<: *use-mysql
   <<: *except-docs
@@ -355,17 +355,17 @@ rake mysql db:rollback:
     paths:
       - log/development.log
 
-rake pg db:seed_fu:
+db:seed_fu pg:
   <<: *db-seed_fu
   <<: *use-pg
   <<: *except-docs
 
-rake mysql db:seed_fu:
+db:seed_fu mysql:
   <<: *db-seed_fu
   <<: *use-mysql
   <<: *except-docs
 
-rake gitlab:assets:compile:
+gitlab:assets:compile:
   stage: test
   <<: *dedicated-runner
   <<: *except-docs
@@ -385,7 +385,7 @@ rake gitlab:assets:compile:
     paths:
     - webpack-report/
 
-rake karma:
+karma:
   cache:
     paths:
       - vendor/ruby
@@ -451,11 +451,11 @@ bundler:audit:
     - . scripts/prepare_build.sh
     - bundle exec rake db:migrate
 
-migration pg paths:
+migration path pg:
   <<: *migration-paths
   <<: *use-pg
 
-migration mysql paths:
+migration path mysql:
   <<: *migration-paths
   <<: *use-mysql
 
@@ -532,8 +532,8 @@ pages:
   <<: *dedicated-runner
   dependencies:
     - coverage
-    - rake karma
-    - rake gitlab:assets:compile
+    - karma
+    - gitlab:assets:compile
     - lint:javascript:report
   script:
     - mv public/ .public/
