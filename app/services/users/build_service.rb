@@ -9,14 +9,13 @@ module Users
     def execute(skip_authorization: false)
       raise Gitlab::Access::AccessDeniedError unless skip_authorization || can_create_user?
 
-      user = User.new(build_user_params(skip_authorization: skip_authorization))
+      user_params = build_user_params(skip_authorization: skip_authorization)
+      user = User.new(user_params)
 
       if current_user&.admin?
-        if params[:reset_password]
-          user.generate_reset_token
-        end
+        @reset_token = user.generate_reset_token if params[:reset_password]
 
-        if params[:force_random_password]
+        if user_params[:force_random_password]
           random_password = Devise.friendly_token.first(Devise.password_length.min)
           user.password = user.password_confirmation = random_password
         end
@@ -89,12 +88,20 @@ module Users
           user_params.merge!(force_random_password: true, password_expires_at: nil)
         end
       else
-        user_params = params.slice(*signup_params)
-        user_params[:skip_confirmation] = params[:skip_confirmation] if skip_authorization
-        user_params[:skip_confirmation] ||= !current_application_settings.send_user_confirmation_email
+        allowed_signup_params = signup_params
+        allowed_signup_params << :skip_confirmation if skip_authorization
+
+        user_params = params.slice(*allowed_signup_params)
+        if user_params[:skip_confirmation].nil?
+          user_params[:skip_confirmation] = skip_user_confirmation_email_from_setting
+        end
       end
 
       user_params
+    end
+
+    def skip_user_confirmation_email_from_setting
+      !current_application_settings.send_user_confirmation_email
     end
   end
 end
