@@ -116,7 +116,7 @@ export default {
             width="24"
             class="avatar avatar-inline s24"
             :alt="assigneeAlt(user)"
-            :src="user.avatar_url"
+            :src="user.avatarUrl"
           />
           <span class="author">
             {{ user.name }}
@@ -156,7 +156,7 @@ export default {
               width="32"
               class="avatar avatar-inline s32"
               :alt="assigneeAlt(firstUser)"
-              :src="firstUser.avatar_url"
+              :src="firstUser.avatarUrl"
             />
             <span class="author">
               {{ firstUser.name }}
@@ -183,7 +183,7 @@ export default {
                   width="32"
                   class="avatar avatar-inline s32"
                   :alt="assigneeAlt(user)"
-                  :src="user.avatar_url"
+                  :src="user.avatarUrl"
                 />
               </a>
             </div>

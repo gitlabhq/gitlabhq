@@ -5,7 +5,7 @@ class ListUser {
     this.id = user.id;
     this.name = user.name;
     this.username = user.username;
-    this.avatar = user.avatar_url;
+    this.avatarUrl = user.avatar_url;
   }
 }
 

@@ -14,6 +14,7 @@ class ListIssue {
     this.dueDate = obj.due_date;
     this.subscribed = obj.subscribed;
     this.labels = [];
+    this.assignees = [];
     this.selected = false;
     this.position = obj.relative_position || Infinity;
     this.milestone_id = obj.milestone_id;

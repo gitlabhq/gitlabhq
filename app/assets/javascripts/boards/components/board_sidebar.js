@@ -5,6 +5,8 @@
 /* global Sidebar */
 
 import Vue from 'vue';
+import AssigneeTitle from '../../sidebar/components/assignees/assignee_title';
+import Assignees from '../../sidebar/components/assignees/assignees';
 
 require('./sidebar/remove_issue');
 
@@ -68,6 +70,8 @@ require('./sidebar/remove_issue');
     },
     components: {
       removeBtn: gl.issueBoards.RemoveIssueBtn,
+      'assignee-title': AssigneeTitle,
+      assignees: Assignees,
     },
   });
 })();
