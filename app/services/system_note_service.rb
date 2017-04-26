@@ -553,8 +553,9 @@ module SystemNoteService
   end
 
   #
-  # noteable - Noteable object
-  # user     - User performing approve
+  # noteable     - Noteable object
+  # noteable_ref - Referenced noteable object
+  # user         - User performing reference
   #
   # Example Note text:
   #
@@ -563,6 +564,22 @@ module SystemNoteService
   # Returns the created Note object
   def relate_issue(noteable, noteable_ref, user)
     body = "marked this issue as related to #{noteable_ref.to_reference(noteable.project)}"
+
+    create_note(NoteSummary.new(noteable, noteable.project, user, body, action: 'relate'))
+  end
+
+  #
+  # noteable     - Noteable object
+  # noteable_ref - Referenced noteable object
+  # user         - User performing reference
+  #
+  # Example Note text:
+  #
+  #   "removed the relation with gitlab-ce#9001"
+  #
+  # Returns the created Note object
+  def unrelate_issue(noteable, noteable_ref, user)
+    body = "removed the relation with #{noteable_ref.to_reference(noteable.project)}"
 
     create_note(NoteSummary.new(noteable, noteable.project, user, body, action: 'relate'))
   end
