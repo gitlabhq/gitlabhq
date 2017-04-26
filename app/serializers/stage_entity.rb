@@ -26,7 +26,10 @@ class StageEntity < Grape::Entity
       format: :json)
   end
 
-  expose :builds, as: :jobs, using: BuildEntity
+  expose :jobs do |stage|
+    JobsSerializer.new(project: request.project, user: request.user)
+      .with_groups.represent(stage.statuses)
+  end
 
   private
 
