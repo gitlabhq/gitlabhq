@@ -52,6 +52,4 @@ describe Projects::MilestonesController do
       expect(last_note).to eq('removed milestone')
     end
   end
-
-
 end

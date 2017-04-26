@@ -3,7 +3,7 @@ module MilestoneActions
 
   def merge_requests
     respond_to do |format|
-      format.html { redirect_to milestone_path }
+      format.html { redirect_to milestone_redirect_path }
       format.json do
         render json: tabs_json("shared/milestones/_merge_requests_tab", {
           merge_requests: @milestone.merge_requests,
@@ -15,7 +15,7 @@ module MilestoneActions
 
   def participants
     respond_to do |format|
-      format.html { redirect_to milestone_path }
+      format.html { redirect_to milestone_redirect_path }
       format.json do
         render json: tabs_json("shared/milestones/_participants_tab", {
           users: @milestone.participants
@@ -26,7 +26,7 @@ module MilestoneActions
 
   def labels
     respond_to do |format|
-      format.html { redirect_to milestone_path }
+      format.html { redirect_to milestone_redirect_path }
       format.json do
         render json: tabs_json("shared/milestones/_labels_tab", {
           labels: @milestone.labels
@@ -43,7 +43,7 @@ module MilestoneActions
     }
   end
 
-  def milestone_path
+  def milestone_redirect_path
     if @project
       namespace_project_milestone_path(@project.namespace, @project, @milestone)
     else
