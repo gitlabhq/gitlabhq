@@ -65,7 +65,7 @@
             - options[:toggle_class] += ' js-multiselect js-save-user-data'
             - options[:data][:field_name] = "#{issuable.to_ability_name}[assignee_ids][]"
             - options[:data][:multi_select] = true
-            - options[:data]['dropdown-title'] = 'Select assignee(s)'
+            - options[:data]['dropdown-title'] = title
             - options[:data]['dropdown-header'] = 'Assignee(s)'
           - else
             - title = 'Select assignee'

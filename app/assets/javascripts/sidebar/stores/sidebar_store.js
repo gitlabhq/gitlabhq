@@ -23,6 +23,7 @@ export default class SidebarStore {
       this.renderedUsers = data.assignees.map(a => {
         a.avatarUrl = a.avatar_url;
         delete a.avatar_url;
+
         return a;
       });
 
