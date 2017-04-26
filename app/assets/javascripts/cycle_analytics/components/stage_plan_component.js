@@ -31,10 +31,10 @@ global.cycleAnalytics.StagePlanComponent = Vue.extend({
               </a>
             </h5>
             <span>
-              {{ 'First' | translate }}
+              {{ __('First') }}
               <span class="commit-icon">${iconCommit}</span>
               <a :href="commit.commitUrl" class="commit-hash-link monospace">{{ commit.shortSha }}</a>
-              {{ 'pushed by' | translate }}
+              {{ __('pushed by') }}
               <a :href="commit.author.webUrl" class="commit-author-link">
                 {{ commit.author.name }}
               </a>

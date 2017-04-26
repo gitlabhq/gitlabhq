@@ -10,6 +10,13 @@ const locales = {
 };
 
 const lang = document.querySelector('html').getAttribute('lang') || 'en';
+const locale = new Jed(locales[lang]);
+const gettext = locale.gettext.bind(locale);
+const ngettext = locale.ngettext.bind(locale);
+const pgettext = locale.pgettext.bind(locale);
 
 export { lang };
-export default new Jed(locales[lang]);
+export { gettext as __ };
+export { ngettext as n__ };
+export { pgettext as s__ };
+export default locale;
