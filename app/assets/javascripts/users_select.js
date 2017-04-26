@@ -289,9 +289,10 @@ import eventHub from './sidebar/event_hub';
               return $value.css('display', '');
             },
             multiSelect: $dropdown.hasClass('js-multiselect'),
-            vue: $dropdown.hasClass('js-issue-board-sidebar'),
+            vue: false,
             clicked: function(options) {
-              const { user, $el, e, isMarking } = options;
+              const { $el, e, isMarking } = options;
+              const user = options.selectedObj;
 
               if ($dropdown.hasClass('js-multiselect')) {
                 const isActive = $el.hasClass('is-active');
@@ -348,19 +349,6 @@ import eventHub from './sidebar/event_hub';
                 return Issuable.filterResults($dropdown.closest('form'));
               } else if ($dropdown.hasClass('js-filter-submit')) {
                 return $dropdown.closest('form').submit();
-              } else if ($dropdown.hasClass('js-issue-board-sidebar')) {
-                if (user.id) {
-                  Vue.set(gl.issueBoards.BoardsStore.detail.issue, 'assignee', new ListUser({
-                    id: user.id,
-                    username: user.username,
-                    name: user.name,
-                    avatar_url: user.avatar_url
-                  }));
-                } else {
-                  Vue.delete(gl.issueBoards.BoardsStore.detail.issue, 'assignee');
-                }
-
-                updateIssueBoardsIssue();
               } else if (!$dropdown.hasClass('js-multiselect')) {
                 selected = $dropdown.closest('.selectbox').find("input[name='" + ($dropdown.data('field-name')) + "']").val();
                 return assignTo(selected);

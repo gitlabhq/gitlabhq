@@ -54,7 +54,10 @@
               return '';
             }
           },
-          clicked: function(selected, $el, e) {
+          clicked: function(options) {
+            const { $el, e } = options;
+            let selected = options.selectedObj;
+
             if ($(dropdown).is(".js-filter-submit")) {
               return $(dropdown).parents('form').submit();
             } else if ($dropdown.is('.js-issuable-form-weight')) {

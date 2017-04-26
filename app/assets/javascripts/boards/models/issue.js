@@ -15,6 +15,7 @@ class ListIssue {
     this.subscribed = obj.subscribed;
     this.labels = [];
     this.assignees = [];
+    this.selectedAssigneeIds = [];
     this.selected = false;
     this.position = obj.relative_position || Infinity;
     this.milestone_id = obj.milestone_id;
@@ -27,7 +28,12 @@ class ListIssue {
       this.labels.push(new ListLabel(label));
     });
 
-    this.assignees = obj.assignees.map(a => new ListUser(a));
+    this.processAssignees(obj.assignees);
+  }
+
+  processAssignees(assignees) {
+    this.assignees = assignees.map(a => new ListUser(a));
+    this.selectedAssigneeIds = this.assignees.map(a => a.id);
   }
 
   addLabel (label) {
@@ -50,6 +56,20 @@ class ListIssue {
     labels.forEach(this.removeLabel.bind(this));
   }
 
+  addUserId (id) {
+    if (this.selectedAssigneeIds.indexOf(id) === -1) {
+      this.selectedAssigneeIds.push(id);
+    }
+  }
+
+  removeUserId (id) {
+    this.selectedAssigneeIds = this.selectedAssigneeIds.filter(uid => uid !== id);
+  }
+
+  removeAllUserIds () {
+    this.selectedAssigneeIds = [];
+  }
+
   getLists () {
     return gl.issueBoards.BoardsStore.state.lists.filter(list => list.findIssue(this.id));
   }
@@ -59,7 +79,7 @@ class ListIssue {
       issue: {
         milestone_id: this.milestone ? this.milestone.id : null,
         due_date: this.dueDate,
-        assignee_id: this.assignee ? this.assignee.id : null,
+        assignee_ids: this.selectedAssigneeIds,
         label_ids: this.labels.map((label) => label.id)
       }
     };

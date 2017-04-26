@@ -351,7 +351,7 @@ GitLabDropdown = (function() {
         isMarking = selected ? selected[1] : null;
         if (this.options.clicked) {
           this.options.clicked.call(this, {
-            user: selectedObj,
+            selectedObj,
             $el,
             e,
             isMarking,

@@ -1,31 +1,11 @@
--# .block.assignee
-  -# .title.hide-collapsed
-  -#   Assignee
-  -#   - if can?(current_user, :admin_issue, @project)
-  -#     = icon("spinner spin", class: "block-loading")
-  -#     = link_to "Edit", "#", class: "edit-link pull-right"
--#   .value.hide-collapsed
--#     %span.assign-yourself.no-value{ "v-if" => "!issue.assignees" }
--#       No assignee
--#       - if can?(current_user, :admin_issue, @project)
--#         \-
--#         %a.js-assign-yourself{ href: "#" }
--#           assign yourself
--#     %a.author_link.bold{ ":href" => "'#{root_url}' + issue.assignees[0].username",
--#       "v-if" => "issue.assignees" }
--#       %img.avatar.avatar-inline.s32{ ":src" => "issue.assignees[0].avatar",
--#         width: "32", alt: "Avatar" }
--#       %span.author
--#         {{ issue.assignees[0].name }}
--#       %span.username
--#         = precede "@" do
--#           {{ issue.assignees[0].username }}
 .block.assignee
   %template{ "v-if" => "issue.assignees"}
-    %assignee-title{ ":number-of-assignees" => "issue.assignees.length",
+    %assignee-title{ ":number-of-assignees" => "issue.selectedAssigneeIds.length",
+      ":loading" => "loadingAssignees",
       ":editable" => can?(current_user, :admin_issue, @project) }
     %assignees{ class: "value", "root-path" => "#{root_url}",
-      ":users" => "issue.assignees" }
+      ":users" => "issue.assignees",
+      "@assign-self" => "assignSelf" }
 
   - if can?(current_user, :admin_issue, @project)
     .selectbox.hide-collapsed

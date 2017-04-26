@@ -144,7 +144,10 @@ import Vue from 'vue';
 
             return true;
           },
-          clicked: function(selected, $el, e) {
+          clicked: function(options) {
+            const { $el, e } = options;
+            let selected = options.selectedObj;
+
             var data, isIssueIndex, isMRIndex, page, boardsStore;
             if (!selected) return;
             page = $('body').data('page');

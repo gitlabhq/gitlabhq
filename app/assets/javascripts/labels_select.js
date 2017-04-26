@@ -330,7 +330,10 @@
           },
           multiSelect: $dropdown.hasClass('js-multiselect'),
           vue: $dropdown.hasClass('js-issue-board-sidebar'),
-          clicked: function(label, $el, e, isMarking) {
+          clicked: function(options) {
+            const { $el, e, isMarking } = options;
+            const label = options.selectedObj;
+
             var isIssueIndex, isMRIndex, page, boardsModel;
 
             page = $('body').data('page');

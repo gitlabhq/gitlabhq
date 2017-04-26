@@ -5,6 +5,8 @@
 /* global Sidebar */
 
 import Vue from 'vue';
+import eventHub from '../../sidebar/event_hub';
+
 import AssigneeTitle from '../../sidebar/components/assignees/assignee_title';
 import Assignees from '../../sidebar/components/assignees/assignees';
 
@@ -25,6 +27,7 @@ require('./sidebar/remove_issue');
         detail: Store.detail,
         issue: {},
         list: {},
+        loadingAssignees: false,
       };
     },
     computed: {
@@ -58,7 +61,46 @@ require('./sidebar/remove_issue');
     methods: {
       closeSidebar () {
         this.detail.issue = {};
-      }
+      },
+      assignSelf () {
+        // Notify gl dropdown that we are now assigning to current user
+        this.$el.querySelector('.block.assignee').dispatchEvent(new Event('assignYourself'));
+
+        this.addUser(this.currentUser.id);
+        this.saveUsers();
+      },
+      removeUser (id) {
+        gl.issueBoards.BoardsStore.detail.issue.removeUserId(id);
+      },
+      addUser (id) {
+        gl.issueBoards.BoardsStore.detail.issue.addUserId(id);
+      },
+      removeAllUsers () {
+        gl.issueBoards.BoardsStore.detail.issue.removeAllUserIds();
+      },
+      saveUsers () {
+        this.loadingAssignees = true;
+
+        const endpoint = document.querySelector('.js-issue-board-sidebar').dataset.issueUpdate;
+        gl.issueBoards.BoardsStore.detail.issue.update(endpoint)
+          .then((response) => {
+            this.loadingAssignees = false;
+
+            const data = response.json();
+            gl.issueBoards.BoardsStore.detail.issue.processAssignees(data.assignees);
+          })
+          .catch(() => {
+            this.loadingAssignees = false;
+            return new Flash('An error occurred while saving assignees');
+          });
+      },
+    },
+    created () {
+      // Get events from glDropdown
+      eventHub.$on('sidebar.removeUser', this.removeUser);
+      eventHub.$on('sidebar.addUser', this.addUser);
+      eventHub.$on('sidebar.removeAllUsers', this.removeAllUsers);
+      eventHub.$on('sidebar.saveUsers', this.saveUsers);
     },
     mounted () {
       new IssuableContext(this.currentUser);
