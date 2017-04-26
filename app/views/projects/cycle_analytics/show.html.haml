@@ -8,8 +8,7 @@
 = render "projects/head"
 
 #cycle-analytics{ class: container_class, "v-cloak" => "true", data: { request_path: project_cycle_analytics_path(@project) } }
-  - if @cycle_analytics_no_data || true
-    {{ s__('context', 'key') }}
+  - if @cycle_analytics_no_data
     .bordered-box.landing.content-block{ "v-if" => "!isOverviewDialogDismissed" }
       = icon("times", class: "dismiss-icon", "@click" => "dismissOverviewDialog()")
       .row
