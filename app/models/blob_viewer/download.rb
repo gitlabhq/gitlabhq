@@ -9,6 +9,7 @@ module BlobViewer
     self.partial_name = 'download'
     self.binary = true
 
+    # We can always render the Download viewer, even if the blob is in LFS or too large.
     def render_error
       nil
     end
