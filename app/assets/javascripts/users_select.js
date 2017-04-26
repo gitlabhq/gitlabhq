@@ -291,7 +291,8 @@ import eventHub from './sidebar/event_hub';
             multiSelect: $dropdown.hasClass('js-multiselect'),
             vue: $dropdown.hasClass('js-issue-board-sidebar'),
             clicked: function(options) {
-              const { user, $el, e, isMarking } = options;
+              const { $el, e, isMarking } = options;
+              const user = options.selectedObj;
 
               if ($dropdown.hasClass('js-multiselect')) {
                 const isActive = $el.hasClass('is-active');
