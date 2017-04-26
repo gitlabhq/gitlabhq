@@ -4,9 +4,9 @@ class ProjectPolicy < BasePolicy
   def rules
     team_access!(user)
 
-    owner_access! if user.admin? || owner
+    owner_access! if user.admin? || owner?
     auditor_access! if user.auditor?
-    team_member_owner_access! if owner
+    team_member_owner_access! if owner?
 
     if project.public? || (project.internal? && !user.external?)
       guest_access!
@@ -26,8 +26,10 @@ class ProjectPolicy < BasePolicy
     @subject
   end
 
-  def owner
-    @owner ||= project.owner == user ||
+  def owner?
+    return @owner if defined?(@owner)
+
+    @owner = project.owner == user ||
       (project.group && project.group.has_owner?(user))
   end
 
@@ -279,7 +281,7 @@ class ProjectPolicy < BasePolicy
 
   def access_requestable?
     project.request_access_enabled &&
-      !owner &&
+      !owner? &&
       !user.admin? &&
       !project.team.member?(user) &&
       !project_group_member?(user)
