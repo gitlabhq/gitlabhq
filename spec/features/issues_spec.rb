@@ -425,7 +425,8 @@ describe 'Issues', feature: true do
     it 'will not send ajax request when no data is changed' do
       page.within '.labels' do
         click_link 'Edit'
-        first('.dropdown-menu-close').click
+
+        find('.dropdown-menu-close', match: :first).click
 
         expect(page).not_to have_selector('.block-loading')
       end

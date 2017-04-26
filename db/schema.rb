@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(version: 20170421113144) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text "message_html"
+    t.integer "cached_markdown_version"
   end
 
   create_table "appearances", force: :cascade do |t|
@@ -35,6 +36,7 @@ ActiveRecord::Schema.define(version: 20170421113144) do
     t.datetime "updated_at"
     t.string "header_logo"
     t.text "description_html"
+    t.integer "cached_markdown_version"
   end
 
   create_table "application_settings", force: :cascade do |t|
@@ -132,6 +134,7 @@ ActiveRecord::Schema.define(version: 20170421113144) do
     t.string "uuid"
     t.decimal "polling_interval_multiplier", default: 1.0, null: false
     t.boolean "elasticsearch_experimental_indexer"
+    t.integer "cached_markdown_version"
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -209,6 +212,7 @@ ActiveRecord::Schema.define(version: 20170421113144) do
     t.string "color"
     t.string "font"
     t.text "message_html"
+    t.integer "cached_markdown_version"
   end
 
   create_table "chat_names", force: :cascade do |t|
@@ -567,6 +571,7 @@ ActiveRecord::Schema.define(version: 20170421113144) do
     t.integer "relative_position"
     t.datetime "closed_at"
     t.string "service_desk_reply_to"
+    t.integer "cached_markdown_version"
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
@@ -631,6 +636,7 @@ ActiveRecord::Schema.define(version: 20170421113144) do
     t.text "description_html"
     t.string "type"
     t.integer "group_id"
+    t.integer "cached_markdown_version"
   end
 
   add_index "labels", ["group_id", "project_id", "title"], name: "index_labels_on_group_id_and_project_id_and_title", unique: true, using: :btree
@@ -771,6 +777,7 @@ ActiveRecord::Schema.define(version: 20170421113144) do
     t.text "description_html"
     t.integer "time_estimate"
     t.boolean "squash", default: false, null: false
+    t.integer "cached_markdown_version"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
@@ -808,6 +815,7 @@ ActiveRecord::Schema.define(version: 20170421113144) do
     t.text "title_html"
     t.text "description_html"
     t.date "start_date"
+    t.integer "cached_markdown_version"
   end
 
   add_index "milestones", ["description"], name: "index_milestones_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
@@ -846,10 +854,11 @@ ActiveRecord::Schema.define(version: 20170421113144) do
     t.text "description_html"
     t.boolean "lfs_enabled"
     t.integer "parent_id"
-    t.boolean "require_two_factor_authentication", default: false, null: false
-    t.integer "two_factor_grace_period", default: 48, null: false
     t.integer "shared_runners_minutes_limit"
     t.integer "repository_size_limit", limit: 8
+    t.boolean "require_two_factor_authentication", default: false, null: false
+    t.integer "two_factor_grace_period", default: 48, null: false
+    t.integer "cached_markdown_version"
   end
 
   add_index "namespaces", ["created_at"], name: "index_namespaces_on_created_at", using: :btree
@@ -886,6 +895,7 @@ ActiveRecord::Schema.define(version: 20170421113144) do
     t.integer "resolved_by_id"
     t.string "discussion_id"
     t.text "note_html"
+    t.integer "cached_markdown_version"
   end
 
   add_index "notes", ["author_id"], name: "index_notes_on_author_id", using: :btree
@@ -1105,12 +1115,13 @@ ActiveRecord::Schema.define(version: 20170421113144) do
     t.boolean "lfs_enabled"
     t.text "description_html"
     t.boolean "only_allow_merge_if_all_discussions_are_resolved"
-    t.integer "auto_cancel_pending_pipelines", default: 0, null: false
     t.integer "repository_size_limit", limit: 8
     t.integer "sync_time", default: 60, null: false
     t.boolean "printing_merge_request_link_enabled", default: true, null: false
-    t.string "import_jid"
+    t.integer "auto_cancel_pending_pipelines", default: 0, null: false
     t.boolean "service_desk_enabled"
+    t.string "import_jid"
+    t.integer "cached_markdown_version"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
@@ -1209,6 +1220,7 @@ ActiveRecord::Schema.define(version: 20170421113144) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text "description_html"
+    t.integer "cached_markdown_version"
   end
 
   add_index "releases", ["project_id", "tag"], name: "index_releases_on_project_id_and_tag", using: :btree
@@ -1300,6 +1312,7 @@ ActiveRecord::Schema.define(version: 20170421113144) do
     t.integer "visibility_level", default: 0, null: false
     t.text "title_html"
     t.text "content_html"
+    t.integer "cached_markdown_version"
   end
 
   add_index "snippets", ["author_id"], name: "index_snippets_on_author_id", using: :btree
@@ -1508,11 +1521,11 @@ ActiveRecord::Schema.define(version: 20170421113144) do
     t.string "organization"
     t.boolean "authorized_projects_populated"
     t.boolean "auditor", default: false, null: false
+    t.boolean "require_two_factor_authentication_from_group", default: false, null: false
+    t.integer "two_factor_grace_period", default: 48, null: false
     t.boolean "ghost"
     t.date "last_activity_on"
     t.boolean "notified_of_own_activity"
-    t.boolean "require_two_factor_authentication_from_group", default: false, null: false
-    t.integer "two_factor_grace_period", default: 48, null: false
     t.boolean "support_bot"
   end
 

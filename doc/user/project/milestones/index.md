@@ -1,12 +1,15 @@
 # Milestones
 
-Milestones allow you to organize issues and merge requests into a cohesive group, optionally setting a due date.
-A common use is keeping track of an upcoming software version. Milestones are created per-project.
+Milestones allow you to organize issues and merge requests into a cohesive group,
+optionally setting a due date. A common use is keeping track of an upcoming
+software version. Milestones can be created per-project or per-group.
+
+## Creating a project milestone
+
+>**Note:**
+You need [Master permissions](../../permissions.md) in order to create a milestone.
 
 You can find the milestones page under your project's **Issues ➔ Milestones**.
-
-## Creating a milestone
-
 To create a new milestone, simply click the **New milestone** button when in the
 milestones page. A milestone can have a title, a description and start/due dates.
 Once you fill in all the details, hit the **Create milestone** button.
@@ -16,7 +19,10 @@ The start/due dates are required if you intend to use [Burndown charts](#burndow
 
 ![Creating a milestone](img/milestone_create.png)
 
-## Groups and milestones
+## Creating a group milestone
+
+>**Note:**
+You need [Master permissions](../../permissions.md) in order to create a milestone.
 
 You can create a milestone for several projects in the same group simultaneously.
 On the group's **Issues ➔ Milestones** page, you will be able to see the status

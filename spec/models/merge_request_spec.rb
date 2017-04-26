@@ -1077,15 +1077,17 @@ describe MergeRequest, models: true do
       user1 = create(:user)
       user2 = create(:user)
       mr = create(:merge_request, assignee: user1)
+      mr.project.add_developer(user1)
+      mr.project.add_developer(user2)
 
-      expect(user1.assigned_open_merge_request_count).to eq(1)
-      expect(user2.assigned_open_merge_request_count).to eq(0)
+      expect(user1.assigned_open_merge_requests_count).to eq(1)
+      expect(user2.assigned_open_merge_requests_count).to eq(0)
 
       mr.assignee = user2
       mr.save
 
-      expect(user1.assigned_open_merge_request_count).to eq(0)
-      expect(user2.assigned_open_merge_request_count).to eq(1)
+      expect(user1.assigned_open_merge_requests_count).to eq(0)
+      expect(user2.assigned_open_merge_requests_count).to eq(1)
     end
   end
 

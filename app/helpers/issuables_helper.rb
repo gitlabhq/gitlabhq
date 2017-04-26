@@ -175,6 +175,10 @@ module IssuablesHelper
     end
   end
 
+  def assigned_issuables_count(issuable_type)
+    current_user.public_send("assigned_open_#{issuable_type}_count")
+  end
+
   def issuable_filter_params
     [
       :search,
@@ -195,10 +199,6 @@ module IssuablesHelper
   end
 
   private
-
-  def assigned_issuables_count(assignee, issuable_type, state)
-    assignee.public_send("assigned_#{issuable_type}").public_send(state).count
-  end
 
   def sidebar_gutter_collapsed?
     cookies[:collapsed_gutter] == 'true'
