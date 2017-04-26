@@ -6,8 +6,8 @@ module Users
       @params = params.dup
     end
 
-    def execute
-      raise Gitlab::Access::AccessDeniedError unless can_create_user?
+    def execute(skip_authorization: false)
+      raise Gitlab::Access::AccessDeniedError unless skip_authorization || can_create_user?
 
       user = User.new(build_user_params)
 
