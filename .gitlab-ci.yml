@@ -253,38 +253,40 @@ spinach mysql 9 10: *spinach-knapsack-mysql
     SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "true"
 
-.exec: &exec
+.rake-exec: &rake-exec
   <<: *ruby-static-analysis
   <<: *dedicated-runner
   <<: *except-docs
   stage: test
   script:
-    - bundle exec $CI_JOB_NAME
+    - bundle exec rake $CI_JOB_NAME
 
-rubocop:
+static-analysis:
   <<: *ruby-static-analysis
   <<: *dedicated-runner
   <<: *except-docs
   stage: test
   script:
+    - bundle exec rake config_lint
+    - bundle exec rake flay
+    - bundle exec rake haml_lint
+    - bundle exec rake scss_lint
+    - bundle exec rake brakeman
+    - bundle exec license_finder
+    - scripts/lint-doc.sh
+    - yarn run eslint
     - bundle exec "rubocop --require rubocop-rspec"
 
-rake haml_lint: *exec
-rake scss_lint: *exec
-rake config_lint: *exec
-rake brakeman: *exec
-rake flay: *exec
-license_finder: *exec
-rake downtime_check:
-  <<: *exec
+downtime_check:
+  <<: *rake-exec
   except:
     - master
     - tags
     - /^[\d-]+-stable(-ee)?$/
     - /^docs\/*/
 
-rake ee_compat_check:
-  <<: *exec
+ee_compat_check:
+  <<: *rake-exec
   only:
     - branches@gitlab-org/gitlab-ce
   except:
@@ -402,16 +404,6 @@ rake karma:
     paths:
     - coverage-javascript/
 
-docs:check:apilint:
-  image: "phusion/baseimage"
-  stage: test
-  <<: *dedicated-runner
-  cache: {}
-  dependencies: []
-  before_script: []
-  script:
-    - scripts/lint-doc.sh
-
 docs:check:links:
   image: "registry.gitlab.com/gitlab-org/gitlab-build-images:nanoc-bootstrap-ruby-2.4-alpine"
   stage: test
@@ -484,14 +476,6 @@ coverage:
     paths:
     - coverage/index.html
     - coverage/assets/
-
-lint:javascript:
-  <<: *dedicated-runner
-  <<: *except-docs
-  stage: test
-  before_script: []
-  script:
-    - yarn run eslint
 
 lint:javascript:report:
   <<: *dedicated-runner
