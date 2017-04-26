@@ -39,11 +39,11 @@ export default {
   },
   methods: {
     renderResponse(res) {
-      const body = JSON.parse(res.body);
-      this.triggerAnimation(body);
+      const data = JSON.parse(res.body);
+      this.triggerAnimation(data);
     },
-    updateTaskHTML(body) {
-      this.taskStatus = body.task_status;
+    updateTaskHTML(data) {
+      this.taskStatus = data.task_status;
       document.querySelector('#task_status').innerText = this.taskStatus;
     },
     elementsToVisualize(noTitleChange, noDescriptionChange) {
@@ -80,13 +80,13 @@ export default {
         clearTimeout(this.timeoutId);
       }, 0);
     },
-    triggerAnimation(body) {
+    triggerAnimation(data) {
       // always reset to false before checking the change
       this.descriptionChange = false;
 
-      const { title, description } = body;
-      this.descriptionText = body.description_text;
-      this.updateTaskHTML(body);
+      const { title, description } = data;
+      this.descriptionText = data.description_text;
+      this.updateTaskHTML(data);
       /**
       * since opacity is changed, even if there is no diff for Vue to update
       * we must check the title/description even on a 304 to ensure no visual change
