@@ -162,13 +162,31 @@
     }
 
     .list-inline.previews {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      padding: $gl-padding;
+      display: inline-block;
 
       .preview {
-        flex-shrink: 0;
+        display: inline-block;
+        height: 280px;
+        min-width: 260px;
+        margin: 0;
+        padding: 16px;
+        @include make-xs-column(3);
+      }
+
+      .panel {
+        margin: 0;
+        height: 100%;
+
+        .panel-body {
+          padding: $gl-padding 0 0;
+          text-align: center;
+        }
+      }
+
+      .img-thumbnail {
+        max-height: 195px;
+        max-width: 195px;
+        padding: 0;
       }
     }
   }
