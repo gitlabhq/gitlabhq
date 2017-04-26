@@ -2,4 +2,7 @@
   .block.light.subscription{ ":data-url" => "'#{namespace_project_issues_path(@project.namespace, @project)}/' + issue.id + '/toggle_subscription'" }
     %span.toggle-text.hide-collapsed.pull-left
       Notifications
-    %a.btn.toggle-button.pull-right.js-subscribe-button.issuable-subscribe-button.hide-collapsed{ type: "button", role="button", ":class" => "issue.subscribed ? 'is-subscribed' : 'is-unsubscribed'" }
+    %a.btn.toggle-button.pull-right.js-subscribe-button.issuable-subscribe-button.hide-collapsed.has-tooltip{ type: "button",
+      ":role" => "button",
+      ":class" => "issue.subscribed ? 'is-subscribed' : 'is-unsubscribed'",
+      ":title" => "issue.subscribed ? 'Subscribed' : 'Unsubscribed'" }

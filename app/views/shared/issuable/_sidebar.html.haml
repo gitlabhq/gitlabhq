@@ -124,7 +124,10 @@
             = icon('bell', 'aria-hidden': 'true', class: 'subscribed-icon')
           %span.toggle-text.hide-collapsed.pull-left
             Notifications
-          %a.btn.toggle-button.pull-right.js-subscribe-button.issuable-subscribe-button.hide-collapsed{ type: "button", role: "button", class: (subscribed ? "is-subscribed" : "is-unsubscribed") }
+          %a.btn.toggle-button.pull-right.js-subscribe-button.issuable-subscribe-button.hide-collapsed.has-tooltip{ type: "button",
+            role: "button",
+            class: (subscribed ? "is-subscribed" : "is-unsubscribed"),
+            title: (subscribed ? "Subscribed" : "Unsubscribed") }
 
       - project_ref = cross_project_reference(@project, issuable)
       .block.project-reference
