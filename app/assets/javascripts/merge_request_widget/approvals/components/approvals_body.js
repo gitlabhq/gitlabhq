@@ -44,12 +44,15 @@ Vue.component('approvals-body', {
         return '';
       }
 
+      const separator = this.approvalsLeft === approvers.length ? 'and' : 'or';
+      const serialComma = approvers.length > 2 ? ',' : '';
+
       return approvers.length === 1 ? approvers[0].name :
         approvers.reduce((memo, curr, index) => {
           const nextMemo = `${memo}${curr.name}`;
 
           if (index === approvers.length - 2) { // second to last index
-            return `${nextMemo} or `;
+            return `${nextMemo}${serialComma} ${separator} `;
           } else if (index === approvers.length - 1) { // last index
             return nextMemo;
           }
