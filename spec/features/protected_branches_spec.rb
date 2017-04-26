@@ -1,13 +1,7 @@
 require 'spec_helper'
 Dir["./spec/features/protected_branches/*.rb"].sort.each { |f| require f }
 
-<<<<<<< HEAD
-feature 'Protected Branches', feature: true, js: true do
-  include WaitForAjax
-
-=======
 feature 'Projected Branches', feature: true, js: true do
->>>>>>> upstream/master
   let(:user) { create(:user, :admin) }
   let(:project) { create(:project, :repository) }
 

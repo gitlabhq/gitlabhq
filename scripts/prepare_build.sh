@@ -17,7 +17,6 @@ if [ "$GITLAB_DATABASE" != 'mysql' ]; then
 fi
 
 cp config/database.yml.$GITLAB_DATABASE config/database.yml
-<<<<<<< HEAD
 
 # EE-only
 cp config/database_geo.yml.$GITLAB_DATABASE config/database_geo.yml
@@ -28,23 +27,15 @@ if [ "$GITLAB_DATABASE" = 'postgresql' ]; then
     # EE-only
     sed -i 's/# host:.*/host: postgres/g' config/database_geo.yml
 
-=======
-
-if [ "$GITLAB_DATABASE" = 'postgresql' ]; then
-    sed -i 's/# host:.*/host: postgres/g' config/database.yml
->>>>>>> upstream/master
 else # Assume it's mysql
     sed -i 's/username:.*/username: root/g' config/database.yml
     sed -i 's/password:.*/password:/g' config/database.yml
     sed -i 's/# host:.*/host: mysql/g' config/database.yml
-<<<<<<< HEAD
 
     # EE-only
     sed -i 's/username:.*/username: root/g' config/database_geo.yml
     sed -i 's/password:.*/password:/g' config/database_geo.yml
     sed -i 's/# host:.*/host: mysql/g' config/database_geo.yml
-=======
->>>>>>> upstream/master
 fi
 
 cp config/resque.yml.example config/resque.yml
@@ -66,10 +57,7 @@ if [ "$SETUP_DB" != "false" ]; then
     if [ "$GITLAB_DATABASE" = "mysql" ]; then
         bundle exec rake add_limits_mysql
     fi
-<<<<<<< HEAD
 
     # EE-only
     bundle exec rake geo:db:drop geo:db:create geo:db:schema:load geo:db:migrate
-=======
->>>>>>> upstream/master
 fi

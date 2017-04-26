@@ -216,16 +216,11 @@ GEM
       railties (>= 3.0.0)
     faraday (0.11.0)
       multipart-post (>= 1.2, < 3)
-<<<<<<< HEAD
-    faraday_middleware (0.10.0)
-      faraday (>= 0.7.4, < 0.10)
+    faraday_middleware (0.11.0.1)
+      faraday (>= 0.7.4, < 1.0)
     faraday_middleware-aws-signers-v4 (0.1.5)
       aws-sdk (~> 2.1)
       faraday (~> 0.9)
-=======
-    faraday_middleware (0.11.0.1)
-      faraday (>= 0.7.4, < 1.0)
->>>>>>> upstream/master
     faraday_middleware-multi_json (0.0.6)
       faraday_middleware
       multi_json
@@ -936,11 +931,8 @@ DEPENDENCIES
   email_reply_trimmer (~> 0.1)
   email_spec (~> 1.6.0)
   factory_girl_rails (~> 4.7.0)
-<<<<<<< HEAD
-  faraday_middleware-aws-signers-v4
-=======
   faraday (~> 0.11.0)
->>>>>>> upstream/master
+  faraday_middleware-aws-signers-v4
   ffaker (~> 2.4)
   flay (~> 2.8.0)
   fog-aws (~> 0.9)

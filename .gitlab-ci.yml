@@ -54,10 +54,7 @@ stages:
   services:
     - postgres:latest
     - redis:alpine
-<<<<<<< HEAD
     - elasticsearch:5.1
-=======
->>>>>>> upstream/master
 
 .use-mysql: &use-mysql
   services:
