@@ -659,6 +659,7 @@ GEM
       rspec-support (~> 3.5.0)
     rspec-retry (0.4.5)
       rspec-core
+    rspec-set (0.1.3)
     rspec-support (3.5.0)
     rspec_profiling (0.0.5)
       activerecord
@@ -989,6 +990,7 @@ DEPENDENCIES
   rqrcode-rails3 (~> 0.1.7)
   rspec-rails (~> 3.5.0)
   rspec-retry (~> 0.4.5)
+  rspec-set (~> 0.1.3)
   rspec_profiling (~> 0.0.5)
   rubocop (~> 0.47.1)
   rubocop-rspec (~> 1.15.0)
