@@ -5,16 +5,36 @@ class Blob < SimpleDelegator
 
   MAXIMUM_TEXT_HIGHLIGHT_SIZE = 1.megabyte
 
+  # Finding a viewer for a blob happens based only on extension and whether the
+  # blob is binary or text, which means 1 blob should only be matched by 1 viewer,
+  # and the order of these viewers doesn't really matter.
+  #
+  # However, when the blob is an LFS pointer, we cannot know for sure whether the
+  # file being pointed to is binary or text. In this case, we match only on
+  # extension, preferring binary viewers over text ones if both exist, since the
+  # large files referred to in "Large File Storage" are much more likely to be
+  # binary than text.
+  #
+  # `.stl` files, for example, exist in both binary and text forms, and are
+  # handled by different viewers (`BinarySTL` and `TextSTL`) depending on blob
+  # type. LFS pointers to `.stl` files are assumed to always be the binary kind,
+  # and use the `BinarySTL` viewer.
   RICH_VIEWERS = [
-    BlobViewer::Image,
-    BlobViewer::PDF,
-    BlobViewer::Sketch,
-    BlobViewer::BinarySTL,
-    BlobViewer::TextSTL,
+    BlobViewer::Markup,
     BlobViewer::Notebook,
     BlobViewer::SVG,
-    BlobViewer::Markup,
+
+    BlobViewer::Image,
+    BlobViewer::Sketch,
+
+    BlobViewer::PDF,
+
+    BlobViewer::BinarySTL,
+    BlobViewer::TextSTL,
   ].freeze
+
+  BINARY_VIEWERS = RICH_VIEWERS.select(&:binary?).freeze
+  TEXT_VIEWERS = RICH_VIEWERS.select(&:text?).freeze
 
   attr_reader :project
 
@@ -147,11 +167,11 @@ class Blob < SimpleDelegator
 
     classes =
       if valid_lfs_pointer?
-        RICH_VIEWERS
+        BINARY_VIEWERS + TEXT_VIEWERS
       elsif binary?
-        RICH_VIEWERS.select(&:binary?)
+        BINARY_VIEWERS
       else # text
-        RICH_VIEWERS.select(&:text?)
+        TEXT_VIEWERS
       end
 
     classes.find { |viewer_class| viewer_class.can_render?(self) }
