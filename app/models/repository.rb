@@ -1,7 +1,6 @@
 require 'securerandom'
 
 class Repository
-  include MarkupHelper
   include Gitlab::ShellAdapter
   include RepositoryMirroring
 
@@ -530,7 +529,7 @@ class Repository
   end
 
   def rendered_readme
-    markup_unsafe(readme.name, readme.data, project: project) if readme
+    MarkupHelper.markup_unsafe(readme.name, readme.data, project: project) if readme
   end
   cache_method :rendered_readme
 

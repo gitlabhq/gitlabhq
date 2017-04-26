@@ -241,4 +241,6 @@ module MarkupHelper
 
     Banzai.post_process(html, context)
   end
+
+  extend self
 end
