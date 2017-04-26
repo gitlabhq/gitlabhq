@@ -166,6 +166,11 @@ module ProjectsHelper
     key
   end
 
+  def load_pipeline_status(projects)
+    Gitlab::Cache::Ci::ProjectPipelineStatus.
+      load_in_batch_for_projects(projects)
+  end
+
   private
 
   def repo_children_classes(field)
