@@ -40,9 +40,11 @@ export default {
         this.loading = false;
       }
 
+      const setLoadingFalseWrapper = setLoadingFalse.bind(this);
+
       this.mediator.saveSelectedUsers(this.field)
-        .then(setLoadingFalse)
-        .catch(setLoadingFalse);
+        .then(setLoadingFalseWrapper)
+        .catch(setLoadingFalseWrapper);
     },
   },
   created() {
@@ -67,6 +69,7 @@ export default {
         v-if="!loading"
         :root-path="store.rootPath"
         :users="store.renderedUsers"
+        @assign-self="assignSelf"
       />
     </div>
   `,

@@ -71,7 +71,7 @@ export default {
   },
   methods: {
     assignSelf() {
-      this.$emit('assignSelf');
+      this.$emit('assign-self');
     },
     toggleShowLess() {
       this.showLess = !this.showLess;
