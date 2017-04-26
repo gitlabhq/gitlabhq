@@ -55,7 +55,7 @@
             }
           },
           clicked: function(options) {
-            const { $el, e } = options;
+            const e = options.e;
             let selected = options.selectedObj;
 
             if ($(dropdown).is(".js-filter-submit")) {

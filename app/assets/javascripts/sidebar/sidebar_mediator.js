@@ -44,8 +44,6 @@ export default class SidebarMediator {
         this.store.processUserData(data);
         this.store.processTimeTrackingData(data);
       })
-      .catch(() => {
-        return new Flash('Error occured when fetching sidebar data');
-      });
+      .catch(() => new Flash('Error occured when fetching sidebar data'));
   }
 }

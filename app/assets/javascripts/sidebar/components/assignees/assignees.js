@@ -89,8 +89,10 @@ export default {
       return `@${user.username}`;
     },
     shouldRenderCollapsedAssignee(index) {
-      return index === 0 || this.users.length <= 2 && index <= 2
-    }
+      const firstTwo = this.users.length <= 2 && index <= 2;
+
+      return index === 0 || firstTwo;
+    },
   },
   template: `
     <div>
