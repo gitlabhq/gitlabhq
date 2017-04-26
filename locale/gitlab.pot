@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-26 17:18+0100\n"
-"PO-Revision-Date: 2017-04-26 17:18+0100\n"
+"POT-Creation-Date: 2017-04-26 12:42-0500\n"
+"PO-Revision-Date: 2017-04-26 12:42-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -25,6 +25,9 @@ msgid "Deutsch"
 msgstr ""
 
 msgid "English"
+msgstr ""
+
+msgid "First"
 msgstr ""
 
 msgid "Introducing Cycle Analytics"
@@ -45,11 +48,19 @@ msgstr ""
 msgid "Not enough data"
 msgstr ""
 
+msgid "Opened"
+msgstr ""
+
 msgid "Pipeline Health"
 msgstr ""
 
 msgid "Read more"
 msgstr ""
+
+msgid "Showing %d event"
+msgid_plural "Showing %d events"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Spanish"
 msgstr ""
@@ -82,4 +93,23 @@ msgid "Total Time"
 msgstr ""
 
 msgid "Want to see the data? Please ask administrator for access."
+msgstr ""
+
+msgid "by"
+msgstr ""
+
+msgid "day"
+msgid_plural "days"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "hr"
+msgstr ""
+
+msgid "min"
+msgid_plural "mins"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "pushed by"
 msgstr ""

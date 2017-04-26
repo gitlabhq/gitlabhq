@@ -26,6 +26,9 @@ msgstr ""
 msgid "English"
 msgstr ""
 
+msgid "First"
+msgstr ""
+
 msgid "Introducing Cycle Analytics"
 msgstr ""
 
@@ -44,11 +47,19 @@ msgstr ""
 msgid "Not enough data"
 msgstr ""
 
+msgid "Opened"
+msgstr ""
+
 msgid "Pipeline Health"
 msgstr ""
 
 msgid "Read more"
 msgstr ""
+
+msgid "Showing %d event"
+msgid_plural "Showing %d events"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Spanish"
 msgstr ""
@@ -81,4 +92,23 @@ msgid "Total Time"
 msgstr ""
 
 msgid "Want to see the data? Please ask administrator for access."
+msgstr ""
+
+msgid "by"
+msgstr ""
+
+msgid "day"
+msgid_plural "days"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "hr"
+msgstr ""
+
+msgid "min"
+msgid_plural "mins"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "pushed by"
 msgstr ""

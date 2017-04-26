@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2017-04-13 00:07-0500\n"
+"PO-Revision-Date: 2017-04-26 16:07-0500\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
@@ -18,7 +18,7 @@ msgstr ""
 "X-Generator: Poedit 2.0.1\n"
 
 msgid "Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project."
-msgstr ""
+msgstr "Cycle Analytics ofrece una visión general de cuánto tiempo tarda en pasar de idea a producción en su proyecto."
 
 msgid "Deutsch"
 msgstr "Alemán"
@@ -26,59 +26,90 @@ msgstr "Alemán"
 msgid "English"
 msgstr "Inglés"
 
+msgid "First"
+msgstr "Primer"
+
 msgid "Introducing Cycle Analytics"
-msgstr ""
+msgstr "Introducción a Cycle Analytics"
 
 msgid "Last 30 days"
-msgstr ""
+msgstr "Últimos 30 días"
 
 msgid "Last 90 days"
-msgstr ""
+msgstr "Últimos 90 días"
 
 msgid "Median"
-msgstr ""
+msgstr "Mediana"
 
 msgid "Not available"
-msgstr ""
+msgstr "No disponible"
 
 msgid "Not enough data"
-msgstr ""
+msgstr "No hay suficientes datos"
+
+msgid "Opened"
+msgstr "Abiertos"
 
 msgid "Pipeline Health"
-msgstr ""
+msgstr "Estado del Pipeline"
 
 msgid "Read more"
-msgstr ""
+msgstr "Leer más"
+
+msgid "Showing %d event"
+msgid_plural "Showing %d events"
+msgstr[0] "Mostrando %d evento"
+msgstr[1] "Mostrando %d eventos"
 
 msgid "Spanish"
 msgstr "Español"
 
 msgid "Stage"
-msgstr ""
+msgstr "Etapa"
 
 msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
-msgstr ""
+msgstr "La etapa de codificación muestra el tiempo desde la primera confirmación hasta la creación de la solicitud de fusión. Los datos serán automáticamente incorporados aquí una vez creada tu primera solicitud de fusión."
 
 msgid "The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage."
-msgstr ""
+msgstr "La etapa de temas muestra el tiempo que toma desde la creación de un tema hasta asignar el tema a un hito, o añadir el tema a una lista en el panel de temas. Empieza a crear temas para ver los datos de esta etapa."
 
 msgid "The planning stage shows the time from the previous step to pushing your first commit. This time will be added automatically once you push your first commit."
-msgstr ""
+msgstr "La etapa de planificación muestra el tiempo desde el paso anterior hasta el envío de tu primera confirmación. Este tiempo se añadirá automáticamente una vez que usted envíe su primera confirmación."
 
 msgid "The production stage shows the total time it takes between creating an issue and deploying the code to production. The data will be automatically added once you have completed the full idea to production cycle."
-msgstr ""
+msgstr "La etapa de producción muestra el tiempo total que tarda entre la creación de un tema y el despliegue del código a producción. Los datos se añadirá automáticamente una vez haya finalizado por completo el ciclo de idea a producción."
 
 msgid "The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request."
-msgstr ""
+msgstr "La etapa de revisión muestra el tiempo desde la creación de la solicitud de fusión hasta que los cambios se fusionaron. Los datos se añadirán automáticamente después de fusionar su primera solicitud de fusión."
 
 msgid "The staging stage shows the time between merging the MR and deploying code to the production environment. The data will be automatically added once you deploy to production for the first time."
-msgstr ""
+msgstr "La etapa de puesta en escena muestra el tiempo entre la fusión  y el despliegue de código en el entorno de producción. Los datos se añadirá automáticamente una vez que se implementa en producción por primera vez."
 
+#, fuzzy
 msgid "The testing stage shows the time GitLab CI takes to run every pipeline for the related merge request. The data will automatically be added after your first pipeline finishes running."
-msgstr ""
+msgstr "La etapa de pruebas muestra el tiempo que GitLab CI toma para ejecutar cada pipeline para la solicitud de fusión relacionada. Los datos se añadirá automáticamente luego de que el primer pipeline termine de ejecutarse."
 
 msgid "Total Time"
-msgstr ""
+msgstr "Tiempo total"
 
 msgid "Want to see the data? Please ask administrator for access."
+msgstr "¿Quieres ver los datos? Por favor pedir acceso al administrador."
+
+msgid "by"
+msgstr "por"
+
+msgid "day"
+msgid_plural "days"
+msgstr[0] "día"
+msgstr[1] "días"
+
+msgid "hr"
 msgstr ""
+
+msgid "min"
+msgid_plural "mins"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "pushed by"
+msgstr "enviado por"
