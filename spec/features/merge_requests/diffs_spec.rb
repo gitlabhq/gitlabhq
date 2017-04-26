@@ -1,18 +1,8 @@
 require 'spec_helper'
 
 feature 'Diffs URL', js: true, feature: true do
-<<<<<<< HEAD
-  include ApplicationHelper
-
-  let(:author_user) { create(:user) }
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :public) }
-  let(:forked_project) { Projects::ForkService.new(project, author_user).execute }
-  let(:merge_request) { create(:merge_request_with_diffs, source_project: forked_project, target_project: project, author: author_user) }
-=======
   let(:project) { create(:project, :public) }
   let(:merge_request) { create(:merge_request, source_project: project) }
->>>>>>> upstream/master
 
   context 'when visit with */* as accept header' do
     before(:each) do
@@ -38,34 +28,7 @@ feature 'Diffs URL', js: true, feature: true do
 
       page.within('.alert') do
         expect(page).to have_text("Too many changes to show. Plain diff Email patch To preserve
-          performance only 3 of 3 files are displayed.")
-      end
-    end
-  end
-
-  describe 'when editing file' do
-    let(:changelog_id) { hexdigest("CHANGELOG") }
-
-    context 'as author' do
-      it 'shows direct edit link' do
-        login_as(author_user)
-        visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)
-
-        # Throws `Capybara::Poltergeist::InvalidSelector` if we try to use `#hash` syntax
-        expect(page).to have_selector("[id=\"#{changelog_id}\"] a.js-edit-blob")
-      end
-    end
-
-    context 'as user who needs to fork' do
-      it 'shows fork/cancel confirmation' do
-        login_as(user)
-        visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)
-
-        # Throws `Capybara::Poltergeist::InvalidSelector` if we try to use `#hash` syntax
-        find("[id=\"#{changelog_id}\"] .js-edit-blob").click
-
-        expect(page).to have_selector('.js-fork-suggestion-button', count: 1)
-        expect(page).to have_selector('.js-cancel-fork-suggestion-button', count: 1)
+          performance only 3 of 3+ files are displayed.")
       end
     end
   end
