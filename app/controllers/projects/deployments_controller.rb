@@ -11,7 +11,7 @@ class Projects::DeploymentsController < Projects::ApplicationController
   end
 
   def metrics
-    @metrics = deployment.metrics(1.hour)
+    @metrics = deployment.metrics
 
     if @metrics&.any?
       render json: @metrics, status: :ok

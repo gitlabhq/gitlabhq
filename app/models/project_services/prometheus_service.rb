@@ -63,45 +63,30 @@ class PrometheusService < MonitoringService
     { success: false, result: err }
   end
 
-  def metrics(environment, timeframe_start: nil, timeframe_end: nil)
-    with_reactive_cache(environment.slug, timeframe_start, timeframe_end) do |data|
-      data
-    end
+  def environment_metrics(environment, **args)
+    with_reactive_cache(Gitlab::Prometheus::Queries::EnvironmentQuery.name, environment.id, &:itself)
+  end
+
+  def deployment_metrics(deployment)
+    with_reactive_cache(Gitlab::Prometheus::Queries::DeploymentQuery.name, deployment.id, &:itself)
   end
 
   # Cache metrics for specific environment
-  def calculate_reactive_cache(environment_slug, timeframe_start, timeframe_end)
+  def calculate_reactive_cache(query_class_name, *args)
     return unless active? && project && !project.pending_delete?
 
-    timeframe_start = Time.parse(timeframe_start) if timeframe_start
-    timeframe_end = Time.parse(timeframe_end) if timeframe_end
-
-    timeframe_start ||= 8.hours.ago
-    timeframe_end ||= Time.now
-
-    memory_query = %{(sum(container_memory_usage_bytes{container_name!="POD",environment="#{environment_slug}"}) / count(container_memory_usage_bytes{container_name!="POD",environment="#{environment_slug}"})) /1024/1024}
-    cpu_query = %{sum(rate(container_cpu_usage_seconds_total{container_name!="POD",environment="#{environment_slug}"}[2m])) / count(container_cpu_usage_seconds_total{container_name!="POD",environment="#{environment_slug}"}) * 100}
+    metrics = Kernel.const_get(query_class_name).new(client).query(*args)
 
     {
       success: true,
-      metrics: {
-        # Average Memory used in MB
-        memory_values: client.query_range(memory_query, start: timeframe_start, stop: timeframe_end),
-        memory_current: client.query(memory_query, time: timeframe_end),
-        memory_previous: client.query(memory_query, time: timeframe_start),
-        # Average CPU Utilization
-        cpu_values: client.query_range(cpu_query, start: timeframe_start, stop: timeframe_end),
-        cpu_current: client.query(cpu_query, time: timeframe_end),
-        cpu_previous: client.query(cpu_query, time: timeframe_start)
-      },
+      metrics: metrics,
       last_update: Time.now.utc
     }
-
   rescue Gitlab::PrometheusError => err
     { success: false, result: err.message }
   end
 
   def client
-    @prometheus ||= Gitlab::Prometheus.new(api_url: api_url)
+    @prometheus ||= Gitlab::PrometheusClient.new(api_url: api_url)
   end
 end

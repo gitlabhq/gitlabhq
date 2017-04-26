@@ -1,10 +1,10 @@
 module PrometheusHelpers
   def prometheus_memory_query(environment_slug)
-    %{(sum(container_memory_usage_bytes{container_name!="POD",environment="#{environment_slug}"}) / count(container_memory_usage_bytes{container_name!="POD",environment="#{environment_slug}"})) /1024/1024}
+    %{avg(container_memory_usage_bytes{container_name!="POD",environment="#{environment_slug}"}) / 2^20}
   end
 
   def prometheus_cpu_query(environment_slug)
-    %{sum(rate(container_cpu_usage_seconds_total{container_name!="POD",environment="#{environment_slug}"}[2m])) / count(container_cpu_usage_seconds_total{container_name!="POD",environment="#{environment_slug}"}) * 100}
+    %{avg(rate(container_cpu_usage_seconds_total{container_name!="POD",environment="#{environment_slug}"}[2m])) * 100}
   end
 
   def prometheus_ping_url(prometheus_query)
@@ -88,10 +88,8 @@ module PrometheusHelpers
       metrics: {
         memory_values: prometheus_values_body('matrix').dig(:data, :result),
         memory_current: prometheus_value_body('vector').dig(:data, :result),
-        memory_previous: prometheus_value_body('vector').dig(:data, :result),
         cpu_values: prometheus_values_body('matrix').dig(:data, :result),
         cpu_current: prometheus_value_body('vector').dig(:data, :result),
-        cpu_previous: prometheus_value_body('vector').dig(:data, :result)
       },
       last_update: last_update
     }
