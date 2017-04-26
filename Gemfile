@@ -17,6 +17,8 @@ gem 'pg', '~> 0.18.2', group: :postgres
 
 gem 'rugged', '~> 0.25.1.1'
 
+gem 'faraday', '~> 0.11.0'
+
 # Authentication libraries
 gem 'devise', '~> 4.2'
 gem 'doorkeeper', '~> 4.2.0'
@@ -183,7 +185,7 @@ gem 'gemnasium-gitlab-service', '~> 0.2'
 gem 'slack-notifier', '~> 1.5.1'
 
 # Asana integration
-gem 'asana', '~> 0.4.0'
+gem 'asana', '~> 0.6.0'
 
 # FogBugz integration
 gem 'ruby-fogbugz', '~> 0.2.1'
@@ -342,7 +344,7 @@ gem 'html2text'
 gem 'ruby-prof', '~> 0.16.2'
 
 # OAuth
-gem 'oauth2', '~> 1.2.0'
+gem 'oauth2', '~> 1.3.0'
 
 # Soft deletion
 gem 'paranoia', '~> 2.2'
