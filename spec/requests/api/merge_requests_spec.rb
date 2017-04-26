@@ -26,6 +26,7 @@ describe API::MergeRequests do
     context "when unauthenticated" do
       it "returns authentication error" do
         get api("/projects/#{project.id}/merge_requests")
+
         expect(response).to have_http_status(401)
       end
     end
