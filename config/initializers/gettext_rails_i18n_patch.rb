@@ -13,6 +13,7 @@ module GettextI18nRails
     # If we found a content like "{{ 'Stage' | translate }}"
     # in a HAML file we convert it to "= _('Stage')", that way
     # it can be processed by the "rake gettext:find" script.
+    #
     # Overwrites: https://github.com/grosser/gettext_i18n_rails/blob/8396387a431e0f8ead72fc1cd425cad2fa4992f2/lib/gettext_i18n_rails/haml_parser.rb#L9
     def self.convert_to_code(text)
       # {{ 'Stage' | translate }} => = _('Stage')
@@ -29,6 +30,20 @@ end
 module GettextI18nRailsJs
   module Parser
     module Javascript
+
+      # This is required to tell the `rake gettext:find` script to use the Javascript
+      # parser for *.vue files.
+      #
+      # Overwrites: https://github.com/webhippie/gettext_i18n_rails_js/blob/46c58db6d2053a4f5f36a0eb024ea706ff5707cb/lib/gettext_i18n_rails_js/parser/javascript.rb#L36
+      def target?(file)
+        [
+          ".js",
+          ".jsx",
+          ".coffee",
+          ".vue"
+        ].include? ::File.extname(file)
+      end
+
       protected
 
       # Overwrites: https://github.com/webhippie/gettext_i18n_rails_js/blob/46c58db6d2053a4f5f36a0eb024ea706ff5707cb/lib/gettext_i18n_rails_js/parser/javascript.rb#L46
