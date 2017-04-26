@@ -48,8 +48,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see closed merge request "Bug NS-04"' do
-    merge_request = MergeRequest.find_by!(title: "Bug NS-04")
-    expect(merge_request).to be_closed
+    expect(page).to have_content "Bug NS-04"
     expect(page).to have_content "Closed by"
   end
 
