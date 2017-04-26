@@ -43,7 +43,9 @@ The following guide assumes that:
   have a new secondary server set up on the same OS and PostgreSQL version. If
   you are using Omnibus, make sure the GitLab version is the same on all nodes.
 - The IP of the primary server for our examples will be `1.2.3.4`, whereas the
-  secondary's IP will be `5.6.7.8`.
+  secondary's IP will be `5.6.7.8`. Note that the primary and secondary servers
+  MUST be able to communicate over these addresses. These IP addresses can either
+  be public or private.
 
 ### Step 1. Configure the primary server
 
@@ -63,7 +65,8 @@ The following guide assumes that:
          -c "ALTER USER gitlab_replicator WITH ENCRYPTED PASSWORD 'thepassword'"
     ```
 
-1. Edit `/etc/gitlab/gitlab.rb` and add the following:
+1. Edit `/etc/gitlab/gitlab.rb` and add the following. Note that GitLab 9.1 added
+   the `geo_primary_role` configuration variable:
 
     ```ruby
     geo_primary_role['enable'] = true
@@ -74,8 +77,8 @@ The following guide assumes that:
     # postgresql['wal_keep_segments'] = 10
     ```
 
-    Where `1.2.3.4` is the public IP address of the primary server, and `5.6.7.8`
-    the public IP address of the secondary one.
+    Where `1.2.3.4` is the IP address of the primary server, and `5.6.7.8`
+    is the IP address of the secondary one.
 
     For security reasons, PostgreSQL by default only listens on the local
     interface (e.g. 127.0.0.1). However, GitLab Geo needs to communicate
@@ -98,10 +101,31 @@ The following guide assumes that:
     |Primary|10.1.5.3|54.193.124.100|
     |Secondary|10.1.10.5|54.193.100.155|
 
-    In this case, for `1.2.3.4` use the internal IP of the primary node: 10.1.5.3.
-    For `5.6.7.8`, use the external of the secondary node: 54.193.100.155.
+    If you are running two nodes in different cloud availability zones, you
+    may need to double check that the nodes can communicate over the internal
+    IP addresses. For example, servers on Amazon Web Services in the same
+    [Virtual Private Cloud (VPC)](https://aws.amazon.com/vpc/) can do
+    this. Google Compute Engine also offers an [internal network]
+    (https://cloud.google.com/compute/docs/networking) that supports
+    cross-availability zone networking.
 
-    If you want to add another secondary, the relevant setting would look like:
+    For the above example, the following configuration uses the internal IPs
+    to replicate the database from the primary to the secondary:
+
+    ```ruby
+    # Example configuration using internal IPs for a cloud configuration
+    geo_primary_role['enable'] = true
+    postgresql['listen_address'] = "10.1.5.3"
+    postgresql['trust_auth_cidr_addresses'] = ['127.0.0.1/32','10.1.5.3/32']
+    postgresql['md5_auth_cidr_addresses'] = ['10.1.10.5/32']
+    # postgresql['max_wal_senders'] = 10
+    # postgresql['wal_keep_segments'] = 10
+    ```
+
+    If you prefer that your nodes communicate over the public Internet, you
+    may choose the IP addresses from the "External IP" column above.
+
+1.  Optional: If you want to add another secondary, the relevant setting would look like:
 
     ```ruby
     postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32','11.22.33.44/32']
@@ -143,7 +167,7 @@ The following guide assumes that:
     \q
     ```
 
-1. Edit `/etc/gitlab/gitlab.rb` and add the following:
+1. Added in GitLab 9.1: Edit `/etc/gitlab/gitlab.rb` and add the following:
 
     ```ruby
     geo_secondary_role['enable'] = true
