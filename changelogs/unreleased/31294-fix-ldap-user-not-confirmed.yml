@@ -1,0 +1,4 @@
+---
+title: Ensures that OAuth/LDAP/SAML users don't need to be confirmed
+merge_request:
+author:
