@@ -103,6 +103,18 @@ describe ProjectsHelper do
     end
   end
 
+  describe '#load_pipeline_status' do
+    it 'loads the pipeline status in batch' do
+      project = build(:empty_project)
+
+      helper.load_pipeline_status([project])
+      # Skip lazy loading of the `pipeline_status` attribute
+      pipeline_status = project.instance_variable_get('@pipeline_status')
+
+      expect(pipeline_status).to be_a(Gitlab::Cache::Ci::ProjectPipelineStatus)
+    end
+  end
+
   describe 'link_to_member' do
     let(:group)   { create(:group) }
     let(:project) { create(:empty_project, group: group) }
