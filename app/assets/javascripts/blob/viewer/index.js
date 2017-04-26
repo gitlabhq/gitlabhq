@@ -1,4 +1,3 @@
-/* eslint-disable no-new */
 /* global Flash */
 export default class BlobViewer {
   constructor() {
@@ -76,6 +75,7 @@ export default class BlobViewer {
       url,
       dataType: 'JSON',
     })
+    .fail(() => new Flash('Error loading source view'))
     .done((data) => {
       viewer.innerHTML = data.html;
       $(viewer).syntaxHighlight();
