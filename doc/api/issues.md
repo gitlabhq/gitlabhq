@@ -99,7 +99,7 @@ Example response:
 ]
 ```
 
-**Note**: `assignee` column is deprecated, it shows a first assignee only.
+**Note**: `assignee` column is deprecated, it shows the first assignee only.
 
 ## List group issues
 
@@ -190,7 +190,7 @@ Example response:
 ]
 ```
 
-**Note**: `assignee` column is deprecated, it shows a first assignee only.
+**Note**: `assignee` column is deprecated, it shows the first assignee only.
 
 ## List project issues
 
@@ -281,7 +281,7 @@ Example response:
 ]
 ```
 
-**Note**: `assignee` column is deprecated, it shows a first assignee only.
+**Note**: `assignee` column is deprecated, it shows the first assignee only.
 
 ## Single issue
 
@@ -357,7 +357,7 @@ Example response:
 }
 ```
 
-**Note**: `assignee` column is deprecated, it shows a first assignee only.
+**Note**: `assignee` column is deprecated, it shows the first assignee only.
 
 ## New issue
 
@@ -421,7 +421,7 @@ Example response:
 }
 ```
 
-**Note**: `assignee` column is deprecated, it shows a first assignee only.
+**Note**: `assignee` column is deprecated, it shows the first assignee only.
 
 ## Edit issue
 
@@ -486,7 +486,7 @@ Example response:
 }
 ```
 
-**Note**: `assignee` column is deprecated, it shows a first assignee only.
+**Note**: `assignee` column is deprecated, it shows the first assignee only.
 
 ## Delete an issue
 
@@ -573,7 +573,7 @@ Example response:
 }
 ```
 
-**Note**: `assignee` column is deprecated, it shows a first assignee only.
+**Note**: `assignee` column is deprecated, it shows the first assignee only.
 
 ## Subscribe to an issue
 
@@ -639,7 +639,7 @@ Example response:
 }
 ```
 
-**Note**: `assignee` column is deprecated, it shows a first assignee only.
+**Note**: `assignee` column is deprecated, it shows the first assignee only.
 
 ## Unsubscribe from an issue
 
@@ -762,7 +762,7 @@ Example response:
 }
 ```
 
-**Note**: `assignee` column is deprecated, it shows a first assignee only.
+**Note**: `assignee` column is deprecated, it shows the first assignee only.
 
 ## Set a time estimate for an issue
 
