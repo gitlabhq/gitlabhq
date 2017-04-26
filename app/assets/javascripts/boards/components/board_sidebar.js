@@ -87,7 +87,10 @@ require('./sidebar/remove_issue');
             this.loadingAssignees = false;
 
             const data = response.json();
-            gl.issueBoards.BoardsStore.detail.issue.processAssignees(data.assignees);
+
+            this.$nextTick(() => {
+              gl.issueBoards.BoardsStore.detail.issue.processAssignees(data.assignees);
+            });
           })
           .catch(() => {
             this.loadingAssignees = false;
