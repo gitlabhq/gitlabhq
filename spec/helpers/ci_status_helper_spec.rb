@@ -21,8 +21,10 @@ describe CiStatusHelper do
     it "builds a cache key for pipeline status" do
       pipeline_status = Gitlab::Cache::Ci::ProjectPipelineStatus.new(
         build(:project),
-        sha: "123abc",
-        status: "success"
+        pipeline_info: {
+          sha: "123abc",
+          status: "success"
+        }
       )
       expect(helper.pipeline_status_cache_key(pipeline_status)).to eq("pipeline-status/123abc-success")
     end
