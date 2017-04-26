@@ -521,4 +521,16 @@ describe SnippetsController do
       end
     end
   end
+
+  describe 'POST #preview_markdown' do
+    let(:snippet) { create(:personal_snippet, :public) }
+
+    it 'renders json in a correct format' do
+      sign_in(user)
+
+      post :preview_markdown, id: snippet, text: '*Markdown* text'
+
+      expect(JSON.parse(response.body).keys).to match_array(%w(body references))
+    end
+  end
 end
