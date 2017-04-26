@@ -2,7 +2,6 @@
 /* global Issuable */
 /* global ListUser */
 
-import Vue from 'vue';
 import eventHub from './sidebar/event_hub';
 
 (function() {
@@ -100,19 +99,7 @@ import eventHub from './sidebar/event_hub';
 
           $block.on('click', '.js-assign-yourself', function(e) {
             e.preventDefault();
-
-            if ($dropdown.hasClass('js-issue-board-sidebar')) {
-              Vue.set(gl.issueBoards.BoardsStore.detail.issue, 'assignee', new ListUser({
-                id: _this.currentUser.id,
-                username: _this.currentUser.username,
-                name: _this.currentUser.name,
-                avatar_url: _this.currentUser.avatar_url
-              }));
-
-              updateIssueBoardsIssue();
-            } else {
-              return assignTo(_this.currentUser.id);
-            }
+            return assignTo(_this.currentUser.id);
           });
           assignTo = function(selected) {
             var data;
@@ -289,7 +276,6 @@ import eventHub from './sidebar/event_hub';
               return $value.css('display', '');
             },
             multiSelect: $dropdown.hasClass('js-multiselect'),
-            vue: false,
             clicked: function(options) {
               const { $el, e, isMarking } = options;
               const user = options.selectedObj;
