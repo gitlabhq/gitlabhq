@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.1.1 (2017-04-26)
+
+- Add a transaction around move_issues_to_ghost_user. !10465
+- Properly expire cache for all MRs of a pipeline. !10770
+- Add sub-nav for Project Integration Services edit page. !10813
+- Fix missing duration for blocked pipelines. !10856
+- Fix lastest commit status text on main project page. !10863
+- Add index on ci_builds.updated_at. !10870 (blackst0ne)
+- Fix 500 error due to trying to show issues from pending deleting projects. !10906
+- Ensures that OAuth/LDAP/SAML users don't need to be confirmed.
+- Ensure replying to an individual note by email creates a note with its own discussion ID.
+- Fix OAuth, LDAP and SAML SSO when regular sign-ups are disabled.
+- Fix usage ping docs link from empty cohorts page.
+- Eliminate N+1 queries in loading namespaces for every issuable in milestones.
+
 ## 9.1.0 (2017-04-22)
 
 - Added merge requests empty state. !7342
