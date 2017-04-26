@@ -1,7 +1,7 @@
 /* eslint-disable no-new */
 import BlobViewer from '~/blob/viewer/index';
 
-describe('Blob viewer', () => {
+fdescribe('Blob viewer', () => {
   preloadFixtures('blob/show.html.raw');
 
   beforeEach(() => {
@@ -74,6 +74,10 @@ describe('Blob viewer', () => {
         ).toBe('true');
 
         done();
+      })
+      .catch(() => {
+        fail();
+        done();
       });
   });
 
@@ -87,7 +91,7 @@ describe('Blob viewer', () => {
     it('has tooltip when disabled', () => {
       expect(
         document.querySelector('.js-copy-blob-source-btn').getAttribute('data-original-title'),
-      ).toBe('Switch to the source view to copy the source to the clipboard');
+      ).toBe('Switch to the source to copy it to the clipboard');
     });
 
     it('enables after switching to simple view', (done) => {
@@ -111,7 +115,7 @@ describe('Blob viewer', () => {
 
         expect(
           document.querySelector('.js-copy-blob-source-btn').getAttribute('data-original-title'),
-        ).toBe('Copy to clipboard');
+        ).toBe('Copy source to clipboard');
 
         done();
       });
