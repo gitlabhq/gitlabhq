@@ -72,6 +72,22 @@ describe RelatedIssues::CreateService, service: true do
       it 'returns success message with Issue references' do
         is_expected.to eq(message: "#{issue_a_ref} and #{another_project_issue_ref} were successfully related", status: :success)
       end
+
+      it 'creates notes' do
+        # First two-way relation notes
+        expect(SystemNoteService).to receive(:relate_issue)
+          .with(issue, issue_a, user)
+        expect(SystemNoteService).to receive(:relate_issue)
+          .with(issue_a, issue, user)
+
+        # Second two-way relation notes
+        expect(SystemNoteService).to receive(:relate_issue)
+          .with(issue, another_project_issue, user)
+        expect(SystemNoteService).to receive(:relate_issue)
+          .with(another_project_issue, issue, user)
+
+        subject
+      end
     end
 
     context 'when relation already exists' do

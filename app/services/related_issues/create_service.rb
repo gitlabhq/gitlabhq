@@ -23,9 +23,19 @@ module RelatedIssues
     def create_related_issues!
       RelatedIssue.transaction do
         referenced_issues.each do |referenced_issue|
-          RelatedIssue.create!(issue: @issue, related_issue: referenced_issue)
+          relate_issues!(referenced_issue)
+          create_notes!(referenced_issue)
         end
       end
+    end
+
+    def relate_issues!(referenced_issue)
+      RelatedIssue.create!(issue: @issue, related_issue: referenced_issue)
+    end
+
+    def create_notes!(referenced_issue)
+      SystemNoteService.relate_issue(@issue, referenced_issue, current_user)
+      SystemNoteService.relate_issue(referenced_issue, @issue, current_user)
     end
 
     def referenced_issues

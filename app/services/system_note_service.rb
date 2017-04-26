@@ -552,6 +552,21 @@ module SystemNoteService
     create_note(NoteSummary.new(noteable, project, author, body, action: 'moved'))
   end
 
+  #
+  # noteable - Noteable object
+  # user     - User performing approve
+  #
+  # Example Note text:
+  #
+  #   "marked this issue as related to gitlab-ce#9001"
+  #
+  # Returns the created Note object
+  def relate_issue(noteable, noteable_ref, user)
+    body = "marked this issue as related to #{noteable_ref.to_reference(noteable.project)}"
+
+    create_note(NoteSummary.new(noteable, noteable.project, user, body, action: 'relate'))
+  end
+
   # Called when the merge request is approved by user
   #
   # noteable - Noteable object
