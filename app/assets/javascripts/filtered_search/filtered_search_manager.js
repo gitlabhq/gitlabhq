@@ -77,13 +77,14 @@ class FilteredSearchManager {
     this.checkForEnterWrapper = this.checkForEnter.bind(this);
     this.onClearSearchWrapper = this.onClearSearch.bind(this);
     this.checkForBackspaceWrapper = this.checkForBackspace.bind(this);
-    this.removeSelectedTokenWrapper = this.removeSelectedToken.bind(this);
+    this.removeSelectedTokenKeydownWrapper = this.removeSelectedTokenKeydown.bind(this);
     this.unselectEditTokensWrapper = this.unselectEditTokens.bind(this);
     this.editTokenWrapper = this.editToken.bind(this);
     this.tokenChange = this.tokenChange.bind(this);
     this.addInputContainerFocusWrapper = this.addInputContainerFocus.bind(this);
     this.removeInputContainerFocusWrapper = this.removeInputContainerFocus.bind(this);
     this.onrecentSearchesItemSelectedWrapper = this.onrecentSearchesItemSelected.bind(this);
+    this.removeTokenWrapper = this.removeToken.bind(this);
 
     this.filteredSearchInputForm.addEventListener('submit', this.handleFormSubmit);
     this.filteredSearchInput.addEventListener('input', this.setDropdownWrapper);
@@ -96,12 +97,13 @@ class FilteredSearchManager {
     this.filteredSearchInput.addEventListener('keyup', this.tokenChange);
     this.filteredSearchInput.addEventListener('focus', this.addInputContainerFocusWrapper);
     this.tokensContainer.addEventListener('click', FilteredSearchManager.selectToken);
+    this.tokensContainer.addEventListener('click', this.removeTokenWrapper);
     this.tokensContainer.addEventListener('dblclick', this.editTokenWrapper);
     this.clearSearchButton.addEventListener('click', this.onClearSearchWrapper);
     document.addEventListener('click', gl.FilteredSearchVisualTokens.unselectTokens);
     document.addEventListener('click', this.unselectEditTokensWrapper);
     document.addEventListener('click', this.removeInputContainerFocusWrapper);
-    document.addEventListener('keydown', this.removeSelectedTokenWrapper);
+    document.addEventListener('keydown', this.removeSelectedTokenKeydownWrapper);
     eventHub.$on('recentSearchesItemSelected', this.onrecentSearchesItemSelectedWrapper);
   }
 
@@ -117,12 +119,13 @@ class FilteredSearchManager {
     this.filteredSearchInput.removeEventListener('keyup', this.tokenChange);
     this.filteredSearchInput.removeEventListener('focus', this.addInputContainerFocusWrapper);
     this.tokensContainer.removeEventListener('click', FilteredSearchManager.selectToken);
+    this.tokensContainer.removeEventListener('click', this.removeTokenWrapper);
     this.tokensContainer.removeEventListener('dblclick', this.editTokenWrapper);
     this.clearSearchButton.removeEventListener('click', this.onClearSearchWrapper);
     document.removeEventListener('click', gl.FilteredSearchVisualTokens.unselectTokens);
     document.removeEventListener('click', this.unselectEditTokensWrapper);
     document.removeEventListener('click', this.removeInputContainerFocusWrapper);
-    document.removeEventListener('keydown', this.removeSelectedTokenWrapper);
+    document.removeEventListener('keydown', this.removeSelectedTokenKeydownWrapper);
     eventHub.$off('recentSearchesItemSelected', this.onrecentSearchesItemSelectedWrapper);
   }
 
@@ -195,11 +198,25 @@ class FilteredSearchManager {
 
   static selectToken(e) {
     const button = e.target.closest('.selectable');
+    const removeButtonSelected = e.target.closest('.remove-token');
 
-    if (button) {
+    if (!removeButtonSelected && button) {
       e.preventDefault();
       e.stopPropagation();
       gl.FilteredSearchVisualTokens.selectToken(button);
+    }
+  }
+
+  removeToken(e) {
+    const removeButtonSelected = e.target.closest('.remove-token');
+
+    if (removeButtonSelected) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const button = e.target.closest('.selectable');
+      gl.FilteredSearchVisualTokens.selectToken(button, true);
+      this.removeSelectedToken();
     }
   }
 
@@ -248,14 +265,19 @@ class FilteredSearchManager {
     }
   }
 
-  removeSelectedToken(e) {
+  removeSelectedTokenKeydown(e) {
     // 8 = Backspace Key
     // 46 = Delete Key
     if (e.keyCode === 8 || e.keyCode === 46) {
-      gl.FilteredSearchVisualTokens.removeSelectedToken();
-      this.handleInputPlaceholder();
-      this.toggleClearSearchButton();
+      this.removeSelectedToken();
     }
+  }
+
+  removeSelectedToken() {
+    gl.FilteredSearchVisualTokens.removeSelectedToken();
+    this.handleInputPlaceholder();
+    this.toggleClearSearchButton();
+    this.dropdownManager.updateCurrentDropdownOffset();
   }
 
   onClearSearch(e) {
