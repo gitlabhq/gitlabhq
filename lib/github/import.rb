@@ -171,24 +171,28 @@ module Github
           begin
             restore_branches(pull_request)
 
-            author_id                       = user_id(pull_request.author, project.creator_id)
-            merge_request.iid               = pull_request.iid
-            merge_request.title             = pull_request.title
-            merge_request.description       = format_description(pull_request.description, pull_request.author)
-            merge_request.source_project    = pull_request.source_project
-            merge_request.source_branch     = pull_request.source_branch_name
-            merge_request.source_branch_sha = pull_request.source_branch_sha
-            merge_request.target_project    = pull_request.target_project
-            merge_request.target_branch     = pull_request.target_branch_name
-            merge_request.target_branch_sha = pull_request.target_branch_sha
-            merge_request.state             = pull_request.state
-            merge_request.milestone_id      = milestone_id(pull_request.milestone)
-            merge_request.author_id         = author_id
-            merge_request.assignee_id       = user_id(pull_request.assignee)
-            merge_request.created_at        = pull_request.created_at
-            merge_request.updated_at        = pull_request.updated_at
-            merge_request.save!(validate: false)
+            author_id   = user_id(pull_request.author, project.creator_id)
+            description = format_description(pull_request.description, pull_request.author)
 
+            merge_request.attributes = {
+              iid: pull_request.iid,
+              title: pull_request.title,
+              description: description,
+              source_project: pull_request.source_project,
+              source_branch: pull_request.source_branch_name,
+              source_branch_sha: pull_request.source_branch_sha,
+              target_project: pull_request.target_project,
+              target_branch: pull_request.target_branch_name,
+              target_branch_sha: pull_request.target_branch_sha,
+              state: pull_request.state,
+              milestone_id: milestone_id(pull_request.milestone),
+              author_id: author_id,
+              assignee_id: user_id(pull_request.assignee),
+              created_at: pull_request.created_at,
+              updated_at: pull_request.updated_at
+            }
+
+            merge_request.save!(validate: false)
             merge_request.merge_request_diffs.create
 
             # Fetch review comments
