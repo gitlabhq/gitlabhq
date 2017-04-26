@@ -171,7 +171,7 @@ export default {
       <ul
         v-if="!isLoading"
         class="nav-links">
-        <li :class="{ 'active': scope === null || scope === 'available' }">
+        <li :class="{ active: scope === null || scope === 'available' }">
           <a :href="projectEnvironmentsPath">
             Available
             <span class="badge js-available-environments-count">
