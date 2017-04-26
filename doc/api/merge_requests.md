@@ -12,6 +12,7 @@ GET /projects/:id/merge_requests?state=opened
 GET /projects/:id/merge_requests?state=all
 GET /projects/:id/merge_requests?iids[]=42&iids[]=43
 GET /projects/:id/merge_requests?milestone=release
+GET /projects/:id/merge_requests?labels=bug,reproduced
 ```
 
 Parameters:
