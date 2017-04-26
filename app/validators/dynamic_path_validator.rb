@@ -82,13 +82,11 @@ class DynamicPathValidator < ActiveModel::EachValidator
     files
     find_file
     gitlab-lfs/objects
-    graphs
     info/lfs/objects
     logs_tree
     new
     preview
     raw
-    refs
     tree
     update
     wikis
