@@ -191,22 +191,23 @@ class MergeRequest < ActiveRecord::Base
     merge_request_diff ? merge_request_diff.raw_diffs(*args) : compare.raw_diffs(*args)
   end
 
-  def diffs(diff_options = nil)
+  def diffs(diff_options = {})
     if compare
-      compare.diffs(diff_options)
+      # When saving MR diffs, `no_collapse` is implicitly added (because we need
+      # to save the entire contents to the DB), so add that here for
+      # consistency.
+      compare.diffs(diff_options.merge(no_collapse: true))
     else
       merge_request_diff.diffs(diff_options)
     end
   end
 
   def diff_size
-    # The `#diffs` method ends up at an instance of a class inheriting from
-    # `Gitlab::Diff::FileCollection::Base`, so use those options as defaults
-    # here too, to get the same diff size without performing highlighting.
-    #
-    opts = Gitlab::Diff::FileCollection::Base.default_options.merge(diff_options || {})
+    # Calling `merge_request_diff.diffs.real_size` will also perform
+    # highlighting, which we don't need here.
+    return real_size if merge_request_diff
 
-    raw_diffs(opts).size
+    diffs.real_size
   end
 
   def diff_base_commit

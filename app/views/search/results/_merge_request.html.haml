@@ -2,6 +2,10 @@
   %h4
     = link_to [merge_request.target_project.namespace.becomes(Namespace), merge_request.target_project, merge_request] do
       %span.term.str-truncated= merge_request.title
+    - if merge_request.merged?
+      %span.label.label-primary.prepend-left-5 Merged
+    - elsif merge_request.closed?
+      %span.label.label-danger.prepend-left-5 Closed
     .pull-right= merge_request.to_reference
   - if merge_request.description.present?
     .description.term
@@ -9,8 +13,3 @@
         = search_md_sanitize(merge_request, :description)
   %span.light
     #{merge_request.project.name_with_namespace}
-  .pull-right
-    - if merge_request.merged?
-      %span.label.label-primary Merged
-    - elsif merge_request.closed?
-      %span.label.label-danger Closed

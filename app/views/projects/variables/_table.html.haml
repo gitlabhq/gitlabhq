@@ -14,7 +14,7 @@
           %tr
             %td.variable-key= variable.key
             %td.variable-value{ "data-value" => variable.value }******
-            %td
+            %td.variable-menu
               = link_to namespace_project_variable_path(@project.namespace, @project, variable), class: "btn btn-transparent btn-variable-edit" do
                 %span.sr-only
                   Update

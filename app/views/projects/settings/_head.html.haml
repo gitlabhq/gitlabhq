@@ -14,7 +14,7 @@
             %span
               Members
         - if can_edit
-          = nav_link(controller: :integrations) do
+          = nav_link(controller: [:integrations, :services]) do
             = link_to project_settings_integrations_path(@project), title: 'Integrations' do
               %span
                 Integrations

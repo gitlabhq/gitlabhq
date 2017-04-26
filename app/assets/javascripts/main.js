@@ -165,6 +165,7 @@ import './syntax_highlight';
 import './task_list';
 import './todos';
 import './tree';
+import './usage_ping';
 import './user';
 import './user_tabs';
 import './username_validator';
@@ -209,6 +210,14 @@ $(function () {
       setTimeout(gl.utils.handleLocationHash, 1);
     }
   });
+
+  if (bootstrapBreakpoint === 'xs') {
+    const $rightSidebar = $('aside.right-sidebar, .page-with-sidebar');
+
+    $rightSidebar
+      .removeClass('right-sidebar-expanded')
+      .addClass('right-sidebar-collapsed');
+  }
 
   // prevent default action for disabled buttons
   $('.btn').click(function(e) {

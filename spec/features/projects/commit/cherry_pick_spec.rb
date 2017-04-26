@@ -1,5 +1,4 @@
 require 'spec_helper'
-include WaitForAjax
 
 describe 'Cherry-pick Commits' do
   let(:group) { create(:group) }

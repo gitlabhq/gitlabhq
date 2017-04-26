@@ -1,12 +1,11 @@
 require "spec_helper"
 
-describe API::MergeRequests, api: true  do
-  include ApiHelpers
+describe API::MergeRequests do
   let(:base_time)   { Time.now }
   let(:user)        { create(:user) }
   let(:admin)       { create(:user, :admin) }
   let(:non_member)  { create(:user) }
-  let!(:project)    { create(:project, :public, :repository, creator: user, namespace: user.namespace) }
+  let!(:project)    { create(:project, :public, :repository, creator: user, namespace: user.namespace, only_allow_merge_if_pipeline_succeeds: false) }
   let!(:merge_request) { create(:merge_request, :simple, author: user, assignee: user, source_project: project, title: "Test", created_at: base_time) }
   let!(:merge_request_closed) { create(:merge_request, state: "closed", author: user, assignee: user, source_project: project, title: "Closed test", created_at: base_time + 1.second) }
   let!(:merge_request_merged) { create(:merge_request, state: "merged", author: user, assignee: user, source_project: project, title: "Merged test", created_at: base_time + 2.seconds, merge_commit_sha: '9999999999999999999999999999999999999999') }
@@ -519,6 +518,18 @@ describe API::MergeRequests, api: true  do
     it "enables merge when pipeline succeeds if the pipeline is active" do
       allow_any_instance_of(MergeRequest).to receive(:head_pipeline).and_return(pipeline)
       allow(pipeline).to receive(:active?).and_return(true)
+
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), merge_when_pipeline_succeeds: true
+
+      expect(response).to have_http_status(200)
+      expect(json_response['title']).to eq('Test')
+      expect(json_response['merge_when_pipeline_succeeds']).to eq(true)
+    end
+
+    it "enables merge when pipeline succeeds if the pipeline is active and only_allow_merge_if_pipeline_succeeds is true" do
+      allow_any_instance_of(MergeRequest).to receive(:head_pipeline).and_return(pipeline)
+      allow(pipeline).to receive(:active?).and_return(true)
+      project.update_attribute(:only_allow_merge_if_pipeline_succeeds, true)
 
       put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), merge_when_pipeline_succeeds: true
 

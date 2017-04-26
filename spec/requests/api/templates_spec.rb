@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe API::Templates, api: true  do
-  include ApiHelpers
-
+describe API::Templates do
   context 'the Template Entity' do
     before { get api('/templates/gitignores/Ruby') }
 

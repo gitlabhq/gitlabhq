@@ -1,0 +1,4 @@
+---
+title: Fix missing duration for blocked pipelines
+merge_request: 10856
+author:

@@ -14,8 +14,13 @@ module API
 
     class User < UserBasic
       expose :created_at
-      expose :admin?, as: :is_admin
       expose :bio, :location, :skype, :linkedin, :twitter, :website_url, :organization
+    end
+
+    class UserActivity < Grape::Entity
+      expose :username
+      expose :last_activity_on
+      expose :last_activity_on, as: :last_activity_at # Back-compat
     end
 
     class Identity < Grape::Entity
@@ -25,6 +30,7 @@ module API
     class UserPublic < User
       expose :last_sign_in_at
       expose :confirmed_at
+      expose :last_activity_on
       expose :email
       expose :color_scheme_id, :projects_limit, :current_sign_in_at
       expose :identities, using: Entities::Identity
@@ -34,8 +40,9 @@ module API
       expose :external
     end
 
-    class UserWithPrivateToken < UserPublic
+    class UserWithPrivateDetails < UserPublic
       expose :private_token
+      expose :admin?, as: :is_admin
     end
 
     class Email < Grape::Entity

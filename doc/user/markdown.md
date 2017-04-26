@@ -431,7 +431,7 @@ Emphasis, aka italics, with *asterisks* or _underscores_.
 
 Strong emphasis, aka bold, with **asterisks** or __underscores__.
 
-Combined emphasis with **_asterisks and underscores_**.
+Combined emphasis with **asterisks and _underscores_**.
 
 Strikethrough uses two tildes. ~~Scratch this.~~
 ```
@@ -640,10 +640,11 @@ Here's a line for us to start with.
 This line is separated from the one above by two newlines, so it will be a *separate paragraph*.
 
 This line is also a separate paragraph, but...
-This line is only separated by a single newline, so it's a separate line in the *same paragraph*.
+This line is only separated by a single newline, so it *does not break* and just follows the previous line in the *same paragraph*.
 
-This line is also a separate paragraph, and...
-This line is on its own line, because the previous line ends with two
+This line is also a separate paragraph, and...  
+This line is *on its own line*, because the previous line ends with two spaces. (but still in the *same paragraph*)
+
 spaces.
 ```
 
@@ -651,11 +652,12 @@ Here's a line for us to start with.
 
 This line is separated from the one above by two newlines, so it will be a *separate paragraph*.
 
-This line is also begins a separate paragraph, but...
-This line is only separated by a single newline, so it's a separate line in the *same paragraph*.
+This line is also a separate paragraph, but...
+This line is only separated by a single newline, so it *does not break* and just follows the previous line in the *same paragraph*.
 
-This line is also a separate paragraph, and...
-This line is on its own line, because the previous line ends with two
+This line is also a separate paragraph, and...  
+This line is *on its own line*, because the previous line ends with two spaces. (but still in the *same paragraph*)
+
 spaces.
 
 ### Tables

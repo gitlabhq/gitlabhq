@@ -29,7 +29,8 @@ RSpec.describe AbuseReport, type: :model do
 
     it 'lets a worker delete the user' do
       expect(DeleteUserWorker).to receive(:perform_async).with(user.id, subject.user.id,
-                                                              delete_solo_owned_groups: true)
+                                                              delete_solo_owned_groups: true,
+                                                              hard_delete: true)
 
       subject.remove_user(deleted_by: user)
     end

@@ -15,6 +15,10 @@ module Gitlab
           super.tap { |_| store_highlight_cache }
         end
 
+        def real_size
+          @merge_request_diff.real_size
+        end
+
         private
 
         # Extracted method to highlight in the same iteration to the diff_collection.

@@ -1,0 +1,4 @@
+---
+title: Fix updating merge_when_build_succeeds via merge API endpoint
+merge_request: 10873
+author: 

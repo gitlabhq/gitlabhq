@@ -199,10 +199,10 @@ describe MergeRequest, models: true do
     end
 
     context 'when there are no MR diffs' do
-      it 'delegates to the compare object' do
+      it 'delegates to the compare object, setting no_collapse: true' do
         merge_request.compare = double(:compare)
 
-        expect(merge_request.compare).to receive(:diffs).with(options)
+        expect(merge_request.compare).to receive(:diffs).with(options.merge(no_collapse: true))
 
         merge_request.diffs(options)
       end
@@ -215,15 +215,22 @@ describe MergeRequest, models: true do
     end
 
     context 'when there are MR diffs' do
-      before do
+      it 'returns the correct count' do
         merge_request.save
+
+        expect(merge_request.diff_size).to eq('105')
       end
 
-      it 'returns the correct count' do
-        expect(merge_request.diff_size).to eq(105)
+      it 'returns the correct overflow count' do
+        allow(Commit).to receive(:max_diff_options).and_return(max_files: 2)
+        merge_request.save
+
+        expect(merge_request.diff_size).to eq('2+')
       end
 
       it 'does not perform highlighting' do
+        merge_request.save
+
         expect(Gitlab::Diff::Highlight).not_to receive(:new)
 
         merge_request.diff_size
@@ -231,7 +238,7 @@ describe MergeRequest, models: true do
     end
 
     context 'when there are no MR diffs' do
-      before do
+      def set_compare(merge_request)
         merge_request.compare = CompareService.new(
           merge_request.source_project,
           merge_request.source_branch
@@ -242,10 +249,21 @@ describe MergeRequest, models: true do
       end
 
       it 'returns the correct count' do
-        expect(merge_request.diff_size).to eq(105)
+        set_compare(merge_request)
+
+        expect(merge_request.diff_size).to eq('105')
+      end
+
+      it 'returns the correct overflow count' do
+        allow(Commit).to receive(:max_diff_options).and_return(max_files: 2)
+        set_compare(merge_request)
+
+        expect(merge_request.diff_size).to eq('2+')
       end
 
       it 'does not perform highlighting' do
+        set_compare(merge_request)
+
         expect(Gitlab::Diff::Highlight).not_to receive(:new)
 
         merge_request.diff_size
@@ -820,15 +838,17 @@ describe MergeRequest, models: true do
       user1 = create(:user)
       user2 = create(:user)
       mr = create(:merge_request, assignee: user1)
+      mr.project.add_developer(user1)
+      mr.project.add_developer(user2)
 
-      expect(user1.assigned_open_merge_request_count).to eq(1)
-      expect(user2.assigned_open_merge_request_count).to eq(0)
+      expect(user1.assigned_open_merge_requests_count).to eq(1)
+      expect(user2.assigned_open_merge_requests_count).to eq(0)
 
       mr.assignee = user2
       mr.save
 
-      expect(user1.assigned_open_merge_request_count).to eq(0)
-      expect(user2.assigned_open_merge_request_count).to eq(1)
+      expect(user1.assigned_open_merge_requests_count).to eq(0)
+      expect(user2.assigned_open_merge_requests_count).to eq(1)
     end
   end
 

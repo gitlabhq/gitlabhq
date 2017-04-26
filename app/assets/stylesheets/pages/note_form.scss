@@ -28,7 +28,7 @@
 .note-edit-form {
   .note-form-actions {
     position: relative;
-    margin-top: $gl-padding;
+    margin: $gl-padding 0;
   }
 
   .note-preview-holder {
@@ -387,6 +387,7 @@
   @media (max-width: $screen-xs-max) {
     display: flex;
     width: 100%;
+    margin-bottom: 10px;
 
     .comment-btn {
       flex-grow: 1;

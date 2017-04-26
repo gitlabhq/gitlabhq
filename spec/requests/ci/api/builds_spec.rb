@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe Ci::API::Builds do
-  include ApiHelpers
-
   let(:runner) { FactoryGirl.create(:ci_runner, tag_list: %w(mysql ruby)) }
   let(:project) { FactoryGirl.create(:empty_project, shared_runners_enabled: false) }
   let(:last_update) { nil }

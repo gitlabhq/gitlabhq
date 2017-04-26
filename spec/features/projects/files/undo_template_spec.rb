@@ -1,26 +1,25 @@
 require 'spec_helper'
-include WaitForAjax
 
-feature 'Template Undo Button', js: true do 
+feature 'Template Undo Button', js: true do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 
   before do
     project.team << [user, :master]
-    login_as user  
+    login_as user
   end
-  
-  context 'editing a matching file and applying a template' do 
+
+  context 'editing a matching file and applying a template' do
     before do
-      visit namespace_project_edit_blob_path(project.namespace, project, File.join(project.default_branch, "LICENSE"))      
+      visit namespace_project_edit_blob_path(project.namespace, project, File.join(project.default_branch, "LICENSE"))
       select_file_template('.js-license-selector', 'Apache License 2.0')
     end
-    
+
     scenario 'reverts template application' do
       try_template_undo('http://www.apache.org/licenses/', 'Apply a license template')
     end
   end
-  
+
   context 'creating a non-matching file' do 
     before do
       visit namespace_project_new_blob_path(project.namespace, project, 'master')

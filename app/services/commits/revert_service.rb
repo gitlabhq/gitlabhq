@@ -1,6 +1,6 @@
 module Commits
   class RevertService < ChangeService
-    def commit
+    def create_commit!
       commit_change(:revert)
     end
   end

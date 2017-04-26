@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-describe API::Files, api: true  do
-  include ApiHelpers
+describe API::Files do
   let(:user) { create(:user) }
   let!(:project) { create(:project, :repository, namespace: user.namespace ) }
   let(:guest) { create(:user) { |u| project.add_guest(u) } }
@@ -205,7 +204,7 @@ describe API::Files, api: true  do
 
     it "returns a 400 if editor fails to create file" do
       allow_any_instance_of(Repository).to receive(:create_file).
-        and_return(false)
+        and_raise(Repository::CommitError, 'Cannot create file')
 
       post api(route("any%2Etxt"), user), valid_params
 
@@ -299,8 +298,8 @@ describe API::Files, api: true  do
       expect(response).to have_http_status(400)
     end
 
-    it "returns a 400 if fails to create file" do
-      allow_any_instance_of(Repository).to receive(:delete_file).and_return(false)
+    it "returns a 400 if fails to delete file" do
+      allow_any_instance_of(Repository).to receive(:delete_file).and_raise(Repository::CommitError, 'Cannot delete file')
 
       delete api(route(file_path), user), valid_params
 
