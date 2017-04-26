@@ -35,9 +35,14 @@ export default {
     },
     saveUsers() {
       this.loading = true;
-      this.mediator.saveSelectedUsers(this.field).then(() => {
+
+      function setLoadingFalse() {
         this.loading = false;
-      });
+      }
+
+      this.mediator.saveSelectedUsers(this.field)
+        .then(setLoadingFalse)
+        .catch(setLoadingFalse);
     },
   },
   created() {
