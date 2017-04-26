@@ -38,6 +38,7 @@ Feature: Group Milestones
     And I should see the "feature" label
     And I should see the project name in the Issue row
 
+  @javascript
   Scenario: I should see the Labels tab
     Given Group has projects with milestones
     When I visit group "Owned" page
