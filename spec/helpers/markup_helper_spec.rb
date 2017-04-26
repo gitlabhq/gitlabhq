@@ -132,7 +132,6 @@ describe MarkupHelper do
     end
 
     it "uses Asciidoctor for asciidoc files" do
-      allow_any_instance_of(ApplicationSetting).to receive(:current).and_return(::ApplicationSetting.create_from_defaults)
       allow(@wiki).to receive(:format).and_return(:asciidoc)
 
       expect(helper).to receive(:asciidoc_unsafe).with('wiki content')
