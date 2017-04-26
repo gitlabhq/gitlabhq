@@ -71,7 +71,6 @@ class GithubImport
     return @current_user.namespace if names == @current_user.namespace_path
     return @current_user.namespace unless @current_user.can_create_group?
 
-    names = params[:target_namespace].presence || names
     full_path_namespace = Namespace.find_by_full_path(names)
 
     return full_path_namespace if full_path_namespace
