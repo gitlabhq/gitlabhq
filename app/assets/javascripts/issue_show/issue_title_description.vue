@@ -30,8 +30,9 @@ export default {
     return {
       poll,
       timeoutId: null,
-      title: null,
-      description: null,
+      title: '<span></span>',
+      description: '<span></span>',
+      descriptionChange: false,
     };
   },
   methods: {
@@ -40,6 +41,9 @@ export default {
       this.triggerAnimation(body);
     },
     triggerAnimation(body) {
+      // always reset to false before checking the change
+      this.descriptionChange = false;
+
       const { title, description } = body;
 
       this.descriptionText = body.description_text;
@@ -57,7 +61,12 @@ export default {
 
       if (!noTitleChange) {
         elementsToVisualize.push(this.$el.querySelector('.title'));
-      } else if (!noDescriptionChange) {
+      }
+
+      if (!noDescriptionChange) {
+        // only change to true when we need to bind TaskLists the html of description
+        this.descriptionChange = true;
+
         elementsToVisualize.push(this.$el.querySelector('.wiki'));
       }
 
@@ -100,15 +109,19 @@ export default {
     });
   },
   updated() {
-    const tl = new gl.TaskList({
-      dataType: 'issue',
-      fieldName: 'description',
-      selector: '.detail-page-description',
-    });
+    // if new html is injected (description changed) - bind TaskList and call renderGFM
+    if (this.descriptionChange) {
+      const tl = new gl.TaskList({
+        dataType: 'issue',
+        fieldName: 'description',
+        selector: '.detail-page-description',
+      });
 
-    $(this.$refs['issue-content-container-gfm-entry']).renderGFM();
+      $(this.$refs['issue-content-container-gfm-entry']).renderGFM();
 
-    return tl;
+      return tl;
+    }
+    return null;
   },
 };
 </script>
