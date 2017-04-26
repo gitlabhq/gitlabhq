@@ -1,14 +1,15 @@
 /* eslint-disable no-new */
 import BlobViewer from '~/blob/viewer/index';
 
-fdescribe('Blob viewer', () => {
+describe('Blob viewer', () => {
+  let blob;
   preloadFixtures('blob/show.html.raw');
 
   beforeEach(() => {
     loadFixtures('blob/show.html.raw');
     $('#modal-upload-blob').remove();
 
-    new BlobViewer();
+    blob = new BlobViewer();
 
     spyOn($, 'ajax').and.callFake(() => {
       const d = $.Deferred();
@@ -119,6 +120,42 @@ fdescribe('Blob viewer', () => {
 
         done();
       });
+    });
+  });
+
+  describe('switchToViewer', () => {
+    it('removes active class from old viewer button', () => {
+      blob.switchToViewer('simple');
+
+      expect(
+        document.querySelector('.js-blob-viewer-switch-btn.active[data-viewer="rich"]'),
+      ).toBeNull();
+    });
+
+    it('adds active class to new viewer button', () => {
+      const simpleBtn = document.querySelector('.js-blob-viewer-switch-btn[data-viewer="simple"]');
+
+      spyOn(simpleBtn, 'blur');
+
+      blob.switchToViewer('simple');
+
+      expect(
+        simpleBtn.classList.contains('active'),
+      ).toBeTruthy();
+      expect(simpleBtn.blur).toHaveBeenCalled();
+    });
+
+    it('sends AJAX request when switching to simple view', () => {
+      blob.switchToViewer('simple');
+
+      expect($.ajax).toHaveBeenCalled();
+    });
+
+    it('does not send AJAX request when switching to rich view', () => {
+      blob.switchToViewer('simple');
+      blob.switchToViewer('rich');
+
+      expect($.ajax.calls.count()).toBe(1);
     });
   });
 });
