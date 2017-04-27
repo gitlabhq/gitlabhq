@@ -21,12 +21,14 @@ describe('Modal store', () => {
       iid: 1,
       confidential: false,
       labels: [],
+      assignees: [],
     });
     issue2 = new ListIssue({
       title: 'Testing',
       iid: 2,
       confidential: false,
       labels: [],
+      assignees: [],
     });
     Store.store.issues.push(issue);
     Store.store.issues.push(issue2);
