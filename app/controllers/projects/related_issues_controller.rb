@@ -16,6 +16,11 @@ module Projects
 
     def destroy
       related_issue = RelatedIssue.find(params[:id])
+
+      # In order to remove a given relation, one must be allowed to admin_related_issue both the current
+      # project and on the related issue project.
+      return render_404 unless can?(current_user, :admin_related_issue, related_issue.related_issue.project)
+
       result = RelatedIssues::DestroyService.new(related_issue, current_user).execute
 
       render json: result

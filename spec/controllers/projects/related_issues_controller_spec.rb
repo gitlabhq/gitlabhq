@@ -82,10 +82,11 @@ describe Projects::RelatedIssuesController, type: :controller do
   end
 
   describe 'DELETE #destroy' do
-    let(:related_issue) { create :related_issue }
+    let(:referenced_issue) { create :issue, project: project }
+    let(:related_issue) { create :related_issue, related_issue: referenced_issue }
     let(:service) { double(RelatedIssues::DestroyService, execute: service_response) }
     let(:service_response) { { 'message' => 'yay' } }
-    let(:user_role) { :developer }
+    let(:current_project_user_role) { :developer }
 
     subject do
       delete :destroy, namespace_id: issue.project.namespace,
@@ -96,7 +97,7 @@ describe Projects::RelatedIssuesController, type: :controller do
     end
 
     before do
-      project.team << [user, user_role]
+      project.team << [user, current_project_user_role]
       sign_in user
 
       allow(RelatedIssues::DestroyService).to receive(:new)
@@ -105,15 +106,26 @@ describe Projects::RelatedIssuesController, type: :controller do
     end
 
     context 'when unauthorized' do
-      let(:user_role) { :guest }
+      context 'when no authorization on current project' do
+        let(:current_project_user_role) { :guest }
 
-      it 'returns 404' do
-        is_expected.to have_http_status(404)
+        it 'returns 404' do
+          is_expected.to have_http_status(404)
+        end
+      end
+
+      context 'when no authorization on the related issue project' do
+        let(:referenced_issue) { create :issue }
+        let(:current_project_user_role) { :developer }
+
+        it 'returns 404' do
+          is_expected.to have_http_status(404)
+        end
       end
     end
 
     context 'when authorized' do
-      let(:user_role) { :developer }
+      let(:current_project_user_role) { :developer }
 
       it 'returns success JSON' do
         is_expected.to have_http_status(200)
