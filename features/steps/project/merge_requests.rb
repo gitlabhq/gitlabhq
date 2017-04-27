@@ -673,8 +673,8 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     project = Project.find_by(name: "Shop")
     project.team << [user, :developer]
 
-    logout
-    login_with user
+    gitlab_sign_out
+    sign_in(user)
   end
 
   step '"Bug NS-05" has CI status' do
