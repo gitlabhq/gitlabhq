@@ -5,12 +5,15 @@ class CreateRelatedIssuesTable < ActiveRecord::Migration
 
   def change
     create_table :related_issues do |t|
-      t.integer :issue_id, null: false
-      t.integer :related_issue_id, null: false
+      t.integer :issue_id, null: false, index: true
+      t.integer :related_issue_id, null: false, index: true
 
       t.timestamps null: true
     end
 
     add_index :related_issues, [:issue_id, :related_issue_id], unique: true
+
+    add_foreign_key :related_issues, :issues, column: :issue_id
+    add_foreign_key :related_issues, :issues, column: :related_issue_id
   end
 end

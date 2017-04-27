@@ -1312,6 +1312,8 @@ ActiveRecord::Schema.define(version: 20170602003304) do
   end
 
   add_index "related_issues", ["issue_id", "related_issue_id"], name: "index_related_issues_on_issue_id_and_related_issue_id", unique: true, using: :btree
+  add_index "related_issues", ["issue_id"], name: "index_related_issues_on_issue_id", using: :btree
+  add_index "related_issues", ["related_issue_id"], name: "index_related_issues_on_related_issue_id", using: :btree
 
   create_table "releases", force: :cascade do |t|
     t.string "tag"
@@ -1745,6 +1747,8 @@ ActiveRecord::Schema.define(version: 20170602003304) do
   add_foreign_key "protected_tag_create_access_levels", "namespaces", column: "group_id"
   add_foreign_key "protected_tag_create_access_levels", "protected_tags"
   add_foreign_key "protected_tag_create_access_levels", "users"
+  add_foreign_key "related_issues", "issues"
+  add_foreign_key "related_issues", "issues", column: "related_issue_id"
   add_foreign_key "remote_mirrors", "projects"
   add_foreign_key "subscriptions", "projects", on_delete: :cascade
   add_foreign_key "system_note_metadata", "notes", name: "fk_d83a918cb1", on_delete: :cascade
