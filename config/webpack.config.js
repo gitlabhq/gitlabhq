@@ -46,6 +46,7 @@ var config = {
     network:              './network/network_bundle.js',
     notebook_viewer:      './blob/notebook_viewer.js',
     pdf_viewer:           './blob/pdf_viewer.js',
+    pipelines:            './pipelines/index.js',
     balsamiq_viewer:      './blob/balsamiq_viewer.js',
     profile:              './profile/profile_bundle.js',
     protected_branches:   './protected_branches/protected_branches_bundle.js',
@@ -129,6 +130,7 @@ var config = {
         'merge_conflicts',
         'notebook_viewer',
         'pdf_viewer',
+        'pipelines',
         'balsamiq_viewer',
       ],
       minChunks: function(module, count) {
