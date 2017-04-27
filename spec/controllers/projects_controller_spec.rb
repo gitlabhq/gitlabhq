@@ -420,7 +420,6 @@ describe ProjectsController do
     end
   end
 
-<<<<<<< HEAD
   describe 'GET edit' do
     it 'does not allow an auditor user to access the page' do
       sign_in(create(:user, :auditor))
@@ -440,7 +439,9 @@ describe ProjectsController do
           id: project.path
 
       expect(response).to have_http_status(200)
-=======
+    end
+  end
+
   describe 'POST #preview_markdown' do
     it 'renders json in a correct format' do
       sign_in(user)
@@ -448,7 +449,6 @@ describe ProjectsController do
       post :preview_markdown, namespace_id: public_project.namespace, id: public_project, text: '*Markdown* text'
 
       expect(JSON.parse(response.body).keys).to match_array(%w(body references))
->>>>>>> ce/master
     end
   end
 end

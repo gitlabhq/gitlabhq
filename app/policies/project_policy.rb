@@ -5,10 +5,7 @@ class ProjectPolicy < BasePolicy
     team_access!(user)
 
     owner_access! if user.admin? || owner?
-<<<<<<< HEAD
     auditor_access! if user.auditor?
-=======
->>>>>>> ce/master
     team_member_owner_access! if owner?
 
     if project.public? || (project.internal? && !user.external?)

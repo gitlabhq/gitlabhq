@@ -177,21 +177,13 @@ export default {
         class="table-holder"
         v-if="!isLoading && state.environments.length > 0">
 
-<<<<<<< HEAD:app/assets/javascripts/environments/folder/environments_folder_view.js
-          <environment-table
-            :environments="state.environments"
-            :can-create-deployment="canCreateDeploymentParsed"
-            :can-read-environment="canReadEnvironmentParsed"
-            :toggleDeployBoard="toggleDeployBoard"
-            :store="store"
-            :service="service"/>
-=======
         <environment-table
           :environments="state.environments"
           :can-create-deployment="canCreateDeploymentParsed"
           :can-read-environment="canReadEnvironmentParsed"
+          :toggleDeployBoard="toggleDeployBoard"
+          :store="store"
           :service="service"/>
->>>>>>> ce/master:app/assets/javascripts/environments/folder/environments_folder_view.vue
 
         <table-pagination
           v-if="state.paginationInformation && state.paginationInformation.totalPages > 1"

@@ -221,27 +221,6 @@ export default {
           <a :href="helpPagePath">
             Read more about environments
           </a>
-<<<<<<< HEAD:app/assets/javascripts/environments/components/environment.js
-        </div>
-
-        <div class="table-holder"
-          v-if="!isLoading && state.environments.length > 0">
-
-          <environment-table
-            :environments="state.environments"
-            :can-create-deployment="canCreateDeploymentParsed"
-            :can-read-environment="canReadEnvironmentParsed"
-            :toggleDeployBoard="toggleDeployBoard"
-            :store="store"
-            :service="service"
-            :is-loading-folder-content="isLoadingFolderContent" />
-        </div>
-
-        <table-pagination v-if="state.paginationInformation && state.paginationInformation.totalPages > 1"
-          :change="changePage"
-          :pageInfo="state.paginationInformation">
-        </table-pagination>
-=======
         </p>
 
         <a
@@ -250,7 +229,6 @@ export default {
           class="btn btn-create js-new-environment-button">
           New Environment
         </a>
->>>>>>> ce/master:app/assets/javascripts/environments/components/environment.vue
       </div>
 
       <div
@@ -261,6 +239,8 @@ export default {
           :environments="state.environments"
           :can-create-deployment="canCreateDeploymentParsed"
           :can-read-environment="canReadEnvironmentParsed"
+          :toggleDeployBoard="toggleDeployBoard"
+          :store="store"
           :service="service"
           :is-loading-folder-content="isLoadingFolderContent" />
       </div>

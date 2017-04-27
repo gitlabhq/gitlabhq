@@ -64,7 +64,6 @@ feature 'Project milestone', :feature do
     end
   end
 
-<<<<<<< HEAD
   # EE-only
   context 'milestone summary' do
     it 'shows the total weight when sum is greater than zero' do
@@ -94,7 +93,7 @@ feature 'Project milestone', :feature do
   def milestone_path
     namespace_project_milestone_path(project.namespace, project, milestone)
   end
-=======
+
   context 'when project has an issue' do
     before do
       create(:issue, project: project, milestone: milestone)
@@ -113,10 +112,9 @@ feature 'Project milestone', :feature do
 
         aggregate_failures 'MR and issue blocks' do
           expect(blocks[3]).to have_content 1
-          expect(blocks[4]).to have_content 0
+          expect(blocks[5]).to have_content 0
         end
       end
     end
   end
->>>>>>> ce/master
 end
