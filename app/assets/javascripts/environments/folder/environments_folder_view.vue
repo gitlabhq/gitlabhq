@@ -1,6 +1,6 @@
+<script>
 /* eslint-disable no-new */
 /* global Flash */
-import Vue from 'vue';
 import EnvironmentsService from '../services/environments_service';
 import EnvironmentTable from '../components/environments_table.vue';
 import EnvironmentsStore from '../stores/environments_store';
@@ -8,7 +8,7 @@ import TablePaginationComponent from '../../vue_shared/components/table_paginati
 import '../../lib/utils/common_utils';
 import '../../vue_shared/vue_resource_interceptor';
 
-export default Vue.component('environment-folder-view', {
+export default {
   components: {
     'environment-table': EnvironmentTable,
     'table-pagination': TablePaginationComponent,
@@ -116,54 +116,66 @@ export default Vue.component('environment-folder-view', {
       return param;
     },
   },
+};
+</script>
+<template>
+  <div :class="cssContainerClass">
+    <div
+      class="top-area"
+      v-if="!isLoading">
 
-  template: `
-    <div :class="cssContainerClass">
-      <div class="top-area" v-if="!isLoading">
+      <h4 class="js-folder-name environments-folder-name">
+        Environments / <b>{{folderName}}</b>
+      </h4>
 
-        <h4 class="js-folder-name environments-folder-name">
-          Environments / <b>{{folderName}}</b>
-        </h4>
+      <ul class="nav-links">
+        <li :class="{ active: scope === null || scope === 'available' }">
+          <a
+            :href="availablePath"
+            class="js-available-environments-folder-tab">
+            Available
+            <span class="badge js-available-environments-count">
+              {{state.availableCounter}}
+            </span>
+          </a>
+        </li>
+        <li :class="{ active : scope === 'stopped' }">
+          <a
+            :href="stoppedPath"
+            class="js-stopped-environments-folder-tab">
+            Stopped
+            <span class="badge js-stopped-environments-count">
+              {{state.stoppedCounter}}
+            </span>
+          </a>
+        </li>
+      </ul>
+    </div>
 
-        <ul class="nav-links">
-          <li v-bind:class="{ 'active': scope === null || scope === 'available' }">
-            <a :href="availablePath" class="js-available-environments-folder-tab">
-              Available
-              <span class="badge js-available-environments-count">
-                {{state.availableCounter}}
-              </span>
-            </a>
-          </li>
-          <li v-bind:class="{ 'active' : scope === 'stopped' }">
-            <a :href="stoppedPath" class="js-stopped-environments-folder-tab">
-              Stopped
-              <span class="badge js-stopped-environments-count">
-                {{state.stoppedCounter}}
-              </span>
-            </a>
-          </li>
-        </ul>
+    <div class="environments-container">
+      <div
+        class="environments-list-loading text-center"
+        v-if="isLoading">
+        <i
+          class="fa fa-spinner fa-spin"
+          aria-hidden="true"/>
       </div>
 
-      <div class="environments-container">
-        <div class="environments-list-loading text-center" v-if="isLoading">
-          <i class="fa fa-spinner fa-spin"></i>
-        </div>
+      <div
+        class="table-holder"
+        v-if="!isLoading && state.environments.length > 0">
 
-        <div class="table-holder"
-          v-if="!isLoading && state.environments.length > 0">
+        <environment-table
+          :environments="state.environments"
+          :can-create-deployment="canCreateDeploymentParsed"
+          :can-read-environment="canReadEnvironmentParsed"
+          :service="service"/>
 
-          <environment-table
-            :environments="state.environments"
-            :can-create-deployment="canCreateDeploymentParsed"
-            :can-read-environment="canReadEnvironmentParsed"
-            :service="service"/>
-
-          <table-pagination v-if="state.paginationInformation && state.paginationInformation.totalPages > 1"
-            :change="changePage"
-            :pageInfo="state.paginationInformation"/>
-        </div>
+        <table-pagination
+          v-if="state.paginationInformation && state.paginationInformation.totalPages > 1"
+          :change="changePage"
+          :pageInfo="state.paginationInformation"/>
       </div>
     </div>
-  `,
-});
+  </div>
+</template>
