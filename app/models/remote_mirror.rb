@@ -2,6 +2,10 @@ class RemoteMirror < ActiveRecord::Base
   include AfterCommitQueue
   include IgnorableColumn
 
+  ignore_column :sync_time
+
+  BACKOFF_DELAY = 5.minutes
+
   attr_encrypted :credentials,
                  key: Gitlab::Application.secrets.db_key_base,
                  marshal: true,
@@ -9,8 +13,6 @@ class RemoteMirror < ActiveRecord::Base
                  mode: :per_attribute_iv_and_salt,
                  insecure_mode: true,
                  algorithm: 'aes-256-cbc'
-
-  ignore_column :sync_time
 
   belongs_to :project, inverse_of: :remote_mirrors
 
@@ -27,8 +29,16 @@ class RemoteMirror < ActiveRecord::Base
   scope :stuck,   -> { started.where('last_update_at < ? OR (last_update_at IS NULL AND updated_at < ?)', 1.day.ago, 1.day.ago) }
 
   state_machine :update_status, initial: :none do
+    event :schedule do
+      transition [:none, :finished] => :scheduling
+    end
+
+    event :reschedule do
+      transition failed: :scheduling
+    end
+
     event :update_start do
-      transition [:none, :finished] => :started
+      transition scheduling: :started
     end
 
     event :update_finish do
@@ -39,11 +49,16 @@ class RemoteMirror < ActiveRecord::Base
       transition started: :failed
     end
 
+    state :scheduling
     state :started
     state :finished
     state :failed
 
-    after_transition any => :started, do: :schedule_update_job
+    after_transition any => :scheduling, do: :schedule_update_job
+
+    after_transition scheduling: :started do |remote_mirror, _|
+      remote_mirror.update(last_update_started_at: Time.now)
+    end
 
     after_transition started: :finished do |remote_mirror, _|
       timestamp = Time.now
@@ -73,7 +88,11 @@ class RemoteMirror < ActiveRecord::Base
     return unless project
     return if !enabled || update_in_progress?
 
-    update_start
+    update_failed? ? reschedule : schedule
+  end
+
+  def updated_since?(timestamp)
+    last_update_started_at && last_update_started_at > timestamp && !update_failed?
   end
 
   def mark_for_delete_if_blank_url
@@ -131,7 +150,7 @@ class RemoteMirror < ActiveRecord::Base
   end
 
   def add_update_job
-    RepositoryUpdateRemoteMirrorWorker.perform_async(self.id, Time.now) if project&.repository_exists?
+    RepositoryUpdateRemoteMirrorWorker.perform_in(BACKOFF_DELAY, self.id, Time.now) if project&.repository_exists?
   end
 
   def refresh_remote
