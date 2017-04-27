@@ -80,14 +80,6 @@ import eventHub from './sidebar/event_hub';
               .get();
           };
 
-          var updateIssueBoardsIssue = function () {
-            $loading.removeClass('hidden').fadeIn();
-            gl.issueBoards.BoardsStore.detail.issue.update($dropdown.attr('data-issue-update'))
-              .then(function () {
-                $loading.fadeOut();
-              });
-          };
-
           $('.assign-to-me-link').on('click', (e) => {
             e.preventDefault();
             $(e.currentTarget).hide();
