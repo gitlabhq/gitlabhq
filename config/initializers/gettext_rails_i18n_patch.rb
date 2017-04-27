@@ -1,7 +1,7 @@
 require 'gettext_i18n_rails/haml_parser'
 require 'gettext_i18n_rails_js/parser/javascript'
 
-VUE_TRANSLATE_REGEX = /{{ (N|n|s)?__\((.*)\) }}/
+VUE_TRANSLATE_REGEX = /((%[\w.-]+)(?:\s))?{{ (N|n|s)?__\((.*)\) }}/
 
 module GettextI18nRails
   class HamlParser
@@ -15,7 +15,7 @@ module GettextI18nRails
     #
     # Overwrites: https://github.com/grosser/gettext_i18n_rails/blob/8396387a431e0f8ead72fc1cd425cad2fa4992f2/lib/gettext_i18n_rails/haml_parser.rb#L9
     def self.convert_to_code(text)
-      text.gsub!(VUE_TRANSLATE_REGEX, "= \\1_(\\2)")
+      text.gsub!(VUE_TRANSLATE_REGEX, "\\2= \\3_(\\4)")
 
       old_convert_to_code(text)
     end

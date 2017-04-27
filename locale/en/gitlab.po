@@ -136,6 +136,12 @@ msgstr ""
 msgid "Want to see the data? Please ask administrator for access."
 msgstr ""
 
+msgid "We don't have enough data to show this stage."
+msgstr ""
+
+msgid "You need permission."
+msgstr ""
+
 msgid "by"
 msgstr ""
 

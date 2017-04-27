@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2017-04-26 20:01-0500\n"
+"PO-Revision-Date: 2017-04-27 11:45-0500\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
@@ -138,6 +138,12 @@ msgstr "Tiempo Total"
 
 msgid "Want to see the data? Please ask administrator for access."
 msgstr "¿Quieres ver los datos? Por favor pedir acceso al administrador."
+
+msgid "We don't have enough data to show this stage."
+msgstr "No hay suficientes datos para mostrar en esta etapa."
+
+msgid "You need permission."
+msgstr "Necesitas permisos."
 
 msgid "by"
 msgstr "por"
