@@ -1028,6 +1028,35 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
+  describe '#find_commits' do
+    it 'should return a return a collection of commits' do
+      commits = repository.find_commits
+
+      expect(commits).not_to be_empty
+      expect(commits).to all( be_a_kind_of(Gitlab::Git::Commit) )
+    end
+
+    context 'while applying a sort order based on the `order` option' do
+      it "allows ordering topologically (no parents shown before their children)" do
+        expect_any_instance_of(Rugged::Walker).to receive(:sorting).with(Rugged::SORT_TOPO)
+
+        repository.find_commits(order: :topo)
+      end
+
+      it "allows ordering by date" do
+        expect_any_instance_of(Rugged::Walker).to receive(:sorting).with(Rugged::SORT_DATE)
+
+        repository.find_commits(order: :date)
+      end
+
+      it "applies no sorting by default" do
+        expect_any_instance_of(Rugged::Walker).to receive(:sorting).with(Rugged::SORT_NONE)
+
+        repository.find_commits
+      end
+    end
+  end
+
   describe '#branches with deleted branch' do
     before(:each) do
       ref = double()

@@ -486,7 +486,9 @@ module Gitlab
       #     :contains is the commit contained by the refs from which to begin (SHA1 or name)
       #     :max_count is the maximum number of commits to fetch
       #     :skip is the number of commits to skip
-      #     :order is the commits order and allowed value is :date(default) or :topo
+      #     :order is the commits order and allowed value is :none (default), :date, or :topo
+      #        commit ordering types are documented here:
+      #        http://www.rubydoc.info/github/libgit2/rugged/Rugged#SORT_NONE-constant)
       #
       def find_commits(options = {})
         actual_options = options.dup
@@ -514,11 +516,8 @@ module Gitlab
           end
         end
 
-        if actual_options[:order] == :topo
-          walker.sorting(Rugged::SORT_TOPO)
-        else
-          walker.sorting(Rugged::SORT_NONE)
-        end
+        sort_type = rugged_sort_type(actual_options[:order])
+        walker.sorting(sort_type)
 
         commits = []
         offset = actual_options[:skip]
@@ -1264,6 +1263,18 @@ module Gitlab
 
       def gitaly_ref_client
         @gitaly_ref_client ||= Gitlab::GitalyClient::Ref.new(self)
+      end
+
+      # Returns the `Rugged` sorting type constant for a given
+      # sort type key. Valid keys are `:none`, `:topo`, and `:date`
+      def rugged_sort_type(key)
+        @rugged_sort_types ||= {
+          none: Rugged::SORT_NONE,
+          topo: Rugged::SORT_TOPO,
+          date: Rugged::SORT_DATE
+        }
+
+        @rugged_sort_types.fetch(key, Rugged::SORT_NONE)
       end
     end
   end
