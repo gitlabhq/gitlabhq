@@ -15,7 +15,7 @@ module RelatedIssues
         return error(exception.message, 401)
       end
 
-      success(message: "#{issues_sentence(referenced_issues)} were successfully related")
+      success_message
     end
 
     private
@@ -48,6 +48,12 @@ module RelatedIssues
 
         extractor.issues
       end
+    end
+
+    def success_message
+      verb = referenced_issues.size > 1 ? 'were' : 'was'
+
+      success(message: "#{issues_sentence(referenced_issues)} #{verb} successfully related")
     end
 
     def issues_sentence(issues)

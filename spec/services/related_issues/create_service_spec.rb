@@ -16,7 +16,7 @@ describe RelatedIssues::CreateService, service: true do
 
     subject { described_class.new(issue, user, params).execute }
 
-    context 'when issue not found' do
+    context 'when Issue not found' do
       let(:params) do
         { issue_references: ['#999'] }
       end
@@ -46,7 +46,7 @@ describe RelatedIssues::CreateService, service: true do
       end
     end
 
-    context 'when all Issue references are valid' do
+    context 'when any Issue to relate' do
       let(:issue_a) { create :issue, project: project }
       let(:another_project) { create :empty_project, namespace: project.namespace }
       let(:another_project_issue) { create :issue, project: another_project }
@@ -69,9 +69,9 @@ describe RelatedIssues::CreateService, service: true do
         expect(RelatedIssue.last).to have_attributes(issue: issue, related_issue: another_project_issue)
       end
 
-      it 'returns success message with Issue references' do
-        is_expected.to eq(message: "#{issue_a_ref} and #{another_project_issue_ref} were successfully related", status: :success)
-      end
+        it 'returns success message with Issue reference' do
+          is_expected.to eq(message: "#{issue_a_ref} and #{another_project_issue_ref} were successfully related", status: :success)
+        end
 
       it 'creates notes' do
         # First two-way relation notes
@@ -87,6 +87,39 @@ describe RelatedIssues::CreateService, service: true do
           .with(another_project_issue, issue, user)
 
         subject
+      end
+    end
+
+    context 'success message' do
+      let(:issue_a) { create :issue, project: project }
+      let(:another_project) { create :empty_project, namespace: project.namespace }
+      let(:another_project_issue) { create :issue, project: another_project }
+
+      let(:issue_a_ref) { issue_a.to_reference }
+      let(:another_project_issue_ref) { another_project_issue.to_reference(project) }
+
+      before do
+        another_project.team << [user, :developer]
+      end
+
+      context 'multiple Issues relation' do
+        let(:params) do
+          { issue_references: [issue_a_ref, another_project_issue_ref] }
+        end
+
+        it 'returns success message with Issue reference' do
+          is_expected.to eq(message: "#{issue_a_ref} and #{another_project_issue_ref} were successfully related", status: :success)
+        end
+      end
+
+      context 'single Issue relation' do
+        let(:params) do
+          { issue_references: [issue_a_ref] }
+        end
+
+        it 'returns success message with Issue reference' do
+          is_expected.to eq(message: "#{issue_a_ref} was successfully related", status: :success)
+        end
       end
     end
 
