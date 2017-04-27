@@ -1,5 +1,4 @@
 require 'spec_helper'
-Dir["./spec/features/protected_tags/*.rb"].sort.each { |f| require f }
 
 feature 'Projected Tags', feature: true, js: true do
   let(:user) { create(:user, :admin) }
