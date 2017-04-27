@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 feature 'GFM autocomplete', feature: true, js: true do
-  include WaitForAjax
   let(:user)    { create(:user, name: '💃speciąl someone💃', username: 'someone.special') }
   let(:project) { create(:project) }
   let(:label) { create(:label, project: project, title: 'special+') }
@@ -44,6 +43,33 @@ feature 'GFM autocomplete', feature: true, js: true do
     wait_for_ajax
 
     expect(find('#at-view-58')).not_to have_selector('.cur:first-of-type')
+  end
+
+  it 'does not open autocomplete menu when ":" is prefixed by a number and letters' do
+    note = find('#note_note')
+
+    # Number.
+    page.within '.timeline-content-form' do
+      note.native.send_keys('7:')
+    end
+
+    expect(page).not_to have_selector('.atwho-view')
+
+    # ASCII letter.
+    page.within '.timeline-content-form' do
+      note.set('')
+      note.native.send_keys('w:')
+    end
+
+    expect(page).not_to have_selector('.atwho-view')
+
+    # Non-ASCII letter.
+    page.within '.timeline-content-form' do
+      note.set('')
+      note.native.send_keys('Ё:')
+    end
+
+    expect(page).not_to have_selector('.atwho-view')
   end
 
   it 'selects the first item for assignee dropdowns' do

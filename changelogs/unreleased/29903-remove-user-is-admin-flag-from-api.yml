@@ -1,0 +1,4 @@
+---
+title: Don't display the is_admin flag in most API responses
+merge_request: 10846
+author:

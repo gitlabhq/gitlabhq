@@ -859,6 +859,17 @@ Parameters:
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `file` | string | yes | The file to be uploaded |
 
+To upload a file from your filesystem, use the `--form` argument. This causes
+cURL to post data using the header `Content-Type: multipart/form-data`.
+The `file=` parameter must point to a file on your filesystem and be preceded
+by `@`. For example:
+
+```bash
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form "file=@dk.png" https://gitlab.example.com/api/v3/projects/5/uploads
+```
+
+Returned object:
+
 ```json
 {
   "alt": "dk",
@@ -868,8 +879,8 @@ Parameters:
 ```
 
 **Note**: The returned `url` is relative to the project path.
-In Markdown contexts, the link is automatically expanded when the format in `markdown` is used.
-
+In Markdown contexts, the link is automatically expanded when the format in
+`markdown` is used.
 
 ## Project members
 

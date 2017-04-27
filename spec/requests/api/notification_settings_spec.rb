@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe API::NotificationSettings, api: true do
-  include ApiHelpers
-
+describe API::NotificationSettings do
   let(:user) { create(:user) }
   let!(:group) { create(:group) }
   let!(:project) { create(:empty_project, :public, creator_id: user.id, namespace: group) }

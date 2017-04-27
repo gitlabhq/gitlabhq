@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe Ci::API::Triggers do
-  include ApiHelpers
-
   describe 'POST /projects/:project_id/refs/:ref/trigger' do
     let!(:trigger_token) { 'secure token' }
     let!(:project) { create(:project, :repository, ci_id: 10) }

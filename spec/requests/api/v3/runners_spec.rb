@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe API::V3::Runners, api: true  do
-  include ApiHelpers
-
+describe API::V3::Runners do
   let(:admin) { create(:user, :admin) }
   let(:user) { create(:user) }
   let(:user2) { create(:user) }

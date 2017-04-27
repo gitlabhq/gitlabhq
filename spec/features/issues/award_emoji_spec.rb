@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe 'Awards Emoji', feature: true do
-  include WaitForAjax
   include WaitForVueResource
 
   let!(:project)   { create(:project, :public) }

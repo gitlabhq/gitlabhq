@@ -260,7 +260,7 @@ class MergeRequestDiff < ActiveRecord::Base
       new_attributes[:state] = :empty
     else
       diff_collection = compare.diffs(Commit.max_diff_options)
-      new_attributes[:real_size] = compare.diffs.real_size
+      new_attributes[:real_size] = diff_collection.real_size
 
       if diff_collection.any?
         new_diffs = dump_diffs(diff_collection)

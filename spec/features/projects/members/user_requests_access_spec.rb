@@ -31,6 +31,17 @@ feature 'Projects > Members > User requests access', feature: true do
     expect(page).not_to have_content 'Leave Project'
   end
 
+  context 'code access is restricted' do
+    scenario 'user can request access' do
+      project.project_feature.update!(repository_access_level: ProjectFeature::PRIVATE,
+                                      builds_access_level: ProjectFeature::PRIVATE,
+                                      merge_requests_access_level: ProjectFeature::PRIVATE)
+      visit namespace_project_path(project.namespace, project)
+
+      expect(page).to have_content 'Request Access'
+    end
+  end
+
   scenario 'user is not listed in the project members page' do
     click_link 'Request Access'
 

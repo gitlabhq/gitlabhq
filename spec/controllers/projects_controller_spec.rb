@@ -398,4 +398,14 @@ describe ProjectsController do
       expect(parsed_body["Commits"]).to include("123456")
     end
   end
+
+  describe 'POST #preview_markdown' do
+    it 'renders json in a correct format' do
+      sign_in(user)
+
+      post :preview_markdown, namespace_id: public_project.namespace, id: public_project, text: '*Markdown* text'
+
+      expect(JSON.parse(response.body).keys).to match_array(%w(body references))
+    end
+  end
 end

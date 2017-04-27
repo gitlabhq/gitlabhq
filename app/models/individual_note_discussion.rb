@@ -10,4 +10,8 @@ class IndividualNoteDiscussion < Discussion
   def individual_note?
     true
   end
+
+  def reply_attributes
+    super.tap { |attrs| attrs.delete(:discussion_id) }
+  end
 end

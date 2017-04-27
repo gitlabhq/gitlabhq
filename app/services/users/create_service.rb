@@ -6,8 +6,8 @@ module Users
       @params = params.dup
     end
 
-    def execute
-      user = Users::BuildService.new(current_user, params).execute
+    def execute(skip_authorization: false)
+      user = Users::BuildService.new(current_user, params).execute(skip_authorization: skip_authorization)
 
       @reset_token = user.generate_reset_token if user.recently_sent_password_reset?
 

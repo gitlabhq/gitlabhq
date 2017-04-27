@@ -49,7 +49,7 @@ eslint-report.html
 /tags
 /tmp/*
 /vendor/bundle/*
-/builds/*
+/builds*
 /shared/*
 /.gitlab_workhorse_secret
 /webpack-report/

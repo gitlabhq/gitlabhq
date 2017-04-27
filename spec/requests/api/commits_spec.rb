@@ -1,8 +1,7 @@
 require 'spec_helper'
 require 'mime/types'
 
-describe API::Commits, api: true  do
-  include ApiHelpers
+describe API::Commits do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let!(:project) { create(:project, :repository, creator: user, namespace: user.namespace) }

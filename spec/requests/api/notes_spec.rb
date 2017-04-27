@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-describe API::Notes, api: true  do
-  include ApiHelpers
+describe API::Notes do
   let(:user) { create(:user) }
   let!(:project) { create(:empty_project, :public, namespace: user.namespace) }
   let!(:issue) { create(:issue, project: project, author: user) }

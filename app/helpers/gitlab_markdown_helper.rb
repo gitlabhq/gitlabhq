@@ -196,7 +196,7 @@ module GitlabMarkdownHelper
   end
 
   # Calls Banzai.post_process with some common context options
-  def banzai_postprocess(html, context)
+  def banzai_postprocess(html, context = {})
     context.merge!(
       current_user:   (current_user if defined?(current_user)),
 
