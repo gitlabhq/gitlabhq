@@ -157,7 +157,7 @@ class Projects::IssuesController < Projects::ApplicationController
         if @issue.valid?
           render json: @issue.to_json(methods: [:task_status, :task_status_short],
                                       include: { milestone: {},
-                                                 assignees: { only: [:name, :username], methods: [:avatar_url] },
+                                                 assignees: { only: [:id, :name, :username], methods: [:avatar_url] },
                                                  labels: { methods: :text_color } })
         else
           render json: { errors: @issue.errors.full_messages }, status: :unprocessable_entity

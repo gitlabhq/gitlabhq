@@ -2,7 +2,7 @@
 
 import Vue from 'vue';
 
-require('~/issuable/time_tracking/components/time_tracker');
+import '~/sidebar/components/time_tracking/time_tracker';
 
 function initTimeTrackingComponent(opts) {
   setFixtures(`
