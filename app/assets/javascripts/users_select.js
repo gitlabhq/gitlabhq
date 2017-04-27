@@ -97,10 +97,11 @@ import eventHub from './sidebar/event_hub';
             $dropdown.find('.dropdown-toggle-text').text(gon.current_user_fullname).removeClass('is-default');
           });
 
-          $block.on('click', '.js-assign-yourself', function(e) {
+          $block.on('click', '.js-assign-yourself', (e) => {
             e.preventDefault();
             return assignTo(_this.currentUser.id);
           });
+
           assignTo = function(selected) {
             var data;
             data = {};
