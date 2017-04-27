@@ -290,7 +290,9 @@ import eventHub from './sidebar/event_hub';
                       .find(`input[name='${$dropdown.data('field-name')}'][value=${firstSelectedId}]`);
 
                     firstSelected.remove();
-                    eventHub.$emit('sidebar.removeUser', firstSelectedId);
+                    eventHub.$emit('sidebar.removeUser', {
+                      id: firstSelectedId,
+                    });
                   }
                 }
 
@@ -303,7 +305,7 @@ import eventHub from './sidebar/event_hub';
                   eventHub.$emit('sidebar.removeAllUsers');
                 } else if (isActive) {
                   // user selected
-                  eventHub.$emit('sidebar.addUser', user.id);
+                  eventHub.$emit('sidebar.addUser', user);
 
                   // Remove unassigned selection (if it was previously selected)
                   const unassignedSelected = $dropdown.closest('.selectbox')
@@ -319,7 +321,7 @@ import eventHub from './sidebar/event_hub';
                   }
 
                   // User unselected
-                  eventHub.$emit('sidebar.removeUser', user.id);
+                  eventHub.$emit('sidebar.removeUser', user);
                 }
               }
 

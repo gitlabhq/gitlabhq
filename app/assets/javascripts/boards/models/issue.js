@@ -15,7 +15,6 @@ class ListIssue {
     this.subscribed = obj.subscribed;
     this.labels = [];
     this.assignees = [];
-    this.selectedAssigneeIds = [];
     this.selected = false;
     this.position = obj.relative_position || Infinity;
     this.milestone_id = obj.milestone_id;
@@ -33,7 +32,6 @@ class ListIssue {
 
   processAssignees(assignees) {
     this.assignees = assignees.map(a => new ListUser(a));
-    this.selectedAssigneeIds = this.assignees.map(a => a.id);
   }
 
   addLabel (label) {
@@ -56,18 +54,24 @@ class ListIssue {
     labels.forEach(this.removeLabel.bind(this));
   }
 
-  addUserId (id) {
-    if (this.selectedAssigneeIds.indexOf(id) === -1) {
-      this.selectedAssigneeIds.push(id);
+  addUser (user) {
+    if (!this.findUser(user)) {
+      this.assignees.push(new ListUser(user));
     }
   }
 
-  removeUserId (id) {
-    this.selectedAssigneeIds = this.selectedAssigneeIds.filter(uid => uid !== id);
+  findUser (user) {
+    return this.assignees.filter(assignee => assignee.id === user.id)[0];
   }
 
-  removeAllUserIds () {
-    this.selectedAssigneeIds = [];
+  removeUser (user) {
+    if (user) {
+      this.assignees = this.assignees.filter(assignee => assignee.id !== user.id);
+    }
+  }
+
+  removeAllUsers () {
+    this.assignees = [];
   }
 
   getLists () {
@@ -79,7 +83,7 @@ class ListIssue {
       issue: {
         milestone_id: this.milestone ? this.milestone.id : null,
         due_date: this.dueDate,
-        assignee_ids: this.selectedAssigneeIds.length > 0 ? this.selectedAssigneeIds : [0],
+        assignee_ids: this.assignees.length > 0 ? this.assignees.map((u) => u.id) : [0],
         label_ids: this.labels.map((label) => label.id)
       }
     };

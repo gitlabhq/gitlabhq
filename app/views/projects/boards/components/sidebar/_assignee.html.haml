@@ -1,6 +1,6 @@
 .block.assignee{ ref: "assigneeBlock" }
   %template{ "v-if" => "issue.assignees"}
-    %assignee-title{ ":number-of-assignees" => "issue.selectedAssigneeIds.length",
+    %assignee-title{ ":number-of-assignees" => "issue.assignees.length",
       ":loading" => "loadingAssignees",
       ":editable" => can?(current_user, :admin_issue, @project) }
     %assignees{ class: "value", "root-path" => "#{root_url}",

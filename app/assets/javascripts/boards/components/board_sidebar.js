@@ -73,14 +73,14 @@ require('./sidebar/remove_issue');
         this.addUser(this.currentUser.id);
         this.saveUsers();
       },
-      removeUser (id) {
-        gl.issueBoards.BoardsStore.detail.issue.removeUserId(id);
+      removeUser (u) {
+        gl.issueBoards.BoardsStore.detail.issue.removeUser(u);
       },
-      addUser (id) {
-        gl.issueBoards.BoardsStore.detail.issue.addUserId(id);
+      addUser (u) {
+        gl.issueBoards.BoardsStore.detail.issue.addUser(u);
       },
       removeAllUsers () {
-        gl.issueBoards.BoardsStore.detail.issue.removeAllUserIds();
+        gl.issueBoards.BoardsStore.detail.issue.removeAllUsers();
       },
       saveUsers () {
         this.loadingAssignees = true;
