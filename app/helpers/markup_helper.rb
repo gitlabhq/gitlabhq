@@ -1,6 +1,22 @@
 require 'nokogiri'
 
-module GitlabMarkdownHelper
+module MarkupHelper
+  def plain?(filename)
+    Gitlab::MarkupHelper.plain?(filename)
+  end
+
+  def markup?(filename)
+    Gitlab::MarkupHelper.markup?(filename)
+  end
+
+  def gitlab_markdown?(filename)
+    Gitlab::MarkupHelper.gitlab_markdown?(filename)
+  end
+
+  def asciidoc?(filename)
+    Gitlab::MarkupHelper.asciidoc?(filename)
+  end
+
   # Use this in places where you would normally use link_to(gfm(...), ...).
   #
   # It solves a problem occurring with nested links (i.e.
@@ -11,7 +27,7 @@ module GitlabMarkdownHelper
   # explicitly produce the correct linking behavior (i.e.
   # "<a>outer text </a><a>gfm ref</a><a> more outer text</a>").
   def link_to_gfm(body, url, html_options = {})
-    return "" if body.blank?
+    return '' if body.blank?
 
     context = {
       project: @project,
@@ -43,52 +59,6 @@ module GitlabMarkdownHelper
     fragment.to_html.html_safe
   end
 
-  def markdown(text, context = {})
-    return "" unless text.present?
-
-    context[:project] ||= @project
-
-    html = Banzai.render(text, context)
-    banzai_postprocess(html, context)
-  end
-
-  def markdown_field(object, field)
-    object = object.for_display if object.respond_to?(:for_display)
-    return "" unless object.present?
-
-    html = Banzai.render_field(object, field)
-    banzai_postprocess(html, object.banzai_render_context(field))
-  end
-
-  def asciidoc(text)
-    Gitlab::Asciidoc.render(
-      text,
-      project:      @project,
-      current_user: (current_user if defined?(current_user)),
-
-      # RelativeLinkFilter
-      project_wiki:   @project_wiki,
-      requested_path: @path,
-      ref:            @ref,
-      commit:         @commit
-    )
-  end
-
-  def other_markup(file_name, text)
-    Gitlab::OtherMarkup.render(
-      file_name,
-      text,
-      project:      @project,
-      current_user: (current_user if defined?(current_user)),
-
-      # RelativeLinkFilter
-      project_wiki:   @project_wiki,
-      requested_path: @path,
-      ref:            @ref,
-      commit:         @commit
-    )
-  end
-
   # Return the first line of +text+, up to +max_chars+, after parsing the line
   # as Markdown.  HTML tags in the parsed output are not counted toward the
   # +max_chars+ limit.  If the length limit falls within a tag's contents, then
@@ -99,15 +69,63 @@ module GitlabMarkdownHelper
     truncate_visible(md, max_chars || md.length) if md.present?
   end
 
+  def markdown(text, context = {})
+    return '' unless text.present?
+
+    context[:project] ||= @project
+    html = markdown_unsafe(text, context)
+    banzai_postprocess(html, context)
+  end
+
+  def markdown_field(object, field)
+    object = object.for_display if object.respond_to?(:for_display)
+    return '' unless object.present?
+
+    html = Banzai.render_field(object, field)
+    banzai_postprocess(html, object.banzai_render_context(field))
+  end
+
+  def markup(file_name, text, context = {})
+    context[:project] ||= @project
+    html = context.delete(:rendered) || markup_unsafe(file_name, text, context)
+    banzai_postprocess(html, context)
+  end
+
   def render_wiki_content(wiki_page)
-    case wiki_page.format
-    when :markdown
-      markdown(wiki_page.content, pipeline: :wiki, project_wiki: @project_wiki, page_slug: wiki_page.slug)
-    when :asciidoc
-      asciidoc(wiki_page.content)
+    text = wiki_page.content
+    return '' unless text.present?
+
+    context = { pipeline: :wiki, project: @project, project_wiki: @project_wiki, page_slug: wiki_page.slug }
+
+    html =
+      case wiki_page.format
+      when :markdown
+        markdown_unsafe(text, context)
+      when :asciidoc
+        asciidoc_unsafe(text)
+      else
+        wiki_page.formatted_content.html_safe
+      end
+
+    banzai_postprocess(html, context)
+  end
+
+  def markup_unsafe(file_name, text, context = {})
+    return '' unless text.present?
+
+    if gitlab_markdown?(file_name)
+      Hamlit::RailsHelpers.preserve(markdown_unsafe(text, context))
+    elsif asciidoc?(file_name)
+      asciidoc_unsafe(text)
+    elsif plain?(file_name)
+      content_tag :pre, class: 'plain-readme' do
+        text
+      end
     else
-      wiki_page.formatted_content.html_safe
+      other_markup_unsafe(file_name, text)
     end
+  rescue RuntimeError
+    simple_format(text)
   end
 
   # Returns the text necessary to reference `entity` across projects
@@ -183,10 +201,10 @@ module GitlabMarkdownHelper
   end
 
   def markdown_toolbar_button(options = {})
-    data = options[:data].merge({ container: "body" })
+    data = options[:data].merge({ container: 'body' })
     content_tag :button,
-      type: "button",
-      class: "toolbar-btn js-md has-tooltip hidden-xs",
+      type: 'button',
+      class: 'toolbar-btn js-md has-tooltip hidden-xs',
       tabindex: -1,
       data: data,
       title: options[:title],
@@ -195,17 +213,34 @@ module GitlabMarkdownHelper
     end
   end
 
+  def markdown_unsafe(text, context = {})
+    Banzai.render(text, context)
+  end
+
+  def asciidoc_unsafe(text)
+    Gitlab::Asciidoc.render(text)
+  end
+
+  def other_markup_unsafe(file_name, text)
+    Gitlab::OtherMarkup.render(file_name, text)
+  end
+
   # Calls Banzai.post_process with some common context options
-  def banzai_postprocess(html, context)
+  def banzai_postprocess(html, context = {})
+    return '' unless html.present?
+
     context.merge!(
       current_user:   (current_user if defined?(current_user)),
 
       # RelativeLinkFilter
-      requested_path: @path,
+      commit:         @commit,
       project_wiki:   @project_wiki,
-      ref:            @ref
+      ref:            @ref,
+      requested_path: @path
     )
 
     Banzai.post_process(html, context)
   end
+
+  extend self
 end

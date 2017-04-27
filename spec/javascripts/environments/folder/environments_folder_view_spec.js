@@ -1,13 +1,15 @@
 import Vue from 'vue';
 import '~/flash';
-import EnvironmentsFolderViewComponent from '~/environments/folder/environments_folder_view';
+import environmentsFolderViewComponent from '~/environments/folder/environments_folder_view.vue';
 import { environmentsList } from '../mock_data';
 
 describe('Environments Folder View', () => {
   preloadFixtures('static/environments/environments_folder_view.html.raw');
+  let EnvironmentsFolderViewComponent;
 
   beforeEach(() => {
     loadFixtures('static/environments/environments_folder_view.html.raw');
+    EnvironmentsFolderViewComponent = Vue.extend(environmentsFolderViewComponent);
     window.history.pushState({}, null, 'environments/folders/build');
   });
 

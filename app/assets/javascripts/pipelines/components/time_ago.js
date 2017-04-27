@@ -2,68 +2,95 @@ import iconTimerSvg from 'icons/_icon_timer.svg';
 import '../../lib/utils/datetime_utility';
 
 export default {
+  props: {
+    finishedTime: {
+      type: String,
+      required: true,
+    },
+
+    duration: {
+      type: Number,
+      required: true,
+    },
+  },
+
   data() {
     return {
-      currentTime: new Date(),
       iconTimerSvg,
     };
   },
-  props: ['pipeline'],
+
+  updated() {
+    $(this.$refs.tooltip).tooltip('fixTitle');
+  },
+
   computed: {
-    timeAgo() {
-      return gl.utils.getTimeago();
+    hasDuration() {
+      return this.duration > 0;
     },
+
+    hasFinishedTime() {
+      return this.finishedTime !== '';
+    },
+
     localTimeFinished() {
-      return gl.utils.formatDate(this.pipeline.details.finished_at);
+      return gl.utils.formatDate(this.finishedTime);
     },
-    timeStopped() {
-      const changeTime = this.currentTime;
-      const options = {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-      };
-      options.timeZoneName = 'short';
-      const finished = this.pipeline.details.finished_at;
-      if (!finished && changeTime) return false;
-      return ({ words: this.timeAgo.format(finished) });
-    },
-    duration() {
-      const { duration } = this.pipeline.details;
-      const date = new Date(duration * 1000);
+
+    durationFormated() {
+      const date = new Date(this.duration * 1000);
 
       let hh = date.getUTCHours();
       let mm = date.getUTCMinutes();
       let ss = date.getSeconds();
 
-      if (hh < 10) hh = `0${hh}`;
-      if (mm < 10) mm = `0${mm}`;
-      if (ss < 10) ss = `0${ss}`;
+      // left pad
+      if (hh < 10) {
+        hh = `0${hh}`;
+      }
+      if (mm < 10) {
+        mm = `0${mm}`;
+      }
+      if (ss < 10) {
+        ss = `0${ss}`;
+      }
 
-      if (duration !== null) return `${hh}:${mm}:${ss}`;
-      return false;
+      return `${hh}:${mm}:${ss}`;
+    },
+
+    finishedTimeFormated() {
+      const timeAgo = gl.utils.getTimeago();
+
+      return timeAgo.format(this.finishedTime);
     },
   },
-  methods: {
-    changeTime() {
-      this.currentTime = new Date();
-    },
-  },
+
   template: `
     <td class="pipelines-time-ago">
-      <p class="duration" v-if='duration'>
-        <span v-html="iconTimerSvg"></span>
-        {{duration}}
+      <p
+        class="duration"
+        v-if="hasDuration">
+        <span
+          v-html="iconTimerSvg">
+        </span>
+        {{durationFormated}}
       </p>
-      <p class="finished-at" v-if='timeStopped'>
-        <i class="fa fa-calendar"></i>
+
+      <p
+        class="finished-at"
+        v-if="hasFinishedTime">
+
+        <i
+          class="fa fa-calendar"
+          aria-hidden="true" />
+
         <time
+          ref="tooltip"
           data-toggle="tooltip"
           data-placement="top"
           data-container="body"
-          :data-original-title='localTimeFinished'>
-          {{timeStopped.words}}
+          :title="localTimeFinished">
+          {{finishedTimeFormated}}
         </time>
       </p>
     </td>

@@ -22,26 +22,9 @@ module Gitlab
         expect(Asciidoctor).to receive(:convert)
           .with(input, expected_asciidoc_opts).and_return(html)
 
-        expect( render(input, context) ).to eql html
+        expect(render(input)).to eq(html)
       end
 
-      context "with asciidoc_opts" do
-        let(:asciidoc_opts) { { safe: :safe, attributes: ['foo'] } }
-
-        it "merges the options with default ones" do
-          expected_asciidoc_opts = {
-              safe: :safe,
-              backend: :gitlab_html5,
-              attributes: described_class::DEFAULT_ADOC_ATTRS + ['foo']
-          }
-
-          expect(Asciidoctor).to receive(:convert)
-            .with(input, expected_asciidoc_opts).and_return(html)
-
-          render(input, context, asciidoc_opts)
-        end
-      end
-      
       context "XSS" do
         links = {
           'links' => {
@@ -60,7 +43,7 @@ module Gitlab
 
         links.each do |name, data|
           it "does not convert dangerous #{name} into HTML" do
-            expect(render(data[:input], context)).to eql data[:output]
+            expect(render(data[:input])).to eq(data[:output])
           end
         end
       end

@@ -154,7 +154,7 @@ gem 'after_commit_queue', '~> 1.3.0'
 gem 'acts-as-taggable-on', '~> 4.0'
 
 # Background jobs
-gem 'sidekiq', '~> 4.2.7'
+gem 'sidekiq', '~> 5.0'
 gem 'sidekiq-cron', '~> 0.4.4'
 gem 'redis-namespace', '~> 1.5.2'
 gem 'sidekiq-limit_fetch', '~> 3.4'
@@ -304,6 +304,7 @@ group :development, :test do
   gem 'spinach-rails', '~> 0.2.1'
   gem 'spinach-rerun-reporter', '~> 0.0.2'
   gem 'rspec_profiling', '~> 0.0.5'
+  gem 'rspec-set', '~> 0.1.3'
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
   gem 'minitest', '~> 5.7.0'

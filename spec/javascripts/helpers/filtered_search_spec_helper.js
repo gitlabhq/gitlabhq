@@ -10,7 +10,12 @@ class FilteredSearchSpecHelper {
     li.innerHTML = `
       <div class="selectable ${isSelected ? 'selected' : ''}" role="button">
         <div class="name">${name}</div>
-        <div class="value">${value}</div>
+        <div class="value-container">
+          <div class="value">${value}</div>
+          <div class="remove-token" role="button">
+            <i class="fa fa-close"></i>
+          </div>
+        </div>
       </div>
     `;
 

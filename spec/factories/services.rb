@@ -1,6 +1,19 @@
 FactoryGirl.define do
   factory :service do
     project factory: :empty_project
+    type 'Service'
+  end
+
+  factory :custom_issue_tracker_service, class: CustomIssueTrackerService do
+    project factory: :empty_project
+    type 'CustomIssueTrackerService'
+    category 'issue_tracker'
+    active true
+    properties(
+      project_url: 'https://project.url.com',
+      issues_url: 'https://issues.url.com',
+      new_issue_url: 'https://newissue.url.com'
+    )
   end
 
   factory :kubernetes_service do

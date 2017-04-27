@@ -53,7 +53,10 @@ module Banzai
 
       # Build a regexp that matches all valid :emoji: names.
       def self.emoji_pattern
-        @emoji_pattern ||= /:(#{Gitlab::Emoji.emojis_names.map { |name| Regexp.escape(name) }.join('|')}):/
+        @emoji_pattern ||=
+          /(?<=[^[:alnum:]:]|\n|^)
+          :(#{Gitlab::Emoji.emojis_names.map { |name| Regexp.escape(name) }.join('|')}):
+          (?=[^[:alnum:]:]|$)/x
       end
 
       # Build a regexp that matches all valid unicode emojis names.

@@ -4,6 +4,7 @@ describe ApplicationSetting, models: true do
   let(:setting) { ApplicationSetting.create_from_defaults }
 
   it { expect(setting).to be_valid }
+  it { expect(setting.uuid).to be_present }
 
   describe 'validations' do
     let(:http)  { 'http://example.com' }

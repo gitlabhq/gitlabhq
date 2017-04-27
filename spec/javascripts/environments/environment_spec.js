@@ -1,15 +1,18 @@
 import Vue from 'vue';
 import '~/flash';
-import EnvironmentsComponent from '~/environments/components/environment';
+import environmentsComponent from '~/environments/components/environment.vue';
 import { environment, folder } from './mock_data';
 
 describe('Environment', () => {
   preloadFixtures('static/environments/environments.html.raw');
 
+  let EnvironmentsComponent;
   let component;
 
   beforeEach(() => {
     loadFixtures('static/environments/environments.html.raw');
+
+    EnvironmentsComponent = Vue.extend(environmentsComponent);
   });
 
   describe('successfull request', () => {

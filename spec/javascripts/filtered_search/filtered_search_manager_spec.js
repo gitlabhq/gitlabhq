@@ -26,6 +26,10 @@ describe('Filtered Search Manager', () => {
     element.dispatchEvent(event);
   }
 
+  function getVisualTokens() {
+    return tokensContainer.querySelectorAll('.js-visual-token');
+  }
+
   beforeEach(() => {
     setFixtures(`
       <div class="filtered-search-box">
@@ -170,11 +174,37 @@ describe('Filtered Search Manager', () => {
     });
   });
 
-  describe('removeSelectedToken', () => {
-    function getVisualTokens() {
-      return tokensContainer.querySelectorAll('.js-visual-token');
-    }
+  describe('removeToken', () => {
+    it('removes token even when it is already selected', () => {
+      tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
+        FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', 'none', true),
+      );
 
+      tokensContainer.querySelector('.js-visual-token .remove-token').click();
+      expect(tokensContainer.querySelector('.js-visual-token')).toEqual(null);
+    });
+
+    describe('unselected token', () => {
+      beforeEach(() => {
+        spyOn(gl.FilteredSearchManager.prototype, 'removeSelectedToken').and.callThrough();
+
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
+          FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', 'none'),
+        );
+        tokensContainer.querySelector('.js-visual-token .remove-token').click();
+      });
+
+      it('removes token when remove button is selected', () => {
+        expect(tokensContainer.querySelector('.js-visual-token')).toEqual(null);
+      });
+
+      it('calls removeSelectedToken', () => {
+        expect(manager.removeSelectedToken).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('removeSelectedTokenKeydown', () => {
     beforeEach(() => {
       tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
         FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', 'none', true),
@@ -221,6 +251,31 @@ describe('Filtered Search Manager', () => {
 
       expect(clearButton.classList.contains('hidden')).toEqual(true);
       expect(getVisualTokens().length).toEqual(0);
+    });
+  });
+
+  describe('removeSelectedToken', () => {
+    beforeEach(() => {
+      spyOn(gl.FilteredSearchVisualTokens, 'removeSelectedToken').and.callThrough();
+      spyOn(gl.FilteredSearchManager.prototype, 'handleInputPlaceholder').and.callThrough();
+      spyOn(gl.FilteredSearchManager.prototype, 'toggleClearSearchButton').and.callThrough();
+      manager.removeSelectedToken();
+    });
+
+    it('calls FilteredSearchVisualTokens.removeSelectedToken', () => {
+      expect(gl.FilteredSearchVisualTokens.removeSelectedToken).toHaveBeenCalled();
+    });
+
+    it('calls handleInputPlaceholder', () => {
+      expect(manager.handleInputPlaceholder).toHaveBeenCalled();
+    });
+
+    it('calls toggleClearSearchButton', () => {
+      expect(manager.toggleClearSearchButton).toHaveBeenCalled();
+    });
+
+    it('calls update dropdown offset', () => {
+      expect(manager.dropdownManager.updateDropdownOffset).toHaveBeenCalled();
     });
   });
 
