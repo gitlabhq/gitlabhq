@@ -27,11 +27,7 @@ class ListIssue {
       this.labels.push(new ListLabel(label));
     });
 
-    this.processAssignees(obj.assignees);
-  }
-
-  processAssignees(assignees) {
-    this.assignees = assignees.map(a => new ListAssignee(a));
+    this.assignees = obj.assignees.map(a => new ListAssignee(a));
   }
 
   addLabel (label) {
