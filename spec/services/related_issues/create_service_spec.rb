@@ -136,7 +136,7 @@ describe RelatedIssues::CreateService, service: true do
       end
 
       it 'returns error' do
-        is_expected.to eq(message: "Validation failed: Issue has already been taken", status: :error, http_status: 401)
+        is_expected.to eq(message: "Validation failed: Issue is already related", status: :error, http_status: 401)
       end
 
       it 'no relation is created' do
