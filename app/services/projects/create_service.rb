@@ -97,7 +97,8 @@ module Projects
       system_hook_service.execute_hooks_for(@project, :create)
 
       unless @project.group || @project.gitlab_project_import?
-        @project.team << [current_user, :master, current_user]
+        owners = [current_user, @project.namespace.owner].compact.uniq
+        @project.add_master(owners, current_user: current_user)
       end
 
       @project.group&.refresh_members_authorized_projects

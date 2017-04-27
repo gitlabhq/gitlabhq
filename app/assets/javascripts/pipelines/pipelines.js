@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import Visibility from 'visibilityjs';
 import PipelinesService from './services/pipelines_service';
 import eventHub from './event_hub';
@@ -159,15 +158,6 @@ export default {
     });
 
     eventHub.$on('refreshPipelines', this.fetchPipelines);
-  },
-
-  beforeUpdate() {
-    if (this.state.pipelines.length &&
-        this.$children &&
-        !this.isMakingRequest &&
-        !this.isLoading) {
-      this.store.startTimeAgoLoops.call(this, Vue);
-    }
   },
 
   beforeDestroyed() {

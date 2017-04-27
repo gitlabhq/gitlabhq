@@ -429,7 +429,7 @@ GEM
       multi_json (~> 1.10)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
-    mail (2.6.4)
+    mail (2.6.5)
       mime-types (>= 1.16, < 4)
     mail_room (0.9.1)
     memoist (0.15.0)

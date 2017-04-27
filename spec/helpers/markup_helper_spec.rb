@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe GitlabMarkdownHelper do
-  include ApplicationHelper
-
+describe MarkupHelper do
   let!(:project) { create(:project, :repository) }
 
   let(:user)          { create(:user, username: 'gfm') }
@@ -128,7 +126,7 @@ describe GitlabMarkdownHelper do
     it "uses Wiki pipeline for markdown files" do
       allow(@wiki).to receive(:format).and_return(:markdown)
 
-      expect(helper).to receive(:markdown).with('wiki content', pipeline: :wiki, project_wiki: @wiki, page_slug: "nested/page")
+      expect(helper).to receive(:markdown_unsafe).with('wiki content', pipeline: :wiki, project: project, project_wiki: @wiki, page_slug: "nested/page")
 
       helper.render_wiki_content(@wiki)
     end
@@ -136,7 +134,7 @@ describe GitlabMarkdownHelper do
     it "uses Asciidoctor for asciidoc files" do
       allow(@wiki).to receive(:format).and_return(:asciidoc)
 
-      expect(helper).to receive(:asciidoc).with('wiki content')
+      expect(helper).to receive(:asciidoc_unsafe).with('wiki content')
 
       helper.render_wiki_content(@wiki)
     end
@@ -148,6 +146,29 @@ describe GitlabMarkdownHelper do
       allow(@wiki).to receive(:formatted_content).and_return(formatted_content_stub)
 
       helper.render_wiki_content(@wiki)
+    end
+  end
+
+  describe 'markup' do
+    let(:content) { 'Noël' }
+
+    it 'preserves encoding' do
+      expect(content.encoding.name).to eq('UTF-8')
+      expect(helper.markup('foo.rst', content).encoding.name).to eq('UTF-8')
+    end
+
+    it "delegates to #markdown_unsafe when file name corresponds to Markdown" do
+      expect(helper).to receive(:gitlab_markdown?).with('foo.md').and_return(true)
+      expect(helper).to receive(:markdown_unsafe).and_return('NOEL')
+
+      expect(helper.markup('foo.md', content)).to eq('NOEL')
+    end
+
+    it "delegates to #asciidoc_unsafe when file name corresponds to AsciiDoc" do
+      expect(helper).to receive(:asciidoc?).with('foo.adoc').and_return(true)
+      expect(helper).to receive(:asciidoc_unsafe).and_return('NOEL')
+
+      expect(helper.markup('foo.adoc', content)).to eq('NOEL')
     end
   end
 
