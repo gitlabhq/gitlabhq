@@ -7,10 +7,10 @@ describe RelatedIssue do
   end
 
   describe "Validation" do
-    subject { build :related_issue }
+    subject { create :related_issue }
 
     it { is_expected.to validate_presence_of(:issue) }
     it { is_expected.to validate_presence_of(:related_issue) }
-    it { is_expected.to validate_uniqueness_of(:issue_id).scoped_to(:related_issue_id) }
+    it { is_expected.to validate_uniqueness_of(:issue).scoped_to(:related_issue_id) }
   end
 end

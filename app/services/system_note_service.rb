@@ -581,7 +581,7 @@ module SystemNoteService
   def unrelate_issue(noteable, noteable_ref, user)
     body = "removed the relation with #{noteable_ref.to_reference(noteable.project)}"
 
-    create_note(NoteSummary.new(noteable, noteable.project, user, body, action: 'relate'))
+    create_note(NoteSummary.new(noteable, noteable.project, user, body, action: 'unrelate'))
   end
 
   # Called when the merge request is approved by user
