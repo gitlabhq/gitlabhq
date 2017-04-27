@@ -94,7 +94,8 @@ describe('List model', () => {
       title: 'Testing',
       iid: 1,
       confidential: false,
-      labels: [list.label, listDup.label]
+      labels: [list.label, listDup.label],
+      assignees: [],
     });
 
     list.issues.push(issue);

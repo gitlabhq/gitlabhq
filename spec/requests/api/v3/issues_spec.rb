@@ -731,7 +731,7 @@ describe API::V3::Issues, api: true  do
   describe "POST /projects/:id/issues" do
     it 'creates a new project issue' do
       post v3_api("/projects/#{project.id}/issues", user),
-        title: 'new issue', labels: 'label, label2', weight: 3
+        title: 'new issue', labels: 'label, label2', weight: 3, assignee_id: assignee.id
 
       expect(response).to have_http_status(201)
       expect(json_response['title']).to eq('new issue')
@@ -739,6 +739,7 @@ describe API::V3::Issues, api: true  do
       expect(json_response['labels']).to eq(%w(label label2))
       expect(json_response['confidential']).to be_falsy
       expect(json_response['weight']).to eq(3)
+      expect(json_response['assignee']['name']).to eq(assignee.name)
     end
 
     it 'creates a new confidential project issue' do
@@ -1132,6 +1133,22 @@ describe API::V3::Issues, api: true  do
 
       expect(response).to have_http_status(200)
       expect(json_response['due_date']).to eq(due_date)
+    end
+  end
+
+  describe 'PUT /projects/:id/issues/:issue_id to update assignee' do
+    it 'updates an issue with no assignee' do
+      put v3_api("/projects/#{project.id}/issues/#{issue.id}", user), assignee_id: 0
+
+      expect(response).to have_http_status(200)
+      expect(json_response['assignee']).to eq(nil)
+    end
+
+    it 'updates an issue with assignee' do
+      put v3_api("/projects/#{project.id}/issues/#{issue.id}", user), assignee_id: user2.id
+
+      expect(response).to have_http_status(200)
+      expect(json_response['assignee']['name']).to eq(user2.name)
     end
   end
 

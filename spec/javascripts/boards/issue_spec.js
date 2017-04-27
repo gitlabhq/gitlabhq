@@ -27,7 +27,8 @@ describe('Issue model', () => {
         title: 'test',
         color: 'red',
         description: 'testing'
-      }]
+      }],
+      assignees: [],
     });
   });
 
@@ -90,7 +91,8 @@ describe('Issue model', () => {
       iid: 1,
       confidential: false,
       relative_position: 1,
-      labels: []
+      labels: [],
+      assignees: [],
     });
 
     expect(relativePositionIssue.position).toBe(1);

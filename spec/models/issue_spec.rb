@@ -730,6 +730,11 @@ describe Issue, models: true do
       expect(attrs_hash).to include(:human_total_time_spent)
       expect(attrs_hash).to include('time_estimate')
     end
+
+    it 'includes assignee_ids and deprecated assignee_id' do
+      expect(attrs_hash).to include(:assignee_id)
+      expect(attrs_hash).to include(:assignee_ids)
+    end
   end
 
   describe '#check_for_spam' do
