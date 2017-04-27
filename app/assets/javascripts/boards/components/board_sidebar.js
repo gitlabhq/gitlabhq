@@ -46,6 +46,8 @@ require('./sidebar/remove_issue');
 
           this.issue = this.detail.issue;
           this.list = this.detail.list;
+
+          this.endpoint = document.querySelector('.js-issue-board-sidebar').dataset.issueUpdate;
         },
         deep: true
       },
@@ -81,8 +83,7 @@ require('./sidebar/remove_issue');
       saveUsers () {
         this.loadingAssignees = true;
 
-        const endpoint = document.querySelector('.js-issue-board-sidebar').dataset.issueUpdate;
-        gl.issueBoards.BoardsStore.detail.issue.update(endpoint)
+        gl.issueBoards.BoardsStore.detail.issue.update(this.endpoint)
           .then((response) => {
             this.loadingAssignees = false;
 
