@@ -23,6 +23,7 @@ header {
   }
 
   &.navbar-gitlab {
+    @include transition(border-color 150ms ease-in-out);
     padding: 0 16px;
     z-index: 100;
     margin-bottom: 0;
@@ -39,11 +40,11 @@ header {
     }
 
     &.with-horizontal-nav {
-      border-bottom: none;
+      border-color: transparent;
     }
 
     &.scroll {
-      border-bottom: 1px solid $border-color;
+      border-color: $border-color;
     }
 
     .container-fluid {
