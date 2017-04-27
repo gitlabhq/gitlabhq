@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-26 12:42-0500\n"
-"PO-Revision-Date: 2017-04-26 12:42-0500\n"
+"POT-Creation-Date: 2017-04-26 19:52-0500\n"
+"PO-Revision-Date: 2017-04-26 19:52-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -18,7 +18,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
+msgid "Commits"
+msgstr ""
+
 msgid "Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project."
+msgstr ""
+
+msgid "Deploys"
 msgstr ""
 
 msgid "Deutsch"
@@ -42,6 +48,9 @@ msgstr ""
 msgid "Median"
 msgstr ""
 
+msgid "New Issues"
+msgstr ""
+
 msgid "Not available"
 msgstr ""
 
@@ -55,6 +64,24 @@ msgid "Pipeline Health"
 msgstr ""
 
 msgid "Read more"
+msgstr ""
+
+msgid "Related Commits"
+msgstr ""
+
+msgid "Related Issues"
+msgstr ""
+
+msgid "Related Merge Requests"
+msgstr ""
+
+msgid "Relative Builds Trigger by Commits"
+msgstr ""
+
+msgid "Relative Deployed Builds"
+msgstr ""
+
+msgid "Relative Merged Requests"
 msgstr ""
 
 msgid "Showing %d event"

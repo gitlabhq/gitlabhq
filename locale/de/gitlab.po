@@ -17,7 +17,13 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "\n"
 
+msgid "Commits"
+msgstr ""
+
 msgid "Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project."
+msgstr ""
+
+msgid "Deploys"
 msgstr ""
 
 msgid "Deutsch"
@@ -41,6 +47,9 @@ msgstr ""
 msgid "Median"
 msgstr ""
 
+msgid "New Issues"
+msgstr ""
+
 msgid "Not available"
 msgstr ""
 
@@ -54,6 +63,24 @@ msgid "Pipeline Health"
 msgstr ""
 
 msgid "Read more"
+msgstr ""
+
+msgid "Related Commits"
+msgstr ""
+
+msgid "Related Issues"
+msgstr ""
+
+msgid "Related Merge Requests"
+msgstr ""
+
+msgid "Relative Builds Trigger by Commits"
+msgstr ""
+
+msgid "Relative Deployed Builds"
+msgstr ""
+
+msgid "Relative Merged Requests"
 msgstr ""
 
 msgid "Showing %d event"

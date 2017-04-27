@@ -32,7 +32,7 @@
           .row
             .col-sm-3.col-xs-12.column{ "v-for" => "item in state.summary" }
               %h3.header {{ item.value }}
-              %p.text {{ item.title }}
+              %p.text {{ __(item.title) }}
             .col-sm-3.col-xs-12.column
               .dropdown.inline.js-ca-dropdown
                 %button.dropdown-menu-toggle{ "data-toggle" => "dropdown", :type => "button" }
@@ -60,7 +60,7 @@
                 %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6.", "aria-hidden" => "true" }
               %li.event-header
                 %span.stage-name
-                  {{ __(currentStage ? currentStage.legend : 'Related Issues') }}
+                  {{ __(currentStage ? __(currentStage.legend) : __('Related Issues')) }}
                 %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: "The collection of events added to the data gathered for that stage.", "aria-hidden" => "true" }
               %li.total-time-header
                 %span.stage-name
