@@ -3,6 +3,7 @@
 /* global MilestoneSelect */
 /* global LabelsSelect */
 /* global Sidebar */
+/* global Flash */
 
 import Vue from 'vue';
 import eventHub from '../../sidebar/event_hub';
@@ -85,10 +86,14 @@ require('./sidebar/remove_issue');
       saveAssignees () {
         this.loadingAssignees = true;
 
+        function setLoadingFalse() {
+          this.loadingAssignees = false;
+        }
+
         gl.issueBoards.BoardsStore.detail.issue.update(this.endpoint)
-          .then(() => this.loadingAssignees = false)
+          .then(setLoadingFalse)
           .catch(() => {
-            this.loadingAssignees = false;
+            setLoadingFalse();
             return new Flash('An error occurred while saving assignees');
           });
       },

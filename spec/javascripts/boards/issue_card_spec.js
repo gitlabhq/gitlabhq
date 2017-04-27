@@ -177,7 +177,6 @@ describe('Issue card component', () => {
       expect(component.$el.querySelectorAll('.card-assignee .avatar').length).toEqual(4);
     });
 
-
     describe('more than four assignees', () => {
       beforeEach((done) => {
         component.issue.assignees.push(new ListAssignee({
@@ -199,7 +198,7 @@ describe('Issue card component', () => {
       });
 
       it('renders 99+ avatar counter', (done) => {
-        for(let i = 5; i < 104; i++) {
+        for (let i = 5; i < 104; i += 1) {
           const u = new ListAssignee({
             id: i,
             name: 'name',
@@ -215,7 +214,7 @@ describe('Issue card component', () => {
         });
       });
     });
-  })
+  });
 
   describe('labels', () => {
     it('does not render any', () => {
