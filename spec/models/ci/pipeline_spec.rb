@@ -955,7 +955,7 @@ describe Ci::Pipeline, models: true do
     end
 
     before do
-      ProjectWebHookWorker.drain
+      WebHookWorker.drain
     end
 
     context 'with pipeline hooks enabled' do

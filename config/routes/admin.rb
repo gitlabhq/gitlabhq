@@ -54,6 +54,12 @@ namespace :admin do
     member do
       get :test
     end
+
+    resources :hook_logs, only: [:show] do
+      member do
+        get :retry
+      end
+    end
   end
 
   resources :broadcast_messages, only: [:index, :edit, :create, :update, :destroy] do
