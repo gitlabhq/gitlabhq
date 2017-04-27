@@ -47,7 +47,9 @@ require('./sidebar/remove_issue');
           this.issue = this.detail.issue;
           this.list = this.detail.list;
 
-          this.endpoint = this.$el.querySelector('.js-user-search').dataset.issueUpdate;
+          this.$nextTick(() => {
+            this.endpoint = this.$refs.assigneeDropdown.dataset.issueUpdate;
+          });
         },
         deep: true
       },
