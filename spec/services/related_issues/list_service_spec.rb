@@ -20,27 +20,24 @@ describe RelatedIssues::ListService, service: true do
       let!(:related_issue_c) do
         create(:related_issue, id: 999,
                                issue: issue_d,
-                               related_issue: issue,
-                               created_at: Date.today)
+                               related_issue: issue)
       end
 
       let!(:related_issue_b) do
         create(:related_issue, id: 998,
                                issue: issue,
-                               related_issue: issue_c,
-                               created_at: 1.day.ago)
+                               related_issue: issue_c)
       end
 
       let!(:related_issue_a) do
         create(:related_issue, id: 997,
                                issue: issue,
-                               related_issue: issue_b,
-                               created_at: 2.days.ago)
+                               related_issue: issue_b)
       end
 
       it 'verifies number of queries' do
         recorded = ActiveRecord::QueryRecorder.new { subject }
-        expect(recorded.count).to be_within(1).of(25)
+        expect(recorded.count).to be_within(1).of(39)
       end
 
       it 'returns related issues JSON' do
@@ -51,7 +48,8 @@ describe RelatedIssues::ListService, service: true do
             title: issue_b.title,
             state: issue_b.state,
             reference: issue_b.to_reference(project),
-            path: "/#{project.full_path}/issues/#{issue_b.iid}"
+            path: "/#{project.full_path}/issues/#{issue_b.iid}",
+            destroy_relation_path: "/#{project.full_path}/issues/#{issue_b.iid}/related_issues/#{related_issue_a.id}"
           }
         )
 
@@ -60,7 +58,8 @@ describe RelatedIssues::ListService, service: true do
             title: issue_c.title,
             state: issue_c.state,
             reference: issue_c.to_reference(project),
-            path: "/#{project.full_path}/issues/#{issue_c.iid}"
+            path: "/#{project.full_path}/issues/#{issue_c.iid}",
+            destroy_relation_path: "/#{project.full_path}/issues/#{issue_c.iid}/related_issues/#{related_issue_b.id}"
           }
         )
 
@@ -69,7 +68,8 @@ describe RelatedIssues::ListService, service: true do
             title: issue_d.title,
             state: issue_d.state,
             reference: issue_d.to_reference(project),
-            path: "/#{project.full_path}/issues/#{issue_d.iid}"
+            path: "/#{project.full_path}/issues/#{issue_d.iid}",
+            destroy_relation_path: "/#{project.full_path}/issues/#{issue_d.iid}/related_issues/#{related_issue_c.id}"
           }
         )
       end
@@ -93,6 +93,35 @@ describe RelatedIssues::ListService, service: true do
 
         it 'returns an empty list' do
           is_expected.to eq([])
+        end
+      end
+    end
+
+    context 'remove relations' do
+      let!(:related_issue) do
+        create(:related_issue, issue: issue, related_issue: referenced_issue)
+      end
+
+      context 'when user can admin related issues on one project' do
+        let(:unauthorized_project) { create :empty_project }
+        let(:referenced_issue) { create :issue, project: unauthorized_project }
+
+        before do
+          # User can just see related issues
+          unauthorized_project.team << [user, :guest]
+        end
+
+        it 'returns no destroy relation path' do
+          expect(subject.first[:destroy_relation_path]).to be_nil
+        end
+      end
+
+      context 'when user can admin related issues on both projects' do
+        let(:referenced_issue) { create :issue, project: project }
+
+        it 'returns related issue destroy relation path' do
+          expect(subject.first[:destroy_relation_path])
+            .to eq("/#{project.full_path}/issues/#{referenced_issue.iid}/related_issues/#{related_issue.id}")
         end
       end
     end

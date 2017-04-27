@@ -12,7 +12,8 @@ module RelatedIssues
           title: referenced_issue.title,
           state: referenced_issue.state,
           reference: referenced_issue.to_reference(@issue.project),
-          path: namespace_project_issue_path(referenced_issue.project.namespace, referenced_issue.project, referenced_issue.iid)
+          path: namespace_project_issue_path(referenced_issue.project.namespace, referenced_issue.project, referenced_issue.iid),
+          destroy_relation_path: destroy_relation_path(referenced_issue)
         }
       end
     end
@@ -38,6 +39,15 @@ module RelatedIssues
 
       # TODO: Try to use SQL instead Array#select
       @issues = Ability.issues_readable_by_user(@issues, @current_user)
+    end
+
+    def destroy_relation_path(issue)
+      return unless Ability.allowed?(@current_user, :admin_related_issue, issue.project)
+
+      namespace_project_issue_related_issue_path(issue.project.namespace,
+                                                 issue.project,
+                                                 issue.iid,
+                                                 issue.related_issues_id)
     end
   end
 end
