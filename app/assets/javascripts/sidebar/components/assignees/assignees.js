@@ -79,6 +79,9 @@ export default {
     renderAssignee(index) {
       return !this.showLess || (index < this.defaultRenderCount && this.showLess);
     },
+    avatarUrl(user) {
+      return user.avatarUrl || user.avatar_url;
+    },
     assigneeUrl(user) {
       return `${this.rootPath}${user.username}`;
     },
@@ -118,7 +121,7 @@ export default {
             width="24"
             class="avatar avatar-inline s24"
             :alt="assigneeAlt(user)"
-            :src="user.avatarUrl"
+            :src="avatarUrl(user)"
           />
           <span class="author">
             {{ user.name }}
@@ -158,7 +161,7 @@ export default {
               width="32"
               class="avatar avatar-inline s32"
               :alt="assigneeAlt(firstUser)"
-              :src="firstUser.avatarUrl"
+              :src="avatarUrl(firstUser)"
             />
             <span class="author">
               {{ firstUser.name }}
@@ -185,7 +188,7 @@ export default {
                   width="32"
                   class="avatar avatar-inline s32"
                   :alt="assigneeAlt(user)"
-                  :src="user.avatarUrl"
+                  :src="avatarUrl(user)"
                 />
               </a>
             </div>

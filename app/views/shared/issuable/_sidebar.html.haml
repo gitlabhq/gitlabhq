@@ -219,7 +219,7 @@
       gl.sidebarOptions = {
         endpoint: "#{issuable_json_path(issuable)}",
         editable: #{can_edit_issuable ? true : false},
-        currentUserId: #{current_user.id},
+        currentUser: #{current_user.to_json(only: [:username, :id, :name], methods: :avatar_url)},
         rootPath: "#{root_path}"
       };
 
