@@ -14,11 +14,11 @@ GET /projects/:id/pipelines
 | `scope`   | string  | no       | The scope of pipelines, one of: `running`, `pending`, `finished`, `branches`, `tags` |
 | `status`  | string  | no       | The status of pipelines, one of: `running`, `pending`, `success`, `failed`, `canceled`, `skipped` |
 | `ref`     | string  | no       | The ref of pipelines |
-| `yaml_errors`| boolean  | no       | Returns pipelines which have an error of gitlab-ci.yml |
+| `yaml_errors`| boolean  | no       | Returns pipelines with invalid configurations |
 | `name`| string  | no       | The name of the user who triggered pipelines |
 | `username`| string  | no       | The username of the user who triggered pipelines |
-| `order_by`| string  | no       | Return requests ordered by `id`, `status`, `ref`, or `user_id`. Default is `id`. Can be combined with `sort`. If you omit `sort`, its default value is used (`desc`) |
-| `sort`    | string  | no       | Return requests sorted in `asc` or `desc` order. Default is `desc`. Can be combined with `order_by`. If you omit `order_by`, its default value is used (`id`) |
+| `order_by`| string  | no       | Order pipelines by `id`, `status`, `ref`, or `user_id` (default: `id`) |
+| `sort`    | string  | no       | Sort pipelines in `asc` or `desc` order (default: `desc`) |
 
 ```
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/pipelines"

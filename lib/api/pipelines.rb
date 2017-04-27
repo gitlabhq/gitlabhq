@@ -19,13 +19,13 @@ module API
         optional :status,   type: String, values: HasStatus::AVAILABLE_STATUSES,
                             desc: 'The status of pipelines'
         optional :ref,      type: String, desc: 'The ref of pipelines'
-        optional :yaml_errors, type: Boolean, desc: 'If true, returns only yaml error pipelines'
-        optional :name,     type: String, desc: 'The name of user who triggered pipelines'
-        optional :username, type: String, desc: 'The username of user who triggered pipelines'
+        optional :yaml_errors, type: Boolean, desc: 'Returns pipelines with invalid configurations'
+        optional :name,     type: String, desc: 'The name of the user who triggered pipelines'
+        optional :username, type: String, desc: 'The username of the user who triggered pipelines'
         optional :order_by, type: String, values: PipelinesFinder::ALLOWED_INDEXED_COLUMNS, default: 'id',
-                            desc: 'The order_by which is combined with a sort'
+                            desc: 'Order pipelines'
         optional :sort,     type: String, values: %w[asc desc], default: 'desc',
-                            desc: 'The sort method which is combined with an order_by'
+                            desc: 'Sort pipelines'
       end
       get ':id/pipelines' do
         authorize! :read_pipeline, user_project
