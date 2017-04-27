@@ -4,6 +4,8 @@ require 'rails/all'
 
 Bundler.require(:default, Rails.env)
 
+require 'elasticsearch/rails/instrumentation'
+
 module Gitlab
   class Application < Rails::Application
     require_dependency Rails.root.join('lib/gitlab/redis')
