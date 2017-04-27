@@ -6,6 +6,10 @@ describe Service, models: true do
     it { is_expected.to have_one :service_hook }
   end
 
+  describe 'Validations' do
+    it { is_expected.to validate_presence_of(:type) }
+  end
+
   describe "Test Button" do
     before do
       @service = Service.new

@@ -60,7 +60,7 @@ describe Gitlab::ImportExport::RelationFactory, lib: true do
     end
 
     context 'original service exists' do
-      let(:service_id) { Service.create(project: project).id }
+      let(:service_id) { create(:service, project: project).id }
 
       it 'does not have the original service_id' do
         expect(created_object.service_id).not_to eq(service_id)
