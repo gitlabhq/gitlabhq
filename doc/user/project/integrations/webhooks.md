@@ -233,6 +233,7 @@ X-Gitlab-Event: Issue Hook
     "id": 301,
     "title": "New API: create/update/delete file",
     "assignee_ids": [51],
+    "assignee_id": 51,
     "author_id": 51,
     "project_id": 14,
     "created_at": "2013-12-03T17:15:43Z",
@@ -251,6 +252,11 @@ X-Gitlab-Event: Issue Hook
     "username": "user1",
     "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon"
   }],
+  "assignee": {
+    "name": "User1",
+    "username": "user1",
+    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon"
+  },
   "labels": [{
     "id": 206,
     "title": "API",
@@ -265,6 +271,9 @@ X-Gitlab-Event: Issue Hook
   }]
 }
 ```
+
+**Note**: `assignee` and `assignee_id` keys are deprecated and now show the first assignee only.
+
 ### Comment events
 
 Triggered when a new comment is made on commits, merge requests, issues, and code snippets.
@@ -545,6 +554,7 @@ X-Gitlab-Event: Note Hook
     "id": 92,
     "title": "test",
     "assignee_ids": [],
+    "assignee_id": null,
     "author_id": 1,
     "project_id": 5,
     "created_at": "2015-04-12 14:53:17 UTC",
@@ -558,6 +568,8 @@ X-Gitlab-Event: Note Hook
   }
 }
 ```
+
+**Note**: `assignee_id` field is deprecated and now shows the first assignee only.
 
 #### Comment on code snippet
 

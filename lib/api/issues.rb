@@ -31,7 +31,8 @@ module API
 
       params :issue_params do
         optional :description, type: String, desc: 'The description of an issue'
-        optional :assignee_ids, type: Array[Integer], desc: 'The ID of a user to assign issue'
+        optional :assignee_ids, type: Array[Integer], desc: 'The array of user IDs to assign issue'
+        optional :assignee_id,  type: Integer, desc: '[Deprecated] The ID of a user to assign issue'
         optional :milestone_id, type: Integer, desc: 'The ID of a milestone to assign issue'
         optional :labels, type: String, desc: 'Comma-separated list of label names'
         optional :due_date, type: String, desc: 'Date string in the format YEAR-MONTH-DAY'
@@ -132,6 +133,8 @@ module API
 
         issue_params = declared_params(include_missing: false)
 
+        issue_params = convert_parameters_from_legacy_format(issue_params)
+
         issue = ::Issues::CreateService.new(user_project,
                                             current_user,
                                             issue_params.merge(request: request, api: true)).execute
@@ -156,7 +159,7 @@ module API
                               desc: 'Date time when the issue was updated. Available only for admins and project owners.'
         optional :state_event, type: String, values: %w[reopen close], desc: 'State of the issue'
         use :issue_params
-        at_least_one_of :title, :description, :assignee_ids, :milestone_id,
+        at_least_one_of :title, :description, :assignee_ids, :assignee_id, :milestone_id,
                         :labels, :created_at, :due_date, :confidential, :state_event,
                         :weight
       end
@@ -170,6 +173,8 @@ module API
         end
 
         update_params = declared_params(include_missing: false).merge(request: request, api: true)
+
+        update_params = convert_parameters_from_legacy_format(update_params)
 
         issue = ::Issues::UpdateService.new(user_project,
                                             current_user,
