@@ -47,7 +47,7 @@ require('./sidebar/remove_issue');
           this.issue = this.detail.issue;
           this.list = this.detail.list;
 
-          this.endpoint = document.querySelector('.js-issue-board-sidebar').dataset.issueUpdate;
+          this.endpoint = this.$el.querySelector('.js-user-search').dataset.issueUpdate;
         },
         deep: true
       },
