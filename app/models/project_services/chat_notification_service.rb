@@ -22,7 +22,7 @@ class ChatNotificationService < Service
   end
 
   def can_test?
-    super && valid?
+    valid?
   end
 
   def self.supported_events

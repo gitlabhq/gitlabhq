@@ -132,7 +132,7 @@ class Service < ActiveRecord::Base
   end
 
   def can_test?
-    !project.empty_repo?
+    true
   end
 
   # reason why service cannot be tested
