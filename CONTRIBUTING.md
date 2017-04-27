@@ -13,27 +13,30 @@ _This notice should stay as the first item in the CONTRIBUTING.MD file._
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [Contributor license agreement](#contributor-license-agreement)
 - [Contribute to GitLab](#contribute-to-gitlab)
 - [Security vulnerability disclosure](#security-vulnerability-disclosure)
 - [Closing policy for issues and merge requests](#closing-policy-for-issues-and-merge-requests)
 - [Helping others](#helping-others)
 - [I want to contribute!](#i-want-to-contribute)
-- [Implement design & UI elements](#implement-design-ui-elements)
-- [Release retrospective and kickoff](#release-retrospective-and-kickoff)
-    - [Retrospective](#retrospective)
-    - [Kickoff](#kickoff)
+- [Workflow labels](#workflow-labels)
+  - [Type labels (~"feature proposal", ~bug, ~customer, etc.)](#type-labels-feature-proposal-bug-customer-etc)
+  - [Subject labels (~wiki, ~"container registry", ~ldap, ~api, etc.)](#subject-labels-wiki-container-registry-ldap-api-etc)
+  - [Team labels (~CI, ~Discussion, ~Edge, ~Frontend, ~Platform, etc.)](#team-labels-ci-discussion-edge-frontend-platform-etc)
+  - [Priority labels (`Deliverable` and `Stretch`)](#priority-labels-deliverable-and-stretch)
+  - [Label for community contributors (~"Accepting Merge Requests")](#label-for-community-contributors-accepting-merge-requests)
+- [Implement design & UI elements](#implement-design-&-ui-elements)
 - [Issue tracker](#issue-tracker)
-    - [Feature proposals](#feature-proposals)
-    - [Issue tracker guidelines](#issue-tracker-guidelines)
-    - [Issue weight](#issue-weight)
-    - [Regression issues](#regression-issues)
-    - [Technical debt](#technical-debt)
-    - [Stewardship](#stewardship)
+  - [Issue triaging](#issue-triaging)
+  - [Feature proposals](#feature-proposals)
+  - [Issue tracker guidelines](#issue-tracker-guidelines)
+  - [Issue weight](#issue-weight)
+  - [Regression issues](#regression-issues)
+  - [Technical debt](#technical-debt)
+  - [Stewardship](#stewardship)
 - [Merge requests](#merge-requests)
-    - [Merge request guidelines](#merge-request-guidelines)
-    - [Contribution acceptance criteria](#contribution-acceptance-criteria)
-- [Changes for Stable Releases](#changes-for-stable-releases)
+  - [Merge request guidelines](#merge-request-guidelines)
+  - [Getting your merge request reviewed, approved, and merged](#getting-your-merge-request-reviewed-approved-and-merged)
+  - [Contribution acceptance criteria](#contribution-acceptance-criteria)
 - [Definition of done](#definition-of-done)
 - [Style guides](#style-guides)
 - [Code of conduct](#code-of-conduct)
@@ -103,34 +106,125 @@ contributing to GitLab.
 
 ## Workflow labels
 
-Labelling issues is described in the [GitLab Inc engineering workflow].
+To allow for asynchronous issue handling, we use [milestones][milestones-page]
+and [labels][labels-page]. Leads and product managers handle most of the
+scheduling into milestones. Labelling is a task for everyone.
+
+Most issues will have labels for at least one of the following:
+
+- Type: ~"feature proposal", ~bug, ~customer, etc.
+- Subject: ~wiki, ~"container registry", ~ldap, ~api, etc.
+- Team: ~CI, ~Discussion, ~Edge, ~Frontend, ~Platform, etc.
+- Priority: ~Deliverable, ~Stretch
+
+All labels, their meaning and priority are defined on the
+[labels page][labels-page].
+
+If you come across an issue that has none of these, and you're allowed to set
+labels, you can _always_ add the team and type, and often also the subject.
+
+[milestones-page]: https://gitlab.com/gitlab-org/gitlab-ce/milestones
+[labels-page]: https://gitlab.com/gitlab-org/gitlab-ce/labels
+
+### Type labels (~"feature proposal", ~bug, ~customer, etc.)
+
+Type labels are very important. They define what kind of issue this is. Every
+issue should have one or more.
+
+Examples of type labels are ~"feature proposal", ~bug, ~customer, ~security,
+and ~"direction".
+
+A number of type labels have a priority assigned to them, which automatically
+makes them float to the top, depending on their importance.
+
+Type labels are always lowercase, but can have any color, besides blue (which is
+already reserved for subject labels).
+
+The descriptions on the [labels page][labels-page] explain what falls under each type label.
+
+### Subject labels (~wiki, ~"container registry", ~ldap, ~api, etc.)
+
+Subject labels are labels that define what area or feature of GitLab this issue
+hits. They are not always necessary, but very convenient.
+
+If you are an expert in a particular area, it makes it easier to find issues to
+work on. You can also subscribe to those labels to receive an email each time an
+issue is labelled with a subject label corresponding to your expertise.
+
+Examples of subject labels are ~wiki, ~"container registry", ~ldap, ~api,
+~issues, ~"merge requests", ~labels, and ~"container registry".
+
+Subject labels are always colored blue and all-lowercase.
+
+### Team labels (~CI, ~Discussion, ~Edge, ~Frontend, ~Platform, etc.)
+
+Team labels specify what team is responsible for this issue.
+Assigning a team label makes sure issues get the attention of the appropriate
+people.
+
+The current team labels are ~Build, ~CI, ~Discussion, ~Documentation, ~Edge,
+~Frontend, ~Gitaly, ~Platform, ~Prometheus, ~Release, and ~"UX".
+
+The descriptions on the [labels page][labels-page] explain what falls under the
+responsibility of each team.
+
+Team labels are always colored aqua, and are capitalized so that they show up as
+the first label for any issue.
+
+### Priority labels (~Deliverable and ~Stretch)
+
+Priority labels help us clearly communicate expectations of the work for the
+release. There are two levels of priority labels:
+
+- ~Deliverable: Issues that are expected to be delivered in the current
+  milestone.
+- ~Stretch: Issues that are a stretch goal for delivering in the current
+  milestone. If these issues are not done in the current release, they will
+  strongly be considered for the next release.
+
+### Label for community contributors (~"Accepting Merge Requests")
+
+Issues that are beneficial to our users, 'nice to haves', that we currently do
+not have the capacity for or want to give the priority to, are labeled as
+~"Accepting Merge Requests", so the community can make a contribution.
+
+Community contributors can submit merge requests for any issue they want, but
+the ~"Accepting Merge Requests" label has a special meaning. It points to
+changes that:
+
+1. We already agreed on,
+1. Are well-defined,
+1. Are likely to get accepted by a maintainer.
+
+We want to avoid a situation when a contributor picks an
+~"Accepting Merge Requests" issue and then their merge request gets closed,
+because we realize that it does not fit our vision, or we want to solve it in a
+different way.
+
+We add the ~"Accepting Merge Requests" label to:
+
+- Low priority ~bug issues (i.e. we do not add it to the bugs that we want to
+solve in the ~"Next Patch Release")
+- Small ~"feature proposal" that do not need ~UX / ~"Product work", or for which
+the ~UX / ~"Product work" is already done
+- Small ~"technical debt" issues
+
+After adding the ~"Accepting Merge Requests" label, we try to estimate the
+[weight](#issue-weight) of the issue. We use issue weight to let contributors
+know how difficult the issue is. Additionally:
+
+- We advertise [~"Accepting Merge Requests" issues with weight < 5][up-for-grabs]
+  as suitable for people that have never contributed to GitLab before on the
+  [Up For Grabs campaign](http://up-for-grabs.net)
+- We encourage people that have never contributed to any open source project to
+  look for [~"Accepting Merge Requests" issues with a weight of 1][firt-timers]
+
+[up-for-grabs]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=Accepting+Merge+Requests&scope=all&sort=weight_asc&state=opened
+[firt-timers]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name%5B%5D=Accepting+Merge+Requests&scope=all&sort=upvotes_desc&state=opened&weight=1
 
 ## Implement design & UI elements
 
 Please see the [UX Guide for GitLab].
-
-## Release retrospective and kickoff
-
-### Retrospective
-
-After each release, we have a retrospective call where we discuss what went well,
-what went wrong, and what we can improve for the next release. The
-[retrospective notes] are public and you are invited to comment on them.
-If you're interested, you can even join the
-[retrospective call][retro-kickoff-call], on the first working day after the
-22nd at 6pm CET / 9am PST.
-
-### Kickoff
-
-Before working on the next release, we have a
-kickoff call to explain what we expect to ship in the next release. The
-[kickoff notes] are public and you are invited to comment on them.
-If you're interested, you can even join the [kickoff call][retro-kickoff-call],
-on the first working day after the 7th at 6pm CET / 9am PST..
-
-[retrospective notes]: https://docs.google.com/document/d/1nEkM_7Dj4bT21GJy0Ut3By76FZqCfLBmFQNVThmW2TY/edit?usp=sharing
-[kickoff notes]: https://docs.google.com/document/d/1ElPkZ90A8ey_iOkTvUs_ByMlwKK6NAB2VOK5835wYK0/edit?usp=sharing
-[retro-kickoff-call]: https://gitlab.zoom.us/j/918821206
 
 ## Issue tracker
 
@@ -153,6 +247,24 @@ to be a bug, it will find its way from there.
 If it happens that you know the solution to an existing bug, please first
 open the issue in order to keep track of it and then open the relevant merge
 request that potentially fixes it.
+
+### Issue triaging
+
+Our issue triage policies are [described in our handbook]. You are very welcome
+to help the GitLab team triage issues. We also organize [issue bash events] once
+every quarter.
+
+The most important thing is making sure valid issues receive feedback from the
+development team. Therefore the priority is mentioning developers that can help
+on those issues. Please select someone with relevant experience from
+[GitLab team][team]. If there is nobody mentioned with that expertise
+look in the commit history for the affected files to find someone. Avoid
+mentioning the lead developer, this is the person that is least likely to give a
+timely response. If the involvement of the lead developer is needed the other
+core team members will mention this person.
+
+[described in our handbook]: https://about.gitlab.com/handbook/engineering/issues/issue-triage-policies/
+[issue bash events]: https://gitlab.com/gitlab-org/gitlab-ce/issues/17815
 
 ### Feature proposals
 
