@@ -48,8 +48,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see closed merge request "Bug NS-04"' do
-    merge_request = MergeRequest.find_by!(title: "Bug NS-04")
-    expect(merge_request).to be_closed
+    expect(page).to have_content "Bug NS-04"
     expect(page).to have_content "Closed by"
   end
 
@@ -674,8 +673,8 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     project = Project.find_by(name: "Shop")
     project.team << [user, :developer]
 
-    logout
-    login_with user
+    gitlab_sign_out
+    sign_in(user)
   end
 
   step '"Bug NS-05" has CI status' do

@@ -545,7 +545,7 @@ Style/Proc:
 # branches, and conditions.
 Metrics/AbcSize:
   Enabled: true
-  Max: 60
+  Max: 57.08
 
 # This cop checks if the length of a block exceeds some maximum value.
 Metrics/BlockLength:
@@ -564,7 +564,7 @@ Metrics/ClassLength:
 # of test cases needed to validate a method.
 Metrics/CyclomaticComplexity:
   Enabled: true
-  Max: 17
+  Max: 16
 
 # Limit lines to 80 characters.
 Metrics/LineLength:

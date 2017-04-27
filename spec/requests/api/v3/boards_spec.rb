@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe API::V3::Boards, api: true  do
-  include ApiHelpers
-
+describe API::V3::Boards do
   let(:user)        { create(:user) }
   let(:guest)       { create(:user) }
   let(:non_member)  { create(:user) }

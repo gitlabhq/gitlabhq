@@ -110,7 +110,7 @@ module Gitlab
           token = Doorkeeper::AccessToken.by_token(password)
           if valid_oauth_token?(token)
             user = User.find_by(id: token.resource_owner_id)
-            Gitlab::Auth::Result.new(user, nil, :oauth, read_authentication_abilities)
+            Gitlab::Auth::Result.new(user, nil, :oauth, full_authentication_abilities)
           end
         end
       end

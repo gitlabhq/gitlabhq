@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe 'View on environment', js: true do
-  include WaitForAjax
-
   let(:branch_name) { 'feature' }
   let(:file_path) { 'files/ruby/feature.rb' }
   let(:project) { create(:project, :repository) }

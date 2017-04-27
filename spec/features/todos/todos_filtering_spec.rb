@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe 'Dashboard > User filters todos', feature: true, js: true do
-  include WaitForAjax
-
   let(:user_1)    { create(:user, username: 'user_1', name: 'user_1') }
   let(:user_2)    { create(:user, username: 'user_2', name: 'user_2') }
 

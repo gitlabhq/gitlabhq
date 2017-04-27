@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 feature 'Member autocomplete', :js do
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:empty_project, :public) }
   let(:user) { create(:user) }
   let(:author) { create(:user) }
   let(:note) { create(:note, noteable: noteable, project: noteable.project) }
@@ -36,6 +36,7 @@ feature 'Member autocomplete', :js do
   end
 
   context 'adding a new note on a Merge Request' do
+    let(:project) { create(:project, :public, :repository) }
     let(:noteable) do
       create(:merge_request, source_project: project,
                              target_project: project, author: author)
@@ -48,6 +49,7 @@ feature 'Member autocomplete', :js do
   end
 
   context 'adding a new note on a Commit' do
+    let(:project) { create(:project, :public, :repository) }
     let(:noteable) { project.commit }
     let(:note) { create(:note_on_commit, project: project, commit_id: project.commit.id) }
 

@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe 'OpenID Connect requests' do
-  include ApiHelpers
-
   let(:user) { create :user }
   let(:access_grant) { create :oauth_access_grant, application: application, resource_owner_id: user.id }
   let(:access_token) { create :oauth_access_token, application: application, resource_owner_id: user.id }

@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe 'Issue Boards new issue', feature: true, js: true do
-  include WaitForAjax
   include WaitForVueResource
 
   let(:project) { create(:empty_project, :public) }

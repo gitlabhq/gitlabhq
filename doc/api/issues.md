@@ -834,6 +834,67 @@ Example response:
 }
 ```
 
+## List merge requests that will close issue on merge
+
+Get all the merge requests that will close issue when merged.
+
+```
+GET /projects/:id/issues/:issue_iid/closed_by
+```
+
+| Attribute   | Type    | Required | Description                          |
+| ---------   | ----    | -------- | -----------                          |
+| `id`        | integer | yes      | The ID of a project                  |
+| `issue_iid` | integer | yes      | The internal ID of a project issue   |
+
+```bash
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/issues/11/closed_by
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 6471,
+    "iid": 6432,
+    "project_id": 1,
+    "title": "add a test for cgi lexer options",
+    "description": "closes #11",
+    "state": "opened",
+    "created_at": "2017-04-06T18:33:34.168Z",
+    "updated_at": "2017-04-09T20:10:24.983Z",
+    "target_branch": "master",
+    "source_branch": "feature.custom-highlighting",
+    "upvotes": 0,
+    "downvotes": 0,
+    "author": {
+      "name": "Administrator",
+      "username": "root",
+      "id": 1,
+      "state": "active",
+      "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+      "web_url": "https://gitlab.example.com/root"
+    },
+    "assignee": null,
+    "source_project_id": 1,
+    "target_project_id": 1,
+    "labels": [],
+    "work_in_progress": false,
+    "milestone": null,
+    "merge_when_pipeline_succeeds": false,
+    "merge_status": "unchecked",
+    "sha": "5a62481d563af92b8e32d735f2fa63b94e806835",
+    "merge_commit_sha": null,
+    "user_notes_count": 1,
+    "should_remove_source_branch": null,
+    "force_remove_source_branch": false,
+    "web_url": "https://gitlab.example.com/gitlab-org/gitlab-test/merge_requests/6432"
+  }
+]
+```
+
+
 ## Comments on issues
 
 Comments are done via the [notes](notes.md) resource.

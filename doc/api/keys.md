@@ -26,7 +26,6 @@ Parameters:
     "avatar_url": "http://www.gravatar.com/avatar/cfa35b8cd2ec278026357769582fa563?s=40\u0026d=identicon",
     "web_url": "http://localhost:3000/john_smith",
     "created_at": "2015-09-03T07:24:01.670Z",
-    "is_admin": false,
     "bio": null,
     "skype": "",
     "linkedin": "",
