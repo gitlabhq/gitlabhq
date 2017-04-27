@@ -19,12 +19,7 @@ export default class SidebarStore {
 
   processAssigneeData(data) {
     if (data.assignees) {
-      this.assignees = data.assignees.map(a => {
-        a.avatarUrl = a.avatar_url;
-        delete a.avatar_url;
-
-        return a;
-      });
+      this.assignees = data.assignees;
     }
   }
 
