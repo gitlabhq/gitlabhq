@@ -5,6 +5,14 @@ resources :snippets, concerns: :awardable do
     post :mark_as_spam
     post :preview_markdown
   end
+
+  scope module: :snippets do
+    resources :notes, only: [:index, :create, :destroy, :update], concerns: :awardable, constraints: { id: /\d+/ } do
+      member do
+        delete :delete_attachment
+      end
+    end
+  end
 end
 
 get '/s/:username', to: redirect('/u/%{username}/snippets'),
