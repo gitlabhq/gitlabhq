@@ -540,19 +540,6 @@ There are a few rules to get your merge request accepted:
    See the instructions in that document for help if your MR fails the
    "license-finder" test with a "Dependencies that need approval" error.
 
-## Changes for Stable Releases
-
-Sometimes certain changes have to be added to an existing stable release.
-Two examples are bug fixes and performance improvements. In these cases the
-corresponding merge request should be updated to have the following:
-
-1. A milestone indicating what release the merge request should be merged into.
-1. The label "Pick into Stable"
-
-This makes it easier for release managers to keep track of what still has to be
-merged and where changes have to be merged into.
-Like all merge requests the target should be master so all bugfixes are in master.
-
 ## Definition of done
 
 If you contribute to GitLab please know that changes involve more than just
