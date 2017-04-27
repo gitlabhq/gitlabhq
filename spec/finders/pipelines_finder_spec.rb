@@ -11,7 +11,7 @@ describe PipelinesFinder do
       let!(:pipelines) { create_list(:ci_pipeline, 2, project: project) }
 
       it 'returns all pipelines' do
-        is_expected.to eq(pipelines.sort_by { |p| -p.id })
+        is_expected.to match_array(pipelines)
       end
     end
 
@@ -35,7 +35,7 @@ describe PipelinesFinder do
       end
 
       it 'returns matched pipelines' do
-        is_expected.to eq(pipelines.sort_by { |p| -p.id })
+        is_expected.to match_array(pipelines)
       end
     end
 
@@ -162,7 +162,7 @@ describe PipelinesFinder do
         let(:params) { { yaml_errors: "invalid-yaml_errors" } }
 
         it 'returns all pipelines' do
-          is_expected.to eq([pipeline1, pipeline2].sort_by { |p| -p.id })
+          is_expected.to match_array([pipeline1, pipeline2])
         end
       end
     end
@@ -173,7 +173,7 @@ describe PipelinesFinder do
         let!(:pipelines) { create_list(:ci_pipeline, 2, project: project, user: create(:user)) }
 
         it 'sorts as user_id: :asc' do
-          is_expected.to eq(pipelines.sort_by { |p| p.user.id })
+          is_expected.to match_array(pipelines)
         end
 
         context 'when sort is invalid' do
