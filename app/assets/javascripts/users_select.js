@@ -1,8 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, one-var, no-var, prefer-rest-params, wrap-iife, quotes, max-len, one-var-declaration-per-line, vars-on-top, prefer-arrow-callback, consistent-return, comma-dangle, object-shorthand, no-shadow, no-unused-vars, no-else-return, no-self-compare, prefer-template, no-unused-expressions, no-lonely-if, yoda, prefer-spread, no-void, camelcase, no-param-reassign */
 /* global Issuable */
-/* global ListUser */
 
-import Vue from 'vue';
 import eventHub from './sidebar/event_hub';
 
 (function() {
@@ -81,14 +79,6 @@ import eventHub from './sidebar/event_hub';
               .get();
           };
 
-          var updateIssueBoardsIssue = function () {
-            $loading.removeClass('hidden').fadeIn();
-            gl.issueBoards.BoardsStore.detail.issue.update($dropdown.attr('data-issue-update'))
-              .then(function () {
-                $loading.fadeOut();
-              });
-          };
-
           $('.assign-to-me-link').on('click', (e) => {
             e.preventDefault();
             $(e.currentTarget).hide();
@@ -98,22 +88,11 @@ import eventHub from './sidebar/event_hub';
             $dropdown.find('.dropdown-toggle-text').text(gon.current_user_fullname).removeClass('is-default');
           });
 
-          $block.on('click', '.js-assign-yourself', function(e) {
+          $block.on('click', '.js-assign-yourself', (e) => {
             e.preventDefault();
-
-            if ($dropdown.hasClass('js-issue-board-sidebar')) {
-              Vue.set(gl.issueBoards.BoardsStore.detail.issue, 'assignee', new ListUser({
-                id: _this.currentUser.id,
-                username: _this.currentUser.username,
-                name: _this.currentUser.name,
-                avatar_url: _this.currentUser.avatar_url
-              }));
-
-              updateIssueBoardsIssue();
-            } else {
-              return assignTo(_this.currentUser.id);
-            }
+            return assignTo(_this.currentUser.id);
           });
+
           assignTo = function(selected) {
             var data;
             data = {};
@@ -289,7 +268,6 @@ import eventHub from './sidebar/event_hub';
               return $value.css('display', '');
             },
             multiSelect: $dropdown.hasClass('js-multiselect'),
-            vue: $dropdown.hasClass('js-issue-board-sidebar'),
             clicked: function(options) {
               const { $el, e, isMarking } = options;
               const user = options.selectedObj;
@@ -367,19 +345,6 @@ import eventHub from './sidebar/event_hub';
                 return Issuable.filterResults($dropdown.closest('form'));
               } else if ($dropdown.hasClass('js-filter-submit')) {
                 return $dropdown.closest('form').submit();
-              } else if ($dropdown.hasClass('js-issue-board-sidebar')) {
-                if (user.id) {
-                  Vue.set(gl.issueBoards.BoardsStore.detail.issue, 'assignee', new ListUser({
-                    id: user.id,
-                    username: user.username,
-                    name: user.name,
-                    avatar_url: user.avatar_url
-                  }));
-                } else {
-                  Vue.delete(gl.issueBoards.BoardsStore.detail.issue, 'assignee');
-                }
-
-                updateIssueBoardsIssue();
               } else if (!$dropdown.hasClass('js-multiselect')) {
                 selected = $dropdown.closest('.selectbox').find("input[name='" + ($dropdown.data('field-name')) + "']").val();
                 return assignTo(selected);

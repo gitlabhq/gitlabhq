@@ -158,7 +158,7 @@ import eventHub from '../eventhub';
             >
               <img
                 class="avatar avatar-inline s20"
-                :src="assignee.avatar"
+                :src="assignee.avatarUrl"
                 width="20"
                 height="20"
                 :alt="avatarUrlTitle(assignee)"
