@@ -1558,6 +1558,16 @@ describe User, models: true do
         expect(ghost.email).to eq('ghost1@example.com')
       end
     end
+
+    context 'when a domain whitelist is in place' do
+      before do
+        stub_application_setting(domain_whitelist: ['gitlab.com'])
+      end
+
+      it 'creates a ghost user' do
+        expect(User.ghost).to be_persisted
+      end
+    end
   end
 
   describe '#update_two_factor_requirement' do

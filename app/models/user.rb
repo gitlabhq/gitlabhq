@@ -1075,11 +1075,13 @@ class User < ActiveRecord::Base
       User.find_by_email(s)
     end
 
-    scope.create(
+    user = scope.build(
       username: username,
       email: email,
       &creation_block
     )
+    user.save(validate: false)
+    user
   ensure
     Gitlab::ExclusiveLease.cancel(lease_key, uuid)
   end
