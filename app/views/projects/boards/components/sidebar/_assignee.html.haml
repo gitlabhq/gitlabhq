@@ -1,4 +1,4 @@
-.block.assignee
+.block.assignee{ ref: "assigneeBlock" }
   %template{ "v-if" => "issue.assignees"}
     %assignee-title{ ":number-of-assignees" => "issue.selectedAssigneeIds.length",
       ":loading" => "loadingAssignees",

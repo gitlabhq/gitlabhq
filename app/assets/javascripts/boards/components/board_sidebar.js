@@ -64,7 +64,7 @@ require('./sidebar/remove_issue');
       },
       assignSelf () {
         // Notify gl dropdown that we are now assigning to current user
-        this.$el.querySelector('.block.assignee').dispatchEvent(new Event('assignYourself'));
+        this.$refs.assigneeBlock.dispatchEvent(new Event('assignYourself'));
 
         this.addUser(this.currentUser.id);
         this.saveUsers();
