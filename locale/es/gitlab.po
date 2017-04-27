@@ -44,6 +44,9 @@ msgstr "Últimos 30 días"
 msgid "Last 90 days"
 msgstr "Últimos 90 días"
 
+msgid "Limited to showing 50 events at most"
+msgstr ""
+
 msgid "Median"
 msgstr "Mediana"
 
@@ -99,8 +102,14 @@ msgstr "Etapa"
 msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
 msgstr "La etapa de codificación muestra el tiempo desde el primer cambio hasta la creación de la solicitud de fusión. Los datos serán automáticamente incorporados aquí una vez creada tu primera solicitud de fusión."
 
+msgid "The collection of events added to the data gathered for that stage."
+msgstr ""
+
 msgid "The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage."
 msgstr "La etapa de temas muestra el tiempo que toma desde la creación de un tema hasta asignar el tema a un hito, o añadir el tema a una lista en el panel de temas. Empieza a crear temas para ver los datos de esta etapa."
+
+msgid "The phase of the development lifecycle."
+msgstr ""
 
 msgid "The planning stage shows the time from the previous step to pushing your first commit. This time will be added automatically once you push your first commit."
 msgstr "La etapa de planificación muestra el tiempo desde el paso anterior hasta el envío de tu primera confirmación. Este tiempo se añadirá automáticamente una vez que usted envíe su primer cambio."
@@ -116,6 +125,13 @@ msgstr "La etapa de puesta en escena muestra el tiempo entre la fusión  y el de
 
 msgid "The testing stage shows the time GitLab CI takes to run every pipeline for the related merge request. The data will automatically be added after your first pipeline finishes running."
 msgstr "La etapa de pruebas muestra el tiempo que GitLab CI toma para ejecutar cada pipeline para la solicitud de fusión relacionada. Los datos se añadirán automáticamente luego de que el primer pipeline termine de ejecutarse."
+
+#, fuzzy
+msgid "The time taken by each data entry gathered by that stage."
+msgstr "por"
+
+msgid "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."
+msgstr ""
 
 msgid "Total Time"
 msgstr "Tiempo Total"

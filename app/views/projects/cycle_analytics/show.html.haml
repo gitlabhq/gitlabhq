@@ -53,19 +53,19 @@
               %li.stage-header
                 %span.stage-name
                   {{ __('Stage') }}
-                %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: "The phase of the development lifecycle.", "aria-hidden" => "true" }
+                %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: _("The phase of the development lifecycle."), "aria-hidden" => "true" }
               %li.median-header
                 %span.stage-name
                   {{ __('Median') }}
-                %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6.", "aria-hidden" => "true" }
+                %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: _("The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."), "aria-hidden" => "true" }
               %li.event-header
                 %span.stage-name
-                  {{ __(currentStage ? __(currentStage.legend) : __('Related Issues')) }}
-                %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: "The collection of events added to the data gathered for that stage.", "aria-hidden" => "true" }
+                  {{ currentStage ? currentStage.legend : __('Related Issues') }}
+                %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: _("The collection of events added to the data gathered for that stage."), "aria-hidden" => "true" }
               %li.total-time-header
                 %span.stage-name
                   {{ __('Total Time') }}
-                %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: "The time taken by each data entry gathered by that stage.", "aria-hidden" => "true" }
+                %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: _("The time taken by each data entry gathered by that stage."), "aria-hidden" => "true" }
         .stage-panel-body
           %nav.stage-nav
             %ul
