@@ -60,7 +60,7 @@
                 %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: _("The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."), "aria-hidden" => "true" }
               %li.event-header
                 %span.stage-name
-                  {{ currentStage ? currentStage.legend : __('Related Issues') }}
+                  {{ currentStage ? __(currentStage.legend) : __('Related Issues') }}
                 %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: _("The collection of events added to the data gathered for that stage."), "aria-hidden" => "true" }
               %li.total-time-header
                 %span.stage-name
@@ -71,7 +71,7 @@
             %ul
               %li.stage-nav-item{ ':class' => '{ active: stage.active }', '@click' => 'selectStage(stage)', "v-for" => "stage in state.stages" }
                 .stage-nav-item-cell.stage-name
-                  {{ stage.title }}
+                  {{ s__('Cycle', stage.title) }}
                 .stage-nav-item-cell.stage-median
                   %template{ "v-if" => "stage.isUserAllowed" }
                     %span{ "v-if" => "stage.value" }

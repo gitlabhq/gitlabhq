@@ -23,6 +23,24 @@ msgstr ""
 msgid "Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project."
 msgstr ""
 
+msgid "Cycle|Code"
+msgstr ""
+
+msgid "Cycle|Issue"
+msgstr ""
+
+msgid "Cycle|Plan"
+msgstr ""
+
+msgid "Cycle|Review"
+msgstr ""
+
+msgid "Cycle|Staging"
+msgstr ""
+
+msgid "Cycle|Test"
+msgstr ""
+
 msgid "Deploys"
 msgstr ""
 

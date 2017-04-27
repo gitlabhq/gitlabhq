@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-27 14:41+0100\n"
-"PO-Revision-Date: 2017-04-27 14:41+0100\n"
+"POT-Creation-Date: 2017-04-27 19:13-0500\n"
+"PO-Revision-Date: 2017-04-27 19:13-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -22,6 +22,24 @@ msgid "Commits"
 msgstr ""
 
 msgid "Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project."
+msgstr ""
+
+msgid "Cycle|Code"
+msgstr ""
+
+msgid "Cycle|Issue"
+msgstr ""
+
+msgid "Cycle|Plan"
+msgstr ""
+
+msgid "Cycle|Review"
+msgstr ""
+
+msgid "Cycle|Staging"
+msgstr ""
+
+msgid "Cycle|Test"
 msgstr ""
 
 msgid "Deploys"
