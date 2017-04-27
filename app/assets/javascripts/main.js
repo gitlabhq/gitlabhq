@@ -171,7 +171,6 @@ import './single_file_diff';
 import './smart_interval';
 import './snippets_list';
 import './star';
-import './subbable_resource';
 import './subscription';
 import './subscription_select';
 import './syntax_highlight';
