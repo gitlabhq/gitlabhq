@@ -82,11 +82,12 @@ stages:
     - //@gitlab-org/gitlab-ee
     - //@gitlab/gitlab-ee
 
-# Skip all jobs except the ones that begin with 'docs/', for commits
-# including ONLY doc changes inside the 'doc/` directory.
+# Skip all jobs except the ones that begin with 'docs/'.
+# Used for commits including ONLY documentation changes.
+# https://docs.gitlab.com/ce/development/writing_documentation.html#testing
 .except-docs: &except-docs
   except:
-    - /^docs\/*/
+    - /^docs\/.*/
 
 .rspec-knapsack: &rspec-knapsack
   stage: test

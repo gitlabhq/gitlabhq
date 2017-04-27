@@ -70,3 +70,27 @@ All the docs follow the same [styleguide](doc_styleguide.md).
 ### Markdown
 
 Currently GitLab docs use Redcarpet as [markdown](../user/markdown.md) engine, but there's an [open discussion](https://gitlab.com/gitlab-com/gitlab-docs/issues/50) for implementing Kramdown in the near future.
+
+## Testing
+
+We try to treat documentation as code, thus have implemented some testing.
+Currently, the following tests are in place:
+
+1. `docs:check:links`: Check that all internal (relative) links work correctly
+1. `docs:check:apilint`: Check that the API docs follow some conventions
+
+If your contribution contains **only** documentation changes, you can speed up
+the CI process by prepending to the name of your branch: `docs/`. For example,
+a valid name would be `docs/update-api-issues` and it will run only the docs
+tests. If the name is `docs-update-api-issues`, the whole test suite will run
+(including docs).
+
+---
+
+When you submit a merge request to GitLab Community Edition (CE), there is an
+additional job called `rake ee_compat_check` that runs against Enterprise
+Edition (EE) and checks if your changes can apply cleanly to the EE codebase.
+If that job fails, read the instructions in the job log for what to do next.
+Contributors do not need to submit their changes to EE, GitLab Inc. employees
+on the other hand need to make sure that their changes apply cleanly to both
+CE and EE.
