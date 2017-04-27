@@ -146,23 +146,6 @@
   }
 }
 
-.prometheus-graph {
-  text {
-    fill: $gl-text-color;
-    stroke-width: 0;
-  }
-
-  .label-axis-text,
-  .text-metric-usage {
-    fill: $black;
-    font-weight: 500;
-  }
-
-  .legend-axis-text {
-    fill: $black;
-  }
-}
-
 .x-axis path,
 .y-axis path,
 .label-x-axis-line,
@@ -227,13 +210,8 @@
   dominant-baseline: text-before-edge;
 }
 
-.text-metric-bold {
-  font-weight: 600;
-}
-
 .prometheus-state {
   margin-top: 10px;
-  display: none;
 
   .state-button-section {
     margin-top: 10px;
@@ -246,5 +224,48 @@
   .terminal-button,
   .stop-env-link {
     width: 38px;
+  }
+}
+
+.prometheus-panel {
+  margin-top: 20px;
+}
+
+.prometheus-svg-container {
+  @media(max-width: $screen-sm-max) {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    padding-bottom: 60%;
+    vertical-align: top;
+    overflow: hidden;
+  }
+
+  .text-metric-bold {
+    font-weight: 600;
+  }
+}
+
+.svg-content {
+  @media(max-width: $screen-sm-max) {
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  text {
+    fill: $gl-text-color;
+    stroke-width: 0;
+  }
+
+  .label-axis-text,
+  .text-metric-usage {
+    fill: $black;
+    font-weight: 500;
+  }
+
+  .legend-axis-text {
+    fill: $black;
   }
 }
