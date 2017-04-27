@@ -120,6 +120,10 @@
     // Ensure that image does not exceed viewport
     max-height: calc(100vh - 100px);
   }
+
+  table {
+    @include markdown-table;
+  }
 }
 
 .toolbar-group {

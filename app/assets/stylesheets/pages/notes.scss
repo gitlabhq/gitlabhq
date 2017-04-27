@@ -97,6 +97,10 @@ ul.notes {
             padding-left: 1.3em;
           }
         }
+
+        table {
+          @include markdown-table;
+        }
       }
     }
 
