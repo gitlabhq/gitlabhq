@@ -106,15 +106,6 @@ export default Vue.component('pipelines-table', {
     eventHub.$on('refreshPipelines', this.fetchPipelines);
   },
 
-  beforeUpdate() {
-    if (this.state.pipelines.length &&
-        this.$children &&
-        !this.isMakingRequest &&
-        !this.isLoading) {
-      this.store.startTimeAgoLoops.call(this, Vue);
-    }
-  },
-
   beforeDestroyed() {
     eventHub.$off('refreshPipelines');
   },
