@@ -1,16 +1,15 @@
 export default class SidebarStore {
   constructor(store) {
     if (!SidebarStore.singleton) {
-      const { currentUserId, rootPath, editable } = store;
-      this.currentUserId = currentUserId;
+      const { currentUser, rootPath, editable } = store;
+      this.currentUser = currentUser;
       this.rootPath = rootPath;
       this.editable = editable;
       this.timeEstimate = 0;
       this.totalTimeSpent = 0;
       this.humanTimeEstimate = '';
       this.humanTimeSpent = '';
-      this.selectedUserIds = [];
-      this.renderedUsers = [];
+      this.assignees = [];
 
       SidebarStore.singleton = this;
     }
@@ -18,17 +17,9 @@ export default class SidebarStore {
     return SidebarStore.singleton;
   }
 
-  processUserData(data) {
+  processAssigneeData(data) {
     if (data.assignees) {
-      this.renderedUsers = data.assignees.map(a => {
-        a.avatarUrl = a.avatar_url;
-        delete a.avatar_url;
-
-        return a;
-      });
-
-      this.removeAllUserIds();
-      this.renderedUsers.map(u => this.addUserId(u.id));
+      this.assignees = data.assignees;
     }
   }
 
@@ -39,18 +30,23 @@ export default class SidebarStore {
     this.humanTimeSpent = data.human_time_spent;
   }
 
-  addUserId(id) {
-    // Prevent duplicate user id's from being added
-    if (this.selectedUserIds.indexOf(id) === -1) {
-      this.selectedUserIds.push(id);
+  addAssignee(assignee) {
+    if (!this.findAssignee(assignee)) {
+      this.assignees.push(assignee);
     }
   }
 
-  removeUserId(id) {
-    this.selectedUserIds = this.selectedUserIds.filter(uid => uid !== id);
+  findAssignee(findAssignee) {
+    return this.assignees.filter(assignee => assignee.id === findAssignee.id)[0];
   }
 
-  removeAllUserIds() {
-    this.selectedUserIds = [];
+  removeAssignee(removeAssignee) {
+    if (removeAssignee) {
+      this.assignees = this.assignees.filter(assignee => assignee.id !== removeAssignee.id);
+    }
+  }
+
+  removeAllAssignees() {
+    this.assignees = [];
   }
 }

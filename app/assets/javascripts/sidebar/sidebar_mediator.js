@@ -15,33 +15,22 @@ export default class SidebarMediator {
   }
 
   assignYourself() {
-    this.store.addUserId(this.store.currentUserId);
+    this.store.addAssignee(this.store.currentUser);
   }
 
-  saveSelectedUsers(field) {
-    return new Promise((resolve, reject) => {
-      const selected = this.store.selectedUserIds;
+  saveAssignees(field) {
+    const selected = this.store.assignees.map((u) => u.id);
 
-      // If there are no ids, that means we have to unassign (which is id = 0)
-      // And it only accepts an array, hence [0]
-      this.service.update(field, selected.length === 0 ? [0] : selected)
-        .then((response) => {
-          const data = response.json();
-          this.store.processUserData(data);
-          resolve();
-        })
-        .catch(() => {
-          reject();
-          return new Flash('Error occurred when saving users');
-        });
-    });
+    // If there are no ids, that means we have to unassign (which is id = 0)
+    // And it only accepts an array, hence [0]
+    return this.service.update(field, selected.length === 0 ? [0] : selected);
   }
 
   fetch() {
     this.service.get()
       .then((response) => {
         const data = response.json();
-        this.store.processUserData(data);
+        this.store.processAssigneeData(data);
         this.store.processTimeTrackingData(data);
       })
       .catch(() => new Flash('Error occured when fetching sidebar data'));
