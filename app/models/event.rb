@@ -16,7 +16,7 @@ class Event < ActiveRecord::Base
 
   RESET_PROJECT_ACTIVITY_INTERVAL = 1.hour
 
-  delegate :name, :email, :public_email, to: :author, prefix: true, allow_nil: true
+  delegate :name, :email, :public_email, :username, to: :author, prefix: true, allow_nil: true
   delegate :title, to: :issue, prefix: true, allow_nil: true
   delegate :title, to: :merge_request, prefix: true, allow_nil: true
   delegate :title, to: :note, prefix: true, allow_nil: true
