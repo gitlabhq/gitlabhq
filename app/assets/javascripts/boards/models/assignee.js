@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 
-class ListUser {
+class ListAssignee {
   constructor(user) {
     this.id = user.id;
     this.name = user.name;
@@ -9,4 +9,4 @@ class ListUser {
   }
 }
 
-window.ListUser = ListUser;
+window.ListAssignee = ListAssignee;

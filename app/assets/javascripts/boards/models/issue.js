@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars, space-before-function-paren, arrow-body-style, arrow-parens, comma-dangle, max-len */
 /* global ListLabel */
 /* global ListMilestone */
-/* global ListUser */
+/* global ListAssignee */
 
 import Vue from 'vue';
 
@@ -31,7 +31,7 @@ class ListIssue {
   }
 
   processAssignees(assignees) {
-    this.assignees = assignees.map(a => new ListUser(a));
+    this.assignees = assignees.map(a => new ListAssignee(a));
   }
 
   addLabel (label) {
@@ -54,23 +54,23 @@ class ListIssue {
     labels.forEach(this.removeLabel.bind(this));
   }
 
-  addUser (user) {
-    if (!this.findUser(user)) {
-      this.assignees.push(new ListUser(user));
+  addAssignee (assignee) {
+    if (!this.findAssignee(assignee)) {
+      this.assignees.push(new ListAssignee(assignee));
     }
   }
 
-  findUser (user) {
-    return this.assignees.filter(assignee => assignee.id === user.id)[0];
+  findAssignee (findAssignee) {
+    return this.assignees.filter(assignee => assignee.id === findAssignee.id)[0];
   }
 
-  removeUser (user) {
-    if (user) {
-      this.assignees = this.assignees.filter(assignee => assignee.id !== user.id);
+  removeAssignee (removeAssignee) {
+    if (assignee) {
+      this.assignees = this.assignees.filter(assignee => assignee.id !== removeAssignee.id);
     }
   }
 
-  removeAllUsers () {
+  removeAllAssignees () {
     this.assignees = [];
   }
 

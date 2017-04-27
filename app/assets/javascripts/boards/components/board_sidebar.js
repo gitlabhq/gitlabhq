@@ -70,19 +70,19 @@ require('./sidebar/remove_issue');
         // Notify gl dropdown that we are now assigning to current user
         this.$refs.assigneeBlock.dispatchEvent(new Event('assignYourself'));
 
-        this.addUser(this.currentUser.id);
-        this.saveUsers();
+        this.addAssignee(this.currentUser);
+        this.saveAssignees();
       },
-      removeUser (u) {
-        gl.issueBoards.BoardsStore.detail.issue.removeUser(u);
+      removeAssignee (a) {
+        gl.issueBoards.BoardsStore.detail.issue.removeAssignee(a);
       },
-      addUser (u) {
-        gl.issueBoards.BoardsStore.detail.issue.addUser(u);
+      addAssignee (a) {
+        gl.issueBoards.BoardsStore.detail.issue.addAssignee(a);
       },
-      removeAllUsers () {
-        gl.issueBoards.BoardsStore.detail.issue.removeAllUsers();
+      removeAllAssignees () {
+        gl.issueBoards.BoardsStore.detail.issue.removeAllAssignees();
       },
-      saveUsers () {
+      saveAssignees () {
         this.loadingAssignees = true;
 
         gl.issueBoards.BoardsStore.detail.issue.update(this.endpoint)
@@ -103,16 +103,16 @@ require('./sidebar/remove_issue');
     },
     created () {
       // Get events from glDropdown
-      eventHub.$on('sidebar.removeUser', this.removeUser);
-      eventHub.$on('sidebar.addUser', this.addUser);
-      eventHub.$on('sidebar.removeAllUsers', this.removeAllUsers);
-      eventHub.$on('sidebar.saveUsers', this.saveUsers);
+      eventHub.$on('sidebar.removeAssignee', this.removeAssignee);
+      eventHub.$on('sidebar.addAssignee', this.addAssignee);
+      eventHub.$on('sidebar.removeAllAssignees', this.removeAllAssignees);
+      eventHub.$on('sidebar.saveAssignees', this.saveAssignees);
     },
     beforeDestroy() {
-      eventHub.$off('sidebar.removeUser', this.removeUser);
-      eventHub.$off('sidebar.addUser', this.addUser);
-      eventHub.$off('sidebar.removeAllUsers', this.removeAllUsers);
-      eventHub.$off('sidebar.saveUsers', this.saveUsers);
+      eventHub.$off('sidebar.removeAssignee', this.removeAssignee);
+      eventHub.$off('sidebar.addAssignee', this.addAssignee);
+      eventHub.$off('sidebar.removeAllAssignees', this.removeAllAssignees);
+      eventHub.$off('sidebar.saveAssignees', this.saveAssignees);
     },
     mounted () {
       new IssuableContext(this.currentUser);

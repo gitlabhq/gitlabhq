@@ -1,4 +1,4 @@
-/* global ListUser */
+/* global ListAssignee */
 /* global ListLabel */
 /* global listObj */
 /* global ListIssue */
@@ -14,7 +14,7 @@ require('~/boards/components/issue_card_inner');
 require('./mock_data');
 
 describe('Issue card component', () => {
-  const user = new ListUser({
+  const user = new ListAssignee({
     id: 1,
     name: 'testing 123',
     username: 'test',
