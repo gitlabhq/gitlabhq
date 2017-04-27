@@ -16,11 +16,11 @@ class FilteredSearchVisualTokens {
     [].forEach.call(otherTokens, t => t.classList.remove('selected'));
   }
 
-  static selectToken(tokenButton) {
+  static selectToken(tokenButton, forceSelection = false) {
     const selected = tokenButton.classList.contains('selected');
     FilteredSearchVisualTokens.unselectTokens();
 
-    if (!selected) {
+    if (!selected || forceSelection) {
       tokenButton.classList.add('selected');
     }
   }
@@ -38,7 +38,12 @@ class FilteredSearchVisualTokens {
     return `
       <div class="selectable" role="button">
         <div class="name"></div>
-        <div class="value"></div>
+        <div class="value-container">
+          <div class="value"></div>
+          <div class="remove-token" role="button">
+            <i class="fa fa-close"></i>
+          </div>
+        </div>
       </div>
     `;
   }
@@ -122,7 +127,8 @@ class FilteredSearchVisualTokens {
 
       if (value) {
         const button = lastVisualToken.querySelector('.selectable');
-        button.removeChild(value);
+        const valueContainer = lastVisualToken.querySelector('.value-container');
+        button.removeChild(valueContainer);
         lastVisualToken.innerHTML = button.innerHTML;
       } else {
         lastVisualToken.closest('.tokens-container').removeChild(lastVisualToken);

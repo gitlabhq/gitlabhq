@@ -3,6 +3,7 @@ resources :snippets, concerns: :awardable do
     get 'raw'
     get 'download'
     post :mark_as_spam
+    post :preview_markdown
   end
 end
 
