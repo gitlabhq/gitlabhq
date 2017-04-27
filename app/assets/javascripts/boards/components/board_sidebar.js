@@ -105,6 +105,12 @@ require('./sidebar/remove_issue');
       eventHub.$on('sidebar.removeAllUsers', this.removeAllUsers);
       eventHub.$on('sidebar.saveUsers', this.saveUsers);
     },
+    beforeDestroy() {
+      eventHub.$off('sidebar.removeUser', this.removeUser);
+      eventHub.$off('sidebar.addUser', this.addUser);
+      eventHub.$off('sidebar.removeAllUsers', this.removeAllUsers);
+      eventHub.$off('sidebar.saveUsers', this.saveUsers);
+    },
     mounted () {
       new IssuableContext(this.currentUser);
       new MilestoneSelect();
