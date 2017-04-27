@@ -56,7 +56,7 @@ module BlobViewer
     end
 
     # This method is used on the server side to check whether we can attempt to
-    # render the blob at all. Human-readible error messages are found in the
+    # render the blob at all. Human-readable error messages are found in the
     # `BlobHelper#blob_render_error_reason` helper.
     #
     # This method does not and should not load the entire blob contents into
