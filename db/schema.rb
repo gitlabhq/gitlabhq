@@ -11,11 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 20170428123910) do
-=======
 ActiveRecord::Schema.define(version: 20170426181740) do
->>>>>>> origin/master
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -67,6 +63,7 @@ ActiveRecord::Schema.define(version: 20170426181740) do
     t.boolean "shared_runners_enabled", default: true, null: false
     t.integer "max_artifacts_size", default: 100, null: false
     t.string "runners_registration_token"
+    t.integer "max_pages_size", default: 100, null: false
     t.boolean "require_two_factor_authentication", default: false
     t.integer "two_factor_grace_period", default: 48
     t.boolean "metrics_enabled", default: false
@@ -115,18 +112,15 @@ ActiveRecord::Schema.define(version: 20170426181740) do
     t.boolean "html_emails_enabled", default: true
     t.string "plantuml_url"
     t.boolean "plantuml_enabled"
-    t.integer "max_pages_size", default: 100, null: false
     t.integer "terminal_max_session_time", default: 0, null: false
     t.string "default_artifacts_expire_in", default: "0", null: false
     t.integer "unique_ips_limit_per_user"
     t.integer "unique_ips_limit_time_window"
     t.boolean "unique_ips_limit_enabled", default: false, null: false
     t.decimal "polling_interval_multiplier", default: 1.0, null: false
+    t.integer "cached_markdown_version"
     t.boolean "usage_ping_enabled", default: true, null: false
     t.string "uuid"
-    t.integer "cached_markdown_version"
-    t.boolean "clientside_sentry_enabled", default: false
-    t.string "clientside_sentry_dsn"
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -738,8 +732,8 @@ ActiveRecord::Schema.define(version: 20170426181740) do
     t.integer "visibility_level", default: 20, null: false
     t.boolean "request_access_enabled", default: false, null: false
     t.datetime "deleted_at"
-    t.boolean "lfs_enabled"
     t.text "description_html"
+    t.boolean "lfs_enabled"
     t.integer "parent_id"
     t.boolean "require_two_factor_authentication", default: false, null: false
     t.integer "two_factor_grace_period", default: 48, null: false
@@ -972,9 +966,9 @@ ActiveRecord::Schema.define(version: 20170426181740) do
     t.boolean "lfs_enabled"
     t.text "description_html"
     t.boolean "only_allow_merge_if_all_discussions_are_resolved"
+    t.integer "auto_cancel_pending_pipelines", default: 0, null: false
     t.boolean "printing_merge_request_link_enabled", default: true, null: false
     t.string "import_jid"
-    t.integer "auto_cancel_pending_pipelines", default: 0, null: false
     t.integer "cached_markdown_version"
   end
 
@@ -1077,6 +1071,7 @@ ActiveRecord::Schema.define(version: 20170426181740) do
     t.string "line_code"
     t.string "note_type"
     t.text "position"
+    t.string "in_reply_to_discussion_id"
   end
 
   add_index "sent_notifications", ["reply_key"], name: "index_sent_notifications_on_reply_key", unique: true, using: :btree
@@ -1326,10 +1321,10 @@ ActiveRecord::Schema.define(version: 20170426181740) do
     t.string "organization"
     t.boolean "authorized_projects_populated"
     t.boolean "ghost"
+    t.date "last_activity_on"
     t.boolean "notified_of_own_activity"
     t.boolean "require_two_factor_authentication_from_group", default: false, null: false
     t.integer "two_factor_grace_period", default: 48, null: false
-    t.date "last_activity_on"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
