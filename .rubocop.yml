@@ -983,10 +983,12 @@ RSpec/ExpectActual:
 
 # Checks the file and folder naming of the spec file.
 RSpec/FilePath:
-  Enabled: false
-  CustomTransform:
-    RuboCop: rubocop
-    RSpec: rspec
+  Enabled: true
+  IgnoreMethods: true
+  Exclude:
+    - 'qa/**/*'
+    - 'spec/javascripts/fixtures/*'
+    - 'spec/requests/api/v3/*'
 
 # Checks if there are focused specs.
 RSpec/Focus:
