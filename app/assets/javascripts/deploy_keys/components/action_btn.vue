@@ -47,7 +47,8 @@
     <i
       v-if="isLoading"
       class="fa fa-spinner fa-spin"
-      aria-hidden="true">
+      aria-hidden="true"
+      aria-label="Loading">
     </i>
   </button>
 </template>

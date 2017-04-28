@@ -56,9 +56,9 @@
     </div>
     <div class="deploy-key-content prepend-left-default deploy-key-projects">
       <a
+        v-for="project in deployKey.projects"
         class="label deploy-project-label"
-        :href="project.full_path"
-        v-for="project in deployKey.projects">
+        :href="project.full_path">
         {{ project.full_name }}
       </a>
     </div>

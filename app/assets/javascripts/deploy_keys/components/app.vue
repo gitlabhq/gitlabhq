@@ -3,15 +3,13 @@
   import eventHub from '../eventhub';
   import DeployKeysService from '../service';
   import DeployKeysStore from '../store';
-  import keysPanel from './keys.vue';
+  import keysPanel from './keys_panel.vue';
 
   export default {
     data() {
-      const store = new DeployKeysStore();
-
       return {
         isLoading: false,
-        store,
+        store: new DeployKeysStore(),
       };
     },
     props: {
@@ -84,7 +82,9 @@
       class="text-center"
       v-if="isLoading && !hasKeys">
       <i
-        class="fa fa-spinner fa-spin fa-2x">
+        class="fa fa-spinner fa-spin fa-2x"
+        aria-hidden="true"
+        aria-label="Loading deploy keys">
       </i>
     </div>
     <div v-else-if="hasKeys">
