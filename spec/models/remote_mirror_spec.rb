@@ -85,6 +85,34 @@ describe RemoteMirror do
     end
   end
 
+  context '#updated_since?' do
+    let(:remote_mirror) { create(:project, :remote_mirror).remote_mirrors.first }
+    let(:timestamp) { Time.now - 5.minutes }
+
+    before do
+      Timecop.freeze(Time.now)
+      remote_mirror.update_attributes(last_update_started_at: Time.now)
+    end
+
+    context 'when remote mirror does not have status failed' do
+      it 'returns true when last update started after the timestamp' do
+        expect(remote_mirror.updated_since?(timestamp)).to be true
+      end
+
+      it 'returns false when last update started before the timestamp' do
+        expect(remote_mirror.updated_since?(Time.now + 5.minutes)).to be  false
+      end
+    end
+
+    context 'when remote mirror has status failed' do
+      it 'returns false when last update started after the timestamp' do
+        remote_mirror.update_attributes(update_status: 'failed')
+
+        expect(remote_mirror.updated_since?(timestamp)).to be false
+      end
+    end
+  end
+
   context 'no project' do
     it 'includes mirror with a project in pending_delete' do
       mirror = create_mirror(url: 'http://cantbeblank',

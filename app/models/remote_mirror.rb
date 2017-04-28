@@ -29,16 +29,8 @@ class RemoteMirror < ActiveRecord::Base
   scope :stuck,   -> { started.where('last_update_at < ? OR (last_update_at IS NULL AND updated_at < ?)', 1.day.ago, 1.day.ago) }
 
   state_machine :update_status, initial: :none do
-    event :schedule do
-      transition [:none, :finished] => :scheduling
-    end
-
-    event :reschedule do
-      transition failed: :scheduling
-    end
-
     event :update_start do
-      transition scheduling: :started
+      transition [:none, :finished, :failed] => :started
     end
 
     event :update_finish do
@@ -49,14 +41,11 @@ class RemoteMirror < ActiveRecord::Base
       transition started: :failed
     end
 
-    state :scheduling
     state :started
     state :finished
     state :failed
 
-    after_transition any => :scheduling, do: :schedule_update_job
-
-    after_transition scheduling: :started do |remote_mirror, _|
+    after_transition any => :started do |remote_mirror, _|
       remote_mirror.update(last_update_started_at: Time.now)
     end
 
@@ -88,7 +77,7 @@ class RemoteMirror < ActiveRecord::Base
     return unless project
     return if !enabled || update_in_progress?
 
-    update_failed? ? reschedule : schedule
+    schedule_update_job
   end
 
   def updated_since?(timestamp)
@@ -146,10 +135,6 @@ class RemoteMirror < ActiveRecord::Base
   end
 
   def schedule_update_job
-    run_after_commit(:add_update_job)
-  end
-
-  def add_update_job
     RepositoryUpdateRemoteMirrorWorker.perform_in(BACKOFF_DELAY, self.id, Time.now) if project&.repository_exists?
   end
 
