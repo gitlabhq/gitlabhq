@@ -202,6 +202,7 @@ Please consult the [dedicated "Frontend testing" guide](./fe_guide/testing.md).
 - Try to follow the [Four-Phase Test][four-phase-test] pattern, using newlines
   to separate phases.
 - Try to use `Gitlab.config.gitlab.host` rather than hard coding `'localhost'`
+- On `before` and `after` hooks, prefer it scoped to `:context` over `:all`
 
 [four-phase-test]: https://robots.thoughtbot.com/four-phase-test
 
@@ -224,6 +225,20 @@ so we need to set some guidelines for their use going forward:
   Use a helper method instead.
 
 [lets-not]: https://robots.thoughtbot.com/lets-not
+
+#### `set` variables
+
+In some cases there is no need to recreate the same object for tests again for
+each example. For example, a project is needed to test issues on the same
+project, one project will do for the entire file. This can be achieved by using
+`set` in the same way you would use `let`.
+
+`rspec-set` only works on ActiveRecord objects, and before new examples it
+reloads or recreates the model, _only_ if needed. That is, when you changed
+properties or destroyed the object.
+
+There is one gotcha; you can't reference a model defined in a `let` block in a
+`set` block.
 
 ### Time-sensitive tests
 

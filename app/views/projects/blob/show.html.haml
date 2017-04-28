@@ -2,6 +2,9 @@
 - page_title @blob.path, @ref
 = render "projects/commits/head"
 
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_bundle_tag('blob')
+
 %div{ class: container_class }
   = render 'projects/last_push'
 

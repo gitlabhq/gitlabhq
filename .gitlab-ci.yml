@@ -11,6 +11,7 @@ variables:
   NODE_ENV: "test"
   SIMPLECOV: "true"
   GIT_DEPTH: "20"
+  GIT_SUBMODULE_STRATEGY: "none"
   PHANTOMJS_VERSION: "2.1.1"
   GET_SOURCES_ATTEMPTS: "3"
   KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/rspec_report-master.json
@@ -401,13 +402,6 @@ docs:check:links:
     - bundle exec nanoc
     # Check the internal links
     - bundle exec nanoc check internal_links
-
-bundler:check:
-  stage: test
-  <<: *dedicated-runner
-  <<: *ruby-static-analysis
-  script:
-   - bundle check
 
 bundler:audit:
   stage: test

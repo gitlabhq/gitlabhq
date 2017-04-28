@@ -1,4 +1,0 @@
----
-title: Eliminate N+1 queries in loading namespaces for every issuable in milestones
-merge_request:
-author:

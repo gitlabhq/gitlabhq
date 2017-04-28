@@ -49,8 +49,8 @@ Click on the service links to see further configuration instructions and details
 | [Mattermost Notifications](mattermost.md) | Receive event notifications in Mattermost |
 | [Microsoft teams](microsoft_teams.md) |  Receive notifications for actions that happen on GitLab into a room on Microsoft Teams using Office 365 Connectors |
 | Pipelines emails | Email the pipeline status to a list of recipients |
-| [Slack Notifications](slack.md) | Receive event notifications in Slack |
-| [Slack slash commands](slack_slash_commands.md) | Slack chat and ChatOps slash commands |
+| [Slack Notifications](slack.md) | Send GitLab events (e.g. issue created) to Slack as notifications |
+| [Slack slash commands](slack_slash_commands.md) | Use slash commands in Slack to control GitLab |
 | PivotalTracker | Project Management Software (Source Commits Endpoint) |
 | [Prometheus](prometheus.md) | Monitor the performance of your deployed apps |
 | Pushover | Pushover makes it easy to get real-time notifications on your Android device, iPhone, iPad, and Desktop |

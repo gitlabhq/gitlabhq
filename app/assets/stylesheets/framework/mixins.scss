@@ -13,6 +13,13 @@
 }
 
 /*
+ * Mixin for markdown tables
+ */
+@mixin markdown-table {
+  width: auto;
+}
+
+/*
  * Base mixin for lists in GitLab
  */
 @mixin basic-list {
