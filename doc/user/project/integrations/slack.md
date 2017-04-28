@@ -1,51 +1,26 @@
 # Slack Notifications Service
 
-## On Slack
+The Slack Notifications Service allows your GitLab project to send events (e.g. issue created) to your existing Slack team as notifications. This requires configurations in both Slack and GitLab.
 
-To enable Slack integration you must create an incoming webhook integration on
-Slack:
+> Note: You can also use Slack slash commands to control GitLab inside Slack. This is the separately configured [Slack slash commands](slack_slash_commands.md).
 
-1. [Sign in to Slack](https://slack.com/signin)
-1. Visit [Incoming WebHooks](https://my.slack.com/services/new/incoming-webhook/)
-1. Choose the channel name you want to send notifications to.
-1. Click **Add Incoming WebHooks Integration**
-1. Copy the **Webhook URL**, we'll need this later for GitLab.
+## Slack Configuration
 
-## On GitLab
+1. Sign in to your Slack team and [start a new Incoming WebHooks configuration](https://my.slack.com/services/new/incoming-webhook/).
+1. Select the Slack channel where notifications will be sent to by default. Click the **Add Incoming WebHooks integration** button to add the configuration.
+1. Copy the **Webhook URL**, which we'll use later in the GitLab configuration.
 
-After you set up Slack, it's time to set up GitLab.
+## GitLab Configuration
 
-Navigate to the [Integrations page](project_services.md#accessing-the-project-services)
-and select the **Slack notifications** service to configure it.
-There, you will see a checkbox with the following events that can be triggered:
+1. Navigate to the [Integrations page](project_services.md#accessing-the-project-services) in your project's settings, i.e. **Project > Settings > Integrations**.
+1. Select the **Slack notifications** project service to configure it.
+1. Check the **Active** checkbox to turn on the service.
+1. Check the checkboxes corresponding to the GitLab events you want to send to Slack as a notification.
+1. For each event, optionally enter the Slack channel where you want to send the event. (Do _not_ include the `#` symbol.) If left empty, the event will be sent to the default channel that you configured in the Slack Configuration step.
+1. Paste the **Webhook URL** that you copied from the Slack Configuration step.
+1. Optionally customize the Slack bot username that will be sending the notifications.
+1. Configure the remaining options and click `Save changes`.
 
-- Push
-- Issue
-- Confidential issue
-- Merge request
-- Note
-- Tag push
-- Pipeline
-- Wiki page
-
-Below each of these event checkboxes, you have an input field to enter
-which Slack channel you want to send that event message. Enter your preferred channel name **without** the hash sign (`#`).
-
-At the end, fill in your Slack details:
-
-| Field | Description |
-| ----- | ----------- |
-| **Webhook**  | The [incoming webhook URL][slackhook] which you have to setup on Slack. |
-| **Username** | Optional username which can be on messages sent to Slack. Fill this in if you want to change the username of the bot. |
-| **Notify only broken pipelines** | If you choose to enable the **Pipeline** event and you want to be only notified about failed pipelines. |
-
-After you are all done, click **Save changes** for the changes to take effect.
-
->**Note:**
-You can set "branch,pushed,Compare changes" as highlight words on your Slack
-profile settings, so that you can be aware of new commits when somebody pushes
-them.
+Your Slack team will now start receiving GitLab event notifications as configured.
 
 ![Slack configuration](img/slack_configuration.png)
-
-[slackhook]: https://my.slack.com/services/new/incoming-webhook
