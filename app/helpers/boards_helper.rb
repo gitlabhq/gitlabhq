@@ -9,6 +9,7 @@ module BoardsHelper
       issue_link_base: namespace_project_issues_path(@project.namespace, @project),
       root_path: root_path,
       bulk_update_path: bulk_update_namespace_project_issues_path(@project.namespace, @project),
+      default_avatar: image_path(default_avatar)
     }
   end
 end
