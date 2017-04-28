@@ -10,25 +10,16 @@
     = render @deploy_keys.form_partial_path
   .col-lg-9.col-lg-offset-3
     %hr
-  .col-lg-9.col-lg-offset-3.append-bottom-default.deploy-keys
+  #js-deploy-keys.col-lg-9.col-lg-offset-3.append-bottom-default{data:{endpoint: namespace_project_deploy_keys_path}}
     %h5.prepend-top-0
-      Enabled deploy keys for this project (#{@deploy_keys.enabled_keys_size})
-    - if @deploy_keys.any_keys_enabled?
-      %ul.well-list
-        = render partial: 'projects/deploy_keys/deploy_key', collection: @deploy_keys.enabled_keys, as: :deploy_key
-    - else
-      .settings-message.text-center
-        No deploy keys found. Create one with the form above.
-    %h5.prepend-top-default
-      Deploy keys from projects you have access to (#{@deploy_keys.available_project_keys_size})
-    - if @deploy_keys.any_available_project_keys_enabled?
-      %ul.well-list
-        = render partial: 'projects/deploy_keys/deploy_key', collection: @deploy_keys.available_project_keys, as: :deploy_key
-    - else
-      .settings-message.text-center
-        No deploy keys from your projects could be found. Create one with the form above or add existing one below.
-    - if @deploy_keys.any_available_public_keys_enabled?
-      %h5.prepend-top-default
-        Public deploy keys available to any project (#{@deploy_keys.available_public_keys_size})
-      %ul.well-list
-        = render partial: 'projects/deploy_keys/deploy_key', collection: @deploy_keys.available_public_keys, as: :deploy_key
+      Enabled deploy keys for this project ({{enabledKeys.length}})
+    %ul.well-list{"v-if" => "enabledKeys.length"}
+      %deploy-key-row{"v-for" => "deployKey in enabledKeys", ":deploy-key" => "deployKey", ":enabled" =>"true"}
+    .settings-message.text-center{"v-else" => true}
+      No deploy keys found. Create one with the form above.
+    %h5.prepend-top-0
+      Deploy keys from projects you have access to ({{availableKeys.length}})
+    %ul.well-list{"v-if" => "availableKeys.length"}
+      %deploy-key-row{"v-for" => "deployKey in availableKeys", ":deploy-key" => "deployKey", ":enabled" =>"false"}
+    .settings-message.text-center{"v-else" => true}
+      No deploy keys found. Create one with the form above.
