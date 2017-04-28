@@ -437,8 +437,12 @@ describe 'Issues', feature: true do
 
           click_link 'Edit'
           click_link 'Unassigned'
+          first('.title').click
           expect(page).to have_content 'No assignee'
         end
+
+        # wait_for_ajax does not work with vue-resource at the moment
+        sleep 1
 
         expect(issue.reload.assignees).to be_empty
       end
