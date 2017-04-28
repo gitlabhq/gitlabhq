@@ -48,7 +48,6 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import UserCallout from './user_callout';
 import { ProtectedTagCreate, ProtectedTagEditList } from './protected_tags';
 import ShortcutsWiki from './shortcuts_wiki';
-import SettingsDeployKeys from './settings/settings_repository';
 import BlobViewer from './blob/viewer/index';
 
 const ShortcutsBlob = require('./shortcuts_blob');
@@ -346,8 +345,6 @@ const ShortcutsBlob = require('./shortcuts_blob');
           // Initialize Protected Tag Settings
           new ProtectedTagCreate();
           new ProtectedTagEditList();
-          // Initialize deploy key ajax call
-          new SettingsDeployKeys();
           break;
         case 'projects:ci_cd:show':
           new gl.ProjectVariables();

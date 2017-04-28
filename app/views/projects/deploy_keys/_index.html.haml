@@ -10,16 +10,4 @@
     = render @deploy_keys.form_partial_path
   .col-lg-9.col-lg-offset-3
     %hr
-  #js-deploy-keys.col-lg-9.col-lg-offset-3.append-bottom-default{data:{endpoint: namespace_project_deploy_keys_path}}
-    %h5.prepend-top-0
-      Enabled deploy keys for this project ({{enabledKeys.length}})
-    %ul.well-list{"v-if" => "enabledKeys.length"}
-      %deploy-key-row{"v-for" => "deployKey in enabledKeys", ":deploy-key" => "deployKey", ":enabled" =>"true"}
-    .settings-message.text-center{"v-else" => true}
-      No deploy keys found. Create one with the form above.
-    %h5.prepend-top-0
-      Deploy keys from projects you have access to ({{availableKeys.length}})
-    %ul.well-list{"v-if" => "availableKeys.length"}
-      %deploy-key-row{"v-for" => "deployKey in availableKeys", ":deploy-key" => "deployKey", ":enabled" =>"false"}
-    .settings-message.text-center{"v-else" => true}
-      No deploy keys found. Create one with the form above.
+  #js-deploy-keys{ data: { endpoint: namespace_project_deploy_keys_path } }

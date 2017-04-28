@@ -32,7 +32,10 @@ class Projects::DeployKeysController < Projects::ApplicationController
   def enable
     Projects::EnableDeployKeyService.new(@project, current_user, params).execute
 
-    redirect_to_repository_settings(@project)
+    respond_to do |format|
+      format.html { redirect_to_repository_settings(@project) }
+      format.json { head :ok }
+    end
   end
 
   def disable
@@ -40,7 +43,11 @@ class Projects::DeployKeysController < Projects::ApplicationController
     return render_404 unless deploy_key_project
 
     deploy_key_project.destroy!
-    redirect_to_repository_settings(@project)
+
+    respond_to do |format|
+      format.html { redirect_to_repository_settings(@project) }
+      format.json { head :ok }
+    end
   end
 
   protected
