@@ -27,9 +27,4 @@
   %article.file-holder
     = render "projects/blob/header", blob: blob
 
-    - if blob.empty?
-      .file-content.code
-        .nothing-here-block
-          Empty file
-    - else
-      = render blob.to_partial_path(@project), blob: blob
+    = render 'projects/blob/content', blob: blob

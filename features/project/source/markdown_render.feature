@@ -6,11 +6,13 @@ Feature: Project Source Markdown Render
 
   # Tree README
 
+  @javascript
   Scenario: Tree view should have correct links in README
     Given I go directory which contains README file
     And I click on a relative link in README
     Then I should see the correct markdown
 
+  @javascript
   Scenario: I browse files from markdown branch
     Then I should see files from repository in markdown
     And I should see rendered README which contains correct links
@@ -29,36 +31,42 @@ Feature: Project Source Markdown Render
     And I click on GitLab API doc directory in README
     Then I should see correct doc/api directory rendered
 
+  @javascript
   Scenario: I view README in markdown branch to see reference links to file
     Then I should see files from repository in markdown
     And I should see rendered README which contains correct links
     And I click on Maintenance in README
     Then I should see correct maintenance file rendered
 
+  @javascript
   Scenario: README headers should have header links
     Then I should see rendered README which contains correct links
     And Header "Application details" should have correct id and link
 
   # Blob
 
+  @javascript
   Scenario: I navigate to doc directory to view documentation in markdown
     And I navigate to the doc/api/README
     And I see correct file rendered
     And I click on users in doc/api/README
     Then I should see the correct document file
 
+  @javascript
   Scenario: I navigate to doc directory to view user doc in markdown
     And I navigate to the doc/api/README
     And I see correct file rendered
     And I click on raketasks in doc/api/README
     Then I should see correct directory rendered
 
+  @javascript
   Scenario: I navigate to doc directory to view user doc in markdown
     And I navigate to the doc/api/README
     And Header "GitLab API" should have correct id and link
 
   # Markdown branch
 
+  @javascript
   Scenario: I browse files from markdown branch
     When I visit markdown branch
     Then I should see files from repository in markdown branch
@@ -73,6 +81,7 @@ Feature: Project Source Markdown Render
     And I click on Rake tasks in README
     Then I should see correct directory rendered for markdown branch
 
+  @javascript
   Scenario: I navigate to doc directory to view documentation in markdown branch
     When I visit markdown branch
     And I navigate to the doc/api/README
@@ -80,6 +89,7 @@ Feature: Project Source Markdown Render
     And I click on users in doc/api/README
     Then I should see the users document file in markdown branch
 
+  @javascript
   Scenario: I navigate to doc directory to view user doc in markdown branch
     When I visit markdown branch
     And I navigate to the doc/api/README
@@ -87,6 +97,7 @@ Feature: Project Source Markdown Render
     And I click on raketasks in doc/api/README
     Then I should see correct directory rendered for markdown branch
 
+  @javascript
   Scenario: Tree markdown links view empty urls should have correct urls
     When I visit markdown branch
     Then The link with text "empty" should have url "tree/markdown"
@@ -99,6 +110,7 @@ Feature: Project Source Markdown Render
 
   # "ID" means "#id" on the tests below, because we are unable to escape the hash sign.
   # which Spinach interprets as the start of a comment.
+  @javascript
   Scenario: All markdown links with ids should have correct urls
     When I visit markdown branch
     Then The link with text "ID" should have url "tree/markdownID"
