@@ -87,10 +87,10 @@ describe Gitlab::UserAccess, lib: true do
         expect(access.can_push_to_branch?(branch.name)).to be_falsey
       end
 
-      it 'returns true if branch does not exist and user has permission to merge' do
+      it 'returns false if branch does not exist' do
         project.team << [user, :developer]
 
-        expect(access.can_push_to_branch?(not_existing_branch.name)).to be_truthy
+        expect(access.can_push_to_branch?(not_existing_branch.name)).to be_falsey
       end
     end
 
