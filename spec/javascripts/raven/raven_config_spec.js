@@ -77,6 +77,7 @@ describe('RavenConfig', () => {
   describe('configure', () => {
     let options;
     let raven;
+    let ravenConfig;
 
     beforeEach(() => {
       options = {
@@ -85,22 +86,25 @@ describe('RavenConfig', () => {
         isProduction: true,
       };
 
+      ravenConfig = jasmine.createSpyObj('ravenConfig', ['shouldSendSample']);
       raven = jasmine.createSpyObj('raven', ['install']);
 
       spyOn(Raven, 'config').and.returnValue(raven);
 
-      RavenConfig.configure.call({
-        options,
-      });
+      ravenConfig.options = options;
+      ravenConfig.IGNORE_ERRORS = 'ignore_errors';
+      ravenConfig.IGNORE_URLS = 'ignore_urls';
+
+      RavenConfig.configure.call(ravenConfig);
     });
 
     it('should call Raven.config', () => {
       expect(Raven.config).toHaveBeenCalledWith(options.sentryDsn, {
         whitelistUrls: options.whitelistUrls,
         environment: 'production',
-        ignoreErrors: Raven.IGNORE_ERRORS,
-        ignoreUrls: Raven.IGNORE_URLS,
-        shouldSendCallback: Raven.shouldSendSample,
+        ignoreErrors: ravenConfig.IGNORE_ERRORS,
+        ignoreUrls: ravenConfig.IGNORE_URLS,
+        shouldSendCallback: jasmine.any(Function),
       });
     });
 
@@ -109,18 +113,16 @@ describe('RavenConfig', () => {
     });
 
     it('should set .environment to development if isProduction is false', () => {
-      options.isProduction = false;
+      ravenConfig.options.isProduction = false;
 
-      RavenConfig.configure.call({
-        options,
-      });
+      RavenConfig.configure.call(ravenConfig);
 
       expect(Raven.config).toHaveBeenCalledWith(options.sentryDsn, {
         whitelistUrls: options.whitelistUrls,
         environment: 'development',
-        ignoreErrors: Raven.IGNORE_ERRORS,
-        ignoreUrls: Raven.IGNORE_URLS,
-        shouldSendCallback: Raven.shouldSendSample,
+        ignoreErrors: ravenConfig.IGNORE_ERRORS,
+        ignoreUrls: ravenConfig.IGNORE_URLS,
+        shouldSendCallback: jasmine.any(Function),
       });
     });
   });

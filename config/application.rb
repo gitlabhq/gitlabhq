@@ -72,6 +72,7 @@ module Gitlab
       runners_token
       secret_token
       sentry_dsn
+      clientside_sentry_enabled
       clientside_sentry_dsn
       variables
     )

@@ -61,7 +61,7 @@ const RavenConfig = {
       environment: this.options.isProduction ? 'production' : 'development',
       ignoreErrors: this.IGNORE_ERRORS,
       ignoreUrls: this.IGNORE_URLS,
-      shouldSendCallback: this.shouldSendSample,
+      shouldSendCallback: this.shouldSendSample.bind(this),
     }).install();
   },
 
