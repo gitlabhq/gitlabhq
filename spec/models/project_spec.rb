@@ -273,6 +273,13 @@ describe Project, models: true do
 
         expect(project).not_to be_valid
       end
+
+      it 'allows a reserved group name' do
+        parent = create(:group)
+        project = build(:project, path: 'avatar', namespace: parent)
+
+        expect(project).to be_valid
+      end
     end
   end
 

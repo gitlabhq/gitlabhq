@@ -86,12 +86,28 @@ describe DynamicPathValidator do
     end.uniq
   end
 
+  STARTING_WITH_GROUP = %r{^/groups/\*(group_)?id/}
+  let(:group_routes) do
+    routes_without_format.select do |path|
+      path =~ STARTING_WITH_GROUP
+    end
+  end
+
+  let(:paths_after_group_id) do
+    group_routes.map do |route|
+      route.gsub(STARTING_WITH_GROUP, '').split('/').first
     end.uniq
   end
 
   describe 'TOP_LEVEL_ROUTES' do
     it 'includes all the top level namespaces' do
       expect(described_class::TOP_LEVEL_ROUTES).to include(*top_level_words)
+    end
+  end
+
+  describe 'GROUP_ROUTES' do
+    it "don't contain a second wildcard" do
+      expect(described_class::GROUP_ROUTES).to include(*paths_after_group_id)
     end
   end
 
@@ -105,59 +121,69 @@ describe DynamicPathValidator do
     end
   end
 
-  describe '.contains_path_part?' do
-    it 'recognizes a path part' do
-      expect(described_class.contains_path_part?('user/some/path', 'user')).
-        to be_truthy
+  describe '.without_reserved_wildcard_paths_regex' do
+    subject { described_class.without_reserved_wildcard_paths_regex }
+
+    it 'rejects paths starting with a reserved top level' do
+      expect(subject).not_to match('dashboard/hello/world')
+      expect(subject).not_to match('dashboard')
     end
 
-    it 'recognizes a path ending in the path part' do
-      expect(described_class.contains_path_part?('some/path/user', 'user')).
-        to be_truthy
+    it 'rejects paths containing a wildcard reserved word' do
+      expect(subject).not_to match('hello/edit')
+      expect(subject).not_to match('hello/edit/in-the-middle')
+      expect(subject).not_to match('foo/bar1/refs/master/logs_tree')
     end
 
-    it 'skips partial path matches' do
-      expect(described_class.contains_path_part?('some/user1/path', 'user')).
-        to be_falsy
+    it 'matches valid paths' do
+      expect(subject).to match('parent/child/project-path')
+      expect(subject).to match('/parent/child/project-path')
     end
+  end
 
-    it 'can recognise combined paths' do
-      expect(described_class.contains_path_part?('some/user/admin/path', 'user/admin')).
-        to be_truthy
-    end
+  describe '.without_reserved_child_paths_regex' do
+    it 'rejects paths containing a child reserved word' do
+      subject = described_class.without_reserved_child_paths_regex
 
-    it 'only recognizes full paths' do
-      expect(described_class.contains_path_part?('frontend-fixtures', 's')).
-        to be_falsy
-    end
-
-    it 'handles regex chars gracefully' do
-      expect(described_class.contains_path_part?('frontend-fixtures', '-')).
-        to be_falsy
+      expect(subject).not_to match('hello/group_members')
+      expect(subject).not_to match('hello/activity/in-the-middle')
+      expect(subject).not_to match('foo/bar1/refs/master/logs_tree')
     end
   end
 
   describe ".valid?" do
     it 'is not case sensitive' do
-      expect(described_class.valid?("Users")).to be(false)
+      expect(described_class.valid?("Users")).to be_falsey
     end
 
     it "isn't valid when the top level is reserved" do
       test_path = 'u/should-be-a/reserved-word'
 
-      expect(described_class.valid?(test_path)).to be(false)
+      expect(described_class.valid?(test_path)).to be_falsey
     end
 
     it "isn't valid if any of the path segments is reserved" do
       test_path = 'the-wildcard/wikis/is-not-allowed'
 
-      expect(described_class.valid?(test_path)).to be(false)
+      expect(described_class.valid?(test_path)).to be_falsey
     end
 
     it "is valid if the path doesn't contain reserved words" do
       test_path = 'there-are/no-wildcards/in-this-path'
 
-      expect(described_class.valid?(test_path)).to be(true)
+      expect(described_class.valid?(test_path)).to be_truthy
+    end
+
+    it 'allows allows a child path on the last spot' do
+      test_path = 'there/can-be-a/project-called/labels'
+
+      expect(described_class.valid?(test_path)).to be_truthy
+    end
+
+    it 'rejects a child path somewhere else' do
+      test_path = 'there/can-be-no/labels/group'
+
+      expect(described_class.valid?(test_path)).to be_falsey
     end
   end
 end

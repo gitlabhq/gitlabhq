@@ -76,6 +76,12 @@ describe Group, models: true do
 
         expect(group).not_to be_valid
       end
+
+      it 'rejects reserved group paths' do
+        group = build(:group, path: 'activity', parent: create(:group))
+
+        expect(group).not_to be_valid
+      end
     end
   end
 
