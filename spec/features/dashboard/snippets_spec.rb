@@ -12,4 +12,51 @@ describe 'Dashboard snippets', feature: true do
 
     it_behaves_like 'paginated snippets'
   end
+
+  context 'filtering by visibility' do
+    let(:user) { create(:user) }
+    let!(:snippets) do
+      [
+        create(:personal_snippet, :public, author: user),
+        create(:personal_snippet, :internal, author: user),
+        create(:personal_snippet, :private, author: user),
+        create(:personal_snippet, :public)
+      ]
+    end
+
+    before do
+      login_as(user)
+
+      visit dashboard_snippets_path
+    end
+
+    it 'contains all snippets of logged user' do
+      expect(page).to have_selector('.snippet-row', count: 3)
+
+      expect(page).to have_content(snippets[0].title)
+      expect(page).to have_content(snippets[1].title)
+      expect(page).to have_content(snippets[2].title)
+    end
+
+    it 'contains all private snippets of logged user when clicking on private' do
+      click_link('Private')
+
+      expect(page).to have_selector('.snippet-row', count: 1)
+      expect(page).to have_content(snippets[2].title)
+    end
+
+    it 'contains all internal snippets of logged user when clicking on internal' do
+      click_link('Internal')
+
+      expect(page).to have_selector('.snippet-row', count: 1)
+      expect(page).to have_content(snippets[1].title)
+    end
+
+    it 'contains all public snippets of logged user when clicking on public' do
+      click_link('Public')
+
+      expect(page).to have_selector('.snippet-row', count: 1)
+      expect(page).to have_content(snippets[0].title)
+    end
+  end
 end
