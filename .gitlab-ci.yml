@@ -17,7 +17,7 @@ variables:
   KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/rspec_report-master.json
   KNAPSACK_SPINACH_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/spinach_report-master.json
   # This hack is needed to make ES not that memory hungry
-  ES_JAVA_OPTS: "-Xms600m -Xmx600m"
+  ES_JAVA_OPTS: "-Xms256m -Xmx256m"
 
 before_script:
   - bundle --version
