@@ -26,6 +26,7 @@ class Service < ActiveRecord::Base
   has_one :service_hook
 
   validates :project_id, presence: true, unless: proc { |service| service.template? }
+  validates :type, presence: true
 
   scope :visible, -> { where.not(type: 'GitlabIssueTrackerService') }
   scope :issue_trackers, -> { where(category: 'issue_tracker') }

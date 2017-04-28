@@ -104,6 +104,24 @@
     padding: 2px 7px;
   }
 
+  .value {
+    padding-right: 0;
+  }
+
+  .remove-token {
+    display: inline-block;
+    padding-left: 4px;
+    padding-right: 8px;
+
+    .fa-close {
+      color: $gl-text-color-disabled;
+    }
+
+    &:hover .fa-close {
+      color: $gl-text-color-secondary;
+    }
+  }
+
   .name {
     background-color: $filter-name-resting-color;
     color: $filter-name-text-color;
@@ -112,7 +130,7 @@
     text-transform: capitalize;
   }
 
-  .value {
+  .value-container {
     background-color: $white-normal;
     color: $filter-value-text-color;
     border-radius: 0 2px 2px 0;
@@ -124,7 +142,7 @@
       background-color: $filter-name-selected-color;
     }
 
-    .value {
+    .value-container {
       background-color: $filter-value-selected-color;
     }
   }

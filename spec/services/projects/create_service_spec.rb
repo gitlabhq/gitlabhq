@@ -27,6 +27,22 @@ describe Projects::CreateService, '#execute', services: true do
     end
   end
 
+  context "admin creates project with other user's namespace_id" do
+    it 'sets the correct permissions' do
+      admin = create(:admin)
+      opts = {
+        name: 'GitLab',
+        namespace_id: user.namespace.id
+      }
+      project = create_project(admin, opts)
+
+      expect(project).to be_persisted
+      expect(project.owner).to eq(user)
+      expect(project.team.masters).to include(user, admin)
+      expect(project.namespace).to eq(user.namespace)
+    end
+  end
+
   context 'group namespace' do
     let(:group) do
       create(:group).tap do |group|

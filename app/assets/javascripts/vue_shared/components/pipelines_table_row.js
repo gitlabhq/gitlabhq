@@ -1,5 +1,4 @@
 /* eslint-disable no-param-reassign */
-
 import AsyncButtonComponent from '../../pipelines/components/async_button.vue';
 import PipelinesActionsComponent from '../../pipelines/components/pipelines_actions';
 import PipelinesArtifactsComponent from '../../pipelines/components/pipelines_artifacts';
@@ -166,6 +165,32 @@ export default {
       }
       return undefined;
     },
+
+    /**
+     * Timeago components expects a number
+     *
+     * @return {type}  description
+     */
+    pipelineDuration() {
+      if (this.pipeline.details && this.pipeline.details.duration) {
+        return this.pipeline.details.duration;
+      }
+
+      return 0;
+    },
+
+    /**
+     * Timeago component expects a String.
+     *
+     * @return {String}
+     */
+    pipelineFinishedAt() {
+      if (this.pipeline.details && this.pipeline.details.finished_at) {
+        return this.pipeline.details.finished_at;
+      }
+
+      return '';
+    },
   },
 
   template: `
@@ -192,7 +217,9 @@ export default {
         </div>
       </td>
 
-      <time-ago :pipeline="pipeline"/>
+      <time-ago
+        :duration="pipelineDuration"
+        :finished-time="pipelineFinishedAt" />
 
       <td class="pipeline-actions">
         <div class="pull-right btn-group">

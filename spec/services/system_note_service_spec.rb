@@ -602,7 +602,7 @@ describe SystemNoteService, services: true do
     end
 
     shared_examples 'cross project mentionable' do
-      include GitlabMarkdownHelper
+      include MarkupHelper
 
       it 'contains cross reference to new noteable' do
         expect(subject.note).to include cross_project_reference(new_project, new_noteable)

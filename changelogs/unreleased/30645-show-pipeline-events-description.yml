@@ -1,0 +1,4 @@
+---
+title: Fix pipeline events description for Slack and Mattermost integration
+merge_request: 10908
+author:

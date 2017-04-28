@@ -24,6 +24,6 @@
       - if gitlab_markdown?(@snippet.file_name)
         = preserve(markdown_field(@snippet, :content))
       - else
-        = render_markup(@snippet.file_name, @snippet.content)
+        = markup(@snippet.file_name, @snippet.content)
   - else
     = render 'shared/file_highlight', blob: @snippet

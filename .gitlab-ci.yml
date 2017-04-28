@@ -12,6 +12,7 @@ variables:
   NODE_ENV: "test"
   SIMPLECOV: "true"
   GIT_DEPTH: "20"
+  GIT_SUBMODULE_STRATEGY: "none"
   PHANTOMJS_VERSION: "2.1.1"
   GET_SOURCES_ATTEMPTS: "3"
   KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/rspec_report-master.json

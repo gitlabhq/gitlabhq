@@ -1,10 +1,16 @@
 # GitLab Enterprise Edition
 
-[GitLab](https://about.gitlab.com/) is a Git-based fully featured platform for software development.
+[GitLab](https://about.gitlab.com/) is a Git-based fully featured platform
+for software development.
 
-**[GitLab Enterprise Edition (EE)](https://about.gitlab.com/gitlab-ee/)** is an opencore product, self-hosted, available under distinct [subscriptions](https://about.gitlab.com/products/).
+**GitLab Enterprise Edition (EE)** is an opencore product, self-hosted,
+available under distinct [subscriptions](https://about.gitlab.com/products/).
 
-GitLab EE contains all the features available in [GitLab Community Edition (CE)](https://docs.gitlab.com/ce/), plus premium features available in each version: **Enterprise Edition Starter** (**EES**) and **Enterprise Edition Premium** (**EEP**). Everything available in **EES** is also available in **EEP**.
+GitLab EE contains all the features available in
+[GitLab Community Edition (CE)](https://docs.gitlab.com/ce/),
+plus premium features available in each version: **Enterprise Edition Starter**
+(**EES**) and **Enterprise Edition Premium** (**EEP**). Everything available in
+**EES** is also available in **EEP**.
 
 ----
 
@@ -22,7 +28,7 @@ Shortcuts to GitLab's most visited docs:
 - [GitLab Workflow](workflow/README.md): Enhance your workflow with the best of GitLab Workflow.
   - See also [GitLab Workflow - an overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/).
 - [GitLab Markdown](user/markdown.md): GitLab's advanced formatting system (GitLab Flavored Markdown).
-- [GitLab Slash Commands](user/project/slash_commands.md): Textual shortcuts for common actions on issues or merge requests that are usually done by clicking buttons or dropdowns in GitLab's UI
+- [GitLab Slash Commands](user/project/slash_commands.md): Textual shortcuts for common actions on issues or merge requests that are usually done by clicking buttons or dropdowns in GitLab's UI.
 
 ### User account
 
@@ -69,7 +75,7 @@ Manage files and branches from the UI (user interface):
 - [Issues and merge requests templates](user/project/description_templates.md): Create templates for submitting new issues and merge requests.
 - [Labels](user/project/labels.md): Categorize your issues or merge requests based on descriptive titles.
 - [Merge Requests](user/project/merge_requests/index.md)
-  - [WIP Merge Requests](user/project/merge_requests/work_in_progress_merge_requests.md)
+  - [Work In Progress Merge Requests](user/project/merge_requests/work_in_progress_merge_requests.md)
   - [Merge Request discussion resolution](user/discussions/index.md#moving-a-single-discussion-to-a-new-issue): Resolve discussions, move discussions in a merge request to an issue, only allow merge requests to be merged if all discussions are resolved.
   - **(EES/EEP)** [Merge Request approval](user/project/merge_requests/merge_request_approvals.md): Make sure every merge request is approved by one or more people before getting merged.
   - [Checkout merge requests locally](user/project/merge_requests/index.md#checkout-merge-requests-locally)
@@ -118,7 +124,7 @@ Take a step ahead and dive into GitLab's advanced features.
 ### Integrations
 
 - [Project Services](user/project/integrations/project_services.md): Integrate a project with external services, such as CI and chat.
-- [GitLab Integrations](integration/README.md): Integrate with multiple third-party services with GitLab to allow external issue trackers and external authentication.
+- [GitLab Integration](integration/README.md): Integrate with multiple third-party services with GitLab to allow external issue trackers and external authentication.
 
 ----
 
@@ -145,12 +151,12 @@ have access to GitLab administration tools and settings.
 
 ### GitLab admins' superpowers
 
-- [Container Registry](administration/container_registry.md): Configure Container Registry with GitLab.
+- [Container Registry](administration/container_registry.md): Configure Docker Registry with GitLab.
 - [Custom Git hooks](administration/custom_hooks.md): Custom Git hooks (on the filesystem) for when webhooks aren't enough.
-- [Git LFS configuration](workflow/lfs/lfs_administration.md): Enable/disable Git LFS, change the location of LFS object storage.
+- [Git LFS configuration](workflow/lfs/lfs_administration.md): Learn how to use LFS under GitLab.
 - [GitLab Pages configuration](administration/pages/index.md): Configure GitLab Pages.
 - [High Availability](administration/high_availability/README.md): Configure multiple servers for scaling or high availability.
-- [User cohorts](user/admin_area/user_cohorts.md): View user activity over time.
+- [User cohorts](user/admin_area/user_cohorts.md) View user activity over time.
 - [Web terminals](administration/integration/terminal.md): Provide terminal access to environments from within GitLab.
 - **(EES/EEP)** [Audit logs and events](administration/audit_events.md): View the changes made within the GitLab server.
 - **(EES/EEP)** [Elasticsearch](integration/elasticsearch.md): A flexible, scalable and powerful search service to keep GitLab's search fast when dealing with huge amount of data.
@@ -163,7 +169,7 @@ have access to GitLab administration tools and settings.
 - **(EES/EEP)** [Omnibus support for external MySQL DB](https://docs.gitlab.com/omnibus/settings/database.html#using-a-mysql-database-management-server-enterprise-edition-only): Omnibus package supports configuring an external MySQL database.
 - **(EES/EEP)** [Omnibus support for log forwarding](https://docs.gitlab.com/omnibus/settings/logs.html#udp-log-shipping-gitlab-enterprise-edition-only)
 - GitLab CI
-    - [CI admin settings](user/admin_area/settings/continuous_integration.md): Define max artifacts size and expiration.
+    - [CI admin settings](user/admin_area/settings/continuous_integration.md): Define max artifacts size and expiration time.
 
 ### Integrations
 
@@ -171,6 +177,7 @@ have access to GitLab administration tools and settings.
 - [Koding](administration/integration/koding.md): Set up Koding to use with GitLab.
 - [Mattermost](user/project/integrations/mattermost.md): Set up GitLab with Mattermost.
 - **(EES/EEP)** [Jenkins](integration/jenkins.md): Set up GitLab with Jenkins.
+
 
 ### Monitoring
 
@@ -182,7 +189,7 @@ have access to GitLab administration tools and settings.
 
 - [Housekeeping](administration/housekeeping.md): Keep your Git repository tidy and fast.
 - [Operations](administration/operations.md): Keeping GitLab up and running.
-- [Polling](administration/polling.md): Configure how often the GitLab UI polls for updates
+- [Polling](administration/polling.md): Configure how often the GitLab UI polls for updates.
 - [Request Profiling](administration/monitoring/performance/request_profiling.md): Get a detailed profile on slow requests.
 
 ### Customization

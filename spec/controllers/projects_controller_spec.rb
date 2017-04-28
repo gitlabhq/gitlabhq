@@ -441,4 +441,14 @@ describe ProjectsController do
       expect(response).to have_http_status(200)
     end
   end
+
+  describe 'POST #preview_markdown' do
+    it 'renders json in a correct format' do
+      sign_in(user)
+
+      post :preview_markdown, namespace_id: public_project.namespace, id: public_project, text: '*Markdown* text'
+
+      expect(JSON.parse(response.body).keys).to match_array(%w(body references))
+    end
+  end
 end

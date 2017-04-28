@@ -2,18 +2,18 @@
 import StatusIconEntityMap from '../../ci_status_icons';
 
 export default {
-  data() {
-    return {
-      builds: '',
-      spinner: '<span class="fa fa-spinner fa-spin"></span>',
-    };
-  },
-
   props: {
     stage: {
       type: Object,
       required: true,
     },
+  },
+
+  data() {
+    return {
+      builds: '',
+      spinner: '<span class="fa fa-spinner fa-spin"></span>',
+    };
   },
 
   updated() {
@@ -31,7 +31,13 @@ export default {
       return this.$http.get(this.stage.dropdown_path)
         .then((response) => {
           this.builds = JSON.parse(response.body).html;
-        }, () => {
+        })
+        .catch(() => {
+          // If dropdown is opened we'll close it.
+          if (this.$el.classList.contains('open')) {
+            $(this.$refs.dropdown).dropdown('toggle');
+          }
+
           const flash = new Flash('Something went wrong on our end.');
           return flash;
         });
@@ -46,9 +52,10 @@ export default {
      * target the click event of this component.
      */
     stopDropdownClickPropagation() {
-      $(this.$el.querySelectorAll('.js-builds-dropdown-list a.mini-pipeline-graph-dropdown-item')).on('click', (e) => {
-        e.stopPropagation();
-      });
+      $(this.$el.querySelectorAll('.js-builds-dropdown-list a.mini-pipeline-graph-dropdown-item'))
+        .on('click', (e) => {
+          e.stopPropagation();
+        });
     },
   },
   computed: {
@@ -81,12 +88,22 @@ export default {
         data-placement="top"
         data-toggle="dropdown"
         type="button"
-        :aria-label="stage.title">
-        <span v-html="svgHTML" aria-hidden="true"></span>
-        <i class="fa fa-caret-down" aria-hidden="true"></i>
+        :aria-label="stage.title"
+        ref="dropdown">
+        <span
+          v-html="svgHTML"
+          aria-hidden="true">
+        </span>
+        <i
+          class="fa fa-caret-down"
+          aria-hidden="true" />
       </button>
-      <ul class="dropdown-menu mini-pipeline-graph-dropdown-menu js-builds-dropdown-container">
-        <div class="arrow-up" aria-hidden="true"></div>
+      <ul
+        ref="dropdown-content"
+        class="dropdown-menu mini-pipeline-graph-dropdown-menu js-builds-dropdown-container">
+        <div
+          class="arrow-up"
+          aria-hidden="true"></div>
         <div
           :class="dropdownClass"
           class="js-builds-dropdown-list scrollable-menu"
