@@ -223,8 +223,7 @@ module API
           Gitlab::CurrentSettings.current_application_settings.default_artifacts_expire_in
 
         if job.save
-          status :created
-          #present job, with: Entities::JobRequest::Response
+          present job, with: Entities::JobRequest::Response
         else
           render_validation_error!(job)
         end

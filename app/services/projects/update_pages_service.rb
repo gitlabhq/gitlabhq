@@ -8,9 +8,6 @@ module Projects
 
     def initialize(project, job)
       @project, @job = project, job
-
-      # If we store artifacts on object store, we need to get them local
-      extractable_artifacts
     end
 
     def execute
@@ -39,7 +36,6 @@ module Projects
       error(e.message)
     ensure
      job.erase_artifacts! unless job.has_expiring_artifacts?
-     FileUtils.rm_rf(artifacts) if Gitlab.config.artifacts.object_store.enabled
     end
 
     private
@@ -90,8 +86,11 @@ module Projects
       # -n  never overwrite existing files
       # We add * to end of SITE_PATH, because we want to extract SITE_PATH and all subdirectories
       site_path = File.join(SITE_PATH, '*')
-      unless system(*%W(unzip -n #{artifacts} #{site_path} -d #{temp_path}))
-        raise 'pages failed to extract'
+
+      job.artifacts_file.use_file do |artifacts_path|
+        unless system(*%W(unzip -n #{artifacts_path} #{site_path} -d #{temp_path}))
+          raise 'pages failed to extract'
+        end
       end
     end
 
@@ -144,17 +143,6 @@ module Projects
 
     def ref
       job.ref
-    end
-
-    def artifacts
-      job.artifacts_file.path
-    end
-
-    def extractable_artifacts
-      return unless Gitlab.config.artifacts.object_store.enabled
-
-      job.artifacts_file.download!(job.artifacts_file.url)
-      job.artifacts_metadata.download!(job.artifacts_metadata.url)
     end
 
     def latest_sha

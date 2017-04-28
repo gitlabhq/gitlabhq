@@ -2,19 +2,16 @@ CarrierWave::SanitizedFile.sanitize_regexp = /[^[:word:]\.\-\+]/
 
 aws_file = Rails.root.join('config', 'aws.yml')
 
-CarrierWave.configure do |config|
-  config.fog_provider = "fog/rackspace/storage"
-  config.fog_credentials = {
-    provider: 'AWS',                                        # required
-    aws_access_key_id:     'ddd',
-    aws_secret_access_key: 'ccc',
-  }
-end
-
 if File.exist?(aws_file)
   AWS_CONFIG = YAML.load(File.read(aws_file))[Rails.env]
 
   CarrierWave.configure do |config|
+    config.fog_credentials = {
+      provider: 'AWS',                                        # required
+      aws_access_key_id: AWS_CONFIG['access_key_id'],         # required
+      aws_secret_access_key: AWS_CONFIG['secret_access_key'], # required
+      region: AWS_CONFIG['region'],                           # optional, defaults to 'us-east-1'
+    }
 
     # required
     config.fog_directory = AWS_CONFIG['bucket']

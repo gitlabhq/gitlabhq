@@ -316,7 +316,7 @@ module Ci
     end
 
     def browsable_artifacts?
-      !Gitlab.config.artifacts.object_store.enabled && artifacts_metadata?
+      !artifacts_file.remote_storage? && artifacts_metadata?
     end
 
     def artifacts_metadata?
@@ -324,12 +324,14 @@ module Ci
     end
 
     def artifacts_metadata_entry(path, **options)
-      metadata = Gitlab::Ci::Build::Artifacts::Metadata.new(
-        artifacts_metadata.path,
-        path,
-        **options)
+      artifacts_metadata.use_file do |metadata_path|
+        metadata = Gitlab::Ci::Build::Artifacts::Metadata.new(
+          metadata_path,
+          path,
+          **options)
 
-      metadata.to_entry
+        metadata.to_entry
+      end
     end
 
     def erase_artifacts!

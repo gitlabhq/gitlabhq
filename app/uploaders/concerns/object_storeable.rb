@@ -10,7 +10,7 @@ module ObjectStoreable
       @storage_options = options
 
       class_eval do
-        storage @storage_options.object_store.enabled ? :fog : :file
+        storage use_object_store? ? :fog : :file
       end
     end
   end
@@ -30,6 +30,7 @@ module ObjectStoreable
       aws_access_key_id:     @storage_options.access_key_id,
       aws_secret_access_key: @storage_options.secret_access_key,
       region:                @storage_options.region,
+      endpoint:              @storage_options.endpoint,
       path_style:            true
     }
   end
@@ -40,5 +41,38 @@ module ObjectStoreable
 
   def use_object_store?
     @storage_options.object_store.enabled
+  end
+
+  def move_to_store
+    !use_object_store?
+  end
+
+  def move_to_cache
+    !use_object_store?
+  end
+
+  def remote_file?
+    file&.is_a?(CarrierWave::Storage::Fog::File)
+  end
+
+  def remote_storage?
+    storage.is_a?(CarrierWave::Storage::Fog)
+  end
+
+  def remote_cache_storage?
+    cache_storage.is_a?(CarrierWave::Storage::Fog)
+  end
+
+  def use_file
+    if use_object_store?
+      return yield path
+    end
+  
+    begin
+      cache_stored_file!
+      yield cache_path
+    ensure
+      cache_storage.delete_dir!(cache_path(nil))
+    end
   end
 end
