@@ -403,13 +403,6 @@ docs:check:links:
     # Check the internal links
     - bundle exec nanoc check internal_links
 
-bundler:check:
-  stage: test
-  <<: *dedicated-runner
-  <<: *ruby-static-analysis
-  script:
-   - bundle check
-
 bundler:audit:
   stage: test
   <<: *ruby-static-analysis
