@@ -5,13 +5,13 @@
 
 import Vue from 'vue';
 
-require('~/boards/models/issue');
-require('~/boards/models/label');
-require('~/boards/models/list');
-require('~/boards/models/user');
-require('~/boards/stores/boards_store');
-require('~/boards/components/issue_card_inner');
-require('./mock_data');
+import '~/boards/models/issue';
+import '~/boards/models/label';
+import '~/boards/models/list';
+import '~/boards/models/assignee';
+import '~/boards/stores/boards_store';
+import '~/boards/components/issue_card_inner';
+import './mock_data';
 
 describe('Issue card component', () => {
   const user = new ListAssignee({
@@ -151,19 +151,19 @@ describe('Issue card component', () => {
     beforeEach((done) => {
       component.issue.assignees = [
         user,
-        new ListUser({
+        new ListAssignee({
           id: 2,
           name: 'user2',
           username: 'user2',
           avatar: 'test_image',
         }),
-        new ListUser({
+        new ListAssignee({
           id: 3,
           name: 'user3',
           username: 'user3',
           avatar: 'test_image',
         }),
-        new ListUser({
+        new ListAssignee({
           id: 4,
           name: 'user4',
           username: 'user4',
@@ -177,10 +177,9 @@ describe('Issue card component', () => {
       expect(component.$el.querySelectorAll('.card-assignee .avatar').length).toEqual(4);
     });
 
-
     describe('more than four assignees', () => {
       beforeEach((done) => {
-        component.issue.assignees.push(new ListUser({
+        component.issue.assignees.push(new ListAssignee({
           id: 5,
           name: 'user5',
           username: 'user5',
@@ -199,8 +198,8 @@ describe('Issue card component', () => {
       });
 
       it('renders 99+ avatar counter', (done) => {
-        for(let i = 5; i < 104; i++) {
-          const u = new ListUser({
+        for (let i = 5; i < 104; i += 1) {
+          const u = new ListAssignee({
             id: i,
             name: 'name',
             username: 'username',
@@ -215,7 +214,7 @@ describe('Issue card component', () => {
         });
       });
     });
-  })
+  });
 
   describe('labels', () => {
     it('does not render any', () => {

@@ -24,6 +24,7 @@ export default {
         title: this.title,
         labels,
         subscribed: true,
+        assignees: [],
       });
 
       if (Store.state.currentBoard) {
