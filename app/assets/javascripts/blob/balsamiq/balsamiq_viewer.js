@@ -2,13 +2,11 @@
 
 import sqljs from 'sql.js';
 import { template as _template } from 'underscore';
-import Spinner from '../../spinner';
 
 class BalsamiqViewer {
   constructor(viewer) {
     this.viewer = viewer;
     this.endpoint = this.viewer.dataset.endpoint;
-    this.spinner = new Spinner(this.viewer);
   }
 
   loadFile() {
