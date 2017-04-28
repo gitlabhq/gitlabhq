@@ -30,13 +30,13 @@
 
 .tab-content.milestone-content
   - if milestone.is_a?(GlobalMilestone) || can?(current_user, :read_issue, @project)
-    .tab-pane.active#tab-issues
+    .tab-pane.active#tab-issues{ data: { sort_endpoint: (sort_issues_namespace_project_milestone_path(@project.namespace, @project, @milestone) if @project && current_user) } }
       = render 'shared/milestones/issues_tab', issues: milestone.issues_visible_to_user(current_user).include_associations, show_project_name: show_project_name, show_full_project_name: show_full_project_name
-    .tab-pane#tab-merge-requests
+    .tab-pane#tab-merge-requests{ data: { sort_endpoint: (sort_merge_requests_namespace_project_milestone_path(@project.namespace, @project, @milestone) if @project && current_user) } }
       -# loaded async
       = render "shared/milestones/tab_loading"
   - else
-    .tab-pane.active#tab-merge-requests
+    .tab-pane.active#tab-merge-requests{ data: { sort_endpoint: (sort_merge_requests_namespace_project_milestone_path(@project.namespace, @project, @milestone) if @project && current_user) } }
       -# loaded async
       = render "shared/milestones/tab_loading"
   .tab-pane#tab-participants

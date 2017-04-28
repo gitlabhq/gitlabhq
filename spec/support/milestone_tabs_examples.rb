@@ -8,6 +8,7 @@ shared_examples 'milestone tabs' do
 
     get path, params.merge(extra_params)
   end
+
   describe '#merge_requests' do
     context 'as html' do
       before { go(:merge_requests, format: 'html') }

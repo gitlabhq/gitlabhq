@@ -19,12 +19,10 @@
       });
     };
 
-    Milestone.sortIssues = function(data) {
-      var sort_issues_url;
-      sort_issues_url = location.pathname + "/sort_issues";
+    Milestone.sortIssues = function(url, data) {
       return $.ajax({
         type: "PUT",
-        url: sort_issues_url,
+        url,
         data: data,
         success: function(_data) {
           return Milestone.successCallback(_data);
@@ -36,12 +34,10 @@
       });
     };
 
-    Milestone.sortMergeRequests = function(data) {
-      var sort_mr_url;
-      sort_mr_url = location.pathname + "/sort_merge_requests";
+    Milestone.sortMergeRequests = function(url, data) {
       return $.ajax({
         type: "PUT",
-        url: sort_mr_url,
+        url,
         data: data,
         success: function(_data) {
           return Milestone.successCallback(_data);
@@ -81,6 +77,9 @@
     };
 
     function Milestone() {
+      this.issuesSortEndpoint = $('#tab-issues').data('sort-endpoint');
+      this.mergeRequestsSortEndpoint = $('#tab-merge-requests').data('sort-endpoint');
+
       this.bindIssuesSorting();
       this.bindTabsSwitching();
 
@@ -92,12 +91,16 @@
     }
 
     Milestone.prototype.bindIssuesSorting = function() {
+      if (!this.issuesSortEndpoint) return;
+
       $('#issues-list-unassigned, #issues-list-ongoing, #issues-list-closed').each(function (i, el) {
         this.createSortable(el, {
           group: 'issue-list',
           listEls: $('.issues-sortable-list'),
           fieldName: 'issue',
-          sortCallback: Milestone.sortIssues,
+          sortCallback: (data) => {
+            Milestone.sortIssues(this.issuesSortEndpoint, data);
+          },
           updateCallback: Milestone.updateIssue,
         });
       }.bind(this));
@@ -113,12 +116,16 @@
     };
 
     Milestone.prototype.bindMergeRequestSorting = function() {
+      if (!this.mergeRequestsSortEndpoint) return;
+
       $("#merge_requests-list-unassigned, #merge_requests-list-ongoing, #merge_requests-list-closed").each(function (i, el) {
         this.createSortable(el, {
           group: 'merge-request-list',
           listEls: $(".merge_requests-sortable-list:not(#merge_requests-list-merged)"),
           fieldName: 'merge_request',
-          sortCallback: Milestone.sortMergeRequests,
+          sortCallback: (data) => {
+            Milestone.sortMergeRequests(this.mergeRequestsSortEndpoint, data);
+          },
           updateCallback: Milestone.updateMergeRequest,
         });
       }.bind(this));
