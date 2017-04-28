@@ -77,7 +77,7 @@
 </script>
 
 <template>
-  <div class="col-lg-9 col-lg-offset-3 append-bottom-default">
+  <div class="col-lg-9 col-lg-offset-3 append-bottom-default deploy-keys">
     <div
       class="text-center"
       v-if="isLoading && !hasKeys">

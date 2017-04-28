@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe DeployKeyEntity do
+  include RequestAwareEntity
+  
   let(:user) { create(:user) }
   let(:project) { create(:empty_project, :internal)}
   let(:project_private) { create(:empty_project, :private)}
@@ -22,7 +24,12 @@ describe DeployKeyEntity do
       created_at: deploy_key.created_at,
       updated_at: deploy_key.updated_at,
       projects: [
-        { id: project.id, name: project.name, full_path: project.full_path, full_name: project.full_name }
+        {
+          id: project.id,
+          name: project.name,
+          full_path: namespace_project_path(project.namespace, project),
+          full_name: project.full_name
+        }
       ]
     }
 
