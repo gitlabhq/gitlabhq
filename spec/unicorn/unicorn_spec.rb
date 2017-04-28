@@ -39,14 +39,7 @@ describe 'Unicorn' do
 
     cmd = %W[unicorn -E test -c #{config_path} #{Rails.root.join('config.ru')}]
     @unicorn_master_pid = spawn(*cmd)
-
-    120.times do
-      break if File.exist?(ready_file)
-      pid = Process.waitpid(@unicorn_master_pid, Process::WNOHANG)
-      raise "unicorn failed to boot: #{$?}" unless pid.nil?
-
-      sleep 1
-    end
+    wait_unicorn_boot!(@unicorn_master_pid, ready_file)
     WebMock.allow_net_connect!
   end
 
@@ -73,7 +66,23 @@ describe 'Unicorn' do
     Process.kill('TERM', @unicorn_master_pid)
   end
 
+  def wait_unicorn_boot!(master_pid, ready_file)
+    # Unicorn should boot in under 60 seconds so 120 seconds seems like a good timeout.
+    timeout = 120
+    timeout.times do
+      return if File.exist?(ready_file)
+      pid = Process.waitpid(master_pid, Process::WNOHANG)
+      raise "unicorn failed to boot: #{$?}" unless pid.nil?
+
+      sleep 1
+    end
+
+    raise "unicorn boot timed out after #{timeout} seconds"
+  end
+
   def pid_gone?(pid)
+    # Worker termination should take less than a second. That makes 10
+    # seconds a generous timeout.
     10.times do
       begin
         Process.kill(0, pid)
