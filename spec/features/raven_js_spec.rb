@@ -18,7 +18,6 @@ feature 'RavenJS', :feature, :js do
   end
 
   def has_requested_raven
-    p page.driver.network_traffic
     page.driver.network_traffic.one? {|request| request.url.end_with?(raven_path)}
   end
 end
