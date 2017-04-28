@@ -31,10 +31,8 @@ class ArtifactUploader < GitlabUploader
 
   if object_store_options.enabled
     storage :fog
-    #cache_storage :fog
   else
     storage :file
-    #cache_storage :file
   end
 
   def initialize(job, field)
@@ -69,10 +67,6 @@ class ArtifactUploader < GitlabUploader
     }
   end
 
-  def filename
-    file.try(:filename)
-  end
-
   def exists?
     file.try(:exists?)
   end
@@ -84,23 +78,31 @@ class ArtifactUploader < GitlabUploader
   def upload_authorize
     result = { TempPath: ArtifactUploader.artifacts_upload_path }
 
-    if use_object_store?
-      path = File.join('tmp', 'cache', 'upload', SecureRandom.hex)
+    use_cache_object_storage do
+      self.cache_id = CarrierWave.generate_cache_id
+      self.original_filename = SecureRandom.hex
       expire_at = ::Fog::Time.now + fog_authenticated_url_expiration
-      result[:UploadPath] = path
+      result[:UploadPath] = cache_name
       result[:UploadURL] = storage.connection.put_object_url(
-        fog_directory, path, expire_at)
+        fog_directory, cache_path, expire_at)
     end
 
     result
   end
 
-  def retrive_uploaded!(path)
-    CarrierWave::Storage::Fog::File.new(self, storage, path)
-  end
-
   def upload_cache_path(path = nil)
     File.join(cache_dir, path)
+  end
+
+  def cache!(new_file = nil)
+    use_cache_object_storage do
+      retrieve_from_cache!(new_file.upload_path)
+      @filename = new_file.original_filename
+      store_path
+      return
+    end if new_file&.upload_path
+
+    super
   end
 
   private
@@ -111,5 +113,30 @@ class ArtifactUploader < GitlabUploader
 
   def use_object_store?
     object_store_options.enabled
+  end
+
+  def cache_storage
+    if @use_storage_for_cache
+      storage
+    else
+      super
+    end
+  end
+
+  def use_cache_object_storage
+    return unless use_object_store?
+
+    @use_storage_for_cache = true
+    yield
+  ensure
+    @use_storage_for_cache = false
+  end
+
+  def move_to_store
+    storage.is_a?(CarrierWave::Storage::File)
+  end
+
+  def move_to_cache
+    cache_storage.is_a?(CarrierWave::Storage::File)
   end
 end

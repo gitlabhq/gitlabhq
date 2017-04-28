@@ -298,17 +298,11 @@ module API
       file_path = File.realpath(params["#{field}.path"])
       bad_request!('Bad file path') unless file_path.start_with?(uploads_path)
 
-      # if file was uploaded, retrieve the cached filed
-      if params["#{field}.upload_path"]
-        file = uploader.retrive_uploaded!(params["#{field}.upload_path"])
-
-        return file
-      end
-
       UploadedFile.new(
         file_path,
         params["#{field}.name"],
         params["#{field}.type"] || 'application/octet-stream',
+        params["#{field}.upload_path"]
       )
     end
 
