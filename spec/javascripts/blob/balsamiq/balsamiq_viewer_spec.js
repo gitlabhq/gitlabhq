@@ -1,6 +1,5 @@
 import sqljs from 'sql.js';
 import BalsamiqViewer from '~/blob/balsamiq/balsamiq_viewer';
-import * as spinnerSrc from '~/spinner';
 import ClassSpecHelper from '../../helpers/class_spec_helper';
 
 describe('BalsamiqViewer', () => {
@@ -17,8 +16,6 @@ describe('BalsamiqViewer', () => {
         },
       };
 
-      spyOn(spinnerSrc, 'default');
-
       balsamiqViewer = new BalsamiqViewer(viewer);
     });
 
@@ -29,36 +26,21 @@ describe('BalsamiqViewer', () => {
     it('should set .endpoint', () => {
       expect(balsamiqViewer.endpoint).toBe(endpoint);
     });
-
-    it('should instantiate Spinner', () => {
-      expect(spinnerSrc.default).toHaveBeenCalledWith(viewer);
-    });
-
-    it('should set .spinner', () => {
-      expect(balsamiqViewer.spinner).toEqual(jasmine.any(spinnerSrc.default));
-    });
   });
 
   describe('loadFile', () => {
     let xhr;
-    let spinner;
 
     beforeEach(() => {
       endpoint = 'endpoint';
       xhr = jasmine.createSpyObj('xhr', ['open', 'send']);
-      spinner = jasmine.createSpyObj('spinner', ['start']);
 
       balsamiqViewer = jasmine.createSpyObj('balsamiqViewer', ['renderFile']);
       balsamiqViewer.endpoint = endpoint;
-      balsamiqViewer.spinner = spinner;
 
       spyOn(window, 'XMLHttpRequest').and.returnValue(xhr);
 
       BalsamiqViewer.prototype.loadFile.call(balsamiqViewer);
-    });
-
-    it('should instantiate XMLHttpRequest', () => {
-      expect(window.XMLHttpRequest).toHaveBeenCalled();
     });
 
     it('should call .open', () => {
@@ -69,25 +51,12 @@ describe('BalsamiqViewer', () => {
       expect(xhr.responseType).toBe('arraybuffer');
     });
 
-    it('should set .onload', () => {
-      expect(xhr.onload).toEqual(jasmine.any(Function));
-    });
-
-    it('should set .onerror', () => {
-      expect(xhr.onerror).toBe(BalsamiqViewer.onError);
-    });
-
-    it('should call spinner.start', () => {
-      expect(spinner.start).toHaveBeenCalled();
-    });
-
     it('should call .send', () => {
       expect(xhr.send).toHaveBeenCalled();
     });
   });
 
   describe('renderFile', () => {
-    let spinner;
     let container;
     let loadEvent;
     let previews;
@@ -95,12 +64,10 @@ describe('BalsamiqViewer', () => {
     beforeEach(() => {
       loadEvent = { target: { response: {} } };
       viewer = jasmine.createSpyObj('viewer', ['appendChild']);
-      spinner = jasmine.createSpyObj('spinner', ['stop']);
-      previews = [0, 1, 2];
+      previews = [document.createElement('ul'), document.createElement('ul')];
 
       balsamiqViewer = jasmine.createSpyObj('balsamiqViewer', ['initDatabase', 'getPreviews', 'renderPreview']);
       balsamiqViewer.viewer = viewer;
-      balsamiqViewer.spinner = spinner;
 
       balsamiqViewer.getPreviews.and.returnValue(previews);
       balsamiqViewer.renderPreview.and.callFake(preview => preview);
@@ -109,10 +76,6 @@ describe('BalsamiqViewer', () => {
       });
 
       BalsamiqViewer.prototype.renderFile.call(balsamiqViewer, loadEvent);
-    });
-
-    it('should call spinner.stop', () => {
-      expect(spinner.stop).toHaveBeenCalled();
     });
 
     it('should call .initDatabase', () => {
@@ -126,15 +89,15 @@ describe('BalsamiqViewer', () => {
     it('should call .renderPreview for each preview', () => {
       const allArgs = balsamiqViewer.renderPreview.calls.allArgs();
 
-      expect(allArgs.length).toBe(3);
+      expect(allArgs.length).toBe(2);
 
       previews.forEach((preview, i) => {
         expect(allArgs[i][0]).toBe(preview);
       });
     });
 
-    it('should set .innerHTML', () => {
-      expect(container.innerHTML).toBe('012');
+    it('should set the container HTML', () => {
+      expect(container.innerHTML).toBe('<ul></ul><ul></ul>');
     });
 
     it('should add inline preview classes', () => {
@@ -216,16 +179,16 @@ describe('BalsamiqViewer', () => {
     });
   });
 
-  describe('getTitle', () => {
+  describe('getResource', () => {
     let database;
     let resourceID;
     let resource;
-    let getTitle;
+    let getResource;
 
     beforeEach(() => {
       database = jasmine.createSpyObj('database', ['exec']);
       resourceID = 4;
-      resource = 'resource';
+      resource = ['resource'];
 
       balsamiqViewer = {
         database,
@@ -233,7 +196,7 @@ describe('BalsamiqViewer', () => {
 
       database.exec.and.returnValue(resource);
 
-      getTitle = BalsamiqViewer.prototype.getTitle.call(balsamiqViewer, resourceID);
+      getResource = BalsamiqViewer.prototype.getResource.call(balsamiqViewer, resourceID);
     });
 
     it('should call database.exec', () => {
@@ -241,7 +204,7 @@ describe('BalsamiqViewer', () => {
     });
 
     it('should return the selected resource', () => {
-      expect(getTitle).toBe(resource);
+      expect(getResource).toBe(resource[0]);
     });
   });
 
@@ -267,10 +230,6 @@ describe('BalsamiqViewer', () => {
       renderPreview = BalsamiqViewer.prototype.renderPreview.call(balsamiqViewer, preview);
     });
 
-    it('should call document.createElement', () => {
-      expect(document.createElement).toHaveBeenCalledWith('li');
-    });
-
     it('should call classList.add', () => {
       expect(previewElement.classList.add).toHaveBeenCalledWith('preview');
     });
@@ -283,22 +242,22 @@ describe('BalsamiqViewer', () => {
       expect(previewElement.innerHTML).toBe(innerHTML);
     });
 
-    it('should return .outerHTML', () => {
-      expect(renderPreview).toBe(previewElement.outerHTML);
+    it('should return element', () => {
+      expect(renderPreview).toBe(previewElement);
     });
   });
 
   describe('renderTemplate', () => {
     let preview;
     let name;
-    let title;
+    let resource;
     let template;
     let renderTemplate;
 
     beforeEach(() => {
       preview = { resourceID: 1, image: 'image' };
       name = 'name';
-      title = 'title';
+      resource = 'resource';
       template = `
         <div class="panel panel-default">
           <div class="panel-heading">name</div>
@@ -308,32 +267,24 @@ describe('BalsamiqViewer', () => {
         </div>
       `;
 
-      balsamiqViewer = jasmine.createSpyObj('balsamiqViewer', ['getTitle']);
+      balsamiqViewer = jasmine.createSpyObj('balsamiqViewer', ['getResource']);
 
       spyOn(BalsamiqViewer, 'parseTitle').and.returnValue(name);
-      spyOn(BalsamiqViewer, 'PREVIEW_TEMPLATE').and.returnValue(template);
-      balsamiqViewer.getTitle.and.returnValue(title);
+      balsamiqViewer.getResource.and.returnValue(resource);
 
       renderTemplate = BalsamiqViewer.prototype.renderTemplate.call(balsamiqViewer, preview);
     });
 
-    it('should call .getTitle', () => {
-      expect(balsamiqViewer.getTitle).toHaveBeenCalledWith(preview.resourceID);
+    it('should call .getResource', () => {
+      expect(balsamiqViewer.getResource).toHaveBeenCalledWith(preview.resourceID);
     });
 
     it('should call .parseTitle', () => {
-      expect(BalsamiqViewer.parseTitle).toHaveBeenCalledWith(title);
-    });
-
-    it('should call .PREVIEW_TEMPLATE', () => {
-      expect(BalsamiqViewer.PREVIEW_TEMPLATE).toHaveBeenCalledWith({
-        name,
-        image: preview.image,
-      });
+      expect(BalsamiqViewer.parseTitle).toHaveBeenCalledWith(resource);
     });
 
     it('should return the template string', function () {
-      expect(renderTemplate.trim()).toBe(template.trim());
+      expect(renderTemplate.replace(/\s/g, '')).toEqual(template.replace(/\s/g, ''));
     });
   });
 
@@ -351,10 +302,6 @@ describe('BalsamiqViewer', () => {
 
     ClassSpecHelper.itShouldBeAStaticMethod(BalsamiqViewer, 'parsePreview');
 
-    it('should call JSON.parse', () => {
-      expect(JSON.parse).toHaveBeenCalledWith(preview[1]);
-    });
-
     it('should return the parsed JSON', () => {
       expect(parsePreview).toEqual(JSON.parse('{ "id": 1 }'));
     });
@@ -365,7 +312,7 @@ describe('BalsamiqViewer', () => {
     let parseTitle;
 
     beforeEach(() => {
-      title = [{ values: [['{}', '{}', '{"name":"name"}']] }];
+      title = { values: [['{}', '{}', '{"name":"name"}']] };
 
       spyOn(JSON, 'parse').and.callThrough();
 
@@ -374,32 +321,22 @@ describe('BalsamiqViewer', () => {
 
     ClassSpecHelper.itShouldBeAStaticMethod(BalsamiqViewer, 'parsePreview');
 
-    it('should call JSON.parse', () => {
-      expect(JSON.parse).toHaveBeenCalledWith(title[0].values[0][2]);
-    });
-
     it('should return the name value', () => {
       expect(parseTitle).toBe('name');
     });
   });
 
   describe('onError', () => {
-    let onError;
-
     beforeEach(() => {
       spyOn(window, 'Flash');
 
-      onError = BalsamiqViewer.onError();
+      BalsamiqViewer.onError();
     });
 
     ClassSpecHelper.itShouldBeAStaticMethod(BalsamiqViewer, 'onError');
 
     it('should instantiate Flash', () => {
       expect(window.Flash).toHaveBeenCalledWith('Balsamiq file could not be loaded.');
-    });
-
-    it('should return Flash', () => {
-      expect(onError).toEqual(jasmine.any(window.Flash));
     });
   });
 });

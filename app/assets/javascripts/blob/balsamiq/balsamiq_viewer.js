@@ -3,6 +3,15 @@
 import sqljs from 'sql.js';
 import { template as _template } from 'underscore';
 
+const PREVIEW_TEMPLATE = _template(`
+  <div class="panel panel-default">
+    <div class="panel-heading"><%- name %></div>
+    <div class="panel-body">
+      <img class="img-thumbnail" src="data:image/png;base64,<%- image %>"/>
+    </div>
+  </div>
+`);
+
 class BalsamiqViewer {
   constructor(viewer) {
     this.viewer = viewer;
@@ -18,23 +27,23 @@ class BalsamiqViewer {
     xhr.onload = this.renderFile.bind(this);
     xhr.onerror = BalsamiqViewer.onError;
 
-    this.spinner.start();
-
     xhr.send();
   }
 
   renderFile(loadEvent) {
-    this.spinner.stop();
-
     const container = document.createElement('ul');
 
     this.initDatabase(loadEvent.target.response);
 
     const previews = this.getPreviews();
-    const renderedPreviews = previews.map(preview => this.renderPreview(preview));
+    previews.forEach((preview) => {
+      const renderedPreview = this.renderPreview(preview);
 
-    container.innerHTML = renderedPreviews.join('');
-    container.classList.add('list-inline', 'previews');
+      container.appendChild(renderedPreview);
+    });
+
+    container.classList.add('list-inline');
+    container.classList.add('previews');
 
     this.viewer.appendChild(container);
   }
@@ -51,8 +60,10 @@ class BalsamiqViewer {
     return thumbnails[0].values.map(BalsamiqViewer.parsePreview);
   }
 
-  getTitle(resourceID) {
-    return this.database.exec(`SELECT * FROM resources WHERE id = '${resourceID}'`);
+  getResource(resourceID) {
+    const resources = this.database.exec(`SELECT * FROM resources WHERE id = '${resourceID}'`);
+
+    return resources[0];
   }
 
   renderPreview(preview) {
@@ -61,15 +72,15 @@ class BalsamiqViewer {
     previewElement.classList.add('preview');
     previewElement.innerHTML = this.renderTemplate(preview);
 
-    return previewElement.outerHTML;
+    return previewElement;
   }
 
   renderTemplate(preview) {
-    const title = this.getTitle(preview.resourceID);
-    const name = BalsamiqViewer.parseTitle(title);
+    const resource = this.getResource(preview.resourceID);
+    const name = BalsamiqViewer.parseTitle(resource);
     const image = preview.image;
 
-    const template = BalsamiqViewer.PREVIEW_TEMPLATE({
+    const template = PREVIEW_TEMPLATE({
       name,
       image,
     });
@@ -81,8 +92,16 @@ class BalsamiqViewer {
     return JSON.parse(preview[1]);
   }
 
-  static parseTitle(title) {
-    return JSON.parse(title[0].values[0][2]).name;
+  /*
+   * resource = {
+   *   columns: ['ID', 'BRANCHID', 'ATTRIBUTES', 'DATA'],
+   *   values: [['id', 'branchId', 'attributes', 'data']],
+   * }
+   *
+   * 'attributes' being a JSON string containing the `name` property.
+   */
+  static parseTitle(resource) {
+    return JSON.parse(resource.values[0][2]).name;
   }
 
   static onError() {
@@ -91,14 +110,5 @@ class BalsamiqViewer {
     return flash;
   }
 }
-
-BalsamiqViewer.PREVIEW_TEMPLATE = _template(`
-  <div class="panel panel-default">
-    <div class="panel-heading"><%- name %></div>
-    <div class="panel-body">
-      <img class="img-thumbnail" src="data:image/png;base64,<%- image %>"/>
-    </div>
-  </div>
-`);
 
 export default BalsamiqViewer;
