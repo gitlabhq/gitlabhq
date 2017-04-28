@@ -97,6 +97,7 @@
         :keys="keys.available_project_keys"
         :store="store" />
       <keys-panel
+        v-if="keys.public_keys.length"
         title="Public deploy keys available to any project"
         :keys="keys.public_keys"
         :store="store" />
