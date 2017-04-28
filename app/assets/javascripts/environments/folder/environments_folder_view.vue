@@ -141,11 +141,7 @@ export default {
       </h4>
 
       <ul class="nav-links">
-<<<<<<< HEAD:app/assets/javascripts/environments/folder/environments_folder_view.vue
-        <li :class="{ active: scope === null || scope === 'available' }">
-=======
         <li :class="{ 'active': scope === null || scope === 'available' }">
->>>>>>> upstream/master:app/assets/javascripts/environments/folder/environments_folder_view.vue
           <a
             :href="availablePath"
             class="js-available-environments-folder-tab">
@@ -155,11 +151,7 @@ export default {
             </span>
           </a>
         </li>
-<<<<<<< HEAD:app/assets/javascripts/environments/folder/environments_folder_view.vue
-        <li :class="{ active : scope === 'stopped' }">
-=======
         <li :class="{ 'active' : scope === 'stopped' }">
->>>>>>> upstream/master:app/assets/javascripts/environments/folder/environments_folder_view.vue
           <a
             :href="stoppedPath"
             class="js-stopped-environments-folder-tab">
