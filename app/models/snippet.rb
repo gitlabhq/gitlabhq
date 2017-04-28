@@ -167,18 +167,5 @@ class Snippet < ActiveRecord::Base
 
       where(table[:content].matches(pattern))
     end
-
-    def accessible_to(user)
-      return are_public unless user.present?
-      return all if user.admin?
-
-      where(
-        'visibility_level IN (:visibility_levels)
-         OR author_id = :author_id
-         OR project_id IN (:project_ids)',
-         visibility_levels: [Snippet::PUBLIC, Snippet::INTERNAL],
-         author_id: user.id,
-         project_ids: user.authorized_projects.select(:id))
-    end
   end
 end

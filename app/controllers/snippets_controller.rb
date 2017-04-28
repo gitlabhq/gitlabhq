@@ -24,11 +24,8 @@ class SnippetsController < ApplicationController
 
       render_404 and return unless @user
 
-      @snippets = SnippetsFinder.new.execute(current_user, {
-        filter: :by_user,
-        user: @user,
-        scope: params[:scope] }).
-      page(params[:page])
+      @snippets = SnippetsFinder.new(current_user, author: @user, scope: params[:scope])
+        .execute.page(params[:page])
 
       render 'index'
     else
