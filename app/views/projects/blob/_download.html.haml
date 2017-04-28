@@ -1,7 +1,0 @@
-.file-content.blob_file.blob-no-preview
-  .center
-    = link_to namespace_project_raw_path(@project.namespace, @project, @id) do
-      %h1.light
-        %i.fa.fa-download
-      %h4
-        Download (#{number_to_human_size blob_size(blob)})
