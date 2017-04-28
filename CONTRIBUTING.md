@@ -485,24 +485,6 @@ Please ensure that your merge request meets the contribution acceptance criteria
 When having your code reviewed and when reviewing merge requests please take the
 [code review guidelines](doc/development/code_review.md) into account.
 
-### Getting your merge request reviewed, approved, and merged
-
-There are a few rules to get your merge request accepted:
-
-1. Your merge request should only be **merged by a [maintainer][team]**.
-  1. If your merge request includes only backend changes [^1], it must be
-    **approved by a [backend maintainer][team]**.
-  1. If your merge request includes only frontend changes [^1], it must be
-    **approved by a [frontend maintainer][team]**.
-  1. If your merge request includes frontend and backend changes [^1], it must
-    be **approved by a [frontend and a backend maintainer][team]**.
-1. To lower the amount of merge requests maintainers need to review, you can
-  ask or assign any [reviewers][team] for a first review.
-  1. If you need some guidance (e.g. it's your first merge request), feel free
-    to ask one of the [Merge request coaches][team].
-  1. The reviewer will assign the merge request to a maintainer once the
-    reviewer is satisfied with the state of the merge request.
-
 ### Contribution acceptance criteria
 
 1. The change is as small as possible
