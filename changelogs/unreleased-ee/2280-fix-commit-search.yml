@@ -1,0 +1,4 @@
+---
+title: Fix commit search on some elasticsearch indexes
+merge_request: 1745
+author:
