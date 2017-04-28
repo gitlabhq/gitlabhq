@@ -267,15 +267,7 @@ static-analysis:
   <<: *except-docs
   stage: test
   script:
-    - bundle exec rake config_lint
-    - bundle exec rake flay
-    - bundle exec rake haml_lint
-    - bundle exec rake scss_lint
-    - bundle exec rake brakeman
-    - bundle exec license_finder
-    - scripts/lint-doc.sh
-    - yarn run eslint
-    - bundle exec "rubocop --require rubocop-rspec"
+    - scripts/static-analysis
 
 downtime_check:
   <<: *rake-exec
