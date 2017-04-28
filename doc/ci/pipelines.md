@@ -1,7 +1,6 @@
 # Introduction to pipelines and jobs
 
->**Note:**
-Introduced in GitLab 8.8.
+> Introduced in GitLab 8.8.
 
 ## Pipelines
 
@@ -162,6 +161,31 @@ stage has a job with a manual action.
 
 ![Pipelines example](img/pipelines.png)
 
+### Ordering of jobs in pipeline graphs
+
+**Regular pipeline graph**
+
+In the single pipeline page, jobs are sorted by name.
+
+**Mini pipeline graph**
+
+> [Introduced][ce-9760] in GitLab 9.0.
+
+In the pipeline mini graphs, the jobs are sorted first by severity and then
+by name. The order of severity is:
+
+- failed
+- warning
+- pending
+- running
+- manual
+- canceled
+- success
+- skipped
+- created
+
+![Pipeline mini graph sorting](img/pipelines_mini_graph_sorting.png)
+
 ## How the pipeline duration is calculated
 
 Total running time for a given pipeline would exclude retries and pending
@@ -209,4 +233,5 @@ respective link in the [Pipelines settings] page.
 [ce-5742]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5742
 [ce-6242]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6242
 [ce-7931]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7931
+[ce-9760]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9760
 [regexp]: https://gitlab.com/gitlab-org/gitlab-ce/blob/2f3dc314f42dbd79813e6251792853bc231e69dd/app/models/commit_status.rb#L99
