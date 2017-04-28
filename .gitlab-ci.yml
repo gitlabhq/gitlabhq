@@ -82,6 +82,13 @@ stages:
     - //@gitlab-org/gitlab-ee
     - //@gitlab/gitlab-ee
 
+# Skip all jobs except the ones that begin with 'docs/'.
+# Used for commits including ONLY documentation changes.
+# https://docs.gitlab.com/ce/development/writing_documentation.html#testing
+.except-docs: &except-docs
+  except:
+    - /^docs\/.*/
+
 .rspec-knapsack: &rspec-knapsack
   stage: test
   <<: *dedicated-runner
@@ -105,11 +112,13 @@ stages:
 .rspec-knapsack-pg: &rspec-knapsack-pg
   <<: *rspec-knapsack
   <<: *use-pg
+  <<: *except-docs
 
 .rspec-knapsack-mysql: &rspec-knapsack-mysql
   <<: *rspec-knapsack
   <<: *use-mysql
   <<: *only-master-and-ee-or-mysql
+  <<: *except-docs
 
 .spinach-knapsack: &spinach-knapsack
   stage: test
@@ -134,16 +143,19 @@ stages:
 .spinach-knapsack-pg: &spinach-knapsack-pg
   <<: *spinach-knapsack
   <<: *use-pg
+  <<: *except-docs
 
 .spinach-knapsack-mysql: &spinach-knapsack-mysql
   <<: *spinach-knapsack
   <<: *use-mysql
   <<: *only-master-and-ee-or-mysql
+  <<: *except-docs
 
 # Prepare and merge knapsack tests
 knapsack:
   <<: *knapsack-state
   <<: *dedicated-runner
+  <<: *except-docs
   stage: prepare
   script:
     - mkdir -p knapsack/${CI_PROJECT_NAME}/
@@ -170,6 +182,7 @@ update-knapsack:
 setup-test-env:
   <<: *use-pg
   <<: *dedicated-runner
+  <<: *except-docs
   stage: prepare
   script:
     - node --version
@@ -257,6 +270,7 @@ spinach mysql 9 10: *spinach-knapsack-mysql
 .exec: &exec
   <<: *ruby-static-analysis
   <<: *dedicated-runner
+  <<: *except-docs
   stage: test
   script:
     - bundle exec $CI_JOB_NAME
@@ -264,6 +278,7 @@ spinach mysql 9 10: *spinach-knapsack-mysql
 rubocop:
   <<: *ruby-static-analysis
   <<: *dedicated-runner
+  <<: *except-docs
   stage: test
   script:
     - bundle exec "rubocop --require rubocop-rspec"
@@ -285,10 +300,12 @@ rake downtime_check: *exec
 rake pg db:migrate:reset:
   <<: *db-migrate-reset
   <<: *use-pg
+  <<: *except-docs
 
 rake mysql db:migrate:reset:
   <<: *db-migrate-reset
   <<: *use-mysql
+  <<: *except-docs
 
 .db-rollback: &db-rollback
   stage: test
@@ -300,10 +317,12 @@ rake mysql db:migrate:reset:
 rake pg db:rollback:
   <<: *db-rollback
   <<: *use-pg
+  <<: *except-docs
 
 rake mysql db:rollback:
   <<: *db-rollback
   <<: *use-mysql
+  <<: *except-docs
 
 .db-seed_fu: &db-seed_fu
   stage: test
@@ -325,14 +344,17 @@ rake mysql db:rollback:
 rake pg db:seed_fu:
   <<: *db-seed_fu
   <<: *use-pg
+  <<: *except-docs
 
 rake mysql db:seed_fu:
   <<: *db-seed_fu
   <<: *use-mysql
+  <<: *except-docs
 
 rake gitlab:assets:compile:
   stage: test
   <<: *dedicated-runner
+  <<: *except-docs
   dependencies: []
   variables:
     NODE_ENV: "production"
@@ -356,6 +378,7 @@ rake karma:
   stage: test
   <<: *use-pg
   <<: *dedicated-runner
+  <<: *except-docs
   variables:
     BABEL_ENV: "coverage"
   script:
@@ -396,6 +419,7 @@ bundler:check:
   stage: test
   <<: *dedicated-runner
   <<: *ruby-static-analysis
+  <<: *except-docs
   script:
    - bundle check
 
@@ -443,6 +467,7 @@ coverage:
   stage: post-test
   services: []
   <<: *dedicated-runner
+  <<: *except-docs
   variables:
     SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "true"
@@ -458,6 +483,7 @@ coverage:
 
 lint:javascript:
   <<: *dedicated-runner
+  <<: *except-docs
   stage: test
   before_script: []
   script:
@@ -465,6 +491,7 @@ lint:javascript:
 
 lint:javascript:report:
   <<: *dedicated-runner
+  <<: *except-docs
   stage: post-test
   before_script: []
   script:
