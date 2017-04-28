@@ -97,6 +97,7 @@ pipelines:
 - cancelable_statuses
 - manual_actions
 - artifacts
+- pipeline_schedule
 statuses:
 - project
 - pipeline
@@ -108,9 +109,12 @@ triggers:
 - project
 - trigger_requests
 - owner
-- trigger_schedule
-trigger_schedule:
-- trigger
+pipeline_schedules:
+- project
+- owner
+- pipelines
+pipeline_schedule:
+- pipelines
 deploy_keys:
 - user
 - deploy_keys_projects
@@ -217,7 +221,7 @@ project:
 - active_runners
 - variables
 - triggers
-- trigger_schedules
+- pipeline_schedules
 - environments
 - deployments
 - project_feature

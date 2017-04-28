@@ -5,7 +5,7 @@ module Gitlab
                     pipelines: 'Ci::Pipeline',
                     statuses: 'commit_status',
                     triggers: 'Ci::Trigger',
-                    trigger_schedule: 'Ci::TriggerSchedule',
+                    pipeline_schedules: 'Ci::PipelineSchedule',
                     builds: 'Ci::Build',
                     hooks: 'ProjectHook',
                     merge_access_levels: 'ProtectedBranch::MergeAccessLevel',
