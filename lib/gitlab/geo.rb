@@ -83,18 +83,18 @@ module Gitlab
     end
 
     def self.configure_primary_jobs!
-      PRIMARY_JOBS.map { |job| self.send(job).try(:enable!) }
-      SECONDARY_JOBS.map { |job| self.send(job).try(:disable!) }
+      PRIMARY_JOBS.each { |job| self.send(job).try(:enable!) }
+      SECONDARY_JOBS.each { |job| self.send(job).try(:disable!) }
     end
 
     def self.configure_secondary_jobs!
-      PRIMARY_JOBS.map { |job| self.send(job).try(:disable!) }
-      SECONDARY_JOBS.map { |job| self.send(job).try(:enable!) }
+      PRIMARY_JOBS.each { |job| self.send(job).try(:disable!) }
+      SECONDARY_JOBS.each { |job| self.send(job).try(:enable!) }
     end
 
     def self.disable_all_jobs!
-      PRIMARY_JOBS.map { |job| self.send(job).try(:disable!) }
-      SECONDARY_JOBS.map { |job| self.send(job).try(:disable!) }
+      PRIMARY_JOBS.each { |job| self.send(job).try(:disable!) }
+      SECONDARY_JOBS.each { |job| self.send(job).try(:disable!) }
     end
 
     def self.configure_cron_jobs!

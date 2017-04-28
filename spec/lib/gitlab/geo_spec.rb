@@ -133,26 +133,26 @@ describe Gitlab::Geo, lib: true do
       allow(described_class).to receive(:primary?).and_return(true)
       described_class.configure_cron_jobs!
 
-      expect(described_class.bulk_notify_job.enabled?).to be_truthy
-      expect(described_class.backfill_job.enabled?).to be_falsey
-      expect(described_class.file_download_job.enabled?).to be_falsey
+      expect(described_class.bulk_notify_job).to be_enabled
+      expect(described_class.backfill_job).not_to be_enabled
+      expect(described_class.file_download_job).not_to be_enabled
     end
 
     it 'activates cron jobs for secondary' do
       allow(described_class).to receive(:secondary?).and_return(true)
       described_class.configure_cron_jobs!
 
-      expect(described_class.bulk_notify_job.enabled?).to be_falsey
-      expect(described_class.backfill_job.enabled?).to be_truthy
-      expect(described_class.file_download_job.enabled?).to be_truthy
+      expect(described_class.bulk_notify_job).not_to be_enabled
+      expect(described_class.backfill_job).to be_enabled
+      expect(described_class.file_download_job).to be_enabled
     end
 
     it 'deactivates all jobs when Geo is not active' do
       described_class.configure_cron_jobs!
 
-      expect(described_class.bulk_notify_job.enabled?).to be_falsey
-      expect(described_class.backfill_job.enabled?).to be_falsey
-      expect(described_class.file_download_job.enabled?).to be_falsey
+      expect(described_class.bulk_notify_job).not_to be_enabled
+      expect(described_class.backfill_job).not_to be_enabled
+      expect(described_class.file_download_job).not_to be_enabled
     end
   end
 end
