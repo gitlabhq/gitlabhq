@@ -7,13 +7,9 @@ module SentryHelper
     Gitlab::Sentry.context(current_user)
   end
 
-  def sentry_dsn_public
-    sentry_dsn = ApplicationSetting.current.sentry_dsn
-
-    return unless sentry_dsn
-
-    uri = URI.parse(sentry_dsn)
-    uri.password = nil
-    uri.to_s
+  def clientside_sentry_enabled?
+    current_application_settings.clientside_sentry_enabled
   end
+
+  delegate :clientside_sentry_dsn, to: :current_application_settings
 end

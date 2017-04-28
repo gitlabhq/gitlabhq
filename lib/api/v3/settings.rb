@@ -89,6 +89,10 @@ module API
         given sentry_enabled: ->(val) { val } do
           requires :sentry_dsn, type: String, desc: 'Sentry Data Source Name'
         end
+        optional :clientside_sentry_enabled, type: Boolean, desc: 'Sentry can also be used for reporting and logging clientside exceptions. https://sentry.io/for/javascript/'
+        given clientside_sentry_enabled: ->(val) { val } do
+          requires :clientside_sentry_dsn, type: String, desc: 'Clientside Sentry Data Source Name'
+        end
         optional :repository_storage, type: String, desc: 'Storage paths for new projects'
         optional :repository_checks_enabled, type: Boolean, desc: "GitLab will periodically run 'git fsck' in all project and wiki repositories to look for silent disk corruption issues."
         optional :koding_enabled, type: Boolean, desc: 'Enable Koding'
@@ -120,7 +124,7 @@ module API
                         :home_page_url, :after_sign_out_path, :sign_in_text, :help_page_text,
                         :shared_runners_enabled, :max_artifacts_size, :max_pages_size, :container_registry_token_expire_delay,
                         :metrics_enabled, :sidekiq_throttling_enabled, :recaptcha_enabled,
-                        :akismet_enabled, :admin_notification_email, :sentry_enabled,
+                        :akismet_enabled, :admin_notification_email, :sentry_enabled, :clientside_sentry_enabled,
                         :repository_storage, :repository_checks_enabled, :koding_enabled, :plantuml_enabled,
                         :version_check_enabled, :email_author_in_body, :html_emails_enabled,
                         :housekeeping_enabled, :terminal_max_session_time

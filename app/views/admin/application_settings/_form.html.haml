@@ -411,6 +411,21 @@
       .col-sm-10
         = f.text_field :sentry_dsn, class: 'form-control'
 
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :clientside_sentry_enabled do
+            = f.check_box :clientside_sentry_enabled
+            Enable Clientside Sentry
+          .help-block
+            Sentry can also be used for reporting and logging clientside exceptions.
+            %a{ href: 'https://sentry.io/for/javascript/', target: '_blank', rel: 'noopener noreferrer' } https://sentry.io/for/javascript/
+
+    .form-group
+      = f.label :sentry_dsn, 'Sentry DSN', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :sentry_dsn, class: 'form-control'
+
   %fieldset
     %legend Repository Storage
     .form-group
