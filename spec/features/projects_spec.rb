@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature 'Project', feature: true do
   describe 'description' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:path)    { namespace_project_path(project.namespace, project) }
 
     before do
@@ -36,7 +36,7 @@ feature 'Project', feature: true do
 
   describe 'remove forked relationship', js: true do
     let(:user)    { create(:user) }
-    let(:project) { create(:project, namespace: user.namespace) }
+    let(:project) { create(:empty_project, namespace: user.namespace) }
 
     before do
       login_with user
@@ -57,7 +57,7 @@ feature 'Project', feature: true do
 
   describe 'removal', js: true do
     let(:user)    { create(:user, username: 'test', name: 'test') }
-    let(:project) { create(:project, namespace: user.namespace, name: 'project1') }
+    let(:project) { create(:empty_project, namespace: user.namespace, name: 'project1') }
 
     before do
       login_with(user)
@@ -75,10 +75,8 @@ feature 'Project', feature: true do
   end
 
   describe 'project title' do
-    include WaitForAjax
-
     let(:user)    { create(:user) }
-    let(:project) { create(:project, namespace: user.namespace) }
+    let(:project) { create(:empty_project, namespace: user.namespace) }
 
     before do
       login_with(user)
@@ -94,8 +92,8 @@ feature 'Project', feature: true do
 
   describe 'project title' do
     let(:user)    { create(:user) }
-    let(:project) { create(:project, namespace: user.namespace) }
-    let(:project2) { create(:project, namespace: user.namespace, path: 'test') }
+    let(:project) { create(:empty_project, namespace: user.namespace) }
+    let(:project2) { create(:empty_project, namespace: user.namespace, path: 'test') }
     let(:issue) { create(:issue, project: project) }
 
     context 'on issues page', js: true do

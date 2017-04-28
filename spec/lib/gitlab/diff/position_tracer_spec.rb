@@ -569,13 +569,8 @@ describe Gitlab::Diff::PositionTracer, lib: true do
               # 1 1   BB
               # 2 2   A
 
-              it "returns the new position" do
-                expect_new_position(
-                  old_path: file_name,
-                  new_path: new_file_name,
-                  old_line: old_position.new_line,
-                  new_line: old_position.new_line
-                )
+              it "returns nil since the line doesn't exist in the new diffs anymore" do
+                expect(subject).to be_nil
               end
             end
 

@@ -51,6 +51,7 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import UserCallout from './user_callout';
 import { ProtectedTagCreate, ProtectedTagEditList } from './protected_tags';
 import ShortcutsWiki from './shortcuts_wiki';
+import BlobViewer from './blob/viewer/index';
 
 import GeoNodes from './geo_nodes';
 import ServiceDeskRoot from './projects/settings_service_desk/service_desk_root';
@@ -313,6 +314,7 @@ const ShortcutsBlob = require('./shortcuts_blob');
           gl.TargetBranchDropDown.bootstrap();
           break;
         case 'projects:blob:show':
+          new BlobViewer();
           gl.TargetBranchDropDown.bootstrap();
           initBlob();
           break;

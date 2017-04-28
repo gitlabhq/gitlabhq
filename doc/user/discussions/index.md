@@ -12,7 +12,7 @@ You can leave a comment in the following places:
 
 The comment area supports [Markdown] and [slash commands]. One can edit their
 own comment at any time, and anyone with [Master access level][permissions] or
-higher can also a comment made by someone else.
+higher can also edit a comment made by someone else.
 
 Apart from the standard comments, you also have the option to create a comment
 in the form of a resolvable or threaded discussion.

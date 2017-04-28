@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 feature 'Pipelines for Merge Requests', feature: true, js: true do
-  include WaitForAjax
-
   given(:user) { create(:user) }
   given(:merge_request) { create(:merge_request) }
   given(:project) { merge_request.target_project }

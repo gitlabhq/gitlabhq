@@ -433,7 +433,7 @@ describe 'Copy as GFM', feature: true, js: true do
   end
 
   describe 'Copying code' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
     context 'from a diff' do
       before do
@@ -479,6 +479,7 @@ describe 'Copy as GFM', feature: true, js: true do
     context 'from a blob' do
       before do
         visit namespace_project_blob_path(project.namespace, project, File.join('master', 'files/ruby/popen.rb'))
+        wait_for_ajax
       end
 
       context 'selecting one word of text' do
@@ -520,6 +521,7 @@ describe 'Copy as GFM', feature: true, js: true do
     context 'from a GFM code block' do
       before do
         visit namespace_project_blob_path(project.namespace, project, File.join('markdown', 'doc/api/users.md'))
+        wait_for_ajax
       end
 
       context 'selecting one word of text' do

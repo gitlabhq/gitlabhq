@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-describe API::Issues, api: true  do
-  include ApiHelpers
+describe API::Issues do
   include EmailHelpers
 
   let(:user)        { create(:user) }
@@ -1377,6 +1376,41 @@ describe API::Issues, api: true  do
     let(:issuable) { issue }
 
     include_examples 'time tracking endpoints', 'issue'
+  end
+
+  describe 'GET :id/issues/:issue_iid/closed_by' do
+    let(:merge_request) do
+      create(:merge_request,
+             :simple,
+             author: user,
+             source_project: project,
+             target_project: project,
+             description: "closes #{issue.to_reference}")
+    end
+
+    before do
+      create(:merge_requests_closing_issues, issue: issue, merge_request: merge_request)
+    end
+
+    it 'returns merge requests that will close issue on merge' do
+      get api("/projects/#{project.id}/issues/#{issue.iid}/closed_by", user)
+
+      expect_paginated_array_response(size: 1)
+    end
+
+    context 'when no merge requests will close issue' do
+      it 'returns empty array' do
+        get api("/projects/#{project.id}/issues/#{closed_issue.iid}/closed_by", user)
+
+        expect_paginated_array_response(size: 0)
+      end
+    end
+
+    it "returns 404 when issue doesn't exists" do
+      get api("/projects/#{project.id}/issues/9999/closed_by", user)
+
+      expect(response).to have_http_status(404)
+    end
   end
 
   def expect_paginated_array_response(size: nil)
