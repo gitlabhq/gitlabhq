@@ -213,7 +213,7 @@
     }
 
     .stage-nav-item {
-      display: block;
+      display: flex;
       line-height: 65px;
       border-top: 1px solid transparent;
       border-bottom: 1px solid transparent;
@@ -247,14 +247,10 @@
       }
 
       .stage-nav-item-cell {
-        float: left;
-
-        &.stage-name {
-          width: 65%;
-        }
-
         &.stage-median {
-          width: 35%;
+          margin-left: auto;
+          margin-right: $gl-padding;
+          min-width: calc(35% - #{$gl-padding});
         }
       }
 

@@ -13,7 +13,10 @@ const lang = document.querySelector('html').getAttribute('lang') || 'en';
 const locale = new Jed(locales[lang]);
 const gettext = locale.gettext.bind(locale);
 const ngettext = locale.ngettext.bind(locale);
-const pgettext = locale.pgettext.bind(locale);
+const pgettext = (context, key) => {
+  const joinedKey = [context, key].join('|');
+  return gettext(joinedKey).split('|').pop();
+};
 
 export { lang };
 export { gettext as __ };

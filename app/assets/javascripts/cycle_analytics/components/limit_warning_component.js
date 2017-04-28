@@ -6,7 +6,7 @@ export default {
     },
   },
   template: `
-    <span v-if="count === 50 || true" class="events-info pull-right">
+    <span v-if="count === 50" class="events-info pull-right">
       <i class="fa fa-warning has-tooltip"
           aria-hidden="true"
           :title="__('Limited to showing 50 events at most')"
