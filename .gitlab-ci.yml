@@ -29,8 +29,6 @@ before_script:
 stages:
 - prepare
 - test
-- post-test
-- pages
 
 # Predefined scopes
 .dedicated-runner: &dedicated-runner
@@ -69,28 +67,7 @@ stages:
     - export KNAPSACK_GENERATE_REPORT=true
     - export CACHE_CLASSES=true
     - cp ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} ${KNAPSACK_REPORT_PATH}
-    - knapsack rspec "--color --format documentation"
-  artifacts:
-    expire_in: 31d
-    when: always
-    paths:
-      - coverage/
-      - knapsack/
-      - tmp/capybara/
-
-.spinach-knapsack: &spinach-knapsack
-  stage: test
-  <<: *dedicated-runner
-  <<: *use-db
-  script:
-    - JOB_NAME=( $CI_JOB_NAME )
-    - export CI_NODE_INDEX=${JOB_NAME[1]}
-    - export CI_NODE_TOTAL=${JOB_NAME[2]}
-    - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
-    - export KNAPSACK_GENERATE_REPORT=true
-    - export CACHE_CLASSES=true
-    - cp ${KNAPSACK_SPINACH_SUITE_REPORT_PATH} ${KNAPSACK_REPORT_PATH}
-    - knapsack spinach "-r rerun" || retry '[[ -e tmp/spinach-rerun.txt ]] && bundle exec spinach -r rerun $(cat tmp/spinach-rerun.txt)'
+    - knapsack rspec "--color --format documentation --order rand"
   artifacts:
     expire_in: 31d
     when: always
@@ -142,37 +119,8 @@ setup-test-env:
       - public/assets
       - tmp/tests
 
-rspec 0 20: *rspec-knapsack
-rspec 1 20: *rspec-knapsack
-rspec 2 20: *rspec-knapsack
-rspec 3 20: *rspec-knapsack
-rspec 4 20: *rspec-knapsack
-rspec 5 20: *rspec-knapsack
-rspec 6 20: *rspec-knapsack
-rspec 7 20: *rspec-knapsack
-rspec 8 20: *rspec-knapsack
-rspec 9 20: *rspec-knapsack
-rspec 10 20: *rspec-knapsack
-rspec 11 20: *rspec-knapsack
-rspec 12 20: *rspec-knapsack
-rspec 13 20: *rspec-knapsack
-rspec 14 20: *rspec-knapsack
-rspec 15 20: *rspec-knapsack
-rspec 16 20: *rspec-knapsack
-rspec 17 20: *rspec-knapsack
-rspec 18 20: *rspec-knapsack
-rspec 19 20: *rspec-knapsack
 
-spinach 0 10: *spinach-knapsack
-spinach 1 10: *spinach-knapsack
-spinach 2 10: *spinach-knapsack
-spinach 3 10: *spinach-knapsack
-spinach 4 10: *spinach-knapsack
-spinach 5 10: *spinach-knapsack
-spinach 6 10: *spinach-knapsack
-spinach 7 10: *spinach-knapsack
-spinach 8 10: *spinach-knapsack
-spinach 9 10: *spinach-knapsack
+rspec 10 20: *rspec-knapsack
 
 # Other generic tests
 .ruby-static-analysis: &ruby-static-analysis
@@ -187,13 +135,6 @@ spinach 9 10: *spinach-knapsack
   stage: test
   script:
     - bundle exec $CI_JOB_NAME
-
-rubocop:
-  <<: *ruby-static-analysis
-  <<: *dedicated-runner
-  stage: test
-  script:
-    - bundle exec "rubocop --require rubocop-rspec"
 
 rake haml_lint: *exec
 rake scss_lint: *exec
@@ -228,141 +169,6 @@ rake ee_compat_check:
     paths:
       - ee_compat_check/patches/*.patch
 
-rake db:migrate:reset:
-  stage: test
-  <<: *use-db
-  <<: *dedicated-runner
-  script:
-    - bundle exec rake db:migrate:reset
-
-rake db:rollback:
-  stage: test
-  <<: *use-db
-  <<: *dedicated-runner
-  script:
-    - bundle exec rake db:rollback STEP=120
-    - bundle exec rake db:migrate
-
-rake db:seed_fu:
-  stage: test
-  <<: *use-db
-  <<: *dedicated-runner
-  variables:
-    SIZE: "1"
-    SETUP_DB: "false"
-    RAILS_ENV: "development"
-  script:
-    - git clone https://gitlab.com/gitlab-org/gitlab-test.git
-       /home/git/repositories/gitlab-org/gitlab-test.git
-    - bundle exec rake db:setup db:seed_fu
-  artifacts:
-    when: on_failure
-    expire_in: 1d
-    paths:
-      - log/development.log
-
-rake gitlab:assets:compile:
-  stage: test
-  <<: *dedicated-runner
-  dependencies: []
-  variables:
-    NODE_ENV: "production"
-    RAILS_ENV: "production"
-    SETUP_DB: "false"
-    USE_DB: "false"
-    SKIP_STORAGE_VALIDATION: "true"
-    WEBPACK_REPORT: "true"
-  script:
-    - bundle exec rake yarn:install gitlab:assets:compile
-  artifacts:
-    name: webpack-report
-    expire_in: 31d
-    paths:
-    - webpack-report/
-
-rake karma:
-  cache:
-    paths:
-      - vendor/ruby
-  stage: test
-  <<: *use-db
-  <<: *dedicated-runner
-  variables:
-    BABEL_ENV: "coverage"
-  script:
-    - bundle exec rake karma
-  coverage: '/^Statements *: (\d+\.\d+%)/'
-  artifacts:
-    name: coverage-javascript
-    expire_in: 31d
-    paths:
-    - coverage-javascript/
-
-docs:check:apilint:
-  image: "phusion/baseimage"
-  stage: test
-  <<: *dedicated-runner
-  cache: {}
-  dependencies: []
-  before_script: []
-  script:
-    - scripts/lint-doc.sh
-
-docs:check:links:
-  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:nanoc-bootstrap-ruby-2.4-alpine"
-  stage: test
-  <<: *dedicated-runner
-  cache: {}
-  dependencies: []
-  before_script: []
-  script:
-    - mv doc/ /nanoc/content/
-    - cd /nanoc
-    # Build HTML from Markdown
-    - bundle exec nanoc
-    # Check the internal links
-    - bundle exec nanoc check internal_links
-
-bundler:check:
-  stage: test
-  <<: *dedicated-runner
-  <<: *ruby-static-analysis
-  script:
-   - bundle check
-
-bundler:audit:
-  stage: test
-  <<: *ruby-static-analysis
-  <<: *dedicated-runner
-  only:
-    - master@gitlab-org/gitlab-ce
-    - master@gitlab-org/gitlab-ee
-    - master@gitlab/gitlabhq
-    - master@gitlab/gitlab-ee
-  script:
-    - "bundle exec bundle-audit check --update --ignore CVE-2016-4658"
-
-migration paths:
-  stage: test
-  <<: *use-db
-  <<: *dedicated-runner
-  variables:
-    SETUP_DB: "false"
-  only:
-    - master@gitlab-org/gitlab-ce
-    - master@gitlab-org/gitlab-ee
-    - master@gitlab/gitlabhq
-    - master@gitlab/gitlab-ee
-  script:
-    - git fetch origin v8.14.10
-    - git checkout -f FETCH_HEAD
-    - bundle install --without postgres production --jobs $(nproc) $FLAGS --retry=3
-    - bundle exec rake db:drop db:create db:schema:load db:seed_fu
-    - git checkout $CI_COMMIT_SHA
-    - bundle install --without postgres production --jobs $(nproc) $FLAGS --retry=3
-    - source scripts/prepare_build.sh
-    - bundle exec rake db:migrate
-
 coverage:
   stage: post-test
   services: []
@@ -379,13 +185,6 @@ coverage:
     paths:
     - coverage/index.html
     - coverage/assets/
-
-lint:javascript:
-  <<: *dedicated-runner
-  stage: test
-  before_script: []
-  script:
-    - yarn run eslint
 
 lint:javascript:report:
   <<: *dedicated-runner
