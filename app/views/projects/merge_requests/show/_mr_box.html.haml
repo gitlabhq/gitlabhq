@@ -10,4 +10,4 @@
         %textarea.hidden.js-task-list-field
           = @merge_request.description
 
-  = edited_time_ago_with_tooltip(@merge_request, placement: 'bottom')
+  = edited_time_ago_with_tooltip(@merge_request, placement: 'bottom', include_author: true)

@@ -292,6 +292,20 @@ describe SystemNoteService, services: true do
     end
   end
 
+  describe '.change_description' do
+    subject { described_class.change_description(noteable, project, author) }
+
+    context 'when noteable responds to `description`' do
+      it_behaves_like 'a system note' do
+        let(:action) { 'description' }
+      end
+
+      it 'sets the note text' do
+        expect(subject.note).to eq 'changed the description'
+      end
+    end
+  end
+
   describe '.change_issue_confidentiality' do
     subject { described_class.change_issue_confidentiality(noteable, project, author) }
 

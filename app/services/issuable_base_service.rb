@@ -24,6 +24,10 @@ class IssuableBaseService < BaseService
       issuable, issuable.project, current_user, old_title)
   end
 
+  def create_description_change_note(issuable)
+    SystemNoteService.change_description(issuable, issuable.project, current_user)
+  end
+
   def create_branch_change_note(issuable, branch_type, old_branch, new_branch)
     SystemNoteService.change_branch(
       issuable, issuable.project, current_user, branch_type,
@@ -287,6 +291,10 @@ class IssuableBaseService < BaseService
   def handle_common_system_notes(issuable, old_labels: [])
     if issuable.previous_changes.include?('title')
       create_title_change_note(issuable, issuable.previous_changes['title'].first)
+    end
+
+    if issuable.previous_changes.include?('description')
+      create_description_change_note(issuable)
     end
 
     if issuable.previous_changes.include?('description') && issuable.tasks?

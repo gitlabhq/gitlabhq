@@ -1,6 +1,7 @@
 module SystemNoteHelper
   ICON_NAMES_BY_ACTION = {
     'commit' => 'icon_commit',
+    'description' => 'icon_edit',
     'merge' => 'icon_merge',
     'merged' => 'icon_merged',
     'opened' => 'icon_status_open',
