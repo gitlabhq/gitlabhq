@@ -1,4 +1,4 @@
-module BalsamiqViewer
+module BlobViewer
   class Balsamiq < Base
     include Rich
     include ClientSide
