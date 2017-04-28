@@ -36,6 +36,27 @@ describe Projects::DestroyService, services: true do
     end
   end
 
+  shared_examples 'handles errors thrown during async destroy' do |error_message|
+    it 'does not allow the error to bubble up' do
+      expect do
+        Sidekiq::Testing.inline! { destroy_project(project, user, {}) }
+      end.not_to raise_error
+    end
+
+    it 'unmarks the project as "pending deletion"' do
+      Sidekiq::Testing.inline! { destroy_project(project, user, {}) }
+
+      expect(project.reload.pending_delete).to be(false)
+    end
+
+    it 'stores an error message in `projects.delete_error`' do
+      Sidekiq::Testing.inline! { destroy_project(project, user, {}) }
+
+      expect(project.reload.delete_error).to be_present
+      expect(project.delete_error).to include(error_message)
+    end
+  end
+
   context 'Sidekiq inline' do
     before do
       # Run sidekiq immediatly to check that renamed repository will be removed
@@ -102,10 +123,52 @@ describe Projects::DestroyService, services: true do
     end
 
     it_behaves_like 'deleting the project with pipeline and build'
+
+    context 'errors' do
+      context 'when `remove_legacy_registry_tags` fails' do
+        before do
+          expect_any_instance_of(Projects::DestroyService)
+            .to receive(:remove_legacy_registry_tags).and_return(false)
+        end
+
+        it_behaves_like 'handles errors thrown during async destroy', "Failed to remove some tags"
+      end
+
+      context 'when `remove_repository` fails' do
+        before do
+          expect_any_instance_of(Projects::DestroyService)
+            .to receive(:remove_repository).and_return(false)
+        end
+
+        it_behaves_like 'handles errors thrown during async destroy', "Failed to remove project repository"
+      end
+
+      context 'when `execute` raises any other error' do
+        before do
+          expect_any_instance_of(Projects::DestroyService)
+            .to receive(:execute).and_raise(ArgumentError.new("Other error message"))
+        end
+
+        it_behaves_like 'handles errors thrown during async destroy', "Other error message"
+      end
+    end
   end
 
   context 'with execute' do
     it_behaves_like 'deleting the project with pipeline and build'
+
+    context 'when `execute` raises an error' do
+      before do
+        expect_any_instance_of(Projects::DestroyService)
+          .to receive(:execute).and_raise(ArgumentError)
+      end
+
+      it 'allows the error to bubble up' do
+        expect do
+          Sidekiq::Testing.inline! { Projects::DestroyService.new(project, user, {}).execute }
+        end.to raise_error(ArgumentError)
+      end
+    end
   end
 
   describe 'container registry' do
