@@ -49,7 +49,7 @@ describe 'Unicorn' do
       expect(response.status).to eq(200)
 
       worker_pid = response.body.to_i
-      expect(worker_pid > 0).to eq(true)
+      expect(worker_pid).to be > 0
 
       begin
         Excon.post('unix:///unicorn_test/kill', socket: @socket_path, body: "signal=#{signal}")
