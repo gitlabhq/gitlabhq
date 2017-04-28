@@ -1379,7 +1379,10 @@ describe Repository, models: true do
   describe '#branch_count' do
     it 'returns the number of branches' do
       expect(repository.branch_count).to be_an(Integer)
+
+      # NOTE: Until rugged goes away, make sure rugged and gitaly are in sync
       rugged_count = repository.raw_repository.rugged.branches.count
+
       expect(repository.branch_count).to eq(rugged_count)
     end
   end
@@ -1387,8 +1390,10 @@ describe Repository, models: true do
   describe '#tag_count' do
     it 'returns the number of tags' do
       expect(repository.tag_count).to be_an(Integer)
+
       # NOTE: Until rugged goes away, make sure rugged and gitaly are in sync
       rugged_count = repository.raw_repository.rugged.tags.count
+
       expect(repository.tag_count).to eq(rugged_count)
     end
   end
