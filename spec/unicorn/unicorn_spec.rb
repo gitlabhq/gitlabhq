@@ -11,22 +11,22 @@ describe 'Unicorn' do
     # Remove these because they make setup harder.
     config_lines = config_lines.reject do |line|
       %w[
+        working_directory
+        worker_processes
+        listen
         pid
         stderr_path
         stdout_path
       ].any? { |prefix| line.start_with?(prefix) }
     end
 
-    config_lines = config_lines.reject { |l| l.start_with?('working_directory') }
     config_lines << "working_directory '#{Rails.root}'"
 
     # We want to have exactly 1 worker process because that makes it
     # predictable which process will handle our requests.
-    config_lines = config_lines.reject { |l| l.start_with?('worker_processes') }
     config_lines << 'worker_processes 1'
 
     @socket_path = File.join(Dir.pwd, 'tmp/tests/unicorn.socket')
-    config_lines = config_lines.reject { |l| l.start_with?('listen') }
     config_lines << "listen '#{@socket_path}'"
 
     ready_file = 'tmp/tests/unicorn-worker-ready'
