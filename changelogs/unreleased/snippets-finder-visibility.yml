@@ -1,0 +1,4 @@
+---
+title: Refactor snippets finder & dont return internal snippets for external users
+merge_request:
+author:
