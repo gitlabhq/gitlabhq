@@ -91,7 +91,7 @@ knapsack:
 update-knapsack:
   <<: *knapsack-state
   <<: *dedicated-runner
-  stage: post-test
+  stage: test
   script:
     - scripts/merge-reports ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/rspec_node_*.json
     - scripts/merge-reports ${KNAPSACK_SPINACH_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/spinach_node_*.json
@@ -168,95 +168,6 @@ rake ee_compat_check:
     expire_in: 10d
     paths:
       - ee_compat_check/patches/*.patch
-
-coverage:
-  stage: post-test
-  services: []
-  <<: *dedicated-runner
-  variables:
-    SETUP_DB: "false"
-    USE_BUNDLE_INSTALL: "true"
-  script:
-    - bundle exec scripts/merge-simplecov
-  coverage: '/LOC \((\d+\.\d+%)\) covered.$/'
-  artifacts:
-    name: coverage
-    expire_in: 31d
-    paths:
-    - coverage/index.html
-    - coverage/assets/
-
-lint:javascript:report:
-  <<: *dedicated-runner
-  stage: post-test
-  before_script: []
-  script:
-    - find app/ spec/ -name '*.js' -exec sed --in-place 's|/\* eslint-disable .*\*/||' {} \; # run report over all files
-    - yarn run eslint-report || true # ignore exit code
-  artifacts:
-    name: eslint-report
-    expire_in: 31d
-    paths:
-    - eslint-report.html
-
-# Trigger docs build
-# https://gitlab.com/gitlab-com/doc-gitlab-com/blob/master/README.md#deployment-process
-trigger_docs:
-  stage: post-test
-  image: "alpine"
-  <<: *dedicated-runner
-  before_script:
-    - apk update && apk add curl
-  variables:
-    GIT_STRATEGY: none
-  cache: {}
-  artifacts: {}
-  script:
-    - "HTTP_STATUS=$(curl -X POST -F token=${DOCS_TRIGGER_TOKEN} -F ref=master -F variables[PROJECT]=${CI_PROJECT_NAME} --silent --output curl.log --write-out '%{http_code}' https://gitlab.com/api/v3/projects/1794617/trigger/builds)"
-    - if [ "${HTTP_STATUS}" -ne "201" ]; then echo "Error ${HTTP_STATUS}"; cat curl.log; echo; exit 1; fi
-  only:
-    - master@gitlab-org/gitlab-ce
-    - master@gitlab-org/gitlab-ee
-
-# Notify slack in the end
-notify:slack:
-  stage: post-test
-  <<: *dedicated-runner
-  variables:
-    SETUP_DB: "false"
-    USE_BUNDLE_INSTALL: "false"
-  script:
-    - ./scripts/notify_slack.sh "#development" "Build on \`$CI_COMMIT_REF_NAME\` failed! Commit \`$(git log -1 --oneline)\` See <https://gitlab.com/gitlab-org/$(basename "$PWD")/commit/"$CI_COMMIT_SHA"/pipelines>"
-  when: on_failure
-  only:
-    - master@gitlab-org/gitlab-ce
-    - tags@gitlab-org/gitlab-ce
-    - master@gitlab-org/gitlab-ee
-    - tags@gitlab-org/gitlab-ee
-
-pages:
-  before_script: []
-  stage: pages
-  <<: *dedicated-runner
-  dependencies:
-    - coverage
-    - rake karma
-    - rake gitlab:assets:compile
-    - lint:javascript:report
-  script:
-    - mv public/ .public/
-    - mkdir public/
-    - mv coverage/ public/coverage-ruby/ || true
-    - mv coverage-javascript/ public/coverage-javascript/ || true
-    - mv eslint-report.html public/ || true
-    - mv webpack-report/ public/webpack-report/ || true
-  artifacts:
-    paths:
-      - public
-  only:
-    - master@gitlab-org/gitlab-ce
-    - master@gitlab-org/gitlab-ee
-
 # Insurance in case a gem needed by one of our releases gets yanked from
 # rubygems.org in the future.
 cache gems:
