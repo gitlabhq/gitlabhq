@@ -1,0 +1,5 @@
+---
+title: Fix bug where Geo secondary Sidekiq cron jobs would not be activated if settings
+  changed
+merge_request:
+author:

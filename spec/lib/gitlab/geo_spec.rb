@@ -111,4 +111,48 @@ describe Gitlab::Geo, lib: true do
       expect(keys[:secret_access_key].length).to eq(40)
     end
   end
+
+  describe '.configure_cron_jobs!' do
+    def init_cron_job(job_name, class_name)
+      Sidekiq::Cron::Job.create(
+        name: job_name,
+        cron: '0 * * * *',
+        class: class_name
+      )
+    end
+
+    before(:all) do
+      jobs = %w(geo_bulk_notify_worker geo_backfill_worker)
+
+      jobs.each { |job| init_cron_job(job, job.camelize) }
+      # TODO: Make this name consistent
+      init_cron_job('geo_download_dispatch_worker', 'GeoFileDownloadDispatchWorker')
+    end
+
+    it 'activates cron jobs for primary' do
+      allow(described_class).to receive(:primary?).and_return(true)
+      described_class.configure_cron_jobs!
+
+      expect(described_class.bulk_notify_job.enabled?).to be_truthy
+      expect(described_class.backfill_job.enabled?).to be_falsey
+      expect(described_class.file_download_job.enabled?).to be_falsey
+    end
+
+    it 'activates cron jobs for secondary' do
+      allow(described_class).to receive(:secondary?).and_return(true)
+      described_class.configure_cron_jobs!
+
+      expect(described_class.bulk_notify_job.enabled?).to be_falsey
+      expect(described_class.backfill_job.enabled?).to be_truthy
+      expect(described_class.file_download_job.enabled?).to be_truthy
+    end
+
+    it 'deactivates all jobs when Geo is not active' do
+      described_class.configure_cron_jobs!
+
+      expect(described_class.bulk_notify_job.enabled?).to be_falsey
+      expect(described_class.backfill_job.enabled?).to be_falsey
+      expect(described_class.file_download_job.enabled?).to be_falsey
+    end
+  end
 end
