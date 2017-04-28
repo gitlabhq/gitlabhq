@@ -84,6 +84,10 @@ class Todo < ActiveRecord::Base
     action == BUILD_FAILED
   end
 
+  def assigned?
+    action == ASSIGNED
+  end
+
   def action_name
     ACTION_NAMES[action]
   end
@@ -115,6 +119,14 @@ class Todo < ActiveRecord::Base
     else
       target.to_reference(full: true)
     end
+  end
+
+  def self_added?
+    author == user
+  end
+
+  def self_assigned?
+    assigned? && self_added?
   end
 
   private
