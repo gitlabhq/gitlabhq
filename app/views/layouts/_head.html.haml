@@ -33,7 +33,7 @@
   = webpack_bundle_tag "runtime"
   = webpack_bundle_tag "common"
   = webpack_bundle_tag "main"
-  = webpack_bundle_tag "raven" if clientside_sentry_enabled?
+  = webpack_bundle_tag "raven" if Gitlab.config.clientside_sentry_enabled
 
   - if content_for?(:page_specific_javascripts)
     = yield :page_specific_javascripts
