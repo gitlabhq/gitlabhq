@@ -1,5 +1,3 @@
-include SentryHelper
-
 module Gitlab
   module GonHelper
     def add_gon_variables
