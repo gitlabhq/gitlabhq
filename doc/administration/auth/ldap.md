@@ -65,14 +65,14 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
   #
   # Example: 'Paris' or 'Acme, Ltd.'
   label: 'LDAP'
-  
+
   # Example: 'ldap.mydomain.com'
   host: '_your_ldap_server'
   # This port is an example, it is sometimes different but it is always an integer and not a string
   port: 389
-  uid: 'sAMAccountName'
+  uid: 'sAMAccountName' # This should be the attribute, not the value that maps to uid.
   method: 'plain' # "tls" or "ssl" or "plain"
-  
+
   # Examples: 'america\\momo' or 'CN=Gitlab Git,CN=Users,DC=mydomain,DC=com'
   bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
   password: '_the_password_of_the_bind_user'
