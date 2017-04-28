@@ -70,10 +70,10 @@ class DynamicPathValidator < ActiveModel::EachValidator
   #  'tree' as project name and 'deploy_keys' as route.
   #
   WILDCARD_ROUTES = Set.new(%w[
-    artifacts
     badges
     blame
     blob
+    builds
     commits
     create
     create_dir
@@ -83,10 +83,10 @@ class DynamicPathValidator < ActiveModel::EachValidator
     find_file
     gitlab-lfs/objects
     info/lfs/objects
-    logs_tree
     new
     preview
     raw
+    refs
     tree
     update
     wikis

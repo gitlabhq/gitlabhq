@@ -13,29 +13,28 @@ describe DynamicPathValidator do
   # That's not a parameter
   # `/*namespace_id/:project_id/builds/artifacts/*ref_name_and_path`
   #    -> 'builds/artifacts'
-  def path_between_wildcards(path)
+  def path_before_wildcard(path)
     path = path.gsub(STARTING_WITH_NAMESPACE, "")
     path_segments = path.split('/').reject(&:empty?)
-    wildcard_index = path_segments.index { |segment| segment.starts_with?('*') }
+    wildcard_index = path_segments.index { |segment| parameter?(segment) }
 
     segments_before_wildcard = path_segments[0..wildcard_index - 1]
 
-    param_index = segments_before_wildcard.index { |segment| segment.starts_with?(':') }
-    if param_index
-      segments_before_wildcard = segments_before_wildcard[param_index + 1..-1]
-    end
-
     segments_before_wildcard.join('/')
+  end
+
+  def parameter?(segment)
+    segment =~ /[*:]/
   end
 
   # If the path is reserved. Then no conflicting paths can# be created for any
   # route using this reserved word.
   #
-  # Both `builds/artifacts` & `artifacts/file` are covered by reserving the word
-  # `artifacts`
+  # Both `builds/artifacts` & `build` are covered by reserving the word
+  # `build`
   def wildcards_include?(path)
     described_class::WILDCARD_ROUTES.include?(path) ||
-      path.split('/').any? { |segment| described_class::WILDCARD_ROUTES.include?(segment) }
+      described_class::WILDCARD_ROUTES.include?(path.split('/').first)
   end
 
   let(:all_routes) do
@@ -83,7 +82,10 @@ describe DynamicPathValidator do
   # -> ['builds/artifacts', 'info/lfs/objects', 'commits', 'artifacts/file']
   let(:all_wildcard_paths) do
     namespaced_wildcard_routes.map do |route|
-      path_between_wildcards(route)
+      path_before_wildcard(route)
+    end.uniq
+  end
+
     end.uniq
   end
 
@@ -114,7 +116,7 @@ describe DynamicPathValidator do
         to be_truthy
     end
 
-    it 'skips partial path matchies' do
+    it 'skips partial path matches' do
       expect(described_class.contains_path_part?('some/user1/path', 'user')).
         to be_falsy
     end
