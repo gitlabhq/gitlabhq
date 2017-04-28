@@ -12,5 +12,8 @@ class ProjectDestroyWorker
     user = User.find(user_id)
 
     ::Projects::DestroyService.new(project, user, params.symbolize_keys).execute
+  rescue StandardError => error
+    project.assign_attributes(delete_error: error.message, pending_delete: false)
+    project.save!(validate: false)
   end
 end

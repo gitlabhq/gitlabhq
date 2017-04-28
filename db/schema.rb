@@ -1134,6 +1134,7 @@ ActiveRecord::Schema.define(version: 20170717150329) do
     t.integer "cached_markdown_version"
     t.datetime "last_repository_updated_at"
     t.string "ci_config_path"
+    t.text "delete_error"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
