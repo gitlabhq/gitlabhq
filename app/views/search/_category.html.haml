@@ -83,3 +83,8 @@
             Commits
             %span.badge
               = @search_results.commits_count
+        %li{ class: active_when(@scope == 'wiki_blobs') }
+          = link_to search_filter_path(scope: 'wiki_blobs') do
+            Wiki
+            %span.badge
+              = @search_results.wiki_blobs_count
