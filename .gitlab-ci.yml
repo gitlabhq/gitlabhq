@@ -19,8 +19,8 @@ variables:
 
 before_script:
   - bundle --version
-  - . scripts/utils.sh
-  - ./scripts/prepare_build.sh
+  - source scripts/utils.sh
+  - source scripts/prepare_build.sh
 
 stages:
 - prepare
