@@ -1,0 +1,4 @@
+---
+title: Add index on ci_runners.contacted_at
+merge_request: 10876
+author: blackst0ne

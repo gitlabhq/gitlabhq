@@ -99,5 +99,7 @@ Rails.application.routes.draw do
     end
   end
 
+  draw :test if Rails.env.test?
+
   get '*unmatched_route', to: 'application#route_not_found'
 end

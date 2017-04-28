@@ -9,7 +9,7 @@
 
   .file-actions.hidden-xs
     .btn-group{ role: "group" }<
-      = copy_blob_content_button(@snippet)
+      = copy_blob_source_button(@snippet)
       = open_raw_file_button(raw_path)
 
       - if defined?(download_path) && download_path

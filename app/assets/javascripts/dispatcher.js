@@ -49,6 +49,7 @@ import UserCallout from './user_callout';
 import { ProtectedTagCreate, ProtectedTagEditList } from './protected_tags';
 import ShortcutsWiki from './shortcuts_wiki';
 import SettingsDeployKeys from './settings/settings_repository';
+import BlobViewer from './blob/viewer/index';
 
 const ShortcutsBlob = require('./shortcuts_blob');
 
@@ -300,6 +301,7 @@ const ShortcutsBlob = require('./shortcuts_blob');
           gl.TargetBranchDropDown.bootstrap();
           break;
         case 'projects:blob:show':
+          new BlobViewer();
           gl.TargetBranchDropDown.bootstrap();
           initBlob();
           break;
