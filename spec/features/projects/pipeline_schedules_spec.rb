@@ -27,7 +27,6 @@ feature 'Pipeline Schedules', :feature do
       let(:scope) { 'active' }
 
       it 'lets bryce write a new test' do
-
       end
     end
 

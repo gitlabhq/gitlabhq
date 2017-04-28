@@ -8,26 +8,4 @@
   .form-group
     = f.label :key, "Description", class: "label-light"
     = f.text_field :description, class: "form-control", required: true, title: 'Trigger description is required.', placeholder: "Trigger description"
-    - if @trigger.persisted?
-      %hr
-      = f.fields_for :trigger_schedule do |schedule_fields|
-        = schedule_fields.hidden_field :id
-        .form-group
-          .checkbox
-            = schedule_fields.label :active do
-              = schedule_fields.check_box :active
-              %strong Schedule trigger (experimental)
-            .help-block
-              If checked, this trigger will be executed periodically according to cron and timezone.
-              = link_to icon('question-circle'), help_page_path('ci/triggers/README', anchor: 'using-scheduled-triggers')
-        .form-group
-          = schedule_fields.label :cron, "Cron", class: "label-light"
-          = schedule_fields.text_field :cron, class: "form-control", title: 'Cron specification is required.', placeholder: "0 1 * * *"
-        .form-group
-          = schedule_fields.label :cron, "Timezone", class: "label-light"
-          = schedule_fields.text_field :cron_timezone, class: "form-control", title: 'Timezone is required.', placeholder: "UTC"
-        .form-group
-          = schedule_fields.label :ref, "Branch or tag", class: "label-light"
-          = schedule_fields.text_field :ref, class: "form-control", title: 'Branch or tag is required.', placeholder: "master"
-          .help-block Existing branch name, tag
   = f.submit btn_text, class: "btn btn-save"
