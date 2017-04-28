@@ -228,6 +228,7 @@ describe API::Internal do
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq(project.wiki.repository.path_to_repo)
+          expect(json_response["gl_repository"]).to eq("wiki-#{project.id}")
           expect(user).not_to have_an_activity_record
         end
       end
@@ -239,6 +240,7 @@ describe API::Internal do
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq(project.wiki.repository.path_to_repo)
+          expect(json_response["gl_repository"]).to eq("wiki-#{project.id}")
           expect(user).to have_an_activity_record
         end
       end
@@ -250,6 +252,7 @@ describe API::Internal do
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
+          expect(json_response["gl_repository"]).to eq("project-#{project.id}")
           expect(user).to have_an_activity_record
         end
       end
@@ -261,6 +264,7 @@ describe API::Internal do
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
+          expect(json_response["gl_repository"]).to eq("project-#{project.id}")
           expect(user).not_to have_an_activity_record
         end
 
@@ -271,6 +275,7 @@ describe API::Internal do
             expect(response).to have_http_status(200)
             expect(json_response["status"]).to be_truthy
             expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
+            expect(json_response["gl_repository"]).to eq("project-#{project.id}")
           end
         end
 
@@ -281,6 +286,7 @@ describe API::Internal do
             expect(response).to have_http_status(200)
             expect(json_response["status"]).to be_truthy
             expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
+            expect(json_response["gl_repository"]).to eq("project-#{project.id}")
           end
         end
       end
@@ -492,22 +498,55 @@ describe API::Internal do
 
       expect(json_response).to eq([])
     end
+
+    context 'with a gl_repository parameter' do
+      let(:gl_repository) { "project-#{project.id}" }
+
+      it 'returns link to create new merge request' do
+        get api("/internal/merge_request_urls?gl_repository=#{gl_repository}&changes=#{changes}"), secret_token: secret_token
+
+        expect(json_response).to match [{
+          "branch_name" => "new_branch",
+          "url" => "http://#{Gitlab.config.gitlab.host}/#{project.namespace.name}/#{project.path}/merge_requests/new?merge_request%5Bsource_branch%5D=new_branch",
+          "new_merge_request" => true
+        }]
+      end
+    end
   end
 
   describe 'POST /notify_post_receive' do
     let(:valid_params) do
-      { repo_path: project.repository.path, secret_token: secret_token }
+      { project: project.repository.path, secret_token: secret_token }
+    end
+
+    let(:valid_wiki_params) do
+      { project: project.wiki.repository.path, secret_token: secret_token }
     end
 
     before do
       allow(Gitlab.config.gitaly).to receive(:enabled).and_return(true)
     end
 
-    it "calls the Gitaly client if it's enabled" do
+    it "calls the Gitaly client with the project's repository" do
+      expect(Gitlab::GitalyClient::Notifications).
+        to receive(:new).with(gitlab_git_repository_with(path: project.repository.path)).
+        and_call_original
       expect_any_instance_of(Gitlab::GitalyClient::Notifications).
         to receive(:post_receive)
 
       post api("/internal/notify_post_receive"), valid_params
+
+      expect(response).to have_http_status(200)
+    end
+
+    it "calls the Gitaly client with the wiki's repository if it's a wiki" do
+      expect(Gitlab::GitalyClient::Notifications).
+        to receive(:new).with(gitlab_git_repository_with(path: project.wiki.repository.path)).
+        and_call_original
+      expect_any_instance_of(Gitlab::GitalyClient::Notifications).
+        to receive(:post_receive)
+
+      post api("/internal/notify_post_receive"), valid_wiki_params
 
       expect(response).to have_http_status(200)
     end
@@ -519,6 +558,40 @@ describe API::Internal do
       post api("/internal/notify_post_receive"), valid_params
 
       expect(response).to have_http_status(500)
+    end
+
+    context 'with a gl_repository parameter' do
+      let(:valid_params) do
+        { gl_repository: "project-#{project.id}", secret_token: secret_token }
+      end
+
+      let(:valid_wiki_params) do
+        { gl_repository: "wiki-#{project.id}", secret_token: secret_token }
+      end
+
+      it "calls the Gitaly client with the project's repository" do
+        expect(Gitlab::GitalyClient::Notifications).
+          to receive(:new).with(gitlab_git_repository_with(path: project.repository.path)).
+          and_call_original
+        expect_any_instance_of(Gitlab::GitalyClient::Notifications).
+          to receive(:post_receive)
+
+        post api("/internal/notify_post_receive"), valid_params
+
+        expect(response).to have_http_status(200)
+      end
+
+      it "calls the Gitaly client with the wiki's repository if it's a wiki" do
+        expect(Gitlab::GitalyClient::Notifications).
+          to receive(:new).with(gitlab_git_repository_with(path: project.wiki.repository.path)).
+          and_call_original
+        expect_any_instance_of(Gitlab::GitalyClient::Notifications).
+          to receive(:post_receive)
+
+        post api("/internal/notify_post_receive"), valid_wiki_params
+
+        expect(response).to have_http_status(200)
+      end
     end
   end
 
