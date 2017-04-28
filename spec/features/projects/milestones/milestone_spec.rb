@@ -78,11 +78,10 @@ feature 'Project milestone', :feature do
 
       it 'shows the total MR and issue counts' do
         find('.milestone-sidebar .block', match: :first)
-        blocks = all('.milestone-sidebar .block')
 
         aggregate_failures 'MR and issue blocks' do
-          expect(blocks[3]).to have_content 1
-          expect(blocks[4]).to have_content 0
+          expect(find('.milestone-sidebar .block.issues')).to have_content 1
+          expect(find('.milestone-sidebar .block.merge-requests')).to have_content 0
         end
       end
     end
