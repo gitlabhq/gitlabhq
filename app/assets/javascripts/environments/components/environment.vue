@@ -179,7 +179,11 @@ export default {
             </span>
           </a>
         </li>
+<<<<<<< HEAD:app/assets/javascripts/environments/components/environment.vue
         <li :class="{ active : scope === 'stopped' }">
+=======
+        <li :class="{ 'active' : scope === 'stopped' }">
+>>>>>>> upstream/master:app/assets/javascripts/environments/components/environment.vue
           <a :href="projectStoppedEnvironmentsPath">
             Stopped
             <span class="badge js-stopped-environments-count">
@@ -245,8 +249,12 @@ export default {
           :is-loading-folder-content="isLoadingFolderContent" />
       </div>
 
+<<<<<<< HEAD:app/assets/javascripts/environments/components/environment.vue
       <table-pagination
         v-if="state.paginationInformation && state.paginationInformation.totalPages > 1"
+=======
+      <table-pagination v-if="state.paginationInformation && state.paginationInformation.totalPages > 1"
+>>>>>>> upstream/master:app/assets/javascripts/environments/components/environment.vue
         :change="changePage"
         :pageInfo="state.paginationInformation" />
     </div>

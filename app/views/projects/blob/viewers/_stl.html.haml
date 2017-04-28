@@ -2,7 +2,7 @@
   = page_specific_javascript_bundle_tag('stl_viewer')
 
 .file-content.is-stl-loading
-  .text-center#js-stl-viewer{ data: { endpoint: namespace_project_raw_path(@project.namespace, @project, @id) } }
+  .text-center#js-stl-viewer{ data: { endpoint: blob_raw_url } }
     = icon('spinner spin 2x', class: 'prepend-top-default append-bottom-default', 'aria-hidden' => 'true', 'aria-label' => 'Loading')
   .text-center.prepend-top-default.append-bottom-default.stl-controls
     .btn-group
