@@ -2,7 +2,7 @@ module Gitlab
   module Geo
     OauthApplicationUndefinedError = Class.new(StandardError)
 
-    CACHE_KEYS = %i[
+    CACHE_KEYS = %i(
       geo_primary_node
       geo_secondary_nodes
       geo_node_enabled
@@ -10,7 +10,10 @@ module Gitlab
       geo_node_secondary
       geo_primary_ssh_path_prefix
       geo_oauth_application
-    ].freeze
+    ).freeze
+
+    PRIMARY_JOBS = %i(bulk_notify_job).freeze
+    SECONDARY_JOBS = %i(backfill_job file_download_job).freeze
 
     def self.current_node
       self.cache_value(:geo_node_current) do
@@ -77,6 +80,31 @@ module Gitlab
 
     def self.file_download_job
       Sidekiq::Cron::Job.find('geo_download_dispatch_worker')
+    end
+
+    def self.configure_primary_jobs!
+      PRIMARY_JOBS.each { |job| self.send(job).try(:enable!) }
+      SECONDARY_JOBS.each { |job| self.send(job).try(:disable!) }
+    end
+
+    def self.configure_secondary_jobs!
+      PRIMARY_JOBS.each { |job| self.send(job).try(:disable!) }
+      SECONDARY_JOBS.each { |job| self.send(job).try(:enable!) }
+    end
+
+    def self.disable_all_jobs!
+      PRIMARY_JOBS.each { |job| self.send(job).try(:disable!) }
+      SECONDARY_JOBS.each { |job| self.send(job).try(:disable!) }
+    end
+
+    def self.configure_cron_jobs!
+      if self.primary?
+        self.configure_primary_jobs!
+      elsif self.secondary?
+        self.configure_secondary_jobs!
+      else
+        self.disable_all_jobs!
+      end
     end
 
     def self.oauth_authentication

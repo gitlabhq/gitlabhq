@@ -115,11 +115,7 @@ class GeoNode < ActiveRecord::Base
   end
 
   def refresh_bulk_notify_worker_status
-    if Gitlab::Geo.primary?
-      Gitlab::Geo.bulk_notify_job.try(:enable!)
-    else
-      Gitlab::Geo.bulk_notify_job.try(:disable!)
-    end
+    Gitlab::Geo.configure_cron_jobs!
   end
 
   def build_dependents
