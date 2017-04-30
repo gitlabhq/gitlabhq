@@ -30,7 +30,7 @@
       $els.each((function(_this) {
         return function(i, dropdown) {
           var options = {};
-          var $block, $collapsedSidebar, $dropdown, $loading, $selectbox, $value, abilityName, assignTo, assigneeTemplate, collapsedAssigneeTemplate, defaultLabel, firstUser, issueURL, selectedId, showAnyUser, showNullUser, showMenuAbove;
+          var $block, $collapsedSidebar, $dropdown, $loading, $selectbox, $value, abilityName, assignTo, assigneeTemplate, collapsedAssigneeTemplate, defaultLabel, defaultNullUser, firstUser, issueURL, selectedId, showAnyUser, showNullUser, showMenuAbove;
           $dropdown = $(dropdown);
           options.projectId = $dropdown.data('project-id');
           options.groupId = $dropdown.data('group-id');
@@ -38,6 +38,7 @@
           options.todoFilter = $dropdown.data('todo-filter');
           options.todoStateFilter = $dropdown.data('todo-state-filter');
           showNullUser = $dropdown.data('null-user');
+          defaultNullUser = $dropdown.data('null-user-default');
           showMenuAbove = $dropdown.data('showMenuAbove');
           showAnyUser = $dropdown.data('any-user');
           firstUser = $dropdown.data('first-user');
@@ -50,7 +51,8 @@
           $value = $block.find('.value');
           $collapsedSidebar = $block.find('.sidebar-collapsed-user');
           $loading = $block.find('.block-loading').fadeOut();
-          selectedId = $dropdown.data('selected') || showNullUser ? 0 : null;
+          selectedId = $dropdown.data('selected');
+          if (!selectedId) selectedId = (defaultNullUser && showNullUser) ? 0 : null;
 
           var updateIssueBoardsIssue = function () {
             $loading.removeClass('hidden').fadeIn();
