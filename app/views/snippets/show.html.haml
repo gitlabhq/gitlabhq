@@ -3,7 +3,7 @@
 = render 'shared/snippets/header'
 
 %article.file-holder.snippet-file-content
-  = render 'shared/snippets/blob', download_path: download_snippet_path(@snippet)
+  = render 'shared/snippets/blob'
 
 .row-content-block.top-block.content-component-block
   = render 'award_emoji/awards_block', awardable: @snippet, inline: true

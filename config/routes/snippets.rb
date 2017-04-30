@@ -1,7 +1,6 @@
 resources :snippets, concerns: :awardable do
   member do
-    get 'raw'
-    get 'download'
+    get :raw
     post :mark_as_spam
     post :preview_markdown
   end

@@ -118,15 +118,15 @@ module BlobHelper
     icon("#{file_type_icon_class('file', mode, name)} fw")
   end
 
-  def blob_raw_url
+  def blob_raw_url(params = {})
     if @snippet
       if @snippet.project_id
-        raw_namespace_project_snippet_path(@project.namespace, @project, @snippet)
+        raw_namespace_project_snippet_path(@project.namespace, @project, @snippet, params)
       else
-        raw_snippet_path(@snippet)
+        raw_snippet_path(@snippet, params)
       end
     elsif @blob
-      namespace_project_raw_path(@project.namespace, @project, @id)
+      namespace_project_raw_path(@project.namespace, @project, @id, params)
     end
   end
 
