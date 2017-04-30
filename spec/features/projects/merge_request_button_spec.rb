@@ -25,7 +25,7 @@ feature 'Merge Request button', feature: true do
       it 'shows Create merge request button' do
         href = new_namespace_project_merge_request_path(project.namespace,
                                                         project,
-                                                        merge_request: { source_branch: 'feature',
+                                                        merge_request: { source_branch: "'test'",
                                                                          target_branch: 'master' })
 
         visit url
@@ -69,7 +69,7 @@ feature 'Merge Request button', feature: true do
         it 'shows Create merge request button' do
           href = new_namespace_project_merge_request_path(forked_project.namespace,
                                                           forked_project,
-                                                          merge_request: { source_branch: 'feature',
+                                                          merge_request: { source_branch: "'test'",
                                                                            target_branch: 'master' })
 
           visit fork_url
@@ -93,16 +93,16 @@ feature 'Merge Request button', feature: true do
   context 'on compare page' do
     it_behaves_like 'Merge request button only shown when allowed' do
       let(:label) { 'Create merge request' }
-      let(:url) { namespace_project_compare_path(project.namespace, project, from: 'master', to: 'feature') }
-      let(:fork_url) { namespace_project_compare_path(forked_project.namespace, forked_project, from: 'master', to: 'feature') }
+      let(:url) { namespace_project_compare_path(project.namespace, project, from: 'master', to: "'test'") }
+      let(:fork_url) { namespace_project_compare_path(forked_project.namespace, forked_project, from: 'master', to: "'test'") }
     end
   end
 
   context 'on commits page' do
     it_behaves_like 'Merge request button only shown when allowed' do
       let(:label) { 'Create merge request' }
-      let(:url) { namespace_project_commits_path(project.namespace, project, 'feature') }
-      let(:fork_url) { namespace_project_commits_path(forked_project.namespace, forked_project, 'feature') }
+      let(:url) { namespace_project_commits_path(project.namespace, project, "'test'") }
+      let(:fork_url) { namespace_project_commits_path(forked_project.namespace, forked_project, "'test'") }
     end
   end
 end

@@ -75,7 +75,7 @@ describe 'Cherry-pick Commits' do
       wait_for_ajax
 
       page.within('#modal-cherry-pick-commit .dropdown-menu .dropdown-content') do
-        click_link 'feature'
+        click_link "'test'"
       end
 
       page.within('#modal-cherry-pick-commit') do
