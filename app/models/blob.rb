@@ -28,6 +28,8 @@ class Blob < SimpleDelegator
     BlobViewer::Sketch,
     BlobViewer::Balsamiq,
 
+    BlobViewer::Video,
+    
     BlobViewer::PDF,
 
     BlobViewer::BinarySTL,

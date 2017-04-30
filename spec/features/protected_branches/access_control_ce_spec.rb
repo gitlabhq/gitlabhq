@@ -9,7 +9,7 @@ RSpec.shared_examples "protected branches > access control > CE" do
         allowed_to_push_button = find(".js-allowed-to-push")
 
         unless allowed_to_push_button.text == access_type_name
-          allowed_to_push_button.click
+          allowed_to_push_button.trigger('click')
           within(".dropdown.open .dropdown-menu") { click_on access_type_name }
         end
       end
