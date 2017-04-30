@@ -23,6 +23,7 @@ class RenameReservedDynamicPaths < ActiveRecord::Migration
     notification_settings
     oauth
     sent_notifications
+    unicorn_test
     uploads
     users
   ]
@@ -33,9 +34,19 @@ class RenameReservedDynamicPaths < ActiveRecord::Migration
     info/lfs/objects
   ]
 
+  DISSALLOWED_GROUP_PATHS = %w[
+    activity
+    avatar
+    group_members
+    labels
+    milestones
+    subgroups
+  ]
+
   def up
     rename_root_paths(DISALLOWED_ROOT_PATHS)
     rename_wildcard_paths(DISALLOWED_WILDCARD_PATHS)
+    rename_child_paths(DISSALLOWED_GROUP_PATHS)
   end
 
   def down

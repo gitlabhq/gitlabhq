@@ -1,5 +1,18 @@
 require 'spec_helper'
 
+shared_examples 'renames child namespaces' do |type|
+  it 'renames namespaces' do
+    rename_namespaces = double
+    expect(described_class::RenameNamespaces).
+      to receive(:new).with(['first-path', 'second-path'], subject).
+           and_return(rename_namespaces)
+    expect(rename_namespaces).to receive(:rename_namespaces).
+                                   with(type: :child)
+
+    subject.rename_wildcard_paths(['first-path', 'second-path'])
+  end
+end
+
 describe Gitlab::Database::RenameReservedPathsMigration::V1 do
   let(:subject) { FakeRenameReservedPathMigrationV1.new }
 
@@ -7,17 +20,12 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1 do
     allow(subject).to receive(:say)
   end
 
-  describe '#rename_wildcard_paths' do
-    it 'should rename namespaces' do
-      rename_namespaces = double
-      expect(described_class::RenameNamespaces).
-        to receive(:new).with(['first-path', 'second-path'], subject).
-             and_return(rename_namespaces)
-      expect(rename_namespaces).to receive(:rename_namespaces).
-                           with(type: :wildcard)
+  describe '#rename_child_paths' do
+    it_behaves_like 'renames child namespaces'
+  end
 
-      subject.rename_wildcard_paths(['first-path', 'second-path'])
-    end
+  describe '#rename_wildcard_paths' do
+    it_behaves_like 'renames child namespaces'
 
     it 'should rename projects' do
       rename_projects = double

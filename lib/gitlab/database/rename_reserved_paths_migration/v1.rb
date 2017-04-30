@@ -7,9 +7,14 @@ module Gitlab
         end
 
         def rename_wildcard_paths(one_or_more_paths)
+          rename_child_paths(one_or_more_paths)
           paths = Array(one_or_more_paths)
-          RenameNamespaces.new(paths, self).rename_namespaces(type: :wildcard)
           RenameProjects.new(paths, self).rename_projects
+        end
+
+        def rename_child_paths(one_or_more_paths)
+          paths = Array(one_or_more_paths)
+          RenameNamespaces.new(paths, self).rename_namespaces(type: :child)
         end
 
         def rename_root_paths(paths)

@@ -21,13 +21,13 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces do
         parent = create(:namespace, path: 'parent')
         child = create(:namespace, path: 'the-path', parent: parent)
 
-        found_ids = subject.namespaces_for_paths(type: :wildcard).
+        found_ids = subject.namespaces_for_paths(type: :child).
                       map(&:id)
         expect(found_ids).to contain_exactly(child.id)
       end
     end
 
-    context 'for wildcard namespaces' do
+    context 'for child namespaces' do
       it 'only returns child namespaces with the correct path' do
         _root_namespace = create(:namespace, path: 'THE-path')
         _other_path = create(:namespace,
@@ -37,7 +37,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces do
                            path: 'the-path',
                            parent: create(:namespace))
 
-        found_ids = subject.namespaces_for_paths(type: :wildcard).
+        found_ids = subject.namespaces_for_paths(type: :child).
                       map(&:id)
         expect(found_ids).to contain_exactly(namespace.id)
       end
@@ -165,7 +165,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces do
       expect(subject).to receive(:rename_namespace).
                            with(migration_namespace(child_namespace))
 
-      subject.rename_namespaces(type: :wildcard)
+      subject.rename_namespaces(type: :child)
     end
   end
 end

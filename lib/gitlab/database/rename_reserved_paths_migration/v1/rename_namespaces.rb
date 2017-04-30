@@ -13,7 +13,7 @@ module Gitlab
 
           def namespaces_for_paths(type:)
             namespaces = case type
-                         when :wildcard
+                         when :child
                            MigrationClasses::Namespace.where.not(parent_id: nil)
                          when :top_level
                            MigrationClasses::Namespace.where(parent_id: nil)
