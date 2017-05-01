@@ -7,6 +7,7 @@ import RUNNING_SVG from 'icons/_icon_status_running_borderless.svg';
 import SKIPPED_SVG from 'icons/_icon_status_skipped_borderless.svg';
 import SUCCESS_SVG from 'icons/_icon_status_success_borderless.svg';
 import WARNING_SVG from 'icons/_icon_status_warning_borderless.svg';
+import NOT_FOUND_SVG from 'icons/_icon_status_not_found_borderless.svg';
 
 const StatusIconEntityMap = {
   icon_status_canceled: CANCELED_SVG,
@@ -18,6 +19,7 @@ const StatusIconEntityMap = {
   icon_status_skipped: SKIPPED_SVG,
   icon_status_success: SUCCESS_SVG,
   icon_status_warning: WARNING_SVG,
+  icon_status_not_found: NOT_FOUND_SVG,
 };
 
 export {
@@ -30,5 +32,6 @@ export {
   SKIPPED_SVG,
   SUCCESS_SVG,
   WARNING_SVG,
+  NOT_FOUND_SVG,
   StatusIconEntityMap as default,
 };

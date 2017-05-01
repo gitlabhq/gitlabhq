@@ -11,6 +11,7 @@ describe('CI status icons', () => {
     'skipped',
     'success',
     'warning',
+    'not_found',
   ];
 
   statuses.forEach((status) => {
@@ -23,19 +24,9 @@ describe('CI status icons', () => {
   });
 
   describe('default export map', () => {
-    const entityIconNames = [
-      'icon_status_canceled',
-      'icon_status_created',
-      'icon_status_failed',
-      'icon_status_manual',
-      'icon_status_pending',
-      'icon_status_running',
-      'icon_status_skipped',
-      'icon_status_success',
-      'icon_status_warning',
-    ];
+    statuses.forEach((status) => {
+      const iconName = `icon_status_${status}`;
 
-    entityIconNames.forEach((iconName) => {
       it(`should have a '${iconName}' key`, () => {
         expect(Object.hasOwnProperty.call(icons.default, iconName)).toBe(true);
       });
