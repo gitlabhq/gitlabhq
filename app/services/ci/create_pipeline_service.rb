@@ -2,7 +2,7 @@ module Ci
   class CreatePipelineService < BaseService
     attr_reader :pipeline
 
-    def execute(ignore_skip_ci: false, save_on_errors: true, trigger_request: nil)
+    def execute(ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil)
       @pipeline = Ci::Pipeline.new(
         project: project,
         ref: ref,
@@ -10,7 +10,8 @@ module Ci
         before_sha: before_sha,
         tag: tag?,
         trigger_requests: Array(trigger_request),
-        user: current_user
+        user: current_user,
+        pipeline_schedule: schedule
       )
 
       unless project.builds_enabled?

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 feature 'Pipeline Schedules', :feature do
-  let!(:project) { create(:empty_project) }
+  set(:project) { create(:empty_project) }
 
   describe 'GET /projects/pipeline_schedules' do
     let!(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
@@ -9,7 +9,7 @@ feature 'Pipeline Schedules', :feature do
     let(:user) { create(:user) }
 
     before do
-      project.team << [user, :master]
+      project.add_developer(user)
 
       login_as(user)
       visit_pipelines_schedules
@@ -23,10 +23,10 @@ feature 'Pipeline Schedules', :feature do
       expect { visit_pipelines_schedules }.not_to exceed_query_limit(control_count)
     end
 
-    context 'scope is set to active' do
+    context 'when the scope is set to active' do
       let(:scope) { 'active' }
 
-      it 'lets bryce write a new test' do
+      xit 'lets bryce write a new test' do
       end
     end
 

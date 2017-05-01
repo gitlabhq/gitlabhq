@@ -1,9 +1,10 @@
 class Projects::PipelineSchedulesController < Projects::ApplicationController
   before_action :authorize_read_pipeline_schedule!
-  before_action :authorize_create_pipeline_schedule!, only: [:new, :create, :edit, :take_ownership]
+  before_action :authorize_create_pipeline_schedule!, only: [:new, :create]
+  before_action :authorize_create_pipeline_schedule!, only: [:edit, :take_ownership]
   before_action :authorize_admin_pipeline_schedule!, only: [:destroy]
 
-  before_action :pipeline_schedule, only: [:edit, :update, :destroy, :take_ownership]
+  before_action :schedule, only: [:edit, :update, :destroy, :take_ownership]
 
   def index
     @scope = params[:scope]
@@ -12,15 +13,15 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   end
 
   def new
-    @pipeline_schedule = project.pipeline_schedules.new
+    @schedule = project.pipeline_schedules.new
   end
 
   def create
-    @pipeline_schedule = Ci::CreatePipelineScheduleService.
-      new(@project, current_user, pipeline_schedule_params).
-      execute
+    @schedule = Ci::CreatePipelineScheduleService
+      .new(@project, current_user, schedule_params)
+      .execute
 
-    if @pipeline_schedule.persisted?
+    if @schedule.persisted?
       redirect_to pipeline_schedules_path(@project)
     else
       render :new
@@ -31,7 +32,7 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   end
 
   def update
-    if @pipeline_schedule.update(pipeline_schedule_params)
+    if schedule.update(schedule_params)
       redirect_to pipeline_schedules_path(@project)
     else
       render :edit
@@ -39,25 +40,29 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   end
 
   def take_ownership
-    @pipeline_schedule.own!(current_user)
-
-    redirect_to pipeline_schedules_path(@project)
+    if schedule.update(owner: current_user)
+      redirect_to pipeline_schedules_path(@project)
+    else
+      redirect_to pipeline_schedules_path(@project), alert: "Failed to change the owner"
+    end
   end
 
   def destroy
-    @pipeline_schedule.destroy
-
-    redirect_to pipeline_schedules_path(@project)
+    if schedule.destroy
+      redirect_to pipeline_schedules_path(@project)
+    else
+      redirect_to pipeline_schedules_path(@project), alert: "Failed to remove the pipeline schedule"
+    end
   end
 
   private
 
-  def pipeline_schedule
-    @pipeline_schedule = project.pipeline_schedules.find(params[:id])
+  def schedule
+    @schedule ||= project.pipeline_schedules.find(params[:id])
   end
 
-  def pipeline_schedule_params
-    params.require(:pipeline_schedule).
-      permit(:description, :cron, :cron_timezone, :ref, :active)
+  def schedule_params
+    params.require(:pipeline_schedule)
+      .permit(:description, :cron, :cron_timezone, :ref, :active)
   end
 end

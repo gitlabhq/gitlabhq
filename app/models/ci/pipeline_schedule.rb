@@ -19,12 +19,13 @@ module Ci
     scope :active, -> { where(active: true) }
     scope :inactive, -> { where(active: false) }
 
-    def own!(current_user)
-      update(owner: current_user)
-    end
-
     def owned_by?(current_user)
       owner == current_user
+    end
+
+    def can_take_ownership?(current_user)
+      Ability.allowed?(current_user, :update_pipeline_schedule, project) &&
+        !pipeline_schedule.owned_by?(current_user)
     end
 
     def last_pipeline

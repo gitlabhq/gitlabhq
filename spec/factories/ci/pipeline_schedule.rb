@@ -4,7 +4,7 @@ FactoryGirl.define do
     cron_timezone Gitlab::Ci::CronParser::VALID_SYNTAX_SAMPLE_TIME_ZONE
     ref 'master'
     active true
-    description "trigger schedule"
+    description "pipeline schedule"
     project factory: :empty_project
 
     trait :nightly do

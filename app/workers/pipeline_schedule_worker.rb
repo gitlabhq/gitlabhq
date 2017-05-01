@@ -1,12 +1,15 @@
-class PipelineSchedularWorker 
+class PipelineScheduleWorker
   include Sidekiq::Worker
   include CronjobQueue
 
   def perform
     Ci::PipelineSchedule.active.where("next_run_at < ?", Time.now).find_each do |schedule|
       begin
-        Ci::CreatePipelineService.new(schedule.project, schedule.owner, ref: schedule.ref).
-          execute(save_on_errors: false)
+        Ci::CreatePipelineService.new(schedule.project,
+                                      schedule.owner,
+                                      ref: schedule.ref,
+                                      schedule: schedule)
+          .execute(save_on_errors: false)
       rescue => e
         Rails.logger.error "#{schedule.id}: Failed to create a scheduled pipeline: #{e.message}"
       ensure

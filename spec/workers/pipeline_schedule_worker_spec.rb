@@ -1,7 +1,8 @@
 require 'spec_helper'
 
-describe PipelineSchedularWorker do
+describe PipelineScheduleWorker do
   subject { described_class.new.perform }
+
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 
@@ -10,7 +11,7 @@ describe PipelineSchedularWorker do
   end
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
 
     stub_ci_pipeline_to_return_yaml_file
   end

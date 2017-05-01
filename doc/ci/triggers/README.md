@@ -215,3 +215,5 @@ You can add the following webhook to another project in order to trigger a job:
 ```
 https://gitlab.example.com/api/v4/projects/9/ref/master/trigger/pipeline?token=TOKEN&variables[UPLOAD_TO_S3]=true
 ```
+
+[ci-229]: https://gitlab.com/gitlab-org/gitlab-ci/merge_requests/229

@@ -19,10 +19,10 @@
 
   %td
     - # mind you: in theory a user can be destroyed, but the pipeline still exist!
-    = schedule.owner.name
+    = schedule.owner&.name
 
   %td
-    - if can?(current_user, :update_pipeline, @project) && !pipeline_schedule.owned_by?(current_user)
+    - if schedule.can_take_ownership?(current_user)
       = link_to take_ownership_pipeline_schedule_path(schedule), method: :post, title: 'Take Ownership', class: 'btn' do
         Take ownership
     - if true #can?(current_user, :update_pipeline_schedule, pipeline_schedule)

@@ -1,27 +1,23 @@
 require 'spec_helper'
 
 describe Projects::PipelineSchedulesController do
-  let(:project) { create(:empty_project) }
-  let(:user) { create(:user) }
+  set(:project) { create(:empty_project, :public) }
   let!(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
 
-  before do
-    project.team << [user, :master]
-
-    sign_in(user)
-  end
-
   describe 'GET #index' do
-    let!(:inactive_pipeline_schedule) { create(:ci_pipeline_schedule, :inactive, project: project) }
     let(:scope) { nil }
+    let!(:inactive_pipeline_schedule) do
+      create(:ci_pipeline_schedule, :inactive, project: project)
+    end
 
-    it 'includes all pipeline schedules' do
+    it 'renders the index view' do
       visit_pipelines_schedules
 
       expect(response).to have_http_status(:ok)
+      expect(response).to render_template(:index)
     end
 
-    context 'scope is set to active' do
+    context 'when the scope is set to active' do
       let(:scope) { 'active' }
 
       before do
@@ -41,11 +37,19 @@ describe Projects::PipelineSchedulesController do
   end
 
   describe 'GET edit' do
+    let(:user) { create(:user) }
+
+    before do
+      project.add_master(user)
+
+      sign_in(user)
+    end
+
     it 'loads the pipeline schedule' do
       get :edit, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
 
       expect(response).to have_http_status(:ok)
-      expect(assigns(:pipeline_schedule)).to eq(pipeline_schedule)
+      expect(assigns(:schedule)).to eq(pipeline_schedule)
     end
   end
 end

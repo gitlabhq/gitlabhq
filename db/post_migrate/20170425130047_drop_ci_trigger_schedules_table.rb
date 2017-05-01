@@ -23,7 +23,7 @@ class DropCiTriggerSchedulesTable < ActiveRecord::Migration
       t.boolean "active"
     end
 
-    add_index "ci_trigger_schedules", ["active", "next_run_at"], name: "index_ci_trigger_schedules_on_active_and_next_run_at", using: :btree
+    add_index "ci_trigger_schedules", %w(active next_run_at), name: "index_ci_trigger_schedules_on_active_and_next_run_at", using: :btree
     add_index "ci_trigger_schedules", ["project_id"], name: "index_ci_trigger_schedules_on_project_id", using: :btree
     add_index "ci_trigger_schedules", ["next_run_at"], name: "index_ci_trigger_schedules_on_next_run_at"
 

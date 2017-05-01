@@ -31,7 +31,7 @@ class MigrateTriggerSchedulesToPipelineSchedules < ActiveRecord::Migration
         ci_triggers.owner_id,
         ci_triggers.description
       FROM ci_trigger_schedules
-      LEFT JOIN ci_triggers ON ci_trigger_schedules.trigger_id=ci_triggers.id;
+      INNER JOIN ci_triggers ON ci_trigger_schedules.trigger_id=ci_triggers.id;
     SQL
 
     # Using the foreign key, this removes the trigger schedules also.
@@ -39,7 +39,7 @@ class MigrateTriggerSchedulesToPipelineSchedules < ActiveRecord::Migration
     # throw a `ERROR 1093 (HY000): You can't specify target table 'ci_triggers' for update in FROM clause`
     connection.execute <<-SQL
       DELETE FROM ci_triggers
-      WHERE id IN (
+      WHERE EXISTS (
         SELECT trigger_id FROM (
           SELECT ci_triggers.id AS trigger_id FROM ci_triggers
           LEFT JOIN ci_trigger_schedules ON ci_triggers.id = ci_trigger_schedules.trigger_id
