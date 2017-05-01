@@ -185,6 +185,7 @@ Parameters:
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `statistics` | boolean | no | Include project statistics |
 
 ```json
 {
@@ -256,7 +257,14 @@ Parameters:
   ],
   "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
-  "request_access_enabled": false
+  "request_access_enabled": false,
+  "statistics": {
+    "commit_count": 37,
+    "storage_size": 1038090,
+    "repository_size": 1038090,
+    "lfs_objects_size": 0,
+    "job_artifacts_size": 0
+  }
 }
 ```
 
