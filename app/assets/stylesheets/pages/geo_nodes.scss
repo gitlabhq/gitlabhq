@@ -1,11 +1,55 @@
-.geo-node-icon-healthy {
+.geo-node-healthy {
   color: $gl-success;
 }
 
-.geo-node-icon-unhealthy {
+.geo-node-unhealthy {
   color: $gl-danger;
 }
 
-.geo-node-icon-disabled {
+.geo-node-disabled {
   color: $gray-darkest;
+}
+
+.well-list.geo-nodes {
+  li {
+    position: relative;
+
+    &:hover {
+      background: $white-light;
+    }
+  }
+}
+
+.node-info {
+  font-weight: bold;
+  color: $gl-text-color;
+}
+
+.geo-health {
+  display: inline-block;
+  margin-top: 5px;
+}
+
+.primary-node-badge {
+  color: $white-light;
+  background-color: $blue-300;
+  display: inline-block;
+  margin-left: 5px;
+  padding: 0 5px;
+  border-radius: 3px;
+}
+
+.node-actions {
+  position: absolute;
+  right: 15px;
+  top: 10px;
+
+  @media (max-width: $screen-xs-max) {
+    position: initial;
+    margin-top: 10px;
+  }
+
+  .btn:not(:first-of-type) {
+    margin-left: 10px;
+  }
 }
