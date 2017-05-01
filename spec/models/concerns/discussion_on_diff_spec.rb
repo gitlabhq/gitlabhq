@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe DiffDiscussion, DiscussionOnDiff, model: true do
+describe DiscussionOnDiff, model: true do
   subject { create(:diff_note_on_merge_request).to_discussion }
 
   describe "#truncated_diff_lines" do
@@ -8,9 +8,9 @@ describe DiffDiscussion, DiscussionOnDiff, model: true do
 
     context "when diff is greater than allowed number of truncated diff lines " do
       it "returns fewer lines"  do
-        expect(subject.diff_lines.count).to be > described_class::NUMBER_OF_TRUNCATED_DIFF_LINES
+        expect(subject.diff_lines.count).to be > DiffDiscussion::NUMBER_OF_TRUNCATED_DIFF_LINES
 
-        expect(truncated_lines.count).to be <= described_class::NUMBER_OF_TRUNCATED_DIFF_LINES
+        expect(truncated_lines.count).to be <= DiffDiscussion::NUMBER_OF_TRUNCATED_DIFF_LINES
       end
     end
 
