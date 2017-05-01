@@ -17,7 +17,7 @@ describe Gitlab::OtherMarkup, lib: true do
       context = {}
       output = render('file.rdoc', '{Google}[https://google.com]', context)
 
-      expect(output).to include('rel="nofollow noreferrer"')
+      expect(output).to include('rel="nofollow noreferrer noopener"')
     end
   end
 
