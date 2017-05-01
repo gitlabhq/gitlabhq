@@ -13,7 +13,9 @@ const issueShowInterceptor = (request, next) => {
   }));
 };
 
-describe('Issue Title', () => {
+fdescribe('Issue Title', () => {
+  document.body.innerHTML = '<span id="task_status"></span>';
+
   const comps = {
     IssueTitleComponent: {},
   };
@@ -40,7 +42,7 @@ describe('Issue Title', () => {
     // need setTimeout because actual setTimeout in code :P
     setTimeout(() => {
       expect(document.querySelector('title').innerText)
-        .toContain('this is a title');
+        .toContain('this is a title (#1)');
 
       expect(issueShowComponent.$el.querySelector('.title').innerHTML)
         .toContain('<p>this is a title</p>');

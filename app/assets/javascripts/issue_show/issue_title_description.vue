@@ -31,6 +31,7 @@ export default {
       poll,
       timeoutId: null,
       title: '<span></span>',
+      titleText: '',
       description: '<span></span>',
       descriptionText: '',
       descriptionChange: false,
@@ -40,16 +41,18 @@ export default {
   methods: {
     renderResponse(res) {
       const data = JSON.parse(res.body);
+      this.issueIID = data.issue_number;
       this.triggerAnimation(data);
     },
     updateTaskHTML(data) {
       this.taskStatus = data.task_status;
       document.querySelector('#task_status').innerText = this.taskStatus;
     },
-    elementsToVisualize(noTitleChange, noDescriptionChange) {
+    elementsToVisualize(noTitleChange, noDescriptionChange, data) {
       const elementStack = [];
 
       if (!noTitleChange) {
+        this.titleText = data.title_text;
         elementStack.push(this.$el.querySelector('.title'));
       }
 
@@ -66,11 +69,17 @@ export default {
 
       return elementStack;
     },
+    setTabTitle() {
+      const currentTabTitle = document.querySelector('title');
+      const currentTabTitleScope = currentTabTitle.innerText.split('·');
+      currentTabTitleScope[0] = `${this.titleText} (#${this.issueIID}) `;
+      currentTabTitle.innerText = currentTabTitleScope.join('·');
+    },
     animate(title, description, elementsToVisualize) {
       this.timeoutId = setTimeout(() => {
         this.title = title;
         this.description = description;
-        document.querySelector('title').innerText = title;
+        this.setTabTitle();
 
         elementsToVisualize.forEach((element) => {
           element.classList.remove('issue-realtime-pre-pulse');
@@ -99,6 +108,7 @@ export default {
       const elementsToVisualize = this.elementsToVisualize(
         noTitleChange,
         noDescriptionChange,
+        data,
       );
 
       this.animate(title, description, elementsToVisualize);
