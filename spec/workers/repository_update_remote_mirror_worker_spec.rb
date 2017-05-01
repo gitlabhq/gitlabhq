@@ -11,7 +11,7 @@ describe RepositoryUpdateRemoteMirrorWorker do
   end
 
   describe '#perform' do
-    context 'with status scheduling' do
+    context 'with status none' do
       before do
         remote_mirror.update_attributes(update_status: 'none')
       end
@@ -23,11 +23,13 @@ describe RepositoryUpdateRemoteMirrorWorker do
       end
 
       it 'sets status as failed when update remote mirror service executes with errors' do
-        expect_any_instance_of(Projects::UpdateRemoteMirrorService).to receive(:execute).with(remote_mirror).and_return(status: :error, message: 'fail!')
+        error_message = 'fail!'
 
+        expect_any_instance_of(Projects::UpdateRemoteMirrorService).to receive(:execute).with(remote_mirror).and_return(status: :error, message: error_message)
         expect do
           subject.perform(remote_mirror.id, Time.now)
-        end.to raise_error
+        end.to raise_error(RepositoryUpdateRemoteMirrorWorker::UpdateError, 'fail!')
+
         expect(remote_mirror.reload.update_status).to eq('failed')
       end
 
@@ -38,6 +40,18 @@ describe RepositoryUpdateRemoteMirrorWorker do
         expect_any_instance_of(Projects::UpdateRemoteMirrorService).not_to receive(:execute).with(remote_mirror)
 
         expect(subject.perform(remote_mirror.id, scheduled_time)).to be_nil
+      end
+    end
+
+    context 'with another worker already running' do
+      before do
+        remote_mirror.update_attributes(update_status: 'started')
+      end
+
+      it 'raises RemoteMirrorUpdateAlreadyInProgressError' do
+        expect do
+          subject.perform(remote_mirror.id, Time.now)
+        end.to raise_error(RepositoryUpdateRemoteMirrorWorker::UpdateAlreadyInProgressError)
       end
     end
 

@@ -74,8 +74,7 @@ class RemoteMirror < ActiveRecord::Base
   end
 
   def sync
-    return unless project
-    return if !enabled || update_in_progress?
+    return unless project && enabled
 
     schedule_update_job
   end

@@ -21,10 +21,11 @@ describe GitPushService, services: true do
     let(:ref)      { @ref }
 
     subject do
-      described_class.new(project, user, oldrev: oldrev, newrev: newrev, ref: ref )
+      described_class.new(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
     end
 
     it 'fails stuck remote mirrors' do
+      allow(project).to receive(:update_remote_mirrors).and_return(project.remote_mirrors)
       expect(project).to receive(:mark_stuck_remote_mirrors_as_failed!)
 
       subject.execute
