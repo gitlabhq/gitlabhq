@@ -4,6 +4,24 @@ describe IssuablesHelper do
   let(:label)  { build_stubbed(:label) }
   let(:label2) { build_stubbed(:label) }
 
+  describe '#users_dropdown_label' do
+    let(:user)  { build_stubbed(:user) }
+    let(:user2)  { build_stubbed(:user) }
+
+    it 'returns unassigned' do
+      expect(users_dropdown_label([])).to eq('Unassigned')
+    end
+
+    it 'returns selected user\'s name' do
+      expect(users_dropdown_label([user])).to eq(user.name)
+    end
+
+    it 'returns selected user\'s name and counter' do
+
+      expect(users_dropdown_label([user, user2])).to eq("#{user.name} + 1 more")
+    end
+  end
+
   describe '#issuable_labels_tooltip' do
     it 'returns label text' do
       expect(issuable_labels_tooltip([label])).to eq(label.title)
