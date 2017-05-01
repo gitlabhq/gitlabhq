@@ -27,7 +27,7 @@ export default class SidebarStore {
     this.timeEstimate = data.time_estimate;
     this.totalTimeSpent = data.total_time_spent;
     this.humanTimeEstimate = data.human_time_estimate;
-    this.humanTimeSpent = data.human_time_spent;
+    this.humanTotalTimeSpent = data.human_total_time_spent;
   }
 
   addAssignee(assignee) {
