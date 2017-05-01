@@ -24,7 +24,7 @@ export default class TemplateSelector {
       search: {
         fields: ['name'],
       },
-      clicked: (options) => this.fetchFileTemplate(options),
+      clicked: options => this.fetchFileTemplate(options),
       text: item => item.name,
     });
   }

@@ -44,7 +44,6 @@
             return $el.text();
           },
           clicked: (options) => {
-            const selected = options.selectedObj;
             const $link = options.$el;
 
             if (!$link.data('revert')) {

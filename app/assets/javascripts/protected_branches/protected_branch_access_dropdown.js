@@ -53,9 +53,9 @@
             onHide();
           }
         },
-        clicked(options) {
-          const { $el, e } = options;
-          const item = options.selectedObj;
+        clicked(opts) {
+          const { $el, e } = opts;
+          const item = opts.selectedObj;
 
           e.preventDefault();
 
