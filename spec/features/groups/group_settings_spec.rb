@@ -52,6 +52,9 @@ feature 'Edit group settings', feature: true do
       given!(:project) { create(:project, group: group, path: 'project') }
       given(:old_project_full_path) { "/#{group.path}/#{project.path}" }
       given(:new_project_full_path) { "/#{new_group_path}/#{project.path}" }
+      
+      before(:context) { TestEnv.clean_test_path }
+      after(:example) { TestEnv.clean_test_path }
 
       scenario 'the project is accessible via the new path' do
         update_path(new_group_path)

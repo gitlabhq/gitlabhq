@@ -31,9 +31,8 @@ feature 'Profile > Account', feature: true do
       given(:new_project_path) { "/#{new_username}/#{project.path}" }
       given(:old_project_path) { "/#{user.username}/#{project.path}" }
 
-      after do
-        TestEnv.clean_test_path
-      end
+      before(:context) { TestEnv.clean_test_path }
+      after(:example) { TestEnv.clean_test_path }
 
       scenario 'the project is accessible via the new path' do
         update_username(new_username)

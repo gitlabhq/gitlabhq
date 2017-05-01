@@ -1040,6 +1040,14 @@ ActiveRecord::Schema.define(version: 20170504102911) do
 
   add_index "protected_tags", ["project_id"], name: "index_protected_tags_on_project_id", using: :btree
 
+  create_table "redirect_routes", force: :cascade do |t|
+    t.integer "source_id", null: false
+    t.string "source_type", null: false
+    t.string "path", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "releases", force: :cascade do |t|
     t.string "tag"
     t.text "description"

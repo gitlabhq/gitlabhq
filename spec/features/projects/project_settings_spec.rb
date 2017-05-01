@@ -58,6 +58,9 @@ describe 'Edit Project Settings', feature: true do
       # Not using empty project because we need a repo to exist
       let(:project) { create(:project, namespace: user.namespace, name: 'gitlabhq') }
 
+      before(:context) { TestEnv.clean_test_path }
+      after(:example) { TestEnv.clean_test_path }
+
       specify 'the project is accessible via the new path' do
         rename_project(project, path: 'bar')
         new_path = namespace_project_path(project.namespace, 'bar')
@@ -92,9 +95,10 @@ describe 'Edit Project Settings', feature: true do
     # Not using empty project because we need a repo to exist
     let(:project) { create(:project, namespace: user.namespace, name: 'gitlabhq') }
     let(:group) { create(:group) }
-    before do
-      group.add_owner(user)
-    end
+
+    before(:context) { TestEnv.clean_test_path }
+    before(:example) { group.add_owner(user) }
+    after(:example) { TestEnv.clean_test_path }
 
     specify 'the project is accessible via the new path' do
       transfer_project(project, group)

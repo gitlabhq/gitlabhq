@@ -1,4 +1,6 @@
 class Projects::ApplicationController < ApplicationController
+  include RoutableActions
+
   skip_before_action :authenticate_user!
   before_action :project
   before_action :repository
@@ -24,20 +26,14 @@ class Projects::ApplicationController < ApplicationController
       end
 
       project_path = "#{namespace}/#{id}"
-      @project = Project.find_by_full_path(project_path)
+      @project = Project.find_by_full_path(project_path, follow_redirects: request.get?)
 
       if can?(current_user, :read_project, @project) && !@project.pending_delete?
-        if @project.path_with_namespace != project_path
-          redirect_to request.original_url.gsub(project_path, @project.path_with_namespace)
-        end
+        ensure_canonical_path(@project, project_path)
       else
         @project = nil
 
-        if current_user.nil?
-          authenticate_user!
-        else
-          render_404
-        end
+        route_not_found
       end
     end
 

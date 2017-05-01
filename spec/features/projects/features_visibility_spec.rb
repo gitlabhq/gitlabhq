@@ -68,20 +68,23 @@ describe 'Edit Project Settings', feature: true do
   end
 
   describe 'project features visibility pages' do
-    before do
-      @tools =
-        {
-          builds: namespace_project_pipelines_path(project.namespace, project),
-          issues: namespace_project_issues_path(project.namespace, project),
-          wiki: namespace_project_wiki_path(project.namespace, project, :home),
-          snippets: namespace_project_snippets_path(project.namespace, project),
-          merge_requests: namespace_project_merge_requests_path(project.namespace, project),
-        }
-    end
+    let(:tools) {
+      {
+        builds: namespace_project_pipelines_path(project.namespace, project),
+        issues: namespace_project_issues_path(project.namespace, project),
+        wiki: namespace_project_wiki_path(project.namespace, project, :home),
+        snippets: namespace_project_snippets_path(project.namespace, project),
+        merge_requests: namespace_project_merge_requests_path(project.namespace, project),
+      }
+    }
 
     context 'normal user' do
+      before do
+        login_as(member)
+      end
+
       it 'renders 200 if tool is enabled' do
-        @tools.each do |method_name, url|
+        tools.each do |method_name, url|
           project.project_feature.update_attribute("#{method_name}_access_level", ProjectFeature::ENABLED)
           visit url
           expect(page.status_code).to eq(200)
@@ -89,7 +92,7 @@ describe 'Edit Project Settings', feature: true do
       end
 
       it 'renders 404 if feature is disabled' do
-        @tools.each do |method_name, url|
+        tools.each do |method_name, url|
           project.project_feature.update_attribute("#{method_name}_access_level", ProjectFeature::DISABLED)
           visit url
           expect(page.status_code).to eq(404)
@@ -99,21 +102,21 @@ describe 'Edit Project Settings', feature: true do
       it 'renders 404 if feature is enabled only for team members' do
         project.team.truncate
 
-        @tools.each do |method_name, url|
+        tools.each do |method_name, url|
           project.project_feature.update_attribute("#{method_name}_access_level", ProjectFeature::PRIVATE)
           visit url
           expect(page.status_code).to eq(404)
         end
       end
 
-      it 'renders 200 if users is member of group' do
+      it 'renders 200 if user is member of group' do
         group = create(:group)
         project.group = group
         project.save
 
         group.add_owner(member)
 
-        @tools.each do |method_name, url|
+        tools.each do |method_name, url|
           project.project_feature.update_attribute("#{method_name}_access_level", ProjectFeature::PRIVATE)
           visit url
           expect(page.status_code).to eq(200)
@@ -128,7 +131,7 @@ describe 'Edit Project Settings', feature: true do
       end
 
       it 'renders 404 if feature is disabled' do
-        @tools.each do |method_name, url|
+        tools.each do |method_name, url|
           project.project_feature.update_attribute("#{method_name}_access_level", ProjectFeature::DISABLED)
           visit url
           expect(page.status_code).to eq(404)
@@ -138,7 +141,7 @@ describe 'Edit Project Settings', feature: true do
       it 'renders 200 if feature is enabled only for team members' do
         project.team.truncate
 
-        @tools.each do |method_name, url|
+        tools.each do |method_name, url|
           project.project_feature.update_attribute("#{method_name}_access_level", ProjectFeature::PRIVATE)
           visit url
           expect(page.status_code).to eq(200)
