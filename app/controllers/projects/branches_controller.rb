@@ -54,8 +54,8 @@ class Projects::BranchesController < Projects::ApplicationController
           url_to_autodeploy_setup(project, branch_name),
           notice: view_context.autodeploy_flash_notice(branch_name))
       else
-        redirect_to namespace_project_tree_path(@project.namespace, @project,
-                                                @branch.name)
+        redirect_to namespace_project_issue_path(@project.namespace, @project,
+                                                issue)
       end
     else
       @error = result[:message]
