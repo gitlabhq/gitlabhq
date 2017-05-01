@@ -14,4 +14,8 @@ module RendersBlob
       html: view_to_html_string("projects/blob/_viewer", viewer: viewer, load_asynchronously: false)
     }
   end
+
+  def override_max_blob_size(blob)
+    blob.override_max_size! if params[:override_max_size] == 'true'
+  end
 end

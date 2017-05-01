@@ -11,6 +11,7 @@ Feature: Project Snippets
     Then I should see "Snippet one" in snippets
     And I should not see "Snippet two" in snippets
 
+  @javascript
   Scenario: I create new project snippet
     Given I click link "New snippet"
     And I submit new snippet "Snippet three"

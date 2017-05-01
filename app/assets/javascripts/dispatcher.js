@@ -356,6 +356,10 @@ const ShortcutsBlob = require('./shortcuts_blob');
         case 'users:show':
           new UserCallout();
           break;
+        case 'snippets:show':
+          new LineHighlighter();
+          new BlobViewer();
+          break;
       }
       switch (path.first()) {
         case 'sessions':
@@ -434,6 +438,8 @@ const ShortcutsBlob = require('./shortcuts_blob');
               shortcut_handler = new ShortcutsNavigation();
               if (path[2] === 'show') {
                 new ZenMode();
+                new LineHighlighter();
+                new BlobViewer();
               }
               break;
             case 'labels':
