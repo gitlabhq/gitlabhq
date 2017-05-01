@@ -911,7 +911,7 @@ describe Ci::Build, :models do
       it { is_expected.to eq(environment) }
     end
 
-    context 'when  referenced with a variable' do
+    context 'when referenced with a variable' do
       let(:build) do
         create(:ci_build, pipeline: pipeline, environment: "foo-$CI_COMMIT_REF_NAME")
       end

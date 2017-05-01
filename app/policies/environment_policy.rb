@@ -1,5 +1,4 @@
 class EnvironmentPolicy < BasePolicy
-
   alias_method :environment, :subject
 
   def rules
