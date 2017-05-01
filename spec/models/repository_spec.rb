@@ -1803,9 +1803,9 @@ describe Repository, models: true do
   describe '#refresh_method_caches' do
     it 'refreshes the caches of the given types' do
       expect(repository).to receive(:expire_method_caches).
-        with(%i(readme license_blob license_key))
+        with(%i(rendered_readme license_blob license_key))
 
-      expect(repository).to receive(:readme)
+      expect(repository).to receive(:rendered_readme)
       expect(repository).to receive(:license_blob)
       expect(repository).to receive(:license_key)
 
@@ -1849,17 +1849,15 @@ describe Repository, models: true do
     end
   end
 
-  # TODO: Uncomment when feature is reenabled
-  # describe '#is_ancestor?' do
-  #   context 'Gitaly is_ancestor feature enabled' do
-  #     it 'asks Gitaly server if it\'s an ancestor' do
-  #       commit = repository.commit
-  #       allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:is_ancestor).and_return(true)
-  #       expect(Gitlab::GitalyClient::Commit).to receive(:is_ancestor).
-  #         with(repository.raw_repository, commit.id, commit.id).and_return(true)
-  #
-  #       expect(repository.is_ancestor?(commit.id, commit.id)).to be true
-  #     end
-  #   end
-  # end
+  describe '#is_ancestor?' do
+    context 'Gitaly is_ancestor feature enabled' do
+      it "asks Gitaly server if it's an ancestor" do
+        commit = repository.commit
+        expect(repository.raw_repository).to receive(:is_ancestor?).and_call_original
+        allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:is_ancestor).and_return(true)
+
+        expect(repository.is_ancestor?(commit.id, commit.id)).to be true
+      end
+    end
+  end
 end

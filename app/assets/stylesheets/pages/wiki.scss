@@ -159,3 +159,9 @@ ul.wiki-pages-list.content-list {
     padding: 5px 0;
   }
 }
+
+.wiki {
+  table {
+    @include markdown-table;
+  }
+}

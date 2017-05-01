@@ -2,6 +2,8 @@ class SnippetsController < ApplicationController
   include ToggleAwardEmoji
   include SpammableActions
   include SnippetsActions
+  include MarkdownPreview
+  include RendersBlob
 
   before_action :snippet, only: [:show, :edit, :destroy, :update, :raw, :download]
 
@@ -59,6 +61,18 @@ class SnippetsController < ApplicationController
   end
 
   def show
+    blob = @snippet.blob
+    override_max_blob_size(blob)
+
+    respond_to do |format|
+      format.html do
+        render 'show'
+      end
+
+      format.json do
+        render_blob_json(blob)
+      end
+    end
   end
 
   def destroy
@@ -75,6 +89,10 @@ class SnippetsController < ApplicationController
       type: 'text/plain; charset=utf-8',
       filename: @snippet.sanitized_file_name
     )
+  end
+
+  def preview_markdown
+    render_markdown_preview(params[:text], skip_project_check: true)
   end
 
   protected

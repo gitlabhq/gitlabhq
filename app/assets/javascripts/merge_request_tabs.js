@@ -275,7 +275,8 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
               cancelButtons: $(el).find('.js-cancel-fork-suggestion-button'),
               suggestionSections: $(el).find('.js-file-fork-suggestion-section'),
               actionTextPieces: $(el).find('.js-file-fork-suggestion-section-action'),
-            });
+            })
+              .init();
           });
         },
       });

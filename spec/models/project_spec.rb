@@ -781,17 +781,14 @@ describe Project, models: true do
 
     let(:project) { create(:empty_project) }
 
-    context 'When avatar file is uploaded' do
-      before do
-        project.update_columns(avatar: 'uploads/avatar.png')
-        allow(project.avatar).to receive(:present?) { true }
-      end
+    context 'when avatar file is uploaded' do
+      let(:project) { create(:empty_project, :with_avatar) }
 
-      let(:avatar_path) do
-        "/uploads/project/avatar/#{project.id}/uploads/avatar.png"
-      end
+      it 'creates a correct avatar path' do
+        avatar_path = "/uploads/project/avatar/#{project.id}/dk.png"
 
-      it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
+        expect(project.avatar_url).to eq("http://#{Gitlab.config.gitlab.host}#{avatar_path}")
+      end
     end
 
     context 'When avatar file in git' do

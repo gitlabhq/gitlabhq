@@ -9,7 +9,7 @@
 
         .title-item.author-name
           - if todo.author
-            = link_to_author(todo)
+            = link_to_author(todo, self_added: todo.self_added?)
           - else
             (removed)
 
@@ -21,6 +21,10 @@
           = todo_target_link(todo)
         - else
           (removed)
+
+      - if todo.self_assigned?
+        .title-item.action-name
+          to yourself
 
       .title-item
         &middot;

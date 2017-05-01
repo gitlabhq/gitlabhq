@@ -48,6 +48,7 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import UserCallout from './user_callout';
 import { ProtectedTagCreate, ProtectedTagEditList } from './protected_tags';
 import ShortcutsWiki from './shortcuts_wiki';
+import BlobViewer from './blob/viewer/index';
 
 const ShortcutsBlob = require('./shortcuts_blob');
 
@@ -299,6 +300,7 @@ const ShortcutsBlob = require('./shortcuts_blob');
           gl.TargetBranchDropDown.bootstrap();
           break;
         case 'projects:blob:show':
+          new BlobViewer();
           gl.TargetBranchDropDown.bootstrap();
           initBlob();
           break;
@@ -353,6 +355,10 @@ const ShortcutsBlob = require('./shortcuts_blob');
           break;
         case 'users:show':
           new UserCallout();
+          break;
+        case 'snippets:show':
+          new LineHighlighter();
+          new BlobViewer();
           break;
       }
       switch (path.first()) {
@@ -432,6 +438,8 @@ const ShortcutsBlob = require('./shortcuts_blob');
               shortcut_handler = new ShortcutsNavigation();
               if (path[2] === 'show') {
                 new ZenMode();
+                new LineHighlighter();
+                new BlobViewer();
               }
               break;
             case 'labels':

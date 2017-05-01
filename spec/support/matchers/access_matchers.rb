@@ -51,7 +51,7 @@ module AccessMatchers
       emulate_user(user, @membership)
       visit(url)
 
-      status_code != 404 && current_path != new_user_session_path
+      status_code == 200 && current_path != new_user_session_path
     end
 
     chain :of do |membership|
@@ -66,7 +66,7 @@ module AccessMatchers
       emulate_user(user, @membership)
       visit(url)
 
-      status_code == 404 || current_path == new_user_session_path
+      [401, 404].include?(status_code) || current_path == new_user_session_path
     end
 
     chain :of do |membership|

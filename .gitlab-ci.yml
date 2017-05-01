@@ -11,6 +11,7 @@ variables:
   NODE_ENV: "test"
   SIMPLECOV: "true"
   GIT_DEPTH: "20"
+  GIT_SUBMODULE_STRATEGY: "none"
   PHANTOMJS_VERSION: "2.1.1"
   GET_SOURCES_ATTEMPTS: "3"
   KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/rspec_report-master.json
@@ -18,8 +19,8 @@ variables:
 
 before_script:
   - bundle --version
-  - . scripts/utils.sh
-  - ./scripts/prepare_build.sh
+  - source scripts/utils.sh
+  - source scripts/prepare_build.sh
 
 stages:
 - prepare
@@ -59,13 +60,20 @@ stages:
 
 .only-master-and-ee-or-mysql: &only-master-and-ee-or-mysql
   only:
-    - /\-(?i)mysql$/
+    - /mysql/
     - master@gitlab-org/gitlab-ce
     - master@gitlab/gitlabhq
     - tags@gitlab-org/gitlab-ce
     - tags@gitlab/gitlabhq
     - //@gitlab-org/gitlab-ee
     - //@gitlab/gitlab-ee
+
+# Skip all jobs except the ones that begin with 'docs/'.
+# Used for commits including ONLY documentation changes.
+# https://docs.gitlab.com/ce/development/writing_documentation.html#testing
+.except-docs: &except-docs
+  except:
+    - /^docs\/.*/
 
 .rspec-knapsack: &rspec-knapsack
   stage: test
@@ -90,11 +98,13 @@ stages:
 .rspec-knapsack-pg: &rspec-knapsack-pg
   <<: *rspec-knapsack
   <<: *use-pg
+  <<: *except-docs
 
 .rspec-knapsack-mysql: &rspec-knapsack-mysql
   <<: *rspec-knapsack
   <<: *use-mysql
   <<: *only-master-and-ee-or-mysql
+  <<: *except-docs
 
 .spinach-knapsack: &spinach-knapsack
   stage: test
@@ -119,16 +129,19 @@ stages:
 .spinach-knapsack-pg: &spinach-knapsack-pg
   <<: *spinach-knapsack
   <<: *use-pg
+  <<: *except-docs
 
 .spinach-knapsack-mysql: &spinach-knapsack-mysql
   <<: *spinach-knapsack
   <<: *use-mysql
   <<: *only-master-and-ee-or-mysql
+  <<: *except-docs
 
 # Prepare and merge knapsack tests
 knapsack:
   <<: *knapsack-state
   <<: *dedicated-runner
+  <<: *except-docs
   stage: prepare
   script:
     - mkdir -p knapsack/${CI_PROJECT_NAME}/
@@ -155,6 +168,7 @@ update-knapsack:
 setup-test-env:
   <<: *use-pg
   <<: *dedicated-runner
+  <<: *except-docs
   stage: prepare
   script:
     - node --version
@@ -239,35 +253,32 @@ spinach mysql 9 10: *spinach-knapsack-mysql
     SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "true"
 
-.exec: &exec
+.rake-exec: &rake-exec
   <<: *ruby-static-analysis
   <<: *dedicated-runner
+  <<: *except-docs
   stage: test
   script:
-    - bundle exec $CI_JOB_NAME
+    - bundle exec rake $CI_JOB_NAME
 
-rubocop:
+static-analysis:
   <<: *ruby-static-analysis
   <<: *dedicated-runner
+  <<: *except-docs
   stage: test
   script:
-    - bundle exec "rubocop --require rubocop-rspec"
+    - scripts/static-analysis
 
-rake haml_lint: *exec
-rake scss_lint: *exec
-rake config_lint: *exec
-rake brakeman: *exec
-rake flay: *exec
-license_finder: *exec
-rake downtime_check:
-  <<: *exec
+downtime_check:
+  <<: *rake-exec
   except:
     - master
     - tags
     - /^[\d-]+-stable(-ee)?$/
+    - /^docs\/*/
 
-rake ee_compat_check:
-  <<: *exec
+ee_compat_check:
+  <<: *rake-exec
   only:
     - branches@gitlab-org/gitlab-ce
   except:
@@ -292,13 +303,15 @@ rake ee_compat_check:
   script:
     - bundle exec rake db:migrate:reset
 
-rake pg db:migrate:reset:
+db:migrate:reset pg:
   <<: *db-migrate-reset
   <<: *use-pg
+  <<: *except-docs
 
-rake mysql db:migrate:reset:
+db:migrate:reset mysql:
   <<: *db-migrate-reset
   <<: *use-mysql
+  <<: *except-docs
 
 .db-rollback: &db-rollback
   stage: test
@@ -307,13 +320,15 @@ rake mysql db:migrate:reset:
     - bundle exec rake db:rollback STEP=120
     - bundle exec rake db:migrate
 
-rake pg db:rollback:
+db:rollback pg:
   <<: *db-rollback
   <<: *use-pg
+  <<: *except-docs
 
-rake mysql db:rollback:
+db:rollback mysql:
   <<: *db-rollback
   <<: *use-mysql
+  <<: *except-docs
 
 .db-seed_fu: &db-seed_fu
   stage: test
@@ -332,17 +347,20 @@ rake mysql db:rollback:
     paths:
       - log/development.log
 
-rake pg db:seed_fu:
+db:seed_fu pg:
   <<: *db-seed_fu
   <<: *use-pg
+  <<: *except-docs
 
-rake mysql db:seed_fu:
+db:seed_fu mysql:
   <<: *db-seed_fu
   <<: *use-mysql
+  <<: *except-docs
 
-rake gitlab:assets:compile:
+gitlab:assets:compile:
   stage: test
   <<: *dedicated-runner
+  <<: *except-docs
   dependencies: []
   variables:
     NODE_ENV: "production"
@@ -359,13 +377,14 @@ rake gitlab:assets:compile:
     paths:
     - webpack-report/
 
-rake karma:
+karma:
   cache:
     paths:
       - vendor/ruby
   stage: test
   <<: *use-pg
   <<: *dedicated-runner
+  <<: *except-docs
   variables:
     BABEL_ENV: "coverage"
   script:
@@ -376,16 +395,6 @@ rake karma:
     expire_in: 31d
     paths:
     - coverage-javascript/
-
-docs:check:apilint:
-  image: "phusion/baseimage"
-  stage: test
-  <<: *dedicated-runner
-  cache: {}
-  dependencies: []
-  before_script: []
-  script:
-    - scripts/lint-doc.sh
 
 docs:check:links:
   image: "registry.gitlab.com/gitlab-org/gitlab-build-images:nanoc-bootstrap-ruby-2.4-alpine"
@@ -401,13 +410,6 @@ docs:check:links:
     - bundle exec nanoc
     # Check the internal links
     - bundle exec nanoc check internal_links
-
-bundler:check:
-  stage: test
-  <<: *dedicated-runner
-  <<: *ruby-static-analysis
-  script:
-   - bundle check
 
 bundler:audit:
   stage: test
@@ -441,11 +443,11 @@ bundler:audit:
     - . scripts/prepare_build.sh
     - bundle exec rake db:migrate
 
-migration pg paths:
+migration path pg:
   <<: *migration-paths
   <<: *use-pg
 
-migration mysql paths:
+migration path mysql:
   <<: *migration-paths
   <<: *use-mysql
 
@@ -453,6 +455,7 @@ coverage:
   stage: post-test
   services: []
   <<: *dedicated-runner
+  <<: *except-docs
   variables:
     SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "true"
@@ -466,15 +469,9 @@ coverage:
     - coverage/index.html
     - coverage/assets/
 
-lint:javascript:
-  <<: *dedicated-runner
-  stage: test
-  before_script: []
-  script:
-    - yarn run eslint
-
 lint:javascript:report:
   <<: *dedicated-runner
+  <<: *except-docs
   stage: post-test
   before_script: []
   script:
@@ -527,8 +524,8 @@ pages:
   <<: *dedicated-runner
   dependencies:
     - coverage
-    - rake karma
-    - rake gitlab:assets:compile
+    - karma
+    - gitlab:assets:compile
     - lint:javascript:report
   script:
     - mv public/ .public/

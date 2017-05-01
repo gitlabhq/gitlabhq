@@ -8,6 +8,7 @@ describe Projects::ServicesController do
   before do
     sign_in(user)
     project.team << [user, :master]
+
     controller.instance_variable_set(:@project, project)
     controller.instance_variable_set(:@service, service)
   end
@@ -18,20 +19,60 @@ describe Projects::ServicesController do
     end
 
     describe "#test" do
-      context 'success' do
-        it "redirects and show success message" do
-          expect(service).to receive(:test).and_return({ success: true, result: 'done' })
+      context 'when can_test? returns false' do
+        it 'renders 404' do
+          allow_any_instance_of(Service).to receive(:can_test?).and_return(false)
+
           get :test, namespace_id: project.namespace.id, project_id: project.id, id: service.id, format: :html
-          expect(response.status).to redirect_to('/')
+
+          expect(response).to have_http_status(404)
+        end
+      end
+
+      context 'success' do
+        context 'with empty project' do
+          let(:project) { create(:empty_project) }
+
+          context 'with chat notification service' do
+            let(:service) { project.create_microsoft_teams_service(webhook: 'http://webhook.com') }
+
+            it 'redirects and show success message' do
+              allow_any_instance_of(MicrosoftTeams::Notifier).to receive(:ping).and_return(true)
+
+              get :test, namespace_id: project.namespace.id, project_id: project.id, id: service.id, format: :html
+
+              expect(response).to redirect_to(root_path)
+              expect(flash[:notice]).to eq('We sent a request to the provided URL')
+            end
+          end
+
+          it 'redirects and show success message' do
+            expect(service).to receive(:test).and_return(success: true, result: 'done')
+
+            get :test, namespace_id: project.namespace.id, project_id: project.id, id: service.id, format: :html
+
+            expect(response).to redirect_to(root_path)
+            expect(flash[:notice]).to eq('We sent a request to the provided URL')
+          end
+        end
+
+        it "redirects and show success message" do
+          expect(service).to receive(:test).and_return(success: true, result: 'done')
+
+          get :test, namespace_id: project.namespace.id, project_id: project.id, id: service.id, format: :html
+
+          expect(response).to redirect_to(root_path)
           expect(flash[:notice]).to eq('We sent a request to the provided URL')
         end
       end
 
       context 'failure' do
         it "redirects and show failure message" do
-          expect(service).to receive(:test).and_return({ success: false, result: 'Bad test' })
+          expect(service).to receive(:test).and_return(success: false, result: 'Bad test')
+
           get :test, namespace_id: project.namespace.id, project_id: project.id, id: service.id, format: :html
-          expect(response.status).to redirect_to('/')
+
+          expect(response).to redirect_to(root_path)
           expect(flash[:alert]).to eq('We tried to send a request to the provided URL but an error occurred: Bad test')
         end
       end

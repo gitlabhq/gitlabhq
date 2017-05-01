@@ -17,6 +17,8 @@ gem 'pg', '~> 0.18.2', group: :postgres
 
 gem 'rugged', '~> 0.25.1.1'
 
+gem 'faraday', '~> 0.11.0'
+
 # Authentication libraries
 gem 'devise', '~> 4.2'
 gem 'doorkeeper', '~> 4.2.0'
@@ -83,14 +85,14 @@ gem 'kaminari', '~> 0.17.0'
 gem 'hamlit', '~> 2.6.1'
 
 # Files attachments
-gem 'carrierwave', '~> 0.11.0'
+gem 'carrierwave', '~> 1.0'
 
 # Drag and Drop UI
 gem 'dropzonejs-rails', '~> 0.7.1'
 
 # for backups
 gem 'fog-aws', '~> 0.9'
-gem 'fog-core', '~> 1.40'
+gem 'fog-core', '~> 1.44'
 gem 'fog-google', '~> 0.5'
 gem 'fog-local', '~> 0.3'
 gem 'fog-openstack', '~> 0.1'
@@ -142,7 +144,7 @@ gem 'after_commit_queue', '~> 1.3.0'
 gem 'acts-as-taggable-on', '~> 4.0'
 
 # Background jobs
-gem 'sidekiq', '~> 4.2.7'
+gem 'sidekiq', '~> 5.0'
 gem 'sidekiq-cron', '~> 0.4.4'
 gem 'redis-namespace', '~> 1.5.2'
 gem 'sidekiq-limit_fetch', '~> 3.4'
@@ -186,7 +188,7 @@ gem 'gemnasium-gitlab-service', '~> 0.2'
 gem 'slack-notifier', '~> 1.5.1'
 
 # Asana integration
-gem 'asana', '~> 0.4.0'
+gem 'asana', '~> 0.6.0'
 
 # FogBugz integration
 gem 'ruby-fogbugz', '~> 0.2.1'
@@ -291,6 +293,7 @@ group :development, :test do
   gem 'spinach-rails', '~> 0.2.1'
   gem 'spinach-rerun-reporter', '~> 0.0.2'
   gem 'rspec_profiling', '~> 0.0.5'
+  gem 'rspec-set', '~> 0.1.3'
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
   gem 'minitest', '~> 5.7.0'
@@ -345,7 +348,7 @@ gem 'html2text'
 gem 'ruby-prof', '~> 0.16.2'
 
 # OAuth
-gem 'oauth2', '~> 1.2.0'
+gem 'oauth2', '~> 1.3.0'
 
 # Soft deletion
 gem 'paranoia', '~> 2.2'

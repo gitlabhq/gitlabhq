@@ -1,13 +1,10 @@
-import EnvironmentsFolderComponent from './environments_folder_view';
+import Vue from 'vue';
+import EnvironmentsFolderComponent from './environments_folder_view.vue';
 
-$(() => {
-  window.gl = window.gl || {};
-
-  if (gl.EnvironmentsListFolderApp) {
-    gl.EnvironmentsListFolderApp.$destroy(true);
-  }
-
-  gl.EnvironmentsListFolderApp = new EnvironmentsFolderComponent({
-    el: document.querySelector('#environments-folder-list-view'),
-  });
-});
+document.addEventListener('DOMContentLoaded', () => new Vue({
+  el: '#environments-folder-list-view',
+  components: {
+    'environments-folder-app': EnvironmentsFolderComponent,
+  },
+  render: createElement => createElement('environments-folder-app'),
+}));

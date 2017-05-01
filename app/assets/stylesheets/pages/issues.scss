@@ -110,11 +110,16 @@ ul.related-merge-requests > li {
   }
 }
 
-.merge-request-ci-status {
+.merge-request-ci-status,
+.related-merge-requests {
+  .ci-status-link {
+    display: block;
+    margin-top: 3px;
+    margin-right: 5px;
+  }
+
   svg {
-    margin-right: 4px;
-    position: relative;
-    top: 1px;
+    display: block;
   }
 }
 

@@ -1,29 +1,24 @@
+- blob = @snippet.blob
 .js-file-title.file-title-flex-parent
   .file-header-content
-    = blob_icon @snippet.mode, @snippet.path
+    = blob_icon blob.mode, blob.path
 
     %strong.file-title-name
-      = @snippet.path
+      = blob.path
 
-    = copy_file_path_button(@snippet.path)
+    = copy_file_path_button(blob.path)
+
+    %small
+      = number_to_human_size(blob.raw_size)
 
   .file-actions.hidden-xs
+    = render 'projects/blob/viewer_switcher', blob: blob
+
     .btn-group{ role: "group" }<
-      = copy_blob_content_button(@snippet)
-      = open_raw_file_button(raw_path)
+      = copy_blob_source_button(blob)
+      = open_raw_blob_button(blob)
 
       - if defined?(download_path) && download_path
         = link_to icon('download'), download_path, class: "btn btn-sm has-tooltip", title: 'Download', data: { container: 'body' }
 
-- if @snippet.content.empty?
-  .file-content.code
-    .nothing-here-block Empty file
-- else
-  - if markup?(@snippet.file_name)
-    .file-content.wiki
-      - if gitlab_markdown?(@snippet.file_name)
-        = preserve(markdown_field(@snippet, :content))
-      - else
-        = render_markup(@snippet.file_name, @snippet.content)
-  - else
-    = render 'shared/file_highlight', blob: @snippet
+= render 'projects/blob/content', blob: blob

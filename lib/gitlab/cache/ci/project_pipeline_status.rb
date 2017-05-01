@@ -15,18 +15,51 @@ module Gitlab
           end
         end
 
-        def self.update_for_pipeline(pipeline)
-          new(pipeline.project,
-              sha: pipeline.sha,
-              status: pipeline.status,
-              ref: pipeline.ref).store_in_cache_if_needed
+        def self.load_in_batch_for_projects(projects)
+          cached_results_for_projects(projects).zip(projects).each do |result, project|
+            project.pipeline_status = new(project, result)
+            project.pipeline_status.load_status
+          end
         end
 
-        def initialize(project, sha: nil, status: nil, ref: nil)
+        def self.cached_results_for_projects(projects)
+          result = Gitlab::Redis.with do |redis|
+            redis.multi do
+              projects.each do |project|
+                cache_key = cache_key_for_project(project)
+                redis.exists(cache_key)
+                redis.hmget(cache_key, :sha, :status, :ref)
+              end
+            end
+          end
+
+          result.each_slice(2).map do |(cache_key_exists, (sha, status, ref))|
+            pipeline_info = { sha: sha, status: status, ref: ref }
+            { loaded_from_cache: cache_key_exists, pipeline_info: pipeline_info }
+          end
+        end
+
+        def self.cache_key_for_project(project)
+          "projects/#{project.id}/pipeline_status"
+        end
+
+        def self.update_for_pipeline(pipeline)
+          pipeline_info = {
+            sha: pipeline.sha,
+            status: pipeline.status,
+            ref: pipeline.ref
+          }
+
+          new(pipeline.project, pipeline_info: pipeline_info).
+            store_in_cache_if_needed
+        end
+
+        def initialize(project, pipeline_info: {}, loaded_from_cache: nil)
           @project = project
-          @sha = sha
-          @ref = ref
-          @status = status
+          @sha = pipeline_info[:sha]
+          @ref = pipeline_info[:ref]
+          @status = pipeline_info[:status]
+          @loaded = loaded_from_cache
         end
 
         def has_status?
@@ -85,6 +118,8 @@ module Gitlab
         end
 
         def has_cache?
+          return self.loaded unless self.loaded.nil?
+
           Gitlab::Redis.with do |redis|
             redis.exists(cache_key)
           end
@@ -95,7 +130,7 @@ module Gitlab
         end
 
         def cache_key
-          "projects/#{project.id}/build_status"
+          self.class.cache_key_for_project(project)
         end
       end
     end

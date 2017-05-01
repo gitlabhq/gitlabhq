@@ -33,6 +33,17 @@ module API
           end
         end
 
+        def find_merge_requests(args = {})
+          args = params.merge(args)
+
+          args[:milestone_title] = args.delete(:milestone)
+          args[:label_name] = args.delete(:labels)
+
+          merge_requests = MergeRequestsFinder.new(current_user, args).execute.inc_notes_with_associations
+
+          merge_requests.reorder(args[:order_by] => args[:sort])
+        end
+
         params :optional_params_ce do
           optional :description, type: String, desc: 'The description of the merge request'
           optional :assignee_id, type: Integer, desc: 'The ID of a user to assign the merge request'
@@ -57,23 +68,15 @@ module API
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
                         desc: 'Return merge requests sorted in `asc` or `desc` order.'
         optional :iids, type: Array[Integer], desc: 'The IID array of merge requests'
+        optional :milestone, type: String, desc: 'Return merge requests for a specific milestone'
+        optional :labels, type: String, desc: 'Comma-separated list of label names'
         use :pagination
       end
       get ":id/merge_requests" do
         authorize! :read_merge_request, user_project
 
-        merge_requests = user_project.merge_requests.inc_notes_with_associations
-        merge_requests = filter_by_iid(merge_requests, params[:iids]) if params[:iids].present?
+        merge_requests = find_merge_requests(project_id: user_project.id)
 
-        merge_requests =
-          case params[:state]
-          when 'opened' then merge_requests.opened
-          when 'closed' then merge_requests.closed
-          when 'merged' then merge_requests.merged
-          else merge_requests
-          end
-
-        merge_requests = merge_requests.reorder(params[:order_by] => params[:sort])
         present paginate(merge_requests), with: Entities::MergeRequestBasic, current_user: current_user, project: user_project
       end
 

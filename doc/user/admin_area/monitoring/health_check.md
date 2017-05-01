@@ -100,7 +100,7 @@ On failure, the endpoint will return a `500` HTTP status code. On success, the e
 will return a valid successful HTTP status code, and a `success` message. Ideally your
 uptime monitoring should look for the success message.
 
-[ce-10416]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3888
+[ce-10416]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/10416
 [ce-3888]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3888
 [pingdom]: https://www.pingdom.com
 [nagios-health]: https://nagios-plugins.org/doc/man/check_http.html

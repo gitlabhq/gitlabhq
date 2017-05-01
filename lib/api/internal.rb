@@ -140,7 +140,7 @@ module API
         begin
           Gitlab::GitalyClient::Notifications.new(project.repository).post_receive
         rescue GRPC::Unavailable => e
-          render_api_error(e, 500)
+          render_api_error!(e, 500)
         end
       end
     end
