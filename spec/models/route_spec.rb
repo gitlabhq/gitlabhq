@@ -26,7 +26,20 @@ describe Route, models: true do
     end
   end
 
-  describe '#rename_descendants' do
+  describe '.direct_descendant_routes' do
+    let!(:nested_group) { create(:group, path: 'test', name: 'test', parent: group) }
+    let!(:deep_nested_group) { create(:group, path: 'foo', name: 'foo', parent: nested_group) }
+    let!(:another_group) { create(:group, path: 'other') }
+    let!(:similar_group) { create(:group, path: 'gitllab') }
+    let!(:another_group_nested) { create(:group, path: 'another', name: 'another', parent: similar_group) }
+
+    it 'returns correct routes' do
+      expect(Route.direct_descendant_routes('git_lab')).to match_array([nested_group.route])
+      expect(Route.direct_descendant_routes('git_lab/test')).to match_array([deep_nested_group.route])
+    end
+  end
+
+  describe '#rename_direct_descendant_routes' do
     let!(:nested_group) { create(:group, path: 'test', name: 'test', parent: group) }
     let!(:deep_nested_group) { create(:group, path: 'foo', name: 'foo', parent: nested_group) }
     let!(:similar_group) { create(:group, path: 'gitlab-org', name: 'gitlab-org') }
@@ -74,6 +87,25 @@ describe Route, models: true do
 
         expect { route.update_attributes(name: 'bar') }
           .to change { route.name }.from(nil).to('bar')
+      end
+    end
+  end
+
+  describe '#create_redirect_if_path_changed' do
+    context 'if the path changed' do
+      it 'creates a RedirectRoute for the old path' do
+        route.path = 'new-path'
+        route.save!
+        redirect = route.source.redirect_routes.first
+        expect(redirect.path).to eq('git_lab')
+      end
+    end
+
+    context 'if the path did not change' do
+      it 'does not create a RedirectRoute' do
+        route.updated_at = Time.zone.now.utc
+        route.save!
+        expect(route.source.redirect_routes).to be_empty
       end
     end
   end

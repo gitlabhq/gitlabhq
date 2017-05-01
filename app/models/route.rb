@@ -8,15 +8,17 @@ class Route < ActiveRecord::Base
     presence: true,
     uniqueness: { case_sensitive: false }
 
-  after_update :rename_descendants
+  after_update :create_redirect_if_path_changed
+  after_update :rename_direct_descendant_routes
 
   scope :inside_path, -> (path) { where('routes.path LIKE ?', "#{sanitize_sql_like(path)}/%") }
+  scope :direct_descendant_routes, -> (path) { where('routes.path LIKE ? AND routes.path NOT LIKE ?', "#{sanitize_sql_like(path)}/%", "#{sanitize_sql_like(path)}/%/%") }
 
-  def rename_descendants
+  def rename_direct_descendant_routes
     if path_changed? || name_changed?
-      descendants = self.class.inside_path(path_was)
+      direct_descendant_routes = self.class.direct_descendant_routes(path_was)
 
-      descendants.each do |route|
+      direct_descendant_routes.each do |route|
         attributes = {}
 
         if path_changed? && route.path.present?
@@ -27,10 +29,18 @@ class Route < ActiveRecord::Base
           attributes[:name] = route.name.sub(name_was, name)
         end
 
-        # Note that update_columns skips validation and callbacks.
-        # We need this to avoid recursive call of rename_descendants method
-        route.update_columns(attributes) unless attributes.empty?
+        route.update(attributes) unless attributes.empty?
       end
     end
+  end
+
+  def create_redirect_if_path_changed
+    if path_changed?
+      create_redirect(path_was)
+    end
+  end
+
+  def create_redirect(old_path)
+    source.redirect_routes.create(path: old_path)
   end
 end
