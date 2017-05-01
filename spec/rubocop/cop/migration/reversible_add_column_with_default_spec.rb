@@ -3,9 +3,9 @@ require 'spec_helper'
 require 'rubocop'
 require 'rubocop/rspec/support'
 
-require_relative '../../../../rubocop/cop/migration/add_column_with_default'
+require_relative '../../../../rubocop/cop/migration/reversible_add_column_with_default'
 
-describe RuboCop::Cop::Migration::AddColumnWithDefault do
+describe RuboCop::Cop::Migration::ReversibleAddColumnWithDefault do
   include CopHelper
 
   subject(:cop) { described_class.new }
