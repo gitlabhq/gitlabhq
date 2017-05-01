@@ -17,7 +17,7 @@
             - issuable.assignees.each do |assignee|
               = hidden_field_tag "#{issuable.to_ability_name}[assignee_ids][]", assignee.id, id: nil, data: { meta: assignee.name }
 
-            - options = { toggle_class: "js-user-search js-author-search", title: 'Select assignee', filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable dropdown-menu-author",
+            - options = { toggle_class: "js-user-search js-assignee-search", title: 'Select assignee', filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable dropdown-menu-assignee",
               placeholder: "Search users", data: { first_user: (current_user.username if current_user), null_user: true, current_user: true, project_id: issuable.project.try(:id), field_name: "#{issuable.class.model_name.param_key}[assignee_ids][]", default_label: "Assignee"} }
 
             - options[:toggle_class] += ' js-multiselect js-save-user-data'
@@ -29,7 +29,7 @@
             - options[:data][:current_user_info] = current_user.to_json(only: [:id, :name])
 
             = dropdown_tag(users_dropdown_label(issuable.assignees), options: options)
-          = link_to 'Assign to me', '#', class: "assign-to-me-link #{'hide' if issuable.assignee_ids.split(', ').include?(current_user.id)}"
+          = link_to 'Assign to me', '#', class: "assign-to-me-link #{'hide' if issuable.assignees.include?(current_user)}"
       - else
         = form.label :assignee_id, "Assignee", class: "control-label #{"col-lg-4" if has_due_date}"
         .col-sm-10{ class: ("col-lg-8" if has_due_date) }

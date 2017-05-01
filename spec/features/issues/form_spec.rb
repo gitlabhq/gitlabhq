@@ -27,20 +27,24 @@ describe 'New/edit issue', feature: true, js: true do
       fill_in 'issue_description', with: 'title'
 
       expect(find('a', text: 'Assign to me')).to be_visible
-      click_button 'Assignee'
+      click_button 'Unassigned'
       page.within '.dropdown-menu-user' do
         click_link user2.name
       end
-      expect(find('input[name="issue[assignee_id]"]', visible: false).value).to match(user2.id.to_s)
+      expect(find('input[name="issue[assignee_ids][]"]', visible: false).value).to match(user2.id.to_s)
       page.within '.js-assignee-search' do
         expect(page).to have_content user2.name
       end
       expect(find('a', text: 'Assign to me')).to be_visible
 
       click_link 'Assign to me'
-      expect(find('input[name="issue[assignee_id]"]', visible: false).value).to match(user.id.to_s)
+      assignee_ids = page.all('input[name="issue[assignee_ids][]"]', visible: false)
+
+      expect(assignee_ids[0].value).to match(user2.id.to_s)
+      expect(assignee_ids[1].value).to match(user.id.to_s)
+
       page.within '.js-assignee-search' do
-        expect(page).to have_content user.name
+        expect(page).to have_content "#{user2.name} + 1 more"
       end
       expect(find('a', text: 'Assign to me', visible: false)).not_to be_visible
 
@@ -76,7 +80,7 @@ describe 'New/edit issue', feature: true, js: true do
 
       page.within '.issuable-sidebar' do
         page.within '.assignee' do
-          expect(page).to have_content user.name
+          expect(page).to have_content "2 Assignees"
         end
 
         page.within '.milestone' do
@@ -125,7 +129,7 @@ describe 'New/edit issue', feature: true, js: true do
     end
 
     it 'allows user to update issue' do
-      expect(find('input[name="issue[assignee_id]"]', visible: false).value).to match(user.id.to_s)
+      expect(find('input[name="issue[assignee_ids][]"]', visible: false).value).to match(user.id.to_s)
       expect(find('input[name="issue[milestone_id]"]', visible: false).value).to match(milestone.id.to_s)
       expect(find('a', text: 'Assign to me', visible: false)).not_to be_visible
 
