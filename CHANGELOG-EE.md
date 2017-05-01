@@ -4,6 +4,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 - No changes.
 - No changes.
+- No changes.
 - Fix commit search on some elasticsearch indexes. !1745
 - Fix emailing issues to projects when Service Desk is enabled.
 - Fix bug where Geo secondary Sidekiq cron jobs would not be activated if settings changed.
