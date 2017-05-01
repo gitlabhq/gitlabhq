@@ -24,6 +24,9 @@ feature 'File blob', :js, feature: true do
 
         # shows an enabled copy button
         expect(page).to have_selector('.js-copy-blob-source-btn:not(.disabled)')
+
+        # shows a raw button
+        expect(page).to have_link('Open raw')
       end
     end
   end
@@ -50,6 +53,9 @@ feature 'File blob', :js, feature: true do
 
           # shows a disabled copy button
           expect(page).to have_selector('.js-copy-blob-source-btn.disabled')
+
+          # shows a raw button
+          expect(page).to have_link('Open raw')
         end
       end
 
@@ -160,6 +166,9 @@ feature 'File blob', :js, feature: true do
 
           # does not show a copy button
           expect(page).not_to have_selector('.js-copy-blob-source-btn')
+
+          # shows a raw button
+          expect(page).to have_link('Open raw')
         end
       end
 
@@ -203,6 +212,9 @@ feature 'File blob', :js, feature: true do
 
           # shows an enabled copy button
           expect(page).to have_selector('.js-copy-blob-source-btn:not(.disabled)')
+
+          # shows a raw button
+          expect(page).to have_link('Open raw')
         end
       end
     end
@@ -237,6 +249,9 @@ feature 'File blob', :js, feature: true do
 
         # does not show a copy button
         expect(page).not_to have_selector('.js-copy-blob-source-btn')
+
+        # shows a download button
+        expect(page).to have_link('Download')
       end
     end
   end
@@ -262,6 +277,9 @@ feature 'File blob', :js, feature: true do
 
           # does not show a copy button
           expect(page).not_to have_selector('.js-copy-blob-source-btn')
+
+          # shows a download button
+          expect(page).to have_link('Download')
         end
       end
     end
@@ -283,6 +301,9 @@ feature 'File blob', :js, feature: true do
 
           # shows an enabled copy button
           expect(page).to have_selector('.js-copy-blob-source-btn:not(.disabled)')
+
+          # shows a raw button
+          expect(page).to have_link('Open raw')
         end
       end
     end
@@ -305,6 +326,9 @@ feature 'File blob', :js, feature: true do
 
         # does not show a copy button
         expect(page).not_to have_selector('.js-copy-blob-source-btn')
+
+        # shows a download button
+        expect(page).to have_link('Download')
       end
     end
   end
