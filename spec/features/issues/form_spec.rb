@@ -22,6 +22,42 @@ describe 'New/edit issue', feature: true, js: true do
       visit new_namespace_project_issue_path(project.namespace, project)
     end
 
+    describe 'multiple assignees' do
+      before do
+        click_button 'Unassigned'
+      end
+
+      it 'unselects other assignees when unassigned is selected' do
+        page.within '.dropdown-menu-user' do
+          click_link user2.name
+        end
+
+        page.within '.dropdown-menu-user' do
+          click_link 'Unassigned'
+        end
+
+        page.within '.js-assignee-search' do
+          expect(page).to have_content 'Unassigned'
+        end
+
+        expect(find('input[name="issue[assignee_ids][]"]', visible: false).value).to match('0')
+      end
+
+      it 'toggles assign to me when current user is selected and unselected' do
+        page.within '.dropdown-menu-user' do
+          click_link user.name
+        end
+
+        expect(find('a', text: 'Assign to me', visible: false)).not_to be_visible
+
+        page.within '.dropdown-menu-user' do
+          click_link user.name
+        end
+
+        expect(find('a', text: 'Assign to me')).to be_visible
+      end
+    end
+
     it 'allows user to create new issue' do
       fill_in 'issue_title', with: 'title'
       fill_in 'issue_description', with: 'title'
