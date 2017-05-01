@@ -29,36 +29,43 @@ export default {
 
     return {
       poll,
+      data: {},
+      current: true,
       timeoutId: null,
       title: '<span></span>',
       titleText: '',
       description: '<span></span>',
       descriptionText: '',
       descriptionChange: false,
+      previousDescription: null,
       taskStatus: '',
     };
   },
   methods: {
     renderResponse(res) {
       const data = JSON.parse(res.body);
-      this.issueIID = data.issue_number;
+      this.data = data;
+      this.issueIID = this.data.issue_number;
       this.triggerAnimation(data);
     },
-    updateTaskHTML(data) {
-      this.taskStatus = data.task_status;
+    updateTaskHTML() {
+      this.taskStatus = this.data.task_status;
       document.querySelector('#task_status').innerText = this.taskStatus;
     },
-    elementsToVisualize(noTitleChange, noDescriptionChange, data) {
+    elementsToVisualize(noTitleChange, noDescriptionChange) {
       const elementStack = [];
 
       if (!noTitleChange) {
-        this.titleText = data.title_text;
+        this.titleText = this.data.title_text;
         elementStack.push(this.$el.querySelector('.title'));
       }
 
       if (!noDescriptionChange) {
         // only change to true when we need to bind TaskLists the html of description
         this.descriptionChange = true;
+        if (this.description !== '<span></span>') {
+          this.previousDescription = this.description;
+        }
         elementStack.push(this.$el.querySelector('.wiki'));
       }
 
@@ -89,34 +96,48 @@ export default {
         clearTimeout(this.timeoutId);
       }, 0);
     },
-    triggerAnimation(data) {
+    triggerAnimation() {
       // always reset to false before checking the change
       this.descriptionChange = false;
 
-      const { title, description } = data;
-      this.descriptionText = data.description_text;
-      this.updateTaskHTML(data);
+      const { title, description } = this.data;
+      this.descriptionText = this.data.description_text;
+
+      this.updateTaskHTML();
+
+      const noTitleChange = this.title === title;
+      const noDescriptionChange = this.description === description;
+
       /**
       * since opacity is changed, even if there is no diff for Vue to update
       * we must check the title/description even on a 304 to ensure no visual change
       */
-      const noTitleChange = this.title === title;
-      const noDescriptionChange = this.description === description;
-
       if (noTitleChange && noDescriptionChange) return;
 
       const elementsToVisualize = this.elementsToVisualize(
         noTitleChange,
         noDescriptionChange,
-        data,
       );
 
       this.animate(title, description, elementsToVisualize);
+    },
+    handleCurrentOrPrevious() {
+      this.descriptionChange = true;
+      this.current = !this.current;
     },
   },
   computed: {
     descriptionClass() {
       return `description ${this.candescription} is-task-list-enabled`;
+    },
+    showDescription() {
+      return this.current ? this.description : this.previousDescription;
+    },
+    previousOrCurrentButtonText() {
+      return this.current ? '<< Show Previous Decription' : 'Show Current Description >>';
+    },
+    prevCurrBtnClass() {
+      return this.current ? 'btn btn-sm btn-default' : 'btn btn-sm btn-primary';
     },
   },
   created() {
@@ -135,14 +156,17 @@ export default {
   updated() {
     // if new html is injected (description changed) - bind TaskList and call renderGFM
     if (this.descriptionChange) {
-      const tl = new gl.TaskList({
-        dataType: 'issue',
-        fieldName: 'description',
-        selector: '.detail-page-description',
-      });
-
       $(this.$refs['issue-content-container-gfm-entry']).renderGFM();
-      return tl;
+
+      if (this.current) {
+        const tl = new gl.TaskList({
+          dataType: 'issue',
+          fieldName: 'description',
+          selector: '.detail-page-description',
+        });
+
+        return tl;
+      }
     }
     return null;
   },
@@ -156,9 +180,17 @@ export default {
       :class="descriptionClass"
       v-if="description"
     >
+      <div v-if="previousDescription">
+        <button
+          :class="prevCurrBtnClass"
+          @click="handleCurrentOrPrevious"
+        >
+          {{ previousOrCurrentButtonText }}
+        </button>
+      </div><br>
       <div
         class="wiki issue-realtime-trigger-pulse"
-        v-html="description"
+        v-html="showDescription"
         ref="issue-content-container-gfm-entry"
       >
       </div>

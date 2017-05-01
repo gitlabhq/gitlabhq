@@ -13,7 +13,7 @@ const issueShowInterceptor = (request, next) => {
   }));
 };
 
-fdescribe('Issue Title', () => {
+describe('Issue Title', () => {
   document.body.innerHTML = '<span id="task_status"></span>';
 
   const comps = {
