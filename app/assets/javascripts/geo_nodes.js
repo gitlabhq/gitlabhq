@@ -1,13 +1,16 @@
 /* eslint-disable no-new*/
 import './smart_interval';
 
-const healthyClass = 'geo-node-icon-healthy';
-const unhealthyClass = 'geo-node-icon-unhealthy';
+const healthyClass = 'geo-node-healthy';
+const unhealthyClass = 'geo-node-unhealthy';
+const healthyIcon = 'fa-check';
+const unhealthyIcon = 'fa-close'
 
 class GeoNodeStatus {
   constructor(el) {
     this.$el = $(el);
     this.$icon = $('.js-geo-node-icon', this.$el);
+    this.$healthStatus = $('.js-health-status', this.$el);
     this.$status = $('.js-geo-node-status', this.$el);
     this.$repositoriesSynced = $('.js-repositories-synced', this.$status);
     this.$repositoriesFailed = $('.js-repositories-failed', this.$status);
@@ -29,11 +32,14 @@ class GeoNodeStatus {
   getStatus() {
     $.getJSON(this.endpoint, (status) => {
       this.setStatusIcon(status.healthy);
+      this.setHealthStatus(status.healthy);
       this.$repositoriesSynced.html(`${status.repositories_synced_count}/${status.repositories_count} (${status.repositories_synced_in_percentage})`);
       this.$repositoriesFailed.html(status.repositories_failed_count);
       this.$lfsObjectsSynced.html(`${status.lfs_objects_synced_count}/${status.lfs_objects_count} (${status.lfs_objects_synced_in_percentage})`);
       this.$attachmentsSynced.html(`${status.attachments_synced_count}/${status.attachments_count} (${status.attachments_synced_in_percentage})`);
-      this.$health.html(status.health);
+      if (status.health !== 'Healthy') {
+        this.$health.html('<code class="geo-health">' + status.health + '</code>');
+      }
 
       this.$status.show();
     });
@@ -41,16 +47,28 @@ class GeoNodeStatus {
 
   setStatusIcon(healthy) {
     if (healthy) {
-      this.$icon.removeClass(unhealthyClass)
-                .addClass(healthyClass)
+      this.$icon.removeClass(unhealthyClass + ' ' + unhealthyIcon)
+                .addClass(healthyClass + ' ' + healthyIcon)
                 .attr('title', 'Healthy');
     } else {
-      this.$icon.removeClass(healthyClass)
-                .addClass(unhealthyClass)
+      this.$icon.removeClass(healthyClass + ' ' + healthyIcon)
+                .addClass(unhealthyClass + ' ' + unhealthyIcon)
                 .attr('title', 'Unhealthy');
     }
 
     this.$icon.tooltip('fixTitle');
+  }
+
+  setHealthStatus(healthy) {
+    if (healthy) {
+      this.$healthStatus.removeClass(unhealthyClass)
+                        .addClass(healthyClass)
+                        .html('Healthy');
+    } else {
+      this.$healthStatus.removeClass(healthyClass)
+                        .addClass(unhealthyClass)
+                        .html('Unhealthy');
+    }
   }
 }
 

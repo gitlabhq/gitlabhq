@@ -25,10 +25,11 @@
               %span.help-block Primary node
             - else
               .js-geo-node-status{ style: 'display: none' }
-                %p
-                  %span.help-block
-                    Health Status:
-                    %span= node_status(node)
+                - if node.enabled?
+                  %p
+                    %span.help-block
+                      Health Status:
+                      %span.js-health-status
                 %p
                   %span.help-block
                     Repositories synced:
@@ -46,7 +47,7 @@
                     Attachments synced:
                     %span.node-info.js-attachments-synced
                 %p
-                  %code.geo-health.js-health
+                  .js-health
 
           .node-actions
             - if Gitlab::Geo.license_allows?

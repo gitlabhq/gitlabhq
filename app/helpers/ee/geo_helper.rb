@@ -4,17 +4,15 @@ module EE
       unless node.primary?
         status = node.enabled? ? 'healthy' : 'disabled'
 
-        icon 'check fw',
+        if status == 'healthy'
+          icon = 'check'
+        else
+          icon = 'times'
+        end
+
+        icon "#{icon} fw",
              class: "js-geo-node-icon geo-node-#{status} has-tooltip",
              title: status.capitalize
-      end
-    end
-
-    def node_status(node)
-      status = node.enabled? ? 'healthy' : 'disabled'
-
-      content_tag :span, class: "geo-node-#{status}" do
-        status.capitalize
       end
     end
 
