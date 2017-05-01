@@ -53,7 +53,10 @@
             onHide();
           }
         },
-        clicked(item, $el, e) {
+        clicked(options) {
+          const { $el, e } = options;
+          const item = options.selectedObj;
+
           e.preventDefault();
 
           if ($el.is('.is-active')) {

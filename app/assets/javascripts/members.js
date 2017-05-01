@@ -43,7 +43,10 @@
 
             return $el.text();
           },
-          clicked: (selected, $link) => {
+          clicked: (options) => {
+            const selected = options.selectedObj;
+            const $link = options.$el;
+
             if (!$link.data('revert')) {
               this.formSubmit(null, $link);
             } else {
