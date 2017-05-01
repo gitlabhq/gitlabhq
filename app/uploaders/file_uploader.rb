@@ -26,20 +26,16 @@ class FileUploader < GitlabUploader
     File.join(CarrierWave.root, base_dir, model.path_with_namespace)
   end
 
-  attr_accessor :project
+  attr_accessor :model
   attr_reader :secret
 
-  def initialize(project, secret = nil)
-    @project = project
+  def initialize(model, secret = nil)
+    @model = model
     @secret = secret || generate_secret
   end
 
   def store_dir
     File.join(dynamic_path_segment, @secret)
-  end
-
-  def model
-    project
   end
 
   def relative_path
