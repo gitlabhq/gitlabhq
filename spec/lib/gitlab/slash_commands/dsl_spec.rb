@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::SlashCommands::Dsl do
   before :all do
     DummyClass = Struct.new(:project) do
-      include Gitlab::SlashCommands::Dsl
+      include Gitlab::SlashCommands::Dsl # rubocop:disable RSpec/DescribedClass
 
       desc 'A command with no args'
       command :no_args, :none do

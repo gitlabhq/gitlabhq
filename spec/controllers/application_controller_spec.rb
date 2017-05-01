@@ -4,7 +4,7 @@ describe ApplicationController do
   let(:user) { create(:user) }
 
   describe '#check_password_expiration' do
-    let(:controller) { ApplicationController.new }
+    let(:controller) { described_class.new }
 
     it 'redirects if the user is over their password expiry' do
       user.password_expires_at = Time.new(2002)
@@ -34,7 +34,7 @@ describe ApplicationController do
 
   describe "#authenticate_user_from_token!" do
     describe "authenticating a user from a private token" do
-      controller(ApplicationController) do
+      controller(described_class) do
         def index
           render text: "authenticated"
         end
@@ -66,7 +66,7 @@ describe ApplicationController do
     end
 
     describe "authenticating a user from a personal access token" do
-      controller(ApplicationController) do
+      controller(described_class) do
         def index
           render text: 'authenticated'
         end
@@ -115,7 +115,7 @@ describe ApplicationController do
   end
 
   context 'two-factor authentication' do
-    let(:controller) { ApplicationController.new }
+    let(:controller) { described_class.new }
 
     describe '#check_two_factor_requirement' do
       subject { controller.send :check_two_factor_requirement }
