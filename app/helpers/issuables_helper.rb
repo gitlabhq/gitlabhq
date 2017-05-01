@@ -63,6 +63,16 @@ module IssuablesHelper
     end
   end
 
+  def users_dropdown_label(selected_users)
+    if selected_users.length == 0
+      "Unassigned"
+    elsif selected_users.length == 1
+      selected_users[0].name
+    else
+      "#{selected_users[0].name} + #{selected_users.length - 1} more"
+    end
+  end
+
   def user_dropdown_label(user_id, default_label)
     return default_label if user_id.nil?
     return "Unassigned" if user_id == "0"

@@ -732,6 +732,10 @@ GitLabDropdown = (function() {
       $input.attr('id', this.options.inputId);
     }
 
+    if (this.options.inputMeta) {
+      $input.attr('data-meta', selectedObject[this.options.inputMeta]);
+    }
+
     return this.dropdown.before($input);
   };
 
