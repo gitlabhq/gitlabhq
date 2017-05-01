@@ -34,12 +34,14 @@ describe ExpireBuildInstanceArtifactsWorker do
       context 'when associated project was removed' do
         let(:build) do
           create(:ci_build, :artifacts, artifacts_expiry) do |build|
-            build.project.delete
+            build.project.pending_delete = true
           end
         end
 
         it 'does not remove artifacts' do
-          expect(build.reload.artifacts_file.exists?).to be_truthy
+          expect do
+            build.reload.artifacts_file
+          end.not_to raise_error
         end
       end
     end

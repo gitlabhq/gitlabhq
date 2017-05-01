@@ -6,6 +6,8 @@ if File.exist?(aws_file)
   AWS_CONFIG = YAML.load(File.read(aws_file))[Rails.env]
 
   CarrierWave.configure do |config|
+    config.fog_provider = 'fog/aws'
+
     config.fog_credentials = {
       provider: 'AWS',                                        # required
       aws_access_key_id: AWS_CONFIG['access_key_id'],         # required
