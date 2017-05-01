@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe API::Helpers do
   include API::APIGuard::HelperMethods
-  include API::Helpers
+  include described_class
   include SentryHelper
 
   let(:user) { create(:user) }

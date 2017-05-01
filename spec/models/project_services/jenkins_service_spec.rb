@@ -23,7 +23,7 @@ describe JenkinsService do
 
   describe 'username validation' do
     before do
-      @jenkins_service = JenkinsService.create(
+      @jenkins_service = described_class.create(
         active: active,
         project: project,
         properties: {
@@ -67,7 +67,7 @@ describe JenkinsService do
     let(:username) { nil }
     let(:password) { nil }
     let(:jenkins_service) do
-      JenkinsService.new(
+      described_class.new(
         project: project,
         properties: {
           jenkins_url: jenkins_url,
@@ -165,7 +165,7 @@ describe JenkinsService do
 
     context 'when a password was previously set' do
       before do
-        @jenkins_service = JenkinsService.create(
+        @jenkins_service = described_class.create(
           project: project,
           properties: {
             jenkins_url: 'http://jenkins.example.com/',
@@ -211,7 +211,7 @@ describe JenkinsService do
 
     context 'when no password was previously set' do
       before do
-        @jenkins_service = JenkinsService.create(
+        @jenkins_service = described_class.create(
           project: create(:project),
           properties: {
             jenkins_url: 'http://jenkins.example.com/',
