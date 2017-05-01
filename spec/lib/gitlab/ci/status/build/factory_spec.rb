@@ -216,7 +216,7 @@ describe Gitlab::Ci::Status::Build::Factory do
         expect(status.group).to eq 'manual'
         expect(status.icon).to eq 'icon_status_manual'
         expect(status.favicon).to eq 'favicon_status_manual'
-        expect(status.label).to eq 'manual play action'
+        expect(status.label).to include 'manual play action'
         expect(status).to have_details
         expect(status.action_path).to include 'play'
       end

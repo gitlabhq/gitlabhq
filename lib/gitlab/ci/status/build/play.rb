@@ -6,7 +6,11 @@ module Gitlab
           include Status::Extended
 
           def label
-            'manual play action'
+            if has_action?
+              'manual play action'
+            else
+              'manual play action (not allowed)'
+            end
           end
 
           def has_action?
