@@ -9,7 +9,7 @@
 - [Part 3: Setting Up Custom Domains - DNS Records and SSL/TLS Certificates](getting_started_part_three.md)
 - [Part 4: Creating and tweaking `.gitlab-ci.yml` for GitLab Pages](getting_started_part_four.md)
 
-## GitLab Pages form A to Z
+## GitLab Pages from A to Z
 
 This is a comprehensive guide, made for those who want to
 publish a website with GitLab Pages but aren't familiar with
