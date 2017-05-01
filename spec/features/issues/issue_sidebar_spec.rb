@@ -3,7 +3,8 @@ require 'rails_helper'
 feature 'Issue Sidebar', feature: true do
   include MobileHelpers
 
-  let(:project) { create(:project, :public) }
+  let(:group) { create(:group, :nested) }
+  let(:project) { create(:project, :public, namespace: group) }
   let(:issue) { create(:issue, project: project) }
   let!(:user) { create(:user)}
   let!(:label) { create(:label, project: project, title: 'bug') }
