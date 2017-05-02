@@ -198,6 +198,7 @@ class DynamicPathValidator < ActiveModel::EachValidator
   def validate_each(record, attribute, value)
     unless value =~ Gitlab::Regex.namespace_regex
       record.errors.add(attribute, Gitlab::Regex.namespace_regex_message)
+      return
     end
 
     if path_reserved_for_record?(record, value)
