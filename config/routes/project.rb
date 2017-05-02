@@ -44,7 +44,7 @@ constraints(ProjectUrlConstrainer.new) do
 
       resources :snippets, concerns: :awardable, constraints: { id: /\d+/ } do
         member do
-          get 'raw'
+          get :raw
           post :mark_as_spam
         end
       end

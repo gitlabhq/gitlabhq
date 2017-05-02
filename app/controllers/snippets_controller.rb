@@ -6,10 +6,10 @@ class SnippetsController < ApplicationController
   include MarkdownPreview
   include RendersBlob
 
-  before_action :snippet, only: [:show, :edit, :destroy, :update, :raw, :download]
+  before_action :snippet, only: [:show, :edit, :destroy, :update, :raw]
 
   # Allow read snippet
-  before_action :authorize_read_snippet!, only: [:show, :raw, :download]
+  before_action :authorize_read_snippet!, only: [:show, :raw]
 
   # Allow modify snippet
   before_action :authorize_update_snippet!, only: [:edit, :update]
@@ -17,7 +17,7 @@ class SnippetsController < ApplicationController
   # Allow destroy snippet
   before_action :authorize_admin_snippet!, only: [:destroy]
 
-  skip_before_action :authenticate_user!, only: [:index, :show, :raw, :download]
+  skip_before_action :authenticate_user!, only: [:index, :show, :raw]
 
   layout 'snippets'
   respond_to :html
@@ -87,14 +87,6 @@ class SnippetsController < ApplicationController
     @snippet.destroy
 
     redirect_to snippets_path
-  end
-
-  def download
-    send_data(
-      convert_line_endings(@snippet.content),
-      type: 'text/plain; charset=utf-8',
-      filename: @snippet.sanitized_file_name
-    )
   end
 
   def preview_markdown
