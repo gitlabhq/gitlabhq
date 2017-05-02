@@ -62,15 +62,16 @@ feature 'Task Lists', feature: true do
     visit namespace_project_issue_path(project.namespace, project, issue)
   end
 
-  describe 'for Issues' do
+  describe 'for Issues', js: true do
     include WaitForVueResource
+
+    before { wait_for_vue_resource }
 
     describe 'multiple tasks', js: true do
       let!(:issue) { create(:issue, description: markdown, author: user, project: project) }
 
       it 'renders' do
         visit_issue(project, issue)
-        wait_for_vue_resource
 
         expect(page).to have_selector('ul.task-list',      count: 1)
         expect(page).to have_selector('li.task-list-item', count: 6)
@@ -79,7 +80,6 @@ feature 'Task Lists', feature: true do
 
       it 'contains the required selectors' do
         visit_issue(project, issue)
-        wait_for_vue_resource
 
         container = '.detail-page-description .description.js-task-list-container'
 
@@ -92,14 +92,12 @@ feature 'Task Lists', feature: true do
 
       it 'is only editable by author' do
         visit_issue(project, issue)
-        wait_for_vue_resource
 
         expect(page).to have_selector('.js-task-list-container')
 
         logout(:user)
         login_as(user2)
         visit current_path
-        wait_for_vue_resource
         expect(page).not_to have_selector('.js-task-list-container')
       end
 
@@ -109,12 +107,15 @@ feature 'Task Lists', feature: true do
       end
     end
 
-    describe 'single incomplete task' do
+    describe 'single incomplete task', js: true do
+      include WaitForVueResource
+
       let!(:issue) { create(:issue, description: singleIncompleteMarkdown, author: user, project: project) }
+
+      before { wait_for_vue_resource }
 
       it 'renders' do
         visit_issue(project, issue)
-        wait_for_vue_resource
 
         expect(page).to have_selector('ul.task-list',      count: 1)
         expect(page).to have_selector('li.task-list-item', count: 1)
@@ -132,7 +133,6 @@ feature 'Task Lists', feature: true do
 
       it 'renders' do
         visit_issue(project, issue)
-        wait_for_vue_resource
 
         expect(page).to have_selector('ul.task-list',      count: 1)
         expect(page).to have_selector('li.task-list-item', count: 1)
@@ -151,9 +151,6 @@ feature 'Task Lists', feature: true do
       before { visit_issue(project, issue) }
 
       it 'renders' do
-
-        wait_for_vue_resource
-
         expect(page).to have_selector('ul.task-list',      count: 2)
         expect(page).to have_selector('li.task-list-item', count: 7)
         expect(page).to have_selector('ul input[checked]', count: 1)
@@ -163,8 +160,6 @@ feature 'Task Lists', feature: true do
       it 'solves tasks' do
         expect(page).to have_content("2 of 7 tasks completed")
 
-        wait_for_vue_resource
-
         page.find('li.task-list-item', text: 'Task b').find('input').click
         page.find('li.task-list-item ul li.task-list-item', text: 'Task a.2').find('input').click
         page.find('li.task-list-item ol li.task-list-item', text: 'Task 1.1').find('input').click
@@ -172,8 +167,6 @@ feature 'Task Lists', feature: true do
         expect(page).to have_content("5 of 7 tasks completed")
 
         visit_issue(project, issue) # reload to see new system notes
-
-        wait_for_vue_resource
 
         expect(page).to have_content('marked the task Task b as complete')
         expect(page).to have_content('marked the task Task a.2 as complete')

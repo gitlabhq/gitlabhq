@@ -43,7 +43,6 @@ export default {
   methods: {
     renderResponse(res) {
       this.apiData = JSON.parse(res.body);
-      this.issueIID = this.apiData.issue_number;
       this.triggerAnimation();
     },
     updateTaskHTML() {
@@ -90,7 +89,7 @@ export default {
     setTabTitle() {
       const currentTabTitle = document.querySelector('title');
       const currentTabTitleScope = currentTabTitle.innerText.split('·');
-      currentTabTitleScope[0] = `${this.titleText} (#${this.issueIID}) `;
+      currentTabTitleScope[0] = `${this.titleText} (#${this.apiData.issue_number}) `;
       currentTabTitle.innerText = currentTabTitleScope.join('·');
     },
     animate(title, description, elementsToVisualize) {
