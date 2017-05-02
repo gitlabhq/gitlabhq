@@ -92,7 +92,7 @@ Take a step ahead and dive into GitLab's advanced features.
 
 - [GitLab Pages](user/project/pages/index.md): Build, test, and deploy your static website with GitLab Pages.
 - [Snippets](user/snippets.md): Snippets allow you to create little bits of code.
-- [Wikis](workflow/project_features.md#wiki): Enhance your repository documentation with built-in wikis.
+- [Wikis](user/project/wiki/index.md): Enhance your repository documentation with built-in wikis.
 
 ### Continuous Integration, Delivery, and Deployment
 
