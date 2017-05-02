@@ -110,13 +110,8 @@ feature 'Project milestone', :feature do
         find('.milestone-sidebar .block', match: :first)
 
         aggregate_failures 'MR and issue blocks' do
-<<<<<<< HEAD
-          expect(blocks[3]).to have_content 1
-          expect(blocks[5]).to have_content 0
-=======
           expect(find('.milestone-sidebar .block.issues')).to have_content 1
           expect(find('.milestone-sidebar .block.merge-requests')).to have_content 0
->>>>>>> ce-com/master
         end
       end
     end
