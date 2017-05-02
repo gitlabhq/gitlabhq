@@ -62,12 +62,12 @@ feature 'Task Lists', feature: true do
     visit namespace_project_issue_path(project.namespace, project, issue)
   end
 
-  describe 'for Issues', js: true do
-    include WaitForVueResource
-
-    before { wait_for_vue_resource }
-
+  describe 'for Issues', feature: true do
     describe 'multiple tasks', js: true do
+      include WaitForVueResource
+      
+      before { wait_for_vue_resource }
+
       let!(:issue) { create(:issue, description: markdown, author: user, project: project) }
 
       it 'renders' do
