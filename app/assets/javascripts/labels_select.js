@@ -352,7 +352,7 @@
 
             if ($dropdown.hasClass('js-filter-bulk-update')) {
               _this.enableBulkLabelDropdown();
-              _this.setDropdownData($dropdown, isMarking, this.id(label));
+              _this.setDropdownData($dropdown, isMarking, label.id);
               return;
             }
 
