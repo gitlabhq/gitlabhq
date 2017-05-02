@@ -85,7 +85,6 @@
               Closed:
               = milestone.issues_visible_to_user(current_user).closed.count
 
-<<<<<<< HEAD
     - total_weight = milestone.issues_visible_to_user(current_user).sum(:weight)
     .block.weight
       .sidebar-collapsed-icon
@@ -103,10 +102,7 @@
         - else
           .no-value None
 
-    .block
-=======
     .block.merge-requests
->>>>>>> ce-com/master
       .sidebar-collapsed-icon
         %strong
           = icon('exclamation', 'aria-hidden': 'true')
