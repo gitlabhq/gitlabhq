@@ -85,8 +85,8 @@ feature 'Merge Request button', feature: true do
   context 'on branches page' do
     it_behaves_like 'Merge request button only shown when allowed' do
       let(:label) { 'Merge request' }
-      let(:url) { namespace_project_branches_path(project.namespace, project) }
-      let(:fork_url) { namespace_project_branches_path(forked_project.namespace, forked_project) }
+      let(:url) { namespace_project_branches_path(project.namespace, project, search: 'feature') }
+      let(:fork_url) { namespace_project_branches_path(forked_project.namespace, forked_project, search: 'feature') }
     end
   end
 
