@@ -3,26 +3,26 @@ class PostReceive
   include DedicatedSidekiqQueue
   extend Gitlab::CurrentSettings
 
-  def perform(repo_path, identifier, changes)
-    repo_relative_path = Gitlab::RepoPath.strip_storage_path(repo_path)
+  def perform(project_identifier, identifier, changes)
+    project, is_wiki = parse_project_identifier(project_identifier)
+
+    if project.nil?
+      log("Triggered hook for non-existing project with identifier \"#{project_identifier}\"")
+      return false
+    end
 
     changes = Base64.decode64(changes) unless changes.include?(' ')
     # Use Sidekiq.logger so arguments can be correlated with execution
     # time and thread ID's.
     Sidekiq.logger.info "changes: #{changes.inspect}" if ENV['SIDEKIQ_LOG_ARGUMENTS']
-    post_received = Gitlab::GitPostReceive.new(repo_relative_path, identifier, changes)
+    post_received = Gitlab::GitPostReceive.new(project, identifier, changes)
 
-    if post_received.project.nil?
-      log("Triggered hook for non-existing project with full path \"#{repo_relative_path}\"")
-      return false
-    end
-
-    if post_received.wiki?
+    if is_wiki
       update_wiki_es_indexes(post_received)
 
       # Triggers repository update on secondary nodes when Geo is enabled
       Gitlab::Geo.notify_wiki_update(post_received.project) if Gitlab::Geo.enabled?
-    elsif post_received.regular_project?
+    else
       # TODO: gitlab-org/gitlab-ce#26325. Remove this.
       if Gitlab::Geo.enabled?
         hook_data = {
@@ -36,9 +36,6 @@ class PostReceive
       end
 
       process_project_changes(post_received)
-    else
-      log("Triggered hook for unidentifiable repository type with full path \"#{repo_relative_path}\"")
-      false
     end
   end
 
@@ -68,6 +65,14 @@ class PostReceive
   end
 
   private
+
+  def parse_project_identifier(project_identifier)
+    if project_identifier.start_with?('/')
+      Gitlab::RepoPath.parse(project_identifier)
+    else
+      Gitlab::GlRepository.parse(project_identifier)
+    end
+  end
 
   def log(message)
     Gitlab::GitLogger.error("POST-RECEIVE: #{message}")
