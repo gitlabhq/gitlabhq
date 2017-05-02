@@ -52,6 +52,7 @@ var config = {
     vue_pipelines:        './vue_pipelines_index/index.js',
     issue_show:           './issue_show/index.js',
     group:                './group.js',
+    '../../../public/javascripts/pong': '../../../public/javascripts/pong',
   },
 
   output: {
@@ -155,6 +156,7 @@ var config = {
       'empty_states':   path.join(ROOT_PATH, 'app/views/shared/empty_states'),
       'icons':          path.join(ROOT_PATH, 'app/views/shared/icons'),
       'vendor':         path.join(ROOT_PATH, 'vendor/assets/javascripts'),
+      'public':         path.join(ROOT_PATH, 'public/javascripts'),
       'vue$':           'vue/dist/vue.esm.js',
     }
   }
