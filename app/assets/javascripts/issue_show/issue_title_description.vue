@@ -38,7 +38,6 @@ export default {
       descriptionText: '',
       descriptionChange: false,
       previousDescription: null,
-      taskStatus: '',
     };
   },
   methods: {
@@ -53,12 +52,12 @@ export default {
 
       if (tasks && !zeroTasks) {
         tasks.innerText = this.apiData.task_status;
-      } else if (this.apiData.task_status.includes('0 of 0')) {
-        $('#task_status_short').remove();
       } else if (!tasks && !zeroTasks) {
         $('.issuable-header').append(`
           <span id="task_status_short" class="hidden-md hidden-lg">${this.apiData.task_status}</span>
         `);
+      } else if (zeroTasks) {
+        $('#task_status_short').remove();
       }
     },
     elementsToVisualize(noTitleChange, noDescriptionChange) {
