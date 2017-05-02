@@ -30,6 +30,11 @@ RSpec.describe 'Dashboard Issues', feature: true do
     find('#assignee_id', visible: false).set('')
     find('.js-author-search', match: :first).click
     find('.dropdown-menu-author li a', match: :first, text: current_user.to_reference).click
+    find('.js-author-search', match: :first).click
+
+    page.within '.dropdown-menu-user' do
+      expect(find('.dropdown-menu-author li a.is-active', match: :first, text: current_user.to_reference)).to be_visible
+    end
 
     expect(page).to have_content(authored_issue.title)
     expect(page).to have_content(authored_issue_on_public_project.title)

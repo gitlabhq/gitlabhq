@@ -415,20 +415,31 @@ import eventHub from './sidebar/event_hub';
               const $el = $(e.currentTarget);
               $el.find('.is-active').removeClass('is-active');
 
-              const initialSelected = getSelected().forEach((selectedId) => {
-                $el.find(`li[data-user-id="${selectedId}"] .dropdown-menu-user-link`).addClass('is-active');
-              });
+              function highlightSelected(id) {
+                $el.find(`li[data-user-id="${id}"] .dropdown-menu-user-link`).addClass('is-active');
+              }
+
+              if ($selectbox[0]) {
+                getSelected().forEach((selectedId) => highlightSelected(selectedId));
+              } else {
+                highlightSelected(selectedId);
+              }
             },
             updateLabel: $dropdown.data('dropdown-title'),
             renderRow: function(user) {
-              var avatar, img, listClosingTags, listWithName, listWithUserName, selected, username;
+              var avatar, img, listClosingTags, listWithName, listWithUserName, username;
               username = user.username ? "@" + user.username : "";
               avatar = user.avatar_url ? user.avatar_url : false;
 
-              const fieldName = this.fieldName;
-              const field = $dropdown.closest('.selectbox').find("input[name='" + fieldName + "'][value='" + user.id + "']");
-              if (field.length) {
-                selected = true;
+              let selected = user.id === parseInt(selectedId, 10);
+
+              if (this.multiSelect) {
+                const fieldName = this.fieldName;
+                const field = $dropdown.closest('.selectbox').find("input[name='" + fieldName + "'][value='" + user.id + "']");
+
+                if (field.length) {
+                  selected = true;
+                }
               }
 
               img = "";
