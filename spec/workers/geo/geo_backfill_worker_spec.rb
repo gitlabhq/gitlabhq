@@ -18,6 +18,18 @@ describe Geo::GeoBackfillWorker, services: true do
       subject.perform
     end
 
+    it 'performs Geo::RepositoryBackfillService for projects where last attempt to backfill failed' do
+      Geo::ProjectRegistry.create(
+        project: Project.first,
+        last_repository_synced_at: DateTime.now,
+        last_repository_successful_sync_at: nil
+      )
+
+      expect(Geo::RepositoryBackfillService).to receive(:new).twice.and_return(spy)
+
+      subject.perform
+    end
+
     it 'does not perform Geo::RepositoryBackfillService when tracking DB is not available' do
       allow(Rails.configuration).to receive(:respond_to?).with(:geo_database) { false }
 

@@ -39,7 +39,7 @@ class GeoBackfillWorker
   private
 
   def find_project_ids
-    Project.where.not(id: Geo::ProjectRegistry.pluck(:project_id))
+    Project.where.not(id: Geo::ProjectRegistry.synced.pluck(:project_id))
            .limit(BATCH_SIZE)
            .pluck(:id)
   end

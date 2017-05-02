@@ -80,14 +80,15 @@ describe Geo::RepositoryBackfillService, services: true do
       end
     end
 
-    context 'when repository was backfilled' do
+    context 'when repository was backfilled successfully' do
       let(:project) { create(:project) }
+      let(:last_repository_successful_sync_at) { 5.days.ago }
 
       let!(:registry) do
         Geo::ProjectRegistry.create(
           project: project,
-          last_repository_synced_at: DateTime.now,
-          last_repository_successful_sync_at: DateTime.now
+          last_repository_synced_at: 5.days.ago,
+          last_repository_successful_sync_at: last_repository_successful_sync_at
         )
       end
 
@@ -98,8 +99,54 @@ describe Geo::RepositoryBackfillService, services: true do
       end
 
       context 'tracking database' do
-        it 'does not track repository sync' do
+        it 'does not create a new registry' do
           expect { subject.execute }.not_to change(Geo::ProjectRegistry, :count)
+        end
+
+        it 'does not update last_repository_successful_sync_at' do
+          subject.execute
+
+          expect(registry.reload.last_repository_successful_sync_at).to eq last_repository_successful_sync_at
+        end
+      end
+    end
+
+    context 'when last attempt to backfill the repository failed' do
+      let(:project) { create(:project) }
+
+      let!(:registry) do
+        Geo::ProjectRegistry.create(
+          project: project,
+          last_repository_synced_at: DateTime.now,
+          last_repository_successful_sync_at: nil
+        )
+      end
+
+      it 'fetches project repositories' do
+        fetch_count = 0
+
+        allow_any_instance_of(Repository).to receive(:fetch_geo_mirror) do
+          fetch_count += 1
+        end
+
+        subject.execute
+
+        expect(fetch_count).to eq 2
+      end
+
+      context 'tracking database' do
+        before do
+          allow_any_instance_of(Repository).to receive(:fetch_geo_mirror) { true }
+        end
+
+        it 'does not create a new registry' do
+          expect { subject.execute }.not_to change(Geo::ProjectRegistry, :count)
+        end
+
+        it 'updates last_repository_successful_sync_at' do
+          subject.execute
+
+          expect(registry.reload.last_repository_successful_sync_at).not_to be_nil
         end
       end
     end
