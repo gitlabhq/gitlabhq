@@ -10,4 +10,4 @@
 - else
   :plain
     job = $("tr#repo_#{@repo_id}")
-    job.find(".import-actions").html("<i class='fa fa-exclamation-circle'></i> Error saving project: #{escape_javascript(@project.errors.full_messages.join(','))}")
+    job.find(".import-actions").html("<i class='fa fa-exclamation-circle'></i> Error saving project: #{escape_javascript(h(@project.errors.full_messages.join(',')))}")
