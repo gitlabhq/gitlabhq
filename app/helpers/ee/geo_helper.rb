@@ -16,6 +16,13 @@ module EE
       end
     end
 
+    def node_class(node)
+      klass = []
+      klass << 'js-geo-secondary-node' if node.secondary?
+      klass << ' node-disabled' unless node.enabled?
+      klass
+    end
+
     def toggle_node_button(node)
       btn_class, title, data =
         if node.enabled?
