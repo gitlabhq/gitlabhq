@@ -52,7 +52,9 @@
         filterable: true,
         selectable: true,
         multiSelect: true,
-        clicked (label, $el, e) {
+        clicked (options) {
+          const { e } = options;
+          const label = options.selectedObj;
           e.preventDefault();
 
           if (!Store.findList('title', label.title)) {
