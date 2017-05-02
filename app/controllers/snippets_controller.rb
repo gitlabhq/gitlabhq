@@ -1,4 +1,5 @@
 class SnippetsController < ApplicationController
+  include RendersNotes
   include ToggleAwardEmoji
   include SpammableActions
   include SnippetsActions
@@ -60,6 +61,10 @@ class SnippetsController < ApplicationController
   end
 
   def show
+    @noteable = @snippet
+
+    @discussions = @snippet.discussions
+    @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes))
   end
 
   def destroy
