@@ -50,7 +50,7 @@ module Gitlab
           },
           'images' => {
             input: 'image:https://localhost.com/image.png[Alt text" onerror="alert(7)]',
-            output: "<div>\n<p><span><img src=\"https://localhost.com/image.png\" alt=\"Alt text\"></span></p>\n</div>"
+            output: "<img src=\"https://localhost.com/image.png\" alt=\"Alt text\">"
           },
           'pre' => {
             input: '```mypre"><script>alert(3)</script>',
@@ -60,7 +60,7 @@ module Gitlab
 
         links.each do |name, data|
           it "does not convert dangerous #{name} into HTML" do
-            expect(render(data[:input], context)).to eql data[:output]
+            expect(render(data[:input], context)).to include(data[:output])
           end
         end
       end
@@ -69,7 +69,7 @@ module Gitlab
         it 'adds the `rel` attribute to the link' do
           output = render('link:https://google.com[Google]', context)
 
-          expect(output).to include('rel="nofollow noreferrer noopener"')
+          expect(output).to include('rel="nofollow noreferrer"')
         end
       end
     end
