@@ -2,7 +2,6 @@ require 'rails_helper'
 
 feature 'Merge Requests > User uses slash commands', feature: true, js: true do
   include SlashCommandsHelpers
-  include WaitForAjax
 
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }

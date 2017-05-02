@@ -1,8 +1,9 @@
 require 'spec_helper'
 
-describe Gitlab::Cache::Ci::ProjectPipelineStatus do
+describe Gitlab::Cache::Ci::ProjectPipelineStatus, :redis do
   let(:project) { create(:project) }
   let(:pipeline_status) { described_class.new(project) }
+  let(:cache_key) { "projects/#{project.id}/pipeline_status" }
 
   describe '.load_for_project' do
     it "loads the status" do
@@ -12,12 +13,110 @@ describe Gitlab::Cache::Ci::ProjectPipelineStatus do
     end
   end
 
+  describe 'loading in batches' do
+    let(:status) { 'success' }
+    let(:sha) { '424d1b73bc0d3cb726eb7dc4ce17a4d48552f8c6' }
+    let(:ref) { 'master' }
+    let(:pipeline_info) { { sha: sha, status: status, ref: ref } }
+    let(:project_without_status) { create(:project) }
+
+    describe '.load_in_batch_for_projects' do
+      it 'preloads pipeline_status on projects' do
+        described_class.load_in_batch_for_projects([project])
+
+        # Don't call the accessor that would lazy load the variable
+        expect(project.instance_variable_get('@pipeline_status')).to be_a(described_class)
+      end
+
+      describe 'without a status in redis' do
+        it 'loads the status from a commit when it was not in redis' do
+          empty_status = { sha: nil, status: nil, ref: nil }
+          fake_pipeline = described_class.new(
+            project_without_status,
+            pipeline_info: empty_status,
+            loaded_from_cache: false
+          )
+
+          expect(described_class).to receive(:new).
+                                       with(project_without_status,
+                                            pipeline_info: empty_status,
+                                            loaded_from_cache: false).
+                                       and_return(fake_pipeline)
+          expect(fake_pipeline).to receive(:load_from_project)
+          expect(fake_pipeline).to receive(:store_in_cache)
+
+          described_class.load_in_batch_for_projects([project_without_status])
+        end
+
+        it 'only connects to redis twice' do
+          # Once to load, once to store in the cache
+          expect(Gitlab::Redis).to receive(:with).exactly(2).and_call_original
+
+          described_class.load_in_batch_for_projects([project_without_status])
+
+          expect(project_without_status.pipeline_status).not_to be_nil
+        end
+      end
+
+      describe 'when a status was cached in redis' do
+        before do
+          Gitlab::Redis.with do |redis|
+            redis.mapped_hmset(cache_key,
+                               { sha: sha, status: status, ref: ref })
+          end
+        end
+
+        it 'loads the correct status' do
+          described_class.load_in_batch_for_projects([project])
+
+          pipeline_status = project.instance_variable_get('@pipeline_status')
+
+          expect(pipeline_status.sha).to eq(sha)
+          expect(pipeline_status.status).to eq(status)
+          expect(pipeline_status.ref).to eq(ref)
+        end
+
+        it 'only connects to redis once' do
+          expect(Gitlab::Redis).to receive(:with).exactly(1).and_call_original
+
+          described_class.load_in_batch_for_projects([project])
+
+          expect(project.pipeline_status).not_to be_nil
+        end
+
+        it "doesn't load the status separatly" do
+          expect_any_instance_of(described_class).not_to receive(:load_from_project)
+          expect_any_instance_of(described_class).not_to receive(:load_from_cache)
+
+          described_class.load_in_batch_for_projects([project])
+        end
+      end
+    end
+
+    describe '.cached_results_for_projects' do
+      it 'loads a status from redis for all projects' do
+        Gitlab::Redis.with do |redis|
+          redis.mapped_hmset(cache_key, { sha: sha, status: status, ref: ref })
+        end
+
+        result = [{ loaded_from_cache: false, pipeline_info: { sha: nil, status: nil, ref: nil } },
+                  { loaded_from_cache: true, pipeline_info: pipeline_info }]
+
+        expect(described_class.cached_results_for_projects([project_without_status, project])).to eq(result)
+      end
+    end
+  end
+
   describe '.update_for_pipeline' do
     it 'refreshes the cache if nescessary' do
-      pipeline = build_stubbed(:ci_pipeline, sha: '123456', status: 'success')
+      pipeline = build_stubbed(:ci_pipeline,
+                               sha: '123456', status: 'success', ref: 'master')
       fake_status = double
       expect(described_class).to receive(:new).
-                                   with(pipeline.project, sha: '123456', status: 'success', ref: 'master').
+                                   with(pipeline.project,
+                                        pipeline_info: {
+                                          sha: '123456', status: 'success', ref: 'master'
+                                        }).
                                    and_return(fake_status)
 
       expect(fake_status).to receive(:store_in_cache_if_needed)
@@ -110,7 +209,7 @@ describe Gitlab::Cache::Ci::ProjectPipelineStatus do
       pipeline_status.status = 'failed'
 
       pipeline_status.store_in_cache
-      read_sha, read_status = Gitlab::Redis.with { |redis| redis.hmget("projects/#{project.id}/build_status", :sha, :status) }
+      read_sha, read_status = Gitlab::Redis.with { |redis| redis.hmget(cache_key, :sha, :status) }
 
       expect(read_sha).to eq('123456')
       expect(read_status).to eq('failed')
@@ -120,10 +219,10 @@ describe Gitlab::Cache::Ci::ProjectPipelineStatus do
   describe '#store_in_cache_if_needed', :redis do
     it 'stores the state in the cache when the sha is the HEAD of the project' do
       create(:ci_pipeline, :success, project: project, sha: project.commit.sha)
-      build_status = described_class.load_for_project(project)
+      pipeline_status = described_class.load_for_project(project)
 
-      build_status.store_in_cache_if_needed
-      sha, status, ref = Gitlab::Redis.with { |redis| redis.hmget("projects/#{project.id}/build_status", :sha, :status, :ref) }
+      pipeline_status.store_in_cache_if_needed
+      sha, status, ref = Gitlab::Redis.with { |redis| redis.hmget(cache_key, :sha, :status, :ref) }
 
       expect(sha).not_to be_nil
       expect(status).not_to be_nil
@@ -131,10 +230,13 @@ describe Gitlab::Cache::Ci::ProjectPipelineStatus do
     end
 
     it "doesn't store the status in redis when the sha is not the head of the project" do
-      other_status = described_class.new(project, sha: "123456", status: "failed")
+      other_status = described_class.new(
+        project,
+        pipeline_info: { sha: "123456", status: "failed" }
+      )
 
       other_status.store_in_cache_if_needed
-      sha, status = Gitlab::Redis.with { |redis| redis.hmget("projects/#{project.id}/build_status", :sha, :status) }
+      sha, status = Gitlab::Redis.with { |redis| redis.hmget(cache_key, :sha, :status) }
 
       expect(sha).to be_nil
       expect(status).to be_nil
@@ -142,11 +244,18 @@ describe Gitlab::Cache::Ci::ProjectPipelineStatus do
 
     it "deletes the cache if the repository doesn't have a head commit" do
       empty_project = create(:empty_project)
-      Gitlab::Redis.with { |redis| redis.mapped_hmset("projects/#{empty_project.id}/build_status", { sha: "sha", status: "pending", ref: 'master' }) }
-      other_status = described_class.new(empty_project, sha: "123456", status: "failed")
+      Gitlab::Redis.with do |redis|
+        redis.mapped_hmset(cache_key,
+                           { sha: 'sha', status: 'pending', ref: 'master' })
+      end
+
+      other_status = described_class.new(empty_project,
+                                         pipeline_info: {
+                                           sha: "123456", status: "failed"
+                                         })
 
       other_status.store_in_cache_if_needed
-      sha, status, ref = Gitlab::Redis.with { |redis| redis.hmget("projects/#{empty_project.id}/build_status", :sha, :status, :ref) }
+      sha, status, ref = Gitlab::Redis.with { |redis| redis.hmget("projects/#{empty_project.id}/pipeline_status", :sha, :status, :ref) }
 
       expect(sha).to be_nil
       expect(status).to be_nil
@@ -157,9 +266,13 @@ describe Gitlab::Cache::Ci::ProjectPipelineStatus do
   describe "with a status in redis", :redis do
     let(:status) { 'success' }
     let(:sha) { '424d1b73bc0d3cb726eb7dc4ce17a4d48552f8c6' }
+    let(:ref) { 'master' }
 
     before do
-      Gitlab::Redis.with { |redis| redis.mapped_hmset("projects/#{project.id}/build_status", { sha: sha, status: status }) }
+      Gitlab::Redis.with do |redis|
+        redis.mapped_hmset(cache_key,
+                           { sha: sha, status: status, ref: ref })
+      end
     end
 
     describe '#load_from_cache' do
@@ -168,6 +281,7 @@ describe Gitlab::Cache::Ci::ProjectPipelineStatus do
 
         expect(pipeline_status.sha).to eq(sha)
         expect(pipeline_status.status).to eq(status)
+        expect(pipeline_status.ref).to eq(ref)
       end
     end
 
@@ -181,7 +295,7 @@ describe Gitlab::Cache::Ci::ProjectPipelineStatus do
       it 'deletes values from redis'  do
         pipeline_status.delete_from_cache
 
-        key_exists = Gitlab::Redis.with { |redis| redis.exists("projects/#{project.id}/build_status") }
+        key_exists = Gitlab::Redis.with { |redis| redis.exists(cache_key) }
 
         expect(key_exists).to be_falsy
       end

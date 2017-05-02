@@ -9,17 +9,19 @@
     = copy_file_path_button(blob.path)
 
     %small
-      = number_to_human_size(blob_size(blob))
+      = number_to_human_size(blob.raw_size)
 
   .file-actions.hidden-xs
+    = render 'projects/blob/viewer_switcher', blob: blob unless blame
+
     .btn-group{ role: "group" }<
-      = copy_blob_content_button(blob) if !blame && blob_rendered_as_text?(blob)
-      = open_raw_file_button(namespace_project_raw_path(@project.namespace, @project, @id))
+      = copy_blob_source_button(blob) unless blame
+      = open_raw_blob_button(blob)
       = view_on_environment_button(@commit.sha, @path, @environment) if @environment
 
     .btn-group{ role: "group" }<
       -# only show normal/blame view links for text files
-      - if blob_text_viewable?(blob)
+      - if blob.readable_text?
         - if blame
           = link_to 'Normal view', namespace_project_blob_path(@project.namespace, @project, @id),
               class: 'btn btn-sm'
@@ -34,19 +36,9 @@
           tree_join(@commit.sha, @path)), class: 'btn btn-sm js-data-file-blob-permalink-url'
 
     .btn-group{ role: "group" }<
-      = edit_blob_link if blob_text_viewable?(blob)
+      = edit_blob_link if blob.readable_text?
       - if current_user
         = replace_blob_link
         = delete_blob_link
 
-- if current_user
-  .js-file-fork-suggestion-section.file-fork-suggestion.hidden
-    %span.file-fork-suggestion-note
-      You're not allowed to
-      %span.js-file-fork-suggestion-section-action
-        edit
-      files in this project directly. Please fork this project,
-      make your changes there, and submit a merge request.
-    = link_to 'Fork', nil, method: :post, class: 'js-fork-suggestion-button btn btn-grouped btn-inverted btn-new'
-    %button.js-cancel-fork-suggestion-button.btn.btn-grouped{ type: 'button' }
-      Cancel
+= render 'projects/fork_suggestion'

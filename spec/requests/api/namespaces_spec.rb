@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-describe API::Namespaces, api: true  do
-  include ApiHelpers
+describe API::Namespaces do
   let(:admin) { create(:admin) }
   let(:user) { create(:user) }
   let!(:group1) { create(:group) }

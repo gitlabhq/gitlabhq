@@ -75,8 +75,6 @@ feature 'Project', feature: true do
   end
 
   describe 'project title' do
-    include WaitForAjax
-
     let(:user)    { create(:user) }
     let(:project) { create(:empty_project, namespace: user.namespace) }
 

@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 feature 'Prioritize labels', feature: true do
-  include WaitForAjax
   include DragTo
 
   let(:user)     { create(:user) }

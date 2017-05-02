@@ -50,7 +50,7 @@
       = link_to 'Edit', edit_namespace_project_issue_path(@project.namespace, @project, @issue), class: 'hidden-xs hidden-sm btn btn-grouped issuable-edit'
 
 .issue-details.issuable-details
-  .detail-page-description.content-block{ class: ('hide-bottom-border' unless @issue.description.present? ) }
+  .detail-page-description.content-block
     .issue-title-data.hidden{ "data" => { "initial-title" => markdown_field(@issue, :title),
       "endpoint" => rendered_title_namespace_project_issue_path(@project.namespace, @project, @issue),
     } }
@@ -58,8 +58,7 @@
     - if @issue.description.present?
       .description{ class: can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : '' }
         .wiki
-          = preserve do
-            = markdown_field(@issue, :description)
+          = markdown_field(@issue, :description)
         %textarea.hidden.js-task-list-field
           = @issue.description
     = edited_time_ago_with_tooltip(@issue, placement: 'bottom', html_class: 'issue_edited_ago')

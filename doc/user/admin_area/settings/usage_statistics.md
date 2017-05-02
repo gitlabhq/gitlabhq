@@ -3,7 +3,7 @@
 GitLab Inc. will periodically collect information about your instance in order
 to perform various actions.
 
-All statistics are opt-in and you can always disable them from the admin panel.
+All statistics are opt-out, you can disable them from the admin panel.
 
 ## Version check
 

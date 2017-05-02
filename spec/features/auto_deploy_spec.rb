@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe 'Auto deploy' do
-  include WaitForAjax
-
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
 

@@ -61,7 +61,7 @@ module Boards
           if moving_to_list.movable?
             moving_from_list.label_id
           else
-            project.boards.joins(:lists).merge(List.movable).pluck(:label_id)
+            Label.on_project_boards(project.id).pluck(:label_id)
           end
 
         Array(label_ids).compact

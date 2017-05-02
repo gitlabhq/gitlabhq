@@ -3,7 +3,6 @@ require 'rails_helper'
 describe 'Filter merge requests', feature: true do
   include FilteredSearchHelpers
   include MergeRequestHelpers
-  include WaitForAjax
 
   let!(:project)   { create(:project) }
   let!(:group)     { create(:group) }

@@ -1,10 +1,11 @@
 require 'rails_helper'
 
-feature 'Public Snippets', feature: true do
+feature 'Public Snippets', :js, feature: true do
   scenario 'Unauthenticated user should see public snippets' do
     public_snippet = create(:personal_snippet, :public)
 
     visit snippet_path(public_snippet)
+    wait_for_ajax
 
     expect(page).to have_content(public_snippet.content)
   end

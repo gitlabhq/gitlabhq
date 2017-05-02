@@ -4,8 +4,7 @@
   = render "projects/services/#{@service.to_param}/help", subject: subject
 - elsif @service.help.present?
   .well
-    = preserve do
-      = markdown @service.help
+    = markdown @service.help
 
 .service-settings
   .form-group
