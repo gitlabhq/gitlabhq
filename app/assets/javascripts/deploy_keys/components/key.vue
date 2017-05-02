@@ -7,11 +7,6 @@
         type: Object,
         required: true,
       },
-      enabled: {
-        type: Boolean,
-        required: false,
-        default: true,
-      },
       store: {
         type: Object,
         required: true,

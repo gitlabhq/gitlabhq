@@ -37,7 +37,7 @@
       v-if="keys.length">
       <li
         v-for="deployKey in keys"
-        key="deployKey.id">
+        :key="deployKey.id">
         <key
           :deploy-key="deployKey"
           :store="store" />

@@ -126,4 +126,8 @@ describe('Deploy keys app component', () => {
 
     expect(vm.disableKey).toHaveBeenCalledWith(key);
   });
+
+  it('hasKeys returns true when there are keys', () => {
+    expect(vm.hasKeys).toEqual(3);
+  });
 });
