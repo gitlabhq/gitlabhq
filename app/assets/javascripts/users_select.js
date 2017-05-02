@@ -30,7 +30,7 @@
       $els.each((function(_this) {
         return function(i, dropdown) {
           var options = {};
-          var $block, $collapsedSidebar, $dropdown, $loading, $selectbox, $value, abilityName, assignTo, assigneeTemplate, collapsedAssigneeTemplate, defaultLabel, defaultNullUser, firstUser, issueURL, selectedId, showAnyUser, showNullUser, showMenuAbove;
+          var $block, $collapsedSidebar, $dropdown, $loading, $selectbox, $value, abilityName, assignTo, assigneeTemplate, collapsedAssigneeTemplate, defaultLabel, defaultNullUser, firstUser, issueURL, selectedId, selectedIdDefault, showAnyUser, showNullUser, showMenuAbove;
           $dropdown = $(dropdown);
           options.projectId = $dropdown.data('project-id');
           options.groupId = $dropdown.data('group-id');
@@ -51,8 +51,8 @@
           $value = $block.find('.value');
           $collapsedSidebar = $block.find('.sidebar-collapsed-user');
           $loading = $block.find('.block-loading').fadeOut();
-          selectedId = $dropdown.data('selected');
-          if (!selectedId) selectedId = (defaultNullUser && showNullUser) ? 0 : null;
+          selectedIdDefault = (defaultNullUser && showNullUser) ? 0 : null;
+          selectedId = $dropdown.data('selected') || selectedIdDefault;
 
           var updateIssueBoardsIssue = function () {
             $loading.removeClass('hidden').fadeIn();
@@ -188,12 +188,14 @@
             fieldName: $dropdown.data('field-name'),
             toggleLabel: function(selected, el) {
               if (selected && 'id' in selected && $(el).hasClass('is-active')) {
+                $dropdown.find('.dropdown-toggle-text').removeClass('is-default');
                 if (selected.text) {
                   return selected.text;
                 } else {
                   return selected.name;
                 }
               } else {
+                $dropdown.find('.dropdown-toggle-text').addClass('is-default');
                 return defaultLabel;
               }
             },
@@ -206,11 +208,12 @@
             },
             vue: $dropdown.hasClass('js-issue-board-sidebar'),
             clicked: function(user, $el, e) {
-              var isIssueIndex, isMRIndex, page, selected;
+              var isIssueIndex, isMRIndex, page, selected, isSelecting;
               page = $('body').data('page');
               isIssueIndex = page === 'projects:issues:index';
               isMRIndex = (page === page && page === 'projects:merge_requests:index');
-              selectedId = user.id;
+              isSelecting = (user.id !== selectedId);
+              selectedId = isSelecting ? user.id : selectedIdDefault;
               if ($dropdown.hasClass('js-filter-bulk-update') || $dropdown.hasClass('js-issuable-form-dropdown')) {
                 e.preventDefault();
                 if (selectedId === gon.current_user_id) {
@@ -227,7 +230,7 @@
               } else if ($dropdown.hasClass('js-filter-submit')) {
                 return $dropdown.closest('form').submit();
               } else if ($dropdown.hasClass('js-issue-board-sidebar')) {
-                if (user.id) {
+                if (user.id && isSelecting) {
                   gl.issueBoards.boardStoreIssueSet('assignee', new ListUser({
                     id: user.id,
                     username: user.username,
@@ -249,6 +252,9 @@
             },
             opened: function(e) {
               const $el = $(e.currentTarget);
+              if ($dropdown.hasClass('js-issue-board-sidebar')) {
+                selectedId = parseInt($dropdown[0].dataset.selected, 10) || selectedIdDefault;
+              }
               $el.find('.is-active').removeClass('is-active');
               $el.find(`li[data-user-id="${selectedId}"] .dropdown-menu-user-link`).addClass('is-active');
             },
