@@ -122,13 +122,30 @@ module Gitlab
 
       # Returns the number of valid branches
       def branch_count
-        rugged.branches.count do |ref|
-          begin
-            ref.name && ref.target # ensures the branch is valid
+        Gitlab::GitalyClient.migrate(:branch_names) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.count_branch_names
+          else
+            rugged.branches.count do |ref|
+              begin
+                ref.name && ref.target # ensures the branch is valid
 
-            true
-          rescue Rugged::ReferenceError
-            false
+                true
+              rescue Rugged::ReferenceError
+                false
+              end
+            end
+          end
+        end
+      end
+
+      # Returns the number of valid tags
+      def tag_count
+        Gitlab::GitalyClient.migrate(:tag_names) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.count_tag_names
+          else
+            rugged.tags.count
           end
         end
       end
