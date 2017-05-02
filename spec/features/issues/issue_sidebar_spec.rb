@@ -42,6 +42,21 @@ feature 'Issue Sidebar', feature: true do
         expect(page).to have_content(user2.name)
       end
     end
+
+    it 'assigns yourself' do
+      find('.block.assignee .dropdown-menu-toggle').click
+
+      find('.assign-yourself .btn-link', text: 'assign yourself').click
+
+      wait_for_ajax
+
+      find('.block.assignee .edit-link').click
+
+      page.within '.dropdown-menu-user' do
+        expect(page.find('.dropdown-header')).to be_visible
+        expect(page.find('.dropdown-menu-user-link.is-active')).to have_content(user.name)
+      end
+    end
   end
 
   context 'as a allowed user' do
