@@ -3,7 +3,7 @@ require 'spec_helper'
 feature 'Task Lists', feature: true do
   include Warden::Test::Helpers
 
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
   let(:user)    { create(:user) }
   let(:user2)   { create(:user) }
 
@@ -240,6 +240,7 @@ feature 'Task Lists', feature: true do
     end
 
     describe 'multiple tasks' do
+      let(:project) { create(:project, :repository) }
       let!(:merge) { create(:merge_request, :simple, description: markdown, author: user, source_project: project) }
 
       it 'renders for description' do

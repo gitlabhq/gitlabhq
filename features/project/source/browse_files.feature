@@ -10,7 +10,8 @@ Feature: Project Source Browse Files
   Scenario: I browse files for specific ref
     Given I visit project source page for "6d39438"
     Then I should see files from repository for "6d39438"
-
+    
+  @javascript
   Scenario: I browse file content
     Given I click on ".gitignore" file in repo
     Then I should see its content

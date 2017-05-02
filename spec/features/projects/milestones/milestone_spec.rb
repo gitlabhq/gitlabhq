@@ -63,4 +63,27 @@ feature 'Project milestone', :feature do
       expect(page).not_to have_content('Assign some issues to this milestone.')
     end
   end
+
+  context 'when project has an issue' do
+    before do
+      create(:issue, project: project, milestone: milestone)
+
+      visit namespace_project_milestone_path(project.namespace, project, milestone)
+    end
+
+    describe 'the collapsed sidebar' do
+      before do
+        find('.milestone-sidebar .gutter-toggle').click
+      end
+
+      it 'shows the total MR and issue counts' do
+        find('.milestone-sidebar .block', match: :first)
+
+        aggregate_failures 'MR and issue blocks' do
+          expect(find('.milestone-sidebar .block.issues')).to have_content 1
+          expect(find('.milestone-sidebar .block.merge-requests')).to have_content 0
+        end
+      end
+    end
+  end
 end

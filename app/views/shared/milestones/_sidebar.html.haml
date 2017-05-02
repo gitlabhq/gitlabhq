@@ -64,7 +64,7 @@
             %span.remaining-days= remaining_days
 
     - if !project || can?(current_user, :read_issue, project)
-      .block
+      .block.issues
         .sidebar-collapsed-icon
           %strong
             = icon('hashtag', 'aria-hidden': 'true')
@@ -85,11 +85,11 @@
               Closed:
               = milestone.issues_visible_to_user(current_user).closed.count
 
-    .block
+    .block.merge-requests
       .sidebar-collapsed-icon
         %strong
           = icon('exclamation', 'aria-hidden': 'true')
-        %span= milestone.issues_visible_to_user(current_user).count
+        %span= milestone.merge_requests.count
       .title.hide-collapsed
         Merge requests
         %span.badge= milestone.merge_requests.count

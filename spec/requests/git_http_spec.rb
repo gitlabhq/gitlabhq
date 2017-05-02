@@ -279,10 +279,10 @@ describe 'Git HTTP requests', lib: true do
                   expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
                 end
 
-                it "uploads get status 401 (no project existence information leak)" do
+                it "uploads get status 200" do
                   push_get "#{project.path_with_namespace}.git", user: 'oauth2', password: @token.token
 
-                  expect(response).to have_http_status(401)
+                  expect(response).to have_http_status(200)
                 end
               end
 

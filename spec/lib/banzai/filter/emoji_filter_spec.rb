@@ -68,9 +68,9 @@ describe Banzai::Filter::EmojiFilter, lib: true do
     expect(doc.css('gl-emoji').size).to eq 1
   end
 
-  it 'matches multiple emoji in a row' do
+  it 'does not match multiple emoji in a row' do
     doc = filter(':see_no_evil::hear_no_evil::speak_no_evil:')
-    expect(doc.css('gl-emoji').size).to eq 3
+    expect(doc.css('gl-emoji').size).to eq 0
   end
 
   it 'unicode matches multiple emoji in a row' do
@@ -81,6 +81,12 @@ describe Banzai::Filter::EmojiFilter, lib: true do
   it 'mixed matches multiple emoji in a row' do
     doc = filter("'🙈:see_no_evil:🙉:hear_no_evil:🙊:speak_no_evil:'")
     expect(doc.css('gl-emoji').size).to eq 6
+  end
+
+  it 'does not match emoji in a string' do
+    doc = filter("'2a00:a4c0:100::1'")
+
+    expect(doc.css('gl-emoji').size).to eq 0
   end
 
   it 'has a data-name attribute' do

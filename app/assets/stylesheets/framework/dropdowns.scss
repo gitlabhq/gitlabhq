@@ -195,7 +195,6 @@
   border: 1px solid $dropdown-border-color;
   border-radius: $border-radius-base;
   box-shadow: 0 2px 4px $dropdown-shadow-color;
-  overflow: hidden;
   @include set-invisible;
 
   @media (max-width: $screen-sm-min) {

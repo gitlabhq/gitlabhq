@@ -107,7 +107,8 @@ module Network
     def find_commits(skip = 0)
       opts = {
         max_count: self.class.max_count,
-        skip: skip
+        skip: skip,
+        order: :date
       }
 
       opts[:ref] = @commit.id if @filter_ref

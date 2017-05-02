@@ -505,6 +505,11 @@ production: &base
     # If you use non-standard ssh port you need to specify it
     # ssh_port: 22
 
+  workhorse:
+    # File that contains the secret key for verifying access for gitlab-workhorse.
+    # Default is '.gitlab_workhorse_secret' relative to Rails.root (i.e. root of the GitLab app).
+    # secret_file: /home/git/gitlab/.gitlab_workhorse_secret
+
   ## Git settings
   # CAUTION!
   # Use the default values unless you really know what you are doing

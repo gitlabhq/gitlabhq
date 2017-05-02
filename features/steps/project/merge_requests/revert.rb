@@ -31,7 +31,7 @@ class Spinach::Features::RevertMergeRequests < Spinach::FeatureSteps
 
   step 'I am signed in as a developer of the project' do
     @user = create(:user) { |u| @project.add_developer(u) }
-    login_as(@user)
+    sign_in(@user)
   end
 
   step 'There is an open Merge Request' do

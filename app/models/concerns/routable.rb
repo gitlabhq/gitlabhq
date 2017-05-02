@@ -163,7 +163,20 @@ module Routable
     end
   end
 
+  # Every time `project.namespace.becomes(Namespace)` is called for polymorphic_path,
+  # a new instance is instantiated, and we end up duplicating the same query to retrieve
+  # the route. Caching this per request ensures that even if we have multiple instances,
+  # we will not have to duplicate work, avoiding N+1 queries in some cases.
   def full_path
+    return uncached_full_path unless RequestStore.active?
+
+    key = "routable/full_path/#{self.class.name}/#{self.id}"
+    RequestStore[key] ||= uncached_full_path
+  end
+
+  private
+
+  def uncached_full_path
     if route && route.path.present?
       @full_path ||= route.path
     else
@@ -172,8 +185,6 @@ module Routable
       build_full_path
     end
   end
-
-  private
 
   def full_name_changed?
     name_changed? || parent_changed?

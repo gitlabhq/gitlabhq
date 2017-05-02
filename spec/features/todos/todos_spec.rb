@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe 'Dashboard Todos', feature: true do
-  include WaitForAjax
-
   let(:user)    { create(:user) }
   let(:author)  { create(:user) }
   let(:project) { create(:project, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
@@ -98,6 +96,83 @@ describe 'Dashboard Todos', feature: true do
 
         it_behaves_like 'deleting the todo'
         it_behaves_like 'deleting and restoring the todo'
+      end
+    end
+
+    context 'User created todos for themself' do
+      before do
+        login_as(user)
+      end
+
+      context 'issue assigned todo' do
+        before do
+          create(:todo, :assigned, user: user, project: project, target: issue, author: user)
+          visit dashboard_todos_path
+        end
+
+        it 'shows issue assigned to yourself message' do
+          page.within('.js-todos-all')  do
+            expect(page).to have_content("You assigned issue #{issue.to_reference(full: true)} to yourself")
+          end
+        end
+      end
+
+      context 'marked todo' do
+        before do
+          create(:todo, :marked, user: user, project: project, target: issue, author: user)
+          visit dashboard_todos_path
+        end
+
+        it 'shows you added a todo message' do
+          page.within('.js-todos-all')  do
+            expect(page).to have_content("You added a todo for issue #{issue.to_reference(full: true)}")
+            expect(page).not_to have_content('to yourself')
+          end
+        end
+      end
+
+      context 'mentioned todo' do
+        before do
+          create(:todo, :mentioned, user: user, project: project, target: issue, author: user)
+          visit dashboard_todos_path
+        end
+
+        it 'shows you mentioned yourself message' do
+          page.within('.js-todos-all')  do
+            expect(page).to have_content("You mentioned yourself on issue #{issue.to_reference(full: true)}")
+            expect(page).not_to have_content('to yourself')
+          end
+        end
+      end
+
+      context 'directly_addressed todo' do
+        before do
+          create(:todo, :directly_addressed, user: user, project: project, target: issue, author: user)
+          visit dashboard_todos_path
+        end
+
+        it 'shows you directly addressed yourself message' do
+          page.within('.js-todos-all')  do
+            expect(page).to have_content("You directly addressed yourself on issue #{issue.to_reference(full: true)}")
+            expect(page).not_to have_content('to yourself')
+          end
+        end
+      end
+
+      context 'approval todo' do
+        let(:merge_request) { create(:merge_request) }
+
+        before do
+          create(:todo, :approval_required, user: user, project: project, target: merge_request, author: user)
+          visit dashboard_todos_path
+        end
+
+        it 'shows you set yourself as an approver message' do
+          page.within('.js-todos-all')  do
+            expect(page).to have_content("You set yourself as an approver for merge request #{merge_request.to_reference(full: true)}")
+            expect(page).not_to have_content('to yourself')
+          end
+        end
       end
     end
 

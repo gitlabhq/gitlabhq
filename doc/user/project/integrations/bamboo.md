@@ -51,9 +51,9 @@ service in GitLab.
 
 ## Troubleshooting
 
-If builds are not triggered, these are a couple of things to keep in mind.
+If builds are not triggered, ensure you entered the right GitLab IP address in
+Bamboo under 'Trigger IP addresses'.
 
-1. Ensure you entered the right GitLab IP address in Bamboo under 'Trigger
-   IP addresses'.
-1. Remember that GitLab only triggers builds on push events. A commit via the
-   web interface will not trigger CI currently.
+>**Note:**
+- Starting with GitLab 8.14.0, builds are triggered on push events.
+

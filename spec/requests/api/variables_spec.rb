@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe API::Variables, api: true do
-  include ApiHelpers
-
+describe API::Variables do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let!(:project) { create(:empty_project, creator_id: user.id) }

@@ -18,7 +18,7 @@ describe CacheMarkdownField do
     end
 
     extend ActiveModel::Callbacks
-    define_model_callbacks :save
+    define_model_callbacks :create, :update
 
     include CacheMarkdownField
     cache_markdown_field :foo
@@ -56,7 +56,7 @@ describe CacheMarkdownField do
     end
 
     def save
-      run_callbacks :save do
+      run_callbacks :update do
         changes_applied
       end
     end

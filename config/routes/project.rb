@@ -173,7 +173,7 @@ constraints(ProjectUrlConstrainer.new) do
           post :retry
           post :play
           post :erase
-          get :trace
+          get :trace, defaults: { format: 'json' }
           get :raw
         end
 

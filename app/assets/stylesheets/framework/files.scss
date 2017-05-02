@@ -61,11 +61,13 @@
   .file-content {
     background: $white-light;
 
-    &.image_file {
+    &.image_file,
+    &.video {
       background: $file-image-bg;
       text-align: center;
 
-      img {
+      img,
+      video {
         padding: 20px;
         max-width: 80%;
       }
@@ -73,14 +75,6 @@
 
     &.wiki {
       padding: 30px $gl-padding;
-
-      .highlight {
-        margin-bottom: 9px;
-
-        > pre {
-          margin: 0;
-        }
-      }
     }
 
     &.blob-no-preview {

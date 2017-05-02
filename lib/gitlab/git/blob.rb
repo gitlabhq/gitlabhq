@@ -109,10 +109,6 @@ module Gitlab
         @binary.nil? ? super : @binary == true
       end
 
-      def empty?
-        !data || data == ''
-      end
-
       def data
         encode! @data
       end

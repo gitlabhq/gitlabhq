@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Issue, 'RelativePositioning' do
+describe RelativePositioning do
   let(:project) { create(:empty_project) }
   let(:issue) { create(:issue, project: project) }
   let(:issue1) { create(:issue, project: project) }

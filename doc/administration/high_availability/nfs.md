@@ -7,21 +7,20 @@ supported natively in NFS version 4. NFSv3 also supports locking as long as
 Linux Kernel 2.6.5+ is used. We recommend using version 4 and do not
 specifically test NFSv3.
 
-**no_root_squash**: NFS normally changes the `root` user to `nobody`. This is
-a good security measure when NFS shares will be accessed by many different
-users. However, in this case only GitLab will use the NFS share so it
-is safe. GitLab requires the `no_root_squash` setting because we need to
-manage file permissions automatically. Without the setting you will receive
-errors when the Omnibus package tries to alter permissions. Note that GitLab
-and other bundled components do **not** run as `root` but as non-privileged
-users. The requirement for `no_root_squash` is to allow the Omnibus package to
-set ownership and permissions on files, as needed.
-
 ### Recommended options
 
 When you define your NFS exports, we recommend you also add the following
 options:
 
+- `no_root_squash` - NFS normally changes the `root` user to `nobody`. This is
+  a good security measure when NFS shares will be accessed by many different
+  users. However, in this case only GitLab will use the NFS share so it
+  is safe. GitLab recommends the `no_root_squash` setting because we need to
+  manage file permissions automatically. Without the setting you may receive
+  errors when the Omnibus package tries to alter permissions. Note that GitLab
+  and other bundled components do **not** run as `root` but as non-privileged
+  users. The recommendation for `no_root_squash` is to allow the Omnibus package
+  to set ownership and permissions on files, as needed.
 - `sync` - Force synchronous behavior. Default is asynchronous and under certain
   circumstances it could lead to data loss if a failure occurs before data has
   synced.
