@@ -86,14 +86,12 @@ require('./sidebar/remove_issue');
       saveAssignees () {
         this.loadingAssignees = true;
 
-        function setLoadingFalse() {
-          this.loadingAssignees = false;
-        }
-
         gl.issueBoards.BoardsStore.detail.issue.update(this.endpoint)
-          .then(setLoadingFalse)
+          .then(() => {
+            this.loadingAssignees = false;
+          })
           .catch(() => {
-            setLoadingFalse();
+            this.loadingAssignees = false;
             return new Flash('An error occurred while saving assignees');
           });
       },
