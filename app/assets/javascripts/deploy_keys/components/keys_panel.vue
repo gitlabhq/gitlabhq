@@ -28,7 +28,7 @@
 </script>
 
 <template>
-  <div>
+  <div class="deploy-keys-panel">
     <h5>
       {{ title }}
       ({{ keys.length }})
