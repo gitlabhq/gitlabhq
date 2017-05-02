@@ -16,6 +16,10 @@ export default {
       type: Array,
       required: true,
     },
+    editable: {
+      type: Boolean,
+      required: true,
+    },
   },
   computed: {
     firstUser() {
@@ -142,14 +146,17 @@ export default {
       <div class="value hide-collapsed">
         <template v-if="hasNoUsers">
           <span class="assign-yourself no-value">
-            No assignee -
-            <button
-              type="button"
-              class="btn-link"
-              @click="assignSelf"
-            >
-              assign yourself
-            </button>
+            No assignee
+            <template v-if="editable">
+             -
+              <button
+                type="button"
+                class="btn-link"
+                @click="assignSelf"
+              >
+                assign yourself
+              </button>
+            </template>
           </span>
         </template>
         <template v-else-if="hasOneUser">
