@@ -61,15 +61,28 @@ class DynamicPathValidator < ActiveModel::EachValidator
     users
   ].freeze
 
-  # All project routes with wildcard argument must be listed here.
-  # Otherwise it can lead to routing issues when route considered as project name.
+  # This list should contain all words following `/*namespace_id/:project_id` in
+  # routes that contain a second wildcard.
   #
   # Example:
-  #  /group/project/tree/deploy_keys
+  #   /*namespace_id/:project_id/badges/*ref/build
   #
-  #  without tree as reserved name routing can match 'group/project' as group name,
-  #  'tree' as project name and 'deploy_keys' as route.
+  # If `badges` was allowed as a project/group name, we would not be able to access the
+  # `badges` route for those projects:
   #
+  # Consider a namespace with path `foo/bar` and a project called `badges`.
+  # The route to the build badge would then be `/foo/bar/badges/badges/master/build.svg`
+  #
+  # When accessing this path the route would be matched to the `badges` path
+  # with the following params:
+  #   - namespace_id: `foo`
+  #   - project_id: `bar`
+  #   - ref: `badges/master`
+  #
+  # Failing to find the project, this would result in a 404.
+  #
+  # By rejecting `badges` the router can _count_ on the fact that `badges` will
+  # be preceded by the `namespace/project`.
   WILDCARD_ROUTES = %w[
     badges
     blame

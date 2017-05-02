@@ -1,3 +1,11 @@
+# This module can be included in migrations to make it easier to rename paths
+# of `Namespace` & `Project` models certain paths would become `reserved`.
+#
+# If the way things are stored on the filesystem related to namespaces and
+# projects ever changes. Don't update this module, or anything nested in `V1`,
+# since it needs to keep functioning for all migrations using it using the state
+# that the data is in at the time. Instead, create a `V2` module that implements
+# the new way of reserving paths.
 module Gitlab
   module Database
     module RenameReservedPathsMigration
