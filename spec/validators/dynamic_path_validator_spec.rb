@@ -37,6 +37,24 @@ describe DynamicPathValidator do
       described_class::WILDCARD_ROUTES.include?(path.split('/').first)
   end
 
+  def failure_message(missing_words, constant_name, migration_helper)
+    missing_words = Array(missing_words)
+    <<-MSG
+      Found new routes that could cause conflicts with existing namespaced routes
+      for groups or projects.
+
+      Add <#{missing_words.join(', ')}> to `DynamicPathValidator::#{constant_name}
+      to make sure no projects or namespaces can be created with those paths.
+
+      To rename any existing records with those paths you can use the
+      `Gitlab::Database::RenameReservedpathsMigration::<VERSION>.#{migration_helper}`
+      migration helper.
+
+      Make sure to make a note of the renamed records in the release blog post.
+
+    MSG
+  end
+
   let(:all_routes) do
     Rails.application.routes.routes.routes.
       map { |r| r.path.spec.to_s }
@@ -101,13 +119,25 @@ describe DynamicPathValidator do
 
   describe 'TOP_LEVEL_ROUTES' do
     it 'includes all the top level namespaces' do
-      expect(described_class::TOP_LEVEL_ROUTES).to include(*top_level_words)
+      failure_block = lambda do
+        missing_words = top_level_words - described_class::TOP_LEVEL_ROUTES
+        failure_message(missing_words, 'TOP_LEVEL_ROUTES', 'rename_root_paths')
+      end
+
+      expect(described_class::TOP_LEVEL_ROUTES)
+        .to include(*top_level_words), failure_block
     end
   end
 
   describe 'GROUP_ROUTES' do
     it "don't contain a second wildcard" do
-      expect(described_class::GROUP_ROUTES).to include(*paths_after_group_id)
+      failure_block = lambda do
+        missing_words = paths_after_group_id - described_class::GROUP_ROUTES
+        failure_message(missing_words, 'GROUP_ROUTES', 'rename_child_paths')
+      end
+
+      expect(described_class::GROUP_ROUTES)
+        .to include(*paths_after_group_id), failure_block
     end
   end
 
@@ -115,7 +145,8 @@ describe DynamicPathValidator do
     it 'includes all paths that can be used after a namespace/project path' do
       aggregate_failures do
         all_wildcard_paths.each do |path|
-          expect(wildcards_include?(path)).to be(true), "Expected #{path} to be rejected"
+          expect(wildcards_include?(path))
+            .to be(true), failure_message(path, 'WILDCARD_ROUTES', 'rename_wildcard_paths')
         end
       end
     end
