@@ -264,7 +264,6 @@ spinach mysql 9 10: *spinach-knapsack-mysql
 static-analysis:
   <<: *ruby-static-analysis
   <<: *dedicated-runner
-  <<: *except-docs
   stage: test
   script:
     - scripts/static-analysis
