@@ -45,6 +45,7 @@ If you have enabled shared Runners for your GitLab instance, you can limit their
 usage by setting a maximum number of pipeline minutes that a group can use on
 shared Runners per month. Set 0 to grant unlimited pipeline minutes.
 While build limits are stored as minutes, the counting is done in seconds.
+Usage resets on the first day of each month.
 
 1. Go to the **Admin area ➔ Settings** (`/admin/application_settings`).
 
