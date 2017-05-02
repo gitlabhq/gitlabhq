@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe RemoveUnreferencedLfsObjectsWorker do
-  let(:worker) { RemoveUnreferencedLfsObjectsWorker.new }
+  let(:worker) { described_class.new }
 
   describe '#perform' do
     let!(:unreferenced_lfs_object1) { create(:lfs_object, oid: '1') }
