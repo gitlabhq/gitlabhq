@@ -87,7 +87,6 @@ methods:
     - :type
   statuses:
     - :type
-    - :gl_project_id
   services:
     - :type
   merge_request_diff:
