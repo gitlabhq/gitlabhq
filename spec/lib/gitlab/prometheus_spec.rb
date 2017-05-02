@@ -49,21 +49,33 @@ describe Gitlab::Prometheus, lib: true do
     end
   end
 
-  describe 'failure to reach a prometheus url' do
-    prometheus_invalid_url = 'https://prometheus.invalid.example.com'
+  describe 'failure to reach a provided prometheus url' do
+    let(:prometheus_url) {"https://prometheus.invalid.example.com"}
 
-    it 'raises a Gitlab::PrometheusError error when a SocketError is rescued' do
-      req_stub = stub_prometheus_request_with_socket_exception(prometheus_invalid_url)
+    context 'exceptions are raised' do
+      it 'raises a Gitlab::PrometheusError error when a SocketError is rescued' do
+        req_stub = stub_prometheus_request_with_exception(prometheus_url, SocketError)
 
-      expect { subject.send(:get, prometheus_invalid_url) }.to raise_error(Gitlab::PrometheusError, "Can't connect to #{prometheus_invalid_url}")
-      expect(req_stub).to have_been_requested
-    end
+        expect { subject.send(:get, prometheus_url) }
+          .to raise_error(Gitlab::PrometheusError, "Can't connect to #{prometheus_url}")
+        expect(req_stub).to have_been_requested
+      end
 
-    it 'raises a Gitlab::PrometheusError error when a SSLError is rescued' do
-      req_stub = stub_prometheus_request_with_ssl_exception(prometheus_invalid_url)
+      it 'raises a Gitlab::PrometheusError error when a SSLError is rescued' do
+        req_stub = stub_prometheus_request_with_exception(prometheus_url, OpenSSL::SSL::SSLError)
 
-      expect { subject.send(:get, prometheus_invalid_url) }.to raise_error(Gitlab::PrometheusError, "#{prometheus_invalid_url} contains invalid SSL data")
-      expect(req_stub).to have_been_requested
+        expect { subject.send(:get, prometheus_url) }
+          .to raise_error(Gitlab::PrometheusError, "#{prometheus_url} contains invalid SSL data")
+        expect(req_stub).to have_been_requested
+      end
+
+      it 'raises a Gitlab::PrometheusError error when a HTTParty::Error is rescued' do
+        req_stub = stub_prometheus_request_with_exception(prometheus_url, HTTParty::Error)
+
+        expect { subject.send(:get, prometheus_url) }
+          .to raise_error(Gitlab::PrometheusError, "An error has ocurred")
+        expect(req_stub).to have_been_requested
+      end
     end
   end
 

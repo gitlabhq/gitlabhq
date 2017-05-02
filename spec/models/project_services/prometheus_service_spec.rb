@@ -93,12 +93,11 @@ describe PrometheusService, models: true, caching: true do
 
     [404, 500].each do |status|
       context "when Prometheus responds with #{status}" do
-        body_response = 'QUERY_FAILED'
         before do
-          stub_all_prometheus_requests(environment.slug, status: status, body: body_response)
+          stub_all_prometheus_requests(environment.slug, status: status, body: "QUERY FAILED!")
         end
 
-        it { is_expected.to eq(success: false, result: %(#{status} - \"#{body_response}\")) }
+        it { is_expected.to eq(success: false, result: %(#{status} - "QUERY FAILED!")) }
       end
     end
   end
