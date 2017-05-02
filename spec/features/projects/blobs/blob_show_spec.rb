@@ -231,7 +231,7 @@ feature 'File blob', :js, feature: true do
         branch_name: 'master',
         commit_message: "Add PDF",
         file_path: 'files/test.pdf',
-        file_content: File.read(Rails.root.join('spec/javascripts/blob/pdf/test.pdf'))
+        file_content: project.repository.blob_at('add-pdf-file', 'files/pdf/test.pdf').data
       ).execute
 
       visit_blob('files/test.pdf')
