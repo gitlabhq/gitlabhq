@@ -53,9 +53,9 @@ import eventHub from './sidebar/event_hub';
           $loading = $block.find('.block-loading').fadeOut();
 
 
-          var assignYourself = function () {
+          const assignYourself = function () {
             const unassignedSelected = $dropdown.closest('.selectbox')
-              .find("input[name='" + ($dropdown.data('field-name')) + "'][value=0]");
+              .find(`input[name='${$dropdown.data('field-name')}'][value=0]`);
 
             if (unassignedSelected) {
               unassignedSelected.remove();
@@ -82,18 +82,18 @@ import eventHub from './sidebar/event_hub';
             $block[0].addEventListener('assignYourself', assignYourself);
           }
 
-          var getSelectedUserInputs = function() {
+          const getSelectedUserInputs = function() {
             return $selectbox
               .find(`input[name="${$dropdown.data('field-name')}"]`);
           }
 
-          var getSelected = function() {
+          const getSelected = function() {
             return getSelectedUserInputs()
               .map((index, input) => parseInt(input.value, 10))
               .get();
           };
 
-          var getMultiSelectDropdownTitle = function(selectedUser, isSelected) {
+          const getMultiSelectDropdownTitle = function(selectedUser, isSelected) {
             const selectedUsers = getSelected()
               .filter(u => u !== 0);
 
