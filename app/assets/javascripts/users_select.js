@@ -420,7 +420,7 @@ import eventHub from './sidebar/event_hub';
               }
 
               if ($selectbox[0]) {
-                getSelected().forEach((selectedId) => highlightSelected(selectedId));
+                getSelected().forEach(selectedId => highlightSelected(selectedId));
               } else {
                 highlightSelected(selectedId);
               }
