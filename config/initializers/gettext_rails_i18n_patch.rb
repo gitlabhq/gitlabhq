@@ -25,7 +25,6 @@ end
 module GettextI18nRailsJs
   module Parser
     module Javascript
-
       # This is required to tell the `rake gettext:find` script to use the Javascript
       # parser for *.vue files.
       #
