@@ -129,6 +129,10 @@ describe DynamicPathValidator do
       expect(subject).not_to match('dashboard')
     end
 
+    it 'matches valid paths with a toplevel word in a different place' do
+      expect(subject).to match('parent/dashboard/project-path')
+    end
+
     it 'rejects paths containing a wildcard reserved word' do
       expect(subject).not_to match('hello/edit')
       expect(subject).not_to match('hello/edit/in-the-middle')
@@ -137,7 +141,6 @@ describe DynamicPathValidator do
 
     it 'matches valid paths' do
       expect(subject).to match('parent/child/project-path')
-      expect(subject).to match('/parent/child/project-path')
     end
   end
 
@@ -182,6 +185,12 @@ describe DynamicPathValidator do
 
     it 'rejects a child path somewhere else' do
       test_path = 'there/can-be-no/labels/group'
+
+      expect(described_class.valid?(test_path)).to be_falsey
+    end
+
+    it 'rejects paths that are in an incorrect format' do
+      test_path = 'incorrect/format.git'
 
       expect(described_class.valid?(test_path)).to be_falsey
     end

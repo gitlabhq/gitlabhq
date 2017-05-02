@@ -15,7 +15,7 @@ class DynamicPathValidator < ActiveModel::EachValidator
   #
   #  the path `api` shouldn't be allowed because it would be masked by `api/*`
   #
-  TOP_LEVEL_ROUTES = Set.new(%w[
+  TOP_LEVEL_ROUTES = %w[
     -
     .well-known
     abuse_reports
@@ -59,7 +59,7 @@ class DynamicPathValidator < ActiveModel::EachValidator
     unsubscribes
     uploads
     users
-  ]).freeze
+  ].freeze
 
   # All project routes with wildcard argument must be listed here.
   # Otherwise it can lead to routing issues when route considered as project name.
@@ -70,7 +70,7 @@ class DynamicPathValidator < ActiveModel::EachValidator
   #  without tree as reserved name routing can match 'group/project' as group name,
   #  'tree' as project name and 'deploy_keys' as route.
   #
-  WILDCARD_ROUTES = Set.new(%w[
+  WILDCARD_ROUTES = %w[
     badges
     blame
     blob
@@ -91,7 +91,7 @@ class DynamicPathValidator < ActiveModel::EachValidator
     tree
     update
     wikis
-  ]).freeze
+  ].freeze
 
   # These are all the paths that follow `/groups/*id/ or `/groups/*group_id`
   # We need to reject these because we have a `/groups/*id` page that is the same
@@ -100,7 +100,7 @@ class DynamicPathValidator < ActiveModel::EachValidator
   # If we would allow a subgroup to be created with the name `activity` then
   # this group would not be accessible through `/groups/parent/activity` since
   # this would map to the activity-page of it's parent.
-  GROUP_ROUTES = Set.new(%w[
+  GROUP_ROUTES = %w[
     activity
     avatar
     edit
@@ -111,16 +111,16 @@ class DynamicPathValidator < ActiveModel::EachValidator
     milestones
     projects
     subgroups
-  ])
+  ].freeze
 
   CHILD_ROUTES = (WILDCARD_ROUTES | GROUP_ROUTES).freeze
 
   def self.without_reserved_wildcard_paths_regex
-    @full_path_without_wildcard_regex ||= regex_excluding_child_paths(WILDCARD_ROUTES)
+    @without_reserved_wildcard_paths_regex ||= regex_excluding_child_paths(WILDCARD_ROUTES)
   end
 
   def self.without_reserved_child_paths_regex
-    @full_path_without_child_routes_regex ||= regex_excluding_child_paths(CHILD_ROUTES)
+    @without_reserved_child_paths_regex ||= regex_excluding_child_paths(CHILD_ROUTES)
   end
 
   # This is used to validate a full path.
@@ -128,22 +128,19 @@ class DynamicPathValidator < ActiveModel::EachValidator
   #   - Starting with one of the top level words
   #   - Containing one of the child level words in the middle of a path
   def self.regex_excluding_child_paths(child_routes)
-    reserved_top_level_words = Regexp.union(TOP_LEVEL_ROUTES.to_a)
-    not_starting_in_reserved_word = %r{^(/?)(?!(#{reserved_top_level_words})(/|$))}
+    reserved_top_level_words = Regexp.union(TOP_LEVEL_ROUTES)
+    not_starting_in_reserved_word = %r{\A/?(?!(#{reserved_top_level_words})(/|\z))}
 
-    reserved_child_level_words = Regexp.union(child_routes.to_a)
-    not_containing_reserved_child = %r{(?!(\S+)/(#{reserved_child_level_words})(/|$))}
+    reserved_child_level_words = Regexp.union(child_routes)
+    not_containing_reserved_child = %r{(?!\S+/(#{reserved_child_level_words})(/|\z))}
 
-    @full_path_regex = %r{
-      #{not_starting_in_reserved_word}
-      #{not_containing_reserved_child}
-      #{Gitlab::Regex::FULL_NAMESPACE_REGEX_STR}}x
+    %r{#{not_starting_in_reserved_word}
+       #{not_containing_reserved_child}
+       #{Gitlab::Regex.full_namespace_regex}}x
   end
 
   def self.valid?(path)
-    path_segments = path.split('/')
-
-    !reserved?(path) && path_segments.all? { |value| follow_format?(value) }
+    path =~ Gitlab::Regex.full_namespace_regex && !reserved?(path)
   end
 
   def self.reserved?(path)
@@ -165,13 +162,9 @@ class DynamicPathValidator < ActiveModel::EachValidator
     path !~ without_reserved_wildcard_paths_regex
   end
 
-  def self.follow_format?(value)
-    value =~ Gitlab::Regex.namespace_regex
-  end
-
   delegate :reserved?,
            :any_reserved?,
-           :follow_format?, to: :class
+           to: :class
 
   def valid_full_path?(record, value)
     full_path = record.respond_to?(:full_path) ? record.full_path : value
@@ -185,7 +178,7 @@ class DynamicPathValidator < ActiveModel::EachValidator
   end
 
   def validate_each(record, attribute, value)
-    unless follow_format?(value)
+    unless value =~ Gitlab::Regex.namespace_regex
       record.errors.add(attribute, Gitlab::Regex.namespace_regex_message)
     end
 
