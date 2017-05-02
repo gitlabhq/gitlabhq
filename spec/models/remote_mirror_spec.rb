@@ -81,7 +81,7 @@ describe RemoteMirror do
                              last_update_at: nil,
                              updated_at: 25.hours.ago)
 
-      expect(RemoteMirror.stuck.last).to eq(mirror)
+      expect(described_class.stuck.last).to eq(mirror)
     end
   end
 
@@ -110,7 +110,7 @@ describe RemoteMirror do
 
     context 'without project' do
       it 'returns nil' do
-        allow_any_instance_of(RemoteMirror).to receive(:project).and_return(nil)
+        allow_any_instance_of(described_class).to receive(:project).and_return(nil)
 
         expect(remote_mirror.sync).to be_nil
       end

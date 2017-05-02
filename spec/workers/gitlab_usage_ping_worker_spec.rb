@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe GitlabUsagePingWorker do
-  subject { GitlabUsagePingWorker.new }
+  subject { described_class.new }
 
   it "sends POST request" do
     stub_application_setting(usage_ping_enabled: true)
