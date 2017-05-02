@@ -20,7 +20,7 @@ export default {
       errorCallback: (err) => {
         if (process.env.NODE_ENV !== 'production') {
           // eslint-disable-next-line no-console
-          console.error('ISSUE SHOW REALTIME ERROR', err);
+          console.error('ISSUE SHOW REALTIME ERROR', err, err.stack);
         } else {
           throw new Error(err);
         }
@@ -29,7 +29,7 @@ export default {
 
     return {
       poll,
-      data: {},
+      apiData: {},
       current: true,
       timeoutId: null,
       title: '<span></span>',
@@ -43,29 +43,41 @@ export default {
   },
   methods: {
     renderResponse(res) {
-      const data = JSON.parse(res.body);
-      this.data = data;
-      this.issueIID = this.data.issue_number;
-      this.triggerAnimation(data);
+      this.apiData = JSON.parse(res.body);
+      this.issueIID = this.apiData.issue_number;
+      this.triggerAnimation();
     },
     updateTaskHTML() {
-      this.taskStatus = this.data.task_status;
-      document.querySelector('#task_status').innerText = this.taskStatus;
+      const tasks = document.querySelector('#task_status_short');
+      const zeroTasks = this.apiData.task_status.includes('0 of 0');
+
+      if (tasks && !zeroTasks) {
+        tasks.innerText = this.apiData.task_status;
+      } else if (this.apiData.task_status.includes('0 of 0')) {
+        $('#task_status_short').remove();
+      } else if (!tasks && !zeroTasks) {
+        $('.issuable-header').append(`
+          <span id="task_status_short" class="hidden-md hidden-lg">${this.apiData.task_status}</span>
+        `);
+      }
     },
     elementsToVisualize(noTitleChange, noDescriptionChange) {
       const elementStack = [];
 
       if (!noTitleChange) {
-        this.titleText = this.data.title_text;
+        this.titleText = this.apiData.title_text;
         elementStack.push(this.$el.querySelector('.title'));
       }
 
       if (!noDescriptionChange) {
         // only change to true when we need to bind TaskLists the html of description
         this.descriptionChange = true;
+        this.updateTaskHTML();
+
         if (this.description !== '<span></span>') {
           this.previousDescription = this.description;
         }
+
         elementStack.push(this.$el.querySelector('.wiki'));
       }
 
@@ -100,10 +112,8 @@ export default {
       // always reset to false before checking the change
       this.descriptionChange = false;
 
-      const { title, description } = this.data;
-      this.descriptionText = this.data.description_text;
-
-      this.updateTaskHTML();
+      const { title, description } = this.apiData;
+      this.descriptionText = this.apiData.description_text;
 
       const noTitleChange = this.title === title;
       const noDescriptionChange = this.description === description;

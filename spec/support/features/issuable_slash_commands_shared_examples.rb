@@ -3,6 +3,7 @@
 
 shared_examples 'issuable record that supports slash commands in its description and notes' do |issuable_type|
   include SlashCommandsHelpers
+  include WaitForVueResource
 
   let(:master) { create(:user) }
   let(:assignee) { create(:user, username: 'bob') }
@@ -18,6 +19,7 @@ shared_examples 'issuable record that supports slash commands in its description
     project.team << [assignee, :developer]
     project.team << [guest, :guest]
     login_with(master)
+    wait_for_vue_resource
   end
 
   after do
