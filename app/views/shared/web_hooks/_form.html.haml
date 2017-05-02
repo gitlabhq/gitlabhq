@@ -11,9 +11,7 @@
   .col-lg-9.append-bottom-default
     = form_for hook, as: :hook, url: polymorphic_path(url_components + [:hooks]) do |f|
       = form_errors(hook)
-=======
 = form_errors(hook)
->>>>>>> ce-com/master
 
 .form-group
   = form.label :url, 'URL', class: 'label-light'
