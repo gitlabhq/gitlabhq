@@ -18,6 +18,6 @@
       = copy_blob_source_button(blob)
       = open_raw_blob_button(blob)
 
-      = link_to icon('download'), blob_raw_url(inline: false), target: '_blank', class: "btn btn-sm has-tooltip", title: 'Download', data: { container: 'body' }
+      = link_to icon('download'), download_snippet_path(@snippet), target: '_blank', class: "btn btn-sm has-tooltip", title: 'Download', data: { container: 'body' }
 
 = render 'projects/blob/content', blob: blob
