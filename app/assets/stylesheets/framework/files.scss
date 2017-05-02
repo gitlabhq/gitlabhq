@@ -258,6 +258,10 @@ span.idiff {
 
   a {
     color: $gl-text-color;
+
+    .file-title-name {
+      @include gl-link-hover-focus-state;
+    }
   }
 
   small {
