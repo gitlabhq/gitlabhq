@@ -37,10 +37,6 @@
           &nbsp;
           - issue.labels.each do |label|
             = link_to_label(label, subject: issue.project, css_class: 'label-link')
-        - if issue.tasks?
-          &nbsp;
-          %span.task-status
-            = issue.task_status
 
         .pull-right.issue-updated-at
           %span updated #{time_ago_with_tooltip(issue.updated_at, placement: 'bottom', html_class: 'issue_update_ago')}

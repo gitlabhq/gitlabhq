@@ -2,6 +2,7 @@
 import Visibility from 'visibilityjs';
 import Poll from './../lib/utils/poll';
 import Service from './services/index';
+import tasks from './actions/tasks';
 
 export default {
   props: {
@@ -30,14 +31,13 @@ export default {
     return {
       poll,
       apiData: {},
-      current: true,
       timeoutId: null,
       title: '<span></span>',
       titleText: '',
       description: '<span></span>',
       descriptionText: '',
       descriptionChange: false,
-      previousDescription: null,
+      tasks: '0 of 0',
     };
   },
   methods: {
@@ -46,18 +46,7 @@ export default {
       this.triggerAnimation();
     },
     updateTaskHTML() {
-      const tasks = document.querySelector('#task_status_short');
-      const zeroTasks = this.apiData.task_status.indexOf('0 of 0') >= 0;
-
-      if (tasks && !zeroTasks) {
-        tasks.innerText = this.apiData.task_status;
-      } else if (!tasks && !zeroTasks) {
-        $('.issuable-header').append(`
-          <span id="task_status_short" class="hidden-md hidden-lg">${this.apiData.task_status}</span>
-        `);
-      } else if (zeroTasks) {
-        $('#task_status_short').remove();
-      }
+      tasks(this.apiData, this.tasks);
     },
     elementsToVisualize(noTitleChange, noDescriptionChange) {
       const elementStack = [];
@@ -71,11 +60,7 @@ export default {
         // only change to true when we need to bind TaskLists the html of description
         this.descriptionChange = true;
         this.updateTaskHTML();
-
-        if (this.description !== '<span></span>') {
-          this.previousDescription = this.description;
-        }
-
+        this.tasks = this.apiData.task_status;
         elementStack.push(this.$el.querySelector('.wiki'));
       }
 
@@ -129,23 +114,17 @@ export default {
 
       this.animate(title, description, elementsToVisualize);
     },
-    handleCurrentOrPrevious() {
-      this.descriptionChange = true;
-      this.current = !this.current;
+    updateEditedTimeAgo() {
+      const toolTipTime = gl.utils.formatDate(this.apiData.updated_at);
+      const $timeAgoNode = $('.issue_edited_ago');
+
+      $timeAgoNode.attr('datetime', this.apiData.updated_at);
+      $timeAgoNode.attr('data-original-title', toolTipTime);
     },
   },
   computed: {
     descriptionClass() {
       return `description ${this.candescription} is-task-list-enabled`;
-    },
-    showDescription() {
-      return this.current ? this.description : this.previousDescription;
-    },
-    previousOrCurrentButtonText() {
-      return this.current ? '<< Show Previous Decription' : 'Show Current Description >>';
-    },
-    prevCurrBtnClass() {
-      return this.current ? 'btn btn-sm btn-default' : 'btn btn-sm btn-primary';
     },
   },
   created() {
@@ -164,18 +143,19 @@ export default {
   updated() {
     // if new html is injected (description changed) - bind TaskList and call renderGFM
     if (this.descriptionChange) {
+      this.updateEditedTimeAgo();
+
       $(this.$refs['issue-content-container-gfm-entry']).renderGFM();
 
-      if (this.current) {
-        const tl = new gl.TaskList({
-          dataType: 'issue',
-          fieldName: 'description',
-          selector: '.detail-page-description',
-        });
+      const tl = new gl.TaskList({
+        dataType: 'issue',
+        fieldName: 'description',
+        selector: '.detail-page-description',
+      });
 
-        return tl;
-      }
+      return tl && null;
     }
+
     return null;
   },
 };
@@ -188,17 +168,9 @@ export default {
       :class="descriptionClass"
       v-if="description"
     >
-      <div v-if="previousDescription">
-        <button
-          :class="prevCurrBtnClass"
-          @click="handleCurrentOrPrevious"
-        >
-          {{ previousOrCurrentButtonText }}
-        </button>
-      </div><br>
       <div
         class="wiki issue-realtime-trigger-pulse"
-        v-html="showDescription"
+        v-html="description"
         ref="issue-content-container-gfm-entry"
       >
       </div>
