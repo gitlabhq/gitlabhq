@@ -117,10 +117,10 @@ module Elastic
                          query: {
                            bool: {
                              must: [{
-                               multi_match: {
+                               simple_query_string: {
                                  fields: fields,
                                  query: query,
-                                 operator: :and
+                                 default_operator: :and
                                }
                              }]
                            }
