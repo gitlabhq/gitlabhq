@@ -140,17 +140,17 @@ class DynamicPathValidator < ActiveModel::EachValidator
   end
 
   def self.valid?(path)
-    path =~ Gitlab::Regex.full_namespace_regex && !reserved?(path)
+    path =~ Gitlab::Regex.full_namespace_regex && !full_path_reserved?(path)
   end
 
-  def self.reserved?(path)
+  def self.full_path_reserved?(path)
     path = path.to_s.downcase
-    _project_parts, namespace_parts = path.reverse.split('/', 2).map(&:reverse)
+    _project_part, namespace_parts = path.reverse.split('/', 2).map(&:reverse)
 
-    wildcard_reserved?(path) || any_reserved?(namespace_parts)
+    wildcard_reserved?(path) || child_reserved?(namespace_parts)
   end
 
-  def self.any_reserved?(path)
+  def self.child_reserved?(path)
     return false unless path
 
     path !~ without_reserved_child_paths_regex
@@ -162,18 +162,23 @@ class DynamicPathValidator < ActiveModel::EachValidator
     path !~ without_reserved_wildcard_paths_regex
   end
 
-  delegate :reserved?,
-           :any_reserved?,
+  delegate :full_path_reserved?,
+           :child_reserved?,
            to: :class
 
-  def valid_full_path?(record, value)
+  def path_reserved_for_record?(record, value)
     full_path = record.respond_to?(:full_path) ? record.full_path : value
 
-    case record
-    when Project || User
-      reserved?(full_path)
+    # For group paths the entire path cannot contain a reserved child word
+    # The path doesn't contain the last `_project_part` so we need to validate
+    # if the entire path.
+    # Example:
+    #   A *group* with full path `parent/activity` is reserved.
+    #   A *project* with full path `parent/activity` is allowed.
+    if record.is_a? Group
+      child_reserved?(full_path)
     else
-      any_reserved?(full_path)
+      full_path_reserved?(full_path)
     end
   end
 
@@ -182,7 +187,7 @@ class DynamicPathValidator < ActiveModel::EachValidator
       record.errors.add(attribute, Gitlab::Regex.namespace_regex_message)
     end
 
-    if valid_full_path?(record, value)
+    if path_reserved_for_record?(record, value)
       record.errors.add(attribute, "#{value} is a reserved name")
     end
   end

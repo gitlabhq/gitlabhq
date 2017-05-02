@@ -144,13 +144,18 @@ describe DynamicPathValidator do
     end
   end
 
-  describe '.without_reserved_child_paths_regex' do
-    it 'rejects paths containing a child reserved word' do
-      subject = described_class.without_reserved_child_paths_regex
+  describe '.regex_excluding_child_paths' do
+    let(:subject) { described_class.without_reserved_child_paths_regex }
 
+    it 'rejects paths containing a child reserved word' do
       expect(subject).not_to match('hello/group_members')
       expect(subject).not_to match('hello/activity/in-the-middle')
       expect(subject).not_to match('foo/bar1/refs/master/logs_tree')
+    end
+
+    it 'allows a child path on the top level' do
+      expect(subject).to match('activity/foo')
+      expect(subject).to match('avatar')
     end
   end
 
@@ -193,6 +198,38 @@ describe DynamicPathValidator do
       test_path = 'incorrect/format.git'
 
       expect(described_class.valid?(test_path)).to be_falsey
+    end
+  end
+
+  describe '#path_reserved_for_record?' do
+    it 'reserves a sub-group named activity' do
+      group = build(:group, :nested, path: 'activity')
+
+      expect(validator.path_reserved_for_record?(group, 'activity')).to be_truthy
+    end
+
+    it "doesn't reserve a project called activity" do
+      project = build(:project, path: 'activity')
+
+      expect(validator.path_reserved_for_record?(project, 'activity')).to be_falsey
+    end
+  end
+
+  describe '#validates_each' do
+    it 'adds a message when the path is not in the correct format' do
+      group = build(:group)
+
+      validator.validate_each(group, :path, "Path with spaces, and comma's!")
+
+      expect(group.errors[:path]).to include(Gitlab::Regex.namespace_regex_message)
+    end
+
+    it 'adds a message when the path is not in the correct format' do
+      group = build(:group, path: 'users')
+
+      validator.validate_each(group, :path, 'users')
+
+      expect(group.errors[:path]).to include('users is a reserved name')
     end
   end
 end
