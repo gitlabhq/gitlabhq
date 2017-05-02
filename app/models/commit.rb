@@ -237,7 +237,7 @@ class Commit
   end
 
   def latest_pipeline
-    pipelines.last
+    @latest_pipeline ||= pipelines.last
   end
 
   def status(ref = nil)

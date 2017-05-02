@@ -61,19 +61,20 @@
     %span.commit-info.branches
       %i.fa.fa-spinner.fa-spin
 
-  - if @commit.status
+  - if @commit.latest_pipeline
+    - latest_pipeline = @commit.latest_pipeline
     .well-segment.pipeline-info
       .status-icon-container{ class: "ci-status-icon-#{@commit.status}" }
-        = link_to namespace_project_pipeline_path(@project.namespace, @project, @commit.latest_pipeline.id) do
-          = ci_icon_for_status(@commit.status)
+        = link_to namespace_project_pipeline_path(@project.namespace, @project, latest_pipeline.id) do
+          = ci_icon_for_status(latest_pipeline.status)
       Pipeline
-      = link_to "##{@commit.latest_pipeline.id}", namespace_project_pipeline_path(@project.namespace, @project, @commit.latest_pipeline.id), class: "monospace"
-      = ci_label_for_status(@commit.status)
-      - if @commit.latest_pipeline.stages.any?
+      = link_to "##{latest_pipeline.id}", namespace_project_pipeline_path(@project.namespace, @project, latest_pipeline.id), class: "monospace"
+      = ci_label_for_status(latest_pipeline.status)
+      - if latest_pipeline.stages.any?
         .mr-widget-pipeline-graph
-          = render 'shared/mini_pipeline_graph', pipeline: @commit.latest_pipeline, klass: 'js-commit-pipeline-graph'
+          = render 'shared/mini_pipeline_graph', pipeline: latest_pipeline, klass: 'js-commit-pipeline-graph'
       in
-      = time_interval_in_words @commit.pipelines.total_duration
+      = time_interval_in_words latest_pipeline.duration
 
 :javascript
   $(".commit-info.branches").load("#{branches_namespace_project_commit_path(@project.namespace, @project, @commit.id)}");
