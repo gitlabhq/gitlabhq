@@ -71,7 +71,7 @@ describe Gitlab::Mirror do
     after { Timecop.return }
   end
 
-  describe '#configure_cron_jobs!' do
+  describe '#configure_cron_job!' do
     let(:daily_cron)   { Gitlab::Mirror::SYNC_TIME_TO_CRON[Gitlab::Mirror::DAILY] }
     let(:twelve_cron)  { Gitlab::Mirror::SYNC_TIME_TO_CRON[Gitlab::Mirror::TWELVE] }
     let(:six_cron)     { Gitlab::Mirror::SYNC_TIME_TO_CRON[Gitlab::Mirror::SIX] }
@@ -82,7 +82,7 @@ describe Gitlab::Mirror do
     describe 'with jobs already running' do
       def setup_mirrors_cron_job(current, updated_time)
         allow_any_instance_of(ApplicationSetting).to receive(:minimum_mirror_sync_time).and_return(current)
-        Gitlab::Mirror.configure_cron_jobs!
+        Gitlab::Mirror.configure_cron_job!
         allow_any_instance_of(ApplicationSetting).to receive(:minimum_mirror_sync_time).and_return(updated_time)
       end
 
@@ -90,11 +90,7 @@ describe Gitlab::Mirror do
         before { setup_mirrors_cron_job(Gitlab::Mirror::HOURLY, Gitlab::Mirror::DAILY) }
 
         it 'changes cron of update_all_mirrors_worker to daily' do
-          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_mirrors_worker").cron }.from(hourly_cron).to(daily_cron)
-        end
-
-        it 'changes cron of update_all_remote_mirrors_worker to daily' do
-          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_remote_mirrors_worker").cron }.from(hourly_cron).to(daily_cron)
+          expect { Gitlab::Mirror.configure_cron_job! }.to change { Sidekiq::Cron::Job.find("update_all_mirrors_worker").cron }.from(hourly_cron).to(daily_cron)
         end
       end
 
@@ -102,11 +98,7 @@ describe Gitlab::Mirror do
         before { setup_mirrors_cron_job(Gitlab::Mirror::DAILY, Gitlab::Mirror::TWELVE) }
 
         it 'changes cron of update_all_mirrors_worker to every twelve hours' do
-          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_mirrors_worker").cron }.from(daily_cron).to(twelve_cron)
-        end
-
-        it 'changes cron of update_all_remote_mirrors_worker to every twelve hours' do
-          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_remote_mirrors_worker").cron }.from(daily_cron).to(twelve_cron)
+          expect { Gitlab::Mirror.configure_cron_job! }.to change { Sidekiq::Cron::Job.find("update_all_mirrors_worker").cron }.from(daily_cron).to(twelve_cron)
         end
       end
 
@@ -114,11 +106,7 @@ describe Gitlab::Mirror do
         before { setup_mirrors_cron_job(Gitlab::Mirror::DAILY, Gitlab::Mirror::SIX) }
 
         it 'changes cron of update_all_mirrors_worker to every six hours' do
-          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_mirrors_worker").cron }.from(daily_cron).to(six_cron)
-        end
-
-        it 'changes cron of update_all_remote_mirrors_worker to every six hours' do
-          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_remote_mirrors_worker").cron }.from(daily_cron).to(six_cron)
+          expect { Gitlab::Mirror.configure_cron_job! }.to change { Sidekiq::Cron::Job.find("update_all_mirrors_worker").cron }.from(daily_cron).to(six_cron)
         end
       end
 
@@ -126,11 +114,7 @@ describe Gitlab::Mirror do
         before { setup_mirrors_cron_job(Gitlab::Mirror::DAILY, Gitlab::Mirror::THREE) }
 
         it 'changes cron of update_all_mirrors_worker to every three hours' do
-          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_mirrors_worker").cron }.from(daily_cron).to(three_cron)
-        end
-
-        it 'changes cron of update_all_remote_mirrors_worker to every three hours' do
-          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_remote_mirrors_worker").cron }.from(daily_cron).to(three_cron)
+          expect { Gitlab::Mirror.configure_cron_job! }.to change { Sidekiq::Cron::Job.find("update_all_mirrors_worker").cron }.from(daily_cron).to(three_cron)
         end
       end
 
@@ -138,11 +122,7 @@ describe Gitlab::Mirror do
         before { setup_mirrors_cron_job(Gitlab::Mirror::DAILY, Gitlab::Mirror::HOURLY) }
 
         it 'changes cron of update_all_mirrors_worker to hourly' do
-          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_mirrors_worker").cron }.from(daily_cron).to(hourly_cron)
-        end
-
-        it 'changes cron of update_all_remote_mirrors_worker to hourly' do
-          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_remote_mirrors_worker").cron }.from(daily_cron).to(hourly_cron)
+          expect { Gitlab::Mirror.configure_cron_job! }.to change { Sidekiq::Cron::Job.find("update_all_mirrors_worker").cron }.from(daily_cron).to(hourly_cron)
         end
       end
 
@@ -150,11 +130,7 @@ describe Gitlab::Mirror do
         before { setup_mirrors_cron_job(Gitlab::Mirror::DAILY, Gitlab::Mirror::FIFTEEN) }
 
         it 'changes cron of update_all_mirrors_worker to fifteen' do
-          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_mirrors_worker").cron }.from(daily_cron).to(fifteen_cron)
-        end
-
-        it 'changes cron of update_all_remote_mirrors_worker to fifteen' do
-          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_remote_mirrors_worker").cron }.from(daily_cron).to(fifteen_cron)
+          expect { Gitlab::Mirror.configure_cron_job! }.to change { Sidekiq::Cron::Job.find("update_all_mirrors_worker").cron }.from(daily_cron).to(fifteen_cron)
         end
       end
     end
@@ -162,20 +138,14 @@ describe Gitlab::Mirror do
     describe 'without jobs already running' do
       before do
         Sidekiq::Cron::Job.find("update_all_mirrors_worker").destroy
-        Sidekiq::Cron::Job.find("update_all_remote_mirrors_worker").destroy
       end
 
       describe 'with daily minimum_mirror_sync_time' do
         before { allow_any_instance_of(ApplicationSetting).to receive(:minimum_mirror_sync_time).and_return(Gitlab::Mirror::DAILY) }
 
         it 'creates update_all_mirrors_worker with cron of daily sync_time' do
-          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_mirrors_worker") }.from(nil).to(Sidekiq::Cron::Job)
+          expect { Gitlab::Mirror.configure_cron_job! }.to change { Sidekiq::Cron::Job.find("update_all_mirrors_worker") }.from(nil).to(Sidekiq::Cron::Job)
           expect(Sidekiq::Cron::Job.find("update_all_mirrors_worker").cron).to eq(daily_cron)
-        end
-
-        it 'creates update_all_remote_mirrors_worker with cron of daily sync_time' do
-          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_remote_mirrors_worker") }.from(nil).to(Sidekiq::Cron::Job)
-          expect(Sidekiq::Cron::Job.find("update_all_remote_mirrors_worker").cron).to eq(daily_cron)
         end
       end
 
@@ -183,13 +153,8 @@ describe Gitlab::Mirror do
         before { allow_any_instance_of(ApplicationSetting).to receive(:minimum_mirror_sync_time).and_return(Gitlab::Mirror::TWELVE) }
 
         it 'creates update_all_mirrors_worker with cron of every twelve hours sync_time' do
-          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_mirrors_worker") }.from(nil).to(Sidekiq::Cron::Job)
+          expect { Gitlab::Mirror.configure_cron_job! }.to change { Sidekiq::Cron::Job.find("update_all_mirrors_worker") }.from(nil).to(Sidekiq::Cron::Job)
           expect(Sidekiq::Cron::Job.find("update_all_mirrors_worker").cron).to eq(twelve_cron)
-        end
-
-        it 'creates update_all_remote_mirrors_worker with cron of every twelve hours sync_time' do
-          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_remote_mirrors_worker") }.from(nil).to(Sidekiq::Cron::Job)
-          expect(Sidekiq::Cron::Job.find("update_all_remote_mirrors_worker").cron).to eq(twelve_cron)
         end
       end
 
@@ -197,13 +162,8 @@ describe Gitlab::Mirror do
         before { allow_any_instance_of(ApplicationSetting).to receive(:minimum_mirror_sync_time).and_return(Gitlab::Mirror::SIX) }
 
         it 'creates update_all_mirrors_worker with cron of every six hours sync_time' do
-          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_mirrors_worker") }.from(nil).to(Sidekiq::Cron::Job)
+          expect { Gitlab::Mirror.configure_cron_job! }.to change { Sidekiq::Cron::Job.find("update_all_mirrors_worker") }.from(nil).to(Sidekiq::Cron::Job)
           expect(Sidekiq::Cron::Job.find("update_all_mirrors_worker").cron).to eq(six_cron)
-        end
-
-        it 'creates update_all_remote_mirrors_worker with cron of every six hours sync_time' do
-          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_remote_mirrors_worker") }.from(nil).to(Sidekiq::Cron::Job)
-          expect(Sidekiq::Cron::Job.find("update_all_remote_mirrors_worker").cron).to eq(six_cron)
         end
       end
 
@@ -211,13 +171,8 @@ describe Gitlab::Mirror do
         before { allow_any_instance_of(ApplicationSetting).to receive(:minimum_mirror_sync_time).and_return(Gitlab::Mirror::THREE) }
 
         it 'creates update_all_mirrors_worker with cron of every three hours sync_time' do
-          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_mirrors_worker") }.from(nil).to(Sidekiq::Cron::Job)
+          expect { Gitlab::Mirror.configure_cron_job! }.to change { Sidekiq::Cron::Job.find("update_all_mirrors_worker") }.from(nil).to(Sidekiq::Cron::Job)
           expect(Sidekiq::Cron::Job.find("update_all_mirrors_worker").cron).to eq(three_cron)
-        end
-
-        it 'creates update_all_remote_mirrors_worker with cron of every three hours sync_time' do
-          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_remote_mirrors_worker") }.from(nil).to(Sidekiq::Cron::Job)
-          expect(Sidekiq::Cron::Job.find("update_all_remote_mirrors_worker").cron).to eq(three_cron)
         end
       end
 
@@ -225,25 +180,15 @@ describe Gitlab::Mirror do
         before { allow_any_instance_of(ApplicationSetting).to receive(:minimum_mirror_sync_time).and_return(Gitlab::Mirror::HOURLY) }
 
         it 'creates update_all_mirrors_worker with cron of hourly sync_time' do
-          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_mirrors_worker") }.from(nil).to(Sidekiq::Cron::Job)
+          expect { Gitlab::Mirror.configure_cron_job! }.to change { Sidekiq::Cron::Job.find("update_all_mirrors_worker") }.from(nil).to(Sidekiq::Cron::Job)
           expect(Sidekiq::Cron::Job.find("update_all_mirrors_worker").cron).to eq(hourly_cron)
-        end
-
-        it 'creates update_all_remote_mirrors_worker with cron of hourly sync_time' do
-          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_remote_mirrors_worker") }.from(nil).to(Sidekiq::Cron::Job)
-          expect(Sidekiq::Cron::Job.find("update_all_remote_mirrors_worker").cron).to eq(hourly_cron)
         end
       end
 
       describe 'with fifteen minimum_mirror_sync_time' do
         it 'creates update_all_mirrors_worker with cron of fifteen sync_time' do
-          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_mirrors_worker") }.from(nil).to(Sidekiq::Cron::Job)
+          expect { Gitlab::Mirror.configure_cron_job! }.to change { Sidekiq::Cron::Job.find("update_all_mirrors_worker") }.from(nil).to(Sidekiq::Cron::Job)
           expect(Sidekiq::Cron::Job.find("update_all_mirrors_worker").cron).to eq(fifteen_cron)
-        end
-
-        it 'creates update_all_remote_mirrors_worker with cron of fifteen sync_time' do
-          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_remote_mirrors_worker") }.from(nil).to(Sidekiq::Cron::Job)
-          expect(Sidekiq::Cron::Job.find("update_all_remote_mirrors_worker").cron).to eq(fifteen_cron)
         end
       end
     end
