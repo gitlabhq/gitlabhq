@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::EnvironmentPolicy do
+describe EnvironmentPolicy do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
 
