@@ -14,11 +14,10 @@ module Gitlab
     def self.render(file_name, input, context)
       html = GitHub::Markup.render(file_name, input).
         force_encoding(input.encoding)
+      context[:pipeline] = :markup
 
+      html = Banzai.render(html, context)
       html = Banzai.post_process(html, context)
-
-      filter = Banzai::Filter::SanitizationFilter.new(html)
-      html = filter.call.to_s
 
       html.html_safe
     end
