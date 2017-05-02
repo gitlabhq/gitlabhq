@@ -502,22 +502,6 @@ trigger_docs:
     - master@gitlab-org/gitlab-ce
     - master@gitlab-org/gitlab-ee
 
-# Notify slack in the end
-notify:slack:
-  stage: post-test
-  <<: *dedicated-runner
-  variables:
-    SETUP_DB: "false"
-    USE_BUNDLE_INSTALL: "false"
-  script:
-    - ./scripts/notify_slack.sh "#development" "Build on \`$CI_COMMIT_REF_NAME\` failed! Commit \`$(git log -1 --oneline)\` See <https://gitlab.com/gitlab-org/$(basename "$PWD")/commit/"$CI_COMMIT_SHA"/pipelines>"
-  when: on_failure
-  only:
-    - master@gitlab-org/gitlab-ce
-    - tags@gitlab-org/gitlab-ce
-    - master@gitlab-org/gitlab-ee
-    - tags@gitlab-org/gitlab-ee
-
 pages:
   before_script: []
   stage: pages
