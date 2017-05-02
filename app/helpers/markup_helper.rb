@@ -116,13 +116,13 @@ module MarkupHelper
     if gitlab_markdown?(file_name)
       markdown_unsafe(text, context)
     elsif asciidoc?(file_name)
-      asciidoc_unsafe(text)
+      asciidoc_unsafe(text, context)
     elsif plain?(file_name)
       content_tag :pre, class: 'plain-readme' do
         text
       end
     else
-      other_markup_unsafe(file_name, text)
+      other_markup_unsafe(file_name, text, context)
     end
   rescue RuntimeError
     simple_format(text)
@@ -217,12 +217,12 @@ module MarkupHelper
     Banzai.render(text, context)
   end
 
-  def asciidoc_unsafe(text)
-    Gitlab::Asciidoc.render(text)
+  def asciidoc_unsafe(text, context = {})
+    Gitlab::Asciidoc.render(text, context)
   end
 
-  def other_markup_unsafe(file_name, text)
-    Gitlab::OtherMarkup.render(file_name, text)
+  def other_markup_unsafe(file_name, text, context = {})
+    Gitlab::OtherMarkup.render(file_name, text, context)
   end
 
   def prepare_for_rendering(html, context = {})

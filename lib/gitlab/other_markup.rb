@@ -5,12 +5,12 @@ module Gitlab
     #
     # input         - the source text in a markup format
     #
-    def self.render(file_name, input)
+    def self.render(file_name, input, context)
       html = GitHub::Markup.render(file_name, input).
         force_encoding(input.encoding)
+      context[:pipeline] = :markup
 
-      filter = Banzai::Filter::SanitizationFilter.new(html)
-      html = filter.call.to_s
+      html = Banzai.render(html, context)
 
       html.html_safe
     end
