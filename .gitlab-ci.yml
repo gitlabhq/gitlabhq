@@ -303,12 +303,12 @@ ee_compat_check:
   script:
     - bundle exec rake db:migrate:reset
 
-db:migrate:reset pg:
+rake pg db:migrate:reset:
   <<: *db-migrate-reset
   <<: *use-pg
   <<: *except-docs
 
-db:migrate:reset mysql:
+rake mysql db:migrate:reset:
   <<: *db-migrate-reset
   <<: *use-mysql
   <<: *except-docs
@@ -320,12 +320,12 @@ db:migrate:reset mysql:
     - bundle exec rake db:rollback STEP=120
     - bundle exec rake db:migrate
 
-db:rollback pg:
+rake pg db:rollback:
   <<: *db-rollback
   <<: *use-pg
   <<: *except-docs
 
-db:rollback mysql:
+rake mysql db:rollback:
   <<: *db-rollback
   <<: *use-mysql
   <<: *except-docs
@@ -347,17 +347,17 @@ db:rollback mysql:
     paths:
       - log/development.log
 
-db:seed_fu pg:
+rake pg db:seed_fu:
   <<: *db-seed_fu
   <<: *use-pg
   <<: *except-docs
 
-db:seed_fu mysql:
+rake mysql db:seed_fu:
   <<: *db-seed_fu
   <<: *use-mysql
   <<: *except-docs
 
-gitlab:assets:compile:
+rake gitlab:assets:compile:
   stage: test
   <<: *dedicated-runner
   <<: *except-docs
@@ -377,7 +377,7 @@ gitlab:assets:compile:
     paths:
     - webpack-report/
 
-karma:
+rake karma:
   cache:
     paths:
       - vendor/ruby
@@ -443,11 +443,11 @@ bundler:audit:
     - . scripts/prepare_build.sh
     - bundle exec rake db:migrate
 
-migration path pg:
+migration pg paths:
   <<: *migration-paths
   <<: *use-pg
 
-migration path mysql:
+migration mysql paths:
   <<: *migration-paths
   <<: *use-mysql
 
@@ -502,30 +502,14 @@ trigger_docs:
     - master@gitlab-org/gitlab-ce
     - master@gitlab-org/gitlab-ee
 
-# Notify slack in the end
-notify:slack:
-  stage: post-test
-  <<: *dedicated-runner
-  variables:
-    SETUP_DB: "false"
-    USE_BUNDLE_INSTALL: "false"
-  script:
-    - ./scripts/notify_slack.sh "#development" "Build on \`$CI_COMMIT_REF_NAME\` failed! Commit \`$(git log -1 --oneline)\` See <https://gitlab.com/gitlab-org/$(basename "$PWD")/commit/"$CI_COMMIT_SHA"/pipelines>"
-  when: on_failure
-  only:
-    - master@gitlab-org/gitlab-ce
-    - tags@gitlab-org/gitlab-ce
-    - master@gitlab-org/gitlab-ee
-    - tags@gitlab-org/gitlab-ee
-
 pages:
   before_script: []
   stage: pages
   <<: *dedicated-runner
   dependencies:
     - coverage
-    - karma
-    - gitlab:assets:compile
+    - rake karma
+    - rake gitlab:assets:compile
     - lint:javascript:report
   script:
     - mv public/ .public/

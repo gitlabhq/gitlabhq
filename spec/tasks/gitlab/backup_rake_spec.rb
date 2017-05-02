@@ -230,11 +230,13 @@ describe 'gitlab:app namespace rake task' do
       before do
         FileUtils.mkdir('tmp/tests/default_storage')
         FileUtils.mkdir('tmp/tests/custom_storage')
+        gitaly_address = Gitlab.config.repositories.storages.default.gitaly_address
         storages = {
-          'default' => { 'path' => Settings.absolute('tmp/tests/default_storage') },
-          'custom' => { 'path' => Settings.absolute('tmp/tests/custom_storage') }
+          'default' => { 'path' => Settings.absolute('tmp/tests/default_storage'), 'gitaly_address' => gitaly_address  },
+          'custom' => { 'path' => Settings.absolute('tmp/tests/custom_storage'), 'gitaly_address' => gitaly_address }
         }
         allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
+        Gitlab::GitalyClient.configure_channels
 
         # Create the projects now, after mocking the settings but before doing the backup
         project_a

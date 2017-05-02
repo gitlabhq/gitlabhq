@@ -24,6 +24,12 @@ feature 'Snippet', :js, feature: true do
 
         # shows an enabled copy button
         expect(page).to have_selector('.js-copy-blob-source-btn:not(.disabled)')
+
+        # shows a raw button
+        expect(page).to have_link('Open raw')
+
+        # shows a download button
+        expect(page).to have_link('Download')
       end
     end
   end
@@ -53,6 +59,12 @@ feature 'Snippet', :js, feature: true do
 
           # shows a disabled copy button
           expect(page).to have_selector('.js-copy-blob-source-btn.disabled')
+
+          # shows a raw button
+          expect(page).to have_link('Open raw')
+
+          # shows a download button
+          expect(page).to have_link('Download')
         end
       end
 

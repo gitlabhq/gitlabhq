@@ -505,14 +505,8 @@ class Repository
   delegate :tag_names, to: :raw_repository
   cache_method :tag_names, fallback: []
 
-  def branch_count
-    branches.size
-  end
+  delegate :branch_count, :tag_count, to: :raw_repository
   cache_method :branch_count, fallback: 0
-
-  def tag_count
-    raw_repository.rugged.tags.count
-  end
   cache_method :tag_count, fallback: 0
 
   def avatar

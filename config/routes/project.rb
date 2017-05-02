@@ -44,7 +44,7 @@ constraints(ProjectUrlConstrainer.new) do
 
       resources :snippets, concerns: :awardable, constraints: { id: /\d+/ } do
         member do
-          get 'raw'
+          get :raw
           post :mark_as_spam
         end
       end
@@ -185,7 +185,7 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :hooks, only: [:index, :create, :destroy], constraints: { id: /\d+/ } do
+      resources :hooks, only: [:index, :create, :edit, :update, :destroy], constraints: { id: /\d+/ } do
         member do
           get :test
         end
