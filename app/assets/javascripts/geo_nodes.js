@@ -4,7 +4,7 @@ import './smart_interval';
 const healthyClass = 'geo-node-healthy';
 const unhealthyClass = 'geo-node-unhealthy';
 const healthyIcon = 'fa-check';
-const unhealthyIcon = 'fa-close'
+const unhealthyIcon = 'fa-close';
 
 class GeoNodeStatus {
   constructor(el) {
@@ -38,7 +38,7 @@ class GeoNodeStatus {
       this.$lfsObjectsSynced.html(`${status.lfs_objects_synced_count}/${status.lfs_objects_count} (${status.lfs_objects_synced_in_percentage})`);
       this.$attachmentsSynced.html(`${status.attachments_synced_count}/${status.attachments_count} (${status.attachments_synced_in_percentage})`);
       if (status.health !== 'Healthy') {
-        this.$health.html('<code class="geo-health">' + status.health + '</code>');
+        this.$health.html(`<code class="geo-health">${status.health}</code>`);
       }
 
       this.$status.show();
@@ -47,12 +47,12 @@ class GeoNodeStatus {
 
   setStatusIcon(healthy) {
     if (healthy) {
-      this.$icon.removeClass(unhealthyClass + ' ' + unhealthyIcon)
-                .addClass(healthyClass + ' ' + healthyIcon)
+      this.$icon.removeClass(`${unhealthyClass} ${unhealthyIcon}`)
+                .addClass(`${healthyClass} ${healthyIcon}`)
                 .attr('title', 'Healthy');
     } else {
-      this.$icon.removeClass(healthyClass + ' ' + healthyIcon)
-                .addClass(unhealthyClass + ' ' + unhealthyIcon)
+      this.$icon.removeClass(`${healthyClass} ${healthyIcon}`)
+                .addClass(`${unhealthyClass} ${unhealthyIcon}`)
                 .attr('title', 'Unhealthy');
     }
   }

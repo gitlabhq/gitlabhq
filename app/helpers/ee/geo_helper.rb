@@ -3,12 +3,7 @@ module EE
     def node_status_icon(node)
       unless node.primary?
         status = node.enabled? ? 'healthy' : 'disabled'
-
-        if status == 'healthy'
-          icon = 'check'
-        else
-          icon = 'times'
-        end
+        icon = status == 'healthy' ? 'check' : 'times'
 
         icon "#{icon} fw",
              class: "js-geo-node-icon geo-node-#{status}",
@@ -28,7 +23,7 @@ module EE
         if node.enabled?
           ['warning', 'Disable', { confirm: 'Disabling a node stops the sync process. Are you sure?' }]
         else
-          ['success', 'Enable']
+          %w[success Enable]
         end
 
       link_to title,
