@@ -35,13 +35,20 @@
   margin-top: 5px;
 }
 
-.primary-node-badge {
+.node-badge {
   color: $white-light;
-  background-color: $blue-300;
   display: inline-block;
   margin-left: 5px;
   padding: 0 5px;
   border-radius: 3px;
+
+  &.primary-node {
+    background-color: $blue-300;
+  }
+
+  &.current-node {
+    background-color: $green-400;
+  }
 }
 
 .node-actions {

@@ -21,7 +21,9 @@
             = node_status_icon(node)
             %strong= node.url
             - if node.primary?
-              .primary-node-badge Primary
+              .node-badge.primary-node Primary
+            - if Gitlab::Geo.current_node == node
+              .node-badge.current-node Current node
               %span.help-block Primary node
             - else
               .js-geo-node-status{ style: 'display: none' }
