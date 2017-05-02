@@ -22,7 +22,7 @@
             %strong= node.url
             - if node.primary?
               .node-badge.primary-node Primary
-            - if Gitlab::Geo.current_node == node
+            - if current_node?(node)
               .node-badge.current-node Current node
               %span.help-block Primary node
             - else
