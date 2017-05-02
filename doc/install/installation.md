@@ -173,7 +173,7 @@ Visit the official websites for [node](https://nodejs.org/en/download/package-ma
 
 Create a `git` user for GitLab:
 
-    sudo adduser --disabled-login --gecos 'GitLab' git
+    sudo adduser --gecos 'GitLab' git
 
 ## 6. Database
 
