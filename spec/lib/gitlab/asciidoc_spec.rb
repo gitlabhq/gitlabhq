@@ -41,7 +41,7 @@ module Gitlab
           render(input, context, asciidoc_opts)
         end
       end
-      
+
       context "XSS" do
         links = {
           'links' => {
@@ -62,6 +62,14 @@ module Gitlab
           it "does not convert dangerous #{name} into HTML" do
             expect(render(data[:input], context)).to eql data[:output]
           end
+        end
+      end
+
+      context 'external links' do
+        it 'adds the `rel` attribute to the link' do
+          output = render('link:https://google.com[Google]', context)
+
+          expect(output).to include('rel="nofollow noreferrer noopener"')
         end
       end
     end
