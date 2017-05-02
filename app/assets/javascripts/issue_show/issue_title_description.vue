@@ -48,7 +48,7 @@ export default {
     },
     updateTaskHTML() {
       const tasks = document.querySelector('#task_status_short');
-      const zeroTasks = this.apiData.task_status.includes('0 of 0');
+      const zeroTasks = this.apiData.task_status.indexOf('0 of 0') >= 0;
 
       if (tasks && !zeroTasks) {
         tasks.innerText = this.apiData.task_status;
