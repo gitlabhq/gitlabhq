@@ -33,6 +33,16 @@ module PrometheusHelpers
       })
   end
 
+  def stub_prometheus_request_with_socket_exception(url)
+    WebMock.stub_request(:get, url)
+      .to_raise(SocketError)
+  end
+
+  def stub_prometheus_request_with_ssl_exception(url)
+    WebMock.stub_request(:get, url)
+      .to_raise(OpenSSL::SSL::SSLError)
+  end
+
   def stub_all_prometheus_requests(environment_slug, body: nil, status: 200)
     stub_prometheus_request(
       prometheus_query_url(prometheus_memory_query(environment_slug)),

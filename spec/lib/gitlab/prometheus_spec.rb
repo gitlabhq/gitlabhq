@@ -49,6 +49,24 @@ describe Gitlab::Prometheus, lib: true do
     end
   end
 
+  describe 'failure to reach a prometheus url' do
+    prometheus_invalid_url = 'https://prometheus.invalid.example.com'
+
+    it 'raises a Gitlab::PrometheusError error when a SocketError is rescued' do
+      req_stub = stub_prometheus_request_with_socket_exception(prometheus_invalid_url)
+
+      expect { subject.send(:get, prometheus_invalid_url) }.to raise_error(Gitlab::PrometheusError, "Can't connect to #{prometheus_invalid_url}")
+      expect(req_stub).to have_been_requested
+    end
+
+    it 'raises a Gitlab::PrometheusError error when a SSLError is rescued' do
+      req_stub = stub_prometheus_request_with_ssl_exception(prometheus_invalid_url)
+
+      expect { subject.send(:get, prometheus_invalid_url) }.to raise_error(Gitlab::PrometheusError, "#{prometheus_invalid_url} contains invalid SSL data")
+      expect(req_stub).to have_been_requested
+    end
+  end
+
   describe '#query' do
     let(:prometheus_query) { prometheus_cpu_query('env-slug') }
     let(:query_url) { prometheus_query_url(prometheus_query) }

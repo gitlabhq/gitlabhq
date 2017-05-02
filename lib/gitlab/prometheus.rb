@@ -49,11 +49,11 @@ module Gitlab
     end
 
     def get(url)
-      begin
-        handle_response(HTTParty.get(url))
-      rescue SocketError
-        raise PrometheusError, "Can't connect to #{url}"
-      end
+      handle_response(HTTParty.get(url))
+    rescue SocketError
+      raise PrometheusError, "Can't connect to #{url}"
+    rescue OpenSSL::SSL::SSLError
+      raise PrometheusError, "#{url} contains invalid SSL data"
     end
 
     def handle_response(response)
