@@ -11,7 +11,7 @@ module EE
         end
 
         icon "#{icon} fw",
-             class: "js-geo-node-icon geo-node-#{status} has-tooltip",
+             class: "js-geo-node-icon geo-node-#{status}",
              title: status.capitalize
       end
     end

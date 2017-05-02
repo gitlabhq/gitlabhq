@@ -17,6 +17,11 @@
     &:hover {
       background: $white-light;
     }
+
+    &.node-disabled,
+    &.node-disabled:hover {
+      background-color: $gray-lightest;
+    }
   }
 }
 

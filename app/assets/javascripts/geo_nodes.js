@@ -55,8 +55,6 @@ class GeoNodeStatus {
                 .addClass(unhealthyClass + ' ' + unhealthyIcon)
                 .attr('title', 'Unhealthy');
     }
-
-    this.$icon.tooltip('fixTitle');
   }
 
   setHealthStatus(healthy) {
