@@ -2,10 +2,10 @@
   %ul.nav-links
     = nav_link(page: dashboard_groups_path) do
       = link_to dashboard_groups_path, title: 'Your groups' do
-        Your Groups
+        Your groups
     = nav_link(page: explore_groups_path) do
-      = link_to explore_groups_path, title: 'Explore groups' do
-        Explore Groups
+      = link_to explore_groups_path, title: 'Explore public groups' do
+        Explore public groups
   .nav-controls
     = render 'shared/groups/search_form'
     = render 'shared/groups/dropdown'
