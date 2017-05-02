@@ -41,6 +41,13 @@ class RenameReservedDynamicPaths < ActiveRecord::Migration
     labels
     milestones
     subgroups
+    analytics
+    audit_events
+    hooks
+    ldap
+    ldap_group_links
+    notification_setting
+    pipeline_quota
   ]
 
   def up

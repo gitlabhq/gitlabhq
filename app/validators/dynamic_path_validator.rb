@@ -124,6 +124,13 @@ class DynamicPathValidator < ActiveModel::EachValidator
     milestones
     projects
     subgroups
+    analytics
+    audit_events
+    hooks
+    ldap
+    ldap_group_links
+    notification_setting
+    pipeline_quota
   ].freeze
 
   CHILD_ROUTES = (WILDCARD_ROUTES | GROUP_ROUTES).freeze
