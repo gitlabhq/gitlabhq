@@ -5,12 +5,27 @@ describe Projects::MilestonesController do
   let(:user)    { create(:user) }
   let(:milestone) { create(:milestone, project: project) }
   let(:issue) { create(:issue, project: project, milestone: milestone) }
+  let!(:label) { create(:label, project: project, title: 'Issue Label', issues: [issue]) }
   let!(:merge_request) { create(:merge_request, source_project: project, target_project: project, milestone: milestone) }
 
   before do
     sign_in(user)
     project.team << [user, :master]
     controller.instance_variable_set(:@project, project)
+  end
+
+  describe "#show" do
+    render_views
+
+    def view_milestone
+      get :show, namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid
+    end
+
+    it 'shows milestone page' do
+      view_milestone
+
+      expect(response).to have_http_status(200)
+    end
   end
 
   describe "#destroy" do

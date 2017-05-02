@@ -74,7 +74,7 @@
           - else
             %hr
             - blob = diff_file.blob
-            - if blob && blob.respond_to?(:text?) && blob_text_viewable?(blob)
+            - if blob && blob.readable_text?
               %table.code.white
                 = render partial: "projects/diffs/line", collection: diff_file.highlighted_diff_lines, as: :line, locals: { diff_file: diff_file, plain: true, email: true }
             - else

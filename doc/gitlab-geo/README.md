@@ -43,6 +43,7 @@ If you installed GitLab using the Omnibus packages (highly recommended):
 1. [Install GitLab Enterprise Edition][install-ee] on the server that will serve
    as the **secondary** Geo node. Do not login or set up anything else in the
    secondary node for the moment.
+1. [Upload the GitLab License](../user/admin_area/license.md) you purchased for GitLab Enterprise Edition to unlock GitLab Geo.
 1. [Setup the database replication](database.md)  (`primary (read-write) <-> secondary (read-only)` topology).
 1. [Configure GitLab](configuration.md) to set the primary and secondary nodes.
 1. [Follow the after setup steps](after_setup.md).
@@ -56,6 +57,7 @@ If you installed GitLab from source:
 1. [Install GitLab Enterprise Edition][install-ee-source] on the server that
    will serve as the **secondary** Geo node. Do not login or set up anything
    else in the secondary node for the moment.
+1. [Upload the GitLab License](../user/admin_area/license.md) you purchased for GitLab Enterprise Edition to unlock GitLab Geo.
 1. [Setup the database replication](database_source.md)  (`primary (read-write) <-> secondary (read-only)` topology).
 1. [Configure GitLab](configuration_source.md) to set the primary and secondary
    nodes.

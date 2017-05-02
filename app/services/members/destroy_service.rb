@@ -20,6 +20,11 @@ module Members
       raise Gitlab::Access::AccessDeniedError unless can_destroy_member?(member)
 
       AuthorizedDestroyService.new(member, current_user).execute
+
+      AuditEventService.new(@current_user, @source, action: :destroy)
+        .for_member(member).security_event
+
+      member
     end
 
     private

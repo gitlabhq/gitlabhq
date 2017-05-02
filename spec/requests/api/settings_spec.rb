@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe API::Settings, 'Settings', api: true  do
-  include ApiHelpers
-
+describe API::Settings, 'Settings' do
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
 

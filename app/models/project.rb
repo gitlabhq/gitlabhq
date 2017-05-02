@@ -71,6 +71,7 @@ class Project < ActiveRecord::Base
 
   attr_accessor :new_default_branch
   attr_accessor :old_path_with_namespace
+  attr_writer :pipeline_status
 
   alias_attribute :title, :name
 
@@ -190,7 +191,7 @@ class Project < ActiveRecord::Base
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :count, to: :forks, prefix: true
   delegate :members, to: :team, prefix: true
-  delegate :add_user, to: :team
+  delegate :add_user, :add_users, to: :team
   delegate :add_guest, :add_reporter, :add_developer, :add_master, to: :team
   delegate :empty_repo?, to: :repository
 
@@ -1386,6 +1387,7 @@ class Project < ActiveRecord::Base
     end
   end
 
+  # Lazy loading of the `pipeline_status` attribute
   def pipeline_status
     @pipeline_status ||= Gitlab::Cache::Ci::ProjectPipelineStatus.load_for_project(self)
   end

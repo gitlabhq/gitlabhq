@@ -170,8 +170,9 @@ class DueDateSelectors {
       const $datePicker = $(this);
       const calendar = new Pikaday({
         field: $datePicker.get(0),
-        theme: 'gitlab-theme',
+        theme: 'gitlab-theme animate-picker',
         format: 'yyyy-mm-dd',
+        container: $datePicker.parent().get(0),
         onSelect(dateText) {
           $datePicker.val(dateFormat(new Date(dateText), 'yyyy-mm-dd'));
         }

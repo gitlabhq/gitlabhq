@@ -26,7 +26,6 @@ describe('BlobForkSuggestion', () => {
 
   it('showSuggestionSection', () => {
     blobForkSuggestion.showSuggestionSection('/foo', 'foo');
-
     expect(suggestionSection.classList.contains('hidden')).toEqual(false);
     expect(forkButton.getAttribute('href')).toEqual('/foo');
     expect(actionTextPiece.textContent).toEqual('foo');
@@ -34,7 +33,6 @@ describe('BlobForkSuggestion', () => {
 
   it('hideSuggestionSection', () => {
     blobForkSuggestion.hideSuggestionSection();
-
     expect(suggestionSection.classList.contains('hidden')).toEqual(true);
   });
 });

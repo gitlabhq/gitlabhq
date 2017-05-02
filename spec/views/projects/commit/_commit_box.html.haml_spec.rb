@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe 'projects/commit/_commit_box.html.haml' do
-  include Devise::Test::ControllerHelpers
-
+describe 'projects/commit/_commit_box.html.haml', :view do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
 
@@ -18,14 +16,32 @@ describe 'projects/commit/_commit_box.html.haml' do
     expect(rendered).to have_text("#{Commit.truncate_sha(project.commit.sha)}")
   end
 
-  it 'shows the last pipeline that ran for the commit' do
-    create(:ci_pipeline, project: project, sha: project.commit.id, status: 'success')
-    create(:ci_pipeline, project: project, sha: project.commit.id, status: 'canceled')
-    third_pipeline = create(:ci_pipeline, project: project, sha: project.commit.id, status: 'failed')
+  context 'when there is a pipeline present' do
+    context 'when there are multiple pipelines for a commit' do
+      it 'shows the last pipeline' do
+        create(:ci_pipeline, project: project, sha: project.commit.id, status: 'success')
+        create(:ci_pipeline, project: project, sha: project.commit.id, status: 'canceled')
+        third_pipeline = create(:ci_pipeline, project: project, sha: project.commit.id, status: 'failed')
 
-    render
+        render
 
-    expect(rendered).to have_text("Pipeline ##{third_pipeline.id} failed")
+        expect(rendered).to have_text("Pipeline ##{third_pipeline.id} failed")
+      end
+    end
+
+    context 'when pipeline for the commit is blocked' do
+      let!(:pipeline) do
+        create(:ci_pipeline, :blocked, project: project,
+                                       sha: project.commit.id)
+      end
+
+      it 'shows correct pipeline description' do
+        render
+
+        expect(rendered).to have_text "Pipeline ##{pipeline.id} " \
+                                      'waiting for manual action'
+      end
+    end
   end
 
   context 'viewing a commit' do

@@ -110,7 +110,7 @@
 
 .top-area {
   @include clearfix;
-  border-bottom: 1px solid $white-normal;
+  border-bottom: 1px solid $border-color;
 
   .nav-text {
     padding-top: 16px;

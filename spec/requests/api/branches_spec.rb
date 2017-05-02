@@ -1,9 +1,7 @@
 require 'spec_helper'
 require 'mime/types'
 
-describe API::Branches, api: true  do
-  include ApiHelpers
-
+describe API::Branches do
   let(:user) { create(:user) }
   let!(:project) { create(:project, :repository, creator: user) }
   let!(:master) { create(:project_member, :master, user: user, project: project) }

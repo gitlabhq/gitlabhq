@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'email_spec'
 
-describe Notify do
+describe Emails::CsvExport do
   include EmailSpec::Matchers
   include_context 'gitlab email notification'
 

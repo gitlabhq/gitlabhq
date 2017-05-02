@@ -24,9 +24,9 @@ class Repository
   # same name. The cache key used by those methods must also match method's
   # name.
   #
-  # For example, for entry `:readme` there's a method called `readme` which
-  # stores its data in the `readme` cache key.
-  CACHED_METHODS = %i(size commit_count readme contribution_guide
+  # For example, for entry `:commit_count` there's a method called `commit_count` which
+  # stores its data in the `commit_count` cache key.
+  CACHED_METHODS = %i(size commit_count rendered_readme contribution_guide
                       changelog license_blob license_key gitignore koding_yml
                       gitlab_ci_yml branch_names tag_names branch_count
                       tag_count avatar exists? empty? root_ref).freeze
@@ -35,7 +35,7 @@ class Repository
   # changed. This Hash maps file types (as returned by Gitlab::FileDetector) to
   # the corresponding methods to call for refreshing caches.
   METHOD_CACHES_FOR_FILE_TYPES = {
-    readme: :readme,
+    readme: :rendered_readme,
     changelog: :changelog,
     license: %i(license_blob license_key),
     contributing: :contribution_guide,
@@ -457,7 +457,7 @@ class Repository
 
   def blob_at(sha, path)
     unless Gitlab::Git.blank_ref?(sha)
-      Blob.decorate(Gitlab::Git::Blob.find(self, sha, path))
+      Blob.decorate(Gitlab::Git::Blob.find(self, sha, path), project)
     end
   rescue Gitlab::Git::Repository::NoRepository
     nil
@@ -534,7 +534,11 @@ class Repository
       head.readme
     end
   end
-  cache_method :readme
+
+  def rendered_readme
+    MarkupHelper.markup_unsafe(readme.name, readme.data, project: project) if readme
+  end
+  cache_method :rendered_readme
 
   def contribution_guide
     file_on_head(:contributing)

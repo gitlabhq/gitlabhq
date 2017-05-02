@@ -93,13 +93,25 @@ describe ProjectsHelper do
     end
 
     it "includes a version" do
-      expect(helper.project_list_cache_key(project)).to include("v2.3")
+      expect(helper.project_list_cache_key(project).last).to start_with('v')
     end
 
     it "includes the pipeline status when there is a status" do
       create(:ci_pipeline, :success, project: project, sha: project.commit.sha)
 
       expect(helper.project_list_cache_key(project)).to include("pipeline-status/#{project.commit.sha}-success")
+    end
+  end
+
+  describe '#load_pipeline_status' do
+    it 'loads the pipeline status in batch' do
+      project = build(:empty_project)
+
+      helper.load_pipeline_status([project])
+      # Skip lazy loading of the `pipeline_status` attribute
+      pipeline_status = project.instance_variable_get('@pipeline_status')
+
+      expect(pipeline_status).to be_a(Gitlab::Cache::Ci::ProjectPipelineStatus)
     end
   end
 

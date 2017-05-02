@@ -13,9 +13,7 @@ feature 'Groups > Audit Events', js: true, feature: true do
 
   describe 'changing a user access level' do
     it "appears in the group's audit events" do
-      visit group_path(group)
-
-      click_link 'Members'
+      visit group_group_members_path(group)
 
       group_member = group.members.find_by(user_id: pete)
 

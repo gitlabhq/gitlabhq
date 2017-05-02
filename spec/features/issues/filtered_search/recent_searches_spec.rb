@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe 'Recent searches', js: true, feature: true do
   include FilteredSearchHelpers
-  include WaitForAjax
 
   let!(:group) { create(:group) }
   let!(:project) { create(:project, group: group) }

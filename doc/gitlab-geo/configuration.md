@@ -62,7 +62,7 @@ logins opened on all nodes as we will be moving back and forth.
     sudo -i
     ```
 
-1. Execute the command below to define the node as primary Geo node:
+1. Added in GitLab 9.1: Execute the command below to define the node as primary Geo node:
 
     ```
     gitlab-ctl set-geo-primary-node
@@ -108,7 +108,7 @@ sensitive data in the database. Any secondary node must have the
     sudo -i
     ```
 
-1. Execute the command below to display current encryption key and copy it:
+1. Added in GitLab 9.1: Execute the command below to display current encryption key and copy it:
 
      ```
      gitlab-rake geo:db:show_encryption_key

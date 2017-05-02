@@ -44,10 +44,6 @@ describe('ServiceDeskSetting', () => {
           expect(el.querySelector('.fa-exclamation-circle')).toBeNull();
           expect(vm.$refs['service-desk-incoming-email']).toBeUndefined();
         });
-
-        it('should see warning message', () => {
-          expect(vm.$refs['recommend-protect-email-from-spam-message']).toBeDefined();
-        });
       });
     });
 

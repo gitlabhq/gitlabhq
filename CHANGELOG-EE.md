@@ -1,5 +1,18 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 9.1.2 (2017-05-01)
+
+- No changes.
+- No changes.
+- No changes.
+- Fix commit search on some elasticsearch indexes. !1745
+- Fix emailing issues to projects when Service Desk is enabled.
+- Fix bug where Geo secondary Sidekiq cron jobs would not be activated if settings changed.
+
+## 9.1.1 (2017-04-26)
+
+- No changes.
+
 ## 9.1.0 (2017-04-22)
 
 - Fix rake gitlab:env:info elasticsearch datum. !1422

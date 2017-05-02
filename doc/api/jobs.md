@@ -57,7 +57,6 @@ Example of response
       "bio": null,
       "created_at": "2015-12-21T13:14:24.077Z",
       "id": 1,
-      "is_admin": true,
       "linkedin": "",
       "name": "Administrator",
       "skype": "",
@@ -101,7 +100,6 @@ Example of response
       "bio": null,
       "created_at": "2015-12-21T13:14:24.077Z",
       "id": 1,
-      "is_admin": true,
       "linkedin": "",
       "name": "Administrator",
       "skype": "",
@@ -120,7 +118,7 @@ Example of response
 Get a list of jobs for a pipeline.
 
 ```
-GET /projects/:id/pipeline/:pipeline_id/jobs
+GET /projects/:id/pipelines/:pipeline_id/jobs
 ```
 
 | Attribute     | Type                           | Required | Description          |
@@ -173,7 +171,6 @@ Example of response
       "bio": null,
       "created_at": "2015-12-21T13:14:24.077Z",
       "id": 1,
-      "is_admin": true,
       "linkedin": "",
       "name": "Administrator",
       "skype": "",
@@ -217,7 +214,6 @@ Example of response
       "bio": null,
       "created_at": "2015-12-21T13:14:24.077Z",
       "id": 1,
-      "is_admin": true,
       "linkedin": "",
       "name": "Administrator",
       "skype": "",
@@ -284,7 +280,6 @@ Example of response
     "bio": null,
     "created_at": "2015-12-21T13:14:24.077Z",
     "id": 1,
-    "is_admin": true,
     "linkedin": "",
     "name": "Administrator",
     "skype": "",

@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'Commits' do
   include CiStatusHelper
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
   describe 'CI' do
     before do

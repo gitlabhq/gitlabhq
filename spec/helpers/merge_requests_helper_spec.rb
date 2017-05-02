@@ -22,24 +22,51 @@ describe MergeRequestsHelper do
   end
 
   describe '#issues_sentence' do
+    let(:project) { create :project }
+
     subject { issues_sentence(issues) }
     let(:issues) do
-      [build(:issue, iid: 1), build(:issue, iid: 2), build(:issue, iid: 3)]
+      [build(:issue, iid: 2, project: project),
+       build(:issue, iid: 3, project: project),
+       build(:issue, iid: 1, project: project)]
     end
 
-    it { is_expected.to eq('#1, #2, and #3') }
+    it do
+      @project = project
+
+      is_expected.to eq('#1, #2, and #3')
+    end
 
     context 'for JIRA issues' do
       let(:project) { create(:empty_project) }
       let(:issues) do
         [
-          ExternalIssue.new('JIRA-123', project),
           ExternalIssue.new('JIRA-456', project),
-          ExternalIssue.new('FOOBAR-7890', project)
+          ExternalIssue.new('FOOBAR-7890', project),
+          ExternalIssue.new('JIRA-123', project)
         ]
       end
 
-      it { is_expected.to eq('FOOBAR-7890, JIRA-123, and JIRA-456') }
+      it do
+        @project = project
+        is_expected.to eq('FOOBAR-7890, JIRA-123, and JIRA-456')
+      end
+    end
+
+    context 'for issues from multiple namespaces' do
+      let(:project) { create(:project) }
+      let(:other_project) { create(:project) }
+      let(:issues) do
+        [build(:issue, iid: 2, project: project),
+         build(:issue, iid: 3, project: other_project),
+         build(:issue, iid: 1, project: project)]
+      end
+
+      it do
+        @project = project
+        
+        is_expected.to eq("#1, #2, and #{other_project.namespace.path}/#{other_project.path}#3")
+      end
     end
   end
 
@@ -159,6 +186,20 @@ describe MergeRequestsHelper do
       it 'can see that project\'s issue that will be closed on acceptance' do
         expect(mr_issues_mentioned_but_not_closing).to contain_exactly(issue_1, issue_2)
       end
+    end
+  end
+
+  describe '#render_items_list' do
+    it "returns one item in the list" do
+      expect(render_items_list(["user"])).to eq("user")
+    end
+
+    it "returns two items in the list" do
+      expect(render_items_list(%w(user user1))).to eq("user and user1")
+    end
+
+    it "returns three items in the list" do
+      expect(render_items_list(%w(user user1 user2))).to eq("user, user1 and user2")
     end
   end
 end

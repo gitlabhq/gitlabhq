@@ -4,6 +4,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   include SharedProject
   include SharedPaths
   include RepoHelpers
+  include WaitForAjax
 
   step "I don't have write access" do
     @project = create(:project, :repository, name: "Other Project", path: "other-project")
@@ -36,10 +37,12 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I should see its content' do
+    wait_for_ajax
     expect(page).to have_content old_gitignore_content
   end
 
   step 'I should see its new content' do
+    wait_for_ajax
     expect(page).to have_content new_gitignore_content
   end
 
@@ -87,9 +90,9 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
 
   step 'I fill the new branch name' do
     first('button.js-target-branch', visible: true).click
-    first('.create-new-branch', visible: true).click
-    first('#new_branch_name', visible: true).set('new_branch_name')
-    first('.js-new-branch-btn', visible: true).click
+    find('.create-new-branch', visible: true).click
+    find('#new_branch_name', visible: true).set('new_branch_name')
+    find('.js-new-branch-btn', visible: true).click
   end
 
   step 'I fill the new file name with an illegal name' do

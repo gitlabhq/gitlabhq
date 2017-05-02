@@ -56,11 +56,12 @@ module MergeRequestsHelper
   end
 
   def issues_sentence(issues)
-    # Sorting based on the `#123` or `group/project#123` reference will sort
-    # local issues first.
-    issues.map do |issue|
+    # Issuable sorter will sort local issues, then issues from the same
+    # namespace, then all other issues.
+    issues = Gitlab::IssuableSorter.sort(@project, issues).map do |issue|
       issue.to_reference(@project)
-    end.sort.to_sentence
+    end
+    issues.to_sentence
   end
 
   def mr_closes_issues
@@ -96,31 +97,6 @@ module MergeRequestsHelper
       last_item = items.pop
       "#{items.join(", ")} #{separator} #{last_item}"
     end
-  end
-
-  # This may be able to be removed with associated specs
-  def render_require_section(merge_request)
-    str = if merge_request.approvals_left == 1
-            "Requires one more approval"
-          else
-            "Requires #{merge_request.approvals_left} more approvals"
-          end
-
-    if merge_request.approvers_left.any?
-      more_approvals = merge_request.approvals_left - merge_request.approvers_left.count
-      approvers_names = merge_request.approvers_left.map(&:name)
-
-      str <<
-        if more_approvals > 0
-          " (from #{render_items_list(approvers_names + ["#{more_approvals} more"])})"
-        elsif more_approvals < 0
-          " (from #{render_items_list(approvers_names, "or")})"
-        else
-          " (from #{render_items_list(approvers_names)})"
-        end
-    end
-
-    str
   end
 
   def mr_assign_issues_link

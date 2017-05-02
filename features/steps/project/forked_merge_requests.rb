@@ -6,7 +6,7 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   include Select2Helper
 
   step 'I am a member of project "Shop"' do
-    @project = Project.find_by(name: "Shop")
+    @project = ::Project.find_by(name: "Shop")
     @project ||= create(:project, :repository, name: "Shop")
     @project.team << [@user, :reporter]
   end
