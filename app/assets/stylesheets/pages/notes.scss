@@ -364,6 +364,10 @@ ul.notes {
   }
 }
 
+a .note-headline-light {
+  @include gl-link-hover-focus-state;
+}
+
 .note-headline-light,
 .discussion-headline-light {
   color: $notes-light-color;
