@@ -1,6 +1,5 @@
 class Snippet < ActiveRecord::Base
   include Gitlab::VisibilityLevel
-  include Linguist::BlobHelper
   include CacheMarkdownField
   include Noteable
   include Participable
@@ -88,45 +87,24 @@ class Snippet < ActiveRecord::Base
     ]
   end
 
-  def data
-    content
+  def blob
+    @blob ||= Blob.decorate(SnippetBlob.new(self), nil)
   end
 
   def hook_attrs
     attributes
   end
 
-  def size
-    0
-  end
-
   def file_name
     super.to_s
-  end
-
-  # alias for compatibility with blobs and highlighting
-  def path
-    file_name
-  end
-
-  def name
-    file_name
   end
 
   def sanitized_file_name
     file_name.gsub(/[^a-zA-Z0-9_\-\.]+/, '')
   end
 
-  def mode
-    nil
-  end
-
   def visibility_level_field
     :visibility_level
-  end
-
-  def no_highlighting?
-    content.lines.count > 1000
   end
 
   def notes_with_associations

@@ -367,7 +367,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
 
   step 'I should see buttons for allowed commands' do
     page.within '.content' do
-      expect(page).to have_link 'Open raw'
+      expect(page).to have_link 'Download'
       expect(page).to have_content 'History'
       expect(page).to have_content 'Permalink'
       expect(page).not_to have_content 'Edit'

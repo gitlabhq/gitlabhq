@@ -390,13 +390,15 @@ describe Member, models: true do
     %w[project group].each do |source_type|
       context "when source is a #{source_type}" do
         let!(:source) { create(source_type, :public, :access_requestable) }
-        let!(:user) { create(:user) }
         let!(:admin) { create(:admin) }
+        let(:user1) { create(:user) }
+        let(:user2) { create(:user) }
 
         it 'returns a <Source>Member objects' do
-          members = described_class.add_users(source, [user], :master)
+          members = described_class.add_users(source, [user1, user2], :master)
 
           expect(members).to be_a Array
+          expect(members.size).to eq(2)
           expect(members.first).to be_a "#{source_type.classify}Member".constantize
           expect(members.first).to be_persisted
         end

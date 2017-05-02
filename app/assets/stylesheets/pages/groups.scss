@@ -136,3 +136,26 @@ table.pipeline-project-metrics tr td {
   color: $gl-text-color-secondary;
   margin-top: 10px;
 }
+
+.explore-groups.landing {
+  margin-top: 10px;
+
+  .inner-content {
+    padding: 0;
+
+    p {
+      margin: 7px 0 0;
+      max-width: 480px;
+      padding: 0 $gl-padding;
+
+      @media (max-width: $screen-sm-min) {
+        margin: 0 auto;
+      }
+    }
+  }
+
+  svg {
+    width: 62px;
+    height: 50px;
+  }
+}

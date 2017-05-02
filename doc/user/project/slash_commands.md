@@ -36,5 +36,9 @@ do.
 | `/remove_time_spent`       | Remove time spent |
 | `/target_branch <Branch Name>` | Set target branch for current merge request |
 | `/award :emoji:`  | Toggle award for :emoji: |
+<<<<<<< HEAD
 | `/weight <1-9>` | Set the weight of the issue |
 | `/clear_weight` | Clears the issue weight |
+=======
+| `/board_move ~column`      | Move issue to column on the board |
+>>>>>>> ce-com/master

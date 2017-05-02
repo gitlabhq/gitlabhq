@@ -64,7 +64,7 @@
             %span.remaining-days= remaining_days
 
     - if !project || can?(current_user, :read_issue, project)
-      .block
+      .block.issues
         .sidebar-collapsed-icon
           %strong
             = icon('hashtag', 'aria-hidden': 'true')
@@ -85,6 +85,7 @@
               Closed:
               = milestone.issues_visible_to_user(current_user).closed.count
 
+<<<<<<< HEAD
     - total_weight = milestone.issues_visible_to_user(current_user).sum(:weight)
     .block.weight
       .sidebar-collapsed-icon
@@ -103,6 +104,9 @@
           .no-value None
 
     .block
+=======
+    .block.merge-requests
+>>>>>>> ce-com/master
       .sidebar-collapsed-icon
         %strong
           = icon('exclamation', 'aria-hidden': 'true')

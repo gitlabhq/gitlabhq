@@ -330,6 +330,7 @@ module SlashCommands
       @updates[:target_branch] = branch_name if project.repository.branch_names.include?(branch_name)
     end
 
+<<<<<<< HEAD
     desc 'Set weight'
     params Issue::WEIGHT_RANGE.to_s.squeeze('.').tr('.', '-')
     condition do
@@ -351,6 +352,28 @@ module SlashCommands
     end
     command :clear_weight do
       @updates[:weight] = nil
+=======
+    desc 'Move issue from one column of the board to another'
+    params '~"Target column"'
+    condition do
+      issuable.is_a?(Issue) &&
+        current_user.can?(:"update_#{issuable.to_ability_name}", issuable) &&
+        issuable.project.boards.count == 1
+    end
+    command :board_move do |target_list_name|
+      label_ids = find_label_ids(target_list_name)
+
+      if label_ids.size == 1
+        label_id = label_ids.first
+
+        # Ensure this label corresponds to a list on the board
+        next unless Label.on_project_boards(issuable.project_id).where(id: label_id).exists?
+
+        @updates[:remove_label_ids] =
+          issuable.labels.on_project_boards(issuable.project_id).where.not(id: label_id).pluck(:id)
+        @updates[:add_label_ids] = [label_id]
+      end
+>>>>>>> ce-com/master
     end
 
     def find_label_ids(labels_param)

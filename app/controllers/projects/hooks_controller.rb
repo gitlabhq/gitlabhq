@@ -1,6 +1,7 @@
 class Projects::HooksController < Projects::ApplicationController
   # Authorize
   before_action :authorize_admin_project!
+  before_action :hook, only: :edit
 
   respond_to :html
 
@@ -15,6 +16,18 @@ class Projects::HooksController < Projects::ApplicationController
       flash[:alert] = @hook.errors.full_messages.join.html_safe
     end
     redirect_to namespace_project_settings_integrations_path(@project.namespace, @project)
+  end
+
+  def edit
+  end
+
+  def update
+    if hook.update_attributes(hook_params)
+      flash[:notice] = 'Hook was successfully updated.'
+      redirect_to namespace_project_settings_integrations_path(@project.namespace, @project)
+    else
+      render 'edit'
+    end
   end
 
   def test

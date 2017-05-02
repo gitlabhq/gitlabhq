@@ -208,7 +208,7 @@ constraints(ProjectUrlConstrainer.new) do
           post :retry
           post :play
           post :erase
-          get :trace
+          get :trace, defaults: { format: 'json' }
           get :raw
         end
 
@@ -220,7 +220,7 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :hooks, only: [:index, :create, :destroy], constraints: { id: /\d+/ } do
+      resources :hooks, only: [:index, :create, :edit, :update, :destroy], constraints: { id: /\d+/ } do
         member do
           get :test
         end

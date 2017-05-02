@@ -1992,6 +1992,7 @@ describe Repository, models: true do
     end
   end
 
+<<<<<<< HEAD
   describe '#after_sync' do
     it 'expires repository cache' do
       expect(repository).to receive(:expire_all_method_caches)
@@ -2020,4 +2021,17 @@ describe Repository, models: true do
   #     end
   #   end
   # end
+=======
+  describe '#is_ancestor?' do
+    context 'Gitaly is_ancestor feature enabled' do
+      it "asks Gitaly server if it's an ancestor" do
+        commit = repository.commit
+        expect(repository.raw_repository).to receive(:is_ancestor?).and_call_original
+        allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:is_ancestor).and_return(true)
+
+        expect(repository.is_ancestor?(commit.id, commit.id)).to be true
+      end
+    end
+  end
+>>>>>>> ce-com/master
 end

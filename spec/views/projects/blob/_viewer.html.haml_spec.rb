@@ -21,6 +21,10 @@ describe 'projects/blob/_viewer.html.haml', :view do
 
   before do
     assign(:project, project)
+<<<<<<< HEAD
+=======
+    assign(:blob, blob)
+>>>>>>> ce-com/master
     assign(:id, File.join('master', blob.path))
 
     controller.params[:controller] = 'projects/blob'

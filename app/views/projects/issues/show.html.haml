@@ -58,8 +58,7 @@
     - if @issue.description.present?
       .description{ class: can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : '' }
         .wiki
-          = preserve do
-            = markdown_field(@issue, :description)
+          = markdown_field(@issue, :description)
         %textarea.hidden.js-task-list-field
           = @issue.description
     = edited_time_ago_with_tooltip(@issue, placement: 'bottom', html_class: 'issue_edited_ago')

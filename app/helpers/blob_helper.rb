@@ -119,7 +119,19 @@ module BlobHelper
   end
 
   def blob_raw_url
+<<<<<<< HEAD
     namespace_project_raw_path(@project.namespace, @project, @id)
+=======
+    if @snippet
+      if @snippet.project_id
+        raw_namespace_project_snippet_path(@project.namespace, @project, @snippet)
+      else
+        raw_snippet_path(@snippet)
+      end
+    elsif @blob
+      namespace_project_raw_path(@project.namespace, @project, @id)
+    end
+>>>>>>> ce-com/master
   end
 
   # SVGs can contain malicious JavaScript; only include whitelisted
@@ -209,11 +221,55 @@ module BlobHelper
   end
 
   def copy_blob_source_button(blob)
+<<<<<<< HEAD
+=======
+    return unless blob.rendered_as_text?(ignore_errors: false)
+
+>>>>>>> ce-com/master
     clipboard_button(target: ".blob-content[data-blob-id='#{blob.id}']", class: "btn btn-sm js-copy-blob-source-btn", title: "Copy source to clipboard")
   end
 
-  def open_raw_file_button(path)
-    link_to icon('file-code-o'), path, class: 'btn btn-sm has-tooltip', target: '_blank', rel: 'noopener noreferrer', title: 'Open raw', data: { container: 'body' }
+  def open_raw_blob_button(blob)
+    if blob.raw_binary?
+      icon = icon('download')
+      title = 'Download'
+    else
+      icon = icon('file-code-o')
+      title = 'Open raw'
+    end
+
+    link_to icon, blob_raw_url, class: 'btn btn-sm has-tooltip', target: '_blank', rel: 'noopener noreferrer', title: title, data: { container: 'body' }
+  end
+
+  def blob_render_error_reason(viewer)
+    case viewer.render_error
+    when :too_large
+      max_size =
+        if viewer.absolutely_too_large?
+          viewer.absolute_max_size
+        elsif viewer.too_large?
+          viewer.max_size
+        end
+      "it is larger than #{number_to_human_size(max_size)}"
+    when :server_side_but_stored_in_lfs
+      "it is stored in LFS"
+    end
+  end
+
+  def blob_render_error_options(viewer)
+    options = []
+
+    if viewer.render_error == :too_large && viewer.can_override_max_size?
+      options << link_to('load it anyway', url_for(params.merge(viewer: viewer.type, override_max_size: true, format: nil)))
+    end
+
+    if viewer.rich? && viewer.blob.rendered_as_text?
+      options << link_to('view the source', '#', class: 'js-blob-viewer-switch-btn', data: { viewer: 'simple' })
+    end
+
+    options << link_to('download it', blob_raw_url, target: '_blank', rel: 'noopener noreferrer')
+
+    options
   end
 
   def blob_render_error_reason(viewer)

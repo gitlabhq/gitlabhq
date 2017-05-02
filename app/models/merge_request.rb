@@ -105,7 +105,11 @@ class MergeRequest < ActiveRecord::Base
   validates :merge_user, presence: true, if: :merge_when_pipeline_succeeds?, unless: :importing?
   validate :validate_branches, unless: [:allow_broken, :importing?, :closed_without_fork?]
   validate :validate_fork, unless: :closed_without_fork?
+<<<<<<< HEAD
   validate :validate_approvals_before_merge
+=======
+  validate :validate_target_project, on: :create
+>>>>>>> ce-com/master
 
   scope :by_source_or_target_branch, ->(branch_name) do
     where("source_branch = :branch OR target_branch = :branch", branch: branch_name)
@@ -335,6 +339,12 @@ class MergeRequest < ActiveRecord::Base
                    "Cannot Create: This merge request already exists: #{similar_mrs.pluck(:title)}"
       end
     end
+  end
+
+  def validate_target_project
+    return true if target_project.merge_requests_enabled?
+
+    errors.add :base, 'Target project has disabled merge requests'
   end
 
   def validate_fork
