@@ -1,5 +1,22 @@
 require 'spec_helper'
 
+shared_examples 'an external link with rel attribute' do
+  it 'adds rel="nofollow" to external links' do
+    expect(doc.at_css('a')).to have_attribute('rel')
+    expect(doc.at_css('a')['rel']).to include 'nofollow'
+  end
+
+  it 'adds rel="noreferrer" to external links' do
+    expect(doc.at_css('a')).to have_attribute('rel')
+    expect(doc.at_css('a')['rel']).to include 'noreferrer'
+  end
+
+  it 'adds rel="noopener" to external links' do
+    expect(doc.at_css('a')).to have_attribute('rel')
+    expect(doc.at_css('a')['rel']).to include 'noopener'
+  end
+end
+
 describe Banzai::Filter::ExternalLinkFilter, lib: true do
   include FilterSpecHelper
 
@@ -22,49 +39,51 @@ describe Banzai::Filter::ExternalLinkFilter, lib: true do
   context 'for root links on document' do
     let(:doc) { filter %q(<a href="https://google.com/">Google</a>) }
 
-    it 'adds rel="nofollow" to external links' do
-      expect(doc.at_css('a')).to have_attribute('rel')
-      expect(doc.at_css('a')['rel']).to include 'nofollow'
-    end
-
-    it 'adds rel="noreferrer" to external links' do
-      expect(doc.at_css('a')).to have_attribute('rel')
-      expect(doc.at_css('a')['rel']).to include 'noreferrer'
-    end
+    it_behaves_like 'an external link with rel attribute'
   end
 
   context 'for nested links on document' do
     let(:doc) { filter %q(<p><a href="https://google.com/">Google</a></p>) }
 
-    it 'adds rel="nofollow" to external links' do
-      expect(doc.at_css('a')).to have_attribute('rel')
-      expect(doc.at_css('a')['rel']).to include 'nofollow'
+    it_behaves_like 'an external link with rel attribute'
+  end
+
+  context 'for invalid urls' do
+    it 'skips broken hrefs' do
+      doc = filter %q(<p><a href="don't crash on broken urls">Google</a></p>)
+      expected = %q(<p><a href="don't%20crash%20on%20broken%20urls">Google</a></p>)
+
+      expect(doc.to_html).to eq(expected)
+    end
+  end
+
+  context 'for links with a username' do
+    context 'with a valid username' do
+      let(:doc) { filter %q(<a href="https://user@google.com/">Google</a>) }
+
+      it_behaves_like 'an external link with rel attribute'
     end
 
-    it 'adds rel="noreferrer" to external links' do
-      expect(doc.at_css('a')).to have_attribute('rel')
-      expect(doc.at_css('a')['rel']).to include 'noreferrer'
+    context 'with an impersonated username' do
+      let(:internal) { Gitlab.config.gitlab.url }
+
+      let(:doc) { filter %Q(<a href="https://#{internal}@example.com" target="_blank">Reverse Tabnabbing</a>) }
+
+      it_behaves_like 'an external link with rel attribute'
     end
   end
 
   context 'for non-lowercase scheme links' do
-    let(:doc_with_http) { filter %q(<p><a href="httP://google.com/">Google</a></p>) }
-    let(:doc_with_https) { filter %q(<p><a href="hTTpS://google.com/">Google</a></p>) }
+    context 'with http' do
+      let(:doc) { filter %q(<p><a href="httP://google.com/">Google</a></p>) }
 
-    it 'adds rel="nofollow" to external links' do
-      expect(doc_with_http.at_css('a')).to have_attribute('rel')
-      expect(doc_with_https.at_css('a')).to have_attribute('rel')
-
-      expect(doc_with_http.at_css('a')['rel']).to include 'nofollow'
-      expect(doc_with_https.at_css('a')['rel']).to include 'nofollow'
+      it_behaves_like 'an external link with rel attribute'
     end
 
-    it 'adds rel="noreferrer" to external links' do
-      expect(doc_with_http.at_css('a')).to have_attribute('rel')
-      expect(doc_with_https.at_css('a')).to have_attribute('rel')
+    context 'with https' do
+      let(:doc) { filter %q(<p><a href="hTTpS://google.com/">Google</a></p>) }
 
-      expect(doc_with_http.at_css('a')['rel']).to include 'noreferrer'
-      expect(doc_with_https.at_css('a')['rel']).to include 'noreferrer'
+      it_behaves_like 'an external link with rel attribute'
     end
 
     it 'skips internal links' do
@@ -84,14 +103,6 @@ describe Banzai::Filter::ExternalLinkFilter, lib: true do
   context 'for protocol-relative links' do
     let(:doc) { filter %q(<p><a href="//google.com/">Google</a></p>) }
 
-    it 'adds rel="nofollow" to external links' do
-      expect(doc.at_css('a')).to have_attribute('rel')
-      expect(doc.at_css('a')['rel']).to include 'nofollow'
-    end
-
-    it 'adds rel="noreferrer" to external links' do
-      expect(doc.at_css('a')).to have_attribute('rel')
-      expect(doc.at_css('a')['rel']).to include 'noreferrer'
-    end
+    it_behaves_like 'an external link with rel attribute'
   end
 end

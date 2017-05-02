@@ -69,7 +69,7 @@ module Gitlab
         it 'adds the `rel` attribute to the link' do
           output = render('link:https://google.com[Google]', context)
 
-          expect(output).to include('rel="nofollow noreferrer"')
+          expect(output).to include('rel="nofollow noreferrer noopener"')
         end
       end
     end
