@@ -77,8 +77,8 @@ module CommitsHelper
       link_to(
         namespace_project_tree_path(project.namespace, project, branch)
       ) do
-        content_tag :span, class: 'label label-gray' do
-          icon('code-fork') + ' ' + branch
+        content_tag :span, class: 'label label-gray commit-link' do
+          icon('code-fork', class: 'commit-link-icon') + branch
         end
       end
     end.join(" ").html_safe
@@ -93,7 +93,7 @@ module CommitsHelper
                                        project.repository.find_tag(tag).name)
       ) do
         content_tag :span, class: 'label label-gray' do
-          icon('tag') + ' ' + tag
+          icon('tag', class: 'commit-link-icon') + tag
         end
       end
     end.join(" ").html_safe
