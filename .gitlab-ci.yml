@@ -268,6 +268,21 @@ static-analysis:
   script:
     - scripts/static-analysis
 
+docs:check:links:
+  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:nanoc-bootstrap-ruby-2.4-alpine"
+  stage: test
+  <<: *dedicated-runner
+  cache: {}
+  dependencies: []
+  before_script: []
+  script:
+    - mv doc/ /nanoc/content/
+    - cd /nanoc
+    # Build HTML from Markdown
+    - bundle exec nanoc
+    # Check the internal links
+    - bundle exec nanoc check internal_links
+
 downtime_check:
   <<: *rake-exec
   except:
@@ -299,22 +314,22 @@ ee_compat_check:
 .db-migrate-reset: &db-migrate-reset
   stage: test
   <<: *dedicated-runner
+  <<: *except-docs
   script:
     - bundle exec rake db:migrate:reset
 
 db:migrate:reset pg:
   <<: *db-migrate-reset
   <<: *use-pg
-  <<: *except-docs
 
 db:migrate:reset mysql:
   <<: *db-migrate-reset
   <<: *use-mysql
-  <<: *except-docs
 
 .db-rollback: &db-rollback
   stage: test
   <<: *dedicated-runner
+  <<: *except-docs
   script:
     - bundle exec rake db:rollback STEP=120
     - bundle exec rake db:migrate
@@ -322,16 +337,15 @@ db:migrate:reset mysql:
 db:rollback pg:
   <<: *db-rollback
   <<: *use-pg
-  <<: *except-docs
 
 db:rollback mysql:
   <<: *db-rollback
   <<: *use-mysql
-  <<: *except-docs
 
 .db-seed_fu: &db-seed_fu
   stage: test
   <<: *dedicated-runner
+  <<: *except-docs
   variables:
     SIZE: "1"
     SETUP_DB: "false"
@@ -349,12 +363,10 @@ db:rollback mysql:
 db:seed_fu pg:
   <<: *db-seed_fu
   <<: *use-pg
-  <<: *except-docs
 
 db:seed_fu mysql:
   <<: *db-seed_fu
   <<: *use-mysql
-  <<: *except-docs
 
 gitlab:assets:compile:
   stage: test
@@ -394,21 +406,6 @@ karma:
     expire_in: 31d
     paths:
     - coverage-javascript/
-
-docs:check:links:
-  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:nanoc-bootstrap-ruby-2.4-alpine"
-  stage: test
-  <<: *dedicated-runner
-  cache: {}
-  dependencies: []
-  before_script: []
-  script:
-    - mv doc/ /nanoc/content/
-    - cd /nanoc
-    # Build HTML from Markdown
-    - bundle exec nanoc
-    # Check the internal links
-    - bundle exec nanoc check internal_links
 
 bundler:audit:
   stage: test
