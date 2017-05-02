@@ -25,6 +25,21 @@ module Gitlab
         expect(render(input, context)).to eq(html)
       end
 
+      context "with asciidoc_opts" do
+        it "merges the options with default ones" do
+          expected_asciidoc_opts = {
+              safe: :secure,
+              backend: :gitlab_html5,
+              attributes: described_class::DEFAULT_ADOC_ATTRS
+          }
+
+          expect(Asciidoctor).to receive(:convert)
+            .with(input, expected_asciidoc_opts).and_return(html)
+
+          render(input, context)
+        end
+      end
+
       context "XSS" do
         links = {
           'links' => {
@@ -52,7 +67,7 @@ module Gitlab
         it 'adds the `rel` attribute to the link' do
           output = render('link:https://google.com[Google]', context)
 
-          expect(output).to include('rel="nofollow noreferrer"')
+          expect(output).to include('rel="nofollow noreferrer noopener"')
         end
       end
     end
