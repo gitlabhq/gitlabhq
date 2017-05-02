@@ -216,9 +216,11 @@
 }
 
 .commit-short-id {
+  @include gl-link-hover-focus-state;
   font-family: $monospace_font;
   font-weight: 600;
-  @include gl-link-hover-focus-state;
+  font-size: $gl-font-size;
+  margin-left: $gl-padding;
 }
 
 .commit,
