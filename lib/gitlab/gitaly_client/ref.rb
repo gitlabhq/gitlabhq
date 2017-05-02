@@ -11,7 +11,9 @@ module Gitlab
 
       def default_branch_name
         request = Gitaly::FindDefaultBranchNameRequest.new(repository: @gitaly_repo)
-        stub.find_default_branch_name(request).name.gsub(/^refs\/heads\//, '')
+        branch_name = stub.find_default_branch_name(request).name
+
+        Gitlab::Git.branch_name(branch_name)
       end
 
       def branch_names
