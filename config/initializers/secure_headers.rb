@@ -8,13 +8,13 @@ include Gitlab::CurrentSettings
 # this will construct the Report URI for Sentry.
 if Rails.env.production? && current_application_settings.sentry_enabled
   uri = URI.parse(current_application_settings.sentry_dsn)
-  CSP_REPORT_URI = "#{uri.scheme}://#{uri.host}/api#{uri.path}/csp-report/?sentry_key=#{uri.user}"
+  csp_report_uri = "#{uri.scheme}://#{uri.host}/api#{uri.path}/csp-report/?sentry_key=#{uri.user}"
 else
-  CSP_REPORT_URI = ''
+  csp_report_uri = ''
 end
 
 # Get the GitLab URI without the scheme so it can have wss:// prepended.
-GITLAB_WS_URI = Gitlab.config.gitlab['url'].sub(%r{^https?:(//|\\\\)(www\.)?}i, '')
+gitlab_ws_uri = Gitlab.config.gitlab['url'].sub(%r{^https?://(www\.)?}i, '')
 
 # Content Security Policy Headers
 # For more information on CSP see:
@@ -23,10 +23,10 @@ GITLAB_WS_URI = Gitlab.config.gitlab['url'].sub(%r{^https?:(//|\\\\)(www\.)?}i, 
 SecureHeaders::Configuration.default do |config|
   # Mark all cookies as "Secure", "HttpOnly", and "SameSite=Strict".
   config.cookies = {
-    secure: true,
+    secure: Gitlab.config.gitlab.https,
     httponly: true,
     samesite: {
-      strict: true 
+      lax: true 
     }
   }
   config.csp = {
@@ -40,7 +40,7 @@ SecureHeaders::Configuration.default do |config|
     frame_src: %w('self'),
     # Only allow XMLHTTPRequests from the GitLab instance itself.
     # Only allow WebSockets connections from the GitLab instance itself.
-    connect_src: %W('self' "wss://#{GITLAB_WS_URI}"),
+    connect_src: %W('self' wss://#{gitlab_ws_uri}),
     # Only load local fonts.
     font_src: %w('self'),
     # Load local images, any external image available over HTTP.
@@ -71,7 +71,7 @@ SecureHeaders::Configuration.default do |config|
 
   # Reports are sent to Sentry if it's enabled.
   if current_application_settings.sentry_enabled
-    config.csp[:report_uri] = %W(#{CSP_REPORT_URI})
+    config.csp[:report_uri] = %W(#{csp_report_uri})
   end
 
   if Rails.env.development?
@@ -82,12 +82,12 @@ SecureHeaders::Configuration.default do |config|
     
     # Determine current host, connect through port 3808 for Webpack.
     uri = URI.parse(Gitlab.config.gitlab['url'])
-    WEBPACK_CONNECT_URI = "#{uri.scheme}://#{uri.host}:3808"
-    WEBPACK_CONNECT_WS_URI = "ws://#{uri.host}:3808"
+    webpack_connect_uri = "#{uri.scheme}://#{uri.host}:3808"
+    webpack_connect_ws_uri = "ws://#{uri.host}:3808"
 
     # Allow Webpack's dev server
-    config.csp[:connect_src] << "#{WEBPACK_CONNECT_URI}"
-    config.csp[:connect_src] << "#{WEBPACK_CONNECT_WS_URI}"
+    config.csp[:connect_src] << webpack_connect_uri
+    config.csp[:connect_src] << webpack_connect_ws_uri
   end
 
   # reCAPTCHA
