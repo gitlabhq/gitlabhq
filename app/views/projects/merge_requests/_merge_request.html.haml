@@ -38,14 +38,14 @@
       - if merge_request.target_project.default_branch != merge_request.target_branch
         &nbsp;
         = link_to namespace_project_commits_path(merge_request.project.namespace, merge_request.project, merge_request.target_branch) do
-          = icon('code-fork')
-          = merge_request.target_branch
+          = icon('code-fork', class: 'issuable-info-icon')
+          %span>= merge_request.target_branch
 
       - if merge_request.milestone
         &nbsp;
         = link_to namespace_project_merge_requests_path(merge_request.project.namespace, merge_request.project, milestone_title: merge_request.milestone.title) do
-          = icon('clock-o')
-          = merge_request.milestone.title
+          = icon('clock-o', class: 'issuable-info-icon')
+          %span>= merge_request.milestone.title
 
       - if merge_request.labels.any?
         &nbsp;

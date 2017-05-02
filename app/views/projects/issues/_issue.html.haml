@@ -26,13 +26,12 @@
         - if issue.milestone
           &nbsp;
           = link_to namespace_project_issues_path(issue.project.namespace, issue.project, milestone_title: issue.milestone.title) do
-            = icon('clock-o')
-            = issue.milestone.title
+            = icon('clock-o', class: 'issuable-info-icon')
+            %span>= issue.milestone.title
         - if issue.due_date
           %span{ class: "#{'cred' if issue.overdue?}" }
-            &nbsp;
-            = icon('calendar')
-            = issue.due_date.to_s(:medium)
+            = icon('calendar', class: 'issuable-info-icon')
+            %span>=  issue.due_date.to_s(:medium)
         - if issue.labels.any?
           &nbsp;
           - issue.labels.each do |label|
