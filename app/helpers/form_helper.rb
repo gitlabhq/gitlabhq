@@ -24,7 +24,7 @@ module FormHelper
       dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-assignee',
       placeholder: 'Search users',
       data: {
-        first_user: (current_user.username if current_user),
+        first_user: current_user&.username,
         null_user: true,
         current_user: true,
         project_id: issuable.project.try(:id),

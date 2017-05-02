@@ -17,7 +17,6 @@ describe IssuablesHelper do
     end
 
     it 'returns selected user\'s name and counter' do
-
       expect(users_dropdown_label([user, user2])).to eq("#{user.name} + 1 more")
     end
   end
