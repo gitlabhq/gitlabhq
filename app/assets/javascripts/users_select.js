@@ -52,7 +52,6 @@ import eventHub from './sidebar/event_hub';
           $collapsedSidebar = $block.find('.sidebar-collapsed-user');
           $loading = $block.find('.block-loading').fadeOut();
 
-
           const assignYourself = function () {
             const unassignedSelected = $dropdown.closest('.selectbox')
               .find(`input[name='${$dropdown.data('field-name')}'][value=0]`);
@@ -76,7 +75,7 @@ import eventHub from './sidebar/event_hub';
             }
 
             $dropdown.before(input);
-          }
+          };
 
           if ($block[0]) {
             $block[0].addEventListener('assignYourself', assignYourself);
@@ -85,7 +84,7 @@ import eventHub from './sidebar/event_hub';
           const getSelectedUserInputs = function() {
             return $selectbox
               .find(`input[name="${$dropdown.data('field-name')}"]`);
-          }
+          };
 
           const getSelected = function() {
             return getSelectedUserInputs()
@@ -110,12 +109,12 @@ import eventHub from './sidebar/event_hub';
             } else if (selectedUsers.length === 1) {
               return firstUser.name;
             } else if (isSelected) {
-              let otherSelected = selectedUsers.filter(s => s !== selectedUser.id);
+              const otherSelected = selectedUsers.filter(s => s !== selectedUser.id);
               return `${selectedUser.name} + ${otherSelected.length} more`;
             } else {
               return `${firstUser.name} + ${selectedUsers.length - 1} more`;
             }
-          }
+          };
 
           $('.assign-to-me-link').on('click', (e) => {
             e.preventDefault();
@@ -308,7 +307,6 @@ import eventHub from './sidebar/event_hub';
               if ($dropdown.hasClass('js-multiselect')) {
                 eventHub.$emit('sidebar.saveAssignees');
               }
-
 
               if (!$dropdown.data('always-show-selectbox')) {
                 $selectbox.hide();
