@@ -1,0 +1,5 @@
+---
+title: Gracefully handle failures for incoming emails which do not match on the To
+  header, and have no References header
+merge_request:
+author:

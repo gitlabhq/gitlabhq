@@ -70,6 +70,8 @@ module Gitlab
           # Handle emails from clients which append with commas,
           # example clients are Microsoft exchange and iOS app
           Gitlab::IncomingEmail.scan_fallback_references(references)
+        when nil
+          []
         end
       end
 

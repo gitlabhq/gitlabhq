@@ -57,9 +57,9 @@ require('vendor/jquery.scrollTo');
     }
 
     LineHighlighter.prototype.bindEvents = function() {
-      const $blobContentHolder = $('#blob-content-holder');
-      $blobContentHolder.on('click', 'a[data-line-number]', this.clickHandler);
-      $blobContentHolder.on('highlight:line', this.highlightHash);
+      const $fileHolder = $('.file-holder');
+      $fileHolder.on('click', 'a[data-line-number]', this.clickHandler);
+      $fileHolder.on('highlight:line', this.highlightHash);
     };
 
     LineHighlighter.prototype.highlightHash = function() {
