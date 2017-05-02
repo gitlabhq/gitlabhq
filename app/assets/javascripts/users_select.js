@@ -52,40 +52,86 @@ import eventHub from './sidebar/event_hub';
           $collapsedSidebar = $block.find('.sidebar-collapsed-user');
           $loading = $block.find('.block-loading').fadeOut();
 
-          if ($block[0]) {
-            $block[0].addEventListener('assignYourself', () => {
-              // Remove unassigned selected from the DOM
-              const unassignedSelected = $dropdown.closest('.selectbox')
-                .find("input[name='" + ($dropdown.data('field-name')) + "'][value=0]");
 
-              if (unassignedSelected) {
-                unassignedSelected.remove();
-              }
+          const assignYourself = function () {
+            const unassignedSelected = $dropdown.closest('.selectbox')
+              .find(`input[name='${$dropdown.data('field-name')}'][value=0]`);
 
-              // Save current selected user to the DOM
-              const input = document.createElement('input');
-              input.type = 'hidden';
-              input.name = $dropdown.data('field-name');
+            if (unassignedSelected) {
+              unassignedSelected.remove();
+            }
+
+            // Save current selected user to the DOM
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = $dropdown.data('field-name');
+
+            const currentUserInfo = $dropdown.data('currentUserInfo');
+
+            if (currentUserInfo) {
+              input.value = currentUserInfo.id;
+              input.dataset.meta = currentUserInfo.name;
+            } else if (_this.currentUser) {
               input.value = _this.currentUser.id;
+            }
 
-              $dropdown.before(input);
-            });
+            $dropdown.before(input);
           }
 
-          var getSelected = function() {
+          if ($block[0]) {
+            $block[0].addEventListener('assignYourself', assignYourself);
+          }
+
+          const getSelectedUserInputs = function() {
             return $selectbox
-              .find(`input[name="${$dropdown.data('field-name')}"]`)
+              .find(`input[name="${$dropdown.data('field-name')}"]`);
+          }
+
+          const getSelected = function() {
+            return getSelectedUserInputs()
               .map((index, input) => parseInt(input.value, 10))
               .get();
           };
 
+          const getMultiSelectDropdownTitle = function(selectedUser, isSelected) {
+            const selectedUsers = getSelected()
+              .filter(u => u !== 0);
+
+            const firstUser = getSelectedUserInputs()
+              .map((index, input) => ({
+                name: input.dataset.meta,
+                value: parseInt(input.value, 10),
+              }))
+              .filter(u => u.id !== 0)
+              .get(0);
+
+            if (selectedUsers.length === 0) {
+              return 'Unassigned';
+            } else if (selectedUsers.length === 1) {
+              return firstUser.name;
+            } else if (isSelected) {
+              let otherSelected = selectedUsers.filter(s => s !== selectedUser.id);
+              return `${selectedUser.name} + ${otherSelected.length} more`;
+            } else {
+              return `${firstUser.name} + ${selectedUsers.length - 1} more`;
+            }
+          }
+
           $('.assign-to-me-link').on('click', (e) => {
             e.preventDefault();
             $(e.currentTarget).hide();
-            const $input = $(`input[name="${$dropdown.data('field-name')}"]`);
-            $input.val(gon.current_user_id);
-            selectedId = $input.val();
-            $dropdown.find('.dropdown-toggle-text').text(gon.current_user_fullname).removeClass('is-default');
+
+            if ($dropdown.data('multiSelect')) {
+              assignYourself();
+
+              const currentUserInfo = $dropdown.data('currentUserInfo');
+              $dropdown.find('.dropdown-toggle-text').text(getMultiSelectDropdownTitle(currentUserInfo)).removeClass('is-default');
+            } else {
+              const $input = $(`input[name="${$dropdown.data('field-name')}"]`);
+              $input.val(gon.current_user_id);
+              selectedId = $input.val();
+              $dropdown.find('.dropdown-toggle-text').text(gon.current_user_fullname).removeClass('is-default');
+            }
           });
 
           $block.on('click', '.js-assign-yourself', (e) => {
@@ -243,6 +289,10 @@ import eventHub from './sidebar/event_hub';
                 this.processData(inputValue, users, callback);
               }
 
+              if (this.multiSelect) {
+                return getMultiSelectDropdownTitle(selected, $(el).hasClass('is-active'));
+              }
+
               if (selected && 'id' in selected && $(el).hasClass('is-active')) {
                 if (selected.text) {
                   return selected.text;
@@ -259,15 +309,19 @@ import eventHub from './sidebar/event_hub';
                 eventHub.$emit('sidebar.saveAssignees');
               }
 
-              $selectbox.hide();
 
-              // Recalculate where .value is because vue might have changed it
-              $block = $selectbox.closest('.block');
-              $value = $block.find('.value');
-              // display:block overrides the hide-collapse rule
-              return $value.css('display', '');
+              if (!$dropdown.data('always-show-selectbox')) {
+                $selectbox.hide();
+
+                // Recalculate where .value is because vue might have changed it
+                $block = $selectbox.closest('.block');
+                $value = $block.find('.value');
+                // display:block overrides the hide-collapse rule
+                $value.css('display', '');
+              }
             },
             multiSelect: $dropdown.hasClass('js-multiselect'),
+            inputMeta: $dropdown.data('input-meta'),
             clicked: function(options) {
               const { $el, e, isMarking } = options;
               const user = options.selectedObj;
@@ -321,6 +375,12 @@ import eventHub from './sidebar/event_hub';
 
                   // User unselected
                   eventHub.$emit('sidebar.removeAssignee', user);
+                }
+
+                if (getSelected().find(u => u === gon.current_user_id)) {
+                  $('.assign-to-me-link').hide();
+                } else {
+                  $('.assign-to-me-link').show();
                 }
               }
 
