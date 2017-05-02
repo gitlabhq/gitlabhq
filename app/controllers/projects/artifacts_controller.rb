@@ -16,7 +16,8 @@ class Projects::ArtifactsController < Projects::ApplicationController
   end
 
   def browse
-    directory = params[:path] ? "#{params[:path]}/" : ''
+    @path = params[:path]
+    directory = @path ? "#{@path}/" : ''
     @entry = build.artifacts_metadata_entry(directory)
 
     render_404 unless @entry.exists?
@@ -60,7 +61,10 @@ class Projects::ArtifactsController < Projects::ApplicationController
   end
 
   def build
-    @build ||= build_from_id || build_from_ref
+    @build ||= begin
+      build = build_from_id || build_from_ref
+      build&.present(current_user: current_user)
+    end
   end
 
   def build_from_id
