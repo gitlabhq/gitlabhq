@@ -685,3 +685,11 @@ a .note-headline-light {
     position: relative;
   }
 }
+
+.attach-a-file {
+  @include gl-link-hover-focus-state;
+
+  .toolbar-button-icon {
+    margin-right: 5px;
+  }
+}
