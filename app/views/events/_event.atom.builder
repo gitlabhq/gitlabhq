@@ -8,6 +8,7 @@ xml.entry do
   xml.media   :thumbnail, width: "40", height: "40", url: image_url(avatar_icon(event.author_email))
 
   xml.author do
+    xml.username event.author_username
     xml.name event.author_name
     xml.email event.author_public_email
   end

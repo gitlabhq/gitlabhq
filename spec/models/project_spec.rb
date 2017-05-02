@@ -253,6 +253,34 @@ describe Project, models: true do
         expect(new_project.errors.full_messages.first).to eq('The project is still being deleted. Please try again later.')
       end
     end
+
+    describe 'path validation' do
+      it 'allows paths reserved on the root namespace' do
+        project = build(:project, path: 'api')
+
+        expect(project).to be_valid
+      end
+
+      it 'rejects paths reserved on another level' do
+        project = build(:project, path: 'tree')
+
+        expect(project).not_to be_valid
+      end
+
+      it 'rejects nested paths' do
+        parent = create(:group, :nested, path: 'environments')
+        project = build(:project, path: 'folders', namespace: parent)
+
+        expect(project).not_to be_valid
+      end
+
+      it 'allows a reserved group name' do
+        parent = create(:group)
+        project = build(:project, path: 'avatar', namespace: parent)
+
+        expect(project).to be_valid
+      end
+    end
   end
 
   describe 'default_scope' do
@@ -781,17 +809,14 @@ describe Project, models: true do
 
     let(:project) { create(:empty_project) }
 
-    context 'When avatar file is uploaded' do
-      before do
-        project.update_columns(avatar: 'uploads/avatar.png')
-        allow(project.avatar).to receive(:present?) { true }
-      end
+    context 'when avatar file is uploaded' do
+      let(:project) { create(:empty_project, :with_avatar) }
 
-      let(:avatar_path) do
-        "/uploads/project/avatar/#{project.id}/uploads/avatar.png"
-      end
+      it 'creates a correct avatar path' do
+        avatar_path = "/uploads/project/avatar/#{project.id}/dk.png"
 
-      it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
+        expect(project.avatar_url).to eq("http://#{Gitlab.config.gitlab.host}#{avatar_path}")
+      end
     end
 
     context 'When avatar file in git' do

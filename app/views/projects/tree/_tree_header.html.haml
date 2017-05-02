@@ -1,3 +1,7 @@
+.tree-controls
+  = render 'projects/find_file_link'
+  = render 'projects/buttons/download', project: @project, ref: @ref
+
 .tree-ref-holder
   = render 'shared/ref_switcher', destination: 'tree', path: @path
 

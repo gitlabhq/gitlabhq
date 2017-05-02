@@ -2,7 +2,7 @@
 
   - **General Documentation**: written by the developers responsible by creating features. Should be submitted in the same merge request containing code. Feature proposals (by GitLab contributors) should also be accompanied by its respective documentation. They can be later improved by PMs and Technical Writers.
   - **Technical Articles**: written by any [GitLab Team](https://about.gitlab.com/team/) member, GitLab contributors, or [Community Writers](https://about.gitlab.com/handbook/product/technical-writing/community-writers/).
-  - **Indexes per topic**: initially prepared by the Technical Writing Team, and kept up-to-date by developers and PMs, in the same merge request containing code.
+  - **Indexes per topic**: initially prepared by the Technical Writing Team, and kept up-to-date by developers and PMs in the same merge request containing code. They gather all resources for that topic in a single page (user and admin documentation, articles, and third-party docs).
 
 ## Distinction between General Documentation and Technical Articles
 
@@ -18,7 +18,7 @@ They are topic-related documentation, written with an user-friendly approach and
 
 A technical article guides users and/or admins to achieve certain objectives (within guides and tutorials), or provide an overview of that particular topic or feature (within technical overviews). It can also describe the use, implementation, or integration of third-party tools with GitLab.
 
-They live under `doc/topics/topic-name/`, and can be searched per topic, within "Indexes per Topic" pages. The topics are listed on the main [Indexes per Topic](../topics/index.md) page.
+They live under `doc/articles/article-title/index.md`, and their images should be placed under `doc/articles/article-title/img/`. Find a list of existing [technical articles](../articles/index.md) here.
 
 #### Types of Technical Articles
 
@@ -70,3 +70,27 @@ All the docs follow the same [styleguide](doc_styleguide.md).
 ### Markdown
 
 Currently GitLab docs use Redcarpet as [markdown](../user/markdown.md) engine, but there's an [open discussion](https://gitlab.com/gitlab-com/gitlab-docs/issues/50) for implementing Kramdown in the near future.
+
+## Testing
+
+We try to treat documentation as code, thus have implemented some testing.
+Currently, the following tests are in place:
+
+1. `docs:check:links`: Check that all internal (relative) links work correctly
+1. `docs:check:apilint`: Check that the API docs follow some conventions
+
+If your contribution contains **only** documentation changes, you can speed up
+the CI process by prepending to the name of your branch: `docs/`. For example,
+a valid name would be `docs/update-api-issues` and it will run only the docs
+tests. If the name is `docs-update-api-issues`, the whole test suite will run
+(including docs).
+
+---
+
+When you submit a merge request to GitLab Community Edition (CE), there is an
+additional job called `rake ee_compat_check` that runs against Enterprise
+Edition (EE) and checks if your changes can apply cleanly to the EE codebase.
+If that job fails, read the instructions in the job log for what to do next.
+Contributors do not need to submit their changes to EE, GitLab Inc. employees
+on the other hand need to make sure that their changes apply cleanly to both
+CE and EE.

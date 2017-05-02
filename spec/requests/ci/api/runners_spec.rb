@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Ci::API::Runners do
-  include ApiHelpers
   include StubGitlabCalls
 
   let(:registration_token) { 'abcdefg123456' }

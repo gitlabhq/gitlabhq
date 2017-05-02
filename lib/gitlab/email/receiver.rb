@@ -1,4 +1,3 @@
-
 require_dependency 'gitlab/email/handler'
 
 # Inspired in great part by Discourse's Email::Receiver
@@ -31,6 +30,8 @@ module Gitlab
         handler = Handler.for(mail, mail_key)
 
         raise UnknownIncomingEmail unless handler
+
+        Gitlab::Metrics.add_event(:receive_email, handler.metrics_params)
 
         handler.execute
       end
@@ -69,6 +70,8 @@ module Gitlab
           # Handle emails from clients which append with commas,
           # example clients are Microsoft exchange and iOS app
           Gitlab::IncomingEmail.scan_fallback_references(references)
+        when nil
+          []
         end
       end
 

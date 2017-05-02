@@ -1,6 +1,6 @@
 # Gitaly
 
-[Gitaly](https://gitlab.com/gitlab-org/gitlay) (introduced in GitLab
+[Gitaly](https://gitlab.com/gitlab-org/gitaly) (introduced in GitLab
 9.0) is a service that provides high-level RPC access to Git
 repositories. As of GitLab 9.1 it is still an optional component with
 limited scope.

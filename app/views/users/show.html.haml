@@ -84,19 +84,19 @@
       .fade-right= icon('angle-right')
       %ul.nav-links.center.user-profile-nav.scrolling-tabs
         %li.js-activity-tab
-          = link_to user_path, data: {target: 'div#activity', action: 'activity', toggle: 'tab'} do
+          = link_to user_path, data: { target: 'div#activity', action: 'activity', toggle: 'tab' } do
             Activity
         %li.js-groups-tab
-          = link_to user_groups_path, data: {target: 'div#groups', action: 'groups', toggle: 'tab'} do
+          = link_to user_groups_path, data: { target: 'div#groups', action: 'groups', toggle: 'tab', endpoint: user_groups_path(format: :json) } do
             Groups
         %li.js-contributed-tab
-          = link_to user_contributed_projects_path, data: {target: 'div#contributed', action: 'contributed', toggle: 'tab'} do
+          = link_to user_contributed_projects_path, data: { target: 'div#contributed', action: 'contributed', toggle: 'tab', endpoint: user_contributed_projects_path(format: :json) } do
             Contributed projects
         %li.js-projects-tab
-          = link_to user_projects_path, data: {target: 'div#projects', action: 'projects', toggle: 'tab'} do
+          = link_to user_projects_path, data: { target: 'div#projects', action: 'projects', toggle: 'tab', endpoint: user_projects_path(format: :json) } do
             Personal projects
         %li.js-snippets-tab
-          = link_to user_snippets_path, data: {target: 'div#snippets', action: 'snippets', toggle: 'tab'} do
+          = link_to user_snippets_path, data: { target: 'div#snippets', action: 'snippets', toggle: 'tab', endpoint: user_snippets_path(format: :json) } do
             Snippets
 
   %div{ class: container_class }

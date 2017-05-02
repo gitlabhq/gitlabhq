@@ -388,6 +388,12 @@ Settings.gitlab_shell['owner_group']  ||= Settings.gitlab.user
 Settings.gitlab_shell['ssh_path_prefix'] ||= Settings.__send__(:build_gitlab_shell_ssh_path_prefix)
 
 #
+# Workhorse
+#
+Settings['workhorse'] ||= Settingslogic.new({})
+Settings.workhorse['secret_file'] ||= Rails.root.join('.gitlab_workhorse_secret')
+
+#
 # Repositories
 #
 Settings['repositories'] ||= Settingslogic.new({})

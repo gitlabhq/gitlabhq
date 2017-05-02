@@ -27,7 +27,7 @@
     - diff_commit = commit_for_diff(diff_file)
     - blob = diff_file.blob(diff_commit)
     - next unless blob
-    - blob.load_all_data!(diffs.project.repository) unless blob.only_display_raw?
+    - blob.load_all_data!(diffs.project.repository) unless blob.too_large?
     - file_hash = hexdigest(diff_file.file_path)
 
     = render 'projects/diffs/file', file_hash: file_hash, project: diffs.project,

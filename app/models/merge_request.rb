@@ -100,6 +100,7 @@ class MergeRequest < ActiveRecord::Base
   validates :merge_user, presence: true, if: :merge_when_pipeline_succeeds?, unless: :importing?
   validate :validate_branches, unless: [:allow_broken, :importing?, :closed_without_fork?]
   validate :validate_fork, unless: :closed_without_fork?
+  validate :validate_target_project, on: :create
 
   scope :by_source_or_target_branch, ->(branch_name) do
     where("source_branch = :branch OR target_branch = :branch", branch: branch_name)
@@ -191,22 +192,23 @@ class MergeRequest < ActiveRecord::Base
     merge_request_diff ? merge_request_diff.raw_diffs(*args) : compare.raw_diffs(*args)
   end
 
-  def diffs(diff_options = nil)
+  def diffs(diff_options = {})
     if compare
-      compare.diffs(diff_options)
+      # When saving MR diffs, `no_collapse` is implicitly added (because we need
+      # to save the entire contents to the DB), so add that here for
+      # consistency.
+      compare.diffs(diff_options.merge(no_collapse: true))
     else
       merge_request_diff.diffs(diff_options)
     end
   end
 
   def diff_size
-    # The `#diffs` method ends up at an instance of a class inheriting from
-    # `Gitlab::Diff::FileCollection::Base`, so use those options as defaults
-    # here too, to get the same diff size without performing highlighting.
-    #
-    opts = Gitlab::Diff::FileCollection::Base.default_options.merge(diff_options || {})
+    # Calling `merge_request_diff.diffs.real_size` will also perform
+    # highlighting, which we don't need here.
+    return real_size if merge_request_diff
 
-    raw_diffs(opts).size
+    diffs.real_size
   end
 
   def diff_base_commit
@@ -327,6 +329,12 @@ class MergeRequest < ActiveRecord::Base
                    "Cannot Create: This merge request already exists: #{similar_mrs.pluck(:title)}"
       end
     end
+  end
+
+  def validate_target_project
+    return true if target_project.merge_requests_enabled?
+
+    errors.add :base, 'Target project has disabled merge requests'
   end
 
   def validate_fork

@@ -36,6 +36,9 @@ gl.issueBoards.BoardsStore = {
       .save()
       .then(() => {
         this.state.lists = _.sortBy(this.state.lists, 'position');
+      })
+      .catch(() => {
+        // https://gitlab.com/gitlab-org/gitlab-ce/issues/30821
       });
     this.removeBlankState();
   },

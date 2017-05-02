@@ -22,24 +22,51 @@ describe MergeRequestsHelper do
   end
 
   describe '#issues_sentence' do
+    let(:project) { create :project }
+
     subject { issues_sentence(issues) }
     let(:issues) do
-      [build(:issue, iid: 1), build(:issue, iid: 2), build(:issue, iid: 3)]
+      [build(:issue, iid: 2, project: project),
+       build(:issue, iid: 3, project: project),
+       build(:issue, iid: 1, project: project)]
     end
 
-    it { is_expected.to eq('#1, #2, and #3') }
+    it do
+      @project = project
+
+      is_expected.to eq('#1, #2, and #3')
+    end
 
     context 'for JIRA issues' do
       let(:project) { create(:empty_project) }
       let(:issues) do
         [
-          ExternalIssue.new('JIRA-123', project),
           ExternalIssue.new('JIRA-456', project),
-          ExternalIssue.new('FOOBAR-7890', project)
+          ExternalIssue.new('FOOBAR-7890', project),
+          ExternalIssue.new('JIRA-123', project)
         ]
       end
 
-      it { is_expected.to eq('FOOBAR-7890, JIRA-123, and JIRA-456') }
+      it do
+        @project = project
+        is_expected.to eq('FOOBAR-7890, JIRA-123, and JIRA-456')
+      end
+    end
+
+    context 'for issues from multiple namespaces' do
+      let(:project) { create(:project) }
+      let(:other_project) { create(:project) }
+      let(:issues) do
+        [build(:issue, iid: 2, project: project),
+         build(:issue, iid: 3, project: other_project),
+         build(:issue, iid: 1, project: project)]
+      end
+
+      it do
+        @project = project
+
+        is_expected.to eq("#1, #2, and #{other_project.namespace.path}/#{other_project.path}#3")
+      end
     end
   end
 
@@ -118,6 +145,50 @@ describe MergeRequestsHelper do
 
       it 'can see that project\'s issue that will be closed on acceptance' do
         expect(mr_closes_issues).to contain_exactly(issue_1, issue_2)
+      end
+    end
+  end
+
+  describe '#target_projects' do
+    let(:project) { create(:empty_project) }
+    let(:fork_project) { create(:empty_project, forked_from_project: project) }
+
+    context 'when target project has enabled merge requests' do
+      it 'returns the forked_from project' do
+        expect(target_projects(fork_project)).to contain_exactly(project, fork_project)
+      end
+    end
+
+    context 'when target project has disabled merge requests' do
+      it 'returns the forked project' do
+        project.project_feature.update(merge_requests_access_level: 0)
+
+        expect(target_projects(fork_project)).to contain_exactly(fork_project)
+      end
+    end
+  end
+
+  describe '#new_mr_path_from_push_event' do
+    subject(:url_params) { URI.decode_www_form(new_mr_path_from_push_event(event)).to_h }
+    let(:user) { create(:user) }
+    let(:project) { create(:empty_project, creator: user) }
+    let(:fork_project) { create(:project, forked_from_project: project, creator: user) }
+    let(:event) do
+      push_data = Gitlab::DataBuilder::Push.build_sample(fork_project, user)
+      create(:event, :pushed, project: fork_project, target: fork_project, author: user, data: push_data)
+    end
+
+    context 'when target project has enabled merge requests' do
+      it 'returns link to create merge request on source project' do
+        expect(url_params['merge_request[target_project_id]'].to_i).to eq(project.id)
+      end
+    end
+
+    context 'when target project has disabled merge requests' do
+      it 'returns link to create merge request on forked project' do
+        project.project_feature.update(merge_requests_access_level: 0)
+
+        expect(url_params['merge_request[target_project_id]'].to_i).to eq(fork_project.id)
       end
     end
   end

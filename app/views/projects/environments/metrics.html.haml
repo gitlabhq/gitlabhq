@@ -5,7 +5,7 @@
   = page_specific_javascript_bundle_tag('monitoring')
 = render "projects/pipelines/head"
 
-.prometheus-container{ class: container_class, 'data-has-metrics': "#{@environment.has_metrics?}" }
+#js-metrics.prometheus-container{ class: container_class, data: { has_metrics: "#{@environment.has_metrics?}", deployment_endpoint: namespace_project_environment_deployments_path(@project.namespace, @project, @environment, format: :json) } }
   .top-area
     .row
       .col-sm-6

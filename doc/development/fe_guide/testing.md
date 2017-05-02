@@ -14,8 +14,10 @@ for more information on general testing practices at GitLab.
 
 GitLab uses the [Karma][karma] test runner with [Jasmine][jasmine] as its test
 framework for our JavaScript unit tests. For tests that rely on DOM
-manipulation we use fixtures which are pre-compiled from HAML source files and
-served during testing by the [jasmine-jquery][jasmine-jquery] plugin.
+manipulation, we generate HTML files using RSpec suites (see `spec/javascripts/fixtures/*.rb` for examples).
+Some fixtures are still HAML templates that are translated to HTML files using the same mechanism (see `static_fixtures.rb`).
+Those will be migrated over time.
+Fixtures are served during testing by the [jasmine-jquery][jasmine-jquery] plugin.
 
 JavaScript tests live in `spec/javascripts/`, matching the folder structure
 of `app/assets/javascripts/`: `app/assets/javascripts/behaviors/autosize.js`
@@ -25,6 +27,10 @@ Keep in mind that in a CI environment, these tests are run in a headless
 browser and you will not have access to certain APIs, such as
 [`Notification`](https://developer.mozilla.org/en-US/docs/Web/API/notification),
 which will have to be stubbed.
+
+### Writing tests
+### Vue.js unit tests
+See this [section][vue-test].
 
 ### Running frontend tests
 
@@ -134,3 +140,4 @@ Scenario: Developer can approve merge request
 [jasmine-focus]: https://jasmine.github.io/2.5/focused_specs.html
 [jasmine-jquery]: https://github.com/velesin/jasmine-jquery
 [karma]: http://karma-runner.github.io/
+[vue-test]:https://docs.gitlab.com/ce/development/fe_guide/vue.html#testing-vue-components

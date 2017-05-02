@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe API::V3::Environments, api: true  do
-  include ApiHelpers
-
+describe API::V3::Environments do
   let(:user)          { create(:user) }
   let(:non_member)    { create(:user) }
   let(:project)       { create(:empty_project, :private, namespace: user.namespace) }

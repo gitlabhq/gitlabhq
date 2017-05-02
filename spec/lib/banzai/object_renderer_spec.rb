@@ -4,13 +4,13 @@ describe Banzai::ObjectRenderer do
   let(:project) { create(:empty_project) }
   let(:user) { project.owner }
   let(:renderer) { described_class.new(project, user, custom_value: 'value') }
-  let(:object) { Note.new(note: 'hello', note_html: '<p>hello</p>') }
+  let(:object) { Note.new(note: 'hello', note_html: '<p dir="auto">hello</p>', cached_markdown_version: CacheMarkdownField::CACHE_VERSION) }
 
   describe '#render' do
     it 'renders and redacts an Array of objects' do
       renderer.render([object], :note)
 
-      expect(object.redacted_note_html).to eq '<p>hello</p>'
+      expect(object.redacted_note_html).to eq '<p dir="auto">hello</p>'
       expect(object.user_visible_reference_count).to eq 0
     end
 

@@ -93,11 +93,6 @@
     top: $gl-padding-top;
   }
 
-  .bordered-box {
-    border: 1px solid $border-color;
-    border-radius: $border-radius-default;
-  }
-
   .content-list {
     li {
       padding: 18px $gl-padding $gl-padding;
@@ -139,42 +134,9 @@
     }
   }
 
-  .landing {
-    margin-bottom: $gl-padding;
-    overflow: hidden;
-
-    .dismiss-icon {
-      position: absolute;
-      right: $cycle-analytics-box-padding;
-      cursor: pointer;
-      color: $cycle-analytics-dismiss-icon-color;
-    }
-
-    .svg-container {
-      text-align: center;
-
-      svg {
-        width: 136px;
-        height: 136px;
-      }
-    }
-
-    .inner-content {
-      @media (max-width: $screen-xs-max) {
-        padding: 0 28px;
-        text-align: center;
-      }
-
-      h4 {
-        color: $gl-text-color;
-        font-size: 17px;
-      }
-
-      p {
-        color: $cycle-analytics-box-text-color;
-        margin-bottom: $gl-padding;
-      }
-    }
+  .landing svg {
+    width: 136px;
+    height: 136px;
   }
 
   .fa-spinner {

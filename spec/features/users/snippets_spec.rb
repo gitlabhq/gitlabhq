@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe 'Snippets tab on a user profile', feature: true, js: true do
-  include WaitForAjax
-
   context 'when the user has snippets' do
     let(:user) { create(:user) }
     let!(:snippets) { create_list(:snippet, 2, :public, author: user) }

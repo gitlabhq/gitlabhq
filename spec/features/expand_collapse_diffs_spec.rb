@@ -1,10 +1,8 @@
 require 'spec_helper'
 
 feature 'Expand and collapse diffs', js: true, feature: true do
-  include WaitForAjax
-
   let(:branch) { 'expand-collapse-diffs' }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
   before do
     login_as :admin

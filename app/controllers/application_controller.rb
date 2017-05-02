@@ -118,6 +118,10 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def respond_422
+    head :unprocessable_entity
+  end
+
   def no_cache_headers
     response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
     response.headers["Pragma"] = "no-cache"

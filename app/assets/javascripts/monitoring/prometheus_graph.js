@@ -3,16 +3,20 @@
 
 import d3 from 'd3';
 import statusCodes from '~/lib/utils/http_status';
-import { formatRelevantDigits } from '~/lib/utils/number_utils';
+import Deployments from './deployments';
+import '../lib/utils/common_utils';
+import { formatRelevantDigits } from '../lib/utils/number_utils';
 import '../flash';
+import {
+  dateFormat,
+  timeFormat,
+} from './constants';
 
 const prometheusContainer = '.prometheus-container';
 const prometheusParentGraphContainer = '.prometheus-graphs';
 const prometheusGraphsContainer = '.prometheus-graph';
 const prometheusStatesContainer = '.prometheus-state';
 const metricsEndpoint = 'metrics.json';
-const timeFormat = d3.time.format('%H:%M');
-const dayFormat = d3.time.format('%b %e, %a');
 const bisectDate = d3.bisector(d => d.time).left;
 const extraAddedWidthParent = 100;
 
@@ -22,6 +26,7 @@ class PrometheusGraph {
     const hasMetrics = $prometheusContainer.data('has-metrics');
     this.docLink = $prometheusContainer.data('doc-link');
     this.integrationLink = $prometheusContainer.data('prometheus-integration');
+    this.state = '';
 
     $(document).ajaxError(() => {});
 
@@ -35,11 +40,13 @@ class PrometheusGraph {
       this.width = parentContainerWidth - this.margin.left - this.margin.right;
       this.height = this.originalHeight - this.margin.top - this.margin.bottom;
       this.backOffRequestCounter = 0;
+      this.deployments = new Deployments(this.width, this.height);
       this.configureGraph();
       this.init();
     } else {
+      const prevState = this.state;
       this.state = '.js-getting-started';
-      this.updateState();
+      this.updateState(prevState);
     }
   }
 
@@ -53,23 +60,31 @@ class PrometheusGraph {
   }
 
   init() {
-    this.getData().then((metricsResponse) => {
+    return this.getData().then((metricsResponse) => {
       let enoughData = true;
-      Object.keys(metricsResponse.metrics).forEach((key) => {
-        let currentKey;
-        if (key === 'cpu_values' || key === 'memory_values') {
-          currentKey = metricsResponse.metrics[key];
-          if (Object.keys(currentKey).length === 0) {
-            enoughData = false;
-          }
-        }
-      });
-      if (!enoughData) {
-        this.state = '.js-loading';
-        this.updateState();
+      if (typeof metricsResponse === 'undefined') {
+        enoughData = false;
       } else {
+        Object.keys(metricsResponse.metrics).forEach((key) => {
+          if (key === 'cpu_values' || key === 'memory_values') {
+            const currentData = (metricsResponse.metrics[key])[0];
+            if (currentData.values.length <= 2) {
+              enoughData = false;
+            }
+          }
+        });
+      }
+      if (enoughData) {
+        $(prometheusStatesContainer).hide();
+        $(prometheusParentGraphContainer).show();
         this.transformData(metricsResponse);
         this.createGraph();
+
+        const firstMetricData = this.graphSpecificProperties[
+          Object.keys(this.graphSpecificProperties)[0]
+        ].data;
+
+        this.deployments.init(firstMetricData);
       }
     });
   }
@@ -92,6 +107,7 @@ class PrometheusGraph {
       .attr('width', this.width + this.margin.left + this.margin.right)
       .attr('height', this.height + this.margin.bottom + this.margin.top)
       .append('g')
+      .attr('class', 'graph-container')
         .attr('transform', `translate(${this.margin.left},${this.margin.top})`);
 
     const axisLabelContainer = d3.select(prometheusGraphContainer)
@@ -112,6 +128,7 @@ class PrometheusGraph {
       .scale(y)
       .ticks(this.commonGraphProperties.axis_no_ticks)
       .tickSize(-this.width)
+      .outerTickSize(0)
       .orient('left');
 
     this.createAxisLabelContainers(axisLabelContainer, key);
@@ -244,7 +261,8 @@ class PrometheusGraph {
       const d1 = currentGraphProps.data[overlayIndex];
       const evalTime = timeValueOverlay - d0.time > d1.time - timeValueOverlay;
       const currentData = evalTime ? d1 : d0;
-      const currentTimeCoordinate = currentGraphProps.xScale(currentData.time);
+      const currentTimeCoordinate = Math.floor(currentGraphProps.xScale(currentData.time));
+      const currentDeployXPos = this.deployments.mouseOverDeployInfo(currentXCoordinate, key);
       const currentPrometheusGraphContainer = `${prometheusGraphsContainer}[graph-type=${key}]`;
       const maxValueFromData = d3.max(currentGraphProps.data.map(metricValue => metricValue.value));
       const maxMetricValue = currentGraphProps.yScale(maxValueFromData);
@@ -252,13 +270,12 @@ class PrometheusGraph {
       // Clear up all the pieces of the flag
       d3.selectAll(`${currentPrometheusGraphContainer} .selected-metric-line`).remove();
       d3.selectAll(`${currentPrometheusGraphContainer} .circle-metric`).remove();
-      d3.selectAll(`${currentPrometheusGraphContainer} .rect-text-metric`).remove();
-      d3.selectAll(`${currentPrometheusGraphContainer} .text-metric`).remove();
+      d3.selectAll(`${currentPrometheusGraphContainer} .rect-text-metric:not(.deploy-info-rect)`).remove();
 
       const currentChart = d3.select(currentPrometheusGraphContainer).select('g');
       currentChart.append('line')
-      .attr('class', 'selected-metric-line')
       .attr({
+        class: `${currentDeployXPos ? 'hidden' : ''} selected-metric-line`,
         x1: currentTimeCoordinate,
         y1: currentGraphProps.yScale(0),
         x2: currentTimeCoordinate,
@@ -268,33 +285,45 @@ class PrometheusGraph {
       currentChart.append('circle')
         .attr('class', 'circle-metric')
         .attr('fill', currentGraphProps.line_color)
-        .attr('cx', currentTimeCoordinate)
+        .attr('cx', currentDeployXPos || currentTimeCoordinate)
         .attr('cy', currentGraphProps.yScale(currentData.value))
         .attr('r', this.commonGraphProperties.circle_radius_metric);
 
+      if (currentDeployXPos) return;
+
       // The little box with text
-      const rectTextMetric = currentChart.append('g')
-        .attr('class', 'rect-text-metric')
-        .attr('translate', `(${currentTimeCoordinate}, ${currentGraphProps.yScale(currentData.value)})`);
+      const rectTextMetric = currentChart.append('svg')
+        .attr({
+          class: 'rect-text-metric',
+          x: currentTimeCoordinate,
+          y: 0,
+        });
 
       rectTextMetric.append('rect')
-        .attr('class', 'rect-metric')
-        .attr('x', currentTimeCoordinate + 10)
-        .attr('y', maxMetricValue)
-        .attr('width', this.commonGraphProperties.rect_text_width)
-        .attr('height', this.commonGraphProperties.rect_text_height);
+        .attr({
+          class: 'rect-metric',
+          x: 4,
+          y: 1,
+          rx: 2,
+          width: this.commonGraphProperties.rect_text_width,
+          height: this.commonGraphProperties.rect_text_height,
+        });
 
       rectTextMetric.append('text')
-        .attr('class', 'text-metric')
-        .attr('x', currentTimeCoordinate + 35)
-        .attr('y', maxMetricValue + 35)
+        .attr({
+          class: 'text-metric text-metric-bold',
+          x: 8,
+          y: 35,
+        })
         .text(timeFormat(currentData.time));
 
       rectTextMetric.append('text')
-        .attr('class', 'text-metric-date')
-        .attr('x', currentTimeCoordinate + 15)
-        .attr('y', maxMetricValue + 15)
-        .text(dayFormat(currentData.time));
+        .attr({
+          class: 'text-metric-date',
+          x: 8,
+          y: 15,
+        })
+        .text(dateFormat(currentData.time));
 
       let currentMetricValue = formatRelevantDigits(currentData.value);
       if (key === 'cpu_values') {
@@ -340,6 +369,8 @@ class PrometheusGraph {
 
   getData() {
     const maxNumberOfRequests = 3;
+    this.state = '.js-loading';
+    this.updateState();
     return gl.utils.backOff((next, stop) => {
       $.ajax({
         url: metricsEndpoint,
@@ -350,12 +381,11 @@ class PrometheusGraph {
           this.backOffRequestCounter = this.backOffRequestCounter += 1;
           if (this.backOffRequestCounter < maxNumberOfRequests) {
             next();
-          } else {
-            stop({
-              status: resp.status,
-              metrics: data,
-            });
+          } else if (this.backOffRequestCounter >= maxNumberOfRequests) {
+            stop(new Error('loading'));
           }
+        } else if (!data.success) {
+          stop(new Error('loading'));
         } else {
           stop({
             status: resp.status,
@@ -371,8 +401,9 @@ class PrometheusGraph {
       return resp.metrics;
     })
     .catch(() => {
+      const prevState = this.state;
       this.state = '.js-unable-to-connect';
-      this.updateState();
+      this.updateState(prevState);
     });
   }
 
@@ -380,19 +411,20 @@ class PrometheusGraph {
     Object.keys(metricsResponse.metrics).forEach((key) => {
       if (key === 'cpu_values' || key === 'memory_values') {
         const metricValues = (metricsResponse.metrics[key])[0];
-        if (metricValues !== undefined) {
-          this.graphSpecificProperties[key].data = metricValues.values.map(metric => ({
-            time: new Date(metric[0] * 1000),
-            value: metric[1],
-          }));
-        }
+        this.graphSpecificProperties[key].data = metricValues.values.map(metric => ({
+          time: new Date(metric[0] * 1000),
+          value: metric[1],
+        }));
       }
     });
   }
 
-  updateState() {
+  updateState(prevState) {
     const $statesContainer = $(prometheusStatesContainer);
     $(prometheusParentGraphContainer).hide();
+    if (prevState) {
+      $(`${prevState}`, $statesContainer).addClass('hidden');
+    }
     $(`${this.state}`, $statesContainer).removeClass('hidden');
     $(prometheusStatesContainer).show();
   }

@@ -15,11 +15,10 @@ module Backup
       s[:gitlab_version]     = Gitlab::VERSION
       s[:tar_version]        = tar_version
       s[:skipped]            = ENV["SKIP"]
-      tar_file = "#{s[:backup_created_at].strftime('%s_%Y_%m_%d')}#{FILE_NAME_SUFFIX}"
+      tar_file = "#{s[:backup_created_at].strftime('%s_%Y_%m_%d_')}#{s[:gitlab_version]}#{FILE_NAME_SUFFIX}"
 
-      Dir.chdir(Gitlab.config.backup.path) do
-        File.open("#{Gitlab.config.backup.path}/backup_information.yml",
-                  "w+") do |file|
+      Dir.chdir(backup_path) do
+        File.open("#{backup_path}/backup_information.yml", "w+") do |file|
           file << s.to_yaml.gsub(/^---\n/, '')
         end
 
@@ -64,9 +63,9 @@ module Backup
       $progress.print "Deleting tmp directories ... "
 
       backup_contents.each do |dir|
-        next unless File.exist?(File.join(Gitlab.config.backup.path, dir))
+        next unless File.exist?(File.join(backup_path, dir))
 
-        if FileUtils.rm_rf(File.join(Gitlab.config.backup.path, dir))
+        if FileUtils.rm_rf(File.join(backup_path, dir))
           $progress.puts "done".color(:green)
         else
           puts "deleting tmp directory '#{dir}' failed".color(:red)
@@ -83,8 +82,8 @@ module Backup
       if keep_time > 0
         removed = 0
 
-        Dir.chdir(Gitlab.config.backup.path) do
-          Dir.glob("*#{FILE_NAME_SUFFIX}").each do |file|
+        Dir.chdir(backup_path) do
+          backup_file_list.each do |file|
             next unless file =~ /(\d+)(?:_\d{4}_\d{2}_\d{2})?_gitlab_backup\.tar/
 
             timestamp = $1.to_i
@@ -107,18 +106,14 @@ module Backup
     end
 
     def unpack
-      Dir.chdir(Gitlab.config.backup.path)
+      Dir.chdir(backup_path)
 
       # check for existing backups in the backup dir
-      file_list = Dir.glob("*#{FILE_NAME_SUFFIX}")
-
-      if file_list.count == 0
-        $progress.puts "No backups found in #{Gitlab.config.backup.path}"
+      if backup_file_list.empty?
+        $progress.puts "No backups found in #{backup_path}"
         $progress.puts "Please make sure that file name ends with #{FILE_NAME_SUFFIX}"
         exit 1
-      end
-
-      if file_list.count > 1 && ENV["BACKUP"].nil?
+      elsif backup_file_list.many? && ENV["BACKUP"].nil?
         $progress.puts 'Found more than one backup, please specify which one you want to restore:'
         $progress.puts 'rake gitlab:backup:restore BACKUP=timestamp_of_backup'
         exit 1
@@ -127,7 +122,7 @@ module Backup
       tar_file = if ENV['BACKUP'].present?
                    "#{ENV['BACKUP']}#{FILE_NAME_SUFFIX}"
                  else
-                   file_list.first
+                   backup_file_list.first
                  end
 
       unless File.exist?(tar_file)
@@ -168,6 +163,14 @@ module Backup
     end
 
     private
+
+    def backup_path
+      Gitlab.config.backup.path
+    end
+
+    def backup_file_list
+      @backup_file_list ||= Dir.glob("*#{FILE_NAME_SUFFIX}")
+    end
 
     def connect_to_remote_directory(connection_settings)
       connection = ::Fog::Storage.new(connection_settings)

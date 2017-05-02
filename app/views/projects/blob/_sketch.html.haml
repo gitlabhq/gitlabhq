@@ -1,7 +1,0 @@
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('common_vue')
-  = page_specific_javascript_bundle_tag('sketch_viewer')
-
-.file-content#js-sketch-viewer{ data: { endpoint: namespace_project_raw_path(@project.namespace, @project, @id) } }
-  .js-loading-icon.text-center.prepend-top-default.append-bottom-default.js-loading-icon{ 'aria-label' => 'Loading Sketch preview' }
-    = icon('spinner spin 2x', 'aria-hidden' => 'true');

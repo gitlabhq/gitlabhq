@@ -1,7 +1,6 @@
 require "spec_helper"
 
-describe API::MergeRequests, api: true  do
-  include ApiHelpers
+describe API::MergeRequests do
   let(:base_time)   { Time.now }
   let(:user)        { create(:user) }
   let(:admin)       { create(:user, :admin) }
@@ -337,6 +336,19 @@ describe API::MergeRequests, api: true  do
         title: 'Test merge_request', source_branch: "master", target_branch: "master", author: user2, target_project_id: project.id
         expect(response).to have_http_status(201)
         expect(json_response['title']).to eq('Test merge_request')
+      end
+
+      it "returns 422 when target project has disabled merge requests" do
+        project.project_feature.update(merge_requests_access_level: 0)
+
+        post v3_api("/projects/#{fork_project.id}/merge_requests", user2),
+             title: 'Test',
+             target_branch: "master",
+             source_branch: 'markdown',
+             author: user2,
+             target_project_id: project.id
+
+        expect(response).to have_http_status(422)
       end
 
       it "returns 400 when source_branch is missing" do

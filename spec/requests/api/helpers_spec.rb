@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::Helpers, api: true do
+describe API::Helpers do
   include API::APIGuard::HelperMethods
   include API::Helpers
   include SentryHelper
@@ -427,6 +427,7 @@ describe API::Helpers, api: true do
     context 'current_user is nil' do
       before do
         expect_any_instance_of(self.class).to receive(:current_user).and_return(nil)
+        allow_any_instance_of(self.class).to receive(:initial_current_user).and_return(nil)
       end
 
       it 'returns a 401 response' do
@@ -435,11 +436,36 @@ describe API::Helpers, api: true do
     end
 
     context 'current_user is present' do
+      let(:user) { build(:user) }
+
       before do
-        expect_any_instance_of(self.class).to receive(:current_user).at_least(:once).and_return(User.new)
+        expect_any_instance_of(self.class).to receive(:current_user).at_least(:once).and_return(user)
+        expect_any_instance_of(self.class).to receive(:initial_current_user).and_return(user)
       end
 
       it 'does not raise an error' do
+        expect { authenticate! }.not_to raise_error
+      end
+    end
+
+    context 'current_user is blocked' do
+      let(:user) { build(:user, :blocked) }
+
+      before do
+        expect_any_instance_of(self.class).to receive(:current_user).at_least(:once).and_return(user)
+      end
+
+      it 'raises an error' do
+        expect_any_instance_of(self.class).to receive(:initial_current_user).and_return(user)
+
+        expect { authenticate! }.to raise_error '401 - {"message"=>"401 Unauthorized"}'
+      end
+
+      it "doesn't raise an error if an admin user is impersonating a blocked user (via sudo)" do
+        admin_user = build(:user, :admin)
+
+        expect_any_instance_of(self.class).to receive(:initial_current_user).and_return(admin_user)
+
         expect { authenticate! }.not_to raise_error
       end
     end

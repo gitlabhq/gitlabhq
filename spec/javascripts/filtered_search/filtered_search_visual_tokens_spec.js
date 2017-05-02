@@ -214,8 +214,12 @@ describe('Filtered Search Visual Tokens', () => {
       expect(tokenElement.querySelector('.name')).toEqual(jasmine.anything());
     });
 
+    it('contains value container div', () => {
+      expect(tokenElement.querySelector('.value-container')).toEqual(jasmine.anything());
+    });
+
     it('contains value div', () => {
-      expect(tokenElement.querySelector('.value')).toEqual(jasmine.anything());
+      expect(tokenElement.querySelector('.value-container .value')).toEqual(jasmine.anything());
     });
 
     it('contains selectable class', () => {
@@ -224,6 +228,16 @@ describe('Filtered Search Visual Tokens', () => {
 
     it('contains button role', () => {
       expect(tokenElement.getAttribute('role')).toEqual('button');
+    });
+
+    describe('remove token', () => {
+      it('contains remove-token button', () => {
+        expect(tokenElement.querySelector('.value-container .remove-token')).toEqual(jasmine.anything());
+      });
+
+      it('contains fa-close icon', () => {
+        expect(tokenElement.querySelector('.remove-token .fa-close')).toEqual(jasmine.anything());
+      });
     });
   });
 

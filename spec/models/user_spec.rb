@@ -24,9 +24,7 @@ describe User, models: true do
     it { is_expected.to have_many(:recent_events).class_name('Event') }
     it { is_expected.to have_many(:issues).dependent(:restrict_with_exception) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
-    it { is_expected.to have_many(:assigned_issues).dependent(:nullify) }
     it { is_expected.to have_many(:merge_requests).dependent(:destroy) }
-    it { is_expected.to have_many(:assigned_merge_requests).dependent(:nullify) }
     it { is_expected.to have_many(:identities).dependent(:destroy) }
     it { is_expected.to have_many(:spam_logs).dependent(:destroy) }
     it { is_expected.to have_many(:todos).dependent(:destroy) }
@@ -97,6 +95,18 @@ describe User, models: true do
 
         expect(user).not_to be_valid
         expect(user.errors.values).to eq [['dashboard is a reserved name']]
+      end
+
+      it 'allows child names' do
+        user = build(:user, username: 'avatar')
+
+        expect(user).to be_valid
+      end
+
+      it 'allows wildcard names' do
+        user = build(:user, username: 'blob')
+
+        expect(user).to be_valid
       end
 
       it 'validates uniqueness' do
@@ -1556,6 +1566,16 @@ describe User, models: true do
 
         expect(ghost).to be_persisted
         expect(ghost.email).to eq('ghost1@example.com')
+      end
+    end
+
+    context 'when a domain whitelist is in place' do
+      before do
+        stub_application_setting(domain_whitelist: ['gitlab.com'])
+      end
+
+      it 'creates a ghost user' do
+        expect(User.ghost).to be_persisted
       end
     end
   end

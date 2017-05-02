@@ -74,6 +74,7 @@ class Project < ActiveRecord::Base
 
   attr_accessor :new_default_branch
   attr_accessor :old_path_with_namespace
+  attr_writer :pipeline_status
 
   alias_attribute :title, :name
 
@@ -181,7 +182,7 @@ class Project < ActiveRecord::Base
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :count, to: :forks, prefix: true
   delegate :members, to: :team, prefix: true
-  delegate :add_user, to: :team
+  delegate :add_user, :add_users, to: :team
   delegate :add_guest, :add_reporter, :add_developer, :add_master, to: :team
   delegate :empty_repo?, to: :repository
 
@@ -195,13 +196,14 @@ class Project < ActiveRecord::Base
               message: Gitlab::Regex.project_name_regex_message }
   validates :path,
     presence: true,
-    project_path: true,
+    dynamic_path: true,
     length: { maximum: 255 },
     format: { with: Gitlab::Regex.project_path_regex,
-              message: Gitlab::Regex.project_path_regex_message }
+              message: Gitlab::Regex.project_path_regex_message },
+    uniqueness: { scope: :namespace_id }
+
   validates :namespace, presence: true
   validates :name, uniqueness: { scope: :namespace_id }
-  validates :path, uniqueness: { scope: :namespace_id }
   validates :import_url, addressable_url: true, if: :external_import?
   validates :import_url, importable_url: true, if: [:external_import?, :import_url_changed?]
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
@@ -1181,6 +1183,7 @@ class Project < ActiveRecord::Base
     end
   end
 
+  # Lazy loading of the `pipeline_status` attribute
   def pipeline_status
     @pipeline_status ||= Gitlab::Cache::Ci::ProjectPipelineStatus.load_for_project(self)
   end
@@ -1310,6 +1313,14 @@ class Project < ActiveRecord::Base
 
   def parent_changed?
     namespace_id_changed?
+  end
+
+  def default_merge_request_target
+    if forked_from_project&.merge_requests_enabled?
+      forked_from_project
+    else
+      self
+    end
   end
 
   alias_method :name_with_namespace, :full_name

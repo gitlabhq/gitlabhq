@@ -1,17 +1,19 @@
 require 'spec_helper'
 
-describe API::Issues, api: true  do
-  include ApiHelpers
+describe API::Issues do
   include EmailHelpers
 
-  let(:user)        { create(:user) }
+  set(:user) { create(:user) }
+  set(:project) do
+    create(:empty_project, :public, creator_id: user.id, namespace: user.namespace)
+  end
+
   let(:user2)       { create(:user) }
   let(:non_member)  { create(:user) }
-  let(:guest)       { create(:user) }
-  let(:author)      { create(:author) }
-  let(:assignee)    { create(:assignee) }
+  set(:guest)       { create(:user) }
+  set(:author)      { create(:author) }
+  set(:assignee)    { create(:assignee) }
   let(:admin)       { create(:user, :admin) }
-  let!(:project)    { create(:empty_project, :public, creator_id: user.id, namespace: user.namespace ) }
   let(:issue_title)       { 'foo' }
   let(:issue_description) { 'closed' }
   let!(:closed_issue) do
@@ -44,19 +46,19 @@ describe API::Issues, api: true  do
            title: issue_title,
            description: issue_description
   end
-  let!(:label) do
+  set(:label) do
     create(:label, title: 'label', color: '#FFAABB', project: project)
   end
   let!(:label_link) { create(:label_link, label: label, target: issue) }
-  let!(:milestone) { create(:milestone, title: '1.0.0', project: project) }
-  let!(:empty_milestone) do
+  set(:milestone) { create(:milestone, title: '1.0.0', project: project) }
+  set(:empty_milestone) do
     create(:milestone, title: '2.0.0', project: project)
   end
   let!(:note) { create(:note_on_issue, author: user, project: project, noteable: issue) }
 
   let(:no_milestone_title) { URI.escape(Milestone::None.title) }
 
-  before do
+  before(:all) do
     project.team << [user, :reporter]
     project.team << [guest, :guest]
   end
@@ -71,6 +73,8 @@ describe API::Issues, api: true  do
     end
 
     context "when authenticated" do
+      let(:first_issue) { json_response.first }
+
       it "returns an array of issues" do
         get api("/issues", user)
 
@@ -80,46 +84,46 @@ describe API::Issues, api: true  do
       end
 
       it 'returns an array of closed issues' do
-        get api('/issues?state=closed', user)
+        get api('/issues', user), state: :closed
 
         expect_paginated_array_response(size: 1)
-        expect(json_response.first['id']).to eq(closed_issue.id)
+        expect(first_issue['id']).to eq(closed_issue.id)
       end
 
       it 'returns an array of opened issues' do
-        get api('/issues?state=opened', user)
+        get api('/issues', user), state: :opened
 
         expect_paginated_array_response(size: 1)
-        expect(json_response.first['id']).to eq(issue.id)
+        expect(first_issue['id']).to eq(issue.id)
       end
 
       it 'returns an array of all issues' do
-        get api('/issues?state=all', user)
+        get api('/issues', user), state: :all
 
         expect_paginated_array_response(size: 2)
-        expect(json_response.first['id']).to eq(issue.id)
+        expect(first_issue['id']).to eq(issue.id)
         expect(json_response.second['id']).to eq(closed_issue.id)
       end
 
       it 'returns issues matching given search string for title' do
-        get api("/issues?search=#{issue.title}", user)
+        get api("/issues", user), search: issue.title
 
         expect_paginated_array_response(size: 1)
         expect(json_response.first['id']).to eq(issue.id)
       end
 
       it 'returns issues matching given search string for description' do
-        get api("/issues?search=#{issue.description}", user)
+        get api("/issues", user), search: issue.description
 
         expect_paginated_array_response(size: 1)
-        expect(json_response.first['id']).to eq(issue.id)
+        expect(first_issue['id']).to eq(issue.id)
       end
 
       it 'returns an array of labeled issues' do
-        get api("/issues?labels=#{label.title}", user)
+        get api("/issues", user), labels: label.title
 
         expect_paginated_array_response(size: 1)
-        expect(json_response.first['labels']).to eq([label.title])
+        expect(first_issue['labels']).to eq([label.title])
       end
 
       it 'returns an array of labeled issues when all labels matches' do
@@ -136,13 +140,13 @@ describe API::Issues, api: true  do
       end
 
       it 'returns an empty array if no issue matches labels' do
-        get api('/issues?labels=foo,bar', user)
+        get api('/issues', user), labels: 'foo,bar'
 
         expect_paginated_array_response(size: 0)
       end
 
       it 'returns an array of labeled issues matching given state' do
-        get api("/issues?labels=#{label.title}&state=opened", user)
+        get api("/issues", user), labels: label.title, state: :opened
 
         expect_paginated_array_response(size: 1)
         expect(json_response.first['labels']).to eq([label.title])
@@ -1343,6 +1347,41 @@ describe API::Issues, api: true  do
     let(:issuable) { issue }
 
     include_examples 'time tracking endpoints', 'issue'
+  end
+
+  describe 'GET :id/issues/:issue_iid/closed_by' do
+    let(:merge_request) do
+      create(:merge_request,
+             :simple,
+             author: user,
+             source_project: project,
+             target_project: project,
+             description: "closes #{issue.to_reference}")
+    end
+
+    before do
+      create(:merge_requests_closing_issues, issue: issue, merge_request: merge_request)
+    end
+
+    it 'returns merge requests that will close issue on merge' do
+      get api("/projects/#{project.id}/issues/#{issue.iid}/closed_by", user)
+
+      expect_paginated_array_response(size: 1)
+    end
+
+    context 'when no merge requests will close issue' do
+      it 'returns empty array' do
+        get api("/projects/#{project.id}/issues/#{closed_issue.iid}/closed_by", user)
+
+        expect_paginated_array_response(size: 0)
+      end
+    end
+
+    it "returns 404 when issue doesn't exists" do
+      get api("/projects/#{project.id}/issues/9999/closed_by", user)
+
+      expect(response).to have_http_status(404)
+    end
   end
 
   def expect_paginated_array_response(size: nil)

@@ -1,6 +1,7 @@
 class ProjectsController < Projects::ApplicationController
   include IssuableCollections
   include ExtractsPath
+  include MarkdownPreview
 
   before_action :authenticate_user!, except: [:index, :show, :activity, :refs]
   before_action :project, except: [:index, :new, :create]
@@ -216,20 +217,6 @@ class ProjectsController < Projects::ApplicationController
     }
   end
 
-  def preview_markdown
-    text = params[:text]
-
-    ext = Gitlab::ReferenceExtractor.new(@project, current_user)
-    ext.analyze(text, author: current_user)
-
-    render json: {
-      body:       view_context.markdown(text),
-      references: {
-        users: ext.users.map(&:username)
-      }
-    }
-  end
-
   def refs
     branches = BranchesFinder.new(@repository, params).execute.map(&:name)
 
@@ -250,6 +237,10 @@ class ProjectsController < Projects::ApplicationController
     end
 
     render json: options.to_json
+  end
+
+  def preview_markdown
+    render_markdown_preview(params[:text])
   end
 
   private

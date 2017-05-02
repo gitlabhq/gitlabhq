@@ -4,7 +4,7 @@
 
 .project-snippets
   %article.file-holder.snippet-file-content
-    = render 'shared/snippets/blob', raw_path: raw_namespace_project_snippet_path(@project.namespace, @project, @snippet)
+    = render 'shared/snippets/blob'
 
   .row-content-block.top-block.content-component-block
     = render 'award_emoji/awards_block', awardable: @snippet, inline: true

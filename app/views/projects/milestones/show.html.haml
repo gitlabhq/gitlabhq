@@ -17,7 +17,7 @@
     .header-text-content
       %span.identifier
         %strong
-          Milestone #{@milestone.to_reference}
+          Milestone
       - if @milestone.due_date || @milestone.start_date
         = milestone_date_range(@milestone)
     .milestone-buttons
@@ -36,15 +36,14 @@
       %a.btn.btn-default.btn-grouped.pull-right.visible-xs-block.js-sidebar-toggle{ href: "#" }
         = icon('angle-double-left')
 
-  .detail-page-description.milestone-detail{ class: ('hide-bottom-border' unless @milestone.description.present? ) }
+  .detail-page-description.milestone-detail
     %h2.title
       = markdown_field(@milestone, :title)
     %div
       - if @milestone.description.present?
         .description
           .wiki
-            = preserve do
-              = markdown_field(@milestone, :description)
+            = markdown_field(@milestone, :description)
 
   - if can?(current_user, :read_issue, @project) && @milestone.total_items_count(current_user).zero?
     .alert.alert-success.prepend-top-default
