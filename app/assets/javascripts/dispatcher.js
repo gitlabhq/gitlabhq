@@ -53,12 +53,8 @@ import UserCallout from './user_callout';
 import { ProtectedTagCreate, ProtectedTagEditList } from './protected_tags';
 import ShortcutsWiki from './shortcuts_wiki';
 import BlobViewer from './blob/viewer/index';
-<<<<<<< HEAD
-
 import GeoNodes from './geo_nodes';
 import ServiceDeskRoot from './projects/settings_service_desk/service_desk_root';
-=======
->>>>>>> ce-com/master
 
 const ShortcutsBlob = require('./shortcuts_blob');
 
