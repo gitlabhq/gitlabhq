@@ -1,0 +1,4 @@
+---
+title: Make Asciidoc & other markup go through pipeline to prevent XSS
+merge_request:
+author:
