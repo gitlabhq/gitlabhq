@@ -76,6 +76,7 @@ export default {
         class="value"
         :root-path="store.rootPath"
         :users="store.assignees"
+        :editable="store.editable"
         @assign-self="assignSelf"
       />
     </div>
