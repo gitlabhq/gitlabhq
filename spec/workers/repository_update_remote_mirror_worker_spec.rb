@@ -28,7 +28,7 @@ describe RepositoryUpdateRemoteMirrorWorker do
         expect_any_instance_of(Projects::UpdateRemoteMirrorService).to receive(:execute).with(remote_mirror).and_return(status: :error, message: error_message)
         expect do
           subject.perform(remote_mirror.id, Time.now)
-        end.to raise_error(RepositoryUpdateRemoteMirrorWorker::UpdateError, 'fail!')
+        end.to raise_error(RepositoryUpdateRemoteMirrorWorker::UpdateError, error_message)
 
         expect(remote_mirror.reload.update_status).to eq('failed')
       end

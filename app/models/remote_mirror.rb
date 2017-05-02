@@ -76,7 +76,7 @@ class RemoteMirror < ActiveRecord::Base
   def sync
     return unless project && enabled
 
-    schedule_update_job
+    RepositoryUpdateRemoteMirrorWorker.perform_in(BACKOFF_DELAY, self.id, Time.now) if project&.repository_exists?
   end
 
   def updated_since?(timestamp)
@@ -131,10 +131,6 @@ class RemoteMirror < ActiveRecord::Base
       last_successful_update_at: nil,
       update_status: 'finished'
     )
-  end
-
-  def schedule_update_job
-    RepositoryUpdateRemoteMirrorWorker.perform_in(BACKOFF_DELAY, self.id, Time.now) if project&.repository_exists?
   end
 
   def refresh_remote

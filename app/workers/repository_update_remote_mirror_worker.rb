@@ -5,7 +5,7 @@ class RepositoryUpdateRemoteMirrorWorker
   include Sidekiq::Worker
   include Gitlab::ShellAdapter
 
-  sidekiq_options queue: :project_mirror, retry: 3
+  sidekiq_options queue: :project_mirror, retry: 3, dead: false
 
   sidekiq_retry_in { |count| 30 * count }
 

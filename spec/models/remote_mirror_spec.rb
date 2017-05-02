@@ -85,6 +85,38 @@ describe RemoteMirror do
     end
   end
 
+  context '#sync' do
+    let(:remote_mirror) { create(:project, :remote_mirror).remote_mirrors.first }
+
+    before do
+      Timecop.freeze(Time.now)
+    end
+
+    context 'with remote mirroring enabled' do
+      it 'schedules a RepositoryUpdateRemoteMirrorWorker to run within a certain backoff delay' do
+        expect(RepositoryUpdateRemoteMirrorWorker).to receive(:perform_in).with(RemoteMirror::BACKOFF_DELAY, remote_mirror.id, Time.now)
+
+        remote_mirror.sync
+      end
+    end
+
+    context 'with remote mirroring disabled' do
+      it 'returns nil' do
+        remote_mirror.update_attributes(enabled: false)
+
+        expect(remote_mirror.sync).to be_nil
+      end
+    end
+
+    context 'without project' do
+      it 'returns nil' do
+        allow_any_instance_of(RemoteMirror).to receive(:project).and_return(nil)
+
+        expect(remote_mirror.sync).to be_nil
+      end
+    end
+  end
+
   context '#updated_since?' do
     let(:remote_mirror) { create(:project, :remote_mirror).remote_mirrors.first }
     let(:timestamp) { Time.now - 5.minutes }
