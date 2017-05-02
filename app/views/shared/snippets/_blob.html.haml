@@ -15,13 +15,8 @@
     = render 'projects/blob/viewer_switcher', blob: blob
 
     .btn-group{ role: "group" }<
-<<<<<<< HEAD
-      = copy_blob_source_button(@snippet)
-      = open_raw_file_button(raw_path)
-=======
       = copy_blob_source_button(blob)
       = open_raw_blob_button(blob)
->>>>>>> ce-com/master
 
       - if defined?(download_path) && download_path
         = link_to icon('download'), download_path, class: "btn btn-sm has-tooltip", title: 'Download', data: { container: 'body' }

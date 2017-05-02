@@ -1,102 +1,6 @@
 require 'spec_helper'
 
 feature 'File blob', :js, feature: true do
-<<<<<<< HEAD
-  include TreeHelper
-  include WaitForAjax
-
-  let(:project) { create(:project, :public) }
-
-  def visit_blob(path, fragment = nil)
-    visit namespace_project_blob_path(project.namespace, project, tree_join('master', path), anchor: fragment)
-  end
-
-  context 'Ruby file' do
-    before do
-      visit_blob('files/ruby/popen.rb')
-
-      wait_for_ajax
-    end
-
-    it 'displays the blob' do
-      aggregate_failures do
-        # shows highlighted Ruby code
-        expect(page).to have_content("require 'fileutils'")
-
-        # does not show a viewer switcher
-        expect(page).not_to have_selector('.js-blob-viewer-switcher')
-
-        # shows an enabled copy button
-        expect(page).to have_selector('.js-copy-blob-source-btn:not(.disabled)')
-      end
-    end
-  end
-
-  context 'Markdown file' do
-    context 'visiting directly' do
-      before do
-        visit_blob('files/markdown/ruby-style-guide.md')
-
-        wait_for_ajax
-      end
-
-      it 'displays the blob' do
-        aggregate_failures do
-          # hides the simple viewer
-          expect(page).to have_selector('.blob-viewer[data-type="simple"]', visible: false)
-          expect(page).to have_selector('.blob-viewer[data-type="rich"]')
-
-          # shows rendered Markdown
-          expect(page).to have_link("PEP-8")
-
-          # shows a viewer switcher
-          expect(page).to have_selector('.js-blob-viewer-switcher')
-
-          # shows a disabled copy button
-          expect(page).to have_selector('.js-copy-blob-source-btn.disabled')
-        end
-      end
-
-      context 'switching to the simple viewer' do
-        before do
-          find('.js-blob-viewer-switch-btn[data-viewer=simple]').click
-
-          wait_for_ajax
-        end
-
-        it 'displays the blob' do
-          aggregate_failures do
-            # hides the rich viewer
-            expect(page).to have_selector('.blob-viewer[data-type="simple"]')
-            expect(page).to have_selector('.blob-viewer[data-type="rich"]', visible: false)
-
-            # shows highlighted Markdown code
-            expect(page).to have_content("[PEP-8](http://www.python.org/dev/peps/pep-0008/)")
-
-            # shows an enabled copy button
-            expect(page).to have_selector('.js-copy-blob-source-btn:not(.disabled)')
-          end
-        end
-
-        context 'switching to the rich viewer again' do
-          before do
-            find('.js-blob-viewer-switch-btn[data-viewer=rich]').click
-
-            wait_for_ajax
-          end
-
-          it 'displays the blob' do
-            aggregate_failures do
-              # hides the simple viewer
-              expect(page).to have_selector('.blob-viewer[data-type="simple"]', visible: false)
-              expect(page).to have_selector('.blob-viewer[data-type="rich"]')
-
-              # shows an enabled copy button
-              expect(page).to have_selector('.js-copy-blob-source-btn:not(.disabled)')
-            end
-          end
-        end
-=======
   let(:project) { create(:project, :public) }
 
   def visit_blob(path, fragment = nil)
@@ -639,7 +543,6 @@ feature 'File blob', :js, feature: true do
 
         # shows a download button
         expect(page).to have_link('Download')
->>>>>>> ce-com/master
       end
     end
   end

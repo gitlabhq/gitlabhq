@@ -119,9 +119,6 @@ module BlobHelper
   end
 
   def blob_raw_url
-<<<<<<< HEAD
-    namespace_project_raw_path(@project.namespace, @project, @id)
-=======
     if @snippet
       if @snippet.project_id
         raw_namespace_project_snippet_path(@project.namespace, @project, @snippet)
@@ -131,7 +128,6 @@ module BlobHelper
     elsif @blob
       namespace_project_raw_path(@project.namespace, @project, @id)
     end
->>>>>>> ce-com/master
   end
 
   # SVGs can contain malicious JavaScript; only include whitelisted
@@ -221,11 +217,8 @@ module BlobHelper
   end
 
   def copy_blob_source_button(blob)
-<<<<<<< HEAD
-=======
     return unless blob.rendered_as_text?(ignore_errors: false)
 
->>>>>>> ce-com/master
     clipboard_button(target: ".blob-content[data-blob-id='#{blob.id}']", class: "btn btn-sm js-copy-blob-source-btn", title: "Copy source to clipboard")
   end
 

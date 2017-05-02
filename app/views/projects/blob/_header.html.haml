@@ -15,13 +15,8 @@
     = render 'projects/blob/viewer_switcher', blob: blob unless blame
 
     .btn-group{ role: "group" }<
-<<<<<<< HEAD
-      = copy_blob_source_button(blob) if !blame && blob.rendered_as_text?(ignore_errors: false)
-      = open_raw_file_button(namespace_project_raw_path(@project.namespace, @project, @id))
-=======
       = copy_blob_source_button(blob) unless blame
       = open_raw_blob_button(blob)
->>>>>>> ce-com/master
       = view_on_environment_button(@commit.sha, @path, @environment) if @environment
 
     .btn-group{ role: "group" }<
@@ -41,12 +36,9 @@
           tree_join(@commit.sha, @path)), class: 'btn btn-sm js-data-file-blob-permalink-url'
 
     .btn-group{ role: "group" }<
-<<<<<<< HEAD
       - if current_user
         = lock_file_link(html_options: {class: 'btn btn-sm path-lock'})
 
-=======
->>>>>>> ce-com/master
       = edit_blob_link if blob.readable_text?
       - if current_user
         = replace_blob_link

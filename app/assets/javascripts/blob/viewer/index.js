@@ -6,11 +6,7 @@ export default class BlobViewer {
     this.copySourceBtn = document.querySelector('.js-copy-blob-source-btn');
     this.simpleViewer = document.querySelector('.blob-viewer[data-type="simple"]');
     this.richViewer = document.querySelector('.blob-viewer[data-type="rich"]');
-<<<<<<< HEAD
-    this.$blobContentHolder = $('#blob-content-holder');
-=======
     this.$fileHolder = $('.file-holder');
->>>>>>> ce-com/master
 
     let initialViewerName = document.querySelector('.blob-viewer:not(.hidden)').getAttribute('data-type');
 
@@ -86,11 +82,7 @@ export default class BlobViewer {
 
       viewer.setAttribute('data-loaded', 'true');
 
-<<<<<<< HEAD
-      this.$blobContentHolder.trigger('highlight:line');
-=======
       this.$fileHolder.trigger('highlight:line');
->>>>>>> ce-com/master
 
       this.toggleCopyButtonState();
     });
