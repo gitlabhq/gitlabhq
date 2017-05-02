@@ -278,10 +278,7 @@ import eventHub from './sidebar/event_hub';
 
               if (this.multiSelect && inputValue === '') {
                 // Remove non-users from the fullData array
-                const users = glDropdown.fullData.filter(r => typeof r === 'object'
-                    && !Object.prototype.hasOwnProperty.call(r, 'beforeDivider')
-                    && !Object.prototype.hasOwnProperty.call(r, 'header')
-                  );
+                const users = glDropdown.filteredFullData();
                 const callback = glDropdown.parseData.bind(glDropdown);
 
                 // Update the data model
