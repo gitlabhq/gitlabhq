@@ -1,0 +1,5 @@
+.admin-dashboard {
+  .data a h1 {
+    @include gl-link-hover-focus-state;
+  }
+}
