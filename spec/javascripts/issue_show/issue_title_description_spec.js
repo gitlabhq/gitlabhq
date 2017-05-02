@@ -7,9 +7,12 @@ import issueShowData from './mock_data';
 
 window.$ = $;
 
-const issueShowInterceptor = (request, next) => {
-  next(request.respondWith(JSON.stringify(issueShowData), {
+const issueShowInterceptor = data => (request, next) => {
+  next(request.respondWith(JSON.stringify(data), {
     status: 200,
+    headers: {
+      'POLL-INTERVAL': 1,
+    },
   }));
 };
 
@@ -22,16 +25,15 @@ describe('Issue Title', () => {
 
   beforeEach(() => {
     comps.IssueTitleComponent = Vue.extend(issueTitle);
-    Vue.http.interceptors.push(issueShowInterceptor);
   });
 
   afterEach(() => {
-    Vue.http.interceptors = _.without(
-      Vue.http.interceptors, issueShowInterceptor,
-    );
+    Vue.http.interceptors = _.without(Vue.http.interceptors, issueShowInterceptor);
   });
 
-  it('should render a title', (done) => {
+  it('should render a title/description and update title/description on update', (done) => {
+    Vue.http.interceptors.push(issueShowInterceptor(issueShowData.initialRequest));
+
     const issueShowComponent = new comps.IssueTitleComponent({
       propsData: {
         candescription: '.css-stuff',
@@ -41,22 +43,21 @@ describe('Issue Title', () => {
 
     // need setTimeout because actual setTimeout in code :P
     setTimeout(() => {
-      expect(document.querySelector('title').innerText)
-        .toContain('this is a title (#1)');
+      expect(document.querySelector('title').innerText).toContain('this is a title (#1)');
+      expect(issueShowComponent.$el.querySelector('.title').innerHTML).toContain('<p>this is a title</p>');
+      expect(issueShowComponent.$el.querySelector('.wiki').innerHTML).toContain('<p>this is a description!</p>');
+      expect(issueShowComponent.$el.querySelector('.js-task-list-field').innerText).toContain('this is a description');
 
-      expect(issueShowComponent.$el.querySelector('.title').innerHTML)
-        .toContain('<p>this is a title</p>');
+      Vue.http.interceptors.push(issueShowInterceptor(issueShowData.secondRequest));
 
-      expect(issueShowComponent.$el.querySelector('.wiki').innerHTML)
-        .toContain('<p>this is a description!</p>');
+      setTimeout(() => {
+        expect(document.querySelector('title').innerText).toContain('2 (#1)');
+        expect(issueShowComponent.$el.querySelector('.title').innerHTML).toContain('<p>2</p>');
+        expect(issueShowComponent.$el.querySelector('.wiki').innerHTML).toContain('<p>42</p>');
+        expect(issueShowComponent.$el.querySelector('.js-task-list-field').innerText).toContain('42');
 
-      const hiddenText = issueShowComponent.$el
-        .querySelector('.js-task-list-field').innerText;
-
-      expect(hiddenText)
-        .toContain('this is a description');
-
-      done();
+        done();
+      }, 10);
     }, 10);
     // 10ms is just long enough for the update hook to fire
   });
