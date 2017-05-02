@@ -4,12 +4,6 @@ entry.
 
 ## 9.1.2 (2017-05-01)
 
-<<<<<<< HEAD
-- No changes.
-- No changes.
-- No changes.
-=======
->>>>>>> ce-com/master
 - Add index on ci_runners.contacted_at. !10876 (blackst0ne)
 - Fix pipeline events description for Slack and Mattermost integration. !10908
 - Fixed milestone sidebar showing incorrect number of MRs when collapsed. !10933
