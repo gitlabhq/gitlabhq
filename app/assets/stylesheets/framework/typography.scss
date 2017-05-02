@@ -289,6 +289,8 @@ code {
 }
 
 a > code {
+  @include gl-link-hover-focus-state;
+
   color: $link-color;
 }
 
