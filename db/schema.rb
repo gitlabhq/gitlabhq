@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170426181740) do
+ActiveRecord::Schema.define(version: 20170502070007) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -966,7 +966,7 @@ ActiveRecord::Schema.define(version: 20170426181740) do
     t.boolean "lfs_enabled"
     t.text "description_html"
     t.boolean "only_allow_merge_if_all_discussions_are_resolved"
-    t.integer "auto_cancel_pending_pipelines", default: 0, null: false
+    t.integer "auto_cancel_pending_pipelines", default: 1, null: false
     t.boolean "printing_merge_request_link_enabled", default: true, null: false
     t.string "import_jid"
     t.integer "cached_markdown_version"
