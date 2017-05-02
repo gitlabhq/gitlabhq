@@ -30,14 +30,13 @@ module Gitlab
       )
       asciidoc_opts[:attributes].unshift(*DEFAULT_ADOC_ATTRS)
 
+      context[:pipeline] = :markup
+
       plantuml_setup
 
       html = ::Asciidoctor.convert(input, asciidoc_opts)
-
+      html = Banzai.render(html, context)
       html = Banzai.post_process(html, context)
-
-      filter = Banzai::Filter::SanitizationFilter.new(html)
-      html = filter.call.to_s
 
       html.html_safe
     end
