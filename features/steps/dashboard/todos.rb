@@ -179,7 +179,7 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
   end
 
   def issue
-    @issue ||= create(:issue, assignee: current_user, project: project)
+    @issue ||= create(:issue, assignees: [current_user], project: project)
   end
 
   def merge_request
