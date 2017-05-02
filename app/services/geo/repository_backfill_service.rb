@@ -49,7 +49,7 @@ module Geo
 
         finished_at = DateTime.now
       rescue Gitlab::Shell::Error => e
-        Rails.logger.error "Error syncing repository for project #{project.path_with_namespace}: #{e}"
+        Rails.logger.error("#{self.class.name}: Error syncing repository for project #{project.path_with_namespace}: #{e}")
       end
 
       [started_at, finished_at]
