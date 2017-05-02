@@ -205,13 +205,14 @@ class Project < ActiveRecord::Base
               message: Gitlab::Regex.project_name_regex_message }
   validates :path,
     presence: true,
-    project_path: true,
+    dynamic_path: true,
     length: { maximum: 255 },
     format: { with: Gitlab::Regex.project_path_regex,
-              message: Gitlab::Regex.project_path_regex_message }
+              message: Gitlab::Regex.project_path_regex_message },
+    uniqueness: { scope: :namespace_id }
+
   validates :namespace, presence: true
   validates :name, uniqueness: { scope: :namespace_id }
-  validates :path, uniqueness: { scope: :namespace_id }
   validates :import_url, addressable_url: true, if: :external_import?
   validates :import_url, importable_url: true, if: [:external_import?, :import_url_changed?]
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
