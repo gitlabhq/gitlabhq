@@ -73,9 +73,9 @@ class Projects::PipelinesController < Projects::ApplicationController
       format.json do
         Gitlab::PollingInterval.set_header(response, interval: POLLING_INTERVAL)
 
-        render json: PipelineSerializer.
-          new(project: @project, user: @current_user).
-          represent(@pipeline)
+        render json: PipelineSerializer
+          .new(project: @project, user: @current_user)
+          .represent(@pipeline, with_jobs: true)
       end
     end
   end

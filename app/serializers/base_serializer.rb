@@ -1,6 +1,4 @@
 class BaseSerializer  
-  attr_reader :request
-
   def initialize(parameters = {})
     @request = EntityRequest.new(parameters)
   end

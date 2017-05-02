@@ -26,6 +26,7 @@ describe Projects::PipelinesController do
 
     it 'returns JSON with serialized pipelines' do
       expect(response).to have_http_status(:ok)
+      expect(response).to match_response_schema('pipeline')
 
       expect(json_response).to include('pipelines')
       expect(json_response['pipelines'].count).to eq 4
@@ -33,7 +34,6 @@ describe Projects::PipelinesController do
       expect(json_response['count']['running']).to eq 1
       expect(json_response['count']['pending']).to eq 1
       expect(json_response['count']['finished']).to eq 1
-      expect(json_response).not_to have_key('stages')
     end
   end
 
@@ -46,7 +46,6 @@ describe Projects::PipelinesController do
       expect(response).to have_http_status(:ok)
       expect(json_response).not_to be_an(Array)
       expect(json_response['id']).to be(pipeline.id)
-      expect(json_response).to have_key('stages')
     end
   end
 
