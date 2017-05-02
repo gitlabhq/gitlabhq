@@ -86,7 +86,7 @@ class GlobalMilestone
   end
 
   def issues
-    @issues ||= Issue.of_milestones(milestoneish_ids).includes(:project, :assignee, :labels)
+    @issues ||= Issue.of_milestones(milestoneish_ids).includes(:project, :assignees, :labels)
   end
 
   def merge_requests

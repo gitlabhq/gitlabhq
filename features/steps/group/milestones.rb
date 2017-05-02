@@ -110,7 +110,7 @@ class Spinach::Features::GroupMilestones < Spinach::FeatureSteps
 
       create :issue,
         project: project,
-        assignee: current_user,
+        assignees: [current_user],
         author: current_user,
         milestone: milestone
 
@@ -122,7 +122,7 @@ class Spinach::Features::GroupMilestones < Spinach::FeatureSteps
 
       issue = create :issue,
         project: project,
-        assignee: current_user,
+        assignees: [current_user],
         author: current_user,
         milestone: milestone
 

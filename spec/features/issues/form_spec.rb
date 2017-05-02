@@ -31,14 +31,14 @@ describe 'New/edit issue', feature: true, js: true do
       page.within '.dropdown-menu-user' do
         click_link user2.name
       end
-      expect(find('input[name="issue[assignee_id]"]', visible: false).value).to match(user2.id.to_s)
+      expect(find('input[name="issue[assignee_ids]"]', visible: false).value).to match(user2.id.to_s)
       page.within '.js-assignee-search' do
         expect(page).to have_content user2.name
       end
       expect(find('a', text: 'Assign to me')).to be_visible
 
       click_link 'Assign to me'
-      expect(find('input[name="issue[assignee_id]"]', visible: false).value).to match(user.id.to_s)
+      expect(find('input[name="issue[assignee_ids]"]', visible: false).value).to match(user.id.to_s)
       page.within '.js-assignee-search' do
         expect(page).to have_content user.name
       end
@@ -125,7 +125,7 @@ describe 'New/edit issue', feature: true, js: true do
     end
 
     it 'allows user to update issue' do
-      expect(find('input[name="issue[assignee_id]"]', visible: false).value).to match(user.id.to_s)
+      expect(find('input[name="issue[assignee_ids]"]', visible: false).value).to match(user.id.to_s)
       expect(find('input[name="issue[milestone_id]"]', visible: false).value).to match(milestone.id.to_s)
       expect(find('a', text: 'Assign to me', visible: false)).not_to be_visible
 
