@@ -100,7 +100,8 @@ namespace :geo do
   end
 
   def set_primary_geo_node(public_key)
-    params = { host: Gitlab.config.gitlab.host,
+    params = { schema: Gitlab.config.gitlab.protocol,
+               host: Gitlab.config.gitlab.host,
                port: Gitlab.config.gitlab.port,
                relative_url_root: Gitlab.config.gitlab.relative_url_root,
                primary: true,
