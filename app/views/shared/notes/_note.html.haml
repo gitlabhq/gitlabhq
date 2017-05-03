@@ -2,7 +2,11 @@
 - return if note.cross_reference_not_visible_for?(current_user)
 
 - note_editable = note_editable?(note)
-%li.timeline-entry{ id: dom_id(note), class: ["note", "note-row-#{note.id}", ('system-note' if note.system)], data: {author_id: note.author.id, editable: note_editable, note_id: note.id} }
+%li.timeline-entry{ id: dom_id(note),
+  class: ["note", "note-row-#{note.id}", ('system-note' if note.system)],
+  data: { author_id: note.author.id,
+    editable: note_editable,
+    note_id: note.id } }
   .timeline-entry-inner
     .timeline-icon
       - if note.system
