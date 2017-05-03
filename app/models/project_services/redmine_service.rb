@@ -19,7 +19,7 @@ class RedmineService < IssueTrackerService
     end
   end
 
-  def to_param
+  def self.to_param
     'redmine'
   end
 end

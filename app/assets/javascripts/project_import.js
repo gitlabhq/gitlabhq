@@ -1,4 +1,6 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, prefer-arrow-callback, max-len */
+/* global Turbolinks */
+
 (function() {
   this.ProjectImport = (function() {
     function ProjectImport() {
@@ -8,7 +10,5 @@
     }
 
     return ProjectImport;
-
   })();
-
 }).call(this);

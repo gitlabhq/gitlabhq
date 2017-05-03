@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint-disable no-unused-vars, space-before-function-paren */
+
 class ListLabel {
   constructor (obj) {
     this.id = obj.id;
@@ -9,3 +10,5 @@ class ListLabel {
     this.priority = (obj.priority !== null) ? obj.priority : Infinity;
   }
 }
+
+window.ListLabel = ListLabel;

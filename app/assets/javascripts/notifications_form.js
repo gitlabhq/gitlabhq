@@ -1,6 +1,6 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, one-var, one-var-declaration-per-line, newline-per-chained-call, comma-dangle, consistent-return, prefer-arrow-callback, max-len */
 (function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
 
   this.NotificationsForm = (function() {
     function NotificationsForm() {
@@ -53,7 +53,5 @@
     };
 
     return NotificationsForm;
-
   })();
-
 }).call(this);

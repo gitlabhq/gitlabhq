@@ -1,4 +1,4 @@
-- if @issues.reorder(nil).any?
+- if @issues.to_a.any?
   - @issues.group_by(&:project).each do |group|
     .panel.panel-default.panel-small
       - project = group[0]
@@ -13,4 +13,4 @@
           = render 'projects/issues/issue', issue: issue
   = paginate @issues, theme: "gitlab"
 - else
-  .nothing-here-block No issues to show
+  = render 'shared/empty_states/issues'

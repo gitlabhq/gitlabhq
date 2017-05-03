@@ -6,6 +6,7 @@ shared_examples 'TokenAuthenticatable' do
     it { expect(described_class).to be_private_method_defined(:write_new_token) }
     it { expect(described_class).to respond_to("find_by_#{token_field}") }
     it { is_expected.to respond_to("ensure_#{token_field}") }
+    it { is_expected.to respond_to("set_#{token_field}") }
     it { is_expected.to respond_to("reset_#{token_field}!") }
   end
 end
@@ -53,6 +54,12 @@ describe ApplicationSetting, 'TokenAuthenticatable' do
         expect(subject.send(:read_attribute, token_field)).to be_a String
       end
     end
+  end
+
+  describe 'setting new token' do
+    subject { described_class.new.send("set_#{token_field}", '0123456789') }
+
+    it { is_expected.to eq '0123456789' }
   end
 
   describe 'multiple token fields' do

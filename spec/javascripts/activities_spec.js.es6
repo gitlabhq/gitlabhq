@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint-disable no-unused-expressions, no-prototype-builtins, no-new, no-shadow, max-len */
+
 /*= require js.cookie.js */
 /*= require jquery.endless-scroll.js */
 /*= require pager */
@@ -6,7 +7,7 @@
 
 (() => {
   window.gon || (window.gon = {});
-  const fixtureTemplate = 'event_filter.html';
+  const fixtureTemplate = 'static/event_filter.html.raw';
   const filters = [
     {
       id: 'all',
@@ -18,37 +19,37 @@
       name: 'merge events',
     }, {
       id: 'comments',
-    },{
+    }, {
       id: 'team',
     }];
 
   function getEventName(index) {
-    let filter = filters[index];
+    const filter = filters[index];
     return filter.hasOwnProperty('name') ? filter.name : filter.id;
   }
 
   function getSelector(index) {
-    let filter = filters[index];
-    return `#${filter.id}_event_filter`
+    const filter = filters[index];
+    return `#${filter.id}_event_filter`;
   }
 
   describe('Activities', () => {
     beforeEach(() => {
-      fixture.load(fixtureTemplate);
-      new Activities();
+      loadFixtures(fixtureTemplate);
+      new gl.Activities();
     });
 
-    for(let i = 0; i < filters.length; i++) {
+    for (let i = 0; i < filters.length; i += 1) {
       ((i) => {
         describe(`when selecting ${getEventName(i)}`, () => {
           beforeEach(() => {
             $(getSelector(i)).click();
           });
 
-          for(let x = 0; x < filters.length; x++) {
+          for (let x = 0; x < filters.length; x += 1) {
             ((x) => {
-              let shouldHighlight = i === x;
-              let testName = shouldHighlight ? 'should highlight' : 'should not highlight';
+              const shouldHighlight = i === x;
+              const testName = shouldHighlight ? 'should highlight' : 'should not highlight';
 
               it(`${testName} ${getEventName(x)}`, () => {
                 expect($(getSelector(x)).parent().hasClass('active')).toEqual(shouldHighlight);

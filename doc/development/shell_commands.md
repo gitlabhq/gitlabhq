@@ -129,7 +129,7 @@ Various methods for opening and reading files in Ruby can be used to read the
 standard output of a process instead of a file.  The following two commands do
 roughly the same:
 
-```
+```ruby
 `touch /tmp/pawned-by-backticks`
 File.read('|touch /tmp/pawned-by-file-read')
 ```
@@ -142,7 +142,7 @@ attacker cannot control the start of the filename string you are opening.  For
 instance, the following is sufficient to protect against accidentally starting
 a shell command with `|`:
 
-```
+```ruby
 # we assume repo_path is not controlled by the attacker (user)
 path = File.join(repo_path, user_input)
 # path cannot start with '|' now.
@@ -160,7 +160,7 @@ Path traversal is a security where the program (GitLab) tries to restrict user
 access to a certain directory on disk, but the user manages to open a file
 outside that directory by taking advantage of the `../` path notation.
 
-```
+```ruby
 # Suppose the user gave us a path and they are trying to trick us
 user_input = '../other-repo.git/other-file'
 
@@ -177,7 +177,7 @@ File.open(full_path) do # Oops!
 A good way to protect against this is to compare the full path with its
 'absolute path' according to Ruby's `File.absolute_path`.
 
-```
+```ruby
 full_path = File.join(repo_path, user_input)
 if full_path != File.absolute_path(full_path)
   raise "Invalid path: #{full_path.inspect}"

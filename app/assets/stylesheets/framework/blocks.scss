@@ -1,20 +1,15 @@
-.light-well {
-  background-color: $background-color;
-  padding: 15px;
-}
-
 .centered-light-block {
   text-align: center;
-  color: $gl-gray;
+  color: $gl-text-color;
   margin: 20px;
 }
 
 .nothing-here-block {
   text-align: center;
   padding: 20px;
-  color: $gl-gray;
+  color: $gl-text-color;
   font-weight: normal;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 36px;
 
   &.diff-collapsed {
@@ -29,19 +24,19 @@
 .row-content-block {
   margin-top: 0;
   margin-bottom: -$gl-padding;
-  background-color: $background-color;
+  background-color: $gray-light;
   padding: $gl-padding;
   margin-bottom: 0;
   border-top: 1px solid $white-dark;
   border-bottom: 1px solid $white-dark;
-  color: $gl-gray;
+  color: $gl-text-color;
 
   &.oneline-block {
     line-height: 42px;
   }
 
   &.white {
-    background-color: white;
+    background-color: $white-light;
   }
 
   &.top-block {
@@ -123,7 +118,7 @@
 
 .cover-block {
   text-align: center;
-  background: $background-color;
+  background: $gray-light;
   padding-top: 44px;
   position: relative;
 
@@ -140,11 +135,11 @@
   }
 
   .cover-title {
-    color: $gl-header-color;
+    color: $gl-text-color;
     font-size: 23px;
 
     h1 {
-      color: $gl-gray-dark;
+      color: $gl-text-color;
       margin-bottom: 6px;
       font-size: 23px;
     }
@@ -158,7 +153,7 @@
 
     p {
       padding: 0 $gl-padding;
-      color: #5c5d5e;
+      color: $gl-text-color;
     }
   }
 
@@ -216,7 +211,7 @@
       display: inline;
       font-weight: normal;
       font-size: 24px;
-      color: $gl-title-color;
+      color: $gl-text-color;
     }
   }
 }
@@ -253,4 +248,37 @@
 
 .content-block-small {
   padding: 10px 0;
+}
+
+.empty-state {
+  margin: 100px 0 0;
+
+  .text-content {
+    max-width: 460px;
+    margin: 0 auto;
+    padding: $gl-padding;
+  }
+
+  .svg-content {
+    text-align: center;
+
+    svg {
+      max-width: 425px;
+      width: 100%;
+      padding: $gl-padding;
+    }
+  }
+
+  .emoji-icon {
+    display: inline-block;
+  }
+
+  @media(max-width: $screen-xs-max) {
+    margin-top: 50px;
+    text-align: center;
+
+    .btn {
+      width: 100%;
+    }
+  }
 }

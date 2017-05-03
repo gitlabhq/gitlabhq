@@ -161,8 +161,8 @@ module Network
     def is_overlap?(range, overlap_space)
       range.each do |i|
         if i != range.first &&
-          i != range.last &&
-          @commits[i].spaces.include?(overlap_space)
+            i != range.last &&
+            @commits[i].spaces.include?(overlap_space)
 
           return true
         end

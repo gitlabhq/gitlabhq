@@ -15,23 +15,23 @@
 
       %li.pull-right
         .toolbar-group
-          = markdown_toolbar_button({icon: "bold fw", data: { "md-tag" => "**" }, title: "Add bold text" })
-          = markdown_toolbar_button({icon: "italic fw", data: { "md-tag" => "*" }, title: "Add italic text" })
-          = markdown_toolbar_button({icon: "quote-right fw", data: { "md-tag" => "> ", "md-prepend" => true }, title: "Insert a quote" })
-          = markdown_toolbar_button({icon: "code fw", data: { "md-tag" => "`", "md-block" => "```" }, title: "Insert code" })
-          = markdown_toolbar_button({icon: "list-ul fw", data: { "md-tag" => "* ", "md-prepend" => true }, title: "Add a bullet list" })
-          = markdown_toolbar_button({icon: "list-ol fw", data: { "md-tag" => "1. ", "md-prepend" => true }, title: "Add a numbered list" })
-          = markdown_toolbar_button({icon: "check-square-o fw", data: { "md-tag" => "* [ ] ", "md-prepend" => true }, title: "Add a task list" })
+          = markdown_toolbar_button({ icon: "bold fw", data: { "md-tag" => "**" }, title: "Add bold text" })
+          = markdown_toolbar_button({ icon: "italic fw", data: { "md-tag" => "*" }, title: "Add italic text" })
+          = markdown_toolbar_button({ icon: "quote-right fw", data: { "md-tag" => "> ", "md-prepend" => true }, title: "Insert a quote" })
+          = markdown_toolbar_button({ icon: "code fw", data: { "md-tag" => "`", "md-block" => "```" }, title: "Insert code" })
+          = markdown_toolbar_button({ icon: "list-ul fw", data: { "md-tag" => "* ", "md-prepend" => true }, title: "Add a bullet list" })
+          = markdown_toolbar_button({ icon: "list-ol fw", data: { "md-tag" => "1. ", "md-prepend" => true }, title: "Add a numbered list" })
+          = markdown_toolbar_button({ icon: "check-square-o fw", data: { "md-tag" => "* [ ] ", "md-prepend" => true }, title: "Add a task list" })
         .toolbar-group
           %button.toolbar-btn.js-zen-enter.has-tooltip.hidden-xs{ type: "button", tabindex: -1, aria: { label: "Go full screen" }, title: "Go full screen", data: { container: "body" } }
-            =icon("arrows-alt fw")
+            = icon("arrows-alt fw")
 
   .md-write-holder
     = yield
-  .md.md-preview-holder.js-md-preview.hide{class: (preview_class if defined?(preview_class))}
+  .md.md-preview-holder.js-md-preview.hide{ class: (preview_class if defined?(preview_class)) }
 
   - if defined?(referenced_users) && referenced_users
-    %div.referenced-users.hide
+    .referenced-users.hide
       %span
         = icon("exclamation-triangle")
         You are about to add

@@ -1,6 +1,6 @@
 - unless @snippet.content.empty?
   - if markup?(@snippet.file_name)
-    %textarea.markdown-snippet-copy.blob-content{data: {blob_id: @snippet.id}}
+    %textarea.markdown-snippet-copy.blob-content{ data: { blob_id: @snippet.id } }
       = @snippet.content
     .file-content.wiki
       - if gitlab_markdown?(@snippet.file_name)

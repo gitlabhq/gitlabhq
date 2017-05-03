@@ -1,37 +1,31 @@
-require 'constraints/group_url_constrainer'
+resources :groups, only: [:index, :new, :create]
 
-constraints(GroupUrlConstrainer.new) do
-  scope(path: ':id',
-        as: :group,
-        constraints: { id: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ },
-        controller: :groups) do
-    get '/', action: :show
-    patch '/', action: :update
-    put '/', action: :update
-    delete '/', action: :destroy
+scope(path: 'groups/*group_id',
+      module: :groups,
+      as: :group,
+      constraints: { group_id: Gitlab::Regex.namespace_route_regex }) do
+  resources :group_members, only: [:index, :create, :update, :destroy], concerns: :access_requestable do
+    post :resend_invite, on: :member
+    delete :leave, on: :collection
+  end
+
+  resource :avatar, only: [:destroy]
+  resources :milestones, constraints: { id: /[^\/]+/ }, only: [:index, :show, :update, :new, :create]
+
+  resources :labels, except: [:show] do
+    post :toggle_subscription, on: :member
   end
 end
 
-scope constraints: { id: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ } do
-  resources :groups, except: [:show] do
-    member do
-      get :issues
-      get :merge_requests
-      get :projects
-      get :activity
-    end
-
-    scope module: :groups do
-      resources :group_members, only: [:index, :create, :update, :destroy], concerns: :access_requestable do
-        post :resend_invite, on: :member
-        delete :leave, on: :collection
-      end
-
-      resource :avatar, only: [:destroy]
-      resources :milestones, constraints: { id: /[^\/]+/ }, only: [:index, :show, :update, :new, :create]
-
-      resources :labels, except: [:show], constraints: { id: /\d+/ }
-    end
-  end
-  get 'groups/:id' => 'groups#show', as: :group_canonical
+scope(path: 'groups/*id',
+      controller: :groups,
+      constraints: { id: Gitlab::Regex.namespace_route_regex }) do
+  get :edit, as: :edit_group
+  get :issues, as: :issues_group
+  get :merge_requests, as: :merge_requests_group
+  get :projects, as: :projects_group
+  get :activity, as: :activity_group
 end
+
+# Must be last route in this file
+get 'groups/*id' => 'groups#show', as: :group_canonical, constraints: { id: Gitlab::Regex.namespace_route_regex }

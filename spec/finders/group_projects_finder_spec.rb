@@ -38,7 +38,10 @@ describe GroupProjectsFinder do
   end
 
   describe 'without group member current_user' do
-    before { shared_project_2.team << [current_user, Gitlab::Access::MASTER] }
+    before do
+      shared_project_2.team << [current_user, Gitlab::Access::MASTER]
+      current_user.reload
+    end
 
     context "only shared" do
       context "without external user" do

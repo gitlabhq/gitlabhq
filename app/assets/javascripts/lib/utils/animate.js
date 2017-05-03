@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-param-reassign, no-void, prefer-template, no-var, new-cap, prefer-arrow-callback, consistent-return, max-len */
 (function() {
   (function(w) {
     if (w.gl == null) {
@@ -46,5 +46,4 @@
       return dfd.promise();
     };
   })(window);
-
 }).call(this);

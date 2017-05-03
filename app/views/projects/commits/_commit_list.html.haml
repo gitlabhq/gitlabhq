@@ -1,7 +1,7 @@
 - commits, hidden = limited_commits(@commits)
 - commits = Commit.decorate(commits, @project)
 
-%div.panel.panel-default
+.panel.panel-default
   .panel-heading
     Commits (#{@commits.count})
   - if hidden > 0
@@ -11,4 +11,4 @@
       %li.warning-row.unstyled
         #{number_with_delimiter(hidden)} additional commits have been omitted to prevent performance issues.
   - else
-    %ul.content-list= render commits, project: @project
+    %ul.content-list.table-list= render commits, project: @project, ref: @ref

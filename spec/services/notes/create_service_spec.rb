@@ -14,12 +14,41 @@ describe Notes::CreateService, services: true do
     end
 
     context "valid params" do
-      before do
-        @note = Notes::CreateService.new(project, user, opts).execute
+      it 'returns a valid note' do
+        note = Notes::CreateService.new(project, user, opts).execute
+
+        expect(note).to be_valid
       end
 
-      it { expect(@note).to be_valid }
-      it { expect(@note.note).to eq(opts[:note]) }
+      it 'returns a persisted note' do
+        note = Notes::CreateService.new(project, user, opts).execute
+
+        expect(note).to be_persisted
+      end
+
+      it 'note has valid content' do
+        note = Notes::CreateService.new(project, user, opts).execute
+
+        expect(note.note).to eq(opts[:note])
+      end
+
+      it 'TodoService#new_note is called' do
+        note = build(:note)
+        allow(project).to receive_message_chain(:notes, :new).with(opts) { note }
+
+        expect_any_instance_of(TodoService).to receive(:new_note).with(note, user)
+
+        Notes::CreateService.new(project, user, opts).execute
+      end
+
+      it 'enqueues NewNoteWorker' do
+        note = build(:note, id: 999)
+        allow(project).to receive_message_chain(:notes, :new).with(opts) { note }
+
+        expect(NewNoteWorker).to receive(:perform_async).with(note.id)
+
+        Notes::CreateService.new(project, user, opts).execute
+      end
     end
 
     describe 'note with commands' do
@@ -30,6 +59,17 @@ describe Notes::CreateService, services: true do
           expect_any_instance_of(Issues::UpdateService).to receive(:execute).and_call_original
 
           note = described_class.new(project, user, opts.merge(note: note_text)).execute
+
+          expect(note.note).to eq "HELLO\nWORLD"
+        end
+      end
+
+      describe '/merge with sha option' do
+        let(:note_text) { %(HELLO\n/merge\nWORLD) }
+        let(:params) { opts.merge(note: note_text, merge_request_diff_head_sha: 'sha') }
+
+        it 'saves the note and exectues merge command' do
+          note = described_class.new(project, user, params).execute
 
           expect(note.note).to eq "HELLO\nWORLD"
         end

@@ -135,6 +135,51 @@ describe Issues::CreateService, services: true do
       end
     end
 
+    it_behaves_like 'issuable create service'
+
     it_behaves_like 'new issuable record that supports slash commands'
+
+    context 'for a merge request' do
+      let(:discussion) { Discussion.for_diff_notes([create(:diff_note_on_merge_request)]).first }
+      let(:merge_request) { discussion.noteable }
+      let(:project) { merge_request.source_project }
+      let(:opts) { { merge_request_for_resolving_discussions: merge_request } }
+
+      before do
+        project.team << [user, :master]
+      end
+
+      it 'resolves the discussion for the merge request' do
+        described_class.new(project, user, opts).execute
+        discussion.first_note.reload
+
+        expect(discussion.resolved?).to be(true)
+      end
+
+      it 'added a system note to the discussion' do
+        described_class.new(project, user, opts).execute
+
+        reloaded_discussion = MergeRequest.find(merge_request.id).discussions.first
+
+        expect(reloaded_discussion.last_note.system).to eq(true)
+      end
+
+      it 'assigns the title and description for the issue' do
+        issue = described_class.new(project, user, opts).execute
+
+        expect(issue.title).not_to be_nil
+        expect(issue.description).not_to be_nil
+      end
+
+      it 'can set nil explicityly to the title and description' do
+        issue = described_class.new(project, user,
+                                    merge_request_for_resolving_discussions: merge_request,
+                                    description: nil,
+                                    title: nil).execute
+
+        expect(issue.description).to be_nil
+        expect(issue.title).to be_nil
+      end
+    end
   end
 end

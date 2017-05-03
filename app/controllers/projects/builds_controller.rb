@@ -94,7 +94,7 @@ class Projects::BuildsController < Projects::ApplicationController
   private
 
   def build
-    @build ||= project.builds.find_by!(id: params[:id])
+    @build ||= project.builds.find_by!(id: params[:id]).present(user: current_user)
   end
 
   def build_path(build)

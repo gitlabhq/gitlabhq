@@ -10,7 +10,7 @@
     .col-sm-offset-2.col-sm-10
       .row
         .col-xs-6
-          %button{ type: "button", class: "btn btn-success js-submit-button", "@click" => "commit()", ":disabled" => "!readyToCommit" }
+          %button.btn.btn-success.js-submit-button{ type: "button", "@click" => "commit()", ":disabled" => "!readyToCommit" }
             %span {{commitButtonText}}
         .col-xs-6.text-right
           = link_to "Cancel", namespace_project_merge_request_path(@merge_request.project.namespace, @merge_request.project, @merge_request), class: "btn btn-cancel"

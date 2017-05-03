@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-return-assign, max-len */
 (function() {
   this.StatGraph = (function() {
     function StatGraph() {}
@@ -14,7 +14,5 @@
     };
 
     return StatGraph;
-
   })();
-
 }).call(this);

@@ -1,12 +1,6 @@
 require 'sidekiq/web'
 require 'sidekiq/cron/web'
-require 'api/api'
-
-class ActionDispatch::Routing::Mapper
-  def draw(routes_name)
-    instance_eval(File.read(Rails.root.join("config/routes/#{routes_name}.rb")))
-  end
-end
+require 'constraints/group_url_constrainer'
 
 Rails.application.routes.draw do
   concern :access_requestable do
@@ -84,10 +78,21 @@ Rails.application.routes.draw do
   draw :user
   draw :project
 
-  # Get all keys of user
-  get ':username.keys' => 'profiles/keys#get_keys', constraints: { username: /.*/ }
-
   root to: "root#index"
 
-  get '*unmatched_route', to: 'application#not_found'
+  # Since group show page is wildcard routing
+  # we want all other routing to be checked before matching this one
+  constraints(GroupUrlConstrainer.new) do
+    scope(path: '*id',
+          as: :group,
+          constraints: { id: Gitlab::Regex.namespace_route_regex, format: /(html|json|atom)/ },
+          controller: :groups) do
+      get '/', action: :show
+      patch '/', action: :update
+      put '/', action: :update
+      delete '/', action: :destroy
+    end
+  end
+
+  get '*unmatched_route', to: 'application#route_not_found'
 end

@@ -16,8 +16,6 @@ The access levels are defined in the `Gitlab::Access` module. Currently, these l
 
 Gets a list of group or project members viewable by the authenticated user.
 
-Returns `200` if the request succeeds.
-
 ```
 GET /groups/:id/members
 GET /projects/:id/members
@@ -60,8 +58,6 @@ Example response:
 
 Gets a member of a group or project.
 
-Returns `200` if the request succeeds.
-
 ```
 GET /groups/:id/members/:user_id
 GET /projects/:id/members/:user_id
@@ -94,8 +90,6 @@ Example response:
 ## Add a member to a group or project
 
 Adds a member to a group or project.
-
-Returns `201` if the request succeeds.
 
 ```
 POST /groups/:id/members
@@ -131,8 +125,6 @@ Example response:
 
 Updates a member of a group or project.
 
-Returns `200` if the request succeeds.
-
 ```
 PUT /groups/:id/members/:user_id
 PUT /projects/:id/members/:user_id
@@ -166,8 +158,6 @@ Example response:
 ## Remove a member from a group or project
 
 Removes a user from a group or project.
-
-Returns `200` if the request succeeds.
 
 ```
 DELETE /groups/:id/members/:user_id

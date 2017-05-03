@@ -23,6 +23,48 @@ describe Gitlab::IncomingEmail, lib: true do
     end
   end
 
+  describe 'self.supports_wildcard?' do
+    context 'address contains the wildard placeholder' do
+      before do
+        stub_incoming_email_setting(address: 'replies+%{key}@example.com')
+      end
+
+      it 'confirms that wildcard is supported' do
+        expect(described_class.supports_wildcard?).to be_truthy
+      end
+    end
+
+    context "address doesn't contain the wildcard placeholder" do
+      before do
+        stub_incoming_email_setting(address: 'replies@example.com')
+      end
+
+      it 'returns that wildcard is not supported' do
+        expect(described_class.supports_wildcard?).to be_falsey
+      end
+    end
+
+    context 'address is not set' do
+      before do
+        stub_incoming_email_setting(address: nil)
+      end
+
+      it 'returns that wildard is not supported' do
+        expect(described_class.supports_wildcard?).to be_falsey
+      end
+    end
+  end
+
+  context 'self.unsubscribe_address' do
+    before do
+      stub_incoming_email_setting(address: 'replies+%{key}@example.com')
+    end
+
+    it 'returns the address with interpolated reply key and unsubscribe suffix' do
+      expect(described_class.unsubscribe_address('key')).to eq('replies+key+unsubscribe@example.com')
+    end
+  end
+
   context "self.reply_address" do
     before do
       stub_incoming_email_setting(address: "replies+%{key}@example.com")

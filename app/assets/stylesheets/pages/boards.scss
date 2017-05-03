@@ -12,6 +12,10 @@
   opacity: 1!important;
 
   * {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
     // !important to make sure no style can override this when dragging
     cursor: -webkit-grabbing!important;
     cursor: grabbing!important;
@@ -27,7 +31,7 @@
 
   .dropdown-content {
     max-height: 150px;
-	}
+  }
 }
 
 .issue-board-dropdown-content {
@@ -44,11 +48,6 @@
 .issue-boards-page {
   .page-with-sidebar {
     padding-bottom: 0;
-  }
-
-  .issues-filters {
-    position: relative;
-    z-index: 999999;
   }
 }
 
@@ -75,6 +74,7 @@
     height: 475px; // Needed for PhantomJS
     height: calc(100vh - 220px);
     min-height: 475px;
+    transition: width .2s;
 
     &.is-compact {
       width: calc(100% - 290px);
@@ -99,7 +99,7 @@
 .board-inner {
   height: 100%;
   font-size: $issue-boards-font-size;
-  background: $background-color;
+  background: $gray-light;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
 }
@@ -110,6 +110,12 @@
 
   &.has-border {
     border-top: 3px solid;
+    margin-top: -1px;
+    margin-right: -1px;
+    margin-left: -1px;
+    padding-top: 1px;
+    padding-right: 1px;
+    padding-left: 1px;
 
     .board-title {
       padding-top: ($gl-padding - 3px);
@@ -146,7 +152,7 @@
 .board-blank-state {
   height: calc(100% - 49px);
   padding: $gl-padding;
-  background-color: #fff;
+  background-color: $white-light;
 }
 
 .board-blank-state-list {
@@ -167,8 +173,12 @@
   }
 }
 
-.board-list {
+.board-list-component {
   height: calc(100% - 49px);
+}
+
+.board-list {
+  height: 100%;
   margin-bottom: 0;
   padding: 5px;
   list-style: none;
@@ -176,7 +186,7 @@
   overflow-x: hidden;
 
   &.is-smaller {
-    height: calc(100% - 185px);
+    height: calc(100% - 136px);
   }
 }
 
@@ -188,9 +198,9 @@
 .card {
   position: relative;
   padding: 10px $gl-padding;
-  background: #fff;
+  background: $white-light;
   border-radius: $border-radius-default;
-  box-shadow: 0 1px 2px rgba(186, 186, 186, 0.5);
+  box-shadow: 0 1px 2px $issue-boards-card-shadow;
   list-style: none;
 
   &:not(:last-child) {
@@ -240,7 +250,7 @@
 }
 
 .issue-boards-search {
-  width: 335px;
+  width: 290px;
 
   .form-control {
     display: inline-block;
@@ -250,7 +260,7 @@
 
 .board-list-count {
   padding: 10px 0;
-  color: $gl-placeholder-color;
+  color: $gl-text-color-secondary;
   font-size: 13px;
 
   > .fa {
@@ -322,11 +332,25 @@
   }
 
   .issuable-header-text {
-    width: 100%;
     padding-right: 35px;
 
     > strong {
       font-weight: 600;
     }
+  }
+}
+
+.right-sidebar.right-sidebar-expanded {
+  &.boards-sidebar-slide-enter-active,
+  &.boards-sidebar-slide-leave-active {
+    transition: width .2s,
+                padding .2s;
+  }
+
+  &.boards-sidebar-slide-enter,
+  &.boards-sidebar-slide-leave-active {
+    width: 0;
+    padding-left: 0;
+    padding-right: 0;
   }
 }

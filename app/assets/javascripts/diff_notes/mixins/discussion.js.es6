@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint-disable object-shorthand, func-names, guard-for-in, no-restricted-syntax, comma-dangle, no-param-reassign, max-len */
+
 ((w) => {
   w.DiscussionMixins = {
     computed: {
@@ -12,7 +13,7 @@
           const discussion = this.discussions[discussionId];
 
           if (discussion.isResolved()) {
-            resolvedCount++;
+            resolvedCount += 1;
           }
         }
 
@@ -25,7 +26,7 @@
           const discussion = this.discussions[discussionId];
 
           if (!discussion.isResolved()) {
-            unresolvedCount++;
+            unresolvedCount += 1;
           }
         }
 

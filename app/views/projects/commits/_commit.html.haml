@@ -1,3 +1,4 @@
+- ref = local_assigns.fetch(:ref)
 - if @note_counts
   - note_count = @note_counts.fetch(commit.id, 0)
 - else
@@ -5,37 +6,36 @@
   - note_count = notes.user.count
 
 - cache_key = [project.path_with_namespace, commit.id, current_application_settings, note_count]
-- cache_key.push(commit.status) if commit.status
+- cache_key.push(commit.status(ref)) if commit.status(ref)
 
 = cache(cache_key, expires_in: 1.day) do
-  %li.commit.js-toggle-container{ id: "commit-#{commit.short_id}" }
-    = author_avatar(commit, size: 36)
+  %li.commit.table-list-row.js-toggle-container{ id: "commit-#{commit.short_id}" }
 
-    .commit-info-block
-      .commit-row-title
-        %span.item-title
-          = link_to_gfm commit.title, namespace_project_commit_path(project.namespace, project, commit.id), class: "commit-row-message"
-          %span.commit-row-message.visible-xs-inline
-            &middot;
-            = commit.short_id
-          - if commit.status
-            .visible-xs-inline
-              = render_commit_status(commit)
-          - if commit.description?
-            %a.text-expander.hidden-xs.js-toggle-button ...
+    .table-list-cell.avatar-cell.hidden-xs
+      = author_avatar(commit, size: 36)
 
-        .commit-actions.hidden-xs
-          - if commit.status
-            = render_commit_status(commit)
-          = clipboard_button(clipboard_text: commit.id)
-          = link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit), class: "commit-short-id btn btn-transparent"
-          = link_to_browse_code(project, commit)
+    .table-list-cell.commit-content
+      = link_to_gfm commit.title, namespace_project_commit_path(project.namespace, project, commit.id), class: "commit-row-message item-title"
+      %span.commit-row-message.visible-xs-inline
+        &middot;
+        = commit.short_id
+      - if commit.status(ref)
+        .visible-xs-inline
+          = render_commit_status(commit, ref: ref)
+      - if commit.description?
+        %a.text-expander.hidden-xs.js-toggle-button ...
 
       - if commit.description?
         %pre.commit-row-description.js-toggle-content
           = preserve(markdown(commit.description, pipeline: :single_line, author: commit.author))
-
-      .commit-row-info
+      .commiter
         = commit_author_link(commit, avatar: false, size: 24)
-        authored
+        committed
         #{time_ago_with_tooltip(commit.committed_date)}
+
+    .table-list-cell.commit-actions.hidden-xs
+      - if commit.status(ref)
+        = render_commit_status(commit, ref: ref)
+      = clipboard_button(clipboard_text: commit.id, title: "Copy commit SHA to clipboard")
+      = link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit), class: "commit-short-id btn btn-transparent"
+      = link_to_browse_code(project, commit)

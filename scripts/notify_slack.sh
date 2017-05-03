@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # Sends Slack notification ERROR_MSG to CHANNEL
 # An env. variable CI_SLACK_WEBHOOK_URL needs to be set.
 

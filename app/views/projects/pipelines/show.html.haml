@@ -2,10 +2,8 @@
 - page_title "Pipeline"
 = render "projects/pipelines/head"
 
-%div{ class: container_class }
-  .prepend-top-default
-    - if @commit
-      = render "projects/pipelines/info"
-    %div.block-connector
+.js-pipeline-container{ class: container_class, data: { controller_action: "#{controller.action_name}" } }
+  - if @commit
+    = render "projects/pipelines/info"
 
-  = render "projects/commit/pipeline", pipeline: @pipeline
+  = render "projects/pipelines/with_tabs", pipeline: @pipeline

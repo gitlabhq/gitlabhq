@@ -4,7 +4,8 @@ describe Projects::IssuesController, '(JavaScript fixtures)', type: :controller 
   include JavaScriptFixturesHelpers
 
   let(:admin) { create(:admin) }
-  let(:project) { create(:project_empty_repo) }
+  let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
+  let(:project) { create(:project_empty_repo, namespace: namespace, path: 'issues-project') }
 
   render_views
 
@@ -25,8 +26,13 @@ describe Projects::IssuesController, '(JavaScript fixtures)', type: :controller 
   end
 
   it 'issues/issue-with-task-list.html.raw' do |example|
+    issue = create(:issue, project: project, description: '- [ ] Task List Item')
+    render_issue(example.description, issue)
+  end
+
+  it 'issues/issue_with_comment.html.raw' do |example|
     issue = create(:issue, project: project)
-    issue.update(description: '- [ ] Task List Item')
+    create(:note, project: project, noteable: issue, note: '- [ ] Task List Item').save
     render_issue(example.description, issue)
   end
 

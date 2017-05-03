@@ -8,7 +8,7 @@ feature 'Projects > Members > Owner cannot leave project', feature: true do
     visit namespace_project_path(project.namespace, project)
   end
 
-  scenario 'user does not see a "Leave Project" link' do
-    expect(page).not_to have_content 'Leave Project'
+  scenario 'user does not see a "Leave project" link' do
+    expect(page).not_to have_content 'Leave project'
   end
 end

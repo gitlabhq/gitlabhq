@@ -5,7 +5,7 @@ describe API::API, api: true  do
 
   let!(:user) { create(:user) }
   let!(:application) { Doorkeeper::Application.create!(name: "MyApp", redirect_uri: "https://app.com", owner: user) }
-  let!(:token) { Doorkeeper::AccessToken.create! application_id: application.id, resource_owner_id: user.id }
+  let!(:token) { Doorkeeper::AccessToken.create! application_id: application.id, resource_owner_id: user.id, scopes: "api" }
 
   describe "when unauthenticated" do
     it "returns authentication success" do

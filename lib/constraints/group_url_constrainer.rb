@@ -1,7 +1,17 @@
-require 'constraints/namespace_url_constrainer'
+class GroupUrlConstrainer
+  def matches?(request)
+    id = request.params[:id]
 
-class GroupUrlConstrainer < NamespaceUrlConstrainer
-  def find_resource(id)
-    Group.find_by_path(id)
+    return false unless valid?(id)
+
+    Group.find_by_full_path(id).present?
+  end
+
+  private
+
+  def valid?(id)
+    id.split('/').all? do |namespace|
+      NamespaceValidator.valid?(namespace)
+    end
   end
 end

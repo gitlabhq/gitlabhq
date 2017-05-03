@@ -10,10 +10,11 @@ feature 'Signup', feature: true do
 
         visit root_path
 
-        fill_in 'new_user_name',     with: user.name
-        fill_in 'new_user_username', with: user.username
-        fill_in 'new_user_email',    with: user.email
-        fill_in 'new_user_password', with: user.password
+        fill_in 'new_user_name',                with: user.name
+        fill_in 'new_user_username',            with: user.username
+        fill_in 'new_user_email',               with: user.email
+        fill_in 'new_user_email_confirmation',  with: user.email
+        fill_in 'new_user_password',            with: user.password
         click_button "Register"
 
         expect(current_path).to eq users_almost_there_path
@@ -29,10 +30,11 @@ feature 'Signup', feature: true do
 
         visit root_path
 
-        fill_in 'new_user_name',     with: user.name
-        fill_in 'new_user_username', with: user.username
-        fill_in 'new_user_email',    with: user.email
-        fill_in 'new_user_password', with: user.password
+        fill_in 'new_user_name',                with: user.name
+        fill_in 'new_user_username',            with: user.username
+        fill_in 'new_user_email',               with: user.email
+        fill_in 'new_user_email_confirmation',  with: user.email
+        fill_in 'new_user_password',            with: user.password
         click_button "Register"
 
         expect(current_path).to eq dashboard_projects_path
@@ -55,8 +57,9 @@ feature 'Signup', feature: true do
       click_button "Register"
 
       expect(current_path).to eq user_registration_path
-      expect(page).to have_content("error prohibited this user from being saved")
+      expect(page).to have_content("errors prohibited this user from being saved")
       expect(page).to have_content("Email has already been taken")
+      expect(page).to have_content("Email confirmation doesn't match")
     end
 
     it 'does not redisplay the password' do

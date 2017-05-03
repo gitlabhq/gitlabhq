@@ -1,8 +1,10 @@
 require 'spec_helper'
+include ImportExport::CommonUtil
 
 describe Gitlab::ImportExport::VersionChecker, services: true do
+  let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: '') }
+
   describe 'bundle a project Git repo' do
-    let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: '') }
     let(:version) { Gitlab::ImportExport.version }
 
     before do
@@ -24,6 +26,18 @@ describe Gitlab::ImportExport::VersionChecker, services: true do
         described_class.check!(shared: shared)
 
         expect(shared.errors.first).to eq("Import version mismatch: Required #{Gitlab::ImportExport.version} but was #{version}")
+      end
+    end
+  end
+
+  describe 'version file access check' do
+    it 'does not read a symlink' do
+      Dir.mktmpdir do |tmpdir|
+        setup_symlink(tmpdir, 'VERSION')
+
+        described_class.check!(shared: shared)
+
+        expect(shared.errors.first).not_to include('test')
       end
     end
   end

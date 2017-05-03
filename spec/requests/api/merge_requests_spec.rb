@@ -1,12 +1,12 @@
 require "spec_helper"
 
-describe API::API, api: true  do
+describe API::MergeRequests, api: true  do
   include ApiHelpers
   let(:base_time)   { Time.now }
   let(:user)        { create(:user) }
   let(:admin)       { create(:user, :admin) }
   let(:non_member)  { create(:user) }
-  let!(:project)    { create(:project, creator_id: user.id, namespace: user.namespace) }
+  let!(:project)    { create(:project, :public, creator_id: user.id, namespace: user.namespace) }
   let!(:merge_request) { create(:merge_request, :simple, author: user, assignee: user, source_project: project, target_project: project, title: "Test", created_at: base_time) }
   let!(:merge_request_closed) { create(:merge_request, state: "closed", author: user, assignee: user, source_project: project, target_project: project, title: "Closed test", created_at: base_time + 1.second) }
   let!(:merge_request_merged) { create(:merge_request, state: "merged", author: user, assignee: user, source_project: project, target_project: project, title: "Merged test", created_at: base_time + 2.seconds, merge_commit_sha: '9999999999999999999999999999999999999999') }
@@ -169,6 +169,16 @@ describe API::API, api: true  do
       expect(json_response.first['id']).to eq merge_request.id
     end
 
+    it 'returns merge_request by iid array' do
+      get api("/projects/#{project.id}/merge_requests", user), iid: [merge_request.iid, merge_request_closed.iid]
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(2)
+      expect(json_response.first['title']).to eq merge_request_closed.title
+      expect(json_response.first['id']).to eq merge_request_closed.id
+    end
+
     it "returns a 404 error if merge_request_id not found" do
       get api("/projects/#{project.id}/merge_requests/999", user)
       expect(response).to have_http_status(404)
@@ -186,14 +196,14 @@ describe API::API, api: true  do
   end
 
   describe 'GET /projects/:id/merge_requests/:merge_request_id/commits' do
-    context 'valid merge request' do
-      before { get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/commits", user) }
-      let(:commit) { merge_request.commits.first }
+    it 'returns a 200 when merge request is valid' do
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/commits", user)
+      commit = merge_request.commits.first
 
-      it { expect(response.status).to eq 200 }
-      it { expect(json_response.size).to eq(merge_request.commits.size) }
-      it { expect(json_response.first['id']).to eq(commit.id) }
-      it { expect(json_response.first['title']).to eq(commit.title) }
+      expect(response.status).to eq 200
+      expect(json_response.size).to eq(merge_request.commits.size)
+      expect(json_response.first['id']).to eq(commit.id)
+      expect(json_response.first['title']).to eq(commit.title)
     end
 
     it 'returns a 404 when merge_request_id not found' do
@@ -224,11 +234,14 @@ describe API::API, api: true  do
              target_branch: 'master',
              author: user,
              labels: 'label, label2',
-             milestone_id: milestone.id
+             milestone_id: milestone.id,
+             remove_source_branch: true
+
         expect(response).to have_http_status(201)
         expect(json_response['title']).to eq('Test merge_request')
         expect(json_response['labels']).to eq(['label', 'label2'])
         expect(json_response['milestone']['id']).to eq(milestone.id)
+        expect(json_response['force_remove_source_branch']).to be_truthy
       end
 
       it "returns 422 when source_branch equals target_branch" do
@@ -295,8 +308,8 @@ describe API::API, api: true  do
 
     context 'forked projects' do
       let!(:user2) { create(:user) }
-      let!(:fork_project) { create(:project, forked_from_project: project,  namespace: user2.namespace, creator_id: user2.id) }
-      let!(:unrelated_project) { create(:project,  namespace: create(:user).namespace, creator_id: user2.id) }
+      let!(:fork_project) { create(:empty_project, forked_from_project: project,  namespace: user2.namespace, creator_id: user2.id) }
+      let!(:unrelated_project) { create(:empty_project,  namespace: create(:user).namespace, creator_id: user2.id) }
 
       before :each do |each|
         fork_project.team << [user2, :reporter]
@@ -392,14 +405,6 @@ describe API::API, api: true  do
     end
   end
 
-  describe "PUT /projects/:id/merge_requests/:merge_request_id to close MR" do
-    it "returns merge_request" do
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), state_event: "close"
-      expect(response).to have_http_status(200)
-      expect(json_response['state']).to eq('closed')
-    end
-  end
-
   describe "PUT /projects/:id/merge_requests/:merge_request_id/merge" do
     let(:pipeline) { create(:ci_pipeline_without_jobs) }
 
@@ -463,8 +468,8 @@ describe API::API, api: true  do
       expect(response).to have_http_status(200)
     end
 
-    it "enables merge when build succeeds if the ci is active" do
-      allow_any_instance_of(MergeRequest).to receive(:pipeline).and_return(pipeline)
+    it "enables merge when pipeline succeeds if the pipeline is active" do
+      allow_any_instance_of(MergeRequest).to receive(:head_pipeline).and_return(pipeline)
       allow(pipeline).to receive(:active?).and_return(true)
 
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user), merge_when_build_succeeds: true
@@ -476,6 +481,15 @@ describe API::API, api: true  do
   end
 
   describe "PUT /projects/:id/merge_requests/:merge_request_id" do
+    context "to close a MR" do
+      it "returns merge_request" do
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), state_event: "close"
+
+        expect(response).to have_http_status(200)
+        expect(json_response['state']).to eq('closed')
+      end
+    end
+
     it "updates title and returns merge_request" do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), title: "New title"
       expect(response).to have_http_status(200)
@@ -494,29 +508,46 @@ describe API::API, api: true  do
       expect(json_response['milestone']['id']).to eq(milestone.id)
     end
 
-    it "returns 400 when source_branch is specified" do
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user),
-      source_branch: "master", target_branch: "master"
-      expect(response).to have_http_status(400)
-    end
-
     it "returns merge_request with renamed target_branch" do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), target_branch: "wiki"
       expect(response).to have_http_status(200)
       expect(json_response['target_branch']).to eq('wiki')
     end
 
+    it "returns merge_request that removes the source branch" do
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), remove_source_branch: true
+
+      expect(response).to have_http_status(200)
+      expect(json_response['force_remove_source_branch']).to be_truthy
+    end
+
     it 'allows special label names' do
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}",
-              user),
-          title: 'new issue',
-          labels: 'label, label?, label&foo, ?, &'
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user),
+        title: 'new issue',
+        labels: 'label, label?, label&foo, ?, &'
+
       expect(response.status).to eq(200)
       expect(json_response['labels']).to include 'label'
       expect(json_response['labels']).to include 'label?'
       expect(json_response['labels']).to include 'label&foo'
       expect(json_response['labels']).to include '?'
       expect(json_response['labels']).to include '&'
+    end
+
+    it 'does not update state when title is empty' do
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), state_event: 'close', title: nil
+
+      merge_request.reload
+      expect(response).to have_http_status(400)
+      expect(merge_request.state).to eq('opened')
+    end
+
+    it 'does not update state when target_branch is empty' do
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), state_event: 'close', target_branch: nil
+
+      merge_request.reload
+      expect(response).to have_http_status(400)
+      expect(merge_request.state).to eq('opened')
     end
   end
 
@@ -539,7 +570,7 @@ describe API::API, api: true  do
 
     it "returns 404 if note is attached to non existent merge request" do
       post api("/projects/#{project.id}/merge_requests/404/comments", user),
-           note: 'My comment'
+        note: 'My comment'
       expect(response).to have_http_status(404)
     end
   end
@@ -596,6 +627,17 @@ describe API::API, api: true  do
       expect(json_response.first['title']).to eq(issue.title)
       expect(json_response.first['id']).to eq(issue.id)
     end
+
+    it 'returns 403 if the user has no access to the merge request' do
+      project = create(:empty_project, :private)
+      merge_request = create(:merge_request, :simple, source_project: project)
+      guest = create(:user)
+      project.team << [guest, :guest]
+
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/closes_issues", guest)
+
+      expect(response).to have_http_status(403)
+    end
   end
 
   describe 'POST :id/merge_requests/:merge_request_id/subscription' do
@@ -616,6 +658,15 @@ describe API::API, api: true  do
       post api("/projects/#{project.id}/merge_requests/123/subscription", user)
 
       expect(response).to have_http_status(404)
+    end
+
+    it 'returns 403 if user has no access to read code' do
+      guest = create(:user)
+      project.team << [guest, :guest]
+
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/subscription", guest)
+
+      expect(response).to have_http_status(403)
     end
   end
 
@@ -638,6 +689,21 @@ describe API::API, api: true  do
 
       expect(response).to have_http_status(404)
     end
+
+    it 'returns 403 if user has no access to read code' do
+      guest = create(:user)
+      project.team << [guest, :guest]
+
+      delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}/subscription", guest)
+
+      expect(response).to have_http_status(403)
+    end
+  end
+
+  describe 'Time tracking' do
+    let(:issuable) { merge_request }
+
+    include_examples 'time tracking endpoints', 'merge_request'
   end
 
   def mr_with_later_created_and_updated_at_time

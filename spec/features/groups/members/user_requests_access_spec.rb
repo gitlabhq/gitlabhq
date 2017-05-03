@@ -3,7 +3,7 @@ require 'spec_helper'
 feature 'Groups > Members > User requests access', feature: true do
   let(:user) { create(:user) }
   let(:owner) { create(:user) }
-  let(:group) { create(:group, :public) }
+  let(:group) { create(:group, :public, :access_requestable) }
   let!(:project) { create(:project, :private, namespace: group) }
 
   background do
@@ -29,7 +29,7 @@ feature 'Groups > Members > User requests access', feature: true do
     expect(page).to have_content 'Your request for access has been queued for review.'
 
     expect(page).to have_content 'Withdraw Access Request'
-    expect(page).not_to have_content 'Leave Group'
+    expect(page).not_to have_content 'Leave group'
   end
 
   scenario 'user does not see private projects' do

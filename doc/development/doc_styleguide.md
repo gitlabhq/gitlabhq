@@ -113,6 +113,77 @@ merge request.
   add an alternative text: `[identifier]: https://example.com "Alternative text"`
   that appears when hovering your mouse on a link
 
+### Linking to inline docs
+
+Sometimes it's needed to link to the built-in documentation that GitLab provides
+under `/help`. This is normally done in files inside the `app/views/` directory
+with the help of the `help_page_path` helper method.
+
+In its simplest form, the HAML code to generate a link to the `/help` page is:
+
+```haml
+= link_to 'Help page', help_page_path('user/permissions')
+```
+
+The `help_page_path` contains the path to the document you want to link to with
+the following conventions:
+
+- it is relative to the `doc/` directory in the GitLab repository
+- the `.md` extension must be omitted
+- it must not end with a slash (`/`)
+
+Below are some special cases where should be used depending on the context.
+You can combine one or more of the following:
+
+1. **Linking to an anchor link.** Use `anchor` as part of the `help_page_path`
+   method:
+
+    ```haml
+    = link_to 'Help page', help_page_path('user/permissions', anchor: 'anchor-link')
+    ```
+
+1. **Opening links in a new tab.** This should be the default behavior:
+
+    ```haml
+    = link_to 'Help page', help_page_path('user/permissions'), target: '_blank'
+    ```
+
+1. **Linking to a circle icon.** Usually used in settings where a long
+   description cannot be used, like near checkboxes. You can basically use
+   any font awesome icon, but prefer the `question-circle`:
+
+    ```haml
+    = link_to icon('question-circle'), help_page_path('user/permissions')
+    ```
+
+1. **Using a button link.** Useful in places where text would be out of context
+   with the rest of the page layout:
+
+    ```haml
+    = link_to 'Help page', help_page_path('user/permissions'),  class: 'btn btn-info'
+    ```
+
+1. **Underlining a link.**
+
+    ```haml
+    = link_to 'Help page', help_page_path('user/permissions'), class: 'underlined-link'
+    ```
+
+1. **Using links inline of some text.**
+
+    ```haml
+    Description to #{link_to 'Help page', help_page_path('user/permissions')}.
+    ```
+
+1. **Adding a period at the end of the sentence.** Useful when you don't want
+   the period to be part of the link:
+
+    ```haml
+    = succeed '.' do
+      Learn more in the
+      = link_to 'Help page', help_page_path('user/permissions')
+    ```
+
 ## Images
 
 - Place images in a separate directory named `img/` in the same directory where
@@ -465,6 +536,7 @@ curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data "domain
 [cURL]: http://curl.haxx.se/ "cURL website"
 [single spaces]: http://www.slate.com/articles/technology/technology/2011/01/space_invaders.html
 [gfm]: http://docs.gitlab.com/ce/user/markdown.html#newlines "GitLab flavored markdown documentation"
+[ce-1242]: https://gitlab.com/gitlab-org/gitlab-ce/issues/1242
 [doc-restart]: ../administration/restart_gitlab.md "GitLab restart documentation"
 [ce-3349]: https://gitlab.com/gitlab-org/gitlab-ce/issues/3349 "Documentation restructure"
 [graffle]: https://gitlab.com/gitlab-org/gitlab-design/blob/d8d39f4a87b90fb9ae89ca12dc565347b4900d5e/production/resources/gitlab-map.graffle

@@ -1,4 +1,6 @@
-/* eslint-disable */
+/* eslint-disable no-unused-vars, no-param-reassign */
+/* global BlobLicenseSelector */
+
 ((global) => {
   class BlobLicenseSelectors {
     constructor({ $dropdowns, editor }) {
@@ -18,5 +20,4 @@
   }
 
   global.BlobLicenseSelectors = BlobLicenseSelectors;
-
 })(window.gl || (window.gl = {}));

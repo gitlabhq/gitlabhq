@@ -1,0 +1,3 @@
+- @stage.statuses.latest.each do |status|
+  %li
+    = render 'ci/status/dropdown_graph_badge', subject: status

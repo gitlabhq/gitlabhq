@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 feature 'Member autocomplete', feature: true do
+  include WaitForAjax
+
   let(:project) { create(:project, :public) }
   let(:user) { create(:user) }
   let(:participant) { create(:user) }
@@ -79,11 +81,10 @@ feature 'Member autocomplete', feature: true do
   end
 
   def open_member_suggestions
-    sleep 1
     page.within('.new-note') do
-      sleep 1
-      find('#note_note').native.send_keys('@')
+      find('#note_note').send_keys('@')
     end
+    wait_for_ajax
   end
 
   def visit_issue(project, issue)

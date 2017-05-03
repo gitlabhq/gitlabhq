@@ -12,16 +12,23 @@
           Create new issue by email
       .modal-body
         %p
-          Write an email to the below email address. (This is a private email address, so keep it secret.)
+          You can create a new issue inside this project by sending an email to the following email address:
         .email-modal-input-group.input-group
           = text_field_tag :issue_email, email, class: "monospace js-select-on-focus form-control", readonly: true
           .input-group-btn
             = clipboard_button(clipboard_target: '#issue_email')
         %p
-          Send an email to this address to create an issue.
+          The subject will be used as the title of the new issue, and the message will be the description.
+
+          = link_to 'Slash commands', help_page_path('user/project/slash_commands'), target: '_blank', tabindex: -1
+          and styling with
+          = link_to 'Markdown', help_page_path('user/markdown'), target: '_blank', tabindex: -1
+          are supported.
+
         %p
-          Use the subject line as the title of your issue.
-        %p
-          Use the message as the body of your issue (feel free to include some nice
-          = succeed ")." do
-            = link_to "Markdown", help_page_path('markdown', 'markdown')
+          This is a private email address, generated just for you.
+
+          Anyone who gets ahold of it can create issues as if they were you.
+          You should
+          = link_to 'reset it', new_issue_address_namespace_project_path(@project.namespace, @project), class: 'incoming-email-token-reset'
+          if that ever happens.

@@ -11,6 +11,28 @@ describe Projects::SnippetsController do
   end
 
   describe 'GET #index' do
+    context 'when page param' do
+      let(:last_page) { project.snippets.page().total_pages }
+      let!(:project_snippet) { create(:project_snippet, :public, project: project, author: user) }
+
+      it 'redirects to last_page if page number is larger than number of pages' do
+        get :index,
+          namespace_id: project.namespace.path,
+          project_id: project.path, page: (last_page + 1).to_param
+
+        expect(response).to redirect_to(namespace_project_snippets_path(page: last_page))
+      end
+
+      it 'redirects to specified page' do
+        get :index,
+          namespace_id: project.namespace.path,
+          project_id: project.path, page: last_page.to_param
+
+        expect(assigns(:snippets).current_page).to eq(last_page)
+        expect(response).to have_http_status(200)
+      end
+    end
+
     context 'when the project snippet is private' do
       let!(:project_snippet) { create(:project_snippet, :private, project: project, author: user) }
 

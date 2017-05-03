@@ -3,10 +3,10 @@
 
 %ul.nav-links
   %li.active
-    %a(href="#tab-general" data-toggle="tab")
+    %a{ href: "#tab-general", data: { toggle: "tab" } }
       = t('sherlock.general')
   %li
-    %a(href="#tab-backtrace" data-toggle="tab")
+    %a{ href: "#tab-backtrace", data: { toggle: "tab" } }
       = t('sherlock.backtrace')
 
 .row-content-block

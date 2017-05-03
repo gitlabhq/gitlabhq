@@ -1,7 +1,7 @@
 # GitLab
 
 [![Build status](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/build.svg)](https://gitlab.com/gitlab-org/gitlab-ce/commits/master)
-[![CE coverage report](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/coverage.svg?job=coverage)](http://gitlab-org.gitlab.io/gitlab-ce/coverage-ruby)
+[![CE coverage report](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/coverage.svg?job=coverage)](https://gitlab-org.gitlab.io/gitlab-ce/coverage-ruby)
 [![Code Climate](https://codeclimate.com/github/gitlabhq/gitlabhq.svg)](https://codeclimate.com/github/gitlabhq/gitlabhq)
 [![Core Infrastructure Initiative Best Practices](https://bestpractices.coreinfrastructure.org/projects/42/badge)](https://bestpractices.coreinfrastructure.org/projects/42)
 
@@ -15,10 +15,10 @@ To see how GitLab looks please see the [features page on our website](https://ab
 
 - Manage Git repositories with fine grained access controls that keep your code secure
 - Perform code reviews and enhance collaboration with merge requests
-- Each project can also have an issue tracker and a wiki
+- Complete continuous integration (CI) and CD pipelines to builds, test, and deploy your applications
+- Each project can also have an issue tracker, issue board, and a wiki
 - Used by more than 100,000 organizations, GitLab is the most popular solution to manage Git repositories on-premises
 - Completely free and open source (MIT Expat license)
-- Powered by [Ruby on Rails](https://github.com/rails/rails)
 
 ## Hiring
 
@@ -74,13 +74,17 @@ Instructions on how to start GitLab and how to run the tests can be found in the
 
 GitLab is a Ruby on Rails application that runs on the following software:
 
-- Ubuntu/Debian/CentOS/RHEL
+- Ubuntu/Debian/CentOS/RHEL/OpenSUSE
 - Ruby (MRI) 2.3
-- Git 2.7.4+
+- Git 2.8.4+
 - Redis 2.8+
-- MySQL or PostgreSQL
+- PostgreSQL (preferred) or MySQL
 
-For more information please see the [architecture documentation](http://doc.gitlab.com/ce/development/architecture.html).
+For more information please see the [architecture documentation](https://docs.gitlab.com/ce/development/architecture.html).
+
+## UX design
+
+Please adhere to the [UX Guide](doc/development/ux_guide/index.md) when creating designs and implementing code.
 
 ## Third-party applications
 
@@ -96,7 +100,7 @@ For upgrading information please see our [update page](https://about.gitlab.com/
 
 ## Documentation
 
-All documentation can be found on [doc.gitlab.com/ce/](http://doc.gitlab.com/ce/).
+All documentation can be found on [docs.gitlab.com/ce/](https://docs.gitlab.com/ce/).
 
 ## Getting help
 
@@ -109,4 +113,4 @@ Please see [Getting help for GitLab](https://about.gitlab.com/getting-help/) on 
 ## Is it awesome?
 
 Thanks for [asking this question](https://twitter.com/supersloth/status/489462789384056832) Joshua.
-[These people](https://twitter.com/gitlab/favorites) seem to like it.
+[These people](https://twitter.com/gitlab/likes) seem to like it.

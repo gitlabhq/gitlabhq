@@ -112,6 +112,6 @@ class Projects::MilestonesController < Projects::ApplicationController
   end
 
   def milestone_params
-    params.require(:milestone).permit(:title, :description, :due_date, :state_event)
+    params.require(:milestone).permit(:title, :description, :start_date, :due_date, :state_event)
   end
 end

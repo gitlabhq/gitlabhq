@@ -1,29 +1,23 @@
-/* eslint-disable */
-((global) => {
+/* eslint-disable no-new, guard-for-in, no-restricted-syntax, no-continue, no-param-reassign, max-len */
 
+//= require lib/utils/bootstrap_linked_tabs
+
+((global) => {
   class Pipelines {
-    constructor() {
-      this.initGraphToggle();
+    constructor(options = {}) {
+      if (options.initTabs && options.tabsOptions) {
+        new global.LinkedTabs(options.tabsOptions);
+      }
+
       this.addMarginToBuildColumns();
     }
 
-    initGraphToggle() {
-      this.pipelineGraph = document.querySelector('.pipeline-graph');
-      this.toggleButton = document.querySelector('.toggle-pipeline-btn');
-      this.toggleButtonText = this.toggleButton.querySelector('.toggle-btn-text');
-      this.toggleButton.addEventListener('click', this.toggleGraph.bind(this));
-    }
-
-    toggleGraph() {
-      const graphCollapsed = this.pipelineGraph.classList.contains('graph-collapsed');
-      this.toggleButton.classList.toggle('graph-collapsed');
-      this.pipelineGraph.classList.toggle('graph-collapsed');
-      this.toggleButtonText.textContent = graphCollapsed ? 'Hide' : 'Expand';
-    }
-
     addMarginToBuildColumns() {
+      this.pipelineGraph = document.querySelector('.js-pipeline-graph');
+
       const secondChildBuildNodes = this.pipelineGraph.querySelectorAll('.build:nth-child(2)');
-      for (buildNodeIndex in secondChildBuildNodes) {
+
+      for (const buildNodeIndex in secondChildBuildNodes) {
         const buildNode = secondChildBuildNodes[buildNodeIndex];
         const firstChildBuildNode = buildNode.previousElementSibling;
         if (!firstChildBuildNode || !firstChildBuildNode.matches('.build')) continue;
@@ -35,10 +29,10 @@
         const columnBuilds = previousColumn.querySelectorAll('.build');
         if (columnBuilds.length === 1) previousColumn.classList.add('no-margin');
       }
+
       this.pipelineGraph.classList.remove('hidden');
     }
   }
 
   global.Pipelines = Pipelines;
-
 })(window.gl || (window.gl = {}));

@@ -10,11 +10,11 @@ you need to use with GitLab.
 
 ## Basic ports
 
-| LB Port | Backend Port | Protocol   |
-| ------- | ------------ | --------   |
-| 80      | 80           | HTTP       |
-| 443     | 443          | HTTPS [^1] |
-| 22      | 22           | TCP        |
+| LB Port | Backend Port | Protocol        |
+| ------- | ------------ | --------------- |
+| 80      | 80           | HTTP  [^1]      |
+| 443     | 443          | HTTPS [^1] [^2] |
+| 22      | 22           | TCP             |
 
 ## GitLab Pages Ports
 
@@ -25,8 +25,8 @@ GitLab Pages requires a separate VIP. Configure DNS to point the
 
 | LB Port | Backend Port | Protocol |
 | ------- | ------------ | -------- |
-| 80      | Varies [^2]  | HTTP     |
-| 443     | Varies [^2]  | TCP [^3] |
+| 80      | Varies [^3]  | HTTP     |
+| 443     | Varies [^3]  | TCP [^4] |
 
 ## Alternate SSH Port
 
@@ -50,13 +50,19 @@ Read more on high-availability configuration:
 1. [Configure NFS](nfs.md)
 1. [Configure the GitLab application servers](gitlab.md)
 
-[^1]: When using HTTPS protocol for port 443, you will need to add an SSL
+[^1]: [Web terminal](../../ci/environments.md#web-terminals) support requires
+      your load balancer to correctly handle WebSocket connections. When using
+      HTTP or HTTPS proxying, this means your load balancer must be configured
+      to pass through the `Connection` and `Upgrade` hop-by-hop headers. See the
+      [web terminal](../integration/terminal.md) integration guide for
+      more details.
+[^2]: When using HTTPS protocol for port 443, you will need to add an SSL
       certificate to the load balancers. If you wish to terminate SSL at the
       GitLab application server instead, use TCP protocol.
-[^2]: The backend port for GitLab Pages depends on the
+[^3]: The backend port for GitLab Pages depends on the
       `gitlab_pages['external_http']` and `gitlab_pages['external_https']`
       setting. See [GitLab Pages documentation][gitlab-pages] for more details.
-[^3]: Port 443 for GitLab Pages should always use the TCP protocol. Users can
+[^4]: Port 443 for GitLab Pages should always use the TCP protocol. Users can
       configure custom domains with custom SSL, which would not be possible
       if SSL was terminated at the load balancer.
 

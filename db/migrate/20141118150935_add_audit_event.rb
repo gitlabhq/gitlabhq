@@ -1,5 +1,7 @@
 # rubocop:disable all
 class AddAuditEvent < ActiveRecord::Migration
+  DOWNTIME = false
+
   def change
     create_table :audit_events do |t|
       t.integer :author_id, null: false
@@ -13,7 +15,7 @@ class AddAuditEvent < ActiveRecord::Migration
       # Details for the event
       t.text  :details
 
-      t.timestamps
+      t.timestamps null: true
     end
 
     add_index :audit_events, :author_id

@@ -17,5 +17,9 @@
         %code= Doorkeeper.configuration.native_redirect_uri
         for local tests
 
+  .form-group
+    = f.label :scopes, class: 'label-light'
+    = render 'shared/tokens/scopes_form', prefix: 'doorkeeper_application', token: application, scopes: @scopes
+
   .prepend-top-default
     = f.submit 'Save application', class: "btn btn-create"

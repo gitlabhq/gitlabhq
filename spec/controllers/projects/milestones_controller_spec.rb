@@ -31,7 +31,7 @@ describe Projects::MilestonesController do
 
       # Check system note left for milestone removal
       last_note = project.issues.find(issue.id).notes[-1].note
-      expect(last_note).to eq('Milestone removed')
+      expect(last_note).to eq('removed milestone')
     end
   end
 end

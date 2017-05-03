@@ -24,7 +24,7 @@
     @include clearfix;
 
     padding: 10px 0;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid $list-border-light;
     display: block;
     margin: 0;
 
@@ -46,7 +46,7 @@
 
     &.light {
       a {
-        color: $gl-gray;
+        color: $gl-text-color;
       }
     }
   }
@@ -67,8 +67,8 @@
 }
 
 @mixin dark-diff-match-line {
-  color: rgba(255, 255, 255, 0.3);
-  background: rgba(255, 255, 255, 0.1);
+  color: $dark-diff-match-bg;
+  background: $dark-diff-match-color;
 }
 
 @mixin webkit-prefix($property, $value) {

@@ -1,0 +1,48 @@
+.snippet-row {
+  .title {
+    margin-bottom: 2px;
+  }
+
+  .snippet-filename {
+    padding: 0 2px;
+  }
+}
+
+.snippet-form-holder .file-holder .file-title {
+  padding: 2px;
+}
+
+.markdown-snippet-copy {
+  position: fixed;
+  top: -10px;
+  left: -10px;
+  max-height: 0;
+  max-width: 0;
+}
+
+.snippet-file-content {
+  border-radius: 3px;
+}
+
+.snippet-header {
+  padding: $gl-padding 0;
+}
+
+.snippet-title {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.snippet-edited-ago {
+  color: $gray-darkest;
+}
+
+.snippet-actions {
+  @media (min-width: $screen-sm-min) {
+    float: right;
+  }
+}
+
+.snippet-scope-menu .btn-new {
+  margin-top: 15px;
+}

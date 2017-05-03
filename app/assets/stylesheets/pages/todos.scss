@@ -11,7 +11,7 @@
       background: $todo-alert-blue;
       margin-left: -17px;
       font-size: 11px;
-      color: white;
+      color: $white-light;
       padding: 3px;
       padding-top: 1px;
       padding-bottom: 1px;
@@ -81,7 +81,7 @@
       word-wrap: break-word;
 
       .md {
-        color: #7f8fa4;
+        color: $gl-grayish-blue;
         font-size: $gl-font-size;
 
         .label {
@@ -90,7 +90,7 @@
         }
 
         p {
-          color: #5c5d5e;
+          color: $gl-text-color;
         }
       }
 
@@ -102,7 +102,7 @@
         border: none;
         background: $gray-light;
         border-radius: 0;
-        color: #777;
+        color: $todo-body-pre-color;
         margin: 0 20px;
         overflow: hidden;
       }
@@ -146,7 +146,7 @@
 
     .todo-body {
       margin: 0;
-      border-left: 2px solid #ddd;
+      border-left: 2px solid $todo-body-border;
       padding-left: 10px;
     }
   }

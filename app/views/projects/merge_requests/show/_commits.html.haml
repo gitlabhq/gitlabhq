@@ -1,6 +1,8 @@
-.content-block.oneline-block
-  = icon("sort-amount-desc")
-  Most recent commits displayed first
-
-%ol#commits-list.list-unstyled
-  = render "projects/commits/commits", project: @merge_request.source_project
+- if @commits.empty?
+  .commits-empty
+    %h4
+      There are no commits yet.
+    = custom_icon ('illustration_no_commits')
+- else
+  %ol#commits-list.list-unstyled
+    = render "projects/commits/commits", project: @merge_request.source_project, ref: @merge_request.source_branch

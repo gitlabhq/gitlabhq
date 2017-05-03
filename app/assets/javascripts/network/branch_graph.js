@@ -1,6 +1,8 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, quotes, comma-dangle, one-var, one-var-declaration-per-line, no-mixed-operators, new-cap, no-loop-func, no-floating-decimal, consistent-return, no-unused-vars, prefer-template, prefer-arrow-callback, camelcase, max-len */
+/* global Raphael */
+
 (function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
 
   this.BranchGraph = (function() {
     function BranchGraph(element1, options1) {
@@ -51,7 +53,7 @@
       this.top = this.r.set();
       this.barHeight = Math.max(this.graphHeight, this.unitTime * this.days.length + 320);
       ref = this.commits;
-      for (j = 0, len = ref.length; j < len; j++) {
+      for (j = 0, len = ref.length; j < len; j += 1) {
         c = ref[j];
         if (c.id in this.parents) {
           c.isParent = true;
@@ -66,7 +68,7 @@
       var c, j, len, p, ref, results;
       ref = this.commits;
       results = [];
-      for (j = 0, len = ref.length; j < len; j++) {
+      for (j = 0, len = ref.length; j < len; j += 1) {
         c = ref[j];
         this.mtime = Math.max(this.mtime, c.time);
         this.mspace = Math.max(this.mspace, c.space);
@@ -74,7 +76,7 @@
           var l, len1, ref1, results1;
           ref1 = c.parents;
           results1 = [];
-          for (l = 0, len1 = ref1.length; l < len1; l++) {
+          for (l = 0, len1 = ref1.length; l < len1; l += 1) {
             p = ref1[l];
             this.parents[p[0]] = true;
             results1.push(this.mspace = Math.max(this.mspace, p[1]));
@@ -94,7 +96,7 @@
         // Skipping a few colors in the spectrum to get more contrast between colors
         Raphael.getColor();
         Raphael.getColor();
-        results.push(k++);
+        results.push(k += 1);
       }
       return results;
     };
@@ -111,7 +113,7 @@
         fill: "#444"
       });
       ref = this.days;
-      for (mm = j = 0, len = ref.length; j < len; mm = ++j) {
+      for (mm = j = 0, len = ref.length; j < len; mm = (j += 1)) {
         day = ref[mm];
         if (cuday !== day[0] || cumonth !== day[1]) {
           // Dates
@@ -284,7 +286,7 @@
       r = this.r;
       ref = commit.parents;
       results = [];
-      for (i = j = 0, len = ref.length; j < len; i = ++j) {
+      for (i = j = 0, len = ref.length; j < len; i = (j += 1)) {
         parent = ref[i];
         parentCommit = this.preparedCommits[parent[0]];
         parentY = this.offsetY + this.unitTime * parentCommit.time;
@@ -344,7 +346,6 @@
     };
 
     return BranchGraph;
-
   })();
 
   Raphael.prototype.commitTooltip = function(x, y, commit) {
@@ -354,7 +355,7 @@
     icon = this.image(gon.relative_url_root + commit.author.icon, x, y, 20, 20);
     nameText = this.text(x + 25, y + 10, commit.author.name);
     idText = this.text(x, y + 35, commit.id);
-    messageText = this.text(x, y + 50, commit.message);
+    messageText = this.text(x, y + 50, commit.message.replace(/\r?\n/g, " \n "));
     textSet = this.set(icon, nameText, idText, messageText).attr({
       "text-anchor": "start",
       font: "12px Monaco, monospace"
@@ -366,6 +367,7 @@
     idText.attr({
       fill: "#AAA"
     });
+    messageText.node.style["white-space"] = "pre";
     this.textWrap(messageText, boxWidth - 50);
     rect = this.rect(x - 10, y - 10, boxWidth, 100, 4).attr({
       fill: "#FFF",
@@ -396,23 +398,27 @@
     words = content.split(" ");
     x = 0;
     s = [];
-    for (j = 0, len = words.length; j < len; j++) {
+    for (j = 0, len = words.length; j < len; j += 1) {
       word = words[j];
       if (x + (word.length * letterWidth) > width) {
         s.push("\n");
         x = 0;
       }
-      x += word.length * letterWidth;
-      s.push(word + " ");
+      if (word === "\n") {
+        s.push("\n");
+        x = 0;
+      } else {
+        s.push(word + " ");
+        x += word.length * letterWidth;
+      }
     }
     t.attr({
-      text: s.join("")
+      text: s.join("").trim()
     });
     b = t.getBBox();
-    h = Math.abs(b.y2) - Math.abs(b.y) + 1;
+    h = Math.abs(b.y2) + 1;
     return t.attr({
-      y: b.y + h
+      y: h
     });
   };
-
 }).call(this);

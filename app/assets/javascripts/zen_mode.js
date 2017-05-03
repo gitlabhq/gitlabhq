@@ -1,4 +1,7 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, prefer-arrow-callback, no-unused-vars, consistent-return, camelcase, comma-dangle, max-len */
+/* global Dropzone */
+/* global Mousetrap */
+
 // Zen Mode (full screen) textarea
 //
 /*= provides zen_mode:enter */
@@ -90,7 +93,5 @@
     };
 
     return ZenMode;
-
   })();
-
 }).call(this);

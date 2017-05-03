@@ -2,7 +2,8 @@ require 'spec_helper'
 include WaitForAjax
 
 describe 'Cherry-pick Commits' do
-  let(:project) { create(:project) }
+  let(:group) { create(:group) }
+  let(:project) { create(:project, namespace: group) }
   let(:master_pickable_commit)  { project.commit('7d3b0f7cff5f37573aea97cebfd5692ea1689924') }
   let(:master_pickable_merge)  { project.commit('e56497bb5f03a90a51293fc6d516788730953899') }
 
@@ -64,7 +65,7 @@ describe 'Cherry-pick Commits' do
 
   context "I cherry-pick a commit from a different branch", js: true do
     it do
-      find('.commit-action-buttons a.dropdown-toggle').click
+      find('.header-action-buttons a.dropdown-toggle').click
       find(:css, "a[href='#modal-cherry-pick-commit']").click
 
       page.within('#modal-cherry-pick-commit') do

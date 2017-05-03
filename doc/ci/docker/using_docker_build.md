@@ -44,7 +44,8 @@ GitLab Runner then executes build scripts as the `gitlab-runner` user.
 
 2. Install Docker Engine on server.
 
-    For more information how to install Docker Engine on different systems checkout the [Supported installations](https://docs.docker.com/engine/installation/).
+    For more information how to install Docker Engine on different systems
+    checkout the [Supported installations](https://docs.docker.com/engine/installation/).
 
 3. Add `gitlab-runner` user to `docker` group:
 
@@ -122,10 +123,16 @@ In order to do that, follow the steps:
         Insecure = false
     ```
 
-1. You can now use `docker` in the build script (note the inclusion of the `docker:dind` service):
+1. You can now use `docker` in the build script (note the inclusion of the
+   `docker:dind` service):
 
     ```yaml
     image: docker:latest
+
+    # When using dind, it's wise to use the overlayfs driver for
+    # improved performance.
+    variables:
+      DOCKER_DRIVER: overlay
 
     services:
     - docker:dind
@@ -140,15 +147,21 @@ In order to do that, follow the steps:
       - docker run my-docker-image /script/to/run/tests
     ```
 
-Docker-in-Docker works well, and is the recommended configuration, but it is not without its own challenges:
-* By enabling `--docker-privileged`, you are effectively disabling all of
-the security mechanisms of containers and exposing your host to privilege
-escalation which can lead to container breakout. For more information, check out the official Docker documentation on
-[Runtime privilege and Linux capabilities][docker-cap].
-* Using docker-in-docker, each build is in a clean environment without the past
-history. Concurrent builds work fine because every build gets it's own instance of docker engine so they won't conflict with each other. But this also means builds can be slower because there's no caching of layers.
-* By default, `docker:dind` uses `--storage-driver vfs` which is the slowest form
-offered.
+Docker-in-Docker works well, and is the recommended configuration, but it is
+not without its own challenges:
+
+- By enabling `--docker-privileged`, you are effectively disabling all of
+  the security mechanisms of containers and exposing your host to privilege
+  escalation which can lead to container breakout. For more information, check
+  out the official Docker documentation on
+  [Runtime privilege and Linux capabilities][docker-cap].
+- Using docker-in-docker, each build is in a clean environment without the past
+  history. Concurrent builds work fine because every build gets it's own
+  instance of Docker engine so they won't conflict with each other. But this
+  also means builds can be slower because there's no caching of layers.
+- By default, `docker:dind` uses `--storage-driver vfs` which is the slowest
+  form offered. To use a different driver, see
+  [Using the overlayfs driver](#using-the-overlayfs-driver).
 
 An example project using this approach can be found here: https://gitlab.com/gitlab-examples/docker.
 
@@ -221,14 +234,52 @@ work as expected since volume mounting is done in the context of the host
 machine, not the build container.
 e.g. `docker run --rm -t -i -v $(pwd)/src:/home/app/src test-image:latest run_app_tests`
 
+## Using the OverlayFS driver
+
+By default, when using `docker:dind`, Docker uses the `vfs` storage driver which
+copies the filesystem on every run. This is a very disk-intensive operation
+which can be avoided if a different driver is used, for example `overlay`.
+
+1. Make sure a recent kernel is used, preferably `>= 4.2`.
+1. Check whether the `overlay` module is loaded:
+
+    ```
+    sudo lsmod | grep overlay
+    ```
+
+    If you see no result, then it isn't loaded. To load it use:
+
+    ```
+    sudo modprobe overlay
+    ```
+
+    If everything went fine, you need to make sure module is loaded on reboot.
+    On Ubuntu systems, this is done by editing `/etc/modules`. Just add the
+    following line into it:
+
+    ```
+    overlay
+    ```
+
+1. Use the driver by defining a variable at the top of your `.gitlab-ci.yml`:
+
+    ```
+    variables:
+      DOCKER_DRIVER: overlay
+    ```
+
 ## Using the GitLab Container Registry
 
-> **Note:**
-This feature requires GitLab 8.8 and GitLab Runner 1.2.
+> **Notes:**
+- This feature requires GitLab 8.8 and GitLab Runner 1.2.
+- Starting from GitLab 8.12, if you have 2FA enabled in your account, you need
+  to pass a personal access token instead of your password in order to login to
+  GitLab's Container Registry.
 
-Once you've built a Docker image, you can push it up to the built-in [GitLab Container Registry](../../container_registry/README.md). For example, if you're using
-docker-in-docker on your runners, this is how your `.gitlab-ci.yml` could look:
-
+Once you've built a Docker image, you can push it up to the built-in
+[GitLab Container Registry](../../user/project/container_registry.md). For example,
+if you're using docker-in-docker on your runners, this is how your `.gitlab-ci.yml`
+could look like:
 
 ```yaml
  build:
@@ -307,10 +358,20 @@ deploy:
 ```
 
 Some things you should be aware of when using the Container Registry:
-* You must log in to the container registry before running commands. Putting this in `before_script` will run it before each build job.
-* Using `docker build --pull` makes sure that Docker fetches any changes to base images before building just in case your cache is stale. It takes slightly longer, but means you don’t get stuck without security patches to base images.
-* Doing an explicit `docker pull` before each `docker run` makes sure to fetch the latest image that was just built. This is especially important if you are using multiple runners that cache images locally. Using the git SHA in your image tag makes this less necessary since each build will be unique and you shouldn't ever have a stale image, but it's still possible if you re-build a given commit after a dependency has changed.
-* You don't want to build directly to `latest` in case there are multiple builds happening simultaneously.
+
+- You must log in to the container registry before running commands. Putting
+  this in `before_script` will run it before each build job.
+- Using `docker build --pull` makes sure that Docker fetches any changes to base
+  images before building just in case your cache is stale. It takes slightly
+  longer, but means you don’t get stuck without security patches to base images.
+- Doing an explicit `docker pull` before each `docker run` makes sure to fetch
+  the latest image that was just built. This is especially important if you are
+  using multiple runners that cache images locally. Using the git SHA in your
+  image tag makes this less necessary since each build will be unique and you
+  shouldn't ever have a stale image, but it's still possible if you re-build a
+  given commit after a dependency has changed.
+- You don't want to build directly to `latest` in case there are multiple builds
+  happening simultaneously.
 
 [docker-in-docker]: https://blog.docker.com/2013/09/docker-can-now-run-within-docker/
 [docker-cap]: https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities

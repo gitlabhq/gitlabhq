@@ -7,26 +7,72 @@ describe GlobalMilestone, models: true do
   let(:project1) { create(:project, group: group) }
   let(:project2) { create(:project, path: 'gitlab-ci', group: group) }
   let(:project3) { create(:project, path: 'cookbook-gitlab', group: group) }
-  let(:milestone1_project1) { create(:milestone, title: "Milestone v1.2", project: project1) }
-  let(:milestone1_project2) { create(:milestone, title: "Milestone v1.2", project: project2) }
-  let(:milestone1_project3) { create(:milestone, title: "Milestone v1.2", project: project3) }
-  let(:milestone2_project1) { create(:milestone, title: "VD-123", project: project1) }
-  let(:milestone2_project2) { create(:milestone, title: "VD-123", project: project2) }
-  let(:milestone2_project3) { create(:milestone, title: "VD-123", project: project3) }
 
   describe '.build_collection' do
-    before do
-      milestones =
-        [
-          milestone1_project1,
-          milestone1_project2,
-          milestone1_project3,
-          milestone2_project1,
-          milestone2_project2,
-          milestone2_project3
-        ]
+    let(:milestone1_due_date) { 2.weeks.from_now.to_date }
 
-      @global_milestones = GlobalMilestone.build_collection(milestones)
+    let!(:milestone1_project1) do
+      create(
+        :milestone,
+        title: "Milestone v1.2",
+        project: project1,
+        due_date: milestone1_due_date
+      )
+    end
+
+    let!(:milestone1_project2) do
+      create(
+        :milestone,
+        title: "Milestone v1.2",
+        project: project2,
+        due_date: milestone1_due_date
+      )
+    end
+
+    let!(:milestone1_project3) do
+      create(
+        :milestone,
+        title: "Milestone v1.2",
+        project: project3,
+        due_date: milestone1_due_date
+      )
+    end
+
+    let!(:milestone2_project1) do
+      create(
+        :milestone,
+        title: "VD-123",
+        project: project1,
+        due_date: nil
+      )
+    end
+
+    let!(:milestone2_project2) do
+      create(
+        :milestone,
+        title: "VD-123",
+        project: project2,
+        due_date: nil
+      )
+    end
+
+    let!(:milestone2_project3) do
+      create(
+        :milestone,
+        title: "VD-123",
+        project: project3,
+        due_date: nil
+      )
+    end
+
+    before do
+      projects = [
+        project1,
+        project2,
+        project3
+      ]
+
+      @global_milestones = GlobalMilestone.build_collection(projects, {})
     end
 
     it 'has all project milestones' do
@@ -40,9 +86,17 @@ describe GlobalMilestone, models: true do
     it 'has all project milestones' do
       expect(@global_milestones.map { |group_milestone| group_milestone.milestones.count }.sum).to eq(6)
     end
+
+    it 'sorts collection by due date' do
+      expect(@global_milestones.map(&:due_date)).to eq [nil, milestone1_due_date]
+    end
   end
 
   describe '#initialize' do
+    let(:milestone1_project1) { create(:milestone, title: "Milestone v1.2", project: project1) }
+    let(:milestone1_project2) { create(:milestone, title: "Milestone v1.2", project: project2) }
+    let(:milestone1_project3) { create(:milestone, title: "Milestone v1.2", project: project3) }
+
     before do
       milestones =
         [

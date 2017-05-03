@@ -25,7 +25,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   helper_method :can?, :current_application_settings
-  helper_method :import_sources_enabled?, :github_import_enabled?, :github_import_configured?, :gitlab_import_enabled?, :gitlab_import_configured?, :bitbucket_import_enabled?, :bitbucket_import_configured?, :google_code_import_enabled?, :fogbugz_import_enabled?, :git_import_enabled?, :gitlab_project_import_enabled?
+  helper_method :import_sources_enabled?, :github_import_enabled?, :gitea_import_enabled?, :github_import_configured?, :gitlab_import_enabled?, :gitlab_import_configured?, :bitbucket_import_enabled?, :bitbucket_import_configured?, :google_code_import_enabled?, :fogbugz_import_enabled?, :git_import_enabled?, :gitlab_project_import_enabled?
 
   rescue_from Encoding::CompatibilityError do |exception|
     log_exception(exception)
@@ -47,6 +47,14 @@ class ApplicationController < ActionController::Base
 
   def not_found
     render_404
+  end
+
+  def route_not_found
+    if current_user
+      not_found
+    else
+      redirect_to new_user_session_path
+    end
   end
 
   protected
@@ -192,9 +200,10 @@ class ApplicationController < ActionController::Base
   end
 
   # JSON for infinite scroll via Pager object
-  def pager_json(partial, count)
+  def pager_json(partial, count, locals = {})
     html = render_to_string(
       partial,
+      locals: locals,
       layout: false,
       formats: [:html]
     )
@@ -223,7 +232,7 @@ class ApplicationController < ActionController::Base
   end
 
   def require_email
-    if current_user && current_user.temp_oauth_email?
+    if current_user && current_user.temp_oauth_email? && session[:impersonator_id].nil?
       redirect_to profile_path, notice: 'Please complete your profile with email address' and return
     end
   end
@@ -234,6 +243,10 @@ class ApplicationController < ActionController::Base
 
   def github_import_enabled?
     current_application_settings.import_sources.include?('github')
+  end
+
+  def gitea_import_enabled?
+    current_application_settings.import_sources.include?('gitea')
   end
 
   def github_import_configured?
@@ -253,7 +266,7 @@ class ApplicationController < ActionController::Base
   end
 
   def bitbucket_import_configured?
-    Gitlab::OAuth::Provider.enabled?(:bitbucket) && Gitlab::BitbucketImport.public_key.present?
+    Gitlab::OAuth::Provider.enabled?(:bitbucket)
   end
 
   def google_code_import_enabled?

@@ -17,13 +17,13 @@
 
   .pull-right
     .dropdown.inline
-      %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
+      %button.dropdown-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
         %span.light
         - if @sort.present?
           = sort_options_hash[@sort]
         - else
           = sort_title_recently_created
-        = icon('caret-down')
+        = icon('chevron-down')
       %ul.dropdown-menu.dropdown-menu-align-right
         %li
           = link_to explore_groups_path(sort: sort_value_recently_created) do

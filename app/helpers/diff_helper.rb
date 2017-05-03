@@ -51,11 +51,12 @@ module DiffHelper
     html.html_safe
   end
 
-  def diff_line_content(line, line_type = nil)
+  def diff_line_content(line)
     if line.blank?
-      " &nbsp;".html_safe
+      "&nbsp;".html_safe
     else
-      line[0] = ' ' if %w[new old].include?(line_type)
+      # We can't use `sub` because the HTML-safeness of `line` will not survive.
+      line[0] = '' if line.start_with?('+', '-', ' ')
       line
     end
   end
@@ -163,5 +164,11 @@ module DiffHelper
     options[:class] << ' btn btn-default'
 
     link_to "#{hide_whitespace? ? 'Show' : 'Hide'} whitespace changes", url, class: options[:class]
+  end
+
+  def render_overflow_warning?(diff_files)
+    diffs = @merge_request_diff.presence || diff_files
+
+    diffs.overflow?
   end
 end

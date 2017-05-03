@@ -1,22 +1,27 @@
 module Emails
   module Pipelines
-    def pipeline_success_email(pipeline, to)
-      pipeline_mail(pipeline, to, 'succeeded')
+    def pipeline_success_email(pipeline, recipients)
+      pipeline_mail(pipeline, recipients, 'succeeded')
     end
 
-    def pipeline_failed_email(pipeline, to)
-      pipeline_mail(pipeline, to, 'failed')
+    def pipeline_failed_email(pipeline, recipients)
+      pipeline_mail(pipeline, recipients, 'failed')
     end
 
     private
 
-    def pipeline_mail(pipeline, to, status)
+    def pipeline_mail(pipeline, recipients, status)
       @project = pipeline.project
       @pipeline = pipeline
       @merge_request = pipeline.merge_requests.first
       add_headers
 
-      mail(to: to, subject: pipeline_subject(status), skip_premailer: true) do |format|
+      # We use bcc here because we don't want to generate this emails for a
+      # thousand times. This could be potentially expensive in a loop, and
+      # recipients would contain all project watchers so it could be a lot.
+      mail(bcc: recipients,
+           subject: pipeline_subject(status),
+           skip_premailer: true) do |format|
         format.html { render layout: false }
         format.text
       end

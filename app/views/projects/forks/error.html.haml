@@ -13,7 +13,11 @@
     - if @forked_project && @forked_project.errors.any?
       %p
         &ndash;
-        = @forked_project.errors.full_messages.first
+        - error = @forked_project.errors.full_messages.first
+        - if error.include?("already been taken")
+          Name has already been taken
+        - else
+          = error
 
     %p
       = link_to new_namespace_project_fork_path(@project.namespace, @project), title: "Fork", class: "btn" do

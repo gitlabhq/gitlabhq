@@ -1,4 +1,10 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle, space-before-function-paren, no-new */
+/* global Vue */
+/* global IssuableContext */
+/* global MilestoneSelect */
+/* global LabelsSelect */
+/* global Sidebar */
+
 (() => {
   const Store = gl.issueBoards.BoardsStore;
 
@@ -41,13 +47,13 @@
         this.detail.issue = {};
       }
     },
-    ready () {
+    mounted () {
       new IssuableContext(this.currentUser);
       new MilestoneSelect();
       new gl.DueDateSelectors();
       new LabelsSelect();
       new Sidebar();
-      new Subscription('.subscription');
+      gl.Subscription.bindAll('.subscription');
     }
   });
 })();

@@ -8,8 +8,8 @@ header {
 
   &.navbar-empty {
     height: $header-height;
-    background: #fff;
-    border-bottom: 1px solid $btn-gray-hover;
+    background: $white-light;
+    border-bottom: 1px solid $white-normal;
 
     .center-logo {
       margin: 8px 0;
@@ -27,7 +27,7 @@ header {
     z-index: 100;
     margin-bottom: 0;
     height: $header-height;
-    background-color: $background-color;
+    background-color: $gray-light;
     border: none;
     border-bottom: 1px solid $border-color;
 
@@ -45,7 +45,7 @@ header {
       padding: 0;
 
       .nav > li > a {
-        color: $gl-icon-color;
+        color: $gl-text-color-secondary;
         font-size: 18px;
         padding: 0;
         margin: ($header-height - 28) / 2 0;
@@ -57,21 +57,34 @@ header {
 
         &.header-user-dropdown-toggle {
           margin-left: 14px;
+
+          &:hover,
+          &:focus,
+          &:active {
+            .header-user-avatar {
+              border-color: rgba($avatar-border, .2);
+            }
+          }
         }
 
         &:hover,
         &:focus,
         &:active {
-          background-color: $background-color;
+          background-color: $gray-light;
+          color: darken($gl-text-color-secondary, 30%);
+
+          .todos-pending-count {
+            background: darken($todo-alert-blue, 10%);
+          }
         }
 
         .fa-caret-down {
-          font-size: 15px;
+          font-size: 14px;
         }
       }
 
       .navbar-toggle {
-        color: #666;
+        color: $nav-toggle-gray;
         margin: 6px 0;
         border-radius: 0;
         position: absolute;
@@ -79,11 +92,11 @@ header {
         padding: 6px 10px;
 
         &:hover {
-          background-color: $btn-gray-hover;
+          background-color: $white-normal;
         }
 
         &.active {
-          color: $gl-icon-color;
+          color: $gl-text-color-secondary;
         }
       }
     }
@@ -95,14 +108,11 @@ header {
       font-size: 18px;
       padding: 6px 10px;
       border: none;
-      background-color: $background-color;
+      background-color: $gray-light;
 
       &:hover {
-        background-color: $btn-gray-hover;
-      }
-
-      &:focus {
-        outline: none;
+        background-color: $white-normal;
+        color: $gl-header-nav-hover-color;
       }
     }
   }
@@ -155,8 +165,8 @@ header {
       position: relative;
       padding-right: 20px;
       margin: 0;
-      font-size: 19px;
-      max-width: 400px;
+      font-size: 18px;
+      max-width: 385px;
       display: inline-block;
       line-height: $header-height;
       font-weight: normal;
@@ -179,6 +189,7 @@ header {
 
         &:hover {
           text-decoration: underline;
+          color: $gl-header-nav-hover-color;
         }
       }
 
@@ -195,6 +206,10 @@ header {
         font-size: 10px;
         text-align: center;
         cursor: pointer;
+
+        &:hover {
+          color: $gl-header-nav-hover-color;
+        }
       }
 
       .project-item-select {
@@ -219,6 +234,14 @@ header {
 
   .impersonation i {
     color: $red-normal;
+  }
+}
+
+.page-sidebar-pinned.right-sidebar-expanded {
+  @media (max-width: $screen-md-max) {
+    .header-content .title {
+      width: 300px;
+    }
   }
 }
 
@@ -258,4 +281,5 @@ header {
   float: left;
   margin-right: 5px;
   border-radius: 50%;
+  border: 1px solid $avatar-border;
 }

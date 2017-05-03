@@ -7,7 +7,7 @@
 #   current_user - which user use
 #   params:
 #     scope: 'created-by-me' or 'assigned-to-me' or 'all'
-#     state: 'open' or 'closed' or 'all'
+#     state: 'opened' or 'closed' or 'all'
 #     group_id: integer
 #     project_id: integer
 #     milestone_title: string
@@ -15,15 +15,14 @@
 #     search: string
 #     label_name: string
 #     sort: string
+#     non_archived: boolean
 #
-require_relative 'projects_finder'
-
 class IssuableFinder
   NONE = '0'
 
   attr_accessor :current_user, :params
 
-  def initialize(current_user, params)
+  def initialize(current_user, params = {})
     @current_user = current_user
     @params = params
   end
@@ -40,7 +39,46 @@ class IssuableFinder
     items = by_author(items)
     items = by_label(items)
     items = by_due_date(items)
+    items = by_non_archived(items)
     sort(items)
+  end
+
+  def find(*params)
+    execute.find(*params)
+  end
+
+  def find_by(*params)
+    execute.find_by(*params)
+  end
+
+  # We often get counts for each state by running a query per state, and
+  # counting those results. This is typically slower than running one query
+  # (even if that query is slower than any of the individual state queries) and
+  # grouping and counting within that query.
+  #
+  def count_by_state
+    count_params = params.merge(state: nil, sort: nil)
+    labels_count = label_names.any? ? label_names.count : 1
+    finder = self.class.new(current_user, count_params)
+    counts = Hash.new(0)
+
+    # Searching by label includes a GROUP BY in the query, but ours will be last
+    # because it is added last. Searching by multiple labels also includes a row
+    # per issuable, so we have to count those in Ruby - which is bad, but still
+    # better than performing multiple queries.
+    #
+    finder.execute.reorder(nil).group(:state).count.each do |key, value|
+      counts[Array(key).last.to_sym] += value / labels_count
+    end
+
+    counts[:all] = counts.values.sum
+    counts[:opened] += counts[:reopened]
+
+    counts
+  end
+
+  def find_by!(*params)
+    execute.find_by!(*params)
   end
 
   def group
@@ -61,31 +99,26 @@ class IssuableFinder
   def project
     return @project if defined?(@project)
 
-    if project?
-      @project = Project.find(params[:project_id])
+    project = Project.find(params[:project_id])
+    project = nil unless Ability.allowed?(current_user, :"read_#{klass.to_ability_name}", project)
 
-      unless Ability.allowed?(current_user, :read_project, @project)
-        @project = nil
-      end
-    else
-      @project = nil
-    end
-
-    @project
+    @project = project
   end
 
   def projects
     return @projects if defined?(@projects)
+    return @projects = project if project?
 
-    if project?
-      @projects = project
-    elsif current_user && params[:authorized_only].presence && !current_user_related?
-      @projects = current_user.authorized_projects.reorder(nil)
-    elsif group
-      @projects = GroupProjectsFinder.new(group).execute(current_user).reorder(nil)
-    else
-      @projects = ProjectsFinder.new.execute(current_user).reorder(nil)
-    end
+    projects =
+      if current_user && params[:authorized_only].presence && !current_user_related?
+        current_user.authorized_projects
+      elsif group
+        GroupProjectsFinder.new(group).execute(current_user)
+      else
+        ProjectsFinder.new.execute(current_user)
+      end
+
+    @projects = projects.with_feature_available_for_user(klass, current_user).reorder(nil)
   end
 
   def search
@@ -132,31 +165,53 @@ class IssuableFinder
       end
   end
 
-  def assignee?
-    params[:assignee_id].present?
+  def assignee_id?
+    params[:assignee_id].present? && params[:assignee_id] != NONE
+  end
+
+  def assignee_username?
+    params[:assignee_username].present? && params[:assignee_username] != NONE
+  end
+
+  def no_assignee?
+    # Assignee_id takes precedence over assignee_username
+    params[:assignee_id] == NONE || params[:assignee_username] == NONE
   end
 
   def assignee
     return @assignee if defined?(@assignee)
 
     @assignee =
-      if assignee? && params[:assignee_id] != NONE
-        User.find(params[:assignee_id])
+      if assignee_id?
+        User.find_by(id: params[:assignee_id])
+      elsif assignee_username?
+        User.find_by(username: params[:assignee_username])
       else
         nil
       end
   end
 
-  def author?
-    params[:author_id].present?
+  def author_id?
+    params[:author_id].present? && params[:author_id] != NONE
+  end
+
+  def author_username?
+    params[:author_username].present? && params[:author_username] != NONE
+  end
+
+  def no_author?
+    # author_id takes precedence over author_username
+    params[:author_id] == NONE || params[:author_username] == NONE
   end
 
   def author
     return @author if defined?(@author)
 
     @author =
-      if author? && params[:author_id] != NONE
-        User.find(params[:author_id])
+      if author_id?
+        User.find_by(id: params[:author_id])
+      elsif author_username?
+        User.find_by(username: params[:author_username])
       else
         nil
       end
@@ -180,10 +235,13 @@ class IssuableFinder
   end
 
   def by_state(items)
-    params[:state] ||= 'all'
-
-    if items.respond_to?(params[:state])
-      items.public_send(params[:state])
+    case params[:state].to_s
+    when 'closed'
+      items.closed
+    when 'merged'
+      items.respond_to?(:merged) ? items.merged : items.closed
+    when 'opened'
+      items.opened
     else
       items
     end
@@ -227,16 +285,24 @@ class IssuableFinder
   end
 
   def by_assignee(items)
-    if assignee?
-      items = items.where(assignee_id: assignee.try(:id))
+    if assignee
+      items = items.where(assignee_id: assignee.id)
+    elsif no_assignee?
+      items = items.where(assignee_id: nil)
+    elsif assignee_id? || assignee_username? # assignee not found
+      items = items.none
     end
 
     items
   end
 
   def by_author(items)
-    if author?
-      items = items.where(author_id: author.try(:id))
+    if author
+      items = items.where(author_id: author.id)
+    elsif no_author?
+      items = items.where(author_id: nil)
+    elsif author_id? || author_username? # author not found
+      items = items.none
     end
 
     items
@@ -324,6 +390,10 @@ class IssuableFinder
     else
       []
     end
+  end
+
+  def by_non_archived(items)
+    params[:non_archived].present? ? items.non_archived : items
   end
 
   def current_user_related?

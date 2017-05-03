@@ -45,7 +45,7 @@ module Gitlab
     #
     # Parameters filtered:
     # - Password (:password, :password_confirmation)
-    # - Private tokens (:private_token)
+    # - Private tokens
     # - Two-factor tokens (:otp_attempt)
     # - Repo/Project Import URLs (:import_url)
     # - Build variables (:variables)
@@ -55,15 +55,18 @@ module Gitlab
     # - Sentry DSN (:sentry_dsn)
     # - Deploy keys (:key)
     config.filter_parameters += %i(
+      authentication_token
       certificate
       encrypted_key
       hook
       import_url
+      incoming_email_token
       key
       otp_attempt
       password
       password_confirmation
       private_token
+      runners_token
       secret_token
       sentry_dsn
       variables
@@ -80,25 +83,37 @@ module Gitlab
     # Enable the asset pipeline
     config.assets.enabled = true
     config.assets.paths << Gemojione.images_path
+    config.assets.paths << "vendor/assets/fonts"
     config.assets.precompile << "*.png"
     config.assets.precompile << "print.css"
     config.assets.precompile << "notify.css"
     config.assets.precompile << "mailers/*.css"
+    config.assets.precompile << "lib/vue_resource.js"
+    config.assets.precompile << "katex.css"
+    config.assets.precompile << "katex.js"
+    config.assets.precompile << "xterm/xterm.css"
     config.assets.precompile << "graphs/graphs_bundle.js"
     config.assets.precompile << "users/users_bundle.js"
     config.assets.precompile << "network/network_bundle.js"
     config.assets.precompile << "profile/profile_bundle.js"
     config.assets.precompile << "protected_branches/protected_branches_bundle.js"
     config.assets.precompile << "diff_notes/diff_notes_bundle.js"
+    config.assets.precompile << "merge_request_widget/ci_bundle.js"
+    config.assets.precompile << "issuable/issuable_bundle.js"
     config.assets.precompile << "boards/boards_bundle.js"
     config.assets.precompile << "cycle_analytics/cycle_analytics_bundle.js"
     config.assets.precompile << "merge_conflicts/merge_conflicts_bundle.js"
     config.assets.precompile << "boards/test_utils/simulate_drag.js"
+    config.assets.precompile << "environments/environments_bundle.js"
     config.assets.precompile << "blob_edit/blob_edit_bundle.js"
     config.assets.precompile << "snippet/snippet_bundle.js"
+    config.assets.precompile << "terminal/terminal_bundle.js"
+    config.assets.precompile << "filtered_search/filtered_search_bundle.js"
     config.assets.precompile << "lib/utils/*.js"
     config.assets.precompile << "lib/*.js"
     config.assets.precompile << "u2f.js"
+    config.assets.precompile << "vue_pipelines_index/index.js"
+    config.assets.precompile << "vendor/assets/fonts/*"
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'

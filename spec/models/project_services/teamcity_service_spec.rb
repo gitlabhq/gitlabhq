@@ -1,14 +1,28 @@
 require 'spec_helper'
 
-describe TeamcityService, models: true do
+describe TeamcityService, models: true, caching: true do
+  include ReactiveCachingHelpers
+
+  let(:teamcity_url) { 'http://gitlab.com/teamcity' }
+
+  subject(:service) do
+    described_class.create(
+      project: create(:empty_project),
+      properties: {
+        teamcity_url: teamcity_url,
+        username: 'mic',
+        password: 'password',
+        build_type: 'foo'
+      }
+    )
+  end
+
   describe 'Associations' do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
   end
 
   describe 'Validations' do
-    subject { service }
-
     context 'when service is active' do
       before { subject.active = true }
 
@@ -103,73 +117,87 @@ describe TeamcityService, models: true do
   end
 
   describe '#build_page' do
-    it 'returns a specific URL when status is 500' do
-      stub_request(status: 500)
+    it 'returns the contents of the reactive cache' do
+      stub_reactive_cache(service, { build_page: 'foo' }, 'sha', 'ref')
 
-      expect(service.build_page('123', 'unused')).to eq('http://gitlab.com/teamcity/viewLog.html?buildTypeId=foo')
-    end
-
-    it 'returns a build URL when teamcity_url has no trailing slash' do
-      stub_request(body: %Q({"build":{"id":"666"}}))
-
-      expect(service(teamcity_url: 'http://gitlab.com/teamcity').build_page('123', 'unused')).to eq('http://gitlab.com/teamcity/viewLog.html?buildId=666&buildTypeId=foo')
-    end
-
-    it 'returns a build URL when teamcity_url has a trailing slash' do
-      stub_request(body: %Q({"build":{"id":"666"}}))
-
-      expect(service(teamcity_url: 'http://gitlab.com/teamcity/').build_page('123', 'unused')).to eq('http://gitlab.com/teamcity/viewLog.html?buildId=666&buildTypeId=foo')
+      expect(service.build_page('sha', 'ref')).to eq('foo')
     end
   end
 
   describe '#commit_status' do
-    it 'sets commit status to :error when status is 500' do
-      stub_request(status: 500)
+    it 'returns the contents of the reactive cache' do
+      stub_reactive_cache(service, { commit_status: 'foo' }, 'sha', 'ref')
 
-      expect(service.commit_status('123', 'unused')).to eq(:error)
-    end
-
-    it 'sets commit status to "pending" when status is 404' do
-      stub_request(status: 404)
-
-      expect(service.commit_status('123', 'unused')).to eq('pending')
-    end
-
-    it 'sets commit status to "success" when build status contains SUCCESS' do
-      stub_request(build_status: 'YAY SUCCESS!')
-
-      expect(service.commit_status('123', 'unused')).to eq('success')
-    end
-
-    it 'sets commit status to "failed" when build status contains FAILURE' do
-      stub_request(build_status: 'NO FAILURE!')
-
-      expect(service.commit_status('123', 'unused')).to eq('failed')
-    end
-
-    it 'sets commit status to "pending" when build status contains Pending' do
-      stub_request(build_status: 'NO Pending!')
-
-      expect(service.commit_status('123', 'unused')).to eq('pending')
-    end
-
-    it 'sets commit status to :error when build status is unknown' do
-      stub_request(build_status: 'FOO BAR!')
-
-      expect(service.commit_status('123', 'unused')).to eq(:error)
+      expect(service.commit_status('sha', 'ref')).to eq('foo')
     end
   end
 
-  def service(teamcity_url: 'http://gitlab.com/teamcity')
-    described_class.create(
-      project: create(:empty_project),
-      properties: {
-        teamcity_url: teamcity_url,
-        username: 'mic',
-        password: 'password',
-        build_type: 'foo'
-      }
-    )
+  describe '#calculate_reactive_cache' do
+    context 'build_page' do
+      subject { service.calculate_reactive_cache('123', 'unused')[:build_page] }
+
+      it 'returns a specific URL when status is 500' do
+        stub_request(status: 500)
+
+        is_expected.to eq('http://gitlab.com/teamcity/viewLog.html?buildTypeId=foo')
+      end
+
+      it 'returns a build URL when teamcity_url has no trailing slash' do
+        stub_request(body: %Q({"build":{"id":"666"}}))
+
+        is_expected.to eq('http://gitlab.com/teamcity/viewLog.html?buildId=666&buildTypeId=foo')
+      end
+
+      context 'teamcity_url has trailing slash' do
+        let(:teamcity_url) { 'http://gitlab.com/teamcity/' }
+
+        it 'returns a build URL' do
+          stub_request(body: %Q({"build":{"id":"666"}}))
+
+          is_expected.to eq('http://gitlab.com/teamcity/viewLog.html?buildId=666&buildTypeId=foo')
+        end
+      end
+    end
+
+    context 'commit_status' do
+      subject { service.calculate_reactive_cache('123', 'unused')[:commit_status] }
+
+      it 'sets commit status to :error when status is 500' do
+        stub_request(status: 500)
+
+        is_expected.to eq(:error)
+      end
+
+      it 'sets commit status to "pending" when status is 404' do
+        stub_request(status: 404)
+
+        is_expected.to eq('pending')
+      end
+
+      it 'sets commit status to "success" when build status contains SUCCESS' do
+        stub_request(build_status: 'YAY SUCCESS!')
+
+        is_expected.to eq('success')
+      end
+
+      it 'sets commit status to "failed" when build status contains FAILURE' do
+        stub_request(build_status: 'NO FAILURE!')
+
+        is_expected.to eq('failed')
+      end
+
+      it 'sets commit status to "pending" when build status contains Pending' do
+        stub_request(build_status: 'NO Pending!')
+
+        is_expected.to eq('pending')
+      end
+
+      it 'sets commit status to :error when build status is unknown' do
+        stub_request(build_status: 'FOO BAR!')
+
+        is_expected.to eq(:error)
+      end
+    end
   end
 
   def stub_request(status: 200, body: nil, build_status: 'success')

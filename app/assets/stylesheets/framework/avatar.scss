@@ -4,11 +4,11 @@
   margin-right: $margin-right;
 }
 
-.avatar-container {
+.avatar-circle {
   float: left;
   margin-right: 15px;
   border-radius: $avatar_radius;
-  border: 1px solid rgba(0, 0, 0, .1);
+  border: 1px solid $avatar-border;
   &.s16 { @include avatar-size(16px, 6px); }
   &.s20 { @include avatar-size(20px, 7px); }
   &.s24 { @include avatar-size(24px, 8px); }
@@ -27,13 +27,14 @@
 }
 
 .avatar {
-  @extend .avatar-container;
+  @extend .avatar-circle;
   width: 40px;
   height: 40px;
   padding: 0;
 
   &.avatar-inline {
     float: none;
+    display: inline-block;
     margin-left: 4px;
     margin-bottom: 2px;
 
@@ -41,9 +42,19 @@
     &.s24 { margin-right: 4px; }
   }
 
+  &.center {
+    font-size: 14px;
+    line-height: 1.8em;
+    text-align: center;
+  }
+
   &.avatar-tile {
     border-radius: 0;
     border: none;
+  }
+
+  &:not([href]):hover {
+    border-color: rgba($avatar-border, .2);
   }
 }
 
@@ -57,15 +68,15 @@
   &.s32 { font-size: 20px; line-height: 30px; }
   &.s40 { font-size: 16px; line-height: 38px; }
   &.s60 { font-size: 32px; line-height: 58px; }
-  &.s70 { font-size: 34px; line-height: 68px; }
+  &.s70 { font-size: 34px; line-height: 70px; }
   &.s90 { font-size: 36px; line-height: 88px; }
   &.s110 { font-size: 40px; line-height: 108px; font-weight: 300; }
   &.s140 { font-size: 72px; line-height: 138px; }
   &.s160 { font-size: 96px; line-height: 158px; }
 }
 
-.image-container {
-  @extend .avatar-container;
+.avatar-container {
+  @extend .avatar-circle;
   overflow: hidden;
   display: flex;
 
@@ -73,6 +84,7 @@
     border-radius: 0;
     border: none;
     height: auto;
+    width: 100%;
     margin: 0;
     align-self: center;
   }

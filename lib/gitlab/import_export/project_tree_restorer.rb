@@ -9,8 +9,14 @@ module Gitlab
       end
 
       def restore
-        json = IO.read(@path)
-        @tree_hash = ActiveSupport::JSON.decode(json)
+        begin
+          json = IO.read(@path)
+          @tree_hash = ActiveSupport::JSON.decode(json)
+        rescue => e
+          Rails.logger.error("Import/Export error: #{e.message}")
+          raise Gitlab::ImportExport::Error.new('Incorrect JSON format')
+        end
+
         @project_members = @tree_hash.delete('project_members')
 
         ActiveRecord::Base.no_touching do
@@ -114,7 +120,7 @@ module Gitlab
                                                        members_mapper: members_mapper,
                                                        user: @user,
                                                        project_id: restored_project.id)
-        end
+        end.compact
 
         relation_hash_list.is_a?(Array) ? relation_array : relation_array.first
       end

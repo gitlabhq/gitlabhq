@@ -1,8 +1,9 @@
 - group_link = local_assigns[:group_link]
 - group = group_link.group
 - can_admin_member = can?(current_user, :admin_project_member, @project)
-%li.member.group_member{ id: "group_member_#{group_link.id}" }
-  %span{ class: "list-item-name" }
+- dom_id = "group_member_#{group_link.id}"
+%li.member.group_member{ id: dom_id }
+  %span.list-item-name
     = image_tag group_icon(group), class: "avatar s40", alt: ''
     %strong
       = link_to group.name, group_path(group)
@@ -14,13 +15,28 @@
           Expires in #{distance_of_time_in_words_to_now(group_link.expires_at)}
   .controls.member-controls
     = form_tag namespace_project_group_link_path(@project.namespace, @project, group_link), method: :put, remote: true, class: 'form-horizontal js-edit-member-form' do
-      = select_tag 'group_link[group_access]', options_for_select(ProjectGroupLink.access_options, group_link.group_access), class: 'form-control member-form-control append-right-5 js-member-update-control', id: "member_access_level_#{group.id}", disabled: !can_admin_member
+      = hidden_field_tag "group_link[group_access]", group_link.group_access
+      .member-form-control.dropdown.append-right-5
+        %button.dropdown-menu-toggle.js-member-permissions-dropdown{ type: "button",
+          disabled: !can_admin_member,
+          data: { toggle: "dropdown", field_name: "group_link[group_access]" } }
+          %span.dropdown-toggle-text
+            = group_link.human_access
+          = icon("chevron-down")
+        .dropdown-menu.dropdown-select.dropdown-menu-align-right.dropdown-menu-selectable
+          = dropdown_title("Change permissions")
+          .dropdown-content
+            %ul
+              - Gitlab::Access.options.each do |role, role_id|
+                %li
+                  = link_to role, "javascript:void(0)",
+                    class: ("is-active" if group_link.group_access == role_id),
+                    data: { id: role_id, el_id: dom_id }
       .prepend-left-5.clearable-input.member-form-control
         = text_field_tag 'group_link[expires_at]', group_link.expires_at, class: 'form-control js-access-expiration-date js-member-update-control', placeholder: 'Expiration date', id: "member_expires_at_#{group.id}", disabled: !can_admin_member
         %i.clear-icon.js-clear-input
     - if can_admin_member
       = link_to namespace_project_group_link_path(@project.namespace, @project, group_link),
-        remote: true,
         method: :delete,
         data: { confirm: "Are you sure you want to remove #{group.name}?" },
         class: 'btn btn-remove prepend-left-10' do

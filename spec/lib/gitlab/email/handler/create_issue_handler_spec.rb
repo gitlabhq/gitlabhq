@@ -1,9 +1,9 @@
 require 'spec_helper'
 require_relative '../email_shared_blocks'
 
-xdescribe Gitlab::Email::Handler::CreateIssueHandler, lib: true do
+describe Gitlab::Email::Handler::CreateIssueHandler, lib: true do
   include_context :email_shared_context
-  it_behaves_like :email_shared_examples
+  it_behaves_like :reply_processing_shared_examples
 
   before do
     stub_incoming_email_setting(enabled: true, address: "incoming+%{key}@appmail.adventuretime.ooo")
@@ -18,7 +18,7 @@ xdescribe Gitlab::Email::Handler::CreateIssueHandler, lib: true do
     create(
       :user,
       email: 'jake@adventuretime.ooo',
-      authentication_token: 'auth_token'
+      incoming_email_token: 'auth_token'
     )
   end
 
@@ -60,8 +60,8 @@ xdescribe Gitlab::Email::Handler::CreateIssueHandler, lib: true do
       end
     end
 
-    context "when we can't find the authentication_token" do
-      let(:email_raw) { fixture_file("emails/wrong_authentication_token.eml") }
+    context "when we can't find the incoming_email_token" do
+      let(:email_raw) { fixture_file("emails/wrong_incoming_email_token.eml") }
 
       it "raises an UserNotFoundError" do
         expect { receiver.execute }.to raise_error(Gitlab::Email::UserNotFoundError)

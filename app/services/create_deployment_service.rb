@@ -1,5 +1,3 @@
-require_relative 'base_service'
-
 class CreateDeploymentService < BaseService
   def execute(deployable = nil)
     return unless executable?

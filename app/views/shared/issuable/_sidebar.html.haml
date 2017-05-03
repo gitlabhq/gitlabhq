@@ -1,5 +1,7 @@
 - todo = issuable_todo(issuable)
-%aside.right-sidebar{ class: sidebar_gutter_collapsed_class }
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_tag('issuable/issuable_bundle.js')
+%aside.right-sidebar{ class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite' }
   .issuable-sidebar
     - can_edit_issuable = can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
     .block.issuable-sidebar-header
@@ -9,17 +11,17 @@
       %a.gutter-toggle.pull-right.js-sidebar-toggle{ role: "button", href: "#", aria: { label: "Toggle sidebar" } }
         = sidebar_gutter_toggle_icon
       - if current_user
-        %button.btn.btn-default.issuable-header-btn.pull-right.js-issuable-todo{ type: "button", aria: { label: (todo.nil? ? "Add Todo" : "Mark Done") }, data: { todo_text: "Add Todo", mark_text: "Mark Done", issuable_id: issuable.id, issuable_type: issuable.class.name.underscore, url: namespace_project_todos_path(@project.namespace, @project), delete_path: (dashboard_todo_path(todo) if todo) } }
+        %button.btn.btn-default.issuable-header-btn.pull-right.js-issuable-todo{ type: "button", aria: { label: (todo.nil? ? "Add todo" : "Mark done") }, data: { todo_text: "Add todo", mark_text: "Mark done", issuable_id: issuable.id, issuable_type: issuable.class.name.underscore, url: namespace_project_todos_path(@project.namespace, @project), delete_path: (dashboard_todo_path(todo) if todo) } }
           %span.js-issuable-todo-text
             - if todo
-              Mark Done
+              Mark done
             - else
-              Add Todo
+              Add todo
           = icon('spin spinner', class: 'hidden js-issuable-todo-loading')
 
-    = form_for [@project.namespace.becomes(Namespace), @project, issuable], remote: true, format: :json, html: {class: 'issuable-context-form inline-update js-issuable-update'} do |f|
+    = form_for [@project.namespace.becomes(Namespace), @project, issuable], remote: true, format: :json, html: { class: 'issuable-context-form inline-update js-issuable-update' } do |f|
       .block.assignee
-        .sidebar-collapsed-icon.sidebar-collapsed-user{data: {toggle: "tooltip", placement: "left", container: "body"}, title: (issuable.assignee.name if issuable.assignee)}
+        .sidebar-collapsed-icon.sidebar-collapsed-user{ data: { toggle: "tooltip", placement: "left", container: "body" }, title: (issuable.assignee.name if issuable.assignee) }
           - if issuable.assignee
             = link_to_member(@project, issuable.assignee, size: 24)
           - else
@@ -54,7 +56,7 @@
           = icon('clock-o')
           %span
             - if issuable.milestone
-              %span.has-tooltip{title: milestone_remaining_days(issuable.milestone), data: {container: 'body', html: 1, placement: 'left'}}
+              %span.has-tooltip{ title: milestone_remaining_days(issuable.milestone), data: { container: 'body', html: 1, placement: 'left' } }
                 = issuable.milestone.title
             - else
               None
@@ -72,7 +74,13 @@
         .selectbox.hide-collapsed
           = f.hidden_field 'milestone_id', value: issuable.milestone_id, id: nil
           = dropdown_tag('Milestone', options: { title: 'Assign milestone', toggle_class: 'js-milestone-select js-extra-options', filter: true, dropdown_class: 'dropdown-menu-selectable', placeholder: 'Search milestones', data: { show_no: true, field_name: "#{issuable.to_ability_name}[milestone_id]", project_id: @project.id, issuable_id: issuable.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :json), ability_name: issuable.to_ability_name, issue_update: issuable_json_path(issuable), use_id: true }})
-
+      - if issuable.has_attribute?(:time_estimate)
+        #issuable-time-tracker.block
+          %issuable-time-tracker{ ':time_estimate' => 'issuable.time_estimate', ':time_spent' => 'issuable.total_time_spent', ':human_time_estimate' => 'issuable.human_time_estimate', ':human_time_spent' => 'issuable.human_total_time_spent', 'stopwatch-svg' => custom_icon('icon_stopwatch'), 'docs-url' => help_page_path('workflow/time_tracking.md') }
+            // Fallback while content is loading
+            .title.hide-collapsed
+              Time tracking
+              = icon('spinner spin')
       - if issuable.has_attribute?(:due_date)
         .block.due_date
           .sidebar-collapsed-icon
@@ -97,7 +105,7 @@
                   remove due date
           - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
             .selectbox.hide-collapsed
-              = f.hidden_field :due_date, value: issuable.due_date
+              = f.hidden_field :due_date, value: issuable.due_date.try(:strftime, 'yy-mm-dd')
               .dropdown
                 %button.dropdown-menu-toggle.js-due-date-select{ type: 'button', data: { toggle: 'dropdown', field_name: "#{issuable.to_ability_name}[due_date]", ability_name: issuable.to_ability_name, issue_update: issuable_json_path(issuable) } }
                   %span.dropdown-toggle-text Due date
@@ -129,8 +137,8 @@
             - selected_labels.each do |label|
               = hidden_field_tag "#{issuable.to_ability_name}[label_names][]", label.id, id: nil
             .dropdown
-              %button.dropdown-menu-toggle.js-label-select.js-multiselect.js-label-sidebar-dropdown{type: "button", data: {toggle: "dropdown", default_label: "Labels", field_name: "#{issuable.to_ability_name}[label_names][]", ability_name: issuable.to_ability_name, show_no: "true", show_any: "true", namespace_path: @project.try(:namespace).try(:path), project_path: @project.try(:path), issue_update: issuable_json_path(issuable), labels: (namespace_project_labels_path(@project.namespace, @project, :json) if @project)}}
-                %span.dropdown-toggle-text{ class: ("is-default" if selected_labels.empty?)}
+              %button.dropdown-menu-toggle.js-label-select.js-multiselect.js-label-sidebar-dropdown{ type: "button", data: {toggle: "dropdown", default_label: "Labels", field_name: "#{issuable.to_ability_name}[label_names][]", ability_name: issuable.to_ability_name, show_no: "true", show_any: "true", namespace_path: @project.try(:namespace).try(:path), project_path: @project.try(:path), issue_update: issuable_json_path(issuable), labels: (namespace_project_labels_path(@project.namespace, @project, :json) if @project) } }
+                %span.dropdown-toggle-text{ class: ("is-default" if selected_labels.empty?) }
                   = multi_label_name(selected_labels, "Labels")
                 = icon('chevron-down')
               .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable
@@ -140,36 +148,33 @@
 
       = render "shared/issuable/participants", participants: issuable.participants(current_user)
       - if current_user
-        - subscribed = issuable.subscribed?(current_user)
-        .block.light.subscription{data: {url: toggle_subscription_path(issuable)}}
+        - subscribed = issuable.subscribed?(current_user, @project)
+        .block.light.subscription{ data: { url: toggle_subscription_path(issuable) } }
           .sidebar-collapsed-icon
             = icon('rss')
-          .title.hide-collapsed
+          %span.issuable-header-text.hide-collapsed.pull-left
             Notifications
           - subscribtion_status = subscribed ? 'subscribed' : 'unsubscribed'
-          %button.btn.btn-block.btn-default.js-subscribe-button.issuable-subscribe-button.hide-collapsed{ type: "button" }
+          %button.btn.btn-default.pull-right.js-subscribe-button.issuable-subscribe-button.hide-collapsed{ type: "button" }
             %span= subscribed ? 'Unsubscribe' : 'Subscribe'
-          .subscription-status.hide-collapsed{data: {status: subscribtion_status}}
-            .unsubscribed{class: ( 'hidden' if subscribed )}
-              You're not receiving notifications from this thread.
-            .subscribed{class: ( 'hidden' unless subscribed )}
-              You're receiving notifications because you're subscribed to this thread.
 
       - project_ref = cross_project_reference(@project, issuable)
       .block.project-reference
         .sidebar-collapsed-icon.dont-change-state
-          = clipboard_button(clipboard_text: project_ref)
+          = clipboard_button(clipboard_text: project_ref, title: "Copy reference to clipboard", placement: "left")
         .cross-project-reference.hide-collapsed
           %span
             Reference:
-            %cite{title: project_ref}
+            %cite{ title: project_ref }
               = project_ref
-          = clipboard_button(clipboard_text: project_ref)
+          = clipboard_button(clipboard_text: project_ref, title: "Copy reference to clipboard", placement: "left")
 
     :javascript
+      gl.IssuableResource = new gl.SubbableResource('#{issuable_json_path(issuable)}');
+      new gl.IssuableTimeTracking("#{escape_javascript(serialize_issuable(issuable))}");
       new MilestoneSelect('{"namespace":"#{@project.namespace.path}","path":"#{@project.path}"}');
       new LabelsSelect();
       new IssuableContext('#{escape_javascript(current_user.to_json(only: [:username, :id, :name]))}');
-      new Subscription('.subscription')
+      gl.Subscription.bindAll('.subscription');
       new gl.DueDateSelectors();
-      sidebar = new Sidebar();
+      window.sidebar = new Sidebar();

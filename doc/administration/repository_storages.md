@@ -91,6 +91,9 @@ be stored via the **Application Settings** in the Admin area.
 
 ![Choose repository storage path in Admin area](img/repository_storages_admin_ui.png)
 
+Beginning with GitLab 8.13.4, multiple paths can be chosen. New projects will be
+randomly placed on one of the selected paths.
+
 [ce-4578]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4578
 [restart gitlab]: restart_gitlab.md#installations-from-source
 [reconfigure gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure

@@ -1,11 +1,21 @@
 .ci-body {
   .incorrect-syntax {
-    font-size: 19px;
-    color: red;
+    font-size: 18px;
+    color: $lint-incorrect-color;
   }
 
   .correct-syntax {
-    font-size: 19px;
-    color: #47a447;
+    font-size: 18px;
+    color: $lint-correct-color;
+  }
+}
+
+.ci-linter {
+  .ci-editor {
+    height: 400px;
+  }
+
+  .ci-template pre {
+    white-space: pre-wrap;
   }
 }

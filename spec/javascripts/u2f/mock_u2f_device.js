@@ -1,6 +1,7 @@
-/* eslint-disable */
+/* eslint-disable space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-unused-expressions, no-return-assign, no-param-reassign, max-len */
+
 (function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
 
   this.MockU2FDevice = (function() {
     function MockU2FDevice() {
@@ -28,7 +29,5 @@
     };
 
     return MockU2FDevice;
-
   })();
-
 }).call(this);

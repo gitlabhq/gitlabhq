@@ -13,6 +13,7 @@ module Issuable
   include StripAttribute
   include Awardable
   include Taskable
+  include TimeTrackable
 
   included do
     cache_markdown_field :title, pipeline: :single_line
@@ -41,7 +42,7 @@ module Issuable
     has_one :metrics
 
     validates :author, presence: true
-    validates :title, presence: true, length: { within: 0..255 }
+    validates :title, presence: true, length: { maximum: 255 }
 
     scope :authored, ->(user) { where(author_id: user) }
     scope :assigned_to, ->(u) { where(assignee_id: u.id)}
@@ -92,8 +93,9 @@ module Issuable
     after_save :record_metrics
 
     def update_assignee_cache_counts
-      # make sure we flush the cache for both the old *and* new assignee
-      User.find(assignee_id_was).update_cache_counts if assignee_id_was
+      # make sure we flush the cache for both the old *and* new assignees(if they exist)
+      previous_assignee = User.find_by_id(assignee_id_was) if assignee_id_was
+      previous_assignee.update_cache_counts if previous_assignee
       assignee.update_cache_counts if assignee
     end
 
@@ -183,6 +185,10 @@ module Issuable
 
       grouping_columns
     end
+
+    def to_ability_name
+      model_name.singular
+    end
   end
 
   def today?
@@ -211,7 +217,7 @@ module Issuable
     end
   end
 
-  def subscribed_without_subscriptions?(user)
+  def subscribed_without_subscriptions?(user, project)
     participants(user).include?(user)
   end
 
@@ -244,7 +250,18 @@ module Issuable
   #   issuable.class           # => MergeRequest
   #   issuable.to_ability_name # => "merge_request"
   def to_ability_name
-    self.class.to_s.underscore
+    self.class.to_ability_name
+  end
+
+  # Convert this Issuable class name to a format usable by notifications.
+  #
+  # Examples:
+  #
+  #   issuable.class           # => MergeRequest
+  #   issuable.human_class_name # => "merge request"
+
+  def human_class_name
+    @human_class_name ||= self.class.name.titleize.downcase
   end
 
   # Returns a Hash of attributes to be used for Twitter card metadata
@@ -284,6 +301,11 @@ module Issuable
   #
   def can_move?(*)
     false
+  end
+
+  def assignee_or_author?(user)
+    # We're comparing IDs here so we don't need to load any associations.
+    author_id == user.id || assignee_id == user.id
   end
 
   def record_metrics

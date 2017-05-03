@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::API do
+describe API::Triggers do
   include ApiHelpers
 
   let(:user) { create(:user) }
@@ -15,7 +15,7 @@ describe API::API do
   let!(:trigger_request) { create(:ci_trigger_request, trigger: trigger, created_at: '2015-01-01 12:13:14') }
 
   describe 'POST /projects/:project_id/trigger' do
-    let!(:project2) { create(:empty_project) }
+    let!(:project2) { create(:project) }
     let(:options) do
       {
         token: trigger_token
@@ -54,6 +54,13 @@ describe API::API do
         expect(pipeline.builds.size).to eq(5)
       end
 
+      it 'creates builds on webhook from other gitlab repository and branch' do
+        expect do
+          post api("/projects/#{project.id}/ref/master/trigger/builds?token=#{trigger_token}"), { ref: 'refs/heads/other-branch' }
+        end.to change(project.builds, :count).by(5)
+        expect(response).to have_http_status(201)
+      end
+
       it 'returns bad request with no builds created if there\'s no commit for that ref' do
         post api("/projects/#{project.id}/trigger/builds"), options.merge(ref: 'other-branch')
         expect(response).to have_http_status(400)
@@ -68,7 +75,7 @@ describe API::API do
         it 'validates variables to be a hash' do
           post api("/projects/#{project.id}/trigger/builds"), options.merge(variables: 'value', ref: 'master')
           expect(response).to have_http_status(400)
-          expect(json_response['message']).to eq('variables needs to be a hash')
+          expect(json_response['error']).to eq('variables is invalid')
         end
 
         it 'validates variables needs to be a map of key-valued strings' do

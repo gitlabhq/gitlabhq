@@ -35,7 +35,7 @@ class Spinach::Features::RevertMergeRequests < Spinach::FeatureSteps
 
   step 'There is an open Merge Request' do
     @user = create(:user)
-    @project = create(:project, :public)
+    @project = create(:project, :public, :repository)
     @project_member = create(:project_member, :developer, user: @user, project: @project)
     @merge_request = create(:merge_request, :with_diffs, :simple, source_project: @project)
   end

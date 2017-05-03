@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle, consistent-return, class-methods-use-this, arrow-parens, no-param-reassign, max-len */
+
 ((global) => {
   const debounceTimeoutDuration = 1000;
   const invalidInputClass = 'gl-field-error-outline';
@@ -77,7 +78,7 @@
         this.renderState();
         return $.ajax({
           type: 'GET',
-          url: `/users/${username}/exists`,
+          url: `${gon.relative_url_root}/users/${username}/exists`,
           dataType: 'json',
           success: (res) => this.setAvailabilityState(res.exists)
         });

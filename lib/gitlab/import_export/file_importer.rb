@@ -43,6 +43,14 @@ module Gitlab
 
         raise Projects::ImportService::Error.new("Unable to decompress #{@archive_file} into #{@shared.export_path}") unless result
 
+        remove_symlinks!
+      end
+
+      def remove_symlinks!
+        Dir["#{@shared.export_path}/**/*"].each do |path|
+          FileUtils.rm(path) if File.lstat(path).symlink?
+        end
+
         true
       end
     end

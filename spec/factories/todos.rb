@@ -21,10 +21,15 @@ FactoryGirl.define do
 
     trait :build_failed do
       action { Todo::BUILD_FAILED }
+      target factory: :merge_request
     end
 
     trait :approval_required do
       action { Todo::APPROVAL_REQUIRED }
+    end
+
+    trait :unmergeable do
+      action { Todo::UNMERGEABLE }
     end
 
     trait :done do

@@ -3,6 +3,7 @@ require 'spec_helper'
 describe 'Issues', feature: true do
   include IssueHelpers
   include SortingHelper
+  include WaitForAjax
 
   let(:project) { create(:project) }
 
@@ -368,6 +369,30 @@ describe 'Issues', feature: true do
     end
   end
 
+  describe 'when I want to reset my incoming email token' do
+    let(:project1) { create(:project, namespace: @user.namespace) }
+    let!(:issue) { create(:issue, project: project1) }
+
+    before do
+      stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")
+      project1.team << [@user, :master]
+      visit namespace_project_issues_path(@user.namespace, project1)
+    end
+
+    it 'changes incoming email address token', js: true do
+      find('.issue-email-modal-btn').click
+      previous_token = find('input#issue_email').value
+      find('.incoming-email-token-reset').click
+
+      expect(page).to have_no_field('issue_email', with: previous_token)
+      new_token = project1.new_issue_address(@user.reload)
+      expect(page).to have_field(
+        'issue_email',
+        with: new_token
+      )
+    end
+  end
+
   describe 'update labels from issue#show', js: true do
     let(:issue) { create(:issue, project: project, author: @user, assignee: @user) }
     let!(:label) { create(:label, project: project) }
@@ -553,9 +578,12 @@ describe 'Issues', feature: true do
     end
   end
 
-  xdescribe 'new issue by email' do
+  describe 'new issue by email' do
     shared_examples 'show the email in the modal' do
+      let(:issue) { create(:issue, project: project) }
+
       before do
+        project.issues << issue
         stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")
 
         visit namespace_project_issues_path(project.namespace, project)
@@ -591,14 +619,18 @@ describe 'Issues', feature: true do
       end
 
       it 'adds due date to issue' do
+        date = Date.today.at_beginning_of_month + 2.days
+
         page.within '.due_date' do
           click_link 'Edit'
 
           page.within '.ui-datepicker-calendar' do
-            first('.ui-state-default').click
+            click_link date.day
           end
 
-          expect(page).to have_no_content 'None'
+          wait_for_ajax
+
+          expect(find('.value').text).to have_content date.strftime('%b %-d, %Y')
         end
       end
 
@@ -609,6 +641,8 @@ describe 'Issues', feature: true do
           page.within '.ui-datepicker-calendar' do
             first('.ui-state-default').click
           end
+
+          wait_for_ajax
 
           expect(page).to have_no_content 'No due date'
 

@@ -6,7 +6,7 @@
 .select2-container,
 .select2-container.select2-drop-above {
   .select2-choice {
-    background: #fff;
+    background: $white-light;
     border-color: $input-border;
     height: 35px;
     padding: $gl-vert-padding $gl-input-padding;
@@ -27,9 +27,9 @@
         height: 0;
         margin-left: 2px;
         vertical-align: middle;
-        border-top: $caret-width-base dashed;
-        border-right: $caret-width-base solid transparent;
-        border-left: $caret-width-base solid transparent;
+        border-top: 5px dashed;
+        border-right: 5px solid transparent;
+        border-left: 5px solid transparent;
         color: $gray-darkest;
       }
     }
@@ -39,7 +39,7 @@
     }
 
     &:hover {
-      background-color: $gray-dark;
+      background-color: $white-normal;
       border-color: $border-white-normal;
       color: $gl-text-color;
     }
@@ -47,7 +47,7 @@
 }
 
 .select2-drop {
-  box-shadow: rgba(76, 86, 103, 0.247059) 0 0 1px 0, rgba(31, 37, 50, 0.317647) 0 2px 18px 0;
+  box-shadow: $select2-drop-shadow1 0 0 1px 0, $select2-drop-shadow2 0 2px 18px 0;
   border-radius: $border-radius-default;
   border: none;
   min-width: 175px;
@@ -59,11 +59,11 @@
 }
 
 .select2-drop {
-  color: #7f8fa4;
+  color: $gl-grayish-blue;
 }
 
 .select2-highlighted {
-  background: #3084bb !important;
+  background: $gl-link-color !important;
 }
 
 .select2-results li.select2-result-with-children > .select2-result-label {
@@ -108,7 +108,7 @@
       border-color: $input-border;
       color: $gl-text-color;
       line-height: 15px;
-      background-color: $background-color;
+      background-color: $gray-light;
       background-image: none;
 
       .select2-search-choice-close {
@@ -156,7 +156,7 @@
 
 .select2-search input {
   padding: 2px 25px 2px 5px;
-  background: #fff image-url('select2.png');
+  background: $white-light image-url('select2.png');
   background-repeat: no-repeat;
   background-position: right 0 bottom 6px;
   border: 1px solid $input-border;
@@ -169,7 +169,7 @@
 }
 
 .select2-search input.select2-active {
-  background-color: #fff;
+  background-color: $white-light;
   background-image: image-url('select2-spinner.gif') !important;
   background-repeat: no-repeat;
   background-position: right 5px center !important;
@@ -206,7 +206,7 @@
 .select2-highlighted {
   .group-result {
     .group-path {
-      color: #fff;
+      color: $white-light;
     }
   }
 }
@@ -221,7 +221,7 @@
   }
 
   .group-path {
-    color: #999;
+    color: $group-path-color;
   }
 }
 
@@ -241,7 +241,7 @@
 
 .namespace-result {
   .namespace-kind {
-    color: #aaa;
+    color: $namespace-kind-color;
     font-weight: normal;
   }
 

@@ -1,9 +1,12 @@
-- page_title "Auth Error"
-%h1 422
-%h3 Sign-in using #{@provider} auth failed
-%hr
-%p Sign-in failed because #{@error}.
-%p There are couple of steps you can take:
+- content_for(:title, 'Auth Error')
+%img{ :alt => "GitLab Logo", :src => image_path('logo.svg') }
+  %h1
+    422
+.container
+  %h3 Sign-in using #{@provider} auth failed
+  %hr
+  %p Sign-in failed because #{@error}.
+  %p There are couple of steps you can take:
 
 %ul
   %li Try logging in using your email

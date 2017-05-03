@@ -115,6 +115,38 @@ describe 'Git HTTP requests', lib: true do
             end.to raise_error(JWT::DecodeError)
           end
         end
+
+        context 'when the repo is public' do
+          context 'but the repo is disabled' do
+            it 'does not allow to clone the repo' do
+              project = create(:project, :public, repository_access_level: ProjectFeature::DISABLED)
+
+              download("#{project.path_with_namespace}.git", {}) do |response|
+                expect(response).to have_http_status(:unauthorized)
+              end
+            end
+          end
+
+          context 'but the repo is enabled' do
+            it 'allows to clone the repo' do
+              project = create(:project, :public, repository_access_level: ProjectFeature::ENABLED)
+
+              download("#{project.path_with_namespace}.git", {}) do |response|
+                expect(response).to have_http_status(:ok)
+              end
+            end
+          end
+
+          context 'but only project members are allowed' do
+            it 'does not allow to clone the repo' do
+              project = create(:project, :public, repository_access_level: ProjectFeature::PRIVATE)
+
+              download("#{project.path_with_namespace}.git", {}) do |response|
+                expect(response).to have_http_status(:unauthorized)
+              end
+            end
+          end
+        end
       end
 
       context "when the project is private" do
@@ -198,7 +230,7 @@ describe 'Git HTTP requests', lib: true do
               context "when an oauth token is provided" do
                 before do
                   application = Doorkeeper::Application.create!(name: "MyApp", redirect_uri: "https://app.com", owner: user)
-                  @token = Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id)
+                  @token = Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: "api")
                 end
 
                 it "downloads get status 200" do
@@ -339,10 +371,24 @@ describe 'Git HTTP requests', lib: true do
 
             shared_examples 'can download code only' do
               it 'downloads get status 200' do
-                clone_get "#{project.path_with_namespace}.git", user: 'gitlab-ci-token', password: build.token
+                allow_any_instance_of(Repository).
+                  to receive(:exists?).and_return(true)
+
+                clone_get "#{project.path_with_namespace}.git",
+                  user: 'gitlab-ci-token', password: build.token
 
                 expect(response).to have_http_status(200)
                 expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+              end
+
+              it 'downloads from non-existing repository and gets 403' do
+                allow_any_instance_of(Repository).
+                  to receive(:exists?).and_return(false)
+
+                clone_get "#{project.path_with_namespace}.git",
+                  user: 'gitlab-ci-token', password: build.token
+
+                expect(response).to have_http_status(403)
               end
 
               it 'uploads get status 403' do

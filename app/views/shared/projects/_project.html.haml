@@ -25,14 +25,14 @@
         %span
           = icon('star')
           = number_with_delimiter(project.star_count)
-      %span.visibility-icon.has-tooltip{data: { container: 'body', placement: 'left' }, title: visibility_icon_description(project)}
+      %span.visibility-icon.has-tooltip{ data: { container: 'body', placement: 'left' }, title: visibility_icon_description(project) }
         = visibility_level_icon(project.visibility_level, fw: true)
 
     .title
       = link_to project_path(project), class: dom_class(project) do
         - if avatar
           .dash-project-avatar
-            .image-container.s40
+            .avatar-container.s40
               - if use_creator_avatar
                 = image_tag avatar_icon(project.creator.email, 40), class: "avatar s40", alt:''
               - else

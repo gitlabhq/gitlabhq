@@ -5,5 +5,7 @@
   - if event_filter_visible(:merge_requests)
     = event_filter_link EventFilter.merged, 'Merge events'
   - if event_filter_visible(:issues)
+    = event_filter_link EventFilter.issue, 'Issue events'
+  - if comments_visible?
     = event_filter_link EventFilter.comments, 'Comments'
   = event_filter_link EventFilter.team, 'Team'

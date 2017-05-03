@@ -1,177 +1,38 @@
-resources :projects, constraints: { id: /[^\/]+/ }, only: [:index, :new, :create]
+require 'constraints/project_url_constrainer'
 
-resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only: [] do
-  resources(:projects, constraints: { id: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }, except:
-            [:new, :create, :index], path: "/") do
-    member do
-      put :transfer
-      delete :remove_fork
-      post :archive
-      post :unarchive
-      post :housekeeping
-      post :toggle_star
-      post :preview_markdown
-      post :export
-      post :remove_export
-      post :generate_new_export
-      get :download_export
-      get :autocomplete_sources
-      get :activity
-      get :refs
-    end
+resources :projects, only: [:index, :new, :create]
 
-    scope module: :projects do
-      scope constraints: { id: /.+\.git/, format: nil } do
-        # Git HTTP clients ('git clone' etc.)
-        get '/info/refs', to: 'git_http#info_refs'
-        post '/git-upload-pack', to: 'git_http#git_upload_pack'
-        post '/git-receive-pack', to: 'git_http#git_receive_pack'
+draw :git_http
 
-        # Git LFS API (metadata)
-        post '/info/lfs/objects/batch', to: 'lfs_api#batch'
-        post '/info/lfs/objects', to: 'lfs_api#deprecated'
-        get '/info/lfs/objects/*oid', to: 'lfs_api#deprecated'
+constraints(ProjectUrlConstrainer.new) do
+  scope(path: '*namespace_id', as: :namespace) do
+    scope(path: ':project_id',
+          constraints: { project_id: Gitlab::Regex.project_route_regex },
+          module: :projects,
+          as: :project) do
 
-        # GitLab LFS object storage
-        scope constraints: { oid: /[a-f0-9]{64}/ } do
-          get '/gitlab-lfs/objects/*oid', to: 'lfs_storage#download'
-
-          scope constraints: { size: /[0-9]+/ } do
-            put '/gitlab-lfs/objects/*oid/*size/authorize', to: 'lfs_storage#upload_authorize'
-            put '/gitlab-lfs/objects/*oid/*size', to: 'lfs_storage#upload_finalize'
-          end
+      resources :autocomplete_sources, only: [] do
+        collection do
+          get 'emojis'
+          get 'members'
+          get 'issues'
+          get 'merge_requests'
+          get 'labels'
+          get 'milestones'
+          get 'commands'
         end
       end
-
-      # Allow /info/refs, /info/refs?service=git-upload-pack, and
-      # /info/refs?service=git-receive-pack, but nothing else.
-      #
-      git_http_handshake = lambda do |request|
-        request.query_string.blank? ||
-          request.query_string.match(/\Aservice=git-(upload|receive)-pack\z/)
-      end
-
-      ref_redirect = redirect do |params, request|
-        path = "#{params[:namespace_id]}/#{params[:project_id]}.git/info/refs"
-        path << "?#{request.query_string}" unless request.query_string.blank?
-        path
-      end
-
-      get '/info/refs', constraints: git_http_handshake, to: ref_redirect
-
-      # Blob routes:
-      get '/new/*id', to: 'blob#new', constraints: { id: /.+/ }, as: 'new_blob'
-      post '/create/*id', to: 'blob#create', constraints: { id: /.+/ }, as: 'create_blob'
-      get '/edit/*id', to: 'blob#edit', constraints: { id: /.+/ }, as: 'edit_blob'
-      put '/update/*id', to: 'blob#update', constraints: { id: /.+/ }, as: 'update_blob'
-      post '/preview/*id', to: 'blob#preview', constraints: { id: /.+/ }, as: 'preview_blob'
 
       #
       # Templates
       #
       get '/templates/:template_type/:key' => 'templates#show', as: :template
 
-      scope do
-        get(
-          '/blob/*id/diff',
-          to: 'blob#diff',
-          constraints: { id: /.+/, format: false },
-          as: :blob_diff
-        )
-        get(
-          '/blob/*id',
-          to: 'blob#show',
-          constraints: { id: /.+/, format: false },
-          as: :blob
-        )
-        delete(
-          '/blob/*id',
-          to: 'blob#destroy',
-          constraints: { id: /.+/, format: false }
-        )
-        put(
-          '/blob/*id',
-          to: 'blob#update',
-          constraints: { id: /.+/, format: false }
-        )
-        post(
-          '/blob/*id',
-          to: 'blob#create',
-          constraints: { id: /.+/, format: false }
-        )
-      end
-
-      scope do
-        get(
-          '/raw/*id',
-          to: 'raw#show',
-          constraints: { id: /.+/, format: /(html|js)/ },
-          as: :raw
-        )
-      end
-
-      scope do
-        get(
-          '/tree/*id',
-          to: 'tree#show',
-          constraints: { id: /.+/, format: /(html|js)/ },
-          as: :tree
-        )
-      end
-
-      scope do
-        get(
-          '/find_file/*id',
-          to: 'find_file#show',
-          constraints: { id: /.+/, format: /html/ },
-          as: :find_file
-        )
-      end
-
-      scope do
-        get(
-          '/files/*id',
-          to: 'find_file#list',
-          constraints: { id: /(?:[^.]|\.(?!json$))+/, format: /json/ },
-          as: :files
-        )
-      end
-
-      scope do
-        post(
-          '/create_dir/*id',
-            to: 'tree#create_dir',
-            constraints: { id: /.+/ },
-            as: 'create_dir'
-        )
-      end
-
-      scope do
-        get(
-          '/blame/*id',
-          to: 'blame#show',
-          constraints: { id: /.+/, format: /(html|js)/ },
-          as: :blame
-        )
-      end
-
-      scope do
-        get(
-          '/commits/*id',
-          to: 'commits#show',
-          constraints: { id: /.+/, format: false },
-          as: :commits
-        )
-      end
-
       resource  :avatar, only: [:show, :destroy]
       resources :commit, only: [:show], constraints: { id: /\h{7,40}/ } do
         member do
           get :branches
-          get :builds
           get :pipelines
-          post :cancel_builds
-          post :retry_builds
           post :revert
           post :cherry_pick
           get :diff_for_path
@@ -206,34 +67,13 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
         end
       end
 
-      WIKI_SLUG_ID = { id: /\S+/ } unless defined? WIKI_SLUG_ID
-
-      scope do
-        # Order matters to give priority to these matches
-        get '/wikis/git_access', to: 'wikis#git_access'
-        get '/wikis/pages', to: 'wikis#pages', as: 'wiki_pages'
-        post '/wikis', to: 'wikis#create'
-
-        get '/wikis/*id/history', to: 'wikis#history', as: 'wiki_history', constraints: WIKI_SLUG_ID
-        get '/wikis/*id/edit', to: 'wikis#edit', as: 'wiki_edit', constraints: WIKI_SLUG_ID
-
-        get '/wikis/*id', to: 'wikis#show', as: 'wiki', constraints: WIKI_SLUG_ID
-        delete '/wikis/*id', to: 'wikis#destroy', constraints: WIKI_SLUG_ID
-        put '/wikis/*id', to: 'wikis#update', constraints: WIKI_SLUG_ID
-        post '/wikis/*id/preview_markdown', to: 'wikis#preview_markdown', constraints: WIKI_SLUG_ID, as: 'wiki_preview_markdown'
-      end
-
-      resource :repository, only: [:create] do
-        member do
-          get 'archive', constraints: { format: Gitlab::Regex.archive_formats_regex }
-        end
-      end
-
       resources :services, constraints: { id: /[^\/]+/ }, only: [:index, :edit, :update] do
         member do
           get :test
         end
       end
+
+      resource :mattermost, only: [:new, :create]
 
       resources :deploy_keys, constraints: { id: /\d+/ }, only: [:index, :new, :create] do
         member do
@@ -245,33 +85,16 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
       resources :forks, only: [:index, :new, :create]
       resource :import, only: [:new, :create, :show]
 
-      resources :refs, only: [] do
-        collection do
-          get 'switch'
-        end
-
-        member do
-          # tree viewer logs
-          get 'logs_tree', constraints: { id: Gitlab::Regex.git_reference_regex }
-          # Directories with leading dots erroneously get rejected if git
-          # ref regex used in constraints. Regex verification now done in controller.
-          get 'logs_tree/*path' => 'refs#logs_tree', as: :logs_file, constraints: {
-            id: /.*/,
-            path: /.*/
-          }
-        end
-      end
-
       resources :merge_requests, concerns: :awardable, constraints: { id: /\d+/ } do
         member do
           get :commits
           get :diffs
           get :conflicts
           get :conflict_for_path
-          get :builds
           get :pipelines
           get :merge_check
           post :merge
+          get :merge_widget_refresh
           post :cancel_merge_when_build_succeeds
           get :ci_status
           get :ci_environments_status
@@ -300,6 +123,7 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
       end
 
       resources :branches, only: [:index, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
+      delete :merged_branches, controller: 'branches', action: :destroy_all_merged
       resources :tags, only: [:index, :show, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex } do
         resource :release, only: [:edit, :update]
       end
@@ -314,18 +138,34 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
         end
 
         member do
+          get :stage
           post :cancel
           post :retry
+          get :builds
         end
       end
 
       resources :environments, except: [:destroy] do
         member do
           post :stop
+          get :terminal
+          get '/terminal.ws/authorize', to: 'environments#terminal_websocket_authorize', constraints: { format: nil }
         end
       end
 
       resource :cycle_analytics, only: [:show]
+
+      namespace :cycle_analytics do
+        scope :events, controller: 'events' do
+          get :issue
+          get :plan
+          get :code
+          get :test
+          get :review
+          get :staging
+          get :production
+        end
+      end
 
       resources :builds, only: [:index, :show], constraints: { id: /\d+/ } do
         collection do
@@ -466,6 +306,37 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
             end
           end
         end
+      end
+      namespace :settings do
+        resource :members, only: [:show]
+        resource :integrations, only: [:show]
+      end
+
+      # Since both wiki and repository routing contains wildcard characters
+      # its preferable to keep it below all other project routes
+      draw :wiki
+      draw :repository
+    end
+
+    resources(:projects,
+              path: '/',
+              constraints: { id: Gitlab::Regex.project_route_regex },
+              only: [:edit, :show, :update, :destroy]) do
+      member do
+        put :transfer
+        delete :remove_fork
+        post :archive
+        post :unarchive
+        post :housekeeping
+        post :toggle_star
+        post :preview_markdown
+        post :export
+        post :remove_export
+        post :generate_new_export
+        get :download_export
+        get :activity
+        get :refs
+        put :new_issue_address
       end
     end
   end

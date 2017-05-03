@@ -179,33 +179,6 @@ module BlobHelper
     }
   end
 
-  def selected_template(issuable)
-    templates = issuable_templates(issuable)
-    params[:issuable_template] if templates.include?(params[:issuable_template])
-  end
-
-  def can_add_template?(issuable)
-    names = issuable_templates(issuable)
-    names.empty? && can?(current_user, :push_code, @project) && !@project.private?
-  end
-
-  def merge_request_template_names
-    @merge_request_templates ||= Gitlab::Template::MergeRequestTemplate.dropdown_names(ref_project)
-  end
-
-  def issue_template_names
-    @issue_templates ||= Gitlab::Template::IssueTemplate.dropdown_names(ref_project)
-  end
-
-  def issuable_templates(issuable)
-    @issuable_templates ||=
-      if issuable.is_a?(Issue)
-        issue_template_names
-      elsif issuable.is_a?(MergeRequest)
-        merge_request_template_names
-      end
-  end
-
   def ref_project
     @ref_project ||= @target_project || @project
   end
@@ -215,7 +188,11 @@ module BlobHelper
   end
 
   def gitlab_ci_ymls
-    @gitlab_ci_ymls ||= Gitlab::Template::GitlabCiYmlTemplate.dropdown_names
+    @gitlab_ci_ymls ||= Gitlab::Template::GitlabCiYmlTemplate.dropdown_names(params[:context])
+  end
+
+  def dockerfile_names
+    @dockerfile_names ||= Gitlab::Template::DockerfileTemplate.dropdown_names
   end
 
   def blob_editor_paths

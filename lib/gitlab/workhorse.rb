@@ -15,10 +15,17 @@ module Gitlab
 
     class << self
       def git_http_ok(repository, user)
-        {
+        params = {
           GL_ID: Gitlab::GlId.gl_id(user),
           RepoPath: repository.path_to_repo,
         }
+
+        params.merge!(
+          GitalySocketPath: Gitlab.config.gitaly.socket_path,
+          GitalyResourcePath: "/projects/#{repository.project.id}/git-http/info-refs",
+        ) if Gitlab.config.gitaly.socket_path.present?
+
+        params
       end
 
       def lfs_upload_ok(oid, size)
@@ -95,6 +102,19 @@ module Gitlab
         ]
       end
 
+      def terminal_websocket(terminal)
+        details = {
+          'Terminal' => {
+            'Subprotocols' => terminal[:subprotocols],
+            'Url' => terminal[:url],
+            'Header' => terminal[:headers]
+          }
+        }
+        details['Terminal']['CAPem'] = terminal[:ca_pem] if terminal.has_key?(:ca_pem)
+
+        details
+      end
+
       def version
         path = Rails.root.join(VERSION_FILE)
         path.readable? ? path.read.chomp : 'unknown'
@@ -117,8 +137,12 @@ module Gitlab
       end
 
       def verify_api_request!(request_headers)
+        decode_jwt(request_headers[INTERNAL_API_REQUEST_HEADER])
+      end
+
+      def decode_jwt(encoded_message)
         JWT.decode(
-          request_headers[INTERNAL_API_REQUEST_HEADER],
+          encoded_message,
           secret,
           true,
           { iss: 'gitlab-workhorse', verify_iss: true, algorithm: 'HS256' },

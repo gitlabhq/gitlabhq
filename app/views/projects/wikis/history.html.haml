@@ -1,13 +1,16 @@
 - page_title "History", @page.title.capitalize, "Wiki"
-= render 'nav'
+
 %div{ class: container_class }
-  .top-area
+  .wiki-page-header.has-sidebar-toggle
+    %button.btn.btn-default.sidebar-toggle.js-sidebar-wiki-toggle{ role: "button", type: "button" }
+      = icon('angle-double-left')
+
     .nav-text
-      %strong
+      %h2.wiki-page-title
         = link_to @page.title.capitalize, namespace_project_wiki_path(@project.namespace, @project, @page)
-      %span.light
-        &middot;
-        History
+        %span.light
+          &middot;
+          History
 
   .table-holder
     %table.table
@@ -35,3 +38,5 @@
             %td
               %strong
                 = @page.page.wiki.page(@page.page.name, commit.id).try(:format)
+
+= render 'sidebar'

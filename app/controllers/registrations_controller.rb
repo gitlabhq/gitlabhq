@@ -7,17 +7,17 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def create
-    if !Gitlab::Recaptcha.load_configurations! || verify_recaptcha
-      # To avoid duplicate form fields on the login page, the registration form
-      # names fields using `new_user`, but Devise still wants the params in
-      # `user`.
-      if params["new_#{resource_name}"].present? && params[resource_name].blank?
-        params[resource_name] = params.delete(:"new_#{resource_name}")
-      end
+    # To avoid duplicate form fields on the login page, the registration form
+    # names fields using `new_user`, but Devise still wants the params in
+    # `user`.
+    if params["new_#{resource_name}"].present? && params[resource_name].blank?
+      params[resource_name] = params.delete(:"new_#{resource_name}")
+    end
 
+    if !Gitlab::Recaptcha.load_configurations! || verify_recaptcha
       super
     else
-      flash[:alert] = "There was an error with the reCAPTCHA code below. Please re-enter the code."
+      flash[:alert] = 'There was an error with the reCAPTCHA. Please re-solve the reCAPTCHA.'
       flash.delete :recaptcha_error
       render action: 'new'
     end
@@ -27,7 +27,10 @@ class RegistrationsController < Devise::RegistrationsController
     DeleteUserService.new(current_user).execute(current_user)
 
     respond_to do |format|
-      format.html { redirect_to new_user_session_path, notice: "Account successfully removed." }
+      format.html do
+        session.try(:destroy)
+        redirect_to new_user_session_path, notice: "Account successfully removed."
+      end 
     end
   end
 
@@ -54,7 +57,7 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def sign_up_params
-    params.require(:user).permit(:username, :email, :name, :password, :password_confirmation)
+    params.require(:user).permit(:username, :email, :email_confirmation, :name, :password)
   end
 
   def resource_name

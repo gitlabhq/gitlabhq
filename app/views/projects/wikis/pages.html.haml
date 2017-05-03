@@ -1,9 +1,18 @@
 - @no_container = true
 - page_title "Pages", "Wiki"
 
-= render 'nav'
-
 %div{ class: container_class }
+  .wiki-page-header
+
+    .nav-text
+      %h2.wiki-page-title
+        Wiki Pages
+
+    .nav-controls
+      = link_to namespace_project_wikis_git_access_path(@project.namespace, @project), class: 'btn' do
+        = icon('cloud-download')
+        Clone repository
+
   %ul.content-list
     - @wiki_pages.each do |wiki_page|
       %li

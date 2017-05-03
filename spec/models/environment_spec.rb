@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe Environment, models: true do
-  let(:environment) { create(:environment) }
+  let(:project) { create(:empty_project) }
+  subject(:environment) { create(:environment, project: project) }
 
   it { is_expected.to belong_to(:project) }
   it { is_expected.to have_many(:deployments) }
@@ -9,20 +10,17 @@ describe Environment, models: true do
   it { is_expected.to delegate_method(:last_deployment).to(:deployments).as(:last) }
 
   it { is_expected.to delegate_method(:stop_action).to(:last_deployment) }
+  it { is_expected.to delegate_method(:manual_actions).to(:last_deployment) }
 
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_uniqueness_of(:name).scoped_to(:project_id) }
-  it { is_expected.to validate_length_of(:name).is_within(0..255) }
+  it { is_expected.to validate_length_of(:name).is_at_most(255) }
 
-  it { is_expected.to validate_length_of(:external_url).is_within(0..255) }
+  it { is_expected.to validate_uniqueness_of(:slug).scoped_to(:project_id) }
+  it { is_expected.to validate_length_of(:slug).is_at_most(24) }
 
-  # To circumvent a not null violation of the name column:
-  # https://github.com/thoughtbot/shoulda-matchers/issues/336
-  it 'validates uniqueness of :external_url' do
-    create(:environment)
-
-    is_expected.to validate_uniqueness_of(:external_url).scoped_to(:project_id)
-  end
+  it { is_expected.to validate_length_of(:external_url).is_at_most(255) }
+  it { is_expected.to validate_uniqueness_of(:external_url).scoped_to(:project_id) }
 
   describe '#nullify_external_url' do
     it 'replaces a blank url with nil' do
@@ -34,6 +32,8 @@ describe Environment, models: true do
   end
 
   describe '#includes_commit?' do
+    let(:project) { create(:project) }
+
     context 'without a last deployment' do
       it "returns false" do
         expect(environment.includes_commit?('HEAD')).to be false
@@ -41,9 +41,6 @@ describe Environment, models: true do
     end
 
     context 'with a last deployment' do
-      let(:project)     { create(:project) }
-      let(:environment) { create(:environment, project: project) }
-
       let!(:deployment) do
         create(:deployment, environment: environment, sha: project.commit('master').id)
       end
@@ -66,9 +63,25 @@ describe Environment, models: true do
     end
   end
 
+  describe '#update_merge_request_metrics?' do
+    { 'production' => true,
+      'production/eu' => true,
+      'production/www.gitlab.com' => true,
+      'productioneu' => false,
+      'Production' => false,
+      'Production/eu' => false,
+      'test-production' => false
+    }.each do |name, expected_value|
+      it "returns #{expected_value} for #{name}" do
+        env = create(:environment, name: name)
+
+        expect(env.update_merge_request_metrics?).to eq(expected_value)
+      end
+    end
+  end
+
   describe '#first_deployment_for' do
     let(:project)       { create(:project) }
-    let!(:environment)  { create(:environment, project: project) }
     let!(:deployment)   { create(:deployment, environment: environment, ref: commit.parent.id) }
     let!(:deployment1)  { create(:deployment, environment: environment, ref: commit.id) }
     let(:head_commit)   { project.commit }
@@ -163,6 +176,123 @@ describe Environment, models: true do
           expect(subject.name).to eq(close_action.name)
           expect(subject.user).to eq(user)
         end
+      end
+    end
+  end
+
+  describe 'recently_updated_on_branch?' do
+    subject { environment.recently_updated_on_branch?('feature') }
+
+    context 'when last deployment to environment is the most recent one' do
+      before do
+        create(:deployment, environment: environment, ref: 'feature')
+      end
+
+      it { is_expected.to be true }
+    end
+
+    context 'when last deployment to environment is not the most recent' do
+      before do
+        create(:deployment, environment: environment, ref: 'feature')
+        create(:deployment, environment: environment, ref: 'master')
+      end
+
+      it { is_expected.to be false }
+    end
+  end
+
+  describe '#actions_for' do
+    let(:deployment) { create(:deployment, environment: environment) }
+    let(:pipeline) { deployment.deployable.pipeline }
+    let!(:review_action) { create(:ci_build, :manual, name: 'review-apps', pipeline: pipeline, environment: 'review/$CI_BUILD_REF_NAME' )}
+    let!(:production_action) { create(:ci_build, :manual, name: 'production', pipeline: pipeline, environment: 'production' )}
+
+    it 'returns a list of actions with matching environment' do
+      expect(environment.actions_for('review/master')).to contain_exactly(review_action)
+    end
+  end
+
+  describe '#has_terminals?' do
+    subject { environment.has_terminals? }
+
+    context 'when the enviroment is available' do
+      context 'with a deployment service' do
+        let(:project) { create(:kubernetes_project) }
+
+        context 'and a deployment' do
+          let!(:deployment) { create(:deployment, environment: environment) }
+          it { is_expected.to be_truthy }
+        end
+
+        context 'but no deployments' do
+          it { is_expected.to be_falsy }
+        end
+      end
+
+      context 'without a deployment service' do
+        it { is_expected.to be_falsy }
+      end
+    end
+
+    context 'when the environment is unavailable' do
+      let(:project) { create(:kubernetes_project) }
+      before { environment.stop }
+      it { is_expected.to be_falsy }
+    end
+  end
+
+  describe '#terminals' do
+    let(:project) { create(:kubernetes_project) }
+    subject { environment.terminals }
+
+    context 'when the environment has terminals' do
+      before { allow(environment).to receive(:has_terminals?).and_return(true) }
+
+      it 'returns the terminals from the deployment service' do
+        expect(project.deployment_service).
+          to receive(:terminals).with(environment).
+          and_return(:fake_terminals)
+
+        is_expected.to eq(:fake_terminals)
+      end
+    end
+
+    context 'when the environment does not have terminals' do
+      before { allow(environment).to receive(:has_terminals?).and_return(false) }
+      it { is_expected.to eq(nil) }
+    end
+  end
+
+  describe '#slug' do
+    it "is automatically generated" do
+      expect(environment.slug).not_to be_nil
+    end
+
+    it "is not regenerated if name changes" do
+      original_slug = environment.slug
+      environment.update_attributes!(name: environment.name.reverse)
+
+      expect(environment.slug).to eq(original_slug)
+    end
+  end
+
+  describe '#generate_slug' do
+    SUFFIX = "-[a-z0-9]{6}"
+    {
+      "staging-12345678901234567" => "staging-123456789" + SUFFIX,
+      "9-staging-123456789012345" => "env-9-staging-123" + SUFFIX,
+      "staging-1234567890123456"  => "staging-1234567890123456",
+      "production"                => "production",
+      "PRODUCTION"                => "production" + SUFFIX,
+      "review/1-foo"              => "review-1-foo" + SUFFIX,
+      "1-foo"                     => "env-1-foo" + SUFFIX,
+      "1/foo"                     => "env-1-foo" + SUFFIX,
+      "foo-"                      => "foo" + SUFFIX,
+    }.each do |name, matcher|
+      it "returns a slug matching #{matcher}, given #{name}" do
+        slug = described_class.new(name: name).generate_slug
+
+        expect(slug).to match(/\A#{matcher}\z/)
       end
     end
   end

@@ -27,13 +27,14 @@ describe Event, models: true do
   end
 
   describe "Push event" do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :private) }
     let(:user) { project.owner }
     let(:event) { create_event(project, user) }
 
     it do
       expect(event.push?).to be_truthy
-      expect(event.visible_to_user?).to be_truthy
+      expect(event.visible_to_user?(user)).to be_truthy
+      expect(event.visible_to_user?(nil)).to be_falsey
       expect(event.tag?).to be_falsey
       expect(event.branch_name).to eq("master")
       expect(event.author).to eq(user)
@@ -93,6 +94,7 @@ describe Event, models: true do
     let(:admin) { create(:admin) }
     let(:issue) { create(:issue, project: project, author: author, assignee: assignee) }
     let(:confidential_issue) { create(:issue, :confidential, project: project, author: author, assignee: assignee) }
+    let(:note_on_commit) { create(:note_on_commit, project: project) }
     let(:note_on_issue) { create(:note_on_issue, noteable: issue, project: project) }
     let(:note_on_confidential_issue) { create(:note_on_issue, noteable: confidential_issue, project: project) }
     let(:event) { Event.new(project: project, target: target, author_id: author.id) }
@@ -100,6 +102,32 @@ describe Event, models: true do
     before do
       project.team << [member, :developer]
       project.team << [guest, :guest]
+    end
+
+    context 'commit note event' do
+      let(:target) { note_on_commit }
+
+      it do
+        aggregate_failures do
+          expect(event.visible_to_user?(non_member)).to eq true
+          expect(event.visible_to_user?(member)).to eq true
+          expect(event.visible_to_user?(guest)).to eq true
+          expect(event.visible_to_user?(admin)).to eq true
+        end
+      end
+
+      context 'private project' do
+        let(:project) { create(:empty_project, :private) }
+
+        it do
+          aggregate_failures do
+            expect(event.visible_to_user?(non_member)).to eq false
+            expect(event.visible_to_user?(member)).to eq true
+            expect(event.visible_to_user?(guest)).to eq false
+            expect(event.visible_to_user?(admin)).to eq true
+          end
+        end
+      end
     end
 
     context 'issue event' do
@@ -229,6 +257,24 @@ describe Event, models: true do
 
         project.last_activity_at <= 1.minute.ago
       end
+    end
+  end
+
+  describe '#authored_by?' do
+    let(:event) { build(:event) }
+
+    it 'returns true when the event author and user are the same' do
+      expect(event.authored_by?(event.author)).to eq(true)
+    end
+
+    it 'returns false when passing nil as an argument' do
+      expect(event.authored_by?(nil)).to eq(false)
+    end
+
+    it 'returns false when the given user is not the author of the event' do
+      user = double(:user, id: -1)
+
+      expect(event.authored_by?(user)).to eq(false)
     end
   end
 

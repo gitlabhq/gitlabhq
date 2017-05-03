@@ -1,20 +1,15 @@
 module CiStatusHelper
   def ci_status_path(pipeline)
     project = pipeline.project
-    builds_namespace_project_commit_path(project.namespace, project, pipeline.sha)
+    namespace_project_pipeline_path(project.namespace, project, pipeline)
   end
 
-  def ci_status_with_icon(status, target = nil)
-    content = ci_icon_for_status(status) + '&nbsp;'.html_safe + ci_label_for_status(status)
-    klass = "ci-status ci-#{status}"
-    if target
-      link_to content, target, class: klass
-    else
-      content_tag :span, content, class: klass
-    end
-  end
-
+  # Is used by Commit and Merge Request Widget
   def ci_label_for_status(status)
+    if detailed_status?(status)
+      return status.label
+    end
+
     case status
     when 'success'
       'passed'
@@ -31,6 +26,10 @@ module CiStatusHelper
   end
 
   def ci_icon_for_status(status)
+    if detailed_status?(status)
+      return custom_icon(status.icon)
+    end
+
     icon_name =
       case status
       when 'success'
@@ -47,17 +46,27 @@ module CiStatusHelper
         'icon_play'
       when 'created'
         'icon_status_created'
+      when 'skipped'
+        'icon_status_skipped'
       else
-        'icon_status_cancel'
+        'icon_status_canceled'
       end
 
     custom_icon(icon_name)
   end
 
-  def render_commit_status(commit, tooltip_placement: 'auto left')
+  def render_commit_status(commit, ref: nil, tooltip_placement: 'auto left')
     project = commit.project
-    path = pipelines_namespace_project_commit_path(project.namespace, project, commit)
-    render_status_with_link('commit', commit.status, path, tooltip_placement: tooltip_placement)
+    path = pipelines_namespace_project_commit_path(
+      project.namespace,
+      project,
+      commit)
+
+    render_status_with_link(
+      'commit',
+      commit.status(ref),
+      path,
+      tooltip_placement: tooltip_placement)
   end
 
   def render_pipeline_status(pipeline, tooltip_placement: 'auto left')
@@ -83,5 +92,11 @@ module CiStatusHelper
       content_tag :span, ci_icon_for_status(status),
               class: klass, title: title, data: data
     end
+  end
+
+  def detailed_status?(status)
+    status.respond_to?(:text) &&
+      status.respond_to?(:label) &&
+      status.respond_to?(:icon)
   end
 end

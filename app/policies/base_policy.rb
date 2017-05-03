@@ -53,6 +53,10 @@ class BasePolicy
   def self.class_for(subject)
     return GlobalPolicy if subject.nil?
 
+    if subject.class.try(:presenter?)
+      subject = subject.subject
+    end
+
     subject.class.ancestors.each do |klass|
       next unless klass.name
 

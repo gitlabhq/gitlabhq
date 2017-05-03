@@ -9,11 +9,11 @@
 
     = render 'shared/event_filter'
 
-  .content_list.project-activity{:"data-href" => activity_project_path(@project)}
+  .content_list.project-activity{ :"data-href" => activity_project_path(@project) }
   = spinner
 
 :javascript
-  var activity = new Activities();
+  var activity = new gl.Activities();
   $(document).on('page:restore', function (event) {
     activity.reloadActivities()
   })

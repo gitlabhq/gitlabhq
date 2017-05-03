@@ -196,8 +196,65 @@ It consists of two subtasks:
 As long as the fixtures don't change, `rake teaspoon:tests` is sufficient
 (and saves you some time).
 
+If you need to debug your tests and/or application code while they're
+running, navigate to [localhost:3000/teaspoon](http://localhost:3000/teaspoon)
+in your browser, open DevTools, and run tests for individual files by clicking 
+on them. This is also much faster than setting up and running tests from the 
+command line.
+
 Please note: Not all of the frontend fixtures are generated. Some are still static
 files. These will not be touched by `rake teaspoon:fixtures`.
+
+## Design Patterns
+
+### Singletons
+
+When exactly one object is needed for a given task, prefer to define it as a
+`class` rather than as an object literal. Prefer also to explicitly restrict
+instantiation, unless flexibility is important (e.g. for testing).
+
+```
+// bad
+
+gl.MyThing = {
+  prop1: 'hello',
+  method1: () => {}
+};
+
+// good
+
+class MyThing {
+  constructor() {
+    this.prop1 = 'hello';
+  }
+  method1() {}
+}
+
+gl.MyThing = new MyThing();
+
+// best
+
+let singleton;
+
+class MyThing {
+  constructor() {
+    if (!singleton) {
+      singleton = this;
+      singleton.init();
+    }
+      return singleton;
+  }
+
+  init() {
+    this.prop1 = 'hello';
+  }
+
+  method1() {}
+}
+
+gl.MyThing = MyThing;
+
+```
 
 ## Supported browsers
 
@@ -222,7 +279,7 @@ For our currently-supported browsers, see our [requirements][requirements].
 [page-specific-js-example]: https://gitlab.com/gitlab-org/gitlab-ce/blob/13bb9ed77f405c5f6ee4fdbc964ecf635c9a223f/app/views/projects/graphs/_head.html.haml#L6-8
 [chrome-accessibility-developer-tools]: https://github.com/GoogleChrome/accessibility-developer-tools
 [audit-rules]: https://github.com/GoogleChrome/accessibility-developer-tools/wiki/Audit-Rules
-[observatory-cli]: https://github.com/mozilla/http-observatory-cli)
+[observatory-cli]: https://github.com/mozilla/http-observatory-cli
 [qualys-ssl]: https://www.ssllabs.com/ssltest/analyze.html
 [secure_headers]: https://github.com/twitter/secureheaders
 [mdn-csp]: https://developer.mozilla.org/en-US/docs/Web/Security/CSP
@@ -240,16 +297,74 @@ For our currently-supported browsers, see our [requirements][requirements].
 
 ## Gotchas
 
-### Phantom.JS (used by Teaspoon & Rspec) chokes, returning vague JavaScript errors
+### Spec errors due to use of ES6 features in `.js` files
 
-If you see very generic JavaScript errors (e.g. `jQuery is undefined`) being thrown in tests, but
-can't reproduce them manually, you may have included `ES6`-style JavaScript in files that don't
-have the `.js.es6` file extension. Either use ES5-friendly JavaScript or rename the file you're
-working in (`git mv <file.js> <file.js.es6>`). 
+If you see very generic JavaScript errors (e.g. `jQuery is undefined`) being 
+thrown in Teaspoon, Spinach, or Rspec tests but can't reproduce them manually, 
+you may have included `ES6`-style JavaScript in files that don't have the 
+`.js.es6` file extension. Either use ES5-friendly JavaScript or rename the file 
+you're working in (`git mv <file.js> <file.js.es6>`). 
 
-Similar errors will be thrown if you're using 
-any of the [array methods introduced in ES6](http://www.2ality.com/2014/05/es6-array-methods.html)
-whether or not you've updated the file extension.
+### Spec errors due to use of unsupported JavaScript
 
+Similar errors will be thrown if you're using JavaScript features not yet 
+supported by our test runner's version of webkit, whether or not you've updated
+the file extension. Examples of unsupported JavaScript features are:
 
+- Array.from
+- Array.find
+- Array.first
+- Object.assign
+- Async functions
+- Generators
+- Array destructuring
+- For Of
+- Symbol/Symbol.iterator
+- Spread
 
+Until these are polyfilled or transpiled appropriately, they should not be used. 
+Please update this list with additional unsupported features or when any of 
+these are made usable.
+
+### Spec errors due to JavaScript not enabled
+
+If, as a result of a change you've made, a feature now depends on JavaScript to 
+run correctly, you need to make sure a JavaScript web driver is enabled when
+specs are run. If you don't you'll see vague error messages from the spec 
+runner, and an explosion of vague console errors in the HTML snapshot. 
+
+To enable a JavaScript driver in an `rspec` test, add `js: true` to the 
+individual spec or the context block containing multiple specs that need 
+JavaScript enabled: 
+
+```ruby
+
+# For one spec
+it 'presents information about abuse report', js: true do
+    # assertions...
+end
+
+describe "Admin::AbuseReports", js: true do
+   it 'presents information about abuse report' do
+        # assertions...
+    end
+   it 'shows buttons for adding to abuse report' do
+        # assertions...
+    end
+end
+```
+
+In Spinach, the JavaScript driver is enabled differently. In the `*.feature` 
+file for the failing spec, add the `@javascript` flag above the Scenario: 
+
+```
+@javascript
+Scenario: Developer can approve merge request
+    Given I am a "Shop" developer
+    And I visit project "Shop" merge requests page
+    And merge request 'Bug NS-04' must be approved
+    And I click link "Bug NS-04"
+    When I click link "Approve"
+    Then I should see approved merge request "Bug NS-04"
+
+```

@@ -1,7 +1,7 @@
-image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3-git-2.7-phantomjs-2.1"
+image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-git-2.7-phantomjs-2.1-node-7.1"
 
 cache:
-  key: "ruby-231"
+  key: "ruby-233"
   paths:
   - vendor/ruby
 
@@ -15,12 +15,13 @@ variables:
   USE_BUNDLE_INSTALL: "true"
   GIT_DEPTH: "20"
   PHANTOMJS_VERSION: "2.1.1"
+  GET_SOURCES_ATTEMPTS: "3"
 
 before_script:
   - source ./scripts/prepare_build.sh
   - cp config/gitlab.yml.example config/gitlab.yml
   - bundle --version
-  - '[ "$USE_BUNDLE_INSTALL" != "true" ] || retry bundle install --without postgres production --jobs $(nproc) "${FLAGS[@]}"'
+  - '[ "$USE_BUNDLE_INSTALL" != "true" ] || retry bundle install --without postgres production --jobs $(nproc) $FLAGS'
   - retry gem install knapsack
   - '[ "$SETUP_DB" != "true" ] || bundle exec rake db:drop db:create db:schema:load db:migrate add_limits_mysql'
 
@@ -30,7 +31,11 @@ stages:
 - post-test
 - pages
 
-# Prepare and merge knapsack tests
+# Predefined scopes
+.dedicated-runner: &dedicated-runner
+  tags:
+    - gitlab-org
+
 .knapsack-state: &knapsack-state
   services: []
   variables:
@@ -45,26 +50,6 @@ stages:
     paths:
     - knapsack/
 
-knapsack:
-  <<: *knapsack-state
-  stage: prepare
-  script:
-    - mkdir -p knapsack/
-    - '[[ -f knapsack/rspec_report.json ]] || echo "{}" > knapsack/rspec_report.json'
-    - '[[ -f knapsack/spinach_report.json ]] || echo "{}" > knapsack/spinach_report.json'
-
-update-knapsack:
-  <<: *knapsack-state
-  stage: post-test
-  script:
-    - scripts/merge-reports knapsack/rspec_report.json knapsack/rspec_node_*.json
-    - scripts/merge-reports knapsack/spinach_report.json knapsack/spinach_node_*.json
-    - rm -f knapsack/*_node_*.json
-  only:
-    - master
-
-# Execute all testing suites
-
 .use-db: &use-db
   services:
     - mysql:latest
@@ -72,9 +57,9 @@ update-knapsack:
 
 .rspec-knapsack: &rspec-knapsack
   stage: test
+  <<: *dedicated-runner
   <<: *use-db
   script:
-    - bundle exec rake assets:precompile 2>/dev/null
     - JOB_NAME=( $CI_BUILD_NAME )
     - export CI_NODE_INDEX=${JOB_NAME[1]}
     - export CI_NODE_TOTAL=${JOB_NAME[2]}
@@ -90,9 +75,9 @@ update-knapsack:
 
 .spinach-knapsack: &spinach-knapsack
   stage: test
+  <<: *dedicated-runner
   <<: *use-db
   script:
-    - bundle exec rake assets:precompile 2>/dev/null
     - JOB_NAME=( $CI_BUILD_NAME )
     - export CI_NODE_INDEX=${JOB_NAME[1]}
     - export CI_NODE_TOTAL=${JOB_NAME[2]}
@@ -105,6 +90,44 @@ update-knapsack:
     paths:
     - knapsack/
     - coverage/
+
+# Prepare and merge knapsack tests
+
+knapsack:
+  <<: *knapsack-state
+  <<: *dedicated-runner
+  stage: prepare
+  script:
+    - mkdir -p knapsack/
+    - '[[ -f knapsack/rspec_report.json ]] || echo "{}" > knapsack/rspec_report.json'
+    - '[[ -f knapsack/spinach_report.json ]] || echo "{}" > knapsack/spinach_report.json'
+
+setup-test-env:
+  <<: *use-db
+  <<: *dedicated-runner
+  stage: prepare
+  script:
+    - bundle exec rake assets:precompile 2>/dev/null
+    - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
+  artifacts:
+    expire_in: 7d
+    paths:
+      - public/assets
+      - tmp/tests
+
+update-knapsack:
+  <<: *knapsack-state
+  <<: *dedicated-runner
+  stage: post-test
+  script:
+    - scripts/merge-reports knapsack/rspec_report.json knapsack/rspec_node_*.json
+    - scripts/merge-reports knapsack/spinach_report.json knapsack/spinach_node_*.json
+    - rm -f knapsack/*_node_*.json
+  only:
+    - master@gitlab-org/gitlab-ce
+    - master@gitlab-org/gitlab-ee
+    - master@gitlab/gitlabhq
+    - master@gitlab/gitlab-ee
 
 rspec 0 20: *rspec-knapsack
 rspec 1 20: *rspec-knapsack
@@ -143,7 +166,10 @@ spinach 9 10: *spinach-knapsack
   image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.1-git-2.7-phantomjs-2.1"
   <<: *use-db
   only:
-    - master
+    - master@gitlab-org/gitlab-ce
+    - master@gitlab-org/gitlab-ee
+    - master@gitlab/gitlabhq
+    - master@gitlab/gitlab-ee
   cache:
     key: "ruby21"
     paths:
@@ -151,10 +177,12 @@ spinach 9 10: *spinach-knapsack
 
 .rspec-knapsack-ruby21: &rspec-knapsack-ruby21
   <<: *rspec-knapsack
+  <<: *dedicated-runner
   <<: *ruby-21
 
 .spinach-knapsack-ruby21: &spinach-knapsack-ruby21
   <<: *spinach-knapsack
+  <<: *dedicated-runner
   <<: *ruby-21
 
 rspec 0 20 ruby21: *rspec-knapsack-ruby21
@@ -199,11 +227,18 @@ spinach 9 10 ruby21: *spinach-knapsack-ruby21
 
 .exec: &exec
   <<: *ruby-static-analysis
+  <<: *dedicated-runner
   stage: test
   script:
     - bundle exec $CI_BUILD_NAME
 
-rubocop: *exec
+rubocop: 
+  <<: *ruby-static-analysis
+  <<: *dedicated-runner
+  stage: test
+  script:
+    - bundle exec "rubocop --require rubocop-rspec"
+
 rake haml_lint: *exec
 rake scss_lint: *exec
 rake brakeman: *exec
@@ -213,21 +248,35 @@ rake downtime_check: *exec
 rake ee_compat_check:
   <<: *exec
   only:
-    - branches
+    - branches@gitlab-org/gitlab-ce
   except:
     - master
     - tags
+    - /^[\d-]+-stable(-ee)?$/
   allow_failure: yes
+  cache:
+    key: "ruby233-ee_compat_check_repo"
+    paths:
+      - ee_compat_check/repo/
+      - vendor/ruby
+  artifacts:
+    name: "${CI_BUILD_NAME}_${CI_BUILD_REF_NAME}_${CI_BUILD_REF}"
+    when: on_failure
+    expire_in: 10d
+    paths:
+      - ee_compat_check/patches/*.patch
 
 rake db:migrate:reset:
   stage: test
   <<: *use-db
+  <<: *dedicated-runner
   script:
     - rake db:migrate:reset
 
 rake db:seed_fu:
   stage: test
   <<: *use-db
+  <<: *dedicated-runner
   variables:
     SIZE: "1"
     SETUP_DB: "false"
@@ -243,12 +292,16 @@ rake db:seed_fu:
       - log/development.log
 
 teaspoon:
+  cache:
+    paths:
+      - vendor/ruby
+      - node_modules/
   stage: test
   <<: *use-db
+  <<: *dedicated-runner
   script:
-    - curl --silent --location https://deb.nodesource.com/setup_6.x | bash -
-    - apt-get install --assume-yes nodejs
-    - npm install --global istanbul
+    - npm install
+    - npm link istanbul
     - rake teaspoon
   artifacts:
     name: coverage-javascript
@@ -258,39 +311,48 @@ teaspoon:
 
 lint-doc:
   stage: test
+  <<: *dedicated-runner
   image: "phusion/baseimage:latest"
   before_script: []
   script:
     - scripts/lint-doc.sh
 
 bundler:check:
- stage: test
- <<: *ruby-static-analysis
- script:
+  stage: test
+  <<: *dedicated-runner
+  <<: *ruby-static-analysis
+  script:
    - bundle check
 
 bundler:audit:
   stage: test
   <<: *ruby-static-analysis
+  <<: *dedicated-runner
   only:
-    - master
+    - master@gitlab-org/gitlab-ce
+    - master@gitlab-org/gitlab-ee
+    - master@gitlab/gitlabhq
+    - master@gitlab/gitlab-ee
   script:
     - "bundle exec bundle-audit check --update --ignore OSVDB-115941"
 
 migration paths:
   stage: test
   <<: *use-db
+  <<: *dedicated-runner
   variables:
     SETUP_DB: "false"
   only:
     - master@gitlab-org/gitlab-ce
+    - master@gitlab-org/gitlab-ee
+    - master@gitlab/gitlabhq
+    - master@gitlab/gitlab-ee
   script:
-    - git checkout HEAD .
-    - git fetch --tags
-    - git checkout v8.5.9
+    - git fetch origin v8.5.9
+    - git checkout -f FETCH_HEAD
     - cp config/resque.yml.example config/resque.yml
     - sed -i 's/localhost/redis/g' config/resque.yml
-    - bundle install --without postgres production --jobs $(nproc) "${FLAGS[@]}" --retry=3
+    - bundle install --without postgres production --jobs $(nproc) $FLAGS --retry=3
     - rake db:drop db:create db:schema:load db:seed_fu
     - git checkout $CI_BUILD_REF
     - source scripts/prepare_build.sh
@@ -299,6 +361,7 @@ migration paths:
 coverage:
   stage: post-test
   services: []
+  <<: *dedicated-runner
   variables:
     SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "true"
@@ -311,19 +374,42 @@ coverage:
     - coverage/index.html
     - coverage/assets/
 
-lint-javascript:
+lint:javascript:
+  <<: *dedicated-runner
+  cache:
+    paths:
+      - node_modules/
   stage: test
-  image: "node:latest"
+  image: "node:7.1"
   before_script:
     - npm install
   script:
-    - npm run eslint
+    - npm --silent run eslint
+
+lint:javascript:report:
+  <<: *dedicated-runner
+  cache:
+    paths:
+      - node_modules/
+  stage: post-test
+  image: "node:7.1"
+  before_script:
+    - npm install
+  script:
+    - find app/ spec/ -name '*.js' -or -name '*.js.es6' -exec sed --in-place 's|/\* eslint-disable .*\*/||' {} \; # run report over all files
+    - npm --silent run eslint-report || true # ignore exit code
+  artifacts:
+    name: eslint-report
+    expire_in: 31d
+    paths:
+    - eslint-report.html
 
 # Trigger docs build
 # https://gitlab.com/gitlab-com/doc-gitlab-com/blob/master/README.md#deployment-process
 trigger_docs:
   stage: post-test
   image: "alpine"
+  <<: *dedicated-runner
   before_script:
     - apk update && apk add curl
   variables:
@@ -331,7 +417,7 @@ trigger_docs:
   cache: {}
   artifacts: {}
   script:
-    - "curl -X POST -F token=${DOCS_TRIGGER_TOKEN} -F ref=master -F variables[PROJECT]=ce https://gitlab.com/api/v3/projects/38069/trigger/builds"
+    - "curl -X POST -F token=${DOCS_TRIGGER_TOKEN} -F ref=master -F variables[PROJECT]=ce https://gitlab.com/api/v3/projects/1794617/trigger/builds"
   only:
     - master@gitlab-org/gitlab-ce
 
@@ -339,11 +425,12 @@ trigger_docs:
 
 notify:slack:
   stage: post-test
+  <<: *dedicated-runner
   variables:
     SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "false"
   script:
-    - ./scripts/notify_slack.sh "#builds" "Build on \`$CI_BUILD_REF_NAME\` failed! Commit \`$(git log -1 --oneline)\` See <https://gitlab.com/gitlab-org/$(basename "$PWD")/commit/"$CI_BUILD_REF"/builds>"
+    - ./scripts/notify_slack.sh "#development" "Build on \`$CI_BUILD_REF_NAME\` failed! Commit \`$(git log -1 --oneline)\` See <https://gitlab.com/gitlab-org/$(basename "$PWD")/commit/"$CI_BUILD_REF"/pipelines>"
   when: on_failure
   only:
     - master@gitlab-org/gitlab-ce
@@ -354,23 +441,27 @@ notify:slack:
 pages:
   before_script: []
   stage: pages
+  <<: *dedicated-runner
   dependencies:
     - coverage
     - teaspoon
+    - lint:javascript:report
   script:
     - mv public/ .public/
     - mkdir public/
     - mv coverage public/coverage-ruby
     - mv coverage-javascript/default/ public/coverage-javascript/
+    - mv eslint-report.html public/
   artifacts:
     paths:
       - public
   only:
-    - master
+    - master@gitlab-org/gitlab-ce
 
 # Insurance in case a gem needed by one of our releases gets yanked from
 # rubygems.org in the future.
 cache gems:
+  <<: *dedicated-runner
   only:
     - tags
   variables:
@@ -380,3 +471,5 @@ cache gems:
   artifacts:
     paths:
       - vendor/cache
+  only:
+    - master@gitlab-org/gitlab-ce

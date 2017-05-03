@@ -1,4 +1,7 @@
-/* eslint-disable */
+/* eslint-disable object-shorthand, func-names, camelcase, no-restricted-syntax, guard-for-in, comma-dangle, max-len, no-param-reassign */
+/* global Vue */
+/* global DiscussionModel */
+
 ((w) => {
   w.CommentsStore = {
     state: {},
@@ -38,7 +41,7 @@
       }
     },
     unresolvedDiscussionIds: function () {
-      let ids = [];
+      const ids = [];
 
       for (const discussionId in this.state) {
         const discussion = this.state[discussionId];

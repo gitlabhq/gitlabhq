@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable space-before-function-paren */
 // PhantomJS (Teaspoons default driver) doesn't have support for
 // Function.prototype.bind, which has caused confusion.  Use this polyfill to
 // avoid the confusion.
@@ -37,7 +37,12 @@
 // file as a manifest.
 // For more information: http://github.com/modeset/teaspoon
 
-(function() {
+// set our fixtures path
+jasmine.getFixtures().fixturesPath = '/teaspoon/fixtures';
+jasmine.getJSONFixtures().fixturesPath = '/teaspoon/fixtures';
 
-
-}).call(this);
+// defined in ActionDispatch::TestRequest
+// see https://github.com/rails/rails/blob/v4.2.7.1/actionpack/lib/action_dispatch/testing/test_request.rb#L7
+window.gl = window.gl || {};
+window.gl.TEST_HOST = 'http://test.host';
+window.gon = window.gon || {};

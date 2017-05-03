@@ -18,12 +18,16 @@ class Projects::GitHttpClientController < Projects::ApplicationController
 
   private
 
+  def download_request?
+    raise NotImplementedError
+  end
+
+  def upload_request?
+    raise NotImplementedError
+  end
+
   def authenticate_user
     @authentication_result = Gitlab::Auth::Result.new
-
-    if project && project.public? && download_request?
-      return # Allow access
-    end
 
     if allow_basic_auth? && basic_auth_provided?
       login, password = user_name_and_password(request)
@@ -41,6 +45,10 @@ class Projects::GitHttpClientController < Projects::ApplicationController
         send_final_spnego_response
         return # Allow access
       end
+    elsif project && download_request? && Guest.can?(:download_code, project)
+      @authentication_result = Gitlab::Auth::Result.new(nil, project, :none, [:download_code])
+
+      return # Allow access
     end
 
     send_challenges
@@ -130,10 +138,6 @@ class Projects::GitHttpClientController < Projects::ApplicationController
     authentication_result.ci?(project)
   end
 
-  def lfs_deploy_token?
-    authentication_result.lfs_deploy_token?(project)
-  end
-
   def authentication_has_download_access?
     has_authentication_ability?(:download_code) || has_authentication_ability?(:build_download_code)
   end
@@ -148,9 +152,5 @@ class Projects::GitHttpClientController < Projects::ApplicationController
 
   def authentication_project
     authentication_result.project
-  end
-
-  def verify_workhorse_api!
-    Gitlab::Workhorse.verify_api_request!(request.headers)
   end
 end

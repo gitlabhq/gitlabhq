@@ -1,6 +1,8 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, quotes, consistent-return, one-var, one-var-declaration-per-line, no-cond-assign, max-len, object-shorthand, no-param-reassign, comma-dangle, prefer-template, no-unused-vars, no-return-assign */
+/* global fuzzaldrinPlus */
+
 (function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
 
   this.ProjectFindFile = (function() {
     var highlighter;
@@ -69,7 +71,7 @@
       var blobItemUrl, filePath, html, i, j, len, matches, results;
       this.element.find(".tree-table > tbody").empty();
       results = [];
-      for (i = j = 0, len = filePaths.length; j < len; i = ++j) {
+      for (i = j = 0, len = filePaths.length; j < len; i = (j += 1)) {
         filePath = filePaths[i];
         if (i === 20) {
           break;
@@ -90,7 +92,7 @@
       lastIndex = 0;
       highlightText = "";
       matchedChars = [];
-      for (j = 0, len = matches.length; j < len; j++) {
+      for (j = 0, len = matches.length; j < len; j += 1) {
         matchIndex = matches[j];
         unmatched = text.substring(lastIndex, matchIndex);
         if (unmatched) {
@@ -165,7 +167,5 @@
     };
 
     return ProjectFindFile;
-
   })();
-
 }).call(this);

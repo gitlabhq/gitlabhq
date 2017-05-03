@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, no-use-before-define, comma-dangle, max-len */
+/* global Issue */
 
 /*= require lib/utils/text_utility */
 /*= require issue */
@@ -7,9 +8,9 @@
   var INVALID_URL = 'http://goesnowhere.nothing/whereami';
   var $boxClosed, $boxOpen, $btnClose, $btnReopen;
 
-  fixture.preload('issues/closed-issue.html');
-  fixture.preload('issues/issue-with-task-list.html');
-  fixture.preload('issues/open-issue.html');
+  preloadFixtures('issues/closed-issue.html.raw');
+  preloadFixtures('issues/issue-with-task-list.html.raw');
+  preloadFixtures('issues/open-issue.html.raw');
 
   function expectErrorMessage() {
     var $flashMessage = $('div.flash-alert');
@@ -41,27 +42,27 @@
   }
 
   function findElements() {
-      $boxClosed = $('div.status-box-closed');
-      expect($boxClosed).toExist();
-      expect($boxClosed).toHaveText('Closed');
+    $boxClosed = $('div.status-box-closed');
+    expect($boxClosed).toExist();
+    expect($boxClosed).toHaveText('Closed');
 
-      $boxOpen = $('div.status-box-open');
-      expect($boxOpen).toExist();
-      expect($boxOpen).toHaveText('Open');
+    $boxOpen = $('div.status-box-open');
+    expect($boxOpen).toExist();
+    expect($boxOpen).toHaveText('Open');
 
-      $btnClose = $('.btn-close.btn-grouped');
-      expect($btnClose).toExist();
-      expect($btnClose).toHaveText('Close issue');
+    $btnClose = $('.btn-close.btn-grouped');
+    expect($btnClose).toExist();
+    expect($btnClose).toHaveText('Close issue');
 
-      $btnReopen = $('.btn-reopen.btn-grouped');
-      expect($btnReopen).toExist();
-      expect($btnReopen).toHaveText('Reopen issue');
+    $btnReopen = $('.btn-reopen.btn-grouped');
+    expect($btnReopen).toExist();
+    expect($btnReopen).toHaveText('Reopen issue');
   }
 
   describe('Issue', function() {
     describe('task lists', function() {
-      fixture.load('issues/issue-with-task-list.html');
       beforeEach(function() {
+        loadFixtures('issues/issue-with-task-list.html.raw');
         this.issue = new Issue();
       });
 
@@ -70,11 +71,11 @@
         $('input[type=checkbox]').attr('checked', true).trigger('change');
         expect($('.js-task-list-field').val()).toBe('- [x] Task List Item');
       });
-      
+
       it('submits an ajax request on tasklist:changed', function() {
         spyOn(jQuery, 'ajax').and.callFake(function(req) {
           expect(req.type).toBe('PATCH');
-          expect(req.url).toBe('https://fixture.invalid/namespace3/project3/issues/1.json');
+          expect(req.url).toBe(gl.TEST_HOST + '/frontend-fixtures/issues-project/issues/1.json'); // eslint-disable-line prefer-template
           expect(req.data.issue.description).not.toBe(null);
         });
 
@@ -85,7 +86,7 @@
 
   describe('close issue', function() {
     beforeEach(function() {
-      fixture.load('issues/open-issue.html');
+      loadFixtures('issues/open-issue.html.raw');
       findElements();
       this.issue = new Issue();
 
@@ -139,7 +140,7 @@
 
   describe('reopen issue', function() {
     beforeEach(function() {
-      fixture.load('issues/closed-issue.html');
+      loadFixtures('issues/closed-issue.html.raw');
       findElements();
       this.issue = new Issue();
 
@@ -160,5 +161,4 @@
       expect($btnReopen).toHaveProp('disabled', false);
     });
   });
-
 }).call(this);

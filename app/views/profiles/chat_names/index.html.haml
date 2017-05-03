@@ -1,0 +1,30 @@
+- page_title 'Chat'
+= render 'profiles/head'
+
+.row.prepend-top-default
+  .col-lg-3.profile-settings-sidebar
+    %h4.prepend-top-0
+      = page_title
+    %p
+      You can see your Chat accounts.
+
+  .col-lg-9
+    %h5 Active chat names (#{@chat_names.size})
+
+    - if @chat_names.present?
+      .table-responsive
+        %table.table.chat-names
+          %thead
+            %tr
+              %th Project
+              %th Service
+              %th Team domain
+              %th Nickname
+              %th Last used
+              %th
+          %tbody
+            = render @chat_names
+
+    - else
+      .settings-message.text-center
+        You don't have any active chat names.

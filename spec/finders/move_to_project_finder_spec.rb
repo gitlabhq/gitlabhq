@@ -2,13 +2,13 @@ require 'spec_helper'
 
 describe MoveToProjectFinder do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
 
-  let(:no_access_project) { create(:project) }
-  let(:guest_project) { create(:project) }
-  let(:reporter_project) { create(:project) }
-  let(:developer_project) { create(:project) }
-  let(:master_project) { create(:project) }
+  let(:no_access_project) { create(:empty_project) }
+  let(:guest_project) { create(:empty_project) }
+  let(:reporter_project) { create(:empty_project) }
+  let(:developer_project) { create(:empty_project) }
+  let(:master_project) { create(:empty_project) }
 
   subject { described_class.new(user) }
 
@@ -36,8 +36,8 @@ describe MoveToProjectFinder do
 
       it 'does not return archived projects' do
         reporter_project.team << [user, :reporter]
-        reporter_project.update_attributes(archived: true)
-        other_reporter_project = create(:project)
+        reporter_project.archive!
+        other_reporter_project = create(:empty_project)
         other_reporter_project.team << [user, :reporter]
 
         expect(subject.execute(project).to_a).to eq([other_reporter_project])
@@ -46,7 +46,7 @@ describe MoveToProjectFinder do
       it 'does not return projects for which issues are disabled' do
         reporter_project.team << [user, :reporter]
         reporter_project.update_attributes(issues_enabled: false)
-        other_reporter_project = create(:project)
+        other_reporter_project = create(:empty_project)
         other_reporter_project.team << [user, :reporter]
 
         expect(subject.execute(project).to_a).to eq([other_reporter_project])
@@ -83,10 +83,10 @@ describe MoveToProjectFinder do
       end
 
       it 'returns projects matching a search query' do
-        foo_project = create(:project)
+        foo_project = create(:empty_project)
         foo_project.team << [user, :master]
 
-        wadus_project = create(:project, name: 'wadus')
+        wadus_project = create(:empty_project, name: 'wadus')
         wadus_project.team << [user, :master]
 
         expect(subject.execute(project).to_a).to eq([wadus_project, foo_project])

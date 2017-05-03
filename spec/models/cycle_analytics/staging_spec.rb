@@ -45,7 +45,7 @@ describe 'CycleAnalytics#staging', feature: true do
         deploy_master
       end
 
-      expect(subject.staging).to be_nil
+      expect(subject[:staging].median).to be_nil
     end
   end
 
@@ -58,7 +58,7 @@ describe 'CycleAnalytics#staging', feature: true do
         deploy_master(environment: 'staging')
       end
 
-      expect(subject.staging).to be_nil
+      expect(subject[:staging].median).to be_nil
     end
   end
 end

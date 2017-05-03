@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable space-before-function-paren, no-var, comma-dangle, no-return-assign, max-len */
 
 /*= require behaviors/autosize */
 
@@ -6,7 +6,7 @@
   describe('Autosize behavior', function() {
     var load;
     beforeEach(function() {
-      return fixture.set('<textarea class="js-autosize" style="resize: vertical"></textarea>');
+      return setFixtures('<textarea class="js-autosize" style="resize: vertical"></textarea>');
     });
     it('does not overwrite the resize property', function() {
       load();
@@ -18,5 +18,4 @@
       return $(document).trigger('page:load');
     };
   });
-
 }).call(this);

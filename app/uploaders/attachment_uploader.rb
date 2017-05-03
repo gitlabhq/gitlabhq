@@ -1,4 +1,4 @@
-class AttachmentUploader < CarrierWave::Uploader::Base
+class AttachmentUploader < GitlabUploader
   include UploaderHelper
 
   storage :file

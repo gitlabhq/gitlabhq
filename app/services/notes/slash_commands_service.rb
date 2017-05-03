@@ -19,10 +19,10 @@ module Notes
       self.class.supported?(note, current_user)
     end
 
-    def extract_commands(note)
+    def extract_commands(note, options = {})
       return [note.note, {}] unless supported?(note)
 
-      SlashCommands::InterpretService.new(project, current_user).
+      SlashCommands::InterpretService.new(project, current_user, options).
         execute(note.note, note.noteable)
     end
 

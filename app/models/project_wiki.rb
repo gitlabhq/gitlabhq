@@ -127,7 +127,7 @@ class ProjectWiki
   end
 
   def search_files(query)
-    repository.search_files(query, default_branch)
+    repository.search_files_by_content(query, default_branch)
   end
 
   def repository

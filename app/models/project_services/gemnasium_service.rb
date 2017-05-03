@@ -12,7 +12,7 @@ class GemnasiumService < Service
     'Gemnasium monitors your project dependencies and alerts you about updates and security vulnerabilities.'
   end
 
-  def to_param
+  def self.to_param
     'gemnasium'
   end
 
@@ -23,7 +23,7 @@ class GemnasiumService < Service
     ]
   end
 
-  def supported_events
+  def self.supported_events
     %w(push)
   end
 

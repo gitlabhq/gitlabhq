@@ -1,4 +1,7 @@
+/coverage/
+/coverage-javascript/
+/node_modules/
 /public/
 /tmp/
 /vendor/
-
+/builds/

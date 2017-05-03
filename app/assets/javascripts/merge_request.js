@@ -1,11 +1,12 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, quotes, no-underscore-dangle, one-var, one-var-declaration-per-line, consistent-return, dot-notation, quote-props, comma-dangle, object-shorthand, max-len, prefer-arrow-callback */
+/* global MergeRequestTabs */
 
 /*= require jquery.waitforimages */
 /*= require task_list */
 /*= require merge_request_tabs */
 
 (function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
 
   this.MergeRequest = (function() {
     function MergeRequest(opts) {
@@ -26,6 +27,7 @@
       // Prevent duplicate event bindings
       this.disableTaskList();
       this.initMRBtnListeners();
+      this.initCommitMessageListeners();
       if ($("a.btn-close").length) {
         this.initTaskList();
       }
@@ -40,7 +42,7 @@
       if (window.mrTabs) {
         window.mrTabs.unbindEvents();
       }
-      window.mrTabs = new MergeRequestTabs(this.opts);
+      window.mrTabs = new gl.MergeRequestTabs(this.opts);
     };
 
     MergeRequest.prototype.showAllCommits = function() {
@@ -107,8 +109,26 @@
     // note so that we can re-use its form here
     };
 
+    MergeRequest.prototype.initCommitMessageListeners = function() {
+      var textarea = $('textarea.js-commit-message');
+
+      $('a.js-with-description-link').on('click', function(e) {
+        e.preventDefault();
+
+        textarea.val(textarea.data('messageWithDescription'));
+        $('p.js-with-description-hint').hide();
+        $('p.js-without-description-hint').show();
+      });
+
+      $('a.js-without-description-link').on('click', function(e) {
+        e.preventDefault();
+
+        textarea.val(textarea.data('messageWithoutDescription'));
+        $('p.js-with-description-hint').show();
+        $('p.js-without-description-hint').hide();
+      });
+    };
+
     return MergeRequest;
-
   })();
-
 }).call(this);

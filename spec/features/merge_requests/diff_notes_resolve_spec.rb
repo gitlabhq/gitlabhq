@@ -69,8 +69,6 @@ feature 'Diff notes resolve', feature: true, js: true do
 
         page.within '.diff-content .note' do
           expect(page).to have_selector('.line-resolve-btn.is-active')
-
-          expect(find('.line-resolve-btn')['data-original-title']).to eq("Resolved by #{user.name}")
         end
 
         page.within '.line-resolve-all-container' do

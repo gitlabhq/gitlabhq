@@ -8,6 +8,17 @@ module SnippetsHelper
     end
   end
 
+  # Return the path of a snippets index for a user or for a project
+  #
+  # @returns String, path to snippet index
+  def subject_snippets_path(subject = nil, opts = nil)
+    if subject.is_a?(Project)
+      namespace_project_snippets_path(subject.namespace, subject, opts)
+    else # assume subject === User
+      dashboard_snippets_path(opts)
+    end
+  end
+
   # Get an array of line numbers surrounding a matching
   # line, bounded by min/max.
   #

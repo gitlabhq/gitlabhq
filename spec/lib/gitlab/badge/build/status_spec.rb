@@ -69,8 +69,8 @@ describe Gitlab::Badge::Build::Status do
         new_build.success!
       end
 
-      it 'reports the compound status' do
-        expect(badge.status).to eq 'failed'
+      it 'does not take outdated pipeline into account' do
+        expect(badge.status).to eq 'success'
       end
     end
   end

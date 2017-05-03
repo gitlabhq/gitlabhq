@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle, no-unused-vars */
+
 class ProtectedBranchDropdown {
   constructor(options) {
     this.onSelect = options.onSelect;
@@ -75,3 +76,5 @@ class ProtectedBranchDropdown {
     this.$dropdownFooter.toggleClass('hidden', !branchName);
   }
 }
+
+window.ProtectedBranchDropdown = ProtectedBranchDropdown;

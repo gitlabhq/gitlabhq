@@ -22,8 +22,20 @@ feature 'Ref switcher', feature: true, js: true do
       input.native.send_keys :down
       input.native.send_keys :down
       input.native.send_keys :enter
-
-      expect(page).to have_content 'expand-collapse-files'
     end
+
+    expect(page).to have_title 'expand-collapse-files'
+  end
+
+  it "user selects ref with special characters" do
+    click_button 'master'
+    wait_for_ajax
+
+    page.within '.project-refs-form' do
+      page.fill_in 'Search branches and tags', with: "'test'"
+      click_link "'test'"
+    end
+
+    expect(page).to have_title "'test'"
   end
 end

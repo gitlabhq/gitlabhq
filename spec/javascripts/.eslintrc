@@ -1,0 +1,30 @@
+{
+  "env": {
+    "jasmine": true
+  },
+  "extends": "plugin:jasmine/recommended",
+  "globals": {
+    "appendLoadFixtures": false,
+    "appendLoadStyleFixtures": false,
+    "appendSetFixtures": false,
+    "appendSetStyleFixtures": false,
+    "getJSONFixture": false,
+    "loadFixtures": false,
+    "loadJSONFixtures": false,
+    "loadStyleFixtures": false,
+    "preloadFixtures": false,
+    "preloadStyleFixtures": false,
+    "readFixtures": false,
+    "sandbox": false,
+    "setFixtures": false,
+    "setStyleFixtures": false,
+    "spyOnEvent": false
+  },
+  "plugins": ["jasmine"],
+  "rules": {
+    "prefer-arrow-callback": 0,
+    "func-names": 0,
+    "jasmine/no-suite-dupes": [1, "branch"],
+    "jasmine/no-spec-dupes": [1, "branch"]
+  }
+}

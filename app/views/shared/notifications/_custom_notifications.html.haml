@@ -18,7 +18,7 @@
                 %p
                   Custom notification levels are the same as participating levels. With custom notification levels you will also receive notifications for select events. To find out more, check out
                   = succeed "." do
-                    %a{ href: "http://docs.gitlab.com/ce/workflow/notifications.html", target: "_blank"} notification emails
+                    %a{ href: "http://docs.gitlab.com/ce/workflow/notifications.html", target: "_blank" } notification emails
               .col-lg-8
                 - NotificationSetting::EMAIL_EVENTS.each_with_index do |event, index|
                   - field_id = "#{notifications_menu_identifier("modal", notification_setting)}_notification_setting[#{event}]"
@@ -27,5 +27,5 @@
                       %label{ for: field_id }
                         = check_box("notification_setting", event, id: field_id, class: "js-custom-notification-event", checked: notification_setting.events[event])
                         %strong
-                          = event.to_s.humanize
+                          = notification_event_name(event)
                           = icon("spinner spin", class: "custom-notification-event-loading")

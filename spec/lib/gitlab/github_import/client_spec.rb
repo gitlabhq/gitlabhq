@@ -45,20 +45,46 @@ describe Gitlab::GithubImport::Client, lib: true do
     end
   end
 
-  context 'when provider does not specity an API endpoint' do
-    it 'uses GitHub root API endpoint' do
-      expect(client.api.api_endpoint).to eq 'https://api.github.com/'
-    end
-  end
-
-  context 'when provider specify a custom API endpoint' do
-    before do
-      github_provider['args']['client_options']['site'] = 'https://github.company.com/'
+  describe '#api_endpoint' do
+    context 'when provider does not specity an API endpoint' do
+      it 'uses GitHub root API endpoint' do
+        expect(client.api.api_endpoint).to eq 'https://api.github.com/'
+      end
     end
 
-    it 'uses the custom API endpoint' do
-      expect(OmniAuth::Strategies::GitHub).not_to receive(:default_options)
-      expect(client.api.api_endpoint).to eq 'https://github.company.com/'
+    context 'when provider specify a custom API endpoint' do
+      before do
+        github_provider['args']['client_options']['site'] = 'https://github.company.com/'
+      end
+
+      it 'uses the custom API endpoint' do
+        expect(OmniAuth::Strategies::GitHub).not_to receive(:default_options)
+        expect(client.api.api_endpoint).to eq 'https://github.company.com/'
+      end
+    end
+
+    context 'when given a host' do
+      subject(:client) { described_class.new(token, host: 'https://try.gitea.io/') }
+
+      it 'builds a endpoint with the given host and the default API version' do
+        expect(client.api.api_endpoint).to eq 'https://try.gitea.io/api/v3/'
+      end
+    end
+
+    context 'when given an API version' do
+      subject(:client) { described_class.new(token, api_version: 'v3') }
+
+      it 'does not use the API version without a host' do
+        expect(client.api.api_endpoint).to eq 'https://api.github.com/'
+      end
+    end
+
+    context 'when given a host and version' do
+      subject(:client) { described_class.new(token, host: 'https://try.gitea.io/', api_version: 'v3') }
+
+      it 'builds a endpoint with the given options' do
+        expect(client.api.api_endpoint).to eq 'https://try.gitea.io/api/v3/'
+      end
     end
   end
 

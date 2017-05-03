@@ -59,6 +59,7 @@ en:
           unknown: "The access token is invalid"
     scopes:
       api: Access your API
+      read_user: Read user information
 
     flash:
       applications:

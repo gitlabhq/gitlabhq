@@ -11,8 +11,8 @@
   > li {
     padding: 10px 15px;
     min-height: 20px;
-    border-bottom: 1px solid #eee;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid $list-border-light;
+    border-bottom: 1px solid $list-border;
 
     &::after {
       content: " ";
@@ -21,7 +21,7 @@
     }
 
     &.disabled {
-      color: #888;
+      color: $list-text-disabled-color;
     }
 
     &.unstyled {
@@ -31,12 +31,12 @@
     }
 
     &.warning-row {
-      background-color: #fcf8e3;
-      border-color: #faebcc;
-      color: #8a6d3b;
+      background-color: $list-warning-row-bg;
+      border-color: $list-warning-row-border;
+      color: $list-warning-row-color;
     }
 
-    &.smoke { background-color: $background-color; }
+    &.smoke { background-color: $gray-light; }
 
     &:not(.ui-sort-disabled):hover {
       background: $row-hover;
@@ -46,7 +46,7 @@
       border-bottom: none;
 
       &.bottom {
-        background: $background-color;
+        background: $gray-light;
       }
     }
 
@@ -59,7 +59,7 @@
     p {
       padding-top: 1px;
       margin: 0;
-      color: $gray-dark;
+      color: $white-normal;
 
       img {
         position: relative;
@@ -106,14 +106,14 @@ ul.task-list {
   }
 }
 
+// Generic content list
 ul.content-list {
   @include basic-list;
-
   margin: 0;
   padding: 0;
 
-  > li {
-    border-color: $table-border-color;
+  li {
+    border-color: $white-normal;
     font-size: $list-font-size;
     color: $list-text-color;
 
@@ -128,7 +128,7 @@ ul.content-list {
     }
 
     a {
-      color: $gl-dark-link-color;
+      color: $gl-text-color;
     }
 
     .member-group-link {
@@ -163,6 +163,10 @@ ul.content-list {
 
         &:last-child {
           margin-right: 0;
+
+          @media(max-width: $screen-xs-max) {
+            margin: 0 auto;
+          }
         }
       }
 
@@ -186,25 +190,97 @@ ul.content-list {
 
     &.list-placeholder {
       background-color: $gray-light;
-      border: dotted 1px $gray-dark;
+      border: dotted 1px $white-normal;
       margin: 1px 0;
       min-height: 52px;
     }
   }
 }
 
-.panel > .content-list > li {
-  padding: $gl-padding-top $gl-padding;
+// Content list using flexbox
+.flex-list {
+  .flex-row {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+  }
 
-  &.commit {
-    @media (min-width: $screen-sm-min) {
-      padding-left: 46px + $gl-padding;
+  .row-main-content {
+    flex: 1 1 auto;
+    overflow: hidden;
+    padding-right: 8px;
+  }
+
+  .row-fixed-content {
+    flex: 0 0 auto;
+    margin-left: auto;
+  }
+
+  .row-title {
+    font-weight: 600;
+  }
+
+  .row-second-line {
+    display: block;
+  }
+
+  .dropdown {
+    .btn-block {
+      margin-bottom: 0;
+      line-height: inherit;
+    }
+  }
+
+  .label-default {
+    color: $gl-text-color-secondary;
+  }
+}
+
+// Table list
+.table-list {
+  display: table;
+  width: 100%;
+
+  .table-list-row {
+    display: table-row;
+  }
+
+  .table-list-cell {
+    display: table-cell;
+    vertical-align: top;
+    padding: 10px 16px;
+    border-bottom: 1px solid $gray-darker;
+
+    &.avatar-cell {
+      width: 36px;
+      padding-right: 0;
+
+      img {
+        margin-right: 0;
+      }
+    }
+  }
+
+  &.table-wide {
+    .table-list-cell {
+      &:last-of-type {
+        padding-right: 0;
+      }
+
+      &:first-of-type {
+        padding-left: 0;
+      }
     }
   }
 }
 
+.panel > .content-list > li {
+  padding: $gl-padding-top $gl-padding;
+}
+
 ul.controls {
-  padding-top: 1px;
   float: right;
   list-style: none;
 

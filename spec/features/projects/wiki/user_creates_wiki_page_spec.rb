@@ -20,7 +20,7 @@ feature 'Projects > Wiki > User creates wiki page', feature: true do
         click_button 'Create page'
 
         expect(page).to have_content('Home')
-        expect(page).to have_content("last edited by #{user.name}")
+        expect(page).to have_content("Last edited by #{user.name}")
         expect(page).to have_content('My awesome wiki!')
       end
     end
@@ -41,7 +41,7 @@ feature 'Projects > Wiki > User creates wiki page', feature: true do
           click_button 'Create page'
 
           expect(page).to have_content('Foo')
-          expect(page).to have_content("last edited by #{user.name}")
+          expect(page).to have_content("Last edited by #{user.name}")
           expect(page).to have_content('My awesome wiki!')
         end
 
@@ -55,7 +55,7 @@ feature 'Projects > Wiki > User creates wiki page', feature: true do
           click_button 'Create page'
 
           expect(page).to have_content('Spaces in the name')
-          expect(page).to have_content("last edited by #{user.name}")
+          expect(page).to have_content("Last edited by #{user.name}")
           expect(page).to have_content('My awesome wiki!')
         end
 
@@ -69,7 +69,7 @@ feature 'Projects > Wiki > User creates wiki page', feature: true do
           click_button 'Create page'
 
           expect(page).to have_content('Hyphens in the name')
-          expect(page).to have_content("last edited by #{user.name}")
+          expect(page).to have_content("Last edited by #{user.name}")
           expect(page).to have_content('My awesome wiki!')
         end
       end
@@ -85,7 +85,7 @@ feature 'Projects > Wiki > User creates wiki page', feature: true do
         click_button 'Create page'
 
         expect(page).to have_content('Home')
-        expect(page).to have_content("last edited by #{user.name}")
+        expect(page).to have_content("Last edited by #{user.name}")
         expect(page).to have_content('My awesome wiki!')
       end
     end
@@ -105,7 +105,7 @@ feature 'Projects > Wiki > User creates wiki page', feature: true do
         click_button 'Create page'
 
         expect(page).to have_content('Foo')
-        expect(page).to have_content("last edited by #{user.name}")
+        expect(page).to have_content("Last edited by #{user.name}")
         expect(page).to have_content('My awesome wiki!')
       end
     end

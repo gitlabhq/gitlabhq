@@ -2,7 +2,7 @@ module Ci
   class GitlabCiYamlProcessor
     class ValidationError < StandardError; end
 
-    include Gitlab::Ci::Config::Node::LegacyValidationHelpers
+    include Gitlab::Ci::Config::Entry::LegacyValidationHelpers
 
     attr_reader :path, :cache, :stages, :jobs
 
@@ -118,7 +118,7 @@ module Ci
         .merge(job_variables(name))
 
       variables.map do |key, value|
-        { key: key, value: value, public: true }
+        { key: key.to_s, value: value, public: true }
       end
     end
 

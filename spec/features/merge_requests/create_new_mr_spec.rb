@@ -40,7 +40,7 @@ feature 'Create New Merge Request', feature: true, js: true do
 
       visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { target_project_id: private_project.id })
 
-      expect(page).not_to have_content private_project.to_reference
+      expect(page).not_to have_content private_project.path_with_namespace
     end
   end
 
@@ -66,5 +66,22 @@ feature 'Create New Merge Request', feature: true, js: true do
     expect(page).to have_content('The form contains the following errors')
     expect(page).to have_content('Source branch "non-exist-source" does not exist')
     expect(page).to have_content('Target branch "non-exist-target" does not exist')
+  end
+
+  context 'when a branch contains commits that both delete and add the same image' do
+    it 'renders the diff successfully' do
+      visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { target_branch: 'master', source_branch: 'deleted-image-test' })
+
+      click_link "Changes"
+
+      expect(page).to have_content "6049019_460s.jpg"
+    end
+  end
+
+  # Isolates a regression (see #24627)
+  it 'does not show error messages on initial form' do
+    visit new_namespace_project_merge_request_path(project.namespace, project)
+    expect(page).not_to have_selector('#error_explanation')
+    expect(page).not_to have_content('The form contains the following error')
   end
 end

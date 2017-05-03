@@ -29,20 +29,20 @@
         .filter-item.inline.labels-filter
           = render "shared/issuable/label_dropdown", selected: finder.labels.select(:title).uniq, use_id: false, selected_toggle: params[:label_name], data_options: { field_name: "label_name[]" }
 
-        - if issuable_filters_present
+        - if issuable_filter_present?
           .filter-item.inline.reset-filters
-            %a{href: page_filter_path(without: [:assignee_id, :author_id, :milestone_title, :label_name, :search])} Reset filters
+            %a{ href: page_filter_path(without: issuable_filter_params) } Reset filters
 
         .pull-right
           - if boards_page
-            #js-boards-seach.issue-boards-search
+            #js-boards-search.issue-boards-search
               %input.pull-left.form-control{ type: "search", placeholder: "Filter by name...", "v-model" => "filters.search", "debounce" => "250" }
               - if can?(current_user, :admin_list, @project)
                 .dropdown.pull-right
                   %button.btn.btn-create.js-new-board-list{ type: "button", data: { toggle: "dropdown", labels: labels_filter_path, namespace_path: @project.try(:namespace).try(:path), project_path: @project.try(:path) } }
-                    Create new list
+                    Add list
                   .dropdown-menu.dropdown-menu-paging.dropdown-menu-align-right.dropdown-menu-issues-board-new.dropdown-menu-selectable
-                    = render partial: "shared/issuable/label_page_default", locals: { show_footer: true, show_create: true, show_boards_content: true, title: "Create a new list" }
+                    = render partial: "shared/issuable/label_page_default", locals: { show_footer: true, show_create: true, show_boards_content: true, title: "Add list" }
                     - if can?(current_user, :admin_label, @project)
                       = render partial: "shared/issuable/label_page_create"
                     = dropdown_loading
@@ -56,9 +56,9 @@
             = dropdown_tag("Status", options: { toggle_class: "js-issue-status", title: "Change status", dropdown_class: "dropdown-menu-status dropdown-menu-selectable", data: { field_name: "update[state_event]" } } ) do
               %ul
                 %li
-                  %a{href: "#", data: {id: "reopen"}} Open
+                  %a{ href: "#", data: { id: "reopen" } } Open
                 %li
-                  %a{href: "#", data: {id: "close"}} Closed
+                  %a{ href: "#", data: {id: "close" } } Closed
           .filter-item.inline
             = dropdown_tag("Assignee", options: { toggle_class: "js-user-search js-update-assignee js-filter-submit js-filter-bulk-update", title: "Assign to", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable",
               placeholder: "Search authors", data: { first_user: (current_user.username if current_user), null_user: true, current_user: true, project_id: @project.id, field_name: "update[assignee_id]" } })
@@ -70,9 +70,9 @@
             = dropdown_tag("Subscription", options: { toggle_class: "js-subscription-event", title: "Change subscription", dropdown_class: "dropdown-menu-selectable", data: { field_name: "update[subscription_event]" } } ) do
               %ul
                 %li
-                  %a{href: "#", data: {id: "subscribe"}} Subscribe
+                  %a{ href: "#", data: { id: "subscribe" } } Subscribe
                 %li
-                  %a{href: "#", data: {id: "unsubscribe"}} Unsubscribe
+                  %a{ href: "#", data: { id: "unsubscribe" } } Unsubscribe
 
           = hidden_field_tag 'update[issuable_ids]', []
           = hidden_field_tag :state_event, params[:state_event]

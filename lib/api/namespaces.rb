@@ -1,6 +1,7 @@
 module API
-  # namespaces API
   class Namespaces < Grape::API
+    include PaginationParams
+
     before { authenticate! }
 
     resource :namespaces do
@@ -9,6 +10,7 @@ module API
       end
       params do
         optional :search, type: String, desc: "Search query for namespaces"
+        use :pagination
       end
       get do
         namespaces = current_user.admin ? Namespace.all : current_user.namespaces

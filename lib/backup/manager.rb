@@ -2,6 +2,7 @@ module Backup
   class Manager
     ARCHIVES_TO_BACKUP = %w[uploads builds artifacts lfs registry]
     FOLDERS_TO_BACKUP = %w[repositories db]
+    FILE_NAME_SUFFIX = '_gitlab_backup.tar'
 
     def pack
       # Make sure there is a connection
@@ -14,7 +15,7 @@ module Backup
       s[:gitlab_version]     = Gitlab::VERSION
       s[:tar_version]        = tar_version
       s[:skipped]            = ENV["SKIP"]
-      tar_file = "#{s[:backup_created_at].to_i}_gitlab_backup.tar"
+      tar_file = "#{s[:backup_created_at].strftime('%s_%Y_%m_%d')}#{FILE_NAME_SUFFIX}"
 
       Dir.chdir(Gitlab.config.backup.path) do
         File.open("#{Gitlab.config.backup.path}/backup_information.yml",
@@ -82,12 +83,17 @@ module Backup
         removed = 0
 
         Dir.chdir(Gitlab.config.backup.path) do
-          file_list = Dir.glob('*_gitlab_backup.tar')
-          file_list.map! { |f| $1.to_i if f =~ /(\d+)_gitlab_backup.tar/ }
-          file_list.sort.each do |timestamp|
+          Dir.glob("*#{FILE_NAME_SUFFIX}").each do |file|
+            next unless file =~ /(\d+)(?:_\d{4}_\d{2}_\d{2})?_gitlab_backup\.tar/
+
+            timestamp = $1.to_i
+
             if Time.at(timestamp) < (Time.now - keep_time)
-              if Kernel.system(*%W(rm #{timestamp}_gitlab_backup.tar))
+              begin
+                FileUtils.rm(file)
                 removed += 1
+              rescue => e
+                $progress.puts "Deleting #{file} failed: #{e.message}".color(:red)
               end
             end
           end
@@ -103,41 +109,50 @@ module Backup
       Dir.chdir(Gitlab.config.backup.path)
 
       # check for existing backups in the backup dir
-      file_list = Dir.glob("*_gitlab_backup.tar").each.map { |f| f.split(/_/).first.to_i }
-      puts "no backups found" if file_list.count == 0
+      file_list = Dir.glob("*#{FILE_NAME_SUFFIX}")
+
+      if file_list.count == 0
+        $progress.puts "No backups found in #{Gitlab.config.backup.path}"
+        $progress.puts "Please make sure that file name ends with #{FILE_NAME_SUFFIX}"
+        exit 1
+      end
 
       if file_list.count > 1 && ENV["BACKUP"].nil?
-        puts "Found more than one backup, please specify which one you want to restore:"
-        puts "rake gitlab:backup:restore BACKUP=timestamp_of_backup"
+        $progress.puts 'Found more than one backup, please specify which one you want to restore:'
+        $progress.puts 'rake gitlab:backup:restore BACKUP=timestamp_of_backup'
         exit 1
       end
 
-      tar_file = ENV["BACKUP"].nil? ? File.join("#{file_list.first}_gitlab_backup.tar") : File.join(ENV["BACKUP"] + "_gitlab_backup.tar")
+      if ENV['BACKUP'].present?
+        tar_file = "#{ENV['BACKUP']}#{FILE_NAME_SUFFIX}"
+      else
+        tar_file = file_list.first
+      end
 
       unless File.exist?(tar_file)
-        puts "The specified backup doesn't exist!"
+        $progress.puts "The backup file #{tar_file} does not exist!"
         exit 1
       end
 
-      $progress.print "Unpacking backup ... "
+      $progress.print 'Unpacking backup ... '
 
       unless Kernel.system(*%W(tar -xf #{tar_file}))
-        puts "unpacking backup failed".color(:red)
+        $progress.puts 'unpacking backup failed'.color(:red)
         exit 1
       else
-        $progress.puts "done".color(:green)
+        $progress.puts 'done'.color(:green)
       end
 
       ENV["VERSION"] = "#{settings[:db_version]}" if settings[:db_version].to_i > 0
 
       # restoring mismatching backups can lead to unexpected problems
       if settings[:gitlab_version] != Gitlab::VERSION
-        puts "GitLab version mismatch:".color(:red)
-        puts "  Your current GitLab version (#{Gitlab::VERSION}) differs from the GitLab version in the backup!".color(:red)
-        puts "  Please switch to the following version and try again:".color(:red)
-        puts "  version: #{settings[:gitlab_version]}".color(:red)
-        puts
-        puts "Hint: git checkout v#{settings[:gitlab_version]}"
+        $progress.puts 'GitLab version mismatch:'.color(:red)
+        $progress.puts "  Your current GitLab version (#{Gitlab::VERSION}) differs from the GitLab version in the backup!".color(:red)
+        $progress.puts '  Please switch to the following version and try again:'.color(:red)
+        $progress.puts "  version: #{settings[:gitlab_version]}".color(:red)
+        $progress.puts
+        $progress.puts "Hint: git checkout v#{settings[:gitlab_version]}"
         exit 1
       end
     end

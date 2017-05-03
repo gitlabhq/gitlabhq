@@ -23,7 +23,7 @@ class CustomIssueTrackerService < IssueTrackerService
     end
   end
 
-  def to_param
+  def self.to_param
     'custom_issue_tracker'
   end
 

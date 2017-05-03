@@ -6,11 +6,11 @@ describe Import::BitbucketController do
   let(:user) { create(:user) }
   let(:token) { "asdasd12345" }
   let(:secret) { "sekrettt" }
-  let(:access_params) { { bitbucket_access_token: token, bitbucket_access_token_secret: secret } }
+  let(:refresh_token) { SecureRandom.hex(15) }
+  let(:access_params) { { token: token, expires_at: nil, expires_in: nil, refresh_token: nil } }
 
   def assign_session_tokens
-    session[:bitbucket_access_token] = token
-    session[:bitbucket_access_token_secret] = secret
+    session[:bitbucket_token] = token
   end
 
   before do
@@ -24,29 +24,36 @@ describe Import::BitbucketController do
     end
 
     it "updates access token" do
-      access_token = double(token: token, secret: secret)
-      allow_any_instance_of(Gitlab::BitbucketImport::Client).
+      expires_at = Time.now + 1.day
+      expires_in = 1.day
+      access_token = double(token: token,
+                            secret: secret,
+                            expires_at: expires_at,
+                            expires_in: expires_in,
+                            refresh_token: refresh_token)
+      allow_any_instance_of(OAuth2::Client).
         to receive(:get_token).and_return(access_token)
       stub_omniauth_provider('bitbucket')
 
       get :callback
 
-      expect(session[:bitbucket_access_token]).to eq(token)
-      expect(session[:bitbucket_access_token_secret]).to eq(secret)
+      expect(session[:bitbucket_token]).to eq(token)
+      expect(session[:bitbucket_refresh_token]).to eq(refresh_token)
+      expect(session[:bitbucket_expires_at]).to eq(expires_at)
+      expect(session[:bitbucket_expires_in]).to eq(expires_in)
       expect(controller).to redirect_to(status_import_bitbucket_url)
     end
   end
 
   describe "GET status" do
     before do
-      @repo = OpenStruct.new(slug: 'vim', owner: 'asd')
+      @repo = double(slug: 'vim', owner: 'asd', full_name: 'asd/vim', "valid?" => true)
       assign_session_tokens
     end
 
     it "assigns variables" do
       @project = create(:project, import_type: 'bitbucket', creator_id: user.id)
-      client = stub_client(projects: [@repo])
-      allow(client).to receive(:incompatible_projects).and_return([])
+      allow_any_instance_of(Bitbucket::Client).to receive(:repos).and_return([@repo])
 
       get :status
 
@@ -57,7 +64,7 @@ describe Import::BitbucketController do
 
     it "does not show already added project" do
       @project = create(:project, import_type: 'bitbucket', creator_id: user.id, import_source: 'asd/vim')
-      stub_client(projects: [@repo])
+      allow_any_instance_of(Bitbucket::Client).to receive(:repos).and_return([@repo])
 
       get :status
 
@@ -70,19 +77,16 @@ describe Import::BitbucketController do
     let(:bitbucket_username) { user.username }
 
     let(:bitbucket_user) do
-      { user: { username: bitbucket_username } }.with_indifferent_access
+      double(username: bitbucket_username)
     end
 
     let(:bitbucket_repo) do
-      { slug: "vim", owner: bitbucket_username }.with_indifferent_access
+      double(slug: "vim", owner: bitbucket_username, name: 'vim')
     end
 
     before do
-      allow(Gitlab::BitbucketImport::KeyAdder).
-        to receive(:new).with(bitbucket_repo, user, access_params).
-        and_return(double(execute: true))
-
-      stub_client(user: bitbucket_user, project: bitbucket_repo)
+      allow_any_instance_of(Bitbucket::Client).to receive(:repo).and_return(bitbucket_repo)
+      allow_any_instance_of(Bitbucket::Client).to receive(:user).and_return(bitbucket_user)
       assign_session_tokens
     end
 
@@ -90,7 +94,7 @@ describe Import::BitbucketController do
       context "when the Bitbucket user and GitLab user's usernames match" do
         it "takes the current user's namespace" do
           expect(Gitlab::BitbucketImport::ProjectCreator).
-            to receive(:new).with(bitbucket_repo, user.namespace, user, access_params).
+            to receive(:new).with(bitbucket_repo, bitbucket_repo.name, user.namespace, user, access_params).
             and_return(double(execute: true))
 
           post :create, format: :js
@@ -102,7 +106,7 @@ describe Import::BitbucketController do
 
         it "takes the current user's namespace" do
           expect(Gitlab::BitbucketImport::ProjectCreator).
-            to receive(:new).with(bitbucket_repo, user.namespace, user, access_params).
+            to receive(:new).with(bitbucket_repo, bitbucket_repo.name, user.namespace, user, access_params).
             and_return(double(execute: true))
 
           post :create, format: :js
@@ -114,7 +118,7 @@ describe Import::BitbucketController do
       let(:other_username) { "someone_else" }
 
       before do
-        bitbucket_repo["owner"] = other_username
+        allow(bitbucket_repo).to receive(:owner).and_return(other_username)
       end
 
       context "when a namespace with the Bitbucket user's username already exists" do
@@ -123,7 +127,7 @@ describe Import::BitbucketController do
         context "when the namespace is owned by the GitLab user" do
           it "takes the existing namespace" do
             expect(Gitlab::BitbucketImport::ProjectCreator).
-              to receive(:new).with(bitbucket_repo, existing_namespace, user, access_params).
+              to receive(:new).with(bitbucket_repo, bitbucket_repo.name, existing_namespace, user, access_params).
               and_return(double(execute: true))
 
             post :create, format: :js
@@ -156,7 +160,7 @@ describe Import::BitbucketController do
 
           it "takes the new namespace" do
             expect(Gitlab::BitbucketImport::ProjectCreator).
-              to receive(:new).with(bitbucket_repo, an_instance_of(Group), user, access_params).
+              to receive(:new).with(bitbucket_repo, bitbucket_repo.name, an_instance_of(Group), user, access_params).
               and_return(double(execute: true))
 
             post :create, format: :js
@@ -177,7 +181,7 @@ describe Import::BitbucketController do
 
           it "takes the current user's namespace" do
             expect(Gitlab::BitbucketImport::ProjectCreator).
-              to receive(:new).with(bitbucket_repo, user.namespace, user, access_params).
+              to receive(:new).with(bitbucket_repo, bitbucket_repo.name, user.namespace, user, access_params).
               and_return(double(execute: true))
 
             post :create, format: :js

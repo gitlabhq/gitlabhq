@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, one-var, one-var-declaration-per-line, no-param-reassign, quotes, quote-props, prefer-template, comma-dangle, max-len */
 (function() {
   this.Flash = (function() {
     var hideFlash;
@@ -38,7 +38,5 @@
     }
 
     return Flash;
-
   })();
-
 }).call(this);

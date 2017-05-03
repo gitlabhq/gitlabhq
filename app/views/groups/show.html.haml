@@ -4,27 +4,25 @@
   - if current_user
     = auto_discovery_link_tag(:atom, group_url(@group, format: :atom, private_token: current_user.private_token), title: "#{@group.name} activity")
 
-.cover-block.groups-cover-block
+.group-home-panel.text-center
   %div{ class: container_class }
-    .image-container.s70.group-avatar
+    .avatar-container.s70.group-avatar
       = image_tag group_icon(@group), class: "avatar s70 avatar-tile"
-    .group-info
-      .cover-title
-        %h1
-          @#{@group.path}
-          %span.visibility-icon.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@group) }
-            = visibility_level_icon(@group.visibility_level, fw: false)
+    %h1.group-title
+      @#{@group.path}
+      %span.visibility-icon.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@group) }
+        = visibility_level_icon(@group.visibility_level, fw: false)
 
-        .group-right-buttons.btn-group
-          - if current_user
-            .pull-left.append-right-10= render 'shared/members/access_request_buttons', source: @group
-          = render 'shared/notifications/button', notification_setting: @notification_setting
+    - if @group.description.present?
+      .group-home-desc
+        = markdown_field(@group, :description)
 
-      - if @group.description.present?
-        .cover-desc.description
-          = markdown_field(@group, :description)
+    - if current_user
+      .group-buttons
+        = render 'shared/members/access_request_buttons', source: @group
+        = render 'shared/notifications/button', notification_setting: @notification_setting
 
-%div.groups-header{ class: container_class }
+.groups-header{ class: container_class }
   .top-area
     %ul.nav-links
       %li.active
@@ -34,6 +32,10 @@
         %li
           = link_to "#shared", 'data-toggle' => 'tab' do
             Shared Projects
+      - if @nested_groups.present?
+        %li
+          = link_to "#groups", 'data-toggle' => 'tab' do
+            Subgroups
     .nav-controls
       = form_tag request.path, method: :get, class: 'project-filter-form', id: 'project-filter-form' do |f|
         = search_field_tag :filter_projects, nil, placeholder: 'Filter by name', class: 'projects-list-filter form-control', spellcheck: false
@@ -49,3 +51,8 @@
     - if @shared_projects.present?
       .tab-pane#shared
         = render "shared_projects", projects: @shared_projects
+
+    - if @nested_groups.present?
+      .tab-pane#groups
+        %ul.content-list
+          = render partial: 'shared/groups/group', collection: @nested_groups

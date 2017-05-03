@@ -7,9 +7,9 @@ input {
 }
 
 input[type='text'].danger {
-  background: #f2dede!important;
-  border-color: #d66;
-  text-shadow: 0 1px 1px #fff;
+  background: $input-danger-bg !important;
+  border-color: $input-danger-border;
+  text-shadow: 0 1px 1px $white-light;
 }
 
 .datetime-controls {
@@ -22,7 +22,7 @@ input[type='text'].danger {
   margin-top: 0;
   margin-bottom: -$gl-padding;
   padding: $gl-padding;
-  background-color: $background-color;
+  background-color: $gray-light;
   border-top: 1px solid $border-color;
 }
 
@@ -68,6 +68,50 @@ label {
   }
 }
 
+.help-form .form-group {
+  margin-left: 0;
+  margin-right: 0;
+
+  .control-label {
+    font-weight: bold;
+    padding-top: 4px;
+  }
+
+  .form-control {
+    height: 29px;
+    background: $white-light;
+    font-family: $monospace_font;
+  }
+
+  .input-group-btn .btn {
+    padding: 3px $gl-btn-padding;
+    background-color: $gray-light;
+    border: 1px solid $border-color;
+  }
+
+  .text-block {
+    line-height: 0.8;
+    padding-top: 9px;
+
+    code {
+      line-height: 1.8;
+    }
+
+    img {
+      margin-right: $gl-padding;
+    }
+  }
+
+  @media(max-width: $screen-xs-max) {
+    padding: 0 $gl-padding;
+
+    .control-label,
+    .text-block {
+      padding-left: 0;
+    }
+  }
+}
+
 .fieldset-form fieldset {
   margin-bottom: 20px;
 }
@@ -109,7 +153,7 @@ label {
 }
 
 .form-control::-webkit-input-placeholder {
-  color: $gl-placeholder-color;
+  color: $gl-text-color-secondary;
 }
 
 .input-group {
@@ -119,7 +163,7 @@ label {
   }
 
   .input-group-addon {
-    background-color: #f7f8fa;
+    background-color: $input-group-addon-bg;
   }
 
   .input-group-addon:not(:first-child):not(:last-child) {
@@ -136,3 +180,34 @@ label {
   color: $red-normal;
 }
 
+.gl-show-field-errors {
+  .gl-field-success-outline {
+    border: 1px solid $green-normal;
+
+    &:focus {
+      box-shadow: 0 0 0 1px $green-normal inset, 0 1px 1px $gl-field-focus-shadow inset, 0 0 4px 0 $green-normal;
+      border: 0 none;
+    }
+  }
+
+  .gl-field-error-outline {
+    border: 1px solid $red-normal;
+
+    &:focus {
+      box-shadow: 0 0 0 1px $red-normal inset, 0 1px 1px $gl-field-focus-shadow inset, 0 0 4px 0 $gl-field-focus-shadow-error;
+      border: 0 none;
+    }
+  }
+
+  .gl-field-success-message {
+    color: $green-normal;
+  }
+
+  .gl-field-error-message {
+    color: $red-normal;
+  }
+
+  .gl-field-hint {
+    color: $gl-text-color;
+  }
+}

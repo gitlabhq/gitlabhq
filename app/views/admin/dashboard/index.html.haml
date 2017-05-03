@@ -87,7 +87,7 @@
         %p
           GitLab Workhorse
           %span.pull-right
-            = Gitlab::Workhorse.version
+            = gitlab_workhorse_version
         %p
           GitLab API
           %span.pull-right
@@ -113,15 +113,15 @@
     %hr
     .row
       .col-sm-4
-        .light-well
+        .light-well.well-centered
           %h4 Projects
           .data
-            = link_to admin_namespaces_projects_path do
+            = link_to admin_projects_path do
               %h1= number_with_delimiter(Project.cached_count)
             %hr
             = link_to('New Project', new_project_path, class: "btn btn-new")
       .col-sm-4
-        .light-well
+        .light-well.well-centered
           %h4 Users
           .data
             = link_to admin_users_path do
@@ -129,7 +129,7 @@
             %hr
             = link_to 'New User', new_admin_user_path, class: "btn btn-new"
       .col-sm-4
-        .light-well
+        .light-well.well-centered
           %h4 Groups
           .data
             = link_to admin_groups_path do
@@ -143,7 +143,7 @@
         %hr
         - @projects.each do |project|
           %p
-            = link_to project.name_with_namespace, [:admin, project.namespace.becomes(Namespace), project], class: 'str-truncated'
+            = link_to project.name_with_namespace, [:admin, project.namespace.becomes(Namespace), project], class: 'str-truncated-60'
             %span.light.pull-right
               #{time_ago_with_tooltip(project.created_at)}
 
@@ -152,7 +152,7 @@
         %hr
         - @users.each do |user|
           %p
-            = link_to [:admin, user], class: 'str-truncated' do
+            = link_to [:admin, user], class: 'str-truncated-60' do
               = user.name
             %span.light.pull-right
               #{time_ago_with_tooltip(user.created_at)}
@@ -162,7 +162,7 @@
         %hr
         - @groups.each do |group|
           %p
-            = link_to [:admin, group], class: 'str-truncated' do
+            = link_to [:admin, group], class: 'str-truncated-60' do
               = group.name
             %span.light.pull-right
               #{time_ago_with_tooltip(group.created_at)}

@@ -44,7 +44,7 @@ describe 'Dashboard Todos', feature: true do
         end
 
         it 'shows "All done" message' do
-          expect(page).to have_content("Good job! Looks like you don't have any todos left.")
+          expect(page).to have_selector('.todos-all-done', count: 1)
         end
       end
 
@@ -64,7 +64,7 @@ describe 'Dashboard Todos', feature: true do
           end
 
           it 'shows "All done" message' do
-            expect(page).to have_content("Good job! Looks like you don't have any todos left.")
+            expect(page).to have_selector('.todos-all-done', count: 1)
           end
         end
       end
@@ -152,7 +152,26 @@ describe 'Dashboard Todos', feature: true do
         within('.todos-pending-count') { expect(page).to have_content '0' }
         expect(page).to have_content 'To do 0'
         expect(page).to have_content 'Done 0'
-        expect(page).to have_content "Good job! Looks like you don't have any todos left."
+        expect(page).to have_selector('.todos-all-done', count: 1)
+      end
+    end
+
+    context 'User has a Build Failed todo' do
+      let!(:todo) { create(:todo, :build_failed, user: user, project: project, author: author) }
+
+      before do
+        login_as user
+        visit dashboard_todos_path
+      end
+
+      it 'shows the todo' do
+        expect(page).to have_content 'The build failed for merge request'
+      end
+
+      it 'links to the pipelines for the merge request' do
+        href = pipelines_namespace_project_merge_request_path(project.namespace, project, todo.target)
+
+        expect(page).to have_link "merge request #{todo.target.to_reference}", href
       end
     end
   end

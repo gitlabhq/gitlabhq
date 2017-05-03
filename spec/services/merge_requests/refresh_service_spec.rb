@@ -76,10 +76,10 @@ describe MergeRequests::RefreshService, services: true do
         reload_mrs
       end
 
-      it { expect(@merge_request.notes.last.note).to include('changed to merged') }
+      it { expect(@merge_request.notes.last.note).to include('merged') }
       it { expect(@merge_request).to be_merged }
       it { expect(@fork_merge_request).to be_merged }
-      it { expect(@fork_merge_request.notes.last.note).to include('changed to merged') }
+      it { expect(@fork_merge_request.notes.last.note).to include('merged') }
       it { expect(@build_failed_todo).to be_done }
       it { expect(@fork_build_failed_todo).to be_done }
     end
@@ -95,11 +95,11 @@ describe MergeRequests::RefreshService, services: true do
         reload_mrs
       end
 
-      it { expect(@merge_request.notes.last.note).to include('changed to merged') }
+      it { expect(@merge_request.notes.last.note).to include('merged') }
       it { expect(@merge_request).to be_merged }
       it { expect(@merge_request.diffs.size).to be > 0 }
       it { expect(@fork_merge_request).to be_merged }
-      it { expect(@fork_merge_request.notes.last.note).to include('changed to merged') }
+      it { expect(@fork_merge_request.notes.last.note).to include('merged') }
       it { expect(@build_failed_todo).to be_done }
       it { expect(@fork_build_failed_todo).to be_done }
     end
@@ -119,24 +119,34 @@ describe MergeRequests::RefreshService, services: true do
 
       it { expect(@merge_request.notes).to be_empty }
       it { expect(@merge_request).to be_open }
-      it { expect(@fork_merge_request.notes.last.note).to include('Added 28 commits') }
+      it { expect(@fork_merge_request.notes.last.note).to include('added 28 commits') }
       it { expect(@fork_merge_request).to be_open }
       it { expect(@build_failed_todo).to be_pending }
       it { expect(@fork_build_failed_todo).to be_pending }
     end
 
     context 'push to fork repo target branch' do
-      before do
-        service.new(@fork_project, @user).execute(@oldrev, @newrev, 'refs/heads/feature')
-        reload_mrs
+      describe 'changes to merge requests' do
+        before do
+          service.new(@fork_project, @user).execute(@oldrev, @newrev, 'refs/heads/feature')
+          reload_mrs
+        end
+
+        it { expect(@merge_request.notes).to be_empty }
+        it { expect(@merge_request).to be_open }
+        it { expect(@fork_merge_request.notes).to be_empty }
+        it { expect(@fork_merge_request).to be_open }
+        it { expect(@build_failed_todo).to be_pending }
+        it { expect(@fork_build_failed_todo).to be_pending }
       end
 
-      it { expect(@merge_request.notes).to be_empty }
-      it { expect(@merge_request).to be_open }
-      it { expect(@fork_merge_request.notes).to be_empty }
-      it { expect(@fork_merge_request).to be_open }
-      it { expect(@build_failed_todo).to be_pending }
-      it { expect(@fork_build_failed_todo).to be_pending }
+      describe 'merge request diff' do
+        it 'does not reload the diff of the merge request made from fork' do
+          expect do
+            service.new(@fork_project, @user).execute(@oldrev, @newrev, 'refs/heads/feature')
+          end.not_to change { @fork_merge_request.reload.merge_request_diff }
+        end
+      end
     end
 
     context 'push to origin repo target branch after fork project was removed' do
@@ -146,7 +156,7 @@ describe MergeRequests::RefreshService, services: true do
         reload_mrs
       end
 
-      it { expect(@merge_request.notes.last.note).to include('changed to merged') }
+      it { expect(@merge_request.notes.last.note).to include('merged') }
       it { expect(@merge_request).to be_merged }
       it { expect(@fork_merge_request).to be_open }
       it { expect(@fork_merge_request.notes).to be_empty }
@@ -169,8 +179,8 @@ describe MergeRequests::RefreshService, services: true do
         expect(@merge_request).to be_open
 
         notes = @fork_merge_request.notes.reorder(:created_at).map(&:note)
-        expect(notes[0]).to include('Restored source branch `master`')
-        expect(notes[1]).to include('Added 28 commits')
+        expect(notes[0]).to include('restored source branch `master`')
+        expect(notes[1]).to include('added 28 commits')
         expect(@fork_merge_request).to be_open
       end
     end
@@ -224,6 +234,70 @@ describe MergeRequests::RefreshService, services: true do
           issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
           expect(issue_ids).to eq([issue.id])
         end
+      end
+    end
+
+    context 'marking the merge request as work in progress' do
+      let(:refresh_service) { service.new(@project, @user) }
+      before do
+        allow(refresh_service).to receive(:execute_hooks)
+      end
+
+      it 'marks the merge request as work in progress from fixup commits' do
+        fixup_merge_request = create(:merge_request,
+                                     source_project: @project,
+                                     source_branch: 'wip',
+                                     target_branch: 'master',
+                                     target_project: @project)
+        commits = fixup_merge_request.commits
+        oldrev = commits.last.id
+        newrev = commits.first.id
+
+        refresh_service.execute(oldrev, newrev, 'refs/heads/wip')
+        fixup_merge_request.reload
+
+        expect(fixup_merge_request.work_in_progress?).to eq(true)
+        expect(fixup_merge_request.notes.last.note).to match(
+          /marked as a \*\*Work In Progress\*\* from #{Commit.reference_pattern}/
+        )
+      end
+
+      it 'references the commit that caused the Work in Progress status' do
+        refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+
+        allow(refresh_service).to receive(:find_new_commits)
+        refresh_service.instance_variable_set("@commits", [
+          instance_double(
+            Commit,
+            id: 'aaaaaaa',
+            short_id: 'aaaaaaa',
+            title: 'Fix issue',
+            work_in_progress?: false
+          ),
+          instance_double(
+            Commit,
+            id: 'bbbbbbb',
+            short_id: 'bbbbbbb',
+            title: 'fixup! Fix issue',
+            work_in_progress?: true,
+            to_reference: 'bbbbbbb'
+          ),
+          instance_double(
+            Commit,
+            id: 'ccccccc',
+            short_id: 'ccccccc',
+            title: 'fixup! Fix issue',
+            work_in_progress?: true,
+            to_reference: 'ccccccc'
+          ),
+        ])
+
+        refresh_service.execute(@oldrev, @newrev, 'refs/heads/wip')
+        reload_mrs
+
+        expect(@merge_request.notes.last.note).to eq(
+          "marked as a **Work In Progress** from bbbbbbb"
+        )
       end
     end
 

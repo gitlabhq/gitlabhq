@@ -1,6 +1,8 @@
-/* eslint-disable */
-((global) => {
+/* eslint-disable class-methods-use-this, no-new, func-names, prefer-template, no-unneeded-ternary, object-shorthand, space-before-function-paren, comma-dangle, quote-props, consistent-return, no-else-return, no-param-reassign, max-len */
+/* global UsersSelect */
+/* global Turbolinks */
 
+((global) => {
   class Todos {
     constructor({ el } = {}) {
       this.allDoneClicked = this.allDoneClicked.bind(this);
@@ -46,7 +48,7 @@
         clicked: function() {
           return $dropdown.closest('form.filter-form').submit();
         }
-      })
+      });
     }
 
     doneClicked(e) {
@@ -72,7 +74,7 @@
     allDoneClicked(e) {
       e.preventDefault();
       e.stopImmediatePropagation();
-      $target = $(e.currentTarget);
+      const $target = $(e.currentTarget);
       $target.disable();
       return $.ajax({
         type: 'POST',

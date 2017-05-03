@@ -7,6 +7,3 @@
   - if can?(current_user, :create_wiki, @project)
     = link_to namespace_project_wiki_edit_path(@project.namespace, @project, @page), class: "btn" do
       Edit
-  - if can?(current_user, :admin_wiki, @project)
-    = link_to namespace_project_wiki_path(@project.namespace, @project, @page), data: { confirm: "Are you sure you want to delete this page?"}, method: :delete, class: "btn btn-remove" do
-      Delete

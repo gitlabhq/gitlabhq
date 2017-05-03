@@ -5,23 +5,23 @@
 %div{ class: container_class }
   .top-area
     %ul.nav-links
-      %li{class: ('active' if @scope.nil?)}
+      %li{ class: ('active' if @scope.nil?) }>
         = link_to project_pipelines_path(@project) do
           All
           %span.badge.js-totalbuilds-count
             = number_with_delimiter(@pipelines_count)
 
-      %li{class: ('active' if @scope == 'running')}
+      %li{ class: ('active' if @scope == 'running') }>
         = link_to project_pipelines_path(@project, scope: :running) do
           Running
           %span.badge.js-running-count
             = number_with_delimiter(@running_or_pending_count)
 
-      %li{class: ('active' if @scope == 'branches')}
+      %li{ class: ('active' if @scope == 'branches') }>
         = link_to project_pipelines_path(@project, scope: :branches) do
           Branches
 
-      %li{class: ('active' if @scope == 'tags')}
+      %li{ class: ('active' if @scope == 'tags') }>
         = link_to project_pipelines_path(@project, scope: :tags) do
           Tags
 
@@ -35,22 +35,33 @@
 
         = link_to ci_lint_path, class: 'btn btn-default' do
           %span CI Lint
-
-  %div.content-list.pipelines
-    - stages = @pipelines.stages
+  .content-list.pipelines{ data: { url: namespace_project_pipelines_path(@project.namespace, @project, format: :json) } }
     - if @pipelines.blank?
       %div
         .nothing-here-block No pipelines to show
     - else
-      .table-holder
-        %table.table.ci-table
-          %thead
-            %th Status
-            %th Pipeline
-            %th Commit
-            %th Stages
-            %th
-            %th.hidden-xs
-          = render @pipelines, commit_sha: true, stage: true, allow_retry: true, stages: stages
+      .pipeline-svgs{ "data" => {"commit_icon_svg" => custom_icon("icon_commit"),
+        "icon_status_canceled" => custom_icon("icon_status_canceled"),
+        "icon_status_running" => custom_icon("icon_status_running"),
+        "icon_status_skipped" => custom_icon("icon_status_skipped"),
+        "icon_status_created" => custom_icon("icon_status_created"),
+        "icon_status_pending" => custom_icon("icon_status_pending"),
+        "icon_status_success" => custom_icon("icon_status_success"),
+        "icon_status_failed" => custom_icon("icon_status_failed"),
+        "icon_status_warning" => custom_icon("icon_status_warning"),
+        "stage_icon_status_canceled" => custom_icon("icon_status_canceled_borderless"),
+        "stage_icon_status_running" => custom_icon("icon_status_running_borderless"),
+        "stage_icon_status_skipped" => custom_icon("icon_status_skipped_borderless"),
+        "stage_icon_status_created" => custom_icon("icon_status_created_borderless"),
+        "stage_icon_status_pending" => custom_icon("icon_status_pending_borderless"),
+        "stage_icon_status_success" => custom_icon("icon_status_success_borderless"),
+        "stage_icon_status_failed" => custom_icon("icon_status_failed_borderless"),
+        "stage_icon_status_warning" => custom_icon("icon_status_warning_borderless"),
+        "icon_play" => custom_icon("icon_play"),
+        "icon_timer" => custom_icon("icon_timer"),
+        "icon_status_manual" => custom_icon("icon_status_manual"),
+      } }
 
-      = paginate @pipelines, theme: 'gitlab'
+      .vue-pipelines-index
+
+= page_specific_javascript_tag('vue_pipelines_index/index.js')

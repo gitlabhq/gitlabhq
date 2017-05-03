@@ -90,7 +90,7 @@
 
     @media (min-width: $screen-sm-min) {
       display: inline-block;
-      width: 40%;
+      width: 30%;
       margin-left: 10px;
       margin-bottom: 0;
       vertical-align: middle;
@@ -98,13 +98,14 @@
   }
 
   .label {
-    padding: 9px;
+    padding: 8px 9px 9px;
     font-size: 14px;
   }
 }
 
 .color-label {
-  padding: 3px 4px;
+  padding: 3px 7px;
+  border-radius: $label-border-radius;
 }
 
 .dropdown-labels-error {
@@ -116,7 +117,7 @@
 
 .manage-labels-list {
   .btn-action {
-    color: $gl-dark-link-color;
+    color: $gl-text-color;
 
     .fa {
       font-size: 18px;
@@ -198,8 +199,14 @@
   }
 
   .label-remove {
-    border-left: 1px solid rgba(0, 0, 0, .1);
+    border-left: 1px solid $label-remove-border;
     z-index: 3;
+    border-radius: $label-border-radius;
+    padding: 6px 10px 6px 9px;
+
+    &:hover {
+      box-shadow: inset 0 0 0 80px $label-remove-border;
+    }
   }
 
   .btn {
@@ -220,6 +227,14 @@
 
 .label-options-toggle {
   width: 100%;
+}
+
+.label-subscription {
+  vertical-align: middle;
+
+  .dropdown-group-label a {
+    cursor: pointer;
+  }
 }
 
 .label-subscribe-button {

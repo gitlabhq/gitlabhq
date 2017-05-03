@@ -1,14 +1,14 @@
 - @no_container = true
 - page_title "Logs"
 - loggers = [Gitlab::GitLogger, Gitlab::AppLogger,
-             Gitlab::ProductionLogger, Gitlab::SidekiqLogger,
+             Gitlab::EnvironmentLogger, Gitlab::SidekiqLogger,
              Gitlab::RepositoryCheckLogger]
 = render 'admin/background_jobs/head'
 
 %div{ class: container_class }
   %ul.nav-links.log-tabs
     - loggers.each do |klass|
-      %li{ class: (klass == Gitlab::GitLogger ? 'active' : '') }
+      %li{ class: (klass == Gitlab::GitLogger ? 'active' : '') }>
         = link_to klass::file_name, "##{klass::file_name_noext}",
             'data-toggle' => 'tab'
   .row-content-block

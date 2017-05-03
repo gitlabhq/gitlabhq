@@ -44,7 +44,7 @@ namespace :gitlab do
     ),
     Template.new(
       "https://gitlab.com/gitlab-org/gitlab-ci-yml.git",
-      /(\.{1,2}|LICENSE|Pages|\.gitlab-ci.yml)\z/
+      /(\.{1,2}|LICENSE|Pages|autodeploy|\.gitlab-ci.yml)\z/
     )
   ]
 

@@ -6,21 +6,15 @@ class Projects::HooksController < Projects::ApplicationController
 
   layout "project_settings"
 
-  def index
-    @hooks = @project.hooks
-    @hook = ProjectHook.new
-  end
-
   def create
     @hook = @project.hooks.new(hook_params)
     @hook.save
 
-    if @hook.valid?
-      redirect_to namespace_project_hooks_path(@project.namespace, @project)
-    else
+    unless @hook.valid?      
       @hooks = @project.hooks.select(&:persisted?)
-      render :index
+      flash[:alert] = @hook.errors.full_messages.join.html_safe
     end
+    redirect_to namespace_project_settings_integrations_path(@project.namespace, @project)
   end
 
   def test
@@ -44,7 +38,7 @@ class Projects::HooksController < Projects::ApplicationController
   def destroy
     hook.destroy
 
-    redirect_to namespace_project_hooks_path(@project.namespace, @project)
+    redirect_to namespace_project_settings_integrations_path(@project.namespace, @project)
   end
 
   private

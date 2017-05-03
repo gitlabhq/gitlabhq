@@ -47,6 +47,7 @@ describe 'mail_room.yml' do
       expect(mailbox[:email]).to eq('gitlab-incoming@gmail.com')
       expect(mailbox[:password]).to eq('[REDACTED]')
       expect(mailbox[:name]).to eq('inbox')
+      expect(mailbox[:idle_timeout]).to eq(60)
 
       redis_url = gitlab_redis.url
       sentinels = gitlab_redis.sentinels

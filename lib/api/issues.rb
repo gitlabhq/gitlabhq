@@ -1,260 +1,225 @@
 module API
-  # Issues API
   class Issues < Grape::API
+    include PaginationParams
+
     before { authenticate! }
 
     helpers do
-      def filter_issues_state(issues, state)
-        case state
-        when 'opened' then issues.opened
-        when 'closed' then issues.closed
-        else issues
+      def find_issues(args = {})
+        args = params.merge(args)
+
+        args.delete(:id)
+        args[:milestone_title] = args.delete(:milestone)
+
+        match_all_labels = args.delete(:match_all_labels)
+        labels = args.delete(:labels)
+        args[:label_name] = labels if match_all_labels
+
+        args[:search] = "#{Issue.reference_prefix}#{args.delete(:iid)}" if args.key?(:iid)
+
+        issues = IssuesFinder.new(current_user, args).execute.inc_notes_with_associations
+
+        # TODO: Remove in 9.0  pass `label_name: args.delete(:labels)` to IssuesFinder
+        if !match_all_labels && labels.present?
+          issues = issues.includes(:labels).where('labels.title' => labels.split(','))
         end
+
+        issues.reorder(args[:order_by] => args[:sort])
       end
 
-      def filter_issues_labels(issues, labels)
-        issues.includes(:labels).where('labels.title' => labels.split(','))
+      params :issues_params do
+        optional :labels, type: String, desc: 'Comma-separated list of label names'
+        optional :milestone, type: String, desc: 'Milestone title'
+        optional :order_by, type: String, values: %w[created_at updated_at], default: 'created_at',
+                            desc: 'Return issues ordered by `created_at` or `updated_at` fields.'
+        optional :sort, type: String, values: %w[asc desc], default: 'desc',
+                        desc: 'Return issues sorted in `asc` or `desc` order.'
+        optional :milestone, type: String, desc: 'Return issues for a specific milestone'
+        use :pagination
       end
 
-      def filter_issues_milestone(issues, milestone)
-        issues.includes(:milestone).where('milestones.title' => milestone)
+      params :issue_params do
+        optional :description, type: String, desc: 'The description of an issue'
+        optional :assignee_id, type: Integer, desc: 'The ID of a user to assign issue'
+        optional :milestone_id, type: Integer, desc: 'The ID of a milestone to assign issue'
+        optional :labels, type: String, desc: 'Comma-separated list of label names'
+        optional :due_date, type: String, desc: 'Date time string in the format YEAR-MONTH-DAY'
+        optional :confidential, type: Boolean, desc: 'Boolean parameter if the issue should be confidential'
       end
     end
 
     resource :issues do
-      # Get currently authenticated user's issues
-      #
-      # Parameters:
-      #   state (optional) - Return "opened" or "closed" issues
-      #   labels (optional) - Comma-separated list of label names
-      #   order_by (optional) - Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`
-      #   sort (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
-      #
-      # Example Requests:
-      #   GET /issues
-      #   GET /issues?state=opened
-      #   GET /issues?state=closed
-      #   GET /issues?labels=foo
-      #   GET /issues?labels=foo,bar
-      #   GET /issues?labels=foo,bar&state=opened
+      desc "Get currently authenticated user's issues" do
+        success Entities::Issue
+      end
+      params do
+        optional :state, type: String, values: %w[opened closed all], default: 'all',
+                         desc: 'Return opened, closed, or all issues'
+        use :issues_params
+      end
       get do
-        issues = current_user.issues.inc_notes_with_associations
-        issues = filter_issues_state(issues, params[:state]) unless params[:state].nil?
-        issues = filter_issues_labels(issues, params[:labels]) unless params[:labels].nil?
-        issues = issues.reorder(issuable_order_by => issuable_sort)
+        issues = find_issues(scope: 'authored')
 
         present paginate(issues), with: Entities::Issue, current_user: current_user
       end
     end
 
+    params do
+      requires :id, type: String, desc: 'The ID of a group'
+    end
     resource :groups do
-      # Get a list of group issues
-      #
-      # Parameters:
-      #   id (required) - The ID of a group
-      #   state (optional) - Return "opened" or "closed" issues
-      #   labels (optional) - Comma-separated list of label names
-      #   milestone (optional) - Milestone title
-      #   order_by (optional) - Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`
-      #   sort (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
-      #
-      # Example Requests:
-      #   GET /groups/:id/issues
-      #   GET /groups/:id/issues?state=opened
-      #   GET /groups/:id/issues?state=closed
-      #   GET /groups/:id/issues?labels=foo
-      #   GET /groups/:id/issues?labels=foo,bar
-      #   GET /groups/:id/issues?labels=foo,bar&state=opened
-      #   GET /groups/:id/issues?milestone=1.0.0
-      #   GET /groups/:id/issues?milestone=1.0.0&state=closed
+      desc 'Get a list of group issues' do
+        success Entities::Issue
+      end
+      params do
+        optional :state, type: String, values: %w[opened closed all], default: 'opened',
+                         desc: 'Return opened, closed, or all issues'
+        use :issues_params
+      end
       get ":id/issues" do
-        group = find_group(params[:id])
+        group = find_group!(params[:id])
 
-        params[:state] ||= 'opened'
-        params[:group_id] = group.id
-        params[:milestone_title] = params.delete(:milestone)
-        params[:label_name] = params.delete(:labels)
-
-        if params[:order_by] || params[:sort]
-          # The Sortable concern takes 'created_desc', not 'created_at_desc' (for example)
-          params[:sort] = "#{issuable_order_by.sub('_at', '')}_#{issuable_sort}"
-        end
-
-        issues = IssuesFinder.new(current_user, params).execute
+        issues = find_issues(group_id: group.id, state: params[:state] || 'opened', match_all_labels: true)
 
         present paginate(issues), with: Entities::Issue, current_user: current_user
       end
     end
 
+    params do
+      requires :id, type: String, desc: 'The ID of a project'
+    end
     resource :projects do
-      # Get a list of project issues
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   iid (optional) - Return the project issue having the given `iid`
-      #   state (optional) - Return "opened" or "closed" issues
-      #   labels (optional) - Comma-separated list of label names
-      #   milestone (optional) - Milestone title
-      #   order_by (optional) - Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`
-      #   sort (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
-      #
-      # Example Requests:
-      #   GET /projects/:id/issues
-      #   GET /projects/:id/issues?state=opened
-      #   GET /projects/:id/issues?state=closed
-      #   GET /projects/:id/issues?labels=foo
-      #   GET /projects/:id/issues?labels=foo,bar
-      #   GET /projects/:id/issues?labels=foo,bar&state=opened
-      #   GET /projects/:id/issues?milestone=1.0.0
-      #   GET /projects/:id/issues?milestone=1.0.0&state=closed
-      #   GET /issues?iid=42
+      include TimeTrackingEndpoints
+
+      desc 'Get a list of project issues' do
+        success Entities::Issue
+      end
+      params do
+        optional :state, type: String, values: %w[opened closed all], default: 'all',
+                         desc: 'Return opened, closed, or all issues'
+        optional :iid, type: Integer, desc: 'Return the issue having the given `iid`'
+        use :issues_params
+      end
       get ":id/issues" do
-        issues = user_project.issues.inc_notes_with_associations.visible_to_user(current_user)
-        issues = filter_issues_state(issues, params[:state]) unless params[:state].nil?
-        issues = filter_issues_labels(issues, params[:labels]) unless params[:labels].nil?
-        issues = filter_by_iid(issues, params[:iid]) unless params[:iid].nil?
+        project = find_project(params[:id])
 
-        unless params[:milestone].nil?
-          issues = filter_issues_milestone(issues, params[:milestone])
-        end
+        issues = find_issues(project_id: project.id)
 
-        issues = issues.reorder(issuable_order_by => issuable_sort)
-
-        present paginate(issues), with: Entities::Issue, current_user: current_user
+        present paginate(issues), with: Entities::Issue, current_user: current_user, project: user_project
       end
 
-      # Get a single project issue
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   issue_id (required) - The ID of a project issue
-      # Example Request:
-      #   GET /projects/:id/issues/:issue_id
+      desc 'Get a single project issue' do
+        success Entities::Issue
+      end
+      params do
+        requires :issue_id, type: Integer, desc: 'The ID of a project issue'
+      end
       get ":id/issues/:issue_id" do
-        @issue = find_project_issue(params[:issue_id])
-        present @issue, with: Entities::Issue, current_user: current_user
+        issue = find_project_issue(params[:issue_id])
+        present issue, with: Entities::Issue, current_user: current_user, project: user_project
       end
 
-      # Create a new project issue
-      #
-      # Parameters:
-      #   id (required)           - The ID of a project
-      #   title (required)        - The title of an issue
-      #   description (optional)  - The description of an issue
-      #   assignee_id (optional)  - The ID of a user to assign issue
-      #   milestone_id (optional) - The ID of a milestone to assign issue
-      #   labels (optional)       - The labels of an issue
-      #   created_at (optional)   - Date time string, ISO 8601 formatted
-      #   due_date (optional)     - Date time string in the format YEAR-MONTH-DAY
-      #   confidential (optional) - Boolean parameter if the issue should be confidential
-      # Example Request:
-      #   POST /projects/:id/issues
+      desc 'Create a new project issue' do
+        success Entities::Issue
+      end
+      params do
+        requires :title, type: String, desc: 'The title of an issue'
+        optional :created_at, type: DateTime,
+                              desc: 'Date time when the issue was created. Available only for admins and project owners.'
+        optional :merge_request_for_resolving_discussions, type: Integer,
+                                                           desc: 'The IID of a merge request for which to resolve discussions'
+        use :issue_params
+      end
       post ':id/issues' do
-        required_attributes! [:title]
-
-        keys = [:title, :description, :assignee_id, :milestone_id, :due_date, :confidential]
-        keys << :created_at if current_user.admin? || user_project.owner == current_user
-        attrs = attributes_for_keys(keys)
-
-        # Validate label names in advance
-        if (errors = validate_label_params(params)).any?
-          render_api_error!({ labels: errors }, 400)
+        # Setting created_at time only allowed for admins and project owners
+        unless current_user.admin? || user_project.owner == current_user
+          params.delete(:created_at)
         end
 
-        attrs[:labels] = params[:labels] if params[:labels]
+        issue_params = declared_params(include_missing: false)
 
-        # Convert and filter out invalid confidential flags
-        attrs['confidential'] = to_boolean(attrs['confidential'])
-        attrs.delete('confidential') if attrs['confidential'].nil?
+        if merge_request_iid = params[:merge_request_for_resolving_discussions]
+          issue_params[:merge_request_for_resolving_discussions] = MergeRequestsFinder.new(current_user, project_id: user_project.id).
+            execute.
+            find_by(iid: merge_request_iid)
+        end
 
-        issue = ::Issues::CreateService.new(user_project, current_user, attrs.merge(request: request, api: true)).execute
-
+        issue = ::Issues::CreateService.new(user_project,
+                                            current_user,
+                                            issue_params.merge(request: request, api: true)).execute
         if issue.spam?
           render_api_error!({ error: 'Spam detected' }, 400)
         end
 
         if issue.valid?
-          present issue, with: Entities::Issue, current_user: current_user
+          present issue, with: Entities::Issue, current_user: current_user, project: user_project
         else
           render_validation_error!(issue)
         end
       end
 
-      # Update an existing issue
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   issue_id (required) - The ID of a project issue
-      #   title (optional) - The title of an issue
-      #   description (optional) - The description of an issue
-      #   assignee_id (optional) - The ID of a user to assign issue
-      #   milestone_id (optional) - The ID of a milestone to assign issue
-      #   labels (optional) - The labels of an issue
-      #   state_event (optional) - The state event of an issue (close|reopen)
-      #   updated_at (optional) - Date time string, ISO 8601 formatted
-      #   due_date (optional)     - Date time string in the format YEAR-MONTH-DAY
-      #   confidential (optional) - Boolean parameter if the issue should be confidential
-      # Example Request:
-      #   PUT /projects/:id/issues/:issue_id
+      desc 'Update an existing issue' do
+        success Entities::Issue
+      end
+      params do
+        requires :issue_id, type: Integer, desc: 'The ID of a project issue'
+        optional :title, type: String, desc: 'The title of an issue'
+        optional :updated_at, type: DateTime,
+                              desc: 'Date time when the issue was updated. Available only for admins and project owners.'
+        optional :state_event, type: String, values: %w[reopen close], desc: 'State of the issue'
+        use :issue_params
+        at_least_one_of :title, :description, :assignee_id, :milestone_id,
+                        :labels, :created_at, :due_date, :confidential, :state_event
+      end
       put ':id/issues/:issue_id' do
-        issue = user_project.issues.find(params[:issue_id])
+        issue = user_project.issues.find(params.delete(:issue_id))
         authorize! :update_issue, issue
-        keys = [:title, :description, :assignee_id, :milestone_id, :state_event, :due_date, :confidential]
-        keys << :updated_at if current_user.admin? || user_project.owner == current_user
-        attrs = attributes_for_keys(keys)
 
-        # Validate label names in advance
-        if (errors = validate_label_params(params)).any?
-          render_api_error!({ labels: errors }, 400)
+        # Setting created_at time only allowed for admins and project owners
+        unless current_user.admin? || user_project.owner == current_user
+          params.delete(:updated_at)
         end
 
-        attrs[:labels] = params[:labels] if params[:labels]
-
-        # Convert and filter out invalid confidential flags
-        attrs['confidential'] = to_boolean(attrs['confidential'])
-        attrs.delete('confidential') if attrs['confidential'].nil?
-
-        issue = ::Issues::UpdateService.new(user_project, current_user, attrs).execute(issue)
+        issue = ::Issues::UpdateService.new(user_project,
+                                            current_user,
+                                            declared_params(include_missing: false)).execute(issue)
 
         if issue.valid?
-          present issue, with: Entities::Issue, current_user: current_user
+          present issue, with: Entities::Issue, current_user: current_user, project: user_project
         else
           render_validation_error!(issue)
         end
       end
 
-      # Move an existing issue
-      #
-      # Parameters:
-      #  id (required)            - The ID of a project
-      #  issue_id (required)      - The ID of a project issue
-      #  to_project_id (required) - The ID of the new project
-      # Example Request:
-      #   POST /projects/:id/issues/:issue_id/move
+      desc 'Move an existing issue' do
+        success Entities::Issue
+      end
+      params do
+        requires :issue_id, type: Integer, desc: 'The ID of a project issue'
+        requires :to_project_id, type: Integer, desc: 'The ID of the new project'
+      end
       post ':id/issues/:issue_id/move' do
-        required_attributes! [:to_project_id]
+        issue = user_project.issues.find_by(id: params[:issue_id])
+        not_found!('Issue') unless issue
 
-        issue = user_project.issues.find(params[:issue_id])
-        new_project = Project.find(params[:to_project_id])
+        new_project = Project.find_by(id: params[:to_project_id])
+        not_found!('Project') unless new_project
 
         begin
           issue = ::Issues::MoveService.new(user_project, current_user).execute(issue, new_project)
-          present issue, with: Entities::Issue, current_user: current_user
+          present issue, with: Entities::Issue, current_user: current_user, project: user_project
         rescue ::Issues::MoveService::MoveError => error
           render_api_error!(error.message, 400)
         end
       end
 
-      #
-      # Delete a project issue
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   issue_id (required) - The ID of a project issue
-      # Example Request:
-      #   DELETE /projects/:id/issues/:issue_id
+      desc 'Delete a project issue'
+      params do
+        requires :issue_id, type: Integer, desc: 'The ID of a project issue'
+      end
       delete ":id/issues/:issue_id" do
         issue = user_project.issues.find_by(id: params[:issue_id])
+        not_found!('Issue') unless issue
 
         authorize!(:destroy_issue, issue)
         issue.destroy

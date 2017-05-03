@@ -49,10 +49,10 @@ module ProjectsHelper
     end
   end
 
-  def project_title(project, name = nil, url = nil)
+  def project_title(project)
     namespace_link =
       if project.group
-        link_to(simple_sanitize(project.group.name), group_path(project.group))
+        group_title(project.group)
       else
         owner = project.namespace.owner
         link_to(simple_sanitize(owner.name), user_path(owner))
@@ -61,15 +61,12 @@ module ProjectsHelper
     project_link = link_to simple_sanitize(project.name), project_path(project), { class: "project-item-select-holder" }
 
     if current_user
-      project_link << button_tag(type: 'button', class: "dropdown-toggle-caret js-projects-dropdown-toggle", aria: { label: "Toggle switch project dropdown" }, data: { target: ".js-dropdown-menu-projects", toggle: "dropdown" }) do
+      project_link << button_tag(type: 'button', class: 'dropdown-toggle-caret js-projects-dropdown-toggle', aria: { label: 'Toggle switch project dropdown' }, data: { target: '.js-dropdown-menu-projects', toggle: 'dropdown', order_by: 'last_activity_at' }) do
         icon("chevron-down")
       end
     end
 
-    full_title = "#{namespace_link} / #{project_link}".html_safe
-    full_title << ' &middot; '.html_safe << link_to(simple_sanitize(name), url) if name
-
-    full_title
+    "#{namespace_link} / #{project_link}".html_safe
   end
 
   def remove_project_message(project)
@@ -93,10 +90,12 @@ module ProjectsHelper
   end
 
   def project_for_deploy_key(deploy_key)
-    if deploy_key.projects.include?(@project)
+    if deploy_key.has_access_to?(@project)
       @project
     else
-      deploy_key.projects.find { |project| can?(current_user, :read_project, project) }
+      deploy_key.projects.find do |project|
+        can?(current_user, :read_project, project)
+      end
     end
   end
 
@@ -174,48 +173,27 @@ module ProjectsHelper
       nav_tabs << :merge_requests
     end
 
-    if can?(current_user, :read_pipeline, project)
-      nav_tabs << :pipelines
-    end
-
-    if can?(current_user, :read_build, project)
-      nav_tabs << :builds
-    end
-
     if Gitlab.config.registry.enabled && can?(current_user, :read_container_image, project)
       nav_tabs << :container_registry
     end
 
-    if can?(current_user, :read_environment, project)
-      nav_tabs << :environments
-    end
+    tab_ability_map = {
+      environments: :read_environment,
+      milestones:   :read_milestone,
+      pipelines:    :read_pipeline,
+      snippets:     :read_project_snippet,
+      settings:     :admin_project,
+      builds:       :read_build,
+      labels:       :read_label,
+      issues:       :read_issue,
+      team:         :read_project_member,
+      wiki:         :read_wiki
+    }
 
-    if can?(current_user, :admin_project, project)
-      nav_tabs << :settings
-    end
-
-    if can?(current_user, :read_project_member, project)
-      nav_tabs << :team
-    end
-
-    if can?(current_user, :read_issue, project)
-      nav_tabs << :issues
-    end
-
-    if can?(current_user, :read_wiki, project)
-      nav_tabs << :wiki
-    end
-
-    if can?(current_user, :read_project_snippet, project)
-      nav_tabs << :snippets
-    end
-
-    if can?(current_user, :read_label, project)
-      nav_tabs << :labels
-    end
-
-    if can?(current_user, :read_milestone, project)
-      nav_tabs << :milestones
+    tab_ability_map.each do |tab, ability|
+      if can?(current_user, ability, project)
+        nav_tabs << tab
+      end
     end
 
     nav_tabs.flatten
@@ -249,11 +227,6 @@ module ProjectsHelper
     end
   end
 
-  def repository_size(project = @project)
-    size_in_bytes = project.repository_size * 1.megabyte
-    number_to_human_size(size_in_bytes, delimiter: ',', precision: 2)
-  end
-
   def default_url_to_repo(project = @project)
     case default_clone_protocol
     when 'ssh'
@@ -283,13 +256,15 @@ module ProjectsHelper
     end
   end
 
-  def add_special_file_path(project, file_name:, commit_message: nil)
+  def add_special_file_path(project, file_name:, commit_message: nil, target_branch: nil, context: nil)
     namespace_project_new_blob_path(
       project.namespace,
       project,
       project.default_branch || 'master',
       file_name:      file_name,
-      commit_message: commit_message || "Add #{file_name.downcase}"
+      commit_message: commit_message || "Add #{file_name.downcase}",
+      target_branch: target_branch,
+      context: context
     )
   end
 
@@ -394,37 +369,9 @@ module ProjectsHelper
     end
   end
 
-  def new_readme_path
-    ref = @repository.root_ref if @repository
-    ref ||= 'master'
-
-    namespace_project_new_blob_path(@project.namespace, @project, tree_join(ref), file_name: 'README.md')
-  end
-
-  def new_license_path
-    ref = @repository.root_ref if @repository
-    ref ||= 'master'
-
-    namespace_project_new_blob_path(@project.namespace, @project, tree_join(ref), file_name: 'LICENSE')
-  end
-
   def readme_cache_key
     sha = @project.commit.try(:sha) || 'nil'
     [@project.path_with_namespace, sha, "readme"].join('-')
-  end
-
-  def round_commit_count(project)
-    count = project.commit_count
-
-    if count > 10000
-      '10000+'
-    elsif count > 5000
-      '5000+'
-    elsif count > 1000
-      '1000+'
-    else
-      count
-    end
   end
 
   def current_ref
@@ -457,5 +404,20 @@ module ProjectsHelper
 
   def project_child_container_class(view_path)
     view_path == "projects/issues/issues" ? "prepend-top-default" : "project-show-#{view_path}"
+  end
+
+  def project_issues(project)
+    IssuesFinder.new(current_user, project_id: project.id).execute
+  end
+
+  def visibility_select_options(project, selected_level)
+    levels_options_array = Gitlab::VisibilityLevel.values.map do |level|
+      [
+        visibility_level_label(level),
+        { data: { description: visibility_level_description(level, project) } },
+        level
+      ]
+    end
+    options_for_select(levels_options_array, selected_level)
   end
 end

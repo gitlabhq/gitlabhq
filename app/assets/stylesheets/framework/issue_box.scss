@@ -20,7 +20,7 @@
   display: block;
   float: left;
   margin-right: 10px;
-  color: #fff;
+  color: $white-light;
   font-size: $gl-font-size;
   line-height: 25px;
 
@@ -37,6 +37,10 @@
   }
 
   &.status-box-expired {
-    background: #cea61b;
+    background-color: $issue-status-expired;
+  }
+
+  &.status-box-upcoming {
+    background: $gl-text-color-secondary;
   }
 }

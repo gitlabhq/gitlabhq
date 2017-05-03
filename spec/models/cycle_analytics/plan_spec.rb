@@ -44,7 +44,7 @@ describe 'CycleAnalytics#plan', feature: true do
       create_merge_request_closing_issue(issue, source_branch: branch_name)
       merge_merge_requests_closing_issue(issue)
 
-      expect(subject.issue).to be_nil
+      expect(subject[:issue].median).to be_nil
     end
   end
 end

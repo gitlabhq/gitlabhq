@@ -14,7 +14,7 @@
       = link_to snippet_title.project.name_with_namespace, namespace_project_path(snippet_title.project.namespace, snippet_title.project)
 
   .snippet-info
-    = "##{snippet_title.id}"
+    = snippet_title.to_reference
     %span
       by
       = link_to user_snippets_path(snippet_title.author) do

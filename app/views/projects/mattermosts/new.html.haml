@@ -1,0 +1,8 @@
+.service-installation
+  .inline.pull-right
+    = custom_icon('mattermost_logo', size: 48)
+  %h3 Install Mattermost Command
+  - if @teams.empty?
+    = render 'no_teams'
+  - else
+    = render 'team_selection'

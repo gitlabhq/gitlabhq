@@ -5,10 +5,12 @@ describe Projects::ForkService, services: true do
     before do
       @from_namespace = create(:namespace)
       @from_user = create(:user, namespace: @from_namespace )
+      avatar = fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png")
       @from_project = create(:project,
                              creator_id: @from_user.id,
                              namespace: @from_namespace,
                              star_count: 107,
+                             avatar: avatar,
                              description: 'wow such project')
       @to_namespace = create(:namespace)
       @to_user = create(:user, namespace: @to_namespace)
@@ -36,6 +38,17 @@ describe Projects::ForkService, services: true do
         it { expect(to_project.namespace).to eq(@to_user.namespace) }
         it { expect(to_project.star_count).to be_zero }
         it { expect(to_project.description).to eq(@from_project.description) }
+        it { expect(to_project.avatar.file).to be_exists }
+
+        # This test is here because we had a bug where the from-project lost its
+        # avatar after being forked.
+        # https://gitlab.com/gitlab-org/gitlab-ce/issues/26158
+        it "after forking the from-project still has its avatar" do
+          # If we do not fork the project first we cannot detect the bug.
+          expect(to_project).to be_persisted
+
+          expect(@from_project.avatar.file).to be_exists
+        end
       end
     end
 

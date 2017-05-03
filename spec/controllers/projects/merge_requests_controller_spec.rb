@@ -39,6 +39,17 @@ describe Projects::MergeRequestsController do
     end
   end
 
+  shared_examples "loads labels" do |action|
+    it "loads labels into the @labels variable" do
+      get action,
+          namespace_id: project.namespace.to_param,
+          project_id: project.to_param,
+          id: merge_request.iid,
+          format: 'html'
+      expect(assigns(:labels)).not_to be_nil
+    end
+  end
+
   describe "GET show" do
     shared_examples "export merge as" do |format|
       it "does generally work" do
@@ -50,6 +61,8 @@ describe Projects::MergeRequestsController do
 
         expect(response).to be_success
       end
+
+      it_behaves_like "loads labels", :show
 
       it "generates it" do
         expect_any_instance_of(MergeRequest).to receive(:"to_#{format}")
@@ -114,11 +127,29 @@ describe Projects::MergeRequestsController do
   end
 
   describe 'GET index' do
-    def get_merge_requests
+    def get_merge_requests(page = nil)
       get :index,
           namespace_id: project.namespace.to_param,
           project_id: project.to_param,
-          state: 'opened'
+          state: 'opened', page: page.to_param
+    end
+
+    context 'when page param' do
+      let(:last_page) { project.merge_requests.page().total_pages }
+      let!(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
+
+      it 'redirects to last_page if page number is larger than number of pages' do
+        get_merge_requests(last_page + 1)
+
+        expect(response).to redirect_to(namespace_project_merge_requests_path(page: last_page, state: controller.params[:state], scope: controller.params[:scope]))
+      end
+
+      it 'redirects to specified page' do
+        get_merge_requests(last_page)
+
+        expect(assigns(:merge_requests).current_page).to eq(last_page)
+        expect(response).to have_http_status(200)
+      end
     end
 
     context 'when filtering by opened state' do
@@ -279,7 +310,9 @@ describe Projects::MergeRequestsController do
         it 'sets the MR to merge when the build succeeds' do
           service = double(:merge_when_build_succeeds_service)
 
-          expect(MergeRequests::MergeWhenBuildSucceedsService).to receive(:new).with(project, anything, anything).and_return(service)
+          expect(MergeRequests::MergeWhenPipelineSucceedsService)
+            .to receive(:new).with(project, anything, anything)
+            .and_return(service)
           expect(service).to receive(:execute).with(merge_request)
 
           merge_when_build_succeeds
@@ -294,6 +327,72 @@ describe Projects::MergeRequestsController do
             merge_when_build_succeeds
 
             expect(assigns(:status)).to eq(:merge_when_build_succeeds)
+          end
+        end
+      end
+
+      describe 'only_allow_merge_if_all_discussions_are_resolved? setting' do
+        let(:merge_request) { create(:merge_request_with_diff_notes, source_project: project, author: user) }
+
+        context 'when enabled' do
+          before do
+            project.update_column(:only_allow_merge_if_all_discussions_are_resolved, true)
+          end
+
+          context 'with unresolved discussion' do
+            before do
+              expect(merge_request).not_to be_discussions_resolved
+            end
+
+            it 'returns :failed' do
+              merge_with_sha
+
+              expect(assigns(:status)).to eq(:failed)
+            end
+          end
+
+          context 'with all discussions resolved' do
+            before do
+              merge_request.discussions.each { |d| d.resolve!(user) }
+              expect(merge_request).to be_discussions_resolved
+            end
+
+            it 'returns :success' do
+              merge_with_sha
+
+              expect(assigns(:status)).to eq(:success)
+            end
+          end
+        end
+
+        context 'when disabled' do
+          before do
+            project.update_column(:only_allow_merge_if_all_discussions_are_resolved, false)
+          end
+
+          context 'with unresolved discussion' do
+            before do
+              expect(merge_request).not_to be_discussions_resolved
+            end
+
+            it 'returns :success' do
+              merge_with_sha
+
+              expect(assigns(:status)).to eq(:success)
+            end
+          end
+
+          context 'with all discussions resolved' do
+            before do
+              merge_request.discussions.each { |d| d.resolve!(user) }
+              expect(merge_request).to be_discussions_resolved
+            end
+
+            it 'returns :success' do
+              merge_with_sha
+
+              expect(assigns(:status)).to eq(:success)
+            end
           end
         end
       end
@@ -339,6 +438,8 @@ describe Projects::MergeRequestsController do
 
       get :diffs, params.merge(extra_params)
     end
+
+    it_behaves_like "loads labels", :diffs
 
     context 'with default params' do
       context 'as html' do
@@ -546,6 +647,8 @@ describe Projects::MergeRequestsController do
           format: format
     end
 
+    it_behaves_like "loads labels", :commits
+
     context 'as html' do
       it 'renders the show template' do
         go
@@ -562,6 +665,10 @@ describe Projects::MergeRequestsController do
         expect(JSON.parse(response.body)).to have_key('html')
       end
     end
+  end
+
+  describe 'GET pipelines' do
+    it_behaves_like "loads labels", :pipelines
   end
 
   describe 'GET conflicts' do
@@ -938,6 +1045,74 @@ describe Projects::MergeRequestsController do
 
       it 'links to the environment on that project' do
         expect(json_response.first['url']).to match /#{forked.path_with_namespace}/
+      end
+    end
+  end
+
+  describe 'GET merge_widget_refresh' do
+    let(:params) do
+      {
+        namespace_id: project.namespace.path,
+        project_id: project.path,
+        id: merge_request.iid,
+        format: :raw
+      }
+    end
+
+    before do
+      project.team << [user, :developer]
+      xhr :get, :merge_widget_refresh, params
+    end
+
+    context 'when merge in progress' do
+      let(:merge_request) { create(:merge_request, source_project: project, in_progress_merge_commit_sha: 'sha') }
+
+      it 'returns an OK response' do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'sets status to :success' do
+        expect(assigns(:status)).to eq(:success)
+        expect(response).to render_template('merge')
+      end
+    end
+
+    context 'when merge request was merged already' do
+      let(:merge_request) { create(:merge_request, source_project: project, state: :merged) }
+
+      it 'returns an OK response' do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'sets status to :success' do
+        expect(assigns(:status)).to eq(:success)
+        expect(response).to render_template('merge')
+      end
+    end
+
+    context 'when waiting for build' do
+      let(:merge_request) { create(:merge_request, source_project: project, merge_when_build_succeeds: true, merge_user: user) }
+
+      it 'returns an OK response' do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'sets status to :merge_when_build_succeeds' do
+        expect(assigns(:status)).to eq(:merge_when_build_succeeds)
+        expect(response).to render_template('merge')
+      end
+    end
+
+    context 'when no special status for MR' do
+      let(:merge_request) { create(:merge_request, source_project: project) }
+
+      it 'returns an OK response' do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'sets status to nil' do
+        expect(assigns(:status)).to be_nil
+        expect(response).to render_template('merge')
       end
     end
   end

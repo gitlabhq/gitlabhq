@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, consistent-return, no-var, no-else-return, prefer-arrow-callback, max-len */
+
 // Syntax Highlighter
 //
 // Applies a syntax highlighting color scheme CSS class to any element with the
@@ -11,6 +12,7 @@
 (function() {
   $.fn.syntaxHighlight = function() {
     var $children;
+
     if ($(this).hasClass('js-syntax-highlight')) {
       // Given the element itself, apply highlighting
       return $(this).addClass(gon.user_color_scheme);
@@ -22,9 +24,4 @@
       }
     }
   };
-
-  $(document).on('ready page:load', function() {
-    return $('.js-syntax-highlight').syntaxHighlight();
-  });
-
 }).call(this);

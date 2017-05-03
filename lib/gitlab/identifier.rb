@@ -21,10 +21,8 @@ module Gitlab
 
       return if !commit || !commit.author_email
 
-      email = commit.author_email
-
-      identify_with_cache(:email, email) do
-        User.find_by(email: email)
+      identify_with_cache(:email, commit.author_email) do
+        commit.author
       end
     end
 

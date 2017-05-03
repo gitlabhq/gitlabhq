@@ -3,7 +3,7 @@ require 'rake'
 
 describe 'gitlab:mail_google_schema_whitelisting rake task' do
   before :all do
-    Rake.application.rake_require "tasks/gitlab/task_helpers"
+    Rake.application.rake_require "tasks/gitlab/helpers"
     Rake.application.rake_require "tasks/gitlab/mail_google_schema_whitelisting"
     # empty task as env is already loaded
     Rake::Task.define_task :environment

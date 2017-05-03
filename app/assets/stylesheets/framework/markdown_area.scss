@@ -56,26 +56,24 @@
 
 .md-header {
   .nav-links {
-    .active {
-      a {
-        border-bottom-color: #000;
-      }
-    }
-
     a {
       padding-top: 0;
-      line-height: 1;
-      border-bottom: 1px solid $border-color;
+      line-height: 19px;
 
       &.btn.btn-xs {
         padding: 2px 5px;
+      }
+
+      &:focus {
+        margin-top: -10px;
+        padding-top: 10px;
       }
     }
   }
 }
 
 .referenced-users {
-  color: #4c4e54;
+  color: $gl-text-color;
   padding-top: 10px;
 }
 
@@ -87,8 +85,8 @@
 
 .markdown-area {
   border-radius: 0;
-  background: #fff;
-  border: 1px solid #ddd;
+  background: $white-light;
+  border: 1px solid $md-area-border;
   min-height: 140px;
   max-height: 500px;
   padding: 5px;
@@ -110,13 +108,13 @@
 
   hr {
     // Darken 'whitesmoke' a bit to make it more visible in note bodies
-    border-color: darken(#f5f5f5, 8%);
+    border-color: darken($gray-normal, 8%);
     margin: 10px 0;
   }
 
   // Border around images in issue and MR comments.
   img:not(.emoji) {
-    border: 1px solid $table-border-gray;
+    border: 1px solid $white-normal;
     padding: 5px;
     margin: 5px 0;
     // Ensure that image does not exceed viewport
@@ -137,7 +135,7 @@
 .toolbar-btn {
   float: left;
   padding: 0 5px;
-  color: #959494;
+  color: $gl-text-color-secondary;
   background: transparent;
   border: 0;
   outline: 0;
@@ -148,7 +146,19 @@
   }
 }
 
-.atwho-view small.description {
-  float: right;
-  padding: 3px 5px;
+.atwho-view {
+  small.description {
+    float: right;
+    padding: 3px 5px;
+  }
+
+  .avatar-inline {
+    margin-bottom: 0;
+  }
+
+  .cur {
+    .avatar {
+      border: 1px solid $white-light;
+    }
+  }
 }

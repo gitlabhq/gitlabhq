@@ -17,7 +17,7 @@ class Projects::PipelinesSettingsController < Projects::ApplicationController
       flash[:notice] = "CI/CD Pipelines settings for '#{@project.name}' were successfully updated."
       redirect_to namespace_project_pipelines_settings_path(@project.namespace, @project)
     else
-      render 'index'
+      render 'show'
     end
   end
 

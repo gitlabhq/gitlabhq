@@ -2,10 +2,10 @@
 
 GitLab University is the best place to learn about **Version Control with Git and GitLab**.
 
-It doesn't replace, but accompanies our great [Documentation](http://docs.gitlab.com)
+It doesn't replace, but accompanies our great [Documentation](https://docs.gitlab.com)
 and [Blog Articles](https://about.gitlab.com/blog/).
 
-Would you like to contribute to GitLab University? Then please take a look at our contribution [process](/process) for more information.
+Would you like to contribute to GitLab University? Then please take a look at our contribution [process](process) for more information.
 
 ## Gitlab University Curriculum
 
@@ -19,7 +19,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 
 ---
 
-### 1. <a name="beginner"></a> GitLab Beginner
+### 1. GitLab Beginner
 
 #### 1.1. Version Control and Git
 
@@ -31,7 +31,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 
 1. [An Overview of GitLab.com - Video](https://www.youtube.com/watch?v=WaiL5DGEMR4)
 1. [Why Use Git and GitLab - Slides](https://docs.google.com/a/gitlab.com/presentation/d/1RcZhFmn5VPvoFu6UMxhMOy7lAsToeBZRjLRn0LIdaNc/edit?usp=drive_web)
-1. [GitLab Basics - Article](http://doc.gitlab.com/ce/gitlab-basics/README.html)
+1. [GitLab Basics - Article](../gitlab-basics/README.md)
 1. [Git and GitLab Basics - Video](https://www.youtube.com/watch?v=03wb9FvO4Ak&index=5&list=PLFGfElNsQthbQu_IWlNOxul0TbS_2JH-e)
 1. [Git and GitLab Basics - Online Course](https://courses.platzi.com/classes/git-gitlab/concepto/part-1/part-23370/material/)
 1. [Comparison of GitLab Versions](https://about.gitlab.com/features/#compare)
@@ -51,10 +51,10 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 
 #### 1.5. Migrating from other Source Control
 
-1. [Migrating from BitBucket/Stash](http://doc.gitlab.com/ee/workflow/importing/import_projects_from_bitbucket.html)
-1. [Migrating from GitHub](http://doc.gitlab.com/ee/workflow/importing/import_projects_from_github.html)
-1. [Migrating from SVN](http://doc.gitlab.com/ee/workflow/importing/migrating_from_svn.html)
-1. [Migrating from Fogbugz](http://doc.gitlab.com/ee/workflow/importing/import_projects_from_fogbugz.html)
+1. [Migrating from BitBucket/Stash](https://docs.gitlab.com/ee/workflow/importing/import_projects_from_bitbucket.html)
+1. [Migrating from GitHub](https://docs.gitlab.com/ee/workflow/importing/import_projects_from_github.html)
+1. [Migrating from SVN](https://docs.gitlab.com/ee/workflow/importing/migrating_from_svn.html)
+1. [Migrating from Fogbugz](https://docs.gitlab.com/ee/workflow/importing/import_projects_from_fogbugz.html)
 
 #### 1.6. GitLab Inc.
 
@@ -85,19 +85,19 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 
 ---
 
-### 2. <a name="intermediate"></a> GitLab Intermediate
+### 2. GitLab Intermediate
 
 #### 2.1 GitLab Pages
 
 1. [Using any Static Site Generator with GitLab Pages](https://about.gitlab.com/2016/06/17/ssg-overview-gitlab-pages-part-3-examples-ci/)
 1. [Securing GitLab Pages with SSL](https://about.gitlab.com/2016/06/24/secure-gitlab-pages-with-startssl/)
-1. [GitLab Pages Documentation](http://doc.gitlab.com/ee/pages/README.html)
+1. [GitLab Pages Documentation](https://docs.gitlab.com/ee/pages/README.html)
 
 #### 2.2. GitLab Issues
 
-1. [Markdown in GitLab](http://doc.gitlab.com/ce/markdown/markdown.html)
+1. [Markdown in GitLab](../user/markdown.md)
 1. [Issues and Merge Requests - Video](https://www.youtube.com/watch?v=raXvuwet78M)
-1. [Due Dates and Milestones fro GitLab Issues](https://about.gitlab.com/2016/08/05/feature-highlight-set-dates-for-issues/)
+1. [Due Dates and Milestones for GitLab Issues](https://about.gitlab.com/2016/08/05/feature-highlight-set-dates-for-issues/)
 1. [How to Use GitLab Labels](https://about.gitlab.com/2016/08/17/using-gitlab-labels/)
 1. [Applying GitLab Labels Automatically](https://about.gitlab.com/2016/08/19/applying-gitlab-labels-automatically/)
 1. [GitLab Issue Board - Product Page](https://about.gitlab.com/solutions/issueboard/)
@@ -129,7 +129,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 1. [GitLab Flow vs Forking in GitLab - Video](https://www.youtube.com/watch?v=UGotqAUACZA)
 1. [GitLab Flow Overview](https://about.gitlab.com/2014/09/29/gitlab-flow/)
 1. [Always Start with an Issue](https://about.gitlab.com/2016/03/03/start-with-an-issue/)
-1. [GitLab Flow Documentation](http://doc.gitlab.com/ee/workflow/gitlab_flow.html)
+1. [GitLab Flow Documentation](https://docs.gitlab.com/ee/workflow/gitlab_flow.html)
 
 #### 2.5. GitLab Comparisons
 
@@ -141,13 +141,13 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 
 ---
 
-### 3. <a name="advanced"></a> GitLab Advanced
+### 3. GitLab Advanced
 
 #### 3.1. Dev Ops
 
 1. [Xebia Labs: Dev Ops Terminology](https://xebialabs.com/glossary/)
 1. [Xebia Labs: Periodic Table of DevOps Tools](https://xebialabs.com/periodic-table-of-devops-tools/)
-1. [Puppet Labs: State of Dev Ops 2015 - Book](https://puppetlabs.com/sites/default/files/2015-state-of-devops-report.pdf)
+1. [Puppet Labs: State of Dev Ops 2016 - Book](https://puppet.com/resources/white-paper/2016-state-of-devops-report)
 
 #### 3.2. Installing GitLab with Omnibus
 
@@ -173,7 +173,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 
 #### 3.6 Custom Languages
 
-1. [How to add Syntax Highlighting Support for Custom Langauges to GitLab - Video](how to add support for your favorite language to GitLab)
+1. [How to add Syntax Highlighting Support for Custom Languages to GitLab - Video](https://youtu.be/6WxTMqatrrA)
 
 #### 3.7. Scalability and High Availability
 
@@ -186,11 +186,11 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 1. [GitLab Cycle Analytics Overview](https://about.gitlab.com/2016/09/21/cycle-analytics-feature-highlight/)
 1. [GitLab Cycle Analytics - Product Page](https://about.gitlab.com/solutions/cycle-analytics/)
 
-#### 3.9. <a name="integrations"></a> Integrations
+#### 3.9. Integrations
 
 1. [How to Integrate JIRA and Jenkins with GitLab - Video](https://gitlabmeetings.webex.com/gitlabmeetings/ldr.php?RCID=44b548147a67ab4d8a62274047146415)
-1. [How to Integrate Jira with GitLab](http://doc.gitlab.com/ee/integration/jira.html)
-1. [How to Integrate Jenkins with GitLab](http://doc.gitlab.com/ee/integration/jenkins.html)
+1. [How to Integrate Jira with GitLab](https://docs.gitlab.com/ee/integration/jira.html)
+1. [How to Integrate Jenkins with GitLab](https://docs.gitlab.com/ee/integration/jenkins.html)
 1. [How to Integrate Bamboo with GitLab](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/project_services/bamboo.md)
 1. [How to Integrate Slack with GitLab](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/integration/slack.md)
 1. [How to Integrate Convox with GitLab](https://about.gitlab.com/2016/06/09/continuous-delivery-with-gitlab-and-convox/)
@@ -198,19 +198,22 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 
 ---
 
-## 4. <a name="external"></a>  External Articles
+### 4. External Articles
 
-1. [2011 WSJ article by Mark Andreeson - Software is Eating the World](http://www.wsj.com/articles/SB10001424053111903480904576512250915629460)
+1. [2011 WSJ article by Marc Andreessen - Software is Eating the World](http://www.wsj.com/articles/SB10001424053111903480904576512250915629460)
 1. [2014 Blog post by Chris Dixon - Software eats software development](http://cdixon.org/2014/04/13/software-eats-software-development/)
 1. [2015 Venture Beat article - Actually, Open Source is Eating the World](http://venturebeat.com/2015/12/06/its-actually-open-source-software-thats-eating-the-world/)
 
 ---
 
-## 5. <a name="team"></a> Resources for GitLab Team Members
+### 5. Resources for GitLab Team Members
 
 *Some content can only be accessed by GitLab team members*
 
 1. [Support Path](support/README.md)
 1. [Sales Path (redirect to sales handbook)](https://about.gitlab.com/handbook/sales-onboarding/)
+1. [User Training](training/user_training.md)
+1. [GitLab Flow Training](training/gitlab_flow.md)
+1. [Training Topics](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/university/training/topics/)
 1. [GitLab architecture for noobs](https://dev.gitlab.org/gitlab/gitlabhq/blob/master/doc/development/architecture.md)
 1. [Client Assessment of GitLab versus GitHub](https://docs.google.com/a/gitlab.com/spreadsheets/d/18cRF9Y5I6I7Z_ab6qhBEW55YpEMyU4PitZYjomVHM-M/edit?usp=sharing)

@@ -57,7 +57,7 @@ class IssueTrackerService < Service
     end
   end
 
-  def supported_events
+  def self.supported_events
     %w(push)
   end
 
@@ -85,8 +85,8 @@ class IssueTrackerService < Service
 
   def enabled_in_gitlab_config
     Gitlab.config.issues_tracker &&
-    Gitlab.config.issues_tracker.values.any? &&
-    issues_tracker
+      Gitlab.config.issues_tracker.values.any? &&
+      issues_tracker
   end
 
   def issues_tracker

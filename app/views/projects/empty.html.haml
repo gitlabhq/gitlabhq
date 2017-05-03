@@ -16,7 +16,7 @@
     %p
       Otherwise you can start with adding a
       = succeed ',' do
-        = link_to "README", new_readme_path, class: 'underlined-link'
+        = link_to "README", add_special_file_path(@project, file_name: 'README.md'), class: 'underlined-link'
       a
       = succeed ',' do
         = link_to "LICENSE", add_special_file_path(@project, file_name: 'LICENSE'), class: 'underlined-link'
@@ -32,7 +32,7 @@
     .empty_wrapper
       %h3.page-title-empty
         Command line instructions
-      %div.git-empty
+      .git-empty
         %fieldset
           %h5 Git global setup
           %pre.light-well
@@ -52,7 +52,7 @@
               git push -u origin master
 
         %fieldset
-          %h5 Existing folder or Git repository
+          %h5 Existing folder
           %pre.light-well
             :preserve
               cd existing_folder
@@ -61,6 +61,15 @@
               git add .
               git commit
               git push -u origin master
+
+        %fieldset
+          %h5 Existing Git repository
+          %pre.light-well
+            :preserve
+              cd existing_repo
+              git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'clone')}
+              git push -u origin --all
+              git push -u origin --tags
 
           - if can? current_user, :remove_project, @project
             .prepend-top-20

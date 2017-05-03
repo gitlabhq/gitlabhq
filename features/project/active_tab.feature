@@ -39,10 +39,10 @@ Feature: Project Active Tab
 
   # Sub Tabs: Settings
 
-  Scenario: On Project Settings/Hooks
+  Scenario: On Project Settings/Integrations
     Given I visit my project's settings page
-    And I click the "Hooks" tab
-    Then the active sub nav should be Hooks
+    And I click the "Integrations" tab
+    Then the active sub nav should be Integrations
     And no other sub navs should be active
     And the active main tab should be Settings
 

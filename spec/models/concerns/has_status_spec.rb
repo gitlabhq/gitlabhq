@@ -48,7 +48,7 @@ describe HasStatus do
           [create(type, status: :failed, allow_failure: true)]
         end
 
-        it { is_expected.to eq 'success' }
+        it { is_expected.to eq 'skipped' }
       end
 
       context 'success and canceled' do
@@ -121,6 +121,108 @@ describe HasStatus do
       let(:type) { :generic_commit_status }
 
       it_behaves_like 'build status summary'
+    end
+  end
+
+  context 'for scope with one status' do
+    shared_examples 'having a job' do |status|
+      %i[ci_build generic_commit_status].each do |type|
+        context "when it's #{status} #{type} job" do
+          let!(:job) { create(type, status) }
+
+          describe ".#{status}" do
+            it 'contains the job' do
+              expect(CommitStatus.public_send(status).all).
+                to contain_exactly(job)
+            end
+          end
+
+          describe '.relevant' do
+            if status == :created
+              it 'contains nothing' do
+                expect(CommitStatus.relevant.all).to be_empty
+              end
+            else
+              it 'contains the job' do
+                expect(CommitStatus.relevant.all).to contain_exactly(job)
+              end
+            end
+          end
+        end
+      end
+    end
+
+    %i[created running pending success
+       failed canceled skipped].each do |status|
+      it_behaves_like 'having a job', status
+    end
+  end
+
+  context 'for scope with more statuses' do
+    shared_examples 'containing the job' do |status|
+      %i[ci_build generic_commit_status].each do |type|
+        context "when it's #{status} #{type} job" do
+          let!(:job) { create(type, status) }
+
+          it 'contains the job' do
+            is_expected.to contain_exactly(job)
+          end
+        end
+      end
+    end
+
+    shared_examples 'not containing the job' do |status|
+      %i[ci_build generic_commit_status].each do |type|
+        context "when it's #{status} #{type} job" do
+          let!(:job) { create(type, status) }
+
+          it 'contains nothing' do
+            is_expected.to be_empty
+          end
+        end
+      end
+    end
+
+    describe '.running_or_pending' do
+      subject { CommitStatus.running_or_pending }
+
+      %i[running pending].each do |status|
+        it_behaves_like 'containing the job', status
+      end
+
+      %i[created failed success].each do |status|
+        it_behaves_like 'not containing the job', status
+      end
+    end
+
+    describe '.finished' do
+      subject { CommitStatus.finished }
+
+      %i[success failed canceled].each do |status|
+        it_behaves_like 'containing the job', status
+      end
+
+      %i[created running pending].each do |status|
+        it_behaves_like 'not containing the job', status
+      end
+    end
+
+    describe '.cancelable' do
+      subject { CommitStatus.cancelable }
+
+      %i[running pending created].each do |status|
+        it_behaves_like 'containing the job', status
+      end
+
+      %i[failed success skipped canceled].each do |status|
+        it_behaves_like 'not containing the job', status
+      end
+    end
+  end
+
+  describe '::DEFAULT_STATUS' do
+    it 'is a status created' do
+      expect(described_class::DEFAULT_STATUS).to eq 'created'
     end
   end
 end

@@ -76,7 +76,7 @@ Make sure you have the right version of Git installed
     # Install Git
     sudo apt-get install -y git-core
 
-    # Make sure Git is version 2.7.4 or higher
+    # Make sure Git is version 2.8.4 or higher
     git --version
 
 Is the system packaged Git too old? Remove it and compile from source.
@@ -89,9 +89,9 @@ Is the system packaged Git too old? Remove it and compile from source.
 
     # Download and compile from source
     cd /tmp
-    curl --remote-name --progress https://www.kernel.org/pub/software/scm/git/git-2.7.4.tar.gz
-    echo '7104c4f5d948a75b499a954524cb281fe30c6649d8abe20982936f75ec1f275b  git-2.7.4.tar.gz' | shasum -a256 -c - && tar -xzf git-2.7.4.tar.gz
-    cd git-2.7.4/
+    curl --remote-name --progress https://www.kernel.org/pub/software/scm/git/git-2.8.4.tar.gz
+    echo '626e319f8a24fc0866167ea5f6bf3e2f38f69d6cb2e59e150f13709ca3ebf301  git-2.8.4.tar.gz' | shasum -a256 -c - && tar -xzf git-2.8.4.tar.gz
+    cd git-2.8.4/
     ./configure
     make prefix=/usr/local all
 
@@ -123,9 +123,9 @@ Remove the old Ruby 1.8 if present:
 Download Ruby and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
-    curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.1.tar.gz
-    echo 'c39b4001f7acb4e334cb60a0f4df72d434bef711  ruby-2.3.1.tar.gz' | shasum -c - && tar xzf ruby-2.3.1.tar.gz
-    cd ruby-2.3.1
+    curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.3.tar.gz
+    echo 'a8db9ce7f9110320f33b8325200e3ecfbd2b534b ruby-2.3.3.tar.gz' | shasum -c - && tar xzf ruby-2.3.3.tar.gz
+    cd ruby-2.3.3
     ./configure --disable-install-rdoc
     make
     sudo make install
@@ -176,16 +176,16 @@ We recommend using a PostgreSQL database. For MySQL check the
     sudo -u postgres psql -d template1 -c "CREATE USER git CREATEDB;"
     ```
 
-1. Create the GitLab production database and grant all privileges on database:
-
-    ```bash
-    sudo -u postgres psql -d template1 -c "CREATE DATABASE gitlabhq_production OWNER git;"
-    ```
-
 1. Create the `pg_trgm` extension (required for GitLab 8.6+):
 
     ```bash
     sudo -u postgres psql -d template1 -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
+    ```
+
+1. Create the GitLab production database and grant all privileges on database:
+
+    ```bash
+    sudo -u postgres psql -d template1 -c "CREATE DATABASE gitlabhq_production OWNER git;"
     ```
 
 1. Try connecting to the new database with the new user:
@@ -271,9 +271,9 @@ sudo usermod -aG redis git
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-13-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-16-stable gitlab
 
-**Note:** You can change `8-13-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `8-16-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
@@ -396,21 +396,13 @@ GitLab Shell is an SSH access and repository management software developed speci
 
 ### Install gitlab-workhorse
 
-GitLab-Workhorse uses [GNU Make](https://www.gnu.org/software/make/).
-If you are not using Linux you may have to run `gmake` instead of
-`make` below.
+GitLab-Workhorse uses [GNU Make](https://www.gnu.org/software/make/). The
+following command-line will install GitLab-Workhorse in `/home/git/gitlab-workhorse`
+which is the recommended location.
 
-    cd /home/git
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-workhorse.git
-    cd gitlab-workhorse
-    sudo -u git -H git checkout v0.8.5
-    sudo -u git -H make
+    sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" RAILS_ENV=production
 
 ### Initialize Database and Activate Advanced Features
-
-    # Go to GitLab installation folder
-
-    cd /home/git/gitlab
 
     sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production
 
@@ -479,10 +471,14 @@ Copy the example site config:
     sudo cp lib/support/nginx/gitlab /etc/nginx/sites-available/gitlab
     sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 
-Make sure to edit the config file to match your setup:
+Make sure to edit the config file to match your setup. Also, ensure that you match your paths to GitLab, especially if installing for a user other than the 'git' user:
 
     # Change YOUR_SERVER_FQDN to the fully-qualified
     # domain name of your host serving GitLab.
+    #
+    # Remember to match your paths to GitLab, especially
+    # if installing for a user other than 'git'.
+    #
     # If using Ubuntu default nginx install:
     # either remove the default_server from the listen line
     # or else sudo rm -f /etc/nginx/sites-enabled/default
@@ -604,6 +600,12 @@ If you want to connect the Redis server via socket, then use the "unix:" URL sch
     # example
     production:
       url: unix:/path/to/redis/socket
+
+Also you can use environment variables in the `config/resque.yml` file:
+
+    # example
+    production:
+      url: <%= ENV.fetch('GITLAB_REDIS_URL') %>
 
 ### Custom SSH Connection
 

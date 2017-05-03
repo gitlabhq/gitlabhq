@@ -1,6 +1,6 @@
 module Gitlab
   module GithubImport
-    class PullRequestFormatter < BaseFormatter
+    class PullRequestFormatter < IssuableFormatter
       delegate :exists?, :project, :ref, :repo, :sha, to: :source_branch, prefix: true
       delegate :exists?, :project, :ref, :repo, :sha, to: :target_branch, prefix: true
 
@@ -28,14 +28,6 @@ module Gitlab
         :merge_requests
       end
 
-      def find_condition
-        { iid: number }
-      end
-
-      def number
-        raw_data.number
-      end
-
       def valid?
         source_branch.valid? && target_branch.valid?
       end
@@ -60,56 +52,14 @@ module Gitlab
         end
       end
 
-      def url
-        raw_data.url
-      end
-
       private
 
-      def assigned?
-        raw_data.assignee.present?
-      end
-
-      def assignee_id
-        if assigned?
-          gitlab_user_id(raw_data.assignee.id)
-        end
-      end
-
-      def author
-        raw_data.user.login
-      end
-
-      def author_id
-        gitlab_author_id || project.creator_id
-      end
-
-      def body
-        raw_data.body || ""
-      end
-
-      def description
-        if gitlab_author_id
-          body
-        else
-          formatter.author_line(author) + body
-        end
-      end
-
-      def milestone
-        if raw_data.milestone.present?
-          project.milestones.find_by(iid: raw_data.milestone.number)
-        end
-      end
-
       def state
-        @state ||= if raw_data.state == 'closed' && raw_data.merged_at.present?
-                     'merged'
-                   elsif raw_data.state == 'closed'
-                     'closed'
-                   else
-                     'opened'
-                   end
+        if raw_data.state == 'closed' && raw_data.merged_at.present?
+          'merged'
+        else
+          super
+        end
       end
     end
   end

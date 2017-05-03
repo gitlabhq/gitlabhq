@@ -23,10 +23,26 @@ class IssuesFinder < IssuableFinder
   private
 
   def init_collection
-    Issue.visible_to_user(current_user)
+    IssuesFinder.not_restricted_by_confidentiality(current_user)
   end
 
   def iid_pattern
     @iid_pattern ||= %r{\A#{Regexp.escape(Issue.reference_prefix)}(?<iid>\d+)\z}
+  end
+
+  def self.not_restricted_by_confidentiality(user)
+    return Issue.where('issues.confidential IS NULL OR issues.confidential IS FALSE') if user.blank?
+
+    return Issue.all if user.admin?
+
+    Issue.where('
+      issues.confidential IS NULL
+      OR issues.confidential IS FALSE
+      OR (issues.confidential = TRUE
+        AND (issues.author_id = :user_id
+          OR issues.assignee_id = :user_id
+          OR issues.project_id IN(:project_ids)))',
+      user_id: user.id,
+      project_ids: user.authorized_projects(Gitlab::Access::REPORTER).select(:id))
   end
 end

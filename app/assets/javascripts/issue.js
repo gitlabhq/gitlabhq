@@ -1,11 +1,12 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, one-var, no-underscore-dangle, one-var-declaration-per-line, object-shorthand, no-unused-vars, no-new, comma-dangle, consistent-return, quotes, dot-notation, quote-props, prefer-arrow-callback, max-len */
+/* global Flash */
 
 /*= require flash */
 /*= require jquery.waitforimages */
 /*= require task_list */
 
 (function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
 
   this.Issue = (function() {
     function Issue() {
@@ -138,22 +139,17 @@
         return;
       }
       return $.getJSON($container.data('path')).error(function() {
-        $container.find('.checking').hide();
         $container.find('.unavailable').show();
         return new Flash('Failed to check if a new branch can be created.', 'alert');
       }).success(function(data) {
         if (data.can_create_branch) {
-          $container.find('.checking').hide();
           $container.find('.available').show();
         } else {
-          $container.find('.checking').hide();
           return $container.find('.unavailable').show();
         }
       });
     };
 
     return Issue;
-
   })();
-
 }).call(this);

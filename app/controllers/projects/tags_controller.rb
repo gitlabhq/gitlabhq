@@ -8,7 +8,7 @@ class Projects::TagsController < Projects::ApplicationController
   before_action :authorize_admin_project!, only: [:destroy]
 
   def index
-    params[:sort] = params[:sort].presence || 'name'
+    params[:sort] = params[:sort].presence || sort_value_recently_updated
 
     @sort = params[:sort]
     @tags = TagsFinder.new(@repository, params).execute

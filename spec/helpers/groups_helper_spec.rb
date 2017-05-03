@@ -6,7 +6,7 @@ describe GroupsHelper do
 
     it 'returns an url for the avatar' do
       group = create(:group)
-      group.avatar = File.open(avatar_file_path)
+      group.avatar = fixture_file_upload(avatar_file_path)
       group.save!
       expect(group_icon(group.path).to_s).
         to match("/uploads/group/avatar/#{group.id}/banana_sample.gif")

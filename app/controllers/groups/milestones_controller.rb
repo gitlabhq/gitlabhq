@@ -1,6 +1,4 @@
 class Groups::MilestonesController < Groups::ApplicationController
-  include GlobalMilestones
-
   before_action :group_projects
   before_action :milestone, only: [:show, :update]
   before_action :authorize_admin_milestones!, only: [:new, :create, :update]
@@ -58,7 +56,7 @@ class Groups::MilestonesController < Groups::ApplicationController
 
   def render_new_with_error(empty_project_ids)
     @milestone = Milestone.new(milestone_params)
-    @milestone.errors.add(:project_id, "Please select at least one project.") if empty_project_ids
+    @milestone.errors.add(:base, "Please select at least one project.") if empty_project_ids
     render :new
   end
 
@@ -67,10 +65,19 @@ class Groups::MilestonesController < Groups::ApplicationController
   end
 
   def milestone_params
-    params.require(:milestone).permit(:title, :description, :due_date, :state_event)
+    params.require(:milestone).permit(:title, :description, :start_date, :due_date, :state_event)
   end
 
   def milestone_path(title)
     group_milestone_path(@group, title.to_slug.to_s, title: title)
+  end
+
+  def milestones
+    @milestones = GroupMilestone.build_collection(@group, @projects, params)
+  end
+
+  def milestone
+    @milestone = GroupMilestone.build(@group, @projects, params[:title])
+    render_404 unless @milestone
   end
 end

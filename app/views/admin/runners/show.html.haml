@@ -91,7 +91,7 @@
               %strong ##{build.id}
 
           %td.status
-            = ci_status_with_icon(build.status)
+            = render 'ci/status/badge', status: build.detailed_status(current_user)
 
           %td.status
             - if project

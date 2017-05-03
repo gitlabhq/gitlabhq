@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint-disable no-param-reassign, comma-dangle */
+
 ((global) => {
   global.mergeConflicts = global.mergeConflicts || {};
 
@@ -24,8 +25,7 @@
         method: 'POST'
       });
     }
-  };
+  }
 
   global.mergeConflicts.mergeConflictsService = mergeConflictsService;
-
 })(window.gl || (window.gl = {}));

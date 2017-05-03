@@ -4,14 +4,24 @@ class Key < ActiveRecord::Base
   include AfterCommitQueue
   include Sortable
 
+  LAST_USED_AT_REFRESH_TIME = 1.day.to_i
+
   belongs_to :user
 
-  before_validation :strip_white_space, :generate_fingerprint
+  before_validation :generate_fingerprint
 
-  validates :title, presence: true, length: { within: 0..255 }
-  validates :key, presence: true, length: { within: 0..5000 }, format: { with: /\A(ssh|ecdsa)-.*\Z/ }
-  validates :key, format: { without: /\n|\r/, message: 'should be a single line' }
-  validates :fingerprint, uniqueness: true, presence: { message: 'cannot be generated' }
+  validates :title,
+    presence: true,
+    length: { maximum: 255 }
+  validates :key,
+    presence: true,
+    length: { maximum: 5000 },
+    format: { with: /\A(ssh|ecdsa)-.*\Z/ }
+  validates :key,
+    format: { without: /\n|\r/, message: 'should be a single line' }
+  validates :fingerprint,
+    uniqueness: true,
+    presence: { message: 'cannot be generated' }
 
   delegate :name, :email, to: :user, prefix: true
 
@@ -21,8 +31,9 @@ class Key < ActiveRecord::Base
   after_destroy :remove_from_shell
   after_destroy :post_destroy_hook
 
-  def strip_white_space
-    self.key = key.strip unless key.blank?
+  def key=(value)
+    value.strip! unless value.blank?
+    write_attribute(:key, value)
   end
 
   def publishable_key
@@ -40,16 +51,19 @@ class Key < ActiveRecord::Base
     "key-#{id}"
   end
 
+  def update_last_used_at
+    lease = Gitlab::ExclusiveLease.new("key_update_last_used_at:#{id}", timeout: LAST_USED_AT_REFRESH_TIME)
+    return unless lease.try_obtain
+
+    UseKeyWorker.perform_async(id)
+  end
+
   def add_to_shell
     GitlabShellWorker.perform_async(
       :add_key,
       shell_id,
       key
     )
-  end
-
-  def notify_user
-    run_after_commit { NotificationService.new.new_key(self) }
   end
 
   def post_create_hook
@@ -76,5 +90,9 @@ class Key < ActiveRecord::Base
     return unless self.key.present?
 
     self.fingerprint = Gitlab::KeyFingerprint.new(self.key).fingerprint
+  end
+
+  def notify_user
+    run_after_commit { NotificationService.new.new_key(self) }
   end
 end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::API, api: true  do
+describe API::Milestones, api: true  do
   include ApiHelpers
   let(:user) { create(:user) }
   let!(:project) { create(:empty_project, namespace: user.namespace ) }
@@ -61,6 +61,15 @@ describe API::API, api: true  do
       expect(json_response.first['id']).to eq closed_milestone.id
     end
 
+    it 'returns a project milestone by iid array' do
+      get api("/projects/#{project.id}/milestones", user), iid: [milestone.iid, closed_milestone.iid]
+
+      expect(response).to have_http_status(200)
+      expect(json_response.size).to eq(2)
+      expect(json_response.first['title']).to eq milestone.title
+      expect(json_response.first['id']).to eq milestone.id
+    end
+
     it 'returns 401 error if user not authenticated' do
       get api("/projects/#{project.id}/milestones/#{milestone.id}")
 
@@ -83,13 +92,14 @@ describe API::API, api: true  do
       expect(json_response['description']).to be_nil
     end
 
-    it 'creates a new project milestone with description and due date' do
+    it 'creates a new project milestone with description and dates' do
       post api("/projects/#{project.id}/milestones", user),
-        title: 'new milestone', description: 'release', due_date: '2013-03-02'
+        title: 'new milestone', description: 'release', due_date: '2013-03-02', start_date: '2013-02-02'
 
       expect(response).to have_http_status(201)
       expect(json_response['description']).to eq('release')
       expect(json_response['due_date']).to eq('2013-03-02')
+      expect(json_response['start_date']).to eq('2013-02-02')
     end
 
     it 'returns a 400 error if title is missing' do
@@ -121,6 +131,15 @@ describe API::API, api: true  do
 
       expect(response).to have_http_status(200)
       expect(json_response['title']).to eq('updated title')
+    end
+
+    it 'removes a due date if nil is passed' do
+      milestone.update!(due_date: "2016-08-05")
+
+      put api("/projects/#{project.id}/milestones/#{milestone.id}", user), due_date: nil
+
+      expect(response).to have_http_status(200)
+      expect(json_response['due_date']).to be_nil
     end
 
     it 'returns a 404 error if milestone id not found' do

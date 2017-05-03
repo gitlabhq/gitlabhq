@@ -8,6 +8,9 @@ class Projects::BlameController < Projects::ApplicationController
 
   def show
     @blob = @repository.blob_at(@commit.id, @path)
+    
+    return render_404 unless @blob
+
     @blame_groups = Gitlab::Blame.new(@blob, @commit).groups
   end
 end

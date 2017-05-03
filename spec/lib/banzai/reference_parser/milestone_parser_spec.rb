@@ -9,6 +9,14 @@ describe Banzai::ReferenceParser::MilestoneParser, lib: true do
   subject { described_class.new(project, user) }
   let(:link) { empty_html_link }
 
+  describe '#nodes_visible_to_user' do
+    context 'when the link has a data-issue attribute' do
+      before { link['data-milestone'] = milestone.id.to_s }
+
+      it_behaves_like "referenced feature visibility", "issues", "merge_requests"
+    end
+  end
+
   describe '#referenced_by' do
     describe 'when the link has a data-milestone attribute' do
       context 'using an existing milestone ID' do

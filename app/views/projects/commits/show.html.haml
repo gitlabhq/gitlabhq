@@ -28,14 +28,14 @@
           = search_field_tag :search, params[:search], { placeholder: 'Filter by commit message', id: 'commits-search', class: 'form-control search-text-input input-short', spellcheck: false }
       - if current_user && current_user.private_token
         .control
-          = link_to namespace_project_commits_path(@project.namespace, @project, @ref, {format: :atom, private_token: current_user.private_token}), title: "Commits Feed", class: 'btn' do
+          = link_to namespace_project_commits_path(@project.namespace, @project, @ref, { format: :atom, private_token: current_user.private_token }), title: "Commits Feed", class: 'btn' do
             = icon("rss")
     %ul.breadcrumb.repo-breadcrumb
       = commits_breadcrumbs
 
-  %div{id: dom_id(@project)}
+  %div{ id: dom_id(@project) }
     %ol#commits-list.list-unstyled.content_list
-      = render "commits", project: @project
+      = render 'commits', project: @project, ref: @ref
   = spinner
 
 :javascript

@@ -62,10 +62,6 @@ Example response:
 
 ## Create a broadcast message
 
-Responds with `400 Bad request` when the `message` parameter is missing or the
-`color` or `font` values are invalid, and `201 Created` when the broadcast
-message was successfully created.
-
 ```
 POST /broadcast_messages
 ```

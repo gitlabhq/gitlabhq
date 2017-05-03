@@ -6,13 +6,15 @@ class Todo < ActiveRecord::Base
   BUILD_FAILED      = 3
   MARKED            = 4
   APPROVAL_REQUIRED = 5 # This is an EE-only feature
+  UNMERGEABLE       = 6
 
   ACTION_NAMES = {
     ASSIGNED => :assigned,
     MENTIONED => :mentioned,
     BUILD_FAILED => :build_failed,
     MARKED => :marked,
-    APPROVAL_REQUIRED => :approval_required
+    APPROVAL_REQUIRED => :approval_required,
+    UNMERGEABLE => :unmergeable
   }
 
   belongs_to :author, class_name: "User"
@@ -64,6 +66,10 @@ class Todo < ActiveRecord::Base
         order(Gitlab::Database.nulls_last_order('highest_priority', 'ASC')).
         order('todos.created_at')
     end
+  end
+
+  def unmergeable?
+    action == UNMERGEABLE
   end
 
   def build_failed?

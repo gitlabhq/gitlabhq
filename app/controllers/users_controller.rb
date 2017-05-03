@@ -86,7 +86,7 @@ class UsersController < ApplicationController
   end
 
   def exists
-    render json: { exists: Namespace.where(path: params[:username].downcase).any? }
+    render json: { exists: !!Namespace.find_by_path_or_name(params[:username]) }
   end
 
   private
@@ -104,8 +104,7 @@ class UsersController < ApplicationController
   end
 
   def contributions_calendar
-    @contributions_calendar ||= Gitlab::ContributionsCalendar.
-      new(contributed_projects, user)
+    @contributions_calendar ||= Gitlab::ContributionsCalendar.new(user, current_user)
   end
 
   def load_events

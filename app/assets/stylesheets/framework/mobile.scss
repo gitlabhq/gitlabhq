@@ -23,9 +23,13 @@
     margin-right: 0;
   }
 
-  .issues-details-filters,
+  .issues-details-filters:not(.filtered-search-block),
   .dash-projects-filters,
   .check-all-holder {
+    display: none;
+  }
+
+  .issues-holder .issue-check {
     display: none;
   }
 
@@ -34,10 +38,6 @@
   }
 
   .project-home-links {
-    display: none;
-  }
-
-  .project-avatar {
     display: none;
   }
 
@@ -54,7 +54,7 @@
     }
 
     // Display Star and Fork buttons without counters on mobile.
-    .project-action-buttons {
+    .project-repo-buttons {
       display: block;
 
       .count-buttons .btn {
@@ -71,7 +71,7 @@
     display: none;
   }
 
-  .group-right-buttons {
+  .group-buttons {
     display: none;
   }
 
@@ -133,9 +133,9 @@
   right: 0;
   top: 30%;
   padding: 5px 15px;
-  background: #eee;
+  background: $show-aside-bg;
   font-size: 20px;
-  color: #777;
+  color: $show-aside-color;
   z-index: 100;
-  box-shadow: 0 1px 2px #ddd;
+  box-shadow: 0 1px 2px $show-aside-shadow;
 }

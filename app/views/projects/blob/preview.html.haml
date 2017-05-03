@@ -20,6 +20,6 @@
                 - else
                   %td.old_line.diff-line-num
                   %td.new_line.diff-line-num
-                  %td.line_content{class: "#{line.type}"}= diff_line_content(line.text)
+                  %td.line_content{ class: "#{line.type}" }= diff_line_content(line.text)
         - else
           .nothing-here-block No changes.

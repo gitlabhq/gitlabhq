@@ -1,0 +1,10 @@
+%h4
+  = icon('exclamation-triangle')
+  This merge request has unresolved discussions
+
+%p
+  Please resolve these discussions
+  - if @project.issues_enabled? && can?(current_user, :create_issue, @project)
+    or
+    = link_to "open an issue to resolve them later", new_namespace_project_issue_path(@project.namespace, @project, merge_request_for_resolving_discussions: @merge_request.iid)
+  to allow this merge request to be merged.

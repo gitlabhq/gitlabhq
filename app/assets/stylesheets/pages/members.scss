@@ -25,7 +25,7 @@
   }
 
   .form-horizontal {
-    margin-top: 5px;
+    margin-top: 20px;
 
     @media (min-width: $screen-sm-min) {
       display: -webkit-flex;
@@ -54,6 +54,10 @@
   @media (min-width: $screen-sm-min) {
     width: 50%;
   }
+
+  .dropdown-menu-toggle {
+    width: 100%;
+  }
 }
 
 .member-access-text {
@@ -74,19 +78,48 @@
     float: right;
   }
 
+  .dropdown {
+    width: 100%;
+    margin-top: 5px;
+
+    .dropdown-menu-toggle {
+      vertical-align: middle;
+      width: 100%;
+    }
+
+    @media (min-width: $screen-sm-min) {
+      margin-top: 0;
+      width: 155px;
+    }
+  }
+
   .form-control {
     width: 100%;
     padding-right: 35px;
 
     @media (min-width: $screen-sm-min) {
+      width: 250px;
+    }
+
+    @media (min-width: $screen-md-min) {
       width: 350px;
+    }
+
+    &.input-short {
+      @media (min-width: $screen-md-min) {
+        width: 170px;
+      }
+
+      @media (min-width: $screen-lg-min) {
+        width: 210px;
+      }
     }
   }
 }
 
 .member-search-btn {
   position: absolute;
-  right: 0;
+  right: 4px;
   top: 0;
   height: 35px;
   padding-left: 10px;
@@ -95,4 +128,8 @@
   background: transparent;
   border: 0;
   outline: 0;
+
+  @media (min-width: $screen-sm-min) {
+    right: 160px;
+  }
 }

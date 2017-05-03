@@ -34,7 +34,7 @@ feature 'Master creates tag', feature: true do
     expect(current_path).to eq(
       namespace_project_tag_path(project.namespace, project, 'v3.0'))
     expect(page).to have_content 'v3.0'
-    page.within 'pre.body' do
+    page.within 'pre.wrap' do
       expect(page).to have_content "Awesome tag message\n\n- hello\n- world"
     end
   end

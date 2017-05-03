@@ -1,6 +1,6 @@
 - if @merge_request_diffs.size > 1
   .mr-version-controls
-    %div.mr-version-menus-container.content-block
+    .mr-version-menus-container.content-block
       Changes between
       %span.dropdown.inline.mr-version-dropdown
         %a.dropdown-toggle.btn.btn-default{ data: {toggle: :dropdown} }
@@ -13,13 +13,13 @@
         .dropdown-menu.dropdown-select.dropdown-menu-selectable
           .dropdown-title
             %span Version:
-            %button.dropdown-title-button.dropdown-menu-close{aria: {label: "Close"}}
+            %button.dropdown-title-button.dropdown-menu-close{ aria: { label: "Close" } }
               = icon('times', class: 'dropdown-menu-close-icon')
           .dropdown-content
             %ul
               - @merge_request_diffs.each do |merge_request_diff|
                 %li
-                  = link_to merge_request_version_path(@project, @merge_request, merge_request_diff), class: ('is-active' if merge_request_diff == @merge_request_diff) do
+                  = link_to merge_request_version_path(@project, @merge_request, merge_request_diff, @start_sha), class: ('is-active' if merge_request_diff == @merge_request_diff) do
                     %strong
                       - if merge_request_diff.latest?
                         latest version
@@ -27,7 +27,7 @@
                         version #{version_index(merge_request_diff)}
                     .monospace #{short_sha(merge_request_diff.head_commit_sha)}
                     %small
-                      #{number_with_delimiter(merge_request_diff.commits.count)} #{'commit'.pluralize(merge_request_diff.commits.count)},
+                      #{number_with_delimiter(merge_request_diff.commits_count)} #{'commit'.pluralize(merge_request_diff.commits_count)},
                       = time_ago_with_tooltip(merge_request_diff.created_at)
 
       - if @merge_request_diff.base_commit_sha
@@ -43,7 +43,7 @@
           .dropdown-menu.dropdown-select.dropdown-menu-selectable
             .dropdown-title
               %span Compared with:
-              %button.dropdown-title-button.dropdown-menu-close{aria: {label: "Close"}}
+              %button.dropdown-title-button.dropdown-menu-close{ aria: { label: "Close" } }
                 = icon('times', class: 'dropdown-menu-close-icon')
             .dropdown-content
               %ul

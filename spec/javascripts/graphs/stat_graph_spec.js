@@ -1,8 +1,9 @@
-/* eslint-disable */
+/* eslint-disable quotes */
+/* global StatGraph */
+
 //= require graphs/stat_graph
 
 describe("StatGraph", function () {
-
   describe("#get_log", function () {
     it("returns log", function () {
       StatGraph.log = "test";
@@ -14,7 +15,6 @@ describe("StatGraph", function () {
     it("sets the log", function () {
       StatGraph.set_log("test");
       expect(StatGraph.log).toBe("test");
-    })
-  })
-
+    });
+  });
 });

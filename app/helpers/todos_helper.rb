@@ -11,9 +11,10 @@ module TodosHelper
     case todo.action
     when Todo::ASSIGNED then 'assigned you'
     when Todo::MENTIONED then 'mentioned you on'
-    when Todo::BUILD_FAILED then 'The build failed for your'
+    when Todo::BUILD_FAILED then 'The build failed for'
     when Todo::MARKED then 'added a todo for'
     when Todo::APPROVAL_REQUIRED then 'set you as an approver for'
+    when Todo::UNMERGEABLE then 'Could not merge'
     end
   end
 
@@ -35,7 +36,7 @@ module TodosHelper
     else
       path = [todo.project.namespace.becomes(Namespace), todo.project, todo.target]
 
-      path.unshift(:builds) if todo.build_failed?
+      path.unshift(:pipelines) if todo.build_failed?
 
       polymorphic_path(path, anchor: anchor)
     end
@@ -59,6 +60,10 @@ module TodosHelper
       type:       params[:type],
       action_id:  params[:action_id],
     }
+  end
+
+  def todos_filter_empty?
+    todos_filter_params.values.none?
   end
 
   def todos_filter_path(options = {})

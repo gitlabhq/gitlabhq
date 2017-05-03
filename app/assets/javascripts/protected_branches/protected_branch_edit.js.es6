@@ -1,6 +1,8 @@
-/* eslint-disable */
+/* eslint-disable no-new, arrow-parens, no-param-reassign, comma-dangle, max-len */
+/* global Flash */
+
 (global => {
-  global.gl = global.gl || {};
+  global.gl = global.gl || {};
 
   gl.ProtectedBranchEdit = class {
     constructor(options) {
@@ -12,7 +14,6 @@
     }
 
     buildDropdowns() {
-
       // Allowed to merge dropdown
       new gl.ProtectedBranchAccessDropdown({
         $dropdown: this.$allowedToMergeDropdown,
@@ -33,7 +34,7 @@
       const $allowedToPushInput = this.$wrap.find(`input[name="${this.$allowedToPushDropdown.data('fieldName')}"]`);
 
       // Do not update if one dropdown has not selected any option
-      if (!($allowedToMergeInput.length && $allowedToPushInput.length)) return; 
+      if (!($allowedToMergeInput.length && $allowedToPushInput.length)) return;
 
       $.ajax({
         type: 'POST',
@@ -61,6 +62,5 @@
         }
       });
     }
-  }
-
+  };
 })(window);

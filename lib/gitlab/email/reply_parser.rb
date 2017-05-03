@@ -13,9 +13,17 @@ module Gitlab
 
         encoding = body.encoding
 
-        body = discourse_email_trimmer(body)
+        body = EmailReplyTrimmer.trim(body)
 
-        body = EmailReplyParser.parse_reply(body)
+        return '' unless body
+
+        # not using /\s+$/ here because that deletes empty lines
+        body = body.gsub(/[ \t]$/, '')
+
+        # NOTE: We currently don't support empty quotes.
+        # EmailReplyTrimmer allows this as a special case,
+        # so we detect it manually here.
+        return "" if body.lines.all? { |l| l.strip.empty? || l.start_with?('>') }
 
         body.force_encoding(encoding).encode("UTF-8")
       end
@@ -23,19 +31,26 @@ module Gitlab
       private
 
       def select_body(message)
-        text    = message.text_part if message.multipart?
-        text  ||= message           if message.content_type !~ /text\/html/
+        if message.multipart?
+          part = message.text_part || message.html_part || message
+        else
+          part = message
+        end
 
-        return "" unless text
+        decoded = fix_charset(part)
 
-        text = fix_charset(text)
+        return "" unless decoded
 
         # Certain trigger phrases that means we didn't parse correctly
-        if text =~ /(Content\-Type\:|multipart\/alternative|text\/plain)/
+        if decoded =~ /(Content\-Type\:|multipart\/alternative|text\/plain)/
           return ""
         end
 
-        text
+        if (part.content_type || '').include? 'text/html'
+          HTMLParser.parse_reply(decoded)
+        else
+          decoded
+        end
       end
 
       # Force encoding to UTF-8 on a Mail::Message or Mail::Part
@@ -49,30 +64,6 @@ module Gitlab
         end
       rescue
         nil
-      end
-
-      REPLYING_HEADER_LABELS = %w(From Sent To Subject Reply To Cc Bcc Date)
-      REPLYING_HEADER_REGEX = Regexp.union(REPLYING_HEADER_LABELS.map { |label| "#{label}:" })
-
-      def discourse_email_trimmer(body)
-        lines = body.scrub.lines.to_a
-        range_end = 0
-
-        lines.each_with_index do |l, idx|
-          # This one might be controversial but so many reply lines have years, times and end with a colon.
-          # Let's try it and see how well it works.
-          break if (l =~ /\d{4}/ && l =~ /\d:\d\d/ && l =~ /\:$/) ||
-                   (l =~ /On \w+ \d+,? \d+,?.*wrote:/)
-
-          # Headers on subsequent lines
-          break if (0..2).all? { |off| lines[idx + off] =~ REPLYING_HEADER_REGEX }
-          # Headers on the same line
-          break if REPLYING_HEADER_LABELS.count { |label| l.include?(label) } >= 3
-
-          range_end = idx
-        end
-
-        lines[0..range_end].join.strip
       end
     end
   end

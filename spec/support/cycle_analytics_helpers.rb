@@ -49,7 +49,8 @@ module CycleAnalyticsHelpers
   end
 
   def merge_merge_requests_closing_issue(issue)
-    merge_requests = issue.closed_by_merge_requests
+    merge_requests = issue.closed_by_merge_requests(user)
+
     merge_requests.each { |merge_request| MergeRequests::MergeService.new(project, user).execute(merge_request) }
   end
 

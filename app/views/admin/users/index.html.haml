@@ -68,7 +68,7 @@
             %small.badge= number_with_delimiter(User.without_projects.count)
         .fade-right
 
-  %ul.users-list.content-list
+  %ul.flex-list.content-list
     - if @users.empty?
       %li
         .nothing-here-block No users found.

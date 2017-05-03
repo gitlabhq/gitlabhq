@@ -1,7 +1,8 @@
 require 'spec_helper'
 
-describe API::API, api: true  do
+describe API::Issues, api: true  do
   include ApiHelpers
+  include EmailHelpers
 
   let(:user)        { create(:user) }
   let(:user2)       { create(:user) }
@@ -10,7 +11,7 @@ describe API::API, api: true  do
   let(:author)      { create(:author) }
   let(:assignee)    { create(:assignee) }
   let(:admin)       { create(:user, :admin) }
-  let!(:project)    { create(:project, :public, creator_id: user.id, namespace: user.namespace ) }
+  let!(:project)    { create(:empty_project, :public, creator_id: user.id, namespace: user.namespace ) }
   let!(:closed_issue) do
     create :closed_issue,
            author: user,
@@ -49,6 +50,8 @@ describe API::API, api: true  do
   end
   let!(:note) { create(:note_on_issue, author: user, project: project, noteable: issue) }
 
+  let(:no_milestone_title) { URI.escape(Milestone::None.title) }
+
   before do
     project.team << [user, :reporter]
     project.team << [guest, :guest]
@@ -69,13 +72,6 @@ describe API::API, api: true  do
         expect(json_response).to be_an Array
         expect(json_response.first['title']).to eq(issue.title)
         expect(json_response.last).to have_key('web_url')
-      end
-
-      it "adds pagination headers and keep query params" do
-        get api("/issues?state=closed&per_page=3", user)
-        expect(response.headers['Link']).to eq(
-          '<http://www.example.com/api/v3/issues?page=1&per_page=3&private_token=%s&state=closed>; rel="first", <http://www.example.com/api/v3/issues?page=1&per_page=3&private_token=%s&state=closed>; rel="last"' % [user.private_token, user.private_token]
-        )
       end
 
       it 'returns an array of closed issues' do
@@ -113,6 +109,7 @@ describe API::API, api: true  do
 
       it 'returns an array of labeled issues when at least one label matches' do
         get api("/issues?labels=#{label.title},foo,bar", user)
+
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
@@ -140,6 +137,51 @@ describe API::API, api: true  do
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(0)
+      end
+
+      it 'returns an empty array if no issue matches milestone' do
+        get api("/issues?milestone=#{empty_milestone.title}", user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(0)
+      end
+
+      it 'returns an empty array if milestone does not exist' do
+        get api("/issues?milestone=foo", user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(0)
+      end
+
+      it 'returns an array of issues in given milestone' do
+        get api("/issues?milestone=#{milestone.title}", user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(2)
+        expect(json_response.first['id']).to eq(issue.id)
+        expect(json_response.second['id']).to eq(closed_issue.id)
+      end
+
+      it 'returns an array of issues matching state in milestone' do
+        get api("/issues?milestone=#{milestone.title}"\
+                '&state=closed', user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['id']).to eq(closed_issue.id)
+      end
+
+      it 'returns an array of issues with no milestone' do
+        get api("/issues?milestone=#{no_milestone_title}", author)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['id']).to eq(confidential_issue.id)
       end
 
       it 'sorts by created_at descending by default' do
@@ -182,7 +224,7 @@ describe API::API, api: true  do
 
   describe "GET /groups/:id/issues" do
     let!(:group)            { create(:group) }
-    let!(:group_project)    { create(:project, :public, creator_id: user.id, namespace: group) }
+    let!(:group_project)    { create(:empty_project, :public, creator_id: user.id, namespace: group) }
     let!(:group_closed_issue) do
       create :closed_issue,
              author: user,
@@ -324,6 +366,15 @@ describe API::API, api: true  do
       expect(json_response.first['id']).to eq(group_closed_issue.id)
     end
 
+    it 'returns an array of issues with no milestone' do
+      get api("#{base_url}?milestone=#{no_milestone_title}", user)
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['id']).to eq(group_confidential_issue.id)
+    end
+
     it 'sorts by created_at descending by default' do
       get api(base_url, user)
       response_dates = json_response.map { |issue| issue['created_at'] }
@@ -363,7 +414,24 @@ describe API::API, api: true  do
 
   describe "GET /projects/:id/issues" do
     let(:base_url) { "/projects/#{project.id}" }
-    let(:title) { milestone.title }
+
+    it "returns 404 on private projects for other users" do
+      private_project = create(:empty_project, :private)
+      create(:issue, project: private_project)
+
+      get api("/projects/#{private_project.id}/issues", non_member)
+
+      expect(response).to have_http_status(404)
+    end
+
+    it 'returns no issues when user has access to project but not issues' do
+      restricted_project = create(:empty_project, :public, issues_access_level: ProjectFeature::PRIVATE)
+      create(:issue, project: restricted_project)
+
+      get api("/projects/#{restricted_project.id}/issues", non_member)
+
+      expect(json_response).to eq([])
+    end
 
     it 'returns project issues without confidential issues for non project members' do
       get api("#{base_url}/issues", non_member)
@@ -421,8 +489,9 @@ describe API::API, api: true  do
       expect(json_response.first['labels']).to eq([label.title])
     end
 
-    it 'returns an array of labeled project issues when at least one label matches' do
+    it 'returns an array of labeled project issues where all labels match' do
       get api("#{base_url}/issues?labels=#{label.title},foo,bar", user)
+
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(1)
@@ -451,7 +520,8 @@ describe API::API, api: true  do
     end
 
     it 'returns an array of issues in given milestone' do
-      get api("#{base_url}/issues?milestone=#{title}", user)
+      get api("#{base_url}/issues?milestone=#{milestone.title}", user)
+
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(2)
@@ -466,6 +536,15 @@ describe API::API, api: true  do
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(1)
       expect(json_response.first['id']).to eq(closed_issue.id)
+    end
+
+    it 'returns an array of issues with no milestone' do
+      get api("#{base_url}/issues?milestone=#{no_milestone_title}", user)
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['id']).to eq(confidential_issue.id)
     end
 
     it 'sorts by created_at descending by default' do
@@ -535,10 +614,19 @@ describe API::API, api: true  do
 
     it 'returns a project issue by iid' do
       get api("/projects/#{project.id}/issues?iid=#{issue.iid}", user)
+
       expect(response.status).to eq 200
+      expect(json_response.length).to eq 1
       expect(json_response.first['title']).to eq issue.title
       expect(json_response.first['id']).to eq issue.id
       expect(json_response.first['iid']).to eq issue.iid
+    end
+
+    it 'returns an empty array for an unknown project issue iid' do
+      get api("/projects/#{project.id}/issues?iid=#{issue.iid + 10}", user)
+
+      expect(response.status).to eq 200
+      expect(json_response.length).to eq 0
     end
 
     it "returns 404 if issue id not found" do
@@ -630,14 +718,13 @@ describe API::API, api: true  do
       post api("/projects/#{project.id}/issues", user),
         title: 'new issue', confidential: 'foo'
 
-      expect(response).to have_http_status(201)
-      expect(json_response['title']).to eq('new issue')
-      expect(json_response['confidential']).to be_falsy
+      expect(response).to have_http_status(400)
+      expect(json_response['error']).to eq('confidential is invalid')
     end
 
     it "sends notifications for subscribers of newly added labels" do
       label = project.labels.first
-      label.toggle_subscription(user2)
+      label.toggle_subscription(user2, project)
 
       perform_enqueued_jobs do
         post api("/projects/#{project.id}/issues", user),
@@ -673,6 +760,32 @@ describe API::API, api: true  do
       ])
     end
 
+    context 'resolving issues in a merge request' do
+      let(:discussion) { Discussion.for_diff_notes([create(:diff_note_on_merge_request)]).first }
+      let(:merge_request) { discussion.noteable }
+      let(:project) { merge_request.source_project }
+      before do
+        project.team << [user, :master]
+        post api("/projects/#{project.id}/issues", user),
+             title: 'New Issue',
+             merge_request_for_resolving_discussions: merge_request.iid
+      end
+
+      it 'creates a new project issue' do
+        expect(response).to have_http_status(:created)
+      end
+
+      it 'resolves the discussions in a merge request' do
+        discussion.first_note.reload
+
+        expect(discussion.resolved?).to be(true)
+      end
+
+      it 'assigns a description to the issue mentioning the merge request' do
+        expect(json_response['description']).to include(merge_request.to_reference)
+      end
+    end
+
     context 'with due date' do
       it 'creates a new project issue' do
         due_date = 2.weeks.from_now.strftime('%Y-%m-%d')
@@ -695,6 +808,14 @@ describe API::API, api: true  do
 
         expect(response).to have_http_status(201)
         expect(Time.parse(json_response['created_at'])).to be_like_time(creation_time)
+      end
+    end
+
+    context 'the user can only read the issue' do
+      it 'cannot create new labels' do
+        expect do
+          post api("/projects/#{project.id}/issues", non_member), title: 'new issue', labels: 'label, label2'
+        end.not_to change { project.labels.count }
       end
     end
   end
@@ -809,8 +930,8 @@ describe API::API, api: true  do
         put api("/projects/#{project.id}/issues/#{confidential_issue.id}", user),
           confidential: 'foo'
 
-        expect(response).to have_http_status(200)
-        expect(json_response['confidential']).to be_truthy
+        expect(response).to have_http_status(400)
+        expect(json_response['error']).to eq('confidential is invalid')
       end
     end
   end
@@ -828,7 +949,7 @@ describe API::API, api: true  do
 
     it "sends notifications for subscribers of newly added labels when issue is updated" do
       label = create(:label, title: 'foo', color: '#FFAABB', project: project)
-      label.toggle_subscription(user2)
+      label.toggle_subscription(user2, project)
 
       perform_enqueued_jobs do
         put api("/projects/#{project.id}/issues/#{issue.id}", user),
@@ -839,8 +960,8 @@ describe API::API, api: true  do
     end
 
     it 'removes all labels' do
-      put api("/projects/#{project.id}/issues/#{issue.id}", user),
-          labels: ''
+      put api("/projects/#{project.id}/issues/#{issue.id}", user), labels: ''
+
       expect(response).to have_http_status(200)
       expect(json_response['labels']).to eq([])
     end
@@ -887,13 +1008,20 @@ describe API::API, api: true  do
       expect(json_response['state']).to eq "closed"
     end
 
+    it 'reopens a project isssue' do
+      put api("/projects/#{project.id}/issues/#{closed_issue.id}", user), state_event: 'reopen'
+
+      expect(response).to have_http_status(200)
+      expect(json_response['state']).to eq 'reopened'
+    end
+
     context 'when an admin or owner makes the request' do
       it 'accepts the update date to be set' do
         update_time = 2.weeks.ago
         put api("/projects/#{project.id}/issues/#{issue.id}", user),
           labels: 'label3', state_event: 'close', updated_at: update_time
-        expect(response).to have_http_status(200)
 
+        expect(response).to have_http_status(200)
         expect(json_response['labels']).to include 'label3'
         expect(Time.parse(json_response['updated_at'])).to be_like_time(update_time)
       end
@@ -924,7 +1052,7 @@ describe API::API, api: true  do
 
     context "when the user is project owner" do
       let(:owner)     { create(:user) }
-      let(:project)   { create(:project, namespace: owner.namespace) }
+      let(:project)   { create(:empty_project, namespace: owner.namespace) }
 
       it "deletes the issue if an admin requests it" do
         delete api("/projects/#{project.id}/issues/#{issue.id}", owner)
@@ -932,11 +1060,19 @@ describe API::API, api: true  do
         expect(json_response['state']).to eq 'opened'
       end
     end
+
+    context 'when issue does not exist' do
+      it 'returns 404 when trying to move an issue' do
+        delete api("/projects/#{project.id}/issues/123", user)
+
+        expect(response).to have_http_status(404)
+      end
+    end
   end
 
   describe '/projects/:id/issues/:issue_id/move' do
-    let!(:target_project) { create(:project, path: 'project2', creator_id: user.id, namespace: user.namespace ) }
-    let!(:target_project2) { create(:project, creator_id: non_member.id, namespace: non_member.namespace ) }
+    let!(:target_project) { create(:empty_project, path: 'project2', creator_id: user.id, namespace: user.namespace ) }
+    let!(:target_project2) { create(:empty_project, creator_id: non_member.id, namespace: non_member.namespace ) }
 
     it 'moves an issue' do
       post api("/projects/#{project.id}/issues/#{issue.id}/move", user),
@@ -980,6 +1116,7 @@ describe API::API, api: true  do
                  to_project_id: target_project.id
 
         expect(response).to have_http_status(404)
+        expect(json_response['message']).to eq('404 Issue Not Found')
       end
     end
 
@@ -989,6 +1126,7 @@ describe API::API, api: true  do
                  to_project_id: target_project.id
 
         expect(response).to have_http_status(404)
+        expect(json_response['message']).to eq('404 Project Not Found')
       end
     end
 
@@ -1054,5 +1192,11 @@ describe API::API, api: true  do
 
       expect(response).to have_http_status(404)
     end
+  end
+
+  describe 'time tracking endpoints' do
+    let(:issuable) { issue }
+
+    include_examples 'time tracking endpoints', 'issue'
   end
 end

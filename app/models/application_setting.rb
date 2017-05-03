@@ -18,6 +18,8 @@ class ApplicationSetting < ActiveRecord::Base
   serialize :disabled_oauth_sign_in_sources, Array
   serialize :domain_whitelist, Array
   serialize :domain_blacklist, Array
+  serialize :repository_storages
+  serialize :sidekiq_throttling_queues, Array
 
   cache_markdown_field :sign_in_text
   cache_markdown_field :help_page_text
@@ -66,6 +68,10 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             if: :koding_enabled
 
+  validates :plantuml_url,
+            presence: true,
+            if: :plantuml_enabled
+
   validates :max_attachment_size,
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
@@ -74,9 +80,8 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
 
-  validates :repository_storage,
-    presence: true,
-    inclusion: { in: ->(_object) { Gitlab.config.repositories.storages.keys } }
+  validates :repository_storages, presence: true
+  validate :check_repository_storages
 
   validates :enabled_git_access_protocol,
             inclusion: { in: %w(ssh http), allow_blank: true, allow_nil: true }
@@ -84,6 +89,27 @@ class ApplicationSetting < ActiveRecord::Base
   validates :domain_blacklist,
             presence: { message: 'Domain blacklist cannot be empty if Blacklist is enabled.' },
             if: :domain_blacklist_enabled?
+
+  validates :sidekiq_throttling_factor,
+            numericality: { greater_than: 0, less_than: 1 },
+            presence: { message: 'Throttling factor cannot be empty if Sidekiq Throttling is enabled.' },
+            if: :sidekiq_throttling_enabled?
+
+  validates :sidekiq_throttling_queues,
+            presence: { message: 'Queues to throttle cannot be empty if Sidekiq Throttling is enabled.' },
+            if: :sidekiq_throttling_enabled?
+
+  validates :housekeeping_incremental_repack_period,
+            presence: true,
+            numericality: { only_integer: true, greater_than: 0 }
+
+  validates :housekeeping_full_repack_period,
+            presence: true,
+            numericality: { only_integer: true, greater_than: :housekeeping_incremental_repack_period }
+
+  validates :housekeeping_gc_period,
+            presence: true,
+            numericality: { only_integer: true, greater_than: :housekeeping_full_repack_period }
 
   validates_each :restricted_visibility_levels do |record, attr, value|
     unless value.nil?
@@ -162,17 +188,29 @@ class ApplicationSetting < ActiveRecord::Base
       akismet_enabled: false,
       koding_enabled: false,
       koding_url: nil,
+      plantuml_enabled: false,
+      plantuml_url: nil,
       repository_checks_enabled: true,
       disabled_oauth_sign_in_sources: [],
       send_user_confirmation_email: false,
       container_registry_token_expire_delay: 5,
-      repository_storage: 'default',
+      repository_storages: ['default'],
       user_default_external: false,
+      sidekiq_throttling_enabled: false,
+      housekeeping_enabled: true,
+      housekeeping_bitmaps_enabled: true,
+      housekeeping_incremental_repack_period: 10,
+      housekeeping_full_repack_period: 50,
+      housekeeping_gc_period: 200,
     )
   end
 
   def home_page_url_column_exist
     ActiveRecord::Base.connection.column_exists?(:application_settings, :home_page_url)
+  end
+
+  def sidekiq_throttling_column_exists?
+    ActiveRecord::Base.connection.column_exists?(:application_settings, :sidekiq_throttling_enabled)
   end
 
   def domain_whitelist_raw
@@ -201,11 +239,44 @@ class ApplicationSetting < ActiveRecord::Base
     self.domain_blacklist_raw = file.read
   end
 
+  def repository_storages
+    Array(read_attribute(:repository_storages))
+  end
+
+  # repository_storage is still required in the API. Remove in 9.0
+  def repository_storage
+    repository_storages.first
+  end
+
+  def repository_storage=(value)
+    self.repository_storages = [value]
+  end
+
+  # Choose one of the available repository storage options. Currently all have
+  # equal weighting.
+  def pick_repository_storage
+    repository_storages.sample
+  end
+
   def runners_registration_token
     ensure_runners_registration_token!
   end
 
   def health_check_access_token
     ensure_health_check_access_token!
+  end
+
+  def sidekiq_throttling_enabled?
+    return false unless sidekiq_throttling_column_exists?
+
+    sidekiq_throttling_enabled
+  end
+
+  private
+
+  def check_repository_storages
+    invalid = repository_storages - Gitlab.config.repositories.storages.keys
+    errors.add(:repository_storages, "can't include: #{invalid.join(", ")}") unless
+      invalid.empty?
   end
 end

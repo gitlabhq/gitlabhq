@@ -35,19 +35,27 @@ class NamespaceValidator < ActiveModel::EachValidator
     users
   ].freeze
 
+  def self.valid?(value)
+    !reserved?(value) && follow_format?(value)
+  end
+
+  def self.reserved?(value)
+    RESERVED.include?(value)
+  end
+
+  def self.follow_format?(value)
+    value =~ Gitlab::Regex.namespace_regex
+  end
+
+  delegate :reserved?, :follow_format?, to: :class
+
   def validate_each(record, attribute, value)
-    unless value =~ Gitlab::Regex.namespace_regex
+    unless follow_format?(value)
       record.errors.add(attribute, Gitlab::Regex.namespace_regex_message)
     end
 
     if reserved?(value)
       record.errors.add(attribute, "#{value} is a reserved name")
     end
-  end
-
-  private
-
-  def reserved?(value)
-    RESERVED.include?(value)
   end
 end

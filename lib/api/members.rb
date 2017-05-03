@@ -1,5 +1,7 @@
 module API
   class Members < Grape::API
+    include PaginationParams
+
     before { authenticate! }
 
     helpers ::API::Helpers::MembersHelpers
@@ -14,15 +16,15 @@ module API
         end
         params do
           optional :query, type: String, desc: 'A query string to search for members'
+          use :pagination
         end
         get ":id/members" do
           source = find_source(source_type, params[:id])
 
           users = source.users
           users = users.merge(User.search(params[:query])) if params[:query]
-          users = paginate(users)
 
-          present users, with: Entities::Member, source: source
+          present paginate(users), with: Entities::Member, source: source
         end
 
         desc 'Gets a member of a group or project.' do
@@ -120,7 +122,7 @@ module API
           if member.nil?
             { message: "Access revoked", id: params[:user_id].to_i }
           else
-            ::Members::DestroyService.new(source, current_user, declared(params)).execute
+            ::Members::DestroyService.new(source, current_user, declared_params).execute
 
             present member.user, with: Entities::Member, member: member
           end

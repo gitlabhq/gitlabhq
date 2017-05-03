@@ -30,6 +30,37 @@ module IssuablesHelper
     end
   end
 
+  def serialize_issuable(issuable)
+    case issuable
+    when Issue
+      IssueSerializer.new.represent(issuable).to_json
+    when MergeRequest
+      MergeRequestSerializer.new.represent(issuable).to_json
+    end
+  end
+
+  def template_dropdown_tag(issuable, &block)
+    title = selected_template(issuable) || "Choose a template"
+    options = {
+      toggle_class: 'js-issuable-selector',
+      title: title,
+      filter: true,
+      placeholder: 'Filter',
+      footer_content: true,
+      data: {
+        data: issuable_templates(issuable),
+        field_name: 'issuable_template',
+        selected: selected_template(issuable),
+        project_path: ref_project.path,
+        namespace_path: ref_project.namespace.path
+      }
+    }
+
+    dropdown_tag(title, options: options) do
+      capture(&block)
+    end
+  end
+
   def user_dropdown_label(user_id, default_label)
     return default_label if user_id.nil?
     return "Unassigned" if user_id == "0"
@@ -74,8 +105,8 @@ module IssuablesHelper
 
     if issuable.tasks?
       output << "&ensp;".html_safe
-      output << content_tag(:span, issuable.task_status, id: "task_status", class: "hidden-xs")
-      output << content_tag(:span, issuable.task_status_short, id: "task_status_short", class: "hidden-sm hidden-md hidden-lg")
+      output << content_tag(:span, issuable.task_status, id: "task_status", class: "hidden-xs hidden-sm")
+      output << content_tag(:span, issuable.task_status_short, id: "task_status_short", class: "hidden-md hidden-lg")
     end
 
     output
@@ -114,7 +145,32 @@ module IssuablesHelper
     html.html_safe
   end
 
+  def cached_assigned_issuables_count(assignee, issuable_type, state)
+    cache_key = hexdigest(['assigned_issuables_count', assignee.id, issuable_type, state].join('-'))
+    Rails.cache.fetch(cache_key, expires_in: 2.minutes) do
+      assigned_issuables_count(assignee, issuable_type, state)
+    end
+  end
+
+  def issuable_filter_params
+    [
+      :search,
+      :author_id,
+      :assignee_id,
+      :milestone_title,
+      :label_name
+    ]
+  end
+
+  def issuable_filter_present?
+    issuable_filter_params.any? { |k| params.key?(k) }
+  end
+
   private
+
+  def assigned_issuables_count(assignee, issuable_type, state)
+    assignee.public_send("assigned_#{issuable_type}").public_send(state).count
+  end
 
   def sidebar_gutter_collapsed?
     cookies[:collapsed_gutter] == 'true'
@@ -132,15 +188,10 @@ module IssuablesHelper
     end
   end
 
-  def issuable_filters_present
-    params[:search] || params[:author_id] || params[:assignee_id] || params[:milestone_title] || params[:label_name]
-  end
-
   def issuables_count_for_state(issuable_type, state)
-    issuables_finder = public_send("#{issuable_type}_finder")
-    issuables_finder.params[:state] = state
-
-    issuables_finder.execute.page(1).total_count
+    @counts ||= {}
+    @counts[issuable_type] ||= public_send("#{issuable_type}_finder").count_by_state
+    @counts[issuable_type][state]
   end
 
   IRRELEVANT_PARAMS_FOR_CACHE_KEY = %i[utf8 sort page]
@@ -150,7 +201,32 @@ module IssuablesHelper
     opts = params.with_indifferent_access
     opts[:state] = state
     opts.except!(*IRRELEVANT_PARAMS_FOR_CACHE_KEY)
+    opts.delete_if { |_, value| value.blank? }
 
     hexdigest(['issuables_count', issuable_type, opts.sort].flatten.join('-'))
+  end
+
+  def issuable_templates(issuable)
+    @issuable_templates ||=
+      case issuable
+      when Issue
+        issue_template_names
+      when MergeRequest
+        merge_request_template_names
+      else
+        raise 'Unknown issuable type!'
+      end
+  end
+
+  def merge_request_template_names
+    @merge_request_templates ||= Gitlab::Template::MergeRequestTemplate.dropdown_names(ref_project)
+  end
+
+  def issue_template_names
+    @issue_templates ||= Gitlab::Template::IssueTemplate.dropdown_names(ref_project)
+  end
+
+  def selected_template(issuable)
+    params[:issuable_template] if issuable_templates(issuable).include?(params[:issuable_template])
   end
 end

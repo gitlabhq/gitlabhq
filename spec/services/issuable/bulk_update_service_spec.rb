@@ -52,7 +52,10 @@ describe Issuable::BulkUpdateService, services: true do
 
     context 'when the new assignee ID is a valid user' do
       it 'succeeds' do
-        result = bulk_update(issue, assignee_id: create(:user).id)
+        new_assignee = create(:user)
+        project.team << [new_assignee, :developer]
+
+        result = bulk_update(issue, assignee_id: new_assignee.id)
 
         expect(result[:success]).to be_truthy
         expect(result[:count]).to eq(1)
@@ -60,15 +63,16 @@ describe Issuable::BulkUpdateService, services: true do
 
       it 'updates the assignee to the use ID passed' do
         assignee = create(:user)
+        project.team << [assignee, :developer]
 
         expect { bulk_update(issue, assignee_id: assignee.id) }
           .to change { issue.reload.assignee }.from(user).to(assignee)
       end
     end
 
-    context 'when the new assignee ID is -1' do
-      it 'unassigns the issues' do
-        expect { bulk_update(issue, assignee_id: -1) }
+    context "when the new assignee ID is #{IssuableFinder::NONE}" do
+      it "unassigns the issues" do
+        expect { bulk_update(issue, assignee_id: IssuableFinder::NONE) }
           .to change { issue.reload.assignee }.to(nil)
       end
     end
@@ -260,14 +264,14 @@ describe Issuable::BulkUpdateService, services: true do
     it 'subscribes the given user' do
       bulk_update(issues, subscription_event: 'subscribe')
 
-      expect(issues).to all(be_subscribed(user))
+      expect(issues).to all(be_subscribed(user, project))
     end
   end
 
   describe 'unsubscribe from issues' do
     let(:issues) do
       create_list(:closed_issue, 2, project: project) do |issue|
-        issue.subscriptions.create(user: user, subscribed: true)
+        issue.subscriptions.create(user: user, project: project, subscribed: true)
       end
     end
 
@@ -275,7 +279,7 @@ describe Issuable::BulkUpdateService, services: true do
       bulk_update(issues, subscription_event: 'unsubscribe')
 
       issues.each do |issue|
-        expect(issue).not_to be_subscribed(user)
+        expect(issue).not_to be_subscribed(user, project)
       end
     end
   end

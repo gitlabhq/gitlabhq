@@ -13,7 +13,7 @@ describe 'projects/commit/_commit_box.html.haml' do
   it 'shows the commit SHA' do
     render
 
-    expect(rendered).to have_text("Commit #{Commit.truncate_sha(project.commit.sha)}")
+    expect(rendered).to have_text("#{Commit.truncate_sha(project.commit.sha)}")
   end
 
   it 'shows the last pipeline that ran for the commit' do

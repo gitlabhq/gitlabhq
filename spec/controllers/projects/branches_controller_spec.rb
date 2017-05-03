@@ -1,13 +1,13 @@
 require 'spec_helper'
 
 describe Projects::BranchesController do
-  let(:project) { create(:project) }
-  let(:user)    { create(:user) }
+  let(:project)   { create(:project) }
+  let(:user)      { create(:user) }
+  let(:developer) { create(:user) }
 
   before do
-    sign_in(user)
-
     project.team << [user, :master]
+    project.team << [user, :developer]
 
     allow(project).to receive(:branches).and_return(['master', 'foo/bar/baz'])
     allow(project).to receive(:tags).and_return(['v1.0.0', 'v2.0.0'])
@@ -19,6 +19,8 @@ describe Projects::BranchesController do
 
     context "on creation of a new branch" do
       before do
+        sign_in(user)
+
         post :create,
           namespace_id: project.namespace.to_param,
           project_id: project.to_param,
@@ -68,6 +70,10 @@ describe Projects::BranchesController do
       let(:branch) { "1-feature-branch" }
       let!(:issue) { create(:issue, project: project) }
 
+      before do
+        sign_in(user)
+      end
+
       it 'redirects' do
         post :create,
           namespace_id: project.namespace.to_param,
@@ -88,11 +94,33 @@ describe Projects::BranchesController do
           branch_name: branch,
           issue_iid: issue.iid
       end
+
+      context 'without issue feature access' do
+        before do
+          project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+          project.project_feature.update!(issues_access_level: ProjectFeature::PRIVATE)
+          project.team.truncate
+        end
+
+        it "doesn't post a system note" do
+          expect(SystemNoteService).not_to receive(:new_issue_branch)
+
+          post :create,
+            namespace_id: project.namespace.to_param,
+            project_id: project.to_param,
+            branch_name: branch,
+            issue_iid: issue.iid
+        end
+      end
     end
   end
 
   describe "POST destroy with HTML format" do
     render_views
+
+    before do
+      sign_in(user)
+    end
 
     it 'returns 303' do
       post :destroy,
@@ -109,6 +137,8 @@ describe Projects::BranchesController do
     render_views
 
     before do
+      sign_in(user)
+
       post :destroy,
            format: :js,
            id: branch,
@@ -137,6 +167,44 @@ describe Projects::BranchesController do
       let(:branch) { "no-branch" }
 
       it { expect(response).to have_http_status(404) }
+    end
+  end
+
+  describe "DELETE destroy_all_merged" do
+    def destroy_all_merged
+      delete :destroy_all_merged,
+             namespace_id: project.namespace.to_param,
+             project_id: project.to_param
+    end
+
+    context 'when user is allowed to push' do
+      before do
+        sign_in(user)
+      end
+
+      it 'redirects to branches' do
+        destroy_all_merged
+
+        expect(response).to redirect_to namespace_project_branches_path(project.namespace, project)
+      end
+
+      it 'starts worker to delete merged branches' do
+        expect_any_instance_of(DeleteMergedBranchesService).to receive(:async_execute)
+
+        destroy_all_merged
+      end
+    end
+
+    context 'when user is not allowed to push' do
+      before do
+        sign_in(developer)
+      end
+
+      it 'responds with status 404' do
+        destroy_all_merged
+
+        expect(response).to have_http_status(404)
+      end
     end
   end
 end

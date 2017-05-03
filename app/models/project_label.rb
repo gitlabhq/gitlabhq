@@ -16,8 +16,8 @@ class ProjectLabel < Label
     'project_id'
   end
 
-  def to_reference(target_project = nil, format: :id)
-    super(project, target_project, format: format)
+  def to_reference(target_project = nil, format: :id, full: false)
+    super(project, target_project: target_project, format: format, full: full)
   end
 
   private

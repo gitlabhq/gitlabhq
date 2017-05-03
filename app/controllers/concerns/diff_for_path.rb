@@ -3,7 +3,7 @@ module DiffForPath
 
   def render_diff_for_path(diffs)
     diff_file = diffs.diff_files.find do |diff|
-      diff.old_path == params[:old_path] && diff.new_path == params[:new_path]
+      diff.file_identifier == params[:file_identifier]
     end
 
     return render_404 unless diff_file

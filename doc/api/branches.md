@@ -22,6 +22,7 @@ Example response:
 [
   {
     "name": "master",
+    "merged": false,
     "protected": true,
     "developers_can_push": false,
     "developers_can_merge": false,
@@ -65,6 +66,7 @@ Example response:
 ```json
 {
   "name": "master",
+  "merged": false,
   "protected": true,
   "developers_can_push": false,
   "developers_can_merge": false,
@@ -123,6 +125,7 @@ Example response:
     ]
   },
   "name": "master",
+  "merged": false,
   "protected": true,
   "developers_can_push": true,
   "developers_can_merge": true
@@ -166,6 +169,7 @@ Example response:
     ]
   },
   "name": "master",
+  "merged": false,
   "protected": false,
   "developers_can_push": false,
   "developers_can_merge": false
@@ -206,14 +210,12 @@ Example response:
     ]
   },
   "name": "newbranch",
+  "merged": false,
   "protected": false,
   "developers_can_push": false,
   "developers_can_merge": false
 }
 ```
-
-It returns `200` if it succeeds or `400` if failed with an error message
-explaining the reason.
 
 ## Delete repository branch
 
@@ -226,8 +228,7 @@ DELETE /projects/:id/repository/branches/:branch
 | `id`      | integer | yes | The ID of a project |
 | `branch`  | string  | yes | The name of the branch |
 
-It returns `200` if it succeeds, `404` if the branch to be deleted does not exist
-or `400` for other reasons. In case of an error, an explaining message is provided.
+In case of an error, an explaining message is provided.
 
 ```bash
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/branches/newbranch"
@@ -239,4 +240,21 @@ Example response:
 {
   "branch_name": "newbranch"
 }
+```
+
+## Delete merged branches
+
+Will delete all branches that are merged into the project's default branch.
+
+```
+DELETE /projects/:id/repository/merged_branches
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer | yes | The ID of a project |
+
+
+```bash
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/merged_branches"
 ```

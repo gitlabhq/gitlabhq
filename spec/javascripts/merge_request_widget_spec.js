@@ -1,6 +1,7 @@
-/* eslint-disable */
+/* eslint-disable space-before-function-paren, quotes, comma-dangle, dot-notation, quote-props, no-var, max-len */
+
 /*= require merge_request_widget */
-/*= require lib/utils/jquery.timeago.js */
+/*= require lib/utils/datetime_utility */
 
 (function() {
   describe('MergeRequestWidget', function() {
@@ -35,23 +36,86 @@
           external_url_formatted: 'test-url.com'
         }];
 
-        spyOn(jQuery, 'getJSON').and.callFake((req, cb) => {
+        spyOn(jQuery, 'getJSON').and.callFake(function(req, cb) {
           cb(this.ciEnvironmentsStatusData);
-        });
+        }.bind(this));
       });
 
       it('should call renderEnvironments when the environments property is set', function() {
-         const spy = spyOn(this.class, 'renderEnvironments').and.stub();
-         this.class.getCIEnvironmentsStatus();
-         expect(spy).toHaveBeenCalledWith(this.ciEnvironmentsStatusData);
-       });
+        const spy = spyOn(this.class, 'renderEnvironments').and.stub();
+        this.class.getCIEnvironmentsStatus();
+        expect(spy).toHaveBeenCalledWith(this.ciEnvironmentsStatusData);
+      });
 
-       it('should not call renderEnvironments when the environments property is not set', function() {
-         this.ciEnvironmentsStatusData = null;
-         const spy = spyOn(this.class, 'renderEnvironments').and.stub();
-         this.class.getCIEnvironmentsStatus();
-         expect(spy).not.toHaveBeenCalled();
-       });
+      it('should not call renderEnvironments when the environments property is not set', function() {
+        this.ciEnvironmentsStatusData = null;
+        const spy = spyOn(this.class, 'renderEnvironments').and.stub();
+        this.class.getCIEnvironmentsStatus();
+        expect(spy).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('renderEnvironments', function() {
+      describe('should render correct timeago', function() {
+        beforeEach(function() {
+          this.environments = [{
+            id: 'test-environment-id',
+            url: 'testurl',
+            deployed_at: new Date().toISOString(),
+            deployed_at_formatted: true
+          }];
+        });
+
+        function getTimeagoText(template) {
+          var el = document.createElement('html');
+          el.innerHTML = template;
+          return el.querySelector('.js-environment-timeago').innerText.trim();
+        }
+
+        it('should render less than a minute ago text', function() {
+          spyOn(this.class.$widgetBody, 'before').and.callFake(function(template) {
+            expect(getTimeagoText(template)).toBe('less than a minute ago.');
+          });
+
+          this.class.renderEnvironments(this.environments);
+        });
+
+        it('should render about an hour ago text', function() {
+          var oneHourAgo = new Date();
+          oneHourAgo.setHours(oneHourAgo.getHours() - 1);
+
+          this.environments[0].deployed_at = oneHourAgo.toISOString();
+          spyOn(this.class.$widgetBody, 'before').and.callFake(function(template) {
+            expect(getTimeagoText(template)).toBe('about an hour ago.');
+          });
+
+          this.class.renderEnvironments(this.environments);
+        });
+
+        it('should render about 2 hours ago text', function() {
+          var twoHoursAgo = new Date();
+          twoHoursAgo.setHours(twoHoursAgo.getHours() - 2);
+
+          this.environments[0].deployed_at = twoHoursAgo.toISOString();
+          spyOn(this.class.$widgetBody, 'before').and.callFake(function(template) {
+            expect(getTimeagoText(template)).toBe('about 2 hours ago.');
+          });
+
+          this.class.renderEnvironments(this.environments);
+        });
+      });
+    });
+
+    describe('mergeInProgress', function() {
+      it('should display error with h4 tag', function() {
+        spyOn(this.class.$widgetBody, 'html').and.callFake(function(html) {
+          expect(html).toBe('<h4>Sorry, something went wrong.</h4>');
+        });
+        spyOn($, 'ajax').and.callFake(function(e) {
+          e.success({ merge_error: 'Sorry, something went wrong.' });
+        });
+        this.class.mergeInProgress(null);
+      });
     });
 
     return describe('getCIStatus', function() {
@@ -103,5 +167,4 @@
       });
     });
   });
-
 }).call(this);

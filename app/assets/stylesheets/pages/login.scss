@@ -17,14 +17,19 @@
     line-height: 1.5;
 
     p {
-      font-size: 18px;
-      color: #888;
+      font-size: 16px;
+      color: $login-brand-holder-color;
     }
 
     h1:first-child {
       font-weight: normal;
-      margin-bottom: 30px;
+      margin-bottom: 0.68em;
       margin-top: 0;
+      font-size: 34px;
+    }
+
+    h3 {
+      font-size: 22px;
     }
 
     img {
@@ -75,43 +80,17 @@
     .login-body {
       font-size: 13px;
 
-
       input + p {
         margin-top: 5px;
       }
 
-      .gl-field-success-outline {
-        border: 1px solid $green-normal;
-
-        &:focus {
-          box-shadow: 0 0 0 1px $green-normal inset, 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 4px 0 $green-normal;
-          border: 0 none;
-        }
-      }
-
-      .gl-field-error-outline {
-        border: 1px solid $red-normal;
-
-        &:focus {
-          box-shadow: 0 0 0 1px $red-normal inset, 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 4px 0 rgba(210, 40, 82, 0.6);
-          border: 0 none;
-        }
-      }
-
-      .username .validation-success,
-      .gl-field-success-message {
+      .username .validation-success {
         color: $green-normal;
       }
 
-      .username .validation-error,
-      .gl-field-error-message {
+      .username .validation-error {
         color: $red-normal;
       }
-
-      .gl-field-hint {
-        color: $gl-text-color;
-      }
-
     }
   }
 
@@ -131,19 +110,19 @@
     li {
       flex: 1;
       text-align: center;
+      border-left: 1px solid $border-color;
 
       &:first-of-type {
+        border-left: none;
         border-top-left-radius: $border-radius-default;
       }
 
       &:last-of-type {
-        border-left: 1px solid $border-color;
         border-top-right-radius: $border-radius-default;
       }
 
       &:not(.active) {
         background-color: $gray-light;
-        border-left: 1px solid $border-color;
       }
 
       a {
@@ -200,7 +179,7 @@
   .form-control {
     &:active,
     &:focus {
-      background-color: #fff;
+      background-color: $white-light;
     }
   }
 
@@ -221,7 +200,7 @@
     h2 {
       margin-top: 0;
       font-size: 14px;
-      color: #a00;
+      color: $login-devise-error-color;
     }
   }
 }
@@ -280,27 +259,3 @@
     }
   }
 }
-
-// For sign in pane only, to improve tab order, the following removes the submit button from
-// normal document flow and pins it to the bottom of the form. For context, see !6867 & !6928
-
-.login-box {
-  .new_user {
-    position: relative;
-    padding-bottom: 35px;
-
-    @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
-      .forgot-password {
-        float: none !important;
-        margin-top: 5px;
-      }
-    }
-  }
-
-  .move-submit-down {
-    position: absolute;
-    width: 100%;
-    bottom: 0;
-  }
-}
-

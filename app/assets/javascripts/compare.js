@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, quotes, no-var, object-shorthand, consistent-return, no-unused-vars, comma-dangle, vars-on-top, prefer-template, max-len */
 (function() {
   this.Compare = (function() {
     function Compare(opts) {
@@ -80,13 +80,12 @@
         success: function(html) {
           loading.hide();
           $target.html(html);
-          return $('.js-timeago', $target).timeago();
+          var className = '.' + $target[0].className.replace(' ', '.');
+          gl.utils.localTimeAgo($('.js-timeago', className));
         }
       });
     };
 
     return Compare;
-
   })();
-
 }).call(this);

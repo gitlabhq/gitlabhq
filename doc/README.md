@@ -1,4 +1,8 @@
-# Documentation
+# GitLab Community Edition documentation
+
+## University
+
+[University](university/README.md) contain guides to learn Git and GitLab through courses and videos.
 
 ## User documentation
 
@@ -8,7 +12,7 @@
 - [GitLab as OAuth2 authentication service provider](integration/oauth_provider.md). It allows you to login to other applications from GitLab.
 - [Container Registry](user/project/container_registry.md) Learn how to use GitLab Container Registry.
 - [GitLab basics](gitlab-basics/README.md) Find step by step how to start working on your commandline and on GitLab.
-- [Importing to GitLab](workflow/importing/README.md).
+- [Importing to GitLab](workflow/importing/README.md) Import your projects from GitHub, Bitbucket, GitLab.com, FogBugz and SVN into GitLab.
 - [Importing and exporting projects between instances](user/project/settings/import_export.md).
 - [Markdown](user/markdown.md) GitLab's advanced formatting system.
 - [Migrating from SVN](workflow/importing/migrating_from_svn.md) Convert a SVN repository to Git and GitLab.
@@ -19,8 +23,8 @@
 - [SSH](ssh/README.md) Setup your ssh keys and deploy keys for secure access to your projects.
 - [Webhooks](web_hooks/web_hooks.md) Let GitLab notify you when new code has been pushed to your project.
 - [Workflow](workflow/README.md) Using GitLab functionality and importing projects from GitHub and SVN.
-- [University](university/README.md) Learn Git and GitLab through videos and courses.
 - [Git Attributes](user/project/git_attributes.md) Managing Git attributes using a `.gitattributes` file.
+- [Git cheatsheet](https://gitlab.com/gitlab-com/marketing/raw/master/design/print/git-cheatsheet/print-pdf/git-cheatsheet.pdf) Download a PDF describing the most used Git operations.
 
 ## Administrator documentation
 
@@ -33,6 +37,7 @@
 - [Integration](integration/README.md) How to integrate with systems such as JIRA, Redmine, Twitter.
 - [Issue closing pattern](administration/issue_closing_pattern.md) Customize how to close an issue from commit messages.
 - [Koding](administration/integration/koding.md) Set up Koding to use with GitLab.
+- [Web terminals](administration/integration/terminal.md) Provide terminal access to environments from within GitLab.
 - [Libravatar](customization/libravatar.md) Use Libravatar instead of Gravatar for user avatars.
 - [Log system](administration/logs.md) Log system.
 - [Environment Variables](administration/environment_variables.md) to configure GitLab.
@@ -48,7 +53,8 @@
 - [Migrate GitLab CI to CE/EE](migrate_ci_to_ce/README.md) Follow this guide to migrate your existing GitLab CI data to GitLab CE/EE.
 - [Git LFS configuration](workflow/lfs/lfs_administration.md)
 - [Housekeeping](administration/housekeeping.md) Keep your Git repository tidy and fast.
-- [GitLab Performance Monitoring](administration/monitoring/performance/introduction.md) Configure GitLab and InfluxDB for measuring performance metrics.
+- [GitLab performance monitoring with InfluxDB](administration/monitoring/performance/introduction.md) Configure GitLab and InfluxDB for measuring performance metrics.
+- [GitLab performance monitoring with Prometheus](administration/monitoring/performance/prometheus.md) Configure GitLab and Prometheus for measuring performance metrics.
 - [Request Profiling](administration/monitoring/performance/request_profiling.md) Get a detailed profile on slow requests.
 - [Monitoring uptime](user/admin_area/monitoring/health_check.md) Check the server status using the health check endpoint.
 - [Debugging Tips](administration/troubleshooting/debug.md) Tips to debug problems when things go wrong

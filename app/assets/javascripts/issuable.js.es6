@@ -1,15 +1,19 @@
-/* eslint-disable */
-(function() {
+/* eslint-disable no-param-reassign, func-names, no-var, camelcase, no-unused-vars, object-shorthand, space-before-function-paren, no-return-assign, comma-dangle, consistent-return, one-var, one-var-declaration-per-line, quotes, prefer-template, prefer-arrow-callback, wrap-iife, max-len */
+/* global Issuable */
+/* global Turbolinks */
+
+((global) => {
   var issuable_created;
 
   issuable_created = false;
 
-  this.Issuable = {
+  global.Issuable = {
     init: function() {
       Issuable.initTemplates();
       Issuable.initSearch();
       Issuable.initChecks();
       Issuable.initResetFilters();
+      Issuable.resetIncomingEmailToken();
       return Issuable.initLabelFilterRemove();
     },
     initTemplates: function() {
@@ -30,7 +34,6 @@
         e.preventDefault();
         debouncedExecSearch(e);
       });
-
     },
     initSearchState: function($searchInput) {
       const currentSearchVal = $searchInput.val();
@@ -107,7 +110,11 @@
     filterResults: (function(_this) {
       return function(form) {
         var formAction, formData, issuesUrl;
-        formData = form.serialize();
+        formData = form.serializeArray();
+        formData = formData.filter(function(data) {
+          return data.value !== '';
+        });
+        formData = $.param(formData);
         formAction = form.attr('action');
         issuesUrl = formAction;
         issuesUrl += "" + (formAction.indexOf('?') < 0 ? '?' : '&');
@@ -140,8 +147,11 @@
       const $issuesOtherFilters = $('.issues-other-filters');
       const $issuesBulkUpdate = $('.issues_bulk_update');
 
+      this.issuableBulkActions.willUpdateLabels = false;
+      this.issuableBulkActions.setOriginalDropdownData();
+
       if ($checkedIssues.length > 0) {
-        let ids = $.map($checkedIssues, function(value) {
+        const ids = $.map($checkedIssues, function(value) {
           return $(value).data('id');
         });
         $updateIssuesIds.val(ids);
@@ -151,10 +161,29 @@
         $updateIssuesIds.val([]);
         $issuesBulkUpdate.hide();
         $issuesOtherFilters.show();
-        this.issuableBulkActions.willUpdateLabels = false;
       }
       return true;
+    },
+
+    resetIncomingEmailToken: function() {
+      $('.incoming-email-token-reset').on('click', function(e) {
+        e.preventDefault();
+
+        $.ajax({
+          type: 'PUT',
+          url: $('.incoming-email-token-reset').attr('href'),
+          dataType: 'json',
+          success: function(response) {
+            $('#issue_email').val(response.new_issue_address).focus();
+          },
+          beforeSend: function() {
+            $('.incoming-email-token-reset').text('resetting...');
+          },
+          complete: function() {
+            $('.incoming-email-token-reset').text('reset it');
+          }
+        });
+      });
     }
   };
-
-}).call(this);
+})(window);

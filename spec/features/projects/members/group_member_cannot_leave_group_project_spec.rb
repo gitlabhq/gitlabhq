@@ -12,6 +12,6 @@ feature 'Projects > Members > Group member cannot leave group project', feature:
   end
 
   scenario 'user does not see a "Leave project" link' do
-    expect(page).not_to have_content 'Leave Project'
+    expect(page).not_to have_content 'Leave project'
   end
 end

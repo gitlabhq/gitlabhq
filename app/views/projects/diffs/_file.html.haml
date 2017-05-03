@@ -1,6 +1,6 @@
-.diff-file.file-holder{id: "diff-#{index}", data: diff_file_html_data(project, diff_file.file_path, diff_commit.id)}
-  .file-title{id: "file-path-#{hexdigest(diff_file.file_path)}"}
-    = render "projects/diffs/file_header", diff_file: diff_file, blob: blob, diff_commit: diff_commit, project: project, url: "#diff-#{index}"
+.diff-file.file-holder{ id: file_hash, data: diff_file_html_data(project, diff_file.file_path, diff_commit.id) }
+  .file-title
+    = render "projects/diffs/file_header", diff_file: diff_file, blob: blob, diff_commit: diff_commit, project: project, url: "##{file_hash}"
 
     - unless diff_file.submodule?
       .file-actions.hidden-xs
@@ -9,7 +9,7 @@
             = icon('comment')
           \
           - if editable_diff?(diff_file)
-            - link_opts = @merge_request.id ? { from_merge_request_id: @merge_request.id } : {}
+            - link_opts = @merge_request.persisted? ? { from_merge_request_iid: @merge_request.iid } : {}
             = edit_blob_link(@merge_request.source_project, @merge_request.source_branch, diff_file.new_path,
                              blob: blob, link_opts: link_opts)
 

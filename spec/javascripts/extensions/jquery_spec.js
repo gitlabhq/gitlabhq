@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable space-before-function-paren, no-var */
 
 /*= require extensions/jquery */
 
@@ -6,7 +6,7 @@
   describe('jQuery extensions', function() {
     describe('disable', function() {
       beforeEach(function() {
-        return fixture.set('<input type="text" />');
+        return setFixtures('<input type="text" />');
       });
       it('adds the disabled attribute', function() {
         var $input;
@@ -23,7 +23,7 @@
     });
     return describe('enable', function() {
       beforeEach(function() {
-        return fixture.set('<input type="text" disabled="disabled" class="disabled" />');
+        return setFixtures('<input type="text" disabled="disabled" class="disabled" />');
       });
       it('removes the disabled attribute', function() {
         var $input;
@@ -39,5 +39,4 @@
       });
     });
   });
-
 }).call(this);

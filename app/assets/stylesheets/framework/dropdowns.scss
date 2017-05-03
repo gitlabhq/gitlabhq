@@ -8,6 +8,12 @@
   }
 }
 
+@mixin chevron-active {
+  .fa-chevron-down {
+    color: $gray-darkest;
+  }
+}
+
 .open {
   .dropdown-menu,
   .dropdown-menu-nav {
@@ -19,50 +25,30 @@
     }
   }
 
+  .dropdown-toggle,
   .dropdown-menu-toggle {
-    border-color: $dropdown-toggle-hover-border-color;
-
-    .fa {
-      color: $dropdown-toggle-hover-icon-color;
-    }
+    @include chevron-active;
+    border-color: $gray-darkest;
   }
 }
 
-.dropdown-menu-toggle {
-  position: relative;
-  width: 160px;
-  padding: 6px 20px 6px 10px;
-  background-color: $dropdown-toggle-bg;
-  color: $dropdown-toggle-color;
-  font-size: 15px;
+.dropdown-toggle {
+  padding: 6px 8px 6px 10px;
+  background-color: $white-light;
+  color: $gl-text-color;
+  font-size: 14px;
   text-align: left;
-  border: 1px solid $dropdown-toggle-border-color;
+  border: 1px solid $border-color;
   border-radius: $border-radius-base;
-  outline: 0;
-  text-overflow: ellipsis;
   white-space: nowrap;
-  overflow: hidden;
 
-  .fa {
-    position: absolute;
-    top: 50%;
-    right: 6px;
-    margin-top: -6px;
-    color: $dropdown-toggle-icon-color;
-    font-size: 10px;
-
-    &.fa-spinner {
-      font-size: 16px;
-      margin-top: -8px;
-    }
+  &[disabled] {
+    background-color: $input-bg-disabled;
+    cursor: not-allowed;
   }
 
-  &:hover, {
-    border-color: $dropdown-toggle-hover-border-color;
-
-    .fa {
-      color: $dropdown-toggle-hover-icon-color;
-    }
+  &.no-outline {
+    outline: 0;
   }
 
   &.large {
@@ -85,6 +71,51 @@
     max-width: 100%;
     padding-right: 25px;
   }
+
+  .fa {
+    color: $gray-darkest;
+  }
+
+  .fa-chevron-down {
+    font-size: $dropdown-chevron-size;
+    position: relative;
+    top: -3px;
+    margin-left: 5px;
+  }
+
+  &:hover {
+    @include chevron-active;
+    border-color: $gray-darkest;
+  }
+
+  &:focus:active {
+    @include chevron-active;
+    border-color: $dropdown-toggle-active-border-color;
+  }
+}
+
+.dropdown-menu-toggle {
+  @extend .dropdown-toggle;
+  padding-right: 20px;
+  position: relative;
+  width: 163px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+
+  .fa {
+    position: absolute;
+
+    &.fa-spinner {
+      font-size: 16px;
+      margin-top: -8px;
+    }
+  }
+
+  .fa-chevron-down {
+    position: absolute;
+    top: 11px;
+    right: 8px;
+  }
 }
 
 .dropdown-menu,
@@ -97,10 +128,10 @@
   width: 240px;
   margin-top: 2px;
   margin-bottom: 0;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: normal;
   padding: 8px 0;
-  background-color: $dropdown-bg;
+  background-color: $white-light;
   border: 1px solid $dropdown-border-color;
   border-radius: $border-radius-base;
   box-shadow: 0 2px 4px $dropdown-shadow-color;
@@ -157,7 +188,6 @@
     &.is-focused {
       background-color: $dropdown-link-hover-bg;
       text-decoration: none;
-      outline: 0;
     }
 
     &.dropdown-menu-empty-link {
@@ -171,7 +201,7 @@
     }
 
     .icon-play {
-      fill: $table-text-gray;
+      fill: $gl-text-color-secondary;
       margin-right: 6px;
       height: 12px;
       width: 11px;
@@ -179,7 +209,7 @@
   }
 
   .dropdown-header {
-    color: $dropdown-header-color;
+    color: $gl-text-color-secondary;
     font-size: 13px;
     line-height: 22px;
     padding: 0 10px;
@@ -192,7 +222,7 @@
   .unclickable {
     cursor: not-allowed;
     padding: 5px 8px;
-    color: $dropdown-header-color;
+    color: $gl-text-color-secondary;
   }
 }
 
@@ -350,7 +380,7 @@
     position: absolute;
     top: 10px;
     right: 20px;
-    color: #c7c7c7;
+    color: $dropdown-input-fa-color;
     font-size: 12px;
     pointer-events: none;
   }
@@ -503,7 +533,7 @@
     .ui-datepicker-calendar {
       .ui-state-hover,
       .ui-state-active {
-        color: #fff;
+        color: $white-light;
         border: 0;
       }
     }
@@ -562,8 +592,8 @@
     }
 
     .ui-datepicker-title {
-      color: $gl-gray;
-      font-size: 15px;
+      color: $gl-text-color;
+      font-size: 14px;
       line-height: 1;
       font-weight: normal;
     }
@@ -571,30 +601,30 @@
 
   th {
     padding: 2px 0;
-    color: $calendar-header-color;
+    color: $note-disabled-comment-color;
     font-weight: normal;
     text-transform: lowercase;
     border-top: 1px solid $calendar-border-color;
   }
 
   .ui-datepicker-unselectable {
-    background-color: $calendar-unselectable-bg;
+    background-color: $gray-light;
   }
 }
 
 .dropdown-menu-inner-title {
   display: block;
-  color: $gl-title-color;
+  color: $gl-text-color;
   font-weight: 600;
 }
 
 .dropdown-menu-inner-content {
   display: block;
-  color: $gl-placeholder-color;
+  color: $gl-text-color-secondary;
 }
 
 .dropdown-toggle-text {
   &.is-default {
-    color: $gl-placeholder-color;
+    color: $gl-text-color-secondary;
   }
 }

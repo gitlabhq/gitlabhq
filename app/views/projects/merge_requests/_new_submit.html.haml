@@ -10,8 +10,8 @@
   %span.pull-right
     = link_to 'Change branches', mr_change_branches_path(@merge_request)
 %hr
-= form_for [@project.namespace.becomes(Namespace), @project, @merge_request], html: { class: 'merge-request-form form-horizontal common-note-form js-requires-input' } do |f|
-  = render 'shared/issuable/form', f: f, issuable: @merge_request
+= form_for [@project.namespace.becomes(Namespace), @project, @merge_request], html: { class: 'merge-request-form form-horizontal common-note-form js-requires-input js-quick-submit' } do |f|
+  = render 'shared/issuable/form', f: f, issuable: @merge_request, commits: @commits
   = f.hidden_field :source_project_id
   = f.hidden_field :source_branch
   = f.hidden_field :target_project_id
@@ -34,10 +34,6 @@
           = link_to url_for(params), data: {target: 'div#pipelines', action: 'pipelines', toggle: 'tab'} do
             Pipelines
             %span.badge= @pipelines.size
-        %li.builds-tab
-          = link_to url_for(params), data: {target: 'div#builds', action: 'builds', toggle: 'tab'} do
-            Builds
-            %span.badge= @statuses.size
       %li.diffs-tab
         = link_to url_for(params.merge(action: 'new_diffs')), data: {target: 'div#diffs', action: 'new/diffs', toggle: 'tab'} do
           Changes
@@ -49,8 +45,6 @@
       #diffs.diffs.tab-pane
         - # This tab is always loaded via AJAX
       - if @pipelines.any?
-        #builds.builds.tab-pane
-          = render "projects/merge_requests/show/builds"
         #pipelines.pipelines.tab-pane
           = render "projects/merge_requests/show/pipelines"
 
@@ -64,6 +58,5 @@
   });
 :javascript
   var merge_request = new MergeRequest({
-    action: "#{(@show_changes_tab ? 'new/diffs' : 'new')}",
-    buildsLoaded: "#{@pipelines.any? ? 'true' : 'false'}"
+    action: "#{(@show_changes_tab ? 'new/diffs' : 'new')}"
   });

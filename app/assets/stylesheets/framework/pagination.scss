@@ -43,7 +43,7 @@
 /**
  * Small screen pagination
  */
-@media (max-width: $screen-xs) {
+@media (max-width: $screen-xs-min) {
   .gl-pagination {
     .pagination li a {
       padding: 6px 10px;
@@ -62,7 +62,7 @@
 /**
  * Medium screen pagination
  */
-@media (min-width: $screen-xs) and (max-width: $screen-md-max) {
+@media (min-width: $screen-xs-min) and (max-width: $screen-md-max) {
   .gl-pagination {
     .page {
       display: none;

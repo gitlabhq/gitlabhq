@@ -2,7 +2,7 @@
   padding-left: 0;
   padding-right: 0;
 
-  @media (min-width: $screen-sm-min) and (max-width: $screen-lg-min) {
+  @media (min-width: $screen-sm-min) and (max-width: $screen-md-max) {
     overflow-x: scroll;
   }
 }
@@ -28,13 +28,13 @@
 .user-contrib-cell {
   &:hover {
     cursor: pointer;
-    stroke: #000;
+    stroke: $black;
   }
 }
 
 .user-contrib-text {
   font-size: 12px;
-  fill: #959494;
+  fill: $calendar-user-contrib-text;
 }
 
 .calendar-hint {

@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, one-var, no-var, one-var-declaration-per-line, quotes, prefer-template, prefer-arrow-callback, no-else-return, consistent-return, max-len */
 // Requires Input behavior
 //
 // When called on a form with input fields with the `required` attribute, the
@@ -59,5 +59,4 @@
       return hideOrShowHelpBlock($form);
     });
   });
-
 }).call(this);

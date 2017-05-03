@@ -1,5 +1,8 @@
 module Gitlab
   module IncomingEmail
+    UNSUBSCRIBE_SUFFIX = '+unsubscribe'.freeze
+    WILDCARD_PLACEHOLDER = '%{key}'.freeze
+
     class << self
       FALLBACK_MESSAGE_ID_REGEX = /\Areply\-(.+)@#{Gitlab.config.gitlab.host}\Z/.freeze
 
@@ -7,8 +10,20 @@ module Gitlab
         config.enabled && config.address
       end
 
+      def supports_wildcard?
+        config.address && config.address.include?(WILDCARD_PLACEHOLDER)
+      end
+
+      def supports_issue_creation?
+        enabled? && supports_wildcard?
+      end
+
       def reply_address(key)
-        config.address.gsub('%{key}', key)
+        config.address.sub(WILDCARD_PLACEHOLDER, key)
+      end
+
+      def unsubscribe_address(key)
+        config.address.sub(WILDCARD_PLACEHOLDER, "#{key}#{UNSUBSCRIBE_SUFFIX}")
       end
 
       def key_from_address(address)
@@ -39,7 +54,7 @@ module Gitlab
         return nil unless wildcard_address
 
         regex = Regexp.escape(wildcard_address)
-        regex = regex.gsub(Regexp.escape('%{key}'), "(.+)")
+        regex = regex.sub(Regexp.escape(WILDCARD_PLACEHOLDER), '(.+)')
         Regexp.new(regex).freeze
       end
     end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::API, api: true  do
+describe API::Boards, api: true  do
   include ApiHelpers
 
   let(:user)        { create(:user) }
@@ -8,7 +8,7 @@ describe API::API, api: true  do
   let(:non_member)  { create(:user) }
   let(:guest)       { create(:user) }
   let(:admin)       { create(:user, :admin) }
-  let!(:project)    { create(:project, :public, creator_id: user.id, namespace: user.namespace ) }
+  let!(:project)    { create(:empty_project, :public, creator_id: user.id, namespace: user.namespace ) }
 
   let!(:dev_label) do
     create(:label, title: 'Development', color: '#FFAABB', project: project)
@@ -188,7 +188,7 @@ describe API::API, api: true  do
 
     context "when the user is project owner" do
       let(:owner)     { create(:user) }
-      let(:project)   { create(:project, namespace: owner.namespace) }
+      let(:project)   { create(:empty_project, namespace: owner.namespace) }
 
       it "deletes the list if an admin requests it" do
         delete api("#{base_url}/#{dev_list.id}", owner)

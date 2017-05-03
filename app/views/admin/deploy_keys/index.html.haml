@@ -1,27 +1,34 @@
 - page_title "Deploy Keys"
-.panel.panel-default.prepend-top-default
-  .panel-heading
-    Public deploy keys (#{@deploy_keys.count})
-    .controls
-      = link_to 'New Deploy Key', new_admin_deploy_key_path, class: "btn btn-new btn-sm"
-  - if @deploy_keys.any?
-    .table-holder
-      %table.table
-        %thead.panel-heading
+
+%h3.page-title.deploy-keys-title
+  Public deploy keys (#{@deploy_keys.count})
+  .pull-right
+    = link_to 'New Deploy Key', new_admin_deploy_key_path, class: 'btn btn-new btn-sm btn-inverted'
+
+- if @deploy_keys.any?
+  .table-holder.deploy-keys-list
+    %table.table
+      %thead
+        %tr
+          %th.col-sm-2 Title
+          %th.col-sm-4 Fingerprint
+          %th.col-sm-2 Write access allowed
+          %th.col-sm-2 Added at
+          %th.col-sm-2
+      %tbody
+        - @deploy_keys.each do |deploy_key|
           %tr
-            %th Title
-            %th Fingerprint
-            %th Added at
-            %th
-        %tbody
-          - @deploy_keys.each do |deploy_key|
-            %tr
-              %td
-                %strong= deploy_key.title
-              %td
-                %code.key-fingerprint= deploy_key.fingerprint
-              %td
-                %span.cgray
-                  added #{time_ago_with_tooltip(deploy_key.created_at)}
-              %td
-                = link_to 'Remove', admin_deploy_key_path(deploy_key), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-sm btn-remove delete-key pull-right"
+            %td
+              %strong= deploy_key.title
+            %td
+              %code.key-fingerprint= deploy_key.fingerprint
+            %td
+              - if deploy_key.can_push?
+                Yes
+              - else
+                No
+            %td
+              %span.cgray
+                added #{time_ago_with_tooltip(deploy_key.created_at)}
+            %td
+              = link_to 'Remove', admin_deploy_key_path(deploy_key), data: { confirm: 'Are you sure?'}, method: :delete, class: 'btn btn-sm btn-remove delete-key pull-right'

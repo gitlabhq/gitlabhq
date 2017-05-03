@@ -32,6 +32,9 @@ The following table depicts the various user permission levels in a project.
 | See a commit status                   |         | ✓          | ✓           | ✓        | ✓      |
 | See a container registry              |         | ✓          | ✓           | ✓        | ✓      |
 | See environments                      |         | ✓          | ✓           | ✓        | ✓      |
+| Create new environments               |         |            | ✓           | ✓        | ✓      |
+| Use environment terminals             |         |            |             | ✓        | ✓      |
+| Stop environments                     |         |            | ✓           | ✓        | ✓      |
 | See a list of merge requests          |         | ✓          | ✓           | ✓        | ✓      |
 | Manage/Accept merge requests          |         |            | ✓           | ✓        | ✓      |
 | Create new merge request              |         |            | ✓           | ✓        | ✓      |
@@ -45,7 +48,6 @@ The following table depicts the various user permission levels in a project.
 | Create or update commit status        |         |            | ✓           | ✓        | ✓      |
 | Update a container registry           |         |            | ✓           | ✓        | ✓      |
 | Remove a container registry image     |         |            | ✓           | ✓        | ✓      |
-| Create new environments               |         |            | ✓           | ✓        | ✓      |
 | Create new milestones                 |         |            |             | ✓        | ✓      |
 | Add new team members                  |         |            |             | ✓        | ✓      |
 | Push to protected branches            |         |            |             | ✓        | ✓      |
@@ -58,7 +60,6 @@ The following table depicts the various user permission levels in a project.
 | Manage runners                        |         |            |             | ✓        | ✓      |
 | Manage build triggers                 |         |            |             | ✓        | ✓      |
 | Manage variables                      |         |            |             | ✓        | ✓      |
-| Delete environments                   |         |            |             | ✓        | ✓      |
 | Switch visibility level               |         |            |             |          | ✓      |
 | Transfer project to another namespace |         |            |             |          | ✓      |
 | Remove project                        |         |            |             |          | ✓      |
@@ -141,10 +142,9 @@ instance and project. In addition, all admins can use the admin interface under
 | See events in the system              |                 |             |          | ✓      |
 | Admin interface                       |                 |             |          | ✓      |
 
-### Build permissions
+### Builds permissions
 
-> Changed in GitLab 8.12.
-
+>**Note:**
 GitLab 8.12 has a completely redesigned build permissions system.
 Read all about the [new model and its implications][new-mod].
 

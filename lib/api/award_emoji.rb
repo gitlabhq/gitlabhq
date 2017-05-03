@@ -1,5 +1,7 @@
 module API
   class AwardEmoji < Grape::API
+    include PaginationParams
+
     before { authenticate! }
     AWARDABLES = %w[issue merge_request snippet]
 
@@ -20,6 +22,9 @@ module API
           desc 'Get a list of project +awardable+ award emoji' do
             detail 'This feature was introduced in 8.9'
             success Entities::AwardEmoji
+          end
+          params do
+            use :pagination
           end
           get endpoint do
             if can_read_awardable?

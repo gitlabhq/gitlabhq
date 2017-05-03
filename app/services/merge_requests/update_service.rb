@@ -1,7 +1,3 @@
-require_relative 'base_service'
-require_relative 'reopen_service'
-require_relative 'close_service'
-
 module MergeRequests
   class UpdateService < MergeRequests::BaseService
     def execute(merge_request)
@@ -10,6 +6,8 @@ module MergeRequests
       params.except!(:source_project_id)
       params.except!(:target_project_id)
       params.except!(:source_branch)
+
+      merge_from_slash_command(merge_request) if params[:merge]
 
       if merge_request.closed_without_fork?
         params.except!(:target_branch, :force_remove_source_branch)
@@ -29,7 +27,7 @@ module MergeRequests
       end
 
       if merge_request.previous_changes.include?('title') ||
-         merge_request.previous_changes.include?('description')
+          merge_request.previous_changes.include?('description')
         todo_service.update_merge_request(merge_request, current_user)
       end
 
@@ -70,6 +68,19 @@ module MergeRequests
           added_mentions,
           current_user
         )
+      end
+    end
+
+    def merge_from_slash_command(merge_request)
+      last_diff_sha = params.delete(:merge)
+      return unless merge_request.mergeable_with_slash_command?(current_user, last_diff_sha: last_diff_sha)
+
+      merge_request.update(merge_error: nil)
+
+      if merge_request.head_pipeline && merge_request.head_pipeline.active?
+        MergeRequests::MergeWhenPipelineSucceedsService.new(project, current_user).execute(merge_request)
+      else
+        MergeWorker.perform_async(merge_request.id, current_user.id, {})
       end
     end
 

@@ -9,11 +9,11 @@
         = link_to namespace_project_tree_path(@project.namespace, @project, @ref) do
           = @project.path
       %li.file-finder
-        %input#file_find.form-control.file-finder-input{type: "text", placeholder: 'Find by path', autocomplete: 'off'}
+        %input#file_find.form-control.file-finder-input{ type: "text", placeholder: 'Find by path', autocomplete: 'off' }
 
-  %div.tree-content-holder
+  .tree-content-holder
     .table-holder
-      %table.table.files-slider{class: "table_#{@hex_path} tree-table table-striped" }
+      %table.table.files-slider{ class: "table_#{@hex_path} tree-table table-striped" }
         %tbody
       = spinner nil, true
 

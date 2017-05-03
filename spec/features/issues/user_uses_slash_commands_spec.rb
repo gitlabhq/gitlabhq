@@ -30,7 +30,7 @@ feature 'Issues > User uses slash commands', feature: true, js: true do
           write_note("/due 2016-08-28")
 
           expect(page).not_to have_content '/due 2016-08-28'
-          expect(page).to have_content 'Your commands have been executed!'
+          expect(page).to have_content 'Commands applied'
 
           issue.reload
 
@@ -51,7 +51,7 @@ feature 'Issues > User uses slash commands', feature: true, js: true do
           write_note("/due 2016-08-28")
 
           expect(page).to have_content '/due 2016-08-28'
-          expect(page).not_to have_content 'Your commands have been executed!'
+          expect(page).not_to have_content 'Commands applied'
 
           issue.reload
 
@@ -70,7 +70,7 @@ feature 'Issues > User uses slash commands', feature: true, js: true do
           write_note("/remove_due_date")
 
           expect(page).not_to have_content '/remove_due_date'
-          expect(page).to have_content 'Your commands have been executed!'
+          expect(page).to have_content 'Commands applied'
 
           issue.reload
 
@@ -91,12 +91,64 @@ feature 'Issues > User uses slash commands', feature: true, js: true do
           write_note("/remove_due_date")
 
           expect(page).to have_content '/remove_due_date'
-          expect(page).not_to have_content 'Your commands have been executed!'
+          expect(page).not_to have_content 'Commands applied'
 
           issue.reload
 
           expect(issue.due_date).to eq Date.new(2016, 8, 28)
         end
+      end
+    end
+
+    describe 'Issuable time tracking' do
+      let(:issue) { create(:issue, project: project) }
+
+      before do
+        project.team << [user, :developer]
+      end
+
+      context 'Issue' do
+        before do
+          visit namespace_project_issue_path(project.namespace, project, issue)
+        end
+
+        it_behaves_like 'issuable time tracker'
+      end
+
+      context 'Merge Request' do
+        let(:merge_request) { create(:merge_request, source_project: project) }
+
+        before do
+          visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+        end
+
+        it_behaves_like 'issuable time tracker'
+      end
+    end
+
+    describe 'Issuable time tracking' do
+      let(:issue) { create(:issue, project: project) }
+
+      before do
+        project.team << [user, :developer]
+      end
+
+      context 'Issue' do
+        before do
+          visit namespace_project_issue_path(project.namespace, project, issue)
+        end
+
+        it_behaves_like 'issuable time tracker'
+      end
+
+      context 'Merge Request' do
+        let(:merge_request) { create(:merge_request, source_project: project) }
+
+        before do
+          visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+        end
+
+        it_behaves_like 'issuable time tracker'
       end
     end
 

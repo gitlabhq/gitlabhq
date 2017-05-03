@@ -35,9 +35,9 @@ describe GitlabIssueTrackerService, models: true do
       end
 
       it 'gives the correct path' do
-        expect(@service.project_url).to eq("http://localhost/gitlab/root/#{project.path_with_namespace}/issues")
-        expect(@service.new_issue_url).to eq("http://localhost/gitlab/root/#{project.path_with_namespace}/issues/new")
-        expect(@service.issue_url(432)).to eq("http://localhost/gitlab/root/#{project.path_with_namespace}/issues/432")
+        expect(@service.project_url).to eq("http://#{Gitlab.config.gitlab.host}/gitlab/root/#{project.path_with_namespace}/issues")
+        expect(@service.new_issue_url).to eq("http://#{Gitlab.config.gitlab.host}/gitlab/root/#{project.path_with_namespace}/issues/new")
+        expect(@service.issue_url(432)).to eq("http://#{Gitlab.config.gitlab.host}/gitlab/root/#{project.path_with_namespace}/issues/432")
       end
     end
 

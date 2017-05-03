@@ -1,13 +1,12 @@
-/* eslint-disable */
-((global) => {
+/* eslint-disable no-useless-escape, max-len, quotes, no-var, no-underscore-dangle, func-names, space-before-function-paren, no-unused-vars, no-return-assign, object-shorthand, one-var, one-var-declaration-per-line, comma-dangle, consistent-return, class-methods-use-this, new-parens */
 
+((global) => {
   // Matches everything but the file name
   const FILENAMEREGEX = /^.*[\\\/]/;
 
   class GitLabCrop {
     constructor(input, { filename, previewImage, modalCrop, pickImageEl, uploadImageBtn, modalCropImg,
         exportWidth = 200, exportHeight = 200, cropBoxWidth = 200, cropBoxHeight = 200 } = {}) {
-
       this.onUploadImageBtnClick = this.onUploadImageBtnClick.bind(this);
       this.onModalHide = this.onModalHide.bind(this);
       this.onModalShow = this.onModalShow.bind(this);
@@ -135,7 +134,7 @@
       var array, binary, i, k, len, v;
       binary = atob(dataURL.split(',')[1]);
       array = [];
-      for (k = i = 0, len = binary.length; i < len; k = ++i) {
+      for (k = i = 0, len = binary.length; i < len; k = (i += 1)) {
         v = binary[k];
         array.push(binary.charCodeAt(k));
       }
@@ -168,6 +167,5 @@
     return this.each(function() {
       return $(this).data('glcrop', new GitLabCrop(this, opts));
     });
-  }
-
+  };
 })(window.gl || (window.gl = {}));

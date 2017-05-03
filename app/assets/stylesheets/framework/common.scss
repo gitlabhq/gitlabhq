@@ -1,9 +1,9 @@
 /** COLORS **/
-.cgray { color: $gl-gray; }
-.clgray { color: #bbb; }
-.cred { color: $gl-text-red; }
-.cgreen { color: $gl-text-green; }
-.cdark { color: #444; }
+.cgray { color: $common-gray; }
+.clgray { color: $common-gray-light; }
+.cred { color: $common-red; }
+.cgreen { color: $common-green; }
+.cdark { color: $common-gray-dark; }
 
 /** COMMON CLASSES **/
 .prepend-top-0 { margin-top: 0; }
@@ -26,14 +26,15 @@
 .append-bottom-default { margin-bottom: $gl-padding; }
 .inline { display: inline-block; }
 .center { text-align: center; }
+.vertical-align-middle { vertical-align: middle; }
 
 .underlined-link { text-decoration: underline; }
-.hint { font-style: italic; color: #999; }
-.light { color: $gl-gray; }
+.hint { font-style: italic; color: $hint-color; }
+.light { color: $common-gray; }
 
 .slead {
-  color: $gl-gray;
-  font-size: 15px;
+  color: $common-gray;
+  font-size: 14px;
   margin-bottom: 12px;
   font-weight: normal;
   line-height: 24px;
@@ -52,19 +53,36 @@ pre {
   }
 
   &.well-pre {
-    border: 1px solid #eee;
+    border: 1px solid $well-pre-bg;
     background: $gray-light;
     border-radius: 0;
-    color: #555;
+    color: $well-pre-color;
+  }
+
+  &.wrap {
+    word-break: break-word;
+    white-space: pre-wrap;
   }
 }
 
 hr {
   margin: $gl-padding 0;
+  border-top: 1px solid darken($gray-normal, 8%);
 }
 
 .str-truncated {
   @include str-truncated;
+}
+
+.block-truncated {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  > div,
+  .str-truncated {
+    display: inline;
+  }
 }
 
 .item-title { font-weight: 600; }
@@ -87,14 +105,14 @@ table a code {
 .loading {
   margin: 20px auto;
   height: 40px;
-  color: #555;
+  color: $loading-color;
   font-size: 32px;
   text-align: center;
 }
 
 span.update-author {
   display: block;
-  color: #999;
+  color: $update-author-color;
   font-weight: normal;
   font-style: italic;
 
@@ -105,7 +123,7 @@ span.update-author {
 }
 
 .user-mention {
-  color: #2fa0bb;
+  color: $user-mention-color;
   font-weight: bold;
 }
 
@@ -114,7 +132,7 @@ span.update-author {
 }
 
 p.time {
-  color: #999;
+  color: $time-color;
   font-size: 90%;
   margin: 30px 3px 3px 2px;
 }
@@ -150,7 +168,7 @@ li.note {
 
 .project_member_show {
   td:first-child {
-    color: #aaa;
+    color: $project-member-show-color;
   }
 }
 
@@ -176,7 +194,7 @@ li.note {
   margin-top: 40px;
 
   pre {
-    background: white;
+    background: $white-light;
     border: none;
     font-size: 12px;
   }
@@ -184,12 +202,12 @@ li.note {
 
 .error-message {
   padding: 10px;
-  background: #c67;
+  background: $error-bg;
   margin: 0;
-  color: #fff;
+  color: $white-light;
 
   a {
-    color: #fff;
+    color: $white-light;
     text-decoration: underline;
   }
 }
@@ -197,22 +215,22 @@ li.note {
 .browser-alert {
   padding: 10px;
   text-align: center;
-  background: #c67;
-  color: #fff;
+  background: $error-bg;
+  color: $white-light;
   font-weight: bold;
 
   a {
-    color: #fff;
+    color: $white-light;
     text-decoration: underline;
   }
 }
 
 .warning_message {
-  border-left: 4px solid #ed9;
-  color: #b90;
+  border-left: 4px solid $warning-message-border;
+  color: $warning-message-color;
   padding: 10px;
   margin-bottom: 10px;
-  background: #ffffe6;
+  background: $warning-message-bg;
   padding-left: 20px;
 
   &.centered {
@@ -222,7 +240,7 @@ li.note {
 
 .gitlab-promo {
   a {
-    color: #aaa;
+    color: $gl-promo-color;
     margin-right: 30px;
   }
 }
@@ -245,7 +263,7 @@ li.note {
         position: relative;
         top: 2px;
         left: 5px;
-        color: #666;
+        color: $control-group-descr-color;
       }
     }
   }
@@ -255,6 +273,7 @@ img.emoji {
   height: 20px;
   vertical-align: top;
   width: 20px;
+  margin-top: 1px;
 }
 
 .chart {
@@ -270,7 +289,7 @@ img.emoji {
 
 table {
   td.permission-x {
-    background: #d9edf7 !important;
+    background: $table-permission-x-bg !important;
     text-align: center;
   }
 }
@@ -299,6 +318,10 @@ table {
 
 .well {
   margin-bottom: $gl-padding;
+
+  hr {
+    border-color: $gray-darker;
+  }
 }
 
 .search_box {
@@ -319,13 +342,13 @@ table {
 
   .username {
     font-size: 18px;
-    color: #666;
+    color: $username-color;
     margin-top: 8px;
   }
 
   .description {
     font-size: $gl-font-size;
-    color: #666;
+    color: $description-color;
     margin-top: 8px;
   }
 }
@@ -335,7 +358,7 @@ table {
 
   .profiler-button,
   .profiler-controls {
-    border-color: #eee !important;
+    border-color: $profiler-border !important;
   }
 }
 
@@ -375,4 +398,32 @@ table {
   border-top: 1px solid $border-color;
 }
 
-.hide-bottom-border { border-bottom: none !important; }
+.hide-bottom-border {
+  border-bottom: none !important;
+}
+
+.gl-accessibility {
+  &:focus {
+    top: 1px;
+    left: 1px;
+    width: auto;
+    height: 100%;
+    line-height: 50px;
+    padding: 0 10px;
+    clip: auto;
+    text-decoration: none;
+    color: $gl-text-color;
+    background: $gray-light;
+    z-index: 1;
+  }
+}
+
+.str-truncated {
+  &-60 {
+    @include str-truncated(60%);
+  }
+
+  &-100 {
+    @include str-truncated(100%);
+  }
+}

@@ -88,8 +88,6 @@ describe Gitlab::Email::ReplyParser, lib: true do
       expect(test_parse_body(fixture_file("emails/inline_reply.eml"))).
         to eq(
           <<-BODY.strip_heredoc.chomp
-            On Wed, Oct 8, 2014 at 11:12 AM, techAPJ <info@unconfigured.discourse.org> wrote:
-
             >     techAPJ <https://meta.discourse.org/users/techapj>
             > November 28
             >
@@ -205,6 +203,10 @@ describe Gitlab::Email::ReplyParser, lib: true do
 
     it "properly renders email reply from MS Outlook client" do
       expect(test_parse_body(fixture_file("emails/outlook.eml"))).to eq("Microsoft Outlook 2010")
+    end
+
+    it "properly renders html-only email from MS Outlook" do
+      expect(test_parse_body(fixture_file("emails/outlook_html.eml"))).to eq("Microsoft Outlook 2010")
     end
   end
 end

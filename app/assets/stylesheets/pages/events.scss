@@ -5,7 +5,7 @@
 .event-item {
   font-size: $gl-font-size;
   padding: $gl-padding-top 0 $gl-padding-top ($gl-avatar-size + $gl-padding-top);
-  border-bottom: 1px solid $table-border-color;
+  border-bottom: 1px solid $white-normal;
   color: $list-text-color;
 
   &.event-inline {
@@ -21,7 +21,7 @@
   }
 
   a {
-    color: $gl-dark-link-color;
+    color: $gl-text-color;
   }
 
   .avatar {
@@ -62,7 +62,7 @@
         border: none;
         background: $gray-light;
         border-radius: 0;
-        color: #777;
+        color: $events-pre-color;
         margin: 0 20px;
         overflow: hidden;
       }
@@ -80,7 +80,7 @@
     }
 
     .event-note-icon {
-      color: #777;
+      color: $events-pre-color;
       float: left;
       font-size: $gl-font-size;
       line-height: 16px;
@@ -91,7 +91,7 @@
   .event_icon {
     position: relative;
     float: right;
-    border: 1px solid #eee;
+    border: 1px solid $gray-darker;
     padding: 5px;
     border-radius: 5px;
     background: $gray-light;
@@ -170,7 +170,7 @@
 
     .event-body {
       margin: 0;
-      border-left: 2px solid #ddd;
+      border-left: 2px solid $events-body-border;
       padding-left: 10px;
     }
 
@@ -186,4 +186,3 @@
     display: none;
   }
 }
-

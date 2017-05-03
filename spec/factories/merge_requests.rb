@@ -68,6 +68,11 @@ FactoryGirl.define do
     factory :closed_merge_request, traits: [:closed]
     factory :reopened_merge_request, traits: [:reopened]
     factory :merge_request_with_diffs, traits: [:with_diffs]
+    factory :merge_request_with_diff_notes do
+      after(:create) do |mr|
+        create(:diff_note_on_merge_request, noteable: mr, project: mr.source_project)
+      end
+    end
 
     factory :labeled_merge_request do
       transient do

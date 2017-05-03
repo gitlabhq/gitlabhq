@@ -13,17 +13,18 @@ override certain values.
 
 Variable | Type | Description
 -------- | ---- | -----------
-`GITLAB_ROOT_PASSWORD`        | string  | Sets the password for the `root` user on installation
-`GITLAB_HOST`                 | string  | The full URL of the GitLab server (including `http://` or `https://`)
-`RAILS_ENV`                   | string  | The Rails environment; can be one of `production`, `development`, `staging` or `test`
-`DATABASE_URL`                | string  | The database URL; is of the form: `postgresql://localhost/blog_development`
-`GITLAB_EMAIL_FROM`           | string  | The e-mail address used in the "From" field in e-mails sent by GitLab
-`GITLAB_EMAIL_DISPLAY_NAME`   | string  | The name used in the "From" field in e-mails sent by GitLab
-`GITLAB_EMAIL_REPLY_TO`       | string  | The e-mail address used in the "Reply-To" field in e-mails sent by GitLab
-`GITLAB_EMAIL_REPLY_TO`       | string  | The e-mail address used in the "Reply-To" field in e-mails sent by GitLab
-`GITLAB_EMAIL_SUBJECT_SUFFIX` | string  | The e-mail subject suffix used in e-mails sent by GitLab
-`GITLAB_UNICORN_MEMORY_MIN`   | integer | The minimum memory threshold (in bytes) for the Unicorn worker killer
-`GITLAB_UNICORN_MEMORY_MAX`   | integer | The maximum memory threshold (in bytes) for the Unicorn worker killer
+`GITLAB_ROOT_PASSWORD`                     | string  | Sets the password for the `root` user on installation
+`GITLAB_HOST`                              | string  | The full URL of the GitLab server (including `http://` or `https://`)
+`RAILS_ENV`                                | string  | The Rails environment; can be one of `production`, `development`, `staging` or `test`
+`DATABASE_URL`                             | string  | The database URL; is of the form: `postgresql://localhost/blog_development`
+`GITLAB_EMAIL_FROM`                        | string  | The e-mail address used in the "From" field in e-mails sent by GitLab
+`GITLAB_EMAIL_DISPLAY_NAME`                | string  | The name used in the "From" field in e-mails sent by GitLab
+`GITLAB_EMAIL_REPLY_TO`                    | string  | The e-mail address used in the "Reply-To" field in e-mails sent by GitLab
+`GITLAB_EMAIL_REPLY_TO`                    | string  | The e-mail address used in the "Reply-To" field in e-mails sent by GitLab
+`GITLAB_EMAIL_SUBJECT_SUFFIX`              | string  | The e-mail subject suffix used in e-mails sent by GitLab
+`GITLAB_UNICORN_MEMORY_MIN`                | integer | The minimum memory threshold (in bytes) for the Unicorn worker killer
+`GITLAB_UNICORN_MEMORY_MAX`                | integer | The maximum memory threshold (in bytes) for the Unicorn worker killer
+`GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN` | string  | Sets the initial registration token used for GitLab Runners
 
 ## Complete database variables
 

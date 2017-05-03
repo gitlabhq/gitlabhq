@@ -1,10 +1,6 @@
 .pipeline-graph-container
   .row-content-block.build-content.middle-block.pipeline-actions
     .pull-right
-      .btn.btn-grouped.btn-white.toggle-pipeline-btn
-        %span.toggle-btn-text Hide
-        %span pipeline graph
-        %span.caret
       - if can?(current_user, :update_pipeline, pipeline.project)
         - if pipeline.builds.latest.failed.any?(&:retryable?)
           = link_to "Retry failed", retry_namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id), class: 'btn btn-grouped btn-primary', method: :post
@@ -28,20 +24,8 @@
           in
           = time_interval_in_words pipeline.duration
 
-  .row-content-block.build-content.middle-block.pipeline-graph.hidden
-    .pipeline-visualization
-      %ul.stage-column-list
-        - stages = pipeline.stages_with_latest_statuses
-        - stages.each do |stage, statuses|
-          %li.stage-column
-            .stage-name
-              %a{name: stage}
-              - if stage
-                = stage.titleize
-            .builds-container
-              %ul
-                = render "projects/commit/pipeline_stage", statuses: statuses
-
+  .row-content-block.build-content.middle-block.js-pipeline-graph.hidden
+    = render "projects/pipelines/graph", pipeline: pipeline
 
 - if pipeline.yaml_errors.present?
   .bs-callout.bs-callout-danger
@@ -66,5 +50,4 @@
         - if pipeline.project.build_coverage_enabled?
           %th Coverage
         %th
-    - pipeline.statuses.relevant.stages.each do |stage|
-      = render 'projects/commit/ci_stage', stage: stage, statuses: pipeline.statuses.relevant.where(stage: stage)
+    = render partial: "projects/stage/stage", collection: pipeline.stages, as: :stage

@@ -1,4 +1,6 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, quotes, quote-props, prefer-template, comma-dangle, max-len */
+/* global BranchGraph */
+
 (function() {
   this.Network = (function() {
     function Network(opts) {
@@ -14,7 +16,5 @@
     }
 
     return Network;
-
   })();
-
 }).call(this);

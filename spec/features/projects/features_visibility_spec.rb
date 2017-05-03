@@ -42,6 +42,17 @@ describe 'Edit Project Settings', feature: true do
       end
     end
 
+    context "When external issue tracker is enabled" do
+      it "does not hide issues tab" do
+        project.project_feature.update(issues_access_level: ProjectFeature::DISABLED)
+        allow_any_instance_of(Project).to receive(:external_issue_tracker).and_return(JiraService.new)
+
+        visit namespace_project_path(project.namespace, project)
+
+        expect(page).to have_selector(".shortcuts-issues")
+      end
+    end
+
     context "pipelines subtabs" do
       it "shows builds when enabled" do
         visit namespace_project_pipelines_path(project.namespace, project)
@@ -181,6 +192,59 @@ describe 'Edit Project Settings', feature: true do
         expect(page).not_to have_content("Merge events")
         expect(page).not_to have_content("Comments")
       end
+    end
+
+    # Regression spec for https://gitlab.com/gitlab-org/gitlab-ce/issues/25272
+    it "hides comments activity tab only on disabled issues, merge requests and repository" do
+      select "Disabled", from: "project_project_feature_attributes_issues_access_level"
+
+      save_changes_and_check_activity_tab do
+        expect(page).to have_content("Comments")
+      end
+
+      visit edit_namespace_project_path(project.namespace, project)
+
+      select "Disabled", from: "project_project_feature_attributes_merge_requests_access_level"
+
+      save_changes_and_check_activity_tab do
+        expect(page).to have_content("Comments")
+      end
+
+      visit edit_namespace_project_path(project.namespace, project)
+
+      select "Disabled", from: "project_project_feature_attributes_repository_access_level"
+
+      save_changes_and_check_activity_tab do
+        expect(page).not_to have_content("Comments")
+      end
+
+      visit edit_namespace_project_path(project.namespace, project)
+    end
+
+    def save_changes_and_check_activity_tab
+      click_button "Save changes"
+      wait_for_ajax
+
+      visit activity_namespace_project_path(project.namespace, project)
+
+      page.within(".event-filter") do
+        yield
+      end
+    end
+  end
+
+  # Regression spec for https://gitlab.com/gitlab-org/gitlab-ce/issues/24056
+  describe 'project statistic visibility' do
+    let!(:project) { create(:project, :private) }
+
+    before do
+      project.team << [member, :guest]
+      login_as(member)
+      visit namespace_project_path(project.namespace, project)
+    end
+
+    it "does not show project statistic for guest" do
+      expect(page).not_to have_selector('.project-stats')
     end
   end
 end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::API, api: true do
+describe API::Version, api: true do
   include ApiHelpers
 
   describe 'GET /version' do

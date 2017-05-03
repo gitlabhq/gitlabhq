@@ -32,6 +32,10 @@ module Ci
         expose :artifacts_file, using: ArtifactFile, if: ->(build, _) { build.artifacts? }
       end
 
+      class BuildCredentials < Grape::Entity
+        expose :type, :url, :username, :password
+      end
+
       class BuildDetails < Build
         expose :commands
         expose :repo_url
@@ -50,6 +54,8 @@ module Ci
 
         expose :variables
         expose :depends_on_builds, using: Build
+
+        expose :credentials, using: BuildCredentials
       end
 
       class Runner < Grape::Entity

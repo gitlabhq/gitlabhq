@@ -49,14 +49,20 @@ describe Gitlab::GithubImport::BranchFormatter, lib: true do
   end
 
   describe '#valid?' do
-    it 'returns true when raw repo is present' do
+    it 'returns true when raw sha and ref are present' do
       branch = described_class.new(project, double(raw))
 
       expect(branch.valid?).to eq true
     end
 
-    it 'returns false when raw repo is blank' do
-      branch = described_class.new(project, double(raw.merge(repo: nil)))
+    it 'returns false when raw sha is blank' do
+      branch = described_class.new(project, double(raw.merge(sha: nil)))
+
+      expect(branch.valid?).to eq false
+    end
+
+    it 'returns false when raw ref is blank' do
+      branch = described_class.new(project, double(raw.merge(ref: nil)))
 
       expect(branch.valid?).to eq false
     end

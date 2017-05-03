@@ -1,20 +1,25 @@
 - page_title "CI Lint"
 - page_description "Validate your GitLab CI configuration file"
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_tag('lib/ace.js')
 
 %h2 Check your .gitlab-ci.yml
-%hr
 
-.row
-  = form_tag ci_lint_path, method: :post do
-    .form-group
-      = label_tag(:content, 'Content of .gitlab-ci.yml', class: 'control-label text-nowrap')
+.ci-linter
+  .row
+    = form_tag ci_lint_path, method: :post do
+      .form-group
+        .col-sm-12
+          .file-holder
+            .file-title.clearfix
+              Content of .gitlab-ci.yml
+            #ci-editor.ci-editor #{@content}
+          = text_area_tag(:content, @content, class: 'hidden form-control span1', rows: 7, require: true)
       .col-sm-12
-        = text_area_tag(:content, @content, class: 'form-control span1', rows: 7, require: true)
-    .col-sm-12
-      .pull-left.prepend-top-10
-        = submit_tag('Validate', class: 'btn btn-success submit-yml')
+        .pull-left.prepend-top-10
+          = submit_tag('Validate', class: 'btn btn-success submit-yml')
 
-.row.prepend-top-20
-  .col-sm-12
-    .results
-      = render partial: 'create' if defined?(@status)
+  .row.prepend-top-20
+    .col-sm-12
+      .results.ci-template
+        = render partial: 'create' if defined?(@status)

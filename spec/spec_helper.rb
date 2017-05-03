@@ -26,11 +26,13 @@ RSpec.configure do |config|
   config.verbose_retry = true
   config.display_try_failure_messages = true
 
-  config.include Devise::Test::ControllerHelpers,   type: :controller
+  config.include Devise::Test::ControllerHelpers, type: :controller
+  config.include Devise::Test::ControllerHelpers, type: :view
   config.include Warden::Test::Helpers, type: :request
-  config.include LoginHelpers,          type: :feature
+  config.include LoginHelpers, type: :feature
+  config.include SearchHelpers, type: :feature
   config.include StubConfiguration
-  config.include EmailHelpers
+  config.include EmailHelpers, type: :mailer
   config.include TestEnv
   config.include ActiveJob::TestHelper
   config.include ActiveSupport::Testing::TimeHelpers
@@ -53,8 +55,12 @@ RSpec.configure do |config|
 
   config.around(:each, :redis) do |example|
     Gitlab::Redis.with(&:flushall)
+    Sidekiq.redis(&:flushall)
+
     example.run
+
     Gitlab::Redis.with(&:flushall)
+    Sidekiq.redis(&:flushall)
   end
 end
 

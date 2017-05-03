@@ -52,7 +52,7 @@ for anonymous users. The group page now has a visibility level icon.
 
 ## Visibility of users
 
-The public page of a user, located at `/u/username`, is always visible whether
+The public page of a user, located at `/username`, is always visible whether
 you are logged in or not.
 
 When visiting the public page of a user, you can only see the projects which
@@ -60,10 +60,13 @@ you are privileged to.
 
 If the public level is restricted, user profiles are only visible to logged in users.
 
-
 ## Restricting the use of public or internal projects
 
 In the Admin area under **Settings** (`/admin/application_settings`), you can
 restrict the use of visibility levels for users when they create a project or a
-snippet. This is useful to prevent people exposing their repositories to public
+snippet:
+
+![Restrict visibility levels](img/restrict_visibility_levels.png)
+
+This is useful to prevent people exposing their repositories to public
 by accident. The restricted visibility settings do not apply to admin users.

@@ -5,7 +5,7 @@ describe 'gitlab:app namespace rake task' do
   let(:enable_registry) { true }
 
   before :all do
-    Rake.application.rake_require 'tasks/gitlab/task_helpers'
+    Rake.application.rake_require 'tasks/gitlab/helpers'
     Rake.application.rake_require 'tasks/gitlab/backup'
     Rake.application.rake_require 'tasks/gitlab/shell'
     Rake.application.rake_require 'tasks/gitlab/db'
@@ -41,7 +41,7 @@ describe 'gitlab:app namespace rake task' do
 
     context 'gitlab version' do
       before do
-        allow(Dir).to receive(:glob).and_return([])
+        allow(Dir).to receive(:glob).and_return(['1_gitlab_backup.tar'])
         allow(Dir).to receive(:chdir)
         allow(File).to receive(:exist?).and_return(true)
         allow(Kernel).to receive(:system).and_return(true)
@@ -331,6 +331,37 @@ describe 'gitlab:app namespace rake task' do
       expect(Rake::Task['gitlab:backup:registry:restore']).to receive :invoke
       expect(Rake::Task['gitlab:shell:setup']).to receive :invoke
       expect { run_rake_task('gitlab:backup:restore') }.not_to raise_error
+    end
+  end
+
+  describe "Human Readable Backup Name" do
+    def tars_glob
+      Dir.glob(File.join(Gitlab.config.backup.path, '*_gitlab_backup.tar'))
+    end
+
+    before :all do
+      @origin_cd = Dir.pwd
+
+      reenable_backup_sub_tasks
+
+      FileUtils.rm tars_glob
+
+      # Redirect STDOUT and run the rake task
+      orig_stdout = $stdout
+      $stdout = StringIO.new
+      run_rake_task('gitlab:backup:create')
+      $stdout = orig_stdout
+
+      @backup_tar = tars_glob.first
+    end
+
+    after :all do
+      FileUtils.rm(@backup_tar)
+      Dir.chdir @origin_cd
+    end
+
+    it 'name has human readable time' do
+      expect(@backup_tar).to match(/\d+_\d{4}_\d{2}_\d{2}_gitlab_backup.tar$/)
     end
   end
 end # gitlab:app namespace

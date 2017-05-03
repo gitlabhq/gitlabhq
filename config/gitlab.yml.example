@@ -138,6 +138,8 @@ production: &base
 
     # The mailbox where incoming mail will end up. Usually "inbox".
     mailbox: "inbox"
+    # The IDLE command timeout.
+    idle_timeout: 60
 
   ## Build Artifacts
   artifacts:
@@ -150,6 +152,12 @@ production: &base
     enabled: true
     # The location where LFS objects are stored (default: shared/lfs-objects).
     # storage_path: shared/lfs-objects
+
+  ## Mattermost
+  ## For enabling Add to Mattermost button
+  mattermost:
+    enabled: false
+    host: 'https://mattermost.example.com'
 
   ## Gravatar
   ## For Libravatar see: http://doc.gitlab.com/ce/customization/libravatar.html
@@ -360,6 +368,16 @@ production: &base
       #             login_url: '/cas/login',
       #             service_validate_url: '/cas/p3/serviceValidate',
       #             logout_url: '/cas/logout'} }
+      # - { name: 'authentiq',
+      #     # for client credentials (client ID and secret), go to https://www.authentiq.com/
+      #     app_id: 'YOUR_CLIENT_ID',
+      #     app_secret: 'YOUR_CLIENT_SECRET',
+      #     args: {
+      #             scope: 'aq:name email~rs address aq:push'
+      #             # redirect_uri parameter is optional except when 'gitlab.host' in this file is set to 'localhost'
+      #             # redirect_uri: 'YOUR_REDIRECT_URI'
+      #           }
+      #   }
       # - { name: 'github',
       #     app_id: 'YOUR_APP_ID',
       #     app_secret: 'YOUR_APP_SECRET',
@@ -432,7 +450,9 @@ production: &base
   ## Repositories settings
   repositories:
     # Paths where repositories can be stored. Give the canonicalized absolute pathname.
-    # NOTE: REPOS PATHS MUST NOT CONTAIN ANY SYMLINK!!!
+    # IMPORTANT: None of the path components may be symlink, because
+    # gitlab-shell invokes Dir.pwd inside the repository path and that results
+    # real path not the symlink.
     storages: # You must have at least a `default` storage path.
       default: /home/git/repositories/
 

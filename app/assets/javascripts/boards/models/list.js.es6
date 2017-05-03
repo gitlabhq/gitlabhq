@@ -1,4 +1,7 @@
-/* eslint-disable */
+/* eslint-disable space-before-function-paren, no-underscore-dangle, class-methods-use-this, consistent-return, no-shadow, no-param-reassign, max-len, no-unused-vars */
+/* global ListIssue */
+/* global ListLabel */
+
 class List {
   constructor (obj) {
     this.id = obj.id;
@@ -42,7 +45,8 @@ class List {
   }
 
   destroy () {
-    gl.issueBoards.BoardsStore.state.lists.$remove(this);
+    const index = gl.issueBoards.BoardsStore.state.lists.indexOf(this);
+    gl.issueBoards.BoardsStore.state.lists.splice(index, 1);
     gl.issueBoards.BoardsStore.updateNewListDropdown(this.id);
 
     gl.boardService.destroyList(this.id);
@@ -54,7 +58,7 @@ class List {
 
   nextPage () {
     if (this.issuesSize > this.issues.length) {
-      this.page++;
+      this.page += 1;
 
       return this.getIssues(false);
     }
@@ -62,12 +66,12 @@ class List {
 
   getIssues (emptyIssues = true) {
     const filters = this.filters;
-    let data = { page: this.page };
+    const data = { page: this.page };
 
     Object.keys(filters).forEach((key) => { data[key] = filters[key]; });
 
     if (this.label) {
-      data.label_name = data.label_name.filter( label => label !== this.label.title );
+      data.label_name = data.label_name.filter(label => label !== this.label.title);
     }
 
     if (emptyIssues) {
@@ -90,7 +94,7 @@ class List {
 
   newIssue (issue) {
     this.addIssue(issue);
-    this.issuesSize++;
+    this.issuesSize += 1;
 
     return gl.boardService.newIssue(this.id, issue)
       .then((resp) => {
@@ -105,16 +109,20 @@ class List {
     });
   }
 
-  addIssue (issue, listFrom) {
+  addIssue (issue, listFrom, newIndex) {
     if (!this.findIssue(issue.id)) {
-      this.issues.push(issue);
+      if (newIndex !== undefined) {
+        this.issues.splice(newIndex, 0, issue);
+      } else {
+        this.issues.push(issue);
+      }
 
       if (this.label) {
         issue.addLabel(this.label);
       }
 
       if (listFrom) {
-        this.issuesSize++;
+        this.issuesSize += 1;
         gl.boardService.moveIssue(issue.id, listFrom.id, this.id)
           .then(() => {
             listFrom.getIssues(false);
@@ -124,7 +132,7 @@ class List {
   }
 
   findIssue (id) {
-    return this.issues.filter( issue => issue.id === id )[0];
+    return this.issues.filter(issue => issue.id === id)[0];
   }
 
   removeIssue (removeIssue) {
@@ -132,7 +140,7 @@ class List {
       const matchesRemove = removeIssue.id === issue.id;
 
       if (matchesRemove) {
-        this.issuesSize--;
+        this.issuesSize -= 1;
         issue.removeLabel(this.label);
       }
 
@@ -140,3 +148,5 @@ class List {
     });
   }
 }
+
+window.List = List;

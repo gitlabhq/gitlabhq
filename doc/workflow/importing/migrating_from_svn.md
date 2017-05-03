@@ -79,7 +79,7 @@ Now that SubGit has configured the Git/SVN repos, run `subgit` to perform the
 initial translation of existing SVN revisions into the Git repository:
 
 ```
-subgit install $GIT_REPOS_PATH
+subgit install $GIT_REPO_PATH
 ```
 
 After the initial translation is completed, the Git repository and the SVN

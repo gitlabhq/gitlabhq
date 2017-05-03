@@ -71,6 +71,14 @@ module Banzai
         @doc = parse_html(rinku)
       end
 
+      # Return true if any of the UNSAFE_PROTOCOLS strings are included in the URI scheme
+      def contains_unsafe?(scheme)
+        return false unless scheme
+
+        scheme = scheme.strip.downcase
+        Banzai::Filter::SanitizationFilter::UNSAFE_PROTOCOLS.any? { |protocol| scheme.include?(protocol) }
+      end
+
       # Autolinks any text matching LINK_PATTERN that Rinku didn't already
       # replace
       def text_parse
@@ -89,17 +97,27 @@ module Banzai
         doc
       end
 
-      def autolink_filter(text)
-        text.gsub(LINK_PATTERN) do |match|
-          # Remove any trailing HTML entities and store them for appending
-          # outside the link element. The entity must be marked HTML safe in
-          # order to be output literally rather than escaped.
-          match.gsub!(/((?:&[\w#]+;)+)\z/, '')
-          dropped = ($1 || '').html_safe
-
-          options = link_options.merge(href: match)
-          content_tag(:a, match, options) + dropped
+      def autolink_match(match)
+        # start by stripping out dangerous links
+        begin
+          uri = Addressable::URI.parse(match)
+          return match if contains_unsafe?(uri.scheme)
+        rescue Addressable::URI::InvalidURIError
+          return match
         end
+
+        # Remove any trailing HTML entities and store them for appending
+        # outside the link element. The entity must be marked HTML safe in
+        # order to be output literally rather than escaped.
+        match.gsub!(/((?:&[\w#]+;)+)\z/, '')
+        dropped = ($1 || '').html_safe
+
+        options = link_options.merge(href: match)
+        content_tag(:a, match, options) + dropped
+      end
+
+      def autolink_filter(text)
+        text.gsub(LINK_PATTERN) { |match| autolink_match(match) }
       end
 
       def link_options

@@ -5,7 +5,7 @@ describe 'gitlab:users namespace rake task' do
   let(:enable_registry) { true }
 
   before :all do
-    Rake.application.rake_require 'tasks/gitlab/task_helpers'
+    Rake.application.rake_require 'tasks/gitlab/helpers'
     Rake.application.rake_require 'tasks/gitlab/users'
 
     # empty task as env is already loaded

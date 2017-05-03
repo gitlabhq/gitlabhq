@@ -34,24 +34,30 @@ describe Commit, models: true do
   end
 
   describe '#to_reference' do
+    let(:project) { create(:project, path: 'sample-project') }
+    let(:commit)  { project.commit }
+
     it 'returns a String reference to the object' do
       expect(commit.to_reference).to eq commit.id
     end
 
     it 'supports a cross-project reference' do
-      cross = double('project')
-      expect(commit.to_reference(cross)).to eq "#{project.to_reference}@#{commit.id}"
+      another_project = build(:project, name: 'another-project', namespace: project.namespace)
+      expect(commit.to_reference(another_project)).to eq "sample-project@#{commit.id}"
     end
   end
 
   describe '#reference_link_text' do
+    let(:project) { create(:project, path: 'sample-project') }
+    let(:commit)  { project.commit }
+
     it 'returns a String reference to the object' do
       expect(commit.reference_link_text).to eq commit.short_id
     end
 
     it 'supports a cross-project reference' do
-      cross = double('project')
-      expect(commit.reference_link_text(cross)).to eq "#{project.to_reference}@#{commit.short_id}"
+      another_project = build(:project, name: 'another-project', namespace: project.namespace)
+      expect(commit.reference_link_text(another_project)).to eq "sample-project@#{commit.short_id}"
     end
   end
 
@@ -173,25 +179,26 @@ eos
 
   describe '#reverts_commit?' do
     let(:another_commit) { double(:commit, revert_description: "This reverts commit #{commit.sha}") }
+    let(:user) { commit.author }
 
-    it { expect(commit.reverts_commit?(another_commit)).to be_falsy }
+    it { expect(commit.reverts_commit?(another_commit, user)).to be_falsy }
 
     context 'commit has no description' do
       before { allow(commit).to receive(:description?).and_return(false) }
 
-      it { expect(commit.reverts_commit?(another_commit)).to be_falsy }
+      it { expect(commit.reverts_commit?(another_commit, user)).to be_falsy }
     end
 
     context "another_commit's description does not revert commit" do
       before { allow(commit).to receive(:description).and_return("Foo Bar") }
 
-      it { expect(commit.reverts_commit?(another_commit)).to be_falsy }
+      it { expect(commit.reverts_commit?(another_commit, user)).to be_falsy }
     end
 
     context "another_commit's description reverts commit" do
       before { allow(commit).to receive(:description).and_return("Foo #{another_commit.revert_description} Bar") }
 
-      it { expect(commit.reverts_commit?(another_commit)).to be_truthy }
+      it { expect(commit.reverts_commit?(another_commit, user)).to be_truthy }
     end
 
     context "another_commit's description reverts merged merge request" do
@@ -201,16 +208,54 @@ eos
         allow(commit).to receive(:description).and_return("Foo #{another_commit.revert_description} Bar")
       end
 
-      it { expect(commit.reverts_commit?(another_commit)).to be_truthy }
+      it { expect(commit.reverts_commit?(another_commit, user)).to be_truthy }
     end
   end
 
-  describe '#ci_commits' do
-    # TODO: kamil
-  end
-
   describe '#status' do
-    # TODO: kamil
+    context 'without ref argument' do
+      before do
+        %w[success failed created pending].each do |status|
+          create(:ci_empty_pipeline,
+                 project: project,
+                 sha: commit.sha,
+                 status: status)
+        end
+      end
+
+      it 'gives compound status from latest pipelines' do
+        expect(commit.status).to eq(Ci::Pipeline.latest_status)
+        expect(commit.status).to eq('pending')
+      end
+    end
+
+    context 'when a particular ref is specified' do
+      let!(:pipeline_from_master) do
+        create(:ci_empty_pipeline,
+               project: project,
+               sha: commit.sha,
+               ref: 'master',
+               status: 'failed')
+      end
+
+      let!(:pipeline_from_fix) do
+        create(:ci_empty_pipeline,
+               project: project,
+               sha: commit.sha,
+               ref: 'fix',
+               status: 'success')
+      end
+
+      it 'gives pipelines from a particular branch' do
+        expect(commit.status('master')).to eq(pipeline_from_master.status)
+        expect(commit.status('fix')).to eq(pipeline_from_fix.status)
+      end
+
+      it 'gives compound status from latest pipelines if ref is nil' do
+        expect(commit.status(nil)).to eq(Ci::Pipeline.latest_status)
+        expect(commit.status(nil)).to eq('failed')
+      end
+    end
   end
 
   describe '#participants' do
@@ -259,6 +304,51 @@ eos
 
     it "returns nil if the path doesn't exists" do
       expect(commit.uri_type('this/path/doesnt/exist')).to be_nil
+    end
+  end
+
+  describe '.from_hash' do
+    let(:new_commit) { described_class.from_hash(commit.to_hash, project) }
+
+    it 'returns a Commit' do
+      expect(new_commit).to be_an_instance_of(described_class)
+    end
+
+    it 'wraps a Gitlab::Git::Commit' do
+      expect(new_commit.raw).to be_an_instance_of(Gitlab::Git::Commit)
+    end
+
+    it 'stores the correct commit fields' do
+      expect(new_commit.id).to eq(commit.id)
+      expect(new_commit.message).to eq(commit.message)
+    end
+  end
+
+  describe '#work_in_progress?' do
+    ['squash! ', 'fixup! ', 'wip: ', 'WIP: ', '[WIP] '].each do |wip_prefix|
+      it "detects the '#{wip_prefix}' prefix" do
+        commit.message = "#{wip_prefix}#{commit.message}"
+
+        expect(commit).to be_work_in_progress
+      end
+    end
+
+    it "detects WIP for a commit just saying 'wip'" do
+      commit.message = "wip"
+
+      expect(commit).to be_work_in_progress
+    end
+
+    it "doesn't detect WIP for a commit that begins with 'FIXUP! '" do
+      commit.message = "FIXUP! #{commit.message}"
+
+      expect(commit).not_to be_work_in_progress
+    end
+
+    it "doesn't detect WIP for words starting with WIP" do
+      commit.message = "Wipout #{commit.message}"
+
+      expect(commit).not_to be_work_in_progress
     end
   end
 end

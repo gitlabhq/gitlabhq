@@ -18,11 +18,11 @@
         - else
           = link_to title, '#'
 
-%ul.blob-commit-info.hidden-xs
+%ul.blob-commit-info.table-list.hidden-xs
   - blob_commit = @repository.last_commit_for_path(@commit.id, blob.path)
-  = render blob_commit, project: @project
+  = render blob_commit, project: @project, ref: @ref
 
-%div#blob-content-holder.blob-content-holder
+#blob-content-holder.blob-content-holder
   %article.file-holder
     .file-title
       = blob_icon blob.mode, blob.name

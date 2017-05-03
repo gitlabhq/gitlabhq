@@ -1,12 +1,12 @@
-/* eslint-disable */
+/* eslint-disable space-before-function-paren, no-var */
 
 /*= require behaviors/requires_input */
 
 (function() {
   describe('requiresInput', function() {
-    fixture.preload('behaviors/requires_input.html');
+    preloadFixtures('static/behaviors/requires_input.html.raw');
     beforeEach(function() {
-      return fixture.load('behaviors/requires_input.html');
+      return loadFixtures('static/behaviors/requires_input.html.raw');
     });
     it('disables submit when any field is required', function() {
       $('.js-requires-input').requiresInput();
@@ -41,5 +41,4 @@
       return expect(spy).toHaveBeenCalled();
     });
   });
-
 }).call(this);

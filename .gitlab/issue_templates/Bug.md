@@ -21,6 +21,8 @@ logs, and code as it's very hard to read otherwise.)
 
 ### Output of checks
 
+(If you are reporting a bug on GitLab.com, write: This bug happens on GitLab.com)
+
 #### Results of GitLab application Check
 
 (For installations with omnibus-gitlab package run and paste the output of:

@@ -1,4 +1,8 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, max-len, no-var, one-var, no-restricted-syntax, vars-on-top, no-use-before-define, no-param-reassign, new-cap, no-underscore-dangle, wrap-iife, one-var-declaration-per-line, quotes, prefer-arrow-callback, consistent-return, prefer-template, no-mixed-operators */
+/* global Mousetrap */
+/* global Turbolinks */
+/* global ShortcutsNavigation */
+/* global sidebar */
 
 /*= require mousetrap */
 /*= require shortcuts_navigation */
@@ -72,7 +76,5 @@
     };
 
     return ShortcutsIssuable;
-
   })(ShortcutsNavigation);
-
 }).call(this);

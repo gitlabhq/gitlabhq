@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, max-len, one-var, no-var, no-restricted-syntax, vars-on-top, no-use-before-define, no-param-reassign, new-cap, no-underscore-dangle, wrap-iife, prefer-rest-params, comma-dangle */
+/* global Api */
 
 /*= require blob/template_selector */
 
@@ -23,7 +24,5 @@
     };
 
     return BlobLicenseSelector;
-
   })(gl.TemplateSelector);
-
 }).call(this);

@@ -27,7 +27,7 @@ feature 'issuable templates', feature: true, js: true do
     scenario 'user selects "bug" template' do
       select_template 'bug'
       wait_for_ajax
-      preview_template
+      assert_template
       save_changes
     end
 
@@ -35,8 +35,7 @@ feature 'issuable templates', feature: true, js: true do
       select_template 'bug'
       wait_for_ajax
       select_option 'No template'
-      wait_for_ajax
-      preview_template('')
+      assert_template('')
       save_changes('')
     end
 
@@ -44,9 +43,9 @@ feature 'issuable templates', feature: true, js: true do
       select_template 'bug'
       wait_for_ajax
       find_field('issue_description').send_keys(description_addition)
-      preview_template(template_content + description_addition)
+      assert_template(template_content + description_addition)
       select_option 'Reset template'
-      preview_template
+      assert_template
       save_changes
     end
 
@@ -77,7 +76,7 @@ feature 'issuable templates', feature: true, js: true do
     scenario 'user selects "bug" template' do
       select_template 'bug'
       wait_for_ajax
-      preview_template("#{template_content}")
+      assert_template("#{template_content}")
       save_changes
     end
   end
@@ -95,7 +94,7 @@ feature 'issuable templates', feature: true, js: true do
     scenario 'user selects "feature-proposal" template' do
       select_template 'feature-proposal'
       wait_for_ajax
-      preview_template
+      assert_template
       save_changes
     end
   end
@@ -122,17 +121,15 @@ feature 'issuable templates', feature: true, js: true do
         scenario 'user selects template' do
           select_template 'feature-proposal'
           wait_for_ajax
-          preview_template
+          assert_template
           save_changes
         end
       end
     end
   end
 
-  def preview_template(expected_content = template_content)
-    click_link 'Preview'
-    expect(page).to have_content expected_content
-    click_link 'Write'
+  def assert_template(expected_content = template_content)
+    expect(find('textarea')['value']).to eq(expected_content)
   end
 
   def save_changes(expected_content = template_content)

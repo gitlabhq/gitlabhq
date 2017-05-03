@@ -5,6 +5,8 @@ describe Notes::SlashCommandsService, services: true do
     let(:project) { create(:empty_project) }
     let(:master) { create(:user).tap { |u| project.team << [u, :master] } }
     let(:assignee) { create(:user) }
+
+    before { project.team << [assignee, :master] }
   end
 
   shared_examples 'note on noteable that does not support slash commands' do
@@ -82,6 +84,18 @@ describe Notes::SlashCommandsService, services: true do
 
           expect(content).to eq ''
           expect(note.noteable).to be_open
+        end
+      end
+
+      describe '/spend' do
+        let(:note_text) { '/spend 1h' }
+
+        it 'updates the spent time on the noteable' do
+          content, command_params = service.extract_commands(note)
+          service.execute(command_params, note)
+
+          expect(content).to eq ''
+          expect(note.noteable.time_spent).to eq(3600)
         end
       end
     end

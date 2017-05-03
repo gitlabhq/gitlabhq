@@ -5,10 +5,10 @@ trackers and external authentication.
 
 See the documentation below for details on how to configure these services.
 
-- [JIRA](jira.md) Integrate with the JIRA issue tracker
+- [JIRA](../project_services/jira.md) Integrate with the JIRA issue tracker
 - [External issue tracker](external-issue-tracker.md) Redmine, JIRA, etc.
 - [LDAP](ldap.md) Set up sign in via LDAP
-- [OmniAuth](omniauth.md) Sign in via Twitter, GitHub, GitLab.com, Google, Bitbucket, Facebook, Shibboleth, SAML, Crowd and Azure
+- [OmniAuth](omniauth.md) Sign in via Twitter, GitHub, GitLab.com, Google, Bitbucket, Facebook, Shibboleth, SAML, Crowd, Azure and Authentiq ID
 - [SAML](saml.md) Configure GitLab as a SAML 2.0 Service Provider
 - [CAS](cas.md) Configure GitLab to sign in using CAS
 - [OAuth2 provider](oauth_provider.md) OAuth2 application creation
@@ -16,6 +16,7 @@ See the documentation below for details on how to configure these services.
 - [reCAPTCHA](recaptcha.md) Configure GitLab to use Google reCAPTCHA for new users
 - [Akismet](akismet.md) Configure Akismet to stop spam
 - [Koding](../administration/integration/koding.md) Configure Koding to use IDE integration
+- [PlantUML](../administration/integration/plantuml.md) Configure PlantUML to use diagrams in AsciiDoc documents.
 
 GitLab Enterprise Edition contains [advanced Jenkins support][jenkins].
 
@@ -44,11 +45,15 @@ This [resource](http://kb.kerio.com/product/kerio-connect/server-configuration/s
 has all the information you need to add a certificate to the main trusted chain.
 
 This [answer](http://superuser.com/questions/437330/how-do-you-add-a-certificate-authority-ca-to-ubuntu)
-at SuperUser also has relevant information.
+at Super User also has relevant information.
 
 **Omnibus Trusted Chain**
 
-It is enough to concatenate the certificate to the main trusted certificate:
+[Install the self signed certificate or custom certificate authorities](http://docs.gitlab.com/omnibus/common_installation_problems/README.html#using-self-signed-certificate-or-custom-certificate-authorities)
+in to GitLab Omnibus.
+
+It is enough to concatenate the certificate to the main trusted certificate
+however it may be overwritten during upgrades:
 
 ```bash
 cat jira.pem >> /opt/gitlab/embedded/ssl/certs/cacert.pem

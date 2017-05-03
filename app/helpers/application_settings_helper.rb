@@ -50,14 +50,14 @@ module ApplicationSettingsHelper
   def restricted_level_checkboxes(help_block_id)
     Gitlab::VisibilityLevel.options.map do |name, level|
       checked = restricted_visibility_levels(true).include?(level)
-      css_class = 'btn'
-      css_class += ' active' if checked
-      checkbox_name = 'application_setting[restricted_visibility_levels][]'
+      css_class = checked ? 'active' : ''
+      checkbox_name = "application_setting[restricted_visibility_levels][]"
 
-      label_tag(checkbox_name, class: css_class) do
+      label_tag(name, class: css_class) do
         check_box_tag(checkbox_name, level, checked,
                       autocomplete: 'off',
-                      'aria-describedby' => help_block_id) + name
+                      'aria-describedby' => help_block_id,
+                      id: name) + visibility_level_icon(level) + name
       end
     end
   end
@@ -67,14 +67,14 @@ module ApplicationSettingsHelper
   def import_sources_checkboxes(help_block_id)
     Gitlab::ImportSources.options.map do |name, source|
       checked = current_application_settings.import_sources.include?(source)
-      css_class = 'btn'
-      css_class += ' active' if checked
+      css_class = checked ? 'active' : ''
       checkbox_name = 'application_setting[import_sources][]'
 
-      label_tag(checkbox_name, class: css_class) do
+      label_tag(name, class: css_class) do
         check_box_tag(checkbox_name, source, checked,
                       autocomplete: 'off',
-                      'aria-describedby' => help_block_id) + name
+                      'aria-describedby' => help_block_id,
+                      id: name.tr(' ', '_')) + name
       end
     end
   end
@@ -93,11 +93,15 @@ module ApplicationSettingsHelper
     end
   end
 
-  def repository_storage_options_for_select
+  def repository_storages_options_for_select
     options = Gitlab.config.repositories.storages.map do |name, path|
       ["#{name} - #{path}", name]
     end
 
-    options_for_select(options, @application_setting.repository_storage)
+    options_for_select(options, @application_setting.repository_storages)
+  end
+
+  def sidekiq_queue_options_for_select
+    options_for_select(Sidekiq::Queue.all.map(&:name), @application_setting.sidekiq_throttling_queues)
   end
 end

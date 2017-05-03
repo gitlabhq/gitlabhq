@@ -1,4 +1,7 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle, space-before-function-paren, max-len */
+/* global Vue */
+/* global Sortable */
+
 //= require ./board_card
 //= require ./board_new_issue
 
@@ -9,6 +12,7 @@
   window.gl.issueBoards = window.gl.issueBoards || {};
 
   gl.issueBoards.BoardList = Vue.extend({
+    template: '#js-board-list-template',
     components: {
       'board-card': gl.issueBoards.BoardCard,
       'board-new-issue': gl.issueBoards.BoardNewIssue
@@ -19,27 +23,27 @@
       issues: Array,
       loading: Boolean,
       issueLinkBase: String,
-      showIssueForm: Boolean
     },
     data () {
       return {
         scrollOffset: 250,
         filters: Store.state.filters,
-        showCount: false
+        showCount: false,
+        showIssueForm: false
       };
     },
     watch: {
       filters: {
         handler () {
           this.list.loadingMore = false;
-          this.$els.list.scrollTop = 0;
+          this.$refs.list.scrollTop = 0;
         },
         deep: true
       },
       issues () {
         this.$nextTick(() => {
           if (this.scrollHeight() <= this.listHeight() && this.list.issuesSize > this.list.issues.length) {
-            this.list.page++;
+            this.list.page += 1;
             this.list.getIssues(false);
           }
 
@@ -51,15 +55,20 @@
         });
       }
     },
+    computed: {
+      orderedIssues () {
+        return _.sortBy(this.issues, 'priority');
+      },
+    },
     methods: {
       listHeight () {
-        return this.$els.list.getBoundingClientRect().height;
+        return this.$refs.list.getBoundingClientRect().height;
       },
       scrollHeight () {
-        return this.$els.list.scrollHeight;
+        return this.$refs.list.scrollHeight;
       },
       scrollTop () {
-        return this.$els.list.scrollTop + this.listHeight();
+        return this.$refs.list.scrollTop + this.listHeight();
       },
       loadNextPage () {
         const getIssues = this.list.nextPage();
@@ -72,8 +81,9 @@
         }
       },
     },
-    ready () {
+    mounted () {
       const options = gl.issueBoards.getBoardSortableDefaultOptions({
+        scroll: document.querySelectorAll('.boards-list')[0],
         group: 'issues',
         sort: false,
         disabled: this.disabled,
@@ -81,23 +91,25 @@
         onStart: (e) => {
           const card = this.$refs.issue[e.oldIndex];
 
-          Store.moving.issue = card.issue;
+          card.showDetail = false;
           Store.moving.list = card.list;
+          Store.moving.issue = Store.moving.list.findIssue(+e.item.dataset.issueId);
 
           gl.issueBoards.onStart();
         },
         onAdd: (e) => {
-          gl.issueBoards.BoardsStore.moveIssueToList(Store.moving.list, this.list, Store.moving.issue);
+          gl.issueBoards.BoardsStore.moveIssueToList(Store.moving.list, this.list, Store.moving.issue, e.newIndex);
+
+          this.$nextTick(() => {
+            e.item.remove();
+          });
         },
-        onRemove: (e) => {
-          this.$refs.issue[e.oldIndex].$destroy(true);
-        }
       });
 
-      this.sortable = Sortable.create(this.$els.list, options);
+      this.sortable = Sortable.create(this.$refs.list, options);
 
       // Scroll event on list to load more
-      this.$els.list.onscroll = () => {
+      this.$refs.list.onscroll = () => {
         if ((this.scrollTop() > this.scrollHeight() - this.scrollOffset) && !this.list.loadingMore) {
           this.loadNextPage();
         }

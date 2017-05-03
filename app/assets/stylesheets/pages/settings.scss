@@ -1,5 +1,5 @@
 .settings-list-icon {
-  color: $gl-placeholder-color;
+  color: $gl-text-color-secondary;
   font-size: $settings-icon-size;
   line-height: 42px;
 }
@@ -19,4 +19,8 @@
 
 .danger-title {
   color: $gl-danger;
+}
+
+.service-settings .control-label {
+  padding-top: 0;
 }

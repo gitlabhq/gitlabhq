@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, prefer-arrow-callback, no-unused-vars, no-return-assign, max-len */
 (function() {
   this.BuildArtifacts = (function() {
     function BuildArtifacts() {
@@ -22,7 +22,5 @@
     };
 
     return BuildArtifacts;
-
   })();
-
 }).call(this);

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::API, 'Settings', api: true  do
+describe API::Settings, 'Settings', api: true  do
   include ApiHelpers
 
   let(:user) { create(:user) }
@@ -16,6 +16,8 @@ describe API::API, 'Settings', api: true  do
       expect(json_response['repository_storage']).to eq('default')
       expect(json_response['koding_enabled']).to be_falsey
       expect(json_response['koding_url']).to be_nil
+      expect(json_response['plantuml_enabled']).to be_falsey
+      expect(json_response['plantuml_url']).to be_nil
     end
   end
 
@@ -28,13 +30,17 @@ describe API::API, 'Settings', api: true  do
 
       it "updates application settings" do
         put api("/application/settings", admin),
-          default_projects_limit: 3, signin_enabled: false, repository_storage: 'custom', koding_enabled: true, koding_url: 'http://koding.example.com'
+          default_projects_limit: 3, signin_enabled: false, repository_storage: 'custom', koding_enabled: true, koding_url: 'http://koding.example.com',
+          plantuml_enabled: true, plantuml_url: 'http://plantuml.example.com'
         expect(response).to have_http_status(200)
         expect(json_response['default_projects_limit']).to eq(3)
         expect(json_response['signin_enabled']).to be_falsey
         expect(json_response['repository_storage']).to eq('custom')
+        expect(json_response['repository_storages']).to eq(['custom'])
         expect(json_response['koding_enabled']).to be_truthy
         expect(json_response['koding_url']).to eq('http://koding.example.com')
+        expect(json_response['plantuml_enabled']).to be_truthy
+        expect(json_response['plantuml_url']).to eq('http://plantuml.example.com')
       end
     end
 
@@ -43,8 +49,16 @@ describe API::API, 'Settings', api: true  do
         put api("/application/settings", admin), koding_enabled: true
 
         expect(response).to have_http_status(400)
-        expect(json_response['message']).to have_key('koding_url')
-        expect(json_response['message']['koding_url']).to include "can't be blank"
+        expect(json_response['error']).to eq('koding_url is missing')
+      end
+    end
+
+    context "missing plantuml_url value when plantuml_enabled is true" do
+      it "returns a blank parameter error message" do
+        put api("/application/settings", admin), plantuml_enabled: true
+
+        expect(response).to have_http_status(400)
+        expect(json_response['error']).to eq('plantuml_url is missing')
       end
     end
   end

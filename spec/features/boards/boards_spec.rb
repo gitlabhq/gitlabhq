@@ -109,7 +109,7 @@ describe 'Issue Boards', feature: true, js: true do
     end
 
     it 'search backlog list' do
-      page.within('#js-boards-seach') do
+      page.within('#js-boards-search') do
         find('.form-control').set(issue1.title)
       end
 
@@ -122,7 +122,7 @@ describe 'Issue Boards', feature: true, js: true do
     end
 
     it 'search done list' do
-      page.within('#js-boards-seach') do
+      page.within('#js-boards-search') do
         find('.form-control').set(issue8.title)
       end
 
@@ -135,7 +135,7 @@ describe 'Issue Boards', feature: true, js: true do
     end
 
     it 'search list' do
-      page.within('#js-boards-seach') do
+      page.within('#js-boards-search') do
         find('.form-control').set(issue5.title)
       end
 
@@ -158,7 +158,7 @@ describe 'Issue Boards', feature: true, js: true do
     end
 
     it 'removes checkmark in new list dropdown after deleting' do
-      click_button 'Create new list'
+      click_button 'Add list'
       wait_for_ajax
 
       page.within(find('.board:nth-child(2)')) do
@@ -304,7 +304,7 @@ describe 'Issue Boards', feature: true, js: true do
 
       context 'new list' do
         it 'shows all labels in new list dropdown' do
-          click_button 'Create new list'
+          click_button 'Add list'
           wait_for_ajax
 
           page.within('.dropdown-menu-issues-board-new') do
@@ -315,7 +315,7 @@ describe 'Issue Boards', feature: true, js: true do
         end
 
         it 'creates new list for label' do
-          click_button 'Create new list'
+          click_button 'Add list'
           wait_for_ajax
 
           page.within('.dropdown-menu-issues-board-new') do
@@ -328,7 +328,7 @@ describe 'Issue Boards', feature: true, js: true do
         end
 
         it 'creates new list for Backlog label' do
-          click_button 'Create new list'
+          click_button 'Add list'
           wait_for_ajax
 
           page.within('.dropdown-menu-issues-board-new') do
@@ -341,7 +341,7 @@ describe 'Issue Boards', feature: true, js: true do
         end
 
         it 'creates new list for Done label' do
-          click_button 'Create new list'
+          click_button 'Add list'
           wait_for_ajax
 
           page.within('.dropdown-menu-issues-board-new') do
@@ -354,7 +354,7 @@ describe 'Issue Boards', feature: true, js: true do
         end
 
         it 'keeps dropdown open after adding new list' do
-          click_button 'Create new list'
+          click_button 'Add list'
           wait_for_ajax
 
           page.within('.dropdown-menu-issues-board-new') do
@@ -369,7 +369,7 @@ describe 'Issue Boards', feature: true, js: true do
         it 'moves issues from backlog into new list' do
           wait_for_board_cards(1, 6)
 
-          click_button 'Create new list'
+          click_button 'Add list'
           wait_for_ajax
 
           page.within('.dropdown-menu-issues-board-new') do
@@ -379,6 +379,25 @@ describe 'Issue Boards', feature: true, js: true do
           wait_for_vue_resource
 
           wait_for_board_cards(1, 5)
+        end
+
+        it 'creates new list from a new label' do
+          click_button 'Add list'
+
+          wait_for_ajax
+
+          click_link 'Create new label'
+
+          fill_in('new_label_name', with: 'Testing New Label')
+
+          first('.suggest-colors a').click
+
+          click_button 'Create'
+
+          wait_for_ajax
+          wait_for_vue_resource
+
+          expect(page).to have_selector('.board', count: 5)
         end
       end
     end
@@ -638,6 +657,10 @@ describe 'Issue Boards', feature: true, js: true do
       logout
       visit namespace_project_board_path(project.namespace, project, board)
       wait_for_vue_resource
+    end
+
+    it 'displays lists' do
+      expect(page).to have_selector('.board')
     end
 
     it 'does not show create new list' do

@@ -7,15 +7,16 @@ describe "Admin Runners" do
 
   describe "Runners page" do
     before do
-      runner = FactoryGirl.create(:ci_runner)
+      runner = FactoryGirl.create(:ci_runner, contacted_at: Time.now)
       pipeline = FactoryGirl.create(:ci_pipeline)
       FactoryGirl.create(:ci_build, pipeline: pipeline, runner_id: runner.id)
       visit admin_runners_path
     end
 
-    it { page.has_text? "Manage Runners" }
-    it { page.has_text? "To register a new runner" }
-    it { page.has_text? "Runners with last contact less than a minute ago: 1" }
+    it 'has all necessary texts' do
+      expect(page).to have_text "To register a new Runner"
+      expect(page).to have_text "Runners with last contact less than a minute ago: 1"
+    end
 
     describe 'search' do
       before do
@@ -27,8 +28,10 @@ describe "Admin Runners" do
         search_form.click_button 'Search'
       end
 
-      it { expect(page).to have_content("runner-foo") }
-      it { expect(page).not_to have_content("runner-bar") }
+      it 'shows correct runner' do
+        expect(page).to have_content("runner-foo")
+        expect(page).not_to have_content("runner-bar")
+      end
     end
   end
 
@@ -46,8 +49,10 @@ describe "Admin Runners" do
     end
 
     describe 'projects' do
-      it { expect(page).to have_content(@project1.name_with_namespace) }
-      it { expect(page).to have_content(@project2.name_with_namespace) }
+      it 'contains project names' do
+        expect(page).to have_content(@project1.name_with_namespace)
+        expect(page).to have_content(@project2.name_with_namespace)
+      end
     end
 
     describe 'search' do
@@ -57,8 +62,10 @@ describe "Admin Runners" do
         search_form.click_button 'Search'
       end
 
-      it { expect(page).to have_content(@project1.name_with_namespace) }
-      it { expect(page).not_to have_content(@project2.name_with_namespace) }
+      it 'contains name of correct project' do
+        expect(page).to have_content(@project1.name_with_namespace)
+        expect(page).not_to have_content(@project2.name_with_namespace)
+      end
     end
 
     describe 'enable/create' do

@@ -1,5 +1,8 @@
 %ul#notes-list.notes.main-notes-list.timeline
   = render "projects/notes/notes"
+
+= render 'projects/notes/edit_form'
+
 %ul.notes.notes-form.timeline
   %li.timeline-entry
     .flash-container.timeline-content
@@ -20,4 +23,4 @@
           to post a comment
 
 :javascript
-  var notes = new Notes("#{namespace_project_notes_path(namespace_id: @project.namespace, target_id: @noteable.id, target_type: @noteable.class.name.underscore)}", #{@notes.map(&:id).to_json}, #{Time.now.to_i}, "#{diff_view}")
+  var notes = new Notes("#{namespace_project_notes_path(namespace_id: @project.namespace, project_id: @project, target_id: @noteable.id, target_type: @noteable.class.name.underscore)}", #{@notes.map(&:id).to_json}, #{Time.now.to_i}, "#{diff_view}")

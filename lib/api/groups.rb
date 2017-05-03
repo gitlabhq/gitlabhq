@@ -1,127 +1,171 @@
 module API
-  # groups API
   class Groups < Grape::API
+    include PaginationParams
+
     before { authenticate! }
 
-    resource :groups do
-      # Get a groups list
-      #
-      # Parameters:
-      #   skip_groups (optional) - Array of group ids to exclude from list
-      # Example Request:
-      #  GET /groups
-      get do
-        @groups = if current_user.admin
-                    Group.all
-                  else
-                    current_user.groups
-                  end
-
-        @groups = @groups.search(params[:search]) if params[:search].present?
-        @groups = @groups.where.not(id: params[:skip_groups]) if params[:skip_groups].present?
-        @groups = paginate @groups
-        present @groups, with: Entities::Group
+    helpers do
+      params :optional_params do
+        optional :description, type: String, desc: 'The description of the group'
+        optional :visibility_level, type: Integer, desc: 'The visibility level of the group'
+        optional :lfs_enabled, type: Boolean, desc: 'Enable/disable LFS for the projects in this group'
+        optional :request_access_enabled, type: Boolean, desc: 'Allow users to request member access'
       end
 
-      # Create group. Available only for users who can create groups.
-      #
-      # Parameters:
-      #   name (required)                   - The name of the group
-      #   path (required)                   - The path of the group
-      #   description (optional)            - The description of the group
-      #   visibility_level (optional)       - The visibility level of the group
-      #   lfs_enabled (optional)            - Enable/disable LFS for the projects in this group
-      #   request_access_enabled (optional) - Allow users to request member access
-      # Example Request:
-      #   POST /groups
+      params :statistics_params do
+        optional :statistics, type: Boolean, default: false, desc: 'Include project statistics'
+      end
+
+      def present_groups(groups, options = {})
+        options = options.reverse_merge(
+          with: Entities::Group,
+          current_user: current_user,
+        )
+
+        groups = groups.with_statistics if options[:statistics]
+        present paginate(groups), options
+      end
+    end
+
+    resource :groups do
+      desc 'Get a groups list' do
+        success Entities::Group
+      end
+      params do
+        use :statistics_params
+        optional :skip_groups, type: Array[Integer], desc: 'Array of group ids to exclude from list'
+        optional :all_available, type: Boolean, desc: 'Show all group that you have access to'
+        optional :search, type: String, desc: 'Search for a specific group'
+        optional :order_by, type: String, values: %w[name path], default: 'name', desc: 'Order by name or path'
+        optional :sort, type: String, values: %w[asc desc], default: 'asc', desc: 'Sort by asc (ascending) or desc (descending)'
+        use :pagination
+      end
+      get do
+        groups = if current_user.admin
+                   Group.all
+                 elsif params[:all_available]
+                   GroupsFinder.new.execute(current_user)
+                 else
+                   current_user.groups
+                 end
+
+        groups = groups.search(params[:search]) if params[:search].present?
+        groups = groups.where.not(id: params[:skip_groups]) if params[:skip_groups].present?
+        groups = groups.reorder(params[:order_by] => params[:sort])
+
+        present_groups groups, statistics: params[:statistics] && current_user.is_admin?
+      end
+
+      desc 'Get list of owned groups for authenticated user' do
+        success Entities::Group
+      end
+      params do
+        use :pagination
+        use :statistics_params
+      end
+      get '/owned' do
+        present_groups current_user.owned_groups, statistics: params[:statistics]
+      end
+
+      desc 'Create a group. Available only for users who can create groups.' do
+        success Entities::Group
+      end
+      params do
+        requires :name, type: String, desc: 'The name of the group'
+        requires :path, type: String, desc: 'The path of the group'
+        use :optional_params
+      end
       post do
         authorize! :create_group
-        required_attributes! [:name, :path]
 
-        attrs = attributes_for_keys [:name, :path, :description, :visibility_level, :lfs_enabled, :request_access_enabled]
-        @group = Group.new(attrs)
+        group = ::Groups::CreateService.new(current_user, declared_params(include_missing: false)).execute
 
-        if @group.save
-          @group.add_owner(current_user)
-          present @group, with: Entities::Group
+        if group.persisted?
+          present group, with: Entities::Group, current_user: current_user
         else
-          render_api_error!("Failed to save group #{@group.errors.messages}", 400)
+          render_api_error!("Failed to save group #{group.errors.messages}", 400)
         end
       end
+    end
 
-      # Update group. Available only for users who can administrate groups.
-      #
-      # Parameters:
-      #   id (required)                     - The ID of a group
-      #   path (optional)                   - The path of the group
-      #   description (optional)            - The description of the group
-      #   visibility_level (optional)       - The visibility level of the group
-      #   lfs_enabled (optional)            - Enable/disable LFS for the projects in this group
-      #   request_access_enabled (optional) - Allow users to request member access
-      # Example Request:
-      #   PUT /groups/:id
+    params do
+      requires :id, type: String, desc: 'The ID of a group'
+    end
+    resource :groups do
+      desc 'Update a group. Available only for users who can administrate groups.' do
+        success Entities::Group
+      end
+      params do
+        optional :name, type: String, desc: 'The name of the group'
+        optional :path, type: String, desc: 'The path of the group'
+        use :optional_params
+        at_least_one_of :name, :path, :description, :visibility_level,
+                        :lfs_enabled, :request_access_enabled
+      end
       put ':id' do
-        group = find_group(params[:id])
+        group = find_group!(params[:id])
         authorize! :admin_group, group
 
-        attrs = attributes_for_keys [:name, :path, :description, :visibility_level, :lfs_enabled, :request_access_enabled]
-
-        if ::Groups::UpdateService.new(group, current_user, attrs).execute
-          present group, with: Entities::GroupDetail
+        if ::Groups::UpdateService.new(group, current_user, declared_params(include_missing: false)).execute
+          present group, with: Entities::GroupDetail, current_user: current_user
         else
           render_validation_error!(group)
         end
       end
 
-      # Get a single group, with containing projects
-      #
-      # Parameters:
-      #   id (required) - The ID of a group
-      # Example Request:
-      #   GET /groups/:id
+      desc 'Get a single group, with containing projects.' do
+        success Entities::GroupDetail
+      end
       get ":id" do
-        group = find_group(params[:id])
-        present group, with: Entities::GroupDetail
+        group = find_group!(params[:id])
+        present group, with: Entities::GroupDetail, current_user: current_user
       end
 
-      # Remove group
-      #
-      # Parameters:
-      #   id (required) - The ID of a group
-      # Example Request:
-      #   DELETE /groups/:id
+      desc 'Remove a group.'
       delete ":id" do
-        group = find_group(params[:id])
+        group = find_group!(params[:id])
         authorize! :admin_group, group
         DestroyGroupService.new(group, current_user).execute
       end
 
-      # Get a list of projects in this group
-      #
-      # Example Request:
-      #   GET /groups/:id/projects
+      desc 'Get a list of projects in this group.' do
+        success Entities::Project
+      end
+      params do
+        optional :archived, type: Boolean, default: false, desc: 'Limit by archived status'
+        optional :visibility, type: String, values: %w[public internal private],
+                              desc: 'Limit by visibility'
+        optional :search, type: String, desc: 'Return list of authorized projects matching the search criteria'
+        optional :order_by, type: String, values: %w[id name path created_at updated_at last_activity_at],
+                            default: 'created_at', desc: 'Return projects ordered by field'
+        optional :sort, type: String, values: %w[asc desc], default: 'desc',
+                        desc: 'Return projects sorted in ascending and descending order'
+        optional :simple, type: Boolean, default: false,
+                          desc: 'Return only the ID, URL, name, and path of each project'
+        use :pagination
+      end
       get ":id/projects" do
-        group = find_group(params[:id])
+        group = find_group!(params[:id])
         projects = GroupProjectsFinder.new(group).execute(current_user)
-        projects = paginate projects
-        present projects, with: Entities::Project, user: current_user
+        projects = filter_projects(projects)
+        entity = params[:simple] ? Entities::BasicProjectDetails : Entities::Project
+        present paginate(projects), with: entity, current_user: current_user
       end
 
-      # Transfer a project to the Group namespace
-      #
-      # Parameters:
-      #   id - group id
-      #   project_id  - project id
-      # Example Request:
-      #   POST /groups/:id/projects/:project_id
+      desc 'Transfer a project to the group namespace. Available only for admin.' do
+        success Entities::GroupDetail
+      end
+      params do
+        requires :project_id, type: String, desc: 'The ID or path of the project'
+      end
       post ":id/projects/:project_id" do
         authenticated_as_admin!
-        group = Group.find_by(id: params[:id])
-        project = Project.find(params[:project_id])
+        group = find_group!(params[:id])
+        project = find_project!(params[:project_id])
         result = ::Projects::TransferService.new(project, current_user).execute(group)
 
         if result
-          present group
+          present group, with: Entities::GroupDetail, current_user: current_user
         else
           render_api_error!("Failed to transfer project #{project.errors.messages}", 400)
         end

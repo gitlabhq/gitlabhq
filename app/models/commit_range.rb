@@ -89,22 +89,25 @@ class CommitRange
 
   alias_method :id, :to_s
 
-  def to_reference(from_project = nil)
-    if cross_project_reference?(from_project)
-      project.to_reference + self.class.reference_prefix + self.id
+  def to_reference(from_project = nil, full: false)
+    project_reference = project.to_reference(from_project, full: full)
+
+    if project_reference.present?
+      project_reference + self.class.reference_prefix + self.id
     else
       self.id
     end
   end
 
   def reference_link_text(from_project = nil)
-    reference = ref_from + notation + ref_to
+    project_reference = project.to_reference(from_project)
+    reference         = ref_from + notation + ref_to
 
-    if cross_project_reference?(from_project)
-      reference = project.to_reference + self.class.reference_prefix + reference
+    if project_reference.present?
+      project_reference + self.class.reference_prefix + reference
+    else
+      reference
     end
-
-    reference
   end
 
   # Return a Hash of parameters for passing to a URL helper

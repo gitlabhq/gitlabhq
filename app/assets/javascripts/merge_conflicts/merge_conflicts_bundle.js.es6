@@ -1,4 +1,7 @@
-/* eslint-disable */
+/* eslint-disable new-cap, comma-dangle, no-new */
+/* global Vue */
+/* global Flash */
+
 //= require vue
 //= require ./merge_conflict_store
 //= require ./merge_conflict_service
@@ -6,7 +9,6 @@
 //= require ./mixins/line_conflict_actions
 //= require ./components/diff_file_editor
 //= require ./components/inline_conflict_lines
-//= require ./components/parallel_conflict_line
 //= require ./components/parallel_conflict_lines
 
 $(() => {
@@ -27,10 +29,10 @@ $(() => {
       'parallel-conflict-lines': gl.mergeConflicts.parallelConflictLines
     },
     computed: {
-      conflictsCountText() { return mergeConflictsStore.getConflictsCountText() },
-      readyToCommit() { return mergeConflictsStore.isReadyToCommit() },
-      commitButtonText() { return mergeConflictsStore.getCommitButtonText() },
-      showDiffViewTypeSwitcher() { return mergeConflictsStore.fileTextTypePresent() }
+      conflictsCountText() { return mergeConflictsStore.getConflictsCountText(); },
+      readyToCommit() { return mergeConflictsStore.isReadyToCommit(); },
+      commitButtonText() { return mergeConflictsStore.getCommitButtonText(); },
+      showDiffViewTypeSwitcher() { return mergeConflictsStore.fileTextTypePresent(); }
     },
     created() {
       mergeConflictsService
@@ -49,7 +51,7 @@ $(() => {
           mergeConflictsStore.setLoadingState(false);
 
           this.$nextTick(() => {
-            $(conflictsEl.querySelectorAll('.js-syntax-highlight')).syntaxHighlight();
+            $('.js-syntax-highlight').syntaxHighlight();
           });
         });
     },
@@ -86,5 +88,5 @@ $(() => {
           });
       }
     }
-  })
+  });
 });

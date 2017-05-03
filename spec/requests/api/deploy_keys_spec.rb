@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe API::API, api: true  do
+describe API::DeployKeys, api: true  do
   include ApiHelpers
 
   let(:user)        { create(:user) }
   let(:admin)       { create(:admin) }
-  let(:project)     { create(:project, creator_id: user.id) }
-  let(:project2)    { create(:project, creator_id: user.id) }
+  let(:project)     { create(:empty_project, creator_id: user.id) }
+  let(:project2)    { create(:empty_project, creator_id: user.id) }
   let(:deploy_key)  { create(:deploy_key, public: true) }
 
   let!(:deploy_keys_project) do
@@ -75,7 +75,6 @@ describe API::API, api: true  do
       expect(response).to have_http_status(400)
       expect(json_response['message']['key']).to eq([
         'can\'t be blank',
-        'is too short (minimum is 0 characters)',
         'is invalid'
       ])
     end
@@ -85,8 +84,7 @@ describe API::API, api: true  do
 
       expect(response).to have_http_status(400)
       expect(json_response['message']['title']).to eq([
-        'can\'t be blank',
-        'is too short (minimum is 0 characters)'
+        'can\'t be blank'
       ])
     end
 

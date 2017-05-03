@@ -20,12 +20,14 @@ Example response:
     "id": 1,
     "title": "Public key",
     "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=",
+    "can_push": false,
     "created_at": "2013-10-02T10:12:29Z"
   },
   {
     "id": 3,
     "title": "Another Public key",
     "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=",
+    "can_push": true,
     "created_at": "2013-10-02T11:12:29Z"
   }
 ]
@@ -55,12 +57,14 @@ Example response:
     "id": 1,
     "title": "Public key",
     "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=",
+    "can_push": false,
     "created_at": "2013-10-02T10:12:29Z"
   },
   {
     "id": 3,
     "title": "Another Public key",
     "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=",
+    "can_push": false,
     "created_at": "2013-10-02T11:12:29Z"
   }
 ]
@@ -92,6 +96,7 @@ Example response:
   "id": 1,
   "title": "Public key",
   "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=",
+  "can_push": false,
   "created_at": "2013-10-02T10:12:29Z"
 }
 ```
@@ -107,14 +112,15 @@ project only if original one was is accessible by the same user.
 POST /projects/:id/deploy_keys
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`    | integer | yes | The ID of the project |
-| `title` | string  | yes | New deploy key's title |
-| `key`   | string  | yes | New deploy key |
+| Attribute  | Type | Required | Description |
+| ---------  | ---- | -------- | ----------- |
+| `id`       | integer | yes | The ID of the project |
+| `title`    | string  | yes | New deploy key's title |
+| `key`      | string  | yes | New deploy key |
+| `can_push` | boolean | no  | Can deploy key push to the project's repository |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "Content-Type: application/json" --data '{"title": "My deploy key", "key": "ssh-rsa AAAA..."}' "https://gitlab.example.com/api/v3/projects/5/deploy_keys/"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "Content-Type: application/json" --data '{"title": "My deploy key", "key": "ssh-rsa AAAA...", "can_push": "true"}' "https://gitlab.example.com/api/v3/projects/5/deploy_keys/"
 ```
 
 Example response:
@@ -124,6 +130,7 @@ Example response:
    "key" : "ssh-rsa AAAA...",
    "id" : 12,
    "title" : "My deploy key",
+   "can_push": true,
    "created_at" : "2015-08-29T12:44:31.550Z"
 }
 ```

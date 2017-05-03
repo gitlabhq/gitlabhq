@@ -16,18 +16,18 @@
       - if plain
         = link_text
       - else
-        %a{href: "##{line_code}", data: { linenumber: link_text }}
+        %a{ href: "##{line_code}", data: { linenumber: link_text } }
     %td.new_line.diff-line-num{ class: type, data: { linenumber: line.new_pos } }
       - link_text = type == "old" ? " " : line.new_pos
       - if plain
         = link_text
       - else
-        %a{href: "##{line_code}", data: { linenumber: link_text }}
+        %a{ href: "##{line_code}", data: { linenumber: link_text } }
     %td.line_content.noteable_line{ class: type, data: (diff_view_line_data(line_code, diff_file.position(line), type) unless plain) }<
       - if email
-        %pre= diff_line_content(line.text, type)
+        %pre= line.text
       - else
-        = diff_line_content(line.text, type)
+        = diff_line_content(line.text)
 
 - discussions = local_assigns.fetch(:discussions, nil)
 - if discussions && !line.meta?

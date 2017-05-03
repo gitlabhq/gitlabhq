@@ -4,13 +4,15 @@
 
 ---
 
-> **Note**
-Docker Registry manifest `v1` support was added in GitLab 8.9 to support Docker
-versions earlier than 1.10.
->
-This document is about the user guide. To learn how to enable GitLab Container
-Registry across your GitLab instance, visit the
-[administrator documentation](../../administration/container_registry.md).
+>**Notes:**
+- Docker Registry manifest `v1` support was added in GitLab 8.9 to support Docker
+  versions earlier than 1.10.
+- This document is about the user guide. To learn how to enable GitLab Container
+  Registry across your GitLab instance, visit the
+  [administrator documentation](../../administration/container_registry.md).
+- Starting from GitLab 8.12, if you have 2FA enabled in your account, you need
+  to pass a personal access token instead of your password in order to login to
+  GitLab's Container Registry.
 
 With the Docker Container Registry integrated into GitLab, every project can
 have its own space to store its Docker images.

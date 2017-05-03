@@ -12,15 +12,15 @@
 = render 'projects/last_push'
 = render "home_panel"
 
-- if @project.feature_available?(:repository, current_user)
+- if current_user && can?(current_user, :download_code, @project)
   %nav.project-stats{ class: container_class }
     %ul.nav
       %li
         = link_to project_files_path(@project) do
-          Files (#{repository_size})
+          Files (#{storage_counter(@project.statistics.total_repository_size)})
       %li
         = link_to namespace_project_commits_path(@project.namespace, @project, current_ref) do
-          #{'Commit'.pluralize(@project.commit_count)} (#{number_with_delimiter(@project.commit_count)})
+          #{'Commit'.pluralize(@project.statistics.commit_count)} (#{number_with_delimiter(@project.statistics.commit_count)})
       %li
         = link_to namespace_project_branches_path(@project.namespace, @project) do
           #{'Branch'.pluralize(@repository.branch_count)} (#{number_with_delimiter(@repository.branch_count)})
@@ -64,22 +64,18 @@
         - unless @repository.gitlab_ci_yml
           %li.missing
             = link_to add_special_file_path(@project, file_name: '.gitlab-ci.yml') do
-              Set Up CI
+              Set up CI
+        - if koding_enabled? && @repository.koding_yml.blank?
+          %li.missing
+            = link_to 'Set up Koding', add_koding_stack_path(@project)
+        - if @repository.gitlab_ci_yml.blank? && @project.deployment_service.present?
+          %li.missing
+            = link_to add_special_file_path(@project, file_name: '.gitlab-ci.yml', commit_message: 'Set up auto deploy', target_branch: 'auto-deploy', context: 'autodeploy') do
+              Set up auto deploy
 
-      %li.project-repo-buttons-right
-        .project-repo-buttons.project-right-buttons
-          - if current_user
-            = render 'shared/members/access_request_buttons', source: @project
-            = render "projects/buttons/koding"
-
-          .btn-group.project-repo-btn-group
-            = render 'projects/buttons/download', project: @project, ref: @ref
-            = render 'projects/buttons/dropdown'
-
-          = render 'shared/notifications/button', notification_setting: @notification_setting
   - if @repository.commit
     .project-last-commit{ class: container_class }
-      = render 'projects/last_commit', commit: @repository.commit, project: @project
+      = render 'projects/last_commit', commit: @repository.commit, ref: current_ref, project: @project
 
 %div{ class: container_class }
   - if @project.archived?

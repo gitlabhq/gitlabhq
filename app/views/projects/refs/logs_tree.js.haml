@@ -14,5 +14,8 @@
       // Load more commit logs for each file in tree
       // if we still on the same page
       var url = "#{escape_javascript(@more_log_url)}";
-      ajaxGet(url);
+      gl.utils.ajaxGet(url);
     }
+
+:plain
+  gl.utils.localTimeAgo($('.js-timeago', 'table.table_#{@hex_path} tbody'));

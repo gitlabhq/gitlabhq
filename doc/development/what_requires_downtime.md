@@ -66,6 +66,12 @@ producing errors whenever it tries to use the `dummy` column.
 As a result of the above downtime _is_ required when removing a column, even
 when using PostgreSQL.
 
+## Renaming Columns
+
+Renaming columns requires downtime as running GitLab instances will continue
+using the old column name until a new version is deployed. This can result
+in the instance producing errors, which in turn can impact the user experience.
+
 ## Changing Column Constraints
 
 Generally changing column constraints requires checking all rows in the table to

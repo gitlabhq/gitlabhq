@@ -2,16 +2,14 @@
 - ref = local_assigns.fetch(:ref, nil)
 - commit_sha = local_assigns.fetch(:commit_sha, nil)
 - retried = local_assigns.fetch(:retried, false)
+- pipeline_link = local_assigns.fetch(:pipeline_link, false)
 - stage = local_assigns.fetch(:stage, false)
 - coverage = local_assigns.fetch(:coverage, false)
 - allow_retry = local_assigns.fetch(:allow_retry, false)
 
-%tr.build.commit{class: ('retried' if retried)}
+%tr.build.commit{ class: ('retried' if retried) }
   %td.status
-    - if can?(current_user, :read_build, build)
-      = ci_status_with_icon(build.status, namespace_project_build_url(build.project.namespace, build.project, build))
-    - else
-      = ci_status_with_icon(build.status)
+    = render "ci/status/badge", status: build.detailed_status(current_user)
 
   %td.branch-commit
     - if can?(current_user, :read_build, build)
@@ -51,12 +49,20 @@
       - if build.manual?
         %span.label.label-info manual
 
+  - if pipeline_link
+    %td
+      = link_to pipeline_path(build.pipeline) do
+        %span.pipeline-id ##{build.pipeline.id}
+      %span by
+      - if build.pipeline.user
+        = user_avatar(user: build.pipeline.user, size: 20)
+      - else
+        %span.monospace API
+
   - if admin
     %td
       - if build.project
         = link_to build.project.name_with_namespace, admin_namespace_project_path(build.project.namespace, build.project)
-
-  - if admin
     %td
       - if build.try(:runner)
         = runner_link(build.runner)
@@ -82,9 +88,8 @@
         %span #{time_ago_with_tooltip(build.finished_at)}
 
   %td.coverage
-    - if coverage
-      - if build.try(:coverage)
-        #{build.coverage}%
+    - if coverage && build.try(:coverage)
+      #{build.coverage}%
 
   %td
     .pull-right
@@ -96,9 +101,9 @@
           = link_to cancel_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Cancel', class: 'btn btn-build' do
             = icon('remove', class: 'cred')
         - elsif allow_retry
-          - if build.retryable?
-            = link_to retry_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Retry', class: 'btn btn-build' do
-              = icon('repeat')
-          - elsif build.playable? && !admin
+          - if build.playable? && !admin
             = link_to play_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Play', class: 'btn btn-build' do
               = custom_icon('icon_play')
+          - elsif build.retryable?
+            = link_to retry_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Retry', class: 'btn btn-build' do
+              = icon('repeat')

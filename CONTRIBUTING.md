@@ -9,8 +9,6 @@
     - [Helping others](#helping-others)
     - [I want to contribute!](#i-want-to-contribute)
     - [Implement design & UI elements](#implement-design-ui-elements)
-        - [Design reference](#design-reference)
-        - [UI development kit](#ui-development-kit)
     - [Issue tracker](#issue-tracker)
         - [Feature proposals](#feature-proposals)
         - [Issue tracker guidelines](#issue-tracker-guidelines)
@@ -19,7 +17,6 @@
         - [Technical debt](#technical-debt)
     - [Merge requests](#merge-requests)
         - [Merge request guidelines](#merge-request-guidelines)
-        - [Merge request description format](#merge-request-description-format)
         - [Contribution acceptance criteria](#contribution-acceptance-criteria)
     - [Changes for Stable Releases](#changes-for-stable-releases)
     - [Definition of done](#definition-of-done)
@@ -91,7 +88,7 @@ This was inspired by [an article by Kent C. Dodds][medium-up-for-grabs].
 
 ## Implement design & UI elements
 
-Please see the [UI Guide for building GitLab].
+Please see the [UX Guide for GitLab].
 
 ## Issue tracker
 
@@ -219,7 +216,10 @@ associated with in the description of the issue.
 We welcome merge requests with fixes and improvements to GitLab code, tests,
 and/or documentation. The features we would really like a merge request for are
 listed with the label [`Accepting Merge Requests` on our issue tracker for CE][accepting-mrs-ce]
-and [EE][accepting-mrs-ee] but other improvements are also welcome.
+and [EE][accepting-mrs-ee] but other improvements are also welcome. Please note
+that if an issue is marked for the current milestone either before or while you
+are working on it, a team member may take over the merge request in order to
+ensure the work is finished before the release date.
 
 If you want to add a new feature that is not labeled it is best to first create
 a feedback issue (if there isn't one already) and leave a comment asking for it
@@ -247,13 +247,7 @@ request is as follows:
 1. Fork the project into your personal space on GitLab.com
 1. Create a feature branch, branch away from `master`
 1. Write [tests](https://gitlab.com/gitlab-org/gitlab-development-kit#running-the-tests) and code
-1. Add your changes to the [CHANGELOG.md](CHANGELOG.md):
-  1. If you are fixing a ~regression issue, you can add your entry to the next
-     patch release (e.g. `8.12.5` if current version is `8.12.4`)
-  1. Otherwise, add your entry to the next minor release (e.g. `8.13.0` if
-     current version is `8.12.4`
-  1. Please add your entry at a random place among the entries of the targeted
-     release
+1. [Generate a changelog entry with `bin/changelog`][changelog]
 1. If you are writing documentation, make sure to follow the
    [documentation styleguide][doc-styleguide]
 1. If you have multiple commits please combine them into one commit by
@@ -262,8 +256,11 @@ request is as follows:
 1. Submit a merge request (MR) to the `master` branch
 1. The MR title should describe the change you want to make
 1. The MR description should give a motive for your change and the method you
-   used to achieve it, see the [merge request description format]
-   (#merge-request-description-format)
+   used to achieve it.
+  1. If you are contributing code, fill in the template already provided in the
+     "Description" field.
+  1. If you are contributing documentation, choose `Documentation` from the
+     "Choose a template" menu and fill in the template.
 1. If the MR changes the UI it should include *Before* and *After* screenshots
 1. If the MR changes CSS classes please include the list of affected pages,
    `grep css-class ./app -R`
@@ -303,6 +300,7 @@ you start with a very simple UI? Can you do part of the refactor? The increased
 reviewability of small MRs that leads to higher code quality is more important
 to us than having a minimal commit log. The smaller an MR is the more likely it
 is it will be merged (quickly). After that you can send more MRs to enhance it.
+The ['How to get faster PR reviews' document of Kubernetes](https://github.com/kubernetes/community/blob/master/contributors/devel/faster_reviews.md) also has some great points regarding this.
 
 For examples of feedback on merge requests please look at already
 [closed merge requests][closed-merge-requests]. If you would like quick feedback
@@ -469,8 +467,9 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [contributor-covenant]: http://contributor-covenant.org
 [rss-source]: https://github.com/bbatsov/ruby-style-guide/blob/master/README.md#source-code-layout
 [rss-naming]: https://github.com/bbatsov/ruby-style-guide/blob/master/README.md#naming
+[changelog]: doc/development/changelog.md "Generate a changelog entry"
 [doc-styleguide]: doc/development/doc_styleguide.md "Documentation styleguide"
 [scss-styleguide]: doc/development/scss_styleguide.md "SCSS styleguide"
 [newlines-styleguide]: doc/development/newlines_styleguide.md "Newlines styleguide"
-[UI Guide for building GitLab]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/development/ui_guide.md
+[UX Guide for GitLab]: http://docs.gitlab.com/ce/development/ux_guide/
 [license-finder-doc]: doc/development/licensing.md

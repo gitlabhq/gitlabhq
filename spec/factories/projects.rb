@@ -24,6 +24,18 @@ FactoryGirl.define do
       visibility_level Gitlab::VisibilityLevel::PRIVATE
     end
 
+    trait :archived do
+      archived true
+    end
+
+    trait :access_requestable do
+      request_access_enabled true
+    end
+
+    trait :repository do
+      # no-op... for now!
+    end
+
     trait :empty_repo do
       after(:create) do |project|
         project.create_repository
@@ -38,6 +50,12 @@ FactoryGirl.define do
       end
     end
 
+    trait :test_repo do
+      after :create do |project|
+        TestEnv.copy_repo(project)
+      end
+    end
+
     # Nest Project Feature attributes
     transient do
       wiki_access_level ProjectFeature::ENABLED
@@ -49,13 +67,17 @@ FactoryGirl.define do
     end
 
     after(:create) do |project, evaluator|
+      # Builds and MRs can't have higher visibility level than repository access level.
+      builds_access_level = [evaluator.builds_access_level, evaluator.repository_access_level].min
+      merge_requests_access_level = [evaluator.merge_requests_access_level, evaluator.repository_access_level].min
+
       project.project_feature.
-        update_attributes(
+        update_attributes!(
           wiki_access_level: evaluator.wiki_access_level,
-          builds_access_level: evaluator.builds_access_level,
+          builds_access_level: builds_access_level,
           snippets_access_level: evaluator.snippets_access_level,
           issues_access_level: evaluator.issues_access_level,
-          merge_requests_access_level: evaluator.merge_requests_access_level,
+          merge_requests_access_level: merge_requests_access_level,
           repository_access_level: evaluator.repository_access_level
         )
     end
@@ -83,9 +105,7 @@ FactoryGirl.define do
   factory :project, parent: :empty_project do
     path { 'gitlabhq' }
 
-    after :create do |project|
-      TestEnv.copy_repo(project)
-    end
+    test_repo
   end
 
   factory :forked_project_with_submodules, parent: :empty_project do
@@ -121,6 +141,19 @@ FactoryGirl.define do
           title: 'JIRA tracker',
           url: 'http://jira.example.net',
           project_key: 'JIRA'
+        }
+      )
+    end
+  end
+
+  factory :kubernetes_project, parent: :empty_project do
+    after :create do |project|
+      project.create_kubernetes_service(
+        active: true,
+        properties: {
+          namespace: project.path,
+          api_url: 'https://kubernetes.example.com',
+          token: 'a' * 40,
         }
       )
     end

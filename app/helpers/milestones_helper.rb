@@ -86,6 +86,30 @@ module MilestonesHelper
       days    = milestone.remaining_days
       content = content_tag(:strong, days)
       content << " #{'day'.pluralize(days)} remaining"
+    elsif milestone.upcoming?
+      content_tag(:strong, 'Upcoming')
+    elsif milestone.start_date && milestone.start_date.past?
+      days    = milestone.elapsed_days
+      content = content_tag(:strong, days)
+      content << " #{'day'.pluralize(days)} elapsed"
+    end
+  end
+
+  def milestone_date_range(milestone)
+    if milestone.start_date && milestone.due_date
+      "#{milestone.start_date.to_s(:medium)} - #{milestone.due_date.to_s(:medium)}"
+    elsif milestone.due_date
+      if milestone.due_date.past?
+        "expired on #{milestone.due_date.to_s(:medium)}"
+      else
+        "expires on #{milestone.due_date.to_s(:medium)}"
+      end
+    elsif milestone.start_date
+      if milestone.start_date.past?
+        "started on #{milestone.start_date.to_s(:medium)}"
+      else
+        "starts on #{milestone.start_date.to_s(:medium)}"
+      end
     end
   end
 end

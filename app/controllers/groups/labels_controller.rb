@@ -1,4 +1,6 @@
 class Groups::LabelsController < Groups::ApplicationController
+  include ToggleSubscriptionAction
+
   before_action :label, only: [:edit, :update, :destroy]
   before_action :authorize_admin_labels!, only: [:new, :create, :edit, :update, :destroy]
   before_action :save_previous_label_path, only: [:edit]
@@ -68,6 +70,11 @@ class Groups::LabelsController < Groups::ApplicationController
 
   def label
     @label ||= @group.labels.find(params[:id])
+  end
+  alias_method :subscribable_resource, :label
+
+  def subscribable_project
+    nil
   end
 
   def label_params

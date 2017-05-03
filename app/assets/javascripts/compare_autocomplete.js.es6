@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, one-var, no-var, one-var-declaration-per-line, object-shorthand, comma-dangle, prefer-arrow-callback, no-else-return, newline-per-chained-call, wrap-iife, max-len */
+
 (function() {
   this.CompareAutocomplete = (function() {
     function CompareAutocomplete() {
@@ -27,7 +28,6 @@
           selectable: true,
           filterable: true,
           filterByText: true,
-          toggleLabel: true,
           fieldName: $dropdown.data('field-name'),
           filterInput: 'input[type="search"]',
           renderRow: function(ref) {
@@ -54,11 +54,16 @@
           $('.dropdown-toggle-text', $dropdown).text(text);
           $dropdownContainer.removeClass('open');
         });
+
+        $dropdownContainer.on('click', '.dropdown-content a', (e) => {
+          $dropdown.prop('title', e.target.text.replace(/_+?/g, '-'));
+          if ($dropdown.hasClass('has-tooltip')) {
+            $dropdown.tooltip('fixTitle');
+          }
+        });
       });
     };
 
     return CompareAutocomplete;
-
   })();
-
 }).call(this);

@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint-disable max-len, space-before-function-paren, no-underscore-dangle, consistent-return, comma-dangle, no-unused-vars, dot-notation, no-new, no-return-assign, camelcase, no-param-reassign */
+
 /*
 UserTabs
 
@@ -106,7 +107,7 @@ content on the Users#show page.
         this.loadActivities(source);
       }
 
-      const loadableActions = [ 'groups', 'contributed', 'projects', 'snippets' ];
+      const loadableActions = ['groups', 'contributed', 'projects', 'snippets'];
       if (loadableActions.indexOf(action) > -1) {
         return this.loadTab(source, action);
       }
@@ -134,7 +135,7 @@ content on the Users#show page.
       }
       const $calendarWrap = this.$parentEl.find('.user-calendar');
       $calendarWrap.load($calendarWrap.data('href'));
-      new Activities();
+      new gl.Activities();
       return this.loaded['activity'] = true;
     }
 
@@ -144,7 +145,7 @@ content on the Users#show page.
     }
 
     setCurrentAction(source, action) {
-      let new_state = source
+      let new_state = source;
       new_state = new_state.replace(/\/+$/, '');
       new_state += this._location.search + this._location.hash;
       history.replaceState({

@@ -74,4 +74,13 @@ module NotificationsHelper
     return unless notification_setting.source_type
     hidden_field_tag "#{notification_setting.source_type.downcase}_id", notification_setting.source_id
   end
+
+  def notification_event_name(event)
+    case event
+    when :success_pipeline
+      'Successful pipeline'
+    else
+      event.to_s.humanize
+    end
+  end
 end

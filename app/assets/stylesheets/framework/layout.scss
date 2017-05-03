@@ -6,7 +6,7 @@ html {
 
 body {
   &.navless {
-    background-color: white !important;
+    background-color: $white-light !important;
   }
 }
 
@@ -26,6 +26,62 @@ body {
 
 .container-limited {
   max-width: $fixed-layout-width;
+
+  &.limit-container-width {
+    max-width: $limited-layout-width;
+  }
+}
+
+.alert-wrapper {
+  .alert {
+    margin-bottom: 0;
+
+    &:last-child {
+      margin-bottom: $gl-padding;
+    }
+  }
+
+  .alert-link-group {
+    float: right;
+  }
+
+  /* Center alert text and alert action links on smaller screens */
+  @media (max-width: $screen-sm-max) {
+    .alert {
+      text-align: center;
+    }
+
+    .alert-link-group {
+      float: none;
+    }
+  }
+
+  /* Stripe the background colors so that adjacent alert-warnings are distinct from one another */
+  .alert-warning {
+    transition: background-color 0.15s, border-color 0.15s;
+    background-color: lighten($gl-warning, 4%);
+    border-color: lighten($gl-warning, 4%);
+  }
+
+  .alert-warning + .alert-warning {
+    background-color: $gl-warning;
+    border-color: $gl-warning;
+  }
+
+  .alert-warning + .alert-warning + .alert-warning {
+    background-color: darken($gl-warning, 4%);
+    border-color: darken($gl-warning, 4%);
+  }
+
+  .alert-warning + .alert-warning + .alert-warning + .alert-warning {
+    background-color: darken($gl-warning, 8%);
+    border-color: darken($gl-warning, 8%);
+  }
+
+  .alert-warning:only-of-type {
+    background-color: $gl-warning;
+    border-color: $gl-warning;
+  }
 }
 
 

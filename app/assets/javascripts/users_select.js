@@ -1,6 +1,10 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, one-var, no-var, prefer-rest-params, wrap-iife, quotes, max-len, one-var-declaration-per-line, vars-on-top, prefer-arrow-callback, consistent-return, comma-dangle, object-shorthand, no-shadow, no-unused-vars, no-else-return, no-self-compare, prefer-template, no-unused-expressions, no-lonely-if, yoda, prefer-spread, no-void, camelcase, no-param-reassign */
+/* global Vue */
+/* global Issuable */
+/* global ListUser */
+
 (function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; },
     slice = [].slice;
 
   this.UsersSelect = (function() {
@@ -23,6 +27,8 @@
           $dropdown = $(dropdown);
           options.projectId = $dropdown.data('project-id');
           options.showCurrentUser = $dropdown.data('current-user');
+          options.todoFilter = $dropdown.data('todo-filter');
+          options.todoStateFilter = $dropdown.data('todo-state-filter');
           showNullUser = $dropdown.data('null-user');
           showMenuAbove = $dropdown.data('showMenuAbove');
           showAnyUser = $dropdown.data('any-user');
@@ -110,7 +116,7 @@
                   showDivider = 0;
                   if (firstUser) {
                     // Move current user to the front of the list
-                    for (index = j = 0, len = users.length; j < len; index = ++j) {
+                    for (index = j = 0, len = users.length; j < len; index = (j += 1)) {
                       obj = users[index];
                       if (obj.username === firstUser) {
                         users.splice(index, 1);
@@ -272,7 +278,7 @@
                   if (firstUser) {
                     // Move current user to the front of the list
                     ref = data.results;
-                    for (index = j = 0, len = ref.length; j < len; index = ++j) {
+                    for (index = j = 0, len = ref.length; j < len; index = (j += 1)) {
                       obj = ref[index];
                       if (obj.username === firstUser) {
                         data.results.splice(index, 1);
@@ -365,7 +371,7 @@
     };
 
     UsersSelect.prototype.user = function(user_id, callback) {
-      if(!/^\d+$/.test(user_id)) {
+      if (!/^\d+$/.test(user_id)) {
         return false;
       }
 
@@ -394,6 +400,8 @@
           project_id: options.projectId || null,
           group_id: options.groupId || null,
           skip_ldap: options.skipLdap || null,
+          todo_filter: options.todoFilter || null,
+          todo_state_filter: options.todoStateFilter || null,
           current_user: options.showCurrentUser || null,
           push_code_to_protected_branches: options.pushCodeToProtectedBranches || null,
           author_id: options.authorId || null,
@@ -413,7 +421,5 @@
     };
 
     return UsersSelect;
-
   })();
-
 }).call(this);

@@ -1,5 +1,5 @@
 @mixin md-typography {
-  color: $md-text-color;
+  color: $gl-text-color;
   word-wrap: break-word;
 
   a {
@@ -10,7 +10,7 @@
     max-width: 100%;
   }
 
-  *:first-child {
+  *:first-child:not(.katex-display) {
     margin-top: 0;
   }
 
@@ -33,15 +33,15 @@
     padding: 3px 5px;
     font-size: 11px;
     line-height: 10px;
-    color: #555;
+    color: $kdb-color;
     vertical-align: middle;
-    background-color: #fcfcfc;
+    background-color: $kdb-bg;
     border-width: 1px;
     border-style: solid;
-    border-color: #ccc #ccc #bbb;
+    border-color: $kdb-border $kdb-border $kdb-border-bottom;
     border-image: none;
     border-radius: 3px;
-    box-shadow: 0 -1px 0 #bbb inset;
+    box-shadow: 0 -1px 0 $kdb-shadow inset;
   }
 
   h1 {
@@ -50,14 +50,14 @@
     margin: 16px 0 10px;
     padding: 0 0 0.3em;
     border-bottom: 1px solid $white-dark;
-    color: $gl-gray-dark;
+    color: $gl-text-color;
   }
 
   h2 {
     font-size: 1.5em;
     font-weight: 600;
     margin: 16px 0 10px;
-    color: $gl-gray-dark;
+    color: $gl-text-color;
   }
 
   h3 {
@@ -81,7 +81,7 @@
   }
 
   blockquote {
-    color: #7f8fa4;
+    color: $gl-grayish-blue;
     font-size: inherit;
     padding: 8px 21px;
     margin: 12px 0;
@@ -94,13 +94,13 @@
   }
 
   blockquote p {
-    color: #7f8fa4 !important;
+    color: $gl-grayish-blue !important;
     font-size: inherit;
     line-height: 1.5;
   }
 
   p {
-    color: #5c5d5e;
+    color: $gl-text-color;
     margin: 6px 0 0;
   }
 
@@ -108,10 +108,10 @@
     @extend .table;
     @extend .table-bordered;
     margin: 12px 0;
-    color: #5c5d5e;
+    color: $gl-text-color;
 
     th {
-      background: #f8fafc;
+      background: $label-gray-bg;
     }
   }
 
@@ -182,6 +182,7 @@
       left: -16px;
       position: absolute;
       text-decoration: none;
+      outline: none;
 
       &::after {
         content: image-url('icon_anchor.svg');
@@ -201,7 +202,7 @@
  *
  */
 body {
-  -webkit-text-shadow: rgba(255,255,255,0.01) 0 0 1px;
+  -webkit-text-shadow: $body-text-shadow 0 0 1px;
 }
 
 .page-title {
@@ -229,7 +230,7 @@ h3,
 h4,
 h5,
 h6 {
-  color: $gl-title-color;
+  color: $gl-text-color;
   font-weight: 600;
 }
 
@@ -291,7 +292,7 @@ h2,
 h3,
 h4 {
   small {
-    color: $gl-gray;
+    color: $gl-text-color;
   }
 }
 

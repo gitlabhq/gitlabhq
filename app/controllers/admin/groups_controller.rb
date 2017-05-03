@@ -1,17 +1,18 @@
 class Admin::GroupsController < Admin::ApplicationController
-  before_action :group, only: [:edit, :show, :update, :destroy, :project_update, :members_update]
+  before_action :group, only: [:edit, :update, :destroy, :project_update, :members_update]
 
   def index
-    @groups = Group.all
+    @groups = Group.with_statistics
     @groups = @groups.sort(@sort = params[:sort])
     @groups = @groups.search(params[:name]) if params[:name].present?
     @groups = @groups.page(params[:page])
   end
 
   def show
+    @group = Group.with_statistics.joins(:route).group('routes.path').find_by_full_path(params[:id])
     @members = @group.members.order("access_level DESC").page(params[:members_page])
     @requesters = AccessRequestsFinder.new(@group).execute(current_user)
-    @projects = @group.projects.page(params[:projects_page])
+    @projects = @group.projects.with_statistics.page(params[:projects_page])
   end
 
   def new
@@ -56,11 +57,15 @@ class Admin::GroupsController < Admin::ApplicationController
   private
 
   def group
-    @group ||= Group.find_by(path: params[:id])
+    @group ||= Group.find_by_full_path(params[:id])
   end
 
   def group_params
-    params.require(:group).permit(
+    params.require(:group).permit(group_params_ce)
+  end
+
+  def group_params_ce
+    [
       :avatar,
       :description,
       :lfs_enabled,
@@ -68,6 +73,6 @@ class Admin::GroupsController < Admin::ApplicationController
       :path,
       :request_access_enabled,
       :visibility_level
-    )
+    ]
   end
 end

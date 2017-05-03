@@ -12,7 +12,7 @@ class AssemblaService < Service
     'Project Management Software (Source Commits Endpoint)'
   end
 
-  def to_param
+  def self.to_param
     'assembla'
   end
 
@@ -23,7 +23,7 @@ class AssemblaService < Service
     ]
   end
 
-  def supported_events
+  def self.supported_events
     %w(push)
   end
 

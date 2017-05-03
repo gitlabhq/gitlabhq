@@ -48,6 +48,10 @@ class Commit
         max_lines: DIFF_HARD_LIMIT_LINES,
       }
     end
+
+    def from_hash(hash, project)
+      new(Gitlab::Git::Commit.new(hash), project)
+    end
   end
 
   attr_accessor :raw
@@ -87,20 +91,12 @@ class Commit
     @link_reference_pattern ||= super("commit", /(?<commit>\h{7,40})/)
   end
 
-  def to_reference(from_project = nil)
-    if cross_project_reference?(from_project)
-      project.to_reference + self.class.reference_prefix + self.id
-    else
-      self.id
-    end
+  def to_reference(from_project = nil, full: false)
+    commit_reference(from_project, id, full: full)
   end
 
   def reference_link_text(from_project = nil)
-    if cross_project_reference?(from_project)
-      project.to_reference + self.class.reference_prefix + self.short_id
-    else
-      self.short_id
-    end
+    commit_reference(from_project, short_id)
   end
 
   def diff_line_count
@@ -226,12 +222,15 @@ class Commit
   end
 
   def pipelines
-    @pipeline ||= project.pipelines.where(sha: sha)
+    project.pipelines.where(sha: sha)
   end
 
-  def status
-    return @status if defined?(@status)
-    @status ||= pipelines.status
+  def status(ref = nil)
+    @statuses ||= {}
+
+    return @statuses[ref] if @statuses.key?(ref)
+
+    @statuses[ref] = pipelines.latest_status(ref)
   end
 
   def revert_branch_name
@@ -242,44 +241,47 @@ class Commit
     project.repository.next_branch("cherry-pick-#{short_id}", mild: true)
   end
 
-  def revert_description
-    if merged_merge_request
-      "This reverts merge request #{merged_merge_request.to_reference}"
+  def revert_description(user)
+    if merged_merge_request?(user)
+      "This reverts merge request #{merged_merge_request(user).to_reference}"
     else
       "This reverts commit #{sha}"
     end
   end
 
-  def revert_message
-    %Q{Revert "#{title.strip}"\n\n#{revert_description}}
+  def revert_message(user)
+    %Q{Revert "#{title.strip}"\n\n#{revert_description(user)}}
   end
 
-  def reverts_commit?(commit)
-    description? && description.include?(commit.revert_description)
+  def reverts_commit?(commit, user)
+    description? && description.include?(commit.revert_description(user))
   end
 
   def merge_commit?
     parents.size > 1
   end
 
-  def merged_merge_request
-    return @merged_merge_request if defined?(@merged_merge_request)
+  def merged_merge_request(current_user)
+    # Memoize with per-user access check
+    @merged_merge_request_hash ||= Hash.new do |hash, user|
+      hash[user] = merged_merge_request_no_cache(user)
+    end
 
-    @merged_merge_request = project.merge_requests.find_by(merge_commit_sha: id) if merge_commit?
+    @merged_merge_request_hash[current_user]
   end
 
-  def has_been_reverted?(current_user = nil, noteable = self)
+  def has_been_reverted?(current_user, noteable = self)
     ext = all_references(current_user)
 
     noteable.notes_with_associations.system.each do |note|
       note.all_references(current_user, extractor: ext)
     end
 
-    ext.commits.any? { |commit_ref| commit_ref.reverts_commit?(self) }
+    ext.commits.any? { |commit_ref| commit_ref.reverts_commit?(self, current_user) }
   end
 
-  def change_type_title
-    merged_merge_request ? 'merge request' : 'commit'
+  def change_type_title(user)
+    merged_merge_request?(user) ? 'merge request' : 'commit'
   end
 
   # Get the URI type of the given path
@@ -316,7 +318,31 @@ class Commit
     Gitlab::Diff::FileCollection::Commit.new(self, diff_options: diff_options)
   end
 
+  def persisted?
+    true
+  end
+
+  def touch
+    # no-op but needs to be defined since #persisted? is defined
+  end
+
+  WIP_REGEX = /\A\s*(((?i)(\[WIP\]|WIP:|WIP)\s|WIP$))|(fixup!|squash!)\s/.freeze
+
+  def work_in_progress?
+    !!(title =~ WIP_REGEX)
+  end
+
   private
+
+  def commit_reference(from_project, referable_commit_id, full: false)
+    reference = project.to_reference(from_project, full: full)
+
+    if reference.present?
+      "#{reference}#{self.class.reference_prefix}#{referable_commit_id}"
+    else
+      referable_commit_id
+    end
+  end
 
   def find_author_by_any_email
     User.find_by_any_email(author_email.downcase)
@@ -336,5 +362,13 @@ class Commit
     end
 
     changes
+  end
+
+  def merged_merge_request?(user)
+    !!merged_merge_request(user)
+  end
+
+  def merged_merge_request_no_cache(user)
+    MergeRequestsFinder.new(user, project_id: project.id).find_by(merge_commit_sha: id) if merge_commit?
   end
 end

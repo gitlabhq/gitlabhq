@@ -210,5 +210,22 @@ describe Ci::CreatePipelineService, services: true do
         expect(result.manual_actions).not_to be_empty
       end
     end
+
+    context 'with environment' do
+      before do
+        config = YAML.dump(deploy: { environment: { name: "review/$CI_BUILD_REF_NAME" }, script: 'ls' })
+        stub_ci_pipeline_yaml_file(config)
+      end
+
+      it 'creates the environment' do
+        result = execute(ref: 'refs/heads/master',
+                         before: '00000000',
+                         after: project.commit.id,
+                         commits: [{ message: 'some msg' }])
+
+        expect(result).to be_persisted
+        expect(Environment.find_by(name: "review/master")).not_to be_nil
+      end
+    end
   end
 end

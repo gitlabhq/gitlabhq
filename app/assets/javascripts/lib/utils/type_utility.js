@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-param-reassign, no-cond-assign, no-return-assign, max-len */
 (function() {
   (function(w) {
     var base;
@@ -12,5 +12,4 @@
       return (obj != null) && (obj.constructor === Object);
     };
   })(window);
-
 }).call(this);

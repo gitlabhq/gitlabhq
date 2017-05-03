@@ -1,6 +1,8 @@
 require 'spec_helper'
 
-describe DroneCiService, models: true do
+describe DroneCiService, models: true, caching: true do
+  include ReactiveCachingHelpers
+
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to have_one(:service_hook) }
@@ -33,6 +35,10 @@ describe DroneCiService, models: true do
     let(:token)      { 'secret' }
     let(:iid)        { rand(1..9999) }
 
+    # URL's
+    let(:build_page) { "#{drone_url}/gitlab/#{path}/redirect/commits/#{sha}?branch=#{branch}" }
+    let(:commit_status_path) { "#{drone_url}/gitlab/#{path}/commits/#{sha}?branch=#{branch}&access_token=#{token}" }
+
     before(:each) do
       allow(drone).to receive_messages(
         project_id: project.id,
@@ -42,22 +48,66 @@ describe DroneCiService, models: true do
         token: token
       )
     end
+
+    def stub_request(status: 200, body: nil)
+      body ||= %Q({"status":"success"})
+
+      WebMock.stub_request(:get, commit_status_path).to_return(
+        status: status,
+        headers: { 'Content-Type' => 'application/json' },
+        body: body
+      )
+    end
   end
 
   describe "service page/path methods" do
     include_context :drone_ci_service
 
-    # URL's
-    let(:commit_page) { "#{drone_url}/gitlab/#{path}/redirect/commits/#{sha}?branch=#{branch}" }
-    let(:merge_request_page) { "#{drone_url}/gitlab/#{path}/redirect/pulls/#{iid}" }
-    let(:commit_status_path) { "#{drone_url}/gitlab/#{path}/commits/#{sha}?branch=#{branch}&access_token=#{token}" }
-    let(:merge_request_status_path) { "#{drone_url}/gitlab/#{path}/pulls/#{iid}?access_token=#{token}" }
-
-    it { expect(drone.build_page(sha, branch)).to eq(commit_page) }
-    it { expect(drone.commit_page(sha, branch)).to eq(commit_page) }
-    it { expect(drone.merge_request_page(iid, sha, branch)).to eq(merge_request_page) }
+    it { expect(drone.build_page(sha, branch)).to eq(build_page) }
     it { expect(drone.commit_status_path(sha, branch)).to eq(commit_status_path) }
-    it { expect(drone.merge_request_status_path(iid, sha, branch)).to eq(merge_request_status_path)  }
+  end
+
+  describe '#commit_status' do
+    include_context :drone_ci_service
+
+    it 'returns the contents of the reactive cache' do
+      stub_reactive_cache(drone, { commit_status: 'foo' }, 'sha', 'ref')
+
+      expect(drone.commit_status('sha', 'ref')).to eq('foo')
+    end
+  end
+
+  describe '#calculate_reactive_cache' do
+    include_context :drone_ci_service
+
+    context '#commit_status' do
+      subject { drone.calculate_reactive_cache(sha, branch)[:commit_status] }
+
+      it 'sets commit status to :error when status is 500' do
+        stub_request(status: 500)
+
+        is_expected.to eq(:error)
+      end
+
+      it 'sets commit status to :error when status is 404' do
+        stub_request(status: 404)
+
+        is_expected.to eq(:error)
+      end
+
+      { "killed"  => :canceled,
+        "failure" => :failed,
+        "error"   => :failed,
+        "success" => "success",
+      }.each do |drone_status, our_status|
+
+        it "sets commit status to #{our_status.inspect} when returned status is #{drone_status.inspect}" do
+          stub_request(body: %Q({"status":"#{drone_status}"}))
+
+          is_expected.to eq(our_status)
+        end
+      end
+    end
   end
 
   describe "execute" do

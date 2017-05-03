@@ -21,7 +21,6 @@
       background: $color-darker;
     }
 
-    .sidebar-header,
     .sidebar-action-buttons {
       color: $color-light;
       background-color: lighten($color-darker, 5%);
@@ -81,42 +80,65 @@
         }
       }
 
+      .about-gitlab {
+        color: $color-light;
+      }
     }
   }
 }
 
-$theme-charcoal: #3d454d;
-$theme-charcoal-dark: #383f45;
-$theme-charcoal-text: #b9bbbe;
+$theme-charcoal-light: #b9bbbe;
+$theme-charcoal: #485157;
+$theme-charcoal-dark: #3d454d;
+$theme-charcoal-darker: #383f45;
 
+$theme-blue-light: #becde9;
 $theme-blue: #2980b9;
-$theme-graphite: #666;
-$theme-gray: #373737;
+$theme-blue-dark: #1970a9;
+$theme-blue-darker: #096099;
+
+$theme-graphite-light: #ccc;
+$theme-graphite: #777;
+$theme-graphite-dark: #666;
+$theme-graphite-darker: #555;
+
+$theme-black-light: #979797;
+$theme-black: #373737;
+$theme-black-dark: #272727;
+$theme-black-darker: #222;
+
+$theme-green-light: #adc;
 $theme-green: #019875;
+$theme-green-dark: #018865;
+$theme-green-darker: #017855;
+
+$theme-violet-light: #98c;
 $theme-violet: #548;
+$theme-violet-dark: #436;
+$theme-violet-darker: #325;
 
 body {
   &.ui_blue {
-    @include gitlab-theme(#becde9, $theme-blue, #1970a9, #096099);
+    @include gitlab-theme($theme-blue-light, $theme-blue, $theme-blue-dark, $theme-blue-darker);
   }
 
   &.ui_charcoal {
-    @include gitlab-theme($theme-charcoal-text, #485157, $theme-charcoal, $theme-charcoal-dark);
+    @include gitlab-theme($theme-charcoal-light, $theme-charcoal, $theme-charcoal-dark, $theme-charcoal-darker);
   }
 
   &.ui_graphite {
-    @include gitlab-theme(#ccc, #777, $theme-graphite, #555);
+    @include gitlab-theme($theme-graphite-light, $theme-graphite, $theme-graphite-dark, $theme-graphite-darker);
   }
 
-  &.ui_gray {
-    @include gitlab-theme(#979797, $theme-gray, #272727, #222);
+  &.ui_black {
+    @include gitlab-theme($theme-black-light, $theme-black, $theme-black-dark, $theme-black-darker);
   }
 
   &.ui_green {
-    @include gitlab-theme(#adc, $theme-green, #018865, #017855);
+    @include gitlab-theme($theme-green-light, $theme-green, $theme-green-dark, $theme-green-darker);
   }
 
   &.ui_violet {
-    @include gitlab-theme(#98c, $theme-violet, #436, #325);
+    @include gitlab-theme($theme-violet-light, $theme-violet, $theme-violet-dark, $theme-violet-darker);
   }
 }

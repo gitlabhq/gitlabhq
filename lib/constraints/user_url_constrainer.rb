@@ -1,7 +1,5 @@
-require 'constraints/namespace_url_constrainer'
-
-class UserUrlConstrainer < NamespaceUrlConstrainer
-  def find_resource(id)
-    User.find_by('lower(username) = ?', id.downcase)
+class UserUrlConstrainer
+  def matches?(request)
+    User.find_by_username(request.params[:username]).present?
   end
 end

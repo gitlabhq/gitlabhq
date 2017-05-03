@@ -1,16 +1,15 @@
 .detail-page-header {
   padding: $gl-padding-top 0;
   border-bottom: 1px solid $border-color;
-  color: #5c5d5e;
-  font-size: 16px;
+  color: $gl-text-color;
   line-height: 34px;
 
   .author {
-    color: #5c5d5e;
+    color: $gl-text-color;
   }
 
   .identifier {
-    color: #5c5d5e;
+    color: $gl-text-color;
   }
 
   .issue_created_ago,
@@ -23,7 +22,7 @@
   .title {
     margin: 0 0 16px;
     font-size: 2em;
-    color: $gl-gray-dark;
+    color: $gl-text-color;
     padding: 0 0 0.3em;
     border-bottom: 1px solid $white-dark;
   }

@@ -15,7 +15,7 @@
       %th
   %tbody.oauth-applications
     - @applications.each do |application|
-      %tr{:id => "application_#{application.id}"}
+      %tr{ :id => "application_#{application.id}" }
         %td= link_to application.name, admin_application_path(application)
         %td= application.redirect_uri
         %td= application.access_tokens.map(&:resource_owner_id).uniq.count

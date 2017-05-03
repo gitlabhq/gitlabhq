@@ -1,23 +1,20 @@
 {
-  "extends": "airbnb",
+  "env": {
+    "jquery": true,
+    "browser": true,
+    "es6": true
+  },
+  "extends": "airbnb-base",
   "globals": {
-    "$": false,
     "_": false,
-    "beforeEach": false,
-    "d3": false,
-    "define": false,
-    "describe": false,
-    "document": false,
-    "expect": false,
-    "fixture": false,
     "gl": false,
-    "it": false,
-    "jQuery": false,
-    "Mousetrap": false,
-    "spyOn": false,
-    "spyOnEvent": false,
-    "Turbolinks": false,
-    "window": false
+    "gon": false,
+    "localStorage": false
+  },
+  "plugins": [
+    "filenames"
+  ],
+  "rules": {
+    "filenames/match-regex": [2, "^[a-z0-9_]+(.js)?$"]
   }
 }
-

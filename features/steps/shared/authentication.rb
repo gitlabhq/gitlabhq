@@ -33,6 +33,6 @@ module SharedAuthentication
   end
 
   def current_user
-    @user || User.first
+    @user || User.reorder(nil).first
   end
 end

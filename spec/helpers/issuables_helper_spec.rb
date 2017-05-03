@@ -114,4 +114,25 @@ describe IssuablesHelper do
       end
     end
   end
+
+  describe '#issuable_filter_present?' do
+    it 'returns true when any key is present' do
+      allow(helper).to receive(:params).and_return(
+        ActionController::Parameters.new(milestone_title: 'Velit consectetur asperiores natus delectus.',
+                                         project_id: 'gitlabhq',
+                                         scope: 'all')
+      )
+
+      expect(helper.issuable_filter_present?).to be_truthy
+    end
+
+    it 'returns false when no key is present' do
+      allow(helper).to receive(:params).and_return(
+        ActionController::Parameters.new(project_id: 'gitlabhq',
+                                         scope: 'all')
+      )
+
+      expect(helper.issuable_filter_present?).to be_falsey
+    end
+  end
 end

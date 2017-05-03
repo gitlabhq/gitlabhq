@@ -1,4 +1,4 @@
-%li{ class: mr_css_classes(merge_request) }
+%li{ id: dom_id(merge_request), class: mr_css_classes(merge_request), data: { labels: merge_request.label_ids, id: merge_request.id } }
   - if @bulk_edit
     .issue-check
       = check_box_tag dom_id(merge_request, "selected"), nil, false, 'data-id' => merge_request.id, class: "selected_issue"
@@ -15,9 +15,9 @@
           = icon('ban')
           CLOSED
 
-      - if merge_request.pipeline
+      - if merge_request.head_pipeline
         %li
-          = render_pipeline_status(merge_request.pipeline)
+          = render_pipeline_status(merge_request.head_pipeline)
 
       - if merge_request.open? && merge_request.broken?
         %li
@@ -39,7 +39,7 @@
           = icon('thumbs-down')
           = downvotes
 
-      - note_count = merge_request.mr_and_commit_notes.user.count
+      - note_count = merge_request.related_notes.user.count
       %li
         = link_to merge_request_path(merge_request, anchor: 'notes'), class: ('no-comments' if note_count.zero?) do
           = icon('comments')
@@ -54,15 +54,18 @@
       = link_to namespace_project_commits_path(merge_request.project.namespace, merge_request.project, merge_request.target_branch) do
         = icon('code-fork')
         = merge_request.target_branch
+
     - if merge_request.milestone
       &nbsp;
       = link_to namespace_project_merge_requests_path(merge_request.project.namespace, merge_request.project, milestone_title: merge_request.milestone.title) do
         = icon('clock-o')
         = merge_request.milestone.title
+
     - if merge_request.labels.any?
       &nbsp;
       - merge_request.labels.each do |label|
         = link_to_label(label, subject: merge_request.project, type: :merge_request)
+
     - if merge_request.tasks?
       &nbsp;
       %span.task-status

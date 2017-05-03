@@ -8,7 +8,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
 
   step 'I own project "Delta"' do
     @project = Project.find_by(name: "Delta")
-    @project ||= create(:project, name: "Delta", namespace: @user.namespace)
+    @project ||= create(:project, :repository, name: "Delta", namespace: @user.namespace)
     @project.team << [@user, :master]
   end
 
@@ -241,7 +241,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
 
     page.within(:css, ".nav-text") do
       expect(page).to have_content "Test"
-      expect(page).to have_content "Edit Page"
+      expect(page).to have_content "Create Page"
     end
   end
 
@@ -258,7 +258,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
     expect(current_path).to eq namespace_project_wiki_path(@project.namespace, @project, "api")
 
     page.within(:css, ".nav-text") do
-      expect(page).to have_content "Edit"
+      expect(page).to have_content "Create"
       expect(page).to have_content "Api"
     end
   end
@@ -271,7 +271,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
     expect(current_path).to eq namespace_project_wiki_path(@project.namespace, @project, "raketasks")
 
     page.within(:css, ".nav-text") do
-      expect(page).to have_content "Edit"
+      expect(page).to have_content "Create"
       expect(page).to have_content "Rake"
     end
   end

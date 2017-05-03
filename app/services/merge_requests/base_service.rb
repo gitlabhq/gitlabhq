@@ -38,10 +38,6 @@ module MergeRequests
 
     private
 
-    def filter_params
-      super(:merge_request)
-    end
-
     def merge_requests_for(branch)
       origin_merge_requests = @project.origin_merge_requests
         .opened.where(source_branch: branch).to_a
@@ -55,7 +51,7 @@ module MergeRequests
 
     def pipeline_merge_requests(pipeline)
       merge_requests_for(pipeline.ref).each do |merge_request|
-        next unless pipeline == merge_request.pipeline
+        next unless pipeline == merge_request.head_pipeline
 
         yield merge_request
       end
@@ -63,7 +59,7 @@ module MergeRequests
 
     def commit_status_merge_requests(commit_status)
       merge_requests_for(commit_status.ref).each do |merge_request|
-        pipeline = merge_request.pipeline
+        pipeline = merge_request.head_pipeline
 
         next unless pipeline
         next unless pipeline.sha == commit_status.sha

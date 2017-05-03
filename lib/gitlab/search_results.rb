@@ -50,7 +50,7 @@ module Gitlab
     end
 
     def issues
-      issues = Issue.visible_to_user(current_user).where(project_id: project_ids_relation)
+      issues = IssuesFinder.new(current_user).execute.where(project_id: project_ids_relation)
 
       if query =~ /#(\d+)\z/
         issues = issues.where(iid: $1)
@@ -68,7 +68,7 @@ module Gitlab
     end
 
     def merge_requests
-      merge_requests = MergeRequest.in_projects(project_ids_relation)
+      merge_requests = MergeRequestsFinder.new(current_user).execute.in_projects(project_ids_relation)
       if query =~ /[#!](\d+)\z/
         merge_requests = merge_requests.where(iid: $1)
       else

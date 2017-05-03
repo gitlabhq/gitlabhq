@@ -10,7 +10,7 @@ User authentication by combination of 2 different steps during login. This allow
 
 ### Access Levels
 
-Process of selective restriction to create, view, modify or delete a resource based on a set of assigned permissions. See [GitLab's Permission Guidelines](http://doc.gitlab.com/ce/permissions/permissions.html)
+Process of selective restriction to create, view, modify or delete a resource based on a set of assigned permissions. See [GitLab's Permission Guidelines](../../permissions/permissions.md
 
 ### Active Directory (AD)
 

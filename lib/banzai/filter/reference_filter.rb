@@ -20,10 +20,10 @@ module Banzai
       # Examples:
       #
       #   data_attribute(project: 1, issue: 2)
-      #   # => "data-reference-filter=\"SomeReferenceFilter\" data-project=\"1\" data-issue=\"2\""
+      #   # => "data-reference-type=\"SomeReferenceFilter\" data-project=\"1\" data-issue=\"2\""
       #
       #   data_attribute(project: 3, merge_request: 4)
-      #   # => "data-reference-filter=\"SomeReferenceFilter\" data-project=\"3\" data-merge-request=\"4\""
+      #   # => "data-reference-type=\"SomeReferenceFilter\" data-project=\"3\" data-merge-request=\"4\""
       #
       # Returns a String
       def data_attribute(attributes = {})
@@ -31,7 +31,9 @@ module Banzai
 
         attributes[:reference_type] ||= self.class.reference_type
         attributes.delete(:original) if context[:no_original_data]
-        attributes.map { |key, value| %Q(data-#{key.to_s.dasherize}="#{escape_once(value)}") }.join(" ")
+        attributes.map do |key, value|
+          %Q(data-#{key.to_s.dasherize}="#{escape_once(value)}")
+        end.join(' ')
       end
 
       def escape_once(html)

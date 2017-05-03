@@ -1,7 +1,7 @@
 - page_title 'Preferences'
 = render 'profiles/head'
 
-= form_for @user, url: profile_preferences_path, remote: true, method: :put, html: {class: 'row prepend-top-default js-preferences-form'} do |f|
+= form_for @user, url: profile_preferences_path, remote: true, method: :put, html: { class: 'row prepend-top-default js-preferences-form' } do |f|
   .col-lg-3.profile-settings-sidebar
     %h4.prepend-top-0
       Application theme
@@ -10,7 +10,7 @@
   .col-lg-9.application-theme
     - Gitlab::Themes.each do |theme|
       = label_tag do
-        .preview{class: theme.css_class}
+        .preview{ class: theme.css_class }
         = f.radio_button :theme_id, theme.id
         = theme.name
   .col-sm-12

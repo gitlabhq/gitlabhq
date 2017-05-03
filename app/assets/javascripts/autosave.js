@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-param-reassign, quotes, prefer-template, no-var, one-var, no-unused-vars, one-var-declaration-per-line, no-void, consistent-return, no-empty, max-len */
 (function() {
   this.Autosave = (function() {
     function Autosave(field, key) {
@@ -58,7 +58,5 @@
     };
 
     return Autosave;
-
   })();
-
 }).call(this);

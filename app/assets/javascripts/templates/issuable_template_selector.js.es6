@@ -1,4 +1,6 @@
-/* eslint-disable */
+/* eslint-disable comma-dangle, max-len, no-useless-return, no-param-reassign, max-len */
+/* global Api */
+
 /*= require ../blob/template_selector */
 
 ((global) => {
@@ -10,7 +12,7 @@
       this.issuableType = this.wrapper.data('issuable-type');
       this.titleInput = $(`#${this.issuableType}_title`);
 
-      let initialQuery = {
+      const initialQuery = {
         name: this.dropdown.data('selected')
       };
 
@@ -21,7 +23,7 @@
       });
 
       $('.no-template', this.dropdown.parent()).on('click', () => {
-        this.currentTemplate = '';
+        this.currentTemplate.content = '';
         this.setInputValueToTemplateContent();
         $('.dropdown-toggle-text', this.dropdown).text('Choose a template');
       });
@@ -45,10 +47,10 @@
         // If the title has not yet been set, focus the title input and
         // skip focusing the description input by setting `true` as the
         // `skipFocus` option to `requestFileSuccess`.
-        this.requestFileSuccess(this.currentTemplate, {skipFocus: true});
+        this.requestFileSuccess(this.currentTemplate, { skipFocus: true });
         this.titleInput.focus();
       } else {
-        this.requestFileSuccess(this.currentTemplate, {skipFocus: false});
+        this.requestFileSuccess(this.currentTemplate, { skipFocus: false });
       }
       return;
     }

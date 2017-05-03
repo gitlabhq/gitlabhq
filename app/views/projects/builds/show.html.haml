@@ -1,7 +1,6 @@
 - @no_container = true
 - page_title "#{@build.name} (##{@build.id})", "Builds"
 - trace_with_state = @build.trace_with_state
-- header_title project_title(@project, "Builds", project_builds_path(@project))
 = render "projects/pipelines/head", build_subnav: true
 
 %div{ class: container_class }
@@ -27,33 +26,57 @@
             = link_to namespace_project_runners_path(@build.project.namespace, @build.project) do
               Runners page
 
+    - if @build.starts_environment?
+      .prepend-top-default
+        .environment-information
+          - if @build.outdated_deployment?
+            = ci_icon_for_status('success_with_warnings')
+          - else
+            = ci_icon_for_status(@build.status)
+
+          - environment = environment_for_build(@build.project, @build)
+          - if @build.success? && @build.last_deployment.present?
+            - if @build.last_deployment.last?
+              This build is the most recent deployment to #{environment_link_for_build(@build.project, @build)}.
+            - else
+              This build is an out-of-date deployment to #{environment_link_for_build(@build.project, @build)}.
+              View the most recent deployment #{deployment_link(environment.last_deployment)}.
+          - elsif @build.complete? && !@build.success?
+            The deployment of this build to #{environment_link_for_build(@build.project, @build)} did not succeed.
+          - else
+            This build is creating a deployment to #{environment_link_for_build(@build.project, @build)}
+            - if environment.try(:last_deployment)
+              and will overwrite the #{deployment_link(environment.last_deployment, text: 'latest deployment')}
+
     .prepend-top-default
-      - if @build.active?
-        .autoscroll-container
-          %button.btn.btn-success.btn-sm#autoscroll-button{:type => "button", :data => {:state => 'disabled'}} enable autoscroll
       - if @build.erased?
         .erased.alert.alert-warning
-          - erased_by = "by #{link_to @build.erased_by.name, user_path(@build.erased_by)}" if @build.erased_by
-          Build has been erased #{erased_by.html_safe} #{time_ago_with_tooltip(@build.erased_at)}
+          - if @build.erased_by_user?
+            Build has been erased by #{link_to(@build.erased_by_name, user_path(@build.erased_by))} #{time_ago_with_tooltip(@build.erased_at)}
+          - else
+            Build has been erased #{time_ago_with_tooltip(@build.erased_at)}
       - else
         #js-build-scroll.scroll-controls
-          = link_to '#build-trace', class: 'btn' do
-            %i.fa.fa-angle-up
-          = link_to '#down-build-trace', class: 'btn' do
-            %i.fa.fa-angle-down
+          .scroll-step
+            %a.scroll-link.scroll-top{ href: '#up-build-trace', id: 'scroll-top', title: 'Scroll to top' }
+              = custom_icon('scroll_up')
+              = custom_icon('scroll_up_hover_active')
+            %a.scroll-link.scroll-bottom{ href: '#down-build-trace', id: 'scroll-bottom', title: 'Scroll to bottom' }
+              = custom_icon('scroll_down')
+              = custom_icon('scroll_down_hover_active')
+          - if @build.active?
+            .autoscroll-container
+              %span.status-message#autoscroll-status{ data: { state: 'disabled' } }
+                %span.status-text Autoscroll active
+                %i.status-icon
+                  = custom_icon('scroll_down_hover_active')
+        #up-build-trace
         %pre.build-trace#build-trace
           %code.bash.js-build-output
-          = icon("refresh spin", class: "js-build-refresh")
+          .build-loader-animation.js-build-refresh
 
-      #down-build-trace
+        #down-build-trace
 
   = render "sidebar"
 
-  :javascript
-    new Build({
-      page_url: "#{namespace_project_build_url(@project.namespace, @project, @build)}",
-      build_url: "#{namespace_project_build_url(@project.namespace, @project, @build, :json)}",
-      build_status: "#{@build.status}",
-      build_stage: "#{@build.stage}",
-      state1: "#{trace_with_state[:state]}"
-    })
+.js-build-options{ data: javascript_build_options }

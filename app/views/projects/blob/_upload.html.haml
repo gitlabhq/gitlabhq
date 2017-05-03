@@ -2,7 +2,7 @@
   .modal-dialog
     .modal-content
       .modal-header
-        %a.close{href: "#", "data-dismiss" => "modal"} ×
+        %a.close{ href: "#", "data-dismiss" => "modal" } ×
         %h3.page-title #{title}
       .modal-body
         = form_tag form_path, method: method, class: 'js-quick-submit js-upload-blob-form form-horizontal' do
@@ -12,7 +12,7 @@
                 Attach a file by drag &amp; drop or
                 = link_to 'click to upload', '#', class: "markdown-selector"
           %br
-          .dropzone-alerts{class: "alert alert-danger data", style: "display:none"}
+          .dropzone-alerts.alert.alert-danger.data{ style: "display:none" }
 
           = render 'shared/new_commit_form', placeholder: placeholder
 
@@ -26,6 +26,6 @@
 
 
 :javascript
-  disableButtonIfEmptyField($('.js-upload-blob-form').find('.js-commit-message'), '.btn-upload-file');
+  gl.utils.disableButtonIfEmptyField($('.js-upload-blob-form').find('.js-commit-message'), '.btn-upload-file');
   new BlobFileDropzone($('.js-upload-blob-form'), '#{method}');
   new NewCommitForm($('.js-upload-blob-form'))

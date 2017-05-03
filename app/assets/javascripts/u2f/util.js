@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife */
 (function() {
   this.U2FUtil = (function() {
     function U2FUtil() {}
@@ -8,7 +8,5 @@
     };
 
     return U2FUtil;
-
   })();
-
 }).call(this);

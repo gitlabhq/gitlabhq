@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe PipelinesEmailService do
+  include EmailHelpers
+
   let(:pipeline) do
     create(:ci_pipeline, project: project, sha: project.commit('master').sha)
   end
@@ -13,7 +15,7 @@ describe PipelinesEmailService do
   end
 
   before do
-    ActionMailer::Base.deliveries.clear
+    reset_delivered_emails!
   end
 
   describe 'Validations' do
@@ -23,14 +25,6 @@ describe PipelinesEmailService do
       end
 
       it { is_expected.to validate_presence_of(:recipients) }
-
-      context 'when pusher is added' do
-        before do
-          subject.add_pusher = true
-        end
-
-        it { is_expected.not_to validate_presence_of(:recipients) }
-      end
     end
 
     context 'when service is inactive' do
@@ -66,8 +60,7 @@ describe PipelinesEmailService do
     end
 
     it 'sends email' do
-      sent_to = ActionMailer::Base.deliveries.flat_map(&:to)
-      expect(sent_to).to contain_exactly(recipient)
+      should_only_email(double(notification_email: recipient), kind: :bcc)
     end
   end
 
@@ -79,7 +72,7 @@ describe PipelinesEmailService do
     end
 
     it 'does not send email' do
-      expect(ActionMailer::Base.deliveries).to be_empty
+      should_not_email_anyone
     end
   end
 

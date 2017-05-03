@@ -42,8 +42,11 @@ Example response:
    "sign_in_text" : null,
    "container_registry_token_expire_delay": 5,
    "repository_storage": "default",
+   "repository_storages": ["default"],
    "koding_enabled": false,
-   "koding_url": null
+   "koding_url": null,
+   "plantuml_enabled": false,
+   "plantuml_url": null
 }
 ```
 
@@ -73,10 +76,14 @@ PUT /application/settings
 | `user_oauth_applications` | boolean | no | Allow users to register any application to use GitLab as an OAuth provider |
 | `after_sign_out_path` | string | no | Where to redirect users after logout |
 | `container_registry_token_expire_delay` | integer | no | Container Registry token duration in minutes |
-| `repository_storage` | string | no | Storage path for new projects. The value should be the name of one of the repository storage paths defined in your gitlab.yml |
+| `repository_storages` | array of strings | no | A list of names of enabled storage paths, taken from `gitlab.yml`. New projects will be created in one of these stores, chosen at random. |
+| `repository_storage` | string | no | The first entry in `repository_storages`. Deprecated, but retained for compatibility reasons |
 | `enabled_git_access_protocol` | string | no | Enabled protocols for Git access. Allowed values are: `ssh`, `http`, and `nil` to allow both protocols. |
 | `koding_enabled` | boolean | no | Enable Koding integration. Default is `false`. |
 | `koding_url` | string | yes (if `koding_enabled` is `true`) |  The Koding instance URL for integration. |
+| `disabled_oauth_sign_in_sources` | Array of strings | no | Disabled OAuth sign-in sources |
+| `plantuml_enabled` | boolean | no | Enable PlantUML integration. Default is `false`. |
+| `plantuml_url` | string | yes (if `plantuml_enabled` is `true`) |  The PlantUML instance URL for integration. |
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/application/settings?signup_enabled=false&default_project_visibility=1
@@ -109,6 +116,8 @@ Example response:
   "container_registry_token_expire_delay": 5,
   "repository_storage": "default",
   "koding_enabled": false,
-  "koding_url": null
+  "koding_url": null,
+  "plantuml_enabled": false,
+  "plantuml_url": null
 }
 ```

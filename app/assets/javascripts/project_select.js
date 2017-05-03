@@ -1,4 +1,6 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, prefer-arrow-callback, no-var, comma-dangle, object-shorthand, one-var, one-var-declaration-per-line, no-else-return, quotes, max-len */
+/* global Api */
+
 (function() {
   this.ProjectSelect = (function() {
     function ProjectSelect() {
@@ -13,6 +15,7 @@
           },
           data: function(term, callback) {
             var finalCallback, projectsCallback;
+            var orderBy = $dropdown.data('order-by');
             finalCallback = function(projects) {
               return callback(projects);
             };
@@ -24,7 +27,7 @@
                   data = groups.concat(projects);
                   return finalCallback(data);
                 };
-                return Api.groups(term, false, false, groupsCallback);
+                return Api.groups(term, {}, groupsCallback);
               };
             } else {
               projectsCallback = finalCallback;
@@ -32,7 +35,7 @@
             if (this.groupId) {
               return Api.groupProjects(this.groupId, term, projectsCallback);
             } else {
-              return Api.projects(term, this.orderBy, projectsCallback);
+              return Api.projects(term, orderBy, projectsCallback);
             }
           },
           url: function(project) {
@@ -73,7 +76,7 @@
                     data = groups.concat(projects);
                     return finalCallback(data);
                   };
-                  return Api.groups(query.term, false, false, groupsCallback);
+                  return Api.groups(query.term, {}, groupsCallback);
                 };
               } else {
                 projectsCallback = finalCallback;
@@ -97,7 +100,5 @@
     }
 
     return ProjectSelect;
-
   })();
-
 }).call(this);

@@ -17,5 +17,6 @@
               = check_box_tag :filter_ref, 1, @options[:filter_ref]
               %span Begin with the selected commit
 
-    .network-graph{ data: { url: @url, commit_url: @commit_url, ref: @ref, commit_id: @commit.id } }
-      = spinner nil, true
+    - if @commit
+      .network-graph{ data: { url: @url, commit_url: @commit_url, ref: @ref, commit_id: @commit.id } }
+        = spinner nil, true

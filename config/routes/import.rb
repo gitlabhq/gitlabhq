@@ -6,6 +6,12 @@ namespace :import do
     get :jobs
   end
 
+  resource :gitea, only: [:create, :new], controller: :gitea do
+    post :personal_access_token
+    get :status
+    get :jobs
+  end
+
   resource :gitlab, only: [:create], controller: :gitlab do
     get :status
     get :callback
