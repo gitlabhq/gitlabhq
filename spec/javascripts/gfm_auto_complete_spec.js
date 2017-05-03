@@ -1,11 +1,9 @@
 /* eslint no-param-reassign: "off" */
 
-require('~/gfm_auto_complete');
+import GfmAutoComplete from '~/gfm_auto_complete';
+
 require('vendor/jquery.caret');
 require('vendor/jquery.atwho');
-
-const global = window.gl || (window.gl = {});
-const GfmAutoComplete = global.GfmAutoComplete;
 
 describe('GfmAutoComplete', function () {
   describe('DefaultOptions.sorter', function () {
