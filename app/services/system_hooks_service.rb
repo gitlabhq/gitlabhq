@@ -113,7 +113,7 @@ class SystemHooksService
       user_name: model.user.name,
       user_email: model.user.email,
       user_id: model.user.id,
-      group_access: model.human_access,
+      group_access: model.human_access
     }
   end
 end

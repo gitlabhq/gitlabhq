@@ -37,8 +37,8 @@ module KubernetesHelpers
       "kind" => "APIResourceList",
       "resources" => [
         { "name" => "pods", "namespaced" => true, "kind" => "Pod" },
-        { "name" => "deployments", "namespaced" => true, "kind" => "Deployment" },
-      ],
+        { "name" => "deployments", "namespaced" => true, "kind" => "Deployment" }
+      ]
     }
   end
 
@@ -47,8 +47,8 @@ module KubernetesHelpers
       "kind" => "APIResourceList",
       "resources" => [
         { "name" => "pods", "namespaced" => true, "kind" => "Pod" },
-        { "name" => "deployments", "namespaced" => true, "kind" => "Deployment" },
-      ],
+        { "name" => "deployments", "namespaced" => true, "kind" => "Deployment" }
+      ]
     }
   end
 
@@ -73,13 +73,13 @@ module KubernetesHelpers
       "metadata" => {
         "name" => name,
         "creationTimestamp" => "2016-11-25T19:55:19Z",
-        "labels" => { "app" => app },
+        "labels" => { "app" => app }
       },
       "spec" => {
         "containers" => [
           { "name" => "container-0" },
-          { "name" => "container-1" },
-        ],
+          { "name" => "container-1" }
+        ]
       },
       "status" => { "phase" => "Running" }
     }
@@ -93,15 +93,15 @@ module KubernetesHelpers
         "labels" => {
           "app" => app,
           "track" => track
-        }.compact,
+        }.compact
       },
       "spec" => { "replicas" => 3 },
       "status" => {
         "observedGeneration" => 4,
         "replicas" => 3,
         "updatedReplicas" => 3,
-        "availableReplicas" => 3,
-      },
+        "availableReplicas" => 3
+      }
     }
   end
 

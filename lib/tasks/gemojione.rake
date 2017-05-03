@@ -21,7 +21,7 @@ namespace :gemojione do
           moji: emoji_hash['moji'],
           description: emoji_hash['description'],
           unicodeVersion: Gitlab::Emoji.emoji_unicode_version(name),
-          digest: hash_digest,
+          digest: hash_digest
         }
 
         resultant_emoji_map[name] = entry

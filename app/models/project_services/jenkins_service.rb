@@ -83,7 +83,7 @@ class JenkinsService < CiService
         help: 'The URL-friendly project name. Example: my_project_name'
       },
       { type: 'text', name: 'username' },
-      { type: 'password', name: 'password' },
+      { type: 'password', name: 'password' }
     ]
   end
 end

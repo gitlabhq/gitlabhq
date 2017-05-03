@@ -225,7 +225,7 @@ module Ci
                                before_script: ["pwd"],
                                rspec: { script: "rspec", type: "test", only: %w(master deploy) },
                                staging: { script: "deploy", type: "deploy", only: %w(master deploy) },
-                               production: { script: "deploy", type: "deploy", only: ["master@path", "deploy"] },
+                               production: { script: "deploy", type: "deploy", only: ["master@path", "deploy"] }
                              })
 
           config_processor = GitlabCiYamlProcessor.new(config, 'fork')
@@ -381,7 +381,7 @@ module Ci
                                before_script: ["pwd"],
                                rspec: { script: "rspec", type: "test", except: ["master", "deploy", "test@fork"] },
                                staging: { script: "deploy", type: "deploy", except: ["master"] },
-                               production: { script: "deploy", type: "deploy", except: ["master@fork"] },
+                               production: { script: "deploy", type: "deploy", except: ["master@fork"] }
                              })
 
           config_processor = GitlabCiYamlProcessor.new(config, 'fork')
@@ -743,7 +743,7 @@ module Ci
                              cache: { paths: ["logs/", "binaries/"], untracked: true, key: 'global' },
                              rspec: {
                                script: "rspec",
-                               cache: { paths: ["test/"], untracked: false, key: 'local' },
+                               cache: { paths: ["test/"], untracked: false, key: 'local' }
                              }
                            })
 

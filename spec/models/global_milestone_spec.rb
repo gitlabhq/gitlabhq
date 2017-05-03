@@ -137,7 +137,7 @@ describe GlobalMilestone, models: true do
         [
           milestone1_project1,
           milestone1_project2,
-          milestone1_project3,
+          milestone1_project3
         ]
       milestones_relation = Milestone.where(id: milestones.map(&:id))
 

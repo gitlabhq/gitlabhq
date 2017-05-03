@@ -986,7 +986,7 @@ describe Ci::Build, :models do
       'fix-1-foo' => 'fix-1-foo',
       'a' * 63    => 'a' * 63,
       'a' * 64    => 'a' * 63,
-      'FOO'       => 'foo',
+      'FOO'       => 'foo'
     }.each do |ref, slug|
       it "transforms #{ref} to #{slug}" do
         build.ref = ref
@@ -1158,7 +1158,7 @@ describe Ci::Build, :models do
         { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true },
         { key: 'CI_REGISTRY_USER', value: 'gitlab-ci-token', public: true },
         { key: 'CI_REGISTRY_PASSWORD', value: build.token, public: false },
-        { key: 'CI_REPOSITORY_URL', value: build.repo_url, public: false },
+        { key: 'CI_REPOSITORY_URL', value: build.repo_url, public: false }
       ]
     end
 

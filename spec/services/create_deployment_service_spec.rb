@@ -255,7 +255,7 @@ describe CreateDeploymentService, services: true do
         environment: 'production',
         ref: 'master',
         tag: false,
-        sha: '97de212e80737a608d939f648d959671fb0a0142b',
+        sha: '97de212e80737a608d939f648d959671fb0a0142b'
       }
     end
 

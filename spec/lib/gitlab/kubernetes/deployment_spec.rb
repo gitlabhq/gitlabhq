@@ -68,7 +68,7 @@ describe Gitlab::Kubernetes::Deployment do
           { status: 'waiting', tooltip: 'unknown (pod 0) Waiting', track: 'stable', stable: true },
           { status: 'waiting', tooltip: 'unknown (pod 1) Waiting', track: 'stable', stable: true },
           { status: 'waiting', tooltip: 'unknown (pod 2) Waiting', track: 'stable', stable: true },
-          { status: 'waiting', tooltip: 'unknown (pod 3) Waiting', track: 'stable', stable: true },
+          { status: 'waiting', tooltip: 'unknown (pod 3) Waiting', track: 'stable', stable: true }
         ]
 
         expect(deployment.instances).to eq(expected)
@@ -83,7 +83,7 @@ describe Gitlab::Kubernetes::Deployment do
           { status: 'waiting', tooltip: 'foo (pod 0) Waiting', track: 'stable', stable: true },
           { status: 'waiting', tooltip: 'foo (pod 1) Waiting', track: 'stable', stable: true },
           { status: 'waiting', tooltip: 'foo (pod 2) Waiting', track: 'stable', stable: true },
-          { status: 'waiting', tooltip: 'foo (pod 3) Waiting', track: 'stable', stable: true },
+          { status: 'waiting', tooltip: 'foo (pod 3) Waiting', track: 'stable', stable: true }
         ]
 
         expect(deployment.instances).to eq(expected)
@@ -98,7 +98,7 @@ describe Gitlab::Kubernetes::Deployment do
           { status: 'finished',  tooltip: 'foo (pod 0) Finished', track: 'stable', stable: true },
           { status: 'deploying', tooltip: 'foo (pod 1) Deploying', track: 'stable', stable: true },
           { status: 'waiting',   tooltip: 'foo (pod 2) Waiting', track: 'stable', stable: true },
-          { status: 'waiting',   tooltip: 'foo (pod 3) Waiting', track: 'stable', stable: true },
+          { status: 'waiting',   tooltip: 'foo (pod 3) Waiting', track: 'stable', stable: true }
         ]
 
         expect(deployment.instances).to eq(expected)
@@ -114,7 +114,7 @@ describe Gitlab::Kubernetes::Deployment do
 
         it 'returns all instances' do
           expected = [
-            { status: 'waiting',  tooltip: 'foo (pod 0) Waiting', track: 'stable', stable: true },
+            { status: 'waiting',  tooltip: 'foo (pod 0) Waiting', track: 'stable', stable: true }
           ]
 
           expect(deployment.instances).to eq(expected)
@@ -126,7 +126,7 @@ describe Gitlab::Kubernetes::Deployment do
 
         it 'returns all instances' do
           expected = [
-            { status: 'waiting',  tooltip: 'foo (pod 0) Waiting', track: 'canary', stable: false },
+            { status: 'waiting',  tooltip: 'foo (pod 0) Waiting', track: 'canary', stable: false }
           ]
 
           expect(deployment.instances).to eq(expected)

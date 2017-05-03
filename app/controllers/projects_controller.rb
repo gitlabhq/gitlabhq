@@ -221,7 +221,7 @@ class ProjectsController < Projects::ApplicationController
     branches = BranchesFinder.new(@repository, params).execute.map(&:name)
 
     options = {
-      'Branches' => branches.take(100),
+      'Branches' => branches.take(100)
     }
 
     unless @repository.tag_count.zero?

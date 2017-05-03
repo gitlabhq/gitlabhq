@@ -496,7 +496,8 @@ Style/TrailingBlankLines:
 
 # This cop checks for trailing comma in array and hash literals.
 Style/TrailingCommaInLiteral:
-  Enabled: false
+  Enabled: true
+  EnforcedStyleForMultiline: no_comma
 
 # Checks for %W when interpolation is not needed.
 Style/UnneededCapitalW:

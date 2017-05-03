@@ -217,7 +217,7 @@ class Projects::IssuesController < Projects::ApplicationController
       description_text: @issue.description,
       task_status: @issue.task_status,
       issue_number: @issue.iid,
-      updated_at: @issue.updated_at,
+      updated_at: @issue.updated_at
     }
   end
 

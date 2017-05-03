@@ -46,7 +46,7 @@ describe Search::GroupService, services: true do
       # Ensure these are present when the index is refreshed
       _ = [
         outside_project, private_project, other_project,
-        project1, project2, project3,
+        project1, project2, project3
       ]
 
       Gitlab::Elastic::Helper.refresh_index

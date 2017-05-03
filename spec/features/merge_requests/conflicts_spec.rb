@@ -151,7 +151,7 @@ feature 'Merge request conflict resolution', js: true, feature: true do
     'conflict-too-large' => 'when the conflicts contain a large file',
     'conflict-binary-file' => 'when the conflicts contain a binary file',
     'conflict-missing-side' => 'when the conflicts contain a file edited in one branch and deleted in another',
-    'conflict-non-utf8' => 'when the conflicts contain a non-UTF-8 file',
+    'conflict-non-utf8' => 'when the conflicts contain a non-UTF-8 file'
   }.freeze
 
   UNRESOLVABLE_CONFLICTS.each do |source_branch, description|
