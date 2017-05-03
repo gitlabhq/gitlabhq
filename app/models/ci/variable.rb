@@ -3,6 +3,7 @@ module Ci
     extend Ci::Model
     include HasVariable
     prepend EE::Ci::Variable
+    include Presentable
 
     belongs_to :project
 

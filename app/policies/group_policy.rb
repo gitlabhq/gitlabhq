@@ -33,6 +33,8 @@ class GroupPolicy < BasePolicy
   rule { master }.policy do
     enable :create_projects
     enable :admin_milestones
+    enable :admin_pipeline
+    enable :admin_build
   end
 
   rule { owner }.policy do

@@ -418,6 +418,7 @@ import AuditLogs from './audit_logs';
           initSettingsPanels();
           break;
         case 'projects:settings:ci_cd:show':
+        case 'groups:settings:ci_cd:show':
           new gl.ProjectVariables();
           break;
         case 'ci:lints:create':
