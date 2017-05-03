@@ -580,9 +580,10 @@ Optional manual actions have `allow_failure: true` set by default.
 
 **Statuses of optional actions do not contribute to overall pipeline status.**
 
-**Manual actions do inherit permissions of protected branches. In other words,
-in order to trigger a manual action assigned to a branch that the pipeline is
-running for, user needs to have ability to push to this branch.**
+**Manual actions are considered to be write actions, so permissions for
+protected branches are used when user wants to trigger an action. In other
+words, in order to trigger a manual action assigned to a branch that the
+pipeline is running for, user needs to have ability to push to this branch.**
 
 ### environment
 
