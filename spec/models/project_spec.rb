@@ -2340,4 +2340,12 @@ describe Project, models: true do
         not_to raise_error
     end
   end
+
+  describe '#last_repository_updated_at' do
+    it 'sets to created_at upon creation' do
+      project = create(:empty_project, created_at: 2.hours.ago)
+
+      expect(project.last_repository_updated_at.to_i).to eq(project.created_at.to_i)
+    end
+  end
 end
