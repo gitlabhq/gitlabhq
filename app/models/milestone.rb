@@ -108,10 +108,10 @@ class Milestone < ActiveRecord::Base
     end
   end
 
-<<<<<<< HEAD
   def participants
     User.joins(assigned_issues: :milestone).where("milestones.id = ?", id)
-=======
+  end
+
   def self.sort(method)
     case method.to_s
     when 'due_date_asc'
@@ -125,7 +125,6 @@ class Milestone < ActiveRecord::Base
     else
       order_by(method)
     end
->>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0
   end
 
   ##

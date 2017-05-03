@@ -13,12 +13,8 @@ describe Issues::UpdateService, services: true do
 
   let(:issue) do
     create(:issue, title: 'Old title',
-<<<<<<< HEAD
-                   assignees: [user3],
-=======
                    description: "for #{user2.to_reference}",
-                   assignee_id: user3.id,
->>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0
+                   assignee_ids: [user3.id],
                    project: project)
   end
 

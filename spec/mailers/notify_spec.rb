@@ -36,19 +36,11 @@ describe Notify do
       end
 
       context 'for issues' do
-<<<<<<< HEAD
         let(:issue) { create(:issue, author: current_user, assignees: [assignee], project: project) }
-        let(:issue_with_description) { create(:issue, author: current_user, assignees: [assignee], project: project, description: FFaker::Lorem.sentence) }
+        let(:issue_with_description) { create(:issue, author: current_user, assignees: [assignee], project: project, description: 'My awesome description') }
 
         describe 'that are new' do
-          subject { Notify.new_issue_email(issue.assignees.first.id, issue.id) }
-=======
-        let(:issue) { create(:issue, author: current_user, assignee: assignee, project: project) }
-        let(:issue_with_description) { create(:issue, author: current_user, assignee: assignee, project: project, description: 'My awesome description') }
-
-        describe 'that are new' do
-          subject { described_class.new_issue_email(issue.assignee_id, issue.id) }
->>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0
+          subject { described_class.new_issue_email(issue.assignees.first.id, issue.id) }
 
           it_behaves_like 'an assignee email'
           it_behaves_like 'an email starting a new thread with reply-by-email enabled' do
@@ -77,11 +69,7 @@ describe Notify do
         end
 
         describe 'that are new with a description' do
-<<<<<<< HEAD
-          subject { Notify.new_issue_email(issue_with_description.assignees.first.id, issue_with_description.id) }
-=======
-          subject { described_class.new_issue_email(issue_with_description.assignee_id, issue_with_description.id) }
->>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0
+          subject { described_class.new_issue_email(issue_with_description.assignees.first.id, issue_with_description.id) }
 
           it_behaves_like 'it should show Gmail Actions View Issue link'
 
@@ -91,11 +79,7 @@ describe Notify do
         end
 
         describe 'that have been reassigned' do
-<<<<<<< HEAD
-          subject { Notify.reassigned_issue_email(recipient.id, issue.id, [previous_assignee.id], current_user.id) }
-=======
-          subject { described_class.reassigned_issue_email(recipient.id, issue.id, previous_assignee.id, current_user.id) }
->>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0
+          subject { described_class.reassigned_issue_email(recipient.id, issue.id, [previous_assignee.id], current_user.id) }
 
           it_behaves_like 'a multiple recipients email'
           it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do

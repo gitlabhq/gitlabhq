@@ -97,12 +97,8 @@ module Issuable
 
     acts_as_paranoid
 
-<<<<<<< HEAD
-    after_save :record_metrics
-=======
     after_save :update_assignee_cache_counts, if: :assignee_id_changed?
     after_save :record_metrics, unless: :imported?
->>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0
 
     # We want to use optimistic lock for cases when only title or description are involved
     # http://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html
@@ -295,24 +291,12 @@ module Issuable
     self.class.to_ability_name
   end
 
-<<<<<<< HEAD
-  # Convert this Issuable class name to a format usable by notifications.
-  #
-  # Examples:
-  #
-  #   issuable.class           # => MergeRequest
-  #   issuable.human_class_name # => "merge request"
-
-  def human_class_name
-    @human_class_name ||= self.class.name.titleize.downcase
-=======
   # Returns a Hash of attributes to be used for Twitter card metadata
   def card_attributes
     {
       'Author'   => author.try(:name),
       'Assignee' => assignee.try(:name)
     }
->>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0
   end
 
   def notes_with_associations

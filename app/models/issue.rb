@@ -37,11 +37,8 @@ class Issue < ActiveRecord::Base
 
   validates :project, presence: true
 
-<<<<<<< HEAD
-  scope :open_for, ->(user) { opened.assigned_to(user) }
-=======
->>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0
   scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
+
   scope :assigned, -> { where('EXISTS (SELECT TRUE FROM issue_assignees WHERE issue_id = issues.id)') }
   scope :unassigned, -> { where('NOT EXISTS (SELECT TRUE FROM issue_assignees WHERE issue_id = issues.id)') }
   scope :assigned_to, ->(u) { where('EXISTS (SELECT TRUE FROM issue_assignees WHERE user_id = ? AND issue_id = issues.id)', u.id)}

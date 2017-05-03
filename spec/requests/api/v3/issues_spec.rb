@@ -26,13 +26,8 @@ describe API::V3::Issues do
            :confidential,
            project: project,
            author: author,
-<<<<<<< HEAD
            assignees: [assignee],
-           created_at: generate(:issue_created_at),
-=======
-           assignee: assignee,
            created_at: generate(:past_time),
->>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0
            updated_at: 2.hours.ago
   end
   let!(:issue) do

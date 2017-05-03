@@ -43,15 +43,6 @@ describe 'Filter issues', js: true, feature: true do
     group.add_developer(user)
     group.add_developer(user2)
 
-<<<<<<< HEAD
-    create(:issue, title: "Bug report 1", project: project)
-    create(:issue, title: "Bug report 2", project: project)
-    create(:issue, title: "issue with 'single quotes'", project: project)
-    create(:issue, title: "issue with \"double quotes\"", project: project)
-    create(:issue, title: "issue with !@\#{$%^&*()-+", project: project)
-    create(:issue, title: "issue by assignee", project: project, milestone: milestone, author: user, assignees: [user])
-    create(:issue, title: "issue by assignee with searchTerm", project: project, milestone: milestone, author: user, assignees: [user])
-=======
     sign_in(user)
 
     create(:issue, project: project)
@@ -60,9 +51,9 @@ describe 'Filter issues', js: true, feature: true do
     create(:issue, project: project, title: "issue with 'single quotes'")
     create(:issue, project: project, title: "issue with \"double quotes\"")
     create(:issue, project: project, title: "issue with !@\#{$%^&*()-+")
-    create(:issue, project: project, title: "issue by assignee", milestone: milestone, author: user, assignee: user)
-    create(:issue, project: project, title: "issue by assignee with searchTerm", milestone: milestone, author: user, assignee: user)
->>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0
+    create(:issue, project: project, title: "issue by assignee", milestone: milestone, author: user, assignees: [user])
+    create(:issue, project: project, title: "issue by assignee with searchTerm", milestone: milestone, author: user, assignees: [user])
+
 
     issue = create(:issue,
       title: "Bug 2",

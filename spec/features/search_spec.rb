@@ -4,13 +4,8 @@ describe "Search", feature: true  do
   include FilteredSearchHelpers
 
   let(:user) { create(:user) }
-<<<<<<< HEAD
-  let(:project) { create(:project, namespace: user.namespace) }
-  let!(:issue) { create(:issue, project: project, assignees: [user]) }
-=======
   let(:project) { create(:empty_project, namespace: user.namespace) }
-  let!(:issue) { create(:issue, project: project, assignee: user) }
->>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0
+  let!(:issue) { create(:issue, project: project, assignees: [user]) }
   let!(:issue2) { create(:issue, project: project, author: user) }
 
   before do

@@ -72,13 +72,8 @@ describe Users::DestroyService, services: true do
         project.add_developer(user)
       end
 
-<<<<<<< HEAD:spec/services/users/destroy_spec.rb
-      context "for an issue the user was assigned to" do
-        let!(:issue) { create(:issue, project: project, assignees: [user]) }
-=======
       context "for an merge request the user was assigned to" do
         let!(:merge_request) { create(:merge_request, source_project: project, assignee: user) }
->>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0:spec/services/users/destroy_service_spec.rb
 
         before do
           service.execute(user)
@@ -91,11 +86,7 @@ describe Users::DestroyService, services: true do
         it 'migrates the merge request so that it is "Unassigned"' do
           migrated_merge_request = MergeRequest.find_by_id(merge_request.id)
 
-<<<<<<< HEAD:spec/services/users/destroy_spec.rb
-          expect(migrated_issue.assignees).to be_empty
-=======
           expect(migrated_merge_request.assignee).to be_nil
->>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0:spec/services/users/destroy_service_spec.rb
         end
       end
     end
