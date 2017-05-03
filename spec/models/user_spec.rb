@@ -899,18 +899,11 @@ describe User, models: true do
   end
 
   describe '#avatar_url' do
-    let(:user) { create(:user) }
+    let(:user) { create(:user, :with_avatar) }
     subject { user.avatar_url }
 
     context 'when avatar file is uploaded' do
-      before do
-        user.update_columns(avatar: 'uploads/avatar.png')
-        allow(user.avatar).to receive(:present?) { true }
-      end
-
-      let(:avatar_path) do
-        "/uploads/user/avatar/#{user.id}/uploads/avatar.png"
-      end
+      let(:avatar_path) { "/uploads/user/avatar/#{user.id}/dk.png" }
 
       it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
 

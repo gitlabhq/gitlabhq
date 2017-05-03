@@ -33,6 +33,10 @@ FactoryGirl.define do
       after(:build) { |user, _| user.block! }
     end
 
+    trait :with_avatar do
+      avatar { File.open(Rails.root.join('spec/fixtures/dk.png')) }
+    end
+
     trait :two_factor_via_otp do
       before(:create) do |user|
         user.otp_required_for_login = true
