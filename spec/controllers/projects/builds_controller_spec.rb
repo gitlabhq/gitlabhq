@@ -260,10 +260,8 @@ describe Projects::BuildsController do
   end
 
   describe 'POST play' do
-    let(:project) { create(:project, :public) }
-
     before do
-      project.add_developer(user)
+      project.add_master(user)
       sign_in(user)
 
       post_play

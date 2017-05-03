@@ -5,7 +5,7 @@ module Ci
         raise Gitlab::Access::AccessDeniedError
       end
 
-      # Try to enqueue thebuild, otherwise create a duplicate.
+      # Try to enqueue the build, otherwise create a duplicate.
       #
       if build.enqueue
         build.tap { |action| action.update(user: current_user) }

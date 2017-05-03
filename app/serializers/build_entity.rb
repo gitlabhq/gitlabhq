@@ -12,7 +12,7 @@ class BuildEntity < Grape::Entity
     path_to(:retry_namespace_project_build, build)
   end
 
-  expose :play_path, if: proc { playable? } do |build|
+  expose :play_path, if: -> (*) { playable? } do |build|
     path_to(:play_namespace_project_build, build)
   end
 
@@ -26,7 +26,7 @@ class BuildEntity < Grape::Entity
   alias_method :build, :object
 
   def playable?
-    can?(request.user, :play_build, build) && build.playable?
+    build.playable? && can?(request.user, :play_build, build)
   end
 
   def detailed_status
