@@ -709,7 +709,7 @@ class User < ActiveRecord::Base
     if !Gitlab.config.ldap.enabled
       false
     elsif ldap_user?
-      !last_credential_check_at || (last_credential_check_at + 1.hour) < Time.now
+      !last_credential_check_at || (last_credential_check_at + Gitlab.config.ldap.servers.main.check_expiraton_time.seconds) < Time.now
     else
       false
     end
