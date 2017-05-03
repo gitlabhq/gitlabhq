@@ -152,7 +152,7 @@ describe 'Issue Boards', feature: true, js: true do
       page.within(find('.assignee')) do
         expect(page).to have_content('No assignee')
 
-        find('.btn-link', text: 'assign yourself').click
+        click_button 'assign yourself'
 
         wait_for_vue_resource
 
