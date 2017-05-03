@@ -35,13 +35,8 @@ var config = {
     group:                './group.js',
     groups_list:          './groups_list.js',
     issues:               './issues/issues_bundle.js',
-<<<<<<< HEAD
-    sidebar:              './sidebar/sidebar_bundle.js',
-=======
-    issuable:             './issuable/issuable_bundle.js',
     issue_show:           './issue_show/index.js',
     main:                 './main.js',
->>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
     merge_request_widget: './merge_request_widget/ci_bundle.js',
     mr_widget_ee:         './merge_request_widget/widget_bundle.js',
@@ -53,6 +48,7 @@ var config = {
     profile:              './profile/profile_bundle.js',
     protected_branches:   './protected_branches/protected_branches_bundle.js',
     protected_tags:       './protected_tags',
+    sidebar:              './sidebar/sidebar_bundle.js',
     snippet:              './snippet/snippet_bundle.js',
     sketch_viewer:        './blob/sketch_viewer.js',
     stl_viewer:           './blob/stl_viewer.js',
@@ -127,12 +123,8 @@ var config = {
         'diff_notes',
         'environments',
         'environments_folder',
-<<<<<<< HEAD
         'sidebar',
-=======
-        'issuable',
         'issue_show',
->>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0
         'merge_conflicts',
         'notebook_viewer',
         'pdf_viewer',

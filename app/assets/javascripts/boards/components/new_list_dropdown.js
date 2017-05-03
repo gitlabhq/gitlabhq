@@ -44,20 +44,6 @@ gl.issueBoards.newListDropdownInit = () => {
           style: `background-color: ${label.color}`
         });
 
-<<<<<<< HEAD
-          return $li.append($a.prepend($labelColor));
-        },
-        search: {
-          fields: ['title']
-        },
-        filterable: true,
-        selectable: true,
-        multiSelect: true,
-        clicked (options) {
-          const { e } = options;
-          const label = options.selectedObj;
-          e.preventDefault();
-=======
         return $li.append($a.prepend($labelColor));
       },
       search: {
@@ -66,9 +52,10 @@ gl.issueBoards.newListDropdownInit = () => {
       filterable: true,
       selectable: true,
       multiSelect: true,
-      clicked (label, $el, e) {
+      clicked (options) {
+        const { e } = options;
+        const label = options.selectedObj;
         e.preventDefault();
->>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0
 
         if (!Store.findList('title', label.title)) {
           Store.new({

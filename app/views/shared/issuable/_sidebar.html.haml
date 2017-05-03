@@ -3,13 +3,8 @@
   = page_specific_javascript_bundle_tag('common_vue')
   = page_specific_javascript_bundle_tag('sidebar')
 
-<<<<<<< HEAD
-%aside.right-sidebar.js-right-sidebar{ data: { "offset-top" => "101", "spy" => "affix" }, class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite' }
-  .issuable-sidebar{ data: { endpoint: "#{issuable_json_path(issuable)}" } }
-=======
 %aside.right-sidebar.js-right-sidebar{ data: { "offset-top" => "102", "spy" => "affix" }, class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite' }
-  .issuable-sidebar
->>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0
+  .issuable-sidebar{ data: { endpoint: "#{issuable_json_path(issuable)}" } }
     - can_edit_issuable = can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
     .block.issuable-sidebar-header
       - if current_user
