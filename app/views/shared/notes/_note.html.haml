@@ -42,10 +42,7 @@
           = note.redacted_note_html
         = edited_time_ago_with_tooltip(note, placement: 'bottom', html_class: 'note_edited_ago', include_author: true)
         - if note_editable
-          - if note.for_personal_snippet?
-            = render 'snippets/notes/edit', note: note
-          - else
-            = render 'projects/notes/edit', note: note
+          = render 'shared/notes/edit', note: note
         .note-awards
           = render 'award_emoji/awards_block', awardable: note, inline: false
         - if note.system

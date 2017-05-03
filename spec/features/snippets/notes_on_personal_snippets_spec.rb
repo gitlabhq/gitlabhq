@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Comments on personal snippets', feature: true do
+describe 'Comments on personal snippets', :js, feature: true do
   let!(:user)    { create(:user) }
   let!(:snippet) { create(:personal_snippet, :public) }
   let!(:snippet_notes) do
@@ -18,7 +18,7 @@ describe 'Comments on personal snippets', feature: true do
 
   subject { page }
 
-  context 'viewing the snippet detail page' do
+  context 'when viewing the snippet detail page' do
     it 'contains notes for a snippet with correct action icons' do
       expect(page).to have_selector('#notes-list li', count: 2)
 
@@ -34,6 +34,66 @@ describe 'Comments on personal snippets', feature: true do
         expect(page).not_to have_selector('.js-note-delete')
         expect(page).to have_selector('.note-emoji-button')
       end
+    end
+  end
+
+  context 'when submitting a note' do
+    it 'shows a valid form' do
+      is_expected.to have_css('.js-main-target-form', visible: true, count: 1)
+      expect(find('.js-main-target-form .js-comment-button').value).
+        to eq('Comment')
+
+      page.within('.js-main-target-form') do
+        expect(page).not_to have_link('Cancel')
+      end
+    end
+
+    it 'previews a note' do
+      fill_in 'note[note]', with: 'This is **awesome**!'
+      find('.js-md-preview-button').click
+
+      page.within('.new-note .md-preview') do
+        expect(page).to have_content('This is awesome!')
+        expect(page).to have_selector('strong')
+      end
+    end
+
+    it 'creates a note' do
+      fill_in 'note[note]', with: 'This is **awesome**!'
+      click_button 'Comment'
+
+      expect(find('div#notes')).to have_content('This is awesome!')
+    end
+  end
+
+  context 'when editing a note' do
+    it 'changes the text' do
+      page.within("#notes-list li#note_#{snippet_notes[0].id}") do
+        click_on 'Edit comment'
+      end
+
+      page.within('.current-note-edit-form') do
+        fill_in 'note[note]', with: 'new content'
+        find('.btn-save').click
+      end
+
+      page.within("#notes-list li#note_#{snippet_notes[0].id}") do
+        expect(page).to have_css('.note_edited_ago')
+        expect(page).to have_content('new content')
+        expect(find('.note_edited_ago').text).to match(/less than a minute ago/)
+      end
+    end
+  end
+
+  context 'when deleting a note' do
+    it 'removes the note from the snippet detail page' do
+      page.within("#notes-list li#note_#{snippet_notes[0].id}") do
+        click_on 'Remove comment'
+      end
+
+      wait_for_ajax
+
+      expect(page).not_to have_selector("#notes-list li#note_#{snippet_notes[0].id}")
     end
   end
 end
