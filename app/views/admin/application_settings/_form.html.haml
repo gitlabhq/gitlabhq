@@ -394,8 +394,6 @@
 
   %fieldset
     %legend Error Reporting and Logging
-    %p
-      These settings require a restart to take effect.
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
@@ -403,6 +401,7 @@
             = f.check_box :sentry_enabled
             Enable Sentry
           .help-block
+            %p This setting requires a restart to take effect.
             Sentry is an error reporting and logging tool which is currently not shipped with GitLab, get it here:
             %a{ href: 'https://getsentry.com', target: '_blank', rel: 'noopener noreferrer' } https://getsentry.com
 
