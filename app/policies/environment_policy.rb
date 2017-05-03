@@ -4,12 +4,14 @@ class EnvironmentPolicy < BasePolicy
   def rules
     delegate! environment.project
 
-    if environment.stop_action?
-      delegate! environment.stop_action
+    if can?(:create_deployment) && environment.stop_action?
+      can! :stop_environment if can_play_stop_action?
     end
+  end
 
-    if can?(:create_deployment) && can?(:play_build)
-      can! :stop_environment
-    end
+  private
+
+  def can_play_stop_action?
+    Ability.allowed?(user, :play_build, environment.stop_action)
   end
 end
