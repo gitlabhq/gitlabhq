@@ -469,7 +469,7 @@ GitLabDropdown = (function() {
 
     // Process the data to make sure rendered data
     // matches the correct layout
-    if (this.fullData && hasMultiSelect) {
+    if (this.fullData && hasMultiSelect && this.options.processData) {
       const inputValue = this.filterInput.val();
       this.options.processData.call(this.options, inputValue, this.filteredFullData(), this.parseData.bind(this));
     }
