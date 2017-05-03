@@ -9,9 +9,6 @@ class CleanUpPendingDeleteProjects < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    admin = User.find_by(admin: true)
-    return unless admin
-
     Project.unscoped.where(pending_delete: true).each { |project| delete_project(project, admin) }
   end
 
@@ -21,7 +18,7 @@ class CleanUpPendingDeleteProjects < ActiveRecord::Migration
 
   private
 
-  def delete_project(project, user)
+  def delete_project(project)
     project.team.truncate
 
     unlink_fork(project) if project.forked?
