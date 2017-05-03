@@ -60,7 +60,7 @@ module API
                  elsif current_user.admin
                    Group.all
                  elsif params[:all_available]
-                   GroupsFinder.new.execute(current_user)
+                   GroupsFinder.new(current_user).execute
                  else
                    current_user.groups
                  end
