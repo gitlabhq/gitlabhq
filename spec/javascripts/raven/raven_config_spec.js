@@ -1,7 +1,7 @@
 import Raven from 'raven-js';
 import RavenConfig from '~/raven/raven_config';
 
-describe('RavenConfig', () => {
+fdescribe('RavenConfig', () => {
   describe('IGNORE_ERRORS', () => {
     it('should be an array of strings', () => {
       const areStrings = RavenConfig.IGNORE_ERRORS.every(error => typeof error === 'string');
@@ -190,7 +190,7 @@ describe('RavenConfig', () => {
           url: config.url,
           data: config.data,
           status: req.status,
-          response: req.responseText.substring(0, 100),
+          response: req.responseText,
           error: err,
           event,
         },
@@ -211,7 +211,7 @@ describe('RavenConfig', () => {
             url: config.url,
             data: config.data,
             status: req.status,
-            response: req.responseText.substring(0, 100),
+            response: req.responseText,
             error: req.statusText,
             event,
           },

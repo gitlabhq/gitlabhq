@@ -85,7 +85,7 @@ const RavenConfig = {
         url: config.url,
         data: config.data,
         status: req.status,
-        response: responseText.substring(0, 100),
+        response: responseText,
         error,
         event,
       },
