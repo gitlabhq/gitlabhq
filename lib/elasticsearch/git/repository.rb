@@ -10,7 +10,7 @@ require 'open3'
 module Elasticsearch
   module Git
     module Repository
-      class CreateIndexException < StandardError; end
+      CreateIndexException = Class.new(StandardError)
 
       BLOBS_BATCH = 100
       COMMMITS_BATCH = 500
@@ -196,7 +196,7 @@ module Elasticsearch
           out, err, status = Open3.capture3("git log #{range} --format=\"%H\"", chdir: repository_for_indexing.path)
 
           if status.success? && err.blank?
-            #TODO use rugged walker!!!
+            # TODO: use rugged walker!!!
             commit_oids = out.split("\n")
 
             commit_oids.each_slice(COMMMITS_BATCH) do |batch|
@@ -393,7 +393,7 @@ module Elasticsearch
 
       module ClassMethods
         def search(query, type: :all, page: 1, per: 20, options: {})
-          results = { blobs: [], commits: []}
+          results = { blobs: [], commits: [] }
 
           case type.to_sym
           when :all
@@ -430,7 +430,7 @@ module Elasticsearch
           }
 
           if query.blank?
-            query_hash[:query][:bool][:must] = { match_all: {}}
+            query_hash[:query][:bool][:must] = { match_all: {} }
             query_hash[:track_scores] = true
           end
 
@@ -481,7 +481,7 @@ module Elasticsearch
                   simple_query_string: {
                     query: query,
                     default_operator: :and,
-                    fields: [ 'blob.content', 'blob.file_name' ]
+                    fields: %w[blob.content blob.file_name]
                   }
                 }
               }

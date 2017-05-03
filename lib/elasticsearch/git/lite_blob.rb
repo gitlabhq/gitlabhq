@@ -12,7 +12,7 @@ module Elasticsearch
 
       def initialize(repo, raw_blob_hash)
         @id   = raw_blob_hash[:oid]
-        @blob  = repo.lookup(@id)
+        @blob = repo.lookup(@id)
 
         @mode = raw_blob_hash[:mode].to_s(8)
         @size = @blob.size
