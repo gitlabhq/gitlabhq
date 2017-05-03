@@ -581,7 +581,7 @@
         var link = document.createElement('a');
 
         link.href = url;
-        link.innerHTML = text;
+        link.textContent = text;
 
         if (selected) {
           link.className = 'is-active';
