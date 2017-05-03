@@ -1261,17 +1261,16 @@ module Gitlab
         @gitaly_ref_client ||= Gitlab::GitalyClient::Ref.new(self)
       end
 
-<<<<<<< HEAD
       def gitaly_commit_client
         @gitaly_commit_client ||= Gitlab::GitalyClient::Commit.new(self)
-=======
+      end
+
       def gitaly_migrate(method, &block)
         Gitlab::GitalyClient.migrate(method, &block)
       rescue GRPC::NotFound => e
         raise NoRepository.new(e)
       rescue GRPC::BadStatus => e
         raise CommandError.new(e)
->>>>>>> origin/master
       end
 
       # Returns the `Rugged` sorting type constant for a given

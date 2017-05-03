@@ -35,8 +35,7 @@
               = render 'projects/notes/actions', note: note, note_editable: note_editable
       .note-body{ class: note_editable ? 'js-task-list-container' : '' }
         .note-text.md
-          = preserve do
-            = note.redacted_note_html
+          = note.redacted_note_html
 
         = edited_time_ago_with_tooltip(note, placement: 'bottom', html_class: 'note_edited_ago', include_author: true)
         - if note_editable
