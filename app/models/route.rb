@@ -43,11 +43,13 @@ class Route < ActiveRecord::Base
     RedirectRoute.matching_path_and_descendants(path)
   end
 
-  def create_redirect_for_old_path
-    create_redirect(path_was) if path_changed?
-  end
-
   def create_redirect(path)
     RedirectRoute.create(source: source, path: path)
+  end
+
+  private
+
+  def create_redirect_for_old_path
+    create_redirect(path_was) if path_changed?
   end
 end

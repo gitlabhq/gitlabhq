@@ -94,11 +94,9 @@ class UsersController < ApplicationController
   private
 
   def authorize_read_user!
-    if can?(current_user, :read_user, user)
-      ensure_canonical_path(user.namespace, params[:username])
-    else
-      render_404
-    end
+    render_404 unless can?(current_user, :read_user, user)
+    
+    ensure_canonical_path(user.namespace, params[:username])
   end
 
   def user
