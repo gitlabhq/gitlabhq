@@ -71,14 +71,14 @@ module Gitlab
       def restore_project
         return @project unless @tree_hash
 
-        @project.update(project_params)
+        @project.update_columns(project_params)
         @project
       end
 
       def project_params
         @tree_hash.reject do |key, value|
           # return params that are not 1 to many or 1 to 1 relations
-          value.is_a?(Array) || key == key.singularize
+          value.respond_to?(:each) && !Project.column_names.include?(key)
         end
       end
 
