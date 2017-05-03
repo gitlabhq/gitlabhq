@@ -18,7 +18,7 @@ module EE
     def node_class(node)
       klass = []
       klass << 'js-geo-secondary-node' if node.secondary?
-      klass << ' node-disabled' unless node.enabled?
+      klass << 'node-disabled' unless node.enabled?
       klass
     end
 

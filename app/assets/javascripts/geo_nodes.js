@@ -37,7 +37,9 @@ class GeoNodeStatus {
       this.$repositoriesFailed.html(status.repositories_failed_count);
       this.$lfsObjectsSynced.html(`${status.lfs_objects_synced_count}/${status.lfs_objects_count} (${status.lfs_objects_synced_in_percentage})`);
       this.$attachmentsSynced.html(`${status.attachments_synced_count}/${status.attachments_count} (${status.attachments_synced_in_percentage})`);
-      if (status.health !== 'Healthy') {
+      if (status.health === 'Healthy') {
+        this.$health.html('');
+      } else {
         this.$health.html(`<code class="geo-health">${status.health}</code>`);
       }
 
