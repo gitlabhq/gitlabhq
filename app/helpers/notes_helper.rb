@@ -60,20 +60,16 @@ module NotesHelper
     note.project.team.human_max_access(note.author_id)
   end
 
-  def discussion_diff_path(discussion)
-    if discussion.for_merge_request? && discussion.diff_discussion?
-      if discussion.active?
-        # Without a diff ID, the link always points to the latest diff version
-        diff_id = nil
-      elsif merge_request_diff = discussion.latest_merge_request_diff
-        diff_id = merge_request_diff.id
-      else
-        # If the discussion is not active, and we cannot find the latest
-        # merge request diff for this discussion, we return no path at all.
-        return
-      end
+  def discussion_path(discussion)
+    if discussion.for_merge_request?
+      return unless discussion.diff_discussion?
 
-      diffs_namespace_project_merge_request_path(discussion.project.namespace, discussion.project, discussion.noteable, diff_id: diff_id, anchor: discussion.line_code)
+      version_params = discussion.merge_request_version_params
+      return unless version_params
+
+      path_params = version_params.merge(anchor: discussion.line_code)
+
+      diffs_namespace_project_merge_request_path(discussion.project.namespace, discussion.project, discussion.noteable, path_params)
     elsif discussion.for_commit?
       anchor = discussion.line_code if discussion.diff_discussion?
 
