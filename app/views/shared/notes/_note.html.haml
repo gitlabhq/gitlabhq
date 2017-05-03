@@ -40,7 +40,7 @@
       .note-body{ class: note_editable ? 'js-task-list-container' : '' }
         .note-text.md
           = note.redacted_note_html
-        = edited_time_ago_with_tooltip(note, placement: 'bottom', html_class: 'note_edited_ago', include_author: true)
+        = edited_time_ago_with_tooltip(note, placement: 'bottom', html_class: 'note_edited_ago')
         - if note_editable
           - if note.for_personal_snippet?
             = render 'snippets/notes/edit', note: note

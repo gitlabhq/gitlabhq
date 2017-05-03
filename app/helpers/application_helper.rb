@@ -180,14 +180,14 @@ module ApplicationHelper
     element
   end
 
-  def edited_time_ago_with_tooltip(object, placement: 'top', html_class: 'time_ago', include_author: false)
+  def edited_time_ago_with_tooltip(object, placement: 'top', html_class: 'time_ago', exclude_author: false)
     return if object.last_edited_at == object.created_at || object.last_edited_at.blank?
 
     content_tag :small, class: 'edited-text' do
       output = content_tag(:span, 'Edited ')
       output << time_ago_with_tooltip(object.last_edited_at, placement: placement, html_class: html_class)
 
-      if include_author && object.last_edited_by
+      if !exclude_author && object.last_edited_by
         output << content_tag(:span, ' by ')
         output << link_to_member(object.project, object.last_edited_by, avatar: false, author_class: nil)
       end

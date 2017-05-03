@@ -61,7 +61,7 @@
           = markdown_field(@issue, :description)
         %textarea.hidden.js-task-list-field
           = @issue.description
-    = edited_time_ago_with_tooltip(@issue, placement: 'bottom', html_class: 'issue_edited_ago', include_author: true)
+    = edited_time_ago_with_tooltip(@issue, placement: 'bottom', html_class: 'issue_edited_ago')
 
     #merge-requests{ data: { url: referenced_merge_requests_namespace_project_issue_url(@project.namespace, @project, @issue) } }
       // This element is filled in using JavaScript.
