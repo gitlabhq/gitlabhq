@@ -12,7 +12,9 @@ const locales = allLocales.reduce((d, obj) => {
   return data;
 }, {});
 
-const lang = document.querySelector('html').getAttribute('lang').replace(/-/g, '_') || 'en';
+let lang = document.querySelector('html').getAttribute('lang') || 'en';
+lang = lang.replace(/-/g, '_');
+
 const locale = new Jed(locales[lang]);
 const gettext = locale.gettext.bind(locale);
 const ngettext = locale.ngettext.bind(locale);
