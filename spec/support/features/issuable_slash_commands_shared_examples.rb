@@ -27,7 +27,7 @@ shared_examples 'issuable record that supports slash commands in its description
     wait_for_ajax
   end
 
-  describe "new #{issuable_type}" do
+  describe "new #{issuable_type}", js: true do
     context 'with commands in the description' do
       it "creates the #{issuable_type} and interpret commands accordingly" do
         visit public_send("new_namespace_project_#{issuable_type}_path", project.namespace, project, new_url_opts)
