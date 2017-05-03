@@ -18,12 +18,11 @@
       }
 
       $els.each(function(i, dropdown) {
-        var $block, $dropdown, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, collapsedSidebarLabelTemplate, defaultLabel, issuableId, issueUpdateURL, milestoneLinkNoneTemplate, milestoneLinkTemplate, milestonesUrl, projectId, selectedMilestone, showAny, showNo, showUpcoming, showStarted, useId, showMenuAbove;
+        var $block, $dropdown, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, collapsedSidebarLabelTemplate, defaultLabel, defaultNo, issuableId, issueUpdateURL, milestoneLinkNoneTemplate, milestoneLinkTemplate, milestonesUrl, projectId, selectedMilestone, selectedMilestoneDefault, showAny, showNo, showUpcoming, showStarted, useId, showMenuAbove;
         $dropdown = $(dropdown);
         projectId = $dropdown.data('project-id');
         milestonesUrl = $dropdown.data('milestones');
         issueUpdateURL = $dropdown.data('issueUpdate');
-        selectedMilestone = $dropdown.data('selected');
         showNo = $dropdown.data('show-no');
         showAny = $dropdown.data('show-any');
         showMenuAbove = $dropdown.data('showMenuAbove');
@@ -38,6 +37,8 @@
         $sidebarCollapsedValue = $block.find('.sidebar-collapsed-icon');
         $value = $block.find('.value');
         $loading = $block.find('.block-loading').fadeOut();
+        selectedMilestoneDefault = (showNo && defaultNo ? 'No Milestone' : '');
+        selectedMilestone = $dropdown.data('selected') || selectedMilestoneDefault;
         if (issueUpdateURL) {
           milestoneLinkTemplate = _.template('<a href="/<%- full_path %>/milestones/<%- iid %>" class="bold has-tooltip" data-container="body" title="<%- remaining %>"><%- title %></a>');
           milestoneLinkNoneTemplate = '<span class="no-value">None</span>';
@@ -120,12 +121,22 @@
             // display:block overrides the hide-collapse rule
             return $value.css('display', '');
           },
+          opened: function(e) {
+            const $el = $(e.currentTarget);
+            if ($dropdown.hasClass('js-issue-board-sidebar')) {
+              selectedMilestone = $dropdown[0].dataset.selected || selectedMilestoneDefault;
+            }
+            $('a.is-active', $el).removeClass('is-active');
+            $(`a:contains(${selectedMilestone})`, $el).addClass('is-active');
+          },
           vue: $dropdown.hasClass('js-issue-board-sidebar'),
           clicked: function(selected, $el, e) {
-            var data, isIssueIndex, isMRIndex, page, boardsStore;
+            var data, isIssueIndex, isMRIndex, isSelecting, page, boardsStore;
             page = $('body').data('page');
             isIssueIndex = page === 'projects:issues:index';
             isMRIndex = (page === page && page === 'projects:merge_requests:index');
+            isSelecting = (selected.name !== selectedMilestone);
+            selectedMilestone = isSelecting ? selected.name : selectedMilestoneDefault;
             if ($dropdown.hasClass('js-filter-bulk-update') || $dropdown.hasClass('js-issuable-form-dropdown')) {
               e.preventDefault();
               return;
@@ -139,16 +150,11 @@
               boardsStore[$dropdown.data('field-name')] = selected.name;
               e.preventDefault();
             } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
-              if (selected.name != null) {
-                selectedMilestone = selected.name;
-              } else {
-                selectedMilestone = '';
-              }
               return Issuable.filterResults($dropdown.closest('form'));
             } else if ($dropdown.hasClass('js-filter-submit')) {
               return $dropdown.closest('form').submit();
             } else if ($dropdown.hasClass('js-issue-board-sidebar')) {
-              if (selected.id !== -1) {
+              if (selected.id !== -1 && isSelecting) {
                 gl.issueBoards.boardStoreIssueSet('milestone', new ListMilestone({
                   id: selected.id,
                   title: selected.name
