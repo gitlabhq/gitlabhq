@@ -3,7 +3,6 @@ class UsersController < ApplicationController
 
   skip_before_action :authenticate_user!
   before_action :user, except: [:exists]
-  before_action :authorize_read_user!, except: [:exists]
 
   def show
     respond_to do |format|
@@ -93,14 +92,17 @@ class UsersController < ApplicationController
 
   private
 
-  def authorize_read_user!
-    render_404 unless can?(current_user, :read_user, user)
-    
-    ensure_canonical_path(user.namespace, params[:username])
-  end
-
   def user
-    @user ||= User.find_by_full_path(params[:username], follow_redirects: true)
+    return @user if @user
+
+    @user = User.find_by_full_path(params[:username], follow_redirects: true)
+
+    return render_404 unless @user
+    return render_404 unless can?(current_user, :read_user, @user)
+
+    ensure_canonical_path(@user.namespace, params[:username])
+
+    @user
   end
 
   def contributed_projects

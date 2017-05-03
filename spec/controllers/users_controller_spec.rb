@@ -84,6 +84,24 @@ describe UsersController do
         expect(response).to redirect_to(user)
       end
     end
+
+    context 'when a user by that username does not exist' do
+      context 'when logged out' do
+        it 'renders 404 (does not redirect to login)' do
+          get :show, username: 'nonexistent'
+          expect(response).to have_http_status(404)
+        end
+      end
+
+      context 'when logged in' do
+        before { sign_in(user) }
+
+        it 'renders 404' do
+          get :show, username: 'nonexistent'
+          expect(response).to have_http_status(404)
+        end
+      end
+    end
   end
 
   describe 'GET #calendar' do

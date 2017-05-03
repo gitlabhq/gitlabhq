@@ -1,7 +1,6 @@
 # See http://doc.gitlab.com/ce/development/migration_style_guide.html
 # for more information on how to write migrations for GitLab.
 
-# rubocop:disable RemoveIndex
 class AddIndexToRedirectRoutes < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
@@ -16,7 +15,7 @@ class AddIndexToRedirectRoutes < ActiveRecord::Migration
   end
 
   def down
-    remove_index(:redirect_routes, :path) if index_exists?(:redirect_routes, :path)
-    remove_index(:redirect_routes, [:source_type, :source_id]) if index_exists?(:redirect_routes, [:source_type, :source_id])
+    remove_concurrent_index(:redirect_routes, :path) if index_exists?(:redirect_routes, :path)
+    remove_concurrent_index(:redirect_routes, [:source_type, :source_id]) if index_exists?(:redirect_routes, [:source_type, :source_id])
   end
 end

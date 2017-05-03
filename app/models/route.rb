@@ -16,22 +16,22 @@ class Route < ActiveRecord::Base
   scope :direct_descendant_routes, -> (path) { where('routes.path LIKE ? AND routes.path NOT LIKE ?', "#{sanitize_sql_like(path)}/%", "#{sanitize_sql_like(path)}/%/%") }
 
   def rename_direct_descendant_routes
-    if path_changed? || name_changed?
-      direct_descendant_routes = self.class.direct_descendant_routes(path_was)
+    return if !path_changed? && !name_changed?
 
-      direct_descendant_routes.each do |route|
-        attributes = {}
+    direct_descendant_routes = self.class.direct_descendant_routes(path_was)
 
-        if path_changed? && route.path.present?
-          attributes[:path] = route.path.sub(path_was, path)
-        end
+    direct_descendant_routes.each do |route|
+      attributes = {}
 
-        if name_changed? && name_was.present? && route.name.present?
-          attributes[:name] = route.name.sub(name_was, name)
-        end
-
-        route.update(attributes) unless attributes.empty?
+      if path_changed? && route.path.present?
+        attributes[:path] = route.path.sub(path_was, path)
       end
+
+      if name_changed? && name_was.present? && route.name.present?
+        attributes[:name] = route.name.sub(name_was, name)
+      end
+
+      route.update(attributes) unless attributes.empty?
     end
   end
 
