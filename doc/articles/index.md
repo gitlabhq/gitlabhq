@@ -7,6 +7,12 @@ to provide the community with guidance on specific processes to achieve certain 
 They are written by members of the GitLab Team and by
 [Community Writers](https://about.gitlab.com/handbook/product/technical-writing/community-writers/).
 
+## Authentication
+
+- **LDAP**
+  - [How to configure LDAP with GitLab CE](how_to_configure_ldap_gitlab_ce/index.md)
+  - [How to configure LDAP with GitLab EE](how_to_configure_ldap_gitlab_ee/index.md)
+
 ## GitLab Pages
 
 - **GitLab Pages from A to Z**
