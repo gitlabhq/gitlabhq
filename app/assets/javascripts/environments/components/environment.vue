@@ -1,6 +1,4 @@
 <script>
-
-/* eslint-disable no-new */
 /* global Flash */
 import EnvironmentsService from '../services/environments_service';
 import EnvironmentTable from './environments_table.vue';
@@ -123,6 +121,7 @@ export default {
         })
         .catch(() => {
           this.isLoading = false;
+          // eslint-disable-next-line no-new
           new Flash('An error occurred while fetching the environments.');
         });
     },
@@ -138,19 +137,15 @@ export default {
         })
         .catch(() => {
           this.isLoadingFolderContent = false;
+          // eslint-disable-next-line no-new
           new Flash('An error occurred while fetching the environments.');
         });
     },
 
     postAction(endpoint) {
       this.service.postAction(endpoint)
-        .then(() => {
-          this.fetchEnvironments();
-        })
-        .catch(() => {
-          // eslint-disable-next-line no-new
-          new Flash('An error occured while making the request.');
-        });
+        .then(() => this.fetchEnvironments())
+        .catch(() => new Flash('An error occured while making the request.'));
     },
   },
 };
