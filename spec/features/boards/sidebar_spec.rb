@@ -5,6 +5,7 @@ describe 'Issue Boards', feature: true, js: true do
   include WaitForVueResource
 
   let(:user)         { create(:user) }
+  let(:user2)        { create(:user) }
   let(:project)      { create(:empty_project, :public) }
   let!(:milestone)   { create(:milestone, project: project) }
   let!(:development) { create(:label, project: project, name: 'Development') }
@@ -21,6 +22,7 @@ describe 'Issue Boards', feature: true, js: true do
     Timecop.freeze
 
     project.team << [user, :master]
+    project.team.add_developer(user2)
 
     login_as(user)
 
@@ -102,6 +104,26 @@ describe 'Issue Boards', feature: true, js: true do
       expect(card).to have_selector('.avatar')
     end
 
+    it 'adds multiple assignees' do
+      click_card(card)
+
+      page.within('.assignee') do
+        click_link 'Edit'
+
+        wait_for_ajax
+
+        page.within('.dropdown-menu-user') do
+          click_link user.name
+          click_link user2.name
+        end
+
+        expect(page).to have_content(user.name)
+        expect(page).to have_content(user2.name)
+      end
+
+      expect(card.all('.avatar').length).to eq(2)
+    end
+
     it 'removes the assignee' do
       card_two = first('.board').find('.card:nth-child(2)')
       click_card(card_two)
@@ -113,9 +135,10 @@ describe 'Issue Boards', feature: true, js: true do
 
         page.within('.dropdown-menu-user') do
           click_link 'Unassigned'
-
-          wait_for_vue_resource
         end
+
+        find('.dropdown-menu-toggle').click
+        wait_for_vue_resource
 
         expect(page).to have_content('No assignee')
       end
@@ -129,7 +152,7 @@ describe 'Issue Boards', feature: true, js: true do
       page.within(find('.assignee')) do
         expect(page).to have_content('No assignee')
 
-        click_link 'assign yourself'
+        click_button 'assign yourself'
 
         wait_for_vue_resource
 
