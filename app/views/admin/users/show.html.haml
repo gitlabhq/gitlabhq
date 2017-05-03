@@ -175,11 +175,7 @@
         .panel-body
           - if @user.can_be_removed? && can?(current_user, :destroy_user, @user)
             %p Deleting a user has the following effects:
-            %ul
-              %li All user content like authored issues, snippets, comments will be removed
-              - rp = @user.personal_projects.count
-              - unless rp.zero?
-                %li #{pluralize rp, 'personal project'} will be removed and cannot be restored
+            = render 'users/deletion_guidance', user: @user
             %br
             = link_to 'Remove user', [:admin, @user], data: { confirm: "USER #{@user.name} WILL BE REMOVED! Are you sure?" }, method: :delete, class: "btn btn-remove"
           - else

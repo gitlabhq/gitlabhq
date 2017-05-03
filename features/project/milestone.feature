@@ -7,14 +7,6 @@ Feature: Project Milestone
     And milestone has issue "Bugfix1" with labels: "bug", "feature"
     And milestone has issue "Bugfix2" with labels: "bug", "enhancement"
 
-
-  @javascript
-  Scenario: Listing issues from issues tab
-    Given I visit project "Shop" milestones page
-    And I click link "v2.2"
-    Then I should see the labels "bug", "enhancement" and "feature"
-    And I should see the "bug" label listed only once
-
   @javascript
   Scenario: Listing labels from labels tab
     Given I visit project "Shop" milestones page

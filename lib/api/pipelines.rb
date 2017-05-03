@@ -14,13 +14,23 @@ module API
       end
       params do
         use :pagination
-        optional :scope,    type: String, values: %w(running branches tags),
-                            desc: 'Either running, branches, or tags'
+        optional :scope,    type: String, values: %w[running pending finished branches tags],
+                            desc: 'The scope of pipelines'
+        optional :status,   type: String, values: HasStatus::AVAILABLE_STATUSES,
+                            desc: 'The status of pipelines'
+        optional :ref,      type: String, desc: 'The ref of pipelines'
+        optional :yaml_errors, type: Boolean, desc: 'Returns pipelines with invalid configurations'
+        optional :name,     type: String, desc: 'The name of the user who triggered pipelines'
+        optional :username, type: String, desc: 'The username of the user who triggered pipelines'
+        optional :order_by, type: String, values: PipelinesFinder::ALLOWED_INDEXED_COLUMNS, default: 'id',
+                            desc: 'Order pipelines'
+        optional :sort,     type: String, values: %w[asc desc], default: 'desc',
+                            desc: 'Sort pipelines'
       end
       get ':id/pipelines' do
         authorize! :read_pipeline, user_project
 
-        pipelines = PipelinesFinder.new(user_project).execute(scope: params[:scope])
+        pipelines = PipelinesFinder.new(user_project, params).execute
         present paginate(pipelines), with: Entities::PipelineBasic
       end
 

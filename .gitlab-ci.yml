@@ -264,11 +264,15 @@ spinach mysql 9 10: *spinach-knapsack-mysql
 static-analysis:
   <<: *ruby-static-analysis
   <<: *dedicated-runner
+  <<: *except-docs
   stage: test
   script:
     - scripts/static-analysis
 
-docs:check:links:
+# Documentation checks:
+# - Check validity of relative links
+# - Make sure cURL examples in API docs use the full switches
+docs lint:
   image: "registry.gitlab.com/gitlab-org/gitlab-build-images:nanoc-bootstrap-ruby-2.4-alpine"
   stage: test
   <<: *dedicated-runner
@@ -276,6 +280,7 @@ docs:check:links:
   dependencies: []
   before_script: []
   script:
+    - scripts/lint-doc.sh
     - mv doc/ /nanoc/content/
     - cd /nanoc
     # Build HTML from Markdown
