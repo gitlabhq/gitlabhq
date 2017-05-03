@@ -1,6 +1,6 @@
 RSpec.shared_examples "protected tags > access control > CE" do
   ProtectedTag::CreateAccessLevel.human_access_levels.each do |(access_type_id, access_type_name)|
-    it "allows creating protected tags that #{access_type_name} can create" do
+    it "allows creating protected tags that #{access_type_name} can create", :js do
       visit namespace_project_protected_tags_path(project.namespace, project)
 
       set_protected_tag_name('master')
@@ -10,8 +10,9 @@ RSpec.shared_examples "protected tags > access control > CE" do
 
         unless allowed_to_create_button.text == access_type_name
           allowed_to_create_button.click
-          find('.dropdown.open .dropdown-menu li', match: :first)
-          within(".dropdown.open .dropdown-menu") { click_on access_type_name }
+          find('.create_access_levels-container .dropdown-menu li', match: :first)
+          screenshot_and_open_image
+          within('.create_access_levels-container .dropdown-menu') { click_on access_type_name }
         end
       end
 
