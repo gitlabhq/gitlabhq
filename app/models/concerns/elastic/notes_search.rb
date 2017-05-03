@@ -50,14 +50,7 @@ module Elastic
       def self.elastic_search(query, options: {})
         options[:in] = ['note']
 
-        query_hash = {
-          query: {
-            bool: {
-              must: [{ match: { note: query } }],
-            },
-          }
-        }
-
+        query_hash = basic_query_hash(%w[note], query)
         query_hash = project_ids_filter(query_hash, options)
         query_hash = confidentiality_filter(query_hash, options[:current_user])
 

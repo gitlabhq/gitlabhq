@@ -10,7 +10,7 @@ module Gitlab
       def initialize(current_user, query, limit_project_ids, public_and_internal_projects = true)
         @current_user = current_user
         @limit_project_ids = limit_project_ids
-        @query = Shellwords.shellescape(query) if query.present?
+        @query = query
         @public_and_internal_projects = public_and_internal_projects
       end
 

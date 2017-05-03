@@ -22,6 +22,7 @@ describe Repository, elastic: true do
     end
 
     expect(project.repository.search('def popen')[:blobs][:total_count]).to eq(1)
+    expect(project.repository.search('def | popen')[:blobs][:total_count] > 1).to be_truthy
     expect(project.repository.search('initial')[:commits][:total_count]).to eq(1)
   end
 

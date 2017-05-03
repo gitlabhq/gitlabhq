@@ -19,9 +19,9 @@ describe Snippet, elastic: true do
     let!(:internal_snippet) { create(:snippet, :internal, content: 'password: XXX') }
     let!(:private_snippet)  { create(:snippet, :private, content: 'password: XXX', author: author) }
 
-    let!(:project_public_snippet)   { create(:snippet, :public, project: project, content: 'password: XXX') }
-    let!(:project_internal_snippet) { create(:snippet, :internal, project: project, content: 'password: XXX') }
-    let!(:project_private_snippet)  { create(:snippet, :private, project: project, content: 'password: XXX') }
+    let!(:project_public_snippet)   { create(:snippet, :public, project: project, content: 'password: 123') }
+    let!(:project_internal_snippet) { create(:snippet, :internal, project: project, content: 'password: 456') }
+    let!(:project_private_snippet)  { create(:snippet, :private, project: project, content: 'password: 789') }
 
     before do
       Gitlab::Elastic::Helper.refresh_index
@@ -58,6 +58,16 @@ describe Snippet, elastic: true do
 
       expect(result.total_count).to eq(3)
       expect(result.records).to match_array [public_snippet, internal_snippet, private_snippet]
+    end
+
+    it 'supports advanced search syntax' do
+      member = create(:user)
+      project.add_reporter(member)
+
+      result = described_class.elastic_search_code('password +(123 | 789)', options: { user: member })
+
+      expect(result.total_count).to eq(2)
+      expect(result.records).to match_array [project_public_snippet, project_private_snippet]
     end
 
     [:admin, :auditor].each do |user_type|
