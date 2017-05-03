@@ -948,8 +948,8 @@ describe Project, models: true do
       it 'creates a correct avatar path' do
         avatar_path = "/uploads/project/avatar/#{project.id}/dk.png"
 
-<<<<<<< HEAD
-      it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
+        expect(project.avatar_url).to eq("http://#{Gitlab.config.gitlab.host}#{avatar_path}")
+      end
 
       context 'When in a geo secondary node' do
         let(:geo_url) { 'http://geo.example.com' }
@@ -960,9 +960,6 @@ describe Project, models: true do
         end
 
         it { should eq "#{geo_url}#{avatar_path}" }
-=======
-        expect(project.avatar_url).to eq("http://#{Gitlab.config.gitlab.host}#{avatar_path}")
->>>>>>> ce-com/master
       end
     end
 
