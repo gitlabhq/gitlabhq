@@ -471,9 +471,7 @@ GitLabDropdown = (function() {
     // matches the correct layout
     if (this.fullData && hasMultiSelect) {
       const inputValue = this.filterInput.val();
-      const users = this.filteredFullData();
-
-      this.options.processData.call(this.options, inputValue, users, this.parseData.bind(this));
+      this.options.processData.call(this.options, inputValue, this.filteredFullData(), this.parseData.bind(this));
     }
 
     contentHtml = $('.dropdown-content', this.dropdown).html();
