@@ -31,14 +31,14 @@
 - if current_user
   - if note.emoji_awardable?
     - user_authored = note.user_authored?(current_user)
-    = link_to '#', title: 'Award Emoji', class: "note-action-button note-emoji-button js-add-award js-note-emoji #{'js-user-authored' if user_authored}", data: { position: 'right' } do
+    = link_to '#', title: 'Award Emoji', class: "note-action-button note-emoji-button js-add-award js-note-emoji #{'js-user-authored' if user_authored} has-tooltip", data: { position: 'right' } do
       = icon('spinner spin')
       %span{ class: 'link-highlight award-control-icon-neutral' }= custom_icon('emoji_slightly_smiling_face')
       %span{ class: 'link-highlight award-control-icon-positive' }= custom_icon('emoji_smiley')
       %span{ class: 'link-highlight award-control-icon-super-positive' }= custom_icon('emoji_smile')
 
   - if note_editable
-    = link_to '#', title: 'Edit comment', class: 'note-action-button js-note-edit' do
+    = link_to '#', title: 'Edit comment', class: 'note-action-button js-note-edit has-tooltip' do
       = icon('pencil', class: 'link-highlight')
-    = link_to namespace_project_note_path(note.project.namespace, note.project, note), title: 'Remove comment', method: :delete, data: { confirm: 'Are you sure you want to remove this comment?' }, remote: true, class: 'note-action-button js-note-delete danger' do
+    = link_to namespace_project_note_path(note.project.namespace, note.project, note), title: 'Remove comment', method: :delete, data: { confirm: 'Are you sure you want to remove this comment?' }, remote: true, class: 'note-action-button js-note-delete danger has-tooltip' do
       = icon('trash-o', class: 'danger-highlight')
