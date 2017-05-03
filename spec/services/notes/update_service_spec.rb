@@ -20,13 +20,6 @@ describe Notes::UpdateService, services: true do
       @note.reload
     end
 
-    it 'updates last_edited_at and last_edited_by attributes' do
-      update_note({ note: 'Hello world!' })
-
-      expect(@note.last_edited_at).not_to be_nil
-      expect(@note.last_edited_by).not_to be_nil
-    end
-
     context 'todos' do
       let!(:todo) { create(:todo, :assigned, user: user, project: project, target: issue, author: user2) }
 

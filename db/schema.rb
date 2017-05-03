@@ -778,8 +778,6 @@ ActiveRecord::Schema.define(version: 20170503022548) do
     t.string "discussion_id"
     t.text "note_html"
     t.integer "cached_markdown_version"
-    t.datetime "last_edited_at"
-    t.integer "last_edited_by_id"
   end
 
   add_index "notes", ["author_id"], name: "index_notes_on_author_id", using: :btree
