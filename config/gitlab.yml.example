@@ -515,7 +515,7 @@ production: &base
   # Use the default values unless you really know what you are doing
   git:
     bin_path: /usr/bin/git
-    # The next value is the maximum memory size grit can use
+    # The next value is the maximum memory size git can use
     # Given in number of bytes per git object (e.g. a commit)
     # This value can be increased if you have very large commits
     max_size: 20971520 # 20.megabytes
