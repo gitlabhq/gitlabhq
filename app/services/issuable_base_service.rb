@@ -218,6 +218,13 @@ class IssuableBaseService < BaseService
     if issuable.changed? || params.present?
       issuable.assign_attributes(params.merge(updated_by: current_user))
 
+      if has_title_or_description_changed?(issuable)
+        issuable.assign_attributes(params.merge(
+          last_edited_at: Time.now,
+          last_edited_by: current_user
+        ))
+      end
+
       before_update(issuable)
 
       if issuable.with_transaction_returning_status { issuable.save }
@@ -238,6 +245,10 @@ class IssuableBaseService < BaseService
 
   def labels_changing?(old_label_ids, new_label_ids)
     old_label_ids.sort != new_label_ids.sort
+  end
+
+  def has_title_or_description_changed?(issuable)
+    issuable.title_changed? || issuable.description_changed?
   end
 
   def change_state(issuable)

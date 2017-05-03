@@ -38,6 +38,7 @@ class Note < ActiveRecord::Base
   belongs_to :noteable, polymorphic: true, touch: true
   belongs_to :author, class_name: "User"
   belongs_to :updated_by, class_name: "User"
+  belongs_to :last_edited_by, class_name: 'User'
 
   has_many :todos, dependent: :destroy
   has_many :events, as: :target, dependent: :destroy

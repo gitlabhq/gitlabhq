@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170426181740) do
+ActiveRecord::Schema.define(version: 20170503022548) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -488,6 +488,8 @@ ActiveRecord::Schema.define(version: 20170426181740) do
     t.integer "relative_position"
     t.datetime "closed_at"
     t.integer "cached_markdown_version"
+    t.datetime "last_edited_at"
+    t.integer "last_edited_by_id"
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
@@ -674,6 +676,8 @@ ActiveRecord::Schema.define(version: 20170426181740) do
     t.text "description_html"
     t.integer "time_estimate"
     t.integer "cached_markdown_version"
+    t.datetime "last_edited_at"
+    t.integer "last_edited_by_id"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
@@ -774,6 +778,8 @@ ActiveRecord::Schema.define(version: 20170426181740) do
     t.string "discussion_id"
     t.text "note_html"
     t.integer "cached_markdown_version"
+    t.datetime "last_edited_at"
+    t.integer "last_edited_by_id"
   end
 
   add_index "notes", ["author_id"], name: "index_notes_on_author_id", using: :btree
