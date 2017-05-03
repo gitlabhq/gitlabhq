@@ -872,27 +872,6 @@ module Gitlab
         rugged.remotes[remote_name].push(refspecs)
       end
 
-      # Merge the +source_name+ branch into the +target_name+ branch. This is
-      # equivalent to `git merge --no_ff +source_name+`, since a merge commit
-      # is always created.
-      def merge(source_name, target_name, options = {})
-        our_commit = rugged.branches[target_name].target
-        their_commit = rugged.branches[source_name].target
-
-        raise "Invalid merge target" if our_commit.nil?
-        raise "Invalid merge source" if their_commit.nil?
-
-        merge_index = rugged.merge_commits(our_commit, their_commit)
-        return false if merge_index.conflicts?
-
-        actual_options = options.merge(
-          parents: [our_commit, their_commit],
-          tree: merge_index.write_tree(rugged),
-          update_ref: "refs/heads/#{target_name}"
-        )
-        Rugged::Commit.create(rugged, actual_options)
-      end
-
       AUTOCRLF_VALUES = {
         "true" => true,
         "false" => false,

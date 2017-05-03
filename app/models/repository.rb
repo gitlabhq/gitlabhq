@@ -791,7 +791,7 @@ class Repository
       }
       options.merge!(get_committer_and_author(user, email: author_email, name: author_name))
 
-      Rugged::Commit.create(rugged, options)
+      create_commit(options)
     end
   end
   # rubocop:enable Metrics/ParameterLists
@@ -838,7 +838,7 @@ class Repository
         tree: merge_index.write_tree(rugged),
       )
 
-      commit_id = Rugged::Commit.create(rugged, actual_options)
+      commit_id = create_commit(actual_options)
       merge_request.update(in_progress_merge_commit_sha: commit_id)
       commit_id
     end
@@ -861,12 +861,11 @@ class Repository
 
       committer = user_to_committer(user)
 
-      Rugged::Commit.create(rugged,
-        message: commit.revert_message(user),
-        author: committer,
-        committer: committer,
-        tree: revert_tree_id,
-        parents: [start_commit.sha])
+      create_commit(message: commit.revert_message(user),
+                    author: committer,
+                    committer: committer,
+                    tree: revert_tree_id,
+                    parents: [start_commit.sha])
     end
   end
 
@@ -885,16 +884,15 @@ class Repository
 
       committer = user_to_committer(user)
 
-      Rugged::Commit.create(rugged,
-        message: commit.message,
-        author: {
-          email: commit.author_email,
-          name: commit.author_name,
-          time: commit.authored_date
-        },
-        committer: committer,
-        tree: cherry_pick_tree_id,
-        parents: [start_commit.sha])
+      create_commit(message: commit.message,
+                    author: {
+                        email: commit.author_email,
+                        name: commit.author_name,
+                        time: commit.authored_date
+                    },
+                    committer: committer,
+                    tree: cherry_pick_tree_id,
+                    parents: [start_commit.sha])
     end
   end
 
@@ -902,7 +900,7 @@ class Repository
     GitOperationService.new(user, self).with_branch(branch_name) do
       committer = user_to_committer(user)
 
-      Rugged::Commit.create(rugged, params.merge(author: committer, committer: committer))
+      create_commit(params.merge(author: committer, committer: committer))
     end
   end
 
@@ -1144,6 +1142,12 @@ class Repository
 
   def repository_event(event, tags = {})
     Gitlab::Metrics.add_event(event, { path: path_with_namespace }.merge(tags))
+  end
+
+  def create_commit(params = {})
+    params[:message].delete!("\r")
+
+    Rugged::Commit.create(rugged, params)
   end
 
   def repository_storage_path
