@@ -226,7 +226,7 @@ module API
             :shared_runners_enabled,
             :snippets_enabled,
             :visibility,
-            :wiki_enabled,
+            :wiki_enabled
           ]
         optional :name, type: String, desc: 'The name of the project'
         optional :default_branch, type: String, desc: 'The default branch of the project'

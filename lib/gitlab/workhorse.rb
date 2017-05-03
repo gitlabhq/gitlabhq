@@ -22,7 +22,7 @@ module Gitlab
         params = {
           GL_ID: Gitlab::GlId.gl_id(user),
           GL_REPOSITORY: Gitlab::GlRepository.gl_repository(project, is_wiki),
-          RepoPath: repo_path,
+          RepoPath: repo_path
         }
 
         if Gitlab.config.gitaly.enabled
@@ -51,7 +51,7 @@ module Gitlab
         {
           StoreLFSPath: "#{Gitlab.config.lfs.storage_path}/tmp/upload",
           LfsOid: oid,
-          LfsSize: size,
+          LfsSize: size
         }
       end
 
@@ -62,7 +62,7 @@ module Gitlab
       def send_git_blob(repository, blob)
         params = {
           'RepoPath' => repository.path_to_repo,
-          'BlobId' => blob.id,
+          'BlobId' => blob.id
         }
 
         [
@@ -127,7 +127,7 @@ module Gitlab
             'Subprotocols' => terminal[:subprotocols],
             'Url' => terminal[:url],
             'Header' => terminal[:headers],
-            'MaxSessionTime' => terminal[:max_session_time],
+            'MaxSessionTime' => terminal[:max_session_time]
           }
         }
         details['Terminal']['CAPem'] = terminal[:ca_pem] if terminal.has_key?(:ca_pem)
