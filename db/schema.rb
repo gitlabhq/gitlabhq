@@ -1048,6 +1048,9 @@ ActiveRecord::Schema.define(version: 20170504102911) do
     t.datetime "updated_at", null: false
   end
 
+  add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path", unique: true, using: :btree
+  add_index "redirect_routes", ["source_type", "source_id"], name: "index_redirect_routes_on_source_type_and_source_id", using: :btree
+
   create_table "releases", force: :cascade do |t|
     t.string "tag"
     t.text "description"
