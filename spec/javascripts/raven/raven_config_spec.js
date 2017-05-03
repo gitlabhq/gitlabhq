@@ -1,7 +1,7 @@
 import Raven from 'raven-js';
 import RavenConfig from '~/raven/raven_config';
 
-fdescribe('RavenConfig', () => {
+describe('RavenConfig', () => {
   describe('IGNORE_ERRORS', () => {
     it('should be an array of strings', () => {
       const areStrings = RavenConfig.IGNORE_ERRORS.every(error => typeof error === 'string');
