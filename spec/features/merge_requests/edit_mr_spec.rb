@@ -67,5 +67,23 @@ feature 'Edit Merge Request', feature: true do
     def get_textarea_height
       page.evaluate_script('document.getElementById("merge_request_description").offsetHeight')
     end
+
+    describe '"edited by" message', js: true do
+      context 'when merge request is updated' do
+        it 'shows "edited by" mesage on title update' do
+          fill_in 'merge_request_title', with: 'hello world'
+          click_button 'Save changes'
+
+          expect(page).to have_content("Edited less than a minute ago by #{user.name}")
+        end
+
+        it 'shows "edited by" mesage on description update' do
+          fill_in 'merge_request_description', with: 'hello world'
+          click_button 'Save changes'
+
+          expect(page).to have_content("Edited less than a minute ago by #{user.name}")
+        end
+      end
+    end
   end
 end
