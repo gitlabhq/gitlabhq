@@ -151,9 +151,7 @@ feature 'Issue Sidebar', feature: true do
   end
 
   def open_issue_sidebar
-    page.within('aside.right-sidebar.right-sidebar-collapsed') do
-      find('.js-sidebar-toggle').click
-      sleep 1
-    end
+    find('aside.right-sidebar.right-sidebar-collapsed .js-sidebar-toggle').trigger('click')
+    find('aside.right-sidebar.right-sidebar-expanded')
   end
 end
