@@ -216,11 +216,11 @@ class IssuableBaseService < BaseService
     params[:label_ids] = label_ids if labels_changing?(issuable.label_ids, label_ids)
 
     if issuable.changed? || params.present?
+      issuable.assign_attributes(params.merge(updated_by: current_user))
+
       if has_title_or_description_changed?(issuable)
         issuable.assign_attributes(last_edited_at: Time.now, last_edited_by: current_user)
       end
-
-      issuable.assign_attributes(params.merge(updated_by: current_user))
 
       before_update(issuable)
 

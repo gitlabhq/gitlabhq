@@ -714,4 +714,26 @@ describe 'Issues', feature: true do
       expect(page).to have_text("updated title")
     end
   end
+
+  describe '"edited by" message', js: true do
+    let(:issue) { create(:issue, project: project, author: @user) }
+
+    context 'when issue is updated' do
+      before { visit edit_namespace_project_issue_path(project.namespace, project, issue) }
+
+      it 'shows "edited by" mesage on title update' do
+        fill_in 'issue_title', with: 'hello world'
+        click_button 'Save changes'
+
+        expect(page).to have_content("Edited less than a minute ago by #{@user.name}")
+      end
+
+      it 'shows "edited by" mesage on description update' do
+        fill_in 'issue_description', with: 'hello world'
+        click_button 'Save changes'
+
+        expect(page).to have_content("Edited less than a minute ago by #{@user.name}")
+      end
+    end
+  end
 end
