@@ -65,16 +65,6 @@ stages:
 
 .only-master-and-ee-or-mysql: &only-master-and-ee-or-mysql
   only:
-    - /\-(?i)mysql$/
-    - master@gitlab-org/gitlab-ce
-    - master@gitlab/gitlabhq
-    - tags@gitlab-org/gitlab-ce
-    - tags@gitlab/gitlabhq
-    - //@gitlab-org/gitlab-ee
-    - //@gitlab/gitlab-ee
-
-.only-master-and-ee-or-mysql: &only-master-and-ee-or-mysql
-  only:
     - /mysql/
     - master@gitlab-org/gitlab-ce
     - master@gitlab/gitlabhq
