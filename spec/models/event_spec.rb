@@ -243,19 +243,38 @@ describe Event, models: true do
         expect(project).not_to receive(:update_column).
           with(:last_activity_at, a_kind_of(Time))
 
+        expect(project).not_to receive(:update_column).
+          with(:last_repository_updated_at, a_kind_of(Time))
+
         create_event(project, project.owner)
       end
     end
 
     context 'when a project was updated more than 1 hour ago' do
-      it 'updates the project' do
-        project.update(last_activity_at: 1.year.ago)
+      context 'with a push event' do
+        it 'updates the project last_activity_at and last_repository_updated_at' do
+          project.update(last_activity_at: 1.year.ago, last_repository_updated_at: 1.year.ago)
 
-        create_event(project, project.owner)
+          create_event(project, project.owner)
 
-        project.reload
+          project.reload
 
-        project.last_activity_at <= 1.minute.ago
+          expect(project.last_activity_at).to be_within(1.minute).of(Time.now)
+          expect(project.last_repository_updated_at).to be_within(1.minute).of(Time.now)
+        end
+      end
+
+      context 'without a push event' do
+        it 'does not updates the project last_repository_updated_at' do
+          project.update(last_activity_at: 1.year.ago, last_repository_updated_at: 1.year.ago)
+
+          create(:closed_issue_event, project: project, author: project.owner)
+
+          project.reload
+
+          expect(project.last_activity_at).to be_within(1.minute).of(Time.now)
+          expect(project.last_repository_updated_at).to be_within(1.minute).of(1.year.ago)
+        end
       end
     end
   end
