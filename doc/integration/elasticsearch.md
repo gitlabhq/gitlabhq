@@ -33,7 +33,7 @@ service.
 | GitLab version | Elasticsearch version |
 | -------------- | --------------------- |
 | GitLab Enterprise Edition 8.4 - 8.17  | Elasticsearch 2.4 with [Delete By Query Plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/2.4/plugins-delete-by-query.html) installed |
-| GitLab Enterprise Edition 9.0+        | Elasticsearch 5.1 |
+| GitLab Enterprise Edition 9.0+        | Elasticsearch 5.1 - 5.3 |
 
 ## Install Elasticsearch
 

@@ -55,13 +55,13 @@ stages:
   services:
     - postgres:latest
     - redis:alpine
-    - elasticsearch:5.1
+    - elasticsearch:5.3
 
 .use-mysql: &use-mysql
   services:
     - mysql:latest
     - redis:alpine
-    - elasticsearch:5.1
+    - elasticsearch:5.3
 
 .only-master-and-ee-or-mysql: &only-master-and-ee-or-mysql
   only:
