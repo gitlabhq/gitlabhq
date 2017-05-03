@@ -264,7 +264,7 @@ spinach-mysql 7 10: *spinach-knapsack-mysql
 spinach-mysql 8 10: *spinach-knapsack-mysql
 spinach-mysql 9 10: *spinach-knapsack-mysql
 
-# Other generic tests
+# Static analysis jobs
 .ruby-static-analysis: &ruby-static-analysis
   variables:
     SIMPLECOV: "false"
@@ -333,6 +333,7 @@ ee_compat_check:
     paths:
       - ee_compat_check/patches/*.patch
 
+# DB migration, rollback, and seed jobs
 .db-migrate-reset: &db-migrate-reset
   stage: test
   <<: *dedicated-runner
@@ -346,6 +347,30 @@ db:migrate:reset-pg:
 
 db:migrate:reset-mysql:
   <<: *db-migrate-reset
+  <<: *use-mysql
+
+.migration-paths: &migration-paths
+  stage: test
+  <<: *dedicated-runner
+  variables:
+    SETUP_DB: "false"
+  <<: *only-canonical-masters
+  script:
+    - git fetch origin v8.14.10
+    - git checkout -f FETCH_HEAD
+    - bundle install $BUNDLE_INSTALL_FLAGS
+    - bundle exec rake db:drop db:create db:schema:load db:seed_fu
+    - git checkout $CI_COMMIT_SHA
+    - bundle install $BUNDLE_INSTALL_FLAGS
+    - . scripts/prepare_build.sh
+    - bundle exec rake db:migrate
+
+migration:path-pg:
+  <<: *migration-paths
+  <<: *use-pg
+
+migration:path-mysql:
+  <<: *migration-paths
   <<: *use-mysql
 
 .db-rollback: &db-rollback
@@ -390,6 +415,7 @@ db:seed_fu-mysql:
   <<: *db-seed_fu
   <<: *use-mysql
 
+# Frontend-related jobs
 gitlab:assets:compile:
   stage: test
   <<: *dedicated-runner
@@ -426,34 +452,6 @@ karma:
     expire_in: 31d
     paths:
     - coverage-javascript/
-
-.migration-paths: &migration-paths
-  stage: test
-  <<: *dedicated-runner
-  variables:
-    SETUP_DB: "false"
-  only:
-    - master@gitlab-org/gitlab-ce
-    - master@gitlab-org/gitlab-ee
-    - master@gitlab/gitlabhq
-    - master@gitlab/gitlab-ee
-  script:
-    - git fetch origin v8.14.10
-    - git checkout -f FETCH_HEAD
-    - bundle install $BUNDLE_INSTALL_FLAGS
-    - bundle exec rake db:drop db:create db:schema:load db:seed_fu
-    - git checkout $CI_COMMIT_SHA
-    - bundle install $BUNDLE_INSTALL_FLAGS
-    - . scripts/prepare_build.sh
-    - bundle exec rake db:migrate
-
-migration:path-pg:
-  <<: *migration-paths
-  <<: *use-pg
-
-migration:path-mysql:
-  <<: *migration-paths
-  <<: *use-mysql
 
 coverage:
   stage: post-test
