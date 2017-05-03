@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe MergeRequests::MergeRequestDiffCacheService do
-  let(:subject) { MergeRequests::MergeRequestDiffCacheService.new }
+  let(:subject) { described_class.new }
 
   describe '#execute' do
     it 'retrieves the diff files to cache the highlighted result' do

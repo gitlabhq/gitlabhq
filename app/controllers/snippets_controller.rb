@@ -1,4 +1,5 @@
 class SnippetsController < ApplicationController
+  include RendersNotes
   include ToggleAwardEmoji
   include SpammableActions
   include SnippetsActions
@@ -61,6 +62,7 @@ class SnippetsController < ApplicationController
   end
 
   def show
+<<<<<<< HEAD
     blob = @snippet.blob
     override_max_blob_size(blob)
 
@@ -73,6 +75,12 @@ class SnippetsController < ApplicationController
         render_blob_json(blob)
       end
     end
+=======
+    @noteable = @snippet
+
+    @discussions = @snippet.discussions
+    @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes))
+>>>>>>> origin/master
   end
 
   def destroy

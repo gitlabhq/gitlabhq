@@ -26,7 +26,7 @@ describe AdminEmailsWorker do
 
       it "sends email to subscribed users" do
         perform_enqueued_jobs do
-          AdminEmailsWorker.new.perform(recipient_id, 'subject', 'body')
+          described_class.new.perform(recipient_id, 'subject', 'body')
           expect(ActionMailer::Base.deliveries.count).to be 2
         end
       end
@@ -37,7 +37,7 @@ describe AdminEmailsWorker do
 
       it "sends email to subscribed users" do
         perform_enqueued_jobs do
-          AdminEmailsWorker.new.perform(recipient_id, 'subject', 'body')
+          described_class.new.perform(recipient_id, 'subject', 'body')
           expect(ActionMailer::Base.deliveries.count).to be 2
         end
       end
@@ -48,7 +48,7 @@ describe AdminEmailsWorker do
 
       it "sends email to subscribed users" do
         perform_enqueued_jobs do
-          AdminEmailsWorker.new.perform(recipient_id, 'subject', 'body')
+          described_class.new.perform(recipient_id, 'subject', 'body')
           expect(ActionMailer::Base.deliveries.count).to be 4
         end
       end

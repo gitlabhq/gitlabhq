@@ -15,7 +15,7 @@ describe MergeRequests::RebaseService do
 
   describe '#execute' do
     context 'valid params' do
-      let(:service) { MergeRequests::RebaseService.new(project, user, {}) }
+      let(:service) { described_class.new(project, user, {}) }
 
       before do
         service.execute(merge_request)

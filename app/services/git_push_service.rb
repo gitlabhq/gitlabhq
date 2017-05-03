@@ -59,6 +59,7 @@ class GitPushService < BaseService
     execute_related_hooks
     perform_housekeeping
 
+    update_remote_mirrors
     update_caches
   end
 
@@ -95,6 +96,13 @@ class GitPushService < BaseService
   end
 
   protected
+
+  def update_remote_mirrors
+    return if @project.remote_mirrors.empty?
+
+    @project.mark_stuck_remote_mirrors_as_failed!
+    @project.update_remote_mirrors
+  end
 
   def execute_related_hooks
     # Update merge requests that may be affected by this push. A new branch

@@ -20,7 +20,7 @@ describe Gitlab::LDAP::Person do
     it 'uses the configured name attribute and handles values as an array' do
       name = 'John Doe'
       entry['cn'] = [name]
-      person = Gitlab::LDAP::Person.new(entry, 'ldapmain')
+      person = described_class.new(entry, 'ldapmain')
 
       expect(person.name).to eq(name)
     end
@@ -30,7 +30,7 @@ describe Gitlab::LDAP::Person do
     it 'returns the value of mail, if present' do
       mail = 'john@example.com'
       entry['mail'] = mail
-      person = Gitlab::LDAP::Person.new(entry, 'ldapmain')
+      person = described_class.new(entry, 'ldapmain')
 
       expect(person.email).to eq([mail])
     end
@@ -38,7 +38,7 @@ describe Gitlab::LDAP::Person do
     it 'returns the value of userPrincipalName, if mail and email are not present' do
       user_principal_name = 'john.doe@example.com'
       entry['userPrincipalName'] = user_principal_name
-      person = Gitlab::LDAP::Person.new(entry, 'ldapmain')
+      person = described_class.new(entry, 'ldapmain')
 
       expect(person.email).to eq([user_principal_name])
     end
