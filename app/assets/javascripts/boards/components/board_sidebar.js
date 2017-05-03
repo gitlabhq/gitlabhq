@@ -27,6 +27,9 @@ gl.issueBoards.BoardSidebar = Vue.extend({
   computed: {
     showSidebar () {
       return Object.keys(this.issue).length;
+    },
+    assigneeId() {
+      return this.issue.assignee ? this.issue.assignee.id : 0;
     }
   },
   watch: {
