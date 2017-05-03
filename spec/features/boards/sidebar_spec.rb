@@ -162,7 +162,7 @@ describe 'Issue Boards', feature: true, js: true do
       expect(card).to have_selector('.avatar')
     end
 
-    it 'resets assignee dropdown' do
+    it 'updates assignee dropdown' do
       click_card(card)
 
       page.within('.assignee') do
@@ -186,7 +186,7 @@ describe 'Issue Boards', feature: true, js: true do
       page.within('.assignee') do
         click_link 'Edit'
 
-        expect(page).not_to have_selector('.is-active')
+        expect(page).to have_selector('.is-active')
       end
     end
   end
