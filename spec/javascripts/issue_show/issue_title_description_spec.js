@@ -11,14 +11,12 @@ const issueShowInterceptor = data => (request, next) => {
   next(request.respondWith(JSON.stringify(data), {
     status: 200,
     headers: {
-      'POLL-INTERVAL': 1,
+      'POLL-INTERVAL': 10,
     },
   }));
 };
 
 describe('Issue Title', () => {
-  document.body.innerHTML = '<span id="task_status"></span>';
-
   const comps = {
     IssueTitleComponent: {},
   };
@@ -57,7 +55,7 @@ describe('Issue Title', () => {
         expect(issueShowComponent.$el.querySelector('.js-task-list-field').innerText).toContain('42');
 
         done();
-      }, 10);
+      }, 20);
     }, 10);
     // 10ms is just long enough for the update hook to fire
   });

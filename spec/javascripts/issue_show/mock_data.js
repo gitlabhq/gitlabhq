@@ -15,4 +15,12 @@ export default {
     issue_number: 1,
     task_status: '0 of 0 completed',
   },
+  issueSpecRequest: {
+    title: '<p>this is a title</p>',
+    title_text: 'this is a title',
+    description: '<li class="task-list-item enabled"><input type="checkbox" class="task-list-item-checkbox">Task List Item</li>',
+    description_text: '- [ ] Task List Item',
+    issue_number: 1,
+    task_status: '0 of 1 completed',
+  },
 };
