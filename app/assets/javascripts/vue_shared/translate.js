@@ -1,23 +1,42 @@
 import {
   __,
   n__,
+  s__,
 } from '../locale';
 
 export default (Vue) => {
   Vue.mixin({
     methods: {
-      __(text) { return __(text); },
-      n__(text, pluralText, count) {
-        const translated = n__(text, pluralText, count).replace(/%d/g, count).split('|');
-        return translated[translated.length - 1];
-      },
-      s__(keyOrContext, key) {
-        const normalizedKey = key ? `${keyOrContext}|${key}` : keyOrContext;
-        // eslint-disable-next-line no-underscore-dangle
-        const translated = this.__(normalizedKey).split('|');
+      /**
+        Translates `text`
 
-        return translated[translated.length - 1];
-      },
+        @param text The text to be translated
+        @returns {String} The translated text
+      **/
+      __(text) { return __(text); },
+      /**
+        Translate the text with a number
+        if the number is more than 1 it will use the `pluralText` translation.
+        This method allows for contexts, see below re. contexts
+
+        @param text Singular text to translate (eg. '%d day')
+        @param pluralText Plural text to translate (eg. '%d days')
+        @param count Number to decide which translation to use (eg. 2)
+        @returns {String} Translated text with the number replaced (eg. '2 days')
+      **/
+      n__(text, pluralText, count) { return n__(text, pluralText, count); },
+      /**
+        Translate context based text
+        Either pass in the context translation like `Context|Text to translate`
+        or allow for dynamic text by doing passing in the context first & then the text to translate
+
+        @param keyOrContext Can be either the key to translate including the context
+                            (eg. 'Context|Text') or just the context for the translation
+                            (eg. 'Context')
+        @param key Is the dynamic variable you want to be translated
+        @returns {String} Translated context based text
+      **/
+      s__(keyOrContext, key) { return s__(keyOrContext, key); },
     },
   });
 };
