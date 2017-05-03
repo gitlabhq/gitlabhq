@@ -23,28 +23,31 @@ msgstr ""
 msgid "Commits"
 msgstr ""
 
-msgid "Cycle"
-msgstr ""
-
 msgid "Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project."
 msgstr ""
 
-msgid "Cycle|Code"
+msgid "CycleAnalyticsStage"
 msgstr ""
 
-msgid "Cycle|Issue"
+msgid "CycleAnalyticsStage|Code"
 msgstr ""
 
-msgid "Cycle|Plan"
+msgid "CycleAnalyticsStage|Issue"
 msgstr ""
 
-msgid "Cycle|Review"
+msgid "CycleAnalyticsStage|Plan"
 msgstr ""
 
-msgid "Cycle|Staging"
+msgid "CycleAnalyticsStage|Production"
 msgstr ""
 
-msgid "Cycle|Test"
+msgid "CycleAnalyticsStage|Review"
+msgstr ""
+
+msgid "CycleAnalyticsStage|Staging"
+msgstr ""
+
+msgid "CycleAnalyticsStage|Test"
 msgstr ""
 
 msgid "Deploys"

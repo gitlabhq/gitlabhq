@@ -14,7 +14,7 @@ module Gitlab
       end
 
       def legend
-        N_("Relative Builds Trigger by Commits")
+        _("Relative Builds Trigger by Commits")
       end
 
       def description

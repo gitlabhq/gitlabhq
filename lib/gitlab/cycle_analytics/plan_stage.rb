@@ -15,7 +15,7 @@ module Gitlab
       end
 
       def legend
-        N_("Related Commits")
+        _("Related Commits")
       end
 
       def description

@@ -15,7 +15,7 @@ module Gitlab
       end
 
       def legend
-        N_("Relative Deployed Builds")
+        _("Relative Deployed Builds")
       end
 
       def description

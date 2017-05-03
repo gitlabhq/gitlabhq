@@ -16,7 +16,7 @@ module Gitlab
       end
 
       def legend
-        N_("Related Issues")
+        _("Related Issues")
       end
 
       def description

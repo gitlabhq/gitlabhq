@@ -31,7 +31,7 @@
           .row
             .col-sm-3.col-xs-12.column{ "v-for" => "item in state.summary" }
               %h3.header {{ item.value }}
-              %p.text {{ s__('Cycle', item.title) }}
+              %p.text {{ __(item.title) }}
             .col-sm-3.col-xs-12.column
               .dropdown.inline.js-ca-dropdown
                 %button.dropdown-menu-toggle{ "data-toggle" => "dropdown", :type => "button" }
@@ -70,7 +70,7 @@
             %ul
               %li.stage-nav-item{ ':class' => '{ active: stage.active }', '@click' => 'selectStage(stage)', "v-for" => "stage in state.stages" }
                 .stage-nav-item-cell.stage-name
-                  {{ s__('Cycle', stage.title) }}
+                  {{ s__('CycleAnalyticsStage', stage.title) }}
                 .stage-nav-item-cell.stage-median
                   %template{ "v-if" => "stage.isUserAllowed" }
                     %span{ "v-if" => "stage.value" }

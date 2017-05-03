@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2017-05-02 23:17-0500\n"
+"PO-Revision-Date: 2017-05-03 12:28-0500\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
@@ -23,34 +23,32 @@ msgstr "por"
 msgid "Commits"
 msgstr "Cambios"
 
-msgid "Cycle"
-msgstr ""
-
 msgid "Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project."
 msgstr "Cycle Analytics ofrece una visión general de cuánto tiempo tarda en pasar de idea a producción en su proyecto."
 
-#, fuzzy
-msgid "Cycle|Code"
+msgid "CycleAnalyticsStage"
+msgstr ""
+
+msgid "CycleAnalyticsStage|Code"
 msgstr "Código"
 
-#, fuzzy
-msgid "Cycle|Issue"
-msgstr "Tema"
+msgid "CycleAnalyticsStage|Issue"
+msgstr "Incidencia"
 
-#, fuzzy
-msgid "Cycle|Plan"
+msgid "CycleAnalyticsStage|Plan"
 msgstr "Planificación"
 
-#, fuzzy
-msgid "Cycle|Review"
+msgid "CycleAnalyticsStage|Production"
+msgstr "Producción"
+
+msgid "CycleAnalyticsStage|Review"
 msgstr "Revisión"
 
 #, fuzzy
-msgid "Cycle|Staging"
-msgstr "Etapa"
+msgid "CycleAnalyticsStage|Staging"
+msgstr "Puesta en escena"
 
-#, fuzzy
-msgid "Cycle|Test"
+msgid "CycleAnalyticsStage|Test"
 msgstr "Pruebas"
 
 msgid "Deploys"
@@ -59,21 +57,21 @@ msgstr "Despliegues"
 msgid "Introducing Cycle Analytics"
 msgstr "Introducción a Cycle Analytics"
 
-#, fuzzy
 msgid "Last %d day"
 msgid_plural "Last %d days"
-msgstr[0] "Últimos %d días"
+msgstr[0] "Último %d día"
+msgstr[1] "Últimos %d días"
 
-#, fuzzy
 msgid "Limited to showing %d event at most"
 msgid_plural "Limited to showing %d events at most"
-msgstr[0] "Limitado a mostrar máximo %d eventos"
+msgstr[0] "Limitado a mostrar máximo %d evento"
+msgstr[1] "Limitado a mostrar máximo %d eventos"
 
 msgid "Median"
 msgstr "Mediana"
 
 msgid "New Issues"
-msgstr "Nuevos temas"
+msgstr "Nuevas incidencias"
 
 msgid "Not available"
 msgstr "No disponible"
@@ -81,7 +79,6 @@ msgstr "No disponible"
 msgid "Not enough data"
 msgstr "No hay suficientes datos"
 
-#, fuzzy
 msgid "OfFirstTime|First"
 msgstr "Primer"
 
@@ -101,18 +98,16 @@ msgid "Related Commits"
 msgstr "Cambios Relacionados"
 
 msgid "Related Issues"
-msgstr "Temas Relacionados"
+msgstr "Incidencias Relacionadas"
 
 msgid "Related Merge Requests"
 msgstr "Solicitudes de fusión Relacionadas"
 
-#, fuzzy
 msgid "Relative Builds Trigger by Commits"
-msgstr "Builds Relacionadas Originadas por Cambios"
+msgstr "Builds Relacionados Originados por Cambios"
 
-#, fuzzy
 msgid "Relative Deployed Builds"
-msgstr "Builds Desplegadas Relacionadas"
+msgstr "Builds Desplegados Relacionados"
 
 msgid "Relative Merged Requests"
 msgstr "Solicitudes de fusión Relacionadas"
@@ -129,7 +124,7 @@ msgid "The collection of events added to the data gathered for that stage."
 msgstr "La colección de eventos agregados a los datos recopilados para esa etapa."
 
 msgid "The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage."
-msgstr "La etapa de temas muestra el tiempo que toma desde la creación de un tema hasta asignar el tema a un hito, o añadir el tema a una lista en el panel de temas. Empieza a crear temas para ver los datos de esta etapa."
+msgstr "La etapa de incidencia muestra el tiempo que toma desde la creación de un tema hasta asignar el tema a un hito, o añadir el tema a una lista en el panel de temas. Empieza a crear temas para ver los datos de esta etapa."
 
 msgid "The phase of the development lifecycle."
 msgstr "La etapa del ciclo de vida del desarrollo."
@@ -138,7 +133,7 @@ msgid "The planning stage shows the time from the previous step to pushing your 
 msgstr "La etapa de planificación muestra el tiempo desde el paso anterior hasta el envío de tu primera confirmación. Este tiempo se añadirá automáticamente una vez que usted envíe su primer cambio."
 
 msgid "The production stage shows the total time it takes between creating an issue and deploying the code to production. The data will be automatically added once you have completed the full idea to production cycle."
-msgstr "La etapa de producción muestra el tiempo total que tarda entre la creación de un tema y el despliegue del código a producción. Los datos se añadirán automáticamente una vez haya finalizado por completo el ciclo de idea a producción."
+msgstr "La etapa de producción muestra el tiempo total que tarda entre la creación de una incidencia y el despliegue del código a producción. Los datos se añadirán automáticamente una vez haya finalizado por completo el ciclo de idea a producción."
 
 msgid "The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request."
 msgstr "La etapa de revisión muestra el tiempo desde la creación de la solicitud de fusión hasta que los cambios se fusionaron. Los datos se añadirán automáticamente después de fusionar su primera solicitud de fusión."
@@ -171,7 +166,6 @@ msgstr ""
 msgid "Total Time"
 msgstr "Tiempo Total"
 
-#, fuzzy
 msgid "Want to see the data? Please ask an administrator for access."
 msgstr "¿Quieres ver los datos? Por favor pedir acceso al administrador."
 
