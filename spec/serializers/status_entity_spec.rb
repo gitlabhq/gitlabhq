@@ -18,6 +18,12 @@ describe StatusEntity do
     it 'contains status details' do
       expect(subject).to include :text, :icon, :favicon, :label, :group
       expect(subject).to include :has_details, :details_path
+      expect(subject[:favicon]).to eq('/assets/ci_favicons/favicon_status_success.ico')
+    end
+
+    it 'contains a dev namespaced favicon if dev env' do
+      allow(Rails.env).to receive(:development?) { true }
+      expect(entity.as_json[:favicon]).to eq('/assets/ci_favicons/dev/favicon_status_success.ico')
     end
   end
 end

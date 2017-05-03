@@ -3638,7 +3638,7 @@ mime-types@^2.1.12, mime-types@~2.1.11, mime-types@~2.1.13, mime-types@~2.1.7:
   dependencies:
     mime-db "~1.26.0"
 
-mime@1.3.4, mime@^1.3.4:
+mime@1.3.4, mime@1.3.x, mime@^1.3.4:
   version "1.3.4"
   resolved "https://registry.yarnpkg.com/mime/-/mime-1.3.4.tgz#115f9e3b6b3daf2959983cb38f149a2d40eb5d53"
 
@@ -3709,6 +3709,10 @@ nested-error-stacks@^1.0.0:
   resolved "https://registry.yarnpkg.com/nested-error-stacks/-/nested-error-stacks-1.0.2.tgz#19f619591519f096769a5ba9a86e6eeec823c3cf"
   dependencies:
     inherits "~2.0.1"
+
+node-ensure@^0.0.0:
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/node-ensure/-/node-ensure-0.0.0.tgz#ecae764150de99861ec5c810fd5d096b183932a7"
 
 node-libs-browser@^1.0.0:
   version "1.1.1"
@@ -4101,6 +4105,13 @@ pbkdf2@^3.0.3:
   resolved "https://registry.yarnpkg.com/pbkdf2/-/pbkdf2-3.0.9.tgz#f2c4b25a600058b3c3773c086c37dbbee1ffe693"
   dependencies:
     create-hmac "^1.1.2"
+
+pdfjs-dist@^1.8.252:
+  version "1.8.252"
+  resolved "https://registry.yarnpkg.com/pdfjs-dist/-/pdfjs-dist-1.8.252.tgz#2477245695341f7fe096824dacf327bc324c0f52"
+  dependencies:
+    node-ensure "^0.0.0"
+    worker-loader "^0.8.0"
 
 pend@~1.2.0:
   version "1.2.0"
@@ -5538,6 +5549,13 @@ update-notifier@0.5.0:
     semver-diff "^2.0.0"
     string-length "^1.0.0"
 
+url-loader@^0.5.8:
+  version "0.5.8"
+  resolved "https://registry.yarnpkg.com/url-loader/-/url-loader-0.5.8.tgz#b9183b1801e0f847718673673040bc9dc1c715c5"
+  dependencies:
+    loader-utils "^1.0.2"
+    mime "1.3.x"
+
 url-parse@1.0.x:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/url-parse/-/url-parse-1.0.5.tgz#0854860422afdcfefeb6c965c662d4800169927b"
@@ -5820,6 +5838,12 @@ wordwrap@^1.0.0, wordwrap@~1.0.0:
 wordwrap@~0.0.2:
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/wordwrap/-/wordwrap-0.0.3.tgz#a3d5da6cd5c0bc0008d37234bbaf1bed63059107"
+
+worker-loader@^0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/worker-loader/-/worker-loader-0.8.0.tgz#13582960dcd7d700dc829d3fd252a7561696167e"
+  dependencies:
+    loader-utils "^1.0.2"
 
 wrap-ansi@^2.0.0:
   version "2.1.0"

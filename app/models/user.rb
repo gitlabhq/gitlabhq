@@ -118,7 +118,7 @@ class User < ActiveRecord::Base
     presence: true,
     numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: Gitlab::Database::MAX_INT_VALUE }
   validates :username,
-    namespace: true,
+    dynamic_path: true,
     presence: true,
     uniqueness: { case_sensitive: false }
 

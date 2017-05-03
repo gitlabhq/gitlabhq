@@ -10,6 +10,7 @@ RSpec.shared_examples "protected tags > access control > CE" do
 
         unless allowed_to_create_button.text == access_type_name
           allowed_to_create_button.click
+          find('.dropdown.open .dropdown-menu li', match: :first)
           within(".dropdown.open .dropdown-menu") { click_on access_type_name }
         end
       end

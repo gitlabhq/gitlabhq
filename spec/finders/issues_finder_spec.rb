@@ -16,7 +16,7 @@ describe IssuesFinder do
     set(:label_link) { create(:label_link, label: label, target: issue2) }
     let(:search_user) { user }
     let(:params) { {} }
-    let(:issues) { IssuesFinder.new(search_user, params.reverse_merge(scope: scope, state: 'opened')).execute }
+    let(:issues) { described_class.new(search_user, params.reverse_merge(scope: scope, state: 'opened')).execute }
 
     before(:context) do
       project1.team << [user, :master]
@@ -282,15 +282,15 @@ describe IssuesFinder do
     let!(:confidential_issue) { create(:issue, project: project, confidential: true) }
 
     it 'returns non confidential issues for nil user' do
-      expect(IssuesFinder.send(:not_restricted_by_confidentiality, nil)).to include(public_issue)
+      expect(described_class.send(:not_restricted_by_confidentiality, nil)).to include(public_issue)
     end
 
     it 'returns non confidential issues for user not authorized for the issues projects' do
-      expect(IssuesFinder.send(:not_restricted_by_confidentiality, user)).to include(public_issue)
+      expect(described_class.send(:not_restricted_by_confidentiality, user)).to include(public_issue)
     end
 
     it 'returns all issues for user authorized for the issues projects' do
-      expect(IssuesFinder.send(:not_restricted_by_confidentiality, authorized_user)).to include(public_issue, confidential_issue)
+      expect(described_class.send(:not_restricted_by_confidentiality, authorized_user)).to include(public_issue, confidential_issue)
     end
   end
 end

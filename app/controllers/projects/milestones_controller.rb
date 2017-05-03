@@ -1,12 +1,14 @@
 class Projects::MilestonesController < Projects::ApplicationController
+  include MilestoneActions
+
   before_action :module_enabled
-  before_action :milestone, only: [:edit, :update, :destroy, :show, :sort_issues, :sort_merge_requests]
+  before_action :milestone, only: [:edit, :update, :destroy, :show, :sort_issues, :sort_merge_requests, :merge_requests, :participants, :labels]
 
   # Allow read any milestone
   before_action :authorize_read_milestone!
 
   # Allow admin milestone
-  before_action :authorize_admin_milestone!, except: [:index, :show]
+  before_action :authorize_admin_milestone!, except: [:index, :show, :merge_requests, :participants, :labels]
 
   respond_to :html
 

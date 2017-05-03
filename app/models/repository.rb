@@ -505,14 +505,8 @@ class Repository
   delegate :tag_names, to: :raw_repository
   cache_method :tag_names, fallback: []
 
-  def branch_count
-    branches.size
-  end
+  delegate :branch_count, :tag_count, to: :raw_repository
   cache_method :branch_count, fallback: 0
-
-  def tag_count
-    raw_repository.rugged.tags.count
-  end
   cache_method :tag_count, fallback: 0
 
   def avatar
@@ -961,15 +955,13 @@ class Repository
   end
 
   def is_ancestor?(ancestor_id, descendant_id)
-    # NOTE: This feature is intentionally disabled until
-    # https://gitlab.com/gitlab-org/gitlab-ce/issues/30586 is resolved
-    # Gitlab::GitalyClient.migrate(:is_ancestor) do |is_enabled|
-    #   if is_enabled
-    #     raw_repository.is_ancestor?(ancestor_id, descendant_id)
-    #   else
-    merge_base_commit(ancestor_id, descendant_id) == ancestor_id
-    #   end
-    # end
+    Gitlab::GitalyClient.migrate(:is_ancestor) do |is_enabled|
+      if is_enabled
+        raw_repository.is_ancestor?(ancestor_id, descendant_id)
+      else
+        merge_base_commit(ancestor_id, descendant_id) == ancestor_id
+      end
+    end
   end
 
   def empty_repo?

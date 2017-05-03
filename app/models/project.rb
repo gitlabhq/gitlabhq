@@ -196,13 +196,14 @@ class Project < ActiveRecord::Base
               message: Gitlab::Regex.project_name_regex_message }
   validates :path,
     presence: true,
-    project_path: true,
+    dynamic_path: true,
     length: { maximum: 255 },
     format: { with: Gitlab::Regex.project_path_regex,
-              message: Gitlab::Regex.project_path_regex_message }
+              message: Gitlab::Regex.project_path_regex_message },
+    uniqueness: { scope: :namespace_id }
+
   validates :namespace, presence: true
   validates :name, uniqueness: { scope: :namespace_id }
-  validates :path, uniqueness: { scope: :namespace_id }
   validates :import_url, addressable_url: true, if: :external_import?
   validates :import_url, importable_url: true, if: [:external_import?, :import_url_changed?]
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
@@ -1270,6 +1271,9 @@ class Project < ActiveRecord::Base
     else
       update_attribute(name, value)
     end
+
+  rescue ActiveRecord::RecordNotSaved => e
+    handle_update_attribute_error(e, value)
   end
 
   def pushes_since_gc
@@ -1312,6 +1316,14 @@ class Project < ActiveRecord::Base
 
   def parent_changed?
     namespace_id_changed?
+  end
+
+  def default_merge_request_target
+    if forked_from_project&.merge_requests_enabled?
+      forked_from_project
+    else
+      self
+    end
   end
 
   alias_method :name_with_namespace, :full_name
@@ -1382,5 +1394,17 @@ class Project < ActiveRecord::Base
     return false unless Gitlab.config.registry.enabled
 
     ContainerRepository.build_root_repository(self).has_tags?
+  end
+
+  def handle_update_attribute_error(ex, value)
+    if ex.message.start_with?('Failed to replace')
+      if value.respond_to?(:each)
+        invalid = value.detect(&:invalid?)
+
+        raise ex, ([ex.message] + invalid.errors.full_messages).join(' ') if invalid
+      end
+    end
+
+    raise ex
   end
 end

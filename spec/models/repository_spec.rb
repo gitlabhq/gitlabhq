@@ -1379,12 +1379,22 @@ describe Repository, models: true do
   describe '#branch_count' do
     it 'returns the number of branches' do
       expect(repository.branch_count).to be_an(Integer)
+
+      # NOTE: Until rugged goes away, make sure rugged and gitaly are in sync
+      rugged_count = repository.raw_repository.rugged.branches.count
+
+      expect(repository.branch_count).to eq(rugged_count)
     end
   end
 
   describe '#tag_count' do
     it 'returns the number of tags' do
       expect(repository.tag_count).to be_an(Integer)
+
+      # NOTE: Until rugged goes away, make sure rugged and gitaly are in sync
+      rugged_count = repository.raw_repository.rugged.tags.count
+
+      expect(repository.tag_count).to eq(rugged_count)
     end
   end
 
@@ -1849,17 +1859,15 @@ describe Repository, models: true do
     end
   end
 
-  # TODO: Uncomment when feature is reenabled
-  # describe '#is_ancestor?' do
-  #   context 'Gitaly is_ancestor feature enabled' do
-  #     it 'asks Gitaly server if it\'s an ancestor' do
-  #       commit = repository.commit
-  #       allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:is_ancestor).and_return(true)
-  #       expect(Gitlab::GitalyClient::Commit).to receive(:is_ancestor).
-  #         with(repository.raw_repository, commit.id, commit.id).and_return(true)
-  #
-  #       expect(repository.is_ancestor?(commit.id, commit.id)).to be true
-  #     end
-  #   end
-  # end
+  describe '#is_ancestor?' do
+    context 'Gitaly is_ancestor feature enabled' do
+      it "asks Gitaly server if it's an ancestor" do
+        commit = repository.commit
+        expect(repository.raw_repository).to receive(:is_ancestor?).and_call_original
+        allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:is_ancestor).and_return(true)
+
+        expect(repository.is_ancestor?(commit.id, commit.id)).to be true
+      end
+    end
+  end
 end

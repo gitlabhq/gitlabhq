@@ -44,6 +44,7 @@ import GroupsList from './groups_list';
 import ProjectsList from './projects_list';
 import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
 import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
+import Landing from './landing';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import UserCallout from './user_callout';
 import { ProtectedTagCreate, ProtectedTagEditList } from './protected_tags';
@@ -148,8 +149,19 @@ const ShortcutsBlob = require('./shortcuts_blob');
           new ProjectsList();
           break;
         case 'dashboard:groups:index':
+          new GroupsList();
+          break;
         case 'explore:groups:index':
           new GroupsList();
+
+          const landingElement = document.querySelector('.js-explore-groups-landing');
+          if (!landingElement) break;
+          const exploreGroupsLanding = new Landing(
+            landingElement,
+            landingElement.querySelector('.dismiss-button'),
+            'explore_groups_landing_dismissed',
+          );
+          exploreGroupsLanding.toggle();
           break;
         case 'projects:milestones:new':
         case 'projects:milestones:edit':
@@ -356,6 +368,10 @@ const ShortcutsBlob = require('./shortcuts_blob');
         case 'users:show':
           new UserCallout();
           break;
+        case 'snippets:show':
+          new LineHighlighter();
+          new BlobViewer();
+          break;
       }
       switch (path.first()) {
         case 'sessions':
@@ -434,6 +450,8 @@ const ShortcutsBlob = require('./shortcuts_blob');
               shortcut_handler = new ShortcutsNavigation();
               if (path[2] === 'show') {
                 new ZenMode();
+                new LineHighlighter();
+                new BlobViewer();
               }
               break;
             case 'labels':
