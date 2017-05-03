@@ -62,7 +62,7 @@ function glEmojiTag(inputName, options) {
     data-fallback-src="${fallbackImageSrc}"
     ${fallbackSpriteAttribute}
     data-unicode-version="${emojiInfo.unicodeVersion}"
-    title=${emojiInfo.description}
+    title="${emojiInfo.description}"
   >
     ${contents}
   </gl-emoji>
