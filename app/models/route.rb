@@ -8,7 +8,8 @@ class Route < ActiveRecord::Base
     presence: true,
     uniqueness: { case_sensitive: false }
 
-  after_update :create_redirect_if_path_changed
+  after_save :delete_conflicting_redirects
+  after_update :create_redirect_for_old_path
   after_update :rename_direct_descendant_routes
 
   scope :inside_path, -> (path) { where('routes.path LIKE ?', "#{sanitize_sql_like(path)}/%") }
@@ -34,13 +35,19 @@ class Route < ActiveRecord::Base
     end
   end
 
-  def create_redirect_if_path_changed
-    if path_changed?
-      create_redirect(path_was)
-    end
+  def delete_conflicting_redirects
+    conflicting_redirects.delete_all
   end
 
-  def create_redirect(old_path)
-    source.redirect_routes.create(path: old_path)
+  def conflicting_redirects
+    RedirectRoute.matching_path_and_descendants(path)
+  end
+
+  def create_redirect_for_old_path
+    create_redirect(path_was) if path_changed?
+  end
+
+  def create_redirect(path)
+    RedirectRoute.create(source: source, path: path)
   end
 end
