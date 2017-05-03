@@ -85,10 +85,11 @@
      */
 
     getFormDataAsObject() {
+      // debugger
       const formData = {
         update: {
           state_event: this.form.find('input[name="update[state_event]"]').val(),
-          assignee_id: this.form.find('input[name="update[assignee_id]"]').val(),
+          assignee_ids: this.form.find('input[name="update[assignee_ids][]"]').val(),
           milestone_id: this.form.find('input[name="update[milestone_id]"]').val(),
           issuable_ids: this.form.find('input[name="update[issuable_ids]"]').val(),
           subscription_event: this.form.find('input[name="update[subscription_event]"]').val(),
