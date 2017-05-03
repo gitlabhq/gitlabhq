@@ -66,6 +66,13 @@ class PostReceive
 
   private
 
+  # To maintain backwards compatibility, we accept both gl_repository or
+  # repository paths as project identifiers. Our plan is to migrate to
+  # gl_repository only with the following plan:
+  # 9.2: Handle both possible values. Keep Gitlab-Shell sending only repo paths
+  # 9.3 (or patch release): Make GitLab Shell pass gl_repository if present
+  # 9.4 (or patch release): Make GitLab Shell always pass gl_repository
+  # 9.5 (or patch release): Handle only gl_repository as project identifier on this method
   def parse_project_identifier(project_identifier)
     if project_identifier.start_with?('/')
       Gitlab::RepoPath.parse(project_identifier)

@@ -44,7 +44,7 @@ module API
 
           # Project id to pass between components that don't share/don't have
           # access to the same filesystem mounts
-          response[:gl_repository] = "#{wiki? ? 'wiki' : 'project'}-#{project.id}"
+          response[:gl_repository] = Gitlab::GlRepository.gl_repository(project, wiki?)
 
           # Return the repository full path so that gitlab-shell has it when
           # handling ssh commands
