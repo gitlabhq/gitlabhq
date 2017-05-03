@@ -71,6 +71,7 @@ export default {
 
     eventHub.$on('refreshEnvironments', this.fetchEnvironments);
     eventHub.$on('toggleFolder', this.toggleFolder);
+    eventHub.$on('postAction', this.postAction);
   },
 
   beforeDestroyed() {
@@ -138,6 +139,17 @@ export default {
         .catch(() => {
           this.isLoadingFolderContent = false;
           new Flash('An error occurred while fetching the environments.');
+        });
+    },
+
+    postAction(endpoint) {
+      this.service.postAction(endpoint)
+        .then(() => {
+          this.fetchEnvironments();
+        })
+        .catch(() => {
+          // eslint-disable-next-line no-new
+          new Flash('An error occured while making the request.');
         });
     },
   },
@@ -217,7 +229,6 @@ export default {
           :environments="state.environments"
           :can-create-deployment="canCreateDeploymentParsed"
           :can-read-environment="canReadEnvironmentParsed"
-          :service="service"
           :is-loading-folder-content="isLoadingFolderContent" />
       </div>
 
