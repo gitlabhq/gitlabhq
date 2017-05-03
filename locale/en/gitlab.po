@@ -17,7 +17,13 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "\n"
 
+msgid "Author|by"
+msgstr ""
+
 msgid "Commits"
+msgstr ""
+
+msgid "Cycle"
 msgstr ""
 
 msgid "Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project."
@@ -44,15 +50,6 @@ msgstr ""
 msgid "Deploys"
 msgstr ""
 
-msgid "Deutsch"
-msgstr ""
-
-msgid "English"
-msgstr ""
-
-msgid "First"
-msgstr ""
-
 msgid "Introducing Cycle Analytics"
 msgstr ""
 
@@ -77,10 +74,16 @@ msgstr ""
 msgid "Not enough data"
 msgstr ""
 
+msgid "OfFirstTime|First"
+msgstr ""
+
 msgid "Opened"
 msgstr ""
 
 msgid "Pipeline Health"
+msgstr ""
+
+msgid "ProjectLifecycle|Stage"
 msgstr ""
 
 msgid "Read more"
@@ -108,12 +111,6 @@ msgid "Showing %d event"
 msgid_plural "Showing %d events"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "Spanish"
-msgstr ""
-
-msgid "Stage"
-msgstr ""
 
 msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
 msgstr ""
@@ -148,6 +145,19 @@ msgstr ""
 msgid "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."
 msgstr ""
 
+msgid "Time|hr"
+msgid_plural "Time|hrs"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Time|min"
+msgid_plural "Time|mins"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Time|s"
+msgstr ""
+
 msgid "Total Time"
 msgstr ""
 
@@ -160,19 +170,8 @@ msgstr ""
 msgid "You need permission."
 msgstr ""
 
-msgid "by"
-msgstr ""
-
 msgid "day"
 msgid_plural "days"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "hr"
-msgstr ""
-
-msgid "min"
-msgid_plural "mins"
 msgstr[0] ""
 msgstr[1] ""
 

@@ -1,9 +1,15 @@
 module Gitlab
   module I18n
+    extend self
+
     AVAILABLE_LANGUAGES = {
-      'en' => N_('English'),
-      'es' => N_('Spanish'),
-      'de' => N_('Deutsch')
+      en: 'English',
+      es: 'Español',
+      de: 'Deutsch'
     }.freeze
+
+    def available_locales
+      AVAILABLE_LANGUAGES.keys
+    end
   end
 end

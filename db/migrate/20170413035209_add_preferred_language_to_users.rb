@@ -6,10 +6,8 @@ class AddPreferredLanguageToUsers < ActiveRecord::Migration
 
   DOWNTIME = false
 
-  disable_ddl_transaction!
-
   def up
-    add_column_with_default :users, :preferred_language, :string, default: 'en'
+    add_column :users, :preferred_language, :string
   end
 
   def down

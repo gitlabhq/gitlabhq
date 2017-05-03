@@ -21,6 +21,8 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :require_email, unless: :devise_controller?
 
+  around_action :set_locale
+
   protect_from_forgery with: :exception
 
   helper_method :can?, :current_application_settings
@@ -271,9 +273,14 @@ class ApplicationController < ActionController::Base
   end
 
   def set_locale
-    requested_locale = current_user&.preferred_language || request.env['HTTP_ACCEPT_LANGUAGE'] || I18n.default_locale
-    locale = FastGettext.set_locale(requested_locale)
+    begin
+      requested_locale = current_user&.preferred_language || I18n.default_locale
+      locale = FastGettext.set_locale(requested_locale)
+      I18n.locale = locale
 
-    I18n.locale = locale
+      yield
+    ensure
+      I18n.locale = I18n.default_locale
+    end
   end
 end
