@@ -95,7 +95,7 @@ RSpec.configure do |config|
   end
 
   config.around(:each, :nested_groups) do |example|
-    example.run if Gitlab::GroupHierarchy.supports_nested_groups?
+    example.run if Group.supports_nested_groups?
   end
 
   config.around(:each, :postgresql) do |example|

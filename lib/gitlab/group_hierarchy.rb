@@ -15,12 +15,16 @@ module Gitlab
     # Returns a relation that includes the base set of groups and all their
     # ancestors (recursively).
     def base_and_ancestors
+      return model.none unless Group.supports_nested_groups?
+
       base_and_ancestors_cte.apply_to(model.all)
     end
 
     # Returns a relation that includes the base set of groups and all their
     # descendants (recursively).
     def base_and_descendants
+      return model.none unless Group.supports_nested_groups?
+
       base_and_descendants_cte.apply_to(model.all)
     end
 
@@ -45,6 +49,8 @@ module Gitlab
     # Using this approach allows us to further add criteria to the relation with
     # Rails thinking it's selecting data the usual way.
     def all_groups
+      return base unless Group.supports_nested_groups?
+
       ancestors = base_and_ancestors_cte
       descendants = base_and_descendants_cte
 

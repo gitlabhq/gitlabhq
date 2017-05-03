@@ -26,7 +26,7 @@ describe GroupsController do
     end
   end
 
-  describe 'GET #subgroups' do
+  describe 'GET #subgroups', :nested_groups do
     let!(:public_subgroup) { create(:group, :public, parent: group) }
     let!(:private_subgroup) { create(:group, :private, parent: group) }
 

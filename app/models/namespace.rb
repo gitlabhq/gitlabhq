@@ -178,7 +178,7 @@ class Namespace < ActiveRecord::Base
 
   # Returns all the ancestors of the current namespaces.
   def ancestors
-    return self.class.none if !Group.supports_nested_groups? || !parent_id
+    return self.class.none unless parent_id
 
     Gitlab::GroupHierarchy.
       new(self.class.where(id: parent_id)).
@@ -187,8 +187,6 @@ class Namespace < ActiveRecord::Base
 
   # Returns all the descendants of the current namespace.
   def descendants
-    return self.class.none unless Group.supports_nested_groups?
-
     Gitlab::GroupHierarchy.
       new(self.class.where(parent_id: id)).
       base_and_descendants

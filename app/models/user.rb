@@ -509,8 +509,6 @@ class User < ActiveRecord::Base
   # Returns a relation of groups the user has access to, including their parent
   # and child groups (recursively).
   def all_expanded_groups
-    return groups unless Group.supports_nested_groups?
-
     Gitlab::GroupHierarchy.new(groups).all_groups
   end
 

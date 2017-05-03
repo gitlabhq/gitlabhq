@@ -19,9 +19,6 @@ module Gitlab
         projects = Project.arel_table
         links = ProjectGroupLink.arel_table
 
-        # These queries don't directly use the user object so they don't depend
-        # on the state of said object, ensuring the produced queries are always
-        # the same.
         relations = [
           # The project a user has direct access to.
           user.projects.select_for_project_authorization,
