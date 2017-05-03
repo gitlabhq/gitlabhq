@@ -139,6 +139,13 @@ stages:
   <<: *only-master-and-ee-or-mysql
   <<: *except-docs
 
+.only-canonical-masters: &only-canonical-masters
+  only:
+    - master@gitlab-org/gitlab-ce
+    - master@gitlab-org/gitlab-ee
+    - master@gitlab/gitlabhq
+    - master@gitlab/gitlab-ee
+
 # Trigger a package build on omnibus-gitlab repository
 
 build-package:
@@ -168,17 +175,13 @@ knapsack:
 update-knapsack:
   <<: *knapsack-state
   <<: *dedicated-runner
+  <<: *only-canonical-masters
   stage: post-test
   script:
     - scripts/merge-reports ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/rspec_pg_node_*.json
     - scripts/merge-reports ${KNAPSACK_SPINACH_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/spinach_pg_node_*.json
     - '[[ -z ${KNAPSACK_S3_BUCKET} ]] || scripts/sync-reports put $KNAPSACK_S3_BUCKET $KNAPSACK_RSPEC_SUITE_REPORT_PATH $KNAPSACK_SPINACH_SUITE_REPORT_PATH'
     - rm -f knapsack/${CI_PROJECT_NAME}/*_node_*.json
-  only:
-    - master@gitlab-org/gitlab-ce
-    - master@gitlab-org/gitlab-ee
-    - master@gitlab/gitlabhq
-    - master@gitlab/gitlab-ee
 
 setup-test-env:
   <<: *use-pg
