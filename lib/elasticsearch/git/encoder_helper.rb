@@ -1,6 +1,3 @@
-require 'active_support/concern'
-require 'charlock_holmes'
-
 module Elasticsearch
   module Git
     module EncoderHelper

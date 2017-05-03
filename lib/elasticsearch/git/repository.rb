@@ -1,12 +1,3 @@
-require 'active_support/concern'
-require 'active_model'
-require 'elasticsearch'
-require 'elasticsearch/git/model'
-require 'elasticsearch/git/encoder_helper'
-require 'elasticsearch/git/lite_blob'
-require 'rugged'
-require 'open3'
-
 module Elasticsearch
   module Git
     module Repository

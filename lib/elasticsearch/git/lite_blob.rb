@@ -1,6 +1,3 @@
-require 'linguist'
-require 'elasticsearch/git/encoder_helper'
-
 module Elasticsearch
   module Git
     class LiteBlob
