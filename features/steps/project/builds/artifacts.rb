@@ -22,6 +22,12 @@ class Spinach::Features::ProjectBuildsArtifacts < Spinach::FeatureSteps
     end
   end
 
+  step 'I should see the build header' do
+    page.within('.build-header') do
+      expect(page).to have_content "Job ##{@build.id} in pipeline ##{@pipeline.id} for commit #{@pipeline.short_sha}"
+    end
+  end
+
   step 'I click link to subdirectory within build artifacts' do
     page.within('.tree-table') { click_link 'other_artifacts_0.1.2' }
   end
@@ -31,6 +37,12 @@ class Spinach::Features::ProjectBuildsArtifacts < Spinach::FeatureSteps
       expect(page).to have_content '..'
       expect(page).to have_content 'another-subdirectory'
       expect(page).to have_content 'doc_sample.txt'
+    end
+  end
+
+  step 'I should see the directory name in the breadcrumb' do
+    page.within('.repo-breadcrumb') do
+      expect(page).to have_content 'other_artifacts_0.1.2'
     end
   end
 
