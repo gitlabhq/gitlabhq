@@ -93,8 +93,8 @@ describe 'Edit Project Settings', feature: true do
 
   describe 'Transfer project section', js: true do
     # Not using empty project because we need a repo to exist
-    let(:project) { create(:project, namespace: user.namespace, name: 'gitlabhq') }
-    let(:group) { create(:group) }
+    let!(:project) { create(:project, namespace: user.namespace, name: 'gitlabhq') }
+    let!(:group) { create(:group) }
 
     before(:context) { TestEnv.clean_test_path }
     before(:example) { group.add_owner(user) }
