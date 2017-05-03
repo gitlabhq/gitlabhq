@@ -10,7 +10,8 @@ The variables can be overwritten and they take precedence over each other in
 this order:
 
 1. [Trigger variables][triggers] (take precedence over all)
-1. [Secret variables](#secret-variables) or [protected secret variables](#protected-secret-variables)
+1. [Project-level secret variables](#project-level-secret-variables)
+1. [Group-level secret variables](#group-level-secret-variables)
 1. YAML-defined [job-level variables](../yaml/README.md#job-variables)
 1. YAML-defined [global variables](../yaml/README.md#variables)
 1. [Deployment variables](#deployment-variables)
@@ -138,7 +139,7 @@ script:
   - 'eval $LS_CMD'  # will execute 'ls -al $TMP_DIR'
 ```
 
-## Secret variables
+## Project-level secret variables
 
 >**Notes:**
 - This feature requires GitLab Runner 0.4.0 or higher.
@@ -158,7 +159,8 @@ Secret variables can be added by going to your project's
 **Settings ➔ Pipelines**, then finding the section called
 **Secret variables**.
 
-Once you set them, they will be available for all subsequent pipelines.
+Once you set them, they will be available for all subsequent pipelines. You can also
+[protect your variables](#protected-secret-variables).
 
 ### Protected secret variables
 
@@ -175,6 +177,19 @@ Protected variables can be added by going to your project's
 **Secret variables**, and check *Protected*.
 
 Once you set them, they will be available for all subsequent pipelines.
+
+## Group-level secret variables
+
+>**Notes:**
+This feature requires GitLab 9.4 or higher.
+
+You can also define variables per Group. The essential functionality is exactly the
+same with [project-level secret variables](#project-level-secret-variables). You
+can also [protect your variables](#protected-secret-variables).
+
+Secret variables can be added by going to your group's
+**Settings ➔ Pipelines**, then finding the section called
+**Secret variables**.
 
 ## Deployment variables
 

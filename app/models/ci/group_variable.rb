@@ -1,12 +1,12 @@
 module Ci
-  class Variable < ActiveRecord::Base
+  class GroupVariable < ActiveRecord::Base
     extend Ci::Model
     include HasVariable
     include Presentable
 
-    belongs_to :project
+    belongs_to :group
 
-    validates :key, uniqueness: { scope: [:project_id, :environment_scope] }
+    validates :key, uniqueness: { scope: :group_id }
 
     scope :unprotected, -> { where(protected: false) }
   end

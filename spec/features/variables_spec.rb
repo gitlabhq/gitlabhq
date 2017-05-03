@@ -82,7 +82,7 @@ describe 'Project variables', js: true do
 
   it 'deletes variable' do
     page.within('.variables-table') do
-      find('.btn-variable-delete').click
+      click_on 'Remove'
     end
 
     expect(page).not_to have_selector('variables-table')
@@ -90,7 +90,7 @@ describe 'Project variables', js: true do
 
   it 'edits variable' do
     page.within('.variables-table') do
-      find('.btn-variable-edit').click
+      click_on 'Update'
     end
 
     expect(page).to have_content('Update variable')
@@ -104,7 +104,7 @@ describe 'Project variables', js: true do
 
   it 'edits variable with empty value' do
     page.within('.variables-table') do
-      find('.btn-variable-edit').click
+      click_on 'Update'
     end
 
     expect(page).to have_content('Update variable')
@@ -117,7 +117,7 @@ describe 'Project variables', js: true do
 
   it 'edits variable to be protected' do
     page.within('.variables-table') do
-      find('.btn-variable-edit').click
+      click_on 'Update'
     end
 
     expect(page).to have_content('Update variable')
@@ -132,7 +132,7 @@ describe 'Project variables', js: true do
     project.variables.first.update(protected: true)
 
     page.within('.variables-table') do
-      find('.btn-variable-edit').click
+      click_on 'Update'
     end
 
     expect(page).to have_content('Update variable')
