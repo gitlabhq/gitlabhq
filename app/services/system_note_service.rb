@@ -273,7 +273,7 @@ module SystemNoteService
   #
   # Returns the created Note object
   def change_description(noteable, project, author)
-    body = "changed the description"
+    body = 'changed the description'
 
     create_note(NoteSummary.new(noteable, project, author, body, action: 'description'))
   end
