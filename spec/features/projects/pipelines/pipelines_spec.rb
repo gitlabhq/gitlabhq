@@ -22,7 +22,7 @@ describe 'Pipelines', :feature, :js do
           project: project,
           ref: 'master',
           status: 'running',
-          sha: project.commit.id,
+          sha: project.commit.id
         )
       end
 

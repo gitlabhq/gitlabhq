@@ -859,7 +859,7 @@ class Repository
 
       actual_options = options.merge(
         parents: [our_commit, their_commit],
-        tree: merge_index.write_tree(rugged),
+        tree: merge_index.write_tree(rugged)
       )
 
       commit_id = create_commit(actual_options)

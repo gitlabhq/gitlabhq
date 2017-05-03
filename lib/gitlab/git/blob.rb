@@ -90,7 +90,7 @@ module Gitlab
             name: blob_entry[:name],
             data: '',
             path: path,
-            commit_id: sha,
+            commit_id: sha
           )
         end
       end

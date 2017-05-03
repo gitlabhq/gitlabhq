@@ -149,7 +149,7 @@ describe Gitlab::Kubernetes::Deployment do
   def instances(replicas = 4, available = 1, updated = 2, labels = {})
     combine(
       make('spec', 'replicas' => replicas),
-      make('status', 'availableReplicas' => available, 'updatedReplicas' => updated),
+      make('status', 'availableReplicas' => available, 'updatedReplicas' => updated)
     )
   end
 

@@ -35,7 +35,7 @@ module EE
           ldap_search(
             base: dn,
             scope: Net::LDAP::SearchScope_BaseObject,
-            attributes: ["member;range=#{range_start}-*"],
+            attributes: ["member;range=#{range_start}-*"]
           ).first
         end
 

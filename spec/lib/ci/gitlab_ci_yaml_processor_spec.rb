@@ -716,7 +716,7 @@ module Ci
         expect(config_processor.builds_for_stage_and_ref("test", "master").first[:options][:cache]).to eq(
           paths: ["logs/", "binaries/"],
           untracked: true,
-          key: 'key',
+          key: 'key'
         )
       end
 
@@ -734,7 +734,7 @@ module Ci
         expect(config_processor.builds_for_stage_and_ref("test", "master").first[:options][:cache]).to eq(
           paths: ["logs/", "binaries/"],
           untracked: true,
-          key: 'key',
+          key: 'key'
         )
       end
 
@@ -753,7 +753,7 @@ module Ci
         expect(config_processor.builds_for_stage_and_ref("test", "master").first[:options][:cache]).to eq(
           paths: ["test/"],
           untracked: false,
-          key: 'local',
+          key: 'local'
         )
       end
     end

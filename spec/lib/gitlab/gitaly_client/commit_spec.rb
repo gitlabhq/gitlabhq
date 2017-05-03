@@ -17,7 +17,7 @@ describe Gitlab::GitalyClient::Commit do
         request = Gitaly::CommitDiffRequest.new(
           repository: repository_message,
           left_commit_id: 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660',
-          right_commit_id: commit.id,
+          right_commit_id: commit.id
         )
 
         expect(diff_stub).to receive(:commit_diff).with(request)
@@ -32,7 +32,7 @@ describe Gitlab::GitalyClient::Commit do
         request        = Gitaly::CommitDiffRequest.new(
           repository: repository_message,
           left_commit_id: '4b825dc642cb6eb9a060e54bf8d69288fbee4904',
-          right_commit_id: initial_commit.id,
+          right_commit_id: initial_commit.id
         )
 
         expect(diff_stub).to receive(:commit_diff).with(request)

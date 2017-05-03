@@ -321,7 +321,7 @@ class NotificationService
     recipients ||= NotificationRecipientService.new(pipeline.project).build_pipeline_recipients(
       pipeline,
       pipeline.user,
-      action: pipeline.status,
+      action: pipeline.status
     ).map(&:notification_email)
 
     if recipients.any?
