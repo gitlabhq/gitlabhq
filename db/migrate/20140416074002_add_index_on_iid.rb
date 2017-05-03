@@ -18,7 +18,7 @@ class RemoveDuplicateIid
     duplicates.each do |duplicate|
       project_id = duplicate.send(project_field)
       iid = duplicate.iid
-      items = klass.of_projects(project_id).where(iid: iid)
+      items = klass.of_projects(project_id).where(iid: iid).to_a
 
       if items.size > 1
         puts "Remove #{klass.name} duplicates for iid: #{iid} and project_id: #{project_id}"
