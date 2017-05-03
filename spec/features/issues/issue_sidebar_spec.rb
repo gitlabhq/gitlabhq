@@ -46,7 +46,7 @@ feature 'Issue Sidebar', feature: true do
     it 'assigns yourself' do
       find('.block.assignee .dropdown-menu-toggle').click
 
-      find('.assign-yourself .btn-link', text: 'assign yourself').click
+      click_button 'assign yourself'
 
       wait_for_ajax
 
