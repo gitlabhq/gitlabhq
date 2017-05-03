@@ -811,12 +811,9 @@ describe Project, models: true do
 
     context 'when avatar file is uploaded' do
       let(:project) { create(:empty_project, :with_avatar) }
+      let(:avatar_path) { "/uploads/project/avatar/#{project.id}/dk.png" }
 
-      it 'creates a correct avatar path' do
-        avatar_path = "/uploads/project/avatar/#{project.id}/dk.png"
-
-        expect(project.avatar_url).to eq("http://#{Gitlab.config.gitlab.host}#{avatar_path}")
-      end
+      it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
     end
 
     context 'When avatar file in git' do
@@ -824,9 +821,7 @@ describe Project, models: true do
         allow(project).to receive(:avatar_in_git) { true }
       end
 
-      let(:avatar_path) do
-        "/#{project.full_path}/avatar"
-      end
+      let(:avatar_path) { "/#{project.full_path}/avatar" }
 
       it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
     end
