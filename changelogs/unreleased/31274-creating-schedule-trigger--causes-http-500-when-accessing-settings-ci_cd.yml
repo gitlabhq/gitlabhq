@@ -1,0 +1,4 @@
+---
+title: Fix error on CI/CD Settings page related to invalid pipeline trigger
+merge_request: 10948
+author: dosuken123
