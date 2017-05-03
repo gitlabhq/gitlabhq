@@ -59,14 +59,15 @@ msgstr "Despliegues"
 msgid "Introducing Cycle Analytics"
 msgstr "Introducción a Cycle Analytics"
 
-msgid "Last 30 days"
-msgstr "Últimos 30 días"
+#, fuzzy
+msgid "Last %d day"
+msgid_plural "Last %d days"
+msgstr[0] "Últimos %d días"
 
-msgid "Last 90 days"
-msgstr "Últimos 90 días"
-
-msgid "Limited to showing 50 events at most"
-msgstr "Limitado a mostrar máximo 50 eventos"
+#, fuzzy
+msgid "Limited to showing %d event at most"
+msgid_plural "Limited to showing %d events at most"
+msgstr[0] "Limitado a mostrar máximo %d eventos"
 
 msgid "Median"
 msgstr "Mediana"
@@ -170,7 +171,8 @@ msgstr ""
 msgid "Total Time"
 msgstr "Tiempo Total"
 
-msgid "Want to see the data? Please ask administrator for access."
+#, fuzzy
+msgid "Want to see the data? Please ask an administrator for access."
 msgstr "¿Quieres ver los datos? Por favor pedir acceso al administrador."
 
 msgid "We don't have enough data to show this stage."

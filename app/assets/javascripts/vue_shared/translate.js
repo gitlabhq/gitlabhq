@@ -1,7 +1,6 @@
 import {
   __,
   n__,
-  s__,
 } from '../locale';
 
 export default (Vue) => {
@@ -9,9 +8,16 @@ export default (Vue) => {
     methods: {
       __(text) { return __(text); },
       n__(text, pluralText, count) {
-        return n__(text, pluralText, count).replace(/%d/g, count);
+        const translated = n__(text, pluralText, count).replace(/%d/g, count).split('|');
+        return translated[translated.length - 1];
       },
-      s__(context, key) { return s__(context, key); },
+      s__(keyOrContext, key) {
+        const normalizedKey = key ? `${keyOrContext}|${key}` : keyOrContext;
+        // eslint-disable-next-line no-underscore-dangle
+        const translated = this.__(normalizedKey).split('|');
+
+        return translated[translated.length - 1];
+      },
     },
   });
 };
