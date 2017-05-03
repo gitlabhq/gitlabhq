@@ -30,13 +30,13 @@ describe('Deploy keys panel', () => {
 
     expect(
       vm.$el.querySelector('h5').textContent.trim(),
-    ).toContain('(1)');
+    ).toContain(`(${vm.keys.length})`);
   });
 
   it('renders list of keys', () => {
     expect(
       vm.$el.querySelectorAll('li').length,
-    ).toBe(1);
+    ).toBe(vm.keys.length);
   });
 
   it('renders help box if keys are empty', (done) => {
