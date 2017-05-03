@@ -5,7 +5,7 @@ describe RepositoryForkWorker do
   let(:fork_project) { create(:project, :repository, forked_from_project: project) }
   let(:shell) { Gitlab::Shell.new }
 
-  subject { RepositoryForkWorker.new }
+  subject { described_class.new }
 
   before do
     allow(subject).to receive(:gitlab_shell).and_return(shell)

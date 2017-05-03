@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Create Snippet', feature: true do
+feature 'Create Snippet', :js, feature: true do
   before do
     login_as :user
     visit new_snippet_path
@@ -9,10 +9,11 @@ feature 'Create Snippet', feature: true do
   scenario 'Authenticated user creates a snippet' do
     fill_in 'personal_snippet_title', with: 'My Snippet Title'
     page.within('.file-editor') do
-      find(:xpath, "//input[@id='personal_snippet_content']").set 'Hello World!'
+      find('.ace_editor').native.send_keys 'Hello World!'
     end
 
     click_button 'Create snippet'
+    wait_for_ajax
 
     expect(page).to have_content('My Snippet Title')
     expect(page).to have_content('Hello World!')
@@ -22,10 +23,11 @@ feature 'Create Snippet', feature: true do
     fill_in 'personal_snippet_title', with: 'My Snippet Title'
     page.within('.file-editor') do
       find(:xpath, "//input[@id='personal_snippet_file_name']").set 'snippet+file+name'
-      find(:xpath, "//input[@id='personal_snippet_content']").set 'Hello World!'
+      find('.ace_editor').native.send_keys 'Hello World!'
     end
 
     click_button 'Create snippet'
+    wait_for_ajax
 
     expect(page).to have_content('My Snippet Title')
     expect(page).to have_content('snippet+file+name')

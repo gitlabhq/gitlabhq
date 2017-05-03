@@ -8,7 +8,7 @@ feature 'Projected Branches', feature: true, js: true do
   before { login_as(user) }
 
   def set_protected_branch_name(branch_name)
-    find(".js-protected-branch-select").click
+    find(".js-protected-branch-select").trigger('click')
     find(".dropdown-input-field").set(branch_name)
     click_on("Create wildcard #{branch_name}")
   end

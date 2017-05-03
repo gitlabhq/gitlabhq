@@ -55,10 +55,12 @@ feature 'Issue Sidebar', feature: true do
         # Resize the window
         resize_screen_sm
         # Make sure the sidebar is collapsed
+        find(sidebar_selector)
         expect(page).to have_css(sidebar_selector)
         # Once is collapsed let's open the sidebard and reload
         open_issue_sidebar
         refresh
+        find(sidebar_selector)
         expect(page).to have_css(sidebar_selector)
         # Restore the window size as it was including the sidebar
         restore_window_size

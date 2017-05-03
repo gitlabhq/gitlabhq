@@ -498,6 +498,29 @@ module Gitlab
 
         columns(table).find { |column| column.name == name }
       end
+
+      # This will replace the first occurance of a string in a column with
+      # the replacement
+      # On postgresql we can use `regexp_replace` for that.
+      # On mysql we find the location of the pattern, and overwrite it
+      # with the replacement
+      def replace_sql(column, pattern, replacement)
+        quoted_pattern = Arel::Nodes::Quoted.new(pattern.to_s)
+        quoted_replacement = Arel::Nodes::Quoted.new(replacement.to_s)
+
+        if Database.mysql?
+          locate = Arel::Nodes::NamedFunction.
+            new('locate', [quoted_pattern, column])
+          insert_in_place = Arel::Nodes::NamedFunction.
+            new('insert', [column, locate, pattern.size, quoted_replacement])
+
+          Arel::Nodes::SqlLiteral.new(insert_in_place.to_sql)
+        else
+          replace = Arel::Nodes::NamedFunction.
+            new("regexp_replace", [column, quoted_pattern, quoted_replacement])
+          Arel::Nodes::SqlLiteral.new(replace.to_sql)
+        end
+      end
     end
   end
 end

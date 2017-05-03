@@ -36,10 +36,10 @@ if Rails.env.test?
       RspecProfiling::Collectors::PSQL.prepend(RspecProfilingExt::PSQL)
       config.collector = RspecProfiling::Collectors::PSQL
     end
-  end
 
-  if ENV.has_key?('CI') && ENV['GITLAB_DATABASE'] == 'postgresql'
-    RspecProfiling::VCS::Git.prepend(RspecProfilingExt::Git)
-    RspecProfiling::Run.prepend(RspecProfilingExt::Run)
+    if ENV.key?('CI')
+      RspecProfiling::VCS::Git.prepend(RspecProfilingExt::Git)
+      RspecProfiling::Run.prepend(RspecProfilingExt::Run)
+    end
   end
 end
