@@ -12,33 +12,93 @@ describe Admin::ApplicationSettingsController do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
   end
 
+  describe 'GET #usage_data with no access' do
+    before do
+      sign_in(user)
+    end
+
+    it 'returns 404' do
+      get :usage_data, format: :html
+
+      expect(response.status).to eq(404)
+    end
+  end
+
+  describe 'GET #usage_data' do
+    before do
+      sign_in(admin)
+    end
+
+    it 'returns HTML data' do
+      get :usage_data, format: :html
+
+      expect(response.body).to start_with('<span')
+      expect(response.status).to eq(200)
+    end
+
+    it 'returns JSON data' do
+      get :usage_data, format: :json
+
+      body = JSON.parse(response.body)
+      expect(body["version"]).to eq(Gitlab::VERSION)
+      expect(body).to include('counts')
+      expect(response.status).to eq(200)
+    end
+  end
+
   describe 'PUT #update' do
     before do
       sign_in(admin)
     end
 
-    context 'with valid params' do
-      subject { put :update, application_setting: { repository_size_limit: '100' } }
+    it 'updates the default_project_visibility for string value' do
+      put :update, application_setting: { default_project_visibility: "20" }
 
-      it 'redirect to application settings page' do
-        is_expected.to redirect_to(admin_application_settings_path)
-      end
-
-      it 'set flash notice' do
-        is_expected.to set_flash[:notice].to('Application settings saved successfully')
-      end
+      expect(response).to redirect_to(admin_application_settings_path)
+      expect(ApplicationSetting.current.default_project_visibility).to eq(Gitlab::VisibilityLevel::PUBLIC)
     end
 
-    context 'with invalid params' do
-      subject! { put :update, application_setting: { repository_size_limit: '-100' } }
+    it 'update the restricted levels for string values' do
+      put :update, application_setting: { restricted_visibility_levels: %w[10 20] }
 
-      it 'render show template' do
-        is_expected.to render_template(:show)
-      end
+      expect(response).to redirect_to(admin_application_settings_path)
+      expect(ApplicationSetting.current.restricted_visibility_levels).to eq([10, 20])
+    end
 
-      it 'assigned @application_settings has errors' do
-        expect(assigns(:application_setting).errors[:repository_size_limit]).to be_present
-      end
+    it 'falls back to defaults when settings are omitted' do
+      put :update, application_setting: {}
+
+      expect(response).to redirect_to(admin_application_settings_path)
+      expect(ApplicationSetting.current.default_project_visibility).to eq(Gitlab::VisibilityLevel::PRIVATE)
+      expect(ApplicationSetting.current.restricted_visibility_levels).to be_empty
+    end
+
+    it 'updates repository_size_limit' do
+      put :update, application_setting: { repository_size_limit: '100' }
+
+      expect(response).to redirect_to(admin_application_settings_path)
+      expect(response).to set_flash[:notice].to('Application settings saved successfully')
+    end
+
+    it 'does not accept negative repository_size_limit' do
+      put :update, application_setting: { repository_size_limit: '-100' }
+
+      expect(response).to render_template(:show)
+      expect(assigns(:application_setting).errors[:repository_size_limit]).to be_present
+    end
+
+    it 'does not accept invalid repository_size_limit' do
+      put :update, application_setting: { repository_size_limit: 'one thousand' }
+
+      expect(response).to render_template(:show)
+      expect(assigns(:application_setting).errors[:repository_size_limit]).to be_present
+    end
+
+    it 'does not accept empty repository_size_limit' do
+      put :update, application_setting: { repository_size_limit: '' }
+
+      expect(response).to render_template(:show)
+      expect(assigns(:application_setting).errors[:repository_size_limit]).to be_present
     end
   end
 

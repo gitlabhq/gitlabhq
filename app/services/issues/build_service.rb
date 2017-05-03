@@ -7,6 +7,10 @@ module Issues
       @issue = project.issues.new(issue_params)
     end
 
+    def issue_params_from_template
+      { description: project.issues_template }
+    end
+
     def issue_params_with_info_from_discussions
       return {} unless merge_request_to_resolve_discussions_of
 
@@ -35,22 +39,32 @@ module Issues
     end
 
     def item_for_discussion(discussion)
-      first_note = discussion.first_note_to_resolve || discussion.first_note
-      other_note_count = discussion.notes.size - 1
-      note_url = Gitlab::UrlBuilder.build(first_note)
+      first_note_to_resolve = discussion.first_note_to_resolve || discussion.first_note
 
-      discussion_info = "- [ ] #{first_note.author.to_reference} commented on a [discussion](#{note_url}): "
+      is_very_first_note = first_note_to_resolve == discussion.first_note
+      action = is_very_first_note ? "started" : "commented on"
+
+      note_url = Gitlab::UrlBuilder.build(first_note_to_resolve)
+
+      other_note_count = discussion.notes.size - 1
+
+      discussion_info = "- [ ] #{first_note_to_resolve.author.to_reference} #{action} a [discussion](#{note_url}): "
       discussion_info << " (+#{other_note_count} #{'comment'.pluralize(other_note_count)})" if other_note_count > 0
 
-      note_without_block_quotes = Banzai::Filter::BlockquoteFenceFilter.new(first_note.note).call
+      note_without_block_quotes = Banzai::Filter::BlockquoteFenceFilter.new(first_note_to_resolve.note).call
       spaces = ' ' * 4
       quote = note_without_block_quotes.lines.map { |line| "#{spaces}> #{line}" }.join
 
       [discussion_info, quote].join("\n\n")
     end
 
+    # Issue params can be built from 3 types of passed params,
+    # They take precedence over eachother like this
+    # passed params > discussion params > template params
     def issue_params
-      @issue_params ||= issue_params_with_info_from_discussions.merge(whitelisted_issue_params)
+      @issue_params ||= issue_params_from_template.
+                          merge(issue_params_with_info_from_discussions).
+                          merge(whitelisted_issue_params)
     end
 
     def whitelisted_issue_params

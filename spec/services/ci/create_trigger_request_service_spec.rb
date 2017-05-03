@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Ci::CreateTriggerRequestService, services: true do
   let(:service) { described_class.new }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:trigger) { create(:ci_trigger, project: project) }
 
   before do

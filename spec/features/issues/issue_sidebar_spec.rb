@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 feature 'Issue Sidebar', feature: true do
-  include WaitForAjax
   include MobileHelpers
 
   let(:project) { create(:project, :public) }
@@ -116,6 +115,20 @@ feature 'Issue Sidebar', feature: true do
             end
           end
         end
+      end
+    end
+  end
+
+  context 'as a allowed mobile user', js: true do
+    before do
+      project.team << [user, :developer]
+      resize_screen_xs
+      visit_issue(project, issue)
+    end
+
+    context 'mobile sidebar' do
+      it 'collapses the sidebar for small screens' do
+        expect(page).not_to have_css('aside.right-sidebar.right-sidebar-collapsed')
       end
     end
   end

@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe 'View on environment', js: true do
-  include WaitForAjax
-
   let(:branch_name) { 'feature' }
   let(:file_path) { 'files/ruby/feature.rb' }
   let(:project) { create(:project, :repository) }
@@ -25,7 +23,7 @@ describe 'View on environment', js: true do
         project,
         user,
         start_branch: branch_name,
-        target_branch: branch_name,
+        branch_name: branch_name,
         commit_message: "Add .gitlab/route-map.yml",
         file_path: '.gitlab/route-map.yml',
         file_content: route_map
@@ -36,7 +34,7 @@ describe 'View on environment', js: true do
         project,
         user,
         start_branch: branch_name,
-        target_branch: branch_name,
+        branch_name: branch_name,
         commit_message: "Update feature",
         file_path: file_path,
         file_content: "# Noop"

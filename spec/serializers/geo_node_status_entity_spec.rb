@@ -5,6 +5,8 @@ describe GeoNodeStatusEntity do
     GeoNodeStatus.new(
       id: 1,
       health: nil,
+      attachments_count: 329,
+      attachments_synced_count: 141,
       lfs_objects_count: 256,
       lfs_objects_synced_count: 123,
       repositories_count: 10,
@@ -25,6 +27,9 @@ describe GeoNodeStatusEntity do
   it { is_expected.to have_key(:id) }
   it { is_expected.to have_key(:healthy) }
   it { is_expected.to have_key(:health) }
+  it { is_expected.to have_key(:attachments_count) }
+  it { is_expected.to have_key(:attachments_synced_count) }
+  it { is_expected.to have_key(:attachments_synced_in_percentage) }
   it { is_expected.to have_key(:lfs_objects_count) }
   it { is_expected.to have_key(:lfs_objects_synced_count) }
   it { is_expected.to have_key(:lfs_objects_synced_in_percentage) }
@@ -70,6 +75,12 @@ describe GeoNodeStatusEntity do
       it 'exposes the error message' do
         expect(subject[:health]).to eq error
       end
+    end
+  end
+
+  describe '#attachments_synced_in_percentage' do
+    it 'formats as percentage' do
+      expect(subject[:attachments_synced_in_percentage]).to eq '42.86%'
     end
   end
 

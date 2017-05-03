@@ -17,7 +17,7 @@
   .stats
     %span
       = icon('bookmark')
-      = number_with_delimiter(group.projects.count)
+      = number_with_delimiter(group.projects.non_archived.count)
 
     %span
       = icon('users')
@@ -27,7 +27,8 @@
       = visibility_level_icon(group.visibility_level, fw: false)
 
   .avatar-container.s40
-    = image_tag group_icon(group), class: "avatar s40 hidden-xs"
+    = link_to group do
+      = image_tag group_icon(group), class: "avatar s40 hidden-xs"
   .title
     = link_to group_name, group, class: 'group-name'
 

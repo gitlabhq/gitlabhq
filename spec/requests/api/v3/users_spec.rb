@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe API::V3::Users, api: true  do
-  include ApiHelpers
-
+describe API::V3::Users do
   let(:user)  { create(:user) }
   let(:admin) { create(:admin) }
   let(:key)   { create(:key, user: user) }
@@ -261,6 +259,26 @@ describe API::V3::Users, api: true  do
 
       expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('404 User Not Found')
+    end
+  end
+
+  describe 'POST /users' do
+    it 'creates confirmed user when confirm parameter is false' do
+      optional_attributes = { confirm: false }
+      attributes = attributes_for(:user).merge(optional_attributes)
+
+      post v3_api('/users', admin), attributes
+
+      user_id = json_response['id']
+      new_user = User.find(user_id)
+
+      expect(new_user).to be_confirmed
+    end
+
+    it 'does not reveal the `is_admin` flag of the user' do
+      post v3_api('/users', admin), attributes_for(:user)
+
+      expect(json_response['is_admin']).to be_nil
     end
   end
 end

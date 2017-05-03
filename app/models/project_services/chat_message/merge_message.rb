@@ -1,35 +1,36 @@
 module ChatMessage
   class MergeMessage < BaseMessage
-    attr_reader :user_name
-    attr_reader :project_name
-    attr_reader :project_url
-    attr_reader :merge_request_id
+    attr_reader :merge_request_iid
     attr_reader :source_branch
     attr_reader :target_branch
     attr_reader :state
     attr_reader :title
 
     def initialize(params)
-      @user_name = params[:user][:username]
-      @project_name = params[:project_name]
-      @project_url = params[:project_url]
+      super
+
       @action = params[:object_attributes][:action]
 
       obj_attr = params[:object_attributes]
       obj_attr = HashWithIndifferentAccess.new(obj_attr)
-      @merge_request_id = obj_attr[:iid]
+      @merge_request_iid = obj_attr[:iid]
       @source_branch = obj_attr[:source_branch]
       @target_branch = obj_attr[:target_branch]
       @state = obj_attr[:state]
       @title = format_title(obj_attr[:title])
     end
 
-    def pretext
-      format(message)
-    end
-
     def attachments
       []
+    end
+
+    def activity
+      {
+        title: "Merge Request #{state} by #{user_name}",
+        subtitle: "in #{project_link}",
+        text: merge_request_link,
+        image: user_avatar
+      }
     end
 
     private
@@ -51,11 +52,15 @@ module ChatMessage
     end
 
     def merge_request_link
-      link("merge request !#{merge_request_id}", merge_request_url)
+      link(merge_request_title, merge_request_url)
+    end
+
+    def merge_request_title
+      "#{MergeRequest.reference_prefix}#{merge_request_iid} #{title}"
     end
 
     def merge_request_url
-      "#{project_url}/merge_requests/#{merge_request_id}"
+      "#{project_url}/merge_requests/#{merge_request_iid}"
     end
 
     def state_or_action_text

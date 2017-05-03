@@ -12,13 +12,12 @@ Thus, we must strike a balance between sending requests and the feeling of realt
 Use the following rules when creating realtime solutions.
 
 1. The server will tell you how much to poll by sending `Poll-Interval` in the header.
-Use that as your polling interval. This way it is easy for system administrators to change the
-polling rate.
+Use that as your polling interval. This way it is [easy for system administrators to change the
+polling rate](../../administration/polling.md).
 A `Poll-Interval: -1` means you should disable polling, and this must be implemented.
 1. A response with HTTP status `4XX` or `5XX` should disable polling as well.
 1. Use a common library for polling.
-1. Poll on active tabs only. Use a common library to find out which tab currently has eyes on it.
-Please use [Focus](https://gitlab.com/andrewn/focus). Specifically [Eyeballs Detector](https://gitlab.com/andrewn/focus/blob/master/lib/eyeballs-detector.js).
+1. Poll on active tabs only. Please use [Visibility](https://github.com/ai/visibilityjs).
 1. Use regular polling intervals, do not use backoff polling, or jitter, as the interval will be
 controlled by the server.
 1. The backend code will most likely be using etags. You do not and should not check for status
@@ -49,8 +48,8 @@ Steps to split page-specific JavaScript from the main `main.js`:
 
 ```haml
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('lib_chart')
-  = page_specific_javascript_bundle_tag('graphs')
+  = webpack_bundle_tag 'lib_chart'
+  = webpack_bundle_tag 'graphs'
 ```
 
 The above loads `chart.js` and `graphs_bundle.js` for this page only. `chart.js`

@@ -1,16 +1,16 @@
 require 'spec_helper.rb'
 
-class DummyService < Issues::BaseService
-  include ::Issues::ResolveDiscussions
+describe Issues::ResolveDiscussions, services: true do
+  class DummyService < Issues::BaseService
+    include ::Issues::ResolveDiscussions
 
-  def initialize(*args)
-    super
-    filter_resolve_discussion_params
+    def initialize(*args)
+      super
+      filter_resolve_discussion_params
+    end
   end
-end
 
-describe DummyService, services: true do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 
   before do
@@ -18,12 +18,12 @@ describe DummyService, services: true do
   end
 
   describe "for resolving discussions" do
-    let(:discussion) { Discussion.new([create(:diff_note_on_merge_request, project: project, note: "Almost done")]) }
+    let(:discussion) { create(:diff_note_on_merge_request, project: project, note: "Almost done").to_discussion }
     let(:merge_request) { discussion.noteable }
     let(:other_merge_request) { create(:merge_request, source_project: project, source_branch: "other") }
 
     describe "#merge_request_for_resolving_discussion" do
-      let(:service) { described_class.new(project, user, merge_request_to_resolve_discussions_of: merge_request.iid) }
+      let(:service) { DummyService.new(project, user, merge_request_to_resolve_discussions_of: merge_request.iid) }
 
       it "finds the merge request" do
         expect(service.merge_request_to_resolve_discussions_of).to eq(merge_request)
@@ -43,7 +43,7 @@ describe DummyService, services: true do
 
     describe "#discussions_to_resolve" do
       it "contains a single discussion when matching merge request and discussion are passed" do
-        service = described_class.new(
+        service = DummyService.new(
           project,
           user,
           discussion_to_resolve: discussion.id,
@@ -61,7 +61,7 @@ describe DummyService, services: true do
                                                   noteable: merge_request,
                                                   project: merge_request.target_project,
                                                   line_number: 15)])
-        service = described_class.new(
+        service = DummyService.new(
           project,
           user,
           merge_request_to_resolve_discussions_of: merge_request.iid
@@ -79,7 +79,7 @@ describe DummyService, services: true do
                                                    project: merge_request.target_project,
                                                    line_number: 15,
                                                    )])
-        service = described_class.new(
+        service = DummyService.new(
           project,
           user,
           merge_request_to_resolve_discussions_of: merge_request.iid
@@ -92,7 +92,7 @@ describe DummyService, services: true do
       end
 
       it "is empty when a discussion and another merge request are passed" do
-        service = described_class.new(
+        service = DummyService.new(
           project,
           user,
           discussion_to_resolve: discussion.id,

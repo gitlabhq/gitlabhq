@@ -5,7 +5,7 @@ namespace :gitlab do
   end
 
   def update(template)
-    sub_dir = template.repo_url.match(/([a-z-]+)\.git\z/)[1]
+    sub_dir = template.repo_url.match(/([A-Za-z-]+)\.git\z/)[1]
     dir = File.join(vendor_directory, sub_dir)
 
     unless clone_repository(template.repo_url, dir)
@@ -44,8 +44,12 @@ namespace :gitlab do
     ),
     Template.new(
       "https://gitlab.com/gitlab-org/gitlab-ci-yml.git",
-      /(\.{1,2}|LICENSE|Pages|autodeploy|\.gitlab-ci.yml)\z/
-    )
+      /(\.{1,2}|LICENSE|CONTRIBUTING.md|Pages|autodeploy|\.gitlab-ci.yml)\z/
+    ),
+    Template.new(
+      "https://gitlab.com/gitlab-org/Dockerfile.git",
+      /(\.{1,2}|LICENSE|CONTRIBUTING.md|\.Dockerfile)\z/
+    ),
   ].freeze
 
   def vendor_directory

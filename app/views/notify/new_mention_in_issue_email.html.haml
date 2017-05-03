@@ -1,6 +1,7 @@
 %p
   You have been mentioned in an issue.
 
+<<<<<<< HEAD
 - if current_application_settings.email_author_in_body
   %div
     #{link_to @issue.author_name, user_url(@issue.author)} wrote:
@@ -10,3 +11,6 @@
 - if @issue.assignees.present?
   %p
     Assignee: #{@issue.assignee_list}
+=======
+= render template: 'notify/new_issue_email'
+>>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0

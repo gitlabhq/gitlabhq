@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Milestones::CloseService, services: true do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
   let(:milestone) { create(:milestone, title: "Milestone v1.2", project: project) }
 
   before do
@@ -17,7 +17,7 @@ describe Milestones::CloseService, services: true do
     it { expect(milestone).to be_valid }
     it { expect(milestone).to be_closed }
 
-    describe :event do
+    describe 'event' do
       let(:event) { Event.recent.first }
 
       it { expect(event.milestone).to be_truthy }

@@ -9,6 +9,59 @@ module API
       end
 
       resource :users, requirements: { uid: /[0-9]*/, id: /[0-9]*/ } do
+        helpers do
+          params :optional_attributes do
+            optional :skype, type: String, desc: 'The Skype username'
+            optional :linkedin, type: String, desc: 'The LinkedIn username'
+            optional :twitter, type: String, desc: 'The Twitter username'
+            optional :website_url, type: String, desc: 'The website of the user'
+            optional :organization, type: String, desc: 'The organization of the user'
+            optional :projects_limit, type: Integer, desc: 'The number of projects a user can create'
+            optional :extern_uid, type: String, desc: 'The external authentication provider UID'
+            optional :provider, type: String, desc: 'The external provider'
+            optional :bio, type: String, desc: 'The biography of the user'
+            optional :location, type: String, desc: 'The location of the user'
+            optional :admin, type: Boolean, desc: 'Flag indicating the user is an administrator'
+            optional :can_create_group, type: Boolean, desc: 'Flag indicating the user can create groups'
+            optional :confirm, type: Boolean, default: true, desc: 'Flag indicating the account needs to be confirmed'
+            optional :external, type: Boolean, desc: 'Flag indicating the user is an external user'
+            all_or_none_of :extern_uid, :provider
+          end
+        end
+
+        desc 'Create a user. Available only for admins.' do
+          success ::API::Entities::UserPublic
+        end
+        params do
+          requires :email, type: String, desc: 'The email of the user'
+          optional :password, type: String, desc: 'The password of the new user'
+          optional :reset_password, type: Boolean, desc: 'Flag indicating the user will be sent a password reset token'
+          at_least_one_of :password, :reset_password
+          requires :name, type: String, desc: 'The name of the user'
+          requires :username, type: String, desc: 'The username of the user'
+          use :optional_attributes
+        end
+        post do
+          authenticated_as_admin!
+
+          params = declared_params(include_missing: false)
+          user = ::Users::CreateService.new(current_user, params.merge!(skip_confirmation: !params[:confirm])).execute
+
+          if user.persisted?
+            present user, with: ::API::Entities::UserPublic
+          else
+            conflict!('Email has already been taken') if User.
+                where(email: user.email).
+                count > 0
+
+            conflict!('Username has already been taken') if User.
+                where(username: user.username).
+                count > 0
+
+            render_validation_error!(user)
+          end
+        end
+
         desc 'Get the SSH keys of a specified user. Available only for admins.' do
           success ::API::Entities::SSHKey
         end
@@ -85,7 +138,7 @@ module API
           not_found!('User') unless user
 
           events = user.events.
-            merge(ProjectsFinder.new.execute(current_user)).
+            merge(ProjectsFinder.new(current_user: current_user).execute).
             references(:project).
             with_associations.
             recent

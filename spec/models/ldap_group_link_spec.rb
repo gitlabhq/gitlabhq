@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe LdapGroupLink do
-  let(:klass) { LdapGroupLink }
+  let(:klass) { described_class }
   let(:ldap_group_link) { build :ldap_group_link }
 
   describe "validation" do
@@ -22,7 +22,7 @@ describe LdapGroupLink do
       end
     end
 
-    describe :provider do
+    describe 'provider' do
       it "shows the set value" do
         ldap_group_link.provider = '1235'
         expect( ldap_group_link.provider ).to eql '1235'

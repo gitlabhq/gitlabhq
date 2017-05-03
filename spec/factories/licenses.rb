@@ -3,7 +3,7 @@ FactoryGirl.define do
     starts_at { Date.today - 1.month }
     expires_at { Date.today + 11.months }
     licensee do
-      { "Name" => FFaker::Name.name }
+      { "Name" => generate(:name) }
     end
     restrictions do
       {

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe MergeRequests::ResolveService do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
   let(:fork_project) do
     create(:forked_project_with_submodules) do |fork_project|
@@ -50,7 +50,7 @@ describe MergeRequests::ResolveService do
 
       context 'when the source and target project are the same' do
         before do
-          MergeRequests::ResolveService.new(project, user, params).execute(merge_request)
+          described_class.new(project, user, params).execute(merge_request)
         end
 
         it 'creates a commit with the message' do
@@ -75,7 +75,7 @@ describe MergeRequests::ResolveService do
         end
 
         before do
-          MergeRequests::ResolveService.new(fork_project, user, params).execute(merge_request_from_fork)
+          described_class.new(fork_project, user, params).execute(merge_request_from_fork)
         end
 
         it 'creates a commit with the message' do
@@ -115,7 +115,7 @@ describe MergeRequests::ResolveService do
       end
 
       before do
-        MergeRequests::ResolveService.new(project, user, params).execute(merge_request)
+        described_class.new(project, user, params).execute(merge_request)
       end
 
       it 'creates a commit with the message' do
@@ -154,7 +154,7 @@ describe MergeRequests::ResolveService do
         }
       end
 
-      let(:service) { MergeRequests::ResolveService.new(project, user, invalid_params) }
+      let(:service) { described_class.new(project, user, invalid_params) }
 
       it 'raises a MissingResolution error' do
         expect { service.execute(merge_request) }.
@@ -180,7 +180,7 @@ describe MergeRequests::ResolveService do
         }
       end
 
-      let(:service) { MergeRequests::ResolveService.new(project, user, invalid_params) }
+      let(:service) { described_class.new(project, user, invalid_params) }
 
       it 'raises a MissingResolution error' do
         expect { service.execute(merge_request) }.
@@ -202,7 +202,7 @@ describe MergeRequests::ResolveService do
         }
       end
 
-      let(:service) { MergeRequests::ResolveService.new(project, user, invalid_params) }
+      let(:service) { described_class.new(project, user, invalid_params) }
 
       it 'raises a MissingFiles error' do
         expect { service.execute(merge_request) }.

@@ -311,7 +311,7 @@ Running on runner-8a2f473d-project-1796893-concurrent-0 via runner-8a2f473d-mach
 ++ export GITLAB_USER_ID=42
 ++ GITLAB_USER_ID=42
 ++ export GITLAB_USER_EMAIL=user@example.com
-++ GITLAB_USER_EMAIL=axilleas@axilleas.me
+++ GITLAB_USER_EMAIL=user@example.com
 ++ export VERY_SECURE_VARIABLE=imaverysecurevariable
 ++ VERY_SECURE_VARIABLE=imaverysecurevariable
 ++ mkdir -p /builds/gitlab-examples/ci-debug-trace.tmp
@@ -352,7 +352,7 @@ Example values:
 export CI_JOB_ID="50"
 export CI_COMMIT_SHA="1ecfd275763eff1d6b4844ea3168962458c9f27a"
 export CI_COMMIT_REF_NAME="master"
-export CI_REPOSITORY="https://gitab-ci-token:abcde-1234ABCD5678ef@example.com/gitlab-org/gitlab-ce.git"
+export CI_REPOSITORY_URL="https://gitlab-ci-token:abcde-1234ABCD5678ef@example.com/gitlab-org/gitlab-ce.git"
 export CI_COMMIT_TAG="1.0.0"
 export CI_JOB_NAME="spec:other"
 export CI_JOB_STAGE="test"

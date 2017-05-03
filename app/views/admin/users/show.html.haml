@@ -123,6 +123,8 @@
             %strong
               = link_to @user.created_by.name, [:admin, @user.created_by]
 
+        = render partial: "namespaces/shared_runner_status", locals: { namespace: @user.namespace }
+
   .col-md-6
     - unless @user == current_user
       - unless @user.confirmed?

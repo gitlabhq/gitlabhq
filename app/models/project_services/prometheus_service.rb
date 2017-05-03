@@ -31,7 +31,7 @@ class PrometheusService < MonitoringService
 
   def help
     <<-MD.strip_heredoc
-      Retrieves the Kubernetes node metrics `container_cpu_usage_seconds_total` 
+      Retrieves the Kubernetes node metrics `container_cpu_usage_seconds_total`
       and `container_memory_usage_bytes` from the configured Prometheus server.
 
       If you are not using [Auto-Deploy](https://docs.gitlab.com/ee/ci/autodeploy/index.html)
@@ -74,8 +74,8 @@ class PrometheusService < MonitoringService
   def calculate_reactive_cache(environment_slug)
     return unless active? && project && !project.pending_delete?
 
-    memory_query = %{(sum(container_memory_usage_bytes{container_name="app",environment="#{environment_slug}"}) / count(container_memory_usage_bytes{container_name="app",environment="#{environment_slug}"})) /1024/1024}
-    cpu_query = %{sum(rate(container_cpu_usage_seconds_total{container_name="app",environment="#{environment_slug}"}[2m])) / count(container_cpu_usage_seconds_total{container_name="app",environment="#{environment_slug}"}) * 100}
+    memory_query = %{(sum(container_memory_usage_bytes{container_name!="POD",environment="#{environment_slug}"}) / count(container_memory_usage_bytes{container_name!="POD",environment="#{environment_slug}"})) /1024/1024}
+    cpu_query = %{sum(rate(container_cpu_usage_seconds_total{container_name!="POD",environment="#{environment_slug}"}[2m])) / count(container_cpu_usage_seconds_total{container_name!="POD",environment="#{environment_slug}"}) * 100}
 
     {
       success: true,

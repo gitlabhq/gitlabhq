@@ -41,7 +41,7 @@ module Boards
       end
 
       def set_state
-        params[:state] = list && list.done? ? 'closed' : 'opened'
+        params[:state] = list && list.closed? ? 'closed' : 'opened'
       end
 
       def board_label_ids

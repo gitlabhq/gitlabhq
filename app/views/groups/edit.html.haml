@@ -29,7 +29,7 @@
         .col-sm-offset-2.col-sm-10
           = render 'shared/allow_request_access', form: f
 
-      = render 'group_lfs_settings', f: f
+      = render 'group_admin_settings', f: f
 
       .form-group
         %hr
@@ -62,4 +62,4 @@
       %strong Removed group can not be restored!
 
     .form-actions
-      = link_to 'Remove Group', @group, data: {confirm: 'Removed group can not be restored! Are you sure?'}, method: :delete, class: "btn btn-remove"
+      = link_to 'Remove group', @group, data: {confirm: 'Removed group can not be restored! Are you sure?'}, method: :delete, class: "btn btn-remove"

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe MergeRequests::MergeWhenPipelineSucceedsService do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
   let(:mr_merge_if_green_enabled) do
     create(:merge_request, merge_when_pipeline_succeeds: true, merge_user: user,

@@ -45,7 +45,7 @@ describe 'Pipeline', :feature, :js do
     include_context 'pipeline builds'
 
     let(:project) { create(:project) }
-    let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id) }
+    let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id, user: user) }
 
     before { visit namespace_project_pipeline_path(project.namespace, project, pipeline) }
 

@@ -31,7 +31,7 @@ class Milestone < ActiveRecord::Base
 
   validates :title, presence: true, uniqueness: { scope: :project_id }
   validates :project, presence: true
-  validate :start_date_should_be_less_than_due_date, if: Proc.new { |m| m.start_date.present? && m.due_date.present? }
+  validate :start_date_should_be_less_than_due_date, if: proc { |m| m.start_date.present? && m.due_date.present? }
 
   strip_attributes :title
 
@@ -108,8 +108,24 @@ class Milestone < ActiveRecord::Base
     end
   end
 
+<<<<<<< HEAD
   def participants
     User.joins(assigned_issues: :milestone).where("milestones.id = ?", id)
+=======
+  def self.sort(method)
+    case method.to_s
+    when 'due_date_asc'
+      reorder(Gitlab::Database.nulls_last_order('due_date', 'ASC'))
+    when 'due_date_desc'
+      reorder(Gitlab::Database.nulls_last_order('due_date', 'DESC'))
+    when 'start_date_asc'
+      reorder(Gitlab::Database.nulls_last_order('start_date', 'ASC'))
+    when 'start_date_desc'
+      reorder(Gitlab::Database.nulls_last_order('start_date', 'DESC'))
+    else
+      order_by(method)
+    end
+>>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0
   end
 
   ##
@@ -141,10 +157,6 @@ class Milestone < ActiveRecord::Base
 
   def can_be_closed?
     active? && issues.opened.count.zero?
-  end
-
-  def is_empty?(user = nil)
-    total_items_count(user).zero?
   end
 
   def author_id

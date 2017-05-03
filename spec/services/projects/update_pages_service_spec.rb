@@ -1,9 +1,9 @@
 require "spec_helper"
 
 describe Projects::UpdatePagesService do
-  let(:project) { create :project }
-  let(:pipeline) { create :ci_pipeline, project: project, sha: project.commit('HEAD').sha }
-  let(:build) { create :ci_build, pipeline: pipeline, ref: 'HEAD' }
+  let(:project) { create(:project, :repository) }
+  let(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit('HEAD').sha) }
+  let(:build) { create(:ci_build, pipeline: pipeline, ref: 'HEAD') }
   let(:invalid_file) { fixture_file_upload(Rails.root + 'spec/fixtures/dk.png') }
 
   subject { described_class.new(project, build) }

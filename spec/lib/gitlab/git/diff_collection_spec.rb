@@ -24,7 +24,7 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
     it { is_expected.to be_kind_of ::Array }
   end
 
-  describe :decorate! do
+  describe '#decorate!' do
     let(:file_count) { 3 }
 
     it 'modifies the array in place' do
@@ -302,7 +302,7 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
     end
   end
 
-  describe :each do
+  describe '#each' do
     context 'when diff are too large' do
       let(:collection) do
         Gitlab::Git::DiffCollection.new([{ diff: 'a' * 204800 }])

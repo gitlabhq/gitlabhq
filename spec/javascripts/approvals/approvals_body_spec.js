@@ -58,7 +58,7 @@ require('~/merge_request_widget/approvals/components/approvals_body');
           expect(this.approvalsBody.approvalsRequiredStringified).toBe(correctText);
         });
 
-        it('should display the correct string for 2 possible approver', function (done) {
+        it('should display the correct string for 2 possible approvers', function (done) {
           this.approvalsBody.approvalsLeft = 2;
           this.approvalsBody.suggestedApprovers.push({ name: 'Approver 2' });
 
@@ -81,7 +81,6 @@ require('~/merge_request_widget/approvals/components/approvals_body');
         });
 
         it('should display the correct string for 2 possible approver names', function (done) {
-          this.approvalsBody.approvalsLeft = 2;
           this.approvalsBody.suggestedApprovers.push({ name: 'Approver 2' });
 
           Vue.nextTick(() => {
@@ -92,12 +91,23 @@ require('~/merge_request_widget/approvals/components/approvals_body');
         });
 
         it('should display the correct string for 3 possible approver names', function (done) {
+          this.approvalsBody.suggestedApprovers.push({ name: 'Approver 2' });
+          this.approvalsBody.suggestedApprovers.push({ name: 'Approver 3' });
+
+          Vue.nextTick(() => {
+            const correctText = 'Approver 1, Approver 2, or Approver 3';
+            expect(this.approvalsBody.approverNamesStringified).toBe(correctText);
+            done();
+          });
+        });
+
+        it('should join the names with "and" when all of the remaining approvers have to approve the MR', function (done) {
           this.approvalsBody.approvalsLeft = 3;
           this.approvalsBody.suggestedApprovers.push({ name: 'Approver 2' });
           this.approvalsBody.suggestedApprovers.push({ name: 'Approver 3' });
 
           Vue.nextTick(() => {
-            const correctText = 'Approver 1, Approver 2 or Approver 3';
+            const correctText = 'Approver 1, Approver 2, and Approver 3';
             expect(this.approvalsBody.approverNamesStringified).toBe(correctText);
             done();
           });

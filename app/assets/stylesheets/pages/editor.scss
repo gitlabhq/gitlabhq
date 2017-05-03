@@ -1,4 +1,13 @@
 .file-editor {
+  .nav-links {
+    border-top: 1px solid $border-color;
+    border-right: 1px solid $border-color;
+    border-left: 1px solid $border-color;
+    border-bottom: none;
+    border-radius: 2px;
+    background: $gray-normal;
+  }
+
   #editor {
     border: none;
     border-radius: 0;
@@ -72,11 +81,7 @@
   }
 
   .encoding-selector,
-  .soft-wrap-toggle,
-  .license-selector,
-  .gitignore-selector,
-  .gitlab-ci-yml-selector,
-  .dockerfile-selector {
+  .soft-wrap-toggle {
     display: inline-block;
     vertical-align: top;
     font-family: $regular_font;
@@ -103,27 +108,8 @@
       }
     }
   }
-
-  .gitignore-selector,
-  .license-selector,
-  .gitlab-ci-yml-selector,
-  .dockerfile-selector {
-    .dropdown {
-      line-height: 21px;
-    }
-
-    .dropdown-menu-toggle {
-      vertical-align: top;
-      width: 220px;
-    }
-  }
-
-  .gitlab-ci-yml-selector {
-    .dropdown-menu-toggle {
-      width: 250px;
-    }
-  }
 }
+
 
 @media(max-width: $screen-xs-max){
   .file-editor {
@@ -149,10 +135,7 @@
         margin: 3px 0;
       }
 
-      .encoding-selector,
-      .license-selector,
-      .gitignore-selector,
-      .gitlab-ci-yml-selector {
+      .encoding-selector {
         display: block;
         margin: 3px 0;
 
@@ -161,5 +144,106 @@
         }
       }
     }
+  }
+}
+
+.blob-new-page-title,
+.blob-edit-page-title {
+  margin: 19px 0 21px;
+  vertical-align: top;
+  display: inline-block;
+
+  @media(max-width: $screen-sm-max) {
+    display: block;
+    margin: 19px 0 12px;
+  }
+}
+
+.template-selectors-menu {
+  display: inline-block;
+  vertical-align: top;
+  margin: 14px 0 0 16px;
+  padding: 0 0 0 14px;
+  border-left: 1px solid $border-color;
+
+  @media(max-width: $screen-sm-max) {
+    display: block;
+    width: 100%;
+    margin: 5px 0;
+    padding: 0;
+    border-left: none;
+  }
+}
+
+.templates-selectors-label {
+  display: inline-block;
+  vertical-align: top;
+  margin-top: 6px;
+  line-height: 21px;
+
+  @media(max-width: $screen-sm-max) {
+    display: block;
+    margin: 5px 0;
+  }
+}
+
+.template-selector-dropdowns-wrap {
+  display: inline-block;
+  margin-left: 8px;
+  vertical-align: top;
+  margin: 5px 0 0 8px;
+
+  @media(max-width: $screen-sm-max) {
+    display: block;
+    width: 100%;
+    margin: 0 0 16px;
+  }
+
+  .license-selector,
+  .gitignore-selector,
+  .gitlab-ci-yml-selector,
+  .dockerfile-selector,
+  .template-type-selector {
+    display: inline-block;
+    vertical-align: top;
+    font-family: $regular_font;
+    margin-top: -5px;
+
+    @media(max-width: $screen-sm-max) {
+      display: block;
+      width: 100%;
+      margin: 5px 0;
+    }
+
+    .dropdown {
+      line-height: 21px;
+    }
+
+    .dropdown-menu-toggle {
+      width: 250px;
+      vertical-align: top;
+
+      @media(max-width: $screen-sm-max) {
+        display: block;
+        width: 100%;
+        margin: 5px 0;
+      }
+    }
+
+  }
+}
+
+.template-selectors-undo-menu {
+  display: inline-block;
+  margin: 7px 0 0 10px;
+
+  @media(max-width: $screen-sm-max) {
+    display: block;
+    width: 100%;
+    margin: 20px 0;
+  }
+
+  button {
+    margin: -4px 0 0 15px;
   }
 }

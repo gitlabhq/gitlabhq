@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-describe API::Internal, api: true  do
-  include ApiHelpers
+describe API::Internal do
   let(:user) { create(:user) }
   let(:key) { create(:key, user: user) }
   let(:project) { create(:project, :repository) }
@@ -196,8 +195,6 @@ describe API::Internal, api: true  do
   end
 
   describe "POST /internal/allowed", :redis do
-    include UserActivitiesHelpers
-
     context "access granted" do
       before do
         project.team << [user, :developer]
@@ -208,6 +205,22 @@ describe API::Internal, api: true  do
         Timecop.return
       end
 
+      context 'with env passed as a JSON' do
+        it 'sets env in RequestStore' do
+          expect(Gitlab::Git::Env).to receive(:set).with({
+            'GIT_OBJECT_DIRECTORY' => 'foo',
+            'GIT_ALTERNATE_OBJECT_DIRECTORIES' => 'bar'
+          })
+
+          push(key, project.wiki, env: {
+            GIT_OBJECT_DIRECTORY: 'foo',
+            GIT_ALTERNATE_OBJECT_DIRECTORIES: 'bar'
+          }.to_json)
+
+          expect(response).to have_http_status(200)
+        end
+      end
+
       context "git push with project.wiki" do
         it 'responds with success' do
           push(key, project.wiki)
@@ -215,7 +228,7 @@ describe API::Internal, api: true  do
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq(project.wiki.repository.path_to_repo)
-          expect(user_score).to be_zero
+          expect(user).not_to have_an_activity_record
         end
       end
 
@@ -226,7 +239,7 @@ describe API::Internal, api: true  do
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq(project.wiki.repository.path_to_repo)
-          expect(user_score).not_to be_zero
+          expect(user).to have_an_activity_record
         end
       end
 
@@ -237,7 +250,7 @@ describe API::Internal, api: true  do
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
-          expect(user_score).not_to be_zero
+          expect(user).to have_an_activity_record
         end
       end
 
@@ -248,7 +261,7 @@ describe API::Internal, api: true  do
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
-          expect(user_score).to be_zero
+          expect(user).not_to have_an_activity_record
         end
 
         context 'project as /namespace/project' do
@@ -284,7 +297,7 @@ describe API::Internal, api: true  do
 
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_falsey
-          expect(user_score).to be_zero
+          expect(user).not_to have_an_activity_record
         end
       end
 
@@ -294,7 +307,7 @@ describe API::Internal, api: true  do
 
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_falsey
-          expect(user_score).to be_zero
+          expect(user).not_to have_an_activity_record
         end
       end
     end
@@ -312,7 +325,7 @@ describe API::Internal, api: true  do
 
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_falsey
-          expect(user_score).to be_zero
+          expect(user).not_to have_an_activity_record
         end
       end
 
@@ -322,7 +335,7 @@ describe API::Internal, api: true  do
 
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_falsey
-          expect(user_score).to be_zero
+          expect(user).not_to have_an_activity_record
         end
       end
     end
@@ -487,12 +500,12 @@ describe API::Internal, api: true  do
     end
 
     before do
-      allow(Gitlab.config.gitaly).to receive(:socket_path).and_return('path/to/gitaly.socket')
+      allow(Gitlab.config.gitaly).to receive(:enabled).and_return(true)
     end
 
     it "calls the Gitaly client if it's enabled" do
       expect_any_instance_of(Gitlab::GitalyClient::Notifications).
-        to receive(:post_receive).with(project.repository.path)
+        to receive(:post_receive)
 
       post api("/internal/notify_post_receive"), valid_params
 
@@ -501,7 +514,7 @@ describe API::Internal, api: true  do
 
     it "returns 500 if the gitaly call fails" do
       expect_any_instance_of(Gitlab::GitalyClient::Notifications).
-        to receive(:post_receive).with(project.repository.path).and_raise(GRPC::Unavailable)
+        to receive(:post_receive).and_raise(GRPC::Unavailable)
 
       post api("/internal/notify_post_receive"), valid_params
 
@@ -526,7 +539,7 @@ describe API::Internal, api: true  do
     )
   end
 
-  def push(key, project, protocol = 'ssh')
+  def push(key, project, protocol = 'ssh', env: nil)
     post(
       api("/internal/allowed"),
       changes: 'd14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master',
@@ -534,7 +547,8 @@ describe API::Internal, api: true  do
       project: project.repository.path_to_repo,
       action: 'git-receive-pack',
       secret_token: secret_token,
-      protocol: protocol
+      protocol: protocol,
+      env: env
     )
   end
 

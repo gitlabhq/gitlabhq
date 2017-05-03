@@ -21,6 +21,10 @@ describe('Pipelines Table', () => {
       }).$mount();
     });
 
+    afterEach(() => {
+      component.$destroy();
+    });
+
     it('should render a table', () => {
       expect(component.$el).toEqual('TABLE');
     });

@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe 'Issue Boards add issue modal', :feature, :js do
-  include WaitForAjax
   include WaitForVueResource
 
   let(:project) { create(:empty_project, :public) }
@@ -21,6 +20,20 @@ describe 'Issue Boards add issue modal', :feature, :js do
 
     visit namespace_project_board_path(project.namespace, project, board)
     wait_for_vue_resource
+  end
+
+  it 'resets filtered search state' do
+    visit namespace_project_board_path(project.namespace, project, board, search: 'testing')
+
+    wait_for_vue_resource
+
+    click_button('Add issues')
+
+    page.within('.add-issues-modal') do
+      expect(find('.form-control').value).to eq('')
+      expect(page).to have_selector('.clear-search', visible: false)
+      expect(find('.form-control')[:placeholder]).to eq('Search or filter results...')
+    end
   end
 
   context 'modal interaction' do

@@ -9,21 +9,20 @@
   }
 }
 
+.group-root-path {
+  max-width: 40vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: nowrap;
+}
+
 .content-list .group-name {
   font-weight: 600;
   color: $pages-group-name-color;
 }
 
 .group-row {
-  .stats {
-    float: right;
-    line-height: $list-text-height;
-    color: $gl-text-color;
-
-    span {
-      margin-right: 15px;
-    }
-  }
+  @include basic-list-stats;
 }
 
 .ldap-group-links {

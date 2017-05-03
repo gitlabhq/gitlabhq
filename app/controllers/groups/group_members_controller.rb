@@ -17,31 +17,11 @@ class Groups::GroupMembersController < Groups::ApplicationController
     @members = @members.search(params[:search]) if params[:search].present?
     @members = @members.sort(@sort)
     @members = @members.page(params[:page]).per(50)
+    @members.includes(:user)
 
     @requesters = AccessRequestsFinder.new(@group).execute(current_user)
 
     @group_member = @group.group_members.new
-  end
-
-  def create
-    if params[:user_ids].blank?
-      return redirect_to(group_group_members_path(@group), alert: 'No users specified.')
-    end
-
-    @group.add_users(
-      params[:user_ids].split(','),
-      params[:access_level],
-      current_user: current_user,
-      expires_at: params[:expires_at]
-    )
-
-    group_members = @group.group_members.where(user_id: params[:user_ids].split(','))
-
-    group_members.each do |group_member|
-      log_audit_event(group_member, action: :create)
-    end
-
-    redirect_to group_group_members_path(@group), notice: 'Users were successfully added.'
   end
 
   def update
@@ -53,17 +33,6 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
     if @group_member.update_attributes(member_params)
       log_audit_event(@group_member, action: :update, old_access_level: old_access_level)
-    end
-  end
-
-  def destroy
-    member = Members::DestroyService.new(@group, current_user, id: params[:id]).execute(:all)
-
-    log_audit_event(member, action: :destroy)
-
-    respond_to do |format|
-      format.html { redirect_to group_group_members_path(@group), notice: 'User was successfully removed from group.' }
-      format.js { head :ok }
     end
   end
 

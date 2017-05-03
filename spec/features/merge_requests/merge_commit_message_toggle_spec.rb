@@ -41,7 +41,7 @@ feature 'Clicking toggle commit message link', feature: true, js: true do
     visit namespace_project_merge_request_path(project.namespace, project, merge_request)
 
     expect(textbox).not_to be_visible
-    click_link "Modify commit message"
+    click_button "Modify commit message"
     expect(textbox).to be_visible
   end
 

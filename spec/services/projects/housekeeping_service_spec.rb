@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe Projects::HousekeepingService do
-  subject { Projects::HousekeepingService.new(project) }
-  let(:project) { create :project }
+  subject { described_class.new(project) }
+  let(:project) { create(:project, :repository) }
 
   before do
     project.reset_pushes_since_gc

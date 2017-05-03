@@ -10,7 +10,7 @@ GET /projects/:id/deployments
 
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
-| `id`      | integer | yes      | The ID of a project |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/deployments"
@@ -48,7 +48,6 @@ Example of response
         "bio": null,
         "created_at": "2016-08-11T07:09:20.351Z",
         "id": 1,
-        "is_admin": true,
         "linkedin": "",
         "location": null,
         "name": "Administrator",
@@ -106,7 +105,6 @@ Example of response
         "bio": null,
         "created_at": "2016-08-11T07:09:20.351Z",
         "id": 1,
-        "is_admin": true,
         "linkedin": "",
         "location": null,
         "name": "Administrator",
@@ -147,7 +145,7 @@ GET /projects/:id/deployments/:deployment_id
 
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
-| `id`      | integer | yes      | The ID of a project |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `deployment_id` | integer | yes      | The ID of the deployment |
 
 ```bash
@@ -195,7 +193,6 @@ Example of response
       "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
       "web_url": "http://localhost:3000/root",
       "created_at": "2016-08-11T07:09:20.351Z",
-      "is_admin": true,
       "bio": null,
       "location": null,
       "skype": "",

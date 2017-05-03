@@ -14,6 +14,7 @@ module Issuable
   include Awardable
   include Taskable
   include TimeTrackable
+  include Importable
 
   # This object is used to gather issuable meta data for displaying
   # upvotes, downvotes, notes and closing merge requests count for issues and merge requests
@@ -22,7 +23,7 @@ module Issuable
 
   included do
     cache_markdown_field :title, pipeline: :single_line
-    cache_markdown_field :description
+    cache_markdown_field :description, issuable_state_filter_enabled: true
 
     belongs_to :author, class_name: "User"
     belongs_to :updated_by, class_name: "User"
@@ -96,7 +97,12 @@ module Issuable
 
     acts_as_paranoid
 
+<<<<<<< HEAD
     after_save :record_metrics
+=======
+    after_save :update_assignee_cache_counts, if: :assignee_id_changed?
+    after_save :record_metrics, unless: :imported?
+>>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0
 
     # We want to use optimistic lock for cases when only title or description are involved
     # http://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html
@@ -289,6 +295,7 @@ module Issuable
     self.class.to_ability_name
   end
 
+<<<<<<< HEAD
   # Convert this Issuable class name to a format usable by notifications.
   #
   # Examples:
@@ -298,6 +305,14 @@ module Issuable
 
   def human_class_name
     @human_class_name ||= self.class.name.titleize.downcase
+=======
+  # Returns a Hash of attributes to be used for Twitter card metadata
+  def card_attributes
+    {
+      'Author'   => author.try(:name),
+      'Assignee' => assignee.try(:name)
+    }
+>>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0
   end
 
   def notes_with_associations

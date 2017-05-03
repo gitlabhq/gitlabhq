@@ -1,25 +1,25 @@
 require 'spec_helper'
 Dir["./spec/features/protected_branches/*.rb"].sort.each { |f| require f }
 
-feature 'Protected Branches', feature: true, js: true do
-  include WaitForAjax
-
+feature 'Projected Branches', feature: true, js: true do
   let(:user) { create(:user, :admin) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
   before { login_as(user) }
 
-  def set_allowed_to(operation, option = 'Masters')
-    find(".js-allowed-to-#{operation}").click
-    wait_for_ajax
+  def set_allowed_to(operation, option = 'Masters', form: '#new_protected_branch')
+    within form do
+      find(".js-allowed-to-#{operation}").trigger('click')
+      wait_for_ajax
 
-    Array(option).each { |opt| click_on(opt) }
+      Array(option).each { |opt| click_on(opt) }
 
-    find(".js-allowed-to-#{operation}").click # needed to submit form in some cases
+      find(".js-allowed-to-#{operation}").trigger('click') # needed to submit form in some cases
+    end
   end
 
   def set_protected_branch_name(branch_name)
-    find(".js-protected-branch-select").click
+    find(".js-protected-branch-select").trigger('click')
     find(".dropdown-input-field").set(branch_name)
     click_on("Create wildcard #{branch_name}")
   end

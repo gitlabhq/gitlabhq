@@ -1,80 +1,43 @@
 require 'spec_helper'
 
 describe Banzai::Renderer do
-  def expect_render(project = :project)
-    expected_context = { project: project }
-    expect(renderer).to receive(:cacheless_render) { :html }.with(:markdown, expected_context)
-  end
+  def fake_object(fresh:)
+    object = double('object')
 
-  def expect_cache_update
-    expect(object).to receive(:update_column).with("field_html", :html)
-  end
-
-  def fake_object(*features)
-    markdown = :markdown if features.include?(:markdown)
-    html = :html if features.include?(:html)
-
-    object = double(
-      "object",
-      banzai_render_context: { project: :project },
-      field: markdown,
-      field_html: html
-    )
-
-    allow(object).to receive(:markdown_cache_field_for).with(:field).and_return("field_html")
-    allow(object).to receive(:new_record?).and_return(features.include?(:new))
-    allow(object).to receive(:destroyed?).and_return(features.include?(:destroyed))
+    allow(object).to receive(:cached_html_up_to_date?).with(:field).and_return(fresh)
+    allow(object).to receive(:cached_html_for).with(:field).and_return('field_html')
 
     object
   end
 
-  describe "#render_field" do
-    let(:renderer) { Banzai::Renderer }
-    let(:subject) { renderer.render_field(object, :field) }
+  describe '#render_field' do
+    let(:renderer) { described_class }
+    subject { renderer.render_field(object, :field) }
 
-    context "with an empty cache" do
-      let(:object) { fake_object(:markdown) }
-      it "caches and returns the result" do
-        expect_render
-        expect_cache_update
-        expect(subject).to eq(:html)
+    context 'with a stale cache' do
+      let(:object) { fake_object(fresh: false) }
+
+      it 'caches and returns the result' do
+        expect(object).to receive(:refresh_markdown_cache!).with(do_update: true)
+
+        is_expected.to eq('field_html')
       end
 
       it "skips database caching on a Geo secondary" do
         allow(Gitlab::Geo).to receive(:secondary?).and_return(true)
-        expect_render
-        expect_cache_update.never
-        expect(subject).to eq(:html)
+        expect(object).to receive(:refresh_markdown_cache!).with(do_update: false)
+
+        is_expected.to eq('field_html')
       end
     end
 
-    context "with a filled cache" do
-      let(:object) { fake_object(:markdown, :html) }
+    context 'with an up-to-date cache' do
+      let(:object) { fake_object(fresh: true) }
 
-      it "uses the cache" do
-        expect_render.never
-        expect_cache_update.never
-        should eq(:html)
-      end
-    end
+      it 'uses the cache' do
+        expect(object).to receive(:refresh_markdown_cache!).never
 
-    context "new object" do
-      let(:object) { fake_object(:new, :markdown) }
-
-      it "doesn't cache the result" do
-        expect_render
-        expect_cache_update.never
-        expect(subject).to eq(:html)
-      end
-    end
-
-    context "destroyed object" do
-      let(:object) { fake_object(:destroyed, :markdown) }
-
-      it "doesn't cache the result" do
-        expect_render
-        expect_cache_update.never
-        expect(subject).to eq(:html)
+        is_expected.to eq('field_html')
       end
     end
   end

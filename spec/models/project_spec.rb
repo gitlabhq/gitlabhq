@@ -22,6 +22,7 @@ describe Project, models: true do
     it { is_expected.to have_many(:protected_branches).dependent(:destroy) }
     it { is_expected.to have_one(:forked_project_link).dependent(:destroy) }
     it { is_expected.to have_one(:slack_service).dependent(:destroy) }
+    it { is_expected.to have_one(:microsoft_teams_service).dependent(:destroy) }
     it { is_expected.to have_one(:mattermost_service).dependent(:destroy) }
     it { is_expected.to have_one(:pushover_service).dependent(:destroy) }
     it { is_expected.to have_one(:asana_service).dependent(:destroy) }
@@ -57,6 +58,7 @@ describe Project, models: true do
     it { is_expected.to have_many(:builds) }
     it { is_expected.to have_many(:runner_projects) }
     it { is_expected.to have_many(:runners) }
+    it { is_expected.to have_many(:active_runners) }
     it { is_expected.to have_many(:variables) }
     it { is_expected.to have_many(:triggers) }
     it { is_expected.to have_many(:pages_domains) }
@@ -193,6 +195,21 @@ describe Project, models: true do
       end
     end
 
+    context '#mark_stuck_remote_mirrors_as_failed!' do
+      it 'fails stuck remote mirrors' do
+        project = create(:project, :remote_mirror)
+
+        project.remote_mirrors.first.update_attributes(
+          update_status: :started,
+          last_update_at: 2.days.ago
+        )
+
+        expect do
+          project.mark_stuck_remote_mirrors_as_failed!
+        end.to change { project.remote_mirrors.stuck.count }.from(1).to(0)
+      end
+    end
+
     context 'mirror' do
       subject { build(:project, mirror: true) }
 
@@ -261,6 +278,34 @@ describe Project, models: true do
 
       it 'contains errors related to the project being deleted' do
         expect(new_project.errors.full_messages.first).to eq('The project is still being deleted. Please try again later.')
+      end
+    end
+
+    describe 'path validation' do
+      it 'allows paths reserved on the root namespace' do
+        project = build(:project, path: 'api')
+
+        expect(project).to be_valid
+      end
+
+      it 'rejects paths reserved on another level' do
+        project = build(:project, path: 'tree')
+
+        expect(project).not_to be_valid
+      end
+
+      it 'rejects nested paths' do
+        parent = create(:group, :nested, path: 'environments')
+        project = build(:project, path: 'folders', namespace: parent)
+
+        expect(project).not_to be_valid
+      end
+
+      it 'allows a reserved group name' do
+        parent = create(:group)
+        project = build(:project, path: 'avatar', namespace: parent)
+
+        expect(project).to be_valid
       end
     end
   end
@@ -846,25 +891,6 @@ describe Project, models: true do
     end
   end
 
-  describe '#open_branches' do
-    let(:project) { create(:project, :repository) }
-
-    before do
-      project.protected_branches.create(name: 'master')
-    end
-
-    it { expect(project.open_branches.map(&:name)).to include('feature') }
-    it { expect(project.open_branches.map(&:name)).not_to include('master') }
-
-    it "includes branches matching a protected branch wildcard" do
-      expect(project.open_branches.map(&:name)).to include('feature')
-
-      create(:protected_branch, name: 'feat*', project: project)
-
-      expect(Project.find(project.id).open_branches.map(&:name)).to include('feature')
-    end
-  end
-
   describe '#star_count' do
     it 'counts stars from multiple users' do
       user1 = create :user
@@ -1376,11 +1402,12 @@ describe Project, models: true do
       # Project#gitlab_shell returns a new instance of Gitlab::Shell on every
       # call. This makes testing a bit easier.
       allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
-
       allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
     end
 
     it 'renames a repository' do
+      stub_container_registry_config(enabled: false)
+
       expect(gitlab_shell).to receive(:mv_repository).
         ordered.
         with(project.repository_storage_path, "#{project.namespace.full_path}/foo", "#{project.full_path}").
@@ -1404,10 +1431,13 @@ describe Project, models: true do
       project.rename_repo
     end
 
-    context 'container registry with tags' do
+    context 'container registry with images' do
+      let(:container_repository) { create(:container_repository) }
+
       before do
         stub_container_registry_config(enabled: true)
-        stub_container_registry_tags('tag')
+        stub_container_registry_tags(repository: :any, tags: ['tag'])
+        project.container_repositories << container_repository
       end
 
       subject { project.rename_repo }
@@ -1532,62 +1562,6 @@ describe Project, models: true do
     end
   end
 
-  describe '#protected_branch?' do
-    context 'existing project' do
-      let(:project) { create(:project, :repository) }
-
-      it 'returns true when the branch matches a protected branch via direct match' do
-        create(:protected_branch, project: project, name: "foo")
-
-        expect(project.protected_branch?('foo')).to eq(true)
-      end
-
-      it 'returns true when the branch matches a protected branch via wildcard match' do
-        create(:protected_branch, project: project, name: "production/*")
-
-        expect(project.protected_branch?('production/some-branch')).to eq(true)
-      end
-
-      it 'returns false when the branch does not match a protected branch via direct match' do
-        expect(project.protected_branch?('foo')).to eq(false)
-      end
-
-      it 'returns false when the branch does not match a protected branch via wildcard match' do
-        create(:protected_branch, project: project, name: "production/*")
-
-        expect(project.protected_branch?('staging/some-branch')).to eq(false)
-      end
-    end
-
-    context "new project" do
-      let(:project) { create(:empty_project) }
-
-      it 'returns false when default_protected_branch is unprotected' do
-        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_NONE)
-
-        expect(project.protected_branch?('master')).to be false
-      end
-
-      it 'returns false when default_protected_branch lets developers push' do
-        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
-
-        expect(project.protected_branch?('master')).to be false
-      end
-
-      it 'returns true when default_branch_protection does not let developers push but let developer merge branches' do
-        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
-
-        expect(project.protected_branch?('master')).to be true
-      end
-
-      it 'returns true when default_branch_protection is in full protection' do
-        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_FULL)
-
-        expect(project.protected_branch?('master')).to be true
-      end
-    end
-  end
-
   describe '#user_can_push_to_empty_repo?' do
     let(:project) { create(:empty_project) }
     let(:user)    { create(:user) }
@@ -1627,38 +1601,17 @@ describe Project, models: true do
     end
   end
 
-  describe '#container_registry_path_with_namespace' do
-    let(:project) { create(:empty_project, path: 'PROJECT') }
-
-    subject { project.container_registry_path_with_namespace }
-
-    it { is_expected.not_to eq(project.path_with_namespace) }
-    it { is_expected.to eq(project.path_with_namespace.downcase) }
-  end
-
-  describe '#container_registry_repository' do
+  describe '#container_registry_url' do
     let(:project) { create(:empty_project) }
 
-    before { stub_container_registry_config(enabled: true) }
-
-    subject { project.container_registry_repository }
-
-    it { is_expected.not_to be_nil }
-  end
-
-  describe '#container_registry_repository_url' do
-    let(:project) { create(:empty_project) }
-
-    subject { project.container_registry_repository_url }
+    subject { project.container_registry_url }
 
     before { stub_container_registry_config(**registry_settings) }
 
     context 'for enabled registry' do
       let(:registry_settings) do
-        {
-          enabled: true,
-          host_port: 'example.com',
-        }
+        { enabled: true,
+          host_port: 'example.com' }
       end
 
       it { is_expected.not_to be_nil }
@@ -1666,9 +1619,7 @@ describe Project, models: true do
 
     context 'for disabled registry' do
       let(:registry_settings) do
-        {
-          enabled: false
-        }
+        { enabled: false }
       end
 
       it { is_expected.to be_nil }
@@ -1678,28 +1629,60 @@ describe Project, models: true do
   describe '#has_container_registry_tags?' do
     let(:project) { create(:empty_project) }
 
-    subject { project.has_container_registry_tags? }
-
-    context 'for enabled registry' do
+    context 'when container registry is enabled' do
       before { stub_container_registry_config(enabled: true) }
 
-      context 'with tags' do
-        before { stub_container_registry_tags('test', 'test2') }
+      context 'when tags are present for multi-level registries' do
+        before do
+          create(:container_repository, project: project, name: 'image')
 
-        it { is_expected.to be_truthy }
+          stub_container_registry_tags(repository: /image/,
+                                       tags: %w[latest rc1])
+        end
+
+        it 'should have image tags' do
+          expect(project).to have_container_registry_tags
+        end
       end
 
-      context 'when no tags' do
-        before { stub_container_registry_tags }
+      context 'when tags are present for root repository' do
+        before do
+          stub_container_registry_tags(repository: project.full_path,
+                                       tags: %w[latest rc1 pre1])
+        end
 
-        it { is_expected.to be_falsey }
+        it 'should have image tags' do
+          expect(project).to have_container_registry_tags
+        end
+      end
+
+      context 'when there are no tags at all' do
+        before do
+          stub_container_registry_tags(repository: :any, tags: [])
+        end
+
+        it 'should not have image tags' do
+          expect(project).not_to have_container_registry_tags
+        end
       end
     end
 
-    context 'for disabled registry' do
+    context 'when container registry is disabled' do
       before { stub_container_registry_config(enabled: false) }
 
-      it { is_expected.to be_falsey }
+      it 'should not have image tags' do
+        expect(project).not_to have_container_registry_tags
+      end
+
+      it 'should not check root repository tags' do
+        expect(project).not_to receive(:full_path)
+        expect(project).not_to have_container_registry_tags
+      end
+
+      it 'should iterate through container repositories' do
+        expect(project).to receive(:container_repositories)
+        expect(project).not_to have_container_registry_tags
+      end
     end
   end
 
@@ -2081,6 +2064,19 @@ describe Project, models: true do
     end
   end
 
+  describe '#repository_and_lfs_size' do
+    let(:project) { create(:project) }
+    let(:size) { 50 }
+
+    before do
+      allow(project.statistics).to receive(:total_repository_size).and_return(size)
+    end
+
+    it 'returns the total repository and lfs size' do
+      expect(project.repository_and_lfs_size).to eq(size)
+    end
+  end
+
   describe '#approver_group_ids=' do
     let(:project) { create(:empty_project) }
 
@@ -2326,7 +2322,7 @@ describe Project, models: true do
   describe '#pipeline_status' do
     let(:project) { create(:project) }
     it 'builds a pipeline status' do
-      expect(project.pipeline_status).to be_a(Ci::PipelineStatus)
+      expect(project.pipeline_status).to be_a(Gitlab::Cache::Ci::ProjectPipelineStatus)
     end
 
     it 'hase a loaded pipeline status' do

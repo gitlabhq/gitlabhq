@@ -9,26 +9,38 @@ module Search
     end
 
     def execute
-      group = Group.find_by(id: params[:group_id]) if params[:group_id].present?
-      projects = ProjectsFinder.new.execute(current_user)
-
-      if group
-        projects = projects.inside_path(group.full_path)
-      end
-
       if current_application_settings.elasticsearch_search?
-        unless group
-          projects = current_user ? current_user.authorized_projects : Project.none
-        end
-
-        Gitlab::Elastic::SearchResults.new(
-          current_user,
-          params[:search],
-          projects.pluck(:id),
-          !group # Ignore public projects outside of the group if provided
-        )
+        Gitlab::Elastic::SearchResults.new(current_user, params[:search], elastic_projects, elastic_global)
       else
         Gitlab::SearchResults.new(current_user, projects, params[:search])
+      end
+    end
+
+    def projects
+      @projects ||= ProjectsFinder.new(current_user: current_user).execute
+    end
+
+    def elastic_projects
+      @elastic_projects ||=
+        if current_user.try(:admin_or_auditor?)
+          :any
+        elsif current_user
+          current_user.authorized_projects.pluck(:id)
+        else
+          []
+        end
+    end
+
+    def elastic_global
+      true
+    end
+
+    def scope
+      @scope ||= begin
+        allowed_scopes = %w[issues merge_requests milestones]
+        allowed_scopes += %w[wiki_blobs blobs commits] if current_application_settings.elasticsearch_search?
+
+        allowed_scopes.delete(params[:scope]) { 'projects' }
       end
     end
   end

@@ -1,13 +1,13 @@
 require 'spec_helper'
 
 describe SystemHooksService, services: true do
-  let(:user)          { create :user }
-  let(:project)       { create :project }
-  let(:project_member) { create :project_member }
-  let(:key)           { create(:key, user: user) }
-  let(:deploy_key)    { create(:key) }
-  let(:group)         { create(:group) }
-  let(:group_member)  { create(:group_member) }
+  let(:user)           { create(:user) }
+  let(:project)        { create(:empty_project) }
+  let(:project_member) { create(:project_member) }
+  let(:key)            { create(:key, user: user) }
+  let(:deploy_key)     { create(:key) }
+  let(:group)          { create(:group) }
+  let(:group_member)   { create(:group_member) }
 
   context 'event data' do
     it { expect(event_data(user, :create)).to include(:event_name, :name, :created_at, :updated_at, :email, :user_id, :username) }

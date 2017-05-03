@@ -1,6 +1,8 @@
 module Ci
   module API
     module Helpers
+      prepend EE::Ci::API::Helpers
+
       BUILD_TOKEN_HEADER = "HTTP_BUILD_TOKEN".freeze
       BUILD_TOKEN_PARAM = :token
       UPDATE_RUNNER_EVERY = 10 * 60
@@ -13,10 +15,14 @@ module Ci
         forbidden! unless current_runner
       end
 
-      def authenticate_build!(build)
+      def authenticate_build!
+        build = Ci::Build.find_by_id(params[:id])
+
         validate_build!(build) do
           forbidden! unless build_token_valid?(build)
         end
+
+        build
       end
 
       def validate_build!(build)

@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe Gitlab::Git::EncodingHelper do
   let(:ext_class) { Class.new { extend Gitlab::Git::EncodingHelper } }
-  let(:binary_string) { File.join(SEED_REPOSITORY_PATH, 'gitlab_logo.png') }
+  let(:binary_string) { File.join(SEED_STORAGE_PATH, 'gitlab_logo.png') }
 
   describe '#encode!' do
     [
@@ -55,6 +55,10 @@ describe Gitlab::Git::EncodingHelper do
         expect(r).to eq(xpect)
         expect(r.encoding.name).to eq('UTF-8')
       end
+    end
+
+    it 'returns empty string on conversion errors' do
+      expect { ext_class.encode_utf8('') }.not_to raise_error(ArgumentError)
     end
   end
 

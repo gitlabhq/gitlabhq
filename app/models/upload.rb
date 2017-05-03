@@ -27,6 +27,12 @@ class Upload < ActiveRecord::Base
     )
   end
 
+  def self.hexdigest(absolute_path)
+    return unless File.exist?(absolute_path)
+
+    Digest::SHA256.file(absolute_path).hexdigest
+  end
+
   def absolute_path
     return path unless relative_path?
 
@@ -36,7 +42,7 @@ class Upload < ActiveRecord::Base
   def calculate_checksum
     return unless exist?
 
-    self.checksum = Digest::SHA256.file(absolute_path).hexdigest
+    self.checksum = self.class.hexdigest(absolute_path)
   end
 
   def exist?

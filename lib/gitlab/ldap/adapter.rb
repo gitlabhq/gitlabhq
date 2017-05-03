@@ -5,7 +5,7 @@
 module Gitlab
   module LDAP
     class Adapter
-      prepend EE::Gitlab::LDAP::Adapter
+      prepend ::EE::Gitlab::LDAP::Adapter
 
       attr_reader :provider, :ldap
 

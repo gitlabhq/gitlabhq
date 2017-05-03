@@ -7,6 +7,8 @@ module SlashCommands
     # Takes a text and interprets the commands that are extracted from it.
     # Returns the content without commands, and hash of changes to be applied to a record.
     def execute(content, issuable)
+      return [content, {}] unless current_user.can?(:use_slash_commands)
+
       @issuable = issuable
       @updates = {}
 

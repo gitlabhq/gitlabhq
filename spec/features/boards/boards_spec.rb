@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe 'Issue Boards', feature: true, js: true do
-  include WaitForAjax
   include WaitForVueResource
   include DragTo
 
@@ -42,7 +41,7 @@ describe 'Issue Boards', feature: true, js: true do
     end
 
     it 'creates default lists' do
-      lists = ['To Do', 'Doing', 'Done']
+      lists = ['To Do', 'Doing', 'Closed']
 
       page.within(find('.board-blank-state')) do
         click_button('Add default lists')
@@ -65,7 +64,7 @@ describe 'Issue Boards', feature: true, js: true do
     let(:testing)     { create(:label, project: project, name: 'Testing') }
     let(:bug)         { create(:label, project: project, name: 'Bug') }
     let!(:backlog)    { create(:label, project: project, name: 'Backlog') }
-    let!(:done)       { create(:label, project: project, name: 'Done') }
+    let!(:closed)       { create(:label, project: project, name: 'Closed') }
     let!(:accepting)  { create(:label, project: project, name: 'Accepting Merge Requests') }
 
     let!(:list1) { create(:list, board: board, label: planning, position: 0) }
@@ -114,7 +113,7 @@ describe 'Issue Boards', feature: true, js: true do
       end
     end
 
-    it 'search done list' do
+    it 'search closed list' do
       find('.filtered-search').set(issue8.title)
       find('.filtered-search').native.send_keys(:enter)
 
@@ -186,13 +185,13 @@ describe 'Issue Boards', feature: true, js: true do
       end
     end
 
-    context 'done' do
-      it 'shows list of done issues' do
+    context 'closed' do
+      it 'shows list of closed issues' do
         wait_for_board_cards(3, 1)
         wait_for_ajax
       end
 
-      it 'moves issue to done' do
+      it 'moves issue to closed' do
         drag(list_from_index: 0, list_to_index: 2)
 
         wait_for_board_cards(1, 7)
@@ -205,7 +204,7 @@ describe 'Issue Boards', feature: true, js: true do
         expect(find('.board:nth-child(3)')).not_to have_content(planning.title)
       end
 
-      it 'removes all of the same issue to done' do
+      it 'removes all of the same issue to closed' do
         drag(list_from_index: 0, list_to_index: 2)
 
         wait_for_board_cards(1, 7)
@@ -252,7 +251,7 @@ describe 'Issue Boards', feature: true, js: true do
         expect(find('.board:nth-child(1)').all('.card').first).not_to have_content(planning.title)
       end
 
-      it 'issue moves from done' do
+      it 'issue moves from closed' do
         drag(list_from_index: 2, list_to_index: 1)
 
         expect(find('.board:nth-child(2)')).to have_content(issue8.title)
@@ -308,12 +307,12 @@ describe 'Issue Boards', feature: true, js: true do
           expect(page).to have_selector('.board', count: 4)
         end
 
-        it 'creates new list for Done label' do
+        it 'creates new list for Closed label' do
           click_button 'Add list'
           wait_for_ajax
 
           page.within('.dropdown-menu-issues-board-new') do
-            click_link done.title
+            click_link closed.title
           end
 
           wait_for_vue_resource
@@ -326,7 +325,7 @@ describe 'Issue Boards', feature: true, js: true do
           wait_for_ajax
 
           page.within('.dropdown-menu-issues-board-new') do
-            click_link done.title
+            click_link closed.title
           end
 
           wait_for_vue_resource
@@ -590,7 +589,7 @@ describe 'Issue Boards', feature: true, js: true do
   end
 
   def click_filter_link(link_text)
-    page.within('.filtered-search-input-container') do
+    page.within('.filtered-search-box') do
       expect(page).to have_button(link_text)
 
       click_button(link_text)

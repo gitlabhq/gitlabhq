@@ -1,8 +1,11 @@
 /* eslint-disable func-names, space-before-function-paren, one-var, no-var, prefer-rest-params, wrap-iife, quotes, max-len, one-var-declaration-per-line, vars-on-top, prefer-arrow-callback, consistent-return, comma-dangle, object-shorthand, no-shadow, no-unused-vars, no-else-return, no-self-compare, prefer-template, no-unused-expressions, no-lonely-if, yoda, prefer-spread, no-void, camelcase, no-param-reassign */
 /* global Issuable */
 
+<<<<<<< HEAD
 import eventHub from './sidebar/event_hub';
 
+=======
+>>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0
 (function() {
   var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; },
     slice = [].slice;
@@ -34,6 +37,7 @@ import eventHub from './sidebar/event_hub';
           var $block, $collapsedSidebar, $dropdown, $loading, $selectbox, $value, abilityName, assignTo, assigneeTemplate, collapsedAssigneeTemplate, defaultLabel, firstUser, issueURL, selectedId, showAnyUser, showNullUser, showMenuAbove;
           $dropdown = $(dropdown);
           options.projectId = $dropdown.data('project-id');
+          options.groupId = $dropdown.data('group-id');
           options.showCurrentUser = $dropdown.data('current-user');
           options.todoFilter = $dropdown.data('todo-filter');
           options.todoStateFilter = $dropdown.data('todo-state-filter');
@@ -52,6 +56,7 @@ import eventHub from './sidebar/event_hub';
           $collapsedSidebar = $block.find('.sidebar-collapsed-user');
           $loading = $block.find('.block-loading').fadeOut();
 
+<<<<<<< HEAD
           const assignYourself = function () {
             const unassignedSelected = $dropdown.closest('.selectbox')
               .find(`input[name='${$dropdown.data('field-name')}'][value=0]`);
@@ -114,14 +119,35 @@ import eventHub from './sidebar/event_hub';
             } else {
               return `${firstUser.name} + ${selectedUsers.length - 1} more`;
             }
+=======
+          var updateIssueBoardsIssue = function () {
+            $loading.removeClass('hidden').fadeIn();
+            gl.issueBoards.BoardsStore.detail.issue.update($dropdown.attr('data-issue-update'))
+              .then(function () {
+                $loading.fadeOut();
+              })
+              .catch(function () {
+                $loading.fadeOut();
+              });
+>>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0
           };
 
           $('.assign-to-me-link').on('click', (e) => {
             e.preventDefault();
             $(e.currentTarget).hide();
 
+<<<<<<< HEAD
             if ($dropdown.data('multiSelect')) {
               assignYourself();
+=======
+            if ($dropdown.hasClass('js-issue-board-sidebar')) {
+              gl.issueBoards.boardStoreIssueSet('assignee', new ListUser({
+                id: _this.currentUser.id,
+                username: _this.currentUser.username,
+                name: _this.currentUser.name,
+                avatar_url: _this.currentUser.avatar_url
+              }));
+>>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0
 
               const currentUserInfo = $dropdown.data('currentUserInfo');
               $dropdown.find('.dropdown-toggle-text').text(getMultiSelectDropdownTitle(currentUserInfo)).removeClass('is-default');
@@ -403,7 +429,24 @@ import eventHub from './sidebar/event_hub';
                 return Issuable.filterResults($dropdown.closest('form'));
               } else if ($dropdown.hasClass('js-filter-submit')) {
                 return $dropdown.closest('form').submit();
+<<<<<<< HEAD
               } else if (!$dropdown.hasClass('js-multiselect')) {
+=======
+              } else if ($dropdown.hasClass('js-issue-board-sidebar')) {
+                if (user.id) {
+                  gl.issueBoards.boardStoreIssueSet('assignee', new ListUser({
+                    id: user.id,
+                    username: user.username,
+                    name: user.name,
+                    avatar_url: user.avatar_url
+                  }));
+                } else {
+                  gl.issueBoards.boardStoreIssueDelete('assignee');
+                }
+
+                updateIssueBoardsIssue();
+              } else {
+>>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0
                 selected = $dropdown.closest('.selectbox').find("input[name='" + ($dropdown.data('field-name')) + "']").val();
                 return assignTo(selected);
               }
@@ -580,7 +623,7 @@ import eventHub from './sidebar/event_hub';
       } else {
         avatar = gon.default_avatar_url;
       }
-      return "<div class='user-result " + (!user.username ? 'no-username' : void 0) + "'> <div class='user-image'><img class='avatar s24' src='" + avatar + "'></div> <div class='user-name'>" + user.name + "</div> <div class='user-username'>" + (user.username || "") + "</div> </div>";
+      return "<div class='user-result " + (!user.username ? 'no-username' : void 0) + "'> <div class='user-image'><img class='avatar s40' src='" + avatar + "'></div> <div><div class='user-name'>" + user.name + "</div> <div class='user-username'>" + (user.username || "") + "</div> </div> </div>";
     };
 
     UsersSelect.prototype.formatSelection = function(user) {

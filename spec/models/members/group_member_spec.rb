@@ -13,12 +13,12 @@ describe GroupMember, models: true do
     end
   end
 
-  describe '.add_users_to_group' do
+  describe '.add_users' do
     it 'adds the given users to the given group' do
       group = create(:group)
       users = create_list(:user, 2)
 
-      described_class.add_users_to_group(
+      described_class.add_users(
         group,
         [users.first.id, users.second],
         described_class::MASTER
@@ -61,7 +61,7 @@ describe GroupMember, models: true do
 
     describe '#after_accept_request' do
       it 'calls NotificationService.accept_group_access_request' do
-        member = create(:group_member, user: build_stubbed(:user), requested_at: Time.now)
+        member = create(:group_member, user: build(:user), requested_at: Time.now)
 
         expect_any_instance_of(NotificationService).to receive(:new_group_member)
 
@@ -73,6 +73,21 @@ describe GroupMember, models: true do
       subject { create(:group_member).real_source_type }
 
       it { is_expected.to eq 'Group' }
+    end
+  end
+
+  describe '#update_two_factor_requirement' do
+    let(:user) { build :user }
+    let(:group_member) { build :group_member, user: user }
+
+    it 'is called after creation and deletion' do
+      expect(user).to receive(:update_two_factor_requirement)
+
+      group_member.save
+
+      expect(user).to receive(:update_two_factor_requirement)
+
+      group_member.destroy
     end
   end
 end

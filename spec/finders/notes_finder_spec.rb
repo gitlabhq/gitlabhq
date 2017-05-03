@@ -110,6 +110,15 @@ describe NotesFinder do
         expect(notes.count).to eq(1)
       end
 
+      it 'finds notes on personal snippets' do
+        note = create(:note_on_personal_snippet)
+        params = { target_type: 'personal_snippet', target_id: note.noteable_id }
+
+        notes = described_class.new(project, user, params).execute
+
+        expect(notes.count).to eq(1)
+      end
+
       it 'raises an exception for an invalid target_type' do
         params[:target_type] = 'invalid'
         expect { described_class.new(project, user, params).execute }.to raise_error('invalid target_type')
@@ -199,6 +208,47 @@ describe NotesFinder do
 
       specify 'search filter' do
         expect(sql.scan(/LIKE/).count).to be >= number_of_noteable_types
+      end
+    end
+  end
+
+  describe '#target' do
+    subject { described_class.new(project, user, params) }
+
+    context 'for a issue target' do
+      let(:issue) { create(:issue, project: project) }
+      let(:params) { { target_type: 'issue', target_id: issue.id } }
+
+      it 'returns the issue' do
+        expect(subject.target).to eq(issue)
+      end
+    end
+
+    context 'for a merge request target' do
+      let(:merge_request) { create(:merge_request, source_project: project) }
+      let(:params) { { target_type: 'merge_request', target_id: merge_request.id } }
+
+      it 'returns the merge_request' do
+        expect(subject.target).to eq(merge_request)
+      end
+    end
+
+    context 'for a snippet target' do
+      let(:snippet) { create(:project_snippet, project: project) }
+      let(:params) { { target_type: 'snippet', target_id: snippet.id } }
+
+      it 'returns the snippet' do
+        expect(subject.target).to eq(snippet)
+      end
+    end
+
+    context 'for a commit target' do
+      let(:project) { create(:project, :repository) }
+      let(:commit) { project.commit }
+      let(:params) { { target_type: 'commit', target_id: commit.id } }
+
+      it 'returns the commit' do
+        expect(subject.target).to eq(commit)
       end
     end
   end

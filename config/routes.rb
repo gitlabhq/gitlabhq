@@ -48,6 +48,12 @@ Rails.application.routes.draw do
   # Health check
   get 'health_check(/:checks)' => 'health_check#index', as: :health_check
 
+  scope path: '-', controller: 'health' do
+    get :liveness
+    get :readiness
+    get :metrics
+  end
+
   # Koding route
   get 'koding' => 'koding#index'
 

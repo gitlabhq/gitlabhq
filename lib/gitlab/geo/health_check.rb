@@ -4,6 +4,7 @@ module Gitlab
       def self.perform_checks
         return '' unless Gitlab::Geo.secondary?
         return 'The Geo database configuration file is missing.' unless Gitlab::Geo.configured?
+        return 'The Geo node has a database that is not configured for streaming replication with the primary node.' unless self.database_secondary?
 
         database_version  = self.get_database_version.to_i
         migration_version = self.get_migration_version.to_i
@@ -47,6 +48,14 @@ module Gitlab
         end
 
         latest_migration
+      end
+
+      def self.database_secondary?
+        raise NotImplementedError unless Gitlab::Database.postgresql?
+
+        ActiveRecord::Base.connection.execute('SELECT pg_is_in_recovery()')
+          .first
+          .fetch('pg_is_in_recovery') == 't'
       end
     end
   end

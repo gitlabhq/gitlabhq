@@ -2,6 +2,8 @@ require 'spec_helper'
 
 describe 'GlobalSearch' do
   let(:features) { %i(issues merge_requests repository builds) }
+  let(:admin) { create :user, admin: true }
+  let(:auditor) {create :user, auditor: true }
   let(:non_member) { create :user }
   let(:member) { create :user }
   let(:guest) { create :user }
@@ -27,6 +29,8 @@ describe 'GlobalSearch' do
       it "does not find items if features are disabled" do
         create_items(project, feature_settings(:disabled))
 
+        expect_no_items_to_be_found(admin)
+        expect_no_items_to_be_found(auditor)
         expect_no_items_to_be_found(member)
         expect_no_items_to_be_found(guest)
         expect_no_items_to_be_found(non_member)
@@ -36,6 +40,8 @@ describe 'GlobalSearch' do
       it "shows items to member only if features are enabled" do
         create_items(project, feature_settings(:enabled))
 
+        expect_items_to_be_found(admin)
+        expect_items_to_be_found(auditor)
         expect_items_to_be_found(member)
         expect_non_code_items_to_be_found(guest)
         expect_no_items_to_be_found(non_member)
@@ -50,6 +56,8 @@ describe 'GlobalSearch' do
       it "does not find items if features are disabled" do
         create_items(project, feature_settings(:disabled))
 
+        expect_no_items_to_be_found(admin)
+        expect_no_items_to_be_found(auditor)
         expect_no_items_to_be_found(member)
         expect_no_items_to_be_found(guest)
         expect_no_items_to_be_found(non_member)
@@ -59,6 +67,8 @@ describe 'GlobalSearch' do
       it "shows items to member only if features are enabled" do
         create_items(project, feature_settings(:enabled))
 
+        expect_items_to_be_found(admin)
+        expect_items_to_be_found(auditor)
         expect_items_to_be_found(member)
         expect_items_to_be_found(guest)
         expect_items_to_be_found(non_member)
@@ -68,6 +78,8 @@ describe 'GlobalSearch' do
       it "shows items to member only if features are private" do
         create_items(project, feature_settings(:private))
 
+        expect_items_to_be_found(admin)
+        expect_items_to_be_found(auditor)
         expect_items_to_be_found(member)
         expect_non_code_items_to_be_found(guest)
         expect_no_items_to_be_found(non_member)
@@ -82,6 +94,8 @@ describe 'GlobalSearch' do
       it "does not find items if features are disabled" do
         create_items(project, feature_settings(:disabled))
 
+        expect_no_items_to_be_found(admin)
+        expect_no_items_to_be_found(auditor)
         expect_no_items_to_be_found(member)
         expect_no_items_to_be_found(guest)
         expect_no_items_to_be_found(non_member)
@@ -91,6 +105,8 @@ describe 'GlobalSearch' do
       it "finds items if features are enabled" do
         create_items(project, feature_settings(:enabled))
 
+        expect_items_to_be_found(admin)
+        expect_items_to_be_found(auditor)
         expect_items_to_be_found(member)
         expect_items_to_be_found(guest)
         expect_items_to_be_found(non_member)
@@ -100,6 +116,8 @@ describe 'GlobalSearch' do
       it "shows items to member only if features are private" do
         create_items(project, feature_settings(:private))
 
+        expect_items_to_be_found(admin)
+        expect_items_to_be_found(auditor)
         expect_items_to_be_found(member)
         expect_non_code_items_to_be_found(guest)
         expect_no_items_to_be_found(non_member)

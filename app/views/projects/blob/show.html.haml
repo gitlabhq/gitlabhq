@@ -2,13 +2,16 @@
 - page_title @blob.path, @ref
 = render "projects/commits/head"
 
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_bundle_tag('blob')
+
 %div{ class: container_class }
   = render 'projects/last_push'
 
   #tree-holder.tree-holder
     = render 'blob', blob: @blob
 
-  - if can_edit_blob?(@blob)
+  - if can_modify_blob?(@blob)
     = render 'projects/blob/remove'
 
     - title = "Replace #{@blob.name}"

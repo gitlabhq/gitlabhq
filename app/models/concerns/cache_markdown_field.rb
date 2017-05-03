@@ -8,6 +8,14 @@
 #
 # Corresponding foo_html, bar_html and baz_html fields should exist.
 module CacheMarkdownField
+  extend ActiveSupport::Concern
+
+  # Increment this number every time the renderer changes its output
+  CACHE_VERSION = 1
+
+  # changes to these attributes cause the cache to be invalidates
+  INVALIDATED_BY = %w[author project].freeze
+
   # Knows about the relationship between markdown and html field names, and
   # stores the rendering contexts for the latter
   class FieldData
@@ -30,60 +38,74 @@ module CacheMarkdownField
     end
   end
 
-  # Dynamic registries don't really work in Rails as it's not guaranteed that
-  # every class will be loaded, so hardcode the list.
-  CACHING_CLASSES = %w[
-    AbuseReport
-    Appearance
-    ApplicationSetting
-    BroadcastMessage
-    Issue
-    Label
-    MergeRequest
-    Milestone
-    Namespace
-    Note
-    Project
-    Release
-    Snippet
-  ].freeze
-
-  def self.caching_classes
-    CACHING_CLASSES.map(&:constantize)
-  end
-
   def skip_project_check?
     false
   end
 
-  extend ActiveSupport::Concern
+  # Returns the default Banzai render context for the cached markdown field.
+  def banzai_render_context(field)
+    raise ArgumentError.new("Unknown field: #{field.inspect}") unless
+      cached_markdown_fields.markdown_fields.include?(field)
+
+    # Always include a project key, or Banzai complains
+    project = self.project if self.respond_to?(:project)
+    context = cached_markdown_fields[field].merge(project: project)
+
+    # Banzai is less strict about authors, so don't always have an author key
+    context[:author] = self.author if self.respond_to?(:author)
+
+    context
+  end
+
+  # Update every column in a row if any one is invalidated, as we only store
+  # one version per row
+  def refresh_markdown_cache!(do_update: false)
+    options = { skip_project_check: skip_project_check? }
+
+    updates = cached_markdown_fields.markdown_fields.map do |markdown_field|
+      [
+        cached_markdown_fields.html_field(markdown_field),
+        Banzai::Renderer.cacheless_render_field(self, markdown_field, options)
+      ]
+    end.to_h
+    updates['cached_markdown_version'] = CacheMarkdownField::CACHE_VERSION
+
+    updates.each {|html_field, data| write_attribute(html_field, data) }
+
+    update_columns(updates) if persisted? && do_update
+  end
+
+  def cached_html_up_to_date?(markdown_field)
+    html_field = cached_markdown_fields.html_field(markdown_field)
+
+    cached = !cached_html_for(markdown_field).nil? && !__send__(markdown_field).nil?
+    return false unless cached
+
+    markdown_changed = attribute_changed?(markdown_field) || false
+    html_changed = attribute_changed?(html_field) || false
+
+    CacheMarkdownField::CACHE_VERSION == cached_markdown_version &&
+      (html_changed || markdown_changed == html_changed)
+  end
+
+  def invalidated_markdown_cache?
+    cached_markdown_fields.html_fields.any? {|html_field| attribute_invalidated?(html_field) }
+  end
+
+  def attribute_invalidated?(attr)
+    __send__("#{attr}_invalidated?")
+  end
+
+  def cached_html_for(markdown_field)
+    raise ArgumentError.new("Unknown field: #{field}") unless
+      cached_markdown_fields.markdown_fields.include?(markdown_field)
+
+    __send__(cached_markdown_fields.html_field(markdown_field))
+  end
 
   included do
     cattr_reader :cached_markdown_fields do
       FieldData.new
-    end
-
-    # Returns the default Banzai render context for the cached markdown field.
-    def banzai_render_context(field)
-      raise ArgumentError.new("Unknown field: #{field.inspect}") unless
-        cached_markdown_fields.markdown_fields.include?(field)
-
-      # Always include a project key, or Banzai complains
-      project = self.project if self.respond_to?(:project)
-      context = cached_markdown_fields[field].merge(project: project)
-
-      # Banzai is less strict about authors, so don't always have an author key
-      context[:author] = self.author if self.respond_to?(:author)
-
-      context
-    end
-
-    # Allow callers to look up the cache field name, rather than hardcoding it
-    def markdown_cache_field_for(field)
-      raise ArgumentError.new("Unknown field: #{field}") unless
-        cached_markdown_fields.markdown_fields.include?(field)
-
-      cached_markdown_fields.html_field(field)
     end
 
     # Always exclude _html fields from attributes (including serialization).
@@ -92,12 +114,18 @@ module CacheMarkdownField
     def attributes
       attrs = attributes_before_markdown_cache
 
+      attrs.delete('cached_markdown_version')
+
       cached_markdown_fields.html_fields.each do |field|
         attrs.delete(field)
       end
 
       attrs
     end
+
+    # Using before_update here conflicts with elasticsearch-model somehow
+    before_create :refresh_markdown_cache!, if: :invalidated_markdown_cache?
+    before_update :refresh_markdown_cache!, if: :invalidated_markdown_cache?
   end
 
   class_methods do
@@ -107,31 +135,18 @@ module CacheMarkdownField
     # a corresponding _html field. Any custom rendering options may be provided
     # as a context.
     def cache_markdown_field(markdown_field, context = {})
-      raise "Add #{self} to CacheMarkdownField::CACHING_CLASSES" unless
-        CacheMarkdownField::CACHING_CLASSES.include?(self.to_s)
-
       cached_markdown_fields[markdown_field] = context
 
       html_field = cached_markdown_fields.html_field(markdown_field)
-      cache_method = "#{markdown_field}_cache_refresh".to_sym
       invalidation_method = "#{html_field}_invalidated?".to_sym
-
-      define_method(cache_method) do
-        options = { skip_project_check: skip_project_check? }
-        html = Banzai::Renderer.cacheless_render_field(self, markdown_field, options)
-        __send__("#{html_field}=", html)
-        true
-      end
 
       # The HTML becomes invalid if any dependent fields change. For now, assume
       # author and project invalidate the cache in all circumstances.
       define_method(invalidation_method) do
         changed_fields = changed_attributes.keys
-        invalidations = changed_fields & [markdown_field.to_s, "author", "project"]
-        !invalidations.empty?
+        invalidations = changed_fields & [markdown_field.to_s, *INVALIDATED_BY]
+        !invalidations.empty? || !cached_html_up_to_date?(markdown_field)
       end
-
-      before_save cache_method, if: invalidation_method
     end
   end
 end

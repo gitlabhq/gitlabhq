@@ -3,8 +3,6 @@
     .event-item-timestamp
       #{time_ago_with_tooltip(event.created_at)}
 
-    = author_avatar(event, size: 40)
-
     - if event.created_project?
       = render "events/event/created_project", event: event
     - elsif event.push?

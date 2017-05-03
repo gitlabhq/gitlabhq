@@ -9,6 +9,10 @@ require('./lib/utils/bootstrap_linked_tabs');
         new global.LinkedTabs(options.tabsOptions);
       }
 
+      if (options.pipelineStatusUrl) {
+        gl.utils.setCiStatusFavicon(options.pipelineStatusUrl);
+      }
+
       this.addMarginToBuildColumns();
     }
 

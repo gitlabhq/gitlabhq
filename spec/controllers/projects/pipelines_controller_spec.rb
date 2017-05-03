@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe Projects::PipelinesController do
-  include ApiHelpers
-
   let(:user) { create(:user) }
   let(:project) { create(:empty_project, :public) }
 
@@ -67,6 +65,26 @@ describe Projects::PipelinesController do
                   id: pipeline.id,
                   stage: name,
                   format: :json
+    end
+  end
+
+  describe 'GET status.json' do
+    let(:pipeline) { create(:ci_pipeline, project: project) }
+    let(:status) { pipeline.detailed_status(double('user')) }
+
+    before do
+      get :status, namespace_id: project.namespace,
+                   project_id: project,
+                   id: pipeline.id,
+                   format: :json
+    end
+
+    it 'return a detailed pipeline status in json' do
+      expect(response).to have_http_status(:ok)
+      expect(json_response['text']).to eq status.text
+      expect(json_response['label']).to eq status.label
+      expect(json_response['icon']).to eq status.icon
+      expect(json_response['favicon']).to eq "/assets/ci_favicons/#{status.favicon}.ico"
     end
   end
 end

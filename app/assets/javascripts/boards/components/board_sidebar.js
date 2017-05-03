@@ -13,12 +13,12 @@ import Assignees from '../../sidebar/components/assignees/assignees';
 
 require('./sidebar/remove_issue');
 
-(() => {
-  const Store = gl.issueBoards.BoardsStore;
+const Store = gl.issueBoards.BoardsStore;
 
-  window.gl = window.gl || {};
-  window.gl.issueBoards = window.gl.issueBoards || {};
+window.gl = window.gl || {};
+window.gl.issueBoards = window.gl.issueBoards || {};
 
+<<<<<<< HEAD
   gl.issueBoards.BoardSidebar = Vue.extend({
     props: {
       currentUser: Object
@@ -59,10 +59,39 @@ require('./sidebar/remove_issue');
           this.$nextTick(() => {
             $('.right-sidebar').getNiceScroll(0).doScrollTop(0, 0);
             $('.right-sidebar').getNiceScroll().resize();
+=======
+gl.issueBoards.BoardSidebar = Vue.extend({
+  props: {
+    currentUser: Object
+  },
+  data() {
+    return {
+      detail: Store.detail,
+      issue: {},
+      list: {},
+    };
+  },
+  computed: {
+    showSidebar () {
+      return Object.keys(this.issue).length;
+    }
+  },
+  watch: {
+    detail: {
+      handler () {
+        if (this.issue.id !== this.detail.issue.id) {
+          $('.js-issue-board-sidebar', this.$el).each((i, el) => {
+            $(el).data('glDropdown').clearMenu();
+>>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0
           });
         }
-      }
+
+        this.issue = this.detail.issue;
+        this.list = this.detail.list;
+      },
+      deep: true
     },
+<<<<<<< HEAD
     methods: {
       closeSidebar () {
         this.detail.issue = {};
@@ -124,3 +153,31 @@ require('./sidebar/remove_issue');
     },
   });
 })();
+=======
+    issue () {
+      if (this.showSidebar) {
+        this.$nextTick(() => {
+          $('.right-sidebar').getNiceScroll(0).doScrollTop(0, 0);
+          $('.right-sidebar').getNiceScroll().resize();
+        });
+      }
+    }
+  },
+  methods: {
+    closeSidebar () {
+      this.detail.issue = {};
+    }
+  },
+  mounted () {
+    new IssuableContext(this.currentUser);
+    new MilestoneSelect();
+    new gl.DueDateSelectors();
+    new LabelsSelect();
+    new Sidebar();
+    gl.Subscription.bindAll('.subscription');
+  },
+  components: {
+    removeBtn: gl.issueBoards.RemoveIssueBtn,
+  },
+});
+>>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0

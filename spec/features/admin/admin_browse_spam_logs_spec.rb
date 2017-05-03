@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'Admin browse spam logs' do
-  let!(:spam_log) { create(:spam_log) }
+  let!(:spam_log) { create(:spam_log, description: 'abcde ' * 20) }
 
   before do
     login_as :admin

@@ -1,0 +1,15 @@
+%html{ lang: "en" }
+  %head
+    %meta{ content: "text/html; charset=utf-8", "http-equiv" => "Content-Type" }
+    %title
+      GitLab
+    = stylesheet_link_tag 'notify'
+    = yield :head
+  %body
+    .content
+      = yield
+    .footer{ style: "margin-top: 10px;" }
+    %p
+      &mdash;
+      %br
+      = link_to "Unsubscribe", @unsubscribe_url

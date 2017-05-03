@@ -4,7 +4,6 @@
 - retried = local_assigns.fetch(:retried, false)
 - pipeline_link = local_assigns.fetch(:pipeline_link, false)
 - stage = local_assigns.fetch(:stage, false)
-- coverage = local_assigns.fetch(:coverage, false)
 
 %tr.generic_commit_status{ class: ('retried' if retried) }
   %td.status
@@ -80,7 +79,7 @@
         %span= time_ago_with_tooltip(generic_commit_status.finished_at)
 
   %td.coverage
-    - if coverage && generic_commit_status.try(:coverage)
+    - if generic_commit_status.try(:coverage)
       #{generic_commit_status.coverage}%
 
   %td

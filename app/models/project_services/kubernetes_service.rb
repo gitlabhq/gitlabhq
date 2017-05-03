@@ -22,22 +22,21 @@ class KubernetesService < DeploymentService
   with_options presence: true, if: :activated? do
     validates :api_url, url: true
     validates :token
-
-    validates :namespace,
-      format: {
-        with: Gitlab::Regex.kubernetes_namespace_regex,
-        message: Gitlab::Regex.kubernetes_namespace_regex_message,
-      },
-      length: 1..63
   end
+
+  validates :namespace,
+    allow_blank: true,
+    length: 1..63,
+    if: :activated?,
+    format: {
+      with: Gitlab::Regex.kubernetes_namespace_regex,
+      message: Gitlab::Regex.kubernetes_namespace_regex_message
+    }
 
   after_save :clear_reactive_cache!
 
   def initialize_properties
-    if properties.nil?
-      self.properties = {}
-      self.namespace = "#{project.path}-#{project.id}" if project.present?
-    end
+    self.properties = {} if properties.nil?
   end
 
   def title
@@ -62,7 +61,7 @@ class KubernetesService < DeploymentService
         { type: 'text',
           name: 'namespace',
           title: 'Kubernetes namespace',
-          placeholder: 'Kubernetes namespace' },
+          placeholder: namespace_placeholder },
         { type: 'text',
           name: 'api_url',
           title: 'API URL',
@@ -92,7 +91,7 @@ class KubernetesService < DeploymentService
     variables = [
       { key: 'KUBE_URL', value: api_url, public: true },
       { key: 'KUBE_TOKEN', value: token, public: false },
-      { key: 'KUBE_NAMESPACE', value: namespace, public: true }
+      { key: 'KUBE_NAMESPACE', value: namespace_variable, public: true }
     ]
 
     if ca_pem.present?
@@ -132,7 +131,25 @@ class KubernetesService < DeploymentService
     { pods: read_pods, deployments: read_deployments }
   end
 
+  TEMPLATE_PLACEHOLDER = 'Kubernetes namespace'.freeze
+
   private
+
+  def namespace_placeholder
+    default_namespace || TEMPLATE_PLACEHOLDER
+  end
+
+  def namespace_variable
+    if namespace.present?
+      namespace
+    else
+      default_namespace
+    end
+  end
+
+  def default_namespace
+    "#{project.path}-#{project.id}" if project.present?
+  end
 
   def build_kubeclient!(api_path: 'api', api_version: 'v1')
     raise "Incomplete settings" unless api_url && namespace && token

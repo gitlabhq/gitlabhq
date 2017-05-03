@@ -3,8 +3,8 @@ require 'spec_helper'
 describe Projects::UploadService, services: true do
   describe 'File service' do
     before do
-      @user = create :user
-      @project = create :project, creator_id: @user.id, namespace: @user.namespace
+      @user = create(:user)
+      @project = create(:empty_project, creator_id: @user.id, namespace: @user.namespace)
     end
 
     context 'for valid gif file' do

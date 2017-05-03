@@ -1,18 +1,20 @@
-%ul.notes{ data: { discussion_id: discussion.id } }
-  = render partial: "projects/notes/note", collection: discussion.notes, as: :note
+.discussion-notes
+  %ul.notes{ data: { discussion_id: discussion.id } }
+    = render partial: "shared/notes/note", collection: discussion.notes, as: :note
 
-- if current_user
-  .discussion-reply-holder
-    - if discussion.diff_discussion?
-      - line_type = local_assigns.fetch(:line_type, nil)
+  - if current_user
+    .discussion-reply-holder
+      - if discussion.potentially_resolvable?
+        - line_type = local_assigns.fetch(:line_type, nil)
 
-      .btn-group-justified.discussion-with-resolve-btn{ role: "group" }
-        .btn-group{ role: "group" }
-          = link_to_reply_discussion(discussion, line_type)
-        = render "discussions/resolve_all", discussion: discussion
-        - if discussion.for_merge_request?
+        .btn-group-justified.discussion-with-resolve-btn{ role: "group" }
+          .btn-group{ role: "group" }
+            = link_to_reply_discussion(discussion, line_type)
+
+          = render "discussions/resolve_all", discussion: discussion
+
           .btn-group.discussion-actions
             = render "discussions/new_issue_for_discussion", discussion: discussion, merge_request: discussion.noteable
             = render "discussions/jump_to_next", discussion: discussion
-    - else
-      = link_to_reply_discussion(discussion)
+      - else
+        = link_to_reply_discussion(discussion)

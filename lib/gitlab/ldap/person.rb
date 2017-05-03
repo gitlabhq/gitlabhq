@@ -1,7 +1,7 @@
 module Gitlab
   module LDAP
     class Person
-      include EE::Gitlab::LDAP::Person
+      include ::EE::Gitlab::LDAP::Person
 
       # Active Directory-specific LDAP filter that checks if bit 2 of the
       # userAccountControl attribute is set.

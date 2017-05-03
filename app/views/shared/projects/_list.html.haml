@@ -7,10 +7,11 @@
 - skip_namespace = false unless local_assigns[:skip_namespace] == true
 - show_last_commit_as_description = false unless local_assigns[:show_last_commit_as_description] == true
 - remote = false unless local_assigns[:remote] == true
+- load_pipeline_status(projects)
 
 .js-projects-list-holder
   - if projects.any?
-    %ul.projects-list.content-list
+    %ul.projects-list
       - projects.each_with_index do |project, i|
         - css_class = (i >= projects_limit) ? 'hide' : nil
         = render "shared/projects/project", project: project, skip_namespace: skip_namespace,

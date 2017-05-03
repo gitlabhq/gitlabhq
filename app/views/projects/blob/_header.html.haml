@@ -1,3 +1,4 @@
+- blame = local_assigns.fetch(:blame, false)
 .js-file-title.file-title-flex-parent
   .file-header-content
     = blob_icon blob.mode, blob.name
@@ -8,19 +9,21 @@
     = copy_file_path_button(blob.path)
 
     %small
-      = number_to_human_size(blob_size(blob))
+      = number_to_human_size(blob.raw_size)
 
   .file-actions.hidden-xs
+    = render 'projects/blob/viewer_switcher', blob: blob unless blame
+
     .btn-group{ role: "group" }<
-      = copy_blob_content_button(blob) if blob_text_viewable?(blob)
+      = copy_blob_source_button(blob) if !blame && blob.rendered_as_text?(ignore_errors: false)
       = open_raw_file_button(namespace_project_raw_path(@project.namespace, @project, @id))
       = view_on_environment_button(@commit.sha, @path, @environment) if @environment
 
     .btn-group{ role: "group" }<
       -# only show normal/blame view links for text files
-      - if blob_text_viewable?(blob)
-        - if current_page? namespace_project_blame_path(@project.namespace, @project, @id)
-          = link_to 'Normal View', namespace_project_blob_path(@project.namespace, @project, @id),
+      - if blob.readable_text?
+        - if blame
+          = link_to 'Normal view', namespace_project_blob_path(@project.namespace, @project, @id),
               class: 'btn btn-sm'
         - else
           = link_to 'Blame', namespace_project_blame_path(@project.namespace, @project, @id),
@@ -32,12 +35,16 @@
       = link_to 'Permalink', namespace_project_blob_path(@project.namespace, @project,
           tree_join(@commit.sha, @path)), class: 'btn btn-sm js-data-file-blob-permalink-url'
 
-    - if current_user
-      .btn-group{ role: "group" }<
+    .btn-group{ role: "group" }<
+      - if current_user
         = lock_file_link(html_options: {class: 'btn btn-sm path-lock'})
-        = edit_blob_link if blob_text_viewable?(blob)
+
+      = edit_blob_link if blob.readable_text?
+      - if current_user
         = replace_blob_link
         = delete_blob_link
+
+= render 'projects/fork_suggestion'
 
 - if license_allows_file_locks?
   :javascript

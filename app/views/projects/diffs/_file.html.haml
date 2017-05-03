@@ -6,7 +6,7 @@
 
     - unless diff_file.submodule?
       .file-actions.hidden-xs
-        - if blob_text_viewable?(blob)
+        - if blob.readable_text?
           = link_to '#', class: 'js-toggle-diff-comments btn active has-tooltip', title: "Toggle comments for this file", disabled: @diff_notes_disabled do
             = icon('comment')
           \
@@ -17,5 +17,7 @@
 
         = view_file_button(diff_commit.id, diff_file.new_path, project)
         = view_on_environment_button(diff_commit.id, diff_file.new_path, environment) if environment
+
+  = render 'projects/fork_suggestion'
 
   = render 'projects/diffs/content', diff_file: diff_file, diff_commit: diff_commit, blob: blob, project: project

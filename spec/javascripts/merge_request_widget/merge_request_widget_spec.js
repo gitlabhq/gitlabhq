@@ -143,18 +143,21 @@ require('~/lib/utils/datetime_utility');
       it('should call showCIStatus even if a notification should not be displayed', function() {
         var spy;
         spy = spyOn(this["class"], 'showCIStatus').and.stub();
+        spyOn(gl.utils, 'setCiStatusFavicon').and.callFake(() => {});
         this["class"].getCIStatus(false);
         return expect(spy).toHaveBeenCalledWith(this.ciStatusData.status);
       });
       it('should call showCIStatus when a notification should be displayed', function() {
         var spy;
         spy = spyOn(this["class"], 'showCIStatus').and.stub();
+        spyOn(gl.utils, 'setCiStatusFavicon').and.callFake(() => {});
         this["class"].getCIStatus(true);
         return expect(spy).toHaveBeenCalledWith(this.ciStatusData.status);
       });
       it('should call showCICoverage when the coverage rate is set', function() {
         var spy;
         spy = spyOn(this["class"], 'showCICoverage').and.stub();
+        spyOn(gl.utils, 'setCiStatusFavicon').and.callFake(() => {});
         this["class"].getCIStatus(false);
         return expect(spy).toHaveBeenCalledWith(this.ciStatusData.coverage);
       });
@@ -162,12 +165,14 @@ require('~/lib/utils/datetime_utility');
         var spy;
         this.ciStatusData.coverage = null;
         spy = spyOn(this["class"], 'showCICoverage').and.stub();
+        spyOn(gl.utils, 'setCiStatusFavicon').and.callFake(() => {});
         this["class"].getCIStatus(false);
         return expect(spy).not.toHaveBeenCalled();
       });
       it('should not display a notification on the first check after the widget has been created', function() {
         var spy;
         spy = spyOn(window, 'notify');
+        spyOn(gl.utils, 'setCiStatusFavicon').and.callFake(() => {});
         this["class"] = new window.gl.MergeRequestWidget(this.opts);
         this["class"].getCIStatus(true);
         return expect(spy).not.toHaveBeenCalled();
@@ -175,6 +180,7 @@ require('~/lib/utils/datetime_utility');
       it('should update the pipeline URL when the pipeline changes', function() {
         var spy;
         spy = spyOn(this["class"], 'updatePipelineUrls').and.stub();
+        spyOn(gl.utils, 'setCiStatusFavicon').and.callFake(() => {});
         this["class"].getCIStatus(false);
         this.ciStatusData.pipeline += 1;
         this["class"].getCIStatus(false);
@@ -183,6 +189,7 @@ require('~/lib/utils/datetime_utility');
       it('should update the commit URL when the sha changes', function() {
         var spy;
         spy = spyOn(this["class"], 'updateCommitUrls').and.stub();
+        spyOn(gl.utils, 'setCiStatusFavicon').and.callFake(() => {});
         this["class"].getCIStatus(false);
         this.ciStatusData.sha = "9b50b99a";
         this["class"].getCIStatus(false);

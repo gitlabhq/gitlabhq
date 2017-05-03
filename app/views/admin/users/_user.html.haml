@@ -40,6 +40,6 @@
           - if user.can_be_removed? && can?(current_user, :destroy_user, @user)
             %li.divider
             %li
-              = link_to 'Delete User', [:admin, user], data: { confirm: "USER #{user.name} WILL BE REMOVED! All issues, merge requests and groups linked to this user will also be removed! Consider cancelling this deletion and blocking the user instead. Are you sure?" },
+              = link_to 'Delete user', [:admin, user], data: { confirm: "USER #{user.name} WILL BE REMOVED! All issues, merge requests and groups linked to this user will also be removed! Consider cancelling this deletion and blocking the user instead. Are you sure?" },
                                                    class: 'btn btn-remove btn-block',
                                                    method: :delete

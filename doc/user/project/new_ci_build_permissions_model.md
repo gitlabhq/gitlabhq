@@ -87,12 +87,12 @@ your Runners in the most possible secure way, by avoiding the following:
 By using an insecure GitLab Runner configuration, you allow the rogue developers
 to steal the tokens of other jobs.
 
-## job triggers
+## Pipeline triggers
 
-[job triggers][triggers] do not support the new permission model.
-They continue to use the old authentication mechanism where the CI job
-can access only its own sources. We plan to remove that limitation in one of
-the upcoming releases.
+Since 9.0 [pipelnie triggers][triggers] do support the new permission model.
+The new triggers do impersonate their associated user including their access
+to projects and their project permissions. To migrate trigger to use new permisison
+model use **Take ownership**.
 
 ## Before GitLab 8.12
 
@@ -141,6 +141,7 @@ with GitLab 8.12.
 With the new job permissions model, there is now an easy way to access all
 dependent source code in a project. That way, we can:
 
+1. Access a project's dependent repositories
 1. Access a project's [Git submodules][gitsub]
 1. Access private container images
 1. Access project's and submodule LFS objects
@@ -176,6 +177,22 @@ As a user:
 - Make sure you are a member of the group or project you're trying to have
   access to. As an Administrator, you can verify that by impersonating the user
   and retry the failing job in order to verify that everything is correct.
+
+### Dependent repositories
+
+The [Job environment variable][jobenv] `CI_JOB_TOKEN` can be used to
+authenticate any clones of dependent repositories. For example:
+
+```
+git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/myuser/mydependentrepo
+```
+
+It can also be used for system-wide authentication
+(only do this in a docker container, it will overwrite ~/.netrc):
+
+```
+echo -e "machine gitlab.com\nlogin gitlab-ci-token\npassword ${CI_JOB_TOKEN}" > ~/.netrc
+```
 
 ### Git submodules
 
@@ -221,3 +238,4 @@ test:
 [triggers]: ../../ci/triggers/README.md
 [update-docs]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/update
 [workhorse]: https://gitlab.com/gitlab-org/gitlab-workhorse
+[jobenv]: ../../ci/variables/README.md#predefined-variables-environment-variables

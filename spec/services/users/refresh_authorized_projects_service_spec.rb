@@ -152,7 +152,7 @@ describe Users::RefreshAuthorizedProjectsService do
 
     context 'projects of groups the user is a member of' do
       let(:group) { create(:group) }
-      let!(:other_project) { create(:project, group: group) }
+      let!(:other_project) { create(:empty_project, group: group) }
 
       before do
         group.add_owner(user)
@@ -166,7 +166,7 @@ describe Users::RefreshAuthorizedProjectsService do
     context 'projects of subgroups of groups the user is a member of' do
       let(:group) { create(:group) }
       let(:nested_group) { create(:group, parent: group) }
-      let!(:other_project) { create(:project, group: nested_group) }
+      let!(:other_project) { create(:empty_project, group: nested_group) }
 
       before do
         group.add_master(user)

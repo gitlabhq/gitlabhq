@@ -14,6 +14,8 @@ export default {
 
     this.filteredSearch = new FilteredSearchBoards(this.store);
     this.filteredSearch.removeTokens();
+    this.filteredSearch.handleInputPlaceholder();
+    this.filteredSearch.toggleClearSearchButton();
   },
   destroyed() {
     this.filteredSearch.cleanup();

@@ -1,6 +1,4 @@
-.panel {
-  margin-bottom: $gl-padding;
-
+@mixin panel {
   .panel-heading {
     padding: $gl-vert-padding $gl-padding;
     line-height: 36px;
@@ -47,4 +45,15 @@
     font-size: inherit;
     line-height: inherit;
   }
+}
+
+.panel {
+  @include panel;
+  margin-bottom: $gl-padding;
+}
+
+.panel-slim {
+  @extend .panel;
+  @include panel;
+  margin-bottom: $gl-vert-padding;
 }

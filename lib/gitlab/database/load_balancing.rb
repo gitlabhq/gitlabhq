@@ -50,7 +50,7 @@ module Gitlab
       end
 
       def self.program_name
-        File.basename($0)
+        @program_name ||= File.basename($0)
       end
 
       # Configures proxying of requests.

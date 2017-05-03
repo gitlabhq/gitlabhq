@@ -1,4 +1,6 @@
 # Migration type: online without errors (works on previous version and new one)
+
+# rubocop:disable RemoveIndex
 class AddLdapSyncStateIndicesToGroups < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
   disable_ddl_transaction!

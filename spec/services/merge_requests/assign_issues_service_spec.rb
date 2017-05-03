@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe MergeRequests::AssignIssuesService, services: true do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project, :public, :repository) }
   let(:issue) { create(:issue, project: project) }
   let(:merge_request) { create(:merge_request, :simple, source_project: project, author: user, description: "fixes #{issue.to_reference}") }
   let(:service) { described_class.new(project, user, merge_request: merge_request) }

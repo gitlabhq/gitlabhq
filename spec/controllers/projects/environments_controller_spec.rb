@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe Projects::EnvironmentsController do
-  include ApiHelpers
-
   let(:user) { create(:user) }
   let(:project) { create(:empty_project) }
 
@@ -11,6 +9,8 @@ describe Projects::EnvironmentsController do
   end
 
   before do
+    allow_any_instance_of(License).to receive(:add_on?).and_return(false)
+
     project.team << [user, :master]
 
     sign_in(user)
@@ -27,6 +27,8 @@ describe Projects::EnvironmentsController do
 
     context 'when requesting JSON response for folders' do
       before do
+        allow_any_instance_of(Environment).to receive(:deployment_service_ready?).and_return(true)
+
         create(:environment, project: project,
                              name: 'staging/review-1',
                              state: :available)
@@ -44,15 +46,19 @@ describe Projects::EnvironmentsController do
 
       context 'when requesting available environments scope' do
         before do
+          allow_any_instance_of(License).to receive(:add_on?).with('GitLab_DeployBoard').and_return(true)
+
           get :index, environment_params(format: :json, scope: :available)
         end
 
         it 'responds with a payload describing available environments' do
           expect(environments.count).to eq 2
           expect(environments.first['name']).to eq 'production'
+          expect(environments.first['latest']['rollout_status_path']).to be_present
           expect(environments.second['name']).to eq 'staging'
           expect(environments.second['size']).to eq 2
           expect(environments.second['latest']['name']).to eq 'staging/review-2'
+          expect(environments.second['latest']['rollout_status_path']).to be_present
         end
 
         it 'contains values describing environment scopes sizes' do
@@ -77,6 +83,52 @@ describe Projects::EnvironmentsController do
           expect(json_response['available_count']).to eq 3
           expect(json_response['stopped_count']).to eq 1
         end
+      end
+
+      context 'when license does not has the GitLab_DeployBoard add-on' do
+        before do
+          allow_any_instance_of(License).to receive(:add_on?).with('GitLab_DeployBoard').and_return(false)
+
+          get :index, environment_params(format: :json)
+        end
+
+        it 'does not return the rollout_status_path attribute' do
+          expect(environments.first['latest']['rollout_status_path']).to be_blank
+          expect(environments.second['latest']['rollout_status_path']).to be_blank
+        end
+      end
+    end
+  end
+
+  describe 'GET folder' do
+    before do
+      create(:environment, project: project,
+                           name: 'staging-1.0/review',
+                           state: :available)
+    end
+
+    context 'when using default format' do
+      it 'responds with HTML' do
+        get :folder, namespace_id: project.namespace,
+                     project_id: project,
+                     id: 'staging-1.0'
+
+        expect(response).to be_ok
+        expect(response).to render_template 'folder'
+      end
+    end
+
+    context 'when using JSON format' do
+      it 'responds with JSON' do
+        get :folder, namespace_id: project.namespace,
+                     project_id: project,
+                     id: 'staging-1.0',
+                     format: :json
+
+        expect(response).to be_ok
+        expect(response).not_to render_template 'folder'
+        expect(json_response['environments'][0])
+          .to include('name' => 'staging-1.0/review')
       end
     end
   end
@@ -200,6 +252,7 @@ describe Projects::EnvironmentsController do
       let(:project) { create(:kubernetes_project) }
 
       before do
+        allow_any_instance_of(License).to receive(:add_on?).with('GitLab_DeployBoard').and_return(true)
         allow_any_instance_of(Environment).to receive(:deployment_service_ready?).and_return(true)
       end
 
@@ -211,6 +264,7 @@ describe Projects::EnvironmentsController do
         get :status, environment_params
 
         expect(response.status).to eq(204)
+        expect(response.headers['Poll-Interval']).to eq("3000")
       end
 
       it 'returns the rollout status when present' do
@@ -221,6 +275,18 @@ describe Projects::EnvironmentsController do
         get :status, environment_params
 
         expect(response.status).to eq(200)
+      end
+    end
+
+    context 'when license does not has the GitLab_DeployBoard add-on' do
+      before do
+        allow_any_instance_of(License).to receive(:add_on?).with('GitLab_DeployBoard').and_return(false)
+      end
+
+      it 'does not return any data' do
+        get :status, environment_params
+
+        expect(response).to have_http_status(:not_found)
       end
     end
   end

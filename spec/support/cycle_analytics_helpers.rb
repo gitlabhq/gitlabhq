@@ -1,5 +1,5 @@
 module CycleAnalyticsHelpers
-  def create_commit_referencing_issue(issue, branch_name: random_git_name)
+  def create_commit_referencing_issue(issue, branch_name: generate(:branch))
     project.repository.add_branch(user, branch_name, 'master')
     create_commit("Commit for ##{issue.iid}", issue.project, user, branch_name)
   end
@@ -7,9 +7,7 @@ module CycleAnalyticsHelpers
   def create_commit(message, project, user, branch_name, count: 1)
     oldrev = project.repository.commit(branch_name).sha
     commit_shas = Array.new(count) do |index|
-      filename = random_git_name
-
-      commit_sha = project.repository.create_file(user, filename, "content", message: message, branch_name: branch_name)
+      commit_sha = project.repository.create_file(user, generate(:branch), "content", message: message, branch_name: branch_name)
       project.repository.commit(commit_sha)
 
       commit_sha
@@ -24,13 +22,13 @@ module CycleAnalyticsHelpers
 
   def create_merge_request_closing_issue(issue, message: nil, source_branch: nil)
     if !source_branch || project.repository.commit(source_branch).blank?
-      source_branch = random_git_name
+      source_branch = generate(:branch)
       project.repository.add_branch(user, source_branch, 'master')
     end
 
     sha = project.repository.create_file(
       user,
-      random_git_name,
+      generate(:branch),
       'content',
       message: 'commit message',
       branch_name: source_branch)

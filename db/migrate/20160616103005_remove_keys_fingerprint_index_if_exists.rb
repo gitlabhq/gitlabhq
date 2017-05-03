@@ -1,3 +1,4 @@
+# rubocop:disable RemoveIndex
 class RemoveKeysFingerprintIndexIfExists < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 

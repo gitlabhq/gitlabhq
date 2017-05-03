@@ -40,7 +40,13 @@ module Gitlab
       def encode_utf8(message)
         detect = CharlockHolmes::EncodingDetector.detect(message)
         if detect
-          CharlockHolmes::Converter.convert(message, detect[:encoding], 'UTF-8')
+          begin
+            CharlockHolmes::Converter.convert(message, detect[:encoding], 'UTF-8')
+          rescue ArgumentError => e
+            Rails.logger.warn("Ignoring error converting #{detect[:encoding]} into UTF8: #{e.message}")
+
+            ''
+          end
         else
           clean(message)
         end

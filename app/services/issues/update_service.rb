@@ -23,7 +23,7 @@ module Issues
 
       if issue.previous_changes.include?('title') ||
           issue.previous_changes.include?('description')
-        todo_service.update_issue(issue, current_user)
+        todo_service.update_issue(issue, current_user, old_mentioned_users)
       end
 
       if issue.previous_changes.include?('milestone_id')

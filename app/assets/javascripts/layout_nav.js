@@ -11,8 +11,9 @@
     });
   };
 
-  $(function() {
-    var $scrollingTabs = $('.scrolling-tabs');
+  $(document).on('init.scrolling-tabs', () => {
+    const $scrollingTabs = $('.scrolling-tabs').not('.is-initialized');
+    $scrollingTabs.addClass('is-initialized');
 
     hideEndFade($scrollingTabs);
     $(window).off('resize.nav').on('resize.nav', function() {

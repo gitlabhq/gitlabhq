@@ -1,0 +1,4 @@
+---
+title: Fix redundant cache expiration in Repository
+merge_request: 10575
+author: blackst0ne

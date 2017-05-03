@@ -13,8 +13,9 @@ $(() => {
     const urlRoot = editBlobForm.data('relative-url-root');
     const assetsPath = editBlobForm.data('assets-prefix');
     const blobLanguage = editBlobForm.data('blob-language');
+    const currentAction = $('.js-file-title').data('current-action');
 
-    new EditBlob(`${urlRoot}${assetsPath}`, blobLanguage);
+    new EditBlob(`${urlRoot}${assetsPath}`, blobLanguage, currentAction);
     new NewCommitForm(editBlobForm);
   }
 

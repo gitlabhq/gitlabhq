@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import stopComp from '~/environments/components/environment_stop';
+import stopComp from '~/environments/components/environment_stop.vue';
 
 describe('Stop Component', () => {
   let StopComponent;
@@ -24,7 +24,7 @@ describe('Stop Component', () => {
 
   it('should render a button to stop the environment', () => {
     expect(component.$el.tagName).toEqual('BUTTON');
-    expect(component.$el.getAttribute('title')).toEqual('Stop Environment');
+    expect(component.$el.getAttribute('title')).toEqual('Stop');
   });
 
   it('should call the service when an action is clicked', () => {

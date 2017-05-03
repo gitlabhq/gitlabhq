@@ -25,7 +25,7 @@ FactoryGirl.define do
     end
 
     trait :import_started do
-      import_url FFaker::Internet.uri('http')
+      import_url { generate(:url) }
       import_status :started
     end
 
@@ -65,13 +65,12 @@ FactoryGirl.define do
 
     trait :remote_mirror do
       transient do
-        sync_time Gitlab::Mirror::HOURLY
         url "http://foo.com"
         enabled true
       end
 
       after(:create) do |project, evaluator|
-        project.remote_mirrors.create!(url: evaluator.url, enabled: evaluator.enabled, sync_time: evaluator.sync_time)
+        project.remote_mirrors.create!(url: evaluator.url, enabled: evaluator.enabled)
       end
     end
 

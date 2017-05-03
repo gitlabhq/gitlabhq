@@ -19,8 +19,8 @@ module MilestonesHelper
     end
   end
 
-  def milestones_browse_issuables_path(milestone, type:)
-    opts = { milestone_title: milestone.title }
+  def milestones_browse_issuables_path(milestone, state: nil, type:)
+    opts = { milestone_title: milestone.title, state: state }
 
     if @project
       polymorphic_path([@project.namespace.becomes(Namespace), @project, type], opts)
@@ -89,10 +89,12 @@ module MilestonesHelper
       content = time_ago.gsub(/\d+/) { |match| "<strong>#{match}</strong>" }
       content.slice!("about ")
       content << " remaining"
+      content.html_safe
     elsif milestone.start_date && milestone.start_date.past?
       days    = milestone.elapsed_days
       content = content_tag(:strong, days)
       content << " #{'day'.pluralize(days)} elapsed"
+      content.html_safe
     end
   end
 
@@ -111,6 +113,23 @@ module MilestonesHelper
       else
         "starts on #{milestone.start_date.to_s(:medium)}"
       end
+    end
+  end
+
+  def data_warning_for(burndown)
+    return unless burndown
+
+    message =
+      if burndown.empty?
+        "The burndown chart can’t be shown, as all issues assigned to this milestone were closed on an older GitLab version before data was recorded. "
+      elsif !burndown.accurate?
+        "Some issues can’t be shown in the burndown chart, as they were closed on an older GitLab version before data was recorded. "
+      end
+
+    if message
+      message += link_to "About burndown charts", help_page_path('user/project/milestones/index', anchor: 'burndown-charts'), class: 'burndown-docs-link'
+
+      content_tag(:div, message.html_safe, id: "data-warning", class: "settings-message prepend-top-20")
     end
   end
 end

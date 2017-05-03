@@ -41,24 +41,6 @@ describe Projects::MirrorsController do
         end.to change { RemoteMirror.count }.to(1)
       end
 
-      context 'sync_time update' do
-        it 'allows sync_time update with valid time' do
-          sync_times.each do |sync_time|
-            expect do
-              do_put(@project, remote_mirrors_attributes: { '0' => { 'enabled' => 1, 'url' => 'http://foo.com', 'sync_time' => sync_time } })
-            end.to change { RemoteMirror.where(sync_time: sync_time).count }.by(1)
-          end
-        end
-
-        it 'fails to update sync_time with invalid time' do
-          expect(@project.remote_mirrors.count).to eq(0)
-
-          expect do
-            do_put(@project, remote_mirrors_attributes: { '0' => { 'enabled' => 1, 'url' => 'http://foo.com', 'sync_time' => 1000 } })
-          end.not_to change { @project.remote_mirrors.count }
-        end
-      end
-
       context 'when remote mirror has the same URL' do
         it 'does not allow to create the remote mirror' do
           expect do

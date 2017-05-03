@@ -23,6 +23,7 @@ Issue:
 - weight
 - time_estimate
 - relative_position
+- service_desk_reply_to
 Event:
 - id
 - target_type
@@ -186,6 +187,7 @@ Ci::Pipeline:
 - duration
 - user_id
 - lock_version
+- auto_canceled_by_id
 CommitStatus:
 - id
 - project_id
@@ -226,6 +228,7 @@ CommitStatus:
 - token
 - lock_version
 - coverage_regex
+- auto_canceled_by_id
 Ci::Variable:
 - id
 - project_id
@@ -243,6 +246,19 @@ Ci::Trigger:
 - updated_at
 - owner_id
 - description
+- ref
+Ci::TriggerSchedule:
+- id
+- project_id
+- trigger_id
+- deleted_at
+- created_at
+- updated_at
+- cron
+- cron_timezone
+- next_run_at
+- ref
+- active
 DeployKey:
 - id
 - user_id
@@ -303,6 +319,12 @@ ProtectedBranch:
 - name
 - created_at
 - updated_at
+ProtectedTag:
+- id
+- project_id
+- name
+- created_at
+- updated_at
 Project:
 - description
 - issues_enabled
@@ -335,6 +357,14 @@ ProtectedBranch::MergeAccessLevel:
 ProtectedBranch::PushAccessLevel:
 - id
 - protected_branch_id
+- access_level
+- created_at
+- updated_at
+- user_id
+- group_id
+ProtectedTag::CreateAccessLevel:
+- id
+- protected_tag_id
 - access_level
 - created_at
 - updated_at

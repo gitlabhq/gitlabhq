@@ -299,8 +299,8 @@ could look like:
    stage: build
    script:
      - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.example.com
-     - docker build -t registry.example.com/group/project:latest .
-     - docker push registry.example.com/group/project:latest
+     - docker build -t registry.example.com/group/project/image:latest .
+     - docker push registry.example.com/group/project/image:latest
 ```
 
 You have to use the special `gitlab-ci-token` user created for you in order to
@@ -318,7 +318,7 @@ variables:
   IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
 
 before_script:
-  - docker login -u gitlab-ci-token -p $CI_COMMIT_TOKEN $CI_REGISTRY
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
 
 build:
   stage: build
@@ -350,8 +350,8 @@ stages:
 - deploy
 
 variables:
-  CONTAINER_TEST_IMAGE: registry.example.com/my-group/my-project:$CI_COMMIT_REF_NAME
-  CONTAINER_RELEASE_IMAGE: registry.example.com/my-group/my-project:latest
+  CONTAINER_TEST_IMAGE: registry.example.com/my-group/my-project/my-image:$CI_COMMIT_REF_NAME
+  CONTAINER_RELEASE_IMAGE: registry.example.com/my-group/my-project/my-image:latest
 
 before_script:
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.example.com

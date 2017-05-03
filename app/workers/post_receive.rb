@@ -4,20 +4,16 @@ class PostReceive
   extend Gitlab::CurrentSettings
 
   def perform(repo_path, identifier, changes)
-    if repository_storage = Gitlab.config.repositories.storages.find { |p| repo_path.start_with?(p[1]['path'].to_s) }
-      repo_path.gsub!(repository_storage[1]['path'].to_s, "")
-    else
-      log("Check gitlab.yml config for correct repositories.storages values. No repository storage path matches \"#{repo_path}\"")
-    end
+    repo_relative_path = Gitlab::RepoPath.strip_storage_path(repo_path)
 
     changes = Base64.decode64(changes) unless changes.include?(' ')
     # Use Sidekiq.logger so arguments can be correlated with execution
     # time and thread ID's.
     Sidekiq.logger.info "changes: #{changes.inspect}" if ENV['SIDEKIQ_LOG_ARGUMENTS']
-    post_received = Gitlab::GitPostReceive.new(repo_path, identifier, changes)
+    post_received = Gitlab::GitPostReceive.new(repo_relative_path, identifier, changes)
 
     if post_received.project.nil?
-      log("Triggered hook for non-existing project with full path \"#{repo_path}\"")
+      log("Triggered hook for non-existing project with full path \"#{repo_relative_path}\"")
       return false
     end
 
@@ -41,7 +37,7 @@ class PostReceive
 
       process_project_changes(post_received)
     else
-      log("Triggered hook for unidentifiable repository type with full path \"#{repo_path}\"")
+      log("Triggered hook for unidentifiable repository type with full path \"#{repo_relative_path}\"")
       false
     end
   end

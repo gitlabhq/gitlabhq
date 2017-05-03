@@ -52,8 +52,8 @@ class ProjectTeam
   def add_users(users, access_level, current_user: nil, expires_at: nil)
     return false if group_member_lock
 
-    ProjectMember.add_users_to_projects(
-      [project.id],
+    ProjectMember.add_users(
+      project,
       users,
       access_level,
       current_user: current_user,
@@ -171,6 +171,9 @@ class ProjectTeam
 
     # Lookup only the IDs we need
     user_ids = user_ids - access.keys
+
+    return access if user_ids.empty?
+
     users_access = project.project_authorizations.
       where(user: user_ids).
       group(:user_id).

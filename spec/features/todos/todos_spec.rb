@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe 'Dashboard Todos', feature: true do
-  include WaitForAjax
-
   let(:user)    { create(:user) }
   let(:author)  { create(:user) }
   let(:project) { create(:project, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
@@ -251,7 +249,7 @@ describe 'Dashboard Todos', feature: true do
       end
 
       it 'shows "All done" message' do
-        within('.todos-pending-count') { expect(page).to have_content '0' }
+        within('.todos-count') { expect(page).to have_content '0' }
         expect(page).to have_content 'To do 0'
         expect(page).to have_content 'Done 0'
         expect(page).to have_selector('.todos-all-done', count: 1)
@@ -267,7 +265,7 @@ describe 'Dashboard Todos', feature: true do
       end
 
       it 'shows 99+ for count >= 100 in notification' do
-        expect(page).to have_selector('.todos-pending-count', text: '99+')
+        expect(page).to have_selector('.todos-count', text: '99+')
       end
 
       it 'shows exact number in To do tab' do
@@ -277,7 +275,7 @@ describe 'Dashboard Todos', feature: true do
       it 'shows exact number for count < 100' do
         3.times { first('.js-done-todo').click }
 
-        expect(page).to have_selector('.todos-pending-count', text: '98')
+        expect(page).to have_selector('.todos-count', text: '98')
       end
     end
 

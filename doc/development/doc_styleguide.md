@@ -3,6 +3,8 @@
 This styleguide recommends best practices to improve documentation and to keep
 it organized and easy to find.
 
+See also [writing documentation](writing_documentation.md).
+
 ## Location and naming of documents
 
 >**Note:**
@@ -27,6 +29,8 @@ The table below shows what kind of documentation goes where.
 | `doc/legal/` | Legal documents about contributing to GitLab. |
 | `doc/install/`| Probably the most visited directory, since `installation.md` is there. Ideally this should go under `doc/administration/`, but it's best to leave it as-is in order to avoid confusion (still debated though). |
 | `doc/update/` | Same with `doc/install/`. Should be under `administration/`, but this is a well known location, better leave as-is, at least for now. |
+| `doc/topics/` | Indexes per Topic (`doc/topics/topic-name/index.md`): all resources for that topic (user and admin documentation, articles, and third-party docs) |
+| `doc/articles/` | [Technical Articles](writing_documentation.md#technical-articles): user guides, admin guides, technical overviews, tutorials (`doc/articles/article-title/index.md`). |
 
 ---
 
@@ -56,6 +60,10 @@ The table below shows what kind of documentation goes where.
          own document located at `doc/user/admin_area/settings/`. For example,
          the **Visibility and Access Controls** category should have a document
          located at `doc/user/admin_area/settings/visibility_and_access_controls.md`.
+1. The `doc/topics/` directory holds topic-related technical content. Create
+   `doc/topics/topic-name/subtopic-name/index.md` when subtopics become necessary.
+   General user- and admin- related documentation, should be placed accordingly.
+1. For technical articles, place their images under `doc/articles/article-title/img/`.
 
 ---
 

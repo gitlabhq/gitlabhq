@@ -25,7 +25,7 @@ describe Gitlab::Ci::Build::Step do
     end
 
     context 'when after_script is not empty' do
-      let(:job) { create(:ci_build, options: { after_script: "ls -la\ndate" }) }
+      let(:job) { create(:ci_build, options: { after_script: ['ls -la', 'date'] }) }
 
       it 'fabricates an object' do
         expect(subject.name).to eq(:after_script)

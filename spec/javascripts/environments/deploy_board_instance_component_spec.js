@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import DeployBoardInstance from '~/environments/components/deploy_board_instance_component';
+import DeployBoardInstance from '~/environments/components/deploy_board_instance_component.vue';
 
 describe('Deploy Board Instance', () => {
   let DeployBoardInstanceComponent;
@@ -29,5 +29,16 @@ describe('Deploy Board Instance', () => {
 
     expect(component.$el.classList.contains('deploy-board-instance-deploying')).toBe(true);
     expect(component.$el.getAttribute('data-title')).toEqual('');
+  });
+
+  it('should render a div with canary class when stable prop is provided as false', () => {
+    const component = new DeployBoardInstanceComponent({
+      propsData: {
+        status: 'deploying',
+        stable: false,
+      },
+    }).$mount();
+
+    expect(component.$el.classList.contains('deploy-board-instance-canary')).toBe(true);
   });
 });

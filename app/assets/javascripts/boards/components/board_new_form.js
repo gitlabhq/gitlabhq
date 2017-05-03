@@ -81,7 +81,7 @@ const extraMilestones = require('../mixins/extra_milestones');
       },
       submit() {
         gl.boardService.createBoard(this.board)
-          .then(() => {
+          .then((resp) => {
             if (this.currentBoard && this.currentPage !== 'new') {
               this.currentBoard.name = this.board.name;
 
@@ -89,14 +89,20 @@ const extraMilestones = require('../mixins/extra_milestones');
                 // We reload the page to make sure the store & state of the app are correct
                 this.refreshPage();
               }
+
+              // Enable the button thanks to our jQuery disabling it
+              $(this.$refs.submitBtn).enable();
+
+              // Reset the selectors current page
+              Store.state.currentPage = '';
+              Store.state.reload = true;
+            } else if (this.currentPage === 'new') {
+              const data = resp.json();
+              gl.utils.visitUrl(`${Store.rootPath}/${data.id}`);
             }
-
-            // Enable the button thanks to our jQuery disabling it
-            $(this.$refs.submitBtn).enable();
-
-            // Reset the selectors current page
-            Store.state.currentPage = '';
-            Store.state.reload = true;
+          })
+          .catch(() => {
+            // https://gitlab.com/gitlab-org/gitlab-ce/issues/30821
           });
       },
       cancel() {

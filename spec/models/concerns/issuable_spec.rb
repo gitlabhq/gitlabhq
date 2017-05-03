@@ -1,10 +1,13 @@
 require 'spec_helper'
 
-describe Issue, "Issuable" do
+describe Issuable do
+  let(:issuable_class) { Issue }
   let(:issue) { create(:issue) }
   let(:user) { create(:user) }
 
   describe "Associations" do
+    subject { build(:issue) }
+
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:author) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
@@ -22,10 +25,14 @@ describe Issue, "Issuable" do
   end
 
   describe 'Included modules' do
+    let(:described_class) { issuable_class }
+
     it { is_expected.to include_module(Awardable) }
   end
 
   describe "Validation" do
+    subject { build(:issue) }
+
     before do
       allow(subject).to receive(:set_iid).and_return(false)
     end
@@ -38,9 +45,11 @@ describe Issue, "Issuable" do
   end
 
   describe "Scope" do
-    it { expect(described_class).to respond_to(:opened) }
-    it { expect(described_class).to respond_to(:closed) }
-    it { expect(described_class).to respond_to(:assigned) }
+    subject { build(:issue) }
+
+    it { expect(issuable_class).to respond_to(:opened) }
+    it { expect(issuable_class).to respond_to(:closed) }
+    it { expect(issuable_class).to respond_to(:assigned) }
   end
 
   describe 'author_name' do
@@ -60,16 +69,16 @@ describe Issue, "Issuable" do
     let!(:searchable_issue) { create(:issue, title: "Searchable issue") }
 
     it 'returns notes with a matching title' do
-      expect(described_class.search(searchable_issue.title)).
+      expect(issuable_class.search(searchable_issue.title)).
         to eq([searchable_issue])
     end
 
     it 'returns notes with a partially matching title' do
-      expect(described_class.search('able')).to eq([searchable_issue])
+      expect(issuable_class.search('able')).to eq([searchable_issue])
     end
 
     it 'returns notes with a matching title regardless of the casing' do
-      expect(described_class.search(searchable_issue.title.upcase)).
+      expect(issuable_class.search(searchable_issue.title.upcase)).
         to eq([searchable_issue])
     end
   end
@@ -80,31 +89,31 @@ describe Issue, "Issuable" do
     end
 
     it 'returns notes with a matching title' do
-      expect(described_class.full_search(searchable_issue.title)).
+      expect(issuable_class.full_search(searchable_issue.title)).
         to eq([searchable_issue])
     end
 
     it 'returns notes with a partially matching title' do
-      expect(described_class.full_search('able')).to eq([searchable_issue])
+      expect(issuable_class.full_search('able')).to eq([searchable_issue])
     end
 
     it 'returns notes with a matching title regardless of the casing' do
-      expect(described_class.full_search(searchable_issue.title.upcase)).
+      expect(issuable_class.full_search(searchable_issue.title.upcase)).
         to eq([searchable_issue])
     end
 
     it 'returns notes with a matching description' do
-      expect(described_class.full_search(searchable_issue.description)).
+      expect(issuable_class.full_search(searchable_issue.description)).
         to eq([searchable_issue])
     end
 
     it 'returns notes with a partially matching description' do
-      expect(described_class.full_search(searchable_issue.description)).
+      expect(issuable_class.full_search(searchable_issue.description)).
         to eq([searchable_issue])
     end
 
     it 'returns notes with a matching description regardless of the casing' do
-      expect(described_class.full_search(searchable_issue.description.upcase)).
+      expect(issuable_class.full_search(searchable_issue.description.upcase)).
         to eq([searchable_issue])
     end
   end

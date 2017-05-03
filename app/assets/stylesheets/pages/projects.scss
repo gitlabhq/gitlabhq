@@ -46,10 +46,18 @@
     }
   }
 
+  .load-wrapper {
+    position: absolute;
+    background: $black-transparent;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   @media (max-width: $screen-xs-max) {
     .input-group > div {
-
-      margin-bottom: 14px;
 
       &:last-child {
         margin-bottom: 0;
@@ -459,34 +467,13 @@ a.deploy-project-label {
     flex-wrap: wrap;
 
     .btn {
-      margin: 0 10px 10px 0;
       padding: 8px;
+      margin-left: 10px;
     }
 
     > div {
+      margin-bottom: 10px;
       padding-left: 0;
-
-      &:last-child {
-        margin-bottom: 0;
-
-        .btn {
-          margin-right: 0;
-        }
-      }
-    }
-  }
-}
-
-.page-sidebar-pinned {
-  .project-stats .nav > li.right {
-    @media (min-width: $screen-lg-min) {
-      float: none;
-    }
-  }
-
-  .download-button {
-    @media (min-width: $screen-lg-min) {
-      margin-left: 0;
     }
   }
 }
@@ -582,54 +569,70 @@ pre.light-well {
 /*
  * Projects list rendered on dashboard and user page
  */
-
 .projects-list {
   @include basic-list;
+  display: flex;
+  flex-direction: column;
 
-  .project-row {
-    border-color: $white-normal;
+  // Disable Flexbox for admin page
+  &.admin-projects {
+    display: block;
 
-    .project-full-name {
-      @include str-truncated;
-
-      @media (max-width: $screen-xs-max) {
-        max-width: 50%;
-      }
-    }
-
-    .controls {
-      line-height: $list-text-height;
-
-      .badge {
-        @media (max-width: $screen-xs-max) {
-          display: none;
-        }
-      }
-
-      a:hover {
-        text-decoration: none;
-      }
-
-      > span {
-        margin-left: 10px;
-      }
-
-      svg {
-        position: relative;
-        top: 2px;
-      }
-    }
-
-    .description p {
-      @media (max-width: $screen-xs-max) {
-        max-width: 50%;
-      }
+    .project-row {
+      display: block;
     }
   }
 
-  .bottom {
-    padding-top: $gl-padding;
-    padding-bottom: 0;
+  .project-row {
+    display: flex;
+    align-items: center;
+    @include basic-list-stats;
+  }
+
+  h3 {
+    font-size: $gl-font-size;
+  }
+
+  a {
+    color: $gl-text-color;
+  }
+
+  .avatar-container,
+  .controls {
+    flex: 0 0 auto;
+  }
+
+  .avatar-container {
+    align-self: flex-start;
+
+    > a {
+      width: 100%;
+    }
+  }
+
+  .project-details {
+    min-width: 0;
+
+    p,
+    .commit-row-message {
+      @include str-truncated(100%);
+      margin-bottom: 0;
+    }
+  }
+
+  .controls {
+    margin-left: auto;
+    text-align: right;
+  }
+
+  .ci-status-link {
+    display: inline-block;
+    line-height: 17px;
+    vertical-align: middle;
+
+    &:hover {
+      text-decoration: none;
+    }
   }
 }
 
@@ -758,7 +761,17 @@ a.allowed-to-push {
   }
 }
 
-.protected-branches-list {
+.create-new-protected-branch-button {
+  @include dropdown-link;
+
+  width: 100%;
+  background-color: transparent;
+  border: 0;
+  text-align: left;
+}
+
+.protected-branches-list,
+.protected-tags-list {
   margin-bottom: 30px;
 
   a {
@@ -792,6 +805,17 @@ a.allowed-to-push {
 
 .disabled-item {
   @extend .btn.disabled;
+}
+
+.protected-tags-list {
+  .dropdown-menu-toggle {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .flash-container {
+    padding: 0;
+  }
 }
 
 .custom-notifications-form {
@@ -951,27 +975,23 @@ a.allowed-to-push {
   }
 
   .variable-key {
-    width: 300px;
-    max-width: 300px;
+    max-width: 120px;
     overflow: hidden;
     word-wrap: break-word;
-
-    // override bootstrap
-    white-space: normal!important;
-
-    @media (max-width: $screen-sm-max) {
-      width: 150px;
-      max-width: 150px;
-    }
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   .variable-value {
-    @media(max-width: $screen-xs-max) {
-      width: 150px;
-      max-width: 150px;
-      overflow: hidden;
-      word-wrap: break-word;
-    }
+    max-width: 150px;
+    overflow: hidden;
+    word-wrap: break-word;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .variable-menu {
+    text-align: right;
   }
 }
 

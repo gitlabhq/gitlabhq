@@ -59,7 +59,7 @@ class Projects::GitHttpController < Projects::GitHttpClientController
 
   def render_ok
     set_workhorse_internal_api_content_type
-    render json: Gitlab::Workhorse.git_http_ok(repository, user)
+    render json: Gitlab::Workhorse.git_http_ok(repository, user, action_name)
   end
 
   def render_http_not_allowed
@@ -105,11 +105,11 @@ class Projects::GitHttpController < Projects::GitHttpClientController
     access_check.allowed?
   end
 
-  def log_user_activity
-    Users::ActivityService.new(user, 'pull').execute
-  end
-
   def access_klass
     @access_klass ||= wiki? ? Gitlab::GitAccessWiki : Gitlab::GitAccess
+  end
+
+  def log_user_activity
+    Users::ActivityService.new(user, 'pull').execute
   end
 end

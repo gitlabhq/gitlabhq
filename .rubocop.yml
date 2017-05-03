@@ -535,13 +535,17 @@ Style/WhileUntilModifier:
 Style/WordArray:
   Enabled: true
 
+# Use `proc` instead of `Proc.new`.
+Style/Proc:
+  Enabled: true
+
 # Metrics #####################################################################
 
 # A calculated magnitude based on number of assignments,
 # branches, and conditions.
 Metrics/AbcSize:
   Enabled: true
-  Max: 60
+  Max: 57.08
 
 # This cop checks if the length of a block exceeds some maximum value.
 Metrics/BlockLength:
@@ -560,7 +564,7 @@ Metrics/ClassLength:
 # of test cases needed to validate a method.
 Metrics/CyclomaticComplexity:
   Enabled: true
-  Max: 17
+  Max: 16
 
 # Limit lines to 80 characters.
 Metrics/LineLength:
@@ -952,10 +956,14 @@ RSpec/DescribeClass:
 RSpec/DescribeMethod:
   Enabled: false
 
+# Avoid describing symbols.
+RSpec/DescribeSymbol:
+  Enabled: true
+
 # Checks that the second argument to top level describe is the tested method
 # name.
 RSpec/DescribedClass:
-  Enabled: false
+  Enabled: true
 
 # Checks for long example.
 RSpec/ExampleLength:
@@ -977,10 +985,12 @@ RSpec/ExpectActual:
 
 # Checks the file and folder naming of the spec file.
 RSpec/FilePath:
-  Enabled: false
-  CustomTransform:
-    RuboCop: rubocop
-    RSpec: rspec
+  Enabled: true
+  IgnoreMethods: true
+  Exclude:
+    - 'qa/**/*'
+    - 'spec/javascripts/fixtures/*'
+    - 'spec/requests/api/v3/*'
 
 # Checks if there are focused specs.
 RSpec/Focus:

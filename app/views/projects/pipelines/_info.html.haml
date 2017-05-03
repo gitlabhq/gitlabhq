@@ -1,10 +1,12 @@
 .page-content-header
   .header-main-content
-    = render 'ci/status/badge', status: @pipeline.detailed_status(current_user)
-    %strong Pipeline ##{@commit.pipelines.last.id}
-    triggered #{time_ago_with_tooltip(@commit.authored_date)} by
-    = author_avatar(@commit, size: 24)
-    = commit_author_link(@commit)
+    = render 'ci/status/badge', status: @pipeline.detailed_status(current_user), title: @pipeline.status_title
+    %strong Pipeline ##{@pipeline.id}
+    triggered #{time_ago_with_tooltip(@pipeline.created_at)}
+    - if @pipeline.user
+      by
+      = user_avatar(user: @pipeline.user, size: 24)
+      = user_link(@pipeline.user)
   .header-action-buttons
     - if can?(current_user, :update_pipeline, @pipeline.project)
       - if @pipeline.retryable?
@@ -44,4 +46,4 @@
         \...
     %span.js-details-content.hide
       = link_to @pipeline.sha, namespace_project_commit_path(@project.namespace, @project, @pipeline.sha), class: "monospace commit-hash-full"
-    = clipboard_button(clipboard_text: @pipeline.sha, title: "Copy commit SHA to clipboard")
+    = clipboard_button(text: @pipeline.sha, title: "Copy commit SHA to clipboard")

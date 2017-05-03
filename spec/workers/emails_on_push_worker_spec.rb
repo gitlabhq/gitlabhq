@@ -5,14 +5,14 @@ describe EmailsOnPushWorker do
   include EmailHelpers
   include EmailSpec::Matchers
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:data) { Gitlab::DataBuilder::Push.build_sample(project, user) }
   let(:recipients) { user.email }
   let(:perform) { subject.perform(project.id, recipients, data.stringify_keys) }
   let(:email) { ActionMailer::Base.deliveries.last }
 
-  subject { EmailsOnPushWorker.new }
+  subject { described_class.new }
 
   describe "#perform" do
     context "when push is a new branch" do

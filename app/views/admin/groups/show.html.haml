@@ -56,7 +56,7 @@
             = group_lfs_status(@group)
             = link_to icon('question-circle'), help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
 
-        = render "shared_runner_status", group: @group
+        = render partial: "namespaces/shared_runner_status", locals: { namespace: @group }
 
     .panel.panel-default
       .panel-heading Linked LDAP groups
@@ -129,7 +129,7 @@
         group members
         %span.badge= @group.members.size
         .pull-right
-          = link_to icon('pencil-square-o', text: 'Manage Access'), polymorphic_url([@group, :members]), class: "btn btn-xs"
+          = link_to icon('pencil-square-o', text: 'Manage access'), polymorphic_url([@group, :members]), class: "btn btn-xs"
       %ul.well-list.group-users-list.content-list
         = render partial: 'shared/members/member', collection: @members, as: :member, locals: { show_controls: false }
       .panel-footer

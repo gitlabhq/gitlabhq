@@ -1,18 +1,18 @@
 require 'spec_helper'
 
 describe 'Filter issues', js: true, feature: true do
+  include Devise::Test::IntegrationHelpers
   include FilteredSearchHelpers
-  include WaitForAjax
 
   let!(:group) { create(:group) }
   let!(:project) { create(:project, group: group) }
-  let!(:user) { create(:user) }
-  let!(:user2) { create(:user) }
+  let!(:user) { create(:user, username: 'joe') }
+  let!(:user2) { create(:user, username: 'jane') }
   let!(:label) { create(:label, project: project) }
   let!(:wontfix) { create(:label, project: project, title: "Won't fix") }
 
   let!(:bug_label) { create(:label, project: project, title: 'bug') }
-  let!(:caps_sensitive_label) { create(:label, project: project, title: 'CAPS_sensitive') }
+  let!(:caps_sensitive_label) { create(:label, project: project, title: 'CaPs') }
   let!(:milestone) { create(:milestone, title: "8", project: project, start_date: 2.days.ago) }
   let!(:multiple_words_label) { create(:label, project: project, title: "Two words") }
 
@@ -42,9 +42,8 @@ describe 'Filter issues', js: true, feature: true do
     project.team << [user2, :master]
     group.add_developer(user)
     group.add_developer(user2)
-    login_as(user)
-    create(:issue, project: project)
 
+<<<<<<< HEAD
     create(:issue, title: "Bug report 1", project: project)
     create(:issue, title: "Bug report 2", project: project)
     create(:issue, title: "issue with 'single quotes'", project: project)
@@ -52,6 +51,18 @@ describe 'Filter issues', js: true, feature: true do
     create(:issue, title: "issue with !@\#{$%^&*()-+", project: project)
     create(:issue, title: "issue by assignee", project: project, milestone: milestone, author: user, assignees: [user])
     create(:issue, title: "issue by assignee with searchTerm", project: project, milestone: milestone, author: user, assignees: [user])
+=======
+    sign_in(user)
+
+    create(:issue, project: project)
+    create(:issue, project: project, title: "Bug report 1")
+    create(:issue, project: project, title: "Bug report 2")
+    create(:issue, project: project, title: "issue with 'single quotes'")
+    create(:issue, project: project, title: "issue with \"double quotes\"")
+    create(:issue, project: project, title: "issue with !@\#{$%^&*()-+")
+    create(:issue, project: project, title: "issue by assignee", milestone: milestone, author: user, assignee: user)
+    create(:issue, project: project, title: "issue by assignee with searchTerm", milestone: milestone, author: user, assignee: user)
+>>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0
 
     issue = create(:issue,
       title: "Bug 2",
@@ -70,7 +81,7 @@ describe 'Filter issues', js: true, feature: true do
     issue_with_caps_label.labels << caps_sensitive_label
 
     issue_with_everything = create(:issue,
-      title: "Bug report with everything you thought was possible",
+      title: "Bug report foo was possible",
       project: project,
       milestone: milestone,
       author: user,
@@ -687,10 +698,10 @@ describe 'Filter issues', js: true, feature: true do
       end
 
       it 'filters issues by searched text, author, more text, assignee and even more text' do
-        input_filtered_search("bug author:@#{user.username} report assignee:@#{user.username} with")
+        input_filtered_search("bug author:@#{user.username} report assignee:@#{user.username} foo")
 
         expect_issues_list_count(1)
-        expect_filtered_search_input('bug report with')
+        expect_filtered_search_input('bug report foo')
       end
 
       it 'filters issues by searched text, author, assignee and label' do
@@ -701,10 +712,10 @@ describe 'Filter issues', js: true, feature: true do
       end
 
       it 'filters issues by searched text, author, text, assignee, text, label and text' do
-        input_filtered_search("bug author:@#{user.username} report assignee:@#{user.username} with label:~#{bug_label.title} everything")
+        input_filtered_search("bug author:@#{user.username} assignee:@#{user.username} report label:~#{bug_label.title} foo")
 
         expect_issues_list_count(1)
-        expect_filtered_search_input('bug report with everything')
+        expect_filtered_search_input('bug report foo')
       end
 
       it 'filters issues by searched text, author, assignee, label and milestone' do
@@ -715,10 +726,10 @@ describe 'Filter issues', js: true, feature: true do
       end
 
       it 'filters issues by searched text, author, text, assignee, text, label, text, milestone and text' do
-        input_filtered_search("bug author:@#{user.username} report assignee:@#{user.username} with label:~#{bug_label.title} everything milestone:%#{milestone.title} you")
+        input_filtered_search("bug author:@#{user.username} assignee:@#{user.username} report label:~#{bug_label.title} milestone:%#{milestone.title} foo")
 
         expect_issues_list_count(1)
-        expect_filtered_search_input('bug report with everything you')
+        expect_filtered_search_input('bug report foo')
       end
 
       it 'filters issues by searched text, author, assignee, multiple labels and milestone' do
@@ -729,10 +740,10 @@ describe 'Filter issues', js: true, feature: true do
       end
 
       it 'filters issues by searched text, author, text, assignee, text, label1, text, label2, text, milestone and text' do
-        input_filtered_search("bug author:@#{user.username} report assignee:@#{user.username} with label:~#{bug_label.title} everything label:~#{caps_sensitive_label.title} you milestone:%#{milestone.title} thought")
+        input_filtered_search("bug author:@#{user.username} assignee:@#{user.username} report label:~#{bug_label.title} label:~#{caps_sensitive_label.title} milestone:%#{milestone.title} foo")
 
         expect_issues_list_count(1)
-        expect_filtered_search_input('bug report with everything you thought')
+        expect_filtered_search_input('bug report foo')
       end
     end
 
@@ -756,10 +767,10 @@ describe 'Filter issues', js: true, feature: true do
 
         expect_issues_list_count(2)
 
-        sort_toggle = find('.filtered-search-container .dropdown-toggle')
+        sort_toggle = find('.filtered-search-wrapper .dropdown-toggle')
         sort_toggle.click
 
-        find('.filtered-search-container .dropdown-menu li a', text: 'Oldest updated').click
+        find('.filtered-search-wrapper .dropdown-menu li a', text: 'Oldest updated').click
         wait_for_ajax
 
         expect(find('.issues-list .issue:first-of-type .issue-title-text a')).to have_content(old_issue.title)

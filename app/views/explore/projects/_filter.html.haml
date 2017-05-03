@@ -17,24 +17,3 @@
           = link_to filter_projects_path(visibility_level: level) do
             = visibility_level_icon(level)
             = visibility_level_label(level)
-
-- if @tags.present?
-  .dropdown
-    %button.dropdown-toggle{ href: '#', "data-toggle" => "dropdown" }
-      = icon('tags')
-      %span.light Tags:
-      - if params[:tag].present?
-        = params[:tag]
-      - else
-        Any
-      = icon('chevron-down')
-    %ul.dropdown-menu.dropdown-menu-align-right
-      %li
-        = link_to filter_projects_path(tag: nil) do
-          Any
-
-      - @tags.each do |tag|
-        %li{ class: active_when(tag.name == params[:tag]) || 'light' }
-          = link_to filter_projects_path(tag: tag.name) do
-            = icon('tag')
-            = tag.name

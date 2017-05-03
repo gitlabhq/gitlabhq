@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe SlashCommands::InterpretService, services: true do
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:empty_project, :public) }
   let(:developer) { create(:user) }
   let(:developer2) { create(:user) }
   let(:issue) { create(:issue, project: project) }
@@ -244,6 +244,8 @@ describe SlashCommands::InterpretService, services: true do
     end
 
     shared_examples 'merge command' do
+      let(:project) { create(:project, :repository) }
+
       it 'runs merge command if content contains /merge' do
         _, updates = service.execute(content, issuable)
 
@@ -323,6 +325,7 @@ describe SlashCommands::InterpretService, services: true do
       end
 
       context 'when sha is missing' do
+        let(:project) { create(:project, :repository) }
         let(:service) { described_class.new(project, developer, {}) }
 
         it 'precheck passes and returns merge command' do
@@ -749,7 +752,7 @@ describe SlashCommands::InterpretService, services: true do
     end
 
     context '/target_branch command' do
-      let(:non_empty_project) { create(:project) }
+      let(:non_empty_project) { create(:project, :repository) }
       let(:another_merge_request) { create(:merge_request, author: developer, source_project: non_empty_project) }
       let(:service) { described_class.new(non_empty_project, developer)}
 

@@ -1,6 +1,7 @@
 class ProjectsController < Projects::ApplicationController
   include IssuableCollections
   include ExtractsPath
+  include MarkdownPreview
 
   before_action :authenticate_user!, except: [:index, :show, :activity, :refs]
   before_action :project, except: [:index, :new, :create]
@@ -217,20 +218,6 @@ class ProjectsController < Projects::ApplicationController
     }
   end
 
-  def preview_markdown
-    text = params[:text]
-
-    ext = Gitlab::ReferenceExtractor.new(@project, current_user)
-    ext.analyze(text, author: current_user)
-
-    render json: {
-      body:       view_context.markdown(text),
-      references: {
-        users: ext.users.map(&:username)
-      }
-    }
-  end
-
   def refs
     branches = BranchesFinder.new(@repository, params).execute.map(&:name)
 
@@ -251,6 +238,10 @@ class ProjectsController < Projects::ApplicationController
     end
 
     render json: options.to_json
+  end
+
+  def preview_markdown
+    render_markdown_preview(params[:text])
   end
 
   private
@@ -349,6 +340,7 @@ class ProjectsController < Projects::ApplicationController
       mirror_user_id
       repository_size_limit
       reset_approvals_on_push
+      service_desk_enabled
     ]
   end
 
@@ -362,7 +354,11 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def project_view_files?
-    current_user && current_user.project_view == 'files'
+    if current_user
+      current_user.project_view == 'files'
+    else
+      project_view_files_allowed?
+    end
   end
 
   # Override extract_ref from ExtractsPath, which returns the branch and file path
@@ -382,5 +378,9 @@ class ProjectsController < Projects::ApplicationController
   def assign_tree_vars
     @id = get_id
     tree
+  end
+
+  def project_view_files_allowed?
+    !project.empty_repo? && can?(current_user, :download_code, project)
   end
 end

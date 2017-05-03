@@ -18,7 +18,7 @@ feature 'toggler_behavior', js: true, feature: true do
     it 'should be scrolled down to fragment' do
       page_height = page.current_window.size[1]
       page_scroll_y = page.evaluate_script("window.scrollY")
-      fragment_position_top = page.evaluate_script("$('#{fragment_id}').offset().top")
+      fragment_position_top = page.evaluate_script("Math.round($('#{fragment_id}').offset().top)")
       expect(find('.js-toggle-content').visible?).to eq true
       expect(find(fragment_id).visible?).to eq true
       expect(fragment_position_top).to be >= page_scroll_y

@@ -10,6 +10,8 @@ module Geo
       repositories_failed_count
       lfs_objects_count
       lfs_objects_synced_count
+      attachments_count
+      attachments_synced_count
     ).freeze
 
     def call(geo_node)

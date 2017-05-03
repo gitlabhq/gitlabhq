@@ -10,7 +10,8 @@ Feature: Project Source Browse Files
   Scenario: I browse files for specific ref
     Given I visit project source page for "6d39438"
     Then I should see files from repository for "6d39438"
-
+    
+  @javascript
   Scenario: I browse file content
     Given I click on ".gitignore" file in repo
     Then I should see its content
@@ -36,7 +37,7 @@ Feature: Project Source Browse Files
     And I edit code
     And I fill the new file name
     And I fill the commit message
-    And I click on "Commit Changes"
+    And I click on "Commit changes"
     Then I am redirected to the new file
     And I should see its new content
 
@@ -47,7 +48,7 @@ Feature: Project Source Browse Files
     And I edit code
     And I fill the new file name
     And I fill the commit message
-    And I click on "Commit Changes"
+    And I click on "Commit changes"
     Then I am redirected to the fork's new merge request page
     And I can see the new commit message
 
@@ -57,7 +58,7 @@ Feature: Project Source Browse Files
     And I edit code with new lines at end of file
     And I fill the new file name
     And I fill the commit message
-    And I click on "Commit Changes"
+    And I click on "Commit changes"
     Then I am redirected to the new file
     And I click button "Edit"
     And I should see its content with new lines preserved at end of file
@@ -69,7 +70,7 @@ Feature: Project Source Browse Files
     And I fill the new file name
     And I fill the commit message
     And I fill the new branch name
-    And I click on "Commit Changes"
+    And I click on "Commit changes"
     Then I am redirected to the new merge request page
     When I click on "Changes" tab
     And I should see its new content
@@ -117,6 +118,8 @@ Feature: Project Source Browse Files
     And I click on ".gitignore" file in repo
     And I see the ".gitignore"
     And I click on "Replace"
+    Then I should see a Fork/Cancel combo
+    And I click button "Fork"
     Then I should see a notice about a new fork having been created
     When I click on "Replace"
     And I replace it with a text file
@@ -135,7 +138,7 @@ Feature: Project Source Browse Files
     And I fill the commit message
     And I click on "Commit changes"
     Then I am on the new file page
-    And I see a commit error message
+    And I see "Path can contain only..."
 
   @javascript
   Scenario: I can create file with a directory name
@@ -158,6 +161,8 @@ Feature: Project Source Browse Files
     Given I don't have write access
     And I click on ".gitignore" file in repo
     And I click button "Edit"
+    Then I should see a Fork/Cancel combo
+    And I click button "Fork"
     Then I should see a notice about a new fork having been created
     And I can edit code
 
@@ -171,7 +176,7 @@ Feature: Project Source Browse Files
     And I click button "Edit"
     And I edit code
     And I fill the commit message
-    And I click on "Commit Changes"
+    And I click on "Commit changes"
     Then I am redirected to the ".gitignore"
     And I should see its new content
 
@@ -180,9 +185,11 @@ Feature: Project Source Browse Files
     Given I don't have write access
     And I click on ".gitignore" file in repo
     And I click button "Edit"
+    Then I should see a Fork/Cancel combo
+    And I click button "Fork"
     And I edit code
     And I fill the commit message
-    And I click on "Commit Changes"
+    And I click on "Commit changes"
     Then I am redirected to the fork's new merge request page
     And I can see the new commit message
 
@@ -193,7 +200,7 @@ Feature: Project Source Browse Files
     And I edit code
     And I fill the commit message
     And I fill the new branch name
-    And I click on "Commit Changes"
+    And I click on "Commit changes"
     Then I am redirected to the new merge request page
     Then I click on "Changes" tab
     And I should see its new content
@@ -261,6 +268,8 @@ Feature: Project Source Browse Files
     And I click on ".gitignore" file in repo
     And I see the ".gitignore"
     And I click on "Delete"
+    Then I should see a Fork/Cancel combo
+    And I click button "Fork"
     Then I should see a notice about a new fork having been created
     When I click on "Delete"
     And I fill the commit message

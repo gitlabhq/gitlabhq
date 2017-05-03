@@ -7,6 +7,7 @@ Vue.use(VueResource);
 export default class EnvironmentsService {
   constructor(endpoint) {
     this.environments = Vue.resource(endpoint);
+    this.folderResults = 3;
   }
 
   get(scope, page) {
@@ -19,5 +20,9 @@ export default class EnvironmentsService {
 
   postAction(endpoint) {
     return Vue.http.post(endpoint, {}, { emulateJSON: true });
+  }
+
+  getFolderContent(folderUrl) {
+    return Vue.http.get(`${folderUrl}.json?per_page=${this.folderResults}`);
   }
 }

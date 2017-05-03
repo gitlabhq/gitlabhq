@@ -15,7 +15,7 @@ module LicenseHelper
   # in_html is set to false from an initializer, which shouldn't try to render
   # HTML links.
   #
-  def license_message(signed_in: signed_in?, is_admin: (current_user && current_user.is_admin?), in_html: true)
+  def license_message(signed_in: signed_in?, is_admin: (current_user && current_user.admin?), in_html: true)
     @license_message =
       if License.current
         yes_license_message(signed_in, is_admin)

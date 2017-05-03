@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-describe API::V3::Issues, api: true  do
-  include ApiHelpers
+describe API::V3::Issues do
   include EmailHelpers
 
   let(:user)        { create(:user) }
@@ -19,7 +18,7 @@ describe API::V3::Issues, api: true  do
            project: project,
            state: :closed,
            milestone: milestone,
-           created_at: generate(:issue_created_at),
+           created_at: generate(:past_time),
            updated_at: 3.hours.ago
   end
   let!(:confidential_issue) do
@@ -27,8 +26,13 @@ describe API::V3::Issues, api: true  do
            :confidential,
            project: project,
            author: author,
+<<<<<<< HEAD
            assignees: [assignee],
            created_at: generate(:issue_created_at),
+=======
+           assignee: assignee,
+           created_at: generate(:past_time),
+>>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0
            updated_at: 2.hours.ago
   end
   let!(:issue) do
@@ -37,7 +41,7 @@ describe API::V3::Issues, api: true  do
            assignees: [user],
            project: project,
            milestone: milestone,
-           created_at: generate(:issue_created_at),
+           created_at: generate(:past_time),
            updated_at: 1.hour.ago
   end
   let!(:label) do
@@ -285,8 +289,16 @@ describe API::V3::Issues, api: true  do
     end
     let(:base_url) { "/groups/#{group.id}/issues" }
 
+    it 'returns all group issues (including opened and closed)' do
+      get v3_api(base_url, admin)
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(3)
+    end
+
     it 'returns group issues without confidential issues for non project members' do
-      get v3_api(base_url, non_member)
+      get v3_api("#{base_url}?state=opened", non_member)
 
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
@@ -295,7 +307,7 @@ describe API::V3::Issues, api: true  do
     end
 
     it 'returns group confidential issues for author' do
-      get v3_api(base_url, author)
+      get v3_api("#{base_url}?state=opened", author)
 
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
@@ -303,7 +315,7 @@ describe API::V3::Issues, api: true  do
     end
 
     it 'returns group confidential issues for assignee' do
-      get v3_api(base_url, assignee)
+      get v3_api("#{base_url}?state=opened", assignee)
 
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
@@ -311,7 +323,7 @@ describe API::V3::Issues, api: true  do
     end
 
     it 'returns group issues with confidential issues for project members' do
-      get v3_api(base_url, user)
+      get v3_api("#{base_url}?state=opened", user)
 
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
@@ -319,7 +331,7 @@ describe API::V3::Issues, api: true  do
     end
 
     it 'returns group confidential issues for admin' do
-      get v3_api(base_url, admin)
+      get v3_api("#{base_url}?state=opened", admin)
 
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
@@ -368,7 +380,7 @@ describe API::V3::Issues, api: true  do
     end
 
     it 'returns an array of issues in given milestone' do
-      get v3_api("#{base_url}?milestone=#{group_milestone.title}", user)
+      get v3_api("#{base_url}?state=opened&milestone=#{group_milestone.title}", user)
 
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
@@ -819,7 +831,7 @@ describe API::V3::Issues, api: true  do
     end
 
     context 'resolving issues in a merge request' do
-      let(:discussion) { Discussion.for_diff_notes([create(:diff_note_on_merge_request)]).first }
+      let(:discussion) { create(:diff_note_on_merge_request).to_discussion }
       let(:merge_request) { discussion.noteable }
       let(:project) { merge_request.source_project }
       before do

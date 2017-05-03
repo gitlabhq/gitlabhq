@@ -31,6 +31,7 @@ eslint-report.html
 /config/unicorn.rb
 /config/secrets.yml
 /config/sidekiq.yml
+/config/registry.key
 /coverage/*
 /coverage-javascript/
 /db/*.sqlite3
@@ -49,7 +50,7 @@ eslint-report.html
 /tags
 /tmp/*
 /vendor/bundle/*
-/builds/*
+/builds*
 /shared/*
 /.gitlab_workhorse_secret
 /webpack-report/

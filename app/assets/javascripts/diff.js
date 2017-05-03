@@ -13,10 +13,6 @@ class Diff {
 
     $diffFile.each((index, file) => new gl.ImageFile(file));
 
-    if (this.diffViewType() === 'parallel') {
-      $('.content-wrapper .container-fluid').removeClass('container-limited');
-    }
-
     if (!isBound) {
       $(document)
         .on('click', '.js-unfold', this.handleClickUnfold.bind(this))
@@ -33,11 +29,7 @@ class Diff {
 
   handleClickUnfold(e) {
     const $target = $(e.target);
-    // current babel config relies on iterators implementation, so we cannot simply do:
-    // const [oldLineNumber, newLineNumber] = this.lineNumbers($target.parent());
-    const ref = this.lineNumbers($target.parent());
-    const oldLineNumber = ref[0];
-    const newLineNumber = ref[1];
+    const [oldLineNumber, newLineNumber] = this.lineNumbers($target.parent());
     const offset = newLineNumber - oldLineNumber;
     const bottom = $target.hasClass('js-unfold-bottom');
     let since;
@@ -105,10 +97,11 @@ class Diff {
   }
 
   lineNumbers(line) {
-    if (!line.children().length) {
+    const children = line.find('.diff-line-num').toArray();
+    if (children.length !== 2) {
       return [0, 0];
     }
-    return line.find('.diff-line-num').map((i, elm) => parseInt($(elm).data('linenumber'), 10));
+    return children.map(elm => parseInt($(elm).data('linenumber'), 10) || 0);
   }
 
   highlightSelectedLine() {

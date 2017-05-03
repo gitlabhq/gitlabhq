@@ -62,7 +62,7 @@ module Elastic
       end
 
       def self.confidentiality_filter(query_hash, current_user)
-        return query_hash if current_user && current_user.admin?
+        return query_hash if current_user && current_user.admin_or_auditor?
 
         filter = if current_user
                    {

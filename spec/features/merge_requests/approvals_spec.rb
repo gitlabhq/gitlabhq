@@ -246,14 +246,14 @@ feature 'Merge request approvals', js: true, feature: true do
         visit namespace_project_merge_request_path(project.namespace, project, merge_request)
       end
 
-      it 'I am unable to set Merge When Pipeline Succeeds' do
+      it 'I am unable to set Merge when pipeline succeeds' do
         # before approval status is loaded
-        expect(page).to have_button('Merge When Pipeline Succeeds', disabled: true)
+        expect(page).to have_button('Merge when pipeline succeeds', disabled: true)
 
         wait_for_ajax
 
         # after approval status is loaded
-        expect(page).to have_button('Merge When Pipeline Succeeds', disabled: true)
+        expect(page).to have_button('Merge when pipeline succeeds', disabled: true)
       end
     end
 
@@ -309,7 +309,7 @@ end
 
 def approve_merge_request
   page.within '.mr-state-widget' do
-    click_button 'Approve Merge Request'
+    click_button 'Approve merge request'
   end
   wait_for_ajax
 end

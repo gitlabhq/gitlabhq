@@ -58,7 +58,7 @@ See [our current .eslintrc][eslintrc] for specific rules and patterns.
   import Bar from './bar';
   ```
 
-- **Never** disable the `no-undef` rule.  Declare globals with `/* global Foo */` instead.
+- **Never** disable the `no-undef` rule. Declare globals with `/* global Foo */` instead.
 
 - When declaring multiple globals, always use one `/* global [name] */` line per variable.
 
@@ -70,6 +70,16 @@ See [our current .eslintrc][eslintrc] for specific rules and patterns.
   /* global Flash */
   /* global Cookies */
   /* global jQuery */
+  ```
+  
+- Use up to 3 parameters for a function or class. If you need more accept an Object instead.
+
+  ```javascript
+  // bad
+  fn(p1, p2, p3, p4) {}
+
+  // good
+  fn(options) {}
   ```
 
 #### Modules, Imports, and Exports
@@ -168,6 +178,23 @@ See [our current .eslintrc][eslintrc] for specific rules and patterns.
 
 - Avoid constructors with side-effects
 
+- Prefer `.map`, `.reduce` or `.filter` over `.forEach`
+A forEach will cause side effects, it will be mutating the array being iterated. Prefer using `.map`,
+`.reduce` or `.filter`
+
+  ```javascript
+  const users = [ { name: 'Foo' }, { name: 'Bar' } ];
+
+  // bad
+  users.forEach((user, index) => {
+    user.id = index;
+  });
+
+  // good
+  const usersWithId = users.map((user, index) => {
+    return Object.assign({}, user, { id: index });
+  });
+  ```
 
 #### Parse Strings into Numbers
 - `parseInt()` is preferable over `Number()` or `+`
@@ -183,6 +210,19 @@ See [our current .eslintrc][eslintrc] for specific rules and patterns.
   parseInt('10', 10);
   ```
 
+#### CSS classes used for JavaScript
+- If the class is being used in Javascript it needs to be prepend with `js-`
+  ```html
+    // bad
+    <button class="add-user">
+      Add User
+    </button>
+
+    // good
+    <button class="js-add-user">
+      Add User
+    </button>
+  ```
 
 ### Vue.js
 
@@ -218,15 +258,24 @@ See [our current .eslintrc][eslintrc] for specific rules and patterns.
     cardBoard: CardBoard
   };
   ```
-- **Props Naming**: Avoid using DOM component prop names.
+
+- **Props Naming:**
+- Avoid using DOM component prop names.
+- Use kebab-case instead of camelCase to provide props in templates.
 
   ```javascript
   // bad
   <component class="btn">
 
   // good
-  <component cssClass="btn">
-  ```
+  <component css-class="btn">
+
+  // bad
+  <component myProp="prop" />
+
+  // good
+  <component my-prop="prop" />
+```
 
 #### Alignment
 - Follow these alignment styles for the template method:
@@ -236,11 +285,17 @@ See [our current .eslintrc][eslintrc] for specific rules and patterns.
   <component v-if="bar"
       param="baz" />
 
+  <button class="btn">Click me</button>
+
   // good
   <component
     v-if="bar"
     param="baz"
   />
+
+  <button class="btn">
+    Click me
+  </button>
 
   // if props fit in one line then keep it on the same line
   <component bar="bar" />

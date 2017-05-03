@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-describe API::Milestones, api: true  do
-  include ApiHelpers
+describe API::Milestones do
   let(:user) { create(:user) }
   let!(:project) { create(:empty_project, namespace: user.namespace ) }
   let!(:closed_milestone) { create(:closed_milestone, project: project, title: 'version1', description: 'closed milestone') }
@@ -306,6 +305,8 @@ describe API::Milestones, api: true  do
     end
 
     it 'returns project merge_requests for a particular milestone' do
+      # eager-load another_merge_request
+      another_merge_request
       get api("/projects/#{project.id}/milestones/#{milestone.id}/merge_requests", user)
 
       expect(response).to have_http_status(200)

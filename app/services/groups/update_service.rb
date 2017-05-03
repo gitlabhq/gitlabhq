@@ -1,6 +1,8 @@
 module Groups
   class UpdateService < Groups::BaseService
     def execute
+      reject_parent_id!
+
       # check that user is allowed to set specified visibility_level
       new_visibility = params[:visibility_level]
       if new_visibility && new_visibility.to_i != group.visibility_level
@@ -14,7 +16,7 @@ module Groups
 
       # Repository size limit comes as MB from the view
       limit = @params.delete(:repository_size_limit)
-      group.repository_size_limit = (limit.to_i.megabytes if limit.present?)
+      group.repository_size_limit = Gitlab::Utils.try_megabytes_to_bytes(limit) if limit
 
       group.assign_attributes(params)
 
@@ -25,6 +27,12 @@ module Groups
 
         false
       end
+    end
+
+    private
+
+    def reject_parent_id!
+      params.except!(:parent_id)
     end
   end
 end

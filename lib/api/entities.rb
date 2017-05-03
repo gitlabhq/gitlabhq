@@ -14,13 +14,13 @@ module API
 
     class User < UserBasic
       expose :created_at
-      expose :is_admin?, as: :is_admin
       expose :bio, :location, :skype, :linkedin, :twitter, :website_url, :organization
     end
 
     class UserActivity < Grape::Entity
       expose :username
-      expose :last_activity_at
+      expose :last_activity_on
+      expose :last_activity_on, as: :last_activity_at # Back-compat
     end
 
     class Identity < Grape::Entity
@@ -30,6 +30,7 @@ module API
     class UserPublic < User
       expose :last_sign_in_at
       expose :confirmed_at
+      expose :last_activity_on
       expose :email
       expose :color_scheme_id, :projects_limit, :current_sign_in_at
       expose :identities, using: Entities::Identity
@@ -39,8 +40,9 @@ module API
       expose :external
     end
 
-    class UserWithPrivateToken < UserPublic
+    class UserWithPrivateDetails < UserPublic
       expose :private_token
+      expose :admin?, as: :is_admin
     end
 
     class Email < Grape::Entity
@@ -210,19 +212,15 @@ module API
       end
 
       expose :protected do |repo_branch, options|
-        options[:project].protected_branch?(repo_branch.name)
+        ProtectedBranch.protected?(options[:project], repo_branch.name)
       end
 
       expose :developers_can_push do |repo_branch, options|
-        project = options[:project]
-        access_levels = project.protected_branches.matching(repo_branch.name).map(&:push_access_levels).flatten
-        access_levels.any? { |access_level| access_level.access_level == Gitlab::Access::DEVELOPER }
+        options[:project].protected_branches.developers_can?(:push, repo_branch.name)
       end
 
       expose :developers_can_merge do |repo_branch, options|
-        project = options[:project]
-        access_levels = project.protected_branches.matching(repo_branch.name).map(&:merge_access_levels).flatten
-        access_levels.any? { |access_level| access_level.access_level == Gitlab::Access::DEVELOPER }
+        options[:project].protected_branches.developers_can?(:merge, repo_branch.name)
       end
     end
 
@@ -230,7 +228,7 @@ module API
       expose :id, :name, :type, :path
 
       expose :mode do |obj, options|
-        filemode = obj.mode.to_s(8)
+        filemode = obj.mode
         filemode = "0" + filemode if filemode.length < 6
         filemode
       end
@@ -640,6 +638,7 @@ module API
       expose :plantuml_enabled
       expose :plantuml_url
       expose :terminal_max_session_time
+      expose :polling_interval_multiplier
     end
 
     class Release < Grape::Entity
@@ -689,9 +688,9 @@ module API
       expose :locked
       expose :version, :revision, :platform, :architecture
       expose :contacted_at
-      expose :token, if: lambda { |runner, options| options[:current_user].is_admin? || !runner.is_shared? }
+      expose :token, if: lambda { |runner, options| options[:current_user].admin? || !runner.is_shared? }
       expose :projects, with: Entities::BasicProjectDetails do |runner, options|
-        if options[:current_user].is_admin?
+        if options[:current_user].admin?
           runner.projects
         else
           options[:current_user].authorized_projects.where(id: runner.projects)
@@ -782,12 +781,16 @@ module API
     end
 
     class GeoNodeStatus < Grape::Entity
+      expose :id
       expose :health
+      expose :healthy?, as: :healthy
       expose :repositories_count
       expose :repositories_synced_count
       expose :repositories_failed_count
       expose :lfs_objects_count
       expose :lfs_objects_synced_count
+      expose :attachments_count
+      expose :attachments_synced_count
     end
 
     class PersonalAccessToken < Grape::Entity

@@ -11,7 +11,7 @@ feature 'Project milestone', :feature do
 
   context 'when project has enabled issues' do
     before do
-      visit milestone_path
+      visit namespace_project_milestone_path(project.namespace, project, milestone)
     end
 
     it 'shows issues tab' do
@@ -23,12 +23,14 @@ feature 'Project milestone', :feature do
     end
 
     it 'shows issues stats' do
-      expect(page).to have_content 'issues:'
+      expect(find('.milestone-sidebar')).to have_content 'Issues 0'
     end
 
-    it 'shows Browse Issues button' do
-      within('#content-body') do
-        expect(page).to have_link 'Browse Issues'
+    it 'shows link to browse and add issues' do
+      within('.milestone-sidebar') do
+        expect(page).to have_link 'New issue'
+        expect(page).to have_link 'Open: 0'
+        expect(page).to have_link 'Closed: 0'
       end
     end
   end
@@ -36,7 +38,7 @@ feature 'Project milestone', :feature do
   context 'when project has disabled issues' do
     before do
       project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
-      visit milestone_path
+      visit namespace_project_milestone_path(project.namespace, project, milestone)
     end
 
     it 'hides issues tab' do
@@ -48,12 +50,12 @@ feature 'Project milestone', :feature do
     end
 
     it 'hides issues stats' do
-      expect(page).to have_no_content 'issues:'
+      expect(find('.milestone-sidebar')).not_to have_content 'Issues 0'
     end
 
-    it 'hides Browse Issues button' do
-      within('#content-body') do
-        expect(page).not_to have_link 'Browse Issues'
+    it 'hides new issue button' do
+      within('.milestone-sidebar') do
+        expect(page).not_to have_link 'New issue'
       end
     end
 
@@ -66,23 +68,23 @@ feature 'Project milestone', :feature do
   context 'milestone summary' do
     it 'shows the total weight when sum is greater than zero' do
       create(:issue, project: project, milestone: milestone, weight: 3)
-      create(:issue, project: project,  milestone: milestone, weight: 1)
+      create(:issue, project: project, milestone: milestone, weight: 1)
 
       visit milestone_path
 
-      within '.milestone-summary' do
-        expect(page).to have_content 'Total weight: 4'
+      within '.milestone-sidebar' do
+        expect(page).to have_content 'Total issue weight 4'
       end
     end
 
     it 'hides the total weight when sum is equal to zero' do
       create(:issue, project: project, milestone: milestone, weight: nil)
-      create(:issue, project: project,  milestone: milestone, weight: nil)
+      create(:issue, project: project, milestone: milestone, weight: nil)
 
       visit milestone_path
 
-      within '.milestone-summary' do
-        expect(page).not_to have_content 'Total weight:'
+      within '.milestone-sidebar' do
+        expect(page).to have_content 'Total issue weight None'
       end
     end
   end
@@ -90,5 +92,29 @@ feature 'Project milestone', :feature do
 
   def milestone_path
     namespace_project_milestone_path(project.namespace, project, milestone)
+  end
+
+  context 'when project has an issue' do
+    before do
+      create(:issue, project: project, milestone: milestone)
+
+      visit namespace_project_milestone_path(project.namespace, project, milestone)
+    end
+
+    describe 'the collapsed sidebar' do
+      before do
+        find('.milestone-sidebar .gutter-toggle').click
+      end
+
+      it 'shows the total MR and issue counts' do
+        find('.milestone-sidebar .block', match: :first)
+        blocks = all('.milestone-sidebar .block')
+
+        aggregate_failures 'MR and issue blocks' do
+          expect(blocks[3]).to have_content 1
+          expect(blocks[5]).to have_content 0
+        end
+      end
+    end
   end
 end

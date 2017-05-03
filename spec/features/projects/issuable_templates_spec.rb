@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 feature 'issuable templates', feature: true, js: true do
-  include WaitForAjax
-
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
 
@@ -163,12 +161,14 @@ feature 'issuable templates', feature: true, js: true do
   end
 
   def select_template(name)
-    first('.js-issuable-selector').click
-    first('.js-issuable-selector-wrap .dropdown-content a', text: name).click
+    find('.js-issuable-selector').click
+
+    find('.js-issuable-selector-wrap .dropdown-content a', text: name, match: :first).click
   end
 
   def select_option(name)
-    first('.js-issuable-selector').click
-    first('.js-issuable-selector-wrap .dropdown-footer-list a', text: name).click
+    find('.js-issuable-selector').click
+
+    find('.js-issuable-selector-wrap .dropdown-footer-list a', text: name, match: :first).click
   end
 end

@@ -16,10 +16,9 @@ class Admin::LabelsController < Admin::ApplicationController
   end
 
   def create
-    @label = Label.new(label_params)
-    @label.template = true
+    @label = Labels::CreateService.new(label_params).execute(template: true)
 
-    if @label.save
+    if @label.persisted?
       redirect_to admin_labels_url, notice: "Label was created"
     else
       render :new
@@ -27,7 +26,9 @@ class Admin::LabelsController < Admin::ApplicationController
   end
 
   def update
-    if @label.update(label_params)
+    @label = Labels::UpdateService.new(label_params).execute(@label)
+
+    if @label.valid?
       redirect_to admin_labels_path, notice: 'label was successfully updated.'
     else
       render :edit

@@ -29,6 +29,8 @@ export default class FilteredSearchBoards extends gl.FilteredSearchManager {
     [].forEach.call(tokens, (el) => {
       el.parentNode.removeChild(el);
     });
+
+    this.filteredSearchInput.value = '';
   }
 
   updateTokens() {

@@ -18,11 +18,11 @@ class Spinach::Features::Dashboard < Spinach::FeatureSteps
 
   step 'I should see last push widget' do
     expect(page).to have_content "You pushed to fix"
-    expect(page).to have_link "Create Merge Request"
+    expect(page).to have_link "Create merge request"
   end
 
-  step 'I click "Create Merge Request" link' do
-    click_link "Create Merge Request"
+  step 'I click "Create merge request" link' do
+    click_link "Create merge request"
   end
 
   step 'I see prefilled new Merge Request page' do

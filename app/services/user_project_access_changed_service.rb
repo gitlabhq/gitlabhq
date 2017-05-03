@@ -1,4 +1,6 @@
 class UserProjectAccessChangedService
+  prepend EE::UserProjectAccessChangedService
+
   def initialize(user_ids)
     @user_ids = Array.wrap(user_ids)
   end

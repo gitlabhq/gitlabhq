@@ -2,11 +2,15 @@ require 'spec_helper'
 
 describe "Search", feature: true  do
   include FilteredSearchHelpers
-  include WaitForAjax
 
   let(:user) { create(:user) }
+<<<<<<< HEAD
   let(:project) { create(:project, namespace: user.namespace) }
   let!(:issue) { create(:issue, project: project, assignees: [user]) }
+=======
+  let(:project) { create(:empty_project, namespace: user.namespace) }
+  let!(:issue) { create(:issue, project: project, assignee: user) }
+>>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0
   let!(:issue2) { create(:issue, project: project, author: user) }
 
   before do
@@ -62,6 +66,7 @@ describe "Search", feature: true  do
 
   context 'search for comments' do
     context 'when comment belongs to a invalid commit' do
+      let(:project) { create(:project, :repository) }
       let(:note) { create(:note_on_commit, author: user, project: project, commit_id: project.repository.commit.id, note: 'Bug here') }
 
       before { note.update_attributes(commit_id: 12345678) }
@@ -103,6 +108,7 @@ describe "Search", feature: true  do
     end
 
     it 'finds a commit' do
+      project = create(:project, :repository) { |p| p.add_reporter(user) }
       visit namespace_project_path(project.namespace, project)
 
       page.within '.search' do
@@ -116,16 +122,19 @@ describe "Search", feature: true  do
     end
 
     it 'finds a code' do
+      project = create(:project, :repository) { |p| p.add_reporter(user) }
       visit namespace_project_path(project.namespace, project)
 
       page.within '.search' do
-        fill_in 'search', with: 'def'
+        fill_in 'search', with: 'application.js'
         click_button 'Go'
       end
 
       click_link "Code"
 
       expect(page).to have_selector('.file-content .code')
+
+      expect(page).to have_selector("span.line[lang='javascript']")
     end
   end
 
@@ -162,6 +171,8 @@ describe "Search", feature: true  do
       end
 
       context 'click the links in the category search dropdown', js: true do
+        let!(:merge_request) { create(:merge_request, source_project: project, author: user, assignee: user) }
+
         before do
           page.find('#search').click
         end
@@ -218,6 +229,8 @@ describe "Search", feature: true  do
   end
 
   describe 'search for commits' do
+    let(:project) { create(:project, :repository) }
+
     before do
       visit search_path(project_id: project.id)
     end

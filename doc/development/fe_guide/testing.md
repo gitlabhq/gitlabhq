@@ -7,15 +7,30 @@ feature tests with Capybara for integration testing.
 Feature tests need to be written for all new features. Regression tests ought
 to be written for all bug fixes to prevent them from recurring in the future.
 
-See [the Testing Standards and Style Guidelines](/doc/development/testing.md)
+See [the Testing Standards and Style Guidelines](../testing.md)
 for more information on general testing practices at GitLab.
 
 ## Karma test suite
 
 GitLab uses the [Karma][karma] test runner with [Jasmine][jasmine] as its test
-framework for our JavaScript unit tests.  For tests that rely on DOM
-manipulation we use fixtures which are pre-compiled from HAML source files and
-served during testing by the [jasmine-jquery][jasmine-jquery] plugin.
+framework for our JavaScript unit tests. For tests that rely on DOM
+manipulation, we generate HTML files using RSpec suites (see `spec/javascripts/fixtures/*.rb` for examples).
+Some fixtures are still HAML templates that are translated to HTML files using the same mechanism (see `static_fixtures.rb`).
+Those will be migrated over time.
+Fixtures are served during testing by the [jasmine-jquery][jasmine-jquery] plugin.
+
+JavaScript tests live in `spec/javascripts/`, matching the folder structure
+of `app/assets/javascripts/`: `app/assets/javascripts/behaviors/autosize.js`
+has a corresponding `spec/javascripts/behaviors/autosize_spec.js` file.
+
+Keep in mind that in a CI environment, these tests are run in a headless
+browser and you will not have access to certain APIs, such as
+[`Notification`](https://developer.mozilla.org/en-US/docs/Web/API/notification),
+which will have to be stubbed.
+
+### Writing tests
+### Vue.js unit tests
+See this [section][vue-test].
 
 ### Running frontend tests
 
@@ -48,7 +63,7 @@ remove these directives when you commit your code.
 
 Information on setting up and running RSpec integration tests with
 [Capybara][capybara] can be found in the
-[general testing guide](/doc/development/testing.md).
+[general testing guide](../testing.md).
 
 ## Gotchas
 
@@ -80,24 +95,23 @@ If an integration test depends on JavaScript to run correctly, you need to make
 sure the spec is configured to enable JavaScript when the tests are run. If you
 don't do this you'll see vague error messages from the spec runner.
 
-To enable a JavaScript driver in an `rspec` test, add `js: true` to the
+To enable a JavaScript driver in an `rspec` test, add `:js` to the
 individual spec or the context block containing multiple specs that need
 JavaScript enabled:
 
 ```ruby
-
 # For one spec
-it 'presents information about abuse report', js: true do
-    # assertions...
+it 'presents information about abuse report', :js do
+  # assertions...
 end
 
-describe "Admin::AbuseReports", js: true do
-    it 'presents information about abuse report' do
-        # assertions...
-    end
-    it 'shows buttons for adding to abuse report' do
-        # assertions...
-    end
+describe "Admin::AbuseReports", :js do
+  it 'presents information about abuse report' do
+    # assertions...
+  end
+  it 'shows buttons for adding to abuse report' do
+    # assertions...
+  end
 end
 ```
 
@@ -113,13 +127,12 @@ file for the failing spec, add the `@javascript` flag above the Scenario:
 ```
 @javascript
 Scenario: Developer can approve merge request
-    Given I am a "Shop" developer
-    And I visit project "Shop" merge requests page
-    And merge request 'Bug NS-04' must be approved
-    And I click link "Bug NS-04"
-    When I click link "Approve"
-    Then I should see approved merge request "Bug NS-04"
-
+  Given I am a "Shop" developer
+  And I visit project "Shop" merge requests page
+  And merge request 'Bug NS-04' must be approved
+  And I click link "Bug NS-04"
+  When I click link "Approve"
+  Then I should see approved merge request "Bug NS-04"
 ```
 
 [capybara]: http://teamcapybara.github.io/capybara/
@@ -127,3 +140,4 @@ Scenario: Developer can approve merge request
 [jasmine-focus]: https://jasmine.github.io/2.5/focused_specs.html
 [jasmine-jquery]: https://github.com/velesin/jasmine-jquery
 [karma]: http://karma-runner.github.io/
+[vue-test]:https://docs.gitlab.com/ce/development/fe_guide/vue.html#testing-vue-components

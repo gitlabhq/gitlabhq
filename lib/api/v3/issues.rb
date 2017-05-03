@@ -75,14 +75,14 @@ module API
           success ::API::V3::Entities::Issue
         end
         params do
-          optional :state, type: String, values: %w[opened closed all], default: 'opened',
+          optional :state, type: String, values: %w[opened closed all], default: 'all',
                            desc: 'Return opened, closed, or all issues'
           use :issues_params
         end
         get ":id/issues" do
           group = find_group!(params[:id])
 
-          issues = find_issues(group_id: group.id, state: params[:state] || 'opened', match_all_labels: true)
+          issues = find_issues(group_id: group.id, match_all_labels: true)
 
           present paginate(issues), with: ::API::V3::Entities::Issue, current_user: current_user
         end

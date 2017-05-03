@@ -135,14 +135,21 @@
 
 .text-expander {
   display: inline-block;
-  background: $gray-light;
+  background: $white-light;
   color: $gl-text-color-secondary;
   padding: 0 5px;
   cursor: pointer;
   border: 1px solid $border-gray-dark;
   border-radius: $border-radius-default;
   margin-left: 5px;
-  line-height: 1;
+  font-size: $gl-font-size;
+  line-height: $gl-font-size;
+  outline: none;
+
+  &.open {
+    background: $gray-light;
+    box-shadow: inset 0 0 2px rgba($black, 0.2);
+  }
 
   &:hover {
     background-color: darken($gray-light, 10%);

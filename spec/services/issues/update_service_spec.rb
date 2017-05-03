@@ -13,7 +13,12 @@ describe Issues::UpdateService, services: true do
 
   let(:issue) do
     create(:issue, title: 'Old title',
+<<<<<<< HEAD
                    assignees: [user3],
+=======
+                   description: "for #{user2.to_reference}",
+                   assignee_id: user3.id,
+>>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0
                    project: project)
   end
 
@@ -182,15 +187,23 @@ describe Issues::UpdateService, services: true do
         it 'marks pending todos as done' do
           expect(todo.reload.done?).to eq true
         end
+
+        it 'does not create any new todos' do
+          expect(Todo.count).to eq(1)
+        end
       end
 
       context 'when the description change' do
         before do
-          update_issue(description: 'Also please fix')
+          update_issue(description: "Also please fix #{user2.to_reference} #{user3.to_reference}")
         end
 
         it 'marks todos as done' do
           expect(todo.reload.done?).to eq true
+        end
+
+        it 'creates only 1 new todo' do
+          expect(Todo.count).to eq(2)
         end
       end
 

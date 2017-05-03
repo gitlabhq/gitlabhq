@@ -83,6 +83,17 @@ describe Projects::IssuesController do
         expect(assigns(:issues).current_page).to eq(last_page)
         expect(response).to have_http_status(200)
       end
+
+      it 'does not redirect to external sites when provided a host field' do
+        external_host = "www.example.com"
+        get :index,
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          page: (last_page + 1).to_param,
+          host: external_host
+
+        expect(response).to redirect_to(namespace_project_issues_path(page: last_page, state: controller.params[:state], scope: controller.params[:scope]))
+      end
     end
   end
 
@@ -90,6 +101,7 @@ describe Projects::IssuesController do
     it 'redirects to signin if not logged in' do
       get :new, namespace_id: project.namespace, project_id: project
 
+      expect(flash[:notice]).to eq 'Please sign in to create the new issue.'
       expect(response).to redirect_to(new_user_session_path)
     end
 
@@ -507,7 +519,7 @@ describe Projects::IssuesController do
     end
 
     context 'resolving discussions in MergeRequest' do
-      let(:discussion) { Discussion.for_diff_notes([create(:diff_note_on_merge_request)]).first }
+      let(:discussion) { create(:diff_note_on_merge_request).to_discussion }
       let(:merge_request) { discussion.noteable }
       let(:project) { merge_request.source_project }
 

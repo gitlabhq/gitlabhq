@@ -19,8 +19,8 @@ describe List do
       expect(subject).to validate_uniqueness_of(:label_id).scoped_to(:board_id)
     end
 
-    context 'when list_type is set to done' do
-      subject { described_class.new(list_type: :done) }
+    context 'when list_type is set to closed' do
+      subject { described_class.new(list_type: :closed) }
 
       it { is_expected.not_to validate_presence_of(:label) }
       it { is_expected.not_to validate_presence_of(:position) }
@@ -34,8 +34,8 @@ describe List do
       expect(subject.destroy).to be_truthy
     end
 
-    it 'can not be destroyed when when list_type is set to done' do
-      subject = create(:done_list)
+    it 'can not be destroyed when when list_type is set to closed' do
+      subject = create(:closed_list)
 
       expect(subject.destroy).to be_falsey
     end
@@ -48,8 +48,8 @@ describe List do
       expect(subject).to be_destroyable
     end
 
-    it 'returns false when list_type is set to done' do
-      subject.list_type = :done
+    it 'returns false when list_type is set to closed' do
+      subject.list_type = :closed
 
       expect(subject).not_to be_destroyable
     end
@@ -62,8 +62,8 @@ describe List do
       expect(subject).to be_movable
     end
 
-    it 'returns false when list_type is set to done' do
-      subject.list_type = :done
+    it 'returns false when list_type is set to closed' do
+      subject.list_type = :closed
 
       expect(subject).not_to be_movable
     end
@@ -77,10 +77,10 @@ describe List do
       expect(subject.title).to eq 'Development'
     end
 
-    it 'returns Done when list_type is set to done' do
-      subject.list_type = :done
+    it 'returns Closed when list_type is set to closed' do
+      subject.list_type = :closed
 
-      expect(subject.title).to eq 'Done'
+      expect(subject.title).to eq 'Closed'
     end
   end
 end

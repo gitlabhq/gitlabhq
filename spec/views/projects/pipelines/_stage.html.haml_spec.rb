@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'projects/pipelines/_stage', :view do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:stage) { build(:ci_stage, pipeline: pipeline) }
 

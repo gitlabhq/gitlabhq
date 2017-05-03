@@ -31,7 +31,7 @@ describe Project, models: true do
         expect(project.any_runners? { |runner| runner == shared_runner }).to be_truthy
       end
 
-      context 'with used build minutes' do
+      context 'with used pipeline minutes' do
         let(:namespace) { create(:namespace, :with_used_build_minutes_limit) }
         let(:project) do
           create(:empty_project,
@@ -49,7 +49,7 @@ describe Project, models: true do
   describe '#shared_runners_available?' do
     subject { project.shared_runners_available? }
 
-    context 'with used build minutes' do
+    context 'with used pipeline minutes' do
       let(:namespace) { create(:namespace, :with_used_build_minutes_limit) }
       let(:project) do
         create(:empty_project,
@@ -113,6 +113,21 @@ describe Project, models: true do
       end
 
       it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#service_desk_address' do
+    let(:project) { create(:empty_project, service_desk_enabled: true) }
+
+    before do
+      allow_any_instance_of(License).to receive(:add_on?).and_call_original
+      allow_any_instance_of(License).to receive(:add_on?).with('GitLab_ServiceDesk') { true }
+      allow(Gitlab.config.incoming_email).to receive(:enabled).and_return(true)
+      allow(Gitlab.config.incoming_email).to receive(:address).and_return("test+%{key}@mail.com")
+    end
+
+    it 'uses project full path as service desk address key' do
+      expect(project.service_desk_address).to eq("test+#{project.full_path}@mail.com")
     end
   end
 end

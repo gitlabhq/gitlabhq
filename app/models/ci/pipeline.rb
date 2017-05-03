@@ -4,13 +4,24 @@ module Ci
     include HasStatus
     include Importable
     include AfterCommitQueue
+    include Presentable
 
     belongs_to :project
     belongs_to :user
+    belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
+
+    has_many :auto_canceled_pipelines, class_name: 'Ci::Pipeline', foreign_key: 'auto_canceled_by_id'
+    has_many :auto_canceled_jobs, class_name: 'CommitStatus', foreign_key: 'auto_canceled_by_id'
 
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id
     has_many :builds, foreign_key: :commit_id
     has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id
+
+    has_many :pending_builds, -> { pending }, foreign_key: :commit_id, class_name: 'Ci::Build'
+    has_many :retryable_builds, -> { latest.failed_or_canceled }, foreign_key: :commit_id, class_name: 'Ci::Build'
+    has_many :cancelable_statuses, -> { cancelable }, foreign_key: :commit_id, class_name: 'CommitStatus'
+    has_many :manual_actions, -> { latest.manual_actions }, foreign_key: :commit_id, class_name: 'Ci::Build'
+    has_many :artifacts, -> { latest.with_artifacts_not_expired }, foreign_key: :commit_id, class_name: 'Ci::Build'
 
     delegate :id, to: :project, prefix: true
 
@@ -20,7 +31,6 @@ module Ci
     validate :valid_commit_sha, unless: :importing?
 
     after_create :keep_around_commits, unless: :importing?
-    after_create :refresh_build_status_cache
 
     state_machine :status, initial: :created do
       event :enqueue do
@@ -65,23 +75,32 @@ module Ci
         pipeline.update_duration
       end
 
+      before_transition any => [:manual] do |pipeline|
+        pipeline.update_duration
+      end
+
+      before_transition canceled: any - [:canceled] do |pipeline|
+        pipeline.auto_canceled_by = nil
+      end
+
       after_transition [:created, :pending] => :running do |pipeline|
-        pipeline.run_after_commit { PipelineMetricsWorker.perform_async(id) }
+        pipeline.run_after_commit { PipelineMetricsWorker.perform_async(pipeline.id) }
       end
 
       after_transition any => [:success] do |pipeline|
-        pipeline.run_after_commit { PipelineMetricsWorker.perform_async(id) }
+        pipeline.run_after_commit { PipelineMetricsWorker.perform_async(pipeline.id) }
       end
 
       after_transition [:created, :pending, :running] => :success do |pipeline|
-        pipeline.run_after_commit { PipelineSuccessWorker.perform_async(id) }
+        pipeline.run_after_commit { PipelineSuccessWorker.perform_async(pipeline.id) }
       end
 
       after_transition do |pipeline, transition|
         next if transition.loopback?
 
         pipeline.run_after_commit do
-          PipelineHooksWorker.perform_async(id)
+          PipelineHooksWorker.perform_async(pipeline.id)
+          ExpirePipelineCacheWorker.perform_async(pipeline.id)
         end
       end
 
@@ -160,15 +179,6 @@ module Ci
       end
     end
 
-    def artifacts
-      builds.latest.with_artifacts_not_expired.includes(project: [:namespace])
-    end
-
-    # For now the only user who participates is the user who triggered
-    def participants(_current_user = nil)
-      Array(user)
-    end
-
     def valid_commit_sha
       if self.sha == Gitlab::Git::BLANK_SHA
         self.errors.add(:sha, " cant be 00000000 (branch removal)")
@@ -205,27 +215,37 @@ module Ci
       !tag?
     end
 
-    def manual_actions
-      builds.latest.manual_actions.includes(project: [:namespace])
-    end
-
     def stuck?
-      builds.pending.any?(&:stuck?)
+      pending_builds.any?(&:stuck?)
     end
 
     def retryable?
-      builds.latest.failed_or_canceled.any?(&:retryable?)
+      retryable_builds.any?
     end
 
     def cancelable?
-      statuses.cancelable.any?
+      cancelable_statuses.any?
+    end
+
+    def auto_canceled?
+      canceled? && auto_canceled_by_id?
     end
 
     def cancel_running
-      Gitlab::OptimisticLocking.retry_lock(
-        statuses.cancelable) do |cancelable|
-          cancelable.find_each(&:cancel)
+      Gitlab::OptimisticLocking.retry_lock(cancelable_statuses) do |cancelable|
+        cancelable.find_each do |job|
+          yield(job) if block_given?
+          job.cancel
         end
+      end
+    end
+
+    def auto_cancel_running(pipeline)
+      update(auto_canceled_by: pipeline)
+
+      cancel_running do |job|
+        job.auto_canceled_by = pipeline
+      end
     end
 
     def retry_failed(current_user)
@@ -333,7 +353,6 @@ module Ci
         when 'manual' then block
         end
       end
-      refresh_build_status_cache
     end
 
     def predefined_variables
@@ -369,14 +388,15 @@ module Ci
         .select { |merge_request| merge_request.head_pipeline.try(:id) == self.id }
     end
 
+    # All the merge requests for which the current pipeline runs/ran against
+    def all_merge_requests
+      @all_merge_requests ||= project.merge_requests.where(source_branch: ref)
+    end
+
     def detailed_status(current_user)
       Gitlab::Ci::Status::Pipeline::Factory
         .new(self, current_user)
         .fabricate!
-    end
-
-    def refresh_build_status_cache
-      Ci::PipelineStatus.new(project, sha: sha, status: status).store_in_cache_if_needed
     end
 
     private

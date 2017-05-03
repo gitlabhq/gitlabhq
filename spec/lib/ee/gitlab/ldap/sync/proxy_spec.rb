@@ -39,7 +39,7 @@ describe EE::Gitlab::LDAP::Sync::Proxy, lib: true do
 
     context 'with a valid LDAP group that contains members' do
       # Create some random usernames and DNs
-      let(:usernames) { (1..4).map { FFaker::Internet.user_name } }
+      let(:usernames) { (1..4).map { generate(:username) } }
       let(:dns) { usernames.map { |u| user_dn(u) } }
 
       it 'returns member DNs' do

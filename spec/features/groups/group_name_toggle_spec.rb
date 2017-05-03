@@ -6,39 +6,46 @@ feature 'Group name toggle', feature: true, js: true do
   let(:nested_group_2) { create(:group, parent: nested_group_1) }
   let(:nested_group_3) { create(:group, parent: nested_group_2) }
 
+  SMALL_SCREEN = 300
+
   before do
     login_as :user
   end
 
-  it 'is not present for less than 3 groups' do
-    visit group_path(group)
-    expect(page).not_to have_css('.group-name-toggle')
-
-    visit group_path(nested_group_1)
-    expect(page).not_to have_css('.group-name-toggle')
-  end
-
-  it 'is present for nested group of 3 or more in the namespace' do
-    visit group_path(nested_group_2)
-    expect(page).to have_css('.group-name-toggle')
-
+  it 'is not present if enough horizontal space' do
     visit group_path(nested_group_3)
-    expect(page).to have_css('.group-name-toggle')
+
+    container_width = page.evaluate_script("$('.title-container')[0].offsetWidth")
+    title_width = page.evaluate_script("$('.title')[0].offsetWidth")
+
+    expect(container_width).to be > title_width
+    expect(page).not_to have_css('.group-name-toggle')
   end
 
-  context 'for group with at least 3 groups' do
-    before do
-      visit group_path(nested_group_2)
-    end
+  it 'is present if the title is longer than the container' do
+    visit group_path(nested_group_3)
+    title_width = page.evaluate_script("$('.title')[0].offsetWidth")
 
-    it 'should show the full group namespace when toggled' do
-      expect(page).not_to have_content(group.name)
-      expect(page).to have_css('.group-path.hidable', visible: false)
+    page_height = page.current_window.size[1]
+    page.current_window.resize_to(SMALL_SCREEN, page_height)
 
-      click_button '...'
+    find('.group-name-toggle')
+    container_width = page.evaluate_script("$('.title-container')[0].offsetWidth")
 
-      expect(page).to have_content(group.name)
-      expect(page).to have_css('.group-path.hidable', visible: true)
-    end
+    expect(title_width).to be > container_width
+  end
+
+  it 'should show the full group namespace when toggled' do
+    page_height = page.current_window.size[1]
+    page.current_window.resize_to(SMALL_SCREEN, page_height)
+    visit group_path(nested_group_3)
+
+    expect(page).not_to have_content(group.name)
+    expect(page).to have_css('.group-path.hidable', visible: false)
+
+    click_button '...'
+
+    expect(page).to have_content(group.name)
+    expect(page).to have_css('.group-path.hidable', visible: true)
   end
 end

@@ -6,7 +6,13 @@ module NamespacesHelper
   def namespaces_options(selected = :current_user, display_path: false, extra_group: nil)
     groups = current_user.owned_groups + current_user.masters_groups
 
-    groups << extra_group if extra_group && !Group.exists?(name: extra_group.name)
+    unless extra_group.nil? || extra_group.is_a?(Group)
+      extra_group = Group.find(extra_group) if Namespace.find(extra_group).kind == 'group'
+    end
+
+    if extra_group && extra_group.is_a?(Group) && (!Group.exists?(name: extra_group.name) || Ability.allowed?(current_user, :read_group, extra_group))
+      groups |= [extra_group]
+    end
 
     users = [current_user.namespace]
 

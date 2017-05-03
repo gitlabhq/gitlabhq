@@ -24,6 +24,7 @@ class User < ActiveRecord::Base
   default_value_for :hide_no_ssh_key, false
   default_value_for :hide_no_password, false
   default_value_for :project_view, :files
+  default_value_for :notified_of_own_activity, false
 
   attr_encrypted :otp_secret,
     key:       Gitlab::Application.secrets.otp_key_base,
@@ -88,11 +89,14 @@ class User < ActiveRecord::Base
   has_many :merge_requests,           dependent: :destroy, foreign_key: :author_id
   has_many :events,                   dependent: :destroy, foreign_key: :author_id
   has_many :subscriptions,            dependent: :destroy
+<<<<<<< HEAD
   has_many :recent_events, -> { order "id DESC" }, foreign_key: :author_id, class_name: "Event"
+=======
+  has_many :recent_events, -> { order "id DESC" }, foreign_key: :author_id,   class_name: "Event"
+>>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0
   has_many :oauth_applications,       class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy
-  has_many :approvals,                dependent: :destroy
-  has_many :approvers,                dependent: :destroy
-  has_one  :abuse_report,             dependent: :destroy
+  has_one  :abuse_report,             dependent: :destroy, foreign_key: :user_id
+  has_many :reported_abuse_reports,   dependent: :destroy, foreign_key: :reporter_id, class_name: "AbuseReport"
   has_many :spam_logs,                dependent: :destroy
   has_many :builds,                   dependent: :nullify, class_name: 'Ci::Build'
   has_many :pipelines,                dependent: :nullify, class_name: 'Ci::Pipeline'
@@ -101,15 +105,21 @@ class User < ActiveRecord::Base
   has_many :award_emoji,              dependent: :destroy
   has_many :path_locks,               dependent: :destroy
 
+  has_many :approvals,                dependent: :destroy
+  has_many :approvers,                dependent: :destroy
+
   # Protected Branch Access
   has_many :protected_branch_merge_access_levels, dependent: :destroy, class_name: ProtectedBranch::MergeAccessLevel
   has_many :protected_branch_push_access_levels, dependent: :destroy, class_name: ProtectedBranch::PushAccessLevel
   has_many :triggers,                 dependent: :destroy, class_name: 'Ci::Trigger', foreign_key: :owner_id
 
+<<<<<<< HEAD
   has_many :issue_assignees
   has_many :assigned_issues, class_name: "Issue", through: :issue_assignees, source: :issue
   has_many :assigned_merge_requests,  dependent: :nullify, foreign_key: :assignee_id, class_name: "MergeRequest"
 
+=======
+>>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0
   # Issues that a user owns are expected to be moved to the "ghost" user before
   # the user is destroyed. If the user owns any issues during deletion, this
   # should be treated as an exceptional condition.
@@ -125,9 +135,11 @@ class User < ActiveRecord::Base
   validates :notification_email, email: true, if: ->(user) { user.notification_email != user.email }
   validates :public_email, presence: true, uniqueness: true, email: true, allow_blank: true
   validates :bio, length: { maximum: 255 }, allow_blank: true
-  validates :projects_limit, presence: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :projects_limit,
+    presence: true,
+    numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: Gitlab::Database::MAX_INT_VALUE }
   validates :username,
-    namespace: true,
+    dynamic_path: true,
     presence: true,
     uniqueness: { case_sensitive: false }
 
@@ -136,10 +148,9 @@ class User < ActiveRecord::Base
   validate :unique_email, if: ->(user) { user.email_changed? }
   validate :owns_notification_email, if: ->(user) { user.notification_email_changed? }
   validate :owns_public_email, if: ->(user) { user.public_email_changed? }
+  validate :signup_domain_valid?, on: :create, if: ->(user) { !user.created_by_id }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
-  before_validation :generate_password, on: :create
-  before_validation :signup_domain_valid?, on: :create, if: ->(user) { !user.created_by_id }
   before_validation :sanitize_attrs
   before_validation :set_notification_email, if: ->(user) { user.email_changed? }
   before_validation :set_public_email, if: ->(user) { user.public_email_changed? }
@@ -149,8 +160,6 @@ class User < ActiveRecord::Base
   before_save :ensure_external_user_rights
   after_save :ensure_namespace_correct
   after_initialize :set_projects_limit
-  before_create :check_confirmation_email
-  after_create :post_create_hook
   after_destroy :post_destroy_hook
 
   # User's Layout preference
@@ -167,6 +176,8 @@ class User < ActiveRecord::Base
   alias_attribute :private_token, :authentication_token
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
+
+  accepts_nested_attributes_for :namespace
 
   state_machine :state, initial: :active do
     event :block do
@@ -206,7 +217,7 @@ class User < ActiveRecord::Base
   scope :admins, -> { where(admin: true) }
   scope :blocked, -> { with_states(:blocked, :ldap_blocked) }
   scope :external, -> { where(external: true) }
-  scope :active, -> { with_state(:active) }
+  scope :active, -> { with_state(:active).non_internal }
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members WHERE user_id IS NOT NULL AND requested_at IS NULL)') }
   scope :subscribed_for_admin_email, -> { where(admin_email_unsubscribed_at: nil) }
@@ -408,10 +419,8 @@ class User < ActiveRecord::Base
     "#{self.class.reference_prefix}#{username}"
   end
 
-  def generate_password
-    if force_random_password
-      self.password = self.password_confirmation = Devise.friendly_token.first(Devise.password_length.min)
-    end
+  def skip_confirmation=(bool)
+    skip_confirmation! if bool
   end
 
   def generate_reset_token
@@ -421,10 +430,6 @@ class User < ActiveRecord::Base
     self.reset_password_sent_at = Time.now.utc
 
     @reset_token
-  end
-
-  def check_confirmation_email
-    skip_confirmation! unless current_application_settings.send_user_confirmation_email
   end
 
   def recently_sent_password_reset?
@@ -514,6 +519,14 @@ class User < ActiveRecord::Base
     Group.member_descendants(id)
   end
 
+  def all_expanded_groups
+    Group.member_hierarchy(id)
+  end
+
+  def expanded_groups_requiring_two_factor_authentication
+    all_expanded_groups.where(require_two_factor_authentication: true)
+  end
+
   def nested_groups_projects
     Project.joins(:namespace).where('namespaces.parent_id IS NOT NULL').
       member_descendants(id)
@@ -576,10 +589,6 @@ class User < ActiveRecord::Base
     authorized_projects(Gitlab::Access::REPORTER).non_archived.with_issues_enabled
   end
 
-  def is_admin?
-    admin
-  end
-
   def require_ssh_key?
     keys.count == 0 && Gitlab::ProtocolAccess.allowed?('ssh')
   end
@@ -610,10 +619,6 @@ class User < ActiveRecord::Base
 
   def first_name
     name.split.first unless name.blank?
-  end
-
-  def cared_merge_requests
-    MergeRequest.cared(self)
   end
 
   def projects_limit_left
@@ -665,8 +670,10 @@ class User < ActiveRecord::Base
   end
 
   def fork_of(project)
-    links = ForkedProjectLink.where(forked_from_project_id: project, forked_to_project_id: personal_projects)
-
+    links = ForkedProjectLink.where(
+      forked_from_project_id: project,
+      forked_to_project_id: personal_projects.unscope(:order)
+    )
     if links.any?
       links.first.forked_to_project
     else
@@ -821,12 +828,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  def post_create_hook
-    log_info("User \"#{name}\" (#{email}) was created")
-    notification_service.new_user(self, @reset_token) if created_by_id
-    system_hook_service.execute_hooks_for(self, :create)
-  end
-
   def post_destroy_hook
     log_info("User \"#{name}\" (#{email})  was removed")
     system_hook_service.execute_hooks_for(self, :destroy)
@@ -928,20 +929,20 @@ class User < ActiveRecord::Base
     @global_notification_setting
   end
 
-  def assigned_open_merge_request_count(force: false)
-    Rails.cache.fetch(['users', id, 'assigned_open_merge_request_count'], force: force) do
-      assigned_merge_requests.opened.count
+  def assigned_open_merge_requests_count(force: false)
+    Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count'], force: force) do
+      MergeRequestsFinder.new(self, assignee_id: self.id, state: 'opened').execute.count
     end
   end
 
   def assigned_open_issues_count(force: false)
     Rails.cache.fetch(['users', id, 'assigned_open_issues_count'], force: force) do
-      assigned_issues.opened.count
+      IssuesFinder.new(self, assignee_id: self.id, state: 'opened').execute.count
     end
   end
 
   def update_cache_counts
-    assigned_open_merge_request_count(force: true)
+    assigned_open_merge_requests_count(force: true)
     assigned_open_issues_count(force: true)
   end
 
@@ -978,10 +979,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  def record_activity
-    Gitlab::UserActivities::ActivitySet.record(self)
-  end
-
   def access_level
     if admin?
       :admin
@@ -998,6 +995,15 @@ class User < ActiveRecord::Base
 
     self.admin = (new_level == 'admin')
     self.auditor = (new_level == 'auditor')
+  end
+
+  def update_two_factor_requirement
+    periods = expanded_groups_requiring_two_factor_authentication.pluck(:two_factor_grace_period)
+
+    self.require_two_factor_authentication_from_group = periods.any?
+    self.two_factor_grace_period = periods.min || User.column_defaults['two_factor_grace_period']
+
+    save
   end
 
   protected

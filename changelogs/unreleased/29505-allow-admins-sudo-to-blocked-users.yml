@@ -1,0 +1,4 @@
+---
+title: Allow admins to sudo to blocked users via the API
+merge_request: 10842
+author:

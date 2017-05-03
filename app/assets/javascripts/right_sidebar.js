@@ -56,14 +56,15 @@ import Cookies from 'js-cookie';
     Sidebar.prototype.toggleTodo = function(e) {
       var $btnText, $this, $todoLoading, ajaxType, url;
       $this = $(e.currentTarget);
-      $todoLoading = $('.js-issuable-todo-loading');
-      $btnText = $('.js-issuable-todo-text', $this);
       ajaxType = $this.attr('data-delete-path') ? 'DELETE' : 'POST';
       if ($this.attr('data-delete-path')) {
         url = "" + ($this.attr('data-delete-path'));
       } else {
         url = "" + ($this.data('url'));
       }
+
+      $this.tooltip('hide');
+
       return $.ajax({
         url: url,
         type: ajaxType,
@@ -74,34 +75,44 @@ import Cookies from 'js-cookie';
         },
         beforeSend: (function(_this) {
           return function() {
-            return _this.beforeTodoSend($this, $todoLoading);
+            $('.js-issuable-todo').disable()
+              .addClass('is-loading');
           };
         })(this)
       }).done((function(_this) {
         return function(data) {
-          return _this.todoUpdateDone(data, $this, $btnText, $todoLoading);
+          return _this.todoUpdateDone(data);
         };
       })(this));
     };
 
-    Sidebar.prototype.beforeTodoSend = function($btn, $todoLoading) {
-      $btn.disable();
-      return $todoLoading.removeClass('hidden');
-    };
+    Sidebar.prototype.todoUpdateDone = function(data) {
+      const deletePath = data.delete_path ? data.delete_path : null;
+      const attrPrefix = deletePath ? 'mark' : 'todo';
+      const $todoBtns = $('.js-issuable-todo');
 
-    Sidebar.prototype.todoUpdateDone = function(data, $btn, $btnText, $todoLoading) {
       $(document).trigger('todo:toggle', data.count);
 
-      $btn.enable();
-      $todoLoading.addClass('hidden');
+      $todoBtns.each((i, el) => {
+        const $el = $(el);
+        const $elText = $el.find('.js-issuable-todo-inner');
 
-      if (data.delete_path != null) {
-        $btn.attr('aria-label', $btn.data('mark-text')).attr('data-delete-path', data.delete_path);
-        return $btnText.text($btn.data('mark-text'));
-      } else {
-        $btn.attr('aria-label', $btn.data('todo-text')).removeAttr('data-delete-path');
-        return $btnText.text($btn.data('todo-text'));
-      }
+        $el.removeClass('is-loading')
+          .enable()
+          .attr('aria-label', $el.data(`${attrPrefix}-text`))
+          .attr('data-delete-path', deletePath)
+          .attr('title', $el.data(`${attrPrefix}-text`));
+
+        if ($el.hasClass('has-tooltip')) {
+          $el.tooltip('fixTitle');
+        }
+
+        if ($el.data(`${attrPrefix}-icon`)) {
+          $elText.html($el.data(`${attrPrefix}-icon`));
+        } else {
+          $elText.text($el.data(`${attrPrefix}-text`));
+        }
+      });
     };
 
     Sidebar.prototype.sidebarDropdownLoading = function(e) {
@@ -198,9 +209,9 @@ import Cookies from 'js-cookie';
     };
 
     Sidebar.prototype.setSidebarHeight = function() {
-      const $navHeight = $('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight();
+      const $navHeight = $('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight() + $('.sub-nav-scroll').outerHeight();
       const $rightSidebar = $('.js-right-sidebar');
-      const diff = $navHeight - $('body').scrollTop();
+      const diff = $navHeight - $(window).scrollTop();
       if (diff > 0) {
         $rightSidebar.outerHeight($(window).height() - diff);
       } else {

@@ -1,9 +1,10 @@
 class ElasticIndexerWorker
   include Sidekiq::Worker
+  include DedicatedSidekiqQueue
   include Elasticsearch::Model::Client::ClassMethods
   include Gitlab::CurrentSettings
 
-  sidekiq_options queue: :elasticsearch, retry: 2
+  sidekiq_options retry: 2
 
   ISSUE_TRACKED_FIELDS = %w(assignee_ids author_id confidential).freeze
 

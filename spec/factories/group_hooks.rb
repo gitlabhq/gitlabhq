@@ -1,5 +1,5 @@
 FactoryGirl.define do
   factory :group_hook do
-    url { FFaker::Internet.uri('http') }
+    url { generate(:url) }
   end
 end

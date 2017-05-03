@@ -30,7 +30,6 @@ feature 'Project mirror', feature: true do
 
           it 'shows the correct selector options' do
             expect(page).to have_selector('.project-mirror-sync-time > option', count: index + 1)
-            expect(page).to have_selector('.remote-mirror-sync-time > option', count: index + 1)
           end
         end
       end

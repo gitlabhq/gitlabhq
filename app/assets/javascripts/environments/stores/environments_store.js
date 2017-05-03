@@ -45,23 +45,29 @@ export default class EnvironmentsStore {
     const filteredEnvironments = environments.map((env) => {
       let filtered = {};
 
-      if (env.latest) {
-        filtered = Object.assign({}, env, env.latest);
-        delete filtered.latest;
-      } else {
-        filtered = Object.assign({}, env);
-      }
-
-      if (filtered.size > 1) {
-        filtered = Object.assign(filtered, env, { isFolder: true, folderName: env.name });
-      } else if (filtered.size === 1 && filtered.rollout_status_path) {
-        filtered = Object.assign({}, env, filtered, {
-          hasDeployBoard: true,
-          isDeployBoardVisible: false,
-          deployBoardData: {},
+      if (env.size > 1) {
+        filtered = Object.assign({}, env, {
+          isFolder: true,
+          folderName: env.name,
+          isOpen: false,
+          children: [],
         });
       }
 
+      if (env.latest) {
+        filtered = Object.assign(filtered, env, env.latest);
+        delete filtered.latest;
+      } else {
+        filtered = Object.assign(filtered, env);
+      }
+
+      if (filtered.size === 1 && filtered.rollout_status_path) {
+        filtered = Object.assign({}, filtered, {
+          hasDeployBoard: true,
+          isDeployBoardVisible: true,
+          deployBoardData: {},
+        });
+      }
       return filtered;
     });
 
@@ -154,5 +160,67 @@ export default class EnvironmentsStore {
       return updated;
     });
     return this.state.environments;
+  }
+
+  /*
+    * Toggles folder open property for the given folder.
+    *
+    * @param  {Object} folder
+    * @return {Array}
+    */
+  toggleFolder(folder) {
+    return this.updateFolder(folder, 'isOpen', !folder.isOpen);
+  }
+
+  /**
+   * Updates the folder with the received environments.
+   *
+   *
+   * @param  {Object} folder       Folder to update
+   * @param  {Array} environments Received environments
+   * @return {Object}
+   */
+  setfolderContent(folder, environments) {
+    const updatedEnvironments = environments.map((env) => {
+      let updated = env;
+
+      if (env.latest) {
+        updated = Object.assign({}, env, env.latest);
+        delete updated.latest;
+      } else {
+        updated = env;
+      }
+
+      updated.isChildren = true;
+
+      return updated;
+    });
+
+    return this.updateFolder(folder, 'children', updatedEnvironments);
+  }
+
+  /**
+   * Given a folder a prop and a new value updates the correct folder.
+   *
+   * @param  {Object} folder
+   * @param  {String} prop
+   * @param  {String|Boolean|Object|Array} newValue
+   * @return {Array}
+   */
+  updateFolder(folder, prop, newValue) {
+    const environments = this.state.environments;
+
+    const updatedEnvironments = environments.map((env) => {
+      const updateEnv = Object.assign({}, env);
+      if (env.isFolder && env.id === folder.id) {
+        updateEnv[prop] = newValue;
+      }
+
+      return updateEnv;
+    });
+
+    this.state.environments = updatedEnvironments;
+
+    return updatedEnvironments;
   }
 }

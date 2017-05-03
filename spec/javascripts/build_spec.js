@@ -1,11 +1,11 @@
 /* eslint-disable no-new */
 /* global Build */
-
-require('~/lib/utils/datetime_utility');
-require('~/lib/utils/url_utility');
-require('~/build');
-require('~/breakpoints');
-require('vendor/jquery.nicescroll');
+import { bytesToKiB } from '~/lib/utils/number_utils';
+import '~/lib/utils/datetime_utility';
+import '~/lib/utils/url_utility';
+import '~/build';
+import '~/breakpoints';
+import 'vendor/jquery.nicescroll';
 
 describe('Build', () => {
   const BUILD_URL = `${gl.TEST_HOST}/frontend-fixtures/builds-project/builds/1`;
@@ -64,54 +64,33 @@ describe('Build', () => {
       });
     });
 
-    describe('initial build trace', () => {
-      beforeEach(() => {
-        new Build();
-      });
-
-      it('displays the initial build trace', () => {
-        expect($.ajax.calls.count()).toBe(1);
-        const [{ url, dataType, success, context }] = $.ajax.calls.argsFor(0);
-        expect(url).toBe(`${BUILD_URL}.json`);
-        expect(dataType).toBe('json');
-        expect(success).toEqual(jasmine.any(Function));
-
-        success.call(context, { trace_html: '<span>Example</span>', status: 'running' });
-
-        expect($('#build-trace .js-build-output').text()).toMatch(/Example/);
-      });
-
-      it('removes the spinner', () => {
-        const [{ success, context }] = $.ajax.calls.argsFor(0);
-        success.call(context, { trace_html: '<span>Example</span>', status: 'success' });
-
-        expect($('.js-build-refresh').length).toBe(0);
-      });
-    });
-
     describe('running build', () => {
       beforeEach(function () {
-        $('.js-build-options').data('buildStatus', 'running');
         this.build = new Build();
-        spyOn(this.build, 'location').and.returnValue(BUILD_URL);
       });
 
       it('updates the build trace on an interval', function () {
+        spyOn(gl.utils, 'visitUrl');
+
         jasmine.clock().tick(4001);
 
-        expect($.ajax.calls.count()).toBe(2);
-        let [{ url, dataType, success, context }] = $.ajax.calls.argsFor(1);
-        expect(url).toBe(
-          `${BUILD_URL}/trace.json?state=`,
-        );
-        expect(dataType).toBe('json');
-        expect(success).toEqual(jasmine.any(Function));
+        expect($.ajax.calls.count()).toBe(1);
 
-        success.call(context, {
+        // We have to do it this way to prevent Webpack to fail to compile
+        // when destructuring assignments and reusing
+        // the same variables names inside the same scope
+        let args = $.ajax.calls.argsFor(0)[0];
+
+        expect(args.url).toBe(`${BUILD_URL}/trace.json`);
+        expect(args.dataType).toBe('json');
+        expect(args.success).toEqual(jasmine.any(Function));
+
+        args.success.call($, {
           html: '<span>Update<span>',
           status: 'running',
           state: 'newstate',
           append: true,
+          complete: false,
         });
 
         expect($('#build-trace .js-build-output').text()).toMatch(/Update/);
@@ -120,16 +99,19 @@ describe('Build', () => {
         jasmine.clock().tick(4001);
 
         expect($.ajax.calls.count()).toBe(3);
-        [{ url, dataType, success, context }] = $.ajax.calls.argsFor(2);
-        expect(url).toBe(`${BUILD_URL}/trace.json?state=newstate`);
-        expect(dataType).toBe('json');
-        expect(success).toEqual(jasmine.any(Function));
 
-        success.call(context, {
+        args = $.ajax.calls.argsFor(2)[0];
+        expect(args.url).toBe(`${BUILD_URL}/trace.json`);
+        expect(args.dataType).toBe('json');
+        expect(args.data.state).toBe('newstate');
+        expect(args.success).toEqual(jasmine.any(Function));
+
+        args.success.call($, {
           html: '<span>More</span>',
           status: 'running',
           state: 'finalstate',
           append: true,
+          complete: true,
         });
 
         expect($('#build-trace .js-build-output').text()).toMatch(/UpdateMore/);
@@ -137,19 +119,22 @@ describe('Build', () => {
       });
 
       it('replaces the entire build trace', () => {
+        spyOn(gl.utils, 'visitUrl');
+
         jasmine.clock().tick(4001);
-        let [{ success, context }] = $.ajax.calls.argsFor(1);
-        success.call(context, {
+        let args = $.ajax.calls.argsFor(0)[0];
+        args.success.call($, {
           html: '<span>Update</span>',
           status: 'running',
-          append: true,
+          append: false,
+          complete: false,
         });
 
         expect($('#build-trace .js-build-output').text()).toMatch(/Update/);
 
         jasmine.clock().tick(4001);
-        [{ success, context }] = $.ajax.calls.argsFor(2);
-        success.call(context, {
+        args = $.ajax.calls.argsFor(2)[0];
+        args.success.call($, {
           html: '<span>Different</span>',
           status: 'running',
           append: false,
@@ -163,14 +148,116 @@ describe('Build', () => {
         spyOn(gl.utils, 'visitUrl');
 
         jasmine.clock().tick(4001);
-        const [{ success, context }] = $.ajax.calls.argsFor(1);
-        success.call(context, {
+        const [{ success }] = $.ajax.calls.argsFor(0);
+        success.call($, {
           html: '<span>Final</span>',
           status: 'passed',
           append: true,
+          complete: true,
         });
 
         expect(gl.utils.visitUrl).toHaveBeenCalledWith(BUILD_URL);
+      });
+
+      describe('truncated information', () => {
+        describe('when size is less than total', () => {
+          it('shows information about truncated log', () => {
+            jasmine.clock().tick(4001);
+            const [{ success }] = $.ajax.calls.argsFor(0);
+
+            success.call($, {
+              html: '<span>Update</span>',
+              status: 'success',
+              append: false,
+              size: 50,
+              total: 100,
+            });
+
+            expect(document.querySelector('.js-truncated-info').classList).not.toContain('hidden');
+          });
+
+          it('shows the size in KiB', () => {
+            jasmine.clock().tick(4001);
+            const [{ success }] = $.ajax.calls.argsFor(0);
+            const size = 50;
+
+            success.call($, {
+              html: '<span>Update</span>',
+              status: 'success',
+              append: false,
+              size,
+              total: 100,
+            });
+
+            expect(
+              document.querySelector('.js-truncated-info-size').textContent.trim(),
+            ).toEqual(`${bytesToKiB(size)}`);
+          });
+
+          it('shows incremented size', () => {
+            jasmine.clock().tick(4001);
+            let args = $.ajax.calls.argsFor(0)[0];
+            args.success.call($, {
+              html: '<span>Update</span>',
+              status: 'success',
+              append: false,
+              size: 50,
+              total: 100,
+            });
+
+            expect(
+              document.querySelector('.js-truncated-info-size').textContent.trim(),
+            ).toEqual(`${bytesToKiB(50)}`);
+
+            jasmine.clock().tick(4001);
+            args = $.ajax.calls.argsFor(2)[0];
+            args.success.call($, {
+              html: '<span>Update</span>',
+              status: 'success',
+              append: true,
+              size: 10,
+              total: 100,
+            });
+
+            expect(
+              document.querySelector('.js-truncated-info-size').textContent.trim(),
+            ).toEqual(`${bytesToKiB(60)}`);
+          });
+
+          it('renders the raw link', () => {
+            jasmine.clock().tick(4001);
+            const [{ success }] = $.ajax.calls.argsFor(0);
+
+            success.call($, {
+              html: '<span>Update</span>',
+              status: 'success',
+              append: false,
+              size: 50,
+              total: 100,
+            });
+
+            expect(
+              document.querySelector('.js-raw-link').textContent.trim(),
+            ).toContain('Complete Raw');
+          });
+        });
+
+        describe('when size is equal than total', () => {
+          it('does not show the trunctated information', () => {
+            jasmine.clock().tick(4001);
+            const [{ success }] = $.ajax.calls.argsFor(0);
+
+            success.call($, {
+              html: '<span>Update</span>',
+              status: 'success',
+              append: false,
+              size: 100,
+              total: 100,
+            });
+
+            expect(document.querySelector('.js-truncated-info').classList).toContain('hidden');
+          });
+        });
       });
     });
   });

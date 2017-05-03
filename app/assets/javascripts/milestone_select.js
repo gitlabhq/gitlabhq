@@ -2,8 +2,6 @@
 /* global Issuable */
 /* global ListMilestone */
 
-import Vue from 'vue';
-
 (function() {
   this.MilestoneSelect = (function() {
     function MilestoneSelect(currentProject, els) {
@@ -176,12 +174,12 @@ import Vue from 'vue';
               return $dropdown.closest('form').submit();
             } else if ($dropdown.hasClass('js-issue-board-sidebar')) {
               if (selected.id !== -1) {
-                Vue.set(gl.issueBoards.BoardsStore.detail.issue, 'milestone', new ListMilestone({
+                gl.issueBoards.boardStoreIssueSet('milestone', new ListMilestone({
                   id: selected.id,
                   title: selected.name
                 }));
               } else {
-                Vue.delete(gl.issueBoards.BoardsStore.detail.issue, 'milestone');
+                gl.issueBoards.boardStoreIssueDelete('milestone');
               }
 
               $dropdown.trigger('loading.gl.dropdown');
@@ -190,6 +188,9 @@ import Vue from 'vue';
               gl.issueBoards.BoardsStore.detail.issue.update($dropdown.attr('data-issue-update'))
                 .then(function () {
                   $dropdown.trigger('loaded.gl.dropdown');
+                  $loading.fadeOut();
+                })
+                .catch(() => {
                   $loading.fadeOut();
                 });
             } else {

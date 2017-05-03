@@ -46,6 +46,7 @@ module Projects
     end
 
     def error(message, http_status = nil)
+      log_error("Projects::UpdatePagesService: #{message}")
       @status.allow_failure = !latest?
       @status.description = message
       @status.drop

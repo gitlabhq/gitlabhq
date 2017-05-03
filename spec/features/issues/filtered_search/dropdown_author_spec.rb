@@ -2,7 +2,6 @@ require 'rails_helper'
 
 describe 'Dropdown author', js: true, feature: true do
   include FilteredSearchHelpers
-  include WaitForAjax
 
   let!(:project) { create(:empty_project) }
   let!(:user) { create(:user, name: 'administrator', username: 'root') }
@@ -172,7 +171,7 @@ describe 'Dropdown author', js: true, feature: true do
 
       new_user = create(:user)
       project.team << [new_user, :master]
-      find('.filtered-search-input-container .clear-search').click
+      find('.filtered-search-box .clear-search').click
       filtered_search.set('author')
       send_keys_to_filtered_search(':')
 

@@ -64,7 +64,6 @@ GET /users
     "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
     "web_url": "http://localhost:3000/john_smith",
     "created_at": "2012-05-23T08:00:58Z",
-    "is_admin": false,
     "bio": null,
     "location": null,
     "skype": "",
@@ -74,6 +73,7 @@ GET /users
     "organization": "",
     "last_sign_in_at": "2012-06-01T11:41:01Z",
     "confirmed_at": "2012-05-23T09:05:22Z",
+    "last_activity_on": "2012-05-23",
     "color_scheme_id": 2,
     "projects_limit": 100,
     "current_sign_in_at": "2012-06-02T06:36:55Z",
@@ -96,7 +96,6 @@ GET /users
     "avatar_url": "http://localhost:3000/uploads/user/avatar/2/index.jpg",
     "web_url": "http://localhost:3000/jack_smith",
     "created_at": "2012-05-23T08:01:01Z",
-    "is_admin": false,
     "bio": null,
     "location": null,
     "skype": "",
@@ -106,6 +105,7 @@ GET /users
     "organization": "",
     "last_sign_in_at": null,
     "confirmed_at": "2012-05-30T16:53:06.148Z",
+    "last_activity_on": "2012-05-23",
     "color_scheme_id": 3,
     "projects_limit": 100,
     "current_sign_in_at": "2014-03-19T17:54:13Z",
@@ -130,6 +130,18 @@ For example:
 
 ```
 GET /users?username=jack_smith
+```
+
+You can also lookup users by external UID and provider:
+
+```
+GET /users?extern_uid=:extern_uid&provider=:provider
+```
+
+For example:
+
+```
+GET /users?extern_uid=1234567&provider=github
 ```
 
 You can search for users who are external with: `/users?external=true`
@@ -157,7 +169,6 @@ Parameters:
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/cd8.jpeg",
   "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
-  "is_admin": false,
   "bio": null,
   "location": null,
   "skype": "",
@@ -188,7 +199,6 @@ Parameters:
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
   "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
-  "is_admin": false,
   "bio": null,
   "location": null,
   "skype": "",
@@ -198,6 +208,7 @@ Parameters:
   "organization": "",
   "last_sign_in_at": "2012-06-01T11:41:01Z",
   "confirmed_at": "2012-05-23T09:05:22Z",
+  "last_activity_on": "2012-05-23",
   "color_scheme_id": 2,
   "projects_limit": 100,
   "current_sign_in_at": "2012-06-02T06:36:55Z",
@@ -312,7 +323,6 @@ GET /user
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
   "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
-  "is_admin": false,
   "bio": null,
   "location": null,
   "skype": "",
@@ -322,6 +332,7 @@ GET /user
   "organization": "",
   "last_sign_in_at": "2012-06-01T11:41:01Z",
   "confirmed_at": "2012-05-23T09:05:22Z",
+  "last_activity_on": "2012-05-23",
   "color_scheme_id": 2,
   "projects_limit": 100,
   "current_sign_in_at": "2012-06-02T06:36:55Z",
@@ -367,6 +378,7 @@ GET /user
   "organization": "",
   "last_sign_in_at": "2012-06-01T11:41:01Z",
   "confirmed_at": "2012-05-23T09:05:22Z",
+  "last_activity_on": "2012-05-23",
   "color_scheme_id": 2,
   "projects_limit": 100,
   "current_sign_in_at": "2012-06-02T06:36:55Z",
@@ -830,10 +842,166 @@ Example response:
 ]
 ```
 
+## Get all impersonation tokens of a user
+
+> Requires admin permissions.
+
+It retrieves every impersonation token of the user. Use the pagination
+parameters `page` and `per_page` to restrict the list of impersonation tokens.
+
+```
+GET /users/:user_id/impersonation_tokens
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `user_id` | integer | yes | The ID of the user |
+| `state`   | string  | no | filter tokens based on state (`all`, `active`, `inactive`) |
+
+```
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/users/42/impersonation_tokens
+```
+
+Example response:
+
+```json
+[
+   {
+      "active" : true,
+      "token" : "EsMo-vhKfXGwX9RKrwiy",
+      "scopes" : [
+         "api"
+      ],
+      "revoked" : false,
+      "name" : "mytoken",
+      "id" : 2,
+      "created_at" : "2017-03-17T17:18:09.283Z",
+      "impersonation" : true,
+      "expires_at" : "2017-04-04"
+   },
+   {
+      "active" : false,
+      "scopes" : [
+         "read_user"
+      ],
+      "revoked" : true,
+      "token" : "ZcZRpLeEuQRprkRjYydY",
+      "name" : "mytoken2",
+      "created_at" : "2017-03-17T17:19:28.697Z",
+      "id" : 3,
+      "impersonation" : true,
+      "expires_at" : "2017-04-14"
+   }
+]
+```
+
+## Get an impersonation token of a user
+
+> Requires admin permissions.
+
+It shows a user's impersonation token.
+
+```
+GET /users/:user_id/impersonation_tokens/:impersonation_token_id
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `user_id` | integer | yes | The ID of the user |
+| `impersonation_token_id` | integer | yes | The ID of the impersonation token |
+
+```
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/users/42/impersonation_tokens/2
+```
+
+Example response:
+
+```json
+{
+   "active" : true,
+   "token" : "EsMo-vhKfXGwX9RKrwiy",
+   "scopes" : [
+      "api"
+   ],
+   "revoked" : false,
+   "name" : "mytoken",
+   "id" : 2,
+   "created_at" : "2017-03-17T17:18:09.283Z",
+   "impersonation" : true,
+   "expires_at" : "2017-04-04"
+}
+```
+
+## Create an impersonation token
+
+> Requires admin permissions.
+
+It creates a new impersonation token. Note that only administrators can do this.
+You are only able to create impersonation tokens to impersonate the user and perform
+both API calls and Git reads and writes. The user will not see these tokens in his profile
+settings page.
+
+```
+POST /users/:user_id/impersonation_tokens
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `user_id` | integer | yes | The ID of the user |
+| `name`    | string  | yes | The name of the impersonation token |
+| `expires_at` | date | no  | The expiration date of the impersonation token in ISO format (`YYYY-MM-DD`)|
+| `scopes` | array    | yes | The array of scopes of the impersonation token (`api`, `read_user`) |
+
+```
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data "name=mytoken" --data "expires_at=2017-04-04" --data "scopes[]=api" https://gitlab.example.com/api/v4/users/42/impersonation_tokens
+```
+
+Example response:
+
+```json
+{
+   "id" : 2,
+   "revoked" : false,
+   "scopes" : [
+      "api"
+   ],
+   "token" : "EsMo-vhKfXGwX9RKrwiy",
+   "active" : true,
+   "impersonation" : true,
+   "name" : "mytoken",
+   "created_at" : "2017-03-17T17:18:09.283Z",
+   "expires_at" : "2017-04-04"
+}
+```
+
+## Revoke an impersonation token
+
+> Requires admin permissions.
+
+It revokes an impersonation token.
+
+```
+DELETE /users/:user_id/impersonation_tokens/:impersonation_token_id
+```
+
+```
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/users/42/impersonation_tokens/1
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `user_id` | integer | yes | The ID of the user |
+| `impersonation_token_id` | integer | yes | The ID of the impersonation token |
+
 ### Get user activities (admin only)
 
->**Note:** This API endpoint is only available on 8.15 EE and above.
-
+>**Note:** This API endpoint is only available on 8.15 (EE) and 9.1 (CE) and above.
 
 Get the last activity date for all users, sorted from oldest to newest.
 
@@ -842,15 +1010,8 @@ The activities that update the timestamp are:
   - Git HTTP/SSH activities (such as clone, push)
   - User logging in into GitLab
 
-The data is stored in Redis and it depends on it for being recorded and displayed
-over time. This means that we will lose the data if Redis gets flushed, or a custom
-TTL is reached.
-
 By default, it shows the activity for all users in the last 6 months, but this can be
 amended by using the `from` parameter.
-
-This function takes pagination parameters `page` and `per_page` to restrict the list of users.
-
 
 ```
 GET /user/activities
@@ -872,109 +1033,20 @@ Example response:
 [
   {
     "username": "user1",
-    "last_activity_at": "2015-12-14 01:00:00"
+    "last_activity_on": "2015-12-14",
+    "last_activity_at": "2015-12-14"
   },
   {
     "username": "user2",
-    "last_activity_at": "2015-12-15 01:00:00"
+    "last_activity_on": "2015-12-15",
+    "last_activity_at": "2015-12-15"
   },
   {
     "username": "user3",
-    "last_activity_at": "2015-12-16 01:00:00"
+    "last_activity_on": "2015-12-16",
+    "last_activity_at": "2015-12-16"
   }
 ]
 ```
 
-## Retrieve user impersonation tokens
-
-It retrieves every impersonation token of the user. Note that only administrators can do this.
-This function takes pagination parameters `page` and `per_page` to restrict the list of impersonation tokens.
-
-```
-GET /users/:user_id/impersonation_tokens
-```
-
-Parameters:
-
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `user_id` | integer | yes | The ID of the user |
-| `state`   | string | no | filter tokens based on state (all, active, inactive) |
-
-Example response:
-```json
-[
-  {
-    "id": 1,
-    "name": "mytoken",
-    "revoked": false,
-    "expires_at": "2017-01-04",
-    "scopes": ['api'],
-    "active": true,
-    "impersonation": true,
-    "token": "9koXpg98eAheJpvBs5tK"
-  }
-]
-```
-
-## Show a user's impersonation token
-
-It shows a user's impersonation token. Note that only administrators can do this.
-
-```
-GET /users/:user_id/impersonation_tokens/:impersonation_token_id
-```
-
-Parameters:
-
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `user_id` | integer | yes | The ID of the user |
-| `impersonation_token_id` | integer | yes | The ID of the impersonation token |
-
-## Create a impersonation token
-
-It creates a new impersonation token. Note that only administrators can do this.
-You are only able to create impersonation tokens to impersonate the user and perform
-both API calls and Git reads and writes. The user will not see these tokens in his profile
-settings page.
-
-```
-POST /users/:user_id/impersonation_tokens
-```
-
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `user_id` | integer | yes | The ID of the user |
-| `name` | string | yes | The name of the impersonation token |
-| `expires_at` | date | no | The expiration date of the impersonation token |
-| `scopes` | array | no | The array of scopes of the impersonation token (api, read_user) |
-
-Example response:
-```json
-{
-  "id": 1,
-  "name": "mytoken",
-  "revoked": false,
-  "expires_at": "2017-01-04",
-  "scopes": ['api'],
-  "active": true,
-  "impersonation": true,
-  "token": "9koXpg98eAheJpvBs5tK"
-}
-```
-
-## Revoke an impersonation token
-
-It revokes an impersonation token. Note that only administrators can revoke impersonation tokens.
-
-```
-DELETE /users/:user_id/impersonation_tokens/:impersonation_token_id
-```
-
-Parameters:
-
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `user_id` | integer | yes | The ID of the user |
-| `impersonation_token_id` | integer | yes | The ID of the impersonation token |
+Please note that `last_activity_at` is deprecated, please use `last_activity_on`.

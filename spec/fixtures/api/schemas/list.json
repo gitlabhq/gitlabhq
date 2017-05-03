@@ -10,7 +10,7 @@
     "id": { "type": "integer" },
     "list_type": {
       "type": "string",
-      "enum": ["label", "done"]
+      "enum": ["label", "closed"]
     },
     "label": {
       "type": ["object", "null"],

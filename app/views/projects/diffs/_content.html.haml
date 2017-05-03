@@ -3,9 +3,9 @@
   - return unless blob.respond_to?(:text?)
   - if diff_file.too_large?
     .nothing-here-block This diff could not be displayed because it is too large.
-  - elsif blob.only_display_raw?
-    .nothing-here-block This file is too large to display.
-  - elsif blob_text_viewable?(blob)
+  - elsif blob.too_large?
+    .nothing-here-block The file could not be displayed because it is too large.
+  - elsif blob.readable_text?
     - if !project.repository.diffable?(blob)
       .nothing-here-block This diff was suppressed by a .gitattributes entry.
     - elsif diff_file.collapsed?

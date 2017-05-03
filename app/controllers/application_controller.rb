@@ -8,12 +8,12 @@ class ApplicationController < ActionController::Base
   include PageLayoutHelper
   include SentryHelper
   include WorkhorseHelper
+  include EnforcesTwoFactorAuthentication
 
   before_action :authenticate_user_from_private_token!
   before_action :authenticate_user!
   before_action :validate_user_service_ticket!
   before_action :check_password_expiration
-  before_action :check_2fa_requirement
   before_action :ldap_security_check
   before_action :sentry_context
   before_action :default_headers
@@ -155,12 +155,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def check_2fa_requirement
-    if two_factor_authentication_required? && current_user && !current_user.two_factor_enabled? && !skip_two_factor?
-      redirect_to profile_two_factor_auth_path
-    end
-  end
-
   def ldap_security_check
     if current_user && current_user.requires_ldap_check?
       return unless current_user.try_obtain_ldap_lease
@@ -267,23 +261,6 @@ class ApplicationController < ActionController::Base
 
   def gitlab_project_import_enabled?
     current_application_settings.import_sources.include?('gitlab_project')
-  end
-
-  def two_factor_authentication_required?
-    current_application_settings.require_two_factor_authentication
-  end
-
-  def two_factor_grace_period
-    current_application_settings.two_factor_grace_period
-  end
-
-  def two_factor_grace_period_expired?
-    date = current_user.otp_grace_period_started_at
-    date && (date + two_factor_grace_period.hours) < Time.current
-  end
-
-  def skip_two_factor?
-    session[:skip_tfa] && session[:skip_tfa] > Time.current
   end
 
   # U2F (universal 2nd factor) devices need a unique identifier for the application

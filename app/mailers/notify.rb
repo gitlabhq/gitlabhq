@@ -11,6 +11,8 @@ class Notify < BaseMailer
   include Emails::Pipelines
   include Emails::Members
 
+  include Emails::EE::ServiceDesk
+
   helper MergeRequestsHelper
   helper DiffHelper
   helper BlobHelper
@@ -113,7 +115,7 @@ class Notify < BaseMailer
     headers["X-GitLab-#{model.class.name}-ID"] = model.id
     headers['X-GitLab-Reply-Key'] = reply_key
 
-    if Gitlab::IncomingEmail.enabled?
+    if Gitlab::IncomingEmail.enabled? && @sent_notification
       address = Mail::Address.new(Gitlab::IncomingEmail.reply_address(reply_key))
       address.display_name = @project.name_with_namespace
 
@@ -178,6 +180,6 @@ class Notify < BaseMailer
     end
 
     headers['List-Unsubscribe'] = list_unsubscribe_methods.map { |e| "<#{e}>" }.join(',')
-    @sent_notification_url = unsubscribe_sent_notification_url(@sent_notification)
+    @unsubscribe_url = unsubscribe_sent_notification_url(@sent_notification)
   end
 end

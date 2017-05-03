@@ -1,0 +1,37 @@
+- milestone = local_assigns[:milestone]
+- project = local_assigns[:project]
+- burndown = local_assigns[:burndown]
+- can_generate_chart = burndown&.valid? && !burndown&.empty?
+- warning = data_warning_for(burndown)
+
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_bundle_tag('common_d3')
+  = page_specific_javascript_bundle_tag('burndown_chart')
+
+= warning
+
+- if can_generate_chart
+  .burndown-header
+    %h3
+      Burndown chart
+      .btn-group.js-burndown-data-selector
+        %button.btn.btn-xs.active{ data: { show: 'count' } }
+          Issues
+        %button.btn.btn-xs{ data: { show: 'weight' } }
+          Issue weight
+  .burndown-chart{ data: { start_date: burndown.start_date.strftime("%Y-%m-%d"), due_date: burndown.due_date.strftime("%Y-%m-%d"), chart_data: burndown.to_json } }
+
+- elsif can?(current_user, :admin_milestone, @project) && cookies['hide_burndown_message'].nil? && warning.nil?
+  .burndown-hint.content-block.container-fluid
+    = icon("times", class: "dismiss-icon")
+    .row
+      .col-sm-4.col-xs-12.svg-container
+        = custom_icon('icon_burndown_chart_splash')
+      .col-sm-8.col-xs-12.inner-content
+        %h4
+          Burndown chart
+        %p
+          View your milestone's progress as a burndown chart.  Add both a start and a due date to
+          this milestone and the chart will appear here, always up-to-date.
+
+        = link_to "Add start and due date", edit_namespace_project_milestone_path(project.namespace, project, milestone), class: 'btn'

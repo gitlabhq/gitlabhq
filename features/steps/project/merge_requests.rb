@@ -14,7 +14,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click link "New Merge Request"' do
-    click_link "New Merge Request"
+    page.has_link?('New Merge Request') ? click_link("New Merge Request") : click_link('New merge request')
   end
 
   step 'I click link "Bug NS-04"' do
@@ -48,8 +48,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see closed merge request "Bug NS-04"' do
-    merge_request = MergeRequest.find_by!(title: "Bug NS-04")
-    expect(merge_request).to be_closed
+    expect(page).to have_content "Bug NS-04"
     expect(page).to have_content "Closed by"
   end
 
@@ -300,10 +299,10 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
       page.within('.current-note-edit-form', visible: true) do
         fill_in 'note_note', with: 'Typo, please fix'
-        click_button 'Save Comment'
+        click_button 'Save comment'
       end
 
-      expect(page).not_to have_button 'Save Comment', disabled: true, visible: true
+      expect(page).not_to have_button 'Save comment', disabled: true, visible: true
     end
   end
 
@@ -347,6 +346,9 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see a discussion by user "John Doe" has started on diff' do
+    # Trigger a refresh of notes
+    execute_script("$(document).trigger('visibilitychange');")
+    wait_for_ajax
     page.within(".notes .discussion") do
       page.should have_content "#{user_exists("John Doe").name} #{user_exists("John Doe").to_reference} started a discussion"
       page.should have_content sample_commit.line_code_path
@@ -378,11 +380,11 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'merge request is mergeable' do
-    expect(page).to have_button 'Accept Merge Request'
+    expect(page).to have_button 'Accept merge request'
   end
 
   step 'I modify merge commit message' do
-    find('.modify-merge-commit-link').click
+    click_button "Modify commit message"
     fill_in 'commit_message', with: 'wow such merge'
   end
 
@@ -392,7 +394,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I accept this merge request' do
     page.within '.mr-state-widget' do
-      click_button "Accept Merge Request"
+      click_button "Accept merge request"
     end
   end
 
@@ -608,19 +610,19 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   step 'I click link "Approve"' do
     page.within '.mr-state-widget' do
       wait_for_ajax
-      click_button 'Approve Merge Request'
+      click_button 'Approve merge request'
     end
   end
 
   step 'I should see the merge button disabled' do
     page.within '.mr-state-widget' do
-      expect(page).to have_button('Accept Merge Request', disabled: true)
+      expect(page).to have_button('Accept merge request', disabled: true)
     end
   end
 
   step 'I should not see merge button' do
     page.within '.mr-state-widget' do
-      expect(page).not_to have_button('Accept Merge Request')
+      expect(page).not_to have_button('Accept merge mequest')
     end
   end
 
@@ -632,7 +634,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should see approved merge request "Bug NS-04"' do
     page.within '.mr-state-widget' do
-      expect(page).to have_button('Accept Merge Request', disabled: false)
+      expect(page).to have_button('Accept merge request', disabled: false)
     end
   end
 
@@ -671,8 +673,8 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     project = Project.find_by(name: "Shop")
     project.team << [user, :developer]
 
-    logout
-    login_with user
+    gitlab_sign_out
+    sign_in(user)
   end
 
   step '"Bug NS-05" has CI status' do

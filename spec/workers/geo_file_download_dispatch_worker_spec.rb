@@ -45,21 +45,25 @@ describe GeoFileDownloadDispatchWorker do
 
     # Test the case where we have:
     #
-    # 1. A total of 6 files in the queue, and we can load a maxmimum of 5 and send 2 at a time.
+    # 1. A total of 8 files in the queue, and we can load a maximimum of 5 and send 2 at a time.
     # 2. We send 2, wait for 1 to finish, and then send again.
     it 'attempts to load a new batch without pending downloads' do
       stub_const('GeoFileDownloadDispatchWorker::DB_RETRIEVE_BATCH', 5)
       stub_const('GeoFileDownloadDispatchWorker::MAX_CONCURRENT_DOWNLOADS', 2)
 
-      create_list(:lfs_object, 6, :with_file)
+      avatar = fixture_file_upload(Rails.root.join('spec/fixtures/dk.png'))
+      create_list(:lfs_object, 2, :with_file)
+      create_list(:user, 2, avatar: avatar)
+      create_list(:note, 2, :with_attachment)
+      create(:appearance, logo: avatar, header_logo: avatar)
 
       allow_any_instance_of(described_class).to receive(:over_time?).and_return(false)
 
-      expect(GeoFileDownloadWorker).to receive(:perform_async).exactly(6).times.and_call_original
-      # For 6 downloads, we expect three database reloads:
+      expect(GeoFileDownloadWorker).to receive(:perform_async).exactly(8).times.and_call_original
+      # For 8 downloads, we expect three database reloads:
       # 1. Load the first batch of 5.
-      # 2. 4 get sent out, 1 remains. This triggers another reload, which loads in the remaining 2.
-      # 3. Since the second reload filled the pipe with 2, we need to do a final reload to ensure
+      # 2. 4 get sent out, 1 remains. This triggers another reload, which loads in the remaining 4.
+      # 3. Since the second reload filled the pipe with 4, we need to do a final reload to ensure
       #    zero are left.
       expect(subject).to receive(:load_pending_downloads).exactly(3).times.and_call_original
 

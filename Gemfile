@@ -12,10 +12,12 @@ gem 'sprockets', '~> 3.7.0'
 gem 'default_value_for', '~> 3.0.0'
 
 # Supported DBs
-gem 'mysql2', '~> 0.3.16', group: :mysql
+gem 'mysql2', '~> 0.4.5', group: :mysql
 gem 'pg', '~> 0.18.2', group: :postgres
 
-gem 'rugged', '~> 0.24.0'
+gem 'rugged', '~> 0.25.1.1'
+
+gem 'faraday', '~> 0.11.0'
 
 # Authentication libraries
 gem 'devise', '~> 4.2'
@@ -65,7 +67,7 @@ gem 'net-ldap'
 # Git Wiki
 # Required manually in config/initializers/gollum.rb to control load order
 gem 'gollum-lib', '~> 4.2', require: false
-gem 'gollum-rugged_adapter', '~> 0.4.2', require: false
+gem 'gollum-rugged_adapter', '~> 0.4.4', require: false
 
 # Language detection
 gem 'github-linguist', '~> 4.7.0', require: 'linguist'
@@ -74,6 +76,9 @@ gem 'github-linguist', '~> 4.7.0', require: 'linguist'
 gem 'grape', '~> 0.19.0'
 gem 'grape-entity', '~> 0.6.0'
 gem 'rack-cors', '~> 0.4.0', require: 'rack/cors'
+
+# Disable strong_params so that Mash does not respond to :permitted?
+gem 'hashie-forbidden_attributes'
 
 # Pagination
 gem 'kaminari', '~> 0.17.0'
@@ -149,10 +154,13 @@ gem 'after_commit_queue', '~> 1.3.0'
 gem 'acts-as-taggable-on', '~> 4.0'
 
 # Background jobs
-gem 'sidekiq', '~> 4.2.7'
+gem 'sidekiq', '~> 5.0'
 gem 'sidekiq-cron', '~> 0.4.4'
 gem 'redis-namespace', '~> 1.5.2'
 gem 'sidekiq-limit_fetch', '~> 3.4'
+
+# Cron Parser
+gem 'rufus-scheduler', '~> 3.1.10'
 
 # HTTP requests
 gem 'httparty', '~> 0.13.3'
@@ -190,7 +198,7 @@ gem 'gemnasium-gitlab-service', '~> 0.2'
 gem 'slack-notifier', '~> 1.5.1'
 
 # Asana integration
-gem 'asana', '~> 0.4.0'
+gem 'asana', '~> 0.6.0'
 
 # FogBugz integration
 gem 'ruby-fogbugz', '~> 0.2.1'
@@ -233,7 +241,7 @@ gem 'oj', '~> 2.17.4'
 gem 'chronic', '~> 0.10.2'
 gem 'chronic_duration', '~> 0.10.6'
 
-gem 'webpack-rails', '~> 0.9.9'
+gem 'webpack-rails', '~> 0.9.10'
 gem 'rack-proxy', '~> 0.6.0'
 
 gem 'sass-rails', '~> 5.0.6'
@@ -255,7 +263,7 @@ gem 'base32',             '~> 0.3.0'
 gem "gitlab-license", "~> 1.0"
 
 # Sentry integration
-gem 'sentry-raven', '~> 2.0.0'
+gem 'sentry-raven', '~> 2.4.0'
 
 gem 'premailer-rails', '~> 1.9.0'
 
@@ -268,15 +276,13 @@ end
 
 group :development do
   gem 'foreman', '~> 0.78.0'
-  gem 'brakeman', '~> 3.4.0', require: false
+  gem 'brakeman', '~> 3.6.0', require: false
 
   gem 'letter_opener_web', '~> 1.3.0'
-  gem 'bullet', '~> 5.2.0', require: false
   gem 'rblineprof', '~> 0.3.6', platform: :mri, require: false
-  gem 'web-console', '~> 2.0'
 
   # Better errors handler
-  gem 'better_errors', '~> 1.0.1'
+  gem 'better_errors', '~> 2.1.0'
   gem 'binding_of_caller', '~> 0.7.2'
 
   # thin instead webrick
@@ -284,6 +290,7 @@ group :development do
 end
 
 group :development, :test do
+  gem 'bullet', '~> 5.5.0', require: !!ENV['ENABLE_BULLET']
   gem 'pry-byebug', '~> 3.4.1', platform: :mri
   gem 'pry-rails', '~> 0.3.4'
 
@@ -297,6 +304,7 @@ group :development, :test do
   gem 'spinach-rails', '~> 0.2.1'
   gem 'spinach-rerun-reporter', '~> 0.0.2'
   gem 'rspec_profiling', '~> 0.0.5'
+  gem 'rspec-set', '~> 0.1.3'
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
   gem 'minitest', '~> 5.7.0'
@@ -308,16 +316,16 @@ group :development, :test do
   gem 'capybara-screenshot', '~> 1.0.0'
   gem 'poltergeist', '~> 1.9.0'
 
-  gem 'spring', '~> 1.7.0'
+  gem 'spring', '~> 2.0.0'
   gem 'spring-commands-rspec', '~> 1.0.4'
   gem 'spring-commands-spinach', '~> 1.1.0'
 
   gem 'rubocop', '~> 0.47.1', require: false
-  gem 'rubocop-rspec', '~> 1.12.0', require: false
+  gem 'rubocop-rspec', '~> 1.15.0', require: false
   gem 'scss_lint', '~> 0.47.0', require: false
   gem 'haml_lint', '~> 0.21.0', require: false
-  gem 'simplecov', '0.12.0', require: false
-  gem 'flay', '~> 2.6.1', require: false
+  gem 'simplecov', '~> 0.14.0', require: false
+  gem 'flay', '~> 2.8.0', require: false
   gem 'bundler-audit', '~> 0.5.0', require: false
 
   gem 'benchmark-ips', '~> 2.3.0', require: false
@@ -334,7 +342,7 @@ group :test do
   gem 'shoulda-matchers', '~> 2.8.0', require: false
   gem 'email_spec', '~> 1.6.0'
   gem 'json-schema', '~> 2.6.2'
-  gem 'webmock', '~> 1.21.0'
+  gem 'webmock', '~> 1.24.0'
   gem 'test_after_commit', '~> 1.1'
   gem 'sham_rack', '~> 1.3.6'
   gem 'timecop', '~> 0.8.0'
@@ -351,7 +359,7 @@ gem 'html2text'
 gem 'ruby-prof', '~> 0.16.2'
 
 # OAuth
-gem 'oauth2', '~> 1.2.0'
+gem 'oauth2', '~> 1.3.0'
 
 # Soft deletion
 gem 'paranoia', '~> 2.2'
@@ -364,4 +372,6 @@ gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'
 
 # Gitaly GRPC client
-gem 'gitaly', '~> 0.3.0'
+gem 'gitaly', '~> 0.5.0'
+
+gem 'toml-rb', '~> 0.3.15', require: false

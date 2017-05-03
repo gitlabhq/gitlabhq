@@ -39,7 +39,9 @@ module TestEnv
     'deleted-image-test'                 => '6c17798',
     'wip'                                => 'b9238ee',
     'csv'                                => '3dd0896',
-    'squash-large-files'                 => '54cec52'
+    'v1.1.0'                             => 'b83d6e3',
+    'add-ipython-files'                  => '6d85bb69',
+    'squash-large-files'                 => '54cec52',
   }.freeze
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily
@@ -62,17 +64,20 @@ module TestEnv
 
     clean_test_path
 
-    FileUtils.mkdir_p(repos_path)
-    FileUtils.mkdir_p(backup_path)
-
     # Setup GitLab shell for test instance
     setup_gitlab_shell
+
+    setup_gitaly if Gitlab::GitalyClient.enabled?
 
     # Create repository for FactoryGirl.create(:project)
     setup_factory_repo
 
     # Create repository for FactoryGirl.create(:forked_project_with_submodules)
     setup_forked_repo
+  end
+
+  def cleanup
+    stop_gitaly
   end
 
   def disable_mailer
@@ -96,10 +101,14 @@ module TestEnv
     tmp_test_path = Rails.root.join('tmp', 'tests', '**')
 
     Dir[tmp_test_path].each do |entry|
-      unless File.basename(entry) =~ /\Agitlab-(shell|test|test-fork)\z/
+      unless File.basename(entry) =~ /\A(gitaly|gitlab-(shell|test|test_bare|test-fork|test-fork_bare))\z/
         FileUtils.rm_rf(entry)
       end
     end
+
+    FileUtils.mkdir_p(repos_path)
+    FileUtils.mkdir_p(backup_path)
+    FileUtils.mkdir_p(pages_path)
   end
 
   def setup_gitlab_shell
@@ -108,6 +117,29 @@ module TestEnv
         raise 'Can`t clone gitlab-shell'
       end
     end
+  end
+
+  def setup_gitaly
+    socket_path = Gitlab::GitalyClient.get_address('default').sub(/\Aunix:/, '')
+    gitaly_dir = File.dirname(socket_path)
+
+    unless File.directory?(gitaly_dir) || system('rake', "gitlab:gitaly:install[#{gitaly_dir}]")
+      raise "Can't clone gitaly"
+    end
+
+    start_gitaly(gitaly_dir)
+  end
+
+  def start_gitaly(gitaly_dir)
+    gitaly_exec = File.join(gitaly_dir, 'gitaly')
+    gitaly_config = File.join(gitaly_dir, 'config.toml')
+    @gitaly_pid = spawn(gitaly_exec, gitaly_config, [:out, :err] => '/dev/null')
+  end
+
+  def stop_gitaly
+    return unless @gitaly_pid
+
+    Process.kill('KILL', @gitaly_pid)
   end
 
   def setup_factory_repo
@@ -131,8 +163,10 @@ module TestEnv
 
     set_repo_refs(repo_path, branch_sha)
 
-    # We must copy bare repositories because we will push to them.
-    system(git_env, *%W(#{Gitlab.config.git.bin_path} clone -q --bare #{repo_path} #{repo_path_bare}))
+    unless File.directory?(repo_path_bare)
+      # We must copy bare repositories because we will push to them.
+      system(git_env, *%W(#{Gitlab.config.git.bin_path} clone -q --bare #{repo_path} #{repo_path_bare}))
+    end
   end
 
   def copy_repo(project)
@@ -152,6 +186,10 @@ module TestEnv
     Gitlab.config.backup.path
   end
 
+  def pages_path
+    Gitlab.config.pages.path
+  end
+
   def copy_forked_repo_with_submodules(project)
     base_repo_path = File.expand_path(forked_repo_path_bare)
     target_repo_path = File.expand_path(project.repository_storage_path + "/#{project.full_path}.git")
@@ -165,16 +203,11 @@ module TestEnv
   #
   # Otherwise they'd be created by the first test, often timing out and
   # causing a transient test failure
-  def warm_asset_cache
-    return if warm_asset_cache?
+  def eager_load_driver_server
     return unless defined?(Capybara)
 
-    Capybara.current_session.driver.visit '/'
-  end
-
-  def warm_asset_cache?
-    cache = Rails.root.join(*%w(tmp cache assets test))
-    Dir.exist?(cache) && Dir.entries(cache).length > 2
+    puts "Starting the Capybara driver server..."
+    Capybara.current_session.visit '/'
   end
 
   private

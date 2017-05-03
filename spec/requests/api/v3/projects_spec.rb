@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-describe API::V3::Projects, api: true do
-  include ApiHelpers
+describe API::V3::Projects do
   include Gitlab::CurrentSettings
 
   let(:user) { create(:user) }
@@ -356,7 +355,6 @@ describe API::V3::Projects, api: true do
     it "assigns attributes to project" do
       project = attributes_for(:project, {
         path: 'camelCasePath',
-        description: FFaker::Lorem.sentence,
         issues_enabled: false,
         merge_requests_enabled: false,
         wiki_enabled: false,
@@ -501,7 +499,6 @@ describe API::V3::Projects, api: true do
 
     it 'assigns attributes to project' do
       project = attributes_for(:project, {
-        description: FFaker::Lorem.sentence,
         issues_enabled: false,
         merge_requests_enabled: false,
         wiki_enabled: false,
@@ -1000,7 +997,7 @@ describe API::V3::Projects, api: true do
     end
   end
 
-  describe :fork_admin do
+  describe 'fork management' do
     let(:project_fork_target) { create(:empty_project) }
     let(:project_fork_source) { create(:empty_project, :public) }
 

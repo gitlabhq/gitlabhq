@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe 'Issue Boards new issue', feature: true, js: true do
-  include WaitForAjax
   include WaitForVueResource
 
   let(:project) { create(:empty_project, :public) }
@@ -25,7 +24,7 @@ describe 'Issue Boards new issue', feature: true, js: true do
       expect(page).to have_selector('.board-issue-count-holder .btn', count: 1)
     end
 
-    it 'does not display new issue button in done list' do
+    it 'does not display new issue button in closed list' do
       page.within('.board:nth-child(2)') do
         expect(page).not_to have_selector('.board-issue-count-holder .btn')
       end

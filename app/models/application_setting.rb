@@ -29,6 +29,8 @@ class ApplicationSetting < ActiveRecord::Base
 
   attr_accessor :domain_whitelist_raw, :domain_blacklist_raw
 
+  validates :uuid, presence: true
+
   validates :session_expire_delay,
             presence: true,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
@@ -144,6 +146,10 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
+  validates :polling_interval_multiplier,
+            presence: true,
+            numericality: { greater_than_or_equal_to: 0 }
+
   validates :minimum_mirror_sync_time,
             presence: true,
             inclusion: { in: Gitlab::Mirror::SYNC_TIME_OPTIONS.values }
@@ -172,10 +178,11 @@ class ApplicationSetting < ActiveRecord::Base
     end
   end
 
+  before_validation :ensure_uuid!
   before_save :ensure_runners_registration_token
   before_save :ensure_health_check_access_token
 
-  after_update :update_mirror_cron_jobs, if: :minimum_mirror_sync_time_changed?
+  after_update :update_mirror_cron_job, if: :minimum_mirror_sync_time_changed?
 
   after_commit do
     Rails.cache.write(CACHE_KEY, self)
@@ -252,7 +259,9 @@ class ApplicationSetting < ActiveRecord::Base
       signup_enabled: Settings.gitlab['signup_enabled'],
       terminal_max_session_time: 0,
       two_factor_grace_period: 48,
-      user_default_external: false
+      user_default_external: false,
+      polling_interval_multiplier: 1,
+      usage_ping_enabled: true
     }
   end
 
@@ -261,8 +270,8 @@ class ApplicationSetting < ActiveRecord::Base
       elasticsearch_url: ENV['ELASTIC_URL'] || 'http://localhost:9200',
       elasticsearch_aws: false,
       elasticsearch_aws_region: ENV['ELASTIC_REGION'] || 'us-east-1',
-      usage_ping_enabled: true,
-      minimum_mirror_sync_time: Gitlab::Mirror::FIFTEEN
+      minimum_mirror_sync_time: Gitlab::Mirror::FIFTEEN,
+      repository_size_limit: 0
     }
   end
 
@@ -282,17 +291,21 @@ class ApplicationSetting < ActiveRecord::Base
     end
   end
 
-  def update_mirror_cron_jobs
+  def update_mirror_cron_job
     Project.mirror.where('sync_time < ?', minimum_mirror_sync_time)
       .update_all(sync_time: minimum_mirror_sync_time)
-    RemoteMirror.where('sync_time < ?', minimum_mirror_sync_time)
-      .update_all(sync_time: minimum_mirror_sync_time)
 
-    Gitlab::Mirror.configure_cron_jobs!
+    Gitlab::Mirror.configure_cron_job!
   end
 
   def elasticsearch_url
     read_attribute(:elasticsearch_url).split(',').map(&:strip)
+  end
+
+  def elasticsearch_url=(values)
+    cleaned = values.split(',').map {|url| url.strip.gsub(%r{/*\z}, '') }
+
+    write_attribute(:elasticsearch_url, cleaned.join(','))
   end
 
   def elasticsearch_config
@@ -389,6 +402,12 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   private
+
+  def ensure_uuid!
+    return if uuid?
+
+    self.uuid = SecureRandom.uuid
+  end
 
   def check_repository_storages
     invalid = repository_storages - Gitlab.config.repositories.storages.keys

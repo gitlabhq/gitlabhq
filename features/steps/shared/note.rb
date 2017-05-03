@@ -95,7 +95,7 @@ module SharedNote
   step 'The comment preview tab should be display rendered Markdown' do
     page.within(".js-main-target-form") do
       find('.js-md-preview-button').click
-      expect(find('.js-md-preview')).to have_css('img.emoji', visible: true)
+      expect(find('.js-md-preview')).to have_css('gl-emoji', visible: true)
     end
   end
 
@@ -141,7 +141,7 @@ module SharedNote
 
     page.within(".current-note-edit-form") do
       fill_in 'note[note]', with: '+1 Awesome!'
-      click_button 'Save Comment'
+      click_button 'Save comment'
     end
   end
 

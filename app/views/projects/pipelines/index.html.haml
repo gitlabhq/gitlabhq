@@ -6,53 +6,19 @@
 
 = render "projects/pipelines/head"
 
-%div{ class: container_class }
-  .top-area
-    %ul.nav-links
-      %li.js-pipelines-tab-all{ class: active_when(@scope.nil?) }>
-        = link_to project_pipelines_path(@project) do
-          All
-          %span.badge.js-totalbuilds-count
-            = number_with_delimiter(@pipelines_count)
-
-      %li.js-pipelines-tab-pending{ class: active_when(@scope == 'pending') }>
-        = link_to project_pipelines_path(@project, scope: :pending) do
-          Pending
-          %span.badge
-            = number_with_delimiter(@pending_count)
-
-      %li.js-pipelines-tab-running{ class: active_when(@scope == 'running') }>
-        = link_to project_pipelines_path(@project, scope: :running) do
-          Running
-          %span.badge.js-running-count
-            = number_with_delimiter(@running_count)
-
-      %li.js-pipelines-tab-finished{ class: active_when(@scope == 'finished') }>
-        = link_to project_pipelines_path(@project, scope: :finished) do
-          Finished
-          %span.badge
-            = number_with_delimiter(@finished_count)
-
-      %li.js-pipelines-tab-branches{ class: active_when(@scope == 'branches') }>
-        = link_to project_pipelines_path(@project, scope: :branches) do
-          Branches
-
-      %li.js-pipelines-tab-tags{ class: active_when(@scope == 'tags') }>
-        = link_to project_pipelines_path(@project, scope: :tags) do
-          Tags
-
-    .nav-controls
-      - if can? current_user, :create_pipeline, @project
-        = link_to new_namespace_project_pipeline_path(@project.namespace, @project), class: 'btn btn-create' do
-          Run pipeline
-
-        - unless @repository.gitlab_ci_yml
-          = link_to 'Get started with Pipelines', help_page_path('ci/quick_start/README'), class: 'btn btn-info'
-
-        = link_to ci_lint_path, class: 'btn btn-default' do
-          %span CI Lint
-  .content-list.pipelines{ data: { url: namespace_project_pipelines_path(@project.namespace, @project, format: :json) } }
-    .vue-pipelines-index
+#pipelines-list-vue{ data: { endpoint: namespace_project_pipelines_path(@project.namespace, @project, format: :json),
+  "css-class" => container_class,
+  "help-page-path" => help_page_path('ci/quick_start/README'),
+  "new-pipeline-path" => new_namespace_project_pipeline_path(@project.namespace, @project),
+  "can-create-pipeline" => can?(current_user, :create_pipeline, @project).to_s,
+  "all-path" =>  project_pipelines_path(@project),
+  "pending-path" => project_pipelines_path(@project, scope: :pending),
+  "running-path" => project_pipelines_path(@project, scope: :running),
+  "finished-path" => project_pipelines_path(@project, scope: :finished),
+  "branches-path" => project_pipelines_path(@project, scope: :branches),
+  "tags-path" => project_pipelines_path(@project, scope: :tags),
+  "has-ci" => @repository.gitlab_ci_yml,
+  "ci-lint-path" => ci_lint_path } }
 
 = page_specific_javascript_bundle_tag('common_vue')
-= page_specific_javascript_bundle_tag('vue_pipelines')
+= page_specific_javascript_bundle_tag('pipelines')

@@ -6,8 +6,8 @@ class Board < ActiveRecord::Base
 
   validates :name, :project, presence: true
 
-  def done_list
-    lists.merge(List.done).take
+  def closed_list
+    lists.merge(List.closed).take
   end
 
   def milestone

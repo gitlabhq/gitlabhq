@@ -42,6 +42,11 @@ namespace :geo do
         Rake::Task['geo:config:restore'].reenable
       end
     end
+
+    desc 'Display database encryption key'
+    task show_encryption_key: :environment do
+      puts Rails.application.secrets.db_key_base
+    end
   end
 
   namespace :config do
@@ -71,5 +76,41 @@ namespace :geo do
       ENV['SCHEMA'] = @previous_config[:schema]
       Rails.application.config = @previous_config[:config]
     end
+  end
+
+  desc 'Make this node the Geo primary'
+  task :set_primary_node, [:ssh_key_filename] => :environment do |_, args|
+    filename = args[:ssh_key_filename]
+    abort 'GitLab Geo is not supported with this license. Please contact sales@gitlab.com.' unless Gitlab::Geo.license_allows?
+    abort 'You must specify a filename of an SSH public key' unless filename.present?
+    abort 'GitLab Geo primary node already present' if Gitlab::Geo.primary_node.present?
+
+    public_key = load_ssh_public_key(filename)
+
+    abort "Invalid SSH public key in #{filename}, aborting" unless public_key
+
+    set_primary_geo_node(public_key)
+  end
+
+  def load_ssh_public_key(filename)
+    File.open(filename).read
+  rescue => e
+    puts "Error opening #{filename}: #{e}".color(:red)
+    nil
+  end
+
+  def set_primary_geo_node(public_key)
+    params = { schema: Gitlab.config.gitlab.protocol,
+               host: Gitlab.config.gitlab.host,
+               port: Gitlab.config.gitlab.port,
+               relative_url_root: Gitlab.config.gitlab.relative_url_root,
+               primary: true,
+               geo_node_key_attributes: { key: public_key } }
+
+    node = GeoNode.new(params)
+    puts "Saving primary GeoNode with URL #{node.url}".color(:green)
+    node.save
+
+    puts "Error saving GeoNode:\n#{node.errors.full_messages.join("\n")}".color(:red) unless node.persisted?
   end
 end

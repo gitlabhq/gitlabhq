@@ -7,7 +7,11 @@ module RspecProfilingExt
 
   module Git
     def branch
-      ENV['CI_COMMIT_REF_NAME'] || super
+      if ENV['CI_COMMIT_REF_NAME']
+        "#{defined?(Gitlab::License) ? 'ee' : 'ce'}:#{ENV['CI_COMMIT_REF_NAME']}"
+      else
+        super
+      end
     end
   end
 
@@ -32,10 +36,10 @@ if Rails.env.test?
       RspecProfiling::Collectors::PSQL.prepend(RspecProfilingExt::PSQL)
       config.collector = RspecProfiling::Collectors::PSQL
     end
-  end
 
-  if ENV.has_key?('CI')
-    RspecProfiling::VCS::Git.prepend(RspecProfilingExt::Git)
-    RspecProfiling::Run.prepend(RspecProfilingExt::Run)
+    if ENV.key?('CI')
+      RspecProfiling::VCS::Git.prepend(RspecProfilingExt::Git)
+      RspecProfiling::Run.prepend(RspecProfilingExt::Run)
+    end
   end
 end

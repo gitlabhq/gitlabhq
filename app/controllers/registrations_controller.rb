@@ -1,5 +1,4 @@
 class RegistrationsController < Devise::RegistrationsController
-  before_action :signup_enabled?
   include Recaptcha::Verify
 
   def new
@@ -21,15 +20,17 @@ class RegistrationsController < Devise::RegistrationsController
       flash.delete :recaptcha_error
       render action: 'new'
     end
+  rescue Gitlab::Access::AccessDeniedError
+    redirect_to(new_user_session_path)
   end
 
   def destroy
-    Users::DestroyService.new(current_user).execute(current_user)
+    DeleteUserWorker.perform_async(current_user.id, current_user.id)
 
     respond_to do |format|
       format.html do
         session.try(:destroy)
-        redirect_to new_user_session_path, notice: "Account successfully removed."
+        redirect_to new_user_session_path, notice: "Account scheduled for removal."
       end
     end
   end
@@ -50,12 +51,6 @@ class RegistrationsController < Devise::RegistrationsController
 
   private
 
-  def signup_enabled?
-    unless current_application_settings.signup_enabled?
-      redirect_to(new_user_session_path)
-    end
-  end
-
   def sign_up_params
     params.require(:user).permit(:username, :email, :email_confirmation, :name, :password)
   end
@@ -65,7 +60,7 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def resource
-    @resource ||= User.new(sign_up_params)
+    @resource ||= Users::BuildService.new(current_user, sign_up_params).execute
   end
 
   def devise_mapping

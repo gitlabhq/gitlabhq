@@ -6,7 +6,7 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   include Select2Helper
 
   step 'I am a member of project "Shop"' do
-    @project = Project.find_by(name: "Shop")
+    @project = ::Project.find_by(name: "Shop")
     @project ||= create(:project, :repository, name: "Shop")
     @project.team << [@user, :reporter]
   end
@@ -16,7 +16,7 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click link "New Merge Request"' do
-    click_link "New Merge Request"
+    page.has_link?('New Merge Request') ? click_link("New Merge Request") : click_link('New merge request')
   end
 
   step 'I should see merge request "Merge Request On Forked Project"' do

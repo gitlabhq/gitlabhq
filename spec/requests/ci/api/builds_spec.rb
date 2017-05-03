@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe Ci::API::Builds do
-  include ApiHelpers
-
   let(:runner) { FactoryGirl.create(:ci_runner, tag_list: %w(mysql ruby)) }
   let(:project) { FactoryGirl.create(:empty_project, shared_runners_enabled: false) }
   let(:last_update) { nil }
@@ -285,7 +283,7 @@ describe Ci::API::Builds do
       end
 
       it 'does not override trace information when no trace is given' do
-        expect(build.reload.trace).to eq 'BUILD TRACE'
+        expect(build.reload.trace.raw).to eq 'BUILD TRACE'
       end
 
       context 'job has been erased' do
@@ -309,9 +307,11 @@ describe Ci::API::Builds do
 
       def patch_the_trace(content = ' appended', request_headers = nil)
         unless request_headers
-          offset = build.trace_length
-          limit = offset + content.length - 1
-          request_headers = headers.merge({ 'Content-Range' => "#{offset}-#{limit}" })
+          build.trace.read do |stream|
+            offset = stream.size
+            limit = offset + content.length - 1
+            request_headers = headers.merge({ 'Content-Range' => "#{offset}-#{limit}" })
+          end
         end
 
         Timecop.travel(build.updated_at + update_interval) do
@@ -335,7 +335,7 @@ describe Ci::API::Builds do
       context 'when request is valid' do
         it 'gets correct response' do
           expect(response.status).to eq 202
-          expect(build.reload.trace).to eq 'BUILD TRACE appended'
+          expect(build.reload.trace.raw).to eq 'BUILD TRACE appended'
           expect(response.header).to have_key 'Range'
           expect(response.header).to have_key 'Build-Status'
         end
@@ -346,7 +346,7 @@ describe Ci::API::Builds do
           it 'changes the build trace' do
             patch_the_trace
 
-            expect(build.reload.trace).to eq 'BUILD TRACE appended appended'
+            expect(build.reload.trace.raw).to eq 'BUILD TRACE appended appended'
           end
 
           context 'when Runner makes a force-patch' do
@@ -355,7 +355,7 @@ describe Ci::API::Builds do
             it "doesn't change the build.trace" do
               force_patch_the_trace
 
-              expect(build.reload.trace).to eq 'BUILD TRACE appended'
+              expect(build.reload.trace.raw).to eq 'BUILD TRACE appended'
             end
           end
         end
@@ -368,7 +368,7 @@ describe Ci::API::Builds do
           it 'changes the build.trace' do
             patch_the_trace
 
-            expect(build.reload.trace).to eq 'BUILD TRACE appended appended'
+            expect(build.reload.trace.raw).to eq 'BUILD TRACE appended appended'
           end
 
           context 'when Runner makes a force-patch' do
@@ -377,7 +377,7 @@ describe Ci::API::Builds do
             it "doesn't change the build.trace" do
               force_patch_the_trace
 
-              expect(build.reload.trace).to eq 'BUILD TRACE appended'
+              expect(build.reload.trace.raw).to eq 'BUILD TRACE appended'
             end
           end
         end
@@ -403,7 +403,7 @@ describe Ci::API::Builds do
 
         it 'gets correct response' do
           expect(response.status).to eq 202
-          expect(build.reload.trace).to eq 'BUILD TRACE appended'
+          expect(build.reload.trace.raw).to eq 'BUILD TRACE appended'
           expect(response.header).to have_key 'Range'
           expect(response.header).to have_key 'Build-Status'
         end

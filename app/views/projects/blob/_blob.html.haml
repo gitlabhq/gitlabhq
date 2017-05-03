@@ -26,4 +26,5 @@
 #blob-content-holder.blob-content-holder
   %article.file-holder
     = render "projects/blob/header", blob: blob
-    = render blob.to_partial_path(@project), blob: blob
+
+    = render 'projects/blob/content', blob: blob

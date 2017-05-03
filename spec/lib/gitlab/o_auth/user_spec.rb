@@ -40,6 +40,44 @@ describe Gitlab::OAuth::User, lib: true do
     let(:provider) { 'twitter' }
 
     describe 'signup' do
+      context 'when signup is disabled' do
+        before do
+          stub_application_setting signup_enabled: false
+        end
+
+        it 'creates the user' do
+          stub_omniauth_config(allow_single_sign_on: ['twitter'])
+
+          oauth_user.save
+
+          expect(gl_user).to be_persisted
+        end
+      end
+
+      context 'when user confirmation email is enabled' do
+        before do
+          stub_application_setting send_user_confirmation_email: true
+        end
+
+        it 'creates and confirms the user anyway' do
+          stub_omniauth_config(allow_single_sign_on: ['twitter'])
+
+          oauth_user.save
+
+          expect(gl_user).to be_persisted
+          expect(gl_user).to be_confirmed
+        end
+      end
+
+      it 'marks user as having password_automatically_set' do
+        stub_omniauth_config(allow_single_sign_on: ['twitter'], external_providers: ['twitter'])
+
+        oauth_user.save
+
+        expect(gl_user).to be_persisted
+        expect(gl_user).to be_password_automatically_set
+      end
+
       shared_examples 'to verify compliance with allow_single_sign_on' do
         context 'provider is marked as external' do
           it 'marks user as external' do

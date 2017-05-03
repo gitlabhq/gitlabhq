@@ -30,6 +30,7 @@ notes:
 - resolved_by
 - todos
 - events
+- system_note_metadata
 label_links:
 - target
 - label
@@ -93,16 +94,28 @@ pipelines:
 - statuses
 - builds
 - trigger_requests
+- auto_canceled_by
+- auto_canceled_pipelines
+- auto_canceled_jobs
+- pending_builds
+- retryable_builds
+- cancelable_statuses
+- manual_actions
+- artifacts
 statuses:
 - project
 - pipeline
 - user
+- auto_canceled_by
 variables:
 - project
 triggers:
 - project
 - trigger_requests
 - owner
+- trigger_schedule
+trigger_schedule:
+- trigger
 deploy_keys:
 - user
 - deploy_keys_projects
@@ -116,6 +129,9 @@ protected_branches:
 - project
 - merge_access_levels
 - push_access_levels
+protected_tags:
+- project
+- create_access_levels
 merge_access_levels:
 - user
 - protected_branch
@@ -124,6 +140,11 @@ push_access_levels:
 - user
 - protected_branch
 - group
+create_access_levels:
+- protected_tag
+container_repositories:
+- project
+- name
 project:
 - taggings
 - base_tags
@@ -151,6 +172,7 @@ project:
 - asana_service
 - gemnasium_service
 - slack_service
+- microsoft_teams_service
 - mattermost_service
 - buildkite_service
 - bamboo_service
@@ -164,6 +186,8 @@ project:
 - external_wiki_service
 - kubernetes_service
 - mock_ci_service
+- mock_deployment_service
+- mock_monitoring_service
 - forked_project_link
 - forked_from_project
 - forked_project_links
@@ -178,6 +202,7 @@ project:
 - snippets
 - hooks
 - protected_branches
+- protected_tags
 - project_members
 - users
 - requesters
@@ -198,8 +223,10 @@ project:
 - builds
 - runner_projects
 - runners
+- active_runners
 - variables
 - triggers
+- trigger_schedules
 - environments
 - deployments
 - project_feature
@@ -219,6 +246,7 @@ project:
 - approver_groups
 - route
 - statistics
+- container_repositories
 - uploads
 award_emoji:
 - awardable

@@ -1,5 +1,7 @@
 module API
   module Helpers
+    prepend EE::API::Helpers
+
     include Gitlab::Utils
     include Helpers::Pagination
 
@@ -90,6 +92,11 @@ module API
       MergeRequestsFinder.new(current_user, project_id: user_project.id).find_by!(iid: iid)
     end
 
+    def find_project_snippet(id)
+      finder_params = { filter: :by_project, project: user_project }
+      SnippetsFinder.new.execute(current_user, finder_params).find(id)
+    end
+
     def find_merge_request_with_access(iid, access_level = :read_merge_request)
       merge_request = user_project.merge_requests.find_by!(iid: iid)
       authorize! access_level, merge_request
@@ -97,7 +104,7 @@ module API
     end
 
     def authenticate!
-      unauthorized! unless current_user && can?(current_user, :access_api)
+      unauthorized! unless current_user && can?(initial_current_user, :access_api)
     end
 
     def authenticate_non_get!
@@ -120,7 +127,7 @@ module API
 
     def authenticated_as_admin!
       authenticate!
-      forbidden! unless current_user.is_admin?
+      forbidden! unless current_user.admin?
     end
 
     def authorize!(action, subject = :global)
@@ -360,7 +367,7 @@ module API
       return unless sudo_identifier
       return unless initial_current_user
 
-      unless initial_current_user.is_admin?
+      unless initial_current_user.admin?
         forbidden!('Must be admin to use sudo')
       end
 

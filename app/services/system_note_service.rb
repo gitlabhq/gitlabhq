@@ -26,7 +26,7 @@ module SystemNoteService
     body << new_commit_summary(new_commits).join("\n")
     body << "\n\n[Compare with previous version](#{diff_comparison_url(noteable, project, oldrev)})"
 
-    create_note(noteable: noteable, project: project, author: author, note: body)
+    create_note(NoteSummary.new(noteable, project, author, body, action: 'commit', commit_count: total_count))
   end
 
   # Called when the assignee of a Noteable is changed or removed
@@ -46,7 +46,7 @@ module SystemNoteService
   def change_assignee(noteable, project, author, assignee)
     body = assignee.nil? ? 'removed assignee' : "assigned to #{assignee.to_reference}"
 
-    create_note(noteable: noteable, project: project, author: author, note: body)
+    create_note(NoteSummary.new(noteable, project, author, body, action: 'assignee'))
   end
 
   # Called when the assignees of an Issue is changed or removed
@@ -124,7 +124,7 @@ module SystemNoteService
 
     body << ' ' << 'label'.pluralize(labels_count)
 
-    create_note(noteable: noteable, project: project, author: author, note: body)
+    create_note(NoteSummary.new(noteable, project, author, body, action: 'label'))
   end
 
   # Called when the milestone of a Noteable is changed
@@ -144,7 +144,7 @@ module SystemNoteService
   def change_milestone(noteable, project, author, milestone)
     body = milestone.nil? ? 'removed milestone' : "changed milestone to #{milestone.to_reference(project)}"
 
-    create_note(noteable: noteable, project: project, author: author, note: body)
+    create_note(NoteSummary.new(noteable, project, author, body, action: 'milestone'))
   end
 
   # Called when the estimated time of a Noteable is changed
@@ -170,7 +170,7 @@ module SystemNoteService
              "changed time estimate to #{parsed_time}"
            end
 
-    create_note(noteable: noteable, project: project, author: author, note: body)
+    create_note(NoteSummary.new(noteable, project, author, body, action: 'time_tracking'))
   end
 
   # Called when the spent time of a Noteable is changed
@@ -199,7 +199,7 @@ module SystemNoteService
       body = "#{action} #{parsed_time} of time spent"
     end
 
-    create_note(noteable: noteable, project: project, author: author, note: body)
+    create_note(NoteSummary.new(noteable, project, author, body, action: 'time_tracking'))
   end
 
   # Called when the status of a Noteable is changed
@@ -221,53 +221,57 @@ module SystemNoteService
     body = status.dup
     body << " via #{source.gfm_reference(project)}" if source
 
-    create_note(noteable: noteable, project: project, author: author, note: body)
+    action = status == 'reopened' ? 'opened' : status
+
+    create_note(NoteSummary.new(noteable, project, author, body, action: action))
   end
 
   # Called when 'merge when pipeline succeeds' is executed
   def merge_when_pipeline_succeeds(noteable, project, author, last_commit)
     body = "enabled an automatic merge when the pipeline for #{last_commit.to_reference(project)} succeeds"
 
-    create_note(noteable: noteable, project: project, author: author, note: body)
+    create_note(NoteSummary.new(noteable, project, author, body, action: 'merge'))
   end
 
   # Called when 'merge when pipeline succeeds' is canceled
   def cancel_merge_when_pipeline_succeeds(noteable, project, author)
     body = 'canceled the automatic merge'
 
-    create_note(noteable: noteable, project: project, author: author, note: body)
+    create_note(NoteSummary.new(noteable, project, author, body, action: 'merge'))
   end
 
   def remove_merge_request_wip(noteable, project, author)
     body = 'unmarked as a **Work In Progress**'
 
-    create_note(noteable: noteable, project: project, author: author, note: body)
+    create_note(NoteSummary.new(noteable, project, author, body, action: 'title'))
   end
 
   def add_merge_request_wip(noteable, project, author)
     body = 'marked as a **Work In Progress**'
 
-    create_note(noteable: noteable, project: project, author: author, note: body)
+    create_note(NoteSummary.new(noteable, project, author, body, action: 'title'))
   end
 
   def add_merge_request_wip_from_commit(noteable, project, author, commit)
     body = "marked as a **Work In Progress** from #{commit.to_reference(project)}"
 
-    create_note(noteable: noteable, project: project, author: author, note: body)
+    create_note(NoteSummary.new(noteable, project, author, body, action: 'title'))
   end
 
   def self.resolve_all_discussions(merge_request, project, author)
     body = "resolved all discussions"
 
-    create_note(noteable: merge_request, project: project, author: author, note: body)
+    create_note(NoteSummary.new(merge_request, project, author, body, action: 'discussion'))
   end
 
   def discussion_continued_in_issue(discussion, project, author, issue)
     body = "created #{issue.to_reference} to continue this discussion"
     note_attributes = discussion.reply_attributes.merge(project: project, author: author, note: body)
-    note_attributes[:type] = note_attributes.delete(:note_type)
 
-    create_note(note_attributes)
+    note = Note.create(note_attributes.merge(system: true))
+    note.system_note_metadata = SystemNoteMetadata.new(action: 'discussion')
+
+    note
   end
 
   # Called when the title of a Noteable is changed
@@ -291,7 +295,8 @@ module SystemNoteService
     marked_new_title = Gitlab::Diff::InlineDiffMarker.new(new_title).mark(new_diffs, mode: :addition, markdown: true)
 
     body = "changed title from **#{marked_old_title}** to **#{marked_new_title}**"
-    create_note(noteable: noteable, project: project, author: author, note: body)
+
+    create_note(NoteSummary.new(noteable, project, author, body, action: 'title'))
   end
 
   # Called when the confidentiality changes
@@ -306,8 +311,15 @@ module SystemNoteService
   #
   # Returns the created Note object
   def change_issue_confidentiality(issue, project, author)
-    body = issue.confidential ? 'made the issue confidential' : 'made the issue visible to everyone'
-    create_note(noteable: issue, project: project, author: author, note: body)
+    if issue.confidential
+      body = 'made the issue confidential'
+      action = 'confidential'
+    else
+      body = 'made the issue visible to everyone'
+      action = 'visible'
+    end
+
+    create_note(NoteSummary.new(issue, project, author, body, action: action))
   end
 
   # Called when a branch in Noteable is changed
@@ -326,7 +338,8 @@ module SystemNoteService
   # Returns the created Note object
   def change_branch(noteable, project, author, branch_type, old_branch, new_branch)
     body = "changed #{branch_type} branch from `#{old_branch}` to `#{new_branch}`"
-    create_note(noteable: noteable, project: project, author: author, note: body)
+
+    create_note(NoteSummary.new(noteable, project, author, body, action: 'branch'))
   end
 
   # Called when a branch in Noteable is added or deleted
@@ -352,7 +365,8 @@ module SystemNoteService
       end
 
     body = "#{verb} #{branch_type} branch `#{branch}`"
-    create_note(noteable: noteable, project: project, author: author, note: body)
+
+    create_note(NoteSummary.new(noteable, project, author, body, action: 'branch'))
   end
 
   # Called when a branch is created from the 'new branch' button on a issue
@@ -363,7 +377,8 @@ module SystemNoteService
     link = url_helpers.namespace_project_compare_url(project.namespace, project, from: project.default_branch, to: branch)
 
     body = "created branch [`#{branch}`](#{link})"
-    create_note(noteable: issue, project: project, author: author, note: body)
+
+    create_note(NoteSummary.new(issue, project, author, body, action: 'branch'))
   end
 
   # Called when a Mentionable references a Noteable
@@ -387,23 +402,12 @@ module SystemNoteService
     return if cross_reference_disallowed?(noteable, mentioner)
 
     gfm_reference = mentioner.gfm_reference(noteable.project)
-
-    note_options = {
-      project: noteable.project,
-      author:  author,
-      note:    cross_reference_note_content(gfm_reference)
-    }
-
-    if noteable.is_a?(Commit)
-      note_options.merge!(noteable_type: 'Commit', commit_id: noteable.id)
-    else
-      note_options[:noteable] = noteable
-    end
+    body = cross_reference_note_content(gfm_reference)
 
     if noteable.is_a?(ExternalIssue)
       noteable.project.issues_tracker.create_cross_reference_note(noteable, mentioner, author)
     else
-      create_note(note_options)
+      create_note(NoteSummary.new(noteable, noteable.project, author, body, action: 'cross_reference'))
     end
   end
 
@@ -482,7 +486,8 @@ module SystemNoteService
   def change_task_status(noteable, project, author, new_task)
     status_label = new_task.complete? ? Taskable::COMPLETED : Taskable::INCOMPLETE
     body = "marked the task **#{new_task.source}** as #{status_label}"
-    create_note(noteable: noteable, project: project, author: author, note: body)
+
+    create_note(NoteSummary.new(noteable, project, author, body, action: 'task'))
   end
 
   # Called when noteable has been moved to another project
@@ -504,7 +509,8 @@ module SystemNoteService
 
     cross_reference = noteable_ref.to_reference(project)
     body = "moved #{direction} #{cross_reference}"
-    create_note(noteable: noteable, project: project, author: author, note: body)
+
+    create_note(NoteSummary.new(noteable, project, author, body, action: 'moved'))
   end
 
   # Called when the merge request is approved by user
@@ -520,12 +526,13 @@ module SystemNoteService
   def approve_mr(noteable, user)
     body = "approved this merge request"
 
-    create_note(noteable: noteable, project: noteable.project, author: user, note: body)
+    create_note(NoteSummary.new(noteable, noteable.project, user, body, action: 'approved'))
   end
 
   def unapprove_mr(noteable, user)
     body = "unapproved this merge request"
-    create_note(noteable: noteable, project: noteable.project, author: user, note: body)
+
+    create_note(NoteSummary.new(noteable, noteable.project, user, body, action: 'unapproved'))
   end
 
   private
@@ -541,8 +548,11 @@ module SystemNoteService
     end
   end
 
-  def create_note(args = {})
-    Note.create(args.merge(system: true))
+  def create_note(note_summary)
+    note = Note.create(note_summary.note.merge(system: true))
+    note.system_note_metadata = SystemNoteMetadata.new(note_summary.metadata) if note_summary.metadata?
+
+    note
   end
 
   def cross_reference_note_prefix

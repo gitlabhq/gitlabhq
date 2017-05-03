@@ -5,35 +5,44 @@ module Gitlab
     CE_REPO = 'https://gitlab.com/gitlab-org/gitlab-ce.git'.freeze
     EE_REPO = 'https://gitlab.com/gitlab-org/gitlab-ee.git'.freeze
     CHECK_DIR = Rails.root.join('ee_compat_check')
-    MAX_FETCH_DEPTH = 500
     IGNORED_FILES_REGEX = /(VERSION|CHANGELOG\.md:\d+)/.freeze
+    PLEASE_READ_THIS_BANNER = %Q{
+      ============================================================
+      ===================== PLEASE READ THIS =====================
+      ============================================================
+    }.freeze
+    THANKS_FOR_READING_BANNER = %Q{
+      ============================================================
+      ==================== THANKS FOR READING ====================
+      ============================================================\n
+    }.freeze
 
-    attr_reader :repo_dir, :patches_dir, :ce_repo, :ce_branch
+    attr_reader :ee_repo_dir, :patches_dir, :ce_repo, :ce_branch, :ee_branch_found
+    attr_reader :failed_files
 
     def initialize(branch:, ce_repo: CE_REPO)
-      @repo_dir = CHECK_DIR.join('repo')
+      @ee_repo_dir = CHECK_DIR.join('ee-repo')
       @patches_dir = CHECK_DIR.join('patches')
       @ce_branch = branch
       @ce_repo = ce_repo
     end
 
     def check
-      ensure_ee_repo
       ensure_patches_dir
-
       generate_patch(ce_branch, ce_patch_full_path)
 
-      Dir.chdir(repo_dir) do
-        step("In the #{repo_dir} directory")
+      ensure_ee_repo
+      Dir.chdir(ee_repo_dir) do
+        step("In the #{ee_repo_dir} directory")
 
         status = catch(:halt_check) do
           ce_branch_compat_check!
-          delete_ee_branch_locally!
+          delete_ee_branches_locally!
           ee_branch_presence_check!
           ee_branch_compat_check!
         end
 
-        delete_ee_branch_locally!
+        delete_ee_branches_locally!
 
         if status.nil?
           true
@@ -46,11 +55,13 @@ module Gitlab
     private
 
     def ensure_ee_repo
-      if Dir.exist?(repo_dir)
-        step("#{repo_dir} already exists")
+      if Dir.exist?(ee_repo_dir)
+        step("#{ee_repo_dir} already exists")
       else
-        cmd = %W[git clone --branch master --single-branch --depth 200 #{EE_REPO} #{repo_dir}]
-        step("Cloning #{EE_REPO} into #{repo_dir}", cmd)
+        step(
+          "Cloning #{EE_REPO} into #{ee_repo_dir}",
+          %W[git clone --branch master --single-branch --depth=200 #{EE_REPO} #{ee_repo_dir}]
+        )
       end
     end
 
@@ -61,23 +72,18 @@ module Gitlab
     def generate_patch(branch, patch_path)
       FileUtils.rm(patch_path, force: true)
 
-      depth = 0
-      loop do
-        depth += 50
-        cmd = %W[git fetch --depth #{depth} origin --prune +refs/heads/master:refs/remotes/origin/master]
-        Gitlab::Popen.popen(cmd)
-        _, status = Gitlab::Popen.popen(%w[git merge-base FETCH_HEAD HEAD])
+      find_merge_base_with_master(branch: branch)
 
-        raise "#{branch} is too far behind master, please rebase it!" if depth >= MAX_FETCH_DEPTH
-        break if status.zero?
+      step(
+        "Generating the patch against origin/master in #{patch_path}",
+        %w[git format-patch origin/master --stdout]
+      ) do |output, status|
+        throw(:halt_check, :ko) unless status.zero?
+
+        File.write(patch_path, output)
+
+        throw(:halt_check, :ko) unless File.exist?(patch_path)
       end
-
-      step("Generating the patch against master in #{patch_path}")
-      output, status = Gitlab::Popen.popen(%w[git format-patch FETCH_HEAD --stdout])
-      throw(:halt_check, :ko) unless status.zero?
-
-      File.write(patch_path, output)
-      throw(:halt_check, :ko) unless File.exist?(patch_path)
     end
 
     def ce_branch_compat_check!
@@ -88,9 +94,17 @@ module Gitlab
     end
 
     def ee_branch_presence_check!
-      status = step("Fetching origin/#{ee_branch}", %W[git fetch origin #{ee_branch}])
+      _, status = step("Fetching origin/#{ee_branch_prefix}", %W[git fetch origin #{ee_branch_prefix}])
 
-      unless status.zero?
+      if status.zero?
+        @ee_branch_found = ee_branch_prefix
+      else
+        _, status = step("Fetching origin/#{ee_branch_suffix}", %W[git fetch origin #{ee_branch_suffix}])
+      end
+
+      if status.zero?
+        @ee_branch_found = ee_branch_suffix
+      else
         puts
         puts ce_branch_doesnt_apply_cleanly_and_no_ee_branch_msg
 
@@ -99,9 +113,9 @@ module Gitlab
     end
 
     def ee_branch_compat_check!
-      step("Checking out origin/#{ee_branch}", %W[git checkout -b #{ee_branch} FETCH_HEAD])
+      step("Checking out origin/#{ee_branch_found}", %W[git checkout -b #{ee_branch_found} FETCH_HEAD])
 
-      generate_patch(ee_branch, ee_patch_full_path)
+      generate_patch(ee_branch_found, ee_patch_full_path)
 
       unless check_patch(ee_patch_full_path).zero?
         puts
@@ -111,41 +125,77 @@ module Gitlab
       end
 
       puts
-      puts applies_cleanly_msg(ee_branch)
+      puts applies_cleanly_msg(ee_branch_found)
     end
 
     def check_patch(patch_path)
       step("Checking out master", %w[git checkout master])
-      step("Reseting to latest master", %w[git reset --hard origin/master])
-
-      step("Checking if #{patch_path} applies cleanly to EE/master")
-      output, status = Gitlab::Popen.popen(%W[git apply --check --3way #{patch_path}])
-
-      unless status.zero?
-        failed_files = output.lines.reduce([]) do |memo, line|
-          if line.start_with?('error: patch failed:')
-            file = line.sub(/\Aerror: patch failed: /, '')
-            memo << file unless file =~ IGNORED_FILES_REGEX
+      step("Resetting to latest master", %w[git reset --hard origin/master])
+      step(
+        "Checking if #{patch_path} applies cleanly to EE/master",
+        %W[git apply --check --3way #{patch_path}]
+      ) do |output, status|
+        unless status.zero?
+          @failed_files = output.lines.reduce([]) do |memo, line|
+            if line.start_with?('error: patch failed:')
+              file = line.sub(/\Aerror: patch failed: /, '')
+              memo << file unless file =~ IGNORED_FILES_REGEX
+            end
+            memo
           end
-          memo
+
+          status = 0 if failed_files.empty?
         end
 
-        if failed_files.empty?
-          status = 0
-        else
-          puts "\nConflicting files:"
-          failed_files.each do |file|
-            puts "  - #{file}"
-          end
-        end
+        status
       end
-
-      status
     end
 
-    def delete_ee_branch_locally!
+    def delete_ee_branches_locally!
       command(%w[git checkout master])
-      step("Deleting the local #{ee_branch} branch", %W[git branch -D #{ee_branch}])
+      command(%W[git branch --delete --force #{ee_branch_prefix}])
+      command(%W[git branch --delete --force #{ee_branch_suffix}])
+    end
+
+    def merge_base_found?
+      step(
+        "Finding merge base with master",
+        %w[git merge-base origin/master HEAD]
+      ) do |output, status|
+        if status.zero?
+          puts "Merge base was found: #{output}"
+          true
+        end
+      end
+    end
+
+    def find_merge_base_with_master(branch:)
+      return if merge_base_found?
+
+      # Start with (Math.exp(3).to_i = 20) until (Math.exp(6).to_i = 403)
+      # In total we go (20 + 54 + 148 + 403 = 625) commits deeper
+      depth = 20
+      success =
+        (3..6).any? do |factor|
+          depth += Math.exp(factor).to_i
+          # Repository is initially cloned with a depth of 20 so we need to fetch
+          # deeper in the case the branch has more than 20 commits on top of master
+          fetch(branch: branch, depth: depth)
+          fetch(branch: 'master', depth: depth)
+
+          merge_base_found?
+        end
+
+      raise "\n#{branch} is too far behind master, please rebase it!\n" unless success
+    end
+
+    def fetch(branch:, depth:)
+      step(
+        "Fetching deeper...",
+        %W[git fetch --depth=#{depth} --prune origin +refs/heads/#{branch}:refs/remotes/origin/#{branch}]
+      ) do |output, status|
+        raise "Fetch failed: #{output}" unless status.zero?
+      end
     end
 
     def ce_patch_name
@@ -156,12 +206,16 @@ module Gitlab
       @ce_patch_full_path ||= patches_dir.join(ce_patch_name)
     end
 
-    def ee_branch
-      @ee_branch ||= "#{ce_branch}-ee"
+    def ee_branch_suffix
+      @ee_branch_suffix ||= "#{ce_branch}-ee"
+    end
+
+    def ee_branch_prefix
+      @ee_branch_prefix ||= "ee-#{ce_branch}"
     end
 
     def ee_patch_name
-      @ee_patch_name ||= patch_name_from_branch(ee_branch)
+      @ee_patch_name ||= patch_name_from_branch(ee_branch_found)
     end
 
     def ee_patch_full_path
@@ -178,98 +232,125 @@ module Gitlab
       if cmd
         start = Time.now
         puts "\n$ #{cmd.join(' ')}"
-        status = command(cmd)
-        puts "\nFinished in #{Time.now - start} seconds"
-        status
+
+        output, status = command(cmd)
+        puts "\n==> Finished in #{Time.now - start} seconds"
+
+        if block_given?
+          yield(output, status)
+        else
+          [output, status]
+        end
       end
     end
 
     def command(cmd)
-      output, status = Gitlab::Popen.popen(cmd)
-      puts output
-
-      status
+      Gitlab::Popen.popen(cmd)
     end
 
     def applies_cleanly_msg(branch)
-      <<-MSG.strip_heredoc
-        =================================================================
+      %Q{
+        #{PLEASE_READ_THIS_BANNER}
         🎉 Congratulations!! 🎉
 
-        The #{branch} branch applies cleanly to EE/master!
+        The `#{branch}` branch applies cleanly to EE/master!
 
-        Much ❤️!!
-        =================================================================\n
-      MSG
+        Much ❤️! For more information, see
+        https://docs.gitlab.com/ce/development/limit_ee_conflicts.html#check-the-rake-ee_compat_check-in-your-merge-requests
+        #{THANKS_FOR_READING_BANNER}
+      }
     end
 
     def ce_branch_doesnt_apply_cleanly_and_no_ee_branch_msg
-      <<-MSG.strip_heredoc
-        =================================================================
+      %Q{
+        #{PLEASE_READ_THIS_BANNER}
         💥 Oh no! 💥
 
-        The #{ce_branch} branch does not apply cleanly to the current
-        EE/master, and no #{ee_branch} branch was found in the EE repository.
+        The `#{ce_branch}` branch does not apply cleanly to the current
+        EE/master, and no `#{ee_branch_prefix}` or `#{ee_branch_suffix}` branch
+        was found in the EE repository.
 
-        Please create a #{ee_branch} branch that includes changes from
-        #{ce_branch} but also specific changes than can be applied cleanly
-        to EE/master.
+        #{conflicting_files_msg}
+
+        We advise you to create a `#{ee_branch_prefix}` or `#{ee_branch_suffix}`
+        branch that includes changes from `#{ce_branch}` but also specific changes
+        than can be applied cleanly to EE/master. In some cases, the conflicts
+        are trivial and you can ignore the warning from this job. As always,
+        use your best judgment!
 
         There are different ways to create such branch:
 
-        1. Create a new branch based on the CE branch and rebase it on top of EE/master
-
-          # In the EE repo
-          $ git fetch #{ce_repo} #{ce_branch}
-          $ git checkout -b #{ee_branch} FETCH_HEAD
-
-          # You can squash the #{ce_branch} commits into a single "Port of #{ce_branch} to EE" commit
-          # before rebasing to limit the conflicts-resolving steps during the rebase
-          $ git fetch origin
-          $ git rebase origin/master
-
-          At this point you will likely have conflicts.
-          Solve them, and continue/finish the rebase.
-
-          You can squash the #{ce_branch} commits into a single "Port of #{ce_branch} to EE".
-
-        2. Create a new branch from master and cherry-pick your CE commits
+        1. Create a new branch from master and cherry-pick your CE commits
 
           # In the EE repo
           $ git fetch origin
-          $ git checkout -b #{ee_branch} origin/master
+          $ git checkout -b #{ee_branch_prefix} origin/master
           $ git fetch #{ce_repo} #{ce_branch}
           $ git cherry-pick SHA # Repeat for all the commits you want to pick
 
-          You can squash the #{ce_branch} commits into a single "Port of #{ce_branch} to EE" commit.
+          You can squash the `#{ce_branch}` commits into a single "Port of #{ce_branch} to EE" commit.
 
-        Don't forget to push your branch to #{EE_REPO}:
+        2. Apply your branch's patch to EE
+
+          # In the CE repo
+          $ git fetch origin master
+          $ git format-patch origin/master --stdout > #{ce_branch}.patch
 
           # In the EE repo
-          $ git push origin #{ee_branch}
+          $ git fetch origin master
+          $ git checkout -b #{ee_branch_prefix} origin/master
+          $ git apply --3way path/to/#{ce_branch}.patch
 
-        You can then retry this failed build, and hopefully it should pass.
+          At this point you might have conflicts such as:
 
-        Stay 💪 !
-        =================================================================\n
-      MSG
+            error: patch failed: lib/gitlab/ee_compat_check.rb:5
+            Falling back to three-way merge...
+            Applied patch to 'lib/gitlab/ee_compat_check.rb' with conflicts.
+            U lib/gitlab/ee_compat_check.rb
+
+          Resolve them, stage the changes and commit them.
+
+        ⚠️ Don't forget to push your branch to gitlab-ee:
+
+          # In the EE repo
+          $ git push origin #{ee_branch_prefix}
+
+        ⚠️ Also, don't forget to create a new merge request on gitlab-ce and
+        cross-link it with the CE merge request.
+
+        Once this is done, you can retry this failed build, and it should pass.
+
+        Stay 💪 ! For more information, see
+        https://docs.gitlab.com/ce/development/limit_ee_conflicts.html#check-the-rake-ee_compat_check-in-your-merge-requests
+        #{THANKS_FOR_READING_BANNER}
+      }
     end
 
     def ee_branch_doesnt_apply_cleanly_msg
-      <<-MSG.strip_heredoc
-        =================================================================
+      %Q{
+        #{PLEASE_READ_THIS_BANNER}
         💥 Oh no! 💥
 
-        The #{ce_branch} does not apply cleanly to the current
-        EE/master, and even though a #{ee_branch} branch exists in the EE
-        repository, it does not apply cleanly either to EE/master!
+        The `#{ce_branch}` does not apply cleanly to the current EE/master, and
+        even though a `#{ee_branch_found}` branch
+        exists in the EE repository, it does not apply cleanly either to
+        EE/master!
 
-        Please update the #{ee_branch}, push it again to #{EE_REPO}, and
+        #{conflicting_files_msg}
+
+        Please update the `#{ee_branch_found}`, push it again to gitlab-ee, and
         retry this build.
 
-        Stay 💪 !
-        =================================================================\n
-      MSG
+        Stay 💪 ! For more information, see
+        https://docs.gitlab.com/ce/development/limit_ee_conflicts.html#check-the-rake-ee_compat_check-in-your-merge-requests
+        #{THANKS_FOR_READING_BANNER}
+      }
+    end
+
+    def conflicting_files_msg
+      failed_files.reduce("The conflicts detected were as follows:\n") do |memo, file|
+        memo << "\n        - #{file}"
+      end
     end
   end
 end

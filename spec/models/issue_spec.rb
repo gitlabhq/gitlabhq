@@ -110,14 +110,6 @@ describe Issue, models: true do
 
       expect(issue.closed_at).to eq(now)
     end
-
-    it 'sets closed_at to nil when issue is reopened' do
-      issue = create(:issue, state: 'closed')
-
-      issue.reopen
-
-      expect(issue.closed_at).to be_nil
-    end
   end
 
   describe '#to_reference' do
@@ -201,6 +193,7 @@ describe Issue, models: true do
       expect(issue.assignee_or_author?(user)).to be_truthy
     end
 
+<<<<<<< HEAD
     it 'returns true for a user that is the author of an issue' do
       issue.update(author: user)
 
@@ -212,6 +205,8 @@ describe Issue, models: true do
     end
   end
 
+=======
+>>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0
   describe '#closed_by_merge_requests' do
     let(:project) { create(:project, :repository) }
     let(:issue) { create(:issue, project: project)}
@@ -439,7 +434,14 @@ describe Issue, models: true do
     it 'updates when assignees change' do
       user1 = create(:user)
       user2 = create(:user)
+<<<<<<< HEAD
       issue = create(:issue, assignees: [user1])
+=======
+      project = create(:empty_project)
+      issue = create(:issue, assignee: user1, project: project)
+      project.add_developer(user1)
+      project.add_developer(user2)
+>>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0
 
       expect(user1.assigned_open_issues_count).to eq(1)
       expect(user2.assigned_open_issues_count).to eq(0)

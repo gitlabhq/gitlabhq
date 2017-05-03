@@ -18,12 +18,15 @@
 .environments-container {
   .table-holder {
     width: 100%;
-    overflow: auto;
+
+    @media (max-width: $screen-sm-max) {
+      overflow: auto;
+    }
   }
 
   .table.ci-table {
     .environments-actions {
-      min-width: 200px;
+      min-width: 300px;
     }
 
     .environments-commit,
@@ -237,6 +240,9 @@
   border-width: 1px;
   border-style: solid;
   margin: 1px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   &-finished {
     background-color: $green-100;
@@ -267,6 +273,17 @@
     background-color: $white-light;
     border-color: $border-color;
   }
+
+  &.deploy-board-instance-canary {
+    &::after {
+      width: 7px;
+      height: 7px;
+      border: 1px solid $white-light;
+      background-color: $orange-300;
+      border-radius: 50%;
+      content: "";
+    }
+  }
 }
 
 .deploy-board-icon i {
@@ -291,6 +308,16 @@
 .prometheus-graph {
   text {
     fill: $stat-graph-axis-fill;
+  }
+
+  .label-axis-text,
+  .text-metric-usage {
+    fill: $black;
+    font-weight: 500;
+  }
+
+  .legend-axis-text {
+    fill: $black;
   }
 }
 
@@ -354,4 +381,22 @@
 .selected-metric-line {
   stroke: $black;
   stroke-width: 1;
+}
+
+.prometheus-state {
+  margin-top: 10px;
+  display: none;
+
+  .state-button-section {
+    margin-top: 10px;
+  }
+}
+
+.environments-actions {
+  .external-url,
+  .monitoring-url,
+  .terminal-button,
+  .stop-env-link {
+    width: 38px;
+  }
 }

@@ -1,9 +1,7 @@
 require 'spec_helper'
 
-describe API::Users, api: true do
-  include ApiHelpers
-
-  let(:user) { create(:user) }
+describe API::Users do
+  let(:user)  { create(:user) }
   let(:admin) { create(:admin) }
   let(:key) { create(:key, user: user) }
   let(:email) { create(:email, user: user) }
@@ -72,6 +70,12 @@ describe API::Users, api: true do
         expect(json_response).to be_an Array
         expect(json_response.first['username']).to eq(omniauth_user.username)
       end
+
+      it "returns a 403 when non-admin user searches by external UID" do
+        get api("/users?extern_uid=#{omniauth_user.identities.first.extern_uid}&provider=#{omniauth_user.identities.first.provider}", user)
+
+        expect(response).to have_http_status(403)
+      end
     end
 
     context "when admin" do
@@ -100,6 +104,27 @@ describe API::Users, api: true do
         expect(json_response).to be_an Array
         expect(json_response).to all(include('external' => true))
       end
+
+      it "returns one user by external UID" do
+        get api("/users?extern_uid=#{omniauth_user.identities.first.extern_uid}&provider=#{omniauth_user.identities.first.provider}", admin)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.size).to eq(1)
+        expect(json_response.first['username']).to eq(omniauth_user.username)
+      end
+
+      it "returns 400 error if provider with no extern_uid" do
+        get api("/users?extern_uid=#{omniauth_user.identities.first.extern_uid}", admin)
+
+        expect(response).to have_http_status(400)
+      end
+
+      it "returns 400 error if provider with no extern_uid" do
+        get api("/users?provider=#{omniauth_user.identities.first.provider}", admin)
+
+        expect(response).to have_http_status(400)
+      end
     end
 
     context "when authenticated and ldap is enabled" do
@@ -120,6 +145,12 @@ describe API::Users, api: true do
       get api("/users/#{user.id}", user)
       expect(response).to have_http_status(200)
       expect(json_response['username']).to eq(user.username)
+    end
+
+    it "does not return the user's `is_admin` flag" do
+      get api("/users/#{user.id}", user)
+
+      expect(json_response['is_admin']).to be_nil
     end
 
     it "returns a 401 if unauthenticated" do
@@ -384,7 +415,6 @@ describe API::Users, api: true do
     it "updates admin status" do
       put api("/users/#{user.id}", admin), { admin: true }
       expect(response).to have_http_status(200)
-      expect(json_response['is_admin']).to eq(true)
       expect(user.reload.admin).to eq(true)
     end
 
@@ -398,7 +428,6 @@ describe API::Users, api: true do
     it "does not update admin status" do
       put api("/users/#{admin_user.id}", admin), { can_create_group: false }
       expect(response).to have_http_status(200)
-      expect(json_response['is_admin']).to eq(true)
       expect(admin_user.reload.admin).to eq(true)
       expect(admin_user.can_create_group).to eq(false)
     end
@@ -688,7 +717,7 @@ describe API::Users, api: true do
     before { admin }
 
     it "deletes user" do
-      delete api("/users/#{user.id}", admin)
+      Sidekiq::Testing.inline! { delete api("/users/#{user.id}", admin) }
 
       expect(response).to have_http_status(204)
       expect { User.find(user.id) }.to raise_error ActiveRecord::RecordNotFound
@@ -696,23 +725,23 @@ describe API::Users, api: true do
     end
 
     it "does not delete for unauthenticated user" do
-      delete api("/users/#{user.id}")
+      Sidekiq::Testing.inline! { delete api("/users/#{user.id}") }
       expect(response).to have_http_status(401)
     end
 
     it "is not available for non admin users" do
-      delete api("/users/#{user.id}", user)
+      Sidekiq::Testing.inline! { delete api("/users/#{user.id}", user) }
       expect(response).to have_http_status(403)
     end
 
     it "returns 404 for non-existing user" do
-      delete api("/users/999999", admin)
+      Sidekiq::Testing.inline! { delete api("/users/999999", admin) }
       expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('404 User Not Found')
     end
 
     it "returns a 404 for invalid ID" do
-      delete api("/users/ASDF", admin)
+      Sidekiq::Testing.inline! { delete api("/users/ASDF", admin) }
 
       expect(response).to have_http_status(404)
     end
@@ -892,7 +921,7 @@ describe API::Users, api: true do
         delete api("/user/keys/#{key.id}", user)
 
         expect(response).to have_http_status(204)
-      end.to change{user.keys.count}.by(-1)
+      end.to change { user.keys.count}.by(-1)
     end
 
     it "returns 404 if key ID not found" do
@@ -1001,7 +1030,7 @@ describe API::Users, api: true do
         delete api("/user/emails/#{email.id}", user)
 
         expect(response).to have_http_status(204)
-      end.to change{user.emails.count}.by(-1)
+      end.to change { user.emails.count}.by(-1)
     end
 
     it "returns 404 if email ID not found" do
@@ -1171,72 +1200,44 @@ describe API::Users, api: true do
   end
 
   context "user activities", :redis do
+    let!(:old_active_user) { create(:user, last_activity_on: Time.utc(2000, 1, 1)) }
+    let!(:newly_active_user) { create(:user, last_activity_on: 2.days.ago.midday) }
+
     context 'last activity as normal user' do
       it 'has no permission' do
-        user.record_activity
-
         get api("/user/activities", user)
 
         expect(response).to have_http_status(403)
       end
     end
 
-    context 'last activity as admin' do
-      it 'returns the last activity' do
-        allow(Time).to receive(:now).and_return(Time.new(2000, 1, 1))
-
-        user.record_activity
-
+    context 'as admin' do
+      it 'returns the activities from the last 6 months' do
         get api("/user/activities", admin)
+
+        expect(response).to include_pagination_headers
+        expect(json_response.size).to eq(1)
 
         activity = json_response.last
 
-        expect(response).to include_pagination_headers
-        expect(activity['username']).to eq(user.username)
-        expect(activity['last_activity_at']).to eq('2000-01-01 00:00:00')
+        expect(activity['username']).to eq(newly_active_user.username)
+        expect(activity['last_activity_on']).to eq(2.days.ago.to_date.to_s)
+        expect(activity['last_activity_at']).to eq(2.days.ago.to_date.to_s)
       end
-    end
 
-    context 'last activities paginated', :redis do
-      let(:activity) { json_response.first }
-      let(:old_date) { 2.months.ago.to_date }
+      context 'passing a :from parameter' do
+        it 'returns the activities from the given date' do
+          get api("/user/activities?from=2000-1-1", admin)
 
-      before do
-        5.times do |num|
-          Timecop.freeze(old_date + num)
+          expect(response).to include_pagination_headers
+          expect(json_response.size).to eq(2)
 
-          create(:user, username: num.to_s).record_activity
+          activity = json_response.first
+
+          expect(activity['username']).to eq(old_active_user.username)
+          expect(activity['last_activity_on']).to eq(Time.utc(2000, 1, 1).to_date.to_s)
+          expect(activity['last_activity_at']).to eq(Time.utc(2000, 1, 1).to_date.to_s)
         end
-      end
-
-      after do
-        Timecop.return
-      end
-
-      it 'returns 3 activities' do
-        get api("/user/activities?page=1&per_page=3", admin)
-
-        expect(json_response.count).to eq(3)
-      end
-
-      it 'contains the first activities' do
-        get api("/user/activities?page=1&per_page=3", admin)
-
-        expect(json_response.map { |activity| activity['username'] }).to eq(%w[0 1 2])
-      end
-
-      it 'contains the last activities' do
-        get api("/user/activities?page=2&per_page=3", admin)
-
-        expect(json_response.map { |activity| activity['username'] }).to eq(%w[3 4])
-      end
-
-      it 'contains activities created after user 3 was created' do
-        from = (old_date + 3).to_s("%Y-%m-%d")
-
-        get api("/user/activities?page=1&per_page=5&from=#{from}", admin)
-
-        expect(json_response.map { |activity| activity['username'] }).to eq(%w[3 4])
       end
     end
   end

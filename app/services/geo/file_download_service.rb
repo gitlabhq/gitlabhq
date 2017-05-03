@@ -1,13 +1,6 @@
 module Geo
-  class FileDownloadService
-    attr_reader :object_type, :object_db_id
-
+  class FileDownloadService < FileService
     LEASE_TIMEOUT = 8.hours.freeze
-
-    def initialize(object_type, object_db_id)
-      @object_type = object_type
-      @object_db_id = object_db_id
-    end
 
     def execute
       try_obtain_lease do |lease|
@@ -20,13 +13,11 @@ module Geo
     private
 
     def downloader
-      begin
-        klass = Gitlab::Geo.const_get("#{object_type.capitalize}Downloader")
-        klass.new(object_db_id)
-      rescue NameError
-        log("unknown file type: #{object_type}")
-        raise
-      end
+      klass = "Gitlab::Geo::#{service_klass_name}Downloader".constantize
+      klass.new(object_type, object_db_id)
+    rescue NameError
+      log("Unknown file type: #{object_type}")
+      raise
     end
 
     def try_obtain_lease
@@ -41,14 +32,12 @@ module Geo
       end
     end
 
-    def log(message)
-      Rails.logger.info "#{self.class.name}: #{message}"
-    end
-
     def update_registry(bytes_downloaded)
       transfer = Geo::FileRegistry.find_or_initialize_by(
         file_type: object_type,
-        file_id: object_db_id)
+        file_id: object_db_id
+      )
+
       transfer.bytes = bytes_downloaded
       transfer.save
     end

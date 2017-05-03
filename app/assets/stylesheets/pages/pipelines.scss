@@ -2,6 +2,7 @@
   .realtime-loading {
     font-size: 40px;
     text-align: center;
+    margin: 0 auto;
   }
 
   .stage {
@@ -13,9 +14,16 @@
     white-space: nowrap;
   }
 
+  .empty-state {
+    margin: 5% auto 0;
+  }
+
   .table-holder {
     width: 100%;
-    overflow: auto;
+
+    @media (max-width: $screen-sm-max) {
+      overflow: auto;
+    }
   }
 
   .commit-title {
@@ -99,8 +107,6 @@
 
 @media (max-width: $screen-md-max) {
   .content-list {
-    &.pipelines,
-    &.environments-container,
     &.builds-content-list {
       width: 100%;
       overflow: auto;

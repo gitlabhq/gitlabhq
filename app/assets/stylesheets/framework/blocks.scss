@@ -230,7 +230,6 @@
     float: right;
     margin-top: 8px;
     padding-bottom: 8px;
-    border-bottom: 1px solid $border-color;
   }
 }
 
@@ -292,6 +291,10 @@
   }
 
   @media(min-width: $screen-xs-max) {
+    &.merge-requests .text-content {
+      margin-top: 40px;
+    }
+
     &.labels .text-content {
       margin-top: 70px;
     }

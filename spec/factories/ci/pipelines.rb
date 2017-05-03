@@ -48,6 +48,10 @@ FactoryGirl.define do
       trait :success do
         status :success
       end
+
+      trait :failed do
+        status :failed
+      end
     end
   end
 end

@@ -500,6 +500,12 @@ module API
             desc: 'The channel name'
           }
         ],
+        'microsoft-teams' => [
+          required: true,
+          name: :webhook,
+          type: String,
+          desc: 'The Microsoft Teams webhook. e.g. https://outlook.office.com/webhook/…'
+        ],
         'mattermost' => [
           {
             required: true,
@@ -642,7 +648,7 @@ module API
         end
         get ":id/services/:service_slug" do
           service = user_project.find_or_initialize_service(params[:service_slug].underscore)
-          present service, with: Entities::ProjectService, include_passwords: current_user.is_admin?
+          present service, with: Entities::ProjectService, include_passwords: current_user.admin?
         end
       end
 

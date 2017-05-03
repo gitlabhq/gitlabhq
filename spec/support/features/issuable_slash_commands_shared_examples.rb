@@ -3,7 +3,6 @@
 
 shared_examples 'issuable record that supports slash commands in its description and notes' do |issuable_type|
   include SlashCommandsHelpers
-  include WaitForAjax
 
   let(:master) { create(:user) }
   let(:assignee) { create(:user, username: 'bob') }

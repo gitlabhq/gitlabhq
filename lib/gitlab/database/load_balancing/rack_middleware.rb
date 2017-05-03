@@ -1,13 +1,27 @@
 module Gitlab
   module Database
     module LoadBalancing
-      # Rack middleware for managing load balancing.
+      # Rack middleware to handle sticking when serving Rails requests. Grape
+      # API calls are handled separately as different API endpoints need to
+      # stick based on different objects.
       class RackMiddleware
-        SESSION_KEY = :gitlab_load_balancer
+        STICK_OBJECT = 'load_balancing.stick_object'.freeze
 
-        # The number of seconds after which a session should stop reading from
-        # the primary.
-        EXPIRATION = 30
+        # Unsticks or continues sticking the current request.
+        #
+        # This method also updates the Rack environment so #call can later
+        # determine if we still need to stick or not.
+        #
+        # env - The Rack environment.
+        # namespace - The namespace to use for sticking.
+        # id - The identifier to use for sticking.
+        def self.stick_or_unstick(env, namespace, id)
+          return unless LoadBalancing.enable?
+
+          Sticking.unstick_or_continue_sticking(namespace, id)
+
+          env[STICK_OBJECT] = [namespace, id]
+        end
 
         def initialize(app)
           @app = app
@@ -18,34 +32,36 @@ module Gitlab
           # doesn't linger around.
           clear
 
-          user = user_for_request(env)
-
-          check_primary_requirement(user) if user
+          unstick_or_continue_sticking(env)
 
           result = @app.call(env)
 
-          assign_primary_for_user(user) if Session.current.use_primary? && user
+          stick_if_necessary(env)
 
           result
         ensure
           clear
         end
 
-        # Checks if we need to use the primary for the current user.
-        def check_primary_requirement(user)
-          location = last_write_location_for(user)
+        # Determine if we need to stick based on currently available user data.
+        #
+        # Typically this code will only be reachable for Rails requests as
+        # Grape data is not yet available at this point.
+        def unstick_or_continue_sticking(env)
+          namespace, id = sticking_namespace_and_id(env)
 
-          return unless location
-
-          if load_balancer.all_caught_up?(location)
-            delete_write_location_for(user)
-          else
-            Session.current.use_primary!
+          if namespace && id
+            Sticking.unstick_or_continue_sticking(namespace, id)
           end
         end
 
-        def assign_primary_for_user(user)
-          set_write_location_for(user, load_balancer.primary_write_location)
+        # Determine if we need to stick after handling a request.
+        def stick_if_necessary(env)
+          namespace, id = sticking_namespace_and_id(env)
+
+          if namespace && id
+            Sticking.stick_if_necessary(namespace, id)
+          end
         end
 
         def clear
@@ -57,43 +73,21 @@ module Gitlab
           LoadBalancing.proxy.load_balancer
         end
 
-        # Returns the User object for the currently authenticated user, if any.
-        def user_for_request(env)
-          api = env['api.endpoint']
+        # Determines the sticking namespace and identifier based on the Rack
+        # environment.
+        #
+        # For Rails requests this uses warden, but Grape and others have to
+        # manually set the right environment variable.
+        def sticking_namespace_and_id(env)
           warden = env['warden']
 
-          if api && api.respond_to?(:current_user)
-            # The current request is an API request. In this case we can use our
-            # `current_user` helper method.
-            api.current_user
-          elsif warden && warden.user
-            # Used by the Rails app, and sometimes by the API.
-            warden.user
+          if warden && warden.user
+            [:user, warden.user.id]
+          elsif env[STICK_OBJECT]
+            env[STICK_OBJECT]
           else
-            nil
+            []
           end
-        end
-
-        def last_write_location_for(user)
-          Gitlab::Redis.with do |redis|
-            redis.get(redis_key_for(user))
-          end
-        end
-
-        def delete_write_location_for(user)
-          Gitlab::Redis.with do |redis|
-            redis.del(redis_key_for(user))
-          end
-        end
-
-        def set_write_location_for(user, location)
-          Gitlab::Redis.with do |redis|
-            redis.set(redis_key_for(user), location, ex: EXPIRATION)
-          end
-        end
-
-        def redis_key_for(user)
-          "database-load-balancing/write-location/#{user.id}"
         end
       end
     end

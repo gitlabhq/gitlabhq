@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 feature 'project owner creates a license file', feature: true, js: true do
-  include WaitForAjax
-
   let(:project_master) { create(:user) }
   let(:project) { create(:project) }
   background do
@@ -29,7 +27,7 @@ feature 'project owner creates a license file', feature: true, js: true do
     expect(file_content).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
 
     fill_in :commit_message, with: 'Add a LICENSE file', visible: true
-    click_button 'Commit Changes'
+    click_button 'Commit changes'
 
     expect(current_path).to eq(
       namespace_project_blob_path(project.namespace, project, 'master/LICENSE'))
@@ -40,7 +38,7 @@ feature 'project owner creates a license file', feature: true, js: true do
   scenario 'project master creates a license file from the "Add license" link' do
     click_link 'Add License'
 
-    expect(page).to have_content('New File')
+    expect(page).to have_content('New file')
     expect(current_path).to eq(
       namespace_project_new_blob_path(project.namespace, project, 'master'))
     expect(find('#file_name').value).to eq('LICENSE')
@@ -53,7 +51,7 @@ feature 'project owner creates a license file', feature: true, js: true do
     expect(file_content).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
 
     fill_in :commit_message, with: 'Add a LICENSE file', visible: true
-    click_button 'Commit Changes'
+    click_button 'Commit changes'
 
     expect(current_path).to eq(
       namespace_project_blob_path(project.namespace, project, 'master/LICENSE'))
@@ -63,7 +61,7 @@ feature 'project owner creates a license file', feature: true, js: true do
 
   def select_template(template)
     page.within('.js-license-selector-wrap') do
-      click_button 'Choose a License template'
+      click_button 'Apply a license template'
       click_link template
       wait_for_ajax
     end

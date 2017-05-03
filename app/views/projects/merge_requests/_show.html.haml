@@ -52,8 +52,10 @@
       = render 'award_emoji/awards_block', awardable: @merge_request, inline: true
 
     .merge-request-tabs-holder{ class: ("js-tabs-affix" unless ENV['RAILS_ENV'] == 'test') }
-      .merge-request-tabs-container
-        %ul.merge-request-tabs.nav-links.no-top.no-bottom
+      .merge-request-tabs-container.scrolling-tabs-container.inner-page-scroll-tabs
+        .fade-left= icon('angle-left')
+        .fade-right= icon('angle-right')
+        %ul.merge-request-tabs.nav-links.scrolling-tabs
           %li.notes-tab
             = link_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: 'div#notes', action: 'notes', toggle: 'tab' } do
               Discussion

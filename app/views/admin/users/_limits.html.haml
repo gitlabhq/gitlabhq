@@ -1,0 +1,5 @@
+= f.fields_for :namespace do |namespace_form|
+  = namespace_form.hidden_field :id
+  %fieldset
+    %legend Limits
+    = render "namespaces/shared_runners_minutes_setting", f: namespace_form

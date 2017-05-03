@@ -69,7 +69,7 @@ describe Groups::CreateService, '#execute', services: true do
     let!(:service) { described_class.new(user, params) }
 
     before do
-      Settings.mattermost['enabled'] = true
+      stub_mattermost_setting(enabled: true)
     end
 
     it 'create the chat team with the group' do

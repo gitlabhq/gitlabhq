@@ -1,13 +1,13 @@
 require 'spec_helper'
 
 describe GitlabUsagePingWorker do
-  subject { GitlabUsagePingWorker.new }
+  subject { described_class.new }
 
   it "sends POST request" do
     stub_application_setting(usage_ping_enabled: true)
 
-    stub_request(:post, "https://version.gitlab.com/usage_data")
-        .to_return(status: 200, body: '', headers: {})
+    stub_request(:post, "https://version.gitlab.com/usage_data").
+        to_return(status: 200, body: '', headers: {})
     expect(Gitlab::UsageData).to receive(:to_json).with({ force_refresh: true }).and_call_original
     expect(subject).to receive(:try_obtain_lease).and_return(true)
 

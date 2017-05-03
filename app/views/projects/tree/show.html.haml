@@ -7,12 +7,4 @@
 = render 'projects/last_push'
 
 %div{ class: container_class }
-  .tree-controls
-    = render 'projects/find_file_link'
-    = render 'projects/buttons/download', project: @project, ref: @ref
-
-  #tree-holder.tree-holder.clearfix
-    .nav-block
-      = render 'projects/tree/tree_header', tree: @tree
-
-    = render 'projects/tree/tree_content', tree: @tree
+  = render 'projects/files'

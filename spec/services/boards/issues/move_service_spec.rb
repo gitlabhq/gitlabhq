@@ -12,7 +12,7 @@ describe Boards::Issues::MoveService, services: true do
 
     let!(:list1)   { create(:list, board: board1, label: development, position: 0) }
     let!(:list2)   { create(:list, board: board1, label: testing, position: 1) }
-    let!(:done)    { board1.done_list }
+    let!(:closed)  { create(:closed_list, board: board1) }
 
     before do
       project.team << [user, :developer]
@@ -35,13 +35,13 @@ describe Boards::Issues::MoveService, services: true do
       end
     end
 
-    context 'when moving to done' do
+    context 'when moving to closed' do
       let(:board2) { create(:board, project: project) }
       let(:regression) { create(:label, project: project, name: 'Regression') }
       let!(:list3) { create(:list, board: board2, label: regression, position: 1) }
 
       let(:issue)  { create(:labeled_issue, project: project, labels: [bug, development, testing, regression]) }
-      let(:params) { { board_id: board1.id, from_list_id: list2.id, to_list_id: done.id } }
+      let(:params) { { board_id: board1.id, from_list_id: list2.id, to_list_id: closed.id } }
 
       it 'delegates the close proceedings to Issues::CloseService' do
         expect_any_instance_of(Issues::CloseService).to receive(:execute).with(issue).once
@@ -58,9 +58,9 @@ describe Boards::Issues::MoveService, services: true do
       end
     end
 
-    context 'when moving from done' do
+    context 'when moving from closed' do
       let(:issue)  { create(:labeled_issue, :closed, project: project, labels: [bug]) }
-      let(:params) { { board_id: board1.id, from_list_id: done.id, to_list_id: list2.id } }
+      let(:params) { { board_id: board1.id, from_list_id: closed.id, to_list_id: list2.id } }
 
       it 'delegates the re-open proceedings to Issues::ReopenService' do
         expect_any_instance_of(Issues::ReopenService).to receive(:execute).with(issue).once

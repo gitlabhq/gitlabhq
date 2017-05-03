@@ -180,22 +180,19 @@ module Elastic
 
       def project_ids_query(current_user, project_ids, public_and_internal_projects, feature = nil)
         conditions = []
+        limit_private_projects = {}
 
-        private_project_condition = {
-          bool: {
-            filter: {
-              terms: { id: project_ids }
-            }
-          }
-        }
+        if project_ids != :any
+          limit_private_projects[:filter] = { terms: { id: project_ids } }
+        end
 
         if feature
-          private_project_condition[:bool][:must_not] = {
+          limit_private_projects[:must_not] = {
             term: { "#{feature}_access_level" => ProjectFeature::DISABLED }
           }
         end
 
-        conditions << private_project_condition
+        conditions << { bool: limit_private_projects } unless limit_private_projects.empty?
 
         if public_and_internal_projects
           conditions << if feature

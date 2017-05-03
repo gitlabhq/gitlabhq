@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 describe ProjectDestroyWorker do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:path) { project.repository.path_to_repo }
 
-  subject { ProjectDestroyWorker.new }
+  subject { described_class.new }
 
   describe "#perform" do
     it "deletes the project" do

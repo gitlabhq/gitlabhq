@@ -5,7 +5,7 @@ module SubmoduleHelper
   def submodule_links(submodule_item, ref = nil, repository = @repository)
     url = repository.submodule_url_for(ref, submodule_item.path)
 
-    return url, nil unless url =~ /([^\/:]+)\/([^\/]+\.git)\Z/
+    return url, nil unless url =~ /([^\/:]+)\/([^\/]+(?:\.git)?)\Z/
 
     namespace = $1
     project = $2
@@ -37,14 +37,16 @@ module SubmoduleHelper
   end
 
   def self_url?(url, namespace, project)
-    return true if url == [Gitlab.config.gitlab.url, '/', namespace, '/',
-                           project, '.git'].join('')
-    url == gitlab_shell.url_to_repo([namespace, '/', project].join(''))
+    url_no_dotgit = url.chomp('.git')
+    return true if url_no_dotgit == [Gitlab.config.gitlab.url, '/', namespace, '/',
+                                     project].join('')
+    url_with_dotgit = url_no_dotgit + '.git'
+    url_with_dotgit == gitlab_shell.url_to_repo([namespace, '/', project].join(''))
   end
 
   def relative_self_url?(url)
     # (./)?(../repo.git) || (./)?(../../project/repo.git) )
-    url =~ /\A((\.\/)?(\.\.\/))(?!(\.\.)|(.*\/)).*\.git\z/ || url =~ /\A((\.\/)?(\.\.\/){2})(?!(\.\.))([^\/]*)\/(?!(\.\.)|(.*\/)).*\.git\z/
+    url =~ /\A((\.\/)?(\.\.\/))(?!(\.\.)|(.*\/)).*(\.git)?\z/ || url =~ /\A((\.\/)?(\.\.\/){2})(?!(\.\.))([^\/]*)\/(?!(\.\.)|(.*\/)).*(\.git)?\z/
   end
 
   def standard_links(host, namespace, project, commit)

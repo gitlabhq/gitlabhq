@@ -57,7 +57,7 @@ describe Gitlab::LDAP::User, lib: true do
     end
   end
 
-  describe :find_or_create do
+  describe 'find or create' do
     it "finds the user if already existing" do
       create(:omniauth_user, extern_uid: 'my-uid', provider: 'ldapmain')
 
@@ -107,6 +107,31 @@ describe Gitlab::LDAP::User, lib: true do
 
     it "creates a new user if not found" do
       expect{ ldap_user.save }.to change{ User.count }.by(1)
+    end
+
+    context 'when signup is disabled' do
+      before do
+        stub_application_setting signup_enabled: false
+      end
+
+      it 'creates the user' do
+        ldap_user.save
+
+        expect(gl_user).to be_persisted
+      end
+    end
+
+    context 'when user confirmation email is enabled' do
+      before do
+        stub_application_setting send_user_confirmation_email: true
+      end
+
+      it 'creates and confirms the user anyway' do
+        ldap_user.save
+
+        expect(gl_user).to be_persisted
+        expect(gl_user).to be_confirmed
+      end
     end
   end
 

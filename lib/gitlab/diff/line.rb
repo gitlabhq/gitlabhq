@@ -33,6 +33,10 @@ module Gitlab
         new_pos unless removed? || meta?
       end
 
+      def line
+        new_line || old_line
+      end
+
       def unchanged?
         type.nil?
       end

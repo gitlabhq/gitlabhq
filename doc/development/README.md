@@ -12,6 +12,8 @@
   contributing to the API.
 - [Documentation styleguide](doc_styleguide.md) Use this styleguide if you are
   contributing to documentation.
+- [Writing documentation](writing_documentation.md)
+  - [Distinction between general documentation and technical articles](writing_documentation.md#distinction-between-general-documentation-and-technical-articles)
 - [SQL Migration Style Guide](migration_style_guide.md) for creating safe SQL migrations
 - [Testing standards and style guidelines](testing.md)
 - [UX guide](ux_guide/index.md) for building GitLab with existing CSS styles and elements
@@ -32,7 +34,6 @@
 ## Backend howtos
 
 - [Architecture](architecture.md) of GitLab
-- [CI setup](ci_setup.md) for testing GitLab
 - [Gotchas](gotchas.md) to avoid
 - [How to dump production data to staging](db_dump.md)
 - [Instrumentation](instrumentation.md)

@@ -12,11 +12,7 @@ class NotificationRecipientService
     custom_action = build_custom_key(action, target)
 
     recipients = target.participants(current_user)
-
-    unless NotificationSetting::EXCLUDED_WATCHER_EVENTS.include?(custom_action)
-      recipients = add_project_watchers(recipients)
-    end
-
+    recipients = add_project_watchers(recipients)
     recipients = add_custom_notifications(recipients, custom_action)
     recipients = reject_mention_users(recipients)
 
@@ -43,16 +39,38 @@ class NotificationRecipientService
     recipients = reject_unsubscribed_users(recipients, target)
     recipients = reject_users_without_access(recipients, target)
 
-    recipients.delete(current_user) if skip_current_user
+    recipients.delete(current_user) if skip_current_user && !current_user.notified_of_own_activity?
 
     recipients.uniq
+  end
+
+  def build_pipeline_recipients(target, current_user, action:)
+    return [] unless current_user
+
+    custom_action =
+      case action.to_s
+      when 'failed'
+        :failed_pipeline
+      when 'success'
+        :success_pipeline
+      end
+
+    notification_setting = notification_setting_for_user_project(current_user, target.project)
+
+    return [] if notification_setting.mention? || notification_setting.disabled?
+
+    return [] if notification_setting.custom? && !notification_setting.public_send(custom_action)
+
+    return [] if (notification_setting.watch? || notification_setting.participating?) && NotificationSetting::EXCLUDED_WATCHER_EVENTS.include?(custom_action)
+
+    reject_users_without_access([current_user], target)
   end
 
   def build_relabeled_recipients(target, current_user, labels:)
     recipients = add_labels_subscribers([], target, labels: labels)
     recipients = reject_unsubscribed_users(recipients, target)
     recipients = reject_users_without_access(recipients, target)
-    recipients.delete(current_user)
+    recipients.delete(current_user) unless current_user.notified_of_own_activity?
     recipients.uniq
   end
 
@@ -93,7 +111,7 @@ class NotificationRecipientService
     recipients = reject_unsubscribed_users(recipients, note.noteable)
     recipients = reject_users_without_access(recipients, note.noteable)
 
-    recipients.delete(note.author)
+    recipients.delete(note.author) unless note.author.notified_of_own_activity?
     recipients.uniq
   end
 
@@ -294,5 +312,17 @@ class NotificationRecipientService
   # Check NotificationSetting::EMAIL_EVENTS
   def build_custom_key(action, object)
     "#{action}_#{object.class.model_name.name.underscore}".to_sym
+  end
+
+  def notification_setting_for_user_project(user, project)
+    project_setting = user.notification_settings_for(project)
+
+    return project_setting unless project_setting.global?
+
+    group_setting = user.notification_settings_for(project.group)
+
+    return group_setting unless group_setting.global?
+
+    user.global_notification_setting
   end
 end

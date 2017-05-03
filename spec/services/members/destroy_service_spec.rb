@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Members::DestroyService, services: true do
   let(:user) { create(:user) }
   let(:member_user) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:empty_project, :public) }
   let(:group) { create(:group, :public) }
 
   shared_examples 'a service raising ActiveRecord::RecordNotFound' do

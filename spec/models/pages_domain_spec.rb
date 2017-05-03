@@ -5,7 +5,7 @@ describe PagesDomain, models: true do
     it { is_expected.to belong_to(:project) }
   end
 
-  describe :validate_domain do
+  describe 'validate domain' do
     subject { build(:pages_domain, domain: domain) }
 
     context 'is unique' do
@@ -75,7 +75,7 @@ describe PagesDomain, models: true do
     end
   end
 
-  describe :url do
+  describe '#url' do
     subject { domain.url }
 
     context 'without the certificate' do
@@ -91,7 +91,7 @@ describe PagesDomain, models: true do
     end
   end
 
-  describe :has_matching_key? do
+  describe '#has_matching_key?' do
     subject { domain.has_matching_key? }
 
     context 'for matching key' do
@@ -107,7 +107,7 @@ describe PagesDomain, models: true do
     end
   end
 
-  describe :has_intermediates? do
+  describe '#has_intermediates?' do
     subject { domain.has_intermediates? }
 
     context 'for self signed' do
@@ -133,7 +133,7 @@ describe PagesDomain, models: true do
     end
   end
 
-  describe :expired? do
+  describe '#expired?' do
     subject { domain.expired? }
 
     context 'for valid' do
@@ -149,7 +149,7 @@ describe PagesDomain, models: true do
     end
   end
 
-  describe :subject do
+  describe '#subject' do
     let(:domain) { build(:pages_domain, :with_certificate) }
 
     subject { domain.subject }
@@ -157,7 +157,7 @@ describe PagesDomain, models: true do
     it { is_expected.to eq('/CN=test-certificate') }
   end
 
-  describe :certificate_text do
+  describe '#certificate_text' do
     let(:domain) { build(:pages_domain, :with_certificate) }
 
     subject { domain.certificate_text }

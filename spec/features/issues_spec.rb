@@ -4,9 +4,8 @@ describe 'Issues', feature: true do
   include DropzoneHelper
   include IssueHelpers
   include SortingHelper
-  include WaitForAjax
 
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:empty_project, :public) }
 
   before do
     login_as :user
@@ -382,7 +381,7 @@ describe 'Issues', feature: true do
   end
 
   describe 'when I want to reset my incoming email token' do
-    let(:project1) { create(:project, namespace: @user.namespace) }
+    let(:project1) { create(:empty_project, namespace: @user.namespace) }
     let!(:issue) { create(:issue, project: project1) }
 
     before do
@@ -418,7 +417,8 @@ describe 'Issues', feature: true do
     it 'will not send ajax request when no data is changed' do
       page.within '.labels' do
         click_link 'Edit'
-        first('.dropdown-menu-close').click
+
+        find('.dropdown-menu-close', match: :first).click
 
         expect(page).not_to have_selector('.block-loading')
       end
@@ -634,10 +634,29 @@ describe 'Issues', feature: true do
         expect(page.find_field("issue_description").value).to have_content 'banana_sample'
       end
 
-      it 'adds double newline to end of attachment markdown' do
+      it "doesn't add double newline to end of a single attachment markdown" do
         dropzone_file Rails.root.join('spec', 'fixtures', 'banana_sample.gif')
 
-        expect(page.find_field("issue_description").value).to match /\n\n$/
+        expect(page.find_field("issue_description").value).not_to match /\n\n$/
+      end
+    end
+
+    context 'form filled by URL parameters' do
+      let(:project) { create(:project, :public, :repository) }
+
+      before do
+        project.repository.create_file(
+          @user,
+          '.gitlab/issue_templates/bug.md',
+          'this is a test "bug" template',
+          message: 'added issue template',
+          branch_name: 'master')
+
+        visit new_namespace_project_issue_path(project.namespace, project, issuable_template: 'bug')
+      end
+
+      it 'fills in template' do
+        expect(find('.js-issuable-selector .dropdown-toggle-text')).to have_content('bug')
       end
     end
   end
@@ -716,6 +735,23 @@ describe 'Issues', feature: true do
           expect(page).to have_content 'No due date'
         end
       end
+    end
+  end
+
+  describe 'title issue#show', js: true do
+    include WaitForVueResource
+
+    it 'updates the title', js: true do
+      issue = create(:issue, author: @user, assignee: @user, project: project, title: 'new title')
+
+      visit namespace_project_issue_path(project.namespace, project, issue)
+
+      expect(page).to have_text("new title")
+
+      issue.update(title: "updated title")
+
+      wait_for_vue_resource
+      expect(page).to have_text("updated title")
     end
   end
 end

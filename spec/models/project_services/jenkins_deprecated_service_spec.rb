@@ -74,11 +74,11 @@ eos
         )
       end
 
-      describe :build_page do
+      describe '#build_page' do
         it { expect(@service.build_page("2ab7834c", 'master')).to eq("http://jenkins.gitlab.org/job/#{project.name}_master/scm/bySHA1/2ab7834c") }
       end
 
-      describe :build_page_with_branch do
+      describe '#build_page with branch' do
         it { expect(@service.build_page("2ab7834c", 'test_branch')).to eq("http://jenkins.gitlab.org/job/#{project.name}_test_branch/scm/bySHA1/2ab7834c") }
       end
     end
@@ -94,11 +94,11 @@ eos
         )
       end
 
-      describe :build_page do
+      describe '#build_page' do
         it { expect(@service.build_page("2ab7834c", 'master')).to eq("http://jenkins.gitlab.org/job/2/scm/bySHA1/2ab7834c") }
       end
 
-      describe :build_page_with_branch do
+      describe '#build_page with branch' do
         it { expect(@service.build_page("2ab7834c", 'test_branch')).to eq("http://jenkins.gitlab.org/job/2/scm/bySHA1/2ab7834c") }
       end
     end

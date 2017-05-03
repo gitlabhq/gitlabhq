@@ -18,7 +18,7 @@ describe Boards::Issues::ListService, services: true do
 
     let!(:list1)   { create(:list, board: board, label: development, position: 0) }
     let!(:list2)   { create(:list, board: board, label: testing, position: 1) }
-    let!(:done)    { board.done_list }
+    let!(:closed)  { create(:closed_list, board: board) }
 
     let!(:opened_issue1) { create(:labeled_issue, project: project, milestone: m1, title: 'Issue 1', labels: [bug]) }
     let!(:opened_issue2) { create(:labeled_issue, project: project, milestone: m2, title: 'Issue 2', labels: [p2]) }
@@ -70,20 +70,30 @@ describe Boards::Issues::ListService, services: true do
       end
     end
 
-    it 'returns closed issues when listing issues from Done' do
-      params = { board_id: board.id, id: done.id }
+    context 'issues are ordered by priority' do
+      it 'returns opened issues when list_id is missing' do
+        params = { board_id: board.id }
 
-      issues = described_class.new(project, user, params).execute
+        issues = described_class.new(project, user, params).execute
 
-      expect(issues).to eq [closed_issue4, closed_issue2, closed_issue5, closed_issue3, closed_issue1]
-    end
+        expect(issues).to eq [opened_issue2, reopened_issue1, opened_issue1]
+      end
 
-    it 'returns opened issues that have label list applied when listing issues from a label list' do
-      params = { board_id: board.id, id: list1.id }
+      it 'returns closed issues when listing issues from Closed' do
+        params = { board_id: board.id, id: closed.id }
 
-      issues = described_class.new(project, user, params).execute
+        issues = described_class.new(project, user, params).execute
 
-      expect(issues).to eq [list1_issue3, list1_issue1, list1_issue2]
+        expect(issues).to eq [closed_issue4, closed_issue2, closed_issue5, closed_issue3, closed_issue1]
+      end
+
+      it 'returns opened issues that have label list applied when listing issues from a label list' do
+        params = { board_id: board.id, id: list1.id }
+
+        issues = described_class.new(project, user, params).execute
+
+        expect(issues).to eq [list1_issue3, list1_issue1, list1_issue2]
+      end
     end
 
     context 'with list that does not belong to the board' do

@@ -1,12 +1,11 @@
 require 'spec_helper'
 
 describe 'Explore Groups page', js: true, feature: true do
-  include WaitForAjax
-
   let!(:user) { create :user }
   let!(:group) { create(:group) }
   let!(:public_group) { create(:group, :public) }
   let!(:private_group) { create(:group, :private) }
+  let!(:empty_project) { create(:empty_project, group: public_group) }
 
   before do
     group.add_owner(user)
@@ -42,5 +41,24 @@ describe 'Explore Groups page', js: true, feature: true do
     expect(page).to have_content(public_group.full_name)
     expect(page).not_to have_content(private_group.full_name)
     expect(page.all('.js-groups-list-holder .content-list li').length).to eq 2
+  end
+
+  it 'shows non-archived projects count' do
+    # Initially project is not archived
+    expect(find('.js-groups-list-holder .content-list li:first-child .stats span:first-child')).to have_text("1")
+    
+    # Archive project
+    empty_project.archive!
+    visit explore_groups_path
+
+    # Check project count
+    expect(find('.js-groups-list-holder .content-list li:first-child .stats span:first-child')).to have_text("0")
+  
+    # Unarchive project
+    empty_project.unarchive!
+    visit explore_groups_path
+
+    # Check project count
+    expect(find('.js-groups-list-holder .content-list li:first-child .stats span:first-child')).to have_text("1")    
   end
 end

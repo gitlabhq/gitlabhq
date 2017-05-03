@@ -3,7 +3,6 @@ require 'rails_helper'
 feature 'Merge requests filter clear button', feature: true, js: true do
   include FilteredSearchHelpers
   include MergeRequestHelpers
-  include WaitForAjax
   include IssueHelpers
 
   let!(:project) { create(:project, :public) }
@@ -14,7 +13,7 @@ feature 'Merge requests filter clear button', feature: true, js: true do
   let!(:mr2) { create(:merge_request, title: "Bugfix1", source_project: project, target_project: project, source_branch: "Bugfix1") }
 
   let(:merge_request_css) { '.merge-request' }
-  let(:clear_search_css) { '.filtered-search-input-container .clear-search' }
+  let(:clear_search_css) { '.filtered-search-box .clear-search' }
 
   before do
     mr2.labels << bug

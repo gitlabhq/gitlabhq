@@ -3,7 +3,7 @@ require 'spec_helper'
 describe MergeRequests::UpdateService, services: true do
   include EmailHelpers
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
@@ -12,6 +12,7 @@ describe MergeRequests::UpdateService, services: true do
 
   let(:merge_request) do
     create(:merge_request, :simple, title: 'Old title',
+                                    description: "FYI #{user2.to_reference}",
                                     assignee_id: user3.id,
                                     source_project: project)
   end
@@ -225,15 +226,23 @@ describe MergeRequests::UpdateService, services: true do
         it 'marks pending todos as done' do
           expect(pending_todo.reload).to be_done
         end
+
+        it 'does not create any new todos' do
+          expect(Todo.count).to eq(1)
+        end
       end
 
       context 'when the description change' do
         before do
-          update_merge_request({ description: 'Also please fix' })
+          update_merge_request({ description: "Also please fix #{user2.to_reference} #{user3.to_reference}" })
         end
 
         it 'marks pending todos as done' do
           expect(pending_todo.reload).to be_done
+        end
+
+        it 'creates only 1 new todo' do
+          expect(Todo.count).to eq(2)
         end
       end
 

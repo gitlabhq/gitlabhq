@@ -1,0 +1,4 @@
+---
+title: 'repository browser: handle submodule urls that don''t end with .git'
+merge_request:
+author: David Turner

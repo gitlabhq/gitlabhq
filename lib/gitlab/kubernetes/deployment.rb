@@ -10,7 +10,19 @@ module Gitlab
       end
 
       def labels
-        metadata['labels']
+        metadata.fetch('labels', {})
+      end
+
+      def track
+        labels.fetch('track', 'stable')
+      end
+
+      def stable?
+        track == 'stable'
+      end
+
+      def order
+        stable? ? 1 : 0
       end
 
       def outdated?
@@ -52,7 +64,12 @@ module Gitlab
       end
 
       def deployment_instance(n, name, status)
-        { status: status, tooltip: "#{name} (pod #{n}) #{status.capitalize}" }
+        {
+          status: status,
+          tooltip: "#{name} (pod #{n}) #{status.capitalize}",
+          track: track,
+          stable: stable?
+        }
       end
 
       def metadata

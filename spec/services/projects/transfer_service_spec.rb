@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Projects::TransferService, services: true do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
-  let(:project) { create(:project, namespace: user.namespace) }
+  let(:project) { create(:project, :repository, namespace: user.namespace) }
 
   context 'namespace -> namespace' do
     before do
@@ -29,9 +29,12 @@ describe Projects::TransferService, services: true do
   end
 
   context 'disallow transfering of project with tags' do
+    let(:container_repository) { create(:container_repository) }
+
     before do
       stub_container_registry_config(enabled: true)
-      stub_container_registry_tags('tag')
+      stub_container_registry_tags(repository: :any, tags: ['tag'])
+      project.container_repositories << container_repository
     end
 
     subject { transfer_project(project, user, group) }
@@ -58,7 +61,7 @@ describe Projects::TransferService, services: true do
     before { internal_group.add_owner(user) }
 
     context 'when namespace visibility level < project visibility level' do
-      let(:public_project) { create(:project, :public, namespace: user.namespace) }
+      let(:public_project) { create(:project, :public, :repository, namespace: user.namespace) }
 
       before { transfer_project(public_project, user, internal_group) }
 
@@ -66,7 +69,7 @@ describe Projects::TransferService, services: true do
     end
 
     context 'when namespace visibility level > project visibility level' do
-      let(:private_project) { create(:project, :private, namespace: user.namespace) }
+      let(:private_project) { create(:project, :private, :repository, namespace: user.namespace) }
 
       before { transfer_project(private_project, user, internal_group) }
 

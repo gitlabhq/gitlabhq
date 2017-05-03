@@ -1,17 +1,30 @@
 require 'spec_helper.rb'
 
 describe Issues::BuildService, services: true do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 
   before do
     project.team << [user, :developer]
   end
 
+  context 'with an issue template' do
+    describe '#execute' do
+      it 'fills in the template in the description' do
+        project = build(:project, issues_template: 'Work hard, play hard!')
+        service = described_class.new(project, user)
+
+        issue = service.execute
+
+        expect(issue.description).to eq('Work hard, play hard!')
+      end
+    end
+  end
+
   context 'for a single discussion' do
     describe '#execute' do
       let(:merge_request) { create(:merge_request, title: "Hello world", source_project: project) }
-      let(:discussion) { Discussion.new([create(:diff_note_on_merge_request, project: project, noteable: merge_request, note: "Almost done")]) }
+      let(:discussion) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, note: "Almost done").to_discussion }
       let(:service) { described_class.new(project, user, merge_request_to_resolve_discussions_of: merge_request.iid, discussion_to_resolve: discussion.id) }
 
       it 'references the noteable title in the issue title' do
@@ -24,6 +37,16 @@ describe Issues::BuildService, services: true do
         issue = service.execute
 
         expect(issue.description).to include('Almost done')
+      end
+
+      context 'with an issue template' do
+        let(:project) { create(:project, :repository, issues_template: 'Work hard, play hard!') }
+
+        it 'picks the discussion description over the issue template' do
+          issue = service.execute
+
+          expect(issue.description).to include('Almost done')
+        end
       end
     end
   end
@@ -47,7 +70,7 @@ describe Issues::BuildService, services: true do
       let(:service) { described_class.new(project, user, merge_request_to_resolve_discussions_of: merge_request.iid) }
 
       it 'mentions the author of the note' do
-        discussion = Discussion.new([create(:diff_note_on_merge_request, author: create(:user, username: 'author'))])
+        discussion = create(:diff_note_on_merge_request, author: create(:user, username: 'author')).to_discussion
         expect(service.item_for_discussion(discussion)).to include('@author')
       end
 
@@ -60,7 +83,7 @@ describe Issues::BuildService, services: true do
         note_result = "    > This is a string\n"\
                       "    > > with a blockquote\n"\
                       "    > > > That has a quote\n"
-        discussion = Discussion.new([create(:diff_note_on_merge_request, note: note_text)])
+        discussion = create(:diff_note_on_merge_request, note: note_text).to_discussion
         expect(service.item_for_discussion(discussion)).to include(note_result)
       end
     end
@@ -91,25 +114,23 @@ describe Issues::BuildService, services: true do
       end
 
       describe 'with multiple discussions' do
-        before do
-          create(:diff_note_on_merge_request, noteable: merge_request, project: merge_request.target_project, line_number: 15)
-        end
+        let!(:diff_note) { create(:diff_note_on_merge_request, noteable: merge_request, project: merge_request.target_project, line_number: 15) }
 
         it 'mentions all the authors in the description' do
-          authors = merge_request.diff_discussions.map(&:author)
+          authors = merge_request.resolvable_discussions.map(&:author)
 
           expect(issue.description).to include(*authors.map(&:to_reference))
         end
 
         it 'has a link for each unresolved discussion in the description' do
-          notes = merge_request.diff_discussions.map(&:first_note)
+          notes = merge_request.resolvable_discussions.map(&:first_note)
           links = notes.map { |note| Gitlab::UrlBuilder.build(note) }
 
           expect(issue.description).to include(*links)
         end
 
         it 'mentions additional notes' do
-          create_list(:diff_note_on_merge_request, 2, noteable: merge_request, project: merge_request.target_project, line_number: 15)
+          create_list(:diff_note_on_merge_request, 2, noteable: merge_request, project: merge_request.target_project, in_reply_to: diff_note)
 
           expect(issue.description).to include('(+2 comments)')
         end

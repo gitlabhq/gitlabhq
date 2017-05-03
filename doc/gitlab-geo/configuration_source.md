@@ -75,7 +75,6 @@ logins opened on all nodes as we will be moving back and forth.
 1. Get the contents of `id_rsa.pub` for the git user:
 
     ```
-    # Installations from source
     sudo -u git cat /home/git/.ssh/id_rsa.pub
     ```
 
@@ -111,7 +110,6 @@ logins opened on all nodes as we will be moving back and forth.
 1. Verify that the fingerprint was added by checking `known_hosts`:
 
     ```
-    # Installations from source
     cat /home/git/.ssh/known_hosts
     ```
 
@@ -127,11 +125,10 @@ sensitive data in the database. Any secondary node must have the
     sudo -i
     ```
 
-1. Find the value of `db_key_base` and copy it:
+1. Execute the command below to display the current encryption key and copy it:
 
      ```
-     # Installations from source
-     cat /home/git/gitlab/config/secrets.yml | grep db_key_base
+     bundle exec rake geo:db:show_encryption_key
      ```
 
 1. SSH into the **secondary** node and login as root:
@@ -184,7 +181,6 @@ sensitive data in the database. Any secondary node must have the
    previous step:
 
      ```
-     # Installations from source
      editor /home/git/gitlab/config/secrets.yml
      ```
 
@@ -210,7 +206,6 @@ sensitive data in the database. Any secondary node must have the
 1. Get the contents of `id_rsa.pub` the was just created:
 
     ```
-    # Installations from source
     sudo -u git cat /home/git/.ssh/id_rsa.pub
     ```
 

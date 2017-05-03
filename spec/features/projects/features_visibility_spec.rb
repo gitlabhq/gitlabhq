@@ -1,9 +1,6 @@
 require 'spec_helper'
-include WaitForAjax
 
 describe 'Edit Project Settings', feature: true do
-  include WaitForAjax
-
   let(:member) { create(:user) }
   let!(:project) { create(:project, :public, path: 'gitlab', name: 'sample') }
   let!(:issue) { create(:issue, project: project) }

@@ -1,7 +1,7 @@
 = content_for :sub_nav do
   .scrolling-tabs-container.sub-nav-scroll
     = render 'shared/nav_scroll'
-    .nav-links.sub-nav.scrolling-tabs{ class: ('build' if local_assigns.fetch(:build_subnav, false)) }
+    .nav-links.sub-nav.scrolling-tabs
       %ul{ class: (container_class) }
         - if project_nav_tab? :pipelines
           = nav_link(path: 'pipelines#index', controller: :pipelines) do
@@ -10,13 +10,13 @@
                 Pipelines
 
         - if project_nav_tab? :builds
-          = nav_link(path: 'builds#index', controller: :builds) do
+          = nav_link(controller: :builds) do
             = link_to project_builds_path(@project), title: 'Jobs', class: 'shortcuts-builds' do
               %span
                 Jobs
 
         - if project_nav_tab? :environments
-          = nav_link(path: 'environments#index', controller: :environments) do
+          = nav_link(controller: :environments) do
             = link_to project_environments_path(@project), title: 'Environments', class: 'shortcuts-environments' do
               %span
                 Environments

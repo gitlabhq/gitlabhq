@@ -52,66 +52,62 @@
   }
 }
 
-.milestone-summary {
+.milestone-sidebar {
+  .gutter-toggle {
+    margin-bottom: 10px;
+  }
+
+  .milestone-progress {
+    .title {
+      padding-top: 5px;
+    }
+
+    .progress {
+      height: 6px;
+      margin: 0;
+    }
+  }
+
+  .collapsed-milestone-date {
+    font-size: 12px;
+  }
+
+  .milestone-date {
+    display: block;
+  }
+
+  .date-separator {
+    line-height: 5px;
+  }
+
+  .remaining-days strong {
+    font-weight: normal;
+  }
+
   .milestone-stat {
-    white-space: nowrap;
-    margin-right: 10px;
-
-    &.with-drilldown {
-      margin-right: 2px;
-    }
+    float: left;
+    margin-right: 14px;
   }
 
-  .remaining-days {
-    color: $orange-600;
+  .milestone-stat:last-child {
+    margin-right: 0;
   }
 
-  .milestone-stats-and-buttons {
-    display: flex;
-    justify-content: flex-start;
-    flex-wrap: wrap;
+  .milestone-progress {
+    .sidebar-collapsed-icon {
+      clear: both;
+      padding: 15px 5px 5px;
 
-    @media (min-width: $screen-xs-min) {
-      justify-content: space-between;
-      flex-wrap: nowrap;
-    }
-  }
-
-  .milestone-progress-buttons {
-    order: 1;
-    margin-top: 10px;
-
-    @media (min-width: $screen-xs-min) {
-      order: 2;
-      margin-top: 0;
-      flex-shrink: 0;
-    }
-
-    .btn {
-      float: left;
-      margin-right: $btn-side-margin;
-
-      &:last-child {
-        margin-right: 0;
+      .progress {
+        margin: 5px 0;
       }
     }
   }
 
-  .milestone-stats {
-    order: 2;
-    width: 100%;
-    padding: 7px 0;
-    flex-shrink: 1;
-
-    @media (min-width: $screen-xs-min) {
-      // when displayed on one line stats go first, buttons second
-      order: 1;
+  .right-sidebar-collapsed & {
+    .reference {
+      border-top: 1px solid $border-gray-normal;
     }
-  }
-
-  .progress {
-    width: 100%;
-    margin: 15px 0;
   }
 }
 
@@ -203,4 +199,163 @@
   background-color: $white-light;
   cursor: -webkit-grab;
   cursor: grab;
+}
+
+// EE-only
+
+.burndown-hint.container-fluid {
+  border: 1px solid $border-color;
+  border-radius: $border-radius-default;
+  position: relative;
+  margin: $gl-padding 0;
+  overflow: hidden;
+  padding-top: 15px;
+  padding-bottom: 15px;
+
+  .dismiss-icon {
+    position: absolute;
+    right: $gl-padding;
+    cursor: pointer;
+    color: $cycle-analytics-dismiss-icon-color;
+    z-index: 1;
+  }
+
+  .svg-container {
+    text-align: center;
+
+    svg {
+      max-width: 200px;
+      max-height: 200px;
+    }
+  }
+
+  .inner-content {
+    @media (max-width: $screen-xs-max) {
+      padding: 0 28px;
+      text-align: center;
+    }
+
+    h4 {
+      color: $gl-text-color;
+      font-size: 17px;
+    }
+
+    p {
+      color: $cycle-analytics-box-text-color;
+      margin-bottom: $gl-padding;
+    }
+  }
+}
+
+.burndown-docs-link {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.burndown-header {
+  margin: 24px 0 12px;
+
+  h3 {
+    font-size: 16px;
+    margin: 0;
+  }
+
+  .btn-group {
+    margin-left: 20px;
+    margin-bottom: 2px;
+  }
+
+  .btn {
+    font-size: 12px;
+
+    @include btn-outline($white-light, $blue-500, $blue-500, $blue-500, $white-light, $blue-600, $blue-600, $blue-700);
+
+    &.active {
+      background-color: $blue-500;
+      border-color: $blue-600;
+      color: $white-light;
+    }
+  }
+}
+
+.burndown-chart {
+  width: 100%;
+  height: 380px;
+  margin: 5px 0;
+
+  @media (max-width: $screen-sm-max) {
+    height: 320px;
+  }
+
+  @media (max-width: $screen-xs-max) {
+    height: 200px;
+  }
+
+  .axis {
+    font-size: 12px;
+
+    line,
+    path {
+      fill: none;
+      stroke: $stat-graph-axis-fill;
+      shape-rendering: crispEdges;
+    }
+  }
+
+  .axis-label {
+    text {
+      fill: $gl-text-color-secondary;
+    }
+
+    line {
+      stroke: $border-color;
+    }
+  }
+
+  .legend {
+    shape-rendering: crispEdges;
+
+    text {
+      font-size: 13px;
+      fill: $gl-text-color-disabled;
+    }
+
+    rect {
+      stroke: $border-color;
+      fill: none;
+    }
+  }
+
+  .line {
+    stroke-width: 2px;
+    fill: none;
+
+    &.actual {
+      stroke: $gl-success;
+    }
+
+    &.ideal {
+      stroke: $stat-graph-axis-fill;
+      stroke-dasharray: 6px 6px;
+    }
+  }
+
+  .focus {
+    circle {
+      fill: $white-light;
+      stroke: $gl-success;
+      stroke-width: 2px;
+    }
+  }
+
+  .chart-tooltip {
+    text {
+      font-size: 12px;
+      fill: $white-light;
+    }
+
+    rect {
+      fill: $black;
+    }
+  }
 }

@@ -68,12 +68,11 @@
                 = link_to todos_filter_path(sort: sort_value_oldest_created) do
                   = sort_title_oldest_created
 
-
 .js-todos-all
   - if @todos.any?
     .js-todos-list-container
       .js-todos-options{ data: { per_page: @todos.limit_value, current_page: @todos.current_page, total_pages: @todos.total_pages } }
-        .panel.panel-default.panel-small.panel-without-border
+        .panel.panel-default.panel-without-border.panel-without-margin
           %ul.content-list.todos-list
             = render @todos
       = paginate @todos, theme: "gitlab"

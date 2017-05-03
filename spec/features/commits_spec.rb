@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'Commits' do
   include CiStatusHelper
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
   describe 'CI' do
     before do
@@ -11,12 +11,16 @@ describe 'Commits' do
       stub_ci_pipeline_to_return_yaml_file
     end
 
+    let(:creator) { create(:user) }
+
     let!(:pipeline) do
       create(:ci_pipeline,
              project: project,
+             user: creator,
              ref: project.default_branch,
              sha: project.commit.sha,
-             status: :success)
+             status: :success,
+             created_at: 5.months.ago)
     end
 
     context 'commit status is Generic Commit Status' do
@@ -80,7 +84,8 @@ describe 'Commits' do
           it 'shows pipeline`s data' do
             expect(page).to have_content pipeline.sha[0..7]
             expect(page).to have_content pipeline.git_commit_message
-            expect(page).to have_content pipeline.git_author_name
+            expect(page).to have_content pipeline.user.name
+            expect(page).to have_content pipeline.created_at.strftime('%b %d, %Y')
           end
         end
 
@@ -150,7 +155,7 @@ describe 'Commits' do
         it do
           expect(page).to have_content pipeline.sha[0..7]
           expect(page).to have_content pipeline.git_commit_message
-          expect(page).to have_content pipeline.git_author_name
+          expect(page).to have_content pipeline.user.name
           expect(page).to have_link('Download artifacts')
           expect(page).not_to have_link('Cancel running')
           expect(page).not_to have_link('Retry')
@@ -169,7 +174,7 @@ describe 'Commits' do
         it do
           expect(page).to have_content pipeline.sha[0..7]
           expect(page).to have_content pipeline.git_commit_message
-          expect(page).to have_content pipeline.git_author_name
+          expect(page).to have_content pipeline.user.name
           expect(page).not_to have_link('Download artifacts')
           expect(page).not_to have_link('Cancel running')
           expect(page).not_to have_link('Retry')

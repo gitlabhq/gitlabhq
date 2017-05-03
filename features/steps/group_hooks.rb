@@ -32,9 +32,9 @@ class Spinach::Features::GroupHooks < Spinach::FeatureSteps
   end
 
   step 'I submit new hook' do
-    @url = FFaker::Internet.uri("http")
+    @url = 'http://example.org'
     fill_in "hook_url", with: @url
-    expect { click_button "Add Webhook" }.to change(GroupHook, :count).by(1)
+    expect { click_button "Add webhook" }.to change(GroupHook, :count).by(1)
   end
 
   step 'I should see newly created hook' do

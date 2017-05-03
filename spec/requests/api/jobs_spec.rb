@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe API::Jobs, api: true do
-  include ApiHelpers
-
+describe API::Jobs do
   let(:user) { create(:user) }
   let(:api_user) { user }
   let!(:project) { create(:project, :repository, creator: user, public_builds: false) }
@@ -320,7 +318,7 @@ describe API::Jobs, api: true do
     context 'authorized user' do
       it 'returns specific job trace' do
         expect(response).to have_http_status(200)
-        expect(response.body).to eq(build.trace)
+        expect(response.body).to eq(build.trace.raw)
       end
     end
 
@@ -408,7 +406,7 @@ describe API::Jobs, api: true do
 
       it 'erases job content' do
         expect(response).to have_http_status(201)
-        expect(build.trace).to be_empty
+        expect(build).not_to have_trace
         expect(build.artifacts_file.exists?).to be_falsy
         expect(build.artifacts_metadata.exists?).to be_falsy
       end

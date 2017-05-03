@@ -122,7 +122,7 @@ describe EventCreateService, services: true do
     end
 
     it 'updates user last activity' do
-      expect { service.push(project, user, {}) }.to change { user_score }
+      expect { service.push(project, user, {}) }.to change { user_activity(user) }
     end
   end
 

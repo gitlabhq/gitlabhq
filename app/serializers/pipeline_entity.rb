@@ -12,12 +12,7 @@ class PipelineEntity < Grape::Entity
   end
 
   expose :details do
-    expose :status do |pipeline, options|
-      StatusEntity.represent(
-        pipeline.detailed_status(request.user),
-        options)
-    end
-
+    expose :detailed_status, as: :status, with: StatusEntity
     expose :duration
     expose :finished_at
     expose :stages, using: StageEntity
@@ -74,12 +69,16 @@ class PipelineEntity < Grape::Entity
   alias_method :pipeline, :object
 
   def can_retry?
-    pipeline.retryable? &&
-      can?(request.user, :update_pipeline, pipeline)
+    can?(request.user, :update_pipeline, pipeline) &&
+      pipeline.retryable?
   end
 
   def can_cancel?
-    pipeline.cancelable? &&
-      can?(request.user, :update_pipeline, pipeline)
+    can?(request.user, :update_pipeline, pipeline) &&
+      pipeline.cancelable?
+  end
+
+  def detailed_status
+    pipeline.detailed_status(request.user)
   end
 end

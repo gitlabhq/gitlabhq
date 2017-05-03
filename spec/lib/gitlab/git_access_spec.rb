@@ -195,7 +195,7 @@ describe Gitlab::GitAccess, lib: true do
 
   describe '#check_push_access!' do
     before { merge_into_protected_branch }
-    let(:unprotected_branch) { FFaker::Internet.user_name }
+    let(:unprotected_branch) { 'unprotected_branch' }
 
     let(:changes) do
       { push_new_branch: "#{Gitlab::Git::BLANK_SHA} 570e7b2ab refs/heads/wow",
@@ -223,9 +223,9 @@ describe Gitlab::GitAccess, lib: true do
         target_branch = project.repository.lookup('feature')
         source_branch = project.repository.create_file(
           user,
-          FFaker::InternetSE.login_user_name,
-          FFaker::HipsterIpsum.paragraph,
-          message: FFaker::HipsterIpsum.sentence,
+          'filename',
+          'This is the file content',
+          message: 'This is a good commit message',
           branch_name: unprotected_branch)
         rugged = project.repository.rugged
         author = { email: "email@example.com", time: Time.now, name: "Example Git User" }
@@ -527,7 +527,7 @@ describe Gitlab::GitAccess, lib: true do
       before do
         project.team << [user, :developer]
 
-        allow_any_instance_of(Repository).to receive(:new_commits).and_return(
+        allow(project.repository).to receive(:new_commits).and_return(
           project.repository.commits_between('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9', '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')
         )
       end
@@ -568,7 +568,7 @@ describe Gitlab::GitAccess, lib: true do
           bad_commit = double("Commit", safe_message: 'Some change').as_null_object
           ref_object = double(name: 'heads/master')
           allow(bad_commit).to receive(:refs).and_return([ref_object])
-          allow_any_instance_of(Repository).to receive(:commits_between).and_return([bad_commit])
+          allow(project.repository).to receive(:commits_between).and_return([bad_commit])
 
           project.create_push_rule
           project.push_rule.update(commit_message_regex: "Change some files")
@@ -582,8 +582,8 @@ describe Gitlab::GitAccess, lib: true do
           # We use tmp ref a a temporary for Web UI commiting
           ref_object = double(name: 'refs/tmp')
           allow(bad_commit).to receive(:refs).and_return([ref_object])
-          allow_any_instance_of(Repository).to receive(:commits_between).and_return([bad_commit])
-          allow_any_instance_of(Repository).to receive(:new_commits).and_return([bad_commit])
+          allow(project.repository).to receive(:commits_between).and_return([bad_commit])
+          allow(project.repository).to receive(:new_commits).and_return([bad_commit])
 
           project.create_push_rule
           project.push_rule.update(commit_message_regex: "Change some files")
@@ -612,7 +612,7 @@ describe Gitlab::GitAccess, lib: true do
 
       describe "file names check" do
         before do
-          allow_any_instance_of(Repository).to receive(:new_commits).and_return(
+          allow(project.repository).to receive(:new_commits).and_return(
             project.repository.commits_between('913c66a37b4a45b9769037c55c2d238bd0942d2e', '33f3729a45c02fc67d00adb1b8bca394b0e761d9')
           )
         end

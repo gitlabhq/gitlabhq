@@ -36,6 +36,8 @@ class Group < Namespace
 
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
+  validates :two_factor_grace_period, presence: true, numericality: { greater_than_or_equal_to: 0 }
+
   validates :repository_size_limit,
             numericality: { only_integer: true, greater_than_or_equal_to: 0, allow_nil: true }
 
@@ -44,6 +46,7 @@ class Group < Namespace
 
   after_create :post_create_hook
   after_destroy :post_destroy_hook
+  after_save :update_two_factor_requirement
 
   scope :where_group_links_with_provider, ->(provider) do
     joins(:ldap_group_links).where(ldap_group_links: { provider: provider })
@@ -138,7 +141,7 @@ class Group < Namespace
   end
 
   def add_users(users, access_level, current_user: nil, expires_at: nil)
-    GroupMember.add_users_to_group(
+    GroupMember.add_users(
       self,
       users,
       access_level,
@@ -266,5 +269,13 @@ class Group < Namespace
       display_name: name[0..max_length],
       type: public? ? 'O' : 'I' # Open vs Invite-only
     }
+  end
+
+  protected
+
+  def update_two_factor_requirement
+    return unless require_two_factor_authentication_changed? || two_factor_grace_period_changed?
+
+    users.find_each(&:update_two_factor_requirement)
   end
 end

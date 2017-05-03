@@ -161,7 +161,7 @@
           %span.badge= @group_members.size
           .pull-right
             = link_to admin_group_path(@group), class: 'btn btn-xs' do
-              = icon('pencil-square-o', text: 'Manage Access')
+              = icon('pencil-square-o', text: 'Manage access')
         %ul.well-list.content-list
           = render partial: 'shared/members/member', collection: @group_members, as: :member, locals: { show_controls: false }
         .panel-footer
@@ -175,7 +175,7 @@
         project members
         %span.badge= @project.users.size
         .pull-right
-          = link_to icon('pencil-square-o', text: 'Manage Access'), polymorphic_url([@project, :members]), class: "btn btn-xs"
+          = link_to icon('pencil-square-o', text: 'Manage access'), polymorphic_url([@project, :members]), class: "btn btn-xs"
       %ul.well-list.project_members.content-list
         = render partial: 'shared/members/member', collection: @project_members, as: :member, locals: { show_controls: false }
       .panel-footer

@@ -25,9 +25,7 @@ describe User, models: true do
     it { is_expected.to have_many(:issues).dependent(:restrict_with_exception) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
     it { is_expected.to have_many(:merge_requests).dependent(:destroy) }
-    it { is_expected.to have_many(:assigned_merge_requests).dependent(:nullify) }
     it { is_expected.to have_many(:identities).dependent(:destroy) }
-    it { is_expected.to have_one(:abuse_report) }
     it { is_expected.to have_many(:spam_logs).dependent(:destroy) }
     it { is_expected.to have_many(:todos).dependent(:destroy) }
     it { is_expected.to have_many(:award_emoji).dependent(:destroy) }
@@ -37,6 +35,34 @@ describe User, models: true do
     it { is_expected.to have_many(:pipelines).dependent(:nullify) }
     it { is_expected.to have_many(:chat_names).dependent(:destroy) }
     it { is_expected.to have_many(:uploads).dependent(:destroy) }
+    it { is_expected.to have_many(:reported_abuse_reports).dependent(:destroy).class_name('AbuseReport') }
+
+    describe "#abuse_report" do
+      let(:current_user) { create(:user) }
+      let(:other_user) { create(:user) }
+
+      it { is_expected.to have_one(:abuse_report) }
+
+      it "refers to the abuse report whose user_id is the current user" do
+        abuse_report = create(:abuse_report, reporter: other_user, user: current_user)
+
+        expect(current_user.abuse_report).to eq(abuse_report)
+      end
+
+      it "does not refer to the abuse report whose reporter_id is the current user" do
+        create(:abuse_report, reporter: current_user, user: other_user)
+
+        expect(current_user.abuse_report).to be_nil
+      end
+
+      it "does not update the user_id of an abuse report when the user is updated" do
+        abuse_report = create(:abuse_report, reporter: current_user, user: other_user)
+
+        current_user.block
+
+        expect(abuse_report.reload.user).to eq(other_user)
+      end
+    end
 
     describe '#group_members' do
       it 'does not include group memberships for which user is a requester' do
@@ -59,6 +85,10 @@ describe User, models: true do
     end
   end
 
+  describe 'nested attributes' do
+    it { is_expected.to respond_to(:namespace_attributes=) }
+  end
+
   describe 'validations' do
     describe 'username' do
       it 'validates presence' do
@@ -72,6 +102,18 @@ describe User, models: true do
         expect(user.errors.values).to eq [['dashboard is a reserved name']]
       end
 
+      it 'allows child names' do
+        user = build(:user, username: 'avatar')
+
+        expect(user).to be_valid
+      end
+
+      it 'allows wildcard names' do
+        user = build(:user, username: 'blob')
+
+        expect(user).to be_valid
+      end
+
       it 'validates uniqueness' do
         expect(subject).to validate_uniqueness_of(:username).case_insensitive
       end
@@ -81,6 +123,7 @@ describe User, models: true do
     it { is_expected.to validate_numericality_of(:projects_limit) }
     it { is_expected.to allow_value(0).for(:projects_limit) }
     it { is_expected.not_to allow_value(-1).for(:projects_limit) }
+    it { is_expected.not_to allow_value(Gitlab::Database::MAX_INT_VALUE + 1).for(:projects_limit) }
 
     it { is_expected.to validate_length_of(:bio).is_at_most(255) }
 
@@ -306,7 +349,7 @@ describe User, models: true do
   end
 
   describe "Respond to" do
-    it { is_expected.to respond_to(:is_admin?) }
+    it { is_expected.to respond_to(:admin?) }
     it { is_expected.to respond_to(:name) }
     it { is_expected.to respond_to(:private_token) }
     it { is_expected.to respond_to(:external?) }
@@ -379,21 +422,9 @@ describe User, models: true do
   end
 
   describe '#generate_password' do
-    it "executes callback when force_random_password specified" do
-      user = build(:user, force_random_password: true)
-      expect(user).to receive(:generate_password)
-      user.save
-    end
-
     it "does not generate password by default" do
       user = create(:user, password: 'abcdefghe')
       expect(user.password).to eq('abcdefghe')
-    end
-
-    it "generates password when forcing random password" do
-      allow(Devise).to receive(:friendly_token).and_return('123456789')
-      user = create(:user, password: 'abcdefg', force_random_password: true)
-      expect(user.password).to eq('12345678')
     end
   end
 
@@ -589,7 +620,7 @@ describe User, models: true do
     describe 'normal user' do
       let(:user) { create(:user, name: 'John Smith') }
 
-      it { expect(user.is_admin?).to be_falsey }
+      it { expect(user.admin?).to be_falsey }
       it { expect(user.require_ssh_key?).to be_truthy }
       it { expect(user.can_create_group?).to be_truthy }
       it { expect(user.can_create_project?).to be_truthy }
@@ -1487,6 +1518,17 @@ describe User, models: true do
     it { expect(user.nested_groups).to eq([nested_group]) }
   end
 
+  describe '#all_expanded_groups' do
+    let!(:user) { create(:user) }
+    let!(:group) { create(:group) }
+    let!(:nested_group_1) { create(:group, parent: group) }
+    let!(:nested_group_2) { create(:group, parent: group) }
+
+    before { nested_group_1.add_owner(user) }
+
+    it { expect(user.all_expanded_groups).to match_array [group, nested_group_1] }
+  end
+
   describe '#nested_groups_projects' do
     let!(:user) { create(:user) }
     let!(:group) { create(:group) }
@@ -1740,6 +1782,90 @@ describe User, models: true do
         expect(ghost).to be_persisted
         expect(ghost.email).to eq('ghost1@example.com')
       end
+    end
+  end
+
+  describe '#update_two_factor_requirement' do
+    let(:user) { create :user }
+
+    context 'with 2FA requirement on groups' do
+      let(:group1) { create :group, require_two_factor_authentication: true, two_factor_grace_period: 23 }
+      let(:group2) { create :group, require_two_factor_authentication: true, two_factor_grace_period: 32 }
+
+      before do
+        group1.add_user(user, GroupMember::OWNER)
+        group2.add_user(user, GroupMember::OWNER)
+
+        user.update_two_factor_requirement
+      end
+
+      it 'requires 2FA' do
+        expect(user.require_two_factor_authentication_from_group).to be true
+      end
+
+      it 'uses the shortest grace period' do
+        expect(user.two_factor_grace_period).to be 23
+      end
+    end
+
+    context 'with 2FA requirement on nested parent group' do
+      let!(:group1) { create :group, require_two_factor_authentication: true }
+      let!(:group1a) { create :group, require_two_factor_authentication: false, parent: group1 }
+
+      before do
+        group1a.add_user(user, GroupMember::OWNER)
+
+        user.update_two_factor_requirement
+      end
+
+      it 'requires 2FA' do
+        expect(user.require_two_factor_authentication_from_group).to be true
+      end
+    end
+
+    context 'with 2FA requirement on nested child group' do
+      let!(:group1) { create :group, require_two_factor_authentication: false }
+      let!(:group1a) { create :group, require_two_factor_authentication: true, parent: group1 }
+
+      before do
+        group1.add_user(user, GroupMember::OWNER)
+
+        user.update_two_factor_requirement
+      end
+
+      it 'requires 2FA' do
+        expect(user.require_two_factor_authentication_from_group).to be true
+      end
+    end
+
+    context 'without 2FA requirement on groups' do
+      let(:group) { create :group }
+
+      before do
+        group.add_user(user, GroupMember::OWNER)
+
+        user.update_two_factor_requirement
+      end
+
+      it 'does not require 2FA' do
+        expect(user.require_two_factor_authentication_from_group).to be false
+      end
+
+      it 'falls back to the default grace period' do
+        expect(user.two_factor_grace_period).to be 48
+      end
+    end
+  end
+
+  context '.active' do
+    before do
+      User.ghost
+      create(:user, name: 'user', state: 'active')
+      create(:user, name: 'user', state: 'blocked')
+    end
+
+    it 'only counts active and non internal users' do
+      expect(User.active.count).to eq(1)
     end
   end
 end

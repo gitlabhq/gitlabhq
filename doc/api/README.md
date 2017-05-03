@@ -75,6 +75,12 @@ returned with status code `401`:
 }
 ```
 
+### Session Cookie
+
+When signing in to GitLab as an ordinary user, a `_gitlab_session` cookie is
+set. The API will use this cookie for authentication if it is present, but using
+the API to generate a new session cookie is currently not supported.
+
 ### Private Tokens
 
 You need to pass a `private_token` parameter via query string or header. If passed as a
@@ -114,11 +120,73 @@ moment – `read_user` and `api` – the groundwork has been laid to add more sc
 
 At any time you can revoke any personal access token by just clicking **Revoke**.
 
-### Session Cookie
+### Impersonation tokens
 
-When signing in to GitLab as an ordinary user, a `_gitlab_session` cookie is
-set. The API will use this cookie for authentication if it is present, but using
-the API to generate a new session cookie is currently not supported.
+> [Introduced][ce-9099] in GitLab 9.0. Needs admin permissions.
+
+Impersonation tokens are a type of [Personal Access Token](#personal-access-tokens)
+that can only be created by an admin for a specific user.
+
+They are a better alternative to using the user's password/private token
+or using the [Sudo](#sudo) feature which also requires the admin's password
+or private token, since the password/token can change over time. Impersonation
+tokens are a great fit if you want to build applications or tools which
+authenticate with the API as a specific user.
+
+For more information about the usage please refer to the
+[users API](users.md#retrieve-user-impersonation-tokens) docs.
+
+### Sudo
+
+> Needs admin permissions.
+
+All API requests support performing an API call as if you were another user,
+provided your private token is from an administrator account. You need to pass
+the `sudo` parameter either via query string or a header with an ID/username of
+the user you want to perform the operation as. If passed as a header, the
+header name must be `SUDO` (uppercase).
+
+If a non administrative `private_token` is provided, then an error message will
+be returned with status code `403`:
+
+```json
+{
+  "message": "403 Forbidden - Must be admin to use sudo"
+}
+```
+
+If the sudo user ID or username cannot be found, an error message will be
+returned with status code `404`:
+
+```json
+{
+  "message": "404 Not Found: No user id or username for: <id/username>"
+}
+```
+
+---
+
+Example of a valid API call and a request using cURL with sudo request,
+providing a username:
+
+```
+GET /projects?private_token=9koXpg98eAheJpvBs5tK&sudo=username
+```
+
+```shell
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "SUDO: username" "https://gitlab.example.com/api/v4/projects"
+```
+
+Example of a valid API call and a request using cURL with sudo request,
+providing an ID:
+
+```
+GET /projects?private_token=9koXpg98eAheJpvBs5tK&sudo=23
+```
+
+```shell
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "SUDO: 23" "https://gitlab.example.com/api/v4/projects"
+```
 
 ## Basic Usage
 
@@ -127,8 +195,8 @@ is defined in [`lib/api.rb`][lib-api-url].
 
 Example of a valid API request:
 
-```shell
-GET https://gitlab.example.com/api/v4/projects?private_token=9koXpg98eAheJpvBs5tK
+```
+GET /projects?private_token=9koXpg98eAheJpvBs5tK
 ```
 
 Example of a valid API request using cURL and authentication via header:
@@ -171,64 +239,6 @@ The following table shows the possible return codes for API requests.
 | `409 Conflict` | A conflicting resource already exists, e.g., creating a project with a name that already exists. |
 | `422 Unprocessable` | The entity could not be processed. |
 | `500 Server Error` | While handling the request something went wrong server-side. |
-
-## Sudo
-
-All API requests support performing an API call as if you were another user,
-provided your private token is from an administrator account. You need to pass
-the `sudo` parameter either via query string or a header with an ID/username of
-the user you want to perform the operation as. If passed as a header, the
-header name must be `SUDO` (uppercase).
-
-If a non administrative `private_token` is provided, then an error message will
-be returned with status code `403`:
-
-```json
-{
-  "message": "403 Forbidden - Must be admin to use sudo"
-}
-```
-
-If the sudo user ID or username cannot be found, an error message will be
-returned with status code `404`:
-
-```json
-{
-  "message": "404 Not Found: No user id or username for: <id/username>"
-}
-```
-
----
-
-Example of a valid API call and a request using cURL with sudo request,
-providing a username:
-
-```shell
-GET /projects?private_token=9koXpg98eAheJpvBs5tK&sudo=username
-```
-
-```shell
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "SUDO: username" "https://gitlab.example.com/api/v4/projects"
-```
-
-Example of a valid API call and a request using cURL with sudo request,
-providing an ID:
-
-```shell
-GET /projects?private_token=9koXpg98eAheJpvBs5tK&sudo=23
-```
-
-```shell
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "SUDO: 23" "https://gitlab.example.com/api/v4/projects"
-```
-
-## Impersonation Tokens
-
-Impersonation Tokens are a type of Personal Access Token that can only be created by an admin for a specific user. These can be used by automated tools
-to authenticate with the API as a specific user, as a better alternative to using the user's password or private token directly, which may change over time,
-and to using the [Sudo](#sudo) feature, which requires the tool to know an admin's password or private token, which can change over time as well and are extremely powerful.
-
-For more information about the usage please refer to the [Users](users.md) page
 
 ## Pagination
 
@@ -294,6 +304,17 @@ Additional pagination headers are also sent back.
 | `X-Next-Page`   | The index of the next page |
 | `X-Prev-Page`   | The index of the previous page |
 
+## Namespaced path encoding
+
+If using namespaced API calls, make sure that the `NAMESPACE/PROJECT_NAME` is
+URL-encoded.
+
+For example, `/` is represented by `%2F`:
+
+```
+/api/v4/projects/diaspora%2Fdiaspora
+```
+
 ## `id` vs `iid`
 
 When you work with the API, you may notice two similar fields in API entities:
@@ -308,14 +329,14 @@ For example, an issue might have `id: 46` and `iid: 5`.
 
 That means that if you want to get an issue via the API you should use the `id`:
 
-```bash
+```
 GET /projects/42/issues/:id
 ```
 
 On the other hand, if you want to create a link to a web page you should use
 the `iid`:
 
-```bash
+```
 GET /projects/42/issues/:iid
 ```
 
@@ -389,7 +410,6 @@ Content-Type: application/json
 }
 ```
 
-
 ## Clients
 
 There are many unofficial GitLab API Clients for most of the popular
@@ -399,3 +419,4 @@ programming languages. Visit the [GitLab website] for a complete list.
 [lib-api-url]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/api/api.rb
 [ce-3749]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3749
 [ce-5951]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5951
+[ce-9099]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9099

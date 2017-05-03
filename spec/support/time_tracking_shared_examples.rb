@@ -77,6 +77,6 @@ end
 
 def submit_time(slash_command)
   fill_in 'note[note]', with: slash_command
-  find('.comment-btn').trigger('click')
+  find('.js-comment-submit-button').trigger('click')
   wait_for_ajax
 end

@@ -26,7 +26,7 @@ require 'erb'
 
 describe 'GitLab Markdown', feature: true do
   include Capybara::Node::Matchers
-  include GitlabMarkdownHelper
+  include MarkupHelper
   include MarkdownMatchers
 
   # Sometimes it can be useful to see the parsed output of the Markdown document

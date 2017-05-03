@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe "Dashboard Issues filtering", feature: true, js: true do
   let(:user)      { create(:user) }
-  let(:project)   { create(:project) }
+  let(:project)   { create(:empty_project) }
   let(:milestone) { create(:milestone, project: project) }
 
   context 'filtering by milestone' do

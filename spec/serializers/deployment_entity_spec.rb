@@ -1,8 +1,15 @@
 require 'spec_helper'
 
 describe DeploymentEntity do
+  let(:user) { create(:user) }
+  let(:request) { double('request') }
+
+  before do
+    allow(request).to receive(:user).and_return(user)
+  end
+
   let(:entity) do
-    described_class.new(deployment, request: double)
+    described_class.new(deployment, request: request)
   end
 
   let(:deployment) { create(:deployment) }

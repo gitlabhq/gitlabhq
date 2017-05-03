@@ -10,7 +10,7 @@ describe Boards::Lists::MoveService, services: true do
     let!(:development) { create(:list, board: board, position: 1) }
     let!(:review)      { create(:list, board: board, position: 2) }
     let!(:staging)     { create(:list, board: board, position: 3) }
-    let!(:done)        { board.done_list }
+    let!(:closed)      { create(:closed_list, board: board) }
 
     context 'when list type is set to label' do
       it 'keeps position of lists when new position is nil' do
@@ -86,10 +86,10 @@ describe Boards::Lists::MoveService, services: true do
       end
     end
 
-    it 'keeps position of lists when list type is done' do
+    it 'keeps position of lists when list type is closed' do
       service = described_class.new(project, user, position: 2)
 
-      service.execute(done)
+      service.execute(closed)
 
       expect(current_list_positions).to eq [0, 1, 2, 3]
     end

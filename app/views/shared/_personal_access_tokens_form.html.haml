@@ -1,4 +1,4 @@
-- type = impersonation ? "Impersonation" : "Personal Access"
+- type = impersonation ? "impersonation" : "personal access"
 
 %h5.prepend-top-0
   Add a #{type} Token
@@ -22,7 +22,7 @@
     = render 'shared/tokens/scopes_form', prefix: 'personal_access_token', token: token, scopes: scopes
 
   .prepend-top-default
-    = f.submit "Create #{type} Token", class: "btn btn-create"
+    = f.submit "Create #{type} token", class: "btn btn-create"
 
 :javascript
   var $dateField = $('.datepicker');
@@ -30,9 +30,10 @@
 
   new Pikaday({
     field: $dateField.get(0),
-    theme: 'gitlab-theme',
+    theme: 'gitlab-theme animate-picker',
     format: 'yyyy-mm-dd',
     minDate: new Date(),
+    container: $dateField.parent().get(0),
     onSelect: function(dateText) {
       $dateField.val(dateFormat(new Date(dateText), 'yyyy-mm-dd'));
     }
