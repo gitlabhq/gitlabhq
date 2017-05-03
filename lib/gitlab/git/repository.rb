@@ -258,7 +258,7 @@ module Gitlab
           'RepoPath' => path,
           'ArchivePrefix' => prefix,
           'ArchivePath' => archive_file_path(prefix, storage_path, format),
-          'CommitId' => commit.id,
+          'CommitId' => commit.id
         }
       end
 

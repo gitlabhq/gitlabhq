@@ -10,7 +10,7 @@ describe 'Auto deploy' do
       properties: {
         namespace: project.path,
         api_url: 'https://kubernetes.example.com',
-        token: 'a' * 40,
+        token: 'a' * 40
       }
     )
     project.team << [user, :master]

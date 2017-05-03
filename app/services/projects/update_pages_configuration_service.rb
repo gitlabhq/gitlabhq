@@ -27,7 +27,7 @@ module Projects
         {
           domain: domain.domain,
           certificate: domain.certificate,
-          key: domain.key,
+          key: domain.key
         }
       end
     end

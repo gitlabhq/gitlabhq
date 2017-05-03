@@ -377,7 +377,7 @@ module API
             name: :ca_pem,
             type: String,
             desc: 'A custom certificate authority bundle to verify the Kubernetes cluster with (PEM format)'
-          },
+          }
         ],
         'mattermost-slash-commands' => [
           {

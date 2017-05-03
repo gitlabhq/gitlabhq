@@ -80,7 +80,7 @@ describe 'gitlab:gitaly namespace rake task' do
     it 'prints storage configuration in a TOML format' do
       config = {
         'default' => { 'path' => '/path/to/default' },
-        'nfs_01' => { 'path' => '/path/to/nfs_01' },
+        'nfs_01' => { 'path' => '/path/to/nfs_01' }
       }
       allow(Gitlab.config.repositories).to receive(:storages).and_return(config)
 

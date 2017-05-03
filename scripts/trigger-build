@@ -8,7 +8,7 @@ params = {
   "ref" => ENV["OMNIBUS_BRANCH"] || "master",
   "token" => ENV["BUILD_TRIGGER_TOKEN"],
   "variables[GITLAB_VERSION]" => ENV["CI_COMMIT_SHA"],
-  "variables[ALTERNATIVE_SOURCES]" => true,
+  "variables[ALTERNATIVE_SOURCES]" => true
 }
 
 Dir.glob("*_VERSION").each do |version_file|

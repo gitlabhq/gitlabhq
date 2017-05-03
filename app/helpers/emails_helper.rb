@@ -12,7 +12,7 @@ module EmailsHelper
         "action" => {
           "@type" => "ViewAction",
           "name" => name,
-          "url" => url,
+          "url" => url
           }
         }
 

@@ -33,7 +33,7 @@ class Blob < SimpleDelegator
     BlobViewer::PDF,
 
     BlobViewer::BinarySTL,
-    BlobViewer::TextSTL,
+    BlobViewer::TextSTL
   ].freeze
 
   BINARY_VIEWERS = RICH_VIEWERS.select(&:binary?).freeze

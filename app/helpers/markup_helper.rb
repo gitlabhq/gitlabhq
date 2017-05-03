@@ -32,7 +32,7 @@ module MarkupHelper
     context = {
       project: @project,
       current_user: (current_user if defined?(current_user)),
-      pipeline: :single_line,
+      pipeline: :single_line
     }
     gfm_body = Banzai.render(body, context)
 

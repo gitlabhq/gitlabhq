@@ -54,7 +54,7 @@ describe KubernetesService, models: true, caching: true do
           'a' * 63 => true,
           'a' * 64 => false,
           'a.b' => false,
-          'a*b' => false,
+          'a*b' => false
         }.each do |namespace, validity|
           it "validates #{namespace} as #{validity ? 'valid' : 'invalid'}" do
             subject.namespace = namespace
