@@ -369,13 +369,6 @@ Style/SymbolProc:
 Style/TernaryParentheses:
   Enabled: false
 
-# Offense count: 53
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyleForMultiline, SupportedStylesForMultiline.
-# SupportedStylesForMultiline: comma, consistent_comma, no_comma
-Style/TrailingCommaInArguments:
-  Enabled: false
-
 # Offense count: 18
 # Cop supports --auto-correct.
 # Configuration parameters: AllowNamedUnderscoreVariables.

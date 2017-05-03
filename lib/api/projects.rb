@@ -69,7 +69,7 @@ module API
           options = options.reverse_merge(
             with: Entities::Project,
             current_user: current_user,
-            simple: params[:simple],
+            simple: params[:simple]
           )
 
           projects = filter_projects(projects)

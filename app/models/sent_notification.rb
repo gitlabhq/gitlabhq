@@ -39,7 +39,7 @@ class SentNotification < ActiveRecord::Base
 
         noteable_type: noteable.class.name,
         noteable_id: noteable_id,
-        commit_id: commit_id,
+        commit_id: commit_id
       )
 
       create(attrs)

@@ -165,7 +165,7 @@ module Gitlab
           encoded_message,
           secret,
           true,
-          { iss: 'gitlab-workhorse', verify_iss: true, algorithm: 'HS256' },
+          { iss: 'gitlab-workhorse', verify_iss: true, algorithm: 'HS256' }
         )
       end
 

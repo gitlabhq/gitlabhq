@@ -51,7 +51,7 @@ class SystemHooksService
         path: model.path,
         group_id: model.id,
         owner_name: owner.respond_to?(:name) ? owner.name : nil,
-        owner_email: owner.respond_to?(:email) ? owner.email : nil,
+        owner_email: owner.respond_to?(:email) ? owner.email : nil
       )
     when GroupMember
       data.merge!(group_member_data(model))
