@@ -1,0 +1,4 @@
+require 'pygments'
+
+Pygments.start
+
