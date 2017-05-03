@@ -106,7 +106,7 @@ describe Geo::RepositoryBackfillService, services: true do
         it 'does not update last_repository_successful_sync_at' do
           subject.execute
 
-          expect(registry.reload.last_repository_successful_sync_at).to eq last_repository_successful_sync_at
+          expect(registry.reload.last_repository_successful_sync_at).to be_within(1.second).of(last_repository_successful_sync_at)
         end
       end
     end
