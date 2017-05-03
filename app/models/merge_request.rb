@@ -200,6 +200,10 @@ class MergeRequest < ActiveRecord::Base
     else
       merge_request_diff.diffs(diff_options)
     end
+    available_branches = project.repo.branches
+    unless available_branches.include?(target_branch) and available_branches.include?(source_branch)
+      errors.add :base, "Specified source branch or target branch does not exist"
+    end
   end
 
   def diff_size
