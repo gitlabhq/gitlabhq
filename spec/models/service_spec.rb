@@ -254,4 +254,30 @@ describe Service, models: true do
       end
     end
   end
+
+  describe "#update_and_propagate" do
+    let!(:service) do
+      RedmineService.new(
+        project: project,
+        active: false,
+        properties: {
+          project_url: 'http://redmine/projects/project_name_in_redmine',
+          issues_url: "http://redmine/#{project.id}/project_name_in_redmine/:id",
+          new_issue_url: 'http://redmine/projects/project_name_in_redmine/issues/new'
+        }
+      )
+    end
+
+    it 'updates the service params successfully and calls the propagation worker' do
+      expect(PropagateProjectServiceWorker).to receve(:perform_async)
+
+      expect(service.update_and_propagate(active: true)).to be true
+    end
+
+    it 'updates the service params successfully' do
+      expect(PropagateProjectServiceWorker).not_to receve(:perform_asyncs)
+
+      expect(service.update_and_propagate(properties: {})).to be true
+    end
+  end
 end
