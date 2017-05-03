@@ -80,7 +80,7 @@ describe('Issue', function() {
     expect($btnReopen).toHaveText('Reopen issue');
   }
 
-  fdescribe('task lists', function() {
+  describe('task lists', function() {
     const issueShowInterceptor = data => (request, next) => {
       next(request.respondWith(JSON.stringify(data), {
         status: 200,
