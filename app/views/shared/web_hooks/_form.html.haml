@@ -1,16 +1,3 @@
-<<<<<<< HEAD
-- context_title = @project ? 'project' : 'group'
-
-.row.prepend-top-default
-  .col-lg-3
-    %h4.prepend-top-0
-      = page_title
-    %p
-      #{link_to "Webhooks", help_page_path("user/project/integrations/webhooks")} can be
-      used for binding events when something is happening within the project.
-  .col-lg-9.append-bottom-default
-    = form_for hook, as: :hook, url: polymorphic_path(url_components + [:hooks]) do |f|
-      = form_errors(hook)
 = form_errors(hook)
 
 .form-group

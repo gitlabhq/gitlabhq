@@ -11,4 +11,3 @@
     = form_for [@project.namespace.becomes(Namespace), @project, @hook], as: :hook, url: namespace_project_hook_path do |f|
       = render partial: 'shared/web_hooks/form', locals: { form: f, hook: @hook }
       = f.submit 'Save changes', class: 'btn btn-create'
-
