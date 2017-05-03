@@ -144,13 +144,13 @@ describe GroupsController do
         it 'does not 404' do
           delete :destroy, id: group.to_param.upcase
 
-          expect(response).to_not have_http_status(404)
+          expect(response).not_to have_http_status(404)
         end
 
         it 'does not redirect to the correct casing' do
           delete :destroy, id: group.to_param.upcase
 
-          expect(response).to_not redirect_to(group_path(group.to_param))
+          expect(response).not_to redirect_to(group_path(group.to_param))
         end
       end
 
@@ -190,13 +190,13 @@ describe GroupsController do
       it 'does not 404' do
         post :update, id: group.to_param.upcase, group: { path: 'new_path' }
 
-        expect(response).to_not have_http_status(404)
+        expect(response).not_to have_http_status(404)
       end
 
       it 'does not redirect to the correct casing' do
         post :update, id: group.to_param.upcase, group: { path: 'new_path' }
 
-        expect(response).to_not redirect_to(group_path(group.to_param))
+        expect(response).not_to redirect_to(group_path(group.to_param))
       end
     end
 

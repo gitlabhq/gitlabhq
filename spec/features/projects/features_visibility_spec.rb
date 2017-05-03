@@ -68,7 +68,7 @@ describe 'Edit Project Settings', feature: true do
   end
 
   describe 'project features visibility pages' do
-    let(:tools) {
+    let(:tools) do
       {
         builds: namespace_project_pipelines_path(project.namespace, project),
         issues: namespace_project_issues_path(project.namespace, project),
@@ -76,7 +76,7 @@ describe 'Edit Project Settings', feature: true do
         snippets: namespace_project_snippets_path(project.namespace, project),
         merge_requests: namespace_project_merge_requests_path(project.namespace, project),
       }
-    }
+    end
 
     context 'normal user' do
       before do
