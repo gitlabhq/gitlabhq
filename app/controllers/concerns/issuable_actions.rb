@@ -63,6 +63,7 @@ module IssuableActions
     params.require(:update).permit(
       :issuable_ids,
       :assignee_id,
+      :assignee_ids,
       :milestone_id,
       :state_event,
       :subscription_event,
