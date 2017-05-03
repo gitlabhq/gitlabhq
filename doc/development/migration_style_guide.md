@@ -270,3 +270,28 @@ end
 
 When doing so be sure to explicitly set the model's table name so it's not
 derived from the class name or namespace.
+
+### Renaming reserved paths
+
+When a new route for projects is introduced that could conflict with any
+existing records. The path for this records should be renamed, and the
+related data should be moved on disk.
+
+Since we had to do this a few times already, there are now some helpers to help
+with this.
+
+To use this you can include `Gitlab::Database::RenameReservedPathsMigration::V1`
+in your migration. This will provide 3 methods which you can pass one or more
+paths that need to be rejected.
+
+**`rename_root_paths`**: This will rename the path of all _namespaces_ with the
+given name that don't have a `parent_id`.
+
+**`rename_child_paths`**: This will rename the path of all _namespaces_ with the
+given name that have a `parent_id`.
+
+**`rename_wildcard_paths`**: This will rename the path of all _projects_, and all
+_namespaces_ that have a `project_id`.
+
+The `path` column for these rows will be renamed to their previous value followed
+by an integer. For example: `users` would turn into `users0`

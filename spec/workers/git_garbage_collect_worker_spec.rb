@@ -6,7 +6,7 @@ describe GitGarbageCollectWorker do
   let(:project) { create(:project, :repository) }
   let(:shell) { Gitlab::Shell.new }
 
-  subject { GitGarbageCollectWorker.new }
+  subject { described_class.new }
 
   describe "#perform" do
     it "flushes ref caches when the task is 'gc'" do

@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe MergeRequests::GetUrlsService do
   let(:project) { create(:project, :public, :repository) }
-  let(:service) { MergeRequests::GetUrlsService.new(project) }
+  let(:service) { described_class.new(project) }
   let(:source_branch) { "my_branch" }
   let(:new_merge_request_url) { "http://#{Gitlab.config.gitlab.host}/#{project.namespace.name}/#{project.path}/merge_requests/new?merge_request%5Bsource_branch%5D=#{source_branch}" }
   let(:show_merge_request_url) { "http://#{Gitlab.config.gitlab.host}/#{project.namespace.name}/#{project.path}/merge_requests/#{merge_request.iid}" }
@@ -89,7 +89,7 @@ describe MergeRequests::GetUrlsService do
       let!(:merge_request) { create(:merge_request, source_project: forked_project, target_project: project, source_branch: source_branch) }
       let(:changes) { existing_branch_changes }
       # Source project is now the forked one
-      let(:service) { MergeRequests::GetUrlsService.new(forked_project) }
+      let(:service) { described_class.new(forked_project) }
 
       before do
         allow(forked_project).to receive(:empty_repo?).and_return(false)

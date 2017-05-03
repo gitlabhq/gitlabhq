@@ -1,0 +1,4 @@
+---
+title: Disallow merge requests from fork when source project have disabled merge requests
+merge_request:
+author: mhasbini

@@ -188,7 +188,8 @@ Please consult the [dedicated "Frontend testing" guide](./fe_guide/testing.md).
 ### General Guidelines
 
 - Use a single, top-level `describe ClassName` block.
-- Use `described_class` instead of repeating the class name being described.
+- Use `described_class` instead of repeating the class name being described
+  (_this is enforced by RuboCop_).
 - Use `.method` to describe class methods and `#method` to describe instance
   methods.
 - Use `context` to test branching logic.
@@ -197,7 +198,7 @@ Please consult the [dedicated "Frontend testing" guide](./fe_guide/testing.md).
 - Don't `describe` symbols (see [Gotchas](gotchas.md#dont-describe-symbols)).
 - Don't assert against the absolute value of a sequence-generated attribute (see [Gotchas](gotchas.md#dont-assert-against-the-absolute-value-of-a-sequence-generated-attribute)).
 - Don't supply the `:each` argument to hooks since it's the default.
-- Prefer `not_to` to `to_not` (_this is enforced by Rubocop_).
+- Prefer `not_to` to `to_not` (_this is enforced by RuboCop_).
 - Try to match the ordering of tests to the ordering within the class.
 - Try to follow the [Four-Phase Test][four-phase-test] pattern, using newlines
   to separate phases.
