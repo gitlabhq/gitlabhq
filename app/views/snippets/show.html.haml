@@ -2,11 +2,11 @@
 
 = render 'shared/snippets/header'
 
-%article.file-holder.snippet-file-content
-  = render 'shared/snippets/blob'
+.personal-snippets
+  %article.file-holder.snippet-file-content
+    = render 'shared/snippets/blob'
 
-.row-content-block.top-block.content-component-block
-  = render 'award_emoji/awards_block', awardable: @snippet, inline: true
+  .row-content-block.top-block.content-component-block
+    = render 'award_emoji/awards_block', awardable: @snippet, inline: true
 
-%ul#notes-list.notes.main-notes-list.timeline
-  #notes= render 'shared/notes/notes'
+  #notes= render "shared/notes/notes_with_form"

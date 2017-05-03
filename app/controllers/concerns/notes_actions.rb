@@ -65,6 +65,15 @@ module NotesActions
 
   private
 
+  def note_html(note)
+    render_to_string(
+      "shared/notes/_note",
+      layout: false,
+      formats: [:html],
+      locals: { note: note }
+    )
+  end
+
   def note_json(note)
     attrs = {
       commands_changes: note.commands_changes
@@ -96,6 +105,41 @@ module NotesActions
     end
 
     attrs
+  end
+
+  def diff_discussion_html(discussion)
+    return unless discussion.diff_discussion?
+
+    if params[:view] == 'parallel'
+      template = "discussions/_parallel_diff_discussion"
+      locals =
+        if params[:line_type] == 'old'
+          { discussions_left: [discussion], discussions_right: nil }
+        else
+          { discussions_left: nil, discussions_right: [discussion] }
+        end
+    else
+      template = "discussions/_diff_discussion"
+      locals = { discussions: [discussion] }
+    end
+
+    render_to_string(
+      template,
+      layout: false,
+      formats: [:html],
+      locals: locals
+    )
+  end
+
+  def discussion_html(discussion)
+    return if discussion.individual_note?
+
+    render_to_string(
+      "discussions/_discussion",
+      layout: false,
+      formats: [:html],
+      locals: { discussion: discussion }
+    )
   end
 
   def authorize_admin_note!
