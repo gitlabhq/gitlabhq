@@ -1153,6 +1153,8 @@ ActiveRecord::Schema.define(version: 20170523091700) do
     t.text "title_html"
     t.text "content_html"
     t.integer "cached_markdown_version"
+    t.text "description"
+    t.text "description_html"
   end
 
   add_index "snippets", ["author_id"], name: "index_snippets_on_author_id", using: :btree

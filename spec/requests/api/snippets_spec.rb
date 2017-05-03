@@ -80,11 +80,33 @@ describe API::Snippets do
     end
   end
 
+  describe 'GET /snippets/:id' do
+    let(:snippet) { create(:personal_snippet, author: user) }
+
+    it 'returns snippet json' do
+      get api("/snippets/#{snippet.id}", user)
+
+      expect(response).to have_http_status(200)
+
+      expect(json_response['title']).to eq(snippet.title)
+      expect(json_response['description']).to eq(snippet.description)
+      expect(json_response['file_name']).to eq(snippet.file_name)
+    end
+
+    it 'returns 404 for invalid snippet id' do
+      get api("/snippets/1234", user)
+
+      expect(response).to have_http_status(404)
+      expect(json_response['message']).to eq('404 Not found')
+    end
+  end
+
   describe 'POST /snippets/' do
     let(:params) do
       {
         title: 'Test Title',
         file_name: 'test.rb',
+        description: 'test description',
         content: 'puts "hello world"',
         visibility: 'public'
       }
@@ -97,6 +119,7 @@ describe API::Snippets do
 
       expect(response).to have_http_status(201)
       expect(json_response['title']).to eq(params[:title])
+      expect(json_response['description']).to eq(params[:description])
       expect(json_response['file_name']).to eq(params[:file_name])
     end
 
@@ -150,12 +173,14 @@ describe API::Snippets do
 
     it 'updates snippet' do
       new_content = 'New content'
+      new_description = 'New description'
 
-      put api("/snippets/#{snippet.id}", user), content: new_content
+      put api("/snippets/#{snippet.id}", user), content: new_content, description: new_description
 
       expect(response).to have_http_status(200)
       snippet.reload
       expect(snippet.content).to eq(new_content)
+      expect(snippet.description).to eq(new_description)
     end
 
     it 'returns 404 for invalid snippet id' do

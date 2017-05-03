@@ -1,10 +1,11 @@
 - project = local_assigns.fetch(:project)
-- issuable = local_assigns.fetch(:issuable)
+- model = local_assigns.fetch(:model)
+
 - form = local_assigns.fetch(:form)
-- supports_slash_commands = issuable.new_record?
+- supports_slash_commands = !model.persisted?
 
 - if supports_slash_commands
-  - preview_url = preview_markdown_path(project, slash_commands_target_type: issuable.class.name)
+  - preview_url = preview_markdown_path(project, slash_commands_target_type: model.class.name)
 - else
   - preview_url = preview_markdown_path(project)
 

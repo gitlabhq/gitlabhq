@@ -9,6 +9,8 @@ class UploadsController < ApplicationController
   private
 
   def find_model
+    return nil unless params[:id]
+
     return render_404 unless upload_model && upload_mount
 
     @model = upload_model.find(params[:id])
@@ -33,6 +35,8 @@ class UploadsController < ApplicationController
   end
 
   def authorize_create_access!
+    return unless model
+
     # for now we support only personal snippets comments
     authorized = can?(current_user, :comment_personal_snippet, model)
 

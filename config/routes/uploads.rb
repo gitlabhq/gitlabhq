@@ -20,7 +20,7 @@ scope path: :uploads do
     constraints:  { namespace_id: /[a-zA-Z.0-9_\-]+/, project_id: /[a-zA-Z.0-9_\-]+/, filename: /[^\/]+/ }
 
   # create uploads for models, snippets (notes) available for now
-  post ':model/:id/',
+  post ':model',
     to: 'uploads#create',
     constraints: { model: /personal_snippet/, id: /\d+/ },
     as: 'upload'

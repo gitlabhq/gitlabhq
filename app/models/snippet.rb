@@ -10,6 +10,7 @@ class Snippet < ActiveRecord::Base
   include Spammable
 
   cache_markdown_field :title, pipeline: :single_line
+  cache_markdown_field :description
   cache_markdown_field :content
 
   # Aliases to make application_helper#edited_time_ago_with_tooltip helper work properly with snippets.

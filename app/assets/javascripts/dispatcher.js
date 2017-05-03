@@ -218,6 +218,16 @@ import ShortcutsBlob from './shortcuts_blob';
           new gl.GLForm($('.tag-form'));
           new RefSelectDropdown($('.js-branch-select'), window.gl.availableRefs);
           break;
+        case 'projects:snippets:new':
+        case 'projects:snippets:edit':
+        case 'projects:snippets:create':
+        case 'projects:snippets:update':
+        case 'snippets:new':
+        case 'snippets:edit':
+        case 'snippets:create':
+        case 'snippets:update':
+          new gl.GLForm($('.snippet-form'));
+          break;
         case 'projects:releases:edit':
           new ZenMode();
           new gl.GLForm($('.release-form'));
