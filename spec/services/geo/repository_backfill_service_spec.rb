@@ -67,35 +67,67 @@ describe Geo::RepositoryBackfillService, services: true do
     context 'when repository exists and is not empty' do
       let(:project) { create(:project) }
 
-      it 'does not fetch the project repositories' do
-        expect_any_instance_of(Repository).not_to receive(:fetch_geo_mirror)
+      it 'fetches project repositories' do
+        fetch_count = 0
+
+        allow_any_instance_of(Repository).to receive(:fetch_geo_mirror) do
+          fetch_count += 1
+        end
 
         subject.execute
+
+        expect(fetch_count).to eq 2
       end
 
       context 'tracking database' do
-        it 'tracks missing repository sync' do
+        it 'tracks repository sync' do
           expect { subject.execute }.to change(Geo::ProjectRegistry, :count).by(1)
+        end
+
+        it 'stores last_repository_successful_sync_at when succeed' do
+          allow_any_instance_of(Repository).to receive(:fetch_geo_mirror) { true }
+
+          subject.execute
+
+          registry = Geo::ProjectRegistry.find_by(project_id: project.id)
+
+          expect(registry.last_repository_successful_sync_at).not_to be_nil
+        end
+
+        it 'reset last_repository_successful_sync_at when fail' do
+          allow_any_instance_of(Repository).to receive(:fetch_geo_mirror) { raise Gitlab::Shell::Error }
+
+          subject.execute
+
+          registry = Geo::ProjectRegistry.find_by(project_id: project.id)
+
+          expect(registry.last_repository_successful_sync_at).to be_nil
         end
       end
     end
 
     context 'when repository was backfilled successfully' do
       let(:project) { create(:project) }
-      let(:last_repository_successful_sync_at) { 5.days.ago }
+      let(:last_repository_synced_at) { 5.days.ago }
 
       let!(:registry) do
         Geo::ProjectRegistry.create(
           project: project,
-          last_repository_synced_at: 5.days.ago,
-          last_repository_successful_sync_at: last_repository_successful_sync_at
+          last_repository_synced_at: last_repository_synced_at,
+          last_repository_successful_sync_at: last_repository_synced_at
         )
       end
 
-      it 'does not fetch the project repositories' do
-        expect_any_instance_of(Repository).not_to receive(:fetch_geo_mirror)
+      it 'fetches project repositories' do
+        fetch_count = 0
+
+        allow_any_instance_of(Repository).to receive(:fetch_geo_mirror) do
+          fetch_count += 1
+        end
 
         subject.execute
+
+        expect(fetch_count).to eq 2
       end
 
       context 'tracking database' do
@@ -103,10 +135,26 @@ describe Geo::RepositoryBackfillService, services: true do
           expect { subject.execute }.not_to change(Geo::ProjectRegistry, :count)
         end
 
-        it 'does not update last_repository_successful_sync_at' do
+        it 'updates registry when succeed' do
+          allow_any_instance_of(Repository).to receive(:fetch_geo_mirror) { true }
+
           subject.execute
 
-          expect(registry.reload.last_repository_successful_sync_at).to be_within(1.second).of(last_repository_successful_sync_at)
+          registry.reload
+
+          expect(registry.last_repository_synced_at).to be_within(1.minute).of(Time.now)
+          expect(registry.last_repository_successful_sync_at).to be_within(1.minute).of(Time.now)
+        end
+
+        it 'does not update registry last_repository_successful_sync_at when fail' do
+          allow_any_instance_of(Repository).to receive(:fetch_geo_mirror) { raise Gitlab::Shell::Error }
+
+          subject.execute
+
+          registry.reload
+
+          expect(registry.last_repository_synced_at).to be_within(1.minute).of(Time.now)
+          expect(registry.last_repository_successful_sync_at).to be_within(1.minute).of(last_repository_synced_at)
         end
       end
     end
