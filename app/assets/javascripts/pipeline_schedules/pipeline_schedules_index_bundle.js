@@ -5,5 +5,5 @@ const PipelineSchedulesCalloutComponent = Vue.extend(PipelineSchedulesCallout);
 
 document.addEventListener('DOMContentLoaded', () => {
   new PipelineSchedulesCalloutComponent()
-    .$mount('#scheduling-pipelines-intro-message');
+    .$mount('#scheduling-pipelines-callout');
 });
