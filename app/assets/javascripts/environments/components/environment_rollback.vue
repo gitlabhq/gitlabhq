@@ -18,15 +18,12 @@ export default {
       type: Boolean,
       default: true,
     },
-<<<<<<< HEAD
 
     service: {
       type: Object,
       required: true,
       default: () => ({}),
     },
-=======
->>>>>>> ce/master
   },
 
   data() {

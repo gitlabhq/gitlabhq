@@ -11,15 +11,12 @@ export default {
       type: String,
       default: '',
     },
-<<<<<<< HEAD
 
     service: {
       type: Object,
       required: true,
       default: () => ({}),
     },
-=======
->>>>>>> ce/master
   },
 
   data() {

@@ -41,7 +41,6 @@ export default {
       required: false,
       default: false,
     },
-<<<<<<< HEAD
 
     toggleDeployBoard: {
       type: Function,
@@ -53,8 +52,6 @@ export default {
       required: true,
       default: () => ({}),
     },
-=======
->>>>>>> ce/master
   },
 
   computed: {

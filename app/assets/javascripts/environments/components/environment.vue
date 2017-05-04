@@ -247,12 +247,9 @@ export default {
           :environments="state.environments"
           :can-create-deployment="canCreateDeploymentParsed"
           :can-read-environment="canReadEnvironmentParsed"
-<<<<<<< HEAD
           :toggleDeployBoard="toggleDeployBoard"
           :store="store"
           :service="service"
-=======
->>>>>>> ce/master
           :is-loading-folder-content="isLoadingFolderContent" />
       </div>
 
