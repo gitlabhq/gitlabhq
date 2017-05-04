@@ -116,15 +116,24 @@ describe('Deploy keys app component', () => {
     expect(vm.service.disableKey).toHaveBeenCalledWith(key.id);
   });
 
-  it('calls disableKey when removing a key', () => {
+  it('calls disableKey when removing a key', (done) => {
     const key = data.public_keys[0];
 
     spyOn(window, 'confirm').and.returnValue(true);
-    spyOn(vm, 'disableKey');
+    spyOn(vm.service, 'getKeys');
+    spyOn(vm.service, 'disableKey').and.callFake(() => new Promise((resolve) => {
+      resolve();
+
+      setTimeout(() => {
+        expect(vm.service.getKeys).toHaveBeenCalled();
+
+        done();
+      });
+    }));
 
     eventHub.$emit('remove.key', key);
 
-    expect(vm.disableKey).toHaveBeenCalledWith(key);
+    expect(vm.service.disableKey).toHaveBeenCalledWith(key.id);
   });
 
   it('hasKeys returns true when there are keys', () => {

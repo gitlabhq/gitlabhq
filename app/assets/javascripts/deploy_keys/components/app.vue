@@ -66,7 +66,7 @@
     },
     beforeDestroy() {
       eventHub.$off('enable.key', this.enableKey);
-      eventHub.$off('remove.key', this.removeKey);
+      eventHub.$off('remove.key', this.disableKey);
       eventHub.$off('disable.key', this.disableKey);
     },
   };
