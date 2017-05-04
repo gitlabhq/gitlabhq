@@ -9,15 +9,19 @@ class UploadedFile
   # The tempfile
   attr_reader :tempfile
 
+  # The object_id for asynchronous uploads
+  attr_reader :object_id
+
   # The content type of the "uploaded" file
   attr_accessor :content_type
 
-  def initialize(path, filename, content_type = "text/plain")
+  def initialize(path, filename, content_type = "text/plain", object_id = nil)
     raise "#{path} file does not exist" unless ::File.exist?(path)
 
     @content_type = content_type
     @original_filename = filename || ::File.basename(path)
     @tempfile = File.new(path, 'rb')
+    @object_id = object_id
   end
 
   def path

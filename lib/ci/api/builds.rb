@@ -124,7 +124,7 @@ module Ci
 
           status 200
           content_type Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE
-          Gitlab::Workhorse.artifact_upload_ok
+          build.artifacts_file.upload_authorize
         end
 
         # Upload artifacts to build - Runners only
@@ -153,13 +153,13 @@ module Ci
           build = authenticate_build!
           forbidden!('Build is not running!') unless build.running?
 
-          artifacts_upload_path = ArtifactUploader.artifacts_upload_path
-          artifacts = uploaded_file(:file, artifacts_upload_path)
-          metadata = uploaded_file(:metadata, artifacts_upload_path)
+          artifacts = uploaded_file(build.artifacts_file, :file)
+          metadata = uploaded_file(build.artifacts_metadata, :metadata)
 
           bad_request!('Missing artifacts file!') unless artifacts
           file_to_large! unless artifacts.size < max_artifacts_size
 
+          build.artifacts_storage_upgraded!
           build.artifacts_file = artifacts
           build.artifacts_metadata = metadata
           build.artifacts_expire_in =

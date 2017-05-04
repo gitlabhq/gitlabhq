@@ -96,8 +96,10 @@ module Projects
       # -n  never overwrite existing files
       # We add * to end of SITE_PATH, because we want to extract SITE_PATH and all subdirectories
       site_path = File.join(SITE_PATH, '*')
-      unless system(*%W(unzip -n #{artifacts} #{site_path} -d #{temp_path}))
-        raise 'pages failed to extract'
+      build.artifacts_file.use_file do |artifacts_path|
+        unless system(*%W(unzip -n #{artifacts_path} #{site_path} -d #{temp_path}))
+          raise 'pages failed to extract'
+        end
       end
     end
 
@@ -150,10 +152,6 @@ module Projects
 
     def ref
       build.ref
-    end
-
-    def artifacts
-      build.artifacts_file.path
     end
 
     def latest_sha

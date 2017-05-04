@@ -138,6 +138,13 @@ production: &base
     enabled: true
     # The location where build artifacts are stored (default: shared/artifacts).
     # path: shared/artifacts
+    object_store:
+      enabled: false
+      provider: AWS # Only AWS supported at the moment
+      access_key_id: VXKLW2P7WP83RM3OQAYU
+      secret_access_key: hEm7WuxW3Qct9tsxNqSw+iyP26fcCacz78vErkiI
+      bucket: docker
+      region: eu-central-1
 
   ## Git LFS
   lfs:

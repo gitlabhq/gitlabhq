@@ -1,5 +1,5 @@
 class ArtifactUploader < GitlabUploader
-  storage :file
+  include ObjectStoreable
 
   attr_reader :job, :field
 
@@ -16,11 +16,23 @@ class ArtifactUploader < GitlabUploader
   end
 
   def store_dir
-    default_local_path
+    if file_storage?
+      default_local_path
+    else
+      default_path
+    end
   end
 
   def cache_dir
-    File.join(self.class.local_artifacts_store, 'tmp/cache')
+    if file_cache_storage?
+      File.join(self.local_artifacts_store, 'tmp/cache')
+    else
+      'tmp/cache'
+    end
+  end
+
+  def migrate!
+    # TODO
   end
 
   private

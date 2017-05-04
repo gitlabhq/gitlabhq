@@ -82,6 +82,17 @@ _The artifacts are stored by default in
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
 
+---
+
+**Using Object Store**
+
+The previously mentioned methods use the local disk to store artifacts. However,
+there is the option to use object stores like AWS' S3. To do this, set the
+`object_store` flag to true in your `gitlab.rb`. This relies on valid AWS
+credentials to be configured already. Please note, that enabling this feature
+will have the effect that artifacts are _not_ browsable anymore through the web
+interface.
+
 ## Set the maximum file size of the artifacts
 
 Provided the artifacts are enabled, you can change the maximum file size of the
