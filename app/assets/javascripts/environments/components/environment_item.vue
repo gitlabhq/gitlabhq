@@ -47,11 +47,6 @@ export default {
       required: false,
     },
 
-    service: {
-      type: Object,
-      required: true,
-      default: () => ({}),
-    },
   },
 
   computed: {
@@ -560,8 +555,8 @@ export default {
 
         <actions-component
           v-if="hasManualActions && canCreateDeployment"
-          :service="service"
-          :actions="manualActions"/>
+          :actions="manualActions"
+          />
 
         <external-url-component
           v-if="externalURL && canReadEnvironment"
@@ -578,13 +573,13 @@ export default {
         <stop-component
           v-if="hasStopAction && canCreateDeployment"
           :stop-url="model.stop_path"
-          :service="service"/>
+          />
 
         <rollback-component
           v-if="canRetry && canCreateDeployment"
           :is-last-deployment="isLastDeployment"
           :retry-url="retryUrl"
-          :service="service"/>
+          />
       </div>
     </td>
   </tr>
