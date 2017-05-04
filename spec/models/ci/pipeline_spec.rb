@@ -59,8 +59,8 @@ describe Ci::Pipeline, models: true do
     subject { pipeline.retried }
 
     before do
-      @build1 = FactoryGirl.create :ci_build, pipeline: pipeline, name: 'deploy'
-      @build2 = FactoryGirl.create :ci_build, pipeline: pipeline, name: 'deploy'
+      @build1 = create(:ci_build, pipeline: pipeline, name: 'deploy', retried: true)
+      @build2 = create(:ci_build, pipeline: pipeline, name: 'deploy')
     end
 
     it 'returns old builds' do
@@ -69,31 +69,31 @@ describe Ci::Pipeline, models: true do
   end
 
   describe "coverage" do
-    let(:project) { FactoryGirl.create :empty_project, build_coverage_regex: "/.*/" }
-    let(:pipeline) { FactoryGirl.create :ci_empty_pipeline, project: project }
+    let(:project) { create(:empty_project, build_coverage_regex: "/.*/") }
+    let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
     it "calculates average when there are two builds with coverage" do
-      FactoryGirl.create :ci_build, name: "rspec", coverage: 30, pipeline: pipeline
-      FactoryGirl.create :ci_build, name: "rubocop", coverage: 40, pipeline: pipeline
+      create(:ci_build, name: "rspec", coverage: 30, pipeline: pipeline)
+      create(:ci_build, name: "rubocop", coverage: 40, pipeline: pipeline)
       expect(pipeline.coverage).to eq("35.00")
     end
 
     it "calculates average when there are two builds with coverage and one with nil" do
-      FactoryGirl.create :ci_build, name: "rspec", coverage: 30, pipeline: pipeline
-      FactoryGirl.create :ci_build, name: "rubocop", coverage: 40, pipeline: pipeline
-      FactoryGirl.create :ci_build, pipeline: pipeline
+      create(:ci_build, name: "rspec", coverage: 30, pipeline: pipeline)
+      create(:ci_build, name: "rubocop", coverage: 40, pipeline: pipeline)
+      create(:ci_build, pipeline: pipeline)
       expect(pipeline.coverage).to eq("35.00")
     end
 
     it "calculates average when there are two builds with coverage and one is retried" do
-      FactoryGirl.create :ci_build, name: "rspec", coverage: 30, pipeline: pipeline
-      FactoryGirl.create :ci_build, name: "rubocop", coverage: 30, pipeline: pipeline
-      FactoryGirl.create :ci_build, name: "rubocop", coverage: 40, pipeline: pipeline
+      create(:ci_build, name: "rspec", coverage: 30, pipeline: pipeline)
+      create(:ci_build, name: "rubocop", coverage: 30, pipeline: pipeline)
+      create(:ci_build, name: "rubocop", coverage: 40, pipeline: pipeline)
       expect(pipeline.coverage).to eq("35.00")
     end
 
     it "calculates average when there is one build without coverage" do
-      FactoryGirl.create :ci_build, pipeline: pipeline
+      FactoryGirl.create(:ci_build, pipeline: pipeline)
       expect(pipeline.coverage).to be_nil
     end
   end

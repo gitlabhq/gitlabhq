@@ -21,8 +21,7 @@ module Ci
         ref: pipeline.ref,
         tag: pipeline.tag,
         user: current_user,
-        trigger_request: trigger_request,
-        retried: false
+        trigger_request: trigger_request
       )
       build = pipeline.builds.create(build_attributes)
 

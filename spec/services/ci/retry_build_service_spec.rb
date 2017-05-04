@@ -16,7 +16,7 @@ describe Ci::RetryBuildService, :services do
     %i[id status user token coverage trace runner artifacts_expire_at
        artifacts_file artifacts_metadata artifacts_size created_at
        updated_at started_at finished_at queued_at erased_by
-       erased_at auto_canceled_by].freeze
+       erased_at auto_canceled_by retried].freeze
 
   IGNORE_ACCESSORS =
     %i[type lock_version target_url base_tags
@@ -115,7 +115,7 @@ describe Ci::RetryBuildService, :services do
   end
 
   describe '#reprocess' do
-    let(:new_build) { service.reprocess(build) }
+    let(:new_build) { service.reprocess!(build) }
 
     context 'when user has ability to execute build' do
       before do

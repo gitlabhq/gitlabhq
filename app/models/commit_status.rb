@@ -31,7 +31,7 @@ class CommitStatus < ActiveRecord::Base
       false, all_state_names - [:failed, :canceled, :manual])
   end
 
-  scope :latest, -> { where(retried: [false, nil]) }
+  scope :latest, -> { where(retried: false) }
   scope :retried, -> { where(retried: true) }
   scope :ordered, -> { order(:name) }
   scope :latest_ordered, -> { latest.ordered.includes(project: :namespace) }
