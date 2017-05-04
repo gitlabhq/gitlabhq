@@ -157,9 +157,9 @@ describe CommitStatus, :models do
     subject { described_class.latest.order(:id) }
 
     let(:statuses) do
-      [create_status(name: 'aa', ref: 'bb', status: 'running'),
-       create_status(name: 'cc', ref: 'cc', status: 'pending'),
-       create_status(name: 'aa', ref: 'cc', status: 'success'),
+      [create_status(name: 'aa', ref: 'bb', status: 'running', retried: true),
+       create_status(name: 'cc', ref: 'cc', status: 'pending', retried: true),
+       create_status(name: 'aa', ref: 'cc', status: 'success', retried: true),
        create_status(name: 'cc', ref: 'bb', status: 'success'),
        create_status(name: 'aa', ref: 'bb', status: 'success')]
     end

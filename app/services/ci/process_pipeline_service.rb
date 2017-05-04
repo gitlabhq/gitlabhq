@@ -77,13 +77,17 @@ module Ci
     # This method is for compatibility and data consistency and should be removed with 9.3 version of GitLab
     # This replicates what is db/post_migrate/20170416103934_upate_retried_for_ci_build.rb
     # and ensures that functionality will not be broken before migration is run
+    # this updates only when there are data that needs to be updated, there are two groups with no retried flag
     def update_retried
       # find the latest builds for each name
-      latest_builds = pipeline.builds.group(:name).pluck('max(id)')
+      latest_builds = pipeline.builds.latest.
+        .group(:name)
+        .having('count(*) > 1')
+        .pluck('max(id)', 'count(*)')
 
-      # mark builds that are not longer latest
+      # mark builds that are retried
       pipeline.builds.latest
-        .where.not(id: latest_builds)
+        .where.not(id: latest_builds.map(&:first))
         .update_all(retried: true) if latest_builds.any?
     end
   end

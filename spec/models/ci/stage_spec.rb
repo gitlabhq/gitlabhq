@@ -73,6 +73,10 @@ describe Ci::Stage, models: true do
       context 'and builds are retried' do
         let!(:new_build) { create_job(:ci_build, status: :success) }
 
+        before do
+          stage_build.update(retried: true)
+        end
+
         it "returns status of latest build" do
           is_expected.to eq('success')
         end

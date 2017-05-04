@@ -3,8 +3,10 @@ class AddRetriedToCiBuild < ActiveRecord::Migration
 
   DOWNTIME = false
 
+  disable_ddl_transaction!
+
   def up
-    add_column(:ci_builds, :retried, :boolean)
+    add_column_with_default(:ci_builds, :retried, :boolean, default: false)
   end
 
   def down

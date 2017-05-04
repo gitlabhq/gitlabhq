@@ -87,7 +87,7 @@ describe Ci::Pipeline, models: true do
 
     it "calculates average when there are two builds with coverage and one is retried" do
       create(:ci_build, name: "rspec", coverage: 30, pipeline: pipeline)
-      create(:ci_build, name: "rubocop", coverage: 30, pipeline: pipeline)
+      create(:ci_build, name: "rubocop", coverage: 30, pipeline: pipeline, retried: true)
       create(:ci_build, name: "rubocop", coverage: 40, pipeline: pipeline)
       expect(pipeline.coverage).to eq("35.00")
     end
@@ -221,13 +221,15 @@ describe Ci::Pipeline, models: true do
                                   %w(deploy running)])
         end
 
-        context 'when commit status  is retried' do
+        context 'when commit status is retried' do
           before do
             create(:commit_status, pipeline: pipeline,
                                    stage: 'build',
                                    name: 'mac',
                                    stage_idx: 0,
                                    status: 'success')
+
+            pipeline.process!
           end
 
           it 'ignores the previous state' do
@@ -487,6 +489,10 @@ describe Ci::Pipeline, models: true do
 
       context 'there are multiple of the same name' do
         let!(:manual2) { create(:ci_build, :manual, pipeline: pipeline, name: 'deploy') }
+
+        before do
+          manual.update(retried: true)
+        end
 
         it 'returns latest one' do
           is_expected.to contain_exactly(manual2)
