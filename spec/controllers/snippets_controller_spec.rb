@@ -265,26 +265,6 @@ describe SnippetsController do
     end
   end
 
-  shared_examples "line endings" do |action|
-    context 'CRLF line ending' do
-      let(:personal_snippet) do
-        create(:personal_snippet, :public, author: user, content: "first line\r\nsecond line\r\nthird line")
-      end
-
-      it 'returns LF line endings by default' do
-        get action, id: personal_snippet.to_param
-
-        expect(response.body).to eq("first line\nsecond line\nthird line")
-      end
-
-      it 'does not convert line endings when parameter present' do
-        get action, id: personal_snippet.to_param, line_ending: :raw
-
-        expect(response.body).to eq("first line\r\nsecond line\r\nthird line")
-      end
-    end
-  end
-
   shared_examples 'snippet response' do |action|
     context 'when the personal snippet is private' do
       let(:personal_snippet) { create(:personal_snippet, :private, author: user) }
@@ -427,12 +407,10 @@ describe SnippetsController do
   end
 
   describe "GET #raw" do
-    include_examples 'line endings', :raw
     include_examples 'snippet response', :raw
   end
 
   describe "GET #download" do
-    include_examples 'line endings', :download
     include_examples 'snippet response', :download
   end
 
