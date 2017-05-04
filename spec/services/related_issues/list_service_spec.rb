@@ -46,9 +46,12 @@ describe RelatedIssues::ListService, service: true do
         expect(subject[0]).to eq(
           {
             title: issue_b.title,
+            iid: issue_b.iid,
             state: issue_b.state,
             reference: issue_b.to_reference(project),
             path: "/#{project.full_path}/issues/#{issue_b.iid}",
+            project_full_path: issue_b.project.full_path,
+            namespace_full_path: issue_b.project.namespace.full_path,
             destroy_relation_path: "/#{project.full_path}/issues/#{issue_b.iid}/related_issues/#{related_issue_a.id}"
           }
         )
@@ -56,9 +59,12 @@ describe RelatedIssues::ListService, service: true do
         expect(subject[1]).to eq(
           {
             title: issue_c.title,
+            iid: issue_c.iid,
             state: issue_c.state,
             reference: issue_c.to_reference(project),
             path: "/#{project.full_path}/issues/#{issue_c.iid}",
+            project_full_path: issue_c.project.full_path,
+            namespace_full_path: issue_c.project.namespace.full_path,
             destroy_relation_path: "/#{project.full_path}/issues/#{issue_c.iid}/related_issues/#{related_issue_b.id}"
           }
         )
@@ -66,9 +72,12 @@ describe RelatedIssues::ListService, service: true do
         expect(subject[2]).to eq(
           {
             title: issue_d.title,
+            iid: issue_d.iid,
             state: issue_d.state,
             reference: issue_d.to_reference(project),
             path: "/#{project.full_path}/issues/#{issue_d.iid}",
+            project_full_path: issue_d.project.full_path,
+            namespace_full_path: issue_d.project.namespace.full_path,
             destroy_relation_path: "/#{project.full_path}/issues/#{issue_d.iid}/related_issues/#{related_issue_c.id}"
           }
         )
