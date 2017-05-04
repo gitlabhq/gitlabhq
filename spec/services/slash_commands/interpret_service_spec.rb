@@ -43,26 +43,6 @@ describe SlashCommands::InterpretService, services: true do
       end
     end
 
-<<<<<<< HEAD
-    shared_examples 'assign command' do
-      it 'fetches assignee and populates assignee_id if content contains /assign' do
-        _, updates = service.execute(content, issuable)
-
-        expect(updates).to eq(assignee_id: developer.id)
-      end
-    end
-
-    shared_examples 'unassign command' do
-      it 'populates assignee_id: nil if content contains /unassign' do
-        issuable.update!(assignee_id: developer.id)
-        _, updates = service.execute(content, issuable)
-
-        expect(updates).to eq(assignee_id: nil)
-      end
-    end
-
-=======
->>>>>>> b0a2435... Merge branch 'multiple_assignees_review_upstream' into ee_master
     shared_examples 'milestone command' do
       it 'fetches milestone and populates milestone_id if content contains /milestone' do
         milestone # populate the milestone

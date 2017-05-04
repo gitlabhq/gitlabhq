@@ -61,12 +61,8 @@ module API
         end
         get do
           issues = find_issues(scope: 'authored')
-<<<<<<< HEAD
 
-          present paginate(issues), with: ::API::Entities::Issue, current_user: current_user
-=======
           present paginate(issues), with: ::API::V3::Entities::Issue, current_user: current_user
->>>>>>> b0a2435... Merge branch 'multiple_assignees_review_upstream' into ee_master
         end
       end
 

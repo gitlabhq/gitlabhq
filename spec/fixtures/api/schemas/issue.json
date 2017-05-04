@@ -40,13 +40,12 @@
         "additionalProperties": false
       }
     },
-<<<<<<< HEAD
     "assignee": {
       "id": { "type": "integet" },
       "name": { "type": "string" },
       "username": { "type": "string" },
       "avatar_url": { "type": "uri" }
-=======
+    },
     "assignees": {
       "type": "array",
       "items": {
@@ -64,7 +63,6 @@
           "avatar_url": { "type": "uri" }
         }
       }
->>>>>>> b0a2435... Merge branch 'multiple_assignees_review_upstream' into ee_master
     },
     "subscribed": { "type": ["boolean", "null"] }
   },

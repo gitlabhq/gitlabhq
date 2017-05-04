@@ -774,24 +774,16 @@ describe API::Issues do
 
     it 'creates a new project issue' do
       post api("/projects/#{project.id}/issues", user),
-<<<<<<< HEAD
-        title: 'new issue', labels: 'label, label2'
-=======
         title: 'new issue', labels: 'label, label2', weight: 3,
         assignee_ids: [user2.id]
->>>>>>> b0a2435... Merge branch 'multiple_assignees_review_upstream' into ee_master
 
       expect(response).to have_http_status(201)
       expect(json_response['title']).to eq('new issue')
       expect(json_response['description']).to be_nil
       expect(json_response['labels']).to eq(%w(label label2))
       expect(json_response['confidential']).to be_falsy
-<<<<<<< HEAD
-=======
-      expect(json_response['weight']).to eq(3)
       expect(json_response['assignee']['name']).to eq(user2.name)
       expect(json_response['assignees'].first['name']).to eq(user2.name)
->>>>>>> b0a2435... Merge branch 'multiple_assignees_review_upstream' into ee_master
     end
 
     it 'creates a new confidential project issue' do
