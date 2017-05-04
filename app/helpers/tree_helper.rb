@@ -83,13 +83,15 @@ module TreeHelper
 
       yield('..', nil) if parts.count > max_links
 
-      parts.each do |part|
+      parts[0..-2].each do |part|
         part_path = File.join(part_path, part) unless part_path.empty?
         part_path = part if part_path.empty?
 
         next if parts.count > max_links && !parts.last(2).include?(part)
         yield(part, tree_join(@ref, part_path))
       end
+
+      yield(parts.last, nil)
     end
   end
 
