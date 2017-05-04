@@ -73,7 +73,7 @@ describe Gitlab::Prometheus, lib: true do
         req_stub = stub_prometheus_request_with_exception(prometheus_url, HTTParty::Error)
 
         expect { subject.send(:get, prometheus_url) }
-          .to raise_error(Gitlab::PrometheusError, "An error has ocurred")
+          .to raise_error(Gitlab::PrometheusError, "Network connection error")
         expect(req_stub).to have_been_requested
       end
     end

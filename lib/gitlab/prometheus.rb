@@ -55,7 +55,7 @@ module Gitlab
     rescue OpenSSL::SSL::SSLError
       raise PrometheusError, "#{url} contains invalid SSL data"
     rescue HTTParty::Error
-      raise PrometheusError, "An error has ocurred"
+      raise PrometheusError, "Network connection error"
     end
 
     def handle_response(response)

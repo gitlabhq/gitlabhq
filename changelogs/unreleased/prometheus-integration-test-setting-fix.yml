@@ -1,4 +1,4 @@
 ---
-title: Added rescue block for the test method
+title: Prevent 500 errors caused by testing the Prometheus service
 merge_request: 10994
 author:
