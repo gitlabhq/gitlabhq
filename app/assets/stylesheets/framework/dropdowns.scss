@@ -257,6 +257,10 @@
     padding: 0 16px;
   }
 
+  &.capitalize-header .dropdown-header {
+    text-transform: capitalize;
+  }
+
   .separator + .dropdown-header {
     padding-top: 2px;
   }

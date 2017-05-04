@@ -47,7 +47,7 @@ describe Users::DestroyService, services: true do
       end
 
       context "for an issue the user was assigned to" do
-        let!(:issue) { create(:issue, project: project, assignee: user) }
+        let!(:issue) { create(:issue, project: project, assignees: [user]) }
 
         before do
           service.execute(user)
@@ -60,7 +60,7 @@ describe Users::DestroyService, services: true do
         it 'migrates the issue so that it is "Unassigned"' do
           migrated_issue = Issue.find_by_id(issue.id)
 
-          expect(migrated_issue.assignee).to be_nil
+          expect(migrated_issue.assignees).to be_nil
         end
       end
     end

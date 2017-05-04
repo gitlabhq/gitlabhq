@@ -39,8 +39,8 @@ export default class ProtectedTagDropdown {
         return _.escape(protectedTag.id);
       },
       onFilter: this.toggleCreateNewButton.bind(this),
-      clicked: (item, $el, e) => {
-        e.preventDefault();
+      clicked: (options) => {
+        options.e.preventDefault();
         this.onSelect();
       },
     });

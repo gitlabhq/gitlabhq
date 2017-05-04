@@ -710,7 +710,7 @@ describe 'Issues', feature: true do
     include WaitForVueResource
 
     it 'updates the title', js: true do
-      issue = create(:issue, author: @user, assignee: @user, project: project, title: 'new title')
+      issue = create(:issue, author: @user, assignees: [@user], project: project, title: 'new title')
 
       visit namespace_project_issue_path(project.namespace, project, issue)
 
