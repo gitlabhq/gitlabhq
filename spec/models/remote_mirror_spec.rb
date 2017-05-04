@@ -115,6 +115,14 @@ describe RemoteMirror do
         expect(remote_mirror.sync).to be_nil
       end
     end
+
+    context 'as a Geo secondary' do
+      it 'returns nil' do
+        allow(Gitlab::Geo).to receive(:secondary?).and_return(true)
+
+        expect(remote_mirror.sync).to be_nil
+      end
+    end
   end
 
   context '#updated_since?' do

@@ -5,6 +5,9 @@ class UpdateAllMirrorsWorker
   LEASE_TIMEOUT = 840
 
   def perform
+    # This worker requires updating the database state, which we can't
+    # do on a Geo secondary
+    return if Gitlab::Geo.secondary?
     return unless try_obtain_lease
 
     fail_stuck_mirrors!
