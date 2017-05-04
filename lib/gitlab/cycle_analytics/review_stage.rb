@@ -14,7 +14,7 @@ module Gitlab
       end
 
       def legend
-        "Relative Merged Requests"
+        "Related Merged Requests"
       end
 
       def description
