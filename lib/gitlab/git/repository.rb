@@ -486,8 +486,9 @@ module Gitlab
       #     :contains is the commit contained by the refs from which to begin (SHA1 or name)
       #     :max_count is the maximum number of commits to fetch
       #     :skip is the number of commits to skip
-      #     :order is the commits order and allowed value is :none (default), :date, or :topo
-      #        commit ordering types are documented here:
+      #     :order is the commits order and allowed value is :none (default), :date,
+      #        :topo, or any combination of them (in an array). Commit ordering types
+      #        are documented here:
       #        http://www.rubydoc.info/github/libgit2/rugged/Rugged#SORT_NONE-constant)
       #
       def find_commits(options = {})
@@ -1265,16 +1266,30 @@ module Gitlab
         @gitaly_ref_client ||= Gitlab::GitalyClient::Ref.new(self)
       end
 
-      # Returns the `Rugged` sorting type constant for a given
-      # sort type key. Valid keys are `:none`, `:topo`, and `:date`
-      def rugged_sort_type(key)
+      def gitaly_commit_client
+        @gitaly_commit_client ||= Gitlab::GitalyClient::Commit.new(self)
+      end
+
+      def gitaly_migrate(method, &block)
+        Gitlab::GitalyClient.migrate(method, &block)
+      rescue GRPC::NotFound => e
+        raise NoRepository.new(e)
+      rescue GRPC::BadStatus => e
+        raise CommandError.new(e)
+      end
+
+      # Returns the `Rugged` sorting type constant for one or more given
+      # sort types. Valid keys are `:none`, `:topo`, and `:date`, or an array
+      # containing more than one of them. `:date` uses a combination of date and
+      # topological sorting to closer mimic git's native ordering.
+      def rugged_sort_type(sort_type)
         @rugged_sort_types ||= {
           none: Rugged::SORT_NONE,
           topo: Rugged::SORT_TOPO,
-          date: Rugged::SORT_DATE
+          date: Rugged::SORT_DATE | Rugged::SORT_TOPO
         }
 
-        @rugged_sort_types.fetch(key, Rugged::SORT_NONE)
+        @rugged_sort_types.fetch(sort_type, Rugged::SORT_NONE)
       end
     end
   end
