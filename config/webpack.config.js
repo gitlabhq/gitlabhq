@@ -46,7 +46,7 @@ var config = {
     profile:              './profile/profile_bundle.js',
     protected_branches:   './protected_branches/protected_branches_bundle.js',
     protected_tags:       './protected_tags',
-    schedules_form:       './pipeline_schedules/pipeline_schedules_form_bundle.js',
+    schedule_form:        './pipeline_schedules/pipeline_schedule_form_bundle.js',
     schedules_index:      './pipeline_schedules/pipeline_schedules_index_bundle.js',
     snippet:              './snippet/snippet_bundle.js',
     sketch_viewer:        './blob/sketch_viewer.js',

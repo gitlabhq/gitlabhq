@@ -1,5 +1,5 @@
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('schedules_form')
+  = page_specific_javascript_bundle_tag('schedule_form')
 
 - timezones = ActiveSupport::TimeZone.all.map { |timezone| { name: timezone.name, offset: timezone.utc_offset, identifier: timezone.tzinfo.identifier } }
 
