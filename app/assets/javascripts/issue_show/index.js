@@ -4,13 +4,13 @@ import '../vue_shared/vue_resource_interceptor';
 
 (() => {
   const issueTitleData = document.querySelector('.issue-title-data').dataset;
-  const { candescription, endpoint } = issueTitleData;
+  const { canupdateissue, endpoint } = issueTitleData;
 
   const vm = new Vue({
     el: '.issue-title-entrypoint',
     render: createElement => createElement(IssueTitle, {
       props: {
-        candescription,
+        canUpdateIssue: canupdateissue,
         endpoint,
       },
     }),

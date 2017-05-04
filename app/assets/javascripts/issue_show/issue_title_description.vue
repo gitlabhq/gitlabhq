@@ -10,7 +10,7 @@ export default {
       required: true,
       type: String,
     },
-    candescription: {
+    canUpdateIssue: {
       required: true,
       type: String,
     },
@@ -131,7 +131,7 @@ export default {
   },
   computed: {
     descriptionClass() {
-      return `description ${this.candescription} is-task-list-enabled`;
+      return `description ${this.canUpdateIssue} is-task-list-enabled`;
     },
   },
   created() {

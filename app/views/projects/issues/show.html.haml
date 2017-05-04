@@ -52,7 +52,7 @@
 .issue-details.issuable-details
   .detail-page-description.content-block
     .issue-title-data.hidden{ "data" => { "endpoint" => rendered_title_namespace_project_issue_path(@project.namespace, @project, @issue),
-      "canDescription" => can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : '',
+      "canUpdateIssue" => can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : '',
     } }
     .issue-title-entrypoint
 
