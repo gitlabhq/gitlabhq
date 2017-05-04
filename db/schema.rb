@@ -1596,12 +1596,9 @@ ActiveRecord::Schema.define(version: 20170427180205) do
   add_foreign_key "ci_trigger_requests", "ci_triggers", column: "trigger_id", name: "fk_b8ec8b7245", on_delete: :cascade
   add_foreign_key "ci_trigger_schedules", "ci_triggers", column: "trigger_id", name: "fk_90a406cc94", on_delete: :cascade
   add_foreign_key "ci_triggers", "users", column: "owner_id", name: "fk_e8e10d1964", on_delete: :cascade
-<<<<<<< HEAD
   add_foreign_key "issue_assignees", "issues", on_delete: :cascade
   add_foreign_key "issue_assignees", "users", on_delete: :cascade
-=======
   add_foreign_key "container_repositories", "projects"
->>>>>>> ebe5fef5b52c6561be470e7f0b2a173d81bc64c0
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
   add_foreign_key "label_priorities", "labels", on_delete: :cascade
   add_foreign_key "label_priorities", "projects", on_delete: :cascade
