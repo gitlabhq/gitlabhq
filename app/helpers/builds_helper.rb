@@ -1,7 +1,11 @@
 module BuildsHelper
-  def build_summary(build)
+  def build_summary(build, skip: false)
     if build.has_trace?
-      build.trace.html(last_lines: 10).html_safe
+      if skip
+        link_to "View job trace", pipeline_build_url(build.pipeline, build)
+      else
+        build.trace.html(last_lines: 10).html_safe
+      end
     else
       "No job trace"
     end
