@@ -34,6 +34,7 @@ describe('RelatedIssuesService', () => {
 
     it('fetch issue info', (done) => {
       service.fetchIssueInfo('...')
+        .then(res => res.json())
         .then((issue) => {
           expect(issue).toEqual(issuable1);
           done();
@@ -61,6 +62,7 @@ describe('RelatedIssuesService', () => {
 
     it('fetch related issues', (done) => {
       service.fetchRelatedIssues()
+        .then(res => res.json())
         .then((relatedIssues) => {
           expect(relatedIssues).toEqual([issuable1]);
           done();
@@ -91,6 +93,7 @@ describe('RelatedIssuesService', () => {
 
     it('add related issues', (done) => {
       service.addRelatedIssues([issuable1.reference])
+        .then(res => res.json())
         .then((resData) => {
           expect(resData.status).toEqual('success');
           done();
@@ -121,6 +124,7 @@ describe('RelatedIssuesService', () => {
 
     it('remove related issue', (done) => {
       service.removeRelatedIssue('...')
+        .then(res => res.json())
         .then((resData) => {
           expect(resData.status).toEqual('success');
           done();
