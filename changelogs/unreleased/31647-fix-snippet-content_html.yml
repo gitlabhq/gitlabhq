@@ -1,0 +1,4 @@
+---
+title: Fix caching large snippet HTML content on MySQL databases
+merge_request: 11024
+author:
