@@ -16,23 +16,15 @@ class ArtifactUploader < GitlabUploader
   end
 
   def cache_dir
-    File.join(self.local_artifacts_path, 'tmp/cache')
-  end
-
-  def default_path
-    File.join(job.project_id.to_s, created_at.utc.strftime('%Y_%m'), id.to_s)
+    File.join(self.local_artifacts_store, 'tmp/cache')
   end
 
   def deprecated_local_path
     return unless job.artifacts_storage_undefined?
 
     @deprecated_local_path ||= deprecated_paths.find do |artifact_path|
-      File.directory?(File.Join(self.local_artifacts_store, artifact_path))
+      File.directory?(File.join(self.local_artifacts_store, artifact_path))
     end
-  end
-
-  def default_local_path
-    File.Join(self.local_artifacts_store, default_path)
   end
 
   def migrate!
@@ -40,6 +32,14 @@ class ArtifactUploader < GitlabUploader
     return unless default_local_path == deprecated_local_path
 
     FileUtils.move(deprecated_local_path, default_local_path, force: true)
+  end
+
+  def default_local_path
+    File.join(self.local_artifacts_store, default_path)
+  end
+
+  def default_path
+    File.join("project-#{job.project_id.to_s}", "pipeline-#{job.commit_id.to_s}", "job-#{id.to_s}")
   end
 
   ##
