@@ -29,15 +29,22 @@ export default {
       },
     });
 
+    const defaultFlags = {
+      pre: true,
+      pulse: false,
+    };
+
     return {
       poll,
       apiData: {},
+      tasks: '0 of 0',
       title: null,
       titleText: '',
-      tasks: '0 of 0',
+      titleFlag: defaultFlags,
       description: null,
       descriptionText: '',
       descriptionChange: false,
+      descriptionFlag: defaultFlags,
       timeAgoEl: $('.issue_edited_ago'),
       titleEl: document.querySelector('title'),
     };
@@ -51,11 +58,9 @@ export default {
       tasks(this.apiData, this.tasks);
     },
     elementsToVisualize(noTitleChange, noDescriptionChange) {
-      const elementStack = [];
-
       if (!noTitleChange) {
         this.titleText = this.apiData.title_text;
-        elementStack.push(this.$refs['issue-title']);
+        this.titleFlag = { pre: true, pulse: false };
       }
 
       if (!noDescriptionChange) {
@@ -63,35 +68,24 @@ export default {
         this.descriptionChange = true;
         this.updateTaskHTML();
         this.tasks = this.apiData.task_status;
-        elementStack.push(this.$refs['issue-content-container-gfm-entry']);
+        this.descriptionFlag = { pre: true, pulse: false };
       }
 
-      elementStack.forEach((element) => {
-        if (element) {
-          element.classList.remove('issue-realtime-trigger-pulse');
-          element.classList.add('issue-realtime-pre-pulse');
-        }
-      });
-
-      return elementStack;
+      return { noTitleChange, noDescriptionChange };
     },
     setTabTitle() {
       const currentTabTitleScope = this.titleEl.innerText.split('·');
       currentTabTitleScope[0] = `${this.titleText} (#${this.apiData.issue_number}) `;
       this.titleEl.innerText = currentTabTitleScope.join('·');
     },
-    animate(title, description, elementsToVisualize) {
+    animate(title, description) {
       this.title = title;
       this.description = description;
       this.setTabTitle();
 
       this.$nextTick(() => {
-        elementsToVisualize.forEach((element) => {
-          if (element) {
-            element.classList.remove('issue-realtime-pre-pulse');
-            element.classList.add('issue-realtime-trigger-pulse');
-          }
-        });
+        this.titleFlag = { pre: false, pulse: true };
+        this.descriptionFlag = { pre: false, pulse: true };
       });
     },
     triggerAnimation() {
@@ -110,12 +104,8 @@ export default {
       */
       if (noTitleChange && noDescriptionChange) return;
 
-      const elementsToVisualize = this.elementsToVisualize(
-        noTitleChange,
-        noDescriptionChange,
-      );
-
-      this.animate(title, description, elementsToVisualize);
+      this.elementsToVisualize(noTitleChange, noDescriptionChange);
+      this.animate(title, description);
     },
     updateEditedTimeAgo() {
       const toolTipTime = gl.utils.formatDate(this.apiData.updated_at);
@@ -127,6 +117,18 @@ export default {
   computed: {
     descriptionClass() {
       return `description ${this.canUpdateIssue} is-task-list-enabled`;
+    },
+    titleAnimationCss() {
+      return {
+        'title issue-realtime-pre-pulse': this.titleFlag.pre,
+        'title issue-realtime-trigger-pulse': this.titleFlag.pulse,
+      };
+    },
+    descriptionAnimationCss() {
+      return {
+        'wiki issue-realtime-pre-pulse': this.descriptionFlag.pre,
+        'wiki issue-realtime-trigger-pulse': this.descriptionFlag.pulse,
+      };
     },
   },
   created() {
@@ -166,7 +168,7 @@ export default {
 <template>
   <div>
     <h2
-      class="title issue-realtime-trigger-pulse"
+      :class="titleAnimationCss"
       ref="issue-title"
       v-html="title"
     >
@@ -176,7 +178,7 @@ export default {
       v-if="description"
     >
       <div
-        class="wiki issue-realtime-trigger-pulse"
+        :class="descriptionAnimationCss"
         v-html="description"
         ref="issue-content-container-gfm-entry"
       >
