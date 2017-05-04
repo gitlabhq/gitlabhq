@@ -355,6 +355,7 @@ Project:
 - auto_cancel_pending_pipelines
 - printing_merge_request_link_enabled
 - build_allow_git_fetch
+<<<<<<< HEAD
 - merge_requests_template
 - merge_requests_rebase_enabled
 - approvals_before_merge
@@ -364,6 +365,8 @@ Project:
 - repository_size_limit
 - sync_time
 - service_desk_enabled
+=======
+>>>>>>> ce/master
 Author:
 - name
 ProjectFeature:

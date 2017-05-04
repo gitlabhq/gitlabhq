@@ -9,6 +9,7 @@
   %li
     = link_to namespace_project_tree_path(@project.namespace, @project, @ref) do
       = @project.path
+<<<<<<< HEAD
   - tree_breadcrumbs(tree, 6) do |title, path, part_path|
     %li
       = render_lock_icon(part_path)
@@ -16,6 +17,11 @@
         = link_to truncate(title, length: 40), namespace_project_tree_path(@project.namespace, @project, path)
       - else
         = link_to title, '#'
+=======
+  - path_breadcrumbs do |title, path|
+    %li
+      = link_to truncate(title, length: 40), namespace_project_tree_path(@project.namespace, @project, tree_join(@ref, path))
+>>>>>>> ce/master
 
 
   - if current_user

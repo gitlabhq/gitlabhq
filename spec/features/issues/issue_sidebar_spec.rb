@@ -3,7 +3,8 @@ require 'rails_helper'
 feature 'Issue Sidebar', feature: true do
   include MobileHelpers
 
-  let(:project) { create(:project, :public) }
+  let(:group) { create(:group, :nested) }
+  let(:project) { create(:project, :public, namespace: group) }
   let(:issue) { create(:issue, project: project) }
   let!(:user) { create(:user)}
   let!(:label) { create(:label, project: project, title: 'bug') }
@@ -180,9 +181,7 @@ feature 'Issue Sidebar', feature: true do
   end
 
   def open_issue_sidebar
-    page.within('aside.right-sidebar.right-sidebar-collapsed') do
-      find('.js-sidebar-toggle').click
-      sleep 1
-    end
+    find('aside.right-sidebar.right-sidebar-collapsed .js-sidebar-toggle').click
+    find('aside.right-sidebar.right-sidebar-expanded')
   end
 end

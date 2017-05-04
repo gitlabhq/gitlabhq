@@ -4,6 +4,7 @@ describe ChatMessage::PipelineMessage do
   subject { described_class.new(args) }
 
   let(:user) { { name: 'hacker' } }
+  let(:duration) { 7210 }
   let(:args) do
     {
       object_attributes: {
@@ -26,7 +27,6 @@ describe ChatMessage::PipelineMessage do
     context 'pipeline succeeded' do
       let(:status) { 'success' }
       let(:color) { 'good' }
-      let(:duration) { 10 }
       let(:message) { build_message('passed') }
 
       it 'returns a message with information about succeeded build' do
@@ -39,7 +39,6 @@ describe ChatMessage::PipelineMessage do
     context 'pipeline failed' do
       let(:status) { 'failed' }
       let(:color) { 'danger' }
-      let(:duration) { 10 }
       let(:message) { build_message }
 
       it 'returns a message with information about failed build' do
@@ -64,7 +63,7 @@ describe ChatMessage::PipelineMessage do
       "<http://example.gitlab.com|project_name>:" \
         " Pipeline <http://example.gitlab.com/pipelines/123|#123>" \
         " of <http://example.gitlab.com/commits/develop|develop> branch" \
-        " by #{name} #{status_text} in #{duration} #{'second'.pluralize(duration)}"
+        " by #{name} #{status_text} in 02:00:10"
     end
   end
 
@@ -76,7 +75,6 @@ describe ChatMessage::PipelineMessage do
     context 'pipeline succeeded' do
       let(:status) { 'success' }
       let(:color) { 'good' }
-      let(:duration) { 10 }
       let(:message) { build_markdown_message('passed') }
 
       it 'returns a message with information about succeeded build' do
@@ -85,7 +83,7 @@ describe ChatMessage::PipelineMessage do
         expect(subject.activity).to eq({
           title: 'Pipeline [#123](http://example.gitlab.com/pipelines/123) of [develop](http://example.gitlab.com/commits/develop) branch by hacker passed',
           subtitle: 'in [project_name](http://example.gitlab.com)',
-          text: 'in 10 seconds',
+          text: 'in 02:00:10',
           image: ''
         })
       end
@@ -94,7 +92,6 @@ describe ChatMessage::PipelineMessage do
     context 'pipeline failed' do
       let(:status) { 'failed' }
       let(:color) { 'danger' }
-      let(:duration) { 10 }
       let(:message) { build_markdown_message }
 
       it 'returns a message with information about failed build' do
@@ -103,7 +100,7 @@ describe ChatMessage::PipelineMessage do
         expect(subject.activity).to eq({
           title: 'Pipeline [#123](http://example.gitlab.com/pipelines/123) of [develop](http://example.gitlab.com/commits/develop) branch by hacker failed',
           subtitle: 'in [project_name](http://example.gitlab.com)',
-          text: 'in 10 seconds',
+          text: 'in 02:00:10',
           image: ''
         })
       end
@@ -118,7 +115,7 @@ describe ChatMessage::PipelineMessage do
           expect(subject.activity).to eq({
             title: 'Pipeline [#123](http://example.gitlab.com/pipelines/123) of [develop](http://example.gitlab.com/commits/develop) branch by API failed',
             subtitle: 'in [project_name](http://example.gitlab.com)',
-            text: 'in 10 seconds',
+            text: 'in 02:00:10',
             image: ''
           })
         end
@@ -129,7 +126,7 @@ describe ChatMessage::PipelineMessage do
       "[project_name](http://example.gitlab.com):" \
         " Pipeline [#123](http://example.gitlab.com/pipelines/123)" \
         " of [develop](http://example.gitlab.com/commits/develop)" \
-        " branch by #{name} #{status_text} in #{duration} #{'second'.pluralize(duration)}"
+        " branch by #{name} #{status_text} in 02:00:10"
     end
   end
 end

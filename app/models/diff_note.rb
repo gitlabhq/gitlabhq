@@ -70,10 +70,11 @@ class DiffNote < Note
     self.position.diff_refs == diff_refs
   end
 
-  def latest_merge_request_diff
-    return unless for_merge_request?
+  def created_at_diff?(diff_refs)
+    return false unless supported?
+    return true if for_commit?
 
-    self.noteable.merge_request_diff_for(self.position.diff_refs)
+    self.original_position.diff_refs == diff_refs
   end
 
   private

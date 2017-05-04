@@ -19,7 +19,11 @@ This page gathers all the resources for the topic **Authentication** within GitL
 - [Enforce Two-factor Authentication (2FA)](../../security/two_factor_authentication.md#enforce-two-factor-authentication-2fa)
 - **Articles:**
   - [How to Configure LDAP with GitLab CE](../../articles/how_to_configure_ldap_gitlab_ce/index.md)
+<<<<<<< HEAD
   - [How to Configure LDAP with GitLab EE](../../articles/how_to_configure_ldap_gitlab_ee/index.md)
+=======
+  - [How to Configure LDAP with GitLab EE](https://docs.gitlab.com/articles/how_to_configure_ldap_gitlab_ee/)
+>>>>>>> ce/master
   - [Feature Highlight: LDAP Integration](https://about.gitlab.com/2014/07/10/feature-highlight-ldap-sync/)
   - [Debugging LDAP](https://about.gitlab.com/handbook/support/workflows/ldap/debugging_ldap.html)
 - **Integrations:**

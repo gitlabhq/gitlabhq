@@ -11,6 +11,7 @@ module DiscussionOnDiff
               :diff_line,
               :for_line?,
               :active?,
+              :created_at_diff?,
 
               to: :first_note
 

@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable no-new */
 /* global Flash */
 import EnvironmentsService from '../services/environments_service';
 import EnvironmentTable from '../components/environments_table.vue';
@@ -100,6 +99,7 @@ export default {
       })
       .catch(() => {
         this.isLoading = false;
+        // eslint-disable-next-line no-new
         new Flash('An error occurred while fetching the environments.', 'alert');
       });
   },
@@ -181,9 +181,13 @@ export default {
           :environments="state.environments"
           :can-create-deployment="canCreateDeploymentParsed"
           :can-read-environment="canReadEnvironmentParsed"
+<<<<<<< HEAD
           :toggleDeployBoard="toggleDeployBoard"
           :store="store"
           :service="service"/>
+=======
+          />
+>>>>>>> ce/master
 
         <table-pagination
           v-if="state.paginationInformation && state.paginationInformation.totalPages > 1"

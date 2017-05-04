@@ -30,12 +30,15 @@ describe MergeRequestsFinder do
     it 'filters by project' do
       params = { project_id: project1.id, scope: 'authored', state: 'opened' }
       merge_requests = described_class.new(user, params).execute
+<<<<<<< HEAD
       expect(merge_requests.size).to eq(1)
     end
 
     it 'ignores sorting by weight' do
       params = { project_id: project1.id, scope: 'authored', state: 'opened', weight: Issue::WEIGHT_ANY }
       merge_requests = described_class.new(user, params).execute
+=======
+>>>>>>> ce/master
       expect(merge_requests.size).to eq(1)
     end
 

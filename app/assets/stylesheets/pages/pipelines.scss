@@ -785,14 +785,9 @@
   }
 
   .scrollable-menu {
+    padding: 0;
     max-height: 245px;
     overflow: auto;
-  }
-
-  // Loading icon
-  .builds-dropdown-loading {
-    margin: 0 auto;
-    width: 20px;
   }
 
   // Action icon on the right
@@ -897,30 +892,29 @@
  * Top arrow in the dropdown in the mini pipeline graph
  */
 .mini-pipeline-graph-dropdown-menu {
-  .arrow-up {
-    &::before,
-    &::after {
-      content: '';
-      display: inline-block;
-      position: absolute;
-      width: 0;
-      height: 0;
-      border-color: transparent;
-      border-style: solid;
-      top: -6px;
-      left: 2px;
-      border-width: 0 5px 6px;
-    }
 
-    &::before {
-      border-width: 0 5px 5px;
-      border-bottom-color: $border-color;
-    }
+  &::before,
+  &::after {
+    content: '';
+    display: inline-block;
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+    top: -6px;
+    left: 2px;
+    border-width: 0 5px 6px;
+  }
 
-    &::after {
-      margin-top: 1px;
-      border-bottom-color: $white-light;
-    }
+  &::before {
+    border-width: 0 5px 5px;
+    border-bottom-color: $border-color;
+  }
+
+  &::after {
+    margin-top: 1px;
+    border-bottom-color: $white-light;
   }
 }
 

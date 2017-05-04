@@ -20,7 +20,6 @@ feature 'Create New Merge Request', feature: true, js: true do
     expect(page).to have_content('Target branch')
 
     first('.js-source-branch').click
-    first('.dropdown-source-branch .dropdown-content')
     find('.dropdown-source-branch .dropdown-content a', match: :first).click
 
     expect(page).to have_content "b83d6e3"
@@ -35,7 +34,10 @@ feature 'Create New Merge Request', feature: true, js: true do
     expect(page).to have_content('Target branch')
 
     first('.js-target-branch').click
+<<<<<<< HEAD
     first('.dropdown-target-branch .dropdown-content')
+=======
+>>>>>>> ce/master
     find('.dropdown-target-branch .dropdown-content a', text: 'v1.1.0', match: :first).click
 
     expect(page).to have_content "b83d6e3"

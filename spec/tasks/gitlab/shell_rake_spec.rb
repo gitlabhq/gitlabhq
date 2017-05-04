@@ -11,6 +11,10 @@ describe 'gitlab:shell rake tasks' do
     it 'invokes create_hooks task' do
       expect(Rake::Task['gitlab:shell:create_hooks']).to receive(:invoke)
 
+      storages = Gitlab.config.repositories.storages.values.map { |rs| rs['path'] }
+      expect(Kernel).to receive(:system).with('bin/install', *storages).and_call_original
+      expect(Kernel).to receive(:system).with('bin/compile').and_call_original
+
       run_rake_task('gitlab:shell:install')
     end
   end

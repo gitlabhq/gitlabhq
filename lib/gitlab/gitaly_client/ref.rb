@@ -36,6 +36,14 @@ module Gitlab
         stub.find_ref_name(request).name
       end
 
+      def count_tag_names
+        tag_names.count
+      end
+
+      def count_branch_names
+        branch_names.count
+      end
+
       private
 
       def consume_refs_response(response, prefix:)
