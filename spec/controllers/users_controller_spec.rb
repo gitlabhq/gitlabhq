@@ -82,6 +82,7 @@ describe UsersController do
         get :show, username: redirect_route.path
 
         expect(response).to redirect_to(user)
+        expect(controller).to set_flash[:notice].to(/moved/)
       end
     end
 
@@ -159,6 +160,7 @@ describe UsersController do
         get :calendar, username: redirect_route.path
 
         expect(response).to redirect_to(user_calendar_path(user))
+        expect(controller).to set_flash[:notice].to(/moved/)
       end
     end
   end
@@ -211,6 +213,7 @@ describe UsersController do
         get :calendar_activities, username: redirect_route.path
 
         expect(response).to redirect_to(user_calendar_activities_path(user))
+        expect(controller).to set_flash[:notice].to(/moved/)
       end
     end
   end
@@ -263,6 +266,7 @@ describe UsersController do
         get :snippets, username: redirect_route.path
 
         expect(response).to redirect_to(user_snippets_path(user))
+        expect(controller).to set_flash[:notice].to(/moved/)
       end
     end
   end

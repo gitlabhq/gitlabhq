@@ -226,6 +226,7 @@ describe ProjectsController do
         get :show, namespace_id: 'foo', id: 'bar'
 
         expect(response).to redirect_to(public_project)
+        expect(controller).to set_flash[:notice].to(/moved/)
       end
     end
   end
@@ -471,6 +472,7 @@ describe ProjectsController do
         get :refs, namespace_id: 'foo', id: 'bar'
 
         expect(response).to redirect_to(refs_namespace_project_path(namespace_id: public_project.namespace, id: public_project))
+        expect(controller).to set_flash[:notice].to(/moved/)
       end
     end
   end

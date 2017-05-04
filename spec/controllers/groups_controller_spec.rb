@@ -65,6 +65,7 @@ describe GroupsController do
         get :issues, id: redirect_route.path
 
         expect(response).to redirect_to(issues_group_path(group.to_param))
+        expect(controller).to set_flash[:notice].to(/moved/)
       end
     end
   end
@@ -108,6 +109,7 @@ describe GroupsController do
         get :merge_requests, id: redirect_route.path
 
         expect(response).to redirect_to(merge_requests_group_path(group.to_param))
+        expect(controller).to set_flash[:notice].to(/moved/)
       end
     end
   end
