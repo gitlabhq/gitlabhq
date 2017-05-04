@@ -6,8 +6,14 @@ import tasks from './actions/tasks';
 
 export default {
   props: {
-    endpoint: { required: true, type: String },
-    candescription: { required: true, type: String },
+    endpoint: {
+      required: true,
+      type: String,
+    },
+    candescription: {
+      required: true,
+      type: String,
+    },
   },
   data() {
     const resource = new Service(this.$http, this.endpoint);
@@ -32,17 +38,18 @@ export default {
       poll,
       apiData: {},
       timeoutId: null,
-      title: '<span></span>',
+      title: null,
       titleText: '',
-      description: '<span></span>',
+      description: null,
       descriptionText: '',
       descriptionChange: false,
       tasks: '0 of 0',
+      titleEl: document.querySelector('title'),
     };
   },
   methods: {
     renderResponse(res) {
-      this.apiData = JSON.parse(res.body);
+      this.apiData = res.json();
       this.triggerAnimation();
     },
     updateTaskHTML() {
@@ -53,7 +60,7 @@ export default {
 
       if (!noTitleChange) {
         this.titleText = this.apiData.title_text;
-        elementStack.push(this.$el.querySelector('.title'));
+        elementStack.push(this.$refs['issue-title']);
       }
 
       if (!noDescriptionChange) {
@@ -61,21 +68,22 @@ export default {
         this.descriptionChange = true;
         this.updateTaskHTML();
         this.tasks = this.apiData.task_status;
-        elementStack.push(this.$el.querySelector('.wiki'));
+        elementStack.push(this.$refs['issue-content-container-gfm-entry']);
       }
 
       elementStack.forEach((element) => {
-        element.classList.remove('issue-realtime-trigger-pulse');
-        element.classList.add('issue-realtime-pre-pulse');
+        if (element) {
+          element.classList.remove('issue-realtime-trigger-pulse');
+          element.classList.add('issue-realtime-pre-pulse');
+        }
       });
 
       return elementStack;
     },
     setTabTitle() {
-      const currentTabTitle = document.querySelector('title');
-      const currentTabTitleScope = currentTabTitle.innerText.split('·');
+      const currentTabTitleScope = this.titleEl.innerText.split('·');
       currentTabTitleScope[0] = `${this.titleText} (#${this.apiData.issue_number}) `;
-      currentTabTitle.innerText = currentTabTitleScope.join('·');
+      this.titleEl.innerText = currentTabTitleScope.join('·');
     },
     animate(title, description, elementsToVisualize) {
       this.timeoutId = setTimeout(() => {
@@ -84,11 +92,11 @@ export default {
         this.setTabTitle();
 
         elementsToVisualize.forEach((element) => {
-          element.classList.remove('issue-realtime-pre-pulse');
-          element.classList.add('issue-realtime-trigger-pulse');
+          if (element) {
+            element.classList.remove('issue-realtime-pre-pulse');
+            element.classList.add('issue-realtime-trigger-pulse');
+          }
         });
-
-        clearTimeout(this.timeoutId);
       }, 0);
     },
     triggerAnimation() {
@@ -163,7 +171,12 @@ export default {
 
 <template>
   <div>
-    <h2 class="title issue-realtime-trigger-pulse" v-html="title"></h2>
+    <h2
+      class="title issue-realtime-trigger-pulse"
+      ref="issue-title"
+      v-html="title"
+    >
+    </h2>
     <div
       :class="descriptionClass"
       v-if="description"
@@ -174,7 +187,10 @@ export default {
         ref="issue-content-container-gfm-entry"
       >
       </div>
-      <textarea class="hidden js-task-list-field" v-if="descriptionText">{{descriptionText}}</textarea>
+      <textarea
+        class="hidden js-task-list-field"
+        v-if="descriptionText"
+      >{{descriptionText}}</textarea>
     </div>
   </div>
 </template>
