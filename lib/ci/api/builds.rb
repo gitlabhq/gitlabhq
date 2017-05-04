@@ -160,6 +160,7 @@ module Ci
           bad_request!('Missing artifacts file!') unless artifacts
           file_to_large! unless artifacts.size < max_artifacts_size
 
+          build.artifacts_storage_upgraded!
           build.artifacts_file = artifacts
           build.artifacts_metadata = metadata
           build.artifacts_expire_in =
@@ -187,7 +188,7 @@ module Ci
           build = authenticate_build!
           artifacts_file = build.artifacts_file
 
-          unless artifacts_file.file_storage?
+          unless artifacts_file.local_file?
             return redirect_to build.artifacts_file.url
           end
 

@@ -217,6 +217,7 @@ module API
         bad_request!('Missing artifacts file!') unless artifacts
         file_to_large! unless artifacts.size < max_artifacts_size
 
+        job.artifacts_storage_upgraded!
         job.artifacts_file = artifacts
         job.artifacts_metadata = metadata
         job.artifacts_expire_in = params['expire_in'] ||
@@ -242,7 +243,7 @@ module API
         job = authenticate_job!
 
         artifacts_file = job.artifacts_file
-        unless artifacts_file.file_storage?
+        unless artifacts_file.local_file?
           return redirect_to job.artifacts_file.url
         end
 

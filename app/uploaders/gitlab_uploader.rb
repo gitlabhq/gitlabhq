@@ -9,8 +9,16 @@ class GitlabUploader < CarrierWave::Uploader::Base
 
   delegate :base_dir, to: :class
 
-  def file_storage?
-    self.class.storage == CarrierWave::Storage::File
+  def local_file?
+    local_storage? && file&.is_a?(CarrierWave::Storage::Fog::File)
+  end
+
+  def local_storage?
+    storage.is_a?(CarrierWave::Storage::File)
+  end
+
+  def local_cache_storage?
+    cache_storage.is_a?(CarrierWave::Storage::File)
   end
 
   # Reduce disk IO
