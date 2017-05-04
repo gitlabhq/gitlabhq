@@ -13,7 +13,7 @@ export default (Vue) => {
         @param text The text to be translated
         @returns {String} The translated text
       **/
-      __(text) { return __(text); },
+      __,
       /**
         Translate the text with a number
         if the number is more than 1 it will use the `pluralText` translation.
@@ -24,7 +24,7 @@ export default (Vue) => {
         @param count Number to decide which translation to use (eg. 2)
         @returns {String} Translated text with the number replaced (eg. '2 days')
       **/
-      n__(text, pluralText, count) { return n__(text, pluralText, count); },
+      n__,
       /**
         Translate context based text
         Either pass in the context translation like `Context|Text to translate`
@@ -36,7 +36,7 @@ export default (Vue) => {
         @param key Is the dynamic variable you want to be translated
         @returns {String} Translated context based text
       **/
-      s__(keyOrContext, key) { return s__(keyOrContext, key); },
+      s__,
     },
   });
 };
