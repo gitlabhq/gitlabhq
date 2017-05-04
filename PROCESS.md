@@ -1,4 +1,4 @@
-## GitLab Core Team & GitLab Inc. Team Contributing Process
+## GitLab Core Team & GitLab Inc. Contribution Process
 
 ---
 

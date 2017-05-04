@@ -95,8 +95,6 @@ experience, refactors the existing code). Then:
   "LGTM :thumbsup:", or "Just a couple things to address."
 - Assign the merge request to the author if changes are required following your
   review.
-- You should try to resolve merge conflicts yourself, using the [merge conflict
-  resolution][conflict-resolution] tool.
 - Set the milestone before merging a merge request.
 - Avoid accepting a merge request before the job succeeds. Of course, "Merge
   When Pipeline Succeeds" (MWPS) is fine.
@@ -105,7 +103,6 @@ experience, refactors the existing code). Then:
 - Consider using the [Squash and
   merge][squash-and-merge] feature when the merge request has a lot of commits.
 
-[conflict-resolution]: https://docs.gitlab.com/ce/user/project/merge_requests/resolve_conflicts.html#merge-conflict-resolution
 [squash-and-merge]: https://docs.gitlab.com/ee/user/project/merge_requests/squash_and_merge.html#squash-and-merge
 
 ### The right balance

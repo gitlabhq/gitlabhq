@@ -136,7 +136,7 @@ and ~"direction".
 A number of type labels have a priority assigned to them, which automatically
 makes them float to the top, depending on their importance.
 
-Type labels are always lowercase, but can have any color, besides blue (which is
+Type labels are always lowercase, and can have any color, besides blue (which is
 already reserved for subject labels).
 
 The descriptions on the [labels page][labels-page] explain what falls under each type label.
@@ -153,7 +153,7 @@ issue is labelled with a subject label corresponding to your expertise.
 Examples of subject labels are ~wiki, ~"container registry", ~ldap, ~api,
 ~issues, ~"merge requests", ~labels, and ~"container registry".
 
-Subject labels are always colored blue and all-lowercase.
+Subject labels are always all-lowercase.
 
 ### Team labels (~CI, ~Discussion, ~Edge, ~Frontend, ~Platform, etc.)
 
@@ -167,8 +167,8 @@ The current team labels are ~Build, ~CI, ~Discussion, ~Documentation, ~Edge,
 The descriptions on the [labels page][labels-page] explain what falls under the
 responsibility of each team.
 
-Team labels are always colored aqua, and are capitalized so that they show up as
-the first label for any issue.
+Team labels are always capitalized so that they show up as the first label for
+any issue.
 
 ### Priority labels (~Deliverable and ~Stretch)
 
@@ -255,12 +255,9 @@ every quarter.
 
 The most important thing is making sure valid issues receive feedback from the
 development team. Therefore the priority is mentioning developers that can help
-on those issues. Please select someone with relevant experience from
-[GitLab team][team]. If there is nobody mentioned with that expertise
-look in the commit history for the affected files to find someone. Avoid
-mentioning the lead developer, this is the person that is least likely to give a
-timely response. If the involvement of the lead developer is needed the other
-core team members will mention this person.
+on those issues. Please select someone with relevant experience from the
+[GitLab team][team]. If there is nobody mentioned with that expertise look in
+the commit history for the affected files to find someone.
 
 [described in our handbook]: https://about.gitlab.com/handbook/engineering/issues/issue-triage-policies/
 [issue bash events]: https://gitlab.com/gitlab-org/gitlab-ce/issues/17815
@@ -535,11 +532,11 @@ the feature you contribute through all of these steps.
 1. [Unit and system tests][testing] that pass on the CI server
 1. Performance/scalability implications have been considered, addressed, and tested
 1. [Documented][doc-styleguide] in the `/doc` directory
-1. [Changelog entry added][changelog]
+1. [Changelog entry added][changelog], if necessary
 1. Reviewed and any concerns are addressed
 1. Merged by a project maintainer
-1. Added to the release blog article if relevant
-1. Added to [the website](https://gitlab.com/gitlab-com/www-gitlab-com/) if relevant
+1. Added to the release blog article, if relevant
+1. Added to [the website](https://gitlab.com/gitlab-com/www-gitlab-com/), if relevant
 1. Community questions answered
 1. Answers to questions radiated (in docs/wiki/support etc.)
 
