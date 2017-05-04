@@ -1,3 +1,5 @@
+/* eslint-disable class-methods-use-this */
+
 export default class TimezoneDropdown {
   constructor() {
     this.$dropdown = $('.js-timezone-dropdown');
@@ -24,7 +26,7 @@ export default class TimezoneDropdown {
     this.setDropdownToggle();
   }
 
-  formatOffset(offset) {
+  formatUtcOffset(offset) {
     let prefix = '';
 
     if (offset > 0) {
@@ -37,7 +39,7 @@ export default class TimezoneDropdown {
   }
 
   formatTimezone(item) {
-    return `[UTC ${this.formatOffset(item.offset)}] ${item.name}`;
+    return `[UTC ${this.formatUtcOffset(item.offset)}] ${item.name}`;
   }
 
   setDropdownToggle() {
