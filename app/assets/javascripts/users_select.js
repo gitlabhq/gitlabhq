@@ -84,6 +84,24 @@ import eventHub from './sidebar/event_hub';
             $block[0].addEventListener('assignYourself', assignYourself);
           }
 
+          const checkMaxSelect = function() {
+            const maxSelect = $dropdown.data('max-select');
+            if (maxSelect) {
+              const selected = getSelected();
+
+              if (selected.length > maxSelect) {
+                const firstSelectedId = selected[0];
+                const firstSelected = $dropdown.closest('.selectbox')
+                  .find(`input[name='${$dropdown.data('field-name')}'][value=${firstSelectedId}]`);
+
+                firstSelected.remove();
+                eventHub.$emit('sidebar.removeAssignee', {
+                  id: firstSelectedId,
+                });
+              }
+            }
+          };
+
           const getSelectedUserInputs = function() {
             return $selectbox
               .find(`input[name="${$dropdown.data('field-name')}"]`);
@@ -125,6 +143,7 @@ import eventHub from './sidebar/event_hub';
 
             if ($dropdown.data('multiSelect')) {
               assignYourself();
+              checkMaxSelect();
 
               const currentUserInfo = $dropdown.data('currentUserInfo');
               $dropdown.find('.dropdown-toggle-text').text(getMultiSelectDropdownTitle(currentUserInfo)).removeClass('is-default');
@@ -323,6 +342,7 @@ import eventHub from './sidebar/event_hub';
             multiSelect: $dropdown.hasClass('js-multiselect'),
             inputMeta: $dropdown.data('input-meta'),
             clicked: function(options) {
+              debugger
               const { $el, e, isMarking } = options;
               const user = options.selectedObj;
 
@@ -333,21 +353,7 @@ import eventHub from './sidebar/event_hub';
 
                 // Enables support for limiting the number of users selected
                 // Automatically removes the first on the list if more users are selected
-                const maxSelect = $dropdown.data('max-select');
-                if (maxSelect) {
-                  const selected = getSelected();
-
-                  if (selected.length > maxSelect) {
-                    const firstSelectedId = selected[0];
-                    const firstSelected = $dropdown.closest('.selectbox')
-                      .find(`input[name='${$dropdown.data('field-name')}'][value=${firstSelectedId}]`);
-
-                    firstSelected.remove();
-                    eventHub.$emit('sidebar.removeAssignee', {
-                      id: firstSelectedId,
-                    });
-                  }
-                }
+                checkMaxSelect();
 
                 if (user.beforeDivider && user.name.toLowerCase() === 'unassigned') {
                   // Unassigned selected

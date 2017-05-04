@@ -17,7 +17,7 @@
             - issuable.assignees.each do |assignee|
               = hidden_field_tag "#{issuable.to_ability_name}[assignee_ids][]", assignee.id, id: nil, data: { meta: assignee.name }
 
-            = dropdown_tag(users_dropdown_label(issuable.assignees), options: issue_dropdown_options(issuable, true))
+            = dropdown_tag(users_dropdown_label(issuable.assignees), options: issue_dropdown_options(issuable,false))
           = link_to 'Assign to me', '#', class: "assign-to-me-link #{'hide' if issuable.assignees.include?(current_user)}"
       - else
         = form.label :assignee_id, "Assignee", class: "control-label #{"col-lg-4" if has_due_date}"

@@ -148,12 +148,12 @@ describe 'New/edit issue', feature: true, js: true do
     end
 
     it 'correctly updates the selected user when changing assignee' do
-      click_button 'Assignee'
+      click_button 'Unassigned'
       page.within '.dropdown-menu-user' do
         click_link user.name
       end
 
-      expect(find('input[name="issue[assignee_id]"]', visible: false).value).to match(user.id.to_s)
+      expect(find('input[name="issue[assignee_ids][]"]', visible: false).value).to match(user.id.to_s)
 
       click_button user.name
 
@@ -167,7 +167,7 @@ describe 'New/edit issue', feature: true, js: true do
         click_link user2.name
       end
 
-      expect(find('input[name="issue[assignee_id]"]', visible: false).value).to match(user2.id.to_s)
+      expect(find('input[name="issue[assignee_ids][]"]', visible: false).value).to match(user2.id.to_s)
 
       click_button user2.name
 
