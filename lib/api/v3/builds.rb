@@ -226,7 +226,7 @@ module API
         end
 
         def present_artifacts!(artifacts_file)
-          if !artifacts_file.file_storage?
+          if !artifacts_file.local_file?
             redirect_to(build.artifacts_file.url)
           elsif artifacts_file.exists?
             present_file!(artifacts_file.path, artifacts_file.filename)

@@ -16,7 +16,7 @@ module RecordsUploads
   #
   # Called `after :store`
   def record_upload(_tempfile)
-    return unless file_storage?
+    return unless local_file?
     return unless file.exists?
 
     Upload.record(self)
@@ -26,7 +26,7 @@ module RecordsUploads
   #
   # Called `before :remove`
   def destroy_upload(*args)
-    return unless file_storage?
+    return unless local_file?
     return unless file
 
     Upload.remove_path(relative_path)

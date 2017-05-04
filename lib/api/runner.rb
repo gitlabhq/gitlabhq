@@ -242,7 +242,7 @@ module API
         job = authenticate_job!
 
         artifacts_file = job.artifacts_file
-        unless artifacts_file.file_storage?
+        unless artifacts_file.local_file?
           return redirect_to job.artifacts_file.url
         end
 
