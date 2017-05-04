@@ -1,7 +1,3 @@
-require 'active_support/concern'
-require 'active_model'
-require 'elasticsearch/model'
-
 module Elasticsearch
   module Git
     module Model

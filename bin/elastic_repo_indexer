@@ -3,14 +3,24 @@
 require 'rubygems'
 require 'bundler/setup'
 require 'json'
+require 'active_model'
 require 'active_support'
 require 'active_support/core_ext'
 require 'benchmark'
 
 $: << File.expand_path('../lib', File.dirname(__FILE__))
 
+require 'linguist'
+require 'open3'
+require 'rugged'
+
 require 'gitlab/elastic/client'
+require 'elasticsearch/model'
 require 'elasticsearch/git'
+require 'elasticsearch/git/encoder_helper'
+require 'elasticsearch/git/lite_blob'
+require 'elasticsearch/git/model'
+require 'elasticsearch/git/repository'
 
 Thread.abort_on_exception = true
 
