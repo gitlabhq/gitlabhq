@@ -33,7 +33,7 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
 
   def update
     if schedule.update(schedule_params)
-      redirect_to edit_namespace_project_pipeline_schedule_path(@project)
+      redirect_to namespace_project_pipeline_schedules_path(@project.namespace.becomes(Namespace), @project)
     else
       render :edit
     end
