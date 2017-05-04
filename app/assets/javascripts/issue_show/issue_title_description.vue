@@ -70,8 +70,6 @@ export default {
         this.tasks = this.apiData.task_status;
         this.descriptionFlag = { pre: true, pulse: false };
       }
-
-      return { noTitleChange, noDescriptionChange };
     },
     setTabTitle() {
       const currentTabTitleScope = this.titleEl.innerText.split('·');
@@ -109,9 +107,8 @@ export default {
     },
     updateEditedTimeAgo() {
       const toolTipTime = gl.utils.formatDate(this.apiData.updated_at);
-
       this.timeAgoEl.attr('datetime', this.apiData.updated_at);
-      this.timeAgoEl.attr('data-original-title', toolTipTime);
+      this.timeAgoEl.attr('title', toolTipTime).tooltip('fixTitle');
     },
   },
   computed: {

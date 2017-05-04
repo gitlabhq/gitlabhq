@@ -23,7 +23,7 @@
 }
 
 .issue-realtime-trigger-pulse {
-  transition: opacity 0.2s ease;
+  transition: opacity $fade-in-duration linear;
   opacity: 1;
 }
 
