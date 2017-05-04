@@ -1,0 +1,9 @@
+- if @project.delete_error.present?
+  .project-deletion-failed-message.alert.alert-warning
+    This project was scheduled for deletion, but failed with the message:
+    = @project.delete_error
+
+    .alert-link-group
+      = link_to "Don't show again", profile_path(user: {hide_no_ssh_key: true}), method: :put, class: 'alert-link'
+      |
+      = link_to 'Remind later', '#', class: 'hide-no-ssh-message alert-link'
