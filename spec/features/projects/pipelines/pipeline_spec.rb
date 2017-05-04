@@ -269,6 +269,7 @@ describe 'Pipeline', :feature, :js do
       end
 
       it 'shows jobs tab pane as active' do
+        expect(page).to have_content('Failed Jobs')
         expect(page).to have_css('#js-tab-failures.active')
       end
 
@@ -289,6 +290,20 @@ describe 'Pipeline', :feature, :js do
 
       it 'includes failed jobs' do
         expect(page).to have_content('No job trace')
+      end
+    end
+
+    context 'without failures' do
+      before do
+        failed_build.update!(status: :success)
+
+        visit pipeline_failures_page
+      end
+
+      it 'displays the pipeline graph' do
+        expect(current_path).to eq(pipeline_path(pipeline))
+        expect(page).not_to have_content('Failed Jobs')
+        expect(page).to have_selector('.pipeline-visualization')
       end
     end
   end

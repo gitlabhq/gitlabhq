@@ -1,3 +1,5 @@
+- failed_builds = @pipeline.statuses.latest.failed
+
 .tabs-holder
   %ul.pipelines-tabs.nav-links.no-top.no-bottom
     %li.js-pipeline-tab-link
@@ -7,10 +9,11 @@
       = link_to builds_namespace_project_pipeline_path(@project.namespace, @project, @pipeline), data: {target: 'div#js-tab-builds', action: 'builds', toggle: 'tab' }, class: 'builds-tab' do
         Jobs
         %span.badge.js-builds-counter= pipeline.statuses.count
-    %li.js-failures-tab-link
-      = link_to failures_namespace_project_pipeline_path(@project.namespace, @project, @pipeline), data: {target: 'div#js-tab-failures', action: 'failures', toggle: 'tab' }, class: 'failures-tab' do
-        Failures
-        %span.badge.js-failures-counter= pipeline.statuses.latest.failed.count
+    - if failed_builds.present?
+      %li.js-failures-tab-link
+        = link_to failures_namespace_project_pipeline_path(@project.namespace, @project, @pipeline), data: {target: 'div#js-tab-failures', action: 'failures', toggle: 'tab' }, class: 'failures-tab' do
+          Failed Jobs
+          %span.badge.js-failures-counter= failed_builds.count
 
 .tab-content
   #js-tab-pipeline.tab-pane
@@ -41,13 +44,13 @@
             %th Coverage
             %th
         = render partial: "projects/stage/stage", collection: pipeline.stages, as: :stage
-  #js-tab-failures.build-failures.tab-pane
-    - failed = @pipeline.statuses.latest.failed
-    - failed.each do |build|
-      .build-state
-        %span.ci-status-icon-failed= custom_icon('icon_status_failed')
-        %span.stage
-          = build.stage.titleize
-        %span.build-name
-          = render "notify/links/#{build.to_partial_path}", pipeline: @pipeline, build: build
-      %pre.build-log= build_summary(build)
+  - if failed_builds.present?
+    #js-tab-failures.build-failures.tab-pane
+      - failed_builds.each do |build|
+        .build-state
+          %span.ci-status-icon-failed= custom_icon('icon_status_failed')
+          %span.stage
+            = build.stage.titleize
+          %span.build-name
+            = render "notify/links/#{build.to_partial_path}", pipeline: @pipeline, build: build
+        %pre.build-log= build_summary(build)
