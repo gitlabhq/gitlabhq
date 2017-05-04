@@ -55,7 +55,6 @@ module Gitlab
     # - Webhook URLs (:hook)
     # - GitLab-shell secret token (:secret_token)
     # - Sentry DSN (:sentry_dsn)
-    # - Clientside Sentry DSN (:clientside_sentry_dsn)
     # - Deploy keys (:key)
     config.filter_parameters += %i(
       authentication_token
@@ -72,8 +71,6 @@ module Gitlab
       runners_token
       secret_token
       sentry_dsn
-      clientside_sentry_enabled
-      clientside_sentry_dsn
       variables
     )
 
