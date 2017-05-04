@@ -5,7 +5,7 @@ module Ci
     def execute(pipeline)
       @pipeline = pipeline
 
-      fix_latest
+      update_retried
 
       new_builds =
         stage_indexes_of_created_builds.map do |index|
@@ -74,18 +74,17 @@ module Ci
       pipeline.builds.created
     end
 
-    # TODO:
     # This method is for compatibility and data consistency and should be removed with 9.3 version of GitLab
-    # This replicates what is db/post_migrate/20170416103934_upate_latest_for_ci_build.rb
+    # This replicates what is db/post_migrate/20170416103934_upate_retried_for_ci_build.rb
     # and ensures that functionality will not be broken before migration is run
-    def fix_latest
+    def update_retried
       # find the latest builds for each name
-      latest_builds = pipeline.builds.group(:name).select('max(id)')
+      latest_builds = pipeline.builds.group(:name).pluck('max(id)')
 
       # mark builds that are not longer latest
       pipeline.builds.latest
         .where.not(id: latest_builds)
-        .update_all(latest: false)
+        .update_all(retried: true) if latest_builds.any?
     end
   end
 end

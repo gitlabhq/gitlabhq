@@ -129,8 +129,8 @@ module Ci
       success? || failed? || canceled?
     end
 
-    def retried?
-      !latest?
+    def latest?
+      !retried?
     end
 
     def expanded_environment_name
