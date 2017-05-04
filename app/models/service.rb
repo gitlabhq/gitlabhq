@@ -254,16 +254,6 @@ class Service < ActiveRecord::Base
     service
   end
 
-  def update_and_propagate(service_params)
-    return false unless update_attributes(service_params)
-
-    if service_params[:active]
-      PropagateProjectServiceWorker.perform_async(id)
-    end
-
-    true
-  end
-
   private
 
   def cache_project_has_external_issue_tracker

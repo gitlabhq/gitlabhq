@@ -23,4 +23,36 @@ describe Admin::ServicesController do
       end
     end
   end
+
+  describe "#update" do
+    let(:project) { create(:empty_project) }
+    let!(:service) do
+      RedmineService.create(
+        project: project,
+        active: false,
+        template: true,
+        properties: {
+          project_url: 'http://abc',
+          issues_url: 'http://abc',
+          new_issue_url: 'http://abc'
+        }
+      )
+    end
+
+    it 'updates the service params successfully and calls the propagation worker' do
+      expect(PropagateProjectServiceWorker).to receive(:perform_async).with(service.id)
+
+      put :update, id: service.id, service: { active: true }
+
+      expect(response).to have_http_status(302)
+    end
+
+    it 'updates the service params successfully' do
+      expect(PropagateProjectServiceWorker).not_to receive(:perform_async)
+
+      put :update, id: service.id, service: { properties: {} }
+
+      expect(response).to have_http_status(302)
+    end
+  end
 end

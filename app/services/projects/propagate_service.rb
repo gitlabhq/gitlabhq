@@ -2,15 +2,15 @@ module Projects
   class PropagateService
     BATCH_SIZE = 100
 
-    def self.propagate!(*args)
-      new(*args).propagate!
+    def self.propagate(*args)
+      new(*args).propagate
     end
 
     def initialize(template)
       @template = template
     end
 
-    def propagate!
+    def propagate
       return unless @template&.active
 
       Rails.logger.info("Propagating services for template #{@template.id}")
@@ -28,7 +28,7 @@ module Projects
 
         batch.each { |project_id| create_from_template(project_id) }
 
-        break if batch.count < BATCH_SIZE
+        break if batch.size < BATCH_SIZE
 
         offset += BATCH_SIZE
       end

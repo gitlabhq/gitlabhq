@@ -18,7 +18,7 @@ describe Projects::PropagateService, services: true do
     let!(:project) { create(:empty_project) }
 
     it 'creates services for projects' do
-      expect { described_class.propagate!(service_template) }.
+      expect { described_class.propagate(service_template) }.
         to change { Service.count }.by(1)
     end
 
@@ -36,7 +36,7 @@ describe Projects::PropagateService, services: true do
 
       Service.build_from_template(project.id, other_service).save!
 
-      expect { described_class.propagate!(service_template) }.
+      expect { described_class.propagate(service_template) }.
         to change { Service.count }.by(1)
     end
 
@@ -55,12 +55,12 @@ describe Projects::PropagateService, services: true do
       Service.build_from_template(project.id, service_template).save!
       Service.build_from_template(project.id, other_service).save!
 
-      expect { described_class.propagate!(service_template) }.
+      expect { described_class.propagate(service_template) }.
         not_to change { Service.count }
     end
 
     it 'creates the service containing the template attributes' do
-      described_class.propagate!(service_template)
+      described_class.propagate(service_template)
 
       service = Service.find_by(type: service_template.type, template: false)
 

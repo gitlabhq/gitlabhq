@@ -10,7 +10,7 @@ class PropagateProjectServiceWorker
   def perform(template_id)
     return unless try_obtain_lease_for(template_id)
 
-    Projects::PropagateService.propagate!(Service.find_by(id: template_id))
+    Projects::PropagateService.propagate(Service.find_by(id: template_id))
   end
 
   private
