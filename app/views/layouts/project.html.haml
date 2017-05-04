@@ -11,7 +11,7 @@
     - preview_markdown_path = preview_markdown_namespace_project_path(project.namespace, project)
   - if current_user
     :javascript
-      window.project_uploads_path = "#{namespace_project_uploads_path project.namespace,project}";
+      window.uploads_path = "#{namespace_project_uploads_path project.namespace,project}";
       window.preview_markdown_path = "#{preview_markdown_path}";
 
 - content_for :header_content do

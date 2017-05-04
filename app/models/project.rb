@@ -53,6 +53,11 @@ class Project < ActiveRecord::Base
     update_column(:last_activity_at, self.created_at)
   end
 
+  after_create :set_last_repository_updated_at
+  def set_last_repository_updated_at
+    update_column(:last_repository_updated_at, self.created_at)
+  end
+
   after_destroy :remove_pages
 
   # update visibility_level of forks

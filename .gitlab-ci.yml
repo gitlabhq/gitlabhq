@@ -412,18 +412,6 @@ rake karma:
     paths:
     - coverage-javascript/
 
-bundler:audit:
-  stage: test
-  <<: *ruby-static-analysis
-  <<: *dedicated-runner
-  only:
-    - master@gitlab-org/gitlab-ce
-    - master@gitlab-org/gitlab-ee
-    - master@gitlab/gitlabhq
-    - master@gitlab/gitlab-ee
-  script:
-    - "bundle exec bundle-audit check --update --ignore CVE-2016-4658"
-
 .migration-paths: &migration-paths
   stage: test
   <<: *dedicated-runner
