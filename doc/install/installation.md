@@ -430,6 +430,8 @@ which is the recommended location.
     # Type 'yes' to create the database tables.
 
     # When done you see 'Administrator account created:'
+    
+If you are using Ruby 1.9.x, you may get error like `Lost connection to MySQL server during query (Mysql2::Error)` in this step. Solution is upgrade to Ruby 2.0.0+ or simply disable `reaping_frequency` in `config/database.yml` (just leave it blank) according to [Denniss](http://stackoverflow.com/questions/19391526/trying-to-update-640k-rows-in-mysql-gets-lost-connection-to-mysql-server-during/22423893#22423893).
 
 **Note:** You can set the Administrator/root password and e-mail by supplying them in environmental variables, `GITLAB_ROOT_PASSWORD` and `GITLAB_ROOT_EMAIL` respectively, as seen below. If you don't set the password (and it is set to the default one) please wait with exposing GitLab to the public internet until the installation is done and you've logged into the server the first time. During the first login you'll be forced to change the default password.
 
