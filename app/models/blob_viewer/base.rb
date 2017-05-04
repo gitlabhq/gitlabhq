@@ -70,12 +70,13 @@ module BlobViewer
       return @render_error if defined?(@render_error)
 
       @render_error =
-        if server_side_but_stored_in_lfs?
-          # Files stored in LFS can only be rendered using a client-side viewer,
+        if server_side_but_stored_externally?
+          # Files that are not stored in the repository, like LFS files and
+          # build artifacts, can only be rendered using a client-side viewer,
           # since we do not want to read large amounts of data into memory on the
           # server side. Client-side viewers use JS and can fetch the file from
           # `blob_raw_url` using AJAX.
-          :server_side_but_stored_in_lfs
+          :server_side_but_stored_externally
         elsif override_max_size ? absolutely_too_large? : too_large?
           :too_large
         end
@@ -89,8 +90,8 @@ module BlobViewer
 
     private
 
-    def server_side_but_stored_in_lfs?
-      server_side? && blob.valid_lfs_pointer?
+    def server_side_but_stored_externally?
+      server_side? && blob.stored_externally?
     end
   end
 end

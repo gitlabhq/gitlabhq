@@ -6,7 +6,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
     let(:project_tree_saver) { described_class.new(project: project, current_user: user, shared: shared) }
     let(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
     let(:user) { create(:user) }
-    let(:project) { setup_project }
+    let!(:project) { setup_project }
 
     before do
       project.team << [user, :master]
@@ -219,7 +219,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
                      releases: [release],
                      group: group
                     )
-    project.update(description_html: 'description')
+    project.update_column(:description_html, 'description')
     project_label = create(:label, project: project)
     group_label = create(:group_label, group: group)
     create(:label_link, label: project_label, target: issue)

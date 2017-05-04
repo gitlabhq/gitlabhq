@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::UploadService, services: true do
+describe UploadService, services: true do
   describe 'File service' do
     before do
       @user = create(:user)
@@ -68,6 +68,6 @@ describe Projects::UploadService, services: true do
   end
 
   def upload_file(project, file)
-    Projects::UploadService.new(project, file).execute
+    described_class.new(project, file, FileUploader).execute
   end
 end

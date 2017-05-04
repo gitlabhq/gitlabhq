@@ -30,8 +30,4 @@ class ArtifactUploader < GitlabUploader
   def filename
     file.try(:filename)
   end
-
-  def exists?
-    file.try(:exists?)
-  end
 end

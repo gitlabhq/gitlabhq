@@ -159,7 +159,7 @@ feature 'File blob', :js, feature: true do
           expect(page).to have_selector('.blob-viewer[data-type="rich"]')
 
           # shows an error message
-          expect(page).to have_content('The rendered file could not be displayed because it is stored in LFS. You can view the source or download it instead.')
+          expect(page).to have_content('The rendered file could not be displayed because it is stored in LFS. You can download it instead.')
 
           # shows a viewer switcher
           expect(page).to have_selector('.js-blob-viewer-switcher')
@@ -167,8 +167,8 @@ feature 'File blob', :js, feature: true do
           # does not show a copy button
           expect(page).not_to have_selector('.js-copy-blob-source-btn')
 
-          # shows a raw button
-          expect(page).to have_link('Open raw')
+          # shows a download button
+          expect(page).to have_link('Download')
         end
       end
 
@@ -329,6 +329,43 @@ feature 'File blob', :js, feature: true do
 
         # shows a download button
         expect(page).to have_link('Download')
+      end
+    end
+  end
+
+  context 'empty file' do
+    before do
+      project.add_master(project.creator)
+
+      Files::CreateService.new(
+        project,
+        project.creator,
+        start_branch: 'master',
+        branch_name: 'master',
+        commit_message: "Add empty file",
+        file_path: 'files/empty.md',
+        file_content: ''
+      ).execute
+
+      visit_blob('files/empty.md')
+
+      wait_for_ajax
+    end
+
+    it 'displays an error' do
+      aggregate_failures do
+        # shows an error message
+        expect(page).to have_content('Empty file')
+
+        # does not show a viewer switcher
+        expect(page).not_to have_selector('.js-blob-viewer-switcher')
+
+        # does not show a copy button
+        expect(page).not_to have_selector('.js-copy-blob-source-btn')
+
+        # does not show a download or raw button
+        expect(page).not_to have_link('Download')
+        expect(page).not_to have_link('Open raw')
       end
     end
   end

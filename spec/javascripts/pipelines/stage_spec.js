@@ -1,81 +1,86 @@
 import Vue from 'vue';
-import { SUCCESS_SVG } from '~/ci_status_icons';
-import Stage from '~/pipelines/components/stage';
+import stage from '~/pipelines/components/stage.vue';
 
-function minify(string) {
-  return string.replace(/\s/g, '');
-}
+describe('Pipelines stage component', () => {
+  let StageComponent;
+  let component;
 
-describe('Pipelines Stage', () => {
-  describe('data', () => {
-    let stageReturnValue;
+  beforeEach(() => {
+    StageComponent = Vue.extend(stage);
 
-    beforeEach(() => {
-      stageReturnValue = Stage.data();
-    });
-
-    it('should return object with .builds and .spinner', () => {
-      expect(stageReturnValue).toEqual({
-        builds: '',
-        spinner: '<span class="fa fa-spinner fa-spin"></span>',
-      });
-    });
-  });
-
-  describe('computed', () => {
-    describe('svgHTML', function () {
-      let stage;
-      let svgHTML;
-
-      beforeEach(() => {
-        stage = { stage: { status: { icon: 'icon_status_success' } } };
-
-        svgHTML = Stage.computed.svgHTML.call(stage);
-      });
-
-      it("should return the correct icon for the stage's status", () => {
-        expect(svgHTML).toBe(SUCCESS_SVG);
-      });
-    });
-  });
-
-  describe('when mounted', () => {
-    let StageComponent;
-    let renderedComponent;
-    let stage;
-
-    beforeEach(() => {
-      stage = { status: { icon: 'icon_status_success' } };
-
-      StageComponent = Vue.extend(Stage);
-
-      renderedComponent = new StageComponent({
-        propsData: {
-          stage,
+    component = new StageComponent({
+      propsData: {
+        stage: {
+          status: {
+            group: 'success',
+            icon: 'icon_status_success',
+            title: 'success',
+          },
+          dropdown_path: 'foo',
         },
-      }).$mount();
+        updateDropdown: false,
+      },
+    }).$mount();
+  });
+
+  it('should render a dropdown with the status icon', () => {
+    expect(component.$el.getAttribute('class')).toEqual('dropdown');
+    expect(component.$el.querySelector('svg')).toBeDefined();
+    expect(component.$el.querySelector('button').getAttribute('data-toggle')).toEqual('dropdown');
+  });
+
+  describe('with successfull request', () => {
+    const interceptor = (request, next) => {
+      next(request.respondWith(JSON.stringify({ html: 'foo' }), {
+        status: 200,
+      }));
+    };
+
+    beforeEach(() => {
+      Vue.http.interceptors.push(interceptor);
     });
 
-    it('should render the correct status svg', () => {
-      const minifiedComponent = minify(renderedComponent.$el.outerHTML);
-      const expectedSVG = minify(SUCCESS_SVG);
+    afterEach(() => {
+      Vue.http.interceptors = _.without(
+        Vue.http.interceptors, interceptor,
+      );
+    });
 
-      expect(minifiedComponent).toContain(expectedSVG);
+    it('should render the received data', (done) => {
+      component.$el.querySelector('button').click();
+
+      setTimeout(() => {
+        expect(
+          component.$el.querySelector('.js-builds-dropdown-container ul').textContent.trim(),
+        ).toEqual('foo');
+        done();
+      }, 0);
     });
   });
 
   describe('when request fails', () => {
-    it('closes dropdown', () => {
-      spyOn($, 'ajax').and.callFake(options => options.error());
-      const StageComponent = Vue.extend(Stage);
+    const interceptor = (request, next) => {
+      next(request.respondWith(JSON.stringify({}), {
+        status: 500,
+      }));
+    };
 
-      const component = new StageComponent({
-        propsData: { stage: { status: { icon: 'foo' } } },
-      }).$mount();
+    beforeEach(() => {
+      Vue.http.interceptors.push(interceptor);
+    });
 
-      expect(
-        component.$el.classList.contains('open'),
-      ).toEqual(false);
+    afterEach(() => {
+      Vue.http.interceptors = _.without(
+        Vue.http.interceptors, interceptor,
+      );
+    });
+
+    it('should close the dropdown', () => {
+      component.$el.click();
+
+      setTimeout(() => {
+        expect(component.$el.classList.contains('open')).toEqual(false);
+      }, 0);
     });
   });
 });

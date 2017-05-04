@@ -374,12 +374,18 @@ class MergeRequest < ActiveRecord::Base
     merge_request_diff(true)
   end
 
-  def merge_request_diff_for(diff_refs)
-    @merge_request_diffs_by_diff_refs ||= Hash.new do |h, diff_refs|
-      h[diff_refs] = merge_request_diffs.viewable.select_without_diff.find_by_diff_refs(diff_refs)
+  def merge_request_diff_for(diff_refs_or_sha)
+    @merge_request_diffs_by_diff_refs_or_sha ||= Hash.new do |h, diff_refs_or_sha|
+      diffs = merge_request_diffs.viewable.select_without_diff
+      h[diff_refs_or_sha] =
+        if diff_refs_or_sha.is_a?(Gitlab::Diff::DiffRefs)
+          diffs.find_by_diff_refs(diff_refs_or_sha)
+        else
+          diffs.find_by(head_commit_sha: diff_refs_or_sha)
+        end
     end
 
-    @merge_request_diffs_by_diff_refs[diff_refs]
+    @merge_request_diffs_by_diff_refs_or_sha[diff_refs_or_sha]
   end
 
   def reload_diff_if_branch_changed

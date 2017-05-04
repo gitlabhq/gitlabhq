@@ -9,7 +9,6 @@ tasks = [
   %w[bundle exec rake scss_lint],
   %w[bundle exec rake brakeman],
   %w[bundle exec license_finder],
-  %w[scripts/lint-doc.sh],
   %w[yarn run eslint],
   %w[bundle exec rubocop --require rubocop-rspec]
 ]
