@@ -84,6 +84,7 @@ Is the system packaged Git too old? Remove it and compile from source.
 
     # Remove packaged Git
     sudo apt-get remove git-core
+    unalias git # You may have to run this if you can't get 'git --version' to verify that you've installed git correctly from source.
 
     # Install dependencies
     sudo apt-get install -y libcurl4-openssl-dev libexpat1-dev gettext libz-dev libssl-dev build-essential
@@ -98,6 +99,9 @@ Is the system packaged Git too old? Remove it and compile from source.
 
     # Install into /usr/local/bin
     sudo make prefix=/usr/local install
+    
+    # Make sure that the installation went correctly.
+    git --version
 
     # When editing config/gitlab.yml (Step 5), change the git -> bin_path to /usr/local/bin/git
 
@@ -131,10 +135,15 @@ Download Ruby and compile it:
     ./configure --disable-install-rdoc
     make
     sudo make install
+    # Verify that the correct version is actually installed.
+    ruby --version
 
 Install the Bundler Gem:
 
     sudo gem install bundler --no-ri --no-rdoc
+    # In ubuntu LTS 12.04 you may end up with gem not installed at this point so you may end up needing to do this.
+    apt-get install -y libgemplugin-ruby
+    # Then you may run "sudo gem install bundler --no-ri --no-rdoc"
 
 ## 3. Go
 
