@@ -10,6 +10,6 @@ class AddIndexToLastRepositoryUpdatedAtOnProjects < ActiveRecord::Migration
   end
 
   def down
-    remove_index(:projects, :last_repository_updated_at) if index_exists?(:projects, :last_repository_updated_at)
+    remove_concurrent_index(:projects, :last_repository_updated_at) if index_exists?(:projects, :last_repository_updated_at)
   end
 end
