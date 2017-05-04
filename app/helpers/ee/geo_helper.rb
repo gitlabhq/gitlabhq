@@ -1,9 +1,5 @@
 module EE
   module GeoHelper
-    def current_node?(node)
-      ::Gitlab::Geo.current_node == node
-    end
-
     def node_status_icon(node)
       unless node.primary?
         status = node.enabled? ? 'healthy' : 'disabled'
