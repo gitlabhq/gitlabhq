@@ -552,7 +552,7 @@ You should receive `syntax is okay` and `test is successful` messages. If you re
 
 ### Restart
 
-    sudo service nginx restart
+    sudo service nginx reload
 
 ## Done!
 
