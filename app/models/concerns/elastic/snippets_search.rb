@@ -52,22 +52,8 @@ module Elastic
       end
 
       def self.elastic_search_code(query, options: {})
-        query_hash = {
-          query: {
-            bool: {
-              must: [{ match: { content: query } }]
-            }
-          }
-        }
-
+        query_hash = basic_query_hash(%w(content), query)
         query_hash = filter(query_hash, options[:user])
-
-        query_hash[:sort] = [
-          { updated_at: { order: :desc } },
-          :_score
-        ]
-
-        query_hash[:highlight] = { fields: { content: {} } }
 
         self.__elasticsearch__.search(query_hash)
       end

@@ -13,3 +13,7 @@
     - unless params[:snippets].eql? 'true'
       = render 'filter' if current_user
     = button_tag "Search", class: "btn btn-success btn-search"
+  - if current_application_settings.elasticsearch_search?
+    .help-block
+      = link_to 'Advanced search functionality', help_page_path('user/search/advanced-search-syntax.md'), target: '_blank'
+      is enabled.

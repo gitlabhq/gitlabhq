@@ -15,19 +15,19 @@ describe MergeRequest, elastic: true do
     project = create :project
 
     Sidekiq::Testing.inline! do
-      create :merge_request, title: 'bla-bla term', source_project: project
-      create :merge_request, description: 'term in description', source_project: project, target_branch: "feature2"
+      create :merge_request, title: 'bla-bla term1', source_project: project
+      create :merge_request, description: 'term2 in description', source_project: project, target_branch: "feature2"
       create :merge_request, source_project: project, target_branch: "feature3"
 
       # The merge request you have no access to
-      create :merge_request, title: 'also with term'
+      create :merge_request, title: 'also with term3'
 
       Gitlab::Elastic::Helper.refresh_index
     end
 
     options = { project_ids: [project.id] }
 
-    expect(described_class.elastic_search('term', options: options).total_count).to eq(2)
+    expect(described_class.elastic_search('term1 | term2 | term3', options: options).total_count).to eq(2)
   end
 
   it "returns json with all needed elements" do

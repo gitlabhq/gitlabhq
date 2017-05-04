@@ -1078,11 +1078,11 @@ namespace :gitlab do
   def check_elasticsearch
     client = Gitlab::Elastic::Client.build(current_application_settings.elasticsearch_config)
 
-    print "Elasticsearch version 5.1.x? ... "
+    print "Elasticsearch version 5.1 - 5.3? ... "
 
     version = Gitlab::VersionInfo.parse(client.info["version"]["number"])
 
-    if version.major == 5 && version.minor == 1
+    if version.major == 5 && (1..3).cover?(version.minor)
       puts "yes (#{version})".color(:green)
     else
       puts "no, you have #{version}".color(:red)

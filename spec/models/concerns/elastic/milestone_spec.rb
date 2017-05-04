@@ -15,19 +15,19 @@ describe Milestone, elastic: true do
     project = create :empty_project
 
     Sidekiq::Testing.inline! do
-      create :milestone, title: 'bla-bla term', project: project
-      create :milestone, description: 'bla-bla term', project: project
+      create :milestone, title: 'bla-bla term1', project: project
+      create :milestone, description: 'bla-bla term2', project: project
       create :milestone, project: project
 
       # The milestone you have no access to
-      create :milestone, title: 'bla-bla term'
+      create :milestone, title: 'bla-bla term3'
 
       Gitlab::Elastic::Helper.refresh_index
     end
 
     options = { project_ids: [project.id] }
 
-    expect(described_class.elastic_search('term', options: options).total_count).to eq(2)
+    expect(described_class.elastic_search('(term1 | term2 | term3) +bla-bla', options: options).total_count).to eq(2)
   end
 
   it "returns json with all needed elements" do
