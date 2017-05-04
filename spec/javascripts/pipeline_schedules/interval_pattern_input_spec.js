@@ -2,9 +2,9 @@ import Vue from 'vue';
 import IntervalPatternInput from '~/pipeline_schedules/components/interval_pattern_input';
 
 const IntervalPatternInputComponent = Vue.extend(IntervalPatternInput);
-
+const inputNameAttribute = 'schedule[cron]';
 const dataDefaults = {
-  inputNameAttribute: 'schedule[cron]',
+  inputNameAttribute,
   cronSyntaxUrl: 'https://en.wikipedia.org/wiki/Cron',
   customInputEnabled: false,
 };
@@ -61,7 +61,7 @@ describe('Interval Pattern Input Component', () => {
       beforeEach(() => {
         this.intervalPatternComponent = new IntervalPatternInputComponent({
           propsData: {
-            inputNameAttribute: cronInputName,
+            inputNameAttribute: inputNameAttribute,
             initialCronInterval: '0 4 * * *',
           },
         }).$mount();
@@ -110,7 +110,7 @@ describe('Interval Pattern Input Component', () => {
     beforeEach(() => {
       this.intervalPatternComponent = new IntervalPatternInputComponent({
         propsData: {
-          inputNameAttribute: cronInputName,
+          inputNameAttribute: inputNameAttribute,
         },
       }).$mount();
     });
