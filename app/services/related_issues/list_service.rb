@@ -12,7 +12,6 @@ module RelatedIssues
           title: referenced_issue.title,
           iid: referenced_issue.iid,
           state: referenced_issue.state,
-          reference: referenced_issue.to_reference(@issue.project),
           project_full_path: referenced_issue.project.full_path,
           namespace_full_path: referenced_issue.project.namespace.full_path,
           path: namespace_project_issue_path(referenced_issue.project.namespace, referenced_issue.project, referenced_issue.iid),
