@@ -274,6 +274,22 @@ static-analysis:
   script:
     - scripts/static-analysis
 
+docs:check:links:
+  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:nanoc-bootstrap-ruby-2.4-alpine"
+  stage: test
+  <<: *dedicated-runner
+  cache: {}
+  dependencies: []
+  before_script: []
+  script:
+    - scripts/lint-doc.sh
+    - mv doc/ /nanoc/content/
+    - cd /nanoc
+    # Build HTML from Markdown
+    - bundle exec nanoc
+    # Check the internal links
+    - bundle exec nanoc check internal_links
+
 downtime_check:
   <<: *rake-exec
   except:
