@@ -31,11 +31,11 @@ module RelatedIssues
         <<-SQL.strip_heredoc
           SELECT issues.*, related_issues.id as related_issues_id FROM issues
           INNER JOIN related_issues ON related_issues.related_issue_id = issues.id
-          WHERE related_issues.issue_id = #{@issue.id}
+          WHERE related_issues.issue_id = #{@issue.id} AND issues.deleted_at IS NULL
           UNION ALL
           SELECT issues.*, related_issues.id as related_issues_id FROM issues
           INNER JOIN related_issues ON related_issues.issue_id = issues.id
-          WHERE related_issues.related_issue_id = #{@issue.id}
+          WHERE related_issues.related_issue_id = #{@issue.id} AND issues.deleted_at IS NULL
           ORDER BY related_issues_id
         SQL
       )
