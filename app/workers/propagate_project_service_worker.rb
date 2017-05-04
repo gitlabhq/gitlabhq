@@ -5,7 +5,7 @@ class PropagateProjectServiceWorker
 
   sidekiq_options retry: 3
 
-  LEASE_TIMEOUT = 30.minutes.to_i
+  LEASE_TIMEOUT = 4.hours.to_i
 
   def perform(template_id)
     return unless try_obtain_lease_for(template_id)
