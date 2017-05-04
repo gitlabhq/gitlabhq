@@ -145,7 +145,7 @@ describe BlobHelper do
         end
       end
 
-      context 'for error :server_side_but_stored_in_lfs' do
+      context 'for error :server_side_but_stored_externally' do
         let(:blob) { fake_blob(lfs: true) }
 
         it 'returns an error message' do
@@ -157,6 +157,7 @@ describe BlobHelper do
     describe '#blob_render_error_options' do
       before do
         assign(:project, project)
+        assign(:blob, blob)
         assign(:id, File.join('master', blob.path))
 
         controller.params[:controller] = 'projects/blob'
@@ -182,40 +183,56 @@ describe BlobHelper do
             expect(helper.blob_render_error_options(viewer)).not_to include(/load it anyway/)
           end
         end
-      end
 
-      context 'when the viewer is rich' do
-        context 'the blob is rendered as text' do
-          let(:blob) { fake_blob(path: 'file.md', lfs: true) }
+        context 'when the viewer is rich' do
+          context 'the blob is rendered as text' do
+            let(:blob) { fake_blob(path: 'file.md', size: 2.megabytes) }
 
-          it 'includes a "view the source" link' do
-            expect(helper.blob_render_error_options(viewer)).to include(/view the source/)
+            it 'includes a "view the source" link' do
+              expect(helper.blob_render_error_options(viewer)).to include(/view the source/)
+            end
+          end
+
+          context 'the blob is not rendered as text' do
+            let(:blob) { fake_blob(path: 'file.pdf', binary: true, size: 2.megabytes) }
+
+            it 'does not include a "view the source" link' do
+              expect(helper.blob_render_error_options(viewer)).not_to include(/view the source/)
+            end
           end
         end
 
-        context 'the blob is not rendered as text' do
-          let(:blob) { fake_blob(path: 'file.pdf', binary: true, lfs: true) }
+        context 'when the viewer is not rich' do
+          before do
+            viewer_class.type = :simple
+          end
+
+          let(:blob) { fake_blob(path: 'file.md', size: 2.megabytes) }
 
           it 'does not include a "view the source" link' do
             expect(helper.blob_render_error_options(viewer)).not_to include(/view the source/)
           end
         end
+
+        it 'includes a "download it" link' do
+          expect(helper.blob_render_error_options(viewer)).to include(/download it/)
+        end
       end
 
-      context 'when the viewer is not rich' do
-        before do
-          viewer_class.type = :simple
-        end
-
+      context 'for error :server_side_but_stored_externally' do
         let(:blob) { fake_blob(path: 'file.md', lfs: true) }
+
+        it 'does not include a "load it anyway" link' do
+          expect(helper.blob_render_error_options(viewer)).not_to include(/load it anyway/)
+        end
 
         it 'does not include a "view the source" link' do
           expect(helper.blob_render_error_options(viewer)).not_to include(/view the source/)
         end
-      end
 
-      it 'includes a "download it" link' do
-        expect(helper.blob_render_error_options(viewer)).to include(/download it/)
+        it 'includes a "download it" link' do
+          expect(helper.blob_render_error_options(viewer)).to include(/download it/)
+        end
       end
     end
   end

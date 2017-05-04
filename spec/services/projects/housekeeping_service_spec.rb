@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::HousekeepingService do
-  subject { Projects::HousekeepingService.new(project) }
+  subject { described_class.new(project) }
   let(:project) { create(:project, :repository) }
 
   before do

@@ -726,4 +726,37 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
       expect(model.column_for(:users, :kittens)).to be_nil
     end
   end
+
+  describe '#replace_sql' do
+    context 'using postgres' do
+      before do
+        allow(Gitlab::Database).to receive(:mysql?).and_return(false)
+      end
+
+      it 'builds the sql with correct functions' do
+        expect(model.replace_sql(Arel::Table.new(:users)[:first_name], "Alice", "Eve").to_s).
+          to include('regexp_replace')
+      end
+    end
+
+    context 'using mysql' do
+      before do
+        allow(Gitlab::Database).to receive(:mysql?).and_return(true)
+      end
+
+      it 'builds the sql with the correct functions' do
+        expect(model.replace_sql(Arel::Table.new(:users)[:first_name], "Alice", "Eve").to_s).
+          to include('locate', 'insert')
+      end
+    end
+
+    describe 'results' do
+      let!(:user) { create(:user, name: 'Kathy Alice Aliceson') }
+
+      it 'replaces the correct part of the string' do
+        model.update_column_in_batches(:users, :name, model.replace_sql(Arel::Table.new(:users)[:name], 'Alice', 'Eve'))
+        expect(user.reload.name).to eq('Kathy Eve Aliceson')
+      end
+    end
+  end
 end

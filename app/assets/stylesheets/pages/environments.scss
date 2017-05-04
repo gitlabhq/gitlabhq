@@ -157,7 +157,8 @@
 
 .prometheus-graph {
   text {
-    fill: $stat-graph-axis-fill;
+    fill: $gl-text-color;
+    stroke-width: 0;
   }
 
   .label-axis-text,
@@ -210,27 +211,33 @@
 .rect-text-metric {
   fill: $white-light;
   stroke-width: 1;
-  stroke: $black;
+  stroke: $gray-darkest;
 }
 
 .rect-axis-text {
   fill: $white-light;
 }
 
-.text-metric,
-.text-median-metric,
-.text-metric-usage,
-.text-metric-date {
-  fill: $black;
-}
-
-.text-metric-date {
-  font-weight: 200;
+.text-metric {
+  font-weight: 600;
 }
 
 .selected-metric-line {
-  stroke: $black;
+  stroke: $gl-gray-dark;
   stroke-width: 1;
+}
+
+.deployment-line {
+  stroke: $black;
+  stroke-width: 2;
+}
+
+.deploy-info-text {
+  dominant-baseline: text-before-edge;
+}
+
+.text-metric-bold {
+  font-weight: 600;
 }
 
 .prometheus-state {

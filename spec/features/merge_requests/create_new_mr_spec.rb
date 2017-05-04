@@ -34,7 +34,7 @@ feature 'Create New Merge Request', feature: true, js: true do
     expect(page).to have_content('Target branch')
 
     first('.js-target-branch').click
-    first('.dropdown-target-branch .dropdown-content a', text: 'v1.1.0').click
+    find('.dropdown-target-branch .dropdown-content a', text: 'v1.1.0', match: :first).click
 
     expect(page).to have_content "b83d6e3"
   end

@@ -118,11 +118,7 @@
       - if @user.can_be_removed? && can?(current_user, :destroy_user, @user)
         %p
           Deleting an account has the following effects:
-        %ul
-          %li All user content like authored issues, snippets, comments will be removed
-          - rp = current_user.personal_projects.count
-          - unless rp.zero?
-            %li #{pluralize rp, 'personal project'} will be removed and cannot be restored
+        = render 'users/deletion_guidance', user: current_user
         = link_to 'Delete account', user_registration_path, data: { confirm: "REMOVE #{current_user.name}? Are you sure?" }, method: :delete, class: "btn btn-remove"
       - else
         - if @user.solo_owned_groups.present?

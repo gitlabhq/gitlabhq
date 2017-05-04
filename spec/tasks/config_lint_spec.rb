@@ -5,11 +5,11 @@ describe ConfigLint do
   let(:files){ ['lib/support/fake.sh'] }
 
   it 'errors out if any bash scripts have errors' do
-    expect { ConfigLint.run(files){ system('exit 1') } }.to raise_error(SystemExit)
+    expect { described_class.run(files){ system('exit 1') } }.to raise_error(SystemExit)
   end
 
   it 'passes if all scripts are fine' do
-    expect { ConfigLint.run(files){ system('exit 0') } }.not_to raise_error
+    expect { described_class.run(files){ system('exit 0') } }.not_to raise_error
   end
 end
 

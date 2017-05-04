@@ -15,7 +15,7 @@ module ChatMessage
       @ref_type = pipeline_attributes[:tag] ? 'tag' : 'branch'
       @ref = pipeline_attributes[:ref]
       @status = pipeline_attributes[:status]
-      @duration = pipeline_attributes[:duration]
+      @duration = pipeline_attributes[:duration].to_i
       @pipeline_id = pipeline_attributes[:id]
     end
 
@@ -37,7 +37,7 @@ module ChatMessage
       {
         title: "Pipeline #{pipeline_link} of #{branch_link} #{ref_type} by #{user_name} #{humanized_status}",
         subtitle: "in #{project_link}",
-        text: "in #{duration} #{time_measure}",
+        text: "in #{pretty_duration(duration)}",
         image: user_avatar || ''
       }
     end
@@ -45,7 +45,7 @@ module ChatMessage
     private
 
     def message
-      "#{project_link}: Pipeline #{pipeline_link} of #{branch_link} #{ref_type} by #{user_name} #{humanized_status} in #{duration} #{time_measure}"
+      "#{project_link}: Pipeline #{pipeline_link} of #{branch_link} #{ref_type} by #{user_name} #{humanized_status} in #{pretty_duration(duration)}"
     end
 
     def humanized_status
@@ -83,10 +83,6 @@ module ChatMessage
 
     def pipeline_link
       "[##{pipeline_id}](#{pipeline_url})"
-    end
-
-    def time_measure
-      'second'.pluralize(duration)
     end
   end
 end

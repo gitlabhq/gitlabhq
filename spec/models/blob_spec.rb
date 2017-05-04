@@ -35,8 +35,68 @@ describe Blob do
     end
   end
 
+  describe '#external_storage_error?' do
+    context 'if the blob is stored in LFS' do
+      let(:blob) { fake_blob(path: 'file.pdf', lfs: true) }
+
+      context 'when the project has LFS enabled' do
+        it 'returns false' do
+          expect(blob.external_storage_error?).to be_falsey
+        end
+      end
+
+      context 'when the project does not have LFS enabled' do
+        before do
+          project.lfs_enabled = false
+        end
+
+        it 'returns true' do
+          expect(blob.external_storage_error?).to be_truthy
+        end
+      end
+    end
+
+    context 'if the blob is not stored in LFS' do
+      let(:blob) { fake_blob(path: 'file.md') }
+
+      it 'returns false' do
+        expect(blob.external_storage_error?).to be_falsey
+      end
+    end
+  end
+
+  describe '#stored_externally?' do
+    context 'if the blob is stored in LFS' do
+      let(:blob) { fake_blob(path: 'file.pdf', lfs: true) }
+
+      context 'when the project has LFS enabled' do
+        it 'returns true' do
+          expect(blob.stored_externally?).to be_truthy
+        end
+      end
+
+      context 'when the project does not have LFS enabled' do
+        before do
+          project.lfs_enabled = false
+        end
+
+        it 'returns false' do
+          expect(blob.stored_externally?).to be_falsey
+        end
+      end
+    end
+
+    context 'if the blob is not stored in LFS' do
+      let(:blob) { fake_blob(path: 'file.md') }
+
+      it 'returns false' do
+        expect(blob.stored_externally?).to be_falsey
+      end
+    end
+  end
+
   describe '#raw_binary?' do
-    context 'if the blob is a valid LFS pointer' do
+    context 'if the blob is stored externally' do
       context 'if the extension has a rich viewer' do
         context 'if the viewer is binary' do
           it 'returns true' do
@@ -56,15 +116,63 @@ describe Blob do
       end
 
       context "if the extension doesn't have a rich viewer" do
-        it 'returns true' do
-          blob = fake_blob(path: 'file.exe', lfs: true)
+        context 'if the extension has a text mime type' do
+          context 'if the extension is for a programming language' do
+            it 'returns false' do
+              blob = fake_blob(path: 'file.txt', lfs: true)
 
-          expect(blob.raw_binary?).to be_truthy
+              expect(blob.raw_binary?).to be_falsey
+            end
+          end
+
+          context 'if the extension is not for a programming language' do
+            it 'returns false' do
+              blob = fake_blob(path: 'file.ics', lfs: true)
+
+              expect(blob.raw_binary?).to be_falsey
+            end
+          end
+        end
+
+        context 'if the extension has a binary mime type' do
+          context 'if the extension is for a programming language' do
+            it 'returns false' do
+              blob = fake_blob(path: 'file.rb', lfs: true)
+
+              expect(blob.raw_binary?).to be_falsey
+            end
+          end
+
+          context 'if the extension is not for a programming language' do
+            it 'returns true' do
+              blob = fake_blob(path: 'file.exe', lfs: true)
+
+              expect(blob.raw_binary?).to be_truthy
+            end
+          end
+        end
+
+        context 'if the extension has an unknown mime type' do
+          context 'if the extension is for a programming language' do
+            it 'returns false' do
+              blob = fake_blob(path: 'file.ini', lfs: true)
+
+              expect(blob.raw_binary?).to be_falsey
+            end
+          end
+
+          context 'if the extension is not for a programming language' do
+            it 'returns true' do
+              blob = fake_blob(path: 'file.wtf', lfs: true)
+
+              expect(blob.raw_binary?).to be_truthy
+            end
+          end
         end
       end
     end
 
-    context 'if the blob is not an LFS pointer' do
+    context 'if the blob is not stored externally' do
       context 'if the blob is binary' do
         it 'returns true' do
           blob = fake_blob(path: 'file.pdf', binary: true)
@@ -94,7 +202,7 @@ describe Blob do
   describe '#simple_viewer' do
     context 'when the blob is empty' do
       it 'returns an empty viewer' do
-        blob = fake_blob(data: '')
+        blob = fake_blob(data: '', size: 0)
 
         expect(blob.simple_viewer).to be_a(BlobViewer::Empty)
       end
@@ -118,7 +226,7 @@ describe Blob do
   end
 
   describe '#rich_viewer' do
-    context 'when the blob is an invalid LFS pointer' do
+    context 'when the blob has an external storage error' do
       before do
         project.lfs_enabled = false
       end
@@ -138,7 +246,7 @@ describe Blob do
       end
     end
 
-    context 'when the blob is a valid LFS pointer' do
+    context 'when the blob is stored externally' do
       it 'returns a matching viewer' do
         blob = fake_blob(path: 'file.pdf', lfs: true)
 

@@ -44,7 +44,7 @@ constraints(ProjectUrlConstrainer.new) do
 
       resources :snippets, concerns: :awardable, constraints: { id: /\d+/ } do
         member do
-          get 'raw'
+          get :raw
           post :mark_as_spam
         end
       end
@@ -138,6 +138,8 @@ constraints(ProjectUrlConstrainer.new) do
         collection do
           get :folder, path: 'folders/*id', constraints: { format: /(html|json)/ }
         end
+
+        resources :deployments, only: [:index]
       end
 
       resource :cycle_analytics, only: [:show]
@@ -185,7 +187,7 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :hooks, only: [:index, :create, :destroy], constraints: { id: /\d+/ } do
+      resources :hooks, only: [:index, :create, :edit, :update, :destroy], constraints: { id: /\d+/ } do
         member do
           get :test
         end
@@ -205,6 +207,9 @@ constraints(ProjectUrlConstrainer.new) do
         member do
           put :sort_issues
           put :sort_merge_requests
+          get :merge_requests
+          get :participants
+          get :labels
         end
       end
 
@@ -229,6 +234,7 @@ constraints(ProjectUrlConstrainer.new) do
           get :related_branches
           get :can_create_branch
           get :rendered_title
+          post :create_merge_request
         end
         collection do
           post  :bulk_update

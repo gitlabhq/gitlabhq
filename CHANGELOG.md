@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.1.2 (2017-05-01)
+
+- Add index on ci_runners.contacted_at. !10876 (blackst0ne)
+- Fix pipeline events description for Slack and Mattermost integration. !10908
+- Fixed milestone sidebar showing incorrect number of MRs when collapsed. !10933
+- Fix ordering of commits in the network graph. !10936
+- Ensure the chat notifications service properly saves the "Notify only default branch" setting. !10959
+- Lazily sets UUID in ApplicationSetting for new installations.
+- Skip validation when creating internal (ghost, service desk) users.
+- Use GitLab Pages v0.4.1.
+
 ## 9.1.1 (2017-04-26)
 
 - Add a transaction around move_issues_to_ghost_user. !10465

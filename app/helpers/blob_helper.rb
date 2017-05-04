@@ -52,7 +52,7 @@ module BlobHelper
 
     if !on_top_of_branch?(project, ref)
       button_tag label, class: "#{common_classes} disabled has-tooltip", title: "You can only #{action} files when you are on a branch", data: { container: 'body' }
-    elsif blob.valid_lfs_pointer?
+    elsif blob.stored_externally?
       button_tag label, class: "#{common_classes} disabled has-tooltip", title: "It is not possible to #{action} files that are stored in LFS using the web interface", data: { container: 'body' }
     elsif can_modify_blob?(blob, project, ref)
       button_tag label, class: "#{common_classes}", 'data-target' => "#modal-#{modal_type}-blob", 'data-toggle' => 'modal'
@@ -95,7 +95,7 @@ module BlobHelper
   end
 
   def can_modify_blob?(blob, project = @project, ref = @ref)
-    !blob.valid_lfs_pointer? && can_edit_tree?(project, ref)
+    !blob.stored_externally? && can_edit_tree?(project, ref)
   end
 
   def leave_edit_message
@@ -119,7 +119,15 @@ module BlobHelper
   end
 
   def blob_raw_url
-    namespace_project_raw_path(@project.namespace, @project, @id)
+    if @snippet
+      if @snippet.project_id
+        raw_namespace_project_snippet_path(@project.namespace, @project, @snippet)
+      else
+        raw_snippet_path(@snippet)
+      end
+    elsif @blob
+      namespace_project_raw_path(@project.namespace, @project, @id)
+    end
   end
 
   # SVGs can contain malicious JavaScript; only include whitelisted
@@ -209,11 +217,23 @@ module BlobHelper
   end
 
   def copy_blob_source_button(blob)
+    return unless blob.rendered_as_text?(ignore_errors: false)
+
     clipboard_button(target: ".blob-content[data-blob-id='#{blob.id}']", class: "btn btn-sm js-copy-blob-source-btn", title: "Copy source to clipboard")
   end
 
-  def open_raw_file_button(path)
-    link_to icon('file-code-o'), path, class: 'btn btn-sm has-tooltip', target: '_blank', rel: 'noopener noreferrer', title: 'Open raw', data: { container: 'body' }
+  def open_raw_blob_button(blob)
+    return if blob.empty?
+    
+    if blob.raw_binary? || blob.stored_externally?
+      icon = icon('download')
+      title = 'Download'
+    else
+      icon = icon('file-code-o')
+      title = 'Open raw'
+    end
+
+    link_to icon, blob_raw_url, class: 'btn btn-sm has-tooltip', target: '_blank', rel: 'noopener noreferrer', title: title, data: { container: 'body' }
   end
 
   def blob_render_error_reason(viewer)
@@ -226,19 +246,27 @@ module BlobHelper
           viewer.max_size
         end
       "it is larger than #{number_to_human_size(max_size)}"
-    when :server_side_but_stored_in_lfs
-      "it is stored in LFS"
+    when :server_side_but_stored_externally
+      case viewer.blob.external_storage
+      when :lfs
+        'it is stored in LFS'
+      else
+        'it is stored externally'
+      end
     end
   end
 
   def blob_render_error_options(viewer)
+    error = viewer.render_error
     options = []
 
-    if viewer.render_error == :too_large && viewer.can_override_max_size?
+    if error == :too_large && viewer.can_override_max_size?
       options << link_to('load it anyway', url_for(params.merge(viewer: viewer.type, override_max_size: true, format: nil)))
     end
 
-    if viewer.rich? && viewer.blob.rendered_as_text?
+    # If the error is `:server_side_but_stored_externally`, the simple viewer will show the same error,
+    # so don't bother switching.
+    if viewer.rich? && viewer.blob.rendered_as_text? && error != :server_side_but_stored_externally
       options << link_to('view the source', '#', class: 'js-blob-viewer-switch-btn', data: { viewer: 'simple' })
     end
 

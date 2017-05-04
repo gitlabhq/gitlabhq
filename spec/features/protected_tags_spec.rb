@@ -11,6 +11,7 @@ feature 'Projected Tags', feature: true, js: true do
     find(".js-protected-tag-select").click
     find(".dropdown-input-field").set(tag_name)
     click_on("Create wildcard #{tag_name}")
+    find('.protected-tags-dropdown .dropdown-menu', visible: false)
   end
 
   describe "explicit protected tags" do

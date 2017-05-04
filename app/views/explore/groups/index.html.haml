@@ -7,6 +7,15 @@
   = render 'explore/head'
   = render 'nav'
 
+- if cookies[:explore_groups_landing_dismissed] != 'true'
+  .explore-groups.landing.content-block.js-explore-groups-landing.hidden
+    %button.dismiss-button{ type: 'button', 'aria-label' => 'Dismiss' }= icon('times')
+    .svg-container
+      = custom_icon('icon_explore_groups_splash')
+    .inner-content
+      %p Below you will find all the groups that are public.
+      %p You can easily contribute to them by requesting to join these groups.
+
 - if @groups.present?
   = render 'groups'
 - else

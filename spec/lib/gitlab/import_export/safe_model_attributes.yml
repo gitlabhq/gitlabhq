@@ -329,6 +329,28 @@ Project:
 - snippets_enabled
 - visibility_level
 - archived
+- created_at
+- updated_at
+- last_activity_at
+- star_count
+- ci_id
+- shared_runners_enabled
+- build_coverage_regex
+- build_allow_git_fetchs
+- build_timeout
+- pending_delete
+- public_builds
+- last_repository_check_failed
+- last_repository_check_at
+- container_registry_enabled
+- only_allow_merge_if_pipeline_succeeds
+- has_external_issue_tracker
+- request_access_enabled
+- has_external_wiki
+- only_allow_merge_if_all_discussions_are_resolved
+- auto_cancel_pending_pipelines
+- printing_merge_request_link_enabled
+- build_allow_git_fetch
 Author:
 - name
 ProjectFeature:

@@ -1,13 +1,10 @@
 require 'spec_helper'
 
 feature 'File blob', :js, feature: true do
-  include TreeHelper
-  include WaitForAjax
-
   let(:project) { create(:project, :public) }
 
   def visit_blob(path, fragment = nil)
-    visit namespace_project_blob_path(project.namespace, project, tree_join('master', path), anchor: fragment)
+    visit namespace_project_blob_path(project.namespace, project, File.join('master', path), anchor: fragment)
   end
 
   context 'Ruby file' do
@@ -27,6 +24,9 @@ feature 'File blob', :js, feature: true do
 
         # shows an enabled copy button
         expect(page).to have_selector('.js-copy-blob-source-btn:not(.disabled)')
+
+        # shows a raw button
+        expect(page).to have_link('Open raw')
       end
     end
   end
@@ -39,7 +39,7 @@ feature 'File blob', :js, feature: true do
         wait_for_ajax
       end
 
-      it 'displays the blob' do
+      it 'displays the blob using the rich viewer' do
         aggregate_failures do
           # hides the simple viewer
           expect(page).to have_selector('.blob-viewer[data-type="simple"]', visible: false)
@@ -53,6 +53,9 @@ feature 'File blob', :js, feature: true do
 
           # shows a disabled copy button
           expect(page).to have_selector('.js-copy-blob-source-btn.disabled')
+
+          # shows a raw button
+          expect(page).to have_link('Open raw')
         end
       end
 
@@ -63,7 +66,7 @@ feature 'File blob', :js, feature: true do
           wait_for_ajax
         end
 
-        it 'displays the blob' do
+        it 'displays the blob using the simple viewer' do
           aggregate_failures do
             # hides the rich viewer
             expect(page).to have_selector('.blob-viewer[data-type="simple"]')
@@ -84,7 +87,7 @@ feature 'File blob', :js, feature: true do
             wait_for_ajax
           end
 
-          it 'displays the blob' do
+          it 'displays the blob using the rich viewer' do
             aggregate_failures do
               # hides the simple viewer
               expect(page).to have_selector('.blob-viewer[data-type="simple"]', visible: false)
@@ -105,7 +108,7 @@ feature 'File blob', :js, feature: true do
         wait_for_ajax
       end
 
-      it 'displays the blob' do
+      it 'displays the blob using the simple viewer' do
         aggregate_failures do
           # hides the rich viewer
           expect(page).to have_selector('.blob-viewer[data-type="simple"]')
@@ -156,13 +159,16 @@ feature 'File blob', :js, feature: true do
           expect(page).to have_selector('.blob-viewer[data-type="rich"]')
 
           # shows an error message
-          expect(page).to have_content('The rendered file could not be displayed because it is stored in LFS. You can view the source or download it instead.')
+          expect(page).to have_content('The rendered file could not be displayed because it is stored in LFS. You can download it instead.')
 
           # shows a viewer switcher
           expect(page).to have_selector('.js-blob-viewer-switcher')
 
           # does not show a copy button
           expect(page).not_to have_selector('.js-copy-blob-source-btn')
+
+          # shows a download button
+          expect(page).to have_link('Download')
         end
       end
 
@@ -206,6 +212,9 @@ feature 'File blob', :js, feature: true do
 
           # shows an enabled copy button
           expect(page).to have_selector('.js-copy-blob-source-btn:not(.disabled)')
+
+          # shows a raw button
+          expect(page).to have_link('Open raw')
         end
       end
     end
@@ -222,7 +231,7 @@ feature 'File blob', :js, feature: true do
         branch_name: 'master',
         commit_message: "Add PDF",
         file_path: 'files/test.pdf',
-        file_content: File.read(Rails.root.join('spec/javascripts/blob/pdf/test.pdf'))
+        file_content: project.repository.blob_at('add-pdf-file', 'files/pdf/test.pdf').data
       ).execute
 
       visit_blob('files/test.pdf')
@@ -240,6 +249,9 @@ feature 'File blob', :js, feature: true do
 
         # does not show a copy button
         expect(page).not_to have_selector('.js-copy-blob-source-btn')
+
+        # shows a download button
+        expect(page).to have_link('Download')
       end
     end
   end
@@ -265,6 +277,9 @@ feature 'File blob', :js, feature: true do
 
           # does not show a copy button
           expect(page).not_to have_selector('.js-copy-blob-source-btn')
+
+          # shows a download button
+          expect(page).to have_link('Download')
         end
       end
     end
@@ -286,6 +301,9 @@ feature 'File blob', :js, feature: true do
 
           # shows an enabled copy button
           expect(page).to have_selector('.js-copy-blob-source-btn:not(.disabled)')
+
+          # shows a raw button
+          expect(page).to have_link('Open raw')
         end
       end
     end
@@ -308,6 +326,46 @@ feature 'File blob', :js, feature: true do
 
         # does not show a copy button
         expect(page).not_to have_selector('.js-copy-blob-source-btn')
+
+        # shows a download button
+        expect(page).to have_link('Download')
+      end
+    end
+  end
+
+  context 'empty file' do
+    before do
+      project.add_master(project.creator)
+
+      Files::CreateService.new(
+        project,
+        project.creator,
+        start_branch: 'master',
+        branch_name: 'master',
+        commit_message: "Add empty file",
+        file_path: 'files/empty.md',
+        file_content: ''
+      ).execute
+
+      visit_blob('files/empty.md')
+
+      wait_for_ajax
+    end
+
+    it 'displays an error' do
+      aggregate_failures do
+        # shows an error message
+        expect(page).to have_content('Empty file')
+
+        # does not show a viewer switcher
+        expect(page).not_to have_selector('.js-blob-viewer-switcher')
+
+        # does not show a copy button
+        expect(page).not_to have_selector('.js-copy-blob-source-btn')
+
+        # does not show a download or raw button
+        expect(page).not_to have_link('Download')
+        expect(page).not_to have_link('Open raw')
       end
     end
   end
