@@ -88,11 +88,7 @@ module TreeHelper
         part_path = part if part_path.empty?
 
         next if parts.count > max_links && !parts.last(2).include?(part)
-<<<<<<< HEAD
-        yield(part, tree_join(@ref, part_path), part_path)
-=======
         yield(part, part_path)
->>>>>>> ce/master
       end
     end
   end

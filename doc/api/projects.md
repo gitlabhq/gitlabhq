@@ -93,9 +93,7 @@ Parameters:
     "only_allow_merge_if_pipeline_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "request_access_enabled": false,
-<<<<<<< HEAD
-    "approvals_before_merge": 0
-=======
+    "approvals_before_merge": 0,
     "statistics": {
       "commit_count": 37,
       "storage_size": 1038090,
@@ -103,7 +101,6 @@ Parameters:
       "lfs_objects_size": 0,
       "job_artifacts_size": 0
     }
->>>>>>> ce/master
   },
   {
     "id": 6,
@@ -164,9 +161,7 @@ Parameters:
     "only_allow_merge_if_pipeline_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "request_access_enabled": false,
-<<<<<<< HEAD
-    "approvals_before_merge": 0
-=======
+    "approvals_before_merge": 0,
     "statistics": {
       "commit_count": 12,
       "storage_size": 2066080,
@@ -174,7 +169,6 @@ Parameters:
       "lfs_objects_size": 0,
       "job_artifacts_size": 0
     }
->>>>>>> ce/master
   }
 ]
 ```
@@ -267,9 +261,7 @@ Parameters:
   "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "request_access_enabled": false,
-<<<<<<< HEAD
-  "approvals_before_merge": 0
-=======
+  "approvals_before_merge": 0,
   "statistics": {
     "commit_count": 37,
     "storage_size": 1038090,
@@ -277,7 +269,6 @@ Parameters:
     "lfs_objects_size": 0,
     "job_artifacts_size": 0
   }
->>>>>>> ce/master
 }
 ```
 

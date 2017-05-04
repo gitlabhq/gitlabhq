@@ -27,21 +27,13 @@
               = link_to namespace_project_settings_ci_cd_path(@project.namespace, @project), title: 'CI/CD Pipelines' do
                 %span
                   CI/CD Pipelines
-<<<<<<< HEAD
-          = nav_link(controller: :pages) do
-            = link_to namespace_project_pages_path(@project.namespace, @project), title: 'Pages' do
-              %span
-                Pages
-
-          = nav_link(controller: :audit_events) do
-            = link_to namespace_project_audit_events_path(@project.namespace, @project), title: "Audit Events" do
-              %span
-                Audit Events
-
-=======
           - if Gitlab.config.pages.enabled
             = nav_link(controller: :pages) do
               = link_to namespace_project_pages_path(@project.namespace, @project), title: 'Pages' do
                 %span
                   Pages
->>>>>>> ce/master
+
+          = nav_link(controller: :audit_events) do
+            = link_to namespace_project_audit_events_path(@project.namespace, @project), title: "Audit Events" do
+              %span
+                Audit Events

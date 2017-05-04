@@ -1487,7 +1487,6 @@ class Project < ActiveRecord::Base
 
   rescue ActiveRecord::RecordNotSaved => e
     handle_update_attribute_error(e, value)
-<<<<<<< HEAD
   end
 
   def change_repository_storage(new_repository_storage_key)
@@ -1498,8 +1497,6 @@ class Project < ActiveRecord::Base
 
     run_after_commit { ProjectUpdateRepositoryStorageWorker.perform_async(id, new_repository_storage_key) }
     self.repository_read_only = true
-=======
->>>>>>> ce/master
   end
 
   def pushes_since_gc

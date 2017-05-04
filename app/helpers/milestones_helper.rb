@@ -116,7 +116,6 @@ module MilestonesHelper
     end
   end
 
-<<<<<<< HEAD
   def data_warning_for(burndown)
     return unless burndown
 
@@ -131,7 +130,9 @@ module MilestonesHelper
       message += link_to "About burndown charts", help_page_path('user/project/milestones/index', anchor: 'burndown-charts'), class: 'burndown-docs-link'
 
       content_tag(:div, message.html_safe, id: "data-warning", class: "settings-message prepend-top-20")
-=======
+    end
+  end
+
   def milestone_merge_request_tab_path(milestone)
     if @project
       merge_requests_namespace_project_milestone_path(@project.namespace, @project, milestone, format: :json)
@@ -153,7 +154,6 @@ module MilestonesHelper
       labels_namespace_project_milestone_path(@project.namespace, @project, milestone, format: :json)
     elsif @group
       labels_group_milestone_path(@group, milestone.safe_title, title: milestone.title, format: :json)
->>>>>>> ce/master
     end
   end
 end

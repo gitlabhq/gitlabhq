@@ -309,7 +309,6 @@ describe IssuesFinder do
 
     it 'returns all issues for user authorized for the issues projects' do
       expect(described_class.send(:not_restricted_by_confidentiality, authorized_user)).to include(public_issue, confidential_issue)
-<<<<<<< HEAD
     end
 
     it 'returns all issues for an admin user' do
@@ -318,8 +317,6 @@ describe IssuesFinder do
 
     it 'returns all issues for an auditor user' do
       expect(described_class.send(:not_restricted_by_confidentiality, auditor_user)).to include(public_issue, confidential_issue)
-=======
->>>>>>> ce/master
     end
   end
 end

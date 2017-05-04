@@ -41,7 +41,6 @@ class RenameReservedDynamicPaths < ActiveRecord::Migration
     labels
     milestones
     subgroups
-<<<<<<< HEAD
     analytics
     audit_events
     hooks
@@ -49,8 +48,6 @@ class RenameReservedDynamicPaths < ActiveRecord::Migration
     ldap_group_links
     notification_setting
     pipeline_quota
-=======
->>>>>>> ce/master
   ]
 
   def up
