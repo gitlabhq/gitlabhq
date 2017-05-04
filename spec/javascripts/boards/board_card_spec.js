@@ -6,7 +6,7 @@
 /* global BoardService */
 
 import Vue from 'vue';
-import '~/boards/models/user';
+import '~/boards/models/assignee';
 
 require('~/boards/models/list');
 require('~/boards/models/label');

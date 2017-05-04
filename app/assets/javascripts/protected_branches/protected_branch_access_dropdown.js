@@ -20,8 +20,7 @@
           }
         },
         clicked(opts) {
-          const { $el, e } = opts;
-          const item = opts.selectedObj;
+          const { e } = opts;
 
           e.preventDefault();
           onSelect();

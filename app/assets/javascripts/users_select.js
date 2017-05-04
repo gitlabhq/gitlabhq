@@ -391,7 +391,7 @@ import eventHub from './sidebar/event_hub';
               if ($dropdown.hasClass('js-filter-bulk-update') || $dropdown.hasClass('js-issuable-form-dropdown')) {
                 e.preventDefault();
 
-                let isSelecting = (user.id !== selectedId);
+                const isSelecting = (user.id !== selectedId);
                 selectedId = isSelecting ? user.id : selectedIdDefault;
 
                 if (selectedId === gon.current_user_id) {
