@@ -20,7 +20,7 @@
           .node-block
             = node_status_icon(node)
             %strong= node.url
-            - if current_node?(node)
+            - if node.current?
               .node-badge.current-node Current node
             - if node.primary?
               .node-badge.primary-node Primary
@@ -51,7 +51,7 @@
                 %p
                   .js-health
 
-          - if current_node?(node) == node.primary?
+          - if node.current? && node.primary?
             .node-actions
               - if Gitlab::Geo.license_allows?
                 - if node.missing_oauth_application?
