@@ -3,7 +3,8 @@ require 'spec_helper'
 describe Geo::GeoBackfillWorker, services: true do
   let!(:primary)   { create(:geo_node, :primary, host: 'primary-geo-node') }
   let!(:secondary) { create(:geo_node, :current) }
-  let!(:projects)  { create_list(:empty_project, 2) }
+  let!(:project_1) { create(:empty_project) }
+  let!(:project_2) { create(:empty_project) }
 
   subject { described_class.new }
 
@@ -20,12 +21,33 @@ describe Geo::GeoBackfillWorker, services: true do
 
     it 'performs Geo::RepositoryBackfillService for projects where last attempt to backfill failed' do
       Geo::ProjectRegistry.create(
-        project: Project.first,
+        project: project_1,
         last_repository_synced_at: DateTime.now,
         last_repository_successful_sync_at: nil
       )
 
       expect(Geo::RepositoryBackfillService).to receive(:new).twice.and_return(spy)
+
+      subject.perform
+    end
+
+    it 'performs Geo::RepositoryBackfillService for backfilled projects updated recently' do
+      Geo::ProjectRegistry.create(
+        project: project_1,
+        last_repository_synced_at: 2.days.ago,
+        last_repository_successful_sync_at: 2.days.ago
+      )
+
+      Geo::ProjectRegistry.create(
+        project: project_2,
+        last_repository_synced_at: 2.days.ago,
+        last_repository_successful_sync_at: 2.days.ago
+      )
+
+      project_1.update_attribute(:last_repository_updated_at, 2.days.ago)
+      project_2.update_attribute(:last_repository_updated_at, 10.minutes.ago)
+
+      expect(Geo::RepositoryBackfillService).to receive(:new).once.and_return(spy)
 
       subject.perform
     end
