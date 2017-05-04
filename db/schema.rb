@@ -925,6 +925,8 @@ ActiveRecord::Schema.define(version: 20170508190732) do
     t.date "expires_at"
   end
 
+  add_index "project_group_links", ["group_id"], name: "index_project_group_links_on_group_id", using: :btree
+
   create_table "project_import_data", force: :cascade do |t|
     t.integer "project_id"
     t.text "data"
