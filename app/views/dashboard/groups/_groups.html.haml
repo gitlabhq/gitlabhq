@@ -1,6 +1,7 @@
 .js-groups-list-holder
   %ul.content-list
-    - @group_members.each do |group_member|
+    - @groups.each do |group|
+      - group_member = group.group_members.find_by(user_id: current_user)
       = render 'shared/groups/group', group: group_member.group, group_member: group_member
 
-  = paginate @group_members, theme: 'gitlab'
+  = paginate @groups, theme: 'gitlab'

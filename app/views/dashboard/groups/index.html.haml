@@ -2,7 +2,7 @@
 - header_title  "Groups", dashboard_groups_path
 = render 'dashboard/groups_head'
 
-- if @group_members.empty?
+- if @groups.empty?
   = render 'empty_state'
 - else
   = render 'groups'
