@@ -75,6 +75,7 @@ export default {
   beforeDestroyed() {
     eventHub.$off('refreshEnvironments');
     eventHub.$off('toggleFolder');
+    eventHub.$off('postAction');
   },
 
   methods: {
