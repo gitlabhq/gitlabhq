@@ -225,13 +225,6 @@ A forEach will cause side effects, it will be mutating the array being iterated.
 ### Vue.js
 
 #### Basic Rules
-1. Only include one Vue.js component per file.
-1. Export components as plain objects:
-  ```javascript
-    export default {
-      template: `<h1>I'm a component</h1>
-    }
-  ```
 1. The service has it's own file
 1. The store has it's own file
 1. Use a function in the bundle file to instantiate the Vue component:
@@ -274,22 +267,13 @@ A forEach will cause side effects, it will be mutating the array being iterated.
 
 #### Naming
 1. **Extensions**: Use `.vue` extension for Vue components.
-1. **Reference Naming**: Use PascalCase for Vue components and camelCase for their instances:
+1. **Reference Naming**: Use camelCase for their instances:
   ```javascript
-    // bad
-    import cardBoard from 'cardBoard';
-
     // good
-    import CardBoard from 'cardBoard'
+    import cardBoard from 'cardBoard'
 
-    // bad
     components: {
-      CardBoard: CardBoard
-    };
-
-    // good
-    components: {
-      cardBoard: CardBoard
+      cardBoard:
     };
   ```
 
@@ -495,6 +479,16 @@ A forEach will cause side effects, it will be mutating the array being iterated.
 1. Tooltips: When using a tooltip, include the tooltip mixin
 
 1. Don't change `data-original-title`.
+  ```javascript
+    // bad
+    <span data-original-title="tooltip text">Foo</span>
+
+    // good
+    <span title="tooltip text">Foo</span>
+
+    $('span').tooltip('fixTitle');
+  ```
+
 
 ## SCSS
 - [SCSS](style_guide_scss.md)
