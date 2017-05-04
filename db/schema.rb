@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170502091007) do
+ActiveRecord::Schema.define(version: 20170504102911) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -121,6 +121,8 @@ ActiveRecord::Schema.define(version: 20170502091007) do
     t.integer "cached_markdown_version"
     t.boolean "usage_ping_enabled", default: true, null: false
     t.string "uuid"
+    t.boolean "clientside_sentry_enabled", default: false, null: false
+    t.string "clientside_sentry_dsn"
   end
 
   create_table "audit_events", force: :cascade do |t|
