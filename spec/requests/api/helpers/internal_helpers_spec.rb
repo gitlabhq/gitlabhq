@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe ::API::Helpers::InternalHelpers do
-  include ::API::Helpers::InternalHelpers
+  include described_class
 
   describe '.clean_project_path' do
     project = 'namespace/project'

@@ -11,8 +11,8 @@
           = icon('caret-down')
 
         %ul.dropdown-menu.mini-pipeline-graph-dropdown-menu.js-builds-dropdown-container
-          .arrow-up
-          .js-builds-dropdown-list.scrollable-menu
+          %li.js-builds-dropdown-list.scrollable-menu
 
-          .js-builds-dropdown-loading.builds-dropdown-loading.hidden
-            %span.fa.fa-spinner.fa-spin
+          %li.js-builds-dropdown-loading.hidden
+            .text-center
+              %i.fa.fa-spinner.fa-spin{ 'aria-hidden': 'true', 'aria-label': 'Loading' }

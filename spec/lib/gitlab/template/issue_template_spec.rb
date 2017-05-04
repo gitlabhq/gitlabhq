@@ -37,7 +37,7 @@ describe Gitlab::Template::IssueTemplate do
     it 'returns the issue object of a valid file' do
       ruby = subject.find('bug', project)
 
-      expect(ruby).to be_a Gitlab::Template::IssueTemplate
+      expect(ruby).to be_a described_class
       expect(ruby.name).to eq('bug')
     end
   end

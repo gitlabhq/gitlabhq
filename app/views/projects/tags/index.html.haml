@@ -1,4 +1,5 @@
 - @no_container = true
+- @sort ||= sort_value_recently_updated
 - page_title "Tags"
 = render "projects/commits/head"
 
@@ -14,16 +15,14 @@
       .dropdown
         %button.dropdown-toggle{ type: 'button', data: { toggle: 'dropdown'} }
           %span.light
-            = projects_sort_options_hash[@sort]
+            = tags_sort_options_hash[@sort]
           = icon('chevron-down')
-        %ul.dropdown-menu.dropdown-menu-align-right
-          %li
-            = link_to filter_tags_path(sort: sort_value_name) do
-              = sort_title_name
-            = link_to filter_tags_path(sort: sort_value_recently_updated) do
-              = sort_title_recently_updated
-            = link_to filter_tags_path(sort: sort_value_oldest_updated) do
-              = sort_title_oldest_updated
+        %ul.dropdown-menu.dropdown-menu-align-right.dropdown-menu-selectable
+          %li.dropdown-header
+            Sort by
+          - tags_sort_options_hash.each do |value, title|
+            %li
+              = link_to title, filter_tags_path(sort: value), class: ("is-active" if @sort == value)
       - if can?(current_user, :push_code, @project)
         = link_to new_namespace_project_tag_path(@project.namespace, @project), class: 'btn btn-create new-tag-btn' do
           New tag

@@ -139,7 +139,7 @@ describe BlobViewer::Base, model: true do
       end
     end
 
-    context 'when the viewer is server side but the blob is stored in LFS' do
+    context 'when the viewer is server side but the blob is stored externally' do
       let(:project) { build(:empty_project, lfs_enabled: true) }
 
       let(:blob) { fake_blob(path: 'file.pdf', lfs: true) }
@@ -148,8 +148,8 @@ describe BlobViewer::Base, model: true do
         allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
       end
 
-      it 'return :server_side_but_stored_in_lfs' do
-        expect(viewer.render_error).to eq(:server_side_but_stored_in_lfs)
+      it 'return :server_side_but_stored_externally' do
+        expect(viewer.render_error).to eq(:server_side_but_stored_externally)
       end
     end
   end

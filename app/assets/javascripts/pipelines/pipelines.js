@@ -49,6 +49,7 @@ export default {
       isLoading: false,
       hasError: false,
       isMakingRequest: false,
+      updateGraphDropdown: false,
     };
   },
 
@@ -198,15 +199,21 @@ export default {
       this.store.storePagination(response.headers);
 
       this.isLoading = false;
+      this.updateGraphDropdown = true;
     },
 
     errorCallback() {
       this.hasError = true;
       this.isLoading = false;
+      this.updateGraphDropdown = false;
     },
 
     setIsMakingRequest(isMakingRequest) {
       this.isMakingRequest = isMakingRequest;
+
+      if (isMakingRequest) {
+        this.updateGraphDropdown = false;
+      }
     },
   },
 
@@ -263,7 +270,9 @@ export default {
 
           <pipelines-table-component
             :pipelines="state.pipelines"
-            :service="service"/>
+            :service="service"
+            :update-graph-dropdown="updateGraphDropdown"
+            />
         </div>
 
         <gl-pagination
