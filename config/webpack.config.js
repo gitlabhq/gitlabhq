@@ -123,6 +123,7 @@ var config = {
         'boards',
         'commit_pipelines',
         'cycle_analytics',
+        'deploy_keys',
         'diff_notes',
         'environments',
         'environments_folder',

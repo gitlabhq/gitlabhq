@@ -32,7 +32,6 @@
     methods: {
       fetchKeys() {
         this.isLoading = true;
-        this.store.keys = {};
 
         this.service.getKeys()
           .then((data) => {
@@ -45,9 +44,6 @@
         this.service.enableKey(deployKey.id)
           .then(() => this.fetchKeys())
           .catch(() => new Flash('Error enabling deploy key'));
-      },
-      removeKey(deployKey) {
-        this.disableKey(deployKey);
       },
       disableKey(deployKey) {
         // eslint-disable-next-line no-alert
@@ -62,7 +58,7 @@
       this.service = new DeployKeysService(this.endpoint);
 
       eventHub.$on('enable.key', this.enableKey);
-      eventHub.$on('remove.key', this.removeKey);
+      eventHub.$on('remove.key', this.disableKey);
       eventHub.$on('disable.key', this.disableKey);
     },
     mounted() {
