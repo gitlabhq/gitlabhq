@@ -15,7 +15,7 @@ module Gitlab
       end
 
       def legend
-        "Relative Deployed Builds"
+        "Related Deployed Jobs"
       end
 
       def description

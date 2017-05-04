@@ -14,7 +14,7 @@ module Gitlab
       end
 
       def legend
-        "Relative Builds Trigger by Commits"
+        "Related Jobs"
       end
 
       def description
