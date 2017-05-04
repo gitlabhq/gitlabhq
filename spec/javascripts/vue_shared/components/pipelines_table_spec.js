@@ -8,6 +8,8 @@ describe('Pipelines Table', () => {
   let pipeline;
   let PipelinesTableComponent;
 
+  preloadFixtures(jsonFixtureName);
+
   beforeEach(() => {
     PipelinesTableComponent = Vue.extend(pipelinesTableComp);
     const pipelines = getJSONFixture(jsonFixtureName).pipelines;

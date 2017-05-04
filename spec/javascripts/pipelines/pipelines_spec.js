@@ -6,6 +6,7 @@ describe('Pipelines', () => {
   const jsonFixtureName = 'pipelines/pipelines.json';
 
   preloadFixtures('static/pipelines.html.raw');
+  preloadFixtures(jsonFixtureName);
 
   let PipelinesComponent;
   let pipeline;

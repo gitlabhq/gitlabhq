@@ -3,24 +3,35 @@ import tableRowComp from '~/vue_shared/components/pipelines_table_row';
 
 describe('Pipelines Table Row', () => {
   const jsonFixtureName = 'pipelines/pipelines.json';
-
-  let component;
-  let pipeline;
-
-  preloadFixtures(jsonFixtureName);
-
-  beforeEach(() => {
-    const pipelines = getJSONFixture(jsonFixtureName).pipelines;
-    pipeline = pipelines.find(p => p.id === 1);
+  const buildComponent = pipeline => {
     const PipelinesTableRowComponent = Vue.extend(tableRowComp);
-
-    component = new PipelinesTableRowComponent({
+    return new PipelinesTableRowComponent({
       el: document.querySelector('.test-dom-element'),
       propsData: {
         pipeline,
         service: {},
       },
     }).$mount();
+  }
+
+  let component;
+  let pipeline;
+  let pipelineWithoutAuthor;
+  let pipelineWithoutCommit;
+
+  preloadFixtures(jsonFixtureName);
+
+  beforeEach(() => {
+    const pipelines = getJSONFixture(jsonFixtureName).pipelines;
+    pipeline = pipelines.find(p => p.id === 1);
+    pipelineWithoutAuthor = pipelines.find(p => p.id === 2);
+    pipelineWithoutCommit = pipelines.find(p => p.id === 3);
+
+    component = buildComponent(pipeline);
+  });
+
+  afterEach(() => {
+    component.$destroy();
   });
 
   it('should render a table row', () => {
@@ -65,21 +76,40 @@ describe('Pipelines Table Row', () => {
         ).toEqual(pipeline.user.name);
       });
     });
-
-    it('should render commit author', () => {
-      const commitTitleElement = component.$el.querySelector('.branch-commit .commit-title');
-      const commitAuthorElement = commitTitleElement.querySelector('a.avatar-image-container');
-      expect(commitAuthorElement.getAttribute('href')).toEqual(pipeline.commit.author.web_url);
-      expect(commitAuthorElement.querySelector('img.avatar').getAttribute('title')).toEqual(pipeline.commit.author.username);
-    });
   });
 
   describe('commit column', () => {
     it('should render link to commit', () => {
-      expect(
-        component.$el.querySelector('td:nth-child(3) .commit-id').getAttribute('href'),
-      ).toEqual(pipeline.commit.commit_path);
+      const commitLink = component.$el.querySelector('.branch-commit .commit-id');
+      expect(commitLink.getAttribute('href')).toEqual(pipeline.commit.commit_path);
     });
+
+    const commitAuthorTestCase = displayedPipeline => {
+      component.$destroy();
+      component = buildComponent(displayedPipeline);
+      const commitTitleElement = component.$el.querySelector('.branch-commit .commit-title');
+      const commitAuthorElement = commitTitleElement.querySelector('a.avatar-image-container');
+
+      if (!displayedPipeline.commit) {
+        expect(commitAuthorElement).toBe(null);
+        return;
+      }
+
+      const commitAuthorLink = commitAuthorElement.getAttribute('href');
+      const commitAuthorName = commitAuthorElement.querySelector('img.avatar').getAttribute('title');
+
+      if (displayedPipeline.commit.author) {
+        expect(commitAuthorLink).toEqual(displayedPipeline.commit.author.web_url);
+        expect(commitAuthorName).toEqual(displayedPipeline.commit.author.username);
+      } else {
+        expect(commitAuthorLink).toEqual(`mailto:${displayedPipeline.commit.author_email}`);
+        expect(commitAuthorName).toEqual(displayedPipeline.commit.author_name);
+      }
+    };
+
+    it('renders commit author', () => commitAuthorTestCase(pipeline));
+    it('renders commit with unregistered author', () => commitAuthorTestCase(pipelineWithoutAuthor));
+    it('renders nothing without commit', () => commitAuthorTestCase(pipelineWithoutCommit));
   });
 
   describe('stages column', () => {
