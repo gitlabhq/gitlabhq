@@ -8,6 +8,93 @@ end
 describe UploadsController do
   let!(:user) { create(:user, avatar: fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png")) }
 
+  describe 'POST create' do
+    let(:model)   { 'personal_snippet' }
+    let(:snippet) { create(:personal_snippet, :public) }
+    let(:jpg)     { fixture_file_upload(Rails.root + 'spec/fixtures/rails_sample.jpg', 'image/jpg') }
+    let(:txt)     { fixture_file_upload(Rails.root + 'spec/fixtures/doc_sample.txt', 'text/plain') }
+
+    context 'when a user does not have permissions to upload a file' do
+      it "returns 401 when the user is not logged in" do
+        post :create, model: model, id: snippet.id, format: :json
+
+        expect(response).to have_http_status(401)
+      end
+
+      it "returns 404 when user can't comment on a snippet" do
+        private_snippet = create(:personal_snippet, :private)
+
+        sign_in(user)
+        post :create, model: model, id: private_snippet.id, format: :json
+
+        expect(response).to have_http_status(404)
+      end
+    end
+
+    context 'when a user is logged in' do
+      before do
+        sign_in(user)
+      end
+
+      it "returns an error without file" do
+        post :create, model: model, id: snippet.id, format: :json
+
+        expect(response).to have_http_status(422)
+      end
+
+      it "returns an error with invalid model" do
+        expect { post :create, model: 'invalid', id: snippet.id, format: :json }
+        .to raise_error(ActionController::UrlGenerationError)
+      end
+
+      it "returns 404 status when object not found" do
+        post :create, model: model, id: 9999, format: :json
+
+        expect(response).to have_http_status(404)
+      end
+
+      context 'with valid image' do
+        before do
+          post :create, model: 'personal_snippet', id: snippet.id, file: jpg, format: :json
+        end
+
+        it 'returns a content with original filename, new link, and correct type.' do
+          expect(response.body).to match '\"alt\":\"rails_sample\"'
+          expect(response.body).to match "\"url\":\"/uploads"
+        end
+
+        it 'creates a corresponding Upload record' do
+          upload = Upload.last
+
+          aggregate_failures do
+            expect(upload).to exist
+            expect(upload.model).to eq snippet
+          end
+        end
+      end
+
+      context 'with valid non-image file' do
+        before do
+          post :create, model: 'personal_snippet', id: snippet.id, file: txt, format: :json
+        end
+
+        it 'returns a content with original filename, new link, and correct type.' do
+          expect(response.body).to match '\"alt\":\"doc_sample.txt\"'
+          expect(response.body).to match "\"url\":\"/uploads"
+        end
+
+        it 'creates a corresponding Upload record' do
+          upload = Upload.last
+
+          aggregate_failures do
+            expect(upload).to exist
+            expect(upload.model).to eq snippet
+          end
+        end
+      end
+    end
+  end
+
   describe "GET show" do
     context 'Content-Disposition security measures' do
       let(:project) { create(:empty_project, :public) }
