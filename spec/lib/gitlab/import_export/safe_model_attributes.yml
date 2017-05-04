@@ -364,6 +364,7 @@ Project:
 - repository_size_limit
 - sync_time
 - service_desk_enabled
+- last_repository_updated_at
 Author:
 - name
 ProjectFeature:
