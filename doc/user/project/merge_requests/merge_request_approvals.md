@@ -11,7 +11,7 @@ merge request in a project.
 ## Configuring Approvals
 
 You can configure the approvals in the project settings, under merge requests.
-To enable it, set **Approvals required** to 1 or higher and search for the
+To enable it, turn on **Activate merge request approvals** and search for the
 users you want to be approvers.
 
 ![Merge Request Approvals in Project Settings](img/approvals_settings.png)
@@ -19,8 +19,6 @@ users you want to be approvers.
 ### Approvals Required
 
 This sets the amount of approvals required before being able to merge a merge request.
-At 0, this disables the feature. Any value above 0 requires that amount of different
-users to approve the merge request.
 
 The number of approvers can be higher than the required approvals.
 

@@ -31,6 +31,7 @@ feature 'Merge request approvals', js: true, feature: true do
 
   context 'when creating an MR' do
     let(:other_user) { create(:user) }
+    let(:non_member) { create(:user) }
 
     before do
       project.team << [user, :developer]
@@ -48,6 +49,10 @@ feature 'Merge request approvals', js: true, feature: true do
 
     it 'does not allow setting the current user as an approver' do
       expect(find('.select2-results')).not_to have_content(user.name)
+    end
+
+    it 'filters non members from approvers list' do
+      expect(find('.select2-results')).not_to have_content(non_member.name)
     end
   end
 
