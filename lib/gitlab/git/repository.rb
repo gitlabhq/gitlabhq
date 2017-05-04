@@ -45,17 +45,13 @@ module Gitlab
 
       # Default branch in the repository
       def root_ref
-        # NOTE: This feature is intentionally disabled until
-        # https://gitlab.com/gitlab-org/gitaly/issues/179 is resolved
-        # @root_ref ||= Gitlab::GitalyClient.migrate(:root_ref) do |is_enabled|
-        #   if is_enabled
-        #     gitaly_ref_client.default_branch_name
-        #   else
-        @root_ref ||= discover_default_branch
-        #   end
-        # end
-      rescue GRPC::BadStatus => e
-        raise CommandError.new(e)
+        @root_ref ||= gitaly_migrate(:root_ref) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.default_branch_name
+          else
+            discover_default_branch
+          end
+        end
       end
 
       # Alias to old method for compatibility
@@ -72,17 +68,13 @@ module Gitlab
       # Returns an Array of branch names
       # sorted by name ASC
       def branch_names
-        # Gitlab::GitalyClient.migrate(:branch_names) do |is_enabled|
-        #   NOTE: This feature is intentionally disabled until
-        #   https://gitlab.com/gitlab-org/gitaly/issues/179 is resolved
-        #   if is_enabled
-        #     gitaly_ref_client.branch_names
-        #   else
-        branches.map(&:name)
-        #   end
-        # end
-      rescue GRPC::BadStatus => e
-        raise CommandError.new(e)
+        gitaly_migrate(:branch_names) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.branch_names
+          else
+            branches.map(&:name)
+          end
+        end
       end
 
       # Returns an Array of Branches
@@ -122,30 +114,43 @@ module Gitlab
 
       # Returns the number of valid branches
       def branch_count
-        rugged.branches.count do |ref|
-          begin
-            ref.name && ref.target # ensures the branch is valid
+        Gitlab::GitalyClient.migrate(:branch_names) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.count_branch_names
+          else
+            rugged.branches.count do |ref|
+              begin
+                ref.name && ref.target # ensures the branch is valid
 
-            true
-          rescue Rugged::ReferenceError
-            false
+                true
+              rescue Rugged::ReferenceError
+                false
+              end
+            end
+          end
+        end
+      end
+
+      # Returns the number of valid tags
+      def tag_count
+        Gitlab::GitalyClient.migrate(:tag_names) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.count_tag_names
+          else
+            rugged.tags.count
           end
         end
       end
 
       # Returns an Array of tag names
       def tag_names
-        # Gitlab::GitalyClient.migrate(:tag_names) do |is_enabled|
-        #   NOTE: This feature is intentionally disabled until
-        #   https://gitlab.com/gitlab-org/gitaly/issues/179 is resolved
-        #   if is_enabled
-        #     gitaly_ref_client.tag_names
-        #   else
-        rugged.tags.map { |t| t.name }
-        #   end
-        # end
-      rescue GRPC::BadStatus => e
-        raise CommandError.new(e)
+        gitaly_migrate(:tag_names) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.tag_names
+          else
+            rugged.tags.map { |t| t.name }
+          end
+        end
       end
 
       # Returns an Array of Tags
@@ -451,7 +456,7 @@ module Gitlab
 
       # Returns true is +from+ is direct ancestor to +to+, otherwise false
       def is_ancestor?(from, to)
-        Gitlab::GitalyClient::Commit.is_ancestor(self, from, to)
+        gitaly_commit_client.is_ancestor(from, to)
       end
 
       # Return an array of Diff objects that represent the diff
@@ -871,27 +876,6 @@ module Gitlab
         rugged.remotes[remote_name].push(refspecs)
       end
 
-      # Merge the +source_name+ branch into the +target_name+ branch. This is
-      # equivalent to `git merge --no_ff +source_name+`, since a merge commit
-      # is always created.
-      def merge(source_name, target_name, options = {})
-        our_commit = rugged.branches[target_name].target
-        their_commit = rugged.branches[source_name].target
-
-        raise "Invalid merge target" if our_commit.nil?
-        raise "Invalid merge source" if their_commit.nil?
-
-        merge_index = rugged.merge_commits(our_commit, their_commit)
-        return false if merge_index.conflicts?
-
-        actual_options = options.merge(
-          parents: [our_commit, their_commit],
-          tree: merge_index.write_tree(rugged),
-          update_ref: "refs/heads/#{target_name}"
-        )
-        Rugged::Commit.create(rugged, actual_options)
-      end
-
       AUTOCRLF_VALUES = {
         "true" => true,
         "false" => false,
@@ -1271,6 +1255,18 @@ module Gitlab
 
       def gitaly_ref_client
         @gitaly_ref_client ||= Gitlab::GitalyClient::Ref.new(self)
+      end
+
+      def gitaly_commit_client
+        @gitaly_commit_client ||= Gitlab::GitalyClient::Commit.new(self)
+      end
+
+      def gitaly_migrate(method, &block)
+        Gitlab::GitalyClient.migrate(method, &block)
+      rescue GRPC::NotFound => e
+        raise NoRepository.new(e)
+      rescue GRPC::BadStatus => e
+        raise CommandError.new(e)
       end
 
       # Returns the `Rugged` sorting type constant for a given

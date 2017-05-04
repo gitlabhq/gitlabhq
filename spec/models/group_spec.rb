@@ -57,6 +57,32 @@ describe Group, models: true do
     it { is_expected.not_to validate_presence_of :owner }
     it { is_expected.to validate_presence_of :two_factor_grace_period }
     it { is_expected.to validate_numericality_of(:two_factor_grace_period).is_greater_than_or_equal_to(0) }
+
+    describe 'path validation' do
+      it 'rejects paths reserved on the root namespace when the group has no parent' do
+        group = build(:group, path: 'api')
+
+        expect(group).not_to be_valid
+      end
+
+      it 'allows root paths when the group has a parent' do
+        group = build(:group, path: 'api', parent: create(:group))
+
+        expect(group).to be_valid
+      end
+
+      it 'rejects any wildcard paths when not a top level group' do
+        group = build(:group, path: 'tree', parent: create(:group))
+
+        expect(group).not_to be_valid
+      end
+
+      it 'rejects reserved group paths' do
+        group = build(:group, path: 'activity', parent: create(:group))
+
+        expect(group).not_to be_valid
+      end
+    end
   end
 
   describe '.visible_to_user' do
@@ -150,19 +176,16 @@ describe Group, models: true do
   end
 
   describe '#avatar_url' do
+    let!(:group) { create(:group, :access_requestable, :with_avatar) }
     let(:user) { create(:user) }
     subject { group.avatar_url }
 
     context 'when avatar file is uploaded' do
       before do
-        group.add_user(user, GroupMember::MASTER)
-        group.update_columns(avatar: 'avatar.png')
-        allow(group.avatar).to receive(:present?) { true }
+        group.add_master(user)
       end
 
-      let(:avatar_path) do
-        "/uploads/group/avatar/#{group.id}/avatar.png"
-      end
+      let(:avatar_path) { "/uploads/group/avatar/#{group.id}/dk.png" }
 
       it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
 

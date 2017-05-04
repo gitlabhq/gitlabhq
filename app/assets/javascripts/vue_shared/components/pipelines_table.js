@@ -10,12 +10,17 @@ export default {
     pipelines: {
       type: Array,
       required: true,
-      default: () => ([]),
     },
 
     service: {
       type: Object,
       required: true,
+    },
+
+    updateGraphDropdown: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
 
@@ -40,7 +45,9 @@ export default {
           v-bind:model="model">
           <tr is="pipelines-table-row-component"
             :pipeline="model"
-            :service="service"></tr>
+            :service="service"
+            :update-graph-dropdown="updateGraphDropdown"
+            />
         </template>
       </tbody>
     </table>

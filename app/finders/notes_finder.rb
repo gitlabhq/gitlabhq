@@ -68,6 +68,8 @@ class NotesFinder
       MergeRequestsFinder.new(@current_user, project_id: @project.id).execute
     when "snippet", "project_snippet"
       SnippetsFinder.new.execute(@current_user, filter: :by_project, project: @project)
+    when "personal_snippet"
+      PersonalSnippet.all
     else
       raise 'invalid target_type'
     end

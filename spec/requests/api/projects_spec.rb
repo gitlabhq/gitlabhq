@@ -715,6 +715,20 @@ describe API::Projects do
         })
       end
 
+      it "does not include statistics by default" do
+        get api("/projects/#{project.id}", user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).not_to include 'statistics'
+      end
+
+      it "includes statistics if requested" do
+        get api("/projects/#{project.id}", user), statistics: true
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to include 'statistics'
+      end
+
       describe 'permissions' do
         context 'all projects' do
           before { project.team << [user, :master] }

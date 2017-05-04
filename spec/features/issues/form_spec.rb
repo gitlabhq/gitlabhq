@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe 'New/edit issue', feature: true, js: true do
   include GitlabRoutingHelper
+  include ActionView::Helpers::JavaScriptHelper
 
   let!(:project)   { create(:project) }
   let!(:user)      { create(:user)}
@@ -117,6 +118,33 @@ describe 'New/edit issue', feature: true, js: true do
 
       expect(find('.js-label-select')).to have_content('Labels')
     end
+
+    it 'correctly updates the selected user when changing assignee' do
+      click_button 'Assignee'
+      page.within '.dropdown-menu-user' do
+        click_link user.name
+      end
+
+      expect(find('input[name="issue[assignee_id]"]', visible: false).value).to match(user.id.to_s)
+
+      click_button user.name
+
+      expect(find('.dropdown-menu-user a.is-active').first(:xpath, '..')['data-user-id']).to eq(user.id.to_s)
+
+      # check the ::before pseudo element to ensure checkmark icon is present
+      expect(before_for_selector('.dropdown-menu-selectable a.is-active')).not_to eq('')
+      expect(before_for_selector('.dropdown-menu-selectable a:not(.is-active)')).to eq('')
+
+      page.within '.dropdown-menu-user' do
+        click_link user2.name
+      end
+
+      expect(find('input[name="issue[assignee_id]"]', visible: false).value).to match(user2.id.to_s)
+
+      click_button user2.name
+
+      expect(find('.dropdown-menu-user a.is-active').first(:xpath, '..')['data-user-id']).to eq(user2.id.to_s)
+    end
   end
 
   context 'edit issue' do
@@ -165,5 +193,15 @@ describe 'New/edit issue', feature: true, js: true do
         end
       end
     end
+  end
+
+  def before_for_selector(selector)
+    js = <<-JS.strip_heredoc
+      (function(selector) {
+        var el = document.querySelector(selector);
+        return window.getComputedStyle(el, '::before').getPropertyValue('content');
+      })("#{escape_javascript(selector)}")
+    JS
+    page.evaluate_script(js)
   end
 end

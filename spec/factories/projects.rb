@@ -49,6 +49,10 @@ FactoryGirl.define do
       request_access_enabled true
     end
 
+    trait :with_avatar do
+      avatar { File.open(Rails.root.join('spec/fixtures/dk.png')) }
+    end
+
     trait :repository do
       # no-op... for now!
     end
@@ -65,13 +69,12 @@ FactoryGirl.define do
 
     trait :remote_mirror do
       transient do
-        sync_time Gitlab::Mirror::HOURLY
         url "http://foo.com"
         enabled true
       end
 
       after(:create) do |project, evaluator|
-        project.remote_mirrors.create!(url: evaluator.url, enabled: evaluator.enabled, sync_time: evaluator.sync_time)
+        project.remote_mirrors.create!(url: evaluator.url, enabled: evaluator.enabled)
       end
     end
 

@@ -46,6 +46,7 @@ export default Vue.component('pipelines-table', {
       isLoading: false,
       hasError: false,
       isMakingRequest: false,
+      updateGraphDropdown: false,
     };
   },
 
@@ -130,15 +131,21 @@ export default Vue.component('pipelines-table', {
       const pipelines = response.pipelines || response;
       this.store.storePipelines(pipelines);
       this.isLoading = false;
+      this.updateGraphDropdown = true;
     },
 
     errorCallback() {
       this.hasError = true;
       this.isLoading = false;
+      this.updateGraphDropdown = false;
     },
 
     setIsMakingRequest(isMakingRequest) {
       this.isMakingRequest = isMakingRequest;
+
+      if (isMakingRequest) {
+        this.updateGraphDropdown = false;
+      }
     },
   },
 
@@ -163,7 +170,9 @@ export default Vue.component('pipelines-table', {
         v-if="shouldRenderTable">
         <pipelines-table-component
           :pipelines="state.pipelines"
-          :service="service" />
+          :service="service"
+          :update-graph-dropdown="updateGraphDropdown"
+          />
       </div>
     </div>
   `,

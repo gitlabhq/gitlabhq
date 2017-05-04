@@ -1,5 +1,10 @@
 class RemoteMirror < ActiveRecord::Base
   include AfterCommitQueue
+  include IgnorableColumn
+
+  ignore_column :sync_time
+
+  BACKOFF_DELAY = 5.minutes
 
   attr_encrypted :credentials,
                  key: Gitlab::Application.secrets.db_key_base,
@@ -12,9 +17,6 @@ class RemoteMirror < ActiveRecord::Base
   belongs_to :project, inverse_of: :remote_mirrors
 
   validates :url, presence: true, url: { protocols: %w(ssh git http https), allow_blank: true }
-  validates :sync_time,
-    presence: true,
-    inclusion: { in: Gitlab::Mirror::SYNC_TIME_OPTIONS.values }
 
   validate  :url_availability, if: -> (mirror) { mirror.url_changed? || mirror.enabled? }
 
@@ -28,7 +30,7 @@ class RemoteMirror < ActiveRecord::Base
 
   state_machine :update_status, initial: :none do
     event :update_start do
-      transition [:none, :finished] => :started
+      transition [:none, :finished, :failed] => :started
     end
 
     event :update_finish do
@@ -39,24 +41,22 @@ class RemoteMirror < ActiveRecord::Base
       transition started: :failed
     end
 
-    event :update_retry do
-      transition failed: :started
-    end
-
     state :started
     state :finished
     state :failed
 
-    after_transition any => :started, do: :schedule_update_job
+    after_transition any => :started do |remote_mirror, _|
+      remote_mirror.update(last_update_started_at: Time.now)
+    end
 
-    after_transition started: :finished do |remote_mirror, transaction|
+    after_transition started: :finished do |remote_mirror, _|
       timestamp = Time.now
       remote_mirror.update_attributes!(
         last_update_at: timestamp, last_successful_update_at: timestamp, last_error: nil
       )
     end
 
-    after_transition started: :failed do |remote_mirror, transaction|
+    after_transition started: :failed do |remote_mirror, _|
       remote_mirror.update(last_update_at: Time.now)
     end
   end
@@ -74,10 +74,13 @@ class RemoteMirror < ActiveRecord::Base
   end
 
   def sync
-    return unless project
-    return if !enabled || update_in_progress?
+    return unless project && enabled
 
-    update_failed? ? update_retry : update_start
+    RepositoryUpdateRemoteMirrorWorker.perform_in(BACKOFF_DELAY, self.id, Time.now) if project&.repository_exists?
+  end
+
+  def updated_since?(timestamp)
+    last_update_started_at && last_update_started_at > timestamp && !update_failed?
   end
 
   def mark_for_delete_if_blank_url
@@ -128,16 +131,6 @@ class RemoteMirror < ActiveRecord::Base
       last_successful_update_at: nil,
       update_status: 'finished'
     )
-  end
-
-  def schedule_update_job
-    run_after_commit(:add_update_job)
-  end
-
-  def add_update_job
-    if project && project.repository_exists?
-      RepositoryUpdateRemoteMirrorWorker.perform_async(self.id)
-    end
   end
 
   def refresh_remote

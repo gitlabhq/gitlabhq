@@ -63,13 +63,6 @@ Feature: Project Active Tab
     And no other sub tabs should be active
     And the active main tab should be Settings
 
-  Scenario: On Project Settings/Pages
-    Given I visit my project's settings page
-    And I click the "Pages" tab
-    Then the active sub tab should be Pages
-    And no other sub tabs should be active
-    And the active main tab should be Settings
-
   Scenario: On Project Members
     Given I visit my project's members page
     Then the active sub tab should be Members

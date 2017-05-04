@@ -195,6 +195,21 @@ describe Project, models: true do
       end
     end
 
+    context '#mark_stuck_remote_mirrors_as_failed!' do
+      it 'fails stuck remote mirrors' do
+        project = create(:project, :remote_mirror)
+
+        project.remote_mirrors.first.update_attributes(
+          update_status: :started,
+          last_update_at: 2.days.ago
+        )
+
+        expect do
+          project.mark_stuck_remote_mirrors_as_failed!
+        end.to change { project.remote_mirrors.stuck.count }.from(1).to(0)
+      end
+    end
+
     context 'mirror' do
       subject { build(:project, mirror: true) }
 
@@ -263,6 +278,34 @@ describe Project, models: true do
 
       it 'contains errors related to the project being deleted' do
         expect(new_project.errors.full_messages.first).to eq('The project is still being deleted. Please try again later.')
+      end
+    end
+
+    describe 'path validation' do
+      it 'allows paths reserved on the root namespace' do
+        project = build(:project, path: 'api')
+
+        expect(project).to be_valid
+      end
+
+      it 'rejects paths reserved on another level' do
+        project = build(:project, path: 'tree')
+
+        expect(project).not_to be_valid
+      end
+
+      it 'rejects nested paths' do
+        parent = create(:group, :nested, path: 'environments')
+        project = build(:project, path: 'folders', namespace: parent)
+
+        expect(project).not_to be_valid
+      end
+
+      it 'allows a reserved group name' do
+        parent = create(:group)
+        project = build(:project, path: 'avatar', namespace: parent)
+
+        expect(project).to be_valid
       end
     end
   end
@@ -920,37 +963,14 @@ describe Project, models: true do
     end
   end
 
-  describe '#execute_hooks' do
-    it "triggers project and group hooks" do
-      group = create :group, name: 'gitlab'
-      project = create(:project, name: 'gitlabhq', namespace: group)
-      project_hook = create(:project_hook, push_events: true, project: project)
-      group_hook = create(:group_hook, push_events: true, group: group)
-
-      stub_request(:post, project_hook.url)
-      stub_request(:post, group_hook.url)
-
-      expect_any_instance_of(GroupHook).to receive(:async_execute).and_return(true)
-      expect_any_instance_of(ProjectHook).to receive(:async_execute).and_return(true)
-
-      project.execute_hooks({}, :push_hooks)
-    end
-  end
-
   describe '#avatar_url' do
     subject { project.avatar_url }
 
     let(:project) { create(:empty_project) }
 
-    context 'When avatar file is uploaded' do
-      before do
-        project.update_columns(avatar: 'uploads/avatar.png')
-        allow(project.avatar).to receive(:present?) { true }
-      end
-
-      let(:avatar_path) do
-        "/uploads/project/avatar/#{project.id}/uploads/avatar.png"
-      end
+    context 'when avatar file is uploaded' do
+      let(:project) { create(:empty_project, :with_avatar) }
+      let(:avatar_path) { "/uploads/project/avatar/#{project.id}/dk.png" }
 
       it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
 
@@ -971,9 +991,7 @@ describe Project, models: true do
         allow(project).to receive(:avatar_in_git) { true }
       end
 
-      let(:avatar_path) do
-        "/#{project.full_path}/avatar"
-      end
+      let(:avatar_path) { "/#{project.full_path}/avatar" }
 
       it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
     end
@@ -982,6 +1000,23 @@ describe Project, models: true do
       let(:project) { create(:empty_project) }
 
       it { should eq nil }
+    end
+  end
+
+  describe '#execute_hooks' do
+    it "triggers project and group hooks" do
+      group = create :group, name: 'gitlab'
+      project = create(:project, name: 'gitlabhq', namespace: group)
+      project_hook = create(:project_hook, push_events: true, project: project)
+      group_hook = create(:group_hook, push_events: true, group: group)
+
+      stub_request(:post, project_hook.url)
+      stub_request(:post, group_hook.url)
+
+      expect_any_instance_of(GroupHook).to receive(:async_execute).and_return(true)
+      expect_any_instance_of(ProjectHook).to receive(:async_execute).and_return(true)
+
+      project.execute_hooks({}, :push_hooks)
     end
   end
 
@@ -2284,6 +2319,25 @@ describe Project, models: true do
 
     it 'hase a loaded pipeline status' do
       expect(project.pipeline_status).to be_loaded
+    end
+  end
+
+  describe '#append_or_update_attribute' do
+    let(:project) { create(:project) }
+
+    it 'shows full error updating an invalid MR' do
+      error_message = 'Failed to replace merge_requests because one or more of the new records could not be saved.'\
+                      ' Validate fork Source project is not a fork of the target project'
+
+      expect { project.append_or_update_attribute(:merge_requests, [create(:merge_request)]) }.
+        to raise_error(ActiveRecord::RecordNotSaved, error_message)
+    end
+
+    it 'updates the project succesfully' do
+      merge_request = create(:merge_request, target_project: project, source_project: project)
+
+      expect { project.append_or_update_attribute(:merge_requests, [merge_request]) }.
+        not_to raise_error
     end
   end
 end

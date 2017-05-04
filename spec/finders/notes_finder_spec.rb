@@ -110,6 +110,15 @@ describe NotesFinder do
         expect(notes.count).to eq(1)
       end
 
+      it 'finds notes on personal snippets' do
+        note = create(:note_on_personal_snippet)
+        params = { target_type: 'personal_snippet', target_id: note.noteable_id }
+
+        notes = described_class.new(project, user, params).execute
+
+        expect(notes.count).to eq(1)
+      end
+
       it 'raises an exception for an invalid target_type' do
         params[:target_type] = 'invalid'
         expect { described_class.new(project, user, params).execute }.to raise_error('invalid target_type')

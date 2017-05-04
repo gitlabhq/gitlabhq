@@ -87,14 +87,14 @@ gem 'kaminari', '~> 0.17.0'
 gem 'hamlit', '~> 2.6.1'
 
 # Files attachments
-gem 'carrierwave', '~> 0.11.0'
+gem 'carrierwave', '~> 1.0'
 
 # Drag and Drop UI
 gem 'dropzonejs-rails', '~> 0.7.1'
 
 # for backups
 gem 'fog-aws', '~> 0.9'
-gem 'fog-core', '~> 1.40'
+gem 'fog-core', '~> 1.44'
 gem 'fog-google', '~> 0.5'
 gem 'fog-local', '~> 0.3'
 gem 'fog-openstack', '~> 0.1'
@@ -113,7 +113,6 @@ gem 'seed-fu', '~> 2.3.5'
 gem 'elasticsearch-model', '~> 0.1.9'
 gem 'elasticsearch-rails', '~> 0.1.9'
 gem 'elasticsearch-api',   '5.0.3'
-gem 'gitlab-elasticsearch-git', '1.1.1', require: "elasticsearch/git"
 gem 'aws-sdk'
 gem 'faraday_middleware-aws-signers-v4'
 

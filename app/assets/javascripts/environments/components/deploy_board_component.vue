@@ -19,11 +19,11 @@
  * Please refer to this [comment](https://gitlab.com/gitlab-org/gitlab-ee/issues/1589#note_23630610)
  * for more information
  */
-import statusCodes from '~/lib/utils/http_status';
-import '~/flash';
-import '~/lib/utils/common_utils';
+import Visibility from 'visibilityjs';
 import deployBoardSvg from 'empty_states/icons/_deploy_board.svg';
 import instanceComponent from './deploy_board_instance_component.vue';
+import Poll from '../../lib/utils/poll';
+import '../../flash';
 
 export default {
 
@@ -62,73 +62,45 @@ export default {
     return {
       isLoading: false,
       hasError: false,
-      backOffRequestCounter: 0,
       deployBoardSvg,
     };
   },
 
   created() {
-    this.getDeployBoard(true);
-  },
+    const poll = new Poll({
+      resource: this.service,
+      method: 'getDeployBoard',
+      data: this.endpoint,
+      successCallback: this.successCallback,
+      errorCallback: this.errorCallback,
+    });
 
-  updated() {
-    // While board is not complete we need to request new data from the server.
-    // Let's make sure we are not making any request at the moment
-    // and that we only make this request if the latest response was not 204.
-    if (!this.isLoading &&
-      !this.hasError &&
-      this.deployBoardData.completion &&
-      this.deployBoardData.completion < 100) {
-      // let's wait 1s and make the request again
-      setTimeout(() => {
-        this.getDeployBoard(false);
-      }, 3000);
+    if (!Visibility.hidden()) {
+      this.isLoading = true;
+      poll.makeRequest();
     }
+
+    Visibility.change(() => {
+      if (!Visibility.hidden()) {
+        poll.restart();
+      } else {
+        poll.stop();
+      }
+    });
   },
 
   methods: {
-    getDeployBoard(showLoading) {
-      this.isLoading = showLoading;
+    successCallback(response) {
+      const data = response.json();
 
-      const maxNumberOfRequests = 3;
+      this.store.storeDeployBoard(this.environmentID, data);
+      this.isLoading = false;
+    },
 
-      // If the response is 204, we make 3 more requests.
-      gl.utils.backOff((next, stop) => {
-        this.service.getDeployBoard(this.endpoint)
-          .then((resp) => {
-            if (resp.status === statusCodes.NO_CONTENT) {
-              this.backOffRequestCounter = this.backOffRequestCounter += 1;
-
-              if (this.backOffRequestCounter < maxNumberOfRequests) {
-                next();
-              } else {
-                stop(resp);
-              }
-            } else {
-              stop(resp);
-            }
-          })
-          .catch(stop);
-      })
-      .then((resp) => {
-        if (resp.status === statusCodes.NO_CONTENT) {
-          this.hasError = true;
-          return resp;
-        }
-
-        return resp.json();
-      })
-      .then((response) => {
-        this.store.storeDeployBoard(this.environmentID, response);
-        return response;
-      })
-      .then(() => {
-        this.isLoading = false;
-      })
-      .catch(() => {
-        this.isLoading = false;
-        new Flash('An error occurred while fetching the deploy board.', 'alert');
-      });
+    errorCallback() {
+      this.isLoading = false;
+      // eslint-disable-next-line no-new
+      new Flash('An error occurred while fetching the deploy board.');
     },
   },
 

@@ -23,6 +23,8 @@ module API
               error!(errors[:validate_fork], 422)
             elsif errors[:validate_branches].any?
               conflict!(errors[:validate_branches])
+            elsif errors[:base].any?
+              error!(errors[:base], 422)
             end
 
             render_api_error!(errors, 400)

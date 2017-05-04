@@ -40,16 +40,9 @@ Sidekiq.configure_server do |config|
   end
   Sidekiq::Cron::Job.load_from_hash! cron_jobs
 
-  Gitlab::Mirror.configure_cron_jobs!
+  Gitlab::Mirror.configure_cron_job!
 
-  # Gitlab Geo: enable bulk notify job only on primary node
-  Gitlab::Geo.bulk_notify_job.disable! unless Gitlab::Geo.primary?
-
-  # GitLab Geo: enable backfill job only on secondary nodes
-  Gitlab::Geo.backfill_job.disable! unless Gitlab::Geo.secondary?
-
-  # GitLab Geo: enable backfill job only on secondary nodes
-  Gitlab::Geo.file_download_job.disable! unless Gitlab::Geo.secondary?
+  Gitlab::Geo.configure_cron_jobs!
 
   Gitlab::SidekiqThrottler.execute!
 

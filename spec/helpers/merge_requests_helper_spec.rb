@@ -64,7 +64,7 @@ describe MergeRequestsHelper do
 
       it do
         @project = project
-        
+
         is_expected.to eq("#1, #2, and #{other_project.namespace.path}/#{other_project.path}#3")
       end
     end
@@ -149,6 +149,50 @@ describe MergeRequestsHelper do
     end
   end
 
+  describe '#target_projects' do
+    let(:project) { create(:empty_project) }
+    let(:fork_project) { create(:empty_project, forked_from_project: project) }
+
+    context 'when target project has enabled merge requests' do
+      it 'returns the forked_from project' do
+        expect(target_projects(fork_project)).to contain_exactly(project, fork_project)
+      end
+    end
+
+    context 'when target project has disabled merge requests' do
+      it 'returns the forked project' do
+        project.project_feature.update(merge_requests_access_level: 0)
+
+        expect(target_projects(fork_project)).to contain_exactly(fork_project)
+      end
+    end
+  end
+
+  describe '#new_mr_path_from_push_event' do
+    subject(:url_params) { URI.decode_www_form(new_mr_path_from_push_event(event)).to_h }
+    let(:user) { create(:user) }
+    let(:project) { create(:empty_project, creator: user) }
+    let(:fork_project) { create(:project, forked_from_project: project, creator: user) }
+    let(:event) do
+      push_data = Gitlab::DataBuilder::Push.build_sample(fork_project, user)
+      create(:event, :pushed, project: fork_project, target: fork_project, author: user, data: push_data)
+    end
+
+    context 'when target project has enabled merge requests' do
+      it 'returns link to create merge request on source project' do
+        expect(url_params['merge_request[target_project_id]'].to_i).to eq(project.id)
+      end
+    end
+
+    context 'when target project has disabled merge requests' do
+      it 'returns link to create merge request on forked project' do
+        project.project_feature.update(merge_requests_access_level: 0)
+
+        expect(url_params['merge_request[target_project_id]'].to_i).to eq(fork_project.id)
+      end
+    end
+  end
+
   describe '#mr_issues_mentioned_but_not_closing' do
     let(:user_1) { create(:user) }
     let(:user_2) { create(:user) }
@@ -186,6 +230,20 @@ describe MergeRequestsHelper do
       it 'can see that project\'s issue that will be closed on acceptance' do
         expect(mr_issues_mentioned_but_not_closing).to contain_exactly(issue_1, issue_2)
       end
+    end
+  end
+
+  describe '#render_items_list' do
+    it "returns one item in the list" do
+      expect(render_items_list(["user"])).to eq("user")
+    end
+
+    it "returns two items in the list" do
+      expect(render_items_list(%w(user user1))).to eq("user and user1")
+    end
+
+    it "returns three items in the list" do
+      expect(render_items_list(%w(user user1 user2))).to eq("user, user1 and user2")
     end
   end
 end

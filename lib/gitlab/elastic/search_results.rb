@@ -10,7 +10,7 @@ module Gitlab
       def initialize(current_user, query, limit_project_ids, public_and_internal_projects = true)
         @current_user = current_user
         @limit_project_ids = limit_project_ids
-        @query = Shellwords.shellescape(query) if query.present?
+        @query = query
         @public_and_internal_projects = public_and_internal_projects
       end
 
@@ -26,6 +26,8 @@ module Gitlab
           milestones.page(page).per(per_page).records
         when 'blobs'
           blobs.page(page).per(per_page)
+        when 'wiki_blobs'
+          wiki_blobs.page(page).per(per_page)
         when 'commits'
           commits(page: page, per_page: per_page)
         else
@@ -39,6 +41,10 @@ module Gitlab
 
       def blobs_count
         @blobs_count ||= blobs.total_count
+      end
+
+      def wiki_blobs_count
+        @wiki_blobs_count ||= wiki_blobs.total_count
       end
 
       def commits_count
@@ -147,6 +153,22 @@ module Gitlab
         end
       end
 
+      def wiki_blobs
+        if query.blank?
+          Kaminari.painate_array([])
+        else
+          opt = {
+            additional_filter: wiki_filter
+          }
+
+          ProjectWiki.search(
+            query,
+            type: :blob,
+            options: opt.merge({ highlight: true })
+          )[:blobs][:results].response
+        end
+      end
+
       def commits(page: 1, per_page: 20)
         if query.blank?
           Kaminari.paginate_array([])
@@ -164,7 +186,15 @@ module Gitlab
         end
       end
 
+      def wiki_filter
+        blob_filter(:wiki_access_level)
+      end
+
       def repository_filter
+        blob_filter(:repository_access_level)
+      end
+
+      def blob_filter(project_feature_name)
         conditions =
           if non_guest_project_ids == :any
             [{ exists: { field: "id" } }]
@@ -177,7 +207,7 @@ module Gitlab
                           bool: {
                             filter: [
                               { term: { visibility_level: Project::PUBLIC } },
-                              { term: { repository_access_level: ProjectFeature::ENABLED } }
+                              { term: { project_feature_name => ProjectFeature::ENABLED } }
                             ]
                           }
                         }
@@ -187,7 +217,7 @@ module Gitlab
                             bool: {
                               filter: [
                                 { term: { visibility_level: Project::INTERNAL } },
-                                { term: { repository_access_level: ProjectFeature::ENABLED } }
+                                { term: { project_feature_name => ProjectFeature::ENABLED } }
                               ]
                             }
                           }
@@ -200,7 +230,7 @@ module Gitlab
             query: {
               bool: {
                 should: conditions,
-                must_not: { term: { repository_access_level: ProjectFeature::DISABLED } }
+                must_not: { term: { project_feature_name => ProjectFeature::DISABLED } }
               }
             }
           }

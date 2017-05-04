@@ -560,15 +560,18 @@ export default {
 
         <external-url-component
           v-if="externalURL && canReadEnvironment"
-          :external-url="externalURL"/>
+          :external-url="externalURL"
+          />
 
         <monitoring-button-component
           v-if="monitoringUrl && canReadEnvironment"
-          :monitoring-url="monitoringUrl"/>
+          :monitoring-url="monitoringUrl"
+          />
 
         <terminal-button-component
           v-if="model && model.terminal_path"
-          :terminal-path="model.terminal_path"/>
+          :terminal-path="model.terminal_path"
+          />
 
         <stop-component
           v-if="hasStopAction && canCreateDeployment"

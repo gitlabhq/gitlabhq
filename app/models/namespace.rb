@@ -34,7 +34,7 @@ class Namespace < ActiveRecord::Base
   validates :path,
     presence: true,
     length: { maximum: 255 },
-    namespace: true
+    dynamic_path: true
 
   validate :nesting_level_allowed
 
@@ -223,6 +223,10 @@ class Namespace < ActiveRecord::Base
   # that belongs to this namespace
   def all_projects
     Project.inside_path(full_path)
+  end
+
+  def has_parent?
+    parent.present?
   end
 
   private

@@ -3,25 +3,25 @@ require 'spec_helper'
 describe HistoricalData do
   before do
     (1..12).each do |i|
-      HistoricalData.create!(date: Date.new(2014, i, 1), active_user_count: i * 100)
+      described_class.create!(date: Date.new(2014, i, 1), active_user_count: i * 100)
     end
   end
 
   describe ".during" do
     it "returns the historical data during the specified period" do
-      expect(HistoricalData.during(Date.new(2014, 1, 1)..Date.new(2014, 12, 31)).average(:active_user_count)).to eq(650)
+      expect(described_class.during(Date.new(2014, 1, 1)..Date.new(2014, 12, 31)).average(:active_user_count)).to eq(650)
     end
   end
 
   describe ".up_until" do
     it "returns the historical data up until the specified date" do
-      expect(HistoricalData.up_until(Date.new(2014, 6, 1)).average(:active_user_count)).to eq(350)
+      expect(described_class.up_until(Date.new(2014, 6, 1)).average(:active_user_count)).to eq(350)
     end
   end
 
   describe ".at" do
     it "returns the historical data at the specified date" do
-      expect(HistoricalData.at(Date.new(2014, 8, 1)).active_user_count).to eq(800)
+      expect(described_class.at(Date.new(2014, 8, 1)).active_user_count).to eq(800)
     end
   end
 
@@ -31,9 +31,9 @@ describe HistoricalData do
     end
 
     it "creates a new historical data record" do
-      HistoricalData.track!
+      described_class.track!
 
-      data = HistoricalData.last
+      data = described_class.last
       expect(data.date).to eq(Date.today)
       expect(data.active_user_count).to eq(5)
     end
@@ -42,12 +42,12 @@ describe HistoricalData do
   describe ".max_historical_user_count" do
     before do
       (1..3).each do |i|
-        HistoricalData.create!(date: Time.now - i.days, active_user_count: i * 100)
+        described_class.create!(date: Time.now - i.days, active_user_count: i * 100)
       end
     end
 
     it "returns max user count for the past year" do
-      expect(HistoricalData.max_historical_user_count).to eq(300)
+      expect(described_class.max_historical_user_count).to eq(300)
     end
   end
 end

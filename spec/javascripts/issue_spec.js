@@ -108,8 +108,8 @@ describe('Issue', function() {
           expect(this.$triggeredButton).toHaveProp('disabled', true);
           expectNewBranchButtonState(true, false);
           return this.issueStateDeferred;
-        } else if (req.url === Issue.$btnNewBranch.data('path')) {
-          expect(req.type).toBe('get');
+        } else if (req.url === Issue.createMrDropdownWrap.dataset.canCreatePath) {
+          expect(req.type).toBe('GET');
           expectNewBranchButtonState(true, false);
           return this.canCreateBranchDeferred;
         }

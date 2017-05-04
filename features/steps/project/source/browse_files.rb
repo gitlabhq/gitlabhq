@@ -4,6 +4,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   include SharedProject
   include SharedPaths
   include RepoHelpers
+  include WaitForAjax
 
   step "I don't have write access" do
     @project = create(:project, :repository, name: "Other Project", path: "other-project")
@@ -36,10 +37,12 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I should see its content' do
+    wait_for_ajax
     expect(page).to have_content old_gitignore_content
   end
 
   step 'I should see its new content' do
+    wait_for_ajax
     expect(page).to have_content new_gitignore_content
   end
 
@@ -364,7 +367,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
 
   step 'I should see buttons for allowed commands' do
     page.within '.content' do
-      expect(page).to have_link 'Open raw'
+      expect(page).to have_link 'Download'
       expect(page).to have_content 'History'
       expect(page).to have_content 'Permalink'
       expect(page).not_to have_content 'Edit'

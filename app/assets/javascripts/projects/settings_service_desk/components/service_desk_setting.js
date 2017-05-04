@@ -76,13 +76,6 @@ export default {
             </template>
           </div>
         </div>
-        <p
-          ref="recommend-protect-email-from-spam-message"
-          class="settings-message">
-          We recommend you protect the external support email address.
-          Unblocked email spam would result in many spam issues being created,
-          and may disrupt your GitLab service.
-        </p>
       </template>
     </div>
   `,

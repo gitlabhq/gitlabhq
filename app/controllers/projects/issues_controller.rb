@@ -11,7 +11,7 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :redirect_to_external_issue_tracker, only: [:index, :new]
   before_action :module_enabled
   before_action :issue, only: [:edit, :update, :show, :referenced_merge_requests,
-                               :related_branches, :can_create_branch, :rendered_title]
+                               :related_branches, :can_create_branch, :rendered_title, :create_merge_request]
 
   # Allow read any issue
   before_action :authorize_read_issue!, only: [:show, :rendered_title]
@@ -21,6 +21,9 @@ class Projects::IssuesController < Projects::ApplicationController
 
   # Allow modify issue
   before_action :authorize_update_issue!, only: [:edit, :update]
+
+  # Allow create a new branch and empty WIP merge request from current issue
+  before_action :authorize_create_merge_request!, only: [:create_merge_request]
 
   respond_to :html
 
@@ -199,7 +202,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
     respond_to do |format|
       format.json do
-        render json: { can_create_branch: can_create }
+        render json: { can_create_branch: can_create, has_related_branch: @issue.has_related_branch? }
       end
     end
   end
@@ -207,6 +210,16 @@ class Projects::IssuesController < Projects::ApplicationController
   def rendered_title
     Gitlab::PollingInterval.set_header(response, interval: 3_000)
     render json: { title: view_context.markdown_field(@issue, :title) }
+  end
+
+  def create_merge_request
+    result = MergeRequests::CreateFromIssueService.new(project, current_user, issue_iid: issue.iid).execute
+
+    if result[:status] == :success
+      render json: MergeRequestCreateSerializer.new.represent(result[:merge_request])
+    else
+      render json: result[:messsage], status: :unprocessable_entity
+    end
   end
 
   protected
@@ -230,6 +243,10 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def authorize_admin_issues!
     return render_404 unless can?(current_user, :admin_issue, @project)
+  end
+
+  def authorize_create_merge_request!
+    return render_404 unless can?(current_user, :push_code, @project) && @issue.can_be_worked_on?(current_user)
   end
 
   def module_enabled

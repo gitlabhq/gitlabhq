@@ -76,7 +76,7 @@ module TreeHelper
     "A new branch will be created in your fork and a new merge request will be started."
   end
 
-  def tree_breadcrumbs(tree, max_links = 2)
+  def path_breadcrumbs(max_links = 6)
     if @path.present?
       part_path = ""
       parts = @path.split('/')
@@ -88,7 +88,7 @@ module TreeHelper
         part_path = part if part_path.empty?
 
         next if parts.count > max_links && !parts.last(2).include?(part)
-        yield(part, tree_join(@ref, part_path), part_path)
+        yield(part, part_path)
       end
     end
   end

@@ -157,6 +157,11 @@ class Member < ActiveRecord::Base
     def add_users(source, users, access_level, current_user: nil, expires_at: nil)
       return [] unless users.present?
 
+      # Collect all user ids into separate array
+      # so we can use single sql query to get user objects
+      user_ids = users.select { |user| user =~ /\A\d+\Z/ }
+      users = users - user_ids + User.where(id: user_ids)
+
       self.transaction do
         users.map do |user|
           add_user(

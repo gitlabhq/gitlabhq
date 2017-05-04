@@ -38,7 +38,7 @@ module Search
     def scope
       @scope ||= begin
         allowed_scopes = %w[issues merge_requests milestones]
-        allowed_scopes += %w[blobs commits] if current_application_settings.elasticsearch_search?
+        allowed_scopes += %w[wiki_blobs blobs commits] if current_application_settings.elasticsearch_search?
 
         allowed_scopes.delete(params[:scope]) { 'projects' }
       end

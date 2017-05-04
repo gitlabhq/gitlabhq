@@ -17,6 +17,10 @@ FactoryGirl.define do
       visibility_level Gitlab::VisibilityLevel::PRIVATE
     end
 
+    trait :with_avatar do
+      avatar { File.open(Rails.root.join('spec/fixtures/dk.png')) }
+    end
+
     factory :group_with_members do
       after(:create) do |group, evaluator|
         group.add_developer(create :user)

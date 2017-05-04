@@ -30,6 +30,10 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
         expect(project.project_feature.merge_requests_access_level).to eq(ProjectFeature::ENABLED)
       end
 
+      it 'has the project html description' do
+        expect(Project.find_by_path('project').description_html).to eq('description')
+      end
+
       it 'has the same label associated to two issues' do
         expect(ProjectLabel.find_by_title('test2').issues.count).to eq(2)
       end

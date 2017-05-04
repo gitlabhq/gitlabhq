@@ -6,18 +6,14 @@
     %li
       = link_to namespace_project_tree_path(@project.namespace, @project, @ref) do
         = @project.path
-    - tree_breadcrumbs(@tree, 6) do |title, path, part_path|
+    - path_breadcrumbs do |title, path|
+      - title = truncate(title, length: 40)
       %li
-        - if path
-          - if path.end_with?(@path)
-            = link_to namespace_project_blob_path(@project.namespace, @project, path) do
-              %strong
-                = truncate(title, length: 40)
-          - else
-            = link_to truncate(title, length: 40), namespace_project_tree_path(@project.namespace, @project, path)
+        - if path == @path
+          = link_to namespace_project_blob_path(@project.namespace, @project, tree_join(@ref, path)) do
+            %strong= title
         - else
-          = link_to title, '#'
-        = render_lock_icon(part_path)
+          = link_to title, namespace_project_tree_path(@project.namespace, @project, tree_join(@ref, path))
 
 %ul.blob-commit-info.hidden-xs
   - blob_commit = @repository.last_commit_for_path(@commit.id, blob.path)
@@ -26,10 +22,4 @@
 #blob-content-holder.blob-content-holder
   %article.file-holder
     = render "projects/blob/header", blob: blob
-
-    - if blob.empty?
-      .file-content.code
-        .nothing-here-block
-          Empty file
-    - else
-      = render blob.to_partial_path(@project), blob: blob
+    = render 'projects/blob/content', blob: blob

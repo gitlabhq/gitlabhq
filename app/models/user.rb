@@ -128,7 +128,7 @@ class User < ActiveRecord::Base
     presence: true,
     numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: Gitlab::Database::MAX_INT_VALUE }
   validates :username,
-    namespace: true,
+    dynamic_path: true,
     presence: true,
     uniqueness: { case_sensitive: false }
 
@@ -1101,11 +1101,13 @@ class User < ActiveRecord::Base
       User.find_by_email(s)
     end
 
-    scope.create(
+    user = scope.build(
       username: username,
       email: email,
       &creation_block
     )
+    user.save(validate: false)
+    user
   ensure
     Gitlab::ExclusiveLease.cancel(lease_key, uuid)
   end

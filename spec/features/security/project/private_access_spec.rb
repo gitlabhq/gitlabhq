@@ -422,6 +422,38 @@ describe "Private Project Access", feature: true  do
     end
   end
 
+  describe 'GET /:project_path/builds/:id/trace' do
+    let(:pipeline) { create(:ci_pipeline, project: project) }
+    let(:build) { create(:ci_build, pipeline: pipeline) }
+    subject { trace_namespace_project_build_path(project.namespace, project, build.id) }
+
+    it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_allowed_for(:owner).of(project) }
+    it { is_expected.to be_allowed_for(:master).of(project) }
+    it { is_expected.to be_allowed_for(:developer).of(project) }
+    it { is_expected.to be_allowed_for(:reporter).of(project) }
+    it { is_expected.to be_denied_for(:guest).of(project) }
+    it { is_expected.to be_denied_for(:user) }
+    it { is_expected.to be_denied_for(:external) }
+    it { is_expected.to be_denied_for(:visitor) }
+
+    context 'when public builds is enabled' do
+      before do
+        project.update(public_builds: true)
+      end
+
+      it { is_expected.to be_allowed_for(:guest).of(project) }
+    end
+
+    context 'when public builds is disabled' do
+      before do
+        project.update(public_builds: false)
+      end
+
+      it { is_expected.to be_denied_for(:guest).of(project) }
+    end
+  end
+
   describe "GET /:project_path/environments" do
     subject { namespace_project_environments_path(project.namespace, project) }
 
@@ -443,6 +475,21 @@ describe "Private Project Access", feature: true  do
 
     it { is_expected.to be_allowed_for(:admin) }
     it { is_expected.to be_allowed_for(:auditor) }
+    it { is_expected.to be_allowed_for(:owner).of(project) }
+    it { is_expected.to be_allowed_for(:master).of(project) }
+    it { is_expected.to be_allowed_for(:developer).of(project) }
+    it { is_expected.to be_allowed_for(:reporter).of(project) }
+    it { is_expected.to be_denied_for(:guest).of(project) }
+    it { is_expected.to be_denied_for(:user) }
+    it { is_expected.to be_denied_for(:external) }
+    it { is_expected.to be_denied_for(:visitor) }
+  end
+
+  describe "GET /:project_path/environments/:id/deployments" do
+    let(:environment) { create(:environment, project: project) }
+    subject { namespace_project_environment_deployments_path(project.namespace, project, environment) }
+
+    it { is_expected.to be_allowed_for(:admin) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:master).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }

@@ -64,7 +64,7 @@
             %span.remaining-days= remaining_days
 
     - if !project || can?(current_user, :read_issue, project)
-      .block
+      .block.issues
         .sidebar-collapsed-icon
           %strong
             = icon('hashtag', 'aria-hidden': 'true')
@@ -102,7 +102,7 @@
         - else
           .no-value None
 
-    .block
+    .block.merge-requests
       .sidebar-collapsed-icon
         %strong
           = icon('exclamation', 'aria-hidden': 'true')

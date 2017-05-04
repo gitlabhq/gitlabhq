@@ -71,9 +71,10 @@ repository to push to. Hit **Save changes** for the changes to take effect.
 
 Similarly to the pull mirroring, since the upstream repository functions as a
 mirror to the repository in GitLab, you are advised not to push commits directly
-to the mirrored repository. Instead, any commits should be pushed to GitLab,
-and will end up in the mirrored repository automatically within the configured time,
-or when a [forced update](#forcing-an-update) is initiated.
+to the mirrored repository. Instead, all changes will end up in the mirrored repository
+whenever commits are pushed to GitLab, or when a [forced update](#forcing-an-update) is initiated.
+
+Pushes into GitLab are automatically pushed to the remote mirror 5 minutes after they come in.
 
 In case of a diverged branch, you will see an error indicated at the
 **Mirror repository** settings.

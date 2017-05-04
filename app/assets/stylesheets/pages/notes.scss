@@ -67,7 +67,7 @@ ul.notes {
       }
     }
 
-    &.is-editting {
+    &.is-editing {
       .note-header,
       .note-text,
       .edited-text {
@@ -96,6 +96,10 @@ ul.notes {
           ul:not(.task-list) {
             padding-left: 1.3em;
           }
+        }
+
+        table {
+          @include markdown-table;
         }
       }
     }

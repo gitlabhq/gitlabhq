@@ -390,7 +390,8 @@
       &::before {
         position: absolute;
         left: 6px;
-        top: 6px;
+        top: 50%;
+        transform: translateY(-50%);
         font: normal normal normal 14px/1 FontAwesome;
         font-size: inherit;
         text-rendering: auto;

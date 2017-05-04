@@ -10,7 +10,7 @@ describe PostReceive do
 
   context "as a resque worker" do
     it "reponds to #perform" do
-      expect(PostReceive.new).to respond_to(:perform)
+      expect(described_class.new).to respond_to(:perform)
     end
   end
 
@@ -25,7 +25,7 @@ describe PostReceive do
       it "calls GitTagPushService" do
         expect_any_instance_of(GitPushService).to receive(:execute).and_return(true)
         expect_any_instance_of(GitTagPushService).not_to receive(:execute)
-        PostReceive.new.perform(pwd(project), key_id, base64_changes)
+        described_class.new.perform(pwd(project), key_id, base64_changes)
       end
     end
 
@@ -35,7 +35,7 @@ describe PostReceive do
       it "calls GitTagPushService" do
         expect_any_instance_of(GitPushService).not_to receive(:execute)
         expect_any_instance_of(GitTagPushService).to receive(:execute).and_return(true)
-        PostReceive.new.perform(pwd(project), key_id, base64_changes)
+        described_class.new.perform(pwd(project), key_id, base64_changes)
       end
     end
 
@@ -45,12 +45,12 @@ describe PostReceive do
       it "does not call any of the services" do
         expect_any_instance_of(GitPushService).not_to receive(:execute)
         expect_any_instance_of(GitTagPushService).not_to receive(:execute)
-        PostReceive.new.perform(pwd(project), key_id, base64_changes)
+        described_class.new.perform(pwd(project), key_id, base64_changes)
       end
     end
 
     context "gitlab-ci.yml" do
-      subject { PostReceive.new.perform(pwd(project), key_id, base64_changes) }
+      subject { described_class.new.perform(pwd(project), key_id, base64_changes) }
 
       context "creates a Ci::Pipeline for every change" do
         before do
@@ -75,7 +75,7 @@ describe PostReceive do
   context "webhook" do
     it "fetches the correct project" do
       expect(Project).to receive(:find_by_full_path).with(project.path_with_namespace).and_return(project)
-      PostReceive.new.perform(pwd(project), key_id, base64_changes)
+      described_class.new.perform(pwd(project), key_id, base64_changes)
     end
 
     it "triggers wiki index update" do
@@ -86,7 +86,7 @@ describe PostReceive do
 
       repo_path = "#{pwd(project)}.wiki"
 
-      PostReceive.new.perform(repo_path, key_id, base64_changes)
+      described_class.new.perform(repo_path, key_id, base64_changes)
     end
 
     it "does not run if the author is not in the project" do
@@ -96,7 +96,7 @@ describe PostReceive do
 
       expect(project).not_to receive(:execute_hooks)
 
-      expect(PostReceive.new.perform(pwd(project), key_id, base64_changes)).to be_falsey
+      expect(described_class.new.perform(pwd(project), key_id, base64_changes)).to be_falsey
     end
 
     it "asks the project to trigger all hooks" do
@@ -104,14 +104,14 @@ describe PostReceive do
       expect(project).to receive(:execute_hooks).twice
       expect(project).to receive(:execute_services).twice
 
-      PostReceive.new.perform(pwd(project), key_id, base64_changes)
+      described_class.new.perform(pwd(project), key_id, base64_changes)
     end
 
     it "enqueues a UpdateMergeRequestsWorker job" do
       allow(Project).to receive(:find_by_full_path).and_return(project)
       expect(UpdateMergeRequestsWorker).to receive(:perform_async).with(project.id, project.owner.id, any_args)
 
-      PostReceive.new.perform(pwd(project), key_id, base64_changes)
+      described_class.new.perform(pwd(project), key_id, base64_changes)
     end
   end
 

@@ -56,7 +56,7 @@ describe EventsHelper do
 
     it 'preserves code color scheme' do
       input = "```ruby\ndef test\n  'hello world'\nend\n```"
-      expected = '<pre class="code highlight js-syntax-highlight ruby">' \
+      expected = "\n<pre class=\"code highlight js-syntax-highlight ruby\">" \
         "<code><span class=\"line\"><span class=\"k\">def</span> <span class=\"nf\">test</span>...</span>\n" \
         "</code></pre>"
       expect(helper.event_note(input)).to eq(expected)

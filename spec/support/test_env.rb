@@ -41,6 +41,7 @@ module TestEnv
     'csv'                                => '3dd0896',
     'v1.1.0'                             => 'b83d6e3',
     'add-ipython-files'                  => '6d85bb69',
+    'add-pdf-file'                       => 'e774ebd3',
     'squash-large-files'                 => '54cec52',
   }.freeze
 

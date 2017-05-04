@@ -1,6 +1,6 @@
 module MergeRequestsHelper
   def new_mr_path_from_push_event(event)
-    target_project = event.project.forked_from_project || event.project
+    target_project = event.project.default_merge_request_target
     new_namespace_project_merge_request_path(
       event.project.namespace,
       event.project,
@@ -99,31 +99,6 @@ module MergeRequestsHelper
     end
   end
 
-  # This may be able to be removed with associated specs
-  def render_require_section(merge_request)
-    str = if merge_request.approvals_left == 1
-            "Requires one more approval"
-          else
-            "Requires #{merge_request.approvals_left} more approvals"
-          end
-
-    if merge_request.approvers_left.any?
-      more_approvals = merge_request.approvals_left - merge_request.approvers_left.count
-      approvers_names = merge_request.approvers_left.map(&:name)
-
-      str <<
-        if more_approvals > 0
-          " (from #{render_items_list(approvers_names + ["#{more_approvals} more"])})"
-        elsif more_approvals < 0
-          " (from #{render_items_list(approvers_names, "or")})"
-        else
-          " (from #{render_items_list(approvers_names)})"
-        end
-    end
-
-    str
-  end
-
   def mr_assign_issues_link
     issues = MergeRequests::AssignIssuesService.new(@project,
                                                     current_user,
@@ -164,6 +139,10 @@ module MergeRequestsHelper
     else
       ["#{source_path}:#{source_branch}", "#{target_path}:#{target_branch}"]
     end
+  end
+
+  def target_projects(project)
+    [project, project.default_merge_request_target].uniq
   end
 
   def merge_request_button_visibility(merge_request, closed)

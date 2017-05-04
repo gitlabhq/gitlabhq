@@ -17,6 +17,7 @@ Feature: Project Builds Artifacts
     When I visit recent build details page
     And I click artifacts browse button
     Then I should see content of artifacts archive
+    And I should see the build header
 
   Scenario: I browse subdirectory of build artifacts
     Given recent build has artifacts available
@@ -25,6 +26,7 @@ Feature: Project Builds Artifacts
     And I click artifacts browse button
     And I click link to subdirectory within build artifacts
     Then I should see content of subdirectory within artifacts archive
+    And I should see the directory name in the breadcrumb
 
   Scenario: I browse directory with UTF-8 characters in name
     Given recent build has artifacts available

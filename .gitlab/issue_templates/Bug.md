@@ -1,3 +1,17 @@
+Please read this!
+
+Before opening a new issue, make sure to search for keywords in the issues
+filtered by the "regression" or "bug" label:
+
+- https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name%5B%5D=regression
+- https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name%5B%5D=bug
+
+and verify the issue you're about to submit isn't a duplicate.
+
+Please remove this notice if you're confident your issue isn't a duplicate.
+
+------
+
 ### Summary
 
 (Summarize the bug encountered concisely)
@@ -56,3 +70,5 @@ logs, and code as it's very hard to read otherwise.)
 ### Possible fixes
 
 (If you can, link to the line of code that might be responsible for the problem)
+
+/label ~bug

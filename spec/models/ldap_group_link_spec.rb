@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe LdapGroupLink do
-  let(:klass) { LdapGroupLink }
+  let(:klass) { described_class }
   let(:ldap_group_link) { build :ldap_group_link }
 
   describe "validation" do

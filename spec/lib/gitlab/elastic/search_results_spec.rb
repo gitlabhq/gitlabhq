@@ -401,6 +401,75 @@ describe Gitlab::Elastic::SearchResults, lib: true do
     end
   end
 
+  describe 'Wikis' do
+    let(:results) { described_class.new(user, 'term', limit_project_ids) }
+    subject(:wiki_blobs) { results.objects('wiki_blobs') }
+
+    before do
+      project_1.wiki.create_page('index_page', 'term')
+      project_1.wiki.index_blobs
+
+      Gitlab::Elastic::Helper.refresh_index
+    end
+
+    it 'finds wiki blobs' do
+      blobs = results.objects('wiki_blobs')
+
+      expect(blobs.first["_source"]["blob"]["content"]).to include("term")
+      expect(results.wiki_blobs_count).to eq 1
+    end
+
+    it 'finds wiki blobs from public projects only' do
+      project_2 = create :project, :private
+      project_2.wiki.create_page('index_page', 'term')
+      project_2.wiki.index_blobs
+      Gitlab::Elastic::Helper.refresh_index
+
+      expect(results.wiki_blobs_count).to eq 1
+
+      results = described_class.new(user, 'term', [project_1.id, project_2.id])
+      expect(results.wiki_blobs_count).to eq 2
+    end
+
+    it 'returns zero when wiki blobs are not found' do
+      results = described_class.new(user, 'asdfg', limit_project_ids)
+
+      expect(results.wiki_blobs_count).to eq 0
+    end
+
+    context 'when wiki is disabled' do
+      let(:project_1) { create(:project, :public, :wiki_disabled) }
+
+      context 'search by member' do
+        let(:limit_project_ids) { [project_1.id] }
+
+        it { is_expected.to be_empty }
+      end
+
+      context 'search by non-member' do
+        let(:limit_project_ids) { [] }
+
+        it { is_expected.to be_empty }
+      end
+    end
+
+    context 'when wiki is internal' do
+      let(:project_1) { create(:project, :public, :wiki_private) }
+
+      context 'search by member' do
+        let(:limit_project_ids) { [project_1.id] }
+
+        it { is_expected.not_to be_empty }
+      end
+
+      context 'search by non-member' do
+        let(:limit_project_ids) { [] }
+
+        it { is_expected.to be_empty }
+      end
+    end
+  end
+
   describe 'Commits' do
     before do
       project_1.repository.index_commits
@@ -551,6 +620,33 @@ describe Gitlab::Elastic::SearchResults, lib: true do
 
         expect(merge_requests).to include merge_request_4
         expect(results.merge_requests_count).to eq 1
+      end
+    end
+
+    context 'Wikis' do
+      before do
+        [public_project, internal_project, private_project1, private_project2].each do |project|
+          project.wiki.create_page('index_page', 'term')
+          project.wiki.index_blobs
+        end
+
+        Gitlab::Elastic::Helper.refresh_index
+      end
+
+      it 'finds the right set of wiki blobs' do
+        # Authenticated search
+        results = described_class.new(user, 'term', limit_project_ids)
+        blobs = results.objects('wiki_blobs')
+
+        expect(blobs.map{|blob| blob._parent.to_i }).to match_array [internal_project.id, private_project2.id, public_project.id]
+        expect(results.wiki_blobs_count).to eq 3
+
+        # Unauthenticated search
+        results = described_class.new(nil, 'term', [])
+        blobs = results.objects('wiki_blobs')
+
+        expect(blobs.first._parent.to_i).to eq public_project.id
+        expect(results.wiki_blobs_count).to eq 1
       end
     end
 

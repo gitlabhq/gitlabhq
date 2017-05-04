@@ -8,13 +8,13 @@ describe DeleteUserWorker do
     expect_any_instance_of(Users::DestroyService).to receive(:execute).
                                                       with(user, {})
 
-    DeleteUserWorker.new.perform(current_user.id, user.id)
+    described_class.new.perform(current_user.id, user.id)
   end
 
   it "uses symbolized keys" do
     expect_any_instance_of(Users::DestroyService).to receive(:execute).
                                                       with(user, test: "test")
 
-    DeleteUserWorker.new.perform(current_user.id, user.id, "test" => "test")
+    described_class.new.perform(current_user.id, user.id, "test" => "test")
   end
 end
