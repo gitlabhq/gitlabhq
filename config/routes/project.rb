@@ -234,6 +234,7 @@ constraints(ProjectUrlConstrainer.new) do
           get :related_branches
           get :can_create_branch
           get :rendered_title
+          post :create_merge_request
         end
         collection do
           post  :bulk_update
