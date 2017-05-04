@@ -31,6 +31,10 @@ RAILS_ENV="production"
 # internal /bin/sh variables such as PATH, EDITOR or SHELL.
 app_user="git"
 app_root="/home/$app_user/gitlab"
+
+# Read configuration variable file if it is present
+test -f /etc/default/gitlab && . /etc/default/gitlab
+
 pid_path="$app_root/tmp/pids"
 socket_path="$app_root/tmp/sockets"
 rails_socket="$socket_path/gitlab.socket"
@@ -52,9 +56,6 @@ gitaly_enabled=false
 gitaly_dir=$(cd $app_root/../gitaly 2> /dev/null && pwd)
 gitaly_pid_path="$pid_path/gitaly.pid"
 gitaly_log="$app_root/log/gitaly.log"
-
-# Read configuration variable file if it is present
-test -f /etc/default/gitlab && . /etc/default/gitlab
 
 # Switch to the app_user if it is not he/she who is running the script.
 if [ `whoami` != "$app_user" ]; then
