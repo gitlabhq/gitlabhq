@@ -35,23 +35,23 @@
                 %p
                   %span.help-block
                     Repositories synced:
-                    %span.node-info.js-repositories-synced
+                    %strong.node-info.js-repositories-synced
                 %p
                   %span.help-block
                     Repositories failed:
-                    %span.node-info.js-repositories-failed
+                    %strong.node-info.js-repositories-failed
                 %p
                   %span.help-block
                     LFS objects synced:
-                    %span.node-info.js-lfs-objects-synced
+                    %strong.node-info.js-lfs-objects-synced
                 %p
                   %span.help-block
                     Attachments synced:
-                    %span.node-info.js-attachments-synced
+                    %strong.node-info.js-attachments-synced
                 %p
                   .js-health
 
-          - if node.current? && node.primary?
+          - if node.current? == node.primary?
             .node-actions
               - if Gitlab::Geo.license_allows?
                 - if node.missing_oauth_application?

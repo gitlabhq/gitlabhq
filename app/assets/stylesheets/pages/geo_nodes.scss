@@ -26,7 +26,6 @@
 }
 
 .node-info {
-  font-weight: bold;
   color: $gl-text-color;
 }
 
@@ -52,13 +51,12 @@
 }
 
 .node-actions {
-  position: absolute;
-  right: 15px;
-  top: 10px;
+  margin-top: 10px;
 
-  @media (max-width: $screen-xs-max) {
-    position: initial;
-    margin-top: 10px;
+  @media (min-width: $screen-md-min) {
+    position: absolute;
+    right: 15px;
+    top: 10px;
   }
 
   .btn:not(:first-of-type) {
