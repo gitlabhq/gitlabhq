@@ -1,0 +1,277 @@
+production:
+    first_thing:
+      - source: /config/cloud/cloud66/scripts/install.sh
+        destination: /tmp/install.sh
+        target: rails
+        apply_during: build_only
+        run_on: all_servers
+        execute: true
+        sudo: true
+      - source: /config/cloud/cloud66/scripts/env_var_perms.sh
+        destination: /tmp/env_var_perms.sh
+        target: rails
+        apply_during: all
+        run_on: all_servers
+        execute: true
+        sudo: true
+    after_checkout:
+      - source: /config/cloud/cloud66/files/database.yml
+        destination: <%= ENV['RAILS_STACK_PATH'] %>/config/database.yml
+        target: rails
+        parse: false
+        run_on: all_servers
+      - source: /config/cloud/cloud66/files/resque.yml
+        destination: <%= ENV['RAILS_STACK_PATH'] %>/config/resque.yml
+        target: rails
+        parse: false
+        run_on: all_servers
+      - source: /config/cloud/cloud66/files/Procfile
+        destination: <%= ENV['RAILS_STACK_PATH'] %>/Procfile
+        target: rails
+        run_on: all_servers
+      - source: /config/cloud/cloud66/files/gitlab.yml
+        destination: <%= ENV['RAILS_STACK_PATH'] %>/config/gitlab.yml
+        target: rails
+        run_on: all_servers
+      - source: /config/cloud/cloud66/files/gitlab_config.yml
+        destination: <%= ENV['RAILS_STACK_PATH'] %>/config/gitlab_config.yml
+        target: rails
+        parse: true
+        run_on: all_servers
+      - source: /config/cloud/cloud66/files/production.rb
+        destination: <%= ENV['RAILS_STACK_PATH'] %>/config/environments/production.rb
+        target: rails
+        run_on: all_servers
+      - source: /config/cloud/cloud66/files/smtp_settings.rb
+        destination: <%= ENV['RAILS_STACK_PATH'] %>/config/initializers/smtp_settings.rb
+        target: rails
+        run_on: all_servers
+      - source: /config/cloud/cloud66/files/unicorn.rb.cloud66
+        destination: <%= ENV['RAILS_STACK_PATH'] %>/config/unicorn.rb.cloud66
+        target: rails
+        run_on: all_servers
+      - source: /config/cloud/cloud66/files/rack_attack.rb
+        destination: <%= ENV['RAILS_STACK_PATH'] %>/config/initializers/rack_attack.rb
+        target: rails
+        run_on: all_servers
+    last_thing:
+      - source: /config/cloud/cloud66/scripts/add_user.sh
+        destination: /tmp/add_user.sh
+        target: rails
+        apply_during: build_only
+        execute: true
+        run_on: all_servers
+        sudo: true
+      - source: /config/cloud/cloud66/scripts/permissions.sh
+        destination: /tmp/permissions.sh
+        target: rails
+        apply_during: build_only
+        execute: true
+        run_on: all_servers
+        sudo: false
+      - source: /config/cloud/cloud66/scripts/gitlab_shell.sh
+        destination: /tmp/gitlab_shell.sh
+        target: rails
+        apply_during: build_only
+        execute: true
+        run_on: all_servers
+        sudo: false
+      - source: /config/cloud/cloud66/scripts/logging.sh
+        destination: /tmp/logging.sh
+        target: rails
+        apply_during: build_only
+        execute: true
+        run_on: all_servers
+        sudo: false
+      - source: /config/cloud/cloud66/scripts/seed.sh
+        destination: /tmp/seed.sh
+        target: rails
+        apply_during: build_only
+        execute: true
+        sudo: true
+staging:
+    first_thing:
+      - source: /config/cloud/cloud66/scripts/install.sh
+        destination: /tmp/install.sh
+        target: rails
+        apply_during: build_only
+        run_on: all_servers
+        execute: true
+        sudo: true
+      - source: /config/cloud/cloud66/scripts/env_var_perms.sh
+        destination: /tmp/env_var_perms.sh
+        target: rails
+        apply_during: all
+        run_on: all_servers
+        execute: true
+        sudo: true
+    after_checkout:
+      - source: /config/cloud/cloud66/files/database.yml
+        destination: <%= ENV['RAILS_STACK_PATH'] %>/config/database.yml
+        target: rails
+        parse: false
+        run_on: all_servers
+      - source: /config/cloud/cloud66/files/resque.yml
+        destination: <%= ENV['RAILS_STACK_PATH'] %>/config/resque.yml
+        target: rails
+        run_on: all_servers
+      - source: /config/cloud/cloud66/files/Procfile
+        destination: <%= ENV['RAILS_STACK_PATH'] %>/Procfile
+        target: rails
+        run_on: all_servers
+      - source: /config/cloud/cloud66/files/gitlab.yml
+        destination: <%= ENV['RAILS_STACK_PATH'] %>/config/gitlab.yml
+        target: rails
+        run_on: all_servers
+      - source: /config/cloud/cloud66/files/gitlab_config.yml
+        destination: <%= ENV['RAILS_STACK_PATH'] %>/config/gitlab_config.yml
+        target: rails
+        parse: true
+        run_on: all_servers
+      - source: /config/cloud/cloud66/files/production.rb
+        destination: <%= ENV['RAILS_STACK_PATH'] %>/config/environments/production.rb
+        target: rails
+        run_on: all_servers
+      - source: /config/cloud/cloud66/files/smtp_settings.rb
+        destination: <%= ENV['RAILS_STACK_PATH'] %>/config/initializers/smtp_settings.rb
+        target: rails
+        run_on: all_servers
+      - source: /config/cloud/cloud66/files/unicorn.rb.cloud66
+        destination: <%= ENV['RAILS_STACK_PATH'] %>/config/unicorn.rb.cloud66
+        target: rails
+        run_on: all_servers
+      - source: /config/cloud/cloud66/files/rack_attack.rb
+        destination: <%= ENV['RAILS_STACK_PATH'] %>/config/initializers/rack_attack.rb
+        target: rails
+        run_on: all_servers
+    last_thing:
+      - source: /config/cloud/cloud66/scripts/add_user.sh
+        destination: /tmp/add_user.sh
+        target: rails
+        apply_during: build_only
+        execute: true
+        run_on: all_servers
+        sudo: true
+      - source: /config/cloud/cloud66/scripts/permissions.sh
+        destination: /tmp/permissions.sh
+        target: rails
+        apply_during: build_only
+        execute: true
+        run_on: all_servers
+        sudo: false
+      - source: /config/cloud/cloud66/scripts/gitlab_shell.sh
+        destination: /tmp/gitlab_shell.sh
+        target: rails
+        apply_during: build_only
+        execute: true
+        run_on: all_servers
+        sudo: false
+      - source: /config/cloud/cloud66/scripts/logging.sh
+        destination: /tmp/logging.sh
+        target: rails
+        apply_during: build_only
+        execute: true
+        run_on: all_servers
+        sudo: false
+      - source: /config/cloud/cloud66/scripts/seed.sh
+        destination: /tmp/seed.sh
+        target: rails
+        apply_during: build_only
+        execute: true
+        sudo: true
+development:
+    first_thing:
+      - source: /config/cloud/cloud66/scripts/install.sh
+        destination: /tmp/install.sh
+        target: rails
+        apply_during: build_only
+        run_on: all_servers
+        execute: true
+        sudo: true
+      - source: /config/cloud/cloud66/scripts/env_var_perms.sh
+        destination: /tmp/env_var_perms.sh
+        target: rails
+        apply_during: all
+        run_on: all_servers
+        execute: true
+        sudo: true
+    after_checkout:
+      - source: /config/cloud/cloud66/files/database.yml
+        destination: <%= ENV['RAILS_STACK_PATH'] %>/config/database.yml
+        target: rails
+        parse: false
+        run_on: all_servers
+      - source: /config/cloud/cloud66/files/resque.yml
+        destination: <%= ENV['RAILS_STACK_PATH'] %>/config/resque.yml
+        target: rails
+        run_on: all_servers
+      - source: /config/cloud/cloud66/files/Procfile
+        destination: <%= ENV['RAILS_STACK_PATH'] %>/Procfile
+        target: rails
+        run_on: all_servers
+      - source: /config/cloud/cloud66/files/gitlab.yml
+        destination: <%= ENV['RAILS_STACK_PATH'] %>/config/gitlab.yml
+        target: rails
+        run_on: all_servers
+      - source: /config/cloud/cloud66/files/gitlab_config.yml
+        destination: <%= ENV['RAILS_STACK_PATH'] %>/config/gitlab_config.yml
+        target: rails
+        parse: true
+        run_on: all_servers
+      - source: /config/cloud/cloud66/files/production.rb
+        destination: <%= ENV['RAILS_STACK_PATH'] %>/config/environments/production.rb
+        target: rails
+        run_on: all_servers
+      - source: /config/cloud/cloud66/files/smtp_settings.rb
+        destination: <%= ENV['RAILS_STACK_PATH'] %>/config/initializers/smtp_settings.rb
+        target: rails
+        run_on: all_servers
+      - source: /config/cloud/cloud66/files/unicorn.rb.cloud66
+        destination: <%= ENV['RAILS_STACK_PATH'] %>/config/unicorn.rb.cloud66
+        target: rails
+        run_on: all_servers
+      - source: /config/cloud/cloud66/files/rack_attack.rb
+        destination: <%= ENV['RAILS_STACK_PATH'] %>/config/initializers/rack_attack.rb
+        target: rails
+        run_on: all_servers
+    last_thing:
+      - source: /config/cloud/cloud66/scripts/add_user.sh
+        destination: /tmp/add_user.sh
+        target: rails
+        apply_during: build_only
+        execute: true
+        run_on: all_servers
+        sudo: true
+      - source: /config/cloud/cloud66/scripts/permissions.sh
+        destination: /tmp/permissions.sh
+        target: rails
+        apply_during: build_only
+        execute: true
+        run_on: all_servers
+        sudo: false
+      - source: /config/cloud/cloud66/scripts/gitlab_shell.sh
+        destination: /tmp/gitlab_shell.sh
+        target: rails
+        apply_during: build_only
+        execute: true
+        run_on: all_servers
+        sudo: false
+      - source: /config/cloud/cloud66/scripts/logging.sh
+        destination: /tmp/logging.sh
+        target: rails
+        apply_during: build_only
+        execute: true
+        run_on: all_servers
+        sudo: false
+      - source: /config/cloud/cloud66/scripts/seed.sh
+        destination: /tmp/seed.sh
+        target: rails
+        apply_during: build_only
+        execute: true
+        sudo: true
+      - source: /config/cloud/cloud66/scripts/dev_seed.sh
+        destination: /tmp/dev_seed.sh
+        target: rails
+        apply_during: build_only
+        execute: true
+        sudo: true
