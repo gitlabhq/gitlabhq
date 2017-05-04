@@ -120,7 +120,8 @@ describe('List model', () => {
           title: 'Testing',
           iid: _.random(10000) + i,
           confidential: false,
-          labels: [list.label]
+          labels: [list.label],
+          assignees: [],
         }));
       }
       list.issuesSize = 50;
@@ -138,7 +139,8 @@ describe('List model', () => {
         title: 'Testing',
         iid: _.random(10000),
         confidential: false,
-        labels: [list.label]
+        labels: [list.label],
+        assignees: [],
       }));
       list.issuesSize = 2;
 

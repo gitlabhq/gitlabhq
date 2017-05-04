@@ -1,5 +1,5 @@
 /* global List */
-/* global ListUser */
+/* global ListAssignee */
 /* global ListLabel */
 /* global listObj */
 /* global boardsMockInterceptor */
@@ -133,12 +133,12 @@ describe('Issue card', () => {
     });
 
     it('does not set detail issue if img is clicked', (done) => {
-      vm.issue.assignee = new ListUser({
+      vm.issue.assignees = [new ListAssignee({
         id: 1,
         name: 'testing 123',
         username: 'test',
         avatar: 'test_image',
-      });
+      })];
 
       Vue.nextTick(() => {
         triggerEvent('mouseup', vm.$el.querySelector('img'));
