@@ -2,6 +2,7 @@
 /* global BoardService */
 /* global ListIssue */
 
+import Vue from 'vue';
 import '~/lib/utils/url_utility';
 import '~/boards/models/issue';
 import '~/boards/models/label';
@@ -28,7 +29,12 @@ describe('Issue model', () => {
         color: 'red',
         description: 'testing'
       }],
-      assignees: [],
+      assignees: [{
+        id: 1,
+        name: 'name',
+        username: 'username',
+        avatar_url: 'http://avatar_url',
+      }],
     });
   });
 
@@ -81,6 +87,33 @@ describe('Issue model', () => {
     expect(issue.labels.length).toBe(0);
   });
 
+  it('adds assignee', () => {
+    issue.addAssignee({
+      id: 2,
+      name: 'Bruce Wayne',
+      username: 'batman',
+      avatar_url: 'http://batman',
+    });
+
+    expect(issue.assignees.length).toBe(2);
+  });
+
+  it('finds assignee', () => {
+    const assignee = issue.findAssignee(issue.assignees[0]);
+    expect(assignee).toBeDefined();
+  });
+
+  it('removes assignee', () => {
+    const assignee = issue.findAssignee(issue.assignees[0]);
+    issue.removeAssignee(assignee);
+    expect(issue.assignees.length).toBe(0);
+  });
+
+  it('removes all assignees', () => {
+    issue.removeAllAssignees();
+    expect(issue.assignees.length).toBe(0);
+  });
+
   it('sets position to infinity if no position is stored', () => {
     expect(issue.position).toBe(Infinity);
   });
@@ -96,5 +129,26 @@ describe('Issue model', () => {
     });
 
     expect(relativePositionIssue.position).toBe(1);
+  });
+
+  describe('update', () => {
+    it('passes assignee ids when there are assignees', (done) => {
+      spyOn(Vue.http, 'patch').and.callFake((url, data) => {
+        expect(data.issue.assignee_ids).toEqual([1]);
+        done();
+      });
+
+      issue.update('url');
+    });
+
+    it('passes assignee ids of [0] when there are no assignees', (done) => {
+      spyOn(Vue.http, 'patch').and.callFake((url, data) => {
+        expect(data.issue.assignee_ids).toEqual([0]);
+        done();
+      });
+
+      issue.removeAllAssignees();
+      issue.update('url');
+    });
   });
 });

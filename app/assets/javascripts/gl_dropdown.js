@@ -446,15 +446,34 @@ GitLabDropdown = (function() {
     }
   };
 
+  GitLabDropdown.prototype.filteredFullData = function() {
+    return this.fullData.filter(r => typeof r === 'object'
+      && !Object.prototype.hasOwnProperty.call(r, 'beforeDivider')
+      && !Object.prototype.hasOwnProperty.call(r, 'header')
+    );
+  };
+
   GitLabDropdown.prototype.opened = function(e) {
     var contentHtml;
     this.resetRows();
     this.addArrowKeyEvent();
 
+    const dropdownToggle = this.dropdown.find('.dropdown-menu-toggle');
+    const hasFilterBulkUpdate = dropdownToggle.hasClass('js-filter-bulk-update');
+    const hasMultiSelect = dropdownToggle.hasClass('js-multiselect');
+
     // Makes indeterminate items effective
-    if (this.fullData && this.dropdown.find('.dropdown-menu-toggle').hasClass('js-filter-bulk-update')) {
+    if (this.fullData && hasFilterBulkUpdate) {
       this.parseData(this.fullData);
     }
+
+    // Process the data to make sure rendered data
+    // matches the correct layout
+    if (this.fullData && hasMultiSelect && this.options.processData) {
+      const inputValue = this.filterInput.val();
+      this.options.processData.call(this.options, inputValue, this.filteredFullData(), this.parseData.bind(this));
+    }
+
     contentHtml = $('.dropdown-content', this.dropdown).html();
     if (this.remote && contentHtml === "") {
       this.remote.execute();

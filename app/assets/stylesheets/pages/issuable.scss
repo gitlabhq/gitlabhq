@@ -585,16 +585,19 @@
         vertical-align: text-top;
       }
     }
+  }
+}
 
-    .avatar-counter {
-      display: inline-block;
-      vertical-align: middle;
-      min-width: 16px;
-      line-height: 14px;
-      height: 16px;
-      padding-left: 2px;
-      padding-right: 2px;
-    }
+.issuable-list li,
+.issue-info-container .controls {
+  .avatar-counter {
+    display: inline-block;
+    vertical-align: middle;
+    min-width: 16px;
+    line-height: 14px;
+    height: 16px;
+    padding-left: 2px;
+    padding-right: 2px;
   }
 }
 
