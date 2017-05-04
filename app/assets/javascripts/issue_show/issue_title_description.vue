@@ -1,4 +1,5 @@
 <script>
+import Vue from 'vue';
 import Visibility from 'visibilityjs';
 import Poll from './../lib/utils/poll';
 import Service from './services/index';
@@ -37,13 +38,13 @@ export default {
     return {
       poll,
       apiData: {},
-      timeoutId: null,
       title: null,
       titleText: '',
+      tasks: '0 of 0',
       description: null,
       descriptionText: '',
       descriptionChange: false,
-      tasks: '0 of 0',
+      timeAgoEl: $('.issue_edited_ago'),
       titleEl: document.querySelector('title'),
     };
   },
@@ -86,18 +87,18 @@ export default {
       this.titleEl.innerText = currentTabTitleScope.join('·');
     },
     animate(title, description, elementsToVisualize) {
-      this.timeoutId = setTimeout(() => {
-        this.title = title;
-        this.description = description;
-        this.setTabTitle();
+      this.title = title;
+      this.description = description;
+      this.setTabTitle();
 
+      Vue.nextTick(() => {
         elementsToVisualize.forEach((element) => {
           if (element) {
             element.classList.remove('issue-realtime-pre-pulse');
             element.classList.add('issue-realtime-trigger-pulse');
           }
         });
-      }, 0);
+      });
     },
     triggerAnimation() {
       // always reset to false before checking the change
@@ -124,10 +125,9 @@ export default {
     },
     updateEditedTimeAgo() {
       const toolTipTime = gl.utils.formatDate(this.apiData.updated_at);
-      const $timeAgoNode = $('.issue_edited_ago');
 
-      $timeAgoNode.attr('datetime', this.apiData.updated_at);
-      $timeAgoNode.attr('data-original-title', toolTipTime);
+      this.timeAgoEl.attr('datetime', this.apiData.updated_at);
+      this.timeAgoEl.attr('data-original-title', toolTipTime);
     },
   },
   computed: {
