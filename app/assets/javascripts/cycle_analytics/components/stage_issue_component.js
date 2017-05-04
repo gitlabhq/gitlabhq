@@ -32,7 +32,7 @@ global.cycleAnalytics.StageIssueComponent = Vue.extend({
               <a :href="issue.url" class="issue-date">{{ issue.createdAt }}</a>
             </span>
             <span>
-              {{ __('Author|by') }}
+              {{ __('ByAuthor|by') }}
               <a :href="issue.author.webUrl" class="issue-author-link">
                 {{ issue.author.name }}
               </a>

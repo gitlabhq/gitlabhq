@@ -39,7 +39,7 @@ global.cycleAnalytics.CycleAnalyticsStore = {
     });
 
     newData.stages.forEach((item) => {
-      const stageSlug = gl.text.dasherize(item.title.toLowerCase());
+      const stageSlug = gl.text.dasherize(item.name.toLowerCase());
       item.active = false;
       item.isUserAllowed = data.permissions[stageSlug];
       item.emptyStageText = EMPTY_STAGE_TEXTS[stageSlug];

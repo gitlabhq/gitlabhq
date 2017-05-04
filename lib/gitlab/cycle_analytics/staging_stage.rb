@@ -14,12 +14,16 @@ module Gitlab
         :staging
       end
 
+      def title
+        s_('CycleAnalyticsStage|Staging')
+      end
+
       def legend
         _("Relative Deployed Builds")
       end
 
       def description
-        "From merge request merge until deploy to production"
+        _("From merge request merge until deploy to production")
       end
     end
   end

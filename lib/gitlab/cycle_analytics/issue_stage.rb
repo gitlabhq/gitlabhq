@@ -14,12 +14,16 @@ module Gitlab
         :issue
       end
 
+      def title
+        s_('CycleAnalyticsStage|Issue')
+      end
+
       def legend
         _("Related Issues")
       end
 
       def description
-        "Time before an issue gets scheduled"
+        _("Time before an issue gets scheduled")
       end
     end
   end

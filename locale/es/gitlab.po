@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2017-05-03 12:28-0500\n"
+"PO-Revision-Date: 2017-05-03 21:03-0500\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
@@ -17,17 +17,16 @@ msgstr ""
 "Last-Translator: \n"
 "X-Generator: Poedit 2.0.1\n"
 
-msgid "Author|by"
+msgid "ByAuthor|by"
 msgstr "por"
 
-msgid "Commits"
-msgstr "Cambios"
+msgid "Commit"
+msgid_plural "Commits"
+msgstr[0] "Cambio"
+msgstr[1] "Cambios"
 
 msgid "Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project."
 msgstr "Cycle Analytics ofrece una visión general de cuánto tiempo tarda en pasar de idea a producción en su proyecto."
-
-msgid "CycleAnalyticsStage"
-msgstr ""
 
 msgid "CycleAnalyticsStage|Code"
 msgstr "Código"
@@ -51,8 +50,22 @@ msgstr "Puesta en escena"
 msgid "CycleAnalyticsStage|Test"
 msgstr "Pruebas"
 
-msgid "Deploys"
-msgstr "Despliegues"
+msgid "Deploy"
+msgid_plural "Deploys"
+msgstr[0] "Despliegue"
+msgstr[1] "Despliegues"
+
+msgid "FirstPushedBy|First"
+msgstr "Primer"
+
+msgid "FirstPushedBy|pushed by"
+msgstr "enviado por"
+
+msgid "From issue creation until deploy to production"
+msgstr "Desde la creación de la incidencia hasta el despliegue a producción"
+
+msgid "From merge request merge until deploy to production"
+msgstr "Desde la integración de la solicitud de fusión hasta el despliegue a producción"
 
 msgid "Introducing Cycle Analytics"
 msgstr "Introducción a Cycle Analytics"
@@ -70,8 +83,10 @@ msgstr[1] "Limitado a mostrar máximo %d eventos"
 msgid "Median"
 msgstr "Mediana"
 
-msgid "New Issues"
-msgstr "Nuevas incidencias"
+msgid "New Issue"
+msgid_plural "New Issues"
+msgstr[0] "Nueva incidencia"
+msgstr[1] "Nuevas incidencias"
 
 msgid "Not available"
 msgstr "No disponible"
@@ -79,11 +94,11 @@ msgstr "No disponible"
 msgid "Not enough data"
 msgstr "No hay suficientes datos"
 
-msgid "OfFirstTime|First"
-msgstr "Primer"
-
 msgid "Opened"
 msgstr "Abiertos"
+
+msgid "OpenedNDaysAgo|Opened"
+msgstr "Abierto"
 
 msgid "Pipeline Health"
 msgstr "Estado del Pipeline"
@@ -150,6 +165,18 @@ msgstr "El tiempo utilizado por cada entrada de datos obtenido por esa etapa."
 msgid "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."
 msgstr "El valor en el punto medio de una serie de valores observados. Por ejemplo, entre 3, 5, 9, la mediana es 5. Entre 3, 5, 7, 8, la mediana es (5 + 7) / 2 = 6."
 
+msgid "Time before an issue gets scheduled"
+msgstr "Tiempo antes de que una incidencia sea programada"
+
+msgid "Time before an issue starts implementation"
+msgstr "Tiempo antes de que empieze la implementación de una incidencia"
+
+msgid "Time between merge request creation and merge/close"
+msgstr "Tiempo entre la creación de la solicitud de fusión y la integración o cierre de esta"
+
+msgid "Time until first merge request"
+msgstr "Tiempo hasta la primera solicitud de fusión"
+
 msgid "Time|hr"
 msgid_plural "Time|hrs"
 msgstr[0] ""
@@ -166,6 +193,9 @@ msgstr ""
 msgid "Total Time"
 msgstr "Tiempo Total"
 
+msgid "Total test time for all commits/merges"
+msgstr "Tiempo total de pruebas para todos los cambios o integraciones"
+
 msgid "Want to see the data? Please ask an administrator for access."
 msgstr "¿Quieres ver los datos? Por favor pedir acceso al administrador."
 
@@ -179,6 +209,3 @@ msgid "day"
 msgid_plural "days"
 msgstr[0] "día"
 msgstr[1] "días"
-
-msgid "pushed by"
-msgstr "enviado por"

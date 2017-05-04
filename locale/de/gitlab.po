@@ -17,16 +17,15 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "\n"
 
-msgid "Author|by"
+msgid "ByAuthor|by"
 msgstr ""
 
-msgid "Commits"
-msgstr ""
+msgid "Commit"
+msgid_plural "Commits"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project."
-msgstr ""
-
-msgid "CycleAnalyticsStage"
 msgstr ""
 
 msgid "CycleAnalyticsStage|Code"
@@ -50,7 +49,21 @@ msgstr ""
 msgid "CycleAnalyticsStage|Test"
 msgstr ""
 
-msgid "Deploys"
+msgid "Deploy"
+msgid_plural "Deploys"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "FirstPushedBy|First"
+msgstr ""
+
+msgid "FirstPushedBy|pushed by"
+msgstr ""
+
+msgid "From issue creation until deploy to production"
+msgstr ""
+
+msgid "From merge request merge until deploy to production"
 msgstr ""
 
 msgid "Introducing Cycle Analytics"
@@ -69,8 +82,10 @@ msgstr[1] ""
 msgid "Median"
 msgstr ""
 
-msgid "New Issues"
-msgstr ""
+msgid "New Issue"
+msgid_plural "New Issues"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Not available"
 msgstr ""
@@ -78,10 +93,10 @@ msgstr ""
 msgid "Not enough data"
 msgstr ""
 
-msgid "OfFirstTime|First"
+msgid "Opened"
 msgstr ""
 
-msgid "Opened"
+msgid "OpenedNDaysAgo|Opened"
 msgstr ""
 
 msgid "Pipeline Health"
@@ -149,6 +164,18 @@ msgstr ""
 msgid "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."
 msgstr ""
 
+msgid "Time before an issue gets scheduled"
+msgstr ""
+
+msgid "Time before an issue starts implementation"
+msgstr ""
+
+msgid "Time between merge request creation and merge/close"
+msgstr ""
+
+msgid "Time until first merge request"
+msgstr ""
+
 msgid "Time|hr"
 msgid_plural "Time|hrs"
 msgstr[0] ""
@@ -165,6 +192,9 @@ msgstr ""
 msgid "Total Time"
 msgstr ""
 
+msgid "Total test time for all commits/merges"
+msgstr ""
+
 msgid "Want to see the data? Please ask an administrator for access."
 msgstr ""
 
@@ -178,6 +208,3 @@ msgid "day"
 msgid_plural "days"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "pushed by"
-msgstr ""

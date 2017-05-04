@@ -273,14 +273,10 @@ class ApplicationController < ActionController::Base
   end
 
   def set_locale
-    begin
-      requested_locale = current_user&.preferred_language || I18n.default_locale
-      locale = FastGettext.set_locale(requested_locale)
-      I18n.locale = locale
+    Gitlab::I18n.set_locale(current_user)
 
-      yield
-    ensure
-      I18n.locale = I18n.default_locale
-    end
+    yield
+  ensure
+    Gitlab::I18n.reset_locale
   end
 end

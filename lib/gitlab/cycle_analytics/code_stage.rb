@@ -13,12 +13,16 @@ module Gitlab
         :code
       end
 
+      def title
+        s_('CycleAnalyticsStage|Code')
+      end
+
       def legend
         _("Related Merge Requests")
       end
 
       def description
-        "Time until first merge request"
+        _("Time until first merge request")
       end
     end
   end

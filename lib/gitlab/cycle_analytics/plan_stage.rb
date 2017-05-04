@@ -14,12 +14,16 @@ module Gitlab
         :plan
       end
 
+      def title
+        s_('CycleAnalyticsStage|Plan')
+      end
+
       def legend
         _("Related Commits")
       end
 
       def description
-        "Time before an issue starts implementation"
+        _("Time before an issue starts implementation")
       end
     end
   end
