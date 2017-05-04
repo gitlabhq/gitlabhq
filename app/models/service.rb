@@ -257,7 +257,7 @@ class Service < ActiveRecord::Base
   def update_and_propagate(service_params)
     return false unless update_attributes(service_params)
 
-    if service_params[:active] == 1
+    if service_params[:active]
       PropagateProjectServiceWorker.perform_async(service_params[:id])
     end
 
