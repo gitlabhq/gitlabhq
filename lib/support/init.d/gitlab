@@ -395,6 +395,7 @@ print_status() {
   check_status
   if [ "$web_status" != "0" ] && [ "$sidekiq_status" != "0" ] && [ "$gitlab_workhorse_status" != "0" ] && { [ "$mail_room_enabled" != true ] || [ "$mail_room_status" != "0" ]; } && { [ "$gitlab_pages_enabled" != true ] || [ "$gitlab_pages_status" != "0" ]; } && { [ "$gitaly_enabled" != true ] || [ "$gitaly_status" != "0" ]; }; then
     echo "GitLab is not running."
+    exit 3;
     return
   fi
   if [ "$web_status" = "0" ]; then
