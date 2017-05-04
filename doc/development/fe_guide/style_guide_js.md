@@ -11,7 +11,10 @@ See [our current .eslintrc][eslintrc] for specific rules and patterns.
 
 #### ESlint
 
-1. **Never** disable eslint rules unless you have a good reason.  You may see a lot of legacy files with `/* eslint-disable some-rule, some-other-rule */` at the top, but legacy files are a special case.  Any time you develop a new feature or refactor an existing one, you should abide by the eslint rules.
+1. **Never** disable eslint rules unless you have a good reason.  
+You may see a lot of legacy files with `/* eslint-disable some-rule, some-other-rule */`
+at the top, but legacy files are a special case.  Any time you develop a new feature or
+refactor an existing one, you should abide by the eslint rules.
 
 1. **Never Ever EVER** disable eslint globally for a file
   ```javascript
@@ -44,7 +47,8 @@ See [our current .eslintrc][eslintrc] for specific rules and patterns.
   1. [no-new][eslint-new]
   1. [class-methods-use-this][eslint-this]
 
-1. When they are needed _always_ place ESlint directive comment blocks on the first line of a script, followed by any global declarations, then a blank newline prior to any imports or code.
+1. When they are needed _always_ place ESlint directive comment blocks on the first line of a script,
+followed by any global declarations, then a blank newline prior to any imports or code.
   ```javascript
     // bad
     /* global Foo */
@@ -96,7 +100,8 @@ See [our current .eslintrc][eslintrc] for specific rules and patterns.
     export default Foo;
   ```
 
-1. Relative paths: Unless you are writing a test, always reference other scripts using relative paths instead of `~`
+1. Relative paths: Unless you are writing a test, always reference other scripts using
+relative paths instead of `~`
   * In **app/assets/javascripts**:
 
     ```javascript
@@ -116,7 +121,10 @@ See [our current .eslintrc][eslintrc] for specific rules and patterns.
       import Foo from '~/foo';
     ```
 
-1. Avoid using IIFE. Although we have a lot of examples of files which wrap their contents in IIFEs (immediately-invoked function expressions), this is no longer necessary after the transition from Sprockets to webpack. Do not use them anymore and feel free to remove them when refactoring legacy code.
+1. Avoid using IIFE. Although we have a lot of examples of files which wrap their
+contents in IIFEs (immediately-invoked function expressions),
+this is no longer necessary after the transition from Sprockets to webpack.
+Do not use them anymore and feel free to remove them when refactoring legacy code.
 
 1. Avoid adding to the global namespace.
   ```javascript
@@ -224,7 +232,45 @@ A forEach will cause side effects, it will be mutating the array being iterated.
       template: `<h1>I'm a component</h1>
     }
   ```
-1.
+1. The service has it's own file
+1. The store has it's own file
+1. Use a function in the bundle file to instantiate the Vue component:
+  ```javascript
+    // bad
+    class {
+      init() {
+        new Component({})
+      }
+    }
+
+    // good
+    document.addEventListener('DOMContentLoaded', () => new Vue({
+      el: '#element',
+      components: {
+        componentName
+      },
+      render: createElement => createElement('component-name'),
+    }));
+  ```
+
+1. Don not use a singleton for the service or the store
+  ```javascript
+    // bad
+    class Store {
+      constructor() {
+        if (!this.prototype.singleton) {
+          // do something
+        }
+      }
+    }
+
+    // good
+    class Store {
+      constructor() {
+        // do something
+      }
+    }
+  ```
 
 #### Naming
 1. **Extensions**: Use `.vue` extension for Vue components.
@@ -247,9 +293,8 @@ A forEach will cause side effects, it will be mutating the array being iterated.
     };
   ```
 
-1. **Props Naming:**
-1. Avoid using DOM component prop names.
-1. Use kebab-case instead of camelCase to provide props in templates.
+1. **Props Naming:**  Avoid using DOM component prop names.
+1. **Props Naming:** Use kebab-case instead of camelCase to provide props in templates.
   ```javascript
     // bad
     <component class="btn">
@@ -433,6 +478,23 @@ A forEach will cause side effects, it will be mutating the array being iterated.
   1. `beforeDestroy`
   1. `destroyed`
 
+#### Vue and Boostrap
+1. Tooltips: Do not rely on `has-tooltip` class name for vue components
+  ```javascript
+    // bad
+    <span class="has-tooltip">
+      Text
+    </span>
+
+    // good
+    <span data-toggle="tooltip">
+      Text
+    </span>
+  ```
+
+1. Tooltips: When using a tooltip, include the tooltip mixin
+
+1. Don't change `data-original-title`.
 
 ## SCSS
 - [SCSS](style_guide_scss.md)
