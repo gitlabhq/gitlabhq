@@ -132,6 +132,10 @@ Download Ruby and compile it:
     make
     sudo make install
 
+On some Debian/Ubuntu servers, `make` will fail when compiling `readline`, just install Ruby 2.0 via :
+
+    sudo apt-get install ruby2.0
+
 Install the Bundler Gem:
 
     sudo gem install bundler --no-ri --no-rdoc
