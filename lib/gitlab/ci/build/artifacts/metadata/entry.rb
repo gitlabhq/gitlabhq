@@ -37,6 +37,12 @@ module Gitlab
           !directory?
         end
 
+        def blob
+          return unless file?
+
+          @blob ||= Blob.decorate(::Ci::ArtifactBlob.new(self), nil)
+        end
+
         def has_parent?
           nodes > 0
         end

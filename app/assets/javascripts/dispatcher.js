@@ -344,6 +344,9 @@ const ShortcutsBlob = require('./shortcuts_blob');
         case 'projects:artifacts:browse':
           new BuildArtifacts();
           break;
+        case 'projects:artifacts:file':
+          new BlobViewer();
+          break;
         case 'help:index':
           gl.VersionCheckImage.bindErrorEvent($('img.js-version-status-badge'));
           break;
