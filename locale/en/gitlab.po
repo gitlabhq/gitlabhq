@@ -93,9 +93,6 @@ msgstr ""
 msgid "Not enough data"
 msgstr ""
 
-msgid "Opened"
-msgstr ""
-
 msgid "OpenedNDaysAgo|Opened"
 msgstr ""
 

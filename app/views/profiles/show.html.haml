@@ -76,6 +76,7 @@
         = f.label :preferred_language, class: "label-light"
         = f.select :preferred_language, Gitlab::I18n::AVAILABLE_LANGUAGES.map { |value, label| [label, value] },
           {}, class: "select2"
+        %span.help-block This feature is experimental and translations are not complete yet.
       .form-group
         = f.label :skype, class: "label-light"
         = f.text_field :skype, class: "form-control"

@@ -227,7 +227,7 @@ Gitlab::Seeder.quiet do
 
   if ENV[flag]
     Project.all.each do |project|
-      seeder = Gitlab::Seeder::CycleAnalytics.new(pro)
+      seeder = Gitlab::Seeder::CycleAnalytics.new(project)
       seeder.seed!
     end
   elsif ENV['CYCLE_ANALYTICS_PERF_TEST']

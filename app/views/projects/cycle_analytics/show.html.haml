@@ -31,7 +31,7 @@
           .row
             .col-sm-3.col-xs-12.column{ "v-for" => "item in state.summary" }
               %h3.header {{ item.value }}
-              %p.text {{ __(item.title) }}
+              %p.text {{ item.title }}
             .col-sm-3.col-xs-12.column
               .dropdown.inline.js-ca-dropdown
                 %button.dropdown-menu-toggle{ "data-toggle" => "dropdown", :type => "button" }

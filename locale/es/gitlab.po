@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2017-05-03 21:03-0500\n"
+"PO-Revision-Date: 2017-05-04 14:52-0500\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
@@ -94,9 +94,6 @@ msgstr "No disponible"
 msgid "Not enough data"
 msgstr "No hay suficientes datos"
 
-msgid "Opened"
-msgstr "Abiertos"
-
 msgid "OpenedNDaysAgo|Opened"
 msgstr "Abierto"
 
@@ -119,13 +116,13 @@ msgid "Related Merge Requests"
 msgstr "Solicitudes de fusión Relacionadas"
 
 msgid "Relative Builds Trigger by Commits"
-msgstr "Builds Relacionados Originados por Cambios"
+msgstr "Builds Relativos Originados por Cambios"
 
 msgid "Relative Deployed Builds"
-msgstr "Builds Desplegados Relacionados"
+msgstr "Builds Desplegados Relativos"
 
 msgid "Relative Merged Requests"
-msgstr "Solicitudes de fusión Relacionadas"
+msgstr "Solicitudes de fusión Relativas"
 
 msgid "Showing %d event"
 msgid_plural "Showing %d events"
@@ -142,10 +139,10 @@ msgid "The issue stage shows the time it takes from creating an issue to assigni
 msgstr "La etapa de incidencia muestra el tiempo que toma desde la creación de un tema hasta asignar el tema a un hito, o añadir el tema a una lista en el panel de temas. Empieza a crear temas para ver los datos de esta etapa."
 
 msgid "The phase of the development lifecycle."
-msgstr "La etapa del ciclo de vida del desarrollo."
+msgstr "La etapa del ciclo de vida de desarrollo."
 
 msgid "The planning stage shows the time from the previous step to pushing your first commit. This time will be added automatically once you push your first commit."
-msgstr "La etapa de planificación muestra el tiempo desde el paso anterior hasta el envío de tu primera confirmación. Este tiempo se añadirá automáticamente una vez que usted envíe su primer cambio."
+msgstr "La etapa de planificación muestra el tiempo desde el paso anterior hasta el envío de tu primera confirmación. Este tiempo se añadirá automáticamente una vez que usted envíe el primer cambio."
 
 msgid "The production stage shows the total time it takes between creating an issue and deploying the code to production. The data will be automatically added once you have completed the full idea to production cycle."
 msgstr "La etapa de producción muestra el tiempo total que tarda entre la creación de una incidencia y el despliegue del código a producción. Los datos se añadirán automáticamente una vez haya finalizado por completo el ciclo de idea a producción."
@@ -154,7 +151,7 @@ msgid "The review stage shows the time from creating the merge request to mergin
 msgstr "La etapa de revisión muestra el tiempo desde la creación de la solicitud de fusión hasta que los cambios se fusionaron. Los datos se añadirán automáticamente después de fusionar su primera solicitud de fusión."
 
 msgid "The staging stage shows the time between merging the MR and deploying code to the production environment. The data will be automatically added once you deploy to production for the first time."
-msgstr "La etapa de puesta en escena muestra el tiempo entre la fusión  y el despliegue de código en el entorno de producción. Los datos se añadirán automáticamente una vez que se despliega a producción por primera vez."
+msgstr "La etapa de puesta en escena muestra el tiempo entre la fusión y el despliegue de código en el entorno de producción. Los datos se añadirán automáticamente una vez que se despliega a producción por primera vez."
 
 msgid "The testing stage shows the time GitLab CI takes to run every pipeline for the related merge request. The data will automatically be added after your first pipeline finishes running."
 msgstr "La etapa de pruebas muestra el tiempo que GitLab CI toma para ejecutar cada pipeline para la solicitud de fusión relacionada. Los datos se añadirán automáticamente luego de que el primer pipeline termine de ejecutarse."
@@ -172,23 +169,23 @@ msgid "Time before an issue starts implementation"
 msgstr "Tiempo antes de que empieze la implementación de una incidencia"
 
 msgid "Time between merge request creation and merge/close"
-msgstr "Tiempo entre la creación de la solicitud de fusión y la integración o cierre de esta"
+msgstr "Tiempo entre la creación de la solicitud de fusión y la integración o cierre de ésta"
 
 msgid "Time until first merge request"
 msgstr "Tiempo hasta la primera solicitud de fusión"
 
 msgid "Time|hr"
 msgid_plural "Time|hrs"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "hr"
+msgstr[1] "hrs"
 
 msgid "Time|min"
 msgid_plural "Time|mins"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "min"
+msgstr[1] "mins"
 
 msgid "Time|s"
-msgstr ""
+msgstr "s"
 
 msgid "Total Time"
 msgstr "Tiempo Total"
@@ -197,7 +194,7 @@ msgid "Total test time for all commits/merges"
 msgstr "Tiempo total de pruebas para todos los cambios o integraciones"
 
 msgid "Want to see the data? Please ask an administrator for access."
-msgstr "¿Quieres ver los datos? Por favor pedir acceso al administrador."
+msgstr "¿Quieres ver los datos? Por favor pide acceso al administrador."
 
 msgid "We don't have enough data to show this stage."
 msgstr "No hay suficientes datos para mostrar en esta etapa."

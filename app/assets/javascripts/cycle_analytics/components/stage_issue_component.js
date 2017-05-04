@@ -28,7 +28,7 @@ global.cycleAnalytics.StageIssueComponent = Vue.extend({
             <a :href="issue.url" class="issue-link">#{{ issue.iid }}</a>
             &middot;
             <span>
-              {{ __('Opened') }}
+              {{ __('OpenedNDaysAgo|Opened') }}
               <a :href="issue.url" class="issue-date">{{ issue.createdAt }}</a>
             </span>
             <span>
