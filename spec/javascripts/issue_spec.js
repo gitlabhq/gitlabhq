@@ -1,10 +1,5 @@
 /* eslint-disable space-before-function-paren, one-var, one-var-declaration-per-line, no-use-before-define, comma-dangle, max-len */
 import Issue from '~/issue';
-import Vue from 'vue';
-import '~/render_math';
-import '~/render_gfm';
-import IssueTitle from '~/issue_show/issue_title_description.vue';
-import issueShowData from './issue_show/mock_data';
 
 require('~/lib/utils/text_utility');
 
@@ -81,52 +76,9 @@ describe('Issue', function() {
   }
 
   describe('task lists', function() {
-    const issueShowInterceptor = data => (request, next) => {
-      next(request.respondWith(JSON.stringify(data), {
-        status: 200,
-      }));
-    };
-
     beforeEach(function() {
       loadFixtures('issues/issue-with-task-list.html.raw');
       this.issue = new Issue();
-      Vue.http.interceptors.push(issueShowInterceptor(issueShowData.issueSpecRequest));
-    });
-
-    afterEach(function() {
-      Vue.http.interceptors = _.without(Vue.http.interceptors, issueShowInterceptor);
-    });
-
-    it('modifies the Markdown field', function(done) {
-      // gotta actually render it for jquery to find elements
-      const vm = new Vue({
-        el: document.querySelector('.issue-title-entrypoint'),
-        components: {
-          IssueTitle,
-        },
-        render: createElement => createElement(IssueTitle, {
-          props: {
-            candescription: '.js-task-list-container',
-            endpoint: '/gitlab-org/gitlab-shell/issues/9/rendered_title',
-          },
-        }),
-      });
-
-      setTimeout(() => {
-        spyOn(jQuery, 'ajax').and.stub();
-
-        const description = '<li class="task-list-item enabled"><input type="checkbox" class="task-list-item-checkbox"> Task List Item</li>';
-
-        expect(document.querySelector('title').innerText).toContain('this is a title (#1)');
-        expect(vm.$el.querySelector('.title').innerHTML).toContain('<p>this is a title</p>');
-        expect(vm.$el.querySelector('.wiki').innerHTML).toContain(description);
-        expect(vm.$el.querySelector('.js-task-list-field').value).toContain('- [ ] Task List Item');
-
-        // somehow the dom does not have a closest `.js-task-list.field` to the `.task-list-item-checkbox`
-        $('input[type=checkbox]').attr('checked', true).trigger('change');
-        expect($('.js-task-list-field').val()).toBe('- [x] Task List Item');
-        done();
-      }, 10);
     });
 
     it('submits an ajax request on tasklist:changed', function() {

@@ -2,7 +2,7 @@ import Vue from 'vue';
 import $ from 'jquery';
 import '~/render_math';
 import '~/render_gfm';
-import issueTitle from '~/issue_show/issue_title_description.vue';
+import issueTitleDescription from '~/issue_show/issue_title_description.vue';
 import issueShowData from './mock_data';
 
 window.$ = $;
@@ -11,18 +11,18 @@ const issueShowInterceptor = data => (request, next) => {
   next(request.respondWith(JSON.stringify(data), {
     status: 200,
     headers: {
-      'POLL-INTERVAL': 10,
+      'POLL-INTERVAL': 1,
     },
   }));
 };
 
 describe('Issue Title', () => {
-  const comps = {
-    IssueTitleComponent: {},
-  };
+  document.body.innerHTML = '<span id="task_status"></span>';
+
+  let IssueTitleDescriptionComponent;
 
   beforeEach(() => {
-    comps.IssueTitleComponent = Vue.extend(issueTitle);
+    IssueTitleDescriptionComponent = Vue.extend(issueTitleDescription);
   });
 
   afterEach(() => {
@@ -32,14 +32,14 @@ describe('Issue Title', () => {
   it('should render a title/description and update title/description on update', (done) => {
     Vue.http.interceptors.push(issueShowInterceptor(issueShowData.initialRequest));
 
-    const issueShowComponent = new comps.IssueTitleComponent({
+    const issueShowComponent = new IssueTitleDescriptionComponent({
       propsData: {
-        candescription: '.css-stuff',
+        canUpdateIssue: '.css-stuff',
         endpoint: '/gitlab-org/gitlab-shell/issues/9/rendered_title',
       },
     }).$mount();
 
-    // need setTimeout because actual setTimeout in code :P
+    // need setTimeout because of api call/v-html
     setTimeout(() => {
       expect(document.querySelector('title').innerText).toContain('this is a title (#1)');
       expect(issueShowComponent.$el.querySelector('.title').innerHTML).toContain('<p>this is a title</p>');
@@ -55,8 +55,8 @@ describe('Issue Title', () => {
         expect(issueShowComponent.$el.querySelector('.js-task-list-field').innerText).toContain('42');
 
         done();
-      }, 20);
-    }, 10);
+      });
+    });
     // 10ms is just long enough for the update hook to fire
   });
 });
