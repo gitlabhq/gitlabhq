@@ -46,16 +46,12 @@ module Gitlab
       end
 
       def exist?
-        current_path.present? || old_trace.present?
+        FileUtils.exists?(full_path)
       end
 
       def read
         stream = Gitlab::Ci::Trace::Stream.new do
-          if current_path
-            File.open(current_path, "rb")
-          elsif old_trace
-            StringIO.new(old_trace)
-          end
+          File.open(full_path, "rb")
         end
 
         yield stream
@@ -64,8 +60,10 @@ module Gitlab
       end
 
       def write
+        ensure_directory
+
         stream = Gitlab::Ci::Trace::Stream.new do
-          File.open(ensure_path, "a+b")
+          File.open(full_path, "a+b")
         end
 
         yield(stream).tap do
@@ -76,42 +74,16 @@ module Gitlab
       end
 
       def erase!
-        paths.each do |trace_path|
-          FileUtils.rm(trace_path, force: true)
-        end
+        FileUtils.rm(full_path, force: true)
 
         job.erase_old_trace!
       end
 
-      private
-
-      def ensure_path
-        return current_path if current_path
-
-        ensure_directory
-        default_path
+      def full_path
+        File.join(directory, "#{job.id}.log")
       end
 
-      def ensure_directory
-        unless Dir.exist?(default_directory)
-          FileUtils.mkdir_p(default_directory)
-        end
-      end
-
-      def current_path
-        @current_path ||= paths.find do |trace_path|
-          File.exist?(trace_path)
-        end
-      end
-
-      def paths
-        [
-          default_path,
-          deprecated_path
-        ].compact
-      end
-
-      def default_directory
+      def directory
         File.join(
           Settings.gitlab_ci.builds_path,
           job.created_at.utc.strftime("%Y_%m"),
@@ -119,17 +91,12 @@ module Gitlab
         )
       end
 
-      def default_path
-        File.join(default_directory, "#{job.id}.log")
-      end
+      private
 
-      def deprecated_path
-        File.join(
-          Settings.gitlab_ci.builds_path,
-          job.created_at.utc.strftime("%Y_%m"),
-          job.project.ci_id.to_s,
-          "#{job.id}.log"
-        ) if job.project&.ci_id
+      def ensure_directory
+        unless Dir.exist?(default_directory)
+          FileUtils.mkdir_p(default_directory)
+        end
       end
     end
   end

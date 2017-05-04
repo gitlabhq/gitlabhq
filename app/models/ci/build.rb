@@ -249,38 +249,6 @@ module Ci
       Time.now - updated_at > 15.minutes.to_i
     end
 
-    ##
-    # Deprecated
-    #
-    # This contains a hotfix for CI build data integrity, see #4246
-    #
-    # This method is used by `ArtifactUploader` to create a store_dir.
-    # Warning: Uploader uses it after AND before file has been stored.
-    #
-    # This method returns old path to artifacts only if it already exists.
-    #
-    def artifacts_path
-      # We need the project even if it's soft deleted, because whenever
-      # we're really deleting the project, we'll also delete the builds,
-      # and in order to delete the builds, we need to know where to find
-      # the artifacts, which is depending on the data of the project.
-      # We need to retain the project in this case.
-      the_project = project || unscoped_project
-
-      old = File.join(created_at.utc.strftime('%Y_%m'),
-                      the_project.ci_id.to_s,
-                      id.to_s)
-
-      old_store = File.join(ArtifactUploader.artifacts_path, old)
-      return old if the_project.ci_id && File.directory?(old_store)
-
-      File.join(
-        created_at.utc.strftime('%Y_%m'),
-        the_project.id.to_s,
-        id.to_s
-      )
-    end
-
     def valid_token?(token)
       self.token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.token)
     end
