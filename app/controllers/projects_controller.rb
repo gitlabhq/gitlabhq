@@ -20,7 +20,7 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def new
-    @project = Project.new
+    @project = Project.new(default_branch: "master")
   end
 
   def edit
