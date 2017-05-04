@@ -22,8 +22,38 @@ describe Projects::PropagateService, services: true do
         to change { Service.count }.by(1)
     end
 
+    it 'creates services for a project that has another service' do
+      other_service = BambooService.create(
+        template: true,
+        active: true,
+        properties: {
+          bamboo_url: 'http://gitlab.com',
+          username: 'mic',
+          password: "password",
+          build_key: 'build'
+        }
+      )
+
+      Service.build_from_template(project.id, other_service).save!
+
+      expect { described_class.propagate!(service_template) }.
+        to change { Service.count }.by(1)
+    end
+
     it 'does not create the service if it exists already' do
+      other_service = BambooService.create(
+        template: true,
+        active: true,
+        properties: {
+          bamboo_url: 'http://gitlab.com',
+          username: 'mic',
+          password: "password",
+          build_key: 'build'
+        }
+      )
+
       Service.build_from_template(project.id, service_template).save!
+      Service.build_from_template(project.id, other_service).save!
 
       expect { described_class.propagate!(service_template) }.
         not_to change { Service.count }
