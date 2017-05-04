@@ -334,6 +334,9 @@ sudo usermod -aG redis git
     # Change the permissions of the directory where GitLab Pages are stored
     sudo chmod -R ug+rwX shared/pages/
 
+    # Copy the example Puma config
+    sudo -u git -H cp config/puma.rb.example config/puma.rb
+
     # Copy the example Unicorn config
     sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
 
