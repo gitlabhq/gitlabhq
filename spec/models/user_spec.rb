@@ -1663,4 +1663,12 @@ describe User, models: true do
       expect(User.active.count).to eq(1)
     end
   end
+
+  describe 'preferred language' do
+    it 'is English by default' do
+      user = create(:user)
+
+      expect(user.preferred_language).to eq('en')
+    end
+  end
 end

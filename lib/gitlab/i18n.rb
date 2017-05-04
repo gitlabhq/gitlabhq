@@ -3,9 +3,9 @@ module Gitlab
     extend self
 
     AVAILABLE_LANGUAGES = {
-      en: 'English',
-      es: 'Español',
-      de: 'Deutsch'
+      'en' => 'English',
+      'es' => 'Español',
+      'de' => 'Deutsch'
     }.freeze
 
     def available_locales
@@ -19,6 +19,7 @@ module Gitlab
     end
 
     def reset_locale
+      FastGettext.set_locale(::I18n.default_locale)
       ::I18n.locale = ::I18n.default_locale
     end
   end
