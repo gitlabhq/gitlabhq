@@ -24,6 +24,40 @@ end
 if ENV['CI'] && !ENV['NO_KNAPSACK']
   require 'knapsack'
   Knapsack::Adapters::RSpecAdapter.bind
+
+  if ENV['GITLAB_DATABASE'] == 'postgresql'
+    module Knapsack
+      module Adapters
+        class RSpecAdapter < BaseAdapter
+          def bind_time_tracker
+            ::RSpec.configure do |config|
+              config.before(:context) do
+                Knapsack.tracker.start_timer
+              end
+
+              config.before(:each) do
+                current_example_group =
+                  if ::RSpec.respond_to?(:current_example)
+                    ::RSpec.current_example.metadata[:example_group]
+                  else
+                    example.metadata
+                  end
+                Knapsack.tracker.test_path = RSpecAdapter.test_path(current_example_group)
+              end
+
+              config.after(:context) do
+                Knapsack.tracker.stop_timer
+              end
+
+              config.after(:suite) do
+                Knapsack.logger.info(Presenter.global_time)
+              end
+            end
+          end
+        end
+      end
+    end
+  end
 end
 
 # Requires supporting ruby files with custom matchers and macros, etc,
