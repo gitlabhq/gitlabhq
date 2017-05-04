@@ -1571,6 +1571,14 @@ class Project < ActiveRecord::Base
     namespace_id_changed?
   end
 
+  def default_merge_request_target
+    if forked_from_project&.merge_requests_enabled?
+      forked_from_project
+    else
+      self
+    end
+  end
+
   alias_method :name_with_namespace, :full_name
   alias_method :human_name, :full_name
   alias_method :path_with_namespace, :full_path

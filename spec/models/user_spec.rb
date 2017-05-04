@@ -899,18 +899,11 @@ describe User, models: true do
   end
 
   describe '#avatar_url' do
-    let(:user) { create(:user) }
+    let(:user) { create(:user, :with_avatar) }
     subject { user.avatar_url }
 
     context 'when avatar file is uploaded' do
-      before do
-        user.update_columns(avatar: 'uploads/avatar.png')
-        allow(user.avatar).to receive(:present?) { true }
-      end
-
-      let(:avatar_path) do
-        "/uploads/user/avatar/#{user.id}/uploads/avatar.png"
-      end
+      let(:avatar_path) { "/uploads/user/avatar/#{user.id}/dk.png" }
 
       it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
 
@@ -1781,6 +1774,16 @@ describe User, models: true do
 
         expect(ghost).to be_persisted
         expect(ghost.email).to eq('ghost1@example.com')
+      end
+    end
+
+    context 'when a domain whitelist is in place' do
+      before do
+        stub_application_setting(domain_whitelist: ['gitlab.com'])
+      end
+
+      it 'creates a ghost user' do
+        expect(User.ghost).to be_persisted
       end
     end
   end

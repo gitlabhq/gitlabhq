@@ -54,8 +54,10 @@ namespace :admin do
 
   resources :deploy_keys, only: [:index, :new, :create, :destroy]
 
-  resources :hooks, only: [:index, :create, :destroy] do
-    get :test
+  resources :hooks, only: [:index, :create, :edit, :update, :destroy] do
+    member do
+      get :test
+    end
   end
 
   resources :broadcast_messages, only: [:index, :edit, :create, :update, :destroy] do

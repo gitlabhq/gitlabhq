@@ -3,6 +3,7 @@ class Projects::SnippetsController < Projects::ApplicationController
   include ToggleAwardEmoji
   include SpammableActions
   include SnippetsActions
+  include RendersBlob
 
   before_action :module_enabled
   before_action :snippet, only: [:show, :edit, :destroy, :update, :raw, :toggle_award_emoji, :mark_as_spam]
@@ -55,11 +56,23 @@ class Projects::SnippetsController < Projects::ApplicationController
   end
 
   def show
-    @note = @project.notes.new(noteable: @snippet)
-    @noteable = @snippet
+    blob = @snippet.blob
+    override_max_blob_size(blob)
 
-    @discussions = @snippet.discussions
-    @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes))
+    respond_to do |format|
+      format.html do
+        @note = @project.notes.new(noteable: @snippet)
+        @noteable = @snippet
+
+        @discussions = @snippet.discussions
+        @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes))
+        render 'show'
+      end
+
+      format.json do
+        render_blob_json(blob)
+      end
+    end
   end
 
   def destroy

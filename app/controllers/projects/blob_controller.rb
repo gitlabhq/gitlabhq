@@ -35,7 +35,7 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def show
-    @blob.override_max_size! if params[:override_max_size] == 'true'
+    override_max_blob_size(@blob)
 
     respond_to do |format|
       format.html do

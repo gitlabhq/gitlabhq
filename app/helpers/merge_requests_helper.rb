@@ -1,6 +1,6 @@
 module MergeRequestsHelper
   def new_mr_path_from_push_event(event)
-    target_project = event.project.forked_from_project || event.project
+    target_project = event.project.default_merge_request_target
     new_namespace_project_merge_request_path(
       event.project.namespace,
       event.project,
@@ -139,6 +139,10 @@ module MergeRequestsHelper
     else
       ["#{source_path}:#{source_branch}", "#{target_path}:#{target_branch}"]
     end
+  end
+
+  def target_projects(project)
+    [project, project.default_merge_request_target].uniq
   end
 
   def merge_request_button_visibility(merge_request, closed)

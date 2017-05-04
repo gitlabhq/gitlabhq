@@ -38,3 +38,4 @@ do.
 | `/award :emoji:`  | Toggle award for :emoji: |
 | `/weight <1-9>` | Set the weight of the issue |
 | `/clear_weight` | Clears the issue weight |
+| `/board_move ~column`      | Move issue to column on the board |

@@ -43,8 +43,7 @@
       - if @milestone.description.present?
         .description
           .wiki
-            = preserve do
-              = markdown_field(@milestone, :description)
+            = markdown_field(@milestone, :description)
 
   = render 'shared/milestones/burndown', milestone: @milestone, project: @project, burndown: @burndown
 

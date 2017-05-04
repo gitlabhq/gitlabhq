@@ -963,37 +963,14 @@ describe Project, models: true do
     end
   end
 
-  describe '#execute_hooks' do
-    it "triggers project and group hooks" do
-      group = create :group, name: 'gitlab'
-      project = create(:project, name: 'gitlabhq', namespace: group)
-      project_hook = create(:project_hook, push_events: true, project: project)
-      group_hook = create(:group_hook, push_events: true, group: group)
-
-      stub_request(:post, project_hook.url)
-      stub_request(:post, group_hook.url)
-
-      expect_any_instance_of(GroupHook).to receive(:async_execute).and_return(true)
-      expect_any_instance_of(ProjectHook).to receive(:async_execute).and_return(true)
-
-      project.execute_hooks({}, :push_hooks)
-    end
-  end
-
   describe '#avatar_url' do
     subject { project.avatar_url }
 
     let(:project) { create(:empty_project) }
 
-    context 'When avatar file is uploaded' do
-      before do
-        project.update_columns(avatar: 'uploads/avatar.png')
-        allow(project.avatar).to receive(:present?) { true }
-      end
-
-      let(:avatar_path) do
-        "/uploads/project/avatar/#{project.id}/uploads/avatar.png"
-      end
+    context 'when avatar file is uploaded' do
+      let(:project) { create(:empty_project, :with_avatar) }
+      let(:avatar_path) { "/uploads/project/avatar/#{project.id}/dk.png" }
 
       it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
 
@@ -1014,9 +991,7 @@ describe Project, models: true do
         allow(project).to receive(:avatar_in_git) { true }
       end
 
-      let(:avatar_path) do
-        "/#{project.full_path}/avatar"
-      end
+      let(:avatar_path) { "/#{project.full_path}/avatar" }
 
       it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
     end
@@ -1025,6 +1000,23 @@ describe Project, models: true do
       let(:project) { create(:empty_project) }
 
       it { should eq nil }
+    end
+  end
+
+  describe '#execute_hooks' do
+    it "triggers project and group hooks" do
+      group = create :group, name: 'gitlab'
+      project = create(:project, name: 'gitlabhq', namespace: group)
+      project_hook = create(:project_hook, push_events: true, project: project)
+      group_hook = create(:group_hook, push_events: true, group: group)
+
+      stub_request(:post, project_hook.url)
+      stub_request(:post, group_hook.url)
+
+      expect_any_instance_of(GroupHook).to receive(:async_execute).and_return(true)
+      expect_any_instance_of(ProjectHook).to receive(:async_execute).and_return(true)
+
+      project.execute_hooks({}, :push_hooks)
     end
   end
 

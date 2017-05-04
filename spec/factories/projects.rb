@@ -49,6 +49,10 @@ FactoryGirl.define do
       request_access_enabled true
     end
 
+    trait :with_avatar do
+      avatar { File.open(Rails.root.join('spec/fixtures/dk.png')) }
+    end
+
     trait :repository do
       # no-op... for now!
     end

@@ -10,11 +10,12 @@ module EventsHelper
     'deleted' => 'icon_trash_o'
   }.freeze
 
-  def link_to_author(event)
+  def link_to_author(event, self_added: false)
     author = event.author
 
     if author
-      link_to author.name, user_path(author.username), title: author.name
+      name = self_added ? 'You' : author.name
+      link_to name, user_path(author.username), title: name
     else
       event.author_name
     end

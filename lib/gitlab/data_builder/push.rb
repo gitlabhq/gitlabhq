@@ -41,7 +41,7 @@ module Gitlab
         type = Gitlab::Git.tag_ref?(ref) ? 'tag_push' : 'push'
 
         # Hash to be passed as post_receive_data
-        data = {
+        {
           object_kind: type,
           event_name: type,
           before: oldrev,
@@ -61,16 +61,15 @@ module Gitlab
           repository: project.hook_attrs.slice(:name, :url, :description, :homepage,
                                                :git_http_url, :git_ssh_url, :visibility_level)
         }
-
-        data
       end
 
       # This method provide a sample data generated with
       # existing project and commits to test webhooks
       def build_sample(project, user)
-        commits = project.repository.commits(project.default_branch, limit: 3)
         ref = "#{Gitlab::Git::BRANCH_REF_PREFIX}#{project.default_branch}"
-        build(project, user, commits.last.id, commits.first.id, ref, commits)
+        commits = project.repository.commits(project.default_branch.to_s, limit: 3) rescue []
+
+        build(project, user, commits.last&.id, commits.first&.id, ref, commits)
       end
 
       def checkout_sha(repository, newrev, ref)

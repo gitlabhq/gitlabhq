@@ -2007,17 +2007,15 @@ describe Repository, models: true do
     rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target.id)
   end
 
-  # TODO: Uncomment when feature is reenabled
-  # describe '#is_ancestor?' do
-  #   context 'Gitaly is_ancestor feature enabled' do
-  #     it 'asks Gitaly server if it\'s an ancestor' do
-  #       commit = repository.commit
-  #       allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:is_ancestor).and_return(true)
-  #       expect(Gitlab::GitalyClient::Commit).to receive(:is_ancestor).
-  #         with(repository.raw_repository, commit.id, commit.id).and_return(true)
-  #
-  #       expect(repository.is_ancestor?(commit.id, commit.id)).to be true
-  #     end
-  #   end
-  # end
+  describe '#is_ancestor?' do
+    context 'Gitaly is_ancestor feature enabled' do
+      it "asks Gitaly server if it's an ancestor" do
+        commit = repository.commit
+        expect(repository.raw_repository).to receive(:is_ancestor?).and_call_original
+        allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:is_ancestor).and_return(true)
+
+        expect(repository.is_ancestor?(commit.id, commit.id)).to be true
+      end
+    end
+  end
 end

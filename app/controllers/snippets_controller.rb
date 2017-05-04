@@ -4,6 +4,7 @@ class SnippetsController < ApplicationController
   include SpammableActions
   include SnippetsActions
   include MarkdownPreview
+  include RendersBlob
 
   before_action :snippet, only: [:show, :edit, :destroy, :update, :raw, :download]
 
@@ -61,10 +62,23 @@ class SnippetsController < ApplicationController
   end
 
   def show
+    blob = @snippet.blob
+    override_max_blob_size(blob)
+
     @noteable = @snippet
 
     @discussions = @snippet.discussions
     @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes))
+
+    respond_to do |format|
+      format.html do
+        render 'show'
+      end
+
+      format.json do
+        render_blob_json(blob)
+      end
+    end
   end
 
   def destroy

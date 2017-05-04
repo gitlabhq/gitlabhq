@@ -439,7 +439,7 @@ module Gitlab
 
       # Returns true is +from+ is direct ancestor to +to+, otherwise false
       def is_ancestor?(from, to)
-        Gitlab::GitalyClient::Commit.is_ancestor(self, from, to)
+        gitaly_commit_client.is_ancestor(from, to)
       end
 
       # Return an array of Diff objects that represent the diff
@@ -1259,6 +1259,10 @@ module Gitlab
 
       def gitaly_ref_client
         @gitaly_ref_client ||= Gitlab::GitalyClient::Ref.new(self)
+      end
+
+      def gitaly_commit_client
+        @gitaly_commit_client ||= Gitlab::GitalyClient::Commit.new(self)
       end
 
       def gitaly_migrate(method, &block)
