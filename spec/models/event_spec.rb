@@ -15,13 +15,39 @@ describe Event, models: true do
   end
 
   describe 'Callbacks' do
-    describe 'after_create :reset_project_activity' do
-      let(:project) { create(:empty_project) }
+    let(:project) { create(:empty_project) }
 
+    describe 'after_create :reset_project_activity' do
       it 'calls the reset_project_activity method' do
         expect_any_instance_of(described_class).to receive(:reset_project_activity)
 
         create_push_event(project, project.owner)
+      end
+    end
+
+    describe 'after_create :set_last_repository_updated_at' do
+      context 'with a push event' do
+        it 'updates the project last_repository_updated_at' do
+          project.update(last_repository_updated_at: 1.year.ago)
+
+          create_push_event(project, project.owner)
+
+          project.reload
+
+          expect(project.last_repository_updated_at).to be_within(1.minute).of(Time.now)
+        end
+      end
+
+      context 'without a push event' do
+        it 'does not update the project last_repository_updated_at' do
+          project.update(last_repository_updated_at: 1.year.ago)
+
+          create(:closed_issue_event, project: project, author: project.owner)
+
+          project.reload
+
+          expect(project.last_repository_updated_at).to be_within(1.minute).of(1.year.ago)
+        end
       end
     end
   end
@@ -243,38 +269,19 @@ describe Event, models: true do
         expect(project).not_to receive(:update_column).
           with(:last_activity_at, a_kind_of(Time))
 
-        expect(project).not_to receive(:update_column).
-          with(:last_repository_updated_at, a_kind_of(Time))
-
         create_push_event(project, project.owner)
       end
     end
 
     context 'when a project was updated more than 1 hour ago' do
-      context 'with a push event' do
-        it 'updates the project last_activity_at and last_repository_updated_at' do
-          project.update(last_activity_at: 1.year.ago, last_repository_updated_at: 1.year.ago)
+      it 'updates the project' do
+        project.update(last_activity_at: 1.year.ago)
 
-          create_push_event(project, project.owner)
+        create_push_event(project, project.owner)
 
-          project.reload
+        project.reload
 
-          expect(project.last_activity_at).to be_within(1.minute).of(Time.now)
-          expect(project.last_repository_updated_at).to be_within(1.minute).of(Time.now)
-        end
-      end
-
-      context 'without a push event' do
-        it 'does not update the project last_repository_updated_at' do
-          project.update(last_activity_at: 1.year.ago, last_repository_updated_at: 1.year.ago)
-
-          create(:closed_issue_event, project: project, author: project.owner)
-
-          project.reload
-
-          expect(project.last_activity_at).to be_within(1.minute).of(Time.now)
-          expect(project.last_repository_updated_at).to be_within(1.minute).of(1.year.ago)
-        end
+        expect(project.last_activity_at).to be_within(1.minute).of(Time.now)
       end
     end
   end
