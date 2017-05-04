@@ -30,7 +30,7 @@ module Ci
 
       Ci::Build.transaction do
         # mark all other builds of that name as retried
-        pipeline.builds.where(name: build.name, retried: false).
+        build.pipeline.builds.where(name: build.name, retried: [false, nil]).
           update_all(retried: true)
 
         project.builds.create!(Hash[attributes])
