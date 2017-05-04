@@ -51,7 +51,7 @@
                 %p
                   .js-health
 
-          - if node.current? == node.primary?
+          - if Gitlab::Geo.primary?
             .node-actions
               - if Gitlab::Geo.license_allows?
                 - if node.missing_oauth_application?
