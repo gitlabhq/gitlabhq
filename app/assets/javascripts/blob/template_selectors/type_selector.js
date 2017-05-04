@@ -17,7 +17,7 @@ export default class FileTemplateTypeSelector extends FileTemplateSelector {
       filterable: false,
       selectable: true,
       toggleLabel: item => item.name,
-      clicked: (item, el, e) => this.mediator.selectTemplateType(item, el, e),
+      clicked: options => this.mediator.selectTemplateTypeOptions(options),
       text: item => item.name,
     });
   }
