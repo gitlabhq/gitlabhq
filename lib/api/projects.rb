@@ -26,6 +26,10 @@ module API
       params :optional_params do
         use :optional_params_ce
       end
+
+      params :statistics_params do
+        optional :statistics, type: Boolean, default: false, desc: 'Include project statistics'
+      end
     end
 
     resource :projects do
@@ -56,10 +60,6 @@ module API
           optional :membership, type: Boolean, default: false, desc: 'Limit by projects that the current user is a member of'
         end
 
-        params :statistics_params do
-          optional :statistics, type: Boolean, default: false, desc: 'Include project statistics'
-        end
-
         params :create_params do
           optional :namespace_id, type: Integer, desc: 'Namespace ID for the new project. Default to the user namespace.'
           optional :import_url, type: String, desc: 'URL from which the project is imported'
@@ -85,6 +85,7 @@ module API
       end
       params do
         use :collection_params
+        use :statistics_params
       end
       get do
         entity = current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails
@@ -151,10 +152,13 @@ module API
       desc 'Get a single project' do
         success Entities::ProjectWithAccess
       end
+      params do
+        use :statistics_params
+      end
       get ":id" do
         entity = current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails
         present user_project, with: entity, current_user: current_user,
-                              user_can_admin_project: can?(current_user, :admin_project, user_project)
+                              user_can_admin_project: can?(current_user, :admin_project, user_project), statistics: params[:statistics]
       end
 
       desc 'Get events for a single project' do
