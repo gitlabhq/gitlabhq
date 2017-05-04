@@ -3,9 +3,8 @@ import IntervalPatternInput from '~/pipeline_schedules/components/interval_patte
 
 const IntervalPatternInputComponent = Vue.extend(IntervalPatternInput);
 
-const cronInputName = 'pipeline_schedule[cron]';
-
 const dataDefaults = {
+  inputNameAttribute: 'schedule[cron]',
   cronSyntaxUrl: 'https://en.wikipedia.org/wiki/Cron',
   customInputEnabled: false,
 };
@@ -23,7 +22,6 @@ describe('Interval Pattern Input Component', () => {
         this.initialCronInterval = '1 2 3 4 5';
         this.intervalPatternComponent = new IntervalPatternInputComponent({
           propsData: {
-            inputNameAttribute: cronInputName,
             initialCronInterval: this.initialCronInterval,
           },
         }).$mount();
@@ -35,10 +33,6 @@ describe('Interval Pattern Input Component', () => {
 
       it('prop initialCronInterval is set', () => {
         expect(this.intervalPatternComponent.initialCronInterval).toBe(this.initialCronInterval);
-      });
-
-      it('prop inputNameAttribute is set', () => {
-        expect(this.intervalPatternComponent.inputNameAttribute).toBe(cronInputName);
       });
 
       it('sets showUnsetWarning to false', (done) => {
@@ -75,10 +69,6 @@ describe('Interval Pattern Input Component', () => {
 
       it('is initialized as a Vue component', () => {
         expect(this.intervalPatternComponent).toBeDefined();
-      });
-
-      it('prop inputNameAttribute is set', () => {
-        expect(this.intervalPatternComponent.inputNameAttribute).toBe(cronInputName);
       });
 
       it('sets showUnsetWarning to false', (done) => {
@@ -134,10 +124,6 @@ describe('Interval Pattern Input Component', () => {
       expect(this.intervalPatternComponent.initialCronInterval).toBe(defaultInitialCronInterval);
     });
 
-    it('prop inputNameAttribute is set', () => {
-      expect(this.intervalPatternComponent.inputNameAttribute).toBe(cronInputName);
-    });
-
     it('sets showUnsetWarning to true', (done) => {
       Vue.nextTick(() => {
         expect(this.intervalPatternComponent.showUnsetWarning).toBe(true);
@@ -177,7 +163,6 @@ describe('Interval Pattern Input Component', () => {
       this.initialCronInterval = '1 2 3 4 5';
       this.intervalPatternComponent = new IntervalPatternInputComponent({
         propsData: {
-          inputNameAttribute: cronInputName,
           initialCronInterval: this.initialCronInterval,
         },
       }).$mount();

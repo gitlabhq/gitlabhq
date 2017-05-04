@@ -1,3 +1,5 @@
+const inputNameAttribute = 'schedule[cron]';
+
 export default {
   props: {
     initialCronInterval: {
@@ -5,13 +7,10 @@ export default {
       required: false,
       default: '',
     },
-    inputNameAttribute: {
-      type: String,
-      required: true,
-    },
   },
   data() {
     return {
+      inputNameAttribute,
       cronInterval: this.initialCronInterval,
       cronIntervalPresets: {
         everyDay: '0 4 * * *',

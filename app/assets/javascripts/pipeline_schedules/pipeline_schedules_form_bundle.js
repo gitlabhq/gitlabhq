@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   new IntervalPatternInputComponent({
     propsData: {
-      inputNameAttribute: 'schedule[cron]',
+      initialCronInterval: '0 0 0 0 0',
     },
   }).$mount('#interval-pattern-input');
 
