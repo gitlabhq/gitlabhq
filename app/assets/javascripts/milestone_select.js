@@ -121,30 +121,10 @@
             return $value.css('display', '');
           },
           vue: $dropdown.hasClass('js-issue-board-sidebar'),
-<<<<<<< HEAD
-          clicked: function(selected, $el, e) {
-=======
-          hideRow: function(milestone) {
-            if ($('html').hasClass('issue-boards-page') && !$dropdown.hasClass('js-issue-board-sidebar') &&
-              !$dropdown.closest('.add-issues-modal').length && gl.issueBoards.BoardsStore.state.currentBoard.milestone) {
-              return milestone !== gl.issueBoards.BoardsStore.state.currentBoard.milestone.title;
-            }
-
-            return false;
-          },
-          isSelectable: function() {
-            if ($('html').hasClass('issue-boards-page') && !$dropdown.hasClass('js-issue-board-sidebar') &&
-              !$dropdown.closest('.add-issues-modal').length && gl.issueBoards.BoardsStore.state.currentBoard.milestone_id) {
-              return false;
-            }
-
-            return true;
-          },
           clicked: function(options) {
             const { $el, e } = options;
             let selected = options.selectedObj;
 
->>>>>>> b0a2435... Merge branch 'multiple_assignees_review_upstream' into ee_master
             var data, isIssueIndex, isMRIndex, page, boardsStore;
             page = $('body').data('page');
             isIssueIndex = page === 'projects:issues:index';
