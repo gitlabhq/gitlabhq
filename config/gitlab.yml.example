@@ -502,7 +502,9 @@ production: &base
     upload_pack: true
     receive_pack: true
 
-    # If you use non-standard ssh port you need to specify it
+    # If you use non-standard ssh port you need to specify it.
+    # Note that you do not need to set this if you have specified an entry in your ~/.ssh/config file
+    # for your GitLab instance
     # ssh_port: 22
 
   workhorse:
