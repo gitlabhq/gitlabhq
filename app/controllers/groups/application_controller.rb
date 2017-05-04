@@ -9,20 +9,11 @@ class Groups::ApplicationController < ApplicationController
   private
 
   def group
-    unless @group
-      given_path = params[:group_id] || params[:id]
-      @group = Group.find_by_full_path(given_path, follow_redirects: request.get?)
+    @group ||= find_routable!(Group, requested_full_path)
+  end
 
-      if @group && can?(current_user, :read_group, @group)
-        ensure_canonical_path(@group, given_path)
-      else
-        @group = nil
-
-        route_not_found
-      end
-    end
-
-    @group
+  def requested_full_path
+    params[:group_id] || params[:id]
   end
 
   def group_projects

@@ -93,16 +93,7 @@ class UsersController < ApplicationController
   private
 
   def user
-    return @user if @user
-
-    @user = User.find_by_full_path(params[:username], follow_redirects: true)
-
-    return render_404 unless @user
-    return render_404 unless can?(current_user, :read_user, @user)
-
-    ensure_canonical_path(@user.namespace, params[:username])
-
-    @user
+    @user ||= find_routable!(User, params[:username])
   end
 
   def contributed_projects

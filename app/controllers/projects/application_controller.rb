@@ -2,6 +2,7 @@ class Projects::ApplicationController < ApplicationController
   include RoutableActions
 
   skip_before_action :authenticate_user!
+  before_action :redirect_git_extension
   before_action :project
   before_action :repository
   layout 'project'
@@ -10,34 +11,30 @@ class Projects::ApplicationController < ApplicationController
 
   private
 
-  def project
-    unless @project
-      namespace = params[:namespace_id]
-      id = params[:project_id] || params[:id]
-
-      # Redirect from
-      #   localhost/group/project.git
-      # to
-      #   localhost/group/project
-      #
-      if params[:format] == 'git'
-        redirect_to request.original_url.gsub(/\.git\/?\Z/, '')
-        return
-      end
-
-      project_path = "#{namespace}/#{id}"
-      @project = Project.find_by_full_path(project_path, follow_redirects: request.get?)
-
-      if can?(current_user, :read_project, @project) && !@project.pending_delete?
-        ensure_canonical_path(@project, project_path)
-      else
-        @project = nil
-
-        route_not_found
-      end
+  def redirect_git_extension
+    # Redirect from
+    #   localhost/group/project.git
+    # to
+    #   localhost/group/project
+    #
+    if params[:format] == 'git'
+      redirect_to request.original_url.gsub(/\.git\/?\Z/, '')
+      return
     end
+  end
 
-    @project
+  def project
+    @project ||= find_routable!(Project, requested_full_path, extra_authorization_method: :project_not_being_deleted?)
+  end
+
+  def requested_full_path
+    namespace = params[:namespace_id]
+    id = params[:project_id] || params[:id]
+    "#{namespace}/#{id}"
+  end
+
+  def project_not_being_deleted?(project)
+    !project.pending_delete?
   end
 
   def repository

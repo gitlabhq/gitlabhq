@@ -36,9 +36,9 @@ describe UsersController do
       end
 
       context 'when logged out' do
-        it 'renders 404' do
+        it 'redirects to login page' do
           get :show, username: user.username
-          expect(response).to have_http_status(404)
+          expect(response).to redirect_to new_user_session_path
         end
       end
 
@@ -88,9 +88,9 @@ describe UsersController do
 
     context 'when a user by that username does not exist' do
       context 'when logged out' do
-        it 'renders 404 (does not redirect to login)' do
+        it 'redirects to login page' do
           get :show, username: 'nonexistent'
-          expect(response).to have_http_status(404)
+          expect(response).to redirect_to new_user_session_path
         end
       end
 
