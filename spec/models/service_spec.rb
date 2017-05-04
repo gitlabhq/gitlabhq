@@ -258,7 +258,7 @@ describe Service, models: true do
   describe "#update_and_propagate" do
     let(:project) { create(:empty_project) }
     let!(:service) do
-      RedmineService.new(
+      RedmineService.create(
         project: project,
         active: false,
         properties: {
@@ -270,7 +270,7 @@ describe Service, models: true do
     end
 
     it 'updates the service params successfully and calls the propagation worker' do
-      expect(PropagateProjectServiceWorker).to receive(:perform_async)
+      expect(PropagateProjectServiceWorker).to receive(:perform_async).with(service.id)
 
       expect(service.update_and_propagate(active: true)).to be true
     end

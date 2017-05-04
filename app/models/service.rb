@@ -258,7 +258,7 @@ class Service < ActiveRecord::Base
     return false unless update_attributes(service_params)
 
     if service_params[:active]
-      PropagateProjectServiceWorker.perform_async(service_params[:id])
+      PropagateProjectServiceWorker.perform_async(id)
     end
 
     true
