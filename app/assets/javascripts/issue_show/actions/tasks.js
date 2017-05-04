@@ -15,7 +15,7 @@ export default (newStateData, tasks) => {
     tasksStates.currentState = tasks.indexOf('0 of 0') === 0;
   }
 
-  if ($tasks && !tasksStates.newState) {
+  if ($tasks.length !== 0 && !tasksStates.newState) {
     $tasks.text(newStateData.task_status);
     $tasksShort.text(newStateData.task_status);
   } else if (tasksStates.currentState) {

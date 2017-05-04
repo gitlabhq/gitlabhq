@@ -25,12 +25,7 @@ export default {
         this.renderResponse(res);
       },
       errorCallback: (err) => {
-        if (process.env.NODE_ENV !== 'production') {
-          // eslint-disable-next-line no-console
-          console.error('ISSUE SHOW REALTIME ERROR', err, err.stack);
-        } else {
-          throw new Error(err);
-        }
+        throw new Error(err);
       },
     });
 
