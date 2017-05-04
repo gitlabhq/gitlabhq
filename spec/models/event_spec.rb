@@ -21,7 +21,7 @@ describe Event, models: true do
       it 'calls the reset_project_activity method' do
         expect_any_instance_of(described_class).to receive(:reset_project_activity)
 
-        create_event(project, project.owner)
+        create_push_event(project, project.owner)
       end
     end
   end
@@ -29,7 +29,7 @@ describe Event, models: true do
   describe "Push event" do
     let(:project) { create(:empty_project, :private) }
     let(:user) { project.owner }
-    let(:event) { create_event(project, user) }
+    let(:event) { create_push_event(project, user) }
 
     it do
       expect(event.push?).to be_truthy
@@ -246,7 +246,7 @@ describe Event, models: true do
         expect(project).not_to receive(:update_column).
           with(:last_repository_updated_at, a_kind_of(Time))
 
-        create_event(project, project.owner)
+        create_push_event(project, project.owner)
       end
     end
 
@@ -255,7 +255,7 @@ describe Event, models: true do
         it 'updates the project last_activity_at and last_repository_updated_at' do
           project.update(last_activity_at: 1.year.ago, last_repository_updated_at: 1.year.ago)
 
-          create_event(project, project.owner)
+          create_push_event(project, project.owner)
 
           project.reload
 
@@ -265,7 +265,7 @@ describe Event, models: true do
       end
 
       context 'without a push event' do
-        it 'does not updates the project last_repository_updated_at' do
+        it 'does not update the project last_repository_updated_at' do
           project.update(last_activity_at: 1.year.ago, last_repository_updated_at: 1.year.ago)
 
           create(:closed_issue_event, project: project, author: project.owner)
@@ -297,7 +297,7 @@ describe Event, models: true do
     end
   end
 
-  def create_event(project, user, attrs = {})
+  def create_push_event(project, user, attrs = {})
     data = {
       before: Gitlab::Git::BLANK_SHA,
       after: "0220c11b9a3e6c69dc8fd35321254ca9a7b98f7e",
