@@ -111,6 +111,22 @@ describe GeoNode, type: :model do
     end
   end
 
+  describe '#current?' do
+    subject { described_class.new }
+
+    it 'returns true when node is the current node' do
+      allow(Gitlab::Geo).to receive(:current_node) { subject }
+
+      expect(subject.current?).to eq true
+    end
+
+    it 'returns false when node is not the current node' do
+      allow(Gitlab::Geo).to receive(:current_node) { double }
+
+      expect(subject.current?).to eq false
+    end
+  end
+
   describe '#uri' do
     context 'when all fields are filled' do
       it 'returns an URI object' do
