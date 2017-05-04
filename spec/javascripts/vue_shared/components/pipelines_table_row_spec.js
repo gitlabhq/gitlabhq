@@ -59,6 +59,13 @@ describe('Pipelines Table Row', () => {
         ).toEqual(pipeline.user.name);
       });
     });
+
+    it('should render commit author', () => {
+      const commitTitleElement = component.$el.querySelector('.branch-commit .commit-title');
+      const commitAuthorElement = commitTitleElement.querySelector('a.avatar-image-container');
+      expect(commitAuthorElement.getAttribute('href')).toEqual(pipeline.commit.author.web_url);
+      expect(commitAuthorElement.querySelector('img.avatar').getAttribute('title')).toEqual(pipeline.commit.author.username);
+    });
   });
 
   describe('commit column', () => {
