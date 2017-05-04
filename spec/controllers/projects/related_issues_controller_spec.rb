@@ -33,13 +33,19 @@ describe Projects::RelatedIssuesController, type: :controller do
 
   describe 'POST #create' do
     let(:service) { double(RelatedIssues::CreateService, execute: service_response) }
-    let(:service_response) { { 'message' => 'yay' } }
+    let(:list_service) { double(RelatedIssues::ListService, execute: list_service_response) }
+    let(:service_response) { { 'message' => 'yay', 'status' => 'success' } }
+    let(:list_service_response) { [{ 'foo' => 'bar' }] }
     let(:issue_references) { double }
     let(:user_role) { :developer }
 
     before do
       project.team << [user, user_role]
       sign_in user
+
+      allow(RelatedIssues::ListService).to receive(:new)
+        .with(issue, user)
+        .and_return(list_service)
 
       allow(RelatedIssues::CreateService).to receive(:new)
         .with(issue, user, { issue_references: issue_references })
@@ -57,7 +63,8 @@ describe Projects::RelatedIssuesController, type: :controller do
     context 'with success' do
       it 'returns success JSON' do
         is_expected.to have_http_status(200)
-        expect(json_response).to eq(service_response)
+        expect(json_response).to eq('result' => service_response,
+                                    'issues' => list_service_response)
       end
     end
 
@@ -70,12 +77,12 @@ describe Projects::RelatedIssuesController, type: :controller do
         end
       end
 
-      context 'when failure service result' do
-        let(:service_response) { { 'http_status' => 401 } }
+      context 'when failing service result' do
+        let(:service_response) { { 'http_status' => 401, 'status' => 'error' } }
 
         it 'returns failure JSON' do
           is_expected.to have_http_status(401)
-          expect(json_response).to eq(service_response)
+          expect(json_response).to eq('result' => service_response)
         end
       end
     end
@@ -85,7 +92,9 @@ describe Projects::RelatedIssuesController, type: :controller do
     let(:referenced_issue) { create :issue, project: project }
     let(:related_issue) { create :related_issue, related_issue: referenced_issue }
     let(:service) { double(RelatedIssues::DestroyService, execute: service_response) }
+    let(:list_service) { double(RelatedIssues::ListService, execute: list_service_response) }
     let(:service_response) { { 'message' => 'yay' } }
+    let(:list_service_response) { [{ 'foo' => 'bar' }] }
     let(:current_project_user_role) { :developer }
 
     subject do
@@ -99,6 +108,10 @@ describe Projects::RelatedIssuesController, type: :controller do
     before do
       project.team << [user, current_project_user_role]
       sign_in user
+
+      allow(RelatedIssues::ListService).to receive(:new)
+        .with(issue, user)
+        .and_return(list_service)
 
       allow(RelatedIssues::DestroyService).to receive(:new)
         .with(related_issue, user)
@@ -129,7 +142,7 @@ describe Projects::RelatedIssuesController, type: :controller do
 
       it 'returns success JSON' do
         is_expected.to have_http_status(200)
-        expect(json_response).to eq(service_response)
+        expect(json_response).to eq('result' => service_response, 'issues' => list_service_response)
       end
     end
   end

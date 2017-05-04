@@ -4,14 +4,18 @@ module Projects
     before_action :authorize_admin_related_issue!, only: [:create, :destroy]
 
     def index
-      render json: RelatedIssues::ListService.new(issue, current_user).execute
+      render json: issues
     end
 
     def create
       opts = { issue_references: params[:issue_references] }
       result = RelatedIssues::CreateService.new(issue, current_user, opts).execute
 
-      render json: result, status: result['http_status']
+      if result['status'] == 'success'
+        render json: { result: result, issues: issues }, status: result['http_status']
+      else
+        render json: { result: result }, status: result['http_status']
+      end
     end
 
     def destroy
@@ -23,10 +27,14 @@ module Projects
 
       result = RelatedIssues::DestroyService.new(related_issue, current_user).execute
 
-      render json: result
+      render json: { result: result, issues: issues }
     end
 
     private
+
+    def issues
+      RelatedIssues::ListService.new(issue, current_user).execute
+    end
 
     def authorize_admin_related_issue!
       return render_404 unless can?(current_user, :admin_related_issue, @project)
