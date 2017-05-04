@@ -25,7 +25,7 @@ module Ci
 
     def can_take_ownership?(current_user)
       Ability.allowed?(current_user, :update_pipeline_schedule, project) &&
-        !pipeline_schedule.owned_by?(current_user)
+        !owned_by?(current_user)
     end
 
     def last_pipeline

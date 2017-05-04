@@ -18,7 +18,7 @@ export default class TimezoneDropdown {
         fields: ['name'],
       },
       clicked: (query, el, e) => this.updateInputValue(query, el, e),
-      text: item => this.listItemRenderer(item),
+      text: item => this.formatTimezone(item),
     });
 
     this.setDropdownToggle();

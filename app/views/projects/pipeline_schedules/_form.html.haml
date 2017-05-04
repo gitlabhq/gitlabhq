@@ -16,7 +16,7 @@
   .form-group
     .col-md-6
       = f.label :cron_timezone, 'Cron Timezone', class: 'label-light'
-      = hidden_field_tag(:cron_timezone, params[:cron_timezone], id: 'schedule_cron_timezone', name: 'schedule[cron_timezone]')
+      = hidden_field_tag(:cron_timezone, @schedule.cron_timezone, id: 'schedule_cron_timezone', name: 'schedule[cron_timezone]')
       = dropdown_tag("Select a timezone", options: { toggle_class: 'btn js-timezone-dropdown', title: "Select a timezone", filter: true, placeholder: "Filter", data: { data: timezones } } )
   .form-group
     .col-md-6

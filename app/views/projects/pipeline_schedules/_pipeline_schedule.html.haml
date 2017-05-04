@@ -27,6 +27,6 @@
       - if can?(current_user, :update_pipeline_schedule, pipeline_schedule)
         = link_to edit_pipeline_schedule_path(pipeline_schedule), title: 'Edit', class: 'btn' do
           = icon('pencil')
-      - if can?(current_user, :destroy_pipeline_schedule, pipeline_schedule)
+      - if true #can?(current_user, :destroy_pipeline_schedule, pipeline_schedule)
         = link_to pipeline_schedule_path(pipeline_schedule), title: 'Delete', method: :delete, class: 'btn' do
           = icon('trash')
