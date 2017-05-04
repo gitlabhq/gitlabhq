@@ -18,12 +18,6 @@ export default {
       type: Boolean,
       default: true,
     },
-
-    service: {
-      type: Object,
-      required: true,
-      default: () => ({}),
-    },
   },
 
   data() {

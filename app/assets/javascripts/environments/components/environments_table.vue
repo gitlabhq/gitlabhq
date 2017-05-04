@@ -87,7 +87,6 @@ export default {
           :model="model"
           :can-create-deployment="canCreateDeployment"
           :can-read-environment="canReadEnvironment"
-          :service="service"
           :toggleDeployBoard="toggleDeployBoard"
           />
 
@@ -120,6 +119,7 @@ export default {
               :can-create-deployment="canCreateDeployment"
               :can-read-environment="canReadEnvironment"
               />
+
 
             <tr>
               <td

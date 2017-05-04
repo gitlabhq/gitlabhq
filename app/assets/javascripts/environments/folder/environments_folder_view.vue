@@ -181,13 +181,10 @@ export default {
           :environments="state.environments"
           :can-create-deployment="canCreateDeploymentParsed"
           :can-read-environment="canReadEnvironmentParsed"
-<<<<<<< HEAD
           :toggleDeployBoard="toggleDeployBoard"
           :store="store"
-          :service="service"/>
-=======
+          :service="service"
           />
->>>>>>> ce/master
 
         <table-pagination
           v-if="state.paginationInformation && state.paginationInformation.totalPages > 1"

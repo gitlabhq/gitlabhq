@@ -29,7 +29,6 @@ export default {
       this.isLoading = true;
 
       $(this.$refs.tooltip).tooltip('destroy');
-
       eventHub.$emit('postAction', endpoint);
     },
 

@@ -11,12 +11,6 @@ export default {
       type: String,
       default: '',
     },
-
-    service: {
-      type: Object,
-      required: true,
-      default: () => ({}),
-    },
   },
 
   data() {
