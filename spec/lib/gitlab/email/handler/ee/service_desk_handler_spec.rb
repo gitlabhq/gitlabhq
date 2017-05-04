@@ -66,6 +66,26 @@ describe Gitlab::Email::Handler::EE::ServiceDeskHandler do
         expect { receiver.execute rescue nil }.not_to change { Issue.count }
       end
     end
+
+    context 'when the email is forwarded through an alias' do
+      let(:email_raw) { fixture_file('emails/service_desk_forwarded.eml') }
+
+      it 'sends thank you the email and creates issue' do
+        setup_attachment
+
+        expect(Notify).to receive(:service_desk_thank_you_email).with(kind_of(Integer))
+
+        expect { receiver.execute }.to change { Issue.count }.by(1)
+
+        new_issue = Issue.last
+
+        expect(new_issue.author).to eql(User.support_bot)
+        expect(new_issue.confidential?).to be true
+        expect(new_issue.all_references.all).to be_empty
+        expect(new_issue.title).to eq("Service Desk (from jake@adventuretime.ooo): The message subject! @all")
+        expect(new_issue.description).to eq("Service desk stuff!\n\n```\na = b\n```\n\n![image](uploads/image.png)")
+      end
+    end
   end
 
   context 'when service desk is not enabled' do

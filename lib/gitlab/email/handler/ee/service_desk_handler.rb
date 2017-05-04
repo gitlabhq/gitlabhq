@@ -23,7 +23,7 @@ module Gitlab
           private
 
           def service_desk_key
-            return unless mail_key.include?('/') && !mail_key.include?('+')
+            return unless mail_key && mail_key.include?('/') && !mail_key.include?('+')
 
             mail_key
           end
