@@ -7,23 +7,7 @@ class IssueAssignee < ActiveRecord::Base
   after_create :update_assignee_cache_counts
   after_destroy :update_assignee_cache_counts
 
-  # EE-specific
-  after_create :update_elasticsearch_index
-  after_destroy :update_elasticsearch_index
-  # EE-specific
-
   def update_assignee_cache_counts
     assignee&.update_cache_counts
-  end
-
-  def update_elasticsearch_index
-    if current_application_settings.elasticsearch_indexing?
-      ElasticIndexerWorker.perform_async(
-        :update,
-        'Issue',
-        issue.id,
-        changed_fields: ['assignee_ids']
-      )
-    end
   end
 end

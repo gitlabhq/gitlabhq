@@ -74,12 +74,14 @@ class NotificationService
       previous_assignee: previous_assignees
     )
 
+    previous_assignee_ids = previous_assignees.map(&:id)
+
     recipients.each do |recipient|
       mailer.send(
         :reassigned_issue_email,
         recipient.id,
         issue.id,
-        previous_assignees.map(&:id),
+        previous_assignee_ids,
         current_user.id
       ).deliver_later
     end
