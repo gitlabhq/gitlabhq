@@ -13,7 +13,7 @@ class CreateRelatedIssuesTable < ActiveRecord::Migration
 
     add_index :related_issues, [:issue_id, :related_issue_id], unique: true
 
-    add_foreign_key :related_issues, :issues, column: :issue_id
-    add_foreign_key :related_issues, :issues, column: :related_issue_id
+    add_concurrent_foreign_key :related_issues, :issues, column: :issue_id
+    add_concurrent_foreign_key :related_issues, :issues, column: :related_issue_id
   end
 end

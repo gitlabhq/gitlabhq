@@ -69,9 +69,9 @@ describe RelatedIssues::CreateService, service: true do
         expect(RelatedIssue.last).to have_attributes(issue: issue, related_issue: another_project_issue)
       end
 
-        it 'returns success message with Issue reference' do
-          is_expected.to eq(message: "#{issue_a_ref} and #{another_project_issue_ref} were successfully related", status: :success)
-        end
+      it 'returns success message with Issue reference' do
+        is_expected.to eq(message: "#{issue_a_ref} and #{another_project_issue_ref} were successfully related", status: :success)
+      end
 
       it 'creates notes' do
         # First two-way relation notes
