@@ -9,12 +9,12 @@ class LegacyDiffDiscussion < Discussion
 
   memoized_values << :active
 
-  def legacy_diff_discussion?
-    true
-  end
-
   def self.note_class
     LegacyDiffNote
+  end
+
+  def legacy_diff_discussion?
+    true
   end
 
   def active?(*args)
@@ -25,6 +25,16 @@ class LegacyDiffDiscussion < Discussion
 
   def collapsed?
     !active?
+  end
+
+  def merge_request_version_params
+    return unless for_merge_request?
+
+    if active?
+      {}
+    else
+      nil
+    end
   end
 
   def reply_attributes

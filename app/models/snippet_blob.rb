@@ -1,5 +1,5 @@
 class SnippetBlob
-  include Linguist::BlobHelper
+  include BlobLike
 
   attr_reader :snippet
 
@@ -27,33 +27,5 @@ class SnippetBlob
     return unless Gitlab::MarkupHelper.gitlab_markdown?(name)
 
     Banzai.render_field(snippet, :content)
-  end
-
-  def mode
-    nil
-  end
-
-  def binary?
-    false
-  end
-
-  def load_all_data!(repository)
-    # No-op
-  end
-
-  def lfs_pointer?
-    false
-  end
-
-  def lfs_oid
-    nil
-  end
-
-  def lfs_size
-    nil
-  end
-
-  def truncated?
-    false
   end
 end

@@ -28,7 +28,7 @@ class Blob < SimpleDelegator
     BlobViewer::Sketch,
 
     BlobViewer::Video,
-    
+
     BlobViewer::PDF,
 
     BlobViewer::BinarySTL,
@@ -75,19 +75,37 @@ class Blob < SimpleDelegator
   end
 
   def no_highlighting?
-    size && size > MAXIMUM_TEXT_HIGHLIGHT_SIZE
+    raw_size && raw_size > MAXIMUM_TEXT_HIGHLIGHT_SIZE
+  end
+
+  def empty?
+    raw_size == 0
   end
 
   def too_large?
     size && truncated?
   end
 
+  def external_storage_error?
+    if external_storage == :lfs
+      !project&.lfs_enabled?
+    else
+      false
+    end
+  end
+
+  def stored_externally?
+    return @stored_externally if defined?(@stored_externally)
+
+    @stored_externally = external_storage && !external_storage_error?
+  end
+
   # Returns the size of the file that this blob represents. If this blob is an
   # LFS pointer, this is the size of the file stored in LFS. Otherwise, this is
   # the size of the blob itself.
   def raw_size
-    if valid_lfs_pointer?
-      lfs_size
+    if stored_externally?
+      external_size
     else
       size
     end
@@ -98,9 +116,13 @@ class Blob < SimpleDelegator
   # text-based rich blob viewer matched on the file's extension. Otherwise, this
   # depends on the type of the blob itself.
   def raw_binary?
-    if valid_lfs_pointer?
+    if stored_externally?
       if rich_viewer
         rich_viewer.binary?
+      elsif Linguist::Language.find_by_filename(name).any?
+        false
+      elsif _mime_type
+        _mime_type.binary?
       else
         true
       end
@@ -118,15 +140,7 @@ class Blob < SimpleDelegator
   end
 
   def readable_text?
-    text? && !valid_lfs_pointer? && !too_large?
-  end
-
-  def valid_lfs_pointer?
-    lfs_pointer? && project&.lfs_enabled?
-  end
-
-  def invalid_lfs_pointer?
-    lfs_pointer? && !project&.lfs_enabled?
+    text? && !stored_externally? && !too_large?
   end
 
   def simple_viewer
@@ -165,10 +179,10 @@ class Blob < SimpleDelegator
   end
 
   def rich_viewer_class
-    return if invalid_lfs_pointer? || empty?
+    return if empty? || external_storage_error?
 
     classes =
-      if valid_lfs_pointer?
+      if stored_externally?
         BINARY_VIEWERS + TEXT_VIEWERS
       elsif binary?
         BINARY_VIEWERS
