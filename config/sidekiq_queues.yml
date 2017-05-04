@@ -53,3 +53,4 @@
   - [pages, 1]
   - [system_hook_push, 1]
   - [update_user_activity, 1]
+  - [propagate_project_service, 1]
