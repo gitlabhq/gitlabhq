@@ -14,7 +14,7 @@ describe API::V3::Issues do
   let!(:closed_issue) do
     create :closed_issue,
            author: user,
-           assignee: user,
+           assignees: [user],
            project: project,
            state: :closed,
            milestone: milestone,
@@ -26,14 +26,14 @@ describe API::V3::Issues do
            :confidential,
            project: project,
            author: author,
-           assignee: assignee,
+           assignees: [assignee],
            created_at: generate(:past_time),
            updated_at: 2.hours.ago
   end
   let!(:issue) do
     create :issue,
            author: user,
-           assignee: user,
+           assignees: [user],
            project: project,
            milestone: milestone,
            created_at: generate(:past_time),
@@ -247,7 +247,7 @@ describe API::V3::Issues do
     let!(:group_closed_issue) do
       create :closed_issue,
              author: user,
-             assignee: user,
+             assignees: [user],
              project: group_project,
              state: :closed,
              milestone: group_milestone,
@@ -258,13 +258,13 @@ describe API::V3::Issues do
              :confidential,
              project: group_project,
              author: author,
-             assignee: assignee,
+             assignees: [assignee],
              updated_at: 2.hours.ago
     end
     let!(:group_issue) do
       create :issue,
              author: user,
-             assignee: user,
+             assignees: [user],
              project: group_project,
              milestone: group_milestone,
              updated_at: 1.hour.ago
@@ -737,13 +737,22 @@ describe API::V3::Issues do
   describe "POST /projects/:id/issues" do
     it 'creates a new project issue' do
       post v3_api("/projects/#{project.id}/issues", user),
+<<<<<<< HEAD
         title: 'new issue', labels: 'label, label2'
+=======
+        title: 'new issue', labels: 'label, label2', weight: 3, assignee_id: assignee.id
+>>>>>>> b0a2435... Merge branch 'multiple_assignees_review_upstream' into ee_master
 
       expect(response).to have_http_status(201)
       expect(json_response['title']).to eq('new issue')
       expect(json_response['description']).to be_nil
       expect(json_response['labels']).to eq(%w(label label2))
       expect(json_response['confidential']).to be_falsy
+<<<<<<< HEAD
+=======
+      expect(json_response['weight']).to eq(3)
+      expect(json_response['assignee']['name']).to eq(assignee.name)
+>>>>>>> b0a2435... Merge branch 'multiple_assignees_review_upstream' into ee_master
     end
 
     it 'creates a new confidential project issue' do
@@ -1140,6 +1149,57 @@ describe API::V3::Issues do
     end
   end
 
+<<<<<<< HEAD
+=======
+  describe 'PUT /projects/:id/issues/:issue_id to update assignee' do
+    it 'updates an issue with no assignee' do
+      put v3_api("/projects/#{project.id}/issues/#{issue.id}", user), assignee_id: 0
+
+      expect(response).to have_http_status(200)
+      expect(json_response['assignee']).to eq(nil)
+    end
+
+    it 'updates an issue with assignee' do
+      put v3_api("/projects/#{project.id}/issues/#{issue.id}", user), assignee_id: user2.id
+
+      expect(response).to have_http_status(200)
+      expect(json_response['assignee']['name']).to eq(user2.name)
+    end
+  end
+
+  describe 'PUT /projects/:id/issues/:issue_id to update weight' do
+    it 'updates an issue with no weight' do
+      put v3_api("/projects/#{project.id}/issues/#{issue.id}", user), weight: 5
+
+      expect(response).to have_http_status(200)
+      expect(json_response['weight']).to eq(5)
+    end
+
+    it 'removes a weight from an issue' do
+      weighted_issue = create(:issue, project: project, weight: 2)
+
+      put v3_api("/projects/#{project.id}/issues/#{weighted_issue.id}", user), weight: nil
+
+      expect(response).to have_http_status(200)
+      expect(json_response['weight']).to be_nil
+    end
+
+    it 'returns 400 if weight is less than minimum weight' do
+      put v3_api("/projects/#{project.id}/issues/#{issue.id}", user), weight: -1
+
+      expect(response).to have_http_status(400)
+      expect(json_response['error']).to eq('weight does not have a valid value')
+    end
+
+    it 'returns 400 if weight is more than maximum weight' do
+      put v3_api("/projects/#{project.id}/issues/#{issue.id}", user), weight: 10
+
+      expect(response).to have_http_status(400)
+      expect(json_response['error']).to eq('weight does not have a valid value')
+    end
+  end
+
+>>>>>>> b0a2435... Merge branch 'multiple_assignees_review_upstream' into ee_master
   describe "DELETE /projects/:id/issues/:issue_id" do
     it "rejects a non member from deleting an issue" do
       delete v3_api("/projects/#{project.id}/issues/#{issue.id}", non_member)

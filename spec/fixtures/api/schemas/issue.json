@@ -40,11 +40,31 @@
         "additionalProperties": false
       }
     },
+<<<<<<< HEAD
     "assignee": {
       "id": { "type": "integet" },
       "name": { "type": "string" },
       "username": { "type": "string" },
       "avatar_url": { "type": "uri" }
+=======
+    "assignees": {
+      "type": "array",
+      "items": {
+        "type": ["object", "null"],
+        "required": [
+          "id",
+          "name",
+          "username",
+          "avatar_url"
+        ],
+        "properties": {
+          "id": { "type": "integer" },
+          "name": { "type": "string" },
+          "username": { "type": "string" },
+          "avatar_url": { "type": "uri" }
+        }
+      }
+>>>>>>> b0a2435... Merge branch 'multiple_assignees_review_upstream' into ee_master
     },
     "subscribed": { "type": ["boolean", "null"] }
   },

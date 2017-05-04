@@ -1,12 +1,12 @@
 /* eslint-disable no-unused-vars */
 
-class ListUser {
+class ListAssignee {
   constructor(user) {
     this.id = user.id;
     this.name = user.name;
     this.username = user.username;
-    this.avatar = user.avatar_url;
+    this.avatarUrl = user.avatar_url;
   }
 }
 
-window.ListUser = ListUser;
+window.ListAssignee = ListAssignee;

@@ -33,7 +33,11 @@ var config = {
     graphs:               './graphs/graphs_bundle.js',
     group:                './group.js',
     groups_list:          './groups_list.js',
+<<<<<<< HEAD
     issuable:             './issuable/issuable_bundle.js',
+=======
+    issues:               './issues/issues_bundle.js',
+>>>>>>> b0a2435... Merge branch 'multiple_assignees_review_upstream' into ee_master
     issue_show:           './issue_show/index.js',
     main:                 './main.js',
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
@@ -46,6 +50,7 @@ var config = {
     profile:              './profile/profile_bundle.js',
     protected_branches:   './protected_branches/protected_branches_bundle.js',
     protected_tags:       './protected_tags',
+    sidebar:              './sidebar/sidebar_bundle.js',
     snippet:              './snippet/snippet_bundle.js',
     sketch_viewer:        './blob/sketch_viewer.js',
     stl_viewer:           './blob/stl_viewer.js',
@@ -125,7 +130,7 @@ var config = {
         'diff_notes',
         'environments',
         'environments_folder',
-        'issuable',
+        'sidebar',
         'issue_show',
         'merge_conflicts',
         'notebook_viewer',

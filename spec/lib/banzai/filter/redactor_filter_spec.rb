@@ -113,7 +113,7 @@ describe Banzai::Filter::RedactorFilter, lib: true do
       it 'allows references for assignee' do
         assignee = create(:user)
         project = create(:empty_project, :public)
-        issue = create(:issue, :confidential, project: project, assignee: assignee)
+        issue = create(:issue, :confidential, project: project, assignees: [assignee])
 
         link = reference_link(project: project.id, issue: issue.id, reference_type: 'issue')
         doc = filter(link, current_user: assignee)

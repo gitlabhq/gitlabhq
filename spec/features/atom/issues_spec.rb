@@ -6,7 +6,7 @@ describe 'Issues Feed', feature: true  do
     let!(:assignee) { create(:user, email: 'private2@example.com', public_email: 'public2@example.com') }
     let!(:group)    { create(:group) }
     let!(:project)  { create(:project) }
-    let!(:issue)    { create(:issue, author: user, assignee: assignee, project: project) }
+    let!(:issue)    { create(:issue, author: user, assignees: [assignee], project: project) }
 
     before do
       project.team << [user, :developer]
@@ -22,7 +22,7 @@ describe 'Issues Feed', feature: true  do
           to have_content('application/atom+xml')
         expect(body).to have_selector('title', text: "#{project.name} issues")
         expect(body).to have_selector('author email', text: issue.author_public_email)
-        expect(body).to have_selector('assignee email', text: issue.author_public_email)
+        expect(body).to have_selector('assignees email', text: issue.author_public_email)
         expect(body).to have_selector('entry summary', text: issue.title)
       end
     end
@@ -36,7 +36,7 @@ describe 'Issues Feed', feature: true  do
           to have_content('application/atom+xml')
         expect(body).to have_selector('title', text: "#{project.name} issues")
         expect(body).to have_selector('author email', text: issue.author_public_email)
-        expect(body).to have_selector('assignee email', text: issue.author_public_email)
+        expect(body).to have_selector('assignees email', text: issue.author_public_email)
         expect(body).to have_selector('entry summary', text: issue.title)
       end
     end

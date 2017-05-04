@@ -10,7 +10,6 @@ describe Issuable do
 
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:author) }
-    it { is_expected.to belong_to(:assignee) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
     it { is_expected.to have_many(:todos).dependent(:destroy) }
 
@@ -63,60 +62,6 @@ describe Issuable do
       issue.save(validate: false)
 
       expect(issue.author_name).to eq nil
-    end
-  end
-
-  describe 'assignee_name' do
-    it 'is delegated to assignee' do
-      issue.update!(assignee: create(:user))
-
-      expect(issue.assignee_name).to eq issue.assignee.name
-    end
-
-    it 'returns nil when assignee is nil' do
-      issue.assignee_id = nil
-      issue.save(validate: false)
-
-      expect(issue.assignee_name).to eq nil
-    end
-  end
-
-  describe "before_save" do
-    describe "#update_cache_counts" do
-      context "when previous assignee exists" do
-        before do
-          assignee = create(:user)
-          issue.project.team << [assignee, :developer]
-          issue.update(assignee: assignee)
-        end
-
-        it "updates cache counts for new assignee" do
-          user = create(:user)
-
-          expect(user).to receive(:update_cache_counts)
-
-          issue.update(assignee: user)
-        end
-
-        it "updates cache counts for previous assignee" do
-          old_assignee = issue.assignee
-          allow(User).to receive(:find_by_id).with(old_assignee.id).and_return(old_assignee)
-
-          expect(old_assignee).to receive(:update_cache_counts)
-
-          issue.update(assignee: nil)
-        end
-      end
-
-      context "when previous assignee does not exist" do
-        before{ issue.update(assignee: nil) }
-
-        it "updates cache count for the new assignee" do
-          expect_any_instance_of(User).to receive(:update_cache_counts)
-
-          issue.update(assignee: user)
-        end
-      end
     end
   end
 
@@ -307,7 +252,20 @@ describe Issuable do
     end
 
     context "issue is assigned" do
-      before { issue.update_attribute(:assignee, user) }
+      before { issue.assignees << user }
+
+      it "returns correct hook data" do
+        expect(data[:assignees].first).to eq(user.hook_attrs)
+      end
+    end
+
+    context "merge_request is assigned" do
+      let(:merge_request) { create(:merge_request) }
+      let(:data) { merge_request.to_hook_data(user) }
+
+      before do
+        merge_request.update_attribute(:assignee, user)
+      end
 
       it "returns correct hook data" do
         expect(data[:object_attributes]['assignee_id']).to eq(user.id)
@@ -327,24 +285,6 @@ describe Issuable do
 
     include_examples 'project hook data'
     include_examples 'deprecated repository hook data'
-  end
-
-  describe '#card_attributes' do
-    it 'includes the author name' do
-      allow(issue).to receive(:author).and_return(double(name: 'Robert'))
-      allow(issue).to receive(:assignee).and_return(nil)
-
-      expect(issue.card_attributes).
-        to eq({ 'Author' => 'Robert', 'Assignee' => nil })
-    end
-
-    it 'includes the assignee name' do
-      allow(issue).to receive(:author).and_return(double(name: 'Robert'))
-      allow(issue).to receive(:assignee).and_return(double(name: 'Douwe'))
-
-      expect(issue.card_attributes).
-        to eq({ 'Author' => 'Robert', 'Assignee' => 'Douwe' })
-    end
   end
 
   describe '#labels_array' do
@@ -472,27 +412,6 @@ describe Issuable do
 
     it 'finds the correct issues containing only both labels' do
       expect(Issue.with_label([bug.title, enhancement.title])).to match_array([issue2])
-    end
-  end
-
-  describe '#assignee_or_author?' do
-    let(:user) { build(:user, id: 1) }
-    let(:issue) { build(:issue) }
-
-    it 'returns true for a user that is assigned to an issue' do
-      issue.assignee = user
-
-      expect(issue.assignee_or_author?(user)).to eq(true)
-    end
-
-    it 'returns true for a user that is the author of an issue' do
-      issue.author = user
-
-      expect(issue.assignee_or_author?(user)).to eq(true)
-    end
-
-    it 'returns false for a user that is not the assignee or author' do
-      expect(issue.assignee_or_author?(user)).to eq(false)
     end
   end
 

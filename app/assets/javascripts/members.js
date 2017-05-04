@@ -31,8 +31,27 @@
           toggleLabel(selected, $el) {
             return $el.text();
           },
+<<<<<<< HEAD
           clicked: (selected, $link) => {
             this.formSubmit(null, $link);
+=======
+          clicked: (options) => {
+            const $link = options.$el;
+
+            if (!$link.data('revert')) {
+              this.formSubmit(null, $link);
+            } else {
+              const { $memberListItem, $toggle, $dateInput } = this.getMemberListItems($link);
+
+              $toggle.disable();
+              $dateInput.disable();
+
+              this.overrideLdap($memberListItem, $link.data('endpoint'), false).fail(() => {
+                $toggle.enable();
+                $dateInput.enable();
+              });
+            }
+>>>>>>> b0a2435... Merge branch 'multiple_assignees_review_upstream' into ee_master
           },
         });
       });

@@ -251,11 +251,9 @@
   }
 
   .dropdown-header {
-    color: $gl-text-color;
+    color: $gl-text-color-secondary;
     font-size: 13px;
-    font-weight: 600;
     line-height: 22px;
-    text-transform: capitalize;
     padding: 0 16px;
   }
 
@@ -337,8 +335,8 @@
 .dropdown-menu-user {
   .avatar {
     float: left;
-    width: 30px;
-    height: 30px;
+    width: 2 * $gl-padding;
+    height: 2 * $gl-padding;
     margin: 0 10px 0 0;
   }
 }
@@ -381,6 +379,7 @@
 .dropdown-menu-selectable {
   a {
     padding-left: 26px;
+    position: relative;
 
     &.is-indeterminate,
     &.is-active {
@@ -406,6 +405,9 @@
 
     &.is-active::before {
       content: "\f00c";
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
     }
   }
 }

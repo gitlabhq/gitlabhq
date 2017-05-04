@@ -452,6 +452,14 @@ ActiveRecord::Schema.define(version: 20170502091007) do
 
   add_index "identities", ["user_id"], name: "index_identities_on_user_id", using: :btree
 
+  create_table "issue_assignees", id: false, force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "issue_id", null: false
+  end
+
+  add_index "issue_assignees", ["issue_id", "user_id"], name: "index_issue_assignees_on_issue_id_and_user_id", unique: true, using: :btree
+  add_index "issue_assignees", ["user_id"], name: "index_issue_assignees_on_user_id", using: :btree
+
   create_table "issue_metrics", force: :cascade do |t|
     t.integer "issue_id", null: false
     t.datetime "first_mentioned_in_commit_at"
@@ -1383,6 +1391,8 @@ ActiveRecord::Schema.define(version: 20170502091007) do
   add_foreign_key "ci_trigger_requests", "ci_triggers", column: "trigger_id", name: "fk_b8ec8b7245", on_delete: :cascade
   add_foreign_key "ci_trigger_schedules", "ci_triggers", column: "trigger_id", name: "fk_90a406cc94", on_delete: :cascade
   add_foreign_key "ci_triggers", "users", column: "owner_id", name: "fk_e8e10d1964", on_delete: :cascade
+  add_foreign_key "issue_assignees", "issues", on_delete: :cascade
+  add_foreign_key "issue_assignees", "users", on_delete: :cascade
   add_foreign_key "container_repositories", "projects"
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
   add_foreign_key "label_priorities", "labels", on_delete: :cascade

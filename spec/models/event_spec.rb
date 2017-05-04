@@ -92,8 +92,8 @@ describe Event, models: true do
     let(:author) { create(:author) }
     let(:assignee) { create(:user) }
     let(:admin) { create(:admin) }
-    let(:issue) { create(:issue, project: project, author: author, assignee: assignee) }
-    let(:confidential_issue) { create(:issue, :confidential, project: project, author: author, assignee: assignee) }
+    let(:issue) { create(:issue, project: project, author: author, assignees: [assignee]) }
+    let(:confidential_issue) { create(:issue, :confidential, project: project, author: author, assignees: [assignee]) }
     let(:note_on_commit) { create(:note_on_commit, project: project) }
     let(:note_on_issue) { create(:note_on_issue, noteable: issue, project: project) }
     let(:note_on_confidential_issue) { create(:note_on_issue, noteable: confidential_issue, project: project) }

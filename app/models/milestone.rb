@@ -21,7 +21,6 @@ class Milestone < ActiveRecord::Base
   has_many :issues
   has_many :labels, -> { distinct.reorder('labels.title') },  through: :issues
   has_many :merge_requests
-  has_many :participants, -> { distinct.reorder('users.name') }, through: :issues, source: :assignee
   has_many :events, as: :target, dependent: :destroy
 
   scope :active, -> { with_state(:active) }
@@ -105,6 +104,10 @@ class Milestone < ActiveRecord::Base
         pluck(:id, :project_id, :due_date).
         map(&:first)
     end
+  end
+
+  def participants
+    User.joins(assigned_issues: :milestone).where("milestones.id = ?", id)
   end
 
   def self.sort(method)

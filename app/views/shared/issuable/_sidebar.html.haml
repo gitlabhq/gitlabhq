@@ -1,10 +1,10 @@
 - todo = issuable_todo(issuable)
 - content_for :page_specific_javascripts do
   = page_specific_javascript_bundle_tag('common_vue')
-  = page_specific_javascript_bundle_tag('issuable')
+  = page_specific_javascript_bundle_tag('sidebar')
 
 %aside.right-sidebar.js-right-sidebar{ data: { "offset-top" => "102", "spy" => "affix" }, class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite' }
-  .issuable-sidebar
+  .issuable-sidebar{ data: { endpoint: "#{issuable_json_path(issuable)}" } }
     - can_edit_issuable = can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
     .block.issuable-sidebar-header
       - if current_user
@@ -20,36 +20,59 @@
         .block.todo.hide-expanded
           = render "shared/issuable/sidebar_todo", todo: todo, issuable: issuable, is_collapsed: true
       .block.assignee
-        .sidebar-collapsed-icon.sidebar-collapsed-user{ data: { toggle: "tooltip", placement: "left", container: "body" }, title: (issuable.assignee.name if issuable.assignee) }
-          - if issuable.assignee
-            = link_to_member(@project, issuable.assignee, size: 24)
-          - else
-            = icon('user', 'aria-hidden': 'true')
-        .title.hide-collapsed
-          Assignee
-          = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')
-          - if can_edit_issuable
-            = link_to 'Edit', '#', class: 'edit-link pull-right'
-        .value.hide-collapsed
-          - if issuable.assignee
-            = link_to_member(@project, issuable.assignee, size: 32, extra_class: 'bold') do
-              - if issuable.instance_of?(MergeRequest) && !issuable.can_be_merged_by?(issuable.assignee)
-                %span.pull-right.cannot-be-merged{ data: { toggle: 'tooltip', placement: 'left' }, title: 'Not allowed to merge' }
-                  = icon('exclamation-triangle', 'aria-hidden': 'true')
-              %span.username
-                = issuable.assignee.to_reference
-          - else
-            %span.assign-yourself.no-value
-              No assignee
-              - if can_edit_issuable
-                \-
-                %a.js-assign-yourself{ href: '#' }
-                  assign yourself
+        - if issuable.instance_of?(Issue)
+          #js-vue-sidebar-assignees{ data: { field: "#{issuable.to_ability_name}[assignee_ids]" } }
+        - else
+          .sidebar-collapsed-icon.sidebar-collapsed-user{ data: { toggle: "tooltip", placement: "left", container: "body" }, title: (issuable.assignee.name if issuable.assignee) }
+            - if issuable.assignee
+              = link_to_member(@project, issuable.assignee, size: 24)
+            - else
+              = icon('user', 'aria-hidden': 'true')
+          .title.hide-collapsed
+            Assignee
+            = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')
+            - if can_edit_issuable
+              = link_to 'Edit', '#', class: 'edit-link pull-right'
+          .value.hide-collapsed
+            - if issuable.assignee
+              = link_to_member(@project, issuable.assignee, size: 32, extra_class: 'bold') do
+                - if issuable.instance_of?(MergeRequest) && !issuable.can_be_merged_by?(issuable.assignee)
+                  %span.pull-right.cannot-be-merged{ data: { toggle: 'tooltip', placement: 'left' }, title: 'Not allowed to merge' }
+                    = icon('exclamation-triangle', 'aria-hidden': 'true')
+                %span.username
+                  = issuable.assignee.to_reference
+            - else
+              %span.assign-yourself.no-value
+                No assignee
+                - if can_edit_issuable
+                  \-
+                  %a.js-assign-yourself{ href: '#' }
+                    assign yourself
 
         .selectbox.hide-collapsed
+<<<<<<< HEAD
           = f.hidden_field 'assignee_id', value: issuable.assignee_id, id: 'issue_assignee_id'
           = dropdown_tag('Select assignee', options: { toggle_class: 'js-user-search js-author-search', title: 'Assign to', filter: true, dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author', placeholder: 'Search users', data: { first_user: (current_user.username if current_user), current_user: true, project_id: (@project.id if @project), author_id: issuable.author_id, field_name: "#{issuable.to_ability_name}[assignee_id]", issue_update: issuable_json_path(issuable), ability_name: issuable.to_ability_name, null_user: true, null_user_default: true, selected: issuable.assignee_id } })
+=======
+          - issuable.assignees.each do |assignee|
+            = hidden_field_tag "#{issuable.to_ability_name}[assignee_ids][]", assignee.id, id: nil
+>>>>>>> b0a2435... Merge branch 'multiple_assignees_review_upstream' into ee_master
 
+          - options = { toggle_class: 'js-user-search js-author-search', title: 'Assign to', filter: true, dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author', placeholder: 'Search users', data: { first_user: (current_user.username if current_user), current_user: true, project_id: (@project.id if @project), author_id: issuable.author_id, field_name: "#{issuable.to_ability_name}[assignee_id]", issue_update: issuable_json_path(issuable), ability_name: issuable.to_ability_name, null_user: true } }
+
+          - if issuable.instance_of?(Issue)
+            - if issuable.assignees.length == 0
+              = hidden_field_tag "#{issuable.to_ability_name}[assignee_ids][]", 0, id: nil
+            - title = 'Select assignee(s)'
+            - options[:toggle_class] += ' js-multiselect js-save-user-data'
+            - options[:data][:field_name] = "#{issuable.to_ability_name}[assignee_ids][]"
+            - options[:data][:multi_select] = true
+            - options[:data]['dropdown-title'] = title
+            - options[:data]['dropdown-header'] = 'Assignee(s)'
+          - else
+            - title = 'Select assignee'
+
+          = dropdown_tag(title, options: options)
       .block.milestone
         .sidebar-collapsed-icon
           = icon('clock-o', 'aria-hidden': 'true')
@@ -75,11 +98,10 @@
           = dropdown_tag('Milestone', options: { title: 'Assign milestone', toggle_class: 'js-milestone-select js-extra-options', filter: true, dropdown_class: 'dropdown-menu-selectable', placeholder: 'Search milestones', data: { show_no: true, field_name: "#{issuable.to_ability_name}[milestone_id]", project_id: @project.id, issuable_id: issuable.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :json), ability_name: issuable.to_ability_name, issue_update: issuable_json_path(issuable), use_id: true }})
       - if issuable.has_attribute?(:time_estimate)
         #issuable-time-tracker.block
-          %issuable-time-tracker{ ':time_estimate' => 'issuable.time_estimate', ':time_spent' => 'issuable.total_time_spent', ':human_time_estimate' => 'issuable.human_time_estimate', ':human_time_spent' => 'issuable.human_total_time_spent', 'docs-url' => help_page_path('workflow/time_tracking.md') }
-            // Fallback while content is loading
-            .title.hide-collapsed
-              Time tracking
-              = icon('spinner spin', 'aria-hidden': 'true')
+          // Fallback while content is loading
+          .title.hide-collapsed
+            Time tracking
+            = icon('spinner spin', 'aria-hidden': 'true')
       - if issuable.has_attribute?(:due_date)
         .block.due_date
           .sidebar-collapsed-icon
@@ -169,8 +191,13 @@
           = clipboard_button(text: project_ref, title: "Copy reference to clipboard", placement: "left")
 
     :javascript
-      gl.IssuableResource = new gl.SubbableResource('#{issuable_json_path(issuable)}');
-      new gl.IssuableTimeTracking("#{escape_javascript(serialize_issuable(issuable))}");
+      gl.sidebarOptions = {
+        endpoint: "#{issuable_json_path(issuable)}",
+        editable: #{can_edit_issuable ? true : false},
+        currentUser: #{current_user.to_json(only: [:username, :id, :name], methods: :avatar_url)},
+        rootPath: "#{root_path}"
+      };
+
       new MilestoneSelect('{"full_path":"#{@project.full_path}"}');
       new LabelsSelect();
       new IssuableContext('#{escape_javascript(current_user.to_json(only: [:username, :id, :name]))}');

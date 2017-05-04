@@ -14,7 +14,7 @@ describe Issues::UpdateService, services: true do
   let(:issue) do
     create(:issue, title: 'Old title',
                    description: "for #{user2.to_reference}",
-                   assignee_id: user3.id,
+                   assignee_ids: [user3.id],
                    project: project)
   end
 
@@ -40,7 +40,7 @@ describe Issues::UpdateService, services: true do
         {
           title: 'New title',
           description: 'Also please fix',
-          assignee_id: user2.id,
+          assignee_ids: [user2.id, user3.id],
           state_event: 'close',
           label_ids: [label.id],
           due_date: Date.tomorrow
@@ -53,15 +53,15 @@ describe Issues::UpdateService, services: true do
         expect(issue).to be_valid
         expect(issue.title).to eq 'New title'
         expect(issue.description).to eq 'Also please fix'
-        expect(issue.assignee).to eq user2
+        expect(issue.assignees).to match_array([user2, user3])
         expect(issue).to be_closed
         expect(issue.labels).to match_array [label]
         expect(issue.due_date).to eq Date.tomorrow
       end
 
       it 'sorts issues as specified by parameters' do
-        issue1 = create(:issue, project: project, assignee_id: user3.id)
-        issue2 = create(:issue, project: project, assignee_id: user3.id)
+        issue1 = create(:issue, project: project, assignees: [user3])
+        issue2 = create(:issue, project: project, assignees: [user3])
 
         [issue, issue1, issue2].each do |issue|
           issue.move_to_end
@@ -87,7 +87,7 @@ describe Issues::UpdateService, services: true do
           expect(issue).to be_valid
           expect(issue.title).to eq 'New title'
           expect(issue.description).to eq 'Also please fix'
-          expect(issue.assignee).to eq user3
+          expect(issue.assignees).to match_array [user3]
           expect(issue.labels).to be_empty
           expect(issue.milestone).to be_nil
           expect(issue.due_date).to be_nil
@@ -137,7 +137,7 @@ describe Issues::UpdateService, services: true do
         {
           title: 'New title',
           description: 'Also please fix',
-          assignee_id: user2.id,
+          assignee_ids: [user2],
           state_event: 'close',
           label_ids: [label.id],
           confidential: true
@@ -163,12 +163,12 @@ describe Issues::UpdateService, services: true do
       it 'does not update assignee_id with unauthorized users' do
         project.update(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
         update_issue(confidential: true)
-        non_member        = create(:user)
-        original_assignee = issue.assignee
+        non_member = create(:user)
+        original_assignees = issue.assignees
 
-        update_issue(assignee_id: non_member.id)
+        update_issue(assignee_ids: [non_member.id])
 
-        expect(issue.reload.assignee_id).to eq(original_assignee.id)
+        expect(issue.reload.assignees).to eq(original_assignees)
       end
     end
 
@@ -205,7 +205,7 @@ describe Issues::UpdateService, services: true do
 
       context 'when is reassigned' do
         before do
-          update_issue(assignee: user2)
+          update_issue(assignees: [user2])
         end
 
         it 'marks previous assignee todos as done' do
@@ -404,6 +404,41 @@ describe Issues::UpdateService, services: true do
 
         it 'removes the passed labels' do
           expect(result.label_ids).not_to include(label.id)
+        end
+      end
+    end
+
+    context 'updating asssignee_id' do
+      it 'does not update assignee when assignee_id is invalid' do
+        update_issue(assignee_ids: [-1])
+
+        expect(issue.reload.assignees).to eq([user3])
+      end
+
+      it 'unassigns assignee when user id is 0' do
+        update_issue(assignee_ids: [0])
+
+        expect(issue.reload.assignees).to be_empty
+      end
+
+      it 'does not update assignee_id when user cannot read issue' do
+        update_issue(assignee_ids: [create(:user).id])
+
+        expect(issue.reload.assignees).to eq([user3])
+      end
+
+      context "when issuable feature is private" do
+        levels = [Gitlab::VisibilityLevel::INTERNAL, Gitlab::VisibilityLevel::PUBLIC]
+
+        levels.each do |level|
+          it "does not update with unauthorized assignee when project is #{Gitlab::VisibilityLevel.level_name(level)}" do
+            assignee = create(:user)
+            project.update(visibility_level: level)
+            feature_visibility_attr = :"#{issue.model_name.plural}_access_level"
+            project.project_feature.update_attribute(feature_visibility_attr, ProjectFeature::PRIVATE)
+
+            expect{ update_issue(assignee_ids: [assignee.id]) }.not_to change{ issue.assignees }
+          end
         end
       end
     end

@@ -1,40 +1,32 @@
-.block.assignee
-  .title.hide-collapsed
-    Assignee
-    - if can?(current_user, :admin_issue, @project)
-      = icon("spinner spin", class: "block-loading")
-      = link_to "Edit", "#", class: "edit-link pull-right"
-  .value.hide-collapsed
-    %span.assign-yourself.no-value{ "v-if" => "!issue.assignee" }
-      No assignee
-      - if can?(current_user, :admin_issue, @project)
-        \-
-        %a.js-assign-yourself{ href: "#" }
-          assign yourself
-    %a.author_link.bold{ ":href" => "'#{root_url}' + issue.assignee.username",
-      "v-if" => "issue.assignee" }
-      %img.avatar.avatar-inline.s32{ ":src" => "issue.assignee.avatar",
-        width: "32", alt: "Avatar" }
-      %span.author
-        {{ issue.assignee.name }}
-      %span.username
-        = precede "@" do
-          {{ issue.assignee.username }}
+.block.assignee{ ref: "assigneeBlock" }
+  %template{ "v-if" => "issue.assignees" }
+    %assignee-title{ ":number-of-assignees" => "issue.assignees.length",
+      ":loading" => "loadingAssignees",
+      ":editable" => can?(current_user, :admin_issue, @project) }
+    %assignees.value{ "root-path" => "#{root_url}",
+      ":users" => "issue.assignees",
+      ":editable" => can?(current_user, :admin_issue, @project),
+      "@assign-self" => "assignSelf" }
+
   - if can?(current_user, :admin_issue, @project)
     .selectbox.hide-collapsed
       %input{ type: "hidden",
-        name: "issue[assignee_id]",
-        id: "issue_assignee_id",
-        ":value" => "issue.assignee.id",
-        "v-if" => "issue.assignee" }
+        name: "issue[assignee_ids][]",
+        ":value" => "assignee.id",
+        "v-if" => "issue.assignees",
+        "v-for" => "assignee in issue.assignees" }
       .dropdown
+<<<<<<< HEAD
         %button.dropdown-menu-toggle.js-user-search.js-author-search.js-issue-board-sidebar{ type: "button", data: { toggle: "dropdown", field_name: "issue[assignee_id]", first_user: (current_user.username if current_user), current_user: "true", project_id: @project.id, null_user: "true", null_user_default: "true" },
+=======
+        %button.dropdown-menu-toggle.js-user-search.js-author-search.js-multiselect.js-save-user-data.js-issue-board-sidebar{ type: "button", ref: "assigneeDropdown", data: { toggle: "dropdown", field_name: "issue[assignee_ids][]", first_user: (current_user.username if current_user), current_user: "true", project_id: @project.id, null_user: "true", multi_select: "true", dropdown: { header: 'Assignee(s)'} },
+>>>>>>> b0a2435... Merge branch 'multiple_assignees_review_upstream' into ee_master
           ":data-issuable-id" => "issue.id",
           ":data-selected" => "assigneeId",
           ":data-issue-update" => "'#{namespace_project_issues_path(@project.namespace, @project)}/' + issue.id + '.json'" }
-          Select assignee
+          Select assignee(s)
           = icon("chevron-down")
-        .dropdown-menu.dropdown-menu-user.dropdown-menu-selectable.dropdown-menu-author
+        .dropdown-menu.dropdown-select.dropdown-menu-user.dropdown-menu-selectable.dropdown-menu-author
           = dropdown_title("Assign to")
           = dropdown_filter("Search users")
           = dropdown_content

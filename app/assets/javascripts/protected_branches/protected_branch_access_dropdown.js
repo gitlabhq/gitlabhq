@@ -19,7 +19,10 @@
             return 'Select';
           }
         },
-        clicked(item, $el, e) {
+        clicked(opts) {
+          const { $el, e } = opts;
+          const item = opts.selectedObj;
+
           e.preventDefault();
           onSelect();
         }

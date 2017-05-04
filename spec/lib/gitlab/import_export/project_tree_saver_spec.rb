@@ -203,7 +203,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
   end
 
   def setup_project
-    issue = create(:issue, assignee: user)
+    issue = create(:issue, assignees: [user])
     snippet = create(:project_snippet)
     release = create(:release)
     group = create(:group)

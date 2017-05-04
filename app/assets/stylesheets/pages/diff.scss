@@ -570,14 +570,7 @@
 
 .diff-comments-more-count,
 .diff-notes-collapse {
-  background-color: $gray-darkest;
-  color: $white-light;
-  border: 1px solid $white-light;
-  border-radius: 1em;
-  font-family: $regular_font;
-  font-size: 9px;
-  line-height: 17px;
-  text-align: center;
+  @extend .avatar-counter;
 }
 
 .diff-notes-collapse {
