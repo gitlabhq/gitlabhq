@@ -12,7 +12,7 @@
   .form-group
     .col-md-8
       = f.label :cron, 'Interval Pattern', class: 'label-light'
-      #interval-pattern-input 
+      #interval-pattern-input{ data: { initial_interval: @schedule.cron }}
   .form-group
     .col-md-6
       = f.label :cron_timezone, 'Cron Timezone', class: 'label-light'
@@ -21,7 +21,8 @@
   .form-group
     .col-md-6
       = f.label :ref, 'Target Branch', class: 'label-light'
-      = f.select(:ref, @project.repository.branch_names, {}, {class: 'select2 select-wide'})
+      = hidden_field_tag(:ref, @schedule.ref, id: 'schedule_ref', name: 'schedule[ref]')
+      = dropdown_tag("Select target branch", options: { toggle_class: 'btn js-target-branch-dropdown', title: "Select target branch", filter: true, placeholder: "Filter", data: { data: @project.repository.branch_names } } )
   .form-group
     .col-md-6
       = f.label  :active, 'Activated', class: 'label-light'

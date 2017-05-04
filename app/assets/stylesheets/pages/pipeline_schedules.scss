@@ -1,3 +1,10 @@
+.js-pipeline-schedule-form {
+  .dropdown-select, 
+  .dropdown-menu-toggle {
+    width: 100%!important;
+  }
+}
+
 .interval-pattern-form-group {
   label {
     margin-right: 10px;
@@ -21,9 +28,5 @@
     color: $gl-text-color-secondary;
     font-size: 12px;
     font-weight: 600;
-  }
-
-  .dropdown-select {
-    width: 100%;
   }
 }
