@@ -201,7 +201,16 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def rendered_title
     Gitlab::PollingInterval.set_header(response, interval: 3_000)
-    render json: { title: view_context.markdown_field(@issue, :title) }
+
+    render json: {
+      title: view_context.markdown_field(@issue, :title),
+      title_text: @issue.title,
+      description: view_context.markdown_field(@issue, :description),
+      description_text: @issue.description,
+      task_status: @issue.task_status,
+      issue_number: @issue.iid,
+      updated_at: @issue.updated_at,
+    }
   end
 
   def create_merge_request
