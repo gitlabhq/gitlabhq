@@ -1,4 +1,4 @@
-.js-groups-list-holder
+.js-groups-list-holder{ data: { endpoint: dashboard_groups_path(format: :json) } }
   %ul.content-list
     - @groups.each do |group|
       - group_member = group.group_members.find_by(user_id: current_user)
