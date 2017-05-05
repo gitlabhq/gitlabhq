@@ -54,7 +54,6 @@ describe 'Filter issues', js: true, feature: true do
     create(:issue, project: project, title: "issue by assignee", milestone: milestone, author: user, assignees: [user])
     create(:issue, project: project, title: "issue by assignee with searchTerm", milestone: milestone, author: user, assignees: [user])
 
-
     issue = create(:issue,
       title: "Bug 2",
       project: project,
