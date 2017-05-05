@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170504203205) do
+ActiveRecord::Schema.define(version: 20170503004427) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -230,7 +230,7 @@ ActiveRecord::Schema.define(version: 20170504203205) do
     t.integer "lock_version"
     t.string "coverage_regex"
     t.integer "auto_canceled_by_id"
-    t.boolean "retried", default: true, null: false
+    t.boolean "retried", default: false, null: false
   end
 
   add_index "ci_builds", ["commit_id", "stage_idx", "created_at"], name: "index_ci_builds_on_commit_id_and_stage_idx_and_created_at", using: :btree
