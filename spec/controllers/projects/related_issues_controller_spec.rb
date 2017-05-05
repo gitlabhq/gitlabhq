@@ -34,7 +34,7 @@ describe Projects::RelatedIssuesController, type: :controller do
   describe 'POST #create' do
     let(:service) { double(RelatedIssues::CreateService, execute: service_response) }
     let(:list_service) { double(RelatedIssues::ListService, execute: list_service_response) }
-    let(:service_response) { { 'message' => 'yay', 'status' => 'success' } }
+    let(:service_response) { { 'message' => 'yay', 'status' => :success } }
     let(:list_service_response) { [{ 'foo' => 'bar' }] }
     let(:issue_references) { double }
     let(:user_role) { :developer }
@@ -63,7 +63,7 @@ describe Projects::RelatedIssuesController, type: :controller do
     context 'with success' do
       it 'returns success JSON' do
         is_expected.to have_http_status(200)
-        expect(json_response).to eq('result' => service_response,
+        expect(json_response).to eq('result' => { 'message' => 'yay', 'status' => 'success' },
                                     'issues' => list_service_response)
       end
     end
