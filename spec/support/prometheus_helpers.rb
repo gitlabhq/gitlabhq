@@ -33,6 +33,10 @@ module PrometheusHelpers
       })
   end
 
+  def stub_prometheus_request_with_exception(url, exception_type)
+    WebMock.stub_request(:get, url).to_raise(exception_type)
+  end
+
   def stub_all_prometheus_requests(environment_slug, body: nil, status: 200)
     stub_prometheus_request(
       prometheus_query_url(prometheus_memory_query(environment_slug)),
