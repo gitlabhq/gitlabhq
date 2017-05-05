@@ -299,6 +299,23 @@ module SystemNoteService
     create_note(NoteSummary.new(noteable, project, author, body, action: 'title'))
   end
 
+  # Called when the description of a Noteable is changed
+  #
+  # noteable  - Noteable object that responds to `description`
+  # project   - Project owning noteable
+  # author    - User performing the change
+  #
+  # Example Note text:
+  #
+  #   "changed the description"
+  #
+  # Returns the created Note object
+  def change_description(noteable, project, author)
+    body = 'changed the description'
+
+    create_note(NoteSummary.new(noteable, project, author, body, action: 'description'))
+  end
+
   # Called when the confidentiality changes
   #
   # issue   - Issue object

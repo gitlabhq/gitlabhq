@@ -498,6 +498,8 @@ ActiveRecord::Schema.define(version: 20170504102911) do
     t.integer "relative_position"
     t.datetime "closed_at"
     t.integer "cached_markdown_version"
+    t.datetime "last_edited_at"
+    t.integer "last_edited_by_id"
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
@@ -684,6 +686,8 @@ ActiveRecord::Schema.define(version: 20170504102911) do
     t.text "description_html"
     t.integer "time_estimate"
     t.integer "cached_markdown_version"
+    t.datetime "last_edited_at"
+    t.integer "last_edited_by_id"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
