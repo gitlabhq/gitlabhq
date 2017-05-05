@@ -8,19 +8,19 @@ class Route < ActiveRecord::Base
     presence: true,
     uniqueness: { case_sensitive: false }
 
-  after_save :delete_conflicting_redirects
+  after_create :delete_conflicting_redirects
+  after_update :delete_conflicting_redirects, if: :path_changed?
   after_update :create_redirect_for_old_path
-  after_update :rename_direct_descendant_routes
+  after_update :rename_descendants
 
   scope :inside_path, -> (path) { where('routes.path LIKE ?', "#{sanitize_sql_like(path)}/%") }
-  scope :direct_descendant_routes, -> (path) { where('routes.path LIKE ? AND routes.path NOT LIKE ?', "#{sanitize_sql_like(path)}/%", "#{sanitize_sql_like(path)}/%/%") }
 
-  def rename_direct_descendant_routes
+  def rename_descendants
     return unless path_changed? || name_changed?
 
-    direct_descendant_routes = self.class.direct_descendant_routes(path_was)
+    descendant_routes = self.class.inside_path(path_was)
 
-    direct_descendant_routes.each do |route|
+    descendant_routes.each do |route|
       attributes = {}
 
       if path_changed? && route.path.present?
@@ -31,7 +31,17 @@ class Route < ActiveRecord::Base
         attributes[:name] = route.name.sub(name_was, name)
       end
 
-      route.update(attributes) unless attributes.empty?
+      if attributes.present?
+        old_path = route.path
+
+        # Callbacks must be run manually
+        route.update_columns(attributes)
+
+        # We are not calling route.delete_conflicting_redirects here, in hopes
+        # of avoiding deadlocks. The parent (self, in this method) already
+        # called it, which deletes conflicts for all descendants.
+        route.create_redirect(old_path) if attributes[:path]
+      end
     end
   end
 

@@ -50,20 +50,7 @@ describe Route, models: true do
     end
   end
 
-  describe '.direct_descendant_routes' do
-    let!(:nested_group) { create(:group, path: 'test', name: 'test', parent: group) }
-    let!(:deep_nested_group) { create(:group, path: 'foo', name: 'foo', parent: nested_group) }
-    let!(:another_group) { create(:group, path: 'other') }
-    let!(:similar_group) { create(:group, path: 'gitllab') }
-    let!(:another_group_nested) { create(:group, path: 'another', name: 'another', parent: similar_group) }
-
-    it 'returns correct routes' do
-      expect(Route.direct_descendant_routes('git_lab')).to match_array([nested_group.route])
-      expect(Route.direct_descendant_routes('git_lab/test')).to match_array([deep_nested_group.route])
-    end
-  end
-
-  describe '#rename_direct_descendant_routes' do
+  describe '#rename_descendants' do
     let!(:nested_group) { create(:group, path: 'test', name: 'test', parent: group) }
     let!(:deep_nested_group) { create(:group, path: 'foo', name: 'foo', parent: nested_group) }
     let!(:similar_group) { create(:group, path: 'gitlab-org', name: 'gitlab-org') }
