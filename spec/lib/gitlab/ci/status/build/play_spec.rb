@@ -7,38 +7,28 @@ describe Gitlab::Ci::Status::Build::Play do
 
   subject { described_class.new(status) }
 
-  context 'when user is allowed to update build' do
-    context 'when user can push to branch' do
-      before { build.project.add_master(user) }
-
-      describe '#has_action?' do
-        it { is_expected.to have_action }
-      end
-
-      describe '#label' do
-        it 'has a label that says it is a manual action' do
-          expect(subject.label).to eq 'manual play action'
-        end
-      end
-    end
-
-    context 'when user can not push to the branch' do
-      before { build.project.add_developer(user) }
-
-      describe 'has_action?' do
-        it { is_expected.not_to have_action }
-      end
-
-      describe '#label' do
-        it 'has a label that says user is not allowed to play it' do
-          expect(subject.label).to eq 'manual play action (not allowed)'
-        end
-      end
+  describe '#label' do
+    it 'has a label that says it is a manual action' do
+      expect(subject.label).to eq 'manual play action'
     end
   end
 
-  context 'when user is not allowed to update build' do
-    describe '#has_action?' do
+  describe '#has_action?' do
+    context 'when user is allowed to update build' do
+      context 'when user can push to branch' do
+        before { build.project.add_master(user) }
+
+        it { is_expected.to have_action }
+      end
+
+      context 'when user can not push to the branch' do
+        before { build.project.add_developer(user) }
+
+        it { is_expected.not_to have_action }
+      end
+    end
+
+    context 'when user is not allowed to update build' do
       it { is_expected.not_to have_action }
     end
   end
