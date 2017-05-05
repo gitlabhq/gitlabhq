@@ -1,11 +1,17 @@
 import Vue from 'vue';
 import tableRowComp from '~/vue_shared/components/pipelines_table_row';
-import pipeline from '../../commit/pipelines/mock_data';
 
 describe('Pipelines Table Row', () => {
+  const jsonFixtureName = 'pipelines/pipelines.json';
+
   let component;
+  let pipeline;
+
+  preloadFixtures(jsonFixtureName);
 
   beforeEach(() => {
+    const pipelines = getJSONFixture(jsonFixtureName).pipelines;
+    pipeline = pipelines.find(p => p.id === 1);
     const PipelinesTableRowComponent = Vue.extend(tableRowComp);
 
     component = new PipelinesTableRowComponent({
