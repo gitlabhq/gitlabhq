@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 ## 9.1.3 (2017-05-05)
 
+- No changes.
 - Respect project features when searching alternative branches with elasticsearch enabled.
 - Fix for XSS in project mirror errors caused by Hamlit filter usage.
 
