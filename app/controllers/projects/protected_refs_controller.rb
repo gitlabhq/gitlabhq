@@ -48,6 +48,6 @@ class Projects::ProtectedRefsController < Projects::ApplicationController
   protected
 
   def access_level_attributes
-    [:access_level, :id, :user_id, :_destroy, :group_id]
+    %i(access_level id user_id _destroy group_id)
   end
 end
