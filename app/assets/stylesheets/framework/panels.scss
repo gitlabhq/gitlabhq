@@ -32,6 +32,10 @@
     }
   }
 
+  .panel-empty-heading {
+    border-bottom: 0;
+  }
+
   .panel-body {
     padding: $gl-padding;
 

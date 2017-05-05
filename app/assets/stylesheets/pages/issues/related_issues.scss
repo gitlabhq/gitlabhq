@@ -1,0 +1,29 @@
+.related-issues-block {
+  margin-top: $gl-vert-padding;
+}
+
+.related-issues-header-help-icon {
+  margin-left: 0.25em;
+  color: $gl-text-color-secondary;
+}
+
+.related-issues-header-issue-count {
+  margin-left: 0.5em;
+}
+
+.related-issues-add-related-issues-form {
+  border-bottom: 1px solid $border-color;
+}
+
+.related-issues-token-body {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.related-issues-token-list-item {
+  margin-bottom: 0.5em;
+  margin-right: 1em;
+}

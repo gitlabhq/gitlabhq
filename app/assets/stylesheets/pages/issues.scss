@@ -1,3 +1,6 @@
+@import "./issues/issue_count_badge";
+@import "./issues/related_issues";
+
 .issues-list {
   .issue {
     padding: 10px 0 10px $gl-padding;
