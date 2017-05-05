@@ -4,6 +4,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 - No changes.
 - No changes.
+- No changes.
 - Respect project features when searching alternative branches with elasticsearch enabled.
 - Fix for XSS in project mirror errors caused by Hamlit filter usage.
 
