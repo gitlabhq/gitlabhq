@@ -116,7 +116,7 @@
 }
 
 .manage-labels-list {
-  > li:not(.empty-message) {
+  > li:not(.empty-message):not(.is-not-draggable) {
     background-color: $white-light;
     cursor: move;
     cursor: -webkit-grab;
