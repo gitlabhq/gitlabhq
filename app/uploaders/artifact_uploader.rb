@@ -39,7 +39,7 @@ class ArtifactUploader < GitlabUploader
   end
 
   def default_path
-    File.join("project-#{job.project_id.to_s}", "pipeline-#{job.commit_id.to_s}", "job-#{id.to_s}")
+    File.join("project-#{job.project_id.to_s}", "pipeline-#{job.commit_id.to_s}", "job-#{job.id.to_s}")
   end
 
   ##
@@ -54,12 +54,12 @@ class ArtifactUploader < GitlabUploader
   #
   def deprecated_paths
     [
-      File.join(created_at.utc.strftime('%Y_%m'), job.project_id.to_s, id.to_s),
-      the_project&.ci_id && File.join(created_at.utc.strftime('%Y_%m'), the_project.ci_id.to_s, id.to_s),
+      File.join(job.created_at.utc.strftime('%Y_%m'), job.project_id.to_s, job.id.to_s),
+      the_project&.ci_id && File.join(job.created_at.utc.strftime('%Y_%m'), the_project.ci_id.to_s, job.id.to_s),
     ].compact
   end
 
   def the_project
-    job.project || job.unscoped_project
+    @the_project ||= job.project || job.unscoped_project
   end
 end
