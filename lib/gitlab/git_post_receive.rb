@@ -1,25 +1,12 @@
 module Gitlab
   class GitPostReceive
     include Gitlab::Identifier
-    attr_reader :repo_path, :identifier, :changes, :project
+    attr_reader :project, :identifier, :changes
 
-    def initialize(repo_path, identifier, changes)
-      repo_path.gsub!(/\.git\z/, '')
-      repo_path.gsub!(/\A\//, '')
-
-      @repo_path = repo_path
+    def initialize(project, identifier, changes)
+      @project = project
       @identifier = identifier
       @changes = deserialize_changes(changes)
-
-      retrieve_project_and_type
-    end
-
-    def wiki?
-      @type == :wiki
-    end
-
-    def regular_project?
-      @type == :project
     end
 
     def identify(revision)
@@ -27,16 +14,6 @@ module Gitlab
     end
 
     private
-
-    def retrieve_project_and_type
-      @type = :project
-      @project = Project.find_by_full_path(@repo_path)
-
-      if @repo_path.end_with?('.wiki') && !@project
-        @type = :wiki
-        @project = Project.find_by_full_path(@repo_path.gsub(/\.wiki\z/, ''))
-      end
-    end
 
     def deserialize_changes(changes)
       changes = utf8_encode_changes(changes)
