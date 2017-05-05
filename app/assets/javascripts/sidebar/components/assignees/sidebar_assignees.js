@@ -33,14 +33,12 @@ export default {
     saveAssignees() {
       this.loading = true;
 
-      function setLoadingFalse() {
-        this.loading = false;
-      }
-
       this.mediator.saveAssignees(this.field)
-        .then(setLoadingFalse.bind(this))
+        .then(() => {
+          this.loading = false;
+        })
         .catch(() => {
-          setLoadingFalse();
+          this.loading = false;
           return new Flash('Error occurred when saving assignees');
         });
     },
