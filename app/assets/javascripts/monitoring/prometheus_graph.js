@@ -3,16 +3,20 @@
 
 import d3 from 'd3';
 import statusCodes from '~/lib/utils/http_status';
-import { formatRelevantDigits } from '~/lib/utils/number_utils';
+import Deployments from './deployments';
+import '../lib/utils/common_utils';
+import { formatRelevantDigits } from '../lib/utils/number_utils';
 import '../flash';
+import {
+  dateFormat,
+  timeFormat,
+} from './constants';
 
 const prometheusContainer = '.prometheus-container';
 const prometheusParentGraphContainer = '.prometheus-graphs';
 const prometheusGraphsContainer = '.prometheus-graph';
 const prometheusStatesContainer = '.prometheus-state';
 const metricsEndpoint = 'metrics.json';
-const timeFormat = d3.time.format('%H:%M');
-const dayFormat = d3.time.format('%b %e, %a');
 const bisectDate = d3.bisector(d => d.time).left;
 const extraAddedWidthParent = 100;
 
@@ -36,6 +40,7 @@ class PrometheusGraph {
       this.width = parentContainerWidth - this.margin.left - this.margin.right;
       this.height = this.originalHeight - this.margin.top - this.margin.bottom;
       this.backOffRequestCounter = 0;
+      this.deployments = new Deployments(this.width, this.height);
       this.configureGraph();
       this.init();
     } else {
@@ -74,6 +79,12 @@ class PrometheusGraph {
         $(prometheusParentGraphContainer).show();
         this.transformData(metricsResponse);
         this.createGraph();
+
+        const firstMetricData = this.graphSpecificProperties[
+          Object.keys(this.graphSpecificProperties)[0]
+        ].data;
+
+        this.deployments.init(firstMetricData);
       }
     });
   }
@@ -96,6 +107,7 @@ class PrometheusGraph {
       .attr('width', this.width + this.margin.left + this.margin.right)
       .attr('height', this.height + this.margin.bottom + this.margin.top)
       .append('g')
+      .attr('class', 'graph-container')
         .attr('transform', `translate(${this.margin.left},${this.margin.top})`);
 
     const axisLabelContainer = d3.select(prometheusGraphContainer)
@@ -116,6 +128,7 @@ class PrometheusGraph {
       .scale(y)
       .ticks(this.commonGraphProperties.axis_no_ticks)
       .tickSize(-this.width)
+      .outerTickSize(0)
       .orient('left');
 
     this.createAxisLabelContainers(axisLabelContainer, key);
@@ -248,7 +261,8 @@ class PrometheusGraph {
       const d1 = currentGraphProps.data[overlayIndex];
       const evalTime = timeValueOverlay - d0.time > d1.time - timeValueOverlay;
       const currentData = evalTime ? d1 : d0;
-      const currentTimeCoordinate = currentGraphProps.xScale(currentData.time);
+      const currentTimeCoordinate = Math.floor(currentGraphProps.xScale(currentData.time));
+      const currentDeployXPos = this.deployments.mouseOverDeployInfo(currentXCoordinate, key);
       const currentPrometheusGraphContainer = `${prometheusGraphsContainer}[graph-type=${key}]`;
       const maxValueFromData = d3.max(currentGraphProps.data.map(metricValue => metricValue.value));
       const maxMetricValue = currentGraphProps.yScale(maxValueFromData);
@@ -256,13 +270,12 @@ class PrometheusGraph {
       // Clear up all the pieces of the flag
       d3.selectAll(`${currentPrometheusGraphContainer} .selected-metric-line`).remove();
       d3.selectAll(`${currentPrometheusGraphContainer} .circle-metric`).remove();
-      d3.selectAll(`${currentPrometheusGraphContainer} .rect-text-metric`).remove();
-      d3.selectAll(`${currentPrometheusGraphContainer} .text-metric`).remove();
+      d3.selectAll(`${currentPrometheusGraphContainer} .rect-text-metric:not(.deploy-info-rect)`).remove();
 
       const currentChart = d3.select(currentPrometheusGraphContainer).select('g');
       currentChart.append('line')
-      .attr('class', 'selected-metric-line')
       .attr({
+        class: `${currentDeployXPos ? 'hidden' : ''} selected-metric-line`,
         x1: currentTimeCoordinate,
         y1: currentGraphProps.yScale(0),
         x2: currentTimeCoordinate,
@@ -272,33 +285,45 @@ class PrometheusGraph {
       currentChart.append('circle')
         .attr('class', 'circle-metric')
         .attr('fill', currentGraphProps.line_color)
-        .attr('cx', currentTimeCoordinate)
+        .attr('cx', currentDeployXPos || currentTimeCoordinate)
         .attr('cy', currentGraphProps.yScale(currentData.value))
         .attr('r', this.commonGraphProperties.circle_radius_metric);
 
+      if (currentDeployXPos) return;
+
       // The little box with text
-      const rectTextMetric = currentChart.append('g')
-        .attr('class', 'rect-text-metric')
-        .attr('translate', `(${currentTimeCoordinate}, ${currentGraphProps.yScale(currentData.value)})`);
+      const rectTextMetric = currentChart.append('svg')
+        .attr({
+          class: 'rect-text-metric',
+          x: currentTimeCoordinate,
+          y: 0,
+        });
 
       rectTextMetric.append('rect')
-        .attr('class', 'rect-metric')
-        .attr('x', currentTimeCoordinate + 10)
-        .attr('y', maxMetricValue)
-        .attr('width', this.commonGraphProperties.rect_text_width)
-        .attr('height', this.commonGraphProperties.rect_text_height);
+        .attr({
+          class: 'rect-metric',
+          x: 4,
+          y: 1,
+          rx: 2,
+          width: this.commonGraphProperties.rect_text_width,
+          height: this.commonGraphProperties.rect_text_height,
+        });
 
       rectTextMetric.append('text')
-        .attr('class', 'text-metric')
-        .attr('x', currentTimeCoordinate + 35)
-        .attr('y', maxMetricValue + 35)
+        .attr({
+          class: 'text-metric text-metric-bold',
+          x: 8,
+          y: 35,
+        })
         .text(timeFormat(currentData.time));
 
       rectTextMetric.append('text')
-        .attr('class', 'text-metric-date')
-        .attr('x', currentTimeCoordinate + 15)
-        .attr('y', maxMetricValue + 15)
-        .text(dayFormat(currentData.time));
+        .attr({
+          class: 'text-metric-date',
+          x: 8,
+          y: 15,
+        })
+        .text(dateFormat(currentData.time));
 
       let currentMetricValue = formatRelevantDigits(currentData.value);
       if (key === 'cpu_values') {

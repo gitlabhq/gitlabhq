@@ -30,11 +30,6 @@ export default {
       default: false,
     },
 
-    service: {
-      type: Object,
-      required: true,
-    },
-
     isLoadingFolderContent: {
       type: Boolean,
       required: false,
@@ -92,7 +87,6 @@ export default {
           :model="model"
           :can-create-deployment="canCreateDeployment"
           :can-read-environment="canReadEnvironment"
-          :service="service"
           :toggleDeployBoard="toggleDeployBoard"
           />
 
@@ -124,7 +118,8 @@ export default {
               :model="children"
               :can-create-deployment="canCreateDeployment"
               :can-read-environment="canReadEnvironment"
-              :service="service" />
+              />
+
 
             <tr>
               <td

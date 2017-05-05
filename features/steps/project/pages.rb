@@ -18,12 +18,20 @@ class Spinach::Features::ProjectPages < Spinach::FeatureSteps
     visit namespace_project_pages_path(@project.namespace, @project)
   end
 
-  step 'I should see that GitLab Pages are disabled' do
-    expect(page).to have_content('GitLab Pages are disabled')
-  end
-
   step 'I should see the usage of GitLab Pages' do
     expect(page).to have_content('Configure pages')
+  end
+
+  step 'I should see the "Pages" tab' do
+    page.within '.sub-nav' do
+      expect(page).to have_link('Pages')
+    end
+  end
+
+  step 'I should not see the "Pages" tab' do
+    page.within '.sub-nav' do
+      expect(page).not_to have_link('Pages')
+    end
   end
 
   step 'pages are deployed' do

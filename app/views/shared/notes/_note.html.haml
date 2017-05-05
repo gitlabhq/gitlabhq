@@ -2,7 +2,11 @@
 - return if note.cross_reference_not_visible_for?(current_user)
 
 - note_editable = note_editable?(note)
-%li.timeline-entry{ id: dom_id(note), class: ["note", "note-row-#{note.id}", ('system-note' if note.system)], data: {author_id: note.author.id, editable: note_editable, note_id: note.id} }
+%li.timeline-entry{ id: dom_id(note),
+  class: ["note", "note-row-#{note.id}", ('system-note' if note.system)],
+  data: { author_id: note.author.id,
+    editable: note_editable,
+    note_id: note.id } }
   .timeline-entry-inner
     .timeline-icon
       - if note.system
@@ -36,7 +40,6 @@
       .note-body{ class: note_editable ? 'js-task-list-container' : '' }
         .note-text.md
           = note.redacted_note_html
-
         = edited_time_ago_with_tooltip(note, placement: 'bottom', html_class: 'note_edited_ago', include_author: true)
         - if note_editable
           - if note.for_personal_snippet?

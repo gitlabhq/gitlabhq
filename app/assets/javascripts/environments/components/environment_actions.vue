@@ -1,7 +1,4 @@
 <script>
-/* global Flash */
-/* eslint-disable no-new */
-
 import playIconSvg from 'icons/_icon_play.svg';
 import eventHub from '../event_hub';
 
@@ -11,11 +8,6 @@ export default {
       type: Array,
       required: false,
       default: () => [],
-    },
-
-    service: {
-      type: Object,
-      required: true,
     },
   },
 
@@ -37,16 +29,7 @@ export default {
       this.isLoading = true;
 
       $(this.$refs.tooltip).tooltip('destroy');
-
-      this.service.postAction(endpoint)
-      .then(() => {
-        this.isLoading = false;
-        eventHub.$emit('refreshEnvironments');
-      })
-      .catch(() => {
-        this.isLoading = false;
-        new Flash('An error occured while making the request.');
-      });
+      eventHub.$emit('postAction', endpoint);
     },
 
     isActionDisabled(action) {

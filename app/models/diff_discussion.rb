@@ -10,12 +10,30 @@ class DiffDiscussion < Discussion
 
   delegate  :position,
             :original_position,
-            :latest_merge_request_diff,
 
             to: :first_note
 
   def legacy_diff_discussion?
     false
+  end
+
+  def merge_request_version_params
+    return unless for_merge_request?
+
+    if active?
+      {}
+    else
+      diff_refs = position.diff_refs
+
+      if diff = noteable.merge_request_diff_for(diff_refs)
+        { diff_id: diff.id }
+      elsif diff = noteable.merge_request_diff_for(diff_refs.head_sha)
+        {
+          diff_id: diff.id,
+          start_sha: diff_refs.start_sha
+        }
+      end
+    end
   end
 
   def reply_attributes

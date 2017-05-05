@@ -6,6 +6,12 @@
       %p
         Add a new member to
         %strong= @project.name
+    - else
+      %p
+        Members can be added by project
+        %i Masters
+        or
+        %i Owners
   .col-lg-9
     .light.prepend-top-default
       - if can?(current_user, :admin_project_member, @project) && !membership_locked?

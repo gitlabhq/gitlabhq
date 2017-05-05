@@ -40,6 +40,7 @@ Parameters:
 | `owned` | boolean | no | Limit by projects owned by the current user |
 | `membership` | boolean | no | Limit by projects that the current user is a member of |
 | `starred` | boolean | no | Limit by projects starred by the current user |
+| `statistics` | boolean | no | Include project statistics |
 
 ```json
 [
@@ -92,7 +93,14 @@ Parameters:
     "only_allow_merge_if_pipeline_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "request_access_enabled": false,
-    "approvals_before_merge": 0
+    "approvals_before_merge": 0,
+    "statistics": {
+      "commit_count": 37,
+      "storage_size": 1038090,
+      "repository_size": 1038090,
+      "lfs_objects_size": 0,
+      "job_artifacts_size": 0
+    }
   },
   {
     "id": 6,
@@ -153,7 +161,14 @@ Parameters:
     "only_allow_merge_if_pipeline_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "request_access_enabled": false,
-    "approvals_before_merge": 0
+    "approvals_before_merge": 0,
+    "statistics": {
+      "commit_count": 12,
+      "storage_size": 2066080,
+      "repository_size": 2066080,
+      "lfs_objects_size": 0,
+      "job_artifacts_size": 0
+    }
   }
 ]
 ```
@@ -172,6 +187,7 @@ Parameters:
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `statistics` | boolean | no | Include project statistics |
 
 ```json
 {
@@ -245,7 +261,14 @@ Parameters:
   "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "request_access_enabled": false,
-  "approvals_before_merge": 0
+  "approvals_before_merge": 0,
+  "statistics": {
+    "commit_count": 37,
+    "storage_size": 1038090,
+    "repository_size": 1038090,
+    "lfs_objects_size": 0,
+    "job_artifacts_size": 0
+  }
 }
 ```
 

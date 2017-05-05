@@ -39,12 +39,6 @@ class Spinach::Features::ProjectActiveTab < Spinach::FeatureSteps
     end
   end
 
-  step 'I click the "Pages" tab' do
-    page.within '.sub-nav' do
-      click_link('Pages')
-    end
-  end
-
   step 'I click the "Activity" tab' do
     page.within '.sub-nav' do
       click_link('Activity')

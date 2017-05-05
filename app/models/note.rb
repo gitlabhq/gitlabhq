@@ -117,11 +117,19 @@ class Note < ActiveRecord::Base
     end
 
     def grouped_diff_discussions(diff_refs = nil)
-      diff_notes.
-        fresh.
-        discussions.
-        select { |n| n.active?(diff_refs) }.
-        group_by(&:line_code)
+      groups = {}
+
+      diff_notes.fresh.discussions.each do |discussion|
+        if discussion.active?(diff_refs)
+          discussions = groups[discussion.line_code] ||= []
+        elsif diff_refs && discussion.created_at_diff?(diff_refs)
+          discussions = groups[discussion.original_line_code] ||= []
+        end
+
+        discussions << discussion if discussions
+      end
+
+      groups
     end
 
     def count_for_collection(ids, type)
@@ -145,10 +153,6 @@ class Note < ActiveRecord::Base
 
   def active?
     true
-  end
-
-  def latest_merge_request_diff
-    nil
   end
 
   def max_attachment_size

@@ -235,12 +235,7 @@ describe Notify do
         end
 
         describe 'that are new with a description' do
-          subject do
-            described_class.new_merge_request_email(
-              merge_request_with_description.assignee_id,
-              merge_request_with_description.id
-            )
-          end
+          subject { described_class.new_merge_request_email(merge_request_with_description.assignee_id, merge_request_with_description.id) }
 
           it_behaves_like 'it should show Gmail Actions View Merge request link'
           it_behaves_like "an unsubscribeable thread"

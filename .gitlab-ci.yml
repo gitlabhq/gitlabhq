@@ -274,7 +274,10 @@ static-analysis:
   script:
     - scripts/static-analysis
 
-docs:check:links:
+# Documentation checks:
+# - Check validity of relative links
+# - Make sure cURL examples in API docs use the full switches
+docs lint:
   image: "registry.gitlab.com/gitlab-org/gitlab-build-images:nanoc-bootstrap-ruby-2.4-alpine"
   stage: test
   <<: *dedicated-runner
@@ -301,22 +304,22 @@ downtime_check:
 .db-migrate-reset: &db-migrate-reset
   stage: test
   <<: *dedicated-runner
+  <<: *except-docs
   script:
     - bundle exec rake db:migrate:reset
 
 rake pg db:migrate:reset:
   <<: *db-migrate-reset
   <<: *use-pg
-  <<: *except-docs
 
 rake mysql db:migrate:reset:
   <<: *db-migrate-reset
   <<: *use-mysql
-  <<: *except-docs
 
 .db-rollback: &db-rollback
   stage: test
   <<: *dedicated-runner
+  <<: *except-docs
   script:
     - bundle exec rake db:rollback STEP=120
     - bundle exec rake db:migrate
@@ -324,16 +327,15 @@ rake mysql db:migrate:reset:
 rake pg db:rollback:
   <<: *db-rollback
   <<: *use-pg
-  <<: *except-docs
 
 rake mysql db:rollback:
   <<: *db-rollback
   <<: *use-mysql
-  <<: *except-docs
 
 .db-seed_fu: &db-seed_fu
   stage: test
   <<: *dedicated-runner
+  <<: *except-docs
   variables:
     SIZE: "1"
     SETUP_DB: "false"
@@ -351,12 +353,10 @@ rake mysql db:rollback:
 rake pg db:seed_fu:
   <<: *db-seed_fu
   <<: *use-pg
-  <<: *except-docs
 
 rake mysql db:seed_fu:
   <<: *db-seed_fu
   <<: *use-mysql
-  <<: *except-docs
 
 rake gitlab:assets:compile:
   stage: test
@@ -396,21 +396,6 @@ rake karma:
     expire_in: 31d
     paths:
     - coverage-javascript/
-
-docs:check:links:
-  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:nanoc-bootstrap-ruby-2.4-alpine"
-  stage: test
-  <<: *dedicated-runner
-  cache: {}
-  dependencies: []
-  before_script: []
-  script:
-    - mv doc/ /nanoc/content/
-    - cd /nanoc
-    # Build HTML from Markdown
-    - bundle exec nanoc
-    # Check the internal links
-    - bundle exec nanoc check internal_links
 
 bundler:audit:
   stage: test
@@ -501,22 +486,6 @@ trigger_docs:
     - if [ "${HTTP_STATUS}" -ne "201" ]; then echo "Error ${HTTP_STATUS}"; cat curl.log; echo; exit 1; fi
   only:
     - master@gitlab-org/gitlab-ee
-
-# Notify slack in the end
-notify:slack:
-  stage: post-test
-  <<: *dedicated-runner
-  variables:
-    SETUP_DB: "false"
-    USE_BUNDLE_INSTALL: "false"
-  script:
-    - ./scripts/notify_slack.sh "#development" "Build on \`$CI_COMMIT_REF_NAME\` failed! Commit \`$(git log -1 --oneline)\` See <https://gitlab.com/gitlab-org/$(basename "$PWD")/commit/"$CI_COMMIT_SHA"/pipelines>"
-  when: on_failure
-  only:
-    - master@gitlab-org/gitlab-ce
-    - tags@gitlab-org/gitlab-ce
-    - master@gitlab-org/gitlab-ee
-    - tags@gitlab-org/gitlab-ee
 
 pages:
   before_script: []

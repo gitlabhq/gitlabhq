@@ -1089,20 +1089,8 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#branch_count' do
-    before(:each) do
-      valid_ref   = double(:ref)
-      invalid_ref = double(:ref)
-
-      allow(valid_ref).to receive_messages(name: 'master', target: double(:target))
-
-      allow(invalid_ref).to receive_messages(name: 'bad-branch')
-      allow(invalid_ref).to receive(:target) { raise Rugged::ReferenceError }
-
-      allow(repository.rugged).to receive_messages(branches: [valid_ref, invalid_ref])
-    end
-
     it 'returns the number of branches' do
-      expect(repository.branch_count).to eq(1)
+      expect(repository.branch_count).to eq(9)
     end
   end
 
