@@ -4,9 +4,6 @@ import TimezoneDropdown from './components/timezone_dropdown';
 import TargetBranchDropdown from './components/target_branch_dropdown';
 
 document.addEventListener('DOMContentLoaded', () => {
-  gl.timezoneDropdown = new TimezoneDropdown();
-  gl.targetBranchDropdown = new TargetBranchDropdown();
-
   const IntervalPatternInputComponent = Vue.extend(IntervalPatternInput);
   const intervalPatternMount = document.getElementById('interval-pattern-input');
 
@@ -16,5 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
     },
   }).$mount(intervalPatternMount);
 
-  gl.pipelineScheduleFieldErrors = new gl.GlFieldErrors(document.querySelector('#new-pipeline-schedule-form'));
+  const formElement = document.querySelector('#new-pipeline-schedule-form');
+
+  gl.timezoneDropdown = new TimezoneDropdown();
+  gl.targetBranchDropdown = new TargetBranchDropdown();
+  gl.pipelineScheduleFieldErrors = new gl.GlFieldErrors(formElement);
 });
