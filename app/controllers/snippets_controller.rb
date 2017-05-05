@@ -3,7 +3,6 @@ class SnippetsController < ApplicationController
   include ToggleAwardEmoji
   include SpammableActions
   include SnippetsActions
-  include MarkdownPreview
   include RendersBlob
 
   before_action :snippet, only: [:show, :edit, :destroy, :update, :raw, :download]
@@ -98,7 +97,14 @@ class SnippetsController < ApplicationController
   end
 
   def preview_markdown
-    render_markdown_preview(params[:text], skip_project_check: true)
+    result = PreviewMarkdownService.new(@project, current_user, params).execute
+
+    render json: {
+      body: view_context.markdown(result[:text], skip_project_check: true),
+      references: {
+        users: result[:users]
+      }
+    }
   end
 
   protected
