@@ -16,7 +16,7 @@ class Route < ActiveRecord::Base
   scope :direct_descendant_routes, -> (path) { where('routes.path LIKE ? AND routes.path NOT LIKE ?', "#{sanitize_sql_like(path)}/%", "#{sanitize_sql_like(path)}/%/%") }
 
   def rename_direct_descendant_routes
-    return if !path_changed? && !name_changed?
+    return unless path_changed? || name_changed?
 
     direct_descendant_routes = self.class.direct_descendant_routes(path_was)
 

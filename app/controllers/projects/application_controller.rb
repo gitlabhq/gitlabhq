@@ -21,13 +21,12 @@ class Projects::ApplicationController < ApplicationController
   end
 
   def project
-    @project ||= find_routable!(Project,
-      File.join(params[:namespace_id], params[:project_id] || params[:id]),
-      extra_authorization_proc: project_not_being_deleted?)
-  end
+    return @project if @project
 
-  def project_not_being_deleted?
-    ->(project) { !project.pending_delete? }
+    path = File.join(params[:namespace_id], params[:project_id] || params[:id])
+    auth_proc = ->(project) { !project.pending_delete? }
+
+    @project = find_routable!(Project, path, extra_authorization_proc: auth_proc)
   end
 
   def repository
