@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     },
   }).$mount(intervalPatternMount);
 
-  const formElement = document.querySelector('#new-pipeline-schedule-form');
+  const formElement = document.getElementById('new-pipeline-schedule-form');
 
   gl.timezoneDropdown = new TimezoneDropdown();
   gl.targetBranchDropdown = new TargetBranchDropdown();
