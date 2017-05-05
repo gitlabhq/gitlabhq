@@ -115,22 +115,22 @@ class DynamicPathValidator < ActiveModel::EachValidator
   # this would map to the activity-page of it's parent.
   GROUP_ROUTES = %w[
     activity
+    analytics
+    audit_events
     avatar
     edit
     group_members
+    hooks
     issues
     labels
-    merge_requests
-    milestones
-    projects
-    subgroups
-    analytics
-    audit_events
-    hooks
     ldap
     ldap_group_links
+    merge_requests
+    milestones
     notification_setting
     pipeline_quota
+    projects
+    subgroups
   ].freeze
 
   CHILD_ROUTES = (WILDCARD_ROUTES | GROUP_ROUTES).freeze

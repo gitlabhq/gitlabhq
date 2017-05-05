@@ -35,6 +35,10 @@ class GeoNode < ActiveRecord::Base
                  mode: :per_attribute_iv,
                  encode: true
 
+  def current?
+    Gitlab::Geo.current_node == self
+  end
+
   def secondary?
     !primary
   end
