@@ -1,8 +1,6 @@
 - content_for :page_specific_javascripts do
   = page_specific_javascript_bundle_tag('schedule_form')
 
-- timezones = ActiveSupport::TimeZone.all.map { |timezone| { name: timezone.name, offset: timezone.utc_offset, identifier: timezone.tzinfo.identifier } }
-
 = form_for [@project.namespace.becomes(Namespace), @project, @schedule], as: :schedule, html: { id: "new-pipeline-schedule-form", class: "form-horizontal js-pipeline-schedule-form gl-show-field-errors" } do |f|
   = form_errors(@schedule)
   .form-group
@@ -17,7 +15,7 @@
     .col-md-6
       = f.label :cron_timezone, 'Cron Timezone', class: 'label-light'
       = hidden_field_tag(:cron_timezone, @schedule.cron_timezone, id: 'schedule_cron_timezone', name: 'schedule[cron_timezone]')
-      = dropdown_tag("Select a timezone", options: { toggle_class: 'btn js-timezone-dropdown', title: "Select a timezone", filter: true, placeholder: "Filter", data: { data: timezones } } )
+      = dropdown_tag("Select a timezone", options: { toggle_class: 'btn js-timezone-dropdown', title: "Select a timezone", filter: true, placeholder: "Filter", data: { data: timezone_data } } )
   .form-group
     .col-md-6
       = f.label :ref, 'Target Branch', class: 'label-light'
