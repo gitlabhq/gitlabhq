@@ -191,6 +191,19 @@ describe Gitlab::Mirror do
           expect(Sidekiq::Cron::Job.find("update_all_mirrors_worker").cron).to eq(fifteen_cron)
         end
       end
+
+      describe 'when Geo is enabled' do
+        it 'disables mirror cron job' do
+          described_class.configure_cron_job!
+
+          expect(described_class.update_all_mirrors_cron_job).to be_enabled
+
+          allow(Gitlab::Geo).to receive(:secondary?).and_return(true)
+          described_class.configure_cron_job!
+
+          expect(described_class.update_all_mirrors_cron_job).to be_nil
+        end
+      end
     end
   end
 

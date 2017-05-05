@@ -41,11 +41,23 @@ module Gitlab
         sync_times
       end
 
+      def update_all_mirrors_cron_job
+        Sidekiq::Cron::Job.find("update_all_mirrors_worker")
+      end
+
+      def destroy_cron_job!
+        update_all_mirrors_cron_job&.destroy
+      end
+
       def configure_cron_job!
+        if Gitlab::Geo.secondary?
+          destroy_cron_job!
+          return
+        end
+
         minimum_mirror_sync_time = current_application_settings.minimum_mirror_sync_time rescue FIFTEEN
         sync_time = SYNC_TIME_TO_CRON[minimum_mirror_sync_time]
-
-        Sidekiq::Cron::Job.find("update_all_mirrors_worker")&.destroy
+        destroy_cron_job!
 
         Sidekiq::Cron::Job.create(
           name: 'update_all_mirrors_worker',
