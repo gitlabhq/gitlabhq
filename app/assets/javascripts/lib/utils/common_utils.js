@@ -35,6 +35,14 @@
       });
     };
 
+    w.gl.utils.ajaxPost = function(url, data) {
+      return $.ajax({
+        type: 'POST',
+        url: url,
+        data: data,
+      });
+    };
+
     w.gl.utils.extractLast = function(term) {
       return this.split(term).pop();
     };

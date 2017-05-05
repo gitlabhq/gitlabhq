@@ -98,6 +98,7 @@ describe 'Merge requests > User posts notes', :js do
           find('.btn-save').click
         end
 
+        wait_for_ajax
         find('.note').hover
         find('.js-note-edit').click
 
