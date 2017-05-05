@@ -1,15 +1,19 @@
 import Vue from 'vue';
 import pipelinesComp from '~/pipelines/pipelines';
 import Store from '~/pipelines/stores/pipelines_store';
-import pipelinesData from './mock_data';
 
 describe('Pipelines', () => {
+  const jsonFixtureName = 'pipelines/pipelines.json';
+
   preloadFixtures('static/pipelines.html.raw');
 
   let PipelinesComponent;
+  let pipeline;
 
   beforeEach(() => {
     loadFixtures('static/pipelines.html.raw');
+    const pipelines = getJSONFixture(jsonFixtureName).pipelines;
+    pipeline = pipelines.find(p => p.id === 1);
 
     PipelinesComponent = Vue.extend(pipelinesComp);
   });
@@ -17,7 +21,7 @@ describe('Pipelines', () => {
   describe('successfull request', () => {
     describe('with pipelines', () => {
       const pipelinesInterceptor = (request, next) => {
-        next(request.respondWith(JSON.stringify(pipelinesData), {
+        next(request.respondWith(JSON.stringify(pipeline), {
           status: 200,
         }));
       };

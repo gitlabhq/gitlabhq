@@ -1,13 +1,17 @@
 import Vue from 'vue';
 import pipelinesTableComp from '~/vue_shared/components/pipelines_table';
 import '~/lib/utils/datetime_utility';
-import pipeline from '../../commit/pipelines/mock_data';
 
 describe('Pipelines Table', () => {
+  const jsonFixtureName = 'pipelines/pipelines.json';
+
+  let pipeline;
   let PipelinesTableComponent;
 
   beforeEach(() => {
     PipelinesTableComponent = Vue.extend(pipelinesTableComp);
+    const pipelines = getJSONFixture(jsonFixtureName).pipelines;
+    pipeline = pipelines.find(p => p.id === 1);
   });
 
   describe('table', () => {
