@@ -103,6 +103,14 @@ describe Gitlab::UsageData do
       end
     end
 
+    context 'when there is no license' do
+      it 'returns an empty hash' do
+        allow(License).to receive(:current).and_return(nil)
+
+        expect(subject).to eq({})
+      end
+    end
+
     context 'when Service Desk is enabled' do
       it 'gathers Service Desk data' do
         create_list(:issue, 3, confidential: true, author: User.support_bot, project: [project3, project4].sample)

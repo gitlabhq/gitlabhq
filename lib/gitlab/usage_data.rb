@@ -54,7 +54,7 @@ module Gitlab
       end
 
       def service_desk_counts
-        return {} unless ::License.current.add_on?('GitLab_ServiceDesk')
+        return {} unless ::License.current&.add_on?('GitLab_ServiceDesk')
 
         projects_with_service_desk = Project.where(service_desk_enabled: true)
 
