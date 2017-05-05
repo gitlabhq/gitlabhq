@@ -17,13 +17,13 @@ export default class SidebarStore {
     return SidebarStore.singleton;
   }
 
-  processAssigneeData(data) {
+  setAssigneeData(data) {
     if (data.assignees) {
       this.assignees = data.assignees;
     }
   }
 
-  processTimeTrackingData(data) {
+  setTimeTrackingData(data) {
     this.timeEstimate = data.time_estimate;
     this.totalTimeSpent = data.total_time_spent;
     this.humanTimeEstimate = data.human_time_estimate;

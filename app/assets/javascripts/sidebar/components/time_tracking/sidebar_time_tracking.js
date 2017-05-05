@@ -17,15 +17,21 @@ export default {
   },
   methods: {
     listenForSlashCommands() {
-      $(document).on('ajax:success', '.gfm-form', (e, data) => {
-        const subscribedCommands = ['spend_time', 'time_estimate'];
-        const changedCommands = data.commands_changes
+      $(document).on('ajax:success', '.gfm-form', this.slashCommandListened);
+    },
+    slashCommandListened(e, data) {
+      const subscribedCommands = ['spend_time', 'time_estimate'];
+      let changedCommands;
+      if (data !== undefined) {
+        changedCommands = data.commands_changes
           ? Object.keys(data.commands_changes)
           : [];
-        if (changedCommands && _.intersection(subscribedCommands, changedCommands).length) {
-          this.mediator.fetch();
-        }
-      });
+      } else {
+        changedCommands = [];
+      }
+      if (changedCommands && _.intersection(subscribedCommands, changedCommands).length) {
+        this.mediator.fetch();
+      }
     },
   },
   mounted() {
