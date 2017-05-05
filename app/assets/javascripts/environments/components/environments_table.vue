@@ -28,11 +28,6 @@ export default {
       default: false,
     },
 
-    service: {
-      type: Object,
-      required: true,
-    },
-
     isLoadingFolderContent: {
       type: Boolean,
       required: false,
@@ -78,7 +73,7 @@ export default {
           :model="model"
           :can-create-deployment="canCreateDeployment"
           :can-read-environment="canReadEnvironment"
-          :service="service" />
+          />
 
         <template v-if="model.isFolder && model.isOpen && model.children && model.children.length > 0">
           <tr v-if="isLoadingFolderContent">
@@ -96,7 +91,7 @@ export default {
               :model="children"
               :can-create-deployment="canCreateDeployment"
               :can-read-environment="canReadEnvironment"
-              :service="service" />
+              />
 
             <tr>
               <td

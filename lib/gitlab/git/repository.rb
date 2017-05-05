@@ -499,8 +499,9 @@ module Gitlab
       #     :contains is the commit contained by the refs from which to begin (SHA1 or name)
       #     :max_count is the maximum number of commits to fetch
       #     :skip is the number of commits to skip
-      #     :order is the commits order and allowed value is :none (default), :date, or :topo
-      #        commit ordering types are documented here:
+      #     :order is the commits order and allowed value is :none (default), :date,
+      #        :topo, or any combination of them (in an array). Commit ordering types
+      #        are documented here:
       #        http://www.rubydoc.info/github/libgit2/rugged/Rugged#SORT_NONE-constant)
       #
       def find_commits(options = {})
@@ -874,27 +875,6 @@ module Gitlab
       # Push +*refspecs+ to the remote identified by +remote_name+.
       def push(remote_name, *refspecs)
         rugged.remotes[remote_name].push(refspecs)
-      end
-
-      # Merge the +source_name+ branch into the +target_name+ branch. This is
-      # equivalent to `git merge --no_ff +source_name+`, since a merge commit
-      # is always created.
-      def merge(source_name, target_name, options = {})
-        our_commit = rugged.branches[target_name].target
-        their_commit = rugged.branches[source_name].target
-
-        raise "Invalid merge target" if our_commit.nil?
-        raise "Invalid merge source" if their_commit.nil?
-
-        merge_index = rugged.merge_commits(our_commit, their_commit)
-        return false if merge_index.conflicts?
-
-        actual_options = options.merge(
-          parents: [our_commit, their_commit],
-          tree: merge_index.write_tree(rugged),
-          update_ref: "refs/heads/#{target_name}"
-        )
-        Rugged::Commit.create(rugged, actual_options)
       end
 
       AUTOCRLF_VALUES = {
@@ -1290,16 +1270,18 @@ module Gitlab
         raise CommandError.new(e)
       end
 
-      # Returns the `Rugged` sorting type constant for a given
-      # sort type key. Valid keys are `:none`, `:topo`, and `:date`
-      def rugged_sort_type(key)
+      # Returns the `Rugged` sorting type constant for one or more given
+      # sort types. Valid keys are `:none`, `:topo`, and `:date`, or an array
+      # containing more than one of them. `:date` uses a combination of date and
+      # topological sorting to closer mimic git's native ordering.
+      def rugged_sort_type(sort_type)
         @rugged_sort_types ||= {
           none: Rugged::SORT_NONE,
           topo: Rugged::SORT_TOPO,
-          date: Rugged::SORT_DATE
+          date: Rugged::SORT_DATE | Rugged::SORT_TOPO
         }
 
-        @rugged_sort_types.fetch(key, Rugged::SORT_NONE)
+        @rugged_sort_types.fetch(sort_type, Rugged::SORT_NONE)
       end
     end
   end

@@ -264,11 +264,15 @@ spinach mysql 9 10: *spinach-knapsack-mysql
 static-analysis:
   <<: *ruby-static-analysis
   <<: *dedicated-runner
+  <<: *except-docs
   stage: test
   script:
     - scripts/static-analysis
 
-docs:check:links:
+# Documentation checks:
+# - Check validity of relative links
+# - Make sure cURL examples in API docs use the full switches
+docs lint:
   image: "registry.gitlab.com/gitlab-org/gitlab-build-images:nanoc-bootstrap-ruby-2.4-alpine"
   stage: test
   <<: *dedicated-runner
@@ -276,6 +280,7 @@ docs:check:links:
   dependencies: []
   before_script: []
   script:
+    - scripts/lint-doc.sh
     - mv doc/ /nanoc/content/
     - cd /nanoc
     # Build HTML from Markdown
@@ -406,18 +411,6 @@ rake karma:
     expire_in: 31d
     paths:
     - coverage-javascript/
-
-bundler:audit:
-  stage: test
-  <<: *ruby-static-analysis
-  <<: *dedicated-runner
-  only:
-    - master@gitlab-org/gitlab-ce
-    - master@gitlab-org/gitlab-ee
-    - master@gitlab/gitlabhq
-    - master@gitlab/gitlab-ee
-  script:
-    - "bundle exec bundle-audit check --update --ignore CVE-2016-4658"
 
 .migration-paths: &migration-paths
   stage: test

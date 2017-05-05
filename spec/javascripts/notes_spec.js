@@ -1,10 +1,12 @@
 /* eslint-disable space-before-function-paren, no-unused-expressions, no-var, object-shorthand, comma-dangle, max-len */
 /* global Notes */
 
-require('~/notes');
-require('vendor/autosize');
-require('~/gl_form');
-require('~/lib/utils/text_utility');
+import 'vendor/autosize';
+import '~/gl_form';
+import '~/lib/utils/text_utility';
+import '~/render_gfm';
+import '~/render_math';
+import '~/notes';
 
 (function() {
   window.gon || (window.gon = {});
@@ -80,35 +82,78 @@ require('~/lib/utils/text_utility');
 
       beforeEach(() => {
         note = {
+          id: 1,
           discussion_html: null,
           valid: true,
-          html: '<div></div>',
+          note: 'heya',
+          html: '<div>heya</div>',
         };
-        $notesList = jasmine.createSpyObj('$notesList', ['find']);
+        $notesList = jasmine.createSpyObj('$notesList', [
+          'find',
+          'append',
+        ]);
 
         notes = jasmine.createSpyObj('notes', [
           'refresh',
           'isNewNote',
+          'isUpdatedNote',
           'collapseLongCommitList',
           'updateNotesCount',
+          'putConflictEditWarningInPlace'
         ]);
         notes.taskList = jasmine.createSpyObj('tasklist', ['init']);
         notes.note_ids = [];
+        notes.updatedNotesTrackingMap = {};
 
-        spyOn(window, '$').and.returnValue($notesList);
         spyOn(gl.utils, 'localTimeAgo');
-        spyOn(Notes, 'animateAppendNote');
-        notes.isNewNote.and.returnValue(true);
-
-        Notes.prototype.renderNote.call(notes, note);
+        spyOn(Notes, 'animateAppendNote').and.callThrough();
+        spyOn(Notes, 'animateUpdateNote').and.callThrough();
       });
 
-      it('should query for the notes list', () => {
-        expect(window.$).toHaveBeenCalledWith('ul.main-notes-list');
+      describe('when adding note', () => {
+        it('should call .animateAppendNote', () => {
+          notes.isNewNote.and.returnValue(true);
+          Notes.prototype.renderNote.call(notes, note, null, $notesList);
+
+          expect(Notes.animateAppendNote).toHaveBeenCalledWith(note.html, $notesList);
+        });
       });
 
-      it('should call .animateAppendNote', () => {
-        expect(Notes.animateAppendNote).toHaveBeenCalledWith(note.html, $notesList);
+      describe('when note was edited', () => {
+        it('should call .animateUpdateNote', () => {
+          notes.isUpdatedNote.and.returnValue(true);
+          const $note = $('<div>');
+          $notesList.find.and.returnValue($note);
+          Notes.prototype.renderNote.call(notes, note, null, $notesList);
+
+          expect(Notes.animateUpdateNote).toHaveBeenCalledWith(note.html, $note);
+        });
+
+        describe('while editing', () => {
+          it('should update textarea if nothing has been touched', () => {
+            notes.isUpdatedNote.and.returnValue(true);
+            const $note = $(`<div class="is-editing">
+              <div class="original-note-content">initial</div>
+              <textarea class="js-note-text">initial</textarea>
+            </div>`);
+            $notesList.find.and.returnValue($note);
+            Notes.prototype.renderNote.call(notes, note, null, $notesList);
+
+            expect($note.find('.js-note-text').val()).toEqual(note.note);
+          });
+
+          it('should call .putConflictEditWarningInPlace', () => {
+            notes.isUpdatedNote.and.returnValue(true);
+            const $note = $(`<div class="is-editing">
+              <div class="original-note-content">initial</div>
+              <textarea class="js-note-text">different</textarea>
+            </div>`);
+            $notesList.find.and.returnValue($note);
+            Notes.prototype.renderNote.call(notes, note, null, $notesList);
+
+            expect(notes.putConflictEditWarningInPlace).toHaveBeenCalledWith(note, $note);
+          });
+        });
       });
     });
 
@@ -147,14 +192,12 @@ require('~/lib/utils/text_utility');
       });
 
       describe('Discussion root note', () => {
-        let $notesList;
         let body;
 
         beforeEach(() => {
           body = jasmine.createSpyObj('body', ['attr']);
           discussionContainer = { length: 0 };
 
-          spyOn(window, '$').and.returnValues(discussionContainer, body, $notesList);
           $form.closest.and.returnValues(row, $form);
           $form.find.and.returnValues(discussionContainer);
           body.attr.and.returnValue('');
@@ -162,12 +205,8 @@ require('~/lib/utils/text_utility');
           Notes.prototype.renderDiscussionNote.call(notes, note, $form);
         });
 
-        it('should query for the notes list', () => {
-          expect(window.$.calls.argsFor(2)).toEqual(['ul.main-notes-list']);
-        });
-
         it('should call Notes.animateAppendNote', () => {
-          expect(Notes.animateAppendNote).toHaveBeenCalledWith(note.discussion_html, $notesList);
+          expect(Notes.animateAppendNote).toHaveBeenCalledWith(note.discussion_html, $('.main-notes-list'));
         });
       });
 
@@ -175,14 +214,10 @@ require('~/lib/utils/text_utility');
         beforeEach(() => {
           discussionContainer = { length: 1 };
 
-          spyOn(window, '$').and.returnValues(discussionContainer);
-          $form.closest.and.returnValues(row);
+          $form.closest.and.returnValues(row, $form);
+          $form.find.and.returnValues(discussionContainer);
 
           Notes.prototype.renderDiscussionNote.call(notes, note, $form);
-        });
-
-        it('should query foor the discussion container', () => {
-          expect(window.$).toHaveBeenCalledWith(`.notes[data-discussion-id="${note.discussion_id}"]`);
         });
 
         it('should call Notes.animateAppendNote', () => {
@@ -193,35 +228,45 @@ require('~/lib/utils/text_utility');
 
     describe('animateAppendNote', () => {
       let noteHTML;
-      let $note;
       let $notesList;
+      let $resultantNote;
 
       beforeEach(() => {
         noteHTML = '<div></div>';
-        $note = jasmine.createSpyObj('$note', ['addClass', 'renderGFM', 'removeClass']);
         $notesList = jasmine.createSpyObj('$notesList', ['append']);
 
-        spyOn(window, '$').and.returnValue($note);
-        spyOn(window, 'setTimeout').and.callThrough();
-        $note.addClass.and.returnValue($note);
-        $note.renderGFM.and.returnValue($note);
-
-        Notes.animateAppendNote(noteHTML, $notesList);
+        $resultantNote = Notes.animateAppendNote(noteHTML, $notesList);
       });
 
-      it('should init the note jquery object', () => {
-        expect(window.$).toHaveBeenCalledWith(noteHTML);
-      });
-
-      it('should call addClass', () => {
-        expect($note.addClass).toHaveBeenCalledWith('fade-in');
-      });
-      it('should call renderGFM', () => {
-        expect($note.renderGFM).toHaveBeenCalledWith();
+      it('should have `fade-in` class', () => {
+        expect($resultantNote.hasClass('fade-in')).toEqual(true);
       });
 
       it('should append note to the notes list', () => {
-        expect($notesList.append).toHaveBeenCalledWith($note);
+        expect($notesList.append).toHaveBeenCalledWith($resultantNote);
+      });
+    });
+
+    describe('animateUpdateNote', () => {
+      let noteHTML;
+      let $note;
+      let $updatedNote;
+
+      beforeEach(() => {
+        noteHTML = '<div></div>';
+        $note = jasmine.createSpyObj('$note', [
+          'replaceWith'
+        ]);
+
+        $updatedNote = Notes.animateUpdateNote(noteHTML, $note);
+      });
+
+      it('should have `fade-in` class', () => {
+        expect($updatedNote.hasClass('fade-in')).toEqual(true);
+      });
+
+      it('should call replaceWith on $note', () => {
+        expect($note.replaceWith).toHaveBeenCalledWith($updatedNote);
       });
     });
   });

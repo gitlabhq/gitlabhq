@@ -4,7 +4,10 @@ module Projects
       key = accessible_keys.find_by(id: params[:key_id] || params[:id])
       return unless key
 
-      project.deploy_keys << key
+      unless project.deploy_keys.include?(key)
+        project.deploy_keys << key
+      end
+
       key
     end
 
