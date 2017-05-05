@@ -58,6 +58,7 @@ shared_examples 'issuable record that supports slash commands in its description
         expect(page).not_to have_content '/label ~bug'
         expect(page).not_to have_content '/milestone %"ASAP"'
 
+        wait_for_ajax
         issuable.reload
         note = issuable.notes.user.first
 
@@ -254,6 +255,21 @@ shared_examples 'issuable record that supports slash commands in its description
         expect(page).to have_content 'Commands applied'
 
         expect(issuable.subscribed?(master, project)).to be_falsy
+      end
+    end
+  end
+
+  describe "preview of note on #{issuable_type}" do
+    it 'removes slash commands from note and explains them' do
+      visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
+
+      page.within('.js-main-target-form') do
+        fill_in 'note[note]', with: "Awesome!\n/assign @bob "
+        click_on 'Preview'
+
+        expect(page).to have_content 'Awesome!'
+        expect(page).not_to have_content '/assign @bob'
+        expect(page).to have_content 'Assigns @bob.'
       end
     end
   end

@@ -2,7 +2,7 @@ module SlashCommands
   class InterpretService < BaseService
     include Gitlab::SlashCommands::Dsl
 
-    attr_reader :issuable, :options
+    attr_reader :issuable
 
     # Takes a text and interprets the commands that are extracted from it.
     # Returns the content without commands, and hash of changes to be applied to a record.
@@ -12,23 +12,21 @@ module SlashCommands
       @issuable = issuable
       @updates = {}
 
-      opts = {
-        issuable:     issuable,
-        current_user: current_user,
-        project:      project,
-        params:       params
-      }
-
-      content, commands = extractor.extract_commands(content, opts)
-
-      commands.each do |name, arg|
-        definition = self.class.command_definitions_by_name[name.to_sym]
-        next unless definition
-
-        definition.execute(self, opts, arg)
-      end
-
+      content, commands = extractor.extract_commands(content, context)
+      extract_updates(commands, context)
       [content, @updates]
+    end
+
+    # Takes a text and interprets the commands that are extracted from it.
+    # Returns the content without commands, and array of changes explained.
+    def explain(content, issuable)
+      return [content, []] unless current_user.can?(:use_slash_commands)
+
+      @issuable = issuable
+
+      content, commands = extractor.extract_commands(content, context)
+      commands = explain_commands(commands, context)
+      [content, commands]
     end
 
     private
@@ -39,6 +37,9 @@ module SlashCommands
 
     desc do
       "Close this #{issuable.to_ability_name.humanize(capitalize: false)}"
+    end
+    explanation do
+      "Closes this #{issuable.to_ability_name.humanize(capitalize: false)}."
     end
     condition do
       issuable.persisted? &&
@@ -52,6 +53,9 @@ module SlashCommands
     desc do
       "Reopen this #{issuable.to_ability_name.humanize(capitalize: false)}"
     end
+    explanation do
+      "Reopens this #{issuable.to_ability_name.humanize(capitalize: false)}."
+    end
     condition do
       issuable.persisted? &&
         issuable.closed? &&
@@ -62,6 +66,7 @@ module SlashCommands
     end
 
     desc 'Merge (when the pipeline succeeds)'
+    explanation 'Merges this merge request when the pipeline succeeds.'
     condition do
       last_diff_sha = params && params[:merge_request_diff_head_sha]
       issuable.is_a?(MergeRequest) &&
@@ -73,6 +78,9 @@ module SlashCommands
     end
 
     desc 'Change title'
+    explanation do |title_param|
+      "Changes the title to \"#{title_param}\"."
+    end
     params '<New title>'
     condition do
       issuable.persisted? &&
@@ -83,18 +91,25 @@ module SlashCommands
     end
 
     desc 'Assign'
+    explanation do |user|
+      "Assigns #{user.to_reference}." if user
+    end
     params '@user'
     condition do
       current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
-    command :assign do |assignee_param|
-      user = extract_references(assignee_param, :user).first
-      user ||= User.find_by(username: assignee_param)
-
+    parse_params do |assignee_param|
+      extract_references(assignee_param, :user).first ||
+        User.find_by(username: assignee_param)
+    end
+    command :assign do |user|
       @updates[:assignee_id] = user.id if user
     end
 
     desc 'Remove assignee'
+    explanation do
+      "Removes assignee #{issuable.assignee.to_reference}."
+    end
     condition do
       issuable.persisted? &&
         issuable.assignee_id? &&
@@ -105,19 +120,26 @@ module SlashCommands
     end
 
     desc 'Set milestone'
+    explanation do |milestone|
+      "Sets the milestone to #{milestone.to_reference}." if milestone
+    end
     params '%"milestone"'
     condition do
       current_user.can?(:"admin_#{issuable.to_ability_name}", project) &&
         project.milestones.active.any?
     end
-    command :milestone do |milestone_param|
-      milestone = extract_references(milestone_param, :milestone).first
-      milestone ||= project.milestones.find_by(title: milestone_param.strip)
-
+    parse_params do |milestone_param|
+      extract_references(milestone_param, :milestone).first ||
+        project.milestones.find_by(title: milestone_param.strip)
+    end
+    command :milestone do |milestone|
       @updates[:milestone_id] = milestone.id if milestone
     end
 
     desc 'Remove milestone'
+    explanation do
+      "Removes #{issuable.milestone.to_reference(format: :name)} milestone."
+    end
     condition do
       issuable.persisted? &&
         issuable.milestone_id? &&
@@ -128,6 +150,11 @@ module SlashCommands
     end
 
     desc 'Add label(s)'
+    explanation do |labels_param|
+      labels = find_label_references(labels_param)
+
+      "Adds #{labels.join(' ')} #{'label'.pluralize(labels.count)}." if labels.any?
+    end
     params '~label1 ~"label 2"'
     condition do
       available_labels = LabelsFinder.new(current_user, project_id: project.id).execute
@@ -147,6 +174,14 @@ module SlashCommands
     end
 
     desc 'Remove all or specific label(s)'
+    explanation do |labels_param = nil|
+      if labels_param.present?
+        labels = find_label_references(labels_param)
+        "Removes #{labels.join(' ')} #{'label'.pluralize(labels.count)}." if labels.any?
+      else
+        'Removes all labels.'
+      end
+    end
     params '~label1 ~"label 2"'
     condition do
       issuable.persisted? &&
@@ -169,6 +204,10 @@ module SlashCommands
     end
 
     desc 'Replace all label(s)'
+    explanation do |labels_param|
+      labels = find_label_references(labels_param)
+      "Replaces all labels with #{labels.join(' ')} #{'label'.pluralize(labels.count)}." if labels.any?
+    end
     params '~label1 ~"label 2"'
     condition do
       issuable.persisted? &&
@@ -187,6 +226,7 @@ module SlashCommands
     end
 
     desc 'Add a todo'
+    explanation 'Adds a todo.'
     condition do
       issuable.persisted? &&
         !TodoService.new.todo_exist?(issuable, current_user)
@@ -196,6 +236,7 @@ module SlashCommands
     end
 
     desc 'Mark todo as done'
+    explanation 'Marks todo as done.'
     condition do
       issuable.persisted? &&
         TodoService.new.todo_exist?(issuable, current_user)
@@ -205,6 +246,9 @@ module SlashCommands
     end
 
     desc 'Subscribe'
+    explanation do
+      "Subscribes to this #{issuable.to_ability_name.humanize(capitalize: false)}."
+    end
     condition do
       issuable.persisted? &&
         !issuable.subscribed?(current_user, project)
@@ -214,6 +258,9 @@ module SlashCommands
     end
 
     desc 'Unsubscribe'
+    explanation do
+      "Unsubscribes from this #{issuable.to_ability_name.humanize(capitalize: false)}."
+    end
     condition do
       issuable.persisted? &&
         issuable.subscribed?(current_user, project)
@@ -223,18 +270,23 @@ module SlashCommands
     end
 
     desc 'Set due date'
+    explanation do |due_date|
+      "Sets the due date to #{due_date.to_s(:medium)}." if due_date
+    end
     params '<in 2 days | this Friday | December 31st>'
     condition do
       issuable.respond_to?(:due_date) &&
         current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
-    command :due do |due_date_param|
-      due_date = Chronic.parse(due_date_param).try(:to_date)
-
+    parse_params do |due_date_param|
+      Chronic.parse(due_date_param).try(:to_date)
+    end
+    command :due do |due_date|
       @updates[:due_date] = due_date if due_date
     end
 
     desc 'Remove due date'
+    explanation 'Removes the due date.'
     condition do
       issuable.persisted? &&
         issuable.respond_to?(:due_date) &&
@@ -245,8 +297,11 @@ module SlashCommands
       @updates[:due_date] = nil
     end
 
-    desc do
-      "Toggle the Work In Progress status"
+    desc 'Toggle the Work In Progress status'
+    explanation do
+      verb = issuable.work_in_progress? ? 'Unmarks' : 'Marks'
+      noun = issuable.to_ability_name.humanize(capitalize: false)
+      "#{verb} this #{noun} as Work In Progress."
     end
     condition do
       issuable.persisted? &&
@@ -257,45 +312,72 @@ module SlashCommands
       @updates[:wip_event] = issuable.work_in_progress? ? 'unwip' : 'wip'
     end
 
-    desc 'Toggle emoji reward'
+    desc 'Toggle emoji award'
+    explanation do |name|
+      "Toggles :#{name}: emoji award." if name
+    end
     params ':emoji:'
     condition do
       issuable.persisted?
     end
-    command :award do |emoji|
-      name = award_emoji_name(emoji)
+    parse_params do |emoji_param|
+      match = emoji_param.match(Banzai::Filter::EmojiFilter.emoji_pattern)
+      match[1] if match
+    end
+    command :award do |name|
       if name && issuable.user_can_award?(current_user, name)
         @updates[:emoji_award] = name
       end
     end
 
     desc 'Set time estimate'
+    explanation do |time_estimate|
+      time_estimate = Gitlab::TimeTrackingFormatter.output(time_estimate)
+
+      "Sets time estimate to #{time_estimate}." if time_estimate
+    end
     params '<1w 3d 2h 14m>'
     condition do
       current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
-    command :estimate do |raw_duration|
-      time_estimate = Gitlab::TimeTrackingFormatter.parse(raw_duration)
-
+    parse_params do |raw_duration|
+      Gitlab::TimeTrackingFormatter.parse(raw_duration)
+    end
+    command :estimate do |time_estimate|
       if time_estimate
         @updates[:time_estimate] = time_estimate
       end
     end
 
     desc 'Add or substract spent time'
+    explanation do |time_spent|
+      if time_spent
+        if time_spent > 0
+          verb = 'Adds'
+          value = time_spent
+        else
+          verb = 'Substracts'
+          value = -time_spent
+        end
+
+        "#{verb} #{Gitlab::TimeTrackingFormatter.output(value)} spent time."
+      end
+    end
     params '<1h 30m | -1h 30m>'
     condition do
       current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
     end
-    command :spend do |raw_duration|
-      time_spent = Gitlab::TimeTrackingFormatter.parse(raw_duration)
-
+    parse_params do |raw_duration|
+      Gitlab::TimeTrackingFormatter.parse(raw_duration)
+    end
+    command :spend do |time_spent|
       if time_spent
         @updates[:spend_time] = { duration: time_spent, user: current_user }
       end
     end
 
     desc 'Remove time estimate'
+    explanation 'Removes time estimate.'
     condition do
       issuable.persisted? &&
         current_user.can?(:"admin_#{issuable.to_ability_name}", project)
@@ -305,6 +387,7 @@ module SlashCommands
     end
 
     desc 'Remove spent time'
+    explanation 'Removes spent time.'
     condition do
       issuable.persisted? &&
         current_user.can?(:"admin_#{issuable.to_ability_name}", project)
@@ -318,19 +401,28 @@ module SlashCommands
     params '@user'
     command :cc
 
-    desc 'Defines target branch for MR'
+    desc 'Define target branch for MR'
+    explanation do |branch_name|
+      "Sets target branch to #{branch_name}."
+    end
     params '<Local branch name>'
     condition do
       issuable.respond_to?(:target_branch) &&
         (current_user.can?(:"update_#{issuable.to_ability_name}", issuable) ||
           issuable.new_record?)
     end
-    command :target_branch do |target_branch_param|
-      branch_name = target_branch_param.strip
+    parse_params do |target_branch_param|
+      target_branch_param.strip
+    end
+    command :target_branch do |branch_name|
       @updates[:target_branch] = branch_name if project.repository.branch_names.include?(branch_name)
     end
 
     desc 'Move issue from one column of the board to another'
+    explanation do |target_list_name|
+      label = find_label_references(target_list_name).first
+      "Moves issue to #{label} column in the board." if label
+    end
     params '~"Target column"'
     condition do
       issuable.is_a?(Issue) &&
@@ -352,11 +444,35 @@ module SlashCommands
       end
     end
 
-    def find_label_ids(labels_param)
-      label_ids_by_reference = extract_references(labels_param, :label).map(&:id)
-      labels_ids_by_name = LabelsFinder.new(current_user, project_id: project.id, name: labels_param.split).execute.select(:id)
+    def find_labels(labels_param)
+      extract_references(labels_param, :label) |
+        LabelsFinder.new(current_user, project_id: project.id, name: labels_param.split).execute
+    end
 
-      label_ids_by_reference | labels_ids_by_name
+    def find_label_references(labels_param)
+      find_labels(labels_param).map(&:to_reference)
+    end
+
+    def find_label_ids(labels_param)
+      find_labels(labels_param).map(&:id)
+    end
+
+    def explain_commands(commands, opts)
+      commands.map do |name, arg|
+        definition = self.class.definition_by_name(name)
+        next unless definition
+
+        definition.explain(self, opts, arg)
+      end.compact
+    end
+
+    def extract_updates(commands, opts)
+      commands.each do |name, arg|
+        definition = self.class.definition_by_name(name)
+        next unless definition
+
+        definition.execute(self, opts, arg)
+      end
     end
 
     def extract_references(arg, type)
@@ -366,9 +482,13 @@ module SlashCommands
       ext.references(type)
     end
 
-    def award_emoji_name(emoji)
-      match = emoji.match(Banzai::Filter::EmojiFilter.emoji_pattern)
-      match[1] if match
+    def context
+      {
+        issuable: issuable,
+        current_user: current_user,
+        project: project,
+        params: params
+      }
     end
   end
 end

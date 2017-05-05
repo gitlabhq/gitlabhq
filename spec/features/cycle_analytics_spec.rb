@@ -62,6 +62,25 @@ feature 'Cycle Analytics', feature: true, js: true do
         expect_issue_to_be_present
       end
     end
+
+    context "when my preferred language is Spanish" do
+      before do
+        user.update_attribute(:preferred_language, 'es')
+
+        project.team << [user, :master]
+        login_as(user)
+        visit namespace_project_cycle_analytics_path(project.namespace, project)
+        wait_for_ajax
+      end
+
+      it 'shows the content in Spanish' do
+        expect(page).to have_content('Estado del Pipeline')
+      end
+
+      it 'resets the language to English' do
+        expect(I18n.locale).to eq(:en)
+      end
+    end
   end
 
   context "as a guest" do

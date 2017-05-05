@@ -972,6 +972,7 @@ ActiveRecord::Schema.define(version: 20170504203205) do
     t.boolean "printing_merge_request_link_enabled", default: true, null: false
     t.string "import_jid"
     t.integer "cached_markdown_version"
+    t.datetime "last_repository_updated_at"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
@@ -980,6 +981,7 @@ ActiveRecord::Schema.define(version: 20170504203205) do
   add_index "projects", ["description"], name: "index_projects_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
   add_index "projects", ["last_activity_at"], name: "index_projects_on_last_activity_at", using: :btree
   add_index "projects", ["last_repository_check_failed"], name: "index_projects_on_last_repository_check_failed", using: :btree
+  add_index "projects", ["last_repository_updated_at"], name: "index_projects_on_last_repository_updated_at", using: :btree
   add_index "projects", ["name"], name: "index_projects_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
   add_index "projects", ["namespace_id"], name: "index_projects_on_namespace_id", using: :btree
   add_index "projects", ["path"], name: "index_projects_on_path", using: :btree
@@ -1327,6 +1329,7 @@ ActiveRecord::Schema.define(version: 20170504203205) do
     t.boolean "notified_of_own_activity"
     t.boolean "require_two_factor_authentication_from_group", default: false, null: false
     t.integer "two_factor_grace_period", default: 48, null: false
+    t.string "preferred_language"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
