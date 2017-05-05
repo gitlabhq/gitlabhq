@@ -55,6 +55,7 @@ var config = {
     terminal:             './terminal/terminal_bundle.js',
     u2f:                  ['vendor/u2f'],
     users:                './users/users_bundle.js',
+    raven:                './raven/index.js',
   },
 
   output: {
