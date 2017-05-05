@@ -41,7 +41,7 @@ module Projects
     end
 
     def project_ids_batch
-      Project.connection.execute(
+      Project.connection.select_values(
         <<-SQL
           SELECT id
           FROM projects
@@ -53,7 +53,7 @@ module Projects
           )
           LIMIT #{BATCH_SIZE}
       SQL
-      ).to_a.flatten
+      )
     end
 
     def service_hash
