@@ -24,20 +24,23 @@ module Projects
       loop do
         batch = project_ids_batch
 
-        bulk_create_from_template(batch)
+        bulk_create_from_template(batch) unless batch.empty?
 
         break if batch.size < BATCH_SIZE
       end
     end
 
     def bulk_create_from_template(batch)
-      service_hash_list = batch.map do |project_id|
-        service_hash.merge('project_id' => project_id)
+      service_list = batch.map do |project_id|
+        service_hash.merge('project_id' => project_id).values
       end
 
-      Project.transaction do
-        Service.create!(service_hash_list)
-      end
+      # Project.transaction do
+      #   Service.create!(service_hash_list)
+      # end
+      Gitlab::SQL::BulkInsert.new(service_hash.keys + ['project_id'],
+                                  service_list,
+                                  'services').execute
     end
 
     def project_ids_batch
@@ -57,7 +60,17 @@ module Projects
     end
 
     def service_hash
-      @service_hash ||= @template.as_json(methods: :type).except('id', 'template')
+      @service_hash ||=
+        begin
+          template_hash = @template.as_json(methods: :type).except('id', 'template', 'project_id')
+
+          template_hash.each_with_object({}) do |(key, value), service_hash|
+            value = value.is_a?(Hash) ? value.to_json : value
+            key = Gitlab::Database.postgresql? ? "\"#{key}\"" : "`#{key}`"
+
+            service_hash[key] = ActiveRecord::Base.sanitize(value)
+          end
+        end
     end
   end
 end
