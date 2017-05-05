@@ -7,6 +7,7 @@ module Ci
 
     belongs_to :project
     belongs_to :owner, class_name: 'User'
+    has_one :last_pipeline, class_name: 'Ci::Pipeline'
     has_many :pipelines
 
     validates :cron, unless: :importing_or_inactive?, cron: true, presence: { unless: :importing_or_inactive? }
@@ -26,10 +27,6 @@ module Ci
     def can_take_ownership?(current_user)
       Ability.allowed?(current_user, :update_pipeline_schedule, project) &&
         !owned_by?(current_user)
-    end
-
-    def last_pipeline
-      pipelines.last
     end
 
     def inactive?

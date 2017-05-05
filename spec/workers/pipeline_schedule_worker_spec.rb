@@ -3,8 +3,8 @@ require 'spec_helper'
 describe PipelineScheduleWorker do
   subject { described_class.new.perform }
 
-  let(:project) { create(:project, :repository) }
-  let(:user) { create(:user) }
+  set(:project) { create(:project, :repository) }
+  set(:user) { create(:user) }
 
   let!(:pipeline_schedule) do
     create(:ci_pipeline_schedule, :nightly, project: project, owner: user)
@@ -24,13 +24,18 @@ describe PipelineScheduleWorker do
     end
 
     it 'creates a new pipeline' do
-      expect { subject }.to change { project.pipelines.count }
+      expect { subject }.to change { project.pipelines.count }.by(1)
     end
 
     it 'updates the next_run_at field' do
       subject
 
       expect(pipeline_schedule.reload.next_run_at).to be > Time.now
+    end
+
+    it 'sets the schedule on the pipeline' do
+      subject
+      expect(project.pipelines.last.pipeline_schedule).to eq(pipeline_schedule)
     end
   end
 

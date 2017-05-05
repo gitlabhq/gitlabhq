@@ -10,6 +10,7 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
     @scope = params[:scope]
     @all_schedules = PipelineSchedulesFinder.new(@project).execute
     @schedules = PipelineSchedulesFinder.new(@project).execute(scope: params[:scope])
+      .includes(:last_pipeline)
   end
 
   def new
