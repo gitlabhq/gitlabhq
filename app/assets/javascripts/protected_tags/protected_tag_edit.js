@@ -100,14 +100,14 @@ export default class ProtectedTagEdit {
           type: LEVEL_TYPES.GROUP,
           persisted: true,
         };
-      } else {
-        return {
-          id: currentItem.id,
-          access_level: currentItem.access_level,
-          type: LEVEL_TYPES.ROLE,
-          persisted: true,
-        };
       }
+
+      return {
+        id: currentItem.id,
+        access_level: currentItem.access_level,
+        type: LEVEL_TYPES.ROLE,
+        persisted: true,
+      };
     });
 
     this[dropdownName].setSelectedItems(itemsToAdd);

@@ -1,12 +1,10 @@
-/* eslint-disable no-param-reassign, no-underscore-dangle, no-continue,
-                  guard-for-in, no-restricted-syntax, class-methods-use-this */
+/* eslint-disable no-param-reassign, no-underscore-dangle, class-methods-use-this */
 /* global Flash */
 
-import { LEVEL_TYPES } from './';
+import { ACCESS_LEVELS, LEVEL_TYPES } from './';
 
 export default class ProtectedTagAccessDropdown {
   constructor(options) {
-    this.createAccessLevel = 'create_access_levels';
     const {
       $dropdown,
       accessLevel,
@@ -26,7 +24,7 @@ export default class ProtectedTagAccessDropdown {
     this.setSelectedItems([]);
     this.persistPreselectedItems();
 
-    if (this.createAccessLevel === this.accessLevel) {
+    if (ACCESS_LEVELS.CREATE === this.accessLevel) {
       this.isAllowedToCreateDropdown = true;
       this.noOneObj = this.accessLevelsData[2];
     }
@@ -35,7 +33,6 @@ export default class ProtectedTagAccessDropdown {
   }
 
   initDropdown() {
-    const self = this;
     const { onSelect, onHide } = this.options;
     this.$dropdown.glDropdown({
       data: this.getData.bind(this),
@@ -50,37 +47,37 @@ export default class ProtectedTagAccessDropdown {
           onHide();
         }
       },
-      clicked(item, $el, e) {
+      clicked: (item, $el, e) => {
         e.preventDefault();
 
         if ($el.is('.is-active')) {
-          if (self.isAllowedToCreateDropdown) {
-            if (item.id === self.noOneObj.id) {
-              self.accessLevelsData.forEach((level) => {
+          if (this.isAllowedToCreateDropdown) {
+            if (item.id === this.noOneObj.id) {
+              this.accessLevelsData.forEach((level) => {
                 if (level.id !== item.id) {
-                  self.removeSelectedItem(level);
+                  this.removeSelectedItem(level);
                 }
               });
 
-              self.$wrap.find(`.item-${item.type}`).removeClass('is-active');
+              this.$wrap.find(`.item-${item.type}`).removeClass('is-active');
             } else {
-              const $noOne = self.$wrap.find(`.is-active-item-${item.type}:contains('No one')`);
+              const $noOne = this.$wrap.find(`.is-active-item-${item.type}:contains('No one')`);
               if ($noOne.length) {
                 $noOne.removeClass('is-active');
-                self.removeSelectedItem(self.noOneObj);
+                this.removeSelectedItem(this.noOneObj);
               }
             }
 
             $el.addClass(`is-active item-${item.type}`);
           }
 
-          self.addSelectedItem(item);
+          this.addSelectedItem(item);
         } else {
-          self.removeSelectedItem(item);
+          this.removeSelectedItem(item);
         }
 
         if (onSelect) {
-          onSelect(item, $el, self);
+          onSelect(item, $el, this);
         }
       },
     });
@@ -89,7 +86,7 @@ export default class ProtectedTagAccessDropdown {
   persistPreselectedItems() {
     const itemsToPreselect = this.$dropdown.data('preselectedItems');
 
-    if (typeof itemsToPreselect === 'undefined' || !itemsToPreselect.length) {
+    if (!itemsToPreselect || !itemsToPreselect.length) {
       return;
     }
 
@@ -148,12 +145,11 @@ export default class ProtectedTagAccessDropdown {
     let index = -1;
     const selectedItems = this.getAllSelectedItems();
 
-    for (let i = 0; i < selectedItems.length; i += 1) {
-      if (selectedItem.id === selectedItems[i].access_level) {
+    selectedItems.forEach((item, i) => {
+      if (selectedItem.id === item.access_level) {
         index = i;
-        continue;
       }
-    }
+    });
 
     if (index !== -1 && selectedItems[index]._destroy) {
       delete selectedItems[index]._destroy;
@@ -165,9 +161,9 @@ export default class ProtectedTagAccessDropdown {
     if (selectedItem.type === LEVEL_TYPES.USER) {
       itemToAdd = {
         user_id: selectedItem.id,
-        name: selectedItem.name || '_name1',
-        username: selectedItem.username || '_username1',
-        avatar_url: selectedItem.avatar_url || '_avatar_url1',
+        name: selectedItem.name || '-name1',
+        username: selectedItem.username || '-username1',
+        avatar_url: selectedItem.avatar_url || '-avatar_url1',
         type: LEVEL_TYPES.USER,
       };
     } else if (selectedItem.type === LEVEL_TYPES.ROLE) {
@@ -190,26 +186,24 @@ export default class ProtectedTagAccessDropdown {
     const selectedItems = this.getAllSelectedItems();
 
     // To find itemToDelete on selectedItems, first we need the index
-    for (let i = 0; i < selectedItems.length; i += 1) {
-      const currentItem = selectedItems[i];
-
-      if (currentItem.type !== itemToDelete.type) {
-        continue;
+    selectedItems.every((item, i) => {
+      if (item.type !== itemToDelete.type) {
+        return true;
       }
 
-      if (currentItem.type === LEVEL_TYPES.USER &&
-          currentItem.user_id === itemToDelete.id) {
+      if (item.type === LEVEL_TYPES.USER &&
+        item.user_id === itemToDelete.id) {
         index = i;
-      } else if (currentItem.type === LEVEL_TYPES.ROLE &&
-                 currentItem.access_level === itemToDelete.id) {
+      } else if (item.type === LEVEL_TYPES.ROLE &&
+        item.access_level === itemToDelete.id) {
         index = i;
-      } else if (currentItem.type === LEVEL_TYPES.GROUP &&
-                 currentItem.group_id === itemToDelete.id) {
+      } else if (item.type === LEVEL_TYPES.GROUP &&
+        item.group_id === itemToDelete.id) {
         index = i;
       }
 
-      if (index > -1) { break; }
-    }
+      return index < 0; // Break once we have index set
+    });
 
     // if ItemToDelete is not really selected do nothing
     if (index === -1) {
@@ -234,13 +228,13 @@ export default class ProtectedTagAccessDropdown {
     const label = [];
 
     if (currentItems.length) {
-      for (const levelType in LEVEL_TYPES) {
+      Object.keys(LEVEL_TYPES).forEach((levelType) => {
         const typeName = LEVEL_TYPES[levelType];
         const numberOfTypes = types[typeName] ? types[typeName].length : 0;
         const text = numberOfTypes === 1 ? typeName : `${typeName}s`;
 
         label.push(`${numberOfTypes} ${text}`);
-      }
+      });
     } else {
       label.push(this.defaultLabel);
     }
@@ -259,7 +253,7 @@ export default class ProtectedTagAccessDropdown {
           // Cache groups to avoid multiple requests
           this.groups = groupsResponse;
           callback(this.consolidateData(usersResponse, groupsResponse));
-        });
+        }).error(() => new Flash('Failed to load groups.'));
       }
     }).error(() => new Flash('Failed to load users.'));
   }
@@ -267,9 +261,7 @@ export default class ProtectedTagAccessDropdown {
   consolidateData(usersResponse, groupsResponse) {
     let consolidatedData = [];
     const map = [];
-    let roles = [];
     const users = [];
-    let groups = [];
     const selectedItems = this.getSelectedItems();
 
     // ID property is handled differently locally from the server
@@ -289,7 +281,7 @@ export default class ProtectedTagAccessDropdown {
     /*
      * Build groups
      */
-    groups = groupsResponse.map((group) => {
+    const groups = groupsResponse.map((group) => {
       group.type = LEVEL_TYPES.GROUP;
       return group;
     });
@@ -297,7 +289,7 @@ export default class ProtectedTagAccessDropdown {
     /*
      * Build roles
      */
-    roles = this.accessLevelsData.map((level) => {
+    const roles = this.accessLevelsData.map((level) => {
       level.type = LEVEL_TYPES.ROLE;
       return level;
     });
@@ -305,35 +297,33 @@ export default class ProtectedTagAccessDropdown {
     /*
      * Build users
      */
-    for (let x = 0; x < selectedItems.length; x += 1) {
-      const current = selectedItems[x];
-
-      if (current.type !== LEVEL_TYPES.USER) { continue; }
+    selectedItems.forEach((item) => {
+      if (item.type !== LEVEL_TYPES.USER) {
+        return;
+      }
 
       // Collect selected users
       users.push({
-        id: current.user_id,
-        name: current.name,
-        username: current.username,
-        avatar_url: current.avatar_url,
+        id: item.user_id,
+        name: item.name,
+        username: item.username,
+        avatar_url: item.avatar_url,
         type: LEVEL_TYPES.USER,
       });
 
       // Save identifiers for easy-checking more later
-      map.push(LEVEL_TYPES.USER + current.user_id);
-    }
+      map.push(LEVEL_TYPES.USER + item.user_id);
+    });
 
     // Has to be checked against server response
     // because the selected item can be in filter results
-    for (let i = 0; i < usersResponse.length; i += 1) {
-      const u = usersResponse[i];
-
+    usersResponse.forEach((response) => {
       // Add is it has not been added
-      if (map.indexOf(LEVEL_TYPES.USER + u.id) === -1) {
-        u.type = LEVEL_TYPES.USER;
-        users.push(u);
+      if (map.indexOf(LEVEL_TYPES.USER + response.id) === -1) {
+        response.type = LEVEL_TYPES.USER;
+        users.push(response);
       }
-    }
+    });
 
     if (roles.length) {
       consolidatedData = consolidatedData.concat([{ header: 'Roles' }], roles);
@@ -387,28 +377,42 @@ export default class ProtectedTagAccessDropdown {
 
   renderRow(item) {
     let criteria = {};
+    let groupRowEl;
 
-    // Dectect if the current item is already saved so we can add
+    // Detect if the current item is already saved so we can add
     // the `is-active` class so the item looks as marked
-    if (item.type === LEVEL_TYPES.USER) {
-      criteria = { user_id: item.id };
-    } else if (item.type === LEVEL_TYPES.ROLE) {
-      criteria = { access_level: item.id };
-    } else if (item.type === LEVEL_TYPES.GROUP) {
-      criteria = { group_id: item.id };
+    switch (item.type) {
+      case LEVEL_TYPES.USER:
+        criteria = { user_id: item.id };
+        break;
+      case LEVEL_TYPES.ROLE:
+        criteria = { access_level: item.id };
+        break;
+      case LEVEL_TYPES.GROUP:
+        criteria = { group_id: item.id };
+        break;
+      default:
+        break;
     }
 
     const isActive = _.findWhere(this.getSelectedItems(), criteria) ? 'is-active' : '';
 
-    if (item.type === LEVEL_TYPES.USER) {
-      return this.userRowHtml(item, isActive);
-    } else if (item.type === LEVEL_TYPES.ROLE) {
-      return this.roleRowHtml(item, isActive);
-    } else if (item.type === LEVEL_TYPES.GROUP) {
-      return this.groupRowHtml(item, isActive);
+    switch (item.type) {
+      case LEVEL_TYPES.USER:
+        groupRowEl = this.userRowHtml(item, isActive);
+        break;
+      case LEVEL_TYPES.ROLE:
+        groupRowEl = this.roleRowHtml(item, isActive);
+        break;
+      case LEVEL_TYPES.GROUP:
+        groupRowEl = this.groupRowHtml(item, isActive);
+        break;
+      default:
+        groupRowEl = '';
+        break;
     }
 
-    return '';
+    return groupRowEl;
   }
 
   userRowHtml(user, isActive) {
