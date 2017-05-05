@@ -1,5 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, one-var, one-var-declaration-per-line, prefer-rest-params, max-len, vars-on-top, wrap-iife, no-unused-vars, quotes, no-shadow, no-cond-assign, prefer-arrow-callback, no-return-assign, no-else-return, camelcase, comma-dangle, no-lonely-if, guard-for-in, no-restricted-syntax, consistent-return, prefer-template, no-param-reassign, no-loop-func, no-mixed-operators */
 /* global fuzzaldrinPlus */
+import _ from 'underscore';
 
 var GitLabDropdown, GitLabDropdownFilter, GitLabDropdownRemote,
   bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; },
@@ -95,7 +96,7 @@ GitLabDropdownFilter = (function() {
           //     { prop: 'def' }
           //   ]
           // }
-          if (gl.utils.isObject(data)) {
+          if (_.isObject(data)) {
             results = {};
             for (key in data) {
               group = data[key];
@@ -391,7 +392,7 @@ GitLabDropdown = (function() {
       html = [this.noResults()];
     } else {
       // Handle array groups
-      if (gl.utils.isObject(data)) {
+      if (_.isObject(data)) {
         html = [];
         for (name in data) {
           groupData = data[name];
