@@ -10,42 +10,47 @@ __Note__: The password digests can be obtained by running: `echo -n 'PASSWORD + 
 ```ruby
 postgresql['listen_address'] = '0.0.0.0'
 postgresql['trust_auth_cidr_addresses'] = ['127.0.0.1/32']
-postgresql['md5_auth_cidr_addresses'] = [CIDR]
-```
-CIDR should be the cidr address of the pgbouncer server that will be connecting to the database.
-```ruby
+
+# CIDR should be the cidr address of the pgbouncer server that will be connecting to the database.
+postgresql['md5_auth_cidr_addresses'] = ['CIDR']
+
+# The default for postgresql['sql_user'] is `gitlab`, this is the account that the GitLab application uses to connect to the database.
 postgresql['sql_user_password'] = 'PASSWORD_HASH'
+
+# The default for `postgresql['pgbouncer_user']` is `pgbouncer`, this will be the user that the pgbouncer service uses to authenticate to the database.
+# Both `postgresql['pgbouncer_user']` and `postgresql['pgbouncer_user_password']` should match what is set in the next step for the pgbouncer server.
 postgresql['pgbouncer_user_password'] = 'PASSWORD_HASH'
 ```
-The default for postgresql['sql_user'] is `gitlab`, this is the account that the GitLab application uses to connect to the database.
-
-The default for `postgresql['pgbouncer_user']` is `pgbouncer`, this will be the user that the pgbouncer service uses to authenticate to the database.
-Both `postgresql['pgbouncer_user']` and `postgresql['pgbouncer_user_password']` should match what is set in the next step for the pgbouncer server.
-
 
 ### On the pgbouncer server, the following attributes should be set
 ```ruby
 pgbouncer['enable'] = true
 pgbouncer['databases'] = {
+  # By default, this is `gitlabhq_production`.
+  # If you've changed `gitlab_rails['gitlabhq_production']` then this needs to be the same value.
   your_database_name: {
     host: HOSTNAME,
+    # The user, and the password hash should be the same as what is on the database server
     user: USERNAME,
     password: PASSWORD_HASH
+  }
 }
 ```
-The user, and the password hash should be the same as what is on the database server
 You can specify multiple databases in `pgbouncer['databases']` if required.
 
-### On the server which will be running unicorn, ensure the following attributes are set:
+### On the server which will be running gitlab-rails, ensure the following attributes are set:
 ```ruby
 gitlab_rails['db_adapter'] = "postgresql"
 gitlab_rails['db_encoding'] = "utf8"
 gitlab_rails['db_host'] = 'IP_OF_PGBOUNCER'
 gitlab_rails['db_port'] = 6432
 gitlab_rails['db_username'] = "gitlab"
+
+# The plain text password you want to use for the database user.
 gitlab_rails['db_password'] = 'PASSWORD'
 ```
-`gitlab_rails['db_password']` should be the plain text password you want to use for the database user. For security purposes, run the following to ensure that `/etc/gitlab/gitlab.rb` cannot be accessed by just anyone:
+
+For security purposes, run the following to ensure that `/etc/gitlab/gitlab.rb` cannot be accessed by just anyone:
 1. `chown root:root /etc/gitlab/gitlab.rb`
 1. `chmod 0600 /etc/gitlab/gitlab.rb`
 
