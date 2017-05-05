@@ -3,6 +3,25 @@
   margin: 24px auto 0;
   position: relative;
 
+  .landing {
+    margin-top: 10px;
+
+    .inner-content {
+      white-space: normal;
+
+      h4,
+      p {
+        margin: 7px 0 0;
+        max-width: 480px;
+        padding: 0 $gl-padding;
+
+        @media (max-width: $screen-sm-min) {
+          margin: 0 auto;
+        }
+      }
+    }
+  }
+
   .col-headers {
     ul {
       margin: 0;
