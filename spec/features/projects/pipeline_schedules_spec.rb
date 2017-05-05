@@ -93,4 +93,48 @@ feature 'Pipeline Schedules', :feature do
       visit namespace_project_pipeline_schedules_path(project.namespace, project, scope: scope)
     end
   end
+
+  describe 'POST /projects/pipeline_schedules/new', focus: true do
+    let!(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
+    let(:scope) { nil }
+    let(:user) { create(:user) }
+
+    before do
+      project.add_master(user)
+      login_as(user)
+      create_pipeline_schedule
+    end
+
+    it 'it creates a new scheduled pipeline' do
+
+    end
+
+    it 'it prevents an invalid form from being submitted' do
+
+    end
+    
+    def create_pipeline_schedule
+      visit new_pipeline_schedule_path(project.namespace, project)
+    end
+  end
+
+  describe 'POST /projects/pipelines_schedules/{id}/edit' do
+    it 'it displays existing properties' do
+
+    end
+
+    it 'edits the scheduled pipeline' do
+
+    end
+  end
+  
+
+  def create_pipeline_schedule
+    visit edit_pipeline_schedule_path(project.namespace, project)
+  end
+  
+  def edit_pipeline_schedule
+    visit edit_pipeline_schedule_path(pipeline_schedule)
+  end
+  
 end
