@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 8.17.6 (2017-05-05)
+
+- Enforce project features when searching blobs and wikis.
+- Fixed branches dropdown rendering branch names as HTML.
+- Make Asciidoc & other markup go through pipeline to prevent XSS.
+- Validate URLs in markdown using URI to detect the host correctly.
+- Fix for XSS in project import view caused by Hamlit filter usage.
+- Sanitize submodule URLs before linking to them in the file tree view.
+- Refactor snippets finder & dont return internal snippets for external users.
+- Fix snippets visibility for show action - external users can not see internal snippets.
+
 ## 8.17.5 (2017-04-05)
 
 - Don’t show source project name when user does not have access.
