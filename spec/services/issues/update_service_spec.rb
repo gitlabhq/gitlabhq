@@ -132,6 +132,17 @@ describe Issues::UpdateService, services: true do
       end
     end
 
+    context 'when description changed' do
+      it 'creates system note about description change' do
+        update_issue(description: 'Changed description')
+
+        note = find_note('changed the description')
+
+        expect(note).not_to be_nil
+        expect(note.note).to eq('changed the description')
+      end
+    end
+
     context 'when issue turns confidential' do
       let(:opts) do
         {

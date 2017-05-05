@@ -301,7 +301,7 @@ describe SystemNoteService, services: true do
       end
 
       it 'sets the note text' do
-        expect(subject.note).to eq 'changed the description'
+        expect(subject.note).to eq('changed the description')
       end
     end
   end
