@@ -80,7 +80,7 @@ module Ci
     # this updates only when there are data that needs to be updated, there are two groups with no retried flag
     def update_retried
       # find the latest builds for each name
-      latest_builds = pipeline.builds.latest.
+      latest_builds = pipeline.builds.latest
         .group(:name)
         .having('count(*) > 1')
         .pluck('max(id)', 'count(*)')
