@@ -336,6 +336,13 @@ ul.notes {
   a {
     color: inherit;
     @include gl-link-hover-focus-state;
+
+    &:focus,
+    &:hover {
+      .note-headline-light {
+        @include gl-link-hover-focus-state-rules;
+      }
+    }
   }
 
   .author_link {
