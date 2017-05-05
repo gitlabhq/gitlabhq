@@ -727,3 +727,42 @@
     }
   }
 }
+
+.add-issuable-form-input-wrapper {
+  height: auto;
+  padding: $gl-vert-padding $gl-vert-padding 0 $gl-input-padding;
+
+  &.focus,
+  &.focus:hover {
+    border-color: $dropdown-input-focus-border;
+    box-shadow: 0 0 4px $search-input-focus-shadow-color;
+  }
+}
+
+.add-issuable-form-input-token-list {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  margin-bottom: 0;
+  padding-left: 0;
+}
+
+.add-issuable-form-token-list-item {
+  margin-bottom: $gl-vert-padding;
+  margin-right: 1em;
+}
+
+.add-issuable-form-input-list-item {
+  flex: 1;
+  min-width: 200px;
+  margin-bottom: $gl-vert-padding;
+}
+
+.add-issuable-form-input {
+  width: 100%;
+  border: 0;
+
+  &:focus {
+    outline: none;
+  }
+}
