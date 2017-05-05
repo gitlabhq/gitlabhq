@@ -14,8 +14,11 @@
     }
   }
 
+  .cron-interval-input-wrapper {
+    padding-left: 0;
+  }
+
   .cron-interval-input {
-    width: 75%;
     margin: 10px 10px 0 0;
   }
 
@@ -25,6 +28,7 @@
   }
 
   .cron-unset-status {
+    padding-top: 16px;
     color: $gl-text-color-secondary;
     font-size: 12px;
     font-weight: 600;

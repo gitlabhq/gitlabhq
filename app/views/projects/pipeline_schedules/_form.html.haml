@@ -8,7 +8,7 @@
       = f.label :description, 'Description', class: 'label-light'
       = f.text_field :description, class: 'form-control', required: true, autofocus: true, placeholder: 'Provide a short description for this pipeline'
   .form-group
-    .col-md-8
+    .col-md-12
       = f.label :cron, 'Interval Pattern', class: 'label-light'
       #interval-pattern-input{ data: { initial_interval: @schedule.cron }}
   .form-group

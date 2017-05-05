@@ -112,17 +112,18 @@ export default {
         Every month (on the 1st at 4:00am)
       </label>
 
-      <input
-        class="form-control inline cron-interval-input"
-        type="text"
-        placeholder="Define a custom pattern with cron syntax"
-        required="true"
-        v-model="cronInterval"
-        :name="inputNameAttribute"
-        :disabled="!isEditable"
-      />
-
-      <span class="cron-unset-status" v-if="showUnsetWarning">
+      <div class="cron-interval-input-wrapper col-md-6">
+        <input
+          class="form-control inline cron-interval-input"
+          type="text"
+          placeholder="Define a custom pattern with cron syntax"
+          required="true"
+          v-model="cronInterval"
+          :name="inputNameAttribute"
+          :disabled="!isEditable"
+        />
+      </div>
+      <span class="cron-unset-status col-md-3" v-if="showUnsetWarning">
         Schedule not yet set
       </span>
     </div>
