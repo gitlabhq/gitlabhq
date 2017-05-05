@@ -17,7 +17,7 @@ class Namespace < ActiveRecord::Base
 
   has_many :projects, dependent: :destroy
   has_many :project_statistics
-  belongs_to :owner, class_name: "User"
+  belongs_to :owner, class_name: "User", inverse_of: :namespace
 
   belongs_to :parent, class_name: "Namespace"
   has_many :children, class_name: "Namespace", foreign_key: :parent_id

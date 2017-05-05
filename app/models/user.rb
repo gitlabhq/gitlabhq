@@ -66,7 +66,7 @@ class User < ActiveRecord::Base
   #
 
   # Namespace for personal projects
-  has_one :namespace, -> { where type: nil }, dependent: :destroy, foreign_key: :owner_id, autosave: true
+  has_one :namespace, -> { where type: nil }, dependent: :destroy, foreign_key: :owner_id, autosave: true, inverse_of: :owner
 
   # Profile
   has_many :keys, -> do
@@ -150,11 +150,11 @@ class User < ActiveRecord::Base
   before_validation :sanitize_attrs
   before_validation :set_notification_email, if: ->(user) { user.email_changed? }
   before_validation :set_public_email, if: ->(user) { user.public_email_changed? }
+  before_validation :ensure_namespace_correct
 
   after_update :update_emails_with_primary_email, if: ->(user) { user.email_changed? }
   before_save :ensure_authentication_token, :ensure_incoming_email_token
   before_save :ensure_external_user_rights
-  after_save :ensure_namespace_correct
   after_initialize :set_projects_limit
   after_destroy :post_destroy_hook
 
@@ -177,6 +177,7 @@ class User < ActiveRecord::Base
   alias_attribute :private_token, :authentication_token
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
+  delegate :full_path, to: :namespace, allow_nil: true
 
   state_machine :state, initial: :active do
     event :block do
@@ -379,10 +380,6 @@ class User < ActiveRecord::Base
         u.name = 'Ghost User'
       end
     end
-  end
-
-  def full_path
-    username
   end
 
   def self.internal_attributes
@@ -796,11 +793,15 @@ class User < ActiveRecord::Base
   end
 
   def ensure_namespace_correct
-    # Ensure user has namespace
-    create_namespace!(path: username, name: username) unless namespace
-
-    if username_changed?
-      namespace.update_attributes(path: username, name: username)
+    if namespace
+      # Ensure namespace path and name always match username
+      if namespace.path != username
+        namespace.path = username
+        namespace.name = username
+      end
+    else
+      # Ensure user has namespace
+      build_namespace(path: username, name: username)
     end
   end
 
