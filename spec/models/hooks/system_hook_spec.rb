@@ -1,6 +1,19 @@
 require "spec_helper"
 
 describe SystemHook, models: true do
+  context 'default attributes' do
+    let(:system_hook) { build(:system_hook) }
+
+    it 'sets defined default parameters' do
+      attrs = {
+        push_events: false,
+        repository_update_events: true,
+        enable_ssl_verification: true
+      }
+      expect(system_hook).to have_attributes(attrs)
+    end
+  end
+
   describe "execute" do
     let(:system_hook) { create(:system_hook) }
     let(:user)        { create(:user) }
