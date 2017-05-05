@@ -2,6 +2,7 @@
 class Projects::BlobController < Projects::ApplicationController
   include ExtractsPath
   include CreatesCommit
+  include RendersBlob
   include ActionView::Helpers::SanitizeHelper
 
   # Raised when given an invalid file path
@@ -34,8 +35,20 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def show
-    environment_params = @repository.branch_exists?(@ref) ? { ref: @ref } : { commit: @commit }
-    @environment = EnvironmentsFinder.new(@project, current_user, environment_params).execute.last
+    override_max_blob_size(@blob)
+
+    respond_to do |format|
+      format.html do
+        environment_params = @repository.branch_exists?(@ref) ? { ref: @ref } : { commit: @commit }
+        @environment = EnvironmentsFinder.new(@project, current_user, environment_params).execute.last
+
+        render 'show'
+      end
+
+      format.json do
+        render_blob_json(@blob)
+      end
+    end
   end
 
   def edit
@@ -96,7 +109,7 @@ class Projects::BlobController < Projects::ApplicationController
   private
 
   def blob
-    @blob ||= Blob.decorate(@repository.blob_at(@commit.id, @path))
+    @blob ||= Blob.decorate(@repository.blob_at(@commit.id, @path), @project)
 
     if @blob
       @blob

@@ -14,7 +14,7 @@
             %span
               Members
         - if can_edit
-          = nav_link(controller: :integrations) do
+          = nav_link(controller: [:integrations, :services, :hooks]) do
             = link_to project_settings_integrations_path(@project), title: 'Integrations' do
               %span
                 Integrations
@@ -27,7 +27,8 @@
               = link_to namespace_project_settings_ci_cd_path(@project.namespace, @project), title: 'CI/CD Pipelines' do
                 %span
                   CI/CD Pipelines
-          = nav_link(controller: :pages) do
-            = link_to namespace_project_pages_path(@project.namespace, @project), title: 'Pages' do
-              %span
-                Pages
+          - if Gitlab.config.pages.enabled
+            = nav_link(controller: :pages) do
+              = link_to namespace_project_pages_path(@project.namespace, @project), title: 'Pages' do
+                %span
+                  Pages

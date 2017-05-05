@@ -16,13 +16,10 @@
 
 %hr.clearfix
 
-- if Gitlab.config.pages.enabled
-  = render 'access'
-  = render 'use'
-  - if Gitlab.config.pages.external_http || Gitlab.config.pages.external_https
-    = render 'list'
-  - else
-    = render 'no_domains'
-  = render 'destroy'
+= render 'access'
+= render 'use'
+- if Gitlab.config.pages.external_http || Gitlab.config.pages.external_https
+  = render 'list'
 - else
-  = render 'disabled'
+  = render 'no_domains'
+= render 'destroy'

@@ -46,6 +46,7 @@ export default Vue.component('pipelines-table', {
       isLoading: false,
       hasError: false,
       isMakingRequest: false,
+      updateGraphDropdown: false,
     };
   },
 
@@ -55,7 +56,15 @@ export default Vue.component('pipelines-table', {
     },
 
     shouldRenderEmptyState() {
-      return !this.state.pipelines.length && !this.isLoading;
+      return !this.state.pipelines.length &&
+        !this.isLoading &&
+        !this.hasError;
+    },
+
+    shouldRenderTable() {
+      return !this.isLoading &&
+        this.state.pipelines.length > 0 &&
+        !this.hasError;
     },
   },
 
@@ -98,15 +107,6 @@ export default Vue.component('pipelines-table', {
     eventHub.$on('refreshPipelines', this.fetchPipelines);
   },
 
-  beforeUpdate() {
-    if (this.state.pipelines.length &&
-        this.$children &&
-        !this.isMakingRequest &&
-        !this.isLoading) {
-      this.store.startTimeAgoLoops.call(this, Vue);
-    }
-  },
-
   beforeDestroyed() {
     eventHub.$off('refreshPipelines');
   },
@@ -131,22 +131,32 @@ export default Vue.component('pipelines-table', {
       const pipelines = response.pipelines || response;
       this.store.storePipelines(pipelines);
       this.isLoading = false;
+      this.updateGraphDropdown = true;
     },
 
     errorCallback() {
       this.hasError = true;
       this.isLoading = false;
+      this.updateGraphDropdown = false;
     },
 
     setIsMakingRequest(isMakingRequest) {
       this.isMakingRequest = isMakingRequest;
+
+      if (isMakingRequest) {
+        this.updateGraphDropdown = false;
+      }
     },
   },
 
   template: `
     <div class="content-list pipelines">
-      <div class="realtime-loading" v-if="isLoading">
-        <i class="fa fa-spinner fa-spin"></i>
+      <div
+        class="realtime-loading"
+        v-if="isLoading">
+        <i
+          class="fa fa-spinner fa-spin"
+          aria-hidden="true" />
       </div>
 
       <empty-state
@@ -155,11 +165,14 @@ export default Vue.component('pipelines-table', {
 
       <error-state v-if="shouldRenderErrorState" />
 
-      <div class="table-holder"
-        v-if="!isLoading && state.pipelines.length > 0">
+      <div
+        class="table-holder"
+        v-if="shouldRenderTable">
         <pipelines-table-component
           :pipelines="state.pipelines"
-          :service="service" />
+          :service="service"
+          :update-graph-dropdown="updateGraphDropdown"
+          />
       </div>
     </div>
   `,

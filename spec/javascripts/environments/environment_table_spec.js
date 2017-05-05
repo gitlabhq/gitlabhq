@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import environmentTableComp from '~/environments/components/environments_table';
+import environmentTableComp from '~/environments/components/environments_table.vue';
 
 describe('Environment item', () => {
   preloadFixtures('static/environments/element.html.raw');

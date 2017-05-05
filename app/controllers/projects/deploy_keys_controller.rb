@@ -8,7 +8,12 @@ class Projects::DeployKeysController < Projects::ApplicationController
   layout "project_settings"
 
   def index
-    redirect_to_repository_settings(@project)
+    respond_to do |format|
+      format.html { redirect_to_repository_settings(@project) }
+      format.json do
+        render json: Projects::Settings::DeployKeysPresenter.new(@project, current_user: current_user).as_json
+      end
+    end
   end
 
   def new
@@ -19,7 +24,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
     @key = DeployKey.new(deploy_key_params.merge(user: current_user))
 
     unless @key.valid? && @project.deploy_keys << @key
-      flash[:alert] = @key.errors.full_messages.join(', ').html_safe      
+      flash[:alert] = @key.errors.full_messages.join(', ').html_safe
     end
     redirect_to_repository_settings(@project)
   end
@@ -27,7 +32,10 @@ class Projects::DeployKeysController < Projects::ApplicationController
   def enable
     Projects::EnableDeployKeyService.new(@project, current_user, params).execute
 
-    redirect_to_repository_settings(@project)
+    respond_to do |format|
+      format.html { redirect_to_repository_settings(@project) }
+      format.json { head :ok }
+    end
   end
 
   def disable
@@ -35,7 +43,11 @@ class Projects::DeployKeysController < Projects::ApplicationController
     return render_404 unless deploy_key_project
 
     deploy_key_project.destroy!
-    redirect_to_repository_settings(@project)
+
+    respond_to do |format|
+      format.html { redirect_to_repository_settings(@project) }
+      format.json { head :ok }
+    end
   end
 
   protected

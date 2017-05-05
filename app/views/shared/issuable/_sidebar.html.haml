@@ -48,7 +48,7 @@
 
         .selectbox.hide-collapsed
           = f.hidden_field 'assignee_id', value: issuable.assignee_id, id: 'issue_assignee_id'
-          = dropdown_tag('Select assignee', options: { toggle_class: 'js-user-search js-author-search', title: 'Assign to', filter: true, dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author', placeholder: 'Search users', data: { first_user: (current_user.username if current_user), current_user: true, project_id: (@project.id if @project), author_id: issuable.author_id, field_name: "#{issuable.to_ability_name}[assignee_id]", issue_update: issuable_json_path(issuable), ability_name: issuable.to_ability_name, null_user: true } })
+          = dropdown_tag('Select assignee', options: { toggle_class: 'js-user-search js-author-search', title: 'Assign to', filter: true, dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author', placeholder: 'Search users', data: { first_user: (current_user.username if current_user), current_user: true, project_id: (@project.id if @project), author_id: issuable.author_id, field_name: "#{issuable.to_ability_name}[assignee_id]", issue_update: issuable_json_path(issuable), ability_name: issuable.to_ability_name, null_user: true, null_user_default: true, selected: issuable.assignee_id } })
 
       .block.milestone
         .sidebar-collapsed-icon
@@ -136,7 +136,7 @@
             - selected_labels.each do |label|
               = hidden_field_tag "#{issuable.to_ability_name}[label_names][]", label.id, id: nil
             .dropdown
-              %button.dropdown-menu-toggle.js-label-select.js-multiselect.js-label-sidebar-dropdown{ type: "button", data: {toggle: "dropdown", default_label: "Labels", field_name: "#{issuable.to_ability_name}[label_names][]", ability_name: issuable.to_ability_name, show_no: "true", show_any: "true", namespace_path: @project.try(:namespace).try(:path), project_path: @project.try(:path), issue_update: issuable_json_path(issuable), labels: (namespace_project_labels_path(@project.namespace, @project, :json) if @project) } }
+              %button.dropdown-menu-toggle.js-label-select.js-multiselect.js-label-sidebar-dropdown{ type: "button", data: {toggle: "dropdown", default_label: "Labels", field_name: "#{issuable.to_ability_name}[label_names][]", ability_name: issuable.to_ability_name, show_no: "true", show_any: "true", namespace_path: @project.try(:namespace).try(:full_path), project_path: @project.try(:path), issue_update: issuable_json_path(issuable), labels: (namespace_project_labels_path(@project.namespace, @project, :json) if @project) } }
                 %span.dropdown-toggle-text{ class: ("is-default" if selected_labels.empty?) }
                   = multi_label_name(selected_labels, "Labels")
                 = icon('chevron-down', 'aria-hidden': 'true')

@@ -2,10 +2,8 @@ require 'spec_helper'
 Dir["./spec/features/protected_tags/*.rb"].sort.each { |f| require f }
 
 feature 'Projected Tags', feature: true, js: true do
-  include WaitForAjax
-
   let(:user) { create(:user, :admin) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
   before { login_as(user) }
 
@@ -13,6 +11,7 @@ feature 'Projected Tags', feature: true, js: true do
     find(".js-protected-tag-select").click
     find(".dropdown-input-field").set(tag_name)
     click_on("Create wildcard #{tag_name}")
+    find('.protected-tags-dropdown .dropdown-menu', visible: false)
   end
 
   describe "explicit protected tags" do

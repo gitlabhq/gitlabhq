@@ -143,6 +143,14 @@ class Issue < ActiveRecord::Base
     branches_with_iid - branches_with_merge_request
   end
 
+  # Returns boolean if a related branch exists for the current issue
+  # ignores merge requests branchs
+  def has_related_branch? 
+    project.repository.branch_names.any? do |branch|
+      /\A#{iid}-(?!\d+-stable)/i =~ branch
+    end
+  end
+
   # To allow polymorphism with MergeRequest.
   def source_project
     project
@@ -199,7 +207,7 @@ class Issue < ActiveRecord::Base
   # Returns `true` if the current issue can be viewed by either a logged in User
   # or an anonymous user.
   def visible_to_user?(user = nil)
-    return false unless project.feature_available?(:issues, user)
+    return false unless project && project.feature_available?(:issues, user)
 
     user ? readable_by?(user) : publicly_visible?
   end

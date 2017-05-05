@@ -1,0 +1,4 @@
+---
+title: Replace rake cache:clear:db with an automatic mechanism
+merge_request: 10597
+author:

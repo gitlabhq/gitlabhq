@@ -1,6 +1,6 @@
 module MergeRequestsHelper
   def new_mr_path_from_push_event(event)
-    target_project = event.project.forked_from_project || event.project
+    target_project = event.project.default_merge_request_target
     new_namespace_project_merge_request_path(
       event.project.namespace,
       event.project,
@@ -56,11 +56,12 @@ module MergeRequestsHelper
   end
 
   def issues_sentence(issues)
-    # Sorting based on the `#123` or `group/project#123` reference will sort
-    # local issues first.
-    issues.map do |issue|
+    # Issuable sorter will sort local issues, then issues from the same
+    # namespace, then all other issues.
+    issues = Gitlab::IssuableSorter.sort(@project, issues).map do |issue|
       issue.to_reference(@project)
-    end.sort.to_sentence
+    end
+    issues.to_sentence
   end
 
   def mr_closes_issues
@@ -124,6 +125,10 @@ module MergeRequestsHelper
     else
       ["#{source_path}:#{source_branch}", "#{target_path}:#{target_branch}"]
     end
+  end
+
+  def target_projects(project)
+    [project, project.default_merge_request_target].uniq
   end
 
   def merge_request_button_visibility(merge_request, closed)

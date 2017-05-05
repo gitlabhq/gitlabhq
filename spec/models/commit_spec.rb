@@ -212,7 +212,7 @@ eos
     end
   end
 
-  describe '#latest_pipeline' do
+  describe '#last_pipeline' do
     let!(:first_pipeline) do
       create(:ci_empty_pipeline,
         project: project,
@@ -226,8 +226,8 @@ eos
         status: 'success')
     end
 
-    it 'returns latest pipeline' do
-      expect(commit.latest_pipeline).to eq second_pipeline
+    it 'returns last pipeline' do
+      expect(commit.last_pipeline).to eq second_pipeline
     end
   end
 

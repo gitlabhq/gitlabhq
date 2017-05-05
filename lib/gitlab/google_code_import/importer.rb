@@ -1,7 +1,23 @@
 module Gitlab
   module GoogleCodeImport
     class Importer
-      attr_reader :project, :repo
+      attr_reader :project, :repo, :closed_statuses
+
+      NICE_LABEL_COLOR_HASH =
+        {
+          'Status: New'        => '#428bca',
+          'Status: Accepted'   => '#5cb85c',
+          'Status: Started'    => '#8e44ad',
+          'Priority: Critical' => '#ffcfcf',
+          'Priority: High'     => '#deffcf',
+          'Priority: Medium'   => '#fff5cc',
+          'Priority: Low'      => '#cfe9ff',
+          'Type: Defect'       => '#d9534f',
+          'Type: Enhancement'  => '#44ad8e',
+          'Type: Task'         => '#4b6dd0',
+          'Type: Review'       => '#8e44ad',
+          'Type: Other'        => '#7f8c8d'
+        }.freeze
 
       def initialize(project)
         @project = project
@@ -161,45 +177,19 @@ module Gitlab
       end
 
       def nice_label_color(name)
-        case name
-        when /\AComponent:/
-          "#fff39e"
-        when /\AOpSys:/
-          "#e2e2e2"
-        when /\AMilestone:/
-          "#fee3ff"
-
-        when "Status: New"
-          "#428bca"
-        when "Status: Accepted"
-          "#5cb85c"
-        when "Status: Started"
-          "#8e44ad"
-
-        when "Priority: Critical"
-          "#ffcfcf"
-        when "Priority: High"
-          "#deffcf"
-        when "Priority: Medium"
-          "#fff5cc"
-        when "Priority: Low"
-          "#cfe9ff"
-
-        when "Type: Defect"
-          "#d9534f"
-        when "Type: Enhancement"
-          "#44ad8e"
-        when "Type: Task"
-          "#4b6dd0"
-        when "Type: Review"
-          "#8e44ad"
-        when "Type: Other"
-          "#7f8c8d"
-        when *@closed_statuses.map { |s| nice_status_name(s) }
-          "#cfcfcf"
-        else
-          "#e2e2e2"
-        end
+        NICE_LABEL_COLOR_HASH[name] ||
+          case name
+          when /\AComponent:/
+            '#fff39e'
+          when /\AOpSys:/
+            '#e2e2e2'
+          when /\AMilestone:/
+            '#fee3ff'
+          when *closed_statuses.map { |s| nice_status_name(s) }
+            '#cfcfcf'
+          else
+            '#e2e2e2'
+          end
       end
 
       def nice_label_name(name)

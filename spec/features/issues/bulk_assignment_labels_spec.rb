@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 feature 'Issues > Labels bulk assignment', feature: true do
-  include WaitForAjax
-
   let(:user)      { create(:user) }
   let!(:project)  { create(:project) }
   let!(:issue1)   { create(:issue, project: project, title: "Issue 1") }

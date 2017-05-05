@@ -296,32 +296,56 @@ describe Ci::Pipeline, models: true do
 
   describe 'state machine' do
     let(:current) { Time.now.change(usec: 0) }
-    let(:build) { create_build('build1', 0) }
-    let(:build_b) { create_build('build2', 0) }
-    let(:build_c) { create_build('build3', 0) }
+    let(:build) { create_build('build1', queued_at: 0) }
+    let(:build_b) { create_build('build2', queued_at: 0) }
+    let(:build_c) { create_build('build3', queued_at: 0) }
 
     describe '#duration' do
-      before do
-        travel_to(current + 30) do
-          build.run!
-          build.success!
-          build_b.run!
-          build_c.run!
+      context 'when multiple builds are finished' do
+        before do
+          travel_to(current + 30) do
+            build.run!
+            build.success!
+            build_b.run!
+            build_c.run!
+          end
+
+          travel_to(current + 40) do
+            build_b.drop!
+          end
+
+          travel_to(current + 70) do
+            build_c.success!
+          end
         end
 
-        travel_to(current + 40) do
-          build_b.drop!
-        end
+        it 'matches sum of builds duration' do
+          pipeline.reload
 
-        travel_to(current + 70) do
-          build_c.success!
+          expect(pipeline.duration).to eq(40)
         end
       end
 
-      it 'matches sum of builds duration' do
-        pipeline.reload
+      context 'when pipeline becomes blocked' do
+        let!(:build) { create_build('build:1') }
+        let!(:action) { create_build('manual:action', :manual) }
 
-        expect(pipeline.duration).to eq(40)
+        before do
+          travel_to(current + 1.minute) do
+            build.run!
+          end
+
+          travel_to(current + 5.minutes) do
+            build.success!
+          end
+        end
+
+        it 'recalculates pipeline duration' do
+          pipeline.reload
+
+          expect(pipeline).to be_manual
+          expect(pipeline.duration).to eq 4.minutes
+        end
       end
     end
 
@@ -376,19 +400,20 @@ describe Ci::Pipeline, models: true do
     end
 
     describe 'pipeline caching' do
-      it 'executes ExpirePipelinesCacheService' do
-        expect_any_instance_of(Ci::ExpirePipelineCacheService).to receive(:execute).with(pipeline)
+      it 'performs ExpirePipelinesCacheWorker' do
+        expect(ExpirePipelineCacheWorker).to receive(:perform_async).with(pipeline.id)
 
         pipeline.cancel
       end
     end
 
-    def create_build(name, queued_at = current, started_from = 0)
-      create(:ci_build,
+    def create_build(name, *traits, queued_at: current, started_from: 0, **opts)
+      create(:ci_build, *traits,
              name: name,
              pipeline: pipeline,
              queued_at: queued_at,
-             started_at: queued_at + started_from)
+             started_at: queued_at + started_from,
+             **opts)
     end
   end
 
@@ -1014,11 +1039,12 @@ describe Ci::Pipeline, models: true do
   end
 
   describe "#merge_requests" do
-    let(:project) { create(:project, :repository) }
-    let(:pipeline) { FactoryGirl.create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: project.repository.commit('master').id) }
+    let(:project) { create(:empty_project) }
+    let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: 'a288a022a53a5a944fae87bcec6efc87b7061808') }
 
     it "returns merge requests whose `diff_head_sha` matches the pipeline's SHA" do
       merge_request = create(:merge_request, source_project: project, source_branch: pipeline.ref)
+      allow_any_instance_of(MergeRequest).to receive(:diff_head_sha) { 'a288a022a53a5a944fae87bcec6efc87b7061808' }
 
       expect(pipeline.merge_requests).to eq([merge_request])
     end
@@ -1034,6 +1060,23 @@ describe Ci::Pipeline, models: true do
       allow_any_instance_of(MergeRequest).to receive(:diff_head_sha) { '97de212e80737a608d939f648d959671fb0a0142b' }
 
       expect(pipeline.merge_requests).to be_empty
+    end
+  end
+
+  describe "#all_merge_requests" do
+    let(:project) { create(:empty_project) }
+    let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master') }
+
+    it "returns all merge requests having the same source branch" do
+      merge_request = create(:merge_request, source_project: project, source_branch: pipeline.ref)
+
+      expect(pipeline.all_merge_requests).to eq([merge_request])
+    end
+
+    it "doesn't return merge requests having a different source branch" do
+      create(:merge_request, source_project: project, source_branch: 'feature', target_branch: 'master')
+
+      expect(pipeline.all_merge_requests).to be_empty
     end
   end
 

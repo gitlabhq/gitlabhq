@@ -67,7 +67,7 @@ ul.notes {
       }
     }
 
-    &.is-editting {
+    &.is-editing {
       .note-header,
       .note-text,
       .edited-text {
@@ -97,18 +97,21 @@ ul.notes {
             padding-left: 1.3em;
           }
         }
+
+        table {
+          @include markdown-table;
+        }
       }
     }
 
     .note-awards {
       .js-awards-block {
-        padding: 2px;
-        margin-top: 10px;
+        margin-bottom: 16px;
       }
     }
 
     .note-header {
-      padding-bottom: 3px;
+      padding-bottom: 8px;
       padding-right: 20px;
 
       @media (min-width: $screen-sm-min) {
@@ -149,6 +152,10 @@ ul.notes {
 
     @media (min-width: $screen-sm-min) {
       margin-left: 65px;
+    }
+
+    .note-header {
+      padding-bottom: 0;
     }
 
     &.timeline-entry::after {
@@ -386,6 +393,10 @@ ul.notes {
 .note-headline-meta {
   display: inline-block;
   white-space: nowrap;
+
+  .system-note-message {
+    white-space: normal;
+  }
 }
 
 /**

@@ -6,7 +6,13 @@
 }
 
 .limit-container-width {
-  .detail-page-header {
+  .detail-page-header,
+  .page-content-header,
+  .commit-box,
+  .info-well,
+  .notes,
+  .commit-ci-menu,
+  .files-changed {
     @extend .fixed-width-container;
   }
 
@@ -36,8 +42,7 @@
   }
 
   .diffs {
-    .mr-version-controls,
-    .files-changed {
+    .mr-version-controls {
       @extend .fixed-width-container;
     }
   }
@@ -52,7 +57,7 @@
 
   .title {
     padding: 0;
-    margin: 0;
+    margin-bottom: 16px;
     border-bottom: none;
   }
 
@@ -365,6 +370,8 @@
 }
 
 .detail-page-description {
+  padding: 16px 0 0;
+
   small {
     color: $gray-darkest;
   }
@@ -372,6 +379,8 @@
 
 .edited-text {
   color: $gray-darkest;
+  display: block;
+  margin: 0 0 16px;
 
   .author_link {
     color: $gray-darkest;

@@ -188,7 +188,8 @@ Please consult the [dedicated "Frontend testing" guide](./fe_guide/testing.md).
 ### General Guidelines
 
 - Use a single, top-level `describe ClassName` block.
-- Use `described_class` instead of repeating the class name being described.
+- Use `described_class` instead of repeating the class name being described
+  (_this is enforced by RuboCop_).
 - Use `.method` to describe class methods and `#method` to describe instance
   methods.
 - Use `context` to test branching logic.
@@ -197,11 +198,12 @@ Please consult the [dedicated "Frontend testing" guide](./fe_guide/testing.md).
 - Don't `describe` symbols (see [Gotchas](gotchas.md#dont-describe-symbols)).
 - Don't assert against the absolute value of a sequence-generated attribute (see [Gotchas](gotchas.md#dont-assert-against-the-absolute-value-of-a-sequence-generated-attribute)).
 - Don't supply the `:each` argument to hooks since it's the default.
-- Prefer `not_to` to `to_not` (_this is enforced by Rubocop_).
+- Prefer `not_to` to `to_not` (_this is enforced by RuboCop_).
 - Try to match the ordering of tests to the ordering within the class.
 - Try to follow the [Four-Phase Test][four-phase-test] pattern, using newlines
   to separate phases.
 - Try to use `Gitlab.config.gitlab.host` rather than hard coding `'localhost'`
+- On `before` and `after` hooks, prefer it scoped to `:context` over `:all`
 
 [four-phase-test]: https://robots.thoughtbot.com/four-phase-test
 
@@ -224,6 +226,20 @@ so we need to set some guidelines for their use going forward:
   Use a helper method instead.
 
 [lets-not]: https://robots.thoughtbot.com/lets-not
+
+#### `set` variables
+
+In some cases there is no need to recreate the same object for tests again for
+each example. For example, a project is needed to test issues on the same
+project, one project will do for the entire file. This can be achieved by using
+`set` in the same way you would use `let`.
+
+`rspec-set` only works on ActiveRecord objects, and before new examples it
+reloads or recreates the model, _only_ if needed. That is, when you changed
+properties or destroyed the object.
+
+There is one gotcha; you can't reference a model defined in a `let` block in a
+`set` block.
 
 ### Time-sensitive tests
 
@@ -448,12 +464,21 @@ is used for Spinach tests as well.
 
 ### Monitoring
 
-The GitLab test suite is [monitored] and a [public dashboard] is available for
-everyone to see. Feel free to look at the slowest test files and try to improve
-them.
+The GitLab test suite is [monitored] for the `master` branch, and any branch
+that includes `rspec-profile` in their name.
+
+A [public dashboard] is available for everyone to see. Feel free to look at the
+slowest test files and try to improve them.
 
 [monitored]: ./performance.md#rspec-profiling
 [public dashboard]: https://redash.gitlab.com/public/dashboards/l1WhHXaxrCWM5Ai9D7YDqHKehq6OU3bx5gssaiWe?org_slug=default
+
+## CI setup
+
+- On CE, the test suite only runs against PostgreSQL by default. We additionally
+  run the suite against MySQL for tags, `master`, and any branch that includes
+  `mysql` in the name.
+- On EE, the test suite always runs both PostgreSQL and MySQL.
 
 ## Spinach (feature) tests
 

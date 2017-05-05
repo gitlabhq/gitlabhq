@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-describe API::Files, api: true  do
-  include ApiHelpers
+describe API::Files do
   let(:user) { create(:user) }
   let!(:project) { create(:project, :repository, namespace: user.namespace ) }
   let(:guest) { create(:user) { |u| project.add_guest(u) } }

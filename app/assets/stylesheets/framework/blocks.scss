@@ -230,7 +230,6 @@
     float: right;
     margin-top: 8px;
     padding-bottom: 8px;
-    border-bottom: 1px solid $border-color;
   }
 }
 
@@ -253,6 +252,63 @@
 
 .content-block-small {
   padding: 10px 0;
+}
+
+.landing {
+  margin-bottom: $gl-padding;
+  overflow: hidden;
+  display: flex;
+  position: relative;
+  border: 1px solid $blue-300;
+  border-radius: $border-radius-default;
+  background-color: $blue-25;
+  justify-content: center;
+
+  .dismiss-button {
+    position: absolute;
+    right: 6px;
+    top: 6px;
+    cursor: pointer;
+    color: $blue-300;
+    z-index: 1;
+    border: none;
+    background-color: transparent;
+
+    &:hover,
+    &:focus {
+      border: none;
+      color: $blue-400;
+    }
+  }
+
+  .svg-container {
+    align-self: center;
+  }
+
+  .inner-content {
+    text-align: left;
+    white-space: nowrap;
+
+    h4 {
+      color: $gl-text-color;
+      font-size: 17px;
+    }
+
+    p {
+      color: $gl-text-color;
+      margin-bottom: $gl-padding;
+    }
+  }
+
+  @media (max-width: $screen-sm-min) {
+    flex-direction: column;
+
+    .inner-content {
+      white-space: normal;
+      padding: 0 28px;
+      text-align: center;
+    }
+  }
 }
 
 .empty-state {

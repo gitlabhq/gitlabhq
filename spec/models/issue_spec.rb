@@ -291,6 +291,27 @@ describe Issue, models: true do
     end
   end
 
+  describe '#has_related_branch?' do
+    let(:issue) { create(:issue, title: "Blue Bell Knoll") }
+    subject { issue.has_related_branch? }
+
+    context 'branch found' do
+      before do
+        allow(issue.project.repository).to receive(:branch_names).and_return(["iceblink-luck", issue.to_branch_name])
+      end
+
+      it { is_expected.to eq true }
+    end
+
+    context 'branch not found' do
+      before do
+        allow(issue.project.repository).to receive(:branch_names).and_return(["lazy-calm"])
+      end
+
+      it { is_expected.to eq false }
+    end
+  end
+
   it_behaves_like 'an editable mentionable' do
     subject { create(:issue, project: create(:project, :repository)) }
 
@@ -361,7 +382,10 @@ describe Issue, models: true do
     it 'updates when assignees change' do
       user1 = create(:user)
       user2 = create(:user)
-      issue = create(:issue, assignee: user1)
+      project = create(:empty_project)
+      issue = create(:issue, assignee: user1, project: project)
+      project.add_developer(user1)
+      project.add_developer(user2)
 
       expect(user1.assigned_open_issues_count).to eq(1)
       expect(user2.assigned_open_issues_count).to eq(0)

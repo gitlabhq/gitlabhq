@@ -157,7 +157,7 @@ import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
       $('.ci-widget-fetching').show();
       return $.getJSON(this.opts.ci_status_url, (function(_this) {
         return function(data) {
-          var message, status, title;
+          var message, status, title, callback;
           _this.status = data.status;
           _this.hasCi = data.has_ci;
           _this.updateMergeButton(_this.status, _this.hasCi);
@@ -178,6 +178,12 @@ import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
             if (data.sha) {
               _this.opts.ci_sha = data.sha;
               _this.updateCommitUrls(data.sha);
+            }
+            if (data.status === "success" || data.status === "failed") {
+              callback = function() {
+                return _this.getMergeStatus();
+              };
+              return setTimeout(callback, 2000);
             }
             if (showNotification && data.status) {
               status = _this.ciLabelForStatus(data.status);
@@ -285,7 +291,7 @@ import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
 
     MergeRequestWidget.prototype.updateCommitUrls = function(id) {
       const commitsUrl = this.opts.commits_path;
-      $('.js-commit-link').text(`#${id}`).attr('href', [commitsUrl, id].join('/'));
+      $('.js-commit-link').text(id).attr('href', [commitsUrl, id].join('/'));
     };
 
     MergeRequestWidget.prototype.initMiniPipelineGraph = function() {

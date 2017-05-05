@@ -14,14 +14,32 @@
   }
 }
 
+@mixin set-visible {
+  transform: translateY(0);
+  visibility: visible;
+  opacity: 1;
+  transition-duration: 100ms, 150ms, 25ms;
+  transition-delay: 35ms, 50ms, 25ms;
+}
+
+@mixin set-invisible {
+  transform: translateY(-10px);
+  visibility: hidden;
+  opacity: 0;
+  transition-property: opacity, transform, visibility;
+  transition-duration: 70ms, 250ms, 250ms;
+  transition-timing-function: linear, $dropdown-animation-timing;
+  transition-delay: 25ms, 50ms, 0ms;
+}
+
 .open {
   .dropdown-menu,
   .dropdown-menu-nav {
     display: block;
+    @include set-visible;
 
     @media (max-width: $screen-xs-max) {
       width: 100%;
-      min-width: 240px;
     }
   }
 
@@ -161,8 +179,9 @@
 
 .dropdown-menu,
 .dropdown-menu-nav {
-  display: none;
+  display: block;
   position: absolute;
+  width: 100%;
   top: 100%;
   left: 0;
   z-index: 9;
@@ -176,6 +195,11 @@
   border: 1px solid $dropdown-border-color;
   border-radius: $border-radius-base;
   box-shadow: 0 2px 4px $dropdown-shadow-color;
+  @include set-invisible;
+
+  @media (max-width: $screen-sm-min) {
+    width: 100%;
+  }
 
   &.is-loading {
     .dropdown-content {
@@ -249,6 +273,23 @@
     position: absolute;
     right: 8px;
     top: 5px;
+  }
+}
+
+.filtered-search-box-input-container .dropdown-menu,
+.filtered-search-box-input-container .dropdown-menu-nav,
+.comment-type-dropdown .dropdown-menu {
+  display: none;
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.filtered-search-box-input-container {
+  .dropdown-menu,
+  .dropdown-menu-nav {
+    max-width: 280px;
+    width: auto;
   }
 }
 
@@ -326,6 +367,10 @@
 
 .dropdown-select {
   width: $dropdown-width;
+
+  @media (max-width: $screen-sm-min) {
+    width: 100%;
+  }
 }
 
 .dropdown-menu-align-right {
@@ -345,7 +390,8 @@
       &::before {
         position: absolute;
         left: 6px;
-        top: 6px;
+        top: 50%;
+        transform: translateY(-50%);
         font: normal normal normal 14px/1 FontAwesome;
         font-size: inherit;
         text-rendering: auto;
@@ -567,4 +613,25 @@
 
 .droplab-item-ignore {
   pointer-events: none;
+}
+
+.pika-single.animate-picker.is-bound,
+.pika-single.animate-picker.is-bound.is-hidden {
+  /*
+   * Having `!important` is not recommended but
+   * since `pikaday` sets positioning inline
+   * there's no way it can be gracefully overridden
+   * using config options.
+   */
+  position: absolute !important;
+  display: block;
+}
+
+.pika-single.animate-picker.is-bound {
+  @include set-visible;
+}
+
+.pika-single.animate-picker.is-bound.is-hidden {
+  @include set-invisible;
+  overflow: hidden;
 }

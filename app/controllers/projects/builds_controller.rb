@@ -1,6 +1,6 @@
 class Projects::BuildsController < Projects::ApplicationController
   before_action :build, except: [:index, :cancel_all]
-  before_action :authorize_read_build!, except: [:cancel, :cancel_all, :retry, :play]
+  before_action :authorize_read_build!, only: [:index, :show, :status, :raw, :trace]
   before_action :authorize_update_build!, except: [:index, :show, :status, :raw, :trace]
   layout 'project'
 
@@ -60,20 +60,22 @@ class Projects::BuildsController < Projects::ApplicationController
   end
 
   def retry
-    return render_404 unless @build.retryable?
+    return respond_422 unless @build.retryable?
 
     build = Ci::Build.retry(@build, current_user)
     redirect_to build_path(build)
   end
 
   def play
-    return render_404 unless @build.playable?
+    return respond_422 unless @build.playable?
 
     build = @build.play(current_user)
     redirect_to build_path(build)
   end
 
   def cancel
+    return respond_422 unless @build.cancelable?
+
     @build.cancel
     redirect_to build_path(@build)
   end
@@ -85,9 +87,12 @@ class Projects::BuildsController < Projects::ApplicationController
   end
 
   def erase
-    @build.erase(erased_by: current_user)
-    redirect_to namespace_project_build_path(project.namespace, project, @build),
+    if @build.erase(erased_by: current_user)
+      redirect_to namespace_project_build_path(project.namespace, project, @build),
                 notice: "Build has been successfully erased!"
+    else
+      respond_422
+    end
   end
 
   def raw

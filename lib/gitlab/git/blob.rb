@@ -109,10 +109,6 @@ module Gitlab
         @binary.nil? ? super : @binary == true
       end
 
-      def empty?
-        !data || data == ''
-      end
-
       def data
         encode! @data
       end
@@ -130,6 +126,10 @@ module Gitlab
 
       def name
         encode! @name
+      end
+
+      def truncated?
+        size && (size > loaded_size)
       end
 
       # Valid LFS object pointer is a text file consisting of
@@ -159,9 +159,13 @@ module Gitlab
         nil
       end
 
-      def truncated?
-        size && (size > loaded_size)
+      def external_storage
+        return unless lfs_pointer?
+
+        :lfs
       end
+
+      alias_method :external_size, :lfs_size
 
       private
 

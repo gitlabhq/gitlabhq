@@ -1,16 +1,22 @@
 require "spec_helper"
 
-describe API::MergeRequests, api: true  do
-  include ApiHelpers
+describe API::MergeRequests do
   let(:base_time)   { Time.now }
   let(:user)        { create(:user) }
   let(:admin)       { create(:user, :admin) }
   let(:non_member)  { create(:user) }
-  let!(:project)    { create(:project, :public, :repository, creator: user, namespace: user.namespace) }
-  let!(:merge_request) { create(:merge_request, :simple, author: user, assignee: user, source_project: project, title: "Test", created_at: base_time) }
-  let!(:merge_request_closed) { create(:merge_request, state: "closed", author: user, assignee: user, source_project: project, title: "Closed test", created_at: base_time + 1.second) }
-  let!(:merge_request_merged) { create(:merge_request, state: "merged", author: user, assignee: user, source_project: project, title: "Merged test", created_at: base_time + 2.seconds, merge_commit_sha: '9999999999999999999999999999999999999999') }
+  let!(:project)    { create(:project, :public, :repository, creator: user, namespace: user.namespace, only_allow_merge_if_pipeline_succeeds: false) }
   let(:milestone)   { create(:milestone, title: '1.0.0', project: project) }
+  let(:milestone1)   { create(:milestone, title: '0.9', project: project) }
+  let!(:merge_request) { create(:merge_request, :simple, milestone: milestone1, author: user, assignee: user, source_project: project, target_project: project, title: "Test", created_at: base_time) }
+  let!(:merge_request_closed) { create(:merge_request, state: "closed", milestone: milestone1, author: user, assignee: user, source_project: project, target_project: project, title: "Closed test", created_at: base_time + 1.second) }
+  let!(:merge_request_merged) { create(:merge_request, state: "merged", author: user, assignee: user, source_project: project, target_project: project, title: "Merged test", created_at: base_time + 2.seconds, merge_commit_sha: '9999999999999999999999999999999999999999') }
+  let!(:note)       { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "a comment on a MR") }
+  let!(:note2)      { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "another comment on a MR") }
+  let!(:label) do
+    create(:label, title: 'label', color: '#FFAABB', project: project)
+  end
+  let!(:label_link) { create(:label_link, label: label, target: merge_request) }
 
   before do
     project.team << [user, :reporter]
@@ -20,6 +26,7 @@ describe API::MergeRequests, api: true  do
     context "when unauthenticated" do
       it "returns authentication error" do
         get api("/projects/#{project.id}/merge_requests")
+
         expect(response).to have_http_status(401)
       end
     end
@@ -100,6 +107,63 @@ describe API::MergeRequests, api: true  do
         expect(response).to match_response_schema('public_api/v4/merge_requests')
       end
 
+      it 'returns an empty array if no issue matches milestone' do
+        get api("/projects/#{project.id}/merge_requests", user), milestone: '1.0.0'
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(0)
+      end
+
+      it 'returns an empty array if milestone does not exist' do
+        get api("/projects/#{project.id}/merge_requests", user), milestone: 'foo'
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(0)
+      end
+
+      it 'returns an array of merge requests in given milestone' do
+        get api("/projects/#{project.id}/merge_requests", user), milestone: '0.9'
+
+        expect(json_response.first['title']).to eq merge_request_closed.title
+        expect(json_response.first['id']).to eq merge_request_closed.id
+      end
+
+      it 'returns an array of merge requests matching state in milestone' do
+        get api("/projects/#{project.id}/merge_requests", user), milestone: '0.9', state: 'closed'
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['id']).to eq(merge_request_closed.id)
+      end
+
+      it 'returns an array of labeled merge requests' do
+        get api("/projects/#{project.id}/merge_requests?labels=#{label.title}", user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['labels']).to eq([label.title])
+      end
+
+      it 'returns an array of labeled merge requests where all labels match' do
+        get api("/projects/#{project.id}/merge_requests?labels=#{label.title},foo,bar", user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(0)
+      end
+
+      it 'returns an empty array if no merge request matches labels' do
+        get api("/projects/#{project.id}/merge_requests?labels=foo,bar", user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(0)
+      end
+
       context "with ordering" do
         before do
           @mr_later = mr_with_later_created_and_updated_at_time
@@ -167,7 +231,7 @@ describe API::MergeRequests, api: true  do
       expect(json_response['created_at']).to be_present
       expect(json_response['updated_at']).to be_present
       expect(json_response['labels']).to eq(merge_request.label_names)
-      expect(json_response['milestone']).to be_nil
+      expect(json_response['milestone']).to be_a Hash
       expect(json_response['assignee']).to be_a Hash
       expect(json_response['author']).to be_a Hash
       expect(json_response['target_branch']).to eq(merge_request.target_branch)
@@ -370,6 +434,19 @@ describe API::MergeRequests, api: true  do
         expect(json_response['title']).to eq('Test merge_request')
       end
 
+      it 'returns 422 when target project has disabled merge requests' do
+        project.project_feature.update(merge_requests_access_level: 0)
+
+        post api("/projects/#{fork_project.id}/merge_requests", user2),
+             title: 'Test',
+             target_branch: 'master',
+             source_branch: 'markdown',
+             author: user2,
+             target_project_id: project.id
+
+        expect(response).to have_http_status(422)
+      end
+
       it "returns 400 when source_branch is missing" do
         post api("/projects/#{fork_project.id}/merge_requests", user2),
         title: 'Test merge_request', target_branch: "master", author: user2, target_project_id: project.id
@@ -519,6 +596,18 @@ describe API::MergeRequests, api: true  do
     it "enables merge when pipeline succeeds if the pipeline is active" do
       allow_any_instance_of(MergeRequest).to receive(:head_pipeline).and_return(pipeline)
       allow(pipeline).to receive(:active?).and_return(true)
+
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), merge_when_pipeline_succeeds: true
+
+      expect(response).to have_http_status(200)
+      expect(json_response['title']).to eq('Test')
+      expect(json_response['merge_when_pipeline_succeeds']).to eq(true)
+    end
+
+    it "enables merge when pipeline succeeds if the pipeline is active and only_allow_merge_if_pipeline_succeeds is true" do
+      allow_any_instance_of(MergeRequest).to receive(:head_pipeline).and_return(pipeline)
+      allow(pipeline).to receive(:active?).and_return(true)
+      project.update_attribute(:only_allow_merge_if_pipeline_succeeds, true)
 
       put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), merge_when_pipeline_succeeds: true
 

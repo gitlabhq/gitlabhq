@@ -13,12 +13,13 @@ you need to use with GitLab.
 | LB Port | Backend Port | Protocol        |
 | ------- | ------------ | --------------- |
 | 80      | 80           | HTTP  [^1]      |
-| 443     | 443          | HTTPS [^1] [^2] |
+| 443     | 443          | TCP or HTTPS [^1] [^2] |
 | 22      | 22           | TCP             |
 
 ## GitLab Pages Ports
 
-If you're using GitLab Pages you will need some additional port configurations.
+If you're using GitLab Pages with custom domain support you will need some 
+additional port configurations.
 GitLab Pages requires a separate virtual IP address. Configure DNS to point the
 `pages_external_url` from `/etc/gitlab/gitlab.rb` at the new virtual IP address. See the
 [GitLab Pages documentation][gitlab-pages] for more information.

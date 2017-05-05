@@ -82,7 +82,7 @@ module Gitlab
 
         file_diff, old_line, new_line = results
 
-        Position.new(
+        new_position = Position.new(
           old_path: file_diff.old_path,
           new_path: file_diff.new_path,
           head_sha: new_diff_refs.head_sha,
@@ -91,6 +91,13 @@ module Gitlab
           old_line: old_line,
           new_line: new_line
         )
+
+        # If a position is found, but is not actually contained in the diff, for example
+        # because it was an unchanged line in the context of a change that was undone,
+        # we cannot return this as a successful trace.
+        return unless new_position.diff_line(repository)
+
+        new_position
       end
 
       private

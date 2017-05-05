@@ -2,6 +2,7 @@ class Spinach::Features::ProjectMilestone < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths
+  include WaitForAjax
 
   step 'milestone has issue "Bugfix1" with labels: "bug", "feature"' do
     project = Project.find_by(name: "Shop")
@@ -34,6 +35,8 @@ class Spinach::Features::ProjectMilestone < Spinach::FeatureSteps
   end
 
   step 'I should see the labels "bug", "enhancement" and "feature"' do
+    wait_for_ajax
+
     page.within('#tab-issues') do
       expect(page).to have_content 'bug'
       expect(page).to have_content 'enhancement'

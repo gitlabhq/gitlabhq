@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import Visibility from 'visibilityjs';
 import PipelinesService from './services/pipelines_service';
 import eventHub from './event_hub';
@@ -50,6 +49,7 @@ export default {
       isLoading: false,
       hasError: false,
       isMakingRequest: false,
+      updateGraphDropdown: false,
     };
   },
 
@@ -161,15 +161,6 @@ export default {
     eventHub.$on('refreshPipelines', this.fetchPipelines);
   },
 
-  beforeUpdate() {
-    if (this.state.pipelines.length &&
-        this.$children &&
-        !this.isMakingRequest &&
-        !this.isLoading) {
-      this.store.startTimeAgoLoops.call(this, Vue);
-    }
-  },
-
   beforeDestroyed() {
     eventHub.$off('refreshPipelines');
   },
@@ -208,15 +199,21 @@ export default {
       this.store.storePagination(response.headers);
 
       this.isLoading = false;
+      this.updateGraphDropdown = true;
     },
 
     errorCallback() {
       this.hasError = true;
       this.isLoading = false;
+      this.updateGraphDropdown = false;
     },
 
     setIsMakingRequest(isMakingRequest) {
       this.isMakingRequest = isMakingRequest;
+
+      if (isMakingRequest) {
+        this.updateGraphDropdown = false;
+      }
     },
   },
 
@@ -273,7 +270,9 @@ export default {
 
           <pipelines-table-component
             :pipelines="state.pipelines"
-            :service="service"/>
+            :service="service"
+            :update-graph-dropdown="updateGraphDropdown"
+            />
         </div>
 
         <gl-pagination

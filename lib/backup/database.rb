@@ -80,16 +80,32 @@ module Backup
         'port'      => '--port',
         'socket'    => '--socket',
         'username'  => '--user',
-        'encoding'  => '--default-character-set'
+        'encoding'  => '--default-character-set',
+        # SSL
+        'sslkey'    => '--ssl-key',
+        'sslcert'   => '--ssl-cert',
+        'sslca'     => '--ssl-ca',
+        'sslcapath' => '--ssl-capath',
+        'sslcipher' => '--ssl-cipher'
       }
       args.map { |opt, arg| "#{arg}=#{config[opt]}" if config[opt] }.compact
     end
 
     def pg_env
-      ENV['PGUSER']     = config["username"] if config["username"]
-      ENV['PGHOST']     = config["host"] if config["host"]
-      ENV['PGPORT']     = config["port"].to_s if config["port"]
-      ENV['PGPASSWORD'] = config["password"].to_s if config["password"]
+      args = {
+        'username'  => 'PGUSER',
+        'host'      => 'PGHOST',
+        'port'      => 'PGPORT',
+        'password'  => 'PGPASSWORD',
+        # SSL
+        'sslmode'         => 'PGSSLMODE',
+        'sslkey'          => 'PGSSLKEY',
+        'sslcert'         => 'PGSSLCERT',
+        'sslrootcert'     => 'PGSSLROOTCERT',
+        'sslcrl'          => 'PGSSLCRL',
+        'sslcompression'  => 'PGSSLCOMPRESSION'
+      }
+      args.each { |opt, arg| ENV[arg] = config[opt].to_s if config[opt] }
     end
 
     def report_success(success)

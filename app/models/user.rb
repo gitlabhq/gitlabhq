@@ -23,6 +23,7 @@ class User < ActiveRecord::Base
   default_value_for :hide_no_password, false
   default_value_for :project_view, :files
   default_value_for :notified_of_own_activity, false
+  default_value_for :preferred_language, I18n.default_locale
 
   attr_encrypted :otp_secret,
     key:       Gitlab::Application.secrets.otp_key_base,
@@ -99,9 +100,6 @@ class User < ActiveRecord::Base
   has_many :award_emoji,              dependent: :destroy
   has_many :triggers,                 dependent: :destroy, class_name: 'Ci::Trigger', foreign_key: :owner_id
 
-  has_many :assigned_issues,          dependent: :nullify, foreign_key: :assignee_id, class_name: "Issue"
-  has_many :assigned_merge_requests,  dependent: :nullify, foreign_key: :assignee_id, class_name: "MergeRequest"
-
   # Issues that a user owns are expected to be moved to the "ghost" user before
   # the user is destroyed. If the user owns any issues during deletion, this
   # should be treated as an exceptional condition.
@@ -121,7 +119,7 @@ class User < ActiveRecord::Base
     presence: true,
     numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: Gitlab::Database::MAX_INT_VALUE }
   validates :username,
-    namespace: true,
+    dynamic_path: true,
     presence: true,
     uniqueness: { case_sensitive: false }
 
@@ -891,20 +889,20 @@ class User < ActiveRecord::Base
     @global_notification_setting
   end
 
-  def assigned_open_merge_request_count(force: false)
-    Rails.cache.fetch(['users', id, 'assigned_open_merge_request_count'], force: force) do
-      assigned_merge_requests.opened.count
+  def assigned_open_merge_requests_count(force: false)
+    Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count'], force: force) do
+      MergeRequestsFinder.new(self, assignee_id: self.id, state: 'opened').execute.count
     end
   end
 
   def assigned_open_issues_count(force: false)
     Rails.cache.fetch(['users', id, 'assigned_open_issues_count'], force: force) do
-      assigned_issues.opened.count
+      IssuesFinder.new(self, assignee_id: self.id, state: 'opened').execute.count
     end
   end
 
   def update_cache_counts
-    assigned_open_merge_request_count(force: true)
+    assigned_open_merge_requests_count(force: true)
     assigned_open_issues_count(force: true)
   end
 
@@ -1071,11 +1069,13 @@ class User < ActiveRecord::Base
       User.find_by_email(s)
     end
 
-    scope.create(
+    user = scope.build(
       username: username,
       email: email,
       &creation_block
     )
+    user.save(validate: false)
+    user
   ensure
     Gitlab::ExclusiveLease.cancel(lease_key, uuid)
   end

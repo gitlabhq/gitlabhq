@@ -48,8 +48,12 @@ GitLab CI build environment:
 
 - `KUBE_URL` - equal to the API URL
 - `KUBE_TOKEN`
-- `KUBE_NAMESPACE`
-- `KUBE_CA_PEM_FILE` - only present if a custom CA bundle was specified. Path to a file containing PEM data.
+- `KUBE_NAMESPACE` - The Kubernetes namespace is auto-generated if not specified.
+  The default value is `<project_name>-<project_id>`. You can overwrite it to
+  use different one if needed, otherwise the `KUBE_NAMESPACE` variable will
+  receive the default value.
+- `KUBE_CA_PEM_FILE` - only present if a custom CA bundle was specified. Path
+  to a file containing PEM data.
 - `KUBE_CA_PEM` (deprecated)- only if a custom CA bundle was specified. Raw PEM data.
 
 ## Web terminals

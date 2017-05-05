@@ -38,7 +38,7 @@
             %span.badge.count.merge_counter= number_with_delimiter(MergeRequestsFinder.new(current_user, project_id: @project.id).execute.opened.count)
 
     - if project_nav_tab? :pipelines
-      = nav_link(controller: [:pipelines, :builds, :environments]) do
+      = nav_link(controller: [:pipelines, :builds, :environments, :artifacts]) do
         = link_to project_pipelines_path(@project), title: 'Pipelines', class: 'shortcuts-pipelines' do
           %span
             Pipelines
@@ -56,7 +56,7 @@
             Snippets
 
     - if project_nav_tab? :settings
-      = nav_link(path: %w[projects#edit members#show integrations#show repository#show ci_cd#show pages#show]) do
+      = nav_link(path: %w[projects#edit members#show integrations#show services#edit repository#show ci_cd#show pages#show]) do
         = link_to edit_project_path(@project), title: 'Settings', class: 'shortcuts-tree' do
           %span
             Settings

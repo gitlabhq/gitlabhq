@@ -45,8 +45,8 @@ describe Gitlab::Regex, lib: true do
     it { is_expected.not_to match('foo-') }
   end
 
-  describe 'FULL_NAMESPACE_REGEX_STR' do
-    subject { %r{\A#{Gitlab::Regex::FULL_NAMESPACE_REGEX_STR}\z} }
+  describe '.full_namespace_regex' do
+    subject { described_class.full_namespace_regex }
 
     it { is_expected.to match('gitlab.org') }
     it { is_expected.to match('gitlab.org/gitlab-git') }

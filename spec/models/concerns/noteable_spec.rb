@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequest, Noteable, model: true do
+describe Noteable, model: true do
   let!(:active_diff_note1) { create(:diff_note_on_merge_request) }
   let(:project) { active_diff_note1.project }
   subject { active_diff_note1.noteable }

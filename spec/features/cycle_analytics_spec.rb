@@ -1,11 +1,9 @@
 require 'spec_helper'
 
 feature 'Cycle Analytics', feature: true, js: true do
-  include WaitForAjax
-
   let(:user) { create(:user) }
   let(:guest) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:issue) { create(:issue, project: project, created_at: 2.days.ago) }
   let(:milestone) { create(:milestone, project: project) }
   let(:mr) { create_merge_request_closing_issue(issue) }
@@ -62,6 +60,25 @@ feature 'Cycle Analytics', feature: true, js: true do
 
         click_stage('Production')
         expect_issue_to_be_present
+      end
+    end
+
+    context "when my preferred language is Spanish" do
+      before do
+        user.update_attribute(:preferred_language, 'es')
+
+        project.team << [user, :master]
+        login_as(user)
+        visit namespace_project_cycle_analytics_path(project.namespace, project)
+        wait_for_ajax
+      end
+
+      it 'shows the content in Spanish' do
+        expect(page).to have_content('Estado del Pipeline')
+      end
+
+      it 'resets the language to English' do
+        expect(I18n.locale).to eq(:en)
       end
     end
   end

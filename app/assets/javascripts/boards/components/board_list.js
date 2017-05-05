@@ -57,12 +57,15 @@ export default {
     },
     loadNextPage() {
       const getIssues = this.list.nextPage();
+      const loadingDone = () => {
+        this.list.loadingMore = false;
+      };
 
       if (getIssues) {
         this.list.loadingMore = true;
-        getIssues.then(() => {
-          this.list.loadingMore = false;
-        });
+        getIssues
+          .then(loadingDone)
+          .catch(loadingDone);
       }
     },
     toggleForm() {

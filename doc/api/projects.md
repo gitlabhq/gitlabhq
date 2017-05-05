@@ -40,6 +40,7 @@ Parameters:
 | `owned` | boolean | no | Limit by projects owned by the current user |
 | `membership` | boolean | no | Limit by projects that the current user is a member of |
 | `starred` | boolean | no | Limit by projects starred by the current user |
+| `statistics` | boolean | no | Include project statistics |
 
 ```json
 [
@@ -91,7 +92,14 @@ Parameters:
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
-    "request_access_enabled": false
+    "request_access_enabled": false,
+    "statistics": {
+      "commit_count": 37,
+      "storage_size": 1038090,
+      "repository_size": 1038090,
+      "lfs_objects_size": 0,
+      "job_artifacts_size": 0
+    }
   },
   {
     "id": 6,
@@ -151,7 +159,14 @@ Parameters:
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
-    "request_access_enabled": false
+    "request_access_enabled": false,
+    "statistics": {
+      "commit_count": 12,
+      "storage_size": 2066080,
+      "repository_size": 2066080,
+      "lfs_objects_size": 0,
+      "job_artifacts_size": 0
+    }
   }
 ]
 ```
@@ -170,6 +185,7 @@ Parameters:
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `statistics` | boolean | no | Include project statistics |
 
 ```json
 {
@@ -241,7 +257,14 @@ Parameters:
   ],
   "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
-  "request_access_enabled": false
+  "request_access_enabled": false,
+  "statistics": {
+    "commit_count": 37,
+    "storage_size": 1038090,
+    "repository_size": 1038090,
+    "lfs_objects_size": 0,
+    "job_artifacts_size": 0
+  }
 }
 ```
 
@@ -859,6 +882,17 @@ Parameters:
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `file` | string | yes | The file to be uploaded |
 
+To upload a file from your filesystem, use the `--form` argument. This causes
+cURL to post data using the header `Content-Type: multipart/form-data`.
+The `file=` parameter must point to a file on your filesystem and be preceded
+by `@`. For example:
+
+```bash
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form "file=@dk.png" https://gitlab.example.com/api/v3/projects/5/uploads
+```
+
+Returned object:
+
 ```json
 {
   "alt": "dk",
@@ -868,8 +902,8 @@ Parameters:
 ```
 
 **Note**: The returned `url` is relative to the project path.
-In Markdown contexts, the link is automatically expanded when the format in `markdown` is used.
-
+In Markdown contexts, the link is automatically expanded when the format in
+`markdown` is used.
 
 ## Project members
 

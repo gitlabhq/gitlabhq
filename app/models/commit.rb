@@ -236,8 +236,8 @@ class Commit
     project.pipelines.where(sha: sha)
   end
 
-  def latest_pipeline
-    pipelines.last
+  def last_pipeline
+    @last_pipeline ||= pipelines.last
   end
 
   def status(ref = nil)
@@ -316,7 +316,7 @@ class Commit
   def uri_type(path)
     entry = @raw.tree.path(path)
     if entry[:type] == :blob
-      blob = ::Blob.decorate(Gitlab::Git::Blob.new(name: entry[:name]))
+      blob = ::Blob.decorate(Gitlab::Git::Blob.new(name: entry[:name]), @project)
       blob.image? || blob.video? ? :raw : :blob
     else
       entry[:type]

@@ -492,7 +492,7 @@ which ideally should not have Redis or Sentinels on it for a HA setup.
     redis['master_name'] = 'gitlab-redis'
 
     ## The same password for Redis authentication you set up for the master node.
-    redis['password'] = 'redis-password-goes-here'
+    redis['master_password'] = 'redis-password-goes-here'
 
     ## A list of sentinels with `host` and `port`
     gitlab_rails['redis_sentinels'] = [

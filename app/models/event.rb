@@ -16,7 +16,7 @@ class Event < ActiveRecord::Base
 
   RESET_PROJECT_ACTIVITY_INTERVAL = 1.hour
 
-  delegate :name, :email, :public_email, to: :author, prefix: true, allow_nil: true
+  delegate :name, :email, :public_email, :username, to: :author, prefix: true, allow_nil: true
   delegate :title, to: :issue, prefix: true, allow_nil: true
   delegate :title, to: :merge_request, prefix: true, allow_nil: true
   delegate :title, to: :note, prefix: true, allow_nil: true
@@ -30,6 +30,7 @@ class Event < ActiveRecord::Base
 
   # Callbacks
   after_create :reset_project_activity
+  after_create :set_last_repository_updated_at, if: :push?
 
   # Scopes
   scope :recent, -> { reorder(id: :desc) }
@@ -356,5 +357,10 @@ class Event < ActiveRecord::Base
 
   def recent_update?
     project.last_activity_at > RESET_PROJECT_ACTIVITY_INTERVAL.ago
+  end
+
+  def set_last_repository_updated_at
+    Project.unscoped.where(id: project_id).
+      update_all(last_repository_updated_at: created_at)
   end
 end

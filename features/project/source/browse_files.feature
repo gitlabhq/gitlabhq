@@ -10,7 +10,8 @@ Feature: Project Source Browse Files
   Scenario: I browse files for specific ref
     Given I visit project source page for "6d39438"
     Then I should see files from repository for "6d39438"
-
+    
+  @javascript
   Scenario: I browse file content
     Given I click on ".gitignore" file in repo
     Then I should see its content
@@ -117,6 +118,8 @@ Feature: Project Source Browse Files
     And I click on ".gitignore" file in repo
     And I see the ".gitignore"
     And I click on "Replace"
+    Then I should see a Fork/Cancel combo
+    And I click button "Fork"
     Then I should see a notice about a new fork having been created
     When I click on "Replace"
     And I replace it with a text file
@@ -265,6 +268,8 @@ Feature: Project Source Browse Files
     And I click on ".gitignore" file in repo
     And I see the ".gitignore"
     And I click on "Delete"
+    Then I should see a Fork/Cancel combo
+    And I click button "Fork"
     Then I should see a notice about a new fork having been created
     When I click on "Delete"
     And I fill the commit message

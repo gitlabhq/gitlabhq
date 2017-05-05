@@ -1,4 +1,0 @@
----
-title: Force unlimited terminal size when checking processes via call to ps
-merge_request: 10246
-author: Sebastian Reitenbach

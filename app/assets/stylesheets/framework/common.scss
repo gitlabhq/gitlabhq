@@ -70,7 +70,7 @@ pre {
 }
 
 hr {
-  margin: $gl-padding 0;
+  margin: 24px 0;
   border-top: 1px solid darken($gray-normal, 8%);
 }
 
@@ -422,6 +422,11 @@ table {
     background: $gray-light;
     z-index: 1;
   }
+}
+
+.bordered-box {
+  border: 1px solid $border-color;
+  border-radius: $border-radius-default;
 }
 
 .str-truncated {

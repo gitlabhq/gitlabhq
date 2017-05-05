@@ -239,33 +239,6 @@ describe ApplicationHelper do
     end
   end
 
-  describe 'render_markup' do
-    let(:content) { 'Noël' }
-    let(:user) { create(:user) }
-    before do
-      allow(helper).to receive(:current_user).and_return(user)
-    end
-
-    it 'preserves encoding' do
-      expect(content.encoding.name).to eq('UTF-8')
-      expect(helper.render_markup('foo.rst', content).encoding.name).to eq('UTF-8')
-    end
-
-    it "delegates to #markdown when file name corresponds to Markdown" do
-      expect(helper).to receive(:gitlab_markdown?).with('foo.md').and_return(true)
-      expect(helper).to receive(:markdown).and_return('NOEL')
-
-      expect(helper.render_markup('foo.md', content)).to eq('NOEL')
-    end
-
-    it "delegates to #asciidoc when file name corresponds to AsciiDoc" do
-      expect(helper).to receive(:asciidoc?).with('foo.adoc').and_return(true)
-      expect(helper).to receive(:asciidoc).and_return('NOEL')
-
-      expect(helper.render_markup('foo.adoc', content)).to eq('NOEL')
-    end
-  end
-
   describe '#active_when' do
     it { expect(helper.active_when(true)).to eq('active') }
     it { expect(helper.active_when(false)).to eq(nil) }
