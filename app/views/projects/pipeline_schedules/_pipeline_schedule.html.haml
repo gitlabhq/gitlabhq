@@ -23,12 +23,13 @@
         = link_to user_path(pipeline_schedule.owner) do
           = pipeline_schedule.owner&.name
     %td
-      - if pipeline_schedule.can_take_ownership?(current_user)
-        = link_to take_ownership_pipeline_schedule_path(pipeline_schedule), method: :post, title: 'Take Ownership', class: 'btn' do
-          Take ownership
-      - if can?(current_user, :update_pipeline_schedule, pipeline_schedule)
-        = link_to edit_pipeline_schedule_path(pipeline_schedule), title: 'Edit', class: 'btn' do
-          = icon('pencil')
-      - if can?(current_user, :admin_pipeline_schedule, pipeline_schedule)
-        = link_to pipeline_schedule_path(pipeline_schedule), title: 'Delete', method: :delete, class: 'btn btn-remove', data: { confirm: "Are you sure you want to cancel this pipeline?" } do
-          = icon('trash')
+      .pull-right.btn-group
+        - if pipeline_schedule.can_take_ownership?(current_user)
+          = link_to take_ownership_pipeline_schedule_path(pipeline_schedule), method: :post, title: 'Take Ownership', class: 'btn' do
+            Take ownership
+        - if can?(current_user, :update_pipeline_schedule, pipeline_schedule)
+          = link_to edit_pipeline_schedule_path(pipeline_schedule), title: 'Edit', class: 'btn' do
+            = icon('pencil')
+        - if can?(current_user, :admin_pipeline_schedule, pipeline_schedule)
+          = link_to pipeline_schedule_path(pipeline_schedule), title: 'Delete', method: :delete, class: 'btn btn-remove', data: { confirm: "Are you sure you want to cancel this pipeline?" } do
+            = icon('trash')
