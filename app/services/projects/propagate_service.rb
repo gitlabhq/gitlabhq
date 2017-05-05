@@ -26,7 +26,7 @@ module Projects
       loop do
         batch = project_ids_batch(offset)
 
-        batch.each { |project_id| create_from_template(project_id) }
+        bulk_create_from_template(batch)
 
         break if batch.size < BATCH_SIZE
 
@@ -34,14 +34,34 @@ module Projects
       end
     end
 
-    def create_from_template(project_id)
-      Service.build_from_template(project_id, @template).save!
+    def bulk_create_from_template(batch)
+      service_hash_list = batch.map do |project_id|
+        service_hash.merge('project_id' => project_id)
+      end
+
+      Project.transaction do
+        Service.create!(service_hash_list)
+      end
     end
 
     def project_ids_batch(offset)
-      Project.joins('LEFT JOIN services ON services.project_id = projects.id').
-        where('services.type != ? OR services.id IS NULL', @template.type).
-        limit(BATCH_SIZE).offset(offset).pluck(:id)
+      Project.connection.execute(
+        <<-SQL
+          SELECT id
+          FROM projects
+          WHERE NOT EXISTS (
+            SELECT true
+            FROM services
+            WHERE services.project_id = projects.id
+            AND services.type = '#{@template.type}'
+          )
+          LIMIT #{BATCH_SIZE} OFFSET #{offset}
+      SQL
+      ).to_a.flatten
+    end
+
+    def service_hash
+      @service_hash ||= @template.as_json(methods: :type).except('id', 'template')
     end
   end
 end
