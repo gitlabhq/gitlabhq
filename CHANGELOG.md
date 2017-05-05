@@ -5,6 +5,7 @@ entry.
 ## 9.1.3 (2017-05-05)
 
 - No changes.
+- No changes.
 - Enforce project features when searching blobs and wikis.
 - Fixed branches dropdown rendering branch names as HTML.
 - Make Asciidoc & other markup go through pipeline to prevent XSS.
