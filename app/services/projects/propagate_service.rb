@@ -21,16 +21,12 @@ module Projects
     private
 
     def propagate_projects_with_template
-      offset = 0
-
       loop do
-        batch = project_ids_batch(offset)
+        batch = project_ids_batch
 
         bulk_create_from_template(batch)
 
         break if batch.size < BATCH_SIZE
-
-        offset += BATCH_SIZE
       end
     end
 
@@ -44,7 +40,7 @@ module Projects
       end
     end
 
-    def project_ids_batch(offset)
+    def project_ids_batch
       Project.connection.execute(
         <<-SQL
           SELECT id
@@ -55,7 +51,7 @@ module Projects
             WHERE services.project_id = projects.id
             AND services.type = '#{@template.type}'
           )
-          LIMIT #{BATCH_SIZE} OFFSET #{offset}
+          LIMIT #{BATCH_SIZE}
       SQL
       ).to_a.flatten
     end

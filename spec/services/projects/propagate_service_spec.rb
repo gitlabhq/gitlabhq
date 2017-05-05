@@ -66,5 +66,17 @@ describe Projects::PropagateService, services: true do
 
       expect(service.properties).to eq(service_template.properties)
     end
+
+    describe 'bulk update' do
+      it 'creates services for all projects' do
+        project_total = 5
+        stub_const 'Projects::PropagateService::BATCH_SIZE', 3
+
+        project_total.times { create(:empty_project) }
+
+        expect { described_class.propagate(service_template) }.
+          to change { Service.count }.by(project_total + 1)
+      end
+    end
   end
 end
