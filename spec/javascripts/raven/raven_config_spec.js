@@ -157,10 +157,6 @@ describe('RavenConfig', () => {
       RavenConfig.bindRavenErrors();
     });
 
-    it('should query for document using jquery', () => {
-      expect(window.$).toHaveBeenCalledWith(document);
-    });
-
     it('should call .on', function () {
       expect($document.on).toHaveBeenCalledWith('ajaxError.raven', RavenConfig.handleRavenErrors);
     });

@@ -18,8 +18,9 @@ describe('RavenConfig options', () => {
       sentry_dsn: sentryDsn,
       current_user_id: currentUserId,
       gitlab_url: gitlabUrl,
-      is_production: isProduction,
     };
+
+    process.env.NODE_ENV = isProduction;
 
     spyOn(RavenConfig, 'init');
 
