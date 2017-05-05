@@ -62,7 +62,7 @@ class DropdownHint extends gl.FilteredSearchDropdown {
           Object.assign({
             icon: `fa-${icon}`,
             hint,
-            tag: `&lt;${tag}&gt;`,
+            tag: `<${tag}>`,
           }, type && { type }),
         );
       }
