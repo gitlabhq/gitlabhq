@@ -7,7 +7,7 @@ export default {
   data() {
     return {
       illustrationSvg,
-      calloutDismissed: Cookies.get(cookieKey) === 'true',
+      calloutDismissed: !Cookies.get(cookieKey) === 'true',
     };
   },
   methods: {
@@ -17,7 +17,7 @@ export default {
     },
   },
   template: `
-    <div v-if="!calloutDismissed" class="user-callout">
+    <div v-if="!calloutDismissed" class="pipeline-schedules-user-callout user-callout">
       <div class="bordered-box landing content-block">
         <button
           id="dismiss-callout-btn"

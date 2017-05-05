@@ -47,3 +47,15 @@
     color: $text-color;
   }
 }
+
+.pipeline-schedules-user-callout {
+  .bordered-box.content-block {
+    border: 1px solid $border-color;
+    background-color: transparent;
+    padding: 16px;
+  }
+
+  #dismiss-callout-btn {
+    color: $gl-text-color;
+  }
+}
