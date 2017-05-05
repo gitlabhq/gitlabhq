@@ -3,8 +3,6 @@ class PropagateServiceTemplateWorker
   include Sidekiq::Worker
   include DedicatedSidekiqQueue
 
-  sidekiq_options retry: 3
-
   LEASE_TIMEOUT = 4.hours.to_i
 
   def perform(template_id)

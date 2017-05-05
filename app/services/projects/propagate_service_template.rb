@@ -11,7 +11,7 @@ module Projects
     end
 
     def propagate
-      return unless @template&.active?
+      return unless @template.active?
 
       Rails.logger.info("Propagating services for template #{@template.id}")
 
@@ -32,11 +32,11 @@ module Projects
 
     def bulk_create_from_template(batch)
       service_list = batch.map do |project_id|
-        service_hash.merge('project_id' => project_id).values
+        service_hash.values << project_id
       end
 
       Project.transaction do
-        bulk_insert_services(service_hash.keys + ['project_id'], service_list)
+        bulk_insert_services(service_hash.keys << 'project_id', service_list)
         run_callbacks(batch)
       end
     end
@@ -75,9 +75,9 @@ module Projects
 
           template_hash.each_with_object({}) do |(key, value), service_hash|
             value = value.is_a?(Hash) ? value.to_json : value
-            key = Gitlab::Database.postgresql? ? "\"#{key}\"" : "`#{key}`"
 
-            service_hash[key] = ActiveRecord::Base.sanitize(value)
+            service_hash[ActiveRecord::Base.connection.quote_column_name(key)] =
+              ActiveRecord::Base.sanitize(value)
           end
         end
     end
@@ -93,7 +93,7 @@ module Projects
     end
 
     def active_external_issue_tracker?
-      @template.category == :issue_tracker && !@template.default
+      @template.issue_tracker? && !@template.default
     end
 
     def active_external_wiki?

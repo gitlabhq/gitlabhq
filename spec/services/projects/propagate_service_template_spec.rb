@@ -18,8 +18,11 @@ describe Projects::PropagateServiceTemplate, services: true do
     let!(:project) { create(:empty_project) }
 
     it 'creates services for projects' do
-      expect { described_class.propagate(service_template) }.
-        to change { Service.count }.by(1)
+      expect(project.pushover_service).to be_nil
+
+      described_class.propagate(service_template)
+
+      expect(project.reload.pushover_service).to be_present
     end
 
     it 'creates services for a project that has another service' do
@@ -35,8 +38,11 @@ describe Projects::PropagateServiceTemplate, services: true do
         }
       )
 
-      expect { described_class.propagate(service_template) }.
-        to change { Service.count }.by(1)
+      expect(project.pushover_service).to be_nil
+
+      described_class.propagate(service_template)
+
+      expect(project.reload.pushover_service).to be_present
     end
 
     it 'does not create the service if it exists already' do
@@ -61,9 +67,7 @@ describe Projects::PropagateServiceTemplate, services: true do
     it 'creates the service containing the template attributes' do
       described_class.propagate(service_template)
 
-      service = Service.find_by!(type: service_template.type, template: false)
-
-      expect(service.properties).to eq(service_template.properties)
+      expect(project.pushover_service.properties).to eq(service_template.properties)
     end
 
     describe 'bulk update' do
