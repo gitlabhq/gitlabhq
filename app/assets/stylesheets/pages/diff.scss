@@ -106,6 +106,10 @@
         span {
           white-space: pre-wrap;
         }
+
+        .line {
+          word-wrap: break-word;
+        }
       }
     }
 

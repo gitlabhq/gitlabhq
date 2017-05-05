@@ -21,6 +21,7 @@ development:
   pool: 5
   username: postgres
   password:
+  # host: localhost
 
 #
 # Staging specific
@@ -32,6 +33,7 @@ staging:
   pool: 5
   username: postgres
   password:
+  # host: localhost
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -43,3 +45,4 @@ test: &test
   pool: 5
   username: postgres
   password:
+  # host: localhost

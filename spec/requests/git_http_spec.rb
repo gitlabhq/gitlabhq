@@ -3,6 +3,7 @@ require "spec_helper"
 describe 'Git HTTP requests', lib: true do
   include GitHttpHelpers
   include WorkhorseHelpers
+  include UserActivitiesHelpers
 
   it "gives WWW-Authenticate hints" do
     clone_get('doesnt/exist.git')
@@ -383,6 +384,14 @@ describe 'Git HTTP requests', lib: true do
                     expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
                   end
                 end
+
+                it 'updates the user last activity', :redis do
+                  expect(user_activity(user)).to be_nil
+
+                  download(path, env) do |response|
+                    expect(user_activity(user)).to be_present
+                  end
+                end
               end
 
               context "when an oauth token is provided" do
@@ -398,10 +407,10 @@ describe 'Git HTTP requests', lib: true do
                   expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
                 end
 
-                it "uploads get status 401 (no project existence information leak)" do
+                it "uploads get status 200" do
                   push_get "#{project.path_with_namespace}.git", user: 'oauth2', password: @token.token
 
-                  expect(response).to have_http_status(401)
+                  expect(response).to have_http_status(200)
                 end
               end
 

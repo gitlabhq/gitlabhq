@@ -1,5 +1,0 @@
----
-title: 'Add `requirements: { id: /.+/ }` for all projects and groups namespaced API
-  routes'
-merge_request: 9944
-author:

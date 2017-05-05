@@ -33,14 +33,33 @@ module API
           end
         end
 
-        params :optional_params do
+        def find_merge_requests(args = {})
+          args = params.merge(args)
+
+          args[:milestone_title] = args.delete(:milestone)
+          args[:label_name] = args.delete(:labels)
+
+          merge_requests = MergeRequestsFinder.new(current_user, args).execute.inc_notes_with_associations
+
+          merge_requests.reorder(args[:order_by] => args[:sort])
+        end
+
+        params :optional_params_ce do
           optional :description, type: String, desc: 'The description of the merge request'
           optional :assignee_id, type: Integer, desc: 'The ID of a user to assign the merge request'
           optional :milestone_id, type: Integer, desc: 'The ID of a milestone to assign the merge request'
           optional :labels, type: String, desc: 'Comma-separated list of label names'
-          optional :approvals_before_merge, type: Integer, desc: 'Number of approvals required before this can be merged'
           optional :remove_source_branch, type: Boolean, desc: 'Remove source branch when merging'
+        end
+
+        params :optional_params_ee do
+          optional :approvals_before_merge, type: Integer, desc: 'Number of approvals required before this can be merged'
           optional :squash, type: Boolean, desc: 'Squash commits when merging'
+        end
+
+        params :optional_params do
+          use :optional_params_ce
+          use :optional_params_ee
         end
       end
 
@@ -55,23 +74,15 @@ module API
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
                         desc: 'Return merge requests sorted in `asc` or `desc` order.'
         optional :iids, type: Array[Integer], desc: 'The IID array of merge requests'
+        optional :milestone, type: String, desc: 'Return merge requests for a specific milestone'
+        optional :labels, type: String, desc: 'Comma-separated list of label names'
         use :pagination
       end
       get ":id/merge_requests" do
         authorize! :read_merge_request, user_project
 
-        merge_requests = user_project.merge_requests.inc_notes_with_associations
-        merge_requests = filter_by_iid(merge_requests, params[:iids]) if params[:iids].present?
+        merge_requests = find_merge_requests(project_id: user_project.id)
 
-        merge_requests =
-          case params[:state]
-          when 'opened' then merge_requests.opened
-          when 'closed' then merge_requests.closed
-          when 'merged' then merge_requests.merged
-          else merge_requests
-          end
-
-        merge_requests = merge_requests.reorder(params[:order_by] => params[:sort])
         present paginate(merge_requests), with: Entities::MergeRequestBasic, current_user: current_user, project: user_project
       end
 
@@ -147,14 +158,29 @@ module API
         success Entities::MergeRequest
       end
       params do
+        # CE
+        at_least_one_of_ce = [
+          :assignee_id,
+          :description,
+          :labels,
+          :milestone_id,
+          :remove_source_branch,
+          :state_event,
+          :target_branch,
+          :title
+        ]
         optional :title, type: String, allow_blank: false, desc: 'The title of the merge request'
         optional :target_branch, type: String, allow_blank: false, desc: 'The target branch'
         optional :state_event, type: String, values: %w[close reopen],
                                desc: 'Status of the merge request'
+
+        # EE
+        at_least_one_of_ee = [
+          :squash
+        ]
+
         use :optional_params
-        at_least_one_of :title, :target_branch, :description, :assignee_id,
-                        :milestone_id, :labels, :state_event,
-                        :remove_source_branch, :squash
+        at_least_one_of(*(at_least_one_of_ce + at_least_one_of_ee))
       end
       put ':id/merge_requests/:merge_request_iid' do
         merge_request = find_merge_request_with_access(params.delete(:merge_request_iid), :update_merge_request)
@@ -175,24 +201,28 @@ module API
         success Entities::MergeRequest
       end
       params do
+        # CE
         optional :merge_commit_message, type: String, desc: 'Custom merge commit message'
         optional :should_remove_source_branch, type: Boolean,
                                                desc: 'When true, the source branch will be deleted if possible'
         optional :merge_when_pipeline_succeeds, type: Boolean,
                                                 desc: 'When true, this merge request will be merged when the pipeline succeeds'
         optional :sha, type: String, desc: 'When present, must have the HEAD SHA of the source branch'
+
+        # EE
         optional :squash, type: Boolean, desc: 'When true, the commits will be squashed into a single commit on merge'
       end
       put ':id/merge_requests/:merge_request_iid/merge' do
         merge_request = find_project_merge_request(params[:merge_request_iid])
+        merge_when_pipeline_succeeds = to_boolean(params[:merge_when_pipeline_succeeds])
 
         # Merge request can not be merged
         # because user dont have permissions to push into target branch
         unauthorized! unless merge_request.can_be_merged_by?(current_user)
 
-        not_allowed! unless merge_request.mergeable_state?
+        not_allowed! unless merge_request.mergeable_state?(skip_ci_check: merge_when_pipeline_succeeds)
 
-        render_api_error!('Branch cannot be merged', 406) unless merge_request.mergeable?
+        render_api_error!('Branch cannot be merged', 406) unless merge_request.mergeable?(skip_ci_check: merge_when_pipeline_succeeds)
 
         if params[:sha] && merge_request.diff_head_sha != params[:sha]
           render_api_error!("SHA does not match HEAD of source branch: #{merge_request.diff_head_sha}", 409)
@@ -207,7 +237,7 @@ module API
           should_remove_source_branch: params[:should_remove_source_branch]
         }
 
-        if params[:merge_when_pipeline_succeeds] && merge_request.head_pipeline && merge_request.head_pipeline.active?
+        if merge_when_pipeline_succeeds && merge_request.head_pipeline && merge_request.head_pipeline.active?
           ::MergeRequests::MergeWhenPipelineSucceedsService
             .new(merge_request.target_project, current_user, merge_params)
             .execute(merge_request)

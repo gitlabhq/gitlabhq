@@ -1,9 +1,7 @@
 require 'spec_helper'
 
-describe API::Users, api: true do
-  include ApiHelpers
-
-  let(:user) { create(:user) }
+describe API::Users do
+  let(:user)  { create(:user) }
   let(:admin) { create(:admin) }
   let(:key) { create(:key, user: user) }
   let(:email) { create(:email, user: user) }
@@ -72,6 +70,12 @@ describe API::Users, api: true do
         expect(json_response).to be_an Array
         expect(json_response.first['username']).to eq(omniauth_user.username)
       end
+
+      it "returns a 403 when non-admin user searches by external UID" do
+        get api("/users?extern_uid=#{omniauth_user.identities.first.extern_uid}&provider=#{omniauth_user.identities.first.provider}", user)
+
+        expect(response).to have_http_status(403)
+      end
     end
 
     context "when admin" do
@@ -100,6 +104,27 @@ describe API::Users, api: true do
         expect(json_response).to be_an Array
         expect(json_response).to all(include('external' => true))
       end
+
+      it "returns one user by external UID" do
+        get api("/users?extern_uid=#{omniauth_user.identities.first.extern_uid}&provider=#{omniauth_user.identities.first.provider}", admin)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.size).to eq(1)
+        expect(json_response.first['username']).to eq(omniauth_user.username)
+      end
+
+      it "returns 400 error if provider with no extern_uid" do
+        get api("/users?extern_uid=#{omniauth_user.identities.first.extern_uid}", admin)
+
+        expect(response).to have_http_status(400)
+      end
+
+      it "returns 400 error if provider with no extern_uid" do
+        get api("/users?provider=#{omniauth_user.identities.first.provider}", admin)
+
+        expect(response).to have_http_status(400)
+      end
     end
 
     context "when authenticated and ldap is enabled" do
@@ -120,6 +145,12 @@ describe API::Users, api: true do
       get api("/users/#{user.id}", user)
       expect(response).to have_http_status(200)
       expect(json_response['username']).to eq(user.username)
+    end
+
+    it "does not return the user's `is_admin` flag" do
+      get api("/users/#{user.id}", user)
+
+      expect(json_response['is_admin']).to be_nil
     end
 
     it "returns a 401 if unauthenticated" do
@@ -384,7 +415,6 @@ describe API::Users, api: true do
     it "updates admin status" do
       put api("/users/#{user.id}", admin), { admin: true }
       expect(response).to have_http_status(200)
-      expect(json_response['is_admin']).to eq(true)
       expect(user.reload.admin).to eq(true)
     end
 
@@ -398,7 +428,6 @@ describe API::Users, api: true do
     it "does not update admin status" do
       put api("/users/#{admin_user.id}", admin), { can_create_group: false }
       expect(response).to have_http_status(200)
-      expect(json_response['is_admin']).to eq(true)
       expect(admin_user.reload.admin).to eq(true)
       expect(admin_user.can_create_group).to eq(false)
     end
@@ -892,7 +921,7 @@ describe API::Users, api: true do
         delete api("/user/keys/#{key.id}", user)
 
         expect(response).to have_http_status(204)
-      end.to change{user.keys.count}.by(-1)
+      end.to change { user.keys.count}.by(-1)
     end
 
     it "returns 404 if key ID not found" do
@@ -1001,7 +1030,7 @@ describe API::Users, api: true do
         delete api("/user/emails/#{email.id}", user)
 
         expect(response).to have_http_status(204)
-      end.to change{user.emails.count}.by(-1)
+      end.to change { user.emails.count}.by(-1)
     end
 
     it "returns 404 if email ID not found" do

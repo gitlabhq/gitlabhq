@@ -5,8 +5,7 @@
       - left = line[:left]
       - right = line[:right]
       - last_line = right.new_pos if right
-      - unless @diff_notes_disabled
-        - discussions_left, discussions_right = parallel_diff_discussions(left, right, diff_file)
+      - discussions_left, discussions_right = parallel_diff_discussions(left, right, diff_file)
       %tr.line_holder.parallel
         - if left
           - case left.type

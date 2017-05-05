@@ -15,6 +15,9 @@ By default, a protected branch does four simple things:
 - it prevents **anyone** from force pushing to the branch
 - it prevents **anyone** from deleting the branch
 
+**Note**: A GitLab admin is allowed to push to the protected branches. 
+
+
 See the [Changelog](#changelog) section for changes over time.
 
 >

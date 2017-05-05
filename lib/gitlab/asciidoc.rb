@@ -14,27 +14,15 @@ module Gitlab
     # Public: Converts the provided Asciidoc markup into HTML.
     #
     # input         - the source text in Asciidoc format
-    # context       - a Hash with the template context:
-    #                 :commit
-    #                 :project
-    #                 :project_wiki
-    #                 :requested_path
-    #                 :ref
-    # asciidoc_opts - a Hash of options to pass to the Asciidoctor converter
     #
-    def self.render(input, context, asciidoc_opts = {})
-      asciidoc_opts.reverse_merge!(
-        safe: :secure,
-        backend: :gitlab_html5,
-        attributes: []
-      )
-      asciidoc_opts[:attributes].unshift(*DEFAULT_ADOC_ATTRS)
+    def self.render(input)
+      asciidoc_opts = { safe: :secure,
+                        backend: :gitlab_html5,
+                        attributes: DEFAULT_ADOC_ATTRS }
 
       plantuml_setup
 
       html = ::Asciidoctor.convert(input, asciidoc_opts)
-
-      html = Banzai.post_process(html, context)
 
       filter = Banzai::Filter::SanitizationFilter.new(html)
       html = filter.call.to_s

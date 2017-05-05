@@ -61,6 +61,9 @@ module Projects
         fail(error: @project.errors.full_messages.join(', '))
       end
       @project
+    rescue ActiveRecord::RecordInvalid => e
+      message = "Unable to save #{e.record.type}: #{e.record.errors.full_messages.join(", ")} "
+      fail(error: message)
     rescue => e
       fail(error: e.message)
     end
@@ -97,7 +100,8 @@ module Projects
       system_hook_service.execute_hooks_for(@project, :create)
 
       unless @project.group || @project.gitlab_project_import?
-        @project.team << [current_user, :master, current_user]
+        owners = [current_user, @project.namespace.owner].compact.uniq
+        @project.add_master(owners, current_user: current_user)
       end
 
       predefined_push_rule = PushRule.find_by(is_sample: true)

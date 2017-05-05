@@ -1,6 +1,32 @@
 module MembershipActions
   extend ActiveSupport::Concern
 
+  def create
+    status = Members::CreateService.new(membershipable, current_user, params).execute
+
+    redirect_url = members_page_url
+
+    if status
+      redirect_to redirect_url, notice: 'Users were successfully added.'
+    else
+      redirect_to redirect_url, alert: 'No users specified.'
+    end
+  end
+
+  def destroy
+    Members::DestroyService.new(membershipable, current_user, params).
+      execute(:all)
+
+    respond_to do |format|
+      format.html do
+        message = "User was successfully removed from #{source_type}."
+        redirect_to members_page_url, notice: message
+      end
+
+      format.js { head :ok }
+    end
+  end
+
   def request_access
     membershipable.request_access(current_user)
 
@@ -13,14 +39,13 @@ module MembershipActions
 
     log_audit_event(member, action: :create)
 
-    redirect_to polymorphic_url([membershipable, :members])
+    redirect_to members_page_url
   end
 
   def leave
     member = Members::DestroyService.new(membershipable, current_user, user_id: current_user.id).
       execute(:all)
 
-    source_type = membershipable.class.to_s.humanize(capitalize: false)
     notice =
       if member.request?
         "Your access request to the #{source_type} has been withdrawn."
@@ -44,5 +69,17 @@ module MembershipActions
   def log_audit_event(member, options = {})
     AuditEventService.new(current_user, membershipable, options)
       .for_member(member).security_event
+  end
+
+  def members_page_url
+    if membershipable.is_a?(Project)
+      project_settings_members_path(membershipable)
+    else
+      polymorphic_url([membershipable, :members])
+    end
+  end
+
+  def source_type
+    @source_type ||= membershipable.class.to_s.humanize(capitalize: false)
   end
 end

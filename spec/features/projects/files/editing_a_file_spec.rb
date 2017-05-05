@@ -1,14 +1,12 @@
 require 'spec_helper'
 
 feature 'User wants to edit a file', feature: true do
-  include WaitForAjax
-
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:commit_params) do
     {
       start_branch: project.default_branch,
-      target_branch: project.default_branch,
+      branch_name: project.default_branch,
       commit_message: "Committing First Update",
       file_path: ".gitignore",
       file_content: "First Update",

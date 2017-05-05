@@ -3,7 +3,7 @@ require 'spec_helper'
 describe ProjectUpdateRepositoryStorageWorker do
   let(:project) { create(:project) }
 
-  subject { ProjectUpdateRepositoryStorageWorker.new }
+  subject { described_class.new }
 
   describe "#perform" do
     it "should call the update repository storage service" do

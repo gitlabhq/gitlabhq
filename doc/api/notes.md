@@ -14,7 +14,7 @@ GET /projects/:id/issues/:issue_iid/notes
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `issue_iid` (required) - The IID of an issue
 
 ```json
@@ -68,7 +68,7 @@ GET /projects/:id/issues/:issue_iid/notes/:note_id
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `issue_iid` (required) - The IID of a project issue
 - `note_id` (required) - The ID of an issue note
 
@@ -83,7 +83,7 @@ POST /projects/:id/issues/:issue_iid/notes
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `issue_id` (required) - The IID of an issue
 - `body` (required) - The content of a note
 - `created_at` (optional) - Date time string, ISO 8601 formatted, e.g. 2016-03-11T03:45:40Z
@@ -98,7 +98,7 @@ PUT /projects/:id/issues/:issue_iid/notes/:note_id
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `issue_iid` (required) - The IID of an issue
 - `note_id` (required) - The ID of a note
 - `body` (required) - The content of a note
@@ -115,7 +115,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a project |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `issue_iid` | integer | yes | The IID of an issue |
 | `note_id` | integer | yes | The ID of a note |
 
@@ -135,7 +135,7 @@ GET /projects/:id/snippets/:snippet_id/notes
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `snippet_id` (required) - The ID of a project snippet
 
 ### Get single snippet note
@@ -148,7 +148,7 @@ GET /projects/:id/snippets/:snippet_id/notes/:note_id
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `snippet_id` (required) - The ID of a project snippet
 - `note_id` (required) - The ID of an snippet note
 
@@ -182,7 +182,7 @@ POST /projects/:id/snippets/:snippet_id/notes
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `snippet_id` (required) - The ID of a snippet
 - `body` (required) - The content of a note
 
@@ -196,7 +196,7 @@ PUT /projects/:id/snippets/:snippet_id/notes/:note_id
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `snippet_id` (required) - The ID of a snippet
 - `note_id` (required) - The ID of a note
 - `body` (required) - The content of a note
@@ -213,7 +213,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a project |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `snippet_id` | integer | yes | The ID of a snippet |
 | `note_id` | integer | yes | The ID of a note |
 
@@ -233,7 +233,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/notes
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `merge_request_iid` (required) - The IID of a project merge request
 
 ### Get single merge request note
@@ -246,7 +246,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/notes/:note_id
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `merge_request_iid` (required) - The IID of a project merge request
 - `note_id` (required) - The ID of a merge request note
 
@@ -283,7 +283,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/notes
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `merge_request_iid` (required) - The IID of a merge request
 - `body` (required) - The content of a note
 
@@ -297,7 +297,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid/notes/:note_id
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `merge_request_iid` (required) - The IID of a merge request
 - `note_id` (required) - The ID of a note
 - `body` (required) - The content of a note
@@ -314,7 +314,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a project |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `merge_request_iid` | integer | yes | The IID of a merge request |
 | `note_id` | integer | yes | The ID of a note |
 

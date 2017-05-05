@@ -55,7 +55,7 @@ module Elastic
 
         commits = response.map do |result|
           sha = result["_source"]["commit"]["sha"]
-          project_id = result["_source"]["commit"]["rid"]
+          project_id = result["_source"]["commit"]["rid"].to_i
 
           projects[project_id].try(:commit, sha)
         end.compact

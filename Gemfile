@@ -12,10 +12,12 @@ gem 'sprockets', '~> 3.7.0'
 gem 'default_value_for', '~> 3.0.0'
 
 # Supported DBs
-gem 'mysql2', '~> 0.3.16', group: :mysql
+gem 'mysql2', '~> 0.4.5', group: :mysql
 gem 'pg', '~> 0.18.2', group: :postgres
 
 gem 'rugged', '~> 0.25.1.1'
+
+gem 'faraday', '~> 0.11.0'
 
 # Authentication libraries
 gem 'devise', '~> 4.2'
@@ -75,6 +77,9 @@ gem 'grape', '~> 0.19.0'
 gem 'grape-entity', '~> 0.6.0'
 gem 'rack-cors', '~> 0.4.0', require: 'rack/cors'
 
+# Disable strong_params so that Mash does not respond to :permitted?
+gem 'hashie-forbidden_attributes'
+
 # Pagination
 gem 'kaminari', '~> 0.17.0'
 
@@ -108,7 +113,6 @@ gem 'seed-fu', '~> 2.3.5'
 gem 'elasticsearch-model', '~> 0.1.9'
 gem 'elasticsearch-rails', '~> 0.1.9'
 gem 'elasticsearch-api',   '5.0.3'
-gem 'gitlab-elasticsearch-git', '1.1.1', require: "elasticsearch/git"
 gem 'aws-sdk'
 gem 'faraday_middleware-aws-signers-v4'
 
@@ -149,10 +153,13 @@ gem 'after_commit_queue', '~> 1.3.0'
 gem 'acts-as-taggable-on', '~> 4.0'
 
 # Background jobs
-gem 'sidekiq', '~> 4.2.7'
+gem 'sidekiq', '~> 5.0'
 gem 'sidekiq-cron', '~> 0.4.4'
 gem 'redis-namespace', '~> 1.5.2'
 gem 'sidekiq-limit_fetch', '~> 3.4'
+
+# Cron Parser
+gem 'rufus-scheduler', '~> 3.1.10'
 
 # HTTP requests
 gem 'httparty', '~> 0.13.3'
@@ -190,7 +197,7 @@ gem 'gemnasium-gitlab-service', '~> 0.2'
 gem 'slack-notifier', '~> 1.5.1'
 
 # Asana integration
-gem 'asana', '~> 0.4.0'
+gem 'asana', '~> 0.6.0'
 
 # FogBugz integration
 gem 'ruby-fogbugz', '~> 0.2.1'
@@ -296,6 +303,7 @@ group :development, :test do
   gem 'spinach-rails', '~> 0.2.1'
   gem 'spinach-rerun-reporter', '~> 0.0.2'
   gem 'rspec_profiling', '~> 0.0.5'
+  gem 'rspec-set', '~> 0.1.3'
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
   gem 'minitest', '~> 5.7.0'
@@ -350,7 +358,7 @@ gem 'html2text'
 gem 'ruby-prof', '~> 0.16.2'
 
 # OAuth
-gem 'oauth2', '~> 1.2.0'
+gem 'oauth2', '~> 1.3.0'
 
 # Soft deletion
 gem 'paranoia', '~> 2.2'
@@ -364,3 +372,5 @@ gem 'sys-filesystem', '~> 1.1.6'
 
 # Gitaly GRPC client
 gem 'gitaly', '~> 0.5.0'
+
+gem 'toml-rb', '~> 0.3.15', require: false

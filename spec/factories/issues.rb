@@ -8,8 +8,13 @@ FactoryGirl.define do
       confidential true
     end
 
+    trait :opened do
+      state :opened
+    end
+
     trait :closed do
       state :closed
+      closed_at Time.now
     end
 
     trait :reopened do

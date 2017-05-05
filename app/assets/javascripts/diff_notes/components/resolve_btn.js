@@ -5,117 +5,119 @@
 
 import Vue from 'vue';
 
-(() => {
-  const ResolveBtn = Vue.extend({
-    props: {
-      noteId: Number,
-      discussionId: String,
-      resolved: Boolean,
-      canResolve: Boolean,
-      resolvedBy: String,
-      authorName: String,
-      authorAvatar: String,
-      noteTruncated: String,
-    },
-    data: function () {
-      return {
-        discussions: CommentsStore.state,
-        loading: false,
-        note: {},
-      };
-    },
-    watch: {
-      'discussions': {
-        handler: 'updateTooltip',
-        deep: true
-      }
-    },
-    computed: {
-      discussion: function () {
-        return this.discussions[this.discussionId];
-      },
-      buttonText: function () {
-        if (this.isResolved) {
-          return `Resolved by ${this.resolvedByName}`;
-        } else if (this.canResolve) {
-          return 'Mark as resolved';
-        } else {
-          return 'Unable to resolve';
-        }
-      },
-      isResolved: function () {
-        if (this.note) {
-          return this.note.resolved;
-        } else {
-          return false;
-        }
-      },
-      resolvedByName: function () {
-        return this.note.resolved_by;
-      },
-    },
-    methods: {
-      updateTooltip: function () {
-        this.$nextTick(() => {
-          $(this.$refs.button)
-            .tooltip('hide')
-            .tooltip('fixTitle');
-        });
-      },
-      resolve: function () {
-        if (!this.canResolve) return;
-
-        let promise;
-        this.loading = true;
-
-        if (this.isResolved) {
-          promise = ResolveService
-            .unresolve(this.noteId);
-        } else {
-          promise = ResolveService
-            .resolve(this.noteId);
-        }
-
-        promise.then((response) => {
-          this.loading = false;
-
-          if (response.status === 200) {
-            const data = response.json();
-            const resolved_by = data ? data.resolved_by : null;
-
-            CommentsStore.update(this.discussionId, this.noteId, !this.isResolved, resolved_by);
-            this.discussion.updateHeadline(data);
-          } else {
-            new Flash('An error occurred when trying to resolve a comment. Please try again.', 'alert');
-          }
-
-          this.updateTooltip();
-        });
-      }
-    },
-    mounted: function () {
-      $(this.$refs.button).tooltip({
-        container: 'body'
-      });
-    },
-    beforeDestroy: function () {
-      CommentsStore.delete(this.discussionId, this.noteId);
-    },
-    created: function () {
-      CommentsStore.create({
-        discussionId: this.discussionId,
-        noteId: this.noteId,
-        canResolve: this.canResolve,
-        resolved: this.resolved,
-        resolvedBy: this.resolvedBy,
-        authorName: this.authorName,
-        authorAvatar: this.authorAvatar,
-        noteTruncated: this.noteTruncated,
-      });
-
-      this.note = this.discussion.getNote(this.noteId);
+const ResolveBtn = Vue.extend({
+  props: {
+    noteId: Number,
+    discussionId: String,
+    resolved: Boolean,
+    canResolve: Boolean,
+    resolvedBy: String,
+    authorName: String,
+    authorAvatar: String,
+    noteTruncated: String,
+  },
+  data: function () {
+    return {
+      discussions: CommentsStore.state,
+      loading: false
+    };
+  },
+  watch: {
+    'discussions': {
+      handler: 'updateTooltip',
+      deep: true
     }
-  });
+  },
+  computed: {
+    discussion: function () {
+      return this.discussions[this.discussionId];
+    },
+    note: function () {
+      return this.discussion ? this.discussion.getNote(this.noteId) : {};
+    },
+    buttonText: function () {
+      if (this.isResolved) {
+        return `Resolved by ${this.resolvedByName}`;
+      } else if (this.canResolve) {
+        return 'Mark as resolved';
+      } else {
+        return 'Unable to resolve';
+      }
+    },
+    isResolved: function () {
+      if (this.note) {
+        return this.note.resolved;
+      } else {
+        return false;
+      }
+    },
+    resolvedByName: function () {
+      return this.note.resolved_by;
+    },
+  },
+  methods: {
+    updateTooltip: function () {
+      this.$nextTick(() => {
+        $(this.$refs.button)
+          .tooltip('hide')
+          .tooltip('fixTitle');
+      });
+    },
+    resolve: function () {
+      const errorFlashMsg = 'An error occurred when trying to resolve a comment. Please try again.';
 
-  Vue.component('resolve-btn', ResolveBtn);
-})();
+      if (!this.canResolve) return;
+
+      let promise;
+      this.loading = true;
+
+      if (this.isResolved) {
+        promise = ResolveService
+          .unresolve(this.noteId);
+      } else {
+        promise = ResolveService
+          .resolve(this.noteId);
+      }
+
+      promise.then((response) => {
+        this.loading = false;
+
+        if (response.status === 200) {
+          const data = response.json();
+          const resolved_by = data ? data.resolved_by : null;
+
+          CommentsStore.update(this.discussionId, this.noteId, !this.isResolved, resolved_by);
+          this.discussion.updateHeadline(data);
+        } else {
+          new Flash(errorFlashMsg);
+        }
+
+        this.updateTooltip();
+      }).catch(() => {
+        new Flash(errorFlashMsg);
+      });
+    }
+  },
+  mounted: function () {
+    $(this.$refs.button).tooltip({
+      container: 'body'
+    });
+  },
+  beforeDestroy: function () {
+    CommentsStore.delete(this.discussionId, this.noteId);
+  },
+  created: function () {
+    CommentsStore.create({
+      discussionId: this.discussionId,
+      noteId: this.noteId,
+      canResolve: this.canResolve,
+      resolved: this.resolved,
+      resolvedBy: this.resolvedBy,
+      authorName: this.authorName,
+      authorAvatar: this.authorAvatar,
+      noteTruncated: this.noteTruncated,
+    });
+  }
+});
+
+Vue.component('resolve-btn', ResolveBtn);

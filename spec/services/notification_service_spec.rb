@@ -1216,6 +1216,22 @@ describe NotificationService, services: true do
         should_not_email(@u_disabled)
       end
     end
+
+    describe '#project_exported' do
+      it do
+        notification.project_exported(project, @u_disabled)
+
+        should_only_email(@u_disabled)
+      end
+    end
+
+    describe '#project_not_exported' do
+      it do
+        notification.project_not_exported(project, @u_disabled, ['error'])
+
+        should_only_email(@u_disabled)
+      end
+    end
   end
 
   describe 'GroupMember' do

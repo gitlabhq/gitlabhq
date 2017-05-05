@@ -18,7 +18,7 @@ describe MergeRequests::FfMergeService do
 
   describe '#execute' do
     context 'valid params' do
-      let(:service) { MergeRequests::FfMergeService.new(project, user, {}) }
+      let(:service) { described_class.new(project, user, {}) }
 
       before do
         allow(service).to receive(:execute_hooks)
@@ -50,7 +50,7 @@ describe MergeRequests::FfMergeService do
     end
 
     context "error handling" do
-      let(:service) { MergeRequests::FfMergeService.new(project, user, commit_message: 'Awesome message') }
+      let(:service) { described_class.new(project, user, commit_message: 'Awesome message') }
 
       before do
         allow(Rails.logger).to receive(:error)

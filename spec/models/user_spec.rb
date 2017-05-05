@@ -24,9 +24,7 @@ describe User, models: true do
     it { is_expected.to have_many(:recent_events).class_name('Event') }
     it { is_expected.to have_many(:issues).dependent(:restrict_with_exception) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
-    it { is_expected.to have_many(:assigned_issues).dependent(:nullify) }
     it { is_expected.to have_many(:merge_requests).dependent(:destroy) }
-    it { is_expected.to have_many(:assigned_merge_requests).dependent(:nullify) }
     it { is_expected.to have_many(:identities).dependent(:destroy) }
     it { is_expected.to have_many(:spam_logs).dependent(:destroy) }
     it { is_expected.to have_many(:todos).dependent(:destroy) }
@@ -102,6 +100,18 @@ describe User, models: true do
 
         expect(user).not_to be_valid
         expect(user.errors.values).to eq [['dashboard is a reserved name']]
+      end
+
+      it 'allows child names' do
+        user = build(:user, username: 'avatar')
+
+        expect(user).to be_valid
+      end
+
+      it 'allows wildcard names' do
+        user = build(:user, username: 'blob')
+
+        expect(user).to be_valid
       end
 
       it 'validates uniqueness' do
@@ -1508,6 +1518,17 @@ describe User, models: true do
     it { expect(user.nested_groups).to eq([nested_group]) }
   end
 
+  describe '#all_expanded_groups' do
+    let!(:user) { create(:user) }
+    let!(:group) { create(:group) }
+    let!(:nested_group_1) { create(:group, parent: group) }
+    let!(:nested_group_2) { create(:group, parent: group) }
+
+    before { nested_group_1.add_owner(user) }
+
+    it { expect(user.all_expanded_groups).to match_array [group, nested_group_1] }
+  end
+
   describe '#nested_groups_projects' do
     let!(:user) { create(:user) }
     let!(:group) { create(:group) }
@@ -1761,6 +1782,90 @@ describe User, models: true do
         expect(ghost).to be_persisted
         expect(ghost.email).to eq('ghost1@example.com')
       end
+    end
+  end
+
+  describe '#update_two_factor_requirement' do
+    let(:user) { create :user }
+
+    context 'with 2FA requirement on groups' do
+      let(:group1) { create :group, require_two_factor_authentication: true, two_factor_grace_period: 23 }
+      let(:group2) { create :group, require_two_factor_authentication: true, two_factor_grace_period: 32 }
+
+      before do
+        group1.add_user(user, GroupMember::OWNER)
+        group2.add_user(user, GroupMember::OWNER)
+
+        user.update_two_factor_requirement
+      end
+
+      it 'requires 2FA' do
+        expect(user.require_two_factor_authentication_from_group).to be true
+      end
+
+      it 'uses the shortest grace period' do
+        expect(user.two_factor_grace_period).to be 23
+      end
+    end
+
+    context 'with 2FA requirement on nested parent group' do
+      let!(:group1) { create :group, require_two_factor_authentication: true }
+      let!(:group1a) { create :group, require_two_factor_authentication: false, parent: group1 }
+
+      before do
+        group1a.add_user(user, GroupMember::OWNER)
+
+        user.update_two_factor_requirement
+      end
+
+      it 'requires 2FA' do
+        expect(user.require_two_factor_authentication_from_group).to be true
+      end
+    end
+
+    context 'with 2FA requirement on nested child group' do
+      let!(:group1) { create :group, require_two_factor_authentication: false }
+      let!(:group1a) { create :group, require_two_factor_authentication: true, parent: group1 }
+
+      before do
+        group1.add_user(user, GroupMember::OWNER)
+
+        user.update_two_factor_requirement
+      end
+
+      it 'requires 2FA' do
+        expect(user.require_two_factor_authentication_from_group).to be true
+      end
+    end
+
+    context 'without 2FA requirement on groups' do
+      let(:group) { create :group }
+
+      before do
+        group.add_user(user, GroupMember::OWNER)
+
+        user.update_two_factor_requirement
+      end
+
+      it 'does not require 2FA' do
+        expect(user.require_two_factor_authentication_from_group).to be false
+      end
+
+      it 'falls back to the default grace period' do
+        expect(user.two_factor_grace_period).to be 48
+      end
+    end
+  end
+
+  context '.active' do
+    before do
+      User.ghost
+      create(:user, name: 'user', state: 'active')
+      create(:user, name: 'user', state: 'blocked')
+    end
+
+    it 'only counts active and non internal users' do
+      expect(User.active.count).to eq(1)
     end
   end
 end

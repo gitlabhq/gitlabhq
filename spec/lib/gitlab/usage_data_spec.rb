@@ -20,8 +20,9 @@ describe Gitlab::UsageData do
         licensee
         license_md5
         recorded_at
-        version
         mattermost_enabled
+        edition
+        version
         uuid
       ))
     end
@@ -68,7 +69,7 @@ describe Gitlab::UsageData do
     end
   end
 
-  describe '.license_usage_data' do
+  describe '#license_usage_data' do
     subject { described_class.license_usage_data }
 
     it "gathers license data" do

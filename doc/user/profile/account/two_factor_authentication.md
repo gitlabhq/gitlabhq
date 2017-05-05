@@ -143,7 +143,7 @@ into the password field.
 To disable two-factor authentication on your account (for example, if you
 have lost your code generation device) you can:
 * [Use a saved recovery code](#use-a-saved-recovery-code)
-* [Generate new recovery codes using SSH](#generate-new-recovery-codes-using-SSH)
+* [Generate new recovery codes using SSH](#generate-new-recovery-codes-using-ssh)
 * [Ask a GitLab administrator to disable two-factor authentication on your account](#ask-a-gitlab-administrator-to-disable-two-factor-authentication-on-your-account)
 
 ### Use a saved recovery code

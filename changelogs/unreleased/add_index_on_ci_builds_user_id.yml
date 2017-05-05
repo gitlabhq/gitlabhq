@@ -1,0 +1,4 @@
+---
+title: Add index on ci_builds.user_id
+merge_request: 10874
+author: blackst0ne

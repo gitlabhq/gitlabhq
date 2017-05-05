@@ -6,7 +6,10 @@ import statusCodes from '~/lib/utils/http_status';
 import { formatRelevantDigits } from '~/lib/utils/number_utils';
 import '../flash';
 
+const prometheusContainer = '.prometheus-container';
+const prometheusParentGraphContainer = '.prometheus-graphs';
 const prometheusGraphsContainer = '.prometheus-graph';
+const prometheusStatesContainer = '.prometheus-state';
 const metricsEndpoint = 'metrics.json';
 const timeFormat = d3.time.format('%H:%M');
 const dayFormat = d3.time.format('%b %e, %a');
@@ -14,19 +17,32 @@ const bisectDate = d3.bisector(d => d.time).left;
 const extraAddedWidthParent = 100;
 
 class PrometheusGraph {
-
   constructor() {
-    this.margin = { top: 80, right: 180, bottom: 80, left: 100 };
-    this.marginLabelContainer = { top: 40, right: 0, bottom: 40, left: 0 };
-    const parentContainerWidth = $(prometheusGraphsContainer).parent().width() +
-    extraAddedWidthParent;
-    this.originalWidth = parentContainerWidth;
-    this.originalHeight = 330;
-    this.width = parentContainerWidth - this.margin.left - this.margin.right;
-    this.height = this.originalHeight - this.margin.top - this.margin.bottom;
-    this.backOffRequestCounter = 0;
-    this.configureGraph();
-    this.init();
+    const $prometheusContainer = $(prometheusContainer);
+    const hasMetrics = $prometheusContainer.data('has-metrics');
+    this.docLink = $prometheusContainer.data('doc-link');
+    this.integrationLink = $prometheusContainer.data('prometheus-integration');
+    this.state = '';
+
+    $(document).ajaxError(() => {});
+
+    if (hasMetrics) {
+      this.margin = { top: 80, right: 180, bottom: 80, left: 100 };
+      this.marginLabelContainer = { top: 40, right: 0, bottom: 40, left: 0 };
+      const parentContainerWidth = $(prometheusGraphsContainer).parent().width() +
+      extraAddedWidthParent;
+      this.originalWidth = parentContainerWidth;
+      this.originalHeight = 330;
+      this.width = parentContainerWidth - this.margin.left - this.margin.right;
+      this.height = this.originalHeight - this.margin.top - this.margin.bottom;
+      this.backOffRequestCounter = 0;
+      this.configureGraph();
+      this.init();
+    } else {
+      const prevState = this.state;
+      this.state = '.js-getting-started';
+      this.updateState(prevState);
+    }
   }
 
   createGraph() {
@@ -39,10 +55,23 @@ class PrometheusGraph {
   }
 
   init() {
-    this.getData().then((metricsResponse) => {
-      if (Object.keys(metricsResponse).length === 0) {
-        new Flash('Empty metrics', 'alert');
+    return this.getData().then((metricsResponse) => {
+      let enoughData = true;
+      if (typeof metricsResponse === 'undefined') {
+        enoughData = false;
       } else {
+        Object.keys(metricsResponse.metrics).forEach((key) => {
+          if (key === 'cpu_values' || key === 'memory_values') {
+            const currentData = (metricsResponse.metrics[key])[0];
+            if (currentData.values.length <= 2) {
+              enoughData = false;
+            }
+          }
+        });
+      }
+      if (enoughData) {
+        $(prometheusStatesContainer).hide();
+        $(prometheusParentGraphContainer).show();
         this.transformData(metricsResponse);
         this.createGraph();
       }
@@ -315,6 +344,8 @@ class PrometheusGraph {
 
   getData() {
     const maxNumberOfRequests = 3;
+    this.state = '.js-loading';
+    this.updateState();
     return gl.utils.backOff((next, stop) => {
       $.ajax({
         url: metricsEndpoint,
@@ -325,12 +356,11 @@ class PrometheusGraph {
           this.backOffRequestCounter = this.backOffRequestCounter += 1;
           if (this.backOffRequestCounter < maxNumberOfRequests) {
             next();
-          } else {
-            stop({
-              status: resp.status,
-              metrics: data,
-            });
+          } else if (this.backOffRequestCounter >= maxNumberOfRequests) {
+            stop(new Error('loading'));
           }
+        } else if (!data.success) {
+          stop(new Error('loading'));
         } else {
           stop({
             status: resp.status,
@@ -345,21 +375,33 @@ class PrometheusGraph {
       }
       return resp.metrics;
     })
-    .catch(() => new Flash('An error occurred while fetching metrics.', 'alert'));
+    .catch(() => {
+      const prevState = this.state;
+      this.state = '.js-unable-to-connect';
+      this.updateState(prevState);
+    });
   }
 
   transformData(metricsResponse) {
     Object.keys(metricsResponse.metrics).forEach((key) => {
       if (key === 'cpu_values' || key === 'memory_values') {
         const metricValues = (metricsResponse.metrics[key])[0];
-        if (typeof metricValues !== 'undefined') {
-          this.graphSpecificProperties[key].data = metricValues.values.map(metric => ({
-            time: new Date(metric[0] * 1000),
-            value: metric[1],
-          }));
-        }
+        this.graphSpecificProperties[key].data = metricValues.values.map(metric => ({
+          time: new Date(metric[0] * 1000),
+          value: metric[1],
+        }));
       }
     });
+  }
+
+  updateState(prevState) {
+    const $statesContainer = $(prometheusStatesContainer);
+    $(prometheusParentGraphContainer).hide();
+    if (prevState) {
+      $(`${prevState}`, $statesContainer).addClass('hidden');
+    }
+    $(`${this.state}`, $statesContainer).removeClass('hidden');
+    $(prometheusStatesContainer).show();
   }
 }
 

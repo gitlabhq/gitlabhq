@@ -34,7 +34,7 @@ Keep track of the progress during a code review with resolving comments.
 Resolving comments prevents you from forgetting to address feedback and lets
 you hide discussions that are no longer relevant.
 
-[Read more about resolving discussion comments in merge requests reviews.](merge_request_discussion_resolution.md)
+[Read more about resolving discussion comments in merge requests reviews.](../../discussions/index.md)
 
 ## Squash and merge
 

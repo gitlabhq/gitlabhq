@@ -3,10 +3,15 @@ class GroupMember < Member
 
   belongs_to :group, foreign_key: 'source_id'
 
+  delegate :update_two_factor_requirement, to: :user
+
   # Make sure group member points only to group as it source
   default_value_for :source_type, SOURCE_TYPE
   validates :source_type, format: { with: /\ANamespace\z/ }
   default_scope { where(source_type: SOURCE_TYPE) }
+
+  after_create :update_two_factor_requirement, unless: :invite?
+  after_destroy :update_two_factor_requirement, unless: :invite?
 
   scope :with_ldap_dn, -> { joins(user: :identities).where("identities.provider LIKE ?", 'ldap%') }
   scope :with_identity_provider, ->(provider) do
@@ -19,18 +24,6 @@ class GroupMember < Member
 
   def self.access_levels
     Gitlab::Access.sym_options_with_owner
-  end
-
-  def self.add_users_to_group(group, users, access_level, current_user: nil, expires_at: nil)
-    self.transaction do
-      add_users_to_source(
-        group,
-        users,
-        access_level,
-        current_user: current_user,
-        expires_at: expires_at
-      )
-    end
   end
 
   def group

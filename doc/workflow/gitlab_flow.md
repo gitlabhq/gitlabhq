@@ -323,6 +323,5 @@ Merging only when needed prevents creating merge commits in your feature branch 
 
 ## References
 
-- [Sketch file](https://www.dropbox.com/s/58dvsj5votbwrzv/git_flows.sketch?dl=0) with vectors of images in this article
 - [Git Flow by Vincent Driessen](http://nvie.com/posts/a-successful-git-branching-model/)
 - [Blog post with responses](https://about.gitlab.com/2014/09/29/gitlab-flow/)

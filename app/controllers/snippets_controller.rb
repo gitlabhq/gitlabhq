@@ -1,7 +1,9 @@
 class SnippetsController < ApplicationController
+  include RendersNotes
   include ToggleAwardEmoji
   include SpammableActions
   include SnippetsActions
+  include MarkdownPreview
 
   before_action :snippet, only: [:show, :edit, :destroy, :update, :raw, :download]
 
@@ -59,6 +61,10 @@ class SnippetsController < ApplicationController
   end
 
   def show
+    @noteable = @snippet
+
+    @discussions = @snippet.discussions
+    @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes))
   end
 
   def destroy
@@ -75,6 +81,10 @@ class SnippetsController < ApplicationController
       type: 'text/plain; charset=utf-8',
       filename: @snippet.sanitized_file_name
     )
+  end
+
+  def preview_markdown
+    render_markdown_preview(params[:text], skip_project_check: true)
   end
 
   protected

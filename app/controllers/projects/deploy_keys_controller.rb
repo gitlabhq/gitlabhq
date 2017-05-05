@@ -38,9 +38,8 @@ class Projects::DeployKeysController < Projects::ApplicationController
     deploy_key_project = @project.deploy_keys_projects.find_by(deploy_key_id: params[:id])
     return render_404 unless deploy_key_project
 
-    deploy_key_project.destroy!
-
     load_key
+    deploy_key_project.destroy!
     log_audit_event(@key.title, action: :destroy)
 
     redirect_to_repository_settings(@project)

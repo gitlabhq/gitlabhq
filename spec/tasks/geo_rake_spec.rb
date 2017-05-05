@@ -10,6 +10,7 @@ describe 'geo rake tasks' do
 
     before do
       expect(Gitlab::Geo).to receive(:license_allows?).and_return(true)
+      stub_config_setting(protocol: 'https')
     end
 
     it 'creates a GeoNode' do
@@ -25,6 +26,7 @@ describe 'geo rake tasks' do
 
         expect(GeoNode.count).to eq(1)
         node = GeoNode.first
+        expect(node.schema).to eq('https')
         expect(node.primary).to be_truthy
         expect(node.geo_node_key.key).to eq(ssh_key)
       ensure

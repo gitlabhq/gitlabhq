@@ -1,4 +1,0 @@
----
-title: Return 404 instead of a 500 error on API status endpoint if Geo tracking DB is not enabled
-merge_request:
-author:

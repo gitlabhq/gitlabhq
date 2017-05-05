@@ -8,6 +8,10 @@ module Gitlab
     class Repository
       include Gitlab::Git::Popen
 
+      ALLOWED_OBJECT_DIRECTORIES_VARIABLES = %w[
+        GIT_OBJECT_DIRECTORY
+        GIT_ALTERNATE_OBJECT_DIRECTORIES
+      ].freeze
       SEARCH_CONTEXT_LINES = 3
 
       NoRepository = Class.new(StandardError)
@@ -41,15 +45,13 @@ module Gitlab
 
       # Default branch in the repository
       def root_ref
-        @root_ref ||= Gitlab::GitalyClient.migrate(:root_ref) do |is_enabled|
+        @root_ref ||= gitaly_migrate(:root_ref) do |is_enabled|
           if is_enabled
             gitaly_ref_client.default_branch_name
           else
             discover_default_branch
           end
         end
-      rescue GRPC::BadStatus => e
-        raise CommandError.new(e)
       end
 
       # Alias to old method for compatibility
@@ -58,7 +60,7 @@ module Gitlab
       end
 
       def rugged
-        @rugged ||= Rugged::Repository.new(path)
+        @rugged ||= Rugged::Repository.new(path, alternates: alternate_object_directories)
       rescue Rugged::RepositoryError, Rugged::OSError
         raise NoRepository.new('no repository for such path')
       end
@@ -66,15 +68,13 @@ module Gitlab
       # Returns an Array of branch names
       # sorted by name ASC
       def branch_names
-        Gitlab::GitalyClient.migrate(:branch_names) do |is_enabled|
+        gitaly_migrate(:branch_names) do |is_enabled|
           if is_enabled
             gitaly_ref_client.branch_names
           else
             branches.map(&:name)
           end
         end
-      rescue GRPC::BadStatus => e
-        raise CommandError.new(e)
       end
 
       # Returns an Array of Branches
@@ -127,15 +127,13 @@ module Gitlab
 
       # Returns an Array of tag names
       def tag_names
-        Gitlab::GitalyClient.migrate(:tag_names) do |is_enabled|
+        gitaly_migrate(:tag_names) do |is_enabled|
           if is_enabled
             gitaly_ref_client.tag_names
           else
             rugged.tags.map { |t| t.name }
           end
         end
-      rescue GRPC::BadStatus => e
-        raise CommandError.new(e)
       end
 
       # Returns an Array of Tags
@@ -452,6 +450,23 @@ module Gitlab
         Gitlab::Git::DiffCollection.new(diff_patches(from, to, options, *paths), options)
       end
 
+      # Returns a RefName for a given SHA
+      def ref_name_for_sha(ref_path, sha)
+        # NOTE: This feature is intentionally disabled until
+        # https://gitlab.com/gitlab-org/gitaly/issues/180 is resolved
+        # Gitlab::GitalyClient.migrate(:find_ref_name) do |is_enabled|
+        #   if is_enabled
+        #     gitaly_ref_client.find_ref_name(sha, ref_path)
+        #   else
+        args = %W(#{Gitlab.config.git.bin_path} for-each-ref --count=1 #{ref_path} --contains #{sha})
+
+        # Not found -> ["", 0]
+        # Found -> ["b8d95eb4969eefacb0a58f6a28f6803f8070e7b9 commit\trefs/environments/production/77\n", 0]
+        Gitlab::Popen.popen(args, @path).first.split.last
+        #   end
+        # end
+      end
+
       # Returns commits collection
       #
       # Ex.
@@ -467,7 +482,9 @@ module Gitlab
       #     :contains is the commit contained by the refs from which to begin (SHA1 or name)
       #     :max_count is the maximum number of commits to fetch
       #     :skip is the number of commits to skip
-      #     :order is the commits order and allowed value is :date(default) or :topo
+      #     :order is the commits order and allowed value is :none (default), :date, or :topo
+      #        commit ordering types are documented here:
+      #        http://www.rubydoc.info/github/libgit2/rugged/Rugged#SORT_NONE-constant)
       #
       def find_commits(options = {})
         actual_options = options.dup
@@ -495,11 +512,8 @@ module Gitlab
           end
         end
 
-        if actual_options[:order] == :topo
-          walker.sorting(Rugged::SORT_TOPO)
-        else
-          walker.sorting(Rugged::SORT_NONE)
-        end
+        sort_type = rugged_sort_type(actual_options[:order])
+        walker.sorting(sort_type)
 
         commits = []
         offset = actual_options[:skip]
@@ -953,7 +967,19 @@ module Gitlab
         @attributes.attributes(path)
       end
 
+      def gitaly_repository
+        Gitlab::GitalyClient::Util.repository(@repository_storage, @relative_path)
+      end
+
+      def gitaly_channel
+        Gitlab::GitalyClient.get_channel(@repository_storage)
+      end
+
       private
+
+      def alternate_object_directories
+        Gitlab::Git::Env.all.values_at(*ALLOWED_OBJECT_DIRECTORIES_VARIABLES).compact
+      end
 
       # Get the content of a blob for a given commit.  If the blob is a commit
       # (for submodules) then return the blob's OID.
@@ -1232,7 +1258,27 @@ module Gitlab
       end
 
       def gitaly_ref_client
-        @gitaly_ref_client ||= Gitlab::GitalyClient::Ref.new(@repository_storage, @relative_path)
+        @gitaly_ref_client ||= Gitlab::GitalyClient::Ref.new(self)
+      end
+
+      def gitaly_migrate(method, &block)
+        Gitlab::GitalyClient.migrate(method, &block)
+      rescue GRPC::NotFound => e
+        raise NoRepository.new(e)
+      rescue GRPC::BadStatus => e
+        raise CommandError.new(e)
+      end
+
+      # Returns the `Rugged` sorting type constant for a given
+      # sort type key. Valid keys are `:none`, `:topo`, and `:date`
+      def rugged_sort_type(key)
+        @rugged_sort_types ||= {
+          none: Rugged::SORT_NONE,
+          topo: Rugged::SORT_TOPO,
+          date: Rugged::SORT_DATE
+        }
+
+        @rugged_sort_types.fetch(key, Rugged::SORT_NONE)
       end
     end
   end

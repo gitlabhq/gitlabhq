@@ -602,7 +602,7 @@ describe SystemNoteService, services: true do
     end
 
     shared_examples 'cross project mentionable' do
-      include GitlabMarkdownHelper
+      include MarkupHelper
 
       it 'contains cross reference to new noteable' do
         expect(subject.note).to include cross_project_reference(new_project, new_noteable)
@@ -807,12 +807,27 @@ describe SystemNoteService, services: true do
     subject { described_class.approve_mr(noteable, author) }
 
     it_behaves_like 'a system note' do
-      let(:action) { 'approvals' }
+      let(:action) { 'approved' }
     end
 
     context 'when merge request approved' do
       it 'sets the note text' do
         expect(subject.note).to eq "approved this merge request"
+      end
+    end
+  end
+
+  describe '.unapprove_mr' do
+    let(:noteable)    { create(:merge_request, source_project: project) }
+    subject { described_class.unapprove_mr(noteable, author) }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'unapproved' }
+    end
+
+    context 'when merge request approved' do
+      it 'sets the note text' do
+        expect(subject.note).to eq "unapproved this merge request"
       end
     end
   end

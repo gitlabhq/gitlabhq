@@ -40,7 +40,8 @@ module TestEnv
     'wip'                                => 'b9238ee',
     'csv'                                => '3dd0896',
     'v1.1.0'                             => 'b83d6e3',
-    'squash-large-files'                 => '54cec52'
+    'add-ipython-files'                  => '6d85bb69',
+    'squash-large-files'                 => '54cec52',
   }.freeze
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily
@@ -66,11 +67,17 @@ module TestEnv
     # Setup GitLab shell for test instance
     setup_gitlab_shell
 
+    setup_gitaly if Gitlab::GitalyClient.enabled?
+
     # Create repository for FactoryGirl.create(:project)
     setup_factory_repo
 
     # Create repository for FactoryGirl.create(:forked_project_with_submodules)
     setup_forked_repo
+  end
+
+  def cleanup
+    stop_gitaly
   end
 
   def disable_mailer
@@ -94,7 +101,7 @@ module TestEnv
     tmp_test_path = Rails.root.join('tmp', 'tests', '**')
 
     Dir[tmp_test_path].each do |entry|
-      unless File.basename(entry) =~ /\Agitlab-(shell|test|test_bare|test-fork|test-fork_bare)\z/
+      unless File.basename(entry) =~ /\A(gitaly|gitlab-(shell|test|test_bare|test-fork|test-fork_bare))\z/
         FileUtils.rm_rf(entry)
       end
     end
@@ -110,6 +117,29 @@ module TestEnv
         raise 'Can`t clone gitlab-shell'
       end
     end
+  end
+
+  def setup_gitaly
+    socket_path = Gitlab::GitalyClient.get_address('default').sub(/\Aunix:/, '')
+    gitaly_dir = File.dirname(socket_path)
+
+    unless File.directory?(gitaly_dir) || system('rake', "gitlab:gitaly:install[#{gitaly_dir}]")
+      raise "Can't clone gitaly"
+    end
+
+    start_gitaly(gitaly_dir)
+  end
+
+  def start_gitaly(gitaly_dir)
+    gitaly_exec = File.join(gitaly_dir, 'gitaly')
+    gitaly_config = File.join(gitaly_dir, 'config.toml')
+    @gitaly_pid = spawn(gitaly_exec, gitaly_config, [:out, :err] => '/dev/null')
+  end
+
+  def stop_gitaly
+    return unless @gitaly_pid
+
+    Process.kill('KILL', @gitaly_pid)
   end
 
   def setup_factory_repo

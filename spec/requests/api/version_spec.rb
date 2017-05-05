@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe API::Version, api: true do
-  include ApiHelpers
-
+describe API::Version do
   describe 'GET /version' do
     context 'when unauthenticated' do
       it 'returns authentication error' do

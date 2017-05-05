@@ -25,19 +25,39 @@ feature 'Admin Groups', feature: true do
       visit admin_groups_path
 
       click_link "New group"
-      fill_in 'group_path', with: 'gitlab'
-      fill_in 'group_description', with: 'Group description'
+
+      path_component = 'gitlab'
+      group_name = 'GitLab group name'
+      group_description = 'Description of group for GitLab'
+
+      fill_in 'group_path', with: path_component
+      fill_in 'group_name', with: group_name
+      fill_in 'group_description', with: group_description
       click_button "Create group"
 
-      expect(current_path).to eq admin_group_path(Group.find_by(path: 'gitlab'))
-      expect(page).to have_content('Group: gitlab')
-      expect(page).to have_content('Group description')
+      expect(current_path).to eq admin_group_path(Group.find_by(path: path_component))
+      content = page.find('div#content-body')
+      h3_texts = content.all('h3').collect(&:text).join("\n")
+      expect(h3_texts).to match group_name
+      li_texts = content.all('li').collect(&:text).join("\n")
+      expect(li_texts).to match group_name
+      expect(li_texts).to match path_component
+      expect(li_texts).to match group_description
     end
 
     scenario 'shows the visibility level radio populated with the default value' do
       visit new_admin_group_path
 
       expect_selected_visibility(internal)
+    end
+
+    scenario 'when entered in group path, it auto filled the group name', js: true do
+      visit admin_groups_path
+      click_link "New group"
+      group_path = 'gitlab'
+      fill_in 'group_path', with: group_path
+      name_field = find('input#group_name')
+      expect(name_field.value).to eq group_path
     end
   end
 
@@ -58,6 +78,17 @@ feature 'Admin Groups', feature: true do
       visit admin_group_edit_path(group)
 
       expect_selected_visibility(group.visibility_level)
+    end
+
+    scenario 'edit group path does not change group name', js: true do
+      group = create(:group, :private)
+
+      visit admin_group_edit_path(group)
+      name_field = find('input#group_name')
+      original_name = name_field.value
+      fill_in 'group_path', with: 'this-new-path'
+
+      expect(name_field.value).to eq original_name
     end
   end
 

@@ -487,6 +487,14 @@ module API
           desc: 'The channel name'
         }
       ],
+      'microsoft-teams' => [
+        {
+          required: true,
+          name: :webhook,
+          type: String,
+          desc: 'The Microsoft Teams webhook. e.g. https://outlook.office.com/webhook/…'
+        }
+      ],
       'mattermost' => [
         {
           required: true,
@@ -596,6 +604,7 @@ module API
       RedmineService,
       SlackService,
       MattermostService,
+      MicrosoftTeamsService,
       TeamcityService,
       JenkinsService,
       JenkinsDeprecatedService

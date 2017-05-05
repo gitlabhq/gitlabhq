@@ -63,7 +63,7 @@ describe ProjectsHelper do
     end
   end
 
-  describe "#project_list_cache_key" do
+  describe "#project_list_cache_key", redis: true do
     let(:project) { create(:project) }
 
     it "includes the namespace" do
@@ -93,13 +93,25 @@ describe ProjectsHelper do
     end
 
     it "includes a version" do
-      expect(helper.project_list_cache_key(project)).to include("v2.3")
+      expect(helper.project_list_cache_key(project).last).to start_with('v')
     end
 
     it "includes the pipeline status when there is a status" do
       create(:ci_pipeline, :success, project: project, sha: project.commit.sha)
 
       expect(helper.project_list_cache_key(project)).to include("pipeline-status/#{project.commit.sha}-success")
+    end
+  end
+
+  describe '#load_pipeline_status' do
+    it 'loads the pipeline status in batch' do
+      project = build(:empty_project)
+
+      helper.load_pipeline_status([project])
+      # Skip lazy loading of the `pipeline_status` attribute
+      pipeline_status = project.instance_variable_get('@pipeline_status')
+
+      expect(pipeline_status).to be_a(Gitlab::Cache::Ci::ProjectPipelineStatus)
     end
   end
 
@@ -272,6 +284,29 @@ describe ProjectsHelper do
         expect(result).not_to include("Everyone with access")
         expect(result).to have_selector('option[selected]', text: "Only team members")
       end
+    end
+  end
+
+  describe "#visibility_select_options" do
+    let(:project) { create(:project, :repository) }
+    let(:user)    { create(:user) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+
+      stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
+    end
+
+    it "does not include the Public restricted level" do
+      expect(helper.send(:visibility_select_options, project, Gitlab::VisibilityLevel::PRIVATE)).not_to include('Public')
+    end
+
+    it "includes the Internal level" do
+      expect(helper.send(:visibility_select_options, project, Gitlab::VisibilityLevel::PRIVATE)).to include('Internal')
+    end
+
+    it "includes the Private level" do
+      expect(helper.send(:visibility_select_options, project, Gitlab::VisibilityLevel::PRIVATE)).to include('Private')
     end
   end
 end

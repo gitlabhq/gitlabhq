@@ -52,7 +52,7 @@
 
   .title {
     padding: 0;
-    margin: 0;
+    margin-bottom: 16px;
     border-bottom: none;
   }
 
@@ -196,6 +196,7 @@
   transition: width .3s;
   background: $gray-light;
   padding: 10px 20px;
+  z-index: 2;
 
   &.right-sidebar-expanded {
     width: $gutter_width;
@@ -207,10 +208,6 @@
         margin-top: 10px;
         display: block;
       }
-    }
-
-    .bold {
-      font-weight: 600;
     }
 
     .light {
@@ -360,6 +357,8 @@
 }
 
 .detail-page-description {
+  padding: 16px 0 0;
+
   small {
     color: $gray-darkest;
   }
@@ -367,6 +366,8 @@
 
 .edited-text {
   color: $gray-darkest;
+  display: block;
+  margin: 0 0 16px;
 
   .author_link {
     color: $gray-darkest;

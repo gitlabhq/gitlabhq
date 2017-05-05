@@ -9,7 +9,7 @@
   - if @conflict
     .alert.alert-danger
       Someone edited the file the same time you did. Please check out
-      = link_to "the file", namespace_project_blob_path(@project.namespace, @project, tree_join(@target_branch, @file_path)), target: "_blank", rel: 'noopener noreferrer'
+      = link_to "the file", namespace_project_blob_path(@project.namespace, @project, tree_join(@branch_name, @file_path)), target: "_blank", rel: 'noopener noreferrer'
       and make sure your changes will not unintentionally remove theirs.
   .editor-title-row
     %h3.page-title.blob-edit-page-title

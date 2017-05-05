@@ -8,6 +8,13 @@
 
   img {
     max-width: 100%;
+    margin: 0 0 8px;
+  }
+
+  p a:not(.no-attachment-icon) img {
+    // Remove bottom padding because
+    // <p> already has $gl-padding bottom
+    margin-bottom: 0;
   }
 
   *:first-child:not(.katex-display) {
@@ -47,44 +54,50 @@
   h1 {
     font-size: 1.75em;
     font-weight: 600;
-    margin: 16px 0 10px;
-    padding: 0 0 0.3em;
+    margin: 24px 0 16px;
+    padding-bottom: 0.3em;
     border-bottom: 1px solid $white-dark;
     color: $gl-text-color;
+
+    &:first-child {
+      margin-top: 0;
+    }
   }
 
   h2 {
     font-size: 1.5em;
     font-weight: 600;
-    margin: 16px 0 10px;
+    margin: 24px 0 16px;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid $white-dark;
     color: $gl-text-color;
   }
 
   h3 {
-    margin: 16px 0 10px;
+    margin: 24px 0 16px;
     font-size: 1.3em;
   }
 
   h4 {
-    margin: 16px 0 10px;
+    margin: 24px 0 16px;
     font-size: 1.2em;
   }
 
   h5 {
-    margin: 16px 0 10px;
+    margin: 24px 0 16px;
     font-size: 1em;
   }
 
   h6 {
-    margin: 16px 0 10px;
+    margin: 24px 0 16px;
     font-size: 0.95em;
   }
 
   blockquote {
     color: $gl-grayish-blue;
     font-size: inherit;
-    padding: 8px 21px;
-    margin: 12px 0;
+    padding: 8px 24px;
+    margin: 16px 0;
     border-left: 3px solid $white-dark;
   }
 
@@ -95,19 +108,20 @@
 
   blockquote p {
     color: $gl-grayish-blue !important;
+    margin: 0;
     font-size: inherit;
     line-height: 1.5;
   }
 
   p {
     color: $gl-text-color;
-    margin: 6px 0 0;
+    margin: 0 0 16px;
   }
 
   table {
     @extend .table;
     @extend .table-bordered;
-    margin: 12px 0;
+    margin: 16px 0;
     color: $gl-text-color;
 
     th {
@@ -120,7 +134,7 @@
   }
 
   pre {
-    margin: 12px 0;
+    margin-bottom: 16px;
     font-size: 13px;
     line-height: 1.6em;
     overflow-x: auto;
@@ -134,7 +148,7 @@
   ul,
   ol {
     padding: 0;
-    margin: 3px 0 !important;
+    margin: 0 0 16px !important;
   }
 
   ul:dir(rtl),
@@ -158,6 +172,7 @@
     li.task-list-item {
       list-style-type: none;
       position: relative;
+      min-height: 22px;
       padding-left: 28px;
       margin-left: 0 !important;
 
@@ -336,4 +351,33 @@ h4 {
 
 .idiff.addition {
   background: $line-added-dark;
+}
+
+
+/**
+ * form text input i.e. search bar, comments, forms, etc.
+ */
+input,
+textarea {
+  &::-webkit-input-placeholder {
+    color: $placeholder-text-color;
+  }
+
+  // support firefox 19+ vendor prefix
+  &::-moz-placeholder {
+    color: $placeholder-text-color;
+    opacity: 1; // FF defaults to 0.54
+  }
+
+  // scss-lint:disable PseudoElement
+  // support Edge vendor prefix
+  &::-ms-input-placeholder {
+    color: $placeholder-text-color;
+  }
+
+  // scss-lint:disable PseudoElement
+  // support IE vendor prefix
+  &:-ms-input-placeholder {
+    color: $placeholder-text-color;
+  }
 }

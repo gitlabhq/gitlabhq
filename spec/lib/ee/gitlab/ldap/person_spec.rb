@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::LDAP::Person do
   it 'includes the EE module' do
-    expect(Gitlab::LDAP::Person).to include(EE::Gitlab::LDAP::Person)
+    expect(described_class).to include(EE::Gitlab::LDAP::Person)
   end
 
   describe '#kerberos_principal' do
@@ -12,7 +12,7 @@ describe Gitlab::LDAP::Person do
       Net::LDAP::Entry.from_single_ldif_string(ldif)
     end
 
-    subject { Gitlab::LDAP::Person.new(entry, 'ldapmain') }
+    subject { described_class.new(entry, 'ldapmain') }
 
     context 'when sAMAccountName is not defined (non-AD LDAP server)' do
       let(:sam_account_name) { nil }
@@ -38,7 +38,7 @@ describe Gitlab::LDAP::Person do
       Net::LDAP::Entry.from_single_ldif_string("dn: cn=foo, dc=bar, dc=com\n#{keys}")
     end
 
-    subject { Gitlab::LDAP::Person.new(entry, 'ldapmain') }
+    subject { described_class.new(entry, 'ldapmain') }
 
     before do
       allow_any_instance_of(Gitlab::LDAP::Config).to receive_messages(sync_ssh_keys: ssh_key_attribute_name)

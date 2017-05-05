@@ -82,7 +82,7 @@
   .input-token:last-child {
     flex: 1;
     -webkit-flex: 1;
-    max-width: initial;
+    max-width: inherit;
   }
 }
 
@@ -104,6 +104,24 @@
     padding: 2px 7px;
   }
 
+  .value {
+    padding-right: 0;
+  }
+
+  .remove-token {
+    display: inline-block;
+    padding-left: 4px;
+    padding-right: 8px;
+
+    .fa-close {
+      color: $gl-text-color-disabled;
+    }
+
+    &:hover .fa-close {
+      color: $gl-text-color-secondary;
+    }
+  }
+
   .name {
     background-color: $filter-name-resting-color;
     color: $filter-name-text-color;
@@ -112,7 +130,7 @@
     text-transform: capitalize;
   }
 
-  .value {
+  .value-container {
     background-color: $white-normal;
     color: $filter-value-text-color;
     border-radius: 0 2px 2px 0;
@@ -124,7 +142,7 @@
       background-color: $filter-name-selected-color;
     }
 
-    .value {
+    .value-container {
       background-color: $filter-value-selected-color;
     }
   }
@@ -246,17 +264,17 @@
   }
 }
 
-.filtered-search-history-dropdown-toggle-button {
+.filtered-search-history-dropdown-wrapper {
+  position: static;
   display: flex;
-  align-items: center;
-  width: auto;
-  height: 100%;
-  padding-top: 0;
-  padding-left: 0.75em;
-  padding-bottom: 0;
-  padding-right: 0.5em;
+  flex-direction: column;
+}
 
-  background-color: transparent;
+.filtered-search-history-dropdown-toggle-button {
+  flex: 1;
+  width: auto;
+  padding-right: 10px;
+
   border-radius: 0;
   border-top: 0;
   border-left: 0;
@@ -264,6 +282,7 @@
   border-right: 1px solid $border-color;
 
   color: $gl-text-color-secondary;
+  line-height: 1;
 
   transition: color 0.1s linear;
 
@@ -275,22 +294,19 @@
   }
 
   .dropdown-toggle-text {
+    display: inline-block;
     color: inherit;
 
     .fa {
+      vertical-align: middle;
       color: inherit;
     }
   }
 
   .fa {
-    position: initial;
+    position: static;
   }
 
-}
-
-.filtered-search-history-dropdown-wrapper {
-  position: initial;
-  flex-shrink: 0;
 }
 
 .filtered-search-history-dropdown {
@@ -446,10 +462,8 @@
   }
 }
 
-.filter-dropdown-item.droplab-item-active {
-  .btn {
-    @extend %filter-dropdown-item-btn-hover;
-  }
+.filter-dropdown-item.droplab-item-active .btn {
+  @extend %filter-dropdown-item-btn-hover;
 }
 
 .filter-dropdown-loading {

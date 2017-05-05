@@ -48,7 +48,7 @@ feature 'Template type dropdown selector', js: true do
 
     context 'user previews changes' do
       before do
-        click_link 'Preview Changes'
+        click_link 'Preview changes'
       end
 
       scenario 'type selector is hidden and shown correctly' do

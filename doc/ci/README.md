@@ -67,6 +67,8 @@ learn how to leverage its potential even more.
 - [Auto deploy](autodeploy/index.md)
 - [Use SSH keys in your build environment](ssh_keys/README.md)
 - [Trigger jobs through the GitLab API](triggers/README.md)
+- [Deploy Boards](../user/project/deploy_boards.md) - Check the current health
+  and status of each CI environment running on Kubernetes
 
 ## Review Apps
 
@@ -110,9 +112,8 @@ Here is an collection of tutorials and guides on setting up your CI pipeline.
   - [Run PHP Composer & NPM scripts then deploy them to a staging server](examples/deployment/composer-npm-deploy.md)
 - **Blog posts**
   - [Automated Debian packaging](https://about.gitlab.com/2016/10/12/automated-debian-package-build-with-gitlab-ci/)
-  - [Spring boot application with GitLab CI and Kubernetes](https://about.gitlab.com/2016/11/30/setting-up-gitlab-ci-for-android-projects/)
-  - [Setting up CI for iOS projects](https://about.gitlab.com/2016/12/14/continuous-delivery-of-a-spring-boot-application-with-gitlab-ci-and-kubernetes/)
-  - [Using GitLab CI for iOS projects](https://about.gitlab.com/2016/03/10/setting-up-gitlab-ci-for-ios-projects/)
+  - [Spring boot application with GitLab CI and Kubernetes](https://about.gitlab.com/2016/12/14/continuous-delivery-of-a-spring-boot-application-with-gitlab-ci-and-kubernetes/)
+  - [Setting up GitLab CI for iOS projects](https://about.gitlab.com/2016/03/10/setting-up-gitlab-ci-for-ios-projects/)
   - [Setting up GitLab CI for Android projects](https://about.gitlab.com/2016/11/30/setting-up-gitlab-ci-for-android-projects/)
   - [Building a new GitLab Docs site with Nanoc, GitLab CI, and GitLab Pages](https://about.gitlab.com/2016/12/07/building-a-new-gitlab-docs-site-with-nanoc-gitlab-ci-and-gitlab-pages/)
   - [CI/CD with GitLab in action](https://about.gitlab.com/2017/03/13/ci-cd-demo/)

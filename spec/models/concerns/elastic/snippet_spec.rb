@@ -19,9 +19,9 @@ describe Snippet, elastic: true do
     let!(:internal_snippet) { create(:snippet, :internal, content: 'password: XXX') }
     let!(:private_snippet)  { create(:snippet, :private, content: 'password: XXX', author: author) }
 
-    let!(:project_public_snippet)   { create(:snippet, :public, project: project, content: 'password: XXX') }
-    let!(:project_internal_snippet) { create(:snippet, :internal, project: project, content: 'password: XXX') }
-    let!(:project_private_snippet)  { create(:snippet, :private, project: project, content: 'password: XXX') }
+    let!(:project_public_snippet)   { create(:snippet, :public, project: project, content: 'password: 123') }
+    let!(:project_internal_snippet) { create(:snippet, :internal, project: project, content: 'password: 456') }
+    let!(:project_private_snippet)  { create(:snippet, :private, project: project, content: 'password: 789') }
 
     before do
       Gitlab::Elastic::Helper.refresh_index
@@ -60,13 +60,25 @@ describe Snippet, elastic: true do
       expect(result.records).to match_array [public_snippet, internal_snippet, private_snippet]
     end
 
-    it 'returns all snippets for admins' do
-      admin = create(:admin)
+    it 'supports advanced search syntax' do
+      member = create(:user)
+      project.add_reporter(member)
 
-      result = described_class.elastic_search_code('password', options: { user: admin })
+      result = described_class.elastic_search_code('password +(123 | 789)', options: { user: member })
 
-      expect(result.total_count).to eq(6)
-      expect(result.records).to match_array [public_snippet, internal_snippet, private_snippet, project_public_snippet, project_internal_snippet, project_private_snippet]
+      expect(result.total_count).to eq(2)
+      expect(result.records).to match_array [project_public_snippet, project_private_snippet]
+    end
+
+    [:admin, :auditor].each do |user_type|
+      it "returns all snippets for #{user_type}" do
+        superuser = create(user_type)
+
+        result = described_class.elastic_search_code('password', options: { user: superuser })
+
+        expect(result.total_count).to eq(6)
+        expect(result.records).to match_array [public_snippet, internal_snippet, private_snippet, project_public_snippet, project_internal_snippet, project_private_snippet]
+      end
     end
   end
 

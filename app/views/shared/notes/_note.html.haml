@@ -1,0 +1,64 @@
+- return unless note.author
+- return if note.cross_reference_not_visible_for?(current_user)
+
+- note_editable = note_editable?(note)
+%li.timeline-entry{ id: dom_id(note), class: ["note", "note-row-#{note.id}", ('system-note' if note.system)], data: {author_id: note.author.id, editable: note_editable, note_id: note.id} }
+  .timeline-entry-inner
+    .timeline-icon
+      - if note.system
+        = icon_for_system_note(note)
+      - else
+        %a{ href: user_path(note.author) }
+          = image_tag avatar_icon(note.author), alt: '', class: 'avatar s40'
+    .timeline-content
+      .note-header
+        .note-header-info
+          %a{ href: user_path(note.author) }
+            %span.hidden-xs
+              = sanitize(note.author.name)
+            %span.note-headline-light
+              = note.author.to_reference
+          %span.note-headline-light
+            %span.note-headline-meta
+              - unless note.system
+                commented
+              - if note.system
+                %span.system-note-message
+                  = note.redacted_note_html
+              %a{ href: "##{dom_id(note)}" }
+                = time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note-created-ago')
+        - unless note.system?
+          .note-actions
+            - if note.for_personal_snippet?
+              = render 'snippets/notes/actions', note: note, note_editable: note_editable
+            - else
+              = render 'projects/notes/actions', note: note, note_editable: note_editable
+      .note-body{ class: note_editable ? 'js-task-list-container' : '' }
+        .note-text.md
+          = preserve do
+            = note.redacted_note_html
+
+        = edited_time_ago_with_tooltip(note, placement: 'bottom', html_class: 'note_edited_ago', include_author: true)
+        - if note_editable
+          - if note.for_personal_snippet?
+            = render 'snippets/notes/edit', note: note
+          - else
+            = render 'projects/notes/edit', note: note
+        .note-awards
+          = render 'award_emoji/awards_block', awardable: note, inline: false
+        - if note.system
+          .system-note-commit-list-toggler
+            Toggle commit list
+            %i.fa.fa-angle-down
+      - if note.attachment.url
+        .note-attachment
+          - if note.attachment.image?
+            = link_to note.attachment.url, target: '_blank' do
+              = image_tag note.attachment.url, class: 'note-image-attach'
+          .attachment
+            = link_to note.attachment.url, target: '_blank' do
+              = icon('paperclip')
+              = note.attachment_identifier
+              = link_to delete_attachment_namespace_project_note_path(note.project.namespace, note.project, note),
+                title: 'Delete this attachment', method: :delete, remote: true, data: { confirm: 'Are you sure you want to remove the attachment?' }, class: 'danger js-note-attachment-delete' do
+                = icon('trash-o', class: 'cred')

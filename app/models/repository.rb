@@ -10,6 +10,8 @@ class Repository
 
   attr_accessor :path_with_namespace, :project
 
+  delegate :ref_name_for_sha, to: :raw_repository
+
   CommitError = Class.new(StandardError)
   CreateTreeError = Class.new(StandardError)
 
@@ -22,9 +24,9 @@ class Repository
   # same name. The cache key used by those methods must also match method's
   # name.
   #
-  # For example, for entry `:readme` there's a method called `readme` which
-  # stores its data in the `readme` cache key.
-  CACHED_METHODS = %i(size commit_count readme version contribution_guide
+  # For example, for entry `:commit_count` there's a method called `commit_count` which
+  # stores its data in the `commit_count` cache key.
+  CACHED_METHODS = %i(size commit_count rendered_readme contribution_guide
                       changelog license_blob license_key gitignore koding_yml
                       gitlab_ci_yml branch_names tag_names branch_count
                       tag_count avatar exists? empty? root_ref).freeze
@@ -33,11 +35,10 @@ class Repository
   # changed. This Hash maps file types (as returned by Gitlab::FileDetector) to
   # the corresponding methods to call for refreshing caches.
   METHOD_CACHES_FOR_FILE_TYPES = {
-    readme: :readme,
+    readme: :rendered_readme,
     changelog: :changelog,
     license: %i(license_blob license_key),
     contributing: :contribution_guide,
-    version: :version,
     gitignore: :gitignore,
     koding: :koding_yml,
     gitlab_ci: :gitlab_ci_yml,
@@ -114,7 +115,7 @@ class Repository
       offset: offset,
       after: after,
       before: before,
-      follow: path.present?,
+      follow: Array(path).length == 1,
       skip_merges: skip_merges
     }
 
@@ -412,8 +413,6 @@ class Repository
   # Runs code after a repository has been forked/imported.
   def after_import
     expire_content_cache
-    expire_tags_cache
-    expire_branches_cache
   end
 
   # Runs code after a new commit has been pushed.
@@ -458,7 +457,7 @@ class Repository
 
   def blob_at(sha, path)
     unless Gitlab::Git.blank_ref?(sha)
-      Blob.decorate(Gitlab::Git::Blob.find(self, sha, path))
+      Blob.decorate(Gitlab::Git::Blob.find(self, sha, path), project)
     end
   rescue Gitlab::Git::Repository::NoRepository
     nil
@@ -535,12 +534,11 @@ class Repository
       head.readme
     end
   end
-  cache_method :readme
 
-  def version
-    file_on_head(:version)
+  def rendered_readme
+    MarkupHelper.markup_unsafe(readme.name, readme.data, project: project) if readme
   end
-  cache_method :version
+  cache_method :rendered_readme
 
   def contribution_guide
     file_on_head(:contributing)
@@ -634,15 +632,6 @@ class Repository
     commit(sha)
   end
 
-  # Returns a list of commits that are not present in any reference
-  def new_commits(newrev)
-    args = %W(#{Gitlab.config.git.bin_path} rev-list #{newrev} --not --all)
-
-    Gitlab::Popen.popen(args, path_to_repo).first.split("\n").map do |sha|
-      commit(sha.strip)
-    end
-  end
-
   def last_commit_id_for_path(sha, path)
     key = path.blank? ? "last_commit_id_for_path:#{sha}" : "last_commit_id_for_path:#{sha}:#{Digest::SHA1.hexdigest(path)}"
 
@@ -714,14 +703,6 @@ class Repository
 
       contributor
     end
-  end
-
-  def ref_name_for_sha(ref_path, sha)
-    args = %W(#{Gitlab.config.git.bin_path} for-each-ref --count=1 #{ref_path} --contains #{sha})
-
-    # Not found -> ["", 0]
-    # Found -> ["b8d95eb4969eefacb0a58f6a28f6803f8070e7b9 commit\trefs/environments/production/77\n", 0]
-    Gitlab::Popen.popen(args, path_to_repo).first.split.last
   end
 
   def refs_contains_sha(ref_type, sha)
@@ -1054,13 +1035,15 @@ class Repository
   end
 
   def is_ancestor?(ancestor_id, descendant_id)
-    Gitlab::GitalyClient.migrate(:is_ancestor) do |is_enabled|
-      if is_enabled
-        raw_repository.is_ancestor?(ancestor_id, descendant_id)
-      else
-        merge_base_commit(ancestor_id, descendant_id) == ancestor_id
-      end
-    end
+    # NOTE: This feature is intentionally disabled until
+    # https://gitlab.com/gitlab-org/gitlab-ce/issues/30586 is resolved
+    # Gitlab::GitalyClient.migrate(:is_ancestor) do |is_enabled|
+    #   if is_enabled
+    #     raw_repository.is_ancestor?(ancestor_id, descendant_id)
+    #   else
+    merge_base_commit(ancestor_id, descendant_id) == ancestor_id
+    #   end
+    # end
   end
 
   def empty_repo?
@@ -1250,6 +1233,8 @@ class Repository
   def repository_storage_path
     @project.repository_storage_path
   end
+
+  delegate :gitaly_channel, :gitaly_repository, to: :raw_repository
 
   def initialize_raw_repository
     Gitlab::Git::Repository.new(project.repository_storage, path_with_namespace + '.git')

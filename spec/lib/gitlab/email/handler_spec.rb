@@ -16,14 +16,14 @@ describe Gitlab::Email::Handler, lib: true do
         allow_any_instance_of(License).to receive(:add_on?).and_call_original
         allow_any_instance_of(License).to receive(:add_on?).with('GitLab_ServiceDesk').and_return(true)
 
-        expect(handler_for('emails/service_desk.eml', 'service_desk+auth_token')).to be_instance_of(Gitlab::Email::Handler::EE::ServiceDeskHandler)
+        expect(handler_for('emails/service_desk.eml', 'some/project')).to be_instance_of(Gitlab::Email::Handler::EE::ServiceDeskHandler)
       end
 
-      it 'uses the create issue handler when Service Desk is disabled' do
+      it 'uses no handler when Service Desk is disabled' do
         allow_any_instance_of(License).to receive(:add_on?).and_call_original
         allow_any_instance_of(License).to receive(:add_on?).with('GitLab_ServiceDesk').and_return(false)
 
-        expect(handler_for('emails/service_desk.eml', 'service_desk+auth_token')).to be_instance_of(Gitlab::Email::Handler::CreateIssueHandler)
+        expect(handler_for('emails/service_desk.eml', 'some/project')).to be_nil
       end
     end
 
@@ -34,14 +34,14 @@ describe Gitlab::Email::Handler, lib: true do
         allow_any_instance_of(License).to receive(:add_on?).and_call_original
         allow_any_instance_of(License).to receive(:add_on?).with('GitLab_ServiceDesk').and_return(true)
 
-        expect(handler_for('emails/valid_new_issue.eml', 'incoming+auth_token')).to be_instance_of(Gitlab::Email::Handler::CreateIssueHandler)
+        expect(handler_for('emails/valid_new_issue.eml', 'some/project+auth_token')).to be_instance_of(Gitlab::Email::Handler::CreateIssueHandler)
       end
 
       it 'uses the create issue handler when Service Desk is disabled' do
         allow_any_instance_of(License).to receive(:add_on?).and_call_original
         allow_any_instance_of(License).to receive(:add_on?).with('GitLab_ServiceDesk').and_return(false)
 
-        expect(handler_for('emails/valid_new_issue.eml', 'incoming+auth_token')).to be_instance_of(Gitlab::Email::Handler::CreateIssueHandler)
+        expect(handler_for('emails/valid_new_issue.eml', 'some/project+auth_token')).to be_instance_of(Gitlab::Email::Handler::CreateIssueHandler)
       end
     end
   end

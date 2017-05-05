@@ -4,6 +4,7 @@ describe ApplicationSetting, models: true do
   let(:setting) { ApplicationSetting.create_from_defaults }
 
   it { expect(setting).to be_valid }
+  it { expect(setting.uuid).to be_present }
 
   describe 'validations' do
     let(:http)  { 'http://example.com' }
@@ -88,7 +89,6 @@ describe ApplicationSetting, models: true do
         Sidekiq::Logging.logger = nil
         sync_times.each do |sync_time|
           create(:project, :mirror, sync_time: sync_time)
-          create(:project, :remote_mirror, sync_time: sync_time)
         end
       end
 
@@ -97,18 +97,14 @@ describe ApplicationSetting, models: true do
           subject { setting.update_attributes(minimum_mirror_sync_time: sync_time) }
 
           it "updates minimum mirror sync time to #{sync_time}" do
-            expect_any_instance_of(ApplicationSetting).to receive(:update_mirror_cron_jobs).and_call_original
-            expect(Gitlab::Mirror).to receive(:configure_cron_jobs!)
+            expect_any_instance_of(ApplicationSetting).to receive(:update_mirror_cron_job).and_call_original
+            expect(Gitlab::Mirror).to receive(:configure_cron_job!)
 
             subject
           end
 
           it 'updates every mirror to the current minimum_mirror_sync_time' do
             expect { subject }.to change { Project.mirror.where('sync_time < ?', sync_time).count }.from(index + 1).to(0)
-          end
-
-          it 'updates every remote mirror to the current minimum_mirror_sync_time' do
-            expect { subject }.to change { RemoteMirror.where('sync_time < ?', sync_time).count }.from(index + 1).to(0)
           end
         end
       end
@@ -118,8 +114,8 @@ describe ApplicationSetting, models: true do
         let(:sync_time) { Gitlab::Mirror::FIFTEEN }
 
         it 'does not update minimum_mirror_sync_time' do
-          expect_any_instance_of(ApplicationSetting).not_to receive(:update_mirror_cron_jobs)
-          expect(Gitlab::Mirror).not_to receive(:configure_cron_jobs!)
+          expect_any_instance_of(ApplicationSetting).not_to receive(:update_mirror_cron_job)
+          expect(Gitlab::Mirror).not_to receive(:configure_cron_job!)
           expect(setting.minimum_mirror_sync_time).to eq(Gitlab::Mirror::FIFTEEN)
 
           setting.update_attributes(minimum_mirror_sync_time: sync_time)
@@ -127,10 +123,6 @@ describe ApplicationSetting, models: true do
 
         it 'updates every mirror to the current minimum_mirror_sync_time' do
           expect { setting.update_attributes(minimum_mirror_sync_time: sync_time) }.not_to change { Project.mirror.where('sync_time < ?', sync_time).count }
-        end
-
-        it 'updates every remote mirror to the current minimum_mirror_sync_time' do
-          expect { setting.update_attributes(minimum_mirror_sync_time: sync_time) }.not_to change { RemoteMirror.where('sync_time < ?', sync_time).count }
         end
       end
     end

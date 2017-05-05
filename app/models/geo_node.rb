@@ -22,7 +22,9 @@ class GeoNode < ActiveRecord::Base
 
   after_initialize :build_dependents
   after_save :refresh_bulk_notify_worker_status
+  after_save :expire_cache!
   after_destroy :refresh_bulk_notify_worker_status
+  after_destroy :expire_cache!
   before_validation :update_dependents_attributes
 
   before_validation :ensure_access_keys!
@@ -113,11 +115,7 @@ class GeoNode < ActiveRecord::Base
   end
 
   def refresh_bulk_notify_worker_status
-    if Gitlab::Geo.primary?
-      Gitlab::Geo.bulk_notify_job.try(:enable!)
-    else
-      Gitlab::Geo.bulk_notify_job.try(:disable!)
-    end
+    Gitlab::Geo.configure_cron_jobs!
   end
 
   def build_dependents
@@ -159,5 +157,9 @@ class GeoNode < ActiveRecord::Base
     self.system_hook.url = geo_events_url if uri.present?
     self.system_hook.push_events = true
     self.system_hook.tag_push_events = true
+  end
+
+  def expire_cache!
+    Gitlab::Geo.expire_cache!
   end
 end

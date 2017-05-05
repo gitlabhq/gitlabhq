@@ -50,14 +50,7 @@ module Elastic
       def self.elastic_search(query, options: {})
         options[:in] = ['note']
 
-        query_hash = {
-          query: {
-            bool: {
-              must: [{ match: { note: query } }],
-            },
-          }
-        }
-
+        query_hash = basic_query_hash(%w[note], query)
         query_hash = project_ids_filter(query_hash, options)
         query_hash = confidentiality_filter(query_hash, options[:current_user])
 
@@ -72,7 +65,7 @@ module Elastic
       end
 
       def self.confidentiality_filter(query_hash, current_user)
-        return query_hash if current_user && current_user.admin?
+        return query_hash if current_user && current_user.admin_or_auditor?
 
         filter = {
           bool: {
@@ -102,7 +95,7 @@ module Elastic
           }
         end
 
-        query_hash[:query][:bool][:must] << filter
+        query_hash[:query][:bool][:filter] << filter
         query_hash
       end
     end

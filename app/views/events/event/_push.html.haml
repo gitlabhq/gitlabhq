@@ -1,5 +1,7 @@
 - project = event.project
 
+= icon_for_profile_event(event)
+
 .event-title
   %span.author_name= link_to_author event
   %span.pushed #{event.action_name} #{event.ref_type}
@@ -48,4 +50,3 @@
     .event-body
       %ul.well-list.event_commits
         = render "events/commit", commit: last_commit, project: project, event: event
-

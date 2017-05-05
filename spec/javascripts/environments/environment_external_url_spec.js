@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import externalUrlComp from '~/environments/components/environment_external_url';
+import externalUrlComp from '~/environments/components/environment_external_url.vue';
 
 describe('External URL Component', () => {
   let ExternalUrlComponent;

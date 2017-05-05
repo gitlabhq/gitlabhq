@@ -20,57 +20,60 @@ class Issue {
       });
       Issue.initIssueBtnEventListeners();
     }
+
+    Issue.$btnNewBranch = $('#new-branch');
+
     Issue.initMergeRequests();
     Issue.initRelatedBranches();
     Issue.initCanCreateBranch();
   }
 
   static initIssueBtnEventListeners() {
-    var issueFailMessage;
-    issueFailMessage = 'Unable to update this issue at this time.';
-    return $('a.btn-close, a.btn-reopen').on('click', function(e) {
-      var $this, isClose, shouldSubmit, url;
+    const issueFailMessage = 'Unable to update this issue at this time.';
+
+    const closeButtons = $('a.btn-close');
+    const isClosedBadge = $('div.status-box-closed');
+    const isOpenBadge = $('div.status-box-open');
+    const projectIssuesCounter = $('.issue_counter');
+    const reopenButtons = $('a.btn-reopen');
+
+    return closeButtons.add(reopenButtons).on('click', function(e) {
+      var $this, shouldSubmit, url;
       e.preventDefault();
       e.stopImmediatePropagation();
       $this = $(this);
-      isClose = $this.hasClass('btn-close');
       shouldSubmit = $this.hasClass('btn-comment');
       if (shouldSubmit) {
         Issue.submitNoteForm($this.closest('form'));
       }
       $this.prop('disabled', true);
+      Issue.setNewBranchButtonState(true, null);
       url = $this.attr('href');
       return $.ajax({
         type: 'PUT',
-        url: url,
-        error: function(jqXHR, textStatus, errorThrown) {
-          var issueStatus;
-          issueStatus = isClose ? 'close' : 'open';
-          return new Flash(issueFailMessage, 'alert');
-        },
-        success: function(data, textStatus, jqXHR) {
-          if ('id' in data) {
-            $(document).trigger('issuable:change');
-            let total = Number($('.issue_counter').text().replace(/[^\d]/, ''));
-            if (isClose) {
-              $('a.btn-close').addClass('hidden');
-              $('a.btn-reopen').removeClass('hidden');
-              $('div.status-box-closed').removeClass('hidden');
-              $('div.status-box-open').addClass('hidden');
-              total -= 1;
-            } else {
-              $('a.btn-reopen').addClass('hidden');
-              $('a.btn-close').removeClass('hidden');
-              $('div.status-box-closed').addClass('hidden');
-              $('div.status-box-open').removeClass('hidden');
-              total += 1;
-            }
-            $('.issue_counter').text(gl.text.addDelimiter(total));
-          } else {
-            new Flash(issueFailMessage, 'alert');
-          }
-          return $this.prop('disabled', false);
+        url: url
+      }).fail(function(jqXHR, textStatus, errorThrown) {
+        new Flash(issueFailMessage);
+        Issue.initCanCreateBranch();
+      }).done(function(data, textStatus, jqXHR) {
+        if ('id' in data) {
+          $(document).trigger('issuable:change');
+
+          const isClosed = $this.hasClass('btn-close');
+          closeButtons.toggleClass('hidden', isClosed);
+          reopenButtons.toggleClass('hidden', !isClosed);
+          isClosedBadge.toggleClass('hidden', !isClosed);
+          isOpenBadge.toggleClass('hidden', isClosed);
+
+          let numProjectIssues = Number(projectIssuesCounter.text().replace(/[^\d]/, ''));
+          numProjectIssues = isClosed ? numProjectIssues - 1 : numProjectIssues + 1;
+          projectIssuesCounter.text(gl.text.addDelimiter(numProjectIssues));
+        } else {
+          new Flash(issueFailMessage);
         }
+
+        $this.prop('disabled', false);
+        Issue.initCanCreateBranch();
       });
     });
   }
@@ -86,9 +89,9 @@ class Issue {
   static initMergeRequests() {
     var $container;
     $container = $('#merge-requests');
-    return $.getJSON($container.data('url')).error(function() {
-      return new Flash('Failed to load referenced merge requests', 'alert');
-    }).success(function(data) {
+    return $.getJSON($container.data('url')).fail(function() {
+      return new Flash('Failed to load referenced merge requests');
+    }).done(function(data) {
       if ('html' in data) {
         return $container.html(data.html);
       }
@@ -98,9 +101,9 @@ class Issue {
   static initRelatedBranches() {
     var $container;
     $container = $('#related-branches');
-    return $.getJSON($container.data('url')).error(function() {
-      return new Flash('Failed to load related branches', 'alert');
-    }).success(function(data) {
+    return $.getJSON($container.data('url')).fail(function() {
+      return new Flash('Failed to load related branches');
+    }).done(function(data) {
       if ('html' in data) {
         return $container.html(data.html);
       }
@@ -108,23 +111,26 @@ class Issue {
   }
 
   static initCanCreateBranch() {
-    var $container;
-    $container = $('#new-branch');
     // If the user doesn't have the required permissions the container isn't
     // rendered at all.
-    if ($container.length === 0) {
+    if (Issue.$btnNewBranch.length === 0) {
       return;
     }
-    return $.getJSON($container.data('path')).error(function() {
-      $container.find('.unavailable').show();
-      return new Flash('Failed to check if a new branch can be created.', 'alert');
-    }).success(function(data) {
-      if (data.can_create_branch) {
-        $container.find('.available').show();
-      } else {
-        return $container.find('.unavailable').show();
-      }
+    return $.getJSON(Issue.$btnNewBranch.data('path')).fail(function() {
+      Issue.setNewBranchButtonState(false, false);
+      new Flash('Failed to check if a new branch can be created.');
+    }).done(function(data) {
+      Issue.setNewBranchButtonState(false, data.can_create_branch);
     });
+  }
+
+  static setNewBranchButtonState(isPending, canCreate) {
+    if (Issue.$btnNewBranch.length === 0) {
+      return;
+    }
+
+    Issue.$btnNewBranch.find('.available').toggle(!isPending && canCreate);
+    Issue.$btnNewBranch.find('.unavailable').toggle(!isPending && !canCreate);
   }
 }
 

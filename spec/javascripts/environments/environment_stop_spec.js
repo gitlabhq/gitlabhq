@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import stopComp from '~/environments/components/environment_stop';
+import stopComp from '~/environments/components/environment_stop.vue';
 
 describe('Stop Component', () => {
   let StopComponent;

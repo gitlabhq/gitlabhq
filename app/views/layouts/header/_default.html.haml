@@ -47,17 +47,19 @@
             %li
               = link_to assigned_issues_dashboard_path, title: 'Issues', aria: { label: "Issues" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                 = icon('hashtag fw')
-                %span.badge.issues-count
-                  = number_with_delimiter(cached_assigned_issuables_count(current_user, :issues, :opened))
+                - issues_count = assigned_issuables_count(:issues)
+                %span.badge.issues-count{ class: ('hidden' if issues_count.zero?) }
+                  = number_with_delimiter(issues_count)
             %li
               = link_to assigned_mrs_dashboard_path, title: 'Merge requests', aria: { label: "Merge requests" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                 = custom_icon('mr_bold')
-                %span.badge.merge-requests-count
-                  = number_with_delimiter(cached_assigned_issuables_count(current_user, :merge_requests, :opened))
+                - merge_requests_count = assigned_issuables_count(:merge_requests)
+                %span.badge.merge-requests-count{ class: ('hidden' if merge_requests_count.zero?) }
+                  = number_with_delimiter(merge_requests_count)
             %li
               = link_to dashboard_todos_path, title: 'Todos', aria: { label: "Todos" }, class: 'shortcuts-todos', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                 = icon('check-circle fw')
-                %span.badge.todos-count
+                %span.badge.todos-count{ class: ('hidden' if todos_pending_count.zero?) }
                   = todos_count_format(todos_pending_count)
 
             - if Gitlab::Geo.secondary?
@@ -77,6 +79,11 @@
                 = icon('caret-down')
               .dropdown-menu-nav.dropdown-menu-align-right
                 %ul
+                  %li.current-user
+                    .user-name.bold
+                      = current_user.name
+                    @#{current_user.username}
+                  %li.divider
                   %li
                     = link_to "Profile", current_user, class: 'profile-link', aria: { label: "Profile" }, data: { user: current_user.username }
                   %li

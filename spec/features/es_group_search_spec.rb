@@ -68,6 +68,31 @@ feature 'Group elastic search', js: true, feature: true do
     end
   end
 
+  describe 'wiki search' do
+    let(:wiki) { ProjectWiki.new(project, user) }
+
+    before do
+      wiki.create_page('test.md', '# term')
+      wiki.index_blobs
+
+      Gitlab::Elastic::Helper.refresh_index
+    end
+
+    it "finds pages" do
+      visit search_path
+      
+      choose_group group
+      fill_in "search", with: "term"
+      click_button "Search"
+
+      select_filter("Wiki")
+
+      expect(page).to have_selector('.file-content .code')
+
+      expect(page).to have_selector("span.line[lang='markdown']")
+    end
+  end
+
   describe 'commit search' do
     before do
       project.repository.index_commits

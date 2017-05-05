@@ -2,6 +2,7 @@
   "description": "Nisi et repellendus ut enim quo accusamus vel magnam.",
   "visibility_level": 10,
   "archived": false,
+  "description_html": "description",
   "labels": [
     {
       "id": 2,
@@ -6981,28 +6982,6 @@
   ],
   "services": [
     {
-      "id": 164,
-      "title": null,
-      "project_id": 5,
-      "created_at": "2016-06-14T15:02:07.372Z",
-      "updated_at": "2016-06-14T15:02:07.372Z",
-      "active": false,
-      "properties": {
-
-      },
-      "template": false,
-      "push_events": true,
-      "issues_events": true,
-      "merge_requests_events": true,
-      "tag_push_events": true,
-      "note_events": true,
-      "build_events": true,
-      "category": "issue_tracker",
-      "type": "CustomIssueTrackerService",
-      "default": true,
-      "wiki_page_events": true
-    },
-    {
       "id": 100,
       "title": "JetBrains TeamCity CI",
       "project_id": 5,
@@ -7019,6 +6998,7 @@
       "tag_push_events": true,
       "note_events": true,
       "build_events": true,
+      "type": "TeamcityService",
       "category": "ci",
       "default": false,
       "wiki_page_events": true
@@ -7040,6 +7020,7 @@
       "tag_push_events": true,
       "note_events": true,
       "pipeline_events": true,
+      "type": "SlackService",
       "category": "common",
       "default": false,
       "wiki_page_events": true
@@ -7061,6 +7042,7 @@
       "tag_push_events": true,
       "note_events": true,
       "build_events": true,
+      "type": "RedmineService",
       "category": "issue_tracker",
       "default": false,
       "wiki_page_events": true
@@ -7082,6 +7064,7 @@
       "tag_push_events": true,
       "note_events": true,
       "build_events": true,
+      "type": "PushoverService",
       "category": "common",
       "default": false,
       "wiki_page_events": true
@@ -7103,6 +7086,7 @@
       "tag_push_events": true,
       "note_events": true,
       "build_events": true,
+      "type": "PivotalTrackerService",
       "category": "common",
       "default": false,
       "wiki_page_events": true
@@ -7125,6 +7109,7 @@
       "tag_push_events": true,
       "note_events": true,
       "build_events": true,
+      "type": "JiraService",
       "category": "issue_tracker",
       "default": false,
       "wiki_page_events": true
@@ -7146,6 +7131,7 @@
       "tag_push_events": true,
       "note_events": true,
       "build_events": true,
+      "type": "IrkerService",
       "category": "common",
       "default": false,
       "wiki_page_events": true
@@ -7167,6 +7153,7 @@
       "tag_push_events": true,
       "note_events": true,
       "pipeline_events": true,
+      "type": "HipchatService",
       "category": "common",
       "default": false,
       "wiki_page_events": true
@@ -7188,6 +7175,7 @@
       "tag_push_events": true,
       "note_events": true,
       "build_events": true,
+      "type": "GemnasiumService",
       "category": "common",
       "default": false,
       "wiki_page_events": true
@@ -7209,6 +7197,7 @@
       "tag_push_events": true,
       "note_events": true,
       "build_events": true,
+      "type": "FlowdockService",
       "category": "common",
       "default": false,
       "wiki_page_events": true
@@ -7230,6 +7219,7 @@
       "tag_push_events": true,
       "note_events": true,
       "build_events": true,
+      "type": "ExternalWikiService",
       "category": "common",
       "default": false,
       "wiki_page_events": true
@@ -7251,6 +7241,7 @@
       "tag_push_events": true,
       "note_events": true,
       "build_events": true,
+      "type": "EmailsOnPushService",
       "category": "common",
       "default": false,
       "wiki_page_events": true
@@ -7272,6 +7263,7 @@
       "tag_push_events": true,
       "note_events": true,
       "build_events": true,
+      "type": "DroneCiService",
       "category": "ci",
       "default": false,
       "wiki_page_events": true
@@ -7293,6 +7285,7 @@
       "tag_push_events": true,
       "note_events": true,
       "build_events": true,
+      "type": "CustomIssueTrackerService",
       "category": "issue_tracker",
       "default": false,
       "wiki_page_events": true
@@ -7314,6 +7307,7 @@
       "tag_push_events": true,
       "note_events": true,
       "build_events": true,
+      "type": "CampfireService",
       "category": "common",
       "default": false,
       "wiki_page_events": true
@@ -7335,6 +7329,7 @@
       "tag_push_events": true,
       "note_events": true,
       "build_events": true,
+      "type": "BuildkiteService",
       "category": "ci",
       "default": false,
       "wiki_page_events": true
@@ -7356,6 +7351,7 @@
       "tag_push_events": true,
       "note_events": true,
       "build_events": true,
+      "type": "BambooService",
       "category": "ci",
       "default": false,
       "wiki_page_events": true
@@ -7377,6 +7373,7 @@
       "tag_push_events": true,
       "note_events": true,
       "build_events": true,
+      "type": "AssemblaService",
       "category": "common",
       "default": false,
       "wiki_page_events": true
@@ -7398,6 +7395,7 @@
       "tag_push_events": true,
       "note_events": true,
       "build_events": true,
+      "type": "AssemblaService",
       "category": "common",
       "default": false,
       "wiki_page_events": true

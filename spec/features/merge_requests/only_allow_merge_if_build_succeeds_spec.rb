@@ -14,7 +14,7 @@ feature 'Only allow merge requests to be merged if the pipeline succeeds', featu
     it 'allows MR to be merged' do
       visit_merge_request(merge_request)
 
-      expect(page).to have_button 'Accept Merge Request'
+      expect(page).to have_button 'Accept merge request'
     end
   end
 
@@ -38,8 +38,8 @@ feature 'Only allow merge requests to be merged if the pipeline succeeds', featu
         it 'does not allow to merge immediately' do
           visit_merge_request(merge_request)
 
-          expect(page).to have_button 'Merge When Pipeline Succeeds'
-          expect(page).not_to have_button 'Select Merge Moment'
+          expect(page).to have_button 'Merge when pipeline succeeds'
+          expect(page).not_to have_button 'Select merge moment'
         end
       end
 
@@ -49,7 +49,7 @@ feature 'Only allow merge requests to be merged if the pipeline succeeds', featu
         it 'does not allow MR to be merged' do
           visit_merge_request(merge_request)
 
-          expect(page).not_to have_button 'Accept Merge Request'
+          expect(page).not_to have_button 'Accept merge request'
           expect(page).to have_content('Please retry the job or push a new commit to fix the failure.')
         end
       end
@@ -60,7 +60,7 @@ feature 'Only allow merge requests to be merged if the pipeline succeeds', featu
         it 'does not allow MR to be merged' do
           visit_merge_request(merge_request)
 
-          expect(page).not_to have_button 'Accept Merge Request'
+          expect(page).not_to have_button 'Accept merge request'
           expect(page).to have_content('Please retry the job or push a new commit to fix the failure.')
         end
       end
@@ -71,7 +71,7 @@ feature 'Only allow merge requests to be merged if the pipeline succeeds', featu
         it 'allows MR to be merged' do
           visit_merge_request(merge_request)
 
-          expect(page).to have_button 'Accept Merge Request'
+          expect(page).to have_button 'Accept merge request'
         end
       end
 
@@ -81,7 +81,7 @@ feature 'Only allow merge requests to be merged if the pipeline succeeds', featu
         it 'allows MR to be merged' do
           visit_merge_request(merge_request)
 
-          expect(page).to have_button 'Accept Merge Request'
+          expect(page).to have_button 'Accept merge request'
         end
       end
     end
@@ -97,10 +97,10 @@ feature 'Only allow merge requests to be merged if the pipeline succeeds', featu
         it 'allows MR to be merged immediately', js: true do
           visit_merge_request(merge_request)
 
-          expect(page).to have_button 'Merge When Pipeline Succeeds'
+          expect(page).to have_button 'Merge when pipeline succeeds'
 
-          click_button 'Select Merge Moment'
-          expect(page).to have_content 'Merge Immediately'
+          click_button 'Select merge moment'
+          expect(page).to have_content 'Merge immediately'
         end
       end
 
@@ -110,7 +110,7 @@ feature 'Only allow merge requests to be merged if the pipeline succeeds', featu
         it 'allows MR to be merged' do
           visit_merge_request(merge_request)
 
-          expect(page).to have_button 'Accept Merge Request'
+          expect(page).to have_button 'Accept merge request'
         end
       end
 
@@ -120,7 +120,7 @@ feature 'Only allow merge requests to be merged if the pipeline succeeds', featu
         it 'allows MR to be merged' do
           visit_merge_request(merge_request)
 
-          expect(page).to have_button 'Accept Merge Request'
+          expect(page).to have_button 'Accept merge request'
         end
       end
     end

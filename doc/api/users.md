@@ -64,7 +64,6 @@ GET /users
     "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
     "web_url": "http://localhost:3000/john_smith",
     "created_at": "2012-05-23T08:00:58Z",
-    "is_admin": false,
     "bio": null,
     "location": null,
     "skype": "",
@@ -97,7 +96,6 @@ GET /users
     "avatar_url": "http://localhost:3000/uploads/user/avatar/2/index.jpg",
     "web_url": "http://localhost:3000/jack_smith",
     "created_at": "2012-05-23T08:01:01Z",
-    "is_admin": false,
     "bio": null,
     "location": null,
     "skype": "",
@@ -134,6 +132,18 @@ For example:
 GET /users?username=jack_smith
 ```
 
+You can also lookup users by external UID and provider:
+
+```
+GET /users?extern_uid=:extern_uid&provider=:provider
+```
+
+For example:
+
+```
+GET /users?extern_uid=1234567&provider=github
+```
+
 You can search for users who are external with: `/users?external=true`
 
 ## Single user
@@ -159,7 +169,6 @@ Parameters:
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/cd8.jpeg",
   "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
-  "is_admin": false,
   "bio": null,
   "location": null,
   "skype": "",
@@ -190,7 +199,6 @@ Parameters:
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
   "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
-  "is_admin": false,
   "bio": null,
   "location": null,
   "skype": "",
@@ -315,7 +323,6 @@ GET /user
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
   "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
-  "is_admin": false,
   "bio": null,
   "location": null,
   "skype": "",
@@ -994,8 +1001,7 @@ Parameters:
 
 ### Get user activities (admin only)
 
->**Note:** This API endpoint is only available on 8.15 EE and above.
-
+>**Note:** This API endpoint is only available on 8.15 (EE) and 9.1 (CE) and above.
 
 Get the last activity date for all users, sorted from oldest to newest.
 

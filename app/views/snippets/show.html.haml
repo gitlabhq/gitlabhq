@@ -1,4 +1,4 @@
-- page_title @snippet.title, "Snippets"
+- page_title "#{@snippet.title} (#{@snippet.to_reference})", "Snippets"
 
 = render 'shared/snippets/header'
 
@@ -7,3 +7,6 @@
 
 .row-content-block.top-block.content-component-block
   = render 'award_emoji/awards_block', awardable: @snippet, inline: true
+
+%ul#notes-list.notes.main-notes-list.timeline
+  #notes= render 'shared/notes/notes'

@@ -1,30 +1,41 @@
 /* eslint-disable func-names, space-before-function-paren, quotes, object-shorthand, camelcase, no-var, comma-dangle, prefer-arrow-callback, quote-props, no-param-reassign, max-len */
 
 var Api = {
-  groupsPath: "/api/:version/groups.json",
-  groupPath: "/api/:version/groups/:id.json",
-  namespacesPath: "/api/:version/namespaces.json",
-  groupProjectsPath: "/api/:version/groups/:id/projects.json",
-  projectsPath: "/api/:version/projects.json?simple=true",
-  labelsPath: "/:namespace_path/:project_path/labels",
-  licensePath: "/api/:version/templates/licenses/:key",
-  gitignorePath: "/api/:version/templates/gitignores/:key",
-  gitlabCiYmlPath: "/api/:version/templates/gitlab_ci_ymls/:key",
-  ldapGroupsPath: "/api/:version/ldap/:provider/groups.json",
-  dockerfilePath: "/api/:version/templates/dockerfiles/:key",
-  issuableTemplatePath: "/:namespace_path/:project_path/templates/:type/:key",
+  groupsPath: '/api/:version/groups.json',
+  groupPath: '/api/:version/groups/:id.json',
+  namespacesPath: '/api/:version/namespaces.json',
+  groupProjectsPath: '/api/:version/groups/:id/projects.json',
+  projectsPath: '/api/:version/projects.json?simple=true',
+  labelsPath: '/:namespace_path/:project_path/labels',
+  licensePath: '/api/:version/templates/licenses/:key',
+  gitignorePath: '/api/:version/templates/gitignores/:key',
+  gitlabCiYmlPath: '/api/:version/templates/gitlab_ci_ymls/:key',
+  ldapGroupsPath: '/api/:version/ldap/:provider/groups.json',
+  dockerfilePath: '/api/:version/templates/dockerfiles/:key',
+  issuableTemplatePath: '/:namespace_path/:project_path/templates/:type/:key',
   group: function(group_id, callback) {
     var url = Api.buildUrl(Api.groupPath)
       .replace(':id', group_id);
     return $.ajax({
       url: url,
-      dataType: "json"
+      dataType: 'json'
     }).done(function(group) {
       return callback(group);
     });
   },
+  users: function(search, options, callback = $.noop) {
+    var url = Api.buildUrl('/autocomplete/users.json');
+    return $.ajax({
+      url,
+      data: $.extend({
+        search,
+        per_page: 20
+      }, options),
+      dataType: 'json'
+    }).done(callback);
+  },
   // Return groups list. Filtered by query
-  groups: function(query, options, callback) {
+  groups: function(query, options, callback = $.noop) {
     var url = Api.buildUrl(Api.groupsPath);
     return $.ajax({
       url: url,
@@ -32,7 +43,7 @@ var Api = {
         search: query,
         per_page: 20
       }, options),
-      dataType: "json"
+      dataType: 'json'
     }).done(function(groups) {
       return callback(groups);
     });
@@ -46,7 +57,7 @@ var Api = {
         search: query,
         per_page: 20
       },
-      dataType: "json"
+      dataType: 'json'
     }).done(function(namespaces) {
       return callback(namespaces);
     });
@@ -61,7 +72,7 @@ var Api = {
         per_page: 20,
         membership: true
       }, options),
-      dataType: "json"
+      dataType: 'json'
     }).done(function(projects) {
       return callback(projects);
     });
@@ -72,9 +83,9 @@ var Api = {
       .replace(':project_path', project_path);
     return $.ajax({
       url: url,
-      type: "POST",
+      type: 'POST',
       data: { 'label': data },
-      dataType: "json"
+      dataType: 'json'
     }).done(function(label) {
       return callback(label);
     }).error(function(message) {
@@ -91,7 +102,7 @@ var Api = {
         search: query,
         per_page: 20
       },
-      dataType: "json"
+      dataType: 'json'
     }).done(function(projects) {
       return callback(projects);
     });
@@ -156,7 +167,7 @@ var Api = {
         per_page: 20,
         active: true
       },
-      dataType: "json"
+      dataType: 'json'
     }).done(function(groups) {
       return callback(groups);
     });

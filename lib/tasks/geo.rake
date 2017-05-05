@@ -42,6 +42,11 @@ namespace :geo do
         Rake::Task['geo:config:restore'].reenable
       end
     end
+
+    desc 'Display database encryption key'
+    task show_encryption_key: :environment do
+      puts Rails.application.secrets.db_key_base
+    end
   end
 
   namespace :config do
@@ -95,7 +100,8 @@ namespace :geo do
   end
 
   def set_primary_geo_node(public_key)
-    params = { host: Gitlab.config.gitlab.host,
+    params = { schema: Gitlab.config.gitlab.protocol,
+               host: Gitlab.config.gitlab.host,
                port: Gitlab.config.gitlab.port,
                relative_url_root: Gitlab.config.gitlab.relative_url_root,
                primary: true,

@@ -22,6 +22,7 @@ describe Project, models: true do
     it { is_expected.to have_many(:protected_branches).dependent(:destroy) }
     it { is_expected.to have_one(:forked_project_link).dependent(:destroy) }
     it { is_expected.to have_one(:slack_service).dependent(:destroy) }
+    it { is_expected.to have_one(:microsoft_teams_service).dependent(:destroy) }
     it { is_expected.to have_one(:mattermost_service).dependent(:destroy) }
     it { is_expected.to have_one(:pushover_service).dependent(:destroy) }
     it { is_expected.to have_one(:asana_service).dependent(:destroy) }
@@ -57,6 +58,7 @@ describe Project, models: true do
     it { is_expected.to have_many(:builds) }
     it { is_expected.to have_many(:runner_projects) }
     it { is_expected.to have_many(:runners) }
+    it { is_expected.to have_many(:active_runners) }
     it { is_expected.to have_many(:variables) }
     it { is_expected.to have_many(:triggers) }
     it { is_expected.to have_many(:pages_domains) }
@@ -193,6 +195,21 @@ describe Project, models: true do
       end
     end
 
+    context '#mark_stuck_remote_mirrors_as_failed!' do
+      it 'fails stuck remote mirrors' do
+        project = create(:project, :remote_mirror)
+
+        project.remote_mirrors.first.update_attributes(
+          update_status: :started,
+          last_update_at: 2.days.ago
+        )
+
+        expect do
+          project.mark_stuck_remote_mirrors_as_failed!
+        end.to change { project.remote_mirrors.stuck.count }.from(1).to(0)
+      end
+    end
+
     context 'mirror' do
       subject { build(:project, mirror: true) }
 
@@ -261,6 +278,34 @@ describe Project, models: true do
 
       it 'contains errors related to the project being deleted' do
         expect(new_project.errors.full_messages.first).to eq('The project is still being deleted. Please try again later.')
+      end
+    end
+
+    describe 'path validation' do
+      it 'allows paths reserved on the root namespace' do
+        project = build(:project, path: 'api')
+
+        expect(project).to be_valid
+      end
+
+      it 'rejects paths reserved on another level' do
+        project = build(:project, path: 'tree')
+
+        expect(project).not_to be_valid
+      end
+
+      it 'rejects nested paths' do
+        parent = create(:group, :nested, path: 'environments')
+        project = build(:project, path: 'folders', namespace: parent)
+
+        expect(project).not_to be_valid
+      end
+
+      it 'allows a reserved group name' do
+        parent = create(:group)
+        project = build(:project, path: 'avatar', namespace: parent)
+
+        expect(project).to be_valid
       end
     end
   end
@@ -2277,11 +2322,30 @@ describe Project, models: true do
   describe '#pipeline_status' do
     let(:project) { create(:project) }
     it 'builds a pipeline status' do
-      expect(project.pipeline_status).to be_a(Ci::PipelineStatus)
+      expect(project.pipeline_status).to be_a(Gitlab::Cache::Ci::ProjectPipelineStatus)
     end
 
     it 'hase a loaded pipeline status' do
       expect(project.pipeline_status).to be_loaded
+    end
+  end
+
+  describe '#append_or_update_attribute' do
+    let(:project) { create(:project) }
+
+    it 'shows full error updating an invalid MR' do
+      error_message = 'Failed to replace merge_requests because one or more of the new records could not be saved.'\
+                      ' Validate fork Source project is not a fork of the target project'
+
+      expect { project.append_or_update_attribute(:merge_requests, [create(:merge_request)]) }.
+        to raise_error(ActiveRecord::RecordNotSaved, error_message)
+    end
+
+    it 'updates the project succesfully' do
+      merge_request = create(:merge_request, target_project: project, source_project: project)
+
+      expect { project.append_or_update_attribute(:merge_requests, [merge_request]) }.
+        not_to raise_error
     end
   end
 end

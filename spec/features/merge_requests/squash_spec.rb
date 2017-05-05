@@ -35,7 +35,7 @@ feature 'Squashing merge requests', js: true, feature: true do
   end
 
   def accept_mr
-    click_on 'Accept Merge Request'
+    click_on 'Accept merge request'
     wait_for_ajax
   end
 

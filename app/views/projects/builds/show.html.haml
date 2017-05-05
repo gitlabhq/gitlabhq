@@ -73,6 +73,11 @@
                   = custom_icon('scroll_down_hover_active')
         #up-build-trace
         %pre.build-trace#build-trace
+          .js-truncated-info.truncated-info.hidden<
+            Showing last
+            %span.js-truncated-info-size.truncated-info-size><
+            KiB of log -
+            %a.js-raw-link.raw-link{ :href => raw_namespace_project_build_path(@project.namespace, @project, @build) }>< Complete Raw
           %code.bash.js-build-output
           .build-loader-animation.js-build-refresh
 

@@ -1,4 +1,0 @@
----
-title: Handle parsing OpenBSD ps output properly to display sidekiq infos on admin->monitoring->background
-merge_request: 10303
-author: Sebastian Reitenbach

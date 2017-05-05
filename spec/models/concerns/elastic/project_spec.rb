@@ -15,8 +15,8 @@ describe Project, elastic: true do
     project_ids = []
 
     Sidekiq::Testing.inline! do
-      project = create :empty_project, name: 'test'
-      project1 = create :empty_project, path: 'test1'
+      project = create :empty_project, name: 'test1'
+      project1 = create :empty_project, path: 'test2'
       project2 = create :empty_project
       create :empty_project, path: 'someone_elses_project'
       project_ids += [project.id, project1.id, project2.id]
@@ -24,8 +24,9 @@ describe Project, elastic: true do
       Gitlab::Elastic::Helper.refresh_index
     end
 
-    expect(described_class.elastic_search('test', options: { project_ids: project_ids }).total_count).to eq(1)
     expect(described_class.elastic_search('test1', options: { project_ids: project_ids }).total_count).to eq(1)
+    expect(described_class.elastic_search('test2', options: { project_ids: project_ids }).total_count).to eq(1)
+    expect(described_class.elastic_search('test*', options: { project_ids: project_ids }).total_count).to eq(2)
     expect(described_class.elastic_search('someone_elses_project', options: { project_ids: project_ids }).total_count).to eq(0)
   end
 

@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-describe API::Internal, api: true  do
-  include ApiHelpers
+describe API::Internal do
   let(:user) { create(:user) }
   let(:key) { create(:key, user: user) }
   let(:project) { create(:project, :repository) }
@@ -204,6 +203,22 @@ describe API::Internal, api: true  do
 
       after do
         Timecop.return
+      end
+
+      context 'with env passed as a JSON' do
+        it 'sets env in RequestStore' do
+          expect(Gitlab::Git::Env).to receive(:set).with({
+            'GIT_OBJECT_DIRECTORY' => 'foo',
+            'GIT_ALTERNATE_OBJECT_DIRECTORIES' => 'bar'
+          })
+
+          push(key, project.wiki, env: {
+            GIT_OBJECT_DIRECTORY: 'foo',
+            GIT_ALTERNATE_OBJECT_DIRECTORIES: 'bar'
+          }.to_json)
+
+          expect(response).to have_http_status(200)
+        end
       end
 
       context "git push with project.wiki" do
@@ -524,7 +539,7 @@ describe API::Internal, api: true  do
     )
   end
 
-  def push(key, project, protocol = 'ssh')
+  def push(key, project, protocol = 'ssh', env: nil)
     post(
       api("/internal/allowed"),
       changes: 'd14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master',
@@ -532,7 +547,8 @@ describe API::Internal, api: true  do
       project: project.repository.path_to_repo,
       action: 'git-receive-pack',
       secret_token: secret_token,
-      protocol: protocol
+      protocol: protocol,
+      env: env
     )
   end
 

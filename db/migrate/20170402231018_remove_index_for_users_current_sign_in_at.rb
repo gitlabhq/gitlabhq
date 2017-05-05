@@ -15,7 +15,7 @@ class RemoveIndexForUsersCurrentSignInAt < ActiveRecord::Migration
       if Gitlab::Database.postgresql?
         execute 'DROP INDEX CONCURRENTLY index_users_on_current_sign_in_at;'
       else
-        remove_index :users, :current_sign_in_at
+        remove_concurrent_index :users, :current_sign_in_at
       end
     end
   end

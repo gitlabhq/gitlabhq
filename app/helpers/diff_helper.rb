@@ -62,6 +62,8 @@ module DiffHelper
   end
 
   def parallel_diff_discussions(left, right, diff_file)
+    return unless @grouped_diff_discussions
+    
     discussions_left = discussions_right = nil
 
     if left && (left.unchanged? || left.removed?)

@@ -13,7 +13,7 @@ Create issues, labels, milestones, cast your vote, and review issues.
 
 - [Create a new issue](../gitlab-basics/create-issue.md)
 - [Assign labels to issues](../user/project/labels.md)
-- [Use milestones as an overview of your project's tracker](../workflow/milestones.md)
+- [Use milestones as an overview of your project's tracker](../user/project/milestones/index.md)
 - [Use voting to express your like/dislike to issues and merge requests](../workflow/award_emoji.md)
 
 ## Collaborate

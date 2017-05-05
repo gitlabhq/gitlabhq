@@ -32,10 +32,46 @@ describe Gitlab::Git::Repository, seed_helper: true do
         repository.root_ref
       end
 
+      it 'wraps GRPC not found' do
+        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:default_branch_name).
+          and_raise(GRPC::NotFound)
+        expect { repository.root_ref }.to raise_error(Gitlab::Git::Repository::NoRepository)
+      end
+
       it 'wraps GRPC exceptions' do
         expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:default_branch_name).
           and_raise(GRPC::Unknown)
         expect { repository.root_ref }.to raise_error(Gitlab::Git::CommandError)
+      end
+    end
+  end
+
+  describe "#rugged" do
+    context 'with no Git env stored' do
+      before do
+        expect(Gitlab::Git::Env).to receive(:all).and_return({})
+      end
+
+      it "whitelist some variables and pass them via the alternates keyword argument" do
+        expect(Rugged::Repository).to receive(:new).with(repository.path, alternates: [])
+
+        repository.rugged
+      end
+    end
+
+    context 'with some Git env stored' do
+      before do
+        expect(Gitlab::Git::Env).to receive(:all).and_return({
+          'GIT_OBJECT_DIRECTORY' => 'foo',
+          'GIT_ALTERNATE_OBJECT_DIRECTORIES' => 'bar',
+          'GIT_OTHER' => 'another_env'
+        })
+      end
+
+      it "whitelist some variables and pass them via the alternates keyword argument" do
+        expect(Rugged::Repository).to receive(:new).with(repository.path, alternates: %w[foo bar])
+
+        repository.rugged
       end
     end
   end
@@ -90,7 +126,13 @@ describe Gitlab::Git::Repository, seed_helper: true do
         subject
       end
 
-      it 'wraps GRPC exceptions' do
+      it 'wraps GRPC not found' do
+        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:branch_names).
+          and_raise(GRPC::NotFound)
+        expect { subject }.to raise_error(Gitlab::Git::Repository::NoRepository)
+      end
+
+      it 'wraps GRPC other exceptions' do
         expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:branch_names).
           and_raise(GRPC::Unknown)
         expect { subject }.to raise_error(Gitlab::Git::CommandError)
@@ -119,6 +161,12 @@ describe Gitlab::Git::Repository, seed_helper: true do
       it 'gets the tag names from GitalyClient' do
         expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:tag_names)
         subject
+      end
+
+      it 'wraps GRPC not found' do
+        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:tag_names).
+          and_raise(GRPC::NotFound)
+        expect { subject }.to raise_error(Gitlab::Git::Repository::NoRepository)
       end
 
       it 'wraps GRPC exceptions' do
@@ -995,6 +1043,35 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
       expect(branch).to be_a_kind_of(Gitlab::Git::Branch)
       expect(branch.name).to eq('master')
+    end
+  end
+
+  describe '#find_commits' do
+    it 'should return a return a collection of commits' do
+      commits = repository.find_commits
+
+      expect(commits).not_to be_empty
+      expect(commits).to all( be_a_kind_of(Gitlab::Git::Commit) )
+    end
+
+    context 'while applying a sort order based on the `order` option' do
+      it "allows ordering topologically (no parents shown before their children)" do
+        expect_any_instance_of(Rugged::Walker).to receive(:sorting).with(Rugged::SORT_TOPO)
+
+        repository.find_commits(order: :topo)
+      end
+
+      it "allows ordering by date" do
+        expect_any_instance_of(Rugged::Walker).to receive(:sorting).with(Rugged::SORT_DATE)
+
+        repository.find_commits(order: :date)
+      end
+
+      it "applies no sorting by default" do
+        expect_any_instance_of(Rugged::Walker).to receive(:sorting).with(Rugged::SORT_NONE)
+
+        repository.find_commits
+      end
     end
   end
 

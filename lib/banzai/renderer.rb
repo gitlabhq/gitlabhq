@@ -1,7 +1,5 @@
 module Banzai
   module Renderer
-    module_function
-
     # Convert a Markdown String into an HTML-safe String of HTML
     #
     # Note that while the returned HTML will have been sanitized of dangerous
@@ -16,7 +14,7 @@ module Banzai
     # context  - Hash of context options passed to our HTML Pipeline
     #
     # Returns an HTML-safe String
-    def render(text, context = {})
+    def self.render(text, context = {})
       cache_key = context.delete(:cache_key)
       cache_key = full_cache_key(cache_key, context[:pipeline])
 
@@ -35,24 +33,16 @@ module Banzai
     # of HTML. This method is analogous to calling render(object.field), but it
     # can cache the rendered HTML in the object, rather than Redis.
     #
-    # The context to use is learned from the passed-in object by calling
-    # #banzai_render_context(field), and cannot be changed. Use #render, passing
-    # it the field text, if a custom rendering is needed. The generated context
-    # is returned along with the HTML.
-    def render_field(object, field)
-      html_field = object.markdown_cache_field_for(field)
+    # The context to use is managed by the object and cannot be changed.
+    # Use #render, passing it the field text, if a custom rendering is needed.
+    def self.render_field(object, field)
+      object.refresh_markdown_cache!(do_update: update_object?(object)) unless object.cached_html_up_to_date?(field)
 
-      html = object.__send__(html_field)
-      return html if html.present?
-
-      html = cacheless_render_field(object, field)
-      update_object(object, html_field, html) unless object.new_record? || object.destroyed?
-
-      html
+      object.cached_html_for(field)
     end
 
     # Same as +render_field+, but without consulting or updating the cache field
-    def cacheless_render_field(object, field, options = {})
+    def self.cacheless_render_field(object, field, options = {})
       text = object.__send__(field)
       context = object.banzai_render_context(field).merge(options)
 
@@ -82,7 +72,7 @@ module Banzai
     #    texts_and_contexts
     #    => [{ text: '### Hello',
     #          context: { cache_key: [note, :note] } }]
-    def cache_collection_render(texts_and_contexts)
+    def self.cache_collection_render(texts_and_contexts)
       items_collection = texts_and_contexts.each_with_index do |item, index|
         context = item[:context]
         cache_key = full_cache_multi_key(context.delete(:cache_key), context[:pipeline])
@@ -111,7 +101,7 @@ module Banzai
       items_collection.map { |item| item[:rendered] }
     end
 
-    def render_result(text, context = {})
+    def self.render_result(text, context = {})
       text = Pipeline[:pre_process].to_html(text, context) if text
 
       Pipeline[context[:pipeline]].call(text, context)
@@ -130,7 +120,7 @@ module Banzai
     #            :user      - User object
     #
     # Returns an HTML-safe String
-    def post_process(html, context)
+    def self.post_process(html, context)
       context = Pipeline[context[:pipeline]].transform_context(context)
 
       pipeline = Pipeline[:post_process]
@@ -141,7 +131,7 @@ module Banzai
       end.html_safe
     end
 
-    def cacheless_render(text, context = {})
+    def self.cacheless_render(text, context = {})
       Gitlab::Metrics.measure(:banzai_cacheless_render) do
         result = render_result(text, context)
 
@@ -154,7 +144,7 @@ module Banzai
       end
     end
 
-    def full_cache_key(cache_key, pipeline_name)
+    def self.full_cache_key(cache_key, pipeline_name)
       return unless cache_key
       ["banzai", *cache_key, pipeline_name || :full]
     end
@@ -162,13 +152,14 @@ module Banzai
     # To map Rails.cache.read_multi results we need to know the Rails.cache.expanded_key.
     # Other option will be to generate stringified keys on our side and don't delegate to Rails.cache.expanded_key
     # method.
-    def full_cache_multi_key(cache_key, pipeline_name)
+    def self.full_cache_multi_key(cache_key, pipeline_name)
       return unless cache_key
       Rails.cache.send(:expanded_key, full_cache_key(cache_key, pipeline_name))
     end
 
-    def update_object(object, html_field, html)
-      object.update_column(html_field, html) unless Gitlab::Geo.secondary?
+    # GitLab EE needs to disable updates on GET requests in Geo
+    def self.update_object?(object)
+      !Gitlab::Geo.secondary?
     end
   end
 end

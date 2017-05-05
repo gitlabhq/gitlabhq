@@ -90,11 +90,7 @@ class User < ActiveRecord::Base
   has_many :events,                   dependent: :destroy, foreign_key: :author_id
   has_many :subscriptions,            dependent: :destroy
   has_many :recent_events, -> { order "id DESC" }, foreign_key: :author_id,   class_name: "Event"
-  has_many :assigned_issues,          dependent: :destroy, foreign_key: :assignee_id, class_name: "Issue"
-  has_many :assigned_merge_requests,  dependent: :destroy, foreign_key: :assignee_id, class_name: "MergeRequest"
   has_many :oauth_applications,       class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy
-  has_many :approvals,                dependent: :destroy
-  has_many :approvers,                dependent: :destroy
   has_one  :abuse_report,             dependent: :destroy, foreign_key: :user_id
   has_many :reported_abuse_reports,   dependent: :destroy, foreign_key: :reporter_id, class_name: "AbuseReport"
   has_many :spam_logs,                dependent: :destroy
@@ -105,13 +101,13 @@ class User < ActiveRecord::Base
   has_many :award_emoji,              dependent: :destroy
   has_many :path_locks,               dependent: :destroy
 
+  has_many :approvals,                dependent: :destroy
+  has_many :approvers,                dependent: :destroy
+
   # Protected Branch Access
   has_many :protected_branch_merge_access_levels, dependent: :destroy, class_name: ProtectedBranch::MergeAccessLevel
   has_many :protected_branch_push_access_levels, dependent: :destroy, class_name: ProtectedBranch::PushAccessLevel
   has_many :triggers,                 dependent: :destroy, class_name: 'Ci::Trigger', foreign_key: :owner_id
-
-  has_many :assigned_issues,          dependent: :nullify, foreign_key: :assignee_id, class_name: "Issue"
-  has_many :assigned_merge_requests,  dependent: :nullify, foreign_key: :assignee_id, class_name: "MergeRequest"
 
   # Issues that a user owns are expected to be moved to the "ghost" user before
   # the user is destroyed. If the user owns any issues during deletion, this
@@ -132,7 +128,7 @@ class User < ActiveRecord::Base
     presence: true,
     numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: Gitlab::Database::MAX_INT_VALUE }
   validates :username,
-    namespace: true,
+    dynamic_path: true,
     presence: true,
     uniqueness: { case_sensitive: false }
 
@@ -210,7 +206,7 @@ class User < ActiveRecord::Base
   scope :admins, -> { where(admin: true) }
   scope :blocked, -> { with_states(:blocked, :ldap_blocked) }
   scope :external, -> { where(external: true) }
-  scope :active, -> { with_state(:active) }
+  scope :active, -> { with_state(:active).non_internal }
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members WHERE user_id IS NOT NULL AND requested_at IS NULL)') }
   scope :subscribed_for_admin_email, -> { where(admin_email_unsubscribed_at: nil) }
@@ -512,6 +508,14 @@ class User < ActiveRecord::Base
     Group.member_descendants(id)
   end
 
+  def all_expanded_groups
+    Group.member_hierarchy(id)
+  end
+
+  def expanded_groups_requiring_two_factor_authentication
+    all_expanded_groups.where(require_two_factor_authentication: true)
+  end
+
   def nested_groups_projects
     Project.joins(:namespace).where('namespaces.parent_id IS NOT NULL').
       member_descendants(id)
@@ -604,10 +608,6 @@ class User < ActiveRecord::Base
 
   def first_name
     name.split.first unless name.blank?
-  end
-
-  def cared_merge_requests
-    MergeRequest.cared(self)
   end
 
   def projects_limit_left
@@ -918,20 +918,20 @@ class User < ActiveRecord::Base
     @global_notification_setting
   end
 
-  def assigned_open_merge_request_count(force: false)
-    Rails.cache.fetch(['users', id, 'assigned_open_merge_request_count'], force: force) do
-      assigned_merge_requests.opened.count
+  def assigned_open_merge_requests_count(force: false)
+    Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count'], force: force) do
+      MergeRequestsFinder.new(self, assignee_id: self.id, state: 'opened').execute.count
     end
   end
 
   def assigned_open_issues_count(force: false)
     Rails.cache.fetch(['users', id, 'assigned_open_issues_count'], force: force) do
-      assigned_issues.opened.count
+      IssuesFinder.new(self, assignee_id: self.id, state: 'opened').execute.count
     end
   end
 
   def update_cache_counts
-    assigned_open_merge_request_count(force: true)
+    assigned_open_merge_requests_count(force: true)
     assigned_open_issues_count(force: true)
   end
 
@@ -984,6 +984,15 @@ class User < ActiveRecord::Base
 
     self.admin = (new_level == 'admin')
     self.auditor = (new_level == 'auditor')
+  end
+
+  def update_two_factor_requirement
+    periods = expanded_groups_requiring_two_factor_authentication.pluck(:two_factor_grace_period)
+
+    self.require_two_factor_authentication_from_group = periods.any?
+    self.two_factor_grace_period = periods.min || User.column_defaults['two_factor_grace_period']
+
+    save
   end
 
   protected

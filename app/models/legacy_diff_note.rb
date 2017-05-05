@@ -61,11 +61,12 @@ class LegacyDiffNote < Note
   #
   # If the note's current diff cannot be matched in the MergeRequest's current
   # diff, it's considered inactive.
-  def active?
+  def active?(diff_refs = nil)
     return @active if defined?(@active)
     return true if for_commit?
     return true unless diff_line
     return false unless noteable
+    return false if diff_refs && diff_refs != noteable_diff_refs
 
     noteable_diff = find_noteable_diff
 

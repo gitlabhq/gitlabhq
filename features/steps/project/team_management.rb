@@ -4,25 +4,10 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
   include SharedPaths
   include Select2Helper
 
-  step 'I should be able to see myself in team' do
-    expect(page).to have_content(@user.name)
-    expect(page).to have_content(@user.username)
-  end
-
-  step 'I should see "Dmitriy" in team list' do
+  step 'I should not see "Dmitriy" in team list' do
     user = User.find_by(name: "Dmitriy")
-    expect(page).to have_content(user.name)
-    expect(page).to have_content(user.username)
-  end
-
-  step 'I select "Mike" as "Reporter"' do
-    user = User.find_by(name: "Mike")
-
-    page.within ".users-project-form" do
-      select2(user.id, from: "#user_ids", multiple: true)
-      select "Reporter", from: "access_level"
-    end
-    click_button "Add to project"
+    expect(page).not_to have_content(user.name)
+    expect(page).not_to have_content(user.username)
   end
 
   step 'I should see "Mike" in team list as "Reporter"' do
@@ -32,60 +17,6 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
       expect(page).to have_content('Mike')
       expect(page).to have_content('Reporter')
     end
-  end
-
-  step 'I select "sjobs@apple.com" as "Reporter"' do
-    page.within ".users-project-form" do
-      find('#user_ids', visible: false).set('sjobs@apple.com')
-      select "Reporter", from: "access_level"
-    end
-    click_button "Add to project"
-  end
-
-  step 'I should see "sjobs@apple.com" in team list as invited "Reporter"' do
-    project_member = project.project_members.find_by(invite_email: 'sjobs@apple.com')
-    page.within "#project_member_#{project_member.id}" do
-      expect(page).to have_content('sjobs@apple.com')
-      expect(page).to have_content('Invited')
-      expect(page).to have_content('Reporter')
-    end
-  end
-
-  step 'I should see "Dmitriy" in team list as "Developer"' do
-    user = User.find_by(name: 'Dmitriy')
-    project_member = project.project_members.find_by(user_id: user.id)
-    page.within "#project_member_#{project_member.id}" do
-      expect(page).to have_content('Dmitriy')
-      expect(page).to have_content('Developer')
-    end
-  end
-
-  step 'I change "Dmitriy" role to "Reporter"' do
-    project = Project.find_by(name: "Shop")
-    user = User.find_by(name: 'Dmitriy')
-    project_member = project.project_members.find_by(user_id: user.id)
-    page.within "#project_member_#{project_member.id}" do
-      click_button project_member.human_access
-
-      page.within '.dropdown-menu' do
-        click_link 'Reporter'
-      end
-    end
-  end
-
-  step 'I should see "Dmitriy" in team list as "Reporter"' do
-    user = User.find_by(name: 'Dmitriy')
-    project_member = project.project_members.find_by(user_id: user.id)
-    page.within "#project_member_#{project_member.id}" do
-      expect(page).to have_content('Dmitriy')
-      expect(page).to have_content('Reporter')
-    end
-  end
-
-  step 'I should not see "Dmitriy" in team list' do
-    user = User.find_by(name: "Dmitriy")
-    expect(page).not_to have_content(user.name)
-    expect(page).not_to have_content(user.username)
   end
 
   step 'gitlab user "Mike"' do
@@ -113,7 +44,7 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
     project.team << [user, :reporter]
   end
 
-  step 'I click link "Import team from another project"' do    
+  step 'I click link "Import team from another project"' do
     page.within '.users-project-form' do
       click_link "Import"
     end

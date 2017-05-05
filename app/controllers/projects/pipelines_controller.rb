@@ -29,6 +29,8 @@ class Projects::PipelinesController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
+        Gitlab::PollingInterval.set_header(response, interval: 10_000)
+
         render json: {
           pipelines: PipelineSerializer
             .new(project: @project, user: @current_user)
@@ -114,7 +116,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def pipeline
-    @pipeline ||= project.pipelines.find_by!(id: params[:id])
+    @pipeline ||= project.pipelines.find_by!(id: params[:id]).present(current_user: current_user)
   end
 
   def commit

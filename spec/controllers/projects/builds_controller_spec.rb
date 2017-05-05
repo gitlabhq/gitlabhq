@@ -1,13 +1,44 @@
 require 'spec_helper'
 
 describe Projects::BuildsController do
-  include ApiHelpers
-
   let(:user) { create(:user) }
   let(:project) { create(:empty_project, :public) }
 
   before do
     sign_in(user)
+  end
+
+  describe 'GET index' do
+    context 'number of queries' do
+      before do
+        Ci::Build::AVAILABLE_STATUSES.each do |status|
+          create_build(status, status)
+        end
+
+        RequestStore.begin!
+      end
+
+      after do
+        RequestStore.end!
+        RequestStore.clear!
+      end
+
+      def render
+        get :index, namespace_id: project.namespace,
+                    project_id: project
+      end
+
+      it "verifies number of queries" do
+        recorded = ActiveRecord::QueryRecorder.new { render }
+        expect(recorded.count).to be_within(5).of(8)
+      end
+
+      def create_build(name, status)
+        pipeline = create(:ci_pipeline, project: project)
+        create(:ci_build, :tags, :triggered, :artifacts,
+          pipeline: pipeline, name: name, status: status)
+      end
+    end
   end
 
   describe 'GET status.json' do
@@ -27,7 +58,47 @@ describe Projects::BuildsController do
       expect(json_response['text']).to eq status.text
       expect(json_response['label']).to eq status.label
       expect(json_response['icon']).to eq status.icon
-      expect(json_response['favicon']).to eq status.favicon
+      expect(json_response['favicon']).to eq "/assets/ci_favicons/#{status.favicon}.ico"
+    end
+  end
+
+  describe 'GET trace.json' do
+    let(:pipeline) { create(:ci_pipeline, project: project) }
+    let(:build) { create(:ci_build, pipeline: pipeline) }
+    let(:user) { create(:user) }
+
+    context 'when user is logged in as developer' do
+      before do
+        project.add_developer(user)
+        sign_in(user)
+        get_trace
+      end
+
+      it 'traces build log' do
+        expect(response).to have_http_status(:ok)
+        expect(json_response['id']).to eq build.id
+        expect(json_response['status']).to eq build.status
+      end
+    end
+
+    context 'when user is logged in as non member' do
+      before do
+        sign_in(user)
+        get_trace
+      end
+
+      it 'traces build log' do
+        expect(response).to have_http_status(:ok)
+        expect(json_response['id']).to eq build.id
+        expect(json_response['status']).to eq build.status
+      end
+    end
+
+    def get_trace
+      get :trace, namespace_id: project.namespace,
+                  project_id: project,
+                  id: build.id,
+                  format: :json
     end
   end
 end

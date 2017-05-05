@@ -145,8 +145,6 @@
   margin: 0;
 }
 
-#modal-remove-blob > .modal-dialog { width: 850px; }
-
 .blob-upload-dropzone-previews {
   text-align: center;
   border: 2px;
@@ -162,7 +160,6 @@
 
 .tree-controls {
   float: right;
-  margin-top: 11px;
   position: relative;
   z-index: 2;
 

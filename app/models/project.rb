@@ -71,6 +71,7 @@ class Project < ActiveRecord::Base
 
   attr_accessor :new_default_branch
   attr_accessor :old_path_with_namespace
+  attr_writer :pipeline_status
 
   alias_attribute :title, :name
 
@@ -118,6 +119,7 @@ class Project < ActiveRecord::Base
   has_one :mock_ci_service, dependent: :destroy
   has_one :mock_deployment_service, dependent: :destroy
   has_one :mock_monitoring_service, dependent: :destroy
+  has_one :microsoft_teams_service, dependent: :destroy
 
   has_one  :forked_project_link,  dependent: :destroy, foreign_key: "forked_to_project_id"
   has_one  :forked_from_project,  through:   :forked_project_link
@@ -179,6 +181,8 @@ class Project < ActiveRecord::Base
   has_many :deployments, dependent: :destroy
   has_many :path_locks, dependent: :destroy
 
+  has_many :active_runners, -> { active }, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
+
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :remote_mirrors,
     allow_destroy: true, reject_if: ->(attrs) { attrs[:id].blank? && attrs[:url].blank? }
@@ -187,7 +191,7 @@ class Project < ActiveRecord::Base
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :count, to: :forks, prefix: true
   delegate :members, to: :team, prefix: true
-  delegate :add_user, to: :team
+  delegate :add_user, :add_users, to: :team
   delegate :add_guest, :add_reporter, :add_developer, :add_master, to: :team
   delegate :empty_repo?, to: :repository
 
@@ -201,13 +205,14 @@ class Project < ActiveRecord::Base
               message: Gitlab::Regex.project_name_regex_message }
   validates :path,
     presence: true,
-    project_path: true,
+    dynamic_path: true,
     length: { maximum: 255 },
     format: { with: Gitlab::Regex.project_path_regex,
-              message: Gitlab::Regex.project_path_regex_message }
+              message: Gitlab::Regex.project_path_regex_message },
+    uniqueness: { scope: :namespace_id }
+
   validates :namespace, presence: true
   validates :name, uniqueness: { scope: :namespace_id }
-  validates :path, uniqueness: { scope: :namespace_id }
   validates :import_url, addressable_url: true, if: :external_import?
   validates :import_url, importable_url: true, if: [:external_import?, :import_url_changed?]
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
@@ -285,6 +290,8 @@ class Project < ActiveRecord::Base
   scope :with_builds_enabled, -> { with_feature_enabled(:builds) }
   scope :with_issues_enabled, -> { with_feature_enabled(:issues) }
   scope :with_wiki_enabled, -> { with_feature_enabled(:wiki) }
+
+  enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
 
   # project features may be "disabled", "internal" or "enabled". If "internal",
   # they are only available to team members. This scope returns projects where
@@ -631,6 +638,14 @@ class Project < ActiveRecord::Base
 
   def update_remote_mirrors
     remote_mirrors.each(&:sync)
+  end
+
+  def mark_stuck_remote_mirrors_as_failed!
+    remote_mirrors.stuck.update_all(
+      update_status: :failed,
+      last_error: 'The remote mirror took to long to complete.',
+      last_update_at: Time.now
+    )
   end
 
   def fetch_mirror
@@ -1215,23 +1230,19 @@ class Project < ActiveRecord::Base
   end
 
   def shared_runners
-    shared_runners_available? ? Ci::Runner.shared : Ci::Runner.none
+    @shared_runners ||= shared_runners_available? ? Ci::Runner.shared : Ci::Runner.none
+  end
+
+  def active_shared_runners
+    @active_shared_runners ||= shared_runners.active
   end
 
   def any_runners?(&block)
-    if runners.active.any?(&block)
-      return true
-    end
-
-    shared_runners.active.any?(&block)
+    active_runners.any?(&block) || active_shared_runners.any?(&block)
   end
 
   def valid_runners_token?(token)
     self.runners_token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.runners_token)
-  end
-
-  def build_coverage_enabled?
-    build_coverage_regex.present?
   end
 
   def build_timeout_in_minutes
@@ -1385,8 +1396,9 @@ class Project < ActiveRecord::Base
     end
   end
 
+  # Lazy loading of the `pipeline_status` attribute
   def pipeline_status
-    @pipeline_status ||= Ci::PipelineStatus.load_for_project(self)
+    @pipeline_status ||= Gitlab::Cache::Ci::ProjectPipelineStatus.load_for_project(self)
   end
 
   def mark_import_as_failed(error_message)
@@ -1472,6 +1484,9 @@ class Project < ActiveRecord::Base
     else
       update_attribute(name, value)
     end
+
+  rescue ActiveRecord::RecordNotSaved => e
+    handle_update_attribute_error(e, value)
   end
 
   def change_repository_storage(new_repository_storage_key)
@@ -1624,5 +1639,17 @@ class Project < ActiveRecord::Base
     return false unless Gitlab.config.registry.enabled
 
     ContainerRepository.build_root_repository(self).has_tags?
+  end
+
+  def handle_update_attribute_error(ex, value)
+    if ex.message.start_with?('Failed to replace')
+      if value.respond_to?(:each)
+        invalid = value.detect(&:invalid?)
+
+        raise ex, ([ex.message] + invalid.errors.full_messages).join(' ') if invalid
+      end
+    end
+
+    raise ex
   end
 end

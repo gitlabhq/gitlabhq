@@ -111,18 +111,6 @@ describe Milestone, models: true do
     it { expect(milestone.percent_complete(user)).to eq(75) }
   end
 
-  describe '#is_empty?' do
-    before do
-      milestone.issues << create(:issue, project: project)
-      milestone.issues << create(:closed_issue, project: project)
-      milestone.merge_requests << create(:merge_request)
-    end
-
-    it { expect(milestone.closed_items_count(user)).to eq(1) }
-    it { expect(milestone.total_items_count(user)).to eq(3) }
-    it { expect(milestone.is_empty?(user)).to be_falsey }
-  end
-
   describe '#can_be_closed?' do
     it { expect(milestone.can_be_closed?).to be_truthy }
   end

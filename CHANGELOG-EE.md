@@ -1,5 +1,70 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 9.1.2 (2017-05-01)
+
+- No changes.
+- No changes.
+- No changes.
+- Fix commit search on some elasticsearch indexes. !1745
+- Fix emailing issues to projects when Service Desk is enabled.
+- Fix bug where Geo secondary Sidekiq cron jobs would not be activated if settings changed.
+
+## 9.1.1 (2017-04-26)
+
+- No changes.
+
+## 9.1.0 (2017-04-22)
+
+- Fix rake gitlab:env:info elasticsearch datum. !1422
+- Fix 500 errors caused by elasticsearch results referencing garbage-collected commits. !1430
+- Adds timeout option to push mirrors. !1439
+- elasticsearch: Add support for an experimental repository indexer. !1483
+- Update color palette to a more harmonious and consistent one. !1500
+- Cache Gitlab::Geo queries. !1507
+- Add Service Desk feature. !1508
+- Fix pre-receive hooks when using Git 2.11 or later. !1525
+- Geo: Add support to sync avatars and attachments. !1562
+- Fix Elasticsearch not working when URL ends with a forward slash. !1566
+- Allow admins to perform global searches with Elasticsearch. !1578
+- Periodically persists users activity to users.last_activity_on. !1597
+- Removes duplicate count of LFS objects from repository_and_lfs_size method. !1599
+- Fix searching notes and snippets as an auditor. !1674
+- Fix searching for notes with elasticsearch when a user is a member of many projects. !1675
+- Fix type declarations for spend/estimate values.
+- Speed up suggested approvers on MR creation.
+- Fix squashing MRs when the repository contains a ref named HEAD.
+- Fix approver count reset when editing assignee or labels.
+- Geo: handle git failures on GeoRepositoryFetchWorker.
+- Give each elasticsearch worker its own sidekiq queue.
+- Fixes broken link to pipeline quota.
+- Prevent filtering issues by multiple Milestones or Authors.
+- Fix 500 error when selecting a mirror user.
+- Add index to approvals.merge_request_id.
+- Added mock data for Deployboard.
+- Add uuid to usage ping.
+- Expose board project and milestone on boards API.
+- Fix active user count to ignore internal users.
+- Add warning when burndown data is not accurate.
+- Check if incoming emails and email key are available for service desk.
+- Add burndown chart to milestones.
+- Make deployboard to be visible by default.
+- Add a Rake task to make the current node the primary Geo node.
+- Return 404 instead of a 500 error on API status endpoint if Geo tracking DB is not enabled.
+- Remove N+1 queries for Groups::AnalyticsController.
+- Show user cohorts data when usage ping is enabled.
+- Visualise Canary Deployments.
+
+## 9.0.6 (2017-04-21)
+
+- Cache Gitlab::Geo queries. !1507
+- Fix searching for notes with elasticsearch when a user is a member of many projects. !1675
+- Fix 500 error when selecting a mirror user.
+- Fix active user count to ignore internal users.
+
+## 9.0.5 (2017-04-10)
+
+- Return 404 instead of a 500 error on API status endpoint if Geo tracking DB is not enabled.
+
 ## 9.0.4 (2017-04-05)
 
 - No changes.

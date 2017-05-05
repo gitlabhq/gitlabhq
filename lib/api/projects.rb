@@ -6,12 +6,12 @@ module API
     before { authenticate_non_get! }
 
     helpers do
-      params :optional_params do
+      params :optional_params_ce do
         optional :description, type: String, desc: 'The description of the project'
         optional :issues_enabled, type: Boolean, desc: 'Flag indication if the issue tracker is enabled'
         optional :merge_requests_enabled, type: Boolean, desc: 'Flag indication if merge requests are enabled'
         optional :wiki_enabled, type: Boolean, desc: 'Flag indication if the wiki is enabled'
-        optional :builds_enabled, type: Boolean, desc: 'Flag indication if builds are enabled'
+        optional :jobs_enabled, type: Boolean, desc: 'Flag indication if jobs are enabled'
         optional :snippets_enabled, type: Boolean, desc: 'Flag indication if snippets are enabled'
         optional :shared_runners_enabled, type: Boolean, desc: 'Flag indication if shared runners are enabled for that project'
         optional :container_registry_enabled, type: Boolean, desc: 'Flag indication if the container registry is enabled for that project'
@@ -21,10 +21,16 @@ module API
         optional :request_access_enabled, type: Boolean, desc: 'Allow users to request member access'
         optional :only_allow_merge_if_pipeline_succeeds, type: Boolean, desc: 'Only allow to merge if builds succeed'
         optional :only_allow_merge_if_all_discussions_are_resolved, type: Boolean, desc: 'Only allow to merge if all discussions are resolved'
+      end
 
-        # EE-specific
+      params :optional_params_ee do
         optional :repository_storage, type: String, desc: 'Which storage shard the repository is on. Available only to admins'
         optional :approvals_before_merge, type: Integer, desc: 'How many approvers should approve merge request by default'
+      end
+
+      params :optional_params do
+        use :optional_params_ce
+        use :optional_params_ee
       end
     end
 
@@ -103,6 +109,7 @@ module API
       end
       post do
         attrs = declared_params(include_missing: false)
+        attrs[:builds_enabled] = attrs.delete(:jobs_enabled) if attrs.has_key?(:jobs_enabled)
         project = ::Projects::CreateService.new(current_user, attrs).execute
 
         if project.saved?
@@ -202,25 +209,47 @@ module API
         success Entities::Project
       end
       params do
+        # CE
+        at_least_one_of_ce =
+          [
+            :jobs_enabled,
+            :container_registry_enabled,
+            :default_branch,
+            :description,
+            :issues_enabled,
+            :lfs_enabled,
+            :merge_requests_enabled,
+            :name,
+            :only_allow_merge_if_all_discussions_are_resolved,
+            :only_allow_merge_if_pipeline_succeeds,
+            :path,
+            :public_builds,
+            :request_access_enabled,
+            :shared_runners_enabled,
+            :snippets_enabled,
+            :visibility,
+            :wiki_enabled,
+          ]
         optional :name, type: String, desc: 'The name of the project'
         optional :default_branch, type: String, desc: 'The default branch of the project'
         optional :path, type: String, desc: 'The path of the repository'
+
+        # EE
+        at_least_one_of_ee = [
+          :approvals_before_merge,
+          :repository_storage
+        ]
+
         use :optional_params
-        at_least_one_of :name, :description, :issues_enabled, :merge_requests_enabled,
-                        :wiki_enabled, :builds_enabled, :snippets_enabled,
-                        :shared_runners_enabled, :container_registry_enabled,
-                        :lfs_enabled, :visibility, :public_builds,
-                        :request_access_enabled, :only_allow_merge_if_pipeline_succeeds,
-                        :only_allow_merge_if_all_discussions_are_resolved, :path,
-                        :default_branch,
-                        ## EE-specific
-                        :repository_storage, :approvals_before_merge
+        at_least_one_of(*(at_least_one_of_ce + at_least_one_of_ee))
       end
       put ':id' do
         authorize_admin_project
         attrs = declared_params(include_missing: false)
         authorize! :rename_project, user_project if attrs[:name].present?
         authorize! :change_visibility_level, user_project if attrs[:visibility].present?
+
+        attrs[:builds_enabled] = attrs.delete(:jobs_enabled) if attrs.has_key?(:jobs_enabled)
 
         result = ::Projects::UpdateService.new(user_project, current_user, attrs).execute
 

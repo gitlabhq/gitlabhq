@@ -7,7 +7,7 @@ module Gitlab
       attr_reader :user_access, :project, :skip_authorization, :protocol
 
       def initialize(
-        change, user_access:, project:, env: {}, skip_authorization: false,
+        change, user_access:, project:, skip_authorization: false,
         protocol:
       )
         @oldrev, @newrev, @ref = change.values_at(:oldrev, :newrev, :ref)
@@ -15,7 +15,6 @@ module Gitlab
         @tag_name = Gitlab::Git.tag_name(@ref)
         @user_access = user_access
         @project = project
-        @env = env
         @skip_authorization = skip_authorization
         @protocol = protocol
       end
@@ -99,7 +98,7 @@ module Gitlab
       end
 
       def forced_push?
-        Gitlab::Checks::ForcePush.force_push?(@project, @oldrev, @newrev, env: @env)
+        Gitlab::Checks::ForcePush.force_push?(@project, @oldrev, @newrev)
       end
 
       def update?

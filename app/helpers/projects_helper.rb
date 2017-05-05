@@ -24,7 +24,7 @@ module ProjectsHelper
 
     return "(deleted)" unless author
 
-    author_html =  ""
+    author_html = ""
 
     # Build avatar image tag
     author_html << image_tag(avatar_icon(author, opts[:size]), width: opts[:size], class: "avatar avatar-inline #{"s#{opts[:size]}" if opts[:size]} #{opts[:avatar_class] if opts[:avatar_class]}", alt: '') if opts[:avatar]
@@ -45,7 +45,7 @@ module ProjectsHelper
       link_to(author_html, user_path(author), class: "author_link #{"#{opts[:extra_class]}" if opts[:extra_class]} #{"#{opts[:mobile_classes]}" if opts[:mobile_classes]}").html_safe
     else
       title = opts[:title].sub(":name", sanitize(author.name))
-      link_to(author_html, user_path(author), class: "author_link has-tooltip", title: title, data: { container: 'body' } ).html_safe
+      link_to(author_html, user_path(author), class: "author_link has-tooltip", title: title, data: { container: 'body' }).html_safe
     end
   end
 
@@ -160,10 +160,15 @@ module ProjectsHelper
   end
 
   def project_list_cache_key(project)
-    key = [project.namespace.cache_key, project.cache_key, controller.controller_name, controller.action_name, current_application_settings.cache_key, 'v2.3']
+    key = [project.namespace.cache_key, project.cache_key, controller.controller_name, controller.action_name, current_application_settings.cache_key, 'v2.4']
     key << pipeline_status_cache_key(project.pipeline_status) if project.pipeline_status.has_status?
 
     key
+  end
+
+  def load_pipeline_status(projects)
+    Gitlab::Cache::Ci::ProjectPipelineStatus.
+      load_in_batch_for_projects(projects)
   end
 
   private
@@ -291,14 +296,14 @@ module ProjectsHelper
     end
   end
 
-  def add_special_file_path(project, file_name:, commit_message: nil, target_branch: nil, context: nil)
+  def add_special_file_path(project, file_name:, commit_message: nil, branch_name: nil, context: nil)
     namespace_project_new_blob_path(
       project.namespace,
       project,
       project.default_branch || 'master',
       file_name:      file_name,
       commit_message: commit_message || "Add #{file_name.downcase}",
-      target_branch: target_branch,
+      branch_name: branch_name,
       context: context
     )
   end
@@ -457,13 +462,22 @@ module ProjectsHelper
   end
 
   def visibility_select_options(project, selected_level)
-    levels_options_array = Gitlab::VisibilityLevel.values.map do |level|
-      [
+    level_options = Gitlab::VisibilityLevel.values.each_with_object([]) do |level, level_options|
+      next if restricted_levels.include?(level)
+
+      level_options << [
         visibility_level_label(level),
         { data: { description: visibility_level_description(level, project) } },
         level
       ]
     end
-    options_for_select(levels_options_array, selected_level)
+
+    options_for_select(level_options, selected_level)
+  end
+
+  def restricted_levels
+    return [] if current_user.admin?
+
+    current_application_settings.restricted_visibility_levels || []
   end
 end

@@ -30,15 +30,22 @@ module API
         use :pagination
       end
 
-      params :issue_params do
+      params :issue_params_ce do
         optional :description, type: String, desc: 'The description of an issue'
         optional :assignee_id, type: Integer, desc: 'The ID of a user to assign issue'
         optional :milestone_id, type: Integer, desc: 'The ID of a milestone to assign issue'
         optional :labels, type: String, desc: 'Comma-separated list of label names'
         optional :due_date, type: String, desc: 'Date string in the format YEAR-MONTH-DAY'
         optional :confidential, type: Boolean, desc: 'Boolean parameter if the issue should be confidential'
-        # Gitlab-EE specific
+      end
+
+      params :issue_params_ee do
         optional :weight, type: Integer, values: 0..9, desc: 'The weight of the issue'
+      end
+
+      params :issue_params do
+        use :issue_params_ce
+        use :issue_params_ee
       end
     end
 
@@ -217,6 +224,21 @@ module API
 
         authorize!(:destroy_issue, issue)
         issue.destroy
+      end
+
+      desc 'List merge requests closing issue'  do
+        success Entities::MergeRequestBasic
+      end
+      params do
+        requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
+      end
+      get ':id/issues/:issue_iid/closed_by' do
+        issue = find_project_issue(params[:issue_iid])
+
+        merge_request_ids = MergeRequestsClosingIssues.where(issue_id: issue).select(:merge_request_id)
+        merge_requests = MergeRequestsFinder.new(current_user, project_id: user_project.id).execute.where(id: merge_request_ids)
+
+        present paginate(merge_requests), with: Entities::MergeRequestBasic, current_user: current_user, project: user_project
       end
     end
   end

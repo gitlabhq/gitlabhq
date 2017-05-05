@@ -95,6 +95,22 @@ describe GeoNode, type: :model do
     end
   end
 
+  context 'cache expiration' do
+    let(:new_node) { FactoryGirl.build(:geo_node) }
+
+    it 'expires cache when saved' do
+      expect(new_node).to receive(:expire_cache!)
+
+      new_node.save!
+    end
+
+    it 'expires cache when removed' do
+      expect(node).to receive(:expire_cache!) # 1 for creation 1 for deletion
+
+      node.destroy
+    end
+  end
+
   describe '#uri' do
     context 'when all fields are filled' do
       it 'returns an URI object' do

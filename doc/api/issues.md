@@ -29,17 +29,15 @@ GET /issues?iids[]=42&iids[]=43
 GET /issues?search=issue+title+or+description
 ```
 
-|-------------+----------------+----------+-----------------------------------------------------------------------------------------------------------------------------|
 | Attribute   | Type           | Required | Description                                                                                                                 |
-|-------------+----------------+----------+-----------------------------------------------------------------------------------------------------------------------------|
+|-------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------------------|
 | `state`     | string         | no       | Return all issues or just those that are `opened` or `closed`                                                               |
 | `labels`    | string         | no       | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels |
 | `milestone` | string         | no       | The milestone title                                                                                                         |
 | `iids`      | Array[integer] | no       | Return only the issues having the given `iid`                                                                               |
 | `order_by`  | string         | no       | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`                                     |
 | `sort`      | string         | no       | Return requests sorted in `asc` or `desc` order. Default is `desc`                                                          |
-| `search`    | string         | no       | Search issues against their `title` and `description`                                                                        |
-|-------------+----------------+----------+-----------------------------------------------------------------------------------------------------------------------------|
+| `search`    | string         | no       | Search issues against their `title` and `description`                                                                       |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/issues
@@ -112,10 +110,9 @@ GET /groups/:id/issues?iids[]=42&iids[]=43
 GET /groups/:id/issues?search=issue+title+or+description
 ```
 
-|-------------+----------------+----------+-----------------------------------------------------------------------------------------------------------------------------|
 | Attribute   | Type           | Required | Description                                                                                                                 |
-|-------------+----------------+----------+-----------------------------------------------------------------------------------------------------------------------------|
-| `id`        | integer        | yes      | The ID of a group                                                                                                           |
+|-------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------------------|
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user               |
 | `state`     | string         | no       | Return all issues or just those that are `opened` or `closed`                                                               |
 | `labels`    | string         | no       | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels |
 | `iids`      | Array[integer] | no       | Return only the issues having the given `iid`                                                                               |
@@ -123,7 +120,6 @@ GET /groups/:id/issues?search=issue+title+or+description
 | `order_by`  | string         | no       | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`                                     |
 | `sort`      | string         | no       | Return requests sorted in `asc` or `desc` order. Default is `desc`                                                          |
 | `search`    | string         | no       | Search group issues against their `title` and `description`                                                                  |
-|-------------+----------------+----------+-----------------------------------------------------------------------------------------------------------------------------|
 
 
 ```bash
@@ -197,10 +193,9 @@ GET /projects/:id/issues?iids[]=42&iids[]=43
 GET /projects/:id/issues?search=issue+title+or+description
 ```
 
-|-------------+----------------+----------+-----------------------------------------------------------------------------------------------------------------------------|
 | Attribute   | Type           | Required | Description                                                                                                                 |
-|-------------+----------------+----------+-----------------------------------------------------------------------------------------------------------------------------|
-| `id`        | integer        | yes      | The ID of a project                                                                                                         |
+|-------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------------------|
+| `id`        | integer/string        | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
 | `iids`      | Array[integer] | no       | Return only the milestone having the given `iid`                                                                            |
 | `state`     | string         | no       | Return all issues or just those that are `opened` or `closed`                                                               |
 | `labels`    | string         | no       | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels |
@@ -208,7 +203,6 @@ GET /projects/:id/issues?search=issue+title+or+description
 | `order_by`  | string         | no       | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`                                     |
 | `sort`      | string         | no       | Return requests sorted in `asc` or `desc` order. Default is `desc`                                                          |
 | `search`    | string         | no       | Search project issues against their `title` and `description`                                                                |
-|-------------+----------------+----------+-----------------------------------------------------------------------------------------------------------------------------|
 
 
 ```bash
@@ -273,12 +267,10 @@ Get a single project issue.
 GET /projects/:id/issues/:issue_iid
 ```
 
-|-------------+---------+----------+--------------------------------------|
 | Attribute   | Type    | Required | Description                          |
-|-------------+---------+----------+--------------------------------------|
-| `id`        | integer | yes      | The ID of a project                  |
+|-------------|---------|----------|--------------------------------------|
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
-|-------------+---------+----------+--------------------------------------|
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/4/issues/41
@@ -341,24 +333,20 @@ Creates a new project issue.
 POST /projects/:id/issues
 ```
 
-|-------------------------------------------+---------+----------+------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Attribute                                 | Type    | Required | Description                                                                                                                                          |
-|-------------------------------------------+---------+----------+------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`                                      | integer | yes      | The ID of a project                                                                                                                                  |
-| `title`                                   | string  | yes      | The title of an issue                                                                                                                                |
-| `description`                             | string  | no       | The description of an issue                                                                                                                          |
-| `confidential`                            | boolean | no       | Set an issue to be confidential. Default is `false`.                                                                                                 |
-| `assignee_id`                             | integer | no       | The ID of a user to assign issue                                                                                                                     |
-| `milestone_id`                            | integer | no       | The ID of a milestone to assign issue                                                                                                                |
-| `labels`                                  | string  | no       | Comma-separated label names for an issue                                                                                                             |
-| `created_at`                              | string  | no       | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` (requires admin or project owner rights)                                           |
-| `due_date`                                | string  | no       | Date time string in the format YEAR-MONTH-DAY, e.g. `2016-03-11`                                                                                     |
-| `merge_request_to_resolve_discussions_of` | integer | no       | The IID of a merge request in which to resolve all issues. This will fill the issue with a default description and mark all discussions as resolved. |
-| -                                         | -       | -        | When passing a description or title, these values will take precedence over the default values.                                                      |
-| `discussion_to_resolve`                   | string  | no       | The ID of a discussion to resolve. This will fill in the issue with a default description and mark the discussion                                    |
-| -                                         | -       | -        | as resolved. Use in combination with `merge_request_to_resolve_discussions_of`.                                                                      |
-| `weight`                                  | integer | no       | The weight of the issue in range 0 to 9                                                                                                              |
-|-------------------------------------------+---------+----------+------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Attribute                                 | Type    | Required | Description  |
+|-------------------------------------------|---------|----------|--------------|
+| `id`                                      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `title`                                   | string  | yes      | The title of an issue |
+| `description`                             | string  | no       | The description of an issue  |
+| `confidential`                            | boolean | no       | Set an issue to be confidential. Default is `false`.  |
+| `assignee_id`                             | integer | no       | The ID of a user to assign issue |
+| `milestone_id`                            | integer | no       | The ID of a milestone to assign issue  |
+| `labels`                                  | string  | no       | Comma-separated label names for an issue  |
+| `created_at`                              | string  | no       | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` (requires admin or project owner rights) |
+| `due_date`                                | string  | no       | Date time string in the format YEAR-MONTH-DAY, e.g. `2016-03-11` |
+| `merge_request_to_resolve_discussions_of` | integer | no       | The IID of a merge request in which to resolve all issues. This will fill the issue with a default description and mark all discussions as resolved. When passing a description or title, these values will take precedence over the default values.|
+| `discussion_to_resolve`                   | string  | no       | The ID of a discussion to resolve. This will fill in the issue with a default description and mark the discussion as resolved. Use in combination with `merge_request_to_resolve_discussions_of`. |
+| `weight` | integer | no | The weight of the issue in range 0 to 9 |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/4/issues?title=Issues%20with%20auth&labels=bug
@@ -407,10 +395,9 @@ closed.
 PUT /projects/:id/issues/:issue_iid
 ```
 
-|----------------+---------+----------+------------------------------------------------------------------------------------------------------------|
 | Attribute      | Type    | Required | Description                                                                                                |
-|----------------+---------+----------+------------------------------------------------------------------------------------------------------------|
-| `id`           | integer | yes      | The ID of a project                                                                                        |
+|----------------|---------|----------|------------------------------------------------------------------------------------------------------------|
+| `id`           | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `issue_iid`    | integer | yes      | The internal ID of a project's issue                                                                       |
 | `title`        | string  | no       | The title of an issue                                                                                      |
 | `description`  | string  | no       | The description of an issue                                                                                |
@@ -422,7 +409,6 @@ PUT /projects/:id/issues/:issue_iid
 | `updated_at`   | string  | no       | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` (requires admin or project owner rights) |
 | `due_date`     | string  | no       | Date time string in the format YEAR-MONTH-DAY, e.g. `2016-03-11`                                           |
 | `weight`       | integer | no       | The weight of the issue in range 0 to 9                                                                    |
-|----------------+---------+----------+------------------------------------------------------------------------------------------------------------|
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/4/issues/85?state_event=close
@@ -470,12 +456,10 @@ Only for admins and project owners. Soft deletes the issue in question.
 DELETE /projects/:id/issues/:issue_iid
 ```
 
-|-------------+---------+----------+--------------------------------------|
 | Attribute   | Type    | Required | Description                          |
-|-------------+---------+----------+--------------------------------------|
-| `id`        | integer | yes      | The ID of a project                  |
+|-------------|---------|----------|--------------------------------------|
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
-|-------------+---------+----------+--------------------------------------|
 
 ```bash
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/4/issues/85
@@ -494,13 +478,11 @@ project, it will then be assigned to the issue that is being moved.
 POST /projects/:id/issues/:issue_iid/move
 ```
 
-|-----------------+---------+----------+--------------------------------------|
 | Attribute       | Type    | Required | Description                          |
-|-----------------+---------+----------+--------------------------------------|
-| `id`            | integer | yes      | The ID of a project                  |
+|-----------------|---------|----------|--------------------------------------|
+| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid`     | integer | yes      | The internal ID of a project's issue |
 | `to_project_id` | integer | yes      | The ID of the new project            |
-|-----------------+---------+----------+--------------------------------------|
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/4/issues/85/move
@@ -553,12 +535,10 @@ is returned.
 POST /projects/:id/issues/:issue_iid/subscribe
 ```
 
-|-------------+---------+----------+--------------------------------------|
 | Attribute   | Type    | Required | Description                          |
-|-------------+---------+----------+--------------------------------------|
-| `id`        | integer | yes      | The ID of a project                  |
+|-------------|---------|----------|--------------------------------------|
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
-|-------------+---------+----------+--------------------------------------|
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/issues/93/subscribe
@@ -611,12 +591,10 @@ status code `304` is returned.
 POST /projects/:id/issues/:issue_iid/unsubscribe
 ```
 
-|-------------+---------+----------+--------------------------------------|
 | Attribute   | Type    | Required | Description                          |
-|-------------+---------+----------+--------------------------------------|
-| `id`        | integer | yes      | The ID of a project                  |
+|-------------|---------|----------|--------------------------------------|
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
-|-------------+---------+----------+--------------------------------------|
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/issues/93/unsubscribe
@@ -632,12 +610,10 @@ returned.
 POST /projects/:id/issues/:issue_iid/todo
 ```
 
-|-------------+---------+----------+--------------------------------------|
 | Attribute   | Type    | Required | Description                          |
-|-------------+---------+----------+--------------------------------------|
-| `id`        | integer | yes      | The ID of a project                  |
+|-------------|---------|----------|--------------------------------------|
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
-|-------------+---------+----------+--------------------------------------|
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/issues/93/todo
@@ -726,13 +702,11 @@ Sets an estimated time of work for this issue.
 POST /projects/:id/issues/:issue_iid/time_estimate
 ```
 
-|-------------+---------+----------+------------------------------------------|
 | Attribute   | Type    | Required | Description                              |
-|-------------+---------+----------+------------------------------------------|
-| `id`        | integer | yes      | The ID of a project                      |
+|-------------|---------|----------|------------------------------------------|
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue     |
 | `duration`  | string  | yes      | The duration in human format. e.g: 3h30m |
-|-------------+---------+----------+------------------------------------------|
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/issues/93/time_estimate?duration=3h30m
@@ -757,12 +731,10 @@ Resets the estimated time for this issue to 0 seconds.
 POST /projects/:id/issues/:issue_iid/reset_time_estimate
 ```
 
-|-------------+---------+----------+--------------------------------------|
 | Attribute   | Type    | Required | Description                          |
-|-------------+---------+----------+--------------------------------------|
-| `id`        | integer | yes      | The ID of a project                  |
+|-------------|---------|----------|--------------------------------------|
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
-|-------------+---------+----------+--------------------------------------|
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/issues/93/reset_time_estimate
@@ -787,13 +759,11 @@ Adds spent time for this issue
 POST /projects/:id/issues/:issue_iid/add_spent_time
 ```
 
-|-------------+---------+----------+------------------------------------------|
 | Attribute   | Type    | Required | Description                              |
-|-------------+---------+----------+------------------------------------------|
-| `id`        | integer | yes      | The ID of a project                      |
+|-------------|---------|----------|------------------------------------------|
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue     |
 | `duration`  | string  | yes      | The duration in human format. e.g: 3h30m |
-|-------------+---------+----------+------------------------------------------|
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/issues/93/add_spent_time?duration=1h
@@ -818,12 +788,10 @@ Resets the total spent time for this issue to 0 seconds.
 POST /projects/:id/issues/:issue_iid/reset_spent_time
 ```
 
-|-------------+---------+----------+--------------------------------------|
 | Attribute   | Type    | Required | Description                          |
-|-------------+---------+----------+--------------------------------------|
-| `id`        | integer | yes      | The ID of a project                  |
+|-------------|---------|----------|--------------------------------------|
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
-|-------------+---------+----------+--------------------------------------|
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/issues/93/reset_spent_time
@@ -846,12 +814,10 @@ Example response:
 GET /projects/:id/issues/:issue_iid/time_stats
 ```
 
-|-------------+---------+----------+--------------------------------------|
 | Attribute   | Type    | Required | Description                          |
-|-------------+---------+----------+--------------------------------------|
-| `id`        | integer | yes      | The ID of a project                  |
+|-------------|---------|----------|--------------------------------------|
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
-|-------------+---------+----------+--------------------------------------|
 
 ```bash
 curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/issues/93/time_stats
@@ -867,6 +833,67 @@ Example response:
   "total_time_spent": 3600
 }
 ```
+
+## List merge requests that will close issue on merge
+
+Get all the merge requests that will close issue when merged.
+
+```
+GET /projects/:id/issues/:issue_iid/closed_by
+```
+
+| Attribute   | Type    | Required | Description                          |
+| ---------   | ----    | -------- | -----------                          |
+| `id`        | integer | yes      | The ID of a project                  |
+| `issue_iid` | integer | yes      | The internal ID of a project issue   |
+
+```bash
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/issues/11/closed_by
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 6471,
+    "iid": 6432,
+    "project_id": 1,
+    "title": "add a test for cgi lexer options",
+    "description": "closes #11",
+    "state": "opened",
+    "created_at": "2017-04-06T18:33:34.168Z",
+    "updated_at": "2017-04-09T20:10:24.983Z",
+    "target_branch": "master",
+    "source_branch": "feature.custom-highlighting",
+    "upvotes": 0,
+    "downvotes": 0,
+    "author": {
+      "name": "Administrator",
+      "username": "root",
+      "id": 1,
+      "state": "active",
+      "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+      "web_url": "https://gitlab.example.com/root"
+    },
+    "assignee": null,
+    "source_project_id": 1,
+    "target_project_id": 1,
+    "labels": [],
+    "work_in_progress": false,
+    "milestone": null,
+    "merge_when_pipeline_succeeds": false,
+    "merge_status": "unchecked",
+    "sha": "5a62481d563af92b8e32d735f2fa63b94e806835",
+    "merge_commit_sha": null,
+    "user_notes_count": 1,
+    "should_remove_source_branch": null,
+    "force_remove_source_branch": false,
+    "web_url": "https://gitlab.example.com/gitlab-org/gitlab-test/merge_requests/6432"
+  }
+]
+```
+
 
 ## Comments on issues
 

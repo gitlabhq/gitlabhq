@@ -67,14 +67,19 @@ module Gitlab
       end
 
       def license_usage_data
-        usage_data = { uuid: current_application_settings.uuid,
-                       version: Gitlab::VERSION,
-                       active_user_count: User.active.count,
-                       mattermost_enabled: Gitlab.config.mattermost.enabled }
+        usage_data = {
+          uuid: current_application_settings.uuid,
+          version: Gitlab::VERSION,
+          active_user_count: User.active.count,
+          recorded_at: Time.now,
+          mattermost_enabled: Gitlab.config.mattermost.enabled,
+          edition: 'EE'
+        }
 
         license = ::License.current
 
         if license
+          usage_data[:edition] = license_edition(license.plan)
           usage_data[:license_md5] = Digest::MD5.hexdigest(license.data)
           usage_data[:historical_max_users] = ::HistoricalData.max_historical_user_count
           usage_data[:licensee] = license.licensee
@@ -82,10 +87,20 @@ module Gitlab
           usage_data[:license_starts_at] = license.starts_at
           usage_data[:license_expires_at] = license.expires_at
           usage_data[:license_add_ons] = license.add_ons
-          usage_data[:recorded_at] = Time.now
         end
 
         usage_data
+      end
+
+      def license_edition(plan)
+        case plan
+        when 'premium'
+          'EEP'
+        when 'starter'
+          'EES'
+        else # Older licenses
+          'EE'
+        end
       end
     end
   end

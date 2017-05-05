@@ -1,5 +1,6 @@
 /* eslint-disable one-var, quote-props, comma-dangle, space-before-function-paren */
 /* global BoardService */
+/* global Flash */
 
 import Vue from 'vue';
 import VueResource from 'vue-resource';
@@ -41,6 +42,10 @@ $(() => {
   }
 
   Store.create();
+
+  // hack to allow sidebar scripts like milestone_select manipulate the BoardsStore
+  gl.issueBoards.boardStoreIssueSet = (...args) => Vue.set(Store.detail.issue, ...args);
+  gl.issueBoards.boardStoreIssueDelete = (...args) => Vue.delete(Store.detail.issue, ...args);
 
   gl.IssueBoardsApp = new Vue({
     el: $boardApp,
@@ -97,6 +102,7 @@ $(() => {
 
             if (list.type === 'closed') {
               list.position = Infinity;
+              list.label = { description: 'Shows all closed issues. Moving an issue to this list closes it' };
             }
           });
 
@@ -104,7 +110,7 @@ $(() => {
 
           Store.addBlankState();
           this.loading = false;
-        });
+        }).catch(() => new Flash('An error occurred. Please try again.'));
     },
     methods: {
       updateTokens() {

@@ -55,6 +55,34 @@ describe Group, models: true do
     it { is_expected.to validate_uniqueness_of(:name).scoped_to(:parent_id) }
     it { is_expected.to validate_presence_of :path }
     it { is_expected.not_to validate_presence_of :owner }
+    it { is_expected.to validate_presence_of :two_factor_grace_period }
+    it { is_expected.to validate_numericality_of(:two_factor_grace_period).is_greater_than_or_equal_to(0) }
+
+    describe 'path validation' do
+      it 'rejects paths reserved on the root namespace when the group has no parent' do
+        group = build(:group, path: 'api')
+
+        expect(group).not_to be_valid
+      end
+
+      it 'allows root paths when the group has a parent' do
+        group = build(:group, path: 'api', parent: create(:group))
+
+        expect(group).to be_valid
+      end
+
+      it 'rejects any wildcard paths when not a top level group' do
+        group = build(:group, path: 'tree', parent: create(:group))
+
+        expect(group).not_to be_valid
+      end
+
+      it 'rejects reserved group paths' do
+        group = build(:group, path: 'activity', parent: create(:group))
+
+        expect(group).not_to be_valid
+      end
+    end
   end
 
   describe '.visible_to_user' do
@@ -343,6 +371,46 @@ describe Group, models: true do
 
       expect(group.user_ids_for_project_authorizations).
         to include(master.id, developer.id)
+    end
+  end
+
+  describe '#update_two_factor_requirement' do
+    let(:user) { create(:user) }
+
+    before do
+      group.add_user(user, GroupMember::OWNER)
+    end
+
+    it 'is called when require_two_factor_authentication is changed' do
+      expect_any_instance_of(User).to receive(:update_two_factor_requirement)
+
+      group.update!(require_two_factor_authentication: true)
+    end
+
+    it 'is called when two_factor_grace_period is changed' do
+      expect_any_instance_of(User).to receive(:update_two_factor_requirement)
+
+      group.update!(two_factor_grace_period: 23)
+    end
+
+    it 'is not called when other attributes are changed' do
+      expect_any_instance_of(User).not_to receive(:update_two_factor_requirement)
+
+      group.update!(description: 'foobar')
+    end
+
+    it 'calls #update_two_factor_requirement on each group member' do
+      other_user = create(:user)
+      group.add_user(other_user, GroupMember::OWNER)
+
+      calls = 0
+      allow_any_instance_of(User).to receive(:update_two_factor_requirement) do
+        calls += 1
+      end
+
+      group.update!(require_two_factor_authentication: true, two_factor_grace_period: 23)
+
+      expect(calls).to eq 2
     end
   end
 end

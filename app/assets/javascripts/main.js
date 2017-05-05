@@ -37,14 +37,7 @@ import './shortcuts_issuable';
 import './shortcuts_network';
 
 // behaviors
-import './behaviors/autosize';
-import './behaviors/details_behavior';
-import './behaviors/quick_submit';
-import './behaviors/requires_input';
-import './behaviors/toggler_behavior';
-import './behaviors/bind_in_out';
-import { installGlEmojiElement } from './behaviors/gl_emoji';
-installGlEmojiElement();
+import './behaviors/';
 
 // blob
 import './blob/create_branch_dropdown';
@@ -172,6 +165,7 @@ import './syntax_highlight';
 import './task_list';
 import './todos';
 import './tree';
+import './usage_ping';
 import './user';
 import './user_tabs';
 import './username_validator';
@@ -182,12 +176,12 @@ import './wikis';
 import './zen_mode';
 
 // EE-only scripts
-require('./admin_email_select');
-require('./application_settings');
-require('./approvals');
-require('./ldap_groups_select');
-require('./path_locks');
-require('./weight_select');
+import './admin_email_select';
+import './application_settings';
+import './approvals';
+import './ldap_groups_select';
+import './path_locks';
+import './weight_select';
 
 // eslint-disable-next-line global-require
 if (process.env.NODE_ENV !== 'production') require('./test_utils/');
@@ -224,6 +218,14 @@ $(function () {
       setTimeout(gl.utils.handleLocationHash, 1);
     }
   });
+
+  if (bootstrapBreakpoint === 'xs') {
+    const $rightSidebar = $('aside.right-sidebar, .page-with-sidebar');
+
+    $rightSidebar
+      .removeClass('right-sidebar-expanded')
+      .addClass('right-sidebar-collapsed');
+  }
 
   // prevent default action for disabled buttons
   $('.btn').click(function(e) {

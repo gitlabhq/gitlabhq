@@ -11,7 +11,7 @@ class Projects::TriggersController < Projects::ApplicationController
   end
 
   def create
-    @trigger = project.triggers.create(create_params.merge(owner: current_user))
+    @trigger = project.triggers.create(trigger_params.merge(owner: current_user))
 
     if @trigger.valid?
       flash[:notice] = 'Trigger was created successfully.'
@@ -36,7 +36,7 @@ class Projects::TriggersController < Projects::ApplicationController
   end
 
   def update
-    if trigger.update(update_params)
+    if trigger.update(trigger_params)
       redirect_to namespace_project_settings_ci_cd_path(@project.namespace, @project), notice: 'Trigger was successfully updated.'
     else
       render action: "edit"
@@ -67,11 +67,10 @@ class Projects::TriggersController < Projects::ApplicationController
     @trigger ||= project.triggers.find(params[:id]) || render_404
   end
 
-  def create_params
-    params.require(:trigger).permit(:description)
-  end
-
-  def update_params
-    params.require(:trigger).permit(:description)
+  def trigger_params
+    params.require(:trigger).permit(
+      :description,
+      trigger_schedule_attributes: [:id, :active, :cron, :cron_timezone, :ref]
+    )
   end
 end

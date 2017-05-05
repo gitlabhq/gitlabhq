@@ -1,24 +1,24 @@
 require 'spec_helper'
 
 describe IssuesFinder do
-  let(:user) { create(:user) }
-  let(:user2) { create(:user) }
-  let(:project1) { create(:empty_project) }
-  let(:project2) { create(:empty_project) }
-  let(:milestone) { create(:milestone, project: project1) }
-  let(:label) { create(:label, project: project2) }
-  let(:issue1) { create(:issue, author: user, assignee: user, project: project1, milestone: milestone, title: 'gitlab') }
-  let(:issue2) { create(:issue, author: user, assignee: user, project: project2, description: 'gitlab') }
-  let(:issue3) { create(:issue, author: user2, assignee: user2, project: project2, title: 'tanuki', description: 'tanuki') }
+  set(:user) { create(:user) }
+  set(:user2) { create(:user) }
+  set(:project1) { create(:empty_project) }
+  set(:project2) { create(:empty_project) }
+  set(:milestone) { create(:milestone, project: project1) }
+  set(:label) { create(:label, project: project2) }
+  set(:issue1) { create(:issue, author: user, assignee: user, project: project1, milestone: milestone, title: 'gitlab') }
+  set(:issue2) { create(:issue, author: user, assignee: user, project: project2, description: 'gitlab') }
+  set(:issue3) { create(:issue, author: user2, assignee: user2, project: project2, title: 'tanuki', description: 'tanuki') }
 
   describe '#execute' do
-    let(:closed_issue) { create(:issue, author: user2, assignee: user2, project: project2, state: 'closed') }
-    let!(:label_link) { create(:label_link, label: label, target: issue2) }
+    set(:closed_issue) { create(:issue, author: user2, assignee: user2, project: project2, state: 'closed') }
+    set(:label_link) { create(:label_link, label: label, target: issue2) }
     let(:search_user) { user }
     let(:params) { {} }
-    let(:issues) { IssuesFinder.new(search_user, params.reverse_merge(scope: scope, state: 'opened')).execute }
+    let(:issues) { described_class.new(search_user, params.reverse_merge(scope: scope, state: 'opened')).execute }
 
-    before do
+    before(:context) do
       project1.team << [user, :master]
       project2.team << [user, :developer]
       project2.team << [user2, :developer]
@@ -300,23 +300,23 @@ describe IssuesFinder do
     let!(:confidential_issue) { create(:issue, project: project, confidential: true) }
 
     it 'returns non confidential issues for nil user' do
-      expect(IssuesFinder.send(:not_restricted_by_confidentiality, nil)).to include(public_issue)
+      expect(described_class.send(:not_restricted_by_confidentiality, nil)).to include(public_issue)
     end
 
     it 'returns non confidential issues for user not authorized for the issues projects' do
-      expect(IssuesFinder.send(:not_restricted_by_confidentiality, user)).to include(public_issue)
+      expect(described_class.send(:not_restricted_by_confidentiality, user)).to include(public_issue)
     end
 
     it 'returns all issues for user authorized for the issues projects' do
-      expect(IssuesFinder.send(:not_restricted_by_confidentiality, authorized_user)).to include(public_issue, confidential_issue)
+      expect(described_class.send(:not_restricted_by_confidentiality, authorized_user)).to include(public_issue, confidential_issue)
     end
 
     it 'returns all issues for an admin user' do
-      expect(IssuesFinder.send(:not_restricted_by_confidentiality, admin_user)).to include(public_issue, confidential_issue)
+      expect(described_class.send(:not_restricted_by_confidentiality, admin_user)).to include(public_issue, confidential_issue)
     end
 
     it 'returns all issues for an auditor user' do
-      expect(IssuesFinder.send(:not_restricted_by_confidentiality, auditor_user)).to include(public_issue, confidential_issue)
+      expect(described_class.send(:not_restricted_by_confidentiality, auditor_user)).to include(public_issue, confidential_issue)
     end
   end
 end

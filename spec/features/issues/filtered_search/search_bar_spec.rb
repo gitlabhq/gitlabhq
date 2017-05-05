@@ -2,7 +2,6 @@ require 'rails_helper'
 
 describe 'Search bar', js: true, feature: true do
   include FilteredSearchHelpers
-  include WaitForAjax
 
   let!(:project) { create(:empty_project) }
   let!(:user) { create(:user) }

@@ -19,7 +19,7 @@
   %div{ class: (container_class) }
     .top-area
       = render 'shared/issuable/nav', type: :issues
-      .nav-controls
+      .nav-controls.inline
         = link_to params.merge(rss_url_options), class: 'btn append-right-10 has-tooltip', title: 'Subscribe' do
           = icon('rss')
         - if current_user
@@ -29,10 +29,10 @@
                                                    @project,
                                                    issue: { assignee_id: issues_finder.assignee.try(:id),
                                                             milestone_id: issues_finder.milestones.first.try(:id) }),
-                                                   class: "btn btn-new",
-                                                   title: "New Issue",
+                                                   class: "btn btn-new btn-full",
+                                                   title: "New issue",
                                                    id: "new_issue_link" do
-          New Issue
+          New issue
     = render 'shared/issuable/search_bar', type: :issues
 
     .issues-holder

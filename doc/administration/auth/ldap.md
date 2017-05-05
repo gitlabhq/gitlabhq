@@ -8,7 +8,7 @@ membership syncing.
 
 ## GitLab EE
 
-The information on this page is relevent for both GitLab CE and EE. For more
+The information on this page is relevant for both GitLab CE and EE. For more
 details about EE-specific LDAP features, see [LDAP EE Documentation](ldap-ee.md).
 
 [//]: # (Do *NOT* modify this file in EE documentation. All changes in this)
@@ -84,7 +84,7 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
   host: '_your_ldap_server'
   # This port is an example, it is sometimes different but it is always an integer and not a string
   port: 389
-  uid: 'sAMAccountName'
+  uid: 'sAMAccountName' # This should be the attribute, not the value that maps to uid.
   method: 'plain' # "tls" or "ssl" or "plain"
   
   # Examples: 'america\\momo' or 'CN=Gitlab Git,CN=Users,DC=mydomain,DC=com'
@@ -284,6 +284,74 @@ attribute is not found in GitLab's database, a new user is created.
 In other words, if an existing GitLab user wants to enable LDAP sign-in for
 themselves, they should check that their GitLab email address matches their
 LDAP email address, and then sign into GitLab via their LDAP credentials.
+
+## Adjusting LDAP user and group sync schedules
+
+You can manually configure LDAP user and group sync times by setting the
+following configuration values.
+
+>**Note:**
+These are cron formatted values. You can use a crontab generator to create
+these values, for example http://www.crontabgenerator.com/.
+
+### Adjusting LDAP user sync schedule
+
+By default, GitLab will run a worker once per day at 01:30 a.m. server time to
+check and update GitLab users against LDAP.
+
+**Omnibus installations**
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    gitlab_rails['ldap_sync_worker_cron'] = "* */12 * * *"
+    ```
+
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+
+**Source installations**
+
+1. Edit `config/gitlab.yaml`:
+
+    ```yaml
+    cron_jobs
+      ldap_sync_worker_cron:
+        "* */12 * * *"
+    ```
+
+1. [Restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
+
+### Adjusting LDAP group sync schedule
+
+By default, GitLab will run a group sync process every hour, on the hour.
+
+>**Note**: It's recommended not to run group sync at too short intervals as this
+could lead to multiple syncs running concurrently. This is primarily a concern
+for installations with a large number of LDAP users. Please review the
+[LDAP group sync benchmark metrics](../auth/ldap-ee.md#benchmarks) to see how
+your installation compares before proceeding.
+
+**Omnibus installations**
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    gitlab_rails['ldap_group_sync_worker_cron'] = "*/30 * * * *"
+    ```
+
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+
+**Source installations**
+
+1. Edit `config/gitlab.yaml`:
+
+    ```yaml
+    cron_jobs
+      ldap_group_sync_worker_cron:
+        "*/30 * * * *"
+    ```
+
+1. [Restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
 
 ## Limitations
 

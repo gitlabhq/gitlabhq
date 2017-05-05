@@ -2,8 +2,6 @@
 /* global Issuable */
 /* global ListUser */
 
-import Vue from 'vue';
-
 (function() {
   var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; },
     slice = [].slice;
@@ -35,6 +33,7 @@ import Vue from 'vue';
           var $block, $collapsedSidebar, $dropdown, $loading, $selectbox, $value, abilityName, assignTo, assigneeTemplate, collapsedAssigneeTemplate, defaultLabel, firstUser, issueURL, selectedId, showAnyUser, showNullUser, showMenuAbove;
           $dropdown = $(dropdown);
           options.projectId = $dropdown.data('project-id');
+          options.groupId = $dropdown.data('group-id');
           options.showCurrentUser = $dropdown.data('current-user');
           options.todoFilter = $dropdown.data('todo-filter');
           options.todoStateFilter = $dropdown.data('todo-state-filter');
@@ -58,6 +57,9 @@ import Vue from 'vue';
             gl.issueBoards.BoardsStore.detail.issue.update($dropdown.attr('data-issue-update'))
               .then(function () {
                 $loading.fadeOut();
+              })
+              .catch(function () {
+                $loading.fadeOut();
               });
           };
 
@@ -74,7 +76,7 @@ import Vue from 'vue';
             e.preventDefault();
 
             if ($dropdown.hasClass('js-issue-board-sidebar')) {
-              Vue.set(gl.issueBoards.BoardsStore.detail.issue, 'assignee', new ListUser({
+              gl.issueBoards.boardStoreIssueSet('assignee', new ListUser({
                 id: _this.currentUser.id,
                 username: _this.currentUser.username,
                 name: _this.currentUser.name,
@@ -225,14 +227,14 @@ import Vue from 'vue';
                 return $dropdown.closest('form').submit();
               } else if ($dropdown.hasClass('js-issue-board-sidebar')) {
                 if (user.id) {
-                  Vue.set(gl.issueBoards.BoardsStore.detail.issue, 'assignee', new ListUser({
+                  gl.issueBoards.boardStoreIssueSet('assignee', new ListUser({
                     id: user.id,
                     username: user.username,
                     name: user.name,
                     avatar_url: user.avatar_url
                   }));
                 } else {
-                  Vue.delete(gl.issueBoards.BoardsStore.detail.issue, 'assignee');
+                  gl.issueBoards.boardStoreIssueDelete('assignee');
                 }
 
                 updateIssueBoardsIssue();
@@ -388,7 +390,7 @@ import Vue from 'vue';
       } else {
         avatar = gon.default_avatar_url;
       }
-      return "<div class='user-result " + (!user.username ? 'no-username' : void 0) + "'> <div class='user-image'><img class='avatar s24' src='" + avatar + "'></div> <div class='user-name'>" + user.name + "</div> <div class='user-username'>" + (user.username || "") + "</div> </div>";
+      return "<div class='user-result " + (!user.username ? 'no-username' : void 0) + "'> <div class='user-image'><img class='avatar s40' src='" + avatar + "'></div> <div><div class='user-name'>" + user.name + "</div> <div class='user-username'>" + (user.username || "") + "</div> </div> </div>";
     };
 
     UsersSelect.prototype.formatSelection = function(user) {

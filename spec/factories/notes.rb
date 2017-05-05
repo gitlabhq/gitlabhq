@@ -5,7 +5,7 @@ include ActionDispatch::TestProcess
 FactoryGirl.define do
   factory :note do
     project factory: :empty_project
-    note "Note"
+    note { generate(:title) }
     author
     on_issue
 
@@ -40,6 +40,7 @@ FactoryGirl.define do
 
       transient do
         line_number 14
+        diff_refs { noteable.try(:diff_refs) }
       end
 
       position do
@@ -48,7 +49,7 @@ FactoryGirl.define do
           new_path: "files/ruby/popen.rb",
           old_line: nil,
           new_line: line_number,
-          diff_refs: noteable.try(:diff_refs)
+          diff_refs: diff_refs
         )
       end
 

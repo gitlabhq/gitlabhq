@@ -31,7 +31,7 @@ describe Project, models: true do
         expect(project.any_runners? { |runner| runner == shared_runner }).to be_truthy
       end
 
-      context 'with used build minutes' do
+      context 'with used pipeline minutes' do
         let(:namespace) { create(:namespace, :with_used_build_minutes_limit) }
         let(:project) do
           create(:empty_project,
@@ -49,7 +49,7 @@ describe Project, models: true do
   describe '#shared_runners_available?' do
     subject { project.shared_runners_available? }
 
-    context 'with used build minutes' do
+    context 'with used pipeline minutes' do
       let(:namespace) { create(:namespace, :with_used_build_minutes_limit) }
       let(:project) do
         create(:empty_project,
@@ -116,37 +116,18 @@ describe Project, models: true do
     end
   end
 
-  describe '#regenerate_service_desk_key' do
+  describe '#service_desk_address' do
+    let(:project) { create(:empty_project, service_desk_enabled: true) }
+
     before do
       allow_any_instance_of(License).to receive(:add_on?).and_call_original
       allow_any_instance_of(License).to receive(:add_on?).with('GitLab_ServiceDesk') { true }
+      allow(Gitlab.config.incoming_email).to receive(:enabled).and_return(true)
+      allow(Gitlab.config.incoming_email).to receive(:address).and_return("test+%{key}@mail.com")
     end
 
-    subject { create(:project) }
-
-    it 'leaves it blank by default' do
-      expect(subject.service_desk_mail_key).to be_blank
-    end
-
-    it 'updates when enabled' do
-      subject.service_desk_enabled = true
-      subject.validate
-      expect(subject.service_desk_mail_key).not_to be_blank
-    end
-
-    it 'changes when enabled' do
-      subject.update!(service_desk_mail_key: '12345')
-      subject.service_desk_enabled = true
-      expect { subject.validate }.to change { subject.service_desk_mail_key }
-    end
-
-    it 'ensures mail key is never nil when enabled' do
-      subject.update!(service_desk_enabled: true)
-
-      expect { subject.update!(service_desk_mail_key: nil) }
-        .to change { subject.service_desk_mail_key }
-
-      expect(subject.service_desk_mail_key).not_to be_blank
+    it 'uses project full path as service desk address key' do
+      expect(project.service_desk_address).to eq("test+#{project.full_path}@mail.com")
     end
   end
 end

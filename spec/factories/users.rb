@@ -66,6 +66,7 @@ FactoryGirl.define do
     end
 
     factory :admin, traits: [:admin]
+    factory :auditor, traits: [:auditor]
     factory :external_user, traits: [:external]
   end
 end

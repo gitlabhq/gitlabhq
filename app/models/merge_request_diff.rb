@@ -31,6 +31,10 @@ class MergeRequestDiff < ActiveRecord::Base
   # It allows you to override variables like head_commit_sha before getting diff.
   after_create :save_git_content, unless: :importing?
 
+  def self.find_by_diff_refs(diff_refs)
+    find_by(start_commit_sha: diff_refs.start_sha, head_commit_sha: diff_refs.head_sha, base_commit_sha: diff_refs.base_sha)
+  end
+
   def self.select_without_diff
     select(column_names - ['st_diffs'])
   end
@@ -128,6 +132,12 @@ class MergeRequestDiff < ActiveRecord::Base
 
   def commits_sha
     st_commits.map { |commit| commit[:id] }
+  end
+
+  def diff_refs=(new_diff_refs)
+    self.base_commit_sha = new_diff_refs&.base_sha
+    self.start_commit_sha = new_diff_refs&.start_sha
+    self.head_commit_sha = new_diff_refs&.head_sha
   end
 
   def diff_refs
@@ -250,7 +260,7 @@ class MergeRequestDiff < ActiveRecord::Base
       new_attributes[:state] = :empty
     else
       diff_collection = compare.diffs(Commit.max_diff_options)
-      new_attributes[:real_size] = compare.diffs.real_size
+      new_attributes[:real_size] = diff_collection.real_size
 
       if diff_collection.any?
         new_diffs = dump_diffs(diff_collection)

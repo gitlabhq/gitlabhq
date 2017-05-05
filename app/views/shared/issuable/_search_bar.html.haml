@@ -16,13 +16,14 @@
             class: "check_all_issues left"
       .issues-other-filters.filtered-search-wrapper
         .filtered-search-box
-          = dropdown_tag(content_tag(:i, '', class: 'fa fa-history'),
-            options: { wrapper_class: "filtered-search-history-dropdown-wrapper",
-            toggle_class: "filtered-search-history-dropdown-toggle-button",
-            dropdown_class: "filtered-search-history-dropdown",
-            content_class: "filtered-search-history-dropdown-content",
-            title: "Recent searches" }) do
-            .js-filtered-search-history-dropdown
+          - if type != :boards_modal && type != :boards
+            = dropdown_tag(content_tag(:i, '', class: 'fa fa-history'),
+              options: { wrapper_class: "filtered-search-history-dropdown-wrapper",
+              toggle_class: "filtered-search-history-dropdown-toggle-button",
+              dropdown_class: "filtered-search-history-dropdown",
+              content_class: "filtered-search-history-dropdown-content",
+              title: "Recent searches" }) do
+              .js-filtered-search-history-dropdown
           .filtered-search-box-input-container
             .scroll-container
               %ul.tokens-container.list-unstyled
@@ -31,7 +32,7 @@
               = icon('filter')
               %button.clear-search.hidden{ type: 'button' }
                 = icon('times')
-            #js-dropdown-hint.filtered-search-input-dropdown-menu.filtered-search-input-dropdown-menu.dropdown-menu.hint-dropdown
+            #js-dropdown-hint.filtered-search-input-dropdown-menu.dropdown-menu.hint-dropdown
               %ul{ data: { dropdown: true } }
                 %li.filter-dropdown-item{ data: { action: 'submit' } }
                   %button.btn.btn-link
@@ -73,6 +74,7 @@
                         {{name}}
                       %span.dropdown-light-content
                         @{{username}}
+
             - unless board && board.milestone_id
               #js-dropdown-milestone.filtered-search-input-dropdown-menu.dropdown-menu{ data: { icon: 'clock-o', hint: 'milestone', tag: '%milestone' } }
                 %ul{ data: { dropdown: true } }
@@ -90,6 +92,7 @@
                   %li.filter-dropdown-item
                     %button.btn.btn-link.js-data-value
                       {{title}}
+
             #js-dropdown-label.filtered-search-input-dropdown-menu.dropdown-menu{ data: { icon: 'tag', hint: 'label', tag: '~label', type: 'array' } }
               %ul{ data: { dropdown: true } }
                 %li.filter-dropdown-item{ data: { value: 'none' } }

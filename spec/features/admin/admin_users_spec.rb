@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe "Admin::Users", feature: true do
-  include WaitForAjax
-
   let!(:user) do
     create(:omniauth_user, provider: 'twitter', extern_uid: '123456')
   end
@@ -208,7 +206,7 @@ describe "Admin::Users", feature: true do
 
           click_link user.name
 
-          expect(page).to have_content('Build minutes quota: 0 / 500')
+          expect(page).to have_content('Pipeline minutes quota: 0 / 500')
         end
       end
 
@@ -222,7 +220,7 @@ describe "Admin::Users", feature: true do
 
           click_link user.name
 
-          expect(page).not_to have_content('Build minutes quota:')
+          expect(page).not_to have_content('Pipeline minutes quota:')
         end
       end
     end
@@ -299,7 +297,7 @@ describe "Admin::Users", feature: true do
       end
 
       it "shows page with new data" do
-        expect(page).to have_content('Build minutes quota: 0 / 500')
+        expect(page).to have_content('Pipeline minutes quota: 0 / 500')
       end
     end
   end

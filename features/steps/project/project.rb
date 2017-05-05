@@ -89,12 +89,6 @@ class Spinach::Features::Project < Spinach::FeatureSteps
     end
   end
 
-  step 'I should see project "Shop" version' do
-    page.within '.project-side' do
-      expect(page).to have_content '6.7.0.pre'
-    end
-  end
-
   step 'change project default branch' do
     select 'fix', from: 'project_default_branch'
     click_button 'Save changes'

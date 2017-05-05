@@ -46,10 +46,18 @@
     }
   }
 
+  .load-wrapper {
+    position: absolute;
+    background: $black-transparent;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   @media (max-width: $screen-xs-max) {
     .input-group > div {
-
-      margin-bottom: 14px;
 
       &:last-child {
         margin-bottom: 0;
@@ -596,6 +604,10 @@ pre.light-well {
 
   .avatar-container {
     align-self: flex-start;
+
+    > a {
+      width: 100%;
+    }
   }
 
   .project-details {
@@ -610,6 +622,7 @@ pre.light-well {
 
   .controls {
     margin-left: auto;
+    text-align: right;
   }
 
   .ci-status-link {
@@ -964,27 +977,23 @@ a.allowed-to-push {
   }
 
   .variable-key {
-    width: 300px;
-    max-width: 300px;
+    max-width: 120px;
     overflow: hidden;
     word-wrap: break-word;
-
-    // override bootstrap
-    white-space: normal!important;
-
-    @media (max-width: $screen-sm-max) {
-      width: 150px;
-      max-width: 150px;
-    }
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   .variable-value {
-    @media(max-width: $screen-xs-max) {
-      width: 150px;
-      max-width: 150px;
-      overflow: hidden;
-      word-wrap: break-word;
-    }
+    max-width: 150px;
+    overflow: hidden;
+    word-wrap: break-word;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .variable-menu {
+    text-align: right;
   }
 }
 

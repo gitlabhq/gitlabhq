@@ -460,64 +460,7 @@
         .help-block
           If you got a lot of false alarms from repository checks you can choose to clear all repository check information from the database.
 
-  %fieldset
-    %legend Elasticsearch
-    .form-group
-      .col-sm-offset-2.col-sm-10
-        .checkbox
-          = f.label :elasticsearch_indexing do
-            = f.check_box :elasticsearch_indexing
-            Elasticsearch indexing
-
-    .form-group
-      .col-sm-offset-2.col-sm-10
-        .checkbox
-          = f.label :elasticsearch_experimental_indexer do
-            = f.check_box :elasticsearch_experimental_indexer
-            Use experimental repository indexer
-
-    .form-group
-      .col-sm-offset-2.col-sm-10
-        .checkbox
-          = f.label :elasticsearch_search do
-            = f.check_box :elasticsearch_search
-            Search with Elasticsearch enabled
-
-    .form-group
-      = f.label :elasticsearch_url, 'URL', class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.text_field :elasticsearch_url, value: @application_setting.elasticsearch_url.join(', '), class: 'form-control', placeholder: 'http://localhost:9200'
-        .help-block
-          The url to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., "http://localhost:9200, http://localhost:9201").
-
-  %fieldset
-    %legend Elasticsearch AWS IAM credentials
-    .form-group
-      .col-sm-offset-2.col-sm-10
-        .checkbox
-          = f.label :elasticsearch_aws do
-            = f.check_box :elasticsearch_aws
-            Using AWS hosted Elasticsearch with IAM credentials
-    .form-group
-      = f.label :elasticsearch_aws_region, 'AWS region', class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.text_field :elasticsearch_aws_region, value: @application_setting.elasticsearch_aws_region, class: 'form-control'
-        .help-block
-          Region that elasticsearch is configured
-
-    .form-group
-      = f.label :elasticsearch_aws_access_key, 'AWS Access Key', class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.text_field :elasticsearch_aws_access_key, value: @application_setting.elasticsearch_aws_access_key, class: 'form-control'
-        .help-block
-          AWS Access Key.  Only required if not using role instance credentials
-
-    .form-group
-      = f.label :elasticsearch_aws_secret_access_key, 'AWS Secret Access Key', class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.password_field :elasticsearch_aws_secret_access_key, value: @application_setting.elasticsearch_aws_secret_access_key, class: 'form-control'
-        .help-block
-          AWS Secret Access Key.  Only required if not using role instance credentials
+  = render partial: 'elasticsearch_form', locals: { f: f }
 
   %fieldset
     %legend Koding
@@ -572,11 +515,12 @@
             = f.check_box :usage_ping_enabled
             Usage ping enabled
             = link_to icon('question-circle'), help_page_path("user/admin_area/settings/usage_statistics", anchor: "usage-data")
-          .container
-            .help-block
-              Every week GitLab will report license usage back to GitLab, Inc.
-              Disable this option if you do not want this to occur. This is the JSON payload that will be sent:
-              %pre.usage-data.js-syntax-highlight.code.highlight{ "data-endpoint" => usage_data_admin_application_settings_path(format: :html) }
+          .help-block
+            Every week GitLab will report license usage back to GitLab, Inc.
+            Disable this option if you do not want this to occur. To see the
+            JSON payload that will be sent, visit the
+            = succeed '.' do
+              = link_to "Cohorts page", admin_cohorts_path(anchor: 'usage-ping')
 
   %fieldset
     %legend Email
@@ -662,6 +606,7 @@
           The multiplier can also have a decimal value.
           The default value (1) is a reasonable choice for the majority of GitLab
           installations. Set to 0 to completely disable polling.
+          = link_to icon('question-circle'), help_page_path('administration/polling')
 
   - if Gitlab::Geo.license_allows?
     %fieldset

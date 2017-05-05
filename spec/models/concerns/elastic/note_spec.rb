@@ -15,18 +15,18 @@ describe Note, elastic: true do
     issue = create :issue
 
     Sidekiq::Testing.inline! do
-      create :note, note: 'bla-bla term', project: issue.project
+      create :note, note: 'bla-bla term1', project: issue.project
       create :note, project: issue.project
 
       # The note in the project you have no access to
-      create :note, note: 'bla-bla term'
+      create :note, note: 'bla-bla term2'
 
       Gitlab::Elastic::Helper.refresh_index
     end
 
     options = { project_ids: [issue.project.id] }
 
-    expect(described_class.elastic_search('term', options: options).total_count).to eq(1)
+    expect(described_class.elastic_search('term1 | term2', options: options).total_count).to eq(1)
   end
 
   it "indexes && searches diff notes" do
@@ -99,6 +99,22 @@ describe Note, elastic: true do
       options = { project_ids: [issue.project.id], current_user: user }
 
       expect(Note.elastic_search('term', options: options).total_count).to eq(1)
+    end
+
+    [:admin, :auditor].each do |user_type|
+      it "finds note for #{user_type}" do
+        superuser = create(user_type)
+        issue = create(:issue, :confidential, author: create(:user))
+
+        Sidekiq::Testing.inline! do
+          create_notes_for(issue, 'bla-bla term')
+          Gitlab::Elastic::Helper.refresh_index
+        end
+
+        options = { project_ids: [issue.project.id], current_user: superuser }
+
+        expect(Note.elastic_search('term', options: options).total_count).to eq(1)
+      end
     end
 
     it "return notes with matching content for project members" do

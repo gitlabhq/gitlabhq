@@ -10,7 +10,8 @@ RSpec.shared_examples "protected tags > access control > CE" do
 
         unless allowed_to_create_button.text == access_type_name
           allowed_to_create_button.click
-          within(".dropdown.open .dropdown-menu") { click_on access_type_name }
+          find('.create_access_levels-container .dropdown-menu li', match: :first)
+          within('.create_access_levels-container .dropdown-menu') { click_on access_type_name }
         end
       end
 
@@ -31,7 +32,7 @@ RSpec.shared_examples "protected tags > access control > CE" do
 
       within(".protected-tags-list") do
         find(".js-allowed-to-create").click
-        
+
         within('.js-allowed-to-create-container') do
           expect(first("li")).to have_content("Roles")
           click_on access_type_name

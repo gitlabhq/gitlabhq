@@ -1,12 +1,11 @@
 /* eslint-disable no-param-reassign */
-
-import AsyncButtonComponent from '../../vue_pipelines_index/components/async_button';
-import PipelinesActionsComponent from '../../vue_pipelines_index/components/pipelines_actions';
-import PipelinesArtifactsComponent from '../../vue_pipelines_index/components/pipelines_artifacts';
-import PipelinesStatusComponent from '../../vue_pipelines_index/components/status';
-import PipelinesStageComponent from '../../vue_pipelines_index/components/stage';
-import PipelinesUrlComponent from '../../vue_pipelines_index/components/pipeline_url';
-import PipelinesTimeagoComponent from '../../vue_pipelines_index/components/time_ago';
+import AsyncButtonComponent from '../../pipelines/components/async_button.vue';
+import PipelinesActionsComponent from '../../pipelines/components/pipelines_actions';
+import PipelinesArtifactsComponent from '../../pipelines/components/pipelines_artifacts';
+import PipelinesStatusComponent from '../../pipelines/components/status';
+import PipelinesStageComponent from '../../pipelines/components/stage';
+import PipelinesUrlComponent from '../../pipelines/components/pipeline_url';
+import PipelinesTimeagoComponent from '../../pipelines/components/time_ago';
 import CommitComponent from './commit';
 
 /**
@@ -166,6 +165,32 @@ export default {
       }
       return undefined;
     },
+
+    /**
+     * Timeago components expects a number
+     *
+     * @return {type}  description
+     */
+    pipelineDuration() {
+      if (this.pipeline.details && this.pipeline.details.duration) {
+        return this.pipeline.details.duration;
+      }
+
+      return 0;
+    },
+
+    /**
+     * Timeago component expects a String.
+     *
+     * @return {String}
+     */
+    pipelineFinishedAt() {
+      if (this.pipeline.details && this.pipeline.details.finished_at) {
+        return this.pipeline.details.finished_at;
+      }
+
+      return '';
+    },
   },
 
   template: `
@@ -192,7 +217,9 @@ export default {
         </div>
       </td>
 
-      <time-ago :pipeline="pipeline"/>
+      <time-ago
+        :duration="pipelineDuration"
+        :finished-time="pipelineFinishedAt" />
 
       <td class="pipeline-actions">
         <div class="pull-right btn-group">

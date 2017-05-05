@@ -1,4 +1,0 @@
----
-title: Do not set closed_at to nil when issue is reopened
-merge_request:
-author:

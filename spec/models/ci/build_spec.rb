@@ -764,40 +764,6 @@ describe Ci::Build, :models do
     end
   end
 
-  describe '#has_commands?' do
-    context 'when build has commands' do
-      let(:build) do
-        create(:ci_build, commands: 'rspec')
-      end
-
-      it 'has commands' do
-        expect(build).to have_commands
-      end
-    end
-
-    context 'when does not have commands' do
-      context 'when commands are an empty string' do
-        let(:build) do
-          create(:ci_build, commands: '')
-        end
-
-        it 'has no commands' do
-          expect(build).not_to have_commands
-        end
-      end
-
-      context 'when commands are not set at all' do
-        let(:build) do
-          create(:ci_build, commands: nil)
-        end
-
-        it 'has no commands' do
-          expect(build).not_to have_commands
-        end
-      end
-    end
-  end
-
   describe '#has_tags?' do
     context 'when build has tags' do
       subject { create(:ci_build, tag_list: ['tag']) }

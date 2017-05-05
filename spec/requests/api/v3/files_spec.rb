@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe API::V3::Files, api: true  do
-  include ApiHelpers
-
+describe API::V3::Files do
   # I have to remove periods from the end of the name
   # This happened when the user's name had a suffix (i.e. "Sr.")
   # This seems to be what git does under the hood. For example, this commit:
@@ -129,7 +127,7 @@ describe API::V3::Files, api: true  do
 
     it "returns a 400 if editor fails to create file" do
       allow_any_instance_of(Repository).to receive(:create_file).
-        and_return(false)
+        and_raise(Repository::CommitError, 'Cannot create file')
 
       post v3_api("/projects/#{project.id}/repository/files", user), valid_params
 
@@ -229,8 +227,8 @@ describe API::V3::Files, api: true  do
       expect(response).to have_http_status(400)
     end
 
-    it "returns a 400 if fails to create file" do
-      allow_any_instance_of(Repository).to receive(:delete_file).and_return(false)
+    it "returns a 400 if fails to delete file" do
+      allow_any_instance_of(Repository).to receive(:delete_file).and_raise(Repository::CommitError, 'Cannot delete file')
 
       delete v3_api("/projects/#{project.id}/repository/files", user), valid_params
 
