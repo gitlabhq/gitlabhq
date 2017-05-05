@@ -65,7 +65,7 @@ export default {
     },
     hasTitle() {
       return this.title.length > 0 || this.isFetching;
-    }
+    },
   },
 
   methods: {
