@@ -130,12 +130,6 @@ ul.notes {
     }
 
     .note-header {
-      padding-bottom: 8px;
-      padding-right: 20px;
-
-      @media (min-width: $screen-sm-min) {
-        padding-right: 0;
-      }
 
       @media (max-width: $screen-xs-min) {
         .inline {
@@ -384,10 +378,15 @@ ul.notes {
 .note-header {
   display: flex;
   justify-content: space-between;
+
+  @media (max-width: $screen-xs-max) {
+    flex-flow: row wrap;
+  }
 }
 
 .note-header-info {
   min-width: 0;
+  padding-bottom: 5px;
 }
 
 .note-headline-light {
@@ -434,6 +433,11 @@ ul.notes {
   float: right;
   margin-left: 10px;
   color: $gray-darkest;
+
+  @media (max-width: $screen-xs-max) {
+    float: none;
+    margin-left: 0;
+  }
 
   .note-action-button {
     margin-left: 8px;
