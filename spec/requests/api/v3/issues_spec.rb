@@ -1157,38 +1157,6 @@ describe API::V3::Issues do
     end
   end
 
-  describe 'PUT /projects/:id/issues/:issue_id to update weight' do
-    it 'updates an issue with no weight' do
-      put v3_api("/projects/#{project.id}/issues/#{issue.id}", user), weight: 5
-
-      expect(response).to have_http_status(200)
-      expect(json_response['weight']).to eq(5)
-    end
-
-    it 'removes a weight from an issue' do
-      weighted_issue = create(:issue, project: project, weight: 2)
-
-      put v3_api("/projects/#{project.id}/issues/#{weighted_issue.id}", user), weight: nil
-
-      expect(response).to have_http_status(200)
-      expect(json_response['weight']).to be_nil
-    end
-
-    it 'returns 400 if weight is less than minimum weight' do
-      put v3_api("/projects/#{project.id}/issues/#{issue.id}", user), weight: -1
-
-      expect(response).to have_http_status(400)
-      expect(json_response['error']).to eq('weight does not have a valid value')
-    end
-
-    it 'returns 400 if weight is more than maximum weight' do
-      put v3_api("/projects/#{project.id}/issues/#{issue.id}", user), weight: 10
-
-      expect(response).to have_http_status(400)
-      expect(json_response['error']).to eq('weight does not have a valid value')
-    end
-  end
-
   describe "DELETE /projects/:id/issues/:issue_id" do
     it "rejects a non member from deleting an issue" do
       delete v3_api("/projects/#{project.id}/issues/#{issue.id}", non_member)

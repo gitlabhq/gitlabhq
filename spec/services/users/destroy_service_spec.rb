@@ -60,7 +60,7 @@ describe Users::DestroyService, services: true do
         it 'migrates the issue so that it is "Unassigned"' do
           migrated_issue = Issue.find_by_id(issue.id)
 
-          expect(migrated_issue.assignees).to be_nil
+          expect(migrated_issue.assignees).to be_empty
         end
       end
     end

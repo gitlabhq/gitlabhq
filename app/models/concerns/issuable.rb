@@ -94,7 +94,6 @@ module Issuable
 
     acts_as_paranoid
 
-    after_save :update_assignee_cache_counts, if: :assignee_id_changed?
     after_save :record_metrics, unless: :imported?
 
     # We want to use optimistic lock for cases when only title or description are involved

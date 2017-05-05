@@ -245,7 +245,7 @@ module Github
               issue.label_ids    = label_ids(representation.labels)
               issue.milestone_id = milestone_id(representation.milestone)
               issue.author_id    = author_id
-              issue.assignee_id  = user_id(representation.assignee)
+              issue.assignee_ids = [user_id(representation.assignee)]
               issue.created_at   = representation.created_at
               issue.updated_at   = representation.updated_at
               issue.save!(validate: false)

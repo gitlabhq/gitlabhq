@@ -452,7 +452,7 @@ ActiveRecord::Schema.define(version: 20170502091007) do
 
   add_index "identities", ["user_id"], name: "index_identities_on_user_id", using: :btree
 
-  create_table "issue_assignees", id: false, force: :cascade do |t|
+  create_table "issue_assignees", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "issue_id", null: false
   end

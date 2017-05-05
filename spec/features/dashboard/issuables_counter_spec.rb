@@ -19,6 +19,8 @@ describe 'Navigation bar counter', feature: true, caching: true do
 
     issue.assignees = []
 
+    user.update_cache_counts
+
     Timecop.travel(3.minutes.from_now) do
       visit issues_path
 
