@@ -1,34 +1,52 @@
-# GitLab Contributing Process
+## GitLab Core Team & GitLab Inc. Contribution Process
+
+---
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Purpose of describing the contributing process](#purpose-of-describing-the-contributing-process)
+- [Common actions](#common-actions)
+  - [Merge request coaching](#merge-request-coaching)
+- [Assigning issues](#assigning-issues)
+- [Be kind](#be-kind)
+- [Feature freeze on the 7th for the release on the 22nd](#feature-freeze-on-the-7th-for-the-release-on-the-22nd)
+  - [Between the 1st and the 7th](#between-the-1st-and-the-7th)
+  - [On the 7th](#on-the-7th)
+  - [After the 7th](#after-the-7th)
+- [Release retrospective and kickoff](#release-retrospective-and-kickoff)
+  - [Retrospective](#retrospective)
+  - [Kickoff](#kickoff)
+- [Copy & paste responses](#copy--paste-responses)
+  - [Improperly formatted issue](#improperly-formatted-issue)
+  - [Issue report for old version](#issue-report-for-old-version)
+  - [Support requests and configuration questions](#support-requests-and-configuration-questions)
+  - [Code format](#code-format)
+  - [Issue fixed in newer version](#issue-fixed-in-newer-version)
+  - [Improperly formatted merge request](#improperly-formatted-merge-request)
+  - [Inactivity close of an issue](#inactivity-close-of-an-issue)
+  - [Inactivity close of a merge request](#inactivity-close-of-a-merge-request)
+  - [Accepting merge requests](#accepting-merge-requests)
+  - [Only accepting merge requests with green tests](#only-accepting-merge-requests-with-green-tests)
+  - [Closing down the issue tracker on GitHub](#closing-down-the-issue-tracker-on-github)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+---
 
 ## Purpose of describing the contributing process
 
-Below we describe the contributing process to GitLab for two reasons. So that
-contributors know what to expect from maintainers (possible responses, friendly
-treatment, etc.). And so that maintainers know what to expect from contributors
-(use the latest version, ensure that the issue is addressed, friendly treatment,
-etc.).
+Below we describe the contributing process to GitLab for two reasons:
+
+1. Contributors know what to expect from maintainers (possible responses, friendly
+  treatment, etc.)
+1. Maintainers know what to expect from contributors (use the latest version,
+  ensure that the issue is addressed, friendly treatment, etc.).
 
 - [GitLab Inc engineers should refer to the engineering workflow document](https://about.gitlab.com/handbook/engineering/workflow/)
 
 ## Common actions
-
-### Issue triaging
-
-Our issue triage policies are [described in our handbook]. You are very welcome
-to help the GitLab team triage issues. We also organize [issue bash events] once
-every quarter.
-
-The most important thing is making sure valid issues receive feedback from the
-development team. Therefore the priority is mentioning developers that can help
-on those issues. Please select someone with relevant experience from
-[GitLab team][team]. If there is nobody mentioned with that expertise
-look in the commit history for the affected files to find someone. Avoid
-mentioning the lead developer, this is the person that is least likely to give a
-timely response. If the involvement of the lead developer is needed the other
-core team members will mention this person.
-
-[described in our handbook]: https://about.gitlab.com/handbook/engineering/issues/issue-triage-policies/
-[issue bash events]: https://gitlab.com/gitlab-org/gitlab-ce/issues/17815
 
 ### Merge request coaching
 
@@ -36,12 +54,6 @@ Several people from the [GitLab team][team] are helping community members to get
 their contributions accepted by meeting our [Definition of done][done].
 
 What you can expect from them is described at https://about.gitlab.com/jobs/merge-request-coach/.
-
-## Workflow labels
-
-Labelling issues is described in the [GitLab Inc engineering workflow].
-
-[GitLab Inc engineering workflow]: https://about.gitlab.com/handbook/engineering/workflow/#labelling-issues
 
 ## Assigning issues
 
@@ -145,6 +157,29 @@ release should have the correct milestone assigned _and_ have the label
 ~"Pick into Stable" set, so that release managers can find and pick them.
 Merge requests without a milestone and this label will
 not be merged into any stable branches.
+
+## Release retrospective and kickoff
+
+### Retrospective
+
+After each release, we have a retrospective call where we discuss what went well,
+what went wrong, and what we can improve for the next release. The
+[retrospective notes] are public and you are invited to comment on them.
+If you're interested, you can even join the
+[retrospective call][retro-kickoff-call], on the first working day after the
+22nd at 6pm CET / 9am PST.
+
+### Kickoff
+
+Before working on the next release, we have a
+kickoff call to explain what we expect to ship in the next release. The
+[kickoff notes] are public and you are invited to comment on them.
+If you're interested, you can even join the [kickoff call][retro-kickoff-call],
+on the first working day after the 7th at 6pm CET / 9am PST..
+
+[retrospective notes]: https://docs.google.com/document/d/1nEkM_7Dj4bT21GJy0Ut3By76FZqCfLBmFQNVThmW2TY/edit?usp=sharing
+[kickoff notes]: https://docs.google.com/document/d/1ElPkZ90A8ey_iOkTvUs_ByMlwKK6NAB2VOK5835wYK0/edit?usp=sharing
+[retro-kickoff-call]: https://gitlab.zoom.us/j/918821206
 
 ## Copy & paste responses
 

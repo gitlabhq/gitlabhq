@@ -26,6 +26,7 @@ var config = {
     common_d3:            ['d3'],
     cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',
     commit_pipelines:     './commit/pipelines/pipelines_bundle.js',
+    deploy_keys:          './deploy_keys/index.js',
     diff_notes:           './diff_notes/diff_notes_bundle.js',
     environments:         './environments/environments_bundle.js',
     environments_folder:  './environments/folder/environments_folder_bundle.js',
@@ -33,7 +34,13 @@ var config = {
     graphs:               './graphs/graphs_bundle.js',
     group:                './group.js',
     groups_list:          './groups_list.js',
+<<<<<<< HEAD
+=======
+    issuable:             './issuable/issuable_bundle.js',
+    locale:               './locale/index.js',
+>>>>>>> 10c1bf2d77fd0ab21309d0b136cbc0ac11f56c77
     issue_show:           './issue_show/index.js',
+    locale:               './locale/index.js',
     main:                 './main.js',
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
     merge_request_widget: './merge_request_widget/ci_bundle.js',
@@ -87,6 +94,10 @@ var config = {
         exclude: /node_modules/,
         loader: 'file-loader',
       },
+      {
+        test: /locale\/[a-z]+\/(.*)\.js$/,
+        loader: 'exports-loader?locales',
+      },
     ]
   },
 
@@ -122,6 +133,7 @@ var config = {
         'boards',
         'commit_pipelines',
         'cycle_analytics',
+        'deploy_keys',
         'diff_notes',
         'environments',
         'environments_folder',
@@ -150,6 +162,14 @@ var config = {
     // create cacheable common library bundles
     new webpack.optimize.CommonsChunkPlugin({
       names: ['main', 'common', 'runtime'],
+    }),
+
+    // locale common library
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'locale',
+      chunks: [
+        'cycle_analytics',
+      ],
     }),
   ],
 

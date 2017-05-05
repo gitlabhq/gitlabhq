@@ -34,6 +34,7 @@
         filterByText: true,
         remote: false,
         fieldName: $branchSelect.data('field-name'),
+        filterInput: 'input[type="search"]',
         selectable: true,
         isSelectable: function(branch, $el) {
           return !$el.hasClass('is-active');
@@ -49,6 +50,21 @@
             return branch;
           }
         }
+      });
+
+      const $dropdownContainer = $branchSelect.closest('.dropdown');
+      const $fieldInput = $(`input[name="${$branchSelect.data('field-name')}"]`, $dropdownContainer);
+      const $filterInput = $('input[type="search"]', $dropdownContainer);
+
+      $filterInput.on('keyup', (e) => {
+        const keyCode = e.keyCode || e.which;
+        if (keyCode !== 13) return;
+
+        const text = $filterInput.val();
+        $fieldInput.val(text);
+        $('.dropdown-toggle-text', $branchSelect).text(text);
+
+        $dropdownContainer.removeClass('open');
       });
     };
 

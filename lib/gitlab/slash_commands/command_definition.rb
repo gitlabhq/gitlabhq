@@ -1,16 +1,19 @@
 module Gitlab
   module SlashCommands
     class CommandDefinition
-      attr_accessor :name, :aliases, :description, :params, :condition_block, :action_block
+      attr_accessor :name, :aliases, :description, :explanation, :params,
+        :condition_block, :parse_params_block, :action_block
 
       def initialize(name, attributes = {})
         @name = name
 
-        @aliases         = attributes[:aliases] || []
-        @description     = attributes[:description] || ''
-        @params          = attributes[:params] || []
+        @aliases = attributes[:aliases] || []
+        @description = attributes[:description] || ''
+        @explanation = attributes[:explanation] || ''
+        @params = attributes[:params] || []
         @condition_block = attributes[:condition_block]
-        @action_block    = attributes[:action_block]
+        @parse_params_block = attributes[:parse_params_block]
+        @action_block = attributes[:action_block]
       end
 
       def all_names
@@ -28,14 +31,20 @@ module Gitlab
         context.instance_exec(&condition_block)
       end
 
+      def explain(context, opts, arg)
+        return unless available?(opts)
+
+        if explanation.respond_to?(:call)
+          execute_block(explanation, context, arg)
+        else
+          explanation
+        end
+      end
+
       def execute(context, opts, arg)
         return if noop? || !available?(opts)
 
-        if arg.present?
-          context.instance_exec(arg, &action_block)
-        elsif action_block.arity == 0
-          context.instance_exec(&action_block)
-        end
+        execute_block(action_block, context, arg)
       end
 
       def to_h(opts)
@@ -51,6 +60,23 @@ module Gitlab
           description: desc,
           params: params
         }
+      end
+
+      private
+
+      def execute_block(block, context, arg)
+        if arg.present?
+          parsed = parse_params(arg, context)
+          context.instance_exec(parsed, &block)
+        elsif block.arity == 0
+          context.instance_exec(&block)
+        end
+      end
+
+      def parse_params(arg, context)
+        return arg unless parse_params_block
+
+        context.instance_exec(arg, &parse_params_block)
       end
     end
   end

@@ -351,6 +351,7 @@ Project:
 - auto_cancel_pending_pipelines
 - printing_merge_request_link_enabled
 - build_allow_git_fetch
+- last_repository_updated_at
 Author:
 - name
 ProjectFeature:

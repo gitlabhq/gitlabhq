@@ -8,6 +8,7 @@ shared_examples 'issuable time tracker' do
   it 'updates the sidebar component when estimate is added' do
     submit_time('/estimate 3w 1d 1h')
 
+    wait_for_ajax
     page.within '.time-tracking-estimate-only-pane' do
       expect(page).to have_content '3w 1d 1h'
     end
@@ -16,6 +17,7 @@ shared_examples 'issuable time tracker' do
   it 'updates the sidebar component when spent is added' do
     submit_time('/spend 3w 1d 1h')
 
+    wait_for_ajax
     page.within '.time-tracking-spend-only-pane' do
       expect(page).to have_content '3w 1d 1h'
     end
@@ -25,6 +27,7 @@ shared_examples 'issuable time tracker' do
     submit_time('/estimate 3w 1d 1h')
     submit_time('/spend 3w 1d 1h')
 
+    wait_for_ajax
     page.within '.time-tracking-comparison-pane' do
       expect(page).to have_content '3w 1d 1h'
     end
@@ -34,7 +37,12 @@ shared_examples 'issuable time tracker' do
     submit_time('/estimate 3w 1d 1h')
     submit_time('/remove_estimate')
 
+<<<<<<< HEAD
     page.within '.time-tracking-component-wrap' do
+=======
+    wait_for_ajax
+    page.within '#issuable-time-tracker' do
+>>>>>>> 10c1bf2d77fd0ab21309d0b136cbc0ac11f56c77
       expect(page).to have_content 'No estimate or time spent'
     end
   end
@@ -43,7 +51,12 @@ shared_examples 'issuable time tracker' do
     submit_time('/spend 3w 1d 1h')
     submit_time('/remove_time_spent')
 
+<<<<<<< HEAD
     page.within '.time-tracking-component-wrap' do
+=======
+    wait_for_ajax
+    page.within '#issuable-time-tracker' do
+>>>>>>> 10c1bf2d77fd0ab21309d0b136cbc0ac11f56c77
       expect(page).to have_content 'No estimate or time spent'
     end
   end

@@ -20,7 +20,7 @@ module Gitlab
         end
 
         def metrics_params
-          super.merge(project: project)
+          super.merge(project: project&.full_path)
         end
 
         private

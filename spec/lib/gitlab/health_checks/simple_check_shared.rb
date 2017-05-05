@@ -8,7 +8,7 @@ shared_context 'simple_check' do |metrics_prefix, check_name, success_result|
 
       it { is_expected.to include(have_attributes(name: "#{metrics_prefix}_success", value: 1)) }
       it { is_expected.to include(have_attributes(name: "#{metrics_prefix}_timeout", value: 0)) }
-      it { is_expected.to include(have_attributes(name: "#{metrics_prefix}_latency", value: be > 0)) }
+      it { is_expected.to include(have_attributes(name: "#{metrics_prefix}_latency", value: be >= 0)) }
     end
 
     context 'Check is misbehaving' do
@@ -18,7 +18,7 @@ shared_context 'simple_check' do |metrics_prefix, check_name, success_result|
 
       it { is_expected.to include(have_attributes(name: "#{metrics_prefix}_success", value: 0)) }
       it { is_expected.to include(have_attributes(name: "#{metrics_prefix}_timeout", value: 0)) }
-      it { is_expected.to include(have_attributes(name: "#{metrics_prefix}_latency", value: be > 0)) }
+      it { is_expected.to include(have_attributes(name: "#{metrics_prefix}_latency", value: be >= 0)) }
     end
 
     context 'Check is timeouting' do
@@ -28,7 +28,7 @@ shared_context 'simple_check' do |metrics_prefix, check_name, success_result|
 
       it { is_expected.to include(have_attributes(name: "#{metrics_prefix}_success", value: 0)) }
       it { is_expected.to include(have_attributes(name: "#{metrics_prefix}_timeout", value: 1)) }
-      it { is_expected.to include(have_attributes(name: "#{metrics_prefix}_latency", value: be > 0)) }
+      it { is_expected.to include(have_attributes(name: "#{metrics_prefix}_latency", value: be >= 0)) }
     end
   end
 

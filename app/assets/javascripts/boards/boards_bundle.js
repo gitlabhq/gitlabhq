@@ -59,7 +59,8 @@ $(() => {
       issueLinkBase: $boardApp.dataset.issueLinkBase,
       rootPath: $boardApp.dataset.rootPath,
       bulkUpdatePath: $boardApp.dataset.bulkUpdatePath,
-      detailIssue: Store.detail
+      detailIssue: Store.detail,
+      defaultAvatar: $boardApp.dataset.defaultAvatar,
     },
     computed: {
       detailIssueVisible () {
@@ -82,7 +83,7 @@ $(() => {
       gl.boardService.all()
         .then((resp) => {
           resp.json().forEach((board) => {
-            const list = Store.addList(board);
+            const list = Store.addList(board, this.defaultAvatar);
 
             if (list.type === 'closed') {
               list.position = Infinity;
