@@ -41,12 +41,26 @@ describe Projects::PipelinesController do
     let!(:pipeline) { create(:ci_pipeline_with_one_job, project: project) }
 
     it 'returns the pipeline' do
-      get :show, namespace_id: project.namespace, project_id: project, id: pipeline, format: :json
+      get_pipeline_json
 
       expect(response).to have_http_status(:ok)
       expect(json_response).not_to be_an(Array)
       expect(json_response['id']).to be(pipeline.id)
       expect(json_response['details']).to have_key 'stages'
+    end
+
+    context 'when the pipeline has multiple jobs' do
+      it 'does not perform N + 1 queries' do
+        control_count = ActiveRecord::QueryRecorder.new { get_pipeline_json }.count
+
+        create(:ci_build, pipeline: pipeline)
+
+        expect { get_pipeline_json }.not_to exceed_query_limit(control_count)
+      end
+    end
+
+    def get_pipeline_json
+      get :show, namespace_id: project.namespace, project_id: project, id: pipeline, format: :json
     end
   end
 

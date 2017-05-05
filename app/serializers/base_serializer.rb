@@ -1,4 +1,4 @@
-class BaseSerializer  
+class BaseSerializer
   def initialize(parameters = {})
     @request = EntityRequest.new(parameters)
   end

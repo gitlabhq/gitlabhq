@@ -13,14 +13,26 @@ module Ci
       @statuses = statuses
     end
 
+    def status
+      @status ||= commit_statuses.status
+    end
+
     def detailed_status(current_user)
-      Gitlab::Ci::Status::Group::Factory
-        .new(CommitStatus.where(id: statuses.map(&:id)), current_user)
-        .fabricate!
+      if size == 1
+        statuses[0].detailed_status(current_user)
+      else
+        Gitlab::Ci::Status::Group::Factory.new(self, current_user).fabricate!
+      end
     end
 
     def size
       statuses.size
+    end
+
+    private
+
+    def commit_statuses
+      @commit_statuses ||= CommitStatus.where(id: statuses.map(&:id))
     end
   end
 end
