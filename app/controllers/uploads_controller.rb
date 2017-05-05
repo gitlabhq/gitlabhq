@@ -78,7 +78,7 @@ class UploadsController < ApplicationController
     else
       @uploader = @model.send(upload_mount)
 
-      redirect_to @uploader.url unless @uploader.file_storage?
+      redirect_to @uploader.url unless @uploader.local_storage?
     end
 
     @uploader
