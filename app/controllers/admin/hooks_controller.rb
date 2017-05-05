@@ -60,6 +60,7 @@ class Admin::HooksController < Admin::ApplicationController
       :enable_ssl_verification,
       :push_events,
       :tag_push_events,
+      :repository_update_events,
       :token,
       :url
     )
