@@ -13,8 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
       render: createElement => createElement('related-issues-root', {
         props: {
           endpoint: relatedIssuesRootElement.dataset.endpoint,
-          currentNamespacePath: relatedIssuesRootElement.dataset.namespace,
-          currentProjectPath: relatedIssuesRootElement.dataset.project,
           canAddRelatedIssues: gl.utils.convertPermissionToBoolean(
             relatedIssuesRootElement.dataset.canAddRelatedIssues,
           ),

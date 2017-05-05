@@ -3,14 +3,18 @@ import eventHub from '~/issuable/related_issues/event_hub';
 import addIssuableForm from '~/issuable/related_issues/components/add_issuable_form.vue';
 
 const issuable1 = {
+  id: '200',
   reference: 'foo/bar#123',
+  displayReference: '#123',
   title: 'some title',
   path: '/foo/bar/issues/123',
   state: 'opened',
 };
 
 const issuable2 = {
+  id: '201',
   reference: 'foo/bar#124',
+  displayReference: '#124',
   title: 'some other thing',
   path: '/foo/bar/issues/124',
   state: 'opened',
@@ -26,6 +30,10 @@ describe('AddIssuableForm', () => {
 
   afterEach(() => {
     if (vm) {
+      // Avoid any NPE errors from `@blur` being called
+      // after `vm.$destroy` in tests, https://github.com/vuejs/vue/issues/5829
+      document.activeElement.blur();
+
       vm.$destroy();
     }
   });
@@ -39,9 +47,9 @@ describe('AddIssuableForm', () => {
         propsData: {
           inputValue,
           addButtonLabel,
-          pendingIssuables: [
-            issuable1,
-            issuable2,
+          pendingReferences: [
+            issuable1.reference,
+            issuable2.reference,
           ],
         },
       }).$mount();
@@ -89,7 +97,6 @@ describe('AddIssuableForm', () => {
           ],
         },
       }).$mount(el);
-      spyOn(vm, 'onInputWrapperClick').and.callThrough();
     });
 
     afterEach(() => {
@@ -99,15 +106,16 @@ describe('AddIssuableForm', () => {
       eventHub.$off('addIssuableFormCancel', addIssuableFormCancelSpy);
     });
 
-    it('when clicking somewhere on the input wrapper should focus the input', () => {
-      expect(vm.onInputWrapperClick).not.toHaveBeenCalled();
+    it('when clicking somewhere on the input wrapper should focus the input', (done) => {
+      vm.onInputWrapperClick();
 
-      vm.$refs.issuableFormWrapper.click();
+      setTimeout(() => {
+        Vue.nextTick(() => {
+          expect(vm.$refs.issuableFormWrapper.classList.contains('focus')).toEqual(true);
+          expect(document.activeElement).toEqual(vm.$refs.input);
 
-      Vue.nextTick(() => {
-        expect(vm.$refs.issuableFormWrapper.classList.contains('focus')).toEqual(true);
-        expect(vm.onInputWrapperClick).toHaveBeenCalled();
-        expect(document.activeElement).toEqual(vm.$refs.input);
+          done();
+        });
       });
     });
 
@@ -121,16 +129,20 @@ describe('AddIssuableForm', () => {
       expect(addIssuableFormInputSpy).toHaveBeenCalledWith(newInputValue, newInputValue.length);
     });
 
-    it('when blurring the input', () => {
+    it('when blurring the input', (done) => {
       expect(addIssuableFormInputSpy).not.toHaveBeenCalled();
 
       const newInputValue = 'filling in things';
       vm.$refs.input.value = newInputValue;
       vm.onBlur();
 
-      Vue.nextTick(() => {
-        expect(vm.$refs.issuableFormWrapper.classList.contains('focus')).toEqual(false);
-        expect(addIssuableFormBlurSpy).toHaveBeenCalledWith(newInputValue);
+      setTimeout(() => {
+        Vue.nextTick(() => {
+          expect(vm.$refs.issuableFormWrapper.classList.contains('focus')).toEqual(false);
+          expect(addIssuableFormBlurSpy).toHaveBeenCalledWith(newInputValue);
+
+          done();
+        });
       });
     });
 

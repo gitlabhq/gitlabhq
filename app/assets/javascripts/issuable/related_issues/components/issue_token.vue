@@ -1,17 +1,12 @@
 <script>
 import eventHub from '../event_hub';
-import {
-  FETCHING_STATUS,
-  FETCH_SUCCESS_STATUS,
-  FETCH_ERROR_STATUS,
-} from '../constants';
 
 export default {
   name: 'IssueToken',
 
   props: {
-    reference: {
-      type: String,
+    idKey: {
+      type: Number,
       required: true,
     },
     displayReference: {
@@ -38,11 +33,6 @@ export default {
       required: false,
       default: '',
     },
-    fetchStatus: {
-      type: String,
-      required: false,
-      default: FETCH_SUCCESS_STATUS,
-    },
     canRemove: {
       type: Boolean,
       required: false,
@@ -51,20 +41,14 @@ export default {
   },
 
   computed: {
-    isFetching() {
-      return this.fetchStatus === FETCHING_STATUS;
-    },
-    hasFetchingError() {
-      return this.fetchStatus === FETCH_ERROR_STATUS;
-    },
     removeButtonLabel() {
-      return `Remove related issue ${this.reference}`;
+      return `Remove related issue ${this.displayReference}`;
     },
     hasState() {
       return this.state && this.state.length > 0;
     },
     hasTitle() {
-      return this.title.length > 0 || this.isFetching;
+      return this.title.length > 0;
     },
   },
 
@@ -75,26 +59,33 @@ export default {
         namespacePrefix = `${this.eventNamespace}-`;
       }
 
-      eventHub.$emit(`${namespacePrefix}removeRequest`, this.reference);
+      eventHub.$emit(`${namespacePrefix}removeRequest`, this.idKey);
     },
   },
   updated() {
+    const link = this.$refs.link;
     const removeButton = this.$refs.removeButton;
+
+    if (link) {
+      $(link).tooltip('fixTitle');
+    }
+
     if (removeButton) {
-      $(this.$refs.removeButton).tooltip('fixTitle');
+      $(removeButton).tooltip('fixTitle');
     }
   },
 };
 </script>
 
 <template>
-  <div
-    class="issue-token"
-    :class="{ 'issue-token-error': hasFetchingError }">
+  <div class="issue-token">
     <a
       ref="link"
       class="issue-token-link"
-      :href="path">
+      :href="path"
+      :title="title"
+      data-toggle="tooltip"
+      data-placement="top">
       <span
         ref="reference"
         class="issue-token-reference">
@@ -113,22 +104,18 @@ export default {
       <span
         v-if="hasTitle"
         ref="title"
-        class="issue-token-title">
-        <i
-          ref="fetchStatusIcon"
-          v-if="isFetching"
-          class="fa fa-spinner fa-spin"
-          aria-label="Fetching info">
-        </i>
-        {{ title }}
+        class="js-issue-token-title issue-token-title"
+        :class="{ 'issue-token-title-standalone': !canRemove }">
+        <span class="issue-token-title-text">
+          {{ title }}
+        </span>
       </span>
     </a>
     <button
       ref="removeButton"
       v-if="canRemove"
       type="button"
-      class="issue-token-remove-button"
-      :class="{ 'issue-token-remove-button-standalone': !hasTitle }"
+      class="js-issue-token-remove-button issue-token-remove-button"
       :title="removeButtonLabel"
       data-toggle="tooltip"
       @click="onRemoveRequest">

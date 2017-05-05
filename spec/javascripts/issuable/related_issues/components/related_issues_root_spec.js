@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import RelatedIssuesRoot from '~/issuable/related_issues/components/related_issues_root.vue';
+import relatedIssuesRoot from '~/issuable/related_issues/components/related_issues_root.vue';
 
 const defaultProps = {
   endpoint: '/foo/bar/issues/1/related_issues',
@@ -7,39 +7,32 @@ const defaultProps = {
   currentProjectPath: 'bar',
 };
 
-const createComponent = (propsData = {}) => {
-  const Component = Vue.extend(RelatedIssuesRoot);
-
-  return new Component({
-    propsData,
-  })
-    .$mount();
-};
-
 const issuable1 = {
-  namespace_full_path: 'foo',
-  project_path: 'bar',
-  iid: '123',
+  id: '200',
+  reference: 'foo/bar#123',
   title: 'issue1',
   path: '/foo/bar/issues/123',
   state: 'opened',
   destroy_relation_path: '/foo/bar/issues/123/related_issues/1',
 };
-const issuable1Reference = `${issuable1.namespace_full_path}/${issuable1.project_path}#${issuable1.iid}`;
 
 const issuable2 = {
-  namespace_full_path: 'foo',
-  project_path: 'bar',
-  iid: '124',
-  title: 'issue2',
+  id: '201',
+  reference: 'foo/bar#124',
+  title: 'issue1',
   path: '/foo/bar/issues/124',
   state: 'opened',
-  destroy_relation_path: '/foo/bar/issues/124/related_issues/2',
+  destroy_relation_path: '/foo/bar/issues/124/related_issues/1',
 };
-const issuable2Reference = `${issuable2.namespace_full_path}/${issuable2.project_path}#${issuable2.iid}`;
 
 describe('RelatedIssuesRoot', () => {
+  let RelatedIssuesRoot;
   let vm;
+
+  beforeEach(() => {
+    RelatedIssuesRoot = Vue.extend(relatedIssuesRoot);
+  });
+
   afterEach(() => {
     if (vm) {
       vm.$destroy();
@@ -49,23 +42,26 @@ describe('RelatedIssuesRoot', () => {
   describe('methods', () => {
     describe('onRelatedIssueRemoveRequest', () => {
       beforeEach(() => {
-        vm = createComponent(defaultProps);
-        vm.store.addToIssueMap(issuable1Reference, issuable1);
-        vm.store.setRelatedIssues([issuable1Reference]);
+        vm = new RelatedIssuesRoot({
+          propsData: defaultProps,
+        }).$mount();
+        vm.store.setRelatedIssues([issuable1]);
       });
 
       it('remove related issue and succeeds', (done) => {
         const interceptor = (request, next) => {
-          next(request.respondWith(JSON.stringify({}), {
+          next(request.respondWith(JSON.stringify({
+            issues: [],
+          }), {
             status: 200,
           }));
         };
         Vue.http.interceptors.push(interceptor);
 
-        vm.onRelatedIssueRemoveRequest(issuable1Reference);
+        vm.onRelatedIssueRemoveRequest(issuable1.id);
 
         setTimeout(() => {
-          expect(vm.computedRelatedIssues).toEqual([]);
+          expect(vm.state.relatedIssues).toEqual([]);
 
           Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
 
@@ -81,11 +77,11 @@ describe('RelatedIssuesRoot', () => {
         };
         Vue.http.interceptors.push(interceptor);
 
-        vm.onRelatedIssueRemoveRequest(issuable1Reference);
+        vm.onRelatedIssueRemoveRequest(issuable1.id);
 
         setTimeout(() => {
-          expect(vm.computedRelatedIssues.length).toEqual(1);
-          expect(vm.computedRelatedIssues[0].reference).toEqual(issuable1Reference);
+          expect(vm.state.relatedIssues.length).toEqual(1);
+          expect(vm.state.relatedIssues[0].id).toEqual(issuable1.id);
 
           Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
 
@@ -94,107 +90,121 @@ describe('RelatedIssuesRoot', () => {
       });
     });
 
-    describe('onShowAddRelatedIssuesForm', () => {
+    describe('onToggleAddRelatedIssuesForm', () => {
       beforeEach(() => {
-        vm = createComponent(defaultProps);
+        vm = new RelatedIssuesRoot({
+          propsData: defaultProps,
+        }).$mount();
       });
 
-      it('show add related issues form', () => {
-        vm.onShowAddRelatedIssuesForm();
+      it('toggle related issues form to visible', () => {
+        vm.onToggleAddRelatedIssuesForm();
 
         expect(vm.isFormVisible).toEqual(true);
       });
+
+      it('show add related issues form to hidden', () => {
+        vm.isFormVisible = true;
+
+        vm.onToggleAddRelatedIssuesForm();
+
+        expect(vm.isFormVisible).toEqual(false);
+      });
     });
 
-    describe('onAddIssuableFormIssuableRemoveRequest', () => {
+    describe('onPendingIssueRemoveRequest', () => {
       beforeEach(() => {
-        vm = createComponent(defaultProps);
-        vm.store.addToIssueMap(issuable1Reference, issuable1);
-        vm.store.setPendingRelatedIssues([issuable1Reference]);
+        vm = new RelatedIssuesRoot({
+          propsData: defaultProps,
+        }).$mount();
+        vm.store.setPendingReferences([issuable1.reference]);
       });
 
       it('remove pending related issue', () => {
-        vm.onAddIssuableFormIssuableRemoveRequest(issuable1Reference);
+        expect(vm.state.pendingReferences.length).toEqual(1);
 
-        expect(vm.computedPendingRelatedIssues.length).toEqual(0);
+        vm.onPendingIssueRemoveRequest(0);
+
+        expect(vm.state.pendingReferences.length).toEqual(0);
       });
     });
 
-    describe('onAddIssuableFormSubmit', () => {
-      describe('when service.addRelatedIssues is succeeding', () => {
+    describe('onPendingFormSubmit', () => {
+      beforeEach(() => {
+        vm = new RelatedIssuesRoot({
+          propsData: defaultProps,
+        }).$mount();
+      });
+
+      it('submit zero pending issue as related issue', (done) => {
+        vm.store.setPendingReferences([]);
+        vm.onPendingFormSubmit();
+
+        setTimeout(() => {
+          Vue.nextTick(() => {
+            expect(vm.state.pendingReferences.length).toEqual(0);
+            expect(vm.state.relatedIssues.length).toEqual(0);
+
+            done();
+          });
+        });
+      });
+
+      it('submit pending issue as related issue', (done) => {
         const interceptor = (request, next) => {
-          next(request.respondWith(JSON.stringify({}), {
+          next(request.respondWith(JSON.stringify({
+            issues: [issuable1],
+            result: {
+              message: 'something was successfully related',
+              status: 'success',
+            },
+          }), {
             status: 200,
           }));
         };
+        Vue.http.interceptors.push(interceptor);
 
-        beforeEach(() => {
-          vm = createComponent(defaultProps);
-          vm.store.addToIssueMap(issuable1Reference, issuable1);
-          vm.store.addToIssueMap(issuable2Reference, issuable2);
+        vm.store.setPendingReferences([issuable1.reference]);
+        vm.onPendingFormSubmit();
 
-          Vue.http.interceptors.push(interceptor);
-        });
+        setTimeout(() => {
+          Vue.nextTick(() => {
+            expect(vm.state.pendingReferences.length).toEqual(0);
+            expect(vm.state.relatedIssues.length).toEqual(1);
+            expect(vm.state.relatedIssues[0].id).toEqual(issuable1.id);
 
-        afterEach(() => {
-          Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
-        });
-
-        it('submit pending issues as related issues', (done) => {
-          vm.store.setPendingRelatedIssues([issuable1Reference]);
-          vm.onAddIssuableFormSubmit();
-
-          setTimeout(() => {
-            expect(vm.computedPendingRelatedIssues.length).toEqual(0);
-            expect(vm.computedRelatedIssues.length).toEqual(1);
-            expect(vm.computedRelatedIssues[0].reference).toEqual(issuable1Reference);
-
-            done();
-          });
-        });
-
-        it('submit multiple pending issues as related issues', (done) => {
-          vm.store.setPendingRelatedIssues([issuable1Reference, issuable2Reference]);
-          vm.onAddIssuableFormSubmit();
-
-          setTimeout(() => {
-            expect(vm.computedPendingRelatedIssues.length).toEqual(0);
-            expect(vm.computedRelatedIssues.length).toEqual(2);
-            expect(vm.computedRelatedIssues[0].reference).toEqual(issuable1Reference);
-            expect(vm.computedRelatedIssues[1].reference).toEqual(issuable2Reference);
+            Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
 
             done();
           });
         });
       });
 
-      describe('when service.addRelatedIssues fails', () => {
+      it('submit multiple pending issues as related issues', (done) => {
         const interceptor = (request, next) => {
-          next(request.respondWith(JSON.stringify({}), {
-            status: 422,
+          next(request.respondWith(JSON.stringify({
+            issues: [issuable1, issuable2],
+            result: {
+              message: 'something was successfully related',
+              status: 'success',
+            },
+          }), {
+            status: 200,
           }));
         };
+        Vue.http.interceptors.push(interceptor);
 
-        beforeEach(() => {
-          vm = createComponent(defaultProps);
-          vm.store.addToIssueMap(issuable1Reference, issuable1);
-          vm.store.addToIssueMap(issuable2Reference, issuable2);
+        vm.store.setPendingReferences([issuable1.reference, issuable2.reference]);
+        vm.onPendingFormSubmit();
 
-          Vue.http.interceptors.push(interceptor);
-        });
+        setTimeout(() => {
+          Vue.nextTick(() => {
+            expect(vm.state.pendingReferences.length).toEqual(0);
+            expect(vm.state.relatedIssues.length).toEqual(2);
+            expect(vm.state.relatedIssues[0].id).toEqual(issuable1.id);
+            expect(vm.state.relatedIssues[1].id).toEqual(issuable2.id);
 
-        afterEach(() => {
-          Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
-        });
-
-        it('submit pending issues as related issues fails and restores to pending related issues', (done) => {
-          vm.store.setPendingRelatedIssues([issuable1Reference]);
-          vm.onAddIssuableFormSubmit();
-
-          setTimeout(() => {
-            expect(vm.computedPendingRelatedIssues.length).toEqual(1);
-            expect(vm.computedPendingRelatedIssues[0].reference).toEqual(issuable1Reference);
-            expect(vm.computedRelatedIssues.length).toEqual(0);
+            Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
 
             done();
           });
@@ -202,51 +212,180 @@ describe('RelatedIssuesRoot', () => {
       });
     });
 
-    describe('onAddIssuableFormCancel', () => {
+    describe('onPendingFormCancel', () => {
       beforeEach(() => {
-        vm = createComponent(defaultProps);
+        vm = new RelatedIssuesRoot({
+          propsData: defaultProps,
+        }).$mount();
         vm.isFormVisible = true;
         vm.inputValue = 'foo';
       });
 
       it('when canceling and hiding add issuable form', () => {
-        vm.onAddIssuableFormCancel();
+        vm.onPendingFormCancel();
 
         expect(vm.isFormVisible).toEqual(false);
         expect(vm.inputValue).toEqual('');
-        expect(vm.computedPendingRelatedIssues.length).toEqual(0);
+        expect(vm.state.pendingReferences.length).toEqual(0);
       });
     });
 
     describe('fetchRelatedIssues', () => {
-      const interceptor = (request, next) => {
-        next(request.respondWith(JSON.stringify([issuable1, issuable2]), {
-          status: 200,
-        }));
-      };
-
       beforeEach(() => {
-        vm = createComponent(defaultProps);
-
-        Vue.http.interceptors.push(interceptor);
+        vm = new RelatedIssuesRoot({
+          propsData: defaultProps,
+        }).$mount();
       });
 
-      afterEach(() => {
-        Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
-      });
+      describe('when the network has not responded yet', () => {
+        it('should be fetching', (done) => {
+          vm.fetchRelatedIssues();
 
-      it('fetching related issues', (done) => {
-        vm.fetchRelatedIssues();
+          setTimeout(() => {
+            Vue.nextTick(() => {
+              expect(vm.isFetching).toEqual(true);
 
-        setTimeout(() => {
-          Vue.nextTick(() => {
-            expect(vm.computedRelatedIssues.length).toEqual(2);
-            expect(vm.computedRelatedIssues[0].reference).toEqual(issuable1Reference);
-            expect(vm.computedRelatedIssues[1].reference).toEqual(issuable2Reference);
-
-            done();
+              done();
+            });
           });
         });
+      });
+
+      describe('when the network responds', () => {
+        const interceptor = (request, next) => {
+          next(request.respondWith(JSON.stringify([issuable1, issuable2]), {
+            status: 200,
+          }));
+        };
+
+        beforeEach(() => {
+          Vue.http.interceptors.push(interceptor);
+        });
+
+        afterEach(() => {
+          Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+        });
+
+        it('should be done fetching', (done) => {
+          vm.fetchRelatedIssues();
+
+          setTimeout(() => {
+            Vue.nextTick(() => {
+              expect(vm.isFetching).toEqual(false);
+
+              done();
+            });
+          });
+        });
+
+        it('should fetch related issues', (done) => {
+          vm.fetchRelatedIssues();
+
+          setTimeout(() => {
+            Vue.nextTick(() => {
+              expect(vm.state.relatedIssues.length).toEqual(2);
+              expect(vm.state.relatedIssues[0].id).toEqual(issuable1.id);
+              expect(vm.state.relatedIssues[1].id).toEqual(issuable2.id);
+
+              done();
+            });
+          });
+        });
+      });
+    });
+
+    describe('onInput', () => {
+      beforeEach(() => {
+        vm = new RelatedIssuesRoot({
+          propsData: defaultProps,
+        }).$mount();
+      });
+
+      it('fill in issue number reference and adds to pending related issues', () => {
+        const input = '#123 ';
+        vm.onInput(input, input.length);
+
+        expect(vm.state.pendingReferences.length).toEqual(1);
+        expect(vm.state.pendingReferences[0]).toEqual('#123');
+      });
+
+      it('fill in with full reference', () => {
+        const input = 'asdf/qwer#444 ';
+        vm.onInput(input, input.length);
+
+        expect(vm.state.pendingReferences.length).toEqual(1);
+        expect(vm.state.pendingReferences[0]).toEqual('asdf/qwer#444');
+      });
+
+      it('fill in with issue link', () => {
+        const link = 'http://localhost:3000/foo/bar/issues/111';
+        const input = `${link} `;
+        vm.onInput(input, input.length);
+
+        expect(vm.state.pendingReferences.length).toEqual(1);
+        expect(vm.state.pendingReferences[0]).toEqual(link);
+      });
+
+      it('fill in with multiple references', () => {
+        const input = 'asdf/qwer#444 #12 ';
+        vm.onInput(input, input.length);
+
+        expect(vm.state.pendingReferences.length).toEqual(2);
+        expect(vm.state.pendingReferences[0]).toEqual('asdf/qwer#444');
+        expect(vm.state.pendingReferences[1]).toEqual('#12');
+      });
+
+      it('fill in with some invalid things', () => {
+        const input = 'something random ';
+        vm.onInput(input, input.length);
+
+        expect(vm.state.pendingReferences.length).toEqual(2);
+        expect(vm.state.pendingReferences[0]).toEqual('something');
+        expect(vm.state.pendingReferences[1]).toEqual('random');
+      });
+
+      it('fill in invalid and some legit references', () => {
+        const input = 'something random #123 ';
+        vm.onInput(input, input.length);
+
+        expect(vm.state.pendingReferences.length).toEqual(3);
+        expect(vm.state.pendingReferences[0]).toEqual('something');
+        expect(vm.state.pendingReferences[1]).toEqual('random');
+        expect(vm.state.pendingReferences[2]).toEqual('#123');
+      });
+
+      it('keep reference piece in input while we are touching it', () => {
+        const input = 'a #123 b ';
+        vm.onInput(input, 3);
+
+        expect(vm.state.pendingReferences.length).toEqual(2);
+        expect(vm.state.pendingReferences[0]).toEqual('a');
+        expect(vm.state.pendingReferences[1]).toEqual('b');
+      });
+    });
+
+    describe('onBlur', () => {
+      beforeEach(() => {
+        vm = new RelatedIssuesRoot({
+          propsData: defaultProps,
+        }).$mount();
+      });
+
+      it('add valid reference to pending when blurring', () => {
+        const input = '#123';
+        vm.onBlur(input);
+
+        expect(vm.state.pendingReferences.length).toEqual(1);
+        expect(vm.state.pendingReferences[0]).toEqual('#123');
+      });
+
+      it('add any valid references to pending when blurring', () => {
+        const input = 'asdf #123';
+        vm.onBlur(input);
+
+        expect(vm.state.pendingReferences.length).toEqual(2);
+        expect(vm.state.pendingReferences[0]).toEqual('asdf');
+        expect(vm.state.pendingReferences[1]).toEqual('#123');
       });
     });
   });

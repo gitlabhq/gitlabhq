@@ -3,6 +3,7 @@ import eventHub from '~/issuable/related_issues/event_hub';
 import relatedIssuesBlock from '~/issuable/related_issues/components/related_issues_block.vue';
 
 const issuable1 = {
+  id: '200',
   reference: 'foo/bar#123',
   displayReference: '#123',
   title: 'some title',
@@ -11,6 +12,7 @@ const issuable1 = {
 };
 
 const issuable2 = {
+  id: '201',
   reference: 'foo/bar#124',
   displayReference: '#124',
   title: 'some other thing',
@@ -43,6 +45,24 @@ describe('RelatedIssuesBlock', () => {
 
     it('add related issues form is hidden', () => {
       expect(vm.$el.querySelector('.js-add-related-issues-form-area')).toBeNull();
+    });
+
+    it('should not show loading icon', () => {
+      expect(vm.$refs.loadingIcon).toBeUndefined();
+    });
+  });
+
+  describe('with isFetching=true', () => {
+    beforeEach(() => {
+      vm = new RelatedIssuesBlock({
+        propsData: {
+          isFetching: true,
+        },
+      }).$mount();
+    });
+
+    it('should show loading icon', () => {
+      expect(vm.$refs.loadingIcon).toBeDefined();
     });
   });
 
@@ -92,7 +112,7 @@ describe('RelatedIssuesBlock', () => {
   });
 
   describe('methods', () => {
-    let showAddRelatedIssuesFormSpy;
+    let toggleAddRelatedIssuesFormSpy;
 
     beforeEach(() => {
       vm = new RelatedIssuesBlock({
@@ -102,18 +122,18 @@ describe('RelatedIssuesBlock', () => {
           ],
         },
       }).$mount();
-      showAddRelatedIssuesFormSpy = jasmine.createSpy('spy');
-      eventHub.$on('showAddRelatedIssuesForm', showAddRelatedIssuesFormSpy);
+      toggleAddRelatedIssuesFormSpy = jasmine.createSpy('spy');
+      eventHub.$on('toggleAddRelatedIssuesForm', toggleAddRelatedIssuesFormSpy);
     });
 
     afterEach(() => {
-      eventHub.$off('showAddRelatedIssuesForm', showAddRelatedIssuesFormSpy);
+      eventHub.$off('toggleAddRelatedIssuesForm', toggleAddRelatedIssuesFormSpy);
     });
 
     it('when expanding add related issue form', () => {
-      expect(showAddRelatedIssuesFormSpy).not.toHaveBeenCalled();
-      vm.showAddRelatedIssuesForm();
-      expect(showAddRelatedIssuesFormSpy).toHaveBeenCalled();
+      expect(toggleAddRelatedIssuesFormSpy).not.toHaveBeenCalled();
+      vm.toggleAddRelatedIssuesForm();
+      expect(toggleAddRelatedIssuesFormSpy).toHaveBeenCalled();
     });
   });
 });

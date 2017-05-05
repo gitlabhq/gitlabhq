@@ -1,5 +1,6 @@
 <script>
 import eventHub from '../event_hub';
+import loadingIcon from '../../../vue_shared/components/loading_icon.vue';
 import issueToken from './issue_token.vue';
 import addIssuableForm from './add_issuable_form.vue';
 
@@ -7,6 +8,11 @@ export default {
   name: 'RelatedIssuesBlock',
 
   props: {
+    isFetching: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     relatedIssues: {
       type: Array,
       required: false,
@@ -22,7 +28,7 @@ export default {
       required: false,
       default: false,
     },
-    pendingRelatedIssues: {
+    pendingReferences: {
       type: Array,
       required: false,
       default: () => [],
@@ -37,9 +43,15 @@ export default {
       required: false,
       default: '',
     },
+    autoCompleteSources: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
 
   components: {
+    loadingIcon,
     addIssuableForm,
     issueToken,
   },
@@ -57,8 +69,8 @@ export default {
   },
 
   methods: {
-    showAddRelatedIssuesForm() {
-      eventHub.$emit('showAddRelatedIssuesForm');
+    toggleAddRelatedIssuesForm() {
+      eventHub.$emit('toggleAddRelatedIssuesForm');
     },
   },
 
@@ -78,47 +90,59 @@ export default {
       <div
         class="panel-heading"
         :class="{ 'panel-empty-heading': !this.hasRelatedIssues }">
-        <h3 class="panel-title">
-          Related issues
-          <a
-            v-if="hasHelpPath"
-            :href="helpPath">
-            <i
-              class="related-issues-header-help-icon fa fa-question-circle"
-              aria-label="Read more about related issues">
-            </i>
-          </a>
-          <div class="related-issues-header-issue-count issue-count-badge">
-            <span
-              class="issue-count-badge-count"
-              :class="{ 'has-btn': this.canAddRelatedIssues }">
-              {{ relatedIssueCount }}
-            </span>
-            <button
-              ref="issueCountBadgeAddButton"
-              v-if="canAddRelatedIssues"
-              type="button"
-              class="issue-count-badge-add-button btn btn-small btn-default"
-              title="Add an issue"
-              aria-label="Add an issue"
-              data-toggle="tooltip"
-              data-placement="top"
-              @click="showAddRelatedIssuesForm">
+        <h3 class="panel-title related-issues-panel-title">
+          <div>
+            Related issues
+            <a
+              v-if="hasHelpPath"
+              :href="helpPath">
               <i
-                class="fa fa-plus"
-                aria-hidden="true">
+                class="related-issues-header-help-icon fa fa-question-circle"
+                aria-label="Read more about related issues">
               </i>
-            </button>
+            </a>
+            <div class="js-related-issues-header-issue-count related-issues-header-issue-count issue-count-badge">
+              <span
+                class="issue-count-badge-count"
+                :class="{ 'has-btn': this.canAddRelatedIssues }">
+                {{ relatedIssueCount }}
+              </span>
+              <button
+                ref="issueCountBadgeAddButton"
+                v-if="canAddRelatedIssues"
+                type="button"
+                class="js-issue-count-badge-add-button issue-count-badge-add-button btn btn-small btn-default"
+                title="Add an issue"
+                aria-label="Add an issue"
+                data-toggle="tooltip"
+                data-placement="top"
+                @click="toggleAddRelatedIssuesForm">
+                <i
+                  class="fa fa-plus"
+                  aria-hidden="true">
+                </i>
+              </button>
+            </div>
+          </div>
+          <div>
+            <loadingIcon
+              ref="loadingIcon"
+              v-if="isFetching"
+              label="Fetching related issues" />
           </div>
         </h3>
       </div>
       <div
         v-if="isFormVisible"
-        class="js-add-related-issues-form-area related-issues-add-related-issues-form panel-body">
+        class="js-add-related-issues-form-area panel-body"
+        :class="{
+          'related-issues-add-related-issues-form-with-break': hasRelatedIssues
+        }">
         <add-issuable-form
           :input-value="inputValue"
-          :pending-issuables="pendingRelatedIssues"
-          add-button-label="Add related issues" />
+          :pending-references="pendingReferences"
+          add-button-label="Add related issues"
+          :auto-complete-sources="autoCompleteSources" />
       </div>
       <div
         v-if="hasRelatedIssues"
@@ -126,18 +150,17 @@ export default {
         <ul
           class="related-issues-token-body">
           <li
-            :key="issue.reference"
+            :key="issue.id"
             v-for="issue in relatedIssues"
             class="js-related-issues-token-list-item related-issues-token-list-item">
             <issue-token
               event-namespace="relatedIssue"
-              :reference="issue.reference"
-              :display-reference="issue.displayReference"
+              :id-key="issue.id"
+              :display-reference="issue.reference"
               :title="issue.title"
               :path="issue.path"
               :state="issue.state"
-              :fetch-status="issue.fetchStatus"
-              :can-remove="issue.canRemove" />
+              :can-remove="true" />
           </li>
         </ul>
         </div>

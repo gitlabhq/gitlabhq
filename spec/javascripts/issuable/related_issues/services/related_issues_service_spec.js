@@ -17,34 +17,6 @@ describe('RelatedIssuesService', () => {
     service = new RelatedIssuesService('');
   });
 
-  describe('fetchIssueInfo', () => {
-    const interceptor = (request, next) => {
-      next(request.respondWith(JSON.stringify(issuable1), {
-        status: 200,
-      }));
-    };
-
-    beforeEach(() => {
-      Vue.http.interceptors.push(interceptor);
-    });
-
-    afterEach(() => {
-      Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
-    });
-
-    it('fetch issue info', (done) => {
-      service.fetchIssueInfo('...')
-        .then(res => res.json())
-        .then((issue) => {
-          expect(issue).toEqual(issuable1);
-          done();
-        })
-        .catch((err) => {
-          done.fail(`Failed to fetch issue:\n${err}`);
-        });
-    });
-  });
-
   describe('fetchRelatedIssues', () => {
     const interceptor = (request, next) => {
       next(request.respondWith(JSON.stringify([issuable1]), {

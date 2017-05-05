@@ -1,4 +1,5 @@
 <script>
+import GfmAutoComplete from '~/gfm_auto_complete';
 import eventHub from '../event_hub';
 import IssueToken from './issue_token.vue';
 
@@ -14,21 +15,33 @@ export default {
       type: String,
       required: true,
     },
-    pendingIssuables: {
+    pendingReferences: {
       type: Array,
       required: false,
       default: () => [],
+    },
+    autoCompleteSources: {
+      type: Object,
+      required: false,
+      default: () => ({}),
     },
   },
 
   data() {
     return {
       isInputFocused: false,
+      isAutoCompleteOpen: false,
     };
   },
 
   components: {
     issueToken: IssueToken,
+  },
+
+  computed: {
+    isSubmitButtonDisabled() {
+      return this.pendingReferences.length === 0;
+    },
   },
 
   methods: {
@@ -42,8 +55,14 @@ export default {
     onBlur() {
       this.isInputFocused = false;
 
-      const value = this.$refs.input.value;
-      eventHub.$emit('addIssuableFormBlur', value);
+      // Avoid tokenizing partial input when clicking an autocomplete item
+      if (!this.isAutoCompleteOpen) {
+        const value = this.$refs.input.value;
+        eventHub.$emit('addIssuableFormBlur', value);
+      }
+    },
+    onAutoCompleteToggled(isOpen) {
+      this.isAutoCompleteOpen = isOpen;
     },
     onInputWrapperClick() {
       this.$refs.input.focus();
@@ -58,14 +77,18 @@ export default {
 
   mounted() {
     const $input = $(this.$refs.input);
-    gl.GfmAutoComplete.setup($input, {
+    new GfmAutoComplete(this.autoCompleteSources).setup($input, {
       issues: true,
     });
+    $input.on('shown-issues.atwho', this.onAutoCompleteToggled.bind(this, true));
+    $input.on('hidden-issues.atwho', this.onAutoCompleteToggled.bind(this, false));
     $input.on('inserted-issues.atwho', this.onInput);
   },
 
   beforeDestroy() {
     const $input = $(this.$refs.input);
+    $input.off('shown-issues.atwho');
+    $input.off('hidden-issues.atwho');
     $input.off('inserted-issues.atwho', this.onInput);
   },
 };
@@ -81,24 +104,20 @@ export default {
       @click="onInputWrapperClick">
       <ul class="add-issuable-form-input-token-list">
         <li
-          :key="issuable.reference"
-          v-for="issuable in pendingIssuables"
+          :key="reference"
+          v-for="(reference, index) in pendingReferences"
           class="js-add-issuable-form-token-list-item add-issuable-form-token-list-item">
           <issue-token
             event-namespace="pendingIssuable"
-            :reference="issuable.reference"
-            :display-reference="issuable.displayReference"
-            :title="issuable.title"
-            :path="issuable.path"
-            :state="issuable.state"
-            :fetch-status="issuable.fetchStatus"
+            :id-key="index"
+            :display-reference="reference"
             :can-remove="true" />
         </li>
         <li class="add-issuable-form-input-list-item">
           <input
             ref="input"
             type="text"
-            class="add-issuable-form-input"
+            class="js-add-issuable-form-input add-issuable-form-input"
             :value="inputValue"
             placeholder="Search issues..."
             @input="onInput"
@@ -111,8 +130,9 @@ export default {
       <button
         ref="addButton"
         type="button"
-        class="btn btn-new pull-left"
-        @click="onFormSubmit">
+        class="js-add-issuable-form-add-button btn btn-new pull-left"
+        @click="onFormSubmit"
+        :disabled="isSubmitButtonDisabled">
         {{ addButtonLabel }}
       </button>
       <button

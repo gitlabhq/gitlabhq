@@ -283,12 +283,14 @@ ul.related-merge-requests > li {
 .issue-token {
   display: inline-flex;
   align-items: stretch;
+  max-width: 100%;
   line-height: 1.75;
   white-space: nowrap;
 }
 
 .issue-token-link {
   display: inline-flex;
+  min-width: 0;
 
   &:hover,
   &:focus {
@@ -299,27 +301,20 @@ ul.related-merge-requests > li {
 
 .issue-token-reference {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   margin-right: 1px;
   padding-left: 0.5em;
   padding-right: 0.5em;
   background-color: $gray-lighter;
+  border-top-left-radius: 2px;
+  border-bottom-left-radius: 2px;
   transition: background $general-hover-transition-duration $general-hover-transition-curve, color $general-hover-transition-duration $general-hover-transition-curve;
-
-  .issue-token-error & {
-    background-color: $red-50;
-  }
 
   .issue-token:hover &,
   .issue-token-link:focus > & {
-    background-color: issue-token-reference-hover-background-color;
+    background-color: $gray-normal;
     color: $gl-link-hover-color;
     text-decoration: none;
-  }
-
-  .issue-token-error:hover &,
-  .issue-token-link:focus > & {
-    background-color: $red-75;
   }
 }
 
@@ -339,26 +334,17 @@ ul.related-merge-requests > li {
 }
 
 .issue-token-title {
+  overflow: hidden;
   display: flex;
   align-items: baseline;
   padding-left: 0.5em;
-  padding-right: 0.5em;
   background-color: $gray-normal;
   color: $gl-text-color-secondary;
   transition: background $general-hover-transition-duration $general-hover-transition-curve;
 
-  .issue-token-error & {
-    background-color: $red-75;
-  }
-
   .issue-token:hover &,
   .issue-token-link:focus > & {
     background-color: $border-gray-normal;
-  }
-
-  .issue-token-error:hover &,
-  .issue-token-link:focus > & {
-    background-color: $red-100;
   }
 
   & > .fa {
@@ -366,33 +352,38 @@ ul.related-merge-requests > li {
   }
 }
 
+.issue-token-title-standalone {
+  padding-right: 0.5em;
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
+}
+
+.issue-token-title-text {
+  overflow: hidden;
+  max-width: 264px;
+  text-overflow: ellipsis;
+}
+
 .issue-token-remove-button {
-  padding: 0 0.5em 0 0;
+  display: flex;
+  align-items: center;
+  padding: 0 0.5em;
   background-color: $gray-normal;
   border: 0;
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
   color: $gl-text-color-secondary;
   transition: background $general-hover-transition-duration $general-hover-transition-curve;
 
-  .issue-token-error & {
-    background-color: $red-75;
-  }
-
+  &:hover,
+  &:focus,
   .issue-token:hover &,
   .issue-token-link:focus + & {
     background-color: $border-gray-normal;
-  }
-
-  .issue-token-error:hover &,
-  .issue-token-link:focus > & {
-    background-color: $red-100;
+    outline: none;
   }
 
   & > .fa {
     font-size: 0.9em;
   }
-}
-
-// When there isn't a title
-.issue-token-remove-button-standalone {
-  padding-left: 0.5em;
 }

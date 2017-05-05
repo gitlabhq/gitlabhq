@@ -1,5 +1,10 @@
 .related-issues-block {
-  margin-top: $gl-vert-padding;
+  margin-top: 3 * $gl-vert-padding;
+}
+
+.related-issues-panel-title {
+  display: flex;
+  justify-content: space-between;
 }
 
 .related-issues-header-help-icon {
@@ -11,7 +16,7 @@
   margin-left: 0.5em;
 }
 
-.related-issues-add-related-issues-form {
+.related-issues-add-related-issues-form-with-break {
   border-bottom: 1px solid $border-color;
 }
 
@@ -24,6 +29,7 @@
 }
 
 .related-issues-token-list-item {
+  max-width: 100%;
   margin-bottom: 0.5em;
   margin-right: 1em;
 }

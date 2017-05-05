@@ -8,11 +8,6 @@ class RelatedIssuesService {
     this.relatedIssuesResource = Vue.resource(endpoint);
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  fetchIssueInfo(endpoint) {
-    return Vue.http.get(endpoint);
-  }
-
   fetchRelatedIssues() {
     return this.relatedIssuesResource.get();
   }
