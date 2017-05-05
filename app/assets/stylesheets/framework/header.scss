@@ -23,7 +23,6 @@ header {
   }
 
   &.navbar-gitlab {
-    @include transition(border-color 150ms ease-in-out);
     padding: 0 16px;
     z-index: 100;
     margin-bottom: 0;
@@ -41,10 +40,6 @@ header {
 
     &.with-horizontal-nav {
       border-color: transparent;
-    }
-
-    &.scroll {
-      border-color: $border-color;
     }
 
     .container-fluid {
@@ -116,6 +111,16 @@ header {
         }
       }
     }
+  }
+
+  .navbar-border {
+    height: 1px;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 50px;
+    background-color: $border-color;
+    opacity: 0;
   }
 
   .global-dropdown {
