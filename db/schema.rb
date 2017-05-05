@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170502091007) do
+ActiveRecord::Schema.define(version: 20170503004425) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1126,6 +1126,7 @@ ActiveRecord::Schema.define(version: 20170502091007) do
     t.boolean "service_desk_enabled"
     t.string "import_jid"
     t.integer "cached_markdown_version"
+    t.datetime "last_repository_updated_at"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
@@ -1134,6 +1135,7 @@ ActiveRecord::Schema.define(version: 20170502091007) do
   add_index "projects", ["description"], name: "index_projects_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
   add_index "projects", ["last_activity_at"], name: "index_projects_on_last_activity_at", using: :btree
   add_index "projects", ["last_repository_check_failed"], name: "index_projects_on_last_repository_check_failed", using: :btree
+  add_index "projects", ["last_repository_updated_at"], name: "index_projects_on_last_repository_updated_at", using: :btree
   add_index "projects", ["mirror_last_successful_update_at"], name: "index_projects_on_mirror_last_successful_update_at", using: :btree
   add_index "projects", ["name"], name: "index_projects_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
   add_index "projects", ["namespace_id"], name: "index_projects_on_namespace_id", using: :btree
