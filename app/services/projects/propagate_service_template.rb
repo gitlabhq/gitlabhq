@@ -1,5 +1,5 @@
 module Projects
-  class PropagateService
+  class PropagateServiceTemplate
     BATCH_SIZE = 100
 
     def self.propagate(*args)
@@ -36,9 +36,7 @@ module Projects
       end
 
       Project.transaction do
-        Gitlab::SQL::BulkInsert.new(service_hash.keys + ['project_id'],
-                                    service_list,
-                                    'services').execute
+        bulk_insert_services(service_hash.keys + ['project_id'], service_list)
         run_callbacks(batch)
       end
     end
@@ -54,7 +52,18 @@ module Projects
             WHERE services.project_id = projects.id
             AND services.type = '#{@template.type}'
           )
+          AND projects.pending_delete = false
+          AND projects.archived = false
           LIMIT #{BATCH_SIZE}
+      SQL
+      )
+    end
+
+    def bulk_insert_services(columns, values_array)
+      ActiveRecord::Base.connection.execute(
+        <<-SQL.strip_heredoc
+          INSERT INTO services (#{columns.join(', ')})
+          VALUES #{values_array.map { |tuple| "(#{tuple.join(', ')})" }.join(', ')}
       SQL
       )
     end
@@ -84,11 +93,11 @@ module Projects
     end
 
     def active_external_issue_tracker?
-      @template['category'] == 'issue_tracker' && @template['active'] && !@template['default']
+      @template.category == :issue_tracker && !@template.default
     end
 
     def active_external_wiki?
-      @template['type'] == 'ExternalWikiService' && @template['active']
+      @template.type == 'ExternalWikiService'
     end
   end
 end

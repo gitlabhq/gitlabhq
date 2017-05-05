@@ -16,7 +16,7 @@ class Admin::ServicesController < Admin::ApplicationController
 
   def update
     if service.update_attributes(service_params[:service])
-      PropagateProjectServiceWorker.perform_async(service.id) if  service.active?
+      PropagateServiceTemplateWorker.perform_async(service.id) if  service.active?
 
       redirect_to admin_application_settings_services_path,
         notice: 'Application settings saved successfully'

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Projects::PropagateService, services: true do
-  describe '.propagate!' do
+describe Projects::PropagateServiceTemplate, services: true do
+  describe '.propagate' do
     let!(:service_template) do
       PushoverService.create(
         template: true,
@@ -23,9 +23,10 @@ describe Projects::PropagateService, services: true do
     end
 
     it 'creates services for a project that has another service' do
-      other_service = BambooService.create(
+      BambooService.create(
         template: true,
         active: true,
+        project: project,
         properties: {
           bamboo_url: 'http://gitlab.com',
           username: 'mic',
@@ -33,8 +34,6 @@ describe Projects::PropagateService, services: true do
           build_key: 'build'
         }
       )
-
-      Service.build_from_template(project.id, other_service).save!
 
       expect { described_class.propagate(service_template) }.
         to change { Service.count }.by(1)
@@ -62,7 +61,7 @@ describe Projects::PropagateService, services: true do
     it 'creates the service containing the template attributes' do
       described_class.propagate(service_template)
 
-      service = Service.find_by(type: service_template.type, template: false)
+      service = Service.find_by!(type: service_template.type, template: false)
 
       expect(service.properties).to eq(service_template.properties)
     end
@@ -70,7 +69,7 @@ describe Projects::PropagateService, services: true do
     describe 'bulk update' do
       it 'creates services for all projects' do
         project_total = 5
-        stub_const 'Projects::PropagateService::BATCH_SIZE', 3
+        stub_const 'Projects::PropagateServiceTemplate::BATCH_SIZE', 3
 
         project_total.times { create(:empty_project) }
 
@@ -81,7 +80,7 @@ describe Projects::PropagateService, services: true do
 
     describe 'external tracker' do
       it 'updates the project external tracker' do
-        service_template.update(category: 'issue_tracker', default: false)
+        service_template.update!(category: 'issue_tracker', default: false)
 
         expect { described_class.propagate(service_template) }.
           to change { project.reload.has_external_issue_tracker }.to(true)
@@ -90,7 +89,7 @@ describe Projects::PropagateService, services: true do
 
     describe 'external wiki' do
       it 'updates the project external tracker' do
-        service_template.update(type: 'ExternalWikiService')
+        service_template.update!(type: 'ExternalWikiService')
 
         expect { described_class.propagate(service_template) }.
           to change { project.reload.has_external_wiki }.to(true)

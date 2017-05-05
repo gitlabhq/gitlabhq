@@ -39,16 +39,16 @@ describe Admin::ServicesController do
       )
     end
 
-    it 'updates the service params successfully and calls the propagation worker' do
-      expect(PropagateProjectServiceWorker).to receive(:perform_async).with(service.id)
+    it 'calls the propagation worker when service is active' do
+      expect(PropagateServiceTemplateWorker).to receive(:perform_async).with(service.id)
 
       put :update, id: service.id, service: { active: true }
 
       expect(response).to have_http_status(302)
     end
 
-    it 'updates the service params successfully' do
-      expect(PropagateProjectServiceWorker).not_to receive(:perform_async)
+    it 'does not call the propagation worker when service is not active' do
+      expect(PropagateServiceTemplateWorker).not_to receive(:perform_async)
 
       put :update, id: service.id, service: { properties: {} }
 

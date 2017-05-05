@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe PropagateProjectServiceWorker do
+describe PropagateServiceTemplateWorker do
   let!(:service_template) do
     PushoverService.create(
       template: true,
@@ -21,7 +21,7 @@ describe PropagateProjectServiceWorker do
 
   describe '#perform' do
     it 'calls the propagate service with the template' do
-      expect(Projects::PropagateService).to receive(:propagate).with(service_template)
+      expect(Projects::PropagateServiceTemplate).to receive(:propagate).with(service_template)
 
       subject.perform(service_template.id)
     end
