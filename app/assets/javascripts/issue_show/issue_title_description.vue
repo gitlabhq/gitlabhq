@@ -51,6 +51,10 @@ export default {
     };
   },
   methods: {
+    updateFlag(key, toggle) {
+      this[key].pre = toggle;
+      this[key].pulse = !toggle;
+    },
     renderResponse(res) {
       this.apiData = res.json();
       this.triggerAnimation();
@@ -61,8 +65,7 @@ export default {
     elementsToVisualize(noTitleChange, noDescriptionChange) {
       if (!noTitleChange) {
         this.titleText = this.apiData.title_text;
-        this.titleFlag.pre = true;
-        this.titleFlag.pulse = false;
+        this.updateFlag('titleFlag', true);
       }
 
       if (!noDescriptionChange) {
@@ -70,8 +73,7 @@ export default {
         this.descriptionChange = true;
         this.updateTaskHTML();
         this.tasks = this.apiData.task_status;
-        this.descriptionFlag.pre = true;
-        this.descriptionFlag.pulse = false;
+        this.updateFlag('descriptionFlag', true);
       }
     },
     setTabTitle() {
@@ -85,10 +87,8 @@ export default {
       this.setTabTitle();
 
       this.$nextTick(() => {
-        this.titleFlag.pre = false;
-        this.titleFlag.pulse = true;
-        this.descriptionFlag.pre = false;
-        this.descriptionFlag.pulse = true;
+        this.updateFlag('titleFlag', false);
+        this.updateFlag('descriptionFlag', false);
       });
     },
     triggerAnimation() {
