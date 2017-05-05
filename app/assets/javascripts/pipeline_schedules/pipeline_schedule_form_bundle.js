@@ -4,8 +4,8 @@ import TimezoneDropdown from './components/timezone_dropdown';
 import TargetBranchDropdown from './components/target_branch_dropdown';
 
 document.addEventListener('DOMContentLoaded', () => {
-  new TimezoneDropdown();
-  new TargetBranchDropdown();
+  gl.timezoneDropdown = new TimezoneDropdown();
+  gl.targetBranchDropdown = new TargetBranchDropdown();
 
   const IntervalPatternInputComponent = Vue.extend(IntervalPatternInput);
   const intervalPatternMount = document.getElementById('interval-pattern-input');
