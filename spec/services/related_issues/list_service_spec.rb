@@ -37,7 +37,7 @@ describe RelatedIssues::ListService, service: true do
 
       it 'verifies number of queries' do
         recorded = ActiveRecord::QueryRecorder.new { subject }
-        expect(recorded.count).to be_within(1).of(42)
+        expect(recorded.count).to be_within(1).of(39)
       end
 
       it 'returns related issues JSON' do
@@ -49,7 +49,7 @@ describe RelatedIssues::ListService, service: true do
             iid: issue_b.iid,
             state: issue_b.state,
             path: "/#{project.full_path}/issues/#{issue_b.iid}",
-            project_full_path: issue_b.project.full_path,
+            project_path: issue_b.project.path,
             namespace_full_path: issue_b.project.namespace.full_path,
             destroy_relation_path: "/#{project.full_path}/issues/#{issue_b.iid}/related_issues/#{related_issue_a.id}"
           }
@@ -61,7 +61,7 @@ describe RelatedIssues::ListService, service: true do
             iid: issue_c.iid,
             state: issue_c.state,
             path: "/#{project.full_path}/issues/#{issue_c.iid}",
-            project_full_path: issue_c.project.full_path,
+            project_path: issue_c.project.path,
             namespace_full_path: issue_c.project.namespace.full_path,
             destroy_relation_path: "/#{project.full_path}/issues/#{issue_c.iid}/related_issues/#{related_issue_b.id}"
           }
@@ -73,7 +73,7 @@ describe RelatedIssues::ListService, service: true do
             iid: issue_d.iid,
             state: issue_d.state,
             path: "/#{project.full_path}/issues/#{issue_d.iid}",
-            project_full_path: issue_d.project.full_path,
+            project_path: issue_d.project.path,
             namespace_full_path: issue_d.project.namespace.full_path,
             destroy_relation_path: "/#{project.full_path}/issues/#{issue_d.iid}/related_issues/#{related_issue_c.id}"
           }
