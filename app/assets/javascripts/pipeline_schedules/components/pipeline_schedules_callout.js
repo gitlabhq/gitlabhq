@@ -7,7 +7,7 @@ export default {
   data() {
     return {
       illustrationSvg,
-      calloutDismissed: !Cookies.get(cookieKey) === 'true',
+      calloutDismissed: Cookies.get(cookieKey) === 'true',
     };
   },
   methods: {
