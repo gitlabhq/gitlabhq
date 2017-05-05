@@ -16,14 +16,14 @@ class ArtifactUploader < GitlabUploader
   end
 
   def cache_dir
-    File.join(self.local_artifacts_store, 'tmp/cache')
+    File.join(self.class.local_artifacts_store, 'tmp/cache')
   end
 
   def deprecated_local_path
     return unless job.artifacts_storage_undefined?
 
     @deprecated_local_path ||= deprecated_paths.find do |artifact_path|
-      File.directory?(File.join(self.local_artifacts_store, artifact_path))
+      File.directory?(File.join(self.class.local_artifacts_store, artifact_path))
     end
   end
 
@@ -35,7 +35,7 @@ class ArtifactUploader < GitlabUploader
   end
 
   def default_local_path
-    File.join(self.local_artifacts_store, default_path)
+    File.join(self.class.local_artifacts_store, default_path)
   end
 
   def default_path

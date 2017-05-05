@@ -10,7 +10,7 @@ class GitlabUploader < CarrierWave::Uploader::Base
   delegate :base_dir, to: :class
 
   def local_file?
-    local_storage? && file&.is_a?(CarrierWave::Storage::Fog::File)
+    local_storage? && file&.is_a?(CarrierWave::SanitizedFile)
   end
 
   def local_storage?
