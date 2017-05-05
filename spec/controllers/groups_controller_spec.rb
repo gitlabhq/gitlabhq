@@ -55,6 +55,7 @@ describe GroupsController do
         get :issues, id: group.to_param.upcase
 
         expect(response).to redirect_to(issues_group_path(group.to_param))
+        expect(controller).not_to set_flash[:notice]
       end
     end
 
@@ -99,6 +100,7 @@ describe GroupsController do
         get :merge_requests, id: group.to_param.upcase
 
         expect(response).to redirect_to(merge_requests_group_path(group.to_param))
+        expect(controller).not_to set_flash[:notice]
       end
     end
 

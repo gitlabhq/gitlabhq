@@ -360,6 +360,10 @@ class User < ActiveRecord::Base
     end
   end
 
+  def full_path
+    username
+  end
+
   def self.internal_attributes
     [:ghost]
   end

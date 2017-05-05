@@ -9,11 +9,7 @@ class Groups::ApplicationController < ApplicationController
   private
 
   def group
-    @group ||= find_routable!(Group, requested_full_path)
-  end
-
-  def requested_full_path
-    params[:group_id] || params[:id]
+    @group ||= find_routable!(Group, params[:group_id] || params[:id])
   end
 
   def group_projects

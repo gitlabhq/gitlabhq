@@ -71,6 +71,7 @@ describe UsersController do
           get :show, username: user.username.downcase
 
           expect(response).to redirect_to(user)
+          expect(controller).not_to set_flash[:notice]
         end
       end
     end
@@ -149,6 +150,7 @@ describe UsersController do
           get :calendar, username: user.username.downcase
 
           expect(response).to redirect_to(user_calendar_path(user))
+          expect(controller).not_to set_flash[:notice]
         end
       end
     end
@@ -202,6 +204,7 @@ describe UsersController do
           get :calendar_activities, username: user.username.downcase
 
           expect(response).to redirect_to(user_calendar_activities_path(user))
+          expect(controller).not_to set_flash[:notice]
         end
       end
     end
@@ -255,6 +258,7 @@ describe UsersController do
           get :snippets, username: user.username.downcase
 
           expect(response).to redirect_to(user_snippets_path(user))
+          expect(controller).not_to set_flash[:notice]
         end
       end
     end

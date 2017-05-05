@@ -185,6 +185,7 @@ describe ProjectsController do
 
           expect(assigns(:project)).to eq(public_project)
           expect(response).to redirect_to("/#{public_project.full_path}")
+          expect(controller).not_to set_flash[:notice]
         end
       end
     end

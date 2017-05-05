@@ -17,24 +17,17 @@ class Projects::ApplicationController < ApplicationController
     # to
     #   localhost/group/project
     #
-    if params[:format] == 'git'
-      redirect_to request.original_url.gsub(/\.git\/?\Z/, '')
-      return
-    end
+    redirect_to url_for(params.merge(format: nil)) if params[:format] == 'git'
   end
 
   def project
-    @project ||= find_routable!(Project, requested_full_path, extra_authorization_method: :project_not_being_deleted?)
+    @project ||= find_routable!(Project,
+      File.join(params[:namespace_id], params[:project_id] || params[:id]),
+      extra_authorization_proc: project_not_being_deleted?)
   end
 
-  def requested_full_path
-    namespace = params[:namespace_id]
-    id = params[:project_id] || params[:id]
-    "#{namespace}/#{id}"
-  end
-
-  def project_not_being_deleted?(project)
-    !project.pending_delete?
+  def project_not_being_deleted?
+    ->(project) { !project.pending_delete? }
   end
 
   def repository
