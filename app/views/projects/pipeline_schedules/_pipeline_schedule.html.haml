@@ -30,5 +30,5 @@
         = link_to edit_pipeline_schedule_path(pipeline_schedule), title: 'Edit', class: 'btn' do
           = icon('pencil')
       - if can?(current_user, :admin_pipeline_schedule, pipeline_schedule)
-        = link_to pipeline_schedule_path(pipeline_schedule), title: 'Delete', method: :delete, class: 'btn btn-remove' do
+        = link_to pipeline_schedule_path(pipeline_schedule), title: 'Delete', method: :delete, class: 'btn btn-remove', data: { confirm: "Are you sure you want to cancel this pipeline?" } do
           = icon('trash')
