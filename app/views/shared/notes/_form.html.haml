@@ -4,7 +4,7 @@
 - else
   - preview_url = preview_markdown_path(@project)
 
-= form_for [@project.namespace.becomes(Namespace), @project, @note], remote: true, html: { :'data-type' => 'json', multipart: true, id: nil, class: "new-note js-new-note-form js-quick-submit common-note-form", "data-noteable-iid" => @note.noteable.try(:iid), }, authenticity_token: true do |f|
+= form_for form_resources, url: new_form_url, remote: true, html: { :'data-type' => 'json', multipart: true, id: nil, class: "new-note js-new-note-form js-quick-submit common-note-form", "data-noteable-iid" => @note.noteable.try(:iid), }, authenticity_token: true do |f|
   = hidden_field_tag :view, diff_view
   = hidden_field_tag :line_type
   = hidden_field_tag :merge_request_diff_head_sha, @note.noteable.try(:diff_head_sha)
@@ -28,11 +28,11 @@
       classes: 'note-textarea js-note-text',
       placeholder: "Write a comment or drag your files here...",
       supports_slash_commands: supports_slash_commands
-    = render 'projects/notes/hints', supports_slash_commands: supports_slash_commands
+    = render 'shared/notes/hints', supports_slash_commands: supports_slash_commands
     .error-alert
 
   .note-form-actions.clearfix
-    = render partial: 'projects/notes/comment_button'
+    = render partial: 'shared/notes/comment_button'
 
     = yield(:note_actions)
 
