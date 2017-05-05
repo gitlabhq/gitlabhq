@@ -13,16 +13,20 @@ describe('Sidebar service', () => {
   });
 
   it('gets the data', (done) => {
-    this.service.get().then((resp) => {
-      expect(resp).toBeDefined();
-      done();
-    });
+    this.service.get()
+      .then((resp) => {
+        expect(resp).toBeDefined();
+        done();
+      })
+      .catch(() => {});
   });
 
   it('updates the data', (done) => {
-    this.service.update('issue[assignee_ids]', [1]).then((resp) => {
-      expect(resp).toBeDefined();
-      done();
-    });
+    this.service.update('issue[assignee_ids]', [1])
+      .then((resp) => {
+        expect(resp).toBeDefined();
+        done();
+      })
+      .catch(() => {});
   });
 });

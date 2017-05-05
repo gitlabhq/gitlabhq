@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Assignee from '~/sidebar/components/assignees/assignees';
 import UsersMock from './mock_data';
-import UsersMockHelper from '../test_helpers/user_mock_data';
+import UsersMockHelper from '../helpers/user_mock_data_helper';
 
 describe('Assignee component', () => {
   let component;
@@ -86,7 +86,7 @@ describe('Assignee component', () => {
       const collapsed = component.$el.querySelector('.sidebar-collapsed-icon');
       const assignee = collapsed.children[0];
       expect(collapsed.childElementCount).toEqual(1);
-      expect(assignee.querySelector('.avatar').getAttribute('src')).toEqual(UsersMock.user.avatarUrl);
+      expect(assignee.querySelector('.avatar').getAttribute('src')).toEqual(UsersMock.user.avatar);
       expect(assignee.querySelector('.avatar').getAttribute('alt')).toEqual(`${UsersMock.user.name}'s avatar`);
       expect(assignee.querySelector('.author').innerText.trim()).toEqual(UsersMock.user.name);
     });
@@ -104,7 +104,7 @@ describe('Assignee component', () => {
 
       expect(component.$el.querySelector('.author_link')).not.toBeNull();
       // The image
-      expect(component.$el.querySelector('.author_link img').getAttribute('src')).toEqual(UsersMock.user.avatarUrl);
+      expect(component.$el.querySelector('.author_link img').getAttribute('src')).toEqual(UsersMock.user.avatar);
       // Author name
       expect(component.$el.querySelector('.author_link .author').innerText.trim()).toEqual(UsersMock.user.name);
       // Username
@@ -141,12 +141,12 @@ describe('Assignee component', () => {
       expect(collapsed.childElementCount).toEqual(2);
 
       const first = collapsed.children[0];
-      expect(first.querySelector('.avatar').getAttribute('src')).toEqual(users[0].avatarUrl);
+      expect(first.querySelector('.avatar').getAttribute('src')).toEqual(users[0].avatar);
       expect(first.querySelector('.avatar').getAttribute('alt')).toEqual(`${users[0].name}'s avatar`);
       expect(first.querySelector('.author').innerText.trim()).toEqual(users[0].name);
 
       const second = collapsed.children[1];
-      expect(second.querySelector('.avatar').getAttribute('src')).toEqual(users[1].avatarUrl);
+      expect(second.querySelector('.avatar').getAttribute('src')).toEqual(users[1].avatar);
       expect(second.querySelector('.avatar').getAttribute('alt')).toEqual(`${users[1].name}'s avatar`);
       expect(second.querySelector('.author').innerText.trim()).toEqual(users[1].name);
     });
@@ -165,7 +165,7 @@ describe('Assignee component', () => {
       expect(collapsed.childElementCount).toEqual(2);
 
       const first = collapsed.children[0];
-      expect(first.querySelector('.avatar').getAttribute('src')).toEqual(users[0].avatarUrl);
+      expect(first.querySelector('.avatar').getAttribute('src')).toEqual(users[0].avatar);
       expect(first.querySelector('.avatar').getAttribute('alt')).toEqual(`${users[0].name}'s avatar`);
       expect(first.querySelector('.author').innerText.trim()).toEqual(users[0].name);
 

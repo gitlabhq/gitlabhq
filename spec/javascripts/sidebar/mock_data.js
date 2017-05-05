@@ -93,7 +93,7 @@ export default {
     human_total_time_spent: null,
   },
   user: {
-    avatarUrl: 'http://gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+    avatar: 'http://gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
     id: 1,
     name: 'Administrator',
     username: 'root',

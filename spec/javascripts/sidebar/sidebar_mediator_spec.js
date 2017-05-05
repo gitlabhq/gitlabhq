@@ -24,10 +24,12 @@ describe('Sidebar mediator', () => {
   });
 
   it('saves assignees', (done) => {
-    this.mediator.saveAssignees('issue[assignee_ids]').then((resp) => {
-      expect(resp.status).toEqual(200);
-      done();
-    });
+    this.mediator.saveAssignees('issue[assignee_ids]')
+      .then((resp) => {
+        expect(resp.status).toEqual(200);
+        done();
+      })
+      .catch(() => {});
   });
 
   it('fetches the data', () => {

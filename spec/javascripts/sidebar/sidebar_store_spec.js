@@ -1,6 +1,6 @@
 import SidebarStore from '~/sidebar/stores/sidebar_store';
 import Mock from './mock_data';
-import UsersMockHelper from '../test_helpers/user_mock_data';
+import UsersMockHelper from '../helpers/user_mock_data_helper';
 
 describe('Sidebar store', () => {
   const assignee = {
