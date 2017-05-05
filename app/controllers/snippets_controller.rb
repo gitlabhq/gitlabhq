@@ -64,6 +64,7 @@ class SnippetsController < ApplicationController
     blob = @snippet.blob
     override_max_blob_size(blob)
 
+    @note = Note.new(noteable: @snippet)
     @noteable = @snippet
 
     @discussions = @snippet.discussions
