@@ -25,7 +25,7 @@ describe 'Milestone show', feature: true do
   end
 
   context 'burndown' do
-    let(:issue_params) { { project: project, assignee: user, author: user, milestone: milestone } }
+    let(:issue_params) { { project: project, assignees: [user], author: user, milestone: milestone } }
 
     context 'when any closed issues do not have closed_at value' do
       it 'shows warning' do
