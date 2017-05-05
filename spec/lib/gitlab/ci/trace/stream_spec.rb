@@ -240,10 +240,18 @@ describe Gitlab::Ci::Trace::Stream do
     end
 
     context 'multiple results in content & regex' do
-      let(:data) { ' (98.39%) covered. (98.29%) covered' }
+      let(:data) do
+        <<~HEREDOC
+          (98.39%) covered
+          (98.29%) covered
+        HEREDOC
+      end
+
       let(:regex) { '\(\d+.\d+\%\) covered' }
 
-      it { is_expected.to eq("98.29") }
+      it 'returns the last matched coverage' do
+        is_expected.to eq("98.29")
+      end
     end
 
     context 'using a regex capture' do
