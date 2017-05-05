@@ -125,6 +125,7 @@ export default {
 
       <div class="cron-interval-input-wrapper col-md-6">
         <input
+          id="schedule_cron"
           class="form-control inline cron-interval-input"
           type="text"
           placeholder="Define a custom pattern with cron syntax"
