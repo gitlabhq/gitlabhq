@@ -2,6 +2,18 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.1.3 (2017-05-05)
+
+- Enforce project features when searching blobs and wikis.
+- Fixed branches dropdown rendering branch names as HTML.
+- Make Asciidoc & other markup go through pipeline to prevent XSS.
+- Validate URLs in markdown using URI to detect the host correctly.
+- Fix for XSS in project import view caused by Hamlit filter usage.
+- Sanitize submodule URLs before linking to them in the file tree view.
+- Refactor snippets finder & dont return internal snippets for external users.
+- Fix snippets visibility for show action - external users can not see internal snippets.
+- Do not show private groups on subgroups page if user doesn't have access to.
+
 ## 9.1.2 (2017-05-01)
 
 - Add index on ci_runners.contacted_at. !10876 (blackst0ne)
