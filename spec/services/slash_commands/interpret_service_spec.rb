@@ -874,7 +874,7 @@ describe SlashCommands::InterpretService, services: true do
 
     describe 'unassign command' do
       let(:content) { '/unassign' }
-      let(:issue) { create(:issue, project: project, assignee: developer) }
+      let(:issue) { create(:issue, project: project, assignees: [developer]) }
 
       it 'includes current assignee reference' do
         _, explanations = service.explain(content, issue)
