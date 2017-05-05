@@ -29,22 +29,23 @@ export default {
       },
     });
 
-    const defaultFlags = {
-      pre: true,
-      pulse: false,
-    };
-
     return {
       poll,
       apiData: {},
       tasks: '0 of 0',
       title: null,
       titleText: '',
-      titleFlag: defaultFlags,
+      titleFlag: {
+        pre: true,
+        pulse: false,
+      },
       description: null,
       descriptionText: '',
       descriptionChange: false,
-      descriptionFlag: defaultFlags,
+      descriptionFlag: {
+        pre: true,
+        pulse: false,
+      },
       timeAgoEl: $('.issue_edited_ago'),
       titleEl: document.querySelector('title'),
     };
@@ -60,7 +61,8 @@ export default {
     elementsToVisualize(noTitleChange, noDescriptionChange) {
       if (!noTitleChange) {
         this.titleText = this.apiData.title_text;
-        this.titleFlag = { pre: true, pulse: false };
+        this.titleFlag.pre = true;
+        this.titleFlag.pulse = false;
       }
 
       if (!noDescriptionChange) {
@@ -68,7 +70,8 @@ export default {
         this.descriptionChange = true;
         this.updateTaskHTML();
         this.tasks = this.apiData.task_status;
-        this.descriptionFlag = { pre: true, pulse: false };
+        this.descriptionFlag.pre = true;
+        this.descriptionFlag.pulse = false;
       }
     },
     setTabTitle() {
@@ -82,8 +85,10 @@ export default {
       this.setTabTitle();
 
       this.$nextTick(() => {
-        this.titleFlag = { pre: false, pulse: true };
-        this.descriptionFlag = { pre: false, pulse: true };
+        this.titleFlag.pre = false;
+        this.titleFlag.pulse = true;
+        this.descriptionFlag.pre = false;
+        this.descriptionFlag.pulse = true;
       });
     },
     triggerAnimation() {
@@ -109,20 +114,6 @@ export default {
       const toolTipTime = gl.utils.formatDate(this.apiData.updated_at);
       this.timeAgoEl.attr('datetime', this.apiData.updated_at);
       this.timeAgoEl.attr('title', toolTipTime).tooltip('fixTitle');
-    },
-  },
-  computed: {
-    titleAnimationCss() {
-      return {
-        'issue-realtime-pre-pulse': this.titleFlag.pre,
-        'issue-realtime-trigger-pulse': this.titleFlag.pulse,
-      };
-    },
-    descriptionAnimationCss() {
-      return {
-        'issue-realtime-pre-pulse': this.descriptionFlag.pre,
-        'issue-realtime-trigger-pulse': this.descriptionFlag.pulse,
-      };
     },
   },
   created() {
@@ -163,7 +154,7 @@ export default {
   <div>
     <h2
       class="title"
-      :class="titleAnimationCss"
+      :class="{ 'issue-realtime-pre-pulse': titleFlag.pre, 'issue-realtime-trigger-pulse': titleFlag.pulse }"
       ref="issue-title"
       v-html="title"
     >
@@ -175,7 +166,7 @@ export default {
     >
       <div
         class="wiki"
-        :class="descriptionAnimationCss"
+        :class="{ 'issue-realtime-pre-pulse': descriptionFlag.pre, 'issue-realtime-trigger-pulse': descriptionFlag.pulse }"
         v-html="description"
         ref="issue-content-container-gfm-entry"
       >
