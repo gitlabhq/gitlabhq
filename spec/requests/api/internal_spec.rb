@@ -23,7 +23,7 @@ describe API::Internal do
         get api("/internal/broadcast_message"), secret_token: secret_token
 
         expect(response).to have_http_status(200)
-        expect(json_response["message"]).to eq(broadcast_message.message)
+        expect(json_response[0]['message']).to eq(broadcast_message.message)
       end
     end
 
