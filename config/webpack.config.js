@@ -34,11 +34,6 @@ var config = {
     graphs:               './graphs/graphs_bundle.js',
     group:                './group.js',
     groups_list:          './groups_list.js',
-<<<<<<< HEAD
-=======
-    issuable:             './issuable/issuable_bundle.js',
-    locale:               './locale/index.js',
->>>>>>> 10c1bf2d77fd0ab21309d0b136cbc0ac11f56c77
     issue_show:           './issue_show/index.js',
     locale:               './locale/index.js',
     main:                 './main.js',

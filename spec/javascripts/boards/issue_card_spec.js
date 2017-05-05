@@ -148,11 +148,11 @@ describe('Issue card component', () => {
 
     describe('assignee default avatar', () => {
       beforeEach((done) => {
-        component.issue.assignee = new ListUser({
+        component.issue.assignees = [new ListAssignee({
           id: 1,
           name: 'testing 123',
           username: 'test',
-        }, 'default_avatar');
+        }, 'default_avatar')];
 
         Vue.nextTick(done);
       });

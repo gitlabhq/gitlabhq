@@ -157,7 +157,7 @@ gl.issueBoards.IssueCardInner = Vue.extend({
           >
             <img
               class="avatar avatar-inline s20"
-              :src="assignee.avatarUrl"
+              :src="assignee.avatar"
               width="20"
               height="20"
               :alt="avatarUrlTitle(assignee)"

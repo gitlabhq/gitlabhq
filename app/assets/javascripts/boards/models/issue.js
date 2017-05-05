@@ -18,13 +18,6 @@ class ListIssue {
     this.selected = false;
     this.position = obj.relative_position || Infinity;
 
-<<<<<<< HEAD
-=======
-    if (obj.assignee) {
-      this.assignee = new ListUser(obj.assignee, defaultAvatar);
-    }
-
->>>>>>> 10c1bf2d77fd0ab21309d0b136cbc0ac11f56c77
     if (obj.milestone) {
       this.milestone = new ListMilestone(obj.milestone);
     }
@@ -33,7 +26,7 @@ class ListIssue {
       this.labels.push(new ListLabel(label));
     });
 
-    this.assignees = obj.assignees.map(a => new ListAssignee(a));
+    this.assignees = obj.assignees.map(a => new ListAssignee(a, defaultAvatar));
   }
 
   addLabel (label) {
