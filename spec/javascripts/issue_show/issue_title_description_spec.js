@@ -39,7 +39,6 @@ describe('Issue Title', () => {
       },
     }).$mount();
 
-    // need setTimeout because of api call/v-html
     setTimeout(() => {
       expect(document.querySelector('title').innerText).toContain('this is a title (#1)');
       expect(issueShowComponent.$el.querySelector('.title').innerHTML).toContain('<p>this is a title</p>');
@@ -57,6 +56,5 @@ describe('Issue Title', () => {
         done();
       });
     });
-    // 10ms is just long enough for the update hook to fire
   });
 });

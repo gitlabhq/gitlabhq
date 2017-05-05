@@ -16,10 +16,6 @@
           - if issue.assignee
             %li
               = link_to_member(@project, issue.assignee, name: false, title: "Assigned to :name")
-          - if issue.tasks?
-            &nbsp;
-            %span.task-status
-              = issue.task_status
 
           = render 'shared/issuable_meta_data', issuable: issue
 

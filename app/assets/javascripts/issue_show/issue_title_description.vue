@@ -10,7 +10,7 @@ export default {
       required: true,
       type: String,
     },
-    canUpdateIssue: {
+    canUpdateTasksClass: {
       required: true,
       type: String,
     },
@@ -112,19 +112,16 @@ export default {
     },
   },
   computed: {
-    descriptionClass() {
-      return `description ${this.canUpdateIssue} is-task-list-enabled`;
-    },
     titleAnimationCss() {
       return {
-        'title issue-realtime-pre-pulse': this.titleFlag.pre,
-        'title issue-realtime-trigger-pulse': this.titleFlag.pulse,
+        'issue-realtime-pre-pulse': this.titleFlag.pre,
+        'issue-realtime-trigger-pulse': this.titleFlag.pulse,
       };
     },
     descriptionAnimationCss() {
       return {
-        'wiki issue-realtime-pre-pulse': this.descriptionFlag.pre,
-        'wiki issue-realtime-trigger-pulse': this.descriptionFlag.pulse,
+        'issue-realtime-pre-pulse': this.descriptionFlag.pre,
+        'issue-realtime-trigger-pulse': this.descriptionFlag.pulse,
       };
     },
   },
@@ -165,16 +162,19 @@ export default {
 <template>
   <div>
     <h2
+      class="title"
       :class="titleAnimationCss"
       ref="issue-title"
       v-html="title"
     >
     </h2>
     <div
-      :class="descriptionClass"
+      class="description is-task-list-enabled"
+      :class="canUpdateTasksClass"
       v-if="description"
     >
       <div
+        class="wiki"
         :class="descriptionAnimationCss"
         v-html="description"
         ref="issue-content-container-gfm-entry"
