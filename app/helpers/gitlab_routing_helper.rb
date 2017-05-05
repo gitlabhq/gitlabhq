@@ -122,6 +122,10 @@ module GitlabRoutingHelper
     namespace_project_snippet_url(entity.project.namespace, entity.project, entity, *args)
   end
 
+  def preview_markdown_path(project, *args)
+    preview_markdown_namespace_project_path(project.namespace, project, *args)
+  end
+
   def toggle_subscription_path(entity, *args)
     if entity.is_a?(Issue)
       toggle_subscription_namespace_project_issue_path(entity.project.namespace, entity.project, entity)
