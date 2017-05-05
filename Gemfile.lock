@@ -1012,6 +1012,7 @@ DEPENDENCIES
   rubocop-rspec (~> 1.15.0)
   ruby-fogbugz (~> 0.2.1)
   ruby-prof (~> 0.16.2)
+  ruby_parser (~> 3.8.4)
   rufus-scheduler (~> 3.1.10)
   rugged (~> 0.25.1.1)
   sanitize (~> 2.0)
