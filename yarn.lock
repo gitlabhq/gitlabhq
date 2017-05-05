@@ -5201,6 +5201,10 @@ sprintf-js@~1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
 
+sql.js@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/sql.js/-/sql.js-0.4.0.tgz#23be9635520eb0ff43a741e7e830397266e88445"
+
 sshpk@^1.7.0:
   version "1.10.2"
   resolved "https://registry.yarnpkg.com/sshpk/-/sshpk-1.10.2.tgz#d5a804ce22695515638e798dbe23273de070a5fa"

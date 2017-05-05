@@ -17,6 +17,10 @@ var DEV_SERVER_LIVERELOAD = process.env.DEV_SERVER_LIVERELOAD !== 'false';
 var WEBPACK_REPORT = process.env.WEBPACK_REPORT;
 
 var config = {
+  // because sqljs requires fs.
+  node: {
+    fs: "empty"
+  },
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
   entry: {
     blob:                 './blob_edit/blob_bundle.js',
@@ -46,6 +50,7 @@ var config = {
     notebook_viewer:      './blob/notebook_viewer.js',
     pdf_viewer:           './blob/pdf_viewer.js',
     pipelines:            './pipelines/index.js',
+    balsamiq_viewer:      './blob/balsamiq_viewer.js',
     profile:              './profile/profile_bundle.js',
     protected_branches:   './protected_branches/protected_branches_bundle.js',
     protected_tags:       './protected_tags',
@@ -140,6 +145,7 @@ var config = {
         'notebook_viewer',
         'pdf_viewer',
         'pipelines',
+        'balsamiq_viewer',
       ],
       minChunks: function(module, count) {
         return module.resource && (/vue_shared/).test(module.resource);
