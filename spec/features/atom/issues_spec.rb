@@ -22,7 +22,8 @@ describe 'Issues Feed', feature: true  do
           to have_content('application/atom+xml')
         expect(body).to have_selector('title', text: "#{project.name} issues")
         expect(body).to have_selector('author email', text: issue.author_public_email)
-        expect(body).to have_selector('assignees email', text: issue.author_public_email)
+        expect(body).to have_selector('assignees assignee email', text: issue.assignees.first.public_email)
+        expect(body).to have_selector('assignee email', text: issue.assignees.first.public_email)
         expect(body).to have_selector('entry summary', text: issue.title)
       end
     end
@@ -36,7 +37,8 @@ describe 'Issues Feed', feature: true  do
           to have_content('application/atom+xml')
         expect(body).to have_selector('title', text: "#{project.name} issues")
         expect(body).to have_selector('author email', text: issue.author_public_email)
-        expect(body).to have_selector('assignees email', text: issue.author_public_email)
+        expect(body).to have_selector('assignees assignee email', text: issue.assignees.first.public_email)
+        expect(body).to have_selector('assignee email', text: issue.assignees.first.public_email)
         expect(body).to have_selector('entry summary', text: issue.title)
       end
     end
