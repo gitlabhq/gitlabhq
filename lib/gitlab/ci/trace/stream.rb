@@ -73,7 +73,7 @@ module Gitlab
 
           match = ""
 
-          stream.each_line do |line|
+          reverse_line do |line|
             matches = line.scan(regex)
             next unless matches.is_a?(Array)
             next if matches.empty?
@@ -114,6 +114,26 @@ module Gitlab
           end
 
           chunks.join.lines.last(last_lines).join
+        end
+
+        def reverse_line
+          pos = 0
+          max = stream.size
+
+          while true
+            pos += BUFFER_SIZE
+
+            buf =
+              if pos <= max
+                stream.seek(-pos, IO::SEEK_END)
+                stream.read(BUFFER_SIZE)
+              else # Reached the head, read only left
+                stream.seek(0)
+                stream.read(BUFFER_SIZE - (pos - max))
+              end
+
+            yield(buf)
+          end
         end
       end
     end
