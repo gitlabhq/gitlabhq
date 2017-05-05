@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-04 14:55-0500\n"
-"PO-Revision-Date: 2017-05-04 14:55-0500\n"
+"POT-Creation-Date: 2017-05-04 19:24-0500\n"
+"PO-Revision-Date: 2017-05-04 19:24-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -109,19 +109,19 @@ msgstr ""
 msgid "Related Commits"
 msgstr ""
 
+msgid "Related Deployed Jobs"
+msgstr ""
+
 msgid "Related Issues"
+msgstr ""
+
+msgid "Related Jobs"
 msgstr ""
 
 msgid "Related Merge Requests"
 msgstr ""
 
-msgid "Relative Builds Trigger by Commits"
-msgstr ""
-
-msgid "Relative Deployed Builds"
-msgstr ""
-
-msgid "Relative Merged Requests"
+msgid "Related Merged Requests"
 msgstr ""
 
 msgid "Showing %d event"

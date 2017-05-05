@@ -19,7 +19,7 @@ module Gitlab
       end
 
       def legend
-        "Related Deployed Jobs"
+        _("Related Deployed Jobs")
       end
 
       def description

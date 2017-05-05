@@ -108,19 +108,19 @@ msgstr ""
 msgid "Related Commits"
 msgstr ""
 
+msgid "Related Deployed Jobs"
+msgstr ""
+
 msgid "Related Issues"
+msgstr ""
+
+msgid "Related Jobs"
 msgstr ""
 
 msgid "Related Merge Requests"
 msgstr ""
 
-msgid "Relative Builds Trigger by Commits"
-msgstr ""
-
-msgid "Relative Deployed Builds"
-msgstr ""
-
-msgid "Relative Merged Requests"
+msgid "Related Merged Requests"
 msgstr ""
 
 msgid "Showing %d event"
