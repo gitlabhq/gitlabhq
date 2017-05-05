@@ -14,7 +14,7 @@ describe Projects::BranchesController do
     controller.instance_variable_set(:@project, project)
   end
 
-  describe "POST create" do
+  describe "POST create with HTML format" do
     render_views
 
     context "on creation of a new branch" do
@@ -149,6 +149,42 @@ describe Projects::BranchesController do
             issue_iid: issue.iid
         end
       end
+    end
+  end
+
+  describe 'POST create with JSON format' do
+    before do
+      sign_in(user)
+    end
+
+    context 'with valid params' do
+      it 'returns a successful 200 response' do
+        create_branch name: 'my-branch', ref: 'master'
+
+        expect(response).to have_http_status(200)
+      end
+
+      it 'returns the created branch' do
+        create_branch name: 'my-branch', ref: 'master'
+
+        expect(response).to match_response_schema('branch')
+      end
+    end
+
+    context 'with invalid params' do
+      it 'returns an unprocessable entity 422 response' do
+        create_branch name: "<script>alert('merge');</script>", ref: "<script>alert('ref');</script>"
+
+        expect(response).to have_http_status(422)
+      end
+    end
+
+    def create_branch(name:, ref:)
+      post :create, namespace_id: project.namespace.to_param,
+                    project_id: project.to_param,
+                    branch_name: name,
+                    ref: ref,
+                    format: :json
     end
   end
 
