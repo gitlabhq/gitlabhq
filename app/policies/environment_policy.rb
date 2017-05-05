@@ -12,6 +12,6 @@ class EnvironmentPolicy < BasePolicy
   private
 
   def can_play_stop_action?
-    Ability.allowed?(user, :play_build, environment.stop_action)
+    Ability.allowed?(user, :update_build, environment.stop_action)
   end
 end

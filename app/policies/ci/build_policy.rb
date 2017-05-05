@@ -1,5 +1,7 @@
 module Ci
   class BuildPolicy < CommitStatusPolicy
+    alias_method :build, :subject
+
     def rules
       super
 
@@ -9,17 +11,17 @@ module Ci
         cannot! :"#{rule}_commit_status" unless can? :"#{rule}_build"
       end
 
-      can! :play_build if can_play_action?
+      if can?(:update_build) && protected_action?
+        cannot! :update_build
+      end
     end
 
     private
 
-    alias_method :build, :subject
-
-    def can_play_action?
+    def protected_action?
       return false unless build.action?
 
-      ::Gitlab::UserAccess
+      !::Gitlab::UserAccess
         .new(user, project: build.project)
         .can_push_to_branch?(build.ref)
     end

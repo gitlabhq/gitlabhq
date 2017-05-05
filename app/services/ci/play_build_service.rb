@@ -1,7 +1,7 @@
 module Ci
   class PlayBuildService < ::BaseService
     def execute(build)
-      unless can?(current_user, :play_build, build)
+      unless can?(current_user, :update_build, build)
         raise Gitlab::Access::AccessDeniedError
       end
 

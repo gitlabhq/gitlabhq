@@ -108,8 +108,8 @@ describe Ci::BuildPolicy, :models do
             create(:ci_build, :manual, ref: 'some-ref', pipeline: pipeline)
           end
 
-          it 'does not include ability to play build' do
-            expect(policies).not_to include :play_build
+          it 'does not include ability to update build' do
+            expect(policies).not_to include :update_build
           end
         end
 
@@ -118,8 +118,8 @@ describe Ci::BuildPolicy, :models do
             create(:ci_build, ref: 'some-ref', pipeline: pipeline)
           end
 
-          it 'does not include ability to play build' do
-            expect(policies).not_to include :play_build
+          it 'includes ability to update build' do
+            expect(policies).to include :update_build
           end
         end
       end
@@ -128,16 +128,16 @@ describe Ci::BuildPolicy, :models do
         context 'when build is a manual action' do
           let(:build) { create(:ci_build, :manual, pipeline: pipeline) }
 
-          it 'includes ability to play build' do
-            expect(policies).to include :play_build
+          it 'includes ability to update build' do
+            expect(policies).to include :update_build
           end
         end
 
         context 'when build is not a manual action' do
-          let(:build) { create(:ci_build,  pipeline: pipeline) }
+          let(:build) { create(:ci_build, pipeline: pipeline) }
 
-          it 'does not include ability to play build' do
-            expect(policies).not_to include :play_build
+          it 'includes ability to update build' do
+            expect(policies).to include :update_build
           end
         end
       end
