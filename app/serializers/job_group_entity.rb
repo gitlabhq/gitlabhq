@@ -4,6 +4,7 @@ class JobGroupEntity < Grape::Entity
   expose :name
   expose :size
   expose :detailed_status, as: :status, with: StatusEntity
+  expose :statuses, as: :jobs, if: -> (group, _) { group.size > 1 }, with: JobEntity
 
   private
 

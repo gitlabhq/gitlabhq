@@ -75,7 +75,7 @@ class Projects::PipelinesController < Projects::ApplicationController
 
         render json: PipelineSerializer
           .new(project: @project, user: @current_user)
-          .represent(@pipeline, with_jobs: true)
+          .represent(@pipeline, grouped: true)
       end
     end
   end

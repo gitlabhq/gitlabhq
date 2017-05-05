@@ -26,7 +26,7 @@ class StageEntity < Grape::Entity
       format: :json)
   end
 
-  expose :job_groups, as: :groups, with: JobGroupEntity
+  expose :job_groups, as: :groups, if: -> (_, opts) { opts[:grouped] }, with: JobGroupEntity
 
   private
 
