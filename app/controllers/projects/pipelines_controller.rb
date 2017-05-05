@@ -9,19 +9,19 @@ class Projects::PipelinesController < Projects::ApplicationController
   def index
     @scope = params[:scope]
     @pipelines = PipelinesFinder
-      .new(project)
-      .execute(scope: @scope)
+      .new(project, scope: @scope)
+      .execute
       .page(params[:page])
       .per(30)
 
     @running_count = PipelinesFinder
-      .new(project).execute(scope: 'running').count
+      .new(project, scope: 'running').execute.count
 
     @pending_count = PipelinesFinder
-      .new(project).execute(scope: 'pending').count
+      .new(project, scope: 'pending').execute.count
 
     @finished_count = PipelinesFinder
-      .new(project).execute(scope: 'finished').count
+      .new(project, scope: 'finished').execute.count
 
     @pipelines_count = PipelinesFinder
       .new(project).execute.count

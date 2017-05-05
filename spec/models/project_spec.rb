@@ -253,6 +253,34 @@ describe Project, models: true do
         expect(new_project.errors.full_messages.first).to eq('The project is still being deleted. Please try again later.')
       end
     end
+
+    describe 'path validation' do
+      it 'allows paths reserved on the root namespace' do
+        project = build(:project, path: 'api')
+
+        expect(project).to be_valid
+      end
+
+      it 'rejects paths reserved on another level' do
+        project = build(:project, path: 'tree')
+
+        expect(project).not_to be_valid
+      end
+
+      it 'rejects nested paths' do
+        parent = create(:group, :nested, path: 'environments')
+        project = build(:project, path: 'folders', namespace: parent)
+
+        expect(project).not_to be_valid
+      end
+
+      it 'allows a reserved group name' do
+        parent = create(:group)
+        project = build(:project, path: 'avatar', namespace: parent)
+
+        expect(project).to be_valid
+      end
+    end
   end
 
   describe 'default_scope' do
@@ -1876,6 +1904,25 @@ describe Project, models: true do
 
     it 'hase a loaded pipeline status' do
       expect(project.pipeline_status).to be_loaded
+    end
+  end
+
+  describe '#append_or_update_attribute' do
+    let(:project) { create(:project) }
+
+    it 'shows full error updating an invalid MR' do
+      error_message = 'Failed to replace merge_requests because one or more of the new records could not be saved.'\
+                      ' Validate fork Source project is not a fork of the target project'
+
+      expect { project.append_or_update_attribute(:merge_requests, [create(:merge_request)]) }.
+        to raise_error(ActiveRecord::RecordNotSaved, error_message)
+    end
+
+    it 'updates the project succesfully' do
+      merge_request = create(:merge_request, target_project: project, source_project: project)
+
+      expect { project.append_or_update_attribute(:merge_requests, [merge_request]) }.
+        not_to raise_error
     end
   end
 end

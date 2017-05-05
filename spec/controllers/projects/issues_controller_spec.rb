@@ -756,4 +756,28 @@ describe Projects::IssuesController do
       expect(response).to have_http_status(200)
     end
   end
+
+  describe 'POST create_merge_request' do
+    before do
+      project.add_developer(user)
+      sign_in(user)
+    end
+
+    it 'creates a new merge request' do
+      expect { create_merge_request }.to change(project.merge_requests, :count).by(1)
+    end
+
+    it 'render merge request as json' do
+      create_merge_request
+
+      expect(response).to match_response_schema('merge_request')
+    end
+
+    def create_merge_request
+      post :create_merge_request, namespace_id: project.namespace.to_param,
+                                  project_id: project.to_param,
+                                  id: issue.to_param,
+                                  format: :json
+    end
+  end
 end

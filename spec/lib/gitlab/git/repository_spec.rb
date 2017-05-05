@@ -24,21 +24,26 @@ describe Gitlab::Git::Repository, seed_helper: true do
       end
     end
 
-    # TODO: Uncomment when feature is reenabled
-    # context 'with gitaly enabled' do
-    #   before { stub_gitaly }
-    #
-    #   it 'gets the branch name from GitalyClient' do
-    #     expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:default_branch_name)
-    #     repository.root_ref
-    #   end
-    #
-    #   it 'wraps GRPC exceptions' do
-    #     expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:default_branch_name).
-    #       and_raise(GRPC::Unknown)
-    #     expect { repository.root_ref }.to raise_error(Gitlab::Git::CommandError)
-    #   end
-    # end
+    context 'with gitaly enabled' do
+      before { stub_gitaly }
+
+      it 'gets the branch name from GitalyClient' do
+        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:default_branch_name)
+        repository.root_ref
+      end
+
+      it 'wraps GRPC not found' do
+        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:default_branch_name).
+          and_raise(GRPC::NotFound)
+        expect { repository.root_ref }.to raise_error(Gitlab::Git::Repository::NoRepository)
+      end
+
+      it 'wraps GRPC exceptions' do
+        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:default_branch_name).
+          and_raise(GRPC::Unknown)
+        expect { repository.root_ref }.to raise_error(Gitlab::Git::CommandError)
+      end
+    end
   end
 
   describe "#rugged" do
@@ -113,21 +118,26 @@ describe Gitlab::Git::Repository, seed_helper: true do
     it { is_expected.to include("master") }
     it { is_expected.not_to include("branch-from-space") }
 
-    # TODO: Uncomment when feature is reenabled
-    # context 'with gitaly enabled' do
-    #   before { stub_gitaly }
-    #
-    #   it 'gets the branch names from GitalyClient' do
-    #     expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:branch_names)
-    #     subject
-    #   end
-    #
-    #   it 'wraps GRPC exceptions' do
-    #     expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:branch_names).
-    #       and_raise(GRPC::Unknown)
-    #     expect { subject }.to raise_error(Gitlab::Git::CommandError)
-    #   end
-    # end
+    context 'with gitaly enabled' do
+      before { stub_gitaly }
+
+      it 'gets the branch names from GitalyClient' do
+        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:branch_names)
+        subject
+      end
+
+      it 'wraps GRPC not found' do
+        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:branch_names).
+          and_raise(GRPC::NotFound)
+        expect { subject }.to raise_error(Gitlab::Git::Repository::NoRepository)
+      end
+
+      it 'wraps GRPC other exceptions' do
+        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:branch_names).
+          and_raise(GRPC::Unknown)
+        expect { subject }.to raise_error(Gitlab::Git::CommandError)
+      end
+    end
   end
 
   describe '#tag_names' do
@@ -145,21 +155,26 @@ describe Gitlab::Git::Repository, seed_helper: true do
     it { is_expected.to include("v1.0.0") }
     it { is_expected.not_to include("v5.0.0") }
 
-    # TODO: Uncomment when feature is reenabled
-    # context 'with gitaly enabled' do
-    #   before { stub_gitaly }
-    #
-    #   it 'gets the tag names from GitalyClient' do
-    #     expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:tag_names)
-    #     subject
-    #   end
-    #
-    #   it 'wraps GRPC exceptions' do
-    #     expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:tag_names).
-    #       and_raise(GRPC::Unknown)
-    #     expect { subject }.to raise_error(Gitlab::Git::CommandError)
-    #   end
-    # end
+    context 'with gitaly enabled' do
+      before { stub_gitaly }
+
+      it 'gets the tag names from GitalyClient' do
+        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:tag_names)
+        subject
+      end
+
+      it 'wraps GRPC not found' do
+        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:tag_names).
+          and_raise(GRPC::NotFound)
+        expect { subject }.to raise_error(Gitlab::Git::Repository::NoRepository)
+      end
+
+      it 'wraps GRPC exceptions' do
+        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:tag_names).
+          and_raise(GRPC::Unknown)
+        expect { subject }.to raise_error(Gitlab::Git::CommandError)
+      end
+    end
   end
 
   shared_examples 'archive check' do |extenstion|
@@ -1047,7 +1062,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       end
 
       it "allows ordering by date" do
-        expect_any_instance_of(Rugged::Walker).to receive(:sorting).with(Rugged::SORT_DATE)
+        expect_any_instance_of(Rugged::Walker).to receive(:sorting).with(Rugged::SORT_DATE | Rugged::SORT_TOPO)
 
         repository.find_commits(order: :date)
       end
@@ -1074,20 +1089,8 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#branch_count' do
-    before(:each) do
-      valid_ref   = double(:ref)
-      invalid_ref = double(:ref)
-
-      allow(valid_ref).to receive_messages(name: 'master', target: double(:target))
-
-      allow(invalid_ref).to receive_messages(name: 'bad-branch')
-      allow(invalid_ref).to receive(:target) { raise Rugged::ReferenceError }
-
-      allow(repository.rugged).to receive_messages(branches: [valid_ref, invalid_ref])
-    end
-
     it 'returns the number of branches' do
-      expect(repository.branch_count).to eq(1)
+      expect(repository.branch_count).to eq(9)
     end
   end
 

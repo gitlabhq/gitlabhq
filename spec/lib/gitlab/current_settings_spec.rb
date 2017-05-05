@@ -10,7 +10,7 @@ describe Gitlab::CurrentSettings do
   describe '#current_application_settings' do
     context 'with DB available' do
       before do
-        allow_any_instance_of(Gitlab::CurrentSettings).to receive(:connect_to_db?).and_return(true)
+        allow_any_instance_of(described_class).to receive(:connect_to_db?).and_return(true)
       end
 
       it 'attempts to use cached values first' do
@@ -36,7 +36,7 @@ describe Gitlab::CurrentSettings do
 
     context 'with DB unavailable' do
       before do
-        allow_any_instance_of(Gitlab::CurrentSettings).to receive(:connect_to_db?).and_return(false)
+        allow_any_instance_of(described_class).to receive(:connect_to_db?).and_return(false)
       end
 
       it 'returns an in-memory ApplicationSetting object' do

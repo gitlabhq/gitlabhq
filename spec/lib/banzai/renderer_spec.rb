@@ -11,7 +11,7 @@ describe Banzai::Renderer do
   end
 
   describe '#render_field' do
-    let(:renderer) { Banzai::Renderer }
+    let(:renderer) { described_class }
     subject { renderer.render_field(object, :field) }
 
     context 'with a stale cache' do

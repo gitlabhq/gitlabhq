@@ -6,7 +6,13 @@
 }
 
 .limit-container-width {
-  .detail-page-header {
+  .detail-page-header,
+  .page-content-header,
+  .commit-box,
+  .info-well,
+  .notes,
+  .commit-ci-menu,
+  .files-changed {
     @extend .fixed-width-container;
   }
 
@@ -36,8 +42,7 @@
   }
 
   .diffs {
-    .mr-version-controls,
-    .files-changed {
+    .mr-version-controls {
       @extend .fixed-width-container;
     }
   }
