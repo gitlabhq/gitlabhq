@@ -502,6 +502,9 @@ production: &base
     upload_pack: true
     receive_pack: true
 
+    # Git import/fetch timeout
+    # git_timeout: 800
+
     # If you use non-standard ssh port you need to specify it
     # ssh_port: 22
 
