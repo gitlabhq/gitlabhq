@@ -240,7 +240,7 @@ describe Notes::SlashCommandsService, services: true do
       end
 
       it 'adds only one assignee from the list' do
-        content, command_params = service.extract_commands(note)
+        _, command_params = service.extract_commands(note)
         service.execute(command_params, note)
 
         expect(note.noteable.assignees.count).to eq(1)
