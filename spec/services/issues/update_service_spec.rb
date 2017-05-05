@@ -40,7 +40,7 @@ describe Issues::UpdateService, services: true do
         {
           title: 'New title',
           description: 'Also please fix',
-          assignee_ids: [user2.id, user3.id],
+          assignee_ids: [user2.id],
           state_event: 'close',
           label_ids: [label.id],
           due_date: Date.tomorrow
@@ -53,7 +53,7 @@ describe Issues::UpdateService, services: true do
         expect(issue).to be_valid
         expect(issue.title).to eq 'New title'
         expect(issue.description).to eq 'Also please fix'
-        expect(issue.assignees).to match_array([user2, user3])
+        expect(issue.assignees).to match_array([user2])
         expect(issue).to be_closed
         expect(issue.labels).to match_array [label]
         expect(issue.due_date).to eq Date.tomorrow
