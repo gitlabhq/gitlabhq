@@ -1,6 +1,6 @@
 class Projects::PipelinesController < Projects::ApplicationController
   before_action :pipeline, except: [:index, :new, :create, :charts]
-  before_action :commit, only: [:show, :builds]
+  before_action :commit, only: [:show, :builds, :failures]
   before_action :authorize_read_pipeline!
   before_action :authorize_create_pipeline!, only: [:new, :create]
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
@@ -69,10 +69,14 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def builds
-    respond_to do |format|
-      format.html do
-        render 'show'
-      end
+    render_show
+  end
+
+  def failures
+    if @pipeline.statuses.latest.failed.present?
+      render_show
+    else
+      redirect_to pipeline_path(@pipeline)
     end
   end
 
@@ -124,6 +128,14 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   private
+
+  def render_show
+    respond_to do |format|
+      format.html do
+        render 'show'
+      end
+    end
+  end
 
   def create_params
     params.require(:pipeline).permit(:ref)

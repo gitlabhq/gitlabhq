@@ -316,6 +316,32 @@
   }
 }
 
+.build-failures {
+  .build-state {
+    padding: 20px 2px;
+
+    .build-name {
+      float: right;
+      font-weight: 500;
+    }
+
+    .ci-status-icon-failed svg {
+      vertical-align: middle;
+    }
+
+    .stage {
+      color: $gl-text-color-secondary;
+      font-weight: 500;
+      vertical-align: middle;
+    }
+  }
+
+  .build-log {
+    border: none;
+    line-height: initial;
+  }
+}
+
 // Pipeline graph
 .pipeline-graph {
   width: 100%;
