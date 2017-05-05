@@ -1,5 +1,0 @@
----
-title: Added remaining_time method to milestoneish, specs and updated the milestone_helper
-  milestone_remaining_days method to correctly return the correct remaining time.
-merge_request:
-author: Michael Robinson

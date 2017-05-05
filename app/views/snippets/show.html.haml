@@ -2,8 +2,11 @@
 
 = render 'shared/snippets/header'
 
-%article.file-holder.snippet-file-content
-  = render 'shared/snippets/blob', raw_path: raw_snippet_path(@snippet), download_path: download_snippet_path(@snippet)
+.personal-snippets
+  %article.file-holder.snippet-file-content
+    = render 'shared/snippets/blob'
 
-.row-content-block.top-block.content-component-block
-  = render 'award_emoji/awards_block', awardable: @snippet, inline: true
+  .row-content-block.top-block.content-component-block
+    = render 'award_emoji/awards_block', awardable: @snippet, inline: true
+
+  #notes= render "shared/notes/notes_with_form"

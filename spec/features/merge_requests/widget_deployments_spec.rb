@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 feature 'Widget Deployments Header', feature: true, js: true do
-  include WaitForAjax
-
   describe 'when deployed to an environment' do
     given(:user) { create(:user) }
     given(:project) { merge_request.target_project }

@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe API::V3::Files, api: true  do
-  include ApiHelpers
-
+describe API::V3::Files do
   # I have to remove periods from the end of the name
   # This happened when the user's name had a suffix (i.e. "Sr.")
   # This seems to be what git does under the hood. For example, this commit:

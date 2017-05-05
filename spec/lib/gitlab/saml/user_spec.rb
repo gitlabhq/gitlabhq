@@ -211,6 +211,31 @@ describe Gitlab::Saml::User, lib: true do
           end
         end
       end
+
+      context 'when signup is disabled' do
+        before do
+          stub_application_setting signup_enabled: false
+        end
+
+        it 'creates the user' do
+          saml_user.save
+
+          expect(gl_user).to be_persisted
+        end
+      end
+
+      context 'when user confirmation email is enabled' do
+        before do
+          stub_application_setting send_user_confirmation_email: true
+        end
+
+        it 'creates and confirms the user anyway' do
+          saml_user.save
+
+          expect(gl_user).to be_persisted
+          expect(gl_user).to be_confirmed
+        end
+      end
     end
 
     describe 'blocking' do

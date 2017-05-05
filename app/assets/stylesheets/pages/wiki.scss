@@ -71,7 +71,6 @@
     .nav-controls {
       width: auto;
       min-width: 50%;
-      white-space: nowrap;
     }
   }
 
@@ -153,5 +152,11 @@ ul.wiki-pages-list.content-list {
 
   & ul li {
     padding: 5px 0;
+  }
+}
+
+.wiki {
+  table {
+    @include markdown-table;
   }
 }

@@ -1,3 +1,4 @@
+# rubocop:disable Migration/AddColumnWithDefaultToLargeTable
 class AddTwoFactorColumnsToNamespaces < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 

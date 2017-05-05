@@ -3,6 +3,25 @@
   margin: 24px auto 0;
   position: relative;
 
+  .landing {
+    margin-top: 10px;
+
+    .inner-content {
+      white-space: normal;
+
+      h4,
+      p {
+        margin: 7px 0 0;
+        max-width: 480px;
+        padding: 0 $gl-padding;
+
+        @media (max-width: $screen-sm-min) {
+          margin: 0 auto;
+        }
+      }
+    }
+  }
+
   .col-headers {
     ul {
       margin: 0;
@@ -93,11 +112,6 @@
     top: $gl-padding-top;
   }
 
-  .bordered-box {
-    border: 1px solid $border-color;
-    border-radius: $border-radius-default;
-  }
-
   .content-list {
     li {
       padding: 18px $gl-padding $gl-padding;
@@ -139,42 +153,9 @@
     }
   }
 
-  .landing {
-    margin-bottom: $gl-padding;
-    overflow: hidden;
-
-    .dismiss-icon {
-      position: absolute;
-      right: $cycle-analytics-box-padding;
-      cursor: pointer;
-      color: $cycle-analytics-dismiss-icon-color;
-    }
-
-    .svg-container {
-      text-align: center;
-
-      svg {
-        width: 136px;
-        height: 136px;
-      }
-    }
-
-    .inner-content {
-      @media (max-width: $screen-xs-max) {
-        padding: 0 28px;
-        text-align: center;
-      }
-
-      h4 {
-        color: $gl-text-color;
-        font-size: 17px;
-      }
-
-      p {
-        color: $cycle-analytics-box-text-color;
-        margin-bottom: $gl-padding;
-      }
-    }
+  .landing svg {
+    width: 136px;
+    height: 136px;
   }
 
   .fa-spinner {
@@ -213,7 +194,7 @@
     }
 
     .stage-nav-item {
-      display: block;
+      display: flex;
       line-height: 65px;
       border-top: 1px solid transparent;
       border-bottom: 1px solid transparent;
@@ -247,14 +228,10 @@
       }
 
       .stage-nav-item-cell {
-        float: left;
-
-        &.stage-name {
-          width: 65%;
-        }
-
         &.stage-median {
-          width: 35%;
+          margin-left: auto;
+          margin-right: $gl-padding;
+          min-width: calc(35% - #{$gl-padding});
         }
       }
 

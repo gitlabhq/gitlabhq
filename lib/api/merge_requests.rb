@@ -20,6 +20,8 @@ module API
             error!(errors[:validate_fork], 422)
           elsif errors[:validate_branches].any?
             conflict!(errors[:validate_branches])
+          elsif errors[:base].any?
+            error!(errors[:base], 422)
           end
 
           render_api_error!(errors, 400)
@@ -31,6 +33,17 @@ module API
           else
             Entities::IssueBasic
           end
+        end
+
+        def find_merge_requests(args = {})
+          args = params.merge(args)
+
+          args[:milestone_title] = args.delete(:milestone)
+          args[:label_name] = args.delete(:labels)
+
+          merge_requests = MergeRequestsFinder.new(current_user, args).execute.inc_notes_with_associations
+
+          merge_requests.reorder(args[:order_by] => args[:sort])
         end
 
         params :optional_params_ce do
@@ -57,23 +70,15 @@ module API
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
                         desc: 'Return merge requests sorted in `asc` or `desc` order.'
         optional :iids, type: Array[Integer], desc: 'The IID array of merge requests'
+        optional :milestone, type: String, desc: 'Return merge requests for a specific milestone'
+        optional :labels, type: String, desc: 'Comma-separated list of label names'
         use :pagination
       end
       get ":id/merge_requests" do
         authorize! :read_merge_request, user_project
 
-        merge_requests = user_project.merge_requests.inc_notes_with_associations
-        merge_requests = filter_by_iid(merge_requests, params[:iids]) if params[:iids].present?
+        merge_requests = find_merge_requests(project_id: user_project.id)
 
-        merge_requests =
-          case params[:state]
-          when 'opened' then merge_requests.opened
-          when 'closed' then merge_requests.closed
-          when 'merged' then merge_requests.merged
-          else merge_requests
-          end
-
-        merge_requests = merge_requests.reorder(params[:order_by] => params[:sort])
         present paginate(merge_requests), with: Entities::MergeRequestBasic, current_user: current_user, project: user_project
       end
 
@@ -197,14 +202,15 @@ module API
       end
       put ':id/merge_requests/:merge_request_iid/merge' do
         merge_request = find_project_merge_request(params[:merge_request_iid])
+        merge_when_pipeline_succeeds = to_boolean(params[:merge_when_pipeline_succeeds])
 
         # Merge request can not be merged
         # because user dont have permissions to push into target branch
         unauthorized! unless merge_request.can_be_merged_by?(current_user)
 
-        not_allowed! unless merge_request.mergeable_state?
+        not_allowed! unless merge_request.mergeable_state?(skip_ci_check: merge_when_pipeline_succeeds)
 
-        render_api_error!('Branch cannot be merged', 406) unless merge_request.mergeable?
+        render_api_error!('Branch cannot be merged', 406) unless merge_request.mergeable?(skip_ci_check: merge_when_pipeline_succeeds)
 
         if params[:sha] && merge_request.diff_head_sha != params[:sha]
           render_api_error!("SHA does not match HEAD of source branch: #{merge_request.diff_head_sha}", 409)
@@ -215,7 +221,7 @@ module API
           should_remove_source_branch: params[:should_remove_source_branch]
         }
 
-        if params[:merge_when_pipeline_succeeds] && merge_request.head_pipeline && merge_request.head_pipeline.active?
+        if merge_when_pipeline_succeeds && merge_request.head_pipeline && merge_request.head_pipeline.active?
           ::MergeRequests::MergeWhenPipelineSucceedsService
             .new(merge_request.target_project, current_user, merge_params)
             .execute(merge_request)

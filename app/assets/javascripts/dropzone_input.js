@@ -5,7 +5,7 @@ require('./preview_markdown');
 
 window.DropzoneInput = (function() {
   function DropzoneInput(form) {
-    var $mdArea, alertAttr, alertClass, appendToTextArea, btnAlert, child, closeAlertMessage, closeSpinner, divAlert, divHover, divSpinner, dropzone, form_dropzone, form_textarea, getFilename, handlePaste, iconPaperclip, iconSpinner, insertToTextArea, isImage, max_file_size, pasteText, project_uploads_path, showError, showSpinner, uploadFile, uploadProgress;
+    var $mdArea, alertAttr, alertClass, appendToTextArea, btnAlert, child, closeAlertMessage, closeSpinner, divAlert, divHover, divSpinner, dropzone, form_dropzone, form_textarea, getFilename, handlePaste, iconPaperclip, iconSpinner, insertToTextArea, isImage, max_file_size, pasteText, uploads_path, showError, showSpinner, uploadFile, uploadProgress;
     Dropzone.autoDiscover = false;
     alertClass = "alert alert-danger alert-dismissable div-dropzone-alert";
     alertAttr = "class=\"close\" data-dismiss=\"alert\"" + "aria-hidden=\"true\"";
@@ -16,7 +16,7 @@ window.DropzoneInput = (function() {
     iconSpinner = "<i class=\"fa fa-spinner fa-spin div-dropzone-icon\"></i>";
     uploadProgress = $("<div class=\"div-dropzone-progress\"></div>");
     btnAlert = "<button type=\"button\"" + alertAttr + ">&times;</button>";
-    project_uploads_path = window.project_uploads_path || null;
+    uploads_path = window.uploads_path || null;
     max_file_size = gon.max_file_size || 10;
     form_textarea = $(form).find(".js-gfm-input");
     form_textarea.wrap("<div class=\"div-dropzone\"></div>");
@@ -39,10 +39,10 @@ window.DropzoneInput = (function() {
       "display": "none"
     });
 
-    if (!project_uploads_path) return;
+    if (!uploads_path) return;
 
     dropzone = form_dropzone.dropzone({
-      url: project_uploads_path,
+      url: uploads_path,
       dictDefaultMessage: "",
       clickable: true,
       paramName: "file",
@@ -159,7 +159,7 @@ window.DropzoneInput = (function() {
       formData = new FormData();
       formData.append("file", item, filename);
       return $.ajax({
-        url: project_uploads_path,
+        url: uploads_path,
         type: "POST",
         data: formData,
         dataType: "json",

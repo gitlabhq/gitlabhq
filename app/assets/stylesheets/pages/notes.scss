@@ -57,6 +57,25 @@ ul.notes {
     position: relative;
     border-bottom: 1px solid $white-normal;
 
+    &.being-posted {
+      pointer-events: none;
+      opacity: 0.5;
+
+      .dummy-avatar {
+        display: inline-block;
+        height: 40px;
+        width: 40px;
+        border-radius: 50%;
+        background-color: $kdb-border;
+        border: 1px solid darken($kdb-border, 25%);
+      }
+
+      .note-headline-light,
+      .fa-spinner {
+        margin-left: 3px;
+      }
+    }
+
     &.note-discussion {
       &.timeline-entry {
         padding: 14px 10px;
@@ -67,7 +86,7 @@ ul.notes {
       }
     }
 
-    &.is-editting {
+    &.is-editing {
       .note-header,
       .note-text,
       .edited-text {
@@ -97,23 +116,20 @@ ul.notes {
             padding-left: 1.3em;
           }
         }
+
+        table {
+          @include markdown-table;
+        }
       }
     }
 
     .note-awards {
       .js-awards-block {
-        padding: 2px;
-        margin-top: 10px;
+        margin-bottom: 16px;
       }
     }
 
     .note-header {
-      padding-bottom: 3px;
-      padding-right: 20px;
-
-      @media (min-width: $screen-sm-min) {
-        padding-right: 0;
-      }
 
       @media (max-width: $screen-xs-min) {
         .inline {
@@ -149,6 +165,10 @@ ul.notes {
 
     @media (min-width: $screen-sm-min) {
       margin-left: 65px;
+    }
+
+    .note-header {
+      padding-bottom: 0;
     }
 
     &.timeline-entry::after {
@@ -357,10 +377,15 @@ ul.notes {
 .note-header {
   display: flex;
   justify-content: space-between;
+
+  @media (max-width: $screen-xs-max) {
+    flex-flow: row wrap;
+  }
 }
 
 .note-header-info {
   min-width: 0;
+  padding-bottom: 5px;
 }
 
 .note-headline-light {
@@ -389,6 +414,10 @@ a .note-headline-light {
 .note-headline-meta {
   display: inline-block;
   white-space: nowrap;
+
+  .system-note-message {
+    white-space: normal;
+  }
 }
 
 /**
@@ -407,6 +436,11 @@ a .note-headline-light {
   float: right;
   margin-left: 10px;
   color: $gray-darkest;
+
+  @media (max-width: $screen-xs-max) {
+    float: none;
+    margin-left: 0;
+  }
 
   .note-action-button {
     margin-left: 8px;
@@ -677,6 +711,10 @@ a .note-headline-light {
       fill: $gray-darkest;
     }
   }
+}
+
+.discussion-notes .flash-container {
+  margin-bottom: 0;
 }
 
 // Merge request notes in diffs

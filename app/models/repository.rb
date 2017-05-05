@@ -17,9 +17,9 @@ class Repository
   # same name. The cache key used by those methods must also match method's
   # name.
   #
-  # For example, for entry `:readme` there's a method called `readme` which
-  # stores its data in the `readme` cache key.
-  CACHED_METHODS = %i(size commit_count readme contribution_guide
+  # For example, for entry `:commit_count` there's a method called `commit_count` which
+  # stores its data in the `commit_count` cache key.
+  CACHED_METHODS = %i(size commit_count rendered_readme contribution_guide
                       changelog license_blob license_key gitignore koding_yml
                       gitlab_ci_yml branch_names tag_names branch_count
                       tag_count avatar exists? empty? root_ref).freeze
@@ -28,7 +28,7 @@ class Repository
   # changed. This Hash maps file types (as returned by Gitlab::FileDetector) to
   # the corresponding methods to call for refreshing caches.
   METHOD_CACHES_FOR_FILE_TYPES = {
-    readme: :readme,
+    readme: :rendered_readme,
     changelog: :changelog,
     license: %i(license_blob license_key),
     contributing: :contribution_guide,
@@ -450,7 +450,7 @@ class Repository
 
   def blob_at(sha, path)
     unless Gitlab::Git.blank_ref?(sha)
-      Blob.decorate(Gitlab::Git::Blob.find(self, sha, path))
+      Blob.decorate(Gitlab::Git::Blob.find(self, sha, path), project)
     end
   rescue Gitlab::Git::Repository::NoRepository
     nil
@@ -505,14 +505,8 @@ class Repository
   delegate :tag_names, to: :raw_repository
   cache_method :tag_names, fallback: []
 
-  def branch_count
-    branches.size
-  end
+  delegate :branch_count, :tag_count, to: :raw_repository
   cache_method :branch_count, fallback: 0
-
-  def tag_count
-    raw_repository.rugged.tags.count
-  end
   cache_method :tag_count, fallback: 0
 
   def avatar
@@ -527,7 +521,11 @@ class Repository
       head.readme
     end
   end
-  cache_method :readme
+
+  def rendered_readme
+    MarkupHelper.markup_unsafe(readme.name, readme.data, project: project) if readme
+  end
+  cache_method :rendered_readme
 
   def contribution_guide
     file_on_head(:contributing)
@@ -791,7 +789,7 @@ class Repository
       }
       options.merge!(get_committer_and_author(user, email: author_email, name: author_name))
 
-      Rugged::Commit.create(rugged, options)
+      create_commit(options)
     end
   end
   # rubocop:enable Metrics/ParameterLists
@@ -838,7 +836,7 @@ class Repository
         tree: merge_index.write_tree(rugged),
       )
 
-      commit_id = Rugged::Commit.create(rugged, actual_options)
+      commit_id = create_commit(actual_options)
       merge_request.update(in_progress_merge_commit_sha: commit_id)
       commit_id
     end
@@ -861,12 +859,11 @@ class Repository
 
       committer = user_to_committer(user)
 
-      Rugged::Commit.create(rugged,
-        message: commit.revert_message(user),
-        author: committer,
-        committer: committer,
-        tree: revert_tree_id,
-        parents: [start_commit.sha])
+      create_commit(message: commit.revert_message(user),
+                    author: committer,
+                    committer: committer,
+                    tree: revert_tree_id,
+                    parents: [start_commit.sha])
     end
   end
 
@@ -885,16 +882,15 @@ class Repository
 
       committer = user_to_committer(user)
 
-      Rugged::Commit.create(rugged,
-        message: commit.message,
-        author: {
-          email: commit.author_email,
-          name: commit.author_name,
-          time: commit.authored_date
-        },
-        committer: committer,
-        tree: cherry_pick_tree_id,
-        parents: [start_commit.sha])
+      create_commit(message: commit.message,
+                    author: {
+                        email: commit.author_email,
+                        name: commit.author_name,
+                        time: commit.authored_date
+                    },
+                    committer: committer,
+                    tree: cherry_pick_tree_id,
+                    parents: [start_commit.sha])
     end
   end
 
@@ -902,7 +898,7 @@ class Repository
     GitOperationService.new(user, self).with_branch(branch_name) do
       committer = user_to_committer(user)
 
-      Rugged::Commit.create(rugged, params.merge(author: committer, committer: committer))
+      create_commit(params.merge(author: committer, committer: committer))
     end
   end
 
@@ -957,15 +953,13 @@ class Repository
   end
 
   def is_ancestor?(ancestor_id, descendant_id)
-    # NOTE: This feature is intentionally disabled until
-    # https://gitlab.com/gitlab-org/gitlab-ce/issues/30586 is resolved
-    # Gitlab::GitalyClient.migrate(:is_ancestor) do |is_enabled|
-    #   if is_enabled
-    #     raw_repository.is_ancestor?(ancestor_id, descendant_id)
-    #   else
-    merge_base_commit(ancestor_id, descendant_id) == ancestor_id
-    #   end
-    # end
+    Gitlab::GitalyClient.migrate(:is_ancestor) do |is_enabled|
+      if is_enabled
+        raw_repository.is_ancestor?(ancestor_id, descendant_id)
+      else
+        merge_base_commit(ancestor_id, descendant_id) == ancestor_id
+      end
+    end
   end
 
   def empty_repo?
@@ -1144,6 +1138,12 @@ class Repository
 
   def repository_event(event, tags = {})
     Gitlab::Metrics.add_event(event, { path: path_with_namespace }.merge(tags))
+  end
+
+  def create_commit(params = {})
+    params[:message].delete!("\r")
+
+    Rugged::Commit.create(rugged, params)
   end
 
   def repository_storage_path

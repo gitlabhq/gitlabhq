@@ -28,6 +28,8 @@ class ApplicationSetting < ActiveRecord::Base
 
   attr_accessor :domain_whitelist_raw, :domain_blacklist_raw
 
+  validates :uuid, presence: true
+
   validates :session_expire_delay,
             presence: true,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
@@ -159,6 +161,7 @@ class ApplicationSetting < ActiveRecord::Base
     end
   end
 
+  before_validation :ensure_uuid!
   before_save :ensure_runners_registration_token
   before_save :ensure_health_check_access_token
 
@@ -343,6 +346,12 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   private
+
+  def ensure_uuid!
+    return if uuid?
+
+    self.uuid = SecureRandom.uuid
+  end
 
   def check_repository_storages
     invalid = repository_storages - Gitlab.config.repositories.storages.keys

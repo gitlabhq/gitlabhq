@@ -24,7 +24,12 @@ feature 'Merge Request versions', js: true, feature: true do
     before do
       page.within '.mr-version-dropdown' do
         find('.btn-default').click
-        find(:link, 'version 1').trigger('click')
+        click_link 'version 1'
+      end
+
+      # Wait for the page to load
+      page.within '.mr-version-dropdown' do
+        expect(page).to have_content 'version 1'
       end
     end
 
@@ -36,8 +41,8 @@ feature 'Merge Request versions', js: true, feature: true do
       expect(page).to have_content '5 changed files'
     end
 
-    it 'show the message about disabled comment creation' do
-      expect(page).to have_content 'comment creation is disabled'
+    it 'show the message about comments' do
+      expect(page).to have_content 'Not all comments are displayed'
     end
 
     it 'shows comments that were last relevant at that version' do
@@ -52,7 +57,28 @@ feature 'Merge Request versions', js: true, feature: true do
       outdated_diff_note.position = outdated_diff_note.original_position
       outdated_diff_note.save!
 
+      visit current_url
+
       expect(page).to have_css(".diffs .notes[data-discussion-id='#{outdated_diff_note.discussion_id}']")
+    end
+
+    it 'allows commenting' do
+      diff_file_selector = ".diff-file[id='7445606fbf8f3683cd42bdc54b05d7a0bc2dfc44']"
+      line_code = '7445606fbf8f3683cd42bdc54b05d7a0bc2dfc44_2_2'
+
+      page.within(diff_file_selector) do
+        find(".line_holder[id='#{line_code}'] td:nth-of-type(1)").trigger 'mouseover'
+        find(".line_holder[id='#{line_code}'] button").trigger 'click'
+
+        page.within("form[data-line-code='#{line_code}']") do
+          fill_in "note[note]", with: "Typo, please fix"
+          find(".js-comment-button").click
+        end
+
+        wait_for_ajax
+
+        expect(page).to have_content("Typo, please fix")
+      end
     end
   end
 
@@ -60,7 +86,12 @@ feature 'Merge Request versions', js: true, feature: true do
     before do
       page.within '.mr-version-compare-dropdown' do
         find('.btn-default').click
-        find(:link, 'version 1').trigger('click')
+        click_link 'version 1'
+      end
+
+      # Wait for the page to load
+      page.within '.mr-version-compare-dropdown' do
+        expect(page).to have_content 'version 1'
       end
     end
 
@@ -80,8 +111,43 @@ feature 'Merge Request versions', js: true, feature: true do
       end
     end
 
-    it 'show the message about disabled comments' do
-      expect(page).to have_content 'Comments are disabled'
+    it 'show the message about comments' do
+      expect(page).to have_content 'Not all comments are displayed'
+    end
+
+    it 'shows comments that were last relevant at that version' do
+      position = Gitlab::Diff::Position.new(
+        old_path: ".gitmodules",
+        new_path: ".gitmodules",
+        old_line: 4,
+        new_line: 4,
+        diff_refs: merge_request_diff3.compare_with(merge_request_diff1.head_commit_sha).diff_refs
+      )
+      outdated_diff_note = create(:diff_note_on_merge_request, project: project, noteable: merge_request, position: position)
+
+      visit current_url
+      wait_for_ajax
+
+      expect(page).to have_css(".diffs .notes[data-discussion-id='#{outdated_diff_note.discussion_id}']")
+    end
+
+    it 'allows commenting' do
+      diff_file_selector = ".diff-file[id='7445606fbf8f3683cd42bdc54b05d7a0bc2dfc44']"
+      line_code = '7445606fbf8f3683cd42bdc54b05d7a0bc2dfc44_4_4'
+
+      page.within(diff_file_selector) do
+        find(".line_holder[id='#{line_code}'] td:nth-of-type(1)").trigger 'mouseover'
+        find(".line_holder[id='#{line_code}'] button").trigger 'click'
+
+        page.within("form[data-line-code='#{line_code}']") do
+          fill_in "note[note]", with: "Typo, please fix"
+          find(".js-comment-button").click
+        end
+
+        wait_for_ajax
+
+        expect(page).to have_content("Typo, please fix")
+      end
     end
 
     it 'show diff between new and old version' do
@@ -107,14 +173,13 @@ feature 'Merge Request versions', js: true, feature: true do
 
     it 'should have 0 chages between versions' do
       page.within '.mr-version-compare-dropdown' do
-        expect(page).to have_content 'version 1'
+        expect(find('.dropdown-toggle')).to have_content 'version 1'
       end
 
       page.within '.mr-version-dropdown' do
         find('.btn-default').click
-        find(:link, 'version 1').trigger('click')
+        click_link 'version 1'
       end
-
       expect(page).to have_content '0 changed files'
     end
   end
@@ -129,12 +194,12 @@ feature 'Merge Request versions', js: true, feature: true do
 
     it 'should set the compared versions to be the same' do
       page.within '.mr-version-compare-dropdown' do
-        expect(page).to have_content 'version 2'
+        expect(find('.dropdown-toggle')).to have_content 'version 2'
       end
 
       page.within '.mr-version-dropdown' do
         find('.btn-default').click
-        find(:link, 'version 1').trigger('click')
+        click_link 'version 1'
       end
 
       page.within '.mr-version-compare-dropdown' do

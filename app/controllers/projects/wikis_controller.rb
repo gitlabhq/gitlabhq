@@ -91,21 +91,18 @@ class Projects::WikisController < Projects::ApplicationController
     )
   end
 
-  def preview_markdown
-    text = params[:text]
-
-    ext = Gitlab::ReferenceExtractor.new(@project, current_user)
-    ext.analyze(text, author: current_user)
-
-    render json: {
-      body: view_context.markdown(text, pipeline: :wiki, project_wiki: @project_wiki, page_slug: params[:id]),
-      references: {
-        users: ext.users.map(&:username)
-      }
-    }
+  def git_access
   end
 
-  def git_access
+  def preview_markdown
+    result = PreviewMarkdownService.new(@project, current_user, params).execute
+
+    render json: {
+      body: view_context.markdown(result[:text], pipeline: :wiki, project_wiki: @project_wiki, page_slug: params[:id]),
+      references: {
+        users: result[:users]
+      }
+    }
   end
 
   private
@@ -115,7 +112,6 @@ class Projects::WikisController < Projects::ApplicationController
 
     # Call #wiki to make sure the Wiki Repo is initialized
     @project_wiki.wiki
-
     @sidebar_wiki_entries = WikiPage.group_by_directory(@project_wiki.pages.first(15))
   rescue ProjectWiki::CouldNotCreateWikiError
     flash[:notice] = "Could not create Wiki Repository at this time. Please try again later."

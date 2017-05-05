@@ -151,6 +151,27 @@ class Member < ActiveRecord::Base
       member
     end
 
+    def add_users(source, users, access_level, current_user: nil, expires_at: nil)
+      return [] unless users.present?
+
+      # Collect all user ids into separate array
+      # so we can use single sql query to get user objects
+      user_ids = users.select { |user| user =~ /\A\d+\Z/ }
+      users = users - user_ids + User.where(id: user_ids)
+
+      self.transaction do
+        users.map do |user|
+          add_user(
+            source,
+            user,
+            access_level,
+            current_user: current_user,
+            expires_at: expires_at
+          )
+        end
+      end
+    end
+
     def access_levels
       Gitlab::Access.sym_options
     end
@@ -172,18 +193,6 @@ class Member < ActiveRecord::Base
     def can_update_member?(current_user, member)
       # There is no current user for bulk actions, in which case anything is allowed
       !current_user || current_user.can?(:"update_#{member.type.underscore}", member)
-    end
-
-    def add_users_to_source(source, users, access_level, current_user: nil, expires_at: nil)
-      users.each do |user|
-        add_user(
-          source,
-          user,
-          access_level,
-          current_user: current_user,
-          expires_at: expires_at
-        )
-      end
     end
   end
 

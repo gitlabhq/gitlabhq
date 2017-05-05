@@ -97,6 +97,18 @@ describe User, models: true do
         expect(user.errors.values).to eq [['dashboard is a reserved name']]
       end
 
+      it 'allows child names' do
+        user = build(:user, username: 'avatar')
+
+        expect(user).to be_valid
+      end
+
+      it 'allows wildcard names' do
+        user = build(:user, username: 'blob')
+
+        expect(user).to be_valid
+      end
+
       it 'validates uniqueness' do
         expect(subject).to validate_uniqueness_of(:username).case_insensitive
       end
@@ -862,6 +874,17 @@ describe User, models: true do
     end
   end
 
+  describe '#avatar_url' do
+    let(:user) { create(:user, :with_avatar) }
+    subject { user.avatar_url }
+
+    context 'when avatar file is uploaded' do
+      let(:avatar_path) { "/uploads/user/avatar/#{user.id}/dk.png" }
+
+      it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
+    end
+  end
+
   describe '#requires_ldap_check?' do
     let(:user) { User.new }
 
@@ -1556,6 +1579,16 @@ describe User, models: true do
         expect(ghost.email).to eq('ghost1@example.com')
       end
     end
+
+    context 'when a domain whitelist is in place' do
+      before do
+        stub_application_setting(domain_whitelist: ['gitlab.com'])
+      end
+
+      it 'creates a ghost user' do
+        expect(User.ghost).to be_persisted
+      end
+    end
   end
 
   describe '#update_two_factor_requirement' do
@@ -1639,6 +1672,14 @@ describe User, models: true do
 
     it 'only counts active and non internal users' do
       expect(User.active.count).to eq(1)
+    end
+  end
+
+  describe 'preferred language' do
+    it 'is English by default' do
+      user = create(:user)
+
+      expect(user.preferred_language).to eq('en')
     end
   end
 end

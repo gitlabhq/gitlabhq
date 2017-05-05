@@ -103,6 +103,21 @@ The Service is a class used only to communicate with the server.
 It does not store or manipulate any data. It is not aware of the store or the components.
 We use [vue-resource][vue-resource-repo] to communicate with the server.
 
+Vue Resource should only be imported in the service file.
+
+  ```javascript
+  import Vue from 'vue';
+  import VueResource from 'vue-resource';
+
+  Vue.use(VueResource);
+  ```
+
+### CSRF token
+We use a Vue Resource interceptor to manage the CSRF token.
+`app/assets/javascripts/vue_shared/vue_resource_interceptor.js` holds all our common interceptors.
+Note: You don't need to load `app/assets/javascripts/vue_shared/vue_resource_interceptor.js`
+since it's already being loaded by `common_vue.js`.
+
 ### End Result
 
 The following example shows an  application:
@@ -288,7 +303,8 @@ new Vue({
 
 ```
 
-The [issue boards service][issue-boards-service] is a good example of this pattern.
+The [issue boards service][issue-boards-service]
+is a good example of this pattern.
 
 ## Style guide
 
@@ -371,6 +387,10 @@ describe('Todos App', () => {
   });
 });
 ```
+#### Test the component's output
+The main return value of a Vue component is the rendered output. In order to test the component we
+need to test the rendered output. [Vue][vue-test] guide's to unit test show us exactly that:
+
 
 ### Stubbing API responses
 [Vue Resource Interceptors][vue-resource-interceptor] allow us to add a interceptor with
@@ -403,6 +423,16 @@ the response we need:
   });
 ```
 
+1. Use `$.mount()` to mount the component
+```javascript
+  // bad
+  new Component({
+    el: document.createElement('div')
+  });
+
+  // good
+  new Component().$mount();
+```
 
 [vue-docs]: http://vuejs.org/guide/index.html
 [issue-boards]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/app/assets/javascripts/boards
@@ -413,5 +443,6 @@ the response we need:
 [one-way-data-flow]: https://vuejs.org/v2/guide/components.html#One-Way-Data-Flow
 [vue-resource-repo]: https://github.com/pagekit/vue-resource
 [vue-resource-interceptor]: https://github.com/pagekit/vue-resource/blob/develop/docs/http.md#interceptors
+[vue-test]: https://vuejs.org/v2/guide/unit-testing.html
 [issue-boards-service]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/boards/services/board_service.js.es6
 [flux]: https://facebook.github.io/flux

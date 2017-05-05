@@ -23,4 +23,20 @@ feature 'Group issues page', feature: true do
       it_behaves_like "an autodiscoverable RSS feed without a private token"
     end
   end
+
+  context 'assignee', :js do
+    let(:access_level) { ProjectFeature::ENABLED }
+    let(:user) { user_in_group }
+    let(:user2) { user_outside_group }
+    let(:path) { issues_group_path(group) }
+
+    it 'filters by only group users' do
+      click_button('Assignee')
+
+      wait_for_ajax
+
+      expect(find('.dropdown-menu-assignee')).to have_link(user.name)
+      expect(find('.dropdown-menu-assignee')).not_to have_link(user2.name)
+    end
+  end
 end

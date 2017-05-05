@@ -1,10 +1,9 @@
 /* eslint-disable no-new */
 import Vue from 'vue';
 import VueResource from 'vue-resource';
-import NotebookLab from 'vendor/notebooklab';
+import notebookLab from '../../notebook/index.vue';
 
 Vue.use(VueResource);
-Vue.use(NotebookLab);
 
 export default () => {
   const el = document.getElementById('js-notebook-viewer');
@@ -18,6 +17,9 @@ export default () => {
         loading: true,
         json: {},
       };
+    },
+    components: {
+      notebookLab,
     },
     template: `
       <div class="container-fluid md prepend-top-default append-bottom-default">

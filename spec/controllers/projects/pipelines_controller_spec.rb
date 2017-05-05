@@ -1,12 +1,12 @@
 require 'spec_helper'
 
 describe Projects::PipelinesController do
-  include ApiHelpers
-
   let(:user) { create(:user) }
   let(:project) { create(:empty_project, :public) }
 
   before do
+    project.add_developer(user)
+
     sign_in(user)
   end
 
@@ -87,6 +87,40 @@ describe Projects::PipelinesController do
       expect(json_response['label']).to eq status.label
       expect(json_response['icon']).to eq status.icon
       expect(json_response['favicon']).to eq "/assets/ci_favicons/#{status.favicon}.ico"
+    end
+  end
+
+  describe 'POST retry.json' do
+    let!(:pipeline) { create(:ci_pipeline, :failed, project: project) }
+    let!(:build) { create(:ci_build, :failed, pipeline: pipeline) }
+
+    before do
+      post :retry, namespace_id: project.namespace,
+                   project_id: project,
+                   id: pipeline.id,
+                   format: :json
+    end
+
+    it 'retries a pipeline without returning any content' do
+      expect(response).to have_http_status(:no_content)
+      expect(build.reload).to be_retried
+    end
+  end
+
+  describe 'POST cancel.json' do
+    let!(:pipeline) { create(:ci_pipeline, project: project) }
+    let!(:build) { create(:ci_build, :running, pipeline: pipeline) }
+
+    before do
+      post :cancel, namespace_id: project.namespace,
+                    project_id: project,
+                    id: pipeline.id,
+                    format: :json
+    end
+
+    it 'cancels a pipeline without returning any content' do
+      expect(response).to have_http_status(:no_content)
+      expect(pipeline.reload).to be_canceled
     end
   end
 end

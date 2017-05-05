@@ -167,6 +167,47 @@ describe Projects::NotesController do
     end
   end
 
+  describe 'DELETE destroy' do
+    let(:request_params) do
+      {
+        namespace_id: project.namespace,
+        project_id: project,
+        id: note,
+        format: :js
+      }
+    end
+
+    context 'user is the author of a note' do
+      before do
+        sign_in(note.author)
+        project.team << [note.author, :developer]
+      end
+
+      it "returns status 200 for html" do
+        delete :destroy, request_params
+
+        expect(response).to have_http_status(200)
+      end
+
+      it "deletes the note" do
+        expect { delete :destroy, request_params }.to change { Note.count }.from(1).to(0)
+      end
+    end
+
+    context 'user is not the author of a note' do
+      before do
+        sign_in(user)
+        project.team << [user, :developer]
+      end
+
+      it "returns status 404" do
+        delete :destroy, request_params
+
+        expect(response).to have_http_status(404)
+      end
+    end
+  end
+
   describe 'POST toggle_award_emoji' do
     before do
       sign_in(user)

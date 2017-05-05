@@ -1,4 +1,3 @@
-
 require 'gitlab/email/handler/base_handler'
 
 module Gitlab
@@ -35,6 +34,10 @@ module Gitlab
 
         def project
           @project ||= Project.find_by_full_path(project_path)
+        end
+
+        def metrics_params
+          super.merge(project: project&.full_path)
         end
 
         private

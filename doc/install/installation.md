@@ -423,6 +423,11 @@ which is the recommended location.
 
     sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" RAILS_ENV=production
 
+You can specify a different Git repository by providing it as an extra paramter:
+
+    sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse,https://example.com/gitlab-workhorse.git]" RAILS_ENV=production
+
+
 ### Initialize Database and Activate Advanced Features
 
     sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production
@@ -466,14 +471,18 @@ with setting up Gitaly until you upgrade to GitLab 9.2 or later.
     # Fetch Gitaly source with Git and compile with Go
     sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly]" RAILS_ENV=production
 
+You can specify a different Git repository by providing it as an extra paramter:
+
+    sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly,https://example.com/gitaly.git]" RAILS_ENV=production
+
+Next, make sure gitaly configured:
+
     # Restrict Gitaly socket access
     sudo chmod 0700 /home/git/gitlab/tmp/sockets/private
     sudo chown git /home/git/gitlab/tmp/sockets/private
 
-    # Configure Gitaly
-    cd /home/git/gitaly
-    sudo -u git cp config.toml.example config.toml
     # If you are using non-default settings you need to update config.toml
+    cd /home/git/gitaly
     sudo -u git -H editor config.toml
 
     # Enable Gitaly in the init script

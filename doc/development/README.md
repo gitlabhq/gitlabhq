@@ -33,7 +33,6 @@
 ## Backend howtos
 
 - [Architecture](architecture.md) of GitLab
-- [CI setup](ci_setup.md) for testing GitLab
 - [Gotchas](gotchas.md) to avoid
 - [How to dump production data to staging](db_dump.md)
 - [Instrumentation](instrumentation.md)
@@ -42,6 +41,7 @@
 - [Shell commands](shell_commands.md) in the GitLab codebase
 - [Sidekiq debugging](sidekiq_debugging.md)
 - [Object state models](object_state_models.md)
+- [Building a package for testing purposes](build_test_package.md)
 
 ## Databases
 

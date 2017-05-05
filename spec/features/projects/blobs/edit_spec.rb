@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 feature 'Editing file blob', feature: true, js: true do
-  include WaitForAjax
   include TreeHelper
 
   let(:project) { create(:project, :public, :test_repo) }

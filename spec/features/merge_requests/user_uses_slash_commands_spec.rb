@@ -2,7 +2,6 @@ require 'rails_helper'
 
 feature 'Merge Requests > User uses slash commands', feature: true, js: true do
   include SlashCommandsHelpers
-  include WaitForAjax
 
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
@@ -161,6 +160,7 @@ feature 'Merge Requests > User uses slash commands', feature: true, js: true do
         it 'changes target branch from a note' do
           write_note("message start \n/target_branch merge-test\n message end.")
 
+          wait_for_ajax
           expect(page).not_to have_content('/target_branch')
           expect(page).to have_content('message start')
           expect(page).to have_content('message end.')

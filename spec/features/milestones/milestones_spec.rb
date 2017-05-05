@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe 'Milestone draggable', feature: true, js: true do
-  include WaitForAjax
   include DragTo
 
   let(:milestone) { create(:milestone, project: project, title: 8.14) }
@@ -87,6 +86,9 @@ describe 'Milestone draggable', feature: true, js: true do
 
     visit namespace_project_milestone_path(project.namespace, project, milestone)
     page.find("a[href='#tab-merge-requests']").click
+
+    wait_for_ajax
+
     scroll_into_view('.milestone-content')
     drag_to(selector: '.merge_requests-sortable-list', list_to_index: 1)
 

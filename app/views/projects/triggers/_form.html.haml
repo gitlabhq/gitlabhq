@@ -19,7 +19,7 @@
               %strong Schedule trigger (experimental)
             .help-block
               If checked, this trigger will be executed periodically according to cron and timezone.
-              = link_to icon('question-circle'), help_page_path('ci/triggers', anchor: 'schedule')
+              = link_to icon('question-circle'), help_page_path('ci/triggers/README', anchor: 'using-scheduled-triggers')
         .form-group
           = schedule_fields.label :cron, "Cron", class: "label-light"
           = schedule_fields.text_field :cron, class: "form-control", title: 'Cron specification is required.', placeholder: "0 1 * * *"

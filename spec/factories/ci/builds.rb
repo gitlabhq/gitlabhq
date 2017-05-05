@@ -79,6 +79,19 @@ FactoryGirl.define do
       manual
     end
 
+    trait :retryable do
+      success
+    end
+
+    trait :cancelable do
+      pending
+    end
+
+    trait :erasable do
+      success
+      artifacts
+    end
+
     trait :tags do
       tag_list [:docker, :ruby]
     end

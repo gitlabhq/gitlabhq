@@ -1,4 +1,0 @@
----
-title: Only add code coverage instrumentation when generating coverage report
-merge_request: 9987
-author:

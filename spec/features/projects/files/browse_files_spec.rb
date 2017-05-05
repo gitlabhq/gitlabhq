@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'user browses project', feature: true do
+feature 'user browses project', feature: true, js: true do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 
@@ -13,7 +13,7 @@ feature 'user browses project', feature: true do
   scenario "can see blame of '.gitignore'" do
     click_link ".gitignore"
     click_link 'Blame'
-    
+
     expect(page).to have_content "*.rb"
     expect(page).to have_content "Dmitriy Zaporozhets"
     expect(page).to have_content "Initial commit"
@@ -24,6 +24,7 @@ feature 'user browses project', feature: true do
     click_link 'files'
     click_link 'lfs'
     click_link 'lfs_object.iso'
+    wait_for_ajax
 
     expect(page).not_to have_content 'Download (1.5 MB)'
     expect(page).to have_content 'version https://git-lfs.github.com/spec/v1'

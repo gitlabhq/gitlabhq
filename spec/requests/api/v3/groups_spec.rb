@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-describe API::V3::Groups, api: true  do
-  include ApiHelpers
+describe API::V3::Groups do
   include UploadHelpers
 
   let(:user1) { create(:user, can_create_group: false) }

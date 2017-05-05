@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe 'Issue Boards', feature: true, js: true do
-  include WaitForAjax
   include WaitForVueResource
 
   let(:user)         { create(:user) }

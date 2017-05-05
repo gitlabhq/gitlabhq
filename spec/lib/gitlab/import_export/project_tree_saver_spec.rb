@@ -6,7 +6,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
     let(:project_tree_saver) { described_class.new(project: project, current_user: user, shared: shared) }
     let(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
     let(:user) { create(:user) }
-    let(:project) { setup_project }
+    let!(:project) { setup_project }
 
     before do
       project.team << [user, :master]
@@ -189,6 +189,16 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
           end
         end
       end
+
+      context 'project attributes' do
+        it 'contains the html description' do
+          expect(saved_project_json).to include("description_html" => 'description')
+        end
+
+        it 'does not contain the runners token' do
+          expect(saved_project_json).not_to include("runners_token" => 'token')
+        end
+      end
     end
   end
 
@@ -209,6 +219,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
                      releases: [release],
                      group: group
                     )
+    project.update_column(:description_html, 'description')
     project_label = create(:label, project: project)
     group_label = create(:group_label, group: group)
     create(:label_link, label: project_label, target: issue)

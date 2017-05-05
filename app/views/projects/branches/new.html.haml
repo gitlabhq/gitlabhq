@@ -1,4 +1,5 @@
 - page_title "New Branch"
+- default_ref = params[:ref] || @project.default_branch
 
 - if @error
   .alert.alert-danger
@@ -16,12 +17,11 @@
       .help-block.text-danger.js-branch-name-error
   .form-group
     = label_tag :ref, 'Create from', class: 'control-label'
-    .col-sm-10
-      = hidden_field_tag :ref, params[:ref] || @project.default_branch
-      = dropdown_tag(params[:ref] || @project.default_branch,
-                     options: { toggle_class: 'js-branch-select wide',
-                                filter: true, dropdown_class: "dropdown-menu-selectable", placeholder: "Search branches",
-                                data: { selected: params[:ref] || @project.default_branch, field_name: 'ref' } })
+    .col-sm-10.dropdown.create-from
+      = hidden_field_tag :ref, default_ref
+      = button_tag type: 'button', title: default_ref, class: 'dropdown-toggle form-control js-branch-select', required: true, data: { toggle: 'dropdown', selected: default_ref, field_name: 'ref' } do
+        .text-left.dropdown-toggle-text= default_ref
+      = render 'shared/ref_dropdown', dropdown_class: 'wide'
       .help-block Existing branch name, tag, or commit SHA
   .form-actions
     = button_tag 'Create branch', class: 'btn btn-create', tabindex: 3

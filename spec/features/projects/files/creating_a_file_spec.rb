@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 feature 'User wants to create a file', feature: true do
-  include WaitForAjax
-
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 

@@ -52,7 +52,7 @@ describe SlashCommands::InterpretService, services: true do
 
     shared_examples 'unassign command' do
       it 'populates assignee_id: nil if content contains /unassign' do
-        issuable.update(assignee_id: developer.id)
+        issuable.update!(assignee_id: developer.id)
         _, updates = service.execute(content, issuable)
 
         expect(updates).to eq(assignee_id: nil)
@@ -70,7 +70,7 @@ describe SlashCommands::InterpretService, services: true do
 
     shared_examples 'remove_milestone command' do
       it 'populates milestone_id: nil if content contains /remove_milestone' do
-        issuable.update(milestone_id: milestone.id)
+        issuable.update!(milestone_id: milestone.id)
         _, updates = service.execute(content, issuable)
 
         expect(updates).to eq(milestone_id: nil)
@@ -108,7 +108,7 @@ describe SlashCommands::InterpretService, services: true do
 
     shared_examples 'unlabel command' do
       it 'fetches label ids and populates remove_label_ids if content contains /unlabel' do
-        issuable.update(label_ids: [inprogress.id]) # populate the label
+        issuable.update!(label_ids: [inprogress.id]) # populate the label
         _, updates = service.execute(content, issuable)
 
         expect(updates).to eq(remove_label_ids: [inprogress.id])
@@ -117,7 +117,7 @@ describe SlashCommands::InterpretService, services: true do
 
     shared_examples 'multiple unlabel command' do
       it 'fetches label ids and populates remove_label_ids if content contains  mutiple /unlabel' do
-        issuable.update(label_ids: [inprogress.id, bug.id]) # populate the label
+        issuable.update!(label_ids: [inprogress.id, bug.id]) # populate the label
         _, updates = service.execute(content, issuable)
 
         expect(updates).to eq(remove_label_ids: [inprogress.id, bug.id])
@@ -126,7 +126,7 @@ describe SlashCommands::InterpretService, services: true do
 
     shared_examples 'unlabel command with no argument' do
       it 'populates label_ids: [] if content contains /unlabel with no arguments' do
-        issuable.update(label_ids: [inprogress.id]) # populate the label
+        issuable.update!(label_ids: [inprogress.id]) # populate the label
         _, updates = service.execute(content, issuable)
 
         expect(updates).to eq(label_ids: [])
@@ -135,7 +135,7 @@ describe SlashCommands::InterpretService, services: true do
 
     shared_examples 'relabel command' do
       it 'populates label_ids: [] if content contains /relabel' do
-        issuable.update(label_ids: [bug.id]) # populate the label
+        issuable.update!(label_ids: [bug.id]) # populate the label
         inprogress # populate the label
         _, updates = service.execute(content, issuable)
 
@@ -187,7 +187,7 @@ describe SlashCommands::InterpretService, services: true do
 
     shared_examples 'remove_due_date command' do
       it 'populates due_date: nil if content contains /remove_due_date' do
-        issuable.update(due_date: Date.today)
+        issuable.update!(due_date: Date.today)
         _, updates = service.execute(content, issuable)
 
         expect(updates).to eq(due_date: nil)
@@ -204,7 +204,7 @@ describe SlashCommands::InterpretService, services: true do
 
     shared_examples 'unwip command' do
       it 'returns wip_event: "unwip" if content contains /wip' do
-        issuable.update(title: issuable.wip_title)
+        issuable.update!(title: issuable.wip_title)
         _, updates = service.execute(content, issuable)
 
         expect(updates).to eq(wip_event: 'unwip')
@@ -725,6 +725,283 @@ describe SlashCommands::InterpretService, services: true do
           let(:content) { '/target_branch totally_non_existing_branch' }
           let(:issuable) { another_merge_request }
         end
+      end
+    end
+
+    context '/board_move command' do
+      let(:todo) { create(:label, project: project, title: 'To Do') }
+      let(:inreview) { create(:label, project: project, title: 'In Review') }
+      let(:content) { %{/board_move ~"#{inreview.title}"} }
+
+      let!(:board) { create(:board, project: project) }
+      let!(:todo_list) { create(:list, board: board, label: todo) }
+      let!(:inreview_list) { create(:list, board: board, label: inreview) }
+      let!(:inprogress_list) { create(:list, board: board, label: inprogress) }
+
+      it 'populates remove_label_ids for all current board columns' do
+        issue.update!(label_ids: [todo.id, inprogress.id])
+
+        _, updates = service.execute(content, issue)
+
+        expect(updates[:remove_label_ids]).to match_array([todo.id, inprogress.id])
+      end
+
+      it 'populates add_label_ids with the id of the given label' do
+        _, updates = service.execute(content, issue)
+
+        expect(updates[:add_label_ids]).to eq([inreview.id])
+      end
+
+      it 'does not include the given label id in remove_label_ids' do
+        issue.update!(label_ids: [todo.id, inreview.id])
+
+        _, updates = service.execute(content, issue)
+
+        expect(updates[:remove_label_ids]).to match_array([todo.id])
+      end
+
+      it 'does not remove label ids that are not lists on the board' do
+        issue.update!(label_ids: [todo.id, bug.id])
+
+        _, updates = service.execute(content, issue)
+
+        expect(updates[:remove_label_ids]).to match_array([todo.id])
+      end
+
+      context 'if the project has multiple boards' do
+        let(:issuable) { issue }
+        before { create(:board, project: project) }
+        it_behaves_like 'empty command'
+      end
+
+      context 'if the given label does not exist' do
+        let(:issuable) { issue }
+        let(:content) { '/board_move ~"Fake Label"' }
+        it_behaves_like 'empty command'
+      end
+
+      context 'if multiple labels are given' do
+        let(:issuable) { issue }
+        let(:content) { %{/board_move ~"#{inreview.title}" ~"#{todo.title}"} }
+        it_behaves_like 'empty command'
+      end
+
+      context 'if the given label is not a list on the board' do
+        let(:issuable) { issue }
+        let(:content) { %{/board_move ~"#{bug.title}"} }
+        it_behaves_like 'empty command'
+      end
+
+      context 'if issuable is not an Issue' do
+        let(:issuable) { merge_request }
+        it_behaves_like 'empty command'
+      end
+    end
+  end
+
+  describe '#explain' do
+    let(:service) { described_class.new(project, developer) }
+    let(:merge_request) { create(:merge_request, source_project: project) }
+
+    describe 'close command' do
+      let(:content) { '/close' }
+
+      it 'includes issuable name' do
+        _, explanations = service.explain(content, issue)
+
+        expect(explanations).to eq(['Closes this issue.'])
+      end
+    end
+
+    describe 'reopen command' do
+      let(:content) { '/reopen' }
+      let(:merge_request) { create(:merge_request, :closed, source_project: project) }
+
+      it 'includes issuable name' do
+        _, explanations = service.explain(content, merge_request)
+
+        expect(explanations).to eq(['Reopens this merge request.'])
+      end
+    end
+
+    describe 'title command' do
+      let(:content) { '/title This is new title' }
+
+      it 'includes new title' do
+        _, explanations = service.explain(content, issue)
+
+        expect(explanations).to eq(['Changes the title to "This is new title".'])
+      end
+    end
+
+    describe 'assign command' do
+      let(:content) { "/assign @#{developer.username} do it!" }
+
+      it 'includes only the user reference' do
+        _, explanations = service.explain(content, merge_request)
+
+        expect(explanations).to eq(["Assigns @#{developer.username}."])
+      end
+    end
+
+    describe 'unassign command' do
+      let(:content) { '/unassign' }
+      let(:issue) { create(:issue, project: project, assignee: developer) }
+
+      it 'includes current assignee reference' do
+        _, explanations = service.explain(content, issue)
+
+        expect(explanations).to eq(["Removes assignee @#{developer.username}."])
+      end
+    end
+
+    describe 'milestone command' do
+      let(:content) { '/milestone %wrong-milestone' }
+      let!(:milestone) { create(:milestone, project: project, title: '9.10') }
+
+      it 'is empty when milestone reference is wrong' do
+        _, explanations = service.explain(content, issue)
+
+        expect(explanations).to eq([])
+      end
+    end
+
+    describe 'remove milestone command' do
+      let(:content) { '/remove_milestone' }
+      let(:merge_request) { create(:merge_request, source_project: project, milestone: milestone) }
+
+      it 'includes current milestone name' do
+        _, explanations = service.explain(content, merge_request)
+
+        expect(explanations).to eq(['Removes %"9.10" milestone.'])
+      end
+    end
+
+    describe 'label command' do
+      let(:content) { '/label ~missing' }
+      let!(:label) { create(:label, project: project) }
+
+      it 'is empty when there are no correct labels' do
+        _, explanations = service.explain(content, issue)
+
+        expect(explanations).to eq([])
+      end
+    end
+
+    describe 'unlabel command' do
+      let(:content) { '/unlabel' }
+
+      it 'says all labels if no parameter provided' do
+        merge_request.update!(label_ids: [bug.id])
+        _, explanations = service.explain(content, merge_request)
+
+        expect(explanations).to eq(['Removes all labels.'])
+      end
+    end
+
+    describe 'relabel command' do
+      let(:content) { '/relabel Bug' }
+      let!(:bug) { create(:label, project: project, title: 'Bug') }
+      let(:feature) { create(:label, project: project, title: 'Feature') }
+
+      it 'includes label name' do
+        issue.update!(label_ids: [feature.id])
+        _, explanations = service.explain(content, issue)
+
+        expect(explanations).to eq(["Replaces all labels with ~#{bug.id} label."])
+      end
+    end
+
+    describe 'subscribe command' do
+      let(:content) { '/subscribe' }
+
+      it 'includes issuable name' do
+        _, explanations = service.explain(content, issue)
+
+        expect(explanations).to eq(['Subscribes to this issue.'])
+      end
+    end
+
+    describe 'unsubscribe command' do
+      let(:content) { '/unsubscribe' }
+
+      it 'includes issuable name' do
+        merge_request.subscribe(developer, project)
+        _, explanations = service.explain(content, merge_request)
+
+        expect(explanations).to eq(['Unsubscribes from this merge request.'])
+      end
+    end
+
+    describe 'due command' do
+      let(:content) { '/due April 1st 2016' }
+
+      it 'includes the date' do
+        _, explanations = service.explain(content, issue)
+
+        expect(explanations).to eq(['Sets the due date to Apr 1, 2016.'])
+      end
+    end
+
+    describe 'wip command' do
+      let(:content) { '/wip' }
+
+      it 'includes the new status' do
+        _, explanations = service.explain(content, merge_request)
+
+        expect(explanations).to eq(['Marks this merge request as Work In Progress.'])
+      end
+    end
+
+    describe 'award command' do
+      let(:content) { '/award :confetti_ball: ' }
+
+      it 'includes the emoji' do
+        _, explanations = service.explain(content, issue)
+
+        expect(explanations).to eq(['Toggles :confetti_ball: emoji award.'])
+      end
+    end
+
+    describe 'estimate command' do
+      let(:content) { '/estimate 79d' }
+
+      it 'includes the formatted duration' do
+        _, explanations = service.explain(content, merge_request)
+
+        expect(explanations).to eq(['Sets time estimate to 3mo 3w 4d.'])
+      end
+    end
+
+    describe 'spend command' do
+      let(:content) { '/spend -120m' }
+
+      it 'includes the formatted duration and proper verb' do
+        _, explanations = service.explain(content, issue)
+
+        expect(explanations).to eq(['Substracts 2h spent time.'])
+      end
+    end
+
+    describe 'target branch command' do
+      let(:content) { '/target_branch my-feature ' }
+
+      it 'includes the branch name' do
+        _, explanations = service.explain(content, merge_request)
+
+        expect(explanations).to eq(['Sets target branch to my-feature.'])
+      end
+    end
+
+    describe 'board move command' do
+      let(:content) { '/board_move ~bug' }
+      let!(:bug) { create(:label, project: project, title: 'bug') }
+      let!(:board) { create(:board, project: project) }
+
+      it 'includes the label name' do
+        _, explanations = service.explain(content, issue)
+
+        expect(explanations).to eq(["Moves issue to ~#{bug.id} column in the board."])
       end
     end
   end

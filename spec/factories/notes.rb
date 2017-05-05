@@ -5,7 +5,7 @@ include ActionDispatch::TestProcess
 FactoryGirl.define do
   factory :note do
     project factory: :empty_project
-    note "Note"
+    note { generate(:title) }
     author
     on_issue
 
@@ -28,6 +28,8 @@ FactoryGirl.define do
     factory :discussion_note_on_issue, traits: [:on_issue], class: DiscussionNote
 
     factory :discussion_note_on_commit, traits: [:on_commit], class: DiscussionNote
+
+    factory :discussion_note_on_personal_snippet, traits: [:on_personal_snippet], class: DiscussionNote
 
     factory :legacy_diff_note_on_commit, traits: [:on_commit, :legacy_diff_note], class: LegacyDiffNote
 

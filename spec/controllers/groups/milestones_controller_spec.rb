@@ -6,6 +6,16 @@ describe Groups::MilestonesController do
   let(:project2) { create(:empty_project, group: group) }
   let(:user)    { create(:user) }
   let(:title) { '肯定不是中文的问题' }
+  let(:milestone) do
+    project_milestone = create(:milestone, project: project)
+
+    GroupMilestone.build(
+      group,
+      [project],
+      project_milestone.title
+    )
+  end
+  let(:milestone_path) { group_milestone_path(group, milestone.safe_title, title: milestone.title) }
 
   before do
     sign_in(user)
@@ -13,6 +23,8 @@ describe Groups::MilestonesController do
     project.team << [user, :master]
     controller.instance_variable_set(:@group, group)
   end
+
+  it_behaves_like 'milestone tabs'
 
   describe "#create" do
     it "creates group milestone with Chinese title" do
