@@ -62,9 +62,10 @@ namespace :gitlab do
 
       ref = Shellwords.escape(args[:ref])
 
-      migrations = `git diff #{ref}.. --name-only -- db/migrate`.lines.
-        map { |file| Rails.root.join(file.strip).to_s }.
-        select { |file| File.file?(file) }
+      migrations = `git diff #{ref}.. --diff-filter=A --name-only -- db/migrate`.lines
+        .map { |file| Rails.root.join(file.strip).to_s }
+        .select { |file| File.file?(file) }
+        .select { |file| /\A[0-9]+.*\.rb\z/ =~ File.basename(file) }
 
       Gitlab::DowntimeCheck.new.check_and_print(migrations)
     end
