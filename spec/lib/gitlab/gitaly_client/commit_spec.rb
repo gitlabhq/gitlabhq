@@ -4,7 +4,8 @@ describe Gitlab::GitalyClient::Commit do
   describe '.diff_from_parent' do
     let(:diff_stub) { double('Gitaly::Diff::Stub') }
     let(:project) { create(:project, :repository) }
-    let(:repository_message) { project.repository.gitaly_repository }
+    let(:repository) { project.repository }
+    let(:repository_message) { repository.gitaly_repository }
     let(:commit) { project.commit('913c66a37b4a45b9769037c55c2d238bd0942d2e') }
 
     context 'when a commit has a parent' do
@@ -17,7 +18,7 @@ describe Gitlab::GitalyClient::Commit do
 
         expect_any_instance_of(Gitaly::Diff::Stub).to receive(:commit_diff).with(request)
 
-        described_class.diff_from_parent(commit)
+        described_class.new(repository).diff_from_parent(commit)
       end
     end
 
@@ -32,12 +33,12 @@ describe Gitlab::GitalyClient::Commit do
 
         expect_any_instance_of(Gitaly::Diff::Stub).to receive(:commit_diff).with(request)
 
-        described_class.diff_from_parent(initial_commit)
+        described_class.new(repository).diff_from_parent(initial_commit)
       end
     end
 
     it 'returns a Gitlab::Git::DiffCollection' do
-      ret = described_class.diff_from_parent(commit)
+      ret = described_class.new(repository).diff_from_parent(commit)
 
       expect(ret).to be_kind_of(Gitlab::Git::DiffCollection)
     end
@@ -47,7 +48,7 @@ describe Gitlab::GitalyClient::Commit do
 
       expect(Gitlab::Git::DiffCollection).to receive(:new).with(kind_of(Enumerable), options)
 
-      described_class.diff_from_parent(commit, options)
+      described_class.new(repository).diff_from_parent(commit, options)
     end
   end
 end

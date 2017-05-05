@@ -82,10 +82,14 @@ module Gitlab
       end
 
       def each_delta
-        @iterator.each_delta.with_index do |delta, i|
-          diff = Gitlab::Git::Diff.new(delta)
+        Gitlab::GitalyClient.migrate(:commit_raw_diffs) do |is_enabled|
+          enum = is_enabled ? @iterator.each : @iterator.each_delta
 
-          yield @array[i] = diff
+          enum.with_index do |delta, i|
+            diff = Gitlab::Git::Diff.new(delta)
+
+            yield @array[i] = diff
+          end
         end
       end
 
