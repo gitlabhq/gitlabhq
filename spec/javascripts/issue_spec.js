@@ -81,12 +81,6 @@ describe('Issue', function() {
       this.issue = new Issue();
     });
 
-    it('modifies the Markdown field', function() {
-      spyOn(jQuery, 'ajax').and.stub();
-      $('input[type=checkbox]').attr('checked', true).trigger('change');
-      expect($('.js-task-list-field').val()).toBe('- [x] Task List Item');
-    });
-
     it('submits an ajax request on tasklist:changed', function() {
       spyOn(jQuery, 'ajax').and.callFake(function(req) {
         expect(req.type).toBe('PATCH');
