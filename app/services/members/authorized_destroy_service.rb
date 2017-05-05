@@ -26,15 +26,22 @@ module Members
 
     def unassign_issues_and_merge_requests(member)
       if member.is_a?(GroupMember)
-        IssuesFinder.new(user, group_id: member.source_id, assignee_id: member.user_id).
-          execute.
-          update_all(assignee_id: nil)
+        issue_ids = IssuesFinder.new(user, group_id: member.source_id, assignee_id: member.user_id).
+          execute.pluck(:id)
+
+        IssueAssignee.destroy_all(issue_id: issue_ids, user_id: member.user_id)
+
         MergeRequestsFinder.new(user, group_id: member.source_id, assignee_id: member.user_id).
           execute.
           update_all(assignee_id: nil)
       else
         project = member.source
-        project.issues.opened.assigned_to(member.user).update_all(assignee_id: nil)
+
+        IssueAssignee.destroy_all(
+          user_id: member.user_id,
+          issue_id: project.issues.opened.assigned_to(member.user).select(:id)
+        )
+
         project.merge_requests.opened.assigned_to(member.user).update_all(assignee_id: nil)
         member.user.update_cache_counts
       end

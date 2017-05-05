@@ -11,10 +11,12 @@ module Emails
       mail_answer_thread(@issue, issue_thread_options(updated_by_user_id, recipient_id))
     end
 
-    def reassigned_issue_email(recipient_id, issue_id, previous_assignee_id, updated_by_user_id)
+    def reassigned_issue_email(recipient_id, issue_id, previous_assignee_ids, updated_by_user_id)
       setup_issue_mail(issue_id, recipient_id)
 
-      @previous_assignee = User.find_by(id: previous_assignee_id) if previous_assignee_id
+      @previous_assignees = []
+      @previous_assignees = User.where(id: previous_assignee_ids) if previous_assignee_ids.any?
+
       mail_answer_thread(@issue, issue_thread_options(updated_by_user_id, recipient_id))
     end
 

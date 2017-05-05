@@ -95,8 +95,13 @@
 }
 
 .right-sidebar {
-  a {
+  a,
+  .btn-link {
     color: inherit;
+  }
+
+  .btn-link {
+    outline: none;
   }
 
   .issuable-header-text {
@@ -215,6 +220,10 @@
       }
     }
 
+    .assign-yourself .btn-link {
+      padding-left: 0;
+    }
+
     .light {
       font-weight: normal;
     }
@@ -237,6 +246,10 @@
       margin-right: 10px;
       margin-bottom: 0;
       margin-left: 0;
+    }
+
+    .assignee .user-list .avatar {
+      margin: 0;
     }
 
     .username {
@@ -301,6 +314,10 @@
         margin-top: 0;
       }
 
+      .sidebar-avatar-counter {
+        padding-top: 2px;
+      }
+
       .todo-undone {
         color: $gl-link-color;
       }
@@ -309,8 +326,13 @@
         display: none;
       }
 
-      .avatar:hover {
+      .avatar:hover,
+      .avatar-counter:hover {
         border-color: $issuable-sidebar-color;
+      }
+
+      .avatar-counter:hover {
+        color: $issuable-sidebar-color;
       }
 
       .btn-clipboard {
@@ -322,6 +344,17 @@
           color: $gl-text-color;
         }
       }
+
+      &.multiple-users {
+        display: flex;
+        justify-content: center;
+      }
+    }
+
+    .sidebar-avatar-counter {
+      width: 24px;
+      height: 24px;
+      border-radius: 12px;
     }
 
     .sidebar-collapsed-user {
@@ -331,6 +364,37 @@
 
     .issuable-header-btn {
       display: none;
+    }
+
+    .multiple-users {
+      height: 24px;
+      margin-bottom: 17px;
+      margin-top: 4px;
+      padding-bottom: 4px;
+
+      .btn-link {
+        padding: 0;
+        border: 0;
+
+        .avatar {
+          margin: 0;
+        }
+      }
+
+      .btn-link:first-child {
+        position: absolute;
+        left: 10px;
+        z-index: 1;
+      }
+
+      .btn-link:last-child {
+        position: absolute;
+        right: 10px;
+
+        &:hover {
+          text-decoration: none;
+        }
+      }
     }
   }
 
@@ -383,6 +447,12 @@
   margin: -5px;
 }
 
+
+.user-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .participants-author {
   display: inline-block;
   padding: 5px;
@@ -400,12 +470,38 @@
   }
 }
 
-.participants-more {
+.user-item {
+  display: inline-block;
+  padding: 5px;
+  flex-basis: 20%;
+
+  .user-link {
+    display: inline-block;
+  }
+}
+
+.participants-more,
+.user-list-more {
   margin-top: 5px;
   margin-left: 5px;
 
-  a {
+  a,
+  .btn-link {
     color: $gl-text-color-secondary;
+  }
+
+  .btn-link {
+    outline: none;
+    padding: 0;
+  }
+
+  .btn-link:hover {
+    @extend a:hover;
+    text-decoration: none;
+  }
+
+  .btn-link:focus {
+    text-decoration: none;
   }
 }
 
@@ -496,6 +592,19 @@
         vertical-align: text-top;
       }
     }
+  }
+}
+
+.issuable-list li,
+.issue-info-container .controls {
+  .avatar-counter {
+    display: inline-block;
+    vertical-align: middle;
+    min-width: 16px;
+    line-height: 14px;
+    height: 16px;
+    padding-left: 2px;
+    padding-right: 2px;
   }
 }
 

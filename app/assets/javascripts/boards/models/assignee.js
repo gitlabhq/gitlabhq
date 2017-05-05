@@ -1,4 +1,6 @@
-class ListUser {
+/* eslint-disable no-unused-vars */
+
+class ListAssignee {
   constructor(user, defaultAvatar) {
     this.id = user.id;
     this.name = user.name;
@@ -7,4 +9,4 @@ class ListUser {
   }
 }
 
-window.ListUser = ListUser;
+window.ListAssignee = ListAssignee;

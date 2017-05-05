@@ -423,6 +423,54 @@ describe MergeRequests::UpdateService, services: true do
       end
     end
 
+    context 'updating asssignee_id' do
+      it 'does not update assignee when assignee_id is invalid' do
+        merge_request.update(assignee_id: user.id)
+
+        update_merge_request(assignee_id: -1)
+
+        expect(merge_request.reload.assignee).to eq(user)
+      end
+
+      it 'unassigns assignee when user id is 0' do
+        merge_request.update(assignee_id: user.id)
+
+        update_merge_request(assignee_id: 0)
+
+        expect(merge_request.assignee_id).to be_nil
+      end
+
+      it 'saves assignee when user id is valid' do
+        update_merge_request(assignee_id: user.id)
+
+        expect(merge_request.assignee_id).to eq(user.id)
+      end
+
+      it 'does not update assignee_id when user cannot read issue' do
+        non_member        = create(:user)
+        original_assignee = merge_request.assignee
+
+        update_merge_request(assignee_id: non_member.id)
+
+        expect(merge_request.assignee_id).to eq(original_assignee.id)
+      end
+
+      context "when issuable feature is private" do
+        levels = [Gitlab::VisibilityLevel::INTERNAL, Gitlab::VisibilityLevel::PUBLIC]
+
+        levels.each do |level|
+          it "does not update with unauthorized assignee when project is #{Gitlab::VisibilityLevel.level_name(level)}" do
+            assignee = create(:user)
+            project.update(visibility_level: level)
+            feature_visibility_attr = :"#{merge_request.model_name.plural}_access_level"
+            project.project_feature.update_attribute(feature_visibility_attr, ProjectFeature::PRIVATE)
+
+            expect{ update_merge_request(assignee_id: assignee) }.not_to change{ merge_request.assignee }
+          end
+        end
+      end
+    end
+
     include_examples 'issuable update service' do
       let(:open_issuable) { merge_request }
       let(:closed_issuable) { create(:closed_merge_request, source_project: project) }

@@ -12,7 +12,7 @@ feature 'issuable templates', feature: true, js: true do
   context 'user creates an issue using templates' do
     let(:template_content) { 'this is a test "bug" template' }
     let(:longtemplate_content) { %Q(this\n\n\n\n\nis\n\n\n\n\na\n\n\n\n\nbug\n\n\n\n\ntemplate) }
-    let(:issue) { create(:issue, author: user, assignee: user, project: project) }
+    let(:issue) { create(:issue, author: user, assignees: [user], project: project) }
     let(:description_addition) { ' appending to description' }
 
     background do
@@ -72,7 +72,7 @@ feature 'issuable templates', feature: true, js: true do
   context 'user creates an issue using templates, with a prior description' do
     let(:prior_description) { 'test issue description' }
     let(:template_content) { 'this is a test "bug" template' }
-    let(:issue) { create(:issue, author: user, assignee: user, project: project) }
+    let(:issue) { create(:issue, author: user, assignees: [user], project: project) }
 
     background do
       project.repository.create_file(

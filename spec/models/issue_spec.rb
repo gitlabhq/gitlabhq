@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Issue, models: true do
   describe "Associations" do
     it { is_expected.to belong_to(:milestone) }
+    it { is_expected.to have_many(:assignees) }
   end
 
   describe 'modules' do
@@ -34,6 +35,64 @@ describe Issue, models: true do
     it 'returns ordered list' do
       expect(project.issues.order_by_position_and_priority).
         to match [issue3, issue4, issue1, issue2]
+    end
+  end
+
+  describe "before_save" do
+    describe "#update_cache_counts when an issue is reassigned" do
+      let(:issue) { create(:issue) }
+      let(:assignee) { create(:user) }
+
+      context "when previous assignee exists" do
+        before do
+          issue.project.team << [assignee, :developer]
+          issue.assignees << assignee
+        end
+
+        it "updates cache counts for new assignee" do
+          user = create(:user)
+
+          expect(user).to receive(:update_cache_counts)
+
+          issue.assignees << user
+        end
+
+        it "updates cache counts for previous assignee" do
+          issue.assignees.first
+
+          expect_any_instance_of(User).to receive(:update_cache_counts)
+
+          issue.assignees.destroy_all
+        end
+      end
+
+      context "when previous assignee does not exist" do
+        it "updates cache count for the new assignee" do
+          issue.assignees = []
+
+          expect_any_instance_of(User).to receive(:update_cache_counts)
+
+          issue.assignees << assignee
+        end
+      end
+    end
+  end
+
+  describe '#card_attributes' do
+    it 'includes the author name' do
+      allow(subject).to receive(:author).and_return(double(name: 'Robert'))
+      allow(subject).to receive(:assignees).and_return([])
+
+      expect(subject.card_attributes).
+        to eq({ 'Author' => 'Robert', 'Assignee' => '' })
+    end
+
+    it 'includes the assignee name' do
+      allow(subject).to receive(:author).and_return(double(name: 'Robert'))
+      allow(subject).to receive(:assignees).and_return([double(name: 'Douwe')])
+
+      expect(subject.card_attributes).
+        to eq({ 'Author' => 'Robert', 'Assignee' => 'Douwe' })
     end
   end
 
@@ -124,13 +183,24 @@ describe Issue, models: true do
     end
   end
 
-  describe '#is_being_reassigned?' do
-    it 'returns true if the issue assignee has changed' do
-      subject.assignee = create(:user)
-      expect(subject.is_being_reassigned?).to be_truthy
+  describe '#assignee_or_author?' do
+    let(:user) { create(:user) }
+    let(:issue) { create(:issue) }
+
+    it 'returns true for a user that is assigned to an issue' do
+      issue.assignees << user
+
+      expect(issue.assignee_or_author?(user)).to be_truthy
     end
-    it 'returns false if the issue assignee has not changed' do
-      expect(subject.is_being_reassigned?).to be_falsey
+
+    it 'returns true for a user that is the author of an issue' do
+      issue.update(author: user)
+
+      expect(issue.assignee_or_author?(user)).to be_truthy
+    end
+
+    it 'returns false for a user that is not the assignee or author' do
+      expect(issue.assignee_or_author?(user)).to be_falsey
     end
   end
 
@@ -383,14 +453,14 @@ describe Issue, models: true do
       user1 = create(:user)
       user2 = create(:user)
       project = create(:empty_project)
-      issue = create(:issue, assignee: user1, project: project)
+      issue = create(:issue, assignees: [user1], project: project)
       project.add_developer(user1)
       project.add_developer(user2)
 
       expect(user1.assigned_open_issues_count).to eq(1)
       expect(user2.assigned_open_issues_count).to eq(0)
 
-      issue.assignee = user2
+      issue.assignees = [user2]
       issue.save
 
       expect(user1.assigned_open_issues_count).to eq(0)
@@ -675,6 +745,11 @@ describe Issue, models: true do
       expect(attrs_hash).to include(:human_time_estimate)
       expect(attrs_hash).to include(:human_total_time_spent)
       expect(attrs_hash).to include('time_estimate')
+    end
+
+    it 'includes assignee_ids and deprecated assignee_id' do
+      expect(attrs_hash).to include(:assignee_id)
+      expect(attrs_hash).to include(:assignee_ids)
     end
   end
 

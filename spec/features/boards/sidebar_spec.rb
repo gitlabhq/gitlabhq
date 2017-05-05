@@ -4,13 +4,14 @@ describe 'Issue Boards', feature: true, js: true do
   include WaitForVueResource
 
   let(:user)         { create(:user) }
+  let(:user2)        { create(:user) }
   let(:project)      { create(:empty_project, :public) }
   let!(:milestone)   { create(:milestone, project: project) }
   let!(:development) { create(:label, project: project, name: 'Development') }
   let!(:bug)         { create(:label, project: project, name: 'Bug') }
   let!(:regression)  { create(:label, project: project, name: 'Regression') }
   let!(:stretch)     { create(:label, project: project, name: 'Stretch') }
-  let!(:issue1)      { create(:labeled_issue, project: project, assignee: user, milestone: milestone, labels: [development], relative_position: 2) }
+  let!(:issue1)      { create(:labeled_issue, project: project, assignees: [user], milestone: milestone, labels: [development], relative_position: 2) }
   let!(:issue2)      { create(:labeled_issue, project: project, labels: [development, stretch], relative_position: 1) }
   let(:board)        { create(:board, project: project) }
   let!(:list)        { create(:list, board: board, label: development, position: 0) }
@@ -112,9 +113,10 @@ describe 'Issue Boards', feature: true, js: true do
 
         page.within('.dropdown-menu-user') do
           click_link 'Unassigned'
-
-          wait_for_vue_resource
         end
+
+        find('.dropdown-menu-toggle').click
+        wait_for_vue_resource
 
         expect(page).to have_content('No assignee')
       end
@@ -128,7 +130,7 @@ describe 'Issue Boards', feature: true, js: true do
       page.within(find('.assignee')) do
         expect(page).to have_content('No assignee')
 
-        click_link 'assign yourself'
+        click_button 'assign yourself'
 
         wait_for_vue_resource
 
@@ -138,7 +140,7 @@ describe 'Issue Boards', feature: true, js: true do
       expect(card).to have_selector('.avatar')
     end
 
-    it 'resets assignee dropdown' do
+    it 'updates assignee dropdown' do
       click_card(card)
 
       page.within('.assignee') do
@@ -162,7 +164,7 @@ describe 'Issue Boards', feature: true, js: true do
       page.within('.assignee') do
         click_link 'Edit'
 
-        expect(page).not_to have_selector('.is-active')
+        expect(page).to have_selector('.is-active')
       end
     end
   end
