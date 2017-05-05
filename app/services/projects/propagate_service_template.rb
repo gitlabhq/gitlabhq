@@ -11,7 +11,7 @@ module Projects
     end
 
     def propagate
-      return unless @template&.active
+      return unless @template&.active?
 
       Rails.logger.info("Propagating services for template #{@template.id}")
 
