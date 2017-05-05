@@ -102,11 +102,10 @@ class GitPushService < BaseService
       .perform_async(@project.id, current_user.id, params[:oldrev], params[:newrev], params[:ref])
 
     SystemHookPushWorker.perform_async(build_push_data.dup, :push_hooks)
-
+    Ci::CreatePipelineService.new(@project, current_user, build_push_data).execute(:push)
     EventCreateService.new.push(@project, current_user, build_push_data)
     @project.execute_hooks(build_push_data.dup, :push_hooks)
     @project.execute_services(build_push_data.dup, :push_hooks)
-    Ci::CreatePipelineService.new(@project, current_user, build_push_data).execute(:push)
 
     if push_remove_branch?
       AfterBranchDeleteService
