@@ -17,10 +17,10 @@ module Ci
 
     def job_groups
       @job_groups ||=
-        statuses.sort_by(&:sortable_name).group_by(&:group_name)
+        statuses.latest.sort_by(&:sortable_name).group_by(&:group_name)
         .map do |group_name, grouped_statuses|
-          Ci::Group.new(self, name: group_name, statuses: grouped_statuses)
-        end
+          Ci::Group.new(self, name: group_name, jobs: grouped_statuses)
+        end.sort_by(&:name)
     end
 
     def to_param

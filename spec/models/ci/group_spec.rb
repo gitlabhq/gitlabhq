@@ -1,15 +1,15 @@
 require 'spec_helper'
 
 describe Ci::Group, models: true do
-  subject { described_class.new('test', name: 'rspec', statuses: statuses) }
-  let(:statuses) { [] }
+  subject { described_class.new('test', name: 'rspec', jobs: jobs) }
+  let(:jobs) { [] }
 
   describe 'expectations' do
     it { is_expected.to include_module(StaticModel) }
 
     it { is_expected.to respond_to(:stage) }
     it { is_expected.to respond_to(:name) }
-    it { is_expected.to respond_to(:statuses) }
+    it { is_expected.to respond_to(:jobs) }
     it { is_expected.to respond_to(:status) }
   end
 
@@ -21,7 +21,7 @@ describe Ci::Group, models: true do
 
   describe '#detailed_status' do
     let(:job) { build(:ci_build, :success) }
-    let(:statuses) { [job] }
+    let(:jobs) { [job] }
 
     context 'when there is only one item in the group' do
       it 'calls the status from the object itself' do
@@ -33,7 +33,7 @@ describe Ci::Group, models: true do
 
     context 'when there are more than 1 commit statuses' do
       let(:job1) { build(:ci_build) }
-      let(:statuses) { [job, job1] }
+      let(:jobs) { [job, job1] }
 
       it 'fabricates a new Ci::Status object' do
         expect(subject.detailed_status(nil)).to be_a(Gitlab::Ci::Status::Created)

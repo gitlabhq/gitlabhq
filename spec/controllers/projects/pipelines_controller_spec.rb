@@ -55,7 +55,8 @@ describe Projects::PipelinesController do
 
         create(:ci_build, pipeline: pipeline)
 
-        expect { get_pipeline_json }.not_to exceed_query_limit(control_count)
+        # The plus 2 is needed to group and sort
+        expect { get_pipeline_json }.not_to exceed_query_limit(control_count + 2)
       end
     end
 

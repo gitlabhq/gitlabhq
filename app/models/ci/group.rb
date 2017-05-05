@@ -5,12 +5,14 @@ module Ci
   class Group
     include StaticModel
 
-    attr_reader :stage, :name, :statuses
+    attr_reader :stage, :name, :jobs
 
-    def initialize(stage, name:, statuses:)
+    delegate :size, to: :jobs
+
+    def initialize(stage, name:, jobs:)
       @stage = stage
       @name = name
-      @statuses = statuses
+      @jobs = jobs
     end
 
     def status
@@ -18,21 +20,17 @@ module Ci
     end
 
     def detailed_status(current_user)
-      if size == 1
-        statuses[0].detailed_status(current_user)
+      if jobs.one?
+        jobs.first.detailed_status(current_user)
       else
         Gitlab::Ci::Status::Group::Factory.new(self, current_user).fabricate!
       end
     end
 
-    def size
-      statuses.size
-    end
-
     private
 
     def commit_statuses
-      @commit_statuses ||= CommitStatus.where(id: statuses.map(&:id))
+      @commit_statuses ||= CommitStatus.where(id: jobs.map(&:id))
     end
   end
 end
