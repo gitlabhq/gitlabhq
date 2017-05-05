@@ -23,6 +23,7 @@ class User < ActiveRecord::Base
   default_value_for :hide_no_password, false
   default_value_for :project_view, :files
   default_value_for :notified_of_own_activity, false
+  default_value_for :preferred_language, I18n.default_locale
 
   attr_encrypted :otp_secret,
     key:       Gitlab::Application.secrets.otp_key_base,
@@ -118,7 +119,7 @@ class User < ActiveRecord::Base
     presence: true,
     numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: Gitlab::Database::MAX_INT_VALUE }
   validates :username,
-    namespace: true,
+    dynamic_path: true,
     presence: true,
     uniqueness: { case_sensitive: false }
 

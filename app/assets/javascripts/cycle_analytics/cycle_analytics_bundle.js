@@ -2,6 +2,7 @@
 
 import Vue from 'vue';
 import Cookies from 'js-cookie';
+import Translate from '../vue_shared/translate';
 import LimitWarningComponent from './components/limit_warning_component';
 
 require('./components/stage_code_component');
@@ -15,6 +16,8 @@ require('./components/total_time_component');
 require('./cycle_analytics_service');
 require('./cycle_analytics_store');
 require('./default_event_objects');
+
+Vue.use(Translate);
 
 $(() => {
   const OVERVIEW_DIALOG_COOKIE = 'cycle_analytics_help_dismissed';

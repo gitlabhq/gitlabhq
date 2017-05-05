@@ -28,11 +28,11 @@ global.cycleAnalytics.StageCodeComponent = Vue.extend({
             <a :href="mergeRequest.url" class="issue-link">!{{ mergeRequest.iid }}</a>
             &middot;
             <span>
-              Opened
+              {{ __('OpenedNDaysAgo|Opened') }}
               <a :href="mergeRequest.url" class="issue-date">{{ mergeRequest.createdAt }}</a>
             </span>
             <span>
-              by
+              {{ __('ByAuthor|by') }}
               <a :href="mergeRequest.author.webUrl" class="issue-author-link">{{ mergeRequest.author.name }}</a>
             </span>
           </div>

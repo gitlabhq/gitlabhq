@@ -3,7 +3,7 @@ import PrometheusGraph from '~/monitoring/prometheus_graph';
 import { prometheusMockData } from './prometheus_mock_data';
 
 describe('PrometheusGraph', () => {
-  const fixtureName = 'static/environments/metrics.html.raw';
+  const fixtureName = 'environments/metrics/metrics.html.raw';
   const prometheusGraphContainer = '.prometheus-graph';
   const prometheusGraphContents = `${prometheusGraphContainer}[graph-type=cpu_values]`;
 
@@ -77,7 +77,7 @@ describe('PrometheusGraph', () => {
 });
 
 describe('PrometheusGraphs UX states', () => {
-  const fixtureName = 'static/environments/metrics.html.raw';
+  const fixtureName = 'environments/metrics/metrics.html.raw';
   preloadFixtures(fixtureName);
 
   beforeEach(() => {

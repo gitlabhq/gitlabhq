@@ -97,6 +97,18 @@ describe User, models: true do
         expect(user.errors.values).to eq [['dashboard is a reserved name']]
       end
 
+      it 'allows child names' do
+        user = build(:user, username: 'avatar')
+
+        expect(user).to be_valid
+      end
+
+      it 'allows wildcard names' do
+        user = build(:user, username: 'blob')
+
+        expect(user).to be_valid
+      end
+
       it 'validates uniqueness' do
         expect(subject).to validate_uniqueness_of(:username).case_insensitive
       end
@@ -859,6 +871,17 @@ describe User, models: true do
     it 'is false if avatar is html page' do
       user.update_attribute(:avatar, 'uploads/avatar.html')
       expect(user.avatar_type).to eq(['only images allowed'])
+    end
+  end
+
+  describe '#avatar_url' do
+    let(:user) { create(:user, :with_avatar) }
+    subject { user.avatar_url }
+
+    context 'when avatar file is uploaded' do
+      let(:avatar_path) { "/uploads/user/avatar/#{user.id}/dk.png" }
+
+      it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
     end
   end
 
@@ -1649,6 +1672,14 @@ describe User, models: true do
 
     it 'only counts active and non internal users' do
       expect(User.active.count).to eq(1)
+    end
+  end
+
+  describe 'preferred language' do
+    it 'is English by default' do
+      user = create(:user)
+
+      expect(user.preferred_language).to eq('en')
     end
   end
 end

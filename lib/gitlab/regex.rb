@@ -22,6 +22,10 @@ module Gitlab
       @namespace_regex ||= /\A#{NAMESPACE_REGEX_STR}\z/.freeze
     end
 
+    def full_namespace_regex
+      @full_namespace_regex ||= %r{\A#{FULL_NAMESPACE_REGEX_STR}\z}
+    end
+
     def namespace_route_regex
       @namespace_route_regex ||= /#{NAMESPACE_REGEX_STR}/.freeze
     end

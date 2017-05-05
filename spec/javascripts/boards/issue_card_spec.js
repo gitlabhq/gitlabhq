@@ -146,6 +146,27 @@ describe('Issue card component', () => {
         ).not.toBeNull();
       });
     });
+
+    describe('assignee default avatar', () => {
+      beforeEach((done) => {
+        component.issue.assignee = new ListUser({
+          id: 1,
+          name: 'testing 123',
+          username: 'test',
+        }, 'default_avatar');
+
+        Vue.nextTick(done);
+      });
+
+      it('displays defaults avatar if users avatar is null', () => {
+        expect(
+          component.$el.querySelector('.card-assignee img'),
+        ).not.toBeNull();
+        expect(
+          component.$el.querySelector('.card-assignee img').getAttribute('src'),
+        ).toBe('default_avatar');
+      });
+    });
   });
 
   describe('labels', () => {

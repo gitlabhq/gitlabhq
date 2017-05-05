@@ -20,7 +20,7 @@
             = discussion.author.to_reference
             started a discussion
 
-            - url = discussion_diff_path(discussion)
+            - url = discussion_path(discussion)
             - if discussion.for_commit? && @noteable != discussion.noteable
               on
               - commit = discussion.noteable

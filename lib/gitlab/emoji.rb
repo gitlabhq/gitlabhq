@@ -54,7 +54,7 @@ module Gitlab
         unicode_version: emoji_unicode_version(emoji_name)
       }
 
-      ActionController::Base.helpers.content_tag('gl-emoji', emoji_info['moji'], data: data)
+      ActionController::Base.helpers.content_tag('gl-emoji', emoji_info['moji'], title: emoji_info['description'], data: data)
     end
   end
 end

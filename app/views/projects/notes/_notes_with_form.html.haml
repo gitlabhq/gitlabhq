@@ -1,7 +1,7 @@
 %ul#notes-list.notes.main-notes-list.timeline
-  = render "projects/notes/notes"
+  = render "shared/notes/notes"
 
-= render 'projects/notes/edit_form'
+= render 'projects/notes/edit_form', project: @project
 
 %ul.notes.notes-form.timeline
   %li.timeline-entry

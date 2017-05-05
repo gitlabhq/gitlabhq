@@ -291,6 +291,27 @@ describe Issue, models: true do
     end
   end
 
+  describe '#has_related_branch?' do
+    let(:issue) { create(:issue, title: "Blue Bell Knoll") }
+    subject { issue.has_related_branch? }
+
+    context 'branch found' do
+      before do
+        allow(issue.project.repository).to receive(:branch_names).and_return(["iceblink-luck", issue.to_branch_name])
+      end
+
+      it { is_expected.to eq true }
+    end
+
+    context 'branch not found' do
+      before do
+        allow(issue.project.repository).to receive(:branch_names).and_return(["lazy-calm"])
+      end
+
+      it { is_expected.to eq false }
+    end
+  end
+
   it_behaves_like 'an editable mentionable' do
     subject { create(:issue, project: create(:project, :repository)) }
 

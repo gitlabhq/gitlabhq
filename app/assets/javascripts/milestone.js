@@ -19,12 +19,10 @@
       });
     };
 
-    Milestone.sortIssues = function(data) {
-      var sort_issues_url;
-      sort_issues_url = location.href + "/sort_issues";
+    Milestone.sortIssues = function(url, data) {
       return $.ajax({
         type: "PUT",
-        url: sort_issues_url,
+        url,
         data: data,
         success: function(_data) {
           return Milestone.successCallback(_data);
@@ -36,12 +34,10 @@
       });
     };
 
-    Milestone.sortMergeRequests = function(data) {
-      var sort_mr_url;
-      sort_mr_url = location.href + "/sort_merge_requests";
+    Milestone.sortMergeRequests = function(url, data) {
       return $.ajax({
         type: "PUT",
-        url: sort_mr_url,
+        url,
         data: data,
         success: function(_data) {
           return Milestone.successCallback(_data);
@@ -81,42 +77,55 @@
     };
 
     function Milestone() {
-      var oldMouseStart;
+      this.issuesSortEndpoint = $('#tab-issues').data('sort-endpoint');
+      this.mergeRequestsSortEndpoint = $('#tab-merge-requests').data('sort-endpoint');
+
       this.bindIssuesSorting();
-      this.bindMergeRequestSorting();
       this.bindTabsSwitching();
+
+      // Load merge request tab if it is active
+      // merge request tab is active based on different conditions in the backend
+      this.loadTab($('.js-milestone-tabs .active a'));
+
+      this.loadInitialTab();
     }
 
     Milestone.prototype.bindIssuesSorting = function() {
+      if (!this.issuesSortEndpoint) return;
+
       $('#issues-list-unassigned, #issues-list-ongoing, #issues-list-closed').each(function (i, el) {
         this.createSortable(el, {
           group: 'issue-list',
           listEls: $('.issues-sortable-list'),
           fieldName: 'issue',
-          sortCallback: Milestone.sortIssues,
+          sortCallback: (data) => {
+            Milestone.sortIssues(this.issuesSortEndpoint, data);
+          },
           updateCallback: Milestone.updateIssue,
         });
       }.bind(this));
     };
 
     Milestone.prototype.bindTabsSwitching = function() {
-      return $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
-        var currentTabClass, previousTabClass;
-        currentTabClass = $(e.target).data('show');
-        previousTabClass = $(e.relatedTarget).data('show');
-        $(previousTabClass).hide();
-        $(currentTabClass).removeClass('hidden');
-        return $(currentTabClass).show();
+      return $('a[data-toggle="tab"]').on('show.bs.tab', (e) => {
+        const $target = $(e.target);
+
+        location.hash = $target.attr('href');
+        this.loadTab($target);
       });
     };
 
     Milestone.prototype.bindMergeRequestSorting = function() {
+      if (!this.mergeRequestsSortEndpoint) return;
+
       $("#merge_requests-list-unassigned, #merge_requests-list-ongoing, #merge_requests-list-closed").each(function (i, el) {
         this.createSortable(el, {
           group: 'merge-request-list',
           listEls: $(".merge_requests-sortable-list:not(#merge_requests-list-merged)"),
           fieldName: 'merge_request',
-          sortCallback: Milestone.sortMergeRequests,
+          sortCallback: (data) => {
+            Milestone.sortMergeRequests(this.mergeRequestsSortEndpoint, data);
+          },
           updateCallback: Milestone.updateMergeRequest,
         });
       }.bind(this));
@@ -167,6 +176,35 @@
           this.options.onUpdate.call(this, e);
         }
       });
+    };
+
+    Milestone.prototype.loadInitialTab = function() {
+      const $target = $(`.js-milestone-tabs a[href="${location.hash}"]`);
+
+      if ($target.length) {
+        $target.tab('show');
+      }
+    };
+
+    Milestone.prototype.loadTab = function($target) {
+      const endpoint = $target.data('endpoint');
+      const tabElId = $target.attr('href');
+
+      if (endpoint && !$target.hasClass('is-loaded')) {
+        $.ajax({
+          url: endpoint,
+          dataType: 'JSON',
+        })
+        .fail(() => new Flash('Error loading milestone tab'))
+        .done((data) => {
+          $(tabElId).html(data.html);
+          $target.addClass('is-loaded');
+
+          if (tabElId === '#tab-merge-requests') {
+            this.bindMergeRequestSorting();
+          }
+        });
+      }
     };
 
     return Milestone;

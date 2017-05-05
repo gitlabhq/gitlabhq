@@ -1098,20 +1098,32 @@ describe Repository, models: true do
   end
 
   describe '#merge' do
-    it 'merges the code and return the commit id' do
+    let(:merge_request) { create(:merge_request, source_branch: 'feature', target_branch: 'master', source_project: project) }
+
+    let(:commit_options) do
+      author = repository.user_to_committer(user)
+      { message: 'Test \r\n\r\n message', committer: author, author: author }
+    end
+
+    it 'merges the code and returns the commit id' do
       expect(merge_commit).to be_present
       expect(repository.blob_at(merge_commit.id, 'files/ruby/feature.rb')).to be_present
     end
 
     it 'sets the `in_progress_merge_commit_sha` flag for the given merge request' do
-      merge_request = create(:merge_request, source_branch: 'feature', target_branch: 'master', source_project: project)
-
-      merge_commit_id = repository.merge(user,
-                                         merge_request.diff_head_sha,
-                                         merge_request,
-                                         commit_options)
+      merge_commit_id = merge(repository, user, merge_request, commit_options)
 
       expect(merge_request.in_progress_merge_commit_sha).to eq(merge_commit_id)
+    end
+
+    it 'removes carriage returns from commit message' do
+      merge_commit_id = merge(repository, user, merge_request, commit_options)
+
+      expect(repository.commit(merge_commit_id).message).to eq(commit_options[:message].delete("\r"))
+    end
+
+    def merge(repository, user, merge_request, options = {})
+      repository.merge(user, merge_request.diff_head_sha, merge_request, options)
     end
   end
 
@@ -1379,12 +1391,22 @@ describe Repository, models: true do
   describe '#branch_count' do
     it 'returns the number of branches' do
       expect(repository.branch_count).to be_an(Integer)
+
+      # NOTE: Until rugged goes away, make sure rugged and gitaly are in sync
+      rugged_count = repository.raw_repository.rugged.branches.count
+
+      expect(repository.branch_count).to eq(rugged_count)
     end
   end
 
   describe '#tag_count' do
     it 'returns the number of tags' do
       expect(repository.tag_count).to be_an(Integer)
+
+      # NOTE: Until rugged goes away, make sure rugged and gitaly are in sync
+      rugged_count = repository.raw_repository.rugged.tags.count
+
+      expect(repository.tag_count).to eq(rugged_count)
     end
   end
 

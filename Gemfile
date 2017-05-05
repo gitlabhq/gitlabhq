@@ -256,6 +256,11 @@ gem 'sentry-raven', '~> 2.4.0'
 
 gem 'premailer-rails', '~> 1.9.0'
 
+# I18n
+gem 'gettext_i18n_rails', '~> 1.8.0'
+gem 'gettext_i18n_rails_js', '~> 1.2.0'
+gem 'gettext', '~> 3.2.2', require: false, group: :development
+
 # Metrics
 group :metrics do
   gem 'allocations', '~> 1.0', require: false, platform: :mri

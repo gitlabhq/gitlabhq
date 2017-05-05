@@ -37,7 +37,7 @@ describe Gitlab::Template::MergeRequestTemplate do
     it 'returns the merge request object of a valid file' do
       ruby = subject.find('bug', project)
 
-      expect(ruby).to be_a Gitlab::Template::MergeRequestTemplate
+      expect(ruby).to be_a described_class
       expect(ruby.name).to eq('bug')
     end
   end

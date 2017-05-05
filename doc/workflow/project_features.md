@@ -26,6 +26,8 @@ This is a separate system for documentation, built right into GitLab.
 
 It is source controlled and is very convenient if you don't want to keep you documentation in your source code, but you do want to keep it in your GitLab project.
 
+[Read more about Wikis.](../user/project/wiki/index.md)
+
 ## Snippets
 
 Snippets are little bits of code or text.

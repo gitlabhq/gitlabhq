@@ -100,6 +100,7 @@ class MergeRequest < ActiveRecord::Base
   validates :merge_user, presence: true, if: :merge_when_pipeline_succeeds?, unless: :importing?
   validate :validate_branches, unless: [:allow_broken, :importing?, :closed_without_fork?]
   validate :validate_fork, unless: :closed_without_fork?
+  validate :validate_target_project, on: :create
 
   scope :by_source_or_target_branch, ->(branch_name) do
     where("source_branch = :branch OR target_branch = :branch", branch: branch_name)
@@ -330,6 +331,12 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+  def validate_target_project
+    return true if target_project.merge_requests_enabled?
+
+    errors.add :base, 'Target project has disabled merge requests'
+  end
+
   def validate_fork
     return true unless target_project && source_project
     return true if target_project == source_project
@@ -367,12 +374,18 @@ class MergeRequest < ActiveRecord::Base
     merge_request_diff(true)
   end
 
-  def merge_request_diff_for(diff_refs)
-    @merge_request_diffs_by_diff_refs ||= Hash.new do |h, diff_refs|
-      h[diff_refs] = merge_request_diffs.viewable.select_without_diff.find_by_diff_refs(diff_refs)
+  def merge_request_diff_for(diff_refs_or_sha)
+    @merge_request_diffs_by_diff_refs_or_sha ||= Hash.new do |h, diff_refs_or_sha|
+      diffs = merge_request_diffs.viewable.select_without_diff
+      h[diff_refs_or_sha] =
+        if diff_refs_or_sha.is_a?(Gitlab::Diff::DiffRefs)
+          diffs.find_by_diff_refs(diff_refs_or_sha)
+        else
+          diffs.find_by(head_commit_sha: diff_refs_or_sha)
+        end
     end
 
-    @merge_request_diffs_by_diff_refs[diff_refs]
+    @merge_request_diffs_by_diff_refs_or_sha[diff_refs_or_sha]
   end
 
   def reload_diff_if_branch_changed

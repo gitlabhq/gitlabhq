@@ -2,8 +2,9 @@
 
 // MarkdownPreview
 //
-// Handles toggling the "Write" and "Preview" tab clicks, rendering the preview,
-// and showing a warning when more than `x` users are referenced.
+// Handles toggling the "Write" and "Preview" tab clicks, rendering the preview
+// (including the explanation of slash commands), and showing a warning when
+// more than `x` users are referenced.
 //
 (function () {
   var lastTextareaPreviewed;
@@ -17,32 +18,45 @@
 
     // Minimum number of users referenced before triggering a warning
     MarkdownPreview.prototype.referenceThreshold = 10;
+    MarkdownPreview.prototype.emptyMessage = 'Nothing to preview.';
 
     MarkdownPreview.prototype.ajaxCache = {};
 
     MarkdownPreview.prototype.showPreview = function ($form) {
       var mdText;
       var preview = $form.find('.js-md-preview');
+      var url = preview.data('url');
       if (preview.hasClass('md-preview-loading')) {
         return;
       }
       mdText = $form.find('textarea.markdown-area').val();
 
       if (mdText.trim().length === 0) {
-        preview.text('Nothing to preview.');
+        preview.text(this.emptyMessage);
         this.hideReferencedUsers($form);
       } else {
         preview.addClass('md-preview-loading').text('Loading...');
-        this.fetchMarkdownPreview(mdText, (function (response) {
-          preview.removeClass('md-preview-loading').html(response.body);
+        this.fetchMarkdownPreview(mdText, url, (function (response) {
+          var body;
+          if (response.body.length > 0) {
+            body = response.body;
+          } else {
+            body = this.emptyMessage;
+          }
+
+          preview.removeClass('md-preview-loading').html(body);
           preview.renderGFM();
           this.renderReferencedUsers(response.references.users, $form);
+
+          if (response.references.commands) {
+            this.renderReferencedCommands(response.references.commands, $form);
+          }
         }).bind(this));
       }
     };
 
-    MarkdownPreview.prototype.fetchMarkdownPreview = function (text, success) {
-      if (!window.preview_markdown_path) {
+    MarkdownPreview.prototype.fetchMarkdownPreview = function (text, url, success) {
+      if (!url) {
         return;
       }
       if (text === this.ajaxCache.text) {
@@ -51,7 +65,7 @@
       }
       $.ajax({
         type: 'POST',
-        url: window.preview_markdown_path,
+        url: url,
         data: {
           text: text
         },
@@ -80,6 +94,22 @@
         } else {
           referencedUsers.hide();
         }
+      }
+    };
+
+    MarkdownPreview.prototype.hideReferencedCommands = function ($form) {
+      $form.find('.referenced-commands').hide();
+    };
+
+    MarkdownPreview.prototype.renderReferencedCommands = function (commands, $form) {
+      var referencedCommands;
+      referencedCommands = $form.find('.referenced-commands');
+      if (commands.length > 0) {
+        referencedCommands.html(commands);
+        referencedCommands.show();
+      } else {
+        referencedCommands.html('');
+        referencedCommands.hide();
       }
     };
 
@@ -137,6 +167,8 @@
     $form.find('.md-write-holder').show();
     $form.find('textarea.markdown-area').focus();
     $form.find('.md-preview-holder').hide();
+
+    markdownPreview.hideReferencedCommands($form);
   });
 
   $(document).on('markdown-preview:toggle', function (e, keyboardEvent) {

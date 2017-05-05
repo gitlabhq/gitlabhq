@@ -12,7 +12,7 @@ describe EmailsOnPushWorker do
   let(:perform) { subject.perform(project.id, recipients, data.stringify_keys) }
   let(:email) { ActionMailer::Base.deliveries.last }
 
-  subject { EmailsOnPushWorker.new }
+  subject { described_class.new }
 
   describe "#perform" do
     context "when push is a new branch" do

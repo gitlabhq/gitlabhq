@@ -1,14 +1,14 @@
 class SnippetsController < ApplicationController
+  include RendersNotes
   include ToggleAwardEmoji
   include SpammableActions
   include SnippetsActions
-  include MarkdownPreview
   include RendersBlob
 
-  before_action :snippet, only: [:show, :edit, :destroy, :update, :raw, :download]
+  before_action :snippet, only: [:show, :edit, :destroy, :update, :raw]
 
   # Allow read snippet
-  before_action :authorize_read_snippet!, only: [:show, :raw, :download]
+  before_action :authorize_read_snippet!, only: [:show, :raw]
 
   # Allow modify snippet
   before_action :authorize_update_snippet!, only: [:edit, :update]
@@ -16,7 +16,7 @@ class SnippetsController < ApplicationController
   # Allow destroy snippet
   before_action :authorize_admin_snippet!, only: [:destroy]
 
-  skip_before_action :authenticate_user!, only: [:index, :show, :raw, :download]
+  skip_before_action :authenticate_user!, only: [:index, :show, :raw]
 
   layout 'snippets'
   respond_to :html
@@ -64,6 +64,11 @@ class SnippetsController < ApplicationController
     blob = @snippet.blob
     override_max_blob_size(blob)
 
+    @noteable = @snippet
+
+    @discussions = @snippet.discussions
+    @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes))
+
     respond_to do |format|
       format.html do
         render 'show'
@@ -83,16 +88,15 @@ class SnippetsController < ApplicationController
     redirect_to snippets_path
   end
 
-  def download
-    send_data(
-      convert_line_endings(@snippet.content),
-      type: 'text/plain; charset=utf-8',
-      filename: @snippet.sanitized_file_name
-    )
-  end
-
   def preview_markdown
-    render_markdown_preview(params[:text], skip_project_check: true)
+    result = PreviewMarkdownService.new(@project, current_user, params).execute
+
+    render json: {
+      body: view_context.markdown(result[:text], skip_project_check: true),
+      references: {
+        users: result[:users]
+      }
+    }
   end
 
   protected

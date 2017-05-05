@@ -961,7 +961,7 @@ RSpec/DescribeSymbol:
 # Checks that the second argument to top level describe is the tested method
 # name.
 RSpec/DescribedClass:
-  Enabled: false
+  Enabled: true
 
 # Checks for long example.
 RSpec/ExampleLength:

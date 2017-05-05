@@ -6,22 +6,24 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
   before_action :builds_enabled, only: :charts
 
+  wrap_parameters Ci::Pipeline
+
   def index
     @scope = params[:scope]
     @pipelines = PipelinesFinder
-      .new(project)
-      .execute(scope: @scope)
+      .new(project, scope: @scope)
+      .execute
       .page(params[:page])
       .per(30)
 
     @running_count = PipelinesFinder
-      .new(project).execute(scope: 'running').count
+      .new(project, scope: 'running').execute.count
 
     @pending_count = PipelinesFinder
-      .new(project).execute(scope: 'pending').count
+      .new(project, scope: 'pending').execute.count
 
     @finished_count = PipelinesFinder
-      .new(project).execute(scope: 'finished').count
+      .new(project, scope: 'finished').execute.count
 
     @pipelines_count = PipelinesFinder
       .new(project).execute.count
@@ -92,13 +94,25 @@ class Projects::PipelinesController < Projects::ApplicationController
   def retry
     pipeline.retry_failed(current_user)
 
-    redirect_back_or_default default: namespace_project_pipelines_path(project.namespace, project)
+    respond_to do |format|
+      format.html do
+        redirect_back_or_default default: namespace_project_pipelines_path(project.namespace, project)
+      end
+
+      format.json { head :no_content }
+    end
   end
 
   def cancel
     pipeline.cancel_running
 
-    redirect_back_or_default default: namespace_project_pipelines_path(project.namespace, project)
+    respond_to do |format|
+      format.html do
+        redirect_back_or_default default: namespace_project_pipelines_path(project.namespace, project)
+      end
+
+      format.json { head :no_content }
+    end
   end
 
   def charts

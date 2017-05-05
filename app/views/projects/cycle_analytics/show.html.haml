@@ -2,6 +2,7 @@
 - page_title "Cycle Analytics"
 - content_for :page_specific_javascripts do
   = page_specific_javascript_bundle_tag('common_vue')
+  = page_specific_javascript_bundle_tag('locale')
   = page_specific_javascript_bundle_tag('cycle_analytics')
 
 = render "projects/head"
@@ -15,16 +16,16 @@
           = custom_icon('icon_cycle_analytics_splash')
         .col-sm-8.col-xs-12.inner-content
           %h4
-            Introducing Cycle Analytics
+            {{ __('Introducing Cycle Analytics') }}
           %p
-            Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project.
+            {{ __('Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project.') }}
 
-          = link_to "Read more",  help_page_path('user/project/cycle_analytics'), target: '_blank', class: 'btn'
+          = link_to _('Read more'), help_page_path('user/project/cycle_analytics'), target: '_blank', class: 'btn'
   = icon("spinner spin", "v-show" => "isLoading")
   .wrapper{ "v-show" => "!isLoading && !hasError" }
     .panel.panel-default
       .panel-heading
-        Pipeline Health
+        {{ __('Pipeline Health') }}
       .content-block
         .container-fluid
           .row
@@ -34,15 +35,15 @@
             .col-sm-3.col-xs-12.column
               .dropdown.inline.js-ca-dropdown
                 %button.dropdown-menu-toggle{ "data-toggle" => "dropdown", :type => "button" }
-                  %span.dropdown-label Last 30 days
+                  %span.dropdown-label {{ n__('Last %d day', 'Last %d days', 30) }}
                   %i.fa.fa-chevron-down
                 %ul.dropdown-menu.dropdown-menu-align-right
                   %li
                     %a{ "href" => "#", "data-value" => "30" }
-                      Last 30 days
+                      {{ n__('Last %d day', 'Last %d days', 30) }}
                   %li
                     %a{ "href" => "#", "data-value" => "90" }
-                      Last 90 days
+                      {{ n__('Last %d day', 'Last %d days', 90) }}
     .stage-panel-container
       .panel.panel-default.stage-panel
         .panel-heading
@@ -50,20 +51,20 @@
             %ul
               %li.stage-header
                 %span.stage-name
-                  Stage
-                %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: "The phase of the development lifecycle.", "aria-hidden" => "true" }
+                  {{ __('ProjectLifecycle|Stage') }}
+                %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: _("The phase of the development lifecycle."), "aria-hidden" => "true" }
               %li.median-header
                 %span.stage-name
-                  Median
-                %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6.", "aria-hidden" => "true" }
+                  {{ __('Median') }}
+                %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: _("The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."), "aria-hidden" => "true" }
               %li.event-header
                 %span.stage-name
-                  {{ currentStage ? currentStage.legend : 'Related Issues' }}
-                %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: "The collection of events added to the data gathered for that stage.", "aria-hidden" => "true" }
+                  {{ currentStage ? __(currentStage.legend) : __('Related Issues') }}
+                %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: _("The collection of events added to the data gathered for that stage."), "aria-hidden" => "true" }
               %li.total-time-header
                 %span.stage-name
-                  Total Time
-                %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: "The time taken by each data entry gathered by that stage.", "aria-hidden" => "true" }
+                  {{ __('Total Time') }}
+                %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: _("The time taken by each data entry gathered by that stage."), "aria-hidden" => "true" }
         .stage-panel-body
           %nav.stage-nav
             %ul
@@ -75,10 +76,10 @@
                     %span{ "v-if" => "stage.value" }
                       {{ stage.value }}
                     %span.stage-empty{ "v-else" => true }
-                      Not enough data
+                      {{ __('Not enough data') }}
                   %template{ "v-else" => true }
                     %span.not-available
-                      Not available
+                      {{ __('Not available') }}
           .section.stage-events
             %template{ "v-if" => "isLoadingStage" }
               = icon("spinner spin")

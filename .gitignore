@@ -1,5 +1,7 @@
 *.log
 *.swp
+*.mo
+*.edit.po
 .DS_Store
 .bundle
 .chef
@@ -45,6 +47,7 @@ eslint-report.html
 /public/uploads.*
 /public/uploads/
 /shared/artifacts/
+/spec/javascripts/fixtures/blob/pdf/
 /rails_best_practices_output.html
 /tags
 /tmp/*
@@ -53,3 +56,4 @@ eslint-report.html
 /shared/*
 /.gitlab_workhorse_secret
 /webpack-report/
+/locale/**/LC_MESSAGES
