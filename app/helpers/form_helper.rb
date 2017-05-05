@@ -18,7 +18,7 @@ module FormHelper
 
   def issue_dropdown_options(issuable, has_multiple_assignees = true)
     options = {
-      toggle_class: 'js-user-search js-assignee-search',
+      toggle_class: 'js-user-search js-assignee-search js-multiselect js-save-user-data',
       title: 'Select assignee',
       filter: true,
       dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-assignee',
@@ -32,16 +32,15 @@ module FormHelper
         default_label: 'Assignee',
         'max-select': 1,
         'dropdown-header': 'Assignee',
+        multi_select: true,
+        'input-meta': 'name',
+        'always-show-selectbox': true,
+        current_user_info: current_user.to_json(only: [:id, :name])
       }
     }
 
     if has_multiple_assignees
-      options[:toggle_class] += ' js-multiselect js-save-user-data'
       options[:title] = 'Select assignee(s)'
-      options[:data][:multi_select] = true
-      options[:data][:'input-meta'] = 'name'
-      options[:data][:'always-show-selectbox'] = true
-      options[:data][:current_user_info] = current_user.to_json(only: [:id, :name])
       options[:data][:'dropdown-header'] = 'Assignee(s)'
       options[:data].delete(:'max-select')
     end
