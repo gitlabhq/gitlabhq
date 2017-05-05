@@ -119,9 +119,8 @@ module Ci
     end
 
     def update_merge_requests_head_pipeline
-      merge_requests = MergeRequest.where(source_branch: @pipeline.ref, source_project: @pipeline.project)
-
-      merge_requests.update_all(head_pipeline_id: @pipeline.id) if merge_requests.any?
+      MergeRequest.where(source_branch: @pipeline.ref, source_project: @pipeline.project).
+        update_all(head_pipeline_id: @pipeline.id)
     end
 
     def error(message, save: false)

@@ -103,6 +103,7 @@ pipelines:
 - manual_actions
 - artifacts
 - pipeline_schedule
+- merge_requests
 statuses:
 - project
 - pipeline
