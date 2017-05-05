@@ -1,3 +1,5 @@
+import Vue from 'vue';
+
 const inputNameAttribute = 'schedule[cron]';
 
 export default {
@@ -49,6 +51,15 @@ export default {
     if (this.intervalIsPreset) {
       this.enableCustomInput = false;
     }
+  },
+  watch: {
+    cronInterval() {
+      // updates field validation state when model changes, as
+      // glFieldError only updates on input.
+      Vue.nextTick(() => {
+        gl.pipelineScheduleFieldErrors.updateFormValidityState();
+      });
+    },
   },
   template: `
     <div class="interval-pattern-form-group">

@@ -119,6 +119,16 @@ feature 'Pipeline Schedules', :feature do
   end
 
   describe 'POST /projects/pipelines_schedules/{id}/edit' do
+    let!(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
+    let(:scope) { nil }
+    let(:user) { create(:user) }
+
+    before do
+      project.add_master(user)
+      login_as(user)
+      create_pipeline_schedule
+    end
+    
     it 'it displays existing properties' do
 
     end

@@ -16,5 +16,5 @@ document.addEventListener('DOMContentLoaded', () => {
     },
   }).$mount(intervalPatternMount);
 
-  new gl.GlFieldErrors(document.querySelector('#new-pipeline-schedule-form'));
+  gl.pipelineScheduleFieldErrors = new gl.GlFieldErrors(document.querySelector('#new-pipeline-schedule-form'));
 });
