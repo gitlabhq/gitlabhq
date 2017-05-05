@@ -21,7 +21,7 @@ _This notice should stay as the first item in the CONTRIBUTING.MD file._
 - [Workflow labels](#workflow-labels)
   - [Type labels (~"feature proposal", ~bug, ~customer, etc.)](#type-labels-feature-proposal-bug-customer-etc)
   - [Subject labels (~wiki, ~"container registry", ~ldap, ~api, etc.)](#subject-labels-wiki-container-registry-ldap-api-etc)
-  - [Team labels (~CI, ~Discussion, ~Edge, ~Frontend, ~Platform, etc.)](#team-labels-ci-discussion-edge-frontend-platform-etc)
+  - [Team labels (~CI, ~Discussion, ~Edge, ~Platform, etc.)](#team-labels-ci-discussion-edge-platform-etc)
   - [Priority labels (~Deliverable and ~Stretch)](#priority-labels-deliverable-and-stretch)
   - [Label for community contributors (~"Accepting Merge Requests")](#label-for-community-contributors-accepting-merge-requests)
 - [Implement design & UI elements](#implement-design--ui-elements)
@@ -155,17 +155,20 @@ Examples of subject labels are ~wiki, ~"container registry", ~ldap, ~api,
 
 Subject labels are always all-lowercase.
 
-### Team labels (~CI, ~Discussion, ~Edge, ~Frontend, ~Platform, etc.)
+### Team labels (~CI, ~Discussion, ~Edge, ~Platform, etc.)
 
 Team labels specify what team is responsible for this issue.
 Assigning a team label makes sure issues get the attention of the appropriate
 people.
 
 The current team labels are ~Build, ~CI, ~Discussion, ~Documentation, ~Edge,
-~Frontend, ~Gitaly, ~Platform, ~Prometheus, ~Release, and ~"UX".
+~Gitaly, ~Platform, ~Prometheus, ~Release, and ~"UX".
 
 The descriptions on the [labels page][labels-page] explain what falls under the
 responsibility of each team.
+
+Within those team labels, we also have the ~backend and ~frontend labels to
+indicate if an issue needs backend work, frontend work, or both.
 
 Team labels are always capitalized so that they show up as the first label for
 any issue.
