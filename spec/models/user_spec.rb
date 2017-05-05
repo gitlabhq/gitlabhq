@@ -359,7 +359,17 @@ describe User, models: true do
 
       expect do
         user.update_tracked_fields!(request)
-      end.not_to change { user.current_sign_in_at }
+      end.not_to change { user.reload.current_sign_in_at }
+    end
+
+    it 'writes trackable attributes for a different user' do
+      user2 = create(:user)
+
+      user.update_tracked_fields!(request)
+
+      expect do
+        user2.update_tracked_fields!(request)
+      end.to change { user2.reload.current_sign_in_at }
     end
   end
 
