@@ -287,6 +287,18 @@ entry.
 - Only send chat notifications for the default branch.
 - Don't fill in the default kubernetes namespace.
 
+## 9.0.7 (2017-05-05)
+
+- Enforce project features when searching blobs and wikis.
+- Fixed branches dropdown rendering branch names as HTML.
+- Make Asciidoc & other markup go through pipeline to prevent XSS.
+- Validate URLs in markdown using URI to detect the host correctly.
+- Fix for XSS in project import view caused by Hamlit filter usage.
+- Sanitize submodule URLs before linking to them in the file tree view.
+- Refactor snippets finder & dont return internal snippets for external users.
+- Fix snippets visibility for show action - external users can not see internal snippets.
+- Do not show private groups on subgroups page if user doesn't have access to.
+
 ## 9.0.6 (2017-04-21)
 
 - Bugfix: POST /projects/:id/hooks and PUT /projects/:id/hook/:hook_id no longer ignore the the job_events param in the V4 API. !10586
