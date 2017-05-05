@@ -1,8 +1,8 @@
 // enable test fixtures
 require('jasmine-jquery');
 
-jasmine.getFixtures().fixturesPath = 'base/spec/javascripts/fixtures';
-jasmine.getJSONFixtures().fixturesPath = 'base/spec/javascripts/fixtures';
+jasmine.getFixtures().fixturesPath = '/base/spec/javascripts/fixtures';
+jasmine.getJSONFixtures().fixturesPath = '/base/spec/javascripts/fixtures';
 
 // include common libraries
 require('~/commons/index.js');
