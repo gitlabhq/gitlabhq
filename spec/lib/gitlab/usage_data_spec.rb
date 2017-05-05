@@ -105,6 +105,8 @@ describe Gitlab::UsageData do
 
     context 'when there is no license' do
       it 'returns an empty hash' do
+        allow(License).to receive(:current).and_return(nil)
+
         expect(subject).to eq({})
       end
     end
