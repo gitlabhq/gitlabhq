@@ -1,4 +1,5 @@
 require 'spec_helper'
+include PipelineSchedulesHelper
 
 feature 'Pipeline Schedules', :feature do
   set(:project) { create(:empty_project) }
@@ -9,7 +10,7 @@ feature 'Pipeline Schedules', :feature do
     let(:user) { create(:user) }
 
     before do
-      project.add_developer(user)
+      project.add_master(user)
 
       login_as(user)
       visit_pipelines_schedules
@@ -26,10 +27,68 @@ feature 'Pipeline Schedules', :feature do
     context 'when the scope is set to active' do
       let(:scope) { 'active' }
 
-      xit 'lets bryce write a new test' do
-      end
-    end
+      describe 'Table row' do
+        it 'displays the description' do
+          page.within('.pipeline-schedule-table-row') do
+            expect(page).to have_content('pipeline schedule')
+          end
+        end
+        
+        it 'displays a link to the target branch' do
+          page.within('.pipeline-schedule-table-row') do
+            expect(page).to have_link('master')
+          end
+        end
 
+        it 'displays the empty state for last pipeline' do
+          page.within('.pipeline-schedule-table-row') do
+            expect(page).to have_content('None')
+          end
+        end
+
+        it 'displays next run timeago value' do
+          page.within('.pipeline-schedule-table-row') do
+            expect(page).to have_content('May 06, 2017')
+          end
+        end
+
+        it 'displays next run timeago value' do
+          page.within('.pipeline-schedule-table-row') do
+            expect(page).to have_content('No owner')
+          end
+        end
+      end
+
+      describe 'Actions' do
+        it 'creates a new scheduled pipeline' do
+          click_link 'New Schedule'
+          expect(page).to have_content('Schedule a new pipeline')
+        end
+        
+        it 'changes ownership of the pipeline' do
+          click_link 'Take ownership'
+          page.within('.pipeline-schedule-table-row') do
+            expect(page).not_to have_content('No owner')
+            expect(page).to have_link('John Doe')
+          end        
+        end
+
+        it 'edits the pipeline' do
+          page.within('.pipeline-schedule-table-row') do
+            click_link 'Edit'
+          end       
+  
+          expect(page).to have_content('Edit Pipeline Schedule')
+        end
+        
+        it 'deletes the pipeline' do
+          click_link 'Delete'
+          expect(page).not_to have_content('pipeline schedule')
+        end
+      end
+      
+    end
+    
     def visit_pipelines_schedules
       visit namespace_project_pipeline_schedules_path(project.namespace, project, scope: scope)
     end
