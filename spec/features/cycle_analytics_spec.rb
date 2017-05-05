@@ -9,10 +9,6 @@ feature 'Cycle Analytics', feature: true, js: true do
   let(:mr) { create_merge_request_closing_issue(issue) }
   let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: project, ref: mr.source_branch, sha: mr.source_branch_sha) }
 
-  before do
-    allow_any_instance_of(Gitlab::ReferenceExtractor).to receive(:issues).and_return([issue])
-  end
-
   context 'as an allowed user' do
     context 'when project is new' do
       before  do
@@ -36,8 +32,10 @@ feature 'Cycle Analytics', feature: true, js: true do
 
     context "when there's cycle analytics data" do
       before do
+        allow_any_instance_of(Gitlab::ReferenceExtractor).to receive(:issues).and_return([issue])
         mr.update(head_pipeline: pipeline)
         project.add_master(user)
+
         create_cycle
         deploy_master
 
