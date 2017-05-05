@@ -1,4 +1,4 @@
-/* eslint-disable no-new, guard-for-in, no-restricted-syntax */
+/* eslint-disable no-new */
 /* global Flash */
 
 import { ACCESS_LEVELS, LEVEL_TYPES } from './';
@@ -11,7 +11,7 @@ export default class ProtectedTagEdit {
     this.$wrap = options.$wrap;
     this.$allowedToCreateDropdownButton = this.$wrap.find('.js-allowed-to-create');
 
-    this.$wrap[ACCESS_LEVELS.CREATE] = this.$allowedToCreateDropdownButton.closest(`.${ACCESS_LEVELS.CREATE}-container`);
+    this.$allowedToCreateDropdownContainer = this.$allowedToCreateDropdownButton.closest('.create_access_levels-container');
 
     this.buildDropdowns();
   }
@@ -43,11 +43,11 @@ export default class ProtectedTagEdit {
   updatePermissions() {
     const formData = {};
 
-    for (const ACCESS_LEVEL in ACCESS_LEVELS) {
-      const accessLevelName = ACCESS_LEVELS[ACCESS_LEVEL];
+    Object.keys(ACCESS_LEVELS).forEach((level) => {
+      const accessLevelName = ACCESS_LEVELS[level];
 
       formData[`${accessLevelName}_attributes`] = this[`${accessLevelName}_dropdown`].getInputData(accessLevelName);
-    }
+    });
 
     return $.ajax({
       type: 'POST',
@@ -60,12 +60,12 @@ export default class ProtectedTagEdit {
       success: (response) => {
         this.hasChanges = false;
 
-        for (const ACCESS_LEVEL in ACCESS_LEVELS) {
-          const accessLevelName = ACCESS_LEVELS[ACCESS_LEVEL];
+        Object.keys(ACCESS_LEVELS).forEach((level) => {
+          const accessLevelName = ACCESS_LEVELS[level];
 
           // The data coming from server will be the new persisted *state* for each dropdown
           this.setSelectedItemsToDropdown(response[accessLevelName], `${accessLevelName}_dropdown`);
-        }
+        });
       },
       error() {
         $.scrollTo(0);
@@ -77,19 +77,14 @@ export default class ProtectedTagEdit {
   }
 
   setSelectedItemsToDropdown(items = [], dropdownName) {
-    const itemsToAdd = [];
-
-    for (let i = 0; i < items.length; i += 1) {
-      let itemToAdd;
-      const currentItem = items[i];
-
+    const itemsToAdd = items.map((currentItem) => {
       if (currentItem.user_id) {
         // Do this only for users for now
         // get the current data for selected items
         const selectedItems = this[dropdownName].getSelectedItems();
         const currentSelectedItem = _.findWhere(selectedItems, { user_id: currentItem.user_id });
 
-        itemToAdd = {
+        return {
           id: currentItem.id,
           user_id: currentItem.user_id,
           type: LEVEL_TYPES.USER,
@@ -99,23 +94,21 @@ export default class ProtectedTagEdit {
           avatar_url: currentSelectedItem.avatar_url,
         };
       } else if (currentItem.group_id) {
-        itemToAdd = {
+        return {
           id: currentItem.id,
           group_id: currentItem.group_id,
           type: LEVEL_TYPES.GROUP,
           persisted: true,
         };
       } else {
-        itemToAdd = {
+        return {
           id: currentItem.id,
           access_level: currentItem.access_level,
           type: LEVEL_TYPES.ROLE,
           persisted: true,
         };
       }
-
-      itemsToAdd.push(itemToAdd);
-    }
+    });
 
     this[dropdownName].setSelectedItems(itemsToAdd);
   }

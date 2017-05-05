@@ -1,4 +1,3 @@
-/* eslint-disable guard-for-in, no-restricted-syntax */
 /* global Flash */
 
 import { ACCESS_LEVELS, LEVEL_TYPES } from './';
@@ -54,30 +53,29 @@ export default class ProtectedTagCreate {
       },
     };
 
-    for (const accessLevel in ACCESS_LEVELS) {
+    Object.keys(ACCESS_LEVELS).forEach((level) => {
+      const accessLevel = ACCESS_LEVELS[level];
       const selectedItems = this[`${ACCESS_LEVELS.CREATE}_dropdown`].getSelectedItems();
       const levelAttributes = [];
 
-      for (let i = 0; i < selectedItems.length; i += 1) {
-        const current = selectedItems[i];
-
-        if (current.type === LEVEL_TYPES.USER) {
+      selectedItems.forEach((item) => {
+        if (item.type === LEVEL_TYPES.USER) {
           levelAttributes.push({
-            user_id: selectedItems[i].user_id,
+            user_id: item.user_id,
           });
-        } else if (current.type === LEVEL_TYPES.ROLE) {
+        } else if (item.type === LEVEL_TYPES.ROLE) {
           levelAttributes.push({
-            access_level: selectedItems[i].access_level,
+            access_level: item.access_level,
           });
-        } else if (current.type === LEVEL_TYPES.GROUP) {
+        } else if (item.type === LEVEL_TYPES.GROUP) {
           levelAttributes.push({
-            group_id: selectedItems[i].group_id,
+            group_id: item.group_id,
           });
         }
-      }
+      });
 
-      formData.protected_tag[`${ACCESS_LEVELS[accessLevel]}_attributes`] = levelAttributes;
-    }
+      formData.protected_tag[`${accessLevel}_attributes`] = levelAttributes;
+    });
 
     return formData;
   }
