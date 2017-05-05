@@ -1,0 +1,3 @@
+export const FETCHING_STATUS = 'FETCHING';
+export const FETCH_SUCCESS_STATUS = 'FETCH_SUCCESS';
+export const FETCH_ERROR_STATUS = 'FETCH_ERROR';

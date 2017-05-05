@@ -275,3 +275,121 @@ ul.related-merge-requests > li {
     }
   }
 }
+
+
+.issue-token {
+  display: inline-flex;
+  align-items: stretch;
+  line-height: 1.75;
+  white-space: nowrap;
+}
+
+.issue-token-link {
+  display: inline-flex;
+
+  &:hover,
+  &:focus {
+    outline: none;
+    text-decoration: none;
+  }
+}
+
+.issue-token-reference {
+  display: flex;
+  align-items: baseline;
+  margin-right: 1px;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  background-color: $gray-lighter;
+  transition: background $general-hover-transition-duration $general-hover-transition-curve, color $general-hover-transition-duration $general-hover-transition-curve;
+
+  .issue-token-error & {
+    background-color: $red-50;
+  }
+
+  .issue-token:hover &,
+  .issue-token-link:focus > & {
+    background-color: issue-token-reference-hover-background-color;
+    color: $gl-link-hover-color;
+    text-decoration: none;
+  }
+
+  .issue-token-error:hover &,
+  .issue-token-link:focus > & {
+    background-color: $red-75;
+  }
+}
+
+@mixin issue-token-state-icon {
+  margin-right: 0.35em;
+  font-size: 0.9em;
+}
+
+.issue-token-state-icon-open {
+  @include issue-token-state-icon;
+  color: $green-600;
+}
+
+.issue-token-state-icon-closed {
+  @include issue-token-state-icon;
+  color: $red-600;
+}
+
+.issue-token-title {
+  display: flex;
+  align-items: baseline;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  background-color: $gray-normal;
+  color: $gl-text-color-secondary;
+  transition: background $general-hover-transition-duration $general-hover-transition-curve;
+
+  .issue-token-error & {
+    background-color: $red-75;
+  }
+
+  .issue-token:hover &,
+  .issue-token-link:focus > & {
+    background-color: $border-gray-normal;
+  }
+
+  .issue-token-error:hover &,
+  .issue-token-link:focus > & {
+    background-color: $red-100;
+  }
+
+  & > .fa {
+    line-height: inherit;
+  }
+}
+
+.issue-token-remove-button {
+  padding: 0 0.5em 0 0;
+  background-color: $gray-normal;
+  border: 0;
+  color: $gl-text-color-secondary;
+  transition: background $general-hover-transition-duration $general-hover-transition-curve;
+
+  .issue-token-error & {
+    background-color: $red-75;
+  }
+
+  .issue-token:hover &,
+  .issue-token-link:focus + & {
+    background-color: $border-gray-normal;
+  }
+
+  .issue-token-error:hover &,
+  .issue-token-link:focus > & {
+    background-color: $red-100;
+  }
+
+  & > .fa {
+    font-size: 0.9em;
+  }
+}
+
+// When there isn't a title
+.issue-token-remove-button-standalone {
+  padding-left: 0.5em;
+}
