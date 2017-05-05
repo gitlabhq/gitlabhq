@@ -2,14 +2,12 @@ module Gitlab
   module Ci
     module Status
       module Build
-        class Action < SimpleDelegator
-          include Status::Extended
-
+        class Action < Status::Extended
           def label
             if has_action?
-              __getobj__.label
+              @status.label
             else
-              "#{__getobj__.label} (not allowed)"
+              "#{@status.label} (not allowed)"
             end
           end
 
