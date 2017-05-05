@@ -4,6 +4,7 @@ entry.
 
 ## 9.1.3 (2017-05-05)
 
+- Do not show private groups on subgroups page if user doesn't have access to.
 - Enforce project features when searching blobs and wikis.
 - Fixed branches dropdown rendering branch names as HTML.
 - Make Asciidoc & other markup go through pipeline to prevent XSS.
