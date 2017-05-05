@@ -131,6 +131,11 @@ describe Ci::RetryBuildService, :services do
       it 'does not enqueue the new build' do
         expect(new_build).to be_created
       end
+
+      it 'does mark old build as retried' do
+        expect(new_build).to be_latest
+        expect(build.reload).to be_retried
+      end
     end
 
     context 'when user does not have ability to execute build' do

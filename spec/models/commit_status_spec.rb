@@ -169,6 +169,22 @@ describe CommitStatus, :models do
     end
   end
 
+  describe '.retried' do
+    subject { described_class.retried.order(:id) }
+
+    let(:statuses) do
+      [create_status(name: 'aa', ref: 'bb', status: 'running', retried: true),
+       create_status(name: 'cc', ref: 'cc', status: 'pending', retried: true),
+       create_status(name: 'aa', ref: 'cc', status: 'success', retried: true),
+       create_status(name: 'cc', ref: 'bb', status: 'success'),
+       create_status(name: 'aa', ref: 'bb', status: 'success')]
+    end
+
+    it 'returns unique statuses' do
+      is_expected.to eq(statuses.values_at(0, 2))
+    end
+  end
+
   describe '.running_or_pending' do
     subject { described_class.running_or_pending.order(:id) }
 

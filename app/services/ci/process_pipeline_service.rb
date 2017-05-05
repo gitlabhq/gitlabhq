@@ -83,10 +83,13 @@ module Ci
       latest_builds = pipeline.builds.latest
         .group(:name)
         .having('count(*) > 1')
-        .pluck('max(id)', 'count(*)')
+        .pluck('max(id)', 'name')
+    
+        binding.pry
 
       # mark builds that are retried
       pipeline.builds.latest
+        .where(name: latest_builds.map(&:second))
         .where.not(id: latest_builds.map(&:first))
         .update_all(retried: true) if latest_builds.any?
     end

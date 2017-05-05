@@ -418,6 +418,21 @@ describe Ci::ProcessPipelineService, '#execute', :services do
     end
   end
 
+  context 'updates a list of retried builds' do
+    subject { described_class.retried.order(:id) }
+
+    let!(:build_retried) { create_build('build') }
+    let!(:build) { create_build('build') }
+    let!(:test) { create_build('test') }
+
+    it 'returns unique statuses' do
+      process_pipeline
+
+      expect(all_builds.latest).to contain_exactly(build, test)
+      expect(all_builds.retried).to contain_exactly(build_retried)
+    end
+  end
+
   def process_pipeline
     described_class.new(pipeline.project, user).execute(pipeline)
   end
