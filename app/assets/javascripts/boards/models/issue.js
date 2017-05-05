@@ -6,7 +6,7 @@
 import Vue from 'vue';
 
 class ListIssue {
-  constructor (obj) {
+  constructor (obj, defaultAvatar) {
     this.globalId = obj.id;
     this.id = obj.iid;
     this.title = obj.title;
@@ -19,7 +19,7 @@ class ListIssue {
     this.position = obj.relative_position || Infinity;
 
     if (obj.assignee) {
-      this.assignee = new ListUser(obj.assignee);
+      this.assignee = new ListUser(obj.assignee, defaultAvatar);
     }
 
     if (obj.milestone) {
