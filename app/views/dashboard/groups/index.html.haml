@@ -2,6 +2,8 @@
 - header_title  "Groups", dashboard_groups_path
 = render 'dashboard/groups_head'
 
+= page_specific_javascript_bundle_tag('groups')
+
 - if @groups.empty?
   = render 'empty_state'
 - else
