@@ -9,6 +9,8 @@ require('~/commons/index.js');
 window.$ = window.jQuery = require('jquery');
 window._ = require('underscore');
 
+window.addEventListener('error', console.error);
+
 // stub expected globals
 window.gl = window.gl || {};
 window.gl.TEST_HOST = 'http://test.host';
