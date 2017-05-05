@@ -35,12 +35,12 @@ module Projects
         service_hash.merge('project_id' => project_id).values
       end
 
-      # Project.transaction do
-      #   Service.create!(service_hash_list)
-      # end
-      Gitlab::SQL::BulkInsert.new(service_hash.keys + ['project_id'],
-                                  service_list,
-                                  'services').execute
+      Project.transaction do
+        Gitlab::SQL::BulkInsert.new(service_hash.keys + ['project_id'],
+                                    service_list,
+                                    'services').execute
+        run_callbacks(batch)
+      end
     end
 
     def project_ids_batch
@@ -71,6 +71,24 @@ module Projects
             service_hash[key] = ActiveRecord::Base.sanitize(value)
           end
         end
+    end
+
+    def run_callbacks(batch)
+      if active_external_issue_tracker?
+        Project.where(id: batch).update_all(has_external_issue_tracker: true)
+      end
+
+      if active_external_wiki?
+        Project.where(id: batch).update_all(has_external_wiki: true)
+      end
+    end
+
+    def active_external_issue_tracker?
+      @template['category'] == 'issue_tracker' && @template['active'] && !@template['default']
+    end
+
+    def active_external_wiki?
+      @template['type'] == 'ExternalWikiService' && @template['active']
     end
   end
 end

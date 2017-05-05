@@ -78,5 +78,23 @@ describe Projects::PropagateService, services: true do
           to change { Service.count }.by(project_total + 1)
       end
     end
+
+    describe 'external tracker' do
+      it 'updates the project external tracker' do
+        service_template.update(category: 'issue_tracker', default: false)
+
+        expect { described_class.propagate(service_template) }.
+          to change { project.reload.has_external_issue_tracker }.to(true)
+      end
+    end
+
+    describe 'external wiki' do
+      it 'updates the project external tracker' do
+        service_template.update(type: 'ExternalWikiService')
+
+        expect { described_class.propagate(service_template) }.
+          to change { project.reload.has_external_wiki }.to(true)
+      end
+    end
   end
 end
