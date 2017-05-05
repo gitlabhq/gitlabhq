@@ -51,5 +51,6 @@ export default class TimezoneDropdown {
   updateInputValue(query, el, e) {
     e.preventDefault();
     this.$input.val(query.identifier);
+    gl.pipelineScheduleFieldErrors.updateFormValidityState();
   }
 }

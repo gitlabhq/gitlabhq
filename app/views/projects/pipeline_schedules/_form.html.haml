@@ -14,13 +14,13 @@
   .form-group
     .col-md-6
       = f.label :cron_timezone, 'Cron Timezone', class: 'label-light'
-      = hidden_field_tag(:cron_timezone, @schedule.cron_timezone, id: 'schedule_cron_timezone', name: 'schedule[cron_timezone]')
       = dropdown_tag("Select a timezone", options: { toggle_class: 'btn js-timezone-dropdown', title: "Select a timezone", filter: true, placeholder: "Filter", data: { data: timezone_data } } )
+      = f.text_field :cron_timezone, value: @schedule.cron_timezone, id: 'schedule_cron_timezone', class: 'hidden', name: 'schedule[cron_timezone]', required: true
   .form-group
     .col-md-6
       = f.label :ref, 'Target Branch', class: 'label-light'
-      = hidden_field_tag(:ref, @schedule.ref, id: 'schedule_ref', name: 'schedule[ref]')
       = dropdown_tag("Select target branch", options: { toggle_class: 'btn js-target-branch-dropdown', title: "Select target branch", filter: true, placeholder: "Filter", data: { data: @project.repository.branch_names } } )
+      = f.text_field :ref, value: @schedule.ref, id: 'schedule_ref', class: 'hidden', name: 'schedule[ref]', required: true
   .form-group
     .col-md-6
       = f.label  :active, 'Activated', class: 'label-light'

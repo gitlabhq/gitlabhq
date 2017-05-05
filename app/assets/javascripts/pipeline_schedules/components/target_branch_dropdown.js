@@ -37,5 +37,6 @@ export default class TargetBranchDropdown {
   updateInputValue(query, el, e) {
     e.preventDefault();
     this.$input.val(query.name);
+    gl.pipelineScheduleFieldErrors.updateFormValidityState();
   }
 }
