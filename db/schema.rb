@@ -1328,6 +1328,7 @@ ActiveRecord::Schema.define(version: 20170503004425) do
     t.boolean "notified_of_own_activity"
     t.boolean "require_two_factor_authentication_from_group", default: false, null: false
     t.integer "two_factor_grace_period", default: 48, null: false
+    t.string "preferred_language"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

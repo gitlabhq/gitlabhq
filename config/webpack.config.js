@@ -35,7 +35,9 @@ var config = {
     group:                './group.js',
     groups_list:          './groups_list.js',
     issuable:             './issuable/issuable_bundle.js',
+    locale:               './locale/index.js',
     issue_show:           './issue_show/index.js',
+    locale:               './locale/index.js',
     main:                 './main.js',
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
     merge_request_widget: './merge_request_widget/ci_bundle.js',
@@ -87,6 +89,10 @@ var config = {
         test: /\.(worker\.js|pdf)$/,
         exclude: /node_modules/,
         loader: 'file-loader',
+      },
+      {
+        test: /locale\/[a-z]+\/(.*)\.js$/,
+        loader: 'exports-loader?locales',
       },
     ]
   },
@@ -152,6 +158,14 @@ var config = {
     // create cacheable common library bundles
     new webpack.optimize.CommonsChunkPlugin({
       names: ['main', 'common', 'runtime'],
+    }),
+
+    // locale common library
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'locale',
+      chunks: [
+        'cycle_analytics',
+      ],
     }),
   ],
 

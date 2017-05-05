@@ -13,12 +13,16 @@ module Gitlab
         :test
       end
 
+      def title
+        s_('CycleAnalyticsStage|Test')
+      end
+
       def legend
-        "Related Jobs"
+        _("Related Jobs")
       end
 
       def description
-        "Total test time for all commits/merges"
+        _("Total test time for all commits/merges")
       end
 
       def stage_query
