@@ -314,6 +314,13 @@ describe Ci::ProcessPipelineService, '#execute', :services do
     end
 
     context 'when pipeline is promoted sequentially up to the end' do
+      before do
+        # We are using create(:empty_project), and users has to be master in
+        # order to execute manual action when repository does not exist.
+        #
+        project.add_master(user)
+      end
+
       it 'properly processes entire pipeline' do
         process_pipeline
 

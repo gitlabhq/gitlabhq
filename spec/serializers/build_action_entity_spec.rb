@@ -2,9 +2,10 @@ require 'spec_helper'
 
 describe BuildActionEntity do
   let(:build) { create(:ci_build, name: 'test_build') }
+  let(:request) { double('request') }
 
   let(:entity) do
-    described_class.new(build, request: double)
+    described_class.new(build, request: spy('request'))
   end
 
   describe '#as_json' do

@@ -102,7 +102,7 @@
           = link_to cancel_namespace_project_build_path(job.project.namespace, job.project, job, return_to: request.original_url), method: :post, title: 'Cancel', class: 'btn btn-build' do
             = icon('remove', class: 'cred')
         - elsif allow_retry
-          - if job.playable? && !admin
+          - if job.playable? && !admin && can?(current_user, :update_build, job)
             = link_to play_namespace_project_build_path(job.project.namespace, job.project, job, return_to: request.original_url), method: :post, title: 'Play', class: 'btn btn-build' do
               = custom_icon('icon_play')
           - elsif job.retryable?

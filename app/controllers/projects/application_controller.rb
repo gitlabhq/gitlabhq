@@ -40,13 +40,15 @@ class Projects::ApplicationController < ApplicationController
       (current_user && current_user.already_forked?(project))
   end
 
-  def authorize_project!(action)
-    return access_denied! unless can?(current_user, action, project)
+  def authorize_action!(action)
+    unless can?(current_user, action, project)
+      return access_denied!
+    end
   end
 
   def method_missing(method_sym, *arguments, &block)
     if method_sym.to_s =~ /\Aauthorize_(.*)!\z/
-      authorize_project!($1.to_sym)
+      authorize_action!($1.to_sym)
     else
       super
     end
