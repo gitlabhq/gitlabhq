@@ -28,6 +28,30 @@ describe Ci::Stage, models: true do
     end
   end
 
+  describe '#groups' do
+    before do
+      create_job(:ci_build, name: 'rspec 0 2')
+      create_job(:ci_build, name: 'rspec 0 1')
+      create_job(:ci_build, name: 'spinach 0 1')
+      create_job(:commit_status, name: 'aaaaa')
+    end
+
+    it 'returns an array of three groups' do
+      expect(stage.groups).to be_a Array
+      expect(stage.groups).to all(be_a Ci::Group)
+      expect(stage.groups.size).to eq 3
+    end
+
+    it 'returns groups with correctly ordered statuses' do
+      expect(stage.groups.first.jobs.map(&:name))
+        .to eq ['aaaaa']
+      expect(stage.groups.second.jobs.map(&:name))
+        .to eq ['rspec 0 1', 'rspec 0 2']
+      expect(stage.groups.third.jobs.map(&:name))
+        .to eq ['spinach 0 1']
+    end
+  end
+
   describe '#statuses_count' do
     before do
       create_job(:ci_build)
@@ -223,7 +247,7 @@ describe Ci::Stage, models: true do
     end
   end
 
-  def create_job(type, status: 'success', stage: stage_name)
-    create(type, pipeline: pipeline, stage: stage, status: status)
+  def create_job(type, status: 'success', stage: stage_name, **opts)
+    create(type, pipeline: pipeline, stage: stage, status: status, **opts)
   end
 end
