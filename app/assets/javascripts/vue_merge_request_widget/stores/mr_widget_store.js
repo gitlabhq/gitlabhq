@@ -18,6 +18,7 @@ export default class MergeRequestStore {
     this.sha = data.diff_head_sha;
     this.commitMessage = data.merge_commit_message;
     this.commitMessageWithDescription = data.merge_commit_message_with_description;
+    this.commitsCount = data.commits_count;
     this.divergedCommitsCount = data.diverged_commits_count;
     this.pipeline = data.pipeline || {};
     this.deployments = this.deployments || data.deployments || [];

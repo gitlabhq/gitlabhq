@@ -1,9 +1,9 @@
-export default function (data) {
+export default function deviseState(data) {
   if (data.project_archived) {
     return 'archived';
   } else if (data.branch_missing) {
     return 'missingBranch';
-  } else if (data.has_no_commits) {
+  } else if (!data.commits_count) {
     return 'nothingToMerge';
   } else if (this.mergeStatus === 'unchecked') {
     return 'checking';

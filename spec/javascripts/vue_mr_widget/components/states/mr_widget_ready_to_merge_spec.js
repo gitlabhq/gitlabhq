@@ -244,7 +244,7 @@ describe('MRWidgetReadyToMerge', () => {
         setTimeout(() => {
           expect(vm.setToMergeWhenPipelineSucceeds).toBeFalsy();
           expect(vm.isMakingRequest).toBeTruthy();
-          expect(eventHub.$emit).toHaveBeenCalledWith('FailedToMerge');
+          expect(eventHub.$emit).toHaveBeenCalledWith('FailedToMerge', undefined);
 
           const params = vm.service.merge.calls.argsFor(0)[0];
           expect(params.should_remove_source_branch).toBeTruthy();

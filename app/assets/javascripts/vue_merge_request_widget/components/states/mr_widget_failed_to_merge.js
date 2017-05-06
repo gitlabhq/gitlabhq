@@ -49,7 +49,11 @@ export default {
       <span
         v-if="!isRefreshing"
         class="bold danger">
-        <span v-if="mr.mergeError">{{mr.mergeError}}</span>
+        <span
+          class="has-error-message"
+          v-if="mr.mergeError">
+          {{mr.mergeError}}
+        </span>
         <span v-else>Merge failed.</span>
         <span
           :class="{ 'has-custom-error': mr.mergeError }">

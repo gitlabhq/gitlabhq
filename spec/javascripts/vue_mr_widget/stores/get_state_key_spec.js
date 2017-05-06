@@ -15,7 +15,7 @@ describe('getStateKey', () => {
     const data = {
       project_archived: false,
       branch_missing: false,
-      has_no_commits: false,
+      commits_count: 2,
       has_conflicts: false,
       work_in_progress: false,
     };
@@ -50,7 +50,7 @@ describe('getStateKey', () => {
     context.mergeStatus = 'unchecked';
     expect(bound()).toEqual('checking');
 
-    data.has_no_commits = true;
+    data.commits_count = 0;
     expect(bound()).toEqual('nothingToMerge');
 
     data.branch_missing = true;

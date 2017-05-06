@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import * as MRWidgetService from '~/vue_merge_request_widget/services/mr_widget_service';
+import MRWidgetService from '~/vue_merge_request_widget/services/mr_widget_service';
 import mrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import mockData from './mock_data';
@@ -276,7 +276,6 @@ describe('mrWidgetOptions', () => {
 
     describe('createService', () => {
       it('should instantiate a Service', () => {
-        spyOn(MRWidgetService, 'default');
         const endpoints = {
           mergePath: '/nice/path',
           mergeCheckPath: '/nice/path',
@@ -288,8 +287,12 @@ describe('mrWidgetOptions', () => {
           mergeActionsContentPath: '/nice/path',
         };
 
-        vm.createService(endpoints);
-        expect(MRWidgetService.default).toHaveBeenCalledWith(endpoints);
+        const serviceInstance = vm.createService(endpoints);
+        const isInstanceOfMRService = serviceInstance instanceof MRWidgetService;
+        expect(isInstanceOfMRService).toBe(true);
+        Object.keys(serviceInstance).forEach((key) => {
+          expect(serviceInstance[key]).toBeDefined();
+        });
       });
     });
   });

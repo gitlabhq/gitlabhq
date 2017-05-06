@@ -33,7 +33,7 @@ describe('MRWidgetAuthor', () => {
       expect(el.tagName).toEqual('A');
       expect(el.getAttribute('href')).toEqual(author.webUrl);
       expect(el.querySelector('img').getAttribute('src')).toEqual(author.avatarUrl);
-      expect(el.querySelector('.author').innerText).toEqual(author.name);
+      expect(el.querySelector('.author').innerText.trim()).toEqual(author.name);
     });
   });
 });

@@ -276,6 +276,10 @@
       }
     }
 
+    .has-error-message + .has-custom-error {
+      margin-left: 0;
+    }
+
     .has-custom-error {
       display: inline-block;
       margin-left: 70px;

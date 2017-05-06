@@ -64,10 +64,14 @@ export default {
     },
     isMergeButtonDisabled() {
       const { commitMessage } = this;
-      return !commitMessage.length
+      return Boolean(!commitMessage.length
         || !this.isMergeAllowed()
         || this.isMakingRequest
-        || this.mr.preventMerge;
+        || this.mr.preventMerge);
+    },
+    shouldShowSquashBeforeMerge() {
+      const { commitsCount, enableSquashBeforeMerge } = this.mr;
+      return enableSquashBeforeMerge && commitsCount > 1;
     },
   },
   methods: {
@@ -108,12 +112,14 @@ export default {
       this.service.merge(options)
         .then(res => res.json())
         .then((res) => {
+          const hasError = res.status === 'failed' || res.status === 'hook_validation_error';
+
           if (res.status === 'merge_when_pipeline_succeeds') {
             eventHub.$emit('MRWidgetUpdateRequested');
           } else if (res.status === 'success') {
             this.initiateMergePolling();
-          } else if (res.status === 'failed') {
-            eventHub.$emit('FailedToMerge');
+          } else if (hasError) {
+            eventHub.$emit('FailedToMerge', res.merge_error);
           }
         })
         .catch(() => {
@@ -253,7 +259,7 @@ export default {
 
         <!-- Placeholder for EE extension of this component -->
         <squash-before-merge
-          v-if="mr.enableSquashBeforeMerge"
+          v-if="shouldShowSquashBeforeMerge"
           :mr="mr"
           :is-merge-button-disabled="isMergeButtonDisabled" />
 

@@ -175,7 +175,7 @@ export default {
   "mergeable_discussions_state": true,
   "conflicts_can_be_resolved_in_ui": false,
   "branch_missing": true,
-  "has_no_commits": false,
+  "commits_count": 1,
   "has_conflicts": false,
   "can_be_merged": true,
   "has_ci": true,
