@@ -248,6 +248,13 @@ module API
         expose :project_id, :issues_events, :merge_requests_events
         expose :note_events, :build_events, :pipeline_events, :wiki_page_events
       end
+
+      class Issue < ::API::Entities::Issue
+        unexpose :assignees
+        expose :assignee do |issue, options|
+          ::API::Entities::UserBasic.represent(issue.assignees.first, options)
+        end
+      end
     end
   end
 end

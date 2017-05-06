@@ -22,7 +22,7 @@ module Gitlab
           [
             {
               title: "Assignee",
-              value: @resource.assignee ? @resource.assignee.name : "_None_",
+              value: @resource.assignees.any? ? @resource.assignees.first.name : "_None_",
               short: true
             },
             {

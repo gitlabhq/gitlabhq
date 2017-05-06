@@ -25,7 +25,7 @@ shared_examples 'issuable record that supports slash commands in its description
     wait_for_ajax
   end
 
-  describe "new #{issuable_type}" do
+  describe "new #{issuable_type}", js: true do
     context 'with commands in the description' do
       it "creates the #{issuable_type} and interpret commands accordingly" do
         visit public_send("new_namespace_project_#{issuable_type}_path", project.namespace, project, new_url_opts)
@@ -44,7 +44,7 @@ shared_examples 'issuable record that supports slash commands in its description
     end
   end
 
-  describe "note on #{issuable_type}" do
+  describe "note on #{issuable_type}", js: true do
     before do
       visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
     end
@@ -63,7 +63,7 @@ shared_examples 'issuable record that supports slash commands in its description
         note = issuable.notes.user.first
 
         expect(note.note).to eq "Awesome!"
-        expect(issuable.assignee).to eq assignee
+        expect(issuable.assignees).to eq [assignee]
         expect(issuable.labels).to eq [label_bug]
         expect(issuable.milestone).to eq milestone
       end
@@ -81,7 +81,7 @@ shared_examples 'issuable record that supports slash commands in its description
         issuable.reload
 
         expect(issuable.notes.user).to be_empty
-        expect(issuable.assignee).to eq assignee
+        expect(issuable.assignees).to eq [assignee]
         expect(issuable.labels).to eq [label_bug]
         expect(issuable.milestone).to eq milestone
       end

@@ -16,15 +16,17 @@ module Gitlab
     SECRET_LENGTH = 32
 
     class << self
-      def git_http_ok(repository, user, action)
+      def git_http_ok(repository, is_wiki, user, action)
+        project = repository.project
         repo_path = repository.path_to_repo
         params = {
           GL_ID: Gitlab::GlId.gl_id(user),
+          GL_REPOSITORY: Gitlab::GlRepository.gl_repository(project, is_wiki),
           RepoPath: repo_path,
         }
 
         if Gitlab.config.gitaly.enabled
-          address = Gitlab::GitalyClient.get_address(repository.project.repository_storage)
+          address = Gitlab::GitalyClient.get_address(project.repository_storage)
           params[:Repository] = repository.gitaly_repository.to_h
 
           feature_enabled = case action.to_s

@@ -252,6 +252,7 @@ const ShortcutsBlob = require('./shortcuts_blob');
           }
           break;
         case 'projects:pipelines:builds':
+        case 'projects:pipelines:failures':
         case 'projects:pipelines:show':
           const { controllerAction } = document.querySelector('.js-pipeline-container').dataset;
           const pipelineStatusUrl = `${document.querySelector('.js-pipeline-tab-link a').getAttribute('href')}/status.json`;

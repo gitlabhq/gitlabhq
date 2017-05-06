@@ -19,7 +19,7 @@ class Projects::LabelsController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        render json: @available_labels.as_json(only: [:id, :title, :color])
+        render json: LabelSerializer.new.represent_appearance(@available_labels)
       end
     end
   end

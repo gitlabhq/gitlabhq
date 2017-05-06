@@ -19,7 +19,9 @@
             return 'Select';
           }
         },
-        clicked(item, $el, e) {
+        clicked(opts) {
+          const { e } = opts;
+
           e.preventDefault();
           onSelect();
         }

@@ -17,6 +17,10 @@ var DEV_SERVER_LIVERELOAD = process.env.DEV_SERVER_LIVERELOAD !== 'false';
 var WEBPACK_REPORT = process.env.WEBPACK_REPORT;
 
 var config = {
+  // because sqljs requires fs.
+  node: {
+    fs: "empty"
+  },
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
   entry: {
     blob:                 './blob_edit/blob_bundle.js',
@@ -34,8 +38,6 @@ var config = {
     graphs:               './graphs/graphs_bundle.js',
     group:                './group.js',
     groups_list:          './groups_list.js',
-    issuable:             './issuable/issuable_bundle.js',
-    locale:               './locale/index.js',
     issue_show:           './issue_show/index.js',
     locale:               './locale/index.js',
     main:                 './main.js',
@@ -46,15 +48,18 @@ var config = {
     notebook_viewer:      './blob/notebook_viewer.js',
     pdf_viewer:           './blob/pdf_viewer.js',
     pipelines:            './pipelines/index.js',
+    balsamiq_viewer:      './blob/balsamiq_viewer.js',
     profile:              './profile/profile_bundle.js',
     protected_branches:   './protected_branches/protected_branches_bundle.js',
     protected_tags:       './protected_tags',
+    sidebar:              './sidebar/sidebar_bundle.js',
     snippet:              './snippet/snippet_bundle.js',
     sketch_viewer:        './blob/sketch_viewer.js',
     stl_viewer:           './blob/stl_viewer.js',
     terminal:             './terminal/terminal_bundle.js',
     u2f:                  ['vendor/u2f'],
     users:                './users/users_bundle.js',
+    raven:                './raven/index.js',
   },
 
   output: {
@@ -133,12 +138,13 @@ var config = {
         'diff_notes',
         'environments',
         'environments_folder',
-        'issuable',
+        'sidebar',
         'issue_show',
         'merge_conflicts',
         'notebook_viewer',
         'pdf_viewer',
         'pipelines',
+        'balsamiq_viewer',
       ],
       minChunks: function(module, count) {
         return module.resource && (/vue_shared/).test(module.resource);

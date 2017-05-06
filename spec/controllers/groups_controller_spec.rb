@@ -49,6 +49,26 @@ describe GroupsController do
         expect(assigns(:issues)).to eq [issue_2, issue_1]
       end
     end
+
+    context 'when requesting the canonical path with different casing' do
+      it 'redirects to the correct casing' do
+        get :issues, id: group.to_param.upcase
+
+        expect(response).to redirect_to(issues_group_path(group.to_param))
+        expect(controller).not_to set_flash[:notice]
+      end
+    end
+
+    context 'when requesting a redirected path' do
+      let(:redirect_route) { group.redirect_routes.create(path: 'old-path') }
+
+      it 'redirects to the canonical path' do
+        get :issues, id: redirect_route.path
+
+        expect(response).to redirect_to(issues_group_path(group.to_param))
+        expect(controller).to set_flash[:notice].to(/moved/)
+      end
+    end
   end
 
   describe 'GET #merge_requests' do
@@ -74,6 +94,26 @@ describe GroupsController do
         expect(assigns(:merge_requests)).to eq [merge_request_2, merge_request_1]
       end
     end
+
+    context 'when requesting the canonical path with different casing' do
+      it 'redirects to the correct casing' do
+        get :merge_requests, id: group.to_param.upcase
+
+        expect(response).to redirect_to(merge_requests_group_path(group.to_param))
+        expect(controller).not_to set_flash[:notice]
+      end
+    end
+
+    context 'when requesting a redirected path' do
+      let(:redirect_route) { group.redirect_routes.create(path: 'old-path') }
+
+      it 'redirects to the canonical path' do
+        get :merge_requests, id: redirect_route.path
+
+        expect(response).to redirect_to(merge_requests_group_path(group.to_param))
+        expect(controller).to set_flash[:notice].to(/moved/)
+      end
+    end
   end
 
   describe 'DELETE #destroy' do
@@ -81,7 +121,7 @@ describe GroupsController do
       it 'returns 404' do
         sign_in(create(:user))
 
-        delete :destroy, id: group.path
+        delete :destroy, id: group.to_param
 
         expect(response.status).to eq(404)
       end
@@ -94,14 +134,38 @@ describe GroupsController do
 
       it 'schedules a group destroy' do
         Sidekiq::Testing.fake! do
-          expect { delete :destroy, id: group.path }.to change(GroupDestroyWorker.jobs, :size).by(1)
+          expect { delete :destroy, id: group.to_param }.to change(GroupDestroyWorker.jobs, :size).by(1)
         end
       end
 
       it 'redirects to the root path' do
-        delete :destroy, id: group.path
+        delete :destroy, id: group.to_param
 
         expect(response).to redirect_to(root_path)
+      end
+
+      context 'when requesting the canonical path with different casing' do
+        it 'does not 404' do
+          delete :destroy, id: group.to_param.upcase
+
+          expect(response).not_to have_http_status(404)
+        end
+
+        it 'does not redirect to the correct casing' do
+          delete :destroy, id: group.to_param.upcase
+
+          expect(response).not_to redirect_to(group_path(group.to_param))
+        end
+      end
+
+      context 'when requesting a redirected path' do
+        let(:redirect_route) { group.redirect_routes.create(path: 'old-path') }
+
+        it 'returns not found' do
+          delete :destroy, id: redirect_route.path
+
+          expect(response).to have_http_status(404)
+        end
       end
     end
   end
@@ -111,7 +175,7 @@ describe GroupsController do
       sign_in(user)
     end
 
-    it 'updates the path succesfully' do
+    it 'updates the path successfully' do
       post :update, id: group.to_param, group: { path: 'new_path' }
 
       expect(response).to have_http_status(302)
@@ -124,6 +188,30 @@ describe GroupsController do
 
       expect(assigns(:group).errors).not_to be_empty
       expect(assigns(:group).path).not_to eq('new_path')
+    end
+
+    context 'when requesting the canonical path with different casing' do
+      it 'does not 404' do
+        post :update, id: group.to_param.upcase, group: { path: 'new_path' }
+
+        expect(response).not_to have_http_status(404)
+      end
+
+      it 'does not redirect to the correct casing' do
+        post :update, id: group.to_param.upcase, group: { path: 'new_path' }
+
+        expect(response).not_to redirect_to(group_path(group.to_param))
+      end
+    end
+
+    context 'when requesting a redirected path' do
+      let(:redirect_route) { group.redirect_routes.create(path: 'old-path') }
+
+      it 'returns not found' do
+        post :update, id: redirect_route.path, group: { path: 'new_path' }
+
+        expect(response).to have_http_status(404)
+      end
     end
   end
 end

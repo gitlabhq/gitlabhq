@@ -18,7 +18,7 @@ describe 'Issues', feature: true do
     let!(:issue) do
       create(:issue,
              author: @user,
-             assignee: @user,
+             assignees: [@user],
              project: project)
     end
 
@@ -43,7 +43,7 @@ describe 'Issues', feature: true do
     let!(:issue) do
       create(:issue,
              author: @user,
-             assignee: @user,
+             assignees: [@user],
              project: project)
     end
 
@@ -61,7 +61,7 @@ describe 'Issues', feature: true do
         expect(page).to have_content 'No assignee - assign yourself'
       end
 
-      expect(issue.reload.assignee).to be_nil
+      expect(issue.reload.assignees).to be_empty
     end
   end
 
@@ -138,7 +138,7 @@ describe 'Issues', feature: true do
 
   describe 'Issue info' do
     it 'excludes award_emoji from comment count' do
-      issue = create(:issue, author: @user, assignee: @user, project: project, title: 'foobar')
+      issue = create(:issue, author: @user, assignees: [@user], project: project, title: 'foobar')
       create(:award_emoji, awardable: issue)
 
       visit namespace_project_issues_path(project.namespace, project, assignee_id: @user.id)
@@ -153,14 +153,14 @@ describe 'Issues', feature: true do
       %w(foobar barbaz gitlab).each do |title|
         create(:issue,
                author: @user,
-               assignee: @user,
+               assignees: [@user],
                project: project,
                title: title)
       end
 
       @issue = Issue.find_by(title: 'foobar')
       @issue.milestone = create(:milestone, project: project)
-      @issue.assignee = nil
+      @issue.assignees = []
       @issue.save
     end
 
@@ -351,9 +351,9 @@ describe 'Issues', feature: true do
       let(:user2) { create(:user) }
 
       before do
-        foo.assignee = user2
+        foo.assignees << user2
         foo.save
-        bar.assignee = user2
+        bar.assignees << user2
         bar.save
       end
 
@@ -396,7 +396,7 @@ describe 'Issues', feature: true do
   end
 
   describe 'update labels from issue#show', js: true do
-    let(:issue) { create(:issue, project: project, author: @user, assignee: @user) }
+    let(:issue) { create(:issue, project: project, author: @user, assignees: [@user]) }
     let!(:label) { create(:label, project: project) }
 
     before do
@@ -415,7 +415,7 @@ describe 'Issues', feature: true do
   end
 
   describe 'update assignee from issue#show' do
-    let(:issue) { create(:issue, project: project, author: @user, assignee: @user) }
+    let(:issue) { create(:issue, project: project, author: @user, assignees: [@user]) }
 
     context 'by authorized user' do
       it 'allows user to select unassigned', js: true do
@@ -426,10 +426,14 @@ describe 'Issues', feature: true do
 
           click_link 'Edit'
           click_link 'Unassigned'
+          first('.title').click
           expect(page).to have_content 'No assignee'
         end
 
-        expect(issue.reload.assignee).to be_nil
+        # wait_for_ajax does not work with vue-resource at the moment
+        sleep 1
+
+        expect(issue.reload.assignees).to be_empty
       end
 
       it 'allows user to select an assignee', js: true do
@@ -461,14 +465,18 @@ describe 'Issues', feature: true do
           click_link 'Edit'
           click_link @user.name
 
-          page.within '.value' do
+          find('.dropdown-menu-toggle').click
+
+          page.within '.value .author' do
             expect(page).to have_content @user.name
           end
 
           click_link 'Edit'
           click_link @user.name
 
-          page.within '.value' do
+          find('.dropdown-menu-toggle').click
+
+          page.within '.value .assign-yourself' do
             expect(page).to have_content "No assignee"
           end
         end
@@ -487,7 +495,7 @@ describe 'Issues', feature: true do
         login_with guest
 
         visit namespace_project_issue_path(project.namespace, project, issue)
-        expect(page).to have_content issue.assignee.name
+        expect(page).to have_content issue.assignees.first.name
       end
     end
   end
@@ -558,7 +566,7 @@ describe 'Issues', feature: true do
       let(:user2) { create(:user) }
 
       before do
-        issue.assignee = user2
+        issue.assignees << user2
         issue.save
       end
     end
@@ -655,7 +663,7 @@ describe 'Issues', feature: true do
 
   describe 'due date' do
     context 'update due on issue#show', js: true do
-      let(:issue) { create(:issue, project: project, author: @user, assignee: @user) }
+      let(:issue) { create(:issue, project: project, author: @user, assignees: [@user]) }
 
       before do
         visit namespace_project_issue_path(project.namespace, project, issue)
@@ -702,7 +710,7 @@ describe 'Issues', feature: true do
     include WaitForVueResource
 
     it 'updates the title', js: true do
-      issue = create(:issue, author: @user, assignee: @user, project: project, title: 'new title')
+      issue = create(:issue, author: @user, assignees: [@user], project: project, title: 'new title')
 
       visit namespace_project_issue_path(project.namespace, project, issue)
 

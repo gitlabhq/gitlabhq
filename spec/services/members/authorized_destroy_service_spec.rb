@@ -14,8 +14,8 @@ describe Members::AuthorizedDestroyService, services: true do
     it "unassigns issues and merge requests" do
       group.add_developer(member_user)
 
-      issue = create :issue, project: group_project, assignee: member_user
-      create :issue, assignee: member_user
+      issue = create :issue, project: group_project, assignees: [member_user]
+      create :issue, assignees: [member_user]
       merge_request = create :merge_request, target_project: group_project, source_project: group_project, assignee: member_user
       create :merge_request, target_project: project, source_project: project, assignee: member_user
 
@@ -33,7 +33,7 @@ describe Members::AuthorizedDestroyService, services: true do
     it "unassigns issues and merge requests" do
       project.team << [member_user, :developer]
 
-      create :issue, project: project, assignee: member_user
+      create :issue, project: project, assignees: [member_user]
       create :merge_request, target_project: project, source_project: project, assignee: member_user
 
       member = project.members.find_by(user_id: member_user.id)

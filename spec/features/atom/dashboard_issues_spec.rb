@@ -32,7 +32,7 @@ describe "Dashboard Issues Feed", feature: true  do
       end
 
       context "issue with basic fields" do
-        let!(:issue2) { create(:issue, author: user, assignee: assignee, project: project2, description: 'test desc') }
+        let!(:issue2) { create(:issue, author: user, assignees: [assignee], project: project2, description: 'test desc') }
 
         it "renders issue fields" do
           visit issues_dashboard_path(:atom, private_token: user.private_token)
@@ -41,7 +41,7 @@ describe "Dashboard Issues Feed", feature: true  do
 
           expect(entry).to be_present
           expect(entry).to have_selector('author email', text: issue2.author_public_email)
-          expect(entry).to have_selector('assignee email', text: issue2.assignee_public_email)
+          expect(entry).to have_selector('assignees email', text: assignee.public_email)
           expect(entry).not_to have_selector('labels')
           expect(entry).not_to have_selector('milestone')
           expect(entry).to have_selector('description', text: issue2.description)
@@ -51,7 +51,7 @@ describe "Dashboard Issues Feed", feature: true  do
       context "issue with label and milestone" do
         let!(:milestone1) { create(:milestone, project: project1, title: 'v1') }
         let!(:label1)     { create(:label, project: project1, title: 'label1') }
-        let!(:issue1)     { create(:issue, author: user, assignee: assignee, project: project1, milestone: milestone1) }
+        let!(:issue1)     { create(:issue, author: user, assignees: [assignee], project: project1, milestone: milestone1) }
 
         before do
           issue1.labels << label1
@@ -64,7 +64,7 @@ describe "Dashboard Issues Feed", feature: true  do
 
           expect(entry).to be_present
           expect(entry).to have_selector('author email', text: issue1.author_public_email)
-          expect(entry).to have_selector('assignee email', text: issue1.assignee_public_email)
+          expect(entry).to have_selector('assignees email', text: assignee.public_email)
           expect(entry).to have_selector('labels label', text: label1.title)
           expect(entry).to have_selector('milestone', text: milestone1.title)
           expect(entry).not_to have_selector('description')

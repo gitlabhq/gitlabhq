@@ -76,4 +76,47 @@ module NotesHelper
       namespace_project_commit_path(discussion.project.namespace, discussion.project, discussion.noteable, anchor: anchor)
     end
   end
+
+  def notes_url
+    if @snippet.is_a?(PersonalSnippet)
+      snippet_notes_path(@snippet)
+    else
+      namespace_project_noteable_notes_path(
+        namespace_id: @project.namespace,
+        project_id: @project,
+        target_id: @noteable.id,
+        target_type: @noteable.class.name.underscore
+      )
+    end
+  end
+
+  def note_url(note)
+    if note.noteable.is_a?(PersonalSnippet)
+      snippet_note_path(note.noteable, note)
+    else
+      namespace_project_note_path(@project.namespace, @project, note)
+    end
+  end
+
+  def form_resources
+    if @snippet.is_a?(PersonalSnippet)
+      [@note]
+    else
+      [@project.namespace.becomes(Namespace), @project, @note]
+    end
+  end
+
+  def new_form_url
+    return nil unless @snippet.is_a?(PersonalSnippet)
+
+    snippet_notes_path(@snippet)
+  end
+
+  def can_create_note?
+    if @snippet.is_a?(PersonalSnippet)
+      can?(current_user, :comment_personal_snippet, @snippet)
+    else
+      can?(current_user, :create_note, @project)
+    end
+  end
 end

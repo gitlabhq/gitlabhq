@@ -42,6 +42,21 @@ feature 'Issue Sidebar', feature: true do
         expect(page).to have_content(user2.name)
       end
     end
+
+    it 'assigns yourself' do
+      find('.block.assignee .dropdown-menu-toggle').click
+
+      click_button 'assign yourself'
+
+      wait_for_ajax
+
+      find('.block.assignee .edit-link').click
+
+      page.within '.dropdown-menu-user' do
+        expect(page.find('.dropdown-header')).to be_visible
+        expect(page.find('.dropdown-menu-user-link.is-active')).to have_content(user.name)
+      end
+    end
   end
 
   context 'as a allowed user' do
@@ -152,7 +167,7 @@ feature 'Issue Sidebar', feature: true do
   end
 
   def open_issue_sidebar
-    find('aside.right-sidebar.right-sidebar-collapsed .js-sidebar-toggle').click
+    find('aside.right-sidebar.right-sidebar-collapsed .js-sidebar-toggle').trigger('click')
     find('aside.right-sidebar.right-sidebar-expanded')
   end
 end

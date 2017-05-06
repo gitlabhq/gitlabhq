@@ -99,7 +99,7 @@ export default class FileTemplateMediator {
     });
   }
 
-  selectTemplateType(item, el, e) {
+  selectTemplateType(item, e) {
     if (e) {
       e.preventDefault();
     }
@@ -115,6 +115,10 @@ export default class FileTemplateMediator {
     this.typeSelector.setToggleText(item.name);
 
     this.cacheToggleText();
+  }
+
+  selectTemplateTypeOptions(options) {
+    this.selectTemplateType(options.selectedObj, options.e);
   }
 
   selectTemplateFile(selector, query, data) {

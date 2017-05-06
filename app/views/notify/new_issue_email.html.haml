@@ -2,9 +2,9 @@
   %p.details
     #{link_to @issue.author_name, user_url(@issue.author)} created an issue:
 
-- if @issue.assignee_id.present?
+- if @issue.assignees.any?
   %p
-    Assignee: #{@issue.assignee_name}
+    Assignee: #{@issue.assignee_list}
 
 - if @issue.description
   %div

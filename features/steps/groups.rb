@@ -61,7 +61,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   step 'project from group "Owned" has issues assigned to me' do
     create :issue,
       project: project,
-      assignee: current_user,
+      assignees: [current_user],
       author: current_user
   end
 
@@ -123,7 +123,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   step 'the archived project have some issues' do
     create :issue,
       project: @archived_project,
-      assignee: current_user,
+      assignees: [current_user],
       author: current_user
   end
 
