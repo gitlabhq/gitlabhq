@@ -11,7 +11,7 @@ class UpdateGeoNodesSystemHooks < ActiveRecord::Migration
       tag_push_events: false,
       repository_update_events: true
     }
-    SystemHook.joins('INNER JOIN "geo_nodes" ON "geo_nodes".system_hook_id = "web_hooks".id').update_all(attrs)
+    SystemHook.joins('INNER JOIN geo_nodes ON geo_nodes.system_hook_id = web_hooks.id').update_all(attrs)
   end
 
   def down
@@ -20,6 +20,6 @@ class UpdateGeoNodesSystemHooks < ActiveRecord::Migration
       tag_push_events: true,
       repository_update_events: false
     }
-    SystemHook.joins('INNER JOIN "geo_nodes" ON "geo_nodes".system_hook_id = "web_hooks".id').update_all(attrs)
+    SystemHook.joins('INNER JOIN geo_nodes ON geo_nodes.system_hook_id = web_hooks.id').update_all(attrs)
   end
 end
