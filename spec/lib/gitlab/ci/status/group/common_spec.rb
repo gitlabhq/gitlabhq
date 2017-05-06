@@ -2,7 +2,8 @@ require 'spec_helper'
 
 describe Gitlab::Ci::Status::Group::Common do
   subject do
-    Gitlab::Ci::Status::Core.new(nil, nil).extend(described_class)
+    Gitlab::Ci::Status::Core.new(double, double)
+      .extend(described_class)
   end
 
   it 'does not have action' do

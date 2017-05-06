@@ -1,6 +1,6 @@
 module Ci
   class ExpirePipelineCacheService < BaseService
-    include Gitlab::Routing.url_helpers
+    include Gitlab::Routing
 
     attr_reader :pipeline
 
