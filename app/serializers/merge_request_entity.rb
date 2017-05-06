@@ -24,9 +24,8 @@ class MergeRequestEntity < IssuableEntity
   expose :merge_user, using: UserEntity
 
   # Diff sha's
-  expose :diff_head_sha
-  expose :diff_head_commit_short_id do |merge_request|
-    merge_request.diff_head_commit.try(:short_id)
+  expose :diff_head_sha do |merge_request|
+    merge_request.diff_head_sha if merge_request.diff_head_commit
   end
 
   expose :merge_commit_sha
@@ -38,7 +37,7 @@ class MergeRequestEntity < IssuableEntity
   expose :source_branch_exists?, as: :source_branch_exists
   expose :mergeable_discussions_state?, as: :mergeable_discussions_state
   expose :branch_missing?, as: :branch_missing
-  expose :has_no_commits?, as: :has_no_commits
+  expose :commits_count
   expose :cannot_be_merged?, as: :has_conflicts
   expose :can_be_merged?, as: :can_be_merged
 

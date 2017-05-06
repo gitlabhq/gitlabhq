@@ -302,17 +302,6 @@ describe MergeRequestPresenter do
 
     context 'when has no permission' do
       it 'returns nil' do
-        allow(project).to receive(:merge_requests_enabled?) { true }
-
-        is_expected.to be_nil
-      end
-    end
-
-    context 'when merge requests disabled' do
-      it 'returns nil' do
-        allow(project).to receive(:merge_requests_enabled?) { false }
-        project.team << [user, :master]
-
         is_expected.to be_nil
       end
     end

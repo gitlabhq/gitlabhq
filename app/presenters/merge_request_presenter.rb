@@ -36,9 +36,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def remove_wip_path
-    if can?(current_user, :update_merge_request, merge_request.project) &&
-        project.merge_requests_enabled?
-
+    if can?(current_user, :update_merge_request, merge_request.project)
       remove_wip_namespace_project_merge_request_path(project.namespace, project, merge_request)
     end
   end

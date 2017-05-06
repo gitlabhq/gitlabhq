@@ -46,7 +46,8 @@ describe MergeRequestEntity do
                                :conflict_resolution_path,
                                :cancel_merge_when_pipeline_succeeds_path,
                                :create_issue_to_resolve_discussions_path,
-                               :source_branch_path, :target_branch_commits_path)
+                               :source_branch_path, :target_branch_commits_path,
+                               :commits_count)
   end
 
   it 'has email_patches_path' do
@@ -64,20 +65,24 @@ describe MergeRequestEntity do
       .to eq(resource.merge_commit_message(include_description: true))
   end
 
-  describe 'diff_head_commit_short_id' do
-    context 'when no diff head commit' do
-      let(:project) { create :empty_project }
+  describe 'diff_head_sha' do
+    before do
+      allow(resource).to receive(:diff_head_sha) { 'sha' }
+    end
 
+    context 'when no diff head commit' do
       it 'returns nil' do
-        expect(subject[:diff_head_commit_short_id]).to be_nil
+        allow(resource).to receive(:diff_head_commit) { nil }
+
+        expect(subject[:diff_head_sha]).to be_nil
       end
     end
 
     context 'when diff head commit present' do
-      let(:project) { create :project }
-
       it 'returns diff head commit short id' do
-        expect(subject[:diff_head_commit_short_id]).to eq(resource.diff_head_commit.short_id)
+        allow(resource).to receive(:diff_head_commit) { double }
+
+        expect(subject[:diff_head_sha]).to eq('sha')
       end
     end
   end

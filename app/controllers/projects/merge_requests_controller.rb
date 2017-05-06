@@ -14,7 +14,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   ]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :pipelines]
   before_action :define_show_vars, only: [:show, :diffs, :commits, :conflicts, :conflict_for_path, :builds, :pipelines]
-  before_action :define_widget_vars, only: [:merge, :cancel_merge_when_pipeline_succeeds, :merge_check]
   before_action :define_commit_vars, only: [:diffs]
   before_action :ensure_ref_fetched, only: [:show, :diffs, :commits, :builds, :conflicts, :conflict_for_path, :pipelines]
   before_action :close_merge_request_without_source_project, only: [:show, :diffs, :commits, :builds, :pipelines]
@@ -335,7 +334,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     status = merge!
 
-    render json: { status: status }
+    if @merge_request.merge_error
+      render json: { status: status, merge_error: @merge_request.merge_error }
+    else
+      render json: { status: status }
+    end
   end
 
   def branch_from
@@ -493,10 +496,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     @discussions = @merge_request.discussions
     @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes))
-  end
-
-  def define_widget_vars
-    @pipeline = @merge_request.head_pipeline
   end
 
   def define_commit_vars
