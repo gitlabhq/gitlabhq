@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170503004425) do
+ActiveRecord::Schema.define(version: 20170503185032) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1218,6 +1218,18 @@ ActiveRecord::Schema.define(version: 20170503004425) do
   end
 
   add_index "push_rules", ["project_id"], name: "index_push_rules_on_project_id", using: :btree
+
+  create_table "redirect_routes", force: :cascade do |t|
+    t.integer "source_id", null: false
+    t.string "source_type", null: false
+    t.string "path", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path", unique: true, using: :btree
+  add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path_text_pattern_ops", using: :btree, opclasses: {"path"=>"varchar_pattern_ops"}
+  add_index "redirect_routes", ["source_type", "source_id"], name: "index_redirect_routes_on_source_type_and_source_id", using: :btree
 
   create_table "releases", force: :cascade do |t|
     t.string "tag"

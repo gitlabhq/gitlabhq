@@ -5,6 +5,7 @@ module Routable
 
   included do
     has_one :route, as: :source, autosave: true, dependent: :destroy
+    has_many :redirect_routes, as: :source, autosave: true, dependent: :destroy
 
     validates_associated :route
     validates :route, presence: true
@@ -26,16 +27,31 @@ module Routable
     #     Klass.find_by_full_path('gitlab-org/gitlab-ce')
     #
     # Returns a single object, or nil.
-    def find_by_full_path(path)
+    def find_by_full_path(path, follow_redirects: false)
       # On MySQL we want to ensure the ORDER BY uses a case-sensitive match so
       # any literal matches come first, for this we have to use "BINARY".
       # Without this there's still no guarantee in what order MySQL will return
       # rows.
+      #
+      # Why do we do this?
+      #
+      # Even though we have Rails validation on Route for unique paths
+      # (case-insensitive), there are old projects in our DB (and possibly
+      # clients' DBs) that have the same path with different cases.
+      # See https://gitlab.com/gitlab-org/gitlab-ce/issues/18603. Also note that
+      # our unique index is case-sensitive in Postgres.
       binary = Gitlab::Database.mysql? ? 'BINARY' : ''
-
       order_sql = "(CASE WHEN #{binary} routes.path = #{connection.quote(path)} THEN 0 ELSE 1 END)"
+      found = where_full_path_in([path]).reorder(order_sql).take
+      return found if found
 
-      where_full_path_in([path]).reorder(order_sql).take
+      if follow_redirects
+        if Gitlab::Database.postgresql?
+          joins(:redirect_routes).find_by("LOWER(redirect_routes.path) = LOWER(?)", path)
+        else
+          joins(:redirect_routes).find_by(path: path)
+        end
+      end
     end
 
     # Builds a relation to find multiple objects by their full paths.
