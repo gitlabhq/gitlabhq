@@ -2,9 +2,7 @@ module Gitlab
   module Ci
     module Status
       module Build
-        class Stop < SimpleDelegator
-          include Status::Extended
-
+        class Stop < Status::Extended
           def label
             'manual stop action'
           end

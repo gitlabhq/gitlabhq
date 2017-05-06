@@ -1,14 +1,26 @@
 require 'spec_helper'
 
-describe API::Jobs do
+describe API::Jobs, :api do
+  let!(:project) do
+    create(:project, :repository, public_builds: false)
+  end
+
+  let!(:pipeline) do
+    create(:ci_empty_pipeline, project: project,
+                               sha: project.commit.id,
+                               ref: project.default_branch)
+  end
+
+  let!(:build) { create(:ci_build, pipeline: pipeline) }
+
   let(:user) { create(:user) }
   let(:api_user) { user }
-  let!(:project) { create(:project, :repository, creator: user, public_builds: false) }
-  let!(:developer) { create(:project_member, :developer, user: user, project: project) }
-  let(:reporter) { create(:project_member, :reporter, project: project) }
-  let(:guest) { create(:project_member, :guest, project: project) }
-  let!(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.id, ref: project.default_branch) }
-  let!(:build) { create(:ci_build, pipeline: pipeline) }
+  let(:reporter) { create(:project_member, :reporter, project: project).user }
+  let(:guest) { create(:project_member, :guest, project: project).user }
+
+  before do
+    project.add_developer(user)
+  end
 
   describe 'GET /projects/:id/jobs' do
     let(:query) { Hash.new }
@@ -211,7 +223,7 @@ describe API::Jobs do
   end
 
   describe 'GET /projects/:id/artifacts/:ref_name/download?job=name' do
-    let(:api_user) { reporter.user }
+    let(:api_user) { reporter }
     let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
     before do
@@ -235,7 +247,7 @@ describe API::Jobs do
     end
 
     context 'when logging as guest' do
-      let(:api_user) { guest.user }
+      let(:api_user) { guest }
 
       before do
         get_for_ref
@@ -345,7 +357,7 @@ describe API::Jobs do
       end
 
       context 'user without :update_build permission' do
-        let(:api_user) { reporter.user }
+        let(:api_user) { reporter }
 
         it 'does not cancel job' do
           expect(response).to have_http_status(403)
@@ -379,7 +391,7 @@ describe API::Jobs do
       end
 
       context 'user without :update_build permission' do
-        let(:api_user) { reporter.user }
+        let(:api_user) { reporter }
 
         it 'does not retry job' do
           expect(response).to have_http_status(403)
@@ -455,16 +467,39 @@ describe API::Jobs do
 
   describe 'POST /projects/:id/jobs/:job_id/play' do
     before do
-      post api("/projects/#{project.id}/jobs/#{build.id}/play", user)
+      post api("/projects/#{project.id}/jobs/#{build.id}/play", api_user)
     end
 
     context 'on an playable job' do
       let(:build) { create(:ci_build, :manual, project: project, pipeline: pipeline) }
 
-      it 'plays the job' do
-        expect(response).to have_http_status(200)
-        expect(json_response['user']['id']).to eq(user.id)
-        expect(json_response['id']).to eq(build.id)
+      context 'when user is authorized to trigger a manual action' do
+        it 'plays the job' do
+          expect(response).to have_http_status(200)
+          expect(json_response['user']['id']).to eq(user.id)
+          expect(json_response['id']).to eq(build.id)
+          expect(build.reload).to be_pending
+        end
+      end
+
+      context 'when user is not authorized to trigger a manual action' do
+        context 'when user does not have access to the project' do
+          let(:api_user) { create(:user) }
+
+          it 'does not trigger a manual action' do
+            expect(build.reload).to be_manual
+            expect(response).to have_http_status(404)
+          end
+        end
+
+        context 'when user is not allowed to trigger the manual action' do
+          let(:api_user) { reporter }
+
+          it 'does not trigger a manual action' do
+            expect(build.reload).to be_manual
+            expect(response).to have_http_status(403)
+          end
+        end
       end
     end
 
