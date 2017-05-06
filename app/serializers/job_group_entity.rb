@@ -4,7 +4,7 @@ class JobGroupEntity < Grape::Entity
   expose :name
   expose :size
   expose :detailed_status, as: :status, with: StatusEntity
-  expose :jobs, with: JobEntity
+  expose :jobs, with: BuildEntity
 
   private
 
