@@ -229,6 +229,7 @@ project:
 - authorized_users
 - project_authorizations
 - route
+- redirect_routes
 - statistics
 - container_repositories
 - uploads

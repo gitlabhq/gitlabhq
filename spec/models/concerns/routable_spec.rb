@@ -9,6 +9,7 @@ describe Group, 'Routable' do
 
   describe 'Associations' do
     it { is_expected.to have_one(:route).dependent(:destroy) }
+    it { is_expected.to have_many(:redirect_routes).dependent(:destroy) }
   end
 
   describe 'Callbacks' do
@@ -35,10 +36,53 @@ describe Group, 'Routable' do
   describe '.find_by_full_path' do
     let!(:nested_group) { create(:group, parent: group) }
 
-    it { expect(described_class.find_by_full_path(group.to_param)).to eq(group) }
-    it { expect(described_class.find_by_full_path(group.to_param.upcase)).to eq(group) }
-    it { expect(described_class.find_by_full_path(nested_group.to_param)).to eq(nested_group) }
-    it { expect(described_class.find_by_full_path('unknown')).to eq(nil) }
+    context 'without any redirect routes' do
+      it { expect(described_class.find_by_full_path(group.to_param)).to eq(group) }
+      it { expect(described_class.find_by_full_path(group.to_param.upcase)).to eq(group) }
+      it { expect(described_class.find_by_full_path(nested_group.to_param)).to eq(nested_group) }
+      it { expect(described_class.find_by_full_path('unknown')).to eq(nil) }
+    end
+
+    context 'with redirect routes' do
+      let!(:group_redirect_route) { group.redirect_routes.create!(path: 'bar') }
+      let!(:nested_group_redirect_route) { nested_group.redirect_routes.create!(path: nested_group.path.sub('foo', 'bar')) }
+
+      context 'without follow_redirects option' do
+        context 'with the given path not matching any route' do
+          it { expect(described_class.find_by_full_path('unknown')).to eq(nil) }
+        end
+
+        context 'with the given path matching the canonical route' do
+          it { expect(described_class.find_by_full_path(group.to_param)).to eq(group) }
+          it { expect(described_class.find_by_full_path(group.to_param.upcase)).to eq(group) }
+          it { expect(described_class.find_by_full_path(nested_group.to_param)).to eq(nested_group) }
+        end
+
+        context 'with the given path matching a redirect route' do
+          it { expect(described_class.find_by_full_path(group_redirect_route.path)).to eq(nil) }
+          it { expect(described_class.find_by_full_path(group_redirect_route.path.upcase)).to eq(nil) }
+          it { expect(described_class.find_by_full_path(nested_group_redirect_route.path)).to eq(nil) }
+        end
+      end
+
+      context 'with follow_redirects option set to true' do
+        context 'with the given path not matching any route' do
+          it { expect(described_class.find_by_full_path('unknown', follow_redirects: true)).to eq(nil) }
+        end
+
+        context 'with the given path matching the canonical route' do
+          it { expect(described_class.find_by_full_path(group.to_param, follow_redirects: true)).to eq(group) }
+          it { expect(described_class.find_by_full_path(group.to_param.upcase, follow_redirects: true)).to eq(group) }
+          it { expect(described_class.find_by_full_path(nested_group.to_param, follow_redirects: true)).to eq(nested_group) }
+        end
+
+        context 'with the given path matching a redirect route' do
+          it { expect(described_class.find_by_full_path(group_redirect_route.path, follow_redirects: true)).to eq(group) }
+          it { expect(described_class.find_by_full_path(group_redirect_route.path.upcase, follow_redirects: true)).to eq(group) }
+          it { expect(described_class.find_by_full_path(nested_group_redirect_route.path, follow_redirects: true)).to eq(nested_group) }
+        end
+      end
+    end
   end
 
   describe '.where_full_path_in' do
