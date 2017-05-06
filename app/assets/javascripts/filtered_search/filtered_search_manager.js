@@ -13,41 +13,44 @@ class FilteredSearchManager {
     this.tokensContainer = this.container.querySelector('.tokens-container');
     this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeys;
 
-    this.recentSearchesStore = new RecentSearchesStore({
-      isLocalStorageAvailable: RecentSearchesService.isAvailable(),
-    });
-    let recentSearchesKey = 'issue-recent-searches';
-    if (page === 'merge_requests') {
-      recentSearchesKey = 'merge-request-recent-searches';
-    }
-    this.recentSearchesService = new RecentSearchesService(recentSearchesKey);
-
-    // Fetch recent searches from localStorage
-    this.fetchingRecentSearchesPromise = this.recentSearchesService.fetch()
-      .catch((error) => {
-        if (error.name === 'RecentSearchesServiceError') return undefined;
-        // eslint-disable-next-line no-new
-        new window.Flash('An error occured while parsing recent searches');
-        // Gracefully fail to empty array
-        return [];
-      })
-      .then((searches) => {
-        // Put any searches that may have come in before
-        // we fetched the saved searches ahead of the already saved ones
-        const resultantSearches = this.recentSearchesStore.setRecentSearches(
-          this.recentSearchesStore.state.recentSearches.concat(searches),
-        );
-        this.recentSearchesService.save(resultantSearches);
-      });
-
     if (this.filteredSearchInput) {
       this.tokenizer = gl.FilteredSearchTokenizer;
       this.dropdownManager = new gl.FilteredSearchDropdownManager(this.filteredSearchInput.getAttribute('data-base-endpoint') || '', page);
 
+      this.recentSearchesStore = new RecentSearchesStore({
+        isLocalStorageAvailable: RecentSearchesService.isAvailable(),
+      });
+      const searchHistoryDropdownElement = document.querySelector('.js-filtered-search-history-dropdown');
+      const projectPath = searchHistoryDropdownElement.dataset.projectFullPath;
+      let recentSearchesPagePrefix = 'issue-recent-searches';
+      if (page === 'merge_requests') {
+        recentSearchesPagePrefix = 'merge-request-recent-searches';
+      }
+      const recentSearchesKey = `${projectPath}-${recentSearchesPagePrefix}`;
+      this.recentSearchesService = new RecentSearchesService(recentSearchesKey);
+
+      // Fetch recent searches from localStorage
+      this.fetchingRecentSearchesPromise = this.recentSearchesService.fetch()
+        .catch((error) => {
+          if (error.name === 'RecentSearchesServiceError') return undefined;
+          // eslint-disable-next-line no-new
+          new window.Flash('An error occured while parsing recent searches');
+          // Gracefully fail to empty array
+          return [];
+        })
+        .then((searches) => {
+          // Put any searches that may have come in before
+          // we fetched the saved searches ahead of the already saved ones
+          const resultantSearches = this.recentSearchesStore.setRecentSearches(
+            this.recentSearchesStore.state.recentSearches.concat(searches),
+          );
+          this.recentSearchesService.save(resultantSearches);
+        });
+
       this.recentSearchesRoot = new RecentSearchesRoot(
         this.recentSearchesStore,
         this.recentSearchesService,
-        document.querySelector('.js-filtered-search-history-dropdown'),
+        searchHistoryDropdownElement,
       );
       this.recentSearchesRoot.init();
 
