@@ -100,7 +100,7 @@ describe Gitlab::Elastic::ProjectSearchResults, lib: true do
     let(:admin) { create(:admin) }
     let!(:issue) { create(:issue, project: project, title: 'Issue 1') }
     let!(:security_issue_1) { create(:issue, :confidential, project: project, title: 'Security issue 1', author: author) }
-    let!(:security_issue_2) { create(:issue, :confidential, title: 'Security issue 2', project: project, assignee: assignee) }
+    let!(:security_issue_2) { create(:issue, :confidential, title: 'Security issue 2', project: project, assignees: [assignee]) }
 
     before do
       Gitlab::Elastic::Helper.refresh_index

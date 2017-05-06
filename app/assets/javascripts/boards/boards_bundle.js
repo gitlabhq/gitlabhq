@@ -13,7 +13,7 @@ require('./models/issue');
 require('./models/label');
 require('./models/list');
 require('./models/milestone');
-require('./models/user');
+require('./models/assignee');
 require('./stores/boards_store');
 require('./stores/modal_store');
 require('./services/board_service');

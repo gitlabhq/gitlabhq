@@ -17,8 +17,8 @@ export default class ProtectedTagAccessDropdown {
         }
         return 'Select';
       },
-      clicked(item, $el, e) {
-        e.preventDefault();
+      clicked(options) {
+        options.e.preventDefault();
         onSelect();
       },
     });

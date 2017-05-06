@@ -52,9 +52,18 @@ export default class FileTemplateSelector {
       .removeClass('fa-spinner fa-spin');
   }
 
-  reportSelection(query, el, e, data) {
+  reportSelection(options) {
+    const { query, e, data } = options;
+
     e.preventDefault();
     return this.mediator.selectTemplateFile(this, query, data);
+  }
+
+  reportSelectionName(options) {
+    const opts = options;
+    opts.query = options.selectedObj.name;
+
+    this.reportSelection(opts);
   }
 }
 

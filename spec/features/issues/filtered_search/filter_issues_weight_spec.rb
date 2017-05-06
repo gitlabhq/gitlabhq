@@ -31,7 +31,7 @@ describe 'Filter issues weight', js: true, feature: true do
       title: 'Bug report 1',
       milestone: milestone,
       author: user,
-      assignee: user)
+      assignees: [user])
     issue.labels << label
 
     visit namespace_project_issues_path(project.namespace, project)

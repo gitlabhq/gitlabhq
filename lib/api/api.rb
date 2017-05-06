@@ -6,6 +6,7 @@ module API
 
     version 'v3', using: :path do
       helpers ::API::V3::Helpers
+      helpers ::API::Helpers::CommonHelpers
 
       mount ::API::V3::AwardEmoji
       mount ::API::V3::Boards
@@ -81,6 +82,7 @@ module API
     # Ensure the namespace is right, otherwise we might load Grape::API::Helpers
     helpers ::SentryHelper
     helpers ::API::Helpers
+    helpers ::API::Helpers::CommonHelpers
 
     # Keep in alphabetical order
     mount ::API::AccessRequests

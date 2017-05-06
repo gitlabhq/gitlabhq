@@ -34,7 +34,7 @@ shared_examples 'issuable time tracker' do
     submit_time('/estimate 3w 1d 1h')
     submit_time('/remove_estimate')
 
-    page.within '#issuable-time-tracker' do
+    page.within '.time-tracking-component-wrap' do
       expect(page).to have_content 'No estimate or time spent'
     end
   end
@@ -43,13 +43,13 @@ shared_examples 'issuable time tracker' do
     submit_time('/spend 3w 1d 1h')
     submit_time('/remove_time_spent')
 
-    page.within '#issuable-time-tracker' do
+    page.within '.time-tracking-component-wrap' do
       expect(page).to have_content 'No estimate or time spent'
     end
   end
 
   it 'shows the help state when icon is clicked' do
-    page.within '#issuable-time-tracker' do
+    page.within '.time-tracking-component-wrap' do
       find('.help-button').click
       expect(page).to have_content 'Track time with slash commands'
       expect(page).to have_content 'Learn more'
@@ -57,7 +57,7 @@ shared_examples 'issuable time tracker' do
   end
 
   it 'hides the help state when close icon is clicked' do
-    page.within '#issuable-time-tracker' do
+    page.within '.time-tracking-component-wrap' do
       find('.help-button').click
       find('.close-help-button').click
 
@@ -67,7 +67,7 @@ shared_examples 'issuable time tracker' do
   end
 
   it 'displays the correct help url' do
-    page.within '#issuable-time-tracker' do
+    page.within '.time-tracking-component-wrap' do
       find('.help-button').click
 
       expect(find_link('Learn more')[:href]).to have_content('/help/workflow/time_tracking.md')

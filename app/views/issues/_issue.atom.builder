@@ -23,10 +23,12 @@ xml.entry do
     end
   end
 
-  if issue.assignee
-    xml.assignee do
-      xml.name issue.assignee.name
-      xml.email issue.assignee_public_email
+  if issue.assignees.any?
+    xml.assignees do
+      issue.assignees.each do |assignee|
+        xml.name assignee.name
+        xml.email assignee.public_email
+      end
     end
   end
 end

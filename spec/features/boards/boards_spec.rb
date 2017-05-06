@@ -71,7 +71,7 @@ describe 'Issue Boards', feature: true, js: true do
     let!(:list2) { create(:list, board: board, label: development, position: 1) }
 
     let!(:confidential_issue) { create(:labeled_issue, :confidential, project: project, author: user, labels: [planning], relative_position: 9) }
-    let!(:issue1) { create(:labeled_issue, project: project, assignee: user, labels: [planning], relative_position: 8) }
+    let!(:issue1) { create(:labeled_issue, project: project, assignees: [user], labels: [planning], relative_position: 8) }
     let!(:issue2) { create(:labeled_issue, project: project, author: user2, labels: [planning], relative_position: 7) }
     let!(:issue3) { create(:labeled_issue, project: project, labels: [planning], relative_position: 6) }
     let!(:issue4) { create(:labeled_issue, project: project, labels: [planning], relative_position: 5) }

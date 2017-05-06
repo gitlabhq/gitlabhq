@@ -7,7 +7,7 @@ describe 'Navigation bar counter', feature: true, caching: true do
   let(:merge_request) { create(:merge_request, source_project: project) }
 
   before do
-    issue.update(assignee: user)
+    issue.assignees = [user]
     merge_request.update(assignee: user)
     login_as(user)
   end
@@ -17,7 +17,7 @@ describe 'Navigation bar counter', feature: true, caching: true do
 
     expect_counters('issues', '1')
 
-    issue.update(assignee: nil)
+    issue.assignees = []
 
     Timecop.travel(3.minutes.from_now) do
       visit issues_path

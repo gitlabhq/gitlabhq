@@ -97,7 +97,7 @@ describe 'Board with milestone', :feature, :js do
     it 'removes issues milestone when removing from the board' do
       wait_for_vue_resource
 
-      first('.card').click
+      first('.card .card-number').click
 
       click_button('Remove from board')
 

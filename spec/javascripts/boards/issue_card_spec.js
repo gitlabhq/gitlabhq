@@ -1,20 +1,20 @@
-/* global ListUser */
+/* global ListAssignee */
 /* global ListLabel */
 /* global listObj */
 /* global ListIssue */
 
 import Vue from 'vue';
 
-require('~/boards/models/issue');
-require('~/boards/models/label');
-require('~/boards/models/list');
-require('~/boards/models/user');
-require('~/boards/stores/boards_store');
-require('~/boards/components/issue_card_inner');
-require('./mock_data');
+import '~/boards/models/issue';
+import '~/boards/models/label';
+import '~/boards/models/list';
+import '~/boards/models/assignee';
+import '~/boards/stores/boards_store';
+import '~/boards/components/issue_card_inner';
+import './mock_data';
 
 describe('Issue card component', () => {
-  const user = new ListUser({
+  const user = new ListAssignee({
     id: 1,
     name: 'testing 123',
     username: 'test',
@@ -40,6 +40,7 @@ describe('Issue card component', () => {
       iid: 1,
       confidential: false,
       labels: [list.label],
+      assignees: [],
     });
 
     component = new Vue({
@@ -92,12 +93,12 @@ describe('Issue card component', () => {
   it('renders confidential icon', (done) => {
     component.issue.confidential = true;
 
-    setTimeout(() => {
+    Vue.nextTick(() => {
       expect(
         component.$el.querySelector('.confidential-icon'),
       ).not.toBeNull();
       done();
-    }, 0);
+    });
   });
 
   it('renders issue ID with #', () => {
@@ -109,34 +110,32 @@ describe('Issue card component', () => {
   describe('assignee', () => {
     it('does not render assignee', () => {
       expect(
-        component.$el.querySelector('.card-assignee'),
+        component.$el.querySelector('.card-assignee .avatar'),
       ).toBeNull();
     });
 
     describe('exists', () => {
       beforeEach((done) => {
-        component.issue.assignee = user;
+        component.issue.assignees = [user];
 
-        setTimeout(() => {
-          done();
-        }, 0);
+        Vue.nextTick(() => done());
       });
 
       it('renders assignee', () => {
         expect(
-          component.$el.querySelector('.card-assignee'),
+          component.$el.querySelector('.card-assignee .avatar'),
         ).not.toBeNull();
       });
 
       it('sets title', () => {
         expect(
-          component.$el.querySelector('.card-assignee').getAttribute('title'),
+          component.$el.querySelector('.card-assignee a').getAttribute('title'),
         ).toContain(`Assigned to ${user.name}`);
       });
 
       it('sets users path', () => {
         expect(
-          component.$el.querySelector('.card-assignee').getAttribute('href'),
+          component.$el.querySelector('.card-assignee a').getAttribute('href'),
         ).toBe('/test');
       });
 
@@ -144,6 +143,75 @@ describe('Issue card component', () => {
         expect(
           component.$el.querySelector('.card-assignee img'),
         ).not.toBeNull();
+      });
+    });
+  });
+
+  describe('multiple assignees', () => {
+    beforeEach((done) => {
+      component.issue.assignees = [
+        user,
+        new ListAssignee({
+          id: 2,
+          name: 'user2',
+          username: 'user2',
+          avatar: 'test_image',
+        }),
+        new ListAssignee({
+          id: 3,
+          name: 'user3',
+          username: 'user3',
+          avatar: 'test_image',
+        }),
+        new ListAssignee({
+          id: 4,
+          name: 'user4',
+          username: 'user4',
+          avatar: 'test_image',
+        })];
+
+      Vue.nextTick(() => done());
+    });
+
+    it('renders all four assignees', () => {
+      expect(component.$el.querySelectorAll('.card-assignee .avatar').length).toEqual(4);
+    });
+
+    describe('more than four assignees', () => {
+      beforeEach((done) => {
+        component.issue.assignees.push(new ListAssignee({
+          id: 5,
+          name: 'user5',
+          username: 'user5',
+          avatar: 'test_image',
+        }));
+
+        Vue.nextTick(() => done());
+      });
+
+      it('renders more avatar counter', () => {
+        expect(component.$el.querySelector('.card-assignee .avatar-counter').innerText).toEqual('+2');
+      });
+
+      it('renders three assignees', () => {
+        expect(component.$el.querySelectorAll('.card-assignee .avatar').length).toEqual(3);
+      });
+
+      it('renders 99+ avatar counter', (done) => {
+        for (let i = 5; i < 104; i += 1) {
+          const u = new ListAssignee({
+            id: i,
+            name: 'name',
+            username: 'username',
+            avatar: 'test_image',
+          });
+          component.issue.assignees.push(u);
+        }
+
+        Vue.nextTick(() => {
+          expect(component.$el.querySelector('.card-assignee .avatar-counter').innerText).toEqual('99+');
+          done();
+        });
       });
     });
   });
@@ -159,9 +227,7 @@ describe('Issue card component', () => {
       beforeEach((done) => {
         component.issue.addLabel(label1);
 
-        setTimeout(() => {
-          done();
-        }, 0);
+        Vue.nextTick(() => done());
       });
 
       it('does not render list label', () => {

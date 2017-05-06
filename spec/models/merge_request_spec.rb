@@ -9,6 +9,7 @@ describe MergeRequest, models: true do
     it { is_expected.to belong_to(:target_project).class_name('Project') }
     it { is_expected.to belong_to(:source_project).class_name('Project') }
     it { is_expected.to belong_to(:merge_user).class_name("User") }
+    it { is_expected.to belong_to(:assignee) }
     it { is_expected.to have_many(:merge_request_diffs).dependent(:destroy) }
     it { is_expected.to have_many(:approver_groups).dependent(:destroy) }
   end
@@ -84,6 +85,86 @@ describe MergeRequest, models: true do
       subject.target_branch_sha = '8ffb3c15a5475e59ae909384297fede4badcb4c7'
 
       expect(subject.target_branch_sha).to eq '8ffb3c15a5475e59ae909384297fede4badcb4c7'
+    end
+  end
+
+  describe "before_save" do
+    describe "#update_cache_counts when a merge request is reassigned" do
+      let(:project) { create :project }
+      let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+      let(:assignee) { create :user }
+
+      context "when previous assignee exists" do
+        before do
+          project.team << [assignee, :developer]
+          merge_request.update(assignee: assignee)
+        end
+
+        it "updates cache counts for new assignee" do
+          user = create(:user)
+
+          expect(user).to receive(:update_cache_counts)
+
+          merge_request.update(assignee: user)
+        end
+
+        it "updates cache counts for previous assignee" do
+          old_assignee = merge_request.assignee
+          allow(User).to receive(:find_by_id).with(old_assignee.id).and_return(old_assignee)
+
+          expect(old_assignee).to receive(:update_cache_counts)
+
+          merge_request.update(assignee: nil)
+        end
+      end
+
+      context "when previous assignee does not exist" do
+        it "updates cache count for the new assignee" do
+          merge_request.update(assignee: nil)
+
+          expect_any_instance_of(User).to receive(:update_cache_counts)
+
+          merge_request.update(assignee: assignee)
+        end
+      end
+    end
+  end
+
+  describe '#card_attributes' do
+    it 'includes the author name' do
+      allow(subject).to receive(:author).and_return(double(name: 'Robert'))
+      allow(subject).to receive(:assignee).and_return(nil)
+
+      expect(subject.card_attributes).
+        to eq({ 'Author' => 'Robert', 'Assignee' => nil })
+    end
+
+    it 'includes the assignee name' do
+      allow(subject).to receive(:author).and_return(double(name: 'Robert'))
+      allow(subject).to receive(:assignee).and_return(double(name: 'Douwe'))
+
+      expect(subject.card_attributes).
+        to eq({ 'Author' => 'Robert', 'Assignee' => 'Douwe' })
+    end
+  end
+
+  describe '#assignee_or_author?' do
+    let(:user) { create(:user) }
+
+    it 'returns true for a user that is assigned to a merge request' do
+      subject.assignee = user
+
+      expect(subject.assignee_or_author?(user)).to eq(true)
+    end
+
+    it 'returns true for a user that is the author of a merge request' do
+      subject.author = user
+
+      expect(subject.assignee_or_author?(user)).to eq(true)
+    end
+
+    it 'returns false for a user that is not the assignee or author' do
+      expect(subject.assignee_or_author?(user)).to eq(false)
     end
   end
 
@@ -293,16 +374,6 @@ describe MergeRequest, models: true do
 
       expect(merge_request.commits).not_to be_empty
       expect(merge_request.related_notes.count).to eq(3)
-    end
-  end
-
-  describe '#is_being_reassigned?' do
-    it 'returns true if the merge_request assignee has changed' do
-      subject.assignee = create(:user)
-      expect(subject.is_being_reassigned?).to be_truthy
-    end
-    it 'returns false if the merge request assignee has not changed' do
-      expect(subject.is_being_reassigned?).to be_falsey
     end
   end
 

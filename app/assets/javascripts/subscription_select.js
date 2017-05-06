@@ -19,8 +19,8 @@
               return label;
             };
           })(this),
-          clicked: function(item, $el, e) {
-            return e.preventDefault();
+          clicked: function(options) {
+            return options.e.preventDefault();
           },
           id: function(obj, el) {
             return $(el).data("id");

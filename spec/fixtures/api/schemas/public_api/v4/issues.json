@@ -33,6 +33,21 @@
         },
         "additionalProperties": false
       },
+      "assignees": {
+        "type": "array",
+        "items": {
+          "type": ["object", "null"],
+          "properties": {
+            "name": { "type": "string" },
+            "username": { "type": "string" },
+            "id": { "type": "integer" },
+            "state": { "type": "string" },
+            "avatar_url": { "type": "uri" },
+            "web_url": { "type": "uri" }
+          },
+          "additionalProperties": false
+        }
+      },
       "assignee": {
         "type": ["object", "null"],
         "properties": {
@@ -68,7 +83,7 @@
     "required": [
       "id", "iid", "project_id", "title", "description",
       "state", "created_at", "updated_at", "labels",
-      "milestone", "assignee", "author", "user_notes_count",
+      "milestone", "assignees", "author", "user_notes_count",
       "upvotes", "downvotes", "due_date", "confidential",
       "web_url", "weight"
     ],

@@ -3,7 +3,7 @@ issues:
 - subscriptions
 - award_emoji
 - author
-- assignee
+- assignees
 - updated_by
 - milestone
 - notes
@@ -16,6 +16,7 @@ issues:
 - merge_requests_closing_issues
 - metrics
 - timelogs
+- issue_assignees
 events:
 - author
 - project

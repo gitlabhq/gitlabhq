@@ -72,9 +72,9 @@ describe Gitlab::SearchResults do
     let(:admin) { create(:admin) }
     let!(:issue) { create(:issue, project: project_1, title: 'Issue 1') }
     let!(:security_issue_1) { create(:issue, :confidential, project: project_1, title: 'Security issue 1', author: author) }
-    let!(:security_issue_2) { create(:issue, :confidential, title: 'Security issue 2', project: project_1, assignee: assignee) }
+    let!(:security_issue_2) { create(:issue, :confidential, title: 'Security issue 2', project: project_1, assignees: [assignee]) }
     let!(:security_issue_3) { create(:issue, :confidential, project: project_2, title: 'Security issue 3', author: author) }
-    let!(:security_issue_4) { create(:issue, :confidential, project: project_3, title: 'Security issue 4', assignee: assignee) }
+    let!(:security_issue_4) { create(:issue, :confidential, project: project_3, title: 'Security issue 4', assignees: [assignee]) }
     let!(:security_issue_5) { create(:issue, :confidential, project: project_4, title: 'Security issue 5') }
 
     it 'does not list confidential issues for non project members' do

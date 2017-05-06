@@ -89,9 +89,9 @@ describe Gitlab::Elastic::SearchResults, lib: true do
     before do
       @issue = create(:issue, project: project_1, title: 'Issue 1', iid: 1)
       @security_issue_1 = create(:issue, :confidential, project: project_1, title: 'Security issue 1', author: author, iid: 2)
-      @security_issue_2 = create(:issue, :confidential, title: 'Security issue 2', project: project_1, assignee: assignee, iid: 3)
+      @security_issue_2 = create(:issue, :confidential, title: 'Security issue 2', project: project_1, assignees: [assignee], iid: 3)
       @security_issue_3 = create(:issue, :confidential, project: project_2, title: 'Security issue 3', author: author, iid: 1)
-      @security_issue_4 = create(:issue, :confidential, project: project_3, title: 'Security issue 4', assignee: assignee, iid: 1)
+      @security_issue_4 = create(:issue, :confidential, project: project_3, title: 'Security issue 4', assignees: [assignee], iid: 1)
       @security_issue_5 = create(:issue, :confidential, project: project_4, title: 'Security issue 5', iid: 1)
 
       Gitlab::Elastic::Helper.refresh_index
