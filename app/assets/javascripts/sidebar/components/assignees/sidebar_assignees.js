@@ -33,12 +33,23 @@ export default {
     saveAssignees() {
       this.loading = true;
 
+<<<<<<< HEAD
       this.mediator.saveAssignees(this.field)
         .then(() => {
           this.loading = false;
         })
         .catch(() => {
           this.loading = false;
+=======
+      function setLoadingFalse() {
+        this.loading = false;
+      }
+
+      this.mediator.saveAssignees(this.field)
+        .then(setLoadingFalse.bind(this))
+        .catch(() => {
+          setLoadingFalse();
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
           return new Flash('Error occurred when saving assignees');
         });
     },

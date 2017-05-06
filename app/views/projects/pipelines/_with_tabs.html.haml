@@ -1,3 +1,5 @@
+- failed_builds = @pipeline.statuses.latest.failed
+
 .tabs-holder
   %ul.pipelines-tabs.nav-links.no-top.no-bottom
     %li.js-pipeline-tab-link
@@ -7,8 +9,11 @@
       = link_to builds_namespace_project_pipeline_path(@project.namespace, @project, @pipeline), data: {target: 'div#js-tab-builds', action: 'builds', toggle: 'tab' }, class: 'builds-tab' do
         Jobs
         %span.badge.js-builds-counter= pipeline.statuses.count
-
-
+    - if failed_builds.present?
+      %li.js-failures-tab-link
+        = link_to failures_namespace_project_pipeline_path(@project.namespace, @project, @pipeline), data: {target: 'div#js-tab-failures', action: 'failures', toggle: 'tab' }, class: 'failures-tab' do
+          Failed Jobs
+          %span.badge.js-failures-counter= failed_builds.count
 
 .tab-content
   #js-tab-pipeline.tab-pane
@@ -39,3 +44,13 @@
             %th Coverage
             %th
         = render partial: "projects/stage/stage", collection: pipeline.stages, as: :stage
+  - if failed_builds.present?
+    #js-tab-failures.build-failures.tab-pane
+      - failed_builds.each_with_index do |build, index|
+        .build-state
+          %span.ci-status-icon-failed= custom_icon('icon_status_failed')
+          %span.stage
+            = build.stage.titleize
+          %span.build-name
+            = link_to build.name, pipeline_build_url(pipeline, build)
+        %pre.build-log= build_summary(build, skip: index >= 10)

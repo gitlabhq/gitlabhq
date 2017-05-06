@@ -19,6 +19,10 @@ class IssuableBaseService < BaseService
       issuable, issuable.project, current_user, old_title)
   end
 
+  def create_description_change_note(issuable)
+    SystemNoteService.change_description(issuable, issuable.project, current_user)
+  end
+
   def create_branch_change_note(issuable, branch_type, old_branch, new_branch)
     SystemNoteService.change_branch(
       issuable, issuable.project, current_user, branch_type,
@@ -211,6 +215,10 @@ class IssuableBaseService < BaseService
     if issuable.changed? || params.present?
       issuable.assign_attributes(params.merge(updated_by: current_user))
 
+      if has_title_or_description_changed?(issuable)
+        issuable.assign_attributes(last_edited_at: Time.now, last_edited_by: current_user)
+      end
+
       before_update(issuable)
 
       if issuable.with_transaction_returning_status { issuable.save }
@@ -237,6 +245,10 @@ class IssuableBaseService < BaseService
 
   def labels_changing?(old_label_ids, new_label_ids)
     old_label_ids.sort != new_label_ids.sort
+  end
+
+  def has_title_or_description_changed?(issuable)
+    issuable.title_changed? || issuable.description_changed?
   end
 
   def change_state(issuable)
@@ -292,6 +304,10 @@ class IssuableBaseService < BaseService
   def handle_common_system_notes(issuable, old_labels: [])
     if issuable.previous_changes.include?('title')
       create_title_change_note(issuable, issuable.previous_changes['title'].first)
+    end
+
+    if issuable.previous_changes.include?('description')
+      create_description_change_note(issuable)
     end
 
     if issuable.previous_changes.include?('description') && issuable.tasks?

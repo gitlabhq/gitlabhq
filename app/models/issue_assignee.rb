@@ -7,6 +7,7 @@ class IssueAssignee < ActiveRecord::Base
   after_create :update_assignee_cache_counts
   after_destroy :update_assignee_cache_counts
 
+<<<<<<< HEAD
   # EE-specific
   after_create :update_elasticsearch_index
   after_destroy :update_elasticsearch_index
@@ -26,4 +27,9 @@ class IssueAssignee < ActiveRecord::Base
       )
     end
   end
+=======
+  def update_assignee_cache_counts
+    assignee&.update_cache_counts
+  end
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
 end

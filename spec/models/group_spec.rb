@@ -188,6 +188,7 @@ describe Group, models: true do
       let(:avatar_path) { "/uploads/group/avatar/#{group.id}/dk.png" }
 
       it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
+<<<<<<< HEAD
 
       context 'when in a geo secondary node' do
         let(:geo_url) { 'http://geo.example.com' }
@@ -199,6 +200,8 @@ describe Group, models: true do
 
         it { should eq "#{geo_url}#{avatar_path}" }
       end
+=======
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
     end
   end
 

@@ -507,6 +507,7 @@ describe 'Issues', feature: true do
 
         visit namespace_project_issue_path(project.namespace, project, issue)
         expect(page).to have_content issue.assignees.first.name
+<<<<<<< HEAD
       end
     end
   end
@@ -528,6 +529,8 @@ describe 'Issues', feature: true do
         page.within('.value') do
           expect(page).to have_content "1"
         end
+=======
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
       end
     end
   end

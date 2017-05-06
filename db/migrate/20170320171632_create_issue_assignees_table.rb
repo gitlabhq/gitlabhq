@@ -26,7 +26,11 @@ class CreateIssueAssigneesTable < ActiveRecord::Migration
   # disable_ddl_transaction!
 
   def up
+<<<<<<< HEAD
     create_table :issue_assignees, id: false do |t|
+=======
+    create_table :issue_assignees do |t|
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
       t.references :user, foreign_key: { on_delete: :cascade }, index: true, null: false
       t.references :issue, foreign_key: { on_delete: :cascade }, null: false
     end

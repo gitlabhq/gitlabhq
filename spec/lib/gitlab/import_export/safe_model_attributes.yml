@@ -23,7 +23,12 @@ Issue:
 - weight
 - time_estimate
 - relative_position
+<<<<<<< HEAD
 - service_desk_reply_to
+=======
+- last_edited_at
+- last_edited_by_id
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
 Event:
 - id
 - target_type
@@ -157,7 +162,12 @@ MergeRequest:
 - approvals_before_merge
 - rebase_commit_sha
 - time_estimate
+<<<<<<< HEAD
 - squash
+=======
+- last_edited_at
+- last_edited_by_id
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
 MergeRequestDiff:
 - id
 - state
@@ -355,6 +365,7 @@ Project:
 - auto_cancel_pending_pipelines
 - printing_merge_request_link_enabled
 - build_allow_git_fetch
+<<<<<<< HEAD
 - merge_requests_template
 - merge_requests_rebase_enabled
 - approvals_before_merge
@@ -364,6 +375,8 @@ Project:
 - repository_size_limit
 - sync_time
 - service_desk_enabled
+=======
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
 - last_repository_updated_at
 Author:
 - name

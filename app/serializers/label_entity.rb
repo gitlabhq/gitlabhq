@@ -6,6 +6,7 @@ class LabelEntity < Grape::Entity
   expose :group_id
   expose :project_id
   expose :template
+  expose :text_color
   expose :created_at
   expose :updated_at
 end

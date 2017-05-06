@@ -971,6 +971,7 @@ describe Project, models: true do
     context 'when avatar file is uploaded' do
       let(:project) { create(:empty_project, :with_avatar) }
       let(:avatar_path) { "/uploads/project/avatar/#{project.id}/dk.png" }
+<<<<<<< HEAD
 
       it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
 
@@ -984,6 +985,10 @@ describe Project, models: true do
 
         it { should eq "#{geo_url}#{avatar_path}" }
       end
+=======
+
+      it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
     end
 
     context 'When avatar file in git' do

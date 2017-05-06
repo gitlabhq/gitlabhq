@@ -9,6 +9,7 @@ issues:
 - notes
 - label_links
 - labels
+- last_edited_by
 - todos
 - user_agent_detail
 - moved_to
@@ -27,6 +28,7 @@ notes:
 - noteable
 - author
 - updated_by
+- last_edited_by
 - resolved_by
 - todos
 - events
@@ -73,6 +75,7 @@ merge_requests:
 - notes
 - label_links
 - labels
+- last_edited_by
 - todos
 - target_project
 - source_project

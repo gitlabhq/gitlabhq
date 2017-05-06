@@ -21,6 +21,7 @@ FactoryGirl.define do
       avatar { File.open(Rails.root.join('spec/fixtures/dk.png')) }
     end
 
+<<<<<<< HEAD
     factory :group_with_members do
       after(:create) do |group, evaluator|
         group.add_developer(create :user)
@@ -44,6 +45,8 @@ FactoryGirl.define do
       end
     end
 
+=======
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
     trait :access_requestable do
       request_access_enabled true
     end

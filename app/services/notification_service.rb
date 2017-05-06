@@ -76,12 +76,21 @@ class NotificationService
       previous_assignee: previous_assignees
     )
 
+<<<<<<< HEAD
+=======
+    previous_assignee_ids = previous_assignees.map(&:id)
+
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
     recipients.each do |recipient|
       mailer.send(
         :reassigned_issue_email,
         recipient.id,
         issue.id,
+<<<<<<< HEAD
         previous_assignees.map(&:id),
+=======
+        previous_assignee_ids,
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
         current_user.id
       ).deliver_later
     end

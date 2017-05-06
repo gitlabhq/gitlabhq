@@ -44,6 +44,7 @@
             return $el.text();
           },
           clicked: (options) => {
+<<<<<<< HEAD
             const $link = options.$el;
 
             if (!$link.data('revert')) {
@@ -59,6 +60,9 @@
                 $dateInput.enable();
               });
             }
+=======
+            this.formSubmit(null, options.$el);
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
           },
         });
       });

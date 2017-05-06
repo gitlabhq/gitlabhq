@@ -6,7 +6,7 @@ import queryData from '../utils/query_data';
 const PER_PAGE = 20;
 
 class List {
-  constructor (obj) {
+  constructor (obj, defaultAvatar) {
     this.id = obj.id;
     this._uid = this.guid();
     this.position = obj.position;
@@ -18,6 +18,7 @@ class List {
     this.loadingMore = false;
     this.issues = [];
     this.issuesSize = 0;
+    this.defaultAvatar = defaultAvatar;
 
     if (obj.label) {
       this.label = new ListLabel(obj.label);
@@ -107,7 +108,7 @@ class List {
 
   createIssues (data) {
     data.forEach((issueObj) => {
-      this.addIssue(new ListIssue(issueObj));
+      this.addIssue(new ListIssue(issueObj, this.defaultAvatar));
     });
   }
 

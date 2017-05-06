@@ -6,7 +6,7 @@
 import Vue from 'vue';
 
 class ListIssue {
-  constructor (obj) {
+  constructor (obj, defaultAvatar) {
     this.globalId = obj.id;
     this.id = obj.iid;
     this.title = obj.title;
@@ -17,7 +17,10 @@ class ListIssue {
     this.assignees = [];
     this.selected = false;
     this.position = obj.relative_position || Infinity;
+<<<<<<< HEAD
     this.milestone_id = obj.milestone_id;
+=======
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
 
     if (obj.milestone) {
       this.milestone = new ListMilestone(obj.milestone);
@@ -27,7 +30,11 @@ class ListIssue {
       this.labels.push(new ListLabel(label));
     });
 
+<<<<<<< HEAD
     this.assignees = obj.assignees.map(a => new ListAssignee(a));
+=======
+    this.assignees = obj.assignees.map(a => new ListAssignee(a, defaultAvatar));
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
   }
 
   addLabel (label) {

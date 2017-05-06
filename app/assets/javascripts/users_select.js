@@ -397,10 +397,12 @@ import eventHub from './sidebar/event_hub';
               page = $('body').data('page');
               isIssueIndex = page === 'projects:issues:index';
               isMRIndex = (page === page && page === 'projects:merge_requests:index');
-              isSelecting = (user.id !== selectedId);
-              selectedId = isSelecting ? user.id : selectedIdDefault;
               if ($dropdown.hasClass('js-filter-bulk-update') || $dropdown.hasClass('js-issuable-form-dropdown')) {
                 e.preventDefault();
+
+                const isSelecting = (user.id !== selectedId);
+                selectedId = isSelecting ? user.id : selectedIdDefault;
+
                 if (selectedId === gon.current_user_id) {
                   $('.assign-to-me-link').hide();
                 } else {

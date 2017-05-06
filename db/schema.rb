@@ -11,7 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20170503004425) do
+=======
+ActiveRecord::Schema.define(version: 20170504102911) do
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -135,6 +139,13 @@ ActiveRecord::Schema.define(version: 20170503004425) do
     t.decimal "polling_interval_multiplier", default: 1.0, null: false
     t.boolean "elasticsearch_experimental_indexer"
     t.integer "cached_markdown_version"
+<<<<<<< HEAD
+=======
+    t.boolean "usage_ping_enabled", default: true, null: false
+    t.string "uuid"
+    t.boolean "clientside_sentry_enabled", default: false, null: false
+    t.string "clientside_sentry_dsn"
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -527,6 +538,7 @@ ActiveRecord::Schema.define(version: 20170503004425) do
 
   add_index "identities", ["user_id"], name: "index_identities_on_user_id", using: :btree
 
+<<<<<<< HEAD
   create_table "index_statuses", force: :cascade do |t|
     t.integer "project_id", null: false
     t.datetime "indexed_at"
@@ -539,6 +551,9 @@ ActiveRecord::Schema.define(version: 20170503004425) do
   add_index "index_statuses", ["project_id"], name: "index_index_statuses_on_project_id", unique: true, using: :btree
 
   create_table "issue_assignees", id: false, force: :cascade do |t|
+=======
+  create_table "issue_assignees", force: :cascade do |t|
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
     t.integer "user_id", null: false
     t.integer "issue_id", null: false
   end
@@ -584,6 +599,8 @@ ActiveRecord::Schema.define(version: 20170503004425) do
     t.datetime "closed_at"
     t.string "service_desk_reply_to"
     t.integer "cached_markdown_version"
+    t.datetime "last_edited_at"
+    t.integer "last_edited_by_id"
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
@@ -790,6 +807,8 @@ ActiveRecord::Schema.define(version: 20170503004425) do
     t.integer "time_estimate"
     t.boolean "squash", default: false, null: false
     t.integer "cached_markdown_version"
+    t.datetime "last_edited_at"
+    t.integer "last_edited_by_id"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
@@ -1144,7 +1163,10 @@ ActiveRecord::Schema.define(version: 20170503004425) do
   add_index "projects", ["last_activity_at"], name: "index_projects_on_last_activity_at", using: :btree
   add_index "projects", ["last_repository_check_failed"], name: "index_projects_on_last_repository_check_failed", using: :btree
   add_index "projects", ["last_repository_updated_at"], name: "index_projects_on_last_repository_updated_at", using: :btree
+<<<<<<< HEAD
   add_index "projects", ["mirror_last_successful_update_at"], name: "index_projects_on_mirror_last_successful_update_at", using: :btree
+=======
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
   add_index "projects", ["name"], name: "index_projects_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
   add_index "projects", ["namespace_id"], name: "index_projects_on_namespace_id", using: :btree
   add_index "projects", ["path"], name: "index_projects_on_path", using: :btree
@@ -1539,7 +1561,13 @@ ActiveRecord::Schema.define(version: 20170503004425) do
     t.boolean "ghost"
     t.date "last_activity_on"
     t.boolean "notified_of_own_activity"
+<<<<<<< HEAD
     t.boolean "support_bot"
+=======
+    t.boolean "require_two_factor_authentication_from_group", default: false, null: false
+    t.integer "two_factor_grace_period", default: 48, null: false
+    t.string "preferred_language"
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

@@ -451,7 +451,7 @@ describe('DropDown', function () {
       this.html = 'html';
       this.template = { firstChild: { outerHTML: 'outerHTML', style: {} } };
 
-      spyOn(utils, 't').and.returnValue(this.html);
+      spyOn(utils, 'template').and.returnValue(this.html);
       spyOn(document, 'createElement').and.returnValue(this.template);
       spyOn(this.dropdown, 'setImagesSrc');
 
@@ -459,7 +459,7 @@ describe('DropDown', function () {
     });
 
     it('should call utils.t with .templateString and data', function () {
-      expect(utils.t).toHaveBeenCalledWith(this.templateString, this.data);
+      expect(utils.template).toHaveBeenCalledWith(this.templateString, this.data);
     });
 
     it('should call document.createElement', function () {

@@ -126,6 +126,7 @@
             return $value.css('display', '');
           },
           vue: $dropdown.hasClass('js-issue-board-sidebar'),
+<<<<<<< HEAD
           hideRow: function(milestone) {
             if ($('html').hasClass('issue-boards-page') && !$dropdown.hasClass('js-issue-board-sidebar') &&
               !$dropdown.closest('.add-issues-modal').length && gl.issueBoards.BoardsStore.state.currentBoard.milestone) {
@@ -142,6 +143,8 @@
 
             return true;
           },
+=======
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
           clicked: function(options) {
             const { $el, e } = options;
             let selected = options.selectedObj;

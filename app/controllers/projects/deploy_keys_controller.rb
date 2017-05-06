@@ -8,7 +8,12 @@ class Projects::DeployKeysController < Projects::ApplicationController
   layout "project_settings"
 
   def index
-    redirect_to_repository_settings(@project)
+    respond_to do |format|
+      format.html { redirect_to_repository_settings(@project) }
+      format.json do
+        render json: Projects::Settings::DeployKeysPresenter.new(@project, current_user: current_user).as_json
+      end
+    end
   end
 
   def new
@@ -20,8 +25,11 @@ class Projects::DeployKeysController < Projects::ApplicationController
 
     unless @key.valid? && @project.deploy_keys << @key
       flash[:alert] = @key.errors.full_messages.join(', ').html_safe
+<<<<<<< HEAD
     else
       log_audit_event(@key.title, action: :create)
+=======
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
     end
     redirect_to_repository_settings(@project)
   end
@@ -31,7 +39,10 @@ class Projects::DeployKeysController < Projects::ApplicationController
     Projects::EnableDeployKeyService.new(@project, current_user, params).execute
     log_audit_event(@key.title, action: :create)
 
-    redirect_to_repository_settings(@project)
+    respond_to do |format|
+      format.html { redirect_to_repository_settings(@project) }
+      format.json { head :ok }
+    end
   end
 
   def disable
@@ -40,9 +51,17 @@ class Projects::DeployKeysController < Projects::ApplicationController
 
     load_key
     deploy_key_project.destroy!
+<<<<<<< HEAD
     log_audit_event(@key.title, action: :destroy)
 
     redirect_to_repository_settings(@project)
+=======
+
+    respond_to do |format|
+      format.html { redirect_to_repository_settings(@project) }
+      format.json { head :ok }
+    end
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
   end
 
   protected

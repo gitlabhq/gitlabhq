@@ -216,6 +216,8 @@ module GitlabRoutingHelper
       browse_namespace_project_build_artifacts_path(*args)
     when 'file'
       file_namespace_project_build_artifacts_path(*args)
+    when 'raw'
+      raw_namespace_project_build_artifacts_path(*args)
     end
   end
 

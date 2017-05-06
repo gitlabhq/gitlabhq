@@ -30,8 +30,13 @@ export default class SidebarMediator {
     this.service.get()
       .then((response) => {
         const data = response.json();
+<<<<<<< HEAD
         this.store.processAssigneeData(data);
         this.store.processTimeTrackingData(data);
+=======
+        this.store.setAssigneeData(data);
+        this.store.setTimeTrackingData(data);
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
       })
       .catch(() => new Flash('Error occured when fetching sidebar data'));
   }

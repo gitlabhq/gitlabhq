@@ -17,6 +17,7 @@ export default {
   },
   methods: {
     listenForSlashCommands() {
+<<<<<<< HEAD
       $(document).on('ajax:success', '.gfm-form', (e, data) => {
         const subscribedCommands = ['spend_time', 'time_estimate'];
         const changedCommands = data.commands_changes
@@ -26,6 +27,23 @@ export default {
           this.mediator.fetch();
         }
       });
+=======
+      $(document).on('ajax:success', '.gfm-form', this.slashCommandListened);
+    },
+    slashCommandListened(e, data) {
+      const subscribedCommands = ['spend_time', 'time_estimate'];
+      let changedCommands;
+      if (data !== undefined) {
+        changedCommands = data.commands_changes
+          ? Object.keys(data.commands_changes)
+          : [];
+      } else {
+        changedCommands = [];
+      }
+      if (changedCommands && _.intersection(subscribedCommands, changedCommands).length) {
+        this.mediator.fetch();
+      }
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
     },
   },
   mounted() {

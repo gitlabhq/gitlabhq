@@ -84,7 +84,11 @@ module SystemNoteService
         "assigned to #{issue.assignees.map(&:to_reference).to_sentence}"
       end
 
+<<<<<<< HEAD
     create_note(noteable: issue, project: project, author: author, note: body)
+=======
+    create_note(NoteSummary.new(issue, project, author, body, action: 'assignee'))
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
   end
 
   # Called when one or more labels on a Noteable are added and/or removed
@@ -297,6 +301,23 @@ module SystemNoteService
     body = "changed title from **#{marked_old_title}** to **#{marked_new_title}**"
 
     create_note(NoteSummary.new(noteable, project, author, body, action: 'title'))
+  end
+
+  # Called when the description of a Noteable is changed
+  #
+  # noteable  - Noteable object that responds to `description`
+  # project   - Project owning noteable
+  # author    - User performing the change
+  #
+  # Example Note text:
+  #
+  #   "changed the description"
+  #
+  # Returns the created Note object
+  def change_description(noteable, project, author)
+    body = 'changed the description'
+
+    create_note(NoteSummary.new(noteable, project, author, body, action: 'description'))
   end
 
   # Called when the confidentiality changes

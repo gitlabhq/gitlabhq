@@ -84,7 +84,11 @@ export default {
       return !this.showLess || (index < this.defaultRenderCount && this.showLess);
     },
     avatarUrl(user) {
+<<<<<<< HEAD
       return user.avatarUrl || user.avatar_url;
+=======
+      return user.avatar || user.avatar_url;
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
     },
     assigneeUrl(user) {
       return `${this.rootPath}${user.username}`;

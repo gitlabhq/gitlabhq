@@ -4,7 +4,11 @@ import sidebarAssignees from './components/assignees/sidebar_assignees';
 
 import Mediator from './sidebar_mediator';
 
+<<<<<<< HEAD
 document.addEventListener('DOMContentLoaded', () => {
+=======
+function domContentLoaded() {
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
   const mediator = new Mediator(gl.sidebarOptions);
   mediator.fetch();
 
@@ -17,5 +21,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   new Vue(sidebarTimeTracking).$mount('#issuable-time-tracker');
+<<<<<<< HEAD
 });
 
+=======
+}
+
+document.addEventListener('DOMContentLoaded', domContentLoaded);
+
+export default domContentLoaded;
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284

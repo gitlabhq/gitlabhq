@@ -18,7 +18,7 @@
         = render "projects/project_members/new_project_member"
 
         = render 'shared/members/requests', membership_source: @project, requesters: @requesters
-        .append-bottom-default.clearfix
+        .clearfix
           %h5.member.existing-title
             Existing members and groups
         - if @group_links.any?

@@ -220,4 +220,31 @@ describe Notes::SlashCommandsService, services: true do
       let(:note) { build(:note_on_commit, project: project) }
     end
   end
+
+  context 'CE restriction for issue assignees' do
+    describe '/assign' do
+      let(:project) { create(:empty_project) }
+      let(:master) { create(:user).tap { |u| project.team << [u, :master] } }
+      let(:assignee) { create(:user) }
+      let(:master) { create(:user) }
+      let(:service) { described_class.new(project, master) }
+      let(:note) { create(:note_on_issue, note: note_text, project: project) }
+
+      let(:note_text) do
+        %(/assign @#{assignee.username} @#{master.username}\n")
+      end
+
+      before do
+        project.team << [master, :master]
+        project.team << [assignee, :master]
+      end
+
+      it 'adds only one assignee from the list' do
+        _, command_params = service.extract_commands(note)
+        service.execute(command_params, note)
+
+        expect(note.noteable.assignees.count).to eq(1)
+      end
+    end
+  end
 end

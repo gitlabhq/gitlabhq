@@ -102,6 +102,13 @@ describe MergeRequests::UpdateService, services: true do
         expect(note.note).to eq 'changed title from **{-Old-} title** to **{+New+} title**'
       end
 
+      it 'creates system note about description change' do
+        note = find_note('changed the description')
+
+        expect(note).not_to be_nil
+        expect(note.note).to eq('changed the description')
+      end
+
       it 'creates system note about branch change' do
         note = find_note('changed target')
 

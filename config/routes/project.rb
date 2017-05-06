@@ -157,6 +157,7 @@ constraints(ProjectUrlConstrainer.new) do
           post :cancel
           post :retry
           get :builds
+          get :failures
           get :status
         end
       end
@@ -218,6 +219,7 @@ constraints(ProjectUrlConstrainer.new) do
           get :download
           get :browse, path: 'browse(/*path)', format: false
           get :file, path: 'file/*path', format: false
+          get :raw, path: 'raw/*path', format: false
           post :keep
         end
       end

@@ -58,6 +58,7 @@ shared_examples 'issuable record that supports slash commands in its description
         expect(page).not_to have_content '/label ~bug'
         expect(page).not_to have_content '/milestone %"ASAP"'
 
+        wait_for_ajax
         issuable.reload
         note = issuable.notes.user.first
 

@@ -197,9 +197,12 @@ class ProjectWiki
 
   def update_project_activity
     @project.touch(:last_activity_at, :last_repository_updated_at)
+<<<<<<< HEAD
   end
 
   def update_elastic_index
     index_blobs if current_application_settings.elasticsearch_indexing?
+=======
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
   end
 end

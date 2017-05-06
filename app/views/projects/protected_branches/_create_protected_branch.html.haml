@@ -24,15 +24,22 @@
           .col-md-10
             .merge_access_levels-container
               = dropdown_tag('Select',
+<<<<<<< HEAD
                              options: { toggle_class: 'js-allowed-to-merge js-multiselect wide',
                              dropdown_class: 'dropdown-menu-user dropdown-menu-selectable  capitalize-header', filter: true,
                              data: { input_id: 'merge_access_levels_attributes', default_label: 'Select' } })
+=======
+                             options: { toggle_class: 'js-allowed-to-merge wide',
+                             dropdown_class: 'dropdown-menu-selectable capitalize-header',
+                             data: { field_name: 'protected_branch[merge_access_levels_attributes][0][access_level]', input_id: 'merge_access_levels_attributes' }})
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
         .form-group
           %label.col-md-2.text-right{ for: 'push_access_levels_attributes' }
             Allowed to push:
           .col-md-10
             .push_access_levels-container
               = dropdown_tag('Select',
+<<<<<<< HEAD
                              options: { toggle_class: 'js-allowed-to-push js-multiselect wide',
                              dropdown_class: 'dropdown-menu-user dropdown-menu-selectable  capitalize-header', filter: true,
                              data: { input_id: 'push_access_levels_attributes', default_label: 'Select' } })
@@ -40,6 +47,11 @@
               Only groups that
               = link_to 'have this project shared', help_page_path('workflow/share_projects_with_other_groups')
               can be added here
+=======
+                             options: { toggle_class: 'js-allowed-to-push wide',
+                             dropdown_class: 'dropdown-menu-selectable capitalize-header',
+                             data: { field_name: 'protected_branch[push_access_levels_attributes][0][access_level]', input_id: 'push_access_levels_attributes' }})
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
 
     .panel-footer
       = f.submit 'Protect', class: 'btn-create btn', disabled: true

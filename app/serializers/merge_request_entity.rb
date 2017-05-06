@@ -1,5 +1,8 @@
 class MergeRequestEntity < IssuableEntity
+<<<<<<< HEAD
   expose :approvals_before_merge
+=======
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
   expose :assignee_id
   expose :in_progress_merge_commit_sha
   expose :locked_at

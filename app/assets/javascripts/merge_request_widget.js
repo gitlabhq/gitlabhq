@@ -313,7 +313,7 @@ import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
 
     MergeRequestWidget.prototype.updateCommitUrls = function(id) {
       const commitsUrl = this.opts.commits_path;
-      $('.js-commit-link').text(`#${id}`).attr('href', [commitsUrl, id].join('/'));
+      $('.js-commit-link').text(id).attr('href', [commitsUrl, id].join('/'));
     };
 
     MergeRequestWidget.prototype.initMiniPipelineGraph = function() {

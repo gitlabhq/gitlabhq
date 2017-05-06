@@ -54,7 +54,10 @@ export default class FileTemplateSelector {
 
   reportSelection(options) {
     const { query, e, data } = options;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
     e.preventDefault();
     return this.mediator.selectTemplateFile(this, query, data);
   }

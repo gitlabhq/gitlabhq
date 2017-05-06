@@ -8,6 +8,7 @@ shared_examples 'issuable time tracker' do
   it 'updates the sidebar component when estimate is added' do
     submit_time('/estimate 3w 1d 1h')
 
+    wait_for_ajax
     page.within '.time-tracking-estimate-only-pane' do
       expect(page).to have_content '3w 1d 1h'
     end
@@ -16,6 +17,7 @@ shared_examples 'issuable time tracker' do
   it 'updates the sidebar component when spent is added' do
     submit_time('/spend 3w 1d 1h')
 
+    wait_for_ajax
     page.within '.time-tracking-spend-only-pane' do
       expect(page).to have_content '3w 1d 1h'
     end
@@ -25,6 +27,7 @@ shared_examples 'issuable time tracker' do
     submit_time('/estimate 3w 1d 1h')
     submit_time('/spend 3w 1d 1h')
 
+    wait_for_ajax
     page.within '.time-tracking-comparison-pane' do
       expect(page).to have_content '3w 1d 1h'
     end

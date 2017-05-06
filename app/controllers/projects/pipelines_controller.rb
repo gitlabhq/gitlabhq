@@ -1,10 +1,12 @@
 class Projects::PipelinesController < Projects::ApplicationController
   before_action :pipeline, except: [:index, :new, :create, :charts]
-  before_action :commit, only: [:show, :builds]
+  before_action :commit, only: [:show, :builds, :failures]
   before_action :authorize_read_pipeline!
   before_action :authorize_create_pipeline!, only: [:new, :create]
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
   before_action :builds_enabled, only: :charts
+
+  wrap_parameters Ci::Pipeline
 
   def index
     @scope = params[:scope]
@@ -67,10 +69,14 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def builds
-    respond_to do |format|
-      format.html do
-        render 'show'
-      end
+    render_show
+  end
+
+  def failures
+    if @pipeline.statuses.latest.failed.present?
+      render_show
+    else
+      redirect_to pipeline_path(@pipeline)
     end
   end
 
@@ -92,13 +98,25 @@ class Projects::PipelinesController < Projects::ApplicationController
   def retry
     pipeline.retry_failed(current_user)
 
-    redirect_back_or_default default: namespace_project_pipelines_path(project.namespace, project)
+    respond_to do |format|
+      format.html do
+        redirect_back_or_default default: namespace_project_pipelines_path(project.namespace, project)
+      end
+
+      format.json { head :no_content }
+    end
   end
 
   def cancel
     pipeline.cancel_running
 
-    redirect_back_or_default default: namespace_project_pipelines_path(project.namespace, project)
+    respond_to do |format|
+      format.html do
+        redirect_back_or_default default: namespace_project_pipelines_path(project.namespace, project)
+      end
+
+      format.json { head :no_content }
+    end
   end
 
   def charts
@@ -110,6 +128,14 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   private
+
+  def render_show
+    respond_to do |format|
+      format.html do
+        render 'show'
+      end
+    end
+  end
 
   def create_params
     params.require(:pipeline).permit(:ref)

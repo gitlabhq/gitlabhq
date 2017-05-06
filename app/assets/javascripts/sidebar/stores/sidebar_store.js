@@ -17,13 +17,21 @@ export default class SidebarStore {
     return SidebarStore.singleton;
   }
 
+<<<<<<< HEAD
   processAssigneeData(data) {
+=======
+  setAssigneeData(data) {
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
     if (data.assignees) {
       this.assignees = data.assignees;
     }
   }
 
+<<<<<<< HEAD
   processTimeTrackingData(data) {
+=======
+  setTimeTrackingData(data) {
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
     this.timeEstimate = data.time_estimate;
     this.totalTimeSpent = data.total_time_spent;
     this.humanTimeEstimate = data.human_time_estimate;

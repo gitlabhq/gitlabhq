@@ -27,6 +27,7 @@ module Issuable
 
     belongs_to :author, class_name: "User"
     belongs_to :updated_by, class_name: "User"
+    belongs_to :last_edited_by, class_name: 'User'
     belongs_to :milestone
     has_many :notes, as: :noteable, inverse_of: :noteable, dependent: :destroy do
       def authors_loaded?
@@ -97,7 +98,6 @@ module Issuable
 
     acts_as_paranoid
 
-    after_save :update_assignee_cache_counts, if: :assignee_id_changed?
     after_save :record_metrics, unless: :imported?
 
     # We want to use optimistic lock for cases when only title or description are involved

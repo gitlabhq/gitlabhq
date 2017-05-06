@@ -164,7 +164,13 @@ describe SystemNoteService, services: true do
     let(:assignee2) { create(:user) }
     let(:assignee3) { create(:user) }
 
+<<<<<<< HEAD
     it_behaves_like 'a system note'
+=======
+    it_behaves_like 'a system note' do
+      let(:action) { 'assignee' }
+    end
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
 
     def build_note(old_assignees, new_assignees)
       issue.assignees = new_assignees
@@ -333,6 +339,20 @@ describe SystemNoteService, services: true do
       it 'sets the note text' do
         expect(subject.note).
           to eq "changed title from **{-Old title-}** to **{+Lorem ipsum+}**"
+      end
+    end
+  end
+
+  describe '.change_description' do
+    subject { described_class.change_description(noteable, project, author) }
+
+    context 'when noteable responds to `description`' do
+      it_behaves_like 'a system note' do
+        let(:action) { 'description' }
+      end
+
+      it 'sets the note text' do
+        expect(subject.note).to eq('changed the description')
       end
     end
   end

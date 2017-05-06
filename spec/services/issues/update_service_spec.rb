@@ -40,7 +40,11 @@ describe Issues::UpdateService, services: true do
         {
           title: 'New title',
           description: 'Also please fix',
+<<<<<<< HEAD
           assignee_ids: [user2.id, user3.id],
+=======
+          assignee_ids: [user2.id],
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
           state_event: 'close',
           label_ids: [label.id],
           due_date: Date.tomorrow
@@ -53,7 +57,11 @@ describe Issues::UpdateService, services: true do
         expect(issue).to be_valid
         expect(issue.title).to eq 'New title'
         expect(issue.description).to eq 'Also please fix'
+<<<<<<< HEAD
         expect(issue.assignees).to match_array([user2, user3])
+=======
+        expect(issue.assignees).to match_array([user2])
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
         expect(issue).to be_closed
         expect(issue.labels).to match_array [label]
         expect(issue.due_date).to eq Date.tomorrow
@@ -129,6 +137,17 @@ describe Issues::UpdateService, services: true do
           expect(note).not_to be_nil
           expect(note.note).to eq 'changed title from **{-Old-} title** to **{+New+} title**'
         end
+      end
+    end
+
+    context 'when description changed' do
+      it 'creates system note about description change' do
+        update_issue(description: 'Changed description')
+
+        note = find_note('changed the description')
+
+        expect(note).not_to be_nil
+        expect(note.note).to eq('changed the description')
       end
     end
 

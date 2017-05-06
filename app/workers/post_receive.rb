@@ -16,6 +16,7 @@ class PostReceive
     # time and thread ID's.
     Sidekiq.logger.info "changes: #{changes.inspect}" if ENV['SIDEKIQ_LOG_ARGUMENTS']
     post_received = Gitlab::GitPostReceive.new(project, identifier, changes)
+<<<<<<< HEAD
 
     if is_wiki
       update_wiki_es_indexes(post_received)
@@ -35,6 +36,12 @@ class PostReceive
         SystemHooksService.new.execute_hooks(hook_data, :repository_update_hooks)
       end
 
+=======
+
+    if is_wiki
+      # Nothing defined here yet.
+    else
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
       process_project_changes(post_received)
     end
   end

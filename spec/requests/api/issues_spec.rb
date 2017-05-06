@@ -773,6 +773,20 @@ describe API::Issues do
       end
     end
 
+<<<<<<< HEAD
+=======
+    context 'CE restrictions' do
+      it 'creates a new project issue with no more than one assignee' do
+        post api("/projects/#{project.id}/issues", user),
+          title: 'new issue', assignee_ids: [user2.id, guest.id]
+
+        expect(response).to have_http_status(201)
+        expect(json_response['title']).to eq('new issue')
+        expect(json_response['assignees'].count).to eq(1)
+      end
+    end
+
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
     it 'creates a new project issue' do
       post api("/projects/#{project.id}/issues", user),
         title: 'new issue', labels: 'label, label2', weight: 3,
@@ -783,7 +797,10 @@ describe API::Issues do
       expect(json_response['description']).to be_nil
       expect(json_response['labels']).to eq(%w(label label2))
       expect(json_response['confidential']).to be_falsy
+<<<<<<< HEAD
       expect(json_response['weight']).to eq(3)
+=======
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
       expect(json_response['assignee']['name']).to eq(user2.name)
       expect(json_response['assignees'].first['name']).to eq(user2.name)
     end
@@ -1113,6 +1130,20 @@ describe API::Issues do
 
       expect(json_response['assignees'].first['name']).to eq(user2.name)
     end
+<<<<<<< HEAD
+=======
+
+    context 'CE restrictions' do
+      it 'updates an issue with several assignee but only one has been applied' do
+        put api("/projects/#{project.id}/issues/#{issue.iid}", user),
+          assignee_ids: [user2.id, guest.id]
+
+        expect(response).to have_http_status(200)
+
+        expect(json_response['assignees'].size).to eq(1)
+      end
+    end
+>>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
   end
 
   describe 'PUT /projects/:id/issues/:issue_iid to update labels' do
