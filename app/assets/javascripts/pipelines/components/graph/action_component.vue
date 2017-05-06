@@ -37,6 +37,10 @@
       actionIconSvg() {
         return getActionIcon(this.actionIcon);
       },
+
+      cssClass() {
+        return `js-${gl.text.dasherize(this.actionIcon)}`;
+      },
     },
   };
 </script>
@@ -52,6 +56,7 @@
 
     <i
       class="ci-action-icon-wrapper"
+      :class="cssClass"
       v-html="actionIconSvg"
       aria-hidden="true"
       />
