@@ -1,15 +1,22 @@
+- project = local_assigns.fetch(:project)
 - issuable = local_assigns.fetch(:issuable)
 - form = local_assigns.fetch(:form)
+- supports_slash_commands = issuable.new_record?
+
+- if supports_slash_commands
+  - preview_url = preview_markdown_path(project, slash_commands_target_type: issuable.class.name)
+- else
+  - preview_url = preview_markdown_path(project)
 
 .form-group.detail-page-description
   = form.label :description, 'Description', class: 'control-label'
   .col-sm-10
 
-    = render layout: 'projects/md_preview', locals: { preview_class: "md-preview", referenced_users: true } do
+    = render layout: 'projects/md_preview', locals: { url: preview_url, referenced_users: true } do
       = render 'projects/zen', f: form, attr: :description,
                                classes: 'note-textarea',
                                placeholder: "Write a comment or drag your files here...",
-                               supports_slash_commands: !issuable.persisted?
-      = render 'projects/notes/hints', supports_slash_commands: !issuable.persisted?
+                               supports_slash_commands: supports_slash_commands
+      = render 'shared/notes/hints', supports_slash_commands: supports_slash_commands
       .clearfix
       .error-alert

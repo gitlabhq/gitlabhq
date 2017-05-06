@@ -1067,7 +1067,7 @@ describe Projects::MergeRequestsController do
     end
 
     it 'correctly pluralizes flash message on success' do
-      issue2.update!(assignee: user)
+      issue2.assignees = [user]
 
       post_assign_issues
 

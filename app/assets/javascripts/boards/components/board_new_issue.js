@@ -26,6 +26,7 @@ export default {
         title: this.title,
         labels,
         subscribed: true,
+        assignees: [],
       });
 
       this.list.newIssue(issue)

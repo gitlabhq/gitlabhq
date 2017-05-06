@@ -23,6 +23,7 @@ before_script:
   - source scripts/prepare_build.sh
 
 stages:
+- build
 - prepare
 - test
 - post-test
@@ -136,6 +137,28 @@ stages:
   <<: *use-mysql
   <<: *only-master-and-ee-or-mysql
   <<: *except-docs
+
+# Trigger a package build on omnibus-gitlab repository
+
+build-package:
+  services: []
+  variables:
+    SETUP_DB: "false"
+    USE_BUNDLE_INSTALL: "false"
+  stage: build
+  when: manual
+  script:
+    # If no branch in omnibus is specified, trigger pipeline against master
+    - if [ -z "$OMNIBUS_BRANCH" ] ; then export OMNIBUS_BRANCH=master ;fi
+    - echo "token=${BUILD_TRIGGER_TOKEN}" > version_details
+    - echo "ref=${OMNIBUS_BRANCH}" >> version_details
+    - echo "variables[ALTERNATIVE_SOURCES]=true" >> version_details
+    - echo "variables[GITLAB_VERSION]=${CI_COMMIT_SHA}" >> version_details
+    # Collect version details of all components
+    - for f in *_VERSION; do echo "variables[$f]=$(cat $f)" >> version_details; done
+    # Trigger the API and pass values collected above as parameters to it
+    - cat version_details | tr '\n' '&' | curl -X POST https://gitlab.com/api/v4/projects/20699/trigger/pipeline --data-binary @-
+    - rm version_details
 
 # Prepare and merge knapsack tests
 knapsack:
@@ -269,6 +292,25 @@ static-analysis:
   script:
     - scripts/static-analysis
 
+# Documentation checks:
+# - Check validity of relative links
+# - Make sure cURL examples in API docs use the full switches
+docs lint:
+  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:nanoc-bootstrap-ruby-2.4-alpine"
+  stage: test
+  <<: *dedicated-runner
+  cache: {}
+  dependencies: []
+  before_script: []
+  script:
+    - scripts/lint-doc.sh
+    - mv doc/ /nanoc/content/
+    - cd /nanoc
+    # Build HTML from Markdown
+    - bundle exec nanoc
+    # Check the internal links
+    - bundle exec nanoc check internal_links
+
 downtime_check:
   <<: *rake-exec
   except:
@@ -300,22 +342,22 @@ ee_compat_check:
 .db-migrate-reset: &db-migrate-reset
   stage: test
   <<: *dedicated-runner
+  <<: *except-docs
   script:
     - bundle exec rake db:migrate:reset
 
 rake pg db:migrate:reset:
   <<: *db-migrate-reset
   <<: *use-pg
-  <<: *except-docs
 
 rake mysql db:migrate:reset:
   <<: *db-migrate-reset
   <<: *use-mysql
-  <<: *except-docs
 
 .db-rollback: &db-rollback
   stage: test
   <<: *dedicated-runner
+  <<: *except-docs
   script:
     - bundle exec rake db:rollback STEP=120
     - bundle exec rake db:migrate
@@ -323,16 +365,15 @@ rake mysql db:migrate:reset:
 rake pg db:rollback:
   <<: *db-rollback
   <<: *use-pg
-  <<: *except-docs
 
 rake mysql db:rollback:
   <<: *db-rollback
   <<: *use-mysql
-  <<: *except-docs
 
 .db-seed_fu: &db-seed_fu
   stage: test
   <<: *dedicated-runner
+  <<: *except-docs
   variables:
     SIZE: "1"
     SETUP_DB: "false"
@@ -350,12 +391,10 @@ rake mysql db:rollback:
 rake pg db:seed_fu:
   <<: *db-seed_fu
   <<: *use-pg
-  <<: *except-docs
 
 rake mysql db:seed_fu:
   <<: *db-seed_fu
   <<: *use-mysql
-  <<: *except-docs
 
 rake gitlab:assets:compile:
   stage: test
@@ -395,33 +434,6 @@ rake karma:
     expire_in: 31d
     paths:
     - coverage-javascript/
-
-docs:check:links:
-  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:nanoc-bootstrap-ruby-2.4-alpine"
-  stage: test
-  <<: *dedicated-runner
-  cache: {}
-  dependencies: []
-  before_script: []
-  script:
-    - mv doc/ /nanoc/content/
-    - cd /nanoc
-    # Build HTML from Markdown
-    - bundle exec nanoc
-    # Check the internal links
-    - bundle exec nanoc check internal_links
-
-bundler:audit:
-  stage: test
-  <<: *ruby-static-analysis
-  <<: *dedicated-runner
-  only:
-    - master@gitlab-org/gitlab-ce
-    - master@gitlab-org/gitlab-ee
-    - master@gitlab/gitlabhq
-    - master@gitlab/gitlab-ee
-  script:
-    - "bundle exec bundle-audit check --update --ignore CVE-2016-4658"
 
 .migration-paths: &migration-paths
   stage: test

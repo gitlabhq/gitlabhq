@@ -25,7 +25,7 @@ shared_examples 'issuable record that supports slash commands in its description
     wait_for_ajax
   end
 
-  describe "new #{issuable_type}" do
+  describe "new #{issuable_type}", js: true do
     context 'with commands in the description' do
       it "creates the #{issuable_type} and interpret commands accordingly" do
         visit public_send("new_namespace_project_#{issuable_type}_path", project.namespace, project, new_url_opts)
@@ -44,7 +44,7 @@ shared_examples 'issuable record that supports slash commands in its description
     end
   end
 
-  describe "note on #{issuable_type}" do
+  describe "note on #{issuable_type}", js: true do
     before do
       visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
     end
@@ -58,11 +58,12 @@ shared_examples 'issuable record that supports slash commands in its description
         expect(page).not_to have_content '/label ~bug'
         expect(page).not_to have_content '/milestone %"ASAP"'
 
+        wait_for_ajax
         issuable.reload
         note = issuable.notes.user.first
 
         expect(note.note).to eq "Awesome!"
-        expect(issuable.assignee).to eq assignee
+        expect(issuable.assignees).to eq [assignee]
         expect(issuable.labels).to eq [label_bug]
         expect(issuable.milestone).to eq milestone
       end
@@ -80,7 +81,7 @@ shared_examples 'issuable record that supports slash commands in its description
         issuable.reload
 
         expect(issuable.notes.user).to be_empty
-        expect(issuable.assignee).to eq assignee
+        expect(issuable.assignees).to eq [assignee]
         expect(issuable.labels).to eq [label_bug]
         expect(issuable.milestone).to eq milestone
       end
@@ -254,6 +255,21 @@ shared_examples 'issuable record that supports slash commands in its description
         expect(page).to have_content 'Commands applied'
 
         expect(issuable.subscribed?(master, project)).to be_falsy
+      end
+    end
+  end
+
+  describe "preview of note on #{issuable_type}" do
+    it 'removes slash commands from note and explains them' do
+      visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
+
+      page.within('.js-main-target-form') do
+        fill_in 'note[note]', with: "Awesome!\n/assign @bob "
+        click_on 'Preview'
+
+        expect(page).to have_content 'Awesome!'
+        expect(page).not_to have_content '/assign @bob'
+        expect(page).to have_content 'Assigns @bob.'
       end
     end
   end

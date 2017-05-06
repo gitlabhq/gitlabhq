@@ -123,6 +123,7 @@ constraints(ProjectUrlConstrainer.new) do
           post :cancel
           post :retry
           get :builds
+          get :failures
           get :status
         end
       end
@@ -138,6 +139,8 @@ constraints(ProjectUrlConstrainer.new) do
         collection do
           get :folder, path: 'folders/*id', constraints: { format: /(html|json)/ }
         end
+
+        resources :deployments, only: [:index]
       end
 
       resource :cycle_analytics, only: [:show]
@@ -181,6 +184,7 @@ constraints(ProjectUrlConstrainer.new) do
           get :download
           get :browse, path: 'browse(/*path)', format: false
           get :file, path: 'file/*path', format: false
+          get :raw, path: 'raw/*path', format: false
           post :keep
         end
       end
@@ -205,6 +209,9 @@ constraints(ProjectUrlConstrainer.new) do
         member do
           put :sort_issues
           put :sort_merge_requests
+          get :merge_requests
+          get :participants
+          get :labels
         end
       end
 
@@ -229,6 +236,7 @@ constraints(ProjectUrlConstrainer.new) do
           get :related_branches
           get :can_create_branch
           get :rendered_title
+          post :create_merge_request
         end
         collection do
           post  :bulk_update

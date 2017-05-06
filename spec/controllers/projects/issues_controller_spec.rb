@@ -173,12 +173,12 @@ describe Projects::IssuesController do
           namespace_id: project.namespace.to_param,
           project_id: project,
           id: issue.iid,
-          issue: { assignee_id: assignee.id },
+          issue: { assignee_ids: [assignee.id] },
           format: :json
         body = JSON.parse(response.body)
 
-        expect(body['assignee'].keys)
-          .to match_array(%w(name username avatar_url))
+        expect(body['assignees'].first.keys)
+          .to match_array(%w(id name username avatar_url))
       end
     end
 
@@ -348,7 +348,7 @@ describe Projects::IssuesController do
     let(:admin) { create(:admin) }
     let!(:issue) { create(:issue, project: project) }
     let!(:unescaped_parameter_value) { create(:issue, :confidential, project: project, author: author) }
-    let!(:request_forgery_timing_attack) { create(:issue, :confidential, project: project, assignee: assignee) }
+    let!(:request_forgery_timing_attack) { create(:issue, :confidential, project: project, assignees: [assignee]) }
 
     describe 'GET #index' do
       it 'does not list confidential issues for guests' do
@@ -754,6 +754,30 @@ describe Projects::IssuesController do
       end.to change { issue.award_emoji.count }.by(1)
 
       expect(response).to have_http_status(200)
+    end
+  end
+
+  describe 'POST create_merge_request' do
+    before do
+      project.add_developer(user)
+      sign_in(user)
+    end
+
+    it 'creates a new merge request' do
+      expect { create_merge_request }.to change(project.merge_requests, :count).by(1)
+    end
+
+    it 'render merge request as json' do
+      create_merge_request
+
+      expect(response).to match_response_schema('merge_request')
+    end
+
+    def create_merge_request
+      post :create_merge_request, namespace_id: project.namespace.to_param,
+                                  project_id: project.to_param,
+                                  id: issue.to_param,
+                                  format: :json
     end
   end
 end

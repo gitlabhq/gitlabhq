@@ -1,6 +1,7 @@
 class Projects::PagesDomainsController < Projects::ApplicationController
   layout 'project_settings'
 
+  before_action :require_pages_enabled!
   before_action :authorize_update_pages!, except: [:show]
   before_action :domain, only: [:show, :destroy]
 

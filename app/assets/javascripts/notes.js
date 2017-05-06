@@ -4,6 +4,7 @@
 /* global ResolveService */
 /* global mrRefreshWidgetUrl */
 
+import $ from 'jquery';
 import Cookies from 'js-cookie';
 import CommentTypeToggle from './comment_type_toggle';
 
@@ -16,17 +17,22 @@ require('vendor/jquery.caret'); // required by jquery.atwho
 require('vendor/jquery.atwho');
 require('./task_list');
 
+const normalizeNewlines = function(str) {
+  return str.replace(/\r\n/g, '\n');
+};
+
 (function() {
   var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
 
   this.Notes = (function() {
     const MAX_VISIBLE_COMMIT_LIST_COUNT = 3;
+    const REGEX_SLASH_COMMANDS = /\/\w+/g;
 
     Notes.interval = null;
 
     function Notes(notes_url, note_ids, last_fetched_at, view) {
       this.updateTargetButtons = bind(this.updateTargetButtons, this);
-      this.updateCloseButton = bind(this.updateCloseButton, this);
+      this.updateComment = bind(this.updateComment, this);
       this.visibilityChange = bind(this.visibilityChange, this);
       this.cancelDiscussionForm = bind(this.cancelDiscussionForm, this);
       this.addDiffNote = bind(this.addDiffNote, this);
@@ -42,13 +48,18 @@ require('./task_list');
       this.refresh = bind(this.refresh, this);
       this.keydownNoteText = bind(this.keydownNoteText, this);
       this.toggleCommitList = bind(this.toggleCommitList, this);
+      this.postComment = bind(this.postComment, this);
+
       this.notes_url = notes_url;
       this.note_ids = note_ids;
+      // Used to keep track of updated notes while people are editing things
+      this.updatedNotesTrackingMap = {};
       this.last_fetched_at = last_fetched_at;
       this.noteable_url = document.URL;
       this.notesCountBadge || (this.notesCountBadge = $(".issuable-details").find(".notes-tab .badge"));
       this.basePollingInterval = 15000;
       this.maxPollingSteps = 4;
+
       this.cleanBinding();
       this.addBinding();
       this.setPollingInterval();
@@ -73,28 +84,19 @@ require('./task_list');
     };
 
     Notes.prototype.addBinding = function() {
-      // add note to UI after creation
-      $(document).on("ajax:success", ".js-main-target-form", this.addNote);
-      $(document).on("ajax:success", ".js-discussion-note-form", this.addDiscussionNote);
-      // catch note ajax errors
-      $(document).on("ajax:error", ".js-main-target-form", this.addNoteError);
-      // change note in UI after update
-      $(document).on("ajax:success", "form.edit-note", this.updateNote);
       // Edit note link
       $(document).on("click", ".js-note-edit", this.showEditForm.bind(this));
       $(document).on("click", ".note-edit-cancel", this.cancelEdit);
       // Reopen and close actions for Issue/MR combined with note form submit
-      $(document).on("click", ".js-comment-button", this.updateCloseButton);
+      $(document).on("click", ".js-comment-submit-button", this.postComment);
+      $(document).on("click", ".js-comment-save-button", this.updateComment);
       $(document).on("keyup input", ".js-note-text", this.updateTargetButtons);
       // resolve a discussion
-      $(document).on('click', '.js-comment-resolve-button', this.resolveDiscussion);
+      $(document).on('click', '.js-comment-resolve-button', this.postComment);
       // remove a note (in general)
       $(document).on("click", ".js-note-delete", this.removeNote);
       // delete note attachment
       $(document).on("click", ".js-note-attachment-delete", this.removeAttachment);
-      // reset main target form after submit
-      $(document).on("ajax:complete", ".js-main-target-form", this.reenableTargetFormSubmitButton);
-      $(document).on("ajax:success", ".js-main-target-form", this.resetMainTargetForm);
       // reset main target form when clicking discard
       $(document).on("click", ".js-note-discard", this.resetMainTargetForm);
       // update the file name when an attachment is selected
@@ -111,30 +113,33 @@ require('./task_list');
       $(document).on("visibilitychange", this.visibilityChange);
       // when issue status changes, we need to refresh data
       $(document).on("issuable:change", this.refresh);
+      // ajax:events that happen on Form when actions like Reopen, Close are performed on Issues and MRs.
+      $(document).on("ajax:success", ".js-main-target-form", this.addNote);
+      $(document).on("ajax:success", ".js-discussion-note-form", this.addDiscussionNote);
+      $(document).on("ajax:success", ".js-main-target-form", this.resetMainTargetForm);
+      $(document).on("ajax:complete", ".js-main-target-form", this.reenableTargetFormSubmitButton);
       // when a key is clicked on the notes
       return $(document).on("keydown", ".js-note-text", this.keydownNoteText);
     };
 
     Notes.prototype.cleanBinding = function() {
-      $(document).off("ajax:success", ".js-main-target-form");
-      $(document).off("ajax:success", ".js-discussion-note-form");
-      $(document).off("ajax:success", "form.edit-note");
       $(document).off("click", ".js-note-edit");
       $(document).off("click", ".note-edit-cancel");
       $(document).off("click", ".js-note-delete");
       $(document).off("click", ".js-note-attachment-delete");
-      $(document).off("ajax:complete", ".js-main-target-form");
-      $(document).off("ajax:success", ".js-main-target-form");
       $(document).off("click", ".js-discussion-reply-button");
       $(document).off("click", ".js-add-diff-note-button");
       $(document).off("visibilitychange");
-      $(document).off("keyup", ".js-note-text");
+      $(document).off("keyup input", ".js-note-text");
       $(document).off("click", ".js-note-target-reopen");
       $(document).off("click", ".js-note-target-close");
       $(document).off("click", ".js-note-discard");
       $(document).off("keydown", ".js-note-text");
       $(document).off('click', '.js-comment-resolve-button');
       $(document).off("click", '.system-note-commit-list-toggler');
+      $(document).off("ajax:success", ".js-main-target-form");
+      $(document).off("ajax:success", ".js-discussion-note-form");
+      $(document).off("ajax:complete", ".js-main-target-form");
     };
 
     Notes.initCommentTypeToggle = function (form) {
@@ -267,20 +272,16 @@ require('./task_list');
       return this.initRefresh();
     };
 
-    Notes.prototype.handleCreateChanges = function(note) {
+    Notes.prototype.handleSlashCommands = function(noteEntity) {
       var votesBlock;
-      if (typeof note === 'undefined') {
-        return;
-      }
-
-      if (note.commands_changes) {
-        if ('merge' in note.commands_changes) {
+      if (noteEntity.commands_changes) {
+        if ('merge' in noteEntity.commands_changes) {
           $.get(mrRefreshWidgetUrl);
         }
 
-        if ('emoji_award' in note.commands_changes) {
+        if ('emoji_award' in noteEntity.commands_changes) {
           votesBlock = $('.js-awards-block').eq(0);
-          gl.awardsHandler.addAwardToEmojiBar(votesBlock, note.commands_changes.emoji_award);
+          gl.awardsHandler.addAwardToEmojiBar(votesBlock, noteEntity.commands_changes.emoji_award);
           return gl.awardsHandler.scrollToAwards();
         }
       }
@@ -292,32 +293,58 @@ require('./task_list');
     Note: for rendering inline notes use renderDiscussionNote
      */
 
-    Notes.prototype.renderNote = function(note, $form) {
-      var $notesList;
-      if (note.discussion_html != null) {
-        return this.renderDiscussionNote(note, $form);
+    Notes.prototype.renderNote = function(noteEntity, $form, $notesList = $('.main-notes-list')) {
+      if (noteEntity.discussion_html != null) {
+        return this.renderDiscussionNote(noteEntity, $form);
       }
 
-      if (!note.valid) {
-        if (note.errors.commands_only) {
-          new Flash(note.errors.commands_only, 'notice', this.parentTimeline);
+      if (!noteEntity.valid) {
+        if (noteEntity.errors.commands_only) {
+          new Flash(noteEntity.errors.commands_only, 'notice', this.parentTimeline);
           this.refresh();
         }
         return;
       }
 
-      if (this.isNewNote(note)) {
-        this.note_ids.push(note.id);
+      const $note = $notesList.find(`#note_${noteEntity.id}`);
+      if (this.isNewNote(noteEntity)) {
+        this.note_ids.push(noteEntity.id);
 
-        $notesList = window.$('ul.main-notes-list');
-        Notes.animateAppendNote(note.html, $notesList);
+        const $newNote = Notes.animateAppendNote(noteEntity.html, $notesList);
 
         // Update datetime format on the recent note
-        gl.utils.localTimeAgo($notesList.find("#note_" + note.id + " .js-timeago"), false);
+        gl.utils.localTimeAgo($newNote.find('.js-timeago'), false);
         this.collapseLongCommitList();
         this.taskList.init();
         this.refresh();
         return this.updateNotesCount(1);
+      }
+      // The server can send the same update multiple times so we need to make sure to only update once per actual update.
+      else if (this.isUpdatedNote(noteEntity, $note)) {
+        const isEditing = $note.hasClass('is-editing');
+        const initialContent = normalizeNewlines(
+          $note.find('.original-note-content').text().trim()
+        );
+        const $textarea = $note.find('.js-note-text');
+        const currentContent = $textarea.val();
+        // There can be CRLF vs LF mismatches if we don't sanitize and compare the same way
+        const sanitizedNoteNote = normalizeNewlines(noteEntity.note);
+        const isTextareaUntouched = currentContent === initialContent || currentContent === sanitizedNoteNote;
+
+        if (isEditing && isTextareaUntouched) {
+          $textarea.val(noteEntity.note);
+          this.updatedNotesTrackingMap[noteEntity.id] = noteEntity;
+        }
+        else if (isEditing && !isTextareaUntouched) {
+          this.putConflictEditWarningInPlace(noteEntity, $note);
+          this.updatedNotesTrackingMap[noteEntity.id] = noteEntity;
+        }
+        else {
+          const $updatedNote = Notes.animateUpdateNote(noteEntity.html, $note);
+
+          // Update datetime format on the recent note
+          gl.utils.localTimeAgo($updatedNote.find('.js-timeago'), false);
+        }
       }
     };
 
@@ -325,8 +352,17 @@ require('./task_list');
     Check if note does not exists on page
      */
 
-    Notes.prototype.isNewNote = function(note) {
-      return $.inArray(note.id, this.note_ids) === -1;
+    Notes.prototype.isNewNote = function(noteEntity) {
+      return $.inArray(noteEntity.id, this.note_ids) === -1;
+    };
+
+    Notes.prototype.isUpdatedNote = function(noteEntity, $note) {
+      // There can be CRLF vs LF mismatches if we don't sanitize and compare the same way
+      const sanitizedNoteNote = normalizeNewlines(noteEntity.note);
+      const currentNoteText = normalizeNewlines(
+        $note.find('.original-note-content').text().trim()
+      );
+      return sanitizedNoteNote !== currentNoteText;
     };
 
     Notes.prototype.isParallelView = function() {
@@ -339,31 +375,31 @@ require('./task_list');
     Note: for rendering inline notes use renderDiscussionNote
      */
 
-    Notes.prototype.renderDiscussionNote = function(note, $form) {
+    Notes.prototype.renderDiscussionNote = function(noteEntity, $form) {
       var discussionContainer, form, row, lineType, diffAvatarContainer;
-      if (!this.isNewNote(note)) {
+      if (!this.isNewNote(noteEntity)) {
         return;
       }
-      this.note_ids.push(note.id);
-      form = $form || $(".js-discussion-note-form[data-discussion-id='" + note.discussion_id + "']");
+      this.note_ids.push(noteEntity.id);
+      form = $form || $(".js-discussion-note-form[data-discussion-id='" + noteEntity.discussion_id + "']");
       row = form.closest("tr");
       lineType = this.isParallelView() ? form.find('#line_type').val() : 'old';
       diffAvatarContainer = row.prevAll('.line_holder').first().find('.js-avatar-container.' + lineType + '_line');
       // is this the first note of discussion?
-      discussionContainer = window.$(`.notes[data-discussion-id="${note.discussion_id}"]`);
+      discussionContainer = $(`.notes[data-discussion-id="${noteEntity.discussion_id}"]`);
       if (!discussionContainer.length) {
         discussionContainer = form.closest('.discussion').find('.notes');
       }
       if (discussionContainer.length === 0) {
-        if (note.diff_discussion_html) {
-          var $discussion = $(note.diff_discussion_html).renderGFM();
+        if (noteEntity.diff_discussion_html) {
+          var $discussion = $(noteEntity.diff_discussion_html).renderGFM();
 
           if (!this.isParallelView() || row.hasClass('js-temp-notes-holder')) {
             // insert the note and the reply button after the temp row
             row.after($discussion);
           } else {
             // Merge new discussion HTML in
-            var $notes = $discussion.find('.notes[data-discussion-id="' + note.discussion_id + '"]');
+            var $notes = $discussion.find('.notes[data-discussion-id="' + noteEntity.discussion_id + '"]');
             var contentContainerClass = '.' + $notes.closest('.notes_content')
               .attr('class')
               .split(' ')
@@ -373,17 +409,18 @@ require('./task_list');
           }
         }
         // Init discussion on 'Discussion' page if it is merge request page
-        if (window.$('body').attr('data-page').indexOf('projects:merge_request') === 0 || !note.diff_discussion_html) {
-          Notes.animateAppendNote(note.discussion_html, window.$('ul.main-notes-list'));
+        const page = $('body').attr('data-page');
+        if ((page && page.indexOf('projects:merge_request') === 0) || !noteEntity.diff_discussion_html) {
+          Notes.animateAppendNote(noteEntity.discussion_html, $('.main-notes-list'));
         }
       } else {
         // append new note to all matching discussions
-        Notes.animateAppendNote(note.html, discussionContainer);
+        Notes.animateAppendNote(noteEntity.html, discussionContainer);
       }
 
-      if (typeof gl.diffNotesCompileComponents !== 'undefined' && note.discussion_resolvable) {
+      if (typeof gl.diffNotesCompileComponents !== 'undefined' && noteEntity.discussion_resolvable) {
         gl.diffNotesCompileComponents();
-        this.renderDiscussionAvatar(diffAvatarContainer, note);
+        this.renderDiscussionAvatar(diffAvatarContainer, noteEntity);
       }
 
       gl.utils.localTimeAgo($('.js-timeago'), false);
@@ -397,13 +434,13 @@ require('./task_list');
         .get(0);
     };
 
-    Notes.prototype.renderDiscussionAvatar = function(diffAvatarContainer, note) {
+    Notes.prototype.renderDiscussionAvatar = function(diffAvatarContainer, noteEntity) {
       var commentButton = diffAvatarContainer.find('.js-add-diff-note-button');
       var avatarHolder = diffAvatarContainer.find('.diff-comment-avatar-holders');
 
       if (!avatarHolder.length) {
         avatarHolder = document.createElement('diff-note-avatars');
-        avatarHolder.setAttribute('discussion-id', note.discussion_id);
+        avatarHolder.setAttribute('discussion-id', noteEntity.discussion_id);
 
         diffAvatarContainer.append(avatarHolder);
 
@@ -511,14 +548,21 @@ require('./task_list');
     Adds new note to list.
      */
 
-    Notes.prototype.addNote = function(xhr, note, status) {
-      this.handleCreateChanges(note);
+    Notes.prototype.addNote = function($form, note) {
       return this.renderNote(note);
     };
 
-    Notes.prototype.addNoteError = function(xhr, note, status) {
-      return new Flash('Your comment could not be submitted! Please check your network connection and try again.', 'alert', this.parentTimeline);
+    Notes.prototype.addNoteError = ($form) => {
+      let formParentTimeline;
+      if ($form.hasClass('js-main-target-form')) {
+        formParentTimeline = $form.parents('.timeline');
+      } else if ($form.hasClass('js-discussion-note-form')) {
+        formParentTimeline = $form.closest('.discussion-notes').find('.notes');
+      }
+      return new Flash('Your comment could not be submitted! Please check your network connection and try again.', 'alert', formParentTimeline);
     };
+
+    Notes.prototype.updateNoteError = $parentTimeline => new Flash('Your comment could not be updated! Please check your network connection and try again.');
 
     /*
     Called in response to the new note form being submitted
@@ -526,9 +570,7 @@ require('./task_list');
     Adds new note to list.
      */
 
-    Notes.prototype.addDiscussionNote = function(xhr, note, status) {
-      var $form = $(xhr.target);
-
+    Notes.prototype.addDiscussionNote = function($form, note, isNewDiffComment) {
       if ($form.attr('data-resolve-all') != null) {
         var projectPath = $form.data('project-path');
         var discussionId = $form.data('discussion-id');
@@ -541,7 +583,9 @@ require('./task_list');
 
       this.renderNote(note, $form);
       // cleanup after successfully creating a diff/discussion note
-      this.removeDiscussionNoteForm($form);
+      if (isNewDiffComment) {
+        this.removeDiscussionNoteForm($form);
+      }
     };
 
     /*
@@ -550,18 +594,19 @@ require('./task_list');
     Updates the current note field.
      */
 
-    Notes.prototype.updateNote = function(_xhr, note, _status) {
-      var $html, $note_li;
+    Notes.prototype.updateNote = function(_xhr, noteEntity, _status) {
+      var $noteEntityEl, $note_li;
       // Convert returned HTML to a jQuery object so we can modify it further
-      $html = $(note.html);
+      $noteEntityEl = $(noteEntity.html);
+      $noteEntityEl.addClass('fade-in-full');
       this.revertNoteEditForm();
-      gl.utils.localTimeAgo($('.js-timeago', $html));
-      $html.renderGFM();
-      $html.find('.js-task-list-container').taskList('enable');
+      gl.utils.localTimeAgo($('.js-timeago', $noteEntityEl));
+      $noteEntityEl.renderGFM();
+      $noteEntityEl.find('.js-task-list-container').taskList('enable');
       // Find the note's `li` element by ID and replace it with the updated HTML
-      $note_li = $('.note-row-' + note.id);
+      $note_li = $('.note-row-' + noteEntity.id);
 
-      $note_li.replaceWith($html);
+      $note_li.replaceWith($noteEntityEl);
 
       if (typeof gl.diffNotesCompileComponents !== 'undefined') {
         gl.diffNotesCompileComponents();
@@ -570,7 +615,7 @@ require('./task_list');
 
     Notes.prototype.checkContentToAllowEditing = function($el) {
       var initialContent = $el.find('.original-note-content').text().trim();
-      var currentContent = $el.find('.note-textarea').val();
+      var currentContent = $el.find('.js-note-text').val();
       var isAllowed = true;
 
       if (currentContent === initialContent) {
@@ -584,7 +629,7 @@ require('./task_list');
           gl.utils.scrollToElement($el);
         }
 
-        $el.find('.js-edit-warning').show();
+        $el.find('.js-finish-edit-warning').show();
         isAllowed = false;
       }
 
@@ -603,7 +648,7 @@ require('./task_list');
       var $target = $(e.target);
       var $editForm = $(this.getEditFormSelector($target));
       var $note = $target.closest('.note');
-      var $currentlyEditing = $('.note.is-editting:visible');
+      var $currentlyEditing = $('.note.is-editing:visible');
 
       if ($currentlyEditing.length) {
         var isEditAllowed = this.checkContentToAllowEditing($currentlyEditing);
@@ -615,7 +660,7 @@ require('./task_list');
 
       $note.find('.js-note-attachment-delete').show();
       $editForm.addClass('current-note-edit-form');
-      $note.addClass('is-editting');
+      $note.addClass('is-editing');
       this.putEditFormInPlace($target);
     };
 
@@ -627,21 +672,34 @@ require('./task_list');
 
     Notes.prototype.cancelEdit = function(e) {
       e.preventDefault();
-      var $target = $(e.target);
-      var note = $target.closest('.note');
-      note.find('.js-edit-warning').hide();
+      const $target = $(e.target);
+      const $note = $target.closest('.note');
+      const noteId = $note.attr('data-note-id');
+
       this.revertNoteEditForm($target);
-      return this.removeNoteEditForm(note);
+
+      if (this.updatedNotesTrackingMap[noteId]) {
+        const $newNote = $(this.updatedNotesTrackingMap[noteId].html);
+        $note.replaceWith($newNote);
+        this.updatedNotesTrackingMap[noteId] = null;
+
+        // Update datetime format on the recent note
+        gl.utils.localTimeAgo($newNote.find('.js-timeago'), false);
+      }
+      else {
+        $note.find('.js-finish-edit-warning').hide();
+        this.removeNoteEditForm($note);
+      }
     };
 
     Notes.prototype.revertNoteEditForm = function($target) {
-      $target = $target || $('.note.is-editting:visible');
+      $target = $target || $('.note.is-editing:visible');
       var selector = this.getEditFormSelector($target);
       var $editForm = $(selector);
 
       $editForm.insertBefore('.notes-form');
-      $editForm.find('.js-comment-button').enable();
-      $editForm.find('.js-edit-warning').hide();
+      $editForm.find('.js-comment-save-button').enable();
+      $editForm.find('.js-finish-edit-warning').hide();
     };
 
     Notes.prototype.getEditFormSelector = function($el) {
@@ -654,11 +712,11 @@ require('./task_list');
       return selector;
     };
 
-    Notes.prototype.removeNoteEditForm = function(note) {
-      var form = note.find('.current-note-edit-form');
-      note.removeClass('is-editting');
+    Notes.prototype.removeNoteEditForm = function($note) {
+      var form = $note.find('.current-note-edit-form');
+      $note.removeClass('is-editing');
       form.removeClass('current-note-edit-form');
-      form.find('.js-edit-warning').hide();
+      form.find('.js-finish-edit-warning').hide();
       // Replace markdown textarea text with original note text.
       return form.find('.js-note-text').val(form.find('form.edit-note').data('original-note'));
     };
@@ -683,9 +741,9 @@ require('./task_list');
         // to remove all. Using $(".note[id='noteId']") ensure we get all the notes,
         // where $("#noteId") would return only one.
         return function(i, el) {
-          var note, notes;
-          note = $(el);
-          notes = note.closest(".discussion-notes");
+          var $note, $notes;
+          $note = $(el);
+          $notes = $note.closest(".discussion-notes");
 
           if (typeof gl.diffNotesCompileComponents !== 'undefined') {
             if (gl.diffNoteApps[noteElId]) {
@@ -693,18 +751,18 @@ require('./task_list');
             }
           }
 
-          note.remove();
+          $note.remove();
 
           // check if this is the last note for this line
-          if (notes.find(".note").length === 0) {
-            var notesTr = notes.closest("tr");
+          if ($notes.find(".note").length === 0) {
+            var notesTr = $notes.closest("tr");
 
             // "Discussions" tab
-            notes.closest(".timeline-entry").remove();
+            $notes.closest(".timeline-entry").remove();
 
             // The notes tr can contain multiple lists of notes, like on the parallel diff
             if (notesTr.find('.discussion-notes').length > 1) {
-              notes.remove();
+              $notes.remove();
             } else {
               notesTr.remove();
             }
@@ -723,12 +781,11 @@ require('./task_list');
      */
 
     Notes.prototype.removeAttachment = function() {
-      var note;
-      note = $(this).closest(".note");
-      note.find(".note-attachment").remove();
-      note.find(".note-body > .note-text").show();
-      note.find(".note-header").show();
-      return note.find(".current-note-edit-form").remove();
+      const $note = $(this).closest(".note");
+      $note.find(".note-attachment").remove();
+      $note.find(".note-body > .note-text").show();
+      $note.find(".note-header").show();
+      return $note.find(".current-note-edit-form").remove();
     };
 
     /*
@@ -925,14 +982,6 @@ require('./task_list');
       return this.refresh();
     };
 
-    Notes.prototype.updateCloseButton = function(e) {
-      var closebtn, form, textarea;
-      textarea = $(e.target);
-      form = textarea.parents('form');
-      closebtn = form.find('.js-note-target-close');
-      return closebtn.text(closebtn.data('original-text'));
-    };
-
     Notes.prototype.updateTargetButtons = function(e) {
       var closebtn, closetext, discardbtn, form, reopenbtn, reopentext, textarea;
       textarea = $(e.target);
@@ -1004,19 +1053,21 @@ require('./task_list');
       $editForm.find('.referenced-users').hide();
     };
 
-    Notes.prototype.updateNotesCount = function(updateCount) {
-      return this.notesCountBadge.text(parseInt(this.notesCountBadge.text(), 10) + updateCount);
+    Notes.prototype.putConflictEditWarningInPlace = function(noteEntity, $note) {
+      if ($note.find('.js-conflict-edit-warning').length === 0) {
+        const $alert = $(`<div class="js-conflict-edit-warning alert alert-danger">
+          This comment has changed since you started editing, please review the
+          <a href="#note_${noteEntity.id}" target="_blank" rel="noopener noreferrer">
+            updated comment
+          </a>
+          to ensure information is not lost
+        </div>`);
+        $alert.insertAfter($note.find('.note-text'));
+      }
     };
 
-    Notes.prototype.resolveDiscussion = function() {
-      var $this = $(this);
-      var discussionId = $this.attr('data-discussion-id');
-
-      $this
-        .closest('form')
-        .attr('data-discussion-id', discussionId)
-        .attr('data-resolve-all', 'true')
-        .attr('data-project-path', $this.attr('data-project-path'));
+    Notes.prototype.updateNotesCount = function(updateCount) {
+      return this.notesCountBadge.text(parseInt(this.notesCountBadge.text(), 10) + updateCount);
     };
 
     Notes.prototype.toggleCommitList = function(e) {
@@ -1064,11 +1115,268 @@ require('./task_list');
       return $form;
     };
 
-    Notes.animateAppendNote = function(noteHTML, $notesList) {
-      const $note = window.$(noteHTML);
+    Notes.animateAppendNote = function(noteHtml, $notesList) {
+      const $note = $(noteHtml);
 
-      $note.addClass('fade-in').renderGFM();
+      $note.addClass('fade-in-full').renderGFM();
       $notesList.append($note);
+      return $note;
+    };
+
+    Notes.animateUpdateNote = function(noteHtml, $note) {
+      const $updatedNote = $(noteHtml);
+
+      $updatedNote.addClass('fade-in').renderGFM();
+      $note.replaceWith($updatedNote);
+      return $updatedNote;
+    };
+
+    /**
+     * Get data from Form attributes to use for saving/submitting comment.
+     */
+    Notes.prototype.getFormData = function($form) {
+      return {
+        formData: $form.serialize(),
+        formContent: $form.find('.js-note-text').val(),
+        formAction: $form.attr('action'),
+      };
+    };
+
+    /**
+     * Identify if comment has any slash commands
+     */
+    Notes.prototype.hasSlashCommands = function(formContent) {
+      return REGEX_SLASH_COMMANDS.test(formContent);
+    };
+
+    /**
+     * Remove slash commands and leave comment with pure message
+     */
+    Notes.prototype.stripSlashCommands = function(formContent) {
+      return formContent.replace(REGEX_SLASH_COMMANDS, '').trim();
+    };
+
+    /**
+     * Create placeholder note DOM element populated with comment body
+     * that we will show while comment is being posted.
+     * Once comment is _actually_ posted on server, we will have final element
+     * in response that we will show in place of this temporary element.
+     */
+    Notes.prototype.createPlaceholderNote = function({ formContent, uniqueId, isDiscussionNote, currentUsername, currentUserFullname }) {
+      const discussionClass = isDiscussionNote ? 'discussion' : '';
+      const $tempNote = $(
+        `<li id="${uniqueId}" class="note being-posted fade-in-half timeline-entry">
+           <div class="timeline-entry-inner">
+              <div class="timeline-icon">
+                 <a href="/${currentUsername}"><span class="dummy-avatar"></span></a>
+              </div>
+              <div class="timeline-content ${discussionClass}">
+                 <div class="note-header">
+                    <div class="note-header-info">
+                       <a href="/${currentUsername}">
+                         <span class="hidden-xs">${currentUserFullname}</span>
+                         <span class="note-headline-light">@${currentUsername}</span>
+                       </a>
+                       <span class="note-headline-light">
+                          <i class="fa fa-spinner fa-spin" aria-label="Comment is being posted" aria-hidden="true"></i>
+                       </span>
+                    </div>
+                 </div>
+                 <div class="note-body">
+                   <div class="note-text">
+                     <p>${formContent}</p>
+                   </div>
+                 </div>
+              </div>
+           </div>
+        </li>`
+      );
+
+      return $tempNote;
+    };
+
+    /**
+     * This method does following tasks step-by-step whenever a new comment
+     * is submitted by user (both main thread comments as well as discussion comments).
+     *
+     * 1) Get Form metadata
+     * 2) Identify comment type; a) Main thread b) Discussion thread c) Discussion resolve
+     * 3) Build temporary placeholder element (using `createPlaceholderNote`)
+     * 4) Show placeholder note on UI
+     * 5) Perform network request to submit the note using `gl.utils.ajaxPost`
+     *    a) If request is successfully completed
+     *        1. Remove placeholder element
+     *        2. Show submitted Note element
+     *        3. Perform post-submit errands
+     *           a. Mark discussion as resolved if comment submission was for resolve.
+     *           b. Reset comment form to original state.
+     *    b) If request failed
+     *        1. Remove placeholder element
+     *        2. Show error Flash message about failure
+     */
+    Notes.prototype.postComment = function(e) {
+      e.preventDefault();
+
+      // Get Form metadata
+      const $submitBtn = $(e.target);
+      let $form = $submitBtn.parents('form');
+      const $closeBtn = $form.find('.js-note-target-close');
+      const isDiscussionNote = $submitBtn.parent().find('li.droplab-item-selected').attr('id') === 'discussion';
+      const isMainForm = $form.hasClass('js-main-target-form');
+      const isDiscussionForm = $form.hasClass('js-discussion-note-form');
+      const isDiscussionResolve = $submitBtn.hasClass('js-comment-resolve-button');
+      const { formData, formContent, formAction } = this.getFormData($form);
+      const uniqueId = _.uniqueId('tempNote_');
+      let $notesContainer;
+      let tempFormContent;
+
+      // Get reference to notes container based on type of comment
+      if (isDiscussionForm) {
+        $notesContainer = $form.parent('.discussion-notes').find('.notes');
+      } else if (isMainForm) {
+        $notesContainer = $('ul.main-notes-list');
+      }
+
+      // If comment is to resolve discussion, disable submit buttons while
+      // comment posting is finished.
+      if (isDiscussionResolve) {
+        $submitBtn.disable();
+        $form.find('.js-comment-submit-button').disable();
+      }
+
+      tempFormContent = formContent;
+      if (this.hasSlashCommands(formContent)) {
+        tempFormContent = this.stripSlashCommands(formContent);
+      }
+
+      if (tempFormContent) {
+        // Show placeholder note
+        $notesContainer.append(this.createPlaceholderNote({
+          formContent: tempFormContent,
+          uniqueId,
+          isDiscussionNote,
+          currentUsername: gon.current_username,
+          currentUserFullname: gon.current_user_fullname,
+        }));
+      }
+
+      // Clear the form textarea
+      if ($notesContainer.length) {
+        if (isMainForm) {
+          this.resetMainTargetForm(e);
+        } else if (isDiscussionForm) {
+          this.removeDiscussionNoteForm($form);
+        }
+      }
+
+      /* eslint-disable promise/catch-or-return */
+      // Make request to submit comment on server
+      gl.utils.ajaxPost(formAction, formData)
+        .then((note) => {
+          // Submission successful! remove placeholder
+          $notesContainer.find(`#${uniqueId}`).remove();
+
+          // Check if this was discussion comment
+          if (isDiscussionForm) {
+            // Remove flash-container
+            $notesContainer.find('.flash-container').remove();
+
+            // If comment intends to resolve discussion, do the same.
+            if (isDiscussionResolve) {
+              $form
+                .attr('data-discussion-id', $submitBtn.data('discussion-id'))
+                .attr('data-resolve-all', 'true')
+                .attr('data-project-path', $submitBtn.data('project-path'));
+            }
+
+            // Show final note element on UI
+            this.addDiscussionNote($form, note, $notesContainer.length === 0);
+
+            // append flash-container to the Notes list
+            if ($notesContainer.length) {
+              $notesContainer.append('<div class="flash-container" style="display: none;"></div>');
+            }
+          } else if (isMainForm) { // Check if this was main thread comment
+            // Show final note element on UI and perform form and action buttons cleanup
+            this.addNote($form, note);
+            this.reenableTargetFormSubmitButton(e);
+          }
+
+          if (note.commands_changes) {
+            this.handleSlashCommands(note);
+          }
+
+          $form.trigger('ajax:success', [note]);
+        }).fail(() => {
+          // Submission failed, remove placeholder note and show Flash error message
+          $notesContainer.find(`#${uniqueId}`).remove();
+
+          // Show form again on UI on failure
+          if (isDiscussionForm && $notesContainer.length) {
+            const replyButton = $notesContainer.parent().find('.js-discussion-reply-button');
+            $.proxy(this.replyToDiscussionNote, replyButton[0], { target: replyButton[0] }).call();
+            $form = $notesContainer.parent().find('form');
+          }
+
+          $form.find('.js-note-text').val(formContent);
+          this.reenableTargetFormSubmitButton(e);
+          this.addNoteError($form);
+        });
+
+      return $closeBtn.text($closeBtn.data('original-text'));
+    };
+
+    /**
+     * This method does following tasks step-by-step whenever an existing comment
+     * is updated by user (both main thread comments as well as discussion comments).
+     *
+     * 1) Get Form metadata
+     * 2) Update note element with new content
+     * 3) Perform network request to submit the updated note using `gl.utils.ajaxPost`
+     *    a) If request is successfully completed
+     *        1. Show submitted Note element
+     *    b) If request failed
+     *        1. Revert Note element to original content
+     *        2. Show error Flash message about failure
+     */
+    Notes.prototype.updateComment = function(e) {
+      e.preventDefault();
+
+      // Get Form metadata
+      const $submitBtn = $(e.target);
+      const $form = $submitBtn.parents('form');
+      const $closeBtn = $form.find('.js-note-target-close');
+      const $editingNote = $form.parents('.note.is-editing');
+      const $noteBody = $editingNote.find('.js-task-list-container');
+      const $noteBodyText = $noteBody.find('.note-text');
+      const { formData, formContent, formAction } = this.getFormData($form);
+
+      // Cache original comment content
+      const cachedNoteBodyText = $noteBodyText.html();
+
+      // Show updated comment content temporarily
+      $noteBodyText.html(formContent);
+      $editingNote.removeClass('is-editing fade-in-full').addClass('being-posted fade-in-half');
+      $editingNote.find('.note-headline-meta a').html('<i class="fa fa-spinner fa-spin" aria-label="Comment is being updated" aria-hidden="true"></i>');
+
+      /* eslint-disable promise/catch-or-return */
+      // Make request to update comment on server
+      gl.utils.ajaxPost(formAction, formData)
+        .then((note) => {
+          // Submission successful! render final note element
+          this.updateNote(null, note, null);
+        })
+        .fail(() => {
+          // Submission failed, revert back to original note
+          $noteBodyText.html(cachedNoteBodyText);
+          $editingNote.removeClass('being-posted fade-in');
+          $editingNote.find('.fa.fa-spinner').remove();
+
+          // Show Flash message about failure
+          this.updateNoteError();
+        });
+
+      return $closeBtn.text($closeBtn.data('original-text'));
     };
 
     return Notes;

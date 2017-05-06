@@ -3,6 +3,6 @@
 %tr.tree-item{ 'data-link' => path_to_directory }
   %td.tree-item-file-name
     = tree_icon('folder', '755', directory.name)
-    %span.str-truncated
-      = link_to directory.name, path_to_directory
+    = link_to path_to_directory do
+      %span.str-truncated= directory.name
   %td

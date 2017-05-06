@@ -77,7 +77,7 @@ class Spinach::Features::Dashboard < Spinach::FeatureSteps
 
   step 'project "Shop" has issue "Bugfix1" with label "feature"' do
     project = Project.find_by(name: "Shop")
-    issue = create(:issue, title: "Bugfix1", project: project, assignee: current_user)
+    issue = create(:issue, title: "Bugfix1", project: project, assignees: [current_user])
     issue.labels << project.labels.find_by(title: 'feature')
   end
 end

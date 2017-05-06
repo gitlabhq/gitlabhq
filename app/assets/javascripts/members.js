@@ -31,8 +31,8 @@
           toggleLabel(selected, $el) {
             return $el.text();
           },
-          clicked: (selected, $link) => {
-            this.formSubmit(null, $link);
+          clicked: (options) => {
+            this.formSubmit(null, options.$el);
           },
         });
       });

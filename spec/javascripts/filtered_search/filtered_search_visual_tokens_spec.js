@@ -1,3 +1,5 @@
+import AjaxCache from '~/lib/utils/ajax_cache';
+
 require('~/filtered_search/filtered_search_visual_tokens');
 const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper');
 
@@ -610,5 +612,104 @@ describe('Filtered Search Visual Tokens', () => {
       const token = tokensContainer.children[1];
       expect(token.querySelector('.value').innerText).toEqual('~bug');
     });
+  });
+
+  describe('renderVisualTokenValue', () => {
+    let searchTokens;
+
+    beforeEach(() => {
+      tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
+        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', 'none')}
+        ${FilteredSearchSpecHelper.createSearchVisualTokenHTML('search')}
+        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', 'upcoming')}
+      `);
+
+      searchTokens = document.querySelectorAll('.filtered-search-token');
+    });
+
+    it('renders a token value element', () => {
+      spyOn(gl.FilteredSearchVisualTokens, 'updateLabelTokenColor');
+      const updateLabelTokenColorSpy = gl.FilteredSearchVisualTokens.updateLabelTokenColor;
+
+      expect(searchTokens.length).toBe(2);
+      Array.prototype.forEach.call(searchTokens, (token) => {
+        updateLabelTokenColorSpy.calls.reset();
+
+        const tokenName = token.querySelector('.name').innerText;
+        const tokenValue = 'new value';
+        gl.FilteredSearchVisualTokens.renderVisualTokenValue(token, tokenName, tokenValue);
+
+        const tokenValueElement = token.querySelector('.value');
+        expect(tokenValueElement.innerText).toBe(tokenValue);
+
+        if (tokenName.toLowerCase() === 'label') {
+          const tokenValueContainer = token.querySelector('.value-container');
+          expect(updateLabelTokenColorSpy.calls.count()).toBe(1);
+          const expectedArgs = [tokenValueContainer, tokenValue];
+          expect(updateLabelTokenColorSpy.calls.argsFor(0)).toEqual(expectedArgs);
+        } else {
+          expect(updateLabelTokenColorSpy.calls.count()).toBe(0);
+        }
+      });
+    });
+  });
+
+  describe('updateLabelTokenColor', () => {
+    const jsonFixtureName = 'labels/project_labels.json';
+    const dummyEndpoint = '/dummy/endpoint';
+
+    preloadFixtures(jsonFixtureName);
+    const labelData = getJSONFixture(jsonFixtureName);
+    const findLabel = tokenValue => labelData.find(
+      label => tokenValue === `~${gl.DropdownUtils.getEscapedText(label.title)}`,
+    );
+
+    const bugLabelToken = FilteredSearchSpecHelper.createFilterVisualToken('label', '~bug');
+    const missingLabelToken = FilteredSearchSpecHelper.createFilterVisualToken('label', '~doesnotexist');
+    const spaceLabelToken = FilteredSearchSpecHelper.createFilterVisualToken('label', '~"some space"');
+
+    const parseColor = (color) => {
+      const dummyElement = document.createElement('div');
+      dummyElement.style.color = color;
+      return dummyElement.style.color;
+    };
+
+    beforeEach(() => {
+      tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
+        ${bugLabelToken.outerHTML}
+        ${missingLabelToken.outerHTML}
+        ${spaceLabelToken.outerHTML}
+      `);
+
+      const filteredSearchInput = document.querySelector('.filtered-search');
+      filteredSearchInput.dataset.baseEndpoint = dummyEndpoint;
+
+      AjaxCache.internalStorage = { };
+      AjaxCache.internalStorage[`${dummyEndpoint}/labels.json`] = labelData;
+    });
+
+    const testCase = (token, done) => {
+      const tokenValueContainer = token.querySelector('.value-container');
+      const tokenValue = token.querySelector('.value').innerText;
+      const label = findLabel(tokenValue);
+
+      gl.FilteredSearchVisualTokens.updateLabelTokenColor(tokenValueContainer, tokenValue)
+      .then(() => {
+        if (label) {
+          expect(tokenValueContainer.getAttribute('style')).not.toBe(null);
+          expect(tokenValueContainer.style.backgroundColor).toBe(parseColor(label.color));
+          expect(tokenValueContainer.style.color).toBe(parseColor(label.text_color));
+        } else {
+          expect(token).toBe(missingLabelToken);
+          expect(tokenValueContainer.getAttribute('style')).toBe(null);
+        }
+      })
+      .then(done)
+      .catch(fail);
+    };
+
+    it('updates the color of a label token', done => testCase(bugLabelToken, done));
+    it('updates the color of a label token with spaces', done => testCase(spaceLabelToken, done));
+    it('does not change color of a missing label', done => testCase(missingLabelToken, done));
   });
 });

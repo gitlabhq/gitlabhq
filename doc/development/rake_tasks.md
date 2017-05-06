@@ -31,16 +31,26 @@ files it can find, also the ones in `/tmp`
 
 To run a single test file you can use:
 
-- `bundle exec rspec spec/controllers/commit_controller_spec.rb` for a rspec test
-- `bundle exec spinach features/project/issues/milestones.feature` for a spinach test
+- `bin/rspec spec/controllers/commit_controller_spec.rb` for a rspec test
+- `bin/spinach features/project/issues/milestones.feature` for a spinach test
 
 To run several tests inside one directory:
 
-- `bundle exec rspec spec/requests/api/` for the rspec tests if you want to test API only
-- `bundle exec spinach features/profile/` for the spinach tests if you want to test only profile pages
+- `bin/rspec spec/requests/api/` for the rspec tests if you want to test API only
+- `bin/spinach features/profile/` for the spinach tests if you want to test only profile pages
 
-If you want to use [Spring](https://github.com/rails/spring) set
-`ENABLE_SPRING=1` in your environment.
+### Speed-up tests, rake tasks, and migrations
+
+[Spring](https://github.com/rails/spring) is a Rails application preloader. It
+speeds up development by keeping your application running in the background so
+you don't need to boot it every time you run a test, rake task or migration.
+
+If you want to use it, you'll need to export the `ENABLE_SPRING` environment
+variable to `1`:
+
+```
+export ENABLE_SPRING=1
+```
 
 ## Compile Frontend Assets
 

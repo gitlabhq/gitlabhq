@@ -168,15 +168,23 @@ import d3 from 'd3';
     };
 
     Calendar.prototype.renderKey = function() {
-      var keyColors;
-      keyColors = ['#ededed', this.colorKey(0), this.colorKey(1), this.colorKey(2), this.colorKey(3)];
-      return this.svg.append('g').attr('transform', "translate(18, " + (this.daySizeWithSpace * 8 + 16) + ")").selectAll('rect').data(keyColors).enter().append('rect').attr('width', this.daySize).attr('height', this.daySize).attr('x', (function(_this) {
-        return function(color, i) {
-          return _this.daySizeWithSpace * i;
-        };
-      })(this)).attr('y', 0).attr('fill', function(color) {
-        return color;
-      });
+      const keyValues = ['no contributions', '1-9 contributions', '10-19 contributions', '20-29 contributions', '30+ contributions'];
+      const keyColors = ['#ededed', this.colorKey(0), this.colorKey(1), this.colorKey(2), this.colorKey(3)];
+
+      this.svg.append('g')
+        .attr('transform', `translate(18, ${this.daySizeWithSpace * 8 + 16})`)
+        .selectAll('rect')
+          .data(keyColors)
+          .enter()
+          .append('rect')
+            .attr('width', this.daySize)
+            .attr('height', this.daySize)
+            .attr('x', (color, i) => this.daySizeWithSpace * i)
+            .attr('y', 0)
+            .attr('fill', color => color)
+            .attr('class', 'js-tooltip')
+            .attr('title', (color, i) => keyValues[i])
+            .attr('data-container', 'body');
     };
 
     Calendar.prototype.initColor = function() {

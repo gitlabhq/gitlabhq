@@ -13,8 +13,8 @@
             %button.btn.btn-small.btn-default.pull-right.has-tooltip{ type: "button",
               "@click" => "showNewIssueForm",
               "v-if" => 'list.type !== "closed"',
-              "aria-label" => "Add an issue",
-              "title" => "Add an issue",
+              "aria-label" => "New issue",
+              "title" => "New issue",
               data: { placement: "top", container: "body" } }
               = icon("plus")
         - if can?(current_user, :admin_list, @project)

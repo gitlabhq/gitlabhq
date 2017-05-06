@@ -85,7 +85,8 @@ class ProfilesController < Profiles::ApplicationController
       :twitter,
       :username,
       :website_url,
-      :organization
+      :organization,
+      :preferred_language
     )
   end
 end

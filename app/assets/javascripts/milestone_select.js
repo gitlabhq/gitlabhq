@@ -121,7 +121,10 @@
             return $value.css('display', '');
           },
           vue: $dropdown.hasClass('js-issue-board-sidebar'),
-          clicked: function(selected, $el, e) {
+          clicked: function(options) {
+            const { $el, e } = options;
+            let selected = options.selectedObj;
+
             var data, isIssueIndex, isMRIndex, page, boardsStore;
             page = $('body').data('page');
             isIssueIndex = page === 'projects:issues:index';

@@ -35,6 +35,7 @@ describe('Board list component', () => {
       iid: 1,
       confidential: false,
       labels: [],
+      assignees: [],
     });
     list.issuesSize = 1;
     list.issues.push(issue);

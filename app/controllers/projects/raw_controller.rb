@@ -15,7 +15,7 @@ class Projects::RawController < Projects::ApplicationController
 
       return if cached_blob?
 
-      if @blob.valid_lfs_pointer?
+      if @blob.stored_externally?
         send_lfs_object
       else
         send_git_blob @repository, @blob

@@ -162,6 +162,18 @@
     &.code {
       padding: 0;
     }
+
+    .list-inline.previews {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-content: flex-start;
+      align-items: baseline;
+
+      .preview {
+        padding: $gl-padding;
+      }
+    }
   }
 }
 

@@ -66,8 +66,25 @@ class NotificationService
   #  * issue new assignee if their notification level is not Disabled
   #  * users with custom level checked with "reassign issue"
   #
-  def reassigned_issue(issue, current_user)
-    reassign_resource_email(issue, issue.project, current_user, :reassigned_issue_email)
+  def reassigned_issue(issue, current_user, previous_assignees = [])
+    recipients = NotificationRecipientService.new(issue.project).build_recipients(
+      issue,
+      current_user,
+      action: "reassign",
+      previous_assignee: previous_assignees
+    )
+
+    previous_assignee_ids = previous_assignees.map(&:id)
+
+    recipients.each do |recipient|
+      mailer.send(
+        :reassigned_issue_email,
+        recipient.id,
+        issue.id,
+        previous_assignee_ids,
+        current_user.id
+      ).deliver_later
+    end
   end
 
   # When we add labels to an issue we should send an email to:
@@ -367,10 +384,10 @@ class NotificationService
   end
 
   def previous_record(object, attribute)
-    if object && attribute
-      if object.previous_changes.include?(attribute)
-        object.previous_changes[attribute].first
-      end
+    return unless object && attribute
+
+    if object.previous_changes.include?(attribute)
+      object.previous_changes[attribute].first
     end
   end
 end

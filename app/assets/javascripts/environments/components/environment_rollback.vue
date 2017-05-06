@@ -1,6 +1,4 @@
 <script>
-/* global Flash */
-/* eslint-disable no-new */
 /**
  * Renders Rollback or Re deploy button in environments table depending
  * of the provided property `isLastDeployment`.
@@ -20,11 +18,6 @@ export default {
       type: Boolean,
       default: true,
     },
-
-    service: {
-      type: Object,
-      required: true,
-    },
   },
 
   data() {
@@ -37,17 +30,7 @@ export default {
     onClick() {
       this.isLoading = true;
 
-      $(this.$el).tooltip('destroy');
-
-      this.service.postAction(this.retryUrl)
-      .then(() => {
-        this.isLoading = false;
-        eventHub.$emit('refreshEnvironments');
-      })
-      .catch(() => {
-        this.isLoading = false;
-        new Flash('An error occured while making the request.');
-      });
+      eventHub.$emit('postAction', this.retryUrl);
     },
   },
 };

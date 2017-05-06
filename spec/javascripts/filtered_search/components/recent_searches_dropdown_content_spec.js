@@ -76,6 +76,26 @@ describe('RecentSearchesDropdownContent', () => {
     });
   });
 
+  describe('if isLocalStorageAvailable is `false`', () => {
+    let el;
+
+    beforeEach(() => {
+      const props = Object.assign({ isLocalStorageAvailable: false }, propsDataWithItems);
+
+      vm = createComponent(props);
+      el = vm.$el;
+    });
+
+    it('should render an info note', () => {
+      const note = el.querySelector('.dropdown-info-note');
+      const items = el.querySelectorAll('.filtered-search-history-dropdown-item');
+
+      expect(note).toBeDefined();
+      expect(note.innerText.trim()).toBe('This feature requires local storage to be enabled');
+      expect(items.length).toEqual(propsDataWithoutItems.items.length);
+    });
+  });
+
   describe('computed', () => {
     describe('processedItems', () => {
       it('with items', () => {

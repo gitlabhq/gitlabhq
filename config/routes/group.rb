@@ -10,7 +10,13 @@ scope(path: 'groups/*group_id',
   end
 
   resource :avatar, only: [:destroy]
-  resources :milestones, constraints: { id: /[^\/]+/ }, only: [:index, :show, :update, :new, :create]
+  resources :milestones, constraints: { id: /[^\/]+/ }, only: [:index, :show, :update, :new, :create] do
+    member do
+      get :merge_requests
+      get :participants
+      get :labels
+    end
+  end
 
   resources :labels, except: [:show] do
     post :toggle_subscription, on: :member

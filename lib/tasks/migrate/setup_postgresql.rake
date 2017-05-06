@@ -11,4 +11,5 @@ task setup_postgresql: :environment do
   AddUsersLowerUsernameEmailIndexes.new.up
   AddLowerPathIndexToRoutes.new.up
   IndexRoutesPathForLike.new.up
+  IndexRedirectRoutesPathForLike.new.up
 end

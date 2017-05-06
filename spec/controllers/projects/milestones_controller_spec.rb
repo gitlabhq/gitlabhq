@@ -7,12 +7,15 @@ describe Projects::MilestonesController do
   let(:issue) { create(:issue, project: project, milestone: milestone) }
   let!(:label) { create(:label, project: project, title: 'Issue Label', issues: [issue]) }
   let!(:merge_request) { create(:merge_request, source_project: project, target_project: project, milestone: milestone) }
+  let(:milestone_path) { namespace_project_milestone_path }
 
   before do
     sign_in(user)
     project.team << [user, :master]
     controller.instance_variable_set(:@project, project)
   end
+
+  it_behaves_like 'milestone tabs'
 
   describe "#show" do
     render_views

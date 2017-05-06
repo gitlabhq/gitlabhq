@@ -36,11 +36,11 @@ describe Notify do
       end
 
       context 'for issues' do
-        let(:issue) { create(:issue, author: current_user, assignee: assignee, project: project) }
-        let(:issue_with_description) { create(:issue, author: current_user, assignee: assignee, project: project, description: 'My awesome description') }
+        let(:issue) { create(:issue, author: current_user, assignees: [assignee], project: project) }
+        let(:issue_with_description) { create(:issue, author: current_user, assignees: [assignee], project: project, description: 'My awesome description') }
 
         describe 'that are new' do
-          subject { Notify.new_issue_email(issue.assignee_id, issue.id) }
+          subject { described_class.new_issue_email(issue.assignees.first.id, issue.id) }
 
           it_behaves_like 'an assignee email'
           it_behaves_like 'an email starting a new thread with reply-by-email enabled' do
@@ -69,7 +69,7 @@ describe Notify do
         end
 
         describe 'that are new with a description' do
-          subject { Notify.new_issue_email(issue_with_description.assignee_id, issue_with_description.id) }
+          subject { described_class.new_issue_email(issue_with_description.assignees.first.id, issue_with_description.id) }
 
           it_behaves_like 'it should show Gmail Actions View Issue link'
 
@@ -79,7 +79,7 @@ describe Notify do
         end
 
         describe 'that have been reassigned' do
-          subject { Notify.reassigned_issue_email(recipient.id, issue.id, previous_assignee.id, current_user.id) }
+          subject { described_class.reassigned_issue_email(recipient.id, issue.id, [previous_assignee.id], current_user.id) }
 
           it_behaves_like 'a multiple recipients email'
           it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
@@ -105,7 +105,7 @@ describe Notify do
         end
 
         describe 'that have been relabeled' do
-          subject { Notify.relabeled_issue_email(recipient.id, issue.id, %w[foo bar baz], current_user.id) }
+          subject { described_class.relabeled_issue_email(recipient.id, issue.id, %w[foo bar baz], current_user.id) }
 
           it_behaves_like 'a multiple recipients email'
           it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
@@ -132,7 +132,7 @@ describe Notify do
 
         describe 'status changed' do
           let(:status) { 'closed' }
-          subject { Notify.issue_status_changed_email(recipient.id, issue.id, status, current_user.id) }
+          subject { described_class.issue_status_changed_email(recipient.id, issue.id, status, current_user.id) }
 
           it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
             let(:model) { issue }
@@ -158,7 +158,7 @@ describe Notify do
 
         describe 'moved to another project' do
           let(:new_issue) { create(:issue) }
-          subject { Notify.issue_moved_email(recipient, issue, new_issue, current_user) }
+          subject { described_class.issue_moved_email(recipient, issue, new_issue, current_user) }
 
           it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
             let(:model) { issue }
@@ -190,7 +190,7 @@ describe Notify do
         let(:merge_request_with_description) { create(:merge_request, author: current_user, assignee: assignee, source_project: project, target_project: project, description: 'My awesome description') }
 
         describe 'that are new' do
-          subject { Notify.new_merge_request_email(merge_request.assignee_id, merge_request.id) }
+          subject { described_class.new_merge_request_email(merge_request.assignee_id, merge_request.id) }
 
           it_behaves_like 'an assignee email'
           it_behaves_like 'an email starting a new thread with reply-by-email enabled' do
@@ -221,7 +221,7 @@ describe Notify do
         end
 
         describe 'that are new with a description' do
-          subject { Notify.new_merge_request_email(merge_request_with_description.assignee_id, merge_request_with_description.id) }
+          subject { described_class.new_merge_request_email(merge_request_with_description.assignee_id, merge_request_with_description.id) }
 
           it_behaves_like 'it should show Gmail Actions View Merge request link'
           it_behaves_like "an unsubscribeable thread"
@@ -232,7 +232,7 @@ describe Notify do
         end
 
         describe 'that are reassigned' do
-          subject { Notify.reassigned_merge_request_email(recipient.id, merge_request.id, previous_assignee.id, current_user.id) }
+          subject { described_class.reassigned_merge_request_email(recipient.id, merge_request.id, previous_assignee.id, current_user.id) }
 
           it_behaves_like 'a multiple recipients email'
           it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
@@ -258,7 +258,7 @@ describe Notify do
         end
 
         describe 'that have been relabeled' do
-          subject { Notify.relabeled_merge_request_email(recipient.id, merge_request.id, %w[foo bar baz], current_user.id) }
+          subject { described_class.relabeled_merge_request_email(recipient.id, merge_request.id, %w[foo bar baz], current_user.id) }
 
           it_behaves_like 'a multiple recipients email'
           it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
@@ -283,7 +283,7 @@ describe Notify do
 
         describe 'status changed' do
           let(:status) { 'reopened' }
-          subject { Notify.merge_request_status_email(recipient.id, merge_request.id, status, current_user.id) }
+          subject { described_class.merge_request_status_email(recipient.id, merge_request.id, status, current_user.id) }
 
           it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
             let(:model) { merge_request }
@@ -308,7 +308,7 @@ describe Notify do
         end
 
         describe 'that are merged' do
-          subject { Notify.merged_merge_request_email(recipient.id, merge_request.id, merge_author.id) }
+          subject { described_class.merged_merge_request_email(recipient.id, merge_request.id, merge_author.id) }
 
           it_behaves_like 'a multiple recipients email'
           it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
@@ -337,7 +337,7 @@ describe Notify do
     describe 'project was moved' do
       let(:project) { create(:empty_project) }
       let(:user) { create(:user) }
-      subject { Notify.project_was_moved_email(project.id, user.id, "gitlab/gitlab") }
+      subject { described_class.project_was_moved_email(project.id, user.id, "gitlab/gitlab") }
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'
@@ -363,7 +363,7 @@ describe Notify do
           project.request_access(user)
           project.requesters.find_by(user_id: user.id)
         end
-        subject { Notify.member_access_requested_email('project', project_member.id) }
+        subject { described_class.member_access_requested_email('project', project_member.id) }
 
         it_behaves_like 'an email sent from GitLab'
         it_behaves_like 'it should not have Gmail Actions links'
@@ -390,7 +390,7 @@ describe Notify do
           project.request_access(user)
           project.requesters.find_by(user_id: user.id)
         end
-        subject { Notify.member_access_requested_email('project', project_member.id) }
+        subject { described_class.member_access_requested_email('project', project_member.id) }
 
         it_behaves_like 'an email sent from GitLab'
         it_behaves_like 'it should not have Gmail Actions links'
@@ -416,7 +416,7 @@ describe Notify do
         project.request_access(user)
         project.requesters.find_by(user_id: user.id)
       end
-      subject { Notify.member_access_denied_email('project', project.id, user.id) }
+      subject { described_class.member_access_denied_email('project', project.id, user.id) }
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'
@@ -434,7 +434,7 @@ describe Notify do
       let(:project) { create(:empty_project, :public, :access_requestable, namespace: owner.namespace) }
       let(:user) { create(:user) }
       let(:project_member) { create(:project_member, project: project, user: user) }
-      subject { Notify.member_access_granted_email('project', project_member.id) }
+      subject { described_class.member_access_granted_email('project', project_member.id) }
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'
@@ -465,7 +465,7 @@ describe Notify do
       let(:master) { create(:user).tap { |u| project.team << [u, :master] } }
       let(:project_member) { invite_to_project(project, inviter: master) }
 
-      subject { Notify.member_invited_email('project', project_member.id, project_member.invite_token) }
+      subject { described_class.member_invited_email('project', project_member.id, project_member.invite_token) }
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'
@@ -490,7 +490,7 @@ describe Notify do
         invitee
       end
 
-      subject { Notify.member_invite_accepted_email('project', project_member.id) }
+      subject { described_class.member_invite_accepted_email('project', project_member.id) }
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'
@@ -514,7 +514,7 @@ describe Notify do
         invitee
       end
 
-      subject { Notify.member_invite_declined_email('project', project.id, project_member.invite_email, master.id) }
+      subject { described_class.member_invite_declined_email('project', project.id, project_member.invite_email, master.id) }
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'
@@ -574,7 +574,7 @@ describe Notify do
 
         before(:each) { allow(note).to receive(:noteable).and_return(commit) }
 
-        subject { Notify.note_commit_email(recipient.id, note.id) }
+        subject { described_class.note_commit_email(recipient.id, note.id) }
 
         it_behaves_like 'a note email'
         it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
@@ -596,7 +596,7 @@ describe Notify do
         let(:note_on_merge_request_path) { namespace_project_merge_request_path(project.namespace, project, merge_request, anchor: "note_#{note.id}") }
         before(:each) { allow(note).to receive(:noteable).and_return(merge_request) }
 
-        subject { Notify.note_merge_request_email(recipient.id, note.id) }
+        subject { described_class.note_merge_request_email(recipient.id, note.id) }
 
         it_behaves_like 'a note email'
         it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
@@ -618,7 +618,7 @@ describe Notify do
         let(:note_on_issue_path) { namespace_project_issue_path(project.namespace, project, issue, anchor: "note_#{note.id}") }
         before(:each) { allow(note).to receive(:noteable).and_return(issue) }
 
-        subject { Notify.note_issue_email(recipient.id, note.id) }
+        subject { described_class.note_issue_email(recipient.id, note.id) }
 
         it_behaves_like 'a note email'
         it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
@@ -680,7 +680,7 @@ describe Notify do
 
         before(:each) { allow(note).to receive(:noteable).and_return(commit) }
 
-        subject { Notify.note_commit_email(recipient.id, note.id) }
+        subject { described_class.note_commit_email(recipient.id, note.id) }
 
         it_behaves_like 'a discussion note email', :discussion_note_on_commit
         it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
@@ -704,7 +704,7 @@ describe Notify do
         let(:note_on_merge_request_path) { namespace_project_merge_request_path(project.namespace, project, merge_request, anchor: "note_#{note.id}") }
         before(:each) { allow(note).to receive(:noteable).and_return(merge_request) }
 
-        subject { Notify.note_merge_request_email(recipient.id, note.id) }
+        subject { described_class.note_merge_request_email(recipient.id, note.id) }
 
         it_behaves_like 'a discussion note email', :discussion_note_on_merge_request
         it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
@@ -728,7 +728,7 @@ describe Notify do
         let(:note_on_issue_path) { namespace_project_issue_path(project.namespace, project, issue, anchor: "note_#{note.id}") }
         before(:each) { allow(note).to receive(:noteable).and_return(issue) }
 
-        subject { Notify.note_issue_email(recipient.id, note.id) }
+        subject { described_class.note_issue_email(recipient.id, note.id) }
 
         it_behaves_like 'a discussion note email', :discussion_note_on_issue
         it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
@@ -798,7 +798,7 @@ describe Notify do
         let(:commit) { project.commit }
         let(:note) { create(:diff_note_on_commit) }
 
-        subject { Notify.note_commit_email(recipient.id, note.id) }
+        subject { described_class.note_commit_email(recipient.id, note.id) }
 
         it_behaves_like 'an email for a note on a diff discussion', :diff_note_on_commit
         it_behaves_like 'it should show Gmail Actions View Commit link'
@@ -809,7 +809,7 @@ describe Notify do
         let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
         let(:note) { create(:diff_note_on_merge_request) }
 
-        subject { Notify.note_merge_request_email(recipient.id, note.id) }
+        subject { described_class.note_merge_request_email(recipient.id, note.id) }
 
         it_behaves_like 'an email for a note on a diff discussion', :diff_note_on_merge_request
         it_behaves_like 'it should show Gmail Actions View Merge request link'
@@ -826,7 +826,7 @@ describe Notify do
         group.request_access(user)
         group.requesters.find_by(user_id: user.id)
       end
-      subject { Notify.member_access_requested_email('group', group_member.id) }
+      subject { described_class.member_access_requested_email('group', group_member.id) }
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'
@@ -847,7 +847,7 @@ describe Notify do
         group.request_access(user)
         group.requesters.find_by(user_id: user.id)
       end
-      subject { Notify.member_access_denied_email('group', group.id, user.id) }
+      subject { described_class.member_access_denied_email('group', group.id, user.id) }
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'
@@ -865,7 +865,7 @@ describe Notify do
       let(:user) { create(:user) }
       let(:group_member) { create(:group_member, group: group, user: user) }
 
-      subject { Notify.member_access_granted_email('group', group_member.id) }
+      subject { described_class.member_access_granted_email('group', group_member.id) }
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'
@@ -896,7 +896,7 @@ describe Notify do
       let(:owner) { create(:user).tap { |u| group.add_user(u, Gitlab::Access::OWNER) } }
       let(:group_member) { invite_to_group(group, inviter: owner) }
 
-      subject { Notify.member_invited_email('group', group_member.id, group_member.invite_token) }
+      subject { described_class.member_invited_email('group', group_member.id, group_member.invite_token) }
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'
@@ -921,7 +921,7 @@ describe Notify do
         invitee
       end
 
-      subject { Notify.member_invite_accepted_email('group', group_member.id) }
+      subject { described_class.member_invite_accepted_email('group', group_member.id) }
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'
@@ -945,7 +945,7 @@ describe Notify do
         invitee
       end
 
-      subject { Notify.member_invite_declined_email('group', group.id, group_member.invite_email, owner.id) }
+      subject { described_class.member_invite_declined_email('group', group.id, group_member.invite_email, owner.id) }
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'
@@ -994,7 +994,7 @@ describe Notify do
     let(:user) { create(:user) }
     let(:tree_path) { namespace_project_tree_path(project.namespace, project, "empty-branch") }
 
-    subject { Notify.repository_push_email(project.id, author_id: user.id, ref: 'refs/heads/empty-branch', action: :create) }
+    subject { described_class.repository_push_email(project.id, author_id: user.id, ref: 'refs/heads/empty-branch', action: :create) }
 
     it_behaves_like 'it should not have Gmail Actions links'
     it_behaves_like 'a user cannot unsubscribe through footer link'
@@ -1020,7 +1020,7 @@ describe Notify do
     let(:user) { create(:user) }
     let(:tree_path) { namespace_project_tree_path(project.namespace, project, "v1.0") }
 
-    subject { Notify.repository_push_email(project.id, author_id: user.id, ref: 'refs/tags/v1.0', action: :create) }
+    subject { described_class.repository_push_email(project.id, author_id: user.id, ref: 'refs/tags/v1.0', action: :create) }
 
     it_behaves_like 'it should not have Gmail Actions links'
     it_behaves_like "a user cannot unsubscribe through footer link"
@@ -1045,7 +1045,7 @@ describe Notify do
     let(:example_site_path) { root_path }
     let(:user) { create(:user) }
 
-    subject { Notify.repository_push_email(project.id, author_id: user.id, ref: 'refs/heads/master', action: :delete) }
+    subject { described_class.repository_push_email(project.id, author_id: user.id, ref: 'refs/heads/master', action: :delete) }
 
     it_behaves_like 'it should not have Gmail Actions links'
     it_behaves_like 'a user cannot unsubscribe through footer link'
@@ -1067,7 +1067,7 @@ describe Notify do
     let(:example_site_path) { root_path }
     let(:user) { create(:user) }
 
-    subject { Notify.repository_push_email(project.id, author_id: user.id, ref: 'refs/tags/v1.0', action: :delete) }
+    subject { described_class.repository_push_email(project.id, author_id: user.id, ref: 'refs/tags/v1.0', action: :delete) }
 
     it_behaves_like 'it should not have Gmail Actions links'
     it_behaves_like 'a user cannot unsubscribe through footer link'
@@ -1096,7 +1096,7 @@ describe Notify do
     let(:send_from_committer_email) { false }
     let(:diff_refs) { Gitlab::Diff::DiffRefs.new(base_sha: project.merge_base_commit(sample_image_commit.id, sample_commit.id).id, head_sha: sample_commit.id) }
 
-    subject { Notify.repository_push_email(project.id, author_id: user.id, ref: 'refs/heads/master', action: :push, compare: compare, reverse_compare: false, diff_refs: diff_refs, send_from_committer_email: send_from_committer_email) }
+    subject { described_class.repository_push_email(project.id, author_id: user.id, ref: 'refs/heads/master', action: :push, compare: compare, reverse_compare: false, diff_refs: diff_refs, send_from_committer_email: send_from_committer_email) }
 
     it_behaves_like 'it should not have Gmail Actions links'
     it_behaves_like 'a user cannot unsubscribe through footer link'
@@ -1189,7 +1189,7 @@ describe Notify do
     let(:diff_path) { namespace_project_commit_path(project.namespace, project, commits.first) }
     let(:diff_refs) { Gitlab::Diff::DiffRefs.new(base_sha: project.merge_base_commit(sample_image_commit.id, sample_commit.id).id, head_sha: sample_commit.id) }
 
-    subject { Notify.repository_push_email(project.id, author_id: user.id, ref: 'refs/heads/master', action: :push, compare: compare, diff_refs: diff_refs) }
+    subject { described_class.repository_push_email(project.id, author_id: user.id, ref: 'refs/heads/master', action: :push, compare: compare, diff_refs: diff_refs) }
 
     it_behaves_like 'it should show Gmail Actions View Commit link'
     it_behaves_like 'a user cannot unsubscribe through footer link'
@@ -1215,7 +1215,7 @@ describe Notify do
   describe 'HTML emails setting' do
     let(:project) { create(:empty_project) }
     let(:user) { create(:user) }
-    let(:multipart_mail) { Notify.project_was_moved_email(project.id, user.id, "gitlab/gitlab") }
+    let(:multipart_mail) { described_class.project_was_moved_email(project.id, user.id, "gitlab/gitlab") }
 
     context 'when disabled' do
       it 'only sends the text template' do

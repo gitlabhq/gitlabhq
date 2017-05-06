@@ -17,6 +17,8 @@ class MergeRequest < ActiveRecord::Base
 
   has_many :merge_requests_closing_issues, class_name: 'MergeRequestsClosingIssues', dependent: :delete_all
 
+  belongs_to :assignee, class_name: "User"
+
   serialize :merge_params, Hash
 
   after_create :ensure_merge_request_diff, unless: :importing?
@@ -114,8 +116,14 @@ class MergeRequest < ActiveRecord::Base
 
   scope :join_project, -> { joins(:target_project) }
   scope :references_project, -> { references(:target_project) }
+  scope :assigned, -> { where("assignee_id IS NOT NULL") }
+  scope :unassigned, -> { where("assignee_id IS NULL") }
+  scope :assigned_to, ->(u) { where(assignee_id: u.id)}
+
+  participant :assignee
 
   after_save :keep_around_commit
+  after_save :update_assignee_cache_counts, if: :assignee_id_changed?
 
   def self.reference_prefix
     '!'
@@ -175,6 +183,30 @@ class MergeRequest < ActiveRecord::Base
 
   def self.wip_title(title)
     work_in_progress?(title) ? title : "WIP: #{title}"
+  end
+
+  def update_assignee_cache_counts
+    # make sure we flush the cache for both the old *and* new assignees(if they exist)
+    previous_assignee = User.find_by_id(assignee_id_was) if assignee_id_was
+    previous_assignee&.update_cache_counts
+    assignee&.update_cache_counts
+  end
+
+  # Returns a Hash of attributes to be used for Twitter card metadata
+  def card_attributes
+    {
+      'Author'   => author.try(:name),
+      'Assignee' => assignee.try(:name)
+    }
+  end
+
+  # This method is needed for compatibility with issues to not mess view and other code
+  def assignees
+    Array(assignee)
+  end
+
+  def assignee_or_author?(user)
+    author_id == user.id || assignee_id == user.id
   end
 
   # `from` argument can be a Namespace or Project.
@@ -374,12 +406,18 @@ class MergeRequest < ActiveRecord::Base
     merge_request_diff(true)
   end
 
-  def merge_request_diff_for(diff_refs)
-    @merge_request_diffs_by_diff_refs ||= Hash.new do |h, diff_refs|
-      h[diff_refs] = merge_request_diffs.viewable.select_without_diff.find_by_diff_refs(diff_refs)
+  def merge_request_diff_for(diff_refs_or_sha)
+    @merge_request_diffs_by_diff_refs_or_sha ||= Hash.new do |h, diff_refs_or_sha|
+      diffs = merge_request_diffs.viewable.select_without_diff
+      h[diff_refs_or_sha] =
+        if diff_refs_or_sha.is_a?(Gitlab::Diff::DiffRefs)
+          diffs.find_by_diff_refs(diff_refs_or_sha)
+        else
+          diffs.find_by(head_commit_sha: diff_refs_or_sha)
+        end
     end
 
-    @merge_request_diffs_by_diff_refs[diff_refs]
+    @merge_request_diffs_by_diff_refs_or_sha[diff_refs_or_sha]
   end
 
   def reload_diff_if_branch_changed

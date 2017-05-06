@@ -34,9 +34,9 @@ GLForm.prototype.setupForm = function() {
     gl.GfmAutoComplete.setup(this.form.find('.js-gfm-input'));
     new DropzoneInput(this.form);
     autosize(this.textarea);
-    // form and textarea event listeners
-    this.addEventListeners();
   }
+  // form and textarea event listeners
+  this.addEventListeners();
   gl.text.init(this.form);
   // hide discard button
   this.form.find('.js-note-discard').hide();

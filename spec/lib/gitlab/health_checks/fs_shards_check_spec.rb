@@ -82,9 +82,9 @@ describe Gitlab::HealthChecks::FsShardsCheck do
         it { is_expected.to include(metric_class.new(:filesystem_readable, 0, shard: :default)) }
         it { is_expected.to include(metric_class.new(:filesystem_writable, 0, shard: :default)) }
 
-        it { is_expected.to include(have_attributes(name: :filesystem_access_latency, value: be > 0, labels: { shard: :default })) }
-        it { is_expected.to include(have_attributes(name: :filesystem_read_latency, value: be > 0, labels: { shard: :default })) }
-        it { is_expected.to include(have_attributes(name: :filesystem_write_latency, value: be > 0, labels: { shard: :default })) }
+        it { is_expected.to include(have_attributes(name: :filesystem_access_latency, value: be >= 0, labels: { shard: :default })) }
+        it { is_expected.to include(have_attributes(name: :filesystem_read_latency, value: be >= 0, labels: { shard: :default })) }
+        it { is_expected.to include(have_attributes(name: :filesystem_write_latency, value: be >= 0, labels: { shard: :default })) }
       end
 
       context 'storage points to directory that has both read and write rights' do
@@ -96,9 +96,9 @@ describe Gitlab::HealthChecks::FsShardsCheck do
         it { is_expected.to include(metric_class.new(:filesystem_readable, 1, shard: :default)) }
         it { is_expected.to include(metric_class.new(:filesystem_writable, 1, shard: :default)) }
 
-        it { is_expected.to include(have_attributes(name: :filesystem_access_latency, value: be > 0, labels: { shard: :default })) }
-        it { is_expected.to include(have_attributes(name: :filesystem_read_latency, value: be > 0, labels: { shard: :default })) }
-        it { is_expected.to include(have_attributes(name: :filesystem_write_latency, value: be > 0, labels: { shard: :default })) }
+        it { is_expected.to include(have_attributes(name: :filesystem_access_latency, value: be >= 0, labels: { shard: :default })) }
+        it { is_expected.to include(have_attributes(name: :filesystem_read_latency, value: be >= 0, labels: { shard: :default })) }
+        it { is_expected.to include(have_attributes(name: :filesystem_write_latency, value: be >= 0, labels: { shard: :default })) }
       end
     end
   end

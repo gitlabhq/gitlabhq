@@ -51,16 +51,11 @@
 
 .issue-details.issuable-details
   .detail-page-description.content-block
-    .issue-title-data.hidden{ "data" => { "initial-title" => markdown_field(@issue, :title),
-      "endpoint" => rendered_title_namespace_project_issue_path(@project.namespace, @project, @issue),
+    .issue-title-data.hidden{ "data" => { "endpoint" => rendered_title_namespace_project_issue_path(@project.namespace, @project, @issue),
+      "can-update-tasks-class" => can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : '',
     } }
     .issue-title-entrypoint
-    - if @issue.description.present?
-      .description{ class: can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : '' }
-        .wiki
-          = markdown_field(@issue, :description)
-        %textarea.hidden.js-task-list-field
-          = @issue.description
+
     = edited_time_ago_with_tooltip(@issue, placement: 'bottom', html_class: 'issue_edited_ago')
 
     #merge-requests{ data: { url: referenced_merge_requests_namespace_project_issue_url(@project.namespace, @project, @issue) } }
@@ -70,8 +65,11 @@
       // This element is filled in using JavaScript.
 
   .content-block.content-block-small
-    = render 'new_branch' unless @issue.confidential?
-    = render 'award_emoji/awards_block', awardable: @issue, inline: true
+    .row
+      .col-sm-6
+        = render 'award_emoji/awards_block', awardable: @issue, inline: true
+      .col-sm-6.new-branch-col
+        = render 'new_branch' unless @issue.confidential?
 
   %section.issuable-discussion
     = render 'projects/issues/discussion'

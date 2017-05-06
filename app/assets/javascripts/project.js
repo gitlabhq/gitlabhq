@@ -112,7 +112,8 @@ import Cookies from 'js-cookie';
           toggleLabel: function(obj, $el) {
             return $el.text().trim();
           },
-          clicked: function(selected, $el, e) {
+          clicked: function(options) {
+            const { e } = options;
             e.preventDefault();
             if ($('input[name="ref"]').length) {
               var $form = $dropdown.closest('form');

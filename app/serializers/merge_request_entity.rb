@@ -1,4 +1,5 @@
 class MergeRequestEntity < IssuableEntity
+  expose :assignee_id
   expose :in_progress_merge_commit_sha
   expose :locked_at
   expose :merge_commit_sha

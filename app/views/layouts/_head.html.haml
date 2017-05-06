@@ -28,9 +28,12 @@
   = stylesheet_link_tag "application", media: "all"
   = stylesheet_link_tag "print",       media: "print"
 
+  = Gon::Base.render_data
+
   = webpack_bundle_tag "runtime"
   = webpack_bundle_tag "common"
   = webpack_bundle_tag "main"
+  = webpack_bundle_tag "raven" if current_application_settings.clientside_sentry_enabled
 
   - if content_for?(:page_specific_javascripts)
     = yield :page_specific_javascripts
