@@ -23,7 +23,8 @@ module Ci
       if jobs.one?
         jobs.first.detailed_status(current_user)
       else
-        Gitlab::Ci::Status::Group::Factory.new(self, current_user).fabricate!
+        Gitlab::Ci::Status::Group::Factory
+          .new(self, current_user).fabricate!
       end
     end
 

@@ -1,42 +1,43 @@
 require 'spec_helper'
 
 describe Ci::Group, models: true do
-  subject { described_class.new('test', name: 'rspec', jobs: jobs) }
-  let(:jobs) { [] }
-
-  describe 'expectations' do
-    it { is_expected.to include_module(StaticModel) }
-
-    it { is_expected.to respond_to(:stage) }
-    it { is_expected.to respond_to(:name) }
-    it { is_expected.to respond_to(:jobs) }
-    it { is_expected.to respond_to(:status) }
+  subject do
+    described_class.new('test', name: 'rspec', jobs: jobs)
   end
 
+  let!(:jobs) { build_list(:ci_build, 1, :success) }
+
+  it { is_expected.to include_module(StaticModel) }
+
+  it { is_expected.to respond_to(:stage) }
+  it { is_expected.to respond_to(:name) }
+  it { is_expected.to respond_to(:jobs) }
+  it { is_expected.to respond_to(:status) }
+
   describe '#size' do
-    it 'returns the size of the statusses array' do
-      expect(subject.size).to eq(0)
+    it 'returns the number of statuses in the group' do
+      expect(subject.size).to eq(1)
     end
   end
 
   describe '#detailed_status' do
-    let(:job) { build(:ci_build, :success) }
-    let(:jobs) { [job] }
-
     context 'when there is only one item in the group' do
       it 'calls the status from the object itself' do
-        expect(job).to receive(:detailed_status)
+        expect(jobs.first).to receive(:detailed_status)
 
-        subject.detailed_status(nil)
+        expect(subject.detailed_status(double(:user)))
       end
     end
 
-    context 'when there are more than 1 commit statuses' do
-      let(:job1) { build(:ci_build) }
-      let(:jobs) { [job, job1] }
+    context 'when there are more than one commit status in the group' do
+      let(:jobs) do
+        [create(:ci_build, :failed),
+         create(:ci_build, :success)]
+      end
 
-      it 'fabricates a new Ci::Status object' do
-        expect(subject.detailed_status(nil)).to be_a(Gitlab::Ci::Status::Created)
+      it 'fabricates a new detailed status object' do
+        expect(subject.detailed_status(double(:user)))
+          .to be_a(Gitlab::Ci::Status::Failed)
       end
     end
   end
