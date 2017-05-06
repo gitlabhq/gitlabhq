@@ -274,10 +274,6 @@ const normalizeNewlines = function(str) {
 
     Notes.prototype.handleSlashCommands = function(noteEntity) {
       var votesBlock;
-      if (typeof note === 'undefined') {
-        return;
-      }
-
       if (noteEntity.commands_changes) {
         if ('merge' in noteEntity.commands_changes) {
           Notes.checkMergeRequestStatus();
