@@ -1,5 +1,14 @@
 export default class GroupsStore {
   constructor() {
-    this.groups = [];
+    this.state = {};
+    this.state.groups = [];
+
+    return this;
+  }
+
+  setGroups(groups) {
+    this.state.groups = groups;
+
+    return groups;
   }
 }

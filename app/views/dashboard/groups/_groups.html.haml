@@ -1,7 +1,1 @@
-.js-groups-list-holder{ data: { endpoint: dashboard_groups_path(format: :json) } }
-  %ul.content-list
-    - @groups.each do |group|
-      - group_member = group.group_members.find_by(user_id: current_user)
-      = render 'shared/groups/group', group: group_member.group, group_member: group_member
-
-  = paginate @groups, theme: 'gitlab'
+.js-groups-list-holder#dashboard-group-app{ data: { endpoint: dashboard_groups_path(format: :json) } }

@@ -1,26 +1,16 @@
 /* eslint-disable no-unused-vars */
 
 import Vue from 'vue';
-import GroupsStore from './stores/groups_store';
-import GroupsService from './services/groups_service';
+import GroupsComponent from './components/groups.vue'
 
 $(() => {
-  const appEl = document.querySelector('.js-groups-list-holder');
-
-  const groupsStore = new GroupsStore();
-  const groupsService = new GroupsService(appEl.dataset.endpoint);
+  const appEl = document.querySelector('#dashboard-group-app');
 
   const GroupsApp = new Vue({
     el: appEl,
-    data: groupsStore,
-    mounted() {
-      groupsService.getGroups()
-        .then((response) => {
-          this.groups = response.json();
-        })
-        .catch(() => {
-          // TODO: Handle error
-        });
+    components: {
+      'groups-component': GroupsComponent
     },
+    render: createElement => createElement('groups-component'),
   });
 });
