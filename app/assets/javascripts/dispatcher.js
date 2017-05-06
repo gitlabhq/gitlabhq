@@ -53,12 +53,9 @@ import UserCallout from './user_callout';
 import { ProtectedTagCreate, ProtectedTagEditList } from './protected_tags';
 import ShortcutsWiki from './shortcuts_wiki';
 import BlobViewer from './blob/viewer/index';
-<<<<<<< HEAD
 import GeoNodes from './geo_nodes';
 import ServiceDeskRoot from './projects/settings_service_desk/service_desk_root';
-=======
 import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
->>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
 
 const ShortcutsBlob = require('./shortcuts_blob');
 

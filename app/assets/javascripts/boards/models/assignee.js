@@ -5,7 +5,7 @@ class ListAssignee {
     this.id = user.id;
     this.name = user.name;
     this.username = user.username;
-    this.avatarUrl = user.avatar_url;
+    this.avatar = user.avatar_url;
   }
 }
 

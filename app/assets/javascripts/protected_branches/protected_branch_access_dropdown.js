@@ -54,12 +54,8 @@
           }
         },
         clicked(opts) {
-<<<<<<< HEAD
           const { $el, e } = opts;
           const item = opts.selectedObj;
-=======
-          const { e } = opts;
->>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
 
           e.preventDefault();
 

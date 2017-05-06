@@ -50,11 +50,7 @@
       = link_to 'Edit', edit_namespace_project_issue_path(@project.namespace, @project, @issue), class: 'hidden-xs hidden-sm btn btn-grouped issuable-edit'
 
 .issue-details.issuable-details
-<<<<<<< HEAD
   .detail-page-description.content-block{ class: ('hide-bottom-border' unless @issue.description.present? ) }
-=======
-  .detail-page-description.content-block
->>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
     .issue-title-data.hidden{ "data" => { "endpoint" => rendered_title_namespace_project_issue_path(@project.namespace, @project, @issue),
       "can-update-tasks-class" => can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : '',
     } }

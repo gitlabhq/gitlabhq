@@ -64,11 +64,8 @@ $(() => {
       rootPath: $boardApp.dataset.rootPath,
       bulkUpdatePath: $boardApp.dataset.bulkUpdatePath,
       detailIssue: Store.detail,
-<<<<<<< HEAD
       milestoneTitle: $boardApp.dataset.boardMilestoneTitle,
-=======
       defaultAvatar: $boardApp.dataset.defaultAvatar,
->>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
     },
     computed: {
       detailIssueVisible () {
