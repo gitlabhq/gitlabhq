@@ -77,12 +77,8 @@ describe 'New/edit issue', feature: true, js: true do
       click_link 'Assign to me'
       assignee_ids = page.all('input[name="issue[assignee_ids][]"]', visible: false)
 
-<<<<<<< HEAD
       expect(assignee_ids[0].value).to match(user2.id.to_s)
       expect(assignee_ids[1].value).to match(user.id.to_s)
-=======
-      expect(assignee_ids[0].value).to match(user.id.to_s)
->>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
 
       page.within '.js-assignee-search' do
         expect(page).to have_content "#{user2.name} + 1 more"
@@ -121,11 +117,7 @@ describe 'New/edit issue', feature: true, js: true do
 
       page.within '.issuable-sidebar' do
         page.within '.assignee' do
-<<<<<<< HEAD
           expect(page).to have_content "2 Assignees"
-=======
-          expect(page).to have_content "Assignee"
->>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
         end
 
         page.within '.milestone' do
