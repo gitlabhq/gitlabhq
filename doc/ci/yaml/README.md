@@ -147,6 +147,10 @@ variables:
   DATABASE_URL: "postgres://postgres@postgres/my_database"
 ```
 
+>**Note:**
+Integers (as well as strings) are legal both for variable's name and value.
+Floats are not legal and cannot be used.
+
 These variables can be later used in all executed commands and scripts.
 The YAML-defined variables are also set to all created service containers,
 thus allowing to fine tune them. Variables can be also defined on a
@@ -1147,7 +1151,7 @@ Example:
 
 ```yaml
 variables:
-  GET_SOURCES_ATTEMPTS: "3"
+  GET_SOURCES_ATTEMPTS: 3
 ```
 
 You can set them in the global [`variables`](#variables) section or the
