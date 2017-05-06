@@ -17,8 +17,11 @@
 
 .tab-content
   #js-tab-pipeline.tab-pane
-    .build-content.middle-block.js-pipeline-graph
-      = render "projects/pipelines/graph", pipeline: pipeline
+    #js-pipeline-graph-vue{ data: { endpoint: namespace_project_pipeline_path(@project.namespace, @project, @pipeline, format: :json) } }
+
+    - content_for :page_specific_javascripts do
+      = page_specific_javascript_bundle_tag('common_vue')
+      = page_specific_javascript_bundle_tag('pipelines_graph')
 
   #js-tab-builds.tab-pane
     - if pipeline.yaml_errors.present?
