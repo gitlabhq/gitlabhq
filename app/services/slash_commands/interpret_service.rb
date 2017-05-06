@@ -91,36 +91,30 @@ module SlashCommands
     end
 
     desc 'Assign'
-    explanation do |user|
-      "Assigns #{user.to_reference}." if user
+    explanation do |users|
+      "Assigns #{users.map(&:to_reference).to_sentence}." if users.any?
     end
     params '@user'
     condition do
       current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
-<<<<<<< HEAD
     parse_params do |assignee_param|
-      extract_references(assignee_param, :user).first ||
-        User.find_by(username: assignee_param)
-    end
-    command :assign do |user|
-      @updates[:assignee_id] = user.id if user
-=======
-    command :assign do |assignee_param|
-      user_ids = extract_references(assignee_param, :user).map(&:id)
+      users = extract_references(assignee_param, :user)
 
-      if user_ids.empty?
-        user_ids = User.where(username: assignee_param.split(' ').map(&:strip)).pluck(:id)
+      if users.empty?
+        users = User.where(username: assignee_param.split(' ').map(&:strip))
       end
 
-      next if user_ids.empty?
+      users
+    end
+    command :assign do |users|
+      next if users.empty?
 
       if issuable.is_a?(Issue)
-        @updates[:assignee_ids] = user_ids
+        @updates[:assignee_ids] = users.map(&:id)
       else
-        @updates[:assignee_id] = user_ids.last
+        @updates[:assignee_id] = users.last.id
       end
->>>>>>> origin/multiple_assignees_review
     end
 
     desc 'Remove assignee'
