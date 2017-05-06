@@ -50,6 +50,11 @@ describe Ci::Stage, models: true do
       expect(stage.groups.third.jobs.map(&:name))
         .to eq ['spinach 0 1']
     end
+
+    it 'returns groups with correct names' do
+      expect(stage.groups.map(&:name))
+        .to eq %w[aaaaa rspec spinach]
+    end
   end
 
   describe '#statuses_count' do
