@@ -49,7 +49,7 @@ module Routable
         if Gitlab::Database.postgresql?
           joins(:redirect_routes).find_by("LOWER(redirect_routes.path) = LOWER(?)", path)
         else
-          joins(:redirect_routes).find_by(path: path)
+          joins(:redirect_routes).find_by(redirect_routes: { path: path })
         end
       end
     end
