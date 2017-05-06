@@ -1,7 +1,10 @@
 module Ci
-  # Currently this model is not persisted in the database, but derived from a
-  # pipelines jobs. We might, but at the same time might not, persist this model
-  # in the database later
+  ##
+  # This domain model is a representation of a group of jobs that are related
+  # to each other, like `rspec 0 1`, `rspec 0 2`.
+  #
+  # It is not persisted in the database.
+  #
   class Group
     include StaticModel
 
