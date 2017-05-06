@@ -1,3 +1,5 @@
+import Visibility from 'visibilityjs';
+
 /*
 * Instances of SmartInterval extend the functionality of `setInterval`, make it configurable
 * and controllable by a public API.
@@ -32,7 +34,6 @@
       this.state = {
         intervalId: null,
         currentInterval: this.cfg.startingInterval,
-        pageVisibility: 'visible',
       };
 
       this.initInterval();
@@ -88,8 +89,7 @@
 
     destroy() {
       this.cancel();
-      document.removeEventListener('visibilitychange', this.handleVisibilityChange);
-      $(document).off('visibilitychange').off('beforeunload');
+      Visibility.unbind(this.handleVisibilityChange);
     }
 
     /* private */
@@ -107,7 +107,7 @@
 
     initVisibilityChangeHandling() {
       // cancel interval when tab no longer shown (prevents cached pages from polling)
-      document.addEventListener('visibilitychange', this.handleVisibilityChange.bind(this));
+      Visibility.change((e, state) => this.handleVisibilityChange(e, state));
     }
 
     initPageUnloadHandling() {
@@ -116,9 +116,8 @@
       $(document).on('beforeunload', () => this.cancel());
     }
 
-    handleVisibilityChange(e) {
-      this.state.pageVisibility = e.target.visibilityState;
-      const intervalAction = this.isPageVisible() ?
+    handleVisibilityChange(e, state) {
+      const intervalAction = state === 'visible' ?
         this.onVisibilityVisible :
         this.onVisibilityHidden;
 
@@ -136,7 +135,7 @@
     incrementInterval() {
       const cfg = this.cfg;
       const currentInterval = this.getCurrentInterval();
-      if (cfg.hiddenInterval && !this.isPageVisible()) return;
+      if (cfg.hiddenInterval && Visibility.hidden()) return;
       let nextInterval = currentInterval * cfg.incrementByFactorOf;
 
       if (nextInterval > cfg.maxInterval) {
@@ -145,8 +144,6 @@
 
       this.setCurrentInterval(nextInterval);
     }
-
-    isPageVisible() { return this.state.pageVisibility === 'visible'; }
 
     stopTimer() {
       const state = this.state;
