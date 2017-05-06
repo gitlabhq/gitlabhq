@@ -365,6 +365,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should see a badge of "0" next to the discussion link' do
     expect_discussion_badge_to_have_counter("0")
+    wait_for_vue_resource
   end
 
   step 'I should see a discussion has started on commit diff' do
