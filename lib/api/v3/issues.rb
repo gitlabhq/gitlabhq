@@ -63,10 +63,6 @@ module API
         end
         get do
           issues = find_issues(scope: 'authored')
-<<<<<<< HEAD
-=======
-
->>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
           present paginate(issues), with: ::API::V3::Entities::Issue, current_user: current_user
         end
       end

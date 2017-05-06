@@ -97,7 +97,6 @@ describe PostReceive do
     it "fetches the correct project" do
       expect(Project).to receive(:find_by).with(id: project.id.to_s)
       described_class.new.perform(project_identifier, key_id, base64_changes)
-<<<<<<< HEAD
     end
 
     it "triggers wiki index update" do
@@ -109,8 +108,6 @@ describe PostReceive do
       repo_path = "#{pwd(project)}.wiki"
 
       described_class.new.perform(repo_path, key_id, base64_changes)
-=======
->>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
     end
 
     it "does not run if the author is not in the project" do

@@ -100,7 +100,6 @@ module SlashCommands
     end
     parse_params do |assignee_param|
       users = extract_references(assignee_param, :user)
-<<<<<<< HEAD
 
       if users.empty?
         users = User.where(username: assignee_param.split(' ').map(&:strip))
@@ -111,18 +110,6 @@ module SlashCommands
     command :assign do |users|
       next if users.empty?
 
-=======
-
-      if users.empty?
-        users = User.where(username: assignee_param.split(' ').map(&:strip))
-      end
-
-      users
-    end
-    command :assign do |users|
-      next if users.empty?
-
->>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
       if issuable.is_a?(Issue)
         @updates[:assignee_ids] = users.map(&:id)
       else
@@ -132,11 +119,7 @@ module SlashCommands
 
     desc 'Remove assignee'
     explanation do
-<<<<<<< HEAD
-      "Removes assignee #{issuable.assignee.to_reference}."
-=======
       "Removes assignee #{issuable.assignees.first.to_reference}."
->>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
     end
     condition do
       issuable.persisted? &&
@@ -516,21 +499,12 @@ module SlashCommands
     def find_label_ids(labels_param)
       find_labels(labels_param).map(&:id)
     end
-<<<<<<< HEAD
 
     def explain_commands(commands, opts)
       commands.map do |name, arg|
         definition = self.class.definition_by_name(name)
         next unless definition
 
-=======
-
-    def explain_commands(commands, opts)
-      commands.map do |name, arg|
-        definition = self.class.definition_by_name(name)
-        next unless definition
-
->>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
         definition.explain(self, opts, arg)
       end.compact
     end

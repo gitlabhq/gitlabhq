@@ -125,10 +125,7 @@ class MergeRequest < ActiveRecord::Base
   scope :unassigned, -> { where("assignee_id IS NULL") }
   scope :assigned_to, ->(u) { where(assignee_id: u.id)}
 
-<<<<<<< HEAD
   participant :approvers_left
-=======
->>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
   participant :assignee
 
   after_save :keep_around_commit

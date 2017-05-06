@@ -164,13 +164,9 @@ describe SystemNoteService, services: true do
     let(:assignee2) { create(:user) }
     let(:assignee3) { create(:user) }
 
-<<<<<<< HEAD
-    it_behaves_like 'a system note'
-=======
     it_behaves_like 'a system note' do
       let(:action) { 'assignee' }
     end
->>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
 
     def build_note(old_assignees, new_assignees)
       issue.assignees = new_assignees

@@ -901,11 +901,7 @@ describe SlashCommands::InterpretService, services: true do
 
     describe 'unassign command' do
       let(:content) { '/unassign' }
-<<<<<<< HEAD
-      let(:issue) { create(:issue, project: project, assignee: developer) }
-=======
       let(:issue) { create(:issue, project: project, assignees: [developer]) }
->>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
 
       it 'includes current assignee reference' do
         _, explanations = service.explain(content, issue)
@@ -1063,7 +1059,6 @@ describe SlashCommands::InterpretService, services: true do
         expect(explanations).to eq(["Moves issue to ~#{bug.id} column in the board."])
       end
     end
-<<<<<<< HEAD
 
     # EE-specific tests
 
@@ -1075,7 +1070,5 @@ describe SlashCommands::InterpretService, services: true do
         expect(explanations).to eq(['Sets weight to 4.'])
       end
     end
-=======
->>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
   end
 end

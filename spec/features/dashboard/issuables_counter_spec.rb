@@ -18,11 +18,8 @@ describe 'Navigation bar counter', feature: true, caching: true do
     expect_counters('issues', '1')
 
     issue.assignees = []
-<<<<<<< HEAD
-=======
 
     user.update_cache_counts
->>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
 
     Timecop.travel(3.minutes.from_now) do
       visit issues_path

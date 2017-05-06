@@ -168,12 +168,8 @@ module API
         optional :state_event, type: String, values: %w[reopen close], desc: 'State of the issue'
         use :issue_params
         at_least_one_of :title, :description, :assignee_ids, :assignee_id, :milestone_id,
-<<<<<<< HEAD
                         :labels, :created_at, :due_date, :confidential, :state_event,
                         :weight
-=======
-                        :labels, :created_at, :due_date, :confidential, :state_event
->>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
       end
       put ':id/issues/:issue_iid' do
         issue = user_project.issues.find_by!(iid: params.delete(:issue_iid))

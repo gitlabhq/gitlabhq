@@ -738,21 +738,14 @@ describe API::V3::Issues do
   describe "POST /projects/:id/issues" do
     it 'creates a new project issue' do
       post v3_api("/projects/#{project.id}/issues", user),
-<<<<<<< HEAD
         title: 'new issue', labels: 'label, label2', weight: 3, assignee_id: assignee.id
-=======
-        title: 'new issue', labels: 'label, label2', assignee_id: assignee.id
->>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
 
       expect(response).to have_http_status(201)
       expect(json_response['title']).to eq('new issue')
       expect(json_response['description']).to be_nil
       expect(json_response['labels']).to eq(%w(label label2))
       expect(json_response['confidential']).to be_falsy
-<<<<<<< HEAD
       expect(json_response['weight']).to eq(3)
-=======
->>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
       expect(json_response['assignee']['name']).to eq(assignee.name)
     end
 
@@ -1166,7 +1159,6 @@ describe API::V3::Issues do
     end
   end
 
-<<<<<<< HEAD
   describe 'PUT /projects/:id/issues/:issue_id to update weight' do
     it 'updates an issue with no weight' do
       put v3_api("/projects/#{project.id}/issues/#{issue.id}", user), weight: 5
@@ -1199,8 +1191,6 @@ describe API::V3::Issues do
     end
   end
 
-=======
->>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
   describe "DELETE /projects/:id/issues/:issue_id" do
     it "rejects a non member from deleting an issue" do
       delete v3_api("/projects/#{project.id}/issues/#{issue.id}", non_member)

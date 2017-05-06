@@ -84,11 +84,7 @@ module SystemNoteService
         "assigned to #{issue.assignees.map(&:to_reference).to_sentence}"
       end
 
-<<<<<<< HEAD
-    create_note(noteable: issue, project: project, author: author, note: body)
-=======
     create_note(NoteSummary.new(issue, project, author, body, action: 'assignee'))
->>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
   end
 
   # Called when one or more labels on a Noteable are added and/or removed
