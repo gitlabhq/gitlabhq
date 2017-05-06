@@ -16,11 +16,7 @@
         "v-if" => "issue.assignees",
         "v-for" => "assignee in issue.assignees" }
       .dropdown
-<<<<<<< HEAD
-        %button.dropdown-menu-toggle.js-user-search.js-author-search.js-issue-board-sidebar{ type: "button", data: { toggle: "dropdown", field_name: "issue[assignee_id]", first_user: (current_user.username if current_user), current_user: "true", project_id: @project.id, null_user: "true", null_user_default: "true" },
-=======
         %button.dropdown-menu-toggle.js-user-search.js-author-search.js-multiselect.js-save-user-data.js-issue-board-sidebar{ type: "button", ref: "assigneeDropdown", data: { toggle: "dropdown", field_name: "issue[assignee_ids][]", first_user: (current_user.username if current_user), current_user: "true", project_id: @project.id, null_user: "true", multi_select: "true", dropdown: { header: 'Assignee(s)'} },
->>>>>>> origin/multiple_assignees_review
           ":data-issuable-id" => "issue.id",
           ":data-selected" => "assigneeId",
           ":data-issue-update" => "'#{namespace_project_issues_path(@project.namespace, @project)}/' + issue.id + '.json'" }

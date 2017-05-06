@@ -343,11 +343,6 @@ import eventHub from './sidebar/event_hub';
                 $value.css('display', '');
               }
             },
-<<<<<<< HEAD
-            vue: $dropdown.hasClass('js-issue-board-sidebar'),
-            clicked: function(user, $el, e) {
-              var isIssueIndex, isMRIndex, page, selected, isSelecting;
-=======
             multiSelect: $dropdown.hasClass('js-multiselect'),
             inputMeta: $dropdown.data('input-meta'),
             clicked: function(options) {
@@ -399,7 +394,6 @@ import eventHub from './sidebar/event_hub';
               }
 
               var isIssueIndex, isMRIndex, page, selected;
->>>>>>> origin/multiple_assignees_review
               page = $('body').data('page');
               isIssueIndex = page === 'projects:issues:index';
               isMRIndex = (page === page && page === 'projects:merge_requests:index');
@@ -420,24 +414,7 @@ import eventHub from './sidebar/event_hub';
                 return Issuable.filterResults($dropdown.closest('form'));
               } else if ($dropdown.hasClass('js-filter-submit')) {
                 return $dropdown.closest('form').submit();
-<<<<<<< HEAD
-              } else if ($dropdown.hasClass('js-issue-board-sidebar')) {
-                if (user.id && isSelecting) {
-                  gl.issueBoards.boardStoreIssueSet('assignee', new ListUser({
-                    id: user.id,
-                    username: user.username,
-                    name: user.name,
-                    avatar_url: user.avatar_url
-                  }));
-                } else {
-                  gl.issueBoards.boardStoreIssueDelete('assignee');
-                }
-
-                updateIssueBoardsIssue();
-              } else {
-=======
               } else if (!$dropdown.hasClass('js-multiselect')) {
->>>>>>> origin/multiple_assignees_review
                 selected = $dropdown.closest('.selectbox').find("input[name='" + ($dropdown.data('field-name')) + "']").val();
                 return assignTo(selected);
               }
