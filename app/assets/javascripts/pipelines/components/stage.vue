@@ -14,7 +14,7 @@
  */
 
 /* global Flash */
-import { statusCssClasses, borderlessStatusIconEntityMap } from '../../vue_shared/ci_status_icons';
+import { borderlessStatusIconEntityMap } from '../../vue_shared/ci_status_icons';
 
 export default {
   props: {
@@ -109,7 +109,7 @@ export default {
     },
 
     triggerButtonClass() {
-      return `ci-status-icon-${statusCssClasses[this.stage.status.icon]}`;
+      return `ci-status-icon-${this.stage.status.group}`;
     },
 
     svgIcon() {
