@@ -15,12 +15,12 @@ module Ci
       @warnings = warnings
     end
 
-    def job_groups
-      @job_groups ||=
-        statuses.latest.sort_by(&:sortable_name).group_by(&:group_name)
+    def groups
+      @groups ||= statuses.ordered.latest
+        .sort_by(&:sortable_name).group_by(&:group_name)
         .map do |group_name, grouped_statuses|
           Ci::Group.new(self, name: group_name, jobs: grouped_statuses)
-        end.sort_by(&:name)
+        end
     end
 
     def to_param

@@ -7,6 +7,10 @@ class StageEntity < Grape::Entity
     "#{stage.name}: #{detailed_status.label}"
   end
 
+  expose :groups,
+    if: -> (_, opts) { opts[:grouped] },
+    with: JobGroupEntity
+
   expose :detailed_status, as: :status, with: StatusEntity
 
   expose :path do |stage|
@@ -25,8 +29,6 @@ class StageEntity < Grape::Entity
       stage: stage.name,
       format: :json)
   end
-
-  expose :job_groups, as: :groups, if: -> (_, opts) { opts[:grouped] }, with: JobGroupEntity
 
   private
 
