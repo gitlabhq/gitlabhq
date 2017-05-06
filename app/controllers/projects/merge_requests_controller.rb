@@ -740,16 +740,12 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       return :hook_validation_error
     end
 
-    if params[:sha] != @merge_request.diff_head_sha
-      return :sha_mismatch
-    end
+    return :sha_mismatch if params[:sha] != @merge_request.diff_head_sha
 
     @merge_request.update(merge_error: nil, squash: merge_params[:squash])
 
     if params[:merge_when_pipeline_succeeds].present?
-      unless @merge_request.head_pipeline
-        return :failed
-      end
+      return :failed unless @merge_request.head_pipeline
 
       if @merge_request.head_pipeline.active?
         MergeRequests::MergeWhenPipelineSucceedsService
