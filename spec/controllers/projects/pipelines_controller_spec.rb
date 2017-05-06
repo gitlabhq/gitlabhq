@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Projects::PipelinesController do
+  include ApiHelpers
+
   let(:user) { create(:user) }
   let(:project) { create(:empty_project, :public) }
 
@@ -24,6 +26,7 @@ describe Projects::PipelinesController do
 
     it 'returns JSON with serialized pipelines' do
       expect(response).to have_http_status(:ok)
+      expect(response).to match_response_schema('pipeline')
 
       expect(json_response).to include('pipelines')
       expect(json_response['pipelines'].count).to eq 4
@@ -31,6 +34,34 @@ describe Projects::PipelinesController do
       expect(json_response['count']['running']).to eq 1
       expect(json_response['count']['pending']).to eq 1
       expect(json_response['count']['finished']).to eq 1
+    end
+  end
+
+  describe 'GET show JSON' do
+    let!(:pipeline) { create(:ci_pipeline_with_one_job, project: project) }
+
+    it 'returns the pipeline' do
+      get_pipeline_json
+
+      expect(response).to have_http_status(:ok)
+      expect(json_response).not_to be_an(Array)
+      expect(json_response['id']).to be(pipeline.id)
+      expect(json_response['details']).to have_key 'stages'
+    end
+
+    context 'when the pipeline has multiple jobs' do
+      it 'does not perform N + 1 queries' do
+        control_count = ActiveRecord::QueryRecorder.new { get_pipeline_json }.count
+
+        create(:ci_build, pipeline: pipeline)
+
+        # The plus 2 is needed to group and sort
+        expect { get_pipeline_json }.not_to exceed_query_limit(control_count + 2)
+      end
+    end
+
+    def get_pipeline_json
+      get :show, namespace_id: project.namespace, project_id: project, id: pipeline, format: :json
     end
   end
 
