@@ -1,7 +1,7 @@
 module RspecProfilingExt
   module PSQL
     def establish_connection
-      ::RspecProfiling::Collectors::PSQL::Result.establish_connection(ENV['RSPEC_PROFILING_POSTGRES_URL'].to_sym)
+      ::RspecProfiling::Collectors::PSQL::Result.establish_connection(ENV['RSPEC_PROFILING_POSTGRES_URL'])
     end
   end
 
