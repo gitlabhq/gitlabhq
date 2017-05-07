@@ -156,22 +156,32 @@ describe AutocompleteController do
     end
 
     context 'author of issuable included' do
-      before do
-        sign_in(user)
-      end
-
       let(:body) { JSON.parse(response.body) }
 
-      it 'includes the author' do
-        get(:users, author_id: non_member.id)
+      context 'authenticated' do
+        before do
+          sign_in(user)
+        end
 
-        expect(body.first["username"]).to eq non_member.username
+        it 'includes the author' do
+          get(:users, author_id: non_member.id)
+
+          expect(body.first["username"]).to eq non_member.username
+        end
+
+        it 'rejects non existent user ids' do
+          get(:users, author_id: 99999)
+
+          expect(body.collect { |u| u['id'] }).not_to include(99999)
+        end
       end
 
-      it 'rejects non existent user ids' do
-        get(:users, author_id: 99999)
+      context 'without authenticating' do
+        it 'returns empty result' do
+          get(:users, author_id: non_member.id)
 
-        expect(body.collect { |u| u['id'] }).not_to include(99999)
+          expect(body).to be_empty
+        end
       end
     end
 
