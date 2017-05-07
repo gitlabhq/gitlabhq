@@ -49,6 +49,7 @@ var config = {
     pdf_viewer:           './blob/pdf_viewer.js',
     pipelines:            './pipelines/index.js',
     balsamiq_viewer:      './blob/balsamiq_viewer.js',
+    pipelines_graph:      './pipelines/graph_bundle.js',
     profile:              './profile/profile_bundle.js',
     protected_branches:   './protected_branches/protected_branches_bundle.js',
     protected_tags:       './protected_tags',
@@ -145,6 +146,7 @@ var config = {
         'pdf_viewer',
         'pipelines',
         'balsamiq_viewer',
+        'pipelines_graph',
       ],
       minChunks: function(module, count) {
         return module.resource && (/vue_shared/).test(module.resource);
