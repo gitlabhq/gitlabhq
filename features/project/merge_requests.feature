@@ -182,6 +182,7 @@ Feature: Project Merge Requests
 
   # Markdown
 
+  @javascript
   Scenario: Headers inside the description should have ids generated for them.
     When I visit merge request page "Bug NS-04"
     Then Header "Description header" should have correct id and link
