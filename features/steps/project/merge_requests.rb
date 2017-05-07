@@ -46,6 +46,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     page.within '.merge-request' do
       expect(page).to have_content "Wiki Feature"
     end
+    wait_for_vue_resource
   end
 
   step 'I should see closed merge request "Bug NS-04"' do
@@ -56,10 +57,12 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should see merge request "Bug NS-04"' do
     expect(page).to have_content "Bug NS-04"
+    wait_for_vue_resource
   end
 
   step 'I should see merge request "Feature NS-05"' do
     expect(page).to have_content "Feature NS-05"
+    wait_for_vue_resource
   end
 
   step 'I should not see "master" branch' do

@@ -24,7 +24,7 @@ class Spinach::Features::ProjectMergeRequestsAcceptance < Spinach::FeatureSteps
 
     # Wait for AJAX requests to complete so they don't blow up if they are
     # only handled after `DatabaseCleaner` has already run
-    wait_for_ajax
+    wait_for_vue_resource
   end
 
   step 'I should not see the Remove Source Branch button' do
@@ -32,7 +32,7 @@ class Spinach::Features::ProjectMergeRequestsAcceptance < Spinach::FeatureSteps
 
     # Wait for AJAX requests to complete so they don't blow up if they are
     # only handled after `DatabaseCleaner` has already run
-    wait_for_ajax
+    wait_for_vue_resource
   end
 
   step 'There is an open Merge Request' do
