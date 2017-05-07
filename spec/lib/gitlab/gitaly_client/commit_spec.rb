@@ -7,11 +7,6 @@ describe Gitlab::GitalyClient::Commit do
     let(:repository_message) { project.repository.gitaly_repository }
     let(:commit) { project.commit('913c66a37b4a45b9769037c55c2d238bd0942d2e') }
 
-    before do
-      allow(Gitaly::Diff::Stub).to receive(:new).and_return(diff_stub)
-      allow(diff_stub).to receive(:commit_diff).and_return([])
-    end
-
     context 'when a commit has a parent' do
       it 'sends an RPC request with the parent ID as left commit' do
         request = Gitaly::CommitDiffRequest.new(
@@ -20,7 +15,7 @@ describe Gitlab::GitalyClient::Commit do
           right_commit_id: commit.id,
         )
 
-        expect(diff_stub).to receive(:commit_diff).with(request)
+        expect_any_instance_of(Gitaly::Diff::Stub).to receive(:commit_diff).with(request)
 
         described_class.diff_from_parent(commit)
       end
@@ -35,7 +30,7 @@ describe Gitlab::GitalyClient::Commit do
           right_commit_id: initial_commit.id,
         )
 
-        expect(diff_stub).to receive(:commit_diff).with(request)
+        expect_any_instance_of(Gitaly::Diff::Stub).to receive(:commit_diff).with(request)
 
         described_class.diff_from_parent(initial_commit)
       end
@@ -50,7 +45,7 @@ describe Gitlab::GitalyClient::Commit do
     it 'passes options to Gitlab::Git::DiffCollection' do
       options = { max_files: 31, max_lines: 13 }
 
-      expect(Gitlab::Git::DiffCollection).to receive(:new).with([], options)
+      expect(Gitlab::Git::DiffCollection).to receive(:new).with(kind_of(Enumerable), options)
 
       described_class.diff_from_parent(commit, options)
     end
