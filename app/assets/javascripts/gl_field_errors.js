@@ -37,6 +37,15 @@ class GlFieldErrors {
     }
   }
 
+  /* Public method for triggering validity updates manually  */
+  updateFormValidityState() {
+    this.state.inputs.forEach((field) => {
+      if (field.state.submitted) {
+        field.updateValidity();
+      }
+    });
+  }
+
   focusOnFirstInvalid () {
     const firstInvalid = this.state.inputs.filter((input) => !input.inputDomElement.validity.valid)[0];
     firstInvalid.inputElement.focus();
