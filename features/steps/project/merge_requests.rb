@@ -419,6 +419,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     page.within '.status-box' do
       expect(page).to have_content "Open"
     end
+    wait_for_vue_resource
   end
 
   step 'I click link "Hide inline discussion" of the third file' do
@@ -566,13 +567,16 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     page.within ".mr-source-target" do
       expect(page).to have_content /([0-9]+ commits behind)/
     end
+
+    wait_for_vue_resource
   end
 
   step 'I should not see the diverged commits count' do
     page.within ".mr-source-target" do
       expect(page).not_to have_content /([0-9]+ commit[s]? behind)/
-      wait_for_vue_resource
     end
+
+    wait_for_vue_resource
   end
 
   def merge_request
