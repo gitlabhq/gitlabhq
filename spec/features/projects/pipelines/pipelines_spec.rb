@@ -397,11 +397,9 @@ describe 'Pipelines', :feature, :js do
 
       it 'shows a graph with grouped stages' do
         expect(page).to have_css('.js-pipeline-graph')
-        # expect(page).to have_css('.js-grouped-pipeline-dropdown')
 
         # header
         expect(page).to have_text("##{pipeline.id}")
-        expect(page).to have_css('time', text: pipeline.created_at.strftime("%b %d, %Y"))
         expect(page).to have_selector(%Q(img[alt$="#{pipeline.user.name}'s avatar"]))
         expect(page).to have_link(pipeline.user.name, href: user_path(pipeline.user))
 
@@ -414,7 +412,7 @@ describe 'Pipelines', :feature, :js do
         # builds
         expect(page).to have_text('rspec')
         expect(page).to have_text('spinach')
-        expect(page).to have_text('rspec 0:2')
+        expect(page).to have_text('rspec')
         expect(page).to have_text('production')
         expect(page).to have_text('jenkins')
       end
