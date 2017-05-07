@@ -1,6 +1,7 @@
 class Spinach::Features::RevertMergeRequests < Spinach::FeatureSteps
   include LoginHelpers
   include GitlabRoutingHelper
+  include WaitForVueResource
 
   step 'I click on the revert button' do
     find("a[href='#modal-revert-commit']").click
@@ -15,6 +16,7 @@ class Spinach::Features::RevertMergeRequests < Spinach::FeatureSteps
 
   step 'I should see the revert merge request notice' do
     page.should have_content('The merge request has been successfully reverted.')
+    wait_for_vue_resource
   end
 
   step 'I should not see the revert button' do

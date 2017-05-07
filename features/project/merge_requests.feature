@@ -48,10 +48,12 @@ Feature: Project Merge Requests
     Then I should see "Feature NS-03" in merge requests
     And I should see "Bug NS-04" in merge requests
 
+  @javascript
   Scenario: I visit an open merge request page
     Given I click link "Bug NS-04"
     Then I should see merge request "Bug NS-04"
 
+  @javascript
   Scenario: I visit a merged merge request page
     Given project "Shop" have "Feature NS-05" merged merge request
     And I click link "Merged"
