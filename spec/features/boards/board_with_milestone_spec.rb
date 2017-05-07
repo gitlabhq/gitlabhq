@@ -26,6 +26,9 @@ describe 'Board with milestone', :feature, :js do
 
       expect(find('.tokens-container')).to have_content(milestone.title)
       wait_for_vue_resource
+
+      find('.card', match: :first)
+
       expect(all('.board')[1]).to have_selector('.card', count: 1)
     end
   end
@@ -48,6 +51,9 @@ describe 'Board with milestone', :feature, :js do
       end
 
       expect(find('.tokens-container')).to have_content(milestone.title)
+
+      find('.card', match: :first)
+
       expect(all('.board')[1]).to have_selector('.card', count: 1)
     end
 
@@ -56,6 +62,9 @@ describe 'Board with milestone', :feature, :js do
 
       expect(page).not_to have_css('.js-visual-token')
       expect(find('.tokens-container')).not_to have_content(milestone.title)
+
+      find('.card', match: :first)
+
       expect(page).to have_selector('.board', count: 2)
       expect(all('.board')[1]).to have_selector('.card', count: 2)
     end
@@ -64,6 +73,9 @@ describe 'Board with milestone', :feature, :js do
       update_board_milestone('Upcoming')
 
       expect(find('.tokens-container')).not_to have_content(milestone.title)
+
+      find('.board', match: :first)
+
       expect(all('.board')[1]).to have_selector('.card', count: 0)
     end
 
@@ -145,9 +157,10 @@ describe 'Board with milestone', :feature, :js do
       click_button 'Add issues'
 
       page.within('.add-issues-modal') do
+        card = find('.card', :first)
         expect(page).to have_selector('.card', count: 1)
 
-        first('.card').click
+        card.click
 
         click_button 'Add 1 issue'
       end
