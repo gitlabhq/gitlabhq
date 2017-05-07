@@ -3190,7 +3190,7 @@ json-stable-stringify@^1.0.0, json-stable-stringify@^1.0.1:
   dependencies:
     jsonify "~0.0.0"
 
-json-stringify-safe@~5.0.1:
+json-stringify-safe@^5.0.1, json-stringify-safe@~5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/json-stringify-safe/-/json-stringify-safe-5.0.1.tgz#1296a2d58fd45f19a0f6ce01d65701e2c735b6eb"
 
@@ -4584,6 +4584,12 @@ raphael@^2.2.7:
   dependencies:
     eve-raphael "0.5.0"
 
+raven-js@^3.14.0:
+  version "3.14.0"
+  resolved "https://registry.yarnpkg.com/raven-js/-/raven-js-3.14.0.tgz#94dda81d975fdc4a42f193db437cf70021d654e0"
+  dependencies:
+    json-stringify-safe "^5.0.1"
+
 raw-body@~2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/raw-body/-/raw-body-2.2.0.tgz#994976cf6a5096a41162840492f0bdc5d6e7fb96"
@@ -5194,6 +5200,10 @@ split@0.3:
 sprintf-js@~1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
+
+sql.js@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/sql.js/-/sql.js-0.4.0.tgz#23be9635520eb0ff43a741e7e830397266e88445"
 
 sshpk@^1.7.0:
   version "1.10.2"

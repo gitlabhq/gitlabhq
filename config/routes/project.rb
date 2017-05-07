@@ -123,6 +123,7 @@ constraints(ProjectUrlConstrainer.new) do
           post :cancel
           post :retry
           get :builds
+          get :failures
           get :status
         end
       end

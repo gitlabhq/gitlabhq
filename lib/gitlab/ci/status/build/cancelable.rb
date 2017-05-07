@@ -2,9 +2,7 @@ module Gitlab
   module Ci
     module Status
       module Build
-        class Cancelable < SimpleDelegator
-          include Status::Extended
-
+        class Cancelable < Status::Extended
           def has_action?
             can?(user, :update_build, subject)
           end

@@ -102,6 +102,13 @@ describe MergeRequests::UpdateService, services: true do
         expect(note.note).to eq 'changed title from **{-Old-} title** to **{+New+} title**'
       end
 
+      it 'creates system note about description change' do
+        note = find_note('changed the description')
+
+        expect(note).not_to be_nil
+        expect(note.note).to eq('changed the description')
+      end
+
       it 'creates system note about branch change' do
         note = find_note('changed target')
 
@@ -420,6 +427,54 @@ describe MergeRequests::UpdateService, services: true do
 
         issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
         expect(issue_ids).to be_empty
+      end
+    end
+
+    context 'updating asssignee_id' do
+      it 'does not update assignee when assignee_id is invalid' do
+        merge_request.update(assignee_id: user.id)
+
+        update_merge_request(assignee_id: -1)
+
+        expect(merge_request.reload.assignee).to eq(user)
+      end
+
+      it 'unassigns assignee when user id is 0' do
+        merge_request.update(assignee_id: user.id)
+
+        update_merge_request(assignee_id: 0)
+
+        expect(merge_request.assignee_id).to be_nil
+      end
+
+      it 'saves assignee when user id is valid' do
+        update_merge_request(assignee_id: user.id)
+
+        expect(merge_request.assignee_id).to eq(user.id)
+      end
+
+      it 'does not update assignee_id when user cannot read issue' do
+        non_member        = create(:user)
+        original_assignee = merge_request.assignee
+
+        update_merge_request(assignee_id: non_member.id)
+
+        expect(merge_request.assignee_id).to eq(original_assignee.id)
+      end
+
+      context "when issuable feature is private" do
+        levels = [Gitlab::VisibilityLevel::INTERNAL, Gitlab::VisibilityLevel::PUBLIC]
+
+        levels.each do |level|
+          it "does not update with unauthorized assignee when project is #{Gitlab::VisibilityLevel.level_name(level)}" do
+            assignee = create(:user)
+            project.update(visibility_level: level)
+            feature_visibility_attr = :"#{merge_request.model_name.plural}_access_level"
+            project.project_feature.update_attribute(feature_visibility_attr, ProjectFeature::PRIVATE)
+
+            expect{ update_merge_request(assignee_id: assignee) }.not_to change{ merge_request.assignee }
+          end
+        end
       end
     end
 

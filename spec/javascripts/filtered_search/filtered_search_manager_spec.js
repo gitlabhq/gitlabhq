@@ -1,3 +1,7 @@
+import * as recentSearchesStoreSrc from '~/filtered_search/stores/recent_searches_store';
+import RecentSearchesService from '~/filtered_search/services/recent_searches_service';
+import RecentSearchesServiceError from '~/filtered_search/services/recent_searches_service_error';
+
 require('~/lib/utils/url_utility');
 require('~/lib/utils/common_utils');
 require('~/filtered_search/filtered_search_token_keys');
@@ -58,6 +62,36 @@ describe('Filtered Search Manager', () => {
 
   afterEach(() => {
     manager.cleanup();
+  });
+
+  describe('class constructor', () => {
+    const isLocalStorageAvailable = 'isLocalStorageAvailable';
+    let filteredSearchManager;
+
+    beforeEach(() => {
+      spyOn(RecentSearchesService, 'isAvailable').and.returnValue(isLocalStorageAvailable);
+      spyOn(recentSearchesStoreSrc, 'default');
+
+      filteredSearchManager = new gl.FilteredSearchManager();
+
+      return filteredSearchManager;
+    });
+
+    it('should instantiate RecentSearchesStore with isLocalStorageAvailable', () => {
+      expect(RecentSearchesService.isAvailable).toHaveBeenCalled();
+      expect(recentSearchesStoreSrc.default).toHaveBeenCalledWith({
+        isLocalStorageAvailable,
+      });
+    });
+
+    it('should not instantiate Flash if an RecentSearchesServiceError is caught', () => {
+      spyOn(RecentSearchesService.prototype, 'fetch').and.callFake(() => Promise.reject(new RecentSearchesServiceError()));
+      spyOn(window, 'Flash');
+
+      filteredSearchManager = new gl.FilteredSearchManager();
+
+      expect(window.Flash).not.toHaveBeenCalled();
+    });
   });
 
   describe('search', () => {

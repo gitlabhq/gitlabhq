@@ -23,6 +23,8 @@ Issue:
 - weight
 - time_estimate
 - relative_position
+- last_edited_at
+- last_edited_by_id
 Event:
 - id
 - target_type
@@ -154,6 +156,8 @@ MergeRequest:
 - approvals_before_merge
 - rebase_commit_sha
 - time_estimate
+- last_edited_at
+- last_edited_by_id
 MergeRequestDiff:
 - id
 - state

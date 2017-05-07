@@ -36,7 +36,11 @@ module Gitlab
         Gitlab::EtagCaching::Router::Route.new(
           %r(^(?!.*(#{RESERVED_WORDS_REGEX})).*/pipelines\.json\z),
           'project_pipelines'
-        )
+        ),
+        Gitlab::EtagCaching::Router::Route.new(
+          %r(^(?!.*(#{RESERVED_WORDS})).*/pipelines/\d+\.json\z),
+          'project_pipeline'
+        ),
       ].freeze
 
       def self.match(env)

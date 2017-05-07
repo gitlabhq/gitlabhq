@@ -89,7 +89,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
     let(:project) { create(:empty_project, :internal) }
     let!(:issue) { create(:issue, project: project, title: 'Issue 1') }
     let!(:security_issue_1) { create(:issue, :confidential, project: project, title: 'Security issue 1', author: author) }
-    let!(:security_issue_2) { create(:issue, :confidential, title: 'Security issue 2', project: project, assignee: assignee) }
+    let!(:security_issue_2) { create(:issue, :confidential, title: 'Security issue 2', project: project, assignees: [assignee]) }
 
     it 'does not list project confidential issues for non project members' do
       results = described_class.new(non_member, project, query)

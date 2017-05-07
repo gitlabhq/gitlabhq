@@ -58,7 +58,8 @@
       });
     }
 
-    NamespaceSelect.prototype.onSelectItem = function(item, el, e) {
+    NamespaceSelect.prototype.onSelectItem = function(options) {
+      const { e } = options;
       return e.preventDefault();
     };
 

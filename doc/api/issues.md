@@ -70,6 +70,14 @@ Example response:
          "updated_at" : "2016-01-04T15:31:39.996Z"
       },
       "project_id" : 1,
+      "assignees" : [{
+         "state" : "active",
+         "id" : 1,
+         "name" : "Administrator",
+         "web_url" : "https://gitlab.example.com/root",
+         "avatar_url" : null,
+         "username" : "root"
+      }],
       "assignee" : {
          "state" : "active",
          "id" : 1,
@@ -91,6 +99,8 @@ Example response:
    }
 ]
 ```
+
+**Note**: `assignee` column is deprecated, it shows the first assignee only.
 
 ## List group issues
 
@@ -153,6 +163,14 @@ Example response:
       "description" : "Omnis vero earum sunt corporis dolor et placeat.",
       "state" : "closed",
       "iid" : 1,
+      "assignees" : [{
+         "avatar_url" : null,
+         "web_url" : "https://gitlab.example.com/lennie",
+         "state" : "active",
+         "username" : "lennie",
+         "id" : 9,
+         "name" : "Dr. Luella Kovacek"
+      }],
       "assignee" : {
          "avatar_url" : null,
          "web_url" : "https://gitlab.example.com/lennie",
@@ -173,6 +191,8 @@ Example response:
    }
 ]
 ```
+
+**Note**: `assignee` column is deprecated, it shows the first assignee only.
 
 ## List project issues
 
@@ -235,6 +255,14 @@ Example response:
       "description" : "Omnis vero earum sunt corporis dolor et placeat.",
       "state" : "closed",
       "iid" : 1,
+      "assignees" : [{
+         "avatar_url" : null,
+         "web_url" : "https://gitlab.example.com/lennie",
+         "state" : "active",
+         "username" : "lennie",
+         "id" : 9,
+         "name" : "Dr. Luella Kovacek"
+      }],
       "assignee" : {
          "avatar_url" : null,
          "web_url" : "https://gitlab.example.com/lennie",
@@ -255,6 +283,8 @@ Example response:
    }
 ]
 ```
+
+**Note**: `assignee` column is deprecated, it shows the first assignee only.
 
 ## Single issue
 
@@ -300,6 +330,14 @@ Example response:
    "description" : "Omnis vero earum sunt corporis dolor et placeat.",
    "state" : "closed",
    "iid" : 1,
+   "assignees" : [{
+      "avatar_url" : null,
+      "web_url" : "https://gitlab.example.com/lennie",
+      "state" : "active",
+      "username" : "lennie",
+      "id" : 9,
+      "name" : "Dr. Luella Kovacek"
+   }],
    "assignee" : {
       "avatar_url" : null,
       "web_url" : "https://gitlab.example.com/lennie",
@@ -321,6 +359,8 @@ Example response:
 }
 ```
 
+**Note**: `assignee` column is deprecated, it shows the first assignee only.
+
 ## New issue
 
 Creates a new project issue.
@@ -329,13 +369,13 @@ Creates a new project issue.
 POST /projects/:id/issues
 ```
 
-| Attribute                                 | Type    | Required | Description  |
-|-------------------------------------------|---------|----------|--------------|
+| Attribute                                 | Type           | Required | Description  |
+|-------------------------------------------|----------------|----------|--------------|
 | `id`                                      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `title`                                   | string  | yes      | The title of an issue |
 | `description`                             | string  | no       | The description of an issue  |
 | `confidential`                            | boolean | no       | Set an issue to be confidential. Default is `false`.  |
-| `assignee_id`                             | integer | no       | The ID of a user to assign issue |
+| `assignee_ids`                            | Array[integer] | no       | The ID of a user to assign issue |
 | `milestone_id`                            | integer | no       | The ID of a milestone to assign issue  |
 | `labels`                                  | string  | no       | Comma-separated label names for an issue  |
 | `created_at`                              | string  | no       | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` (requires admin or project owner rights) |
@@ -357,6 +397,7 @@ Example response:
    "iid" : 14,
    "title" : "Issues with auth",
    "state" : "opened",
+   "assignees" : [],
    "assignee" : null,
    "labels" : [
       "bug"
@@ -380,6 +421,8 @@ Example response:
 }
 ```
 
+**Note**: `assignee` column is deprecated, it shows the first assignee only.
+
 ## Edit issue
 
 Updates an existing project issue. This call is also used to mark an issue as
@@ -396,7 +439,7 @@ PUT /projects/:id/issues/:issue_iid
 | `title`        | string  | no       | The title of an issue                                                                                      |
 | `description`  | string  | no       | The description of an issue                                                                                |
 | `confidential` | boolean | no       | Updates an issue to be confidential                                                                        |
-| `assignee_id`  | integer | no       | The ID of a user to assign the issue to                                                                    |
+| `assignee_ids`  | Array[integer] | no       | The ID of a user to assign the issue to                                                                    |
 | `milestone_id` | integer | no       | The ID of a milestone to assign the issue to                                                               |
 | `labels`       | string  | no       | Comma-separated label names for an issue                                                                   |
 | `state_event`  | string  | no       | The state event of an issue. Set `close` to close the issue and `reopen` to reopen it                      |
@@ -430,6 +473,7 @@ Example response:
       "bug"
    ],
    "id" : 85,
+   "assignees" : [],
    "assignee" : null,
    "milestone" : null,
    "subscribed" : true,
@@ -439,6 +483,8 @@ Example response:
    "confidential": false
 }
 ```
+
+**Note**: `assignee` column is deprecated, it shows the first assignee only.
 
 ## Delete an issue
 
@@ -494,6 +540,14 @@ Example response:
   "updated_at": "2016-04-07T12:20:17.596Z",
   "labels": [],
   "milestone": null,
+  "assignees": [{
+    "name": "Miss Monserrate Beier",
+    "username": "axel.block",
+    "id": 12,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/46f6f7dc858ada7be1853f7fb96e81da?s=80&d=identicon",
+    "web_url": "https://gitlab.example.com/axel.block"
+  }],
   "assignee": {
     "name": "Miss Monserrate Beier",
     "username": "axel.block",
@@ -515,6 +569,8 @@ Example response:
   "confidential": false
 }
 ```
+
+**Note**: `assignee` column is deprecated, it shows the first assignee only.
 
 ## Subscribe to an issue
 
@@ -549,6 +605,14 @@ Example response:
   "updated_at": "2016-04-07T12:20:17.596Z",
   "labels": [],
   "milestone": null,
+  "assignees": [{
+    "name": "Miss Monserrate Beier",
+    "username": "axel.block",
+    "id": 12,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/46f6f7dc858ada7be1853f7fb96e81da?s=80&d=identicon",
+    "web_url": "https://gitlab.example.com/axel.block"
+  }],
   "assignee": {
     "name": "Miss Monserrate Beier",
     "username": "axel.block",
@@ -570,6 +634,8 @@ Example response:
   "confidential": false
 }
 ```
+
+**Note**: `assignee` column is deprecated, it shows the first assignee only.
 
 ## Unsubscribe from an issue
 
@@ -652,6 +718,14 @@ Example response:
       "updated_at": "2016-06-17T07:47:33.832Z",
       "due_date": null
     },
+    "assignees": [{
+      "name": "Jarret O'Keefe",
+      "username": "francisca",
+      "id": 14,
+      "state": "active",
+      "avatar_url": "http://www.gravatar.com/avatar/a7fa515d53450023c83d62986d0658a8?s=80&d=identicon",
+      "web_url": "https://gitlab.example.com/francisca"
+    }],
     "assignee": {
       "name": "Jarret O'Keefe",
       "username": "francisca",
@@ -682,6 +756,8 @@ Example response:
   "created_at": "2016-07-01T11:09:13.992Z"
 }
 ```
+
+**Note**: `assignee` column is deprecated, it shows the first assignee only.
 
 ## Set a time estimate for an issue
 

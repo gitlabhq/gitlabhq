@@ -173,12 +173,12 @@ describe Projects::IssuesController do
           namespace_id: project.namespace.to_param,
           project_id: project,
           id: issue.iid,
-          issue: { assignee_id: assignee.id },
+          issue: { assignee_ids: [assignee.id] },
           format: :json
         body = JSON.parse(response.body)
 
-        expect(body['assignee'].keys)
-          .to match_array(%w(name username avatar_url))
+        expect(body['assignees'].first.keys)
+          .to match_array(%w(id name username avatar_url))
       end
     end
 
@@ -348,7 +348,7 @@ describe Projects::IssuesController do
     let(:admin) { create(:admin) }
     let!(:issue) { create(:issue, project: project) }
     let!(:unescaped_parameter_value) { create(:issue, :confidential, project: project, author: author) }
-    let!(:request_forgery_timing_attack) { create(:issue, :confidential, project: project, assignee: assignee) }
+    let!(:request_forgery_timing_attack) { create(:issue, :confidential, project: project, assignees: [assignee]) }
 
     describe 'GET #index' do
       it 'does not list confidential issues for guests' do

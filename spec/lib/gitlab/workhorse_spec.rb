@@ -181,10 +181,23 @@ describe Gitlab::Workhorse, lib: true do
     let(:user) { create(:user) }
     let(:repo_path) { repository.path_to_repo }
     let(:action) { 'info_refs' }
+    let(:params) do
+      { GL_ID: "user-#{user.id}", GL_REPOSITORY: "project-#{project.id}", RepoPath: repo_path }
+    end
 
-    subject { described_class.git_http_ok(repository, user, action) }
+    subject { described_class.git_http_ok(repository, false, user, action) }
 
-    it { expect(subject).to include({ GL_ID: "user-#{user.id}", RepoPath: repo_path }) }
+    it { expect(subject).to include(params) }
+
+    context 'when is_wiki' do
+      let(:params) do
+        { GL_ID: "user-#{user.id}", GL_REPOSITORY: "wiki-#{project.id}", RepoPath: repo_path }
+      end
+
+      subject { described_class.git_http_ok(repository, true, user, action) }
+
+      it { expect(subject).to include(params) }
+    end
 
     context 'when Gitaly is enabled' do
       let(:gitaly_params) do

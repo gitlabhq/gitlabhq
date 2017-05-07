@@ -7,9 +7,11 @@ class StageEntity < Grape::Entity
     "#{stage.name}: #{detailed_status.label}"
   end
 
-  expose :detailed_status,
-    as: :status,
-    with: StatusEntity
+  expose :groups,
+    if: -> (_, opts) { opts[:grouped] },
+    with: JobGroupEntity
+
+  expose :detailed_status, as: :status, with: StatusEntity
 
   expose :path do |stage|
     namespace_project_pipeline_path(

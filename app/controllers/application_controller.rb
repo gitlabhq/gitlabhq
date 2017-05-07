@@ -58,7 +58,7 @@ class ApplicationController < ActionController::Base
     if current_user
       not_found
     else
-      redirect_to new_user_session_path
+      authenticate_user!
     end
   end
 

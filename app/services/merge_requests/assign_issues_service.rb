@@ -4,7 +4,7 @@ module MergeRequests
       @assignable_issues ||= begin
         if current_user == merge_request.author
           closes_issues.select do |issue|
-            !issue.is_a?(ExternalIssue) && !issue.assignee_id? && can?(current_user, :admin_issue, issue)
+            !issue.is_a?(ExternalIssue) && !issue.assignees.present? && can?(current_user, :admin_issue, issue)
           end
         else
           []
@@ -14,7 +14,7 @@ module MergeRequests
 
     def execute
       assignable_issues.each do |issue|
-        Issues::UpdateService.new(issue.project, current_user, assignee_id: current_user.id).execute(issue)
+        Issues::UpdateService.new(issue.project, current_user, assignee_ids: [current_user.id]).execute(issue)
       end
 
       {

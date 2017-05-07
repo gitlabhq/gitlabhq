@@ -85,6 +85,8 @@ excluded_attributes:
     - :id
     - :star_count
     - :last_activity_at
+    - :last_repository_updated_at
+    - :last_repository_check_at
   snippets:
     - :expired_at
   merge_request_diff:

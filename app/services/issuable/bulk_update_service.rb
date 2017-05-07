@@ -7,8 +7,12 @@ module Issuable
       ids = params.delete(:issuable_ids).split(",")
       items = model_class.where(id: ids)
 
-      %i(state_event milestone_id assignee_id add_label_ids remove_label_ids subscription_event).each do |key|
+      %i(state_event milestone_id assignee_id assignee_ids add_label_ids remove_label_ids subscription_event).each do |key|
         params.delete(key) unless params[key].present?
+      end
+
+      if params[:assignee_ids] == [IssuableFinder::NONE.to_s]
+        params[:assignee_ids] = []
       end
 
       items.each do |issuable|

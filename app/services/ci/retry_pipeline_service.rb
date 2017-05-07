@@ -8,6 +8,8 @@ module Ci
       end
 
       pipeline.retryable_builds.find_each do |build|
+        next unless can?(current_user, :update_build, build)
+
         Ci::RetryBuildService.new(project, current_user)
           .reprocess(build)
       end

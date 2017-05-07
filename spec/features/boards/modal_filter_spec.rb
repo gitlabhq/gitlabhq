@@ -98,7 +98,7 @@ describe 'Issue Boards add issue modal filtering', :feature, :js do
   end
 
   context 'assignee' do
-    let!(:issue) { create(:issue, project: project, assignee: user2) }
+    let!(:issue) { create(:issue, project: project, assignees: [user2]) }
 
     before do
       project.team << [user2, :developer]

@@ -100,6 +100,10 @@ class User < ActiveRecord::Base
   has_many :award_emoji,              dependent: :destroy
   has_many :triggers,                 dependent: :destroy, class_name: 'Ci::Trigger', foreign_key: :owner_id
 
+  has_many :issue_assignees
+  has_many :assigned_issues, class_name: "Issue", through: :issue_assignees, source: :issue
+  has_many :assigned_merge_requests,  dependent: :nullify, foreign_key: :assignee_id, class_name: "MergeRequest"
+
   # Issues that a user owns are expected to be moved to the "ghost" user before
   # the user is destroyed. If the user owns any issues during deletion, this
   # should be treated as an exceptional condition.
@@ -333,6 +337,11 @@ class User < ActiveRecord::Base
       find_by(id: Key.unscoped.select(:user_id).where(id: key_id))
     end
 
+    def find_by_full_path(path, follow_redirects: false)
+      namespace = Namespace.find_by_full_path(path, follow_redirects: follow_redirects)
+      namespace&.owner
+    end
+
     def reference_prefix
       '@'
     end
@@ -353,6 +362,10 @@ class User < ActiveRecord::Base
         u.name = 'Ghost User'
       end
     end
+  end
+
+  def full_path
+    username
   end
 
   def self.internal_attributes

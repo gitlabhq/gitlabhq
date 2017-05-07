@@ -207,8 +207,13 @@
     margin-bottom: 5px;
   }
 
-  &.is-active {
+  &.is-active,
+  &.is-active .card-assignee:hover a {
     background-color: $row-hover;
+
+    &:first-child:not(:only-child) {
+      box-shadow: -10px 0 10px 1px $row-hover;
+    }
   }
 
   .label {
@@ -224,7 +229,7 @@
 }
 
 .card-title {
-  margin: 0;
+  margin: 0 30px 0 0;
   font-size: 1em;
   line-height: inherit;
 
@@ -240,10 +245,69 @@
   min-height: 20px;
 
   .card-assignee {
-    margin-left: auto;
-    margin-right: 5px;
-    padding-left: 10px;
+    display: flex;
+    justify-content: flex-end;
+    position: absolute;
+    right: 15px;
     height: 20px;
+    width: 20px;
+
+    .avatar-counter {
+      display: none;
+      vertical-align: middle;
+      min-width: 20px;
+      line-height: 19px;
+      height: 20px;
+      padding-left: 2px;
+      padding-right: 2px;
+      border-radius: 2em;
+    }
+
+    img {
+      vertical-align: top;
+    }
+
+    a {
+      position: relative;
+      margin-left: -15px;
+    }
+
+    a:nth-child(1) {
+      z-index: 3;
+    }
+
+    a:nth-child(2) {
+      z-index: 2;
+    }
+
+    a:nth-child(3) {
+      z-index: 1;
+    }
+
+    a:nth-child(4) {
+      display: none;
+    }
+
+    &:hover {
+      .avatar-counter {
+        display: inline-block;
+      }
+
+      a {
+        position: static;
+        background-color: $white-light;
+        transition: background-color 0s;
+        margin-left: auto;
+
+        &:nth-child(4) {
+          display: block;
+        }
+
+        &:first-child:not(:only-child) {
+          box-shadow: -10px 0 10px 1px $white-light;
+        }
+      }
+    }
   }
 
   .avatar {

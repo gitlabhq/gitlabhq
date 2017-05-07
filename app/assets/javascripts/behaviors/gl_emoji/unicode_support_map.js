@@ -1,3 +1,5 @@
+import AccessorUtilities from '../../lib/utils/accessor';
+
 const unicodeSupportTestMap = {
   // man, student (emojione does not have any of these yet), http://emojipedia.org/emoji-zwj-sequences/
   // occupationZwj: '\u{1F468}\u{200D}\u{1F393}',
@@ -140,16 +142,25 @@ function generateUnicodeSupportMap(testMap) {
 
 function getUnicodeSupportMap() {
   let unicodeSupportMap;
-  const userAgentFromCache = window.localStorage.getItem('gl-emoji-user-agent');
+  let userAgentFromCache;
+
+  const isLocalStorageAvailable = AccessorUtilities.isLocalStorageAccessSafe();
+
+  if (isLocalStorageAvailable) userAgentFromCache = window.localStorage.getItem('gl-emoji-user-agent');
+
   try {
     unicodeSupportMap = JSON.parse(window.localStorage.getItem('gl-emoji-unicode-support-map'));
   } catch (err) {
     // swallow
   }
+
   if (!unicodeSupportMap || userAgentFromCache !== navigator.userAgent) {
     unicodeSupportMap = generateUnicodeSupportMap(unicodeSupportTestMap);
-    window.localStorage.setItem('gl-emoji-user-agent', navigator.userAgent);
-    window.localStorage.setItem('gl-emoji-unicode-support-map', JSON.stringify(unicodeSupportMap));
+
+    if (isLocalStorageAvailable) {
+      window.localStorage.setItem('gl-emoji-user-agent', navigator.userAgent);
+      window.localStorage.setItem('gl-emoji-unicode-support-map', JSON.stringify(unicodeSupportMap));
+    }
   }
 
   return unicodeSupportMap;

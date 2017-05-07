@@ -1,5 +1,3 @@
-/* global Flash */
-
 import FilteredSearchContainer from './container';
 import RecentSearchesRoot from './recent_searches_root';
 import RecentSearchesStore from './stores/recent_searches_store';
@@ -15,7 +13,9 @@ class FilteredSearchManager {
     this.tokensContainer = this.container.querySelector('.tokens-container');
     this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeys;
 
-    this.recentSearchesStore = new RecentSearchesStore();
+    this.recentSearchesStore = new RecentSearchesStore({
+      isLocalStorageAvailable: RecentSearchesService.isAvailable(),
+    });
     let recentSearchesKey = 'issue-recent-searches';
     if (page === 'merge_requests') {
       recentSearchesKey = 'merge-request-recent-searches';
@@ -24,9 +24,10 @@ class FilteredSearchManager {
 
     // Fetch recent searches from localStorage
     this.fetchingRecentSearchesPromise = this.recentSearchesService.fetch()
-      .catch(() => {
+      .catch((error) => {
+        if (error.name === 'RecentSearchesServiceError') return undefined;
         // eslint-disable-next-line no-new
-        new Flash('An error occured while parsing recent searches');
+        new window.Flash('An error occured while parsing recent searches');
         // Gracefully fail to empty array
         return [];
       })

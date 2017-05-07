@@ -41,13 +41,37 @@ describe BuildEntity do
     it 'does not contain path to play action' do
       expect(subject).not_to include(:play_path)
     end
+
+    it 'is not a playable job' do
+      expect(subject[:playable]).to be false
+    end
   end
 
   context 'when build is a manual action' do
     let(:build) { create(:ci_build, :manual) }
 
-    it 'contains path to play action' do
-      expect(subject).to include(:play_path)
+    context 'when user is allowed to trigger action' do
+      before do
+        build.project.add_master(user)
+      end
+
+      it 'contains path to play action' do
+        expect(subject).to include(:play_path)
+      end
+
+      it 'is a playable action' do
+        expect(subject[:playable]).to be true
+      end
+    end
+
+    context 'when user is not allowed to trigger action' do
+      it 'does not contain path to play action' do
+        expect(subject).not_to include(:play_path)
+      end
+
+      it 'is not a playable action' do
+        expect(subject[:playable]).to be false
+      end
     end
   end
 end
