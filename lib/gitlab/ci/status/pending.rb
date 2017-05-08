@@ -3,11 +3,11 @@ module Gitlab
     module Status
       class Pending < Status::Core
         def text
-          'pending'
+          _('pending')
         end
 
         def label
-          'pending'
+          _('pending')
         end
 
         def icon

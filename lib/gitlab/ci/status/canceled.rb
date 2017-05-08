@@ -3,11 +3,11 @@ module Gitlab
     module Status
       class Canceled < Status::Core
         def text
-          'canceled'
+          _('canceled')
         end
 
         def label
-          'canceled'
+          _('canceled')
         end
 
         def icon

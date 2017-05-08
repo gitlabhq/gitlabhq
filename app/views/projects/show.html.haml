@@ -17,24 +17,24 @@
     %ul.nav
       %li
         = link_to project_files_path(@project) do
-          Files (#{storage_counter(@project.statistics.total_repository_size)})
+          #{_('Files')} (#{storage_counter(@project.statistics.total_repository_size)})
       %li
         = link_to namespace_project_commits_path(@project.namespace, @project, current_ref) do
-          #{'Commit'.pluralize(@project.statistics.commit_count)} (#{number_with_delimiter(@project.statistics.commit_count)})
-      %li
+          #{n_('Commit', @project.statistics.commit_count)} (#{number_with_delimiter(@project.statistics.commit_count)})
+      %l
         = link_to namespace_project_branches_path(@project.namespace, @project) do
-          #{'Branch'.pluralize(@repository.branch_count)} (#{number_with_delimiter(@repository.branch_count)})
+          #{n_('Branch', @repository.branch_count)} (#{number_with_delimiter(@repository.branch_count)})
       %li
         = link_to namespace_project_tags_path(@project.namespace, @project) do
-          #{'Tag'.pluralize(@repository.tag_count)} (#{number_with_delimiter(@repository.tag_count)})
+          #{n_('Tag', @repository.tag_count)} (#{number_with_delimiter(@repository.tag_count)})
 
       - if default_project_view != 'readme' && @repository.readme
         %li
-          = link_to 'Readme', readme_path(@project)
+          = link_to _('Readme'), readme_path(@project)
 
       - if @repository.changelog
         %li
-          = link_to 'Changelog', changelog_path(@project)
+          = link_to _('Changelog'), changelog_path(@project)
 
       - if @repository.license_blob
         %li
@@ -42,36 +42,36 @@
 
       - if @repository.contribution_guide
         %li
-          = link_to 'Contribution guide', contribution_guide_path(@project)
+          = link_to _('Contribution guide'), contribution_guide_path(@project)
 
       - if @repository.gitlab_ci_yml
         %li
-          = link_to 'CI configuration', ci_configuration_path(@project)
+          = link_to _('CI configuration'), ci_configuration_path(@project)
 
       - if current_user && can_push_branch?(@project, @project.default_branch)
         - unless @repository.changelog
           %li.missing
             = link_to add_special_file_path(@project, file_name: 'CHANGELOG') do
-              Add Changelog
+              #{ _('Add Changelog') }
         - unless @repository.license_blob
           %li.missing
             = link_to add_special_file_path(@project, file_name: 'LICENSE') do
-              Add License
+              #{ _('Add License') }
         - unless @repository.contribution_guide
           %li.missing
             = link_to add_special_file_path(@project, file_name: 'CONTRIBUTING.md', commit_message: 'Add contribution guide') do
-              Add Contribution guide
+              #{ _('Add Contribution guide') }
         - unless @repository.gitlab_ci_yml
           %li.missing
             = link_to add_special_file_path(@project, file_name: '.gitlab-ci.yml') do
-              Set up CI
+              #{ _('Set up CI') }
         - if koding_enabled? && @repository.koding_yml.blank?
           %li.missing
-            = link_to 'Set up Koding', add_koding_stack_path(@project)
+            = link_to  _('Set up Koding'), add_koding_stack_path(@project)
         - if @repository.gitlab_ci_yml.blank? && @project.deployment_service.present?
           %li.missing
             = link_to add_special_file_path(@project, file_name: '.gitlab-ci.yml', commit_message: 'Set up auto deploy', branch_name: 'auto-deploy', context: 'autodeploy') do
-              Set up auto deploy
+              #{ _('Set up auto deploy') }
 
   - if @repository.commit
     %div{ class: container_class }
@@ -83,7 +83,7 @@
     .text-warning.center.prepend-top-20
       %p
         = icon("exclamation-triangle fw")
-        Archived project! Repository is read-only
+        #{ _('Archived project! Repository is read-only') }
 
   - view_path = default_project_view
 

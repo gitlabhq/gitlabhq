@@ -1,6 +1,6 @@
 - @no_container = true
 
-- page_title @path.presence || "Files", @ref
+- page_title @path.presence || _("Files"), @ref
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, namespace_project_commits_url(@project.namespace, @project, @ref, rss_url_options), title: "#{@project.name}:#{@ref} commits")
 = render "projects/commits/head"

@@ -4,15 +4,17 @@
       %div{ class: container_class }
         .event-last-push
           .event-last-push-text
-            %span You pushed to
+            %span
+              #{ _('You pushed to') }
             = link_to namespace_project_commits_path(event.project.namespace, event.project, event.ref_name) do
               %strong= event.ref_name
             - if @project && event.project != @project
-              %span at
+              %span
+                #{ s_('at|PushToProject') }
               %strong= link_to_project event.project
-            = clipboard_button(text: event.ref_name, class: 'btn-clipboard btn-transparent', title: 'Copy branch to clipboard')
+            = clipboard_button(text: event.ref_name, class: 'btn-clipboard btn-transparent', title: _('Copy branch to clipboard'))
             #{time_ago_with_tooltip(event.created_at)}
 
           .pull-right
-            = link_to new_mr_path_from_push_event(event), title: "New merge request", class: "btn btn-info btn-sm" do
-              Create merge request
+            = link_to new_mr_path_from_push_event(event), title: _("New merge request"), class: "btn btn-info btn-sm" do
+              #{ _('Create merge request') }

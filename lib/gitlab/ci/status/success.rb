@@ -3,11 +3,11 @@ module Gitlab
     module Status
       class Success < Status::Core
         def text
-          'passed'
+          _('passed')
         end
 
         def label
-          'passed'
+          _('passed')
         end
 
         def icon

@@ -34,7 +34,7 @@ class ProjectsController < Projects::ApplicationController
 
       redirect_to(
         project_path(@project),
-        notice: "Project '#{@project.name}' was successfully created."
+        notice: _("Project '%{project_name}' was successfully created.") % { project_name: @project.name }
       )
     else
       render 'new'
@@ -49,7 +49,7 @@ class ProjectsController < Projects::ApplicationController
 
     respond_to do |format|
       if result[:status] == :success
-        flash[:notice] = "Project '#{@project.name}' was successfully updated."
+        flash[:notice] = _("Project '%{project_name}' was successfully updated.") % { project_name: @project.name }
         format.html do
           redirect_to(edit_project_path(@project))
         end
@@ -76,7 +76,7 @@ class ProjectsController < Projects::ApplicationController
     return access_denied! unless can?(current_user, :remove_fork_project, @project)
 
     if ::Projects::UnlinkForkService.new(@project, current_user).execute
-      flash[:notice] = 'The fork relationship has been removed.'
+      flash[:notice] = _('The fork relationship has been removed.')
     end
   end
 
@@ -97,7 +97,7 @@ class ProjectsController < Projects::ApplicationController
     end
 
     if @project.pending_delete?
-      flash[:alert] = "Project #{@project.name} queued for deletion."
+      flash[:alert] = _("Project #{project_name} queued for deletion.") % { project_name: @project.name }
     end
 
     respond_to do |format|
@@ -117,7 +117,7 @@ class ProjectsController < Projects::ApplicationController
     return access_denied! unless can?(current_user, :remove_project, @project)
 
     ::Projects::DestroyService.new(@project, current_user, {}).async_execute
-    flash[:alert] = "Project '#{@project.name_with_namespace}' will be deleted."
+    flash[:alert] = _("Project '#{project_name}' will be deleted.") % { project_name: @project.name_with_namespace }
 
     redirect_to dashboard_projects_path
   rescue Projects::DestroyService::DestroyError => ex
@@ -156,7 +156,7 @@ class ProjectsController < Projects::ApplicationController
 
     redirect_to(
       project_path(@project),
-      notice: "Housekeeping successfully started"
+      notice: _("Housekeeping successfully started")
     )
   rescue ::Projects::HousekeepingService::LeaseTaken => ex
     redirect_to(
@@ -170,7 +170,7 @@ class ProjectsController < Projects::ApplicationController
 
     redirect_to(
       edit_project_path(@project),
-      notice: "Project export started. A download link will be sent by email."
+      notice: _("Project export started. A download link will be sent by email.")
     )
   end
 
@@ -182,16 +182,16 @@ class ProjectsController < Projects::ApplicationController
     else
       redirect_to(
         edit_project_path(@project),
-        alert: "Project export link has expired. Please generate a new export from your project settings."
+        alert: _("Project export link has expired. Please generate a new export from your project settings.")
       )
     end
   end
 
   def remove_export
     if @project.remove_exports
-      flash[:notice] = "Project export has been deleted."
+      flash[:notice] = _("Project export has been deleted.")
     else
-      flash[:alert] = "Project export could not be deleted."
+      flash[:alert] = _("Project export could not be deleted.")
     end
     redirect_to(edit_project_path(@project))
   end
@@ -202,7 +202,7 @@ class ProjectsController < Projects::ApplicationController
     else
       redirect_to(
         edit_project_path(@project),
-        alert: "Project export could not be deleted."
+        alert: _("Project export could not be deleted.")
       )
     end
   end
@@ -220,7 +220,7 @@ class ProjectsController < Projects::ApplicationController
     branches = BranchesFinder.new(@repository, params).execute.map(&:name)
 
     options = {
-      'Branches' => branches.take(100),
+      _('Branches') => branches.take(100),
     }
 
     unless @repository.tag_count.zero?

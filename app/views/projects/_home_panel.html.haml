@@ -14,7 +14,7 @@
 
       - if forked_from_project = @project.forked_from_project
         %p
-          Forked from
+          #{ _('Forked from') }
           = link_to project_path(forked_from_project) do
             = forked_from_project.namespace.try(:name)
 

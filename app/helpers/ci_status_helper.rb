@@ -35,13 +35,13 @@ module CiStatusHelper
 
     case status
     when 'success'
-      'passed'
+      _('passed')
     when 'success_with_warnings'
-      'passed'
+      _('passed')
     when 'manual'
-      'blocked'
+      _('blocked')
     else
-      status
+      _(status)
     end
   end
 

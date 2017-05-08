@@ -3,20 +3,23 @@
     %table.table#tree-slider{ class: "table_#{@hex_path} tree-table" }
       %thead
         %tr
-          %th Name
+          %th
+            #{ s_('ProjectFileTree|Name') }
           %th.hidden-xs
-            .pull-left Last commit
+            .pull-left
+              #{ _('Last commit') }
             .last-commit.hidden-sm.pull-left
               %i.fa.fa-angle-right
               %small.light
                 = link_to @commit.short_id, namespace_project_commit_path(@project.namespace, @project, @commit), class: "monospace"
-                = clipboard_button(text: @commit.id, title: "Copy commit SHA to clipboard")
+                = clipboard_button(text: @commit.id, title: _("Copy commit SHA to clipboard"))
                 = time_ago_with_tooltip(@commit.committed_date)
                 \-
                 = @commit.full_title
             %small.commit-history-link-spacer &#124;
-            = link_to 'History', namespace_project_commits_path(@project.namespace, @project, @id), class: 'commit-history-link'
-          %th.text-right Last Update
+            = link_to _('History'), namespace_project_commits_path(@project.namespace, @project, @id), class: 'commit-history-link'
+          %th.text-right
+            #{ _('Last Update') }
       - if @path.present?
         %tr.tree-item
           %td.tree-item-file-name
@@ -30,7 +33,7 @@
     = render "projects/tree/readme", readme: tree.readme
 
 - if can_edit_tree?
-  = render 'projects/blob/upload', title: 'Upload New File', placeholder: 'Upload new file', button_title: 'Upload file', form_path: namespace_project_create_blob_path(@project.namespace, @project, @id), method: :post
+  = render 'projects/blob/upload', title: _('Upload New File'), placeholder: _('Upload New File'), button_title: _('Upload file'), form_path: namespace_project_create_blob_path(@project.namespace, @project, @id), method: :post
   = render 'projects/blob/new_dir'
 
 :javascript

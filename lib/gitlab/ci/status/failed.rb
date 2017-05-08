@@ -3,11 +3,11 @@ module Gitlab
     module Status
       class Failed < Status::Core
         def text
-          'failed'
+          _('failed')
         end
 
         def label
-          'failed'
+          _('failed')
         end
 
         def icon
