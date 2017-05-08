@@ -151,7 +151,7 @@ module SharedPaths
     visit profile_preferences_path
   end
 
-  step 'I visit Audit Log page' do
+  step 'I visit Authentication log page' do
     visit audit_log_profile_path
   end
 
