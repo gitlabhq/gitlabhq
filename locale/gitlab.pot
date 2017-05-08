@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-04 19:24-0500\n"
-"PO-Revision-Date: 2017-05-04 19:24-0500\n"
+"POT-Creation-Date: 2017-05-08 18:51+0200\n"
+"PO-Revision-Date: 2017-05-08 18:51+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -18,13 +18,91 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
+msgid "Activity"
+msgstr ""
+
+msgid "Add Changelog"
+msgstr ""
+
+msgid "Add Contribution guide"
+msgstr ""
+
+msgid "Add License"
+msgstr ""
+
+msgid "Add an SSH key to your profile to pull or push via SSH."
+msgstr ""
+
+msgid "Add new directory"
+msgstr ""
+
+msgid "Archived project! Repository is read-only"
+msgstr ""
+
+msgid "Branch"
+msgstr ""
+
+msgid "Branches"
+msgstr ""
+
 msgid "ByAuthor|by"
+msgstr ""
+
+msgid "CI configuration"
+msgstr ""
+
+msgid "Changelog"
+msgstr ""
+
+msgid "Charts"
 msgstr ""
 
 msgid "Commit"
 msgid_plural "Commits"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Commits"
+msgstr ""
+
+msgid "Compare"
+msgstr ""
+
+msgid "Contribution guide"
+msgstr ""
+
+msgid "Contributors"
+msgstr ""
+
+msgid "Copy URL to clipboard"
+msgstr ""
+
+msgid "Copy branch to clipboard"
+msgstr ""
+
+msgid "Copy commit SHA to clipboard"
+msgstr ""
+
+msgid "Create New Directory"
+msgstr ""
+
+msgid "Create directory"
+msgstr ""
+
+msgid "Create empty bare repository"
+msgstr ""
+
+msgid "Create merge request"
+msgstr ""
+
+msgid "Custom notification events"
+msgstr ""
+
+msgid "Custom notification levels are the same as participating levels. With custom notification levels you will also receive notifications for select events. To find out more, check out %{notification_link}."
+msgstr ""
+
+msgid "Cycle Analytics"
+msgstr ""
 
 msgid "Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project."
 msgstr ""
@@ -55,16 +133,73 @@ msgid_plural "Deploys"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Directory name"
+msgstr ""
+
+msgid "Don't show again"
+msgstr ""
+
+msgid "Download"
+msgstr ""
+
+msgid "Download tar"
+msgstr ""
+
+msgid "Download tar.bz2"
+msgstr ""
+
+msgid "Download tar.gz"
+msgstr ""
+
+msgid "Download zip"
+msgstr ""
+
+msgid "Files"
+msgstr ""
+
+msgid "Find by path"
+msgstr ""
+
+msgid "Find file"
+msgstr ""
+
 msgid "FirstPushedBy|First"
 msgstr ""
 
 msgid "FirstPushedBy|pushed by"
 msgstr ""
 
+msgid "Fork"
+msgstr ""
+
+msgid "Fork project"
+msgstr ""
+
+msgid "Forked from"
+msgstr ""
+
+msgid "Forks"
+msgstr ""
+
 msgid "From issue creation until deploy to production"
 msgstr ""
 
 msgid "From merge request merge until deploy to production"
+msgstr ""
+
+msgid "Go to your fork"
+msgstr ""
+
+msgid "Graph"
+msgstr ""
+
+msgid "History"
+msgstr ""
+
+msgid "Home"
+msgstr ""
+
+msgid "Import repository"
 msgstr ""
 
 msgid "Introducing Cycle Analytics"
@@ -74,6 +209,15 @@ msgid "Last %d day"
 msgid_plural "Last %d days"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Last Update"
+msgstr ""
+
+msgid "Last commit"
+msgstr ""
+
+msgid "Leave %{model_name}"
+msgstr ""
 
 msgid "Limited to showing %d event at most"
 msgid_plural "Limited to showing %d events at most"
@@ -88,22 +232,67 @@ msgid_plural "New Issues"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "New branch"
+msgstr ""
+
+msgid "New directory"
+msgstr ""
+
+msgid "New file"
+msgstr ""
+
+msgid "New issue"
+msgstr ""
+
+msgid "New merge request"
+msgstr ""
+
+msgid "New snippet"
+msgstr ""
+
+msgid "New tag"
+msgstr ""
+
+msgid "No repository"
+msgstr ""
+
 msgid "Not available"
 msgstr ""
 
 msgid "Not enough data"
 msgstr ""
 
+msgid "Notification events"
+msgstr ""
+
+msgid "On mention"
+msgstr ""
+
 msgid "OpenedNDaysAgo|Opened"
 msgstr ""
 
+msgid "Participate"
+msgstr ""
+
 msgid "Pipeline Health"
+msgstr ""
+
+msgid "Project access must be granted explicitly to each user."
+msgstr ""
+
+msgid "Project home"
+msgstr ""
+
+msgid "ProjectFileTree|Name"
 msgstr ""
 
 msgid "ProjectLifecycle|Stage"
 msgstr ""
 
 msgid "Read more"
+msgstr ""
+
+msgid "Readme"
 msgstr ""
 
 msgid "Related Commits"
@@ -124,10 +313,55 @@ msgstr ""
 msgid "Related Merged Requests"
 msgstr ""
 
+msgid "Remind later"
+msgstr ""
+
+msgid "Remove project"
+msgstr ""
+
+msgid "Request Access"
+msgstr ""
+
+msgid "Search branches and tags"
+msgstr ""
+
+msgid "Select Archive Format"
+msgstr ""
+
+msgid "Set a password on your account to pull or push via %{protocol}"
+msgstr ""
+
+msgid "Set up CI"
+msgstr ""
+
+msgid "Set up Koding"
+msgstr ""
+
+msgid "Set up auto deploy"
+msgstr ""
+
 msgid "Showing %d event"
 msgid_plural "Showing %d events"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Source code"
+msgstr ""
+
+msgid "Star"
+msgstr ""
+
+msgid "Successful pipeline"
+msgstr ""
+
+msgid "Switch branch/tag"
+msgstr ""
+
+msgid "Tag"
+msgstr ""
+
+msgid "Tags"
+msgstr ""
 
 msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
 msgstr ""
@@ -147,6 +381,15 @@ msgstr ""
 msgid "The production stage shows the total time it takes between creating an issue and deploying the code to production. The data will be automatically added once you have completed the full idea to production cycle."
 msgstr ""
 
+msgid "The project can be cloned by any logged in user."
+msgstr ""
+
+msgid "The project can be cloned without any authentication."
+msgstr ""
+
+msgid "The repository for this project does not exist."
+msgstr ""
+
 msgid "The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request."
 msgstr ""
 
@@ -162,6 +405,9 @@ msgstr ""
 msgid "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."
 msgstr ""
 
+msgid "This means you can not push code until you create an empty repository or import existing one."
+msgstr ""
+
 msgid "Time before an issue gets scheduled"
 msgstr ""
 
@@ -172,6 +418,87 @@ msgid "Time between merge request creation and merge/close"
 msgstr ""
 
 msgid "Time until first merge request"
+msgstr ""
+
+msgid "Timeago|%s days ago"
+msgstr ""
+
+msgid "Timeago|%s minutes ago"
+msgstr ""
+
+msgid "Timeago|%s months ago"
+msgstr ""
+
+msgid "Timeago|%s weeks ago"
+msgstr ""
+
+msgid "Timeago|%s years ago"
+msgstr ""
+
+msgid "Timeago|a day ago"
+msgstr ""
+
+msgid "Timeago|a month ago"
+msgstr ""
+
+msgid "Timeago|a week ago"
+msgstr ""
+
+msgid "Timeago|a while"
+msgstr ""
+
+msgid "Timeago|a year ago"
+msgstr ""
+
+msgid "Timeago|about %s hours ago"
+msgstr ""
+
+msgid "Timeago|about a minute ago"
+msgstr ""
+
+msgid "Timeago|about an hour ago"
+msgstr ""
+
+msgid "Timeago|in %s days"
+msgstr ""
+
+msgid "Timeago|in %s hours"
+msgstr ""
+
+msgid "Timeago|in %s minutes"
+msgstr ""
+
+msgid "Timeago|in %s months"
+msgstr ""
+
+msgid "Timeago|in %s seconds"
+msgstr ""
+
+msgid "Timeago|in %s weeks"
+msgstr ""
+
+msgid "Timeago|in %s years"
+msgstr ""
+
+msgid "Timeago|in 1 day"
+msgstr ""
+
+msgid "Timeago|in 1 hour"
+msgstr ""
+
+msgid "Timeago|in 1 minute"
+msgstr ""
+
+msgid "Timeago|in 1 month"
+msgstr ""
+
+msgid "Timeago|in 1 week"
+msgstr ""
+
+msgid "Timeago|in 1 year"
+msgstr ""
+
+msgid "Timeago|less than a minute ago"
 msgstr ""
 
 msgid "Time|hr"
@@ -193,16 +520,109 @@ msgstr ""
 msgid "Total test time for all commits/merges"
 msgstr ""
 
+msgid "Unstar"
+msgstr ""
+
+msgid "Upload New File"
+msgstr ""
+
+msgid "Upload file"
+msgstr ""
+
+msgid "Use your global notification setting"
+msgstr ""
+
 msgid "Want to see the data? Please ask an administrator for access."
 msgstr ""
 
 msgid "We don't have enough data to show this stage."
 msgstr ""
 
+msgid "Withdraw Access Request"
+msgstr ""
+
+msgid "You can only add files when you are on a branch"
+msgstr ""
+
+msgid "You must sign in to star a project"
+msgstr ""
+
 msgid "You need permission."
+msgstr ""
+
+msgid "You pushed to"
+msgstr ""
+
+msgid "You will not get any notifications via email"
+msgstr ""
+
+msgid "You will only receive notifications for the events you choose"
+msgstr ""
+
+msgid "You will only receive notifications for threads you have participated in"
+msgstr ""
+
+msgid "You will receive notifications for any activity"
+msgstr ""
+
+msgid "You will receive notifications only for comments in which you were @mentioned"
+msgstr ""
+
+msgid "You won't be able to pull or push project code via %{protocol} until you %{set_password_link} on your account"
+msgstr ""
+
+msgid "You won't be able to pull or push project code via SSH until you %{add_ssh_key_link} to your profile"
+msgstr ""
+
+msgid "add an SSH key"
+msgstr ""
+
+msgid "at|PushToProject"
+msgstr ""
+
+msgid "blocked"
+msgstr ""
+
+msgid "canceled"
+msgstr ""
+
+msgid "created"
 msgstr ""
 
 msgid "day"
 msgid_plural "days"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "failed"
+msgstr ""
+
+msgid "manual"
+msgstr ""
+
+msgid "manual action"
+msgstr ""
+
+msgid "notification emails"
+msgstr ""
+
+msgid "passed"
+msgstr ""
+
+msgid "passed with warnings"
+msgstr ""
+
+msgid "pending"
+msgstr ""
+
+msgid "running"
+msgstr ""
+
+msgid "set a password"
+msgstr ""
+
+msgid "skipped"
+msgstr ""
+
+msgid "waiting for manual action"
+msgstr ""
