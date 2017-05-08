@@ -48,8 +48,8 @@ import _ from 'underscore';
   });
 
   function applyScrollNavClass() {
-    $('.navbar-border').css("opacity", $(window).scrollTop() / 40);
+    $('.navbar-border').css('opacity', $(window).scrollTop() / 40);
   }
 
-  $(window).scroll( _.throttle(applyScrollNavClass, 100));
+  $(window).scroll(_.throttle(applyScrollNavClass, 100));
 }).call(window);

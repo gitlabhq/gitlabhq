@@ -32,7 +32,8 @@ header {
     border-bottom: 1px solid $border-color;
     position: fixed;
     top: 0;
-    width: 100%;
+    left: 0;
+    right: 0;
 
     @media (max-width: $screen-xs-min) {
       padding: 0 16px;

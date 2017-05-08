@@ -33,7 +33,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click link "Merged"' do
-    click_link "Merged"
+    find('#state-merged').trigger('click')
   end
 
   step 'I click link "Closed"' do
