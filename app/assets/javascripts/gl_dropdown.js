@@ -2,7 +2,6 @@
 /* global fuzzaldrinPlus */
 
 var GitLabDropdown, GitLabDropdownFilter, GitLabDropdownRemote,
-  bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; },
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i += 1) { if (i in this && this[i] === item) return i; } return -1; };
 
 GitLabDropdownFilter = (function() {
@@ -213,10 +212,10 @@ GitLabDropdown = (function() {
     var searchFields, selector, self;
     this.el = el1;
     this.options = options;
-    this.updateLabel = bind(this.updateLabel, this);
-    this.hidden = bind(this.hidden, this);
-    this.opened = bind(this.opened, this);
-    this.shouldPropagate = bind(this.shouldPropagate, this);
+    this.updateLabel = this.updateLabel.bind(this);
+    this.hidden = this.hidden.bind(this);
+    this.opened = this.opened.bind(this);
+    this.shouldPropagate = this.shouldPropagate.bind(this);
     self = this;
     selector = $(this.el).data("target");
     this.dropdown = selector != null ? $(selector) : $(this.el).parent();
