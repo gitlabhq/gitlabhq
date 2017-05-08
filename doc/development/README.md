@@ -48,6 +48,7 @@
 - [What requires downtime?](what_requires_downtime.md)
 - [Adding database indexes](adding_database_indexes.md)
 - [Post Deployment Migrations](post_deployment_migrations.md)
+- [Foreign Keys & Associations](foreign_keys.md)
 
 ## Compliance
 
