@@ -67,8 +67,6 @@ describe 'Comments on personal snippets', :js, feature: true do
   end
 
   context 'when editing a note' do
-    edited_text = find('.edited-text')
-
     it 'changes the text' do
       page.within("#notes-list li#note_#{snippet_notes[0].id}") do
         click_on 'Edit comment'
