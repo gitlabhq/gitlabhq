@@ -57,6 +57,16 @@ feature 'Issue Sidebar', feature: true do
         expect(page.find('.dropdown-menu-user-link.is-active')).to have_content(user.name)
       end
     end
+
+    context 'single assignee' do
+      it 'hides assignee after selection' do
+        page.within('.dropdown-menu-user') do
+          click_link user.name
+        end
+
+        expect(page.find('.block.assignee .selectbox', visible: false)).not_to be_visible
+      end
+    end
   end
 
   context 'as a allowed user' do

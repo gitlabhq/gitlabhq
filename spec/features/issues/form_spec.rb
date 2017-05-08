@@ -23,6 +23,22 @@ describe 'New/edit issue', feature: true, js: true do
       visit new_namespace_project_issue_path(project.namespace, project)
     end
 
+    describe 'single assignee' do
+      it 'hides assignee after selection' do
+        click_button 'Unassigned'
+
+        page.within('.dropdown-menu-user') do
+          click_link user.name
+        end
+
+        # TODO: Figure out a better way to wait for dropdown CSS hide
+        # animation to complete
+        sleep 0.3
+
+        expect(page.find('.dropdown-menu-user', visible: false)).not_to be_visible
+      end
+    end
+
     describe 'multiple assignees' do
       before do
         click_button 'Unassigned'
