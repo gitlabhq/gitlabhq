@@ -1,0 +1,49 @@
+- if issuable.instance_of?(Issue)
+  #js-vue-sidebar-assignees{ data: { field: "#{issuable.to_ability_name}[assignee_ids]" } }
+- else
+  .sidebar-collapsed-icon.sidebar-collapsed-user{ data: { toggle: "tooltip", placement: "left", container: "body" }, title: (issuable.assignee.name if issuable.assignee) }
+    - if issuable.assignee
+      = link_to_member(@project, issuable.assignee, size: 24)
+    - else
+      = icon('user', 'aria-hidden': 'true')
+  .title.hide-collapsed
+    Assignee
+    = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')
+    - if can_edit_issuable
+      = link_to 'Edit', '#', class: 'edit-link pull-right'
+  .value.hide-collapsed
+    - if issuable.assignee
+      = link_to_member(@project, issuable.assignee, size: 32, extra_class: 'bold') do
+        - if issuable.instance_of?(MergeRequest) && !issuable.can_be_merged_by?(issuable.assignee)
+          %span.pull-right.cannot-be-merged{ data: { toggle: 'tooltip', placement: 'left' }, title: 'Not allowed to merge' }
+            = icon('exclamation-triangle', 'aria-hidden': 'true')
+        %span.username
+          = issuable.assignee.to_reference
+    - else
+      %span.assign-yourself.no-value
+        No assignee
+        - if can_edit_issuable
+          \-
+          %a.js-assign-yourself{ href: '#' }
+            assign yourself
+
+.selectbox.hide-collapsed
+  - issuable.assignees.each do |assignee|
+    = hidden_field_tag "#{issuable.to_ability_name}[assignee_ids][]", assignee.id, id: nil
+
+  - options = { toggle_class: 'js-user-search js-author-search', title: 'Assign to', filter: true, dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author', placeholder: 'Search users', data: { first_user: (current_user.username if current_user), current_user: true, project_id: (@project.id if @project), author_id: issuable.author_id, field_name: "#{issuable.to_ability_name}[assignee_ids][]", issue_update: issuable_json_path(issuable), ability_name: issuable.to_ability_name, null_user: true } }
+
+  - if issuable.instance_of?(Issue)
+    - if issuable.assignees.length == 0
+      = hidden_field_tag "#{issuable.to_ability_name}[assignee_ids][]", 0, id: nil
+    - title = 'Select assignee'
+    - options[:toggle_class] += ' js-multiselect js-save-user-data'
+    - options[:data][:field_name] = "#{issuable.to_ability_name}[assignee_ids][]"
+    - options[:data][:multi_select] = true
+    - options[:data]['dropdown-title'] = title
+    - options[:data]['dropdown-header'] = 'Assignee'
+    - options[:data]['max-select'] = 1
+  - else
+    - title = 'Select assignee'
+
+  = dropdown_tag(title, options: options)
