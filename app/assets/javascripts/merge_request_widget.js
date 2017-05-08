@@ -7,8 +7,6 @@ import './smart_interval';
 import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
 
 ((global) => {
-  var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i += 1) { if (i in this && this[i] === item) return i; } return -1; };
-
   const DEPLOYMENT_TEMPLATE = `<div class="mr-widget-heading" id="<%- id %>">
        <div class="ci_widget ci-success">
          <%= ci_success_icon %>
@@ -258,7 +256,7 @@ import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
       let stateClass = 'btn-danger';
       if (!hasCi) {
         stateClass = 'btn-create';
-      } else if (indexOf.call(allowed_states, state) !== -1) {
+      } else if (allowed_states.indexOf(state) !== -1) {
         switch (state) {
           case "failed":
           case "canceled":
