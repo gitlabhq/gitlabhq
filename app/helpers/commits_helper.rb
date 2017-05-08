@@ -100,17 +100,15 @@ module CommitsHelper
   end
 
   def link_to_browse_code(project, commit)
+    return unless current_controller?(:projects, :commits)
+
     if @path.blank?
       return link_to(
         "Browse Files",
         namespace_project_tree_path(project.namespace, project, commit),
         class: "btn btn-default"
       )
-    end
-
-    return unless current_controller?(:projects, :commits)
-
-    if @repo.blob_at(commit.id, @path)
+    elsif @repo.blob_at(commit.id, @path)
       return link_to(
         "Browse File",
         namespace_project_blob_path(project.namespace, project,
