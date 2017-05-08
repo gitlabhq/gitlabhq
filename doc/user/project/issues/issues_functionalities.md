@@ -6,7 +6,7 @@ Please read through the [GitLab Issue Documentation](index.md) for an overview o
 
 The image bellow illustrates how an issue looks like:
 
-![Issue view](img/issues_main_view_numbered.jpg)
+![Issue view](img/issues_main_view_numbered.png)
 
 You can find all the information on that issue on one screen.
 
@@ -41,6 +41,7 @@ it's reassigned to someone else to take it from there.
 if a user is not member of that project, it can only be
 assigned to them if they created the issue themselves.
 
+<<<<<<< HEAD
 ##### 3.1. Multiple Assignees (EES/EEP)
 
 Issue Weights are only available in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/).
@@ -56,6 +57,8 @@ to an issue.
 Multiple Assignees was [introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/1904)
 in [GitLab Enterprise Edition 9.2](https://about.gitlab.com/2017/05/22/gitlab-9-2-released/#multiple-assignees-for-issues).
 
+=======
+>>>>>>> 6386e42... Merge branch 'docs/new-topic-issues' into 'master'
 #### 4. Milestone
 
 - Select a [milestone](../milestones/index.md) to attribute that issue to.
@@ -147,7 +150,7 @@ or in the issue thread.
 
 #### 15. Award emoji
 
-- Award an emoji to that issue. 
+- Award an emoji to that issue.
 
 > **Tip:**
 Posting "+1" as comments in threads spam all
@@ -168,9 +171,17 @@ Once you wrote your comment, you can either:
 - Click "Start discussion": start a thread within that issue's thread to discuss specific points.
 - Click "Comment and close issue": post your comment and close that issue in one click.
 
+<<<<<<< HEAD
 #### 18. New Merge Request
 
 - Create a new merge request (with a new source branch named after the issue) in one action.
 The merge request will automatically close that issue as soon as merged.
 - Optionally, you can just create a [new branch](../repository/web_editor.md#create-a-new-branch-from-an-issue)
 named after that issue.
+=======
+#### 18. New branch
+
+- [New branch](../repository/web_editor.md#create-a-new-branch-from-an-issue):
+create a new branch, followed by a new merge request which will automatically close that
+issue as soon as that merge request is merged.
+>>>>>>> 6386e42... Merge branch 'docs/new-topic-issues' into 'master'
