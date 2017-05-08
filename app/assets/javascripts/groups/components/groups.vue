@@ -2,6 +2,7 @@
 import GroupsStore from '../stores/groups_store';
 import GroupsService from '../services/groups_service';
 import GroupItem from '../components/group_item.vue';
+import eventHub from '../event_hub';
 
 export default {
   components: {
@@ -14,7 +15,7 @@ export default {
     return {
       store,
       state: store.state,
-    }
+    };
   },
 
   created() {
@@ -22,6 +23,8 @@ export default {
 
     this.service = new GroupsService(appEl.dataset.endpoint);
     this.fetchGroups();
+
+    eventHub.$on('toggleSubGroups', this.toggleSubGroups);
   },
 
   methods: {
@@ -34,12 +37,21 @@ export default {
           // TODO: Handler error
         });
     },
-  }
+    toggleSubGroups(group) {
+      GroupsStore.toggleSubGroups(group);
+    },
+  },
 };
 </script>
 
 <template>
   <table class="table table-bordered">
-    <group-item :group="group" v-for="group in state.groups" />
+    <template v-for="group in state.groups">
+      <tr is="group-item" :group="group" />
+      <tr v-if="group.isOpen">
+        <td>sub groups for {{group.name}}</td>
+        <td></td>
+      </tr>
+    </template>
   </table>
 </template>
