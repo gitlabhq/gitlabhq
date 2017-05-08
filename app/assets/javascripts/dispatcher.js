@@ -38,6 +38,7 @@
 import Issue from './issue';
 
 import BindInOut from './behaviors/bind_in_out';
+import DeleteModal from './branches/branches_delete_modal';
 import Group from './group';
 import GroupName from './group_name';
 import GroupsList from './groups_list';
@@ -180,6 +181,7 @@ const ShortcutsBlob = require('./shortcuts_blob');
           break;
         case 'projects:branches:index':
           gl.AjaxLoadingSpinner.init();
+          new DeleteModal();
           break;
         case 'projects:issues:new':
         case 'projects:issues:edit':

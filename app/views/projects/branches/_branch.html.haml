@@ -30,13 +30,34 @@
       = render 'projects/buttons/download', project: @project, ref: branch.name, pipeline: @refs_pipelines[branch.name]
 
       - if can?(current_user, :push_code, @project)
-        = link_to namespace_project_branch_path(@project.namespace, @project, branch.name),
-          class: "btn btn-remove remove-row js-ajax-loading-spinner #{can_remove_branch?(@project, branch.name) ? '' : 'disabled'}",
-          method: :delete,
-          data: { confirm: "Deleting the '#{branch.name}' branch cannot be undone. Are you sure?" },
-          remote: true,
-          "aria-label" => "Delete branch" do
-          = icon("trash-o")
+        - if branch.name == @project.repository.root_ref
+          %button{ class: "btn btn-remove remove-row js-ajax-loading-spinner has-tooltip disabled",
+            disabled: true,
+            title: "The default branch cannot be deleted" }
+            = icon("trash-o")
+        - elsif protected_branch?(@project, branch)
+          - if can?(current_user, :delete_protected_branch, @project)
+            %button{ class: "btn btn-remove remove-row js-ajax-loading-spinner has-tooltip",
+              title: "Delete protected branch",
+              data: { toggle: "modal",
+                target: "#modal-delete-branch",
+                delete_path: namespace_project_branch_path(@project.namespace, @project, branch.name),
+                branch_name: branch.name } }
+              = icon("trash-o")
+          - else
+            %button{ class: "btn btn-remove remove-row js-ajax-loading-spinner has-tooltip disabled",
+              disabled: true,
+              title: "Only a project master or owner can delete a protected branch" }
+              = icon("trash-o")
+        - else
+          = link_to namespace_project_branch_path(@project.namespace, @project, branch.name),
+            class: "btn btn-remove remove-row js-ajax-loading-spinner has-tooltip",
+            title: "Delete branch",
+            method: :delete,
+            data: { confirm: "Deleting the '#{branch.name}' branch cannot be undone. Are you sure?" },
+            remote: true,
+            "aria-label" => "Delete branch" do
+            = icon("trash-o")
 
     - if branch.name != @repository.root_ref
       .divergence-graph{ title: "#{number_commits_ahead} commits ahead, #{number_commits_behind} commits behind #{@repository.root_ref}" }
