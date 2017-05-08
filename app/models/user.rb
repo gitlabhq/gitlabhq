@@ -1019,6 +1019,15 @@ class User < ActiveRecord::Base
     devise_mailer.send(notification, self, *args).deliver_later
   end
 
+  # This works around a bug in Devise 4.2.0 that erroneously causes a user to
+  # be considered active in MySQL specs due to a sub-second comparison
+  # issue. For more details, see: https://gitlab.com/gitlab-org/gitlab-ee/issues/2362#note_29004709
+  def confirmation_period_valid?
+    return false if self.class.allow_unconfirmed_access_for == 0.days
+
+    super
+  end
+
   def ensure_external_user_rights
     return unless external?
 
