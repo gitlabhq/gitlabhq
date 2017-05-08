@@ -5,6 +5,6 @@
   - if defined?(f) && f
     = f.text_area attr, class: classes, placeholder: placeholder, data: { supports_slash_commands: supports_slash_commands }
   - else
-    = text_area_tag attr, nil, class: classes, placeholder: placeholder
+    = text_area_tag attr, text, class: classes, placeholder: placeholder
   %a.zen-control.zen-control-leave.js-zen-leave{ href: "#" }
     = icon('compress')
