@@ -29,9 +29,37 @@ describe GroupUrlConstrainer, lib: true do
 
       it { expect(subject.matches?(request)).to be_falsey }
     end
+
+    context 'when the request matches a redirect route' do
+      context 'for a root group' do
+        let!(:redirect_route) { group.redirect_routes.create!(path: 'gitlabb') }
+
+        context 'and is a GET request' do
+          let(:request) { build_request(redirect_route.path) }
+
+          it { expect(subject.matches?(request)).to be_truthy }
+        end
+
+        context 'and is NOT a GET request' do
+          let(:request) { build_request(redirect_route.path, 'POST') }
+
+          it { expect(subject.matches?(request)).to be_falsey }
+        end
+      end
+
+      context 'for a nested group' do
+        let!(:nested_group) { create(:group, path: 'nested', parent: group) }
+        let!(:redirect_route) { nested_group.redirect_routes.create!(path: 'gitlabb/nested') }
+        let(:request) { build_request(redirect_route.path) }
+
+        it { expect(subject.matches?(request)).to be_truthy }
+      end
+    end
   end
 
-  def build_request(path)
-    double(:request, params: { id: path })
+  def build_request(path, method = 'GET')
+    double(:request,
+      'get?': (method == 'GET'),
+      params: { id: path })
   end
 end

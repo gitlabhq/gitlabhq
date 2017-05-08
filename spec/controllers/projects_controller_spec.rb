@@ -206,6 +206,7 @@ describe ProjectsController do
 
           expect(assigns(:project)).to eq(public_project)
           expect(response).to redirect_to("/#{public_project.full_path}")
+          expect(controller).not_to set_flash[:notice]
         end
       end
     end
@@ -239,19 +240,33 @@ describe ProjectsController do
         expect(response).to redirect_to(namespace_project_path)
       end
     end
+
+    context 'when requesting a redirected path' do
+      let!(:redirect_route) { public_project.redirect_routes.create!(path: "foo/bar") }
+
+      it 'redirects to the canonical path' do
+        get :show, namespace_id: 'foo', id: 'bar'
+
+        expect(response).to redirect_to(public_project)
+        expect(controller).to set_flash[:notice].to(/moved/)
+      end
+    end
   end
 
   describe "#update" do
     render_views
 
     let(:admin) { create(:admin) }
+    let(:project) { create(:project, :repository) }
+    let(:new_path) { 'renamed_path' }
+    let(:project_params) { { path: new_path } }
+
+    before do
+      sign_in(admin)
+    end
 
     it "sets the repository to the right path after a rename" do
-      project = create(:project, :repository)
-      new_path = 'renamed_path'
-      project_params = { path: new_path }
       controller.instance_variable_set(:@project, project)
-      sign_in(admin)
 
       put :update,
           namespace_id: project.namespace,
@@ -261,6 +276,34 @@ describe ProjectsController do
       expect(project.repository.path).to include(new_path)
       expect(assigns(:repository).path).to eq(project.repository.path)
       expect(response).to have_http_status(302)
+    end
+
+    context 'when requesting the canonical path' do
+      it "is case-insensitive" do
+        controller.instance_variable_set(:@project, project)
+
+        put :update,
+            namespace_id: 'FOo',
+            id: 'baR',
+            project: project_params
+
+        expect(project.repository.path).to include(new_path)
+        expect(assigns(:repository).path).to eq(project.repository.path)
+        expect(response).to have_http_status(302)
+      end
+    end
+
+    context 'when requesting a redirected path' do
+      let!(:redirect_route) { project.redirect_routes.create!(path: "foo/bar") }
+
+      it 'returns not found' do
+        put :update,
+            namespace_id: 'foo',
+            id: 'bar',
+            project: project_params
+
+        expect(response).to have_http_status(404)
+      end
     end
   end
 
@@ -295,6 +338,31 @@ describe ProjectsController do
         delete :destroy, namespace_id: fork_project.namespace, id: fork_project
 
         expect(merge_request.reload.state).to eq('closed')
+      end
+    end
+
+    context 'when requesting the canonical path' do
+      it "is case-insensitive" do
+        controller.instance_variable_set(:@project, project)
+        sign_in(admin)
+
+        orig_id = project.id
+        delete :destroy, namespace_id: project.namespace, id: project.path.upcase
+
+        expect { Project.find(orig_id) }.to raise_error(ActiveRecord::RecordNotFound)
+        expect(response).to have_http_status(302)
+        expect(response).to redirect_to(dashboard_projects_path)
+      end
+    end
+
+    context 'when requesting a redirected path' do
+      let!(:redirect_route) { project.redirect_routes.create!(path: "foo/bar") }
+
+      it 'returns not found' do
+        sign_in(admin)
+        delete :destroy, namespace_id: 'foo', id: 'bar'
+
+        expect(response).to have_http_status(404)
       end
     end
   end
@@ -417,6 +485,17 @@ describe ProjectsController do
       expect(parsed_body["Branches"]).to include("master")
       expect(parsed_body["Tags"]).to include("v1.0.0")
       expect(parsed_body["Commits"]).to include("123456")
+    end
+
+    context 'when requesting a redirected path' do
+      let!(:redirect_route) { public_project.redirect_routes.create!(path: "foo/bar") }
+
+      it 'redirects to the canonical path' do
+        get :refs, namespace_id: 'foo', id: 'bar'
+
+        expect(response).to redirect_to(refs_namespace_project_path(namespace_id: public_project.namespace, id: public_project))
+        expect(controller).to set_flash[:notice].to(/moved/)
+      end
     end
   end
 

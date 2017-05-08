@@ -6,6 +6,6 @@ class ProjectUrlConstrainer
 
     return false unless DynamicPathValidator.valid?(full_path)
 
-    Project.find_by_full_path(full_path).present?
+    Project.find_by_full_path(full_path, follow_redirects: request.get?).present?
   end
 end

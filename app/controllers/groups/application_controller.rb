@@ -1,4 +1,6 @@
 class Groups::ApplicationController < ApplicationController
+  include RoutableActions
+
   layout 'group'
 
   skip_before_action :authenticate_user!
@@ -7,27 +9,15 @@ class Groups::ApplicationController < ApplicationController
   private
 
   def group
-    unless @group
-      id = params[:group_id] || params[:id]
-      @group = Group.find_by_full_path(id)
-      @group_merge_requests = MergeRequestsFinder.new(current_user, group_id: @group.id).execute
-
-      unless @group && can?(current_user, :read_group, @group)
-        @group = nil
-
-        if current_user.nil?
-          authenticate_user!
-        else
-          render_404
-        end
-      end
-    end
-
-    @group
+    @group ||= find_routable!(Group, params[:group_id] || params[:id])
   end
 
   def group_projects
     @projects ||= GroupProjectsFinder.new(group: group, current_user: current_user).execute
+  end
+
+  def group_merge_requests
+    @group_merge_requests = MergeRequestsFinder.new(current_user, group_id: @group.id).execute
   end
 
   def authorize_admin_group!
