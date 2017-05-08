@@ -61,8 +61,9 @@ The following documentation is for the [internal CI API](ci/README.md):
 
 ## Authentication
 
-All API requests require authentication via a session cookie or token. There are
-three types of tokens available: private tokens, OAuth 2 tokens, and personal
+Most API requests require authentication via a session cookie or token. For those cases where it is not required, this will be mentioned in the documentation 
+for each individual endpoint. For example, the [`/projects/:id` endpoint](projects.md). 
+There are three types of tokens available: private tokens, OAuth 2 tokens, and personal
 access tokens.
 
 If authentication information is invalid or omitted, an error message will be
