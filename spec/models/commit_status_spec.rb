@@ -263,6 +263,17 @@ describe CommitStatus, :models do
         expect(described_class.all.status).to eq 'success'
       end
     end
+
+    context 'when using a scope to select latest statuses' do
+      before do
+        create_status(name: 'test', status: 'failed')
+        create_status(allow_failure: true, name: 'test', status: 'failed')
+      end
+
+      it 'returns status according to the scope' do
+        expect(described_class.latest.status).to eq 'success'
+      end
+    end
   end
 
   describe '#before_sha' do
