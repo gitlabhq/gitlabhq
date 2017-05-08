@@ -13,7 +13,6 @@ class AddForeignKeyToCiVariables < ActiveRecord::Migration
         FROM projects
         WHERE projects.id = ci_variables.project_id
       )
-      OR ci_variables.project_id IS NULL
     SQL
 
     add_concurrent_foreign_key(:ci_variables, :projects, column: :project_id)
