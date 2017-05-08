@@ -211,6 +211,17 @@ describe License do
       allow(described_class).to receive(:last).and_return(license)
     end
 
+    describe '.features_for_plan' do
+      it 'returns features for given plan' do
+        expect(described_class.features_for_plan('premium'))
+          .to include({ 'GitLab_DeployBoard' => 1, 'GitLab_FileLocks' => 1 })
+      end
+
+      it 'returns empty Hash if no features for given plan' do
+        expect(described_class.features_for_plan('starter')).to eq({})
+      end
+    end
+
     describe ".current" do
       context "when there is no license" do
         let!(:license) { nil }
@@ -317,6 +328,15 @@ describe License do
           expect(license.add_ons['custom-domain']).to eq(2)
         end
       end
+
+      context 'with extra features mapped by plan' do
+        it 'returns all available add-ons and extra features' do
+          license = build_license_with_add_ons({ 'support' => 1 }, plan: 'premium')
+          eep_features = License::EEP_FEATURES.reduce({}, :merge).keys
+
+          expect(license.add_ons.keys).to include('support', *eep_features)
+        end
+      end
     end
 
     describe '#add_on?' do
@@ -339,8 +359,8 @@ describe License do
       end
     end
 
-    def build_license_with_add_ons(add_ons)
-      gl_license = build(:gitlab_license, restrictions: { add_ons: add_ons })
+    def build_license_with_add_ons(add_ons, plan: nil)
+      gl_license = build(:gitlab_license, restrictions: { add_ons: add_ons, plan: plan })
       build(:license, data: gl_license.export)
     end
   end
