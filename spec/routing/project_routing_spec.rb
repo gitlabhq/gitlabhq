@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'project routing' do
   before do
     allow(Project).to receive(:find_by_full_path).and_return(false)
-    allow(Project).to receive(:find_by_full_path).with('gitlab/gitlabhq').and_return(true)
+    allow(Project).to receive(:find_by_full_path).with('gitlab/gitlabhq', any_args).and_return(true)
   end
 
   # Shared examples for a resource inside a Project
@@ -93,13 +93,13 @@ describe 'project routing' do
       end
 
       context 'name with dot' do
-        before { allow(Project).to receive(:find_by_full_path).with('gitlab/gitlabhq.keys').and_return(true) }
+        before { allow(Project).to receive(:find_by_full_path).with('gitlab/gitlabhq.keys', any_args).and_return(true) }
 
         it { expect(get('/gitlab/gitlabhq.keys')).to route_to('projects#show', namespace_id: 'gitlab', id: 'gitlabhq.keys') }
       end
 
       context 'with nested group' do
-        before { allow(Project).to receive(:find_by_full_path).with('gitlab/subgroup/gitlabhq').and_return(true) }
+        before { allow(Project).to receive(:find_by_full_path).with('gitlab/subgroup/gitlabhq', any_args).and_return(true) }
 
         it { expect(get('/gitlab/subgroup/gitlabhq')).to route_to('projects#show', namespace_id: 'gitlab/subgroup', id: 'gitlabhq') }
       end

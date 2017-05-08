@@ -873,6 +873,65 @@ describe User, models: true do
     end
   end
 
+  describe '.find_by_full_path' do
+    let!(:user) { create(:user) }
+
+    context 'with a route matching the given path' do
+      let!(:route) { user.namespace.route }
+
+      it 'returns the user' do
+        expect(User.find_by_full_path(route.path)).to eq(user)
+      end
+
+      it 'is case-insensitive' do
+        expect(User.find_by_full_path(route.path.upcase)).to eq(user)
+        expect(User.find_by_full_path(route.path.downcase)).to eq(user)
+      end
+    end
+
+    context 'with a redirect route matching the given path' do
+      let!(:redirect_route) { user.namespace.redirect_routes.create(path: 'foo') }
+
+      context 'without the follow_redirects option' do
+        it 'returns nil' do
+          expect(User.find_by_full_path(redirect_route.path)).to eq(nil)
+        end
+      end
+
+      context 'with the follow_redirects option set to true' do
+        it 'returns the user' do
+          expect(User.find_by_full_path(redirect_route.path, follow_redirects: true)).to eq(user)
+        end
+
+        it 'is case-insensitive' do
+          expect(User.find_by_full_path(redirect_route.path.upcase, follow_redirects: true)).to eq(user)
+          expect(User.find_by_full_path(redirect_route.path.downcase, follow_redirects: true)).to eq(user)
+        end
+      end
+    end
+
+    context 'without a route or a redirect route matching the given path' do
+      context 'without the follow_redirects option' do
+        it 'returns nil' do
+          expect(User.find_by_full_path('unknown')).to eq(nil)
+        end
+      end
+      context 'with the follow_redirects option set to true' do
+        it 'returns nil' do
+          expect(User.find_by_full_path('unknown', follow_redirects: true)).to eq(nil)
+        end
+      end
+    end
+
+    context 'with a group route matching the given path' do
+      let!(:group) { create(:group, path: 'group_path') }
+
+      it 'returns nil' do
+        expect(User.find_by_full_path('group_path')).to eq(nil)
+      end
+    end
+  end
+
   describe 'all_ssh_keys' do
     it { is_expected.to have_many(:keys).dependent(:destroy) }
 

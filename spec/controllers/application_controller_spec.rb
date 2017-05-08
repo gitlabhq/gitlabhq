@@ -106,10 +106,9 @@ describe ApplicationController do
       controller.send(:route_not_found)
     end
 
-    it 'does redirect to login page if not authenticated' do
+    it 'does redirect to login page via authenticate_user! if not authenticated' do
       allow(controller).to receive(:current_user).and_return(nil)
-      expect(controller).to receive(:redirect_to)
-      expect(controller).to receive(:new_user_session_path)
+      expect(controller).to receive(:authenticate_user!)
       controller.send(:route_not_found)
     end
   end

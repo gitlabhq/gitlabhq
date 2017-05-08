@@ -353,6 +353,11 @@ class User < ActiveRecord::Base
       find_by(id: Key.unscoped.select(:user_id).where(id: key_id))
     end
 
+    def find_by_full_path(path, follow_redirects: false)
+      namespace = Namespace.find_by_full_path(path, follow_redirects: follow_redirects)
+      namespace&.owner
+    end
+
     def non_ldap
       joins('LEFT JOIN identities ON identities.user_id = users.id')
         .where('identities.provider IS NULL OR identities.provider NOT LIKE ?', 'ldap%')
@@ -378,6 +383,10 @@ class User < ActiveRecord::Base
         u.name = 'Ghost User'
       end
     end
+  end
+
+  def full_path
+    username
   end
 
   def self.internal_attributes
