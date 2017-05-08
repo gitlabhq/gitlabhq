@@ -29,6 +29,33 @@ browser and you will not have access to certain APIs, such as
 which will have to be stubbed.
 
 ### Writing tests
+
+When writing describe test blocks to test specific functions/methods,
+please use the method name as the describe block name.
+
+```javascript
+// Good
+describe('methodName', () => {
+  it('passes', () => {
+    expect(true).toEqual(true);
+  });
+});
+
+// Bad
+describe('#methodName', () => {
+  it('passes', () => {
+    expect(true).toEqual(true);
+  });
+});
+
+// Bad
+describe('.methodName', () => {
+  it('passes', () => {
+    expect(true).toEqual(true);
+  });
+});
+```
+
 ### Vue.js unit tests
 See this [section][vue-test].
 
