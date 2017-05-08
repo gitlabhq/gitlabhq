@@ -2,6 +2,8 @@
 /* global timeago */
 /* global dateFormat */
 
+import { lang, s__ } from '../../locale';
+
 window.timeago = require('timeago.js');
 window.dateFormat = require('vendor/date.format');
 
@@ -49,24 +51,24 @@ window.dateFormat = require('vendor/date.format');
       if (!timeagoInstance) {
         locale = function(number, index) {
           return [
-            ['less than a minute ago', 'a while'],
-            ['less than a minute ago', 'in %s seconds'],
-            ['about a minute ago', 'in 1 minute'],
-            ['%s minutes ago', 'in %s minutes'],
-            ['about an hour ago', 'in 1 hour'],
-            ['about %s hours ago', 'in %s hours'],
-            ['a day ago', 'in 1 day'],
-            ['%s days ago', 'in %s days'],
-            ['a week ago', 'in 1 week'],
-            ['%s weeks ago', 'in %s weeks'],
-            ['a month ago', 'in 1 month'],
-            ['%s months ago', 'in %s months'],
-            ['a year ago', 'in 1 year'],
-            ['%s years ago', 'in %s years']
+            [s__('Timeago|less than a minute ago'), s__('Timeago|a while')],
+            [s__('Timeago|less than a minute ago'), s__('Timeago|in %s seconds')],
+            [s__('Timeago|about a minute ago'), s__('Timeago|in 1 minute')],
+            [s__('Timeago|%s minutes ago'), s__('Timeago|in %s minutes')],
+            [s__('Timeago|about an hour ago'), s__('Timeago|in 1 hour')],
+            [s__('Timeago|about %s hours ago'), s__('Timeago|in %s hours')],
+            [s__('Timeago|a day ago'), s__('Timeago|in 1 day')],
+            [s__('Timeago|%s days ago'), s__('Timeago|in %s days')],
+            [s__('Timeago|a week ago'), s__('Timeago|in 1 week')],
+            [s__('Timeago|%s weeks ago'), s__('Timeago|in %s weeks')],
+            [s__('Timeago|a month ago'), s__('Timeago|in 1 month')],
+            [s__('Timeago|%s months ago'), s__('Timeago|in %s months')],
+            [s__('Timeago|a year ago'), s__('Timeago|in 1 year')],
+            [s__('Timeago|%s years ago'), s__('Timeago|in %s years')]
           ][index];
         };
 
-        timeago.register('gl_en', locale);
+        timeago.register(lang, locale);
         timeagoInstance = timeago();
       }
 
@@ -102,7 +104,7 @@ window.dateFormat = require('vendor/date.format');
 
     w.gl.utils.updateTimeagoText = function(el) {
       const timeago = gl.utils.getTimeago();
-      const formattedDate = timeago.format(el.getAttribute('datetime'), 'gl_en');
+      const formattedDate = timeago.format(el.getAttribute('datetime'), lang);
 
       if (el.textContent !== formattedDate) {
         el.textContent = formattedDate;
