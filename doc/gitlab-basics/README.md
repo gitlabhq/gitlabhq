@@ -11,5 +11,5 @@ Step-by-step guides on the basics of working with Git and GitLab.
 - [Fork a project](fork-project.md)
 - [Add a file](add-file.md)
 - [Add an image](add-image.md)
-- [Create an issue](create-issue.md)
+- [Create an issue](../user/project/issues/create_new_issue.md)
 - [Create a merge request](add-merge-request.md)
