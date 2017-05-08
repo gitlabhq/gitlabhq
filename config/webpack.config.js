@@ -39,10 +39,7 @@ var config = {
     graphs:               './graphs/graphs_bundle.js',
     group:                './group.js',
     groups_list:          './groups_list.js',
-<<<<<<< HEAD
     issues:               './issues/issues_bundle.js',
-=======
->>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
     issue_show:           './issue_show/index.js',
     locale:               './locale/index.js',
     main:                 './main.js',
@@ -150,12 +147,8 @@ var config = {
         'notebook_viewer',
         'pdf_viewer',
         'pipelines',
-<<<<<<< HEAD
         'mr_widget_ee',
         'issue_show'
-=======
-        'balsamiq_viewer',
->>>>>>> 6ce1df41e175c7d62ca760b1e66cf1bf86150284
       ],
       minChunks: function(module, count) {
         return module.resource && (/vue_shared/).test(module.resource);
