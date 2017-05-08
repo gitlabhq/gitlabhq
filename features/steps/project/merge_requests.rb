@@ -421,6 +421,8 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     page.within '.status-box' do
       expect(page).to have_content "Open"
     end
+
+    wait_for_vue_resource
   end
 
   step 'I click link "Hide inline discussion" of the third file' do
