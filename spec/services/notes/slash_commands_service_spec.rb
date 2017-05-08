@@ -243,7 +243,7 @@ describe Notes::SlashCommandsService, services: true do
         _, command_params = service.extract_commands(note)
         service.execute(command_params, note)
 
-        expect(note.noteable.assignees.count).to eq(1)
+        expect(note.noteable.assignees.count).to eq(2)
       end
     end
   end

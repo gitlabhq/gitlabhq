@@ -540,7 +540,7 @@ ActiveRecord::Schema.define(version: 20170504102911) do
 
   add_index "index_statuses", ["project_id"], name: "index_index_statuses_on_project_id", unique: true, using: :btree
 
-  create_table "issue_assignees", id: false, force: :cascade do |t|
+  create_table "issue_assignees", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "issue_id", null: false
   end
