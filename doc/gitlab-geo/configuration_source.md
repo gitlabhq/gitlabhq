@@ -233,10 +233,30 @@ The two most obvious issues that replication can have here are:
 ### Step 5. Replicating the repositories data
 
 Getting a new secondary Geo node up and running, will also require the
-repositories directory to be synced from the primary node.
+repositories data to be synced.
 
-With GitLab **8.14** you can start the syncing process by clicking the
-"Backfill all repositories" button on `Admin > Geo Nodes` screen.
+With GitLab **9.0** the syncing process starts automatically from the
+secondary node after the **Add Node** button is pressed.
+
+Currently, this is what is synced:
+
+* Git repositories
+* Wikis
+* LFS objects
+* Issue, merge request, and comment attachments
+* User, group, and project avatars
+
+You can monitor the status of the syncing process on a secondary node
+by visiting the primary node's **Admin Area ➔ Geo Nodes** (`/admin/geo_nodes`)
+in your browser.
+
+![GitLab Geo dashboard](img/geo-node-dashboard.png)
+
+Disabling a secondary node stops the syncing process.
+
+With GitLab **8.14** this process is started manually from the primary node.
+You can start the syncing process by clicking the "Backfill all repositories"
+button on `Admin > Geo Nodes` screen.
 
 On previous versions, you can use `rsync` for that:
 
