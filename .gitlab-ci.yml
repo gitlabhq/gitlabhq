@@ -141,6 +141,7 @@ stages:
 # Trigger a package build on omnibus-gitlab repository
 
 build-package:
+  before_script: []
   services: []
   variables:
     SETUP_DB: "false"
@@ -157,7 +158,8 @@ build-package:
     # Collect version details of all components
     - for f in *_VERSION; do echo "variables[$f]=$(cat $f)" >> version_details; done
     # Trigger the API and pass values collected above as parameters to it
-    - cat version_details | tr '\n' '&' | curl -X POST https://gitlab.com/api/v4/projects/20699/trigger/pipeline --data-binary @-
+    - pipeline_id=$(cat version_details | tr '\n' '&' | curl -s -X POST https://gitlab.com/api/v4/projects/20699/trigger/pipeline --data-binary @- | ruby -e "require 'json'; puts JSON.parse(STDIN.read)['id']") > /dev/null
+    - echo "Triggered pipeline can be found at https://gitlab.com/gitlab-org/omnibus-gitlab/pipelines/${pipeline_id}"
     - rm version_details
 
 # Prepare and merge knapsack tests
