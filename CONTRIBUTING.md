@@ -35,7 +35,6 @@ _This notice should stay as the first item in the CONTRIBUTING.MD file._
   - [Stewardship](#stewardship)
 - [Merge requests](#merge-requests)
   - [Merge request guidelines](#merge-request-guidelines)
-  - [Getting your merge request reviewed, approved, and merged](#getting-your-merge-request-reviewed-approved-and-merged)
   - [Contribution acceptance criteria](#contribution-acceptance-criteria)
 - [Definition of done](#definition-of-done)
 - [Style guides](#style-guides)
