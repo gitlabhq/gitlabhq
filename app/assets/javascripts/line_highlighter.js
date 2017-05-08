@@ -31,8 +31,6 @@ require('vendor/jquery.scrollTo');
 //   </div>
 //
 (function() {
-  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
-
   this.LineHighlighter = (function() {
     // CSS class applied to highlighted lines
     LineHighlighter.prototype.highlightClass = 'hll';
@@ -47,9 +45,9 @@ require('vendor/jquery.scrollTo');
         // hash - String URL hash for dependency injection in tests
         hash = location.hash;
       }
-      this.setHash = bind(this.setHash, this);
-      this.highlightLine = bind(this.highlightLine, this);
-      this.clickHandler = bind(this.clickHandler, this);
+      this.setHash = this.setHash.bind(this);
+      this.highlightLine = this.highlightLine.bind(this);
+      this.clickHandler = this.clickHandler.bind(this);
       this.highlightHash = this.highlightHash.bind(this);
       this._hash = hash;
       this.bindEvents();
