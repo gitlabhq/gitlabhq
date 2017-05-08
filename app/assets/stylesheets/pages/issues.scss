@@ -51,6 +51,7 @@ ul.related-merge-requests > li {
   display: -ms-flexbox;
   display: -webkit-flex;
   display: flex;
+  align-items: center;
 
   .merge-request-id {
     flex-shrink: 0;
