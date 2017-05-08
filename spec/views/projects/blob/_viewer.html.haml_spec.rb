@@ -47,10 +47,10 @@ describe 'projects/blob/_viewer.html.haml', :view do
         expect(rendered).to have_css('.blob-viewer[data-url]')
       end
 
-      it 'displays a spinner' do
+      it 'renders the loading indicator' do
         render_view
 
-        expect(rendered).to have_css('i[aria-label="Loading content"]')
+        expect(view).to render_template('projects/blob/viewers/_loading')
       end
     end
 

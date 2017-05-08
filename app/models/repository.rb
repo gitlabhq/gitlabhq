@@ -549,6 +549,13 @@ class Repository
   end
   cache_method :license_key
 
+  def license
+    return @license if defined?(@license)
+    return unless license_key
+
+    @license = Licensee::License.new(license_key)
+  end
+
   def gitignore
     file_on_head(:gitignore)
   end
@@ -1083,8 +1090,8 @@ class Repository
 
   def file_on_head(type)
     if head = tree(:head)
-      head.blobs.find do |file|
-        Gitlab::FileDetector.type_of(file.name) == type
+      head.blobs.find do |blob|
+        Gitlab::FileDetector.type_of(blob.path) == type
       end
     end
   end
