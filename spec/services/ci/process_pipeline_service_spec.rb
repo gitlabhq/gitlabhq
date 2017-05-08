@@ -268,6 +268,24 @@ describe Ci::ProcessPipelineService, '#execute', :services do
     end
   end
 
+  context 'when there are only manual actions in stages' do
+    before do
+      create_build('image', stage_idx: 0, when: 'manual', allow_failure: true)
+      create_build('build', stage_idx: 1, when: 'manual', allow_failure: true)
+      create_build('deploy', stage_idx: 2, when: 'manual')
+      create_build('check', stage_idx: 3)
+
+      process_pipeline
+    end
+
+    it 'processes all jobs until blocking actions encountered' do
+      expect(all_builds_statuses).to eq(%w[manual manual manual created])
+      expect(all_builds_names).to eq(%w[image build deploy check])
+
+      expect(pipeline.reload).to be_blocked
+    end
+  end
+
   context 'when blocking manual actions are defined' do
     before do
       create_build('code:test', stage_idx: 0)
@@ -439,6 +457,10 @@ describe Ci::ProcessPipelineService, '#execute', :services do
 
   def builds_names
     builds.pluck(:name)
+  end
+
+  def all_builds_names
+    all_builds.pluck(:name)
   end
 
   def builds_statuses
