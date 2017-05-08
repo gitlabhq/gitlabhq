@@ -13,6 +13,18 @@ export default {
       type: Array,
       required: true,
     },
+
+    isFirstColumn: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    stageConnectorClass: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
 
   components: {
@@ -28,20 +40,27 @@ export default {
     jobId(job) {
       return `ci-badge-${job.name}`;
     },
+
+    buildConnnectorClass(index) {
+      return index === 0 && !this.isFirstColumn ? 'left-connector' : '';
+    },
   },
 };
 </script>
 <template>
-  <li class="stage-column">
+  <li
+    class="stage-column"
+    :class="stageConnectorClass">
     <div class="stage-name">
       {{title}}
     </div>
     <div class="builds-container">
       <ul>
         <li
-          v-for="job in jobs"
+          v-for="(job, index) in jobs"
           :key="job.id"
           class="build"
+          :class="buildConnnectorClass(index)"
           :id="jobId(job)">
 
           <div class="curve"></div>
