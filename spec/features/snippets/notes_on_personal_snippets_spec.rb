@@ -67,9 +67,6 @@ describe 'Comments on personal snippets', :js, feature: true do
   end
 
   context 'when editing a note' do
-    # Matches `less than a minute ago`, `about a minute ago` and `N minutes ago`
-    let(:timeago_regex) { /((less than|about) a minute|\d+? minutes) ago/ }
-
     it 'changes the text' do
       page.within("#notes-list li#note_#{snippet_notes[0].id}") do
         click_on 'Edit comment'
@@ -81,9 +78,11 @@ describe 'Comments on personal snippets', :js, feature: true do
       end
 
       page.within("#notes-list li#note_#{snippet_notes[0].id}") do
+        edited_text = find('.edited-text')
+
         expect(page).to have_css('.note_edited_ago')
         expect(page).to have_content('new content')
-        expect(find('.note_edited_ago').text).to match(timeago_regex)
+        expect(edited_text).to have_selector('.note_edited_ago')
       end
     end
   end
