@@ -45,6 +45,7 @@ class BalsamiqViewer {
     container.classList.add('list-inline');
     container.classList.add('previews');
 
+    this.viewer.innerHTML = '';
     this.viewer.appendChild(container);
   }
 

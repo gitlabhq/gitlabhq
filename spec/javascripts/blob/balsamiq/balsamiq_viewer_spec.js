@@ -105,6 +105,10 @@ describe('BalsamiqViewer', () => {
       expect(container.classList[1]).toBe('previews');
     });
 
+    it('should clear viewer.innerHTML', () => {
+      expect(viewer.innerHTML).toEqual('');
+    });
+
     it('should call viewer.appendChild', () => {
       expect(viewer.appendChild).toHaveBeenCalledWith(container);
     });

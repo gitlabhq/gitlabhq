@@ -1,8 +1,8 @@
 require 'webpack/rails/manifest'
 
 module WebpackHelper
-  def webpack_bundle_tag(bundle)
-    javascript_include_tag(*gitlab_webpack_asset_paths(bundle))
+  def webpack_bundle_tag(bundle, opts = {})
+    javascript_include_tag(*gitlab_webpack_asset_paths(bundle), opts)
   end
 
   # override webpack-rails gem helper until changes can make it upstream

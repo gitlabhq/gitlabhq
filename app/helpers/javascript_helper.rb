@@ -4,7 +4,7 @@ module JavascriptHelper
   end
 
   # deprecated; use webpack_bundle_tag directly instead
-  def page_specific_javascript_bundle_tag(bundle)
-    webpack_bundle_tag(bundle)
+  def page_specific_javascript_bundle_tag(bundle, opts = {})
+    webpack_bundle_tag(bundle, opts)
   end
 end
