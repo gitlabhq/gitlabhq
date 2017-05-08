@@ -7,7 +7,7 @@ module Issuable
       ids = params.delete(:issuable_ids).split(",")
       items = model_class.where(id: ids)
 
-      %i(state_event milestone_id assignee_id assignee_ids add_label_ids remove_label_ids subscription_event).each do |key|
+      permitted_attrs(type).each do |key|
         params.delete(key) unless params[key].present?
       end
 
@@ -25,6 +25,19 @@ module Issuable
         count:    items.count,
         success:  !items.count.zero?
       }
+    end
+
+    private
+
+    def permitted_attrs(type)
+      attrs = %i(state_event milestone_id assignee_id assignee_ids add_label_ids remove_label_ids subscription_event)
+
+      return
+        if type == 'issue'
+          attrs.merge(:assignee_ids)
+        else
+          attrs.merge(:assignee_id)
+        end
     end
   end
 end
