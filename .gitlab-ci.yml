@@ -197,6 +197,7 @@ setup-test-env:
     - node --version
     - yarn install --pure-lockfile
     - bundle exec rake gitlab:assets:compile
+    - bundle exec rake lint:js_bundles
     - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
   artifacts:
     expire_in: 7d
