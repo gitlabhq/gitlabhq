@@ -38,12 +38,12 @@ Spinach.hooks.before_run do
   include FactoryGirl::Syntax::Methods
 end
 
-# Spinach.hooks.after_feature do |feature_data|
-#   if feature_data.scenarios.flat_map(&:tags).include?('javascript')
-#     include WaitForRequests
-#     wait_for_requests_complete
-#   end
-# end
+Spinach.hooks.after_feature do |feature_data|
+  if feature_data.scenarios.flat_map(&:tags).include?('javascript')
+    include WaitForRequests
+    wait_for_requests_complete
+  end
+end
 
 module StdoutReporterWithScenarioLocation
   # Override the standard reporter to show filename and line number next to each
