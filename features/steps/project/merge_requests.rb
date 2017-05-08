@@ -638,12 +638,16 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     page.within '.mr-state-widget' do
       expect(page).not_to have_button("Approve")
     end
+
+    wait_for_vue_resource
   end
 
   step 'I should see approved merge request "Bug NS-04"' do
     page.within '.mr-state-widget' do
       expect(page).to have_button('Merge', disabled: false)
     end
+
+    wait_for_vue_resource
   end
 
   step 'I should see message that merge request can be merged' do
