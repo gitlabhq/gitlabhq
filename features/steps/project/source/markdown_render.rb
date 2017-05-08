@@ -120,6 +120,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
 
   When 'I visit markdown branch' do
     visit namespace_project_tree_path(@project.namespace, @project, "markdown")
+    wait_for_ajax
   end
 
   When 'I visit markdown branch "README.md" blob' do

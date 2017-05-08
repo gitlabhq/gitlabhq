@@ -1634,7 +1634,7 @@ describe Repository, models: true do
 
     context 'with an existing repository' do
       it 'returns the README' do
-        expect(repository.readme).to be_an_instance_of(Gitlab::Git::Blob)
+        expect(repository.readme).to be_an_instance_of(ReadmeBlob)
       end
     end
   end
