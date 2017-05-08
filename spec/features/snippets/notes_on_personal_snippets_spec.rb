@@ -78,9 +78,11 @@ describe 'Comments on personal snippets', :js, feature: true do
       end
 
       page.within("#notes-list li#note_#{snippet_notes[0].id}") do
+        edited_text = find('.edited-text')
+
         expect(page).to have_css('.note_edited_ago')
         expect(page).to have_content('new content')
-        expect(find('.note_edited_ago').text).to match(/less than a minute ago/)
+        expect(edited_text).to have_selector('.note_edited_ago')
       end
     end
   end
