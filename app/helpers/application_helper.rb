@@ -288,7 +288,7 @@ module ApplicationHelper
     end
   end
 
-   def twitter_url(user)
+  def twitter_url(user)
     name = user.twitter
     if name =~ %r{\Ahttps?:\/\/(www\.)?twitter\.com\/(.*)\z}
       name
@@ -296,5 +296,4 @@ module ApplicationHelper
       "https://www.twitter.com/#{name}"
     end
   end
-
 end
