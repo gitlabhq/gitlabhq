@@ -13,7 +13,7 @@ describe KubernetesService, models: true, caching: true do
   let(:discovery_url) { service.api_url + '/api/v1' }
   let(:discovery_response) { { body: kube_discovery_body.to_json } }
 
-  let(:pods_url) { service.api_url + "/api/v1/namespaces/#{service.namespace}/pods" }
+  let(:pods_url) { service.api_url + "/api/v1/namespaces/#{service.actual_namespace}/pods" }
   let(:pods_response) { { body: kube_pods_body(kube_pod).to_json } }
 
   def stub_kubeclient_discover
@@ -194,6 +194,7 @@ describe KubernetesService, models: true, caching: true do
 
   describe '#terminals' do
     let(:environment) { build(:environment, project: project, name: "env", slug: "env-000000") }
+
     subject { service.terminals(environment) }
 
     context 'with invalid pods' do
