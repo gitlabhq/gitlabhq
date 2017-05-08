@@ -7,7 +7,7 @@ import '~/render_gfm';
 import '~/render_math';
 import '~/notes';
 
-fdescribe('Merge request notes', () => {
+describe('Merge request notes', () => {
   window.gon = window.gon || {};
   window.gl = window.gl || {};
   gl.utils = gl.utils || {};
