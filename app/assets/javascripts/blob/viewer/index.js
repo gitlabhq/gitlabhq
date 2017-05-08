@@ -8,7 +8,10 @@ export default class BlobViewer {
     this.richViewer = document.querySelector('.blob-viewer[data-type="rich"]');
     this.$fileHolder = $('.file-holder');
 
-    let initialViewerName = document.querySelector('.blob-viewer:not(.hidden)').getAttribute('data-type');
+    const initialViewer = document.querySelector('.blob-viewer:not(.hidden)');
+    if (!initialViewer) return;
+
+    let initialViewerName = initialViewer.getAttribute('data-type');
 
     this.initBindings();
 

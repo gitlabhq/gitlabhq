@@ -518,7 +518,7 @@ class Repository
 
   def readme
     if head = tree(:head)
-      head.readme
+      ReadmeBlob.new(head.readme, self)
     end
   end
 
