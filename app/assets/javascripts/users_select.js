@@ -422,6 +422,15 @@ window.emitSidebarEvent = window.emitSidebarEvent || $.noop;
                 selected = $dropdown.closest('.selectbox').find("input[name='" + ($dropdown.data('field-name')) + "']").val();
                 return assignTo(selected);
               }
+
+              // Automatically close dropdown after assignee is selected
+              // since CE has no multiple assignees
+              if (getSelected().length === $dropdown.data('max-select')) {
+                // Close the dropdown
+                this.el.click();
+
+                this.hidden();
+              }
             },
             id: function (user) {
               return user.id;
