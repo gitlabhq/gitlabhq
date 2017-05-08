@@ -37,9 +37,7 @@ module HasStatus
     end
 
     def status
-      all.pluck(status_sql).first.tap do |status|
-        return 'success' if status == 'skipped' && all.failed_but_allowed.any?
-      end
+      all.pluck(status_sql).first
     end
 
     def started_at
