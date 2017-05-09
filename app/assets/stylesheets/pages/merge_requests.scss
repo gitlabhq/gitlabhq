@@ -131,12 +131,6 @@
       line-height: 16px;
     }
 
-    @media (min-width: $screen-sm-min) {
-      .stage-cell {
-        padding: 0 4px;
-      }
-    }
-
     @media (max-width: $screen-xs-max) {
       order: 1;
       margin-top: $gl-padding-top;
