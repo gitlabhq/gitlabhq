@@ -1,7 +1,7 @@
 /* global Flash */
 
 import '~/lib/utils/datetime_utility';
-import { statusClassToSvgMap } from '../../vue_shared/pipeline_svg_icons';
+import { statusIconEntityMap } from '../../vue_shared/ci_status_icons';
 import MemoryUsage from './mr_widget_memory_usage';
 import MRWidgetService from '../services/mr_widget_service';
 
@@ -16,7 +16,7 @@ export default {
   },
   computed: {
     svg() {
-      return statusClassToSvgMap.icon_status_success;
+      return statusIconEntityMap.icon_status_success;
     },
   },
   methods: {
