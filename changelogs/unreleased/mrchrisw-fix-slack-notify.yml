@@ -1,0 +1,4 @@
+---
+title: Fix notify_only_default_branch check for Slack service
+merge_request:
+author:
