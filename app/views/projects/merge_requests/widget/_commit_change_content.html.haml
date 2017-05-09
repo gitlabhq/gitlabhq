@@ -1,0 +1,4 @@
+- if @merge_request.can_be_reverted?(current_user)
+  = render "projects/commit/change", type: 'revert', commit: @merge_request.merge_commit, title: @merge_request.title
+- if @merge_request.can_be_cherry_picked?
+  = render "projects/commit/change", type: 'cherry-pick', commit: @merge_request.merge_commit, title: @merge_request.title

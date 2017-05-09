@@ -38,6 +38,8 @@ describe 'Issue Boards', :feature, :js do
     it 'moves un-ordered issue to top of list' do
       drag(from_index: 3, to_index: 0)
 
+      wait_for_vue_resource
+
       page.within(first('.board')) do
         expect(first('.card')).to have_content(issue4.title)
       end

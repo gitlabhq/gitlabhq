@@ -1,6 +1,6 @@
 - @content_class = "limit-container-width" unless fluid_layout
-- page_title           "#{@merge_request.title} (#{@merge_request.to_reference})", "Merge Requests"
-- page_description     @merge_request.description
+- page_title "#{@merge_request.title} (#{@merge_request.to_reference})", "Merge Requests"
+- page_description @merge_request.description
 - page_card_attributes @merge_request.card_attributes
 - content_for :page_specific_javascripts do
   = page_specific_javascript_bundle_tag('common_vue')
@@ -11,42 +11,17 @@
 
   .merge-request-details.issuable-details{ data: { id: @merge_request.project.id } }
     = render "projects/merge_requests/show/mr_box"
-    .append-bottom-default.mr-source-target.prepend-top-default
-      - if @merge_request.open?
-        .pull-right
-          - if @merge_request.source_branch_exists?
-            - if koding_enabled? && @repository.koding_yml
-              = link_to koding_project_url(@merge_request.source_project, @merge_request.source_branch, @merge_request.commits.first.short_id), class: "btn inline btn-grouped btn-sm", target: '_blank', rel: 'noopener noreferrer' do
-                Run in IDE (Koding)
-            = link_to "#modal_merge_info", class: "btn inline btn-grouped btn-sm", "data-toggle" => "modal" do
-              Check out branch
-
-          %span.dropdown.inline.prepend-left-5
-            %a.btn.btn-sm.dropdown-toggle{ data: {toggle: :dropdown} }
-              Download as
-              = icon('caret-down')
-            %ul.dropdown-menu.dropdown-menu-align-right
-              %li= link_to "Email Patches", merge_request_path(@merge_request, format: :patch)
-              %li= link_to "Plain Diff",    merge_request_path(@merge_request, format: :diff)
-      .normal
-        %span <b>Request to merge</b>
-        %span.label-branch= source_branch_with_namespace(@merge_request)
-        %span <b>into</b>
-        %span.label-branch
-          = link_to_if @merge_request.target_branch_exists?, @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch)
-        - if @merge_request.open? && @merge_request.diverged_from_target_branch?
-          %span (#{pluralize(@merge_request.diverged_commits_count, 'commit')} behind)
 
     - if @merge_request.source_branch_exists?
       = render "projects/merge_requests/show/how_to_merge"
 
-    = render "projects/merge_requests/widget/show.html.haml"
+    :javascript
+      window.gl.mrWidgetData = #{serialize_issuable(@merge_request)}
 
-    - if @merge_request.source_branch_exists? && @merge_request.mergeable? && @merge_request.can_be_merged_by?(current_user)
-      .merge-manually.light.prepend-top-default
-        You can also accept this merge request manually using the
-        = succeed '.' do
-          = link_to "command line", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
+    #js-vue-mr-widget.mr-widget
+
+    - content_for :page_specific_javascripts do
+      = page_specific_javascript_bundle_tag('vue_merge_request_widget')
 
     .content-block.content-block-small.emoji-list-container
       = render 'award_emoji/awards_block', awardable: @merge_request, inline: true
@@ -113,9 +88,7 @@
 
 :javascript
   $(function () {
-    new MergeRequest({
+    window.mergeRequest = new MergeRequest({
       action: "#{controller.action_name}"
     });
   });
-
-  var mrRefreshWidgetUrl = "#{mr_widget_refresh_url(@merge_request)}";
