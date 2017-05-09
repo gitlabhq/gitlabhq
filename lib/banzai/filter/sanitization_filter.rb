@@ -31,6 +31,10 @@ module Banzai
         # Allow span elements
         whitelist[:elements].push('span')
 
+        # Allow data-math-style attribute in order to support LaTeX formatting
+        whitelist[:attributes]['code'] = %w(data-math-style)
+        whitelist[:attributes]['pre'] = %w(data-math-style)
+
         # Allow html5 details/summary elements
         whitelist[:elements].push('details')
         whitelist[:elements].push('summary')
