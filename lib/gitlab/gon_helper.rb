@@ -10,12 +10,9 @@ module Gitlab
       gon.user_color_scheme      = Gitlab::ColorSchemes.for_user(current_user).css_class
       gon.katex_css_url          = ActionController::Base.helpers.asset_path('katex.css')
       gon.katex_js_url           = ActionController::Base.helpers.asset_path('katex.js')
-<<<<<<< HEAD
       gon.sentry_dsn             = current_application_settings.clientside_sentry_dsn if current_application_settings.clientside_sentry_enabled
       gon.gitlab_url             = Gitlab.config.gitlab.url
-=======
       gon.test                   = Rails.env.test?
->>>>>>> a6d35c27cac69f7edaaf64a0df863f1a3b557db1
 
       if current_user
         gon.current_user_id = current_user.id

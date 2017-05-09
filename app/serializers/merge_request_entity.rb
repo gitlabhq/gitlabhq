@@ -1,11 +1,8 @@
 class MergeRequestEntity < IssuableEntity
-<<<<<<< HEAD
   expose :approvals_before_merge
   expose :assignee_id
-=======
   include RequestAwareEntity
 
->>>>>>> a6d35c27cac69f7edaaf64a0df863f1a3b557db1
   expose :in_progress_merge_commit_sha
   expose :locked_at
   expose :merge_commit_sha
