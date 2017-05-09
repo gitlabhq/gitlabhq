@@ -34,6 +34,42 @@ describe Ci::CreatePipelineService, services: true do
       it { expect(pipeline).to have_attributes(status: 'pending') }
       it { expect(pipeline.builds.first).to be_kind_of(Ci::Build) }
 
+      context '#update_merge_requests_head_pipeline' do
+        it 'updates head pipeline of each merge request' do
+          merge_request_1 = create(:merge_request, source_branch: 'master', target_branch: "branch_1", source_project: project)
+          merge_request_2 = create(:merge_request, source_branch: 'master', target_branch: "branch_2", source_project: project)
+
+          head_pipeline = pipeline
+
+          expect(merge_request_1.reload.head_pipeline).to eq(head_pipeline)
+          expect(merge_request_2.reload.head_pipeline).to eq(head_pipeline)
+        end
+
+        context 'when there is no pipeline for source branch' do
+          it "does not update merge request head pipeline" do
+            merge_request = create(:merge_request, source_branch: 'other_branch', target_branch: "branch_1", source_project: project)
+
+            head_pipeline = pipeline
+
+            expect(merge_request.reload.head_pipeline).not_to eq(head_pipeline)
+          end
+        end
+
+        context 'when merge request target project is different from source project' do
+          let!(:target_project) { create(:empty_project) }
+          let!(:forked_project_link) { create(:forked_project_link, forked_to_project: project, forked_from_project: target_project) }
+
+          it 'updates head pipeline for merge request' do
+            merge_request =
+              create(:merge_request, source_branch: 'master', target_branch: "branch_1", source_project: project, target_project: target_project)
+
+            head_pipeline = pipeline
+
+            expect(merge_request.reload.head_pipeline).to eq(head_pipeline)
+          end
+        end
+      end
+
       context 'auto-cancel enabled' do
         before do
           project.update(auto_cancel_pending_pipelines: 'enabled')

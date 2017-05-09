@@ -557,6 +557,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     project = merge_request.source_project
     project.enable_ci
     pipeline = create :ci_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch
+    merge_request.update(head_pipeline: pipeline)
     create :ci_build, pipeline: pipeline
   end
 

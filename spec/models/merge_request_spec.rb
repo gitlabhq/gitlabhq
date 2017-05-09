@@ -760,13 +760,8 @@ describe MergeRequest, models: true do
   describe '#head_pipeline' do
     describe 'when the source project exists' do
       it 'returns the latest pipeline' do
-        pipeline = double(:ci_pipeline, ref: 'master')
-
-        allow(subject).to receive(:diff_head_sha).and_return('123abc')
-
-        expect(subject.source_project).to receive(:pipeline_for).
-          with('master', '123abc').
-          and_return(pipeline)
+        pipeline = create(:ci_empty_pipeline, project: subject.source_project, ref: 'master', status: 'running', sha: "123abc")
+        subject.update(head_pipeline: pipeline)
 
         expect(subject.head_pipeline).to eq(pipeline)
       end
@@ -1504,11 +1499,15 @@ describe MergeRequest, models: true do
 
   describe '#mergeable_with_slash_command?' do
     def create_pipeline(status)
-      create(:ci_pipeline_with_one_job,
+      pipeline = create(:ci_pipeline_with_one_job,
         project: project,
         ref:     merge_request.source_branch,
         sha:     merge_request.diff_head_sha,
         status:  status)
+
+      merge_request.update(head_pipeline: pipeline)
+
+      pipeline
     end
 
     let(:project)       { create(:project, :public, :repository, only_allow_merge_if_pipeline_succeeds: true) }
