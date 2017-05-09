@@ -61,6 +61,7 @@ export default {
     tag: false,
     branch: true,
   },
+  coverage: '42.21',
   commit: {
     id: 'fbd79f04fa98717641deaaeb092a4d417237c2e4',
     short_id: 'fbd79f04',

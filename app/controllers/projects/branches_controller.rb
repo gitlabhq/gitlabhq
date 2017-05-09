@@ -73,13 +73,15 @@ class Projects::BranchesController < Projects::ApplicationController
 
   def destroy
     @branch_name = Addressable::URI.unescape(params[:id])
-    status = DeleteBranchService.new(project, current_user).execute(@branch_name)
+    result = DeleteBranchService.new(project, current_user).execute(@branch_name)
     respond_to do |format|
       format.html do
         redirect_to namespace_project_branches_path(@project.namespace,
                                                     @project), status: 303
       end
-      format.js { render nothing: true, status: status[:return_code] }
+
+      format.js { render nothing: true, status: result[:return_code] }
+      format.json { render json: { message: result[:message] }, status: result[:return_code] }
     end
   end
 

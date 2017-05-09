@@ -35,6 +35,6 @@ class StageEntity < Grape::Entity
   alias_method :stage, :object
 
   def detailed_status
-    stage.detailed_status(request.user)
+    stage.detailed_status(request.current_user)
   end
 end

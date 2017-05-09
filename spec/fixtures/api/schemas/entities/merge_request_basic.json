@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "properties" : {
+    "state": { "type": "string" },
+    "merge_status": { "type": "string" },
+    "source_branch_exists": { "type": "boolean" },
+    "time_estimate": { "type": "integer" },
+    "total_time_spent": { "type": "integer" },
+    "human_time_estimate": { "type": ["string", "null"] },
+    "human_total_time_spent": { "type": ["string", "null"] },
+    "merge_error": { "type": ["string", "null"] }
+  },
+  "additionalProperties": false
+}
