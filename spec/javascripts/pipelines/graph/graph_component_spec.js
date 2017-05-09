@@ -66,6 +66,56 @@ describe('graph component', () => {
                 },
               },
             }],
+          },
+          {
+            name: 'test_1',
+            title: 'test_1: passed',
+            status: {
+              icon: 'icon_status_success',
+              text: 'passed',
+              label: 'passed',
+              details_path: '/root/ci-mock/pipelines/123#test',
+            },
+            path: '/root/ci-mock/pipelines/123#test',
+            groups: [{
+              name: 'test',
+              size: 1,
+              jobs: [{
+                id: 4153,
+                name: 'test',
+                status: {
+                  icon: 'icon_status_success',
+                  text: 'passed',
+                  label: 'passed',
+                  details_path: '/root/ci-mock/builds/4153',
+                  action: {
+                    icon: 'icon_action_retry',
+                    title: 'Retry',
+                    path: '/root/ci-mock/builds/4153/retry',
+                    method: 'post',
+                  },
+                },
+              }],
+            }, {
+              name: 'test',
+              size: 1,
+              jobs: [{
+                id: 4153,
+                name: 'test',
+                status: {
+                  icon: 'icon_status_success',
+                  text: 'passed',
+                  label: 'passed',
+                  details_path: '/root/ci-mock/builds/4153',
+                  action: {
+                    icon: 'icon_action_retry',
+                    title: 'Retry',
+                    path: '/root/ci-mock/builds/4153/retry',
+                    method: 'post',
+                  },
+                },
+              }],
+            }],
           }],
         }],
       },
@@ -90,6 +140,18 @@ describe('graph component', () => {
 
       setTimeout(() => {
         expect(component.$el.classList.contains('js-pipeline-graph')).toEqual(true);
+
+        expect(
+          component.$el.querySelector('.stage-column:first-child').classList.contains('no-margin'),
+        ).toEqual(true);
+
+        expect(
+          component.$el.querySelector('.stage-column:nth-child(2)').classList.contains('left-margin'),
+        ).toEqual(true);
+
+        expect(
+          component.$el.querySelector('.stage-column:nth-child(2) .build:nth-child(1)').classList.contains('left-connector'),
+        ).toEqual(true);
 
         expect(component.$el.querySelector('loading-icon')).toBe(null);
 
