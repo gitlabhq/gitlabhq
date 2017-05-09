@@ -28,13 +28,13 @@ As always, the Frontend Architectural Experts are available to help with any Vue
 
 All new features built with Vue.js must follow a [Flux architecture][flux].
 The main goal we are trying to achieve is to have only one data flow and only one data entry.
-In order to achieve this goal, each Vue bundle needs a Store - where we keep all the data -,
-a Service - that we use to communicate with the server - and a main Vue component.
+In order to achieve this goal, each Vue bundle needs a store object to store all the data,
+a main Vue component and any number of services for the functionality required.
 
 Think of the Main Vue Component as the entry point of your application. This is the only smart
 component that should exist in each Vue feature.
 This component is responsible for:
-1. Calling the Service to get data from the server
+1. Calling the Service to get and manipulate data from the server or any other source
 1. Calling the Store to store the data received
 1. Mounting all the other components
 
@@ -99,11 +99,11 @@ itself, please read this guide: [State Management][state-management]
 
 ### A folder for the Service
 
-The Service is a class used only to communicate with the server.
-It does not store or manipulate any data. It is not aware of the store or the components.
-We use [vue-resource][vue-resource-repo] to communicate with the server.
+Often, the Service is a class used to communicate with the server.
+It does not store any data. It is not aware of the store or the components.
+In this case, we use [vue-resource][vue-resource-repo] to communicate with the server.
 
-Vue Resource should only be imported in the service file.
+Vue Resource should only be imported in a service file, not the store or component.
 
   ```javascript
   import Vue from 'vue';
