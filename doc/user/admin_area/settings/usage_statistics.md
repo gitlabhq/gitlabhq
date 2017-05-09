@@ -89,6 +89,24 @@ By default, usage ping is opt-out. If you want to deactivate this feature, go to
 the Settings page of your administration panel and uncheck the Usage ping
 checkbox.
 
+To disable the usage ping and prevent it from being configured from the
+administration panel, Omnibus installs can set the following in
+[`gitlab.rb`](https://docs.gitlab.com/omnibus/settings/configuration.html#configuration-options):
+
+```ruby
+gitlab_rails['usage_ping_enabled'] = false
+```
+
+And source installs can set the following in `gitlab.yml`:
+
+```yaml
+production: &base
+  # ...
+  gitlab:
+    # ...
+    usage_ping_enabled: false
+```
+
 ## Privacy policy
 
 GitLab Inc. does **not** collect any sensitive information, like project names
