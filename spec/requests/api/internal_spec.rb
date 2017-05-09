@@ -299,8 +299,6 @@ describe API::Internal do
     end
 
     context "archived project" do
-      let(:personal_project) { create(:empty_project, namespace: user.namespace) }
-
       before do
         project.team << [user, :developer]
         project.archive!
@@ -421,6 +419,33 @@ describe API::Internal do
 
         expect(response.status).to eq(200)
         expect(json_response['status']).to be_truthy
+      end
+    end
+
+    context 'the project path was changed' do
+      let!(:old_path_to_repo) { project.repository.path_to_repo }
+      let!(:old_full_path) { project.full_path }
+
+      before do
+        project.team << [user, :developer]
+        project.path = 'new_path'
+        project.save!
+      end
+
+      it 'rejects the push' do
+        push_with_path(key, old_path_to_repo)
+
+        expect(response).to have_http_status(200)
+        expect(json_response['status']).to be_falsey
+        expect(json_response['message']).to match("Project '#{old_full_path}' was moved to '#{project.full_path}'.")
+      end
+
+      it 'rejects the SSH pull' do
+        pull_with_path(key, old_path_to_repo)
+
+        expect(response).to have_http_status(200)
+        expect(json_response['status']).to be_falsey
+        expect(json_response['message']).to match("Project '#{old_full_path}' was moved to '#{project.full_path}'.")
       end
     end
   end
@@ -564,12 +589,36 @@ describe API::Internal do
     )
   end
 
+  def pull_with_path(key, path_to_repo, protocol = 'ssh')
+    post(
+      api("/internal/allowed"),
+      key_id: key.id,
+      project: path_to_repo,
+      action: 'git-upload-pack',
+      secret_token: secret_token,
+      protocol: protocol
+    )
+  end
+
   def push(key, project, protocol = 'ssh', env: nil)
     post(
       api("/internal/allowed"),
       changes: 'd14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master',
       key_id: key.id,
       project: project.repository.path_to_repo,
+      action: 'git-receive-pack',
+      secret_token: secret_token,
+      protocol: protocol,
+      env: env
+    )
+  end
+
+  def push_with_path(key, path_to_repo, protocol = 'ssh', env: nil)
+    post(
+      api("/internal/allowed"),
+      changes: 'd14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master',
+      key_id: key.id,
+      project: path_to_repo,
       action: 'git-receive-pack',
       secret_token: secret_token,
       protocol: protocol,

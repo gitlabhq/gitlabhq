@@ -1,10 +1,12 @@
 require 'spec_helper'
 
 describe Gitlab::GitAccess, lib: true do
-  let(:access) { Gitlab::GitAccess.new(actor, project, 'ssh', authentication_abilities: authentication_abilities) }
+  let(:access) { Gitlab::GitAccess.new(actor, project, protocol, authentication_abilities: authentication_abilities, redirected_path: redirected_path) }
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:actor) { user }
+  let(:protocol) { 'ssh' }
+  let(:redirected_path) { nil }
   let(:authentication_abilities) do
     [
       :read_project,
@@ -15,37 +17,40 @@ describe Gitlab::GitAccess, lib: true do
 
   describe '#check with single protocols allowed' do
     def disable_protocol(protocol)
-      settings = ::ApplicationSetting.create_from_defaults
-      settings.update_attribute(:enabled_git_access_protocol, protocol)
+      expect(Gitlab::ProtocolAccess).to receive(:allowed?).with(protocol).and_return(false).twice
     end
 
     context 'ssh disabled' do
       before do
         disable_protocol('ssh')
-        @acc = Gitlab::GitAccess.new(actor, project, 'ssh', authentication_abilities: authentication_abilities)
       end
 
       it 'blocks ssh git push' do
-        expect(@acc.check('git-receive-pack', '_any').allowed?).to be_falsey
+        expect(access.check('git-receive-pack', '_any').allowed?).to be_falsey
+        expect(access.check('git-receive-pack', '_any').message).to match("Git access over #{protocol.upcase} is not allowed")
       end
 
       it 'blocks ssh git pull' do
-        expect(@acc.check('git-upload-pack', '_any').allowed?).to be_falsey
+        expect(access.check('git-upload-pack', '_any').allowed?).to be_falsey
+        expect(access.check('git-upload-pack', '_any').message).to match("Git access over #{protocol.upcase} is not allowed")
       end
     end
 
     context 'http disabled' do
+      let(:protocol) { 'http' }
+
       before do
         disable_protocol('http')
-        @acc = Gitlab::GitAccess.new(actor, project, 'http', authentication_abilities: authentication_abilities)
       end
 
       it 'blocks http push' do
-        expect(@acc.check('git-receive-pack', '_any').allowed?).to be_falsey
+        expect(access.check('git-receive-pack', '_any').allowed?).to be_falsey
+        expect(access.check('git-receive-pack', '_any').message).to match("Git access over #{protocol.upcase} is not allowed")
       end
 
       it 'blocks http git pull' do
-        expect(@acc.check('git-upload-pack', '_any').allowed?).to be_falsey
+        expect(access.check('git-upload-pack', '_any').allowed?).to be_falsey
+        expect(access.check('git-upload-pack', '_any').message).to match("Git access over #{protocol.upcase} is not allowed")
       end
     end
   end
@@ -425,6 +430,56 @@ describe Gitlab::GitAccess, lib: true do
       it_behaves_like 'pushing code', :not_to do
         def authorize
           key.projects << project
+        end
+      end
+    end
+  end
+
+  describe '#check_project_moved!' do
+    before do
+      project.team << [user, :master]
+    end
+
+    context 'when a redirect was not followed to find the project' do
+      context 'pull code' do
+        subject { access.check('git-upload-pack', '_any') }
+
+        it { expect(subject.allowed?).to be_truthy }
+      end
+
+      context 'push code' do
+        subject { access.check('git-receive-pack', '_any') }
+
+        it { expect(subject.allowed?).to be_truthy }
+      end
+    end
+
+    context 'when a redirect was followed to find the project' do
+      let(:redirected_path) { 'some/other-path' }
+
+      context 'pull code' do
+        subject { access.check('git-upload-pack', '_any') }
+
+        it { expect(subject.allowed?).to be_falsey }
+        it { expect(subject.message).to match("Project '#{redirected_path}' was moved to '#{project.full_path}'.") }
+        it { expect(subject.message).to match("git remote set-url origin #{project.ssh_url_to_repo}") }
+
+        context 'http protocol' do
+          let(:protocol) { 'http' }
+          it { expect(subject.message).to match("git remote set-url origin #{project.http_url_to_repo}") }
+        end
+      end
+
+      context 'push code' do
+        subject { access.check('git-receive-pack', '_any') }
+
+        it { expect(subject.allowed?).to be_falsey }
+        it { expect(subject.message).to match("Project '#{redirected_path}' was moved to '#{project.full_path}'.") }
+        it { expect(subject.message).to match("git remote set-url origin #{project.ssh_url_to_repo}") }
+
+        context 'http protocol' do
+          let(:protocol) { 'http' }
+          it { expect(subject.message).to match("git remote set-url origin #{project.http_url_to_repo}") }
         end
       end
     end

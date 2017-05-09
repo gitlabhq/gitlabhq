@@ -16,12 +16,13 @@ module Gitlab
     PUSH_COMMANDS = %w{ git-receive-pack }.freeze
     ALL_COMMANDS = DOWNLOAD_COMMANDS + PUSH_COMMANDS
 
-    attr_reader :actor, :project, :protocol, :user_access, :authentication_abilities
+    attr_reader :actor, :project, :protocol, :user_access, :authentication_abilities, :redirected_path
 
-    def initialize(actor, project, protocol, authentication_abilities:)
+    def initialize(actor, project, protocol, authentication_abilities:, redirected_path: nil)
       @actor    = actor
       @project  = project
       @protocol = protocol
+      @redirected_path = redirected_path
       @authentication_abilities = authentication_abilities
       @user_access = UserAccess.new(user, project: project)
     end
@@ -30,6 +31,7 @@ module Gitlab
       check_protocol!
       check_active_user!
       check_project_accessibility!
+      check_project_moved!
       check_command_existence!(cmd)
       check_repository_existence!
 
@@ -80,6 +82,14 @@ module Gitlab
     def check_project_accessibility!
       if project.blank? || !can_read_project?
         raise UnauthorizedError, 'The project you were looking for could not be found.'
+      end
+    end
+
+    def check_project_moved!
+      if redirected_path
+        url = protocol == 'ssh' ? project.ssh_url_to_repo : project.http_url_to_repo
+        message = "Project '#{redirected_path}' was moved to '#{project.full_path}'.\n\nPlease update your Git remote and try again:\n\n  git remote set-url origin #{url}"
+        raise UnauthorizedError, message
       end
     end
 
