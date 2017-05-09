@@ -20,7 +20,7 @@ class UpateRetriedForCiBuild < ActiveRecord::Migration
     is_retried = Arel.sql("((#{latest_id}) != ci_builds.id)")
 
     update_column_in_batches(:ci_builds, :retried, is_retried) do |table, query|
-      query.where(table[:retried].eq(false))
+      query.where(table[:retried].eq(nil))
     end
   end
 
