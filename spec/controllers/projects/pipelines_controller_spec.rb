@@ -50,6 +50,15 @@ describe Projects::PipelinesController do
     end
 
     context 'when the pipeline has multiple jobs' do
+      before do
+        RequestStore.begin!
+      end
+
+      after do
+        RequestStore.end!
+        RequestStore.clear!
+      end
+
       it 'does not perform N + 1 queries' do
         control_count = ActiveRecord::QueryRecorder.new { get_pipeline_json }.count
 
