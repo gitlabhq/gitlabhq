@@ -22,7 +22,7 @@ module HasStatus
       skipped = scope.skipped.select('count(*)').to_sql
       canceled = scope.canceled.select('count(*)').to_sql
 
-    "(CASE
+      "(CASE
         WHEN (#{builds})=(#{skipped}) THEN 'skipped'
         WHEN (#{builds})=(#{success}) THEN 'success'
         WHEN (#{builds})=(#{created}) THEN 'created'
