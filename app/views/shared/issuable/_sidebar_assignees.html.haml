@@ -14,7 +14,7 @@
   .value.hide-collapsed
     - if issuable.assignee
       = link_to_member(@project, issuable.assignee, size: 32, extra_class: 'bold') do
-        - if issuable.instance_of?(MergeRequest) && !issuable.can_be_merged_by?(issuable.assignee)
+        - if !issuable.can_be_merged_by?(issuable.assignee)
           %span.pull-right.cannot-be-merged{ data: { toggle: 'tooltip', placement: 'left' }, title: 'Not allowed to merge' }
             = icon('exclamation-triangle', 'aria-hidden': 'true')
         %span.username
