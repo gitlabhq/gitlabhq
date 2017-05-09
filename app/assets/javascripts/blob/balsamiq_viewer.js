@@ -1,7 +1,10 @@
 import BalsamiqViewer from './balsamiq/balsamiq_viewer';
 
 function loadBalsamiqViewer() {
-  const balsamiqViewer = new BalsamiqViewer(document.getElementById('js-balsamiq-viewer'));
+  const viewer = document.getElementById('js-balsamiq-viewer');
+  const endpoint = viewer.dataset.endpoint;
+
+  const balsamiqViewer = new BalsamiqViewer(viewer, endpoint);
   balsamiqViewer.loadFile();
 }
 

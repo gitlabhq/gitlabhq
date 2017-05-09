@@ -2,7 +2,7 @@ import sqljs from 'sql.js';
 import BalsamiqViewer from '~/blob/balsamiq/balsamiq_viewer';
 import ClassSpecHelper from '../../helpers/class_spec_helper';
 
-describe('BalsamiqViewer', () => {
+fdescribe('BalsamiqViewer', () => {
   let balsamiqViewer;
   let endpoint;
   let viewer;
@@ -10,13 +10,9 @@ describe('BalsamiqViewer', () => {
   describe('class constructor', () => {
     beforeEach(() => {
       endpoint = 'endpoint';
-      viewer = {
-        dataset: {
-          endpoint,
-        },
-      };
+      viewer = {};
 
-      balsamiqViewer = new BalsamiqViewer(viewer);
+      balsamiqViewer = new BalsamiqViewer(viewer, endpoint);
     });
 
     it('should set .viewer', () => {

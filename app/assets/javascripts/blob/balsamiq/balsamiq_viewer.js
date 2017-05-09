@@ -13,15 +13,15 @@ const PREVIEW_TEMPLATE = _template(`
 `);
 
 class BalsamiqViewer {
-  constructor(viewer) {
+  constructor(viewer, endpoint) {
     this.viewer = viewer;
+    this.endpoint = endpoint;
   }
 
   loadFile() {
     const xhr = new XMLHttpRequest();
-    const endpoint = this.viewer.dataset.endpoint;
 
-    xhr.open('GET', endpoint, true);
+    xhr.open('GET', this.endpoint, true);
     xhr.responseType = 'arraybuffer';
 
     xhr.onload = this.renderFile.bind(this);
