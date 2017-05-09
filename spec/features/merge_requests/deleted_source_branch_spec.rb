@@ -20,7 +20,7 @@ describe 'Deleted source branch', feature: true, js: true do
 
   it 'shows a message about missing source branch' do
     expect(page).to have_content(
-      'Source branch this-branch-does-not-exist does not exist'
+      'Source branch does not exist.'
     )
   end
 
@@ -35,6 +35,6 @@ describe 'Deleted source branch', feature: true, js: true do
     wait_for_ajax
 
     expect(page).to have_selector('.diffs.tab-pane .nothing-here-block')
-    expect(page).to have_content('Nothing to merge from this-branch-does-not-exist into feature')
+    expect(page).to have_content('Source branch does not exist.')
   end
 end

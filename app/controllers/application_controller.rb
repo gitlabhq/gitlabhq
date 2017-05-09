@@ -104,7 +104,10 @@ class ApplicationController < ActionController::Base
   end
 
   def access_denied!
-    render "errors/access_denied", layout: "errors", status: 404
+    respond_to do |format|
+      format.json { head :not_found }
+      format.any { render "errors/access_denied", layout: "errors", status: 404 }
+    end
   end
 
   def git_not_found!

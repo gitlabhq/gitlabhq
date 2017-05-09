@@ -1,6 +1,6 @@
 import Vue from 'vue';
 
-require('~/merge_request_widget/approvals/components/approvals_body');
+import ApprovalsBody from '~/vue_merge_request_widget/ee/components/approvals/approvals_body';
 
 (() => {
   gl.ApprovalsStore = {
@@ -29,7 +29,7 @@ require('~/merge_request_widget/approvals/components/approvals_body');
       checkmarkSvg: '<svg></svg>',
     };
 
-    const ApprovalsBodyComponent = Vue.component('approvals-body');
+    const ApprovalsBodyComponent = Vue.extend(ApprovalsBody);
 
     this.approvalsBody = new ApprovalsBodyComponent({
       el: '#mock-container',
@@ -65,50 +65,6 @@ require('~/merge_request_widget/approvals/components/approvals_body');
           Vue.nextTick(() => {
             const correctText = '2 more approvals';
             expect(this.approvalsBody.approvalsRequiredStringified).toBe(correctText);
-            done();
-          });
-        });
-      });
-
-      describe('approverNamesStringified', function () {
-        // Preceded by: Requires {1 more approval} required from _____
-        it('should display the correct string for 1 possible approver name', function (done) {
-          const correctText = 'Approver 1';
-          Vue.nextTick(() => {
-            expect(this.approvalsBody.approverNamesStringified).toBe(correctText);
-            done();
-          });
-        });
-
-        it('should display the correct string for 2 possible approver names', function (done) {
-          this.approvalsBody.suggestedApprovers.push({ name: 'Approver 2' });
-
-          Vue.nextTick(() => {
-            const correctText = 'Approver 1 or Approver 2';
-            expect(this.approvalsBody.approverNamesStringified).toBe(correctText);
-            done();
-          });
-        });
-
-        it('should display the correct string for 3 possible approver names', function (done) {
-          this.approvalsBody.suggestedApprovers.push({ name: 'Approver 2' });
-          this.approvalsBody.suggestedApprovers.push({ name: 'Approver 3' });
-
-          Vue.nextTick(() => {
-            const correctText = 'Approver 1, Approver 2, or Approver 3';
-            expect(this.approvalsBody.approverNamesStringified).toBe(correctText);
-            done();
-          });
-        });
-
-        it('should join the names with "and" when all of the remaining approvers have to approve the MR', function (done) {
-          this.approvalsBody.approvalsLeft = 3;
-          this.approvalsBody.suggestedApprovers.push({ name: 'Approver 2' });
-          this.approvalsBody.suggestedApprovers.push({ name: 'Approver 3' });
-
-          Vue.nextTick(() => {
-            const correctText = 'Approver 1, Approver 2, and Approver 3';
-            expect(this.approvalsBody.approverNamesStringified).toBe(correctText);
             done();
           });
         });

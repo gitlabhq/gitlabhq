@@ -8,6 +8,7 @@ class Spinach::Features::ProjectFfMergeRequests < Spinach::FeatureSteps
   include SharedDiffNote
   include SharedUser
   include WaitForAjax
+  include WaitForVueResource
 
   step 'project "Shop" have "Bug NS-05" open merge request with diffs inside' do
     create(:merge_request_with_diffs,
@@ -18,12 +19,12 @@ class Spinach::Features::ProjectFfMergeRequests < Spinach::FeatureSteps
   end
 
   step 'merge request is mergeable' do
-    expect(page).to have_button 'Accept merge request'
+    expect(page).to have_button 'Merge'
   end
 
   step 'I should see ff-only merge button' do
     expect(page).to have_content "Fast-forward merge without a merge commit"
-    expect(page).to have_button 'Accept merge request'
+    expect(page).to have_button 'Merge'
   end
 
   step 'merge request "Bug NS-05" is mergeable' do
@@ -32,13 +33,14 @@ class Spinach::Features::ProjectFfMergeRequests < Spinach::FeatureSteps
 
   step 'I accept this merge request' do
     page.within '.mr-state-widget' do
-      click_button "Accept merge request"
+      click_button "Merge"
     end
   end
 
   step 'I should see merged request' do
     page.within '.status-box' do
       expect(page).to have_content "Merged"
+      wait_for_vue_resource
     end
   end
 

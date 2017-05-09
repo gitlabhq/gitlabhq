@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Target branch', feature: true do
+describe 'Target branch', feature: true, js: true do
   let(:user) { create(:user) }
   let(:merge_request) { create(:merge_request) }
   let(:project) { merge_request.project }
@@ -17,11 +17,6 @@ describe 'Target branch', feature: true do
     project.team << [user, :master]
   end
 
-  it 'shows link to target branch' do
-    visit path_to_merge_request
-    expect(page).to have_link('feature', href: namespace_project_commits_path(project.namespace, project, merge_request.target_branch))
-  end
-
   context 'when branch was deleted' do
     before do
       DeleteBranchService.new(project, user).execute('feature')
@@ -30,12 +25,12 @@ describe 'Target branch', feature: true do
 
     it 'shows a message about missing target branch' do
       expect(page).to have_content(
-        'Target branch feature does not exist'
+        'Target branch does not exist'
       )
     end
 
     it 'does not show link to target branch' do
-      expect(page).not_to have_link('feature')
+      expect(page).not_to have_selector('.mr-widget-body .js-branch-text a')
     end
   end
 end
