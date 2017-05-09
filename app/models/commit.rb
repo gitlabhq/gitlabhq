@@ -336,9 +336,7 @@ class Commit
     end
   end
 
-  def raw_deltas
-    raw.deltas
-  end
+  delegate :deltas, to: :raw, prefix: :raw
 
   def diffs(diff_options = nil)
     Gitlab::Diff::FileCollection::Commit.new(self, diff_options: diff_options)
