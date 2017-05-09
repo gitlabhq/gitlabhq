@@ -81,7 +81,7 @@ module TreeHelper
       part_path = ""
       parts = @path.split('/')
 
-      yield('..', nil) if parts.count > max_links
+      yield('..', parts) if parts.count > max_links
 
       parts.each do |part|
         part_path = File.join(part_path, part) unless part_path.empty?
