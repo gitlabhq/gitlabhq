@@ -50,8 +50,8 @@ export default class ProtectedRefDropdown {
       id(protectedRef) {
         return _.escape(protectedRef.id);
       },
-      clicked: (item, $el, e) => {
-        e.preventDefault();
+      clicked: (options) => {
+        options.e.preventDefault();
         this.onSelect();
       },
     });
