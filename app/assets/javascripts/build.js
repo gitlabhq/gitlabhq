@@ -2,7 +2,7 @@
 consistent-return, prefer-rest-params */
 /* global Breakpoints */
 
-import { bytesToKiB } from './lib/utils/number_utils';
+import { formatRelevantDigits, bytesToKiB } from './lib/utils/number_utils';
 
 const bind = function (fn, me) { return function () { return fn.apply(me, arguments); }; };
 const AUTO_SCROLL_OFFSET = 75;
@@ -111,7 +111,7 @@ window.Build = (function () {
         // we need to show a message warning the user about that.
         if (this.logBytes < log.total) {
           // size is in bytes, we need to calculate KiB
-          const size = bytesToKiB(this.logBytes);
+          const size = formatRelevantDigits(bytesToKiB(this.logBytes));
           $('.js-truncated-info-size').html(`${size}`);
           this.$truncatedInfo.removeClass('hidden');
           this.initAffixTruncatedInfo();
