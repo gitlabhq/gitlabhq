@@ -7,201 +7,201 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2017-04-12 22:37-0500\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2017-05-09 13:44+0200\n"
 "Language-Team: German\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"\n"
+"Last-Translator: \n"
+"X-Generator: Poedit 2.0.1\n"
 
 msgid "ByAuthor|by"
-msgstr ""
+msgstr "Von"
 
 msgid "Commit"
 msgid_plural "Commits"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Commit"
+msgstr[1] "Commits"
 
 msgid "Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project."
-msgstr ""
+msgstr "Cycle Analytics liefern einen Überblick darüber, wie viel Zeit in Ihrem Projekt von einer Idee bis zum Produktivdeployment vergeht."
 
 msgid "CycleAnalyticsStage|Code"
-msgstr ""
+msgstr "Code"
 
 msgid "CycleAnalyticsStage|Issue"
-msgstr ""
+msgstr "Issue"
 
 msgid "CycleAnalyticsStage|Plan"
-msgstr ""
+msgstr "Planung"
 
 msgid "CycleAnalyticsStage|Production"
-msgstr ""
+msgstr "Produktiv"
 
 msgid "CycleAnalyticsStage|Review"
-msgstr ""
+msgstr "Review"
 
 msgid "CycleAnalyticsStage|Staging"
-msgstr ""
+msgstr "Staging"
 
 msgid "CycleAnalyticsStage|Test"
-msgstr ""
+msgstr "Test"
 
 msgid "Deploy"
 msgid_plural "Deploys"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Deployment"
+msgstr[1] "Deployments"
 
 msgid "FirstPushedBy|First"
-msgstr ""
+msgstr "Erster"
 
 msgid "FirstPushedBy|pushed by"
-msgstr ""
+msgstr "gepusht von"
 
 msgid "From issue creation until deploy to production"
-msgstr ""
+msgstr "Vom Anlegen des Issues bis zum Produktivdeployment"
 
 msgid "From merge request merge until deploy to production"
-msgstr ""
+msgstr "Vom Merge Request bis zum Produktivdeployment"
 
 msgid "Introducing Cycle Analytics"
-msgstr ""
+msgstr "Was sind Cycle Analytics?"
 
 msgid "Last %d day"
 msgid_plural "Last %d days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Letzter %d Tag"
+msgstr[1] "Letzten %d Tage"
 
 msgid "Limited to showing %d event at most"
 msgid_plural "Limited to showing %d events at most"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Eingeschränkt auf maximal %d Ereignis"
+msgstr[1] "Eingeschränkt auf maximal %d Ereignisse"
 
 msgid "Median"
-msgstr ""
+msgstr "Median"
 
 msgid "New Issue"
 msgid_plural "New Issues"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Neues Issue"
+msgstr[1] "Neue Issues"
 
 msgid "Not available"
-msgstr ""
+msgstr "Nicht verfügbar"
 
 msgid "Not enough data"
-msgstr ""
+msgstr "Nicht genügend Daten"
 
 msgid "OpenedNDaysAgo|Opened"
-msgstr ""
+msgstr "Erstellt"
 
 msgid "Pipeline Health"
-msgstr ""
+msgstr "Pipeline Kennzahlen"
 
 msgid "ProjectLifecycle|Stage"
-msgstr ""
+msgstr "Phase"
 
 msgid "Read more"
-msgstr ""
+msgstr "Mehr"
 
 msgid "Related Commits"
-msgstr ""
+msgstr "Zugehörige Commits"
 
 msgid "Related Deployed Jobs"
-msgstr ""
+msgstr "Zugehörige Deploymentjobs"
 
 msgid "Related Issues"
-msgstr ""
+msgstr "Zugehörige Issues"
 
 msgid "Related Jobs"
-msgstr ""
+msgstr "Zugehörige Jobs"
 
 msgid "Related Merge Requests"
-msgstr ""
+msgstr "Zugehörige Merge Requests"
 
 msgid "Related Merged Requests"
-msgstr ""
+msgstr "Zugehörige abgeschlossene Merge Requests"
 
 msgid "Showing %d event"
 msgid_plural "Showing %d events"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Zeige %d Ereignis"
+msgstr[1] "Zeige %d Ereignisse"
 
 msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
-msgstr ""
+msgstr "Die Code-Phase stellt die Zeit vom ersten Commit bis zum Erstellen eines Merge Requests dar. Sobald Sie Ihren ersten Merge Request anlegen, werden dessen Daten automatisch ergänzt."
 
 msgid "The collection of events added to the data gathered for that stage."
-msgstr ""
+msgstr "Ereignisse, die für diese Phase ausgewertet wurden."
 
 msgid "The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage."
-msgstr ""
+msgstr "Die Issue-Phase stellt die Zeit vom Anlegen eines Issues bis zum Zuweisen eines Meilensteins oder Hinzufügen zum Issue Board dar. Erstellen Sie einen Issue, damit dessen Daten hier erscheinen."
 
 msgid "The phase of the development lifecycle."
-msgstr ""
+msgstr "Die Phase im Entwicklungsprozess."
 
 msgid "The planning stage shows the time from the previous step to pushing your first commit. This time will be added automatically once you push your first commit."
-msgstr ""
+msgstr "Die Planungsphase stellt die Zeit von der vorherigen Phase bis zum Pushen des ersten Commits dar. Sobald Sie den ersten Commit pushen, werden dessen Daten hier erscheinen."
 
 msgid "The production stage shows the total time it takes between creating an issue and deploying the code to production. The data will be automatically added once you have completed the full idea to production cycle."
-msgstr ""
+msgstr "Die Produktiv-Phase stellt die Gesamtzeit vom Anlegen eines Issues bis zum Deployment auf dem Produktivsystem dar. Sobald Sie den vollständigen Entwicklungszyklus von einer Idee bis zum Produktivdeployment durchlaufen haben, erscheinen die zugehörigen Daten hier."
 
 msgid "The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request."
-msgstr ""
+msgstr "Die Review-Phase stellt die Zeit vom Anlegen eines Merge Requests bis zum Mergen dar. Sobald Sie Ihren ersten Merge Request abschließen, werden dessen Daten hier automatisch angezeigt."
 
 msgid "The staging stage shows the time between merging the MR and deploying code to the production environment. The data will be automatically added once you deploy to production for the first time."
-msgstr ""
+msgstr "Die Staging-Phase stellt die Zeit zwischen Mergen eines Merge Requests und dem Produktivdeployment dar. Sobald Sie das erste Produktivdeployment durchgeführt haben, werden dessen Daten hier automatisch angezeigt."
 
 msgid "The testing stage shows the time GitLab CI takes to run every pipeline for the related merge request. The data will automatically be added after your first pipeline finishes running."
-msgstr ""
+msgstr "Die Test-Phase stellt die Zeit dar, die GitLab CI benötigt um die Pipelines von Merge Requests abzuarbeiten. Sobald die erste Pipeline abgeschlossen ist, werden deren Daten hier automatisch angezeigt."
 
 msgid "The time taken by each data entry gathered by that stage."
-msgstr ""
+msgstr "Zeit die für das jeweilige Ereignis in der Phase ermittelt wurde."
 
 msgid "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."
-msgstr ""
+msgstr "Der mittlere aller erfassten Werte. Zum Beispiel ist für 3, 5, 9 der Median 5. Bei 3, 5, 7, 8 ist der Median (5+7)/2 = 6."
 
 msgid "Time before an issue gets scheduled"
-msgstr ""
+msgstr "Zeit bis ein Issue geplant wird"
 
 msgid "Time before an issue starts implementation"
-msgstr ""
+msgstr "Zeit bis die Implementierung für ein Issue beginnt"
 
 msgid "Time between merge request creation and merge/close"
-msgstr ""
+msgstr "Zeit zwischen Anlegen und Mergen/Schließen eines Merge Requests"
 
 msgid "Time until first merge request"
-msgstr ""
+msgstr "Zeit bis zum ersten Merge Request"
 
 msgid "Time|hr"
 msgid_plural "Time|hrs"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "h"
+msgstr[1] "h"
 
 msgid "Time|min"
 msgid_plural "Time|mins"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "min"
+msgstr[1] "min"
 
 msgid "Time|s"
-msgstr ""
+msgstr "s"
 
 msgid "Total Time"
-msgstr ""
+msgstr "Gesamtzeit"
 
 msgid "Total test time for all commits/merges"
-msgstr ""
+msgstr "Gesamte Testlaufzeit für alle Commits/Merges"
 
 msgid "Want to see the data? Please ask an administrator for access."
-msgstr ""
+msgstr "Um diese Daten einsehen zu können, wenden Sie sich bitte an Ihren Administrator."
 
 msgid "We don't have enough data to show this stage."
-msgstr ""
+msgstr "Es liegen nicht genügend Daten vor, um diese Phase anzuzeigen."
 
 msgid "You need permission."
-msgstr ""
+msgstr "Sie benötigen Zugriffsrechte."
 
 msgid "day"
 msgid_plural "days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tag"
+msgstr[1] "Tage"
