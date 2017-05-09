@@ -175,7 +175,7 @@ const normalizeNewlines = function(str) {
           if ($textarea.val() !== '') {
             return;
           }
-          myLastNote = $("li.note[data-author-id='" + gon.current_user_id + "'][data-editable]:last");
+          myLastNote = $(`li.note[data-author-id='${gon.current_user_id}'][data-editable]:last`, $textarea.closest('.note, #notes'));
           if (myLastNote.length) {
             myLastNoteEditBtn = myLastNote.find('.js-note-edit');
             return myLastNoteEditBtn.trigger('click', [true, myLastNote]);
