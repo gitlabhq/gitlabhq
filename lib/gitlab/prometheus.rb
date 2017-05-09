@@ -13,18 +13,18 @@ module Gitlab
       json_api_get('query', query: '1')
     end
 
-    def query(query)
+    def query(query, time: Time.now)
       get_result('vector') do
-        json_api_get('query', query: query)
+        json_api_get('query', query: query, time: time.utc.to_f)
       end
     end
 
-    def query_range(query, start: 8.hours.ago)
+    def query_range(query, start: 8.hours.ago, stop: Time.now)
       get_result('matrix') do
         json_api_get('query_range',
           query: query,
           start: start.to_f,
-          end: Time.now.utc.to_f,
+          end: stop.to_f,
           step: 1.minute.to_i)
       end
     end

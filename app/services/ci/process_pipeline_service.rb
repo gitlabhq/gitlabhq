@@ -50,7 +50,7 @@ module Ci
       when 'always'
         %w[success failed skipped]
       when 'manual'
-        %w[success]
+        %w[success skipped]
       else
         []
       end
