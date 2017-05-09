@@ -2,11 +2,13 @@
 import GroupsStore from '../stores/groups_store';
 import GroupsService from '../services/groups_service';
 import GroupItem from '../components/group_item.vue';
+import GroupItemProxy from '../components/group_item_proxy.vue';
 import eventHub from '../event_hub';
 
 export default {
   components: {
     'group-item': GroupItem,
+    // 'group-item-proxy': GroupItemProxy,
   },
 
   data() {
@@ -28,10 +30,10 @@ export default {
   },
 
   methods: {
-    fetchGroups() {
+    fetchGroups(group = null) {
       this.service.getGroups()
         .then((response) => {
-          this.store.setGroups(response.json());
+          this.store.setGroups(group, this.service.getFakeGroups());
         })
         .catch(() => {
           // TODO: Handler error
@@ -39,19 +41,41 @@ export default {
     },
     toggleSubGroups(group) {
       GroupsStore.toggleSubGroups(group);
+
+      this.fetchGroups(group);
     },
+  },
+  render(createElement) {
+    const ref = [];
+
+    if (!this.state.groups) {
+      return createElement('div', 'hola mundo');
+    }
+
+    function iterator (groups, ref) {
+      for (let i = 0; i < groups.length; i += 1) {
+        ref.push(createElement('group-item', {
+          props: {
+            group: groups[i],
+          },
+        }));
+
+        if (groups[i].subGroups && groups[i].isOpen) {
+          iterator(groups[i].subGroups, ref);
+        }
+      }
+    }
+
+    iterator(this.state.groups, ref);
+
+    return createElement('table', {
+      class: {
+        table: true, 
+        'table-bordered': true,
+      },
+      props: {
+      }
+    }, [createElement('tbody', {}, ref)]);
   },
 };
 </script>
-
-<template>
-  <table class="table table-bordered">
-    <template v-for="group in state.groups">
-      <tr is="group-item" :group="group" />
-      <tr v-if="group.isOpen">
-        <td>sub groups for {{group.name}}</td>
-        <td></td>
-      </tr>
-    </template>
-  </table>
-</template>

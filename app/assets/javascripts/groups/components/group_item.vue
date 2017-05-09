@@ -2,6 +2,7 @@
 import eventHub from '../event_hub';
 
 export default {
+  name: 'group-item',
   props: {
     group: {
       type: Object,
@@ -10,6 +11,10 @@ export default {
   },
   methods: {
     toggleSubGroups() {
+      if (!this.group.subGroups.length) {
+        return;
+      }
+
       eventHub.$emit('toggleSubGroups', this.group);
     },
   },
@@ -18,25 +23,20 @@ export default {
 
 <template>
   <tr @click="toggleSubGroups">
-    <template >
-      <td>
-        <span>
-          <i
-            v-show="group.isOpen"
-            class="fa fa-caret-down"
-            aria-hidden="true" />
-          <i
-            v-show="!group.isOpen"
-            class="fa fa-caret-right"
-            aria-hidden="true"/>
-        </span>
-      </td>
-      <td>
-        <div>
-          <a :href="group.web_url">{{group.full_name}}</a>
-        </div>
-        <div>{{group.description}}</div>
-      </td>
-    </template>
+    <td>
+      <span v-show="group.subGroups && group.subGroups.length">
+        <i
+          v-show="group.isOpen"
+          class="fa fa-caret-down"
+          aria-hidden="true" />
+        <i
+          v-show="!group.isOpen"
+          class="fa fa-caret-right"
+          aria-hidden="true"/>
+      </span>
+      <span>
+        <a :href="group.web_url">{{group.full_name}}</a>
+      </span>
+    </td>
   </tr>
 </template>

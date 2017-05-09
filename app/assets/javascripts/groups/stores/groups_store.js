@@ -6,8 +6,12 @@ export default class GroupsStore {
     return this;
   }
 
-  setGroups(groups) {
-    this.state.groups = this.decorateGroups(groups);
+  setGroups(group, groups) {
+    if (group) {
+      // const group = this.state.groups.find();
+    } else {
+      this.state.groups = this.decorateGroups(groups);
+    }
 
     return groups;
   }
