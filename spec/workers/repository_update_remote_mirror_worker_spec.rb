@@ -10,6 +10,10 @@ describe RepositoryUpdateRemoteMirrorWorker do
     Timecop.freeze(Time.now)
   end
 
+  after do
+    Timecop.return
+  end
+
   describe '#perform' do
     context 'with status none' do
       before do
