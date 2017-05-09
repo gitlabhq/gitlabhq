@@ -6,8 +6,6 @@ unless Rails.env.production?
     end
 
     desc 'GitLab | lint | Check JavaScript bundle files for suboptimal bundling'
-    task :js_bundles do
-      Rake::Task['js_bundles_check'].invoke
-    end
+    task js_bundles: ['rake:js_bundles_check']
   end
 end

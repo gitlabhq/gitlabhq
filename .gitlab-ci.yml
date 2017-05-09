@@ -409,8 +409,7 @@ rake gitlab:assets:compile:
     SKIP_STORAGE_VALIDATION: "true"
     WEBPACK_REPORT: "true"
   script:
-    - bundle exec rake yarn:install gitlab:assets:compile
-    - bundle exec rake lint:js_bundles
+    - bundle exec rake yarn:install gitlab:assets:compile lint:js_bundles
   artifacts:
     name: webpack-report
     expire_in: 31d
