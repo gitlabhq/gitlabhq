@@ -336,6 +336,10 @@ class Commit
     end
   end
 
+  def raw_deltas
+    raw.deltas
+  end
+
   def diffs(diff_options = nil)
     Gitlab::Diff::FileCollection::Commit.new(self, diff_options: diff_options)
   end
@@ -384,10 +388,6 @@ class Commit
     end
 
     changes
-  end
-
-  def raw_deltas
-    raw.deltas
   end
 
   def merged_merge_request?(user)
