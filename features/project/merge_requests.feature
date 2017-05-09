@@ -26,11 +26,13 @@ Feature: Project Merge Requests
     When I visit project "Shop" merge requests page
     Then I should see "feature_conflict" branch
 
+  @javascript
   Scenario: I should not see the numbers of diverged commits if the branch is rebased on the target
     Given project "Shop" have "Bug NS-07" open merge request with rebased branch
     When I visit merge request page "Bug NS-07"
     Then I should not see the diverged commits count
 
+  @javascript
   Scenario: I should see the numbers of diverged commits if the branch diverged from the target
     Given project "Shop" have "Bug NS-08" open merge request with diverged branch
     When I visit merge request page "Bug NS-08"
@@ -46,21 +48,25 @@ Feature: Project Merge Requests
     Then I should see "Feature NS-03" in merge requests
     And I should see "Bug NS-04" in merge requests
 
+  @javascript
   Scenario: I visit an open merge request page
     Given I click link "Bug NS-04"
     Then I should see merge request "Bug NS-04"
 
+  @javascript
   Scenario: I visit a merged merge request page
     Given project "Shop" have "Feature NS-05" merged merge request
     And I click link "Merged"
     And I click link "Feature NS-05"
     Then I should see merge request "Feature NS-05"
 
+  @javascript
   Scenario: I close merge request page
     Given I click link "Bug NS-04"
     And I click link "Close"
     Then I should see closed merge request "Bug NS-04"
 
+  @javascript
   Scenario: I reopen merge request page
     Given I click link "Bug NS-04"
     And I click link "Close"
@@ -176,6 +182,7 @@ Feature: Project Merge Requests
 
   # Markdown
 
+  @javascript
   Scenario: Headers inside the description should have ids generated for them.
     When I visit merge request page "Bug NS-04"
     Then Header "Description header" should have correct id and link

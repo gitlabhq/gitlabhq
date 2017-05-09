@@ -39,8 +39,6 @@ var config = {
     issue_show:           './issue_show/index.js',
     main:                 './main.js',
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
-    merge_request_widget: './merge_request_widget/ci_bundle.js',
-    mr_widget_ee:         './merge_request_widget/widget_bundle.js',
     monitoring:           './monitoring/monitoring_bundle.js',
     network:              './network/network_bundle.js',
     notebook_viewer:      './blob/notebook_viewer.js',
@@ -55,6 +53,7 @@ var config = {
     terminal:             './terminal/terminal_bundle.js',
     u2f:                  ['vendor/u2f'],
     users:                './users/users_bundle.js',
+    vue_merge_request_widget: './vue_merge_request_widget/index.js',
   },
 
   output: {

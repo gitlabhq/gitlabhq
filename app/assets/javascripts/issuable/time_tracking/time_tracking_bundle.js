@@ -30,7 +30,7 @@ Vue.use(VueResource);
           fetchIssuable() {
             return gl.IssuableResource.get.call(gl.IssuableResource, {
               type: 'GET',
-              url: gl.IssuableResource.endpoint,
+              url: `${gl.IssuableResource.endpoint}?basic=true`,
             });
           },
           updateState(data) {

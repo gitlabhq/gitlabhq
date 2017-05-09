@@ -75,10 +75,9 @@ constraints(ProjectUrlConstrainer.new) do
           get :conflict_for_path
           get :pipelines
           get :merge_check
+          get :commit_change_content
           post :merge
-          get :merge_widget_refresh
           post :cancel_merge_when_pipeline_succeeds
-          get :ci_status
           get :pipeline_status
           get :ci_environments_status
           post :toggle_subscription
@@ -174,7 +173,11 @@ constraints(ProjectUrlConstrainer.new) do
           get :folder, path: 'folders/*id', constraints: { format: /(html|json)/ }
         end
 
-        resources :deployments, only: [:index]
+        resources :deployments, only: [:index] do
+          member do
+            get :metrics
+          end
+        end
       end
 
       resource :cycle_analytics, only: [:show]

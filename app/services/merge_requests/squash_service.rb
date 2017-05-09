@@ -9,7 +9,7 @@ module MergeRequests
       @repository = target_project.repository
       @rugged = repository.rugged
 
-      squash || error('Failed to squash. Should be done manually')
+      squash || error('Failed to squash. Should be done manually.')
     end
 
     def squash
@@ -18,7 +18,7 @@ module MergeRequests
       end
 
       if merge_request.squash_in_progress?
-        return error('Squash task canceled: another squash is already in progress')
+        return error('Squash task canceled: another squash is already in progress.')
       end
 
       run_git_command(

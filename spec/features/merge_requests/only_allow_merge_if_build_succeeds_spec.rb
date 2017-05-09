@@ -1,6 +1,8 @@
 require 'spec_helper'
 
-feature 'Only allow merge requests to be merged if the pipeline succeeds', feature: true do
+feature 'Only allow merge requests to be merged if the pipeline succeeds', feature: true, js: true do
+  include WaitForVueResource
+
   let(:merge_request) { create(:merge_request_with_diffs) }
   let(:project)       { merge_request.target_project }
 
@@ -10,15 +12,17 @@ feature 'Only allow merge requests to be merged if the pipeline succeeds', featu
     project.team << [merge_request.author, :master]
   end
 
-  context 'project does not have CI enabled' do
+  context 'project does not have CI enabled', js: true do
     it 'allows MR to be merged' do
       visit_merge_request(merge_request)
 
-      expect(page).to have_button 'Accept merge request'
+      wait_for_vue_resource
+
+      expect(page).to have_button 'Merge'
     end
   end
 
-  context 'when project has CI enabled' do
+  context 'when project has CI enabled', js: true do
     given!(:pipeline) do
       create(:ci_empty_pipeline,
       project: project,
@@ -38,6 +42,8 @@ feature 'Only allow merge requests to be merged if the pipeline succeeds', featu
         it 'does not allow to merge immediately' do
           visit_merge_request(merge_request)
 
+          wait_for_vue_resource
+
           expect(page).to have_button 'Merge when pipeline succeeds'
           expect(page).not_to have_button 'Select merge moment'
         end
@@ -49,7 +55,9 @@ feature 'Only allow merge requests to be merged if the pipeline succeeds', featu
         it 'does not allow MR to be merged' do
           visit_merge_request(merge_request)
 
-          expect(page).not_to have_button 'Accept merge request'
+          wait_for_vue_resource
+
+          expect(page).to have_css('button[disabled="disabled"]', text: 'Merge')
           expect(page).to have_content('Please retry the job or push a new commit to fix the failure.')
         end
       end
@@ -60,7 +68,9 @@ feature 'Only allow merge requests to be merged if the pipeline succeeds', featu
         it 'does not allow MR to be merged' do
           visit_merge_request(merge_request)
 
-          expect(page).not_to have_button 'Accept merge request'
+          wait_for_vue_resource
+
+          expect(page).not_to have_button 'Merge'
           expect(page).to have_content('Please retry the job or push a new commit to fix the failure.')
         end
       end
@@ -71,7 +81,9 @@ feature 'Only allow merge requests to be merged if the pipeline succeeds', featu
         it 'allows MR to be merged' do
           visit_merge_request(merge_request)
 
-          expect(page).to have_button 'Accept merge request'
+          wait_for_vue_resource
+
+          expect(page).to have_button 'Merge'
         end
       end
 
@@ -81,7 +93,9 @@ feature 'Only allow merge requests to be merged if the pipeline succeeds', featu
         it 'allows MR to be merged' do
           visit_merge_request(merge_request)
 
-          expect(page).to have_button 'Accept merge request'
+          wait_for_vue_resource
+
+          expect(page).to have_button 'Merge'
         end
       end
     end
@@ -94,8 +108,10 @@ feature 'Only allow merge requests to be merged if the pipeline succeeds', featu
       context 'when CI is running' do
         given(:status) { :running }
 
-        it 'allows MR to be merged immediately', js: true do
+        it 'allows MR to be merged immediately' do
           visit_merge_request(merge_request)
+
+          wait_for_vue_resource
 
           expect(page).to have_button 'Merge when pipeline succeeds'
 
@@ -110,7 +126,9 @@ feature 'Only allow merge requests to be merged if the pipeline succeeds', featu
         it 'allows MR to be merged' do
           visit_merge_request(merge_request)
 
-          expect(page).to have_button 'Accept merge request'
+          wait_for_vue_resource
+
+          expect(page).to have_button 'Merge'
         end
       end
 
@@ -120,7 +138,9 @@ feature 'Only allow merge requests to be merged if the pipeline succeeds', featu
         it 'allows MR to be merged' do
           visit_merge_request(merge_request)
 
-          expect(page).to have_button 'Accept merge request'
+          wait_for_vue_resource
+
+          expect(page).to have_button 'Merge'
         end
       end
     end
