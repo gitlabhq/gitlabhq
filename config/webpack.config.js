@@ -60,11 +60,8 @@ var config = {
     terminal:             './terminal/terminal_bundle.js',
     u2f:                  ['vendor/u2f'],
     users:                './users/users_bundle.js',
-<<<<<<< HEAD
     raven:                './raven/index.js',
-=======
     vue_merge_request_widget: './vue_merge_request_widget/index.js',
->>>>>>> a6d35c27cac69f7edaaf64a0df863f1a3b557db1
   },
 
   output: {
