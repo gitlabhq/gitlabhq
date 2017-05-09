@@ -25,7 +25,7 @@ module Gitlab
     def highlight(text, continue: true, plain: false)
       highlighted_text = highlight_text(text, continue: continue, plain: plain)
       highlighted_text = link_dependencies(text, highlighted_text) if blob_name
-      autolink_strings(highlighted_text)
+      autolink_strings(text, highlighted_text)
     end
 
     def lexer
@@ -68,9 +68,42 @@ module Gitlab
       Gitlab::DependencyLinker.link(blob_name, text, highlighted_text)
     end
 
-    def autolink_strings(highlighted_text)
+    def autolink_strings(text, highlighted_text)
+      raw_lines = text.lines
+
       # TODO: Don't run pre-processing pipeline, because this may break the highlighting
-      Banzai.render(highlighted_text, pipeline: :autolink, autolink_emails: true).html_safe
+      linked_text = Banzai.render(
+        ERB::Util.html_escape(text),
+        pipeline: :autolink,
+        autolink_emails: true
+      ).html_safe
+
+      linked_lines = linked_text.lines
+
+      highlighted_lines = highlighted_text.lines
+
+      highlighted_lines.map!.with_index do |rich_line, i|
+        matches = []
+        linked_lines[i].scan(/(?<start><a[^>]+>)(?<content>[^<]+)(?<end><\/a>)/) { matches << Regexp.last_match }
+        next rich_line if matches.empty?
+
+        raw_line = raw_lines[i]
+        marked_line = rich_line.html_safe
+
+        matches.each do |match|
+          marker = StringRegexMarker.new(raw_line, marked_line)
+
+          regex = /#{Regexp.escape(match[:content])}/
+
+          marked_line = marker.mark(regex) do |text, left:, right:|
+            "#{match[:start]}#{text}#{match[:end]}"
+          end
+        end
+
+        marked_line
+      end
+
+      highlighted_lines.join.html_safe
     end
   end
 end
