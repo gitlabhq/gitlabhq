@@ -5,8 +5,6 @@ import MRWidgetService from '../services/mr_widget_service';
 export default {
   name: 'MemoryUsage',
   props: {
-    mr: { type: Object, required: true },
-    service: { type: Object, required: true },
     metricsUrl: { type: String, required: true },
   },
   data() {
@@ -14,6 +12,7 @@ export default {
       // memoryFrom: 0,
       // memoryTo: 0,
       memoryMetrics: [],
+      deploymentTime: 0,
       hasMetrics: false,
       loadFailed: false,
       loadingMetrics: true,
@@ -23,8 +22,22 @@ export default {
   components: {
     'mr-memory-graph': MemoryGraph,
   },
+  computed: {
+    shouldShowLoading() {
+      return this.loadingMetrics && !this.hasMetrics && !this.loadFailed;
+    },
+    shouldShowMemoryGraph() {
+      return !this.loadingMetrics && this.hasMetrics && !this.loadFailed;
+    },
+    shouldShowLoadFailure() {
+      return !this.loadingMetrics && !this.hasMetrics && this.loadFailed;
+    },
+    shouldShowMetricsUnavailable() {
+      return !this.loadingMetrics && !this.hasMetrics && !this.loadFailed;
+    },
+  },
   methods: {
-    computeGraphData(metrics) {
+    computeGraphData(metrics, deploymentTime) {
       this.loadingMetrics = false;
       const { memory_values } = metrics;
       // if (memory_previous.length > 0) {
@@ -38,70 +51,73 @@ export default {
       if (memory_values.length > 0) {
         this.hasMetrics = true;
         this.memoryMetrics = memory_values[0].values;
+        this.deploymentTime = deploymentTime;
       }
     },
-  },
-  mounted() {
-    this.$props.loadingMetrics = true;
-    gl.utils.backOff((next, stop) => {
-      MRWidgetService.fetchMetrics(this.$props.metricsUrl)
-        .then((res) => {
-          if (res.status === statusCodes.NO_CONTENT) {
-            this.backOffRequestCounter = this.backOffRequestCounter += 1;
-            if (this.backOffRequestCounter < 3) {
-              next();
+    loadMetrics() {
+      gl.utils.backOff((next, stop) => {
+        MRWidgetService.fetchMetrics(this.metricsUrl)
+          .then((res) => {
+            if (res.status === statusCodes.NO_CONTENT) {
+              this.backOffRequestCounter = this.backOffRequestCounter += 1;
+              /* eslint-disable no-unused-expressions */
+              this.backOffRequestCounter < 3 ? next() : stop(res);
             } else {
               stop(res);
             }
-          } else {
-            stop(res);
+          })
+          .catch(stop);
+      })
+        .then((res) => {
+          if (res.status === statusCodes.NO_CONTENT) {
+            return res;
           }
-        })
-        .catch(stop);
-    })
-    .then((res) => {
-      if (res.status === statusCodes.NO_CONTENT) {
-        return res;
-      }
 
-      return res.json();
-    })
-    .then((res) => {
-      this.computeGraphData(res.metrics);
-      return res;
-    })
-    .catch(() => {
-      this.$props.loadFailed = true;
-    });
+          return res.json();
+        })
+        .then((res) => {
+          this.computeGraphData(res.metrics, res.deployment_time);
+          return res;
+        })
+        .catch(() => {
+          this.loadFailed = true;
+          this.loadingMetrics = false;
+        });
+    },
+  },
+  mounted() {
+    this.loadingMetrics = true;
+    this.loadMetrics();
   },
   template: `
-    <div class="mr-info-list mr-memory-usage">
+    <div class="mr-info-list clearfix mr-memory-usage js-mr-memory-usage">
       <div class="legend"></div>
       <p
-        v-if="loadingMetrics"
-        class="usage-info usage-info-loading">
+        v-if="shouldShowLoading"
+        class="usage-info js-usage-info usage-info-loading">
         <i
           class="fa fa-spinner fa-spin usage-info-load-spinner"
           aria-hidden="true" />Loading deployment statistics.
       </p>
       <p
-        v-if="!hasMetrics && !loadingMetrics"
-        class="usage-info usage-info-loading">
-        Deployment statistics are not available currently.
-      </p>
-      <p
-        v-if="hasMetrics"
-        class="usage-info">
+        v-if="shouldShowMemoryGraph"
+        class="usage-info js-usage-info">
         Deployment memory usage:
       </p>
       <p
-        v-if="loadFailed"
-        class="usage-info">
+        v-if="shouldShowLoadFailure"
+        class="usage-info js-usage-info usage-info-failed">
         Failed to load deployment statistics.
       </p>
+      <p
+        v-if="shouldShowMetricsUnavailable"
+        class="usage-info js-usage-info usage-info-unavailable">
+        Deployment statistics are not available currently.
+      </p>
       <mr-memory-graph
-        v-if="hasMetrics"
+        v-if="shouldShowMemoryGraph"
         :metrics="memoryMetrics"
+        :deploymentTime="deploymentTime"
         height="25"
         width="100" />
     </div>
