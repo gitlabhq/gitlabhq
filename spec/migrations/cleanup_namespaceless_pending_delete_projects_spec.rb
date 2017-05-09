@@ -10,13 +10,21 @@ describe CleanupNamespacelessPendingDeleteProjects do
 
   describe '#up' do
     it 'only cleans up pending delete projects' do
-      admin = create(:admin)
       create(:empty_project)
       create(:empty_project, pending_delete: true)
       project = build(:empty_project, pending_delete: true, namespace_id: nil)
       project.save(validate: false)
 
-      expect(NamespacelessProjectDestroyWorker).to receive(:bulk_perform_async).with([[project.id.to_s, admin.id, {}]])
+      expect(NamespacelessProjectDestroyWorker).to receive(:bulk_perform_async).with([[project.id.to_s]])
+
+      described_class.new.up
+    end
+
+    it 'does nothing when no pending delete projects without namespace found' do
+      create(:empty_project)
+      create(:empty_project, pending_delete: true)
+
+      expect(NamespacelessProjectDestroyWorker).not_to receive(:bulk_perform_async)
 
       described_class.new.up
     end
