@@ -1,5 +1,4 @@
 /* global ListIssue */
-/* global Flash */
 
 import Vue from 'vue';
 import queryData from '../../utils/query_data';
@@ -109,7 +108,7 @@ gl.issueBoards.IssuesModal = Vue.extend({
         if (!this.issuesCount) {
           this.issuesCount = data.size;
         }
-      }).catch(() => new Flash('An unexpected error has occurred.', 'alert'));
+      });
     },
   },
   computed: {

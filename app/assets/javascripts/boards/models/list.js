@@ -1,7 +1,6 @@
 /* eslint-disable space-before-function-paren, no-underscore-dangle, class-methods-use-this, consistent-return, no-shadow, no-param-reassign, max-len, no-unused-vars */
 /* global ListIssue */
 /* global ListLabel */
-/* global Flash */
 import queryData from '../utils/query_data';
 
 const PER_PAGE = 20;
@@ -45,8 +44,7 @@ class List {
         this.position = data.position;
 
         return this.getIssues();
-      })
-      .catch(() => new Flash('An unexpected error has occurred.', 'alert'));
+      });
   }
 
   destroy () {
@@ -54,13 +52,11 @@ class List {
     gl.issueBoards.BoardsStore.state.lists.splice(index, 1);
     gl.issueBoards.BoardsStore.updateNewListDropdown(this.id);
 
-    gl.boardService.destroyList(this.id)
-      .catch(() => new Flash('An unexpected error has occurred.', 'alert'));
+    gl.boardService.destroyList(this.id);
   }
 
   update () {
-    gl.boardService.updateList(this.id, this.position)
-      .catch(() => new Flash('An unexpected error has occurred.', 'alert'));
+    gl.boardService.updateList(this.id, this.position);
   }
 
   nextPage () {
@@ -95,8 +91,7 @@ class List {
         }
 
         this.createIssues(data.issues);
-      })
-      .catch(() => new Flash('Failed to load issues, please try again.', 'alert'));
+      });
   }
 
   newIssue (issue) {
@@ -108,8 +103,7 @@ class List {
         const data = resp.json();
         issue.id = data.iid;
         issue.milestone = data.milestone;
-      })
-      .catch(() => new Flash('An unexpected error has occurred.', 'alert'));
+      });
   }
 
   createIssues (data) {
@@ -153,13 +147,11 @@ class List {
     this.issues.splice(oldIndex, 1);
     this.issues.splice(newIndex, 0, issue);
 
-    gl.boardService.moveIssue(issue.id, null, null, moveBeforeIid, moveAfterIid)
-      .catch(() => new Flash('An unexpected error has occurred.', 'alert'));
+    gl.boardService.moveIssue(issue.id, null, null, moveBeforeIid, moveAfterIid);
   }
 
   updateIssueLabel(issue, listFrom, moveBeforeIid, moveAfterIid) {
-    gl.boardService.moveIssue(issue.id, listFrom.id, this.id, moveBeforeIid, moveAfterIid)
-      .catch(() => new Flash('An unexpected error has occurred.', 'alert'));
+    gl.boardService.moveIssue(issue.id, listFrom.id, this.id, moveBeforeIid, moveAfterIid);
   }
 
   findIssue (id) {
