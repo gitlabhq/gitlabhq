@@ -1,14 +1,9 @@
 <script>
 import GroupsStore from '../stores/groups_store';
 import GroupsService from '../services/groups_service';
-import GroupItem from '../components/group_item.vue';
 import eventHub from '../event_hub';
 
 export default {
-  components: {
-    'group-item': GroupItem,
-  },
-
   data() {
     const store = new GroupsStore();
 
@@ -39,19 +34,15 @@ export default {
     },
     toggleSubGroups(group) {
       GroupsStore.toggleSubGroups(group);
+
+      this.fetchGroups();
     },
   },
 };
 </script>
 
 <template>
-  <table class="table table-bordered">
-    <template v-for="group in state.groups">
-      <tr is="group-item" :group="group" />
-      <tr v-if="group.isOpen">
-        <td>sub groups for {{group.name}}</td>
-        <td></td>
-      </tr>
-    </template>
-  </table>
+  <div>
+    <group-folder :groups="state.groups" />
+  </div>
 </template>
