@@ -16,7 +16,7 @@ class ServiceDeskStore {
   }
 
   setFetchError(value) {
-    this.state.fetchError = value;
+    this.state.fetchError = new Error(value);
   }
 }
 
