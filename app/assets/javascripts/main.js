@@ -123,8 +123,6 @@ import './member_expiration_date';
 import './members';
 import './merge_request';
 import './merge_request_tabs';
-import './merge_request_widget';
-import './merged_buttons';
 import './milestone';
 import './milestone_select';
 import './mini_pipeline_graph_dropdown';

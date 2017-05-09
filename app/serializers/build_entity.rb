@@ -26,11 +26,11 @@ class BuildEntity < Grape::Entity
   alias_method :build, :object
 
   def playable?
-    build.playable? && can?(request.user, :update_build, build)
+    build.playable? && can?(request.current_user, :update_build, build)
   end
 
   def detailed_status
-    build.detailed_status(request.user)
+    build.detailed_status(request.current_user)
   end
 
   def path_to(route, build)
