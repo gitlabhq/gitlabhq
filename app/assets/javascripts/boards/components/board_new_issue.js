@@ -68,7 +68,7 @@ export default {
         <div class="flash-container"
           v-if="error">
           <div class="flash-alert">
-            An error occured. Please try again.
+            An error occurred. Please try again.
           </div>
         </div>
         <label class="label-light"
