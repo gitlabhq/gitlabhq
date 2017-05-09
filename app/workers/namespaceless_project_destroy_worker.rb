@@ -12,16 +12,13 @@ class NamespacelessProjectDestroyWorker
     Sidekiq::Client.push_bulk('class' => self, 'queue' => sidekiq_options['queue'], 'args' => args_list)
   end
 
-  def perform(project_id, user_id, params)
+  def perform(project_id)
     begin
       project = Project.unscoped.find(project_id)
     rescue ActiveRecord::RecordNotFound
       return
     end
     return unless project.namespace_id.nil?  # Reject doing anything for projects that *do* have a namespace
-
-    user = User.find(user_id)
-    return unless user.can?(:remove_project, project)
 
     project.team.truncate
 

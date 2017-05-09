@@ -8,17 +8,14 @@ class CleanupNamespacelessPendingDeleteProjects < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    admin = User.find_by(admin: true)
-    return unless admin
-
     @offset = 0
 
     loop do
       ids = pending_delete_batch
 
-      break if ids.rows.count.zero?
+      break if ids.empty?
 
-      args = ids.map { |id| [id['id'], admin.id, {}] }
+      args = ids.map { |id| Array(id) }
 
       NamespacelessProjectDestroyWorker.bulk_perform_async(args)
 
@@ -33,7 +30,7 @@ class CleanupNamespacelessPendingDeleteProjects < ActiveRecord::Migration
   private
 
   def pending_delete_batch
-    connection.exec_query(find_batch)
+    connection.exec_query(find_batch).map{ |row| row['id'] }
   end
 
   BATCH_SIZE = 5000
