@@ -8,6 +8,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   include SharedDiffNote
   include SharedUser
   include WaitForAjax
+  include WaitForVueResource
 
   after do
     wait_for_ajax if javascript_test?
@@ -45,19 +46,23 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     page.within '.merge-request' do
       expect(page).to have_content "Wiki Feature"
     end
+    wait_for_vue_resource
   end
 
   step 'I should see closed merge request "Bug NS-04"' do
     expect(page).to have_content "Bug NS-04"
     expect(page).to have_content "Closed by"
+    wait_for_vue_resource
   end
 
   step 'I should see merge request "Bug NS-04"' do
     expect(page).to have_content "Bug NS-04"
+    wait_for_vue_resource
   end
 
   step 'I should see merge request "Feature NS-05"' do
     expect(page).to have_content "Feature NS-05"
+    wait_for_vue_resource
   end
 
   step 'I should not see "master" branch' do
@@ -358,10 +363,12 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should see a badge of "1" next to the discussion link' do
     expect_discussion_badge_to_have_counter("1")
+    wait_for_vue_resource
   end
 
   step 'I should see a badge of "0" next to the discussion link' do
     expect_discussion_badge_to_have_counter("0")
+    wait_for_vue_resource
   end
 
   step 'I should see a discussion has started on commit diff' do
@@ -369,6 +376,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
       page.should have_content "#{current_user.name} #{current_user.to_reference} started a discussion on commit"
       page.should have_content sample_commit.line_code_path
       page.should have_content "Line is wrong"
+      wait_for_vue_resource
     end
   end
 
@@ -376,16 +384,17 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     page.within(".notes .discussion") do
       page.should have_content "#{current_user.name} #{current_user.to_reference} started a discussion on commit"
       page.should have_content "One comment to rule them all"
+      wait_for_vue_resource
     end
   end
 
   step 'merge request is mergeable' do
-    expect(page).to have_button 'Accept merge request'
+    expect(page).to have_button 'Merge'
   end
 
   step 'I modify merge commit message' do
     click_button "Modify commit message"
-    fill_in 'commit_message', with: 'wow such merge'
+    fill_in 'Commit message', with: 'wow such merge'
   end
 
   step 'merge request "Bug NS-05" is mergeable' do
@@ -394,24 +403,26 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I accept this merge request' do
     page.within '.mr-state-widget' do
-      click_button "Accept merge request"
+      click_button "Merge"
     end
   end
 
   step 'I should see merged request' do
     page.within '.status-box' do
       expect(page).to have_content "Merged"
+      wait_for_vue_resource
     end
   end
 
   step 'I click link "Reopen"' do
-    first(:css, '.reopen-mr-link').click
+    first(:css, '.reopen-mr-link').trigger('click')
   end
 
   step 'I should see reopened merge request "Bug NS-04"' do
     page.within '.status-box' do
       expect(page).to have_content "Open"
     end
+    wait_for_vue_resource
   end
 
   step 'I click link "Hide inline discussion" of the third file' do
@@ -435,6 +446,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   step 'I should see a comment like "Line is wrong" in the third file' do
     page.within '.files>div:nth-child(3) .note-body > .note-text' do
       expect(page).to have_visible_content "Line is wrong"
+      wait_for_vue_resource
     end
   end
 
@@ -502,6 +514,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   step 'I should see comments on the side-by-side diff page' do
     page.within '.files>div:nth-child(2) .parallel .note-body > .note-text' do
       expect(page).to have_visible_content "Line is correct"
+      wait_for_vue_resource
     end
   end
 
@@ -544,6 +557,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     project = merge_request.source_project
     project.enable_ci
     pipeline = create :ci_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch
+    merge_request.update(head_pipeline: pipeline)
     create :ci_build, pipeline: pipeline
   end
 
@@ -557,12 +571,16 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     page.within ".mr-source-target" do
       expect(page).to have_content /([0-9]+ commits behind)/
     end
+
+    wait_for_vue_resource
   end
 
   step 'I should not see the diverged commits count' do
     page.within ".mr-source-target" do
       expect(page).not_to have_content /([0-9]+ commit[s]? behind)/
     end
+
+    wait_for_vue_resource
   end
 
   def merge_request

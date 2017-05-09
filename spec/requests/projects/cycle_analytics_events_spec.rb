@@ -9,8 +9,6 @@ describe 'cycle analytics events', api: true do
     before do
       project.team << [user, :developer]
 
-      allow_any_instance_of(Gitlab::ReferenceExtractor).to receive(:issues).and_return([issue])
-
       3.times do |count|
         Timecop.freeze(Time.now + count.days) do
           create_cycle
@@ -121,9 +119,10 @@ describe 'cycle analytics events', api: true do
   def create_cycle
     milestone = create(:milestone, project: project)
     issue.update(milestone: milestone)
-    mr = create_merge_request_closing_issue(issue)
+    mr = create_merge_request_closing_issue(issue, commit_message: "References #{issue.to_reference}")
 
     pipeline = create(:ci_empty_pipeline, status: 'created', project: project, ref: mr.source_branch, sha: mr.source_branch_sha)
+    mr.update(head_pipeline_id: pipeline.id)
     pipeline.run
 
     create(:ci_build, pipeline: pipeline, status: :success, author: user)

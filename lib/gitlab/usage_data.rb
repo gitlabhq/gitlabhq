@@ -23,6 +23,7 @@ module Gitlab
             ci_pipelines: ::Ci::Pipeline.count,
             ci_runners: ::Ci::Runner.count,
             ci_triggers: ::Ci::Trigger.count,
+            ci_pipeline_schedules: ::Ci::PipelineSchedule.count,
             deploy_keys: DeployKey.count,
             deployments: Deployment.count,
             environments: Environment.count,

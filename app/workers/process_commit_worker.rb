@@ -23,6 +23,9 @@ class ProcessCommitWorker
     return unless user
 
     commit = build_commit(project, commit_hash)
+
+    return unless commit.matches_cross_reference_regex?
+
     author = commit.author || user
 
     process_commit_message(project, commit, user, author, default)

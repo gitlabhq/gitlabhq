@@ -1,4 +1,7 @@
 module Ci
-  class PipelinePolicy < BuildPolicy
+  class PipelinePolicy < BasePolicy
+    def rules
+      delegate! @subject.project
+    end
   end
 end

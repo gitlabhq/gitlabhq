@@ -14,8 +14,6 @@ feature 'Clicking toggle commit message link', feature: true, js: true do
     )
   end
   let(:textbox) { page.find(:css, '.js-commit-message', visible: false) }
-  let(:include_link) { page.find(:css, '.js-with-description-link', visible: false) }
-  let(:do_not_include_link) { page.find(:css, '.js-without-description-link', visible: false) }
   let(:default_message) do
     [
       "Merge branch 'feature' into 'master'",
@@ -40,7 +38,7 @@ feature 'Clicking toggle commit message link', feature: true, js: true do
 
     visit namespace_project_merge_request_path(project.namespace, project, merge_request)
 
-    expect(textbox).not_to be_visible
+    expect(page).not_to have_selector('.js-commit-message')
     click_button "Modify commit message"
     expect(textbox).to be_visible
   end
@@ -55,20 +53,5 @@ feature 'Clicking toggle commit message link', feature: true, js: true do
     click_link "Don't include description in commit message"
 
     expect(textbox.value).to eq(default_message)
-  end
-
-  it "toggles link between 'Include description' and 'Don't include description'" do
-    expect(include_link).to be_visible
-    expect(do_not_include_link).not_to be_visible
-
-    click_link "Include description in commit message"
-
-    expect(include_link).not_to be_visible
-    expect(do_not_include_link).to be_visible
-
-    click_link "Don't include description in commit message"
-
-    expect(include_link).to be_visible
-    expect(do_not_include_link).not_to be_visible
   end
 end

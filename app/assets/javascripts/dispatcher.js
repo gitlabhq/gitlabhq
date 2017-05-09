@@ -10,7 +10,6 @@
 /* global IssuableForm */
 /* global LabelsSelect */
 /* global MilestoneSelect */
-/* global MergedButtons */
 /* global Commit */
 /* global NotificationsForm */
 /* global TreeView */
@@ -38,6 +37,7 @@
 import Issue from './issue';
 
 import BindInOut from './behaviors/bind_in_out';
+import DeleteModal from './branches/branches_delete_modal';
 import Group from './group';
 import GroupName from './group_name';
 import GroupsList from './groups_list';
@@ -49,6 +49,7 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import UserCallout from './user_callout';
 import { ProtectedTagCreate, ProtectedTagEditList } from './protected_tags';
 import ShortcutsWiki from './shortcuts_wiki';
+import Pipelines from './pipelines';
 import BlobViewer from './blob/viewer/index';
 import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
 
@@ -179,6 +180,7 @@ const ShortcutsBlob = require('./shortcuts_blob');
           break;
         case 'projects:branches:index':
           gl.AjaxLoadingSpinner.init();
+          new DeleteModal();
           break;
         case 'projects:issues:new':
         case 'projects:issues:edit':
@@ -213,15 +215,10 @@ const ShortcutsBlob = require('./shortcuts_blob');
           new gl.Diff();
           shortcut_handler = new ShortcutsIssuable(true);
           new ZenMode();
-          new MergedButtons();
-          break;
-        case 'projects:merge_requests:commits':
-          new MergedButtons();
           break;
         case "projects:merge_requests:diffs":
           new gl.Diff();
           new ZenMode();
-          new MergedButtons();
           break;
         case 'dashboard:activity':
           new gl.Activities();
@@ -257,7 +254,7 @@ const ShortcutsBlob = require('./shortcuts_blob');
           const { controllerAction } = document.querySelector('.js-pipeline-container').dataset;
           const pipelineStatusUrl = `${document.querySelector('.js-pipeline-tab-link a').getAttribute('href')}/status.json`;
 
-          new gl.Pipelines({
+          new Pipelines({
             initTabs: true,
             pipelineStatusUrl,
             tabsOptions: {

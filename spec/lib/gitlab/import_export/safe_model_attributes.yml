@@ -158,6 +158,7 @@ MergeRequest:
 - time_estimate
 - last_edited_at
 - last_edited_by_id
+- head_pipeline_id
 MergeRequestDiff:
 - id
 - state
@@ -188,6 +189,7 @@ Ci::Pipeline:
 - user_id
 - lock_version
 - auto_canceled_by_id
+- pipeline_schedule_id
 CommitStatus:
 - id
 - project_id
@@ -247,18 +249,19 @@ Ci::Trigger:
 - owner_id
 - description
 - ref
-Ci::TriggerSchedule:
+Ci::PipelineSchedule:
 - id
-- project_id
-- trigger_id
-- deleted_at
-- created_at
-- updated_at
+- description
+- ref
 - cron
 - cron_timezone
 - next_run_at
-- ref
+- project_id
+- owner_id
 - active
+- deleted_at
+- created_at
+- updated_at
 DeployKey:
 - id
 - user_id

@@ -85,8 +85,8 @@ class Deployment < ActiveRecord::Base
   end
 
   def stop_action
-    return nil unless on_stop.present?
-    return nil unless manual_actions
+    return unless on_stop.present?
+    return unless manual_actions
 
     @stop_action ||= manual_actions.find_by(name: on_stop)
   end
@@ -97,6 +97,21 @@ class Deployment < ActiveRecord::Base
 
   def formatted_deployment_time
     created_at.to_time.in_time_zone.to_s(:medium)
+  end
+
+  def has_metrics?
+    project.monitoring_service.present?
+  end
+
+  def metrics(timeframe)
+    return {} unless has_metrics?
+
+    half_timeframe = timeframe / 2
+    timeframe_start = created_at - half_timeframe
+    timeframe_end = created_at + half_timeframe
+
+    metrics = project.monitoring_service.metrics(environment, timeframe_start: timeframe_start, timeframe_end: timeframe_end)
+    metrics&.merge(deployment_time: created_at.to_i) || {}
   end
 
   private

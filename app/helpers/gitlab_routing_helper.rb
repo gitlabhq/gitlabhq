@@ -221,6 +221,26 @@ module GitlabRoutingHelper
     end
   end
 
+  # Pipeline Schedules
+  def pipeline_schedules_path(project, *args)
+    namespace_project_pipeline_schedules_path(project.namespace, project, *args)
+  end
+
+  def pipeline_schedule_path(schedule, *args)
+    project = schedule.project
+    namespace_project_pipeline_schedule_path(project.namespace, project, schedule, *args)
+  end
+
+  def edit_pipeline_schedule_path(schedule)
+    project = schedule.project
+    edit_namespace_project_pipeline_schedule_path(project.namespace, project, schedule)
+  end
+
+  def take_ownership_pipeline_schedule_path(schedule, *args)
+    project = schedule.project
+    take_ownership_namespace_project_pipeline_schedule_path(project.namespace, project, schedule, *args)
+  end
+
   # Settings
   def project_settings_integrations_path(project, *args)
     namespace_project_settings_integrations_path(project.namespace, project, *args)

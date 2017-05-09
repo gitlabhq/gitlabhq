@@ -142,12 +142,6 @@ class CommitStatus < ActiveRecord::Base
     canceled? && auto_canceled_by_id?
   end
 
-  # Added in 9.0 to keep backward compatibility for projects exported in 8.17
-  # and prior.
-  def gl_project_id
-    'dummy'
-  end
-
   def detailed_status(current_user)
     Gitlab::Ci::Status::Factory
       .new(self, current_user)

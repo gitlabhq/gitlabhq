@@ -63,7 +63,7 @@ describe('TargetBranchDropdown', () => {
     expect('change.branch').toHaveBeenTriggeredOn(dropdown.$dropdown);
   });
 
-  describe('#dropdownData', () => {
+  describe('dropdownData', () => {
     it('cache the refs', () => {
       const refs = dropdown.cachedRefs;
       dropdown.cachedRefs = null;
@@ -88,7 +88,7 @@ describe('TargetBranchDropdown', () => {
     });
   });
 
-  describe('#setNewBranch', () => {
+  describe('setNewBranch', () => {
     it('adds the new branch and select it', () => {
       const branchName = 'new_branch';
 

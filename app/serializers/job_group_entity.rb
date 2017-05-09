@@ -11,6 +11,6 @@ class JobGroupEntity < Grape::Entity
   alias_method :group, :object
 
   def detailed_status
-    group.detailed_status(request.user)
+    group.detailed_status(request.current_user)
   end
 end

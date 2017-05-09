@@ -1,0 +1,71 @@
+.js-pipeline-schedule-form {
+  .dropdown-select,
+  .dropdown-menu-toggle {
+    width: 100%!important;
+  }
+
+  .gl-field-error {
+    margin: 10px 0 0;
+  }
+}
+
+.interval-pattern-form-group {
+  label {
+    margin-right: 10px;
+    font-size: 12px;
+
+    &[for='custom'] {
+      margin-right: 0;
+    }
+  }
+
+  .cron-interval-input-wrapper {
+    padding-left: 0;
+  }
+
+  .cron-interval-input {
+    margin: 10px 10px 0 0;
+  }
+
+  .cron-syntax-link-wrap {
+    margin-right: 10px;
+    font-size: 12px;
+  }
+
+  .cron-unset-status {
+    padding-top: 16px;
+    margin-left: -16px;
+    color: $gl-text-color-secondary;
+    font-size: 12px;
+    font-weight: 600;
+  }
+}
+
+.pipeline-schedule-table-row {
+  .branch-name-cell {
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .next-run-cell {
+    color: $gl-text-color-secondary;
+  }
+
+  a {
+    color: $text-color;
+  }
+}
+
+.pipeline-schedules-user-callout {
+  .bordered-box.content-block {
+    border: 1px solid $border-color;
+    background-color: transparent;
+    padding: 16px;
+  }
+
+  #dismiss-callout-btn {
+    color: $gl-text-color;
+  }
+}

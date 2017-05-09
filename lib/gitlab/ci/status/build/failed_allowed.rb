@@ -2,9 +2,7 @@ module Gitlab
   module Ci
     module Status
       module Build
-        class FailedAllowed < SimpleDelegator
-          include Status::Extended
-
+        class FailedAllowed < Status::Extended
           def label
             'failed (allowed to fail)'
           end

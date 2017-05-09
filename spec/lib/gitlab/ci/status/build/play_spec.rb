@@ -1,43 +1,48 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Status::Build::Play do
-  let(:status) { double('core') }
-  let(:user) { double('user') }
+  let(:user) { create(:user) }
+  let(:build) { create(:ci_build, :manual) }
+  let(:status) { Gitlab::Ci::Status::Core.new(build, user) }
 
   subject { described_class.new(status) }
 
   describe '#label' do
-    it { expect(subject.label).to eq 'manual play action' }
+    it 'has a label that says it is a manual action' do
+      expect(subject.label).to eq 'manual play action'
+    end
   end
 
-  describe 'action details' do
-    let(:user) { create(:user) }
-    let(:build) { create(:ci_build) }
-    let(:status) { Gitlab::Ci::Status::Core.new(build, user) }
-
-    describe '#has_action?' do
-      context 'when user is allowed to update build' do
-        before { build.project.team << [user, :developer] }
+  describe '#has_action?' do
+    context 'when user is allowed to update build' do
+      context 'when user can push to branch' do
+        before { build.project.add_master(user) }
 
         it { is_expected.to have_action }
       end
 
-      context 'when user is not allowed to update build' do
+      context 'when user can not push to the branch' do
+        before { build.project.add_developer(user) }
+
         it { is_expected.not_to have_action }
       end
     end
 
-    describe '#action_path' do
-      it { expect(subject.action_path).to include "#{build.id}/play" }
+    context 'when user is not allowed to update build' do
+      it { is_expected.not_to have_action }
     end
+  end
 
-    describe '#action_icon' do
-      it { expect(subject.action_icon).to eq 'icon_action_play' }
-    end
+  describe '#action_path' do
+    it { expect(subject.action_path).to include "#{build.id}/play" }
+  end
 
-    describe '#action_title' do
-      it { expect(subject.action_title).to eq 'Play' }
-    end
+  describe '#action_icon' do
+    it { expect(subject.action_icon).to eq 'icon_action_play' }
+  end
+
+  describe '#action_title' do
+    it { expect(subject.action_title).to eq 'Play' }
   end
 
   describe '.matches?' do

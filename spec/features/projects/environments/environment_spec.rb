@@ -62,6 +62,8 @@ feature 'Environment', :feature do
                                        name: 'deploy to production')
           end
 
+          given(:role) { :master }
+
           scenario 'does show a play button' do
             expect(page).to have_link(action.name.humanize)
           end
@@ -131,6 +133,8 @@ feature 'Environment', :feature do
                                     deployable: build,
                                     on_stop: 'close_app')
               end
+
+              given(:role) { :master }
 
               scenario 'does allow to stop environment' do
                 click_link('Stop')

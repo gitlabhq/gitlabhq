@@ -134,6 +134,7 @@ module API
           authorize_update_builds!
 
           build = get_build!(params[:build_id])
+          authorize!(:update_build, build)
 
           build.cancel
 
@@ -150,6 +151,7 @@ module API
           authorize_update_builds!
 
           build = get_build!(params[:build_id])
+          authorize!(:update_build, build)
           return forbidden!('Build is not retryable') unless build.retryable?
 
           build = Ci::Build.retry(build, current_user)
@@ -167,6 +169,7 @@ module API
           authorize_update_builds!
 
           build = get_build!(params[:build_id])
+          authorize!(:update_build, build)
           return forbidden!('Build is not erasable!') unless build.erasable?
 
           build.erase(erased_by: current_user)
@@ -183,6 +186,7 @@ module API
           authorize_update_builds!
 
           build = get_build!(params[:build_id])
+          authorize!(:update_build, build)
           return not_found!(build) unless build.artifacts?
 
           build.keep_artifacts!
@@ -202,7 +206,7 @@ module API
           authorize_read_builds!
 
           build = get_build!(params[:build_id])
-
+          authorize!(:update_build, build)
           bad_request!("Unplayable Job") unless build.playable?
 
           build.play(current_user)
@@ -213,12 +217,12 @@ module API
       end
 
       helpers do
-        def get_build(id)
+        def find_build(id)
           user_project.builds.find_by(id: id.to_i)
         end
 
         def get_build!(id)
-          get_build(id) || not_found!
+          find_build(id) || not_found!
         end
 
         def present_artifacts!(artifacts_file)

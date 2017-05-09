@@ -42,17 +42,19 @@ var config = {
     locale:               './locale/index.js',
     main:                 './main.js',
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
-    merge_request_widget: './merge_request_widget/ci_bundle.js',
     monitoring:           './monitoring/monitoring_bundle.js',
     network:              './network/network_bundle.js',
     notebook_viewer:      './blob/notebook_viewer.js',
     pdf_viewer:           './blob/pdf_viewer.js',
     pipelines:            './pipelines/index.js',
     balsamiq_viewer:      './blob/balsamiq_viewer.js',
+    pipelines_graph:      './pipelines/graph_bundle.js',
     profile:              './profile/profile_bundle.js',
     protected_branches:   './protected_branches/protected_branches_bundle.js',
     protected_tags:       './protected_tags',
     sidebar:              './sidebar/sidebar_bundle.js',
+    schedule_form:        './pipeline_schedules/pipeline_schedule_form_bundle.js',
+    schedules_index:      './pipeline_schedules/pipeline_schedules_index_bundle.js',
     snippet:              './snippet/snippet_bundle.js',
     sketch_viewer:        './blob/sketch_viewer.js',
     stl_viewer:           './blob/stl_viewer.js',
@@ -60,6 +62,7 @@ var config = {
     u2f:                  ['vendor/u2f'],
     users:                './users/users_bundle.js',
     raven:                './raven/index.js',
+    vue_merge_request_widget: './vue_merge_request_widget/index.js',
   },
 
   output: {
@@ -145,6 +148,7 @@ var config = {
         'pdf_viewer',
         'pipelines',
         'balsamiq_viewer',
+        'pipelines_graph',
       ],
       minChunks: function(module, count) {
         return module.resource && (/vue_shared/).test(module.resource);
