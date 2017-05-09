@@ -5,5 +5,5 @@
     %div{ class: access_level_container_class }
       = dropdown_tag('Select',
                      options: { toggle_class: "#{access_level_toggle_class} wide",
-                     dropdown_class: 'dropdown-menu-selectable',
+                     dropdown_class: 'dropdown-menu-selectable capitalize-header',
                      data: { field_name: access_level_field_name, input_id: access_level_input_id }})
