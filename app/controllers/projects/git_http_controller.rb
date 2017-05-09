@@ -11,7 +11,7 @@ class Projects::GitHttpController < Projects::GitHttpClientController
     elsif receive_pack? && receive_pack_allowed?
       render_ok
     elsif http_blocked?
-      render_http_not_allowed
+      render_git_access_error_message
     else
       render_denied
     end
@@ -62,21 +62,17 @@ class Projects::GitHttpController < Projects::GitHttpClientController
     render json: Gitlab::Workhorse.git_http_ok(repository, wiki?, user, action_name)
   end
 
-  def render_http_not_allowed
+  def render_git_access_error_message
     render plain: access_check.message, status: :forbidden
   end
 
   def render_denied
     if user && can?(user, :read_project, project)
-      render plain: access_denied_message, status: :forbidden
+      render_git_access_error_message
     else
       # Do not leak information about project existence
       render_not_found
     end
-  end
-
-  def access_denied_message
-    'Access denied'
   end
 
   def upload_pack_allowed?
@@ -86,7 +82,7 @@ class Projects::GitHttpController < Projects::GitHttpClientController
   end
 
   def access
-    @access ||= access_klass.new(user, project, 'http', authentication_abilities: authentication_abilities)
+    @access ||= access_klass.new(user, project, 'http', authentication_abilities: authentication_abilities, redirected_path: redirected_path)
   end
 
   def access_check

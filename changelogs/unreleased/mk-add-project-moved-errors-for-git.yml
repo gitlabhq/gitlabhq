@@ -1,0 +1,4 @@
+---
+title: Add "project was moved" messages when rejecting git push/pull
+merge_request: 11259
+author:

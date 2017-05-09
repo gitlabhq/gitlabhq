@@ -29,7 +29,7 @@ describe PostReceive do
 
   context "with an absolute path as the project identifier" do
     it "searches the project by full path" do
-      expect(Project).to receive(:find_by_full_path).with(project.full_path).and_call_original
+      expect(Project).to receive(:find_by_full_path).with(project.full_path, follow_redirects: true).and_call_original
 
       described_class.new.perform(pwd(project), key_id, base64_changes)
     end

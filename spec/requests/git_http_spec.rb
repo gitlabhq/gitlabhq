@@ -141,30 +141,30 @@ describe 'Git HTTP requests', lib: true do
 
         context 'when the repo is public' do
           context 'but the repo is disabled' do
-            it 'does not allow to clone the repo' do
-              project = create(:project, :public, :repository_disabled)
+            let(:project) { create(:project, :public, :repository_disabled) }
 
-              download("#{project.path_with_namespace}.git", {}) do |response|
+            it 'does not allow to clone the repo' do
+              download(path, {}) do |response|
                 expect(response).to have_http_status(:unauthorized)
               end
             end
           end
 
           context 'but the repo is enabled' do
-            it 'allows to clone the repo' do
-              project = create(:project, :public, :repository_enabled)
+            let(:project) { create(:project, :public, :repository_enabled) }
 
-              download("#{project.path_with_namespace}.git", {}) do |response|
+            it 'allows to clone the repo' do
+              download(path, {}) do |response|
                 expect(response).to have_http_status(:ok)
               end
             end
           end
 
           context 'but only project members are allowed' do
-            it 'does not allow to clone the repo' do
-              project = create(:project, :public, :repository_private)
+            let(:project) { create(:project, :public, :repository_private) }
 
-              download("#{project.path_with_namespace}.git", {}) do |response|
+            it 'does not allow to clone the repo' do
+              download(path, {}) do |response|
                 expect(response).to have_http_status(:unauthorized)
               end
             end
@@ -262,6 +262,26 @@ describe 'Git HTTP requests', lib: true do
 
                   download(path, env) do |response|
                     expect(user_activity(user)).to be_present
+                  end
+                end
+
+                context 'and the user requests a redirected path' do
+                  let!(:redirect) { project.route.create_redirect('foo/bar') }
+                  let(:path) { "#{redirect.path}.git" }
+
+                  it 'downloads get status 403 with "project was moved" message' do
+                    clone_get(path, env)
+                    message = "Project '#{redirect.path}' was moved to '#{project.full_path}'.\n\nPlease update your Git remote and try again:\n\n  git remote set-url origin #{project.http_url_to_repo}"
+                    expect(response).to have_http_status(:forbidden)
+                    expect(response.body).to match(message)
+                  end
+
+                  it 'uploads get status 403 with "project was moved" message' do
+                    upload(path, env) do |response|
+                      message = "Project '#{redirect.path}' was moved to '#{project.full_path}'.\n\nPlease update your Git remote and try again:\n\n  git remote set-url origin #{project.http_url_to_repo}"
+                      expect(response).to have_http_status(:forbidden)
+                      expect(response.body).to match(message)
+                    end
                   end
                 end
               end
@@ -508,7 +528,7 @@ describe 'Git HTTP requests', lib: true do
       end
 
       context "POST git-receive-pack" do
-        it "failes to find a route" do
+        it "fails to find a route" do
           expect { push_post(project.path_with_namespace) }.to raise_error(ActionController::RoutingError)
         end
       end

@@ -75,13 +75,16 @@ class Projects::GitHttpClientController < Projects::ApplicationController
   def project
     return @project if defined?(@project)
 
+    @project = Project.find_by_full_path(requested_path, follow_redirects: true)
+  end
+
+  def redirected_path
+    requested_path if project.full_path != requested_path
+  end
+
+  def requested_path
     project_id, _ = project_id_with_suffix
-    @project =
-      if project_id.blank?
-        nil
-      else
-        Project.find_by_full_path("#{params[:namespace_id]}/#{project_id}")
-      end
+    "#{params[:namespace_id]}/#{project_id}"
   end
 
   # This method returns two values so that we can parse
