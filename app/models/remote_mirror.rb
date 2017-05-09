@@ -1,8 +1,5 @@
 class RemoteMirror < ActiveRecord::Base
   include AfterCommitQueue
-  include IgnorableColumn
-
-  ignore_column :sync_time
 
   BACKOFF_DELAY = 5.minutes
 
