@@ -188,7 +188,7 @@ module Gitlab
 
         return if validations.empty?
 
-        commit.raw_diffs(deltas_only: true).each do |diff|
+        commit.raw_deltas.each do |diff|
           validations.each do |validation|
             if error = validation.call(diff)
               return error
