@@ -176,8 +176,7 @@
     }
 
     &.mr-memory-usage {
-      margin-top: 10px;
-      margin-bottom: 10px;
+      margin: 5px 0 10px 25px;
     }
   }
 
@@ -505,7 +504,12 @@
 
 .mr-info-list.mr-memory-usage {
   .legend {
-    height: 75%;
+    height: 65%;
+    top: 0;
+
+    @media (max-width: $screen-xs-max) {
+      height: 20px;
+    }
   }
 
   p {
@@ -725,13 +729,15 @@
 }
 
 .mr-memory-usage {
-  p.usage-info-loading {
-    margin-bottom: 6px;
+  p.usage-info-loading,
+  p.usage-info-unavailable,
+  p.usage-info-failed {
+    margin-bottom: 5px;
+  }
 
-    .usage-info-load-spinner {
-      margin-right: 10px;
-      font-size: 16px;
-    }
+  p.usage-info-loading .usage-info-load-spinner {
+    margin-right: 10px;
+    font-size: 16px;
   }
 
   @media (max-width: $screen-md-min) {
