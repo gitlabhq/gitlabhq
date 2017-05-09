@@ -119,16 +119,31 @@ module Gitlab
         def reverse_line
           pos = BUFFER_SIZE
           max = stream.size
+          debris = ''
 
           while pos < max
             stream.seek(-pos, IO::SEEK_END)
-            yield(stream.read(BUFFER_SIZE))
+            stream.read(BUFFER_SIZE).tap do |buf|
+              buf = buf + debris
+              lines = buf.split("\n")
+              lines.reverse.each do |line|
+                yield(line)
+              end
+              debris = lines.count > 0 ? lines[0] : ''
+            end
             pos += BUFFER_SIZE
           end
 
           # Reached the head, read only left
           stream.seek(0)
-          yield(stream.read(BUFFER_SIZE - (pos - max)))
+          last = (max > BUFFER_SIZE) ? (max % BUFFER_SIZE) : max
+          stream.read(last).tap do |buf|
+            buf = buf + debris
+            lines = buf.split("\n")
+            lines.reverse.each do |line|
+              yield(line)
+            end
+          end
         end
       end
     end

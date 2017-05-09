@@ -254,6 +254,28 @@ describe Gitlab::Ci::Trace::Stream do
       end
     end
 
+    context 'when BUFFER_SIZE is smaller than stream.size' do
+      let(:data) { 'Coverage 1033 / 1051 LOC (98.29%) covered\n' }
+      let(:regex) { '\(\d+.\d+\%\) covered' }
+
+      before do
+        stub_const('Gitlab::Ci::Trace::Stream::BUFFER_SIZE', 5)
+      end
+
+      it { is_expected.to eq("98.29") }
+    end
+
+    context 'when BUFFER_SIZE is equal to stream.size' do
+      let(:data) { 'Coverage 1033 / 1051 LOC (98.29%) covered\n' }
+      let(:regex) { '\(\d+.\d+\%\) covered' }
+
+      before do
+        stub_const('Gitlab::Ci::Trace::Stream::BUFFER_SIZE', data.length)
+      end
+
+      it { is_expected.to eq("98.29") }
+    end
+
     context 'using a regex capture' do
       let(:data) { 'TOTAL      9926   3489    65%' }
       let(:regex) { 'TOTAL\s+\d+\s+\d+\s+(\d{1,3}\%)' }
