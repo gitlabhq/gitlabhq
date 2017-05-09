@@ -82,7 +82,7 @@ describe PrometheusService, models: true, caching: true do
       end
 
       it 'returns reactive data' do
-        is_expected.to eq(prometheus_data)
+        is_expected.to eq(prometheus_data.merge(deployment_time: deployment.created_at.to_i))
       end
     end
   end

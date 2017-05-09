@@ -106,8 +106,7 @@ class Deployment < ActiveRecord::Base
   def metrics
     return {} unless has_metrics?
 
-    metrics = project.monitoring_service.deployment_metrics(self)
-    metrics&.merge(deployment_time: created_at.to_i) || {}
+    project.monitoring_service.deployment_metrics(self)
   end
 
   private

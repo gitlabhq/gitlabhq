@@ -63,12 +63,13 @@ class PrometheusService < MonitoringService
     { success: false, result: err }
   end
 
-  def environment_metrics(environment, **args)
+  def environment_metrics(environment)
     with_reactive_cache(Gitlab::Prometheus::Queries::EnvironmentQuery.name, environment.id, &:itself)
   end
 
   def deployment_metrics(deployment)
-    with_reactive_cache(Gitlab::Prometheus::Queries::DeploymentQuery.name, deployment.id, &:itself)
+    metrics = with_reactive_cache(Gitlab::Prometheus::Queries::DeploymentQuery.name, deployment.id, &:itself)
+    metrics&.merge(deployment_time: created_at.to_i) || {}
   end
 
   # Cache metrics for specific environment
