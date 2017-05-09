@@ -372,7 +372,7 @@ class Commit
   def repo_changes
     changes = { added: [], modified: [], removed: [] }
 
-    raw_diffs(deltas_only: true).each do |diff|
+    raw_deltas.each do |diff|
       if diff.deleted_file
         changes[:removed] << diff.old_path
       elsif diff.renamed_file || diff.new_file
@@ -383,6 +383,10 @@ class Commit
     end
 
     changes
+  end
+
+  def raw_deltas
+    raw.deltas
   end
 
   def merged_merge_request?(user)

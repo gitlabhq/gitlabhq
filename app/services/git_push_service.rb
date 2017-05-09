@@ -72,7 +72,7 @@ class GitPushService < BaseService
       paths = Set.new
 
       @push_commits.each do |commit|
-        commit.raw_diffs(deltas_only: true).each do |diff|
+        commit.raw_deltas.each do |diff|
           paths << diff.new_path
         end
       end
