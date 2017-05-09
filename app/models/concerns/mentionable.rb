@@ -92,7 +92,7 @@ module Mentionable
   # Uses regex to quickly determine if mentionables might be referenced
   # Allows heavy processing to be skipped
   def matches_cross_reference_regex?
-    reference_pattern = if project.default_issues_tracker?
+    reference_pattern = if !project || project.default_issues_tracker?
                           ReferenceRegexes::DEFAULT_PATTERN
                         else
                           ReferenceRegexes::EXTERNAL_PATTERN
