@@ -2,7 +2,7 @@ import sqljs from 'sql.js';
 import BalsamiqViewer from '~/blob/balsamiq/balsamiq_viewer';
 import ClassSpecHelper from '../../helpers/class_spec_helper';
 
-fdescribe('BalsamiqViewer', () => {
+describe('BalsamiqViewer', () => {
   let balsamiqViewer;
   let endpoint;
   let viewer;
