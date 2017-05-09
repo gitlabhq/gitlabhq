@@ -15,7 +15,12 @@ module Projects
       if allowed_transfer?(current_user, project, new_namespace)
         transfer(project, new_namespace)
       else
-        project.errors.add(:new_namespace, 'is invalid')
+        error_message = if new_namespace.blank? 
+                          'Please select a namespace to transfer the project to'
+                        else
+                          'Transfer failed, please contact an admin'
+                        end
+        project.errors.add(:new_namespace, error_message)
         false
       end
     rescue Projects::TransferService::TransferError => ex

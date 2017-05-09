@@ -26,6 +26,7 @@ describe Projects::TransferService, services: true do
 
     it { expect(@result).to eq false }
     it { expect(project.namespace).to eq(user.namespace) }
+    it { expect(project.errors.messages[:new_namespace][0]).to eq 'Please select a namespace to transfer the project to' }
   end
 
   context 'disallow transfering of project with tags' do
