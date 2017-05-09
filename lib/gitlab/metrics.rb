@@ -1,3 +1,5 @@
+require 'prometheus/client'
+
 module Gitlab
   module Metrics
     extend Gitlab::CurrentSettings
@@ -9,6 +11,7 @@ module Gitlab
     def self.settings
       @settings ||= {
         enabled:               current_application_settings[:metrics_enabled],
+        prometheus_metrics_enabled: true,
         pool_size:             current_application_settings[:metrics_pool_size],
         timeout:               current_application_settings[:metrics_timeout],
         method_call_threshold: current_application_settings[:metrics_method_call_threshold],
@@ -19,8 +22,16 @@ module Gitlab
       }
     end
 
-    def self.enabled?
+    def self.prometheus_metrics_enabled?
+      settings[:prometheus_metrics_enabled] || false
+    end
+
+    def self.influx_metrics_enabled?
       settings[:enabled] || false
+    end
+
+    def self.enabled?
+      influx_metrics_enabled? || prometheus_metrics_enabled? || false
     end
 
     def self.mri?
@@ -38,10 +49,58 @@ module Gitlab
       @pool
     end
 
+    def self.registry
+      @registry ||= ::Prometheus::Client.registry
+    end
+
+    def self.counter(name, docstring, base_labels = {})
+      dummy_metric || registry.get(name) || registry.counter(name, docstring, base_labels)
+    end
+
+    def self.summary(name, docstring, base_labels = {})
+      dummy_metric || registry.get(name) || registry.summary(name, docstring, base_labels)
+    end
+
+    def self.gauge(name, docstring, base_labels = {})
+      dummy_metric || registry.get(name) || registry.gauge(name, docstring, base_labels)
+    end
+
+    def self.histogram(name, docstring, base_labels = {}, buckets = Histogram::DEFAULT_BUCKETS)
+      dummy_metric || registry.get(name) || registry.histogram(name, docstring, base_labels, buckets)
+    end
+
+    def self.dummy_metric
+      unless prometheus_metrics_enabled?
+        DummyMetric.new
+      end
+    end
+
     def self.submit_metrics(metrics)
       prepared = prepare_metrics(metrics)
 
-      pool.with do |connection|
+      if prometheus_metrics_enabled?
+        metrics.map do |metric|
+          known = [:series, :tags,:values, :timestamp]
+          value = metric&.[](:values)&.[](:value)
+          handled=  [:rails_gc_statistics]
+          if handled.include? metric[:series].to_sym
+            next
+          end
+
+          if metric.keys.any? {|k| !known.include?(k)} || value.nil?
+            print metric
+            print "\n"
+
+            {:series=>"rails_gc_statistics", :tags=>{}, :values=>{:count=>0, :heap_allocated_pages=>4245, :heap_sorted_length=>4426, :heap_allocatable_pages=>0, :heap_available_slots=>1730264, :heap_live_slots=>1729935, :heap_free_slots=>329, :heap_final_slots=>0, :heap_marked_slots=>1184216, :heap_swept_slots=>361843, :heap_eden_pages=>4245, :heap_tomb_pages=>0, :total_allocated_pages=>4245, :total_freed_pages=>0, :total_allocated_objects=>15670757, :total_freed_objects=>13940822, :malloc_increase_bytes=>4842256, :malloc_increase_bytes_limit=>29129457, :minor_gc_count=>0, :major_gc_count=>0, :remembered_wb_unprotected_objects=>39905, :remembered_wb_unprotected_objects_limit=>74474, :old_objects=>1078731, :old_objects_limit=>1975860, :oldmalloc_increase_bytes=>4842640, :oldmalloc_increase_bytes_limit=>31509677, :total_time=>0.0}, :timestamp=>1494356175592659968}
+
+            next
+          end
+          metric_value = gauge(metric[:series].to_sym, metric[:series])
+          metric_value.set(metric[:tags], value)
+        end
+      end
+
+      pool&.with do |connection|
         prepared.each_slice(settings[:packet_size]) do |slice|
           begin
             connection.write_points(slice)
@@ -148,7 +207,7 @@ module Gitlab
 
     # When enabled this should be set before being used as the usual pattern
     # "@foo ||= bar" is _not_ thread-safe.
-    if enabled?
+    if influx_metrics_enabled?
       @pool = ConnectionPool.new(size: settings[:pool_size], timeout: settings[:timeout]) do
         host = settings[:host]
         port = settings[:port]

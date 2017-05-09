@@ -15,11 +15,7 @@ if defined?(Unicorn)
   end
 
   # TODO(lyda): Needs to be set externally.
-  ENV['prometheus_multiproc_dir'] = '/tmp'
-
-  require 'prometheus/client/rack/exporter'
-
-  use Prometheus::Client::Rack::Exporter, path: '/admin/metrics'
+  ENV['prometheus_multiproc_dir'] = '/tmp/somestuff'
 end
 
 require ::File.expand_path('../config/environment',  __FILE__)

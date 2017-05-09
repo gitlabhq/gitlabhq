@@ -1,3 +1,5 @@
+require 'prometheus/client/formats/text'
+
 class HealthController < ActionController::Base
   protect_from_forgery with: :exception
   include RequiresHealthToken
@@ -24,7 +26,7 @@ class HealthController < ActionController::Base
     results = CHECKS.flat_map(&:metrics)
 
     response = results.map(&method(:metric_to_prom_line)).join("\n")
-
+    response = ::Prometheus::Client::Formats::Text.marshal_multiprocess
     render text: response, content_type: 'text/plain; version=0.0.4'
   end
 

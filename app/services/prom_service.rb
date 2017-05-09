@@ -11,6 +11,5 @@ class PromService
 
     @login = Prometheus::Client::Counter.new(:login, 'Login counter')
     @prometheus.register(@login)
-
   end
 end
