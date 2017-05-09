@@ -49,6 +49,7 @@ class ResolveServiceClass {
           discussion.resolveAllNotes(resolved_by);
         }
 
+        gl.mrWidget.checkStatus();
         discussion.updateHeadline(data);
       } else {
         throw new Error('An error occurred when trying to resolve discussion.');

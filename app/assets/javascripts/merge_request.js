@@ -104,6 +104,21 @@ require('./merge_request_tabs');
       });
     };
 
+    MergeRequest.prototype.updateStatusText = function(classToRemove, classToAdd, newStatusText) {
+      $('.detail-page-header .status-box')
+        .removeClass(classToRemove)
+        .addClass(classToAdd)
+        .find('span')
+        .text(newStatusText);
+    };
+
+    MergeRequest.prototype.decreaseCounter = function(by = 1) {
+      const $el = $('.nav-links .js-merge-counter');
+      const count = Math.max((parseInt($el.text().replace(/[^\d]/, ''), 10) - by), 0);
+
+      $el.text(gl.text.addDelimiter(count));
+    };
+
     return MergeRequest;
   })();
 }).call(window);

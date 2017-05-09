@@ -149,6 +149,48 @@ describe Projects::EnvironmentsController do
     end
   end
 
+  describe 'PATCH #stop' do
+    context 'when env not available' do
+      it 'returns 404' do
+        allow_any_instance_of(Environment).to receive(:available?) { false }
+
+        patch :stop, environment_params(format: :json)
+
+        expect(response).to have_http_status(404)
+      end
+    end
+
+    context 'when stop action' do
+      it 'returns action url' do
+        action = create(:ci_build, :manual)
+
+        allow_any_instance_of(Environment)
+          .to receive_messages(available?: true, stop_with_action!: action)
+
+        patch :stop, environment_params(format: :json)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to eq(
+          { 'redirect_url' =>
+              "http://test.host/#{project.path_with_namespace}/builds/#{action.id}" })
+      end
+    end
+
+    context 'when no stop action' do
+      it 'returns env url' do
+        allow_any_instance_of(Environment)
+          .to receive_messages(available?: true, stop_with_action!: nil)
+
+        patch :stop, environment_params(format: :json)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to eq(
+          { 'redirect_url' =>
+              "http://test.host/#{project.path_with_namespace}/environments/#{environment.id}" })
+      end
+    end
+  end
+
   describe 'GET #terminal' do
     context 'with valid id' do
       it 'responds with a status code 200' do

@@ -37,4 +37,11 @@ class PipelineSerializer < BaseSerializer
     data = represent(resource, { only: [{ details: [:status] }] })
     data.dig(:details, :status) || {}
   end
+
+  def represent_stages(resource)
+    return {} unless resource.present?
+
+    data = represent(resource, { only: [{ details: [:stages] }] })
+    data.dig(:details, :stages) || []
+  end
 end

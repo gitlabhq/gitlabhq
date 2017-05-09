@@ -274,7 +274,7 @@ const normalizeNewlines = function(str) {
       var votesBlock;
       if (noteEntity.commands_changes) {
         if ('merge' in noteEntity.commands_changes) {
-          $.get(mrRefreshWidgetUrl);
+          Notes.checkMergeRequestStatus();
         }
 
         if ('emoji_award' in noteEntity.commands_changes) {
@@ -422,6 +422,7 @@ const normalizeNewlines = function(str) {
       }
 
       gl.utils.localTimeAgo($('.js-timeago'), false);
+      Notes.checkMergeRequestStatus();
       return this.updateNotesCount(1);
     };
 
@@ -767,7 +768,8 @@ const normalizeNewlines = function(str) {
           }
         };
       })(this));
-      // Decrement the "Discussions" counter only once
+
+      Notes.checkMergeRequestStatus();
       return this.updateNotesCount(-1);
     };
 
@@ -1111,6 +1113,12 @@ const normalizeNewlines = function(str) {
         .remove();
 
       return $form;
+    };
+
+    Notes.checkMergeRequestStatus = function() {
+      if (gl.utils.getPagePath(1) === 'merge_requests') {
+        gl.mrWidget.checkStatus();
+      }
     };
 
     Notes.animateAppendNote = function(noteHtml, $notesList) {

@@ -169,6 +169,14 @@ Clicking on the Monitoring button will display a new page, showing up to the las
 8 hours of performance data. It may take a minute or two for data to appear
 after initial deployment.
 
+## Determining performance impact of a merge
+
+> [Introduced][ce-10408] in GitLab 9.1.
+
+After a merge request has been approved, a sparkline will appear on the merge request page displaying the average memory usage of the application. The sparkline includes thirty minutes of data prior to the merge, a dot to indicate the merge itself, and then will begin capturing thirty minutes of data after the merge.
+
+This sparkline serves as a quick indicator of the impact on memory consumption of the recently merged changes. If there is a problem, action can then be taken to troubleshoot or revert the merge. 
+
 ## Troubleshooting
 
 If the "Attempting to load performance data" screen continues to appear, it could be due to:
@@ -189,4 +197,5 @@ If the "Attempting to load performance data" screen continues to appear, it coul
 [gitlab.com-ip-range]: https://gitlab.com/gitlab-com/infrastructure/issues/434
 [ci-environment-slug]: https://docs.gitlab.com/ce/ci/variables/#predefined-variables-environment-variables
 [ce-8935]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8935
+[ce-10408]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/10408
 [promgldocs]: ../../../administration/monitoring/prometheus/index.md
