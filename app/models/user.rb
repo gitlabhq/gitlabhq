@@ -40,6 +40,17 @@ class User < ActiveRecord::Base
   devise :lockable, :recoverable, :rememberable, :trackable,
     :validatable, :omniauthable, :confirmable, :registerable
 
+  # Override Devise::Models::Trackable#update_tracked_fields!
+  # to limit database writes to at most once every hour
+  def update_tracked_fields!(request)
+    update_tracked_fields(request)
+
+    lease = Gitlab::ExclusiveLease.new("user_update_tracked_fields:#{id}", timeout: 1.hour.to_i)
+    return unless lease.try_obtain
+
+    save(validate: false)
+  end
+
   attr_accessor :force_random_password
 
   # Virtual attribute for authenticating by either username or email
