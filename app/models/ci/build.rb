@@ -170,9 +170,11 @@ module Ci
     #   * Lowercased
     #   * Anything not matching [a-z0-9-] is replaced with a -
     #   * Maximum length is 63 bytes
+    #   * First/Last Character is not a hyphen
     def ref_slug
       slugified = ref.to_s.downcase
-      slugified.gsub(/[^a-z0-9]/, '-')[0..62]
+      slugified = slugified.gsub(/[^a-z0-9]/, '-')[0..62]
+      slugified.gsub(/(^\-+|\-+$)/, '')
     end
 
     # Variables whose value does not depend on other variables
