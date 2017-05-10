@@ -59,7 +59,7 @@ feature 'Merge Requests > User uses slash commands', feature: true, js: true do
         it 'does not change the WIP prefix' do
           write_note("/wip")
 
-          expect(page).not_to have_content '/wip'
+          expect(page).to have_content '/wip'
           expect(page).not_to have_content 'Commands applied'
 
           expect(merge_request.reload.work_in_progress?).to eq false
@@ -189,7 +189,7 @@ feature 'Merge Requests > User uses slash commands', feature: true, js: true do
         it 'does not change target branch' do
           write_note('/target_branch merge-test')
 
-          expect(page).not_to have_content '/target_branch merge-test'
+          expect(page).to have_content '/target_branch merge-test'
 
           expect(merge_request.target_branch).to eq 'feature'
         end
