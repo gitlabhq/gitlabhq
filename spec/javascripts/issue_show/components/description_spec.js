@@ -1,0 +1,98 @@
+import Vue from 'vue';
+import descriptionComponent from '~/issue_show/components/description.vue';
+
+describe('Description component', () => {
+  let vm;
+
+  beforeEach(() => {
+    const Component = Vue.extend(descriptionComponent);
+
+    if (!document.querySelector('.issuable-meta')) {
+      const metaData = document.createElement('div');
+      metaData.classList.add('issuable-meta');
+
+      document.body.appendChild(metaData);
+    }
+
+    vm = new Component({
+      propsData: {
+        canUpdate: true,
+        descriptionHtml: 'test',
+        descriptionText: 'test',
+        updatedAt: new Date().toString(),
+        taskStatus: '',
+      },
+    }).$mount();
+  });
+
+  it('animates description changes', (done) => {
+    vm.descriptionHtml = 'changed';
+
+    Vue.nextTick(() => {
+      expect(
+        vm.$el.querySelector('.wiki').classList.contains('issue-realtime-pre-pulse'),
+      ).toBeTruthy();
+
+      setTimeout(() => {
+        expect(
+          vm.$el.querySelector('.wiki').classList.contains('issue-realtime-trigger-pulse'),
+        ).toBeTruthy();
+
+        done();
+      });
+    });
+  });
+
+  it('re-inits the TaskList when description changed', (done) => {
+    spyOn(gl, 'TaskList');
+    vm.descriptionHtml = 'changed';
+
+    setTimeout(() => {
+      expect(
+        gl.TaskList,
+      ).toHaveBeenCalled();
+
+      done();
+    });
+  });
+
+  it('does not re-init the TaskList when canUpdate is false', (done) => {
+    spyOn(gl, 'TaskList');
+    vm.canUpdate = false;
+    vm.descriptionHtml = 'changed';
+
+    setTimeout(() => {
+      expect(
+        gl.TaskList,
+      ).not.toHaveBeenCalled();
+
+      done();
+    });
+  });
+
+  describe('taskStatus', () => {
+    it('adds full taskStatus', (done) => {
+      vm.taskStatus = '1 of 1';
+
+      setTimeout(() => {
+        expect(
+          document.querySelector('.issuable-meta #task_status').textContent.trim(),
+        ).toBe('1 of 1');
+
+        done();
+      });
+    });
+
+    it('adds short taskStatus', (done) => {
+      vm.taskStatus = '1 of 1';
+
+      setTimeout(() => {
+        expect(
+          document.querySelector('.issuable-meta #task_status_short').textContent.trim(),
+        ).toBe('1/1 task');
+
+        done();
+      });
+    });
+  });
+});
