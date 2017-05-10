@@ -4,39 +4,32 @@ import ClassSpecHelper from '../../helpers/class_spec_helper';
 
 describe('BalsamiqViewer', () => {
   let balsamiqViewer;
-  let endpoint;
   let viewer;
 
   describe('class constructor', () => {
     beforeEach(() => {
-      endpoint = 'endpoint';
       viewer = {};
 
-      balsamiqViewer = new BalsamiqViewer(viewer, endpoint);
+      balsamiqViewer = new BalsamiqViewer(viewer);
     });
 
     it('should set .viewer', () => {
       expect(balsamiqViewer.viewer).toBe(viewer);
     });
-
-    it('should set .endpoint', () => {
-      expect(balsamiqViewer.endpoint).toBe(endpoint);
-    });
   });
 
   describe('loadFile', () => {
+    const endpoint = 'endpoint';
     let xhr;
 
     beforeEach(() => {
-      endpoint = 'endpoint';
       xhr = jasmine.createSpyObj('xhr', ['open', 'send']);
 
       balsamiqViewer = jasmine.createSpyObj('balsamiqViewer', ['renderFile']);
-      balsamiqViewer.endpoint = endpoint;
 
       spyOn(window, 'XMLHttpRequest').and.returnValue(xhr);
 
-      BalsamiqViewer.prototype.loadFile.call(balsamiqViewer);
+      BalsamiqViewer.prototype.loadFile.call(balsamiqViewer, endpoint);
     });
 
     it('should call .open', () => {
