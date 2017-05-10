@@ -53,6 +53,7 @@
   - [pages, 1]
   - [system_hook_push, 1]
   - [update_user_activity, 1]
+  - [propagate_service_template, 1]
   # EE specific queues
   - [geo, 1]
   - [project_mirror, 1]
@@ -63,4 +64,3 @@
   - [elastic_indexer, 1]
   - [elastic_commit_indexer, 1]
   - [export_csv, 1]
-

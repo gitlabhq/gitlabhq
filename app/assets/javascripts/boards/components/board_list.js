@@ -90,7 +90,10 @@ export default {
         if (this.scrollHeight() <= this.listHeight() &&
           this.list.issuesSize > this.list.issues.length) {
           this.list.page += 1;
-          this.list.getIssues(false);
+          this.list.getIssues(false)
+            .catch(() => {
+              // TODO: handle request error
+            });
         }
 
         if (this.scrollHeight() > Math.ceil(this.listHeight())) {

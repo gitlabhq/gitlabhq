@@ -24,6 +24,8 @@ module SharedNote
       fill_in "note[note]", with: "XML attached"
       click_button "Comment"
     end
+
+    wait_for_ajax
   end
 
   step 'I preview a comment text like "Bug fixed :smile:"' do
@@ -37,6 +39,8 @@ module SharedNote
     page.within(".js-main-target-form") do
       click_button "Comment"
     end
+
+    wait_for_ajax
   end
 
   step 'I write a comment like ":+1: Nice"' do

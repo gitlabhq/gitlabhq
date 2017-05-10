@@ -6,6 +6,7 @@ module API
 
     version 'v3', using: :path do
       helpers ::API::V3::Helpers
+      helpers ::API::Helpers::CommonHelpers
 
       mount ::API::V3::AwardEmoji
       mount ::API::V3::Boards
@@ -48,6 +49,9 @@ module API
     end
 
     before { allow_access_with_scope :api }
+    before { Gitlab::I18n.set_locale(current_user) }
+
+    after { Gitlab::I18n.reset_locale }
 
     rescue_from Gitlab::Access::AccessDeniedError do
       rack_response({ 'message' => '403 Forbidden' }.to_json, 403)
@@ -81,6 +85,7 @@ module API
     # Ensure the namespace is right, otherwise we might load Grape::API::Helpers
     helpers ::SentryHelper
     helpers ::API::Helpers
+    helpers ::API::Helpers::CommonHelpers
 
     # Keep in alphabetical order
     mount ::API::AccessRequests

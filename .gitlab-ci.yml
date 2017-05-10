@@ -26,6 +26,7 @@ before_script:
   - source scripts/prepare_build.sh
 
 stages:
+- build
 - prepare
 - test
 - post-test
@@ -141,6 +142,28 @@ stages:
   <<: *use-mysql
   <<: *only-master-and-ee-or-mysql
   <<: *except-docs
+
+# Trigger a package build on omnibus-gitlab repository
+
+build-package:
+  services: []
+  variables:
+    SETUP_DB: "false"
+    USE_BUNDLE_INSTALL: "false"
+  stage: build
+  when: manual
+  script:
+    # If no branch in omnibus is specified, trigger pipeline against master
+    - if [ -z "$OMNIBUS_BRANCH" ] ; then export OMNIBUS_BRANCH=master ;fi
+    - echo "token=${BUILD_TRIGGER_TOKEN}" > version_details
+    - echo "ref=${OMNIBUS_BRANCH}" >> version_details
+    - echo "variables[ALTERNATIVE_SOURCES]=true" >> version_details
+    - echo "variables[GITLAB_VERSION]=${CI_COMMIT_SHA}" >> version_details
+    # Collect version details of all components
+    - for f in *_VERSION; do echo "variables[$f]=$(cat $f)" >> version_details; done
+    # Trigger the API and pass values collected above as parameters to it
+    - cat version_details | tr '\n' '&' | curl -X POST https://gitlab.com/api/v4/projects/20699/trigger/pipeline --data-binary @-
+    - rm version_details
 
 # Prepare and merge knapsack tests
 knapsack:
@@ -396,18 +419,6 @@ rake karma:
     expire_in: 31d
     paths:
     - coverage-javascript/
-
-bundler:audit:
-  stage: test
-  <<: *ruby-static-analysis
-  <<: *dedicated-runner
-  only:
-    - master@gitlab-org/gitlab-ce
-    - master@gitlab-org/gitlab-ee
-    - master@gitlab/gitlabhq
-    - master@gitlab/gitlab-ee
-  script:
-    - "bundle exec bundle-audit check --update --ignore CVE-2016-4658"
 
 .migration-paths: &migration-paths
   stage: test

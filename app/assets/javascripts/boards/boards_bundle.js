@@ -13,7 +13,7 @@ require('./models/issue');
 require('./models/label');
 require('./models/list');
 require('./models/milestone');
-require('./models/user');
+require('./models/assignee');
 require('./stores/boards_store');
 require('./stores/modal_store');
 require('./services/board_service');
@@ -65,6 +65,7 @@ $(() => {
       bulkUpdatePath: $boardApp.dataset.bulkUpdatePath,
       detailIssue: Store.detail,
       milestoneTitle: $boardApp.dataset.boardMilestoneTitle,
+      defaultAvatar: $boardApp.dataset.defaultAvatar,
     },
     computed: {
       detailIssueVisible () {
@@ -98,7 +99,7 @@ $(() => {
       gl.boardService.all()
         .then((resp) => {
           resp.json().forEach((board) => {
-            const list = Store.addList(board);
+            const list = Store.addList(board, this.defaultAvatar);
 
             if (list.type === 'closed') {
               list.position = Infinity;

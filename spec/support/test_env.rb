@@ -28,6 +28,7 @@ module TestEnv
     'expand-collapse-files'              => '025db92',
     'expand-collapse-lines'              => '238e82d',
     'video'                              => '8879059',
+    'add-balsamiq-file'                  => 'b89b56d',
     'crlf-diff'                          => '5938907',
     'conflict-start'                     => '824be60',
     'conflict-resolvable'                => '1450cd6',

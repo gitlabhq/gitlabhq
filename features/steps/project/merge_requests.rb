@@ -470,6 +470,8 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
       click_button "Comment"
     end
 
+    wait_for_ajax
+
     page.within ".files>div:nth-child(2) .note-body > .note-text" do
       expect(page).to have_content "Line is correct"
     end
@@ -482,6 +484,8 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
       fill_in "note_note", with: "Line is wrong on here"
       click_button "Comment"
     end
+
+    wait_for_ajax
   end
 
   step 'I should still see a comment like "Line is correct" in the second file' do
@@ -734,6 +738,9 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
       fill_in "note_note", with: message
       click_button "Comment"
     end
+
+    wait_for_ajax
+
     page.within(".notes_holder", visible: true) do
       expect(page).to have_content message
     end

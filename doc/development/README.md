@@ -42,6 +42,7 @@
 - [Shell commands](shell_commands.md) in the GitLab codebase
 - [Sidekiq debugging](sidekiq_debugging.md)
 - [Object state models](object_state_models.md)
+- [Building a package for testing purposes](build_test_package.md)
 
 ## Databases
 

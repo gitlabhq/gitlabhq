@@ -17,6 +17,10 @@ var DEV_SERVER_LIVERELOAD = process.env.DEV_SERVER_LIVERELOAD !== 'false';
 var WEBPACK_REPORT = process.env.WEBPACK_REPORT;
 
 var config = {
+  // because sqljs requires fs.
+  node: {
+    fs: "empty"
+  },
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
   entry: {
     blob:                 './blob_edit/blob_bundle.js',
@@ -27,6 +31,7 @@ var config = {
     common_d3:            ['d3'],
     cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',
     commit_pipelines:     './commit/pipelines/pipelines_bundle.js',
+    deploy_keys:          './deploy_keys/index.js',
     diff_notes:           './diff_notes/diff_notes_bundle.js',
     environments:         './environments/environments_bundle.js',
     environments_folder:  './environments/folder/environments_folder_bundle.js',
@@ -35,8 +40,8 @@ var config = {
     group:                './group.js',
     groups_list:          './groups_list.js',
     issues:               './issues/issues_bundle.js',
-    issuable:             './issuable/issuable_bundle.js',
     issue_show:           './issue_show/index.js',
+    locale:               './locale/index.js',
     main:                 './main.js',
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
     monitoring:           './monitoring/monitoring_bundle.js',
@@ -44,15 +49,18 @@ var config = {
     notebook_viewer:      './blob/notebook_viewer.js',
     pdf_viewer:           './blob/pdf_viewer.js',
     pipelines:            './pipelines/index.js',
+    balsamiq_viewer:      './blob/balsamiq_viewer.js',
     profile:              './profile/profile_bundle.js',
     protected_branches:   './protected_branches/protected_branches_bundle.js',
     protected_tags:       './protected_tags',
+    sidebar:              './sidebar/sidebar_bundle.js',
     snippet:              './snippet/snippet_bundle.js',
     sketch_viewer:        './blob/sketch_viewer.js',
     stl_viewer:           './blob/stl_viewer.js',
     terminal:             './terminal/terminal_bundle.js',
     u2f:                  ['vendor/u2f'],
     users:                './users/users_bundle.js',
+    raven:                './raven/index.js',
     vue_merge_request_widget: './vue_merge_request_widget/index.js',
   },
 
@@ -89,6 +97,10 @@ var config = {
         exclude: /node_modules/,
         loader: 'file-loader',
       },
+      {
+        test: /locale\/[a-z]+\/(.*)\.js$/,
+        loader: 'exports-loader?locales',
+      },
     ]
   },
 
@@ -124,10 +136,11 @@ var config = {
         'boards',
         'commit_pipelines',
         'cycle_analytics',
+        'deploy_keys',
         'diff_notes',
         'environments',
         'environments_folder',
-        'issuable',
+        'sidebar',
         'issue_show',
         'merge_conflicts',
         'notebook_viewer',
@@ -155,6 +168,14 @@ var config = {
     // create cacheable common library bundles
     new webpack.optimize.CommonsChunkPlugin({
       names: ['main', 'common', 'runtime'],
+    }),
+
+    // locale common library
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'locale',
+      chunks: [
+        'cycle_analytics',
+      ],
     }),
   ],
 

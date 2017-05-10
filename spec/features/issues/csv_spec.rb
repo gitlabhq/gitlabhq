@@ -76,7 +76,7 @@ describe 'Issues csv', feature: true do
     create_list(:labeled_issue,
                 10,
                 project: project,
-                assignee: user,
+                assignees: [user],
                 author: user,
                 milestone: milestone,
                 labels: [feature_label, idea_label])

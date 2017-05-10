@@ -99,7 +99,7 @@ feature 'Multiple issue updating from issues#index', feature: true do
   end
 
   def create_assigned
-    create(:issue, project: project, assignee: user)
+    create(:issue, project: project, assignees: [user])
   end
 
   def create_with_milestone

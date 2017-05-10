@@ -24,6 +24,8 @@ Issue:
 - time_estimate
 - relative_position
 - service_desk_reply_to
+- last_edited_at
+- last_edited_by_id
 Event:
 - id
 - target_type
@@ -158,6 +160,8 @@ MergeRequest:
 - rebase_commit_sha
 - time_estimate
 - squash
+- last_edited_at
+- last_edited_by_id
 MergeRequestDiff:
 - id
 - state

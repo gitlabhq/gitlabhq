@@ -63,6 +63,10 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             if: :sentry_enabled
 
+  validates :clientside_sentry_dsn,
+            presence: true,
+            if: :clientside_sentry_enabled
+
   validates :akismet_api_key,
             presence: true,
             if: :akismet_enabled

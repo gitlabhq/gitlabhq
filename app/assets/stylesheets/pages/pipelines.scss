@@ -277,6 +277,7 @@
   .stage-container {
     display: inline-block;
     position: relative;
+    vertical-align: middle;
     height: 22px;
     margin: 3px 6px 3px 0;
 
@@ -317,6 +318,32 @@
 .tab-pane {
   &.builds .ci-table tr {
     height: 71px;
+  }
+}
+
+.build-failures {
+  .build-state {
+    padding: 20px 2px;
+
+    .build-name {
+      float: right;
+      font-weight: 500;
+    }
+
+    .ci-status-icon-failed svg {
+      vertical-align: middle;
+    }
+
+    .stage {
+      color: $gl-text-color-secondary;
+      font-weight: 500;
+      vertical-align: middle;
+    }
+  }
+
+  .build-log {
+    border: none;
+    line-height: initial;
   }
 }
 

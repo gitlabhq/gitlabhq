@@ -147,4 +147,45 @@ describe Gitlab::Shell, lib: true do
       end
     end
   end
+
+  describe 'projects commands' do
+    let(:projects_path) { 'tmp/tests/shell-projects-test/bin/gitlab-projects' }
+
+    before do
+      allow(Gitlab.config.gitlab_shell).to receive(:path).and_return('tmp/tests/shell-projects-test')
+      allow(Gitlab.config.gitlab_shell).to receive(:git_timeout).and_return(800)
+    end
+
+    describe '#fetch_remote' do
+      it 'returns true when the command succeeds' do
+        expect(Gitlab::Popen).to receive(:popen)
+          .with([projects_path, 'fetch-remote', 'current/storage', 'project/path.git', 'new/storage', '800']).and_return([nil, 0])
+
+        expect(gitlab_shell.fetch_remote('current/storage', 'project/path', 'new/storage')).to be true
+      end
+
+      it 'raises an exception when the command fails' do
+        expect(Gitlab::Popen).to receive(:popen)
+        .with([projects_path, 'fetch-remote', 'current/storage', 'project/path.git', 'new/storage', '800']).and_return(["error", 1])
+
+        expect { gitlab_shell.fetch_remote('current/storage', 'project/path', 'new/storage') }.to raise_error(Gitlab::Shell::Error, "error")
+      end
+    end
+
+    describe '#import_repository' do
+      it 'returns true when the command succeeds' do
+        expect(Gitlab::Popen).to receive(:popen)
+          .with([projects_path, 'import-project', 'current/storage', 'project/path.git', 'https://gitlab.com/gitlab-org/gitlab-ce.git', "800"]).and_return([nil, 0])
+
+        expect(gitlab_shell.import_repository('current/storage', 'project/path', 'https://gitlab.com/gitlab-org/gitlab-ce.git')).to be true
+      end
+
+      it 'raises an exception when the command fails' do
+        expect(Gitlab::Popen).to receive(:popen)
+        .with([projects_path, 'import-project', 'current/storage', 'project/path.git', 'https://gitlab.com/gitlab-org/gitlab-ce.git', "800"]).and_return(["error", 1])
+
+        expect { gitlab_shell.import_repository('current/storage', 'project/path', 'https://gitlab.com/gitlab-org/gitlab-ce.git') }.to raise_error(Gitlab::Shell::Error, "error")
+      end
+    end
+  end
 end

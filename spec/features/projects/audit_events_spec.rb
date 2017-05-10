@@ -26,7 +26,7 @@ feature 'Projects > Audit Events', js: true, feature: true do
       visit namespace_project_deploy_keys_path(project.namespace, project)
 
       accept_confirm do
-        click_link 'Remove'
+        click_on 'Remove'
       end
 
       visit namespace_project_audit_events_path(project.namespace, project)

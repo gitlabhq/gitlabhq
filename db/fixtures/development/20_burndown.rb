@@ -49,7 +49,7 @@ class Gitlab::Seeder::Burndown
         description: FFaker::Lorem.sentence,
         state: 'opened',
         milestone: @milestone,
-        assignee: @project.team.users.sample,
+        assignees: [@project.team.users.sample],
         weight: rand(1..9)
       }
 

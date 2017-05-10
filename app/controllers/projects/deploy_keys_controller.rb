@@ -8,7 +8,12 @@ class Projects::DeployKeysController < Projects::ApplicationController
   layout "project_settings"
 
   def index
-    redirect_to_repository_settings(@project)
+    respond_to do |format|
+      format.html { redirect_to_repository_settings(@project) }
+      format.json do
+        render json: Projects::Settings::DeployKeysPresenter.new(@project, current_user: current_user).as_json
+      end
+    end
   end
 
   def new
@@ -23,6 +28,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
     else
       log_audit_event(@key.title, action: :create)
     end
+
     redirect_to_repository_settings(@project)
   end
 
@@ -31,7 +37,10 @@ class Projects::DeployKeysController < Projects::ApplicationController
     Projects::EnableDeployKeyService.new(@project, current_user, params).execute
     log_audit_event(@key.title, action: :create)
 
-    redirect_to_repository_settings(@project)
+    respond_to do |format|
+      format.html { redirect_to_repository_settings(@project) }
+      format.json { head :ok }
+    end
   end
 
   def disable
@@ -42,7 +51,10 @@ class Projects::DeployKeysController < Projects::ApplicationController
     deploy_key_project.destroy!
     log_audit_event(@key.title, action: :destroy)
 
-    redirect_to_repository_settings(@project)
+    respond_to do |format|
+      format.html { redirect_to_repository_settings(@project) }
+      format.json { head :ok }
+    end
   end
 
   protected

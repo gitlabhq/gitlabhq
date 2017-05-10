@@ -1,8 +1,11 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, no-param-reassign, quotes, prefer-template, no-var, one-var, no-unused-vars, one-var-declaration-per-line, no-void, consistent-return, no-empty, max-len */
+import AccessorUtilities from './lib/utils/accessor';
 
 window.Autosave = (function() {
   function Autosave(field, key) {
     this.field = field;
+    this.isLocalStorageAvailable = AccessorUtilities.isLocalStorageAccessSafe();
+
     if (key.join != null) {
       key = key.join("/");
     }
@@ -17,16 +20,12 @@ window.Autosave = (function() {
   }
 
   Autosave.prototype.restore = function() {
-    var e, text;
-    if (window.localStorage == null) {
-      return;
-    }
-    try {
-      text = window.localStorage.getItem(this.key);
-    } catch (error) {
-      e = error;
-      return;
-    }
+    var text;
+
+    if (!this.isLocalStorageAvailable) return;
+
+    text = window.localStorage.getItem(this.key);
+
     if ((text != null ? text.length : void 0) > 0) {
       this.field.val(text);
     }
@@ -35,27 +34,22 @@ window.Autosave = (function() {
 
   Autosave.prototype.save = function() {
     var text;
-    if (window.localStorage == null) {
-      return;
-    }
     text = this.field.val();
-    if ((text != null ? text.length : void 0) > 0) {
-      try {
-        return window.localStorage.setItem(this.key, text);
-      } catch (error) {}
-    } else {
-      return this.reset();
+
+    if (this.isLocalStorageAvailable && (text != null ? text.length : void 0) > 0) {
+      return window.localStorage.setItem(this.key, text);
     }
+
+    return this.reset();
   };
 
   Autosave.prototype.reset = function() {
-    if (window.localStorage == null) {
-      return;
-    }
-    try {
-      return window.localStorage.removeItem(this.key);
-    } catch (error) {}
+    if (!this.isLocalStorageAvailable) return;
+
+    return window.localStorage.removeItem(this.key);
   };
 
   return Autosave;
 })();
+
+export default window.Autosave;

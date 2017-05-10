@@ -28,8 +28,8 @@ gl.issueBoards.BoardsStore = {
     this.state.currentPage = '';
     this.state.reload = false;
   },
-  addList (listObj) {
-    const list = new List(listObj);
+  addList (listObj, defaultAvatar) {
+    const list = new List(listObj, defaultAvatar);
     this.state.lists.push(list);
 
     return list;

@@ -135,6 +135,17 @@ describe Gitlab::Ci::Build::Artifacts::Metadata::Entry do
       subject { |example| path(example).nodes }
       it { is_expected.to eq 4 }
     end
+
+    describe '#blob' do
+      let(:file_entry) { |example| path(example) }
+      subject { file_entry.blob }
+
+      it 'returns a blob representing the entry data' do
+        expect(subject).to be_a(Blob)
+        expect(subject.path).to eq(file_entry.path)
+        expect(subject.size).to eq(file_entry.metadata[:size])
+      end
+    end
   end
 
   describe 'non-existent/', path: 'non-existent/' do

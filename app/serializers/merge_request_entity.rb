@@ -1,4 +1,6 @@
 class MergeRequestEntity < IssuableEntity
+  expose :approvals_before_merge
+  expose :assignee_id
   include RequestAwareEntity
 
   expose :in_progress_merge_commit_sha

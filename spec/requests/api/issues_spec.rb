@@ -19,7 +19,7 @@ describe API::Issues do
   let!(:closed_issue) do
     create :closed_issue,
            author: user,
-           assignee: user,
+           assignees: [user],
            project: project,
            state: :closed,
            milestone: milestone,
@@ -31,14 +31,14 @@ describe API::Issues do
            :confidential,
            project: project,
            author: author,
-           assignee: assignee,
+           assignees: [assignee],
            created_at: generate(:past_time),
            updated_at: 2.hours.ago
   end
   let!(:issue) do
     create :issue,
            author: user,
-           assignee: user,
+           assignees: [user],
            project: project,
            milestone: milestone,
            created_at: generate(:past_time),
@@ -265,7 +265,7 @@ describe API::Issues do
     let!(:group_closed_issue) do
       create :closed_issue,
              author: user,
-             assignee: user,
+             assignees: [user],
              project: group_project,
              state: :closed,
              milestone: group_milestone,
@@ -276,13 +276,13 @@ describe API::Issues do
              :confidential,
              project: group_project,
              author: author,
-             assignee: assignee,
+             assignees: [assignee],
              updated_at: 2.hours.ago
     end
     let!(:group_issue) do
       create :issue,
              author: user,
-             assignee: user,
+             assignees: [user],
              project: group_project,
              milestone: group_milestone,
              updated_at: 1.hour.ago,
@@ -687,6 +687,7 @@ describe API::Issues do
       expect(json_response['updated_at']).to be_present
       expect(json_response['labels']).to eq(issue.label_names)
       expect(json_response['milestone']).to be_a Hash
+      expect(json_response['assignees']).to be_a Array
       expect(json_response['assignee']).to be_a Hash
       expect(json_response['author']).to be_a Hash
       expect(json_response['confidential']).to be_falsy
@@ -760,9 +761,22 @@ describe API::Issues do
   end
 
   describe "POST /projects/:id/issues" do
+    context 'support for deprecated assignee_id' do
+      it 'creates a new project issue' do
+        post api("/projects/#{project.id}/issues", user),
+          title: 'new issue', assignee_id: user2.id
+
+        expect(response).to have_http_status(201)
+        expect(json_response['title']).to eq('new issue')
+        expect(json_response['assignee']['name']).to eq(user2.name)
+        expect(json_response['assignees'].first['name']).to eq(user2.name)
+      end
+    end
+
     it 'creates a new project issue' do
       post api("/projects/#{project.id}/issues", user),
-        title: 'new issue', labels: 'label, label2', weight: 3
+        title: 'new issue', labels: 'label, label2', weight: 3,
+        assignee_ids: [user2.id]
 
       expect(response).to have_http_status(201)
       expect(json_response['title']).to eq('new issue')
@@ -770,6 +784,8 @@ describe API::Issues do
       expect(json_response['labels']).to eq(%w(label label2))
       expect(json_response['confidential']).to be_falsy
       expect(json_response['weight']).to eq(3)
+      expect(json_response['assignee']['name']).to eq(user2.name)
+      expect(json_response['assignees'].first['name']).to eq(user2.name)
     end
 
     it 'creates a new confidential project issue' do
@@ -1056,6 +1072,46 @@ describe API::Issues do
       expect(spam_logs[0].description).to eq('content here')
       expect(spam_logs[0].user).to eq(user)
       expect(spam_logs[0].noteable_type).to eq('Issue')
+    end
+  end
+
+  describe 'PUT /projects/:id/issues/:issue_iid to update assignee' do
+    context 'support for deprecated assignee_id' do
+      it 'removes assignee' do
+        put api("/projects/#{project.id}/issues/#{issue.iid}", user),
+          assignee_id: 0
+
+        expect(response).to have_http_status(200)
+
+        expect(json_response['assignee']).to be_nil
+      end
+
+      it 'updates an issue with new assignee' do
+        put api("/projects/#{project.id}/issues/#{issue.iid}", user),
+          assignee_id: user2.id
+
+        expect(response).to have_http_status(200)
+
+        expect(json_response['assignee']['name']).to eq(user2.name)
+      end
+    end
+
+    it 'removes assignee' do
+      put api("/projects/#{project.id}/issues/#{issue.iid}", user),
+        assignee_ids: [0]
+
+      expect(response).to have_http_status(200)
+
+      expect(json_response['assignees']).to be_empty
+    end
+
+    it 'updates an issue with new assignee' do
+      put api("/projects/#{project.id}/issues/#{issue.iid}", user),
+        assignee_ids: [user2.id]
+
+      expect(response).to have_http_status(200)
+
+      expect(json_response['assignees'].first['name']).to eq(user2.name)
     end
   end
 

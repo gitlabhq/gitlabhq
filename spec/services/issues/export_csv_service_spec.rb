@@ -33,7 +33,7 @@ describe Issues::ExportCsvService, services: true do
 
     before do
       issue.update!(milestone: milestone,
-                    assignee: user,
+                    assignees: [user],
                     description: 'Issue with details',
                     state: :reopened,
                     due_date: DateTime.new(2014, 3, 2),
@@ -71,11 +71,11 @@ describe Issues::ExportCsvService, services: true do
     end
 
     specify 'assignee name' do
-      expect(csv[0]['Assignee']).to eq issue.assignee_name
+      expect(csv[0]['Assignee']).to eq user.name
     end
 
     specify 'assignee username' do
-      expect(csv[0]['Assignee Username']).to eq issue.assignee.username
+      expect(csv[0]['Assignee Username']).to eq user.username
     end
 
     specify 'confidential' do

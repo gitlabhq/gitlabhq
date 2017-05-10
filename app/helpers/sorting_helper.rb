@@ -72,6 +72,14 @@ module SortingHelper
     }
   end
 
+  def tags_sort_options_hash
+    {
+      sort_value_name => sort_title_name,
+      sort_value_recently_updated => sort_title_recently_updated,
+      sort_value_oldest_updated => sort_title_oldest_updated
+    }
+  end
+
   def sort_title_priority
     'Priority'
   end

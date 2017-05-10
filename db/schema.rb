@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170503185032) do
+ActiveRecord::Schema.define(version: 20170504102911) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -135,6 +135,8 @@ ActiveRecord::Schema.define(version: 20170503185032) do
     t.decimal "polling_interval_multiplier", default: 1.0, null: false
     t.boolean "elasticsearch_experimental_indexer"
     t.integer "cached_markdown_version"
+    t.boolean "clientside_sentry_enabled", default: false, null: false
+    t.string "clientside_sentry_dsn"
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -538,6 +540,14 @@ ActiveRecord::Schema.define(version: 20170503185032) do
 
   add_index "index_statuses", ["project_id"], name: "index_index_statuses_on_project_id", unique: true, using: :btree
 
+  create_table "issue_assignees", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "issue_id", null: false
+  end
+
+  add_index "issue_assignees", ["issue_id", "user_id"], name: "index_issue_assignees_on_issue_id_and_user_id", unique: true, using: :btree
+  add_index "issue_assignees", ["user_id"], name: "index_issue_assignees_on_user_id", using: :btree
+
   create_table "issue_metrics", force: :cascade do |t|
     t.integer "issue_id", null: false
     t.datetime "first_mentioned_in_commit_at"
@@ -576,6 +586,8 @@ ActiveRecord::Schema.define(version: 20170503185032) do
     t.datetime "closed_at"
     t.string "service_desk_reply_to"
     t.integer "cached_markdown_version"
+    t.datetime "last_edited_at"
+    t.integer "last_edited_by_id"
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
@@ -782,6 +794,8 @@ ActiveRecord::Schema.define(version: 20170503185032) do
     t.integer "time_estimate"
     t.boolean "squash", default: false, null: false
     t.integer "cached_markdown_version"
+    t.datetime "last_edited_at"
+    t.integer "last_edited_by_id"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
@@ -1538,12 +1552,13 @@ ActiveRecord::Schema.define(version: 20170503185032) do
     t.string "organization"
     t.boolean "authorized_projects_populated"
     t.boolean "auditor", default: false, null: false
+    t.boolean "ghost"
     t.boolean "require_two_factor_authentication_from_group", default: false, null: false
     t.integer "two_factor_grace_period", default: 48, null: false
-    t.boolean "ghost"
     t.date "last_activity_on"
     t.boolean "notified_of_own_activity"
     t.boolean "support_bot"
+    t.string "preferred_language"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
@@ -1605,6 +1620,8 @@ ActiveRecord::Schema.define(version: 20170503185032) do
   add_foreign_key "ci_trigger_schedules", "ci_triggers", column: "trigger_id", name: "fk_90a406cc94", on_delete: :cascade
   add_foreign_key "ci_triggers", "users", column: "owner_id", name: "fk_e8e10d1964", on_delete: :cascade
   add_foreign_key "container_repositories", "projects"
+  add_foreign_key "issue_assignees", "issues", on_delete: :cascade
+  add_foreign_key "issue_assignees", "users", on_delete: :cascade
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
   add_foreign_key "label_priorities", "labels", on_delete: :cascade
   add_foreign_key "label_priorities", "projects", on_delete: :cascade

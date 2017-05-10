@@ -6,6 +6,7 @@ describe SystemNoteService, services: true do
   let(:project)  { create(:empty_project) }
   let(:author)   { create(:user) }
   let(:noteable) { create(:issue, project: project) }
+  let(:issue)    { noteable }
 
   shared_examples_for 'a system note' do
     let(:expected_noteable) { noteable }
@@ -155,6 +156,52 @@ describe SystemNoteService, services: true do
     end
   end
 
+  describe '.change_issue_assignees' do
+    subject { described_class.change_issue_assignees(noteable, project, author, [assignee]) }
+
+    let(:assignee) { create(:user) }
+    let(:assignee1) { create(:user) }
+    let(:assignee2) { create(:user) }
+    let(:assignee3) { create(:user) }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'assignee' }
+    end
+
+    def build_note(old_assignees, new_assignees)
+      issue.assignees = new_assignees
+      described_class.change_issue_assignees(issue, project, author, old_assignees).note
+    end
+
+    it 'builds a correct phrase when an assignee is added to a non-assigned issue' do
+      expect(build_note([], [assignee1])).to eq "assigned to @#{assignee1.username}"
+    end
+
+    it 'builds a correct phrase when assignee removed' do
+      expect(build_note([assignee1], [])).to eq 'removed all assignees'
+    end
+
+    it 'builds a correct phrase when assignees changed' do
+      expect(build_note([assignee1], [assignee2])).to eq \
+        "assigned to @#{assignee2.username} and unassigned @#{assignee1.username}"
+    end
+
+    it 'builds a correct phrase when three assignees removed and one added' do
+      expect(build_note([assignee, assignee1, assignee2], [assignee3])).to eq \
+        "assigned to @#{assignee3.username} and unassigned @#{assignee.username}, @#{assignee1.username}, and @#{assignee2.username}"
+    end
+
+    it 'builds a correct phrase when one assignee changed from a set' do
+      expect(build_note([assignee, assignee1], [assignee, assignee2])).to eq \
+        "assigned to @#{assignee2.username} and unassigned @#{assignee1.username}"
+    end
+
+    it 'builds a correct phrase when one assignee removed from a set' do
+      expect(build_note([assignee, assignee1, assignee2], [assignee, assignee1])).to eq \
+        "unassigned @#{assignee2.username}"
+    end
+  end
+
   describe '.change_label' do
     subject { described_class.change_label(noteable, project, author, added, removed) }
 
@@ -288,6 +335,20 @@ describe SystemNoteService, services: true do
       it 'sets the note text' do
         expect(subject.note).
           to eq "changed title from **{-Old title-}** to **{+Lorem ipsum+}**"
+      end
+    end
+  end
+
+  describe '.change_description' do
+    subject { described_class.change_description(noteable, project, author) }
+
+    context 'when noteable responds to `description`' do
+      it_behaves_like 'a system note' do
+        let(:action) { 'description' }
+      end
+
+      it 'sets the note text' do
+        expect(subject.note).to eq('changed the description')
       end
     end
   end

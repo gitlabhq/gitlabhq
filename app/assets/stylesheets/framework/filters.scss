@@ -114,11 +114,21 @@
     padding-right: 8px;
 
     .fa-close {
-      color: $gl-text-color-disabled;
+      color: $gl-text-color-secondary;
     }
 
     &:hover .fa-close {
-      color: $gl-text-color-secondary;
+      color: $gl-text-color;
+    }
+
+    &.inverted {
+      .fa-close {
+        color: $gl-text-color-secondary-inverted;
+      }
+
+      &:hover .fa-close {
+        color: $gl-text-color-inverted;
+      }
     }
   }
 

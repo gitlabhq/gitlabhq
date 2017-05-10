@@ -68,7 +68,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def new
     params[:issue] ||= ActionController::Parameters.new(
-      assignee_id: ""
+      assignee_ids: ""
     )
     build_params = issue_params.merge(
       merge_request_to_resolve_discussions_of: params[:merge_request_to_resolve_discussions_of],
@@ -151,7 +151,7 @@ class Projects::IssuesController < Projects::ApplicationController
         if @issue.valid?
           render json: @issue.to_json(methods: [:task_status, :task_status_short],
                                       include: { milestone: {},
-                                                 assignee: { only: [:name, :username], methods: [:avatar_url] },
+                                                 assignees: { only: [:id, :name, :username], methods: [:avatar_url] },
                                                  labels: { methods: :text_color } })
         else
           render json: { errors: @issue.errors.full_messages }, status: :unprocessable_entity
@@ -291,8 +291,8 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def issue_params
     params.require(:issue).permit(
-      :title, :assignee_id, :position, :description, :confidential, :weight,
-      :milestone_id, :due_date, :state_event, :task_num, :lock_version, label_ids: []
+      :title, :position, :description, :confidential, :weight,
+      :milestone_id, :due_date, :state_event, :task_num, :lock_version, label_ids: [], assignee_ids: [],
     )
   end
 

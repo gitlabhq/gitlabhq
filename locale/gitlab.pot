@@ -1,0 +1,208 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the gitlab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: gitlab 1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-05-04 19:24-0500\n"
+"PO-Revision-Date: 2017-05-04 19:24-0500\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+msgid "ByAuthor|by"
+msgstr ""
+
+msgid "Commit"
+msgid_plural "Commits"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project."
+msgstr ""
+
+msgid "CycleAnalyticsStage|Code"
+msgstr ""
+
+msgid "CycleAnalyticsStage|Issue"
+msgstr ""
+
+msgid "CycleAnalyticsStage|Plan"
+msgstr ""
+
+msgid "CycleAnalyticsStage|Production"
+msgstr ""
+
+msgid "CycleAnalyticsStage|Review"
+msgstr ""
+
+msgid "CycleAnalyticsStage|Staging"
+msgstr ""
+
+msgid "CycleAnalyticsStage|Test"
+msgstr ""
+
+msgid "Deploy"
+msgid_plural "Deploys"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "FirstPushedBy|First"
+msgstr ""
+
+msgid "FirstPushedBy|pushed by"
+msgstr ""
+
+msgid "From issue creation until deploy to production"
+msgstr ""
+
+msgid "From merge request merge until deploy to production"
+msgstr ""
+
+msgid "Introducing Cycle Analytics"
+msgstr ""
+
+msgid "Last %d day"
+msgid_plural "Last %d days"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Limited to showing %d event at most"
+msgid_plural "Limited to showing %d events at most"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Median"
+msgstr ""
+
+msgid "New Issue"
+msgid_plural "New Issues"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Not available"
+msgstr ""
+
+msgid "Not enough data"
+msgstr ""
+
+msgid "OpenedNDaysAgo|Opened"
+msgstr ""
+
+msgid "Pipeline Health"
+msgstr ""
+
+msgid "ProjectLifecycle|Stage"
+msgstr ""
+
+msgid "Read more"
+msgstr ""
+
+msgid "Related Commits"
+msgstr ""
+
+msgid "Related Deployed Jobs"
+msgstr ""
+
+msgid "Related Issues"
+msgstr ""
+
+msgid "Related Jobs"
+msgstr ""
+
+msgid "Related Merge Requests"
+msgstr ""
+
+msgid "Related Merged Requests"
+msgstr ""
+
+msgid "Showing %d event"
+msgid_plural "Showing %d events"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
+msgstr ""
+
+msgid "The collection of events added to the data gathered for that stage."
+msgstr ""
+
+msgid "The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage."
+msgstr ""
+
+msgid "The phase of the development lifecycle."
+msgstr ""
+
+msgid "The planning stage shows the time from the previous step to pushing your first commit. This time will be added automatically once you push your first commit."
+msgstr ""
+
+msgid "The production stage shows the total time it takes between creating an issue and deploying the code to production. The data will be automatically added once you have completed the full idea to production cycle."
+msgstr ""
+
+msgid "The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request."
+msgstr ""
+
+msgid "The staging stage shows the time between merging the MR and deploying code to the production environment. The data will be automatically added once you deploy to production for the first time."
+msgstr ""
+
+msgid "The testing stage shows the time GitLab CI takes to run every pipeline for the related merge request. The data will automatically be added after your first pipeline finishes running."
+msgstr ""
+
+msgid "The time taken by each data entry gathered by that stage."
+msgstr ""
+
+msgid "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."
+msgstr ""
+
+msgid "Time before an issue gets scheduled"
+msgstr ""
+
+msgid "Time before an issue starts implementation"
+msgstr ""
+
+msgid "Time between merge request creation and merge/close"
+msgstr ""
+
+msgid "Time until first merge request"
+msgstr ""
+
+msgid "Time|hr"
+msgid_plural "Time|hrs"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Time|min"
+msgid_plural "Time|mins"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Time|s"
+msgstr ""
+
+msgid "Total Time"
+msgstr ""
+
+msgid "Total test time for all commits/merges"
+msgstr ""
+
+msgid "Want to see the data? Please ask an administrator for access."
+msgstr ""
+
+msgid "We don't have enough data to show this stage."
+msgstr ""
+
+msgid "You need permission."
+msgstr ""
+
+msgid "day"
+msgid_plural "days"
+msgstr[0] ""
+msgstr[1] ""

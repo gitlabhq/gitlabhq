@@ -27,6 +27,12 @@ describe('constants', function () {
     });
   });
 
+  describe('TEMPLATE_REGEX', function () {
+    it('should be a handlebars templating syntax regex', function() {
+      expect(constants.TEMPLATE_REGEX).toEqual(/\{\{(.+?)\}\}/g);
+    });
+  });
+
   describe('IGNORE_CLASS', function () {
     it('should be `droplab-item-ignore`', function() {
       expect(constants.IGNORE_CLASS).toBe('droplab-item-ignore');

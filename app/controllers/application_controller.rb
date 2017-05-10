@@ -21,6 +21,8 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :require_email, unless: :devise_controller?
 
+  around_action :set_locale
+
   protect_from_forgery with: :exception
 
   helper_method :can?, :current_application_settings
@@ -275,5 +277,13 @@ class ApplicationController < ActionController::Base
   # https://developers.yubico.com/U2F/App_ID.html
   def u2f_app_id
     request.base_url
+  end
+
+  def set_locale
+    Gitlab::I18n.set_locale(current_user)
+
+    yield
+  ensure
+    Gitlab::I18n.reset_locale
   end
 end

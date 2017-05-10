@@ -38,7 +38,8 @@ const BoardsMockData = {
         title: 'Testing',
         iid: 1,
         confidential: false,
-        labels: []
+        labels: [],
+        assignees: [],
       }],
       size: 1
     },

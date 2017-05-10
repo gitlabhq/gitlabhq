@@ -35,7 +35,10 @@ gl.issueBoards.Board = Vue.extend({
     filter: {
       handler() {
         this.list.page = 1;
-        this.list.getIssues(true);
+        this.list.getIssues(true)
+          .catch(() => {
+            // TODO: handle request error
+          });
       },
       deep: true,
     },

@@ -21,7 +21,7 @@ module Issues
 
     def csv_builder
       @csv_builder ||=
-        CsvBuilder.new(@issues.includes(:author, :assignee), header_to_value_hash)
+        CsvBuilder.new(@issues.includes(:author, :assignees), header_to_value_hash)
     end
 
     private
@@ -35,8 +35,8 @@ module Issues
        'Description' => 'description',
        'Author' => 'author_name',
        'Author Username' => -> (issue) { issue.author&.username },
-       'Assignee' => 'assignee_name',
-       'Assignee Username' => -> (issue) { issue.assignee&.username },
+       'Assignee' => -> (issue) { issue.assignees.map(&:name).join(', ') },
+       'Assignee Username' => -> (issue) { issue.assignees.map(&:username).join(', ') },
        'Confidential' => -> (issue) { issue.confidential? ? 'Yes' : 'No' },
        'Due Date' => -> (issue) { issue.due_date&.to_s(:csv) },
        'Created At (UTC)' => -> (issue) { issue.created_at&.to_s(:csv) },
