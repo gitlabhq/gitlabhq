@@ -69,7 +69,9 @@ module API
         expose :creator_id
         expose :namespace, using: 'API::Entities::Namespace'
         expose :forked_from_project, using: ::API::Entities::BasicProjectDetails, if: lambda{ |project, options| project.forked? }
-        expose :avatar_url
+        expose :avatar_url do |user, options|
+          user.avatar_url(only_path: false)
+        end
         expose :star_count, :forks_count
         expose :open_issues_count, if: lambda { |project, options| project.feature_available?(:issues, options[:current_user]) && project.default_issues_tracker? }
         expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
@@ -129,7 +131,9 @@ module API
       class Group < Grape::Entity
         expose :id, :name, :path, :description, :visibility_level
         expose :lfs_enabled?, as: :lfs_enabled
-        expose :avatar_url
+        expose :avatar_url do |user, options|
+          user.avatar_url(only_path: false)
+        end
         expose :web_url
         expose :request_access_enabled
         expose :full_name, :full_path
