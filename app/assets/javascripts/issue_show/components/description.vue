@@ -56,19 +56,25 @@
         });
       },
       taskStatus() {
-        const $issueableHeader = $('.issuable-header');
+        const taskRegexMatches = this.taskStatus.match(/(\d+) of (\d+)/);
+        const $issueableHeader = $('.issuable-meta');
         let $tasks = $('#task_status');
         let $tasksShort = $('#task_status_short');
 
-        if (this.taskStatus.indexOf('0 of 0') >= 0) {
+        if (this.taskStatus.indexOf('0 of 0') >= 0 || this.taskStatus.trim() === '') {
           $tasks.remove();
           $tasksShort.remove();
         } else if (!$tasks.length && !$tasksShort.length) {
-          $tasks = $issueableHeader.append('<span id="task_status"></span>');
-          $tasksShort = $issueableHeader.append('<span id="task_status_short"></span>');
+          $tasks = $issueableHeader.append('<span id="task_status" class="hidden-xs hidden-sm"></span>')
+            .find('#task_status');
+          $tasksShort = $issueableHeader.append('<span id="task_status_short" class="hidden-md hidden-lg"></span>')
+            .find('#task_status_short');
         }
 
-        $tasks.text(this.taskStatus);
+        if (taskRegexMatches) {
+          $tasks.text(this.taskStatus);
+          $tasksShort.text(`${taskRegexMatches[1]}/${taskRegexMatches[2]} task${taskRegexMatches[2] > 1 ? 's' : ''}`);
+        }
       },
     },
   };
