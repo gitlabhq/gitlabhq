@@ -1,4 +1,4 @@
-# Notification settings
+# Notification settings API
 
 >**Note:** This feature was [introduced][ce-5632] in GitLab 8.12.
 
