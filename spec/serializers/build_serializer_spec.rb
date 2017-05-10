@@ -4,7 +4,7 @@ describe BuildSerializer do
   let(:user) { create(:user) }
 
   let(:serializer) do
-    described_class.new(user: user)
+    described_class.new(current_user: user)
   end
 
   subject { serializer.represent(resource) }

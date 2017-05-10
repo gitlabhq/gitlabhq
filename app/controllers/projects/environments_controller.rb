@@ -18,7 +18,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
       format.json do
         render json: {
           environments: EnvironmentSerializer
-            .new(project: @project, user: @current_user)
+            .new(project: @project, current_user: @current_user)
             .with_pagination(request, response)
             .within_folders
             .represent(@environments),
@@ -38,7 +38,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
       format.json do
         render json: {
           environments: EnvironmentSerializer
-            .new(project: @project, user: @current_user)
+            .new(project: @project, current_user: @current_user)
             .with_pagination(request, response)
             .represent(@environments),
           available_count: folder_environments.available.count,
@@ -143,7 +143,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     if rollout_status.nil?
       render body: nil, status: 204 # no result yet
     else
-      serializer = RolloutStatusSerializer.new(project: @project, user: @current_user)
+      serializer = RolloutStatusSerializer.new(project: @project, current_user: @current_user)
       render json: serializer.represent(rollout_status)
     end
   end

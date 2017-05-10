@@ -5,7 +5,7 @@ describe EnvironmentEntity do
   let(:environment) { create(:environment) }
 
   let(:entity) do
-    described_class.new(environment, request: double(user: user))
+    described_class.new(environment, request: double(current_user: user))
   end
 
   subject { entity.as_json }

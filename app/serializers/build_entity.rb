@@ -30,6 +30,6 @@ class BuildEntity < Grape::Entity
   end
 
   def detailed_status
-    build.detailed_status(request.user)
+    build.detailed_status(request.current_user)
   end
 end

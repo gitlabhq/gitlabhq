@@ -31,7 +31,7 @@ class EnvironmentEntity < Grape::Entity
   end
 
   expose :terminal_path, if: ->(environment, _) { environment.deployment_service_ready? } do |environment|
-    can?(request.user, :admin_environment, environment.project) &&
+    can?(request.current_user, :admin_environment, environment.project) &&
       terminal_namespace_project_environment_path(
         environment.project.namespace,
         environment.project,
@@ -39,7 +39,7 @@ class EnvironmentEntity < Grape::Entity
   end
 
   expose :rollout_status_path, if: ->(environment, _) { environment.deployment_service_ready? } do |environment|
-    can?(request.user, :read_deploy_board, environment.project) &&
+    can?(request.current_user, :read_deploy_board, environment.project) &&
       status_namespace_project_environment_path(
         environment.project.namespace,
         environment.project,
