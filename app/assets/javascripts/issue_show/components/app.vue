@@ -37,7 +37,7 @@ export default {
   },
   data() {
     const store = new Store({
-      title: this.initialTitle,
+      titleHtml: this.initialTitle,
       descriptionHtml: this.initialDescriptionHtml,
       descriptionText: this.initialDescriptionText,
     });
@@ -86,6 +86,7 @@ export default {
       :title-html="state.titleHtml"
       :title-text="state.titleText" />
     <description-component
+      v-if="state.descriptionHtml"
       :can-update="canUpdate"
       :description-html="state.descriptionHtml"
       :description-text="state.descriptionText"
