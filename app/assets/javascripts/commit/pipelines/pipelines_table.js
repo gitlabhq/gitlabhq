@@ -6,6 +6,7 @@ import PipelineStore from '../../pipelines/stores/pipelines_store';
 import eventHub from '../../pipelines/event_hub';
 import EmptyState from '../../pipelines/components/empty_state.vue';
 import ErrorState from '../../pipelines/components/error_state.vue';
+import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 import '../../lib/utils/common_utils';
 import '../../vue_shared/vue_resource_interceptor';
 import Poll from '../../lib/utils/poll';
@@ -17,8 +18,6 @@ import Poll from '../../lib/utils/poll';
  * We need a store to store the received environemnts.
  * We need a service to communicate with the server.
  *
- * Necessary SVG in the table are provided as props. This should be refactored
- * as soon as we have Webpack and can load them directly into JS files.
  */
 
 export default Vue.component('pipelines-table', {
@@ -27,6 +26,7 @@ export default Vue.component('pipelines-table', {
     'pipelines-table-component': PipelinesTableComponent,
     'error-state': ErrorState,
     'empty-state': EmptyState,
+    loadingIcon,
   },
 
   /**
@@ -151,13 +151,12 @@ export default Vue.component('pipelines-table', {
 
   template: `
     <div class="content-list pipelines">
-      <div
-        class="realtime-loading"
-        v-if="isLoading">
-        <i
-          class="fa fa-spinner fa-spin"
-          aria-hidden="true" />
-      </div>
+
+      <loading-icon
+        label="Loading pipelines"
+        size="3"
+        v-if="isLoading"
+        />
 
       <empty-state
         v-if="shouldRenderEmptyState"
