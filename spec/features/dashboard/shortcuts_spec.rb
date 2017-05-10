@@ -8,11 +8,11 @@ feature 'Dashboard shortcuts', :feature, :js do
     end
 
     scenario 'Navigate to tabs' do
-      find('body').send_key([:shift, 'I'])
+      find('body').send_keys([:shift, 'I'])
 
       check_page_title('Issues')
 
-      find('body').send_key([:shift, 'M'])
+      find('body').send_keys([:shift, 'M'])
 
       check_page_title('Merge Requests')
 
