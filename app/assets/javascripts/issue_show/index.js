@@ -1,20 +1,32 @@
 import Vue from 'vue';
-import IssueTitle from './issue_title_description.vue';
+import issuableApp from './components/app.vue';
 import '../vue_shared/vue_resource_interceptor';
 
-(() => {
-  const issueTitleData = document.querySelector('.issue-title-data').dataset;
-  const { canUpdateTasksClass, endpoint } = issueTitleData;
+document.addEventListener('DOMContentLoaded', () => {
+  const issuableElement = document.getElementById('js-issuable-app');
+  const issuableTitleElement = issuableElement.querySelector('.title');
+  const issuableDescriptionElement = issuableElement.querySelector('.wiki');
+  const issuableDescriptionTextarea = issuableElement.querySelector('.js-task-list-field');
+  const {
+    canUpdate,
+    endpoint,
+    issuableRef,
+  } = issuableElement.dataset;
 
-  const vm = new Vue({
-    el: '.issue-title-entrypoint',
-    render: createElement => createElement(IssueTitle, {
+  return new Vue({
+    el: issuableElement,
+    components: {
+      issuableApp,
+    },
+    render: createElement => createElement('issuable-app', {
       props: {
-        canUpdateTasksClass,
+        canUpdate: gl.utils.convertPermissionToBoolean(canUpdate),
         endpoint,
+        issuableRef,
+        initialTitle: issuableTitleElement.innerHTML,
+        initialDescriptionHtml: issuableDescriptionElement ? issuableDescriptionElement.innerHTML : '',
+        initialDescriptionText: issuableDescriptionTextarea ? issuableDescriptionTextarea.textContent : '',
       },
     }),
   });
-
-  return vm;
-})();
+});
