@@ -1858,11 +1858,12 @@ describe Repository, models: true do
   describe '#refresh_method_caches' do
     it 'refreshes the caches of the given types' do
       expect(repository).to receive(:expire_method_caches).
-        with(%i(rendered_readme license_blob license_key))
+        with(%i(rendered_readme license_blob license_key license))
 
       expect(repository).to receive(:rendered_readme)
       expect(repository).to receive(:license_blob)
       expect(repository).to receive(:license_key)
+      expect(repository).to receive(:license)
 
       repository.refresh_method_caches(%i(readme license))
     end
