@@ -384,9 +384,9 @@
             content: '';
             position: absolute;
             top: 48%;
-            left: -48px;
+            left: -44px;
             border-top: 2px solid $border-color;
-            width: 48px;
+            width: 44px;
             height: 1px;
           }
         }
@@ -486,7 +486,7 @@
     color: $gl-text-color-secondary;
 
     // Action Icons in big pipeline-graph nodes
-    > div > .ci-action-icon-container .ci-action-icon-wrapper {
+    .ci-action-icon-container .ci-action-icon-wrapper {
       height: 30px;
       width: 30px;
       background: $white-light;
@@ -511,7 +511,7 @@
       }
     }
 
-    > div > .ci-action-icon-container {
+    .ci-action-icon-container {
       position: absolute;
       right: 5px;
       top: 5px;
@@ -541,7 +541,7 @@
       }
     }
 
-    > div > .build-content {
+    .build-content {
       display: inline-block;
       padding: 8px 10px 9px;
       width: 100%;
