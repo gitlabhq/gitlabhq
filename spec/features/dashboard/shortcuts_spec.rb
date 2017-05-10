@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Dashboard shortcuts', feature: true, js: true do
+feature 'Dashboard shortcuts', :feature, :js do
   context 'logged in' do
     before do
       login_as :user
@@ -8,21 +8,21 @@ feature 'Dashboard shortcuts', feature: true, js: true do
     end
 
     scenario 'Navigate to tabs' do
-      find('body').native.send_keys([:shift, 'P'])
-
-      check_page_title('Projects')
-
-      find('body').native.send_key([:shift, 'I'])
+      find('body').send_key([:shift, 'I'])
 
       check_page_title('Issues')
 
-      find('body').native.send_key([:shift, 'M'])
+      find('body').send_key([:shift, 'M'])
 
       check_page_title('Merge Requests')
 
-      find('body').native.send_keys([:shift, 'T'])
+      find('body').send_keys([:shift, 'T'])
 
       check_page_title('Todos')
+
+      find('body').send_keys([:shift, 'P'])
+
+      check_page_title('Projects')
     end
   end
 
@@ -32,17 +32,20 @@ feature 'Dashboard shortcuts', feature: true, js: true do
     end
 
     scenario 'Navigate to tabs' do
-      find('body').native.send_keys([:shift, 'P'])
+      find('body').send_keys([:shift, 'G'])
 
-      expect(page).to have_content('No projects found')
-
-      find('body').native.send_keys([:shift, 'G'])
-
+      find('.nothing-here-block')
       expect(page).to have_content('No public groups')
 
-      find('body').native.send_keys([:shift, 'S'])
+      find('body').send_keys([:shift, 'S'])
 
+      find('.nothing-here-block')
       expect(page).to have_selector('.snippets-list-holder')
+
+      find('body').send_keys([:shift, 'P'])
+
+      find('.nothing-here-block')
+      expect(page).to have_content('No projects found')
     end
   end
 
