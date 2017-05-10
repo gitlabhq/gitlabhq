@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 
 import Vue from 'vue';
-import GroupsList from '~/groups_list';
+import GroupFilterableList from './groups_filterable_list';
 import GroupsComponent from './components/groups.vue';
 import GroupFolder from './components/group_folder.vue';
 import GroupItem from './components/group_item.vue';
@@ -47,7 +47,9 @@ $(() => {
       },
     },
     created() {
-      const groupFilterList = new GroupsList(form, filter, holder, store);
+      const groupFilterList = new GroupFilterableList(form, filter, holder, store);
+      groupFilterList.initSearch();
+
       this.fetchGroups();
 
       eventHub.$on('toggleSubGroups', this.toggleSubGroups);

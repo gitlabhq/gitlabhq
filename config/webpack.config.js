@@ -33,7 +33,6 @@ var config = {
     graphs:               './graphs/graphs_bundle.js',
     group:                './group.js',
     groups:               './groups/index.js',
-    groups_list:          './groups_list.js',
     issuable:             './issuable/issuable_bundle.js',
     issue_show:           './issue_show/index.js',
     main:                 './main.js',

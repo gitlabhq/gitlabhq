@@ -4,44 +4,52 @@
  */
 
 export default class FilterableList {
-  constructor(form, filter, holder, store) {
-    this.store = store;
+  constructor(form, filter, holder) {
     this.filterForm = form;
     this.listFilterElement = filter;
     this.listHolderElement = holder;
+    this.filterUrl = `${this.filterForm.getAttribute('action')}?${$(this.filterForm).serialize()}`;
   }
 
   initSearch() {
     this.debounceFilter = _.debounce(this.filterResults.bind(this), 500);
 
-    this.listFilterElement.removeEventListener('input', this.debounceFilter);
+    this.unbindEvents();
+    this.bindEvents();
+  }
+
+  bindEvents() {
     this.listFilterElement.addEventListener('input', this.debounceFilter);
   }
 
+  unbindEvents() {
+    this.listFilterElement.removeEventListener('input', this.debounceFilter);
+  }
+
   filterResults() {
-    const form = this.filterForm;
-    const filterUrl = `${form.getAttribute('action')}?${$(form).serialize()}`;
 
     $(this.listHolderElement).fadeTo(250, 0.5);
 
     return $.ajax({
-      url: form.getAttribute('action'),
-      data: $(form).serialize(),
+      url: this.filterForm.getAttribute('action'),
+      data: $(this.filterForm).serialize(),
       type: 'GET',
       dataType: 'json',
       context: this,
-      complete() {
-        $(this.listHolderElement).fadeTo(250, 1);
-      },
-      success(data) {
-        this.store.setGroups(data);
-
-       // Change url so if user reload a page - search results are saved
-        return window.history.replaceState({
-          page: filterUrl,
-
-        }, document.title, filterUrl);
-      },
+      complete: this.onFilterComplete,
+      success: this.onFilterSuccess,
     });
+  }
+
+  onFilterSuccess(data) {
+   // Change url so if user reload a page - search results are saved
+    return window.history.replaceState({
+      page: this.filterUrl,
+
+    }, document.title, this.filterUrl);
+  }
+
+  onFilterComplete() {
+    $(this.listHolderElement).fadeTo(250, 1);
   }
 }
