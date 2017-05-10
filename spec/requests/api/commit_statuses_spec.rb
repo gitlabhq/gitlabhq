@@ -26,8 +26,8 @@ describe API::CommitStatuses do
           create(:commit_status, { pipeline: commit, ref: commit.ref }.merge(opts))
         end
 
-        let!(:status1) { create_status(master, status: 'running') }
-        let!(:status2) { create_status(master, name: 'coverage', status: 'pending') }
+        let!(:status1) { create_status(master, status: 'running', retried: true) }
+        let!(:status2) { create_status(master, name: 'coverage', status: 'pending', retried: true) }
         let!(:status3) { create_status(develop, status: 'running', allow_failure: true) }
         let!(:status4) { create_status(master, name: 'coverage', status: 'success') }
         let!(:status5) { create_status(develop, name: 'coverage', status: 'success') }
