@@ -155,14 +155,14 @@ module TestEnv
                FORKED_BRANCH_SHA)
   end
 
-  def setup_repo(repo_path, repo_path_bare, repo_name, branch_sha)
+  def setup_repo(repo_path, repo_path_bare, repo_name, refs)
     clone_url = "https://gitlab.com/gitlab-org/#{repo_name}.git"
 
     unless File.directory?(repo_path)
       system(*%W(#{Gitlab.config.git.bin_path} clone -q #{clone_url} #{repo_path}))
     end
 
-    set_repo_refs(repo_path, branch_sha)
+    set_repo_refs(repo_path, refs)
 
     unless File.directory?(repo_path_bare)
       # We must copy bare repositories because we will push to them.
@@ -170,13 +170,12 @@ module TestEnv
     end
   end
 
-  def copy_repo(project, copy_fork: false)
-    base_repo_path = File.expand_path(copy_fork ? forked_repo_path_bare : factory_repo_path_bare)
+  def copy_repo(project, bare_repo:, refs:)
     target_repo_path = File.expand_path(project.repository_storage_path + "/#{project.full_path}.git")
     FileUtils.mkdir_p(target_repo_path)
-    FileUtils.cp_r("#{base_repo_path}/.", target_repo_path)
+    FileUtils.cp_r("#{File.expand_path(bare_repo)}/.", target_repo_path)
     FileUtils.chmod_R 0755, target_repo_path
-    set_repo_refs(target_repo_path, copy_fork ? FORKED_BRANCH_SHA : BRANCH_SHA)
+    set_repo_refs(target_repo_path, refs)
   end
 
   def repos_path
@@ -202,14 +201,18 @@ module TestEnv
     Capybara.current_session.visit '/'
   end
 
+  def factory_repo_path_bare
+    "#{factory_repo_path}_bare"
+  end
+
+  def forked_repo_path_bare
+    "#{forked_repo_path}_bare"
+  end
+
   private
 
   def factory_repo_path
     @factory_repo_path ||= Rails.root.join('tmp', 'tests', factory_repo_name)
-  end
-
-  def factory_repo_path_bare
-    "#{factory_repo_path}_bare"
   end
 
   def factory_repo_name
@@ -218,10 +221,6 @@ module TestEnv
 
   def forked_repo_path
     @forked_repo_path ||= Rails.root.join('tmp', 'tests', forked_repo_name)
-  end
-
-  def forked_repo_path_bare
-    "#{forked_repo_path}_bare"
   end
 
   def forked_repo_name
@@ -235,19 +234,22 @@ module TestEnv
   end
 
   def set_repo_refs(repo_path, branch_sha)
-    instructions = branch_sha.map {|branch, sha| "update refs/heads/#{branch}\x00#{sha}\x00" }.join("\x00") << "\x00"
+    instructions = branch_sha.map { |branch, sha| "update refs/heads/#{branch}\x00#{sha}\x00" }.join("\x00") << "\x00"
     update_refs = %W(#{Gitlab.config.git.bin_path} update-ref --stdin -z)
     reset = proc do
-      IO.popen(update_refs, "w") {|io| io.write(instructions) }
-      $?.success?
+      Dir.chdir(repo_path) do
+        IO.popen(update_refs, "w") { |io| io.write(instructions) }
+        $?.success?
+      end
     end
 
-    Dir.chdir(repo_path) do
-      # Try to reset without fetching to avoid using the network.
-      unless reset.call
-        raise 'Could not fetch test seed repository.' unless system(*%W(#{Gitlab.config.git.bin_path} fetch origin))
-        raise 'The fetched test seed does not contain the required revision.' unless reset.call
-      end
+    # Try to reset without fetching to avoid using the network.
+    unless reset.call
+      raise 'Could not fetch test seed repository.' unless system(*%W(#{Gitlab.config.git.bin_path} -C #{repo_path} fetch origin))
+
+      # Before we used Git clone's --mirror option, bare repos could end up
+      # with missing refs, clearing them and retrying should fix the issue.
+      cleanup && init unless reset.call
     end
   end
 end
