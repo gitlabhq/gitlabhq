@@ -35,6 +35,10 @@ To change the Sidekiq worker's frequency, you have to edit the `trigger_schedule
 value in your `gitlab.rb` and restart GitLab. The Sidekiq worker's configuration
 on GiLab.com is able to be looked up at [here](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/gitlab.yml.example#L185).
 - Cron notation is parsed by [Rufus-Scheduler](https://github.com/jmettraux/rufus-scheduler).
+- When the owner of the schedule does not have the ability to create pipelines
+anymore, due to e.g. being blocked or removed from the project, the schedule is
+deactivated. Another user can take ownership and activate it, so the schedule is
+run again.
 
 [ce-10533]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/10533
 [ce-10853]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/10853
