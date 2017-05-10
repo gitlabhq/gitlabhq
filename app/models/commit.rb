@@ -336,6 +336,8 @@ class Commit
     end
   end
 
+  delegate :deltas, to: :raw, prefix: :raw
+
   def diffs(diff_options = nil)
     Gitlab::Diff::FileCollection::Commit.new(self, diff_options: diff_options)
   end
@@ -373,7 +375,7 @@ class Commit
   def repo_changes
     changes = { added: [], modified: [], removed: [] }
 
-    raw_diffs(deltas_only: true).each do |diff|
+    raw_deltas.each do |diff|
       if diff.deleted_file
         changes[:removed] << diff.old_path
       elsif diff.renamed_file || diff.new_file

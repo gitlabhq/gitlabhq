@@ -41,7 +41,7 @@ feature 'Login', feature: true do
       expect(page).to have_content('Your account has been blocked.')
     end
 
-    it 'does not update Devise trackable attributes' do
+    it 'does not update Devise trackable attributes', :redis do
       user = create(:user, :blocked)
 
       expect { login_with(user) }.not_to change { user.reload.sign_in_count }
@@ -55,7 +55,7 @@ feature 'Login', feature: true do
       expect(page).to have_content('Invalid Login or password.')
     end
 
-    it 'does not update Devise trackable attributes' do
+    it 'does not update Devise trackable attributes', :redis do
       expect { login_with(User.ghost) }.not_to change { User.ghost.reload.sign_in_count }
     end
   end

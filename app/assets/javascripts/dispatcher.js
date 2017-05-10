@@ -246,6 +246,7 @@ const ShortcutsBlob = require('./shortcuts_blob');
           new NotificationsForm();
           if ($('#tree-slider').length) {
             new TreeView();
+            new BlobViewer();
           }
           break;
         case 'projects:pipelines:builds':
@@ -300,6 +301,7 @@ const ShortcutsBlob = require('./shortcuts_blob');
         case 'projects:tree:show':
           shortcut_handler = new ShortcutsNavigation();
           new TreeView();
+          new BlobViewer();
           gl.TargetBranchDropDown.bootstrap();
           break;
         case 'projects:find_file:show':

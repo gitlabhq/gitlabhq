@@ -13,6 +13,8 @@ class MergeRequest < ActiveRecord::Base
   has_one :merge_request_diff,
     -> { order('merge_request_diffs.id DESC') }
 
+  belongs_to :head_pipeline, foreign_key: "head_pipeline_id", class_name: "Ci::Pipeline"
+
   has_many :events, as: :target, dependent: :destroy
 
   has_many :merge_requests_closing_issues, class_name: 'MergeRequestsClosingIssues', dependent: :delete_all
@@ -827,12 +829,6 @@ class MergeRequest < ActiveRecord::Base
 
   def diverged_from_target_branch?
     diverged_commits_count > 0
-  end
-
-  def head_pipeline
-    return unless diff_head_sha && source_project
-
-    @head_pipeline ||= source_project.pipeline_for(source_branch, diff_head_sha)
   end
 
   def all_pipelines

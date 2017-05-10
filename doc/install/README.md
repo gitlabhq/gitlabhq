@@ -18,6 +18,8 @@ the hardware requirements.
   Useful for unsupported systems like *BSD. For an overview of the directory
   structure, read the [structure documentation](structure.md).
 - [Docker](https://docs.gitlab.com/omnibus/docker/) - Install GitLab using Docker.
+- [Installing in Kubernetes](kubernetes/index.md) - Install GitLab into a Kubernetes
+  Cluster using our official Helm Chart Repository.
 - Testing only! [DigitalOcean and Docker Machine](digitaloceandocker.md) -
   Quickly test any version of GitLab on DigitalOcean using Docker Machine.
 

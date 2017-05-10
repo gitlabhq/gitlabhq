@@ -4,6 +4,7 @@
   import DeployKeysService from '../service';
   import DeployKeysStore from '../store';
   import keysPanel from './keys_panel.vue';
+  import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
   export default {
     data() {
@@ -28,6 +29,7 @@
     },
     components: {
       keysPanel,
+      loadingIcon,
     },
     methods: {
       fetchKeys() {
@@ -74,15 +76,11 @@
 
 <template>
   <div class="col-lg-9 col-lg-offset-3 append-bottom-default deploy-keys">
-    <div
-      class="text-center"
-      v-if="isLoading && !hasKeys">
-      <i
-        class="fa fa-spinner fa-spin fa-2x"
-        aria-hidden="true"
-        aria-label="Loading deploy keys">
-      </i>
-    </div>
+    <loading-icon
+      v-if="isLoading && !hasKeys"
+      size="2"
+      label="Loading deploy keys"
+      />
     <div v-else-if="hasKeys">
       <keys-panel
         title="Enabled deploy keys for this project"

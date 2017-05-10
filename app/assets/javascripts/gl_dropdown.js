@@ -1,9 +1,8 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, one-var, one-var-declaration-per-line, prefer-rest-params, max-len, vars-on-top, wrap-iife, no-unused-vars, quotes, no-shadow, no-cond-assign, prefer-arrow-callback, no-return-assign, no-else-return, camelcase, comma-dangle, no-lonely-if, guard-for-in, no-restricted-syntax, consistent-return, prefer-template, no-param-reassign, no-loop-func, no-mixed-operators */
 /* global fuzzaldrinPlus */
+import { isObject } from './lib/utils/type_utility';
 
-var GitLabDropdown, GitLabDropdownFilter, GitLabDropdownRemote,
-  bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; },
-  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i += 1) { if (i in this && this[i] === item) return i; } return -1; };
+var GitLabDropdown, GitLabDropdownFilter, GitLabDropdownRemote;
 
 GitLabDropdownFilter = (function() {
   var ARROW_KEY_CODES, BLUR_KEYCODES, HAS_VALUE_CLASS;
@@ -95,7 +94,7 @@ GitLabDropdownFilter = (function() {
           //     { prop: 'def' }
           //   ]
           // }
-          if (gl.utils.isObject(data)) {
+          if (isObject(data)) {
             results = {};
             for (key in data) {
               group = data[key];
@@ -213,10 +212,10 @@ GitLabDropdown = (function() {
     var searchFields, selector, self;
     this.el = el1;
     this.options = options;
-    this.updateLabel = bind(this.updateLabel, this);
-    this.hidden = bind(this.hidden, this);
-    this.opened = bind(this.opened, this);
-    this.shouldPropagate = bind(this.shouldPropagate, this);
+    this.updateLabel = this.updateLabel.bind(this);
+    this.hidden = this.hidden.bind(this);
+    this.opened = this.opened.bind(this);
+    this.shouldPropagate = this.shouldPropagate.bind(this);
     self = this;
     selector = $(this.el).data("target");
     this.dropdown = selector != null ? $(selector) : $(this.el).parent();
@@ -398,7 +397,7 @@ GitLabDropdown = (function() {
       html = [this.noResults()];
     } else {
       // Handle array groups
-      if (gl.utils.isObject(data)) {
+      if (isObject(data)) {
         html = [];
         for (name in data) {
           groupData = data[name];
@@ -610,7 +609,12 @@ GitLabDropdown = (function() {
       var link = document.createElement('a');
 
       link.href = url;
-      link.innerHTML = text;
+
+      if (this.highlight) {
+        link.innerHTML = text;
+      } else {
+        link.textContent = text;
+      }
 
       if (selected) {
         link.className = 'is-active';
@@ -627,8 +631,8 @@ GitLabDropdown = (function() {
   };
 
   GitLabDropdown.prototype.highlightTextMatches = function(text, term) {
-    var occurrences;
-    occurrences = fuzzaldrinPlus.match(text, term);
+    const occurrences = fuzzaldrinPlus.match(text, term);
+    const indexOf = [].indexOf;
     return text.split('').map(function(character, i) {
       if (indexOf.call(occurrences, i) !== -1) {
         return "<b>" + character + "</b>";

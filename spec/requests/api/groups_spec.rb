@@ -178,7 +178,7 @@ describe API::Groups do
         expect(json_response['path']).to eq(group1.path)
         expect(json_response['description']).to eq(group1.description)
         expect(json_response['visibility']).to eq(Gitlab::VisibilityLevel.string_level(group1.visibility_level))
-        expect(json_response['avatar_url']).to eq(group1.avatar_url)
+        expect(json_response['avatar_url']).to eq(group1.avatar_url(only_path: false))
         expect(json_response['web_url']).to eq(group1.web_url)
         expect(json_response['request_access_enabled']).to eq(group1.request_access_enabled)
         expect(json_response['full_name']).to eq(group1.full_name)

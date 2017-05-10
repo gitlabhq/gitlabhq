@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170506185517) do
+ActiveRecord::Schema.define(version: 20170508170547) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -690,6 +690,7 @@ ActiveRecord::Schema.define(version: 20170506185517) do
     t.integer "cached_markdown_version"
     t.datetime "last_edited_at"
     t.integer "last_edited_by_id"
+    t.integer "head_pipeline_id"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
