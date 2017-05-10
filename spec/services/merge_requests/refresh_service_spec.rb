@@ -447,7 +447,7 @@ describe MergeRequests::RefreshService, services: true do
             title: 'fixup! Fix issue',
             work_in_progress?: true,
             to_reference: 'ccccccc'
-          ),
+          )
         ])
         refresh_service.execute(@oldrev, @newrev, 'refs/heads/wip')
         reload_mrs

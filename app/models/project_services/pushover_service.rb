@@ -55,7 +55,7 @@ class PushoverService < Service
           ['Pushover Echo (long)', 'echo'],
           ['Up Down (long)', 'updown'],
           ['None (silent)', 'none']
-        ] },
+        ] }
     ]
   end
 

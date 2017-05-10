@@ -73,7 +73,7 @@ class KubernetesService < DeploymentService
         { type: 'textarea',
           name: 'ca_pem',
           title: 'Custom CA bundle',
-          placeholder: 'Certificate Authority bundle (PEM format)' },
+          placeholder: 'Certificate Authority bundle (PEM format)' }
     ]
   end
 

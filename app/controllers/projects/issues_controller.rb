@@ -217,7 +217,7 @@ class Projects::IssuesController < Projects::ApplicationController
       description_text: @issue.description,
       task_status: @issue.task_status,
       issue_number: @issue.iid,
-      updated_at: @issue.updated_at,
+      updated_at: @issue.updated_at
     }
   end
 
@@ -292,7 +292,7 @@ class Projects::IssuesController < Projects::ApplicationController
   def issue_params
     params.require(:issue).permit(
       :title, :position, :description, :confidential, :weight,
-      :milestone_id, :due_date, :state_event, :task_num, :lock_version, label_ids: [], assignee_ids: [],
+      :milestone_id, :due_date, :state_event, :task_num, :lock_version, label_ids: [], assignee_ids: []
     )
   end
 

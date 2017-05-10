@@ -17,7 +17,7 @@ module Gitlab
       THREE   => "0 */3 * * *",
       SIX     => "0 */6 * * *",
       TWELVE  => "0 */12 * * *",
-      DAILY   => "0 0 * * *",
+      DAILY   => "0 0 * * *"
     }.freeze
 
     SYNC_TIME_OPTIONS = {
@@ -26,7 +26,7 @@ module Gitlab
       "Update every three hours"  => THREE,
       "Update every six hours"    => SIX,
       "Update every twelve hours" => TWELVE,
-      "Update every day"          => DAILY,
+      "Update every day"          => DAILY
     }.freeze
 
     class << self

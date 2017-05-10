@@ -4,7 +4,7 @@ class JwtController < ApplicationController
   before_action :authenticate_project_or_user
 
   SERVICES = {
-    Auth::ContainerRegistryAuthenticationService::AUDIENCE => Auth::ContainerRegistryAuthenticationService,
+    Auth::ContainerRegistryAuthenticationService::AUDIENCE => Auth::ContainerRegistryAuthenticationService
   }.freeze
 
   def auth

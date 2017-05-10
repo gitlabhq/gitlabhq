@@ -222,12 +222,12 @@ module Elasticsearch
                   author: {
                     name: encode!(author[:name]),
                     email: encode!(author[:email]),
-                    time: author[:time].strftime('%Y%m%dT%H%M%S%z'),
+                    time: author[:time].strftime('%Y%m%dT%H%M%S%z')
                   },
                   committer: {
                     name: encode!(committer[:name]),
                     email: encode!(committer[:email]),
-                    time: committer[:time].strftime('%Y%m%dT%H%M%S%z'),
+                    time: committer[:time].strftime('%Y%m%dT%H%M%S%z')
                   },
                   message: encode!(commit.message)
                 }
@@ -515,7 +515,7 @@ module Elasticsearch
               order: "score",
               fields: {
                 "blob.content" => {},
-                "blob.file_name" => {},
+                "blob.file_name" => {}
               }
             }
           end
@@ -534,7 +534,7 @@ module Elasticsearch
             query: {
                 fuzzy: {
                     'repository.blob.path' => { value: query }
-                },
+                }
             },
             filter: {
                 term: {

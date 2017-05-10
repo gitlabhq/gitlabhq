@@ -318,7 +318,7 @@ class ApplicationSetting < ActiveRecord::Base
       aws:                   elasticsearch_aws,
       aws_access_key:        elasticsearch_aws_access_key,
       aws_secret_access_key: elasticsearch_aws_secret_access_key,
-      aws_region:            elasticsearch_aws_region,
+      aws_region:            elasticsearch_aws_region
     }
   end
 

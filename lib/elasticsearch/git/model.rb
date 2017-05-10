@@ -53,7 +53,7 @@ module Elasticsearch
               path_tokenizer: {
                 type: 'path_hierarchy',
                 reverse: true
-              },
+              }
             },
             filter: {
               code: {
@@ -72,7 +72,7 @@ module Elasticsearch
                   ". => ' '"
                 ]
               }
-            },
+            }
           }
         }
       end

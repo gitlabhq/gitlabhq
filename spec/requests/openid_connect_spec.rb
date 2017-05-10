@@ -61,7 +61,7 @@ describe 'OpenID Connect requests' do
           email: private_email.email,
           public_email: public_email.email,
           website_url: 'https://example.com',
-          avatar: fixture_file_upload(Rails.root + "spec/fixtures/dk.png"),
+          avatar: fixture_file_upload(Rails.root + "spec/fixtures/dk.png")
         )
       end
 
@@ -79,7 +79,7 @@ describe 'OpenID Connect requests' do
           'email_verified' => true,
           'website'        => 'https://example.com',
           'profile'        => 'http://localhost/alice',
-          'picture'        => "http://localhost/uploads/user/avatar/#{user.id}/dk.png",
+          'picture'        => "http://localhost/uploads/user/avatar/#{user.id}/dk.png"
         })
       end
     end

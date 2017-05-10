@@ -42,7 +42,7 @@ class Projects::PipelinesController < Projects::ApplicationController
             all: @pipelines_count,
             running: @running_count,
             pending: @pending_count,
-            finished: @finished_count,
+            finished: @finished_count
           }
         }
       end

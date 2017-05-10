@@ -62,7 +62,7 @@ class Environment < ActiveRecord::Base
   def predefined_variables
     [
       { key: 'CI_ENVIRONMENT_NAME', value: name, public: true },
-      { key: 'CI_ENVIRONMENT_SLUG', value: slug, public: true },
+      { key: 'CI_ENVIRONMENT_SLUG', value: slug, public: true }
     ]
   end
 

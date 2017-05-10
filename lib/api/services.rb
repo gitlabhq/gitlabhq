@@ -355,7 +355,7 @@ module API
           name: :ca_pem,
           type: String,
           desc: 'A custom certificate authority bundle to verify the Kubernetes cluster with (PEM format)'
-        },
+        }
       ],
       'mattermost-slash-commands' => [
         {
@@ -561,13 +561,13 @@ module API
           required: true,
           name: :project_url,
           type: String,
-          desc: 'Jenkins project URL like http://jenkins.example.com/job/my-project/',
+          desc: 'Jenkins project URL like http://jenkins.example.com/job/my-project/'
         },
         {
           required: false,
           name: :pass_unstable,
           type: Boolean,
-          desc: 'Multi-project setup enabled?',
+          desc: 'Multi-project setup enabled?'
         },
         {
           required: false,
@@ -625,7 +625,7 @@ module API
       service_classes += [
         MockCiService,
         MockDeploymentService,
-        MockMonitoringService,
+        MockMonitoringService
       ]
     end
 

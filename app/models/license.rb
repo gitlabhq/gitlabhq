@@ -11,12 +11,12 @@ class License < ActiveRecord::Base
     { 'GitLab_FileLocks' => 1 },
     { 'GitLab_Geo' => 1 },
     { 'GitLab_Auditor_User' => 1 },
-    { 'GitLab_ServiceDesk' => 1 },
+    { 'GitLab_ServiceDesk' => 1 }
   ].freeze
 
   FEATURES_BY_PLAN = {
     'starter'  => EES_FEATURES,
-    'premium'  => EEP_FEATURES,
+    'premium'  => EEP_FEATURES
   }.freeze
 
   validate :valid_license

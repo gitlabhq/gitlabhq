@@ -18,7 +18,7 @@ class AuditEventService
           author_name: author_name,
           target_id: user_id,
           target_type: "User",
-          target_details: user_name,
+          target_details: user_name
         }
       when :create
         {
@@ -27,7 +27,7 @@ class AuditEventService
           author_name: author_name,
           target_id: user_id,
           target_type: "User",
-          target_details: user_name,
+          target_details: user_name
         }
       when :update
         {
@@ -37,7 +37,7 @@ class AuditEventService
           author_name: author_name,
           target_id: user_id,
           target_type: "User",
-          target_details: user_name,
+          target_details: user_name
         }
       end
 
@@ -56,7 +56,7 @@ class AuditEventService
           author_name: author_name,
           target_id: key_title,
           target_type: "DeployKey",
-          target_details: key_title,
+          target_details: key_title
         }
       when :create
         {
@@ -64,7 +64,7 @@ class AuditEventService
           author_name: author_name,
           target_id: key_title,
           target_type: "DeployKey",
-          target_details: key_title,
+          target_details: key_title
         }
       end
 
@@ -76,7 +76,7 @@ class AuditEventService
       with: @details[:with],
       target_id: @author.id,
       target_type: 'User',
-      target_details: @author.name,
+      target_details: @author.name
     }
 
     self

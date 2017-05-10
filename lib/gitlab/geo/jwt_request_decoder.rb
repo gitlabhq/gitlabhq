@@ -33,7 +33,7 @@ module Gitlab
             encoded_message,
             secret,
             true,
-            { iat_leeway: IAT_LEEWAY, verify_iat: true, algorithm: 'HS256' },
+            { iat_leeway: IAT_LEEWAY, verify_iat: true, algorithm: 'HS256' }
           )
 
           message = decoded.first

@@ -149,7 +149,7 @@ class JiraService < IssueTrackerService
     data = {
       user: {
         name: author.name,
-        url: resource_url(user_path(author)),
+        url: resource_url(user_path(author))
       },
       project: {
         name: self.project.path_with_namespace,
