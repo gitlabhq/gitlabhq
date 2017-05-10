@@ -26,6 +26,41 @@ describe GroupsController do
     end
   end
 
+  describe 'GET #subgroups' do
+    let!(:public_subgroup) { create(:group, :public, parent: group) }
+    let!(:private_subgroup) { create(:group, :private, parent: group) }
+
+    context 'as a user' do
+      before do
+        sign_in(user)
+      end
+
+      it 'shows the public subgroups' do
+        get :subgroups, id: group.to_param
+
+        expect(assigns(:nested_groups)).to contain_exactly(public_subgroup)
+      end
+
+      context 'being member' do
+        it 'shows public and private subgroups the user is member of' do
+          private_subgroup.add_guest(user)
+
+          get :subgroups, id: group.to_param
+
+          expect(assigns(:nested_groups)).to contain_exactly(public_subgroup, private_subgroup)
+        end
+      end
+    end
+
+    context 'as a guest' do
+      it 'shows the public subgroups' do
+        get :subgroups, id: group.to_param
+
+        expect(assigns(:nested_groups)).to contain_exactly(public_subgroup)
+      end
+    end
+  end
+
   describe 'GET #issues' do
     let(:issue_1) { create(:issue, project: project) }
     let(:issue_2) { create(:issue, project: project) }
