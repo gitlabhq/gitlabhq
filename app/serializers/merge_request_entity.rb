@@ -98,9 +98,11 @@ class MergeRequestEntity < IssuableEntity
   end
 
   expose :new_blob_path do |merge_request|
-    namespace_project_new_blob_path(merge_request.project.namespace,
-                                    merge_request.project,
-                                    merge_request.source_branch)
+    if can?(current_user, :push_code, merge_request.project)
+      namespace_project_new_blob_path(merge_request.project.namespace,
+                                      merge_request.project,
+                                      merge_request.source_branch)
+    end
   end
 
   expose :conflict_resolution_path do |merge_request|
