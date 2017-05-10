@@ -108,6 +108,8 @@ gl.issueBoards.IssuesModal = Vue.extend({
         if (!this.issuesCount) {
           this.issuesCount = data.size;
         }
+      }).catch(() => {
+        // TODO: handle request error
       });
     },
   },
