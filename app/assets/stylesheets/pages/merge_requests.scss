@@ -349,6 +349,20 @@
       margin-top: 10px;
       margin-left: 12px;
     }
+
+    &.empty-state {
+      .artwork {
+        margin-bottom: $gl-padding;
+      }
+      .text {
+        span {
+          font-weight: bold;
+        }
+        p {
+          margin-top: $gl-padding;
+        }
+      }
+    }
   }
 
   .mr-widget-footer {

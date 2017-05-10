@@ -97,6 +97,12 @@ class MergeRequestEntity < IssuableEntity
     presenter(merge_request).target_branch_commits_path
   end
 
+  expose :new_blob_path do |merge_request|
+    namespace_project_new_blob_path(merge_request.project.namespace,
+                                    merge_request.project,
+                                    merge_request.source_branch)
+  end
+
   expose :conflict_resolution_path do |merge_request|
     presenter(merge_request).conflict_resolution_path
   end
