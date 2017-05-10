@@ -10,6 +10,7 @@ module WaitForVueResource
   def finished_all_vue_resource_requests?
     return true unless javascript_test?
 
+    puts "=== Vue resource requests #{page.evaluate_script('window.activeVueResources || 0')}"
     page.evaluate_script('window.activeVueResources || 0').zero?
   end
 

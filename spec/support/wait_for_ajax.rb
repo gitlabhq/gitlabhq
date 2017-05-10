@@ -9,7 +9,9 @@ module WaitForAjax
     return true unless javascript_test?
     return true if page.evaluate_script('typeof jQuery === "undefined"')
 
-    page.evaluate_script('jQuery.active').zero?
+    value = page.evaluate_script('jQuery.active')
+    puts "jQuery active? #{value}"
+    value.zero?
   end
 
   def javascript_test?

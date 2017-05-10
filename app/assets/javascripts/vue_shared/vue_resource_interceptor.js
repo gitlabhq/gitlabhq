@@ -8,8 +8,10 @@ Vue.use(VueResource);
 Vue.http.interceptors.push((request, next) => {
   window.activeVueResources = window.activeVueResources || 0;
   window.activeVueResources += 1;
+  console.log("=== Vue interecepting request: " + JSON.stringify(request));
 
   next(() => {
+    console.log("=== Vue done intercepting request: " + JSON.stringify(request));
     window.activeVueResources -= 1;
   });
 });
