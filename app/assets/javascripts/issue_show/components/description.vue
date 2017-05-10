@@ -43,16 +43,7 @@
             .attr('title', toolTipTime)
             .tooltip('fixTitle');
 
-          $(this.$refs['gfm-entry-content']).renderGFM();
-
-          if (this.canUpdate) {
-            // eslint-disable-next-line no-new
-            new gl.TaskList({
-              dataType: 'issue',
-              fieldName: 'description',
-              selector: '.detail-page-description',
-            });
-          }
+          this.renderGFM();
         });
       },
       taskStatus() {
@@ -77,17 +68,32 @@
         }
       },
     },
+    methods: {
+      renderGFM() {
+        $(this.$refs['gfm-entry-content']).renderGFM();
+
+        if (this.canUpdate) {
+          // eslint-disable-next-line no-new
+          new gl.TaskList({
+            dataType: 'issue',
+            fieldName: 'description',
+            selector: '.detail-page-description',
+          });
+        }
+      },
+    },
+    mounted() {
+      this.renderGFM();
+    },
   };
 </script>
 
 <template>
   <div
-    v-if="descriptionHtml"
     class="description"
     :class="{
       'js-task-list-container': canUpdate
-    }"
-  >
+    }">
     <div
       class="wiki"
       :class="{
@@ -95,12 +101,12 @@
         'issue-realtime-trigger-pulse': pulseAnimation
       }"
       v-html="descriptionHtml"
-      ref="gfm-content"
-    >
+      ref="gfm-content">
     </div>
     <textarea
       class="hidden js-task-list-field"
       v-if="descriptionText"
-    >{{ descriptionText }}</textarea>
+      v-model="descriptionText">
+    </textarea>
   </div>
 </template>

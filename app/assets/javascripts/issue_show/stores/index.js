@@ -1,11 +1,11 @@
 export default class Store {
   constructor({
-    title,
+    titleHtml,
     descriptionHtml,
     descriptionText,
   }) {
     this.state = {
-      titleHtml: title,
+      titleHtml,
       titleText: '',
       descriptionHtml,
       descriptionText,
