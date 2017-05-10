@@ -1,0 +1,26 @@
+- group: Kubernetes
+  priority: 1
+  metrics:
+  - title: "Memory usage"
+    detect: container_memory_usage_bytes
+    weight: 1
+    queries:
+    - query_range: 'avg(container_memory_usage_bytes{%{environment_filter}}) / 2^20'
+      label: Container memory
+      unit: MiB
+  - title: "Current memory usage"
+    detect: container_memory_usage_bytes
+    weight: 1
+    queries:
+    - query: 'avg(container_memory_usage_bytes{%{environment_filter}}) / 2^20'
+      unit: MiB
+  - title: "CPU usage"
+    detect: container_cpu_usage_seconds_total
+    weight: 1
+    queries:
+    - query_range: 'avg(rate(container_cpu_usage_seconds_total{%{environment_filter}}[2m])) * 100'
+  - title: "Current CPU usage"
+    detect: container_cpu_usage_seconds_total
+    weight: 1
+    queries:
+    - query: 'avg(rate(container_cpu_usage_seconds_total{%{environment_filter}}[2m])) * 100'

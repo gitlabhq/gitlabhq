@@ -29,6 +29,14 @@ module Gitlab
       end
     end
 
+    def label_values(name='__name__')
+      json_api_get("label/#{name}/values")
+    end
+
+    def series(*matches, start: 8.hours.ago, stop: Time.now)
+      json_api_get('series', 'match': matches, start: start.to_f, end: stop.to_f)
+    end
+
     private
 
     def json_api_get(type, args = {})

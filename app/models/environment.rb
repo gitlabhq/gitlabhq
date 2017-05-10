@@ -149,8 +149,16 @@ class Environment < ActiveRecord::Base
     project.monitoring_service.present? && available? && last_deployment.present?
   end
 
+  def has_additional_metrics?
+    has_metrics? && project.monitoring_service&.respond_to?(:reactive_query)
+  end
+
   def metrics
     project.monitoring_service.environment_metrics(self) if has_metrics?
+  end
+
+  def additional_metrics
+    project.monitoring_service.reactive_query(Gitlab::Prometheus::Queries::AdditionalMetricsQuery, self.id) if has_additional_metrics?
   end
 
   # An environment name is not necessarily suitable for use in URLs, DNS

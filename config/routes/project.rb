@@ -72,6 +72,10 @@ constraints(ProjectUrlConstrainer.new) do
 
       resource :mattermost, only: [:new, :create]
 
+      namespace :prometheus do
+        get :active_metrics
+      end
+
       resources :deploy_keys, constraints: { id: /\d+/ }, only: [:index, :new, :create] do
         member do
           put :enable
@@ -152,6 +156,7 @@ constraints(ProjectUrlConstrainer.new) do
           post :stop
           get :terminal
           get :metrics
+          get :additional_metrics
           get '/terminal.ws/authorize', to: 'environments#terminal_websocket_authorize', constraints: { format: nil }
         end
 
