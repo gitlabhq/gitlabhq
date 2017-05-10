@@ -109,14 +109,19 @@ Then select 'Internet Site' and press enter to confirm the hostname.
 
 ## 2. Ruby
 
-**Note:** The current supported Ruby version is 2.3.x. GitLab 9.0 dropped support
-for Ruby 2.1.x.
+The Ruby interpreter is required to run GitLab.
+
+**Note:** The current supported Ruby (MRI) version is 2.3.x. GitLab 9.0 dropped
+support for Ruby 2.1.x.
 
 The use of Ruby version managers such as [RVM], [rbenv] or [chruby] with GitLab
 in production, frequently leads to hard to diagnose problems. For example,
 GitLab Shell is called from OpenSSH, and having a version manager can prevent
 pushing and pulling over SSH. Version managers are not supported and we strongly
-advise everyone to follow the instructions below to use a system Ruby.
+advise everyone to follow the instructions below to use a system Ruby.  
+
+Linux distributions generally have older versions of Ruby available, so these
+instructions are designed to install Ruby from the official source code.
 
 Remove the old Ruby 1.8 if present:
 
@@ -132,7 +137,7 @@ Download Ruby and compile it:
     make
     sudo make install
 
-Install the Bundler Gem:
+Then install the Bundler Gem:
 
     sudo gem install bundler --no-ri --no-rdoc
 
