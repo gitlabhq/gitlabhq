@@ -394,28 +394,32 @@ import '~/notes';
         const sampleComment = '/close';
         const generatedPlaceholderNote = this.notes.generatePlaceholderNoteContent(sampleComment, availableSlashCommands);
 
-        expect(generatedPlaceholderNote).toBe("<i>Executing command 'Close this issue'</i>");
+        expect(generatedPlaceholderNote.systemNote).toBeTruthy();
+        expect(generatedPlaceholderNote.content).toBe('Applying command to close this issue');
       });
 
       it('should return generic slash command execution message when note has multiple slash commands', () => {
         const sampleComment = '/title Commenting issue \n /estimate 2d';
         const generatedPlaceholderNote = this.notes.generatePlaceholderNoteContent(sampleComment, availableSlashCommands);
 
-        expect(generatedPlaceholderNote).toBe('<i>Executing multiple slash commands</i>');
+        expect(generatedPlaceholderNote.systemNote).toBeTruthy();
+        expect(generatedPlaceholderNote.content).toBe('Applying multiple commands');
       });
 
       it('should return message as it is when slash command is not written correctly', () => {
         const sampleComment = '/estimated 2d';
         const generatedPlaceholderNote = this.notes.generatePlaceholderNoteContent(sampleComment, availableSlashCommands);
 
-        expect(generatedPlaceholderNote).toBe(sampleComment);
+        expect(generatedPlaceholderNote.systemNote).toBeFalsy();
+        expect(generatedPlaceholderNote.content).toBe(sampleComment);
       });
 
       it('should return message as it is when available slash commands list is not available', () => {
         const sampleComment = 'Ok, that seems doable. /estimate 2d';
         const generatedPlaceholderNote = this.notes.generatePlaceholderNoteContent(sampleComment);
 
-        expect(generatedPlaceholderNote).toBe(sampleComment);
+        expect(generatedPlaceholderNote.systemNote).toBeFalsy();
+        expect(generatedPlaceholderNote.content).toBe(sampleComment);
       });
     });
 
@@ -461,6 +465,24 @@ import '~/notes';
 
         expect($tempNote.prop('nodeName')).toEqual('LI');
         expect($tempNote.find('.timeline-content').hasClass('discussion')).toBeTruthy();
+      });
+    });
+
+    describe('createPlaceholderSystemNote', () => {
+      const uniqueId = 'b1234-a4567';
+      const formContent = 'Applying command to close this issue';
+
+      it('should return constructed placeholder element for system note based on provided contents', () => {
+        const $tempNote = this.notes.createPlaceholderSystemNote({
+          formContent,
+          uniqueId
+        });
+
+        expect($tempNote.prop('nodeName')).toEqual('LI');
+        expect($tempNote.attr('id')).toEqual(uniqueId);
+        expect($tempNote.hasClass('system-note')).toBeTruthy();
+        expect($tempNote.hasClass('being-posted')).toBeTruthy();
+        expect($tempNote.find('.timeline-content i').text().trim()).toEqual(formContent);
       });
     });
   });
