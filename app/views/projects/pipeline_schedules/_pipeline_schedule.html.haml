@@ -10,6 +10,7 @@
         .status-icon-container{ class: "ci-status-icon-#{pipeline_schedule.last_pipeline.status}" }
           = link_to namespace_project_pipeline_path(@project.namespace, @project, pipeline_schedule.last_pipeline.id) do
             = ci_icon_for_status(pipeline_schedule.last_pipeline.status)
+            %span ##{pipeline_schedule.last_pipeline.id}
       - else
         None
     %td.next-run-cell
