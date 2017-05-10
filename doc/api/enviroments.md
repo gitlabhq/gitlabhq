@@ -1,4 +1,4 @@
-# Environments
+# Environments API
 
 ## List environments
 
