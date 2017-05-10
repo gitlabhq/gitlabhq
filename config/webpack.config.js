@@ -149,13 +149,10 @@ var config = {
         'notebook_viewer',
         'pdf_viewer',
         'pipelines',
-<<<<<<< HEAD
         'mr_widget_ee',
-        'issue_show'
-=======
+        'issue_show',
         'balsamiq_viewer',
         'pipelines_graph',
->>>>>>> upstream/master
       ],
       minChunks: function(module, count) {
         return module.resource && (/vue_shared/).test(module.resource);
