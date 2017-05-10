@@ -64,23 +64,26 @@ class PrometheusService < MonitoringService
   end
 
   def environment_metrics(environment)
-    with_reactive_cache(Gitlab::Prometheus::Queries::EnvironmentQuery.name, environment.id, &:itself)
+    with_reactive_cache(Gitlab::Prometheus::Queries::EnvironmentQuery.name, environment.id, &method(:rename_data_to_metrics))
   end
 
   def deployment_metrics(deployment)
-    metrics = with_reactive_cache(Gitlab::Prometheus::Queries::DeploymentQuery.name, deployment.id, &:itself)
+    metrics = with_reactive_cache(Gitlab::Prometheus::Queries::DeploymentQuery.name, deployment.id, &method(:rename_data_to_metrics))
     metrics&.merge(deployment_time: created_at.to_i) || {}
+  end
+
+  def reactive_query(query_class, *args, &block)
+    calculate_reactive_cache(query_class, *args, &block)
   end
 
   # Cache metrics for specific environment
   def calculate_reactive_cache(query_class_name, *args)
     return unless active? && project && !project.pending_delete?
 
-    metrics = Kernel.const_get(query_class_name).new(client).query(*args)
-
+    data = Kernel.const_get(query_class_name).new(client).query(*args)
     {
       success: true,
-      metrics: metrics,
+      data: data,
       last_update: Time.now.utc
     }
   rescue Gitlab::PrometheusError => err
@@ -89,5 +92,12 @@ class PrometheusService < MonitoringService
 
   def client
     @prometheus ||= Gitlab::PrometheusClient.new(api_url: api_url)
+  end
+
+  private
+
+  def rename_data_to_metrics(metrics)
+    metrics[:metrics] = metrics.delete :data
+    metrics
   end
 end

@@ -128,6 +128,12 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     end
   end
 
+  def additional_metrics
+    additional_metrics = environment.additional_metrics || {}
+
+    render json: additional_metrics, status: additional_metrics.any? ? :ok : :no_content
+  end
+
   private
 
   def verify_api_request!
