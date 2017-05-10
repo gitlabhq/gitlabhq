@@ -1165,21 +1165,17 @@ const normalizeNewlines = function(str) {
      * and generates placeholder note's content.
      */
     Notes.prototype.generatePlaceholderNoteContent = function(formContent, availableSlashCommands = []) {
-      const executedCommands = [];
-
       // Identify executed slash commands from `formContent`
-      availableSlashCommands.forEach((command, index) => {
+      const executedCommands = availableSlashCommands.filter((command, index) => {
         const commandRegex = new RegExp(`/${command.name}\\s`, 'g');
-        if (commandRegex.test(formContent) || formContent === `/${command.name}`) {
-          executedCommands.push(command);
-        }
+        return (commandRegex.test(formContent) || formContent === `/${command.name}`);
       });
 
       if (availableSlashCommands.length) { // Check if available slash commands list was populated
-        if (executedCommands.length) { // Check if any slash command was present in formContent
+        if (executedCommands && executedCommands.length) { // Check if any slash command was present in formContent
           return executedCommands.length > 1 ?
-                      '<i>Executing multiple slash commands</i>' :
-                      `<i>Executing command '${executedCommands[0].description}'</i>`;
+            '<i>Executing multiple slash commands</i>' :
+            `<i>Executing command '${executedCommands[0].description}'</i>`;
         } else {
           return formContent;
         }
