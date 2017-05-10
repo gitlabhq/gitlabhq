@@ -57,17 +57,17 @@
       },
       taskStatus() {
         const taskRegexMatches = this.taskStatus.match(/(\d+) of (\d+)/);
-        const $issueableHeader = $('.issuable-meta');
-        let $tasks = $('#task_status');
-        let $tasksShort = $('#task_status_short');
+        const $issuableHeader = $('.issuable-meta');
+        let $tasks = $('#task_status', $issuableHeader);
+        let $tasksShort = $('#task_status_short', $issuableHeader);
 
         if (this.taskStatus.indexOf('0 of 0') >= 0 || this.taskStatus.trim() === '') {
           $tasks.remove();
           $tasksShort.remove();
         } else if (!$tasks.length && !$tasksShort.length) {
-          $tasks = $issueableHeader.append('<span id="task_status" class="hidden-xs hidden-sm"></span>')
+          $tasks = $issuableHeader.append('<span id="task_status" class="hidden-xs hidden-sm"></span>')
             .find('#task_status');
-          $tasksShort = $issueableHeader.append('<span id="task_status_short" class="hidden-md hidden-lg"></span>')
+          $tasksShort = $issuableHeader.append('<span id="task_status_short" class="hidden-md hidden-lg"></span>')
             .find('#task_status_short');
         }
 
