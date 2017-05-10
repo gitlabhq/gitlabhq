@@ -497,7 +497,6 @@ describe ProjectsController do
         expect(controller).to set_flash[:notice].to(/moved/)
       end
     end
-<<<<<<< HEAD
   end
 
   describe 'GET edit' do
@@ -520,8 +519,6 @@ describe ProjectsController do
 
       expect(response).to have_http_status(200)
     end
-=======
->>>>>>> upstream/master
   end
 
   describe 'POST #preview_markdown' do
