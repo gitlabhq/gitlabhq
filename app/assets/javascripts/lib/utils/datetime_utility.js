@@ -2,7 +2,11 @@
 /* global timeago */
 /* global dateFormat */
 
-import { lang, s__ } from '../../locale';
+import {
+  lang,
+  s__,
+  __,
+} from '../../locale';
 
 window.timeago = require('timeago.js');
 window.dateFormat = require('vendor/date.format');
@@ -80,9 +84,9 @@ window.dateFormat = require('vendor/date.format');
       if (!time) {
         return '';
       }
-      suffix || (suffix = 'remaining');
-      expiredLabel || (expiredLabel = 'Past due');
-      timefor = gl.utils.getTimeago().format(time).replace('in', '');
+      suffix || (suffix = __('Timeago|remaining'));
+      expiredLabel || (expiredLabel = __('Past due'));
+      timefor = gl.utils.getTimeago().format(time);
       if (timefor.indexOf('ago') > -1) {
         timefor = expiredLabel;
       } else {
