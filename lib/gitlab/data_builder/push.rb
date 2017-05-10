@@ -11,6 +11,7 @@ module Gitlab
       #   ref: String,
       #   user_id: String,
       #   user_name: String,
+      #   user_username: String,
       #   user_email: String
       #   project_id: String,
       #   repository: {
@@ -51,6 +52,7 @@ module Gitlab
           message: message,
           user_id: user.id,
           user_name: user.name,
+          user_username: user.username,
           user_email: user.email,
           user_avatar: user.avatar_url,
           project_id: project.id,
