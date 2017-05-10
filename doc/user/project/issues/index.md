@@ -92,7 +92,6 @@ Find GitLab Issue Boards by navigating to your **Project's Dashboard** > **Issue
 Read through the documentation for [Issue Boards](../issue_board.md)
 to find out more about this feature.
 
-<<<<<<< HEAD
 #### Multiple Issue Boards (EES/EEP)
 
 Multiple Issue Boards enables you to create more than one Issue Board per project.
@@ -100,9 +99,6 @@ It's great for large projects with more than one team or in situations where a
 repository is used to host the code of multiple products.
 
 [Multiple Issue Boards](../issue_board.html#multiple-issue-boards)
-=======
-[Multiple Issue Boards](https://docs.gitlab.com/ee/user/project/issue_board.html#multiple-issue-boards)
->>>>>>> upstream/master
 are available only in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/).
 
 ### Issue's API
