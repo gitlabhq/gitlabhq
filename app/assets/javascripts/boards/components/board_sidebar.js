@@ -36,6 +36,9 @@ gl.issueBoards.BoardSidebar = Vue.extend({
     },
     assigneeId() {
       return this.issue.assignee ? this.issue.assignee.id : 0;
+    },
+    milestoneTitle() {
+      return this.issue.milestone ? this.issue.milestone.title : 'No Milestone';
     }
   },
   watch: {
