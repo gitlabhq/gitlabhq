@@ -163,8 +163,8 @@ describe 'Issue Boards', feature: true, js: true do
 
       page.within('.assignee') do
         click_link 'Edit'
-
-        expect(page).to have_selector('.is-active')
+    
+        expect(find('.dropdown-menu')).to have_selector('.is-active')
       end
     end
   end
