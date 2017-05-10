@@ -41,9 +41,9 @@ module Gitlab
 
       def options
         {
-          'Private'  => PRIVATE,
-          'Internal' => INTERNAL,
-          'Public'   => PUBLIC
+          N_('Private')  => PRIVATE,
+          N_('Internal') => INTERNAL,
+          N_('Public')    => PUBLIC
         }
       end
 
