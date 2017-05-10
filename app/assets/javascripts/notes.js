@@ -24,7 +24,6 @@ const normalizeNewlines = function(str) {
 (function() {
   this.Notes = (function() {
     const MAX_VISIBLE_COMMIT_LIST_COUNT = 3;
-    const REGEX_SLASH_COMMANDS = /^\/\w+/gm;
 
     Notes.interval = null;
 
@@ -57,6 +56,7 @@ const normalizeNewlines = function(str) {
       this.notesCountBadge || (this.notesCountBadge = $(".issuable-details").find(".notes-tab .badge"));
       this.basePollingInterval = 15000;
       this.maxPollingSteps = 4;
+      this.regexSlashCommands = null;
 
       this.cleanBinding();
       this.addBinding();
@@ -1149,17 +1149,43 @@ const normalizeNewlines = function(str) {
     };
 
     /**
-     * Identify if comment has any slash commands
+     * Remove slash commands and leave comment with pure message
+     * this command is very less likely to be used in production
+     * as gl.GfmAutoComplete.cachedData['/'] is initialized the moment
+     * user starts typing any slash command, but during Karma tests
+     * it is not available
      */
-    Notes.prototype.hasSlashCommands = function(formContent) {
-      return REGEX_SLASH_COMMANDS.test(formContent);
+    Notes.prototype.stripSlashCommands = function (formContent) {
+      const REGEX_SLASH_COMMANDS = /\/\w+/g;
+      return formContent.replace(REGEX_SLASH_COMMANDS, '').trim();
     };
 
     /**
-     * Remove slash commands and leave comment with pure message
+     * Identify if formContent has any slash commands
+     * and generates placeholder note's content.
      */
-    Notes.prototype.stripSlashCommands = function(formContent) {
-      return formContent.replace(REGEX_SLASH_COMMANDS, '').trim();
+    Notes.prototype.generatePlaceholderNoteContent = function(formContent, availableSlashCommands = []) {
+      const executedCommands = [];
+
+      // Identify executed slash commands from `formContent`
+      availableSlashCommands.forEach((command, index) => {
+        const commandRegex = new RegExp(`/${command.name}\\s`, 'g');
+        if (commandRegex.test(formContent) || formContent === `/${command.name}`) {
+          executedCommands.push(command);
+        }
+      });
+
+      if (availableSlashCommands.length) { // Check if available slash commands list was populated
+        if (executedCommands.length) { // Check if any slash command was present in formContent
+          return executedCommands.length > 1 ?
+                      '<i>Executing multiple slash commands</i>' :
+                      `<i>Executing command '${executedCommands[0].description}'</i>`;
+        } else {
+          return formContent;
+        }
+      } else { // Available slash commands list was not populated, so user either never typed any slash command
+        return formContent;
+      }
     };
 
     /**
@@ -1234,7 +1260,6 @@ const normalizeNewlines = function(str) {
       const { formData, formContent, formAction } = this.getFormData($form);
       const uniqueId = _.uniqueId('tempNote_');
       let $notesContainer;
-      let tempFormContent;
 
       // Get reference to notes container based on type of comment
       if (isDiscussionForm) {
@@ -1250,21 +1275,16 @@ const normalizeNewlines = function(str) {
         $form.find('.js-comment-submit-button').disable();
       }
 
-      tempFormContent = formContent;
-      if (this.hasSlashCommands(formContent)) {
-        tempFormContent = this.stripSlashCommands(formContent);
-      }
+      const tempFormContent = this.generatePlaceholderNoteContent(formContent, gl.GfmAutoComplete.cachedData['/']);
 
-      if (tempFormContent) {
-        // Show placeholder note
-        $notesContainer.append(this.createPlaceholderNote({
-          formContent: tempFormContent,
-          uniqueId,
-          isDiscussionNote,
-          currentUsername: gon.current_username,
-          currentUserFullname: gon.current_user_fullname,
-        }));
-      }
+      // Show placeholder note
+      $notesContainer.append(this.createPlaceholderNote({
+        formContent: tempFormContent,
+        uniqueId,
+        isDiscussionNote,
+        currentUsername: gon.current_username,
+        currentUserFullname: gon.current_user_fullname,
+      }));
 
       // Clear the form textarea
       if ($notesContainer.length) {

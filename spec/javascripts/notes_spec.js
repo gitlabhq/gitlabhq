@@ -371,48 +371,51 @@ import '~/notes';
       });
     });
 
-    describe('hasSlashCommands', () => {
-      beforeEach(() => {
-        this.notes = new Notes('', []);
-      });
+    describe('stripSlashCommands', () => {
+      const REGEX_SLASH_COMMANDS = /\/\w+/g;
 
-      it('should return true when comment begins with a slash command', () => {
-        const sampleComment = '/wip \n/milestone %1.0 \n/merge \n/unassign Merging this';
-        const hasSlashCommands = this.notes.hasSlashCommands(sampleComment);
+      it('should strip slash commands from the comment', () => {
+        this.notes = new Notes();
+        const sampleComment = '/wip /milestone %1.0 /merge /unassign Merging this';
+        const stripedComment = this.notes.stripSlashCommands(sampleComment);
 
-        expect(hasSlashCommands).toBeTruthy();
-      });
-
-      it('should return false when comment does NOT begin with a slash command', () => {
-        const sampleComment = 'Hey, /unassign Merging this';
-        const hasSlashCommands = this.notes.hasSlashCommands(sampleComment);
-
-        expect(hasSlashCommands).toBeFalsy();
-      });
-
-      it('should return false when comment does NOT have any slash commands', () => {
-        const sampleComment = 'Looking good, Awesome!';
-        const hasSlashCommands = this.notes.hasSlashCommands(sampleComment);
-
-        expect(hasSlashCommands).toBeFalsy();
+        expect(REGEX_SLASH_COMMANDS.test(stripedComment)).toBeFalsy();
       });
     });
 
-    describe('stripSlashCommands', () => {
-      it('should strip slash commands from the comment which begins with a slash command', () => {
-        this.notes = new Notes();
-        const sampleComment = '/wip \n/milestone %1.0 \n/merge \n/unassign Merging this';
-        const stripedComment = this.notes.stripSlashCommands(sampleComment);
+    describe('generatePlaceholderNoteContent', () => {
+      const availableSlashCommands = [
+        { name: 'close', description: 'Close this issue', params: [] },
+        { name: 'title', description: 'Change title', params: [{}] },
+        { name: 'estimate', description: 'Set time estimate', params: [{}] }
+      ];
 
-        expect(stripedComment).not.toBe(sampleComment);
+      it('should return executing slash command description when note has single slash command', () => {
+        const sampleComment = '/close';
+        const generatedPlaceholderNote = this.notes.generatePlaceholderNoteContent(sampleComment, availableSlashCommands);
+
+        expect(generatedPlaceholderNote).toBe("<i>Executing command 'Close this issue'</i>");
       });
 
-      it('should NOT strip string that has slashes within', () => {
-        this.notes = new Notes();
-        const sampleComment = 'http://127.0.0.1:3000/root/gitlab-shell/issues/1';
-        const stripedComment = this.notes.stripSlashCommands(sampleComment);
+      it('should return generic slash command execution message when note has multiple slash commands', () => {
+        const sampleComment = '/title Commenting issue \n /estimate 2d';
+        const generatedPlaceholderNote = this.notes.generatePlaceholderNoteContent(sampleComment, availableSlashCommands);
 
-        expect(stripedComment).toBe(sampleComment);
+        expect(generatedPlaceholderNote).toBe('<i>Executing multiple slash commands</i>');
+      });
+
+      it('should return message as it is when slash command is not written correctly', () => {
+        const sampleComment = '/estimated 2d';
+        const generatedPlaceholderNote = this.notes.generatePlaceholderNoteContent(sampleComment, availableSlashCommands);
+
+        expect(generatedPlaceholderNote).toBe(sampleComment);
+      });
+
+      it('should return message as it is when available slash commands list is not available', () => {
+        const sampleComment = 'Ok, that seems doable. /estimate 2d';
+        const generatedPlaceholderNote = this.notes.generatePlaceholderNoteContent(sampleComment);
+
+        expect(generatedPlaceholderNote).toBe(sampleComment);
       });
     });
 
