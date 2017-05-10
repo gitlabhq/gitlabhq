@@ -91,8 +91,8 @@ module API
     end
 
     def find_project_snippet(id)
-      finder_params = { filter: :by_project, project: user_project }
-      SnippetsFinder.new.execute(current_user, finder_params).find(id)
+      finder_params = { project: user_project }
+      SnippetsFinder.new(current_user, finder_params).execute.find(id)
     end
 
     def find_merge_request_with_access(iid, access_level = :read_merge_request)
