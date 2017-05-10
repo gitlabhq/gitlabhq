@@ -6,7 +6,7 @@ class Projects::DeploymentsController < Projects::ApplicationController
     deployments = environment.deployments.reorder(created_at: :desc)
     deployments = deployments.where('created_at > ?', params[:after].to_time) if params[:after]&.to_time
 
-    render json: { deployments: DeploymentSerializer.new(user: @current_user, project: project)
+    render json: { deployments: DeploymentSerializer.new(current_user: @current_user, project: project)
                                   .represent_concise(deployments) }
   end
 
