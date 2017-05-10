@@ -1,5 +1,5 @@
 /* global Flash */
-import StatusIconEntityMap from '../../ci_status_icons';
+import { statusClassToSvgMap } from '../../vue_shared/pipeline_svg_icons';
 
 export default {
   props: {
@@ -76,7 +76,7 @@ export default {
       return `mini-pipeline-graph-dropdown-toggle has-tooltip js-builds-dropdown-button ci-status-icon-${this.stage.status.group}`;
     },
     svgHTML() {
-      return StatusIconEntityMap[this.stage.status.icon];
+      return statusClassToSvgMap[this.stage.status.icon];
     },
   },
   watch: {
