@@ -1,5 +1,7 @@
 /* eslint no-param-reassign: ["error", { "props": false }]*/
 /* eslint no-new: "off" */
+import AccessorUtilities from './lib/utils/accessor';
+
 ((global) => {
   /**
    * Memorize the last selected tab after reloading a page.
@@ -9,6 +11,8 @@
     constructor({ currentTabKey = 'current_signin_tab', tabSelector = 'ul.nav-tabs' } = {}) {
       this.currentTabKey = currentTabKey;
       this.tabSelector = tabSelector;
+      this.isLocalStorageAvailable = AccessorUtilities.isLocalStorageAccessSafe();
+
       this.bootstrap();
     }
 
@@ -37,11 +41,15 @@
     }
 
     saveData(val) {
-      localStorage.setItem(this.currentTabKey, val);
+      if (!this.isLocalStorageAvailable) return undefined;
+
+      return window.localStorage.setItem(this.currentTabKey, val);
     }
 
     readData() {
-      return localStorage.getItem(this.currentTabKey);
+      if (!this.isLocalStorageAvailable) return null;
+
+      return window.localStorage.getItem(this.currentTabKey);
     }
   }
 

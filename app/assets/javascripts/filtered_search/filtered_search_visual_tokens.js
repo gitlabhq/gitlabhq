@@ -177,6 +177,9 @@ class FilteredSearchVisualTokens {
 
   static moveInputToTheRight() {
     const input = FilteredSearchContainer.container.querySelector('.filtered-search');
+
+    if (!input) return;
+
     const inputLi = input.parentElement;
     const tokenContainer = FilteredSearchContainer.container.querySelector('.tokens-container');
 
