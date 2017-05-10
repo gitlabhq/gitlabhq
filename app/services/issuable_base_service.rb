@@ -178,6 +178,7 @@ class IssuableBaseService < BaseService
       after_create(issuable)
       issuable.create_cross_references!(current_user)
       execute_hooks(issuable)
+      issuable.assignees.each(&:invalidate_cache_counts)
     end
 
     issuable
@@ -233,6 +234,12 @@ class IssuableBaseService < BaseService
           old_mentioned_users: old_mentioned_users,
           old_assignees: old_assignees
         )
+
+        if old_assignees != issuable.assignees
+          new_assignees = issuable.assignees.to_a
+          affected_assignees = (old_assignees + new_assignees) - (old_assignees & new_assignees)
+          affected_assignees.compact.each(&:invalidate_cache_counts)
+        end
 
         after_update(issuable)
         issuable.create_new_cross_references!(current_user)
