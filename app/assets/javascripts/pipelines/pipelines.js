@@ -7,6 +7,7 @@ import EmptyState from './components/empty_state.vue';
 import ErrorState from './components/error_state.vue';
 import NavigationTabs from './components/navigation_tabs';
 import NavigationControls from './components/nav_controls';
+import loadingIcon from '../vue_shared/components/loading_icon.vue';
 import Poll from '../lib/utils/poll';
 
 export default {
@@ -24,6 +25,7 @@ export default {
     'error-state': ErrorState,
     'navigation-tabs': NavigationTabs,
     'navigation-controls': NavigationControls,
+    loadingIcon,
   },
 
   data() {
@@ -244,13 +246,11 @@ export default {
 
       <div class="content-list pipelines">
 
-        <div
-          class="realtime-loading"
-          v-if="isLoading">
-          <i
-            class="fa fa-spinner fa-spin"
-            aria-hidden="true" />
-        </div>
+        <loading-icon
+          label="Loading Pipelines"
+          size="3"
+          v-if="isLoading"
+          />
 
         <empty-state
           v-if="shouldRenderEmptyState"
