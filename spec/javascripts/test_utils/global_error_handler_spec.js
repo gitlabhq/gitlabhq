@@ -7,7 +7,7 @@ describe('globalErrorHandler', () => {
     globalErrorHandler();
   });
 
-  it('should bind console.error to the global error event', () => {
-    expect(window.addEventListener).toHaveBeenCalledWith('error', console.error);
+  it('should bind console.log to the global error event', () => {
+    expect(window.addEventListener).toHaveBeenCalledWith('error', console.log);
   });
 });
