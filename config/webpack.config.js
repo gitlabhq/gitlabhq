@@ -141,6 +141,7 @@ var config = {
         'diff_notes',
         'environments',
         'environments_folder',
+        'filtered_search',
         'sidebar',
         'issue_show',
         'merge_conflicts',
