@@ -60,6 +60,14 @@ ul.related-merge-requests > li {
   .merge-request-info {
     margin-left: 5px;
   }
+
+  .row_title {
+    vertical-align: bottom;
+  }
+
+  gl-emoji {
+    font-size: 1em;
+  }
 }
 
 .merge-requests-title,
