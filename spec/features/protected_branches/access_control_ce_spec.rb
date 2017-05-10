@@ -31,7 +31,7 @@ RSpec.shared_examples "protected branches > access control > CE" do
 
       within(".protected-branches-list") do
         find(".js-allowed-to-push").click
-        
+
         within('.js-allowed-to-push-container') do
           expect(first("li")).to have_content("Roles")
           click_on access_type_name
