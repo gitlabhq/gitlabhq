@@ -929,6 +929,11 @@ class User < ActiveRecord::Base
     assigned_open_issues_count(force: true)
   end
 
+  def invalidate_cache_counts
+    Rails.cache.delete(['users', id, 'assigned_open_merge_requests_count'])
+    Rails.cache.delete(['users', id, 'assigned_open_issues_count'])
+  end
+
   def todos_done_count(force: false)
     Rails.cache.fetch(['users', id, 'todos_done_count'], force: force) do
       TodosFinder.new(self, state: :done).execute.count
