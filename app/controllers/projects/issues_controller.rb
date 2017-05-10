@@ -227,7 +227,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def issue
     # The Sortable default scope causes performance issues when used with find_by
-    @noteable = @issue ||= @project.issues.where(iid: params[:id]).reorder(nil).take || redirect_old
+    @noteable = @issue ||= @project.issues.where(iid: params[:id]).reorder(nil).take!
   end
   alias_method :subscribable_resource, :issue
   alias_method :issuable, :issue
@@ -263,21 +263,6 @@ class Projects::IssuesController < Projects::ApplicationController
       redirect_to external.new_issue_path
     else
       redirect_to external.project_path
-    end
-  end
-
-  # Since iids are implemented only in 6.1
-  # user may navigate to issue page using old global ids.
-  #
-  # To prevent 404 errors we provide a redirect to correct iids until 7.0 release
-  #
-  def redirect_old
-    issue = @project.issues.find_by(id: params[:id])
-
-    if issue
-      redirect_to issue_path(issue)
-    else
-      raise ActiveRecord::RecordNotFound.new
     end
   end
 
