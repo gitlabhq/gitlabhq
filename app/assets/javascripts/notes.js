@@ -56,7 +56,6 @@ const normalizeNewlines = function(str) {
       this.notesCountBadge || (this.notesCountBadge = $(".issuable-details").find(".notes-tab .badge"));
       this.basePollingInterval = 15000;
       this.maxPollingSteps = 4;
-      this.regexSlashCommands = null;
 
       this.cleanBinding();
       this.addBinding();
@@ -1165,6 +1164,10 @@ const normalizeNewlines = function(str) {
      * and generates placeholder note's content.
      */
     Notes.prototype.generatePlaceholderNoteContent = function(formContent, availableSlashCommands = []) {
+      let isSystemNote = false;
+      let tempFormContent;
+      let commandDescription;
+
       // Identify executed slash commands from `formContent`
       const executedCommands = availableSlashCommands.filter((command, index) => {
         const commandRegex = new RegExp(`/${command.name}\\s`, 'g');
@@ -1173,15 +1176,22 @@ const normalizeNewlines = function(str) {
 
       if (availableSlashCommands.length) { // Check if available slash commands list was populated
         if (executedCommands && executedCommands.length) { // Check if any slash command was present in formContent
-          return executedCommands.length > 1 ?
-            '<i>Executing multiple slash commands</i>' :
-            `<i>Executing command '${executedCommands[0].description}'</i>`;
+          isSystemNote = true;
+          commandDescription = _.escape(executedCommands[0].description).toLowerCase();
+          tempFormContent = executedCommands.length > 1 ?
+            'Applying multiple commands' :
+            `Applying command to ${commandDescription}`;
         } else {
-          return formContent;
+          tempFormContent = formContent;
         }
       } else { // Available slash commands list was not populated, so user either never typed any slash command
-        return formContent;
+        tempFormContent = formContent;
       }
+
+      return {
+        systemNote: isSystemNote,
+        content: tempFormContent,
+      };
     };
 
     /**
@@ -1218,6 +1228,20 @@ const normalizeNewlines = function(str) {
               </div>
            </div>
         </li>`
+      );
+
+      return $tempNote;
+    };
+
+    Notes.prototype.createPlaceholderSystemNote = function({ formContent, uniqueId }) {
+      const $tempNote = $(
+        `<li id="${uniqueId}" class="note system-note timeline-entry being-posted fade-in-half">
+           <div class="timeline-entry-inner">
+             <div class="timeline-content">
+               <i>${formContent}</i>
+             </div>
+           </div>
+         </li>`
       );
 
       return $tempNote;
@@ -1271,16 +1295,23 @@ const normalizeNewlines = function(str) {
         $form.find('.js-comment-submit-button').disable();
       }
 
-      const tempFormContent = this.generatePlaceholderNoteContent(formContent, gl.GfmAutoComplete.cachedData['/']);
+      const placeholderNote = this.generatePlaceholderNoteContent(formContent, gl.GfmAutoComplete.cachedData['/']);
 
-      // Show placeholder note
-      $notesContainer.append(this.createPlaceholderNote({
-        formContent: tempFormContent,
-        uniqueId,
-        isDiscussionNote,
-        currentUsername: gon.current_username,
-        currentUserFullname: gon.current_user_fullname,
-      }));
+      // Show placeholder note be it for slash command or regular comment.
+      if (placeholderNote.systemNote) {
+        $notesContainer.append(this.createPlaceholderSystemNote({
+          formContent: placeholderNote.content,
+          uniqueId,
+        }));
+      } else {
+        $notesContainer.append(this.createPlaceholderNote({
+          formContent: placeholderNote.content,
+          uniqueId,
+          isDiscussionNote,
+          currentUsername: gon.current_username,
+          currentUserFullname: gon.current_user_fullname,
+        }));
+      }
 
       // Clear the form textarea
       if ($notesContainer.length) {
