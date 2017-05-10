@@ -2,7 +2,7 @@ import Visibility from 'visibilityjs';
 import PipelinesService from './services/pipelines_service';
 import eventHub from './event_hub';
 import PipelinesTableComponent from '../vue_shared/components/pipelines_table';
-import TablePaginationComponent from '../vue_shared/components/table_pagination';
+import tablePagination from '../vue_shared/components/table_pagination.vue';
 import EmptyState from './components/empty_state.vue';
 import ErrorState from './components/error_state.vue';
 import NavigationTabs from './components/navigation_tabs';
@@ -18,7 +18,7 @@ export default {
   },
 
   components: {
-    'gl-pagination': TablePaginationComponent,
+    tablePagination,
     'pipelines-table-component': PipelinesTableComponent,
     'empty-state': EmptyState,
     'error-state': ErrorState,
@@ -275,12 +275,13 @@ export default {
             />
         </div>
 
-        <gl-pagination
+        <table-pagination
           v-if="shouldRenderPagination"
           :pagenum="pagenum"
           :change="change"
           :count="state.count.all"
-          :pageInfo="state.pageInfo"/>
+          :pageInfo="state.pageInfo"
+          />
       </div>
     </div>
   `,
