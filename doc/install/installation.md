@@ -116,7 +116,7 @@ The use of Ruby version managers such as [RVM], [rbenv] or [chruby] with GitLab
 in production, frequently leads to hard to diagnose problems. For example,
 GitLab Shell is called from OpenSSH, and having a version manager can prevent
 pushing and pulling over SSH. Version managers are not supported and we strongly
-advise everyone to follow the instructions below to use a system Ruby.
+advise everyone to follow the instructions below to use a self-compiled Ruby.
 
 Remove the old Ruby 1.8 if present:
 
