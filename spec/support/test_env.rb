@@ -133,7 +133,8 @@ module TestEnv
   def start_gitaly(gitaly_dir)
     gitaly_exec = File.join(gitaly_dir, 'gitaly')
     gitaly_config = File.join(gitaly_dir, 'config.toml')
-    @gitaly_pid = spawn(gitaly_exec, gitaly_config, [:out, :err] => '/dev/null')
+    log_file = Rails.root.join('log/gitaly-test.log').to_s
+    @gitaly_pid = spawn(gitaly_exec, gitaly_config, [:out, :err] => log_file)
   end
 
   def stop_gitaly
