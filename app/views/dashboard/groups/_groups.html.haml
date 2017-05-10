@@ -1,1 +1,3 @@
-.js-groups-list-holder#dashboard-group-app{ data: { endpoint: dashboard_groups_path(format: :json) } }
+.js-groups-list-holder
+  #dashboard-group-app{ data: { endpoint: dashboard_groups_path(format: :json) } }
+    %groups-component{ ':groups' => 'state.groups' }

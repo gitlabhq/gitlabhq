@@ -1,6 +1,4 @@
 <script>
-import eventHub from '../event_hub';
-
 export default {
   props: {
     groups: {

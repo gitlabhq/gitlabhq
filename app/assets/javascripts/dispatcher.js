@@ -40,7 +40,6 @@ import Issue from './issue';
 import BindInOut from './behaviors/bind_in_out';
 import Group from './group';
 import GroupName from './group_name';
-import GroupsList from './groups_list';
 import ProjectsList from './projects_list';
 import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
 import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
@@ -148,12 +147,7 @@ const ShortcutsBlob = require('./shortcuts_blob');
         case 'admin:projects:index':
           new ProjectsList();
           break;
-        case 'dashboard:groups:index':
-          new GroupsList();
-          break;
         case 'explore:groups:index':
-          new GroupsList();
-
           const landingElement = document.querySelector('.js-explore-groups-landing');
           if (!landingElement) break;
           const exploreGroupsLanding = new Landing(

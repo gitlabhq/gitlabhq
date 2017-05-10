@@ -4,7 +4,8 @@
  */
 
 export default class FilterableList {
-  constructor(form, filter, holder) {
+  constructor(form, filter, holder, store) {
+    this.store = store;
     this.filterForm = form;
     this.listFilterElement = filter;
     this.listHolderElement = holder;
@@ -33,7 +34,7 @@ export default class FilterableList {
         $(this.listHolderElement).fadeTo(250, 1);
       },
       success(data) {
-        this.listHolderElement.innerHTML = data.html;
+        this.store.setGroups(data);
 
        // Change url so if user reload a page - search results are saved
         return window.history.replaceState({

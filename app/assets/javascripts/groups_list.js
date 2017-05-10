@@ -5,13 +5,9 @@ import FilterableList from './filterable_list';
  * Updates the html content of the page with the received one.
  */
 export default class GroupsList {
-  constructor() {
-    const form = document.querySelector('form#group-filter-form');
-    const filter = document.querySelector('.js-groups-list-filter');
-    const holder = document.querySelector('.js-groups-list-holder');
-
-    if (form && filter && holder) {
-      const list = new FilterableList(form, filter, holder);
+  constructor(form, filter, holder, store) {
+    if (form && filter && holder && store) {
+      const list = new FilterableList(form, filter, holder, store);
       list.initSearch();
     }
   }
