@@ -35,7 +35,7 @@ module Gitlab
               type: entry[:type],
               mode: entry[:filemode].to_s(8),
               path: path ? File.join(path, entry[:name]) : entry[:name],
-              commit_id: sha,
+              commit_id: sha
             )
           end
         end

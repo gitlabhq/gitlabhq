@@ -38,7 +38,7 @@ module Boards
           attrs.merge!(
             add_label_ids: add_label_ids,
             remove_label_ids: remove_label_ids,
-            state_event: issue_state,
+            state_event: issue_state
           )
         end
 

@@ -69,7 +69,7 @@ describe API::V3::Groups do
           storage_size: 702,
           repository_size: 123,
           lfs_objects_size: 234,
-          build_artifacts_size: 345,
+          build_artifacts_size: 345
         }.stringify_keys
 
         project1.statistics.update!(attributes)

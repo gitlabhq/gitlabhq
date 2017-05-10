@@ -74,7 +74,7 @@ describe 'Edit Project Settings', feature: true do
         issues: namespace_project_issues_path(project.namespace, project),
         wiki: namespace_project_wiki_path(project.namespace, project, :home),
         snippets: namespace_project_snippets_path(project.namespace, project),
-        merge_requests: namespace_project_merge_requests_path(project.namespace, project),
+        merge_requests: namespace_project_merge_requests_path(project.namespace, project)
       }
     end
 
