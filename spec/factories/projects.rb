@@ -172,7 +172,7 @@ FactoryGirl.define do
     path { 'forked-gitlabhq' }
 
     after :create do |project|
-      TestEnv.copy_forked_repo_with_submodules(project)
+      TestEnv.copy_repo(project, copy_fork: true)
     end
   end
 

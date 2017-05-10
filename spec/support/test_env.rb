@@ -170,13 +170,13 @@ module TestEnv
     end
   end
 
-  def copy_repo(project)
-    base_repo_path = File.expand_path(factory_repo_path_bare)
+  def copy_repo(project, copy_fork: false)
+    base_repo_path = File.expand_path(copy_fork ? forked_repo_path_bare : factory_repo_path_bare)
     target_repo_path = File.expand_path(project.repository_storage_path + "/#{project.full_path}.git")
     FileUtils.mkdir_p(target_repo_path)
     FileUtils.cp_r("#{base_repo_path}/.", target_repo_path)
     FileUtils.chmod_R 0755, target_repo_path
-    set_repo_refs(target_repo_path, BRANCH_SHA)
+    set_repo_refs(target_repo_path, copy_fork ? FORKED_BRANCH_SHA : BRANCH_SHA)
   end
 
   def repos_path
@@ -189,15 +189,6 @@ module TestEnv
 
   def pages_path
     Gitlab.config.pages.path
-  end
-
-  def copy_forked_repo_with_submodules(project)
-    base_repo_path = File.expand_path(forked_repo_path_bare)
-    target_repo_path = File.expand_path(project.repository_storage_path + "/#{project.full_path}.git")
-    FileUtils.mkdir_p(target_repo_path)
-    FileUtils.cp_r("#{base_repo_path}/.", target_repo_path)
-    FileUtils.chmod_R 0755, target_repo_path
-    set_repo_refs(target_repo_path, FORKED_BRANCH_SHA)
   end
 
   # When no cached assets exist, manually hit the root path to create them
