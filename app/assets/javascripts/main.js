@@ -59,7 +59,6 @@ import './lib/utils/datetime_utility';
 import './lib/utils/notify';
 import './lib/utils/pretty_time';
 import './lib/utils/text_utility';
-import './lib/utils/type_utility';
 import './lib/utils/url_utility';
 
 // u2f

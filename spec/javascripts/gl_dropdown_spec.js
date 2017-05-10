@@ -2,7 +2,6 @@
 
 require('~/gl_dropdown');
 require('~/lib/utils/common_utils');
-require('~/lib/utils/type_utility');
 require('~/lib/utils/url_utility');
 
 (() => {
