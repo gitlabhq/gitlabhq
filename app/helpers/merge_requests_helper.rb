@@ -60,6 +60,7 @@ module MergeRequestsHelper
     )
   end
 
+<<<<<<< HEAD
   def render_items_list(items, separator = "and")
     items_cnt = items.size
 
@@ -99,6 +100,8 @@ module MergeRequestsHelper
     str
   end
 
+=======
+>>>>>>> upstream/master
   def format_mr_branch_names(merge_request)
     source_path = merge_request.source_project_path
     target_path = merge_request.target_project_path

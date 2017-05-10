@@ -52,7 +52,11 @@ This feature is available only in [GitLab Enterprise Edition](https://about.gitl
 > **Note:**
 both estimate and spend times are set via [GitLab Slash Commands](../slash_commands.md).
 
+<<<<<<< HEAD
 Learn more on the [Time Tracking documentation](../../../workflow/time_tracking.md).
+=======
+Learn more on the [Time Tracking documentation](https://docs.gitlab.com/ee/workflow/time_tracking.html).
+>>>>>>> upstream/master
 
 #### 6. Due date
 
@@ -81,7 +85,11 @@ Issue Weights are only available in [GitLab Enterprise Edition](https://about.gi
 - Attribute a weight (in a 0 to 9 range) to that issue. Easy to complete
 should weight 1 and very hard to complete should weight 9.
 
+<<<<<<< HEAD
 Learn more on the [Issue Weight documentation](../../../workflow/issue_weight.md).
+=======
+Learn more on the [Issue Weight documentation](https://docs.gitlab.com/ee/workflow/issue_weight.html).
+>>>>>>> upstream/master
 
 #### 9. Participants
 

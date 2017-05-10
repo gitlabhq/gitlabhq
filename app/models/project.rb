@@ -184,7 +184,11 @@ class Project < ActiveRecord::Base
   has_many :remote_mirrors, inverse_of: :project, dependent: :destroy
   has_many :environments, dependent: :destroy
   has_many :deployments, dependent: :destroy
+<<<<<<< HEAD
   has_many :path_locks, dependent: :destroy
+=======
+  has_many :pipeline_schedules, dependent: :destroy, class_name: 'Ci::PipelineSchedule'
+>>>>>>> upstream/master
 
   has_many :active_runners, -> { active }, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
 

@@ -2,7 +2,11 @@ module Ci
   class CreatePipelineService < BaseService
     attr_reader :pipeline
 
+<<<<<<< HEAD
     def execute(ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, mirror_update: false)
+=======
+    def execute(ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil)
+>>>>>>> upstream/master
       @pipeline = Ci::Pipeline.new(
         project: project,
         ref: ref,
@@ -10,7 +14,8 @@ module Ci
         before_sha: before_sha,
         tag: tag?,
         trigger_requests: Array(trigger_request),
-        user: current_user
+        user: current_user,
+        pipeline_schedule: schedule
       )
 
       unless project.builds_enabled?
@@ -50,7 +55,7 @@ module Ci
       end
 
       Ci::Pipeline.transaction do
-        pipeline.save
+        update_merge_requests_head_pipeline if pipeline.save
 
         Ci::CreatePipelineBuildsService
           .new(project, current_user)
@@ -119,6 +124,11 @@ module Ci
 
     def valid_sha?
       origin_sha && origin_sha != Gitlab::Git::BLANK_SHA
+    end
+
+    def update_merge_requests_head_pipeline
+      MergeRequest.where(source_branch: @pipeline.ref, source_project: @pipeline.project).
+        update_all(head_pipeline_id: @pipeline.id)
     end
 
     def error(message, save: false)

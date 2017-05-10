@@ -81,6 +81,7 @@ feature 'Merge Request closing issues message', feature: true, js: true do
     it 'does not display closing issue message' do
       expect(page).to have_content("Closes issue #{issue_1.to_reference}. Issue #{issue_2.to_reference} is mentioned but will not be closed.")
       expect(page).to have_content("Issue #{issue_2.to_reference} is mentioned but will not be closed.")
+<<<<<<< HEAD
     end
   end
 
@@ -95,6 +96,8 @@ feature 'Merge Request closing issues message', feature: true, js: true do
     it 'displays closing issue message exactly one time' do
       wait_for_ajax
       expect(page).to have_content("Closes issues #{issue_1.to_reference} and #{issue_2.to_reference}", count: 1)
+=======
+>>>>>>> upstream/master
     end
   end
 end

@@ -261,7 +261,7 @@ describe Projects::BuildsController do
 
   describe 'POST play' do
     before do
-      project.add_developer(user)
+      project.add_master(user)
       sign_in(user)
 
       post_play

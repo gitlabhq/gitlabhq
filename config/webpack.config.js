@@ -50,10 +50,13 @@ var config = {
     pdf_viewer:           './blob/pdf_viewer.js',
     pipelines:            './pipelines/index.js',
     balsamiq_viewer:      './blob/balsamiq_viewer.js',
+    pipelines_graph:      './pipelines/graph_bundle.js',
     profile:              './profile/profile_bundle.js',
     protected_branches:   './protected_branches/protected_branches_bundle.js',
     protected_tags:       './protected_tags',
     sidebar:              './sidebar/sidebar_bundle.js',
+    schedule_form:        './pipeline_schedules/pipeline_schedule_form_bundle.js',
+    schedules_index:      './pipeline_schedules/pipeline_schedules_index_bundle.js',
     snippet:              './snippet/snippet_bundle.js',
     sketch_viewer:        './blob/sketch_viewer.js',
     stl_viewer:           './blob/stl_viewer.js',
@@ -146,8 +149,13 @@ var config = {
         'notebook_viewer',
         'pdf_viewer',
         'pipelines',
+<<<<<<< HEAD
         'mr_widget_ee',
         'issue_show'
+=======
+        'balsamiq_viewer',
+        'pipelines_graph',
+>>>>>>> upstream/master
       ],
       minChunks: function(module, count) {
         return module.resource && (/vue_shared/).test(module.resource);

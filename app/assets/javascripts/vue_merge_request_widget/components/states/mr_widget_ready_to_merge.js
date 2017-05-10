@@ -67,16 +67,22 @@ export default {
       return Boolean(!commitMessage.length
         || !this.isMergeAllowed()
         || this.isMakingRequest
+<<<<<<< HEAD
         || this.isApprovalNeeded
+=======
+>>>>>>> upstream/master
         || this.mr.preventMerge);
     },
     shouldShowSquashBeforeMerge() {
       const { commitsCount, enableSquashBeforeMerge } = this.mr;
       return enableSquashBeforeMerge && commitsCount > 1;
     },
+<<<<<<< HEAD
     isApprovalNeeded() {
       return this.mr.approvalsRequired ? !this.mr.isApproved : false;
     },
+=======
+>>>>>>> upstream/master
   },
   methods: {
     isMergeAllowed() {
@@ -267,6 +273,7 @@ export default {
           :mr="mr"
           :is-merge-button-disabled="isMergeButtonDisabled" />
 
+<<<<<<< HEAD
         <span v-if="mr.ffOnlyEnabled">
           Fast-forward merge without a merge commit
         </span>
@@ -280,6 +287,15 @@ export default {
           </button>
         </span>
 
+=======
+        <button
+          @click="toggleCommitMessageEditor"
+          :disabled="isMergeButtonDisabled"
+          class="btn btn-default btn-xs"
+          type="button">
+          Modify commit message
+        </button>
+>>>>>>> upstream/master
         <div
           v-if="showCommitMessageEditor"
           class="prepend-top-default commit-message-editor">

@@ -152,12 +152,16 @@ ul.content-list {
         margin-top: 3px;
         margin-bottom: 4px;
 
+<<<<<<< HEAD
         &.btn-ldap-override {
           @media (min-width: $screen-sm-min) {
             margin-bottom: 0;
           }
         }
 
+=======
+        &.has-tooltip,
+>>>>>>> upstream/master
         &:last-child {
           margin-right: 0;
 

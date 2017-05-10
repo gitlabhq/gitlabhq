@@ -52,6 +52,7 @@ class ProjectPolicy < BasePolicy
 
     if project.public_builds?
       can! :read_pipeline
+      can! :read_pipeline_schedule
       can! :read_build
     end
   end
@@ -70,6 +71,7 @@ class ProjectPolicy < BasePolicy
     can! :read_build
     can! :read_container_image
     can! :read_pipeline
+    can! :read_pipeline_schedule
     can! :read_environment
     can! :read_deployment
     can! :read_merge_request
@@ -94,6 +96,8 @@ class ProjectPolicy < BasePolicy
     can! :update_build
     can! :create_pipeline
     can! :update_pipeline
+    can! :create_pipeline_schedule
+    can! :update_pipeline_schedule
     can! :create_merge_request
     can! :create_wiki
     can! :push_code
@@ -106,7 +110,7 @@ class ProjectPolicy < BasePolicy
   end
 
   def master_access!
-    can! :push_code_to_protected_branches
+    can! :delete_protected_branch
     can! :update_project_snippet
     can! :update_environment
     can! :update_deployment
@@ -120,6 +124,7 @@ class ProjectPolicy < BasePolicy
     can! :admin_build
     can! :admin_container_image
     can! :admin_pipeline
+    can! :admin_pipeline_schedule
     can! :admin_environment
     can! :admin_deployment
     can! :admin_pages
@@ -135,6 +140,7 @@ class ProjectPolicy < BasePolicy
     can! :fork_project
     can! :read_commit_status
     can! :read_pipeline
+    can! :read_pipeline_schedule
     can! :read_container_image
     can! :build_download_code
     can! :build_read_container_image
@@ -182,7 +188,7 @@ class ProjectPolicy < BasePolicy
   def archived_access!
     cannot! :create_merge_request
     cannot! :push_code
-    cannot! :push_code_to_protected_branches
+    cannot! :delete_protected_branch
     cannot! :update_merge_request
     cannot! :admin_merge_request
   end
@@ -223,13 +229,14 @@ class ProjectPolicy < BasePolicy
     unless project.feature_available?(:builds, user) && repository_enabled
       cannot!(*named_abilities(:build))
       cannot!(*named_abilities(:pipeline))
+      cannot!(*named_abilities(:pipeline_schedule))
       cannot!(*named_abilities(:environment))
       cannot!(*named_abilities(:deployment))
     end
 
     unless repository_enabled
       cannot! :push_code
-      cannot! :push_code_to_protected_branches
+      cannot! :delete_protected_branch
       cannot! :download_code
       cannot! :fork_project
       cannot! :read_commit_status
@@ -302,6 +309,7 @@ class ProjectPolicy < BasePolicy
     can! :read_merge_request
     can! :read_note
     can! :read_pipeline
+    can! :read_pipeline_schedule
     can! :read_commit_status
     can! :read_container_image
     can! :download_code

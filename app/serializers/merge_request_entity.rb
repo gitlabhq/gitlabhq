@@ -1,5 +1,10 @@
 class MergeRequestEntity < IssuableEntity
+<<<<<<< HEAD
   expose :approvals_before_merge
+=======
+  include RequestAwareEntity
+
+>>>>>>> upstream/master
   expose :assignee_id
   include RequestAwareEntity
 
@@ -16,6 +21,7 @@ class MergeRequestEntity < IssuableEntity
   expose :target_branch
   expose :target_project_id
 
+<<<<<<< HEAD
   # EE-specific
   expose :approvals_before_merge
   expose :squash
@@ -36,6 +42,8 @@ class MergeRequestEntity < IssuableEntity
     presenter(merge_request).approvals_path
   end
 
+=======
+>>>>>>> upstream/master
   # Events
   expose :merge_event, using: EventEntity
   expose :closed_event, using: EventEntity

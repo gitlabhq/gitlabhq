@@ -22,8 +22,6 @@ const normalizeNewlines = function(str) {
 };
 
 (function() {
-  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
-
   this.Notes = (function() {
     const MAX_VISIBLE_COMMIT_LIST_COUNT = 3;
     const REGEX_SLASH_COMMANDS = /\/\w+/g;
@@ -31,24 +29,24 @@ const normalizeNewlines = function(str) {
     Notes.interval = null;
 
     function Notes(notes_url, note_ids, last_fetched_at, view) {
-      this.updateTargetButtons = bind(this.updateTargetButtons, this);
-      this.updateComment = bind(this.updateComment, this);
-      this.visibilityChange = bind(this.visibilityChange, this);
-      this.cancelDiscussionForm = bind(this.cancelDiscussionForm, this);
-      this.addDiffNote = bind(this.addDiffNote, this);
-      this.setupDiscussionNoteForm = bind(this.setupDiscussionNoteForm, this);
-      this.replyToDiscussionNote = bind(this.replyToDiscussionNote, this);
-      this.removeNote = bind(this.removeNote, this);
-      this.cancelEdit = bind(this.cancelEdit, this);
-      this.updateNote = bind(this.updateNote, this);
-      this.addDiscussionNote = bind(this.addDiscussionNote, this);
-      this.addNoteError = bind(this.addNoteError, this);
-      this.addNote = bind(this.addNote, this);
-      this.resetMainTargetForm = bind(this.resetMainTargetForm, this);
-      this.refresh = bind(this.refresh, this);
-      this.keydownNoteText = bind(this.keydownNoteText, this);
-      this.toggleCommitList = bind(this.toggleCommitList, this);
-      this.postComment = bind(this.postComment, this);
+      this.updateTargetButtons = this.updateTargetButtons.bind(this);
+      this.updateComment = this.updateComment.bind(this);
+      this.visibilityChange = this.visibilityChange.bind(this);
+      this.cancelDiscussionForm = this.cancelDiscussionForm.bind(this);
+      this.addDiffNote = this.addDiffNote.bind(this);
+      this.setupDiscussionNoteForm = this.setupDiscussionNoteForm.bind(this);
+      this.replyToDiscussionNote = this.replyToDiscussionNote.bind(this);
+      this.removeNote = this.removeNote.bind(this);
+      this.cancelEdit = this.cancelEdit.bind(this);
+      this.updateNote = this.updateNote.bind(this);
+      this.addDiscussionNote = this.addDiscussionNote.bind(this);
+      this.addNoteError = this.addNoteError.bind(this);
+      this.addNote = this.addNote.bind(this);
+      this.resetMainTargetForm = this.resetMainTargetForm.bind(this);
+      this.refresh = this.refresh.bind(this);
+      this.keydownNoteText = this.keydownNoteText.bind(this);
+      this.toggleCommitList = this.toggleCommitList.bind(this);
+      this.postComment = this.postComment.bind(this);
 
       this.notes_url = notes_url;
       this.note_ids = note_ids;
@@ -175,7 +173,7 @@ const normalizeNewlines = function(str) {
           if ($textarea.val() !== '') {
             return;
           }
-          myLastNote = $("li.note[data-author-id='" + gon.current_user_id + "'][data-editable]:last");
+          myLastNote = $(`li.note[data-author-id='${gon.current_user_id}'][data-editable]:last`, $textarea.closest('.note, #notes'));
           if (myLastNote.length) {
             myLastNoteEditBtn = myLastNote.find('.js-note-edit');
             return myLastNoteEditBtn.trigger('click', [true, myLastNote]);
@@ -1123,8 +1121,13 @@ const normalizeNewlines = function(str) {
       }
     };
 
+<<<<<<< HEAD
     Notes.animateAppendNote = function(noteHTML, $notesList) {
       const $note = window.$(noteHTML);
+=======
+    Notes.animateAppendNote = function(noteHtml, $notesList) {
+      const $note = $(noteHtml);
+>>>>>>> upstream/master
 
       $note.addClass('fade-in-full').renderGFM();
       $notesList.append($note);

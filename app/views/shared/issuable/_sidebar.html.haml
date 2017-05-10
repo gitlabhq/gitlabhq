@@ -20,6 +20,7 @@
         .block.todo.hide-expanded
           = render "shared/issuable/sidebar_todo", todo: todo, issuable: issuable, is_collapsed: true
       .block.assignee
+<<<<<<< HEAD
         - if issuable.instance_of?(Issue)
           #js-vue-sidebar-assignees{ data: { field: "#{issuable.to_ability_name}[assignee_ids]" } }
         - else
@@ -68,6 +69,9 @@
             - title = 'Select assignee'
 
           = dropdown_tag(title, options: options)
+=======
+        = render "shared/issuable/sidebar_assignees", issuable: issuable, can_edit_issuable: can_edit_issuable
+>>>>>>> upstream/master
       .block.milestone
         .sidebar-collapsed-icon
           = icon('clock-o', 'aria-hidden': 'true')

@@ -6,6 +6,7 @@
           %th Name
           %th.hidden-xs
             .pull-left Last commit
+<<<<<<< HEAD
             .last-commit.hidden-sm.pull-left
               %i.fa.fa-angle-right
               %small.light
@@ -17,6 +18,8 @@
             %small.commit-history-link-spacer &#124;
             = lock_file_link(html_options: {class: 'pull-right prepend-left-10 path-lock'})
             = link_to 'History', namespace_project_commits_path(@project.namespace, @project, @id), class: 'commit-history-link'
+=======
+>>>>>>> upstream/master
           %th.text-right Last Update
       - if @path.present?
         %tr.tree-item

@@ -13,7 +13,7 @@ require('~/shortcuts_issuable');
       document.querySelector('.js-new-note-form').classList.add('js-main-target-form');
       this.shortcut = new ShortcutsIssuable();
     });
-    describe('#replyWithSelectedText', function() {
+    describe('replyWithSelectedText', function() {
       var stubSelection;
       // Stub window.gl.utils.getSelectedFragment to return a node with the provided HTML.
       stubSelection = function(html) {

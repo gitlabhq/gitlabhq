@@ -7,5 +7,8 @@ class MergeRequestBasicEntity < Grape::Entity
   expose :total_time_spent
   expose :human_time_estimate
   expose :human_total_time_spent
+<<<<<<< HEAD
   expose :rebase_in_progress?, as: :rebase_in_progress
+=======
+>>>>>>> upstream/master
 end

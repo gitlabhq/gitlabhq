@@ -11,6 +11,7 @@
       = view_on_environment_button(@commit.sha, @path, @environment) if @environment
 
     .btn-group{ role: "group" }<
+<<<<<<< HEAD
       -# only show normal/blame view links for text files
       - if blob.readable_text?
         - if blame
@@ -31,6 +32,9 @@
         = lock_file_link(html_options: {class: 'btn btn-sm path-lock'})
 
       = edit_blob_link if blob.readable_text?
+=======
+      = edit_blob_link
+>>>>>>> upstream/master
       - if current_user
         = replace_blob_link
         = delete_blob_link

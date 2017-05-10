@@ -38,6 +38,16 @@ module Gitlab
       end
     end
 
+    def can_delete_branch?(ref)
+      return false unless can_access_git?
+
+      if ProtectedBranch.protected?(project, ref)
+        user.can?(:delete_protected_branch, project)
+      else
+        user.can?(:push_code, project)
+      end
+    end
+
     def can_push_to_branch?(ref)
       return false unless can_access_git?
 

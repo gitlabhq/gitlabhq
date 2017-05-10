@@ -42,6 +42,17 @@ class User < ActiveRecord::Base
   devise :lockable, :recoverable, :rememberable, :trackable,
     :validatable, :omniauthable, :confirmable, :registerable
 
+  # Override Devise::Models::Trackable#update_tracked_fields!
+  # to limit database writes to at most once every hour
+  def update_tracked_fields!(request)
+    update_tracked_fields(request)
+
+    lease = Gitlab::ExclusiveLease.new("user_update_tracked_fields:#{id}", timeout: 1.hour.to_i)
+    return unless lease.try_obtain
+
+    save(validate: false)
+  end
+
   attr_accessor :force_random_password
 
   # Virtual attribute for authenticating by either username or email
@@ -364,11 +375,14 @@ class User < ActiveRecord::Base
       namespace&.owner
     end
 
+<<<<<<< HEAD
     def non_ldap
       joins('LEFT JOIN identities ON identities.user_id = users.id')
         .where('identities.provider IS NULL OR identities.provider NOT LIKE ?', 'ldap%')
     end
 
+=======
+>>>>>>> upstream/master
     def reference_prefix
       '@'
     end

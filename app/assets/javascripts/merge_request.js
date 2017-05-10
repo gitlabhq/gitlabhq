@@ -6,8 +6,6 @@ require('./task_list');
 require('./merge_request_tabs');
 
 (function() {
-  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
-
   this.MergeRequest = (function() {
     function MergeRequest(opts) {
       // Initialize MergeRequest behavior
@@ -16,7 +14,7 @@ require('./merge_request_tabs');
       //   action - String, current controller action
       //
       this.opts = opts != null ? opts : {};
-      this.submitNoteForm = bind(this.submitNoteForm, this);
+      this.submitNoteForm = this.submitNoteForm.bind(this);
       this.$el = $('.merge-request');
       this.$('.show-all-commits').on('click', (function(_this) {
         return function() {

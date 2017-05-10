@@ -261,7 +261,7 @@
 
 .stage-cell {
   font-size: 0;
-  padding: 10px 4px;
+  padding: 0 4px;
 
   > .stage-container > div > button > span > svg,
   > .stage-container > button > svg {
@@ -490,7 +490,7 @@
     color: $gl-text-color-secondary;
 
     // Action Icons in big pipeline-graph nodes
-    > .ci-action-icon-container .ci-action-icon-wrapper {
+    > div > .ci-action-icon-container .ci-action-icon-wrapper {
       height: 30px;
       width: 30px;
       background: $white-light;
@@ -515,7 +515,7 @@
       }
     }
 
-    > .ci-action-icon-container {
+    > div > .ci-action-icon-container {
       position: absolute;
       right: 5px;
       top: 5px;
@@ -545,7 +545,7 @@
       }
     }
 
-    > .build-content {
+    > div > .build-content {
       display: inline-block;
       padding: 8px 10px 9px;
       width: 100%;
@@ -560,34 +560,6 @@
       }
     }
 
-
-    .arrow {
-      &::before,
-      &::after {
-        content: '';
-        display: inline-block;
-        position: absolute;
-        width: 0;
-        height: 0;
-        border-color: transparent;
-        border-style: solid;
-        top: 18px;
-      }
-
-      &::before {
-        left: -5px;
-        margin-top: -6px;
-        border-width: 7px 5px 7px 0;
-        border-right-color: $border-color;
-      }
-
-      &::after {
-        left: -4px;
-        margin-top: -9px;
-        border-width: 10px 7px 10px 0;
-        border-right-color: $white-light;
-      }
-    }
 
     // Connect first build in each stage with right horizontal line
     &:first-child {
@@ -863,7 +835,8 @@
     border-radius: 3px;
 
     // build name
-    .ci-build-text {
+    .ci-build-text,
+    .ci-status-text {
       font-weight: 200;
       overflow: hidden;
       white-space: nowrap;
@@ -912,6 +885,38 @@
     .ci-status-icon {
       top: -1px;
     }
+  }
+}
+
+/**
+ * Top arrow in the dropdown in the big pipeline graph
+ */
+.big-pipeline-graph-dropdown-menu {
+
+  &::before,
+  &::after {
+    content: '';
+    display: inline-block;
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+    top: 18px;
+  }
+
+  &::before {
+    left: -5px;
+    margin-top: -6px;
+    border-width: 7px 5px 7px 0;
+    border-right-color: $border-color;
+  }
+
+  &::after {
+    left: -4px;
+    margin-top: -9px;
+    border-width: 10px 7px 10px 0;
+    border-right-color: $white-light;
   }
 }
 

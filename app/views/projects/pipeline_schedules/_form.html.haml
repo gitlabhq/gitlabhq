@@ -1,0 +1,32 @@
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_bundle_tag('schedule_form')
+
+= form_for [@project.namespace.becomes(Namespace), @project, @schedule], as: :schedule, html: { id: "new-pipeline-schedule-form", class: "form-horizontal js-pipeline-schedule-form" } do |f|
+  = form_errors(@schedule)
+  .form-group
+    .col-md-6
+      = f.label :description, 'Description', class: 'label-light'
+      = f.text_field :description, class: 'form-control', required: true, autofocus: true, placeholder: 'Provide a short description for this pipeline'
+  .form-group
+    .col-md-12
+      = f.label :cron, 'Interval Pattern', class: 'label-light'
+      #interval-pattern-input{ data: { initial_interval: @schedule.cron } }
+  .form-group
+    .col-md-6
+      = f.label :cron_timezone, 'Cron Timezone', class: 'label-light'
+      = dropdown_tag("Select a timezone", options: { toggle_class: 'btn js-timezone-dropdown', title: "Select a timezone", filter: true, placeholder: "Filter", data: { data: timezone_data } } )
+      = f.text_field :cron_timezone, value: @schedule.cron_timezone, id: 'schedule_cron_timezone', class: 'hidden', name: 'schedule[cron_timezone]', required: true
+  .form-group
+    .col-md-6
+      = f.label :ref, 'Target Branch', class: 'label-light'
+      = dropdown_tag("Select target branch", options: { toggle_class: 'btn js-target-branch-dropdown', title: "Select target branch", filter: true, placeholder: "Filter", data: { data: @project.repository.branch_names } } )
+      = f.text_field :ref, value: @schedule.ref, id: 'schedule_ref', class: 'hidden', name: 'schedule[ref]', required: true
+  .form-group
+    .col-md-6
+      = f.label  :active, 'Activated', class: 'label-light'
+      %div
+        = f.check_box :active, required: false, value: @schedule.active?
+        active
+  .footer-block.row-content-block
+    = f.submit 'Save pipeline schedule', class: 'btn btn-create', tabindex: 3
+    = link_to 'Cancel', pipeline_schedules_path(@project), class: 'btn btn-cancel'

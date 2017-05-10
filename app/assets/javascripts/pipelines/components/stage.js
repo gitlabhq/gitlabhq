@@ -1,4 +1,5 @@
 /* global Flash */
+<<<<<<< HEAD
 import { statusClassToSvgMap } from '../../vue_shared/pipeline_svg_icons';
 
 export default {
@@ -9,6 +10,11 @@ export default {
     },
   },
 
+=======
+import { borderlessStatusIconEntityMap } from '../../vue_shared/ci_status_icons';
+
+export default {
+>>>>>>> upstream/master
   data() {
     return {
       builds: '',
@@ -16,6 +22,16 @@ export default {
     };
   },
 
+<<<<<<< HEAD
+=======
+  props: {
+    stage: {
+      type: Object,
+      required: true,
+    },
+  },
+
+>>>>>>> upstream/master
   updated() {
     if (this.builds) {
       this.stopDropdownClickPropagation();
@@ -31,6 +47,7 @@ export default {
       return this.$http.get(this.stage.dropdown_path)
         .then((response) => {
           this.builds = JSON.parse(response.body).html;
+<<<<<<< HEAD
         })
         .catch(() => {
           // If dropdown is opened we'll close it.
@@ -38,6 +55,9 @@ export default {
             $(this.$refs.dropdown).dropdown('toggle');
           }
 
+=======
+        }, () => {
+>>>>>>> upstream/master
           const flash = new Flash('Something went wrong on our end.');
           return flash;
         });
@@ -52,10 +72,16 @@ export default {
      * target the click event of this component.
      */
     stopDropdownClickPropagation() {
+<<<<<<< HEAD
       $(this.$el.querySelectorAll('.js-builds-dropdown-list a.mini-pipeline-graph-dropdown-item'))
         .on('click', (e) => {
           e.stopPropagation();
         });
+=======
+      $(this.$el.querySelectorAll('.js-builds-dropdown-list a.mini-pipeline-graph-dropdown-item')).on('click', (e) => {
+        e.stopPropagation();
+      });
+>>>>>>> upstream/master
     },
   },
   computed: {
@@ -76,7 +102,11 @@ export default {
       return `mini-pipeline-graph-dropdown-toggle has-tooltip js-builds-dropdown-button ci-status-icon-${this.stage.status.group}`;
     },
     svgHTML() {
+<<<<<<< HEAD
       return statusClassToSvgMap[this.stage.status.icon];
+=======
+      return borderlessStatusIconEntityMap[this.stage.status.icon];
+>>>>>>> upstream/master
     },
   },
   watch: {
@@ -93,6 +123,7 @@ export default {
         data-placement="top"
         data-toggle="dropdown"
         type="button"
+<<<<<<< HEAD
         :aria-label="stage.title"
         ref="dropdown">
         <span
@@ -109,6 +140,15 @@ export default {
         <div
           class="arrow-up"
           aria-hidden="true"></div>
+=======
+        ref="button"
+        :aria-label="stage.title">
+        <span v-html="svgHTML" aria-hidden="true"></span>
+        <i class="fa fa-caret-down" aria-hidden="true"></i>
+      </button>
+      <ul class="dropdown-menu mini-pipeline-graph-dropdown-menu js-builds-dropdown-container">
+        <div class="arrow-up" aria-hidden="true"></div>
+>>>>>>> upstream/master
         <div
           :class="dropdownClass"
           class="js-builds-dropdown-list scrollable-menu"

@@ -18,7 +18,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
       format.json do
         render json: {
           environments: EnvironmentSerializer
-            .new(project: @project, user: @current_user)
+            .new(project: @project, current_user: @current_user)
             .with_pagination(request, response)
             .within_folders
             .represent(@environments),
@@ -38,7 +38,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
       format.json do
         render json: {
           environments: EnvironmentSerializer
-            .new(project: @project, user: @current_user)
+            .new(project: @project, current_user: @current_user)
             .with_pagination(request, response)
             .represent(@environments),
           available_count: folder_environments.available.count,

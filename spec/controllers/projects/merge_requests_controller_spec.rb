@@ -59,6 +59,7 @@ describe Projects::MergeRequestsController do
     end
   end
 
+<<<<<<< HEAD
   describe 'POST #create' do
     def create_merge_request(overrides = {})
       params = {
@@ -222,6 +223,8 @@ describe Projects::MergeRequestsController do
     end
   end
 
+=======
+>>>>>>> upstream/master
   describe 'GET commit_change_content' do
     it 'renders commit_change_content template' do
       get :commit_change_content,
@@ -557,7 +560,10 @@ describe Projects::MergeRequestsController do
         namespace_id: project.namespace,
         project_id: project,
         id: merge_request.iid,
+<<<<<<< HEAD
         squash: false,
+=======
+>>>>>>> upstream/master
         format: 'json'
       }
     end
@@ -634,7 +640,8 @@ describe Projects::MergeRequestsController do
         end
 
         before do
-          create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch)
+          pipeline = create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch)
+          merge_request.update(head_pipeline: pipeline)
         end
 
         it 'returns :merge_when_pipeline_succeeds' do
@@ -1448,7 +1455,10 @@ describe Projects::MergeRequestsController do
 
       let(:status) { pipeline.detailed_status(double('user')) }
 
-      before { get_pipeline_status }
+      before do
+        merge_request.update(head_pipeline: pipeline)
+        get_pipeline_status
+      end
 
       it 'return a detailed head_pipeline status in json' do
         expect(response).to have_http_status(:ok)

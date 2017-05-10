@@ -47,5 +47,13 @@ describe StageEntity do
     it 'contains stage title' do
       expect(subject[:title]).to eq 'test: passed'
     end
+
+    context 'when the jobs should be grouped' do
+      let(:entity) { described_class.new(stage, request: request, grouped: true) }
+
+      it 'exposes the group key' do
+        expect(subject).to include :groups
+      end
+    end
   end
 end

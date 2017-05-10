@@ -44,7 +44,10 @@
     "mergeable_discussions_state": { "type": "boolean" },
     "conflicts_can_be_resolved_in_ui": { "type": "boolean" },
     "branch_missing": { "type": "boolean" },
+<<<<<<< HEAD
     "commits_count": { "type": ["integer", "null"] },
+=======
+>>>>>>> upstream/master
     "has_conflicts": { "type": "boolean" },
     "can_be_merged": { "type": "boolean" },
     "project_archived": { "type": "boolean" },
@@ -93,6 +96,7 @@
     "diverged_commits_count": { "type": "integer" },
     "commit_change_content_path": { "type": "string" },
     "remove_wip_path": { "type": "string" },
+<<<<<<< HEAD
     // EE-specific
     "rebase_commit_sha": { "type": ["string", "null"] },
     "approvals_before_merge": { "type": ["integer", "null"] },
@@ -104,6 +108,9 @@
     "approved": { "type": "boolean" },
     "approvals_path": { "type": ["string", "null"] },
     "ff_only_enabled": { "type": "boolean" }
+=======
+    "commits_count": { "type": "integer" }
+>>>>>>> upstream/master
   },
   "additionalProperties": false
 }

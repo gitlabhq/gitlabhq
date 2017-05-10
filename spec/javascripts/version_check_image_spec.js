@@ -3,7 +3,7 @@ const VersionCheckImage = require('~/version_check_image');
 require('jquery');
 
 describe('VersionCheckImage', function () {
-  describe('.bindErrorEvent', function () {
+  describe('bindErrorEvent', function () {
     ClassSpecHelper.itShouldBeAStaticMethod(VersionCheckImage, 'bindErrorEvent');
 
     beforeEach(function () {

@@ -2,9 +2,7 @@ module Gitlab
   module Ci
     module Status
       module Build
-        class Play < SimpleDelegator
-          include Status::Extended
-
+        class Play < Status::Extended
           def label
             'manual play action'
           end

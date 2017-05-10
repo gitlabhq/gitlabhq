@@ -9,6 +9,10 @@ const deploymentMockData = [
     name: 'review/diplo',
     url: '/root/acets-review-apps/environments/15',
     stop_url: '/root/acets-review-apps/environments/15/stop',
+<<<<<<< HEAD
+=======
+    metrics_url: '/root/acets-review-apps/environments/15/deployments/1/metrics',
+>>>>>>> upstream/master
     external_url: 'http://diplo.',
     external_url_formatted: 'diplo.',
     deployed_at: '2017-03-22T22:44:42.258Z',
@@ -156,6 +160,10 @@ describe('MRWidgetDeployment', () => {
       expect(el.querySelector('.js-deploy-url').getAttribute('href')).toEqual(deployment.external_url);
       expect(el.querySelector('.js-deploy-url').innerText).toContain(deployment.external_url_formatted);
       expect(el.querySelector('.js-deploy-time').innerText).toContain(vm.formatDate(deployment.deployed_at));
+<<<<<<< HEAD
+=======
+      expect(el.querySelector('.js-mr-memory-usage')).toBeDefined();
+>>>>>>> upstream/master
       expect(el.querySelector('button')).toBeDefined();
     });
 
@@ -165,6 +173,10 @@ describe('MRWidgetDeployment', () => {
 
       Vue.nextTick(() => {
         expect(el.querySelectorAll('.ci-widget').length).toEqual(3);
+<<<<<<< HEAD
+=======
+        expect(el.querySelectorAll('.js-mr-memory-usage').length).toEqual(3);
+>>>>>>> upstream/master
         done();
       });
     });
@@ -176,6 +188,10 @@ describe('MRWidgetDeployment', () => {
         expect(el.querySelectorAll('.js-deploy-meta').length).toEqual(0);
         expect(el.querySelectorAll('.js-deploy-url').length).toEqual(0);
         expect(el.querySelectorAll('.js-deploy-time').length).toEqual(0);
+<<<<<<< HEAD
+=======
+        expect(el.querySelectorAll('.js-mr-memory-usage').length).toEqual(0);
+>>>>>>> upstream/master
         expect(el.querySelectorAll('.button').length).toEqual(0);
         done();
       });

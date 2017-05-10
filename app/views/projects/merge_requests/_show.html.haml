@@ -18,6 +18,7 @@
     :javascript
       window.gl.mrWidgetData = #{serialize_issuable(@merge_request)}
 
+<<<<<<< HEAD
       // Append static, server-generated data not included in merge request entity (EE-Only)
       // Object.assign would be useful here, but it blows up Phantom.js in tests
       window.gl.mrWidgetData.is_geo_secondary_node = '#{Gitlab::Geo.secondary?}' === 'true';
@@ -26,6 +27,10 @@
 
     #js-vue-mr-widget.mr-widget
 
+=======
+    #js-vue-mr-widget.mr-widget
+
+>>>>>>> upstream/master
     - content_for :page_specific_javascripts do
       = page_specific_javascript_bundle_tag('vue_merge_request_widget')
 

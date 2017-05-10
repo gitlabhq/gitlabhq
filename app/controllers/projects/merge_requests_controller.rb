@@ -10,10 +10,14 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :module_enabled
   before_action :merge_request, only: [
     :edit, :update, :show, :diffs, :commits, :conflicts, :conflict_for_path, :pipelines, :merge, :merge_check,
+<<<<<<< HEAD
     :pipeline_status, :ci_environments_status, :toggle_subscription, :cancel_merge_when_pipeline_succeeds,
     :remove_wip, :resolve_conflicts, :assign_related_issues, :commit_change_content,
     # EE
     :approve, :approvals, :unapprove, :rebase
+=======
+    :pipeline_status, :ci_environments_status, :toggle_subscription, :cancel_merge_when_pipeline_succeeds, :remove_wip, :resolve_conflicts, :assign_related_issues, :commit_change_content
+>>>>>>> upstream/master
   ]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :pipelines]
   before_action :define_show_vars, only: [:show, :diffs, :commits, :conflicts, :conflict_for_path, :builds, :pipelines]
@@ -345,6 +349,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     return access_denied! unless @merge_request.can_be_merged_by?(current_user)
     return render_404 unless @merge_request.approved?
 
+<<<<<<< HEAD
     RebaseWorker.perform_async(@merge_request.id, current_user.id)
 
     render nothing: true, status: 200
@@ -356,6 +361,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     status = merge!
 
+=======
+    status = merge!
+
+>>>>>>> upstream/master
     if @merge_request.merge_error
       render json: { status: status, merge_error: @merge_request.merge_error }
     else
@@ -432,10 +441,17 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
           metrics_url =
             if can?(current_user, :read_environment, environment) && environment.has_metrics?
+<<<<<<< HEAD
               metrics_namespace_project_environment_path(environment.project.namespace,
                                                          environment.project,
                                                          environment,
                                                          deployment)
+=======
+              metrics_namespace_project_environment_deployment_path(environment.project.namespace,
+                                                                    environment.project,
+                                                                    environment,
+                                                                    deployment)
+>>>>>>> upstream/master
             end
 
           {
@@ -734,6 +750,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       return :failed
     end
 
+<<<<<<< HEAD
     merge_request_service = MergeRequests::MergeService.new(@project, current_user, merge_params)
 
     unless merge_request_service.hooks_validation_pass?(@merge_request)
@@ -743,6 +760,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     return :sha_mismatch if params[:sha] != @merge_request.diff_head_sha
 
     @merge_request.update(merge_error: nil, squash: merge_params[:squash])
+=======
+    return :sha_mismatch if params[:sha] != @merge_request.diff_head_sha
+
+    @merge_request.update(merge_error: nil)
+>>>>>>> upstream/master
 
     if params[:merge_when_pipeline_succeeds].present?
       return :failed unless @merge_request.head_pipeline

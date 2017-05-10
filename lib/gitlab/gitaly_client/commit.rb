@@ -32,7 +32,9 @@ module Gitlab
           request = Gitaly::CommitDiffRequest.new(
             repository: gitaly_repo,
             left_commit_id: parent_id,
-            right_commit_id: commit.id
+            right_commit_id: commit.id,
+            ignore_whitespace_change: options.fetch(:ignore_whitespace_change, false),
+            paths: options.fetch(:paths, []),
           )
 
           Gitlab::Git::DiffCollection.new(stub.commit_diff(request), options)

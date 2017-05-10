@@ -213,6 +213,7 @@ describe GroupsController do
         expect(response).to have_http_status(404)
       end
     end
+<<<<<<< HEAD
   end
 
   describe 'POST create' do
@@ -257,5 +258,7 @@ describe GroupsController do
         expect(response).to have_http_status(302)
       end
     end
+=======
+>>>>>>> upstream/master
   end
 end

@@ -16,7 +16,10 @@ feature 'Merge When Pipeline Succeeds', :feature, :js do
                          ref: merge_request.source_branch)
   end
 
-  before { project.team << [user, :master] }
+  before do
+    project.add_master(user)
+    merge_request.update(head_pipeline_id: pipeline.id)
+  end
 
   context 'when there is active pipeline for merge request' do
     background do

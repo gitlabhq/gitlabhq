@@ -204,11 +204,12 @@ describe Gitlab::Ci::Status::Build::Factory do
 
       it 'matches correct extended statuses' do
         expect(factory.extended_statuses)
-          .to eq [Gitlab::Ci::Status::Build::Play]
+          .to eq [Gitlab::Ci::Status::Build::Play,
+                  Gitlab::Ci::Status::Build::Action]
       end
 
-      it 'fabricates a play detailed status' do
-        expect(status).to be_a Gitlab::Ci::Status::Build::Play
+      it 'fabricates action detailed status' do
+        expect(status).to be_a Gitlab::Ci::Status::Build::Action
       end
 
       it 'fabricates status with correct details' do
@@ -216,10 +217,25 @@ describe Gitlab::Ci::Status::Build::Factory do
         expect(status.group).to eq 'manual'
         expect(status.icon).to eq 'icon_status_manual'
         expect(status.favicon).to eq 'favicon_status_manual'
-        expect(status.label).to eq 'manual play action'
+        expect(status.label).to include 'manual play action'
         expect(status).to have_details
-        expect(status).to have_action
         expect(status.action_path).to include 'play'
+      end
+
+      context 'when user has ability to play action' do
+        before do
+          build.project.add_master(user)
+        end
+
+        it 'fabricates status that has action' do
+          expect(status).to have_action
+        end
+      end
+
+      context 'when user does not have ability to play action' do
+        it 'fabricates status that has no action' do
+          expect(status).not_to have_action
+        end
       end
     end
 
@@ -232,21 +248,24 @@ describe Gitlab::Ci::Status::Build::Factory do
 
       it 'matches correct extended statuses' do
         expect(factory.extended_statuses)
-          .to eq [Gitlab::Ci::Status::Build::Stop]
+          .to eq [Gitlab::Ci::Status::Build::Stop,
+                  Gitlab::Ci::Status::Build::Action]
       end
 
-      it 'fabricates a stop detailed status' do
-        expect(status).to be_a Gitlab::Ci::Status::Build::Stop
+      it 'fabricates action detailed status' do
+        expect(status).to be_a Gitlab::Ci::Status::Build::Action
       end
 
-      it 'fabricates status with correct details' do
-        expect(status.text).to eq 'manual'
-        expect(status.group).to eq 'manual'
-        expect(status.icon).to eq 'icon_status_manual'
-        expect(status.favicon).to eq 'favicon_status_manual'
-        expect(status.label).to eq 'manual stop action'
-        expect(status).to have_details
-        expect(status).to have_action
+      context 'when user is not allowed to execute manual action' do
+        it 'fabricates status with correct details' do
+          expect(status.text).to eq 'manual'
+          expect(status.group).to eq 'manual'
+          expect(status.icon).to eq 'icon_status_manual'
+          expect(status.favicon).to eq 'favicon_status_manual'
+          expect(status.label).to eq 'manual stop action (not allowed)'
+          expect(status).to have_details
+          expect(status).not_to have_action
+        end
       end
     end
   end

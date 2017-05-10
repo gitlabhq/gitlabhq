@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "Internal Project Access", feature: true  do
   include AccessMatchers
 
-  let(:project) { create(:project, :internal) }
+  set(:project) { create(:project, :internal) }
 
   describe "Project should be internal" do
     describe '#internal?' do
@@ -460,6 +460,20 @@ describe "Internal Project Access", feature: true  do
       it { is_expected.to be_denied_for(:external) }
       it { is_expected.to be_denied_for(:visitor) }
     end
+  end
+
+  describe "GET /:project_path/pipeline_schedules" do
+    subject { namespace_project_pipeline_schedules_path(project.namespace, project) }
+
+    it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_allowed_for(:owner).of(project) }
+    it { is_expected.to be_allowed_for(:master).of(project) }
+    it { is_expected.to be_allowed_for(:developer).of(project) }
+    it { is_expected.to be_allowed_for(:reporter).of(project) }
+    it { is_expected.to be_allowed_for(:guest).of(project) }
+    it { is_expected.to be_allowed_for(:user) }
+    it { is_expected.to be_denied_for(:external) }
+    it { is_expected.to be_denied_for(:visitor) }
   end
 
   describe "GET /:project_path/environments" do

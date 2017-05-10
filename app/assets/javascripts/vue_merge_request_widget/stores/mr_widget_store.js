@@ -11,9 +11,12 @@ export default class MergeRequestStore {
     const currentUser = data.current_user;
     const pipelineStatus = data.pipeline ? data.pipeline.details.status : null;
 
+<<<<<<< HEAD
     // EE specific
     this.squash = data.squash;
 
+=======
+>>>>>>> upstream/master
     this.title = data.title;
     this.targetBranch = data.target_branch;
     this.sourceBranch = data.source_branch;
