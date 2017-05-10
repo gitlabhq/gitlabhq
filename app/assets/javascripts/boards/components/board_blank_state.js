@@ -70,7 +70,10 @@ export default {
 
             list.id = listObj.id;
             list.label.id = listObj.label.id;
-            list.getIssues();
+            list.getIssues()
+              .catch(() => {
+                // TODO: handle request error
+              });
           });
         })
         .catch(() => {
