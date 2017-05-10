@@ -13,7 +13,7 @@ const issueShowInterceptor = data => (request, next) => {
   }));
 };
 
-describe('Issuable output', () => {
+fdescribe('Issuable output', () => {
   document.body.innerHTML = '<span id="task_status"></span>';
 
   let vm;
@@ -43,7 +43,7 @@ describe('Issuable output', () => {
       expect(document.querySelector('title').innerText).toContain('this is a title (#1)');
       expect(vm.$el.querySelector('.title').innerHTML).toContain('<p>this is a title</p>');
       expect(vm.$el.querySelector('.wiki').innerHTML).toContain('<p>this is a description!</p>');
-      expect(vm.$el.querySelector('.js-task-list-field').innerText).toContain('this is a description');
+      expect(vm.$el.querySelector('.js-task-list-field').value).toContain('this is a description');
 
       Vue.http.interceptors.push(issueShowInterceptor(issueShowData.secondRequest));
 
@@ -51,7 +51,7 @@ describe('Issuable output', () => {
         expect(document.querySelector('title').innerText).toContain('2 (#1)');
         expect(vm.$el.querySelector('.title').innerHTML).toContain('<p>2</p>');
         expect(vm.$el.querySelector('.wiki').innerHTML).toContain('<p>42</p>');
-        expect(vm.$el.querySelector('.js-task-list-field').innerText).toContain('42');
+        expect(vm.$el.querySelector('.js-task-list-field').value).toContain('42');
 
         done();
       });
