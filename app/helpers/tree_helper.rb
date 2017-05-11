@@ -109,7 +109,7 @@ module TreeHelper
   end
 
   def lock_file_link(project = @project, path = @path, html_options: {})
-    return unless license_allows_file_locks?
+    return unless license_allows_file_locks? && current_user
     return if path.blank?
 
     path_lock = project.find_path_lock(path, downstream: true)

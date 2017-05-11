@@ -1,4 +1,6 @@
 .tree-controls
+  = lock_file_link(html_options: { class: 'btn btn-grouped path-lock' })
+
   = render 'projects/find_file_link'
 
   = link_to 'History', namespace_project_commits_path(@project.namespace, @project, @id), class: 'btn btn-grouped'
