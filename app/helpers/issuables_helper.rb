@@ -136,11 +136,9 @@ module IssuablesHelper
       author_output << link_to_member(project, issuable.author, size: 24, by_username: true, avatar: false, mobile_classes: "hidden-sm hidden-md hidden-lg")
     end
 
-    if issuable.tasks?
-      output << "&ensp;".html_safe
-      output << content_tag(:span, issuable.task_status, id: "task_status", class: "hidden-xs hidden-sm")
-      output << content_tag(:span, issuable.task_status_short, id: "task_status_short", class: "hidden-md hidden-lg")
-    end
+    output << "&ensp;".html_safe
+    output << content_tag(:span, issuable.task_status, id: "task_status", class: "hidden-xs hidden-sm")
+    output << content_tag(:span, issuable.task_status_short, id: "task_status_short", class: "hidden-md hidden-lg")
 
     output
   end
