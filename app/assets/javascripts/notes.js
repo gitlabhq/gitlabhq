@@ -26,7 +26,7 @@ const normalizeNewlines = function(str) {
 
   this.Notes = (function() {
     const MAX_VISIBLE_COMMIT_LIST_COUNT = 3;
-    const REGEX_SLASH_COMMANDS = /\/\w+/g;
+    const REGEX_SLASH_COMMANDS = /^\/\w+/gm;
 
     Notes.interval = null;
 
