@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'New Branch Ref Dropdown', :js, :feature do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
-  let(:toggle) { find('.create-from .dropdown-toggle') }
+  let(:toggle) { find('.create-from .dropdown-menu-toggle') }
 
   before do
     project.add_master(user)
