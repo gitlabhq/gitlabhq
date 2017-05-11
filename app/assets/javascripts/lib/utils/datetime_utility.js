@@ -5,7 +5,6 @@
 import {
   lang,
   s__,
-  __,
 } from '../../locale';
 
 window.timeago = require('timeago.js');
@@ -84,13 +83,12 @@ window.dateFormat = require('vendor/date.format');
       if (!time) {
         return '';
       }
-      suffix || (suffix = __('Timeago|remaining'));
-      expiredLabel || (expiredLabel = __('Past due'));
+      expiredLabel || (expiredLabel = s__('Timeago|Past due'));
       timefor = gl.utils.getTimeago().format(time);
-      if (timefor.indexOf('ago') > -1) {
+      if (new Date(time) < new Date()) {
         timefor = expiredLabel;
       } else {
-        timefor = timefor.trim() + ' ' + suffix;
+        timefor = timefor.trim();
       }
       return timefor;
     };
