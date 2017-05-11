@@ -1659,15 +1659,25 @@ describe Repository, models: true do
   describe '#readme', caching: true do
     context 'with a non-existing repository' do
       it 'returns nil' do
-        expect(repository).to receive(:tree).with(:head).and_return(nil)
+        allow(repository).to receive(:tree).with(:head).and_return(nil)
 
         expect(repository.readme).to be_nil
       end
     end
 
     context 'with an existing repository' do
-      it 'returns the README' do
-        expect(repository.readme).to be_an_instance_of(ReadmeBlob)
+      context 'when no README exists' do
+        it 'returns nil' do
+          allow_any_instance_of(Tree).to receive(:readme).and_return(nil)
+
+          expect(repository.readme).to be_nil
+        end
+      end
+
+      context 'when a README exists' do
+        it 'returns the README' do
+          expect(repository.readme).to be_an_instance_of(ReadmeBlob)
+        end
       end
     end
   end
