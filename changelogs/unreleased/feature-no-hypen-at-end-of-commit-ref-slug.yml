@@ -1,0 +1,4 @@
+---
+title: Omit trailing / leding hyphens in CI_COMMIT_REF_SLUG variable
+merge_request: 11218
+author: Stefan Hanreich
