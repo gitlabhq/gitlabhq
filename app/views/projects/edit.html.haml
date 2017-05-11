@@ -1,3 +1,7 @@
+- content_for :page_specific_javascripts do
+  = webpack_bundle_tag('common_vue')
+  = webpack_bundle_tag('service_desk')
+
 = render "projects/settings/head"
 
 .project-edit-container
@@ -133,7 +137,7 @@
               Service Desk
               = link_to icon('question-circle'), help_page_path('user/project/service_desk')
             .js-service-desk-setting-root{ data: { endpoint: namespace_project_service_desk_path(@project.namespace, @project),
-              enabled: @project.service_desk_enabled,
+              enabled: "#{@project.service_desk_enabled}",
               incoming_email: (@project.service_desk_address if @project.service_desk_enabled) } }
 
         %hr

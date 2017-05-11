@@ -52,7 +52,6 @@ import ShortcutsWiki from './shortcuts_wiki';
 import Pipelines from './pipelines';
 import BlobViewer from './blob/viewer/index';
 import GeoNodes from './geo_nodes';
-import ServiceDeskRoot from './projects/settings_service_desk/service_desk_root';
 import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
 import UsersSelect from './users_select';
 import RefSelectDropdown from './ref_select_dropdown';
@@ -264,11 +263,6 @@ import ApproversSelect from './approvers_select';
           break;
         case 'projects:edit':
           new UsersSelect();
-          const el = document.querySelector('.js-service-desk-setting-root');
-          if (el) {
-            const serviceDeskRoot = new ServiceDeskRoot(el);
-            serviceDeskRoot.init();
-          }
           break;
         case 'projects:show':
           shortcut_handler = new ShortcutsNavigation();
