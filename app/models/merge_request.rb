@@ -899,34 +899,6 @@ class MergeRequest < ActiveRecord::Base
     project.repository.keep_around(self.merge_commit_sha)
   end
 
-  def conflicts
-    @conflicts ||= Gitlab::Conflict::FileCollection.new(self)
-  end
-
-  def conflicts_can_be_resolved_by?(user)
-    return false unless source_project
-
-    access = ::Gitlab::UserAccess.new(user, project: source_project)
-    access.can_push_to_branch?(source_branch)
-  end
-
-  def conflicts_can_be_resolved_in_ui?
-    return @conflicts_can_be_resolved_in_ui if defined?(@conflicts_can_be_resolved_in_ui)
-
-    return @conflicts_can_be_resolved_in_ui = false unless cannot_be_merged?
-    return @conflicts_can_be_resolved_in_ui = false unless has_complete_diff_refs?
-
-    begin
-      # Try to parse each conflict. If the MR's mergeable status hasn't been updated,
-      # ensure that we don't say there are conflicts to resolve when there are no conflict
-      # files.
-      conflicts.files.each(&:lines)
-      @conflicts_can_be_resolved_in_ui = conflicts.files.length > 0
-    rescue Rugged::OdbError, Gitlab::Conflict::Parser::UnresolvableError, Gitlab::Conflict::FileCollection::ConflictSideMissing
-      @conflicts_can_be_resolved_in_ui = false
-    end
-  end
-
   def has_commits?
     merge_request_diff && commits_count > 0
   end
