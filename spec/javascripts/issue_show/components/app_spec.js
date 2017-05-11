@@ -13,7 +13,7 @@ const issueShowInterceptor = data => (request, next) => {
   }));
 };
 
-fdescribe('Issuable output', () => {
+describe('Issuable output', () => {
   document.body.innerHTML = '<span id="task_status"></span>';
 
   let vm;

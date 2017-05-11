@@ -39,7 +39,7 @@ class DiffDiscussion < Discussion
   def reply_attributes
     super.merge(
       original_position: original_position.to_json,
-      position: position.to_json,
+      position: position.to_json
     )
   end
 end

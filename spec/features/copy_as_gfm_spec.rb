@@ -96,7 +96,7 @@ describe 'Copy as GFM', feature: true, js: true do
         # issue link
         "[Issue](#{namespace_project_issue_url(@project.namespace, @project, @feat.issue)})",
         # issue link with note anchor
-        "[Issue](#{namespace_project_issue_url(@project.namespace, @project, @feat.issue, anchor: 'note_123')})",
+        "[Issue](#{namespace_project_issue_url(@project.namespace, @project, @feat.issue, anchor: 'note_123')})"
       )
 
       verify(

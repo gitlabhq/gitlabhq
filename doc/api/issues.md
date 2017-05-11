@@ -1,4 +1,4 @@
-# Issues
+# Issues API
 
 Every API call to issues must be authenticated.
 
