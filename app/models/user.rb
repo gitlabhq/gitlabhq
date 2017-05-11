@@ -375,14 +375,11 @@ class User < ActiveRecord::Base
       namespace&.owner
     end
 
-<<<<<<< HEAD
     def non_ldap
       joins('LEFT JOIN identities ON identities.user_id = users.id')
         .where('identities.provider IS NULL OR identities.provider NOT LIKE ?', 'ldap%')
     end
 
-=======
->>>>>>> upstream/master
     def reference_prefix
       '@'
     end
