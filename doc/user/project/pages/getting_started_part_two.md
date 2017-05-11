@@ -56,7 +56,7 @@ created for the steps below.
 
     ![remove fork relashionship](img/remove_fork_relashionship.png)
 
-1. Enable Shared Runners for your fork: navigate to your **Project**'s **Settings** > **CI/CD Pipelines**
+1. Enable Shared Runners for your fork: navigate to your **Project**'s **Settings** > **Pipelines**
 1. Trigger a build (push a change to any file)
 1. As soon as the build passes, your website will have been deployed with GitLab Pages. Your website URL will be available under your **Project**'s **Settings** > **Pages**
 

@@ -1,6 +1,6 @@
 # GitLab Continuous Integration (GitLab CI)
 
-![CI/CD pipeline graph](img/cicd_pipeline_infograph.png)
+![Pipeline graph](img/cicd_pipeline_infograph.png)
 
 The benefits of Continuous Integration are huge when automation plays an
 integral part of your workflow. GitLab comes with built-in Continuous
@@ -85,7 +85,7 @@ You can change the default behavior of GitLab CI in your whole GitLab instance
 as well as in each project.
 
 - **Project specific**
-  - [CI/CD pipelines settings](../user/project/pipelines/settings.md)
+  - [Pipelines settings](../user/project/pipelines/settings.md)
   - [Learn how to enable or disable GitLab CI](enable_or_disable_ci.md)
 - **Affecting the whole GitLab instance**
   - [Continuous Integration admin settings](../user/admin_area/settings/continuous_integration.md)
