@@ -965,19 +965,27 @@ describe Ci::Build, :models do
   end
 
   describe '#ref_slug' do
+    let(:build) { build(:ci_build, ref: "'100%") }
+    subject { build.ref_slug }
+
+    it { is_expected.not_to start_with('-') }
+    it { is_expected.not_to end_with('-') }
+
     {
-      'master'    => 'master',
-      '1-foo'     => '1-foo',
-      'fix/1-foo' => 'fix-1-foo',
-      'fix-1-foo' => 'fix-1-foo',
-      'a' * 63    => 'a' * 63,
-      'a' * 64    => 'a' * 63,
-      'FOO'       => 'foo'
+      'master'                => 'master',
+      '1-foo'                 => '1-foo',
+      'fix/1-foo'             => 'fix-1-foo',
+      'fix-1-foo'             => 'fix-1-foo',
+      'a' * 63                => 'a' * 63,
+      'a' * 64                => 'a' * 63,
+      'FOO'                   => 'foo',
+      '-' + 'a' * 61 + '-'    => 'a' * 61,
+      'a' * 62 + ' '          => 'a' * 62,
     }.each do |ref, slug|
       it "transforms #{ref} to #{slug}" do
         build.ref = ref
 
-        expect(build.ref_slug).to eq(slug)
+        is_expected.to eq(slug)
       end
     end
   end
