@@ -44,8 +44,8 @@ describe('MRWidgetClosed', () => {
       expect(el.querySelector('h4').textContent).toContain('Closed by');
       expect(el.querySelector('h4').textContent).toContain(mr.closedBy.name);
       expect(el.textContent).toContain('The changes were not merged into');
-      expect(el.querySelector('.label-branch').getAttribute('href')).toEqual(mr.targetBranchCommitsPath);
-      expect(el.querySelector('.label-branch').textContent).toContain(mr.targetBranch);
+      expect(el.querySelector('.monospace').getAttribute('href')).toEqual(mr.targetBranchCommitsPath);
+      expect(el.querySelector('.monospace').textContent).toContain(mr.targetBranch);
     });
   });
 });

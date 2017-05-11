@@ -6,18 +6,16 @@
     = render 'ci/status/badge', status: @build.detailed_status(current_user), link: false, title: @build.status_title
     %strong
       Job
-      = link_to namespace_project_build_path(@project.namespace, @project, @build), class: 'js-build-id' do
-        \##{@build.id}
+      = link_to "##{@build.id}", namespace_project_build_path(@project.namespace, @project, @build), class: 'js-build-id'
     in pipeline
-    = link_to pipeline_path(pipeline) do
-      %strong ##{pipeline.id}
+    %strong
+      = link_to "##{pipeline.id}", pipeline_path(pipeline)
     for commit
-    = link_to namespace_project_commit_path(@project.namespace, @project, pipeline.sha) do
-      %strong= pipeline.short_sha
+    %strong
+      = link_to pipeline.short_sha, namespace_project_commit_path(@project.namespace, @project, pipeline.sha)
     from
-    = link_to namespace_project_commits_path(@project.namespace, @project, @build.ref) do
-      %code
-        = @build.ref
+    %strong
+      = link_to @build.ref, namespace_project_commits_path(@project.namespace, @project, @build.ref), class: 'monospace'
 
     = render "projects/builds/user" if @build.user
 

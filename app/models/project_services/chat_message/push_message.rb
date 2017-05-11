@@ -61,7 +61,7 @@ module ChatMessage
     end
 
     def removed_branch_message
-      "#{user_name} removed #{ref_type} #{ref} from #{project_link}"
+      "#{user_name} removed #{ref_type} `#{ref}` from #{project_link}"
     end
 
     def push_message
@@ -102,7 +102,7 @@ module ChatMessage
     end
 
     def branch_link
-      "[#{ref}](#{branch_url})"
+      "`[#{ref}](#{branch_url})`"
     end
 
     def project_link

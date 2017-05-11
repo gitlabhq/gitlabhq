@@ -16,9 +16,9 @@
           There isn't anything to compare.
         %p.slead
           - if params[:to] == params[:from]
-            %span.label-branch= params[:from]
+            %span.monospace= params[:from]
             and
-            %span.label-branch= params[:to]
+            %span.monospace= params[:to]
             are the same.
           - else
             You'll need to use different branch names to get a valid comparison.

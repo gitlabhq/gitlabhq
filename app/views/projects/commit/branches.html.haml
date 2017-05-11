@@ -1,15 +1,15 @@
-- if @branches.any?
-  %span
-    - branch = commit_default_branch(@project, @branches)
-    = link_to(namespace_project_tree_path(@project.namespace, @project, branch)) do
-      %span.label.label-gray
-        = branch
-    - if @branches.any? || @tags.any?
-      = link_to("#", class: "js-details-expand") do
-        %span.label.label-gray
-          \...
+- if @branches.any? || @tags.any?
+  - branch = commit_default_branch(@project, @branches)
+  = link_to(namespace_project_commits_path(@project.namespace, @project, branch), class: "label label-gray monospace") do
+    = icon('code-fork')
+    = branch
+
+  -# `commit_default_branch` deletes the default branch from `@branches`,
+  -# so only render this if we have more branches left
+  - if @branches.any? || @tags.any?
+    %span
+      = link_to "…", "#", class: "js-details-expand label label-gray"
+
       %span.js-details-content.hide
-        - if @branches.any?
-          = commit_branches_links(@project, @branches)
-        - if @tags.any?
-          = commit_tags_links(@project, @tags)
+        = commit_branches_links(@project, @branches) if @branches.any?
+        = commit_tags_links(@project, @tags) if @tags.any?

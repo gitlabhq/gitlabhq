@@ -1,6 +1,7 @@
 %tr
   %td
-    = link_to matching_tag.name, namespace_project_tree_path(@project.namespace, @project, matching_tag.name)
+    = link_to matching_tag.name, namespace_project_commits_path(@project.namespace, @project, matching_tag.name), class: 'monospace'
+
     - if @project.root_ref?(matching_tag.name)
       %span.label.label-info.prepend-left-5 default
   %td

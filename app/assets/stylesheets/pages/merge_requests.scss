@@ -160,6 +160,34 @@
     text-transform: capitalize;
   }
 
+  .label-branch {
+    @extend .monospace;
+
+    color: $gl-text-color;
+    font-weight: bold;
+    overflow: hidden;
+    margin: 0 3px;
+    word-break: break-all;
+
+    &.label-truncated {
+      position: relative;
+      display: inline-block;
+      width: 250px;
+      margin-bottom: -3px;
+      white-space: nowrap;
+      text-overflow: clip;
+      line-height: 14px;
+
+      &::after {
+        position: absolute;
+        content: '...';
+        right: 0;
+        font-family: $regular_font;
+        background-color: $gray-light;
+      }
+    }
+  }
+
   .js-deployment-link {
     display: inline-block;
   }
@@ -355,34 +383,6 @@
 
     &:hover {
       background: none;
-    }
-  }
-}
-
-.label-branch {
-  color: $gl-text-color;
-  font-family: $monospace_font;
-  font-weight: bold;
-  overflow: hidden;
-  font-size: 90%;
-  margin: 0 3px;
-  word-break: break-all;
-
-  &.label-truncated {
-    position: relative;
-    display: inline-block;
-    width: 250px;
-    margin-bottom: -3px;
-    white-space: nowrap;
-    text-overflow: clip;
-    line-height: 14px;
-
-    &::after {
-      position: absolute;
-      content: '...';
-      right: 0;
-      font-family: $regular_font;
-      background-color: $gray-light;
     }
   }
 }

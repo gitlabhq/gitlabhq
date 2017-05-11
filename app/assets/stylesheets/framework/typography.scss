@@ -305,6 +305,11 @@ a > code {
   color: $link-color;
 }
 
+.git-revision-dropdown-toggle,
+.git-revision-dropdown .dropdown-content ul li a {
+  font-family: $monospace_font;
+}
+
 /**
  * Apply Markdown typography
  *

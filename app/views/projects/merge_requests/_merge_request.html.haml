@@ -37,7 +37,7 @@
       by #{link_to_member(@project, merge_request.author, avatar: false)}
       - if merge_request.target_project.default_branch != merge_request.target_branch
         &nbsp;
-        = link_to namespace_project_commits_path(merge_request.project.namespace, merge_request.project, merge_request.target_branch) do
+        = link_to namespace_project_commits_path(merge_request.project.namespace, merge_request.project, merge_request.target_branch), class: 'monospace' do
           = icon('code-fork')
           = merge_request.target_branch
 

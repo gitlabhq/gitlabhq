@@ -19,7 +19,7 @@
     = label_tag :ref, 'Create from', class: 'control-label'
     .col-sm-10.dropdown.create-from
       = hidden_field_tag :ref, default_ref
-      = button_tag type: 'button', title: default_ref, class: 'dropdown-toggle form-control js-branch-select', required: true, data: { toggle: 'dropdown', selected: default_ref, field_name: 'ref' } do
+      = button_tag type: 'button', title: default_ref, class: 'dropdown-toggle form-control js-branch-select git-revision-dropdown-toggle', required: true, data: { toggle: 'dropdown', selected: default_ref, field_name: 'ref' } do
         .text-left.dropdown-toggle-text= default_ref
       = render 'shared/ref_dropdown', dropdown_class: 'wide'
       .help-block Existing branch name, tag, or commit SHA

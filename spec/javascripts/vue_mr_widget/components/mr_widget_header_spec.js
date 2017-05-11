@@ -65,8 +65,8 @@ describe('MRWidgetHeader', () => {
 
     it('should render template elements correctly', () => {
       expect(el.classList.contains('mr-source-target')).toBeTruthy();
-      expect(el.querySelectorAll('.label-branch')[0].textContent).toContain(mr.sourceBranch);
-      expect(el.querySelectorAll('.label-branch')[1].textContent).toContain(mr.targetBranch);
+      expect(el.querySelectorAll('.monospace')[0].textContent).toContain(mr.sourceBranch);
+      expect(el.querySelectorAll('.monospace')[1].textContent).toContain(mr.targetBranch);
       expect(el.querySelector('.diverged-commits-count').textContent).toContain('12 commits behind');
 
       expect(el.textContent).toContain('Check out branch');

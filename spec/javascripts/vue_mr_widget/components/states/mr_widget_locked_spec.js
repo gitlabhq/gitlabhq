@@ -26,8 +26,8 @@ describe('MRWidgetLocked', () => {
       expect(el.classList.contains('mr-widget-body')).toBeTruthy();
       expect(el.innerText).toContain('it is locked');
       expect(el.innerText).toContain('changes will be merged into');
-      expect(el.querySelector('.label-branch a').getAttribute('href')).toEqual(mr.targetBranchPath);
-      expect(el.querySelector('.label-branch a').textContent).toContain(mr.targetBranch);
+      expect(el.querySelector('.monospace a').getAttribute('href')).toEqual(mr.targetBranchPath);
+      expect(el.querySelector('.monospace a').textContent).toContain(mr.targetBranch);
     });
   });
 });

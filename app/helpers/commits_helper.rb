@@ -74,12 +74,8 @@ module CommitsHelper
   # Returns the sorted alphabetically links to branches, separated by a comma
   def commit_branches_links(project, branches)
     branches.sort.map do |branch|
-      link_to(
-        namespace_project_tree_path(project.namespace, project, branch)
-      ) do
-        content_tag :span, class: 'label label-gray' do
-          icon('code-fork') + ' ' + branch
-        end
+      link_to(namespace_project_commits_path(project.namespace, project, branch), class: "label label-gray monospace") do
+        icon('code-fork') + " #{branch}"
       end
     end.join(" ").html_safe
   end
@@ -88,13 +84,8 @@ module CommitsHelper
   def commit_tags_links(project, tags)
     sorted = VersionSorter.rsort(tags)
     sorted.map do |tag|
-      link_to(
-        namespace_project_commits_path(project.namespace, project,
-                                       project.repository.find_tag(tag).name)
-      ) do
-        content_tag :span, class: 'label label-gray' do
-          icon('tag') + ' ' + tag
-        end
+      link_to(namespace_project_commits_path(project.namespace, project, tag), class: "label label-gray monospace") do
+        icon('tag') + " #{tag}"
       end
     end.join(" ").html_safe
   end
