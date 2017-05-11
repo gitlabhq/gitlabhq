@@ -104,7 +104,6 @@ stages:
 .rspec-knapsack-mysql: &rspec-knapsack-mysql
   <<: *rspec-knapsack
   <<: *use-mysql
-  <<: *only-master-and-ee-or-mysql
   <<: *except-docs
 
 .spinach-knapsack: &spinach-knapsack
@@ -135,7 +134,6 @@ stages:
 .spinach-knapsack-mysql: &spinach-knapsack-mysql
   <<: *spinach-knapsack
   <<: *use-mysql
-  <<: *only-master-and-ee-or-mysql
   <<: *except-docs
 
 # Trigger a package build on omnibus-gitlab repository
