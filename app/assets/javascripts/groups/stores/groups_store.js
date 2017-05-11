@@ -18,9 +18,14 @@ export default class GroupsStore {
   }
 
   static decorateGroup(rawGroup) {
-    const group = rawGroup;
-    group.isOpen = false;
-    return group;
+    return {
+      fullName: rawGroup.name,
+      description: rawGroup.description,
+      webUrl: rawGroup.web_url,
+      parentId: rawGroup.parentId,
+      hasSubgroups: !!rawGroup.parent_id,
+      isOpen: false,
+    };
   }
 
   static toggleSubGroups(toggleGroup) {

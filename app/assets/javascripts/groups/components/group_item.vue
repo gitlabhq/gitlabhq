@@ -10,7 +10,7 @@ export default {
   },
   methods: {
     toggleSubGroups() {
-      if (!this.group.subGroups || (this.group.subGroups && !this.group.subGroups.length)) {
+      if (!this.group.hasSubgroups) {
         return;
       }
 
@@ -22,7 +22,7 @@ export default {
 
 <template>
   <li @click="toggleSubGroups" class="list-group-item">
-    <span v-show="group.subGroups && group.subGroups.length">
+    <span v-show="group.hasSubgroups">
       <i
         v-show="group.isOpen"
         class="fa fa-caret-down"
@@ -33,7 +33,7 @@ export default {
         aria-hidden="true"/>
     </span>
 
-    <p><a :href="group.web_url">{{group.full_name}}</a></p>
+    <p><a :href="group.webUrl">{{group.fullName}}</a></p>
     <p>{{group.description}}</p>
 
     <group-folder v-if="group.subGroups && group.isOpen" :groups="group.subGroups" />
