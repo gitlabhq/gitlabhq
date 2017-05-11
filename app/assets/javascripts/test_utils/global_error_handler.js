@@ -1,6 +1,13 @@
-function globalErrorHandler() {
+function errorHandler(error) {
   // eslint-disable-next-line no-console
-  window.addEventListener('error', console.log);
+  console.error('\n\nglobalErrorHandler\n', error, '\n\n');
 }
 
-export default globalErrorHandler;
+function globalErrorHandler() {
+  window.addEventListener('error', errorHandler);
+}
+
+export {
+  globalErrorHandler as default,
+  errorHandler,
+};
