@@ -10,7 +10,7 @@ export default {
   },
   methods: {
     toggleSubGroups() {
-      if (this.group.subGroups && !this.group.subGroups.length) {
+      if (!this.group.subGroups || (this.group.subGroups && !this.group.subGroups.length)) {
         return;
       }
 
