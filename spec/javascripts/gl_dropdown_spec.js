@@ -52,12 +52,8 @@ require('~/lib/utils/url_utility');
         search: {
           fields: ['name']
         },
-        text: (project) => {
-          (project.name_with_namespace || project.name);
-        },
-        id: (project) => {
-          project.id;
-        }
+        text: project => (project.name_with_namespace || project.name),
+        id: project => project.id
       });
     }
 
@@ -78,6 +74,18 @@ require('~/lib/utils/url_utility');
       expect(this.dropdownContainerElement).not.toHaveClass('open');
       this.dropdownButtonElement.click();
       expect(this.dropdownContainerElement).toHaveClass('open');
+    });
+
+    it('escapes HTML as text', () => {
+      this.projectsData[0].name_with_namespace = '<script>alert("testing");</script>';
+
+      initDropDown.call(this, false);
+
+      this.dropdownButtonElement.click();
+
+      expect(
+        $('.dropdown-content li:first-child').text(),
+      ).toBe('<script>alert("testing");</script>');
     });
 
     describe('that is open', () => {

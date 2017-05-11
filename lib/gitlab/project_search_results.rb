@@ -82,10 +82,14 @@ module Gitlab
     private
 
     def blobs
+      return [] unless Ability.allowed?(@current_user, :download_code, @project)
+
       @blobs ||= Gitlab::FileFinder.new(project, repository_ref).find(query)
     end
 
     def wiki_blobs
+      return [] unless Ability.allowed?(@current_user, :read_wiki, @project)
+
       @wiki_blobs ||= begin
         if project.wiki_enabled? && query.present?
           project_wiki = ProjectWiki.new(project)

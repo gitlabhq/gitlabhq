@@ -48,6 +48,8 @@ module Gitlab
       private
 
       def blobs
+        return Kaminari.paginate_array([]) unless Ability.allowed?(@current_user, :download_code, project)
+
         if project.empty_repo? || query.blank?
           Kaminari.paginate_array([])
         else
@@ -89,6 +91,8 @@ module Gitlab
       end
 
       def commits(page: 1, per_page: 20)
+        return Kaminari.paginate_array([]) unless Ability.allowed?(@current_user, :download_code, project)
+
         if project.empty_repo? || query.blank?
           Kaminari.paginate_array([])
         else

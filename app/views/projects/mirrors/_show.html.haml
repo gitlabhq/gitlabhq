@@ -22,7 +22,7 @@
           .panel-body
             %pre
               :preserve
-                #{@project.import_error.try(:strip)}
+                #{h(@project.import_error.try(:strip))}
       .form-group
         = f.check_box :mirror, class: "pull-left"
         .prepend-left-20
@@ -66,7 +66,7 @@
           .panel-body
             %pre
               :preserve
-                #{@remote_mirror.last_error.strip}
+                #{h(@remote_mirror.last_error.strip)}
       = f.fields_for :remote_mirrors, @remote_mirror do |rm_form|
         .form-group
           = rm_form.check_box :enabled, class: "pull-left"
