@@ -1047,7 +1047,7 @@ describe Ci::Build, :models do
       it "transforms #{ref} to #{slug}" do
         build.ref = ref
 
-        expected(build.ref_slug).to eq(slug)
+        expect(build.ref_slug).to eq(slug)
       end
     end
   end
