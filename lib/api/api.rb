@@ -110,6 +110,7 @@ module API
     mount ::API::Notes
     mount ::API::NotificationSettings
     mount ::API::Pipelines
+    mount ::API::PipelineSchedules
     mount ::API::ProjectHooks
     mount ::API::Projects
     mount ::API::ProjectSnippets

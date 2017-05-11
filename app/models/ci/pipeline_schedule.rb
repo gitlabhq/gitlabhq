@@ -40,6 +40,10 @@ module Ci
       self.next_run_at = Gitlab::Ci::CronParser.new(cron, cron_timezone).next_time_from(Time.now)
     end
 
+    def last_pipeline
+      self.pipelines&.last
+    end
+
     def schedule_next_run!
       save! # with set_next_run_at
     rescue ActiveRecord::RecordInvalid

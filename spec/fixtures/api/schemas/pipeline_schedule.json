@@ -1,0 +1,64 @@
+{
+  "type": "object",
+  "properties" : {
+    "id": { "type": "integer" },
+    "description": { "type": "string" },
+    "ref": { "type": "string" },
+    "cron": { "type": "string" },
+    "cron_timezone": { "type": "string" },
+    "next_run_at": { "type": "date" },
+    "active": { "type": "boolean" },
+    "created_at": { "type": "date" },
+    "updated_at": { "type": "date" },
+    "deleted_at": { "type": "date" },
+    "last_pipeline": { 
+      "type": ["object", "null"],
+      "properties": {
+        "id": { "type": "integer" },
+        "sha": { "type": "string" },
+        "ref": { "type": "string" },
+        "status": { "type": "string" },
+        "before_sha": { "type": ["string", "null"] },
+        "tag": { "type": ["boolean", "null"] },
+        "yaml_errors": { "type": ["string", "null"] },
+        "user": {
+          "type": ["object", "null"],
+          "properties": {
+            "name": { "type": "string" },
+            "username": { "type": "string" },
+            "id": { "type": "integer" },
+            "state": { "type": "string" },
+            "avatar_url": { "type": "uri" },
+            "web_url": { "type": "uri" }
+          },
+          "additionalProperties": false
+        },
+        "created_at": { "type": "date" },
+        "updated_at": { "type": "date" },
+        "started_at": { "type": "date" },
+        "finished_at": { "type": "date" },
+        "committed_at": { "type": ["string", "null"] },
+        "duration": { "type": ["integer", "null"] },
+        "coverage": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "owner": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "username": { "type": "string" },
+        "id": { "type": "integer" },
+        "state": { "type": "string" },
+        "avatar_url": { "type": "uri" },
+        "web_url": { "type": "uri" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "id", "description", "ref", "cron", "cron_timezone", "next_run_at", 
+    "active", "created_at", "updated_at", "deleted_at", "owner"
+  ],
+  "additionalProperties": false
+}

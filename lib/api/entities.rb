@@ -686,6 +686,14 @@ module API
       expose :coverage
     end
 
+    class PipelineSchedule < Grape::Entity
+      expose :id
+      expose :description, :ref, :cron, :cron_timezone, :next_run_at, :active
+      expose :created_at, :updated_at, :deleted_at
+      expose :last_pipeline, using: Entities::Pipeline, if: -> (pipeline_schedule, opts) { pipeline_schedule.last_pipeline.present? }
+      expose :owner, using: Entities::UserBasic
+    end
+
     class EnvironmentBasic < Grape::Entity
       expose :id, :name, :slug, :external_url
     end
