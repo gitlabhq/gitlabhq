@@ -623,7 +623,7 @@ describe GitPushService, services: true do
         commit = double(:commit)
         diff = double(:diff, new_path: 'README.md')
 
-        expect(commit).to receive(:raw_diffs).with(deltas_only: true).
+        expect(commit).to receive(:raw_deltas).
           and_return([diff])
 
         service.push_commits = [commit]
