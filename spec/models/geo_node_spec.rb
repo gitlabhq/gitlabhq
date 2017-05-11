@@ -89,8 +89,9 @@ describe GeoNode, type: :model do
         expect(node.system_hook.url).to be_present
         expect(node.system_hook.url).to eq(node.geo_events_url)
         expect(node.system_hook.token).to be_present
-        expect(node.system_hook.push_events).to be_truthy
-        expect(node.system_hook.tag_push_events).to be_truthy
+        expect(node.system_hook.push_events).to be_falsey
+        expect(node.system_hook.tag_push_events).to be_falsey
+        expect(node.system_hook.repository_update_events).to be_truthy
       end
     end
   end
