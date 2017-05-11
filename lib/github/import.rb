@@ -1,4 +1,5 @@
 require_relative 'error'
+
 module Github
   class Import
     include Gitlab::ShellAdapter
@@ -79,7 +80,7 @@ module Github
     def fetch_repository
       begin
         project.create_repository unless project.repository.exists?
-        project.repository.add_remote('github', "https://{options.fetch(:token)}@github.com/#{repo}.git")
+        project.repository.add_remote('github', "https://#{options.fetch(:token)}@github.com/#{repo}.git")
         project.repository.set_remote_as_mirror('github')
         project.repository.fetch_remote('github', forced: true)
       rescue Gitlab::Shell::Error => e
