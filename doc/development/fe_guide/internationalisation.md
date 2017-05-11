@@ -32,10 +32,6 @@ translations and sets up [Jed][jed] to be used with the current locale.
 import locale from './locale';
 ```
 
-**NOTE:**
-If your JavaScript bundle has access to the `locale` file, you need to include it inside
-of the `CommonsChunkPlugin` for `locale`.
-
 For convenience, the locale library exports the same method names as above. However, instead of 1
 underscore, they use 2 underscores so not to conflict with the Underscore library. These can be
 imported directly from the `locale` file. These methods can then be used in the same way as above.
