@@ -1148,18 +1148,6 @@ const normalizeNewlines = function(str) {
     };
 
     /**
-     * Remove slash commands and leave comment with pure message
-     * this command is very less likely to be used in production
-     * as gl.GfmAutoComplete.cachedData['/'] is initialized the moment
-     * user starts typing any slash command, but during Karma tests
-     * it is not available
-     */
-    Notes.prototype.stripSlashCommands = function (formContent) {
-      const REGEX_SLASH_COMMANDS = /\/\w+/g;
-      return formContent.replace(REGEX_SLASH_COMMANDS, '').trim();
-    };
-
-    /**
      * Identify if formContent has any slash commands
      * and generates placeholder note's content.
      */

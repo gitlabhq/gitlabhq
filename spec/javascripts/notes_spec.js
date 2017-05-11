@@ -371,18 +371,6 @@ import '~/notes';
       });
     });
 
-    describe('stripSlashCommands', () => {
-      const REGEX_SLASH_COMMANDS = /\/\w+/g;
-
-      it('should strip slash commands from the comment', () => {
-        this.notes = new Notes();
-        const sampleComment = '/wip /milestone %1.0 /merge /unassign Merging this';
-        const stripedComment = this.notes.stripSlashCommands(sampleComment);
-
-        expect(REGEX_SLASH_COMMANDS.test(stripedComment)).toBeFalsy();
-      });
-    });
-
     describe('generatePlaceholderNoteContent', () => {
       const availableSlashCommands = [
         { name: 'close', description: 'Close this issue', params: [] },
