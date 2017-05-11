@@ -174,7 +174,7 @@ module Ci
     def ref_slug
       slugified = ref.to_s.downcase
       slugified = slugified.gsub(/[^a-z0-9]/, '-')[0..62]
-      slugified.gsub(/(^\-+|\-+$)/, '')
+      slugified.gsub(/(\A-+|-+\z)/, '')
     end
 
     # Variables whose value does not depend on other variables
