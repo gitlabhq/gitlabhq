@@ -34,7 +34,7 @@ describe('Poll', () => {
   });
 
   it('calls the success callback when no header for interval is provided', (done) => {
-    mockServiceCall(service, { status: 200 }, false);
+    mockServiceCall(service, { status: 200 });
 
     new Poll({
       resource: service,
