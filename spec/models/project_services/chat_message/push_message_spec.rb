@@ -28,7 +28,7 @@ describe ChatMessage::PushMessage, models: true do
     context 'without markdown' do
       it 'returns a message regarding pushes' do
         expect(subject.pretext).to eq(
-          'test.user pushed to branch <http://url.com/commits/master|master> of '\
+          'test.user pushed to branch `<http://url.com/commits/master|master>` of '\
             '<http://url.com|project_name> (<http://url.com/compare/before...after|Compare changes>)')
         expect(subject.attachments).to eq([{
           text: "<http://url1.com|abcdefgh>: message1 - author1\n\n"\
@@ -45,7 +45,7 @@ describe ChatMessage::PushMessage, models: true do
 
       it 'returns a message regarding pushes' do
         expect(subject.pretext).to eq(
-          'test.user pushed to branch [master](http://url.com/commits/master) of [project_name](http://url.com) ([Compare changes](http://url.com/compare/before...after))')
+          'test.user pushed to branch `[master](http://url.com/commits/master)` of [project_name](http://url.com) ([Compare changes](http://url.com/compare/before...after))')
         expect(subject.attachments).to eq(
           "[abcdefgh](http://url1.com): message1 - author1\n\n[12345678](http://url2.com): message2 - author2")
         expect(subject.activity).to eq({
@@ -74,7 +74,7 @@ describe ChatMessage::PushMessage, models: true do
     context 'without markdown' do
       it 'returns a message regarding pushes' do
         expect(subject.pretext).to eq('test.user pushed new tag ' \
-          '<http://url.com/commits/new_tag|new_tag> to ' \
+          '`<http://url.com/commits/new_tag|new_tag>` to ' \
           '<http://url.com|project_name>')
         expect(subject.attachments).to be_empty
       end
@@ -87,7 +87,7 @@ describe ChatMessage::PushMessage, models: true do
 
       it 'returns a message regarding pushes' do
         expect(subject.pretext).to eq(
-          'test.user pushed new tag [new_tag](http://url.com/commits/new_tag) to [project_name](http://url.com)')
+          'test.user pushed new tag `[new_tag](http://url.com/commits/new_tag)` to [project_name](http://url.com)')
         expect(subject.attachments).to be_empty
         expect(subject.activity).to eq({
           title: 'test.user created tag',
@@ -107,7 +107,7 @@ describe ChatMessage::PushMessage, models: true do
     context 'without markdown' do
       it 'returns a message regarding a new branch' do
         expect(subject.pretext).to eq(
-          'test.user pushed new branch <http://url.com/commits/master|master> to '\
+          'test.user pushed new branch `<http://url.com/commits/master|master>` to '\
             '<http://url.com|project_name>')
         expect(subject.attachments).to be_empty
       end
@@ -120,7 +120,7 @@ describe ChatMessage::PushMessage, models: true do
 
       it 'returns a message regarding a new branch' do
         expect(subject.pretext).to eq(
-          'test.user pushed new branch [master](http://url.com/commits/master) to [project_name](http://url.com)')
+          'test.user pushed new branch `[master](http://url.com/commits/master)` to [project_name](http://url.com)')
         expect(subject.attachments).to be_empty
         expect(subject.activity).to eq({
           title: 'test.user created branch',
@@ -140,7 +140,7 @@ describe ChatMessage::PushMessage, models: true do
     context 'without markdown' do
       it 'returns a message regarding a removed branch' do
         expect(subject.pretext).to eq(
-          'test.user removed branch master from <http://url.com|project_name>')
+          'test.user removed branch `master` from <http://url.com|project_name>')
         expect(subject.attachments).to be_empty
       end
     end
@@ -152,7 +152,7 @@ describe ChatMessage::PushMessage, models: true do
 
       it 'returns a message regarding a removed branch' do
         expect(subject.pretext).to eq(
-          'test.user removed branch master from [project_name](http://url.com)')
+          'test.user removed branch `master` from [project_name](http://url.com)')
         expect(subject.attachments).to be_empty
         expect(subject.activity).to eq({
           title: 'test.user removed branch',

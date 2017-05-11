@@ -19,7 +19,7 @@
   .form-group
     .col-md-6
       = f.label :ref, 'Target Branch', class: 'label-light'
-      = dropdown_tag("Select target branch", options: { toggle_class: 'btn js-target-branch-dropdown', title: "Select target branch", filter: true, placeholder: "Filter", data: { data: @project.repository.branch_names } } )
+      = dropdown_tag("Select target branch", options: { toggle_class: 'btn js-target-branch-dropdown git-revision-dropdown-toggle', dropdown_class: 'git-revision-dropdown', title: "Select target branch", filter: true, placeholder: "Filter", data: { data: @project.repository.branch_names } } )
       = f.text_field :ref, value: @schedule.ref, id: 'schedule_ref', class: 'hidden', name: 'schedule[ref]', required: true
   .form-group
     .col-md-6
