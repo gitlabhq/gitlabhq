@@ -173,8 +173,8 @@ module Ci
     #   * First/Last Character is not a hyphen
     def ref_slug
       slugified = ref.to_s.downcase
-      slugified = slugified.gsub(/[^a-z0-9]/, '-')[0..62]
-      slugified.gsub(/(\A-+|-+\z)/, '')
+      slugified.gsub!(/[^a-z0-9]/, '-')
+      slugified[0..62].gsub(/(\A-+|-+\z)/, '')
     end
 
     # Variables whose value does not depend on other variables
