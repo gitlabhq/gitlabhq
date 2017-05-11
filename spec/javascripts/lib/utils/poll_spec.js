@@ -14,12 +14,17 @@ const waitForAllCallsToFinish = (service, waitForCount, successCallback) => {
   timer();
 };
 
-function mockServiceCall(service, mockCall) {
+function mockServiceCall(service, response, shouldFail) {
+  const action = shouldFail ? Promise.reject : Promise.resolve;
+  const responseObject = response;
+
+  if (!responseObject.headers) responseObject.headers = {};
+
   service.fetch.calls.reset();
-  service.fetch.and.callFake(mockCall);
+  service.fetch.and.callFake(() => action(responseObject));
 }
 
-describe('Poll', () => {
+fdescribe('Poll', () => {
   const service = jasmine.createSpyObj('service', ['fetch']);
   let callbacks;
 
@@ -33,11 +38,8 @@ describe('Poll', () => {
     spyOn(callbacks, 'error');
   });
 
-  it('calls the success callback when no header for interval is provided', (done) => {
-    mockServiceCall(
-      service,
-      () => Promise.resolve({ status: 200, headers: {} }),
-    );
+  fit('calls the success callback when no header for interval is provided', (done) => {
+    mockServiceCall(service, { status: 200 });
 
     new Poll({
       resource: service,
@@ -55,10 +57,7 @@ describe('Poll', () => {
   });
 
   it('calls the error callback whe the http request returns an error', (done) => {
-    mockServiceCall(
-      service,
-      () => Promise.reject({ status: 500, headers: {} }),
-    );
+    mockServiceCall(service, { status: 500 }, true);
 
     new Poll({
       resource: service,
@@ -76,31 +75,23 @@ describe('Poll', () => {
   });
 
   it('should call the success callback when the interval header is -1', (done) => {
-    mockServiceCall(
-      service,
-      () => Promise.resolve({ status: 200, headers: { 'poll-interval': -1 } }),
-    );
+    mockServiceCall(service, { status: 200, headers: { 'poll-interval': -1 } });
 
     new Poll({
       resource: service,
       method: 'fetch',
       successCallback: callbacks.success,
       errorCallback: callbacks.error,
-    }).makeRequest();
-
-    setTimeout(() => {
+    }).makeRequest().then(() => {
       expect(callbacks.success).toHaveBeenCalled();
       expect(callbacks.error).not.toHaveBeenCalled();
 
       done();
-    }, 0);
+    }).catch(done.fail);
   });
 
   it('starts polling when http status is 200 and interval header is provided', (done) => {
-    mockServiceCall(
-      service,
-      () => Promise.resolve({ status: 200, headers: { 'poll-interval': 1 } }),
-    );
+    mockServiceCall(service, { status: 200, headers: { 'poll-interval': 1 } });
 
     const Polling = new Poll({
       resource: service,
@@ -126,10 +117,7 @@ describe('Poll', () => {
 
   describe('stop', () => {
     it('stops polling when method is called', (done) => {
-      mockServiceCall(
-        service,
-        () => Promise.resolve({ status: 200, headers: { 'poll-interval': 1 } }),
-      );
+      mockServiceCall(service, { status: 200, headers: { 'poll-interval': 1 } });
 
       const Polling = new Poll({
         resource: service,
@@ -157,10 +145,7 @@ describe('Poll', () => {
 
   describe('restart', () => {
     it('should restart polling when its called', (done) => {
-      mockServiceCall(
-        service,
-        () => Promise.resolve({ status: 200, headers: { 'poll-interval': 1 } }),
-      );
+      mockServiceCall(service, { status: 200, headers: { 'poll-interval': 1 } });
 
       const Polling = new Poll({
         resource: service,
