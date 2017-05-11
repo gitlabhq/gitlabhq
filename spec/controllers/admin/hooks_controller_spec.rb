@@ -15,7 +15,7 @@ describe Admin::HooksController do
         tag_push_events: true,
         repository_update_events: true,
         token: "TEST TOKEN",
-        url: "http://example.com",
+        url: "http://example.com"
       }
 
       post :create, hook: hook_params
