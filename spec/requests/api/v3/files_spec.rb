@@ -53,7 +53,7 @@ describe API::V3::Files do
         let(:params) do
           {
             file_path: 'app/models/application.rb',
-            ref: 'master',
+            ref: 'master'
           }
         end
 
@@ -263,7 +263,7 @@ describe API::V3::Files do
     let(:get_params) do
       {
         file_path: file_path,
-        ref: 'master',
+        ref: 'master'
       }
     end
 

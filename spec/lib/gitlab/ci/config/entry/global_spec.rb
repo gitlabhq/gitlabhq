@@ -167,7 +167,7 @@ describe Gitlab::Ci::Config::Entry::Global do
                          cache: { key: 'k', untracked: true, paths: ['public/'] },
                          variables: {},
                          ignore: false,
-                         after_script: ['make clean'] },
+                         after_script: ['make clean'] }
             )
           end
         end

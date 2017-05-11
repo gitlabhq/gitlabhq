@@ -175,7 +175,7 @@ class Project < ActiveRecord::Base
   has_many :builds, class_name: 'Ci::Build' # the builds are created from the commit_statuses
   has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject'
   has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
-  has_many :variables, dependent: :destroy, class_name: 'Ci::Variable'
+  has_many :variables, class_name: 'Ci::Variable'
   has_many :triggers, dependent: :destroy, class_name: 'Ci::Trigger'
   has_many :environments, dependent: :destroy
   has_many :deployments, dependent: :destroy
@@ -967,7 +967,7 @@ class Project < ActiveRecord::Base
       namespace: namespace.name,
       visibility_level: visibility_level,
       path_with_namespace: path_with_namespace,
-      default_branch: default_branch,
+      default_branch: default_branch
     }
 
     # Backward compatibility

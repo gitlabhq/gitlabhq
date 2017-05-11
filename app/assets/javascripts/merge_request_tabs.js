@@ -358,6 +358,13 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
       // So we dont affix the tabs on these
       if (Breakpoints.get().getBreakpointSize() === 'xs' || !$tabs.length) return;
 
+      /**
+        If the browser does not support position sticky, it returns the position as static.
+        If the browser does support sticky, then we allow the browser to handle it, if not
+        then we default back to Bootstraps affix
+      **/
+      if ($tabs.css('position') !== 'static') return;
+
       const $diffTabs = $('#diff-notes-app');
 
       $tabs.off('affix.bs.affix affix-top.bs.affix')

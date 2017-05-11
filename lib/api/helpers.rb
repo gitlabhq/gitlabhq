@@ -301,7 +301,7 @@ module API
       UploadedFile.new(
         file_path,
         params["#{field}.name"],
-        params["#{field}.type"] || 'application/octet-stream',
+        params["#{field}.type"] || 'application/octet-stream'
       )
     end
 

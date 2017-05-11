@@ -1,6 +1,6 @@
 # How to configure LDAP with GitLab CE
 
-> **Type:** admin guide ||
+> **Article [Type](../../development/writing_documentation.html#types-of-technical-articles):** admin guide ||
 > **Level:** intermediary ||
 > **Author:** [Chris Wilson](https://gitlab.com/MrChrisW) ||
 > **Publication date:** 2017/05/03

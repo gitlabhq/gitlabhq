@@ -69,7 +69,7 @@ module API
           options = options.reverse_merge(
             with: Entities::Project,
             current_user: current_user,
-            simple: params[:simple],
+            simple: params[:simple]
           )
 
           projects = filter_projects(projects)
@@ -226,7 +226,7 @@ module API
             :shared_runners_enabled,
             :snippets_enabled,
             :visibility,
-            :wiki_enabled,
+            :wiki_enabled
           ]
         optional :name, type: String, desc: 'The name of the project'
         optional :default_branch, type: String, desc: 'The default branch of the project'

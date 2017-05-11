@@ -89,7 +89,7 @@ describe CohortsService do
           activity_months: [{ total: 2, percentage: 100 }],
           total: 2,
           inactive: 1
-        },
+        }
       ]
 
       expect(described_class.new.execute).to eq(months_included: 12,

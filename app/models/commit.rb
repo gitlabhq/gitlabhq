@@ -49,7 +49,7 @@ class Commit
     def max_diff_options
       {
         max_files: DIFF_HARD_LIMIT_FILES,
-        max_lines: DIFF_HARD_LIMIT_LINES,
+        max_lines: DIFF_HARD_LIMIT_LINES
       }
     end
 

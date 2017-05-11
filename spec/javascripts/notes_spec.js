@@ -376,11 +376,18 @@ import '~/notes';
         this.notes = new Notes('', []);
       });
 
-      it('should return true when comment has slash commands', () => {
-        const sampleComment = '/wip /milestone %1.0 /merge /unassign Merging this';
+      it('should return true when comment begins with a slash command', () => {
+        const sampleComment = '/wip \n/milestone %1.0 \n/merge \n/unassign Merging this';
         const hasSlashCommands = this.notes.hasSlashCommands(sampleComment);
 
         expect(hasSlashCommands).toBeTruthy();
+      });
+
+      it('should return false when comment does NOT begin with a slash command', () => {
+        const sampleComment = 'Hey, /unassign Merging this';
+        const hasSlashCommands = this.notes.hasSlashCommands(sampleComment);
+
+        expect(hasSlashCommands).toBeFalsy();
       });
 
       it('should return false when comment does NOT have any slash commands', () => {
@@ -392,14 +399,20 @@ import '~/notes';
     });
 
     describe('stripSlashCommands', () => {
-      const REGEX_SLASH_COMMANDS = /\/\w+/g;
-
-      it('should strip slash commands from the comment', () => {
+      it('should strip slash commands from the comment which begins with a slash command', () => {
         this.notes = new Notes();
-        const sampleComment = '/wip /milestone %1.0 /merge /unassign Merging this';
+        const sampleComment = '/wip \n/milestone %1.0 \n/merge \n/unassign Merging this';
         const stripedComment = this.notes.stripSlashCommands(sampleComment);
 
-        expect(REGEX_SLASH_COMMANDS.test(stripedComment)).toBeFalsy();
+        expect(stripedComment).not.toBe(sampleComment);
+      });
+
+      it('should NOT strip string that has slashes within', () => {
+        this.notes = new Notes();
+        const sampleComment = 'http://127.0.0.1:3000/root/gitlab-shell/issues/1';
+        const stripedComment = this.notes.stripSlashCommands(sampleComment);
+
+        expect(stripedComment).toBe(sampleComment);
       });
     });
 

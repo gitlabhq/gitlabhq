@@ -19,7 +19,7 @@ module NotesHelper
       id: noteable.id,
       class: noteable.class.name,
       resources: noteable.class.table_name,
-      project_id: noteable.project.id,
+      project_id: noteable.project.id
     }.to_json
   end
 
@@ -34,7 +34,7 @@ module NotesHelper
 
     data = {
       line_code: line_code,
-      line_type: line_type,
+      line_type: line_type
     }
 
     if @use_legacy_diff_notes

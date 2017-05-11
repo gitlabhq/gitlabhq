@@ -8,6 +8,7 @@ describe BlobViewer::Base, model: true do
   let(:viewer_class) do
     Class.new(described_class) do
       self.extensions = %w(pdf)
+      self.binary = true
       self.max_size = 1.megabyte
       self.absolute_max_size = 5.megabytes
       self.client_side = false
@@ -18,14 +19,47 @@ describe BlobViewer::Base, model: true do
 
   describe '.can_render?' do
     context 'when the extension is supported' do
-      let(:blob) { fake_blob(path: 'file.pdf') }
+      context 'when the binaryness matches' do
+        let(:blob) { fake_blob(path: 'file.pdf', binary: true) }
 
-      it 'returns true' do
-        expect(viewer_class.can_render?(blob)).to be_truthy
+        it 'returns true' do
+          expect(viewer_class.can_render?(blob)).to be_truthy
+        end
+      end
+
+      context 'when the binaryness does not match' do
+        let(:blob) { fake_blob(path: 'file.pdf', binary: false) }
+
+        it 'returns false' do
+          expect(viewer_class.can_render?(blob)).to be_falsey
+        end
       end
     end
 
-    context 'when the extension is not supported' do
+    context 'when the file type is supported' do
+      before do
+        viewer_class.file_type = :license
+        viewer_class.binary = false
+      end
+      
+      context 'when the binaryness matches' do
+        let(:blob) { fake_blob(path: 'LICENSE', binary: false) }
+
+        it 'returns true' do
+          expect(viewer_class.can_render?(blob)).to be_truthy
+        end
+      end
+
+      context 'when the binaryness does not match' do
+        let(:blob) { fake_blob(path: 'LICENSE', binary: true) }
+
+        it 'returns false' do
+          expect(viewer_class.can_render?(blob)).to be_falsey
+        end
+      end
+    end
+
+    context 'when the extension and file type are not supported' do
       let(:blob) { fake_blob(path: 'file.txt') }
 
       it 'returns false' do
@@ -150,36 +184,6 @@ describe BlobViewer::Base, model: true do
 
       it 'return :server_side_but_stored_externally' do
         expect(viewer.render_error).to eq(:server_side_but_stored_externally)
-      end
-    end
-  end
-
-  describe '#prepare!' do
-    context 'when the viewer is server side' do
-      let(:blob) { fake_blob(path: 'file.md') }
-
-      before do
-        viewer_class.client_side = false
-      end
-
-      it 'loads all blob data' do
-        expect(blob).to receive(:load_all_data!)
-
-        viewer.prepare!
-      end
-    end
-
-    context 'when the viewer is client side' do
-      let(:blob) { fake_blob(path: 'file.md') }
-
-      before do
-        viewer_class.client_side = true
-      end
-
-      it "doesn't load all blob data" do
-        expect(blob).not_to receive(:load_all_data!)
-
-        viewer.prepare!
       end
     end
   end

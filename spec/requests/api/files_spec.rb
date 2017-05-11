@@ -329,7 +329,7 @@ describe API::Files do
     end
     let(:get_params) do
       {
-        ref: 'master',
+        ref: 'master'
       }
     end
 

@@ -5,13 +5,13 @@ feature 'File blob', :js, feature: true do
 
   def visit_blob(path, fragment = nil)
     visit namespace_project_blob_path(project.namespace, project, File.join('master', path), anchor: fragment)
+
+    wait_for_ajax
   end
 
   context 'Ruby file' do
     before do
       visit_blob('files/ruby/popen.rb')
-
-      wait_for_ajax
     end
 
     it 'displays the blob' do
@@ -35,8 +35,6 @@ feature 'File blob', :js, feature: true do
     context 'visiting directly' do
       before do
         visit_blob('files/markdown/ruby-style-guide.md')
-
-        wait_for_ajax
       end
 
       it 'displays the blob using the rich viewer' do
@@ -104,8 +102,6 @@ feature 'File blob', :js, feature: true do
     context 'visiting with a line number anchor' do
       before do
         visit_blob('files/markdown/ruby-style-guide.md', 'L1')
-
-        wait_for_ajax
       end
 
       it 'displays the blob using the simple viewer' do
@@ -148,8 +144,6 @@ feature 'File blob', :js, feature: true do
         project.update_attribute(:lfs_enabled, true)
 
         visit_blob('files/lfs/file.md')
-
-        wait_for_ajax
       end
 
       it 'displays an error' do
@@ -198,8 +192,6 @@ feature 'File blob', :js, feature: true do
     context 'when LFS is disabled on the project' do
       before do
         visit_blob('files/lfs/file.md')
-
-        wait_for_ajax
       end
 
       it 'displays the blob' do
@@ -235,8 +227,6 @@ feature 'File blob', :js, feature: true do
       ).execute
 
       visit_blob('files/test.pdf')
-
-      wait_for_ajax
     end
 
     it 'displays the blob' do
@@ -263,8 +253,6 @@ feature 'File blob', :js, feature: true do
         project.update_attribute(:lfs_enabled, true)
 
         visit_blob('files/lfs/lfs_object.iso')
-
-        wait_for_ajax
       end
 
       it 'displays the blob' do
@@ -287,8 +275,6 @@ feature 'File blob', :js, feature: true do
     context 'when LFS is disabled on the project' do
       before do
         visit_blob('files/lfs/lfs_object.iso')
-
-        wait_for_ajax
       end
 
       it 'displays the blob' do
@@ -312,8 +298,6 @@ feature 'File blob', :js, feature: true do
   context 'ZIP file' do
     before do
       visit_blob('Gemfile.zip')
-
-      wait_for_ajax
     end
 
     it 'displays the blob' do
@@ -348,8 +332,6 @@ feature 'File blob', :js, feature: true do
       ).execute
 
       visit_blob('files/empty.md')
-
-      wait_for_ajax
     end
 
     it 'displays an error' do
@@ -366,6 +348,82 @@ feature 'File blob', :js, feature: true do
         # does not show a download or raw button
         expect(page).not_to have_link('Download')
         expect(page).not_to have_link('Open raw')
+      end
+    end
+  end
+
+  context '.gitlab-ci.yml' do
+    before do
+      project.add_master(project.creator)
+
+      Files::CreateService.new(
+        project,
+        project.creator,
+        start_branch: 'master',
+        branch_name: 'master',
+        commit_message: "Add .gitlab-ci.yml",
+        file_path: '.gitlab-ci.yml',
+        file_content: File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml'))
+      ).execute
+
+      visit_blob('.gitlab-ci.yml')
+    end
+
+    it 'displays an auxiliary viewer' do
+      aggregate_failures do
+        # shows that configuration is valid
+        expect(page).to have_content('This GitLab CI configuration is valid.')
+
+        # shows a learn more link
+        expect(page).to have_link('Learn more')
+      end
+    end
+  end
+
+  context '.gitlab/route-map.yml' do
+    before do
+      project.add_master(project.creator)
+
+      Files::CreateService.new(
+        project,
+        project.creator,
+        start_branch: 'master',
+        branch_name: 'master',
+        commit_message: "Add .gitlab/route-map.yml",
+        file_path: '.gitlab/route-map.yml',
+        file_content: <<-MAP.strip_heredoc
+          # Team data
+          - source: 'data/team.yml'
+            public: 'team/'
+        MAP
+      ).execute
+
+      visit_blob('.gitlab/route-map.yml')
+    end
+
+    it 'displays an auxiliary viewer' do
+      aggregate_failures do
+        # shows that map is valid
+        expect(page).to have_content('This Route Map is valid.')
+
+        # shows a learn more link
+        expect(page).to have_link('Learn more')
+      end
+    end
+  end
+
+  context 'LICENSE' do
+    before do
+      visit_blob('LICENSE')
+    end
+
+    it 'displays an auxiliary viewer' do
+      aggregate_failures do
+        # shows license
+        expect(page).to have_content('This project is licensed under the MIT License.')
+
+        # shows a learn more link
+        expect(page).to have_link('Learn more about this license', 'http://choosealicense.com/licenses/mit/')
       end
     end
   end

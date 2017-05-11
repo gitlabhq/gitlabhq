@@ -6,7 +6,7 @@
 = render "projects/pipelines/head"
 
 %div{ class: container_class }
-  #scheduling-pipelines-callout
+  #pipeline-schedules-callout{ data: { docs_url: help_page_path('ci/pipeline_schedules') } }
   .top-area
     - schedule_path_proc = ->(scope) { pipeline_schedules_path(@project, scope: scope) }
     = render "tabs", schedule_path_proc: schedule_path_proc, all_schedules: @all_schedules, scope: @scope
