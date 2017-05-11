@@ -1166,7 +1166,6 @@ const normalizeNewlines = function(str) {
     Notes.prototype.generatePlaceholderNoteContent = function(formContent, availableSlashCommands = []) {
       let isSystemNote = false;
       let tempFormContent;
-      let commandDescription;
 
       // Identify executed slash commands from `formContent`
       const executedCommands = availableSlashCommands.filter((command, index) => {
@@ -1174,17 +1173,16 @@ const normalizeNewlines = function(str) {
         return (commandRegex.test(formContent) || formContent === `/${command.name}`);
       });
 
-      if (availableSlashCommands.length) { // Check if available slash commands list was populated
-        if (executedCommands && executedCommands.length) { // Check if any slash command was present in formContent
-          isSystemNote = true;
-          commandDescription = _.escape(executedCommands[0].description).toLowerCase();
-          tempFormContent = executedCommands.length > 1 ?
-            'Applying multiple commands' :
-            `Applying command to ${commandDescription}`;
+      if (executedCommands && executedCommands.length) {
+        isSystemNote = true;
+
+        if (executedCommands.length > 1) {
+          tempFormContent = 'Applying multiple commands';
         } else {
-          tempFormContent = formContent;
+          const commandDescription = _.escape(executedCommands[0].description).toLowerCase();
+          tempFormContent = `Applying command to ${commandDescription}`;
         }
-      } else { // Available slash commands list was not populated, so user either never typed any slash command
+      } else {
         tempFormContent = formContent;
       }
 
