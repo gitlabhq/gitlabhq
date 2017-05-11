@@ -417,9 +417,6 @@ rake gitlab:assets:compile:
     - webpack-report/
 
 rake karma:
-  cache:
-    paths:
-      - vendor/ruby
   stage: test
   <<: *use-pg
   <<: *dedicated-runner
