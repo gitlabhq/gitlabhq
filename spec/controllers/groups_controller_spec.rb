@@ -101,7 +101,7 @@ describe GroupsController do
         get :issues, id: redirect_route.path
 
         expect(response).to redirect_to(issues_group_path(group.to_param))
-        expect(controller).to set_flash[:notice].to(/moved/)
+        expect(controller).to set_flash[:notice].to(group_moved_message(redirect_route, group))
       end
     end
   end
@@ -146,7 +146,7 @@ describe GroupsController do
         get :merge_requests, id: redirect_route.path
 
         expect(response).to redirect_to(merge_requests_group_path(group.to_param))
-        expect(controller).to set_flash[:notice].to(/moved/)
+        expect(controller).to set_flash[:notice].to(group_moved_message(redirect_route, group))
       end
     end
   end
@@ -248,5 +248,9 @@ describe GroupsController do
         expect(response).to have_http_status(404)
       end
     end
+  end
+
+  def group_moved_message(redirect_route, group)
+    "Group '#{redirect_route.path}' was moved to '#{group.full_path}'. Please update any links and bookmarks that may still have the old path."
   end
 end
