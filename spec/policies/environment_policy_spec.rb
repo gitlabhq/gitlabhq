@@ -33,7 +33,7 @@ describe EnvironmentPolicy do
       let(:project) { create(:project, :public) }
 
       before do
-        project.add_master(user)
+        project.add_developer(user)
       end
 
       context 'when team member has ability to stop environment' do

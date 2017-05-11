@@ -163,7 +163,6 @@
 
 .avatar-cell {
   width: 46px;
-  padding-left: 10px;
 
   img {
     margin-right: 0;
@@ -175,7 +174,6 @@
   justify-content: space-between;
   align-items: flex-start;
   flex-grow: 1;
-  padding-left: 10px;
 
   .merge-request-branches & {
     flex-direction: column;

@@ -158,6 +158,7 @@ MergeRequest:
 - time_estimate
 - last_edited_at
 - last_edited_by_id
+- head_pipeline_id
 MergeRequestDiff:
 - id
 - state
@@ -230,6 +231,7 @@ CommitStatus:
 - lock_version
 - coverage_regex
 - auto_canceled_by_id
+- retried
 Ci::Variable:
 - id
 - project_id

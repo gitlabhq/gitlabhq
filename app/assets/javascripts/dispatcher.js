@@ -10,7 +10,6 @@
 /* global IssuableForm */
 /* global LabelsSelect */
 /* global MilestoneSelect */
-/* global MergedButtons */
 /* global Commit */
 /* global NotificationsForm */
 /* global TreeView */
@@ -216,15 +215,10 @@ const ShortcutsBlob = require('./shortcuts_blob');
           new gl.Diff();
           shortcut_handler = new ShortcutsIssuable(true);
           new ZenMode();
-          new MergedButtons();
-          break;
-        case 'projects:merge_requests:commits':
-          new MergedButtons();
           break;
         case "projects:merge_requests:diffs":
           new gl.Diff();
           new ZenMode();
-          new MergedButtons();
           break;
         case 'dashboard:activity':
           new gl.Activities();
@@ -252,6 +246,7 @@ const ShortcutsBlob = require('./shortcuts_blob');
           new NotificationsForm();
           if ($('#tree-slider').length) {
             new TreeView();
+            new BlobViewer();
           }
           break;
         case 'projects:pipelines:builds':
@@ -306,6 +301,7 @@ const ShortcutsBlob = require('./shortcuts_blob');
         case 'projects:tree:show':
           shortcut_handler = new ShortcutsNavigation();
           new TreeView();
+          new BlobViewer();
           gl.TargetBranchDropDown.bootstrap();
           break;
         case 'projects:find_file:show':

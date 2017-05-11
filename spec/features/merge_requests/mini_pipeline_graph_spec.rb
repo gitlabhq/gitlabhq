@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'Mini Pipeline Graph', :js, :feature do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
-  let(:merge_request) { create(:merge_request, source_project: project) }
+  let(:merge_request) { create(:merge_request, source_project: project, head_pipeline: pipeline) }
 
   let(:pipeline) { create(:ci_empty_pipeline, project: project, ref: 'master', status: 'running', sha: project.commit.id) }
   let(:build) { create(:ci_build, pipeline: pipeline, stage: 'test', commands: 'test') }

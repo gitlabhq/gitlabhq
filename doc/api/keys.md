@@ -1,4 +1,4 @@
-# Keys
+# Keys API
 
 ## Get SSH key with user by ID of an SSH key
 

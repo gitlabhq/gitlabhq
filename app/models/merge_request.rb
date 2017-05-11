@@ -13,6 +13,8 @@ class MergeRequest < ActiveRecord::Base
   has_one :merge_request_diff,
     -> { order('merge_request_diffs.id DESC') }
 
+  belongs_to :head_pipeline, foreign_key: "head_pipeline_id", class_name: "Ci::Pipeline"
+
   has_many :events, as: :target, dependent: :destroy
 
   has_many :merge_requests_closing_issues, class_name: 'MergeRequestsClosingIssues', dependent: :delete_all
@@ -829,12 +831,6 @@ class MergeRequest < ActiveRecord::Base
     diverged_commits_count > 0
   end
 
-  def head_pipeline
-    return unless diff_head_sha && source_project
-
-    @head_pipeline ||= source_project.pipeline_for(source_branch, diff_head_sha)
-  end
-
   def all_pipelines
     return Ci::Pipeline.none unless source_project
 
@@ -864,7 +860,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def can_be_cherry_picked?
-    merge_commit
+    merge_commit.present?
   end
 
   def has_complete_diff_refs?
@@ -908,6 +904,8 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def conflicts_can_be_resolved_by?(user)
+    return false unless source_project
+
     access = ::Gitlab::UserAccess.new(user, project: source_project)
     access.can_push_to_branch?(source_branch)
   end

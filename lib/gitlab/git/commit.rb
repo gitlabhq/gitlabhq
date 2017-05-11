@@ -192,6 +192,10 @@ module Gitlab
         Commit.diff_from_parent(raw_commit, options)
       end
 
+      def deltas
+        @deltas ||= diff_from_parent.each_delta.map { |d| Gitlab::Git::Diff.new(d) }
+      end
+
       def has_zero_stats?
         stats.total.zero?
       rescue

@@ -32,7 +32,7 @@ describe('GLForm', () => {
       });
     });
 
-    describe('.setupAutosize', () => {
+    describe('setupAutosize', () => {
       beforeEach((done) => {
         this.glForm.setupAutosize();
         setTimeout(() => {
@@ -59,7 +59,7 @@ describe('GLForm', () => {
       });
     });
 
-    describe('.setHeightData', () => {
+    describe('setHeightData', () => {
       beforeEach(() => {
         spyOn($.prototype, 'data');
         spyOn($.prototype, 'outerHeight').and.returnValue(200);
@@ -75,7 +75,7 @@ describe('GLForm', () => {
       });
     });
 
-    describe('.destroyAutosize', () => {
+    describe('destroyAutosize', () => {
       describe('when called', () => {
         beforeEach(() => {
           spyOn($.prototype, 'data');

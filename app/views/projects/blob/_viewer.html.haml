@@ -2,11 +2,10 @@
 - render_error = viewer.render_error
 - load_asynchronously = local_assigns.fetch(:load_asynchronously, viewer.server_side?) && render_error.nil?
 
-- url = url_for(params.merge(viewer: viewer.type, format: :json)) if load_asynchronously
-.blob-viewer{ data: { type: viewer.type, url: url }, class: ('hidden' if hidden) }
+- viewer_url = local_assigns.fetch(:viewer_url) { url_for(params.merge(viewer: viewer.type, format: :json)) } if load_asynchronously
+.blob-viewer{ data: { type: viewer.type, url: viewer_url }, class: ('hidden' if hidden) }
   - if load_asynchronously
-    .text-center.prepend-top-default.append-bottom-default
-      = icon('spinner spin 2x', 'aria-hidden' => 'true', 'aria-label' => 'Loading content')
+    = render viewer.loading_partial_path, viewer: viewer
   - elsif render_error
     = render 'projects/blob/render_error', viewer: viewer
   - else

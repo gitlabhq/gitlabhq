@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import graphComponent from '~/pipelines/components/graph/graph_component.vue';
+import graphJSON from './mock_data';
 
 describe('graph component', () => {
   preloadFixtures('static/graph.html.raw');
@@ -20,41 +21,7 @@ describe('graph component', () => {
 
   describe('with a successfull response', () => {
     const interceptor = (request, next) => {
-      next(request.respondWith(JSON.stringify({
-        details: {
-          stages: [{
-            name: 'test',
-            title: 'test: passed',
-            status: {
-              icon: 'icon_status_success',
-              text: 'passed',
-              label: 'passed',
-              details_path: '/root/ci-mock/pipelines/123#test',
-            },
-            path: '/root/ci-mock/pipelines/123#test',
-            groups: [{
-              name: 'test',
-              size: 1,
-              jobs: [{
-                id: 4153,
-                name: 'test',
-                status: {
-                  icon: 'icon_status_success',
-                  text: 'passed',
-                  label: 'passed',
-                  details_path: '/root/ci-mock/builds/4153',
-                  action: {
-                    icon: 'icon_action_retry',
-                    title: 'Retry',
-                    path: '/root/ci-mock/builds/4153/retry',
-                    method: 'post',
-                  },
-                },
-              }],
-            }],
-          }],
-        },
-      }), {
+      next(request.respondWith(JSON.stringify(graphJSON), {
         status: 200,
       }));
     };
@@ -72,6 +39,18 @@ describe('graph component', () => {
 
       setTimeout(() => {
         expect(component.$el.classList.contains('js-pipeline-graph')).toEqual(true);
+
+        expect(
+          component.$el.querySelector('.stage-column:first-child').classList.contains('no-margin'),
+        ).toEqual(true);
+
+        expect(
+          component.$el.querySelector('.stage-column:nth-child(2)').classList.contains('left-margin'),
+        ).toEqual(true);
+
+        expect(
+          component.$el.querySelector('.stage-column:nth-child(2) .build:nth-child(1)').classList.contains('left-connector'),
+        ).toEqual(true);
 
         expect(component.$el.querySelector('loading-icon')).toBe(null);
 

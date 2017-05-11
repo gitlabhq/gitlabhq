@@ -7,17 +7,29 @@ module PrometheusHelpers
     %{sum(rate(container_cpu_usage_seconds_total{container_name!="POD",environment="#{environment_slug}"}[2m])) / count(container_cpu_usage_seconds_total{container_name!="POD",environment="#{environment_slug}"}) * 100}
   end
 
+  def prometheus_ping_url(prometheus_query)
+    query = { query: prometheus_query }.to_query
+
+    "https://prometheus.example.com/api/v1/query?#{query}"
+  end
+
   def prometheus_query_url(prometheus_query)
     query = { query: prometheus_query }.to_query
 
     "https://prometheus.example.com/api/v1/query?#{query}"
   end
 
-  def prometheus_query_range_url(prometheus_query, start: 8.hours.ago)
+  def prometheus_query_with_time_url(prometheus_query, time)
+    query = { query: prometheus_query, time: time.to_f }.to_query
+
+    "https://prometheus.example.com/api/v1/query?#{query}"
+  end
+
+  def prometheus_query_range_url(prometheus_query, start: 8.hours.ago, stop: Time.now.to_f)
     query = {
       query: prometheus_query,
       start: start.to_f,
-      end: Time.now.utc.to_f,
+      end: stop,
       step: 1.minute.to_i
     }.to_query
 
@@ -39,7 +51,12 @@ module PrometheusHelpers
 
   def stub_all_prometheus_requests(environment_slug, body: nil, status: 200)
     stub_prometheus_request(
-      prometheus_query_url(prometheus_memory_query(environment_slug)),
+      prometheus_query_with_time_url(prometheus_memory_query(environment_slug), Time.now.utc),
+      status: status,
+      body: body || prometheus_value_body
+    )
+    stub_prometheus_request(
+      prometheus_query_with_time_url(prometheus_memory_query(environment_slug), 8.hours.ago),
       status: status,
       body: body || prometheus_value_body
     )
@@ -49,7 +66,12 @@ module PrometheusHelpers
       body: body || prometheus_values_body
     )
     stub_prometheus_request(
-      prometheus_query_url(prometheus_cpu_query(environment_slug)),
+      prometheus_query_with_time_url(prometheus_cpu_query(environment_slug), Time.now.utc),
+      status: status,
+      body: body || prometheus_value_body
+    )
+    stub_prometheus_request(
+      prometheus_query_with_time_url(prometheus_cpu_query(environment_slug), 8.hours.ago),
       status: status,
       body: body || prometheus_value_body
     )
@@ -66,8 +88,10 @@ module PrometheusHelpers
       metrics: {
         memory_values: prometheus_values_body('matrix').dig(:data, :result),
         memory_current: prometheus_value_body('vector').dig(:data, :result),
+        memory_previous: prometheus_value_body('vector').dig(:data, :result),
         cpu_values: prometheus_values_body('matrix').dig(:data, :result),
-        cpu_current: prometheus_value_body('vector').dig(:data, :result)
+        cpu_current: prometheus_value_body('vector').dig(:data, :result),
+        cpu_previous: prometheus_value_body('vector').dig(:data, :result)
       },
       last_update: last_update
     }

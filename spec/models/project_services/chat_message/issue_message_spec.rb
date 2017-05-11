@@ -48,7 +48,7 @@ describe ChatMessage::IssueMessage, models: true do
             title: "#100 Issue title",
             title_link: "http://url.com",
             text: "issue description",
-            color: color,
+            color: color
           }
         ])
       end

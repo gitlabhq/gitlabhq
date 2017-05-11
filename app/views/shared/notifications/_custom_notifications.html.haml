@@ -1,9 +1,9 @@
-.modal.fade{ tabindex: "-1", role: "dialog", id: notifications_menu_identifier("modal", notification_setting), aria: { labelledby: "custom-notifications-title" } }
+.modal.fade{ tabindex: "-1", role: "dialog", id: notifications_menu_identifier("modal", notification_setting), "aria-labelledby": "custom-notifications-title" }
   .modal-dialog
     .modal-content
       .modal-header
-        %button.close{ type: "button", data: { dismiss: "modal" }, aria: { label: "close" } }
-          %span{ aria: { hidden: "true" } } ×
+        %button.close{ type: "button",  "aria-label": "close", data: { dismiss: "modal" } }
+          %span{ "aria-hidden": "true" } } ×
         %h4#custom-notifications-title.modal-title
           #{ _('Custom notification events') }
 

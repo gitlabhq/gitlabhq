@@ -151,7 +151,7 @@ describe Backup::Manager, lib: true do
         allow(Dir).to receive(:glob).and_return(
           [
             '1451606400_2016_01_01_gitlab_backup.tar',
-            '1451520000_2015_12_31_gitlab_backup.tar',
+            '1451520000_2015_12_31_gitlab_backup.tar'
           ]
         )
       end

@@ -31,7 +31,7 @@ class EnvironmentEntity < Grape::Entity
   end
 
   expose :terminal_path, if: ->(environment, _) { environment.has_terminals? } do |environment|
-    can?(request.user, :admin_environment, environment.project) &&
+    can?(request.current_user, :admin_environment, environment.project) &&
       terminal_namespace_project_environment_path(
         environment.project.namespace,
         environment.project,

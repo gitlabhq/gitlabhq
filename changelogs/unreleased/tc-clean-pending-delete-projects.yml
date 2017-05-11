@@ -1,0 +1,4 @@
+---
+title: Add post-deploy migration to clean up projects in `pending_delete` state
+merge_request: 11044
+author:

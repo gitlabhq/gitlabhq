@@ -3,11 +3,9 @@
 import Cookies from 'js-cookie';
 
 (function() {
-  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
-
   this.Sidebar = (function() {
     function Sidebar(currentUser) {
-      this.toggleTodo = bind(this.toggleTodo, this);
+      this.toggleTodo = this.toggleTodo.bind(this);
       this.sidebar = $('aside');
       this.removeListeners();
       this.addEventListeners();

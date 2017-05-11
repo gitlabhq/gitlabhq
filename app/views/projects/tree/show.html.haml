@@ -7,4 +7,13 @@
 = render 'projects/last_push'
 
 %div{ class: container_class }
-  = render 'projects/files'
+  #tree-holder.tree-holder.clearfix
+    .nav-block
+      = render 'projects/tree/tree_header', tree: @tree
+
+    .info-well.hidden-xs.append-bottom-default
+      .well-segment
+        %ul.blob-commit-info
+          = render 'projects/commits/commit', commit: @commit, project: @project, ref: @ref
+
+    = render 'projects/tree/tree_content', tree: @tree

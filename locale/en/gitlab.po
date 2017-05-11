@@ -94,9 +94,6 @@ msgstr ""
 msgid "Copy branch to clipboard"
 msgstr ""
 
-msgid "Copy commit SHA to clipboard"
-msgstr ""
-
 msgid "Create New Directory"
 msgstr ""
 
@@ -207,9 +204,6 @@ msgstr ""
 msgid "Graph"
 msgstr ""
 
-msgid "History"
-msgstr ""
-
 msgid "Home"
 msgstr ""
 
@@ -217,6 +211,9 @@ msgid "Housekeeping successfully started"
 msgstr ""
 
 msgid "Import repository"
+msgstr ""
+
+msgid "Internal"
 msgstr ""
 
 msgid "Introducing Cycle Analytics"
@@ -297,10 +294,10 @@ msgstr ""
 msgid "Participate"
 msgstr ""
 
-msgid "Past due"
+msgid "Pipeline Health"
 msgstr ""
 
-msgid "Pipeline Health"
+msgid "Private"
 msgstr ""
 
 msgid "Project '%{project_name}' was successfully created."
@@ -343,6 +340,9 @@ msgid "ProjectLastActivity|Never"
 msgstr ""
 
 msgid "ProjectLifecycle|Stage"
+msgstr ""
+
+msgid "Public"
 msgstr ""
 
 msgid "Read more"
@@ -494,6 +494,9 @@ msgstr ""
 msgid "Timeago|%s years ago"
 msgstr ""
 
+msgid "Timeago|Past due"
+msgstr ""
+
 msgid "Timeago|a day ago"
 msgstr ""
 
@@ -558,9 +561,6 @@ msgid "Timeago|in 1 year"
 msgstr ""
 
 msgid "Timeago|less than a minute ago"
-msgstr ""
-
-msgid "Timeago|remaining"
 msgstr ""
 
 msgid "Time|hr"

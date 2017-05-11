@@ -18,6 +18,7 @@ Feature: Project
     Then I should see the default project avatar
     And I should not see the "Remove avatar" button
 
+  @javascript
   Scenario: I should have readme on page
     And I visit project "Shop" page
     Then I should see project "Shop" README

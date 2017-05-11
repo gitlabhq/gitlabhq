@@ -39,7 +39,7 @@ class ChatNotificationService < Service
       { type: 'text', name: 'webhook', placeholder: "e.g. #{webhook_placeholder}" },
       { type: 'text', name: 'username', placeholder: 'e.g. GitLab' },
       { type: 'checkbox', name: 'notify_only_broken_pipelines' },
-      { type: 'checkbox', name: 'notify_only_default_branch' },
+      { type: 'checkbox', name: 'notify_only_default_branch' }
     ]
   end
 
@@ -150,7 +150,7 @@ class ChatNotificationService < Service
 
   def notify_for_ref?(data)
     return true if data[:object_attributes][:tag]
-    return true unless notify_only_default_branch
+    return true unless notify_only_default_branch?
 
     data[:object_attributes][:ref] == project.default_branch
   end

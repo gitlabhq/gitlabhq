@@ -67,7 +67,7 @@ class GitPushService < BaseService
       paths = Set.new
 
       @push_commits.each do |commit|
-        commit.raw_diffs(deltas_only: true).each do |diff|
+        commit.raw_deltas.each do |diff|
           paths << diff.new_path
         end
       end
@@ -85,8 +85,10 @@ class GitPushService < BaseService
     default = is_default_branch?
 
     push_commits.last(PROCESS_COMMIT_LIMIT).each do |commit|
-      ProcessCommitWorker.
-        perform_async(project.id, current_user.id, commit.to_hash, default)
+      if commit.matches_cross_reference_regex?
+        ProcessCommitWorker.
+          perform_async(project.id, current_user.id, commit.to_hash, default)
+      end
     end
   end
 

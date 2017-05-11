@@ -84,6 +84,7 @@ class Projects::BranchesController < Projects::ApplicationController
       end
 
       format.js { render nothing: true, status: result[:return_code] }
+      format.json { render json: { message: result[:message] }, status: result[:return_code] }
     end
   end
 

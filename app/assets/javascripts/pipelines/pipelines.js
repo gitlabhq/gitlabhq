@@ -2,11 +2,12 @@ import Visibility from 'visibilityjs';
 import PipelinesService from './services/pipelines_service';
 import eventHub from './event_hub';
 import PipelinesTableComponent from '../vue_shared/components/pipelines_table';
-import TablePaginationComponent from '../vue_shared/components/table_pagination';
+import tablePagination from '../vue_shared/components/table_pagination.vue';
 import EmptyState from './components/empty_state.vue';
 import ErrorState from './components/error_state.vue';
 import NavigationTabs from './components/navigation_tabs';
 import NavigationControls from './components/nav_controls';
+import loadingIcon from '../vue_shared/components/loading_icon.vue';
 import Poll from '../lib/utils/poll';
 
 export default {
@@ -18,12 +19,13 @@ export default {
   },
 
   components: {
-    'gl-pagination': TablePaginationComponent,
+    tablePagination,
     'pipelines-table-component': PipelinesTableComponent,
     'empty-state': EmptyState,
     'error-state': ErrorState,
     'navigation-tabs': NavigationTabs,
     'navigation-controls': NavigationControls,
+    loadingIcon,
   },
 
   data() {
@@ -244,13 +246,11 @@ export default {
 
       <div class="content-list pipelines">
 
-        <div
-          class="realtime-loading"
-          v-if="isLoading">
-          <i
-            class="fa fa-spinner fa-spin"
-            aria-hidden="true" />
-        </div>
+        <loading-icon
+          label="Loading Pipelines"
+          size="3"
+          v-if="isLoading"
+          />
 
         <empty-state
           v-if="shouldRenderEmptyState"
@@ -275,12 +275,13 @@ export default {
             />
         </div>
 
-        <gl-pagination
+        <table-pagination
           v-if="shouldRenderPagination"
           :pagenum="pagenum"
           :change="change"
           :count="state.count.all"
-          :pageInfo="state.pageInfo"/>
+          :pageInfo="state.pageInfo"
+          />
       </div>
     </div>
   `,
