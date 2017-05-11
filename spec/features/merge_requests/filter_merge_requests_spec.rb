@@ -142,7 +142,7 @@ describe 'Filter merge requests', feature: true do
       expect_tokens([{ name: 'assignee', value: "@#{user.username}" }])
       expect_filtered_search_input_empty
 
-      input_filtered_search_keys("label:~#{label.title} ")
+      input_filtered_search("label:~#{label.title} ")
 
       expect_mr_list_count(1)
 
