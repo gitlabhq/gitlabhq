@@ -7,5 +7,11 @@ module BlobViewer
       self.max_size = 2.megabytes
       self.absolute_max_size = 5.megabytes
     end
+
+    def prepare!
+      if blob.project
+        blob.load_all_data!(blob.project.repository)
+      end
+    end
   end
 end

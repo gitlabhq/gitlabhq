@@ -271,6 +271,52 @@ describe Blob do
     end
   end
 
+  describe '#auxiliary_viewer' do
+    context 'when the blob has an external storage error' do
+      before do
+        project.lfs_enabled = false
+      end
+
+      it 'returns nil' do
+        blob = fake_blob(path: 'LICENSE', lfs: true)
+
+        expect(blob.auxiliary_viewer).to be_nil
+      end
+    end
+
+    context 'when the blob is empty' do
+      it 'returns nil' do
+        blob = fake_blob(data: '')
+
+        expect(blob.auxiliary_viewer).to be_nil
+      end
+    end
+
+    context 'when the blob is stored externally' do
+      it 'returns a matching viewer' do
+        blob = fake_blob(path: 'LICENSE', lfs: true)
+
+        expect(blob.auxiliary_viewer).to be_a(BlobViewer::License)
+      end
+    end
+
+    context 'when the blob is binary' do
+      it 'returns nil' do
+        blob = fake_blob(path: 'LICENSE', binary: true)
+
+        expect(blob.auxiliary_viewer).to be_nil
+      end
+    end
+
+    context 'when the blob is text-based' do
+      it 'returns a matching text-based viewer' do
+        blob = fake_blob(path: 'LICENSE')
+
+        expect(blob.auxiliary_viewer).to be_a(BlobViewer::License)
+      end
+    end
+  end
+
   describe '#rendered_as_text?' do
     context 'when ignoring errors' do
       context 'when the simple viewer is text-based' do
