@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'disable_css_animation_helper'
 
 describe 'New/edit issue', feature: true, js: true do
   include GitlabRoutingHelper
@@ -33,45 +34,9 @@ describe 'New/edit issue', feature: true, js: true do
 
         # TODO: Figure out a better way to wait for dropdown CSS hide
         # animation to complete
-        sleep 0.3
+        # sleep 0.3
 
         expect(page.find('.dropdown-menu-user', visible: false)).not_to be_visible
-      end
-    end
-
-    describe 'multiple assignees' do
-      before do
-        click_button 'Unassigned'
-      end
-
-      it 'unselects other assignees when unassigned is selected' do
-        page.within '.dropdown-menu-user' do
-          click_link user2.name
-        end
-
-        page.within '.dropdown-menu-user' do
-          click_link 'Unassigned'
-        end
-
-        page.within '.js-assignee-search' do
-          expect(page).to have_content 'Unassigned'
-        end
-
-        expect(find('input[name="issue[assignee_ids][]"]', visible: false).value).to match('0')
-      end
-
-      it 'toggles assign to me when current user is selected and unselected' do
-        page.within '.dropdown-menu-user' do
-          click_link user.name
-        end
-
-        expect(find('a', text: 'Assign to me', visible: false)).not_to be_visible
-
-        page.within '.dropdown-menu-user' do
-          click_link user.name
-        end
-
-        expect(find('a', text: 'Assign to me')).to be_visible
       end
     end
 
