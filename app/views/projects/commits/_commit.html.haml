@@ -37,6 +37,6 @@
       .commit-actions.flex-row.hidden-xs
         - if commit.status(ref)
           = render_commit_status(commit, ref: ref)
-        = clipboard_button(text: commit.id, title: "Copy commit SHA to clipboard")
         = link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit), class: "commit-short-id btn btn-transparent"
+        = clipboard_button(text: commit.id, title: "Copy commit SHA to clipboard")
         = link_to_browse_code(project, commit)
