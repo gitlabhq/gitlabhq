@@ -15,7 +15,7 @@ describe CleanupNamespacelessPendingDeleteProjects do
       project = build(:empty_project, pending_delete: true, namespace_id: nil)
       project.save(validate: false)
 
-      expect(NamespacelessProjectDestroyWorker).to receive(:bulk_perform_async).with([[project.id.to_s]])
+      expect(NamespacelessProjectDestroyWorker).to receive(:bulk_perform_async).with([[project.id]])
 
       described_class.new.up
     end
