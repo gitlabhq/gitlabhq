@@ -176,12 +176,7 @@
     }
 
     &.mr-memory-usage {
-<<<<<<< HEAD
-      margin-top: 10px;
-      margin-bottom: 10px;
-=======
       margin: 5px 0 10px 25px;
->>>>>>> upstream/master
     }
   }
 
@@ -504,32 +499,9 @@
     background: $border-color;
     position: absolute;
     top: -5px;
-<<<<<<< HEAD
   }
 }
 
-.mr-info-list.mr-memory-usage {
-  .legend {
-    height: 75%;
-=======
->>>>>>> upstream/master
-  }
-}
-
-<<<<<<< HEAD
-  p {
-    float: left;
-    padding-left: 20px;
-
-    &::before {
-      top: 13px;
-    }
-  }
-
-  .memory-graph-container {
-    float: left;
-    margin-left: 5px;
-=======
 .mr-info-list.mr-memory-usage {
   .legend {
     height: 65%;
@@ -547,7 +519,6 @@
     &::before {
       top: 13px;
     }
->>>>>>> upstream/master
   }
 
   .memory-graph-container {
@@ -757,7 +728,6 @@
   }
 }
 
-<<<<<<< HEAD
 #merge-request-widget-app .loading {
   padding-top: 5px;
   border-top: 1px solid $well-inner-border;
@@ -852,15 +822,6 @@
 }
 
 .mr-memory-usage {
-  p.usage-info-loading {
-    margin-bottom: 6px;
-
-    .usage-info-load-spinner {
-      margin-right: 10px;
-      font-size: 16px;
-    }
-=======
-.mr-memory-usage {
   p.usage-info-loading,
   p.usage-info-unavailable,
   p.usage-info-failed {
@@ -870,7 +831,6 @@
   p.usage-info-loading .usage-info-load-spinner {
     margin-right: 10px;
     font-size: 16px;
->>>>>>> upstream/master
   }
 
   @media (max-width: $screen-md-min) {
