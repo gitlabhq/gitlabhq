@@ -148,7 +148,6 @@ var config = {
         'notebook_viewer',
         'pdf_viewer',
         'pipelines',
-        'balsamiq_viewer',
         'pipelines_graph',
       ],
       minChunks: function(module, count) {
