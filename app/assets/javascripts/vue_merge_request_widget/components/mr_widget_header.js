@@ -12,6 +12,14 @@ export default {
     commitsText() {
       return gl.text.pluralize('commit', this.mr.divergedCommitsCount);
     },
+    branchNameClipboardData() {
+      // This supports code in app/assets/javascripts/copy_to_clipboard.js that
+      // works around ClipboardJS limitations to allow the context-specific copy/pasting of plain text or GFM.
+      return JSON.stringify({
+        text: this.mr.sourceBranch,
+        gfm: '`' + this.mr.sourceBranch + '`'
+      });
+    }
   },
   methods: {
     isBranchTitleLong(branchTitle) {
@@ -71,7 +79,7 @@ export default {
         <button
           class="btn btn-transparent btn-clipboard has-tooltip"
           data-title="Copy branch name to clipboard"
-          :data-clipboard-text="mr.sourceBranch">
+          :data-clipboard-text="branchNameClipboardData">
           <i
             aria-hidden="true"
             class="fa fa-clipboard"></i>
