@@ -43,7 +43,7 @@ module Gitlab
         {
           N_('Private')  => PRIVATE,
           N_('Internal') => INTERNAL,
-          N_('Public')    => PUBLIC
+          N_('Public')   => PUBLIC
         }
       end
 
