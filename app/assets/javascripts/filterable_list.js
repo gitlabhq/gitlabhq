@@ -12,7 +12,10 @@ export default class FilterableList {
   }
 
   initSearch() {
-    this.debounceFilter = _.debounce(this.filterResults.bind(this), 500);
+    // Wrap to prevent passing event arguments to .filterResults;
+    this.debounceFilter = _.debounce(() => {
+      this.filterResults();
+    }, 500);
 
     this.unbindEvents();
     this.bindEvents();
@@ -26,13 +29,15 @@ export default class FilterableList {
     this.listFilterElement.removeEventListener('input', this.debounceFilter);
   }
 
-  filterResults() {
+  filterResults(url, data) {
+    const endpoint = url || this.filterForm.getAttribute('action');
+    const additionalData = data || $(this.filterForm).serialize();
 
     $(this.listHolderElement).fadeTo(250, 0.5);
 
     return $.ajax({
-      url: this.filterForm.getAttribute('action'),
-      data: $(this.filterForm).serialize(),
+      url: endpoint,
+      data: additionalData,
       type: 'GET',
       dataType: 'json',
       context: this,
@@ -42,6 +47,10 @@ export default class FilterableList {
   }
 
   onFilterSuccess(data) {
+    if (data.html) {
+      this.listHolderElement.innerHTML = data.html;
+    }
+
    // Change url so if user reload a page - search results are saved
     return window.history.replaceState({
       page: this.filterUrl,
