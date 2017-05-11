@@ -281,7 +281,7 @@ module ApplicationHelper
 
   def linkedin_url(user)
     name = user.linkedin
-    if name =~ %r{\Ahttps?:\/\/(www\.)?linkedin\.com\/in\/(.*)\z}
+    if name =~ %r{\Ahttps?:\/\/(www\.)?linkedin\.com\/in\/}
       name
     else
       "https://www.linkedin.com/in/#{name}"
@@ -290,7 +290,7 @@ module ApplicationHelper
 
   def twitter_url(user)
     name = user.twitter
-    if name =~ %r{\Ahttps?:\/\/(www\.)?twitter\.com\/(.*)\z}
+    if name =~ %r{\Ahttps?:\/\/(www\.)?twitter\.com\/}
       name
     else
       "https://www.twitter.com/#{name}"
