@@ -14,32 +14,27 @@ const waitForAllCallsToFinish = (service, waitForCount, successCallback) => {
   timer();
 };
 
-function mockServiceCall(service, response, shouldFail) {
+function mockServiceCall(service, response, shouldFail = false) {
   const action = shouldFail ? Promise.reject : Promise.resolve;
   const responseObject = response;
 
   if (!responseObject.headers) responseObject.headers = {};
 
-  service.fetch.calls.reset();
-  service.fetch.and.callFake(() => action(responseObject));
+  service.fetch.and.callFake(action.bind(Promise, responseObject));
 }
 
-fdescribe('Poll', () => {
+describe('Poll', () => {
   const service = jasmine.createSpyObj('service', ['fetch']);
-  let callbacks;
+  const callbacks = jasmine.createSpyObj('callbacks', ['success', 'error']);
 
-  beforeEach(() => {
-    callbacks = {
-      success: () => {},
-      error: () => {},
-    };
-
-    spyOn(callbacks, 'success');
-    spyOn(callbacks, 'error');
+  afterEach(() => {
+    callbacks.success.calls.reset();
+    callbacks.error.calls.reset();
+    service.fetch.calls.reset();
   });
 
-  fit('calls the success callback when no header for interval is provided', (done) => {
-    mockServiceCall(service, { status: 200 });
+  it('calls the success callback when no header for interval is provided', (done) => {
+    mockServiceCall(service, { status: 200 }, false);
 
     new Poll({
       resource: service,
@@ -53,7 +48,7 @@ fdescribe('Poll', () => {
       expect(callbacks.error).not.toHaveBeenCalled();
 
       done();
-    }, 0);
+    });
   });
 
   it('calls the error callback whe the http request returns an error', (done) => {
