@@ -32,10 +32,6 @@ describe 'New/edit issue', feature: true, js: true do
           click_link user.name
         end
 
-        # TODO: Figure out a better way to wait for dropdown CSS hide
-        # animation to complete
-        # sleep 0.3
-
         expect(page.find('.dropdown-menu-user', visible: false)).not_to be_visible
       end
     end

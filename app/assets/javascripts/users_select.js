@@ -425,7 +425,9 @@ window.emitSidebarEvent = window.emitSidebarEvent || $.noop;
 
               // Automatically close dropdown after assignee is selected
               // since CE has no multiple assignees
-              if (getSelected().length === $dropdown.data('max-select')) {
+              // EE does not have a max-select
+              if ($dropdown.data('max-select') &&
+                  getSelected().length === $dropdown.data('max-select')) {
                 // Close the dropdown
                 this.el.click();
 
