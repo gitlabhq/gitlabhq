@@ -10,6 +10,7 @@ describe('Description component', () => {
     if (!document.querySelector('.issuable-meta')) {
       const metaData = document.createElement('div');
       metaData.classList.add('issuable-meta');
+      metaData.innerHTML = '<span id="task_status"></span><span id="task_status_short"></span>';
 
       document.body.appendChild(metaData);
     }
