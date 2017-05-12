@@ -51,8 +51,9 @@ module API
         authenticate!
         authorize! :create_pipeline_schedule, user_project
 
-        pipeline_schedule = user_project.pipeline_schedules.create(
-          declared_params(include_missing: false).merge(owner: current_user))
+        pipeline_schedule = Ci::CreatePipelineScheduleService
+          .new(user_project, current_user, declared_params(include_missing: false))
+          .execute
 
         if pipeline_schedule.valid?
           present pipeline_schedule, with: Entities::PipelineSchedule
