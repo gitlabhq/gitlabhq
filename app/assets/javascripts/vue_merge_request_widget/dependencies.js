@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 /**
  * This file is the centerpiece of an attempt to reduce potential conflicts
  * between the CE and EE versions of the MR widget. EE additions to the MR widget should
@@ -11,7 +9,6 @@
  * should overwrite import paths **without** changing the order of dependencies listed here.
  */
 
->>>>>>> upstream/master
 export { default as Vue } from 'vue';
 export { default as SmartInterval } from '~/smart_interval';
 export { default as WidgetHeader } from './components/mr_widget_header';
@@ -29,18 +26,13 @@ export { default as ConflictsState } from './components/states/mr_widget_conflic
 export { default as NothingToMergeState } from './components/states/mr_widget_nothing_to_merge';
 export { default as MissingBranchState } from './components/states/mr_widget_missing_branch';
 export { default as NotAllowedState } from './components/states/mr_widget_not_allowed';
-<<<<<<< HEAD
 export { default as ReadyToMergeState } from './ee/components/states/mr_widget_ready_to_merge';
-=======
-export { default as ReadyToMergeState } from './components/states/mr_widget_ready_to_merge';
->>>>>>> upstream/master
 export { default as UnresolvedDiscussionsState } from './components/states/mr_widget_unresolved_discussions';
 export { default as PipelineBlockedState } from './components/states/mr_widget_pipeline_blocked';
 export { default as PipelineFailedState } from './components/states/mr_widget_pipeline_failed';
 export { default as MergeWhenPipelineSucceedsState } from './components/states/mr_widget_merge_when_pipeline_succeeds';
 export { default as AutoMergeFailed } from './components/states/mr_widget_auto_merge_failed';
 export { default as CheckingState } from './components/states/mr_widget_checking';
-<<<<<<< HEAD
 export { default as MRWidgetStore } from './ee/stores/mr_widget_store';
 export { default as MRWidgetService } from './ee/services/mr_widget_service';
 export { default as eventHub } from './event_hub';
@@ -48,12 +40,3 @@ export { default as getStateKey } from './ee/stores/get_state_key';
 export { default as mrWidgetOptions } from './ee/mr_widget_options';
 export { default as stateMaps } from './ee/stores/state_maps';
 export { default as SquashBeforeMerge } from './ee/components/states/mr_widget_squash_before_merge';
-=======
-export { default as MRWidgetStore } from './stores/mr_widget_store';
-export { default as MRWidgetService } from './services/mr_widget_service';
-export { default as eventHub } from './event_hub';
-export { default as getStateKey } from './stores/get_state_key';
-export { default as mrWidgetOptions } from './mr_widget_options';
-export { default as stateMaps } from './stores/state_maps';
-export { default as SquashBeforeMerge } from './components/states/mr_widget_squash_before_merge';
->>>>>>> upstream/master

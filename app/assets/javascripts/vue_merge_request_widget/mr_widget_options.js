@@ -69,11 +69,8 @@ export default {
         ciEnvironmentsStatusPath: store.ciEnvironmentsStatusPath,
         statusPath: store.statusPath,
         mergeActionsContentPath: store.mergeActionsContentPath,
-<<<<<<< HEAD
         rebasePath: store.rebasePath,
         approvalsPath: store.approvalsPath,
-=======
->>>>>>> upstream/master
       };
       return new MRWidgetService(endpoints);
     },

@@ -1121,13 +1121,8 @@ const normalizeNewlines = function(str) {
       }
     };
 
-<<<<<<< HEAD
-    Notes.animateAppendNote = function(noteHTML, $notesList) {
-      const $note = window.$(noteHTML);
-=======
     Notes.animateAppendNote = function(noteHtml, $notesList) {
       const $note = $(noteHtml);
->>>>>>> upstream/master
 
       $note.addClass('fade-in-full').renderGFM();
       $notesList.append($note);
