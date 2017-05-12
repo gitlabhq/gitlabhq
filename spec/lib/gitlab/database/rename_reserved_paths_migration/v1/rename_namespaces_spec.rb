@@ -23,6 +23,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces do
 
         found_ids = subject.namespaces_for_paths(type: :child).
                       map(&:id)
+
         expect(found_ids).to contain_exactly(child.id)
       end
     end
@@ -39,6 +40,22 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces do
 
         found_ids = subject.namespaces_for_paths(type: :child).
                       map(&:id)
+
+        expect(found_ids).to contain_exactly(namespace.id)
+      end
+
+      it 'has no namespaces that look the same' do
+        _root_namespace = create(:namespace, path: 'THE-path')
+        _similar_path = create(:namespace,
+                             path: 'not-really-the-path',
+                             parent: create(:namespace))
+        namespace = create(:namespace,
+                           path: 'the-path',
+                           parent: create(:namespace))
+
+        found_ids = subject.namespaces_for_paths(type: :child).
+                      map(&:id)
+
         expect(found_ids).to contain_exactly(namespace.id)
       end
     end
@@ -53,6 +70,20 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces do
 
         found_ids = subject.namespaces_for_paths(type: :top_level).
                       map(&:id)
+
+        expect(found_ids).to contain_exactly(root_namespace.id)
+      end
+
+      it 'has no namespaces that just look the same' do
+        root_namespace = create(:namespace, path: 'the-path')
+        _similar_path = create(:namespace, path: 'not-really-the-path')
+        _child_namespace = create(:namespace,
+                                  path: 'the-path',
+                                  parent: create(:namespace))
+
+        found_ids = subject.namespaces_for_paths(type: :top_level).
+                      map(&:id)
+
         expect(found_ids).to contain_exactly(root_namespace.id)
       end
     end
