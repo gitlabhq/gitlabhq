@@ -4,14 +4,13 @@
 import eventHub from './sidebar/event_hub';
 
 (function() {
-  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; },
-    slice = [].slice;
+  const slice = [].slice;
 
   this.UsersSelect = (function() {
     function UsersSelect(currentUser, els) {
       var $els;
-      this.users = bind(this.users, this);
-      this.user = bind(this.user, this);
+      this.users = this.users.bind(this);
+      this.user = this.user.bind(this);
       this.usersPath = "/autocomplete/users.json";
       this.userPath = "/autocomplete/users/:id.json";
       if (currentUser != null) {

@@ -10,18 +10,16 @@
 (function() {
   const global = window.gl || (window.gl = {});
 
-  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
-
   global.U2FAuthenticate = (function() {
     function U2FAuthenticate(container, form, u2fParams, fallbackButton, fallbackUI) {
       this.container = container;
-      this.renderNotSupported = bind(this.renderNotSupported, this);
-      this.renderAuthenticated = bind(this.renderAuthenticated, this);
-      this.renderError = bind(this.renderError, this);
-      this.renderInProgress = bind(this.renderInProgress, this);
-      this.renderTemplate = bind(this.renderTemplate, this);
-      this.authenticate = bind(this.authenticate, this);
-      this.start = bind(this.start, this);
+      this.renderNotSupported = this.renderNotSupported.bind(this);
+      this.renderAuthenticated = this.renderAuthenticated.bind(this);
+      this.renderError = this.renderError.bind(this);
+      this.renderInProgress = this.renderInProgress.bind(this);
+      this.renderTemplate = this.renderTemplate.bind(this);
+      this.authenticate = this.authenticate.bind(this);
+      this.start = this.start.bind(this);
       this.appId = u2fParams.app_id;
       this.challenge = u2fParams.challenge;
       this.form = form;

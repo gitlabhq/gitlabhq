@@ -8,8 +8,6 @@
 /* global Pikaday */
 
 (function() {
-  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
-
   this.IssuableForm = (function() {
     IssuableForm.prototype.issueMoveConfirmMsg = 'Are you sure you want to move this issue to another project?';
 
@@ -18,10 +16,10 @@
     function IssuableForm(form) {
       var $issuableDueDate, calendar;
       this.form = form;
-      this.toggleWip = bind(this.toggleWip, this);
-      this.renderWipExplanation = bind(this.renderWipExplanation, this);
-      this.resetAutosave = bind(this.resetAutosave, this);
-      this.handleSubmit = bind(this.handleSubmit, this);
+      this.toggleWip = this.toggleWip.bind(this);
+      this.renderWipExplanation = this.renderWipExplanation.bind(this);
+      this.resetAutosave = this.resetAutosave.bind(this);
+      this.handleSubmit = this.handleSubmit.bind(this);
       gl.GfmAutoComplete.setup();
       new UsersSelect();
       new GroupsSelect();
