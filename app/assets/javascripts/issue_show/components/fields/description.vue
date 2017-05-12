@@ -26,7 +26,9 @@
 
 <template>
   <div>
-    <label for="issue-description">
+    <label
+      class="sr-only"
+      for="issue-description">
       Description
     </label>
     <markdown-field
