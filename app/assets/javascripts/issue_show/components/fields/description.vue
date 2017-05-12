@@ -26,11 +26,16 @@
 
 <template>
   <div>
+    <label for="issue-description">
+      Description
+    </label>
     <markdown-field
       :markdown-preview-url="markdownPreviewUrl">
       <textarea
+        id="issue-description"
         class="note-textarea js-gfm-input js-autosize markdown-area"
         data-supports-slash-commands="false"
+        aria-label="Description"
         v-model="state.description"
         ref="textatea"
         slot="textarea">
