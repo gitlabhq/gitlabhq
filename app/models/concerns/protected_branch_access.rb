@@ -8,9 +8,13 @@ module ProtectedBranchAccess
 
     delegate :project, to: :protected_branch
 
-    validates :access_level, presence: true, inclusion: { in: [Gitlab::Access::MASTER,
-                                                               Gitlab::Access::DEVELOPER,
-                                                               Gitlab::Access::NO_ACCESS] }
+    validates :access_level, presence: true, inclusion: {
+      in: [
+        Gitlab::Access::MASTER,
+        Gitlab::Access::DEVELOPER,
+        Gitlab::Access::NO_ACCESS
+      ]
+    }
 
     def self.human_access_levels
       {
