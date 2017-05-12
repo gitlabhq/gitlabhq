@@ -31,12 +31,9 @@ class BuildEntity < Grape::Entity
 
   def detailed_status
     build.detailed_status(request.current_user)
-<<<<<<< HEAD
   end
 
   def path_to(route, build)
     send("#{route}_path", build.project.namespace, build.project, build)
-=======
->>>>>>> origin/master
   end
 end
