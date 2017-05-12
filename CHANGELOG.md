@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.1.4 (2017-05-12)
+
+- Fix error on CI/CD Settings page related to invalid pipeline trigger. !10948 (dosuken123)
+- Sort the network graph both by commit date and topographically. !11057
+- Fix cross referencing for private and internal projects. !11243
+- Handle incoming emails from aliases correctly.
+- Gracefully handle failures for incoming emails which do not match on the To header, and have no References header.
+- Add missing project attributes to Import/Export.
+- Fixed search terms not correctly highlighting.
+- Fixed bug where merge request JSON would be displayed.
+
 ## 9.1.3 (2017-05-05)
 
 - Do not show private groups on subgroups page if user doesn't have access to.
