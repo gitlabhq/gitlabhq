@@ -517,8 +517,8 @@ class Repository
   cache_method :avatar
 
   def readme
-    if head = tree(:head)
-      ReadmeBlob.new(head.readme, self)
+    if readme = tree(:head)&.readme
+      ReadmeBlob.new(readme, self)
     end
   end
 
