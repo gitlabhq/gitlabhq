@@ -2,7 +2,7 @@ module Gitlab
   PrometheusError = Class.new(StandardError)
 
   # Helper methods to interact with Prometheus network services & resources
-  class Prometheus
+  class PrometheusClient
     attr_reader :api_url
 
     def initialize(api_url:)
@@ -15,7 +15,7 @@ module Gitlab
 
     def query(query, time: Time.now)
       get_result('vector') do
-        json_api_get('query', query: query, time: time.utc.to_f)
+        json_api_get('query', query: query, time: time.to_f)
       end
     end
 
