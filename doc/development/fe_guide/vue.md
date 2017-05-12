@@ -423,7 +423,8 @@ the response we need:
   });
 ```
 
-1. Use `$.mount()` to mount the component
+Use `$.mount()` to mount the component
+
 ```javascript
   // bad
   new Component({
