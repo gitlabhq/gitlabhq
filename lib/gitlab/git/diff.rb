@@ -20,13 +20,25 @@ module Gitlab
       # We need this accessor because of `to_hash` and `init_from_hash`
       attr_accessor :too_large
 
-      # The maximum size of a diff to display.
-      SIZE_LIMIT = 100.kilobytes
-
-      # The maximum size before a diff is collapsed.
-      COLLAPSE_LIMIT = 10.kilobytes
-
       class << self
+        # The maximum size of a diff to display.
+        def size_limit
+          if Feature.enabled?('gitlab_git_diff_size_limit_increase')
+            200.kilobytes
+          else
+            100.kilobytes
+          end
+        end
+
+        # The maximum size before a diff is collapsed.
+        def collapse_limit
+          if Feature.enabled?('gitlab_git_diff_size_limit_increase')
+            100.kilobytes
+          else
+            10.kilobytes
+          end
+        end
+
         def between(repo, head, base, options = {}, *paths)
           straight = options.delete(:straight) || false
 
@@ -231,7 +243,7 @@ module Gitlab
 
       def too_large?
         if @too_large.nil?
-          @too_large = @diff.bytesize >= SIZE_LIMIT
+          @too_large = @diff.bytesize >= self.class.size_limit
         else
           @too_large
         end
@@ -246,7 +258,7 @@ module Gitlab
       def collapsed?
         return @collapsed if defined?(@collapsed)
 
-        @collapsed = !expanded && @diff.bytesize >= COLLAPSE_LIMIT
+        @collapsed = !expanded && @diff.bytesize >= self.class.collapse_limit
       end
 
       def collapse!
@@ -318,14 +330,14 @@ module Gitlab
           hunk.each_line do |line|
             size += line.content.bytesize
 
-            if size >= SIZE_LIMIT
+            if size >= self.class.size_limit
               too_large!
               return true
             end
           end
         end
 
-        if !expanded && size >= COLLAPSE_LIMIT
+        if !expanded && size >= self.class.collapse_limit
           collapse!
           return true
         end

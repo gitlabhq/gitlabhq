@@ -5,6 +5,11 @@ feature 'Expand and collapse diffs', js: true, feature: true do
   let(:project) { create(:project, :repository) }
 
   before do
+    # Set the limits to those when these specs were written, to avoid having to
+    # update the test repo every time we change them.
+    allow(Gitlab::Git::Diff).to receive(:size_limit).and_return(100.kilobytes)
+    allow(Gitlab::Git::Diff).to receive(:collapse_limit).and_return(10.kilobytes)
+
     login_as :admin
 
     # Ensure that undiffable.md is in .gitattributes
@@ -60,18 +65,6 @@ feature 'Expand and collapse diffs', js: true, feature: true do
     it 'shows small diffs immediately' do
       expect(small_diff).to have_selector('.code')
       expect(small_diff).not_to have_selector('.nothing-here-block')
-    end
-
-    it 'collapses large diffs by default' do
-      expect(large_diff).not_to have_selector('.code')
-      expect(large_diff).to have_selector('.nothing-here-block')
-    end
-
-    it 'collapses large diffs for renamed files by default' do
-      expect(large_diff_renamed).not_to have_selector('.code')
-      expect(large_diff_renamed).to have_selector('.nothing-here-block')
-      expect(large_diff_renamed).to have_selector('.js-file-title .deletion')
-      expect(large_diff_renamed).to have_selector('.js-file-title .addition')
     end
 
     it 'shows non-renderable diffs as such immediately, regardless of their size' do
