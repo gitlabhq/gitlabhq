@@ -97,8 +97,7 @@ describe API::PipelineSchedules do
           expect do
             post api("/projects/#{project.id}/pipeline_schedules", developer),
               params
-          end
-          .to change { project.pipeline_schedules.count }.by(1)
+          end.to change { project.pipeline_schedules.count }.by(1)
 
           expect(response).to have_http_status(:created)
           expect(response).to match_response_schema('pipeline_schedule')
