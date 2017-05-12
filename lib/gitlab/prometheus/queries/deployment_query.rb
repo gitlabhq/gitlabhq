@@ -19,7 +19,7 @@ module Gitlab::Prometheus::Queries
 
         cpu_values: client_query_range(cpu_query, start: timeframe_start, stop: timeframe_end),
         cpu_before: client_query(cpu_avg_query, time: deployment.created_at.to_f),
-        cpu_after: client_query(cpu_avg_query, time: timeframe_end),
+        cpu_after: client_query(cpu_avg_query, time: timeframe_end)
       }
     end
   end

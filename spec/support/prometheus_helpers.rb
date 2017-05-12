@@ -89,7 +89,7 @@ module PrometheusHelpers
         memory_values: prometheus_values_body('matrix').dig(:data, :result),
         memory_current: prometheus_value_body('vector').dig(:data, :result),
         cpu_values: prometheus_values_body('matrix').dig(:data, :result),
-        cpu_current: prometheus_value_body('vector').dig(:data, :result),
+        cpu_current: prometheus_value_body('vector').dig(:data, :result)
       },
       last_update: last_update
     }

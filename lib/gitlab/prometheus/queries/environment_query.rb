@@ -13,7 +13,7 @@ module Gitlab::Prometheus::Queries
         memory_values: client_query_range(memory_query, start: timeframe_start, stop: timeframe_end),
         memory_current: client_query(memory_query, time: timeframe_end),
         cpu_values: client_query_range(cpu_query, start: timeframe_start, stop: timeframe_end),
-        cpu_current: client_query(cpu_query, time: timeframe_end),
+        cpu_current: client_query(cpu_query, time: timeframe_end)
       }
     end
   end
