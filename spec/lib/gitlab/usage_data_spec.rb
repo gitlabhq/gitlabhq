@@ -17,6 +17,7 @@ describe Gitlab::UsageData do
         edition
         version
         uuid
+        hostname
       ))
     end
 
