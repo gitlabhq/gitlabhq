@@ -24,15 +24,8 @@ describe Gitlab::DependencyLinker::GemfileLinker, lib: true do
 
         gem "rails", '4.2.6', github: "rails/rails"
         gem 'rails-deprecated_sanitizer', '~> 1.0.3'
-
-        # Responders respond_to and respond_with
         gem 'responders', '~> 2.0', :github => 'rails/responders'
-
-        # Specify a sprockets version due to increased performance
-        # See https://gitlab.com/gitlab-org/gitlab-ce/issues/6069
         gem 'sprockets', '~> 3.6.0', git: 'https://gitlab.example.com/gems/sprockets'
-
-        # Default values for AR models
         gem 'default_value_for', '~> 3.0.0'
       CONTENT
     end
