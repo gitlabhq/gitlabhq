@@ -1,0 +1,4 @@
+---
+title: Add state to MR widget that prevent merges when branch changes after page load
+merge_request: 11316
+author:
