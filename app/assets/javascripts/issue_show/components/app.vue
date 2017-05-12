@@ -1,10 +1,13 @@
 <script>
+/* global Flash */
 import Visibility from 'visibilityjs';
 import Poll from '../../lib/utils/poll';
+import eventHub from '../event_hub';
 import Service from '../services/index';
 import Store from '../stores';
 import titleComponent from './title.vue';
 import descriptionComponent from './description.vue';
+import editActions from './edit_actions.vue';
 
 export default {
   props: {
@@ -34,6 +37,10 @@ export default {
       required: false,
       default: '',
     },
+    showForm: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     const store = new Store({
@@ -45,16 +52,43 @@ export default {
     return {
       store,
       state: store.state,
+      formState: store.formState,
     };
   },
   components: {
     descriptionComponent,
     titleComponent,
+    editActions,
+  },
+  methods: {
+    updateIssuable() {
+      this.service.updateIssuable(this.formState)
+        .then(() => {
+          eventHub.$emit('close.form');
+        })
+        .catch(() => {
+          eventHub.$emit('close.form');
+          return new Flash('Error updating issue');
+        });
+    },
+    deleteIssuable() {
+      this.service.deleteIssuable()
+        .then((data) => {
+          gl.utils.visitUrl(data.path);
+
+          // Stop the poll so we don't get 404's with the issue not existing
+          this.poll.stop();
+        })
+        .catch(() => {
+          eventHub.$emit('close.form');
+          return new Flash('Error deleting issue');
+        });
+    },
   },
   created() {
-    const resource = new Service(this.endpoint);
-    const poll = new Poll({
-      resource,
+    this.service = new Service(this.endpoint);
+    this.poll = new Poll({
+      resource: this.service,
       method: 'getData',
       successCallback: (res) => {
         this.store.updateState(res.json());
@@ -65,16 +99,23 @@ export default {
     });
 
     if (!Visibility.hidden()) {
-      poll.makeRequest();
+      this.poll.makeRequest();
     }
 
     Visibility.change(() => {
       if (!Visibility.hidden()) {
-        poll.restart();
+        this.poll.restart();
       } else {
-        poll.stop();
+        this.poll.stop();
       }
     });
+
+    eventHub.$on('delete.issuable', this.deleteIssuable);
+    eventHub.$on('update.issuable', this.updateIssuable);
+  },
+  beforeDestroy() {
+    eventHub.$off('delete.issuable', this.deleteIssuable);
+    eventHub.$off('update.issuable', this.updateIssuable);
   },
 };
 </script>
@@ -92,5 +133,7 @@ export default {
       :description-text="state.descriptionText"
       :updated-at="state.updatedAt"
       :task-status="state.taskStatus" />
+    <edit-actions
+      v-if="canUpdate && showForm" />
   </div>
 </template>

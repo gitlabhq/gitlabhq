@@ -14,7 +14,16 @@ module IssuableActions
 
     name = issuable.human_class_name
     flash[:notice] = "The #{name} was successfully deleted."
-    redirect_to polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable.class])
+    index_path = polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable.class])
+
+    respond_to do |format|
+      format.html { redirect_to index_path }
+      format.json do
+        render json: {
+          path: index_path
+        }
+      end
+    end
   end
 
   def bulk_update

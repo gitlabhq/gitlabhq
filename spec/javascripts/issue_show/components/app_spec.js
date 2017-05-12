@@ -2,6 +2,7 @@ import Vue from 'vue';
 import '~/render_math';
 import '~/render_gfm';
 import issuableApp from '~/issue_show/components/app.vue';
+import eventHub from '~/issue_show/event_hub';
 import issueShowData from '../mock_data';
 
 const issueShowInterceptor = data => (request, next) => {
@@ -22,6 +23,8 @@ describe('Issuable output', () => {
     const IssuableDescriptionComponent = Vue.extend(issuableApp);
     Vue.http.interceptors.push(issueShowInterceptor(issueShowData.initialRequest));
 
+    spyOn(eventHub, '$emit');
+
     vm = new IssuableDescriptionComponent({
       propsData: {
         canUpdate: true,
@@ -30,6 +33,7 @@ describe('Issuable output', () => {
         initialTitle: '',
         initialDescriptionHtml: '',
         initialDescriptionText: '',
+        showForm: true,
       },
     }).$mount();
   });
@@ -52,6 +56,108 @@ describe('Issuable output', () => {
         expect(vm.$el.querySelector('.title').innerHTML).toContain('<p>2</p>');
         expect(vm.$el.querySelector('.wiki').innerHTML).toContain('<p>42</p>');
         expect(vm.$el.querySelector('.js-task-list-field').value).toContain('42');
+
+        done();
+      });
+    });
+  });
+
+  describe('updateIssuable', () => {
+    it('correctly updates issuable data', (done) => {
+      spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve) => {
+        resolve();
+      }));
+
+      vm.updateIssuable();
+
+      setTimeout(() => {
+        expect(
+          vm.service.updateIssuable,
+        ).toHaveBeenCalledWith(vm.formState);
+        expect(
+          eventHub.$emit,
+        ).toHaveBeenCalledWith('close.form');
+
+        done();
+      });
+    });
+
+    it('closes form on error', (done) => {
+      spyOn(window, 'Flash').and.callThrough();
+      spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve, reject) => {
+        reject();
+      }));
+
+      vm.updateIssuable();
+
+      setTimeout(() => {
+        expect(
+          eventHub.$emit,
+        ).toHaveBeenCalledWith('close.form');
+        expect(
+          window.Flash,
+        ).toHaveBeenCalledWith('Error updating issue');
+
+        done();
+      });
+    });
+  });
+
+  describe('deleteIssuable', () => {
+    it('changes URL when deleted', (done) => {
+      spyOn(gl.utils, 'visitUrl');
+      spyOn(vm.service, 'deleteIssuable').and.callFake(() => new Promise((resolve) => {
+        resolve({
+          path: '/test',
+        });
+      }));
+
+      vm.deleteIssuable();
+
+      setTimeout(() => {
+        expect(
+          gl.utils.visitUrl,
+        ).toHaveBeenCalledWith('/test');
+
+        done();
+      });
+    });
+
+    it('stops polling when deleteing', (done) => {
+      spyOn(gl.utils, 'visitUrl');
+      spyOn(vm.poll, 'stop');
+      spyOn(vm.service, 'deleteIssuable').and.callFake(() => new Promise((resolve) => {
+        resolve({
+          path: '/test',
+        });
+      }));
+
+      vm.deleteIssuable();
+
+      setTimeout(() => {
+        expect(
+          vm.poll.stop,
+        ).toHaveBeenCalledWith();
+
+        done();
+      });
+    });
+
+    it('closes form on error', (done) => {
+      spyOn(window, 'Flash').and.callThrough();
+      spyOn(vm.service, 'deleteIssuable').and.callFake(() => new Promise((resolve, reject) => {
+        reject();
+      }));
+
+      vm.deleteIssuable();
+
+      setTimeout(() => {
+        expect(
+          eventHub.$emit,
+        ).toHaveBeenCalledWith('close.form');
+        expect(
+          window.Flash,
+        ).toHaveBeenCalledWith('Error deleting issue');
 
         done();
       });

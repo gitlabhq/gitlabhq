@@ -12,6 +12,7 @@ export default class Store {
       taskStatus: '',
       updatedAt: '',
     };
+    this.formState = {};
   }
 
   updateState(data) {
