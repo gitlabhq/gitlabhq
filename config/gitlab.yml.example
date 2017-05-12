@@ -216,9 +216,9 @@ production: &base
     geo_bulk_notify_worker:
       cron: "*/10 * * * * *"
 
-    # GitLab Geo backfill worker
+    # GitLab Geo repository sync worker
     # NOTE: This will only take effect if Geo is enabled
-    geo_backfill_worker:
+    geo_repository_sync_worker:
       cron: "*/5 * * * *"
 
     # GitLab Geo file download worker
