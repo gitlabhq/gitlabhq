@@ -43,7 +43,7 @@ describe 'Dashboard > milestone filter', feature: true, js: true do
     end
 
     it 'should not change active Milestone unless clicked' do
-      find(milestone_select).click
+      find(milestone_select).trigger('click')
 
       expect(find('.dropdown-content')).to have_selector('a.is-active', count: 1)
 
