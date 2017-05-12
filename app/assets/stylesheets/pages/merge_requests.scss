@@ -90,11 +90,6 @@
     align-items: center;
     padding: $gl-padding-top $gl-padding 0;
 
-    i,
-    svg {
-      margin-right: 8px;
-    }
-
     svg {
       position: relative;
       top: 1px;
@@ -109,9 +104,10 @@
       flex-wrap: wrap;
     }
 
-    .ci-status-icon > .icon-link svg {
+    .icon-link > .ci-status-icon > svg {
       width: 22px;
       height: 22px;
+      margin-right: 8px;
     }
 
     .ci-error {
