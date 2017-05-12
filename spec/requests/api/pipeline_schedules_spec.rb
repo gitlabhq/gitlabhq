@@ -118,6 +118,17 @@ describe API::PipelineSchedules do
           expect(response).to have_http_status(:bad_request)
         end
       end
+
+      context 'when cron has validation error' do
+        it 'does not create pipeline_schedule' do
+          post api("/projects/#{project.id}/pipeline_schedules", developer),
+            description: description, ref: ref, cron: 'invalid-cron',
+            cron_timezone: cron_timezone, active: active
+
+          expect(response).to have_http_status(:bad_request)
+          expect(json_response['message']).to have_key('cron')
+        end
+      end
     end
 
     context 'authenticated user with invalid permissions' do
@@ -147,17 +158,6 @@ describe API::PipelineSchedules do
     end
 
     context 'authenticated user with valid permissions' do
-      let(:new_ref) { 'patch-x' }
-
-      it 'updates ref' do
-        put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", developer),
-          ref: new_ref
-
-        expect(response).to have_http_status(:ok)
-        expect(response).to match_response_schema('pipeline_schedule')
-        expect(json_response['ref']).to eq(new_ref)
-      end
-
       let(:new_cron) { '1 2 3 4 *' }
 
       it 'updates cron' do
@@ -172,6 +172,16 @@ describe API::PipelineSchedules do
         expect(pipeline_schedule.next_run_at.hour).to eq(2)
         expect(pipeline_schedule.next_run_at.day).to eq(3)
         expect(pipeline_schedule.next_run_at.month).to eq(4)
+      end
+
+      context 'when cron has validation error' do
+        it 'does not update pipeline_schedule' do
+          put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", developer),
+            cron: 'invalid-cron'
+
+          expect(response).to have_http_status(:bad_request)
+          expect(json_response['message']).to have_key('cron')
+        end
       end
     end
 
