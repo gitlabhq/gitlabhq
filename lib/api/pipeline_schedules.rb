@@ -6,7 +6,7 @@ module API
       requires :id, type: String, desc: 'The ID of a project'
     end
     resource :projects, requirements: { id: %r{[^/]+} } do
-      desc 'Get pipeline_schedules list' do
+      desc 'Get a list of pipeline schedules' do
         success Entities::PipelineSchedule
       end
       params do
@@ -21,11 +21,11 @@ module API
         present paginate(pipeline_schedules), with: Entities::PipelineSchedule
       end
 
-      desc 'Get specific pipeline_schedule of a project' do
+      desc 'Get a single pipeline schedule' do
         success Entities::PipelineSchedule
       end
       params do
-        requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline_schedule ID'
+        requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline schedule id'
       end
       get ':id/pipeline_schedules/:pipeline_schedule_id' do
         authenticate!
@@ -37,15 +37,15 @@ module API
         present pipeline_schedule, with: Entities::PipelineSchedule
       end
 
-      desc 'Create a pipeline_schedule' do
+      desc 'Creates a new pipeline schedule' do
         success Entities::PipelineSchedule
       end
       params do
-        requires :description, type: String, desc: 'The pipeline_schedule description'
-        requires :ref, type: String, desc: 'The pipeline_schedule ref'
-        requires :cron, type: String, desc: 'The pipeline_schedule cron'
-        requires :cron_timezone, type: String, desc: 'The pipeline_schedule cron_timezone'
-        requires :active, type: Boolean, desc: 'The pipeline_schedule active'
+        requires :description, type: String, desc: 'The description of pipeline schedule'
+        requires :ref, type: String, desc: 'The branch/tag name will be triggered'
+        requires :cron, type: String, desc: 'The cron'
+        requires :cron_timezone, type: String, desc: 'The timezone'
+        requires :active, type: Boolean, desc: 'The activation of pipeline schedule'
       end
       post ':id/pipeline_schedules' do
         authenticate!
@@ -61,16 +61,16 @@ module API
         end
       end
 
-      desc 'Update a pipeline_schedule' do
+      desc 'Updates an existing pipeline schedule' do
         success Entities::PipelineSchedule
       end
       params do
-        requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline_schedule ID'
-        optional :description, type: String, desc: 'The pipeline_schedule description'
-        optional :ref, type: String, desc: 'The pipeline_schedule ref'
-        optional :cron, type: String, desc: 'The pipeline_schedule cron'
-        optional :cron_timezone, type: String, desc: 'The pipeline_schedule cron_timezone'
-        optional :active, type: Boolean, desc: 'The pipeline_schedule active'
+        requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline schedule id'
+        optional :description, type: String, desc: 'The description of pipeline schedule'
+        optional :ref, type: String, desc: 'The branch/tag name will be triggered'
+        optional :cron, type: String, desc: 'The cron'
+        optional :cron_timezone, type: String, desc: 'The timezone'
+        optional :active, type: Boolean, desc: 'The activation of pipeline schedule'
       end
       put ':id/pipeline_schedules/:pipeline_schedule_id' do
         authenticate!
@@ -86,11 +86,11 @@ module API
         end
       end
 
-      desc 'Take ownership of pipeline_schedule' do
+      desc 'Update an owner of a pipeline schedule' do
         success Entities::PipelineSchedule
       end
       params do
-        requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline_schedule ID'
+        requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline schedule id'
       end
       post ':id/pipeline_schedules/:pipeline_schedule_id/take_ownership' do
         authenticate!
@@ -107,11 +107,11 @@ module API
         end
       end
 
-      desc 'Delete a pipeline_schedule' do
+      desc 'Delete a pipeline schedule' do
         success Entities::PipelineSchedule
       end
       params do
-        requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline_schedule ID'
+        requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline schedule id'
       end
       delete ':id/pipeline_schedules/:pipeline_schedule_id' do
         authenticate!
