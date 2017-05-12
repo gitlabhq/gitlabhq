@@ -10,6 +10,6 @@
         = event.details[:with]
         authentication
       %span.pull-right
-        #{time_ago_in_words event.created_at} ago
+        #{time_ago_with_tooltip(event.created_at)}
 
 = paginate events, theme: "gitlab"
