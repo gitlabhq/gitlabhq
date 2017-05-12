@@ -48,7 +48,7 @@
                   %a{ href: "#", data: {id: "close" } } Closed
           .filter-item.inline
             = dropdown_tag("Assignee", options: { toggle_class: "issue-bulk-update-dropdown-toggle js-user-search js-update-assignee js-filter-submit js-filter-bulk-update", title: "Assign to", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable",
-              placeholder: "Search authors", data: { first_user: (current_user.username if current_user), null_user: true, current_user: true, project_id: @project.id, field_name: "update[assignee_id]", default_label: "Assignee" } })
+              placeholder: "Search authors", data: { first_user: (current_user.username if current_user), null_user: true, current_user: true, project_id: @project.id, field_name: "update[assignee_id]", default_label: "Assignee", selected: params[:assignee_id] } })
           .filter-item.inline
             = dropdown_tag("Milestone", options: { title: "Assign milestone", toggle_class: 'issue-bulk-update-dropdown-toggle js-milestone-select js-extra-options js-filter-submit js-filter-bulk-update', filter: true, dropdown_class: "dropdown-menu-selectable dropdown-menu-milestone", placeholder: "Search milestones", data: { show_no: true, field_name: "update[milestone_id]", default_label: "Milestone", project_id: @project.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :json), use_id: true } })
           .filter-item.inline.labels-filter

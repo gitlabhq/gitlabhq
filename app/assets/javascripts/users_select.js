@@ -50,7 +50,8 @@ function UsersSelect(currentUser, els) {
       $collapsedSidebar = $block.find('.sidebar-collapsed-user');
       $loading = $block.find('.block-loading').fadeOut();
       selectedIdDefault = (defaultNullUser && showNullUser) ? 0 : null;
-      selectedId = $dropdown.data('selected') || selectedIdDefault;
+      selectedId = parseInt($dropdown[0].dataset.selected, 10);
+      selectedId = isNaN(selectedId) ? selectedIdDefault : selectedId;
 
       const assignYourself = function () {
         const unassignedSelected = $dropdown.closest('.selectbox')
@@ -424,7 +425,8 @@ function UsersSelect(currentUser, els) {
         opened: function(e) {
           const $el = $(e.currentTarget);
           if ($dropdown.hasClass('js-issue-board-sidebar')) {
-            selectedId = parseInt($dropdown[0].dataset.selected, 10) || selectedIdDefault;
+            selectedId = parseInt($dropdown[0].dataset.selected, 10);
+            selectedId = isNaN(selectedId) ? selectedIdDefault : selectedId;
           }
           $el.find('.is-active').removeClass('is-active');
 
@@ -444,7 +446,7 @@ function UsersSelect(currentUser, els) {
           username = user.username ? "@" + user.username : "";
           avatar = user.avatar_url ? user.avatar_url : false;
 
-          let selected = user.id === parseInt(selectedId, 10);
+          let selected = false;
 
           if (this.multiSelect) {
             const fieldName = this.fieldName;
@@ -453,6 +455,8 @@ function UsersSelect(currentUser, els) {
             if (field.length) {
               selected = true;
             }
+          } else {
+            selected = (user.id === selectedId) || (user.id === parseInt(selectedId, 10));
           }
 
           img = "";
