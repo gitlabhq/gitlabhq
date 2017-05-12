@@ -85,29 +85,28 @@ describe API::PipelineSchedules do
   end
 
   describe 'POST /projects/:id/pipeline_schedules' do
-    let(:description) { 'pipeline_schedule' }
-    let(:ref) { 'master' }
-    let(:cron) { '* * * * *' }
-    let(:cron_timezone) { 'UTC' }
-    let(:active) { true }
+    let(:params) do
+      attributes_for(:ci_pipeline_schedule,
+        description: 'description', ref: 'master', cron: '* * * * *',
+        cron_timezone: 'UTC', active: true)
+    end
 
     context 'authenticated user with valid permissions' do
       context 'with required parameters' do
         it 'creates pipeline_schedule' do
           expect do
             post api("/projects/#{project.id}/pipeline_schedules", developer),
-              description: description, ref: ref, cron: cron,
-              cron_timezone: cron_timezone, active: active
+              params
           end
           .to change{project.pipeline_schedules.count}.by(1)
 
           expect(response).to have_http_status(:created)
           expect(response).to match_response_schema('pipeline_schedule')
-          expect(json_response['description']).to eq(description)
-          expect(json_response['ref']).to eq(ref)
-          expect(json_response['cron']).to eq(cron)
-          expect(json_response['cron_timezone']).to eq(cron_timezone)
-          expect(json_response['active']).to eq(active)
+          expect(json_response['description']).to eq(params[:description])
+          expect(json_response['ref']).to eq(params[:ref])
+          expect(json_response['cron']).to eq(params[:cron])
+          expect(json_response['cron_timezone']).to eq(params[:cron_timezone])
+          expect(json_response['active']).to eq(params[:active])
         end
       end
 
@@ -122,8 +121,7 @@ describe API::PipelineSchedules do
       context 'when cron has validation error' do
         it 'does not create pipeline_schedule' do
           post api("/projects/#{project.id}/pipeline_schedules", developer),
-            description: description, ref: ref, cron: 'invalid-cron',
-            cron_timezone: cron_timezone, active: active
+            params.tap { |_| params['cron'] = 'invalid-cron' }
 
           expect(response).to have_http_status(:bad_request)
           expect(json_response['message']).to have_key('cron')
@@ -133,9 +131,7 @@ describe API::PipelineSchedules do
 
     context 'authenticated user with invalid permissions' do
       it 'does not create pipeline_schedule' do
-        post api("/projects/#{project.id}/pipeline_schedules", user),
-          description: description, ref: ref, cron: cron,
-          cron_timezone: cron_timezone, active: active
+        post api("/projects/#{project.id}/pipeline_schedules", user), params
 
         expect(response).to have_http_status(:not_found)
       end
@@ -143,9 +139,7 @@ describe API::PipelineSchedules do
 
     context 'unauthenticated user' do
       it 'does not create pipeline_schedule' do
-        post api("/projects/#{project.id}/pipeline_schedules"),
-          description: description, ref: ref, cron: cron,
-          cron_timezone: cron_timezone, active: active
+        post api("/projects/#{project.id}/pipeline_schedules"), params
 
         expect(response).to have_http_status(:unauthorized)
       end
@@ -158,16 +152,14 @@ describe API::PipelineSchedules do
     end
 
     context 'authenticated user with valid permissions' do
-      let(:new_cron) { '1 2 3 4 *' }
-
       it 'updates cron' do
         put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", developer),
-          cron: new_cron
+          cron: '1 2 3 4 *'
         pipeline_schedule.reload
 
         expect(response).to have_http_status(:ok)
         expect(response).to match_response_schema('pipeline_schedule')
-        expect(json_response['cron']).to eq(new_cron)
+        expect(json_response['cron']).to eq('1 2 3 4 *')
         expect(pipeline_schedule.next_run_at.min).to eq(1)
         expect(pipeline_schedule.next_run_at.hour).to eq(2)
         expect(pipeline_schedule.next_run_at.day).to eq(3)
