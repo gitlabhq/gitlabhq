@@ -35,24 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initialTitle: issuableTitleElement.innerHTML,
         initialDescriptionHtml: issuableDescriptionElement ? issuableDescriptionElement.innerHTML : '',
         initialDescriptionText: issuableDescriptionTextarea ? issuableDescriptionTextarea.textContent : '',
-        showForm: false,
       };
-    },
-    methods: {
-      openForm() {
-        this.showForm = true;
-      },
-      closeForm() {
-        this.showForm = false;
-      },
-    },
-    created() {
-      eventHub.$on('open.form', this.openForm);
-      eventHub.$on('close.form', this.closeForm);
-    },
-    beforeDestroy() {
-      eventHub.$off('open.form', this.openForm);
-      eventHub.$off('close.form', this.closeForm);
     },
     render(createElement) {
       return createElement('issuable-app', {
