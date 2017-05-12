@@ -689,7 +689,7 @@
 }
 
 .merge-request-tabs-holder {
-  top: 0;
+  top: $header-height;
   z-index: 10;
   background-color: $white-light;
 

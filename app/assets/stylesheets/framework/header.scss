@@ -116,10 +116,10 @@ header {
 
   .navbar-border {
     height: 1px;
-    position: fixed;
-    left: 0;
+    position: absolute;
     right: 0;
-    top: 50px;
+    left: 0;
+    bottom: 0;
     background-color: $border-color;
     opacity: 0;
   }

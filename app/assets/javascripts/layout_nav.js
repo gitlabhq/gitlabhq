@@ -48,8 +48,11 @@ import _ from 'underscore';
   });
 
   function applyScrollNavClass() {
-    $('.navbar-border').css('opacity', $(window).scrollTop() / 40);
+    const scrollOpacityHeight = 40;
+    $('.navbar-border').css('opacity', Math.min($(window).scrollTop() / scrollOpacityHeight, 1));
   }
 
-  $(window).scroll(_.throttle(applyScrollNavClass, 100));
+  $(() => {
+    $(window).on('scroll', _.throttle(applyScrollNavClass, 100));
+  });
 }).call(window);
