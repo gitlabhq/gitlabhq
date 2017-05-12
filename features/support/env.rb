@@ -30,8 +30,8 @@ Spinach.hooks.before_run do
   include FactoryGirl::Syntax::Methods
 end
 
-Spinach.hooks.after_feature do |feature_data|
-  if feature_data.scenarios.flat_map(&:tags).include?('javascript')
+Spinach.hooks.after_scenario do |scenario_data, step_definitions|
+  if scenario_data.tags.include?('javascript')
     include WaitForRequests
     wait_for_requests_complete
   end
