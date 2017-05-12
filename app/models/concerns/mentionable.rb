@@ -44,14 +44,15 @@ module Mentionable
   end
 
   def all_references(current_user = nil, extractor: nil)
+    @extractors ||= {}
+
     # Use custom extractor if it's passed in the function parameters.
     if extractor
-      @extractor = extractor
+      @extractors[current_user] = extractor
     else
-      @extractor ||= Gitlab::ReferenceExtractor.
-        new(project, current_user)
+      extractor = @extractors[current_user] ||= Gitlab::ReferenceExtractor.new(project, current_user)
 
-      @extractor.reset_memoized_values
+      extractor.reset_memoized_values
     end
 
     self.class.mentionable_attrs.each do |attr, options|
@@ -62,10 +63,10 @@ module Mentionable
         skip_project_check: skip_project_check?
       )
 
-      @extractor.analyze(text, options)
+      extractor.analyze(text, options)
     end
 
-    @extractor
+    extractor
   end
 
   def mentioned_users(current_user = nil)
