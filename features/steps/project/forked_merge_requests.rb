@@ -32,10 +32,7 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
     expect(page).to have_content @project.path_with_namespace
     expect(page).to have_content @merge_request.source_branch
     expect(page).to have_content @merge_request.target_branch
-<<<<<<< HEAD
-=======
 
->>>>>>> upstream/master
     wait_for_vue_resource
   end
 

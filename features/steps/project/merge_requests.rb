@@ -422,10 +422,6 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     page.within '.status-box' do
       expect(page).to have_content "Open"
     end
-<<<<<<< HEAD
-
-=======
->>>>>>> upstream/master
     wait_for_vue_resource
   end
 
