@@ -15,7 +15,7 @@ module Gitlab
           end
 
           def path_patterns
-            @path_patterns ||= paths.map { |path| "%#{path}" }
+            @path_patterns ||= paths.map { |path| ["%/#{path}", "#{path}"] }.flatten
           end
 
           def rename_path_for_routable(routable)
