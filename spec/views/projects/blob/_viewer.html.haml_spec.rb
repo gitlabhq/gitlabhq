@@ -12,7 +12,7 @@ describe 'projects/blob/_viewer.html.haml', :view do
       self.partial_name = 'text'
       self.max_size = 1.megabyte
       self.absolute_max_size = 5.megabytes
-      self.client_side = false
+      self.load_async = true
     end
   end
 
@@ -35,9 +35,9 @@ describe 'projects/blob/_viewer.html.haml', :view do
     render partial: 'projects/blob/viewer', locals: { viewer: viewer }
   end
 
-  context 'when the viewer is server side' do
+  context 'when the viewer is loaded asynchronously' do
     before do
-      viewer_class.client_side = false
+      viewer_class.load_async = true
     end
 
     context 'when there is no render error' do
@@ -65,9 +65,9 @@ describe 'projects/blob/_viewer.html.haml', :view do
     end
   end
 
-  context 'when the viewer is client side' do
+  context 'when the viewer is loaded synchronously' do
     before do
-      viewer_class.client_side = true
+      viewer_class.load_async = false
     end
 
     context 'when there is no render error' do

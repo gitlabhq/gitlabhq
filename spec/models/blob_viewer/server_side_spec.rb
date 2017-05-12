@@ -22,4 +22,20 @@ describe BlobViewer::ServerSide, model: true do
       subject.prepare!
     end
   end
+
+  describe '#render_error' do
+    context 'when the blob is stored externally' do
+      let(:project) { build(:empty_project, lfs_enabled: true) }
+
+      let(:blob) { fake_blob(path: 'file.pdf', lfs: true) }
+
+      before do
+        allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
+      end
+
+      it 'return :server_side_but_stored_externally' do
+        expect(subject.render_error).to eq(:server_side_but_stored_externally)
+      end
+    end
+  end
 end

@@ -7,11 +7,12 @@ describe BlobViewer::Base, model: true do
 
   let(:viewer_class) do
     Class.new(described_class) do
+      include BlobViewer::ServerSide
+
       self.extensions = %w(pdf)
       self.binary = true
       self.max_size = 1.megabyte
       self.absolute_max_size = 5.megabytes
-      self.client_side = false
     end
   end
 
@@ -38,10 +39,10 @@ describe BlobViewer::Base, model: true do
 
     context 'when the file type is supported' do
       before do
-        viewer_class.file_type = :license
+        viewer_class.file_types = %i(license)
         viewer_class.binary = false
       end
-      
+
       context 'when the binaryness matches' do
         let(:blob) { fake_blob(path: 'LICENSE', binary: false) }
 
@@ -170,20 +171,6 @@ describe BlobViewer::Base, model: true do
         it 'returns nil' do
           expect(viewer.render_error).to be_nil
         end
-      end
-    end
-
-    context 'when the viewer is server side but the blob is stored externally' do
-      let(:project) { build(:empty_project, lfs_enabled: true) }
-
-      let(:blob) { fake_blob(path: 'file.pdf', lfs: true) }
-
-      before do
-        allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
-      end
-
-      it 'return :server_side_but_stored_externally' do
-        expect(viewer.render_error).to eq(:server_side_but_stored_externally)
       end
     end
   end
