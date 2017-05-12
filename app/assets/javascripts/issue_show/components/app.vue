@@ -78,10 +78,10 @@ export default {
     deleteIssuable() {
       this.service.deleteIssuable()
         .then((data) => {
-          gl.utils.visitUrl(data.path);
-
           // Stop the poll so we don't get 404's with the issue not existing
           this.poll.stop();
+
+          gl.utils.visitUrl(data.path);
         })
         .catch(() => {
           eventHub.$emit('close.form');
