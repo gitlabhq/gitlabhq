@@ -39,6 +39,7 @@ describe('Environments Folder View', () => {
       component = new EnvironmentsFolderViewComponent({
         el: document.querySelector('#environments-folder-list-view'),
       });
+      // component.fetchEnvironments();
     });
 
     afterEach(() => {

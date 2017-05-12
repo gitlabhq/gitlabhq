@@ -76,6 +76,8 @@ describe('Environment', () => {
         component = new EnvironmentsComponent({
           el: document.querySelector('#environments-list-view'),
         });
+
+        // component.fetchEnvironments();
       });
 
       afterEach(() => {

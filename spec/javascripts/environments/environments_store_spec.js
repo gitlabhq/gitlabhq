@@ -123,4 +123,13 @@ describe('Store', () => {
       expect(store.state.paginationInformation).toEqual(expectedResult);
     });
   });
+
+  describe('getOpenFolders', () => {
+    it('should return open folder', () => {
+      store.storeEnvironments(serverData);
+
+      store.toggleFolder(store.state.environments[1]);
+      expect(store.getOpenFolders()[0]).toEqual(store.state.environments[1]);
+    });
+  });
 });

@@ -1,10 +1,13 @@
 <script>
 /* global Flash */
+import Visibility from 'visibilityjs';
 import EnvironmentsService from '../services/environments_service';
 import environmentTable from '../components/environments_table.vue';
 import EnvironmentsStore from '../stores/environments_store';
 import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 import tablePagination from '../../vue_shared/components/table_pagination.vue';
+import Poll from '../../lib/utils/poll';
+import eventHub from '../event_hub';
 import '../../lib/utils/common_utils';
 import '../../vue_shared/vue_resource_interceptor';
 
@@ -76,33 +79,39 @@ export default {
    */
   created() {
     const scope = gl.utils.getParameterByName('scope') || this.visibility;
-    const pageNumber = gl.utils.getParameterByName('page') || this.pageNumber;
+    const page = gl.utils.getParameterByName('page') || this.pageNumber;
 
-    const endpoint = `${this.endpoint}?scope=${scope}&page=${pageNumber}`;
+    this.service = new EnvironmentsService(this.endpoint);
 
-    this.service = new EnvironmentsService(endpoint);
+    const poll = new Poll({
+      resource: this.service,
+      method: 'get',
+      data: { scope, page },
+      successCallback: this.successCallback,
+      errorCallback: this.errorCallback,
+      notificationCallback: (isMakingRequest) => {
+        this.isMakingRequest = isMakingRequest;
+      },
+    });
 
-    this.isLoading = true;
+    if (!Visibility.hidden()) {
+      this.isLoading = true;
+      poll.makeRequest();
+    }
 
-    return this.service.get()
-      .then(resp => ({
-        headers: resp.headers,
-        body: resp.json(),
-      }))
-      .then((response) => {
-        this.store.storeAvailableCount(response.body.available_count);
-        this.store.storeStoppedCount(response.body.stopped_count);
-        this.store.storeEnvironments(response.body.environments);
-        this.store.setPagination(response.headers);
-      })
-      .then(() => {
-        this.isLoading = false;
-      })
-      .catch(() => {
-        this.isLoading = false;
-        // eslint-disable-next-line no-new
-        new Flash('An error occurred while fetching the environments.', 'alert');
-      });
+    Visibility.change(() => {
+      if (!Visibility.hidden()) {
+        poll.restart();
+      } else {
+        poll.stop();
+      }
+    });
+
+    eventHub.$on('postAction', this.postAction);
+  },
+
+  beforeDestroyed() {
+    eventHub.$off('postAction');
   },
 
   methods: {
@@ -116,6 +125,47 @@ export default {
 
       gl.utils.visitUrl(param);
       return param;
+    },
+
+    fetchEnvironments() {
+      const scope = gl.utils.getParameterByName('scope') || this.visibility;
+      const page = gl.utils.getParameterByName('page') || this.pageNumber;
+
+      this.isLoading = true;
+
+      return this.service.get({ scope, page })
+        .then(this.successCallback)
+        .catch(this.errorCallback);
+    },
+
+    successCallback(resp) {
+      const response = {
+        headers: resp.headers,
+        body: resp.json(),
+      };
+
+      this.isLoading = false;
+
+      this.store.storeAvailableCount(response.body.available_count);
+      this.store.storeStoppedCount(response.body.stopped_count);
+      this.store.storeEnvironments(response.body.environments);
+      this.store.setPagination(response.headers);
+    },
+
+    errorCallback() {
+      this.isLoading = false;
+      // eslint-disable-next-line no-new
+      new Flash('An error occurred while fetching the environments.');
+    },
+
+    postAction(endpoint) {
+      if (!this.isMakingRequest) {
+        this.isLoading = true;
+
+        this.service.postAction(endpoint)
+          .then(() => this.fetchEnvironments())
+          .catch(() => new Flash('An error occured while making the request.'));
+      }
     },
   },
 };
