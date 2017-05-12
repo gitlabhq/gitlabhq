@@ -79,7 +79,7 @@ module Gitlab
     end
 
     def self.file_download_job
-      Sidekiq::Cron::Job.find('geo_download_dispatch_worker')
+      Sidekiq::Cron::Job.find('geo_file_download_dispatch_worker')
     end
 
     def self.configure_primary_jobs!
