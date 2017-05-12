@@ -224,6 +224,10 @@ class Namespace < ActiveRecord::Base
     parent.present?
   end
 
+  def parent_full_path
+    full_path.split('/')[0...-1].join('/')
+  end
+
   private
 
   def repository_storage_paths

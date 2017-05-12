@@ -332,4 +332,10 @@ describe Namespace, models: true do
 
     it { expect(group.all_projects.to_a).to eq([project2, project1]) }
   end
+
+  describe '#parent_full_path' do
+    let(:namespace) { create(:group, :nested) }
+
+    it { expect(namespace.parent_full_path).to eq(namespace.parent.path) }
+  end
 end

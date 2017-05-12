@@ -70,6 +70,12 @@ describe ProjectsHelper do
       expect(helper.project_list_cache_key(project)).to include(project.namespace.cache_key)
     end
 
+    it "includes the parent namespace in case of subgroup" do
+      project = create(:project, group: create(:group, :nested))
+
+      expect(helper.project_list_cache_key(project)).to include("parent/#{project.namespace.parent.path}")
+    end
+
     it "includes the project" do
       expect(helper.project_list_cache_key(project)).to include(project.cache_key)
     end
