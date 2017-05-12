@@ -123,7 +123,6 @@ ActiveRecord::Schema.define(version: 20170508170547) do
     t.integer "unique_ips_limit_per_user"
     t.integer "unique_ips_limit_time_window"
     t.boolean "unique_ips_limit_enabled", default: false, null: false
-<<<<<<< HEAD
     t.integer "minimum_mirror_sync_time", default: 15, null: false
     t.string "default_artifacts_expire_in", default: "0", null: false
     t.string "elasticsearch_url", default: "http://localhost:9200"
@@ -132,9 +131,6 @@ ActiveRecord::Schema.define(version: 20170508170547) do
     t.string "elasticsearch_aws_access_key"
     t.string "elasticsearch_aws_secret_access_key"
     t.integer "geo_status_timeout", default: 10
-=======
-    t.string "default_artifacts_expire_in", default: "0", null: false
->>>>>>> upstream/master
     t.string "uuid"
     t.decimal "polling_interval_multiplier", default: 1.0, null: false
     t.boolean "elasticsearch_experimental_indexer"
@@ -1140,16 +1136,11 @@ ActiveRecord::Schema.define(version: 20170508170547) do
     t.boolean "lfs_enabled"
     t.text "description_html"
     t.boolean "only_allow_merge_if_all_discussions_are_resolved"
-<<<<<<< HEAD
     t.integer "repository_size_limit", limit: 8
     t.integer "sync_time", default: 60, null: false
     t.boolean "printing_merge_request_link_enabled", default: true, null: false
     t.integer "auto_cancel_pending_pipelines", default: 0, null: false
     t.boolean "service_desk_enabled"
-=======
-    t.boolean "printing_merge_request_link_enabled", default: true, null: false
-    t.integer "auto_cancel_pending_pipelines", default: 0, null: false
->>>>>>> upstream/master
     t.string "import_jid"
     t.integer "cached_markdown_version"
     t.datetime "last_repository_updated_at"
@@ -1227,7 +1218,6 @@ ActiveRecord::Schema.define(version: 20170508170547) do
 
   add_index "protected_tags", ["project_id"], name: "index_protected_tags_on_project_id", using: :btree
 
-<<<<<<< HEAD
   create_table "push_rules", force: :cascade do |t|
     t.string "force_push_regex"
     t.string "delete_branch_regex"
@@ -1246,8 +1236,6 @@ ActiveRecord::Schema.define(version: 20170508170547) do
 
   add_index "push_rules", ["project_id"], name: "index_push_rules_on_project_id", using: :btree
 
-=======
->>>>>>> upstream/master
   create_table "redirect_routes", force: :cascade do |t|
     t.integer "source_id", null: false
     t.string "source_type", null: false
@@ -1566,7 +1554,6 @@ ActiveRecord::Schema.define(version: 20170508170547) do
     t.string "incoming_email_token"
     t.string "organization"
     t.boolean "authorized_projects_populated"
-<<<<<<< HEAD
     t.boolean "auditor", default: false, null: false
     t.boolean "ghost"
     t.boolean "require_two_factor_authentication_from_group", default: false, null: false
@@ -1574,13 +1561,6 @@ ActiveRecord::Schema.define(version: 20170508170547) do
     t.date "last_activity_on"
     t.boolean "notified_of_own_activity"
     t.boolean "support_bot"
-=======
-    t.boolean "require_two_factor_authentication_from_group", default: false, null: false
-    t.integer "two_factor_grace_period", default: 48, null: false
-    t.boolean "ghost"
-    t.date "last_activity_on"
-    t.boolean "notified_of_own_activity"
->>>>>>> upstream/master
     t.string "preferred_language"
   end
 
