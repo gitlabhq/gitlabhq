@@ -1,12 +1,9 @@
 module Gitlab
   module Checks
     class ChangeAccess
-<<<<<<< HEAD
       include PathLocksHelper
 
       # protocol is currently used only in EE
-=======
->>>>>>> upstream/master
       attr_reader :user_access, :project, :skip_authorization, :protocol
 
       def initialize(
@@ -23,13 +20,9 @@ module Gitlab
       end
 
       def exec
-<<<<<<< HEAD
-        error = push_checks || tag_checks || protected_branch_checks || push_rule_check
-=======
         return GitAccessStatus.new(true) if skip_authorization
 
-        error = push_checks || branch_checks || tag_checks
->>>>>>> upstream/master
+        error = push_checks || branch_checks || tag_checks || push_rule_check
 
         if error
           GitAccessStatus.new(false, error)
