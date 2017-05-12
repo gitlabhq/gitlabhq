@@ -4,6 +4,7 @@ entry.
 
 ## 9.1.4 (2017-05-12)
 
+- No changes.
 - Fix error on CI/CD Settings page related to invalid pipeline trigger. !10948 (dosuken123)
 - Sort the network graph both by commit date and topographically. !11057
 - Fix cross referencing for private and internal projects. !11243
