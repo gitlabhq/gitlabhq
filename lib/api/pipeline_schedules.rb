@@ -100,7 +100,7 @@ module API
         pipeline_schedule = user_project.pipeline_schedules.find(params.delete(:pipeline_schedule_id))
         return not_found!('PipelineSchedule') unless pipeline_schedule
 
-        if pipeline_schedule.update(owner: current_user)
+        if pipeline_schedule.own!(current_user)
           status :ok
           present pipeline_schedule, with: Entities::PipelineSchedule
         else
