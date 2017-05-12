@@ -4,8 +4,15 @@ import PipelineSchedulesCallout from '~/pipeline_schedules/components/pipeline_s
 
 const PipelineSchedulesCalloutComponent = Vue.extend(PipelineSchedulesCallout);
 const cookieKey = 'pipeline_schedules_callout_dismissed';
+const docsUrl = 'help/ci/scheduled_pipelines';
 
 describe('Pipeline Schedule Callout', () => {
+  beforeEach(() => {
+    setFixtures(`
+      <div id='pipeline-schedules-callout' data-docs-url=${docsUrl}></div>
+    `);
+  });
+
   describe('independent of cookies', () => {
     beforeEach(() => {
       this.calloutComponent = new PipelineSchedulesCalloutComponent().$mount();
@@ -17,6 +24,10 @@ describe('Pipeline Schedule Callout', () => {
 
     it('correctly sets illustrationSvg', () => {
       expect(this.calloutComponent.illustrationSvg).toContain('<svg');
+    });
+
+    it('correctly sets docsUrl', () => {
+      expect(this.calloutComponent.docsUrl).toContain(docsUrl);
     });
   });
 
@@ -59,6 +70,10 @@ describe('Pipeline Schedule Callout', () => {
 
     it('renders the callout text', () => {
       expect(this.calloutComponent.$el.outerHTML).toContain('runs pipelines in the future');
+    });
+
+    it('renders the documentation url', () => {
+      expect(this.calloutComponent.$el.outerHTML).toContain(docsUrl);
     });
 
     it('updates calloutDismissed when close button is clicked', (done) => {

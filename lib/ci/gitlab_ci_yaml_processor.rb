@@ -70,7 +70,7 @@ module Ci
           cache: job[:cache],
           dependencies: job[:dependencies],
           after_script: job[:after_script],
-          environment: job[:environment],
+          environment: job[:environment]
         }.compact
       }
     end

@@ -51,12 +51,17 @@
 
 .issue-details.issuable-details
   .detail-page-description.content-block
-    .issue-title-data.hidden{ "data" => { "endpoint" => rendered_title_namespace_project_issue_path(@project.namespace, @project, @issue),
-      "can-update-tasks-class" => can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : '',
+    #js-issuable-app{ "data" => { "endpoint" => rendered_title_namespace_project_issue_path(@project.namespace, @project, @issue),
+      "can-update" => can?(current_user, :update_issue, @issue).to_s,
+      "issuable-ref" => @issue.to_reference,
     } }
-    .issue-title-entrypoint
+      %h2.title= markdown_field(@issue, :title)
+      - if @issue.description.present?
+        .description{ class: can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : '' }
+          .wiki= markdown_field(@issue, :description)
+          %textarea.hidden.js-task-list-field= @issue.description
 
-    = edited_time_ago_with_tooltip(@issue, placement: 'bottom', html_class: 'issue_edited_ago')
+    = edited_time_ago_with_tooltip(@issue, placement: 'bottom', html_class: 'issue-edited-ago js-issue-edited-ago')
 
     #merge-requests{ data: { url: referenced_merge_requests_namespace_project_issue_url(@project.namespace, @project, @issue) } }
       // This element is filled in using JavaScript.

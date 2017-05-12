@@ -3,8 +3,11 @@ module RendersBlob
 
   def render_blob_json(blob)
     viewer =
-      if params[:viewer] == 'rich'
+      case params[:viewer]
+      when 'rich'
         blob.rich_viewer
+      when 'auxiliary'
+        blob.auxiliary_viewer
       else
         blob.simple_viewer
       end

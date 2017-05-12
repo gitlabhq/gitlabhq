@@ -33,7 +33,7 @@ module ActiveRecord
 
           affected_rows = relation.where(
             self.class.primary_key => id,
-            lock_col => previous_lock_value,
+            lock_col => previous_lock_value
           ).update_all(
             attributes_for_update(attribute_names).map do |name|
               [name, _read_attribute(name)]

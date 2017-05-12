@@ -569,6 +569,8 @@ describe 'Issues', feature: true do
   end
 
   describe 'new issue' do
+    let!(:issue) { create(:issue, project: project) }
+
     context 'by unauthenticated user' do
       before do
         logout

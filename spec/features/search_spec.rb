@@ -20,6 +20,7 @@ describe "Search", feature: true  do
 
   context 'search filters', js: true do
     let(:group) { create(:group) }
+    let!(:group_project) { create(:empty_project, group: group) }
 
     before do
       group.add_owner(user)
@@ -34,6 +35,24 @@ describe "Search", feature: true  do
       end
 
       expect(find('.js-search-group-dropdown')).to have_content(group.name)
+    end
+
+    it 'filters by group projects after filtering by group' do
+      find('.js-search-group-dropdown').click
+      wait_for_ajax
+
+      page.within '.search-holder' do
+        click_link group.name
+      end
+
+      expect(find('.js-search-group-dropdown')).to have_content(group.name)
+
+      page.within('.project-filter') do
+        find('.js-search-project-dropdown').click
+        wait_for_ajax
+
+        expect(page).to have_link(group_project.name_with_namespace)
+      end
     end
 
     it 'shows project name after filtering' do

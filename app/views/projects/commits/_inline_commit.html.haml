@@ -1,6 +1,6 @@
 %li.commit.inline-commit
   .commit-row-title
-    = link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit), class: "commit_short_id"
+    = link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit), class: "commit-sha"
     &nbsp;
     %span.str-truncated
       = link_to_gfm commit.title, namespace_project_commit_path(project.namespace, project, commit.id), class: "commit-row-message"

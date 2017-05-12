@@ -1,4 +1,4 @@
-# Snippets
+# Snippets API
 
 > [Introduced][ce-6373] in GitLab 8.15.
 

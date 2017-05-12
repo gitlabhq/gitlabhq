@@ -3,10 +3,10 @@
 - has_button = button_path || project_select_button
 
 .row.empty-state
-  .pull-right.col-xs-12{ class: "#{'col-sm-6' if has_button}" }
+  .col-xs-12
     .svg-content
       = render 'shared/empty_states/icons/issues.svg'
-  .col-xs-12{ class: "#{'col-sm-6' if has_button}" }
+  .col-xs-12.text-center
     .text-content
       - if has_button && current_user
         %h4
@@ -20,4 +20,3 @@
       - else
         .text-center
           %h4 There are no issues to show.
-          = link_to 'New issue', button_path, class: 'btn btn-new', title: 'New issue', id: 'new_issue_link'

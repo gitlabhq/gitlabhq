@@ -67,7 +67,7 @@ module SelectsHelper
       current_user: opts[:current_user] || false,
       "push-code-to-protected-branches" => opts[:push_code_to_protected_branches],
       author_id: opts[:author_id] || '',
-      skip_users: opts[:skip_users] ? opts[:skip_users].map(&:id) : nil,
+      skip_users: opts[:skip_users] ? opts[:skip_users].map(&:id) : nil
     }
   end
 end

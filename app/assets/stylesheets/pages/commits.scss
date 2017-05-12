@@ -163,7 +163,6 @@
 
 .avatar-cell {
   width: 46px;
-  padding-left: 10px;
 
   img {
     margin-right: 0;
@@ -175,7 +174,6 @@
   justify-content: space-between;
   align-items: flex-start;
   flex-grow: 1;
-  padding-left: 10px;
 
   .merge-request-branches & {
     flex-direction: column;
@@ -208,11 +206,11 @@
       margin-left: $gl-padding;
     }
   }
-}
 
-.commit-short-id {
-  font-family: $monospace_font;
-  font-weight: 600;
+  .commit-sha {
+    font-size: 14px;
+    font-weight: 600;
+  }
 }
 
 .commit,
@@ -273,7 +271,7 @@
     }
   }
 
-  .commit-id {
+  .commit-sha {
     color: $gl-link-color;
   }
 

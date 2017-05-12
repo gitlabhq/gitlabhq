@@ -227,7 +227,7 @@ describe ProjectsController do
         get :show, namespace_id: 'foo', id: 'bar'
 
         expect(response).to redirect_to(public_project)
-        expect(controller).to set_flash[:notice].to(/moved/)
+        expect(controller).to set_flash[:notice].to(project_moved_message(redirect_route, public_project))
       end
     end
   end
@@ -473,7 +473,7 @@ describe ProjectsController do
         get :refs, namespace_id: 'foo', id: 'bar'
 
         expect(response).to redirect_to(refs_namespace_project_path(namespace_id: public_project.namespace, id: public_project))
-        expect(controller).to set_flash[:notice].to(/moved/)
+        expect(controller).to set_flash[:notice].to(project_moved_message(redirect_route, public_project))
       end
     end
   end
@@ -486,5 +486,9 @@ describe ProjectsController do
 
       expect(JSON.parse(response.body).keys).to match_array(%w(body references))
     end
+  end
+
+  def project_moved_message(redirect_route, project)
+    "Project '#{redirect_route.path}' was moved to '#{project.full_path}'. Please update any links and bookmarks that may still have the old path."
   end
 end

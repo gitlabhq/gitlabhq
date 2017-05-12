@@ -101,7 +101,7 @@ class Spinach::Features::ExploreProjects < Spinach::FeatureSteps
     create(:merge_request,
       title: "Bug fix for public project",
       source_project: public_project,
-      target_project: public_project,
+      target_project: public_project
           )
   end
 

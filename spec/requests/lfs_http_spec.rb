@@ -425,7 +425,7 @@ describe 'Git LFS API and storage' do
                   'size' => sample_size,
                   'error' => {
                     'code' => 404,
-                    'message' => "Object does not exist on the server or you don't have permissions to access it",
+                    'message' => "Object does not exist on the server or you don't have permissions to access it"
                   }
                 }
               ]
@@ -456,7 +456,7 @@ describe 'Git LFS API and storage' do
                   'size' => 1575078,
                   'error' => {
                     'code' => 404,
-                    'message' => "Object does not exist on the server or you don't have permissions to access it",
+                    'message' => "Object does not exist on the server or you don't have permissions to access it"
                   }
                 }
               ]
@@ -493,7 +493,7 @@ describe 'Git LFS API and storage' do
                   'size' => 1575078,
                   'error' => {
                     'code' => 404,
-                    'message' => "Object does not exist on the server or you don't have permissions to access it",
+                    'message' => "Object does not exist on the server or you don't have permissions to access it"
                   }
                 },
                 {

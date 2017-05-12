@@ -1,9 +1,9 @@
 require 'rails_helper'
-require 'disable_css_animation_helper'
 
-describe 'New/edit issue', feature: true, js: true do
+describe 'New/edit issue', :feature, :js do
   include GitlabRoutingHelper
   include ActionView::Helpers::JavaScriptHelper
+  include WaitForAjax
 
   let!(:project)   { create(:project) }
   let!(:user)      { create(:user)}
@@ -27,6 +27,32 @@ describe 'New/edit issue', feature: true, js: true do
     describe 'single assignee' do
       it 'hides assignee after selection' do
         click_button 'Unassigned'
+        
+        wait_for_ajax
+      end
+
+      it 'unselects other assignees when unassigned is selected' do
+        page.within '.dropdown-menu-user' do
+          click_link user2.name
+        end
+
+        page.within '.dropdown-menu-user' do
+          click_link 'Unassigned'
+        end
+
+        page.within '.js-assignee-search' do
+          expect(page).to have_content 'Unassigned'
+        end
+
+        expect(find('input[name="issue[assignee_ids][]"]', visible: false).value).to match('0')
+      end
+
+      it 'toggles assign to me when current user is selected and unselected' do
+        page.within '.dropdown-menu-user' do
+          click_link user.name
+        end
+
+        expect(find('a', text: 'Assign to me', visible: false)).not_to be_visible
 
         page.within('.dropdown-menu-user') do
           click_link user.name
@@ -42,6 +68,9 @@ describe 'New/edit issue', feature: true, js: true do
 
       expect(find('a', text: 'Assign to me')).to be_visible
       click_button 'Unassigned'
+
+      wait_for_ajax
+
       page.within '.dropdown-menu-user' do
         click_link user2.name
       end
@@ -125,16 +154,15 @@ describe 'New/edit issue', feature: true, js: true do
 
     it 'correctly updates the selected user when changing assignee' do
       click_button 'Unassigned'
+      
+      wait_for_ajax
+
       page.within '.dropdown-menu-user' do
         click_link user.name
       end
 
       expect(find('input[name="issue[assignee_ids][]"]', visible: false).value).to match(user.id.to_s)
-
-      click_button user.name
-
       expect(find('.dropdown-menu-user a.is-active').first(:xpath, '..')['data-user-id']).to eq(user.id.to_s)
-
       # check the ::before pseudo element to ensure checkmark icon is present
       expect(before_for_selector('.dropdown-menu-selectable a.is-active')).not_to eq('')
       expect(before_for_selector('.dropdown-menu-selectable a:not(.is-active)')).to eq('')
@@ -144,9 +172,6 @@ describe 'New/edit issue', feature: true, js: true do
       end
 
       expect(find('input[name="issue[assignee_ids][]"]', visible: false).value).to match(user2.id.to_s)
-
-      click_button user2.name
-
       expect(find('.dropdown-menu-user a.is-active').first(:xpath, '..')['data-user-id']).to eq(user2.id.to_s)
     end
   end

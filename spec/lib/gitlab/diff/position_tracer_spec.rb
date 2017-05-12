@@ -1372,7 +1372,7 @@ describe Gitlab::Diff::PositionTracer, lib: true do
           nil,
           { old_path: file_name, new_path: file_name, old_line: 5, new_line: 5 },
           { old_path: file_name,                      old_line: 6              },
-          {                      new_path: file_name,              new_line: 7 },
+          {                      new_path: file_name,              new_line: 7 }
         ]
 
         expect_positions(old_position_attrs, new_position_attrs)
@@ -1444,7 +1444,7 @@ describe Gitlab::Diff::PositionTracer, lib: true do
           nil,
           { old_path: file_name, new_path: file_name, old_line: 5, new_line: 5 },
           { old_path: file_name,                      old_line: 6              },
-          {                      new_path: file_name,              new_line: 7 },
+          {                      new_path: file_name,              new_line: 7 }
         ]
 
         expect_positions(old_position_attrs, new_position_attrs)
@@ -1498,7 +1498,7 @@ describe Gitlab::Diff::PositionTracer, lib: true do
           { old_path: file_name, new_path: file_name, old_line: 5, new_line: 4 },
           { old_path: file_name, new_path: file_name, old_line: 6, new_line: 5 },
           nil,
-          {                      new_path: file_name,              new_line: 6 },
+          {                      new_path: file_name,              new_line: 6 }
         ]
 
         expect_positions(old_position_attrs, new_position_attrs)
@@ -1746,7 +1746,7 @@ describe Gitlab::Diff::PositionTracer, lib: true do
           { old_path: file_name, new_path: file_name, old_line: 4, new_line: 5 },
           { old_path: file_name,                      old_line: 5              },
           {                      new_path: file_name,              new_line: 6 },
-          {                      new_path: file_name,              new_line: 7 },
+          {                      new_path: file_name,              new_line: 7 }
         ]
 
         expect_positions(old_position_attrs, new_position_attrs)

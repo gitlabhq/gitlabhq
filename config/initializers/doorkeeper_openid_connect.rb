@@ -30,7 +30,7 @@ Doorkeeper::OpenidConnect.configure do
       o.claim(:email_verified) { |user| true if user.public_email? }
       o.claim(:website)        { |user| user.full_website_url if user.website_url? }
       o.claim(:profile)        { |user| Rails.application.routes.url_helpers.user_url user }
-      o.claim(:picture)        { |user| user.avatar_url }
+      o.claim(:picture)        { |user| user.avatar_url(only_path: false) }
     end
   end
 end

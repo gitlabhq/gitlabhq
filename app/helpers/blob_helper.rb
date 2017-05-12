@@ -18,7 +18,7 @@ module BlobHelper
     blob = options.delete(:blob)
     blob ||= project.repository.blob_at(ref, path) rescue nil
 
-    return unless blob
+    return unless blob && blob.readable_text?
 
     common_classes = "btn js-edit-blob #{options[:extra_class]}"
 

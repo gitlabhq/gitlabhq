@@ -31,7 +31,7 @@ class WebHook < ActiveRecord::Base
       post_url = url.gsub("#{parsed_url.userinfo}@", '')
       auth = {
         username: CGI.unescape(parsed_url.user),
-        password: CGI.unescape(parsed_url.password),
+        password: CGI.unescape(parsed_url.password)
       }
       response = WebHook.post(post_url,
                               body: data.to_json,

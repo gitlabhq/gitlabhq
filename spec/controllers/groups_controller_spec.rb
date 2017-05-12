@@ -26,6 +26,41 @@ describe GroupsController do
     end
   end
 
+  describe 'GET #subgroups' do
+    let!(:public_subgroup) { create(:group, :public, parent: group) }
+    let!(:private_subgroup) { create(:group, :private, parent: group) }
+
+    context 'as a user' do
+      before do
+        sign_in(user)
+      end
+
+      it 'shows the public subgroups' do
+        get :subgroups, id: group.to_param
+
+        expect(assigns(:nested_groups)).to contain_exactly(public_subgroup)
+      end
+
+      context 'being member' do
+        it 'shows public and private subgroups the user is member of' do
+          private_subgroup.add_guest(user)
+
+          get :subgroups, id: group.to_param
+
+          expect(assigns(:nested_groups)).to contain_exactly(public_subgroup, private_subgroup)
+        end
+      end
+    end
+
+    context 'as a guest' do
+      it 'shows the public subgroups' do
+        get :subgroups, id: group.to_param
+
+        expect(assigns(:nested_groups)).to contain_exactly(public_subgroup)
+      end
+    end
+  end
+
   describe 'GET #issues' do
     let(:issue_1) { create(:issue, project: project) }
     let(:issue_2) { create(:issue, project: project) }
@@ -33,7 +68,7 @@ describe GroupsController do
     before do
       create_list(:award_emoji, 3, awardable: issue_2)
       create_list(:award_emoji, 2, awardable: issue_1)
-      create_list(:award_emoji, 2, :downvote, awardable: issue_2,)
+      create_list(:award_emoji, 2, :downvote, awardable: issue_2)
 
       sign_in(user)
     end
@@ -66,7 +101,7 @@ describe GroupsController do
         get :issues, id: redirect_route.path
 
         expect(response).to redirect_to(issues_group_path(group.to_param))
-        expect(controller).to set_flash[:notice].to(/moved/)
+        expect(controller).to set_flash[:notice].to(group_moved_message(redirect_route, group))
       end
     end
   end
@@ -111,7 +146,7 @@ describe GroupsController do
         get :merge_requests, id: redirect_route.path
 
         expect(response).to redirect_to(merge_requests_group_path(group.to_param))
-        expect(controller).to set_flash[:notice].to(/moved/)
+        expect(controller).to set_flash[:notice].to(group_moved_message(redirect_route, group))
       end
     end
   end
@@ -213,5 +248,9 @@ describe GroupsController do
         expect(response).to have_http_status(404)
       end
     end
+  end
+
+  def group_moved_message(redirect_route, group)
+    "Group '#{redirect_route.path}' was moved to '#{group.full_path}'. Please update any links and bookmarks that may still have the old path."
   end
 end

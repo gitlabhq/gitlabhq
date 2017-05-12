@@ -19,7 +19,7 @@ describe 'Navigation bar counter', feature: true, caching: true do
 
     issue.assignees = []
 
-    user.update_cache_counts
+    user.invalidate_cache_counts
 
     Timecop.travel(3.minutes.from_now) do
       visit issues_path
@@ -34,6 +34,8 @@ describe 'Navigation bar counter', feature: true, caching: true do
     expect_counters('merge_requests', '1')
 
     merge_request.update(assignee: nil)
+
+    user.invalidate_cache_counts
 
     Timecop.travel(3.minutes.from_now) do
       visit merge_requests_path

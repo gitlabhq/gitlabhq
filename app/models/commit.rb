@@ -49,7 +49,7 @@ class Commit
     def max_diff_options
       {
         max_files: DIFF_HARD_LIMIT_FILES,
-        max_lines: DIFF_HARD_LIMIT_LINES,
+        max_lines: DIFF_HARD_LIMIT_LINES
       }
     end
 
@@ -326,10 +326,7 @@ class Commit
   end
 
   def raw_diffs(*args)
-    use_gitaly = Gitlab::GitalyClient.feature_enabled?(:commit_raw_diffs)
-    deltas_only = args.last.is_a?(Hash) && args.last[:deltas_only]
-
-    if use_gitaly && !deltas_only
+    if Gitlab::GitalyClient.feature_enabled?(:commit_raw_diffs)
       Gitlab::GitalyClient::Commit.diff_from_parent(self, *args)
     else
       raw.diffs(*args)

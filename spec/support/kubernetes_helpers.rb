@@ -5,7 +5,7 @@ module KubernetesHelpers
     {
       "kind" => "APIResourceList",
       "resources" => [
-        { "name" => "pods", "namespaced" => true, "kind" => "Pod" },
+        { "name" => "pods", "namespaced" => true, "kind" => "Pod" }
       ]
     }
   end
@@ -22,13 +22,13 @@ module KubernetesHelpers
       "metadata" => {
         "name" => "kube-pod",
         "creationTimestamp" => "2016-11-25T19:55:19Z",
-        "labels" => { "app" => app },
+        "labels" => { "app" => app }
       },
       "spec" => {
         "containers" => [
           { "name" => "container-0" },
-          { "name" => "container-1" },
-        ],
+          { "name" => "container-1" }
+        ]
       },
       "status" => { "phase" => "Running" }
     }

@@ -1,13 +1,6 @@
 // Common
 .diff-file {
-  border: 1px solid $border-color;
   margin-bottom: $gl-padding;
-  border-radius: 3px;
-
-  .commit-short-id {
-    font-family: $regular_font;
-    font-weight: 400;
-  }
 
   .file-title,
   .file-title-flex-parent {

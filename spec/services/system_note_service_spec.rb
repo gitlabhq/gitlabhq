@@ -178,7 +178,7 @@ describe SystemNoteService, services: true do
     end
 
     it 'builds a correct phrase when assignee removed' do
-      expect(build_note([assignee1], [])).to eq 'removed all assignees'
+      expect(build_note([assignee1], [])).to eq 'removed assignee'
     end
 
     it 'builds a correct phrase when assignees changed' do

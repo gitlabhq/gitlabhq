@@ -1,15 +1,16 @@
 # GitLab Pages from A to Z: Part 1
 
-> **Type**: user guide || 
+> **Article [Type](../../../development/writing_documentation.html#types-of-technical-articles)**: user guide || 
 > **Level**: beginner || 
-> **Author**: [Marcia Ramos](https://gitlab.com/marcia)
+> **Author**: [Marcia Ramos](https://gitlab.com/marcia) ||
+> **Publication date:** 2017/02/22
 
 - **Part 1: Static sites and GitLab Pages domains**
 - [Part 2: Quick start guide - Setting up GitLab Pages](getting_started_part_two.md)
 - [Part 3: Setting Up Custom Domains - DNS Records and SSL/TLS Certificates](getting_started_part_three.md)
 - [Part 4: Creating and tweaking `.gitlab-ci.yml` for GitLab Pages](getting_started_part_four.md)
 
-## GitLab Pages form A to Z
+## GitLab Pages from A to Z
 
 This is a comprehensive guide, made for those who want to
 publish a website with GitLab Pages but aren't familiar with
