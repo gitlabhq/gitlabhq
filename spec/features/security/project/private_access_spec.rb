@@ -515,36 +515,6 @@ describe "Private Project Access", feature: true  do
     it { is_expected.to be_denied_for(:visitor) }
   end
 
-<<<<<<< HEAD
-  context "when license blocks changes" do
-    before do
-      allow(License).to receive(:block_changes?).and_return(true)
-    end
-
-    describe "GET /:project_path/issues/new" do
-      subject { new_namespace_project_issue_path(project.namespace, project) }
-
-      it { is_expected.to be_denied_for(:master).of(project) }
-      it { is_expected.to be_denied_for(:reporter).of(project) }
-      it { is_expected.to be_denied_for(:admin) }
-      it { is_expected.to be_denied_for(:guest).of(project) }
-      it { is_expected.to be_denied_for(:user) }
-      it { is_expected.to be_denied_for(:auditor) }
-      it { is_expected.to be_denied_for(:visitor) }
-    end
-
-    describe "GET /:project_path/merge_requests/new" do
-      subject { new_namespace_project_merge_request_path(project.namespace, project) }
-
-      it { is_expected.to be_denied_for(:master).of(project) }
-      it { is_expected.to be_denied_for(:reporter).of(project) }
-      it { is_expected.to be_denied_for(:admin) }
-      it { is_expected.to be_denied_for(:guest).of(project) }
-      it { is_expected.to be_denied_for(:user) }
-      it { is_expected.to be_denied_for(:auditor) }
-      it { is_expected.to be_denied_for(:visitor) }
-    end
-=======
   describe "GET /:project_path/pipeline_schedules" do
     subject { namespace_project_pipeline_schedules_path(project.namespace, project) }
 
@@ -585,7 +555,36 @@ describe "Private Project Access", feature: true  do
     it { is_expected.to be_denied_for(:user) }
     it { is_expected.to be_denied_for(:external) }
     it { is_expected.to be_denied_for(:visitor) }
->>>>>>> upstream/master
+  end
+
+  context "when license blocks changes" do
+    before do
+      allow(License).to receive(:block_changes?).and_return(true)
+    end
+
+    describe "GET /:project_path/issues/new" do
+      subject { new_namespace_project_issue_path(project.namespace, project) }
+
+      it { is_expected.to be_denied_for(:master).of(project) }
+      it { is_expected.to be_denied_for(:reporter).of(project) }
+      it { is_expected.to be_denied_for(:admin) }
+      it { is_expected.to be_denied_for(:guest).of(project) }
+      it { is_expected.to be_denied_for(:user) }
+      it { is_expected.to be_denied_for(:auditor) }
+      it { is_expected.to be_denied_for(:visitor) }
+    end
+
+    describe "GET /:project_path/merge_requests/new" do
+      subject { new_namespace_project_merge_request_path(project.namespace, project) }
+
+      it { is_expected.to be_denied_for(:master).of(project) }
+      it { is_expected.to be_denied_for(:reporter).of(project) }
+      it { is_expected.to be_denied_for(:admin) }
+      it { is_expected.to be_denied_for(:guest).of(project) }
+      it { is_expected.to be_denied_for(:user) }
+      it { is_expected.to be_denied_for(:auditor) }
+      it { is_expected.to be_denied_for(:visitor) }
+    end
   end
 
   describe "GET /:project_path/container_registry" do

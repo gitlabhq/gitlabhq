@@ -8,12 +8,8 @@
     "total_time_spent": { "type": "integer" },
     "human_time_estimate": { "type": ["string", "null"] },
     "human_total_time_spent": { "type": ["string", "null"] },
-<<<<<<< HEAD
     "merge_error": { "type": ["string", "null"] },
     "rebase_in_progress": { "type": "boolean" }
-=======
-    "merge_error": { "type": ["string", "null"] }
->>>>>>> upstream/master
   },
   "additionalProperties": false
 }
