@@ -16,6 +16,9 @@ module Gitlab
           "https://github.com/#{name}"
         end
 
+        # Link `git: "https://gitlab.example.com/user/repo"` to https://gitlab.example.com/user/repo
+        link_regex(%r{(git:|:git\s*=>)\s*['"](?<name>https?://[^'"]+)['"]}) { |url| url }
+
         # Link `source "https://rubygems.org"` to https://rubygems.org
         link_method_call("source", %r{https?://[^'"]+}) { |url| url }
       end

@@ -30,7 +30,7 @@ describe Gitlab::DependencyLinker::GemfileLinker, lib: true do
 
         # Specify a sprockets version due to increased performance
         # See https://gitlab.com/gitlab-org/gitlab-ce/issues/6069
-        gem 'sprockets', '~> 3.6.0'
+        gem 'sprockets', '~> 3.6.0', git: 'https://gitlab.example.com/gems/sprockets'
 
         # Default values for AR models
         gem 'default_value_for', '~> 3.0.0'
@@ -58,6 +58,10 @@ describe Gitlab::DependencyLinker::GemfileLinker, lib: true do
     it 'links GitHub repos' do
       expect(subject).to include(link('rails/rails', 'https://github.com/rails/rails'))
       expect(subject).to include(link('rails/responders', 'https://github.com/rails/responders'))
+    end
+
+    it 'links Git repos' do
+      expect(subject).to include(link('https://gitlab.example.com/gems/sprockets', 'https://gitlab.example.com/gems/sprockets'))
     end
   end
 end
