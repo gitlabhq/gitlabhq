@@ -1,44 +1,42 @@
-/* eslint-disable */
-
 import utils from './utils';
 import { SELECTED_CLASS, IGNORE_CLASS } from './constants';
 
-var DropDown = function(list) {
-  this.currentIndex = 0;
-  this.hidden = true;
-  this.list = typeof list === 'string' ? document.querySelector(list) : list;
-  this.items = [];
+class DropDown {
+  constructor(list) {
+    this.currentIndex = 0;
+    this.hidden = true;
+    this.list = typeof list === 'string' ? document.querySelector(list) : list;
+    this.items = [];
 
-  this.eventWrapper = {};
+    this.eventWrapper = {};
 
-  this.getItems();
-  this.initTemplateString();
-  this.addEvents();
+    this.getItems();
+    this.initTemplateString();
+    this.addEvents();
 
-  this.initialState = list.innerHTML;
-};
+    this.initialState = list.innerHTML;
+  }
 
-Object.assign(DropDown.prototype, {
-  getItems: function() {
+  getItems() {
     this.items = [].slice.call(this.list.querySelectorAll('li'));
     return this.items;
-  },
+  }
 
-  initTemplateString: function() {
-    var items = this.items || this.getItems();
+  initTemplateString() {
+    const items = this.items || this.getItems();
 
-    var templateString = '';
+    let templateString = '';
     if (items.length > 0) templateString = items[items.length - 1].outerHTML;
     this.templateString = templateString;
 
     return this.templateString;
-  },
+  }
 
-  clickEvent: function(e) {
+  clickEvent(e) {
     if (e.target.tagName === 'UL') return;
     if (e.target.classList.contains(IGNORE_CLASS)) return;
 
-    var selected = utils.closest(e.target, 'LI');
+    const selected = utils.closest(e.target, 'LI');
     if (!selected) return;
 
     this.addSelectedClass(selected);
@@ -46,95 +44,95 @@ Object.assign(DropDown.prototype, {
     e.preventDefault();
     this.hide();
 
-    var listEvent = new CustomEvent('click.dl', {
+    const listEvent = new CustomEvent('click.dl', {
       detail: {
         list: this,
-        selected: selected,
+        selected,
         data: e.target.dataset,
       },
     });
     this.list.dispatchEvent(listEvent);
-  },
+  }
 
-  addSelectedClass: function (selected) {
+  addSelectedClass(selected) {
     this.removeSelectedClasses();
     selected.classList.add(SELECTED_CLASS);
-  },
+  }
 
-  removeSelectedClasses: function () {
+  removeSelectedClasses() {
     const items = this.items || this.getItems();
 
     items.forEach(item => item.classList.remove(SELECTED_CLASS));
-  },
+  }
 
-  addEvents: function() {
-    this.eventWrapper.clickEvent = this.clickEvent.bind(this)
+  addEvents() {
+    this.eventWrapper.clickEvent = this.clickEvent.bind(this);
     this.list.addEventListener('click', this.eventWrapper.clickEvent);
-  },
+  }
 
-  toggle: function() {
-    this.hidden ? this.show() : this.hide();
-  },
-
-  setData: function(data) {
+  setData(data) {
     this.data = data;
     this.render(data);
-  },
+  }
 
-  addData: function(data) {
+  addData(data) {
     this.data = (this.data || []).concat(data);
     this.render(this.data);
-  },
+  }
 
-  render: function(data) {
+  render(data) {
     const children = data ? data.map(this.renderChildren.bind(this)) : [];
     const renderableList = this.list.querySelector('ul[data-dynamic]') || this.list;
 
     renderableList.innerHTML = children.join('');
-  },
+  }
 
-  renderChildren: function(data) {
-    var html = utils.template(this.templateString, data);
-    var template = document.createElement('div');
+  renderChildren(data) {
+    const html = utils.template(this.templateString, data);
+    const template = document.createElement('div');
 
     template.innerHTML = html;
-    this.setImagesSrc(template);
+    DropDown.setImagesSrc(template);
     template.firstChild.style.display = data.droplab_hidden ? 'none' : 'block';
 
     return template.firstChild.outerHTML;
-  },
+  }
 
-  setImagesSrc: function(template) {
-    const images = [].slice.call(template.querySelectorAll('img[data-src]'));
-
-    images.forEach((image) => {
-      image.src = image.getAttribute('data-src');
-      image.removeAttribute('data-src');
-    });
-  },
-
-  show: function() {
+  show() {
     if (!this.hidden) return;
     this.list.style.display = 'block';
     this.currentIndex = 0;
     this.hidden = false;
-  },
+  }
 
-  hide: function() {
+  hide() {
     if (this.hidden) return;
     this.list.style.display = 'none';
     this.currentIndex = 0;
     this.hidden = true;
-  },
+  }
 
-  toggle: function () {
-    this.hidden ? this.show() : this.hide();
-  },
+  toggle() {
+    if (this.hidden) return this.show();
 
-  destroy: function() {
+    return this.hide();
+  }
+
+  destroy() {
     this.hide();
     this.list.removeEventListener('click', this.eventWrapper.clickEvent);
   }
-});
+
+  static setImagesSrc(template) {
+    const images = [...template.querySelectorAll('img[data-src]')];
+
+    images.forEach((image) => {
+      const img = image;
+
+      img.src = img.getAttribute('data-src');
+      img.removeAttribute('data-src');
+    });
+  }
+}
 
 export default DropDown;
