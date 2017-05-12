@@ -134,7 +134,9 @@ describe('Issuable output', () => {
       spyOn(gl.utils, 'visitUrl');
       spyOn(vm.service, 'deleteIssuable').and.callFake(() => new Promise((resolve) => {
         resolve({
-          path: '/test',
+          json() {
+            return { path: '/test' };
+          },
         });
       }));
 
@@ -154,7 +156,9 @@ describe('Issuable output', () => {
       spyOn(vm.poll, 'stop');
       spyOn(vm.service, 'deleteIssuable').and.callFake(() => new Promise((resolve) => {
         resolve({
-          path: '/test',
+          json() {
+            return { path: '/test' };
+          },
         });
       }));
 

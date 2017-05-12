@@ -77,6 +77,7 @@ export default {
     },
     deleteIssuable() {
       this.service.deleteIssuable()
+        .then(res => res.json())
         .then((data) => {
           // Stop the poll so we don't get 404's with the issue not existing
           this.poll.stop();

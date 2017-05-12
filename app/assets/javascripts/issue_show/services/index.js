@@ -20,12 +20,10 @@ export default class Service {
   }
 
   deleteIssuable() {
-    return this.resource.delete()
-      .then(res => res.json());
+    return this.resource.delete();
   }
 
   updateIssuable(data) {
-    return this.resource.update(data)
-      .then(res => res.json());
+    return this.resource.update(data);
   }
 }
