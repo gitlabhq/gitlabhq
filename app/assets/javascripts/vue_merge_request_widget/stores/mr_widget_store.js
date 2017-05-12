@@ -43,7 +43,6 @@ export default class MergeRequestStore {
     this.mergeUserId = data.merge_user_id;
     this.currentUserId = gon.current_user_id;
     this.sourceBranchPath = data.source_branch_path;
-    this.targetBranchCommitsPath = data.target_branch_commits_path;
     this.sourceBranchLink = data.source_branch_with_namespace_link;
     this.mergeError = data.merge_error;
     this.targetBranchPath = data.target_branch_commits_path;

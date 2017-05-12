@@ -53,7 +53,7 @@ describe('MRWidgetHeader', () => {
       divergedCommitsCount: 12,
       sourceBranch: 'mr-widget-refactor',
       sourceBranchLink: `<a href="${sourceBranchPath}">mr-widget-refactor</a>`,
-      targetBranchCommitsPath: 'foo/bar/commits-path',
+      targetBranchPath: 'foo/bar/commits-path',
       targetBranch: 'master',
       isOpen: true,
       emailPatchesPath: '/mr/email-patches',
@@ -73,7 +73,7 @@ describe('MRWidgetHeader', () => {
       expect(sourceBranchLink.textContent).toContain(mr.sourceBranch);
       expect(targetBranchLink.textContent).toContain(mr.targetBranch);
       expect(sourceBranchLink.querySelector('a').getAttribute('href')).toEqual(sourceBranchPath);
-      expect(targetBranchLink.querySelector('a').getAttribute('href')).toEqual(mr.targetBranchCommitsPath);
+      expect(targetBranchLink.querySelector('a').getAttribute('href')).toEqual(mr.targetBranchPath);
       expect(el.querySelector('.diverged-commits-count').textContent).toContain('12 commits behind');
 
       expect(el.textContent).toContain('Check out branch');

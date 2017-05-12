@@ -83,7 +83,7 @@ export default {
           :title="isBranchTitleLong(mr.targetBranch) ? mr.targetBranch : ''"
           data-placement="bottom">
           <a
-            :href="mr.targetBranchCommitsPath">
+            :href="mr.targetBranchPath">
             {{mr.targetBranch}}
           </a>
         </span>
