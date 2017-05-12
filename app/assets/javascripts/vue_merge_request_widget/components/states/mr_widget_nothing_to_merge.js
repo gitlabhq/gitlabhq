@@ -5,20 +5,17 @@ export default {
   props: {
     mr: {
       type: Object,
-      default: false,
+      required: true,
     },
   },
   data() {
-    return {
-      canCreateNewFile: true,
-      emptyStateSVG,
-    };
+    return { emptyStateSVG };
   },
   template: `
     <div class="mr-widget-body empty-state">
       <div class="row">
         <div class="artwork col-sm-5 col-sm-push-7 col-xs-12 text-center">
-          <span v-html="emptyStateSVG" />
+          <span v-html="emptyStateSVG"></span>
         </div>
         <div class="text col-sm-7 col-sm-pull-5 col-xs-12">
           <span>
@@ -33,7 +30,7 @@ export default {
             Please push new commits or use a different branch.
           </p>
           <a
-            v-if="canCreateNewFile"
+            v-if="mr.newBlobPath"
             :href="mr.newBlobPath"
             role="button"
             class="btn btn-inverted btn-save">
