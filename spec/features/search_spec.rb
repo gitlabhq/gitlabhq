@@ -38,7 +38,7 @@ describe "Search", feature: true  do
     end
 
     it 'filters by group projects after filtering by group' do
-      find('.js-search-group-dropdown').click
+      find('.js-search-group-dropdown').trigger('click')
       wait_for_ajax
 
       page.within '.search-holder' do
@@ -48,7 +48,7 @@ describe "Search", feature: true  do
       expect(find('.js-search-group-dropdown')).to have_content(group.name)
 
       page.within('.project-filter') do
-        find('.js-search-project-dropdown').click
+        find('.js-search-project-dropdown').trigger('click')
         wait_for_ajax
 
         expect(page).to have_link(group_project.name_with_namespace)

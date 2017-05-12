@@ -331,7 +331,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I click on the Discussion tab' do
     page.within '.merge-request-tabs' do
-      click_link 'Discussion'
+      find('.notes-tab').trigger('click')
     end
 
     # Waits for load
