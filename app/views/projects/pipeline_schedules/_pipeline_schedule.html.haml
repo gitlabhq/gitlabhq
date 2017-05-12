@@ -4,7 +4,7 @@
       = pipeline_schedule.description
     %td.branch-name-cell
       = icon('code-fork')
-      = link_to pipeline_schedule.ref, namespace_project_commits_path(@project.namespace, @project, pipeline_schedule.ref), class: "branch-name"
+      = link_to pipeline_schedule.ref, project_ref_path(@project, pipeline_schedule.ref), class: "ref-name"
     %td
       - if pipeline_schedule.last_pipeline
         .status-icon-container{ class: "ci-status-icon-#{pipeline_schedule.last_pipeline.status}" }

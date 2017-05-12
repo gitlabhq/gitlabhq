@@ -89,7 +89,7 @@ describe('Pipelines Table Row', () => {
     it('should render link to commit', () => {
       component = buildComponent(pipeline);
 
-      const commitLink = component.$el.querySelector('.branch-commit .commit-id');
+      const commitLink = component.$el.querySelector('.branch-commit .commit-sha');
       expect(commitLink.getAttribute('href')).toEqual(pipeline.commit.commit_path);
     });
 
