@@ -11,7 +11,7 @@ module Gitlab
         EE::ServiceDeskHandler,
         UnsubscribeHandler,
         CreateNoteHandler,
-        CreateIssueHandler,
+        CreateIssueHandler
       ].freeze
 
       def self.for(mail, mail_key)

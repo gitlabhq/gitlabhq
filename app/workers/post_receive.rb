@@ -23,26 +23,33 @@ class PostReceive
       # Triggers repository update on secondary nodes when Geo is enabled
       Gitlab::Geo.notify_wiki_update(post_received.project) if Gitlab::Geo.enabled?
     else
-      # TODO: gitlab-org/gitlab-ce#26325. Remove this.
-      if Gitlab::Geo.enabled?
-        hook_data = {
-          event_name: 'repository_update',
-          project_id: post_received.project.id,
-          project: post_received.project.hook_attrs,
-          remote_url: post_received.project.ssh_url_to_repo
-        }
-
-        SystemHooksService.new.execute_hooks(hook_data, :repository_update_hooks)
-      end
-
       process_project_changes(post_received)
+      process_repository_update(post_received)
     end
   end
 
-  def process_project_changes(post_received)
-    post_received.changes.each do |change|
-      oldrev, newrev, ref = change.strip.split(' ')
+  def process_repository_update(post_received)
+    changes = []
+    refs = Set.new
 
+    post_received.changes_refs do |oldrev, newrev, ref|
+      @user ||= post_received.identify(newrev)
+
+      unless @user
+        log("Triggered hook for non-existing user \"#{post_received.identifier}\"")
+        return false
+      end
+
+      changes << Gitlab::DataBuilder::Repository.single_change(oldrev, newrev, ref)
+      refs << ref
+    end
+
+    hook_data = Gitlab::DataBuilder::Repository.update(post_received.project, @user, changes, refs.to_a)
+    SystemHooksService.new.execute_hooks(hook_data, :repository_update_hooks)
+  end
+
+  def process_project_changes(post_received)
+    post_received.changes_refs do |oldrev, newrev, ref|
       @user ||= post_received.identify(newrev)
 
       unless @user

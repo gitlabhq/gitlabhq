@@ -49,7 +49,7 @@ namespace :gitlab do
     Template.new(
       "https://gitlab.com/gitlab-org/Dockerfile.git",
       /(\.{1,2}|LICENSE|CONTRIBUTING.md|\.Dockerfile)\z/
-    ),
+    )
   ].freeze
 
   def vendor_directory

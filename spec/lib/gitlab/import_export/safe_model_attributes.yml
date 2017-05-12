@@ -320,6 +320,7 @@ ProjectHook:
 - token
 - group_id
 - confidential_issues_events
+- repository_update_events
 ProtectedBranch:
 - id
 - project_id

@@ -60,7 +60,7 @@ module SortingHelper
       sort_value_due_date_soon => sort_title_due_date_soon,
       sort_value_due_date_later => sort_title_due_date_later,
       sort_value_start_date_soon => sort_title_start_date_soon,
-      sort_value_start_date_later => sort_title_start_date_later,
+      sort_value_start_date_later => sort_title_start_date_later
     }
   end
 

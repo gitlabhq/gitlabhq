@@ -140,7 +140,7 @@ describe ApplicationSetting, models: true do
         storages = {
           'custom1' => 'tmp/tests/custom_repositories_1',
           'custom2' => 'tmp/tests/custom_repositories_2',
-          'custom3' => 'tmp/tests/custom_repositories_3',
+          'custom3' => 'tmp/tests/custom_repositories_3'
 
         }
         allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)

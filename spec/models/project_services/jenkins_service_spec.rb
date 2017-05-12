@@ -29,7 +29,7 @@ describe JenkinsService do
         properties: {
           jenkins_url: 'http://jenkins.example.com/',
           password: 'password',
-          username: 'username',
+          username: 'username'
         }
       )
     end
@@ -73,7 +73,7 @@ describe JenkinsService do
           jenkins_url: jenkins_url,
           project_name: 'my_project',
           username: username,
-          password: password,
+          password: password
         }
       )
     end

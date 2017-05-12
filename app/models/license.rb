@@ -1,6 +1,24 @@
 class License < ActiveRecord::Base
   include ActionView::Helpers::NumberHelper
 
+  EES_FEATURES = [
+    # ..
+  ].freeze
+
+  EEP_FEATURES = [
+    *EES_FEATURES,
+    { 'GitLab_DeployBoard' => 1 },
+    { 'GitLab_FileLocks' => 1 },
+    { 'GitLab_Geo' => 1 },
+    { 'GitLab_Auditor_User' => 1 },
+    { 'GitLab_ServiceDesk' => 1 }
+  ].freeze
+
+  FEATURES_BY_PLAN = {
+    'starter'  => EES_FEATURES,
+    'premium'  => EEP_FEATURES
+  }.freeze
+
   validate :valid_license
   validate :check_users_limit, if: :new_record?, unless: :validate_with_trueup?
   validate :check_trueup, unless: :persisted?, if: :validate_with_trueup?
@@ -14,6 +32,10 @@ class License < ActiveRecord::Base
   scope :previous, -> { order(created_at: :desc).offset(1) }
 
   class << self
+    def features_for_plan(plan)
+      FEATURES_BY_PLAN.fetch(plan, []).reduce({}, :merge)
+    end
+
     def current
       if RequestStore.active?
         RequestStore.fetch(:current_license) { load_license }
@@ -83,8 +105,14 @@ class License < ActiveRecord::Base
     end
   end
 
+  # New licenses persists only the `plan` (premium, starter, ..). But, old licenses
+  # keep `add_ons`, therefore this method needs to be backward-compatible in that sense.
+  # See https://gitlab.com/gitlab-org/gitlab-ee/issues/2019
   def add_ons
-    restricted_attr(:add_ons, {})
+    explicit_add_ons = restricted_attr(:add_ons, {})
+    plan_features = self.class.features_for_plan(plan)
+
+    explicit_add_ons.merge(plan_features)
   end
 
   def add_on?(code)

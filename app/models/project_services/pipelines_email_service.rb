@@ -55,7 +55,7 @@ class PipelinesEmailService < Service
         name: 'recipients',
         placeholder: 'Emails separated by comma' },
       { type: 'checkbox',
-        name: 'notify_only_broken_pipelines' },
+        name: 'notify_only_broken_pipelines' }
     ]
   end
 

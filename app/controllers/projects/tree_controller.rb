@@ -48,7 +48,7 @@ class Projects::TreeController < Projects::ApplicationController
     @dir_name = File.join(@path, params[:dir_name])
     @commit_params = {
       file_path: @dir_name,
-      commit_message: params[:commit_message],
+      commit_message: params[:commit_message]
     }
   end
 end

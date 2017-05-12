@@ -143,7 +143,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     if rollout_status.nil?
       render body: nil, status: 204 # no result yet
     else
-      serializer = RolloutStatusSerializer.new(project: @project, user: @current_user)
+      serializer = RolloutStatusSerializer.new(project: @project, current_user: @current_user)
       render json: serializer.represent(rollout_status)
     end
   end

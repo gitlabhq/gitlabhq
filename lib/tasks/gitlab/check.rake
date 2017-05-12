@@ -1128,7 +1128,7 @@ namespace :gitlab do
       display_error.call(e)
 
       try_fixing_it(
-        'If you have a self-signed CA or certificate you need to whitelist it in Omnibus',
+        'If you have a self-signed CA or certificate you need to whitelist it in Omnibus'
       )
       for_more_information(see_custom_certificate_doc)
 

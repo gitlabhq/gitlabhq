@@ -13,7 +13,7 @@ describe Gitlab::OtherMarkup, lib: true do
     }
     links.each do |name, data|
       it "does not convert dangerous #{name} into HTML" do
-        expect(render(data[:file], data[:input])).to eq(data[:output])
+        expect(render(data[:file], data[:input], context)).to eq(data[:output])
       end
     end
   end

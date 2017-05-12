@@ -90,7 +90,7 @@ class JenkinsDeprecatedService < CiService
       get_url = build_page(sha, ref).gsub("#{parsed_url.userinfo}@", "")
       auth = {
         username: URI.decode(parsed_url.user),
-        password: URI.decode(parsed_url.password),
+        password: URI.decode(parsed_url.password)
       }
       response = HTTParty.get(get_url, verify: false, basic_auth: auth)
     end

@@ -2,15 +2,18 @@ class GeoBackfillWorker
   include Sidekiq::Worker
   include CronjobQueue
 
-  RUN_TIME = 5.minutes.to_i.freeze
-  BATCH_SIZE = 100.freeze
+  RUN_TIME = 5.minutes.to_i
+  BATCH_SIZE = 100
+  LAST_SYNC_INTERVAL = 24.hours
 
   def perform
     return unless Gitlab::Geo.configured?
     return unless Gitlab::Geo.primary_node.present?
 
-    start_time  = Time.now
-    project_ids = find_project_ids
+    start_time = Time.now
+    project_ids_not_synced = find_project_ids_not_synced
+    project_ids_updated_recently = find_synced_project_ids_updated_recently
+    project_ids = interleave(project_ids_not_synced, project_ids_updated_recently)
 
     logger.info "Started Geo backfilling for #{project_ids.length} project(s)"
 
@@ -38,10 +41,32 @@ class GeoBackfillWorker
 
   private
 
-  def find_project_ids
+  def find_project_ids_not_synced
     Project.where.not(id: Geo::ProjectRegistry.synced.pluck(:project_id))
            .limit(BATCH_SIZE)
            .pluck(:id)
+  end
+
+  def find_synced_project_ids_updated_recently
+    Geo::ProjectRegistry.where(project_id: find_project_ids_updated_recently)
+                        .where('last_repository_synced_at <= ?', LAST_SYNC_INTERVAL.ago)
+                        .order(last_repository_synced_at: :asc)
+                        .limit(BATCH_SIZE)
+                        .pluck(:project_id)
+  end
+
+  def find_project_ids_updated_recently
+    Project.where(id: Geo::ProjectRegistry.synced.pluck(:project_id))
+           .where('last_repository_updated_at >= ?', LAST_SYNC_INTERVAL.ago)
+           .pluck(:id)
+  end
+
+  def interleave(first, second)
+    if first.length >= second.length
+      first.zip(second)
+    else
+      second.zip(first).map(&:reverse)
+    end.flatten(1).compact.take(BATCH_SIZE)
   end
 
   def over_time?(start_time)

@@ -22,7 +22,7 @@ class MigrateEESidekiqQueuesFromDefault < ActiveRecord::Migration
   RENAMED_QUEUES = {
     default: {
       'LdapGroupSyncWorker' => :cronjob,
-      'LdapSyncWorker'      => :cronjob,
+      'LdapSyncWorker'      => :cronjob
     }
   }.freeze
 

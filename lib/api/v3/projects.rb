@@ -92,7 +92,7 @@ module API
             options = options.reverse_merge(
               with: ::API::V3::Entities::Project,
               current_user: current_user,
-              simple: params[:simple],
+              simple: params[:simple]
             )
 
             projects = filter_projects(projects)
