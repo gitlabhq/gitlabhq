@@ -59,7 +59,6 @@ describe Projects::MergeRequestsController do
     end
   end
 
-<<<<<<< HEAD
   describe 'POST #create' do
     def create_merge_request(overrides = {})
       params = {
@@ -223,8 +222,6 @@ describe Projects::MergeRequestsController do
     end
   end
 
-=======
->>>>>>> upstream/master
   describe 'GET commit_change_content' do
     it 'renders commit_change_content template' do
       get :commit_change_content,
@@ -560,10 +557,7 @@ describe Projects::MergeRequestsController do
         namespace_id: project.namespace,
         project_id: project,
         id: merge_request.iid,
-<<<<<<< HEAD
         squash: false,
-=======
->>>>>>> upstream/master
         format: 'json'
       }
     end

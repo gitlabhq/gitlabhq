@@ -30,13 +30,8 @@ class EnvironmentEntity < Grape::Entity
       environment)
   end
 
-<<<<<<< HEAD
   expose :terminal_path, if: ->(environment, _) { environment.deployment_service_ready? } do |environment|
-    can?(request.user, :admin_environment, environment.project) &&
-=======
-  expose :terminal_path, if: ->(environment, _) { environment.has_terminals? } do |environment|
     can?(request.current_user, :admin_environment, environment.project) &&
->>>>>>> upstream/master
       terminal_namespace_project_environment_path(
         environment.project.namespace,
         environment.project,

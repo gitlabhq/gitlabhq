@@ -2,11 +2,7 @@ module Ci
   class CreatePipelineService < BaseService
     attr_reader :pipeline
 
-<<<<<<< HEAD
-    def execute(ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, mirror_update: false)
-=======
-    def execute(ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil)
->>>>>>> upstream/master
+    def execute(ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, mirror_update: false)
       @pipeline = Ci::Pipeline.new(
         project: project,
         ref: ref,

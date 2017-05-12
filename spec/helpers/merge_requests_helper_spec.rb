@@ -40,7 +40,6 @@ describe MergeRequestsHelper do
       it { is_expected.to eq([source_title, target_title]) }
     end
   end
-<<<<<<< HEAD
 
   describe '#render_items_list' do
     it "returns one item in the list" do
@@ -55,6 +54,4 @@ describe MergeRequestsHelper do
       expect(render_items_list(%w(user user1 user2))).to eq("user, user1 and user2")
     end
   end
-=======
->>>>>>> upstream/master
 end

@@ -81,7 +81,6 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     end
   end
 
-<<<<<<< HEAD
   def rebase_path
     if !rebase_in_progress? && should_be_rebased? && user_can_push_to_source_branch?
       rebase_namespace_project_merge_request_path(project.namespace,
@@ -90,8 +89,6 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     end
   end
 
-=======
->>>>>>> upstream/master
   def target_branch_commits_path
     if target_branch_exists?
       namespace_project_commits_path(project.namespace, project, target_branch)
@@ -104,7 +101,6 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     end
   end
 
-<<<<<<< HEAD
   def approvals_path
     if requires_approve?
       approvals_namespace_project_merge_request_path(project.namespace,
@@ -113,8 +109,6 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     end
   end
 
-=======
->>>>>>> upstream/master
   def source_branch_with_namespace_link
     namespace = source_project_namespace
     branch = source_branch
@@ -161,13 +155,10 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     user_can_collaborate_with_project? && can_be_cherry_picked?
   end
 
-<<<<<<< HEAD
   def can_push_to_source_branch?
     source_branch_exists? && user_can_push_to_source_branch?
   end
 
-=======
->>>>>>> upstream/master
   private
 
   def closing_issues
@@ -186,15 +177,12 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     end.sort.to_sentence
   end
 
-<<<<<<< HEAD
   def user_can_push_to_source_branch?
     ::Gitlab::UserAccess
       .new(current_user, project: source_project)
       .can_push_to_branch?(source_branch)
   end
 
-=======
->>>>>>> upstream/master
   def user_can_collaborate_with_project?
     can?(current_user, :push_code, project) ||
       (current_user && current_user.already_forked?(project))

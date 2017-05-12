@@ -353,7 +353,6 @@ describe MergeRequestPresenter do
       end
     end
   end
-<<<<<<< HEAD
 
   describe '#can_push_to_source_branch' do
     before do
@@ -482,6 +481,4 @@ describe MergeRequestPresenter do
       end
     end
   end
-=======
->>>>>>> upstream/master
 end
