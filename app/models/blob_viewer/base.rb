@@ -2,7 +2,7 @@ module BlobViewer
   class Base
     PARTIAL_PATH_PREFIX = 'projects/blob/viewers'.freeze
 
-    class_attribute :partial_name, :loading_partial_name, :type, :extensions, :file_type, :client_side, :binary, :switcher_icon, :switcher_title, :max_size, :absolute_max_size
+    class_attribute :partial_name, :loading_partial_name, :type, :extensions, :file_types, :client_side, :binary, :switcher_icon, :switcher_title, :max_size, :absolute_max_size
 
     self.loading_partial_name = 'loading'
 
@@ -54,17 +54,17 @@ module BlobViewer
     def self.can_render?(blob, verify_binary: true)
       return false if verify_binary && binary? != blob.binary?
       return true if extensions&.include?(blob.extension)
-      return true if file_type && Gitlab::FileDetector.type_of(blob.path) == file_type
+      return true if file_types&.include?(Gitlab::FileDetector.type_of(blob.path))
 
       false
     end
 
     def too_large?
-      blob.raw_size > max_size
+      max_size && blob.raw_size > max_size
     end
 
     def absolutely_too_large?
-      blob.raw_size > absolute_max_size
+      absolute_max_size && blob.raw_size > absolute_max_size
     end
 
     def can_override_max_size?

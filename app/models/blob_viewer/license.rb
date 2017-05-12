@@ -7,7 +7,7 @@ module BlobViewer
     include Auxiliary
 
     self.partial_name = 'license'
-    self.file_type = :license
+    self.file_types = %i(license)
     self.binary = false
 
     def license
