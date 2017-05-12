@@ -41,10 +41,6 @@ export default {
       required: false,
       default: '',
     },
-    showForm: {
-      type: Boolean,
-      required: true,
-    },
   },
   data() {
     const store = new Store({
@@ -57,7 +53,13 @@ export default {
       store,
       state: store.state,
       formState: store.formState,
+      showForm: false,
     };
+  },
+  computed: {
+    elementType() {
+      return this.showForm ? 'form' : 'div';
+    },
   },
   components: {
     descriptionComponent,
@@ -65,6 +67,12 @@ export default {
     editActions,
   },
   methods: {
+    openForm() {
+      this.showForm = true;
+      this.store.formState = {
+        title: this.state.titleText,
+      };
+    },
     updateIssuable() {
       this.service.updateIssuable(this.formState)
         .then(() => {
@@ -117,17 +125,21 @@ export default {
 
     eventHub.$on('delete.issuable', this.deleteIssuable);
     eventHub.$on('update.issuable', this.updateIssuable);
+    eventHub.$on('open.form', this.openForm);
   },
   beforeDestroy() {
     eventHub.$off('delete.issuable', this.deleteIssuable);
     eventHub.$off('update.issuable', this.updateIssuable);
+    eventHub.$off('open.form', this.openForm);
   },
 };
 </script>
 
 <template>
-  <div>
+  <div :is="elementType">
     <title-component
+      :store="store"
+      :show-form="showForm"
       :issuable-ref="issuableRef"
       :title-html="state.titleHtml"
       :title-text="state.titleText" />

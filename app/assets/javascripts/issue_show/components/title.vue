@@ -1,8 +1,12 @@
 <script>
   import animateMixin from '../mixins/animate';
+  import titleField from './fields/title.vue';
 
   export default {
     mixins: [animateMixin],
+    components: {
+      titleField,
+    },
     data() {
       return {
         preAnimation: false,
@@ -23,6 +27,14 @@
         type: String,
         required: true,
       },
+      store: {
+        type: Object,
+        required: true,
+      },
+      showForm: {
+        type: Boolean,
+        required: true,
+      },
     },
     watch: {
       titleHtml() {
@@ -41,13 +53,19 @@
 </script>
 
 <template>
-  <h2
-    class="title"
-    :class="{
-      'issue-realtime-pre-pulse': preAnimation,
-      'issue-realtime-trigger-pulse': pulseAnimation
-    }"
-    v-html="titleHtml"
-  >
-  </h2>
+  <div>
+    <title-field
+      v-if="showForm"
+      :store="store" />
+    <h2
+      v-else
+      class="title"
+      :class="{
+        'issue-realtime-pre-pulse': preAnimation,
+        'issue-realtime-trigger-pulse': pulseAnimation
+      }"
+      v-html="titleHtml"
+    >
+    </h2>
+  </div>
 </template>

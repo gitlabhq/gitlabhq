@@ -75,6 +75,18 @@ describe('Issuable output', () => {
     });
   });
 
+  it('changes element for `form` when open', (done) => {
+    vm.showForm = true;
+
+    Vue.nextTick(() => {
+      expect(
+        vm.$el.tagName,
+      ).toBe('FORM');
+
+      done();
+    });
+  });
+
   it('does not show actions if permissions are incorrect', (done) => {
     vm.showForm = true;
     vm.canUpdate = false;
