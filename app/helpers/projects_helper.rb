@@ -158,8 +158,7 @@ module ProjectsHelper
 
   def project_list_cache_key(project)
     key = [
-      'parent/' + project.namespace.parent_full_path,
-      project.namespace.cache_key,
+      project.route.cache_key,
       project.cache_key,
       controller.controller_name,
       controller.action_name,

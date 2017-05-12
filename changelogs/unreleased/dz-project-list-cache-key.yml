@@ -1,4 +1,4 @@
 ---
-title: Add parent full path to project list cache key
+title: Use route.cache_key for project list cache key
 merge_request: 11325
 author:

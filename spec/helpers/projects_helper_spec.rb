@@ -66,14 +66,8 @@ describe ProjectsHelper do
   describe "#project_list_cache_key", redis: true do
     let(:project) { create(:project) }
 
-    it "includes the namespace" do
-      expect(helper.project_list_cache_key(project)).to include(project.namespace.cache_key)
-    end
-
-    it "includes the parent namespace in case of subgroup" do
-      project = create(:project, group: create(:group, :nested))
-
-      expect(helper.project_list_cache_key(project)).to include("parent/#{project.namespace.parent.path}")
+    it "includes the route" do
+      expect(helper.project_list_cache_key(project)).to include(project.route.cache_key)
     end
 
     it "includes the project" do
