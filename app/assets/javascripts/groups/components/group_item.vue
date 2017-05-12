@@ -10,10 +10,6 @@ export default {
   },
   methods: {
     toggleSubGroups() {
-      if (!this.group.hasSubgroups) {
-        return;
-      }
-
       eventHub.$emit('toggleSubGroups', this.group);
     },
   },
@@ -21,8 +17,11 @@ export default {
 </script>
 
 <template>
-  <li @click="toggleSubGroups" class="list-group-item">
-    <span v-show="group.hasSubgroups">
+  <li
+    @click="toggleSubGroups" class="list-group-item"
+    :id="group.id"
+    >
+    <span v-show="group.expandable">
       <i
         v-show="group.isOpen"
         class="fa fa-caret-down"
@@ -33,9 +32,9 @@ export default {
         aria-hidden="true"/>
     </span>
 
-    <p><a :href="group.webUrl">{{group.fullName}}</a></p>
-    <p>{{group.description}}</p>
+    <code>{{group.id}}</code> - <code v-show="group.isOrphan">Orphan</code> <a :href="group.webUrl">{{group.fullName}}</a></span>
+    <span>{{group.description}}</span>
 
-    <group-folder v-if="group.subGroups && group.isOpen" :groups="group.subGroups" />
+    <group-folder v-if="group.isOpen" :groups="group.subGroups" />
   </li>
 </template>

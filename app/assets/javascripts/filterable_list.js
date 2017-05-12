@@ -30,8 +30,8 @@ export default class FilterableList {
   }
 
   filterResults(url, data) {
-    const endpoint = url || this.filterForm.getAttribute('action');
-    const additionalData = data || $(this.filterForm).serialize();
+    const endpoint = url || this.filterForm.getAttribute('action');
+    const additionalData = data || $(this.filterForm).serialize();
 
     $(this.listHolderElement).fadeTo(250, 0.5);
 

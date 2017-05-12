@@ -31,19 +31,24 @@ $(() => {
       };
     },
     methods: {
-      fetchGroups() {
-        service.getGroups()
+      fetchGroups(parentGroup) {
+        let parentId = null;
+
+        if (parentGroup) {
+          parentId = parentGroup.id;
+        }
+
+        service.getGroups(parentId)
           .then((response) => {
-            store.setGroups(response.json());
+            store.setGroups(response.json(), parentGroup);
           })
           .catch(() => {
             // TODO: Handler error
           });
       },
-      toggleSubGroups(group) {
-        GroupsStore.toggleSubGroups(group);
-
-        this.fetchGroups();
+      toggleSubGroups(parentGroup = null) {
+        GroupsStore.toggleSubGroups(parentGroup);
+        this.fetchGroups(parentGroup);
       },
     },
     created() {

@@ -8,7 +8,15 @@ export default class GroupsService {
     this.groups = Vue.resource(endpoint);
   }
 
-  getGroups() {
-    return this.groups.get();
+  getGroups(parentId) {
+    let data = {};
+
+    if (parentId) {
+      data = {
+        parent_id: parentId,
+      };
+    }
+
+    return this.groups.get(data);
   }
 }
