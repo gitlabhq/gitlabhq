@@ -14,21 +14,6 @@ class GfmAutoComplete {
     this.isLoadingData = {};
   }
 
-
-      _a = decodeURI("%C3%80");
-      _y = decodeURI("%C3%BF");
-
-      regexp = new RegExp("^(?:\\B|[^a-zA-Z0-9_" + atSymbolsWithoutBar + "]|\\s)" + flag + "(?!" + atSymbolsWithBar + ")((?:[A-Za-z" + _a + "-" + _y + "0-9_\'\.\+\-]|[^\\x00-\\x7a])*)$", 'gi');
-
-      match = regexp.exec(subtext);
-
-      if (match) {
-        return match[1];
-      } else {
-        return null;
-      }
-    }
-  },
   setup(input, enableMap = {
     emojis: true,
     members: true,
@@ -39,6 +24,7 @@ class GfmAutoComplete {
   }) {
     // Add GFM auto-completion to all input fields, that accept GFM input.
     this.input = input || $('.js-gfm-input');
+    this.enableMap = enableMap;
     this.setupLifecycle();
   }
 
