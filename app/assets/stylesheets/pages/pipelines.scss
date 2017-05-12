@@ -158,9 +158,13 @@
     float: none;
   }
 
+  .api {
+    @extend .monospace;
+  }
+
   .branch-commit {
 
-    .branch-name {
+    .ref-name {
       font-weight: bold;
       max-width: 120px;
       overflow: hidden;
@@ -182,7 +186,7 @@
       color: $gl-text-color;
     }
 
-    .commit-id {
+    .commit-sha {
       color: $gl-link-color;
     }
 

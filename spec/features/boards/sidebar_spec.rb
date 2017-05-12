@@ -158,7 +158,7 @@ describe 'Issue Boards', feature: true, js: true do
       end
 
       page.within(first('.board')) do
-        find('.card:nth-child(2)').click
+        find('.card:nth-child(2)').trigger('click')
       end
 
       page.within('.assignee') do

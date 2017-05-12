@@ -59,6 +59,13 @@ describe Issues::UpdateService, services: true do
         expect(issue.due_date).to eq Date.tomorrow
       end
 
+      it 'updates open issue counter for assignees when issue is reassigned' do
+        update_issue(assignee_ids: [user2.id])
+
+        expect(user3.assigned_open_issues_count).to eq 0
+        expect(user2.assigned_open_issues_count).to eq 1
+      end
+
       it 'sorts issues as specified by parameters' do
         issue1 = create(:issue, project: project, assignees: [user3])
         issue2 = create(:issue, project: project, assignees: [user3])

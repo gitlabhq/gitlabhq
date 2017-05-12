@@ -90,7 +90,7 @@
     }
 
     .build-link,
-    .branch-name {
+    .ref-name {
       color: $gl-text-color;
     }
 
@@ -135,7 +135,7 @@
     }
 
     .branch-commit {
-      .commit-id {
+      .commit-sha {
         margin-right: 0;
       }
     }

@@ -1,6 +1,6 @@
-import PipelineStage from '../../pipelines/components/stage';
-import pipelineStatusIcon from '../../vue_shared/components/pipeline_status_icon';
-import { statusClassToSvgMap } from '../../vue_shared/pipeline_svg_icons';
+import PipelineStage from '../../pipelines/components/stage.vue';
+import ciIcon from '../../vue_shared/components/ci_icon.vue';
+import { statusIconEntityMap } from '../../vue_shared/ci_status_icons';
 
 export default {
   name: 'MRWidgetPipeline',
@@ -9,7 +9,7 @@ export default {
   },
   components: {
     'pipeline-stage': PipelineStage,
-    'pipeline-status-icon': pipelineStatusIcon,
+    ciIcon,
   },
   computed: {
     hasCIError() {
@@ -18,10 +18,13 @@ export default {
       return hasCI && !ciStatus;
     },
     svg() {
-      return statusClassToSvgMap.icon_status_failed;
+      return statusIconEntityMap.icon_status_failed;
     },
     stageText() {
       return this.mr.pipeline.details.stages.length > 1 ? 'stages' : 'stage';
+    },
+    status() {
+      return this.mr.pipeline.details.status || {};
     },
   },
   template: `
@@ -38,13 +41,22 @@ export default {
           <span>Could not connect to the CI server. Please check your settings and try again.</span>
         </template>
         <template v-else>
-          <pipeline-status-icon :pipelineStatus="mr.pipelineDetailedStatus" />
+          <div>
+            <a
+              class="icon-link"
+              :href="this.status.details_path">
+              <ci-icon :status="status" />
+            </a>
+          </div>
           <span>
             Pipeline
             <a
               :href="mr.pipeline.path"
               class="pipeline-id">#{{mr.pipeline.id}}</a>
             {{mr.pipeline.details.status.label}}
+          </span>
+          <span
+            v-if="mr.pipeline.details.stages.length > 0">
             with {{stageText}}
           </span>
           <div class="mr-widget-pipeline-graph">
@@ -61,7 +73,7 @@ export default {
             for
             <a
               :href="mr.pipeline.commit.commit_path"
-              class="monospace js-commit-link">
+              class="commit-sha js-commit-link">
               {{mr.pipeline.commit.short_id}}</a>.
           </span>
           <span

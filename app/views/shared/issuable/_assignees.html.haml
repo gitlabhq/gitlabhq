@@ -1,9 +1,8 @@
 - max_render = 3
 - max = [max_render, issue.assignees.length].min
 
-- issue.assignees.each_with_index do |assignee, index|
-  - if index < max
-    = link_to_member(@project, assignee, name: false, title: "Assigned to :name")
+- issue.assignees.take(max).each do |assignee|
+  = link_to_member(@project, assignee, name: false, title: "Assigned to :name")
 
 - if issue.assignees.length > max_render
   - counter = issue.assignees.length - max_render

@@ -25,7 +25,7 @@ class Spinach::Features::ProjectBuildsArtifacts < Spinach::FeatureSteps
 
   step 'I should see the build header' do
     page.within('.build-header') do
-      expect(page).to have_content "Job ##{@build.id} in pipeline ##{@pipeline.id} for commit #{@pipeline.short_sha}"
+      expect(page).to have_content "Job ##{@build.id} in pipeline ##{@pipeline.id} for #{@pipeline.short_sha}"
     end
   end
 

@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { statusClassToSvgMap } from '~/vue_shared/pipeline_svg_icons';
+import { statusIconEntityMap } from '~/vue_shared/ci_status_icons';
 import pipelineComponent from '~/vue_merge_request_widget/components/mr_widget_pipeline';
 import mockData from '../mock_data';
 
@@ -24,7 +24,7 @@ describe('MRWidgetPipeline', () => {
   describe('components', () => {
     it('should have components added', () => {
       expect(pipelineComponent.components['pipeline-stage']).toBeDefined();
-      expect(pipelineComponent.components['pipeline-status-icon']).toBeDefined();
+      expect(pipelineComponent.components.ciIcon).toBeDefined();
     });
   });
 
@@ -33,7 +33,7 @@ describe('MRWidgetPipeline', () => {
       it('should have the proper SVG icon', () => {
         const vm = createComponent({ pipeline: mockData.pipeline });
 
-        expect(vm.svg).toEqual(statusClassToSvgMap.icon_status_failed);
+        expect(vm.svg).toEqual(statusIconEntityMap.icon_status_failed);
       });
     });
 

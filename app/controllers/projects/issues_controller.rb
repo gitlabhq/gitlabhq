@@ -208,7 +208,6 @@ class Projects::IssuesController < Projects::ApplicationController
       description: view_context.markdown_field(@issue, :description),
       description_text: @issue.description,
       task_status: @issue.task_status,
-      issue_number: @issue.iid,
       updated_at: @issue.updated_at
     }
   end
