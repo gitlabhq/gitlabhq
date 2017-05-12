@@ -33,6 +33,7 @@ following locations:
 - [Notification settings](notification_settings.md)
 - [Pipelines](pipelines.md)
 - [Pipeline Triggers](pipeline_triggers.md)
+- [Pipeline Schedules](pipeline_schedules.md)
 - [Projects](projects.md) including setting Webhooks
 - [Project Access Requests](access_requests.md)
 - [Project Members](members.md)
