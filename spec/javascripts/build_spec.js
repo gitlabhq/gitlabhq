@@ -60,7 +60,7 @@ describe('Build', () => {
 
       it('displays the remove date correctly', () => {
         const removeDateElement = document.querySelector('.js-artifacts-remove');
-        expect(removeDateElement.innerText.trim()).toBe('1 year');
+        expect(removeDateElement.innerText.trim()).toBe('1 year remaining');
       });
     });
 

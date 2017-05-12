@@ -17,12 +17,6 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "\n"
 
-msgid "\"Project #{project_name} queued for deletion.\""
-msgstr ""
-
-msgid "\"Project '#{project_name}' will be deleted.\""
-msgstr ""
-
 msgid "About auto deploy"
 msgstr ""
 
@@ -300,10 +294,16 @@ msgstr ""
 msgid "Private"
 msgstr ""
 
+msgid "Project '%{project_name}' queued for deletion."
+msgstr ""
+
 msgid "Project '%{project_name}' was successfully created."
 msgstr ""
 
 msgid "Project '%{project_name}' was successfully updated."
+msgstr ""
+
+msgid "Project '%{project_name}' will be deleted."
 msgstr ""
 
 msgid "Project access must be granted explicitly to each user."
@@ -482,16 +482,55 @@ msgstr ""
 msgid "Timeago|%s days ago"
 msgstr ""
 
+msgid "Timeago|%s days remaining"
+msgstr ""
+
+msgid "Timeago|%s hours remaining"
+msgstr ""
+
 msgid "Timeago|%s minutes ago"
+msgstr ""
+
+msgid "Timeago|%s minutes remaining"
 msgstr ""
 
 msgid "Timeago|%s months ago"
 msgstr ""
 
+msgid "Timeago|%s months remaining"
+msgstr ""
+
+msgid "Timeago|%s seconds remaining"
+msgstr ""
+
 msgid "Timeago|%s weeks ago"
 msgstr ""
 
+msgid "Timeago|%s weeks remaining"
+msgstr ""
+
 msgid "Timeago|%s years ago"
+msgstr ""
+
+msgid "Timeago|%s years remaining"
+msgstr ""
+
+msgid "Timeago|1 day remaining"
+msgstr ""
+
+msgid "Timeago|1 hour remaining"
+msgstr ""
+
+msgid "Timeago|1 minute remaining"
+msgstr ""
+
+msgid "Timeago|1 month remaining"
+msgstr ""
+
+msgid "Timeago|1 week remaining"
+msgstr ""
+
+msgid "Timeago|1 year remaining"
 msgstr ""
 
 msgid "Timeago|Past due"

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-11 15:07+0100\n"
-"PO-Revision-Date: 2017-05-11 15:07+0100\n"
+"POT-Creation-Date: 2017-05-12 14:00+0100\n"
+"PO-Revision-Date: 2017-05-12 14:00+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -17,12 +17,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
-
-msgid "\"Project #{project_name} queued for deletion.\""
-msgstr ""
-
-msgid "\"Project '#{project_name}' will be deleted.\""
-msgstr ""
 
 msgid "About auto deploy"
 msgstr ""
@@ -301,10 +295,16 @@ msgstr ""
 msgid "Private"
 msgstr ""
 
+msgid "Project '%{project_name}' queued for deletion."
+msgstr ""
+
 msgid "Project '%{project_name}' was successfully created."
 msgstr ""
 
 msgid "Project '%{project_name}' was successfully updated."
+msgstr ""
+
+msgid "Project '%{project_name}' will be deleted."
 msgstr ""
 
 msgid "Project access must be granted explicitly to each user."
@@ -483,16 +483,55 @@ msgstr ""
 msgid "Timeago|%s days ago"
 msgstr ""
 
+msgid "Timeago|%s days remaining"
+msgstr ""
+
+msgid "Timeago|%s hours remaining"
+msgstr ""
+
 msgid "Timeago|%s minutes ago"
+msgstr ""
+
+msgid "Timeago|%s minutes remaining"
 msgstr ""
 
 msgid "Timeago|%s months ago"
 msgstr ""
 
+msgid "Timeago|%s months remaining"
+msgstr ""
+
+msgid "Timeago|%s seconds remaining"
+msgstr ""
+
 msgid "Timeago|%s weeks ago"
 msgstr ""
 
+msgid "Timeago|%s weeks remaining"
+msgstr ""
+
 msgid "Timeago|%s years ago"
+msgstr ""
+
+msgid "Timeago|%s years remaining"
+msgstr ""
+
+msgid "Timeago|1 day remaining"
+msgstr ""
+
+msgid "Timeago|1 hour remaining"
+msgstr ""
+
+msgid "Timeago|1 minute remaining"
+msgstr ""
+
+msgid "Timeago|1 month remaining"
+msgstr ""
+
+msgid "Timeago|1 week remaining"
+msgstr ""
+
+msgid "Timeago|1 year remaining"
 msgstr ""
 
 msgid "Timeago|Past due"

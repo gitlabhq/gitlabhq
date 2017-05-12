@@ -52,6 +52,24 @@ window.dateFormat = require('vendor/date.format');
       var locale;
 
       if (!timeagoInstance) {
+        const localeRemaining = function(number, index) {
+          return [
+            [s__('Timeago|less than a minute ago'), s__('Timeago|a while')],
+            [s__('Timeago|less than a minute ago'), s__('Timeago|%s seconds remaining')],
+            [s__('Timeago|about a minute ago'), s__('Timeago|1 minute remaining')],
+            [s__('Timeago|%s minutes ago'), s__('Timeago|%s minutes remaining')],
+            [s__('Timeago|about an hour ago'), s__('Timeago|1 hour remaining')],
+            [s__('Timeago|about %s hours ago'), s__('Timeago|%s hours remaining')],
+            [s__('Timeago|a day ago'), s__('Timeago|1 day remaining')],
+            [s__('Timeago|%s days ago'), s__('Timeago|%s days remaining')],
+            [s__('Timeago|a week ago'), s__('Timeago|1 week remaining')],
+            [s__('Timeago|%s weeks ago'), s__('Timeago|%s weeks remaining')],
+            [s__('Timeago|a month ago'), s__('Timeago|1 month remaining')],
+            [s__('Timeago|%s months ago'), s__('Timeago|%s months remaining')],
+            [s__('Timeago|a year ago'), s__('Timeago|1 year remaining')],
+            [s__('Timeago|%s years ago'), s__('Timeago|%s years remaining')]
+          ][index];
+        };
         locale = function(number, index) {
           return [
             [s__('Timeago|less than a minute ago'), s__('Timeago|a while')],
@@ -72,6 +90,7 @@ window.dateFormat = require('vendor/date.format');
         };
 
         timeago.register(lang, locale);
+        timeago.register(`${lang}-remaining`, localeRemaining);
         timeagoInstance = timeago();
       }
 
@@ -84,7 +103,7 @@ window.dateFormat = require('vendor/date.format');
         return '';
       }
       expiredLabel || (expiredLabel = s__('Timeago|Past due'));
-      timefor = gl.utils.getTimeago().format(time);
+      timefor = gl.utils.getTimeago().format(time, `${lang}-remaining`);
       if (new Date(time) < new Date()) {
         timefor = expiredLabel;
       } else {
