@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe API::PipelineSchedules do
-  let(:developer) { create(:user) }
-  let(:user) { create(:user) }
-  let!(:project) { create(:project, :repository) }
+  set(:developer) { create(:user) }
+  set(:user) { create(:user) }
+  set(:project) { create(:project) }
 
   before do
     project.add_developer(developer)
