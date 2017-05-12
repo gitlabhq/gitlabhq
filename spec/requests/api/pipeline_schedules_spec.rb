@@ -263,7 +263,7 @@ describe API::PipelineSchedules do
       it 'does not delete pipeline_schedule' do
         delete api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", developer)
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_http_status(:forbidden)
       end
     end
 
@@ -271,7 +271,7 @@ describe API::PipelineSchedules do
       it 'does not delete pipeline_schedule' do
         delete api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}")
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_http_status(:unauthorized)
       end
     end
   end
