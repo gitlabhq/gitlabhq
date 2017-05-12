@@ -51,6 +51,7 @@ module Gitlab
       def license_usage_data
         usage_data = {
           uuid: current_application_settings.uuid,
+          hostname: Gitlab.config.gitlab.host,
           version: Gitlab::VERSION,
           active_user_count: User.active.count,
           recorded_at: Time.now,
