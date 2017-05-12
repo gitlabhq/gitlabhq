@@ -1,5 +1,6 @@
 <script>
   import animateMixin from '../mixins/animate';
+  import descriptionField from './fields/description.vue';
 
   export default {
     mixins: [animateMixin],
@@ -21,6 +22,18 @@
         required: true,
       },
       taskStatus: {
+        type: String,
+        required: true,
+      },
+      store: {
+        type: Object,
+        required: true,
+      },
+      showForm: {
+        type: Boolean,
+        required: true,
+      },
+      markdownPreviewUrl: {
         type: String,
         required: true,
       },
@@ -75,6 +88,9 @@
         }
       },
     },
+    components: {
+      descriptionField,
+    },
     mounted() {
       this.renderGFM();
     },
@@ -82,24 +98,31 @@
 </script>
 
 <template>
-  <div
-    class="description"
-    :class="{
-      'js-task-list-container': canUpdate
-    }">
+  <div :class="{ 'common-note-form': showForm }">
+    <description-field
+      v-if="showForm"
+      :store="store"
+      :markdown-preview-url="markdownPreviewUrl" />
     <div
-      class="wiki"
+      v-else-if="descriptionHtml"
+      class="description"
       :class="{
-        'issue-realtime-pre-pulse': preAnimation,
-        'issue-realtime-trigger-pulse': pulseAnimation
-      }"
-      v-html="descriptionHtml"
-      ref="gfm-content">
+        'js-task-list-container': canUpdate
+      }">
+      <div
+        class="wiki"
+        :class="{
+          'issue-realtime-pre-pulse': preAnimation,
+          'issue-realtime-trigger-pulse': pulseAnimation
+        }"
+        v-html="descriptionHtml"
+        ref="gfm-content">
+      </div>
+      <textarea
+        class="hidden js-task-list-field"
+        v-if="descriptionText"
+        v-model="descriptionText">
+      </textarea>
     </div>
-    <textarea
-      class="hidden js-task-list-field"
-      v-if="descriptionText"
-      v-model="descriptionText">
-    </textarea>
   </div>
 </template>

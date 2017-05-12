@@ -41,8 +41,8 @@ export default {
       required: false,
       default: '',
     },
-    showForm: {
-      type: Boolean,
+    markdownPreviewUrl: {
+      type: String,
       required: true,
     },
   },
@@ -71,6 +71,13 @@ export default {
     editActions,
   },
   methods: {
+    openForm() {
+      this.showForm = true;
+      this.store.formState = {
+        title: this.state.titleText,
+        description: this.state.descriptionText,
+      };
+    },
     updateIssuable() {
       this.service.updateIssuable(this.formState)
         .then(() => {
@@ -94,14 +101,6 @@ export default {
           eventHub.$emit('close.form');
           return new Flash('Error deleting issue');
         });
-    },
-  },
-  methods: {
-    openForm() {
-      this.showForm = true;
-      this.store.formState = {
-        title: this.state.titleText,
-      };
     },
   },
   created() {
@@ -150,12 +149,14 @@ export default {
       :title-html="state.titleHtml"
       :title-text="state.titleText" />
     <description-component
-      v-if="state.descriptionHtml"
+      :store="store"
+      :show-form="showForm"
       :can-update="canUpdate"
       :description-html="state.descriptionHtml"
       :description-text="state.descriptionText"
       :updated-at="state.updatedAt"
-      :task-status="state.taskStatus" />
+      :task-status="state.taskStatus"
+      :markdown-preview-url="markdownPreviewUrl" />
     <edit-actions
       v-if="canUpdate && showForm"
       :can-destroy="canDestroy" />
