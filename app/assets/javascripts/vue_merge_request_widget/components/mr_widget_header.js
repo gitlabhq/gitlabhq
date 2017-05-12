@@ -14,12 +14,13 @@ export default {
     },
     branchNameClipboardData() {
       // This supports code in app/assets/javascripts/copy_to_clipboard.js that
-      // works around ClipboardJS limitations to allow the context-specific copy/pasting of plain text or GFM.
+      // works around ClipboardJS limitations to allow the context-specific
+      // copy/pasting of plain text or GFM.
       return JSON.stringify({
         text: this.mr.sourceBranch,
-        gfm: '`' + this.mr.sourceBranch + '`'
+        gfm: `\`${this.mr.sourceBranch}\``,
       });
-    }
+    },
   },
   methods: {
     isBranchTitleLong(branchTitle) {
