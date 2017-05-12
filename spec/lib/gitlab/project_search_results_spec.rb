@@ -55,7 +55,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
     end
 
     it 'finds by name' do
-      expect(results).to include(["files/images/wm.svg", nil])
+      expect(results.map(&:first)).to include('files/images/wm.svg')
     end
 
     it 'finds by content' do
