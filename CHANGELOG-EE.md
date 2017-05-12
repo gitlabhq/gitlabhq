@@ -1,5 +1,10 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 9.1.4 (2017-05-12)
+
+- Remove warning about protecting Service Desk email from form.
+- Backfill projects where the last attempt to backfill failed.
+
 ## 9.1.3 (2017-05-05)
 
 - No changes.
