@@ -77,6 +77,16 @@ describe Gitlab::EtagCaching::Router do
     expect(result).to be_blank
   end
 
+  it 'matches the environments path' do
+    env = build_env(
+      '/my-group/my-project/environments.json'
+    )
+
+    result = described_class.match(env)
+
+    expect(result).to be_blank
+  end
+
   def build_env(path)
     { 'PATH_INFO' => path }
   end

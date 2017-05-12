@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Environment, models: true do
-  let(:project) { create(:empty_project) }
+  set(:project) { create(:empty_project) }
   subject(:environment) { create(:environment, project: project) }
 
   it { is_expected.to belong_to(:project) }
@@ -31,6 +31,14 @@ describe Environment, models: true do
 
     it 'returns the environments in order of having been last deployed' do
       expect(project.environments.order_by_last_deployed_at.to_a).to eq([environment3, environment2, environment1])
+    end
+  end
+
+  describe 'state machine' do
+    it 'invalidates the cache after a change' do
+      expect(environment).to receive(:expire_etag_cache)
+
+      environment.stop
     end
   end
 
