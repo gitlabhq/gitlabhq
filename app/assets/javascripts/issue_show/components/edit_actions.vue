@@ -2,6 +2,12 @@
   import eventHub from '../event_hub';
 
   export default {
+    props: {
+      canDestroy: {
+        type: Boolean,
+        required: true,
+      },
+    },
     data() {
       return {
         deleteLoading: false,
@@ -50,6 +56,7 @@
       Cancel
     </button>
     <button
+      v-if="canDestroy"
       class="btn btn-danger pull-right append-right-default"
       :class="{ disabled: deleteLoading }"
       type="button"

@@ -28,12 +28,13 @@ describe('Issuable output', () => {
     vm = new IssuableDescriptionComponent({
       propsData: {
         canUpdate: true,
+        canDestroy: true,
         endpoint: '/gitlab-org/gitlab-shell/issues/9/rendered_title',
         issuableRef: '#1',
         initialTitle: '',
         initialDescriptionHtml: '',
         initialDescriptionText: '',
-        showForm: true,
+        showForm: false,
       },
     }).$mount();
   });
@@ -59,6 +60,31 @@ describe('Issuable output', () => {
 
         done();
       });
+    });
+  });
+
+  it('shows actions if permissions are correct', (done) => {
+    vm.showForm = true;
+
+    Vue.nextTick(() => {
+      expect(
+        vm.$el.querySelector('.btn'),
+      ).not.toBeNull();
+
+      done();
+    });
+  });
+
+  it('does not show actions if permissions are incorrect', (done) => {
+    vm.showForm = true;
+    vm.canUpdate = false;
+
+    Vue.nextTick(() => {
+      expect(
+        vm.$el.querySelector('.btn'),
+      ).toBeNull();
+
+      done();
     });
   });
 

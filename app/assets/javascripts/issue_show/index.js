@@ -22,12 +22,14 @@ document.addEventListener('DOMContentLoaded', () => {
       const issuableDescriptionTextarea = issuableElement.querySelector('.js-task-list-field');
       const {
         canUpdate,
+        canDestroy,
         endpoint,
         issuableRef,
       } = issuableElement.dataset;
 
       return {
         canUpdate: gl.utils.convertPermissionToBoolean(canUpdate),
+        canDestroy: gl.utils.convertPermissionToBoolean(canDestroy),
         endpoint,
         issuableRef,
         initialTitle: issuableTitleElement.innerHTML,
@@ -56,6 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return createElement('issuable-app', {
         props: {
           canUpdate: this.canUpdate,
+          canDestroy: this.canDestroy,
           endpoint: this.endpoint,
           issuableRef: this.issuableRef,
           initialTitle: this.initialTitle,

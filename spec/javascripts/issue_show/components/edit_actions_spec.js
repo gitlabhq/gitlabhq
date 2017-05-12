@@ -10,7 +10,11 @@ describe('Edit Actions components', () => {
 
     spyOn(eventHub, '$emit');
 
-    vm = new Component().$mount();
+    vm = new Component({
+      propsData: {
+        canDestroy: true,
+      },
+    }).$mount();
 
     Vue.nextTick(done);
   });
@@ -23,6 +27,18 @@ describe('Edit Actions components', () => {
     expect(
       vm.$el.querySelectorAll('[disabled]').length,
     ).toBe(0);
+  });
+
+  it('does not render delete button if canUpdate is false', (done) => {
+    vm.canDestroy = false;
+
+    Vue.nextTick(() => {
+      expect(
+        vm.$el.querySelector('.btn-danger'),
+      ).toBeNull();
+
+      done();
+    });
   });
 
   describe('updateIssuable', () => {

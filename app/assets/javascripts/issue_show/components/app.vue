@@ -19,6 +19,10 @@ export default {
       required: true,
       type: Boolean,
     },
+    canDestroy: {
+      required: true,
+      type: Boolean,
+    },
     issuableRef: {
       type: String,
       required: true,
@@ -134,6 +138,7 @@ export default {
       :updated-at="state.updatedAt"
       :task-status="state.taskStatus" />
     <edit-actions
-      v-if="canUpdate && showForm" />
+      v-if="canUpdate && showForm"
+      :can-destroy="canDestroy" />
   </div>
 </template>
