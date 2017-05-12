@@ -57,6 +57,10 @@ class Environment < ActiveRecord::Base
 
     state :available
     state :stopped
+
+    after_transition do |environment, _|
+      environment.expire_etag_cache
+    end
   end
 
   def predefined_variables
@@ -204,5 +208,13 @@ class Environment < ActiveRecord::Base
   # but the chance of collisions is vanishingly small
   def random_suffix
     (0..5).map { SUFFIX_CHARS.sample }.join
+  end
+
+  def expire_etag_cache
+    Gitlab::EtagCaching::Store.new.tap do |store|
+      store.touch(
+        Gitlab::Routing.url_helpers.namespace_project_environments_path(project)
+      )
+    end
   end
 end

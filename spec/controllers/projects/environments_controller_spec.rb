@@ -76,6 +76,26 @@ describe Projects::EnvironmentsController do
           expect(json_response['stopped_count']).to eq 1
         end
       end
+
+      context "when using etag caching" do
+        before do
+          RequestStore.begin!
+        end
+
+        after do
+          RequestStore.end!
+          RequestStore.clear!
+        end
+
+        it "limits the queries being executed" do
+          control_count = ActiveRecord::QueryRecorder.new { get :index, environment_params }.count
+
+          expect do
+            get :index, environment_params
+            get :index, environment_params
+          end.not_to exceed_query_limit(control_count)
+        end
+      end
     end
   end
 
