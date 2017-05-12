@@ -59,6 +59,36 @@ describe IssuesFinder do
         end
       end
 
+      context 'filtering by assignee IDs' do
+        set(:user3) { create(:user) }
+        let(:params) { { assignee_ids: [user2.id, user3.id] } }
+
+        before do
+          project2.team << [user3, :developer]
+
+          issue3.assignees = [user2, user3]
+        end
+
+        it 'returns issues assigned to those users' do
+          expect(issues).to contain_exactly(issue3)
+        end
+      end
+
+      context 'filtering by assignee usernames' do
+        set(:user3) { create(:user) }
+        let(:params) { { assignee_usernames: [user2.username, user3.username] } }
+
+        before do
+          project2.team << [user3, :developer]
+
+          issue3.assignees = [user2, user3]
+        end
+
+        it 'returns issues assigned to those users' do
+          expect(issues).to contain_exactly(issue3)
+        end
+      end
+
       context 'filtering by author ID' do
         let(:params) { { author_id: user2.id } }
 
