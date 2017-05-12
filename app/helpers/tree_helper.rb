@@ -139,12 +139,16 @@ module TreeHelper
         end
       end
     else
-      if can?(current_user, :push_code, project)
-        html_options[:data] = { state: :lock }
-        enabled_lock_link("Lock", '', html_options)
-      else
-        disabled_lock_link("Lock", "You do not have permission to lock this", html_options)
-      end
+      _lock_link(current_user: current_user, project: project, html_options: {})
+    end
+  end
+
+  def _lock_link(current_user: current_user, project: project, html_options: {})
+    if can?(current_user, :push_code, project)
+      html_options[:data] = { state: :lock }
+      enabled_lock_link("Lock", '', html_options)
+    else
+      disabled_lock_link("Lock", "You do not have permission to lock this", html_options)
     end
   end
 
