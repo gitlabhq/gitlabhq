@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequests::ResolveService do
+describe MergeRequests::Conflicts::ResolveService do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
 
@@ -24,6 +24,8 @@ describe MergeRequests::ResolveService do
   end
 
   describe '#execute' do
+    let(:service) { described_class.new(merge_request) }
+
     context 'with section params' do
       let(:params) do
         {
@@ -50,7 +52,7 @@ describe MergeRequests::ResolveService do
 
       context 'when the source and target project are the same' do
         before do
-          described_class.new(project, user, params).execute(merge_request)
+          service.execute(user, params)
         end
 
         it 'creates a commit with the message' do
@@ -74,15 +76,26 @@ describe MergeRequests::ResolveService do
             branch_name: 'conflict-start')
         end
 
-        before do
-          described_class.new(fork_project, user, params).execute(merge_request_from_fork)
+        def resolve_conflicts
+          described_class.new(merge_request_from_fork).execute(user, params)
+        end
+
+        it 'gets conflicts from the source project' do
+          expect(fork_project.repository.rugged).to receive(:merge_commits).and_call_original
+          expect(project.repository.rugged).not_to receive(:merge_commits)
+
+          resolve_conflicts
         end
 
         it 'creates a commit with the message' do
+          resolve_conflicts
+
           expect(merge_request_from_fork.source_branch_head.message).to eq(params[:commit_message])
         end
 
         it 'creates a commit with the correct parents' do
+          resolve_conflicts
+
           expect(merge_request_from_fork.source_branch_head.parents.map(&:id)).
             to eq(['404fa3fc7c2c9b5dacff102f353bdf55b1be2813',
                    target_head])
@@ -115,7 +128,7 @@ describe MergeRequests::ResolveService do
       end
 
       before do
-        described_class.new(project, user, params).execute(merge_request)
+        service.execute(user, params)
       end
 
       it 'creates a commit with the message' do
@@ -154,15 +167,15 @@ describe MergeRequests::ResolveService do
         }
       end
 
-      let(:service) { described_class.new(project, user, invalid_params) }
-
       it 'raises a MissingResolution error' do
-        expect { service.execute(merge_request) }.
+        expect { service.execute(user, invalid_params) }.
           to raise_error(Gitlab::Conflict::File::MissingResolution)
       end
     end
 
     context 'when the content of a file is unchanged' do
+      let(:list_service) { MergeRequests::Conflicts::ListService.new(merge_request) }
+
       let(:invalid_params) do
         {
           files: [
@@ -173,17 +186,15 @@ describe MergeRequests::ResolveService do
             }, {
               old_path: 'files/ruby/regex.rb',
               new_path: 'files/ruby/regex.rb',
-              content: merge_request.conflicts.file_for_path('files/ruby/regex.rb', 'files/ruby/regex.rb').content
+              content: list_service.conflicts.file_for_path('files/ruby/regex.rb', 'files/ruby/regex.rb').content
             }
           ],
           commit_message: 'This is a commit message!'
         }
       end
 
-      let(:service) { described_class.new(project, user, invalid_params) }
-
       it 'raises a MissingResolution error' do
-        expect { service.execute(merge_request) }.
+        expect { service.execute(user, invalid_params) }.
           to raise_error(Gitlab::Conflict::File::MissingResolution)
       end
     end
@@ -202,11 +213,9 @@ describe MergeRequests::ResolveService do
         }
       end
 
-      let(:service) { described_class.new(project, user, invalid_params) }
-
       it 'raises a MissingFiles error' do
-        expect { service.execute(merge_request) }.
-          to raise_error(MergeRequests::ResolveService::MissingFiles)
+        expect { service.execute(user, invalid_params) }.
+          to raise_error(described_class::MissingFiles)
       end
     end
   end

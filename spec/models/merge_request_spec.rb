@@ -1315,6 +1315,7 @@ describe MergeRequest, models: true do
     end
   end
 
+<<<<<<< HEAD
   describe '#conflicts_can_be_resolved_in_ui?' do
     def create_merge_request(source_branch)
       create(:merge_request, source_branch: source_branch, target_branch: 'conflict-start') do |mr|
@@ -1387,6 +1388,8 @@ describe MergeRequest, models: true do
     end
   end
 
+=======
+>>>>>>> e4261fe3... Merge branch 'fix-conflict-resolution-with-corrupt-repos' into 'master'
   describe "#source_project_missing?" do
     let(:project)      { create(:empty_project) }
     let(:fork_project) { create(:empty_project, forked_from_project: project) }

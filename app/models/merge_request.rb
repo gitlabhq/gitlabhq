@@ -905,6 +905,7 @@ class MergeRequest < ActiveRecord::Base
     project.repository.keep_around(self.merge_commit_sha)
   end
 
+<<<<<<< HEAD
   def conflicts
     @conflicts ||= Gitlab::Conflict::FileCollection.new(self)
   end
@@ -934,6 +935,8 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+=======
+>>>>>>> e4261fe3... Merge branch 'fix-conflict-resolution-with-corrupt-repos' into 'master'
   def has_commits?
     merge_request_diff && commits_count > 0
   end
