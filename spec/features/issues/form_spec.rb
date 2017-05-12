@@ -27,9 +27,9 @@ describe 'New/edit issue', :feature, :js do
     describe 'multiple assignees' do
       before do
         click_button 'Unassigned'
+        
+        wait_for_ajax
       end
-      
-      wait_for_ajax
 
       it 'unselects other assignees when unassigned is selected' do
         page.within '.dropdown-menu-user' do
