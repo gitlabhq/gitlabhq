@@ -1,7 +1,7 @@
 module Gitlab
   module DependencyLinker
     LINKERS = [
-      GemfileLinker,
+      GemfileLinker
     ].freeze
 
     def self.linker(blob_name)
