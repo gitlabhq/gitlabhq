@@ -4,6 +4,7 @@ cache:
   key: "ruby-233"
   paths:
   - vendor/ruby
+  - .yarn-cache
 
 variables:
   MYSQL_ALLOW_EMPTY_PASSWORD: "1"
@@ -186,7 +187,7 @@ setup-test-env:
   stage: prepare
   script:
     - node --version
-    - yarn install --pure-lockfile
+    - yarn install --pure-lockfile --cache-folder .yarn-cache
     - bundle exec rake gitlab:assets:compile
     - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
   artifacts:
@@ -400,7 +401,8 @@ rake gitlab:assets:compile:
     SKIP_STORAGE_VALIDATION: "true"
     WEBPACK_REPORT: "true"
   script:
-    - bundle exec rake yarn:install gitlab:assets:compile
+    - yarn install --pure-lockfile --production --cache-folder .yarn-cache
+    - bundle exec rake gitlab:assets:compile
   artifacts:
     name: webpack-report
     expire_in: 31d
