@@ -6,7 +6,7 @@
     "eslint-fix": "eslint --max-warnings 0 --ext .js,.vue --fix .",
     "eslint-report": "eslint --max-warnings 0 --ext .js,.vue --format html --output-file ./eslint-report.html .",
     "karma": "karma start config/karma.config.js --single-run",
-    "karma-ci": "karma start config/karma.config.js --single-run --log-level debug"
+    "karma-ci": "karma start config/karma.config.js --single-run --log-level debug",
     "karma-coverage": "BABEL_ENV=coverage karma start config/karma.config.js --single-run",
     "karma-start": "karma start config/karma.config.js",
     "webpack": "webpack --config config/webpack.config.js",
