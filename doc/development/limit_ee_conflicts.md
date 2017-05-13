@@ -336,6 +336,29 @@ Blocks of code that are EE-specific should be moved to partials as much as
 possible to avoid conflicts with big chunks of HAML code that that are not fun
 to resolve when you add the indentation in the equation.
 
+You should also isolate EE-specific code that is in JavaScript or SCSS files.
+The aim for the frontend is to only ever have to deal with CE-to-EE conflicts
+that are related to the module import statements at the top of the file. You
+should put any EE-specific code under an `ee` directory under the same parent
+as the CE code.
+
+For example:
+
+```
+app
+└─ assets
+   └─ javascripts
+      ├─ dispatcher.js
+      ├─ ee
+      │  └─ dispatcher.js
+      └─ some_dir
+         ├─ some_file.js
+         └─ ee
+            └─ some_file.js
+```
+
+Note that `ee/dispatcher.js` is a real file, you must use this for EE-specific dispatcher calls.
+
 ---
 
 [Return to Development documentation](README.md)
