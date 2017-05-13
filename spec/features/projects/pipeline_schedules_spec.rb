@@ -70,6 +70,11 @@ feature 'Pipeline Schedules', :feature do
   describe 'POST /projects/pipeline_schedules/new', js: true do
     let(:visit_page) { visit_new_pipeline_schedule }
 
+    it 'sets defaults for timezone and target branch' do
+      expect(page).to have_button('master')
+      expect(page).to have_button('UTC')
+    end
+
     it 'it creates a new scheduled pipeline' do
       fill_in_schedule_form
       save_pipeline_schedule
