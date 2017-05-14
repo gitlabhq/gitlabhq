@@ -388,19 +388,4 @@ eos
       expect(described_class.valid_hash?('a' * 41)).to be false
     end
   end
-
-  describe '#raw_diffs' do
-    context 'Gitaly commit_raw_diffs feature enabled' do
-      before do
-        allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:commit_raw_diffs).and_return(true)
-      end
-
-      it 'fetches diffs from Gitaly server' do
-        expect(Gitlab::GitalyClient::Commit).to receive(:diff_from_parent).
-          with(commit)
-
-        commit.raw_diffs
-      end
-    end
-  end
 end
