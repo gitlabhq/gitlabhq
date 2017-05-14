@@ -22,6 +22,10 @@ module Groups
         DestroyService.new(group, current_user).execute
       end
 
+      if group.chat_team
+        Mattermost::Team.new(current_user).destroy(@group.chat_team.team_id)
+      end
+
       group.really_destroy!
     end
   end

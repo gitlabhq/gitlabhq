@@ -36,6 +36,12 @@ module Mattermost
       end
     end
 
+    def session_delete(path, options = {})
+      with_session do |session|
+        delete(session, path, options)
+      end
+    end
+
     def json_response(response)
       json_response = JSON.parse(response.body)
 

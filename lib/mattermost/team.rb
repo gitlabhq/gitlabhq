@@ -14,5 +14,9 @@ module Mattermost
         type: type
       }.to_json)
     end
+
+    def destroy(team_id:)
+      session_delete("/api/v4/teams/#{team}")
+    end
   end
 end
