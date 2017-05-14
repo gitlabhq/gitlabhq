@@ -5,7 +5,9 @@ const ModalStore = gl.issueBoards.ModalStore;
 gl.issueBoards.ModalEmptyState = Vue.extend({
   mixins: [gl.issueBoards.ModalMixins],
   data() {
-    return ModalStore.store;
+    return {
+      state: ModalStore.store,
+    };
   },
   props: {
     image: {

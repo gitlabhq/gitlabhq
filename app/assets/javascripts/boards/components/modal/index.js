@@ -43,7 +43,9 @@ gl.issueBoards.IssuesModal = Vue.extend({
     },
   },
   data() {
-    return ModalStore.store;
+    return {
+      state: ModalStore.store,
+    };
   },
   watch: {
     page() {

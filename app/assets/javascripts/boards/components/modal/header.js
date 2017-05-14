@@ -22,7 +22,9 @@ gl.issueBoards.ModalHeader = Vue.extend({
     },
   },
   data() {
-    return ModalStore.store;
+    return {
+      state: ModalStore.store,
+    };
   },
   computed: {
     selectAllText() {

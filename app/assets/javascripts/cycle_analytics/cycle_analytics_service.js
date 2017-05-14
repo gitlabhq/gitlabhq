@@ -16,10 +16,12 @@ class CycleAnalyticsService {
       method: 'GET',
       dataType: 'json',
       contentType: 'application/json',
-      data: {
-        cycle_analytics: {
-          start_date: options.startDate,
-        },
+      data() {
+        return {
+          cycle_analytics: {
+            start_date: options.startDate,
+          },
+        };
       },
     });
   }

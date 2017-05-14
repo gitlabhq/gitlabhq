@@ -30,14 +30,16 @@ $(() => {
   gl.cycleAnalyticsApp = new Vue({
     el: '#cycle-analytics',
     name: 'CycleAnalytics',
-    data: {
-      state: cycleAnalyticsStore.state,
-      isLoading: false,
-      isLoadingStage: false,
-      isEmptyStage: false,
-      hasError: false,
-      startDate: 30,
-      isOverviewDialogDismissed: Cookies.get(OVERVIEW_DIALOG_COOKIE),
+    data() {
+      return {
+        state: cycleAnalyticsStore.state,
+        isLoading: false,
+        isLoadingStage: false,
+        isEmptyStage: false,
+        hasError: false,
+        startDate: 30,
+        isOverviewDialogDismissed: Cookies.get(OVERVIEW_DIALOG_COOKIE),
+      };
     },
     computed: {
       currentStage() {

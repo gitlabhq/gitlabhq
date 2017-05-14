@@ -5,7 +5,9 @@ const ModalStore = gl.issueBoards.ModalStore;
 gl.issueBoards.ModalTabs = Vue.extend({
   mixins: [gl.issueBoards.ModalMixins],
   data() {
-    return ModalStore.store;
+    return {
+      state: ModalStore.store,
+    };
   },
   computed: {
     selectedCount() {

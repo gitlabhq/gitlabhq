@@ -50,17 +50,19 @@ $(() => {
       'board-sidebar': gl.issueBoards.BoardSidebar,
       'board-add-issues-modal': gl.issueBoards.IssuesModal,
     },
-    data: {
-      state: Store.state,
-      loading: true,
-      endpoint: $boardApp.dataset.endpoint,
-      boardId: $boardApp.dataset.boardId,
-      disabled: $boardApp.dataset.disabled === 'true',
-      issueLinkBase: $boardApp.dataset.issueLinkBase,
-      rootPath: $boardApp.dataset.rootPath,
-      bulkUpdatePath: $boardApp.dataset.bulkUpdatePath,
-      detailIssue: Store.detail,
-      defaultAvatar: $boardApp.dataset.defaultAvatar,
+    data() {
+      return {
+        state: Store.state,
+        loading: true,
+        endpoint: $boardApp.dataset.endpoint,
+        boardId: $boardApp.dataset.boardId,
+        disabled: $boardApp.dataset.disabled === 'true',
+        issueLinkBase: $boardApp.dataset.issueLinkBase,
+        rootPath: $boardApp.dataset.rootPath,
+        bulkUpdatePath: $boardApp.dataset.bulkUpdatePath,
+        detailIssue: Store.detail,
+        defaultAvatar: $boardApp.dataset.defaultAvatar,
+      };
     },
     computed: {
       detailIssueVisible () {
@@ -106,8 +108,10 @@ $(() => {
 
   gl.IssueBoardsSearch = new Vue({
     el: document.getElementById('js-add-list'),
-    data: {
-      filters: Store.state.filters
+    data() {
+      return {
+        filters: Store.state.filters,
+      };
     },
     mounted () {
       gl.issueBoards.newListDropdownInit();
@@ -117,9 +121,11 @@ $(() => {
   gl.IssueBoardsModalAddBtn = new Vue({
     mixins: [gl.issueBoards.ModalMixins],
     el: document.getElementById('js-add-issues-btn'),
-    data: {
-      modal: ModalStore.store,
-      store: Store.state,
+    data() {
+      return {
+        modal: ModalStore.store,
+        store: Store.state,
+      };
     },
     watch: {
       disabled() {
