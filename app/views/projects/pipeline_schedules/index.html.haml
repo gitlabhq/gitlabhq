@@ -1,5 +1,6 @@
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('schedules_index')
+  = webpack_bundle_tag 'common_vue'
+  = webpack_bundle_tag 'schedules_index'
 
 - @no_container = true
 - page_title "Pipeline Schedules"
@@ -21,4 +22,3 @@
   - else
     .light-well
       .nothing-here-block No schedules
-
