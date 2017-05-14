@@ -51,7 +51,7 @@
 
 .issue-details.issuable-details
   .detail-page-description.content-block{ class: ('hide-bottom-border' unless @issue.description.present? ) }
-    .issue-title-data.hidden{ "data" => { "endpoint" => rendered_title_namespace_project_issue_path(@project.namespace, @project, @issue),
+    .issue-title-data.hidden{ "data" => { "endpoint" => realtime_changes_namespace_project_issue_path(@project.namespace, @project, @issue),
       "can-update-tasks-class" => can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : '',
     } }
     .issue-title-entrypoint

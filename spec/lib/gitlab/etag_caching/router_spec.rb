@@ -14,7 +14,7 @@ describe Gitlab::EtagCaching::Router do
 
   it 'matches issue title endpoint' do
     env = build_env(
-      '/my-group/my-project/issues/123/rendered_title'
+      '/my-group/my-project/issues/123/realtime_changes'
     )
 
     result = described_class.match(env)
