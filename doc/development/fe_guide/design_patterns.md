@@ -1,51 +1,5 @@
 # Design Patterns
 
-## Singletons
-
-As with everything at GitLab, the simplest approach should be taken.
-Below we have defined a few patterns to achieve singleton-like behaviour.
-Pick the simplest one that fits your usecase.
-
-```javascript
-const MyThing = {
-  prop: 'hello',
-  init: () => {}
-};
-
-export default MyThing;
-```
-
-```javascript
-class MyThing {
-  constructor() {
-    this.prop = 'hello';
-  }
-  init() {}
-}
-
-export default new MyThing();
-```
-
-```javascript
-
-export default class MyThing {
-  constructor() {
-    if (!this.prototype.singleton) {
-      this.init();
-      this.prototype.singleton = this;
-    }
-    return this.prototype.singleton;
-  }
-
-  init() {
-    this.prop = 'hello';
-  }
-
-  method1() {}
-}
-
-```
-
 ## Manipulating the DOM in a JS Class
 
 When writing a class that needs to manipulate the DOM guarantee a container option is provided.
