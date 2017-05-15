@@ -134,6 +134,7 @@ export default {
     eventHub.$off('delete.issuable', this.deleteIssuable);
     eventHub.$off('update.issuable', this.updateIssuable);
     eventHub.$off('close.form', this.closeForm);
+    eventHub.$off('open.form', this.openForm);
   },
 };
 </script>
