@@ -52,7 +52,6 @@ export default {
     return {
       store,
       state: store.state,
-      formState: store.formState,
       showForm: false,
     };
   },
@@ -73,8 +72,11 @@ export default {
         title: this.state.titleText,
       };
     },
+    closeForm() {
+      this.showForm = false;
+    },
     updateIssuable() {
-      this.service.updateIssuable(this.formState)
+      this.service.updateIssuable(this.store.formState)
         .then(() => {
           eventHub.$emit('close.form');
         })
@@ -125,12 +127,13 @@ export default {
 
     eventHub.$on('delete.issuable', this.deleteIssuable);
     eventHub.$on('update.issuable', this.updateIssuable);
+    eventHub.$on('close.form', this.closeForm);
     eventHub.$on('open.form', this.openForm);
   },
   beforeDestroy() {
     eventHub.$off('delete.issuable', this.deleteIssuable);
     eventHub.$off('update.issuable', this.updateIssuable);
-    eventHub.$off('open.form', this.openForm);
+    eventHub.$off('close.form', this.closeForm);
   },
 };
 </script>
