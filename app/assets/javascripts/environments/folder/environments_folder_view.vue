@@ -8,8 +8,8 @@ import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 import tablePagination from '../../vue_shared/components/table_pagination.vue';
 import Poll from '../../lib/utils/poll';
 import eventHub from '../event_hub';
+import environmentsMixin from '../mixins/environments_mixin';
 import '../../lib/utils/common_utils';
-import '../../vue_shared/vue_resource_interceptor';
 
 export default {
   components: {
@@ -17,6 +17,10 @@ export default {
     tablePagination,
     loadingIcon,
   },
+
+  mixins: [
+    environmentsMixin,
+  ],
 
   data() {
     const environmentsData = document.querySelector('#environments-folder-list-view').dataset;
@@ -139,17 +143,7 @@ export default {
     },
 
     successCallback(resp) {
-      const response = {
-        headers: resp.headers,
-        body: resp.json(),
-      };
-
-      this.isLoading = false;
-
-      this.store.storeAvailableCount(response.body.available_count);
-      this.store.storeStoppedCount(response.body.stopped_count);
-      this.store.storeEnvironments(response.body.environments);
-      this.store.setPagination(response.headers);
+      this.saveData(resp);
     },
 
     errorCallback() {

@@ -9,6 +9,7 @@ import tablePagination from '../../vue_shared/components/table_pagination.vue';
 import '../../lib/utils/common_utils';
 import eventHub from '../event_hub';
 import Poll from '../../lib/utils/poll';
+import environmentsMixin from '../mixins/environments_mixin';
 
 export default {
 
@@ -17,6 +18,10 @@ export default {
     tablePagination,
     loadingIcon,
   },
+
+  mixins: [
+    environmentsMixin,
+  ],
 
   data() {
     const environmentsData = document.querySelector('#environments-list-view').dataset;
@@ -169,19 +174,9 @@ export default {
     },
 
     successCallback(resp) {
-      const response = {
-        headers: resp.headers,
-        body: resp.json(),
-      };
+      this.saveData(resp);
 
-      this.isLoading = false;
-
-      this.store.storeAvailableCount(response.body.available_count);
-      this.store.storeStoppedCount(response.body.stopped_count);
-      this.store.storeEnvironments(response.body.environments);
-      this.store.setPagination(response.headers);
-
-      // If it were any open folders while polling we need to set them open again
+      // If folders are open while polling we need to open them again
       if (this.openFolders.length) {
         this.openFolders.map((folder) => {
           // TODO - Move this to the backend
