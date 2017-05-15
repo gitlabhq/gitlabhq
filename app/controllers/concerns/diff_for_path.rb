@@ -8,17 +8,6 @@ module DiffForPath
 
     return render_404 unless diff_file
 
-    diff_commit = commit_for_diff(diff_file)
-    blob = diff_file.blob(diff_commit)
-
-    locals = {
-      diff_file: diff_file,
-      diff_commit: diff_commit,
-      diff_refs: diffs.diff_refs,
-      blob: blob,
-      project: project
-    }
-
-    render json: { html: view_to_html_string('projects/diffs/_content', locals) }
+    render json: { html: view_to_html_string('projects/diffs/_content', diff_file: diff_file) }
   end
 end

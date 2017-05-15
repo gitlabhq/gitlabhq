@@ -15,16 +15,6 @@ module CommitsHelper
     commit_person_link(commit, options.merge(source: :committer))
   end
 
-  def image_diff_class(diff)
-    if diff.deleted_file
-      "deleted"
-    elsif diff.new_file
-      "added"
-    else
-      nil
-    end
-  end
-
   def commit_to_html(commit, ref, project)
     render 'projects/commits/commit',
       commit: commit,

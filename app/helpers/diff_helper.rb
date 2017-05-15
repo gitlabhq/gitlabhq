@@ -102,14 +102,30 @@ module DiffHelper
     ].join(' ').html_safe
   end
 
-  def commit_for_diff(diff_file)
-    return diff_file.content_commit if diff_file.content_commit
+  def diff_content_commit(diff_file)
+    content_commit = diff_file.content_commit
+    return content_commit if content_commit
 
-    if diff_file.deleted_file
-      @base_commit || @commit.parent || @commit
+    if diff_file.deleted_file?
+      diff_old_content_commit(diff_file)
     else
       @commit
     end
+  end
+
+  def diff_old_content_commit(diff_file)
+    return if diff_file.new_file?
+
+    diff_file.old_content_commit || @base_commit || @commit.parent || @commit
+  end
+
+  def diff_file_blob_raw_path(diff_file)
+    namespace_project_raw_path(@project.namespace, @project, tree_join(diff_content_commit(diff_file).sha, diff_file.file_path))
+  end
+
+  def diff_file_old_blob_raw_path(diff_file)
+    return if diff_file.new_file?
+    namespace_project_raw_path(@project.namespace, @project, tree_join(diff_old_content_commit(diff_file).sha, diff_file.old_path))
   end
 
   def diff_file_html_data(project, diff_file_path, diff_commit_id)

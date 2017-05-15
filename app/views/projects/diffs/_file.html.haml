@@ -1,8 +1,11 @@
 - environment = local_assigns.fetch(:environment, nil)
+- diff_commit = diff_content_commit(diff_file)
+- blob = diff_file.blob(diff_commit)
+- file_hash = hexdigest(diff_file.file_path)
 .diff-file.file-holder{ id: file_hash, data: diff_file_html_data(project, diff_file.file_path, diff_commit.id) }
   .js-file-title.file-title-flex-parent
     .file-header-content
-      = render "projects/diffs/file_header", diff_file: diff_file, blob: blob, diff_commit: diff_commit, project: project, url: "##{file_hash}"
+      = render "projects/diffs/file_header", diff_file: diff_file, blob: blob, diff_commit: diff_commit, url: "##{file_hash}"
 
     - unless diff_file.submodule?
       .file-actions.hidden-xs
@@ -15,9 +18,9 @@
             = edit_blob_link(@merge_request.source_project, @merge_request.source_branch, diff_file.new_path,
                              blob: blob, link_opts: link_opts)
 
-        = view_file_button(diff_commit.id, diff_file.new_path, project)
-        = view_on_environment_button(diff_commit.id, diff_file.new_path, environment) if environment
+        = view_file_button(diff_commit.id, diff_file.file_path, project)
+        = view_on_environment_button(diff_commit.id, diff_file.file_path, environment) if environment
 
   = render 'projects/fork_suggestion'
 
-  = render 'projects/diffs/content', diff_file: diff_file, diff_commit: diff_commit, blob: blob, project: project
+  = render 'projects/diffs/content', diff_file: diff_file, diff_commit: diff_commit, blob: blob

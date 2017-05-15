@@ -1,0 +1,7 @@
+- blob.load_all_data!(diff_file.repository)
+- total_lines = blob.lines.size
+- total_lines -= 1 if total_lines > 0 && blob.lines.last.blank?
+- if diff_view == :parallel
+  = render "projects/diffs/parallel_view", diff_file: diff_file, total_lines: total_lines
+- else
+  = render "projects/diffs/text_file", diff_file: diff_file, total_lines: total_lines

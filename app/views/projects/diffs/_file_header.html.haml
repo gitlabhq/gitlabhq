@@ -3,19 +3,19 @@
 - if show_toggle
   %i.fa.diff-toggle-caret.fa-fw
 
-- if defined?(blob) && blob && diff_file.submodule?
+- if diff_file.submodule?
   %span
     = icon('archive fw')
 
     %strong.file-title-name
-      = submodule_link(blob, diff_commit.id, project.repository)
+      = submodule_link(blob, diff_commit.id, diff_file.repository)
 
     = copy_file_path_button(blob.path)
 - else
   = conditional_link_to url.present?, url do
     = blob_icon diff_file.b_mode, diff_file.file_path
 
-    - if diff_file.renamed_file
+    - if diff_file.renamed_file?
       - old_path, new_path = mark_inline_diffs(diff_file.old_path, diff_file.new_path)
       %strong.file-title-name.has-tooltip{ data: { title: diff_file.old_path, container: 'body' } }
         = old_path
@@ -23,12 +23,13 @@
       %strong.file-title-name.has-tooltip{ data: { title: diff_file.new_path, container: 'body' } }
         = new_path
     - else
-      %strong.file-title-name.has-tooltip{ data: { title: diff_file.new_path, container: 'body' } }
-        = diff_file.new_path
-      - if diff_file.deleted_file
+      %strong.file-title-name.has-tooltip{ data: { title: diff_file.file_path, container: 'body' } }
+        = diff_file.file_path
+
+      - if diff_file.deleted_file?
         deleted
 
-  = copy_file_path_button(diff_file.new_path)
+  = copy_file_path_button(diff_file.file_path)
 
   - if diff_file.mode_changed?
     %small
