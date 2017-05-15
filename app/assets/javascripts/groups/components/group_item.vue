@@ -18,7 +18,7 @@ export default {
 
 <template>
   <li
-    @click="toggleSubGroups" class="list-group-item"
+    @click.stop="toggleSubGroups"
     :id="group.id"
     >
     <span v-show="group.expandable">
