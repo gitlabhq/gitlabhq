@@ -4,12 +4,14 @@
   import Poll from '../../../lib/utils/poll';
   import PipelineService from '../../services/pipeline_service';
   import PipelineStore from '../../stores/pipeline_store';
+  import linkedPipelinesColumn from './linked_pipelines_column.vue';
   import stageColumnComponent from './stage_column_component.vue';
   import loadingIcon from '../../../vue_shared/components/loading_icon.vue';
   import '../../../flash';
 
   export default {
     components: {
+      linkedPipelinesColumn,
       stageColumnComponent,
       loadingIcon,
     },
@@ -17,12 +19,23 @@
     data() {
       const DOMdata = document.getElementById('js-pipeline-graph-vue').dataset;
       const store = new PipelineStore();
+      const upstreamPipelines = [
+        { id: '111', path: 'hello/world/tho', project_name: 'My Project Name', status: 'success' },
+      ];
+
+      const downstreamPipelines = [
+        { id: '111', path: 'hello/world/tho', project_name: 'My Project Name', status: 'success' },
+        { id: '111', path: 'hello/world/tho', project_name: 'My Project Name', status: 'success' },
+        { id: '111', path: 'hello/world/tho', project_name: 'My Project Name', status: 'success' },
+      ];
 
       return {
         isLoading: false,
         endpoint: DOMdata.endpoint,
         store,
         state: store.state,
+        upstreamPipelines,
+        downstreamPipelines,
       };
     },
 
@@ -75,7 +88,7 @@
         let className;
 
         // If it's the first stage column and only has one job
-        if (index === 0 && stage.groups.length === 1) {
+        if (this.isFirstColumn(index) && stage.groups.length === 1) {
           className = 'no-margin';
         } else if (index > 0) {
           // If it is not the first column
@@ -97,6 +110,12 @@
           />
       </div>
 
+      <linked-pipelines-column
+        v-if="upstreamPipelines"
+        :linked-pipelines="upstreamPipelines"
+        linked-pipeline-orientation="Upstream"
+      />
+
       <ul
         v-if="!isLoading"
         class="stage-column-list">
@@ -108,6 +127,12 @@
           :stage-connector-class="stageConnectorClass(index, stage)"
           :is-first-column="isFirstColumn(index)"/>
       </ul>
+
+      <linked-pipelines-column
+        v-if="downstreamPipelines"
+        :linked-pipelines="downstreamPipelines"
+        linked-pipeline-orientation="Downstream"
+      />
     </div>
   </div>
 </template>
