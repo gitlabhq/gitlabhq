@@ -41,18 +41,3 @@ export const statusIconEntityMap = {
   icon_status_success: SUCCESS_SVG,
   icon_status_warning: WARNING_SVG,
 };
-<<<<<<< HEAD
-
-export const statusCssClasses = {
-  icon_status_canceled: 'canceled',
-  icon_status_created: 'created',
-  icon_status_failed: 'failed',
-  icon_status_manual: 'manual',
-  icon_status_pending: 'pending',
-  icon_status_running: 'running',
-  icon_status_skipped: 'skipped',
-  icon_status_success: 'success',
-  icon_status_warning: 'warning',
-};
-=======
->>>>>>> origin/master

@@ -1,8 +1,4 @@
 <script>
-<<<<<<< HEAD
-  import { statusIconEntityMap, statusCssClasses } from '../../vue_shared/ci_status_icons';
-
-=======
   import { statusIconEntityMap } from '../ci_status_icons';
 
   /**
@@ -26,7 +22,6 @@
    * - Jobs show view header
    * - Jobs show view sidebar
    */
->>>>>>> origin/master
   export default {
     props: {
       status: {
@@ -41,11 +36,7 @@
       },
 
       cssClass() {
-<<<<<<< HEAD
-        const status = statusCssClasses[this.status.icon];
-=======
         const status = this.status.group;
->>>>>>> origin/master
         return `ci-status-icon ci-status-icon-${status} js-ci-status-icon-${status}`;
       },
     },
