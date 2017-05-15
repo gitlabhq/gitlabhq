@@ -4,6 +4,7 @@ class Group < Namespace
   include Gitlab::ConfigHelper
   include Gitlab::VisibilityLevel
   include AccessRequestable
+  include Avatarable
   include Referable
   include SelectForProjectAuthorization
 
@@ -111,10 +112,10 @@ class Group < Namespace
     allowed_by_projects
   end
 
-  def avatar_url(size = nil)
-    if self[:avatar].present?
-      [gitlab_config.url, avatar.url].join
-    end
+  def avatar_url(**args)
+    # We use avatar_path instead of overriding avatar_url because of carrierwave.
+    # See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11001/diffs#note_28659864
+    avatar_path(args)
   end
 
   def lfs_enabled?

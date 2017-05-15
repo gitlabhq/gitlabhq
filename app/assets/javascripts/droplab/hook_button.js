@@ -1,65 +1,58 @@
-/* eslint-disable */
-
 import Hook from './hook';
 
-var HookButton = function(trigger, list, plugins, config) {
-  Hook.call(this, trigger, list, plugins, config);
+class HookButton extends Hook {
+  constructor(trigger, list, plugins, config) {
+    super(trigger, list, plugins, config);
 
-  this.type = 'button';
-  this.event = 'click';
+    this.type = 'button';
+    this.event = 'click';
 
-  this.eventWrapper = {};
+    this.eventWrapper = {};
 
-  this.addEvents();
-  this.addPlugins();
-};
+    this.addEvents();
+    this.addPlugins();
+  }
 
-HookButton.prototype = Object.create(Hook.prototype);
-
-Object.assign(HookButton.prototype, {
-  addPlugins: function() {
+  addPlugins() {
     this.plugins.forEach(plugin => plugin.init(this));
-  },
+  }
 
-  clicked: function(e){
-    var buttonEvent = new CustomEvent('click.dl', {
+  clicked(e) {
+    const buttonEvent = new CustomEvent('click.dl', {
       detail: {
         hook: this,
       },
       bubbles: true,
-      cancelable: true
+      cancelable: true,
     });
     e.target.dispatchEvent(buttonEvent);
 
     this.list.toggle();
-  },
+  }
 
-  addEvents: function(){
+  addEvents() {
     this.eventWrapper.clicked = this.clicked.bind(this);
     this.trigger.addEventListener('click', this.eventWrapper.clicked);
-  },
+  }
 
-  removeEvents: function(){
+  removeEvents() {
     this.trigger.removeEventListener('click', this.eventWrapper.clicked);
-  },
+  }
 
-  restoreInitialState: function() {
+  restoreInitialState() {
     this.list.list.innerHTML = this.list.initialState;
-  },
+  }
 
-  removePlugins: function() {
+  removePlugins() {
     this.plugins.forEach(plugin => plugin.destroy());
-  },
+  }
 
-  destroy: function() {
+  destroy() {
     this.restoreInitialState();
 
     this.removeEvents();
     this.removePlugins();
-  },
-
-  constructor: HookButton,
-});
-
+  }
+}
 
 export default HookButton;

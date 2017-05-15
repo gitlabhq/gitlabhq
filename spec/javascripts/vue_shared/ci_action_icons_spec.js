@@ -2,6 +2,7 @@ import getActionIcon from '~/vue_shared/ci_action_icons';
 import cancelSVG from 'icons/_icon_action_cancel.svg';
 import retrySVG from 'icons/_icon_action_retry.svg';
 import playSVG from 'icons/_icon_action_play.svg';
+import stopSVG from 'icons/_icon_action_stop.svg';
 
 describe('getActionIcon', () => {
   it('should return an empty string', () => {
@@ -18,5 +19,9 @@ describe('getActionIcon', () => {
 
   it('should return play svg', () => {
     expect(getActionIcon('icon_action_play')).toEqual(playSVG);
+  });
+
+  it('should render stop svg', () => {
+    expect(getActionIcon('icon_action_stop')).toEqual(stopSVG);
   });
 });

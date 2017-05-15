@@ -3,6 +3,34 @@ require 'spec_helper'
 describe SnippetsController do
   let(:user) { create(:user) }
 
+  describe 'GET #index' do
+    let(:user) { create(:user) }
+
+    context 'when username parameter is present' do
+      it 'renders snippets of a user when username is present' do
+        get :index, username: user.username
+
+        expect(response).to render_template(:index)
+      end
+    end
+
+    context 'when username parameter is not present' do
+      it 'redirects to explore snippets page when user is not logged in' do
+        get :index
+
+        expect(response).to redirect_to(explore_snippets_path)
+      end
+
+      it 'redirects to snippets dashboard page when user is logged in' do
+        sign_in(user)
+
+        get :index
+
+        expect(response).to redirect_to(dashboard_snippets_path)
+      end
+    end
+  end
+
   describe 'GET #new' do
     context 'when signed in' do
       before do
@@ -132,7 +160,7 @@ describe SnippetsController do
         it 'responds with status 404' do
           get :show, id: 'doesntexist'
 
-          expect(response).to have_http_status(404)
+          expect(response).to redirect_to(new_user_session_path)
         end
       end
     end
@@ -478,10 +506,10 @@ describe SnippetsController do
       end
 
       context 'when not signed in' do
-        it 'responds with status 404' do
+        it 'redirects to the sign in path' do
           get :raw, id: 'doesntexist'
 
-          expect(response).to have_http_status(404)
+          expect(response).to redirect_to(new_user_session_path)
         end
       end
     end

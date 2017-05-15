@@ -1,38 +1,6 @@
 // Common
 .diff-file {
-  border: 1px solid $border-color;
   margin-bottom: $gl-padding;
-  border-radius: 3px;
-
-  .commit-short-id {
-    font-family: $regular_font;
-    font-weight: 400;
-  }
-
-  .diff-header {
-    position: relative;
-    background: $gray-light;
-    border-bottom: 1px solid $border-color;
-    padding: 10px 16px;
-    color: $gl-text-color;
-    z-index: 10;
-    border-radius: 3px 3px 0 0;
-
-    .diff-title {
-      font-family: $monospace_font;
-      word-break: break-all;
-      display: block;
-
-      .file-mode {
-        color: $file-mode-changed;
-      }
-    }
-
-    .commit-short-id {
-      font-family: $monospace_font;
-      font-size: smaller;
-    }
-  }
 
   .file-title,
   .file-title-flex-parent {

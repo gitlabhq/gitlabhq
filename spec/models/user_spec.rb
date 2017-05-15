@@ -676,7 +676,7 @@ describe User, models: true do
       protocol_and_expectation = {
         'http' => false,
         'ssh' => true,
-        '' => true,
+        '' => true
       }
 
       protocol_and_expectation.each do |protocol, expected|
@@ -964,12 +964,19 @@ describe User, models: true do
 
   describe '#avatar_url' do
     let(:user) { create(:user, :with_avatar) }
-    subject { user.avatar_url }
 
     context 'when avatar file is uploaded' do
+      let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
       let(:avatar_path) { "/uploads/user/avatar/#{user.id}/dk.png" }
 
-      it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
+      it 'shows correct avatar url' do
+        expect(user.avatar_url).to eq(avatar_path)
+        expect(user.avatar_url(only_path: false)).to eq([gitlab_host, avatar_path].join)
+
+        allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
+
+        expect(user.avatar_url).to eq([gitlab_host, avatar_path].join)
+      end
     end
   end
 

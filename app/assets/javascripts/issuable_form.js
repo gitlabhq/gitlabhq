@@ -1,14 +1,13 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-use-before-define, no-useless-escape, no-new, quotes, object-shorthand, no-unused-vars, comma-dangle, no-alert, consistent-return, no-else-return, prefer-template, one-var, one-var-declaration-per-line, curly, max-len */
 /* global GitLab */
-/* global UsersSelect */
 /* global ZenMode */
 /* global Autosave */
 /* global dateFormat */
 /* global Pikaday */
 
-(function() {
-  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
+import UsersSelect from './users_select';
 
+(function() {
   this.IssuableForm = (function() {
     IssuableForm.prototype.issueMoveConfirmMsg = 'Are you sure you want to move this issue to another project?';
 
@@ -17,10 +16,10 @@
     function IssuableForm(form) {
       var $issuableDueDate, calendar;
       this.form = form;
-      this.toggleWip = bind(this.toggleWip, this);
-      this.renderWipExplanation = bind(this.renderWipExplanation, this);
-      this.resetAutosave = bind(this.resetAutosave, this);
-      this.handleSubmit = bind(this.handleSubmit, this);
+      this.toggleWip = this.toggleWip.bind(this);
+      this.renderWipExplanation = this.renderWipExplanation.bind(this);
+      this.resetAutosave = this.resetAutosave.bind(this);
+      this.handleSubmit = this.handleSubmit.bind(this);
       gl.GfmAutoComplete.setup();
       new UsersSelect();
       new ZenMode();

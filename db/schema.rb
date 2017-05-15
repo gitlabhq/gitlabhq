@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170508170547) do
+ActiveRecord::Schema.define(version: 20170508190732) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -232,6 +232,7 @@ ActiveRecord::Schema.define(version: 20170508170547) do
     t.integer "lock_version"
     t.string "coverage_regex"
     t.integer "auto_canceled_by_id"
+    t.boolean "retried"
   end
 
   add_index "ci_builds", ["auto_canceled_by_id"], name: "index_ci_builds_on_auto_canceled_by_id", using: :btree
@@ -348,12 +349,12 @@ ActiveRecord::Schema.define(version: 20170508170547) do
   add_index "ci_triggers", ["project_id"], name: "index_ci_triggers_on_project_id", using: :btree
 
   create_table "ci_variables", force: :cascade do |t|
-    t.string "key"
+    t.string "key", null: false
     t.text "value"
     t.text "encrypted_value"
     t.string "encrypted_value_salt"
     t.string "encrypted_value_iv"
-    t.integer "project_id"
+    t.integer "project_id", null: false
   end
 
   add_index "ci_variables", ["project_id"], name: "index_ci_variables_on_project_id", using: :btree
@@ -1405,6 +1406,7 @@ ActiveRecord::Schema.define(version: 20170508170547) do
     t.string "token"
     t.boolean "pipeline_events", default: false, null: false
     t.boolean "confidential_issues_events", default: false, null: false
+    t.boolean "repository_update_events", default: false, null: false
   end
 
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
@@ -1418,6 +1420,7 @@ ActiveRecord::Schema.define(version: 20170508170547) do
   add_foreign_key "ci_pipelines", "ci_pipelines", column: "auto_canceled_by_id", name: "fk_262d4c2d19", on_delete: :nullify
   add_foreign_key "ci_trigger_requests", "ci_triggers", column: "trigger_id", name: "fk_b8ec8b7245", on_delete: :cascade
   add_foreign_key "ci_triggers", "users", column: "owner_id", name: "fk_e8e10d1964", on_delete: :cascade
+  add_foreign_key "ci_variables", "projects", name: "fk_ada5eb64b3", on_delete: :cascade
   add_foreign_key "container_repositories", "projects"
   add_foreign_key "issue_assignees", "issues", on_delete: :cascade
   add_foreign_key "issue_assignees", "users", on_delete: :cascade

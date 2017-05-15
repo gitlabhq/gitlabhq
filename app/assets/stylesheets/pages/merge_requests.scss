@@ -90,11 +90,6 @@
     align-items: center;
     padding: $gl-padding-top $gl-padding 0;
 
-    i,
-    svg {
-      margin-right: 8px;
-    }
-
     svg {
       position: relative;
       top: 1px;
@@ -109,9 +104,10 @@
       flex-wrap: wrap;
     }
 
-    .ci-status-icon > .icon-link svg {
+    .icon-link > .ci-status-icon > svg {
       width: 22px;
       height: 22px;
+      margin-right: 8px;
     }
   }
 
@@ -129,12 +125,6 @@
 
     .ci-action-icon-wrapper {
       line-height: 16px;
-    }
-
-    @media (min-width: $screen-sm-min) {
-      .stage-cell {
-        padding: 0 4px;
-      }
     }
 
     @media (max-width: $screen-xs-max) {
@@ -164,6 +154,34 @@
 
   .capitalize {
     text-transform: capitalize;
+  }
+
+  .label-branch {
+    @extend .ref-name;
+
+    color: $gl-text-color;
+    font-weight: bold;
+    overflow: hidden;
+    margin: 0 3px;
+    word-break: break-all;
+
+    &.label-truncated {
+      position: relative;
+      display: inline-block;
+      width: 250px;
+      margin-bottom: -3px;
+      white-space: nowrap;
+      text-overflow: clip;
+      line-height: 14px;
+
+      &::after {
+        position: absolute;
+        content: '...';
+        right: 0;
+        font-family: $regular_font;
+        background-color: $gray-light;
+      }
+    }
   }
 
   .js-deployment-link {
@@ -361,34 +379,6 @@
 
     &:hover {
       background: none;
-    }
-  }
-}
-
-.label-branch {
-  color: $gl-text-color;
-  font-family: $monospace_font;
-  font-weight: bold;
-  overflow: hidden;
-  font-size: 90%;
-  margin: 0 3px;
-  word-break: break-all;
-
-  &.label-truncated {
-    position: relative;
-    display: inline-block;
-    width: 250px;
-    margin-bottom: -3px;
-    white-space: nowrap;
-    text-overflow: clip;
-    line-height: 14px;
-
-    &::after {
-      position: absolute;
-      content: '...';
-      right: 0;
-      font-family: $regular_font;
-      background-color: $gray-light;
     }
   }
 }
@@ -699,12 +689,17 @@
 }
 
 .merge-request-tabs-holder {
+  top: $header-height;
+  z-index: 10;
   background-color: $white-light;
 
+  @media(min-width: $screen-sm-min) {
+    position: sticky;
+    position: -webkit-sticky;
+  }
+
   &.affix {
-    top: 0;
     left: 0;
-    z-index: 10;
     transition: right .15s;
 
     @media (max-width: $screen-xs-max) {

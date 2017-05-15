@@ -13,6 +13,16 @@ module Gitlab
       super(identifier, project, revision)
     end
 
+    def changes_refs
+      return enum_for(:changes_refs) unless block_given?
+
+      changes.each do |change|
+        oldrev, newrev, ref = change.strip.split(' ')
+
+        yield oldrev, newrev, ref
+      end
+    end
+
     private
 
     def deserialize_changes(changes)

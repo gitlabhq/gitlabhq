@@ -10,6 +10,7 @@ class WebHook < ActiveRecord::Base
   default_value_for :tag_push_events, false
   default_value_for :build_events, false
   default_value_for :pipeline_events, false
+  default_value_for :repository_update_events, false
   default_value_for :enable_ssl_verification, true
 
   scope :push_hooks, -> { where(push_events: true) }
@@ -31,7 +32,7 @@ class WebHook < ActiveRecord::Base
       post_url = url.gsub("#{parsed_url.userinfo}@", '')
       auth = {
         username: CGI.unescape(parsed_url.user),
-        password: CGI.unescape(parsed_url.password),
+        password: CGI.unescape(parsed_url.password)
       }
       response = WebHook.post(post_url,
                               body: data.to_json,

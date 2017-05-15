@@ -353,10 +353,18 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
 
     initAffix() {
       const $tabs = $('.js-tabs-affix');
+      const $fixedNav = $('.navbar-gitlab');
 
       // Screen space on small screens is usually very sparse
       // So we dont affix the tabs on these
       if (Breakpoints.get().getBreakpointSize() === 'xs' || !$tabs.length) return;
+
+      /**
+        If the browser does not support position sticky, it returns the position as static.
+        If the browser does support sticky, then we allow the browser to handle it, if not
+        then we default back to Bootstraps affix
+      **/
+      if ($tabs.css('position') !== 'static') return;
 
       const $diffTabs = $('#diff-notes-app');
 
@@ -364,7 +372,7 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
         .affix({
           offset: {
             top: () => (
-              $diffTabs.offset().top - $tabs.height()
+              $diffTabs.offset().top - $tabs.height() - $fixedNav.height()
             ),
           },
         })

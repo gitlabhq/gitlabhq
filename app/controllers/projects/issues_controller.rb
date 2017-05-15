@@ -208,8 +208,7 @@ class Projects::IssuesController < Projects::ApplicationController
       description: view_context.markdown_field(@issue, :description),
       description_text: @issue.description,
       task_status: @issue.task_status,
-      issue_number: @issue.iid,
-      updated_at: @issue.updated_at,
+      updated_at: @issue.updated_at
     }
   end
 
@@ -227,7 +226,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def issue
     # The Sortable default scope causes performance issues when used with find_by
-    @noteable = @issue ||= @project.issues.where(iid: params[:id]).reorder(nil).take || redirect_old
+    @noteable = @issue ||= @project.issues.where(iid: params[:id]).reorder(nil).take!
   end
   alias_method :subscribable_resource, :issue
   alias_method :issuable, :issue
@@ -266,25 +265,10 @@ class Projects::IssuesController < Projects::ApplicationController
     end
   end
 
-  # Since iids are implemented only in 6.1
-  # user may navigate to issue page using old global ids.
-  #
-  # To prevent 404 errors we provide a redirect to correct iids until 7.0 release
-  #
-  def redirect_old
-    issue = @project.issues.find_by(id: params[:id])
-
-    if issue
-      redirect_to issue_path(issue)
-    else
-      raise ActiveRecord::RecordNotFound.new
-    end
-  end
-
   def issue_params
     params.require(:issue).permit(
       :title, :assignee_id, :position, :description, :confidential,
-      :milestone_id, :due_date, :state_event, :task_num, :lock_version, label_ids: [], assignee_ids: [],
+      :milestone_id, :due_date, :state_event, :task_num, :lock_version, label_ids: [], assignee_ids: []
     )
   end
 

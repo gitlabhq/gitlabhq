@@ -238,11 +238,6 @@ ul.notes {
 
           ul {
             margin: 3px 0 3px 16px !important;
-
-            .gfm-commit {
-              font-family: $monospace_font;
-              font-size: 12px;
-            }
           }
 
           p:first-child {
@@ -282,10 +277,6 @@ ul.notes {
     &:hover {
       background-color: $gray-light;
     }
-  }
-
-  .diff-header > span {
-    margin-right: 10px;
   }
 
   .line_content {

@@ -22,7 +22,7 @@ FactoryGirl.define do
     properties({
       namespace: 'somepath',
       api_url: 'https://kubernetes.example.com',
-      token: 'a' * 40,
+      token: 'a' * 40
     })
   end
 

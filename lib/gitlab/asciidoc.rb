@@ -15,17 +15,17 @@ module Gitlab
     #
     # input         - the source text in Asciidoc format
     #
-    def self.render(input)
+    def self.render(input, context)
       asciidoc_opts = { safe: :secure,
                         backend: :gitlab_html5,
                         attributes: DEFAULT_ADOC_ATTRS }
 
+      context[:pipeline] = :markup
+
       plantuml_setup
 
       html = ::Asciidoctor.convert(input, asciidoc_opts)
-
-      filter = Banzai::Filter::SanitizationFilter.new(html)
-      html = filter.call.to_s
+      html = Banzai.render(html, context)
 
       html.html_safe
     end

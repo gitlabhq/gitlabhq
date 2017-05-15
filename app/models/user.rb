@@ -5,6 +5,7 @@ class User < ActiveRecord::Base
 
   include Gitlab::ConfigHelper
   include Gitlab::CurrentSettings
+  include Avatarable
   include Referable
   include Sortable
   include CaseSensitivity
@@ -784,12 +785,10 @@ class User < ActiveRecord::Base
     email.start_with?('temp-email-for-oauth')
   end
 
-  def avatar_url(size = nil, scale = 2)
-    if self[:avatar].present?
-      [gitlab_config.url, avatar.url].join
-    else
-      GravatarService.new.execute(email, size, scale)
-    end
+  def avatar_url(size: nil, scale: 2, **args)
+    # We use avatar_path instead of overriding avatar_url because of carrierwave.
+    # See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11001/diffs#note_28659864
+    avatar_path(args) || GravatarService.new.execute(email, size, scale)
   end
 
   def all_emails
@@ -928,6 +927,11 @@ class User < ActiveRecord::Base
   def update_cache_counts
     assigned_open_merge_requests_count(force: true)
     assigned_open_issues_count(force: true)
+  end
+
+  def invalidate_cache_counts
+    Rails.cache.delete(['users', id, 'assigned_open_merge_requests_count'])
+    Rails.cache.delete(['users', id, 'assigned_open_issues_count'])
   end
 
   def todos_done_count(force: false)

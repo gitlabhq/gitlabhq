@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Repository, models: true do
   include RepoHelpers
-  TestBlob = Struct.new(:name)
+  TestBlob = Struct.new(:path)
 
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
@@ -565,31 +565,31 @@ describe Repository, models: true do
     it 'accepts changelog' do
       expect(repository.tree).to receive(:blobs).and_return([TestBlob.new('changelog')])
 
-      expect(repository.changelog.name).to eq('changelog')
+      expect(repository.changelog.path).to eq('changelog')
     end
 
     it 'accepts news instead of changelog' do
       expect(repository.tree).to receive(:blobs).and_return([TestBlob.new('news')])
 
-      expect(repository.changelog.name).to eq('news')
+      expect(repository.changelog.path).to eq('news')
     end
 
     it 'accepts history instead of changelog' do
       expect(repository.tree).to receive(:blobs).and_return([TestBlob.new('history')])
 
-      expect(repository.changelog.name).to eq('history')
+      expect(repository.changelog.path).to eq('history')
     end
 
     it 'accepts changes instead of changelog' do
       expect(repository.tree).to receive(:blobs).and_return([TestBlob.new('changes')])
 
-      expect(repository.changelog.name).to eq('changes')
+      expect(repository.changelog.path).to eq('changes')
     end
 
     it 'is case-insensitive' do
       expect(repository.tree).to receive(:blobs).and_return([TestBlob.new('CHANGELOG')])
 
-      expect(repository.changelog.name).to eq('CHANGELOG')
+      expect(repository.changelog.path).to eq('CHANGELOG')
     end
   end
 
@@ -624,7 +624,7 @@ describe Repository, models: true do
       repository.create_file(user, 'LICENSE', 'Copyright!',
         message: 'Add LICENSE', branch_name: 'master')
 
-      expect(repository.license_blob.name).to eq('LICENSE')
+      expect(repository.license_blob.path).to eq('LICENSE')
     end
 
     %w[LICENSE LICENCE LiCensE LICENSE.md LICENSE.foo COPYING COPYING.md].each do |filename|
@@ -654,7 +654,7 @@ describe Repository, models: true do
       expect(repository.license_key).to be_nil
     end
 
-    it 'detects license file with no recognizable open-source license content' do
+    it 'returns nil when the content is not recognizable' do
       repository.create_file(user, 'LICENSE', 'Copyright!',
         message: 'Add LICENSE', branch_name: 'master')
 
@@ -670,12 +670,45 @@ describe Repository, models: true do
     end
   end
 
+  describe '#license' do
+    before do
+      repository.delete_file(user, 'LICENSE',
+        message: 'Remove LICENSE', branch_name: 'master')
+    end
+
+    it 'returns nil when no license is detected' do
+      expect(repository.license).to be_nil
+    end
+
+    it 'returns nil when the repository does not exist' do
+      expect(repository).to receive(:exists?).and_return(false)
+
+      expect(repository.license).to be_nil
+    end
+
+    it 'returns nil when the content is not recognizable' do
+      repository.create_file(user, 'LICENSE', 'Copyright!',
+        message: 'Add LICENSE', branch_name: 'master')
+
+      expect(repository.license).to be_nil
+    end
+
+    it 'returns the license' do
+      license = Licensee::License.new('mit')
+      repository.create_file(user, 'LICENSE',
+        license.content,
+        message: 'Add LICENSE', branch_name: 'master')
+
+      expect(repository.license).to eq(license)
+    end
+  end
+
   describe "#gitlab_ci_yml", caching: true do
     it 'returns valid file' do
       files = [TestBlob.new('file'), TestBlob.new('.gitlab-ci.yml'), TestBlob.new('copying')]
       expect(repository.tree).to receive(:blobs).and_return(files)
 
-      expect(repository.gitlab_ci_yml.name).to eq('.gitlab-ci.yml')
+      expect(repository.gitlab_ci_yml.path).to eq('.gitlab-ci.yml')
     end
 
     it 'returns nil if not exists' do
@@ -1626,15 +1659,25 @@ describe Repository, models: true do
   describe '#readme', caching: true do
     context 'with a non-existing repository' do
       it 'returns nil' do
-        expect(repository).to receive(:tree).with(:head).and_return(nil)
+        allow(repository).to receive(:tree).with(:head).and_return(nil)
 
         expect(repository.readme).to be_nil
       end
     end
 
     context 'with an existing repository' do
-      it 'returns the README' do
-        expect(repository.readme).to be_an_instance_of(Gitlab::Git::Blob)
+      context 'when no README exists' do
+        it 'returns nil' do
+          allow_any_instance_of(Tree).to receive(:readme).and_return(nil)
+
+          expect(repository.readme).to be_nil
+        end
+      end
+
+      context 'when a README exists' do
+        it 'returns the README' do
+          expect(repository.readme).to be_an_instance_of(ReadmeBlob)
+        end
       end
     end
   end
@@ -1825,11 +1868,12 @@ describe Repository, models: true do
   describe '#refresh_method_caches' do
     it 'refreshes the caches of the given types' do
       expect(repository).to receive(:expire_method_caches).
-        with(%i(rendered_readme license_blob license_key))
+        with(%i(rendered_readme license_blob license_key license))
 
       expect(repository).to receive(:rendered_readme)
       expect(repository).to receive(:license_blob)
       expect(repository).to receive(:license_key)
+      expect(repository).to receive(:license)
 
       repository.refresh_method_caches(%i(readme license))
     end

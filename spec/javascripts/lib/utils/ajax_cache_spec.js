@@ -5,19 +5,13 @@ describe('AjaxCache', () => {
   const dummyResponse = {
     important: 'dummy data',
   };
-  let ajaxSpy = (url) => {
-    expect(url).toBe(dummyEndpoint);
-    const deferred = $.Deferred();
-    deferred.resolve(dummyResponse);
-    return deferred.promise();
-  };
 
   beforeEach(() => {
     AjaxCache.internalStorage = { };
-    spyOn(jQuery, 'ajax').and.callFake(url => ajaxSpy(url));
+    AjaxCache.pendingRequests = { };
   });
 
-  describe('#get', () => {
+  describe('get', () => {
     it('returns undefined if cache is empty', () => {
       const data = AjaxCache.get(dummyEndpoint);
 
@@ -41,7 +35,7 @@ describe('AjaxCache', () => {
     });
   });
 
-  describe('#hasData', () => {
+  describe('hasData', () => {
     it('returns false if cache is empty', () => {
       expect(AjaxCache.hasData(dummyEndpoint)).toBe(false);
     });
@@ -59,9 +53,9 @@ describe('AjaxCache', () => {
     });
   });
 
-  describe('#purge', () => {
+  describe('remove', () => {
     it('does nothing if cache is empty', () => {
-      AjaxCache.purge(dummyEndpoint);
+      AjaxCache.remove(dummyEndpoint);
 
       expect(AjaxCache.internalStorage).toEqual({ });
     });
@@ -69,7 +63,7 @@ describe('AjaxCache', () => {
     it('does nothing if cache contains no matching data', () => {
       AjaxCache.internalStorage['not matching'] = dummyResponse;
 
-      AjaxCache.purge(dummyEndpoint);
+      AjaxCache.remove(dummyEndpoint);
 
       expect(AjaxCache.internalStorage['not matching']).toBe(dummyResponse);
     });
@@ -77,14 +71,27 @@ describe('AjaxCache', () => {
     it('removes matching data', () => {
       AjaxCache.internalStorage[dummyEndpoint] = dummyResponse;
 
-      AjaxCache.purge(dummyEndpoint);
+      AjaxCache.remove(dummyEndpoint);
 
       expect(AjaxCache.internalStorage).toEqual({ });
     });
   });
 
-  describe('#retrieve', () => {
+  describe('retrieve', () => {
+    let ajaxSpy;
+
+    beforeEach(() => {
+      spyOn(jQuery, 'ajax').and.callFake(url => ajaxSpy(url));
+    });
+
     it('stores and returns data from Ajax call if cache is empty', (done) => {
+      ajaxSpy = (url) => {
+        expect(url).toBe(dummyEndpoint);
+        const deferred = $.Deferred();
+        deferred.resolve(dummyResponse);
+        return deferred.promise();
+      };
+
       AjaxCache.retrieve(dummyEndpoint)
       .then((data) => {
         expect(data).toBe(dummyResponse);
@@ -92,6 +99,28 @@ describe('AjaxCache', () => {
       })
       .then(done)
       .catch(fail);
+    });
+
+    it('makes no Ajax call if request is pending', () => {
+      const responseDeferred = $.Deferred();
+
+      ajaxSpy = (url) => {
+        expect(url).toBe(dummyEndpoint);
+        // neither reject nor resolve to keep request pending
+        return responseDeferred.promise();
+      };
+
+      const unexpectedResponse = data => fail(`Did not expect response: ${data}`);
+
+      AjaxCache.retrieve(dummyEndpoint)
+      .then(unexpectedResponse)
+      .catch(fail);
+
+      AjaxCache.retrieve(dummyEndpoint)
+      .then(unexpectedResponse)
+      .catch(fail);
+
+      expect($.ajax.calls.count()).toBe(1);
     });
 
     it('returns undefined if Ajax call fails and cache is empty', (done) => {

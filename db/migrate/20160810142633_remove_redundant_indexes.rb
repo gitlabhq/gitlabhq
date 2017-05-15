@@ -69,7 +69,7 @@ class RemoveRedundantIndexes < ActiveRecord::Migration
       [:namespaces, 'index_namespaces_on_created_at_and_id'],
       [:notes, 'index_notes_on_created_at_and_id'],
       [:projects, 'index_projects_on_created_at_and_id'],
-      [:users, 'index_users_on_created_at_and_id'],
+      [:users, 'index_users_on_created_at_and_id']
     ]
 
     transaction do

@@ -95,7 +95,7 @@ describe Gitlab::ImportExport::RelationFactory, lib: true do
         'random_id' => 99,
         'milestone_id' => 99,
         'project_id' => 99,
-        'user_id' => 99,
+        'user_id' => 99
       }
     end
 

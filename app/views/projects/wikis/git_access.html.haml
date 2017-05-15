@@ -28,7 +28,7 @@
     %h3 Clone your wiki
     %pre.dark
       :preserve
-        git clone #{ content_tag(:span, default_url_to_repo(@project_wiki), class: 'clone')}
+        git clone #{ content_tag(:span, h(default_url_to_repo(@project_wiki)), class: 'clone')}
         cd #{h @project_wiki.path}
 
     %h3 Start Gollum and edit locally

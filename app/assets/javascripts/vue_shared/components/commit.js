@@ -119,14 +119,14 @@ export default {
       </div>
 
       <a v-if="hasCommitRef"
-        class="monospace branch-name"
+        class="ref-name"
         :href="commitRef.ref_url">
         {{commitRef.name}}
       </a>
 
       <div v-html="commitIconSvg" class="commit-icon js-commit-icon"></div>
 
-      <a class="commit-id monospace"
+      <a class="commit-sha"
         :href="commitUrl">
         {{shortSha}}
       </a>

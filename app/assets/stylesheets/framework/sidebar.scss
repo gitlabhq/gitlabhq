@@ -80,6 +80,6 @@
 
   &.affix {
     position: fixed;
-    top: 0;
+    top: $header-height;
   }
 }
