@@ -129,6 +129,7 @@
 
     .dropdown-menu {
       margin-top: 11px;
+      z-index: 200;
     }
 
     .ci-action-icon-wrapper {
@@ -703,6 +704,11 @@
 }
 
 .merge-request-tabs-holder {
+<<<<<<< HEAD
+=======
+  top: $header-height;
+  z-index: 100;
+>>>>>>> 3460f36... Merge branch 'fix-merge-request-show-component-z-indices' into 'master'
   background-color: $white-light;
 
   &.affix {
