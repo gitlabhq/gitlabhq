@@ -50,6 +50,12 @@ module Ci
         return error('No builds for this pipeline.')
       end
 
+      _create_pipeline
+    end
+
+    private
+
+    def _create_pipeline
       Ci::Pipeline.transaction do
         update_merge_requests_head_pipeline if pipeline.save
 
@@ -62,8 +68,6 @@ module Ci
 
       pipeline.tap(&:process!)
     end
-
-    private
 
     def skip_ci?
       return false unless pipeline.git_commit_message

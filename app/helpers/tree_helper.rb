@@ -139,11 +139,11 @@ module TreeHelper
         end
       end
     else
-      _lock_link(current_user: current_user, project: project, html_options: {})
+      _lock_link(current_user, project, html_options: html_options)
     end
   end
 
-  def _lock_link(current_user: current_user, project: project, html_options: {})
+  def _lock_link(user, project, html_options: {})
     if can?(current_user, :push_code, project)
       html_options[:data] = { state: :lock }
       enabled_lock_link("Lock", '', html_options)
