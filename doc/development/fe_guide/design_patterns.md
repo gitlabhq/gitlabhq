@@ -2,32 +2,31 @@
 
 ## Singletons
 
-When exactly one object is needed for a given task, prefer to define it as a
-`class` rather than as an object literal. Prefer also to explicitly restrict
-instantiation, unless flexibility is important (e.g. for testing).
+As with everything at GitLab, the simplest approach should be taken.
+Below we have defined a few patterns to achieve singleton-like behaviour.
+Pick the simplest one that fits your usecase.
 
 ```javascript
-// bad
-
 const MyThing = {
-  prop1: 'hello',
-  method1: () => {}
+  prop: 'hello',
+  init: () => {}
 };
 
 export default MyThing;
+```
 
-// good
-
+```javascript
 class MyThing {
   constructor() {
-    this.prop1 = 'hello';
+    this.prop = 'hello';
   }
-  method1() {}
+  init() {}
 }
 
 export default new MyThing();
+```
 
-// best
+```javascript
 
 export default class MyThing {
   constructor() {
@@ -39,7 +38,7 @@ export default class MyThing {
   }
 
   init() {
-    this.prop1 = 'hello';
+    this.prop = 'hello';
   }
 
   method1() {}
