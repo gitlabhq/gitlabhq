@@ -13,6 +13,15 @@ up to 20 levels of nested groups, which among other things can help you to:
 - **Make it easier to manage people and control visibility.** Give people
   different [permissions][] depending on their group [membership](#membership).
 
+## Database Requirements
+
+Nested groups are only supported when you use PostgreSQL. Supporting nested
+groups on MySQL in an efficient way is not possible due to MySQL's limitations.
+See the following links for more information:
+
+* <https://gitlab.com/gitlab-org/gitlab-ce/issues/30472>
+* <https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/10885>
+
 ## Overview
 
 A group can have many subgroups inside it, and at the same time a group can have
