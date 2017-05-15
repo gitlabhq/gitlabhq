@@ -283,7 +283,6 @@ module Gitlab
 
         add_column(table, new, new_type,
                    limit: old_col.limit,
-                   null: old_col.null,
                    precision: old_col.precision,
                    scale: old_col.scale)
 
@@ -306,6 +305,8 @@ module Gitlab
         end
 
         update_column_in_batches(table, new, Arel::Table.new(table)[old])
+
+        change_column_null(table, new, false) unless old_col.null
 
         copy_indexes(table, old, new)
         copy_foreign_keys(table, old, new)
