@@ -52,20 +52,20 @@ module Gitlab
       def content_commit
         return unless diff_refs
 
-        repository.commit(deleted_file ? old_ref : new_ref)
+        repository.commit(deleted_file? ? old_sha : new_sha)
       end
 
       def old_content_commit
         return unless diff_refs
 
-        repository.commit(old_ref)
+        repository.commit(old_sha)
       end
 
-      def old_ref
+      def old_sha
         diff_refs.try(:base_sha)
       end
 
-      def new_ref
+      def new_sha
         diff_refs.try(:head_sha)
       end
 

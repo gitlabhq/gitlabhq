@@ -3,7 +3,7 @@ module Gitlab
     class Highlight
       attr_reader :diff_file, :diff_lines, :raw_lines, :repository
 
-      delegate :old_path, :new_path, :old_ref, :new_ref, to: :diff_file, prefix: :diff
+      delegate :old_path, :new_path, :old_sha, :new_sha, to: :diff_file, prefix: :diff
 
       def initialize(diff_lines, repository: nil)
         @repository = repository
@@ -61,12 +61,12 @@ module Gitlab
 
       def old_lines
         return unless diff_file
-        @old_lines ||= Gitlab::Highlight.highlight_lines(self.repository, diff_old_ref, diff_old_path)
+        @old_lines ||= Gitlab::Highlight.highlight_lines(self.repository, diff_old_sha, diff_old_path)
       end
 
       def new_lines
         return unless diff_file
-        @new_lines ||= Gitlab::Highlight.highlight_lines(self.repository, diff_new_ref, diff_new_path)
+        @new_lines ||= Gitlab::Highlight.highlight_lines(self.repository, diff_new_sha, diff_new_path)
       end
     end
   end
