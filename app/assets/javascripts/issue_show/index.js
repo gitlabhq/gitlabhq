@@ -4,6 +4,8 @@ import issuableApp from './components/app.vue';
 import '../vue_shared/vue_resource_interceptor';
 
 document.addEventListener('DOMContentLoaded', () => {
+  const initialDataEl = document.getElementById('js-issuable-app-initial-data');
+  const initialData = JSON.parse(initialDataEl.innerHTML.replace(/&quot;/g, '"'));
   $('.issuable-edit').on('click', (e) => {
     e.preventDefault();
 
@@ -35,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initialTitle: issuableTitleElement.innerHTML,
         initialDescriptionHtml: issuableDescriptionElement ? issuableDescriptionElement.innerHTML : '',
         initialDescriptionText: issuableDescriptionTextarea ? issuableDescriptionTextarea.textContent : '',
+        issuableTemplates: initialData.templates,
       };
     },
     render(createElement) {
@@ -47,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
           initialTitle: this.initialTitle,
           initialDescriptionHtml: this.initialDescriptionHtml,
           initialDescriptionText: this.initialDescriptionText,
+          issuableTemplates: this.issuableTemplates,
         },
       });
     },

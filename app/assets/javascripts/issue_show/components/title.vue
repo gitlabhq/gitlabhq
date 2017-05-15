@@ -35,6 +35,11 @@
         type: Boolean,
         required: true,
       },
+      issuableTemplates: {
+        type: Array,
+        required: true,
+        default: () => [],
+      },
     },
     watch: {
       titleHtml() {
@@ -56,7 +61,8 @@
   <div>
     <title-field
       v-if="showForm"
-      :store="store" />
+      :store="store"
+      :issuable-templates="issuableTemplates" />
     <h2
       v-else
       class="title"

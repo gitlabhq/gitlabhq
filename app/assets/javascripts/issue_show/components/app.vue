@@ -41,6 +41,11 @@ export default {
       required: false,
       default: '',
     },
+    issuableTemplates: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     const store = new Store({
@@ -146,7 +151,8 @@ export default {
       :show-form="showForm"
       :issuable-ref="issuableRef"
       :title-html="state.titleHtml"
-      :title-text="state.titleText" />
+      :title-text="state.titleText"
+      :issuable-templates="issuableTemplates" />
     <description-component
       v-if="state.descriptionHtml"
       :can-update="canUpdate"
