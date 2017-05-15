@@ -4,7 +4,7 @@ cache:
   key: "ruby-233"
   paths:
   - vendor/ruby
-  - .yarn-cache
+  - .yarn-cache/
 
 variables:
   MYSQL_ALLOW_EMPTY_PASSWORD: "1"
