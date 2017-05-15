@@ -9,22 +9,6 @@
         type: Boolean,
         required: true,
       },
-      descriptionHtml: {
-        type: String,
-        required: true,
-      },
-      descriptionText: {
-        type: String,
-        required: true,
-      },
-      updatedAt: {
-        type: String,
-        required: true,
-      },
-      taskStatus: {
-        type: String,
-        required: true,
-      },
       store: {
         type: Object,
         required: true,
@@ -37,13 +21,32 @@
         type: String,
         required: true,
       },
+      markdownDocs: {
+        type: String,
+        required: true,
+      },
     },
     data() {
       return {
+        state: this.store.state,
         preAnimation: false,
         pulseAnimation: false,
         timeAgoEl: $('.js-issue-edited-ago'),
       };
+    },
+    computed: {
+      descriptionHtml() {
+        return this.state.descriptionHtml;
+      },
+      descriptionText() {
+        return this.state.descriptionText;
+      },
+      updatedAt() {
+        return this.state.updated_at;
+      },
+      taskStatus() {
+        return this.state.taskStatus;
+      },
     },
     watch: {
       descriptionHtml() {
@@ -102,7 +105,8 @@
     <description-field
       v-if="showForm"
       :store="store"
-      :markdown-preview-url="markdownPreviewUrl" />
+      :markdown-preview-url="markdownPreviewUrl"
+      :markdown-docs="markdownDocs" />
     <div
       v-else-if="descriptionHtml"
       class="description"

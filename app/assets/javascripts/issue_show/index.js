@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         endpoint,
         issuableRef,
         markdownPreviewUrl,
+        markdownDocs,
       } = issuableElement.dataset;
 
       return {
@@ -37,6 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initialDescriptionHtml: issuableDescriptionElement ? issuableDescriptionElement.innerHTML : '',
         initialDescriptionText: issuableDescriptionTextarea ? issuableDescriptionTextarea.textContent : '',
         markdownPreviewUrl,
+        markdownDocs,
       };
     },
     render(createElement) {
@@ -50,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
           initialDescriptionHtml: this.initialDescriptionHtml,
           initialDescriptionText: this.initialDescriptionText,
           markdownPreviewUrl: this.markdownPreviewUrl,
+          markdownDocs: this.markdownDocs,
         },
       });
     },

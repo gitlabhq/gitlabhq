@@ -12,6 +12,10 @@
         type: String,
         required: true,
       },
+      markdownDocs: {
+        type: String,
+        required: true,
+      },
     },
     data() {
       return {
@@ -32,7 +36,8 @@
       Description
     </label>
     <markdown-field
-      :markdown-preview-url="markdownPreviewUrl">
+      :markdown-preview-url="markdownPreviewUrl"
+      :markdown-docs="markdownDocs">
       <textarea
         id="issue-description"
         class="note-textarea js-gfm-input js-autosize markdown-area"

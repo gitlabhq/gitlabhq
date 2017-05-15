@@ -10,6 +10,10 @@
         required: false,
         default: '',
       },
+      markdownDocs: {
+        type: String,
+        required: true,
+      },
     },
     data() {
       return {
@@ -84,7 +88,8 @@
             aria-hidden="true">
           </i>
         </a>
-        <markdown-toolbar />
+        <markdown-toolbar
+          :markdown-docs="markdownDocs" />
       </div>
     </div>
     <div

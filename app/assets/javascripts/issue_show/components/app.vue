@@ -45,6 +45,10 @@ export default {
       type: String,
       required: true,
     },
+    markdownDocs: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     const store = new Store({
@@ -152,11 +156,8 @@ export default {
       :store="store"
       :show-form="showForm"
       :can-update="canUpdate"
-      :description-html="state.descriptionHtml"
-      :description-text="state.descriptionText"
-      :updated-at="state.updatedAt"
-      :task-status="state.taskStatus"
-      :markdown-preview-url="markdownPreviewUrl" />
+      :markdown-preview-url="markdownPreviewUrl"
+      :markdown-docs="markdownDocs" />
     <edit-actions
       v-if="canUpdate && showForm"
       :can-destroy="canDestroy" />

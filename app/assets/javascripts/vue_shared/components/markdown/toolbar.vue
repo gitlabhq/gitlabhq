@@ -1,12 +1,19 @@
 <script>
-
+  export default {
+    props: {
+      markdownDocs: {
+        type: String,
+        required: true,
+      },
+    },
+  };
 </script>
 
 <template>
   <div class="comment-toolbar clearfix">
     <div class="toolbar-text">
       <a
-        href="/docs"
+        :href="markdownDocs"
         target="_blank"
         tabindex="-1">
         Markdown is supported
