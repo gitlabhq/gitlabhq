@@ -35,7 +35,7 @@ describe('Issue Title', () => {
     const issueShowComponent = new IssueTitleDescriptionComponent({
       propsData: {
         canUpdateIssue: '.css-stuff',
-        endpoint: '/gitlab-org/gitlab-shell/issues/9/rendered_title',
+        endpoint: '/gitlab-org/gitlab-shell/issues/9/realtime_changes',
       },
     }).$mount();
 
