@@ -7,6 +7,7 @@ import Service from '../services/index';
 import Store from '../stores';
 import titleComponent from './title.vue';
 import descriptionComponent from './description.vue';
+import confidentialCheckbox from './fields/confidential_checkbox.vue';
 import editActions from './edit_actions.vue';
 
 export default {
@@ -41,6 +42,10 @@ export default {
       required: false,
       default: '',
     },
+    isConfidential: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     const store = new Store({
@@ -67,12 +72,14 @@ export default {
     descriptionComponent,
     titleComponent,
     editActions,
+    confidentialCheckbox,
   },
   methods: {
     openForm() {
       this.showForm = true;
       this.store.formState = {
         title: this.state.titleText,
+        confidential: this.isConfidential,
       };
     },
     closeForm() {
@@ -80,7 +87,13 @@ export default {
     },
     updateIssuable() {
       this.service.updateIssuable(this.store.formState)
-        .then(() => {
+        .then((res) => {
+          const data = res.json();
+
+          if (data.confidential !== this.isConfidential) {
+            location.reload();
+          }
+
           eventHub.$emit('close.form');
         })
         .catch(() => {
@@ -157,6 +170,9 @@ export default {
       :description-text="state.descriptionText"
       :updated-at="state.updatedAt"
       :task-status="state.taskStatus" />
+    <confidential-checkbox
+      v-if="showForm"
+      :form-state="formState" />
     <edit-actions
       v-if="canUpdate && showForm"
       :can-destroy="canDestroy" />

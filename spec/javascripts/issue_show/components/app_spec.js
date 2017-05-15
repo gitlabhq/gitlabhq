@@ -35,6 +35,7 @@ describe('Issuable output', () => {
         initialDescriptionHtml: '',
         initialDescriptionText: '',
         showForm: false,
+        isConfidential: false,
       },
     }).$mount();
   });
