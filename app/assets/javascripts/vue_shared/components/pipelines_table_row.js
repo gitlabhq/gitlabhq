@@ -2,7 +2,7 @@
 import AsyncButtonComponent from '../../pipelines/components/async_button.vue';
 import PipelinesActionsComponent from '../../pipelines/components/pipelines_actions';
 import PipelinesArtifactsComponent from '../../pipelines/components/pipelines_artifacts';
-import PipelinesStatusComponent from '../../pipelines/components/status';
+import ciBadge from './ci_badge_link.vue';
 import PipelinesStageComponent from '../../pipelines/components/stage.vue';
 import PipelinesUrlComponent from '../../pipelines/components/pipeline_url';
 import PipelinesTimeagoComponent from '../../pipelines/components/time_ago';
@@ -39,7 +39,7 @@ export default {
     'commit-component': CommitComponent,
     'dropdown-stage': PipelinesStageComponent,
     'pipeline-url': PipelinesUrlComponent,
-    'status-scope': PipelinesStatusComponent,
+    ciBadge,
     'time-ago': PipelinesTimeagoComponent,
   },
 
@@ -197,11 +197,20 @@ export default {
 
       return '';
     },
+
+    pipelineStatus() {
+      if (this.pipeline.details && this.pipeline.details.status) {
+        return this.pipeline.details.status;
+      }
+      return {};
+    },
   },
 
   template: `
     <tr class="commit">
-      <status-scope :pipeline="pipeline"/>
+      <td class="commit-link">
+        <ci-badge :status="pipelineStatus"/>
+      </td>
 
       <pipeline-url :pipeline="pipeline"></pipeline-url>
 
