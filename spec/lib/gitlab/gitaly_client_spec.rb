@@ -1,14 +1,19 @@
 require 'spec_helper'
 
 describe Gitlab::GitalyClient, lib: true do
-  describe '.new_channel' do
+  describe '.stub' do
+    before { described_class.clear_stubs! }
+
     context 'when passed a UNIX socket address' do
-      it 'passes the address as-is to GRPC::Core::Channel initializer' do
+      it 'passes the address as-is to GRPC' do
         address = 'unix:/tmp/gitaly.sock'
+        allow(Gitlab.config.repositories).to receive(:storages).and_return({
+          'default' => { 'gitaly_address' => address }
+        })
 
-        expect(GRPC::Core::Channel).to receive(:new).with(address, any_args)
+        expect(Gitaly::Commit::Stub).to receive(:new).with(address, any_args)
 
-        described_class.new_channel(address)
+        described_class.stub(:commit, 'default')
       end
     end
 
@@ -17,9 +22,13 @@ describe Gitlab::GitalyClient, lib: true do
         address = 'localhost:9876'
         prefixed_address = "tcp://#{address}"
 
-        expect(GRPC::Core::Channel).to receive(:new).with(address, any_args)
+        allow(Gitlab.config.repositories).to receive(:storages).and_return({
+          'default' => { 'gitaly_address' => prefixed_address }
+        })
 
-        described_class.new_channel(prefixed_address)
+        expect(Gitaly::Commit::Stub).to receive(:new).with(address, any_args)
+
+        described_class.stub(:commit, 'default')
       end
     end
   end
