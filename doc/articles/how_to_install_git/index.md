@@ -41,7 +41,7 @@ brew install git
 ```
 
 Congratulations you should now have Git installed via Homebrew.
-Next read our article on [adding an SSH key to GitLab](../ssh/README.md).
+Next read our article on [adding an SSH key to GitLab](../../ssh/README.md).
 
 ## Install Git on Ubuntu Linux
 
