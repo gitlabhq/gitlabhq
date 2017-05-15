@@ -66,10 +66,10 @@
     &.video {
       background: $file-image-bg;
       text-align: center;
+      padding: 30px;
 
       img,
       video {
-        padding: 20px;
         max-width: 80%;
       }
     }
