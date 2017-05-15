@@ -9,7 +9,10 @@ module Gitlab
       download: 'You are not allowed to download code from this project.',
       deploy_key_upload:
         'This deploy key does not have write access to this project.',
-      no_repo: 'A repository for this project does not exist yet.'
+      no_repo: 'A repository for this project does not exist yet.',
+      project_not_found: 'The project you were looking for could not be found.',
+      account_blocked: 'Your account has been blocked.',
+      command_not_allowed: "The command you're trying to execute is not allowed."
     }.freeze
 
     DOWNLOAD_COMMANDS = %w{ git-upload-pack git-upload-archive }.freeze
@@ -73,19 +76,19 @@ module Gitlab
       return if deploy_key?
 
       if user && !user_access.allowed?
-        raise UnauthorizedError, "Your account has been blocked."
+        raise UnauthorizedError, ERROR_MESSAGES[:account_blocked]
       end
     end
 
     def check_project_accessibility!
       if project.blank? || !can_read_project?
-        raise UnauthorizedError, 'The project you were looking for could not be found.'
+        raise UnauthorizedError, ERROR_MESSAGES[:project_not_found]
       end
     end
 
     def check_command_existence!(cmd)
       unless ALL_COMMANDS.include?(cmd)
-        raise UnauthorizedError, "The command you're trying to execute is not allowed."
+        raise UnauthorizedError, ERROR_MESSAGES[:command_not_allowed]
       end
     end
 
