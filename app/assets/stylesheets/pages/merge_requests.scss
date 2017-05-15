@@ -121,6 +121,7 @@
 
     .dropdown-menu {
       margin-top: 11px;
+      z-index: 200;
     }
 
     .ci-action-icon-wrapper {
@@ -690,7 +691,7 @@
 
 .merge-request-tabs-holder {
   top: $header-height;
-  z-index: 10;
+  z-index: 100;
   background-color: $white-light;
 
   @media(min-width: $screen-sm-min) {
