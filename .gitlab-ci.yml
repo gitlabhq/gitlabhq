@@ -1,7 +1,7 @@
 image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.7-phantomjs-2.1-node-7.1-postgresql-9.6"
 
 cache:
-  key: "ruby-233"
+  key: "ruby-233-with-yarn"
   paths:
   - vendor/ruby
   - .yarn-cache/
