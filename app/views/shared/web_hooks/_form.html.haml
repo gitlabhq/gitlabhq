@@ -54,10 +54,10 @@
         %p.light
           This URL will be triggered when a merge request is created/updated/merged
     %li
-      = form.check_box :job_events, class: 'pull-left'
+      = form.check_box :build_events, class: 'pull-left'
       .prepend-left-20
-        = form.label :job_events, class: 'list-label' do
-          %strong Job events
+        = form.label :build_events, class: 'list-label' do
+          %strong Jobs events
         %p.light
           This URL will be triggered when the job status changes
     %li

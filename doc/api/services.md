@@ -516,7 +516,7 @@ Example response:
   "merge_requests_events": true,
   "tag_push_events": true,
   "note_events": true,
-  "job_events": true,
+  "build_events": true,
   "pipeline_events": true,
   "properties": {
     "token": "9koXpg98eAheJpvBs5tK"
