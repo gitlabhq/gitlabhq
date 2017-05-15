@@ -159,6 +159,9 @@ class MergeRequestDiff < ActiveRecord::Base
   # It is not good enough for highlighting diffs, so we can't simply pass
   # these as `diff_refs.`
   def fallback_diff_refs
+    real_refs = diff_refs
+    return real_refs if real_refs
+
     likely_base_commit_sha = (first_commit&.parent || first_commit)&.sha
 
     Gitlab::Diff::DiffRefs.new(

@@ -51,12 +51,9 @@ class Projects::CompareController < Projects::ApplicationController
 
     if @compare
       @commits = @compare.commits
-      @start_commit = @compare.start_commit
-      @commit = @compare.commit
-
       @diffs = @compare.diffs(diff_options)
 
-      environment_params = @repository.branch_exists?(@head_ref) ? { ref: @head_ref } : { commit: @commit }
+      environment_params = @repository.branch_exists?(@head_ref) ? { ref: @head_ref } : { commit: @compare.commit }
       @environment = EnvironmentsFinder.new(@project, current_user, environment_params).execute.last
 
       @diff_notes_disabled = true
