@@ -10,8 +10,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :module_enabled
   before_action :merge_request, only: [
     :edit, :update, :show, :diffs, :commits, :conflicts, :conflict_for_path, :pipelines, :merge, :merge_check,
-    :pipeline_status, :ci_environments_status, :toggle_subscription, :cancel_merge_when_pipeline_succeeds,
-    :remove_wip, :resolve_conflicts, :assign_related_issues, :commit_change_content, :codeclimate
+    :pipeline_status, :ci_environments_status, :toggle_subscription, :cancel_merge_when_pipeline_succeeds, :remove_wip, :resolve_conflicts, :assign_related_issues, :commit_change_content
   ]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :pipelines]
   before_action :define_show_vars, only: [:show, :diffs, :commits, :conflicts, :conflict_for_path, :builds, :pipelines]
@@ -434,39 +433,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       end
 
     render json: environments
-  end
-
-  def codeclimate
-    return render_404 unless @merge_request.head_pipeline.success?
-    response = {}
-
-    head_sha = @merge_request.merge_request_diff.head_commit_sha
-    base_sha = @merge_request.merge_request_diff.base_commit_sha
-
-    build = @merge_request.head_pipeline.artifacts.find do |artifact|
-      artifact.options[:artifacts][:paths] == ['codeclimate.json']
-    end
-
-    return render_404 unless build
-
-    file_name = 'codeclimate.json'
-
-    head_file_path = raw_namespace_project_build_artifacts_url(@project.namespace, @project, build, path: file_name)
-    response[:head] = head_file_path
-
-    base_pipeline = @project.pipelines.find_by(sha: base_sha)
-
-    base_build = base_pipeline.artifacts.find do |artifact|
-      artifact.options[:artifacts][:paths] == ['codeclimate.json']
-    end
-
-    if base_build
-      base_file_path = raw_namespace_project_build_artifacts_url(@project.namespace, @project, base_build, path: file_name)
-
-      response[:base] = base_file_path
-    end
-
-    render json: response
   end
 
   protected

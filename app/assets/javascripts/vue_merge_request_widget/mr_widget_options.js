@@ -6,6 +6,7 @@ import {
   WidgetPipeline,
   WidgetDeployment,
   WidgetRelatedLinks,
+  WidgetCodeQuality,
   MergedState,
   ClosedState,
   LockedState,
@@ -57,6 +58,9 @@ export default {
     },
     shouldRenderDeployments() {
       return this.mr.deployments.length;
+    },
+    shouldRenderCodeQuality() {
+      return this.mr.codeClimate.head.length;
     },
   },
   methods: {
@@ -212,6 +216,7 @@ export default {
     'mr-widget-pipeline-failed': PipelineFailedState,
     'mr-widget-merge-when-pipeline-succeeds': MergeWhenPipelineSucceedsState,
     'mr-widget-auto-merge-failed': AutoMergeFailed,
+    'mr-widget-code-quality': WidgetCodeQuality,
   },
   template: `
     <div class="mr-state-widget prepend-top-default">
@@ -223,6 +228,9 @@ export default {
         v-if="shouldRenderDeployments"
         :mr="mr"
         :service="service" />
+      <mr-widget-code-quality 
+        v-if="shouldRenderCodeQuality"
+        :mr="mr" />
       <component
         :is="componentName"
         :mr="mr"

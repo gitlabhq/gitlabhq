@@ -439,6 +439,11 @@ module Ci
       trace
     end
 
+    def codeclimate?
+      name == 'codeclimate' &&
+        options[:artifacts][:paths] == ['codeclimate.json']
+    end
+
     private
 
     def update_artifacts_size

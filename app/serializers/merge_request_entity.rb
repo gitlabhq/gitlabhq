@@ -176,6 +176,32 @@ class MergeRequestEntity < IssuableEntity
                                                                merge_request)
   end
 
+  expose :codeclimate do
+    expose :head do |merge_request|
+      build = merge_request.head_pipeline.artifacts.find(&:codeclimate?)
+
+      if build && build.success?
+        raw_namespace_project_build_artifacts_url(merge_request.project.namespace,
+                                                  merge_request.project,
+                                                  build,
+                                                  path: 'codeclimate.json')
+      end
+    end
+
+    expose :base do  |merge_request|
+      base_sha = merge_request.merge_request_diff.base_commit_sha
+      pipeline = merge_request.project.pipelines.find_by(sha: base_sha)
+      build = pipeline.artifacts.find(&:codeclimate?)
+
+      if build && build.success?
+        raw_namespace_project_build_artifacts_url(merge_request.project.namespace,
+                                                  merge_request.project,
+                                                  build,
+                                                  path: 'codeclimate.json')
+      end
+    end
+  end
+
   private
 
   delegate :current_user, to: :request

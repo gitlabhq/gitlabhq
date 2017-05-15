@@ -85,7 +85,6 @@ constraints(ProjectUrlConstrainer.new) do
           get :diff_for_path
           post :resolve_conflicts
           post :assign_related_issues
-          get :codeclimate
         end
 
         collection do
