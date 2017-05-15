@@ -94,7 +94,7 @@ var config = {
         query: { mimetype: 'image/gif' },
       },
       {
-        test: /\.(worker\.js|pdf)$/,
+        test: /\.(worker\.js|pdf|bmpr)$/,
         exclude: /node_modules/,
         loader: 'file-loader',
       },

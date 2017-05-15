@@ -1,5 +1,3 @@
-/* global Flash */
-
 import sqljs from 'sql.js';
 import { template as _template } from 'underscore';
 
@@ -15,19 +13,27 @@ const PREVIEW_TEMPLATE = _template(`
 class BalsamiqViewer {
   constructor(viewer) {
     this.viewer = viewer;
-    this.endpoint = this.viewer.dataset.endpoint;
   }
 
-  loadFile() {
-    const xhr = new XMLHttpRequest();
+  loadFile(endpoint) {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
 
-    xhr.open('GET', this.endpoint, true);
-    xhr.responseType = 'arraybuffer';
+      xhr.open('GET', endpoint, true);
+      xhr.responseType = 'arraybuffer';
+      xhr.onload = loadEvent => this.fileLoaded(loadEvent, resolve, reject);
+      xhr.onerror = reject;
 
-    xhr.onload = this.renderFile.bind(this);
-    xhr.onerror = BalsamiqViewer.onError;
+      xhr.send();
+    });
+  }
 
-    xhr.send();
+  fileLoaded(loadEvent, resolve, reject) {
+    if (loadEvent.target.status !== 200) return reject();
+
+    this.renderFile(loadEvent);
+
+    return resolve();
   }
 
   renderFile(loadEvent) {
@@ -102,12 +108,6 @@ class BalsamiqViewer {
    */
   static parseTitle(resource) {
     return JSON.parse(resource.values[0][2]).name;
-  }
-
-  static onError() {
-    const flash = new Flash('Balsamiq file could not be loaded.');
-
-    return flash;
   }
 }
 
