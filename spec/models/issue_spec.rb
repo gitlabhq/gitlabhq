@@ -38,46 +38,6 @@ describe Issue, models: true do
     end
   end
 
-  describe "before_save" do
-    describe "#update_cache_counts when an issue is reassigned" do
-      let(:issue) { create(:issue) }
-      let(:assignee) { create(:user) }
-
-      context "when previous assignee exists" do
-        before do
-          issue.project.team << [assignee, :developer]
-          issue.assignees << assignee
-        end
-
-        it "updates cache counts for new assignee" do
-          user = create(:user)
-
-          expect(user).to receive(:update_cache_counts)
-
-          issue.assignees << user
-        end
-
-        it "updates cache counts for previous assignee" do
-          issue.assignees.first
-
-          expect_any_instance_of(User).to receive(:update_cache_counts)
-
-          issue.assignees.destroy_all
-        end
-      end
-
-      context "when previous assignee does not exist" do
-        it "updates cache count for the new assignee" do
-          issue.assignees = []
-
-          expect_any_instance_of(User).to receive(:update_cache_counts)
-
-          issue.assignees << assignee
-        end
-      end
-    end
-  end
-
   describe '#card_attributes' do
     it 'includes the author name' do
       allow(subject).to receive(:author).and_return(double(name: 'Robert'))

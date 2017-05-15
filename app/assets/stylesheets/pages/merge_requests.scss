@@ -90,11 +90,6 @@
     align-items: center;
     padding: $gl-padding-top $gl-padding 0;
 
-    i,
-    svg {
-      margin-right: 8px;
-    }
-
     svg {
       position: relative;
       top: 1px;
@@ -109,9 +104,10 @@
       flex-wrap: wrap;
     }
 
-    .ci-status-icon > .icon-link svg {
+    .icon-link > .ci-status-icon > svg {
       width: 22px;
       height: 22px;
+      margin-right: 8px;
     }
   }
 
@@ -125,6 +121,7 @@
 
     .dropdown-menu {
       margin-top: 11px;
+      z-index: 200;
     }
 
     .ci-action-icon-wrapper {
@@ -698,7 +695,7 @@
   &.affix {
     top: 0;
     left: 0;
-    z-index: 10;
+    z-index: 100;
     transition: right .15s;
 
     @media (max-width: $screen-xs-max) {

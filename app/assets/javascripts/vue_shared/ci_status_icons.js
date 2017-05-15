@@ -41,6 +41,7 @@ export const statusIconEntityMap = {
   icon_status_success: SUCCESS_SVG,
   icon_status_warning: WARNING_SVG,
 };
+<<<<<<< HEAD
 
 export const statusCssClasses = {
   icon_status_canceled: 'canceled',
@@ -53,3 +54,5 @@ export const statusCssClasses = {
   icon_status_success: 'success',
   icon_status_warning: 'warning',
 };
+=======
+>>>>>>> origin/master

@@ -25,6 +25,10 @@ describe('CI Icon component', () => {
       propsData: {
         status: {
           icon: 'icon_status_success',
+<<<<<<< HEAD
+=======
+          group: 'success',
+>>>>>>> origin/master
         },
       },
     }).$mount();
@@ -37,6 +41,10 @@ describe('CI Icon component', () => {
       propsData: {
         status: {
           icon: 'icon_status_failed',
+<<<<<<< HEAD
+=======
+          group: 'failed',
+>>>>>>> origin/master
         },
       },
     }).$mount();
@@ -49,6 +57,10 @@ describe('CI Icon component', () => {
       propsData: {
         status: {
           icon: 'icon_status_warning',
+<<<<<<< HEAD
+=======
+          group: 'warning',
+>>>>>>> origin/master
         },
       },
     }).$mount();
@@ -61,6 +73,10 @@ describe('CI Icon component', () => {
       propsData: {
         status: {
           icon: 'icon_status_pending',
+<<<<<<< HEAD
+=======
+          group: 'pending',
+>>>>>>> origin/master
         },
       },
     }).$mount();
@@ -73,6 +89,10 @@ describe('CI Icon component', () => {
       propsData: {
         status: {
           icon: 'icon_status_running',
+<<<<<<< HEAD
+=======
+          group: 'running',
+>>>>>>> origin/master
         },
       },
     }).$mount();
@@ -85,6 +105,10 @@ describe('CI Icon component', () => {
       propsData: {
         status: {
           icon: 'icon_status_created',
+<<<<<<< HEAD
+=======
+          group: 'created',
+>>>>>>> origin/master
         },
       },
     }).$mount();
@@ -97,6 +121,10 @@ describe('CI Icon component', () => {
       propsData: {
         status: {
           icon: 'icon_status_skipped',
+<<<<<<< HEAD
+=======
+          group: 'skipped',
+>>>>>>> origin/master
         },
       },
     }).$mount();
@@ -109,6 +137,10 @@ describe('CI Icon component', () => {
       propsData: {
         status: {
           icon: 'icon_status_canceled',
+<<<<<<< HEAD
+=======
+          group: 'canceled',
+>>>>>>> origin/master
         },
       },
     }).$mount();
@@ -121,6 +153,10 @@ describe('CI Icon component', () => {
       propsData: {
         status: {
           icon: 'icon_status_manual',
+<<<<<<< HEAD
+=======
+          group: 'manual',
+>>>>>>> origin/master
         },
       },
     }).$mount();
