@@ -63,6 +63,8 @@ describe 'Branches', feature: true do
         project.add_user(@user, :master)
         visit namespace_project_protected_branches_path(project.namespace, project)
         set_protected_branch_name('fix')
+        set_allowed_to('merge')
+        set_allowed_to('push')
         click_on "Protect"
 
         within(".protected-branches-list") { expect(page).to have_content('fix') }
@@ -91,6 +93,8 @@ describe 'Branches', feature: true do
       before do
         visit namespace_project_protected_branches_path(project.namespace, project)
         set_protected_branch_name('fix')
+        set_allowed_to('merge')
+        set_allowed_to('push')
         click_on "Protect"
 
         within(".protected-branches-list") { expect(page).to have_content('fix') }
