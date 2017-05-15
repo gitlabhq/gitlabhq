@@ -1210,9 +1210,6 @@ const normalizeNewlines = function(str) {
                          <span class="hidden-xs">${currentUserFullname}</span>
                          <span class="note-headline-light">@${currentUsername}</span>
                        </a>
-                       <span class="note-headline-light">
-                          <i class="fa fa-spinner fa-spin" aria-label="Comment is being posted" aria-hidden="true"></i>
-                       </span>
                     </div>
                  </div>
                  <div class="note-body">
