@@ -27,7 +27,7 @@
         type: String,
         required: true,
       },
-      store: {
+      formState: {
         type: Object,
         required: true,
       },
@@ -56,7 +56,7 @@
   <div>
     <title-field
       v-if="showForm"
-      :store="store" />
+      :form-state="formState" />
     <h2
       v-else
       class="title"

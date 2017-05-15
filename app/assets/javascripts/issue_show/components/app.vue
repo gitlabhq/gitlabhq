@@ -59,6 +59,9 @@ export default {
     elementType() {
       return this.showForm ? 'form' : 'div';
     },
+    formState() {
+      return this.store.formState;
+    },
   },
   components: {
     descriptionComponent,
@@ -142,7 +145,7 @@ export default {
 <template>
   <div :is="elementType">
     <title-component
-      :store="store"
+      :form-state="formState"
       :show-form="showForm"
       :issuable-ref="issuableRef"
       :title-html="state.titleHtml"
