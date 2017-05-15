@@ -1,3 +1,4 @@
+<script>
 const PAGINATION_UI_BUTTON_LIMIT = 4;
 const UI_LIMIT = 6;
 const SPREAD = '...';
@@ -114,22 +115,23 @@ export default {
       return items;
     },
   },
-  template: `
-    <div class="gl-pagination">
-      <ul class="pagination clearfix">
-        <li v-for='item in getItems'
-          :class='{
-            page: item.page,
-            prev: item.prev,
-            next: item.next,
-            separator: item.separator,
-            active: item.active,
-            disabled: item.disabled
-          }'
-        >
-          <a @click="changePage($event)">{{item.title}}</a>
-        </li>
-      </ul>
-    </div>
-  `,
 };
+</script>
+<template>
+  <div class="gl-pagination">
+    <ul class="pagination clearfix">
+      <li
+        v-for="item in getItems"
+        :class="{
+          page: item.page,
+          prev: item.prev,
+          next: item.next,
+          separator: item.separator,
+          active: item.active,
+          disabled: item.disabled
+        }">
+        <a @click="changePage($event)">{{item.title}}</a>
+      </li>
+    </ul>
+  </div>
+</template>
