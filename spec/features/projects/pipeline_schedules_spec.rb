@@ -123,12 +123,12 @@ feature 'Pipeline Schedules', :feature do
   end
 
   def select_timezone
-    click_button 'Select a timezone'
+    find('.js-timezone-dropdown').click
     click_link 'American Samoa'
   end
 
   def select_target_branch
-    click_button 'Select target branch'
+    find('.js-target-branch-dropdown').click
     click_link 'master'
   end
 
