@@ -357,7 +357,7 @@ app
             └─ some_file.js
 ```
 
-Note that `ee/dispatcher.js` is a real file, you must use this for EE-specific dispatcher calls.
+Ensure you dispatch EE-specific modules using the EE dispatcher `ee/dispatcher.js`.
 
 ---
 
