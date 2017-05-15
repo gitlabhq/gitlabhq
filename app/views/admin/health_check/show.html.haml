@@ -34,6 +34,12 @@
         %code= health_check_url(token: current_application_settings.health_check_access_token, checks: :database)
       %li
         %code= health_check_url(token: current_application_settings.health_check_access_token, checks: :migrations)
+      %li
+        %code= readiness_url(token: current_application_settings.health_check_access_token)
+      %li
+        %code= liveness_url(token: current_application_settings.health_check_access_token)
+      %li
+        %code= metrics_url(token: current_application_settings.health_check_access_token)
 
   %hr
   .panel.panel-default
