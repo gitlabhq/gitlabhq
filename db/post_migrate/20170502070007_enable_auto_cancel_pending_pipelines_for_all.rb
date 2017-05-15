@@ -4,8 +4,7 @@ class EnableAutoCancelPendingPipelinesForAll < ActiveRecord::Migration
   DOWNTIME = false
 
   def up
-    connection.execute(
-      'UPDATE projects SET auto_cancel_pending_pipelines = 1')
+    update_column_in_batches(:projects, :auto_cancel_pending_pipelines, 1)
   end
 
   def down
