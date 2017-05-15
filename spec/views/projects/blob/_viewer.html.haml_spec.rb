@@ -10,8 +10,8 @@ describe 'projects/blob/_viewer.html.haml', :view do
       include BlobViewer::Rich
 
       self.partial_name = 'text'
-      self.max_size = 1.megabyte
-      self.absolute_max_size = 5.megabytes
+      self.overridable_max_size = 1.megabyte
+      self.max_size = 5.megabytes
       self.load_async = true
     end
   end

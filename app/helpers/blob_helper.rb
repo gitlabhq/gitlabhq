@@ -226,7 +226,7 @@ module BlobHelper
 
   def open_raw_blob_button(blob)
     return if blob.empty?
-    
+
     if blob.raw_binary? || blob.stored_externally?
       icon = icon('download')
       title = 'Download'
@@ -242,9 +242,9 @@ module BlobHelper
     case viewer.render_error
     when :too_large
       max_size =
-        if viewer.absolutely_too_large?
-          viewer.absolute_max_size
-        elsif viewer.too_large?
+        if viewer.can_override_max_size?
+          viewer.overridable_max_size
+        else
           viewer.max_size
         end
       "it is larger than #{number_to_human_size(max_size)}"

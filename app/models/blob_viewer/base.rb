@@ -2,7 +2,7 @@ module BlobViewer
   class Base
     PARTIAL_PATH_PREFIX = 'projects/blob/viewers'.freeze
 
-    class_attribute :partial_name, :loading_partial_name, :type, :extensions, :file_types, :load_async, :binary, :switcher_icon, :switcher_title, :max_size, :absolute_max_size
+    class_attribute :partial_name, :loading_partial_name, :type, :extensions, :file_types, :load_async, :binary, :switcher_icon, :switcher_title, :overridable_max_size, :max_size
 
     self.loading_partial_name = 'loading'
 
@@ -59,16 +59,24 @@ module BlobViewer
       self.class.load_async? && render_error.nil?
     end
 
-    def too_large?
+    def exceeds_overridable_max_size?
+      overridable_max_size && blob.raw_size > overridable_max_size
+    end
+
+    def exceeds_max_size?
       max_size && blob.raw_size > max_size
     end
 
-    def absolutely_too_large?
-      absolute_max_size && blob.raw_size > absolute_max_size
+    def can_override_max_size?
+      exceeds_overridable_max_size? && !exceeds_max_size?
     end
 
-    def can_override_max_size?
-      too_large? && !absolutely_too_large?
+    def too_large?
+      if override_max_size
+        exceeds_max_size?
+      else
+        exceeds_overridable_max_size?
+      end
     end
 
     # This method is used on the server side to check whether we can attempt to
@@ -83,7 +91,7 @@ module BlobViewer
     # binary from `blob_raw_url` and does its own format validation and error
     # rendering, especially for potentially large binary formats.
     def render_error
-      if override_max_size ? absolutely_too_large? : too_large?
+      if too_large?
         :too_large
       end
     end

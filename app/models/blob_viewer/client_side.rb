@@ -4,8 +4,8 @@ module BlobViewer
 
     included do
       self.load_async = false
-      self.max_size = 10.megabytes
-      self.absolute_max_size = 50.megabytes
+      self.overridable_max_size = 10.megabytes
+      self.max_size = 50.megabytes
     end
   end
 end
