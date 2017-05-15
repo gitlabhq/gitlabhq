@@ -23,16 +23,6 @@
     .merge-manually {
       @extend .fixed-width-container;
     }
-
-    .merge-request-tabs-holder {
-      &.affix {
-        border-bottom: 1px solid $border-color;
-
-        .nav-links {
-          border: 0;
-        }
-      }
-    }
   }
 
   .merge-request-details {
