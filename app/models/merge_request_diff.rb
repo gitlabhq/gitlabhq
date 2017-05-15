@@ -150,6 +150,24 @@ class MergeRequestDiff < ActiveRecord::Base
     )
   end
 
+  # MRs created before 8.4 don't store their true diff refs (start and base),
+  # but we need to get a commit SHA for the "View file @ ..." link by a file,
+  # so we find use an approximation of the diff refs if we can't get the actual one.
+  # These will not be the actual diff refs if the target branch was merged into
+  # the source branch after the merge request was created, but it is good enough
+  # for the specific purpose of linking to a commit.
+  # It is not good enough for highlighting diffs, so we can't simply pass
+  # these as `diff_refs.`
+  def fallback_diff_refs
+    likely_base_commit_sha = (first_commit&.parent || first_commit)&.sha
+
+    Gitlab::Diff::DiffRefs.new(
+      base_sha:  likely_base_commit_sha,
+      start_sha: safe_start_commit_sha,
+      head_sha:  head_commit_sha
+    )
+  end
+
   def diff_refs_by_sha?
     base_commit_sha? && head_commit_sha? && start_commit_sha?
   end

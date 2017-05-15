@@ -4,11 +4,12 @@
   %i.fa.diff-toggle-caret.fa-fw
 
 - if diff_file.submodule?
+  - blob = diff_file.blob
   %span
     = icon('archive fw')
 
     %strong.file-title-name
-      = submodule_link(blob, diff_commit.id, diff_file.repository)
+      = submodule_link(blob, diff_file.content_sha, diff_file.repository)
 
     = copy_file_path_button(blob.path)
 - else

@@ -1,16 +1,17 @@
 module Gitlab
   module Diff
     class File
-      attr_reader :diff, :repository, :diff_refs
+      attr_reader :diff, :repository, :diff_refs, :fallback_diff_refs
 
       delegate :new_file?, :deleted_file?, :renamed_file?,
         :old_path, :new_path, :a_mode, :b_mode, :mode_changed?,
         :submodule?, :too_large?, :collapsed?, to: :diff, prefix: false
 
-      def initialize(diff, repository:, diff_refs: nil)
+      def initialize(diff, repository:, diff_refs: nil, fallback_diff_refs: nil)
         @diff = diff
         @repository = repository
         @diff_refs = diff_refs
+        @fallback_diff_refs = fallback_diff_refs
       end
 
       def position(line)
@@ -49,24 +50,60 @@ module Gitlab
         line_code(line) if line
       end
 
-      def content_commit
-        return unless diff_refs
-
-        repository.commit(deleted_file? ? old_sha : new_sha)
-      end
-
-      def old_content_commit
-        return unless diff_refs
-
-        repository.commit(old_sha)
-      end
-
       def old_sha
-        diff_refs.try(:base_sha)
+        diff_refs&.base_sha
       end
 
       def new_sha
-        diff_refs.try(:head_sha)
+        diff_refs&.head_sha
+      end
+
+      def content_sha
+        return old_content_sha if deleted_file?
+        return @content_sha if defined?(@content_sha)
+
+        refs = diff_refs || fallback_diff_refs
+        @content_sha = refs&.head_sha
+      end
+
+      def content_commit
+        return @content_commit if defined?(@content_commit)
+
+        sha = content_sha
+        @content_commit = repository.commit(sha) if sha
+      end
+
+      def old_content_sha
+        return if new_file?
+        return @old_content_sha if defined?(@old_content_sha)
+
+        refs = diff_refs || fallback_diff_refs
+        @old_content_sha = refs&.base_sha
+      end
+
+      def old_content_commit
+        return @old_content_commit if defined?(@old_content_commit)
+
+        sha = old_content_sha
+        @old_content_commit = repository.commit(sha) if sha
+      end
+
+      def blob
+        return @blob if defined?(@blob)
+
+        sha = content_sha
+        return @blob = nil unless sha
+
+        repository.blob_at(sha, file_path)
+      end
+
+      def old_blob
+        return @old_blob if defined?(@old_blob)
+
+        sha = old_content_sha
+        return @old_blob = nil unless sha
+
+        @old_blob = repository.blob_at(sha, old_path)
       end
 
       attr_writer :highlighted_diff_lines
@@ -111,19 +148,6 @@ module Gitlab
 
       def removed_lines
         diff_lines.count(&:removed?)
-      end
-
-      def old_blob(commit = old_content_commit)
-        return unless commit
-        return if new_file?
-
-        repository.blob_at(commit.id, old_path)
-      end
-
-      def blob(commit = content_commit)
-        return unless commit
-
-        repository.blob_at(commit.id, file_path)
       end
 
       def file_identifier

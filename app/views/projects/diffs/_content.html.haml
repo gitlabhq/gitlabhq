@@ -1,7 +1,4 @@
-- diff_commit     = local_assigns.fetch(:diff_commit) { diff_content_commit(diff_file) }
-- diff_old_commit = local_assigns.fetch(:diff_old_commit) { diff_old_content_commit(diff_file) }
-- blob            = local_assigns.fetch(:blob) { diff_file.blob(diff_commit) }
-- old_blob        = local_assigns.fetch(:old_blob) { diff_file.old_blob(diff_old_commit) }
+- blob = diff_file.blob
 
 .diff-content
   - if diff_file.too_large?
@@ -18,13 +15,13 @@
         %a.click-to-expand
           Click to expand it.
     - elsif diff_file.diff_lines.length > 0
-      = render "projects/diffs/viewers/text", diff_file: diff_file, blob: blob
+      = render "projects/diffs/viewers/text", diff_file: diff_file
     - else
       - if diff_file.mode_changed?
         .nothing-here-block File mode changed
       - elsif diff_file.renamed_file?
         .nothing-here-block File moved
   - elsif blob.image?
-    = render "projects/diffs/viewers/image", diff_file: diff_file, blob: blob, old_blob: old_blob
+    = render "projects/diffs/viewers/image", diff_file: diff_file
   - else
     .nothing-here-block No preview for this file type

@@ -53,7 +53,6 @@ class Projects::CompareController < Projects::ApplicationController
       @commits = @compare.commits
       @start_commit = @compare.start_commit
       @commit = @compare.commit
-      @base_commit = @compare.base_commit
 
       @diffs = @compare.diffs(diff_options)
 

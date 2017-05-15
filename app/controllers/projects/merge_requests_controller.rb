@@ -502,7 +502,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def define_commit_vars
     @commit = @merge_request.diff_head_commit
-    @base_commit = @merge_request.diff_base_commit || @merge_request.likely_diff_base_commit
   end
 
   def define_diff_vars
@@ -569,7 +568,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @source_project = merge_request.source_project
     @commits = @merge_request.compare_commits.reverse
     @commit = @merge_request.diff_head_commit
-    @base_commit = @merge_request.diff_base_commit
 
     @note_counts = Note.where(commit_id: @commits.map(&:id)).
       group(:commit_id).count
