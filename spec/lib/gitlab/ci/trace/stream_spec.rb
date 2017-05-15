@@ -240,7 +240,7 @@ describe Gitlab::Ci::Trace::Stream do
     end
 
     context 'multiple results in content & regex' do
-      let(:data) { ' (98.39%) covered. (98.29%) covered' }
+      let(:data) { " (98.39%) covered.\n (98.29%) covered" }
       let(:regex) { '\(\d+.\d+\%\) covered' }
 
       it { is_expected.to eq("98.29") }

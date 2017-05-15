@@ -73,7 +73,7 @@ module Gitlab
 
           match = ""
 
-          stream.each_line do |line|
+          reverse_line do |line|
             matches = line.scan(regex)
             next unless matches.is_a?(Array)
             next if matches.empty?
@@ -85,19 +85,23 @@ module Gitlab
 
           nil
         rescue
-          # if bad regex or something goes wrong we dont want to interrupt transition
-          # so we just silentrly ignore error for now
+          # if bad regex or something goes wrong we don't want to interrupt transition
+          # so we just silently ignore error for now
         end
 
         private
 
-        def read_last_lines(last_lines)
-          chunks = []
-          pos = lines = 0
+        def read_last_lines(last_lines = nil)
+          to_enum(:reverse_line, last_lines).reverse_each.to_a.join
+        end
+
+        def reverse_line(last_lines = nil, &block)
+          leftover = ''
+          pos = read_lines = 0
           max = stream.size
 
           # We want an extra line to make sure fist line has full contents
-          while lines <= last_lines && pos < max
+          while pos < max && (last_lines.nil? || last_lines > 0)
             pos += BUFFER_SIZE
 
             buf =
@@ -109,11 +113,28 @@ module Gitlab
                 stream.read(BUFFER_SIZE - (pos - max))
               end
 
-            lines += buf.count("\n")
-            chunks.unshift(buf)
+            read_lines += buf.count("\n")
+
+            next_partial_line, *current_lines = buf.lines
+            *complete_lines, partial_line = current_lines
+            complete_lines << "#{partial_line}#{leftover}"
+
+            if last_lines
+              complete_lines.last(last_lines)
+            else
+              complete_lines
+            end.reverse_each(&block)
+
+            last_lines -= complete_lines.size if last_lines
+            leftover = next_partial_line
           end
 
-          chunks.join.lines.last(last_lines).join
+          # Handle the leftover
+          if last_lines && last_lines > 0
+            leftover.lines.last(last_lines).reverse_each(&block)
+          elsif last_lines.nil?
+            leftover.lines.reverse_each(&block)
+          end
         end
       end
     end
