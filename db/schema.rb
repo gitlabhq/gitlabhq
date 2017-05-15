@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170511101000) do
+ActiveRecord::Schema.define(version: 20170508190732) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1125,13 +1125,13 @@ ActiveRecord::Schema.define(version: 20170511101000) do
     t.boolean "merge_requests_events", default: true
     t.boolean "tag_push_events", default: true
     t.boolean "note_events", default: true, null: false
+    t.boolean "build_events", default: false, null: false
     t.string "category", default: "common", null: false
     t.boolean "default", default: false
     t.boolean "wiki_page_events", default: true
     t.boolean "pipeline_events", default: false, null: false
     t.boolean "confidential_issues_events", default: true, null: false
     t.boolean "commit_events", default: true, null: false
-    t.boolean "job_events", default: false, null: false
   end
 
   add_index "services", ["project_id"], name: "index_services_on_project_id", using: :btree
@@ -1401,11 +1401,11 @@ ActiveRecord::Schema.define(version: 20170511101000) do
     t.boolean "tag_push_events", default: false
     t.boolean "note_events", default: false, null: false
     t.boolean "enable_ssl_verification", default: true
+    t.boolean "build_events", default: false, null: false
     t.boolean "wiki_page_events", default: false, null: false
     t.string "token"
     t.boolean "pipeline_events", default: false, null: false
     t.boolean "confidential_issues_events", default: false, null: false
-    t.boolean "job_events", default: false, null: false
     t.boolean "repository_update_events", default: false, null: false
   end
 

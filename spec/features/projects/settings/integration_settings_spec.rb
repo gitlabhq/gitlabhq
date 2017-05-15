@@ -52,7 +52,6 @@ feature 'Integration settings', feature: true do
         fill_in 'hook_url', with: url
         check 'Tag push events'
         check 'Enable SSL verification'
-        check 'Job events'
 
         click_button 'Add webhook'
 
@@ -60,7 +59,6 @@ feature 'Integration settings', feature: true do
         expect(page).to have_content('SSL Verification: enabled')
         expect(page).to have_content('Push Events')
         expect(page).to have_content('Tag Push Events')
-        expect(page).to have_content('Job events')
       end
 
       scenario 'edit existing webhook' do
