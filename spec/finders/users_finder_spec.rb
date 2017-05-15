@@ -3,7 +3,7 @@ require 'spec_helper'
 describe UsersFinder do
   describe '#execute' do
     let!(:user1) { create(:user, username: 'johndoe') }
-    let!(:user2) { create(:user, :blocked, username: 'notsorandom', ) }
+    let!(:user2) { create(:user, :blocked, username: 'notsorandom') }
     let!(:external_user) { create(:user, :external) }
     let!(:omniauth_user) { create(:omniauth_user, provider: 'twitter', extern_uid: '123456') }
 
