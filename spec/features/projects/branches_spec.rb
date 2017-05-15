@@ -1,14 +1,10 @@
 require 'spec_helper'
 
 describe 'Branches', feature: true do
+  include ProtectedBranchHelpers
+
   let(:project) { create(:project, :public) }
   let(:repository) { project.repository }
-
-  def set_protected_branch_name(branch_name)
-    find(".js-protected-branch-select").click
-    find(".dropdown-input-field").set(branch_name)
-    click_on("Create wildcard #{branch_name}")
-  end
 
   context 'logged in as developer' do
     before do

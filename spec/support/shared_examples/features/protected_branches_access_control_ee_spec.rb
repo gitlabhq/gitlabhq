@@ -1,4 +1,4 @@
-RSpec.shared_examples "protected branches > access control > EE" do
+shared_examples "protected branches > access control > EE" do
   [['merge', ProtectedBranch::MergeAccessLevel], ['push', ProtectedBranch::PushAccessLevel]].each do |git_operation, access_level_class|
     # Need to set a default for the `git_operation` access level that _isn't_ being tested
     other_git_operation = git_operation == 'merge' ? 'push' : 'merge'
