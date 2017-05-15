@@ -68,15 +68,11 @@ class Projects::GitHttpController < Projects::GitHttpClientController
 
   def render_denied
     if user && can?(user, :read_project, project)
-      render plain: access_denied_message, status: :forbidden
+      render plain: access_check.message, status: :forbidden
     else
       # Do not leak information about project existence
       render_not_found
     end
-  end
-
-  def access_denied_message
-    'Access denied'
   end
 
   def upload_pack_allowed?
