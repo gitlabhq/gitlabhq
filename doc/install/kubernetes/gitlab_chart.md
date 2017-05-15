@@ -392,7 +392,7 @@ Once you [have configured](#configuration) GitLab in your `values.yml` file,
 run the following:
 
 ```bash
-helm install --namepace <NAMEPACE> --name gitlab -f <CONFIG_VALUES_FILE> gitlab/gitlab
+helm install --namespace <NAMESPACE> --name gitlab -f <CONFIG_VALUES_FILE> gitlab/gitlab
 ```
 
 where:
@@ -407,7 +407,7 @@ Once your GitLab Chart is installed, configuration changes and chart updates
 should we done using `helm upgrade`
 
 ```bash
-helm upgrade --namepace <NAMEPACE> -f <CONFIG_VALUES_FILE> <RELEASE-NAME> gitlab/gitlab
+helm upgrade --namespace <NAMESPACE> -f <CONFIG_VALUES_FILE> <RELEASE-NAME> gitlab/gitlab
 ```
 
 where:
