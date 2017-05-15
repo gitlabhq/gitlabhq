@@ -1,0 +1,4 @@
+---
+title: Geo - Fix signing out from secondary node when "Remember me" option is checked
+merge_request: 1903
+author:
