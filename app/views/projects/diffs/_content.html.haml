@@ -25,7 +25,7 @@
     - else
       - if diff_file.mode_changed?
         .nothing-here-block File mode changed
-      - elsif diff_file.renamed_file
+      - elsif diff_file.renamed_file?
         .nothing-here-block File moved
   - elsif blob.image?
     - old_blob = diff_file.old_blob(diff_file.old_content_commit || @base_commit)

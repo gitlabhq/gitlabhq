@@ -3,8 +3,8 @@ module Gitlab
     class File
       attr_reader :diff, :repository, :diff_refs
 
-      delegate :new_file, :deleted_file, :renamed_file,
-        :old_path, :new_path, :a_mode, :b_mode,
+      delegate :new_file?, :deleted_file?, :renamed_file?,
+        :old_path, :new_path, :a_mode, :b_mode, :mode_changed?,
         :submodule?, :too_large?, :collapsed?, to: :diff, prefix: false
 
       def initialize(diff, repository:, diff_refs: nil)
@@ -85,10 +85,6 @@ module Gitlab
         @parallel_diff_lines ||= Gitlab::Diff::ParallelDiff.new(self).parallelize
       end
 
-      def mode_changed?
-        a_mode && b_mode && a_mode != b_mode
-      end
-
       def raw_diff
         diff.diff.to_s
       end
@@ -119,6 +115,7 @@ module Gitlab
 
       def old_blob(commit = old_content_commit)
         return unless commit
+        return if new_file?
 
         repository.blob_at(commit.id, old_path)
       end
@@ -130,7 +127,7 @@ module Gitlab
       end
 
       def file_identifier
-        "#{file_path}-#{new_file}-#{deleted_file}-#{renamed_file}"
+        "#{file_path}-#{new_file?}-#{deleted_file?}-#{renamed_file?}"
       end
     end
   end

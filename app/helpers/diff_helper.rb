@@ -120,8 +120,8 @@ module DiffHelper
     }
   end
 
-  def editable_diff?(diff)
-    !diff.deleted_file && @merge_request && @merge_request.source_project
+  def editable_diff?(diff_file)
+    !diff_file.deleted_file? && @merge_request && @merge_request.source_project
   end
 
   private
