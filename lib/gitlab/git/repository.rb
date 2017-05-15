@@ -116,7 +116,7 @@ module Gitlab
 
       # Returns the number of valid branches
       def branch_count
-        Gitlab::GitalyClient.migrate(:branch_names) do |is_enabled|
+        gitaly_migrate(:branch_names) do |is_enabled|
           if is_enabled
             gitaly_ref_client.count_branch_names
           else
@@ -135,7 +135,7 @@ module Gitlab
 
       # Returns the number of valid tags
       def tag_count
-        Gitlab::GitalyClient.migrate(:tag_names) do |is_enabled|
+        gitaly_migrate(:tag_names) do |is_enabled|
           if is_enabled
             gitaly_ref_client.count_tag_names
           else
@@ -473,7 +473,7 @@ module Gitlab
       def ref_name_for_sha(ref_path, sha)
         # NOTE: This feature is intentionally disabled until
         # https://gitlab.com/gitlab-org/gitaly/issues/180 is resolved
-        # Gitlab::GitalyClient.migrate(:find_ref_name) do |is_enabled|
+        # gitaly_migrate(:find_ref_name) do |is_enabled|
         #   if is_enabled
         #     gitaly_ref_client.find_ref_name(sha, ref_path)
         #   else
