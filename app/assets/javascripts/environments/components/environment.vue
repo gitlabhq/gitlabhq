@@ -1,17 +1,17 @@
 <script>
 /* global Flash */
 import EnvironmentsService from '../services/environments_service';
-import EnvironmentTable from './environments_table.vue';
+import environmentTable from './environments_table.vue';
 import EnvironmentsStore from '../stores/environments_store';
-import TablePaginationComponent from '../../vue_shared/components/table_pagination';
+import tablePagination from '../../vue_shared/components/table_pagination.vue';
 import '../../lib/utils/common_utils';
 import eventHub from '../event_hub';
 
 export default {
 
   components: {
-    'environment-table': EnvironmentTable,
-    'table-pagination': TablePaginationComponent,
+    environmentTable,
+    tablePagination,
   },
 
   data() {
