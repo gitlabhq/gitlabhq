@@ -3,7 +3,7 @@
 /* global ActiveTabMemoizer */
 /* global ShortcutsNavigation */
 /* global Build */
-/* global Issuable */
+/* global IssuableIndex */
 /* global ShortcutsIssuable */
 /* global ZenMode */
 /* global Milestone */
@@ -135,10 +135,9 @@ import ApproversSelect from './approvers_select';
             );
             filteredSearchManager.setup();
           }
-          Issuable.init();
-          new gl.IssuableBulkActions({
-            prefixId: page === 'projects:merge_requests:index' ? 'merge_request_' : 'issue_',
-          });
+          const pagePrefix = page === 'projects:merge_requests:index' ? 'merge_request_' : 'issue_';
+          IssuableIndex.init(pagePrefix);
+
           shortcut_handler = new ShortcutsNavigation();
           new UsersSelect();
           break;
