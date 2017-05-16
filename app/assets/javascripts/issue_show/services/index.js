@@ -8,15 +8,15 @@ export default class Service {
     this.endpoint = endpoint;
 
     this.resource = Vue.resource(this.endpoint, {}, {
-      rendered_title: {
+      realtimeChanges: {
         method: 'GET',
-        url: `${this.endpoint}/rendered_title`,
+        url: `${this.endpoint}/realtime_changes`,
       },
     });
   }
 
   getData() {
-    return this.resource.rendered_title();
+    return this.resource.realtimeChanges();
   }
 
   deleteIssuable() {

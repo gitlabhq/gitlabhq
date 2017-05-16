@@ -1,8 +1,14 @@
 module Gitlab
   module DependencyLinker
     class BaseLinker
-      def self.link(plain_text, highlighted_text)
-        new(plain_text, highlighted_text).link
+      class_attribute :file_type
+
+      def self.support?(blob_name)
+        Gitlab::FileDetector.type_of(blob_name) == file_type
+      end
+
+      def self.link(*args)
+        new(*args).link
       end
 
       attr_accessor :plain_text, :highlighted_text
