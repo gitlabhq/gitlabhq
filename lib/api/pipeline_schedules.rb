@@ -2,6 +2,8 @@ module API
   class PipelineSchedules < Grape::API
     include PaginationParams
 
+    before { authenticate! }
+
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
@@ -13,7 +15,6 @@ module API
         use :pagination
       end
       get ':id/pipeline_schedules' do
-        authenticate!
         authorize! :read_pipeline_schedule, user_project
 
         pipeline_schedules = user_project.pipeline_schedules
@@ -28,7 +29,6 @@ module API
         requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline schedule id'
       end
       get ':id/pipeline_schedules/:pipeline_schedule_id' do
-        authenticate!
         authorize! :read_pipeline_schedule, user_project
 
         pipeline_schedule = user_project.pipeline_schedules.find(params.delete(:pipeline_schedule_id))
@@ -48,7 +48,6 @@ module API
         requires :active, type: Boolean, desc: 'The activation of pipeline schedule'
       end
       post ':id/pipeline_schedules' do
-        authenticate!
         authorize! :create_pipeline_schedule, user_project
 
         pipeline_schedule = Ci::CreatePipelineScheduleService
@@ -74,7 +73,6 @@ module API
         optional :active, type: Boolean, desc: 'The activation of pipeline schedule'
       end
       put ':id/pipeline_schedules/:pipeline_schedule_id' do
-        authenticate!
         authorize! :create_pipeline_schedule, user_project
 
         pipeline_schedule = user_project.pipeline_schedules.find(params.delete(:pipeline_schedule_id))
@@ -94,7 +92,6 @@ module API
         requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline schedule id'
       end
       post ':id/pipeline_schedules/:pipeline_schedule_id/take_ownership' do
-        authenticate!
         authorize! :create_pipeline_schedule, user_project
 
         pipeline_schedule = user_project.pipeline_schedules.find(params.delete(:pipeline_schedule_id))
@@ -115,7 +112,6 @@ module API
         requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline schedule id'
       end
       delete ':id/pipeline_schedules/:pipeline_schedule_id' do
-        authenticate!
         authorize! :admin_pipeline_schedule, user_project
 
         pipeline_schedule = user_project.pipeline_schedules.find(params.delete(:pipeline_schedule_id))
