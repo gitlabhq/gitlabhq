@@ -236,7 +236,6 @@ describe 'gitlab:app namespace rake task' do
           'custom' => { 'path' => Settings.absolute('tmp/tests/custom_storage'), 'gitaly_address' => gitaly_address }
         }
         allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
-        Gitlab::GitalyClient.configure_channels
 
         # Create the projects now, after mocking the settings but before doing the backup
         project_a

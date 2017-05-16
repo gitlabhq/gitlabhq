@@ -4,7 +4,7 @@
 
   export default {
     props: {
-      store: {
+      formState: {
         type: Object,
         required: true,
       },
@@ -17,11 +17,6 @@
         required: true,
       },
     },
-    data() {
-      return {
-        state: this.store.formState,
-      };
-    },
     components: {
       markdownField,
     },
@@ -29,7 +24,7 @@
 </script>
 
 <template>
-  <div>
+  <div class="common-note-form">
     <label
       class="sr-only"
       for="issue-description">
@@ -43,7 +38,7 @@
         class="note-textarea js-gfm-input js-autosize markdown-area"
         data-supports-slash-commands="false"
         aria-label="Description"
-        v-model="state.description"
+        v-model="formState.description"
         ref="textatea"
         slot="textarea">
       </textarea>

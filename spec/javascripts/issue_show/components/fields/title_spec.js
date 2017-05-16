@@ -17,7 +17,7 @@ describe('Title field component', () => {
 
     vm = new Component({
       propsData: {
-        store,
+        formState: store.formState,
       },
     }).$mount();
   });

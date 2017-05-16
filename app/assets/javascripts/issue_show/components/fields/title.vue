@@ -1,15 +1,10 @@
 <script>
   export default {
     props: {
-      store: {
+      formState: {
         type: Object,
         required: true,
       },
-    },
-    data() {
-      return {
-        state: this.store.formState,
-      };
     },
   };
 </script>
@@ -27,6 +22,6 @@
       type="text"
       placeholder="Issue title"
       aria-label="Issue title"
-      v-model="state.title" />
+      v-model="formState.title" />
   </fieldset>
 </template>
