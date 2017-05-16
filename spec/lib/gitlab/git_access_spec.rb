@@ -23,30 +23,30 @@ describe Gitlab::GitAccess, lib: true do
     context 'ssh disabled' do
       before do
         disable_protocol('ssh')
-        @acc = Gitlab::GitAccess.new(actor, project, 'ssh', authentication_abilities: authentication_abilities)
       end
 
       it 'blocks ssh git push' do
-        expect(@acc.check('git-receive-pack', '_any').allowed?).to be_falsey
+        expect(access.check('git-receive-pack', '_any').allowed?).to be_falsey
       end
 
       it 'blocks ssh git pull' do
-        expect(@acc.check('git-upload-pack', '_any').allowed?).to be_falsey
+        expect(access.check('git-upload-pack', '_any').allowed?).to be_falsey
       end
     end
 
     context 'http disabled' do
+      let(:protocol) { 'http' }
+
       before do
         disable_protocol('http')
-        @acc = Gitlab::GitAccess.new(actor, project, 'http', authentication_abilities: authentication_abilities)
       end
 
       it 'blocks http push' do
-        expect(@acc.check('git-receive-pack', '_any').allowed?).to be_falsey
+        expect(access.check('git-receive-pack', '_any').allowed?).to be_falsey
       end
 
       it 'blocks http git pull' do
-        expect(@acc.check('git-upload-pack', '_any').allowed?).to be_falsey
+        expect(access.check('git-upload-pack', '_any').allowed?).to be_falsey
       end
     end
   end

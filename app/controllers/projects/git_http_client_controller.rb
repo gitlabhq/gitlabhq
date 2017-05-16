@@ -152,8 +152,4 @@ class Projects::GitHttpClientController < Projects::ApplicationController
   def has_authentication_ability?(capability)
     (authentication_abilities || []).include?(capability)
   end
-
-  def authentication_project
-    authentication_result.project
-  end
 end
