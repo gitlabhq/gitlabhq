@@ -107,10 +107,6 @@ header {
         &:hover {
           background-color: $white-normal;
         }
-
-        &.active {
-          color: $gl-text-color-secondary;
-        }
       }
     }
   }
@@ -131,12 +127,6 @@ header {
 
     .badge {
       font-size: 11px;
-    }
-
-    li {
-      &.active a {
-        font-weight: bold;
-      }
     }
   }
 
