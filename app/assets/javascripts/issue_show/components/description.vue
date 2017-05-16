@@ -85,7 +85,7 @@
 
 <template>
   <div
-    v-else-if="descriptionHtml"
+    v-if="descriptionHtml"
     class="description"
     :class="{
       'js-task-list-container': canUpdate
