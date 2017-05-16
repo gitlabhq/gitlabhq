@@ -67,20 +67,24 @@ class Projects::GitHttpController < Projects::GitHttpClientController
   end
 
   def render_denied
-    if user && can?(user, :read_project, project)
-      render plain: access_check.message, status: :forbidden
+    if access_check.message == Gitlab::GitAccess::ERROR_MESSAGES[:project_not_found]
+      render plain: access_check.message, status: :not_found
     else
-      # Do not leak information about project existence
-      render_not_found
+      render plain: access_check.message, status: :forbidden
     end
   end
 
   def upload_pack_allowed?
-    access_check.allowed? || ci?
+    access_check.allowed?
   end
 
   def access
-    @access ||= access_klass.new(user, project, 'http', authentication_abilities: authentication_abilities)
+    @access ||= access_klass.new(access_actor, project, 'http', authentication_abilities: authentication_abilities)
+  end
+
+  def access_actor
+    return user if user
+    return :ci if ci?
   end
 
   def access_check

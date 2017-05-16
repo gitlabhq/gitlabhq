@@ -63,6 +63,11 @@ module Gitlab
       authentication_abilities.include?(:build_download_code) && user_access.can_do_action?(:build_download_code)
     end
 
+    # Allow generic CI (build without a user) for backwards compatibility
+    def ci_can_download_code?
+      authentication_abilities.include?(:build_download_code) && ci?
+    end
+
     def protocol_allowed?
       Gitlab::ProtocolAccess.allowed?(protocol)
     end
@@ -115,6 +120,7 @@ module Gitlab
       return if deploy_key?
 
       passed = user_can_download_code? ||
+        ci_can_download_code? ||
         build_can_download_code? ||
         guest_can_download_code?
 
@@ -184,11 +190,17 @@ module Gitlab
       actor.is_a?(DeployKey)
     end
 
+    def ci?
+      actor == :ci
+    end
+
     def can_read_project?
-      if deploy_key
+      if deploy_key?
         deploy_key.has_access_to?(project)
       elsif user
         user.can?(:read_project, project)
+      elsif ci?
+        true # allow CI (build without a user) for backwards compatibility
       end || Guest.can?(:read_project, project)
     end
 
@@ -213,10 +225,12 @@ module Gitlab
         case actor
         when User
           actor
-        when DeployKey
-          nil
         when Key
           actor.user
+        when DeployKey
+          nil
+        when :ci
+          nil
         end
     end
 

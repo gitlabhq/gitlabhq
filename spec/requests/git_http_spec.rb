@@ -489,9 +489,13 @@ describe 'Git HTTP requests', lib: true do
         end
 
         context "when a gitlab ci token is provided" do
+          let(:project) { create(:project, :repository) }
           let(:build) { create(:ci_build, :running) }
-          let(:project) { build.project }
           let(:other_project) { create(:empty_project) }
+
+          before do
+            build.update!(project: project) # can't associate it on factory create
+          end
 
           context 'when build created by system is authenticated' do
             let(:path) { "#{project.path_with_namespace}.git" }
@@ -499,19 +503,27 @@ describe 'Git HTTP requests', lib: true do
 
             it_behaves_like 'pulls are allowed'
 
-            # TODO Verify this is desired behavior
-            it "rejects pushes with 401 Unauthorized (no project existence information leak)" do
+            # A non-401 here is not an information leak since the system is
+            # "authenticated" as CI using the correct token. It does not have
+            # push access, so pushes should be rejected as forbidden, and giving
+            # a reason is fine.
+            #
+            # We know for sure it is not an information leak since pulls using
+            # the build token must be allowed.
+            it "rejects pushes with 403 Forbidden" do
               push_get(path, env)
 
-              expect(response).to have_http_status(:unauthorized)
+              expect(response).to have_http_status(:forbidden)
+              expect(response.body).to eq(git_access_error(:upload))
             end
 
-            # TODO Verify this is desired behavior. Should be 403 Forbidden?
+            # We are "authenticated" as CI using a valid token here. But we are
+            # not authorized to see any other project, so return "not found".
             it "rejects pulls for other project with 404 Not Found" do
               clone_get("#{other_project.path_with_namespace}.git", env)
 
               expect(response).to have_http_status(:not_found)
-              expect(response.body).to eq('TODO: What should this be?')
+              expect(response.body).to eq(git_access_error(:project_not_found))
             end
           end
 
@@ -522,31 +534,27 @@ describe 'Git HTTP requests', lib: true do
             end
 
             shared_examples 'can download code only' do
-              it 'downloads get status 200' do
-                allow_any_instance_of(Repository).
-                  to receive(:exists?).and_return(true)
+              let(:path) { "#{project.path_with_namespace}.git" }
+              let(:env) { { user: 'gitlab-ci-token', password: build.token } }
 
-                clone_get "#{project.path_with_namespace}.git",
-                  user: 'gitlab-ci-token', password: build.token
+              it_behaves_like 'pulls are allowed'
 
-                expect(response).to have_http_status(:ok)
-                expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+              context 'when the repo does not exist' do
+                let(:project) { create(:empty_project) }
+                
+                it 'rejects pulls with 403 Forbidden' do
+                  clone_get path, env
+
+                  expect(response).to have_http_status(:forbidden)
+                  expect(response.body).to eq(git_access_error(:no_repo))
+                end
               end
 
-              it 'downloads from non-existing repository and gets 403' do
-                allow_any_instance_of(Repository).
-                  to receive(:exists?).and_return(false)
-
-                clone_get "#{project.path_with_namespace}.git",
-                  user: 'gitlab-ci-token', password: build.token
+              it 'rejects pushes with 403 Forbidden' do
+                push_get path, env
 
                 expect(response).to have_http_status(:forbidden)
-              end
-
-              it 'uploads get status 403' do
-                push_get "#{project.path_with_namespace}.git", user: 'gitlab-ci-token', password: build.token
-
-                expect(response).to have_http_status(:unauthorized)
+                expect(response.body).to eq(git_access_error(:upload))
               end
             end
 

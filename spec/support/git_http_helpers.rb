@@ -52,14 +52,17 @@ module GitHttpHelpers
   end
 
   def git_access_error(error_key)
-    Gitlab::GitAccess::ERROR_MESSAGES[error_key]
+    message = Gitlab::GitAccess::ERROR_MESSAGES[error_key]
+    message || raise("GitAccess error message key '#{error_key}' not found")
   end
 
   def git_access_wiki_error(error_key)
-    Gitlab::GitAccessWiki::ERROR_MESSAGES[error_key]
+    message = Gitlab::GitAccessWiki::ERROR_MESSAGES[error_key]
+    message || raise("GitAccessWiki error message key '#{error_key}' not found")
   end
 
   def change_access_error(error_key)
-    Gitlab::Checks::ChangeAccess::ERROR_MESSAGES[error_key]
+    message = Gitlab::Checks::ChangeAccess::ERROR_MESSAGES[error_key]
+    message || raise("ChangeAccess error message key '#{error_key}' not found")
   end
 end

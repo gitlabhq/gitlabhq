@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Gitlab::GitAccess, lib: true do
+  let(:pull_access_check) { access.check('git-upload-pack', '_any') }
+  let(:push_access_check) { access.check('git-receive-pack', '_any') }
   let(:access) { Gitlab::GitAccess.new(actor, project, protocol, authentication_abilities: authentication_abilities) }
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
@@ -51,7 +53,123 @@ describe Gitlab::GitAccess, lib: true do
     end
   end
 
-  describe '#check with commands disabled' do
+  describe '#check_project_accessibility!' do
+    context 'when the project exists' do
+      context 'when actor exists' do
+        context 'when actor is a DeployKey' do
+          let(:deploy_key) { create(:deploy_key, user: user, can_push: true) }
+          let(:actor) { deploy_key }
+
+          context 'when the DeployKey has access to the project' do
+            before { deploy_key.projects << project }
+
+            it 'allows pull access' do
+              expect(pull_access_check.allowed?).to be_truthy
+            end
+
+            it 'allows push access' do
+              expect(push_access_check.allowed?).to be_truthy
+            end
+          end
+
+          context 'when the Deploykey does not have access to the project' do
+            it 'blocks pulls with "not found"' do
+              expect(pull_access_check.allowed?).to be_falsey
+              expect(pull_access_check.message).to eq('The project you were looking for could not be found.')
+            end
+
+            it 'blocks pushes with "not found"' do
+              expect(push_access_check.allowed?).to be_falsey
+              expect(push_access_check.message).to eq('The project you were looking for could not be found.')
+            end
+          end
+        end
+
+        context 'when actor is a User' do
+          context 'when the User can read the project' do
+            before { project.team << [user, :master] }
+
+            it 'allows pull access' do
+              expect(pull_access_check.allowed?).to be_truthy
+            end
+
+            it 'allows push access' do
+              expect(push_access_check.allowed?).to be_truthy
+            end
+          end
+
+          context 'when the User cannot read the project' do
+            it 'blocks pulls with "not found"' do
+              expect(pull_access_check.allowed?).to be_falsey
+              expect(pull_access_check.message).to eq('The project you were looking for could not be found.')
+            end
+
+            it 'blocks pushes with "not found"' do
+              expect(push_access_check.allowed?).to be_falsey
+              expect(push_access_check.message).to eq('The project you were looking for could not be found.')
+            end
+          end
+        end
+
+        # For backwards compatibility
+        context 'when actor is :ci' do
+          let(:actor) { :ci }
+          let(:authentication_abilities) { build_authentication_abilities }
+
+          it 'allows pull access' do
+            expect(pull_access_check.allowed?).to be_truthy
+          end
+
+          it 'does not block pushes with "not found"' do
+            expect(push_access_check.allowed?).to be_falsey
+            expect(push_access_check.message).to eq('You are not allowed to upload code for this project.')
+          end
+        end
+      end
+
+      context 'when actor is nil' do
+        let(:actor) { nil }
+
+        context 'when guests can read the project' do
+          let(:project) { create(:project, :repository, :public) }
+
+          it 'allows pull access' do
+            expect(pull_access_check.allowed?).to be_truthy
+          end
+
+          it 'does not block pushes with "not found"' do
+            expect(push_access_check.allowed?).to be_falsey
+            expect(push_access_check.message).to eq('You are not allowed to upload code for this project.')
+          end
+        end
+
+        context 'when guests cannot read the project' do
+          it 'blocks pulls with "not found"' do
+            expect(pull_access_check.allowed?).to be_falsey
+            expect(pull_access_check.message).to eq('The project you were looking for could not be found.')
+          end
+
+          it 'blocks pushes with "not found"' do
+            expect(push_access_check.allowed?).to be_falsey
+            expect(push_access_check.message).to eq('The project you were looking for could not be found.')
+          end
+        end
+      end
+    end
+
+    context 'when the project is nil' do
+      let(:project) { nil }
+
+      it 'blocks any command with "not found"' do
+        expect(pull_access_check.allowed?).to be_falsey
+        expect(pull_access_check.message).to eq('The project you were looking for could not be found.')
+        expect(push_access_check.allowed?).to be_falsey
+        expect(push_access_check.message).to eq('The project you were looking for could not be found.')
+      end
+    end
+  end
+
+  describe '#check_command_disabled!' do
     before { project.team << [user, :master] }
 
     context 'over http' do
@@ -217,6 +335,14 @@ describe Gitlab::GitAccess, lib: true do
           context 'pull code' do
             it { expect(subject).not_to be_allowed }
           end
+        end
+      end
+
+      describe 'generic CI (build without a user)' do
+        let(:actor) { :ci }
+
+        context 'pull code' do
+          it { expect(subject).to be_allowed }
         end
       end
     end
