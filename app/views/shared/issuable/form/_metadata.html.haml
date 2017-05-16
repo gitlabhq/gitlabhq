@@ -11,9 +11,26 @@
   %div{ class: (has_due_date ? "col-lg-6" : "col-sm-12") }
     .form-group.issue-assignee
       - if issuable.is_a?(Issue)
-        = render "shared/issuable/form/metadata_issue_assignee", issuable: issuable, form: form, has_due_date: has_due_date
+        = form.label :assignee_ids, "Assignee", class: "control-label #{"col-lg-4" if has_due_date}"
+        .col-sm-10{ class: ("col-lg-8" if has_due_date) }
+          .issuable-form-select-holder.selectbox
+            - issuable.assignees.each do |assignee|
+              = hidden_field_tag "#{issuable.to_ability_name}[assignee_ids][]", assignee.id, id: nil, data: { meta: assignee.name }
+
+            - if issuable.assignees.length === 0
+              = hidden_field_tag "#{issuable.to_ability_name}[assignee_ids][]", 0, id: nil, data: { meta: '' }
+
+            = dropdown_tag(users_dropdown_label(issuable.assignees), options: issue_dropdown_options(issuable,false))
+          = link_to 'Assign to me', '#', class: "assign-to-me-link #{'hide' if issuable.assignees.include?(current_user)}"
       - else
-        = render "shared/issuable/form/metadata_merge_request_assignee", issuable: issuable, form: form, has_due_date: has_due_date
+        = form.label :assignee_id, "Assignee", class: "control-label #{"col-lg-4" if has_due_date}"
+        .col-sm-10{ class: ("col-lg-8" if has_due_date) }
+          .issuable-form-select-holder
+            = form.hidden_field :assignee_id
+
+            = dropdown_tag(user_dropdown_label(issuable.assignee_id, "Assignee"), options: { toggle_class: "js-dropdown-keep-input js-user-search js-issuable-form-dropdown js-assignee-search", title: "Select assignee", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable dropdown-menu-assignee js-filter-submit",
+              placeholder: "Search assignee", data: { first_user: current_user.try(:username), null_user: true, current_user: true, project_id: issuable.project.try(:id), selected: issuable.assignee_id, field_name: "#{issuable.class.model_name.param_key}[assignee_id]", default_label: "Assignee"} })
+          = link_to 'Assign to me', '#', class: "assign-to-me-link #{'hide' if issuable.assignee_id == current_user.id}"
     .form-group.issue-milestone
       = form.label :milestone_id, "Milestone", class: "control-label #{"col-lg-4" if has_due_date}"
       .col-sm-10{ class: ("col-lg-8" if has_due_date) }
