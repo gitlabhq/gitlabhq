@@ -307,15 +307,6 @@ describe MergeRequests::UpdateService, services: true do
         end
       end
 
-      context 'when the assignee changes' do
-        it 'updates open merge request counter for assignees when merge request is reassigned' do
-          update_merge_request(assignee_id: user2.id)
-
-          expect(user3.assigned_open_merge_requests_count).to eq 0
-          expect(user2.assigned_open_merge_requests_count).to eq 1
-        end
-      end
-
       context 'when the target branch change' do
         before do
           update_merge_request({ target_branch: 'target' })

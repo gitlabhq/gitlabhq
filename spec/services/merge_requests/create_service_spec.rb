@@ -146,26 +146,6 @@ describe MergeRequests::CreateService, services: true do
           expect(merge_request.assignee).to eq(assignee)
         end
 
-        context 'when assignee is set' do
-          let(:opts) do
-            {
-              title: 'Title',
-              description: 'Description',
-              assignee_id: assignee.id,
-              source_branch: 'feature',
-              target_branch: 'master'
-            }
-          end
-
-          it 'invalidates open merge request counter for assignees when merge request is assigned' do
-            project.team << [assignee, :master]
-
-            described_class.new(project, user, opts).execute
-
-            expect(assignee.assigned_open_merge_requests_count).to eq 1
-          end
-        end
-
         context "when issuable feature is private" do
           before do
             project.project_feature.update(issues_access_level: ProjectFeature::PRIVATE,
