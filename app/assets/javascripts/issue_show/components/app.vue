@@ -7,7 +7,7 @@ import Service from '../services/index';
 import Store from '../stores';
 import titleComponent from './title.vue';
 import descriptionComponent from './description.vue';
-import editActions from './edit_actions.vue';
+import formComponent from './form.vue';
 
 export default {
   props: {
@@ -60,19 +60,18 @@ export default {
     return {
       store,
       state: store.state,
-      formState: store.formState,
       showForm: false,
     };
   },
   computed: {
-    elementType() {
-      return this.showForm ? 'form' : 'div';
+    formState() {
+      return this.store.formState;
     },
   },
   components: {
     descriptionComponent,
     titleComponent,
-    editActions,
+    formComponent,
   },
   methods: {
     openForm() {
@@ -82,8 +81,11 @@ export default {
         description: this.state.descriptionText,
       };
     },
+    closeForm() {
+      this.showForm = false;
+    },
     updateIssuable() {
-      this.service.updateIssuable(this.formState)
+      this.service.updateIssuable(this.store.formState)
         .then(() => {
           eventHub.$emit('close.form');
         })
@@ -134,32 +136,38 @@ export default {
 
     eventHub.$on('delete.issuable', this.deleteIssuable);
     eventHub.$on('update.issuable', this.updateIssuable);
+    eventHub.$on('close.form', this.closeForm);
     eventHub.$on('open.form', this.openForm);
   },
   beforeDestroy() {
     eventHub.$off('delete.issuable', this.deleteIssuable);
     eventHub.$off('update.issuable', this.updateIssuable);
-    eventHub.$on('open.form', this.openForm);
+    eventHub.$off('close.form', this.closeForm);
+    eventHub.$off('open.form', this.openForm);
   },
 };
 </script>
 
 <template>
-  <div :is="elementType">
-    <title-component
-      :store="store"
-      :show-form="showForm"
-      :issuable-ref="issuableRef"
-      :title-html="state.titleHtml"
-      :title-text="state.titleText" />
-    <description-component
-      :store="store"
-      :show-form="showForm"
-      :can-update="canUpdate"
-      :markdown-preview-url="markdownPreviewUrl"
-      :markdown-docs="markdownDocs" />
-    <edit-actions
+  <div>
+    <form-component
       v-if="canUpdate && showForm"
-      :can-destroy="canDestroy" />
+      :form-state="formState"
+      :can-destroy="canDestroy"
+      :markdown-docs="markdownDocs"
+      :markdown-preview-url="markdownPreviewUrl" />
+    <div v-else>
+      <title-component
+        :issuable-ref="issuableRef"
+        :title-html="state.titleHtml"
+        :title-text="state.titleText" />
+      <description-component
+        v-if="state.descriptionHtml"
+        :can-update="canUpdate"
+        :description-html="state.descriptionHtml"
+        :description-text="state.descriptionText"
+        :updated-at="state.updatedAt"
+        :task-status="state.taskStatus" />
+    </div>
   </div>
 </template>

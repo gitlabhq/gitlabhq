@@ -60,7 +60,7 @@
     },
     mounted() {
       /*
-        GLForm class handles all the toolbar buttons etc.
+        GLForm class handles all the toolbar buttons
       */
       return new gl.GLForm($(this.$refs['gl-form']));
     },

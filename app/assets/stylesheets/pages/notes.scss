@@ -609,6 +609,15 @@ ul.notes {
 }
 
 .line-resolve-all-container {
+  @media (min-width: $screen-sm-min) {
+    margin-right: 0;
+    padding-left: $gl-padding;
+  }
+
+  > div {
+    white-space: nowrap;
+  }
+
   .btn-group {
     margin-left: -4px;
   }

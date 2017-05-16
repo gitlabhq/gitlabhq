@@ -29,7 +29,7 @@ describe('Issuable output', () => {
       propsData: {
         canUpdate: true,
         canDestroy: true,
-        endpoint: '/gitlab-org/gitlab-shell/issues/9/rendered_title',
+        endpoint: '/gitlab-org/gitlab-shell/issues/9/realtime_changes',
         issuableRef: '#1',
         initialTitle: '',
         initialDescriptionHtml: '',
@@ -70,18 +70,6 @@ describe('Issuable output', () => {
       expect(
         vm.$el.querySelector('.btn'),
       ).not.toBeNull();
-
-      done();
-    });
-  });
-
-  it('changes element to `form` when open', (done) => {
-    vm.showForm = true;
-
-    Vue.nextTick(() => {
-      expect(
-        vm.$el.tagName,
-      ).toBe('FORM');
 
       done();
     });

@@ -1,6 +1,5 @@
 <script>
   import animateMixin from '../mixins/animate';
-  import descriptionField from './fields/description.vue';
 
   export default {
     mixins: [animateMixin],
@@ -9,44 +8,31 @@
         type: Boolean,
         required: true,
       },
-      store: {
-        type: Object,
-        required: true,
-      },
-      showForm: {
-        type: Boolean,
-        required: true,
-      },
-      markdownPreviewUrl: {
+      descriptionHtml: {
         type: String,
         required: true,
       },
-      markdownDocs: {
+      descriptionText: {
         type: String,
         required: true,
+      },
+      updatedAt: {
+        type: String,
+        required: false,
+        default: '',
+      },
+      taskStatus: {
+        type: String,
+        required: false,
+        default: '',
       },
     },
     data() {
       return {
-        state: this.store.state,
         preAnimation: false,
         pulseAnimation: false,
         timeAgoEl: $('.js-issue-edited-ago'),
       };
-    },
-    computed: {
-      descriptionHtml() {
-        return this.state.descriptionHtml;
-      },
-      descriptionText() {
-        return this.state.descriptionText;
-      },
-      updatedAt() {
-        return this.state.updated_at;
-      },
-      taskStatus() {
-        return this.state.taskStatus;
-      },
     },
     watch: {
       descriptionHtml() {
@@ -91,9 +77,6 @@
         }
       },
     },
-    components: {
-      descriptionField,
-    },
     mounted() {
       this.renderGFM();
     },
@@ -101,32 +84,25 @@
 </script>
 
 <template>
-  <div :class="{ 'common-note-form': showForm }">
-    <description-field
-      v-if="showForm"
-      :store="store"
-      :markdown-preview-url="markdownPreviewUrl"
-      :markdown-docs="markdownDocs" />
+  <div
+    v-if="descriptionHtml"
+    class="description"
+    :class="{
+      'js-task-list-container': canUpdate
+    }">
     <div
-      v-else-if="descriptionHtml"
-      class="description"
+      class="wiki"
       :class="{
-        'js-task-list-container': canUpdate
-      }">
-      <div
-        class="wiki"
-        :class="{
-          'issue-realtime-pre-pulse': preAnimation,
-          'issue-realtime-trigger-pulse': pulseAnimation
-        }"
-        v-html="descriptionHtml"
-        ref="gfm-content">
-      </div>
-      <textarea
-        class="hidden js-task-list-field"
-        v-if="descriptionText"
-        v-model="descriptionText">
-      </textarea>
+        'issue-realtime-pre-pulse': preAnimation,
+        'issue-realtime-trigger-pulse': pulseAnimation
+      }"
+      v-html="descriptionHtml"
+      ref="gfm-content">
     </div>
+    <textarea
+      class="hidden js-task-list-field"
+      v-if="descriptionText"
+      v-model="descriptionText">
+    </textarea>
   </div>
 </template>

@@ -7,17 +7,18 @@ describe('Title component', () => {
 
   beforeEach(() => {
     const Component = Vue.extend(titleComponent);
+    const store = new Store({
+      titleHtml: '',
+      descriptionHtml: '',
+      issuableRef: '',
+    });
     vm = new Component({
       propsData: {
         issuableRef: '#1',
         titleHtml: 'Testing <img />',
         titleText: 'Testing',
         showForm: false,
-        store: new Store({
-          titleHtml: '',
-          descriptionHtml: '',
-          issuableRef: '',
-        }),
+        formState: store.formState,
       },
     }).$mount();
   });
