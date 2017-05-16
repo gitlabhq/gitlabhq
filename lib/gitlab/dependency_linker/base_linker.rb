@@ -2,6 +2,7 @@ module Gitlab
   module DependencyLinker
     class BaseLinker
       URL_REGEX = %r{https?://[^'"]+}.freeze
+      REPO_REGEX = %r{[^/'"]+/[^/'"]+}.freeze
 
       class_attribute :file_type
 
@@ -36,6 +37,9 @@ module Gitlab
         Licensee::License.find(name)&.url
       end
 
+      def github_url(name)
+        "https://github.com/#{name}"
+      end
 
       def link_tag(name, url)
         %{<a href="#{ERB::Util.html_escape_once(url)}" rel="nofollow noreferrer noopener" target="_blank">#{ERB::Util.html_escape_once(name)}</a>}

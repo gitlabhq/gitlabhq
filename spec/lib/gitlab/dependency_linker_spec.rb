@@ -17,5 +17,13 @@ describe Gitlab::DependencyLinker, lib: true do
 
       described_class.link(blob_name, nil, nil)
     end
+
+    it 'links using PackageJsonLinker' do
+      blob_name = 'package.json'
+
+      expect(described_class::PackageJsonLinker).to receive(:link)
+
+      described_class.link(blob_name, nil, nil)
+    end
   end
 end
