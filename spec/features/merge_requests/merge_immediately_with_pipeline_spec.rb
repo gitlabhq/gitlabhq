@@ -39,7 +39,7 @@ feature 'Merge immediately', :feature, :js do
 
           expect(find('.accept-merge-request.btn-info')).to have_content('Merge in progress')
 
-          wait_for_ajax
+          wait_for_vue_resource
         end
       end
     end
