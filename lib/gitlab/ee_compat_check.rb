@@ -131,10 +131,12 @@ module Gitlab
     def check_patch(patch_path)
       step("Checking out master", %w[git checkout master])
       step("Resetting to latest master", %w[git reset --hard origin/master])
+      step("Fetching CE/#{branch}", %W[git fetch #{CE_REPO} #{branch}])
       step(
         "Checking if #{patch_path} applies cleanly to EE/master",
         %W[git apply --check --3way #{patch_path}]
       ) do |output, status|
+        puts output
         unless status.zero?
           @failed_files = output.lines.reduce([]) do |memo, line|
             if line.start_with?('error: patch failed:')
@@ -309,12 +311,12 @@ module Gitlab
             U lib/gitlab/ee_compat_check.rb
 
           Resolve them, stage the changes and commit them.
-          
+
           If the patch couldn't be applied cleanly, use the following command:
-          
+
           # In the EE repo
           $ git apply --reject path/to/#{ce_branch}.patch
-          
+
           This option makes git apply the parts of the patch that are applicable,
           and leave the rejected hunks in corresponding `.rej` files.
           You can then resolve the conflicts highlighted in `.rej` by
