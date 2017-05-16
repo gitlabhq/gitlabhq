@@ -25,7 +25,7 @@ module Ci
     end
 
     def own!(user)
-      update!(owner: user)
+      update(owner: user)
     end
 
     def inactive?
