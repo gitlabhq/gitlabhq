@@ -25,6 +25,18 @@ describe API::PipelineSchedules do
         expect(response).to include_pagination_headers
         expect(response).to match_response_schema('pipeline_schedules')
       end
+
+      it 'avoids N + 1 queries' do
+        control_count = ActiveRecord::QueryRecorder.new do
+          get api("/projects/#{project.id}/pipeline_schedules", developer)
+        end.count
+
+        create_list(:ci_pipeline_schedule, 10, project: project, owner: developer)
+
+        expect do
+          get api("/projects/#{project.id}/pipeline_schedules", developer)
+        end.not_to exceed_query_limit(control_count)
+      end
     end
 
     context 'authenticated user with invalid permissions' do
