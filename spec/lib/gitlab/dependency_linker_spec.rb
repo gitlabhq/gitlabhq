@@ -73,5 +73,13 @@ describe Gitlab::DependencyLinker, lib: true do
 
       described_class.link(blob_name, nil, nil)
     end
+
+    it 'links using RequirementsTxtLinker' do
+      blob_name = 'requirements.txt'
+
+      expect(described_class::RequirementsTxtLinker).to receive(:link)
+
+      described_class.link(blob_name, nil, nil)
+    end
   end
 end
