@@ -16,16 +16,27 @@
     components: {
       descriptionTemplate,
     },
+    computed: {
+      hasIssuableTemplates() {
+        return this.issuableTemplates.length !== 0;
+      },
+    },
   };
 </script>
 
 <template>
   <fieldset class="row">
-    <div class="col-sm-4 col-lg-3">
+    <div
+      class="col-sm-4 col-lg-3"
+      v-if="hasIssuableTemplates">
       <description-template
         :issuable-templates="issuableTemplates" />
     </div>
-    <div class="col-sm-8 col-lg-9">
+    <div
+      :class="{
+        'col-sm-8 col-lg-9': hasIssuableTemplates,
+        'col-xs-12': !hasIssuableTemplates,
+      }">
       <label
         class="sr-only"
         for="issue-title">

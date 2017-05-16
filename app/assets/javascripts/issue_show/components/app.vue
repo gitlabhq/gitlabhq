@@ -149,7 +149,8 @@ export default {
     <form-component
       v-if="canUpdate && showForm"
       :form-state="formState"
-      :can-destroy="canDestroy" />
+      :can-destroy="canDestroy"
+      :issuable-templates="issuableTemplates" />
     <div v-else>
       <title-component
         :issuable-ref="issuableRef"
