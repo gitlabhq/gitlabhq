@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Gitlab::HealthChecks::FsShardsCheck do
+  include TimeoutHelper
+
   let(:metric_class) { Gitlab::HealthChecks::Metric }
   let(:result_class) { Gitlab::HealthChecks::Result }
   let(:repository_storages) { [:default] }
@@ -103,14 +105,50 @@ describe Gitlab::HealthChecks::FsShardsCheck do
     end
   end
 
-  context 'when popen always finds required binaries' do
+  context 'when timeout kills fs checks' do
+    let(:timeout_seconds) { 1.to_s }
+
     before do
-      allow(Gitlab::Popen).to receive(:popen).and_wrap_original do |method, *args, &block|
+      skip 'timeout or gtimeout not available' unless any_timeout_command_exists?
+
+      allow(described_class).to receive(:with_timeout) { [timeout_command, timeout_seconds].concat(%w{ sleep 2 }) }
+      FileUtils.chmod_R(0755, tmp_dir)
+    end
+
+    describe '#readiness' do
+      subject { described_class.readiness }
+
+      it { is_expected.to include(result_class.new(false, 'cannot stat storage', shard: :default)) }
+    end
+
+    describe '#metrics' do
+      subject { described_class.metrics }
+
+      it { is_expected.to include(metric_class.new(:filesystem_accessible, 0, shard: :default)) }
+      it { is_expected.to include(metric_class.new(:filesystem_readable, 0, shard: :default)) }
+      it { is_expected.to include(metric_class.new(:filesystem_writable, 0, shard: :default)) }
+
+      it { is_expected.to include(have_attributes(name: :filesystem_access_latency, value: be >= 0, labels: { shard: :default })) }
+      it { is_expected.to include(have_attributes(name: :filesystem_read_latency, value: be >= 0, labels: { shard: :default })) }
+      it { is_expected.to include(have_attributes(name: :filesystem_write_latency, value: be >= 0, labels: { shard: :default })) }
+    end
+  end
+
+  context 'when popen always finds required binaries' do
+    let(:timeout_seconds) { 30.to_s }
+    before do
+      skip 'timeout or gtimeout not available' unless any_timeout_command_exists?
+
+      allow(described_class).to receive(:exec_with_timeout).and_wrap_original do |method, *args, &block|
         begin
           method.call(*args, &block)
-        rescue RuntimeError
+        rescue RuntimeError, Errno::ENOENT
           raise 'expected not to happen'
         end
+      end
+
+      allow(described_class).to receive(:with_timeout) do |args, &block|
+        [timeout_command, timeout_seconds].concat(args)
       end
     end
 

@@ -42,6 +42,7 @@ module Gitlab
         private
 
         RANDOM_STRING = SecureRandom.hex(1000).freeze
+        COMMAND_TIMEOUT = 1.second
 
         def operation_metrics(ok_metric, latency_metric, operation, **labels)
           with_timing operation do |result, elapsed|
@@ -64,7 +65,11 @@ module Gitlab
         end
 
         def with_timeout(args)
-          %w{timeout 1}.concat(args)
+          %W{timeout #{COMMAND_TIMEOUT.to_i}}.concat(args)
+        end
+
+        def exec_with_timeout(cmd_args, *args, &block)
+          Gitlab::Popen.popen(with_timeout(cmd_args), *args, &block)
         end
 
         def tmp_file_path(storage_name)
@@ -78,7 +83,7 @@ module Gitlab
         def storage_stat_test(storage_name)
           stat_path = File.join(path(storage_name), '.')
           begin
-            _, status = Gitlab::Popen.popen(with_timeout(%W{ stat #{stat_path} }))
+            _, status = exec_with_timeout(%W{ stat #{stat_path} })
             status == 0
           rescue Errno::ENOENT
             File.exist?(stat_path) && File::Stat.new(stat_path).readable?
@@ -86,7 +91,7 @@ module Gitlab
         end
 
         def storage_write_test(tmp_path)
-          _, status = Gitlab::Popen.popen(with_timeout(%W{ tee #{tmp_path} })) do |stdin|
+          _, status = exec_with_timeout(%W{ tee #{tmp_path} }) do |stdin|
             stdin.write(RANDOM_STRING)
           end
           status == 0
@@ -96,7 +101,7 @@ module Gitlab
         end
 
         def storage_read_test(tmp_path)
-          _, status = Gitlab::Popen.popen(with_timeout(%W{ diff #{tmp_path} - })) do |stdin|
+          _, status = exec_with_timeout(%W{ diff #{tmp_path} - }) do |stdin|
             stdin.write(RANDOM_STRING)
           end
           status == 0
@@ -106,7 +111,7 @@ module Gitlab
         end
 
         def delete_test_file(tmp_path)
-          _, status = Gitlab::Popen.popen(with_timeout(%W{ rm -f #{tmp_path} }))
+          _, status = exec_with_timeout(%W{ rm -f #{tmp_path} })
           status == 0
         rescue Errno::ENOENT
           File.delete(tmp_path) rescue Errno::ENOENT
