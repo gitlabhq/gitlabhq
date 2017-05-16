@@ -4,7 +4,18 @@ import '~/filtered_search/filtered_search_visual_tokens';
 import FilteredSearchSpecHelper from '../helpers/filtered_search_spec_helper';
 
 describe('Filtered Search Visual Tokens', () => {
+  const subject = gl.FilteredSearchVisualTokens;
+
+  const findElements = (tokenElement) => {
+    const tokenNameElement = tokenElement.querySelector('.name');
+    const tokenValueContainer = tokenElement.querySelector('.value-container');
+    const tokenValueElement = tokenValueContainer.querySelector('.value');
+    return { tokenNameElement, tokenValueContainer, tokenValueElement };
+  };
+
   let tokensContainer;
+  let authorToken;
+  let bugLabelToken;
 
   beforeEach(() => {
     setFixtures(`
@@ -13,12 +24,15 @@ describe('Filtered Search Visual Tokens', () => {
       </ul>
     `);
     tokensContainer = document.querySelector('.tokens-container');
+
+    authorToken = FilteredSearchSpecHelper.createFilterVisualToken('author', '@user');
+    bugLabelToken = FilteredSearchSpecHelper.createFilterVisualToken('label', '~bug');
   });
 
   describe('getLastVisualTokenBeforeInput', () => {
     it('returns when there are no visual tokens', () => {
       const { lastVisualToken, isLastVisualTokenValid }
-        = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
+        = subject.getLastVisualTokenBeforeInput();
 
       expect(lastVisualToken).toEqual(null);
       expect(isLastVisualTokenValid).toEqual(true);
@@ -27,11 +41,11 @@ describe('Filtered Search Visual Tokens', () => {
     describe('input is the last item in tokensContainer', () => {
       it('returns when there is one visual token', () => {
         tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
-          FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug'),
+          bugLabelToken.outerHTML,
         );
 
         const { lastVisualToken, isLastVisualTokenValid }
-          = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
+          = subject.getLastVisualTokenBeforeInput();
 
         expect(lastVisualToken).toEqual(document.querySelector('.filtered-search-token'));
         expect(isLastVisualTokenValid).toEqual(true);
@@ -43,7 +57,7 @@ describe('Filtered Search Visual Tokens', () => {
         );
 
         const { lastVisualToken, isLastVisualTokenValid }
-          = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
+          = subject.getLastVisualTokenBeforeInput();
 
         expect(lastVisualToken).toEqual(document.querySelector('.filtered-search-token'));
         expect(isLastVisualTokenValid).toEqual(false);
@@ -51,13 +65,13 @@ describe('Filtered Search Visual Tokens', () => {
 
       it('returns when there are multiple visual tokens', () => {
         tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
-          ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug')}
+          ${bugLabelToken.outerHTML}
           ${FilteredSearchSpecHelper.createSearchVisualTokenHTML('search term')}
           ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('author', '@root')}
         `);
 
         const { lastVisualToken, isLastVisualTokenValid }
-          = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
+          = subject.getLastVisualTokenBeforeInput();
         const items = document.querySelectorAll('.tokens-container .js-visual-token');
 
         expect(lastVisualToken.isEqualNode(items[items.length - 1])).toEqual(true);
@@ -66,13 +80,13 @@ describe('Filtered Search Visual Tokens', () => {
 
       it('returns when there are multiple visual tokens and an incomplete visual token', () => {
         tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
-          ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug')}
+          ${bugLabelToken.outerHTML}
           ${FilteredSearchSpecHelper.createSearchVisualTokenHTML('search term')}
           ${FilteredSearchSpecHelper.createNameFilterVisualTokenHTML('assignee')}
         `);
 
         const { lastVisualToken, isLastVisualTokenValid }
-          = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
+          = subject.getLastVisualTokenBeforeInput();
         const items = document.querySelectorAll('.tokens-container .js-visual-token');
 
         expect(lastVisualToken.isEqualNode(items[items.length - 1])).toEqual(true);
@@ -83,13 +97,13 @@ describe('Filtered Search Visual Tokens', () => {
     describe('input is a middle item in tokensContainer', () => {
       it('returns last token before input', () => {
         tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
-          ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug')}
+          ${bugLabelToken.outerHTML}
           ${FilteredSearchSpecHelper.createInputHTML()}
           ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('author', '@root')}
         `);
 
         const { lastVisualToken, isLastVisualTokenValid }
-          = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
+          = subject.getLastVisualTokenBeforeInput();
 
         expect(lastVisualToken).toEqual(document.querySelector('.filtered-search-token'));
         expect(isLastVisualTokenValid).toEqual(true);
@@ -103,7 +117,7 @@ describe('Filtered Search Visual Tokens', () => {
         `);
 
         const { lastVisualToken, isLastVisualTokenValid }
-          = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
+          = subject.getLastVisualTokenBeforeInput();
 
         expect(lastVisualToken).toEqual(document.querySelector('.filtered-search-token'));
         expect(isLastVisualTokenValid).toEqual(false);
@@ -114,7 +128,7 @@ describe('Filtered Search Visual Tokens', () => {
   describe('unselectTokens', () => {
     it('does nothing when there are no tokens', () => {
       const beforeHTML = tokensContainer.innerHTML;
-      gl.FilteredSearchVisualTokens.unselectTokens();
+      subject.unselectTokens();
 
       expect(tokensContainer.innerHTML).toEqual(beforeHTML);
     });
@@ -128,7 +142,7 @@ describe('Filtered Search Visual Tokens', () => {
       const selected = tokensContainer.querySelector('.js-visual-token .selected');
       expect(selected.classList.contains('selected')).toEqual(true);
 
-      gl.FilteredSearchVisualTokens.unselectTokens();
+      subject.unselectTokens();
 
       expect(selected.classList.contains('selected')).toEqual(false);
     });
@@ -137,7 +151,7 @@ describe('Filtered Search Visual Tokens', () => {
   describe('selectToken', () => {
     beforeEach(() => {
       tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
-        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug')}
+        ${bugLabelToken.outerHTML}
         ${FilteredSearchSpecHelper.createSearchVisualTokenHTML('search term')}
         ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~awesome')}
       `);
@@ -147,7 +161,7 @@ describe('Filtered Search Visual Tokens', () => {
       const firstTokenButton = tokensContainer.querySelector('.js-visual-token .selectable');
       firstTokenButton.classList.add('selected');
 
-      gl.FilteredSearchVisualTokens.selectToken(firstTokenButton);
+      subject.selectToken(firstTokenButton);
 
       expect(firstTokenButton.classList.contains('selected')).toEqual(false);
     });
@@ -156,7 +170,7 @@ describe('Filtered Search Visual Tokens', () => {
       it('adds selected class', () => {
         const firstTokenButton = tokensContainer.querySelector('.js-visual-token .selectable');
 
-        gl.FilteredSearchVisualTokens.selectToken(firstTokenButton);
+        subject.selectToken(firstTokenButton);
 
         expect(firstTokenButton.classList.contains('selected')).toEqual(true);
       });
@@ -165,7 +179,7 @@ describe('Filtered Search Visual Tokens', () => {
         const tokenButtons = tokensContainer.querySelectorAll('.js-visual-token .selectable');
         tokenButtons[1].classList.add('selected');
 
-        gl.FilteredSearchVisualTokens.selectToken(tokenButtons[0]);
+        subject.selectToken(tokenButtons[0]);
 
         expect(tokenButtons[0].classList.contains('selected')).toEqual(true);
         expect(tokenButtons[1].classList.contains('selected')).toEqual(false);
@@ -181,7 +195,7 @@ describe('Filtered Search Visual Tokens', () => {
 
       expect(tokensContainer.querySelector('.js-visual-token .selectable')).not.toEqual(null);
 
-      gl.FilteredSearchVisualTokens.removeSelectedToken();
+      subject.removeSelectedToken();
 
       expect(tokensContainer.querySelector('.js-visual-token .selectable')).not.toEqual(null);
     });
@@ -193,7 +207,7 @@ describe('Filtered Search Visual Tokens', () => {
 
       expect(tokensContainer.querySelector('.js-visual-token .selectable')).not.toEqual(null);
 
-      gl.FilteredSearchVisualTokens.removeSelectedToken();
+      subject.removeSelectedToken();
 
       expect(tokensContainer.querySelector('.js-visual-token .selectable')).toEqual(null);
     });
@@ -205,7 +219,7 @@ describe('Filtered Search Visual Tokens', () => {
     beforeEach(() => {
       setFixtures(`
         <div class="test-area">
-        ${gl.FilteredSearchVisualTokens.createVisualTokenElementHTML()}
+        ${subject.createVisualTokenElementHTML()}
         </div>
       `);
 
@@ -245,7 +259,7 @@ describe('Filtered Search Visual Tokens', () => {
 
   describe('addVisualTokenElement', () => {
     it('renders search visual tokens', () => {
-      gl.FilteredSearchVisualTokens.addVisualTokenElement('search term', null, true);
+      subject.addVisualTokenElement('search term', null, true);
       const token = tokensContainer.querySelector('.js-visual-token');
 
       expect(token.classList.contains('filtered-search-term')).toEqual(true);
@@ -254,7 +268,7 @@ describe('Filtered Search Visual Tokens', () => {
     });
 
     it('renders filter visual token name', () => {
-      gl.FilteredSearchVisualTokens.addVisualTokenElement('milestone');
+      subject.addVisualTokenElement('milestone');
       const token = tokensContainer.querySelector('.js-visual-token');
 
       expect(token.classList.contains('filtered-search-token')).toEqual(true);
@@ -263,7 +277,7 @@ describe('Filtered Search Visual Tokens', () => {
     });
 
     it('renders filter visual token name and value', () => {
-      gl.FilteredSearchVisualTokens.addVisualTokenElement('label', 'Frontend');
+      subject.addVisualTokenElement('label', 'Frontend');
       const token = tokensContainer.querySelector('.js-visual-token');
 
       expect(token.classList.contains('filtered-search-token')).toEqual(true);
@@ -274,7 +288,7 @@ describe('Filtered Search Visual Tokens', () => {
     it('inserts visual token before input', () => {
       tokensContainer.appendChild(FilteredSearchSpecHelper.createFilterVisualToken('assignee', '@root'));
 
-      gl.FilteredSearchVisualTokens.addVisualTokenElement('label', 'Frontend');
+      subject.addVisualTokenElement('label', 'Frontend');
       const tokens = tokensContainer.querySelectorAll('.js-visual-token');
       const labelToken = tokens[0];
       const assigneeToken = tokens[1];
@@ -296,7 +310,7 @@ describe('Filtered Search Visual Tokens', () => {
       );
 
       const original = tokensContainer.innerHTML;
-      gl.FilteredSearchVisualTokens.addValueToPreviousVisualTokenElement('value');
+      subject.addValueToPreviousVisualTokenElement('value');
 
       expect(original).toEqual(tokensContainer.innerHTML);
     });
@@ -308,7 +322,7 @@ describe('Filtered Search Visual Tokens', () => {
       `);
 
       const original = tokensContainer.innerHTML;
-      gl.FilteredSearchVisualTokens.addValueToPreviousVisualTokenElement('value');
+      subject.addValueToPreviousVisualTokenElement('value');
 
       expect(original).toEqual(tokensContainer.innerHTML);
     });
@@ -319,7 +333,7 @@ describe('Filtered Search Visual Tokens', () => {
       );
 
       const original = tokensContainer.innerHTML;
-      gl.FilteredSearchVisualTokens.addValueToPreviousVisualTokenElement('value');
+      subject.addValueToPreviousVisualTokenElement('value');
       const updatedToken = tokensContainer.querySelector('.js-visual-token');
 
       expect(updatedToken.querySelector('.name').innerText).toEqual('label');
@@ -330,7 +344,7 @@ describe('Filtered Search Visual Tokens', () => {
 
   describe('addFilterVisualToken', () => {
     it('creates visual token with just tokenName', () => {
-      gl.FilteredSearchVisualTokens.addFilterVisualToken('milestone');
+      subject.addFilterVisualToken('milestone');
       const token = tokensContainer.querySelector('.js-visual-token');
 
       expect(token.classList.contains('filtered-search-token')).toEqual(true);
@@ -339,8 +353,8 @@ describe('Filtered Search Visual Tokens', () => {
     });
 
     it('creates visual token with just tokenValue', () => {
-      gl.FilteredSearchVisualTokens.addFilterVisualToken('milestone');
-      gl.FilteredSearchVisualTokens.addFilterVisualToken('%8.17');
+      subject.addFilterVisualToken('milestone');
+      subject.addFilterVisualToken('%8.17');
       const token = tokensContainer.querySelector('.js-visual-token');
 
       expect(token.classList.contains('filtered-search-token')).toEqual(true);
@@ -349,7 +363,7 @@ describe('Filtered Search Visual Tokens', () => {
     });
 
     it('creates full visual token', () => {
-      gl.FilteredSearchVisualTokens.addFilterVisualToken('assignee', '@john');
+      subject.addFilterVisualToken('assignee', '@john');
       const token = tokensContainer.querySelector('.js-visual-token');
 
       expect(token.classList.contains('filtered-search-token')).toEqual(true);
@@ -360,7 +374,7 @@ describe('Filtered Search Visual Tokens', () => {
 
   describe('addSearchVisualToken', () => {
     it('creates search visual token', () => {
-      gl.FilteredSearchVisualTokens.addSearchVisualToken('search term');
+      subject.addSearchVisualToken('search term');
       const token = tokensContainer.querySelector('.js-visual-token');
 
       expect(token.classList.contains('filtered-search-term')).toEqual(true);
@@ -374,7 +388,7 @@ describe('Filtered Search Visual Tokens', () => {
         ${FilteredSearchSpecHelper.createSearchVisualTokenHTML('search term')}
       `);
 
-      gl.FilteredSearchVisualTokens.addSearchVisualToken('append this');
+      subject.addSearchVisualToken('append this');
       const token = tokensContainer.querySelector('.filtered-search-term');
 
       expect(token.querySelector('.name').innerText).toEqual('search term append this');
@@ -386,10 +400,10 @@ describe('Filtered Search Visual Tokens', () => {
     it('should get last token value', () => {
       const value = '~bug';
       tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
-        FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', value),
+        bugLabelToken.outerHTML,
       );
 
-      expect(gl.FilteredSearchVisualTokens.getLastTokenPartial()).toEqual(value);
+      expect(subject.getLastTokenPartial()).toEqual(value);
     });
 
     it('should get last token name if there is no value', () => {
@@ -398,11 +412,11 @@ describe('Filtered Search Visual Tokens', () => {
         FilteredSearchSpecHelper.createNameFilterVisualTokenHTML(name),
       );
 
-      expect(gl.FilteredSearchVisualTokens.getLastTokenPartial()).toEqual(name);
+      expect(subject.getLastTokenPartial()).toEqual(name);
     });
 
     it('should return empty when there are no tokens', () => {
-      expect(gl.FilteredSearchVisualTokens.getLastTokenPartial()).toEqual('');
+      expect(subject.getLastTokenPartial()).toEqual('');
     });
   });
 
@@ -414,7 +428,7 @@ describe('Filtered Search Visual Tokens', () => {
 
       expect(tokensContainer.querySelector('.js-visual-token .value')).not.toEqual(null);
 
-      gl.FilteredSearchVisualTokens.removeLastTokenPartial();
+      subject.removeLastTokenPartial();
 
       expect(tokensContainer.querySelector('.js-visual-token .value')).toEqual(null);
     });
@@ -426,14 +440,14 @@ describe('Filtered Search Visual Tokens', () => {
 
       expect(tokensContainer.querySelector('.js-visual-token .name')).not.toEqual(null);
 
-      gl.FilteredSearchVisualTokens.removeLastTokenPartial();
+      subject.removeLastTokenPartial();
 
       expect(tokensContainer.querySelector('.js-visual-token .name')).toEqual(null);
     });
 
     it('should not remove anything when there are no tokens', () => {
       const html = tokensContainer.innerHTML;
-      gl.FilteredSearchVisualTokens.removeLastTokenPartial();
+      subject.removeLastTokenPartial();
 
       expect(tokensContainer.innerHTML).toEqual(html);
     });
@@ -442,7 +456,7 @@ describe('Filtered Search Visual Tokens', () => {
   describe('tokenizeInput', () => {
     it('does not do anything if there is no input', () => {
       const original = tokensContainer.innerHTML;
-      gl.FilteredSearchVisualTokens.tokenizeInput();
+      subject.tokenizeInput();
 
       expect(tokensContainer.innerHTML).toEqual(original);
     });
@@ -454,7 +468,7 @@ describe('Filtered Search Visual Tokens', () => {
 
       const input = document.querySelector('.filtered-search');
       input.value = 'some value';
-      gl.FilteredSearchVisualTokens.tokenizeInput();
+      subject.tokenizeInput();
 
       const newToken = tokensContainer.querySelector('.filtered-search-term');
 
@@ -470,7 +484,7 @@ describe('Filtered Search Visual Tokens', () => {
 
       const input = document.querySelector('.filtered-search');
       input.value = '@john';
-      gl.FilteredSearchVisualTokens.tokenizeInput();
+      subject.tokenizeInput();
 
       const updatedToken = tokensContainer.querySelector('.filtered-search-token');
 
@@ -497,25 +511,25 @@ describe('Filtered Search Visual Tokens', () => {
 
     it('tokenize\'s existing input', () => {
       input.value = 'some text';
-      spyOn(gl.FilteredSearchVisualTokens, 'tokenizeInput').and.callThrough();
+      spyOn(subject, 'tokenizeInput').and.callThrough();
 
-      gl.FilteredSearchVisualTokens.editToken(token);
+      subject.editToken(token);
 
-      expect(gl.FilteredSearchVisualTokens.tokenizeInput).toHaveBeenCalled();
+      expect(subject.tokenizeInput).toHaveBeenCalled();
       expect(input.value).not.toEqual('some text');
     });
 
     it('moves input to the token position', () => {
       expect(tokensContainer.children[3].querySelector('.filtered-search')).not.toEqual(null);
 
-      gl.FilteredSearchVisualTokens.editToken(token);
+      subject.editToken(token);
 
       expect(tokensContainer.children[1].querySelector('.filtered-search')).not.toEqual(null);
       expect(tokensContainer.children[3].querySelector('.filtered-search')).toEqual(null);
     });
 
     it('input contains the visual token value', () => {
-      gl.FilteredSearchVisualTokens.editToken(token);
+      subject.editToken(token);
 
       expect(input.value).toEqual('none');
     });
@@ -528,7 +542,7 @@ describe('Filtered Search Visual Tokens', () => {
       it('token is removed', () => {
         expect(tokensContainer.querySelector('.filtered-search-term')).not.toEqual(null);
 
-        gl.FilteredSearchVisualTokens.editToken(token);
+        subject.editToken(token);
 
         expect(tokensContainer.querySelector('.filtered-search-term')).toEqual(null);
       });
@@ -536,7 +550,7 @@ describe('Filtered Search Visual Tokens', () => {
       it('input has the same value as removed token', () => {
         expect(input.value).toEqual('');
 
-        gl.FilteredSearchVisualTokens.editToken(token);
+        subject.editToken(token);
 
         expect(input.value).toEqual('search');
       });
@@ -549,25 +563,25 @@ describe('Filtered Search Visual Tokens', () => {
         FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', 'none'),
       );
 
-      spyOn(gl.FilteredSearchVisualTokens, 'tokenizeInput').and.callFake(() => {});
-      spyOn(gl.FilteredSearchVisualTokens, 'getLastVisualTokenBeforeInput').and.callThrough();
+      spyOn(subject, 'tokenizeInput').and.callFake(() => {});
+      spyOn(subject, 'getLastVisualTokenBeforeInput').and.callThrough();
 
-      gl.FilteredSearchVisualTokens.moveInputToTheRight();
+      subject.moveInputToTheRight();
 
-      expect(gl.FilteredSearchVisualTokens.tokenizeInput).toHaveBeenCalled();
-      expect(gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput).not.toHaveBeenCalled();
+      expect(subject.tokenizeInput).toHaveBeenCalled();
+      expect(subject.getLastVisualTokenBeforeInput).not.toHaveBeenCalled();
     });
 
     it('tokenize\'s input', () => {
       tokensContainer.innerHTML = `
         ${FilteredSearchSpecHelper.createNameFilterVisualTokenHTML('label')}
         ${FilteredSearchSpecHelper.createInputHTML()}
-        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug')}
+        ${bugLabelToken.outerHTML}
       `;
 
       document.querySelector('.filtered-search').value = 'none';
 
-      gl.FilteredSearchVisualTokens.moveInputToTheRight();
+      subject.moveInputToTheRight();
       const value = tokensContainer.querySelector('.js-visual-token .value');
 
       expect(value.innerText).toEqual('none');
@@ -577,12 +591,12 @@ describe('Filtered Search Visual Tokens', () => {
       tokensContainer.innerHTML = `
         ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', 'none')}
         ${FilteredSearchSpecHelper.createInputHTML()}
-        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug')}
+        ${bugLabelToken.outerHTML}
       `;
 
       document.querySelector('.filtered-search').value = 'test';
 
-      gl.FilteredSearchVisualTokens.moveInputToTheRight();
+      subject.moveInputToTheRight();
       const searchValue = tokensContainer.querySelector('.filtered-search-term .name');
 
       expect(searchValue.innerText).toEqual('test');
@@ -592,10 +606,10 @@ describe('Filtered Search Visual Tokens', () => {
       tokensContainer.innerHTML = `
         ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', 'none')}
         ${FilteredSearchSpecHelper.createInputHTML()}
-        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug')}
+        ${bugLabelToken.outerHTML}
       `;
 
-      gl.FilteredSearchVisualTokens.moveInputToTheRight();
+      subject.moveInputToTheRight();
 
       expect(tokensContainer.children[2].querySelector('.filtered-search')).not.toEqual(null);
     });
@@ -607,7 +621,7 @@ describe('Filtered Search Visual Tokens', () => {
         ${FilteredSearchSpecHelper.createInputHTML('', '~bug')}
       `;
 
-      gl.FilteredSearchVisualTokens.moveInputToTheRight();
+      subject.moveInputToTheRight();
 
       const token = tokensContainer.children[1];
       expect(token.querySelector('.value').innerText).toEqual('~bug');
@@ -615,42 +629,46 @@ describe('Filtered Search Visual Tokens', () => {
   });
 
   describe('renderVisualTokenValue', () => {
-    let searchTokens;
+    const keywordToken = FilteredSearchSpecHelper.createFilterVisualToken('search');
+    const milestoneToken = FilteredSearchSpecHelper.createFilterVisualToken('milestone', 'upcoming');
+
+    let updateLabelTokenColorSpy;
 
     beforeEach(() => {
       tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
-        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', 'none')}
-        ${FilteredSearchSpecHelper.createSearchVisualTokenHTML('search')}
-        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', 'upcoming')}
+        ${authorToken.outerHTML}
+        ${bugLabelToken.outerHTML}
+        ${keywordToken.outerHTML}
+        ${milestoneToken.outerHTML}
       `);
 
-      searchTokens = document.querySelectorAll('.filtered-search-token');
+      spyOn(subject, 'updateLabelTokenColor');
+      updateLabelTokenColorSpy = subject.updateLabelTokenColor;
     });
 
-    it('renders a token value element', () => {
-      spyOn(gl.FilteredSearchVisualTokens, 'updateLabelTokenColor');
-      const updateLabelTokenColorSpy = gl.FilteredSearchVisualTokens.updateLabelTokenColor;
+    it('renders a label token value element', () => {
+      const { tokenNameElement, tokenValueContainer, tokenValueElement } =
+        findElements(bugLabelToken);
+      const tokenName = tokenNameElement.innerText;
+      const tokenValue = 'new value';
 
-      expect(searchTokens.length).toBe(2);
-      Array.prototype.forEach.call(searchTokens, (token) => {
-        updateLabelTokenColorSpy.calls.reset();
+      subject.renderVisualTokenValue(bugLabelToken, tokenName, tokenValue);
 
-        const tokenName = token.querySelector('.name').innerText;
-        const tokenValue = 'new value';
-        gl.FilteredSearchVisualTokens.renderVisualTokenValue(token, tokenName, tokenValue);
+      expect(tokenValueElement.innerText).toBe(tokenValue);
+      expect(updateLabelTokenColorSpy.calls.count()).toBe(1);
+      const expectedArgs = [tokenValueContainer, tokenValue];
+      expect(updateLabelTokenColorSpy.calls.argsFor(0)).toEqual(expectedArgs);
+    });
 
-        const tokenValueElement = token.querySelector('.value');
-        expect(tokenValueElement.innerText).toBe(tokenValue);
+    it('renders a milestone token value element', () => {
+      const { tokenNameElement, tokenValueElement } = findElements(milestoneToken);
+      const tokenName = tokenNameElement.innerText;
+      const tokenValue = 'new value';
 
-        if (tokenName.toLowerCase() === 'label') {
-          const tokenValueContainer = token.querySelector('.value-container');
-          expect(updateLabelTokenColorSpy.calls.count()).toBe(1);
-          const expectedArgs = [tokenValueContainer, tokenValue];
-          expect(updateLabelTokenColorSpy.calls.argsFor(0)).toEqual(expectedArgs);
-        } else {
-          expect(updateLabelTokenColorSpy.calls.count()).toBe(0);
-        }
-      });
+      subject.renderVisualTokenValue(milestoneToken, tokenName, tokenValue);
+
+      expect(tokenValueElement.innerText).toBe(tokenValue);
+      expect(updateLabelTokenColorSpy.calls.count()).toBe(0);
     });
   });
 
@@ -659,20 +677,15 @@ describe('Filtered Search Visual Tokens', () => {
     const dummyEndpoint = '/dummy/endpoint';
 
     preloadFixtures(jsonFixtureName);
-    const labelData = getJSONFixture(jsonFixtureName);
-    const findLabel = tokenValue => labelData.find(
-      label => tokenValue === `~${gl.DropdownUtils.getEscapedText(label.title)}`,
-    );
 
-    const bugLabelToken = FilteredSearchSpecHelper.createFilterVisualToken('label', '~bug');
+    let labelData;
+
+    beforeAll(() => {
+      labelData = getJSONFixture(jsonFixtureName);
+    });
+
     const missingLabelToken = FilteredSearchSpecHelper.createFilterVisualToken('label', '~doesnotexist');
     const spaceLabelToken = FilteredSearchSpecHelper.createFilterVisualToken('label', '~"some space"');
-
-    const parseColor = (color) => {
-      const dummyElement = document.createElement('div');
-      dummyElement.style.color = color;
-      return dummyElement.style.color;
-    };
 
     beforeEach(() => {
       tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
@@ -688,28 +701,60 @@ describe('Filtered Search Visual Tokens', () => {
       AjaxCache.internalStorage[`${dummyEndpoint}/labels.json`] = labelData;
     });
 
-    const testCase = (token, done) => {
-      const tokenValueContainer = token.querySelector('.value-container');
-      const tokenValue = token.querySelector('.value').innerText;
-      const label = findLabel(tokenValue);
-
-      gl.FilteredSearchVisualTokens.updateLabelTokenColor(tokenValueContainer, tokenValue)
-      .then(() => {
-        if (label) {
-          expect(tokenValueContainer.getAttribute('style')).not.toBe(null);
-          expect(tokenValueContainer.style.backgroundColor).toBe(parseColor(label.color));
-          expect(tokenValueContainer.style.color).toBe(parseColor(label.text_color));
-        } else {
-          expect(token).toBe(missingLabelToken);
-          expect(tokenValueContainer.getAttribute('style')).toBe(null);
-        }
-      })
-      .then(done)
-      .catch(fail);
+    const parseColor = (color) => {
+      const dummyElement = document.createElement('div');
+      dummyElement.style.color = color;
+      return dummyElement.style.color;
     };
 
-    it('updates the color of a label token', done => testCase(bugLabelToken, done));
-    it('updates the color of a label token with spaces', done => testCase(spaceLabelToken, done));
-    it('does not change color of a missing label', done => testCase(missingLabelToken, done));
+    const expectValueContainerStyle = (tokenValueContainer, label) => {
+      expect(tokenValueContainer.getAttribute('style')).not.toBe(null);
+      expect(tokenValueContainer.style.backgroundColor).toBe(parseColor(label.color));
+      expect(tokenValueContainer.style.color).toBe(parseColor(label.text_color));
+    };
+
+    const findLabel = tokenValue => labelData.find(
+      label => tokenValue === `~${gl.DropdownUtils.getEscapedText(label.title)}`,
+    );
+
+    it('updates the color of a label token', (done) => {
+      const { tokenValueContainer, tokenValueElement } = findElements(bugLabelToken);
+      const tokenValue = tokenValueElement.innerText;
+      const matchingLabel = findLabel(tokenValue);
+
+      subject.updateLabelTokenColor(tokenValueContainer, tokenValue)
+        .then(() => {
+          expectValueContainerStyle(tokenValueContainer, matchingLabel);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('updates the color of a label token with spaces', (done) => {
+      const { tokenValueContainer, tokenValueElement } = findElements(spaceLabelToken);
+      const tokenValue = tokenValueElement.innerText;
+      const matchingLabel = findLabel(tokenValue);
+
+      subject.updateLabelTokenColor(tokenValueContainer, tokenValue)
+        .then(() => {
+          expectValueContainerStyle(tokenValueContainer, matchingLabel);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('does not change color of a missing label', (done) => {
+      const { tokenValueContainer, tokenValueElement } = findElements(missingLabelToken);
+      const tokenValue = tokenValueElement.innerText;
+      const matchingLabel = findLabel(tokenValue);
+      expect(matchingLabel).toBe(undefined);
+
+      subject.updateLabelTokenColor(tokenValueContainer, tokenValue)
+        .then(() => {
+          expect(tokenValueContainer.getAttribute('style')).toBe(null);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
   });
 });
