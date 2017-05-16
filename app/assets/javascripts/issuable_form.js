@@ -7,6 +7,8 @@
 /* global dateFormat */
 /* global Pikaday */
 
+import GfmAutoComplete from './gfm_auto_complete';
+
 (function() {
   this.IssuableForm = (function() {
     IssuableForm.prototype.issueMoveConfirmMsg = 'Are you sure you want to move this issue to another project?';
@@ -20,7 +22,7 @@
       this.renderWipExplanation = this.renderWipExplanation.bind(this);
       this.resetAutosave = this.resetAutosave.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
-      gl.GfmAutoComplete.setup();
+      new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources).setup();
       new UsersSelect();
       new GroupsSelect();
       new ZenMode();
