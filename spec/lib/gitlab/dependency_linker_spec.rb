@@ -49,5 +49,13 @@ describe Gitlab::DependencyLinker, lib: true do
 
       described_class.link(blob_name, nil, nil)
     end
+
+    it 'links using PodspecJsonLinker' do
+      blob_name = 'AFNetworking.podspec.json'
+
+      expect(described_class::PodspecJsonLinker).to receive(:link)
+
+      described_class.link(blob_name, nil, nil)
+    end
   end
 end

@@ -7,6 +7,7 @@ module Gitlab
       ComposerJsonLinker,
       PodfileLinker,
       PodspecLinker,
+      PodspecJsonLinker,
     ].freeze
 
     def self.linker(blob_name)
