@@ -76,3 +76,43 @@ You can find an example of the above in this [class][container-class-example];
 
 
 [container-class-example]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/mini_pipeline_graph_dropdown.js
+
+## Custom errors
+
+Custom/namespaced error are not accepted. You should just use a string.
+
+Example:
+
+### bad
+```js
+class NamespacedError extends Error {
+    ... custom Error logics ...
+}
+
+const NamespacedObj = {
+    someMethod() {
+        throw NamespacedError;
+    }
+};
+
+try {
+    NamespacedObj.someMethod()
+} catch (error) {
+    if (error instanceof NamespaceError)  ...
+}
+```
+
+### good
+```js
+const NamespacedObj = {
+    someMethod() {
+        throw 'some string';
+    }
+};
+
+try {
+    NamespacedObj.someMethod()
+} catch (error) {
+    if (error === 'some string')  ...
+}
+```
