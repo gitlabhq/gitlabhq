@@ -14,6 +14,8 @@ module API
 
         issues = IssuesFinder.new(current_user, args).execute
 
+        issues.each(&:migrate_assignee)
+
         issues.reorder(args[:order_by] => args[:sort])
       end
 

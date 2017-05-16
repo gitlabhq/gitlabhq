@@ -3,6 +3,7 @@ module Issues
     include SpamCheckService
 
     def execute(issue)
+      issue.migrate_assignee
       handle_move_between_iids(issue)
       filter_spam_check_params
       update(issue)

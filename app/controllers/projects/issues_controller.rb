@@ -31,6 +31,16 @@ class Projects::IssuesController < Projects::ApplicationController
     @collection_type    = "Issue"
     @issues             = issues_collection
     @issues             = @issues.page(params[:page])
+
+    ### Live assignee migration
+    results = @issues.map(&:migrate_assignee)
+    if results.any?
+      # Reload the collection
+      @issues = issues_collection
+      @issues = @issues.page(params[:page])
+    end
+    ###
+
     @issuable_meta_data = issuable_meta_data(@issues, @collection_type)
 
     if @issues.out_of_range? && @issues.total_pages != 0
@@ -225,8 +235,13 @@ class Projects::IssuesController < Projects::ApplicationController
   protected
 
   def issue
-    # The Sortable default scope causes performance issues when used with find_by
-    @noteable = @issue ||= @project.issues.where(iid: params[:id]).reorder(nil).take!
+    unless @issue
+      # The Sortable default scope causes performance issues when used with find_by
+      @noteable = @issue = @project.issues.where(iid: params[:id]).reorder(nil).take!
+      @issue.migrate_assignee
+    end
+
+    @issue
   end
   alias_method :subscribable_resource, :issue
   alias_method :issuable, :issue

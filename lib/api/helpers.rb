@@ -83,7 +83,9 @@ module API
     end
 
     def find_project_issue(iid)
-      IssuesFinder.new(current_user, project_id: user_project.id).find_by!(iid: iid)
+      issue = IssuesFinder.new(current_user, project_id: user_project.id).find_by!(iid: iid)
+      issue.migrate_assignee
+      issue
     end
 
     def find_project_merge_request(iid)

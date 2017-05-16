@@ -22,6 +22,8 @@ module API
 
           issues = IssuesFinder.new(current_user, args).execute.inc_notes_with_associations
 
+          issues.each(&:migrate_assignee)
+
           if !match_all_labels && labels.present?
             issues = issues.includes(:labels).where('labels.title' => labels.split(','))
           end
