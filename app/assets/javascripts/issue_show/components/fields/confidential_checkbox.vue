@@ -11,11 +11,11 @@
 
 <template>
   <fieldset class="checkbox">
-    <label for="issue_confidential">
+    <label for="issue-confidential">
       <input
         type="checkbox"
         value="1"
-        id="issue_confidential"
+        id="issue-confidential"
         v-model="formState.confidential" />
       This issue is confidential and should only be visible to team members with at least Reporter access.
     </label>
