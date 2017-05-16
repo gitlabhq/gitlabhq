@@ -41,6 +41,16 @@ require('~/lib/utils/common_utils');
         const paramsArray = gl.utils.getUrlParamsArray();
         expect(paramsArray[0][0] !== '?').toBe(true);
       });
+
+      it('should decode params', () => {
+        history.pushState('', '', '?label_name%5B%5D=test');
+
+        expect(
+          gl.utils.getUrlParamsArray()[0],
+        ).toBe('label_name[]=test');
+
+        history.pushState('', '', '?');
+      });
     });
 
     describe('gl.utils.handleLocationHash', () => {
