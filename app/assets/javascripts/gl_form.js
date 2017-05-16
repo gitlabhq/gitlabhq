@@ -3,6 +3,8 @@
 /* global DropzoneInput */
 /* global autosize */
 
+import GfmAutoComplete from './gfm_auto_complete';
+
 window.gl = window.gl || {};
 
 function GLForm(form) {
@@ -31,7 +33,7 @@ GLForm.prototype.setupForm = function() {
     // remove notify commit author checkbox for non-commit notes
     gl.utils.disableButtonIfEmptyField(this.form.find('.js-note-text'), this.form.find('.js-comment-button, .js-note-new-discussion'));
 
-    gl.GfmAutoComplete.setup(this.form.find('.js-gfm-input'));
+    new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources).setup(this.form.find('.js-gfm-input'));
     new DropzoneInput(this.form);
     autosize(this.textarea);
   }
