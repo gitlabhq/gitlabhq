@@ -8,7 +8,7 @@ import '~/breakpoints';
 import 'vendor/jquery.nicescroll';
 
 describe('Build', () => {
-  const BUILD_URL = `${gl.TEST_HOST}/frontend-fixtures/builds-project/builds/1`;
+  const BUILD_URL = `${gl.TEST_HOST}/frontend-fixtures/builds-project/jobs/1`;
 
   preloadFixtures('builds/build-with-artifacts.html.raw');
 

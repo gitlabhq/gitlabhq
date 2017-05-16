@@ -1,4 +1,4 @@
-class Projects::BuildsController < Projects::ApplicationController
+class Projects::JobsController < Projects::ApplicationController
   before_action :build, except: [:index, :cancel_all]
 
   before_action :authorize_read_build!,
@@ -38,7 +38,7 @@ class Projects::BuildsController < Projects::ApplicationController
       build.cancel if can?(current_user, :update_build, build)
     end
 
-    redirect_to namespace_project_builds_path(project.namespace, project)
+    redirect_to namespace_project_jobs_path(project.namespace, project)
   end
 
   def show
@@ -97,7 +97,7 @@ class Projects::BuildsController < Projects::ApplicationController
 
   def erase
     if @build.erase(erased_by: current_user)
-      redirect_to namespace_project_build_path(project.namespace, project, @build),
+      redirect_to namespace_project_job_path(project.namespace, project, @build),
                 notice: "Build has been successfully erased!"
     else
       respond_422
@@ -126,6 +126,6 @@ class Projects::BuildsController < Projects::ApplicationController
   end
 
   def build_path(build)
-    namespace_project_build_path(build.project.namespace, build.project, build)
+    namespace_project_job_path(build.project.namespace, build.project, build)
   end
 end

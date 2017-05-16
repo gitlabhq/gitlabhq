@@ -6,7 +6,7 @@ feature 'Artifact file', :js, feature: true do
   let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
   def visit_file(path)
-    visit file_namespace_project_build_artifacts_path(project.namespace, project, build, path)
+    visit file_namespace_project_job_artifacts_path(project.namespace, project, build, path)
   end
 
   context 'Text file' do
