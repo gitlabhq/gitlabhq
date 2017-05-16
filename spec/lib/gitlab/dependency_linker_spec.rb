@@ -41,5 +41,13 @@ describe Gitlab::DependencyLinker, lib: true do
 
       described_class.link(blob_name, nil, nil)
     end
+
+    it 'links using PodspecLinker' do
+      blob_name = 'Reachability.podspec'
+
+      expect(described_class::PodspecLinker).to receive(:link)
+
+      described_class.link(blob_name, nil, nil)
+    end
   end
 end
