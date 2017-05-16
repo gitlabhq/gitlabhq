@@ -26,7 +26,7 @@
               - commit = discussion.noteable
               - if commit
                 commit
-                = link_to commit.short_id, url, class: 'monospace'
+                = link_to commit.short_id, url, class: 'commit-sha'
               - else
                 a deleted commit
             - elsif discussion.diff_discussion?

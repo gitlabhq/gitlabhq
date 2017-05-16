@@ -11,10 +11,10 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :redirect_to_external_issue_tracker, only: [:index, :new]
   before_action :module_enabled
   before_action :issue, only: [:edit, :update, :show, :referenced_merge_requests,
-                               :related_branches, :can_create_branch, :rendered_title, :create_merge_request]
+                               :related_branches, :can_create_branch, :realtime_changes, :create_merge_request]
 
   # Allow read any issue
-  before_action :authorize_read_issue!, only: [:show, :rendered_title]
+  before_action :authorize_read_issue!, only: [:show, :realtime_changes]
 
   # Allow write(create) issue
   before_action :authorize_create_issue!, only: [:new, :create]
@@ -199,7 +199,7 @@ class Projects::IssuesController < Projects::ApplicationController
     end
   end
 
-  def rendered_title
+  def realtime_changes
     Gitlab::PollingInterval.set_header(response, interval: 3_000)
 
     render json: {
@@ -208,7 +208,6 @@ class Projects::IssuesController < Projects::ApplicationController
       description: view_context.markdown_field(@issue, :description),
       description_text: @issue.description,
       task_status: @issue.task_status,
-      issue_number: @issue.iid,
       updated_at: @issue.updated_at
     }
   end

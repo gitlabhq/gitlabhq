@@ -2,7 +2,7 @@
  * Styles that apply to all GFM related forms.
  */
 
+.gfm-commit,
 .gfm-commit_range {
-  font-family: $monospace_font;
-  font-size: 90%;
+  @extend .commit-sha;
 }

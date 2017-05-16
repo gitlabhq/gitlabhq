@@ -161,7 +161,15 @@ module ProjectsHelper
   end
 
   def project_list_cache_key(project)
-    key = [project.namespace.cache_key, project.cache_key, controller.controller_name, controller.action_name, current_application_settings.cache_key, 'v2.4']
+    key = [
+      project.route.cache_key,
+      project.cache_key,
+      controller.controller_name,
+      controller.action_name,
+      current_application_settings.cache_key,
+      'v2.4'
+    ]
+
     key << pipeline_status_cache_key(project.pipeline_status) if project.pipeline_status.has_status?
 
     key

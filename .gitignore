@@ -18,6 +18,7 @@ eslint-report.html
 .sass-cache/
 /.secret
 /.vagrant
+/.yarn-cache
 /.byebug_history
 /Vagrantfile
 /backups/*
@@ -48,6 +49,7 @@ eslint-report.html
 /public/uploads/
 /shared/artifacts/
 /spec/javascripts/fixtures/blob/pdf/
+/spec/javascripts/fixtures/blob/balsamiq/
 /rails_best_practices_output.html
 /tags
 /tmp/*

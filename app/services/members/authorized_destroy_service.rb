@@ -43,8 +43,9 @@ module Members
         )
 
         project.merge_requests.opened.assigned_to(member.user).update_all(assignee_id: nil)
-        member.user.update_cache_counts
       end
+
+      member.user.invalidate_cache_counts
     end
   end
 end

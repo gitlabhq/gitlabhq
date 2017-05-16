@@ -25,6 +25,7 @@ describe('CI Icon component', () => {
       propsData: {
         status: {
           icon: 'icon_status_success',
+          group: 'success',
         },
       },
     }).$mount();
@@ -37,6 +38,7 @@ describe('CI Icon component', () => {
       propsData: {
         status: {
           icon: 'icon_status_failed',
+          group: 'failed',
         },
       },
     }).$mount();
@@ -49,6 +51,7 @@ describe('CI Icon component', () => {
       propsData: {
         status: {
           icon: 'icon_status_warning',
+          group: 'warning',
         },
       },
     }).$mount();
@@ -61,6 +64,7 @@ describe('CI Icon component', () => {
       propsData: {
         status: {
           icon: 'icon_status_pending',
+          group: 'pending',
         },
       },
     }).$mount();
@@ -73,6 +77,7 @@ describe('CI Icon component', () => {
       propsData: {
         status: {
           icon: 'icon_status_running',
+          group: 'running',
         },
       },
     }).$mount();
@@ -85,6 +90,7 @@ describe('CI Icon component', () => {
       propsData: {
         status: {
           icon: 'icon_status_created',
+          group: 'created',
         },
       },
     }).$mount();
@@ -97,6 +103,7 @@ describe('CI Icon component', () => {
       propsData: {
         status: {
           icon: 'icon_status_skipped',
+          group: 'skipped',
         },
       },
     }).$mount();
@@ -109,6 +116,7 @@ describe('CI Icon component', () => {
       propsData: {
         status: {
           icon: 'icon_status_canceled',
+          group: 'canceled',
         },
       },
     }).$mount();
@@ -121,6 +129,7 @@ describe('CI Icon component', () => {
       propsData: {
         status: {
           icon: 'icon_status_manual',
+          group: 'manual',
         },
       },
     }).$mount();

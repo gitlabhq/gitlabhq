@@ -19,7 +19,7 @@
               dropdown_class: "filtered-search-history-dropdown",
               content_class: "filtered-search-history-dropdown-content",
               title: "Recent searches" }) do
-              .js-filtered-search-history-dropdown
+              .js-filtered-search-history-dropdown{ data: { project_full_path: @project.full_path } }
           .filtered-search-box-input-container
             .scroll-container
               %ul.tokens-container.list-unstyled
@@ -150,7 +150,6 @@
 
 - unless type === :boards_modal
   :javascript
-    new UsersSelect();
     new LabelsSelect();
     new MilestoneSelect();
     new IssueStatusSelect();

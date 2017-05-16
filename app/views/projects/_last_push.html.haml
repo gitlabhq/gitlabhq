@@ -6,7 +6,7 @@
           .event-last-push-text
             %span
               #{ _('You pushed to') }
-            = link_to namespace_project_commits_path(event.project.namespace, event.project, event.ref_name) do
+            = link_to namespace_project_commits_path(event.project.namespace, event.project, event.ref_name, class: 'commit-sha') do
               %strong= event.ref_name
             - if @project && event.project != @project
               %span

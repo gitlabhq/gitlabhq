@@ -94,7 +94,7 @@ var config = {
         query: { mimetype: 'image/gif' },
       },
       {
-        test: /\.(worker\.js|pdf)$/,
+        test: /\.(worker\.js|pdf|bmpr)$/,
         exclude: /node_modules/,
         loader: 'file-loader',
       },
@@ -142,13 +142,15 @@ var config = {
         'environments',
         'environments_folder',
         'filtered_search',
-        'sidebar',
         'issue_show',
         'merge_conflicts',
         'notebook_viewer',
         'pdf_viewer',
         'pipelines',
         'pipelines_graph',
+        'schedule_form',
+        'schedules_index',
+        'sidebar',
       ],
       minChunks: function(module, count) {
         return module.resource && (/vue_shared/).test(module.resource);

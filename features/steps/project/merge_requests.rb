@@ -33,7 +33,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click link "Merged"' do
-    click_link "Merged"
+    find('#state-merged').trigger('click')
   end
 
   step 'I click link "Closed"' do
@@ -331,7 +331,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I click on the Discussion tab' do
     page.within '.merge-request-tabs' do
-      click_link 'Discussion'
+      find('.notes-tab').trigger('click')
     end
 
     # Waits for load

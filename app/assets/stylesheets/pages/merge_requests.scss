@@ -90,11 +90,6 @@
     align-items: center;
     padding: $gl-padding-top $gl-padding 0;
 
-    i,
-    svg {
-      margin-right: 8px;
-    }
-
     svg {
       position: relative;
       top: 1px;
@@ -109,9 +104,10 @@
       flex-wrap: wrap;
     }
 
-    .ci-status-icon > .icon-link svg {
+    .icon-link > .ci-status-icon > svg {
       width: 22px;
       height: 22px;
+      margin-right: 8px;
     }
   }
 
@@ -125,6 +121,7 @@
 
     .dropdown-menu {
       margin-top: 11px;
+      z-index: 200;
     }
 
     .ci-action-icon-wrapper {
@@ -158,6 +155,34 @@
 
   .capitalize {
     text-transform: capitalize;
+  }
+
+  .label-branch {
+    @extend .ref-name;
+
+    color: $gl-text-color;
+    font-weight: bold;
+    overflow: hidden;
+    margin: 0 3px;
+    word-break: break-all;
+
+    &.label-truncated {
+      position: relative;
+      display: inline-block;
+      width: 250px;
+      margin-bottom: -3px;
+      white-space: nowrap;
+      text-overflow: clip;
+      line-height: 14px;
+
+      &::after {
+        position: absolute;
+        content: '...';
+        right: 0;
+        font-family: $regular_font;
+        background-color: $gray-light;
+      }
+    }
   }
 
   .js-deployment-link {
@@ -355,34 +380,6 @@
 
     &:hover {
       background: none;
-    }
-  }
-}
-
-.label-branch {
-  color: $gl-text-color;
-  font-family: $monospace_font;
-  font-weight: bold;
-  overflow: hidden;
-  font-size: 90%;
-  margin: 0 3px;
-  word-break: break-all;
-
-  &.label-truncated {
-    position: relative;
-    display: inline-block;
-    width: 250px;
-    margin-bottom: -3px;
-    white-space: nowrap;
-    text-overflow: clip;
-    line-height: 14px;
-
-    &::after {
-      position: absolute;
-      content: '...';
-      right: 0;
-      font-family: $regular_font;
-      background-color: $gray-light;
     }
   }
 }
@@ -693,9 +690,10 @@
 }
 
 .merge-request-tabs-holder {
-  top: 0;
-  z-index: 10;
+  top: $header-height;
+  z-index: 100;
   background-color: $white-light;
+  border-bottom: 1px solid $border-color;
 
   @media(min-width: $screen-sm-min) {
     position: sticky;
@@ -715,6 +713,16 @@
       padding-right: $gl-padding;
     }
   }
+
+  .nav-links {
+    border: 0;
+  }
+}
+
+.merge-request-tabs {
+  display: flex;
+  margin-bottom: 0;
+  padding: 0;
 }
 
 .limit-container-width {
@@ -722,6 +730,15 @@
     max-width: $limited-layout-width;
     margin-left: auto;
     margin-right: auto;
+  }
+}
+
+.merge-request-tabs-container {
+  display: flex;
+  justify-content: space-between;
+
+  @media (max-width: $screen-xs-max) {
+    flex-direction: column-reverse;
   }
 }
 
