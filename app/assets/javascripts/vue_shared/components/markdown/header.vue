@@ -1,7 +1,11 @@
 <script>
+  import tooltipMixin from '../../mixins/tooltip';
   import toolbarButton from './toolbar_button.vue';
 
   export default {
+    mixins: [
+      tooltipMixin,
+    ],
     props: {
       previewMarkdown: {
         type: Boolean,
@@ -82,9 +86,9 @@
             class="toolbar-btn js-zen-enter"
             data-container="body"
             tabindex="-1"
-            data-toggle="tooltip"
             title="Go full screen"
-            type="button">
+            type="button"
+            ref="tooltip">
             <i
               aria-hidden="true"
               class="fa fa-arrows-alt fa-fw">

@@ -1,5 +1,10 @@
 <script>
+  import tooltipMixin from '../../mixins/tooltip';
+
   export default {
+    mixins: [
+      tooltipMixin,
+    ],
     props: {
       buttonTitle: {
         type: String,
@@ -24,6 +29,11 @@
         default: false,
       },
     },
+    computed: {
+      iconClass() {
+        return `fa-${this.icon}`;
+      },
+    },
   };
 </script>
 
@@ -32,17 +42,17 @@
     type="button"
     class="toolbar-btn js-md hidden-xs"
     tabindex="-1"
+    ref="tooltip"
+    data-container="body"
     :data-md-tag="tag"
     :data-md-block="tagBlock"
     :data-md-prepend="prepend"
-    data-container="body"
-    data-toggle="tooltip"
     :title="buttonTitle"
     :aria-label="buttonTitle">
     <i
       aria-hidden="true"
       class="fa fa-fw"
-      :class="'fa-' + icon">
+      :class="iconClass">
     </i>
   </button>
 </template>
