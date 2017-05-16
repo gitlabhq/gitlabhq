@@ -42,6 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
         issuableTemplates: initialData.templates,
         markdownPreviewUrl,
         markdownDocs,
+        projectPath: initialData.project_path,
+        projectNamespace: initialData.namespace_path,
       };
     },
     render(createElement) {
@@ -57,6 +59,8 @@ document.addEventListener('DOMContentLoaded', () => {
           issuableTemplates: this.issuableTemplates,
           markdownPreviewUrl: this.markdownPreviewUrl,
           markdownDocs: this.markdownDocs,
+          projectPath: this.projectPath,
+          projectNamespace: this.projectNamespace,
         },
       });
     },

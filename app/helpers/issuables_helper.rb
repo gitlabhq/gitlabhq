@@ -201,7 +201,9 @@ module IssuablesHelper
 
   def issuable_initial_data(issuable)
     {
-      templates: issuable_templates(issuable)
+      templates: issuable_templates(issuable),
+      project_path: ref_project.path,
+      namespace_path: ref_project.namespace.full_path
     }.to_json
   end
 

@@ -1,14 +1,36 @@
 <script>
   export default {
     props: {
+      formState: {
+        type: Object,
+        required: true,
+      },
       issuableTemplates: {
         type: Array,
         required: false,
         default: () => [],
       },
+      projectPath: {
+        type: String,
+        required: true,
+      },
+      projectNamespace: {
+        type: String,
+        required: true,
+      },
     },
     mounted() {
-      return new gl.IssuableTemplateSelectors();
+      // Create the editor for the template
+      const editor = $('.detail-page-description .note-textarea');
+      editor.setValue = (val) => {
+        this.formState.description = val;
+      };
+      editor.getValue = () => this.formState.description;
+
+      this.issuableTemplate = new gl.IssuableTemplateSelectors({
+        $dropdowns: $(this.$refs.toggle),
+        editor,
+      });
     },
   };
 </script>
@@ -20,13 +42,14 @@
     <button
       class="dropdown-menu-toggle js-issuable-selector"
       type="button"
-      :data-data="JSON.stringify(issuableTemplates)"
+      ref="toggle"
       data-field-name="issuable_template"
       data-selected="null"
-      data-project-path="gitlab-ce"
-      data-namespace-path="gitlab-org"
-      data-toggle="dropdown">
-      <span class="dropdown-toggle-text ">
+      data-toggle="dropdown"
+      :data-namespace-path="projectNamespace"
+      :data-project-path="projectPath"
+      :data-data="JSON.stringify(issuableTemplates)">
+      <span class="dropdown-toggle-text">
         Choose a template
       </span>
       <i
@@ -63,8 +86,7 @@
           class="fa fa-times dropdown-input-clear js-dropdown-input-clear">
         </i>
       </div>
-      <div class="dropdown-content ">
-      </div>
+      <div class="dropdown-content"></div>
       <div class="dropdown-footer">
         <ul class="dropdown-footer-list">
           <li>

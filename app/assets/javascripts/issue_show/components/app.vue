@@ -54,6 +54,14 @@ export default {
       type: String,
       required: true,
     },
+    projectPath: {
+      type: String,
+      required: true,
+    },
+    projectNamespace: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     const store = new Store({
@@ -161,7 +169,9 @@ export default {
       :can-destroy="canDestroy"
       :issuable-templates="issuableTemplates"
       :markdown-docs="markdownDocs"
-      :markdown-preview-url="markdownPreviewUrl" />
+      :markdown-preview-url="markdownPreviewUrl"
+      :project-path="projectPath"
+      :project-namespace="projectNamespace" />
     <div v-else>
       <title-component
         :issuable-ref="issuableRef"

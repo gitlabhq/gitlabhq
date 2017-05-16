@@ -27,6 +27,14 @@
         type: String,
         required: true,
       },
+      projectPath: {
+        type: String,
+        required: true,
+      },
+      projectNamespace: {
+        type: String,
+        required: true,
+      },
     },
     components: {
       titleField,
@@ -49,7 +57,10 @@
         class="col-sm-4 col-lg-3"
         v-if="hasIssuableTemplates">
         <description-template
-          :issuable-templates="issuableTemplates" />
+          :form-state="formState"
+          :issuable-templates="issuableTemplates"
+          :project-path="projectPath"
+          :project-namespace="projectNamespace" />
       </div>
       <div
         :class="{
