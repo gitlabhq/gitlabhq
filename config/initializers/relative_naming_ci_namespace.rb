@@ -4,7 +4,7 @@
 # - [project.namespace, project, build]
 #
 # instead of:
-# - namespace_project_build_path(project.namespace, project, build)
+# - namespace_project_job_path(project.namespace, project, build)
 #
 # Without that, Ci:: namespace is used for resolving routes:
 # - namespace_project_ci_build_path(project.namespace, project, build)

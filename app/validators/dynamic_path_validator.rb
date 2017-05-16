@@ -97,6 +97,7 @@ class DynamicPathValidator < ActiveModel::EachValidator
     find_file
     gitlab-lfs/objects
     info/lfs/objects
+    jobs
     new
     preview
     raw

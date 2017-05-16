@@ -1,4 +1,4 @@
-- path_to_file = file_namespace_project_build_artifacts_path(@project.namespace, @project, @build, path: file.path)
+- path_to_file = file_namespace_project_job_artifacts_path(@project.namespace, @project, @build, path: file.path)
 
 %tr.tree-item{ 'data-link' => path_to_file }
   - blob = file.blob

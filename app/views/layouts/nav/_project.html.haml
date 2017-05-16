@@ -92,7 +92,7 @@
     -# Shortcut to Pipelines > Jobs
     - if project_nav_tab? :builds
       %li.hidden
-        = link_to project_builds_path(@project), title: 'Jobs', class: 'shortcuts-builds' do
+        = link_to project_jobs_path(@project), title: 'Jobs', class: 'shortcuts-builds' do
           Jobs
 
     -# Shortcut to commits page

@@ -55,5 +55,5 @@
           %span.stage
             = build.stage.titleize
           %span.build-name
-            = link_to build.name, pipeline_build_url(pipeline, build)
+            = link_to build.name, pipeline_job_url(pipeline, build)
         %pre.build-log= build_summary(build, skip: index >= 10)

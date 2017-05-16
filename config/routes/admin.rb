@@ -110,7 +110,7 @@ namespace :admin do
 
   resources :cohorts, only: :index
 
-  resources :builds, only: :index do
+  resources :jobs, only: :index do
     collection do
       post :cancel_all
     end

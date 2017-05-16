@@ -6,7 +6,7 @@ class BuildArtifactEntity < Grape::Entity
   end
 
   expose :path do |build|
-    download_namespace_project_build_artifacts_path(
+    download_namespace_project_job_artifacts_path(
       build.project.namespace,
       build.project,
       build)

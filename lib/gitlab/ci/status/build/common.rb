@@ -8,7 +8,7 @@ module Gitlab
           end
 
           def details_path
-            namespace_project_build_path(subject.project.namespace,
+            namespace_project_job_path(subject.project.namespace,
                                          subject.project,
                                          subject)
           end

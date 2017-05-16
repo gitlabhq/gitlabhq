@@ -120,7 +120,7 @@ module BlobHelper
 
   def blob_raw_url
     if @build && @entry
-      raw_namespace_project_build_artifacts_path(@project.namespace, @project, @build, path: @entry.path)
+      raw_namespace_project_job_artifacts_path(@project.namespace, @project, @build, path: @entry.path)
     elsif @snippet
       if @snippet.project_id
         raw_namespace_project_snippet_path(@project.namespace, @project, @snippet)

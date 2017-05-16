@@ -85,7 +85,7 @@
         %tr.build
           %td.id
             - if project
-              = link_to namespace_project_build_path(project.namespace, project, build) do
+              = link_to namespace_project_job_path(project.namespace, project, build) do
                 %strong ##{build.id}
             - else
               %strong ##{build.id}

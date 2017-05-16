@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::BuildsController, '(JavaScript fixtures)', type: :controller do
+describe Projects::JobsController, '(JavaScript fixtures)', type: :controller do
   include JavaScriptFixturesHelpers
 
   let(:admin) { create(:admin) }

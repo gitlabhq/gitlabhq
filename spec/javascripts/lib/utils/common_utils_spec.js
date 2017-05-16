@@ -356,7 +356,7 @@ require('~/lib/utils/common_utils');
 
     describe('gl.utils.setCiStatusFavicon', () => {
       it('should set page favicon to CI status favicon based on provided status', () => {
-        const BUILD_URL = `${gl.TEST_HOST}/frontend-fixtures/builds-project/builds/1/status.json`;
+        const BUILD_URL = `${gl.TEST_HOST}/frontend-fixtures/builds-project/jobs/1/status.json`;
         const FAVICON_PATH = '//icon_status_success';
         const spySetFavicon = spyOn(gl.utils, 'setFavicon').and.stub();
         const spyResetFavicon = spyOn(gl.utils, 'resetFavicon').and.stub();

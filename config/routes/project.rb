@@ -166,7 +166,7 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :builds, only: [:index, :show], constraints: { id: /\d+/ } do
+      resources :jobs, only: [:index, :show], constraints: { id: /\d+/ } do
         collection do
           post :cancel_all
 

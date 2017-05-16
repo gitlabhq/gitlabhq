@@ -16,7 +16,7 @@ describe 'ci/status/_badge', :view do
       end
 
       it 'has link to build details page' do
-        details_path = namespace_project_build_path(
+        details_path = namespace_project_job_path(
           project.namespace, project, build)
 
         render_status(build)

@@ -12,7 +12,7 @@ describe Projects::ArtifactsController do
             status: 'success')
   end
 
-  let(:build) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
+  let(:job) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
 
   before do
     project.team << [user, :developer]
@@ -22,16 +22,16 @@ describe Projects::ArtifactsController do
 
   describe 'GET download' do
     it 'sends the artifacts file' do
-      expect(controller).to receive(:send_file).with(build.artifacts_file.path, disposition: 'attachment').and_call_original
+      expect(controller).to receive(:send_file).with(job.artifacts_file.path, disposition: 'attachment').and_call_original
 
-      get :download, namespace_id: project.namespace, project_id: project, build_id: build
+      get :download, namespace_id: project.namespace, project_id: project, job_id: job
     end
   end
 
   describe 'GET browse' do
     context 'when the directory exists' do
       it 'renders the browse view' do
-        get :browse, namespace_id: project.namespace, project_id: project, build_id: build, path: 'other_artifacts_0.1.2'
+        get :browse, namespace_id: project.namespace, project_id: project, job_id: job, path: 'other_artifacts_0.1.2'
 
         expect(response).to render_template('projects/artifacts/browse')
       end
@@ -39,7 +39,7 @@ describe Projects::ArtifactsController do
 
     context 'when the directory does not exist' do
       it 'responds Not Found' do
-        get :browse, namespace_id: project.namespace, project_id: project, build_id: build, path: 'unknown'
+        get :browse, namespace_id: project.namespace, project_id: project, job_id: job, path: 'unknown'
 
         expect(response).to be_not_found
       end
@@ -49,7 +49,7 @@ describe Projects::ArtifactsController do
   describe 'GET file' do
     context 'when the file exists' do
       it 'renders the file view' do
-        get :file, namespace_id: project.namespace, project_id: project, build_id: build, path: 'ci_artifacts.txt'
+        get :file, namespace_id: project.namespace, project_id: project, job_id: job, path: 'ci_artifacts.txt'
 
         expect(response).to render_template('projects/artifacts/file')
       end
@@ -57,7 +57,7 @@ describe Projects::ArtifactsController do
 
     context 'when the file does not exist' do
       it 'responds Not Found' do
-        get :file, namespace_id: project.namespace, project_id: project, build_id: build, path: 'unknown'
+        get :file, namespace_id: project.namespace, project_id: project, job_id: job, path: 'unknown'
 
         expect(response).to be_not_found
       end
@@ -67,7 +67,7 @@ describe Projects::ArtifactsController do
   describe 'GET raw' do
     context 'when the file exists' do
       it 'serves the file using workhorse' do
-        get :raw, namespace_id: project.namespace, project_id: project, build_id: build, path: 'ci_artifacts.txt'
+        get :raw, namespace_id: project.namespace, project_id: project, job_id: job, path: 'ci_artifacts.txt'
 
         send_data = response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]
 
@@ -84,7 +84,7 @@ describe Projects::ArtifactsController do
 
     context 'when the file does not exist' do
       it 'responds Not Found' do
-        get :raw, namespace_id: project.namespace, project_id: project, build_id: build, path: 'unknown'
+        get :raw, namespace_id: project.namespace, project_id: project, job_id: job, path: 'unknown'
 
         expect(response).to be_not_found
       end
@@ -92,29 +92,29 @@ describe Projects::ArtifactsController do
   end
 
   describe 'GET latest_succeeded' do
-    def params_from_ref(ref = pipeline.ref, job = build.name, path = 'browse')
+    def params_from_ref(ref = pipeline.ref, job_name = job.name, path = 'browse')
       {
         namespace_id: project.namespace,
         project_id: project,
         ref_name_and_path: File.join(ref, path),
-        job: job
+        job: job_name
       }
     end
 
-    context 'cannot find the build' do
+    context 'cannot find the job' do
       shared_examples 'not found' do
         it { expect(response).to have_http_status(:not_found) }
       end
 
       context 'has no such ref' do
         before do
-          get :latest_succeeded, params_from_ref('TAIL', build.name)
+          get :latest_succeeded, params_from_ref('TAIL', job.name)
         end
 
         it_behaves_like 'not found'
       end
 
-      context 'has no such build' do
+      context 'has no such job' do
         before do
           get :latest_succeeded, params_from_ref(pipeline.ref, 'NOBUILD')
         end
@@ -124,20 +124,20 @@ describe Projects::ArtifactsController do
 
       context 'has no path' do
         before do
-          get :latest_succeeded, params_from_ref(pipeline.sha, build.name, '')
+          get :latest_succeeded, params_from_ref(pipeline.sha, job.name, '')
         end
 
         it_behaves_like 'not found'
       end
     end
 
-    context 'found the build and redirect' do
-      shared_examples 'redirect to the build' do
+    context 'found the job and redirect' do
+      shared_examples 'redirect to the job' do
         it 'redirects' do
-          path = browse_namespace_project_build_artifacts_path(
+          path = browse_namespace_project_job_artifacts_path(
             project.namespace,
             project,
-            build)
+            job)
 
           expect(response).to redirect_to(path)
         end
@@ -151,7 +151,7 @@ describe Projects::ArtifactsController do
           get :latest_succeeded, params_from_ref('master')
         end
 
-        it_behaves_like 'redirect to the build'
+        it_behaves_like 'redirect to the job'
       end
 
       context 'with branch name containing slash' do
@@ -162,7 +162,7 @@ describe Projects::ArtifactsController do
           get :latest_succeeded, params_from_ref('improve/awesome')
         end
 
-        it_behaves_like 'redirect to the build'
+        it_behaves_like 'redirect to the job'
       end
 
       context 'with branch name and path containing slashes' do
@@ -170,14 +170,14 @@ describe Projects::ArtifactsController do
           pipeline.update(ref: 'improve/awesome',
                           sha: project.commit('improve/awesome').sha)
 
-          get :latest_succeeded, params_from_ref('improve/awesome', build.name, 'file/README.md')
+          get :latest_succeeded, params_from_ref('improve/awesome', job.name, 'file/README.md')
         end
 
         it 'redirects' do
-          path = file_namespace_project_build_artifacts_path(
+          path = file_namespace_project_job_artifacts_path(
             project.namespace,
             project,
-            build,
+            job,
             'README.md')
 
           expect(response).to redirect_to(path)

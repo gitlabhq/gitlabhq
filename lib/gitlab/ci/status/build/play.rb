@@ -20,7 +20,7 @@ module Gitlab
           end
 
           def action_path
-            play_namespace_project_build_path(subject.project.namespace,
+            play_namespace_project_job_path(subject.project.namespace,
                                               subject.project,
                                               subject)
           end

@@ -172,7 +172,7 @@ describe Projects::EnvironmentsController do
         expect(response).to have_http_status(200)
         expect(json_response).to eq(
           { 'redirect_url' =>
-              "http://test.host/#{project.path_with_namespace}/builds/#{action.id}" })
+              "http://test.host/#{project.path_with_namespace}/jobs/#{action.id}" })
       end
     end
 

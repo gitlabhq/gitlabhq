@@ -330,7 +330,7 @@ describe "Private Project Access", feature: true  do
   end
 
   describe "GET /:project_path/builds" do
-    subject { namespace_project_builds_path(project.namespace, project) }
+    subject { namespace_project_jobs_path(project.namespace, project) }
 
     it { is_expected.to be_allowed_for(:admin) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
@@ -358,7 +358,7 @@ describe "Private Project Access", feature: true  do
   describe "GET /:project_path/builds/:id" do
     let(:pipeline) { create(:ci_pipeline, project: project) }
     let(:build) { create(:ci_build, pipeline: pipeline) }
-    subject { namespace_project_build_path(project.namespace, project, build.id) }
+    subject { namespace_project_job_path(project.namespace, project, build.id) }
 
     it { is_expected.to be_allowed_for(:admin) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
@@ -391,7 +391,7 @@ describe "Private Project Access", feature: true  do
   describe 'GET /:project_path/builds/:id/trace' do
     let(:pipeline) { create(:ci_pipeline, project: project) }
     let(:build) { create(:ci_build, pipeline: pipeline) }
-    subject { trace_namespace_project_build_path(project.namespace, project, build.id) }
+    subject { trace_namespace_project_job_path(project.namespace, project, build.id) }
 
     it { is_expected.to be_allowed_for(:admin) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
