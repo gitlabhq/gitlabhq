@@ -8,7 +8,7 @@ const defaults = {
   fileBlobPermalinkUrl: null,
 };
 
-class ShortcutsBlob extends Shortcuts {
+export default class ShortcutsBlob extends Shortcuts {
   constructor(opts) {
     const options = Object.assign({}, defaults, opts);
     super(options.skipResetBindings);
@@ -25,5 +25,3 @@ class ShortcutsBlob extends Shortcuts {
     }
   }
 }
-
-module.exports = ShortcutsBlob;
