@@ -50,13 +50,13 @@ describe Projects::PipelinesController do
     end
 
     context 'when the pipeline has multiple jobs' do
-      it 'does not perform N + 1 queries' do
+      it 'does not perform N + 1 queries', :with_request_store do
         control_count = ActiveRecord::QueryRecorder.new { get_pipeline_json }.count
 
         create(:ci_build, pipeline: pipeline)
 
         # The plus 2 is needed to group and sort
-        expect { get_pipeline_json }.not_to exceed_query_limit(control_count + 12)
+        expect { get_pipeline_json }.not_to exceed_query_limit(control_count + 2)
       end
     end
 
