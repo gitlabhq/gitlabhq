@@ -1,18 +1,26 @@
 import Vue from 'vue';
 import editActions from '~/issue_show/components/edit_actions.vue';
 import eventHub from '~/issue_show/event_hub';
+import Store from '~/issue_show/stores';
 
 describe('Edit Actions components', () => {
   let vm;
 
   beforeEach((done) => {
     const Component = Vue.extend(editActions);
+    const store = new Store({
+      titleHtml: '',
+      descriptionHtml: '',
+      issuableRef: '',
+    });
+    store.formState.title = 'test';
 
     spyOn(eventHub, '$emit');
 
     vm = new Component({
       propsData: {
         canDestroy: true,
+        formState: store.formState,
       },
     }).$mount();
 
@@ -36,6 +44,18 @@ describe('Edit Actions components', () => {
       expect(
         vm.$el.querySelector('.btn-danger'),
       ).toBeNull();
+
+      done();
+    });
+  });
+
+  it('disables submit button when title is blank', (done) => {
+    vm.formState.title = '';
+
+    Vue.nextTick(() => {
+      expect(
+        vm.$el.querySelector('.btn-save').getAttribute('disabled'),
+      ).toBe('disabled');
 
       done();
     });

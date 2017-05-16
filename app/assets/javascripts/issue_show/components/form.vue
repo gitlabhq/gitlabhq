@@ -25,6 +25,7 @@
     <title-field
       :form-state="formState" />
     <edit-actions
+      :form-state="formState"
       :can-destroy="canDestroy" />
   </form>
 </template>
