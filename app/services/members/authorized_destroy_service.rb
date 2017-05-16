@@ -29,7 +29,7 @@ module Members
         issue_ids = IssuesFinder.new(user, group_id: member.source_id, assignee_id: member.user_id).
           execute.pluck(:id)
 
-        IssueAssignee.destroy_all(issue_id: issue_ids, user_id: member.user_id)
+        IssueAssignee.delete_all(issue_id: issue_ids, user_id: member.user_id)
 
         MergeRequestsFinder.new(user, group_id: member.source_id, assignee_id: member.user_id).
           execute.
@@ -37,7 +37,7 @@ module Members
       else
         project = member.source
 
-        IssueAssignee.destroy_all(
+        IssueAssignee.delete_all(
           user_id: member.user_id,
           issue_id: project.issues.opened.assigned_to(member.user).select(:id)
         )
