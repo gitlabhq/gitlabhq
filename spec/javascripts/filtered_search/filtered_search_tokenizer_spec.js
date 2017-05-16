@@ -1,6 +1,6 @@
-require('~/extensions/array');
-require('~/filtered_search/filtered_search_token_keys');
-require('~/filtered_search/filtered_search_tokenizer');
+import '~/extensions/array';
+import '~/filtered_search/filtered_search_token_keys';
+import '~/filtered_search/filtered_search_tokenizer';
 
 describe('Filtered Search Tokenizer', () => {
   describe('processTokens', () => {

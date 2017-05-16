@@ -1,7 +1,7 @@
 /* global Mousetrap */
 /* global Shortcuts */
 
-require('./shortcuts');
+import './shortcuts';
 
 const defaults = {
   skipResetBindings: false,

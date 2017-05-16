@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-expressions, no-prototype-builtins, no-new, no-shadow, max-len */
 
-require('vendor/jquery.endless-scroll.js');
-require('~/pager');
-require('~/activities');
+import 'vendor/jquery.endless-scroll.js';
+import '~/pager';
+import '~/activities';
 
 (() => {
   window.gon || (window.gon = {});

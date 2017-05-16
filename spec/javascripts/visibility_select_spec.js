@@ -1,4 +1,4 @@
-require('~/visibility_select');
+import '~/visibility_select';
 
 (() => {
   const VisibilitySelect = gl.VisibilitySelect;

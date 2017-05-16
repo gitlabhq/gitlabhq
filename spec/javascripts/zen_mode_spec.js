@@ -3,7 +3,7 @@
 /* global Mousetrap */
 /* global ZenMode */
 
-require('~/zen_mode');
+import '~/zen_mode';
 
 (function() {
   var enterZen, escapeKeydown, exitZen;

@@ -8,11 +8,11 @@
 import Vue from 'vue';
 import '~/boards/models/assignee';
 
-require('~/boards/models/list');
-require('~/boards/models/label');
-require('~/boards/stores/boards_store');
+import '~/boards/models/list';
+import '~/boards/models/label';
+import '~/boards/stores/boards_store';
 const boardCard = require('~/boards/components/board_card').default;
-require('./mock_data');
+import './mock_data';
 
 describe('Issue card', () => {
   let vm;

@@ -1,7 +1,7 @@
 import AjaxCache from '~/lib/utils/ajax_cache';
 
-require('~/filtered_search/filtered_search_visual_tokens');
-const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper');
+import '~/filtered_search/filtered_search_visual_tokens';
+import FilteredSearchSpecHelper from '../helpers/filtered_search_spec_helper';
 
 describe('Filtered Search Visual Tokens', () => {
   let tokensContainer;

@@ -1,9 +1,9 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, quotes, no-underscore-dangle, one-var, one-var-declaration-per-line, consistent-return, dot-notation, quote-props, comma-dangle, object-shorthand, max-len, prefer-arrow-callback */
 /* global MergeRequestTabs */
 
-require('vendor/jquery.waitforimages');
-require('./task_list');
-require('./merge_request_tabs');
+import 'vendor/jquery.waitforimages';
+import './task_list';
+import './merge_request_tabs';
 
 (function() {
   this.MergeRequest = (function() {

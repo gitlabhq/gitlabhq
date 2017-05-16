@@ -1,8 +1,8 @@
 /* eslint-disable no-param-reassign */
-import { __ } from '../locale';
 
-require('../lib/utils/text_utility');
-const DEFAULT_EVENT_OBJECTS = require('./default_event_objects');
+import { __ } from '../locale';
+import '../lib/utils/text_utility';
+import DEFAULT_EVENT_OBJECTS from './default_event_objects';
 
 const global = window.gl || (window.gl = {});
 global.cycleAnalytics = global.cycleAnalytics || {};
