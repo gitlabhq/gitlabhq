@@ -4,9 +4,9 @@
 - page_title "Boards"
 
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('common_vue')
-  = page_specific_javascript_bundle_tag('filtered_search')
-  = page_specific_javascript_bundle_tag('boards')
+  = webpack_bundle_tag 'common_vue'
+  = webpack_bundle_tag 'filtered_search'
+  = webpack_bundle_tag 'boards'
 
   %script#js-board-template{ type: "text/x-template" }= render "projects/boards/components/board"
   %script#js-board-modal-filter{ type: "text/x-template" }= render "shared/issuable/search_bar", type: :boards_modal
