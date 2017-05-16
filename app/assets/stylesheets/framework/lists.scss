@@ -263,3 +263,47 @@ ul.controls {
 ul.indent-list {
   padding: 10px 0 0 30px;
 }
+
+
+// Specific styles for tree list
+.group-list-tree {
+  .folder-toggle-wrap {
+    float: left;
+    line-height: $list-text-height;
+    font-size: 0;
+
+    span {
+      font-size: $gl-font-size;
+    }
+  }
+
+  .folder-caret,
+  .folder-icon {
+    display: inline-block;
+  }
+
+  .folder-caret {
+    width: 15px;
+  }
+
+  .folder-icon {
+    width: 20px;
+  }
+
+  > .group-row:not(.is-expandable) {
+    .folder-caret .fa {
+      opacity: 0;
+    }
+  }
+
+  .content-list li:last-child {
+    padding-bottom: 0;
+  }
+
+  .group-list-tree {
+    margin-top: 10px;
+    margin-bottom: 0;
+    margin-left: 20px;
+    border-top: solid 1px $border-white-light;
+  }
+}

@@ -47,8 +47,10 @@ $(() => {
           });
       },
       toggleSubGroups(parentGroup = null) {
+        if (!parentGroup.isOpen) {
+          this.fetchGroups(parentGroup);
+        }
         GroupsStore.toggleSubGroups(parentGroup);
-        this.fetchGroups(parentGroup);
       },
     },
     created() {

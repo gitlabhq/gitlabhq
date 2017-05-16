@@ -6,11 +6,16 @@ export default {
       required: true,
     },
   },
+  computed: {
+    hasGroups() {
+      return Object.keys(this.groups).length > 0;
+    },
+  },
 };
 </script>
 
 <template>
-  <ul class="list-group">
+  <ul class="content-list group-list-tree" v-show="hasGroups">
     <group-item v-for="group in groups" :group="group" />
   </ul>
 </template>

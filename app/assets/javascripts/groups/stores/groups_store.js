@@ -33,7 +33,7 @@ export default class GroupsStore {
     Object.keys(mappedGroups).forEach((key) => {
       const currentGroup = mappedGroups[key];
       // If the group is not at the root level, add it to its parent array of subGroups.
-      const parentGroup = mappedGroups[currentGroup['parentId']];
+      const parentGroup = mappedGroups[currentGroup.parentId];
       if (currentGroup.parentId && parentGroup) {
         mappedGroups[currentGroup.parentId].subGroups[currentGroup.id] = currentGroup;
         mappedGroups[currentGroup.parentId].isOpen = true; // Expand group if it has subgroups
@@ -58,8 +58,10 @@ export default class GroupsStore {
       description: rawGroup.description,
       webUrl: rawGroup.web_url,
       parentId: rawGroup.parent_id,
-      expandable: true,
+      visibility: rawGroup.visibility,
       isOpen: false,
+      numberProjects: 10,
+      numberMembers: 10,
       subGroups: {},
     };
   }
