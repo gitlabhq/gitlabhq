@@ -47,7 +47,6 @@ import UsersSelect from './users_select';
           Cookies.set('collapsed_gutter', true);
         }
       });
-      $(".right-sidebar").niceScroll();
     }
 
     IssuableContext.prototype.initParticipants = function() {
