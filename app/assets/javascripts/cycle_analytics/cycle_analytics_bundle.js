@@ -14,7 +14,6 @@ import './components/stage_test_component';
 import './components/total_time_component';
 import './cycle_analytics_service';
 import './cycle_analytics_store';
-import './default_event_objects';
 
 Vue.use(Translate);
 
