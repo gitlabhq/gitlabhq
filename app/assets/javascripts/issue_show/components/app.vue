@@ -7,7 +7,7 @@ import Service from '../services/index';
 import Store from '../stores';
 import titleComponent from './title.vue';
 import descriptionComponent from './description.vue';
-import editActions from './edit_actions.vue';
+import formComponent from './form.vue';
 
 export default {
   props: {
@@ -56,9 +56,6 @@ export default {
     };
   },
   computed: {
-    elementType() {
-      return this.showForm ? 'form' : 'div';
-    },
     formState() {
       return this.store.formState;
     },
@@ -66,7 +63,7 @@ export default {
   components: {
     descriptionComponent,
     titleComponent,
-    editActions,
+    formComponent,
   },
   methods: {
     openForm() {
@@ -143,22 +140,23 @@ export default {
 </script>
 
 <template>
-  <div :is="elementType">
-    <title-component
-      :form-state="formState"
-      :show-form="showForm"
-      :issuable-ref="issuableRef"
-      :title-html="state.titleHtml"
-      :title-text="state.titleText" />
-    <description-component
-      v-if="state.descriptionHtml"
-      :can-update="canUpdate"
-      :description-html="state.descriptionHtml"
-      :description-text="state.descriptionText"
-      :updated-at="state.updatedAt"
-      :task-status="state.taskStatus" />
-    <edit-actions
+  <div>
+    <form-component
       v-if="canUpdate && showForm"
+      :form-state="formState"
       :can-destroy="canDestroy" />
+    <div v-else>
+      <title-component
+        :issuable-ref="issuableRef"
+        :title-html="state.titleHtml"
+        :title-text="state.titleText" />
+      <description-component
+        v-if="state.descriptionHtml"
+        :can-update="canUpdate"
+        :description-html="state.descriptionHtml"
+        :description-text="state.descriptionText"
+        :updated-at="state.updatedAt"
+        :task-status="state.taskStatus" />
+    </div>
   </div>
 </template>
