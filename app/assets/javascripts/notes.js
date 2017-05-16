@@ -24,7 +24,7 @@ const normalizeNewlines = function(str) {
 (function() {
   this.Notes = (function() {
     const MAX_VISIBLE_COMMIT_LIST_COUNT = 3;
-    const REGEX_SLASH_COMMANDS = /^\/\w+/gm;
+    const REGEX_SLASH_COMMANDS = /^\/\w+.*$/gm;
 
     Notes.interval = null;
 
@@ -1182,6 +1182,7 @@ const normalizeNewlines = function(str) {
      */
     Notes.prototype.createPlaceholderNote = function({ formContent, uniqueId, isDiscussionNote, currentUsername, currentUserFullname }) {
       const discussionClass = isDiscussionNote ? 'discussion' : '';
+      const escapedFormContent = _.escape(formContent);
       const $tempNote = $(
         `<li id="${uniqueId}" class="note being-posted fade-in-half timeline-entry">
            <div class="timeline-entry-inner">
@@ -1202,7 +1203,7 @@ const normalizeNewlines = function(str) {
                  </div>
                  <div class="note-body">
                    <div class="note-text">
-                     <p>${formContent}</p>
+                     <p>${escapedFormContent}</p>
                    </div>
                  </div>
               </div>
