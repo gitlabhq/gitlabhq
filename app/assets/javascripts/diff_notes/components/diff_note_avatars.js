@@ -120,7 +120,7 @@ const DiffNoteAvatars = Vue.extend({
   },
   methods: {
     clickedAvatar(e) {
-      notes.addDiffNote(e);
+      notes.onAddDiffNote(e);
 
       // Toggle the active state of the toggle all button
       this.toggleDiscussionsToggleState();
