@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import Store from '~/issue_show/stores';
 import titleComponent from '~/issue_show/components/title.vue';
 
 describe('Title component', () => {
@@ -6,18 +7,25 @@ describe('Title component', () => {
 
   beforeEach(() => {
     const Component = Vue.extend(titleComponent);
+    const store = new Store({
+      titleHtml: '',
+      descriptionHtml: '',
+      issuableRef: '',
+    });
     vm = new Component({
       propsData: {
         issuableRef: '#1',
         titleHtml: 'Testing <img />',
         titleText: 'Testing',
+        showForm: false,
+        formState: store.formState,
       },
     }).$mount();
   });
 
   it('renders title HTML', () => {
     expect(
-      vm.$el.innerHTML.trim(),
+      vm.$el.querySelector('h2').innerHTML.trim(),
     ).toBe('Testing <img>');
   });
 
@@ -39,12 +47,12 @@ describe('Title component', () => {
 
     Vue.nextTick(() => {
       expect(
-        vm.$el.classList.contains('issue-realtime-pre-pulse'),
+        vm.$el.querySelector('h2').classList.contains('issue-realtime-pre-pulse'),
       ).toBeTruthy();
 
       setTimeout(() => {
         expect(
-          vm.$el.classList.contains('issue-realtime-trigger-pulse'),
+          vm.$el.querySelector('h2').classList.contains('issue-realtime-trigger-pulse'),
         ).toBeTruthy();
 
         done();
