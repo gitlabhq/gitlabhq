@@ -79,7 +79,7 @@ You can find an example of the above in this [class][container-class-example];
 
 ## Custom errors
 
-Custom/namespaced error are not accepted. You should just use a string.
+Custom/namespaced errors are not accepted. You should just use a string.
 
 Example:
 
