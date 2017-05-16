@@ -102,8 +102,7 @@ window.dateFormat = dateFormat;
     };
 
     w.gl.utils.updateTimeagoText = function(el) {
-      const timeago = gl.utils.getTimeago();
-      const formattedDate = timeago.format(el.getAttribute('datetime'), 'gl_en');
+      const formattedDate = gl.utils.getTimeago().format(el.getAttribute('datetime'), 'gl_en');
 
       if (el.textContent !== formattedDate) {
         el.textContent = formattedDate;

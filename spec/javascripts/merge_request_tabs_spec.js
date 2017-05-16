@@ -1,7 +1,7 @@
 /* eslint-disable no-var, comma-dangle, object-shorthand */
 
 import '~/merge_request_tabs';
-import '~/commit/pipelines/pipelines_bundle.js';
+import '~/commit/pipelines/pipelines_bundle';
 import '~/breakpoints';
 import '~/lib/utils/common_utils';
 import '~/diff';

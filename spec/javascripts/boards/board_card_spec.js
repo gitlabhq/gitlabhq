@@ -11,7 +11,7 @@ import '~/boards/models/assignee';
 import '~/boards/models/list';
 import '~/boards/models/label';
 import '~/boards/stores/boards_store';
-const boardCard = require('~/boards/components/board_card').default;
+import boardCard from '~/boards/components/board_card';
 import './mock_data';
 
 describe('Issue card', () => {
