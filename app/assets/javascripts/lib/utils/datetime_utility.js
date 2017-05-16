@@ -102,12 +102,11 @@ window.dateFormat = require('vendor/date.format');
       if (!time) {
         return '';
       }
-      expiredLabel || (expiredLabel = s__('Timeago|Past due'));
-      timefor = gl.utils.getTimeago().format(time, `${lang}-remaining`);
       if (new Date(time) < new Date()) {
+        expiredLabel || (expiredLabel = s__('Timeago|Past due'));
         timefor = expiredLabel;
       } else {
-        timefor = timefor.trim();
+        timefor = gl.utils.getTimeago().format(time, `${lang}-remaining`).trim();
       }
       return timefor;
     };

@@ -2,6 +2,26 @@ require('~/lib/utils/datetime_utility');
 
 (() => {
   describe('Date time utils', () => {
+    describe('timeFor', () => {
+      it('returns `past due` when in past', () => {
+        const date = new Date();
+        date.setFullYear(date.getFullYear() - 1);
+
+        expect(
+          gl.utils.timeFor(date),
+        ).toBe('Past due');
+      });
+
+      it('returns remaining time when in the future', () => {
+        const date = new Date();
+        date.setFullYear(date.getFullYear() + 1);
+
+        expect(
+          gl.utils.timeFor(date),
+        ).toBe('1 year remaining');
+      });
+    });
+
     describe('get day name', () => {
       it('should return Sunday', () => {
         const day = gl.utils.getDayName(new Date('07/17/2016'));
