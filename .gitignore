@@ -18,6 +18,7 @@ eslint-report.html
 .sass-cache/
 /.secret
 /.vagrant
+/.yarn-cache
 /.byebug_history
 /Vagrantfile
 /backups/*
