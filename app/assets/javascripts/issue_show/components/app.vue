@@ -41,6 +41,14 @@ export default {
       required: false,
       default: '',
     },
+    markdownPreviewUrl: {
+      type: String,
+      required: true,
+    },
+    markdownDocs: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     const store = new Store({
@@ -70,6 +78,7 @@ export default {
       this.showForm = true;
       this.store.formState = {
         title: this.state.titleText,
+        description: this.state.descriptionText,
       };
     },
     closeForm() {
@@ -144,7 +153,9 @@ export default {
     <form-component
       v-if="canUpdate && showForm"
       :form-state="formState"
-      :can-destroy="canDestroy" />
+      :can-destroy="canDestroy"
+      :markdown-docs="markdownDocs"
+      :markdown-preview-url="markdownPreviewUrl" />
     <div v-else>
       <title-component
         :issuable-ref="issuableRef"
