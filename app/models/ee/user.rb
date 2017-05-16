@@ -52,5 +52,15 @@ module EE
     def admin_or_auditor?
       admin? || auditor?
     end
+
+    def remember_me!
+      return if ::Gitlab::Geo.secondary?
+      super
+    end
+
+    def forget_me!
+      return if ::Gitlab::Geo.secondary?
+      super
+    end
   end
 end
