@@ -110,22 +110,11 @@ describe Repository, models: true do
   end
 
   describe '#ref_name_for_sha' do
-    context 'ref found' do
-      it 'returns the ref' do
-        allow_any_instance_of(Gitlab::Popen).to receive(:popen).
-          and_return(["b8d95eb4969eefacb0a58f6a28f6803f8070e7b9 commit\trefs/environments/production/77\n", 0])
+    it 'returns the ref' do
+      allow(repository.raw_repository).to receive(:ref_name_for_sha).
+        and_return('refs/environments/production/77')
 
-        expect(repository.ref_name_for_sha('bla', '0' * 40)).to eq 'refs/environments/production/77'
-      end
-    end
-
-    context 'ref not found' do
-      it 'returns nil' do
-        allow_any_instance_of(Gitlab::Popen).to receive(:popen).
-          and_return(["", 0])
-
-        expect(repository.ref_name_for_sha('bla', '0' * 40)).to eq nil
-      end
+      expect(repository.ref_name_for_sha('bla', '0' * 40)).to eq 'refs/environments/production/77'
     end
   end
 
@@ -1873,12 +1862,18 @@ describe Repository, models: true do
 
   describe '#is_ancestor?' do
     context 'Gitaly is_ancestor feature enabled' do
-      it "asks Gitaly server if it's an ancestor" do
-        commit = repository.commit
-        expect(repository.raw_repository).to receive(:is_ancestor?).and_call_original
-        allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:is_ancestor).and_return(true)
+      let(:commit) { repository.commit }
+      let(:ancestor) { commit.parents.first }
 
-        expect(repository.is_ancestor?(commit.id, commit.id)).to be true
+      before do
+        allow(Gitlab::GitalyClient).to receive(:enabled?).and_return(true)
+        allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:is_ancestor).and_return(true)
+      end
+
+      it "asks Gitaly server if it's an ancestor" do
+        expect_any_instance_of(Gitlab::GitalyClient::Commit).to receive(:is_ancestor).with(ancestor.id, commit.id)
+
+        repository.is_ancestor?(ancestor.id, commit.id)
       end
     end
   end

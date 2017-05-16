@@ -471,19 +471,19 @@ module Gitlab
 
       # Returns a RefName for a given SHA
       def ref_name_for_sha(ref_path, sha)
-        # NOTE: This feature is intentionally disabled until
-        # https://gitlab.com/gitlab-org/gitaly/issues/180 is resolved
-        # Gitlab::GitalyClient.migrate(:find_ref_name) do |is_enabled|
-        #   if is_enabled
-        #     gitaly_ref_client.find_ref_name(sha, ref_path)
-        #   else
-        args = %W(#{Gitlab.config.git.bin_path} for-each-ref --count=1 #{ref_path} --contains #{sha})
+        raise ArgumentError, "sha can't be empty" unless sha.present?
 
-        # Not found -> ["", 0]
-        # Found -> ["b8d95eb4969eefacb0a58f6a28f6803f8070e7b9 commit\trefs/environments/production/77\n", 0]
-        Gitlab::Popen.popen(args, @path).first.split.last
-        #   end
-        # end
+        gitaly_migrate(:find_ref_name) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.find_ref_name(sha, ref_path)
+          else
+            args = %W(#{Gitlab.config.git.bin_path} for-each-ref --count=1 #{ref_path} --contains #{sha})
+
+            # Not found -> ["", 0]
+            # Found -> ["b8d95eb4969eefacb0a58f6a28f6803f8070e7b9 commit\trefs/environments/production/77\n", 0]
+            Gitlab::Popen.popen(args, @path).first.split.last
+          end
+        end
       end
 
       # Returns commits collection
