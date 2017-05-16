@@ -152,10 +152,12 @@ class MergeRequestDiff < ActiveRecord::Base
 
   # MRs created before 8.4 don't store their true diff refs (start and base),
   # but we need to get a commit SHA for the "View file @ ..." link by a file,
-  # so we find use an approximation of the diff refs if we can't get the actual one.
+  # so we use an approximation of the diff refs if we can't get the actual one.
+  #
   # These will not be the actual diff refs if the target branch was merged into
   # the source branch after the merge request was created, but it is good enough
   # for the specific purpose of linking to a commit.
+  #
   # It is not good enough for highlighting diffs, so we can't simply pass
   # these as `diff_refs.`
   def fallback_diff_refs
