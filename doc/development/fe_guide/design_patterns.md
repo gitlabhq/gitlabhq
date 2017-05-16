@@ -49,30 +49,37 @@ export default class MyThing {
 
 ## Manipulating the DOM in a JS Class
 
-When writing a class that needs to manipulate the DOM guarantee a container option is provided.
-This is useful when we need that class to be instantiated more than once in the same page.
+When writing a class that needs to manipulate the DOM, guarantee a container element is provided
+and avoid DOM queries where possible unless you are querying elements created by the class itself.
 
 Bad:
 ```javascript
 class Foo {
   constructor() {
-    document.querySelector('.bar');
+    this.container = document.getElementById('container');
   }
 }
+
 new Foo();
 ```
 
 Good:
 ```javascript
 class Foo {
-  constructor(opts) {
-    document.querySelector(`${opts.container} .bar`);
+  constructor(container) {
+    this.container = container;
   }
 }
 
-new Foo({ container: '.my-element' });
+new Foo(document.getElementById('container'));
 ```
-You can find an example of the above in this [class][container-class-example];
 
+If the query for the container is hard coded in the class, the code is not easily
+reusable as you have to match your DOM with the DOM **required** by the class. Additionally,
+it is easier to write tests for classes that don't perform queries as you don't have to 
+mock the query methods or provide a test DOM.
 
-[container-class-example]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/mini_pipeline_graph_dropdown.js
+If the query for the container uses a selector string passed to the constructor, it is
+no longer coupled to a specific DOM, but it still lacks the benefits of avoiding that
+query all together and leaving the querying to the module that instantiates that class,
+which in many cases will be `dispatcher.js`.
