@@ -21,7 +21,6 @@ export default {
   <a
     class="btn monitoring-url has-tooltip"
     data-container="body"
-    target="_blank"
     rel="noopener noreferrer nofollow"
     :href="monitoringUrl"
     :title="title"
