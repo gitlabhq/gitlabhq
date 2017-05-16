@@ -265,6 +265,17 @@ describe Gitlab::Ci::Trace::Stream do
       it { is_expected.to eq("98.29") }
     end
 
+    context 'when regex is multi-byte char' do
+      let(:data) { 'ゴッドファット\n' }
+      let(:regex) { 'ゴッドファット' }
+
+      before do
+        stub_const('Gitlab::Ci::Trace::Stream::BUFFER_SIZE', 5)
+      end
+
+      it { is_expected.to be_nil }
+    end
+
     context 'when BUFFER_SIZE is equal to stream.size' do
       let(:data) { 'Coverage 1033 / 1051 LOC (98.29%) covered\n' }
       let(:regex) { '\(\d+.\d+\%\) covered' }
