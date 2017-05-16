@@ -25,5 +25,13 @@ describe Gitlab::DependencyLinker, lib: true do
 
       described_class.link(blob_name, nil, nil)
     end
+
+    it 'links using ComposerJsonLinker' do
+      blob_name = 'composer.json'
+
+      expect(described_class::ComposerJsonLinker).to receive(:link)
+
+      described_class.link(blob_name, nil, nil)
+    end
   end
 end
