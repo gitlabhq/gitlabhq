@@ -32,7 +32,6 @@ export default {
           <a
             v-if="mr.newBlobPath"
             :href="mr.newBlobPath"
-            role="button"
             class="btn btn-inverted btn-save">
             Create file
           </a>
