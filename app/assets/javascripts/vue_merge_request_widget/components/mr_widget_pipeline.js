@@ -34,7 +34,7 @@ export default {
     <div class="mr-widget-heading">
       <div class="ci-widget">
         <template v-if="hasCIError">
-          <div class="ci-status-icon ci-status-icon-failed js-ci-error">
+          <div class="ci-status-icon ci-status-icon-failed ci-error js-ci-error">
             <span class="js-icon-link icon-link">
               <span
                 v-html="svg"
