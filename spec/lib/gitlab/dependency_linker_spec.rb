@@ -65,5 +65,13 @@ describe Gitlab::DependencyLinker, lib: true do
 
       described_class.link(blob_name, nil, nil)
     end
+
+    it 'links using GodepsJsonLinker' do
+      blob_name = 'Godeps.json'
+
+      expect(described_class::GodepsJsonLinker).to receive(:link)
+
+      described_class.link(blob_name, nil, nil)
+    end
   end
 end
