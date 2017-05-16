@@ -76,18 +76,6 @@ describe('Issuable output', () => {
     });
   });
 
-  it('changes element for `form` when open', (done) => {
-    vm.showForm = true;
-
-    Vue.nextTick(() => {
-      expect(
-        vm.$el.tagName,
-      ).toBe('FORM');
-
-      done();
-    });
-  });
-
   it('does not show actions if permissions are incorrect', (done) => {
     vm.showForm = true;
     vm.canUpdate = false;
@@ -116,6 +104,29 @@ describe('Issuable output', () => {
         expect(
           eventHub.$emit,
         ).toHaveBeenCalledWith('close.form');
+
+        done();
+      });
+    });
+
+    it('reloads the page if the confidential status has changed', (done) => {
+      spyOn(window.location, 'reload');
+      spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve) => {
+        resolve({
+          json() {
+            return {
+              confidential: true,
+            };
+          },
+        });
+      }));
+
+      vm.updateIssuable();
+
+      setTimeout(() => {
+        expect(
+          window.location.reload,
+        ).toHaveBeenCalled();
 
         done();
       });
