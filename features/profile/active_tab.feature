@@ -23,7 +23,7 @@ Feature: Profile Active Tab
     Then the active main tab should be Preferences
     And no other main tabs should be active
 
-  Scenario: On Profile Audit Log
-    Given I visit Audit Log page
-    Then the active main tab should be Audit Log
+  Scenario: On Profile Authentication log
+    Given I visit Authentication log page
+    Then the active main tab should be Authentication log
     And no other main tabs should be active
