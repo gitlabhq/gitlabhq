@@ -79,7 +79,7 @@ stages:
 # https://docs.gitlab.com/ce/development/writing_documentation.html#testing
 .except-docs: &except-docs
   except:
-    - /^docs\/.*/
+    - /(^docs[\/-].*|.*-docs$)/
 
 .rspec-knapsack: &rspec-knapsack
   stage: test
@@ -322,7 +322,7 @@ downtime_check:
     - master
     - tags
     - /^[\d-]+-stable(-ee)?$/
-    - /^docs\/*/
+    - /(^docs[\/-].*|.*-docs$)/
 
 .db-migrate-reset: &db-migrate-reset
   stage: test
