@@ -27,7 +27,7 @@ describe 'New/edit issue', :feature, :js do
     describe 'single assignee' do
       it 'hides assignee after selection' do
         click_button 'Unassigned'
-        
+
         wait_for_ajax
       end
 
@@ -154,7 +154,7 @@ describe 'New/edit issue', :feature, :js do
 
     it 'correctly updates the selected user when changing assignee' do
       click_button 'Unassigned'
-      
+
       wait_for_ajax
 
       page.within '.dropdown-menu-user' do
