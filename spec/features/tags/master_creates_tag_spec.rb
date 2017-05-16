@@ -51,10 +51,24 @@ feature 'Master creates tag', feature: true do
     end
   end
 
+  scenario 'opens dropdown for ref', js: true do
+    click_link 'New tag'
+    ref_row = find('.form-group:nth-of-type(2) .col-sm-10')
+    page.within ref_row do
+      ref_input = find('[name="ref"]', visible: false)
+      expect(ref_input.value).to eq 'master'
+      expect(find('.dropdown-toggle-text')).to have_content 'master'
+
+      find('.js-branch-select').trigger('click')
+
+      expect(find('.dropdown-menu')).to have_content 'empty-branch'
+    end
+  end
+
   def create_tag_in_form(tag:, ref:, message: nil, desc: nil)
     click_link 'New tag'
     fill_in 'tag_name', with: tag
-    fill_in 'ref', with: ref
+    find('#ref', visible: false).set(ref)
     fill_in 'message', with: message unless message.nil?
     fill_in 'release_description', with: desc unless desc.nil?
     click_button 'Create tag'
