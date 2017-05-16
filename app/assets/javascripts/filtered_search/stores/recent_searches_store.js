@@ -3,6 +3,7 @@ import _ from 'underscore';
 class RecentSearchesStore {
   constructor(initialState = {}) {
     this.state = Object.assign({
+      isLocalStorageAvailable: true,
       recentSearches: [],
     }, initialState);
   }

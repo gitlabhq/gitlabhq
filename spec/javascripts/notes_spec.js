@@ -377,7 +377,7 @@ import '~/notes';
       });
 
       it('should return true when comment begins with a slash command', () => {
-        const sampleComment = '/wip \n/milestone %1.0 \n/merge \n/unassign Merging this';
+        const sampleComment = '/wip\n/milestone %1.0\n/merge\n/unassign Merging this';
         const hasSlashCommands = this.notes.hasSlashCommands(sampleComment);
 
         expect(hasSlashCommands).toBeTruthy();
@@ -401,10 +401,18 @@ import '~/notes';
     describe('stripSlashCommands', () => {
       it('should strip slash commands from the comment which begins with a slash command', () => {
         this.notes = new Notes();
-        const sampleComment = '/wip \n/milestone %1.0 \n/merge \n/unassign Merging this';
+        const sampleComment = '/wip\n/milestone %1.0\n/merge\n/unassign Merging this';
         const stripedComment = this.notes.stripSlashCommands(sampleComment);
 
-        expect(stripedComment).not.toBe(sampleComment);
+        expect(stripedComment).toBe('');
+      });
+
+      it('should strip slash commands from the comment but leaves plain comment if it is present', () => {
+        this.notes = new Notes();
+        const sampleComment = '/wip\n/milestone %1.0\n/merge\n/unassign\nMerging this';
+        const stripedComment = this.notes.stripSlashCommands(sampleComment);
+
+        expect(stripedComment).toBe('Merging this');
       });
 
       it('should NOT strip string that has slashes within', () => {
@@ -424,6 +432,22 @@ import '~/notes';
 
       beforeEach(() => {
         this.notes = new Notes('', []);
+        spyOn(_, 'escape').and.callFake((comment) => {
+          const escapedString = comment.replace(/["&'<>]/g, (a) => {
+            const escapedToken = {
+              '&': '&amp;',
+              '<': '&lt;',
+              '>': '&gt;',
+              '"': '&quot;',
+              "'": '&#x27;',
+              '`': '&#x60;'
+            }[a];
+
+            return escapedToken;
+          });
+
+          return escapedString;
+        });
       });
 
       it('should return constructed placeholder element for regular note based on form contents', () => {
@@ -444,7 +468,21 @@ import '~/notes';
         expect($tempNote.find('.timeline-content').hasClass('discussion')).toBeFalsy();
         expect($tempNoteHeader.find('.hidden-xs').text().trim()).toEqual(currentUserFullname);
         expect($tempNoteHeader.find('.note-headline-light').text().trim()).toEqual(`@${currentUsername}`);
-        expect($tempNote.find('.note-body .note-text').text().trim()).toEqual(sampleComment);
+        expect($tempNote.find('.note-body .note-text p').text().trim()).toEqual(sampleComment);
+      });
+
+      it('should escape HTML characters from note based on form contents', () => {
+        const commentWithHtml = '<script>alert("Boom!");</script>';
+        const $tempNote = this.notes.createPlaceholderNote({
+          formContent: commentWithHtml,
+          uniqueId,
+          isDiscussionNote: false,
+          currentUsername,
+          currentUserFullname
+        });
+
+        expect(_.escape).toHaveBeenCalledWith(commentWithHtml);
+        expect($tempNote.find('.note-body .note-text p').html()).toEqual('&lt;script&gt;alert("Boom!");&lt;/script&gt;');
       });
 
       it('should return constructed placeholder element for discussion note based on form contents', () => {

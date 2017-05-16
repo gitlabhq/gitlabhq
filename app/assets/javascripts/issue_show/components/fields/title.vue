@@ -3,7 +3,7 @@
 
   export default {
     props: {
-      store: {
+      formState: {
         type: Object,
         required: true,
       },
@@ -12,11 +12,6 @@
         required: false,
         default: () => [],
       },
-    },
-    data() {
-      return {
-        state: this.store.formState,
-      };
     },
     components: {
       descriptionTemplate,
@@ -42,7 +37,7 @@
         type="text"
         placeholder="Issue title"
         aria-label="Issue title"
-        v-model="state.title" />
+        v-model="formState.title" />
     </div>
   </fieldset>
 </template>

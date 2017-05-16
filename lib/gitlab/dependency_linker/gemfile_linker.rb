@@ -1,9 +1,7 @@
 module Gitlab
   module DependencyLinker
     class GemfileLinker < BaseLinker
-      def self.support?(blob_name)
-        blob_name == 'Gemfile' || blob_name == 'gems.rb'
-      end
+      self.file_type = :gemfile
 
       private
 
