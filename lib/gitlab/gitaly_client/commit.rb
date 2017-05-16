@@ -11,7 +11,7 @@ module Gitlab
       end
 
       def is_ancestor(ancestor_id, child_id)
-        stub = Gitaly::Commit::Stub.new(nil, nil, channel_override: @repository.gitaly_channel)
+        stub = GitalyClient.stub(:commit, @repository.storage)
         request = Gitaly::CommitIsAncestorRequest.new(
           repository: @gitaly_repo,
           ancestor_id: ancestor_id,
@@ -52,7 +52,7 @@ module Gitlab
       end
 
       def diff_service_stub
-        Gitaly::Diff::Stub.new(nil, nil, channel_override: @repository.gitaly_channel)
+        GitalyClient.stub(:diff, @repository.storage)
       end
     end
   end

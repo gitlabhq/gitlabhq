@@ -155,7 +155,7 @@ Find more information about different Runners in the
 [Runners](../runners/README.md) documentation.
 
 You can find whether any Runners are assigned to your project by going to
-**Settings ➔ Runners**. Setting up a Runner is easy and straightforward. The
+**Settings ➔ CI/CD Pipelines**. Setting up a Runner is easy and straightforward. The
 official Runner supported by GitLab is written in Go and its documentation
 can be found at <https://docs.gitlab.com/runner/>.
 
@@ -168,7 +168,7 @@ Follow the links above to set up your own Runner or use a Shared Runner as
 described in the next section.
 
 Once the Runner has been set up, you should see it on the Runners page of your
-project, following **Settings ➔ Runners**.
+project, following **Settings ➔ CI/CD Pipelines**.
 
 ![Activated runners](img/runners_activated.png)
 
@@ -181,7 +181,7 @@ These are special virtual machines that run on GitLab's infrastructure and can
 build any project.
 
 To enable the **Shared Runners** you have to go to your project's
-**Settings ➔ Runners** and click **Enable shared runners**.
+**Settings ➔ CI/CD Pipelines** and click **Enable shared runners**.
 
 [Read more on Shared Runners](../runners/README.md).
 

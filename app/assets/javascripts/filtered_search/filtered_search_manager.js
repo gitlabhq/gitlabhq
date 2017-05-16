@@ -16,10 +16,14 @@ class FilteredSearchManager {
     this.recentSearchesStore = new RecentSearchesStore({
       isLocalStorageAvailable: RecentSearchesService.isAvailable(),
     });
-    let recentSearchesKey = 'issue-recent-searches';
+    const searchHistoryDropdownElement = document.querySelector('.js-filtered-search-history-dropdown');
+    const projectPath = searchHistoryDropdownElement ?
+      searchHistoryDropdownElement.dataset.projectFullPath : 'project';
+    let recentSearchesPagePrefix = 'issue-recent-searches';
     if (page === 'merge_requests') {
-      recentSearchesKey = 'merge-request-recent-searches';
+      recentSearchesPagePrefix = 'merge-request-recent-searches';
     }
+    const recentSearchesKey = `${projectPath}-${recentSearchesPagePrefix}`;
     this.recentSearchesService = new RecentSearchesService(recentSearchesKey);
 
     // Fetch recent searches from localStorage
@@ -47,7 +51,7 @@ class FilteredSearchManager {
       this.recentSearchesRoot = new RecentSearchesRoot(
         this.recentSearchesStore,
         this.recentSearchesService,
-        document.querySelector('.js-filtered-search-history-dropdown'),
+        searchHistoryDropdownElement,
       );
       this.recentSearchesRoot.init();
 
