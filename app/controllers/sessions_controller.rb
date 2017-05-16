@@ -34,7 +34,6 @@ class SessionsController < Devise::SessionsController
       end
       # hide the signed-in notification
       flash[:notice] = nil
-      PromService.instance.login.increment
       log_audit_event(current_user, with: authentication_method)
       log_user_activity(current_user)
     end
@@ -47,6 +46,10 @@ class SessionsController < Devise::SessionsController
   end
 
   private
+
+  def self.login_counter
+    @login_counter ||= Gitlab::Metrics.counter(:user_session_logins, 'User logins count')
+  end
 
   # Handle an "initial setup" state, where there's only one user, it's an admin,
   # and they require a password change.
@@ -126,6 +129,7 @@ class SessionsController < Devise::SessionsController
   end
 
   def log_user_activity(user)
+    SessionsController.login_counter.increment
     Users::ActivityService.new(user, 'login').execute
   end
 

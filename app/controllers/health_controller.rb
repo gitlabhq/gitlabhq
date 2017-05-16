@@ -23,14 +23,26 @@ class HealthController < ActionController::Base
   end
 
   def metrics
-    results = CHECKS.flat_map(&:metrics)
+    response = health_metrics_text + "\n"
 
-    response = results.map(&method(:metric_to_prom_line)).join("\n")
-    response = ::Prometheus::Client::Formats::Text.marshal_multiprocess
+    if Gitlab::Metrics.prometheus_metrics_enabled?
+      response += Prometheus::Client::Formats::Text.marshal_multiprocess(ENV['prometheus_multiproc_dir'])
+    end
+
     render text: response, content_type: 'text/plain; version=0.0.4'
   end
 
   private
+
+  def health_metrics_text
+    results = CHECKS.flat_map(&:metrics)
+
+    types = results.map(&:name)
+              .uniq
+              .map { |metric_name| "# TYPE #{metric_name} gauge" }
+    metrics = results.map(&method(:metric_to_prom_line))
+    types.concat(metrics).join("\n")
+  end
 
   def metric_to_prom_line(metric)
     labels = metric.labels&.map { |key, value| "#{key}=\"#{value}\"" }&.join(',') || ''
