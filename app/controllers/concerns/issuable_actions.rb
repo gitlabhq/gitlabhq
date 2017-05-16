@@ -60,24 +60,17 @@ module IssuableActions
   end
 
   def bulk_update_params
-    permitted_keys = [
+    params.require(:update).permit(
       :issuable_ids,
       :assignee_id,
       :milestone_id,
       :state_event,
       :subscription_event,
+      assignee_ids: [],
       label_ids: [],
       add_label_ids: [],
       remove_label_ids: []
-    ]
-
-    if resource_name == 'issue'
-      permitted_keys << { assignee_ids: [] }
-    else
-      permitted_keys.unshift(:assignee_id)
-    end
-
-    params.require(:update).permit(permitted_keys)
+    )
   end
 
   def resource_name

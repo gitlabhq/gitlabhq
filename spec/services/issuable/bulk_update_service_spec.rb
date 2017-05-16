@@ -62,7 +62,7 @@ describe Issuable::BulkUpdateService, services: true do
         expect(result[:count]).to eq(1)
       end
 
-      it 'updates the assignee to the user ID passed' do
+      it 'updates the assignee to the use ID passed' do
         assignee = create(:user)
         project.team << [assignee, :developer]
 
@@ -100,7 +100,7 @@ describe Issuable::BulkUpdateService, services: true do
         expect(result[:count]).to eq(1)
       end
 
-      it 'updates the assignee to the user ID passed' do
+      it 'updates the assignee to the use ID passed' do
         assignee = create(:user)
         project.team << [assignee, :developer]
         expect { bulk_update(issue, assignee_ids: [assignee.id]) }

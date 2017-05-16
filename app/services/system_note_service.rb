@@ -79,7 +79,7 @@ module SystemNoteService
 
         text_parts.join(' and ')
       elsif old_assignees.any?
-        "removed assignee"
+        "removed all assignees"
       elsif issue.assignees.any?
         "assigned to #{issue.assignees.map(&:to_reference).to_sentence}"
       end

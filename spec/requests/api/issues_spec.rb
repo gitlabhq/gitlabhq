@@ -1124,7 +1124,7 @@ describe API::Issues do
     end
 
     context 'CE restrictions' do
-      it 'updates an issue with several assignees but only one has been applied' do
+      it 'updates an issue with several assignee but only one has been applied' do
         put api("/projects/#{project.id}/issues/#{issue.iid}", user),
           assignee_ids: [user2.id, guest.id]
 

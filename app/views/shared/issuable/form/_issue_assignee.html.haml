@@ -1,9 +1,8 @@
 - issue = issuable
-- assignees = issue.assignees
 .block.assignee
   .sidebar-collapsed-icon.sidebar-collapsed-user{ data: { toggle: "tooltip", placement: "left", container: "body" }, title: (issuable.assignee_list) }
-    - if assignees.any?
-      - assignees.each do |assignee|
+    - if issue.assignees.any?
+      - issue.assignees.each do |assignee|
         = link_to_member(@project, assignee, size: 24)
     - else
       = icon('user', 'aria-hidden': 'true')
@@ -13,8 +12,8 @@
     - if can_edit_issuable
       = link_to 'Edit', '#', class: 'edit-link pull-right'
   .value.hide-collapsed
-    - if assignees.any?
-      - assignees.each do |assignee|
+    - if issue.assignees.any?
+      - issue.assignees.each do |assignee|
         = link_to_member(@project, assignee, size: 32, extra_class: 'bold') do
           %span.username
             = assignee.to_reference
