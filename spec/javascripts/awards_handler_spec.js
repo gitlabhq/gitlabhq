@@ -3,7 +3,7 @@
 import Cookies from 'js-cookie';
 import AwardsHandler from '~/awards_handler';
 
-require('~/lib/utils/common_utils');
+import '~/lib/utils/common_utils';
 
 (function() {
   var awardsHandler, lazyAssert, urlRoot, openAndWaitForEmojiMenu;

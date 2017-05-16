@@ -1,9 +1,9 @@
-/* global autosize */
+import autosize from 'vendor/autosize';
+import '~/gl_form';
+import '~/lib/utils/text_utility';
+import '~/lib/utils/common_utils';
 
-window.autosize = require('vendor/autosize');
-require('~/gl_form');
-require('~/lib/utils/text_utility');
-require('~/lib/utils/common_utils');
+window.autosize = autosize;
 
 describe('GLForm', () => {
   const global = window.gl || (window.gl = {});
