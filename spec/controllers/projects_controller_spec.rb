@@ -266,7 +266,7 @@ describe ProjectsController do
 
         expect(project.namespace.id).to eq(old_namespace_id)
         expect(response).to have_http_status(200) 
-        expect(flash[:alert]).to eq 'Please select a namespace to transfer the project to'
+        expect(flash[:alert]).to eq 'Please select a new namespace for your project.'
       end
     end
   end

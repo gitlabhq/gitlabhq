@@ -1,16 +1,9 @@
-export default class ProjectEdit {
-  constructor() {
-    this.transferForm = $('.js-project-transfer-form');
-    this.selectNamespace = $('.js-project-transfer-form').find('.select2');
+export default function setupProjectEdit() {
+  const $transferForm = $('.js-project-transfer-form');
+  const $selectNamespace = $transferForm.find('.select2');
 
-    this.selectNamespaceChangedWrapper = this.selectNamespaceChanged.bind(this);
-    this.selectNamespace.on('change', this.selectNamespaceChangedWrapper);
-    this.selectNamespaceChanged();
-  }
-
-  selectNamespaceChanged() {
-    const selectedNamespaceValue = this.selectNamespace.val();
-
-    this.transferForm.find(':submit').prop('disabled', !selectedNamespaceValue);
-  }
+  $selectNamespace.on('change', () => {
+    $transferForm.find(':submit').prop('disabled', !$selectNamespace.val());
+  });
+  $selectNamespace.trigger('change');
 }

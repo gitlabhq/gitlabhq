@@ -16,9 +16,9 @@ module Projects
         transfer(project, new_namespace)
       else
         error_message = if new_namespace.blank? 
-                          'Please select a namespace to transfer the project to'
+                          'Please select a new namespace for your project.'
                         else
-                          'Transfer failed, please contact an admin'
+                          'Transfer failed, please contact an admin.'
                         end
         project.errors.add(:new_namespace, error_message)
         false
