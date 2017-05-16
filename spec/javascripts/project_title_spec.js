@@ -1,7 +1,7 @@
 /* eslint-disable space-before-function-paren, no-unused-expressions, no-return-assign, no-param-reassign, no-var, new-cap, wrap-iife, no-unused-vars, quotes, jasmine/no-expect-in-setup-teardown, max-len */
 /* global Project */
 
-import 'select2/select2.js';
+import 'select2/select2';
 import '~/gl_dropdown';
 import '~/api';
 import '~/project_select';
