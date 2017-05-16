@@ -19,6 +19,8 @@ module IconsHelper
     case names
     when "standard"
       names = "key"
+    when "two-factor"
+      names = "key"
     end
 
     options.include?(:base) ? fa_stacked_icon(names, options) : fa_icon(names, options)
