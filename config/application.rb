@@ -107,6 +107,7 @@ module Gitlab
     config.assets.precompile << "xterm/xterm.css"
     config.assets.precompile << "lib/ace.js"
     config.assets.precompile << "vendor/assets/fonts/*"
+    config.assets.precompile << "test.css"
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
