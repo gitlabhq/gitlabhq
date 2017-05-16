@@ -56,6 +56,8 @@
       "can-update" => can?(current_user, :update_issue, @issue).to_s,
       "can-destroy" => can?(current_user, :destroy_issue, @issue).to_s,
       "issuable-ref" => @issue.to_reference,
+      "markdown-preview-url" => preview_markdown_path(@project),
+      "markdown-docs" => help_page_path('user/markdown'),
     } }
       %h2.title= markdown_field(@issue, :title)
       - if @issue.description.present?

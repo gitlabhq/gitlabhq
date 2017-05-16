@@ -14,6 +14,7 @@ export default class Store {
     };
     this.formState = {
       title: '',
+      description: '',
     };
   }
 
