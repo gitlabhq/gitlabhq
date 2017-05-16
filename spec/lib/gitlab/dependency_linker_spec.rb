@@ -33,5 +33,13 @@ describe Gitlab::DependencyLinker, lib: true do
 
       described_class.link(blob_name, nil, nil)
     end
+
+    it 'links using PodfileLinker' do
+      blob_name = 'Podfile'
+
+      expect(described_class::PodfileLinker).to receive(:link)
+
+      described_class.link(blob_name, nil, nil)
+    end
   end
 end
