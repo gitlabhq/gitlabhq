@@ -1,10 +1,11 @@
 require 'spec_helper'
 
 describe Gitlab::GitAccess, lib: true do
-  let(:access) { Gitlab::GitAccess.new(actor, project, 'ssh', authentication_abilities: authentication_abilities) }
+  let(:access) { Gitlab::GitAccess.new(actor, project, protocol, authentication_abilities: authentication_abilities) }
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:actor) { user }
+  let(:protocol) { 'ssh' }
   let(:authentication_abilities) do
     [
       :read_project,
@@ -46,6 +47,46 @@ describe Gitlab::GitAccess, lib: true do
 
       it 'blocks http git pull' do
         expect(@acc.check('git-upload-pack', '_any').allowed?).to be_falsey
+      end
+    end
+  end
+
+  describe '#check with commands disabled' do
+    before { project.team << [user, :master] }
+
+    context 'over http' do
+      let(:protocol) { 'http' }
+
+      context 'when the git-upload-pack command is disabled in config' do
+        before do
+          allow(Gitlab.config.gitlab_shell).to receive(:upload_pack).and_return(false)
+        end
+
+        context 'when calling git-upload-pack' do
+          subject { access.check('git-upload-pack', '_any') }
+          it { expect(subject.allowed?).to be_falsey }
+          it { expect(subject.message).to eq('The command "git-upload-pack" is not allowed.') }
+        end
+
+        context 'when calling git-receive-pack' do
+          it { expect(access.check('git-receive-pack', '_any').allowed?).to be_truthy }
+        end
+      end
+
+      context 'when the git-receive-pack command is disabled in config' do
+        before do
+          allow(Gitlab.config.gitlab_shell).to receive(:receive_pack).and_return(false)
+        end
+
+        context 'when calling git-receive-pack' do
+          subject { access.check('git-receive-pack', '_any') }
+          it { expect(subject.allowed?).to be_falsey }
+          it { expect(subject.message).to eq('The command "git-receive-pack" is not allowed.') }
+        end
+
+        context 'when calling git-upload-pack' do
+          it { expect(access.check('git-upload-pack', '_any').allowed?).to be_truthy }
+        end
       end
     end
   end

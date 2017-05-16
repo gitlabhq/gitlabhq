@@ -12,7 +12,9 @@ module Gitlab
       no_repo: 'A repository for this project does not exist yet.',
       project_not_found: 'The project you were looking for could not be found.',
       account_blocked: 'Your account has been blocked.',
-      command_not_allowed: "The command you're trying to execute is not allowed."
+      command_not_allowed: "The command you're trying to execute is not allowed.",
+      upload_pack_disabled_in_config: 'The command "git-upload-pack" is not allowed.',
+      receive_pack_disabled_in_config: 'The command "git-receive-pack" is not allowed.'
     }.freeze
 
     DOWNLOAD_COMMANDS = %w{ git-upload-pack git-upload-archive }.freeze
@@ -33,6 +35,7 @@ module Gitlab
       check_protocol!
       check_active_user!
       check_project_accessibility!
+      check_command_disabled!(cmd)
       check_command_existence!(cmd)
       check_repository_existence!
 
@@ -83,6 +86,16 @@ module Gitlab
     def check_project_accessibility!
       if project.blank? || !can_read_project?
         raise UnauthorizedError, ERROR_MESSAGES[:project_not_found]
+      end
+    end
+
+    def check_command_disabled!(cmd)
+      if http?
+        if upload_pack?(cmd) && !Gitlab.config.gitlab_shell.upload_pack
+          raise UnauthorizedError, ERROR_MESSAGES[:upload_pack_disabled_in_config]
+        elsif receive_pack?(cmd) && !Gitlab.config.gitlab_shell.receive_pack
+          raise UnauthorizedError, ERROR_MESSAGES[:receive_pack_disabled_in_config]
+        end
       end
     end
 
@@ -177,6 +190,18 @@ module Gitlab
       elsif user
         user.can?(:read_project, project)
       end || Guest.can?(:read_project, project)
+    end
+
+    def http?
+      protocol == 'http'
+    end
+
+    def upload_pack?(command)
+      command == 'git-upload-pack'
+    end
+
+    def receive_pack?(command)
+      command == 'git-receive-pack'
     end
 
     protected

@@ -76,8 +76,6 @@ class Projects::GitHttpController < Projects::GitHttpClientController
   end
 
   def upload_pack_allowed?
-    return false unless Gitlab.config.gitlab_shell.upload_pack
-
     access_check.allowed? || ci?
   end
 
@@ -96,8 +94,6 @@ class Projects::GitHttpController < Projects::GitHttpClientController
   end
 
   def receive_pack_allowed?
-    return false unless Gitlab.config.gitlab_shell.receive_pack
-
     access_check.allowed?
   end
 
