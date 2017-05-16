@@ -8,6 +8,7 @@ module Gitlab
       PodfileLinker,
       PodspecLinker,
       PodspecJsonLinker,
+      CartfileLinker,
     ].freeze
 
     def self.linker(blob_name)

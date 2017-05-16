@@ -57,5 +57,13 @@ describe Gitlab::DependencyLinker, lib: true do
 
       described_class.link(blob_name, nil, nil)
     end
+
+    it 'links using CartfileLinker' do
+      blob_name = 'Cartfile'
+
+      expect(described_class::CartfileLinker).to receive(:link)
+
+      described_class.link(blob_name, nil, nil)
+    end
   end
 end
