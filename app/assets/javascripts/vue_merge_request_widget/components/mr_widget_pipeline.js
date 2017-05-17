@@ -26,9 +26,6 @@ export default {
     status() {
       return this.mr.pipeline.details.status || {};
     },
-    statusPath() {
-      return this.status ? this.status.details_path : '';
-    },
   },
   template: `
     <div class="mr-widget-heading">
@@ -47,7 +44,7 @@ export default {
           <div>
             <a
               class="icon-link"
-              :href="statusPath">
+              :href="this.status.details_path">
               <ci-icon :status="status" />
             </a>
           </div>
