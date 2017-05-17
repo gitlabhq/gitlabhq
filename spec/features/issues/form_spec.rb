@@ -27,7 +27,7 @@ describe 'New/edit issue', :feature, :js do
     describe 'multiple assignees' do
       before do
         click_button 'Unassigned'
-        
+
         wait_for_ajax
       end
 
@@ -68,11 +68,7 @@ describe 'New/edit issue', :feature, :js do
 
       expect(find('a', text: 'Assign to me')).to be_visible
       click_button 'Unassigned'
-<<<<<<< HEAD
-      
-=======
 
->>>>>>> upstream/master
       wait_for_ajax
 
       page.within '.dropdown-menu-user' do
@@ -171,11 +167,7 @@ describe 'New/edit issue', :feature, :js do
 
     it 'correctly updates the selected user when changing assignee' do
       click_button 'Unassigned'
-<<<<<<< HEAD
 
-=======
-      
->>>>>>> upstream/master
       wait_for_ajax
 
       page.within '.dropdown-menu-user' do
@@ -192,18 +184,8 @@ describe 'New/edit issue', :feature, :js do
         click_link user2.name
       end
 
-<<<<<<< HEAD
-      expect(page.all('input[name="issue[assignee_ids][]"]', visible: false)[0].value).to match(user.id.to_s)
-      expect(page.all('input[name="issue[assignee_ids][]"]', visible: false)[1].value).to match(user2.id.to_s)
-
-      expect(page.all('.dropdown-menu-user a.is-active').length).to eq(2)
-
-      expect(page.all('.dropdown-menu-user a.is-active')[0].first(:xpath, '..')['data-user-id']).to eq(user.id.to_s)
-      expect(page.all('.dropdown-menu-user a.is-active')[1].first(:xpath, '..')['data-user-id']).to eq(user2.id.to_s)
-=======
       expect(find('input[name="issue[assignee_ids][]"]', visible: false).value).to match(user2.id.to_s)
       expect(find('.dropdown-menu-user a.is-active').first(:xpath, '..')['data-user-id']).to eq(user2.id.to_s)
->>>>>>> upstream/master
     end
   end
 
