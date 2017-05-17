@@ -1,12 +1,12 @@
 require 'spec_helper'
 
 describe RelatedIssue do
-  describe "Associations" do
+  describe 'Associations' do
     it { is_expected.to belong_to(:issue) }
     it { is_expected.to belong_to(:related_issue).class_name('Issue') }
   end
 
-  describe "Validation" do
+  describe 'Validation' do
     subject { create :related_issue }
 
     it { is_expected.to validate_presence_of(:issue) }
