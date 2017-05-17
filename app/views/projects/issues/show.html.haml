@@ -50,16 +50,10 @@
       = link_to 'Edit', edit_namespace_project_issue_path(@project.namespace, @project, @issue), class: 'hidden-xs hidden-sm btn btn-grouped issuable-edit'
 
 .issue-details.issuable-details
-<<<<<<< HEAD
-  .detail-page-description.content-block{ class: ('hide-bottom-border' unless @issue.description.present? ) }
-    .issue-title-data.hidden{ "data" => { "endpoint" => realtime_changes_namespace_project_issue_path(@project.namespace, @project, @issue),
-      "can-update-tasks-class" => can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : '',
-=======
   .detail-page-description.content-block
     #js-issuable-app{ "data" => { "endpoint" => realtime_changes_namespace_project_issue_path(@project.namespace, @project, @issue),
       "can-update" => can?(current_user, :update_issue, @issue).to_s,
       "issuable-ref" => @issue.to_reference,
->>>>>>> upstream/master
     } }
       %h2.title= markdown_field(@issue, :title)
       - if @issue.description.present?
