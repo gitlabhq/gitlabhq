@@ -6,10 +6,7 @@
 /* global dateFormat */
 /* global Pikaday */
 
-<<<<<<< HEAD
-=======
 import UsersSelect from './users_select';
->>>>>>> upstream/master
 import GfmAutoComplete from './gfm_auto_complete';
 
 (function() {
