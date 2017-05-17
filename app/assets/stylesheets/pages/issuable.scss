@@ -195,13 +195,8 @@
   right: 0;
   transition: width .3s;
   background: $gray-light;
-<<<<<<< HEAD
-  padding: 10px 20px;
-  z-index: 200;
-=======
   padding: 0 20px;
   z-index: 200;
-  overflow: hidden;
 
   .issuable-sidebar {
     width: calc(100% + 100px);
@@ -210,7 +205,6 @@
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
   }
->>>>>>> upstream/master
 
   &.right-sidebar-expanded {
     width: $gutter_width;
