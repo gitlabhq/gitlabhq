@@ -960,9 +960,9 @@ X-Gitlab-Event: Pipeline Hook
 }
 ```
 
-### Build events
+### Job events
 
-Triggered on status change of a Build.
+Triggered on status change of a job.
 
 **Request Header**:
 
