@@ -24,6 +24,8 @@ class Projects::TreeController < Projects::ApplicationController
       end
     end
 
+    @last_commit = @repository.last_commit_for_path(@commit.id, @tree.path) || @commit
+
     respond_to do |format|
       format.html
       # Disable cache so browser history works
