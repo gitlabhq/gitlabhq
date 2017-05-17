@@ -1,0 +1,84 @@
+- @no_container = true
+- page_title "ConvDev Index"
+- cards = [ { title: 'Issues', description: 'created per active user', blog: 'https://www2.deloitte.com/content/dam/Deloitte/se/Documents/technology-media-telecommunications/deloitte-digital-collaboration.pdf' },
+  { title: 'Comments', description: 'created per active user', score: '23.2', lead: '25.3', blog: 'http://conversationaldevelopment.com/why/' },
+  { title: 'Milestones', description: 'created per active user', score: '23.2', lead: '25.3', blog: 'http://conversationaldevelopment.com/shorten-cycle/', docs: 'https://docs.gitlab.com/ee/workflow/milestones.html' },
+  { title: 'Boards', description: 'created per active user', score: '23.2', lead: '25.3', docs: 'https://docs.gitlab.com/ee/user/project/issue_board.html', blog: 'http://jpattonassociates.com/user-story-mapping/' },
+  { title: 'Merge Requests', description: 'per active user', score: '23.2', lead: '25.3', docs: 'https://docs.gitlab.com/ee/user/project/merge_requests/index.html', blog: 'https://8thlight.com/blog/uncle-bob/2013/02/01/The-Humble-Craftsman.html' },
+  { title: 'Pipelines', description: 'created per active user', score: '23.2', lead: '25.3', blog: 'https://martinfowler.com/bliki/ContinuousDelivery.html', docs: 'https://docs.gitlab.com/ee/ci/README.html' },
+  { title: 'Environments', description: 'created per active user', score: '23.2', lead: '25.3', blog: 'https://about.gitlab.com/2016/08/26/ci-deployment-and-environments/', docs: 'https://docs.gitlab.com/ee/ci/environments.html' },
+  { title: 'Deployments', description: 'created per active user', score: '23.2', lead: '25.3', blog: 'https://puppet.com/blog/continuous-delivery-vs-continuous-deployment-what-s-diff' },
+  { title: 'Monitoring', description: 'created per active user', score: '23.2', lead: '25.3', blog: 'https://prometheus.io/docs/introduction/overview/', docs: 'https://docs.gitlab.com/ee/user/project/integrations/prometheus.html' },
+  { title: 'Service Desk', description: 'created per active user', score: '23.2', lead: '25.3', blog: 'http://blogs.forrester.com/kate_leggett/17-01-30-top_trends_for_customer_service_in_2017_operations_become_smarter_and_more_strategic', docs: 'https://docs.gitlab.com/ee/user/project/service_desk.html' },]
+- i2p_steps = [ 'Idea', 'Issue', 'Plan', 'Code', 'Commit', 'Test', 'Review', 'Staging', 'Production', 'Feedback',]
+= render 'admin/background_jobs/head'
+
+%div
+  .prepend-top-default
+  .info-callout{ data: { uid: 'convdev_intro' } }
+    .bordered-box.content-block
+      %button.btn.btn-default.close.js-close-callout{ type: 'button',
+        'aria-label' => 'Dismiss customize experience box' }
+        = icon('times', class: 'dismiss-icon', 'aria-hidden' => 'true')
+      .container
+        .col-sm-8
+          %h4.callout-title
+            Introducing Your Conversational Development Index
+          %p.callout-description
+            Your Conversational Development Index gives an overview of how you are using GitLab from a feature perspective. View how they compare with other organizations, discover features your are not using, and learn best practices through blog posts and white papers.
+        .col-sm-4
+          = custom_icon('convdev_overview')
+
+  .container.convdev-empty
+    - if false
+      not current_application_settings.data collected
+    .col-sm-6.col-sm-push-3.col-md-8.col-md-push-2.col-lg-6.col-lg-push-3.centered-light-block.text-center
+      = custom_icon('convdev_no_data')
+      %h4.callout-title Data is still calculating...
+      %p.callout-description
+        In order to gather accurate feature usage data, it can take 1 to 2 weeks to see your index.
+        %a
+          Learn more
+
+  .container.convdev-empty
+    - if not current_application_settings.usage_ping_enabled
+      disabled
+    .col-sm-6.col-sm-push-3.col-md-8.col-md-push-2.col-lg-6.col-lg-push-3.centered-light-block.text-center
+      = custom_icon('convdev_no_index')
+      %h4.callout-title Usage ping is not enabled
+      .callout-description
+        %p
+          ConvDev is only shown when the
+          %a
+            usage ping
+          is enabled.
+        %p
+          Enable usage ping to get an overview of how you are using GitLab from a feature perspective
+        %a.btn.btn-lg.btn-primary{ href: '' }
+          Enable usage ping
+
+  .row.prepend-top-10
+
+  .convdev
+    .convdev-header
+      %h2.big.med
+        43.2%
+      .convdev-subtitle.small
+        .first-one
+          index
+        .first-one
+          score
+          %a{ href: '' }
+            = icon('question-circle', 'aria-hidden' => 'true')
+
+    .convdev-cards.card-container
+      - cards.each do |card|
+        = render "admin/convdev/card", card: card
+
+    .convdev-steps
+      - i2p_steps.each_with_index do |step, index|
+        .convdev-step
+          .as
+            = custom_icon("i2p_step_#{index + 1}")
+          %h4.convdev-step-title
+            = step

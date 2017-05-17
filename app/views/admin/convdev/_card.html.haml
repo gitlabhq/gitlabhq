@@ -1,0 +1,23 @@
+- @n1 = rand(1..3)
+
+.convdev-card-wrapper
+  .convdev-card{ class: [('convdev-card-low' if @n1 == 1), ('convdev-card-med' if @n1 == 2), ('convdev-card-high' if @n1 == 3)] }
+    .convdev-card-title
+      %h3
+        = card[:title]
+      %span.text-light
+        = card[:description]
+    .card-scores
+      .card-score
+        .card-score-value 3.2
+        .card-score-name You
+      .card-score
+        .card-score-value 10.2
+        .card-score-name Lead
+    .card-score-big
+      31.1%
+    .card-buttons
+      %a{ href: card[:blog] }
+        = icon('info-circle', 'aria-hidden' => 'true')
+      %a{ href: card[:docs] }
+        = icon('question-circle', 'aria-hidden' => 'true')

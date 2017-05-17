@@ -1,0 +1,279 @@
+
+
+$red: #ce5a45;
+$red-light: #fdf7f6;
+
+$green: #58af6b;
+$green-light: #f7fcf9;
+
+$orange: #edaa53;
+$orange-light: #fffcf9;
+
+.convdev {
+  margin: 0 auto;
+  max-width: 1920px;
+}
+
+.convdev-empty {
+  margin: 0 auto 128px auto;
+}
+
+.convdev-header {
+  margin: 24px auto;
+  padding: 8px;
+  display: flex;
+
+  .big {
+    font-size: 3em;
+    line-height: 1;
+    margin: 0;
+    color: inherit;
+
+    &.low {
+      color: $red;
+    }
+
+    &.med {
+      color: $orange;
+    }
+
+    &.high {
+      color: $green;
+    }
+  }
+
+  .small {
+    font-size: 1.5em;
+    line-height: 1;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.convdev-cards {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+
+  // TODO variable
+  @media (max-width: 1599px) {
+    flex-wrap: wrap;
+  }
+}
+
+.convdev-card-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  text-align: center;
+  min-width: 145px;
+  max-width: 50%;
+  border-color: $border-color;
+  margin: 0 0 32px 0;
+  padding: 8px;
+  position: relative;
+
+  @media (max-width: 1599px) {
+    width: 16.667%;
+  }
+
+  @media (max-width: 1199px) {
+    width: 20%;
+  }
+
+  @media (max-width: 799px) {
+    width: 25%;
+  }
+
+  @media (max-width: 679px) {
+    width: 33.33%;
+  }
+
+  @media (max-width: 479px) {
+    width: 50%;
+  }
+}
+
+.convdev-card {
+  border: solid 1px $border-color;
+  border-top-width: 5px;
+  flex-grow: 1;
+}
+
+.convdev-card-low {
+  border-top-color: $red;
+
+  .card-score-big {
+    background-color: $red-light;
+  }
+}
+
+.convdev-card-med {
+  border-top-color: $orange;
+
+  .card-score-big {
+    background-color: $orange-light;
+  }
+}
+
+.convdev-card-high {
+  border-top-color: $green;
+
+  .card-score-big {
+    background-color: $green-light;
+  }
+}
+
+.convdev-card-title {
+  padding: 12px;
+  font-size: 16px;
+  margin-bottom: auto;
+
+  h3 {
+    font-size: 16px;
+    margin: 0;
+  }
+
+  .text-light {
+    font-size: 14px;
+  }
+}
+
+.card-scores {
+  display: flex;
+  justify-content: center;
+}
+
+.card-score {
+  margin: 12px;
+}
+
+.card-score-value {
+  font-size: 20px;
+}
+
+.card-score-big {
+  border-top: solid 3px $border-color;
+  border-bottom: solid 1px $border-color;
+  font-size: 30px;
+  padding: 20px 0;
+}
+
+.card-buttons {
+  display: flex;
+  justify-content: stretch;
+
+  > * {
+    font-size: 24px;
+    color: $gray;
+    padding: 12px;
+    flex-grow: 1;
+
+    &:hover {
+      background-color: $border-color;
+    }
+
+    + * {
+      border-left: solid 1px $border-color;
+    }
+  }
+}
+
+.convdev-steps {
+  margin: 64px auto;
+  height: 1px;
+  width: 100%;
+  max-width: 1920px;
+  justify-content: space-around;
+  position: relative;
+  background: $border-color;
+
+  @media (max-width: 1599px) {
+    display: none;
+  }
+}
+
+.convdev-step {
+  $step-positions: 3% 9% 30% 40% 45% 55% 60% 70% 75% 90%;
+  @each $pos in $step-positions {
+    $i: index($step-positions, $pos);
+    &:nth-child(#{$i}) {
+      left: $pos;
+    }
+  }
+
+  position: absolute;
+  transform-origin: 75% 50%;
+  padding: 14px;
+  height: 64px;
+  width: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: solid 1px $border-color;
+  background: white;
+  transform: translateY(-50%);
+
+  &:hover {
+    color: $orange;
+    fill: $orange;
+    transform: scale(1.4) translateY(-33%);
+    cursor: pointer;
+    z-index: 100;
+    height: auto;
+    width: auto;
+
+    .convdev-step-title {
+      max-height: 3em;
+      opacity: 1;
+      transition: 0.1s opacity;
+    }
+  }
+
+  svg {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+.convdev-step-title {
+  max-height: 0;
+  opacity: 0;
+  text-transform: uppercase;
+  margin: 0;
+  text-align: center;
+  font-size: 12px;
+}
+
+.callout-title {
+  font-size: calc(1.5em + (3 - 1.5) * ((100vw - 1200px) / 400));
+}
+
+.callout-description {
+  font-size: calc(1.25em + (2 - 1.25) * ((100vw - 1200px) / 400));
+  color: $gl-text-color-secondary;
+}
+
+.info-callout {
+  padding: 1em;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  .bordered-box {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    @media (min-width: $screen-sm-min) {
+      padding: 2em;
+    }
+  }
+
+  .close {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    font-size: 30px;
+  }
+}

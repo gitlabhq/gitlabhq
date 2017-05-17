@@ -392,6 +392,9 @@ import ShortcutsBlob from './shortcuts_blob';
         case 'users:show':
           new UserCallout();
           break;
+        case 'admin:convdev:show':
+          new UserCallout('info-callout');
+          break;
         case 'snippets:show':
           new LineHighlighter();
           new BlobViewer();

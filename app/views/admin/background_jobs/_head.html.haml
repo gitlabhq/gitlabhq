@@ -3,6 +3,10 @@
     = render 'shared/nav_scroll'
     .nav-links.sub-nav.scrolling-tabs
       %ul{ class: (container_class) }
+        = nav_link(controller: :convdev) do
+          = link_to admin_convdev_path, title: 'ConvDev Index' do
+            %span
+              ConvDev Index
         = nav_link(controller: :system_info) do
           = link_to admin_system_info_path, title: 'System Info' do
             %span
