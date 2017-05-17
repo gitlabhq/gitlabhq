@@ -16,6 +16,16 @@ describe RelatedIssues::CreateService, service: true do
 
     subject { described_class.new(issue, user, params).execute }
 
+    context 'when empty reference list' do
+      let(:params) do
+        { issue_references: [] }
+      end
+
+      it 'returns error' do
+        is_expected.to eq(message: "No Issue found for given reference", status: :error, http_status: 401)
+      end
+    end
+
     context 'when Issue not found' do
       let(:params) do
         { issue_references: ['#999'] }
