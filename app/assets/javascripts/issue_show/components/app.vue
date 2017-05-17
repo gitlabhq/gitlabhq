@@ -79,12 +79,14 @@ export default {
   },
   methods: {
     openForm() {
-      this.showForm = true;
-      this.store.formState = {
-        title: this.state.titleText,
-        confidential: this.isConfidential,
-        description: this.state.descriptionText,
-      };
+      if (!this.showForm) {
+        this.showForm = true;
+        this.store.formState = {
+          title: this.state.titleText,
+          confidential: this.isConfidential,
+          description: this.state.descriptionText,
+        };
+      }
     },
     closeForm() {
       this.showForm = false;

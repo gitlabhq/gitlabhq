@@ -23,7 +23,7 @@ describe('Issuable output', () => {
     const IssuableDescriptionComponent = Vue.extend(issuableApp);
     Vue.http.interceptors.push(issueShowInterceptor(issueShowData.initialRequest));
 
-    spyOn(eventHub, '$emit');
+    spyOn(eventHub, '$emit').and.callThrough();
 
     vm = new IssuableDescriptionComponent({
       propsData: {
@@ -34,8 +34,9 @@ describe('Issuable output', () => {
         initialTitle: '',
         initialDescriptionHtml: '',
         initialDescriptionText: '',
-        showForm: false,
         isConfidential: false,
+        markdownPreviewUrl: '/',
+        markdownDocs: '/',
       },
     }).$mount();
   });
@@ -84,6 +85,22 @@ describe('Issuable output', () => {
       expect(
         vm.$el.querySelector('.btn'),
       ).toBeNull();
+
+      done();
+    });
+  });
+
+  it('does not update formState if form is already open', (done) => {
+    vm.openForm();
+
+    vm.state.titleText = 'testing 123';
+
+    vm.openForm();
+
+    Vue.nextTick(() => {
+      expect(
+        vm.store.formState.title,
+      ).not.toBe('testing 123');
 
       done();
     });
