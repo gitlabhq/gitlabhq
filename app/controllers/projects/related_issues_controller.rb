@@ -11,10 +11,10 @@ module Projects
       opts = params.slice(:issue_references)
       result = RelatedIssues::CreateService.new(issue, current_user, opts).execute
 
-      if result['status'] == :success
-        render json: { result: result, issues: issues }, status: result['http_status']
+      if result[:status] == :success
+        render json: { result: result, issues: issues }, status: result[:http_status]
       else
-        render json: { result: result }, status: result['http_status']
+        render json: { result: result }, status: result[:http_status]
       end
     end
 

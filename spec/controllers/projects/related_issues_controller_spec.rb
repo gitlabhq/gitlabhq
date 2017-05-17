@@ -34,7 +34,7 @@ describe Projects::RelatedIssuesController, type: :controller do
   describe 'POST #create' do
     let(:service) { double(RelatedIssues::CreateService, execute: service_response) }
     let(:list_service) { double(RelatedIssues::ListService, execute: list_service_response) }
-    let(:service_response) { { 'message' => 'yay', 'status' => :success } }
+    let(:service_response) { { message: 'yay', status: :success } }
     let(:list_service_response) { [{ 'foo' => 'bar' }] }
     let(:issue_references) { double }
     let(:user_role) { :developer }
@@ -78,11 +78,11 @@ describe Projects::RelatedIssuesController, type: :controller do
       end
 
       context 'when failing service result' do
-        let(:service_response) { { 'http_status' => 401, 'status' => 'error' } }
+        let(:service_response) { { http_status: 401, status: 'error' } }
 
         it 'returns failure JSON' do
           is_expected.to have_http_status(401)
-          expect(json_response).to eq('result' => service_response)
+          expect(json_response).to eq('result' => { 'http_status' => 401, 'status' => 'error' })
         end
       end
     end
