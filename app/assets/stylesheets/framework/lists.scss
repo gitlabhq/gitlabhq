@@ -305,5 +305,47 @@ ul.indent-list {
     margin-bottom: 0;
     margin-left: 20px;
     border-top: solid 1px $border-white-light;
+    position: relative;
+
+    &:before {
+      content: '';
+      display: block;
+      width: 0;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: -16px;
+      border-left: 2px solid $border-white-normal;
+    }
+
+    .group-row {
+      position: relative;
+      
+      &:before {
+        content: "";
+        display: block;
+        width: 10px;
+        height: 0;
+        border-top: 2px solid $border-white-normal;
+        position: absolute;
+        top: 30px;
+        left: -16px;
+      }
+
+      &:last-child:before {
+        background: white;
+        height: auto;
+        top: 30px;
+        bottom: 0;
+      }
+    }
+  }
+
+  .branch-connector {
+    &:after {
+      content: ' ';
+      position: absolute;
+      background-color: red;
+    }
   }
 }
