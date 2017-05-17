@@ -7,11 +7,13 @@ supported natively in NFS version 4. NFSv3 also supports locking as long as
 Linux Kernel 2.6.5+ is used. We recommend using version 4 and do not
 specifically test NFSv3.
 
-## AWS Elastic File System (EFS) not recommended
+## AWS Elastic File System
+
+GitLab does not recommend using AWS Elastic File System (EFS).
 
 Customers and users have reported that AWS EFS does not perform well for GitLab's
 use-case. There are several issues that can cause problems. For these reasons
-GitLab recommends against using EFS with GitLab.
+GitLab does not recommend using EFS with GitLab.
 
 - EFS bases allowed IOPS on volume size. The larger the volume, the more IOPS
   are allocated. For smaller volumes, users may experience decent performance
@@ -22,7 +24,7 @@ GitLab recommends against using EFS with GitLab.
   EBS with an NFS server on top will perform much better.
 
 For more details on another person's experience with EFS, see
-[Amazon's Elastic File System: Burst Credits]()https://www.rawkode.io/2017/04/amazons-elastic-file-system-burst-credits/
+[Amazon's Elastic File System: Burst Credits](https://www.rawkode.io/2017/04/amazons-elastic-file-system-burst-credits/)
 
 ### Recommended options
 
