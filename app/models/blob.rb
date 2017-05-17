@@ -41,7 +41,8 @@ class Blob < SimpleDelegator
     BlobViewer::RouteMap,
 
     BlobViewer::License,
-    BlobViewer::Contributing
+    BlobViewer::Contributing,
+    BlobViewer::Changelog
   ].freeze
 
   attr_reader :project

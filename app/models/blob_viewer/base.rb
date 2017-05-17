@@ -11,6 +11,8 @@ module BlobViewer
     attr_reader :blob
     attr_accessor :override_max_size
 
+    delegate :project, to: :blob
+
     def initialize(blob)
       @blob = blob
     end
