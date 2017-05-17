@@ -52,14 +52,10 @@ require('~/lib/utils/url_utility');
           fields: ['name']
         },
         text: project => (project.name_with_namespace || project.name),
-<<<<<<< HEAD
         id: project => project.id
-      });
-=======
-        id: project => project.id,
       }, extraOpts);
+
       this.dropdownButtonElement = $('#js-project-dropdown', this.dropdownContainerElement).glDropdown(options);
->>>>>>> upstream/master
     }
 
     beforeEach(() => {

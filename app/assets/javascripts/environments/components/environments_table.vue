@@ -3,20 +3,14 @@
  * Render environments table.
  */
 import EnvironmentTableRowComponent from './environment_item.vue';
-<<<<<<< HEAD
 import DeployBoard from './deploy_board_component.vue';
-=======
 import loadingIcon from '../../vue_shared/components/loading_icon.vue';
->>>>>>> upstream/master
 
 export default {
   components: {
     'environment-item': EnvironmentTableRowComponent,
-<<<<<<< HEAD
     DeployBoard,
-=======
     loadingIcon,
->>>>>>> upstream/master
   },
 
   props: {
