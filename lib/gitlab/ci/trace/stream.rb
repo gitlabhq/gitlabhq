@@ -74,7 +74,7 @@ module Gitlab
           match = ""
 
           reverse_line do |line|
-            matches = line.force_encoding(Encoding.default_external).scan(regex)
+            matches = line.force_encoding(regex.encoding).scan(regex)
             next unless matches.is_a?(Array)
             next if matches.empty?
 
@@ -86,7 +86,7 @@ module Gitlab
           nil
         rescue
           # if bad regex or something goes wrong we dont want to interrupt transition
-          # so we just silentrly ignore error for now
+          # so we just silently ignore error for now
         end
 
         private
