@@ -86,7 +86,13 @@ export default class MergeRequestStore {
     this.isPipelineActive = data.pipeline ? data.pipeline.active : false;
     this.isPipelineBlocked = pipelineStatus ? pipelineStatus.group === 'manual' : false;
     this.ciStatusFaviconPath = pipelineStatus ? pipelineStatus.favicon : null;
-    this.codeClimate = data.codeclimate;
+    this.codeclimate = data.codeclimate;
+    this.codeclimateMetrics = {
+      headIssues: [],
+      baseIssues: [],
+      newIssues: [],
+      resolvedIssues: [],
+    };
 
     this.setState(data);
   }
@@ -109,6 +115,26 @@ export default class MergeRequestStore {
           this.state = null;
       }
     }
+  }
+
+  setCodeclimateHeadMetrics(data) {
+    this.codeclimateMetrics.headIssues = data;
+  }
+
+  setCodeclimateBaseMetrics(data) {
+    this.codeclimateMetrics.baseIssues = data;
+  }
+
+  compareCodecimareMetrics() {
+    const { headIssues, baseIssues } = this.codeclimateMetrics;
+
+    const newIssues = headIssues
+      .filter(item => !baseIssues.find(el => el.fingerprint === item.fingerprint));
+    const resolvedIssues = baseIssues
+      .filter(item => headIssues.find(el => el.fingerprint === item.fingerprint));
+
+    this.codeclimateMetrics.newIssues = newIssues;
+    this.codeclimateMetrics.resolvedIssues = resolvedIssues;
   }
 
   static getAuthorObject(event) {

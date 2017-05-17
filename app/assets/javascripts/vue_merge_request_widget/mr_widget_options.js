@@ -41,6 +41,8 @@ export default {
     return {
       mr: store,
       service,
+      isLoadingMetrics: false,
+      loadingMetricsFailed: false,
     };
   },
   computed: {
@@ -60,7 +62,7 @@ export default {
       return this.mr.deployments.length;
     },
     shouldRenderCodeQuality() {
-      return this.mr.codeClimate.head && this.mr.codeClimate.head.length;
+      return this.mr.codeclimate.head && this.mr.codeclimate.head.length;
     },
   },
   methods: {
@@ -83,13 +85,39 @@ export default {
         .then((res) => {
           this.mr.setData(res);
           this.setFavicon();
+
+          this.checkCodeclimateMetrics();
+
           if (cb) {
             cb.call(null, res);
           }
         })
-        .catch(() => {
-          new Flash('Something went wrong. Please try again.'); // eslint-disable-line
-        });
+        .catch(() => new Flash('Something went wrong. Please try again.'));
+    },
+    checkCodeclimateMetrics() {
+      const { head, base } = this.mr.codeclimate;
+
+      if (head && length) {
+        this.isLoadingMetrics = true;
+        this.service.fetchMetrics(head)
+          .then((resp) => {
+            this.store.setCodeclimateHeadMetrics(resp);
+
+            this.service.fetchMetrics(base)
+              .then((response) => {
+                this.store.setCodeclimateBaseMetrics(response);
+              })
+              .then(() => {
+                this.store.compareCodecimareMetrics();
+              })
+              .catch(() => {
+                this.loadingMetricsFailed = true;
+              });
+          })
+          .catch(() => {
+            this.loadingMetricsFailed = true;
+          });
+      }
     },
     initPolling() {
       this.pollingInterval = new gl.SmartInterval({
@@ -228,9 +256,13 @@ export default {
         v-if="shouldRenderDeployments"
         :mr="mr"
         :service="service" />
-      <mr-widget-code-quality 
+      <mr-widget-code-quality
         v-if="shouldRenderCodeQuality"
-        :mr="mr" />
+        :is-loading="isLoadingMetrics"
+        :loading-failed="loadingMetricsFailed"
+        :new-issues="mr.codeclimateMetrics.newIssues"
+        :resolved-issued="mr.codeclimateMetrics.resolvedIssues"
+        />
       <component
         :is="componentName"
         :mr="mr"
