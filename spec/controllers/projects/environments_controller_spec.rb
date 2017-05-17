@@ -84,6 +84,9 @@ describe Projects::EnvironmentsController do
       create(:environment, project: project,
                            name: 'staging-1.0/review',
                            state: :available)
+      create(:environment, project: project,
+                           name: 'staging-1.0/preview',
+                           state: :available)
     end
 
     context 'when using default format' do
@@ -107,6 +110,8 @@ describe Projects::EnvironmentsController do
         expect(response).to be_ok
         expect(response).not_to render_template 'folder'
         expect(json_response['environments'][0])
+          .to include('name' => 'staging-1.0/preview')
+        expect(json_response['environments'][1])
           .to include('name' => 'staging-1.0/review')
       end
     end
