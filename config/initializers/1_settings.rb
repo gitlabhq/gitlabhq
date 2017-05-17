@@ -222,6 +222,7 @@ Settings.gitlab['default_branch_protection'] ||= 2
 Settings.gitlab['default_can_create_group'] = true if Settings.gitlab['default_can_create_group'].nil?
 Settings.gitlab['host']       ||= ENV['GITLAB_HOST'] || 'localhost'
 Settings.gitlab['ssh_host']   ||= Settings.gitlab.host
+Settings.gitlab['hostname']   ||= ENV['HOSTNAME'] || Socket.gethostname
 Settings.gitlab['https']        = false if Settings.gitlab['https'].nil?
 Settings.gitlab['port']       ||= ENV['GITLAB_PORT'] || (Settings.gitlab.https ? 443 : 80)
 Settings.gitlab['relative_url_root'] ||= ENV['RAILS_RELATIVE_URL_ROOT'] || ''
@@ -433,6 +434,17 @@ end
 Settings.repositories.storages.values.each do |storage|
   # Expand relative paths
   storage['path'] = Settings.absolute(storage['path'])
+  # Set failure defaults
+  storage['failure_count_threshold'] ||= 10
+  storage['failure_wait_time'] ||= 30
+  storage['failure_reset_time'] ||= 1800
+  storage['storage_timeout'] ||= 5
+  # Set turn strings into numbers
+  storage['failure_count_threshold'] = storage['failure_count_threshold'].to_i
+  storage['failure_wait_time'] = storage['failure_wait_time'].to_i
+  storage['failure_reset_time'] = storage['failure_reset_time'].to_i
+  # We might want to have a timeout shorter than 1 second.
+  storage['storage_timeout'] = storage['storage_timeout'].to_f
 end
 
 #

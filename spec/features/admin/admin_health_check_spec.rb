@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature "Admin Health Check" do
+feature "Admin Health Check", feature: true, broken_storage: true do
   include StubENV
 
   before do
@@ -53,6 +53,28 @@ feature "Admin Health Check" do
     it 'shows unhealthy status' do
       expect(page).to have_content('Current Status: Unhealthy')
       expect(page).to have_content('The server is on fire')
+    end
+  end
+
+  context 'with repository storage failures' do
+    before do
+      # Track a failure
+      Gitlab::Git::Storage::CircuitBreaker.for_storage('broken').perform { nil } rescue nil
+      visit admin_health_check_path
+    end
+
+    it 'shows storage failure information' do
+      hostname = Gitlab.config.gitlab.hostname
+
+      expect(page).to have_content('broken: failed storage access attempt on host:')
+      expect(page).to have_content("#{hostname}: 1 of 10 failures.")
+    end
+
+    it 'allows resetting storage failures' do
+      click_button 'Reset git storage health information'
+
+      expect(page).to have_content('Git storage health information has been reset')
+      expect(page).not_to have_content('failed storage access attempt')
     end
   end
 end
