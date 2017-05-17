@@ -8,7 +8,7 @@ module BlobViewer
     self.binary = false
 
     def license
-      blob.project.repository.license
+      project.repository.license
     end
 
     def render_error
