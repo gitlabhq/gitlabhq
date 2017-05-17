@@ -92,13 +92,7 @@ module Gitlab
         private
 
         def read_last_lines(limit)
-          result = ''
-          reverse_line do |line|
-            result = line + result
-            limit -= 1
-            return result if limit <= 0
-          end
-          result
+          to_enum(:reverse_line).first(limit).reverse.join
         end
 
         def reverse_line
