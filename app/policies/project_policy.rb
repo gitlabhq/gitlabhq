@@ -40,7 +40,6 @@ class ProjectPolicy < BasePolicy
     can! :read_wiki
     can! :read_issue
     can! :read_label
-    can! :read_related_issue
     can! :read_milestone
     can! :read_project_snippet
     can! :read_project_member
@@ -56,6 +55,9 @@ class ProjectPolicy < BasePolicy
       can! :read_pipeline_schedule
       can! :read_build
     end
+
+    # EE-only
+    can! :read_related_issue
   end
 
   def reporter_access!
@@ -67,7 +69,6 @@ class ProjectPolicy < BasePolicy
     can! :admin_issue
     can! :admin_label
     can! :admin_board
-    can! :admin_related_issue
     can! :admin_list
     can! :read_commit_status
     can! :read_build
@@ -81,6 +82,9 @@ class ProjectPolicy < BasePolicy
     if project.feature_available?(:deploy_board) || Rails.env.development?
       can! :read_deploy_board
     end
+
+    # EE-only
+    can! :admin_related_issue
   end
 
   # Permissions given when an user is team member of a project
@@ -308,7 +312,6 @@ class ProjectPolicy < BasePolicy
     can! :read_list
     can! :read_wiki
     can! :read_label
-    can! :read_related_issue
     can! :read_milestone
     can! :read_project_snippet
     can! :read_project_member
@@ -324,5 +327,8 @@ class ProjectPolicy < BasePolicy
 
     # NOTE: may be overridden by IssuePolicy
     can! :read_issue
+
+    # EE-only
+    can! :read_related_issue
   end
 end
