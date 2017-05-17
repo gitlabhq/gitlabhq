@@ -1747,8 +1747,8 @@ ActiveRecord::Schema.define(version: 20170602003304) do
   add_foreign_key "protected_tag_create_access_levels", "namespaces", column: "group_id"
   add_foreign_key "protected_tag_create_access_levels", "protected_tags"
   add_foreign_key "protected_tag_create_access_levels", "users"
-  add_foreign_key "related_issues", "issues"
-  add_foreign_key "related_issues", "issues", column: "related_issue_id"
+  add_foreign_key "related_issues", "issues", column: "related_issue_id", name: "fk_f89e405611", on_delete: :cascade
+  add_foreign_key "related_issues", "issues", name: "fk_7bc934491d", on_delete: :cascade
   add_foreign_key "remote_mirrors", "projects"
   add_foreign_key "subscriptions", "projects", on_delete: :cascade
   add_foreign_key "system_note_metadata", "notes", name: "fk_d83a918cb1", on_delete: :cascade

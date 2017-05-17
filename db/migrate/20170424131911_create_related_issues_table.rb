@@ -3,7 +3,9 @@ class CreateRelatedIssuesTable < ActiveRecord::Migration
 
   DOWNTIME = false
 
-  def change
+  disable_ddl_transaction!
+
+  def up
     create_table :related_issues do |t|
       t.integer :issue_id, null: false, index: true
       t.integer :related_issue_id, null: false, index: true
@@ -15,5 +17,9 @@ class CreateRelatedIssuesTable < ActiveRecord::Migration
 
     add_concurrent_foreign_key :related_issues, :issues, column: :issue_id
     add_concurrent_foreign_key :related_issues, :issues, column: :related_issue_id
+  end
+
+  def down
+    drop_table :related_issues
   end
 end
