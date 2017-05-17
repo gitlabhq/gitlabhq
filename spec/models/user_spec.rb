@@ -993,8 +993,14 @@ describe User, models: true do
       let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
       let(:avatar_path) { "/uploads/user/avatar/#{user.id}/dk.png" }
 
-<<<<<<< HEAD
-      it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
+      it 'shows correct avatar url' do
+        expect(user.avatar_url).to eq(avatar_path)
+        expect(user.avatar_url(only_path: false)).to eq([gitlab_host, avatar_path].join)
+
+        allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
+
+        expect(user.avatar_url).to eq([gitlab_host, avatar_path].join)
+      end
 
       context 'when in a geo secondary node' do
         let(:geo_url) { 'http://geo.example.com' }
@@ -1005,15 +1011,6 @@ describe User, models: true do
         end
 
         it { should eq "#{geo_url}#{avatar_path}" }
-=======
-      it 'shows correct avatar url' do
-        expect(user.avatar_url).to eq(avatar_path)
-        expect(user.avatar_url(only_path: false)).to eq([gitlab_host, avatar_path].join)
-
-        allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
-
-        expect(user.avatar_url).to eq([gitlab_host, avatar_path].join)
->>>>>>> upstream/master
       end
     end
   end
@@ -1978,7 +1975,34 @@ describe User, models: true do
     end
   end
 
-<<<<<<< HEAD
+  context '#invalidate_issue_cache_counts' do
+    let(:user) { build_stubbed(:user) }
+
+    it 'invalidates cache for issue counter' do
+      cache_mock = double
+
+      expect(cache_mock).to receive(:delete).with(['users', user.id, 'assigned_open_issues_count'])
+
+      allow(Rails).to receive(:cache).and_return(cache_mock)
+
+      user.invalidate_issue_cache_counts
+    end
+  end
+
+  context '#invalidate_merge_request_cache_counts' do
+    let(:user) { build_stubbed(:user) }
+
+    it 'invalidates cache for Merge Request counter' do
+      cache_mock = double
+
+      expect(cache_mock).to receive(:delete).with(['users', user.id, 'assigned_open_merge_requests_count'])
+
+      allow(Rails).to receive(:cache).and_return(cache_mock)
+
+      user.invalidate_merge_request_cache_counts
+    end
+  end
+
   describe '#forget_me!' do
     subject { create(:user, remember_created_at: Time.now) }
 
@@ -2008,33 +2032,6 @@ describe User, models: true do
       allow(Gitlab::Geo).to receive(:secondary?) { true }
 
       expect { subject.remember_me! }.not_to change(subject, :remember_created_at)
-=======
-  context '#invalidate_issue_cache_counts' do
-    let(:user) { build_stubbed(:user) }
-
-    it 'invalidates cache for issue counter' do
-      cache_mock = double
-
-      expect(cache_mock).to receive(:delete).with(['users', user.id, 'assigned_open_issues_count'])
-
-      allow(Rails).to receive(:cache).and_return(cache_mock)
-
-      user.invalidate_issue_cache_counts
-    end
-  end
-
-  context '#invalidate_merge_request_cache_counts' do
-    let(:user) { build_stubbed(:user) }
-
-    it 'invalidates cache for Merge Request counter' do
-      cache_mock = double
-
-      expect(cache_mock).to receive(:delete).with(['users', user.id, 'assigned_open_merge_requests_count'])
-
-      allow(Rails).to receive(:cache).and_return(cache_mock)
-
-      user.invalidate_merge_request_cache_counts
->>>>>>> upstream/master
     end
   end
 end
