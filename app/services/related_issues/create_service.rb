@@ -9,7 +9,7 @@ module RelatedIssues
         return error('No Issue found for given reference', 401)
       end
 
-      create_related_issues!
+      create_related_issues
 
       success_message
     rescue => exception
@@ -18,20 +18,20 @@ module RelatedIssues
 
     private
 
-    def create_related_issues!
+    def create_related_issues
       RelatedIssue.transaction do
         referenced_issues.each do |referenced_issue|
-          relate_issues!(referenced_issue)
-          create_notes!(referenced_issue)
+          relate_issues(referenced_issue)
+          create_notes(referenced_issue)
         end
       end
     end
 
-    def relate_issues!(referenced_issue)
+    def relate_issues(referenced_issue)
       RelatedIssue.create!(issue: @issue, related_issue: referenced_issue)
     end
 
-    def create_notes!(referenced_issue)
+    def create_notes(referenced_issue)
       SystemNoteService.relate_issue(@issue, referenced_issue, current_user)
       SystemNoteService.relate_issue(referenced_issue, @issue, current_user)
     end
