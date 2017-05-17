@@ -916,19 +916,10 @@ class Project < ActiveRecord::Base
     repository.avatar
   end
 
-<<<<<<< HEAD
-  def avatar_url(size = nil, scale = nil)
-    if self[:avatar].present?
-      [gitlab_config.url, avatar.url].join
-    elsif avatar_in_git
-      Gitlab::Routing.url_helpers.namespace_project_avatar_url(namespace, self)
-    end
-=======
   def avatar_url(**args)
     # We use avatar_path instead of overriding avatar_url because of carrierwave.
     # See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11001/diffs#note_28659864
     avatar_path(args) || (Gitlab::Routing.url_helpers.namespace_project_avatar_url(namespace, self) if avatar_in_git)
->>>>>>> upstream/master
   end
 
   # For compatibility with old code
