@@ -122,11 +122,8 @@ describe Gitlab::Geo, lib: true do
     end
 
     before(:all) do
-      jobs = %w(geo_bulk_notify_worker geo_backfill_worker)
-
+      jobs = %w(geo_bulk_notify_worker geo_repository_sync_worker geo_file_download_dispatch_worker)
       jobs.each { |job| init_cron_job(job, job.camelize) }
-      # TODO: Make this name consistent
-      init_cron_job('geo_download_dispatch_worker', 'GeoFileDownloadDispatchWorker')
     end
 
     it 'activates cron jobs for primary' do
@@ -134,7 +131,7 @@ describe Gitlab::Geo, lib: true do
       described_class.configure_cron_jobs!
 
       expect(described_class.bulk_notify_job).to be_enabled
-      expect(described_class.backfill_job).not_to be_enabled
+      expect(described_class.repository_sync_job).not_to be_enabled
       expect(described_class.file_download_job).not_to be_enabled
     end
 
@@ -143,7 +140,7 @@ describe Gitlab::Geo, lib: true do
       described_class.configure_cron_jobs!
 
       expect(described_class.bulk_notify_job).not_to be_enabled
-      expect(described_class.backfill_job).to be_enabled
+      expect(described_class.repository_sync_job).to be_enabled
       expect(described_class.file_download_job).to be_enabled
     end
 
@@ -151,7 +148,7 @@ describe Gitlab::Geo, lib: true do
       described_class.configure_cron_jobs!
 
       expect(described_class.bulk_notify_job).not_to be_enabled
-      expect(described_class.backfill_job).not_to be_enabled
+      expect(described_class.repository_sync_job).not_to be_enabled
       expect(described_class.file_download_job).not_to be_enabled
     end
   end

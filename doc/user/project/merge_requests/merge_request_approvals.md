@@ -37,7 +37,7 @@ merge request, they automatically get excluded from the approvers list.
 
 ### Approvers
 
-At the approvers area you can define the default set of users that need to
+At the approvers area you can select the default set of users that need to
 approve a merge request.
 
 Depending on the number of required approvals and the number of approvers set,
@@ -56,7 +56,14 @@ creating or editing a merge request.
 When someone is marked as a required approver for a merge request, an email is
 sent to them and a todo is added to their list of todos.
 
-### Approver groups
+### Selecting individual approvers
+
+GitLab restricts the users that can be selected to be individual approvers. Only these can be selected and appear in the search box:
+- Members of the current project
+- Members of the parent group of the current project
+- Members of a group that have access to the current project [via a share](../../../workflow/share_projects_with_other_groups.md)
+
+### Selecting group approvers
 
 > [Introduced][ee-743] in GitLab Enterprise Edition 8.13.
 

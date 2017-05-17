@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Geo::RepositoryBackfillService, services: true do
+describe Geo::RepositorySyncService, services: true do
   let!(:primary) { create(:geo_node, :primary, host: 'primary-geo-node') }
 
   subject { described_class.new(project.id) }
@@ -106,7 +106,7 @@ describe Geo::RepositoryBackfillService, services: true do
       end
     end
 
-    context 'when repository was backfilled successfully' do
+    context 'when repository was synced successfully' do
       let(:project) { create(:project) }
       let(:last_repository_synced_at) { 5.days.ago }
 
@@ -159,7 +159,7 @@ describe Geo::RepositoryBackfillService, services: true do
       end
     end
 
-    context 'when last attempt to backfill the repository failed' do
+    context 'when last attempt to sync the repository failed' do
       let(:project) { create(:project) }
 
       let!(:registry) do

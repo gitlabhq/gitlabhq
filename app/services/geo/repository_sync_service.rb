@@ -1,9 +1,9 @@
 module Geo
-  class RepositoryBackfillService
+  class RepositorySyncService
     attr_reader :project_id
 
     LEASE_TIMEOUT    = 8.hours.freeze
-    LEASE_KEY_PREFIX = 'repository_backfill_service'.freeze
+    LEASE_KEY_PREFIX = 'repository_sync_service'.freeze
 
     def initialize(project_id)
       @project_id = project_id
@@ -81,7 +81,7 @@ module Geo
     end
 
     def update_registry(started_at, finished_at)
-      log('Updating registry information')
+      log('Updating repository sync information')
       registry = Geo::ProjectRegistry.find_or_initialize_by(project_id: project_id)
       registry.last_repository_synced_at = started_at
       registry.last_repository_successful_sync_at = finished_at if finished_at

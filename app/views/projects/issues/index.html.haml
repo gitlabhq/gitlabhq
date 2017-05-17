@@ -7,8 +7,9 @@
   = render "projects/issues/head"
 
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('filtered_search')
-  = page_specific_javascript_bundle_tag('issues')
+  = webpack_bundle_tag 'common_vue'
+  = webpack_bundle_tag 'filtered_search'
+  = webpack_bundle_tag 'issues'
 
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, params.merge(rss_url_options), title: "#{@project.name} issues")

@@ -1,4 +1,4 @@
-class GeoBackfillWorker
+class GeoRepositorySyncWorker
   include Sidekiq::Worker
   include CronjobQueue
 
@@ -15,20 +15,20 @@ class GeoBackfillWorker
     project_ids_updated_recently = find_synced_project_ids_updated_recently
     project_ids = interleave(project_ids_not_synced, project_ids_updated_recently)
 
-    logger.info "Started Geo backfilling for #{project_ids.length} project(s)"
+    logger.info "Started Geo repository syncing for #{project_ids.length} project(s)"
 
     project_ids.each do |project_id|
       begin
         break if over_time?(start_time)
         break unless Gitlab::Geo.current_node_enabled?
 
-        # We try to obtain a lease here for the entire backfilling process
-        # because backfill the repositories continuously at a controlled rate
-        # instead of hammering the primary node. Initially, we are backfilling
+        # We try to obtain a lease here for the entire sync process because we
+        # want to sync the repositories continuously at a controlled rate
+        # instead of hammering the primary node. Initially, we are syncing
         # one repo at a time. If we don't obtain the lease here, every 5
         # minutes all of 100 projects will be synced.
         try_obtain_lease do |lease|
-          Geo::RepositoryBackfillService.new(project_id).execute
+          Geo::RepositorySyncService.new(project_id).execute
         end
       rescue ActiveRecord::RecordNotFound
         logger.error("Couldn't find project with ID=#{project_id}, skipping syncing")
@@ -36,7 +36,7 @@ class GeoBackfillWorker
       end
     end
 
-    logger.info "Finished Geo backfilling for #{project_ids.length} project(s)"
+    logger.info "Finished Geo repository syncing for #{project_ids.length} project(s)"
   end
 
   private
@@ -86,10 +86,10 @@ class GeoBackfillWorker
   end
 
   def lease_key
-    Geo::RepositoryBackfillService::LEASE_KEY_PREFIX
+    Geo::RepositorySyncService::LEASE_KEY_PREFIX
   end
 
   def lease_timeout
-    Geo::RepositoryBackfillService::LEASE_TIMEOUT
+    Geo::RepositorySyncService::LEASE_TIMEOUT
   end
 end

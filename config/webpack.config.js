@@ -143,16 +143,24 @@ var config = {
         'diff_notes',
         'environments',
         'environments_folder',
-        'sidebar',
+        'filtered_search',
         'issue_show',
         'merge_conflicts',
         'notebook_viewer',
         'pdf_viewer',
         'pipelines',
+<<<<<<< HEAD
         'mr_widget_ee',
         'issue_show',
         'balsamiq_viewer',
         'pipelines_graph',
+=======
+        'pipelines_graph',
+        'schedule_form',
+        'schedules_index',
+        'sidebar',
+        'vue_merge_request_widget',
+>>>>>>> origin/master
       ],
       minChunks: function(module, count) {
         return module.resource && (/vue_shared/).test(module.resource);

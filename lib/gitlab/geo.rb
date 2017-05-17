@@ -13,7 +13,7 @@ module Gitlab
     ).freeze
 
     PRIMARY_JOBS = %i(bulk_notify_job).freeze
-    SECONDARY_JOBS = %i(backfill_job file_download_job).freeze
+    SECONDARY_JOBS = %i(repository_sync_job file_download_job).freeze
 
     def self.current_node
       self.cache_value(:geo_node_current) do
@@ -37,7 +37,7 @@ module Gitlab
 
     def self.current_node_enabled?
       # No caching of the enabled! If we cache it and an admin disables
-      # this node, an active GeoBackfillWorker would keep going for up
+      # this node, an active GeoRepositorySyncWorker would keep going for up
       # to max run time after the node was disabled.
       Gitlab::Geo.current_node.reload.enabled?
     end
@@ -74,12 +74,12 @@ module Gitlab
       Sidekiq::Cron::Job.find('geo_bulk_notify_worker')
     end
 
-    def self.backfill_job
-      Sidekiq::Cron::Job.find('geo_backfill_worker')
+    def self.repository_sync_job
+      Sidekiq::Cron::Job.find('geo_repository_sync_worker')
     end
 
     def self.file_download_job
-      Sidekiq::Cron::Job.find('geo_download_dispatch_worker')
+      Sidekiq::Cron::Job.find('geo_file_download_dispatch_worker')
     end
 
     def self.configure_primary_jobs!

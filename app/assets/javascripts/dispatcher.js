@@ -57,6 +57,7 @@ import BlobViewer from './blob/viewer/index';
 import GeoNodes from './geo_nodes';
 import ServiceDeskRoot from './projects/settings_service_desk/service_desk_root';
 import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
+import GfmAutoComplete from './gfm_auto_complete';
 
 const ShortcutsBlob = require('./shortcuts_blob');
 
@@ -82,6 +83,8 @@ const ShortcutsBlob = require('./shortcuts_blob');
       }
       path = page.split(':');
       shortcut_handler = null;
+
+      new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources).setup();
 
       function initBlob() {
         new LineHighlighter();
