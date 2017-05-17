@@ -26,12 +26,8 @@ export { default as ConflictsState } from './components/states/mr_widget_conflic
 export { default as NothingToMergeState } from './components/states/mr_widget_nothing_to_merge';
 export { default as MissingBranchState } from './components/states/mr_widget_missing_branch';
 export { default as NotAllowedState } from './components/states/mr_widget_not_allowed';
-<<<<<<< HEAD
 export { default as ReadyToMergeState } from './ee/components/states/mr_widget_ready_to_merge';
-=======
-export { default as ReadyToMergeState } from './components/states/mr_widget_ready_to_merge';
 export { default as SHAMismatchState } from './components/states/mr_widget_sha_mismatch';
->>>>>>> upstream/master
 export { default as UnresolvedDiscussionsState } from './components/states/mr_widget_unresolved_discussions';
 export { default as PipelineBlockedState } from './components/states/mr_widget_pipeline_blocked';
 export { default as PipelineFailedState } from './components/states/mr_widget_pipeline_failed';

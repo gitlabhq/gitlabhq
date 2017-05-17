@@ -7,13 +7,10 @@ module SubmoduleHelper
   def submodule_links(submodule_item, ref = nil, repository = @repository)
     url = repository.submodule_url_for(ref, submodule_item.path)
 
-<<<<<<< HEAD
-=======
     if url == '.' || url == './'
       url = File.join(Gitlab.config.gitlab.url, @project.full_path)
     end
 
->>>>>>> upstream/master
     if url =~ /([^\/:]+)\/([^\/]+(?:\.git)?)\Z/
       namespace, project = $1, $2
       project.sub!(/\.git\z/, '')

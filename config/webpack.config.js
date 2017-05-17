@@ -150,12 +150,9 @@ var config = {
         'notebook_viewer',
         'pdf_viewer',
         'pipelines',
-<<<<<<< HEAD
         'mr_widget_ee',
         'issue_show',
         'balsamiq_viewer',
-=======
->>>>>>> upstream/master
         'pipelines_graph',
         'schedule_form',
         'schedules_index',

@@ -24,25 +24,10 @@
       %li
         %code= liveness_url(token: current_application_settings.health_check_access_token)
       %li
-<<<<<<< HEAD
-        %code= health_check_url(token: current_application_settings.health_check_access_token, format: :xml)
-
-  %p.light
-    You can also ask for the status of specific services:
-    %ul
-      %li
-        %code= health_check_url(token: current_application_settings.health_check_access_token, checks: :cache)
-      %li
-        %code= health_check_url(token: current_application_settings.health_check_access_token, checks: :database)
-      %li
-        %code= health_check_url(token: current_application_settings.health_check_access_token, checks: :migrations)
+        %code= metrics_url(token: current_application_settings.health_check_access_token)
       - if Gitlab::Geo.secondary?
         %li
           %code= health_check_url(token: current_application_settings.health_check_access_token, checks: :geo)
-=======
-        %code= metrics_url(token: current_application_settings.health_check_access_token)
->>>>>>> upstream/master
-
   %hr
   .panel.panel-default
     .panel-heading

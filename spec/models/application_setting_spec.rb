@@ -263,61 +263,6 @@ describe ApplicationSetting, models: true do
     end
   end
 
-<<<<<<< HEAD
-  describe '#repository_size_limit column' do
-    it 'support values up to 8 exabytes' do
-      setting.update_column(:repository_size_limit, 8.exabytes - 1)
-
-      setting.reload
-
-      expect(setting.repository_size_limit).to eql(8.exabytes - 1)
-    end
-  end
-
-  describe '#elasticsearch_url' do
-    it 'presents a single URL as a one-element array' do
-      setting.elasticsearch_url = 'http://example.com'
-
-      expect(setting.elasticsearch_url).to eq(%w[http://example.com])
-    end
-
-    it 'presents multiple URLs as a many-element array' do
-      setting.elasticsearch_url = 'http://example.com,https://invalid.invalid:9200'
-
-      expect(setting.elasticsearch_url).to eq(%w[http://example.com https://invalid.invalid:9200])
-    end
-
-    it 'strips whitespace from around URLs' do
-      setting.elasticsearch_url = ' http://example.com, https://invalid.invalid:9200 '
-
-      expect(setting.elasticsearch_url).to eq(%w[http://example.com https://invalid.invalid:9200])
-    end
-
-    it 'strips trailing slashes from URLs' do
-      setting.elasticsearch_url = 'http://example.com/, https://example.com:9200/, https://example.com:9200/prefix//'
-
-      expect(setting.elasticsearch_url).to eq(%w[http://example.com https://example.com:9200 https://example.com:9200/prefix])
-    end
-  end
-
-  describe '#elasticsearch_config' do
-    it 'places all elasticsearch configuration values into a hash' do
-      setting.update!(
-        elasticsearch_url: 'http://example.com:9200',
-        elasticsearch_aws: false,
-        elasticsearch_aws_region:     'test-region',
-        elasticsearch_aws_access_key: 'test-access-key',
-        elasticsearch_aws_secret_access_key: 'test-secret-access-key'
-      )
-
-      expect(setting.elasticsearch_config).to eq(
-        url: ['http://example.com:9200'],
-        aws: false,
-        aws_region:     'test-region',
-        aws_access_key: 'test-access-key',
-        aws_secret_access_key: 'test-secret-access-key'
-      )
-=======
   describe 'usage ping settings' do
     context 'when the usage ping is disabled in gitlab.yml' do
       before do
@@ -377,7 +322,62 @@ describe ApplicationSetting, models: true do
           expect(setting.usage_ping_enabled).to be_truthy
         end
       end
->>>>>>> upstream/master
+    end
+  end
+
+  describe '#repository_size_limit column' do
+    it 'support values up to 8 exabytes' do
+      setting.update_column(:repository_size_limit, 8.exabytes - 1)
+
+      setting.reload
+
+      expect(setting.repository_size_limit).to eql(8.exabytes - 1)
+    end
+  end
+
+  describe '#elasticsearch_url' do
+    it 'presents a single URL as a one-element array' do
+      setting.elasticsearch_url = 'http://example.com'
+
+      expect(setting.elasticsearch_url).to eq(%w[http://example.com])
+    end
+
+    it 'presents multiple URLs as a many-element array' do
+      setting.elasticsearch_url = 'http://example.com,https://invalid.invalid:9200'
+
+      expect(setting.elasticsearch_url).to eq(%w[http://example.com https://invalid.invalid:9200])
+    end
+
+    it 'strips whitespace from around URLs' do
+      setting.elasticsearch_url = ' http://example.com, https://invalid.invalid:9200 '
+
+      expect(setting.elasticsearch_url).to eq(%w[http://example.com https://invalid.invalid:9200])
+    end
+
+    it 'strips trailing slashes from URLs' do
+      setting.elasticsearch_url = 'http://example.com/, https://example.com:9200/, https://example.com:9200/prefix//'
+
+      expect(setting.elasticsearch_url).to eq(%w[http://example.com https://example.com:9200 https://example.com:9200/prefix])
+    end
+  end
+
+  describe '#elasticsearch_config' do
+    it 'places all elasticsearch configuration values into a hash' do
+      setting.update!(
+        elasticsearch_url: 'http://example.com:9200',
+        elasticsearch_aws: false,
+        elasticsearch_aws_region:     'test-region',
+        elasticsearch_aws_access_key: 'test-access-key',
+        elasticsearch_aws_secret_access_key: 'test-secret-access-key'
+      )
+
+      expect(setting.elasticsearch_config).to eq(
+        url: ['http://example.com:9200'],
+        aws: false,
+        aws_region:     'test-region',
+        aws_access_key: 'test-access-key',
+        aws_secret_access_key: 'test-secret-access-key'
+      )
     end
   end
 end

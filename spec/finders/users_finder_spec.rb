@@ -45,6 +45,22 @@ describe UsersFinder do
 
         expect(users).to contain_exactly(user, user1, user2, omniauth_user)
       end
+
+      context 'with LDAP users' do
+        let!(:ldap_user) { create(:omniauth_user, provider: 'ldap') }
+
+        it 'returns ldap users by default' do
+          users = described_class.new(user).execute
+
+          expect(users).to contain_exactly(user, user1, user2, omniauth_user, ldap_user)
+        end
+
+        it 'returns only non-ldap users with skip_ldap: true' do
+          users = described_class.new(user, skip_ldap: true).execute
+
+          expect(users).not_to contain_exactly(user, user1, user2, omniauth_user)
+        end
+      end
     end
 
     context 'with an admin user' do

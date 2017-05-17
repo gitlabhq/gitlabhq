@@ -188,8 +188,10 @@ describe Group, models: true do
         expect(group.avatar_url).to eq(avatar_path)
         expect(group.avatar_url(only_path: false)).to eq([gitlab_host, avatar_path].join)
 
-<<<<<<< HEAD
-      it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
+        allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
+
+        expect(group.avatar_url).to eq([gitlab_host, avatar_path].join)
+      end
 
       context 'when in a geo secondary node' do
         let(:geo_url) { 'http://geo.example.com' }
@@ -200,11 +202,6 @@ describe Group, models: true do
         end
 
         it { should eq "#{geo_url}#{avatar_path}" }
-=======
-        allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
-
-        expect(group.avatar_url).to eq([gitlab_host, avatar_path].join)
->>>>>>> upstream/master
       end
     end
   end

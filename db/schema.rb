@@ -11,11 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 20170511101000) do
-=======
 ActiveRecord::Schema.define(version: 20170516183131) do
->>>>>>> upstream/master
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -538,7 +534,6 @@ ActiveRecord::Schema.define(version: 20170516183131) do
 
   add_index "identities", ["user_id"], name: "index_identities_on_user_id", using: :btree
 
-<<<<<<< HEAD
   create_table "index_statuses", force: :cascade do |t|
     t.integer "project_id", null: false
     t.datetime "indexed_at"
@@ -550,10 +545,7 @@ ActiveRecord::Schema.define(version: 20170516183131) do
 
   add_index "index_statuses", ["project_id"], name: "index_index_statuses_on_project_id", unique: true, using: :btree
 
-  create_table "issue_assignees", force: :cascade do |t|
-=======
   create_table "issue_assignees", id: false, force: :cascade do |t|
->>>>>>> upstream/master
     t.integer "user_id", null: false
     t.integer "issue_id", null: false
   end
@@ -1150,12 +1142,8 @@ ActiveRecord::Schema.define(version: 20170516183131) do
     t.integer "repository_size_limit", limit: 8
     t.integer "sync_time", default: 60, null: false
     t.boolean "printing_merge_request_link_enabled", default: true, null: false
-<<<<<<< HEAD
-    t.integer "auto_cancel_pending_pipelines", default: 0, null: false
-    t.boolean "service_desk_enabled"
-=======
     t.integer "auto_cancel_pending_pipelines", default: 1, null: false
->>>>>>> upstream/master
+    t.boolean "service_desk_enabled"
     t.string "import_jid"
     t.integer "cached_markdown_version"
     t.datetime "last_repository_updated_at"
@@ -1623,13 +1611,8 @@ ActiveRecord::Schema.define(version: 20170516183131) do
     t.string "token"
     t.boolean "pipeline_events", default: false, null: false
     t.boolean "confidential_issues_events", default: false, null: false
-<<<<<<< HEAD
-    t.boolean "repository_update_events", default: false, null: false
-    t.boolean "job_events", default: false, null: false
-=======
     t.boolean "job_events", default: false, null: false
     t.boolean "repository_update_events", default: false, null: false
->>>>>>> upstream/master
   end
 
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
