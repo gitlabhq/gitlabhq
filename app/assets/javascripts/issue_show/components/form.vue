@@ -39,6 +39,7 @@
       :markdown-preview-url="markdownPreviewUrl"
       :markdown-docs="markdownDocs" />
     <edit-actions
+      :form-state="formState"
       :can-destroy="canDestroy" />
   </form>
 </template>
