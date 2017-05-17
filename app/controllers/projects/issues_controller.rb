@@ -5,7 +5,6 @@ class Projects::IssuesController < Projects::ApplicationController
   include ToggleAwardEmoji
   include IssuableCollections
   include SpammableActions
-  include EditableHelper
 
   prepend_before_action :authenticate_user!, only: [:new]
 
@@ -212,7 +211,7 @@ class Projects::IssuesController < Projects::ApplicationController
       issue_number: @issue.iid,
     }
 
-    if is_edited?(@issue)
+    if @issue.is_edited?
       response[:updated_at] = @issue.updated_at
       response[:updated_by_name] = @issue.last_edited_by.name
       response[:updated_by_path] = user_path(@issue.last_edited_by)
