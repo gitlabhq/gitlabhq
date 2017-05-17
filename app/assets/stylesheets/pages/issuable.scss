@@ -23,16 +23,6 @@
     .merge-manually {
       @extend .fixed-width-container;
     }
-
-    .merge-request-tabs-holder {
-      &.affix {
-        border-bottom: 1px solid $border-color;
-
-        .nav-links {
-          border: 0;
-        }
-      }
-    }
   }
 
   .merge-request-details {
@@ -205,8 +195,22 @@
   right: 0;
   transition: width .3s;
   background: $gray-light;
+<<<<<<< HEAD
   padding: 10px 20px;
   z-index: 200;
+=======
+  padding: 0 20px;
+  z-index: 200;
+  overflow: hidden;
+
+  .issuable-sidebar {
+    width: calc(100% + 100px);
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+>>>>>>> upstream/master
 
   &.right-sidebar-expanded {
     width: $gutter_width;
@@ -218,6 +222,10 @@
         margin-top: 10px;
         display: block;
       }
+    }
+
+    .issuable-sidebar-header {
+      padding-top: 10px;
     }
 
     .assign-yourself .btn-link {
@@ -273,11 +281,10 @@
     }
 
     width: $gutter_collapsed_width;
-    padding-top: 0;
+    padding: 0;
 
     .block {
       width: $gutter_collapsed_width - 2px;
-      margin-left: -19px;
       padding: 15px 0 0;
       border-bottom: none;
       overflow: hidden;

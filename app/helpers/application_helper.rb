@@ -77,7 +77,7 @@ module ApplicationHelper
       end
 
     if user
-      user.avatar_url(size) || default_avatar
+      user.avatar_url(size: size) || default_avatar
     else
       gravatar_icon(user_or_email, size, scale)
     end
@@ -281,5 +281,23 @@ module ApplicationHelper
 
   def show_user_callout?
     cookies[:user_callout_dismissed] == 'true'
+  end
+
+  def linkedin_url(user)
+    name = user.linkedin
+    if name =~ %r{\Ahttps?:\/\/(www\.)?linkedin\.com\/in\/}
+      name
+    else
+      "https://www.linkedin.com/in/#{name}"
+    end
+  end
+
+  def twitter_url(user)
+    name = user.twitter
+    if name =~ %r{\Ahttps?:\/\/(www\.)?twitter\.com\/}
+      name
+    else
+      "https://www.twitter.com/#{name}"
+    end
   end
 end

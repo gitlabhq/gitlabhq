@@ -6,7 +6,7 @@ module Gitlab
       # 'repository' is a Gitlab::Git::Repository
       def initialize(repository)
         @gitaly_repo = repository.gitaly_repository
-        @stub = Gitaly::Ref::Stub.new(nil, nil, channel_override: repository.gitaly_channel)
+        @stub = GitalyClient.stub(:ref, repository.storage)
       end
 
       def default_branch_name
@@ -28,7 +28,7 @@ module Gitlab
 
       def find_ref_name(commit_id, ref_prefix)
         request = Gitaly::FindRefNameRequest.new(
-          repository: @repository,
+          repository: @gitaly_repo,
           commit_id: commit_id,
           prefix: ref_prefix
         )

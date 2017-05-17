@@ -63,7 +63,7 @@ Feature: Profile
     Given I logout
     And I sign in via the UI
     And I have activity
-    When I visit Audit Log page
+    When I visit Authentication log page
     Then I should see my activity
 
   Scenario: I visit my user page

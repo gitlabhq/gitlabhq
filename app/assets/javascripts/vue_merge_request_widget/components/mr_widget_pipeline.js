@@ -26,9 +26,12 @@ export default {
     status() {
       return this.mr.pipeline.details.status || {};
     },
+<<<<<<< HEAD
     statusPath() {
       return this.status ? this.status.details_path : '';
     },
+=======
+>>>>>>> upstream/master
   },
   template: `
     <div class="mr-widget-heading">
@@ -47,7 +50,11 @@ export default {
           <div>
             <a
               class="icon-link"
+<<<<<<< HEAD
               :href="statusPath">
+=======
+              :href="this.status.details_path">
+>>>>>>> upstream/master
               <ci-icon :status="status" />
             </a>
           </div>
@@ -57,6 +64,9 @@ export default {
               :href="mr.pipeline.path"
               class="pipeline-id">#{{mr.pipeline.id}}</a>
             {{mr.pipeline.details.status.label}}
+          </span>
+          <span
+            v-if="mr.pipeline.details.stages.length > 0">
             with {{stageText}}
           </span>
           <div class="mr-widget-pipeline-graph">
@@ -73,7 +83,7 @@ export default {
             for
             <a
               :href="mr.pipeline.commit.commit_path"
-              class="monospace js-commit-link">
+              class="commit-sha js-commit-link">
               {{mr.pipeline.commit.short_id}}</a>.
           </span>
           <span

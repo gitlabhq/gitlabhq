@@ -13,7 +13,7 @@ describe Ci::RetryPipelineService, '#execute', :services do
 
     context 'when there are already retried jobs present' do
       before do
-        create_build('rspec', :canceled, 0)
+        create_build('rspec', :canceled, 0, retried: true)
         create_build('rspec', :failed, 0)
       end
 

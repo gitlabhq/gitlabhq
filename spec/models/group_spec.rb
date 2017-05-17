@@ -178,15 +178,17 @@ describe Group, models: true do
   describe '#avatar_url' do
     let!(:group) { create(:group, :access_requestable, :with_avatar) }
     let(:user) { create(:user) }
-    subject { group.avatar_url }
+    let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
+    let(:avatar_path) { "/uploads/group/avatar/#{group.id}/dk.png" }
 
     context 'when avatar file is uploaded' do
-      before do
-        group.add_master(user)
-      end
+      before { group.add_master(user) }
 
-      let(:avatar_path) { "/uploads/group/avatar/#{group.id}/dk.png" }
+      it 'shows correct avatar url' do
+        expect(group.avatar_url).to eq(avatar_path)
+        expect(group.avatar_url(only_path: false)).to eq([gitlab_host, avatar_path].join)
 
+<<<<<<< HEAD
       it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
 
       context 'when in a geo secondary node' do
@@ -198,6 +200,11 @@ describe Group, models: true do
         end
 
         it { should eq "#{geo_url}#{avatar_path}" }
+=======
+        allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
+
+        expect(group.avatar_url).to eq([gitlab_host, avatar_path].join)
+>>>>>>> upstream/master
       end
     end
   end

@@ -3,7 +3,6 @@
 require('~/gl_dropdown');
 require('~/search_autocomplete');
 require('~/lib/utils/common_utils');
-require('~/lib/utils/type_utility');
 require('vendor/fuzzaldrin-plus');
 
 (function() {

@@ -524,17 +524,24 @@
             Let GitLab inform you when an update is available.
     .form-group
       .col-sm-offset-2.col-sm-10
+        - can_be_configured = @application_setting.usage_ping_can_be_configured?
         .checkbox
           = f.label :usage_ping_enabled do
-            = f.check_box :usage_ping_enabled
+            = f.check_box :usage_ping_enabled, disabled: !can_be_configured
             Usage ping enabled
-            = link_to icon('question-circle'), help_page_path("user/admin_area/settings/usage_statistics", anchor: "usage-data")
+            = link_to icon('question-circle'), help_page_path("user/admin_area/settings/usage_statistics", anchor: "usage-ping")
           .help-block
-            Every week GitLab will report license usage back to GitLab, Inc.
-            Disable this option if you do not want this to occur. To see the
-            JSON payload that will be sent, visit the
-            = succeed '.' do
-              = link_to "Cohorts page", admin_cohorts_path(anchor: 'usage-ping')
+            - if can_be_configured
+              Every week GitLab will report license usage back to GitLab, Inc.
+              Disable this option if you do not want this to occur. To see the
+              JSON payload that will be sent, visit the
+              = succeed '.' do
+                = link_to "Cohorts page", admin_cohorts_path(anchor: 'usage-ping')
+            - else
+              The usage ping is disabled, and cannot be configured through this
+              form. For more information, see the documentation on
+              = succeed '.' do
+                = link_to 'deactivating the usage ping', help_page_path('user/admin_area/settings/usage_statistics', anchor: 'deactivate-the-usage-ping')
 
   %fieldset
     %legend Email

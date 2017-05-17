@@ -5,6 +5,7 @@ describe 'Auto deploy' do
   let(:project) { create(:project, :repository) }
 
   before do
+<<<<<<< HEAD
     project.create_kubernetes_service(
       active: true,
       properties: {
@@ -13,6 +14,9 @@ describe 'Auto deploy' do
         token: 'a' * 40
       }
     )
+=======
+    create :kubernetes_service, project: project
+>>>>>>> upstream/master
     project.team << [user, :master]
     login_as user
   end

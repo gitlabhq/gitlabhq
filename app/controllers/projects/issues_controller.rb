@@ -216,7 +216,10 @@ class Projects::IssuesController < Projects::ApplicationController
       description: view_context.markdown_field(@issue, :description),
       description_text: @issue.description,
       task_status: @issue.task_status,
+<<<<<<< HEAD
       issue_number: @issue.iid,
+=======
+>>>>>>> upstream/master
       updated_at: @issue.updated_at
     }
   end
@@ -276,7 +279,11 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def issue_params
     params.require(:issue).permit(
+<<<<<<< HEAD
       :title, :position, :description, :confidential, :weight,
+=======
+      :title, :assignee_id, :position, :description, :confidential,
+>>>>>>> upstream/master
       :milestone_id, :due_date, :state_event, :task_num, :lock_version, label_ids: [], assignee_ids: []
     )
   end

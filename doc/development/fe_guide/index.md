@@ -45,15 +45,11 @@ should be `new-feature`.
 branch from `new-feature`, let's call it `new-feature-step-2` and repeat the process done before.
 
 ```shell
-* master
-|\
-| * new-feature
-| |\
-| | * new-feature-step-1
-| |\
-| | * new-feature-step-2
-| |\
-| | * new-feature-step-3
+master
+└─ new-feature
+   ├─ new-feature-step-1
+   ├─ new-feature-step-2
+   └─ new-feature-step-3
 ```
 
 **Tips**

@@ -1113,6 +1113,20 @@ describe API::Issues do
 
       expect(json_response['assignees'].first['name']).to eq(user2.name)
     end
+<<<<<<< HEAD
+=======
+
+    context 'CE restrictions' do
+      it 'updates an issue with several assignees but only one has been applied' do
+        put api("/projects/#{project.id}/issues/#{issue.iid}", user),
+          assignee_ids: [user2.id, guest.id]
+
+        expect(response).to have_http_status(200)
+
+        expect(json_response['assignees'].size).to eq(1)
+      end
+    end
+>>>>>>> upstream/master
   end
 
   describe 'PUT /projects/:id/issues/:issue_iid to update labels' do

@@ -2,11 +2,6 @@
 .diff-file {
   margin-bottom: $gl-padding;
 
-  .commit-short-id {
-    font-family: $regular_font;
-    font-weight: 400;
-  }
-
   .file-title,
   .file-title-flex-parent {
     cursor: pointer;

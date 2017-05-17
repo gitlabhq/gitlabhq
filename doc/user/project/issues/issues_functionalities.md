@@ -155,3 +155,9 @@ Once you wrote your comment, you can either:
 - [New branch](../repository/web_editor.md#create-a-new-branch-from-an-issue):
 create a new branch, followed by a new merge request which will automatically close that
 issue as soon as that merge request is merged.
+
+#### 19. New merge request
+
+- Create a new merge request (with source branch) in one action. Optionally just create a new branch, as explained above.
+
+![Create new merge request](img/create_new_merge_request.png)

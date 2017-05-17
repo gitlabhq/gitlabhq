@@ -55,8 +55,12 @@ describe Gitlab::ProjectSearchResults, lib: true do
     end
 
     it 'finds by name' do
+<<<<<<< HEAD
       blob = results.select { |result| result.first == 'files/images/wm.svg' }.flatten.last
       expect(blob).to be_a(OpenStruct)
+=======
+      expect(results.map(&:first)).to include('files/images/wm.svg')
+>>>>>>> upstream/master
     end
 
     it 'finds by content' do

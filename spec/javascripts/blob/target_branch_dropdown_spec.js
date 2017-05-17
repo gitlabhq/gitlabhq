@@ -1,5 +1,4 @@
 require('~/gl_dropdown');
-require('~/lib/utils/type_utility');
 require('~/blob/create_branch_dropdown');
 require('~/blob/target_branch_dropdown');
 

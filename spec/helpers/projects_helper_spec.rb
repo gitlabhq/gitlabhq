@@ -66,8 +66,8 @@ describe ProjectsHelper do
   describe "#project_list_cache_key", redis: true do
     let(:project) { create(:project) }
 
-    it "includes the namespace" do
-      expect(helper.project_list_cache_key(project)).to include(project.namespace.cache_key)
+    it "includes the route" do
+      expect(helper.project_list_cache_key(project)).to include(project.route.cache_key)
     end
 
     it "includes the project" do

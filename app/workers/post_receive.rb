@@ -31,10 +31,17 @@ class PostReceive
   def process_repository_update(post_received)
     changes = []
     refs = Set.new
+<<<<<<< HEAD
 
     post_received.changes_refs do |oldrev, newrev, ref|
       @user ||= post_received.identify(newrev)
 
+=======
+
+    post_received.changes_refs do |oldrev, newrev, ref|
+      @user ||= post_received.identify(newrev)
+
+>>>>>>> upstream/master
       unless @user
         log("Triggered hook for non-existing user \"#{post_received.identifier}\"")
         return false

@@ -972,7 +972,9 @@ describe Project, models: true do
     context 'when avatar file is uploaded' do
       let(:project) { create(:empty_project, :with_avatar) }
       let(:avatar_path) { "/uploads/project/avatar/#{project.id}/dk.png" }
+      let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
 
+<<<<<<< HEAD
       it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
 
       context 'When in a geo secondary node' do
@@ -984,6 +986,15 @@ describe Project, models: true do
         end
 
         it { should eq "#{geo_url}#{avatar_path}" }
+=======
+      it 'shows correct url' do
+        expect(project.avatar_url).to eq(avatar_path)
+        expect(project.avatar_url(only_path: false)).to eq([gitlab_host, avatar_path].join)
+
+        allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
+
+        expect(project.avatar_url).to eq([gitlab_host, avatar_path].join)
+>>>>>>> upstream/master
       end
     end
 

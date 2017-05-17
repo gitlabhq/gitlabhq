@@ -10,15 +10,10 @@ module WaitForRequests
   def wait_for_requests_complete
     Gitlab::Testing::RequestBlockerMiddleware.block_requests!
     wait_for('pending AJAX requests complete') do
-      Gitlab::Testing::RequestBlockerMiddleware.num_active_requests.zero? &&
-        finished_all_requests?
+      Gitlab::Testing::RequestBlockerMiddleware.num_active_requests.zero?
     end
   ensure
     Gitlab::Testing::RequestBlockerMiddleware.allow_requests!
-  end
-
-  def finished_all_requests?
-    finished_all_ajax_requests? && finished_all_vue_resource_requests?
   end
 
   # Waits until the passed block returns true

@@ -265,7 +265,7 @@ class ApplicationSetting < ActiveRecord::Base
       two_factor_grace_period: 48,
       user_default_external: false,
       polling_interval_multiplier: 1,
-      usage_ping_enabled: true
+      usage_ping_enabled: Settings.gitlab['usage_ping_enabled']
     }
   end
 
@@ -403,6 +403,14 @@ class ApplicationSetting < ActiveRecord::Base
     return false unless sidekiq_throttling_column_exists?
 
     sidekiq_throttling_enabled
+  end
+
+  def usage_ping_can_be_configured?
+    Settings.gitlab.usage_ping_enabled
+  end
+
+  def usage_ping_enabled
+    usage_ping_can_be_configured? && super
   end
 
   private

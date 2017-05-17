@@ -3,7 +3,7 @@ export default class TargetBranchDropdown {
     this.$dropdown = $('.js-target-branch-dropdown');
     this.$dropdownToggle = this.$dropdown.find('.dropdown-toggle-text');
     this.$input = $('#schedule_ref');
-    this.initialValue = this.$input.val();
+    this.initDefaultBranch();
     this.initDropdown();
   }
 
@@ -29,13 +29,23 @@ export default class TargetBranchDropdown {
   }
 
   setDropdownToggle() {
-    if (this.initialValue) {
-      this.$dropdownToggle.text(this.initialValue);
+    const initialValue = this.$input.val();
+
+    this.$dropdownToggle.text(initialValue);
+  }
+
+  initDefaultBranch() {
+    const initialValue = this.$input.val();
+    const defaultBranch = this.$dropdown.data('defaultBranch');
+
+    if (!initialValue) {
+      this.$input.val(defaultBranch);
     }
   }
 
   updateInputValue({ selectedObj, e }) {
     e.preventDefault();
+
     this.$input.val(selectedObj.name);
     gl.pipelineScheduleFieldErrors.updateFormValidityState();
   }

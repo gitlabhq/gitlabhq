@@ -135,7 +135,10 @@
     gl.utils.getUrlParamsArray = function () {
       // We can trust that each param has one & since values containing & will be encoded
       // Remove the first character of search as it is always ?
-      return window.location.search.slice(1).split('&');
+      return window.location.search.slice(1).split('&').map((param) => {
+        const split = param.split('=');
+        return [decodeURI(split[0]), split[1]].join('=');
+      });
     };
 
     gl.utils.isMetaKey = function(e) {

@@ -16,13 +16,15 @@
       = icon('spinner')
       Reset health check access token
   %p.light
-    Health information can be retrieved as plain text, JSON, or XML using:
+    Health information can be retrieved from the following endpoints. More information is available
+    = link_to 'here', help_page_path('user/admin_area/monitoring/health_check')
     %ul
       %li
-        %code= health_check_url(token: current_application_settings.health_check_access_token)
+        %code= readiness_url(token: current_application_settings.health_check_access_token)
       %li
-        %code= health_check_url(token: current_application_settings.health_check_access_token, format: :json)
+        %code= liveness_url(token: current_application_settings.health_check_access_token)
       %li
+<<<<<<< HEAD
         %code= health_check_url(token: current_application_settings.health_check_access_token, format: :xml)
 
   %p.light
@@ -37,6 +39,9 @@
       - if Gitlab::Geo.secondary?
         %li
           %code= health_check_url(token: current_application_settings.health_check_access_token, checks: :geo)
+=======
+        %code= metrics_url(token: current_application_settings.health_check_access_token)
+>>>>>>> upstream/master
 
   %hr
   .panel.panel-default

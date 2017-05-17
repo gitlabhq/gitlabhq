@@ -20,7 +20,6 @@ Variable | Type | Description
 `GITLAB_EMAIL_FROM`                        | string  | The e-mail address used in the "From" field in e-mails sent by GitLab
 `GITLAB_EMAIL_DISPLAY_NAME`                | string  | The name used in the "From" field in e-mails sent by GitLab
 `GITLAB_EMAIL_REPLY_TO`                    | string  | The e-mail address used in the "Reply-To" field in e-mails sent by GitLab
-`GITLAB_EMAIL_REPLY_TO`                    | string  | The e-mail address used in the "Reply-To" field in e-mails sent by GitLab
 `GITLAB_EMAIL_SUBJECT_SUFFIX`              | string  | The e-mail subject suffix used in e-mails sent by GitLab
 `GITLAB_UNICORN_MEMORY_MIN`                | integer | The minimum memory threshold (in bytes) for the Unicorn worker killer
 `GITLAB_UNICORN_MEMORY_MAX`                | integer | The maximum memory threshold (in bytes) for the Unicorn worker killer

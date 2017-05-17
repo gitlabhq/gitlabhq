@@ -63,7 +63,7 @@ module DiffHelper
 
   def parallel_diff_discussions(left, right, diff_file)
     return unless @grouped_diff_discussions
-    
+
     discussions_left = discussions_right = nil
 
     if left && (left.unchanged? || left.removed?)
@@ -98,7 +98,11 @@ module DiffHelper
     [
       content_tag(:span, link_to(truncate(blob.name, length: 40), tree)),
       '@',
+<<<<<<< HEAD
       content_tag(:span, commit_id, class: 'monospace')
+=======
+      content_tag(:span, commit_id, class: 'commit-sha')
+>>>>>>> upstream/master
     ].join(' ').html_safe
   end
 

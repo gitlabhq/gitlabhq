@@ -605,9 +605,13 @@ module API
       SlackService,
       MattermostService,
       MicrosoftTeamsService,
+<<<<<<< HEAD
       TeamcityService,
       JenkinsService,
       JenkinsDeprecatedService
+=======
+      TeamcityService
+>>>>>>> upstream/master
     ]
 
     if Rails.env.development?

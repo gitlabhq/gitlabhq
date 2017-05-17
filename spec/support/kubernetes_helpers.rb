@@ -36,8 +36,12 @@ module KubernetesHelpers
     {
       "kind" => "APIResourceList",
       "resources" => [
+<<<<<<< HEAD
         { "name" => "pods", "namespaced" => true, "kind" => "Pod" },
         { "name" => "deployments", "namespaced" => true, "kind" => "Deployment" }
+=======
+        { "name" => "pods", "namespaced" => true, "kind" => "Pod" }
+>>>>>>> upstream/master
       ]
     }
   end

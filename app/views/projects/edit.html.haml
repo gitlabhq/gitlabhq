@@ -50,9 +50,15 @@
           .form_group.prepend-top-20.sharing-and-permissions
             .row.js-visibility-select
               .col-md-9
+<<<<<<< HEAD
                 %label.label-light
                   = label_tag :project_visibility, 'Project Visibility', class: 'label-light'
                   = link_to icon('question-circle'), help_page_path("public_access/public_access")
+=======
+                .label-light
+                  = label_tag :project_visibility, 'Project Visibility', class: 'label-light', for: :project_visibility_level
+                  = link_to "(?)", help_page_path("public_access/public_access")
+>>>>>>> upstream/master
                 %span.help-block
               .col-md-3.visibility-select-container
                 = render('projects/visibility_select', model_method: :visibility_level, form: f, selected_level: @project.visibility_level)

@@ -665,9 +665,8 @@ pre.light-well {
     color: $gl-text-color;
   }
 
-  .commit_short_id {
+  .commit-sha {
     margin-right: 5px;
-    color: $gl-link-color;
     font-weight: 600;
   }
 
@@ -866,7 +865,8 @@ a.allowed-to-push {
 }
 
 .compare-form-group {
-  .dropdown-menu {
+  .dropdown-menu,
+  .inline-input-group {
     width: 100%;
 
     @media (min-width: $screen-sm-min) {
@@ -883,14 +883,6 @@ a.allowed-to-push {
     @media (min-width: $screen-sm-min) {
       margin-top: 0;
       width: auto;
-    }
-  }
-
-  .inline-input-group {
-    width: 100%;
-
-    @media (min-width: $screen-sm-min) {
-      width: 250px;
     }
   }
 }

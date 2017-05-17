@@ -65,6 +65,7 @@ var config = {
     users:                './users/users_bundle.js',
     raven:                './raven/index.js',
     vue_merge_request_widget: './vue_merge_request_widget/index.js',
+    test:                 './test.js',
   },
 
   output: {
@@ -96,7 +97,7 @@ var config = {
         query: { mimetype: 'image/gif' },
       },
       {
-        test: /\.(worker\.js|pdf)$/,
+        test: /\.(worker\.js|pdf|bmpr)$/,
         exclude: /node_modules/,
         loader: 'file-loader',
       },
@@ -149,9 +150,12 @@ var config = {
         'notebook_viewer',
         'pdf_viewer',
         'pipelines',
+<<<<<<< HEAD
         'mr_widget_ee',
         'issue_show',
         'balsamiq_viewer',
+=======
+>>>>>>> upstream/master
         'pipelines_graph',
         'schedule_form',
         'schedules_index',
