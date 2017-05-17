@@ -45,6 +45,12 @@ gl.issueBoards.BoardSidebar = Vue.extend({
     detail: {
       handler () {
         if (this.issue.id !== this.detail.issue.id) {
+          $('.block.assignee')
+            .find('input:not(.js-vue)[name="issue[assignee_ids][]"]')
+            .each((i, el) => {
+              $(el).remove();
+            });
+
           $('.js-issue-board-sidebar', this.$el).each((i, el) => {
             $(el).data('glDropdown').clearMenu();
           });

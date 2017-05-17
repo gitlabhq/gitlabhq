@@ -26,9 +26,20 @@ RSpec.describe 'Dashboard Issues', feature: true do
     expect(page).not_to have_content(other_issue.title)
   end
 
+  it 'shows checkmark when unassigned is selected for assignee', js: true do
+    find('.js-assignee-search').click
+    find('li', text: 'Unassigned').click
+    find('.js-assignee-search').click
+
+    expect(find('li[data-user-id="0"] a.is-active')).to be_visible
+  end
+
   it 'shows issues when current user is author', js: true do
     find('#assignee_id', visible: false).set('')
     find('.js-author-search', match: :first).click
+
+    expect(find('li[data-user-id="null"] a.is-active')).to be_visible
+
     find('.dropdown-menu-author li a', match: :first, text: current_user.to_reference).click
     find('.js-author-search', match: :first).click
 
