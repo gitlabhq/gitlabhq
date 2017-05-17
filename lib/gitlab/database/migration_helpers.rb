@@ -283,13 +283,6 @@ module Gitlab
 
         add_column(table, new, new_type,
                    limit: old_col.limit,
-<<<<<<< HEAD
-                   default: old_col.default,
-                   null: old_col.null,
-                   precision: old_col.precision,
-                   scale: old_col.scale)
-
-=======
                    precision: old_col.precision,
                    scale: old_col.scale)
 
@@ -298,7 +291,6 @@ module Gitlab
         # necessary since we copy over old values further down.
         change_column_default(table, new, old_col.default) if old_col.default
 
->>>>>>> upstream/master
         trigger_name = rename_trigger_name(table, old, new)
         quoted_table = quote_table_name(table)
         quoted_old = quote_column_name(old)
