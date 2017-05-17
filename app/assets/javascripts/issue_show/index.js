@@ -23,15 +23,18 @@ document.addEventListener('DOMContentLoaded', () => {
       const {
         canUpdate,
         canDestroy,
+        canMove,
         endpoint,
         issuableRef,
         markdownPreviewUrl,
         markdownDocs,
+        projectsAutocompleteUrl,
       } = issuableElement.dataset;
 
       return {
         canUpdate: gl.utils.convertPermissionToBoolean(canUpdate),
         canDestroy: gl.utils.convertPermissionToBoolean(canDestroy),
+        canMove: gl.utils.convertPermissionToBoolean(canMove),
         endpoint,
         issuableRef,
         initialTitle: issuableTitleElement.innerHTML,
@@ -39,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initialDescriptionText: issuableDescriptionTextarea ? issuableDescriptionTextarea.textContent : '',
         markdownPreviewUrl,
         markdownDocs,
+        projectsAutocompleteUrl,
       };
     },
     render(createElement) {
@@ -46,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
         props: {
           canUpdate: this.canUpdate,
           canDestroy: this.canDestroy,
+          canMove: this.canMove,
           endpoint: this.endpoint,
           issuableRef: this.issuableRef,
           initialTitle: this.initialTitle,
@@ -53,6 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
           initialDescriptionText: this.initialDescriptionText,
           markdownPreviewUrl: this.markdownPreviewUrl,
           markdownDocs: this.markdownDocs,
+          projectsAutocompleteUrl: this.projectsAutocompleteUrl,
         },
       });
     },

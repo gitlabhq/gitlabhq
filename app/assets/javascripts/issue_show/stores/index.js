@@ -15,6 +15,7 @@ export default class Store {
     this.formState = {
       title: '',
       description: '',
+      move_to_project_id: 0,
     };
   }
 

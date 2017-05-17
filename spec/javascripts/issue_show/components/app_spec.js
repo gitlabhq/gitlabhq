@@ -29,12 +29,15 @@ describe('Issuable output', () => {
       propsData: {
         canUpdate: true,
         canDestroy: true,
+        canMove: true,
         endpoint: '/gitlab-org/gitlab-shell/issues/9/realtime_changes',
         issuableRef: '#1',
         initialTitle: '',
         initialDescriptionHtml: '',
         initialDescriptionText: '',
-        showForm: false,
+        markdownPreviewUrl: '/',
+        markdownDocs: '/',
+        projectsAutocompleteUrl: '/',
       },
     }).$mount();
   });
@@ -103,6 +106,46 @@ describe('Issuable output', () => {
         expect(
           eventHub.$emit,
         ).toHaveBeenCalledWith('close.form');
+
+        done();
+      });
+    });
+
+    it('does not redirect if issue has not moved', (done) => {
+      spyOn(gl.utils, 'visitUrl');
+      spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve) => {
+        resolve();
+      }));
+
+      vm.updateIssuable();
+
+      setTimeout(() => {
+        expect(
+          gl.utils.visitUrl,
+        ).not.toHaveBeenCalled();
+
+        done();
+      });
+    });
+
+    it('redirects if issue is moved', (done) => {
+      spyOn(gl.utils, 'visitUrl');
+      spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve) => {
+        resolve({
+          json() {
+            return {
+              path: '/testing-issue-move',
+            };
+          },
+        });
+      }));
+
+      vm.updateIssuable();
+
+      setTimeout(() => {
+        expect(
+          gl.utils.visitUrl,
+        ).toHaveBeenCalledWith('/testing-issue-move');
 
         done();
       });
