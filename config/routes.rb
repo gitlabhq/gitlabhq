@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     post :toggle_award_emoji, on: :member
   end
 
+  mount Peek::Railtie => '/peek'
   draw :sherlock
   draw :development
   draw :ci
