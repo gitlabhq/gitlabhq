@@ -54,7 +54,7 @@ module API
           .new(user_project, current_user, declared_params(include_missing: false))
           .execute
 
-        if pipeline_schedule.valid?
+        if pipeline_schedule.persisted?
           present pipeline_schedule, with: Entities::PipelineSchedule
         else
           render_validation_error!(pipeline_schedule)
@@ -98,7 +98,6 @@ module API
         return not_found!('PipelineSchedule') unless pipeline_schedule
 
         if pipeline_schedule.own!(current_user)
-          status :ok
           present pipeline_schedule, with: Entities::PipelineSchedule
         else
           render_validation_error!(pipeline_schedule)

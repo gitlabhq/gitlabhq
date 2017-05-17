@@ -160,15 +160,10 @@ describe API::PipelineSchedules do
       it 'updates cron' do
         put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", developer),
           cron: '1 2 3 4 *'
-        pipeline_schedule.reload
 
         expect(response).to have_http_status(:ok)
         expect(response).to match_response_schema('pipeline_schedule')
         expect(json_response['cron']).to eq('1 2 3 4 *')
-        expect(pipeline_schedule.next_run_at.min).to eq(1)
-        expect(pipeline_schedule.next_run_at.hour).to eq(2)
-        expect(pipeline_schedule.next_run_at.day).to eq(3)
-        expect(pipeline_schedule.next_run_at.month).to eq(4)
       end
 
       context 'when cron has validation error' do
@@ -208,7 +203,7 @@ describe API::PipelineSchedules do
       it 'updates owner' do
         post api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/take_ownership", developer)
 
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:created)
         expect(response).to match_response_schema('pipeline_schedule')
       end
     end
