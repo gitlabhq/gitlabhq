@@ -197,6 +197,15 @@
   background: $gray-light;
   padding: 10px 20px;
   z-index: 200;
+  overflow: hidden;
+
+  .issuable-sidebar {
+    width: calc(100% + 100px);
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
 
   &.right-sidebar-expanded {
     width: $gutter_width;

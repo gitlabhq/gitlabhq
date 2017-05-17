@@ -63,6 +63,7 @@ var config = {
     users:                './users/users_bundle.js',
     raven:                './raven/index.js',
     vue_merge_request_widget: './vue_merge_request_widget/index.js',
+    test:                 './test.js',
   },
 
   output: {
@@ -151,6 +152,7 @@ var config = {
         'schedule_form',
         'schedules_index',
         'sidebar',
+        'vue_merge_request_widget',
       ],
       minChunks: function(module, count) {
         return module.resource && (/vue_shared/).test(module.resource);

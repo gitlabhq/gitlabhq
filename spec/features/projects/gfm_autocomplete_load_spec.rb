@@ -10,7 +10,7 @@ describe 'GFM autocomplete loading', feature: true, js: true do
   end
 
   it 'does not load on project#show' do
-    expect(evaluate_script('gl.GfmAutoComplete.dataSources')).to eq({})
+    expect(evaluate_script('gl.GfmAutoComplete')).to eq(nil)
   end
 
   it 'loads on new issue page' do
