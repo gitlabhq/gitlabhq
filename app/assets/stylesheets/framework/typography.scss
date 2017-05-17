@@ -169,14 +169,14 @@
   }
 
   ul.task-list {
-    li.task-list-item {
+    > li.task-list-item {
       list-style-type: none;
       position: relative;
       min-height: 22px;
       padding-left: 28px;
       margin-left: 0 !important;
 
-      input.task-list-item-checkbox {
+      > input.task-list-item-checkbox {
         position: absolute;
         left: 8px;
         top: 5px;
