@@ -14,10 +14,7 @@
 
 */
 
-import UserAvatarSizeMixin from './user_avatar_size_mixin';
-
 export default {
-  mixins: [UserAvatarSizeMixin],
   props: {
     svg: {
       type: String,
@@ -29,13 +26,19 @@ export default {
       default: 20,
     },
   },
+  computed: {
+    avatarSizeClass() {
+      return `s${this.size}`;
+    },
+  },
 };
 </script>
 
 <template>
   <svg
     :class="avatarSizeClass"
-    :style="avatarSizeStylesMap"
+    :height="size"
+    :width="size"
     v-html="svg">
   </svg>
 </template>

@@ -25,11 +25,5 @@ describe('User Avatar Svg Component', function () {
       expect(this.userAvatarSvg.$el.tagName).toEqual('svg');
       expect(this.userAvatarSvg.$el.innerHTML).toContain('<path');
     });
-
-    it('should return neccessary props as defined', function () {
-      _.each(this.propsData, (val, key) => {
-        expect(this.userAvatarSvg[key]).toBeDefined();
-      });
-    });
   });
 });

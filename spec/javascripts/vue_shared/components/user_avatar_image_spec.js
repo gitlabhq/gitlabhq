@@ -18,8 +18,6 @@ describe('User Avatar Image Component', function () {
       this.userAvatarImage = new UserAvatarImageComponent({
         propsData: this.propsData,
       }).$mount();
-
-      this.imageElement = this.userAvatarImage.$el.outerHTML;
     });
 
     it('should return a defined Vue component', function () {
@@ -27,14 +25,7 @@ describe('User Avatar Image Component', function () {
     });
 
     it('should have <img> as a child element', function () {
-      const componentImgTag = this.userAvatarImage.$el.outerHTML;
-      expect(componentImgTag).toContain('<img');
-    });
-
-    it('should return neccessary props as defined', function () {
-      _.each(this.propsData, (val, key) => {
-        expect(this.userAvatarImage[key]).toBeDefined();
-      });
+      expect(this.userAvatarImage.$el.tagName).toBe('IMG');
     });
 
     it('should properly compute tooltipContainer', function () {
@@ -42,19 +33,22 @@ describe('User Avatar Image Component', function () {
     });
 
     it('should properly render tooltipContainer', function () {
-      expect(this.imageElement).toContain('data-container="body"');
+      expect(this.userAvatarImage.$el.getAttribute('data-container')).toBe('body');
     });
 
     it('should properly compute avatarSizeClass', function () {
       expect(this.userAvatarImage.avatarSizeClass).toBe('s99');
     });
 
-    it('should properly compute imgCssClasses', function () {
-      expect(this.userAvatarImage.imgCssClasses).toBe('avatar s99 myextraavatarclass');
-    });
+    it('should properly render img css', function () {
+      const classList = this.userAvatarImage.$el.classList;
+      const containsAvatar = classList.contains('avatar');
+      const containsSizeClass = classList.contains('s99');
+      const containsCustomClass = classList.contains('myextraavatarclass');
 
-    it('should properly render imgCssClasses', function () {
-      expect(this.imageElement).toContain('avatar s99 myextraavatarclass');
+      expect(containsAvatar).toBe(true);
+      expect(containsSizeClass).toBe(true);
+      expect(containsCustomClass).toBe(true);
     });
   });
 });

@@ -16,12 +16,11 @@
 */
 
 import defaultAvatarUrl from 'images/no_avatar.png';
-import UserAvatarSizeMixin from './user_avatar_size_mixin';
 import TooltipMixin from '../../mixins/tooltip';
 
 export default {
   name: 'UserAvatarImage',
-  mixins: [UserAvatarSizeMixin, TooltipMixin],
+  mixins: [TooltipMixin],
   props: {
     imgSrc: {
       type: String,
@@ -58,8 +57,8 @@ export default {
     tooltipContainer() {
       return this.tooltipText ? 'body' : null;
     },
-    imgCssClasses() {
-      return `avatar ${this.avatarSizeClass} ${this.cssClasses}`;
+    avatarSizeClass() {
+      return `s${this.size}`;
     },
   },
 };
@@ -67,9 +66,11 @@ export default {
 
 <template>
   <img
-    :class="imgCssClasses"
+    class="avatar"
+    :class="[avatarSizeClass, cssClasses]"
     :src="imgSrc"
-    :style="avatarSizeStylesMap"
+    :width="size"
+    :height="size"
     :alt="imgAlt"
     :data-container="tooltipContainer"
     :data-placement="tooltipPlacement"

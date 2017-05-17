@@ -35,24 +35,16 @@ describe('User Avatar Link Component', function () {
   });
 
   it('should render <a> as a child element', function () {
-    const componentLinkTag = this.userAvatarLink.$el.outerHTML;
-    expect(componentLinkTag).toContain('<a');
+    expect(this.userAvatarLink.$el.tagName).toBe('A');
   });
 
   it('should have <img> as a child element', function () {
-    const componentImgTag = this.userAvatarLink.$el.outerHTML;
-    expect(componentImgTag).toContain('<img');
+    expect(this.userAvatarLink.$el.querySelector('img')).not.toBeNull();
   });
 
   it('should return neccessary props as defined', function () {
     _.each(this.propsData, (val, key) => {
       expect(this.userAvatarLink[key]).toBeDefined();
-    });
-  });
-
-  it('should include props in the rendered output', function () {
-    _.each(this.propsData, (val) => {
-      expect(this.userAvatarLink.$el.outerHTML).toContain(val);
     });
   });
 });
