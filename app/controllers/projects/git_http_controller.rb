@@ -10,8 +10,6 @@ class Projects::GitHttpController < Projects::GitHttpClientController
       render_ok
     elsif receive_pack? && receive_pack_allowed?
       render_ok
-    elsif http_blocked?
-      render_http_not_allowed
     else
       render_denied
     end
@@ -62,10 +60,6 @@ class Projects::GitHttpController < Projects::GitHttpClientController
     render json: Gitlab::Workhorse.git_http_ok(repository, wiki?, user, action_name)
   end
 
-  def render_http_not_allowed
-    render plain: access_check.message, status: :forbidden
-  end
-
   def render_denied
     if access_check.message == Gitlab::GitAccess::ERROR_MESSAGES[:project_not_found]
       render plain: access_check.message, status: :not_found
@@ -91,10 +85,6 @@ class Projects::GitHttpController < Projects::GitHttpClientController
     # Use the magic string '_any' to indicate we do not know what the
     # changes are. This is also what gitlab-shell does.
     @access_check ||= access.check(git_command, '_any')
-  end
-
-  def http_blocked?
-    !access.protocol_allowed?
   end
 
   def receive_pack_allowed?
