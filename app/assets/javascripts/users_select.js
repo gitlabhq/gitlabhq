@@ -425,8 +425,6 @@ function UsersSelect(currentUser, els) {
               getSelected().length === $dropdown.data('max-select')) {
             // Close the dropdown
             $dropdown.dropdown('toggle');
-
-            this.hidden();
           }
         },
         id: function (user) {
