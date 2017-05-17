@@ -61,7 +61,6 @@ module API
       expose :project_id, :issues_events, :merge_requests_events
       expose :note_events, :pipeline_events, :wiki_page_events
       expose :job_events
-<<<<<<< HEAD
     end
 
     class ProjectPushRule < Grape::Entity
@@ -69,8 +68,6 @@ module API
       expose :commit_message_regex, :deny_delete_tag
       expose :member_check, :prevent_secrets, :author_email_regex
       expose :file_name_regex, :max_file_size
-=======
->>>>>>> upstream/master
     end
 
     class BasicProjectDetails < Grape::Entity
