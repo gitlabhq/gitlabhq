@@ -41,6 +41,10 @@ export default {
       required: false,
       default: '',
     },
+    isConfidential: {
+      type: Boolean,
+      required: true,
+    },
     markdownPreviewUrl: {
       type: String,
       required: true,
@@ -78,6 +82,7 @@ export default {
       this.showForm = true;
       this.store.formState = {
         title: this.state.titleText,
+        confidential: this.isConfidential,
         description: this.state.descriptionText,
       };
     },
@@ -86,7 +91,13 @@ export default {
     },
     updateIssuable() {
       this.service.updateIssuable(this.store.formState)
-        .then(() => {
+        .then((res) => {
+          const data = res.json();
+
+          if (data.confidential !== this.isConfidential) {
+            location.reload();
+          }
+
           eventHub.$emit('close.form');
         })
         .catch(() => {

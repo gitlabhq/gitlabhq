@@ -35,6 +35,7 @@ describe('Issuable output', () => {
         initialDescriptionHtml: '',
         initialDescriptionText: '',
         showForm: false,
+        isConfidential: false,
       },
     }).$mount();
   });
@@ -103,6 +104,29 @@ describe('Issuable output', () => {
         expect(
           eventHub.$emit,
         ).toHaveBeenCalledWith('close.form');
+
+        done();
+      });
+    });
+
+    it('reloads the page if the confidential status has changed', (done) => {
+      spyOn(window.location, 'reload');
+      spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve) => {
+        resolve({
+          json() {
+            return {
+              confidential: true,
+            };
+          },
+        });
+      }));
+
+      vm.updateIssuable();
+
+      setTimeout(() => {
+        expect(
+          window.location.reload,
+        ).toHaveBeenCalled();
 
         done();
       });
