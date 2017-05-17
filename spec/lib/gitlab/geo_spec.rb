@@ -122,11 +122,8 @@ describe Gitlab::Geo, lib: true do
     end
 
     before(:all) do
-      jobs = %w(geo_bulk_notify_worker geo_repository_sync_worker)
-
+      jobs = %w(geo_bulk_notify_worker geo_repository_sync_worker geo_file_download_dispatch_worker)
       jobs.each { |job| init_cron_job(job, job.camelize) }
-      # TODO: Make this name consistent
-      init_cron_job('geo_download_dispatch_worker', 'GeoFileDownloadDispatchWorker')
     end
 
     it 'activates cron jobs for primary' do
