@@ -8,7 +8,7 @@ module Projects
     end
 
     def create
-      opts = { issue_references: params[:issue_references] }
+      opts = params.slice(:issue_references)
       result = RelatedIssues::CreateService.new(issue, current_user, opts).execute
 
       if result['status'] == :success
