@@ -9,13 +9,11 @@ module RelatedIssues
         return error('No Issue found for given reference', 401)
       end
 
-      begin
-        create_related_issues!
-      rescue => exception
-        return error(exception.message, 401)
-      end
+      create_related_issues!
 
       success_message
+    rescue => exception
+      error(exception.message, 401)
     end
 
     private
