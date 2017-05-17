@@ -19,7 +19,7 @@ describe('Description field component', () => {
       propsData: {
         markdownPreviewUrl: '/',
         markdownDocs: '/',
-        store,
+        formState: store.formState,
       },
     }).$mount();
 
@@ -30,5 +30,17 @@ describe('Description field component', () => {
     expect(
       vm.$el.querySelector('.md-area textarea').value,
     ).toBe('test');
+  });
+
+  it('renders markdown field with a markdown description', (done) => {
+    store.formState.description = '**test**';
+
+    Vue.nextTick(() => {
+      expect(
+        vm.$el.querySelector('.md-area textarea').value,
+      ).toBe('**test**');
+
+      done();
+    });
   });
 });
