@@ -45,8 +45,9 @@ describe RelatedIssues::ListService, service: true do
 
         expect(subject[0]).to eq(
           {
-            title: issue_b.title,
+            id: issue_b.id,
             iid: issue_b.iid,
+            title: issue_b.title,
             state: issue_b.state,
             path: "/#{project.full_path}/issues/#{issue_b.iid}",
             project_path: issue_b.project.path,
@@ -57,8 +58,9 @@ describe RelatedIssues::ListService, service: true do
 
         expect(subject[1]).to eq(
           {
-            title: issue_c.title,
+            id: issue_c.id,
             iid: issue_c.iid,
+            title: issue_c.title,
             state: issue_c.state,
             path: "/#{project.full_path}/issues/#{issue_c.iid}",
             project_path: issue_c.project.path,
@@ -69,8 +71,9 @@ describe RelatedIssues::ListService, service: true do
 
         expect(subject[2]).to eq(
           {
-            title: issue_d.title,
+            id: issue_d.id,
             iid: issue_d.iid,
+            title: issue_d.title,
             state: issue_d.state,
             path: "/#{project.full_path}/issues/#{issue_d.iid}",
             project_path: issue_d.project.path,

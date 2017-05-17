@@ -9,8 +9,9 @@ module RelatedIssues
     def execute
       issues.map do |referenced_issue|
         {
-          title: referenced_issue.title,
+          id: referenced_issue.id,
           iid: referenced_issue.iid,
+          title: referenced_issue.title,
           state: referenced_issue.state,
           project_path: referenced_issue.project.path,
           namespace_full_path: referenced_issue.project.namespace.full_path,
