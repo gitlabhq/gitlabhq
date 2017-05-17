@@ -98,11 +98,7 @@ module DiffHelper
     [
       content_tag(:span, link_to(truncate(blob.name, length: 40), tree)),
       '@',
-<<<<<<< HEAD
-      content_tag(:span, commit_id, class: 'monospace')
-=======
       content_tag(:span, commit_id, class: 'commit-sha')
->>>>>>> upstream/master
     ].join(' ').html_safe
   end
 

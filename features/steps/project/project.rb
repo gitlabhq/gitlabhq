@@ -2,11 +2,8 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths
-<<<<<<< HEAD
   include Select2Helper
-=======
   include WaitForAjax
->>>>>>> upstream/master
 
   step 'change project settings' do
     fill_in 'project_name_edit', with: 'NewName'

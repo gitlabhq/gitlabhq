@@ -34,15 +34,11 @@ class Blob < SimpleDelegator
 
     BlobViewer::BinarySTL,
     BlobViewer::TextSTL
-<<<<<<< HEAD
-  ].freeze
-=======
   ].sort_by { |v| v.binary? ? 0 : 1 }.freeze
 
   AUXILIARY_VIEWERS = [
     BlobViewer::GitlabCiYml,
     BlobViewer::RouteMap,
->>>>>>> upstream/master
 
     BlobViewer::License,
     BlobViewer::Contributing
