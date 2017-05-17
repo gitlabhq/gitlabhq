@@ -131,7 +131,7 @@ module Gitlab
     def check_patch(patch_path)
       step("Checking out master", %w[git checkout master])
       step("Resetting to latest master", %w[git reset --hard origin/master])
-      step("Fetching CE/#{branch}", %W[git fetch #{CE_REPO} #{branch}])
+      step("Fetching CE/#{ce_branch}", %W[git fetch #{CE_REPO} #{ce_branch}])
       step(
         "Checking if #{patch_path} applies cleanly to EE/master",
         %W[git apply --check --3way #{patch_path}]
