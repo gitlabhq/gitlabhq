@@ -21,11 +21,11 @@ describe 'projects/tree/show' do
     let(:tree) { repository.tree(commit.id, path) }
 
     before do
+      assign(:id, File.join(ref, path))
       assign(:ref, ref)
-      assign(:commit, commit)
-      assign(:id, commit.id)
-      assign(:tree, tree)
       assign(:path, path)
+      assign(:last_commit, commit)
+      assign(:tree, tree)
     end
 
     it 'displays correctly' do
