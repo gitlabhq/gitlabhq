@@ -96,6 +96,8 @@ module Gitlab
         end
 
         def reverse_line
+          return if stream.size <= 0
+
           pos = 0
           max = stream.size
           debris = ''
@@ -110,7 +112,7 @@ module Gitlab
             end
           end
 
-          yield(debris) unless debris.empty?
+          yield(debris)
         end
 
         def calc_read_size(pos, max)
