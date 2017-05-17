@@ -72,7 +72,7 @@ describe RelatedIssues::CreateService, service: true do
         another_project.team << [user, :developer]
       end
 
-      it 'create relationships' do
+      it 'creates relationships' do
         expect { subject }.to change(RelatedIssue, :count).from(0).to(2)
 
         expect(RelatedIssue.first).to have_attributes(issue: issue, related_issue: issue_a)

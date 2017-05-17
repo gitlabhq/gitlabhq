@@ -7,11 +7,11 @@ describe RelatedIssues::DestroyService, service: true do
 
     subject { described_class.new(related_issue, user).execute }
 
-    it 'remove related issue' do
+    it 'removes related issue' do
       expect { subject }.to change(RelatedIssue, :count).from(1).to(0)
     end
 
-    it 'create notes' do
+    it 'creates notes' do
       # Two-way notes creation
       expect(SystemNoteService).to receive(:unrelate_issue)
         .with(related_issue.issue, related_issue.related_issue, user)
