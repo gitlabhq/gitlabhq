@@ -11,11 +11,10 @@ describe API::PipelineSchedules do
 
   describe 'GET /projects/:id/pipeline_schedules' do
     context 'authenticated user with valid permissions' do
+      let(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: developer) }
+
       before do
-        create(:ci_pipeline_schedule, project: project, owner: developer)
-          .tap do |pipeline_schedule|
-          pipeline_schedule.pipelines << build(:ci_pipeline, project: project)
-        end
+        pipeline_schedule.pipelines << build(:ci_pipeline, project: project)
       end
 
       it 'returns list of pipeline_schedules' do
@@ -57,11 +56,10 @@ describe API::PipelineSchedules do
   end
 
   describe 'GET /projects/:id/pipeline_schedules/:pipeline_schedule_id' do
-    let(:pipeline_schedule) do
-      create(:ci_pipeline_schedule, project: project, owner: developer)
-        .tap do |pipeline_schedule|
-        pipeline_schedule.pipelines << build(:ci_pipeline, project: project)
-      end
+    let(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: developer) }
+
+    before do
+      pipeline_schedule.pipelines << build(:ci_pipeline, project: project)
     end
 
     context 'authenticated user with valid permissions' do
@@ -97,11 +95,7 @@ describe API::PipelineSchedules do
   end
 
   describe 'POST /projects/:id/pipeline_schedules' do
-    let(:params) do
-      attributes_for(:ci_pipeline_schedule,
-        description: 'description', ref: 'master', cron: '* * * * *',
-        cron_timezone: 'UTC', active: true)
-    end
+    let(:params) { attributes_for(:ci_pipeline_schedule) }
 
     context 'authenticated user with valid permissions' do
       context 'with required parameters' do
@@ -117,7 +111,7 @@ describe API::PipelineSchedules do
           expect(json_response['ref']).to eq(params[:ref])
           expect(json_response['cron']).to eq(params[:cron])
           expect(json_response['cron_timezone']).to eq(params[:cron_timezone])
-          expect(json_response['active']).to eq(params[:active])
+          expect(json_response['owner']['id']).to eq(developer.id)
         end
       end
 
@@ -132,7 +126,7 @@ describe API::PipelineSchedules do
       context 'when cron has validation error' do
         it 'does not create pipeline_schedule' do
           post api("/projects/#{project.id}/pipeline_schedules", developer),
-            params.tap { |_| params['cron'] = 'invalid-cron' }
+            params.merge('cron' => 'invalid-cron')
 
           expect(response).to have_http_status(:bad_request)
           expect(json_response['message']).to have_key('cron')
@@ -211,19 +205,11 @@ describe API::PipelineSchedules do
     end
 
     context 'authenticated user with valid permissions' do
-      let(:developer2) { create(:user) }
-
-      before do
-        project.add_developer(developer2)
-      end
-
       it 'updates owner' do
-        post api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/take_ownership", developer2)
-        pipeline_schedule.reload
+        post api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/take_ownership", developer)
 
         expect(response).to have_http_status(:ok)
         expect(response).to match_response_schema('pipeline_schedule')
-        expect(pipeline_schedule.owner).to eq(developer2)
       end
     end
 
@@ -259,7 +245,7 @@ describe API::PipelineSchedules do
       it 'deletes pipeline_schedule' do
         expect do
           delete api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", master)
-        end.to change{project.pipeline_schedules.count}.by(-1)
+        end.to change { project.pipeline_schedules.count }.by(-1)
 
         expect(response).to have_http_status(:ok)
         expect(response).to match_response_schema('pipeline_schedule')
