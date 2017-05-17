@@ -250,7 +250,6 @@ describe GroupsController do
     end
   end
 
-<<<<<<< HEAD
   describe 'POST create' do
     it 'allows creating a group' do
       sign_in(user)
@@ -293,9 +292,9 @@ describe GroupsController do
         expect(response).to have_http_status(302)
       end
     end
-=======
+  end
+
   def group_moved_message(redirect_route, group)
     "Group '#{redirect_route.path}' was moved to '#{group.full_path}'. Please update any links and bookmarks that may still have the old path."
->>>>>>> upstream/master
   end
 end
