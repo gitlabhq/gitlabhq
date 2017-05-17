@@ -39,7 +39,9 @@ class Blob < SimpleDelegator
   AUXILIARY_VIEWERS = [
     BlobViewer::GitlabCiYml,
     BlobViewer::RouteMap,
-    BlobViewer::License
+
+    BlobViewer::License,
+    BlobViewer::Contributing
   ].freeze
 
   attr_reader :project
