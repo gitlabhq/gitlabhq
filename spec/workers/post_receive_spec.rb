@@ -8,17 +8,12 @@ describe PostReceive do
   let(:key) { create(:key, user: project.owner) }
   let(:key_id) { key.shell_id }
 
-<<<<<<< HEAD
-  context "as a sidekiq worker" do
-    it "reponds to #perform" do
-=======
   let(:project) do
     create(:project, :repository, auto_cancel_pending_pipelines: 'disabled')
   end
 
   context "as a sidekiq worker" do
     it "responds to #perform" do
->>>>>>> upstream/master
       expect(described_class.new).to respond_to(:perform)
     end
   end
