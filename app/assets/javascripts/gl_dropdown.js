@@ -624,16 +624,12 @@ GitLabDropdown = (function() {
       var link = document.createElement('a');
 
       link.href = url;
-<<<<<<< HEAD
-      link.textContent = text;
-=======
 
       if (this.highlight) {
         link.innerHTML = text;
       } else {
         link.textContent = text;
       }
->>>>>>> upstream/master
 
       if (selected) {
         link.className = 'is-active';
