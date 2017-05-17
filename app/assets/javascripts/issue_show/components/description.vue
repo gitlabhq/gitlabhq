@@ -18,11 +18,13 @@
       },
       updatedAt: {
         type: String,
-        required: true,
+        required: false,
+        default: '',
       },
       taskStatus: {
         type: String,
-        required: true,
+        required: false,
+        default: '',
       },
     },
     data() {
@@ -83,6 +85,7 @@
 
 <template>
   <div
+    v-if="descriptionHtml"
     class="description"
     :class="{
       'js-task-list-container': canUpdate

@@ -26,6 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
         endpoint,
         issuableRef,
         isConfidential,
+        markdownPreviewUrl,
+        markdownDocs,
       } = issuableElement.dataset;
 
       return {
@@ -37,6 +39,8 @@ document.addEventListener('DOMContentLoaded', () => {
         initialDescriptionHtml: issuableDescriptionElement ? issuableDescriptionElement.innerHTML : '',
         initialDescriptionText: issuableDescriptionTextarea ? issuableDescriptionTextarea.textContent : '',
         isConfidential: gl.utils.convertPermissionToBoolean(isConfidential),
+        markdownPreviewUrl,
+        markdownDocs,
       };
     },
     render(createElement) {
@@ -50,6 +54,8 @@ document.addEventListener('DOMContentLoaded', () => {
           initialDescriptionHtml: this.initialDescriptionHtml,
           initialDescriptionText: this.initialDescriptionText,
           isConfidential: this.isConfidential,
+          markdownPreviewUrl: this.markdownPreviewUrl,
+          markdownDocs: this.markdownDocs,
         },
       });
     },

@@ -15,6 +15,7 @@ export default class Store {
     this.formState = {
       title: '',
       confidential: false,
+      description: '',
     };
   }
 

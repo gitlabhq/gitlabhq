@@ -142,7 +142,8 @@ window.DropzoneInput = (function() {
       $(child).val(beforeSelection + formattedText + afterSelection);
       textarea.setSelectionRange(caretStart + formattedText.length, caretEnd + formattedText.length);
       textarea.style.height = `${textarea.scrollHeight}px`;
-      return form_textarea.trigger("input");
+      form_textarea.trigger("input");
+      form_textarea.get(0).dispatchEvent(new Event('input'));
     };
     getFilename = function(e) {
       var value;
