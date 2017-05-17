@@ -103,16 +103,14 @@ module Gitlab
           while (read_size = calc_read_size(pos, max)) > 0
             pos += read_size
             stream.seek(-pos, IO::SEEK_END)
-            stream.read(read_size).tap do |buf|
-              buf = buf + debris
-              debris, *lines = buf.each_line.to_a
-              lines.reverse_each do |line|
-                yield(line)
-              end
+            buf = stream.read(read_size) + debris
+            debris, *lines = buf.each_line.to_a
+            lines.reverse_each do |line|
+              yield(line)
             end
           end
 
-          yield(debris) if debris != ''
+          yield(debris) unless debris.empty?
         end
 
         def calc_read_size(pos, max)
