@@ -110,7 +110,12 @@
       margin-right: 8px;
     }
 
-    .ci-error {
+    .ci-error-icon {
+      margin-right: $btn-side-margin;
+    }
+
+    .ci-deploy-icon {
+      margin-left: 4px;
       margin-right: $btn-side-margin;
     }
   }
