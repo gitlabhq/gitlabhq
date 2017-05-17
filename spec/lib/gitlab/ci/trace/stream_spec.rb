@@ -266,14 +266,14 @@ describe Gitlab::Ci::Trace::Stream do
     end
 
     context 'when regex is multi-byte char' do
-      let(:data) { 'ゴッドファット\n' }
-      let(:regex) { 'ゴッドファット' }
+      let(:data) { '95.0 ゴッドファット\n' }
+      let(:regex) { '\d+\.\d+ ゴッドファット' }
 
       before do
         stub_const('Gitlab::Ci::Trace::Stream::BUFFER_SIZE', 5)
       end
 
-      it { is_expected.to be_nil }
+      it { is_expected.to eq('95.0') }
     end
 
     context 'when BUFFER_SIZE is equal to stream.size' do
