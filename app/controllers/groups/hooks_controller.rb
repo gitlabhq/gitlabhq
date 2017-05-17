@@ -54,7 +54,7 @@ class Groups::HooksController < Groups::ApplicationController
 
   def hook_params
     params.require(:hook).permit(
-      :build_events,
+      :job_events,
       :confidential_issues_events,
       :enable_ssl_verification,
       :issues_events,

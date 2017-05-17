@@ -57,7 +57,7 @@ module API
     class ProjectHook < Hook
       expose :project_id, :issues_events, :merge_requests_events
       expose :note_events, :pipeline_events, :wiki_page_events
-      expose :build_events, as: :job_events
+      expose :job_events
     end
 
     class ProjectPushRule < Grape::Entity
@@ -511,7 +511,7 @@ module API
       expose :id, :title, :created_at, :updated_at, :active
       expose :push_events, :issues_events, :merge_requests_events
       expose :tag_push_events, :note_events, :pipeline_events
-      expose :build_events, as: :job_events
+      expose :job_events
       # Expose serialized properties
       expose :properties do |service, options|
         field_names = service.fields.
