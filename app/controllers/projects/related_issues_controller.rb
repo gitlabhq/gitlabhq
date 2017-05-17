@@ -37,11 +37,11 @@ module Projects
     end
 
     def authorize_admin_related_issue!
-      return render_404 unless can?(current_user, :admin_related_issue, @project)
+      render_404 unless can?(current_user, :admin_related_issue, @project)
     end
 
     def authorize_read_related_issue!
-      return render_404 unless can?(current_user, :read_related_issue, @project)
+      render_404 unless can?(current_user, :read_related_issue, @project)
     end
 
     def issue
