@@ -29,7 +29,7 @@ export default {
       };
     },
     isExpandable() {
-      return Object.keys(this.group.subGroups).length > 0;
+      return this.group.subGroups.length > 0;
     },
   },
 };

@@ -2,7 +2,7 @@
 export default {
   props: {
     groups: {
-      type: Object,
+      type: Array,
       required: true,
     },
   },

@@ -1,7 +1,7 @@
 export default class GroupsStore {
   constructor() {
     this.state = {};
-    this.state.groups = {};
+    this.state.groups = [];
 
     return this;
   }
@@ -10,40 +10,12 @@ export default class GroupsStore {
     const parentGroup = parent;
 
     if (parentGroup) {
-      parentGroup.subGroups = this.buildTree(rawGroups);
+      parentGroup.subGroups = this.decorateGroups(rawGroups);
     } else {
-      this.state.groups = this.buildTree(rawGroups);
+      this.state.groups = this.decorateGroups(rawGroups);
     }
 
     return rawGroups;
-  }
-
-  buildTree(rawGroups) {
-    const groups = this.decorateGroups(rawGroups);
-    const tree = {};
-    const mappedGroups = {};
-
-    // Map groups to an object
-    for (let i = 0, len = groups.length; i < len; i += 1) {
-      const group = groups[i];
-      mappedGroups[group.id] = group;
-      mappedGroups[group.id].subGroups = {};
-    }
-
-    Object.keys(mappedGroups).forEach((key) => {
-      const currentGroup = mappedGroups[key];
-      // If the group is not at the root level, add it to its parent array of subGroups.
-      const parentGroup = mappedGroups[currentGroup.parentId];
-      if (currentGroup.parentId && parentGroup) {
-        mappedGroups[currentGroup.parentId].subGroups[currentGroup.id] = currentGroup;
-        mappedGroups[currentGroup.parentId].isOpen = true; // Expand group if it has subgroups
-      } else {
-        // If the group is at the root level, add it to first level elements array.
-        tree[currentGroup.id] = currentGroup;
-      }
-    });
-
-    return tree;
   }
 
   decorateGroups(rawGroups) {
@@ -62,7 +34,7 @@ export default class GroupsStore {
       isOpen: false,
       numberProjects: 10,
       numberMembers: 10,
-      subGroups: {},
+      subGroups: [],
     };
   }
 

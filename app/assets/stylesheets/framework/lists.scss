@@ -307,7 +307,7 @@ ul.indent-list {
     border-top: solid 1px $border-white-light;
     position: relative;
 
-    &:before {
+    &::before {
       content: '';
       display: block;
       width: 0;
@@ -320,8 +320,8 @@ ul.indent-list {
 
     .group-row {
       position: relative;
-      
-      &:before {
+
+      &::before {
         content: "";
         display: block;
         width: 10px;
@@ -332,20 +332,12 @@ ul.indent-list {
         left: -16px;
       }
 
-      &:last-child:before {
-        background: white;
+      &:last-child::before {
+        background: $white-light;
         height: auto;
         top: 30px;
         bottom: 0;
       }
-    }
-  }
-
-  .branch-connector {
-    &:after {
-      content: ' ';
-      position: absolute;
-      background-color: red;
     }
   }
 }
