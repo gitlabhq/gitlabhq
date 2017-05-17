@@ -424,7 +424,7 @@ function UsersSelect(currentUser, els) {
           if ($dropdown.data('max-select') &&
               getSelected().length === $dropdown.data('max-select')) {
             // Close the dropdown
-            this.el.click();
+            $dropdown.dropdown('toggle');
 
             this.hidden();
           }
