@@ -91,29 +91,14 @@ module Gitlab
 
         private
 
-        def read_last_lines(last_lines)
-          chunks = []
-          pos = lines = 0
-          max = stream.size
-
-          # We want an extra line to make sure fist line has full contents
-          while lines <= last_lines && pos < max
-            pos += BUFFER_SIZE
-
-            buf =
-              if pos <= max
-                stream.seek(-pos, IO::SEEK_END)
-                stream.read(BUFFER_SIZE)
-              else # Reached the head, read only left
-                stream.seek(0)
-                stream.read(BUFFER_SIZE - (pos - max))
-              end
-
-            lines += buf.count("\n")
-            chunks.unshift(buf)
+        def read_last_lines(limit)
+          result = ''
+          reverse_line do |line|
+            result = line + result
+            limit -= 1
+            return result if limit <= 0
           end
-
-          chunks.join.lines.last(last_lines).join
+          result
         end
 
         def reverse_line
