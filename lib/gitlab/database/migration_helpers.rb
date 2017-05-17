@@ -278,6 +278,16 @@ module Gitlab
           raise 'rename_column_concurrently can not be run inside a transaction'
         end
 
+        old_col = column_for(table, old)
+        new_type = type || old_col.type
+
+        add_column(table, new, new_type,
+                   limit: old_col.limit,
+                   default: old_col.default,
+                   null: old_col.null,
+                   precision: old_col.precision,
+                   scale: old_col.scale)
+
         trigger_name = rename_trigger_name(table, old, new)
         quoted_table = quote_table_name(table)
         quoted_old = quote_column_name(old)
@@ -290,16 +300,6 @@ module Gitlab
           install_rename_triggers_for_mysql(trigger_name, quoted_table,
                                             quoted_old, quoted_new)
         end
-
-        old_col = column_for(table, old)
-        new_type = type || old_col.type
-
-        add_column(table, new, new_type,
-                   limit: old_col.limit,
-                   default: old_col.default,
-                   null: old_col.null,
-                   precision: old_col.precision,
-                   scale: old_col.scale)
 
         update_column_in_batches(table, new, Arel::Table.new(table)[old])
 
