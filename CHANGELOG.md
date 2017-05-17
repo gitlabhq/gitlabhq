@@ -56,6 +56,7 @@ entry.
 
 ## 9.1.0 (2017-04-22)
 
+- Add Jupyter notebook rendering !10017
 - Added merge requests empty state. !7342
 - Add option to start a new resolvable discussion in an MR. !7527
 - Hide form inputs for group member without editing rights. !7816
