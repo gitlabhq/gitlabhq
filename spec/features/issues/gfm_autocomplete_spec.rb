@@ -11,7 +11,7 @@ feature 'GFM autocomplete', feature: true, js: true do
     login_as(user)
     visit namespace_project_issue_path(project.namespace, project, issue)
 
-    wait_for_ajax
+    wait_for_requests
   end
 
   it 'opens autocomplete menu when field starts with text' do
@@ -40,7 +40,7 @@ feature 'GFM autocomplete', feature: true, js: true do
 
     expect(page).to have_selector('.atwho-container')
 
-    wait_for_ajax
+    wait_for_requests
 
     expect(find('#at-view-58')).not_to have_selector('.cur:first-of-type')
   end
@@ -80,7 +80,7 @@ feature 'GFM autocomplete', feature: true, js: true do
 
     expect(page).to have_selector('.atwho-container')
 
-    wait_for_ajax
+    wait_for_requests
 
     expect(find('#at-view-64')).to have_selector('.cur:first-of-type')
   end
@@ -93,7 +93,7 @@ feature 'GFM autocomplete', feature: true, js: true do
 
     expect(page).to have_selector('.atwho-container')
 
-    wait_for_ajax
+    wait_for_requests
 
     expect(find('#at-view-64')).to have_content(user.name)
   end
@@ -106,7 +106,7 @@ feature 'GFM autocomplete', feature: true, js: true do
 
     expect(page).to have_selector('.atwho-container')
 
-    wait_for_ajax
+    wait_for_requests
 
     expect(find('#at-view-58')).to have_selector('.cur:first-of-type')
   end

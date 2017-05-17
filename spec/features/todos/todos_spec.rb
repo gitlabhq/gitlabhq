@@ -64,7 +64,7 @@ describe 'Dashboard Todos', feature: true do
         before do
           within first('.todo') do
             click_link 'Done'
-            wait_for_ajax
+            wait_for_requests
             click_link 'Undo'
           end
         end
@@ -309,9 +309,9 @@ describe 'Dashboard Todos', feature: true do
 
         def mark_all_and_undo
           find('.js-todos-mark-all').trigger('click')
-          wait_for_ajax
+          wait_for_requests
           find('.js-todos-undo-all').trigger('click')
-          wait_for_ajax
+          wait_for_requests
         end
       end
     end

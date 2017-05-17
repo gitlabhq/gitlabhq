@@ -15,7 +15,7 @@ feature 'New blob creation', feature: true, js: true do
   end
 
   def edit_file
-    wait_for_ajax
+    wait_for_requests
     fill_in 'file_name', with: 'feature.rb'
     execute_script("ace.edit('editor').setValue('#{content}')")
   end

@@ -38,7 +38,7 @@ feature 'Projects > Members > Master adds member with expiration date', feature:
 
       page.within "#project_member_#{new_member.project_members.first.id}" do
         find('.js-access-expiration-date').set date.to_s(:medium)
-        wait_for_ajax
+        wait_for_requests
         expect(page).to have_content('Expires in 3 days')
       end
     end

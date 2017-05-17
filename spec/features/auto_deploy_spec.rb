@@ -46,7 +46,7 @@ describe 'Auto deploy' do
       within '.gitlab-ci-yml-selector' do
         click_on 'OpenShift'
       end
-      wait_for_ajax
+      wait_for_requests
       click_button 'Commit changes'
 
       expect(page).to have_content('New Merge Request From auto-deploy into master')

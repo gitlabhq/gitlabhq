@@ -26,7 +26,7 @@ feature 'Pipelines for Merge Requests', feature: true, js: true do
       page.within('.merge-request-tabs') do
         click_link('Pipelines')
       end
-      wait_for_ajax
+      wait_for_requests
 
       expect(page).to have_selector('.pipeline-actions')
     end

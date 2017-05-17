@@ -2,7 +2,6 @@ require 'spec_helper'
 
 feature 'Pipeline Schedules', :feature do
   include PipelineSchedulesHelper
-  include WaitForAjax
 
   let!(:project) { create(:project) }
   let!(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }

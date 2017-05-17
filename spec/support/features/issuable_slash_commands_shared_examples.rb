@@ -22,7 +22,7 @@ shared_examples 'issuable record that supports slash commands in its description
 
   after do
     # Ensure all outstanding Ajax requests are complete to avoid database deadlocks
-    wait_for_ajax
+    wait_for_requests
   end
 
   describe "new #{issuable_type}", js: true do
@@ -58,7 +58,7 @@ shared_examples 'issuable record that supports slash commands in its description
         expect(page).not_to have_content '/label ~bug'
         expect(page).not_to have_content '/milestone %"ASAP"'
 
-        wait_for_ajax
+        wait_for_requests
         issuable.reload
         note = issuable.notes.user.first
 

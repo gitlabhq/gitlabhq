@@ -20,7 +20,7 @@ feature 'Projects > Members > Anonymous user sees members', feature: true, js: t
       click_link 'Guest'
     end
 
-    wait_for_ajax
+    wait_for_requests
 
     visit namespace_project_settings_members_path(project.namespace, project)
 
@@ -31,7 +31,7 @@ feature 'Projects > Members > Anonymous user sees members', feature: true, js: t
     tomorrow = Date.today + 3
 
     fill_in "member_expires_at_#{group.id}", with: tomorrow.strftime("%F")
-    wait_for_ajax
+    wait_for_requests
 
     page.within(find('li.group_member')) do
       expect(page).to have_content('Expires in')
@@ -42,7 +42,7 @@ feature 'Projects > Members > Anonymous user sees members', feature: true, js: t
     page.within(first('.group_member')) do
       find('.btn-remove').click
     end
-    wait_for_ajax
+    wait_for_requests
 
     expect(page).not_to have_selector('.group_member')
   end

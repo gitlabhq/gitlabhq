@@ -377,7 +377,7 @@ describe 'Issues', feature: true do
       previous_token = find('input#issue_email').value
       find('.incoming-email-token-reset').trigger('click')
 
-      wait_for_ajax
+      wait_for_requests
 
       expect(page).to have_no_field('issue_email', with: previous_token)
       new_token = project1.new_issue_address(@user.reload)
@@ -423,7 +423,7 @@ describe 'Issues', feature: true do
           expect(page).to have_content 'No assignee'
         end
 
-        # wait_for_ajax does not work with vue-resource at the moment
+        # wait_for_requests does not work with vue-resource at the moment
         sleep 1
 
         expect(issue.reload.assignees).to be_empty
@@ -661,7 +661,7 @@ describe 'Issues', feature: true do
             click_button date.day
           end
 
-          wait_for_ajax
+          wait_for_requests
 
           expect(find('.value').text).to have_content date.strftime('%b %-d, %Y')
         end
@@ -677,7 +677,7 @@ describe 'Issues', feature: true do
             click_button date.day
           end
 
-          wait_for_ajax
+          wait_for_requests
 
           expect(page).to have_no_content 'No due date'
 
@@ -689,8 +689,6 @@ describe 'Issues', feature: true do
   end
 
   describe 'title issue#show', js: true do
-    include WaitForVueResource
-
     it 'updates the title', js: true do
       issue = create(:issue, author: @user, assignees: [@user], project: project, title: 'new title')
 
@@ -700,7 +698,7 @@ describe 'Issues', feature: true do
 
       issue.update(title: "updated title")
 
-      wait_for_vue_resource
+      wait_for_requests
       expect(page).to have_text("updated title")
     end
   end

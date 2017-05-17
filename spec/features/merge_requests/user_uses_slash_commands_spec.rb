@@ -21,7 +21,7 @@ feature 'Merge Requests > User uses slash commands', feature: true, js: true do
     end
 
     after do
-      wait_for_ajax
+      wait_for_requests
     end
 
     describe 'toggling the WIP prefix in the title from note' do
@@ -160,7 +160,7 @@ feature 'Merge Requests > User uses slash commands', feature: true, js: true do
         it 'changes target branch from a note' do
           write_note("message start \n/target_branch merge-test\n message end.")
 
-          wait_for_ajax
+          wait_for_requests
           expect(page).not_to have_content('/target_branch')
           expect(page).to have_content('message start')
           expect(page).to have_content('message end.')
