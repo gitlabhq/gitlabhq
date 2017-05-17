@@ -42,7 +42,19 @@ class Blob < SimpleDelegator
 
     BlobViewer::License,
     BlobViewer::Contributing,
-    BlobViewer::Changelog
+    BlobViewer::Changelog,
+
+    BlobViewer::Cartfile,
+    BlobViewer::ComposerJson,
+    BlobViewer::Gemfile,
+    BlobViewer::Gemspec,
+    BlobViewer::GodepsJson,
+    BlobViewer::PackageJson,
+    BlobViewer::Podfile,
+    BlobViewer::Podspec,
+    BlobViewer::PodspecJson,
+    BlobViewer::RequirementsTxt,
+    BlobViewer::YarnLock
   ].freeze
 
   attr_reader :project

@@ -423,7 +423,43 @@ feature 'File blob', :js, feature: true do
         expect(page).to have_content('This project is licensed under the MIT License.')
 
         # shows a learn more link
-        expect(page).to have_link('Learn more about this license', 'http://choosealicense.com/licenses/mit/')
+        expect(page).to have_link('Learn more', 'http://choosealicense.com/licenses/mit/')
+      end
+    end
+  end
+
+  context '*.gemspec' do
+    before do
+      project.add_master(project.creator)
+
+      Files::CreateService.new(
+        project,
+        project.creator,
+        start_branch: 'master',
+        branch_name: 'master',
+        commit_message: "Add activerecord.gemspec",
+        file_path: 'activerecord.gemspec',
+        file_content: <<-SPEC.strip_heredoc
+          Gem::Specification.new do |s|
+            s.platform    = Gem::Platform::RUBY
+            s.name        = "activerecord"
+          end
+        SPEC
+      ).execute
+
+      visit_blob('activerecord.gemspec')
+    end
+
+    it 'displays an auxiliary viewer' do
+      aggregate_failures do
+        # shows license
+        expect(page).to have_content('This project manages its dependencies using RubyGems and defines a gem named activerecord.')
+
+        # shows a link to the gem
+        expect(page).to have_link('activerecord', 'https://rubygems.org/gems/activerecord')
+
+        # shows a learn more link
+        expect(page).to have_link('Learn more', 'http://choosealicense.com/licenses/mit/')
       end
     end
   end
