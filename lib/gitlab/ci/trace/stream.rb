@@ -116,12 +116,8 @@ module Gitlab
         end
 
         def calc_read_size(pos, max)
-          if pos > max
-            BUFFER_SIZE + (pos - max)
-          else
-            remain = max - pos
-            (remain > BUFFER_SIZE) ? BUFFER_SIZE : remain
-          end
+          remain = max - pos
+          (remain > BUFFER_SIZE) ? BUFFER_SIZE : remain
         end
       end
     end
