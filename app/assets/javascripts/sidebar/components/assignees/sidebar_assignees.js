@@ -69,10 +69,11 @@ export default {
     <div>
       <assignee-title
         :number-of-assignees="store.assignees.length"
-        :loading="loading"
+        :loading="loading || store.isFetching.assignees"
         :editable="store.editable"
       />
       <assignees
+        v-if="!store.isFetching.assignees"
         class="value"
         :root-path="store.rootPath"
         :users="store.assignees"
