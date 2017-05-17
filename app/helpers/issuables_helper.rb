@@ -114,21 +114,10 @@ module IssuablesHelper
     h(title || default_label)
   end
 
-  def to_url_reference(issuable)
-    case issuable
-    when Issue
-      link_to issuable.to_reference, issue_url(issuable)
-    when MergeRequest
-      link_to issuable.to_reference, merge_request_url(issuable)
-    else
-      issuable.to_reference
-    end
-  end
-
   def issuable_meta(issuable, project, text)
     output = content_tag(:strong, class: "identifier") do
       concat("#{text} ")
-      concat(to_url_reference(issuable))
+      concat(issuable.to_reference)
     end
 
     output << " opened #{time_ago_with_tooltip(issuable.created_at)} by ".html_safe
