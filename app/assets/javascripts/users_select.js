@@ -429,8 +429,6 @@ window.emitSidebarEvent = window.emitSidebarEvent || $.noop;
                   getSelected().length === $dropdown.data('max-select')) {
                 // Close the dropdown
                 $dropdown.dropdown('toggle');
-
-                this.hidden();
               }
             },
             id: function (user) {
