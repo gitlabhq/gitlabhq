@@ -690,9 +690,7 @@ module API
       expose :id
       expose :description, :ref, :cron, :cron_timezone, :next_run_at, :active
       expose :created_at, :updated_at, :deleted_at
-      expose :last_pipeline, using: Entities::Pipeline do |pipeline_schedule|
-        pipeline_schedule.pipelines&.last
-      end
+      expose :last_pipeline, using: Entities::Pipeline
       expose :owner, using: Entities::UserBasic
     end
 

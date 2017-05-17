@@ -17,7 +17,7 @@ module API
       get ':id/pipeline_schedules' do
         authorize! :read_pipeline_schedule, user_project
 
-        pipeline_schedules = user_project.pipeline_schedules.preload(:pipelines)
+        pipeline_schedules = user_project.pipeline_schedules.includes(last_pipeline: {statuses: :latest})
 
         present paginate(pipeline_schedules), with: Entities::PipelineSchedule
       end
