@@ -37,10 +37,15 @@ module Members
       else
         project = member.source
 
-        IssueAssignee.delete_all(
-          user_id: member.user_id,
-          issue_id: project.issues.opened.assigned_to(member.user).select(:id)
-        )
+        # SELECT 1 FROM issues WHERE issues.id = issue_assignees.issue_id AND issues.project_id = X
+        issues = Issue.unscoped.select(1).
+                 where('issues.id = issue_assignees.issue_id').
+                 where(project_id: project.id)
+
+        # DELETE FROM issue_assignees WHERE user_id = X AND EXISTS (...)
+        IssueAssignee.unscoped.
+          where('user_id = :user_id AND EXISTS (:sub)', user_id: member.user_id, sub: issues).
+          delete_all
 
         project.merge_requests.opened.assigned_to(member.user).update_all(assignee_id: nil)
       end
