@@ -12,7 +12,7 @@ describe Groups::HooksController do
   describe 'POST #create' do
     it 'sets all parameters' do
       hook_params = {
-        build_events: true,
+        job_events: true,
         confidential_issues_events: true,
         enable_ssl_verification: true,
         issues_events: true,
