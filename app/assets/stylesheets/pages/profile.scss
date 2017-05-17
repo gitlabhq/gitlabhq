@@ -287,6 +287,7 @@ table.u2f-registrations {
 
 .user-callout {
   margin: 0 auto;
+  max-width: $screen-lg-min;
 
   .bordered-box {
     border: 1px solid $blue-300;
@@ -295,6 +296,7 @@ table.u2f-registrations {
     position: relative;
     display: flex;
     justify-content: center;
+    align-items: center;
   }
 
   .landing {

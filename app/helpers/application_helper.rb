@@ -275,8 +275,8 @@ module ApplicationHelper
     'active' if condition
   end
 
-  def show_user_callout?
-    cookies[:user_callout_dismissed] == 'true'
+  def show_callout(name)
+    cookies[name] != 'true'
   end
 
   def linkedin_url(user)

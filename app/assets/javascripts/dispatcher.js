@@ -388,6 +388,9 @@ const ShortcutsBlob = require('./shortcuts_blob');
         case 'users:show':
           new UserCallout();
           break;
+        case 'admin:conversational_development_index_metrics:show':
+          new UserCallout();
+          break;
         case 'snippets:show':
           new LineHighlighter();
           new BlobViewer();

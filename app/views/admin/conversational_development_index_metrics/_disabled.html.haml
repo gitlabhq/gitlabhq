@@ -1,0 +1,12 @@
+.container.convdev-empty
+  .col-sm-6.col-sm-push-3.col-lg-6.col-lg-push-3.centered-light-block.text-center
+    = custom_icon('convdev_no_index')
+    %h4.callout-title Usage ping is not enabled
+    .callout-description
+      %p
+        ConvDev is only shown when the
+        = link_to 'usage ping', help_page_path('user/admin_area/settings/usage_statistics'), target: '_blank'
+        is enabled.
+      %p
+        Enable usage ping to get an overview of how you are using GitLab from a feature perspective
+      = link_to 'Enable usage ping', admin_application_settings_path(anchor: 'usage-statistics'), class: 'btn btn-lg btn-primary'

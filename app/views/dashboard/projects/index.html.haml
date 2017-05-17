@@ -4,7 +4,7 @@
 - page_title    "Projects"
 - header_title  "Projects", dashboard_projects_path
 
-- unless show_user_callout?
+- if show_callout('user_callout_dismissed')
   = render 'shared/user_callout'
 
 - if @projects.any? || params[:name]

@@ -1,0 +1,256 @@
+$space-between-cards: 8px;
+
+.convdev-empty svg {
+  margin: 72px auto;
+  max-width: 420px;
+}
+
+.convdev-header {
+  margin-top: $gl-padding;
+  margin-bottom: $gl-padding;
+  padding: 8px;
+  display: flex;
+
+  .convdev-header-title {
+    font-size: 3em;
+    line-height: 1;
+    margin: 0;
+  }
+
+  .convdev-header-subtitle {
+    font-size: 1.5em;
+    line-height: 1;
+  }
+}
+
+.convdev-cards {
+  display: flex;
+  justify-content: center;
+
+  @media (max-width: $screen-lg-min) {
+    flex-wrap: wrap;
+  }
+}
+
+.convdev-card-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  text-align: center;
+  width: 10%;
+  border-color: $border-color;
+  margin: 0 0 32px 0;
+  padding: $space-between-cards / 2;
+  position: relative;
+
+  @media (max-width: $screen-lg-min) {
+    width: 16.667%;
+  }
+
+  @media (max-width: $screen-md-min) {
+    width: 20%;
+  }
+
+  @media (max-width: $screen-sm-min) {
+    width: 25%;
+  }
+
+  @media (max-width: $screen-xs-min) {
+    width: 50%;
+  }
+}
+
+.convdev-card {
+  border: solid 1px $border-color;
+  border-top-width: 5px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.convdev-card-low {
+  border-top-color: $color-low-score;
+
+  .card-score-big {
+    background-color: $red-25;
+  }
+}
+
+.convdev-card-average {
+  border-top-color: $color-average-score;
+
+  .card-score-big {
+    background-color: $orange-25;
+  }
+}
+
+.convdev-card-high {
+  border-top-color: $color-high-score;
+
+  .card-score-big {
+    background-color: $green-25;
+  }
+}
+
+.convdev-card-title {
+  margin-top: $gl-padding;
+  margin-bottom: auto;
+
+  h3 {
+    font-size: 14px;
+    margin: 0;
+  }
+
+  .text-light {
+    font-size: 13px;
+    line-height: 1.25;
+    color: $gl-text-color-secondary
+  }
+}
+
+.card-scores {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: $gl-btn-padding;
+  line-height: 1;
+}
+
+.card-score {
+  color: $gl-text-color-secondary;
+}
+
+.card-score-value {
+  font-size: 16px;
+  color: $gl-text-color;
+}
+
+.card-score-big {
+  border-top: solid 3px $border-color;
+  border-bottom: solid 1px $border-color;
+  font-size: 22px;
+  padding: 10px 0;
+}
+
+.card-buttons {
+  display: flex;
+  justify-content: stretch;
+
+  > * {
+    font-size: 16px;
+    color: $gl-text-color-secondary;
+    padding: 10px;
+    flex-grow: 1;
+
+    &:hover {
+      background-color: $border-color;
+      color: $gl-text-color;
+    }
+
+    + * {
+      border-left: solid 1px $border-color;
+    }
+  }
+}
+
+.convdev-steps {
+  margin-top: 64px;
+  height: 1px;
+  min-width: 100%;
+  justify-content: space-around;
+  position: relative;
+  background: $border-color;
+
+  @media (max-width: $screen-lg-min) {
+    display: none;
+  }
+}
+
+.convdev-step {
+  $step-positions: 3% 10% 28% 39% 45% 55% 62% 70% 77% 90%;
+  @each $pos in $step-positions {
+    $i: index($step-positions, $pos);
+    &:nth-child(#{$i}) {
+      left: $pos;
+    }
+  }
+
+  position: absolute;
+  transform-origin: 75% 50%;
+  padding: 14px;
+  height: 64px;
+  width: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: solid 1px $border-color;
+  background: $white-light;
+  transform: translateY(-50%);
+  color: $gl-text-color-secondary;
+
+  &:hover {
+    transform: scale(1.4) translateY(-33%);
+    fill: currentColor;
+    cursor: pointer;
+    z-index: 100;
+    height: auto;
+    width: auto;
+
+    .convdev-step-title {
+      max-height: 3em;
+      opacity: 1;
+      transition: 0.1s opacity;
+    }
+  }
+
+  svg {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+.convdev-step-title {
+  max-height: 0;
+  opacity: 0;
+  text-transform: uppercase;
+  margin: 0;
+  text-align: center;
+  font-size: 12px;
+}
+
+.callout-title {
+  font-size: 20px;
+}
+
+.callout-description {
+  font-size: 16px;
+  color: $gl-text-color-secondary;
+}
+
+.user-callout {
+  .bordered-box {
+    @media (min-width: $screen-sm-min) {
+      padding: 2em;
+    }
+  }
+
+  .close {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    font-size: 20px;
+    padding: $gl-padding;
+  }
+}
+
+.convdev-high-score {
+  color: $color-high-score;
+}
+
+.convdev-average-score {
+  color: $color-average-score;
+}
+
+.convdev-low-score {
+  color: $color-low-score;
+}

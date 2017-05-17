@@ -65,6 +65,7 @@ namespace :admin do
   resource :background_jobs, controller: 'background_jobs', only: [:show]
   resource :system_info, controller: 'system_info', only: [:show]
   resources :requests_profiles, only: [:index, :show], param: :name, constraints: { name: /.+\.html/ }
+  resource :convdev, controller: 'conversational_development_index_metrics', only: [:show]
 
   resources :projects, only: [:index]
 

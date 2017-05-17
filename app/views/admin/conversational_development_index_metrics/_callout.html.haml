@@ -1,0 +1,14 @@
+.prepend-top-default
+.user-callout.container{ data: { uid: 'convdev_intro_callout_dismissed' } }
+  .bordered-box.content-block
+    %button.btn.btn-default.close.js-close-callout{ type: 'button',
+      'aria-label' => 'Dismiss ConvDev introduction' }
+      = icon('times', class: 'dismiss-icon', 'aria-hidden' => 'true')
+    .container.user-callout-contents
+      .col-sm-8
+        %h4.callout-title
+          Introducing Your Conversational Development Index
+        %p.callout-description
+          Your Conversational Development Index gives an overview of how you are using GitLab from a feature perspective. View how they compare with other organizations, discover features your are not using, and learn best practices through blog posts and white papers.
+      .col-sm-4
+        = custom_icon('convdev_overview')
