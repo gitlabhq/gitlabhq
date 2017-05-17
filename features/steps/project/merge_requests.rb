@@ -368,6 +368,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should see a badge of "0" next to the discussion link' do
     expect_discussion_badge_to_have_counter("0")
+    wait_for_vue_resource
   end
 
   step 'I should see a discussion has started on commit diff' do
@@ -421,7 +422,6 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     page.within '.status-box' do
       expect(page).to have_content "Open"
     end
-
     wait_for_vue_resource
   end
 
@@ -703,6 +703,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     project = merge_request.source_project
     project.enable_ci
     pipeline = create :ci_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch
+    merge_request.update(head_pipeline: pipeline)
     create :ci_build, pipeline: pipeline
   end
 
@@ -716,6 +717,8 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     page.within ".mr-source-target" do
       expect(page).to have_content /([0-9]+ commits behind)/
     end
+
+    wait_for_vue_resource
   end
 
   step 'I should not see the diverged commits count' do
@@ -723,6 +726,8 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
       expect(page).not_to have_content /([0-9]+ commit[s]? behind)/
       wait_for_vue_resource
     end
+
+    wait_for_vue_resource
   end
 
   def merge_request

@@ -294,6 +294,23 @@ ActiveRecord::Schema.define(version: 20170511101000) do
   add_index "ci_builds", ["updated_at"], name: "index_ci_builds_on_updated_at", using: :btree
   add_index "ci_builds", ["user_id"], name: "index_ci_builds_on_user_id", using: :btree
 
+  create_table "ci_pipeline_schedules", force: :cascade do |t|
+    t.string "description"
+    t.string "ref"
+    t.string "cron"
+    t.string "cron_timezone"
+    t.datetime "next_run_at"
+    t.integer "project_id"
+    t.integer "owner_id"
+    t.boolean "active", default: true
+    t.datetime "deleted_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ci_pipeline_schedules", ["next_run_at", "active"], name: "index_ci_pipeline_schedules_on_next_run_at_and_active", using: :btree
+  add_index "ci_pipeline_schedules", ["project_id"], name: "index_ci_pipeline_schedules_on_project_id", using: :btree
+
   create_table "ci_pipelines", force: :cascade do |t|
     t.string "ref"
     t.string "sha"
@@ -311,8 +328,10 @@ ActiveRecord::Schema.define(version: 20170511101000) do
     t.integer "user_id"
     t.integer "lock_version"
     t.integer "auto_canceled_by_id"
+    t.integer "pipeline_schedule_id"
   end
 
+  add_index "ci_pipelines", ["pipeline_schedule_id"], name: "index_ci_pipelines_on_pipeline_schedule_id", using: :btree
   add_index "ci_pipelines", ["project_id", "ref", "status"], name: "index_ci_pipelines_on_project_id_and_ref_and_status", using: :btree
   add_index "ci_pipelines", ["project_id", "sha"], name: "index_ci_pipelines_on_project_id_and_sha", using: :btree
   add_index "ci_pipelines", ["project_id"], name: "index_ci_pipelines_on_project_id", using: :btree
@@ -360,23 +379,6 @@ ActiveRecord::Schema.define(version: 20170511101000) do
   end
 
   add_index "ci_trigger_requests", ["commit_id"], name: "index_ci_trigger_requests_on_commit_id", using: :btree
-
-  create_table "ci_trigger_schedules", force: :cascade do |t|
-    t.integer "project_id"
-    t.integer "trigger_id", null: false
-    t.datetime "deleted_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string "cron"
-    t.string "cron_timezone"
-    t.datetime "next_run_at"
-    t.string "ref"
-    t.boolean "active"
-  end
-
-  add_index "ci_trigger_schedules", ["active", "next_run_at"], name: "index_ci_trigger_schedules_on_active_and_next_run_at", using: :btree
-  add_index "ci_trigger_schedules", ["next_run_at"], name: "index_ci_trigger_schedules_on_next_run_at", using: :btree
-  add_index "ci_trigger_schedules", ["project_id"], name: "index_ci_trigger_schedules_on_project_id", using: :btree
 
   create_table "ci_triggers", force: :cascade do |t|
     t.string "token"
@@ -796,6 +798,7 @@ ActiveRecord::Schema.define(version: 20170511101000) do
     t.integer "cached_markdown_version"
     t.datetime "last_edited_at"
     t.integer "last_edited_by_id"
+    t.integer "head_pipeline_id"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
@@ -1616,9 +1619,10 @@ ActiveRecord::Schema.define(version: 20170511101000) do
   add_foreign_key "boards", "projects"
   add_foreign_key "chat_teams", "namespaces", on_delete: :cascade
   add_foreign_key "ci_builds", "ci_pipelines", column: "auto_canceled_by_id", name: "fk_a2141b1522", on_delete: :nullify
+  add_foreign_key "ci_pipeline_schedules", "projects", name: "fk_8ead60fcc4", on_delete: :cascade
+  add_foreign_key "ci_pipelines", "ci_pipeline_schedules", column: "pipeline_schedule_id", name: "fk_3d34ab2e06", on_delete: :nullify
   add_foreign_key "ci_pipelines", "ci_pipelines", column: "auto_canceled_by_id", name: "fk_262d4c2d19", on_delete: :nullify
   add_foreign_key "ci_trigger_requests", "ci_triggers", column: "trigger_id", name: "fk_b8ec8b7245", on_delete: :cascade
-  add_foreign_key "ci_trigger_schedules", "ci_triggers", column: "trigger_id", name: "fk_90a406cc94", on_delete: :cascade
   add_foreign_key "ci_triggers", "users", column: "owner_id", name: "fk_e8e10d1964", on_delete: :cascade
   add_foreign_key "container_repositories", "projects"
   add_foreign_key "issue_assignees", "issues", on_delete: :cascade

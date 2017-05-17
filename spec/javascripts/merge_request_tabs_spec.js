@@ -47,7 +47,7 @@ require('vendor/jquery.scrollTo');
       this.class.destroyPipelinesView();
     });
 
-    describe('#activateTab', function () {
+    describe('activateTab', function () {
       beforeEach(function () {
         spyOn($, 'ajax').and.callFake(function () {});
         loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
@@ -71,7 +71,7 @@ require('vendor/jquery.scrollTo');
       });
     });
 
-    describe('#opensInNewTab', function () {
+    describe('opensInNewTab', function () {
       var tabUrl;
       var windowTarget = '_blank';
 
@@ -152,7 +152,7 @@ require('vendor/jquery.scrollTo');
       });
     });
 
-    describe('#setCurrentAction', function () {
+    describe('setCurrentAction', function () {
       beforeEach(function () {
         spyOn($, 'ajax').and.callFake(function () {});
         this.subject = this.class.setCurrentAction;
@@ -221,7 +221,7 @@ require('vendor/jquery.scrollTo');
       });
     });
 
-    describe('#tabShown', () => {
+    describe('tabShown', () => {
       beforeEach(function () {
         spyOn($, 'ajax').and.callFake(function (options) {
           options.success({ html: '' });
@@ -281,7 +281,7 @@ require('vendor/jquery.scrollTo');
       });
     });
 
-    describe('#loadDiff', function () {
+    describe('loadDiff', function () {
       it('requires an absolute pathname', function () {
         spyOn($, 'ajax').and.callFake(function (options) {
           expect(options.url).toEqual('/foo/bar/merge_requests/1/diffs.json');

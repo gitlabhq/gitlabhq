@@ -3,6 +3,7 @@
 (function() {
   this.ProjectNew = (function() {
     function ProjectNew() {
+      this.toggleSettings = this.toggleSettings.bind(this);
       this.$selects = $('.features select');
       this.$repoSelects = this.$selects.filter('.js-repo-select');
       this.$enableApprovers = $('.js-require-approvals-toggle');

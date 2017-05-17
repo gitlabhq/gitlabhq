@@ -3,7 +3,7 @@
 require('./class_spec_helper');
 
 describe('ClassSpecHelper', () => {
-  describe('.itShouldBeAStaticMethod', function () {
+  describe('itShouldBeAStaticMethod', function () {
     beforeEach(() => {
       class TestClass {
         instanceMethod() { this.prop = 'val'; }

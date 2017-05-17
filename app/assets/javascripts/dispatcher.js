@@ -39,6 +39,7 @@
 import Issue from './issue';
 
 import BindInOut from './behaviors/bind_in_out';
+import DeleteModal from './branches/branches_delete_modal';
 import Group from './group';
 import GroupName from './group_name';
 import GroupsList from './groups_list';
@@ -51,6 +52,7 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import UserCallout from './user_callout';
 import { ProtectedTagCreate, ProtectedTagEditList } from './protected_tags';
 import ShortcutsWiki from './shortcuts_wiki';
+import Pipelines from './pipelines';
 import BlobViewer from './blob/viewer/index';
 import GeoNodes from './geo_nodes';
 import ServiceDeskRoot from './projects/settings_service_desk/service_desk_root';
@@ -186,6 +188,7 @@ const ShortcutsBlob = require('./shortcuts_blob');
           break;
         case 'projects:branches:index':
           gl.AjaxLoadingSpinner.init();
+          new DeleteModal();
           break;
         case 'projects:issues:new':
         case 'projects:issues:edit':
@@ -267,7 +270,7 @@ const ShortcutsBlob = require('./shortcuts_blob');
           const { controllerAction } = document.querySelector('.js-pipeline-container').dataset;
           const pipelineStatusUrl = `${document.querySelector('.js-pipeline-tab-link a').getAttribute('href')}/status.json`;
 
-          new gl.Pipelines({
+          new Pipelines({
             initTabs: true,
             pipelineStatusUrl,
             tabsOptions: {

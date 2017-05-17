@@ -1,4 +1,4 @@
-require('~/lib/utils/bootstrap_linked_tabs');
+import LinkedTabs from '~/lib/utils/bootstrap_linked_tabs';
 
 (() => {
   // TODO: remove this hack!
@@ -25,7 +25,7 @@ require('~/lib/utils/bootstrap_linked_tabs');
       });
 
       it('should activate the tab correspondent to the given action', () => {
-        const linkedTabs = new window.gl.LinkedTabs({ // eslint-disable-line
+        const linkedTabs = new LinkedTabs({ // eslint-disable-line
           action: 'tab1',
           defaultAction: 'tab1',
           parentEl: '.linked-tabs',
@@ -35,7 +35,7 @@ require('~/lib/utils/bootstrap_linked_tabs');
       });
 
       it('should active the default tab action when the action is show', () => {
-        const linkedTabs = new window.gl.LinkedTabs({ // eslint-disable-line
+        const linkedTabs = new LinkedTabs({ // eslint-disable-line
           action: 'show',
           defaultAction: 'tab1',
           parentEl: '.linked-tabs',
@@ -49,7 +49,7 @@ require('~/lib/utils/bootstrap_linked_tabs');
       it('should change the url according to the clicked tab', () => {
         const historySpy = !phantomjs && spyOn(history, 'replaceState').and.callFake(() => {});
 
-        const linkedTabs = new window.gl.LinkedTabs({ // eslint-disable-line
+        const linkedTabs = new LinkedTabs({
           action: 'show',
           defaultAction: 'tab1',
           parentEl: '.linked-tabs',

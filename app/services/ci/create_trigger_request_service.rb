@@ -5,9 +5,8 @@ module Ci
 
       pipeline = Ci::CreatePipelineService.new(project, trigger.owner, ref: ref).
         execute(ignore_skip_ci: true, trigger_request: trigger_request)
-      if pipeline.persisted?
-        trigger_request
-      end
+
+      trigger_request if pipeline.persisted?
     end
   end
 end

@@ -634,7 +634,8 @@ describe Projects::MergeRequestsController do
         end
 
         before do
-          create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch)
+          pipeline = create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch)
+          merge_request.update(head_pipeline: pipeline)
         end
 
         it 'returns :merge_when_pipeline_succeeds' do
@@ -1448,7 +1449,10 @@ describe Projects::MergeRequestsController do
 
       let(:status) { pipeline.detailed_status(double('user')) }
 
-      before { get_pipeline_status }
+      before do
+        merge_request.update(head_pipeline: pipeline)
+        get_pipeline_status
+      end
 
       it 'return a detailed head_pipeline status in json' do
         expect(response).to have_http_status(:ok)

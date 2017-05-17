@@ -39,6 +39,7 @@ describe Gitlab::UsageData do
         ci_pipelines
         ci_runners
         ci_triggers
+        ci_pipeline_schedules
         deploy_keys
         deployments
         environments

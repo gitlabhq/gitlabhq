@@ -1,5 +1,4 @@
 class MergeRequestEntity < IssuableEntity
-  expose :approvals_before_merge
   expose :assignee_id
   include RequestAwareEntity
 

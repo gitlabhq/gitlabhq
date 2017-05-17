@@ -17,12 +17,11 @@ feature 'Path Locks', feature: true, js: true do
   scenario 'Locking folders' do
     within '.tree-content-holder' do
       click_link "encoding"
-      click_link "Lock"
-
-      visit project_tree_path
-
-      expect(page).to have_selector('.fa-lock')
     end
+    click_link "Lock"
+    visit project_tree_path
+
+    expect(page).to have_selector('.fa-lock')
   end
 
   scenario 'Locking files' do

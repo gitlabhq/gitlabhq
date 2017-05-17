@@ -20,6 +20,14 @@ describe ProcessCommitWorker do
       worker.perform(project.id, -1, commit.to_hash)
     end
 
+    it 'does not process the commit when no issues are referenced' do
+      allow(worker).to receive(:build_commit).and_return(double(matches_cross_reference_regex?: false))
+
+      expect(worker).not_to receive(:process_commit_message)
+
+      worker.perform(project.id, user.id, commit.to_hash)
+    end
+
     it 'processes the commit message' do
       expect(worker).to receive(:process_commit_message).and_call_original
 

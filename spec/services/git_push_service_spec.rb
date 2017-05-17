@@ -661,9 +661,18 @@ describe GitPushService, services: true do
 
     it 'only schedules a limited number of commits' do
       allow(service).to receive(:push_commits).
-        and_return(Array.new(1000, double(:commit, to_hash: {})))
+        and_return(Array.new(1000, double(:commit, to_hash: {}, matches_cross_reference_regex?: true)))
 
       expect(ProcessCommitWorker).to receive(:perform_async).exactly(100).times
+
+      service.process_commit_messages
+    end
+
+    it "skips commits which don't include cross-references" do
+      allow(service).to receive(:push_commits).
+        and_return([double(:commit, to_hash: {}, matches_cross_reference_regex?: false)])
+
+      expect(ProcessCommitWorker).not_to receive(:perform_async)
 
       service.process_commit_messages
     end

@@ -109,7 +109,7 @@ module TreeHelper
   end
 
   def lock_file_link(project = @project, path = @path, html_options: {})
-    return unless license_allows_file_locks?
+    return unless license_allows_file_locks? && current_user
     return if path.blank?
 
     path_lock = project.find_path_lock(path, downstream: true)
@@ -139,12 +139,16 @@ module TreeHelper
         end
       end
     else
-      if can?(current_user, :push_code, project)
-        html_options[:data] = { state: :lock }
-        enabled_lock_link("Lock", '', html_options)
-      else
-        disabled_lock_link("Lock", "You do not have permission to lock this", html_options)
-      end
+      _lock_link(current_user, project, html_options: html_options)
+    end
+  end
+
+  def _lock_link(user, project, html_options: {})
+    if can?(current_user, :push_code, project)
+      html_options[:data] = { state: :lock }
+      enabled_lock_link("Lock", '', html_options)
+    else
+      disabled_lock_link("Lock", "You do not have permission to lock this", html_options)
     end
   end
 

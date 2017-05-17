@@ -1,13 +1,13 @@
 module Gitlab
   module Ci
     module Status
-      module Extended
-        extend ActiveSupport::Concern
+      class Extended < SimpleDelegator
+        def initialize(status)
+          super(@status = status)
+        end
 
-        class_methods do
-          def matches?(_subject, _user)
-            raise NotImplementedError
-          end
+        def self.matches?(_subject, _user)
+          raise NotImplementedError
         end
       end
     end

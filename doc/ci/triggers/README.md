@@ -216,42 +216,4 @@ You can add the following webhook to another project in order to trigger a job:
 https://gitlab.example.com/api/v4/projects/9/ref/master/trigger/pipeline?token=TOKEN&variables[UPLOAD_TO_S3]=true
 ```
 
-### Using cron to trigger nightly jobs
-
-Whether you craft a script or just run cURL directly, you can trigger jobs
-in conjunction with cron. The example below triggers a job on the `master`
-branch of project with ID `9` every night at `00:30`:
-
-```bash
-30 0 * * * curl --request POST --form token=TOKEN --form ref=master https://gitlab.example.com/api/v4/projects/9/trigger/pipeline
-```
-
 [ci-229]: https://gitlab.com/gitlab-org/gitlab-ci/merge_requests/229
-
-## Using scheduled triggers
-
-> [Introduced][ci-10533] in GitLab CE 9.1 as experimental.
-
-In order to schedule a trigger, navigate to your project's **Settings ➔ CI/CD Pipelines ➔ Triggers** and edit an existing trigger token.
-
-![Triggers Schedule edit](img/trigger_schedule_edit.png)
-
-To set up a scheduled trigger:
-
-1. Check the **Schedule trigger (experimental)** checkbox
-1. Enter a cron value for the frequency of the trigger ([learn more about cron notation](http://www.nncron.ru/help/EN/working/cron-format.htm))
-1. Enter the timezone of the cron trigger ([see a list of timezones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones))
-1. Enter the branch or tag that the trigger will target
-1. Hit **Save trigger** for the changes to take effect
-
-![Triggers Schedule create](img/trigger_schedule_create.png)
-
-You can check a next execution date of the scheduled trigger, which is automatically calculated by a server.
-
-![Triggers Schedule create](img/trigger_schedule_updated_next_run_at.png)
-
-> **Notes**:
-- Those triggers won't be executed precicely. Because scheduled triggers are handled by Sidekiq, which runs according to its interval. For exmaple, if you set a trigger to be executed every minute (`* * * * *`) and the Sidekiq worker performs 00:00 and 12:00 o'clock every day (`0 */12 * * *`), then your trigger will be executed only 00:00 and 12:00 o'clock every day. To change the Sidekiq worker's frequency, you have to edit the `trigger_schedule_worker` value in `config/gitlab.yml` and restart GitLab. The Sidekiq worker's configuration on GiLab.com is able to be looked up at [here](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/gitlab.yml.example#L185).
-- Cron notation is parsed by [Rufus-Scheduler](https://github.com/jmettraux/rufus-scheduler).
-
-[ci-10533]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/10533

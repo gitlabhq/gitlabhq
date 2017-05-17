@@ -370,6 +370,58 @@ describe 'Pipelines', :feature, :js do
       end
     end
 
+    describe 'GET /:project/pipelines/show' do
+      let(:project) { create(:project) }
+
+      let(:pipeline) do
+        create(:ci_empty_pipeline,
+              project: project,
+              sha: project.commit.id,
+              user: user)
+      end
+
+      before do
+        create_build('build', 0, 'build', :success)
+        create_build('test', 1, 'rspec 0:2', :pending)
+        create_build('test', 1, 'rspec 1:2', :running)
+        create_build('test', 1, 'spinach 0:2', :created)
+        create_build('test', 1, 'spinach 1:2', :created)
+        create_build('test', 1, 'audit', :created)
+        create_build('deploy', 2, 'production', :created)
+
+        create(:generic_commit_status, pipeline: pipeline, stage: 'external', name: 'jenkins', stage_idx: 3)
+
+        visit namespace_project_pipeline_path(project.namespace, project, pipeline)
+        wait_for_vue_resource
+      end
+
+      it 'shows a graph with grouped stages' do
+        expect(page).to have_css('.js-pipeline-graph')
+
+        # header
+        expect(page).to have_text("##{pipeline.id}")
+        expect(page).to have_selector(%Q(img[alt$="#{pipeline.user.name}'s avatar"]))
+        expect(page).to have_link(pipeline.user.name, href: user_path(pipeline.user))
+
+        # stages
+        expect(page).to have_text('Build')
+        expect(page).to have_text('Test')
+        expect(page).to have_text('Deploy')
+        expect(page).to have_text('External')
+
+        # builds
+        expect(page).to have_text('rspec')
+        expect(page).to have_text('spinach')
+        expect(page).to have_text('rspec')
+        expect(page).to have_text('production')
+        expect(page).to have_text('jenkins')
+      end
+
+      def create_build(stage, stage_idx, name, status)
+        create(:ci_build, pipeline: pipeline, stage: stage, stage_idx: stage_idx, name: name, status: status)
+      end
+    end
+
     describe 'POST /:project/pipelines' do
       let(:project) { create(:project) }
 

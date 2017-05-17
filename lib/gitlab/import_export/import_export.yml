@@ -39,8 +39,8 @@ project_tree:
       - :author
       - :events
     - :statuses
-  - triggers:
-    - :trigger_schedule
+  - :triggers
+  - :pipeline_schedules
   - :services
   - :hooks
   - protected_branches:
@@ -112,7 +112,6 @@ methods:
     - :type
   statuses:
     - :type
-    - :gl_project_id
   services:
     - :type
   merge_request_diff:

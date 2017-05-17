@@ -98,7 +98,7 @@ describe 'OpenID Connect requests' do
         expect(@payload['sub']).to eq hashed_subject
       end
 
-      it 'includes the time of the last authentication' do
+      it 'includes the time of the last authentication', :redis do
         expect(@payload['auth_time']).to eq user.current_sign_in_at.to_i
       end
 

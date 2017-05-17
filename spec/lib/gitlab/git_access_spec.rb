@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::GitAccess, lib: true do
-  let(:access) { Gitlab::GitAccess.new(actor, project, 'web', authentication_abilities: authentication_abilities) }
+  let(:access) { Gitlab::GitAccess.new(actor, project, 'ssh', authentication_abilities: authentication_abilities) }
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:actor) { user }
