@@ -41,10 +41,6 @@ export default {
             });
           });
 
-          console.log(this.baseIssues);
-          console.log(this.headIssues);
-          console.log(this.resolvedIssues);
-
           this.loadFailed = false;
           this.loadingMetrics = false;
         });
