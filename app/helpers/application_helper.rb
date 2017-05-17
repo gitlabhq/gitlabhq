@@ -2,8 +2,6 @@ require 'digest/md5'
 require 'uri'
 
 module ApplicationHelper
-  include EditableHelper
-
   # Check if a particular controller is the current one
   #
   # args - One or more controller names to check
@@ -183,7 +181,7 @@ module ApplicationHelper
   end
 
   def edited_time_ago_with_tooltip(object, placement: 'top', html_class: 'time_ago', exclude_author: false)
-    return unless is_edited?(object)
+    return unless object.is_edited?
 
     content_tag :small, class: 'edited-text' do
       output = content_tag(:span, 'Edited ')
