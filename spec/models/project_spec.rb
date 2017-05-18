@@ -992,6 +992,7 @@ describe Project, models: true do
         end
 
         it { should eq "#{geo_url}#{avatar_path}" }
+      end
     end
 
     context 'When avatar file in git' do
