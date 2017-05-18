@@ -98,8 +98,6 @@ import '~/notes';
 
         notes = jasmine.createSpyObj('notes', [
           'refresh',
-          'isNewNote',
-          'isUpdatedNote',
           'collapseLongCommitList',
           'updateNotesCount',
           'putConflictEditWarningInPlace'
@@ -109,13 +107,15 @@ import '~/notes';
         notes.updatedNotesTrackingMap = {};
 
         spyOn(gl.utils, 'localTimeAgo');
+        spyOn(Notes, 'isNewNote').and.callThrough();
+        spyOn(Notes, 'isUpdatedNote').and.callThrough();
         spyOn(Notes, 'animateAppendNote').and.callThrough();
         spyOn(Notes, 'animateUpdateNote').and.callThrough();
       });
 
       describe('when adding note', () => {
         it('should call .animateAppendNote', () => {
-          notes.isNewNote.and.returnValue(true);
+          Notes.isNewNote.and.returnValue(true);
           Notes.prototype.renderNote.call(notes, note, null, $notesList);
 
           expect(Notes.animateAppendNote).toHaveBeenCalledWith(note.html, $notesList);
@@ -124,7 +124,8 @@ import '~/notes';
 
       describe('when note was edited', () => {
         it('should call .animateUpdateNote', () => {
-          notes.isUpdatedNote.and.returnValue(true);
+          Notes.isNewNote.and.returnValue(false);
+          Notes.isUpdatedNote.and.returnValue(true);
           const $note = $('<div>');
           $notesList.find.and.returnValue($note);
           Notes.prototype.renderNote.call(notes, note, null, $notesList);
@@ -134,7 +135,8 @@ import '~/notes';
 
         describe('while editing', () => {
           it('should update textarea if nothing has been touched', () => {
-            notes.isUpdatedNote.and.returnValue(true);
+            Notes.isNewNote.and.returnValue(false);
+            Notes.isUpdatedNote.and.returnValue(true);
             const $note = $(`<div class="is-editing">
               <div class="original-note-content">initial</div>
               <textarea class="js-note-text">initial</textarea>
@@ -146,7 +148,8 @@ import '~/notes';
           });
 
           it('should call .putConflictEditWarningInPlace', () => {
-            notes.isUpdatedNote.and.returnValue(true);
+            Notes.isNewNote.and.returnValue(false);
+            Notes.isUpdatedNote.and.returnValue(true);
             const $note = $(`<div class="is-editing">
               <div class="original-note-content">initial</div>
               <textarea class="js-note-text">different</textarea>
@@ -157,6 +160,47 @@ import '~/notes';
             expect(notes.putConflictEditWarningInPlace).toHaveBeenCalledWith(note, $note);
           });
         });
+      });
+    });
+
+    describe('isUpdatedNote', () => {
+      it('should consider same note text as the same', () => {
+        const result = Notes.isUpdatedNote(
+          {
+            note: 'initial'
+          },
+          $(`<div>
+            <div class="original-note-content">initial</div>
+          </div>`)
+        );
+
+        expect(result).toEqual(false);
+      });
+
+      it('should consider same note with trailing newline as the same', () => {
+        const result = Notes.isUpdatedNote(
+          {
+            note: 'initial\n'
+          },
+          $(`<div>
+            <div class="original-note-content">initial\n</div>
+          </div>`)
+        );
+
+        expect(result).toEqual(false);
+      });
+
+      it('should consider different notes as different', () => {
+        const result = Notes.isUpdatedNote(
+          {
+            note: 'foo'
+          },
+          $(`<div>
+            <div class="original-note-content">bar</div>
+          </div>`)
+        );
+
+        expect(result).toEqual(true);
       });
     });
 
@@ -179,15 +223,15 @@ import '~/notes';
         row = jasmine.createSpyObj('row', ['prevAll', 'first', 'find']);
 
         notes = jasmine.createSpyObj('notes', [
-          'isNewNote',
           'isParallelView',
           'updateNotesCount',
         ]);
         notes.note_ids = [];
 
         spyOn(gl.utils, 'localTimeAgo');
+        spyOn(Notes, 'isNewNote');
         spyOn(Notes, 'animateAppendNote');
-        notes.isNewNote.and.returnValue(true);
+        Notes.isNewNote.and.returnValue(true);
         notes.isParallelView.and.returnValue(false);
         row.prevAll.and.returnValue(row);
         row.first.and.returnValue(row);
