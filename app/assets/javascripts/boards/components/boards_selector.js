@@ -1,6 +1,5 @@
 import Vue from 'vue';
-
-require('./board_new_form');
+import './board_new_form';
 
 (() => {
   window.gl = window.gl || {};

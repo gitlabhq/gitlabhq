@@ -2,11 +2,10 @@
 
 import Vue from 'vue';
 import queryData from '../../utils/query_data';
-
-require('./header');
-require('./list');
-require('./footer');
-require('./empty_state');
+import './header';
+import './list';
+import './footer';
+import './empty_state';
 
 const ModalStore = gl.issueBoards.ModalStore;
 
