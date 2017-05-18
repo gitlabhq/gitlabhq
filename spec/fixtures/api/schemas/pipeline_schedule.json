@@ -17,29 +17,7 @@
         "id": { "type": "integer" },
         "sha": { "type": "string" },
         "ref": { "type": "string" },
-        "status": { "type": "string" },
-        "before_sha": { "type": ["string", "null"] },
-        "tag": { "type": ["boolean", "null"] },
-        "yaml_errors": { "type": ["string", "null"] },
-        "user": {
-          "type": ["object", "null"],
-          "properties": {
-            "name": { "type": "string" },
-            "username": { "type": "string" },
-            "id": { "type": "integer" },
-            "state": { "type": "string" },
-            "avatar_url": { "type": "uri" },
-            "web_url": { "type": "uri" }
-          },
-          "additionalProperties": false
-        },
-        "created_at": { "type": "date" },
-        "updated_at": { "type": "date" },
-        "started_at": { "type": "date" },
-        "finished_at": { "type": "date" },
-        "committed_at": { "type": ["string", "null"] },
-        "duration": { "type": ["integer", "null"] },
-        "coverage": { "type": ["string", "null"] }
+        "status": { "type": "string" }
       },
       "additionalProperties": false
     },

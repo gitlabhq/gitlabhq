@@ -30,8 +30,12 @@ describe API::PipelineSchedules do
           get api("/projects/#{project.id}/pipeline_schedules", developer)
         end.count
 
-        create_list(:ci_pipeline_schedule, 10, project: project, owner: developer)
+        create_list(:ci_pipeline_schedule, 10, project: project)
           .each do |pipeline_schedule|
+          create(:user).tap do |user|
+            project.add_developer(user)
+            pipeline_schedule.update_attributes(owner: user)
+          end
           pipeline_schedule.pipelines << build(:ci_pipeline, project: project)
         end
 
