@@ -84,9 +84,19 @@ module NotificationsHelper
     # All values from NotificationSetting::EMAIL_EVENTS
     case event
     when :success_pipeline
-      _('Successful pipeline')
+      s_('NotificationEvent|Successful pipeline')
     else
-      _(event.to_s.humanize)
+      N_('NotificationEvent|New note')
+      N_('NotificationEvent|New issue')
+      N_('NotificationEvent|Reopen issue')
+      N_('NotificationEvent|Close issue')
+      N_('NotificationEvent|Reassign issue')
+      N_('NotificationEvent|New merge request')
+      N_('NotificationEvent|Close merge request')
+      N_('NotificationEvent|Reassign merge request')
+      N_('NotificationEvent|Merge merge request')
+      N_('NotificationEvent|Failed pipeline')
+      s_(event.to_s.humanize)
     end
   end
 end
