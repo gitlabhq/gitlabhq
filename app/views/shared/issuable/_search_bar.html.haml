@@ -49,7 +49,7 @@
                       {{hint}}
                     %span.js-filter-tag.dropdown-light-content
                       {{tag}}
-            #js-dropdown-author.filtered-search-input-dropdown-menu.dropdown-menu{ data: { icon: 'pencil', hint: 'author', tag: '@author' } }
+            #js-dropdown-author.filtered-search-input-dropdown-menu.dropdown-menu
               %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                 %li.filter-dropdown-item
                   %button.btn.btn-link.dropdown-user
@@ -59,7 +59,7 @@
                         {{name}}
                       %span.dropdown-light-content
                         @{{username}}
-            #js-dropdown-assignee.filtered-search-input-dropdown-menu.dropdown-menu{ data: { icon: 'user', hint: 'assignee', tag: '@assignee' } }
+            #js-dropdown-assignee.filtered-search-input-dropdown-menu.dropdown-menu
               %ul{ data: { dropdown: true } }
                 %li.filter-dropdown-item{ data: { value: 'none' } }
                   %button.btn.btn-link
@@ -76,7 +76,7 @@
                         @{{username}}
 
             - unless board && board.milestone_id
-              #js-dropdown-milestone.filtered-search-input-dropdown-menu.dropdown-menu{ data: { icon: 'clock-o', hint: 'milestone', tag: '%milestone' } }
+              #js-dropdown-milestone.filtered-search-input-dropdown-menu.dropdown-menu
                 %ul{ data: { dropdown: true } }
                   %li.filter-dropdown-item{ data: { value: 'none' } }
                     %button.btn.btn-link
@@ -93,7 +93,7 @@
                     %button.btn.btn-link.js-data-value
                       {{title}}
 
-            #js-dropdown-label.filtered-search-input-dropdown-menu.dropdown-menu{ data: { icon: 'tag', hint: 'label', tag: '~label', type: 'array' } }
+            #js-dropdown-label.filtered-search-input-dropdown-menu.dropdown-menu
               %ul{ data: { dropdown: true } }
                 %li.filter-dropdown-item{ data: { value: 'none' } }
                   %button.btn.btn-link
