@@ -27,13 +27,15 @@ module Gitlab
       # Rugged repo object
       attr_reader :rugged
 
+      attr_reader :storage
+
       # 'path' must be the path to a _bare_ git repository, e.g.
       # /path/to/my-repo.git
-      def initialize(repository_storage, relative_path)
-        @repository_storage = repository_storage
+      def initialize(storage, relative_path)
+        @storage = storage
         @relative_path = relative_path
 
-        storage_path = Gitlab.config.repositories.storages[@repository_storage]['path']
+        storage_path = Gitlab.config.repositories.storages[@storage]['path']
         @path = File.join(storage_path, @relative_path)
         @name = @relative_path.split("/").last
         @attributes = Gitlab::Git::Attributes.new(path)
@@ -965,11 +967,7 @@ module Gitlab
       end
 
       def gitaly_repository
-        Gitlab::GitalyClient::Util.repository(@repository_storage, @relative_path)
-      end
-
-      def gitaly_channel
-        Gitlab::GitalyClient.get_channel(@repository_storage)
+        Gitlab::GitalyClient::Util.repository(@storage, @relative_path)
       end
 
       private
