@@ -12,5 +12,6 @@ describe NotificationsHelper do
   describe 'notification_title' do
     it { expect(notification_title(:watch)).to match('Watch') }
     it { expect(notification_title(:mention)).to match('On mention') }
+    it { expect(notification_title(:global)).to match('Global') }
   end
 end

@@ -24,12 +24,15 @@ module NotificationsHelper
     # Can be anything in `NotificationSetting.level:
     case level.to_sym
     when :participating
-      _('Participate')
+      s_('NotificationLevel|Participate')
     when :mention
-      _('On mention')
+      s_('NotificationLevel|On mention')
     else
-      # `global`, `watch`, `disabled`, `custom`
-      _(level.to_s.humanize)
+      N_('NotificationLevel|Global')
+      N_('NotificationLevel|Watch')
+      N_('NotificationLevel|Disabled')
+      N_('NotificationLevel|Custom')
+      s_("NotificationLevel|#{level.to_s.humanize}")
     end
   end
 
