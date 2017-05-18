@@ -32,7 +32,7 @@ module RoutableActions
       if canonical_path.casecmp(requested_path) != 0
         flash[:notice] = "#{routable.class.to_s.titleize} '#{requested_path}' was moved to '#{canonical_path}'. Please update any links and bookmarks that may still have the old path."
       end
-      redirect_to request.original_url.sub(requested_path, canonical_path)
+      redirect_to request.original_fullpath.sub(requested_path, canonical_path)
     end
   end
 end
