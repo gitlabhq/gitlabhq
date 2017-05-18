@@ -81,11 +81,11 @@ export default {
     openForm() {
       if (!this.showForm) {
         this.showForm = true;
-        this.store.formState = {
+        this.store.formState = Object.assign(this.store.formState, {
           title: this.state.titleText,
           confidential: this.isConfidential,
           description: this.state.descriptionText,
-        };
+        });
       }
     },
     closeForm() {
@@ -128,7 +128,14 @@ export default {
       resource: this.service,
       method: 'getData',
       successCallback: (res) => {
-        this.store.updateState(res.json());
+        const data = res.json();
+        const shouldUpdate = this.store.stateShouldUpdate(data);
+
+        this.store.updateState(data);
+
+        if (this.showForm && (shouldUpdate.title || shouldUpdate.description)) {
+          this.store.formState.lockedWarningVisible = true;
+        }
       },
       errorCallback(err) {
         throw new Error(err);

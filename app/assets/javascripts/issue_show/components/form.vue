@@ -1,4 +1,6 @@
 <script>
+  import eventHub from '../event_hub';
+  import lockedWarning from './locked_warning.vue';
   import titleField from './fields/title.vue';
   import descriptionField from './fields/description.vue';
   import editActions from './edit_actions.vue';
@@ -24,16 +26,26 @@
       },
     },
     components: {
+      lockedWarning,
       titleField,
       descriptionField,
       editActions,
       confidentialCheckbox,
+    },
+    methods: {
+      closeForm() {
+        eventHub.$emit('close.form');
+        this.formState.lockedWarningVisible = false;
+      },
     },
   };
 </script>
 
 <template>
   <form>
+    <locked-warning
+      v-if="formState.lockedWarningVisible"
+      @closeForm="closeForm" />
     <title-field
       :form-state="formState" />
     <confidential-checkbox
