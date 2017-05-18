@@ -116,6 +116,7 @@ describe('Issuable output', () => {
           json() {
             return {
               confidential: true,
+              path: location.pathname,
             };
           },
         });
@@ -126,7 +127,7 @@ describe('Issuable output', () => {
       setTimeout(() => {
         expect(
           gl.utils.visitUrl,
-        ).toHaveBeenCalledWith(location.href);
+        ).toHaveBeenCalledWith(location.pathname);
 
         done();
       });
@@ -154,7 +155,14 @@ describe('Issuable output', () => {
     it('does not redirect if issue has not moved', (done) => {
       spyOn(gl.utils, 'visitUrl');
       spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve) => {
-        resolve();
+        resolve({
+          json() {
+            return {
+              path: location.pathname,
+              confidential: vm.isConfidential,
+            };
+          },
+        });
       }));
 
       vm.updateIssuable();
@@ -175,6 +183,7 @@ describe('Issuable output', () => {
           json() {
             return {
               path: '/testing-issue-move',
+              confidential: vm.isConfidential,
             };
           },
         });

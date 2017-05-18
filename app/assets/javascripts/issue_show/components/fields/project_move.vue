@@ -72,7 +72,6 @@
     </div>
     <span
       data-placement="auto top"
-      style="cursor: default"
       title="Moving an issue will copy the discussion to a different project and close it here. All participants will be notified of the new location."
       ref="tooltip">
       <i

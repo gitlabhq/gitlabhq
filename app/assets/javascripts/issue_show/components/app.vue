@@ -8,6 +8,7 @@ import Store from '../stores';
 import titleComponent from './title.vue';
 import descriptionComponent from './description.vue';
 import formComponent from './form.vue';
+import '../../lib/utils/url_utility';
 
 export default {
   props: {
@@ -106,8 +107,8 @@ export default {
         .then((data) => {
           if (location.pathname !== data.path) {
             gl.utils.visitUrl(data.path);
-          } if (data.confidential !== this.isConfidential) {
-            gl.utils.visitUrl(location.href);
+          } else if (data.confidential !== this.isConfidential) {
+            gl.utils.visitUrl(location.pathname);
           }
 
           eventHub.$emit('close.form');
