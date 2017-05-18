@@ -10,6 +10,27 @@ describe Members::AuthorizedDestroyService, services: true do
     Issue.assigned_to(user).count + MergeRequest.assigned_to(user).count
   end
 
+  context 'Invited users' do
+    # Regression spec for issue: https://gitlab.com/gitlab-org/gitlab-ce/issues/32504
+    it 'destroys invited project member' do
+      project.team << [member_user, :developer]
+
+      member = create :project_member, :invited, project: project
+
+      expect { described_class.new(member, member_user).execute }
+        .to change { Member.count }.from(2).to(1)
+    end
+
+    it 'destroys invited group member' do
+      group.add_developer(member_user)
+
+      member = create :group_member, :invited, group: group
+
+      expect { described_class.new(member, member_user).execute }
+        .to change { Member.count }.from(2).to(1)
+    end
+  end
+
   context 'Group member' do
     it "unassigns issues and merge requests" do
       group.add_developer(member_user)
