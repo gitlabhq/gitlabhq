@@ -4,6 +4,8 @@ import '../vue_shared/vue_resource_interceptor';
 
 (() => {
   const issueTitleData = document.querySelector('.issue-title-data').dataset;
+  const initialTitle = document.querySelector('.js-issue-title').innerHTML;
+  const initialDescription = document.querySelector('.js-issue-description').innerHTML;
   const { canUpdateTasksClass, endpoint, isEdited } = issueTitleData;
 
   const vm = new Vue({
@@ -13,6 +15,8 @@ import '../vue_shared/vue_resource_interceptor';
         canUpdateTasksClass,
         endpoint,
         isEdited,
+        initialTitle,
+        initialDescription,
       },
     }),
   });

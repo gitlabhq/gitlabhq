@@ -20,6 +20,14 @@ export default {
       default: false,
       required: false,
     },
+    initialTitle: {
+      type: String,
+      required: true,
+    },
+    initialDescription: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     const resource = new Service(this.$http, this.endpoint);
@@ -39,17 +47,17 @@ export default {
       poll,
       apiData: {},
       tasks: '0 of 0',
-      title: null,
+      title: this.initialTitle,
       titleText: '',
       titleFlag: {
-        pre: true,
+        pre: false,
         pulse: false,
       },
-      description: null,
+      description: this.initialDescription,
       descriptionText: '',
       descriptionChange: false,
       descriptionFlag: {
-        pre: true,
+        pre: false,
         pulse: false,
       },
       titleEl: document.querySelector('title'),
