@@ -860,10 +860,19 @@ const normalizeNewlines = function(str) {
       e.preventDefault();
       const $link = $(e.currentTarget || e.target);
       const showReplyInput = !$link.hasClass('js-diff-comment-avatar');
-      this.addDiffNote($link, $link.data('lineType'), showReplyInput);
+      this.toggleDiffNote({
+        target: $link,
+        lineType: $link.data('lineType'),
+        showReplyInput
+      });
     };
 
-    Notes.prototype.addDiffNote = function(target, lineType, showReplyInput) {
+    Notes.prototype.toggleDiffNote = function({
+      target,
+      lineType,
+      forceShow,
+      showReplyInput = false,
+    }) {
       var $link, addForm, hasNotes, newForm, noteForm, replyButton, row, rowCssToAdd, targetContent, isDiffCommentAvatar;
       $link = $(target);
       row = $link.closest("tr");
@@ -908,12 +917,12 @@ const normalizeNewlines = function(str) {
         notesContent = targetRow.find(notesContentSelector);
         addForm = true;
       } else {
-        targetRow.show();
-        notesContent.toggle(!notesContent.is(':visible'));
+        const isCurrentlyShown = targetRow.find('.content:not(:empty)').is(':visible');
+        const isForced = forceShow === true || forceShow === false;
+        const showNow = forceShow === true || (!isCurrentlyShown && !isForced);
 
-        if (!targetRow.find('.content:not(:empty)').is(':visible')) {
-          targetRow.hide();
-        }
+        targetRow.toggle(showNow);
+        notesContent.toggle(showNow);
       }
 
       if (addForm) {
