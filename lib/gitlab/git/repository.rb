@@ -78,14 +78,16 @@ module Gitlab
       end
 
       # Returns an Array of Branches
-      def branches
-        rugged.branches.map do |rugged_ref|
+      def branches(filter: nil, sort_by: nil)
+        branches = rugged.branches.each(filter).map do |rugged_ref|
           begin
             Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target)
           rescue Rugged::ReferenceError
             # Omit invalid branch
           end
-        end.compact.sort_by(&:name)
+        end.compact
+
+        sort_branches(branches, sort_by)
       end
 
       def reload_rugged
@@ -106,9 +108,15 @@ module Gitlab
         Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target) if rugged_ref
       end
 
-      def local_branches
-        rugged.branches.each(:local).map do |branch|
-          Gitlab::Git::Branch.new(self, branch.name, branch.target)
+      def local_branches(sort_by: nil)
+        gitaly_migrate(:local_branches) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.local_branches(sort_by: sort_by).map do |gitaly_branch|
+              Gitlab::Git::Branch.new(self, gitaly_branch.name, gitaly_branch)
+            end
+          else
+            branches(filter: :local, sort_by: sort_by)
+          end
         end
       end
 
@@ -1202,6 +1210,23 @@ module Gitlab
         diff = rugged.diff(from, to, actual_options)
         diff.find_similar!(break_rewrites: break_rewrites)
         diff.each_patch
+      end
+
+      def sort_branches(branches, sort_by)
+        case sort_by
+        when 'name'
+          branches.sort_by(&:name)
+        when 'updated_desc'
+          branches.sort do |a, b|
+            b.dereferenced_target.committed_date <=> a.dereferenced_target.committed_date
+          end
+        when 'updated_asc'
+          branches.sort do |a, b|
+            a.dereferenced_target.committed_date <=> b.dereferenced_target.committed_date
+          end
+        else
+          branches
+        end
       end
 
       def gitaly_ref_client
