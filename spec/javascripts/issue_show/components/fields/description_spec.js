@@ -8,6 +8,7 @@ describe('Description field component', () => {
 
   beforeEach((done) => {
     const Component = Vue.extend(descriptionField);
+    const el = document.createElement('div');
     store = new Store({
       titleHtml: '',
       descriptionHtml: '',
@@ -15,7 +16,10 @@ describe('Description field component', () => {
     });
     store.formState.description = 'test';
 
+    document.body.appendChild(el);
+
     vm = new Component({
+      el,
       propsData: {
         markdownPreviewUrl: '/',
         markdownDocs: '/',
@@ -42,5 +46,11 @@ describe('Description field component', () => {
 
       done();
     });
+  });
+
+  it('focuses field when mounted', () => {
+    expect(
+      document.activeElement,
+    ).toBe(vm.$refs.textarea);
   });
 });

@@ -23,7 +23,7 @@ describe('Issuable output', () => {
     const IssuableDescriptionComponent = Vue.extend(issuableApp);
     Vue.http.interceptors.push(issueShowInterceptor(issueShowData.initialRequest));
 
-    spyOn(eventHub, '$emit');
+    spyOn(eventHub, '$emit').and.callThrough();
 
     vm = new IssuableDescriptionComponent({
       propsData: {
@@ -34,7 +34,9 @@ describe('Issuable output', () => {
         initialTitle: '',
         initialDescriptionHtml: '',
         initialDescriptionText: '',
-        showForm: false,
+        isConfidential: false,
+        markdownPreviewUrl: '/',
+        markdownDocs: '/',
       },
     }).$mount();
   });
@@ -88,6 +90,22 @@ describe('Issuable output', () => {
     });
   });
 
+  it('does not update formState if form is already open', (done) => {
+    vm.openForm();
+
+    vm.state.titleText = 'testing 123';
+
+    vm.openForm();
+
+    Vue.nextTick(() => {
+      expect(
+        vm.store.formState.title,
+      ).not.toBe('testing 123');
+
+      done();
+    });
+  });
+
   describe('updateIssuable', () => {
     it('correctly updates issuable data', (done) => {
       spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve) => {
@@ -103,6 +121,29 @@ describe('Issuable output', () => {
         expect(
           eventHub.$emit,
         ).toHaveBeenCalledWith('close.form');
+
+        done();
+      });
+    });
+
+    it('reloads the page if the confidential status has changed', (done) => {
+      spyOn(window.location, 'reload');
+      spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve) => {
+        resolve({
+          json() {
+            return {
+              confidential: true,
+            };
+          },
+        });
+      }));
+
+      vm.updateIssuable();
+
+      setTimeout(() => {
+        expect(
+          window.location.reload,
+        ).toHaveBeenCalled();
 
         done();
       });

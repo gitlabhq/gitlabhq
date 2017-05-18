@@ -7,12 +7,21 @@
         type: Boolean,
         required: true,
       },
+      formState: {
+        type: Object,
+        required: true,
+      },
     },
     data() {
       return {
         deleteLoading: false,
         updateLoading: false,
       };
+    },
+    computed: {
+      isSubmitEnabled() {
+        return this.formState.title.trim() !== '';
+      },
     },
     methods: {
       updateIssuable() {
@@ -38,9 +47,9 @@
   <div class="prepend-top-default append-bottom-default clearfix">
     <button
       class="btn btn-save pull-left"
-      :class="{ disabled: updateLoading }"
+      :class="{ disabled: updateLoading || !isSubmitEnabled }"
       type="submit"
-      :disabled="updateLoading"
+      :disabled="updateLoading || !isSubmitEnabled"
       @click="updateIssuable">
       Save changes
       <i
