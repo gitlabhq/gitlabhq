@@ -275,6 +275,7 @@ group :development do
 
   gem 'letter_opener_web', '~> 1.3.0'
   gem 'rblineprof', '~> 0.3.6', platform: :mri, require: false
+  gem 'active_record-pg_generate_series', '~> 0.1.2'
 
   # Better errors handler
   gem 'better_errors', '~> 2.1.0'

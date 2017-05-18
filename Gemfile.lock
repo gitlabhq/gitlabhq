@@ -22,6 +22,8 @@ GEM
       erubis (~> 2.7.0)
       rails-dom-testing (~> 1.0, >= 1.0.5)
       rails-html-sanitizer (~> 1.0, >= 1.0.3)
+    active_record-pg_generate_series (0.1.2)
+      activerecord
     activejob (4.2.8)
       activesupport (= 4.2.8)
       globalid (>= 0.3.0)
@@ -863,6 +865,7 @@ PLATFORMS
 DEPENDENCIES
   RedCloth (~> 4.3.2)
   ace-rails-ap (~> 4.1.0)
+  active_record-pg_generate_series (~> 0.1.2)
   activerecord_sane_schema_dumper (= 0.2)
   acts-as-taggable-on (~> 4.0)
   addressable (~> 2.3.8)
