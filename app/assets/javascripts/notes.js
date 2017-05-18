@@ -27,7 +27,7 @@ const normalizeNewlines = function(str) {
 
     Notes.interval = null;
 
-    function Notes(notes_url, note_ids, last_fetched_at, view) {
+    function Notes(notes_url, note_ids, last_fetched_at, view, enableGFM = true) {
       this.updateTargetButtons = this.updateTargetButtons.bind(this);
       this.updateComment = this.updateComment.bind(this);
       this.visibilityChange = this.visibilityChange.bind(this);
@@ -50,6 +50,7 @@ const normalizeNewlines = function(str) {
 
       this.notes_url = notes_url;
       this.note_ids = note_ids;
+      this.enableGFM = enableGFM;
       // Used to keep track of updated notes while people are editing things
       this.updatedNotesTrackingMap = {};
       this.last_fetched_at = last_fetched_at;
@@ -523,7 +524,7 @@ const normalizeNewlines = function(str) {
 
     Notes.prototype.setupNoteForm = function(form) {
       var textarea, key;
-      new gl.GLForm(form);
+      new gl.GLForm(form, this.enableGFM);
       textarea = form.find(".js-note-text");
       key = [
         "Note",
