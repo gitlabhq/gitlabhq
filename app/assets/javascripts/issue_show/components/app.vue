@@ -71,6 +71,11 @@ export default {
     titleComponent,
     editedComponent,
   },
+  computed: {
+    hasUpdated() {
+      return !!this.state.updatedAt;
+    },
+  },
   created() {
     const resource = new Service(this.endpoint);
     const poll = new Poll({
@@ -112,7 +117,7 @@ export default {
       :description-text="state.descriptionText"
       :task-status="state.taskStatus" />
     <edited-component
-      v-if="!!state.updatedAt"
+      v-if="hasUpdated"
       :updated-at="state.updatedAt"
       :updated-by-name="state.updatedByName"
       :updated-by-path="state.updatedByPath"

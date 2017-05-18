@@ -15,8 +15,7 @@ describe EditableHelper do
       }
     end
 
-    it { expect(helper.updated_at_by(unedited_editable)).to eq(nil) }
-
+    it { expect(helper.updated_at_by(unedited_editable)).to be_nil }
     it { expect(helper.updated_at_by(edited_editable)).to eq(edited_updated_at_by) }
   end
 end
