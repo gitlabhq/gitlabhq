@@ -31,7 +31,7 @@ module API
 
         return not_found!('PipelineSchedule') unless pipeline_schedule
 
-        present pipeline_schedule, with: Entities::PipelineSchedule
+        present pipeline_schedule, with: Entities::PipelineSchedule, type: :full
       end
 
       desc 'Creates a new pipeline schedule' do
@@ -52,7 +52,7 @@ module API
           .execute
 
         if pipeline_schedule.persisted?
-          present pipeline_schedule, with: Entities::PipelineSchedule
+          present pipeline_schedule, with: Entities::PipelineSchedule, type: :full
         else
           render_validation_error!(pipeline_schedule)
         end
@@ -75,7 +75,7 @@ module API
         return not_found!('PipelineSchedule') unless pipeline_schedule
 
         if pipeline_schedule.update(declared_params(include_missing: false))
-          present pipeline_schedule, with: Entities::PipelineSchedule
+          present pipeline_schedule, with: Entities::PipelineSchedule, type: :full
         else
           render_validation_error!(pipeline_schedule)
         end
@@ -93,7 +93,7 @@ module API
         return not_found!('PipelineSchedule') unless pipeline_schedule
 
         if pipeline_schedule.own!(current_user)
-          present pipeline_schedule, with: Entities::PipelineSchedule
+          present pipeline_schedule, with: Entities::PipelineSchedule, type: :full
         else
           render_validation_error!(pipeline_schedule)
         end
@@ -110,7 +110,7 @@ module API
 
         return not_found!('PipelineSchedule') unless pipeline_schedule
 
-        present pipeline_schedule.destroy, with: Entities::PipelineSchedule
+        present pipeline_schedule.destroy, with: Entities::PipelineSchedule, type: :full
       end
     end
 
