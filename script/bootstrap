@@ -1,0 +1,43 @@
+#!/bin/sh
+
+# script/bootstrap: Resolve all dependencies that the application requires to
+#                   run.
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+if [ "$(uname -s)" = "Darwin" ]; then
+  if [ -f "Brewfile" ]; then
+    brew bundle check >/dev/null 2>&1  || {
+      echo "==> Installing Homebrew dependencies…"
+      brew bundle
+    }
+  fi
+fi
+
+if [ -f ".ruby-version" ]; then
+  if [ $(command -v "rbenv") ] && [ -z "$(rbenv version-name 2>/dev/null)" ]; then
+    echo "==> Installing Ruby…"
+    rbenv install --skip-existing
+    which bundle >/dev/null 2>&1 || {
+      gem install bundler
+      rbenv rehash
+    }
+  fi
+fi
+
+if [ -f "Gemfile" ]; then
+  echo "==> Installing gem dependencies…"
+  bundle check >/dev/null 2>&1 || {
+    bundle config build.eventmachine --with-cppflags=-I/usr/local/opt/openssl/include
+    bundle install --jobs 4 --quiet --without production
+  }
+fi
+
+if [ -f "yarn.lock" ]; then
+  echo "==> Installing NPM packages…"
+  yarn check --ignore-engines >/dev/null 2>&1 || {
+    yarn install --pure-lockfile --ignore-engines
+  }
+fi
