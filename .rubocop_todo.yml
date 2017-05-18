@@ -23,10 +23,6 @@ RSpec/EmptyLineAfterFinalLet:
 RSpec/EmptyLineAfterSubject:
   Enabled: false
 
-# Offense count: 3
-RSpec/ExpectOutput:
-  Enabled: false
-
 # Offense count: 72
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 # SupportedStyles: implicit, each, example
