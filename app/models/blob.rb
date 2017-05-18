@@ -40,6 +40,7 @@ class Blob < SimpleDelegator
     BlobViewer::GitlabCiYml,
     BlobViewer::RouteMap,
 
+    BlobViewer::Readme,
     BlobViewer::License,
     BlobViewer::Contributing,
     BlobViewer::Changelog
