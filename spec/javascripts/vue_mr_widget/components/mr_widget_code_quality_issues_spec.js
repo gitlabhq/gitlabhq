@@ -15,7 +15,7 @@ describe('Merge Request Code Quality Issues', () => {
     describe('with positions and lines', () => {
       beforeEach(() => {
         vm = mountComponent({
-          title: 'foo',
+          type: 'success',
           issues: [{
             check_name: 'foo',
             location: {
@@ -27,27 +27,17 @@ describe('Merge Request Code Quality Issues', () => {
         });
       });
 
-      it('should render issue name', () => {
-        expect(vm.$el.querySelector('.js-issue-name').textContent.trim()).toEqual('foo');
-      });
-
-      it('should render issue location', () => {
-        expect(vm.$el.querySelector('.js-issue-location').textContent.trim()).toEqual('bar');
-      });
-
-      it('should render issue position', () => {
-        expect(vm.$el.querySelector('.js-issue-position').textContent.trim()).toEqual('81');
-      });
-
-      it('should render issue lines', () => {
-        expect(vm.$el.querySelector('.js-issue-lines').textContent.trim()).toEqual('21');
+      it('should render issue', () => {
+        expect(
+          vm.$el.querySelector('li span').textContent.trim().replace(/\s+/g, ''),
+        ).toEqual('foobar8121');
       });
     });
 
     describe('without positions and lines', () => {
       beforeEach(() => {
         vm = mountComponent({
-          title: 'foo',
+          type: 'success',
           issues: [{
             check_name: 'foo',
             location: {
@@ -57,12 +47,52 @@ describe('Merge Request Code Quality Issues', () => {
         });
       });
 
-      it('should render issue position', () => {
-        expect(vm.$el.querySelector('.js-issue-position')).toEqual(null);
+      it('should render issue without position and lines', () => {
+        expect(
+          vm.$el.querySelector('li span').textContent.trim().replace(/\s+/g, ''),
+        ).toEqual('foobar');
+      });
+    });
+
+    describe('for type failed', () => {
+      beforeEach(() => {
+        vm = mountComponent({
+          type: 'failed',
+          issues: [{
+            check_name: 'foo',
+            location: {
+              path: 'bar',
+              positions: '81',
+              lines: '21',
+            },
+          }],
+        });
       });
 
-      it('should render issue lines', () => {
-        expect(vm.$el.querySelector('.js-issue-lines')).toEqual(null);
+      it('should render red minus icon', () => {
+        expect(vm.$el.querySelector('li').classList.contains('red')).toEqual(true);
+        expect(vm.$el.querySelector('li i').classList.contains('fa-minus')).toEqual(true);
+      });
+    });
+
+    describe('for type success', () => {
+      beforeEach(() => {
+        vm = mountComponent({
+          type: 'success',
+          issues: [{
+            check_name: 'foo',
+            location: {
+              path: 'bar',
+              positions: '81',
+              lines: '21',
+            },
+          }],
+        });
+      });
+
+      it('should render green plus icon', () => {
+        expect(vm.$el.querySelector('li').classList.contains('green')).toEqual(true);
+        expect(vm.$el.querySelector('li i').classList.contains('fa-plus')).toEqual(true);
       });
     });
   });

@@ -788,3 +788,34 @@
     }
   }
 }
+
+.mr-widget-code-quality {
+  .padding-left {
+    padding-left: $gl-padding;
+  }
+
+  .ci-status-icon {
+    margin-right: 7px;
+  }
+
+  .code-quality-container {
+    border-top: 1px solid $gray-darker;
+    border-bottom: 1px solid $gray-darker;
+    padding: $gl-padding-top;
+    background-color: $gray-light;
+
+    .mr-widget-code-quality-list {
+      list-style: none;
+      padding: 0 31px;
+      margin: 0;
+
+      li.green {
+        color: $green-500;
+      }
+
+      li.red {
+        color: $red-500;
+      }
+    }
+  }
+}

@@ -62,7 +62,7 @@ export default {
       return this.mr.deployments.length;
     },
     shouldRenderCodeQuality() {
-      return this.mr.codeclimate;
+      return this.mr.codeclimate.head && this.mr.codeclimate.base;
     },
   },
   methods: {
@@ -97,11 +97,11 @@ export default {
     checkCodeclimateMetrics() {
       const { head, base } = this.mr.codeclimate;
 
-      if (head && length) {
+      if (head && base) {
         this.isLoadingMetrics = true;
         this.service.fetchMetrics(head)
           .then((resp) => {
-            this.mr.setCodeclimateHeadMetrics(resp);
+            this.md.setCodeclimateHeadMetrics(resp);
 
             this.service.fetchMetrics(base)
               .then(response => this.mr.setCodeclimateBaseMetrics(response))
@@ -257,7 +257,7 @@ export default {
         :is-loading="isLoadingMetrics"
         :loading-failed="loadingMetricsFailed"
         :new-issues="mr.codeclimateMetrics.newIssues"
-        :resolved-issued="mr.codeclimateMetrics.resolvedIssues"
+        :resolved-issues="mr.codeclimateMetrics.resolvedIssues"
         />
       <component
         :is="componentName"
