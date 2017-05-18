@@ -987,6 +987,9 @@ RSpec/ExampleWording:
 RSpec/ExpectActual:
   Enabled: true
 
+RSpec/ExpectOutput:
+  Enabled: true
+
 # Checks the file and folder naming of the spec file.
 RSpec/FilePath:
   Enabled: true
