@@ -16,7 +16,7 @@ module Gitlab
       end
 
       def trace(old_position)
-        return unless old_diff_refs.complete? && new_diff_refs.complete?
+        return unless old_diff_refs&.complete? && new_diff_refs&.complete?
         return unless old_position.diff_refs == old_diff_refs
 
         # Suppose we have an MR with source branch `feature` and target branch `master`.
