@@ -49,7 +49,6 @@ describe Gitlab::UsageData do
         pages_domains
         protected_branches
         releases
-        services
         snippets
         todos
         uploads
