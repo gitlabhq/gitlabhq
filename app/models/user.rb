@@ -372,7 +372,9 @@ class User < ActiveRecord::Base
 
     def find_by_full_path(path, follow_redirects: false)
       namespace = Namespace.find_by_full_path(path, follow_redirects: follow_redirects)
-      namespace&.owner
+      return unless namespace && namespace.kind == 'user'
+
+      namespace.owner
     end
 
     def non_ldap
