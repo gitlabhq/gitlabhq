@@ -2,7 +2,9 @@
 
 Since GitLab 9.0, API V4 is the preferred version to be used.
 
-V3 will remain working until at least GitLab 9.3. The V3 API documentation is still [available](https://gitlab.com/gitlab-org/gitlab-ce/blob/8-16-stable/doc/api/README.md).
+API v3 will continue to work until August 2017. In the meantime, we advise you 
+to make any necessary changes to applications that use the v3 API. The V3 API 
+documentation is still [available](https://gitlab.com/gitlab-org/gitlab-ce/blob/8-16-stable/doc/api/README.md).
 
 Below are the changes made between V3 and V4.
 
