@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# script/help: Get help!
+
+set -e
+
+echo "==> Scripts!"
+echo ""
+echo "script/bootstrap: Resolve all dependencies that the application requires to run."
+echo "script/setup:     Set up application for the first time after cloning, or set it back to the initial first unused state."
+echo "script/seed:      Insert seed data in the database."
+echo "script/update:    Update application to run for its current checkout."
+echo "script/console:   Launch a console for the application. Optionally allow an environment to be passed in to let the script"
+echo "                  handle the specific requirements for connecting to a console for that environment."
+echo "script/test:      Run test suite for application. Optionally pass in a path to an individual test file to run a single test."
+echo "bin/rake -T:      List the available Rake tasks. You can pass a keyword to filter tasks."
