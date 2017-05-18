@@ -1,8 +1,8 @@
 <script>
   export default {
-    methods: {
-      closeForm() {
-        this.$emit('closeForm');
+    computed: {
+      currentPath() {
+        return location.pathname;
       },
     },
   };
@@ -10,11 +10,11 @@
 
 <template>
   <div class="alert alert-danger">
-    Someone edited the issue the same time you did. Please check out
+    Someone edited the issue at the same time you did. Please check out
     <a
-      href="#"
-      role="button"
-      @click.prevent="closeForm">the issue</a>
+      :href="currentPath"
+      target="_blank"
+      role="button">the issue</a>
     and make sure your changes will not unintentionally remove theirs.
   </div>
 </template>

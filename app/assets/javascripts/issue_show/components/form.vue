@@ -1,5 +1,4 @@
 <script>
-  import eventHub from '../event_hub';
   import lockedWarning from './locked_warning.vue';
   import titleField from './fields/title.vue';
   import descriptionField from './fields/description.vue';
@@ -32,20 +31,12 @@
       editActions,
       confidentialCheckbox,
     },
-    methods: {
-      closeForm() {
-        eventHub.$emit('close.form');
-        this.formState.lockedWarningVisible = false;
-      },
-    },
   };
 </script>
 
 <template>
   <form>
-    <locked-warning
-      v-if="formState.lockedWarningVisible"
-      @closeForm="closeForm" />
+    <locked-warning v-if="formState.lockedWarningVisible" />
     <title-field
       :form-state="formState" />
     <confidential-checkbox
