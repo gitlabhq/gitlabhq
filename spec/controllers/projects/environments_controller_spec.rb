@@ -85,7 +85,7 @@ describe Projects::EnvironmentsController do
                            name: 'staging-1.0/review',
                            state: :available)
       create(:environment, project: project,
-                           name: 'staging-1.0/preview',
+                           name: 'staging-1.0/zzz',
                            state: :available)
     end
 
@@ -101,7 +101,7 @@ describe Projects::EnvironmentsController do
     end
 
     context 'when using JSON format' do
-      it 'responds with JSON' do
+      it 'responds with with a sorted JSON' do
         get :folder, namespace_id: project.namespace,
                      project_id: project,
                      id: 'staging-1.0',
@@ -110,9 +110,9 @@ describe Projects::EnvironmentsController do
         expect(response).to be_ok
         expect(response).not_to render_template 'folder'
         expect(json_response['environments'][0])
-          .to include('name' => 'staging-1.0/preview')
-        expect(json_response['environments'][1])
           .to include('name' => 'staging-1.0/review')
+        expect(json_response['environments'][1])
+          .to include('name' => 'staging-1.0/zzz')
       end
     end
   end
