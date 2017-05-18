@@ -89,8 +89,6 @@ require('~/lib/utils/url_utility');
       ).toBe('<script>alert("testing");</script>');
     });
 
-<<<<<<< HEAD
-=======
     it('should output HTML when highlighting', () => {
       this.projectsData[0].name_with_namespace = 'testing';
       $('.dropdown-input .dropdown-input-field').val('test');
@@ -110,7 +108,6 @@ require('~/lib/utils/url_utility');
       ).toBe('<b>t</b><b>e</b><b>s</b><b>t</b>ing');
     });
 
->>>>>>> upstream/master
     describe('that is open', () => {
       beforeEach(() => {
         initDropDown.call(this, false, false);
