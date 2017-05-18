@@ -678,7 +678,7 @@ ul.notes {
 
 .line-resolve-btn {
   position: relative;
-  top: 2px;
+  top: 0;
   padding: 0;
   background-color: transparent;
   border: none;
@@ -699,8 +699,8 @@ ul.notes {
 
   svg {
     fill: $gray-darkest;
-    height: 15px;
-    width: 15px;
+    height: 16px;
+    width: 16px;
   }
 
   .loading {
