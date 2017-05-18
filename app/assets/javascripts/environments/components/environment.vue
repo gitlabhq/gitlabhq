@@ -95,6 +95,8 @@ export default {
     if (!Visibility.hidden()) {
       this.isLoading = true;
       poll.makeRequest();
+    } else {
+      this.fetchEnvironments();
     }
 
     Visibility.change(() => {
