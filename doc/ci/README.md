@@ -108,6 +108,7 @@ Here is an collection of tutorials and guides on setting up your CI pipeline.
   - [Scala](examples/test-scala-application.md)
   - [Phoenix](examples/test-phoenix-application.md)
   - [Run PHP Composer & NPM scripts then deploy them to a staging server](examples/deployment/composer-npm-deploy.md)
+  - [Analyze code quality with the Code Climate CLI](examples/code_climate.md)
 - **Blog posts**
   - [Automated Debian packaging](https://about.gitlab.com/2016/10/12/automated-debian-package-build-with-gitlab-ci/)
   - [Spring boot application with GitLab CI and Kubernetes](https://about.gitlab.com/2016/12/14/continuous-delivery-of-a-spring-boot-application-with-gitlab-ci-and-kubernetes/)
