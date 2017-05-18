@@ -501,7 +501,7 @@ feature 'Jobs', :feature do
 
     context "when visiting old URL" do
       let(:trace_job_url) do
-        trace_namespace_project_job_path(project.namespace, project, build,format: :json)
+        trace_namespace_project_job_path(project.namespace, project, build, format: :json)
       end
 
       before do

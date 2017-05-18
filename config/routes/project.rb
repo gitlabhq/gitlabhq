@@ -198,6 +198,8 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
+      # It's a block, not a hash, disabling style check for hash
+      # rubocop:disable Style/AlignHash
       get '/builds/:id/:action', as: 'action_legacy_build',
         to: redirect { |params, req|
           args = params.values_at(:namespace_id, :project_id, :id)
@@ -214,12 +216,16 @@ constraints(ProjectUrlConstrainer.new) do
           end
         }
 
+      # It's a block, not a hash, disabling style check for hash
+      # rubocop:disable Style/AlignHash
       get '/builds/:id', as: 'legacy_build',
         to: redirect { |params, req|
           Gitlab::Routing.url_helpers.namespace_project_job_path(
             params[:namespace_id], params[:project_id], params[:id])
         }
 
+      # It's a block, not a hash, disabling style check for hash
+      # rubocop:disable Style/AlignHash
       get '/builds', as: 'legacy_builds',
         to: redirect { |params, req|
           Gitlab::Routing.url_helpers.namespace_project_jobs_path(
