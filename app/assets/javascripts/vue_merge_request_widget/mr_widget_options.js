@@ -101,11 +101,11 @@ export default {
         this.isLoadingMetrics = true;
         this.service.fetchMetrics(head)
           .then((resp) => {
-            this.store.setCodeclimateHeadMetrics(resp);
+            this.mr.setCodeclimateHeadMetrics(resp);
 
             this.service.fetchMetrics(base)
-              .then(response => this.store.setCodeclimateBaseMetrics(response))
-              .then(() => this.store.compareCodeclimateMetrics())
+              .then(response => this.mr.setCodeclimateBaseMetrics(response))
+              .then(() => this.mr.compareCodeclimateMetrics())
               .catch(() => {
                 this.loadingMetricsFailed = true;
               });
