@@ -14,7 +14,7 @@ const issueShowInterceptor = data => (request, next) => {
   }));
 };
 
-fdescribe('Issuable output', () => {
+describe('Issuable output', () => {
   document.body.innerHTML = '<span id="task_status"></span>';
 
   let vm;
@@ -87,6 +87,22 @@ fdescribe('Issuable output', () => {
       expect(
         vm.$el.querySelector('.btn'),
       ).toBeNull();
+
+      done();
+    });
+  });
+
+  it('does not update formState if form is already open', (done) => {
+    vm.openForm();
+
+    vm.state.titleText = 'testing 123';
+
+    vm.openForm();
+
+    Vue.nextTick(() => {
+      expect(
+        vm.store.formState.title,
+      ).not.toBe('testing 123');
 
       done();
     });
