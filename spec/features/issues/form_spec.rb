@@ -23,9 +23,14 @@ describe 'New/edit issue', feature: true, js: true do
       visit new_namespace_project_issue_path(project.namespace, project)
     end
 
-    describe 'multiple assignees' do
+    describe 'single assignee' do
       before do
         click_button 'Unassigned'
+<<<<<<< HEAD
+=======
+
+        wait_for_ajax
+>>>>>>> a493377... Merge branch '31987-automatically-close-assignee-select-dropdown-after-selection-when-multiple-assignees-is-disabled' into 'master'
       end
 
       it 'unselects other assignees when unassigned is selected' do
@@ -33,12 +38,10 @@ describe 'New/edit issue', feature: true, js: true do
           click_link user2.name
         end
 
+        click_button user2.name
+
         page.within '.dropdown-menu-user' do
           click_link 'Unassigned'
-        end
-
-        page.within '.js-assignee-search' do
-          expect(page).to have_content 'Unassigned'
         end
 
         expect(find('input[name="issue[assignee_ids][]"]', visible: false).value).to match('0')
@@ -51,11 +54,13 @@ describe 'New/edit issue', feature: true, js: true do
 
         expect(find('a', text: 'Assign to me', visible: false)).not_to be_visible
 
-        page.within '.dropdown-menu-user' do
+        click_button user.name
+
+        page.within('.dropdown-menu-user') do
           click_link user.name
         end
 
-        expect(find('a', text: 'Assign to me')).to be_visible
+        expect(page.find('.dropdown-menu-user', visible: false)).not_to be_visible
       end
     end
 
@@ -148,10 +153,17 @@ describe 'New/edit issue', feature: true, js: true do
 
     it 'correctly updates the selected user when changing assignee' do
       click_button 'Unassigned'
+<<<<<<< HEAD
+=======
+
+      wait_for_ajax
+
+>>>>>>> a493377... Merge branch '31987-automatically-close-assignee-select-dropdown-after-selection-when-multiple-assignees-is-disabled' into 'master'
       page.within '.dropdown-menu-user' do
         click_link user.name
       end
 
+<<<<<<< HEAD
       expect(find('input[name="issue[assignee_ids][]"]', visible: false).value).to match(user.id.to_s)
 
       click_button user.name
@@ -161,16 +173,24 @@ describe 'New/edit issue', feature: true, js: true do
       # check the ::before pseudo element to ensure checkmark icon is present
       expect(before_for_selector('.dropdown-menu-selectable a.is-active')).not_to eq('')
       expect(before_for_selector('.dropdown-menu-selectable a:not(.is-active)')).to eq('')
+=======
+      expect(find('.js-assignee-search')).to have_content(user.name)
+      click_button user.name
+>>>>>>> a493377... Merge branch '31987-automatically-close-assignee-select-dropdown-after-selection-when-multiple-assignees-is-disabled' into 'master'
 
       page.within '.dropdown-menu-user' do
         click_link user2.name
       end
 
+<<<<<<< HEAD
       expect(find('input[name="issue[assignee_ids][]"]', visible: false).value).to match(user2.id.to_s)
 
       click_button user2.name
 
       expect(find('.dropdown-menu-user a.is-active').first(:xpath, '..')['data-user-id']).to eq(user2.id.to_s)
+=======
+      expect(find('.js-assignee-search')).to have_content(user2.name)
+>>>>>>> a493377... Merge branch '31987-automatically-close-assignee-select-dropdown-after-selection-when-multiple-assignees-is-disabled' into 'master'
     end
   end
 
