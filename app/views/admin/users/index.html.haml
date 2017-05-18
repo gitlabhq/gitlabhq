@@ -3,41 +3,43 @@
 = render "admin/dashboard/head"
 
 %div{ class: container_class }
-  .top-area
-    .prepend-top-default
-      = form_tag admin_users_path, method: :get do
-        - if params[:filter].present?
-          = hidden_field_tag "filter", h(params[:filter])
-        .search-holder
-          .search-field-holder
-            = search_field_tag :search_query, params[:search_query], placeholder: 'Search by name, email or username', class: 'form-control search-text-input js-search-input', spellcheck: false
-            = icon("search", class: "search-icon")
-          .dropdown
-            - toggle_text = if @sort.present? then sort_options_hash[@sort] else sort_title_name end
-            = dropdown_toggle(toggle_text, { toggle: 'dropdown' })
-            %ul.dropdown-menu.dropdown-menu-align-right
-              %li.dropdown-header
-                Sort by
-              %li
-                = link_to admin_users_path(sort: sort_value_name, filter: params[:filter]) do
-                  = sort_title_name
-                = link_to admin_users_path(sort: sort_value_recently_signin, filter: params[:filter]) do
-                  = sort_title_recently_signin
-                = link_to admin_users_path(sort: sort_value_oldest_signin, filter: params[:filter]) do
-                  = sort_title_oldest_signin
-                = link_to admin_users_path(sort: sort_value_recently_created, filter: params[:filter]) do
-                  = sort_title_recently_created
-                = link_to admin_users_path(sort: sort_value_oldest_created, filter: params[:filter]) do
-                  = sort_title_oldest_created
-                = link_to admin_users_path(sort: sort_value_recently_updated, filter: params[:filter]) do
-                  = sort_title_recently_updated
-                = link_to admin_users_path(sort: sort_value_oldest_updated, filter: params[:filter]) do
-                  = sort_title_oldest_updated
-          = link_to 'New user', new_admin_user_path, class: 'btn btn-new btn-search'
+  .prepend-top-default
+    = form_tag admin_users_path, method: :get do
+      - if params[:filter].present?
+        = hidden_field_tag "filter", h(params[:filter])
+      .search-holder
+        .search-field-holder
+          = search_field_tag :search_query, params[:search_query], placeholder: 'Search by name, email or username', class: 'form-control search-text-input js-search-input', spellcheck: false
+          = icon("search", class: "search-icon")
+        .dropdown
+          - toggle_text = if @sort.present? then sort_options_hash[@sort] else sort_title_name end
+          = dropdown_toggle(toggle_text, { toggle: 'dropdown' })
+          %ul.dropdown-menu.dropdown-menu-align-right
+            %li.dropdown-header
+              Sort by
+            %li
+              = link_to admin_users_path(sort: sort_value_name, filter: params[:filter]) do
+                = sort_title_name
+              = link_to admin_users_path(sort: sort_value_recently_signin, filter: params[:filter]) do
+                = sort_title_recently_signin
+              = link_to admin_users_path(sort: sort_value_oldest_signin, filter: params[:filter]) do
+                = sort_title_oldest_signin
+              = link_to admin_users_path(sort: sort_value_recently_created, filter: params[:filter]) do
+                = sort_title_recently_created
+              = link_to admin_users_path(sort: sort_value_oldest_created, filter: params[:filter]) do
+                = sort_title_oldest_created
+              = link_to admin_users_path(sort: sort_value_recently_updated, filter: params[:filter]) do
+                = sort_title_recently_updated
+              = link_to admin_users_path(sort: sort_value_oldest_updated, filter: params[:filter]) do
+                = sort_title_oldest_updated
+        = link_to 'New user', new_admin_user_path, class: 'btn btn-new btn-search'
 
-    .nav-block
-      %ul.nav-links.wide.scrolling-tabs.white.scrolling-tabs
-        .fade-left
+    .top-area.scrolling-tabs-container.inner-page-scroll-tabs
+      .fade-left
+        = icon('angle-left')
+      .fade-right
+        = icon('angle-right')
+      %ul.nav-links.scrolling-tabs
         = nav_link(html_options: { class: active_when(params[:filter].nil?) }) do
           = link_to admin_users_path do
             Active
@@ -66,7 +68,6 @@
           = link_to admin_users_path(filter: "wop") do
             Without projects
             %small.badge= number_with_delimiter(User.without_projects.count)
-        .fade-right
 
   %ul.flex-list.content-list
     - if @users.empty?
