@@ -66,7 +66,8 @@ learn how to leverage its potential even more.
   submodules are involved
 - [Auto deploy](autodeploy/index.md)
 - [Use SSH keys in your build environment](ssh_keys/README.md)
-- [Trigger jobs through the GitLab API](triggers/README.md)
+- [Trigger pipelines through the GitLab API](triggers/README.md)
+- [Trigger pipelines on a schedule](../user/project/pipelines/schedules.md)
 
 ## Review Apps
 
