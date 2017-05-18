@@ -55,6 +55,13 @@ describe Banzai::Filter::ExternalLinkFilter, lib: true do
 
       expect(doc.to_html).to eq(expected)
     end
+
+    it 'skips improperly formatted mailtos' do
+      doc = filter %q(<p><a href="mailto://jblogs@example.com">Email</a></p>)
+      expected = %q(<p><a href="mailto://jblogs@example.com">Email</a></p>)
+
+      expect(doc.to_html).to eq(expected)
+    end
   end
 
   context 'for links with a username' do

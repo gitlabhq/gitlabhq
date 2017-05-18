@@ -24,7 +24,7 @@ module Banzai
 
       def uri(href)
         URI.parse(href)
-      rescue URI::InvalidURIError
+      rescue URI::Error
         nil
       end
 
