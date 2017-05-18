@@ -214,12 +214,43 @@ describe GroupsController do
       end
 
       context 'when requesting groups under the /groups path' do
-        context 'when requesting the canonical path with different casing' do
-          it 'redirects to the correct casing' do
-            get :issues, id: group.to_param.upcase
+        context 'when requesting the canonical path' do
+          context 'non-show path' do
+            context 'with exactly matching casing' do
+              it 'does not redirect' do
+                get :issues, id: group.to_param
 
-            expect(response).to redirect_to(issues_group_path(group.to_param))
-            expect(controller).not_to set_flash[:notice]
+                expect(response).not_to have_http_status(301)
+              end
+            end
+
+            context 'with different casing' do
+              it 'redirects to the correct casing' do
+                get :issues, id: group.to_param.upcase
+
+                expect(response).to redirect_to(issues_group_path(group.to_param))
+                expect(controller).not_to set_flash[:notice]
+              end
+            end
+          end
+
+          context 'show path' do
+            context 'with exactly matching casing' do
+              it 'does not redirect' do
+                get :show, id: group.to_param
+
+                expect(response).not_to have_http_status(301)
+              end
+            end
+
+            context 'with different casing' do
+              it 'redirects to the correct casing at the root path' do
+                get :show, id: group.to_param.upcase
+
+                expect(response).to redirect_to(group)
+                expect(controller).not_to set_flash[:notice]
+              end
+            end
           end
         end
 
