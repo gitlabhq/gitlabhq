@@ -1,0 +1,50 @@
+#!/bin/sh
+
+# script/test: Run test suite for application. Optionally pass in a path to an
+#              individual test file to run a single test.
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+[ -z "$DEBUG" ] || set -x
+
+RACK_ROOT="$(cd "$(dirname "$0")"/.. && pwd)"
+export RACK_ROOT
+
+if [ "$RAILS_ENV" = "test" ] || [ "$RACK_ENV" = "test" ]; then
+  # if executed and the environment is already set to `test`, then we want a
+  # clean from scratch application. This almost always means a ci environment,
+  # since we set the environment to `test` directly in `script/cibuild`.
+  script/setup
+else
+  # if the environment isn't set to `test`, set it to `test` and update the
+  # application to ensure all dependencies are met as well as any other things
+  # that need to be up to date, like db migrations. The environment not having
+  # already been set to `test` almost always means this is being called on it's
+  # own from a `development` environment.
+  export RAILS_ENV="test" RACK_ENV="test"
+fi
+
+echo "==> Running tests…"
+
+if [ -n "$1" ]; then
+  if [[ $1 =~ ^spec/javascripts/.* ]]; then
+    echo "Sorry, I don't know how to run the '$1' test file."
+    echo "I'm running all JavaScript tests with 'bin/rake karma'…"
+    bin/rake karma
+  else
+    if [[ $1 =~ ^features/.* ]]; then
+      bin/spinach "$1"
+    else
+      if [[ $1 =~ ^spec/.* ]]; then
+        bin/rspec "$1"
+      else
+        echo "Sorry, I don't know how to run the '$1' test file."
+        exit 1
+      fi
+    fi
+  fi
+else
+  bin/rspec
+fi
