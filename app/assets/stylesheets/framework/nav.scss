@@ -350,7 +350,6 @@
 
 .scrolling-tabs-container {
   position: relative;
-  overflow: hidden;
 
   .merge-request-tabs-container & {
     overflow: hidden;
@@ -492,10 +491,6 @@
 
 .inner-page-scroll-tabs {
   position: relative;
-
-  .nav-links {
-    padding-bottom: 1px;
-  }
 
   .fade-right {
     @include fade(left, $white-light);
