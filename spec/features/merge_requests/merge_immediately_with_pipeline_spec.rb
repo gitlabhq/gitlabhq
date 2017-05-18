@@ -34,11 +34,13 @@ feature 'Merge immediately', :feature, :js do
       page.within '.mr-widget-body' do
         find('.dropdown-toggle').click
 
-        click_link 'Merge immediately'
+        Sidekiq::Testing.fake! do
+          click_link 'Merge immediately'
 
-        expect(find('.accept-merge-request.btn-info')).to have_content('Merge in progress')
+          expect(find('.accept-merge-request.btn-info')).to have_content('Merge in progress')
 
-        wait_for_ajax
+          wait_for_vue_resource
+        end
       end
     end
   end

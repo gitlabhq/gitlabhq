@@ -52,6 +52,8 @@ import Pipelines from './pipelines';
 import BlobViewer from './blob/viewer/index';
 import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
 import UsersSelect from './users_select';
+import RefSelectDropdown from './ref_select_dropdown';
+import GfmAutoComplete from './gfm_auto_complete';
 
 const ShortcutsBlob = require('./shortcuts_blob');
 
@@ -77,6 +79,8 @@ const ShortcutsBlob = require('./shortcuts_blob');
       }
       path = page.split(':');
       shortcut_handler = null;
+
+      new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources).setup();
 
       function initBlob() {
         new LineHighlighter();
@@ -212,6 +216,7 @@ const ShortcutsBlob = require('./shortcuts_blob');
         case 'projects:tags:new':
           new ZenMode();
           new gl.GLForm($('.tag-form'));
+          new RefSelectDropdown($('.js-branch-select'), window.gl.availableRefs);
           break;
         case 'projects:releases:edit':
           new ZenMode();

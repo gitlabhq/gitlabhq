@@ -73,11 +73,6 @@
             = link_to add_special_file_path(@project, file_name: '.gitlab-ci.yml', commit_message: 'Set up auto deploy', branch_name: 'auto-deploy', context: 'autodeploy') do
               Set up auto deploy
 
-  - if @repository.commit
-    %div{ class: container_class }
-      .project-last-commit
-        = render 'projects/last_commit', commit: @repository.commit, ref: current_ref, project: @project
-
 %div{ class: container_class }
   - if @project.archived?
     .text-warning.center.prepend-top-20

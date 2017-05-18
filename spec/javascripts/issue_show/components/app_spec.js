@@ -25,7 +25,7 @@ describe('Issuable output', () => {
     vm = new IssuableDescriptionComponent({
       propsData: {
         canUpdate: true,
-        endpoint: '/gitlab-org/gitlab-shell/issues/9/rendered_title',
+        endpoint: '/gitlab-org/gitlab-shell/issues/9/realtime_changes',
         issuableRef: '#1',
         initialTitle: '',
         initialDescriptionHtml: '',

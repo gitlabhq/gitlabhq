@@ -1,4 +1,4 @@
-# V3 to V4 version
+# API V3 to API V4
 
 Since GitLab 9.0, API V4 is the preferred version to be used.
 

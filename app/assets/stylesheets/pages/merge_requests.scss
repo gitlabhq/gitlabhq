@@ -109,6 +109,10 @@
       height: 22px;
       margin-right: 8px;
     }
+
+    .ci-error {
+      margin-right: $btn-side-margin;
+    }
   }
 
   .mr-widget-body,
@@ -121,6 +125,7 @@
 
     .dropdown-menu {
       margin-top: 11px;
+      z-index: 200;
     }
 
     .ci-action-icon-wrapper {
@@ -347,6 +352,22 @@
     &.mr-state-locked .mr-info-list {
       margin-top: 10px;
       margin-left: 12px;
+    }
+
+    &.empty-state {
+      .artwork {
+        margin-bottom: $gl-padding;
+      }
+
+      .text {
+        span {
+          font-weight: bold;
+        }
+
+        p {
+          margin-top: $gl-padding;
+        }
+      }
     }
   }
 
@@ -690,8 +711,9 @@
 
 .merge-request-tabs-holder {
   top: $header-height;
-  z-index: 10;
+  z-index: 100;
   background-color: $white-light;
+  border-bottom: 1px solid $border-color;
 
   @media(min-width: $screen-sm-min) {
     position: sticky;
@@ -711,6 +733,16 @@
       padding-right: $gl-padding;
     }
   }
+
+  .nav-links {
+    border: 0;
+  }
+}
+
+.merge-request-tabs {
+  display: flex;
+  margin-bottom: 0;
+  padding: 0;
 }
 
 .limit-container-width {
@@ -718,6 +750,15 @@
     max-width: $limited-layout-width;
     margin-left: auto;
     margin-right: auto;
+  }
+}
+
+.merge-request-tabs-container {
+  display: flex;
+  justify-content: space-between;
+
+  @media (max-width: $screen-xs-max) {
+    flex-direction: column-reverse;
   }
 }
 

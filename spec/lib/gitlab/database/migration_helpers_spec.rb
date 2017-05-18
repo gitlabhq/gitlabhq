@@ -382,12 +382,15 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
           expect(model).to receive(:add_column).
             with(:users, :new, :integer,
                  limit: old_column.limit,
-                 default: old_column.default,
-                 null: old_column.null,
                  precision: old_column.precision,
                  scale: old_column.scale)
 
+          expect(model).to receive(:change_column_default).
+            with(:users, :new, old_column.default)
+
           expect(model).to receive(:update_column_in_batches)
+
+          expect(model).to receive(:change_column_null).with(:users, :new, false)
 
           expect(model).to receive(:copy_indexes).with(:users, :old, :new)
           expect(model).to receive(:copy_foreign_keys).with(:users, :old, :new)
@@ -406,12 +409,15 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
           expect(model).to receive(:add_column).
             with(:users, :new, :integer,
                  limit: old_column.limit,
-                 default: old_column.default,
-                 null: old_column.null,
                  precision: old_column.precision,
                  scale: old_column.scale)
 
+          expect(model).to receive(:change_column_default).
+            with(:users, :new, old_column.default)
+
           expect(model).to receive(:update_column_in_batches)
+
+          expect(model).to receive(:change_column_null).with(:users, :new, false)
 
           expect(model).to receive(:copy_indexes).with(:users, :old, :new)
           expect(model).to receive(:copy_foreign_keys).with(:users, :old, :new)

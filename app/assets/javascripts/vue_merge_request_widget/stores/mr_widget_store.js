@@ -58,6 +58,7 @@ export default class MergeRequestStore {
     this.statusPath = data.status_path;
     this.emailPatchesPath = data.email_patches_path;
     this.plainDiffPath = data.plain_diff_path;
+    this.newBlobPath = data.new_blob_path;
     this.createIssueToResolveDiscussionsPath = data.create_issue_to_resolve_discussions_path;
     this.mergeCheckPath = data.merge_check_path;
     this.mergeActionsContentPath = data.commit_change_content_path;
