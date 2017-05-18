@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# script/seed: Insert seed data in the database.
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+bin/rake dev:setup
