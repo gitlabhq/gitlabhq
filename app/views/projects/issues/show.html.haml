@@ -56,6 +56,11 @@
       "is-edited": @issue.is_edited?,
     } }
     .issue-title-entrypoint
+      %h2.title.js-issue-title= markdown_field(@issue, :title)
+      - if @issue.description.present?
+        .description{ class: can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : '' }
+          .wiki.js-issue-description= markdown_field(@issue, :description)
+          %textarea.hidden.js-task-list-field= @issue.description
 
     #merge-requests{ data: { url: referenced_merge_requests_namespace_project_issue_url(@project.namespace, @project, @issue) } }
       // This element is filled in using JavaScript.

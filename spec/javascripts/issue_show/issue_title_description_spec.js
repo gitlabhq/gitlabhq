@@ -40,8 +40,13 @@ describe('Issue Title', () => {
       propsData: {
         canUpdateIssue: '.css-stuff',
         endpoint: '/gitlab-org/gitlab-shell/issues/9/rendered_title',
+        initialTitle: 'test',
+        initialDescription: 'testing',
       },
     }).$mount();
+
+    expect(issueShowComponent.$el.querySelector('.title').innerHTML).toContain('test');
+    expect(issueShowComponent.$el.querySelector('.wiki').innerHTML).toContain('testing');
 
     setTimeout(() => {
       const editedText = issueShowComponent.$el.querySelector('.edited-text');
