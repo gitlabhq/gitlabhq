@@ -119,6 +119,15 @@ describe Projects::MergeRequestsController do
           expect(response).to match_response_schema('entities/merge_request')
         end
       end
+
+      context 'number of queries' do
+        it 'verifies number of queries' do
+          recorded = ActiveRecord::QueryRecorder.new { go(format: :json) }
+
+          expect(recorded.count).to be_within(1).of(94)
+          expect(recorded.cached_count).to eq(0)
+        end
+      end
     end
 
     describe "as diff" do
