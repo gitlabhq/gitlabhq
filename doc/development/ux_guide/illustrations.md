@@ -43,7 +43,7 @@ The illustrations should always align with topics and goals in specific context.
 | #FC6D26   | #6B4FBB | #EEEEEE |
 
 ##### Color palette
-We suggest that pick the colors from the color palette. 
+For consistency, we suggest to pick the colors from the color palette. 
 
 | Orange | Purple |
 | -------- | -------- | 
