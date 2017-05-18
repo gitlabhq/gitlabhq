@@ -6,7 +6,11 @@ feature 'Artifact file', :js, feature: true do
   let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
   def visit_file(path)
-    visit file_namespace_project_job_artifacts_path(project.namespace, project, build, path)
+    visit file_path(path)
+  end
+
+  def file_path(path)
+    file_namespace_project_job_artifacts_path(project.namespace, project, build, path)
   end
 
   context 'Text file' do
@@ -54,6 +58,20 @@ feature 'Artifact file', :js, feature: true do
         # shows a download button
         expect(page).to have_link('Download')
       end
+    end
+  end
+
+  context 'when visiting old URL' do
+    let(:file_url) do
+      file_path('other_artifacts_0.1.2/doc_sample.txt')
+    end
+
+    before do
+      visit file_url.sub('jobs', 'builds')
+    end
+
+    it "redirects to new URL" do
+      expect(page.current_path).to eq(file_url)
     end
   end
 end
