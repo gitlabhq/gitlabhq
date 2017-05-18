@@ -187,6 +187,7 @@ export default {
             >
               <a
                 class="user-link has-tooltip"
+                data-container="body"
                 data-placement="bottom"
                 :href="assigneeUrl(user)"
                 :data-title="user.name"
