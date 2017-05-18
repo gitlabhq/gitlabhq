@@ -1,0 +1,46 @@
+#!/bin/sh
+
+# script/update: Update application to run for its current checkout.
+
+set -e
+
+# Returns true if the working tree is dirty
+function dirty_working_tree {
+  [[ $(git diff --shortstat 2> /dev/null | tail -n1) != "" ]]
+}
+
+cd "$(dirname "$0")/.."
+
+PREVIOUS_HEAD=$(git rev-parse HEAD)
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+STASH_CREATED="false"
+
+git checkout -- Gemfile.lock db/schema.rb
+
+if [ $(dirty_working_tree) ]; then
+  echo "==> Stashing the following changes (retrieve them with `git stash pop` if needed)…"
+  git diff --shortstat
+  git stash
+  STASH_CREATED="true"
+fi
+
+echo "==> Checking out and pulling ${CURRENT_BRANCH}…"
+git pull --ff-only origin $CURRENT_BRANCH
+
+script/bootstrap
+
+if [ "$STASH_CREATED" = "true" ]; then
+  echo "==> Retrieving stashed changes…"
+  git stash pop
+fi
+
+if [ "$(git diff ${PREVIOUS_HEAD}...HEAD -- db/schema.rb 2> /dev/null | tail -n1)" != "" ]; then
+  echo "==> Updating db…"
+  echo ""
+  echo "------------------------------------------------------------"
+  echo "Make sure Postgres is running otherwise db:migrate will fail"
+  echo "------------------------------------------------------------"
+  echo ""
+  # run all database migrations to ensure everything is up to date.
+  bin/rake db:migrate db:test:prepare
+fi
