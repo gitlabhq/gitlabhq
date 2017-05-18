@@ -307,7 +307,7 @@ const normalizeNewlines = function(str) {
       }
 
       const $note = $notesList.find(`#note_${noteEntity.id}`);
-      if (this.isNewNote(noteEntity)) {
+      if (Notes.isNewNote(noteEntity, this.note_ids)) {
         this.note_ids.push(noteEntity.id);
 
         const $newNote = Notes.animateAppendNote(noteEntity.html, $notesList);
@@ -320,7 +320,7 @@ const normalizeNewlines = function(str) {
         return this.updateNotesCount(1);
       }
       // The server can send the same update multiple times so we need to make sure to only update once per actual update.
-      else if (this.isUpdatedNote(noteEntity, $note)) {
+      else if (Notes.isUpdatedNote(noteEntity, $note)) {
         const isEditing = $note.hasClass('is-editing');
         const initialContent = normalizeNewlines(
           $note.find('.original-note-content').text().trim()
@@ -348,23 +348,6 @@ const normalizeNewlines = function(str) {
       }
     };
 
-    /*
-    Check if note does not exists on page
-     */
-
-    Notes.prototype.isNewNote = function(noteEntity) {
-      return $.inArray(noteEntity.id, this.note_ids) === -1;
-    };
-
-    Notes.prototype.isUpdatedNote = function(noteEntity, $note) {
-      // There can be CRLF vs LF mismatches if we don't sanitize and compare the same way
-      const sanitizedNoteNote = normalizeNewlines(noteEntity.note);
-      const currentNoteText = normalizeNewlines(
-        $note.find('.original-note-content').text().trim()
-      );
-      return sanitizedNoteNote !== currentNoteText;
-    };
-
     Notes.prototype.isParallelView = function() {
       return Cookies.get('diff_view') === 'parallel';
     };
@@ -377,7 +360,7 @@ const normalizeNewlines = function(str) {
 
     Notes.prototype.renderDiscussionNote = function(noteEntity, $form) {
       var discussionContainer, form, row, lineType, diffAvatarContainer;
-      if (!this.isNewNote(noteEntity)) {
+      if (!Notes.isNewNote(noteEntity, this.note_ids)) {
         return;
       }
       this.note_ids.push(noteEntity.id);
@@ -1136,6 +1119,25 @@ const normalizeNewlines = function(str) {
         .remove();
 
       return $form;
+    };
+
+    /**
+     * Check if note does not exists on page
+     */
+    Notes.isNewNote = function(noteEntity, noteIds) {
+      return $.inArray(noteEntity.id, noteIds) === -1;
+    };
+
+    /**
+     * Check if $note already contains the `noteEntity` content
+     */
+    Notes.isUpdatedNote = function(noteEntity, $note) {
+      // There can be CRLF vs LF mismatches if we don't sanitize and compare the same way
+      const sanitizedNoteEntityText = normalizeNewlines(noteEntity.note.trim());
+      const currentNoteText = normalizeNewlines(
+        $note.find('.original-note-content').text().trim()
+      );
+      return sanitizedNoteEntityText !== currentNoteText;
     };
 
     Notes.checkMergeRequestStatus = function() {
