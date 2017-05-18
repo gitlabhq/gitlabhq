@@ -229,23 +229,22 @@ describe ProjectsController do
   describe '#transfer' do
     render_views
 
-    subject(:project) { create(:project) }
+    let(:project) { create(:project) }
     let(:admin) { create(:admin) }
     let(:new_namespace) { create(:namespace) }
 
     it 'updates namespace' do
-      controller.instance_variable_set(:@project, project)
       sign_in(admin)
 
       put :transfer,
-          namespace_id: project.namespace.id,
+          namespace_id: project.namespace.path,
           new_namespace_id: new_namespace.id,
-          id: project.id,
+          id: project.path,
           format: :js
 
       project.reload
 
-      expect(project.namespace.id).to eq(new_namespace.id)
+      expect(project.namespace).to eq(new_namespace)
       expect(response).to have_http_status(200)
     end
 
@@ -254,18 +253,18 @@ describe ProjectsController do
         controller.instance_variable_set(:@project, project)
         sign_in(admin)
 
-        old_namespace_id = project.namespace.id
+        old_namespace = project.namespace
 
         put :transfer,
-            namespace_id: old_namespace_id,
+            namespace_id: old_namespace.path,
             new_namespace_id: nil,
-            id: project.id,
+            id: project.path,
             format: :js
 
         project.reload
 
-        expect(project.namespace.id).to eq(old_namespace_id)
-        expect(response).to have_http_status(200) 
+        expect(project.namespace).to eq(old_namespace)
+        expect(response).to have_http_status(200)
         expect(flash[:alert]).to eq 'Please select a new namespace for your project.'
       end
     end

@@ -12,7 +12,7 @@ module Projects
     TransferError = Class.new(StandardError)
 
     def execute(new_namespace)
-      if allowed_transfer?(current_user, project, new_namespace)
+      if !new_namespace.blank? && allowed_transfer?(current_user, project, new_namespace)
         transfer(project, new_namespace)
       else
         error_message = if new_namespace.blank? 
