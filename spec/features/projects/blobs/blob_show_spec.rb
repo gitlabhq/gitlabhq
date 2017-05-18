@@ -452,7 +452,7 @@ feature 'File blob', :js, feature: true do
 
     it 'displays an auxiliary viewer' do
       aggregate_failures do
-        # shows license
+        # shows names of dependency manager and package
         expect(page).to have_content('This project manages its dependencies using RubyGems and defines a gem named activerecord.')
 
         # shows a link to the gem
