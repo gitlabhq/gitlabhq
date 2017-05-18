@@ -198,6 +198,34 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
+      get '/builds/:id/:action', as: 'action_legacy_build',
+        to: redirect { |params, req|
+          args = params.values_at(:namespace_id, :project_id, :id)
+
+          case params[:action]
+          when 'status'
+            Gitlab::Routing.url_helpers.status_namespace_project_job_path(*args, format: params[:format])
+          when 'trace'
+            Gitlab::Routing.url_helpers.trace_namespace_project_job_path(*args, format: params[:format])
+          when 'raw'
+            Gitlab::Routing.url_helpers.raw_namespace_project_job_path(*args)
+          else
+            Gitlab::Routing.url_helpers.namespace_project_job_path(*args)
+          end
+        }
+
+      get '/builds/:id', as: 'legacy_build',
+        to: redirect { |params, req|
+          Gitlab::Routing.url_helpers.namespace_project_job_path(
+            params[:namespace_id], params[:project_id], params[:id])
+        }
+
+      get '/builds', as: 'legacy_builds',
+        to: redirect { |params, req|
+          Gitlab::Routing.url_helpers.namespace_project_jobs_path(
+            params[:namespace_id], params[:project_id])
+        }
+
       resources :hooks, only: [:index, :create, :edit, :update, :destroy], constraints: { id: /\d+/ } do
         member do
           get :test
