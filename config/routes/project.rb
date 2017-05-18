@@ -1,4 +1,5 @@
 require 'constraints/project_url_constrainer'
+require 'gitlab/routes/legacy_builds'
 
 resources :projects, only: [:index, :new, :create]
 
@@ -198,28 +199,7 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
-      redirect_builds_to_jobs = redirect do |params, req|
-        args = params.values_at(:namespace_id, :project_id, :id).compact
-        url_helpers = Gitlab::Routing.url_helpers
-
-        if params[:id]
-          case params[:action]
-          when 'status'
-            url_helpers.status_namespace_project_job_path(*args, format: params[:format])
-          when 'trace'
-            url_helpers.trace_namespace_project_job_path(*args, format: params[:format])
-          when 'raw'
-            url_helpers.raw_namespace_project_job_path(*args)
-          else # show
-            url_helpers.namespace_project_job_path(*args)
-          end
-        else # index
-          url_helpers.namespace_project_jobs_path(*args)
-        end
-      end
-
-      get '/builds(/:id(/:action))', to: redirect_builds_to_jobs,
-                                     as: 'legacy_build'
+      Gitlab::Routes::LegacyBuilds.new(self).draw
 
       resources :hooks, only: [:index, :create, :edit, :update, :destroy], constraints: { id: /\d+/ } do
         member do
