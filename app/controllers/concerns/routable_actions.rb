@@ -24,15 +24,27 @@ module RoutableActions
     end
   end
 
-  def ensure_canonical_path(routable, requested_path)
+  def ensure_canonical_path(routable, requested_full_path)
     return unless request.get?
 
     canonical_path = routable.full_path
-    if canonical_path != requested_path
-      if canonical_path.casecmp(requested_path) != 0
-        flash[:notice] = "#{routable.class.to_s.titleize} '#{requested_path}' was moved to '#{canonical_path}'. Please update any links and bookmarks that may still have the old path."
+    if canonical_path != requested_full_path
+      if canonical_path.casecmp(requested_full_path) != 0
+        flash[:notice] = "#{routable.class.to_s.titleize} '#{requested_full_path}' was moved to '#{canonical_path}'. Please update any links and bookmarks that may still have the old path."
       end
-      redirect_to request.original_fullpath.sub(requested_path, canonical_path)
+      redirect_to full_canonical_path(canonical_path, requested_full_path)
+    end
+  end
+
+  def full_canonical_path(canonical_path, requested_full_path)
+    request_path = request.original_fullpath
+    top_level_route_regex = %r{\A(/#{Regexp.union(DynamicPathValidator::TOP_LEVEL_ROUTES)}/)#{requested_full_path}}
+    top_level_route_match = request_path.match(top_level_route_regex)
+
+    if top_level_route_match
+      request_path.sub(top_level_route_regex, "\\1#{canonical_path}")
+    else
+      request_path.sub(requested_full_path, canonical_path)
     end
   end
 end
