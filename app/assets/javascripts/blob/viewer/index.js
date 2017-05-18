@@ -114,6 +114,7 @@ export default class BlobViewer {
       $(viewer).syntaxHighlight();
 
       this.$fileHolder.trigger('highlight:line');
+      gl.utils.handleLocationHash();
 
       this.toggleCopyButtonState();
     })

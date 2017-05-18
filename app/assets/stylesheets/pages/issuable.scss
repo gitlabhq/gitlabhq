@@ -195,7 +195,7 @@
   right: 0;
   transition: width .3s;
   background: $gray-light;
-  padding: 10px 20px;
+  padding: 0 20px;
   z-index: 200;
   overflow: hidden;
 
@@ -217,6 +217,10 @@
         margin-top: 10px;
         display: block;
       }
+    }
+
+    .issuable-sidebar-header {
+      padding-top: 10px;
     }
 
     .assign-yourself .btn-link {
@@ -272,11 +276,10 @@
     }
 
     width: $gutter_collapsed_width;
-    padding-top: 0;
+    padding: 0;
 
     .block {
       width: $gutter_collapsed_width - 2px;
-      margin-left: -19px;
       padding: 15px 0 0;
       border-bottom: none;
       overflow: hidden;

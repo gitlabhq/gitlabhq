@@ -1,11 +1,20 @@
 # Frontend Testing
 
-There are two types of tests you'll encounter while developing frontend code
-at GitLab.  We use Karma and Jasmine for JavaScript unit testing, and RSpec
-feature tests with Capybara for integration testing.
+There are two types of test suites you'll encounter while developing frontend code
+at GitLab.  We use Karma and Jasmine for JavaScript unit and integration testing, and RSpec
+feature tests with Capybara for e2e (end-to-end) integration testing.
 
-Feature tests need to be written for all new features. Regression tests ought
-to be written for all bug fixes to prevent them from recurring in the future.
+Unit and feature tests need to be written for all new features.
+Most of the time, you should use rspec for your feature tests.
+There are cases where the behaviour you are testing is not worth the time spent running the full application,
+for example, if you are testing styling, animation or small actions that don't involve the backend,
+you should write an integration test using Jasmine.
+
+![Testing priority triangle](img/testing_triangle.png)
+
+_This diagram demonstrates the relative priority of each test type we use_
+
+Regression tests should be written for bug fixes to prevent them from recurring in the future.
 
 See [the Testing Standards and Style Guidelines](../testing.md)
 for more information on general testing practices at GitLab.
@@ -13,10 +22,12 @@ for more information on general testing practices at GitLab.
 ## Karma test suite
 
 GitLab uses the [Karma][karma] test runner with [Jasmine][jasmine] as its test
-framework for our JavaScript unit tests. For tests that rely on DOM
-manipulation, we generate HTML files using RSpec suites (see `spec/javascripts/fixtures/*.rb` for examples).
+framework for our JavaScript unit and integration tests. For integration tests,
+we generate HTML files using RSpec (see `spec/javascripts/fixtures/*.rb` for examples).
 Some fixtures are still HAML templates that are translated to HTML files using the same mechanism (see `static_fixtures.rb`).
-Those will be migrated over time.
+Adding these static fixtures should be avoided as they are harder to keep up to date with real views.
+The existing static fixtures will be migrated over time.
+Please see [gitlab-org/gitlab-ce#24753](https://gitlab.com/gitlab-org/gitlab-ce/issues/24753) to track our progress.
 Fixtures are served during testing by the [jasmine-jquery][jasmine-jquery] plugin.
 
 JavaScript tests live in `spec/javascripts/`, matching the folder structure
@@ -28,7 +39,9 @@ browser and you will not have access to certain APIs, such as
 [`Notification`](https://developer.mozilla.org/en-US/docs/Web/API/notification),
 which will have to be stubbed.
 
-### Writing tests
+### Best practice
+
+#### Naming unit tests
 
 When writing describe test blocks to test specific functions/methods,
 please use the method name as the describe block name.
@@ -55,6 +68,14 @@ describe('.methodName', () => {
   });
 });
 ```
+
+#### Stubbing
+
+For unit tests, you should stub methods that are unrelated to the current unit you are testing.
+If you need to use a prototype method, instantiate an instance of the class and call it there instead of mocking the instance completely.
+
+For integration tests, you should stub methods that will effect the stability of the test if they
+execute their original behaviour. i.e. Network requests.
 
 ### Vue.js unit tests
 See this [section][vue-test].

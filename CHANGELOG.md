@@ -4,9 +4,6 @@ entry.
 
 ## 9.1.4 (2017-05-12)
 
-- No changes.
-- No changes.
-- No changes.
 - Fix error on CI/CD Settings page related to invalid pipeline trigger. !10948 (dosuken123)
 - Sort the network graph both by commit date and topographically. !11057
 - Fix cross referencing for private and internal projects. !11243
@@ -56,6 +53,7 @@ entry.
 
 ## 9.1.0 (2017-04-22)
 
+- Add Jupyter notebook rendering !10017
 - Added merge requests empty state. !7342
 - Add option to start a new resolvable discussion in an MR. !7527
 - Hide form inputs for group member without editing rights. !7816

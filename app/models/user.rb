@@ -930,8 +930,16 @@ class User < ActiveRecord::Base
   end
 
   def invalidate_cache_counts
-    Rails.cache.delete(['users', id, 'assigned_open_merge_requests_count'])
+    invalidate_issue_cache_counts
+    invalidate_merge_request_cache_counts
+  end
+
+  def invalidate_issue_cache_counts
     Rails.cache.delete(['users', id, 'assigned_open_issues_count'])
+  end
+
+  def invalidate_merge_request_cache_counts
+    Rails.cache.delete(['users', id, 'assigned_open_merge_requests_count'])
   end
 
   def todos_done_count(force: false)
