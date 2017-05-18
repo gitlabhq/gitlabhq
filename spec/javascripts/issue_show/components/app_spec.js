@@ -14,7 +14,7 @@ const issueShowInterceptor = data => (request, next) => {
   }));
 };
 
-describe('Issuable output', () => {
+fdescribe('Issuable output', () => {
   document.body.innerHTML = '<span id="task_status"></span>';
 
   let vm;
@@ -38,6 +38,7 @@ describe('Issuable output', () => {
         markdownPreviewUrl: '/',
         markdownDocs: '/',
         projectsAutocompleteUrl: '/',
+        isConfidential: false,
       },
     }).$mount();
   });
@@ -92,6 +93,29 @@ describe('Issuable output', () => {
   });
 
   describe('updateIssuable', () => {
+    it('reloads the page if the confidential status has changed', (done) => {
+      spyOn(gl.utils, 'visitUrl');
+      spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve) => {
+        resolve({
+          json() {
+            return {
+              confidential: true,
+            };
+          },
+        });
+      }));
+
+      vm.updateIssuable();
+
+      setTimeout(() => {
+        expect(
+          gl.utils.visitUrl,
+        ).toHaveBeenCalledWith(location.href);
+
+        done();
+      });
+    });
+
     it('correctly updates issuable data', (done) => {
       spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve) => {
         resolve();

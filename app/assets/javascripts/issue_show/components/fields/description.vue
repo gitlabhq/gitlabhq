@@ -20,6 +20,9 @@
     components: {
       markdownField,
     },
+    mounted() {
+      this.$refs.textarea.focus();
+    },
   };
 </script>
 
@@ -39,7 +42,7 @@
         data-supports-slash-commands="false"
         aria-label="Description"
         v-model="formState.description"
-        ref="textatea"
+        ref="textarea"
         slot="textarea">
       </textarea>
     </markdown-field>

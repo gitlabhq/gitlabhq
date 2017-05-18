@@ -3,6 +3,7 @@
   import descriptionField from './fields/description.vue';
   import editActions from './edit_actions.vue';
   import projectMove from './fields/project_move.vue';
+  import confidentialCheckbox from './fields/confidential_checkbox.vue';
 
   export default {
     props: {
@@ -36,6 +37,7 @@
       descriptionField,
       editActions,
       projectMove,
+      confidentialCheckbox,
     },
   };
 </script>
@@ -43,6 +45,8 @@
 <template>
   <form>
     <title-field
+      :form-state="formState" />
+    <confidential-checkbox
       :form-state="formState" />
     <description-field
       :form-state="formState"
@@ -53,6 +57,7 @@
       :form-state="formState"
       :projects-autocomplete-url="projectsAutocompleteUrl" />
     <edit-actions
+      :form-state="formState"
       :can-destroy="canDestroy" />
   </form>
 </template>

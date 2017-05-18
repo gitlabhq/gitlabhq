@@ -14,6 +14,7 @@ export default class Store {
     };
     this.formState = {
       title: '',
+      confidential: false,
       description: '',
       move_to_project_id: 0,
     };

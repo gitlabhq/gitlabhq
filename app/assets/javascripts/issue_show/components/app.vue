@@ -45,6 +45,10 @@ export default {
       required: false,
       default: '',
     },
+    isConfidential: {
+      type: Boolean,
+      required: true,
+    },
     markdownPreviewUrl: {
       type: String,
       required: true,
@@ -83,12 +87,15 @@ export default {
   },
   methods: {
     openForm() {
-      this.showForm = true;
-      this.store.formState = {
-        title: this.state.titleText,
-        description: this.state.descriptionText,
-        move_to_project_id: 0,
-      };
+      if (!this.showForm) {
+        this.showForm = true;
+        this.store.formState = {
+          title: this.state.titleText,
+          confidential: this.isConfidential,
+          description: this.state.descriptionText,
+          move_to_project_id: 0,
+        };
+      }
     },
     closeForm() {
       this.showForm = false;
@@ -99,6 +106,8 @@ export default {
         .then((data) => {
           if (location.pathname !== data.path) {
             gl.utils.visitUrl(data.path);
+          } if (data.confidential !== this.isConfidential) {
+            gl.utils.visitUrl(location.href);
           }
 
           eventHub.$emit('close.form');
