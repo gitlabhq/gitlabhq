@@ -28,64 +28,6 @@ for all signed in users.
 [were added][ee-735] in GitLab Enterprise Edition
 8.12. [Moved to GitLab Community Edition][ce-23361] in 9.1.
 
-<<<<<<< HEAD
-GitLab Inc. can collect non-sensitive information about how GitLab users
-use their GitLab instance upon the activation of a ping feature
-located in the admin panel (`/admin/application_settings`).
-
-You can see the **exact** JSON payload that your instance sends to GitLab
-in the "Usage statistics" section of the admin panel.
-
-Nothing qualitative is collected. Only quantitative. That means no project
-names, author names, comment bodies, names of labels, etc.
-
-The usage ping is sent in order for GitLab Inc. to have a better understanding
-of how our users use our product, and to be more data-driven when creating or
-changing features.
-
-The total number of the following is sent back to GitLab Inc.:
-
-- Comments
-- Groups
-- Users
-- Projects
-- Issues
-- Labels
-- CI builds
-- Snippets
-- Milestones
-- Todos
-- Pushes
-- Merge requests
-- Environments
-- Triggers
-- Deploy keys
-- Pages
-- Project Services
-- Projects using the Prometheus service
-- Issue Boards
-- CI Runners
-- Deployments
-- Geo Nodes
-- LDAP Groups
-- LDAP Keys
-- LDAP Users
-- LFS objects
-- Protected branches
-- Releases
-- Remote mirrors
-- Service Desk projects
-- Service Desk issues
-- Uploads
-- Web hooks
-
-Also, we track if you've installed Mattermost with GitLab.
-For example: `"mattermost_enabled":true"`.
-
-More data will be added over time. The goal of this ping is to be as light as
-possible, so it won't have any performance impact on your installation when
-the calculation is made.
-=======
 GitLab sends a weekly payload containing usage data to GitLab Inc. The usage
 ping uses high-level data to help our product, support, and sales teams. It does
 not send any project names, usernames, or any other specific data. The
@@ -93,7 +35,6 @@ information from the usage ping is not anonymous, it is linked to the hostname
 of the instance.
 
 You can view the exact JSON payload in the administration panel.
->>>>>>> upstream/master
 
 ### Deactivate the usage ping
 
