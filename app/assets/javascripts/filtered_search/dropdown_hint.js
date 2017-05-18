@@ -53,20 +53,13 @@ class DropdownHint extends gl.FilteredSearchDropdown {
   }
 
   renderContent() {
-    const dropdownData = [];
-
-    [].forEach.call(this.input.closest('.filtered-search-box-input-container').querySelectorAll('.dropdown-menu'), (dropdownMenu) => {
-      const { icon, hint, tag, type } = dropdownMenu.dataset;
-      if (icon && hint && tag) {
-        dropdownData.push(
-          Object.assign({
-            icon: `fa-${icon}`,
-            hint,
-            tag: `<${tag}>`,
-          }, type && { type }),
-        );
-      }
-    });
+    const dropdownData = gl.FilteredSearchTokenKeys.get()
+      .map(tokenKey => ({
+        icon: `fa-${tokenKey.icon}`,
+        hint: tokenKey.key,
+        tag: `<${tokenKey.symbol}${tokenKey.key}>`,
+        type: tokenKey.type,
+      }));
 
     this.droplab.changeHookList(this.hookId, this.dropdown, [Filter], this.config);
     this.droplab.setData(this.hookId, dropdownData);
