@@ -65,10 +65,11 @@ describe EE::Gitlab::LDAP::Sync::Group, lib: true do
     end
 
     before do
-      allow(Gitlab::LDAP::Config)
-        .to receive(:providers).and_return(%w(main secondary))
-      allow(EE::Gitlab::LDAP::Sync::Proxy)
-        .to receive(:open).and_yield(double('proxy').as_null_object)
+      stub_ldap_config(providers: %w[main secundary])
+
+      adapter = ldap_adapter('main')
+      proxy = proxy(adapter, 'main')
+      allow(EE::Gitlab::LDAP::Sync::Proxy).to receive(:open).and_yield(proxy)
     end
 
     let(:group) do

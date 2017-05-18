@@ -89,6 +89,7 @@ module Gitlab
 
       def update_user
         update_email
+        update_memberships
         update_ssh_keys if sync_ssh_keys?
         update_kerberos_identity if import_kerberos_identities?
       end
@@ -160,6 +161,16 @@ module Gitlab
       def import_kerberos_identities?
         # Kerberos may be enabled for Git HTTP access and/or as an Omniauth provider
         ldap_config.active_directory && (Gitlab.config.kerberos.enabled || AuthHelper.kerberos_enabled? )
+      end
+
+      def update_memberships
+        return if ldap_user.nil? || ldap_user.group_cns.empty?
+
+        group_ids = LdapGroupLink.where(cn: ldap_user.group_cns, provider: provider)
+                      .distinct(:group_id)
+                      .pluck(:group_id)
+
+        LdapGroupSyncWorker.perform_async(group_ids, provider) if group_ids.any?
       end
 
       private

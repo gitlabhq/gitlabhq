@@ -29,6 +29,11 @@ The process will also update the following user information:
 
 ## Group Sync
 
+If your LDAP supports the `memberof` property, GitLab will add the user to any
+new groups they might be added to when the user logs in. That way they don't need
+to wait for the hourly sync to be granted access to the groups that they are in
+in LDAP.
+
 If `group_base` is set in LDAP configuration, a group sync process will run
 every hour, on the hour. This allows GitLab group membership to be automatically
 updated based on LDAP group members.
