@@ -250,6 +250,19 @@ describe GroupsController do
     end
   end
 
+  describe 'ensure_canonical_path' do
+    context 'when the old group path is a substring of the scheme or host' do
+      let(:redirect_route) { group.redirect_routes.create(path: 'http') }
+
+      it 'does not modify the requested host' do
+        get :issues, id: redirect_route.path
+
+        expect(response).to redirect_to(issues_group_path(group.to_param))
+        expect(controller).to set_flash[:notice].to(group_moved_message(redirect_route, group))
+      end
+    end
+  end
+
   def group_moved_message(redirect_route, group)
     "Group '#{redirect_route.path}' was moved to '#{group.full_path}'. Please update any links and bookmarks that may still have the old path."
   end
