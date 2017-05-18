@@ -7,7 +7,7 @@ describe('Description field component', () => {
   beforeEach((done) => {
     const Component = Vue.extend(descriptionField);
 
-    // Needs an el in the DOM to be able to text the element is focused
+    // Needs an el in the DOM to be able to test the element is focused
     const el = document.createElement('div');
 
     document.body.appendChild(el);
