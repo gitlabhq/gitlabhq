@@ -70,7 +70,7 @@ module ProjectsHelper
   end
 
   def remove_project_message(project)
-    _("You are going to remove %{project_name_with_namespace}. Removed project CANNOT be restored! Are you ABSOLUTELY sure?") %
+    _("You are going to remove %{project_name_with_namespace}.\nRemoved project CANNOT be restored!\nAre you ABSOLUTELY sure?") %
       { project_name_with_namespace: project.name_with_namespace }
   end
 
@@ -287,7 +287,7 @@ module ProjectsHelper
   end
 
   def add_special_file_path(project, file_name:, commit_message: nil, branch_name: nil, context: nil)
-    commit_message ||= _("Add %{file_name}") % { file_name: file_name.downcase }
+    commit_message ||= s_("CommitMessage|Add %{file_name}") % { file_name: file_name.downcase }
     namespace_project_new_blob_path(
       project.namespace,
       project,
