@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::LDAP::Access, lib: true do
+  include LdapHelpers
   let(:access) { Gitlab::LDAP::Access.new user }
   let(:user) { create(:omniauth_user) }
 
@@ -173,6 +174,12 @@ describe Gitlab::LDAP::Access, lib: true do
       subject
     end
 
+    it 'updates the group memberships' do
+      expect(access).to receive(:update_memberships).once
+
+      subject
+    end
+
     it 'syncs ssh keys if enabled by configuration' do
       allow(access).to receive_messages(group_base: '', sync_ssh_keys?: true)
       expect(access).to receive(:update_ssh_keys).once
@@ -303,6 +310,52 @@ describe Gitlab::LDAP::Access, lib: true do
     it "updates the email if the user email is different" do
       entry['mail'] = ["new_email@example.com"]
       expect{ access.update_email }.to change(user, :email)
+    end
+  end
+
+  describe '#update_memberships' do
+    let(:provider) { user.ldap_identity.provider }
+    let(:entry) { ldap_user_entry(user.ldap_identity.extern_uid) }
+
+    let(:person_with_memberof) do
+      entry['memberof'] = ['CN=Group1,CN=Users,DC=The dc,DC=com',
+                           'CN=Group2,CN=Builtin,DC=The dc,DC=com']
+      Gitlab::LDAP::Person.new(entry, provider)
+    end
+
+    it 'triggers a sync for all groups found in `memberof`' do
+      group_link_1 = create(:ldap_group_link, cn: 'Group1', provider: provider)
+      group_link_2 = create(:ldap_group_link, cn: 'Group2', provider: provider)
+      group_ids = [group_link_1, group_link_2].map(&:group_id)
+
+      allow(access).to receive(:ldap_user).and_return(person_with_memberof)
+
+      expect(LdapGroupSyncWorker).to receive(:perform_async)
+                                       .with(group_ids, provider)
+
+      access.update_memberships
+    end
+
+    it "doesn't continue when there is no `memberOf` param" do
+      allow(access).to receive(:ldap_user)
+                         .and_return(Gitlab::LDAP::Person.new(entry, provider))
+
+      expect(LdapGroupLink).not_to receive(:where)
+      expect(LdapGroupSyncWorker).not_to receive(:perform_async)
+
+      access.update_memberships
+    end
+
+    it "doesn't trigger a sync when there are no links for the provider" do
+      _another_provider = create(:ldap_group_link,
+                                 cn: 'Group1',
+                                 provider: 'not-this-ldap')
+
+      allow(access).to receive(:ldap_user).and_return(person_with_memberof)
+
+      expect(LdapGroupSyncWorker).not_to receive(:perform_async)
+
+      access.update_memberships
     end
   end
 end

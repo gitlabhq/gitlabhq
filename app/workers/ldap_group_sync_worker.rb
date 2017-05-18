@@ -1,22 +1,30 @@
 class LdapGroupSyncWorker
   include Sidekiq::Worker
-  include CronjobQueue
+  include DedicatedSidekiqQueue
 
-  def perform(group_id = nil)
-    if group_id
-      group = Group.find_by(id: group_id)
-      unless group
-        logger.warn "Could not find group #{group_id} for LDAP group sync"
-        return
+  def perform(group_ids, provider = nil)
+    groups = Group.where(id: Array(group_ids))
+
+    if provider
+      EE::Gitlab::LDAP::Sync::Proxy.open(provider) do |proxy|
+        sync_groups(groups, proxy: proxy)
       end
-
-      logger.info "Started LDAP group sync for group #{group.name} (#{group.id})"
-      EE::Gitlab::LDAP::Sync::Group.execute_all_providers(group)
-      logger.info "Finished LDAP group sync for group #{group.name} (#{group.id})"
     else
-      logger.info 'Started LDAP group sync'
-      EE::Gitlab::LDAP::Sync::Groups.execute
-      logger.info 'Finished LDAP group sync'
+      sync_groups(groups)
     end
+  end
+
+  def sync_groups(groups, proxy: nil)
+    groups.each { |group| sync_group(group, proxy: proxy) }
+  end
+
+  def sync_group(group, proxy: nil)
+    logger.info "Started LDAP group sync for group #{group.name} (#{group.id})"
+    if proxy
+      EE::Gitlab::LDAP::Sync::Group.execute(group, proxy)
+    else
+      EE::Gitlab::LDAP::Sync::Group.execute_all_providers(group)
+    end
+    logger.info "Finished LDAP group sync for group #{group.name} (#{group.id})"
   end
 end
