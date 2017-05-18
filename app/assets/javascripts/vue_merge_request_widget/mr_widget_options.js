@@ -6,7 +6,7 @@ import {
   WidgetPipeline,
   WidgetDeployment,
   WidgetRelatedLinks,
-  WidgetCodeQuality,
+  widgetCodeQuality,
   MergedState,
   ClosedState,
   LockedState,
@@ -104,12 +104,8 @@ export default {
             this.store.setCodeclimateHeadMetrics(resp);
 
             this.service.fetchMetrics(base)
-              .then((response) => {
-                this.store.setCodeclimateBaseMetrics(response);
-              })
-              .then(() => {
-                this.store.compareCodecimareMetrics();
-              })
+              .then(response => this.store.setCodeclimateBaseMetrics(response))
+              .then(() => this.store.compareCodeclimateMetrics())
               .catch(() => {
                 this.loadingMetricsFailed = true;
               });
@@ -244,7 +240,7 @@ export default {
     'mr-widget-pipeline-failed': PipelineFailedState,
     'mr-widget-merge-when-pipeline-succeeds': MergeWhenPipelineSucceedsState,
     'mr-widget-auto-merge-failed': AutoMergeFailed,
-    'mr-widget-code-quality': WidgetCodeQuality,
+    widgetCodeQuality,
   },
   template: `
     <div class="mr-state-widget prepend-top-default">
@@ -256,7 +252,7 @@ export default {
         v-if="shouldRenderDeployments"
         :mr="mr"
         :service="service" />
-      <mr-widget-code-quality
+      <widget-code-quality
         v-if="shouldRenderCodeQuality"
         :is-loading="isLoadingMetrics"
         :loading-failed="loadingMetricsFailed"

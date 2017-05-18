@@ -19,4 +19,26 @@ describe('MergeRequestStore', () => {
       expect(store.hasSHAChanged).toBe(false);
     });
   });
+
+  describe('setCodeclimateHeadMetrics', () => {
+    it('should set the provided head metrics', () => {
+
+    });
+  });
+
+  describe('setCodeclimateBaseMetrics', () => {
+    it('should set the provided base metrics', () => {
+
+    });
+  });
+
+  describe('compareCodeclimateMetrics', () => {
+    it('should return the new issues', () => {
+
+    });
+
+    it('should return the resolved issues', () => {
+
+    });
+  });
 });

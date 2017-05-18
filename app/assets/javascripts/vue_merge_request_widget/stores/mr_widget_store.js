@@ -125,7 +125,7 @@ export default class MergeRequestStore {
     this.codeclimateMetrics.baseIssues = data;
   }
 
-  compareCodecimareMetrics() {
+  compareCodeclimateMetrics() {
     const { headIssues, baseIssues } = this.codeclimateMetrics;
 
     const newIssues = headIssues
