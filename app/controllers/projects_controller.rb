@@ -220,13 +220,13 @@ class ProjectsController < Projects::ApplicationController
     branches = BranchesFinder.new(@repository, params).execute.map(&:name)
 
     options = {
-      _('Branches') => branches.take(100)
+      s_('RefSwitcher|Branches') => branches.take(100)
     }
 
     unless @repository.tag_count.zero?
       tags = TagsFinder.new(@repository, params).execute.map(&:name)
 
-      options['Tags'] = tags.take(100)
+      options[s_('RefSwitcher|Tags')] = tags.take(100)
     end
 
     # If reference is commit id - we should add it to branch/tag selectbox
