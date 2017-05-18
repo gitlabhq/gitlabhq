@@ -119,7 +119,7 @@ const ShortcutsBlob = require('./shortcuts_blob');
           shortcut_handler = new ShortcutsNavigation();
           new UsersSelect();
           break;
-        case 'projects:builds:show':
+        case 'projects:jobs:show':
           new Build();
           break;
         case 'projects:merge_requests:index':
