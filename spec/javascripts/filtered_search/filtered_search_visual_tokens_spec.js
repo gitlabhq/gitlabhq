@@ -1,4 +1,5 @@
 import AjaxCache from '~/lib/utils/ajax_cache';
+import UsersCache from '~/lib/utils/users_cache';
 
 import '~/filtered_search/filtered_search_visual_tokens';
 import FilteredSearchSpecHelper from '../helpers/filtered_search_spec_helper';
@@ -406,6 +407,22 @@ describe('Filtered Search Visual Tokens', () => {
       expect(subject.getLastTokenPartial()).toEqual(value);
     });
 
+    it('should get last token original value if available', () => {
+      const originalValue = '@user';
+      const valueContainer = authorToken.querySelector('.value-container');
+      valueContainer.dataset.originalValue = originalValue;
+      const avatar = document.createElement('img');
+      const valueElement = valueContainer.querySelector('.value');
+      valueElement.insertAdjacentElement('afterbegin', avatar);
+      tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
+        authorToken.outerHTML,
+      );
+
+      const lastTokenValue = subject.getLastTokenPartial();
+
+      expect(lastTokenValue).toEqual(originalValue);
+    });
+
     it('should get last token name if there is no value', () => {
       const name = 'assignee';
       tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
@@ -534,6 +551,16 @@ describe('Filtered Search Visual Tokens', () => {
       expect(input.value).toEqual('none');
     });
 
+    it('input contains the original value if present', () => {
+      const originalValue = '@user';
+      const valueContainer = token.querySelector('.value-container');
+      valueContainer.dataset.originalValue = originalValue;
+
+      subject.editToken(token);
+
+      expect(input.value).toEqual(originalValue);
+    });
+
     describe('selected token is a search term token', () => {
       beforeEach(() => {
         token = document.querySelector('.filtered-search-term');
@@ -633,6 +660,7 @@ describe('Filtered Search Visual Tokens', () => {
     const milestoneToken = FilteredSearchSpecHelper.createFilterVisualToken('milestone', 'upcoming');
 
     let updateLabelTokenColorSpy;
+    let updateUserTokenAppearanceSpy;
 
     beforeEach(() => {
       tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
@@ -644,6 +672,24 @@ describe('Filtered Search Visual Tokens', () => {
 
       spyOn(subject, 'updateLabelTokenColor');
       updateLabelTokenColorSpy = subject.updateLabelTokenColor;
+
+      spyOn(subject, 'updateUserTokenAppearance');
+      updateUserTokenAppearanceSpy = subject.updateUserTokenAppearance;
+    });
+
+    it('renders a author token value element', () => {
+      const { tokenNameElement, tokenValueContainer, tokenValueElement } =
+        findElements(authorToken);
+      const tokenName = tokenNameElement.innerText;
+      const tokenValue = 'new value';
+
+      subject.renderVisualTokenValue(authorToken, tokenName, tokenValue);
+
+      expect(tokenValueElement.innerText).toBe(tokenValue);
+      expect(updateUserTokenAppearanceSpy.calls.count()).toBe(1);
+      const expectedArgs = [tokenValueContainer, tokenValueElement, tokenValue];
+      expect(updateUserTokenAppearanceSpy.calls.argsFor(0)).toEqual(expectedArgs);
+      expect(updateLabelTokenColorSpy.calls.count()).toBe(0);
     });
 
     it('renders a label token value element', () => {
@@ -658,6 +704,7 @@ describe('Filtered Search Visual Tokens', () => {
       expect(updateLabelTokenColorSpy.calls.count()).toBe(1);
       const expectedArgs = [tokenValueContainer, tokenValue];
       expect(updateLabelTokenColorSpy.calls.argsFor(0)).toEqual(expectedArgs);
+      expect(updateUserTokenAppearanceSpy.calls.count()).toBe(0);
     });
 
     it('renders a milestone token value element', () => {
@@ -669,6 +716,84 @@ describe('Filtered Search Visual Tokens', () => {
 
       expect(tokenValueElement.innerText).toBe(tokenValue);
       expect(updateLabelTokenColorSpy.calls.count()).toBe(0);
+      expect(updateUserTokenAppearanceSpy.calls.count()).toBe(0);
+    });
+  });
+
+  describe('updateUserTokenAppearance', () => {
+    let usersCacheSpy;
+
+    beforeEach(() => {
+      spyOn(UsersCache, 'retrieve').and.callFake(username => usersCacheSpy(username));
+    });
+
+    it('ignores special value "none"', (done) => {
+      usersCacheSpy = (username) => {
+        expect(username).toBe('none');
+        done.fail('Should not resolve "none"!');
+      };
+      const { tokenValueContainer, tokenValueElement } = findElements(authorToken);
+
+      subject.updateUserTokenAppearance(tokenValueContainer, tokenValueElement, 'none')
+      .then(done)
+      .catch(done.fail);
+    });
+
+    it('ignores error if UsersCache throws', (done) => {
+      spyOn(window, 'Flash');
+      const dummyError = new Error('Earth rotated backwards');
+      const { tokenValueContainer, tokenValueElement } = findElements(authorToken);
+      const tokenValue = tokenValueElement.innerText;
+      usersCacheSpy = (username) => {
+        expect(`@${username}`).toBe(tokenValue);
+        return Promise.reject(dummyError);
+      };
+
+      subject.updateUserTokenAppearance(tokenValueContainer, tokenValueElement, tokenValue)
+      .then(() => {
+        expect(window.Flash.calls.count()).toBe(0);
+      })
+      .then(done)
+      .catch(done.fail);
+    });
+
+    it('does nothing if user cannot be found', (done) => {
+      const { tokenValueContainer, tokenValueElement } = findElements(authorToken);
+      const tokenValue = tokenValueElement.innerText;
+      usersCacheSpy = (username) => {
+        expect(`@${username}`).toBe(tokenValue);
+        return Promise.resolve(undefined);
+      };
+
+      subject.updateUserTokenAppearance(tokenValueContainer, tokenValueElement, tokenValue)
+      .then(() => {
+        expect(tokenValueElement.innerText).toBe(tokenValue);
+      })
+      .then(done)
+      .catch(done.fail);
+    });
+
+    it('replaces author token with avatar and display name', (done) => {
+      const dummyUser = {
+        name: 'Important Person',
+        avatar_url: 'https://host.invalid/mypics/avatar.png',
+      };
+      const { tokenValueContainer, tokenValueElement } = findElements(authorToken);
+      const tokenValue = tokenValueElement.innerText;
+      usersCacheSpy = (username) => {
+        expect(`@${username}`).toBe(tokenValue);
+        return Promise.resolve(dummyUser);
+      };
+
+      subject.updateUserTokenAppearance(tokenValueContainer, tokenValueElement, tokenValue)
+      .then(() => {
+        expect(tokenValueContainer.dataset.originalValue).toBe(tokenValue);
+        expect(tokenValueElement.innerText.trim()).toBe(dummyUser.name);
+        const avatar = tokenValueElement.querySelector('img.avatar');
+        expect(avatar.src).toBe(dummyUser.avatar_url);
+      })
+      .then(done)
+      .catch(done.fail);
     });
   });
 

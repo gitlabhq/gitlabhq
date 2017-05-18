@@ -90,6 +90,7 @@
 .filtered-search-term {
   display: -webkit-flex;
   display: flex;
+  flex-shrink: 0;
   margin-top: 5px;
   margin-bottom: 5px;
 
