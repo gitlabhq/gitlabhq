@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# script/console: Launch a console for the application. Optionally allow an
+#                 environment to be passed in to let the script handle the
+#                 specific requirements for connecting to a console for that
+#                 environment.
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+if [ -n "$1" ]; then
+  # use first argument as an environment name. Use this to decide how to connect
+  # to the appropriate console.
+  echo "Sorry, I don't know how to connect to the '$1' environment."
+  exit 1
+else
+  # no argument provided, so just run the local console in the development
+  # environment.
+  bin/rails console
+fi
