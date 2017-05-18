@@ -9,10 +9,11 @@ module Gitlab
 
       def initialize(repository)
         @gitaly_repo = repository.gitaly_repository
-        @stub = Gitaly::Commit::Stub.new(nil, nil, channel_override: repository.gitaly_channel)
+        @repository = repository
       end
 
       def is_ancestor(ancestor_id, child_id)
+        stub = GitalyClient.stub(:commit, @repository.storage)
         request = Gitaly::CommitIsAncestorRequest.new(
           repository: @gitaly_repo,
           ancestor_id: ancestor_id,

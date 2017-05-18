@@ -6,7 +6,7 @@ module Gitlab
       # 'repository' is a Gitlab::Git::Repository
       def initialize(repository)
         @gitaly_repo = repository.gitaly_repository
-        @stub = Gitaly::Ref::Stub.new(nil, nil, channel_override: repository.gitaly_channel)
+        @stub = GitalyClient.stub(:ref, repository.storage)
       end
 
       def default_branch_name

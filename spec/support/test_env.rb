@@ -120,7 +120,7 @@ module TestEnv
   end
 
   def setup_gitaly
-    socket_path = Gitlab::GitalyClient.get_address('default').sub(/\Aunix:/, '')
+    socket_path = Gitlab::GitalyClient.address('default').sub(/\Aunix:/, '')
     gitaly_dir = File.dirname(socket_path)
 
     unless File.directory?(gitaly_dir) || system('rake', "gitlab:gitaly:install[#{gitaly_dir}]")
