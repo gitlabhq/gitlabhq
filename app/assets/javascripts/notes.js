@@ -578,12 +578,12 @@ const normalizeNewlines = function(str) {
     Updates the current note field.
      */
 
-    Notes.prototype.updateNote = function(_xhr, noteEntity, _status) {
+    Notes.prototype.updateNote = function(noteEntity, $targetNote) {
       var $noteEntityEl, $note_li;
       // Convert returned HTML to a jQuery object so we can modify it further
       $noteEntityEl = $(noteEntity.html);
       $noteEntityEl.addClass('fade-in-full');
-      this.revertNoteEditForm();
+      this.revertNoteEditForm($targetNote);
       gl.utils.localTimeAgo($('.js-timeago', $noteEntityEl));
       $noteEntityEl.renderGFM();
       $noteEntityEl.find('.js-task-list-container').taskList('enable');
@@ -1375,7 +1375,7 @@ const normalizeNewlines = function(str) {
       gl.utils.ajaxPost(formAction, formData)
         .then((note) => {
           // Submission successful! render final note element
-          this.updateNote(null, note, null);
+          this.updateNote(note, $editingNote);
         })
         .fail(() => {
           // Submission failed, revert back to original note
