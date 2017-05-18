@@ -16,10 +16,6 @@
         type: String,
         required: true,
       },
-      updatedAt: {
-        type: String,
-        required: true,
-      },
       taskStatus: {
         type: String,
         required: true,
@@ -29,7 +25,6 @@
       return {
         preAnimation: false,
         pulseAnimation: false,
-        timeAgoEl: $('.js-issue-edited-ago'),
       };
     },
     watch: {
@@ -37,12 +32,6 @@
         this.animateChange();
 
         this.$nextTick(() => {
-          const toolTipTime = gl.utils.formatDate(this.updatedAt);
-
-          this.timeAgoEl.attr('datetime', this.updatedAt)
-            .attr('title', toolTipTime)
-            .tooltip('fixTitle');
-
           this.renderGFM();
         });
       },

@@ -3,6 +3,9 @@ export default class Store {
     titleHtml,
     descriptionHtml,
     descriptionText,
+    updatedAt,
+    updatedByName,
+    updatedByPath,
   }) {
     this.state = {
       titleHtml,
@@ -10,7 +13,9 @@ export default class Store {
       descriptionHtml,
       descriptionText,
       taskStatus: '',
-      updatedAt: '',
+      updatedAt,
+      updatedByName,
+      updatedByPath,
     };
   }
 
@@ -21,5 +26,7 @@ export default class Store {
     this.state.descriptionText = data.description_text;
     this.state.taskStatus = data.task_status;
     this.state.updatedAt = data.updated_at;
+    this.state.updatedByName = data.updated_by_name;
+    this.state.updatedByPath = data.updated_by_path;
   }
 }

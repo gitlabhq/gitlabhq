@@ -12,10 +12,14 @@ document.addEventListener('DOMContentLoaded', () => new Vue({
     const issuableTitleElement = issuableElement.querySelector('.title');
     const issuableDescriptionElement = issuableElement.querySelector('.wiki');
     const issuableDescriptionTextarea = issuableElement.querySelector('.js-task-list-field');
+
     const {
       canUpdate,
       endpoint,
       issuableRef,
+      updatedAt,
+      updatedByName,
+      updatedByPath,
     } = issuableElement.dataset;
 
     return {
@@ -25,6 +29,9 @@ document.addEventListener('DOMContentLoaded', () => new Vue({
       initialTitle: issuableTitleElement.innerHTML,
       initialDescriptionHtml: issuableDescriptionElement ? issuableDescriptionElement.innerHTML : '',
       initialDescriptionText: issuableDescriptionTextarea ? issuableDescriptionTextarea.textContent : '',
+      updatedAt,
+      updatedByName,
+      updatedByPath,
     };
   },
   render(createElement) {
@@ -36,6 +43,9 @@ document.addEventListener('DOMContentLoaded', () => new Vue({
         initialTitle: this.initialTitle,
         initialDescriptionHtml: this.initialDescriptionHtml,
         initialDescriptionText: this.initialDescriptionText,
+        updatedAt: this.updatedAt,
+        updatedByName: this.updatedByName,
+        updatedByPath: this.updatedByPath,
       },
     });
   },

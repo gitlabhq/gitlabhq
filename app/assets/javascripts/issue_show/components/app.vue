@@ -5,6 +5,7 @@ import Service from '../services/index';
 import Store from '../stores';
 import titleComponent from './title.vue';
 import descriptionComponent from './description.vue';
+import editedComponent from './edited.vue';
 
 export default {
   props: {
@@ -34,12 +35,30 @@ export default {
       required: false,
       default: '',
     },
+    updatedAt: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    updatedByName: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    updatedByPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     const store = new Store({
       titleHtml: this.initialTitle,
       descriptionHtml: this.initialDescriptionHtml,
       descriptionText: this.initialDescriptionText,
+      updatedAt: this.updatedAt,
+      updatedByName: this.updatedByName,
+      updatedByPath: this.updatedByPath,
     });
 
     return {
@@ -50,6 +69,7 @@ export default {
   components: {
     descriptionComponent,
     titleComponent,
+    editedComponent,
   },
   created() {
     const resource = new Service(this.endpoint);
@@ -90,7 +110,12 @@ export default {
       :can-update="canUpdate"
       :description-html="state.descriptionHtml"
       :description-text="state.descriptionText"
-      :updated-at="state.updatedAt"
       :task-status="state.taskStatus" />
+    <edited-component
+      v-if="!!state.updatedAt"
+      :updated-at="state.updatedAt"
+      :updated-by-name="state.updatedByName"
+      :updated-by-path="state.updatedByPath"
+    />
   </div>
 </template>
