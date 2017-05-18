@@ -1,0 +1,24 @@
+#!/bin/sh
+
+# script/setup: Set up application for the first time after cloning, or set it
+#               back to the initial first unused state.
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+script/bootstrap
+
+echo "==> Setting up DB…"
+# reset database to a fresh state.
+bin/rake db:create db:reset
+
+if [ -z "$RAILS_ENV" ] && [ -z "$RACK_ENV" ]; then
+  # Only things for a development environment will run inside here
+  # Do things that need to be done to the application to set up for the first
+  # time. Or things needed to be run to reset the application back to first
+  # use experience. These things are scoped to the application's domain.
+  true
+fi
+
+echo "==> App is now ready to go!"
