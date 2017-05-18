@@ -29,31 +29,12 @@ module Gitlab
         Gitlab::Git::DiffCollection.new(response, options)
       end
 
-<<<<<<< HEAD
-      class << self
-        def diff_from_parent(commit, options = {})
-          repository = commit.project.repository
-          gitaly_repo = repository.gitaly_repository
-          stub = Gitaly::Diff::Stub.new(nil, nil, channel_override: repository.gitaly_channel)
-          parent = commit.parents[0]
-          parent_id = parent ? parent.id : EMPTY_TREE_ID
-          request = Gitaly::CommitDiffRequest.new(
-            repository: gitaly_repo,
-            left_commit_id: parent_id,
-            right_commit_id: commit.id,
-            ignore_whitespace_change: options.fetch(:ignore_whitespace_change, false),
-            paths: options.fetch(:paths, [])
-          )
-
-          Gitlab::Git::DiffCollection.new(stub.commit_diff(request), options)
-=======
       def commit_deltas(commit)
         request_params = commit_diff_request_params(commit)
 
         response = diff_service_stub.commit_delta(Gitaly::CommitDeltaRequest.new(request_params))
         response.flat_map do |msg|
           msg.deltas.map { |d| Gitlab::Git::Diff.new(d) }
->>>>>>> upstream/master
         end
       end
 

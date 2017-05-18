@@ -961,12 +961,6 @@ class User < ActiveRecord::Base
   end
 
   def invalidate_cache_counts
-<<<<<<< HEAD
-    Rails.cache.delete(['users', id, 'assigned_open_merge_requests_count'])
-    Rails.cache.delete(['users', id, 'assigned_open_issues_count'])
-  end
-
-=======
     invalidate_issue_cache_counts
     invalidate_merge_request_cache_counts
   end
@@ -979,7 +973,6 @@ class User < ActiveRecord::Base
     Rails.cache.delete(['users', id, 'assigned_open_merge_requests_count'])
   end
 
->>>>>>> upstream/master
   def todos_done_count(force: false)
     Rails.cache.fetch(['users', id, 'todos_done_count'], force: force) do
       TodosFinder.new(self, state: :done).execute.count

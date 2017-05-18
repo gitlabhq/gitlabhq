@@ -3,7 +3,6 @@ class IssueAssignee < ActiveRecord::Base
 
   belongs_to :issue
   belongs_to :assignee, class_name: "User", foreign_key: :user_id
-<<<<<<< HEAD
 
   # EE-specific
   after_create :update_elasticsearch_index
@@ -20,6 +19,4 @@ class IssueAssignee < ActiveRecord::Base
       )
     end
   end
-=======
->>>>>>> upstream/master
 end

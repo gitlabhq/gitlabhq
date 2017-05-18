@@ -5,18 +5,7 @@ describe 'Auto deploy' do
   let(:project) { create(:project, :repository) }
 
   before do
-<<<<<<< HEAD
-    project.create_kubernetes_service(
-      active: true,
-      properties: {
-        namespace: project.path,
-        api_url: 'https://kubernetes.example.com',
-        token: 'a' * 40
-      }
-    )
-=======
     create :kubernetes_service, project: project
->>>>>>> upstream/master
     project.team << [user, :master]
     login_as user
   end
