@@ -82,10 +82,7 @@ export default {
           :class="{'label-truncated has-tooltip': isBranchTitleLong(mr.targetBranch)}"
           :title="isBranchTitleLong(mr.targetBranch) ? mr.targetBranch : ''"
           data-placement="bottom">
-          <a
-            :href="mr.targetBranchCommitsPath">
-            {{mr.targetBranch}}
-          </a>
+          <a :href="mr.targetBranchCommitsPath">{{mr.targetBranch}}</a>
         </span>
         <span
           v-if="shouldShowCommitsBehindText"
