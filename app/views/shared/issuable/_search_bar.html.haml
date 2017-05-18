@@ -112,7 +112,7 @@
 - unless type === :boards_modal
   :javascript
     $(document).off('page:restore').on('page:restore', function (event) {
-      if (gl.FilteredSearchManager) {
+      if (gl.FilteredSearchManager && document.querySelector('.filtered-search')) {
         const filteredSearchManager = new gl.FilteredSearchManager();
         filteredSearchManager.setup();
       }
