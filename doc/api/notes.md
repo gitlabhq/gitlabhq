@@ -1,4 +1,4 @@
-# Notes
+# Notes API
 
 Notes are comments on snippets, issues or merge requests.
 
