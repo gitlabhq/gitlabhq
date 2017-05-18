@@ -20,7 +20,7 @@ module Gitlab
           child_id: child_id
         )
 
-        @stub.commit_is_ancestor(request).value
+        stub.commit_is_ancestor(request).value
       end
 
       class << self
