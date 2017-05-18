@@ -6,6 +6,9 @@ export default {
     description_text: 'this is a description',
     issue_number: 1,
     task_status: '2 of 4 completed',
+    updated_at: '2015-05-15T12:31:04.428Z',
+    updated_by_name: 'Some User',
+    updated_by_path: '/some_user',
   },
   secondRequest: {
     title: '<p>2</p>',
@@ -14,6 +17,9 @@ export default {
     description_text: '42',
     issue_number: 1,
     task_status: '0 of 0 completed',
+    updated_at: '2016-05-15T12:31:04.428Z',
+    updated_by_name: 'Other User',
+    updated_by_path: '/other_user',
   },
   issueSpecRequest: {
     title: '<p>this is a title</p>',
@@ -22,5 +28,8 @@ export default {
     description_text: '- [ ] Task List Item',
     issue_number: 1,
     task_status: '0 of 1 completed',
+    updated_at: '2017-05-15T12:31:04.428Z',
+    updated_by_name: 'Last User',
+    updated_by_path: '/last_user',
   },
 };

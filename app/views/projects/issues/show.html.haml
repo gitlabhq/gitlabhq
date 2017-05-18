@@ -53,10 +53,9 @@
   .detail-page-description.content-block
     .issue-title-data.hidden{ "data" => { "endpoint" => rendered_title_namespace_project_issue_path(@project.namespace, @project, @issue),
       "can-update-tasks-class" => can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : '',
+      "is-edited": @issue.is_edited?,
     } }
     .issue-title-entrypoint
-
-    = edited_time_ago_with_tooltip(@issue, placement: 'bottom', html_class: 'issue_edited_ago')
 
     #merge-requests{ data: { url: referenced_merge_requests_namespace_project_issue_url(@project.namespace, @project, @issue) } }
       // This element is filled in using JavaScript.
