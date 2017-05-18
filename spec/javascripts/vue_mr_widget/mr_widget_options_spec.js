@@ -227,7 +227,6 @@ describe('mrWidgetOptions', () => {
 
     describe('handleMounted', () => {
       it('should call required methods to do the initial kick-off', () => {
-        spyOn(vm, 'checkStatus');
         spyOn(vm, 'initDeploymentsPolling');
         spyOn(vm, 'setFavicon');
 
