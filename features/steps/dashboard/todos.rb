@@ -138,7 +138,7 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
   end
 
   step 'I should be directed to the corresponding page' do
-    page.should have_css('.identifier', text: 'Merge Request !1')
+    page.should have_css('.identifier', text: 'Merge request !1')
     # Merge request page loads and issues a number of Ajax requests
     wait_for_ajax
   end
