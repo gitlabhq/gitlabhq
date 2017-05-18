@@ -1,4 +1,4 @@
-# Namespaces
+# Namespaces API
 
 Usernames and groupnames fall under a special category called namespaces.
 
