@@ -184,34 +184,21 @@ class MergeRequestEntity < IssuableEntity
                                                                merge_request)
   end
 
-  expose :codeclimate do
+  expose :codeclimate, if: lambda { |mr, _| mr.has_ci? &&
+                                    mr.codeclimate_artifact&.success? &&
+                                    mr.base_codeclimate_artifact&.success? } do
     expose :head do |merge_request|
-      if merge_request.head_pipeline
-        build = merge_request.head_pipeline.artifacts.find(&:codeclimate?)
-
-        if build && build.success?
-          raw_namespace_project_build_artifacts_url(merge_request.project.namespace,
-                                                    merge_request.project,
-                                                    build,
-                                                    path: 'codeclimate.json')
-        end
-      end
+      raw_namespace_project_build_artifacts_url(merge_request.project.namespace,
+                                                merge_request.project,
+                                                merge_request.codeclimate_artifact,
+                                                path: 'codeclimate.json')
     end
 
-    expose :base do  |merge_request|
-      base_sha = merge_request.merge_request_diff.base_commit_sha
-      pipeline = merge_request.project.pipelines.find_by(sha: base_sha)
-
-      if pipeline
-        build = pipeline.artifacts.find(&:codeclimate?)
-
-        if build && build.success?
-          raw_namespace_project_build_artifacts_url(merge_request.project.namespace,
-                                                    merge_request.project,
-                                                    build,
-                                                    path: 'codeclimate.json')
-        end
-      end
+    expose :base do |merge_request|
+      raw_namespace_project_build_artifacts_url(merge_request.project.namespace,
+                                                merge_request.project,
+                                                merge_request.base_codeclimate_artifact,
+                                                path: 'codeclimate.json')
     end
   end
 

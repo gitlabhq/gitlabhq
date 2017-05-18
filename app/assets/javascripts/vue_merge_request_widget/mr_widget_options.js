@@ -62,7 +62,7 @@ export default {
       return this.mr.deployments.length;
     },
     shouldRenderCodeQuality() {
-      return this.mr.codeclimate.head && this.mr.codeclimate.head.length;
+      return this.mr.codeclimate;
     },
   },
   methods: {

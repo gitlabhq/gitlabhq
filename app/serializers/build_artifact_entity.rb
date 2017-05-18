@@ -11,6 +11,4 @@ class BuildArtifactEntity < Grape::Entity
       build.project,
       build)
   end
-
-  expose :codeclimate?, as: :codeclimate
 end

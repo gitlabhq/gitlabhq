@@ -396,6 +396,12 @@ module Ci
         .fabricate!
     end
 
+    def codeclimate_artifact
+      artifacts.codeclimate.find do |artifact|
+        artifact.options[:artifacts][:paths] == ['codeclimate.json']
+      end
+    end
+
     private
 
     def pipeline_data
