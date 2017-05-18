@@ -722,10 +722,6 @@
 
   &.affix {
     left: 0;
-<<<<<<< HEAD
-    z-index: 100;
-=======
->>>>>>> upstream/master
     transition: right .15s;
 
     @media (max-width: $screen-xs-max) {
