@@ -371,7 +371,7 @@ class User < ActiveRecord::Base
     end
 
     def find_by_full_path(path, follow_redirects: false)
-      namespace = Namespace.find_by_full_path(path, follow_redirects: follow_redirects)
+      namespace = Namespace.for_user.find_by_full_path(path, follow_redirects: follow_redirects)
       namespace&.owner
     end
 
