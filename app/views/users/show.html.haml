@@ -10,7 +10,7 @@
   = auto_discovery_link_tag(:atom, user_url(@user, format: :atom), title: "#{@user.name} activity")
 
 .user-profile
-  .cover-block.user-cover-block
+  .cover-block.user-cover-block.layout-nav
     .cover-controls
       - if @user == current_user
         = link_to profile_path, class: 'btn btn-gray has-tooltip', title: 'Edit profile', 'aria-label': 'Edit profile' do
@@ -82,7 +82,7 @@
     .scrolling-tabs-container
       .fade-left= icon('angle-left')
       .fade-right= icon('angle-right')
-      %ul.nav-links.center.user-profile-nav.scrolling-tabs
+      %ul.nav-links.user-profile-nav.scrolling-tabs
         %li.js-activity-tab
           = link_to user_path, data: { target: 'div#activity', action: 'activity', toggle: 'tab' } do
             Activity
