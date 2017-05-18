@@ -969,6 +969,12 @@ RSpec/DescribeSymbol:
 RSpec/DescribedClass:
   Enabled: true
 
+# Configuration parameters: CustomIncludeMethods.
+RSpec/EmptyExampleGroup:
+  Enabled: true
+  CustomIncludeMethods:
+    - run_permission_checks
+
 # Checks for long example.
 RSpec/ExampleLength:
   Enabled: false
