@@ -198,39 +198,28 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
-      # It's a block, not a hash, disabling style check for hash
-      # rubocop:disable Style/AlignHash
-      get '/builds/:id/:action', as: 'action_legacy_build',
-        to: redirect { |params, req|
-          args = params.values_at(:namespace_id, :project_id, :id)
+      redirect_builds_to_jobs = redirect do |params, req|
+        args = params.values_at(:namespace_id, :project_id, :id).compact
+        url_helpers = Gitlab::Routing.url_helpers
 
+        if params[:id]
           case params[:action]
           when 'status'
-            Gitlab::Routing.url_helpers.status_namespace_project_job_path(*args, format: params[:format])
+            url_helpers.status_namespace_project_job_path(*args, format: params[:format])
           when 'trace'
-            Gitlab::Routing.url_helpers.trace_namespace_project_job_path(*args, format: params[:format])
+            url_helpers.trace_namespace_project_job_path(*args, format: params[:format])
           when 'raw'
-            Gitlab::Routing.url_helpers.raw_namespace_project_job_path(*args)
-          else
-            Gitlab::Routing.url_helpers.namespace_project_job_path(*args)
+            url_helpers.raw_namespace_project_job_path(*args)
+          else # show
+            url_helpers.namespace_project_job_path(*args)
           end
-        }
+        else # index
+          url_helpers.namespace_project_jobs_path(*args)
+        end
+      end
 
-      # It's a block, not a hash, disabling style check for hash
-      # rubocop:disable Style/AlignHash
-      get '/builds/:id', as: 'legacy_build',
-        to: redirect { |params, req|
-          Gitlab::Routing.url_helpers.namespace_project_job_path(
-            params[:namespace_id], params[:project_id], params[:id])
-        }
-
-      # It's a block, not a hash, disabling style check for hash
-      # rubocop:disable Style/AlignHash
-      get '/builds', as: 'legacy_builds',
-        to: redirect { |params, req|
-          Gitlab::Routing.url_helpers.namespace_project_jobs_path(
-            params[:namespace_id], params[:project_id])
-        }
+      get '/builds(/:id(/:action))', to: redirect_builds_to_jobs,
+                                     as: 'legacy_build'
 
       resources :hooks, only: [:index, :create, :edit, :update, :destroy], constraints: { id: /\d+/ } do
         member do
