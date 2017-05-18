@@ -41,6 +41,14 @@ module CiStatusHelper
     when 'manual'
       _('blocked')
     else
+      # All states are already being translated inside the detailed statuses:
+      # :running => Gitlab::Ci::Status::Running
+      # :skipped => Gitlab::Ci::Status::Skipped
+      # :failed => Gitlab::Ci::Status::Failed
+      # :success => Gitlab::Ci::Status::Success
+      # :canceled => Gitlab::Ci::Status::Canceled
+      # The following states are customized above:
+      # :manual => Gitlab::Ci::Status::Manual
       _(status)
     end
   end
