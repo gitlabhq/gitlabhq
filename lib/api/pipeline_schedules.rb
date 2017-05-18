@@ -17,8 +17,6 @@ module API
       get ':id/pipeline_schedules' do
         authorize! :read_pipeline_schedule, user_project
 
-        pipeline_schedules = user_project.pipeline_schedules.preload([:owner, :last_pipeline])
-
         present paginate(pipeline_schedules), with: Entities::PipelineSchedule
       end
 
@@ -31,7 +29,6 @@ module API
       get ':id/pipeline_schedules/:pipeline_schedule_id' do
         authorize! :read_pipeline_schedule, user_project
 
-        pipeline_schedule = user_project.pipeline_schedules.find(params.delete(:pipeline_schedule_id))
         return not_found!('PipelineSchedule') unless pipeline_schedule
 
         present pipeline_schedule, with: Entities::PipelineSchedule
@@ -75,7 +72,6 @@ module API
       put ':id/pipeline_schedules/:pipeline_schedule_id' do
         authorize! :create_pipeline_schedule, user_project
 
-        pipeline_schedule = user_project.pipeline_schedules.find(params.delete(:pipeline_schedule_id))
         return not_found!('PipelineSchedule') unless pipeline_schedule
 
         if pipeline_schedule.update(declared_params(include_missing: false))
@@ -94,7 +90,6 @@ module API
       post ':id/pipeline_schedules/:pipeline_schedule_id/take_ownership' do
         authorize! :create_pipeline_schedule, user_project
 
-        pipeline_schedule = user_project.pipeline_schedules.find(params.delete(:pipeline_schedule_id))
         return not_found!('PipelineSchedule') unless pipeline_schedule
 
         if pipeline_schedule.own!(current_user)
@@ -113,10 +108,23 @@ module API
       delete ':id/pipeline_schedules/:pipeline_schedule_id' do
         authorize! :admin_pipeline_schedule, user_project
 
-        pipeline_schedule = user_project.pipeline_schedules.find(params.delete(:pipeline_schedule_id))
         return not_found!('PipelineSchedule') unless pipeline_schedule
 
         present pipeline_schedule.destroy, with: Entities::PipelineSchedule
+      end
+    end
+
+    helpers do
+      def pipeline_schedules
+        @pipeline_schedules ||=
+          user_project.pipeline_schedules.preload([:owner, :last_pipeline])
+      end
+
+      def pipeline_schedule
+        @pipeline_schedule ||=
+          user_project.pipeline_schedules
+                      .preload([:owner, :last_pipeline])
+                      .find(params.delete(:pipeline_schedule_id))
       end
     end
   end
