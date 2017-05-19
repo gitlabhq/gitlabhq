@@ -1,4 +1,4 @@
-# V3 to V4 version
+# API V3 to API V4
 
 Since GitLab 9.0, API V4 is the preferred version to be used.
 
@@ -65,7 +65,6 @@ Below are the changes made between V3 and V4.
 - Return 202 with JSON body on async removals on V4 API (`DELETE /projects/:id/repository/merged_branches` and `DELETE /projects/:id`) [!9449](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9449)
 - `GET /projects/:id/milestones?iid[]=x&iid[]=y` array filter has been renamed to `iids` [!9096](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9096)
 - Return basic info about pipeline in `GET /projects/:id/pipelines` [!8875](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8875)
-- Simplify project payload exposed on Environment endpoints [!9675](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9675)
 - Renamed all `build` references to `job` [!9463](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9463)
 - Drop `GET /projects/:id/repository/commits/:sha/jobs` [!9463](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9463)
 - Rename Build Triggers to be Pipeline Triggers API [!9713](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9713)
@@ -81,11 +80,4 @@ Below are the changes made between V3 and V4.
   - `GET /projects/:id/repository/blobs/:sha` now returns JSON attributes for the blob identified by `:sha`, instead of finding the commit identified by `:sha` and returning the raw content of the blob in that commit identified by the required `?filepath=:filepath`
   - Moved `GET /projects/:id/repository/commits/:sha/blob?file_path=:file_path`  and `GET /projects/:id/repository/blobs/:sha?file_path=:file_path` to `GET /projects/:id/repository/files/:file_path/raw?ref=:sha`
   - `GET /projects/:id/repository/tree` parameter `ref_name` has been renamed to `ref` for consistency
-  - `confirm` parameter for `POST /users` has been deprecated in favor of `skip_confirmation` parameter
-
-#### EE-specific
-
-- Remove the ProjectGitHook API. Use the ProjectPushRule API instead [!1301](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1301)
-- Removed `repository_storage` from `PUT /application/settings` and `GET /application/settings` (use `repository_storages` instead) [!1307](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1307)
-- Removed `elasticsearch_host` and `elasticsearch_port` from `PUT /application/settings` (use `elasticsearch_url` instead) [!1305](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1305)
-- Make approval API more RESTful. Use `POST /projects/:id/merge_requests/:merge_request_iid/unapprove` to unapprove a merge request. [!1518](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1518)
+- `confirm` parameter for `POST /users` has been deprecated in favor of `skip_confirmation` parameter

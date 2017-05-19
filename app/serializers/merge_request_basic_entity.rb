@@ -1,4 +1,5 @@
 class MergeRequestBasicEntity < Grape::Entity
+  expose :assignee_id
   expose :merge_status
   expose :merge_error
   expose :state

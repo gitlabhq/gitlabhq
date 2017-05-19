@@ -38,4 +38,27 @@ describe Gitlab::GitalyClient::Ref do
       client.default_branch_name
     end
   end
+
+  describe '#local_branches' do
+    it 'sends a find_local_branches message' do
+      expect_any_instance_of(Gitaly::Ref::Stub).
+        to receive(:find_local_branches).with(gitaly_request_with_repo_path(repo_path)).
+          and_return([])
+
+      client.local_branches
+    end
+
+    it 'parses and sends the sort parameter' do
+      expect_any_instance_of(Gitaly::Ref::Stub).
+        to receive(:find_local_branches).
+          with(gitaly_request_with_params(sort_by: :UPDATED_DESC)).
+          and_return([])
+
+      client.local_branches(sort_by: 'updated_desc')
+    end
+
+    it 'raises an argument error if an invalid sort_by parameter is passed' do
+      expect { client.local_branches(sort_by: 'invalid_sort') }.to raise_error(ArgumentError)
+    end
+  end
 end

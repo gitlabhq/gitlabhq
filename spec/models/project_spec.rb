@@ -1042,13 +1042,6 @@ describe Project, models: true do
     end
   end
 
-  describe '#pipeline' do
-    let(:project) { create :project }
-    let(:pipeline) { create :ci_pipeline, project: project, ref: 'master' }
-
-    subject { project.pipeline(pipeline.sha, 'master') }
-  end
-
   describe '#pipeline_for' do
     let(:project) { create(:project, :repository) }
     let!(:pipeline) { create_pipeline }

@@ -953,10 +953,20 @@ describe User, models: true do
     end
 
     context 'with a group route matching the given path' do
-      let!(:group) { create(:group, path: 'group_path') }
+      context 'when the group namespace has an owner_id (legacy data)' do
+        let!(:group) { create(:group, path: 'group_path', owner: user) }
 
-      it 'returns nil' do
-        expect(User.find_by_full_path('group_path')).to eq(nil)
+        it 'returns nil' do
+          expect(User.find_by_full_path('group_path')).to eq(nil)
+        end
+      end
+
+      context 'when the group namespace does not have an owner_id' do
+        let!(:group) { create(:group, path: 'group_path') }
+
+        it 'returns nil' do
+          expect(User.find_by_full_path('group_path')).to eq(nil)
+        end
       end
     end
   end

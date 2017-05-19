@@ -56,6 +56,7 @@
   - [update_user_activity, 1]
   - [propagate_service_template, 1]
   # EE specific queues
+  - [ldap_group_sync, 2]
   - [geo, 1]
   - [project_mirror, 1]
   - [project_update_repository_storage, 1]

@@ -43,7 +43,7 @@ describe Gitlab::LDAP::Adapter, lib: true do
   describe '#user_attributes' do
     it 'appends EE-specific attributes' do
       stub_ldap_config(uid: 'uid', sync_ssh_keys: 'sshPublicKey')
-      expect(adapter.user_attributes).to match_array(%w(uid dn cn mail sshPublicKey))
+      expect(adapter.user_attributes).to match_array(%w(uid dn cn mail sshPublicKey memberof))
     end
   end
 end
