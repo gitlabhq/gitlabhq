@@ -49,7 +49,6 @@ const normalizeNewlines = function(str) {
       this.keydownNoteText = this.keydownNoteText.bind(this);
       this.toggleCommitList = this.toggleCommitList.bind(this);
       this.postComment = this.postComment.bind(this);
-      this.clearFlashWrapper = this.clearFlash.bind(this);
 
       this.notes_url = notes_url;
       this.note_ids = note_ids;
