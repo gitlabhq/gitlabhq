@@ -123,6 +123,7 @@ ActiveRecord::Schema.define(version: 20170525174156) do
     t.integer "cached_markdown_version"
     t.boolean "clientside_sentry_enabled", default: false, null: false
     t.string "clientside_sentry_dsn"
+    t.boolean "prometheus_metrics_enabled", default: false, null: false
   end
 
   create_table "audit_events", force: :cascade do |t|

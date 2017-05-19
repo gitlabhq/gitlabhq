@@ -10,15 +10,15 @@ module Gitlab
 
     def self.settings
       @settings ||= {
-        enabled:               current_application_settings[:metrics_enabled],
-        prometheus_metrics_enabled: true,
-        pool_size:             current_application_settings[:metrics_pool_size],
-        timeout:               current_application_settings[:metrics_timeout],
-        method_call_threshold: current_application_settings[:metrics_method_call_threshold],
-        host:                  current_application_settings[:metrics_host],
-        port:                  current_application_settings[:metrics_port],
-        sample_interval:       current_application_settings[:metrics_sample_interval] || 15,
-        packet_size:           current_application_settings[:metrics_packet_size] || 1
+        enabled:                    current_application_settings[:metrics_enabled],
+        prometheus_metrics_enabled: current_application_settings[:prometheus_metrics_enabled],
+        pool_size:                  current_application_settings[:metrics_pool_size],
+        timeout:                    current_application_settings[:metrics_timeout],
+        method_call_threshold:      current_application_settings[:metrics_method_call_threshold],
+        host:                       current_application_settings[:metrics_host],
+        port:                       current_application_settings[:metrics_port],
+        sample_interval:            current_application_settings[:metrics_sample_interval] || 15,
+        packet_size:                current_application_settings[:metrics_packet_size] || 1
       }
     end
 
@@ -31,7 +31,7 @@ module Gitlab
     end
 
     def self.enabled?
-      influx_metrics_enabled? || prometheus_metrics_enabled? || false
+      influx_metrics_enabled? || prometheus_metrics_enabled?
     end
 
     def self.mri?
