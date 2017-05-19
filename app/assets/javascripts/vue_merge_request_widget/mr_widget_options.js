@@ -41,8 +41,6 @@ export default {
     return {
       mr: store,
       service,
-      isLoadingMetrics: false,
-      loadingMetricsFailed: false,
     };
   },
   computed: {
@@ -93,36 +91,6 @@ export default {
         })
         .catch(() => new Flash('Something went wrong. Please try again.'));
     },
-    checkCodeclimateMetrics() {
-      if (this.shouldRenderCodeQuality) {
-        const { head, base } = this.mr.codeclimate;
-
-        this.isLoadingMetrics = true;
-        this.service.fetchCodeclimate(head)
-          .then((resp) => {
-            const data = resp.json();
-            this.mr.setCodeclimateHeadMetrics(data);
-
-            this.service.fetchCodeclimate(base)
-              .then((response) => {
-                const baseData = response.json();
-                this.mr.setCodeclimateBaseMetrics(baseData);
-              })
-              .then(() => this.mr.compareCodeclimateMetrics())
-              .then(() => {
-                this.isLoadingMetrics = false;
-              })
-              .catch(() => {
-                this.isLoadingMetrics = false;
-                this.loadingMetricsFailed = true;
-              });
-          })
-          .catch(() => {
-            this.isLoadingMetrics = false;
-            this.loadingMetricsFailed = true;
-          });
-      }
-    },
     initPolling() {
       this.pollingInterval = new gl.SmartInterval({
         callback: this.checkStatus,
@@ -168,9 +136,7 @@ export default {
             document.body.appendChild(el);
           }
         })
-        .catch(() => {
-          new Flash('Something went wrong. Please try again.'); // eslint-disable-line
-        });
+        .catch(() => new Flash('Something went wrong. Please try again.'));
     },
     resumePolling() {
       this.pollingInterval.resume();
@@ -218,7 +184,6 @@ export default {
   },
   created() {
     this.initPolling();
-    this.checkCodeclimateMetrics();
     this.bindEventHubListeners();
   },
   mounted() {
@@ -263,10 +228,8 @@ export default {
         :service="service" />
       <mr-widget-code-quality
         v-if="shouldRenderCodeQuality"
-        :is-loading="isLoadingMetrics"
-        :loading-failed="loadingMetricsFailed"
-        :new-issues="mr.codeclimateMetrics.newIssues"
-        :resolved-issues="mr.codeclimateMetrics.resolvedIssues"
+        :mr="mr"
+        :service="service"
         />
       <component
         :is="componentName"

@@ -130,13 +130,12 @@ export default class MergeRequestStore {
   compareCodeclimateMetrics() {
     const { headIssues, baseIssues } = this.codeclimateMetrics;
 
-    const newIssues = headIssues
-      .filter(item => !baseIssues.find(el => el.fingerprint === item.fingerprint));
-    const resolvedIssues = baseIssues
-      .filter(item => !headIssues.find(el => el.fingerprint === item.fingerprint));
+    this.codeclimateMetrics.newIssues = this.filterByFingerprint(headIssues, baseIssues);
+    this.codeclimateMetrics.resolvedIssues = this.filterByFingerprint(baseIssues, headIssues);
+  }
 
-    this.codeclimateMetrics.newIssues = newIssues;
-    this.codeclimateMetrics.resolvedIssues = resolvedIssues;
+  filterByFingerprint(firstArray, secondArray) { // eslint-disable-line
+    return firstArray.filter(item => !secondArray.find(el => el.fingerprint === item.fingerprint));
   }
 
   static getAuthorObject(event) {

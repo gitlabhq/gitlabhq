@@ -4,12 +4,12 @@ import mrWidgetCodeQualityIssues from '~/vue_merge_request_widget/components/mr_
 describe('Merge Request Code Quality Issues', () => {
   let vm;
   let MRWidgetCodeQualityIssues;
+  let mountComponent;
 
   beforeEach(() => {
     MRWidgetCodeQualityIssues = Vue.extend(mrWidgetCodeQualityIssues);
+    mountComponent = props => new MRWidgetCodeQualityIssues({ propsData: props }).$mount();
   });
-
-  const mountComponent = props => new MRWidgetCodeQualityIssues({ propsData: props }).$mount();
 
   describe('Renders provided list of issues', () => {
     describe('with positions and lines', () => {

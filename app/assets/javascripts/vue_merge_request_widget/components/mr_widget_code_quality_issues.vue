@@ -18,8 +18,8 @@ export default {
     <li
       class="commit-sha"
       :class="{
-        'red': type === 'failed',
-        'green': type === 'success'
+        red: type === 'failed',
+        green: type === 'success'
       }
       "v-for="issue in issues">
       <i

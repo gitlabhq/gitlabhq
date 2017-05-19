@@ -9,23 +9,13 @@ export default {
   name: 'MRWidgetCodeQuality',
 
   props: {
-    isLoading: {
-      type: Boolean,
+    mr: {
+      type: Object,
       required: true,
     },
-    loadingFailed: {
-      type: Boolean,
+    service: {
+      type: Object,
       required: true,
-    },
-    newIssues: {
-      type: Array,
-      required: false,
-      default: () => ([]),
-    },
-    resolvedIssues: {
-      type: Array,
-      required: false,
-      default: () => ([]),
     },
   },
 
@@ -40,29 +30,48 @@ export default {
       errorIcon,
       collapseText: 'Expand',
       isCollapsed: true,
+      isLoading: false,
+      loadingFailed: false,
     };
   },
 
   computed: {
     stateIcon() {
-      return this.newIssues.length ? errorIcon : successIcon;
+      return this.mr.codeclimateMetrics.newIssues.length ? errorIcon : successIcon;
+    },
+
+    hasNoneIssues() {
+      return !this.mr.codeclimateMetrics.newIssues.length && !this.mr.codeclimateMetrics.resolvedIssues.length;
+    },
+
+    hasIssues() {
+      return this.mr.codeclimateMetrics.newIssues.length || this.mr.codeclimateMetrics.resolvedIssues.length;
     },
 
     codeText() {
+      const { newIssues, resolvedIssues } = this.mr.codeclimateMetrics;
       let newIssuesText = '';
       let resolvedIssuesText = '';
+      let text = '';
 
-      if (this.newIssues.length) {
-        newIssuesText = `degraded on ${this.newIssues.length} ${this.pointsText(this.newIssues)}`;
+      if (this.hasNoneIssues) {
+        text = 'No changes to code quality so far.';
+      }
+      if (this.hasIssues) {
+        if (newIssues.length) {
+          newIssuesText = `degraded on ${newIssues.length} ${this.pointsText(newIssues)}`;
+        }
+
+        if (resolvedIssues.length) {
+          resolvedIssuesText = `improved on ${resolvedIssues.length} ${this.pointsText(resolvedIssues)}`;
+        }
+
+        const connector = this.hasIssues ? 'and' : '';
+
+        text = `Code quality ${resolvedIssuesText} ${connector} ${newIssuesText}.`;
       }
 
-      if (this.resolvedIssues.length) {
-        resolvedIssuesText = `improved on ${this.resolvedIssues.length} ${this.pointsText(this.resolvedIssues)}`;
-      }
-
-      const connector = this.resolvedIssues.length && this.newIssues.length ? 'and' : '';
-
-      return `Code quality ${resolvedIssuesText} ${connector} ${newIssuesText}`;
+      return text;
     },
   },
 
@@ -77,6 +86,32 @@ export default {
       const text = this.isCollapsed ? 'Expand' : 'Collapse';
       this.collapseText = text;
     },
+
+    handleError() {
+      this.isLoading = false;
+      this.loadingFailed = true;
+    },
+  },
+
+  created() {
+    const { head, base } = this.mr.codeclimate;
+
+    this.isLoading = true;
+
+    this.service.fetchCodeclimate(head)
+      .then(resp => resp.json())
+      .then((data) => {
+        this.mr.setCodeclimateHeadMetrics(data);
+        this.service.fetchCodeclimate(base)
+          .then(response => response.json())
+          .then(baseData => this.mr.setCodeclimateBaseMetrics(baseData))
+          .then(() => this.mr.compareCodeclimateMetrics())
+          .then(() => {
+            this.isLoading = false;
+          })
+          .catch(() => this.handleError());
+      })
+      .catch(() => this.handleError());
   },
 };
 </script>
@@ -96,8 +131,8 @@ export default {
       <span
         class="padding-left ci-status-icon"
         :class="{
-          'ci-status-icon-failed': newIssues.length,
-          'ci-status-icon-passed': newIssues.length === 0
+          'ci-status-icon-failed': mr.codeclimateMetrics.newIssues.length,
+          'ci-status-icon-passed': mr.codeclimateMetrics.newIssues.length === 0
         }"
         v-html="stateIcon">
       </span>
@@ -108,25 +143,27 @@ export default {
       <button
         type="button"
         class="btn-link btn-blank"
+        v-if="hasIssues"
         @click="toggleCollapsed">
         {{collapseText}}
       </button>
 
       <div
         class="code-quality-container"
+        v-if="hasIssues"
         v-show="!isCollapsed">
         <issues-block
           class="js-mr-code-new-issues"
-          v-if="newIssues.length"
+          v-if="mr.codeclimateMetrics.newIssues.length"
           type="failed"
-          :issues="newIssues"
+          :issues="mr.codeclimateMetrics.newIssues"
           />
 
         <issues-block
           class="js-mr-code-resolved-issues"
-          v-if="resolvedIssues.length"
+          v-if="mr.codeclimateMetrics.resolvedIssues.length"
           type="success"
-          :issues="resolvedIssues"
+          :issues="mr.codeclimateMetrics.resolvedIssues"
           />
       </div>
     </div>

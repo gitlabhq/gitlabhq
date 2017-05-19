@@ -210,5 +210,68 @@ export default {
   "merge_commit_message_with_description": "Merge branch 'daaaa' into 'master'\n\nUpdate README.md\n\nSee merge request !22",
   "diverged_commits_count": 0,
   "only_allow_merge_if_pipeline_succeeds": false,
-  "commit_change_content_path": "/root/acets-app/merge_requests/22/commit_change_content"
+  "commit_change_content_path": "/root/acets-app/merge_requests/22/commit_change_content",
+  "codeclimate": {
+    "head": "head.json",
+    "base": "base.json"
+  }
 }
+
+export const headIssues = [
+  {
+    "check_name": "Rubocop/Lint/UselessAssignment",
+    "location": {
+      "path": "lib/six.rb",
+      "positions": {
+        "begin": {
+          "column": 6,
+          "line": 59
+        },
+        "end": {
+          "column": 7,
+          "line": 59
+        }
+      }
+    },
+    "fingerprint": "e879dd9bbc0953cad5037cde7ff0f627",
+  },
+  {
+    "categories": ["Security"],
+    "check_name": "Insecure Dependency",
+    "location": {
+      "path": "Gemfile.lock",
+      "lines": {
+        "begin": 22,
+        "end": 22
+      }
+    },
+    "fingerprint": "ca2e59451e98ae60ba2f54e3857c50e5",
+  }
+];
+
+export const baseIssues = [
+  {
+    "categories": ["Security"],
+    "check_name": "Insecure Dependency",
+    "location": {
+      "path": "Gemfile.lock",
+      "lines": {
+        "begin": 22,
+        "end": 22
+      }
+    },
+    "fingerprint": "ca2e59451e98ae60ba2f54e3857c50e5",
+  },
+  {
+    "categories": ["Security"],
+    "check_name": "Insecure Dependency",
+    "location": {
+      "path": "Gemfile.lock",
+      "lines": {
+        "begin": 21,
+        "end": 21
+      }
+    },
+    "fingerprint": "ca2354534dee94ae60ba2f54e3857c50e5",
+  }
+]

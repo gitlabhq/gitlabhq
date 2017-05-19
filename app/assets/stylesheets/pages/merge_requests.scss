@@ -790,16 +790,19 @@
 }
 
 .mr-widget-code-quality {
+  padding-top: $gl-padding-top;
+
   .padding-left {
     padding-left: $gl-padding;
   }
 
   .ci-status-icon {
     vertical-align: sub;
+
     svg {
       width: 22px;
       height: 22px;
-      margin-right: 8px;
+      margin-right: 4px;
     }
   }
 
@@ -811,7 +814,7 @@
 
     .mr-widget-code-quality-list {
       list-style: none;
-      padding: 0 31px;
+      padding: 0 36px;
       margin: 0;
 
       li.green {
