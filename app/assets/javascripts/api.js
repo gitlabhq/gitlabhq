@@ -1,148 +1,175 @@
-/* eslint-disable func-names, space-before-function-paren, quotes, object-shorthand, camelcase, no-var, comma-dangle, prefer-arrow-callback, quote-props, no-param-reassign, max-len */
+import $ from 'jquery';
 
-var Api = {
-  groupsPath: "/api/:version/groups.json",
-  groupPath: "/api/:version/groups/:id.json",
-  namespacesPath: "/api/:version/namespaces.json",
-  groupProjectsPath: "/api/:version/groups/:id/projects.json",
-  projectsPath: "/api/:version/projects.json?simple=true",
-  labelsPath: "/:namespace_path/:project_path/labels",
-  licensePath: "/api/:version/templates/licenses/:key",
-  gitignorePath: "/api/:version/templates/gitignores/:key",
-  gitlabCiYmlPath: "/api/:version/templates/gitlab_ci_ymls/:key",
-  dockerfilePath: "/api/:version/templates/dockerfiles/:key",
-  issuableTemplatePath: "/:namespace_path/:project_path/templates/:type/:key",
-  group: function(group_id, callback) {
-    var url = Api.buildUrl(Api.groupPath)
-      .replace(':id', group_id);
+const Api = {
+  groupsPath: '/api/:version/groups.json',
+  groupPath: '/api/:version/groups/:id.json',
+  namespacesPath: '/api/:version/namespaces.json',
+  groupProjectsPath: '/api/:version/groups/:id/projects.json',
+  projectsPath: '/api/:version/projects.json?simple=true',
+  labelsPath: '/:namespace_path/:project_path/labels',
+  licensePath: '/api/:version/templates/licenses/:key',
+  gitignorePath: '/api/:version/templates/gitignores/:key',
+  gitlabCiYmlPath: '/api/:version/templates/gitlab_ci_ymls/:key',
+  dockerfilePath: '/api/:version/templates/dockerfiles/:key',
+  issuableTemplatePath: '/:namespace_path/:project_path/templates/:type/:key',
+  usersPath: '/api/:version/users.json',
+
+  group(groupId, callback) {
+    const url = Api.buildUrl(Api.groupPath)
+      .replace(':id', groupId);
     return $.ajax({
-      url: url,
-      dataType: "json"
-    }).done(function(group) {
-      return callback(group);
-    });
+      url,
+      dataType: 'json',
+    })
+      .done(group => callback(group));
   },
+
   // Return groups list. Filtered by query
-  groups: function(query, options, callback) {
-    var url = Api.buildUrl(Api.groupsPath);
+  groups(query, options, callback) {
+    const url = Api.buildUrl(Api.groupsPath);
     return $.ajax({
-      url: url,
-      data: $.extend({
-        search: query,
-        per_page: 20
-      }, options),
-      dataType: "json"
-    }).done(function(groups) {
-      return callback(groups);
-    });
-  },
-  // Return namespaces list. Filtered by query
-  namespaces: function(query, callback) {
-    var url = Api.buildUrl(Api.namespacesPath);
-    return $.ajax({
-      url: url,
-      data: {
-        search: query,
-        per_page: 20
-      },
-      dataType: "json"
-    }).done(function(namespaces) {
-      return callback(namespaces);
-    });
-  },
-  // Return projects list. Filtered by query
-  projects: function(query, options, callback) {
-    var url = Api.buildUrl(Api.projectsPath);
-    return $.ajax({
-      url: url,
-      data: $.extend({
+      url,
+      data: Object.assign({
         search: query,
         per_page: 20,
-        membership: true
       }, options),
-      dataType: "json"
-    }).done(function(projects) {
-      return callback(projects);
-    });
+      dataType: 'json',
+    })
+      .done(groups => callback(groups));
   },
-  newLabel: function(namespace_path, project_path, data, callback) {
-    var url = Api.buildUrl(Api.labelsPath)
-      .replace(':namespace_path', namespace_path)
-      .replace(':project_path', project_path);
+
+  // Return namespaces list. Filtered by query
+  namespaces(query, callback) {
+    const url = Api.buildUrl(Api.namespacesPath);
     return $.ajax({
-      url: url,
-      type: "POST",
-      data: { 'label': data },
-      dataType: "json"
-    }).done(function(label) {
-      return callback(label);
-    }).error(function(message) {
-      return callback(message.responseJSON);
-    });
-  },
-  // Return group projects list. Filtered by query
-  groupProjects: function(group_id, query, callback) {
-    var url = Api.buildUrl(Api.groupProjectsPath)
-      .replace(':id', group_id);
-    return $.ajax({
-      url: url,
+      url,
       data: {
         search: query,
-        per_page: 20
+        per_page: 20,
       },
-      dataType: "json"
-    }).done(function(projects) {
-      return callback(projects);
-    });
+      dataType: 'json',
+    }).done(namespaces => callback(namespaces));
   },
+
+  // Return projects list. Filtered by query
+  projects(query, options, callback) {
+    const url = Api.buildUrl(Api.projectsPath);
+    return $.ajax({
+      url,
+      data: Object.assign({
+        search: query,
+        per_page: 20,
+        membership: true,
+      }, options),
+      dataType: 'json',
+    })
+      .done(projects => callback(projects));
+  },
+
+  newLabel(namespacePath, projectPath, data, callback) {
+    const url = Api.buildUrl(Api.labelsPath)
+      .replace(':namespace_path', namespacePath)
+      .replace(':project_path', projectPath);
+    return $.ajax({
+      url,
+      type: 'POST',
+      data: { label: data },
+      dataType: 'json',
+    })
+      .done(label => callback(label))
+      .error(message => callback(message.responseJSON));
+  },
+
+  // Return group projects list. Filtered by query
+  groupProjects(groupId, query, callback) {
+    const url = Api.buildUrl(Api.groupProjectsPath)
+      .replace(':id', groupId);
+    return $.ajax({
+      url,
+      data: {
+        search: query,
+        per_page: 20,
+      },
+      dataType: 'json',
+    })
+      .done(projects => callback(projects));
+  },
+
   // Return text for a specific license
-  licenseText: function(key, data, callback) {
-    var url = Api.buildUrl(Api.licensePath)
+  licenseText(key, data, callback) {
+    const url = Api.buildUrl(Api.licensePath)
       .replace(':key', key);
     return $.ajax({
-      url: url,
-      data: data
-    }).done(function(license) {
-      return callback(license);
-    });
+      url,
+      data,
+    })
+      .done(license => callback(license));
   },
-  gitignoreText: function(key, callback) {
-    var url = Api.buildUrl(Api.gitignorePath)
+
+  gitignoreText(key, callback) {
+    const url = Api.buildUrl(Api.gitignorePath)
       .replace(':key', key);
-    return $.get(url, function(gitignore) {
-      return callback(gitignore);
-    });
+    return $.get(url, gitignore => callback(gitignore));
   },
-  gitlabCiYml: function(key, callback) {
-    var url = Api.buildUrl(Api.gitlabCiYmlPath)
+
+  gitlabCiYml(key, callback) {
+    const url = Api.buildUrl(Api.gitlabCiYmlPath)
       .replace(':key', key);
-    return $.get(url, function(file) {
-      return callback(file);
-    });
+    return $.get(url, file => callback(file));
   },
-  dockerfileYml: function(key, callback) {
-    var url = Api.buildUrl(Api.dockerfilePath).replace(':key', key);
+
+  dockerfileYml(key, callback) {
+    const url = Api.buildUrl(Api.dockerfilePath).replace(':key', key);
     $.get(url, callback);
   },
-  issueTemplate: function(namespacePath, projectPath, key, type, callback) {
-    var url = Api.buildUrl(Api.issuableTemplatePath)
+
+  issueTemplate(namespacePath, projectPath, key, type, callback) {
+    const url = Api.buildUrl(Api.issuableTemplatePath)
       .replace(':key', key)
       .replace(':type', type)
       .replace(':project_path', projectPath)
       .replace(':namespace_path', namespacePath);
     $.ajax({
-      url: url,
-      dataType: 'json'
-    }).done(function(file) {
-      callback(null, file);
-    }).error(callback);
+      url,
+      dataType: 'json',
+    })
+      .done(file => callback(null, file))
+      .error(callback);
   },
-  buildUrl: function(url) {
+
+  users(query, options) {
+    const url = Api.buildUrl(this.usersPath);
+    return Api.wrapAjaxCall({
+      url,
+      data: Object.assign({
+        search: query,
+        per_page: 20,
+      }, options),
+      dataType: 'json',
+    });
+  },
+
+  buildUrl(url) {
+    let urlRoot = '';
     if (gon.relative_url_root != null) {
-      url = gon.relative_url_root + url;
+      urlRoot = gon.relative_url_root;
     }
-    return url.replace(':version', gon.api_version);
-  }
+    return urlRoot + url.replace(':version', gon.api_version);
+  },
+
+  wrapAjaxCall(options) {
+    return new Promise((resolve, reject) => {
+      // jQuery 2 is not Promises/A+ compatible (missing catch)
+      $.ajax(options) // eslint-disable-line promise/catch-or-return
+      .then(data => resolve(data),
+        (jqXHR, textStatus, errorThrown) => {
+          const error = new Error(`${options.url}: ${errorThrown}`);
+          error.textStatus = textStatus;
+          reject(error);
+        },
+      );
+    });
+  },
 };
 
-window.Api = Api;
+export default Api;
