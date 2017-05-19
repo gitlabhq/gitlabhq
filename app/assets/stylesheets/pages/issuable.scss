@@ -196,7 +196,7 @@
   transition: width .3s;
   background: $gray-light;
   padding: 10px 20px;
-  z-index: 2;
+  z-index: 200;
 
   &.right-sidebar-expanded {
     width: $gutter_width;
