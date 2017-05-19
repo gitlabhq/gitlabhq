@@ -1,6 +1,8 @@
 require './spec/support/sidekiq'
 
 class Gitlab::Seeder::Projects
+  include ActionView::Helpers::NumberHelper
+
   PROJECT_URLS = [
     'https://gitlab.com/gitlab-org/gitlab-test.git',
     'https://gitlab.com/gitlab-org/gitlab-ce.git',
@@ -35,6 +37,11 @@ class Gitlab::Seeder::Projects
     'https://github.com/opencontainers/runc.git',
     'https://github.com/googlesamples/android-topeka.git'
   ]
+  MASS_PROJECTS_COUNT = {
+    private: 2_000_000,
+    internal: 30_000,
+    public: 265_000
+  }
 
   attr_reader :opts
 
@@ -45,7 +52,7 @@ class Gitlab::Seeder::Projects
   def seed!
     Sidekiq::Testing.inline! do
       create_real_projects!(opts[:count])
-      create_empty_projects!
+      create_mass_projects!
     end
   end
 
@@ -94,29 +101,33 @@ class Gitlab::Seeder::Projects
     end
   end
 
-  def create_empty_projects!
+  def create_mass_projects!
     # Disable database insertion logs so speed isn't limited by ability to print to console
     old_logger = ActiveRecord::Base.logger
     ActiveRecord::Base.logger = nil
 
-    author = User.first
-
-    Project.insert_using_generate_series(1, 1_000_000) do |sql|
-      project_name = raw("'seed_project_' || seq")
-      sql.name = project_name
-      sql.path = project_name
-      sql.creator_id = author.id
-      sql.namespace_id = author.namespace_id
-    end
-
-    # Force a different/slower query plan by updating project visibility
-    Project.where(visibility_level: Gitlab::VisibilityLevel::PRIVATE).
-      limit(200_000).update_all(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
-    Project.where(visibility_level: Gitlab::VisibilityLevel::PRIVATE).
-      limit(20_000).update_all(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+    create_mass_projects_by_visility!(:private)
+    create_mass_projects_by_visility!(:internal)
+    create_mass_projects_by_visility!(:public)
 
     # Reset logging
     ActiveRecord::Base.logger = old_logger
+  end
+
+  def create_mass_projects_by_visility!(visibility)
+    users = User.limit(100)
+    groups = Group.limit(100)
+    namespaces = users + groups
+    Project.insert_using_generate_series(1, MASS_PROJECTS_COUNT[visibility], debug: true) do |sql|
+      project_name = raw("'seed_#{visibility}_project_' || seq")
+      namespace = namespaces.take
+      sql.name = project_name
+      sql.path = project_name
+      sql.creator_id = namespace.is_a?(Group) ? namespace.owner_id : users.take.id
+      sql.namespace_id = namespace.is_a?(Group) ? namespace.id : namespace.namespace_id
+      sql.visibility_level = Gitlab::VisibilityLevel.level_value(visibility.to_s)
+    end
+    puts "#{number_with_delimiter(MASS_PROJECTS_COUNT[visibility])} projects created!"
   end
 end
 
