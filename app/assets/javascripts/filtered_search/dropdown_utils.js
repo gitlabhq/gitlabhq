@@ -50,10 +50,11 @@ class DropdownUtils {
     return updatedItem;
   }
 
-  static filterHint(input, item) {
+  static filterHint(options, item) {
+    const { input, allowedKeys } = options;
     const updatedItem = item;
     const searchInput = gl.DropdownUtils.getSearchQuery(input);
-    const { lastToken, tokens } = gl.FilteredSearchTokenizer.processTokens(searchInput);
+    const { lastToken, tokens } = gl.FilteredSearchTokenizer.processTokens(searchInput, allowedKeys);
     const lastKey = lastToken.key || lastToken || '';
     const allowMultiple = item.type === 'array';
     const itemInExistingTokens = tokens.some(t => t.key === item.hint);

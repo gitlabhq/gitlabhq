@@ -3,14 +3,18 @@ import Filter from '~/droplab/plugins/filter';
 require('./filtered_search_dropdown');
 
 class DropdownHint extends gl.FilteredSearchDropdown {
-  constructor(droplab, dropdown, input, filter) {
+  constructor(droplab, dropdown, input, tokenKeys, filter) {
     super(droplab, dropdown, input, filter);
     this.config = {
       Filter: {
         template: 'hint',
-        filterFunction: gl.DropdownUtils.filterHint.bind(null, input),
+        filterFunction: gl.DropdownUtils.filterHint.bind(null, {
+          input,
+          allowedKeys: tokenKeys.getKeys(),
+        }),
       },
     };
+    this.tokenKeys = tokenKeys;
   }
 
   itemClicked(e) {
@@ -53,7 +57,7 @@ class DropdownHint extends gl.FilteredSearchDropdown {
   }
 
   renderContent() {
-    const dropdownData = gl.FilteredSearchTokenKeys.get()
+    const dropdownData = this.tokenKeys.get()
       .map(tokenKey => ({
         icon: `fa-${tokenKey.icon}`,
         hint: tokenKey.key,

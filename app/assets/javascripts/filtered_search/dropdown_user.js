@@ -5,7 +5,7 @@ import AjaxFilter from '~/droplab/plugins/ajax_filter';
 require('./filtered_search_dropdown');
 
 class DropdownUser extends gl.FilteredSearchDropdown {
-  constructor(droplab, dropdown, input, filter) {
+  constructor(droplab, dropdown, input, tokenKeys, filter) {
     super(droplab, dropdown, input, filter);
     this.config = {
       AjaxFilter: {
@@ -26,6 +26,7 @@ class DropdownUser extends gl.FilteredSearchDropdown {
         },
       },
     };
+    this.tokenKeys = tokenKeys;
   }
 
   itemClicked(e) {
@@ -44,7 +45,7 @@ class DropdownUser extends gl.FilteredSearchDropdown {
 
   getSearchInput() {
     const query = gl.DropdownUtils.getSearchInput(this.input);
-    const { lastToken } = gl.FilteredSearchTokenizer.processTokens(query);
+    const { lastToken } = gl.FilteredSearchTokenizer.processTokens(query, this.tokenKeys);
 
     let value = lastToken || '';
 

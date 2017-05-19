@@ -3,8 +3,9 @@ require('./filtered_search_token_keys');
 const weightTokenKey = {
   key: 'weight',
   type: 'string',
-  param: '',
+  param: 'weight',
   symbol: '',
+  icon: 'balance-scale',
 };
 
 const weightConditions = [{
@@ -19,9 +20,14 @@ const weightConditions = [{
 
 class FilteredSearchTokenKeysWithWeights extends gl.FilteredSearchTokenKeys {
   static get() {
-    const tokenKeys = super.get();
+    const tokenKeys = Array.from(super.get());
     tokenKeys.push(weightTokenKey);
     return tokenKeys;
+  }
+
+  static getKeys() {
+    const tokenKeys = FilteredSearchTokenKeysWithWeights.get();
+    return tokenKeys.map(i => i.key);
   }
 
   static getAlternatives() {

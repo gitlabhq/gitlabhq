@@ -13,13 +13,17 @@ export default {
       required: false,
       default: true,
     },
+    allowedKeys: {
+      type: Array,
+      required: true,
+    },
   },
 
   computed: {
     processedItems() {
       return this.items.map((item) => {
         const { tokens, searchToken }
-          = gl.FilteredSearchTokenizer.processTokens(item);
+          = gl.FilteredSearchTokenizer.processTokens(item, this.allowedKeys);
 
         const resultantTokens = tokens.map(token => ({
           prefix: `${token.key}:`,
