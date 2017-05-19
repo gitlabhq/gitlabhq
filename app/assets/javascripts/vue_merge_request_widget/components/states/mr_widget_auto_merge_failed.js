@@ -28,9 +28,6 @@ export default {
       </button>
       <span class="bold danger">
         This merge request failed to be merged automatically.
-      </span>
-      <div class="merge-error-text">
-        {{mr.mergeError}}
         <button
           @click="refreshWidget"
           :class="{ disabled: isRefreshing }"
@@ -42,6 +39,9 @@ export default {
             aria-hidden="true" />
           Refresh
         </button>
+      </span>
+      <div class="merge-error-text">
+        {{mr.mergeError}}
       </div>
     </div>
   `,
