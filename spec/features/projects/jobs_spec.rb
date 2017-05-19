@@ -482,8 +482,8 @@ feature 'Jobs', :feature do
     end
   end
 
-  describe "GET /:project/builds/:id/trace.json" do
-    context "Build from project" do
+  describe "GET /:project/jobs/:id/trace.json" do
+    context "Job from project" do
       before do
         visit trace_namespace_project_job_path(project.namespace, project, build, format: :json)
       end
@@ -491,7 +491,7 @@ feature 'Jobs', :feature do
       it { expect(page.status_code).to eq(200) }
     end
 
-    context "Build from other project" do
+    context "Job from other project" do
       before do
         visit trace_namespace_project_job_path(project.namespace, project, build2, format: :json)
       end
@@ -514,8 +514,8 @@ feature 'Jobs', :feature do
     end
   end
 
-  describe "GET /:project/builds/:id/status" do
-    context "Build from project" do
+  describe "GET /:project/jobs/:id/status" do
+    context "Job from project" do
       before do
         visit status_namespace_project_job_path(project.namespace, project, build)
       end
@@ -523,7 +523,7 @@ feature 'Jobs', :feature do
       it { expect(page.status_code).to eq(200) }
     end
 
-    context "Build from other project" do
+    context "Job from other project" do
       before do
         visit status_namespace_project_job_path(project.namespace, project, build2)
       end
