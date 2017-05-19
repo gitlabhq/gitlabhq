@@ -5,7 +5,7 @@ export default {
   data() {
     return {
       builds: '',
-      spinner: '<span class="fa fa-spinner fa-spin"></span>',
+      spinner: '<div class="text-center"><span class="fa fa-spinner fa-spin"></span></div>',
     };
   },
 
