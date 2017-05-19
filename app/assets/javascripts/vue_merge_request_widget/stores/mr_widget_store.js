@@ -5,6 +5,14 @@ export default class MergeRequestStore {
 
   constructor(data) {
     this.startingSha = data.diff_head_sha;
+    this.codeclimate = data.codeclimate;
+    this.codeclimateMetrics = {
+      headIssues: [],
+      baseIssues: [],
+      newIssues: [],
+      resolvedIssues: [],
+    };
+
     this.setData(data);
   }
 
@@ -87,13 +95,6 @@ export default class MergeRequestStore {
     this.isPipelineActive = data.pipeline ? data.pipeline.active : false;
     this.isPipelineBlocked = pipelineStatus ? pipelineStatus.group === 'manual' : false;
     this.ciStatusFaviconPath = pipelineStatus ? pipelineStatus.favicon : null;
-    this.codeclimate = data.codeclimate;
-    this.codeclimateMetrics = {
-      headIssues: [],
-      baseIssues: [],
-      newIssues: [],
-      resolvedIssues: [],
-    };
 
     this.setState(data);
   }

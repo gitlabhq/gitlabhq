@@ -36,6 +36,10 @@ export default {
   el: '#js-vue-mr-widget',
   name: 'MRWidget',
   data() {
+    gl.mrWidgetData.codeclimate = {};
+    gl.mrWidgetData.codeclimate.head = 'head.json';
+    gl.mrWidgetData.codeclimate.base = 'base.json';
+
     const store = new MRWidgetStore(gl.mrWidgetData);
     const service = this.createService(store);
     return {
@@ -109,11 +113,16 @@ export default {
                 this.mr.setCodeclimateBaseMetrics(baseData);
               })
               .then(() => this.mr.compareCodeclimateMetrics())
+              .then(() => {
+                this.isLoadingMetrics = false;
+              })
               .catch(() => {
+                this.isLoadingMetrics = false;
                 this.loadingMetricsFailed = true;
               });
           })
           .catch(() => {
+            this.isLoadingMetrics = false;
             this.loadingMetricsFailed = true;
           });
       }
