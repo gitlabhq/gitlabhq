@@ -268,6 +268,10 @@ group :metrics do
   gem 'allocations', '~> 1.0', require: false, platform: :mri
   gem 'method_source', '~> 0.8', require: false
   gem 'influxdb', '~> 0.2', require: false
+
+# Prometheus
+  gem 'mmap2', '~> 2.2.6'
+  gem 'prometheus-client-mmap'
 end
 
 group :development do
