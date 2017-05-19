@@ -109,7 +109,7 @@ gem 'seed-fu', '~> 2.3.5'
 
 # Markdown and HTML processing
 gem 'html-pipeline', '~> 1.11.0'
-gem 'deckar01-task_list', '1.0.6', require: 'task_list/railtie'
+gem 'deckar01-task_list', '2.0.0'
 gem 'gitlab-markup', '~> 1.5.1'
 gem 'redcarpet', '~> 3.4'
 gem 'RedCloth', '~> 4.3.2'
