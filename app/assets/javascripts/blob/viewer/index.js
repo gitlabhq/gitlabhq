@@ -83,6 +83,7 @@ export default class BlobViewer {
       viewer.setAttribute('data-loaded', 'true');
 
       this.$fileHolder.trigger('highlight:line');
+      gl.utils.handleLocationHash();
 
       this.toggleCopyButtonState();
     });
