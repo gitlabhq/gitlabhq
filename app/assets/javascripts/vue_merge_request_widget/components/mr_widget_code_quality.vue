@@ -3,6 +3,7 @@ import successIcon from 'icons/_icon_status_success.svg';
 import errorIcon from 'icons/_icon_status_failed.svg';
 import issuesBlock from './mr_widget_code_quality_issues.vue';
 import loadingIcon from '../../vue_shared/components/loading_icon.vue';
+import '../../lib/utils/text_utility';
 
 export default {
   name: 'MRWidgetCodeQuality',
@@ -44,11 +45,7 @@ export default {
 
   computed: {
     stateIcon() {
-      if (this.newIssues.length) {
-        return errorIcon;
-      }
-
-      return successIcon;
+      return this.newIssues.length ? errorIcon : successIcon;
     },
 
     codeText() {
@@ -71,17 +68,14 @@ export default {
 
   methods: {
     pointsText(issues) {
-      return issues.length > 1 ? 'points' : 'point';
+      return gl.text.pluralize('point', issues.length);
     },
 
     toggleCollapsed() {
       this.isCollapsed = !this.isCollapsed;
 
-      if (this.isCollapsed) {
-        this.collapseText = 'Expand';
-      } else {
-        this.collapseText = 'Collapse';
-      }
+      const text = this.isCollapsed ? 'Expand' : 'Collapse';
+      this.collapseText = text;
     },
   },
 };

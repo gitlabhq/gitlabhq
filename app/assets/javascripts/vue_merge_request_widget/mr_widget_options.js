@@ -6,7 +6,7 @@ import {
   WidgetPipeline,
   WidgetDeployment,
   WidgetRelatedLinks,
-  widgetCodeQuality,
+  WidgetCodeQuality,
   MergedState,
   ClosedState,
   LockedState,
@@ -100,10 +100,14 @@ export default {
         this.isLoadingMetrics = true;
         this.service.fetchCodeclimate(head)
           .then((resp) => {
-            this.mr.setCodeclimateHeadMetrics(resp);
+            const data = resp.json();
+            this.mr.setCodeclimateHeadMetrics(data);
 
             this.service.fetchCodeclimate(base)
-              .then(response => this.mr.setCodeclimateBaseMetrics(response))
+              .then((response) => {
+                const baseData = response.json();
+                this.mr.setCodeclimateBaseMetrics(baseData);
+              })
               .then(() => this.mr.compareCodeclimateMetrics())
               .catch(() => {
                 this.loadingMetricsFailed = true;
@@ -240,7 +244,7 @@ export default {
     'mr-widget-pipeline-failed': PipelineFailedState,
     'mr-widget-merge-when-pipeline-succeeds': MergeWhenPipelineSucceedsState,
     'mr-widget-auto-merge-failed': AutoMergeFailed,
-    widgetCodeQuality,
+    'mr-widget-code-quality': WidgetCodeQuality,
   },
   template: `
     <div class="mr-state-widget prepend-top-default">
@@ -252,7 +256,7 @@ export default {
         v-if="shouldRenderDeployments"
         :mr="mr"
         :service="service" />
-      <widget-code-quality
+      <mr-widget-code-quality
         v-if="shouldRenderCodeQuality"
         :is-loading="isLoadingMetrics"
         :loading-failed="loadingMetricsFailed"
