@@ -299,6 +299,8 @@ class MergeRequest < ActiveRecord::Base
   attr_writer :target_branch_sha, :source_branch_sha
 
   def source_branch_head
+    return unless source_project
+
     source_branch_ref = @source_branch_sha || source_branch
     source_project.repository.commit(source_branch_ref) if source_branch_ref
   end
@@ -919,6 +921,7 @@ class MergeRequest < ActiveRecord::Base
 
     return @conflicts_can_be_resolved_in_ui = false unless cannot_be_merged?
     return @conflicts_can_be_resolved_in_ui = false unless has_complete_diff_refs?
+    return @conflicts_can_be_resolved_in_ui = false if branch_missing?
 
     begin
       # Try to parse each conflict. If the MR's mergeable status hasn't been updated,
