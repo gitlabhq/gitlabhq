@@ -21,7 +21,6 @@ class MergeRequestEntity < IssuableEntity
   expose :rebase_commit_sha
   expose :rebase_in_progress?, as: :rebase_in_progress
   expose :should_be_rebased?, as: :should_be_rebased
-  expose :approved?, as: :approved
   expose :ff_only_enabled do |merge_request|
     merge_request.project.merge_requests_ff_only_enabled
   end

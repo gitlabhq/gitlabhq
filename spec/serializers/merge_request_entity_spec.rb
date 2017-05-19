@@ -51,7 +51,6 @@ describe MergeRequestEntity do
                                ## EE
                                :can_push_to_source_branch, :approvals_before_merge,
                                :squash, :rebase_commit_sha, :rebase_in_progress,
-                               :approved, :should_be_rebased, :rebase_path,
                                :approvals_path, :ff_only_enabled)
   end
 
