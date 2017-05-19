@@ -39,20 +39,10 @@
     - unless issuable.assignees.any?
       = hidden_field_tag "#{issuable.to_ability_name}[assignee_ids][]", 0, id: nil
     - options[:toggle_class] += ' js-multiselect js-save-user-data'
-<<<<<<< HEAD
     - data = { field_name: "#{issuable.to_ability_name}[assignee_ids][]" }
     - data[:multi_select] = true
     - data['dropdown-title'] = title
     - data['dropdown-header'] = 'Assignee'
-    - data['max-select'] = 1
     - options[:data].merge!(data)
-=======
-    - options[:data][:field_name] = "#{issuable.to_ability_name}[assignee_ids][]"
-    - options[:data][:multi_select] = true
-    - options[:data]['dropdown-title'] = title
-    - options[:data]['dropdown-header'] = 'Assignee'
-  - else
-    - title = 'Select assignee'
->>>>>>> origin/master
 
   = dropdown_tag(title, options: options)
