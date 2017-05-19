@@ -51,7 +51,6 @@ describe 'Copy as GFM', feature: true, js: true do
 
           To see how GitLab looks please see the [features page on our website](https://about.gitlab.com/features/).
 
-
           - Manage Git repositories with fine grained access controls that keep your code secure
 
           - Perform code reviews and enhance collaboration with merge requests
@@ -352,7 +351,6 @@ describe 'Copy as GFM', feature: true, js: true do
         <<-GFM.strip_heredoc,
           - Nested
 
-
               - Lists
         GFM
 
@@ -374,7 +372,6 @@ describe 'Copy as GFM', feature: true, js: true do
         # nested numbered list
         <<-GFM.strip_heredoc,
           1. Nested
-
 
               1. Numbered lists
         GFM
