@@ -139,6 +139,15 @@
     line-height: 1.6em;
     overflow-x: auto;
     border-radius: 2px;
+
+
+    &.plain-readme {
+      background: none;
+      border: none;
+      padding: 0;
+      margin: 0;
+      font-size: 14px;
+    }
   }
 
   p > code {
@@ -279,14 +288,6 @@ h6 {
 /** CODE **/
 pre {
   font-family: $monospace_font;
-
-  &.plain-readme {
-    background: none;
-    border: none;
-    padding: 0;
-    margin: 0;
-    font-size: 14px;
-  }
 }
 
 code {
