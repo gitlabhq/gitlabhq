@@ -74,7 +74,7 @@ When testing Promises you should always make sure that the test is asynchronous 
 Your Promise chain should therefore end with a call of the `done` callback and `done.fail` in case an error occurred.
 
 ```javascript
-/// Good
+// Good
 it('tests a promise', (done) => {
   promise
     .then((data) => {
@@ -84,9 +84,10 @@ it('tests a promise', (done) => {
     .catch(done.fail);
 });
 
-/// Good
+// Good
 it('tests a promise rejection', (done) => {
   promise
+    .then(done.fail)
     .catch((error) => {
       expect(error).toBe(expectedError);
     })
@@ -94,7 +95,7 @@ it('tests a promise rejection', (done) => {
     .catch(done.fail);
 });
 
-/// Bad (missing done callback)
+// Bad (missing done callback)
 it('tests a promise', () => {
   promise
     .then((data) => {
@@ -102,7 +103,7 @@ it('tests a promise', () => {
     })
 });
 
-/// Bad (missing catch)
+// Bad (missing catch)
 it('tests a promise', (done) => {
   promise
     .then((data) => {
@@ -111,7 +112,7 @@ it('tests a promise', (done) => {
     .then(done)
 });
 
-/// Bad (use done.fail in asynchronous tests)
+// Bad (use done.fail in asynchronous tests)
 it('tests a promise', (done) => {
   promise
     .then((data) => {
@@ -121,7 +122,7 @@ it('tests a promise', (done) => {
     .catch(fail)
 });
 
-/// Bad (missing catch)
+// Bad (missing catch)
 it('tests a promise rejection', (done) => {
   promise
     .catch((error) => {
