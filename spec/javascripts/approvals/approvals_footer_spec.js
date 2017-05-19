@@ -21,6 +21,10 @@ import ApprovalsFooter from '~/vue_merge_request_widget/ee/components/approvals/
     `);
 
     this.initialData = {
+      mr: {
+        state: 'readyToMerge',
+      },
+      service: {},
       userCanApprove: false,
       userHasApproved: true,
       approvedBy: [],
@@ -53,7 +57,9 @@ import ApprovalsFooter from '~/vue_merge_request_widget/ee/components/approvals/
 
     describe('Computed properties', function () {
       it('should correctly set showUnapproveButton when the user can unapprove', function () {
-        expect(this.approvalsFooter.showUnapproveButton).toBe(true);
+        expect(this.approvalsFooter.showUnapproveButton).toBeTruthy();
+        this.approvalsFooter.mr.state = 'merged';
+        expect(this.approvalsFooter.showUnapproveButton).toBeFalsy();
       });
 
       it('should correctly set showUnapproveButton when the user can not unapprove', function (done) {
