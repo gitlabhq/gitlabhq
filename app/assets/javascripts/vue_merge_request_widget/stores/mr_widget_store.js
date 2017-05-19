@@ -132,7 +132,7 @@ export default class MergeRequestStore {
     const newIssues = headIssues
       .filter(item => !baseIssues.find(el => el.fingerprint === item.fingerprint));
     const resolvedIssues = baseIssues
-      .filter(item => headIssues.find(el => el.fingerprint === item.fingerprint));
+      .filter(item => !headIssues.find(el => el.fingerprint === item.fingerprint));
 
     this.codeclimateMetrics.newIssues = newIssues;
     this.codeclimateMetrics.resolvedIssues = resolvedIssues;

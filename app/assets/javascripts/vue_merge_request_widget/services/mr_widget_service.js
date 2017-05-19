@@ -47,6 +47,10 @@ export default class MRWidgetService {
     return this.mergeActionsContentResource.get();
   }
 
+  fetchCodeclimate(endpoint) { // eslint-disable-line
+    return Vue.http.get(endpoint);
+  }
+
   static stopEnvironment(url) {
     return Vue.http.post(url);
   }

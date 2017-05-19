@@ -62,7 +62,8 @@ export default {
       return this.mr.deployments.length;
     },
     shouldRenderCodeQuality() {
-      return this.mr.codeclimate.head && this.mr.codeclimate.base;
+      const { codeclimate } = this.mr;
+      return codeclimate && codeclimate.head && codeclimate.base;
     },
   },
   methods: {
@@ -86,8 +87,6 @@ export default {
           this.mr.setData(res);
           this.setFavicon();
 
-          this.checkCodeclimateMetrics();
-
           if (cb) {
             cb.call(null, res);
           }
@@ -95,15 +94,15 @@ export default {
         .catch(() => new Flash('Something went wrong. Please try again.'));
     },
     checkCodeclimateMetrics() {
-      const { head, base } = this.mr.codeclimate;
+      if (this.shouldRenderCodeQuality) {
+        const { head, base } = this.mr.codeclimate;
 
-      if (head && base) {
         this.isLoadingMetrics = true;
-        this.service.fetchMetrics(head)
+        this.service.fetchCodeclimate(head)
           .then((resp) => {
-            this.md.setCodeclimateHeadMetrics(resp);
+            this.mr.setCodeclimateHeadMetrics(resp);
 
-            this.service.fetchMetrics(base)
+            this.service.fetchCodeclimate(base)
               .then(response => this.mr.setCodeclimateBaseMetrics(response))
               .then(() => this.mr.compareCodeclimateMetrics())
               .catch(() => {
@@ -210,6 +209,7 @@ export default {
   },
   created() {
     this.initPolling();
+    this.checkCodeclimateMetrics();
     this.bindEventHubListeners();
   },
   mounted() {
