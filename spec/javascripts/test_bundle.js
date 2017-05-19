@@ -21,6 +21,7 @@ testsContext.keys().forEach(function (path) {
     testsContext(path);
   } catch (err) {
     console.error('[ERROR] Unable to load spec: ', path);
+    console.error(err);
     describe('Test bundle', function () {
       it(`includes '${path}'`, function () {
         expect(err).toBeNull();
