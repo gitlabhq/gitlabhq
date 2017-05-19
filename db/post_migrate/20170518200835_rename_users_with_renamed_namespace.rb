@@ -6,7 +6,6 @@ class RenameUsersWithRenamedNamespace < ActiveRecord::Migration
 
   DOWNTIME = false
   DISALLOWED_ROOT_PATHS = %w[
-    -
     abuse_reports
     api
     autocomplete
