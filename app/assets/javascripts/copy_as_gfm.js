@@ -330,10 +330,26 @@ class CopyAsGFM {
   }
 
   static transformGFMSelection(documentFragment) {
-    // If the documentFragment contains more than just Markdown, don't copy as GFM.
-    if (documentFragment.querySelector('.md, .wiki')) return null;
+    const gfmEls = documentFragment.querySelectorAll('.md, .wiki');
+    switch (gfmEls.length) {
+      case 0: {
+        return documentFragment;
+      }
+      case 1: {
+        return gfmEls[0];
+      }
+      default: {
+        const allGfmEl = document.createElement('div');
 
-    return documentFragment;
+        for (let i = 0; i < gfmEls.length; i += 1) {
+          const lineEl = gfmEls[i];
+          allGfmEl.appendChild(lineEl);
+          allGfmEl.appendChild(document.createTextNode('\n\n'));
+        }
+
+        return allGfmEl;
+      }
+    }
   }
 
   static transformCodeSelection(documentFragment) {
