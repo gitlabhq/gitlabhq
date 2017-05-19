@@ -195,6 +195,16 @@
   }
 
   .mr-widget-body {
+    .btn {
+      font-size: 15px;
+    }
+
+    .btn-group .btn {
+      padding: 5px 10px;
+    }
+  }
+
+  .mr-widget-body {
     h4 {
       font-weight: 600;
       font-size: 16px;
@@ -226,6 +236,7 @@
     .bold {
       margin-left: 5px;
       font-weight: bold;
+      font-size: 15px;
       color: $gl-gray-light;
     }
 
@@ -247,6 +258,11 @@
       position: relative;
       top: 6px;
       margin-bottom: 24px;
+    }
+
+    .spacing,
+    .bold {
+      vertical-align: middle;
     }
 
     .dropdown-menu {
