@@ -41,6 +41,10 @@ For more examples on artifacts, follow the artifacts reference in
 
 ## Browsing job artifacts
 
+>**Note:**
+With GitLab 9.2, PDFs, images, videos and other formats can be previewed directly
+in the job artifacts browser without the need to download them.
+
 After a job finishes, if you visit the job's specific page, you can see
 that there are two buttons. One is for downloading the artifacts archive and
 the other for browsing its contents.
