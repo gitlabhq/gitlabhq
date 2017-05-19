@@ -169,4 +169,12 @@ class GroupsController < Groups::ApplicationController
       @notification_setting = current_user.notification_settings_for(group)
     end
   end
+
+  def build_canonical_path(group)
+    return group_path(group) if action_name == 'show' # root group path
+    
+    params[:id] = group.to_param
+
+    url_for(params)
+  end
 end
