@@ -151,10 +151,7 @@ describe 'New/edit issue', feature: true, js: true do
       page.within '.dropdown-menu-user' do
         click_link user.name
       end
-
       expect(find('input[name="issue[assignee_ids][]"]', visible: false).value).to match(user.id.to_s)
-
-      click_button user.name
 
       expect(find('.dropdown-menu-user a.is-active').first(:xpath, '..')['data-user-id']).to eq(user.id.to_s)
 
@@ -167,8 +164,6 @@ describe 'New/edit issue', feature: true, js: true do
       end
 
       expect(find('input[name="issue[assignee_ids][]"]', visible: false).value).to match(user2.id.to_s)
-
-      click_button user2.name
 
       expect(find('.dropdown-menu-user a.is-active').first(:xpath, '..')['data-user-id']).to eq(user2.id.to_s)
     end
