@@ -36,10 +36,6 @@ export default {
   el: '#js-vue-mr-widget',
   name: 'MRWidget',
   data() {
-    gl.mrWidgetData.codeclimate = {};
-    gl.mrWidgetData.codeclimate.head = 'head.json';
-    gl.mrWidgetData.codeclimate.base = 'base.json';
-
     const store = new MRWidgetStore(gl.mrWidgetData);
     const service = this.createService(store);
     return {

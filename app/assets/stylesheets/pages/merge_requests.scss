@@ -795,7 +795,12 @@
   }
 
   .ci-status-icon {
-    margin-right: 7px;
+    vertical-align: sub;
+    svg {
+      width: 22px;
+      height: 22px;
+      margin-right: 8px;
+    }
   }
 
   .code-quality-container {
