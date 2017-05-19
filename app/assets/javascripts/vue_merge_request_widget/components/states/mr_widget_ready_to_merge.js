@@ -13,7 +13,7 @@ export default {
   },
   data() {
     return {
-      removeSourceBranch: true,
+      removeSourceBranch: this.mr.shouldRemoveSourceBranch,
       mergeWhenBuildSucceeds: false,
       useCommitMessageWithDescription: false,
       setToMergeWhenPipelineSucceeds: false,
@@ -68,6 +68,9 @@ export default {
         || !this.isMergeAllowed()
         || this.isMakingRequest
         || this.mr.preventMerge);
+    },
+    isRemoveSourceBranchButtonDisabled() {
+      return this.isMergeButtonDisabled || !this.mr.canRemoveSourceBranch;
     },
     shouldShowSquashBeforeMerge() {
       const { commitsCount, enableSquashBeforeMerge } = this.mr;
@@ -252,8 +255,9 @@ export default {
       <template v-if="isMergeAllowed()">
         <label class="spacing">
           <input
+            id="remove-source-branch-input"
             v-model="removeSourceBranch"
-            :disabled="isMergeButtonDisabled"
+            :disabled="isRemoveSourceBranchButtonDisabled"
             type="checkbox"/> Remove source branch
         </label>
 

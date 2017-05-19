@@ -11,6 +11,7 @@ export default class MergeRequestStore {
   setData(data) {
     const currentUser = data.current_user;
     const pipelineStatus = data.pipeline ? data.pipeline.details.status : null;
+    const mergeParams = data.merge_params || {};
 
     this.title = data.title;
     this.targetBranch = data.target_branch;
@@ -51,7 +52,8 @@ export default class MergeRequestStore {
     this.cancelAutoMergePath = data.cancel_merge_when_pipeline_succeeds_path;
     this.removeWIPPath = data.remove_wip_path;
     this.sourceBranchRemoved = !data.source_branch_exists;
-    this.shouldRemoveSourceBranch = (data.merge_params || {}).should_remove_source_branch || false;
+    this.shouldRemoveSourceBranch = mergeParams.should_remove_source_branch ||
+      mergeParams.force_remove_source_branch === "1" || false;
     this.onlyAllowMergeIfPipelineSucceeds = data.only_allow_merge_if_pipeline_succeeds || false;
     this.mergeWhenPipelineSucceeds = data.merge_when_pipeline_succeeds || false;
     this.mergePath = data.merge_path;
