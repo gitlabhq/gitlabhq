@@ -2,18 +2,14 @@ import RavenConfig from '~/raven/raven_config';
 import index from '~/raven/index';
 
 describe('RavenConfig options', () => {
-  let sentryDsn;
-  let currentUserId;
-  let gitlabUrl;
-  let isProduction;
+  const sentryDsn = 'sentryDsn';
+  const currentUserId = 'currentUserId';
+  const gitlabUrl = 'gitlabUrl';
+  const isProduction = 'isProduction';
+  const headCommitSHA = 'headCommitSHA';
   let indexReturnValue;
 
   beforeEach(() => {
-    sentryDsn = 'sentryDsn';
-    currentUserId = 'currentUserId';
-    gitlabUrl = 'gitlabUrl';
-    isProduction = 'isProduction';
-
     window.gon = {
       sentry_dsn: sentryDsn,
       current_user_id: currentUserId,
@@ -21,6 +17,7 @@ describe('RavenConfig options', () => {
     };
 
     process.env.NODE_ENV = isProduction;
+    process.env.HEAD_COMMIT_SHA = headCommitSHA;
 
     spyOn(RavenConfig, 'init');
 
@@ -33,6 +30,10 @@ describe('RavenConfig options', () => {
       currentUserId,
       whitelistUrls: [gitlabUrl],
       isProduction,
+      release: headCommitSHA,
+      tags: {
+        HEAD_COMMIT_SHA: headCommitSHA,
+      },
     });
   });
 

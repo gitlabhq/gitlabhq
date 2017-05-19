@@ -2,6 +2,7 @@
 
 var fs = require('fs');
 var path = require('path');
+var execSync = require('child_process').execSync;
 var webpack = require('webpack');
 var StatsPlugin = require('stats-webpack-plugin');
 var CompressionPlugin = require('compression-webpack-plugin');
@@ -197,7 +198,33 @@ var config = {
   }
 }
 
+function getHeadCommitSHA() {
+  // Simple SHA validation.
+  // Match 5-40 numbers or lowercase letters between a and f.
+  const SHA_REGEX = /^\b[0-9a-f]{5,40}\b$/;
+  let stdout;
+
+  try {
+    stdout = execSync('git rev-parse HEAD');
+  } catch (error) {
+    throw error;
+  }
+
+  const headCommitSHA = stdout.trim();
+  if (!SHA_REGEX.test(headCommitSHA)) {
+    throw new Error(`\`git rev-parse HEAD\` output is not a valid SHA1: ${headCommitSHA}`);
+  }
+
+  return headCommitSHA;
+}
+
 if (IS_PRODUCTION) {
+  const processEnv = {
+    NODE_ENV: JSON.stringify('production'),
+  };
+
+  processEnv.HEAD_COMMIT_SHA = getHeadCommitSHA();
+
   config.devtool = 'source-map';
   config.plugins.push(
     new webpack.NoEmitOnErrorsPlugin(),
@@ -209,7 +236,7 @@ if (IS_PRODUCTION) {
       sourceMap: true
     }),
     new webpack.DefinePlugin({
-      'process.env': { NODE_ENV: JSON.stringify('production') }
+      'process.env': processEnv,
     }),
     new CompressionPlugin({
       asset: '[path].gz[query]',

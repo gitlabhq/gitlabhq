@@ -25,17 +25,9 @@ describe('RavenConfig', () => {
   });
 
   describe('init', () => {
-    let options;
+    const options = {};
 
     beforeEach(() => {
-      options = {
-        sentryDsn: '//sentryDsn',
-        ravenAssetUrl: '//ravenAssetUrl',
-        currentUserId: 1,
-        whitelistUrls: ['//gitlabUrl'],
-        isProduction: true,
-      };
-
       spyOn(RavenConfig, 'configure');
       spyOn(RavenConfig, 'bindRavenErrors');
       spyOn(RavenConfig, 'setUser');
@@ -84,6 +76,10 @@ describe('RavenConfig', () => {
         sentryDsn: '//sentryDsn',
         whitelistUrls: ['//gitlabUrl'],
         isProduction: true,
+        release: 'release',
+        tags: {
+          HEAD_COMMIT_SHA: 'headCommitSha',
+        },
       };
 
       ravenConfig = jasmine.createSpyObj('ravenConfig', ['shouldSendSample']);
@@ -100,6 +96,8 @@ describe('RavenConfig', () => {
 
     it('should call Raven.config', () => {
       expect(Raven.config).toHaveBeenCalledWith(options.sentryDsn, {
+        release: options.release,
+        tags: options.tags,
         whitelistUrls: options.whitelistUrls,
         environment: 'production',
         ignoreErrors: ravenConfig.IGNORE_ERRORS,
