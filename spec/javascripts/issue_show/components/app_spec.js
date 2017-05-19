@@ -23,20 +23,22 @@ describe('Issuable output', () => {
     const IssuableDescriptionComponent = Vue.extend(issuableApp);
     Vue.http.interceptors.push(issueShowInterceptor(issueShowData.initialRequest));
 
-    spyOn(eventHub, '$emit').and.callThrough();
+    spyOn(eventHub, '$emit');
 
     vm = new IssuableDescriptionComponent({
       propsData: {
         canUpdate: true,
         canDestroy: true,
+        canMove: true,
         endpoint: '/gitlab-org/gitlab-shell/issues/9/realtime_changes',
         issuableRef: '#1',
         initialTitle: '',
         initialDescriptionHtml: '',
         initialDescriptionText: '',
-        isConfidential: false,
         markdownPreviewUrl: '/',
         markdownDocs: '/',
+        projectsAutocompleteUrl: '/',
+        isConfidential: false,
       },
     }).$mount();
   });
@@ -107,6 +109,30 @@ describe('Issuable output', () => {
   });
 
   describe('updateIssuable', () => {
+    it('reloads the page if the confidential status has changed', (done) => {
+      spyOn(gl.utils, 'visitUrl');
+      spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve) => {
+        resolve({
+          json() {
+            return {
+              confidential: true,
+              path: location.pathname,
+            };
+          },
+        });
+      }));
+
+      vm.updateIssuable();
+
+      setTimeout(() => {
+        expect(
+          gl.utils.visitUrl,
+        ).toHaveBeenCalledWith(location.pathname);
+
+        done();
+      });
+    });
+
     it('correctly updates issuable data', (done) => {
       spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve) => {
         resolve();
@@ -126,13 +152,14 @@ describe('Issuable output', () => {
       });
     });
 
-    it('reloads the page if the confidential status has changed', (done) => {
-      spyOn(window.location, 'reload');
+    it('does not redirect if issue has not moved', (done) => {
+      spyOn(gl.utils, 'visitUrl');
       spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve) => {
         resolve({
           json() {
             return {
-              confidential: true,
+              path: location.pathname,
+              confidential: vm.isConfidential,
             };
           },
         });
@@ -142,8 +169,32 @@ describe('Issuable output', () => {
 
       setTimeout(() => {
         expect(
-          window.location.reload,
-        ).toHaveBeenCalled();
+          gl.utils.visitUrl,
+        ).not.toHaveBeenCalled();
+
+        done();
+      });
+    });
+
+    it('redirects if issue is moved', (done) => {
+      spyOn(gl.utils, 'visitUrl');
+      spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve) => {
+        resolve({
+          json() {
+            return {
+              path: '/testing-issue-move',
+              confidential: vm.isConfidential,
+            };
+          },
+        });
+      }));
+
+      vm.updateIssuable();
+
+      setTimeout(() => {
+        expect(
+          gl.utils.visitUrl,
+        ).toHaveBeenCalledWith('/testing-issue-move');
 
         done();
       });
