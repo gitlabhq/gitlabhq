@@ -31,14 +31,6 @@
     margin-right: 10px;
     font-size: 12px;
   }
-
-  .cron-unset-status {
-    padding-top: 16px;
-    margin-left: -16px;
-    color: $gl-text-color-secondary;
-    font-size: 12px;
-    font-weight: 600;
-  }
 }
 
 .pipeline-schedule-table-row {
@@ -67,5 +59,18 @@
 
   #dismiss-callout-btn {
     color: $gl-text-color;
+  }
+}
+
+.cron-preset-radio-input {
+  display: inline-block;
+
+  @media (max-width: $screen-md-max) {
+    display: block;
+    margin: 0 0 5px 5px;
+  }
+
+  input {
+    margin-right: 3px;
   }
 }
