@@ -30,13 +30,10 @@ header {
     background-color: $gray-light;
     border: none;
     border-bottom: 1px solid $border-color;
-<<<<<<< HEAD
-=======
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
->>>>>>> 3c45906... Merge branch 'fix-header-z-index' into 'master'
 
     @media (max-width: $screen-xs-min) {
       padding: 0 16px;
