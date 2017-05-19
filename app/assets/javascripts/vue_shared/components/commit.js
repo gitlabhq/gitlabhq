@@ -128,15 +128,17 @@ export default {
         {{commitRef.name}}
       </a>
 
-      <div v-html="commitIconSvg" class="commit-icon js-commit-icon"></div>
+      <div>
+        <div v-html="commitIconSvg" class="commit-icon js-commit-icon"></div>
 
-      <a class="commit-sha"
-        :href="commitUrl">
-        {{shortSha}}
-      </a>
+        <a class="commit-sha"
+          :href="commitUrl">
+          {{shortSha}}
+        </a>
+      </div>
 
-      <p class="commit-title">
-        <span v-if="title">
+      <div class="commit-title flex-truncate-parent">
+        <span v-if="title" class="flex-truncate-child">
           <user-avatar-link
             v-if="hasAuthor"
             class="avatar-image-container"
@@ -153,7 +155,7 @@ export default {
         <span v-else>
           Cant find HEAD commit for this branch
         </span>
-      </p>
+      </div>
     </div>
   `,
 };

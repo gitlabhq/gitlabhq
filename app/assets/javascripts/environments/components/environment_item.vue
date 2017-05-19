@@ -421,14 +421,14 @@ export default {
 };
 </script>
 <template>
-  <tr :class="{ 'js-child-row': model.isChildren }">
-    <td>
+  <div :class="{ 'js-child-row': model.isChildren }" class="gl-responsive-table-row">
+    <div class="table-section section-15">
       <a
         v-if="!model.isFolder"
-        class="environment-name"
+        class="environment-name flex-truncate-parent"
         :class="{ 'prepend-left-default': model.isChildren }"
         :href="environmentPath">
-        {{model.name}}
+        <span class="flex-truncate-child">{{model.name}}</span>
       </a>
       <span
         v-else
@@ -461,9 +461,9 @@ export default {
           {{model.size}}
         </span>
       </span>
-    </td>
+    </div>
 
-    <td class="deployment-column">
+    <div class="table-section section-5 deployment-column">
       <span v-if="shouldRenderDeploymentID">
         {{deploymentInternalId}}
       </span>
@@ -478,18 +478,18 @@ export default {
           :tooltip-text="deploymentUser.username"
         />
       </span>
-    </td>
+    </div>
 
-    <td class="environments-build-cell">
+    <div class="table-section section-15">
       <a
         v-if="shouldRenderBuildName"
         class="build-link"
         :href="buildPath">
         {{buildName}}
       </a>
-    </td>
+    </div>
 
-    <td>
+    <div class="table-section section-flex-full">
       <div
         v-if="!model.isFolder && hasLastDeploymentKey"
         class="js-commit-component">
@@ -501,22 +501,22 @@ export default {
           :title="commitTitle"
           :author="commitAuthor"/>
       </div>
-      <p
+      <div
         v-if="!model.isFolder && !hasLastDeploymentKey"
         class="commit-title">
         No deployments yet
-      </p>
-    </td>
+      </div>
+    </div>
 
-    <td>
+    <div class="table-section section-10">
       <span
         v-if="!model.isFolder && canShowDate"
         class="environment-created-date-timeago">
         {{createdDate}}
       </span>
-    </td>
+    </div>
 
-    <td class="environments-actions">
+    <div class="table-section section-flex-full environments-actions">
       <div
         v-if="!model.isFolder"
         class="btn-group pull-right"
@@ -553,6 +553,6 @@ export default {
           :retry-url="retryUrl"
           />
       </div>
-    </td>
-  </tr>
+    </div>
+  </div>
 </template>

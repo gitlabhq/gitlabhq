@@ -1,0 +1,52 @@
+.gl-responsive-table {
+  .gl-responsive-table-row {
+    display: flex;
+    justify-content: space-between;
+    flex-flow: row nowrap;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid $white-normal;
+
+    @media (max-width: $screen-sm-max) {
+      flex-direction: column;
+      flex-wrap: nowrap;
+      align-items: baseline;
+      box-orient: vertical;
+      -webkit-box-orient: vertical;
+    }
+
+    .table-section {
+      white-space: nowrap;
+      overflow: hidden;
+
+      &.section-flex-full {
+        flex: 1;
+      }
+
+      &.section-5 {
+        flex: 0 0 5%;
+      }
+
+      &.section-10 {
+        flex: 0 0 10%;
+      }
+
+      &.section-15 {
+        flex: 0 0 15%;
+      }
+
+    }
+  }
+
+  .flex-truncate-parent {
+    display: flex;
+    flex-flow: row wrap;
+  }
+
+  .flex-truncate-child {
+    flex: 0 0 90%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
