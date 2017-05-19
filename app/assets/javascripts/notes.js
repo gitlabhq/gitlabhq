@@ -287,6 +287,13 @@ const normalizeNewlines = function(str) {
       }
     };
 
+    Notes.prototype.setupNewNote = function($note) {
+      // Update datetime format on the recent note
+      gl.utils.localTimeAgo($note.find('.js-timeago'), false);
+      this.collapseLongCommitList();
+      this.taskList.init();
+    };
+
     /*
     Render note in main comments area.
 
@@ -312,10 +319,7 @@ const normalizeNewlines = function(str) {
 
         const $newNote = Notes.animateAppendNote(noteEntity.html, $notesList);
 
-        // Update datetime format on the recent note
-        gl.utils.localTimeAgo($newNote.find('.js-timeago'), false);
-        this.collapseLongCommitList();
-        this.taskList.init();
+        this.setupNewNote($newNote);
         this.refresh();
         return this.updateNotesCount(1);
       }
@@ -341,9 +345,7 @@ const normalizeNewlines = function(str) {
         }
         else {
           const $updatedNote = Notes.animateUpdateNote(noteEntity.html, $note);
-
-          // Update datetime format on the recent note
-          gl.utils.localTimeAgo($updatedNote.find('.js-timeago'), false);
+          this.setupNewNote($updatedNote);
         }
       }
     };
@@ -665,10 +667,8 @@ const normalizeNewlines = function(str) {
       if (this.updatedNotesTrackingMap[noteId]) {
         const $newNote = $(this.updatedNotesTrackingMap[noteId].html);
         $note.replaceWith($newNote);
+        this.setupNewNote($newNote);
         this.updatedNotesTrackingMap[noteId] = null;
-
-        // Update datetime format on the recent note
-        gl.utils.localTimeAgo($newNote.find('.js-timeago'), false);
       }
       else {
         $note.find('.js-finish-edit-warning').hide();
@@ -1144,7 +1144,7 @@ const normalizeNewlines = function(str) {
       // There can be CRLF vs LF mismatches if we don't sanitize and compare the same way
       const sanitizedNoteEntityText = normalizeNewlines(noteEntity.note.trim());
       const currentNoteText = normalizeNewlines(
-        $note.find('.original-note-content').text().trim()
+        $note.find('.original-note-content').first().text().trim()
       );
       return sanitizedNoteEntityText !== currentNoteText;
     };
