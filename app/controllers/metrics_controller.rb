@@ -2,6 +2,7 @@ require 'prometheus/client/formats/text'
 
 class MetricsController < ActionController::Base
   protect_from_forgery with: :exception
+  include RequiresHealthToken
 
   CHECKS = [
     Gitlab::HealthChecks::DbCheck,
