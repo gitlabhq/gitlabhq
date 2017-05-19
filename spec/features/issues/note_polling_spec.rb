@@ -31,12 +31,12 @@ feature 'Issue notes polling', :feature, :js do
 
       it 'has .original-note-content to compare against' do
         expect(page).to have_selector("#note_#{existing_note.id}", text: note_text)
-        expect(page).to have_selector("#note_#{existing_note.id} .original-note-content", visible: false)
+        expect(page).to have_selector("#note_#{existing_note.id} .original-note-content", count: 1, visible: false)
 
         update_note(existing_note, updated_text)
 
         expect(page).to have_selector("#note_#{existing_note.id}", text: updated_text)
-        expect(page).to have_selector("#note_#{existing_note.id} .original-note-content", visible: false)
+        expect(page).to have_selector("#note_#{existing_note.id} .original-note-content", count: 1, visible: false)
       end
 
       it 'displays the updated content' do
@@ -98,12 +98,28 @@ feature 'Issue notes polling', :feature, :js do
 
       it 'has .original-note-content to compare against' do
         expect(page).to have_selector("#note_#{existing_note.id}", text: note_text)
-        expect(page).to have_selector("#note_#{existing_note.id} .original-note-content", visible: false)
+        expect(page).to have_selector("#note_#{existing_note.id} .original-note-content", count: 1, visible: false)
 
         update_note(existing_note, updated_text)
 
         expect(page).to have_selector("#note_#{existing_note.id}", text: updated_text)
-        expect(page).to have_selector("#note_#{existing_note.id} .original-note-content", visible: false)
+        expect(page).to have_selector("#note_#{existing_note.id} .original-note-content", count: 1, visible: false)
+      end
+    end
+
+    context 'system notes' do
+      let(:user) { create(:user) }
+      let(:note_text) { "Some system note" }
+      let!(:system_note) { create(:system_note, noteable: issue, project: project, author: user, note: note_text) }
+
+      before do
+        login_as(user)
+        visit namespace_project_issue_path(project.namespace, project, issue)
+      end
+
+      it 'has .original-note-content to compare against' do
+        expect(page).to have_selector("#note_#{system_note.id}", text: note_text)
+        expect(page).to have_selector("#note_#{system_note.id} .original-note-content", count: 1, visible: false)
       end
     end
   end
