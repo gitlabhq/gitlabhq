@@ -3,6 +3,7 @@
 module Gitlab
   class GitAccess
     UnauthorizedError = Class.new(StandardError)
+    NotFoundError = Class.new(StandardError)
 
     ERROR_MESSAGES = {
       upload: 'You are not allowed to upload code for this project.',
@@ -47,8 +48,6 @@ module Gitlab
       end
 
       build_status_object(true)
-    rescue UnauthorizedError => ex
-      build_status_object(false, ex.message)
     end
 
     def guest_can_download_code?
@@ -90,7 +89,7 @@ module Gitlab
 
     def check_project_accessibility!
       if project.blank? || !can_read_project?
-        raise UnauthorizedError, ERROR_MESSAGES[:project_not_found]
+        raise NotFoundError, ERROR_MESSAGES[:project_not_found]
       end
     end
 
@@ -234,8 +233,8 @@ module Gitlab
         end
     end
 
-    def build_status_object(status, message = '')
-      Gitlab::GitAccessStatus.new(status, message)
+    def build_status_object(status)
+      Gitlab::GitAccessStatus.new(status)
     end
   end
 end

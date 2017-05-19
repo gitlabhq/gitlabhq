@@ -16,7 +16,7 @@ module Gitlab
       if user_access.can_do_action?(:create_wiki)
         build_status_object(true)
       else
-        build_status_object(false, ERROR_MESSAGES[:write_to_wiki])
+        raise UnauthorizedError, ERROR_MESSAGES[:write_to_wiki]
       end
     end
   end

@@ -7,9 +7,5 @@ module Gitlab
       @status = status
       @message = message
     end
-
-    def to_json(opts = nil)
-      { status: @status, message: @message }.to_json(opts)
-    end
   end
 end

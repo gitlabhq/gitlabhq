@@ -1,36 +1,27 @@
 class Projects::GitHttpController < Projects::GitHttpClientController
   include WorkhorseRequest
 
+  before_action :access_check
+
+  rescue_from Gitlab::GitAccess::UnauthorizedError, with: :render_403
+  rescue_from Gitlab::GitAccess::NotFoundError, with: :render_404
+
   # GET /foo/bar.git/info/refs?service=git-upload-pack (git pull)
   # GET /foo/bar.git/info/refs?service=git-receive-pack (git push)
   def info_refs
-    if upload_pack? && upload_pack_allowed?
-      log_user_activity
+    log_user_activity if upload_pack?
 
-      render_ok
-    elsif receive_pack? && receive_pack_allowed?
-      render_ok
-    else
-      render_denied
-    end
+    render_ok
   end
 
   # POST /foo/bar.git/git-upload-pack (git pull)
   def git_upload_pack
-    if upload_pack? && upload_pack_allowed?
-      render_ok
-    else
-      render_denied
-    end
+    render_ok
   end
 
   # POST /foo/bar.git/git-receive-pack" (git push)
   def git_receive_pack
-    if receive_pack? && receive_pack_allowed?
-      render_ok
-    else
-      render_denied
-    end
+    render_ok
   end
 
   private
@@ -41,10 +32,6 @@ class Projects::GitHttpController < Projects::GitHttpClientController
 
   def upload_pack?
     git_command == 'git-upload-pack'
-  end
-
-  def receive_pack?
-    git_command == 'git-receive-pack'
   end
 
   def git_command
@@ -60,16 +47,12 @@ class Projects::GitHttpController < Projects::GitHttpClientController
     render json: Gitlab::Workhorse.git_http_ok(repository, wiki?, user, action_name)
   end
 
-  def render_denied
-    if access_check.message == Gitlab::GitAccess::ERROR_MESSAGES[:project_not_found]
-      render plain: access_check.message, status: :not_found
-    else
-      render plain: access_check.message, status: :forbidden
-    end
+  def render_403(exception)
+    render plain: exception.message, status: :forbidden
   end
 
-  def upload_pack_allowed?
-    access_check.allowed?
+  def render_404(exception)
+    render plain: exception.message, status: :not_found
   end
 
   def access
@@ -84,11 +67,7 @@ class Projects::GitHttpController < Projects::GitHttpClientController
   def access_check
     # Use the magic string '_any' to indicate we do not know what the
     # changes are. This is also what gitlab-shell does.
-    @access_check ||= access.check(git_command, '_any')
-  end
-
-  def receive_pack_allowed?
-    access_check.allowed?
+    access.check(git_command, '_any')
   end
 
   def access_klass
