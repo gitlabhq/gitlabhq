@@ -261,6 +261,8 @@ const ShortcutsBlob = require('./shortcuts_blob');
           new NotificationsForm();
           if ($('#tree-slider').length) {
             new TreeView();
+          }
+          if ($('.blob-viewer').length) {
             new BlobViewer();
           }
           break;
