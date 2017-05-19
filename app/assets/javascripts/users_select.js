@@ -426,6 +426,15 @@ window.emitSidebarEvent = window.emitSidebarEvent || $.noop;
                 selected = $dropdown.closest('.selectbox').find("input[name='" + ($dropdown.data('field-name')) + "']").val();
                 return assignTo(selected);
               }
+
+              // Automatically close dropdown after assignee is selected
+              // since CE has no multiple assignees
+              // EE does not have a max-select
+              if ($dropdown.data('max-select') &&
+                  getSelected().length === $dropdown.data('max-select')) {
+                // Close the dropdown
+                $dropdown.dropdown('toggle');
+              }
             },
             id: function (user) {
               return user.id;
