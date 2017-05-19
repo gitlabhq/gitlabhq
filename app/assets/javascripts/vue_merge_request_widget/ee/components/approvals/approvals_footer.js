@@ -46,7 +46,8 @@ export default {
   },
   computed: {
     showUnapproveButton() {
-      return this.userHasApproved && !this.userCanApprove;
+      const isMerged = this.mr.state === 'merged';
+      return this.userHasApproved && !this.userCanApprove && !isMerged;
     },
   },
   methods: {
