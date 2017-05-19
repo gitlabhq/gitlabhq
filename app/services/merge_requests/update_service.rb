@@ -16,6 +16,7 @@ module MergeRequests
       if params[:force_remove_source_branch].present?
         merge_request.merge_params['force_remove_source_branch'] = params.delete(:force_remove_source_branch)
       end
+
       old_approvers = merge_request.overall_approvers.to_a
 
       handle_wip_event(merge_request)
@@ -48,6 +49,7 @@ module MergeRequests
         create_branch_change_note(merge_request, 'target',
                                   merge_request.previous_changes['target_branch'].first,
                                   merge_request.target_branch)
+        reset_approvals(merge_request)
       end
 
       if merge_request.previous_changes.include?('milestone_id')
@@ -110,6 +112,14 @@ module MergeRequests
     end
 
     private
+
+    def reset_approvals(merge_request)
+      target_project = merge_request.target_project
+
+      if target_project.approvals_before_merge.nonzero? && target_project.reset_approvals_on_push
+        merge_request.approvals.delete_all
+      end
+    end
 
     def handle_wip_event(merge_request)
       if wip_event = params.delete(:wip_event)

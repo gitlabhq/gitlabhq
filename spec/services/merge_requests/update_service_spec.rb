@@ -59,7 +59,7 @@ describe MergeRequests::UpdateService, services: true do
         end
       end
 
-      it 'mathces base expectations' do
+      it 'matches base expectations' do
         expect(@merge_request).to be_valid
         expect(@merge_request.title).to eq('New title')
         expect(@merge_request.assignee).to eq(user2)
@@ -498,6 +498,17 @@ describe MergeRequests::UpdateService, services: true do
 
         issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
         expect(issue_ids).to be_empty
+      end
+    end
+
+    context 'updating target_branch' do
+      it 'resets approvals when target_branch is changed' do
+        merge_request.target_project.update(reset_approvals_on_push: true, approvals_before_merge: 2)
+        merge_request.approvals.create(user_id: user2.id)
+
+        update_merge_request(target_branch: 'video')
+
+        expect(merge_request.reload.approvals).to be_empty
       end
     end
 

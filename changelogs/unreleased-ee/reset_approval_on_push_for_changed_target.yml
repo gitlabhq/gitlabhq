@@ -1,0 +1,4 @@
+---
+title: 'Fix: Approvals not reset if changing target branch'
+merge_request:
+author:
