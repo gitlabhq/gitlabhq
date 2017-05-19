@@ -44,13 +44,13 @@ For consistency, we suggest to pick the colors from the color palette.
 
 | Orange | Purple | Grey |
 | -------- | -------- | -------- |
-| <img src="img/illustrations-color-orange.png" width= 320px alt="Orange" /> | <img src="img/illustrations-color-purple.png" width= 320px alt="Purple" /> | <img src="img/illustrations-color-grey.png" width= 320 alt="Grey" /> |
+| <img src="img/illustrations-color-orange.png" width= 160px alt="Orange" /> | <img src="img/illustrations-color-purple.png" width= 160px alt="Purple" /> | <img src="img/illustrations-color-grey.png" width= 160px alt="Grey" /> |
 | #FC6D26   | #6B4FBB | #EEEEEE |
 
 ---
 
 | Orange | Purple |
 | -------- | -------- | 
-| <img src="img/illustrations-palette-oragne.png" width= 320px alt="Palette - Orange" /> | <img src="img/illustrations-palette-purple.png" width= 320px alt="Palette - Purple" /> | 
+| <img src="img/illustrations-palette-oragne.png" width= 160px alt="Palette - Orange" /> | <img src="img/illustrations-palette-purple.png" width= 160px alt="Palette - Purple" /> | 
 
 
