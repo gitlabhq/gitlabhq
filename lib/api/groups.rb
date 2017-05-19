@@ -17,6 +17,7 @@ module API
         optional :membership_lock, type: Boolean, desc: 'Prevent adding new members to project membership within this group'
         optional :ldap_cn, type: String, desc: 'LDAP Common Name'
         optional :ldap_access, type: Integer, desc: 'A valid access level'
+        optional :shared_runners_minutes_limit, type: Integer, desc: 'Pipeline minutes quota for this group'
         all_or_none_of :ldap_cn, :ldap_access
       end
 
@@ -118,8 +119,8 @@ module API
         optional :name, type: String, desc: 'The name of the group'
         optional :path, type: String, desc: 'The path of the group'
         use :optional_params
-        at_least_one_of :name, :path, :description, :visibility,
-                        :lfs_enabled, :request_access_enabled
+
+        at_least_one_of(*@declared_params.flatten - [:id])
       end
       put ':id' do
         group = find_group!(params[:id])

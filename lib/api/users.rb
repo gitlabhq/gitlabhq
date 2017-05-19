@@ -30,6 +30,11 @@ module API
           optional :skip_confirmation, type: Boolean, default: false, desc: 'Flag indicating the account is confirmed'
           optional :external, type: Boolean, desc: 'Flag indicating the user is an external user'
           all_or_none_of :extern_uid, :provider
+
+          # EE
+          optional :namespace_attributes, type: Hash do
+            optional :shared_runners_minutes_limit, type: Integer, desc: 'Pipeline minutes quota for this user'
+          end
         end
       end
 
@@ -137,10 +142,8 @@ module API
         optional :name, type: String, desc: 'The name of the user'
         optional :username, type: String, desc: 'The username of the user'
         use :optional_attributes
-        at_least_one_of :email, :password, :name, :username, :skype, :linkedin,
-                        :twitter, :website_url, :organization, :projects_limit,
-                        :extern_uid, :provider, :bio, :location, :admin,
-                        :can_create_group, :confirm, :external
+
+        at_least_one_of(*@declared_params.flatten - [:id])
       end
       put ":id" do
         authenticated_as_admin!
@@ -171,6 +174,10 @@ module API
         end
 
         user_params[:password_expires_at] = Time.now if user_params[:password].present?
+
+        # EE
+        namespace_attributes = user_params[:namespace_attributes]
+        namespace_attributes[:id] = user.namespace_id if namespace_attributes
 
         if user.update_attributes(user_params.except(:extern_uid, :provider))
           present user, with: Entities::UserPublic

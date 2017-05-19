@@ -425,6 +425,15 @@ describe API::Users do
       expect(user.reload.external?).to be_truthy
     end
 
+    it "updates shared_runners_minutes_limit" do
+      put api("/users/#{user.id}", admin), { namespace_attributes: { shared_runners_minutes_limit: 133 } }
+
+      expect(response).to have_http_status(200)
+      expect(json_response.dig('namespace', 'shared_runners_minutes_limit'))
+        .to eq(133)
+      expect(user.reload.namespace.shared_runners_minutes_limit).to eq(133)
+    end
+
     it "does not update admin status" do
       put api("/users/#{admin_user.id}", admin), { can_create_group: false }
       expect(response).to have_http_status(200)

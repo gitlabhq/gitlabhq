@@ -272,6 +272,14 @@ describe API::Groups do
 
         expect(response).to have_http_status(404)
       end
+
+      # EE
+      it 'updates the group for shared_runners_minutes_limit' do
+        put api("/groups/#{group1.id}", user1), shared_runners_minutes_limit: 133
+
+        expect(response).to have_http_status(200)
+        expect(json_response['shared_runners_minutes_limit']).to eq(133)
+      end
     end
 
     context 'when authenticated as the admin' do

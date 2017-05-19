@@ -38,6 +38,14 @@ module API
       expose :can_create_project?, as: :can_create_project
       expose :two_factor_enabled?, as: :two_factor_enabled
       expose :external
+
+      # EE-only
+      expose :namespace, using: 'API::Entities::UserNamespace'
+    end
+
+    # EE-only
+    class UserNamespace < Grape::Entity
+      expose :shared_runners_minutes_limit
     end
 
     class UserWithPrivateDetails < UserPublic
@@ -181,6 +189,9 @@ module API
     class GroupDetail < Group
       expose :projects, using: Entities::Project
       expose :shared_projects, using: Entities::Project
+
+      # EE-only
+      expose :shared_runners_minutes_limit
     end
 
     class RepoCommit < Grape::Entity
