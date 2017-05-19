@@ -27,7 +27,10 @@ The illustrations should always align with topics and goals in specific context.
 - Depends on different situations, border thickness can be changed to **3px**. For example, when the illustration size is small, the illustration with 4px border thickness would look tight. In this case, the border thickness can be changed to 3px.
 - We use **rounded caps** and **rounded corner**.
 
-![example-caps-and-corner]()
+| Do | Don't |
+| -------- | -------- | 
+| ![example-caps-and-corner--do]() | ![example-caps-and-corner--dont]() |
+
 
 #### Radius
 - Standard corner radius: **10px**
@@ -35,15 +38,16 @@ The illustrations should always align with topics and goals in specific context.
 
 ![example-radius]()
 
-#### Colors
+#### Colors palette
+
+For consistency, we suggest to pick the colors from the color palette.
 
 | Orange | Purple | Grey |
 | -------- | -------- | -------- |
 | ![color-orange]() | ![color-purple]() | ![color-grey]() |
 | #FC6D26   | #6B4FBB | #EEEEEE |
 
-##### Color palette
-For consistency, we suggest to pick the colors from the color palette. 
+
 
 | Orange | Purple |
 | -------- | -------- | 
