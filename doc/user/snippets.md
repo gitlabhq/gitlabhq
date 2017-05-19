@@ -2,7 +2,17 @@
 
 Snippets are little bits of code or text.
 
+![GitLab Snippet](img/gitlab_snippet.png)
+
 There are 2 types of snippets - project snippets and personal snippets.
+
+## Comments
+
+With GitLab Snippets you engage in a conversation about that piece of code,
+facilitating the collaboration among users.
+
+> **Note:**
+Comments on snippets was [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/12910) in [GitLab Community Edition 9.2](https://about.gitlab.com/2017/05/22/gitlab-9-2-released/#comments-for-personal-snippets).
 
 ## Project snippets
 
