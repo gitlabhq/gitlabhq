@@ -1,8 +1,4 @@
 # Projects API
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/master
 
 ### Project visibility level
 
