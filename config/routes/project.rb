@@ -74,7 +74,6 @@ constraints(ProjectUrlConstrainer.new) do
           get :conflicts
           get :conflict_for_path
           get :pipelines
-          get :merge_check
           get :commit_change_content
           post :merge
           post :cancel_merge_when_pipeline_succeeds

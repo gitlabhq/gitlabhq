@@ -175,7 +175,6 @@ export default {
       });
     },
     handleMounted() {
-      this.checkStatus();
       this.setFavicon();
       this.initDeploymentsPolling();
     },
