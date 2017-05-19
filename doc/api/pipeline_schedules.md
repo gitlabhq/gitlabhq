@@ -15,22 +15,21 @@ GET /projects/:id/pipeline_schedules
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 
 ```
-curl --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "http://192.168.10.5:3000/api/v4/projects/28/pipeline_schedules"
+curl --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "http://192.168.10.5:3000/api/v4/projects/29/pipeline_schedules"
 ```
 
 ```json
 [
     {
-        "id": 11,
-        "description": "Acceptance Test",
+        "id": 13,
+        "description": "Test schedule pipeline",
         "ref": "master",
-        "cron": "0 4 * * *",
-        "cron_timezone": "America/Los_Angeles",
-        "next_run_at": "2017-05-13T11:00:00.000Z",
+        "cron": "* * * * *",
+        "cron_timezone": "Asia/Tokyo",
+        "next_run_at": "2017-05-19T13:41:00.000Z",
         "active": true,
-        "created_at": "2017-05-12T13:10:34.497Z",
-        "updated_at": "2017-05-12T13:10:34.497Z",
-        "deleted_at": null,
+        "created_at": "2017-05-19T13:31:08.849Z",
+        "updated_at": "2017-05-19T13:40:17.727Z",
         "owner": {
             "name": "Administrator",
             "username": "root",
@@ -57,21 +56,26 @@ GET /projects/:id/pipeline_schedules/:pipeline_schedule_id
 | `pipeline_schedule_id` | integer | yes      | The pipeline schedule id           |
 
 ```
-curl --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "http://192.168.10.5:3000/api/v4/projects/28/pipeline_schedules/11"
+curl --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "http://192.168.10.5:3000/api/v4/projects/29/pipeline_schedules/13"
 ```
 
 ```json
 {
-    "id": 11,
-    "description": "Acceptance Test",
+    "id": 13,
+    "description": "Test schedule pipeline",
     "ref": "master",
-    "cron": "0 4 * * *",
-    "cron_timezone": "America/Los_Angeles",
-    "next_run_at": "2017-05-13T11:00:00.000Z",
+    "cron": "* * * * *",
+    "cron_timezone": "Asia/Tokyo",
+    "next_run_at": "2017-05-19T13:41:00.000Z",
     "active": true,
-    "created_at": "2017-05-12T13:10:34.497Z",
-    "updated_at": "2017-05-12T13:10:34.497Z",
-    "deleted_at": null,
+    "created_at": "2017-05-19T13:31:08.849Z",
+    "updated_at": "2017-05-19T13:40:17.727Z",
+    "last_pipeline": {
+        "id": 332,
+        "sha": "0e788619d0b5ec17388dffb973ecd505946156db",
+        "ref": "master",
+        "status": "pending"
+    },
     "owner": {
         "name": "Administrator",
         "username": "root",
@@ -101,21 +105,21 @@ POST /projects/:id/pipeline_schedules
 | `active ` | boolean  | yes      | The activation of pipeline schedule. If false is set, the pipeline schedule will deactivated initially. |
 
 ```
-curl --request POST --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" --form description="Build packages" --form ref="master" --form cron="0 1 * * 5" --form cron_timezone="UTC" --form active="true" "http://192.168.10.5:3000/api/v4/projects/28/pipeline_schedules"
+curl --request POST --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" --form description="Build packages" --form ref="master" --form cron="0 1 * * 5" --form cron_timezone="UTC" --form active="true" "http://192.168.10.5:3000/api/v4/projects/29/pipeline_schedules"
 ```
 
 ```json
 {
-    "id": 12,
+    "id": 14,
     "description": "Build packages",
     "ref": "master",
     "cron": "0 1 * * 5",
     "cron_timezone": "UTC",
-    "next_run_at": "2017-05-19T01:00:00.000Z",
+    "next_run_at": "2017-05-26T01:00:00.000Z",
     "active": true,
-    "created_at": "2017-05-12T13:18:58.879Z",
-    "updated_at": "2017-05-12T13:18:58.879Z",
-    "deleted_at": null,
+    "created_at": "2017-05-19T13:43:08.169Z",
+    "updated_at": "2017-05-19T13:43:08.169Z",
+    "last_pipeline": null,
     "owner": {
         "name": "Administrator",
         "username": "root",
@@ -146,21 +150,26 @@ PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id
 | `active ` | boolean  | no      | The activation of pipeline schedule. If false is set, the pipeline schedule will deactivated initially. |
 
 ```
-curl --request PUT --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" --form cron="0 2 * * *" "http://192.168.10.5:3000/api/v4/projects/28/pipeline_schedules/11"
+curl --request PUT --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" --form cron="0 2 * * *" "http://192.168.10.5:3000/api/v4/projects/29/pipeline_schedules/13"
 ```
 
 ```json
 {
-    "id": 11,
-    "description": "Acceptance Test",
+    "id": 13,
+    "description": "Test schedule pipeline",
     "ref": "master",
     "cron": "0 2 * * *",
-    "cron_timezone": "America/Los_Angeles",
-    "next_run_at": "2017-05-13T09:00:00.000Z",
+    "cron_timezone": "Asia/Tokyo",
+    "next_run_at": "2017-05-19T17:00:00.000Z",
     "active": true,
-    "created_at": "2017-05-12T13:10:34.497Z",
-    "updated_at": "2017-05-12T13:22:07.798Z",
-    "deleted_at": null,
+    "created_at": "2017-05-19T13:31:08.849Z",
+    "updated_at": "2017-05-19T13:44:16.135Z",
+    "last_pipeline": {
+        "id": 332,
+        "sha": "0e788619d0b5ec17388dffb973ecd505946156db",
+        "ref": "master",
+        "status": "pending"
+    },
     "owner": {
         "name": "Administrator",
         "username": "root",
@@ -186,21 +195,26 @@ POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/take_ownership
 | `pipeline_schedule_id`  | integer | yes      | The pipeline schedule id           |
 
 ```
-curl --request POST --header "PRIVATE-TOKEN: hf2CvZXB9w8Uc5pZKpSB" "http://192.168.10.5:3000/api/v4/projects/28/pipeline_schedules/11/take_ownership"
+curl --request POST --header "PRIVATE-TOKEN: hf2CvZXB9w8Uc5pZKpSB" "http://192.168.10.5:3000/api/v4/projects/29/pipeline_schedules/13/take_ownership"
 ```
 
 ```json
 {
-    "id": 11,
-    "description": "Acceptance Test",
+    "id": 13,
+    "description": "Test schedule pipeline",
     "ref": "master",
     "cron": "0 2 * * *",
-    "cron_timezone": "America/Los_Angeles",
-    "next_run_at": "2017-05-13T09:00:00.000Z",
+    "cron_timezone": "Asia/Tokyo",
+    "next_run_at": "2017-05-19T17:00:00.000Z",
     "active": true,
-    "created_at": "2017-05-12T13:10:34.497Z",
-    "updated_at": "2017-05-12T13:26:12.191Z",
-    "deleted_at": null,
+    "created_at": "2017-05-19T13:31:08.849Z",
+    "updated_at": "2017-05-19T13:46:37.468Z",
+    "last_pipeline": {
+        "id": 332,
+        "sha": "0e788619d0b5ec17388dffb973ecd505946156db",
+        "ref": "master",
+        "status": "pending"
+    },
     "owner": {
         "name": "shinya",
         "username": "maeda",
@@ -226,21 +240,26 @@ DELETE /projects/:id/pipeline_schedules/:pipeline_schedule_id
 | `pipeline_schedule_id`   | integer | yes      | The pipeline schedule id           |
 
 ```
-curl --request DELETE --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "http://192.168.10.5:3000/api/v4/projects/28/pipeline_schedules/11"
+curl --request DELETE --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "http://192.168.10.5:3000/api/v4/projects/29/pipeline_schedules/13"
 ```
 
 ```json
 {
-    "id": 11,
-    "description": "Acceptance Test",
+    "id": 13,
+    "description": "Test schedule pipeline",
     "ref": "master",
     "cron": "0 2 * * *",
-    "cron_timezone": "America/Los_Angeles",
-    "next_run_at": "2017-05-13T09:00:00.000Z",
+    "cron_timezone": "Asia/Tokyo",
+    "next_run_at": "2017-05-19T17:00:00.000Z",
     "active": true,
-    "created_at": "2017-05-12T13:10:34.497Z",
-    "updated_at": "2017-05-12T13:26:12.191Z",
-    "deleted_at": "2017-05-12T13:27:38.529Z",
+    "created_at": "2017-05-19T13:31:08.849Z",
+    "updated_at": "2017-05-19T13:46:37.468Z",
+    "last_pipeline": {
+        "id": 332,
+        "sha": "0e788619d0b5ec17388dffb973ecd505946156db",
+        "ref": "master",
+        "status": "pending"
+    },
     "owner": {
         "name": "shinya",
         "username": "maeda",
