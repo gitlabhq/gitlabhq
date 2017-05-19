@@ -38,6 +38,11 @@ it's reassigned to someone else to take it from there.
 if a user is not member of that project, it can only be
 assigned to them if they created the issue themselves.
 
+In [GitLab Enterprise Edition Starter and up](https://about.gitlab.com/gitlab-ee/), 
+you can assign multiple people to an issue.
+The interface is exactly the same, except that you can select multiple users in the dropdown.
+The multiple assignees are also visible in issue lists and issue boards, and all get the same notifications.
+
 #### 4. Milestone
 
 - Select a [milestone](../milestones/index.md) to attribute that issue to.
