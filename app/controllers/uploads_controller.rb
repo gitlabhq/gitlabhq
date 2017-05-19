@@ -21,6 +21,8 @@ class UploadsController < ApplicationController
         can?(current_user, :read_project, model.project)
       when User
         true
+      when Appearance
+        true
       else
         permission = "read_#{model.class.to_s.underscore}".to_sym
 
