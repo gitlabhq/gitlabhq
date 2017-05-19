@@ -61,34 +61,6 @@ export default {
         </span>
       </div>
       <div class="normal">
-<<<<<<< HEAD
-        <b>Request to merge</b>
-        <span
-          class="label-branch"
-          :class="{'label-truncated has-tooltip': isBranchTitleLong(mr.sourceBranch)}"
-          :title="isBranchTitleLong(mr.sourceBranch) ? mr.sourceBranch : ''"
-          data-placement="bottom"
-          v-html="mr.sourceBranchLink"></span>
-        <button
-          class="btn btn-transparent btn-clipboard has-tooltip"
-          data-title="Copy branch name to clipboard"
-          :data-clipboard-text="mr.sourceBranch">
-          <i
-            aria-hidden="true"
-            class="fa fa-clipboard"></i>
-        </button>
-        <b>into</b>
-        <span
-          class="label-branch"
-          :class="{'label-truncated has-tooltip': isBranchTitleLong(mr.targetBranch)}"
-          :title="isBranchTitleLong(mr.targetBranch) ? mr.targetBranch : ''"
-          data-placement="bottom">
-          <a
-            :href="mr.targetBranchPath">
-            {{mr.targetBranch}}
-          </a>
-        </span>
-=======
         <strong>
           Request to merge
           <span
@@ -114,7 +86,6 @@ export default {
             <a :href="mr.targetBranchPath">{{mr.targetBranch}}</a>
           </span>
         </strong>
->>>>>>> 4de3d0b... Merge branch 'fix-trailing-space-mr-widget' into 'master'
         <span
           v-if="shouldShowCommitsBehindText"
           class="diverged-commits-count">
