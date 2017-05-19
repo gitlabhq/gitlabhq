@@ -30,10 +30,6 @@ header {
     background-color: $gray-light;
     border: none;
     border-bottom: 1px solid $border-color;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
 
     @media (max-width: $screen-xs-min) {
       padding: 0 16px;
