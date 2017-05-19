@@ -29,7 +29,7 @@ module API
       get ':id/pipeline_schedules/:pipeline_schedule_id' do
         authorize! :read_pipeline_schedule, user_project
 
-        return not_found!('PipelineSchedule') unless pipeline_schedule
+        not_found!('PipelineSchedule') unless pipeline_schedule
 
         present pipeline_schedule, with: Entities::PipelineSchedule, type: :full
       end
@@ -72,7 +72,7 @@ module API
       put ':id/pipeline_schedules/:pipeline_schedule_id' do
         authorize! :create_pipeline_schedule, user_project
 
-        return not_found!('PipelineSchedule') unless pipeline_schedule
+        not_found!('PipelineSchedule') unless pipeline_schedule
 
         if pipeline_schedule.update(declared_params(include_missing: false))
           present pipeline_schedule, with: Entities::PipelineSchedule, type: :full
@@ -90,7 +90,7 @@ module API
       post ':id/pipeline_schedules/:pipeline_schedule_id/take_ownership' do
         authorize! :create_pipeline_schedule, user_project
 
-        return not_found!('PipelineSchedule') unless pipeline_schedule
+        not_found!('PipelineSchedule') unless pipeline_schedule
 
         if pipeline_schedule.own!(current_user)
           present pipeline_schedule, with: Entities::PipelineSchedule, type: :full
@@ -108,7 +108,7 @@ module API
       delete ':id/pipeline_schedules/:pipeline_schedule_id' do
         authorize! :admin_pipeline_schedule, user_project
 
-        return not_found!('PipelineSchedule') unless pipeline_schedule
+        not_found!('PipelineSchedule') unless pipeline_schedule
 
         present pipeline_schedule.destroy, with: Entities::PipelineSchedule, type: :full
       end
@@ -124,7 +124,7 @@ module API
         @pipeline_schedule ||=
           user_project.pipeline_schedules
                       .preload([:owner, :last_pipeline])
-                      .find(params.delete(:pipeline_schedule_id))
+                      .find_by(id: params.delete(:pipeline_schedule_id))
       end
     end
   end

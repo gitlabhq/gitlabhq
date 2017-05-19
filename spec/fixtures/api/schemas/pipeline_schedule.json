@@ -10,7 +10,6 @@
     "active": { "type": "boolean" },
     "created_at": { "type": "date" },
     "updated_at": { "type": "date" },
-    "deleted_at": { "type": "date" },
     "last_pipeline": { 
       "type": ["object", "null"],
       "properties": {
@@ -36,7 +35,7 @@
   },
   "required": [
     "id", "description", "ref", "cron", "cron_timezone", "next_run_at", 
-    "active", "created_at", "updated_at", "deleted_at", "owner"
+    "active", "created_at", "updated_at", "owner"
   ],
   "additionalProperties": false
 }
