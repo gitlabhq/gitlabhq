@@ -1,0 +1,4 @@
+---
+title: Fixes the 500 when accessing customized appearance logos
+merge_request: 11479
+author: Alexis Reigel
