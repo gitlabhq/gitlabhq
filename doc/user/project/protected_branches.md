@@ -97,7 +97,32 @@ all matching branches:
 
 ![Protected branch matches](img/protected_branches_matches.png)
 
+## Deleting a protected branch
+
+> [Introduced][ce-21393] in GitLab 9.3.
+
+From time to time, it may be required to delete or clean up branches that are
+protected.
+
+User with [Master permissions][perm] and up can manually delete protected
+branches via GitLab's web interface:
+
+1. Visit **Repository > Branches**
+1. Click on the delete icon next to the branch you wish to delete
+1. In order to prevent accidental deletion, an additional confirmation is
+   required
+
+    ![Delete protected branches](img/protected_branches_delete.png)
+
+Deleting a protected branch is only allowed via the web interface, not via Git.
+This means that you can't accidentally delete a protected branch from your
+command line or a Git client application.
+
 ## Changelog
+
+**9.2**
+
+- Allow deletion of protected branches via the web interface [gitlab-org/gitlab-ce#21393][ce-21393]
 
 **8.11**
 
@@ -113,4 +138,6 @@ all matching branches:
 [ce-4665]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4665 "Allow specifying protected branches using wildcards"
 [ce-4892]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4892 "Allow developers to merge into a protected branch without having push access"
 [ce-5081]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5081 "Allow creating protected branches that can't be pushed to"
+[ce-21393]: https://gitlab.com/gitlab-org/gitlab-ce/issues/21393
 [ee-restrict]: http://docs.gitlab.com/ee/user/project/protected_branches.html#restricting-push-and-merge-access-to-certain-users
+[perm]: ../permissions.md
