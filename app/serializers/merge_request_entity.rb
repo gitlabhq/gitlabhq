@@ -1,5 +1,4 @@
 class MergeRequestEntity < IssuableEntity
-  expose :assignee_id
   include RequestAwareEntity
 
   expose :in_progress_merge_commit_sha
@@ -163,12 +162,6 @@ class MergeRequestEntity < IssuableEntity
                                          merge_request.target_project,
                                          merge_request,
                                          format: :json)
-  end
-
-  expose :merge_check_path do |merge_request|
-    merge_check_namespace_project_merge_request_path(merge_request.project.namespace,
-                                                     merge_request.project,
-                                                     merge_request)
   end
 
   expose :ci_environments_status_path do |merge_request|
