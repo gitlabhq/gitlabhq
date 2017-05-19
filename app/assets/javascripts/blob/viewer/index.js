@@ -83,6 +83,7 @@ export default class BlobViewer {
       viewer.setAttribute('data-loaded', 'true');
 
       this.$fileHolder.trigger('highlight:line');
+      gl.utils.handleLocationHash();
 
       this.toggleCopyButtonState();
     });
@@ -115,45 +116,6 @@ export default class BlobViewer {
 
     this.toggleCopyButtonState();
 
-<<<<<<< HEAD
     this.loadViewer(newViewer);
-=======
-    BlobViewer.loadViewer(newViewer)
-    .then((viewer) => {
-      $(viewer).syntaxHighlight();
-
-      this.$fileHolder.trigger('highlight:line');
-      gl.utils.handleLocationHash();
-
-      this.toggleCopyButtonState();
-    })
-    .catch(() => new Flash('Error loading viewer'));
-  }
-
-  static loadViewer(viewerParam) {
-    const viewer = viewerParam;
-    const url = viewer.getAttribute('data-url');
-
-    return new Promise((resolve, reject) => {
-      if (!url || viewer.getAttribute('data-loaded') || viewer.getAttribute('data-loading')) {
-        resolve(viewer);
-        return;
-      }
-
-      viewer.setAttribute('data-loading', 'true');
-
-      $.ajax({
-        url,
-        dataType: 'JSON',
-      })
-      .fail(reject)
-      .done((data) => {
-        viewer.innerHTML = data.html;
-        viewer.setAttribute('data-loaded', 'true');
-
-        resolve(viewer);
-      });
-    });
->>>>>>> b957df9... Merge branch 'dm-scroll-to-blob-user-content' into 'master'
   }
 }
