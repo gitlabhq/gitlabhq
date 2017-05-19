@@ -221,6 +221,33 @@ A forEach will cause side effects, it will be mutating the array being iterated.
       Add User
     </button>
   ```
+  
+#### Event handling
+
+1. When registering an event listener, prefer to implicitly bind the context of 
+the handler with an arrow function, rather than explicitly with `.bind(this)`.
+
+    ```javascript
+    // bad
+    $('.my-button').on('click', this.myMethod.bind(this));
+    
+    
+    // good
+    $('.my-button').on('click', e => this.myMethod(e));
+
+    ```
+
+2. In the rare cases where the context you need to bind isn't in lexical 
+scope, or it makes sense to set parameters at the time of binding, it's okay to
+use `.bind()`.
+
+    ```javascript
+    // okay
+    $('.my-button').on('click', e => this.myMethod.bind(superClass));
+    
+    // okay
+    $('.my-button').on('click', e => this.myMethod.bind(superClass, myParam, yourParam));
+    ```
 
 ### Vue.js
 
