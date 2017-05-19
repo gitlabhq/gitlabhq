@@ -20,7 +20,7 @@ The illustrations should always align with topics and goals in specific context.
 - All illustrations are geometric rather than organic. 
 - The illustrations are made by circles, rectangles, squares, and triangles. 
 
-![example-shapes]()
+<img src="img/illustrations-geometric.png" width=224px alt="Example for geometric" />
 
 #### Stroke
 - Standard border thickness: **4px**
@@ -29,14 +29,14 @@ The illustrations should always align with topics and goals in specific context.
 
 | Do | Don't |
 | -------- | -------- | 
-| ![example-caps-and-corner--do]() | ![example-caps-and-corner--dont]() |
+| <img src="img/illustrations-caps-do.png" width= 133px alt="Do: caps and corner" /> | <img src="img/illustrations-caps-don't.png" width= 133px alt="Don't: caps and corner"/> |
 
 
 #### Radius
 - Standard corner radius: **10px**
 - Depends on different situations, corner radius can be changed to **5px**. For example, when the illustration size is small, the illustration with 10px corner radius would be over-rounded. In this case, the corner radius can be changed to 5px.
 
-![example-radius]()
+<img src="img/illustrations-border-radius.png" width= 464px alt="Example for border radius"/> 
 
 #### Colors palette
 
@@ -44,13 +44,13 @@ For consistency, we suggest to pick the colors from the color palette.
 
 | Orange | Purple | Grey |
 | -------- | -------- | -------- |
-| ![color-orange]() | ![color-purple]() | ![color-grey]() |
+| <img src="img/illustrations-color-orange.png" width= 320 alt="Orange" /> | <img src="img/illustrations-color-purple.png" width= 320 alt="Purple" /> | <img src="img/illustrations-color-grey.png" width= 320 alt="Grey" /> |
 | #FC6D26   | #6B4FBB | #EEEEEE |
 
-
+---
 
 | Orange | Purple |
 | -------- | -------- | 
-| ![palette-orange]() | ![palette-purple]() | 
+| <img src="img/illustrations-palette-oragne.png" width= 320 alt="Palette - Orange" /> | <img src="img/illustrations-palette-purple.png" width= 320 alt="Palette - Purple" /> | 
 
 
