@@ -232,7 +232,6 @@ describe('mrWidgetOptions', () => {
 
         vm.handleMounted();
 
-        expect(vm.checkStatus).toHaveBeenCalled();
         expect(vm.setFavicon).toHaveBeenCalled();
         expect(vm.initDeploymentsPolling).toHaveBeenCalled();
       });
