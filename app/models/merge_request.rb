@@ -922,4 +922,10 @@ class MergeRequest < ActiveRecord::Base
   def base_codeclimate_artifact
     @base_codeclimate_artifact ||= base_pipeline&.codeclimate_artifact
   end
+
+  def has_codeclimate_data?
+    has_ci? &&
+      codeclimate_artifact&.success? &&
+      base_codeclimate_artifact&.success?
+  end
 end
