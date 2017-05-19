@@ -84,7 +84,7 @@ export default {
     },
     elementsToVisualize(noTitleChange, noDescriptionChange) {
       if (!noTitleChange) {
-        this.titleText = this.apiData.title_text;
+        this.setTabTitle();
         this.updateFlag('titleFlag', true);
       }
 
@@ -104,7 +104,6 @@ export default {
     animate(title, description) {
       this.title = title;
       this.description = description;
-      this.setTabTitle();
 
       this.$nextTick(() => {
         this.updateFlag('titleFlag', false);
@@ -117,6 +116,7 @@ export default {
 
       const { title, description } = this.apiData;
       this.descriptionText = this.apiData.description_text;
+      this.titleText = this.apiData.title_text;
 
       const noTitleChange = this.title === title;
       const noDescriptionChange = this.description === description;
