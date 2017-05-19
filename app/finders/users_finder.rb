@@ -30,7 +30,7 @@ class UsersFinder
     users = by_active(users)
     users = by_external_identity(users)
     users = by_external(users)
-    users = by_ldap(users)
+    users = by_non_ldap(users)
 
     users
   end
