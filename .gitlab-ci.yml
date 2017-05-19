@@ -422,14 +422,7 @@ gitlab:assets:compile:
     paths:
     - webpack-report/
 
-<<<<<<< HEAD
-rake karma:
-=======
 karma:
-  cache:
-    paths:
-      - vendor/ruby
->>>>>>> origin/master
   stage: test
   <<: *use-pg
   <<: *dedicated-runner
