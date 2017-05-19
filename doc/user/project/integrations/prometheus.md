@@ -171,11 +171,15 @@ after initial deployment.
 
 ## Determining performance impact of a merge
 
-> [Introduced][ce-10408] in GitLab 9.1.
+> [Introduced][ce-10408] in GitLab 9.2.
 
-After a merge request has been approved, a sparkline will appear on the merge request page displaying the average memory usage of the application. The sparkline includes thirty minutes of data prior to the merge, a dot to indicate the merge itself, and then will begin capturing thirty minutes of data after the merge.
+Developers can view the performance impact of their changes within the merge request workflow. When a source branch has been deployed to an environment, a sparkline will appear showing the average memory consumption of the app. The dot indicates when the current changes were deployed, with up to 30 minutes of performance data displayed before and after. The sparkline will be updated after each commit has been deployed.
 
-This sparkline serves as a quick indicator of the impact on memory consumption of the recently merged changes. If there is a problem, action can then be taken to troubleshoot or revert the merge. 
+Once merged and the target branch has been redeployed, the sparkline will switch to show the new environments this revision has been deployed to. 
+
+Performance data will be available for the duration it is persisted on the Prometheus server.
+
+![Merge Request with Performance Impact](img/merge_request_performance.png)
 
 ## Troubleshooting
 
