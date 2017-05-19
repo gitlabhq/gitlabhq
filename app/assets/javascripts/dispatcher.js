@@ -51,7 +51,6 @@ import ShortcutsWiki from './shortcuts_wiki';
 import Pipelines from './pipelines';
 import BlobViewer from './blob/viewer/index';
 import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
-import UsersSelect from './users_select';
 import RefSelectDropdown from './ref_select_dropdown';
 
 const ShortcutsBlob = require('./shortcuts_blob');
