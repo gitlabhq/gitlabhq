@@ -916,10 +916,10 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def codeclimate_artifact
-    @codeclimate_artifact ||= head_pipeline.codeclimate_artifact
+    @codeclimate_artifact ||= head_pipeline&.codeclimate_artifact
   end
 
   def base_codeclimate_artifact
-    @base_codeclimate_artifact ||= base_pipeline.codeclimate_artifact
+    @base_codeclimate_artifact ||= base_pipeline&.codeclimate_artifact
   end
 end
