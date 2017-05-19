@@ -26,10 +26,21 @@ class RenameUsersWithRenamedNamespace < ActiveRecord::Migration
 
   def up
     DISALLOWED_ROOT_PATHS.each do |path|
-      update_sql = "UPDATE users SET username = namespaces.path "\
-                   "FROM namespaces WHERE namespaces.owner_id = users.id "\
-                   "AND namespaces.type IS NULL "\
-                   "AND users.username ILIKE '#{path}'"
+      users = Arel::Table.new(:users)
+      namespaces = Arel::Table.new(:namespaces)
+      predicate = namespaces[:owner_id].eq(users[:id])
+                    .and(namespaces[:type].eq(nil))
+                    .and(users[:username].matches(path))
+      update_sql = if Gitlab::Database.postgresql?
+                     "UPDATE users SET username = namespaces.path "\
+                     "FROM namespaces WHERE #{predicate.to_sql}"
+                   else
+                     "UPDATE users INNER JOIN namespaces "\
+                     "ON namespaces.owner_id = users.id "\
+                     "SET username = namespaces.path "\
+                     "WHERE #{predicate.to_sql}"
+                   end
+
       connection.execute(update_sql)
     end
   end
