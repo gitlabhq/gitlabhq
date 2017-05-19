@@ -277,7 +277,10 @@ class Projects::IssuesController < Projects::ApplicationController
 
     notice = "Please sign in to create the new issue."
 
-    store_location_for :user, request.fullpath
+    if request.get? && !request.xhr?
+      store_location_for :user, request.fullpath
+    end
+
     redirect_to new_user_session_path, notice: notice
   end
 end
