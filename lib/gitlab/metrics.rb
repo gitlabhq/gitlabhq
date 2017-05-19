@@ -78,28 +78,6 @@ module Gitlab
     def self.submit_metrics(metrics)
       prepared = prepare_metrics(metrics)
 
-      if prometheus_metrics_enabled?
-        metrics.map do |metric|
-          known = [:series, :tags,:values, :timestamp]
-          value = metric&.[](:values)&.[](:value)
-          handled=  [:rails_gc_statistics]
-          if handled.include? metric[:series].to_sym
-            next
-          end
-
-          if metric.keys.any? {|k| !known.include?(k)} || value.nil?
-            print metric
-            print "\n"
-
-            {:series=>"rails_gc_statistics", :tags=>{}, :values=>{:count=>0, :heap_allocated_pages=>4245, :heap_sorted_length=>4426, :heap_allocatable_pages=>0, :heap_available_slots=>1730264, :heap_live_slots=>1729935, :heap_free_slots=>329, :heap_final_slots=>0, :heap_marked_slots=>1184216, :heap_swept_slots=>361843, :heap_eden_pages=>4245, :heap_tomb_pages=>0, :total_allocated_pages=>4245, :total_freed_pages=>0, :total_allocated_objects=>15670757, :total_freed_objects=>13940822, :malloc_increase_bytes=>4842256, :malloc_increase_bytes_limit=>29129457, :minor_gc_count=>0, :major_gc_count=>0, :remembered_wb_unprotected_objects=>39905, :remembered_wb_unprotected_objects_limit=>74474, :old_objects=>1078731, :old_objects_limit=>1975860, :oldmalloc_increase_bytes=>4842640, :oldmalloc_increase_bytes_limit=>31509677, :total_time=>0.0}, :timestamp=>1494356175592659968}
-
-            next
-          end
-          metric_value = gauge(metric[:series].to_sym, metric[:series])
-          metric_value.set(metric[:tags], value)
-        end
-      end
-
       pool&.with do |connection|
         prepared.each_slice(settings[:packet_size]) do |slice|
           begin

@@ -54,43 +54,4 @@ describe HealthController do
       end
     end
   end
-
-  describe '#metrics' do
-    context 'authorization token provided' do
-      before do
-        request.headers['TOKEN'] = token
-      end
-
-      it 'returns DB ping metrics' do
-        get :metrics
-        expect(response.body).to match(/^db_ping_timeout 0$/)
-        expect(response.body).to match(/^db_ping_success 1$/)
-        expect(response.body).to match(/^db_ping_latency [0-9\.]+$/)
-      end
-
-      it 'returns Redis ping metrics' do
-        get :metrics
-        expect(response.body).to match(/^redis_ping_timeout 0$/)
-        expect(response.body).to match(/^redis_ping_success 1$/)
-        expect(response.body).to match(/^redis_ping_latency [0-9\.]+$/)
-      end
-
-      it 'returns file system check metrics' do
-        get :metrics
-        expect(response.body).to match(/^filesystem_access_latency{shard="default"} [0-9\.]+$/)
-        expect(response.body).to match(/^filesystem_accessible{shard="default"} 1$/)
-        expect(response.body).to match(/^filesystem_write_latency{shard="default"} [0-9\.]+$/)
-        expect(response.body).to match(/^filesystem_writable{shard="default"} 1$/)
-        expect(response.body).to match(/^filesystem_read_latency{shard="default"} [0-9\.]+$/)
-        expect(response.body).to match(/^filesystem_readable{shard="default"} 1$/)
-      end
-    end
-
-    context 'without authorization token' do
-      it 'returns proper response' do
-        get :metrics
-        expect(response.status).to eq(404)
-      end
-    end
-  end
 end
