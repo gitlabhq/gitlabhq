@@ -122,9 +122,12 @@ describe Projects::MergeRequestsController do
 
       context 'number of queries' do
         it 'verifies number of queries' do
+          # pre-create objects
+          merge_request
+
           recorded = ActiveRecord::QueryRecorder.new { go(format: :json) }
 
-          expect(recorded.count).to be_within(1).of(94)
+          expect(recorded.count).to be_within(1).of(51)
           expect(recorded.cached_count).to eq(0)
         end
       end
