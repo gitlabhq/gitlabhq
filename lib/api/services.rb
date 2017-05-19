@@ -606,7 +606,8 @@ module API
       MattermostService,
       MicrosoftTeamsService,
       TeamcityService,
-      JenkinsService
+      JenkinsService,
+      JenkinsDeprecatedService
     ]
 
     if Rails.env.development?
