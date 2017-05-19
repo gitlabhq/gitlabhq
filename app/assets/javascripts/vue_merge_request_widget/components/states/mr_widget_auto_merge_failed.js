@@ -40,7 +40,7 @@ export default {
           Refresh
         </button>
       </span>
-      <div class="merge-error-text">
+      <div class="merge-error-text danger bold">
         {{mr.mergeError}}
       </div>
     </div>
