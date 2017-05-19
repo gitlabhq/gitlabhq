@@ -263,6 +263,7 @@ const ShortcutsBlob = require('./shortcuts_blob');
           shortcut_handler = new ShortcutsNavigation();
           break;
         case 'projects:edit':
+          new UsersSelect();
           const el = document.querySelector('.js-service-desk-setting-root');
           if (el) {
             const serviceDeskRoot = new ServiceDeskRoot(el);
