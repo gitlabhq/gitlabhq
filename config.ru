@@ -13,10 +13,9 @@ if defined?(Unicorn)
     # Max memory size (RSS) per worker
     use Unicorn::WorkerKiller::Oom, min, max
   end
-
-  # TODO(lyda): Needs to be set externally.
-  ENV['prometheus_multiproc_dir'] = '/tmp/somestuff'
 end
+# set default for multiproces metrics gathering
+ENV['prometheus_multiproc_dir'] ||= 'tmp/prometheus_data_dir'
 
 require ::File.expand_path('../config/environment',  __FILE__)
 

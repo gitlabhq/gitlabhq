@@ -11,15 +11,19 @@ class MetricsController < ActionController::Base
   ].freeze
 
   def metrics
-    render_404 unless Gitlab::Metrics.prometheus_metrics_enabled?
+    return render_404 unless Gitlab::Metrics.prometheus_metrics_enabled?
 
-    metrics_text = Prometheus::Client::Formats::Text.marshal_multiprocess(Settings.gitlab['prometheus_multiproc_dir'])
+    metrics_text = Prometheus::Client::Formats::Text.marshal_multiprocess(multiprocess_metrics_path)
     response = health_metrics_text + "\n" + metrics_text
 
     render text: response, content_type: 'text/plain; version=0.0.4'
   end
 
   private
+
+  def multiprocess_metrics_path
+    Rails.root.join(ENV['prometheus_multiproc_dir'])
+  end
 
   def health_metrics_text
     results = CHECKS.flat_map(&:metrics)
