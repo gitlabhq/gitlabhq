@@ -1,85 +1,5 @@
 /* eslint-disable func-names, space-before-function-paren, one-var, no-var, prefer-rest-params, wrap-iife, quotes, max-len, one-var-declaration-per-line, vars-on-top, prefer-arrow-callback, consistent-return, comma-dangle, object-shorthand, no-shadow, no-unused-vars, no-else-return, no-self-compare, prefer-template, no-unused-expressions, no-lonely-if, yoda, prefer-spread, no-void, camelcase, no-param-reassign */
 /* global Issuable */
-<<<<<<< HEAD
-=======
-/* global emitSidebarEvent */
-
-// TODO: remove eventHub hack after code splitting refactor
-window.emitSidebarEvent = window.emitSidebarEvent || $.noop;
-
-function UsersSelect(currentUser, els) {
-  var $els;
-  this.users = this.users.bind(this);
-  this.user = this.user.bind(this);
-  this.usersPath = "/autocomplete/users.json";
-  this.userPath = "/autocomplete/users/:id.json";
-  if (currentUser != null) {
-    if (typeof currentUser === 'object') {
-      this.currentUser = currentUser;
-    } else {
-      this.currentUser = JSON.parse(currentUser);
-    }
-  }
-
-  $els = $(els);
-
-  if (!els) {
-    $els = $('.js-user-search');
-  }
-
-  $els.each((function(_this) {
-    return function(i, dropdown) {
-      var options = {};
-      var $block, $collapsedSidebar, $dropdown, $loading, $selectbox, $value, abilityName, assignTo, assigneeTemplate, collapsedAssigneeTemplate, defaultLabel, defaultNullUser, firstUser, issueURL, selectedId, selectedIdDefault, showAnyUser, showNullUser, showMenuAbove;
-      $dropdown = $(dropdown);
-      options.projectId = $dropdown.data('project-id');
-      options.groupId = $dropdown.data('group-id');
-      options.showCurrentUser = $dropdown.data('current-user');
-      options.todoFilter = $dropdown.data('todo-filter');
-      options.todoStateFilter = $dropdown.data('todo-state-filter');
-      showNullUser = $dropdown.data('null-user');
-      defaultNullUser = $dropdown.data('null-user-default');
-      showMenuAbove = $dropdown.data('showMenuAbove');
-      showAnyUser = $dropdown.data('any-user');
-      firstUser = $dropdown.data('first-user');
-      options.authorId = $dropdown.data('author-id');
-      defaultLabel = $dropdown.data('default-label');
-      issueURL = $dropdown.data('issueUpdate');
-      $selectbox = $dropdown.closest('.selectbox');
-      $block = $selectbox.closest('.block');
-      abilityName = $dropdown.data('ability-name');
-      $value = $block.find('.value');
-      $collapsedSidebar = $block.find('.sidebar-collapsed-user');
-      $loading = $block.find('.block-loading').fadeOut();
-      selectedIdDefault = (defaultNullUser && showNullUser) ? 0 : null;
-      selectedId = $dropdown.data('selected');
-
-      if (selectedId === undefined) {
-        selectedId = selectedIdDefault;
-      }
-
-      const assignYourself = function () {
-        const unassignedSelected = $dropdown.closest('.selectbox')
-          .find(`input[name='${$dropdown.data('field-name')}'][value=0]`);
-
-        if (unassignedSelected) {
-          unassignedSelected.remove();
-        }
-
-        // Save current selected user to the DOM
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = $dropdown.data('field-name');
-
-        const currentUserInfo = $dropdown.data('currentUserInfo');
-
-        if (currentUserInfo) {
-          input.value = currentUserInfo.id;
-          input.dataset.meta = currentUserInfo.name;
-        } else if (_this.currentUser) {
-          input.value = _this.currentUser.id;
-        }
->>>>>>> 2242a2d... Merge branch 'fix-unassigned-checkmark' into 'master'
 
 import eventHub from './sidebar/event_hub';
 
@@ -133,7 +53,11 @@ import eventHub from './sidebar/event_hub';
           $collapsedSidebar = $block.find('.sidebar-collapsed-user');
           $loading = $block.find('.block-loading').fadeOut();
           selectedIdDefault = (defaultNullUser && showNullUser) ? 0 : null;
-          selectedId = $dropdown.data('selected') || selectedIdDefault;
+          selectedId = $dropdown.data('selected');
+
+          if (selectedId === undefined) {
+            selectedId = selectedIdDefault;
+          }
 
           const assignYourself = function () {
             const unassignedSelected = $dropdown.closest('.selectbox')
@@ -462,49 +386,9 @@ import eventHub from './sidebar/event_hub';
                     this.addInput($dropdown.data('field-name'), 0, {});
                   }
 
-<<<<<<< HEAD
                   // User unselected
                   eventHub.$emit('sidebar.removeAssignee', user);
                 }
-=======
-            if (selectedId === gon.current_user_id) {
-              $('.assign-to-me-link').hide();
-            } else {
-              $('.assign-to-me-link').show();
-            }
-            return;
-          }
-          if ($el.closest('.add-issues-modal').length) {
-            gl.issueBoards.ModalStore.store.filter[$dropdown.data('field-name')] = user.id;
-          } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
-            return Issuable.filterResults($dropdown.closest('form'));
-          } else if ($dropdown.hasClass('js-filter-submit')) {
-            return $dropdown.closest('form').submit();
-          } else if (!$dropdown.hasClass('js-multiselect')) {
-            selected = $dropdown.closest('.selectbox').find("input[name='" + ($dropdown.data('field-name')) + "']").val();
-            return assignTo(selected);
-          }
-
-          // Automatically close dropdown after assignee is selected
-          // since CE has no multiple assignees
-          // EE does not have a max-select
-          if ($dropdown.data('max-select') &&
-              getSelected().length === $dropdown.data('max-select')) {
-            // Close the dropdown
-            $dropdown.dropdown('toggle');
-          }
-        },
-        id: function (user) {
-          return user.id;
-        },
-        opened: function(e) {
-          const $el = $(e.currentTarget);
-          const selected = getSelected();
-          if ($dropdown.hasClass('js-issue-board-sidebar') && selected.length === 0) {
-            this.addInput($dropdown.data('field-name'), 0, {});
-          }
-          $el.find('.is-active').removeClass('is-active');
->>>>>>> 2242a2d... Merge branch 'fix-unassigned-checkmark' into 'master'
 
                 if (getSelected().find(u => u === gon.current_user_id)) {
                   $('.assign-to-me-link').hide();
@@ -513,7 +397,6 @@ import eventHub from './sidebar/event_hub';
                 }
               }
 
-<<<<<<< HEAD
               var isIssueIndex, isMRIndex, page, selected;
               page = $('body').data('page');
               isIssueIndex = page === 'projects:issues:index';
@@ -541,53 +424,35 @@ import eventHub from './sidebar/event_hub';
                 selected = $dropdown.closest('.selectbox').find("input[name='" + ($dropdown.data('field-name')) + "']").val();
                 return assignTo(selected);
               }
+
+              // Automatically close dropdown after assignee is selected
+              // since CE has no multiple assignees
+              // EE does not have a max-select
+              if ($dropdown.data('max-select') &&
+                  getSelected().length === $dropdown.data('max-select')) {
+                // Close the dropdown
+                $dropdown.dropdown('toggle');
+              }
             },
             id: function (user) {
               return user.id;
             },
             opened: function(e) {
               const $el = $(e.currentTarget);
-              if ($dropdown.hasClass('js-issue-board-sidebar')) {
-                selectedId = parseInt($dropdown[0].dataset.selected, 10) || selectedIdDefault;
+              const selected = getSelected();
+              if ($dropdown.hasClass('js-issue-board-sidebar') && selected.length === 0) {
+                this.addInput($dropdown.data('field-name'), 0, {});
               }
               $el.find('.is-active').removeClass('is-active');
 
               function highlightSelected(id) {
                 $el.find(`li[data-user-id="${id}"] .dropdown-menu-user-link`).addClass('is-active');
               }
-=======
-          if (selected.length > 0) {
-            getSelected().forEach(selectedId => highlightSelected(selectedId));
-          } else if ($dropdown.hasClass('js-issue-board-sidebar')) {
-            highlightSelected(0);
-          } else {
-            highlightSelected(selectedId);
-          }
-        },
-        updateLabel: $dropdown.data('dropdown-title'),
-        renderRow: function(user) {
-          var avatar, img, listClosingTags, listWithName, listWithUserName, username;
-          username = user.username ? "@" + user.username : "";
-          avatar = user.avatar_url ? user.avatar_url : false;
 
-          let selected = false;
-
-          if (this.multiSelect) {
-            selected = getSelected().find(u => user.id === u);
-
-            const fieldName = this.fieldName;
-            const field = $dropdown.closest('.selectbox').find("input[name='" + fieldName + "'][value='" + user.id + "']");
-
-            if (field.length) {
-              selected = true;
-            }
-          } else {
-            selected = user.id === selectedId;
-          }
->>>>>>> 2242a2d... Merge branch 'fix-unassigned-checkmark' into 'master'
-
-              if ($selectbox[0]) {
+              if (selected.length > 0) {
                 getSelected().forEach(selectedId => highlightSelected(selectedId));
+              } else if ($dropdown.hasClass('js-issue-board-sidebar')) {
+                highlightSelected(0);
               } else {
                 highlightSelected(selectedId);
               }
@@ -598,15 +463,19 @@ import eventHub from './sidebar/event_hub';
               username = user.username ? "@" + user.username : "";
               avatar = user.avatar_url ? user.avatar_url : false;
 
-              let selected = user.id === parseInt(selectedId, 10);
+              let selected = false;
 
               if (this.multiSelect) {
+                selected = getSelected().find(u => user.id === u);
+
                 const fieldName = this.fieldName;
                 const field = $dropdown.closest('.selectbox').find("input[name='" + fieldName + "'][value='" + user.id + "']");
 
                 if (field.length) {
                   selected = true;
                 }
+              } else {
+                selected = user.id === selectedId;
               }
 
               img = "";

@@ -26,11 +26,8 @@ describe 'New/edit issue', feature: true, js: true do
     describe 'single assignee' do
       before do
         click_button 'Unassigned'
-<<<<<<< HEAD
-=======
 
         wait_for_ajax
->>>>>>> a493377... Merge branch '31987-automatically-close-assignee-select-dropdown-after-selection-when-multiple-assignees-is-disabled' into 'master'
       end
 
       it 'unselects other assignees when unassigned is selected' do
@@ -153,44 +150,21 @@ describe 'New/edit issue', feature: true, js: true do
 
     it 'correctly updates the selected user when changing assignee' do
       click_button 'Unassigned'
-<<<<<<< HEAD
-=======
 
       wait_for_ajax
 
->>>>>>> a493377... Merge branch '31987-automatically-close-assignee-select-dropdown-after-selection-when-multiple-assignees-is-disabled' into 'master'
       page.within '.dropdown-menu-user' do
         click_link user.name
       end
 
-<<<<<<< HEAD
-      expect(find('input[name="issue[assignee_ids][]"]', visible: false).value).to match(user.id.to_s)
-
-      click_button user.name
-
-      expect(find('.dropdown-menu-user a.is-active').first(:xpath, '..')['data-user-id']).to eq(user.id.to_s)
-
-      # check the ::before pseudo element to ensure checkmark icon is present
-      expect(before_for_selector('.dropdown-menu-selectable a.is-active')).not_to eq('')
-      expect(before_for_selector('.dropdown-menu-selectable a:not(.is-active)')).to eq('')
-=======
       expect(find('.js-assignee-search')).to have_content(user.name)
       click_button user.name
->>>>>>> a493377... Merge branch '31987-automatically-close-assignee-select-dropdown-after-selection-when-multiple-assignees-is-disabled' into 'master'
 
       page.within '.dropdown-menu-user' do
         click_link user2.name
       end
 
-<<<<<<< HEAD
-      expect(find('input[name="issue[assignee_ids][]"]', visible: false).value).to match(user2.id.to_s)
-
-      click_button user2.name
-
-      expect(find('.dropdown-menu-user a.is-active').first(:xpath, '..')['data-user-id']).to eq(user2.id.to_s)
-=======
       expect(find('.js-assignee-search')).to have_content(user2.name)
->>>>>>> a493377... Merge branch '31987-automatically-close-assignee-select-dropdown-after-selection-when-multiple-assignees-is-disabled' into 'master'
     end
   end
 
