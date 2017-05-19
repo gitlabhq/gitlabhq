@@ -72,6 +72,7 @@
     "istanbul": "^0.4.5",
     "jasmine-core": "^2.5.2",
     "jasmine-jquery": "^2.1.1",
+    "jasmine-snapshot": "^1.7.8",
     "karma": "^1.4.1",
     "karma-coverage-istanbul-reporter": "^0.2.0",
     "karma-jasmine": "^1.1.0",

@@ -2,6 +2,14 @@
 # yarn lockfile v1
 
 
+"@types/node@^7.0.18":
+  version "7.0.18"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-7.0.18.tgz#cd67f27d3dc0cfb746f0bdd5e086c4c5d55be173"
+
+"@types/vkbeautify@^0.99.1":
+  version "0.99.1"
+  resolved "https://registry.yarnpkg.com/@types/vkbeautify/-/vkbeautify-0.99.1.tgz#7f3eb3dabbee8c3b1d7df672a7bca770bc67661a"
+
 abbrev@1, abbrev@1.0.x:
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.0.9.tgz#91b4792588a7738c25f35dd6f63752a2f8776135"
@@ -1645,6 +1653,12 @@ diffie-hellman@^5.0.0:
     miller-rabin "^4.0.0"
     randombytes "^2.0.0"
 
+difflib@^0.2.4:
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/difflib/-/difflib-0.2.4.tgz#b5e30361a6db023176d562892db85940a718f47e"
+  dependencies:
+    heap ">= 0.2.0"
+
 doctrine@1.5.0, doctrine@^1.2.2:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/doctrine/-/doctrine-1.5.0.tgz#379dce730f6166f76cefa4e6707a159b02c5a6fa"
@@ -2634,6 +2648,10 @@ he@^1.1.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/he/-/he-1.1.1.tgz#93410fd21b009735151f8868c2f271f3427e23fd"
 
+"heap@>= 0.2.0":
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/heap/-/heap-0.2.6.tgz#087e1f10b046932fc8594dd9e6d378afc9d1e5ac"
+
 hoek@2.x.x:
   version "2.16.3"
   resolved "https://registry.yarnpkg.com/hoek/-/hoek-2.16.3.tgz#20bb7403d3cea398e91dc4710a8ff1b8274a25ed"
@@ -3108,6 +3126,17 @@ jasmine-core@^2.5.2:
 jasmine-jquery@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/jasmine-jquery/-/jasmine-jquery-2.1.1.tgz#d4095e646944a26763235769ab018d9f30f0d47b"
+
+jasmine-snapshot@^1.7.8:
+  version "1.7.8"
+  resolved "https://registry.yarnpkg.com/jasmine-snapshot/-/jasmine-snapshot-1.7.8.tgz#b90918414f1be1d3c38bb40f9ad8edf66631ea63"
+  dependencies:
+    "@types/node" "^7.0.18"
+    "@types/vkbeautify" "^0.99.1"
+    difflib "^0.2.4"
+    ts-promise "^0.3.4"
+    vkbeautify "^0.99.2"
+    x2js "^3.1.0"
 
 jed@^1.1.1:
   version "1.1.1"
@@ -5478,6 +5507,10 @@ tryit@^1.0.1:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/tryit/-/tryit-1.0.3.tgz#393be730a9446fd1ead6da59a014308f36c289cb"
 
+ts-promise@^0.3.4:
+  version "0.3.4"
+  resolved "https://registry.yarnpkg.com/ts-promise/-/ts-promise-0.3.4.tgz#165ff9ad521476d93c005601eefe5bb92d579cbe"
+
 tty-browserify@0.0.0:
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/tty-browserify/-/tty-browserify-0.0.0.tgz#a157ba402da24e9bf957f9aa69d524eed42901a6"
@@ -5657,6 +5690,10 @@ verror@1.3.6:
 visibilityjs@^1.2.4:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/visibilityjs/-/visibilityjs-1.2.4.tgz#bff8663da62c8c10ad4ee5ae6a1ae6fac4259d63"
+
+vkbeautify@^0.99.2:
+  version "0.99.2"
+  resolved "https://registry.yarnpkg.com/vkbeautify/-/vkbeautify-0.99.2.tgz#db5d965ecbc49de485bf217a7bf917883641d9ee"
 
 vm-browserify@0.0.4:
   version "0.0.4"
@@ -5902,11 +5939,21 @@ wtf-8@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/wtf-8/-/wtf-8-1.0.0.tgz#392d8ba2d0f1c34d1ee2d630f15d0efb68e1048a"
 
+x2js@^3.1.0:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/x2js/-/x2js-3.1.1.tgz#f7c4e6077c29470f2b0dd6714805871b25667119"
+  dependencies:
+    xmldom "^0.1.19"
+
 xdg-basedir@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/xdg-basedir/-/xdg-basedir-2.0.0.tgz#edbc903cc385fc04523d966a335504b5504d1bd2"
   dependencies:
     os-homedir "^1.0.0"
+
+xmldom@^0.1.19:
+  version "0.1.27"
+  resolved "https://registry.yarnpkg.com/xmldom/-/xmldom-0.1.27.tgz#d501f97b3bdb403af8ef9ecc20573187aadac0e9"
 
 xmlhttprequest-ssl@1.5.3:
   version "1.5.3"
