@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import graphComponent from '~/pipelines/components/graph/graph_component.vue';
+import graphJSON from './mock_data';
 
 describe('graph component', () => {
   preloadFixtures('static/graph.html.raw');
@@ -20,91 +21,7 @@ describe('graph component', () => {
 
   describe('with a successfull response', () => {
     const interceptor = (request, next) => {
-      next(request.respondWith(JSON.stringify({
-        details: {
-          stages: [{
-            name: 'test',
-            title: 'test: passed',
-            status: {
-              icon: 'icon_status_success',
-              text: 'passed',
-              label: 'passed',
-              details_path: '/root/ci-mock/pipelines/123#test',
-            },
-            path: '/root/ci-mock/pipelines/123#test',
-            groups: [{
-              name: 'test',
-              size: 1,
-              jobs: [{
-                id: 4153,
-                name: 'test',
-                status: {
-                  icon: 'icon_status_success',
-                  text: 'passed',
-                  label: 'passed',
-                  details_path: '/root/ci-mock/builds/4153',
-                  action: {
-                    icon: 'icon_action_retry',
-                    title: 'Retry',
-                    path: '/root/ci-mock/builds/4153/retry',
-                    method: 'post',
-                  },
-                },
-              }],
-            }],
-          },
-          {
-            name: 'test_1',
-            title: 'test_1: passed',
-            status: {
-              icon: 'icon_status_success',
-              text: 'passed',
-              label: 'passed',
-              details_path: '/root/ci-mock/pipelines/123#test',
-            },
-            path: '/root/ci-mock/pipelines/123#test',
-            groups: [{
-              name: 'test',
-              size: 1,
-              jobs: [{
-                id: 4153,
-                name: 'test',
-                status: {
-                  icon: 'icon_status_success',
-                  text: 'passed',
-                  label: 'passed',
-                  details_path: '/root/ci-mock/builds/4153',
-                  action: {
-                    icon: 'icon_action_retry',
-                    title: 'Retry',
-                    path: '/root/ci-mock/builds/4153/retry',
-                    method: 'post',
-                  },
-                },
-              }],
-            }, {
-              name: 'test',
-              size: 1,
-              jobs: [{
-                id: 4153,
-                name: 'test',
-                status: {
-                  icon: 'icon_status_success',
-                  text: 'passed',
-                  label: 'passed',
-                  details_path: '/root/ci-mock/builds/4153',
-                  action: {
-                    icon: 'icon_action_retry',
-                    title: 'Retry',
-                    path: '/root/ci-mock/builds/4153/retry',
-                    method: 'post',
-                  },
-                },
-              }],
-            }],
-          }],
-        },
-      }), {
+      next(request.respondWith(JSON.stringify(graphJSON), {
         status: 200,
       }));
     };

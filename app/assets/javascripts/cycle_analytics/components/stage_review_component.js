@@ -28,11 +28,11 @@ global.cycleAnalytics.StageReviewComponent = Vue.extend({
             <a :href="mergeRequest.url" class="issue-link">!{{ mergeRequest.iid }}</a>
             &middot;
             <span>
-              {{ __('OpenedNDaysAgo|Opened') }}
+              {{ s__('OpenedNDaysAgo|Opened') }}
               <a :href="mergeRequest.url" class="issue-date">{{ mergeRequest.createdAt }}</a>
             </span>
             <span>
-              {{ __('ByAuthor|by') }}
+              {{ s__('ByAuthor|by') }}
               <a :href="mergeRequest.author.webUrl" class="issue-author-link">{{ mergeRequest.author.name }}</a>
             </span>
             <template v-if="mergeRequest.state === 'closed'">

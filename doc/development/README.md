@@ -49,6 +49,10 @@
 - [Adding database indexes](adding_database_indexes.md)
 - [Post Deployment Migrations](post_deployment_migrations.md)
 
+## i18n
+
+- [Internationalization for GitLab](i18n_guide.md)
+
 ## Compliance
 
 - [Licensing](licensing.md) for ensuring license compliance

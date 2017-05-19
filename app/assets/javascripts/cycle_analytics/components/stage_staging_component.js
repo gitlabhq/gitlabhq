@@ -32,7 +32,7 @@ global.cycleAnalytics.StageStagingComponent = Vue.extend({
             </h5>
             <span>
               <a :href="build.url" class="build-date">{{ build.date }}</a>
-              {{ __('ByAuthor|by') }}
+              {{ s__('ByAuthor|by') }}
               <a :href="build.author.webUrl" class="issue-author-link">
                 {{ build.author.name }}
               </a>

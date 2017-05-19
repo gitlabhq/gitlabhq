@@ -1,7 +1,9 @@
 /* eslint-disable func-names, space-before-function-paren, one-var, no-var, prefer-rest-params, wrap-iife, quotes, max-len, one-var-declaration-per-line, vars-on-top, prefer-arrow-callback, consistent-return, comma-dangle, object-shorthand, no-shadow, no-unused-vars, no-else-return, no-self-compare, prefer-template, no-unused-expressions, no-lonely-if, yoda, prefer-spread, no-void, camelcase, no-param-reassign */
 /* global Issuable */
+/* global emitSidebarEvent */
 
-import eventHub from './sidebar/event_hub';
+// TODO: remove eventHub hack after code splitting refactor
+window.emitSidebarEvent = window.emitSidebarEvent || $.noop;
 
 (function() {
   var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; },
@@ -114,7 +116,7 @@ import eventHub from './sidebar/event_hub';
                   .find(`input[name='${$dropdown.data('field-name')}'][value=${firstSelectedId}]`);
 
                 firstSelected.remove();
-                eventHub.$emit('sidebar.removeAssignee', {
+                emitSidebarEvent('sidebar.removeAssignee', {
                   id: firstSelectedId,
                 });
               }
@@ -334,7 +336,7 @@ import eventHub from './sidebar/event_hub';
             defaultLabel: defaultLabel,
             hidden: function(e) {
               if ($dropdown.hasClass('js-multiselect')) {
-                eventHub.$emit('sidebar.saveAssignees');
+                emitSidebarEvent('sidebar.saveAssignees');
               }
 
               if (!$dropdown.data('always-show-selectbox')) {
@@ -368,10 +370,10 @@ import eventHub from './sidebar/event_hub';
                     const id = parseInt(element.value, 10);
                     element.remove();
                   });
-                  eventHub.$emit('sidebar.removeAllAssignees');
+                  emitSidebarEvent('sidebar.removeAllAssignees');
                 } else if (isActive) {
                   // user selected
-                  eventHub.$emit('sidebar.addAssignee', user);
+                  emitSidebarEvent('sidebar.addAssignee', user);
 
                   // Remove unassigned selection (if it was previously selected)
                   const unassignedSelected = $dropdown.closest('.selectbox')
@@ -387,7 +389,7 @@ import eventHub from './sidebar/event_hub';
                   }
 
                   // User unselected
-                  eventHub.$emit('sidebar.removeAssignee', user);
+                  emitSidebarEvent('sidebar.removeAssignee', user);
                 }
 
                 if (getSelected().find(u => u === gon.current_user_id)) {

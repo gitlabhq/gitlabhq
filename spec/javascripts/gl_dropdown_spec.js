@@ -44,8 +44,8 @@ require('~/lib/utils/url_utility');
     preloadFixtures('static/gl_dropdown.html.raw');
     loadJSONFixtures('projects.json');
 
-    function initDropDown(hasRemote, isFilterable) {
-      this.dropdownButtonElement = $('#js-project-dropdown', this.dropdownContainerElement).glDropdown({
+    function initDropDown(hasRemote, isFilterable, extraOpts = {}) {
+      const options = Object.assign({
         selectable: true,
         filterable: isFilterable,
         data: hasRemote ? remoteMock.bind({}, this.projectsData) : this.projectsData,
@@ -53,8 +53,9 @@ require('~/lib/utils/url_utility');
           fields: ['name']
         },
         text: project => (project.name_with_namespace || project.name),
-        id: project => project.id
-      });
+        id: project => project.id,
+      }, extraOpts);
+      this.dropdownButtonElement = $('#js-project-dropdown', this.dropdownContainerElement).glDropdown(options);
     }
 
     beforeEach(() => {
@@ -86,6 +87,25 @@ require('~/lib/utils/url_utility');
       expect(
         $('.dropdown-content li:first-child').text(),
       ).toBe('<script>alert("testing");</script>');
+    });
+
+    it('should output HTML when highlighting', () => {
+      this.projectsData[0].name_with_namespace = 'testing';
+      $('.dropdown-input .dropdown-input-field').val('test');
+
+      initDropDown.call(this, false, true, {
+        highlight: true,
+      });
+
+      this.dropdownButtonElement.click();
+
+      expect(
+        $('.dropdown-content li:first-child').text(),
+      ).toBe('testing');
+
+      expect(
+        $('.dropdown-content li:first-child a').html(),
+      ).toBe('<b>t</b><b>e</b><b>s</b><b>t</b>ing');
     });
 
     describe('that is open', () => {

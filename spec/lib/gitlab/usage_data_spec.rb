@@ -17,6 +17,7 @@ describe Gitlab::UsageData do
         edition
         version
         uuid
+        hostname
       ))
     end
 
@@ -49,7 +50,6 @@ describe Gitlab::UsageData do
         pages_domains
         protected_branches
         releases
-        services
         snippets
         todos
         uploads

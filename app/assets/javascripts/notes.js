@@ -31,24 +31,24 @@ const normalizeNewlines = function(str) {
     Notes.interval = null;
 
     function Notes(notes_url, note_ids, last_fetched_at, view) {
-      this.updateTargetButtons = bind(this.updateTargetButtons, this);
-      this.updateComment = bind(this.updateComment, this);
-      this.visibilityChange = bind(this.visibilityChange, this);
-      this.cancelDiscussionForm = bind(this.cancelDiscussionForm, this);
-      this.addDiffNote = bind(this.addDiffNote, this);
-      this.setupDiscussionNoteForm = bind(this.setupDiscussionNoteForm, this);
-      this.replyToDiscussionNote = bind(this.replyToDiscussionNote, this);
-      this.removeNote = bind(this.removeNote, this);
-      this.cancelEdit = bind(this.cancelEdit, this);
-      this.updateNote = bind(this.updateNote, this);
-      this.addDiscussionNote = bind(this.addDiscussionNote, this);
-      this.addNoteError = bind(this.addNoteError, this);
-      this.addNote = bind(this.addNote, this);
-      this.resetMainTargetForm = bind(this.resetMainTargetForm, this);
-      this.refresh = bind(this.refresh, this);
-      this.keydownNoteText = bind(this.keydownNoteText, this);
-      this.toggleCommitList = bind(this.toggleCommitList, this);
-      this.postComment = bind(this.postComment, this);
+      this.updateTargetButtons = this.updateTargetButtons.bind(this);
+      this.updateComment = this.updateComment.bind(this);
+      this.visibilityChange = this.visibilityChange.bind(this);
+      this.cancelDiscussionForm = this.cancelDiscussionForm.bind(this);
+      this.onAddDiffNote = this.onAddDiffNote.bind(this);
+      this.setupDiscussionNoteForm = this.setupDiscussionNoteForm.bind(this);
+      this.onReplyToDiscussionNote = this.onReplyToDiscussionNote.bind(this);
+      this.removeNote = this.removeNote.bind(this);
+      this.cancelEdit = this.cancelEdit.bind(this);
+      this.updateNote = this.updateNote.bind(this);
+      this.addDiscussionNote = this.addDiscussionNote.bind(this);
+      this.addNoteError = this.addNoteError.bind(this);
+      this.addNote = this.addNote.bind(this);
+      this.resetMainTargetForm = this.resetMainTargetForm.bind(this);
+      this.refresh = this.refresh.bind(this);
+      this.keydownNoteText = this.keydownNoteText.bind(this);
+      this.toggleCommitList = this.toggleCommitList.bind(this);
+      this.postComment = this.postComment.bind(this);
 
       this.notes_url = notes_url;
       this.note_ids = note_ids;
@@ -102,9 +102,9 @@ const normalizeNewlines = function(str) {
       // update the file name when an attachment is selected
       $(document).on("change", ".js-note-attachment-input", this.updateFormAttachment);
       // reply to diff/discussion notes
-      $(document).on("click", ".js-discussion-reply-button", this.replyToDiscussionNote);
+      $(document).on("click", ".js-discussion-reply-button", this.onReplyToDiscussionNote);
       // add diff note
-      $(document).on("click", ".js-add-diff-note-button", this.addDiffNote);
+      $(document).on("click", ".js-add-diff-note-button", this.onAddDiffNote);
       // hide diff note form
       $(document).on("click", ".js-close-discussion-note-form", this.cancelDiscussionForm);
       // toggle commit list
@@ -287,6 +287,13 @@ const normalizeNewlines = function(str) {
       }
     };
 
+    Notes.prototype.setupNewNote = function($note) {
+      // Update datetime format on the recent note
+      gl.utils.localTimeAgo($note.find('.js-timeago'), false);
+      this.collapseLongCommitList();
+      this.taskList.init();
+    };
+
     /*
     Render note in main comments area.
 
@@ -312,10 +319,7 @@ const normalizeNewlines = function(str) {
 
         const $newNote = Notes.animateAppendNote(noteEntity.html, $notesList);
 
-        // Update datetime format on the recent note
-        gl.utils.localTimeAgo($newNote.find('.js-timeago'), false);
-        this.collapseLongCommitList();
-        this.taskList.init();
+        this.setupNewNote($newNote);
         this.refresh();
         return this.updateNotesCount(1);
       }
@@ -341,9 +345,7 @@ const normalizeNewlines = function(str) {
         }
         else {
           const $updatedNote = Notes.animateUpdateNote(noteEntity.html, $note);
-
-          // Update datetime format on the recent note
-          gl.utils.localTimeAgo($updatedNote.find('.js-timeago'), false);
+          this.setupNewNote($updatedNote);
         }
       }
     };
@@ -665,10 +667,8 @@ const normalizeNewlines = function(str) {
       if (this.updatedNotesTrackingMap[noteId]) {
         const $newNote = $(this.updatedNotesTrackingMap[noteId].html);
         $note.replaceWith($newNote);
+        this.setupNewNote($newNote);
         this.updatedNotesTrackingMap[noteId] = null;
-
-        // Update datetime format on the recent note
-        gl.utils.localTimeAgo($newNote.find('.js-timeago'), false);
       }
       else {
         $note.find('.js-finish-edit-warning').hide();
@@ -779,10 +779,14 @@ const normalizeNewlines = function(str) {
     Shows the note form below the notes.
      */
 
-    Notes.prototype.replyToDiscussionNote = function(e) {
+    Notes.prototype.onReplyToDiscussionNote = function(e) {
+      this.replyToDiscussionNote(e.target);
+    };
+
+    Notes.prototype.replyToDiscussionNote = function(target) {
       var form, replyLink;
       form = this.cleanForm(this.formClone.clone());
-      replyLink = $(e.target).closest(".js-discussion-reply-button");
+      replyLink = $(target).closest(".js-discussion-reply-button");
       // insert the form after the button
       replyLink
         .closest('.discussion-reply-holder')
@@ -852,35 +856,52 @@ const normalizeNewlines = function(str) {
     Sets up the form and shows it.
      */
 
-    Notes.prototype.addDiffNote = function(e) {
-      var $link, addForm, hasNotes, lineType, newForm, nextRow, noteForm, notesContent, notesContentSelector, replyButton, row, rowCssToAdd, targetContent, isDiffCommentAvatar;
+    Notes.prototype.onAddDiffNote = function(e) {
       e.preventDefault();
-      $link = $(e.currentTarget || e.target);
+      const $link = $(e.currentTarget || e.target);
+      const showReplyInput = !$link.hasClass('js-diff-comment-avatar');
+      this.toggleDiffNote({
+        target: $link,
+        lineType: $link.data('lineType'),
+        showReplyInput
+      });
+    };
+
+    Notes.prototype.toggleDiffNote = function({
+      target,
+      lineType,
+      forceShow,
+      showReplyInput = false,
+    }) {
+      var $link, addForm, hasNotes, newForm, noteForm, replyButton, row, rowCssToAdd, targetContent, isDiffCommentAvatar;
+      $link = $(target);
       row = $link.closest("tr");
-      nextRow = row.next();
-      hasNotes = nextRow.is(".notes_holder");
+      const nextRow = row.next();
+      let targetRow = row;
+      if (nextRow.is('.notes_holder')) {
+        targetRow = nextRow;
+      }
+
+      hasNotes = targetRow.is(".notes_holder");
       addForm = false;
-      notesContentSelector = ".notes_content";
+      let lineTypeSelector = '';
       rowCssToAdd = "<tr class=\"notes_holder js-temp-notes-holder\"><td class=\"notes_line\" colspan=\"2\"></td><td class=\"notes_content\"><div class=\"content\"></div></td></tr>";
-      isDiffCommentAvatar = $link.hasClass('js-diff-comment-avatar');
       // In parallel view, look inside the correct left/right pane
       if (this.isParallelView()) {
-        lineType = $link.data("lineType");
-        notesContentSelector += "." + lineType;
+        lineTypeSelector = `.${lineType}`;
         rowCssToAdd = "<tr class=\"notes_holder js-temp-notes-holder\"><td class=\"notes_line old\"></td><td class=\"notes_content parallel old\"><div class=\"content\"></div></td><td class=\"notes_line new\"></td><td class=\"notes_content parallel new\"><div class=\"content\"></div></td></tr>";
       }
-      notesContentSelector += " .content";
-      notesContent = nextRow.find(notesContentSelector);
+      const notesContentSelector = `.notes_content${lineTypeSelector} .content`;
+      let notesContent = targetRow.find(notesContentSelector);
 
-      if (hasNotes && !isDiffCommentAvatar) {
-        nextRow.show();
-        notesContent = nextRow.find(notesContentSelector);
+      if (hasNotes && showReplyInput) {
+        targetRow.show();
+        notesContent = targetRow.find(notesContentSelector);
         if (notesContent.length) {
           notesContent.show();
           replyButton = notesContent.find(".js-discussion-reply-button:visible");
           if (replyButton.length) {
-            e.target = replyButton[0];
-            $.proxy(this.replyToDiscussionNote, replyButton[0], e).call();
+            this.replyToDiscussionNote(replyButton[0]);
           } else {
             // In parallel view, the form may not be present in one of the panes
             noteForm = notesContent.find(".js-discussion-note-form");
@@ -889,19 +910,19 @@ const normalizeNewlines = function(str) {
             }
           }
         }
-      } else if (!isDiffCommentAvatar) {
+      } else if (showReplyInput) {
         // add a notes row and insert the form
         row.after(rowCssToAdd);
-        nextRow = row.next();
-        notesContent = nextRow.find(notesContentSelector);
+        targetRow = row.next();
+        notesContent = targetRow.find(notesContentSelector);
         addForm = true;
       } else {
-        nextRow.show();
-        notesContent.toggle(!notesContent.is(':visible'));
+        const isCurrentlyShown = targetRow.find('.content:not(:empty)').is(':visible');
+        const isForced = forceShow === true || forceShow === false;
+        const showNow = forceShow === true || (!isCurrentlyShown && !isForced);
 
-        if (!nextRow.find('.content:not(:empty)').is(':visible')) {
-          nextRow.hide();
-        }
+        targetRow.toggle(showNow);
+        notesContent.toggle(showNow);
       }
 
       if (addForm) {
@@ -1114,7 +1135,7 @@ const normalizeNewlines = function(str) {
       // There can be CRLF vs LF mismatches if we don't sanitize and compare the same way
       const sanitizedNoteEntityText = normalizeNewlines(noteEntity.note.trim());
       const currentNoteText = normalizeNewlines(
-        $note.find('.original-note-content').text().trim()
+        $note.find('.original-note-content').first().text().trim()
       );
       return sanitizedNoteEntityText !== currentNoteText;
     };
@@ -1188,9 +1209,6 @@ const normalizeNewlines = function(str) {
                          <span class="hidden-xs">${currentUserFullname}</span>
                          <span class="note-headline-light">@${currentUsername}</span>
                        </a>
-                       <span class="note-headline-light">
-                          <i class="fa fa-spinner fa-spin" aria-label="Comment is being posted" aria-hidden="true"></i>
-                       </span>
                     </div>
                  </div>
                  <div class="note-body">
@@ -1325,7 +1343,7 @@ const normalizeNewlines = function(str) {
           // Show form again on UI on failure
           if (isDiscussionForm && $notesContainer.length) {
             const replyButton = $notesContainer.parent().find('.js-discussion-reply-button');
-            $.proxy(this.replyToDiscussionNote, replyButton[0], { target: replyButton[0] }).call();
+            this.replyToDiscussionNote(replyButton[0]);
             $form = $notesContainer.parent().find('form');
           }
 

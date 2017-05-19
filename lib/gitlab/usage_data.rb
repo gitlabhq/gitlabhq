@@ -40,7 +40,6 @@ module Gitlab
             projects_prometheus_active: PrometheusService.active.count,
             protected_branches: ProtectedBranch.count,
             releases: Release.count,
-            services: Service.where(active: true).count,
             snippets: Snippet.count,
             todos: Todo.count,
             uploads: Upload.count,
@@ -52,6 +51,7 @@ module Gitlab
       def license_usage_data
         usage_data = {
           uuid: current_application_settings.uuid,
+          hostname: Gitlab.config.gitlab.host,
           version: Gitlab::VERSION,
           active_user_count: User.active.count,
           recorded_at: Time.now,

@@ -123,7 +123,6 @@ class MergeRequest < ActiveRecord::Base
   participant :assignee
 
   after_save :keep_around_commit
-  after_save :update_assignee_cache_counts, if: :assignee_id_changed?
 
   def self.reference_prefix
     '!'
@@ -183,13 +182,6 @@ class MergeRequest < ActiveRecord::Base
 
   def self.wip_title(title)
     work_in_progress?(title) ? title : "WIP: #{title}"
-  end
-
-  def update_assignee_cache_counts
-    # make sure we flush the cache for both the old *and* new assignees(if they exist)
-    previous_assignee = User.find_by_id(assignee_id_was) if assignee_id_was
-    previous_assignee&.update_cache_counts
-    assignee&.update_cache_counts
   end
 
   # Returns a Hash of attributes to be used for Twitter card metadata
@@ -903,35 +895,6 @@ class MergeRequest < ActiveRecord::Base
 
   def keep_around_commit
     project.repository.keep_around(self.merge_commit_sha)
-  end
-
-  def conflicts
-    @conflicts ||= Gitlab::Conflict::FileCollection.new(self)
-  end
-
-  def conflicts_can_be_resolved_by?(user)
-    return false unless source_project
-
-    access = ::Gitlab::UserAccess.new(user, project: source_project)
-    access.can_push_to_branch?(source_branch)
-  end
-
-  def conflicts_can_be_resolved_in_ui?
-    return @conflicts_can_be_resolved_in_ui if defined?(@conflicts_can_be_resolved_in_ui)
-
-    return @conflicts_can_be_resolved_in_ui = false unless cannot_be_merged?
-    return @conflicts_can_be_resolved_in_ui = false unless has_complete_diff_refs?
-    return @conflicts_can_be_resolved_in_ui = false if branch_missing?
-
-    begin
-      # Try to parse each conflict. If the MR's mergeable status hasn't been updated,
-      # ensure that we don't say there are conflicts to resolve when there are no conflict
-      # files.
-      conflicts.files.each(&:lines)
-      @conflicts_can_be_resolved_in_ui = conflicts.files.length > 0
-    rescue Rugged::OdbError, Gitlab::Conflict::Parser::UnresolvableError, Gitlab::Conflict::FileCollection::ConflictSideMissing
-      @conflicts_can_be_resolved_in_ui = false
-    end
   end
 
   def has_commits?

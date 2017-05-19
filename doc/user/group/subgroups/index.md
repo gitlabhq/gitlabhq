@@ -71,8 +71,10 @@ structure.
 - You need to be an Owner of a group in order to be able to create
   a subgroup. For more information check the [permissions table][permissions].
 - For a list of words that are not allowed to be used as group names see the
-  [`namespace_validator.rb` file][reserved] under the `RESERVED` and
-  `WILDCARD_ROUTES` lists.
+  [`dynamic_path_validator.rb` file][reserved] under the `TOP_LEVEL_ROUTES`, `WILDCARD_ROUTES` and `GROUP_ROUTES` lists:
+  - `TOP_LEVEL_ROUTES`: are names that are reserved as usernames or top level groups
+  - `WILDCARD_ROUTES`: are names that are reserved for child groups or projects.
+  - `GROUP_ROUTES`: are names that are reserved for all groups or projects.
 
 To create a subgroup:
 
@@ -161,4 +163,4 @@ Here's a list of what you can't do with subgroups:
 
 [ce-2772]: https://gitlab.com/gitlab-org/gitlab-ce/issues/2772
 [permissions]: ../../permissions.md#group
-[reserved]:  https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/validators/namespace_validator.rb
+[reserved]:  https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/validators/dynamic_path_validator.rb

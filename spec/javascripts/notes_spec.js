@@ -138,6 +138,7 @@ import '~/notes';
         ]);
 
         notes = jasmine.createSpyObj('notes', [
+          'setupNewNote',
           'refresh',
           'collapseLongCommitList',
           'updateNotesCount',
