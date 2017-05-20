@@ -32,5 +32,11 @@ describe Gitlab::Geo::JwtRequestDecoder do
 
       expect(subject.decode).to be_nil
     end
+
+    it 'raises invalid decryption key error' do
+      allow_any_instance_of(described_class).to receive(:decode_auth_header).and_raise(Gitlab::Geo::InvalidDecryptionKeyError)
+
+      expect { subject.decode }.to raise_error(Gitlab::Geo::InvalidDecryptionKeyError)
+    end
   end
 end

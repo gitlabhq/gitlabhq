@@ -94,8 +94,12 @@ module API
       def authenticate_by_gitlab_geo_node_token!
         auth_header = headers['Authorization']
 
-        unless auth_header && Gitlab::Geo::JwtRequestDecoder.new(auth_header).decode
-          unauthorized!
+        begin
+          unless auth_header && Gitlab::Geo::JwtRequestDecoder.new(auth_header).decode
+            unauthorized!
+          end
+        rescue Gitlab::Geo::InvalidDecryptionKeyError => e
+          render_api_error!(e.to_s, 401)
         end
       end
 

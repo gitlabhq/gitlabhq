@@ -1,5 +1,7 @@
 module Gitlab
   module Geo
+    InvalidDecryptionKeyError = Class.new(StandardError)
+
     class JwtRequestDecoder
       IAT_LEEWAY = 60.seconds.to_i
 
@@ -22,7 +24,13 @@ module Gitlab
         # For example:
         # JWT payload = { "data": { "oid": "12345" }, iat: 123456 }
         #
-        data = decode_auth_header
+        begin
+          data = decode_auth_header
+        rescue OpenSSL::Cipher::CipherError
+          message = 'Error decrypting the Geo secret from the database. Check that the primary and secondary have the same db_key_base.'
+          Rails.logger.error(message)
+          raise InvalidDecryptionKeyError.new(message)
+        end
 
         return unless data.present?
 
