@@ -1,5 +1,7 @@
-scope(path: '*namespace_id/:project_id', constraints: { format: nil }) do
-  scope(constraints: { project_id: Gitlab::Regex.project_git_route_regex }, module: :projects) do
+scope(path: '*namespace_id/:project_id',
+      format: nil,
+      constraints: { namespace_id: Gitlab::PathRegex.full_namespace_route_regex }) do
+  scope(constraints: { project_id: Gitlab::PathRegex.project_git_route_regex }, module: :projects) do
     # Git HTTP clients ('git clone' etc.)
     scope(controller: :git_http) do
       get '/info/refs', action: :info_refs
@@ -26,7 +28,7 @@ scope(path: '*namespace_id/:project_id', constraints: { format: nil }) do
   end
 
   # Redirect /group/project/info/refs to /group/project.git/info/refs
-  scope(constraints: { project_id: Gitlab::Regex.project_route_regex }) do
+  scope(constraints: { project_id: Gitlab::PathRegex.project_route_regex }) do
     # Allow /info/refs, /info/refs?service=git-upload-pack, and
     # /info/refs?service=git-receive-pack, but nothing else.
     #

@@ -71,9 +71,9 @@ structure.
 - You need to be an Owner of a group in order to be able to create
   a subgroup. For more information check the [permissions table][permissions].
 - For a list of words that are not allowed to be used as group names see the
-  [`dynamic_path_validator.rb` file][reserved] under the `TOP_LEVEL_ROUTES`, `WILDCARD_ROUTES` and `GROUP_ROUTES` lists:
+  [`dynamic_path_validator.rb` file][reserved] under the `TOP_LEVEL_ROUTES`, `PROJECT_WILDCARD_ROUTES` and `GROUP_ROUTES` lists:
   - `TOP_LEVEL_ROUTES`: are names that are reserved as usernames or top level groups
-  - `WILDCARD_ROUTES`: are names that are reserved for child groups or projects.
+  - `PROJECT_WILDCARD_ROUTES`: are names that are reserved for child groups or projects.
   - `GROUP_ROUTES`: are names that are reserved for all groups or projects.
 
 To create a subgroup:

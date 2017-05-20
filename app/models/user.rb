@@ -367,7 +367,7 @@ class User < ActiveRecord::Base
     def reference_pattern
       %r{
         #{Regexp.escape(reference_prefix)}
-        (?<user>#{Gitlab::Regex::FULL_NAMESPACE_REGEX_STR})
+        (?<user>#{Gitlab::PathRegex::FULL_NAMESPACE_FORMAT_REGEX})
       }x
     end
 

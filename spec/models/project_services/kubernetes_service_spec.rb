@@ -100,7 +100,7 @@ describe KubernetesService, models: true, caching: true do
 
       it 'sets the namespace to the default' do
         expect(kube_namespace).not_to be_nil
-        expect(kube_namespace[:placeholder]).to match(/\A#{Gitlab::Regex::PATH_REGEX_STR}-\d+\z/)
+        expect(kube_namespace[:placeholder]).to match(/\A#{Gitlab::PathRegex::PATH_REGEX_STR}-\d+\z/)
       end
     end
   end
@@ -187,7 +187,7 @@ describe KubernetesService, models: true, caching: true do
         kube_namespace = subject.predefined_variables.find { |h| h[:key] == 'KUBE_NAMESPACE' }
 
         expect(kube_namespace).not_to be_nil
-        expect(kube_namespace[:value]).to match(/\A#{Gitlab::Regex::PATH_REGEX_STR}-\d+\z/)
+        expect(kube_namespace[:value]).to match(/\A#{Gitlab::PathRegex::PATH_REGEX_STR}-\d+\z/)
       end
     end
   end
