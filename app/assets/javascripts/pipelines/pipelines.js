@@ -140,7 +140,7 @@ export default {
   created() {
     this.service = new PipelinesService(this.endpoint);
 
-    const poll = new Poll({
+    const poll = new Poll(this.endpoint, {
       resource: this.service,
       method: 'getPipelines',
       data: { page: this.pageParameter, scope: this.scopeParameter },
@@ -151,7 +151,7 @@ export default {
 
     if (!Visibility.hidden()) {
       this.isLoading = true;
-      poll.makeRequest();
+      poll.start();
     } else {
       // If tab is not visible we need to make the first request so we don't show the empty
       // state without knowing if there are any pipelines

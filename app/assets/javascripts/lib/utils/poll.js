@@ -1,4 +1,5 @@
 import httpStatusCodes from './http_status';
+import socketIO from 'socket.io-client';
 
 /**
  * Polling utility for handling realtime updates.
@@ -45,7 +46,7 @@ import httpStatusCodes from './http_status';
  *
  */
 export default class Poll {
-  constructor(options = {}) {
+  constructor(endpoint, options = {}) {
     this.options = options;
     this.options.data = options.data || {};
     this.options.notificationCallback = options.notificationCallback ||
@@ -54,6 +55,8 @@ export default class Poll {
     this.intervalHeader = 'POLL-INTERVAL';
     this.timeoutID = null;
     this.canPoll = true;
+    this.endpoint = endpoint;
+    this.socket = socketIO('/socket.io/');
   }
 
   checkConditions(response) {
@@ -85,6 +88,11 @@ export default class Poll {
       });
   }
 
+  start() {
+    this.socket.emit('subscribe:endpoint', { ID: 1, Endpoint: this.endpoint });
+    this.socket.on('update:1', this.options.successCallback);
+  }
+
   /**
    * Stops the polling recursive chain
    * and guarantees if the timeout is already running it won't make another request by
@@ -93,6 +101,8 @@ export default class Poll {
   stop() {
     this.canPoll = false;
     clearTimeout(this.timeoutID);
+    this.socket.emit('unsubscribe:endpoint', { ID: 1, Endpoint: this.endpoint });
+    this.socket.removeListener('update:1');
   }
 
   /**
@@ -100,6 +110,6 @@ export default class Poll {
    */
   restart() {
     this.canPoll = true;
-    this.makeRequest();
+    this.start();
   }
 }

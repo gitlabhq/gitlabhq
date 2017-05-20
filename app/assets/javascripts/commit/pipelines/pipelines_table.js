@@ -90,7 +90,7 @@ export default Vue.component('pipelines-table', {
     this.helpPagePath = element.dataset.helpPagePath;
     this.service = new PipelinesService(this.endpoint);
 
-    this.poll = new Poll({
+    this.poll = new Poll(this.endpoint, {
       resource: this.service,
       method: 'getPipelines',
       successCallback: this.successCallback,
@@ -100,7 +100,7 @@ export default Vue.component('pipelines-table', {
 
     if (!Visibility.hidden()) {
       this.isLoading = true;
-      this.poll.makeRequest();
+      this.poll.start();
     } else {
       // If tab is not visible we need to make the first request so we don't show the empty
       // state without knowing if there are any pipelines

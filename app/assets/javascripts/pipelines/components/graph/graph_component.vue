@@ -29,7 +29,7 @@
     created() {
       this.service = new PipelineService(this.endpoint);
 
-      const poll = new Poll({
+      const poll = new Poll(this.endpoint, {
         resource: this.service,
         method: 'getPipeline',
         successCallback: this.successCallback,
@@ -38,7 +38,7 @@
 
       if (!Visibility.hidden()) {
         this.isLoading = true;
-        poll.makeRequest();
+        poll.start();
       }
 
       Visibility.change(() => {

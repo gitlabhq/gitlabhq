@@ -53,7 +53,7 @@ export default {
   },
   created() {
     const resource = new Service(this.endpoint);
-    const poll = new Poll({
+    const poll = new Poll(this.endpoint, {
       resource,
       method: 'getData',
       successCallback: (res) => {
@@ -65,7 +65,7 @@ export default {
     });
 
     if (!Visibility.hidden()) {
-      poll.makeRequest();
+      poll.start();
     }
 
     Visibility.change(() => {
