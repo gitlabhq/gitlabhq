@@ -38,13 +38,13 @@ module Gitlab
           'project_pipelines'
         ),
         Gitlab::EtagCaching::Router::Route.new(
-          %r(^(?!.*(#{RESERVED_WORDS})).*/pipelines/\d+\.json\z),
+          %r(^(?!.*(#{RESERVED_WORDS_REGEX})).*/pipelines/\d+\.json\z),
           'project_pipeline'
         )
       ].freeze
 
-      def self.match(env)
-        ROUTES.find { |route| route.regexp.match(env['PATH_INFO']) }
+      def self.match(path)
+        ROUTES.find { |route| route.regexp.match(path) }
       end
     end
   end
