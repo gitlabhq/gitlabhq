@@ -56,7 +56,8 @@ export default class Poll {
     this.timeoutID = null;
     this.canPoll = true;
     this.endpoint = endpoint;
-    this.socket = socketIO('/socket.io/');
+    this.socket = socketIO('/', { transports: ['websocket', 'polling'] });
+    this.subscribeID = null;
   }
 
   checkConditions(response) {
@@ -89,8 +90,15 @@ export default class Poll {
   }
 
   start() {
-    this.socket.emit('subscribe:endpoint', { ID: 1, Endpoint: this.endpoint });
-    this.socket.on('update:1', this.options.successCallback);
+    let poll = this;
+    this.socket.emit('subscribe', { Endpoint: this.endpoint }, function(id) {
+      poll.subscribeID = id;
+
+      this.on('update:' + poll.subscribeID,
+        response => poll.options.successCallback({ 
+          headers: [], json: function() { return response.Data } 
+        }));
+    })
   }
 
   /**
@@ -101,8 +109,12 @@ export default class Poll {
   stop() {
     this.canPoll = false;
     clearTimeout(this.timeoutID);
-    this.socket.emit('unsubscribe:endpoint', { ID: 1, Endpoint: this.endpoint });
-    this.socket.removeListener('update:1');
+
+    if (this.subscribeID != null) {
+      this.socket.emit('unsubscribe', this.subscribeID);
+      this.socket.removeListener('update:' + this.subscribeID);
+      this.subscribeID = null;
+    }
   }
 
   /**
