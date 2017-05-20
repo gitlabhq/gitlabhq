@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import Visibility from 'visibilityjs';
 import pipelinesTableComponent from '../../vue_shared/components/pipelines_table';
 import PipelinesService from '../../pipelines/services/pipelines_service';
 import PipelineStore from '../../pipelines/stores/pipelines_store';
@@ -9,7 +8,7 @@ import errorState from '../../pipelines/components/error_state.vue';
 import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 import '../../lib/utils/common_utils';
 import '../../vue_shared/vue_resource_interceptor';
-import Poll from '../../lib/utils/poll';
+import VisibilitySocketManager from '../../lib/utils/socket/visibility_socket_manager';
 
 /**
  *
@@ -90,29 +89,9 @@ export default Vue.component('pipelines-table', {
     this.helpPagePath = element.dataset.helpPagePath;
     this.service = new PipelinesService(this.endpoint);
 
-    this.poll = new Poll({
-      resource: this.service,
-      method: 'getPipelines',
-      successCallback: this.successCallback,
+    this.subscription = VisibilitySocketManager.subscribe(this.endpoint, null, {
+      updateCallback: this.successCallback,
       errorCallback: this.errorCallback,
-      notificationCallback: this.setIsMakingRequest,
-    });
-
-    if (!Visibility.hidden()) {
-      this.isLoading = true;
-      this.poll.makeRequest();
-    } else {
-      // If tab is not visible we need to make the first request so we don't show the empty
-      // state without knowing if there are any pipelines
-      this.fetchPipelines();
-    }
-
-    Visibility.change(() => {
-      if (!Visibility.hidden()) {
-        this.poll.restart();
-      } else {
-        this.poll.stop();
-      }
     });
 
     eventHub.$on('refreshPipelines', this.fetchPipelines);
@@ -123,7 +102,7 @@ export default Vue.component('pipelines-table', {
   },
 
   destroyed() {
-    this.poll.stop();
+    VisibilitySocketManager.remove(this.subscription);
   },
 
   methods: {

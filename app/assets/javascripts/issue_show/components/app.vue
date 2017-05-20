@@ -1,7 +1,5 @@
 <script>
-import Visibility from 'visibilityjs';
-import Poll from '../../lib/utils/poll';
-import Service from '../services/index';
+import VisibilitySocketManager from '../../lib/utils/socket/visibility_socket_manager';
 import Store from '../stores';
 import titleComponent from './title.vue';
 import descriptionComponent from './description.vue';
@@ -52,28 +50,13 @@ export default {
     titleComponent,
   },
   created() {
-    const resource = new Service(this.endpoint);
-    const poll = new Poll({
-      resource,
-      method: 'getData',
-      successCallback: (res) => {
-        this.store.updateState(res.json());
+    VisibilitySocketManager.subscribe(this.endpoint, null, {
+      updateCallback: (response) => {
+        this.store.updateState(response.json());
       },
-      errorCallback(err) {
-        throw new Error(err);
+      errorCallback(error) {
+        throw new Error(error);
       },
-    });
-
-    if (!Visibility.hidden()) {
-      poll.makeRequest();
-    }
-
-    Visibility.change(() => {
-      if (!Visibility.hidden()) {
-        poll.restart();
-      } else {
-        poll.stop();
-      }
     });
   },
 };

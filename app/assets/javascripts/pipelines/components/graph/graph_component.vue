@@ -1,11 +1,10 @@
 <script>
   /* global Flash */
-  import Visibility from 'visibilityjs';
-  import Poll from '../../../lib/utils/poll';
   import PipelineService from '../../services/pipeline_service';
   import PipelineStore from '../../stores/pipeline_store';
   import stageColumnComponent from './stage_column_component.vue';
   import loadingIcon from '../../../vue_shared/components/loading_icon.vue';
+  import VisibilitySocketManager from '../../../lib/utils/socket/visibility_socket_manager';
   import '../../../flash';
 
   export default {
@@ -29,24 +28,9 @@
     created() {
       this.service = new PipelineService(this.endpoint);
 
-      const poll = new Poll({
-        resource: this.service,
-        method: 'getPipeline',
-        successCallback: this.successCallback,
+      VisibilitySocketManager.subscribe(this.endpoint, null, {
+        updateCallback: this.successCallback,
         errorCallback: this.errorCallback,
-      });
-
-      if (!Visibility.hidden()) {
-        this.isLoading = true;
-        poll.makeRequest();
-      }
-
-      Visibility.change(() => {
-        if (!Visibility.hidden()) {
-          poll.restart();
-        } else {
-          poll.stop();
-        }
       });
     },
 
