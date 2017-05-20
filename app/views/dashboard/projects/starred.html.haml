@@ -1,10 +1,9 @@
 - page_title "Starred Projects"
 - header_title "Projects", dashboard_projects_path
 
-= render 'dashboard/projects_head'
+= render "projects/last_push"
 
-- if @last_push
-  = render "events/event_last_push", event: @last_push
+= render 'dashboard/projects_head'
 
 - if @projects.any? || params[:filter_projects]
   = render 'projects'

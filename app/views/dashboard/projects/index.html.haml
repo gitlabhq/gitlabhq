@@ -7,11 +7,11 @@
 - unless show_user_callout?
   = render 'shared/user_callout'
 
+= render "projects/last_push"
+
 - if @projects.any? || params[:name]
   = render 'dashboard/projects_head'
 
-- if @last_push
-  = render "events/event_last_push", event: @last_push
 
 - if @projects.any? || params[:name]
   = render 'projects'
