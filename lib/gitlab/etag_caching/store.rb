@@ -11,9 +11,9 @@ module Gitlab
       def touch(key, only_if_missing: false)
         etag = generate_etag
 
-        Gitlab::Redis.with do |redis|
-          redis.set(redis_key(key), etag, ex: EXPIRY_TIME, nx: only_if_missing)
-        end
+        ::Gitlab::Workhorse.set_key_and_notify(
+          redis_key(key), etag,
+          expire: EXPIRY_TIME, overwrite: !only_if_missing)
 
         etag
       end
