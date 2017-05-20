@@ -29,6 +29,7 @@ GET /groups
     "description": "An interesting group",
     "visibility": "public",
     "lfs_enabled": true,
+    "members_count": 1,
     "avatar_url": "http://localhost:3000/uploads/group/avatar/1/foo.jpg",
     "web_url": "http://localhost:3000/groups/foo-bar",
     "request_access_enabled": false,
@@ -130,6 +131,8 @@ Example response:
 ```json
 {
   "id": 4,
+  "lfs_enabled": true,
+  "members_count": 1,
   "name": "Twitter",
   "path": "twitter",
   "description": "Aliquid qui quis dignissimos distinctio ut commodi voluptas est.",

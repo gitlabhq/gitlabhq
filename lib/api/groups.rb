@@ -61,7 +61,7 @@ module API
         groups = groups.where.not(id: params[:skip_groups]) if params[:skip_groups].present?
         groups = groups.reorder(params[:order_by] => params[:sort])
 
-        present_groups groups, statistics: params[:statistics] && current_user.admin?
+        present_groups groups.with_members, statistics: params[:statistics] && current_user.admin?
       end
 
       desc 'Create a group. Available only for users who can create groups.' do

@@ -146,13 +146,18 @@ module API
     class Group < Grape::Entity
       expose :id, :name, :path, :description, :visibility
       expose :lfs_enabled?, as: :lfs_enabled
-      expose :avatar_url do |user, options|
-        user.avatar_url(only_path: false)
-      end
       expose :web_url
       expose :request_access_enabled
       expose :full_name, :full_path
       expose :parent_id
+
+      expose :members_count do |group, options|
+        group.members.size
+      end
+
+      expose :avatar_url do |group, options|
+        group.avatar_url(only_path: false)
+      end
 
       expose :statistics, if: :statistics do
         with_options format_with: -> (value) { value.to_i } do

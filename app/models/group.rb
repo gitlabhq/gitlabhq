@@ -33,6 +33,8 @@ class Group < Namespace
   mount_uploader :avatar, AvatarUploader
   has_many :uploads, as: :model, dependent: :destroy
 
+  scope :with_members, -> { includes(:group_members) }
+
   after_create :post_create_hook
   after_destroy :post_destroy_hook
   after_save :update_two_factor_requirement
