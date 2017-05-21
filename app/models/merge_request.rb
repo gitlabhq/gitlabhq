@@ -416,13 +416,24 @@ class MergeRequest < ActiveRecord::Base
     @merge_request_diffs_by_diff_refs_or_sha[diff_refs_or_sha]
   end
 
+  def version_params_for(diff_refs)
+    if diff = merge_request_diff_for(diff_refs)
+      { diff_id: diff.id }
+    elsif diff = merge_request_diff_for(diff_refs.head_sha)
+      {
+        diff_id: diff.id,
+        start_sha: diff_refs.start_sha
+      }
+    end
+  end
+
   def reload_diff_if_branch_changed
     if source_branch_changed? || target_branch_changed?
       reload_diff
     end
   end
 
-  def reload_diff
+  def reload_diff(current_user = nil)
     return unless open?
 
     old_diff_refs = self.diff_refs
@@ -432,7 +443,8 @@ class MergeRequest < ActiveRecord::Base
 
     update_diff_notes_positions(
       old_diff_refs: old_diff_refs,
-      new_diff_refs: new_diff_refs
+      new_diff_refs: new_diff_refs,
+      current_user: current_user
     )
   end
 
@@ -861,7 +873,7 @@ class MergeRequest < ActiveRecord::Base
     diff_sha_refs && diff_sha_refs.complete?
   end
 
-  def update_diff_notes_positions(old_diff_refs:, new_diff_refs:)
+  def update_diff_notes_positions(old_diff_refs:, new_diff_refs:, current_user: nil)
     return unless has_complete_diff_refs?
     return if new_diff_refs == old_diff_refs
 
@@ -875,7 +887,7 @@ class MergeRequest < ActiveRecord::Base
 
     service = Notes::DiffPositionUpdateService.new(
       self.project,
-      nil,
+      current_user,
       old_diff_refs: old_diff_refs,
       new_diff_refs: new_diff_refs,
       paths: paths

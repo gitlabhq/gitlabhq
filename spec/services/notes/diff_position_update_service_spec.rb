@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Notes::DiffPositionUpdateService, services: true do
   let(:project) { create(:project, :repository) }
+  let(:current_user) { project.owner }
   let(:create_commit) { project.commit("913c66a37b4a45b9769037c55c2d238bd0942d2e") }
   let(:modify_commit) { project.commit("874797c3a73b60d2187ed6e2fcabd289ff75171e") }
   let(:edit_commit) { project.commit("570e7b2abdd848b95f2f578043fc23bd6f6fd24d") }
@@ -25,7 +26,7 @@ describe Notes::DiffPositionUpdateService, services: true do
   subject do
     described_class.new(
       project,
-      nil,
+      current_user,
       old_diff_refs: old_diff_refs,
       new_diff_refs: new_diff_refs,
       paths: [path]
@@ -169,6 +170,23 @@ describe Notes::DiffPositionUpdateService, services: true do
 
         expect(note.original_position).to eq(old_position)
         expect(note.position).to eq(old_position)
+      end
+
+      it 'sets the change position' do
+        subject.execute(note)
+
+        change_position = note.change_position
+        expect(change_position.start_sha).to eq(old_diff_refs.head_sha)
+        expect(change_position.head_sha).to eq(new_diff_refs.head_sha)
+        expect(change_position.old_line).to eq(9)
+        expect(change_position.new_line).to be_nil
+      end
+
+      it 'creates a system note' do
+        expect(SystemNoteService).to receive(:diff_discussion_outdated).with(
+          note.to_discussion, project, current_user, instance_of(Gitlab::Diff::Position))
+
+        subject.execute(note)
       end
     end
   end

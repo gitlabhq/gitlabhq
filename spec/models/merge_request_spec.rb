@@ -1213,7 +1213,7 @@ describe MergeRequest, models: true do
 
       expect(Notes::DiffPositionUpdateService).to receive(:new).with(
         subject.project,
-        nil,
+        subject.author,
         old_diff_refs: old_diff_refs,
         new_diff_refs: commit.diff_refs,
         paths: note.position.paths
@@ -1222,7 +1222,7 @@ describe MergeRequest, models: true do
       expect_any_instance_of(Notes::DiffPositionUpdateService).to receive(:execute).with(note)
       expect_any_instance_of(DiffNote).to receive(:save).once
 
-      subject.reload_diff
+      subject.reload_diff(subject.author)
     end
   end
 
@@ -1531,6 +1531,38 @@ describe MergeRequest, models: true do
     context 'with a commit SHA' do
       it 'returns the diffs' do
         expect(subject.merge_request_diff_for(merge_request_diff3.head_commit_sha)).to eq(merge_request_diff3)
+      end
+    end
+  end
+
+  describe '#version_params_for' do
+    subject { create(:merge_request, importing: true) }
+    let(:project) { subject.project }
+    let!(:merge_request_diff1) { subject.merge_request_diffs.create(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
+    let!(:merge_request_diff2) { subject.merge_request_diffs.create(head_commit_sha: nil) }
+    let!(:merge_request_diff3) { subject.merge_request_diffs.create(head_commit_sha: '5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
+
+    context 'when the diff refs are for an older merge request version' do
+      let(:diff_refs) { merge_request_diff1.diff_refs }
+
+      it 'returns the diff ID for the version to show' do
+        expect(subject.version_params_for(diff_refs)).to eq(diff_id: merge_request_diff1.id)
+      end
+    end
+
+    context 'when the diff refs are for a comparison between merge request versions' do
+      let(:diff_refs) { merge_request_diff3.compare_with(merge_request_diff1.head_commit_sha).diff_refs }
+
+      it 'returns the diff ID and start sha of the versions to compare' do
+        expect(subject.version_params_for(diff_refs)).to eq(diff_id: merge_request_diff3.id, start_sha: merge_request_diff1.head_commit_sha)
+      end
+    end
+
+    context 'when the diff refs are not for a merge request version' do
+      let(:diff_refs) { project.commit(sample_commit.id).diff_refs }
+
+      it 'returns nil' do
+        expect(subject.version_params_for(diff_refs)).to be_nil
       end
     end
   end

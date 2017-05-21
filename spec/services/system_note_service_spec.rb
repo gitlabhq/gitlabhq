@@ -1034,4 +1034,35 @@ describe SystemNoteService, services: true do
       expect(subject.note).to eq 'resolved all discussions'
     end
   end
+
+  describe '.diff_discussion_outdated' do
+    let(:discussion) { create(:diff_note_on_merge_request).to_discussion }
+    let(:merge_request) { discussion.noteable }
+    let(:project) { merge_request.source_project }
+    let(:change_position) { discussion.position }
+
+    def reloaded_merge_request
+      MergeRequest.find(merge_request.id)
+    end
+
+    subject { described_class.diff_discussion_outdated(discussion, project, author, change_position) }
+
+    it_behaves_like 'a system note' do
+      let(:expected_noteable) { discussion.first_note.noteable }
+      let(:action)              { 'outdated' }
+    end
+
+    it 'creates a new note in the discussion' do
+      # we need to completely rebuild the merge request object, or the `@discussions` on the merge request are not reloaded.
+      expect { subject }.to change { reloaded_merge_request.discussions.first.notes.size }.by(1)
+    end
+
+    it 'links to the diff in the system note' do
+      expect(subject.note).to include('version 1')
+
+      diff_id = merge_request.merge_request_diff.id
+      line_code = change_position.line_code(project.repository)
+      expect(subject.note).to include(diffs_namespace_project_merge_request_url(project.namespace, project, merge_request, diff_id: diff_id, anchor: line_code))
+    end
+  end
 end
