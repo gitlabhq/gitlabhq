@@ -6,7 +6,7 @@ describe('RavenConfig options', () => {
   const currentUserId = 'currentUserId';
   const gitlabUrl = 'gitlabUrl';
   const isProduction = 'isProduction';
-  const headCommitSHA = 'headCommitSHA';
+  const revision = 'revision';
   let indexReturnValue;
 
   beforeEach(() => {
@@ -14,10 +14,11 @@ describe('RavenConfig options', () => {
       sentry_dsn: sentryDsn,
       current_user_id: currentUserId,
       gitlab_url: gitlabUrl,
+      revision,
     };
 
     process.env.NODE_ENV = isProduction;
-    process.env.HEAD_COMMIT_SHA = headCommitSHA;
+    process.env.HEAD_COMMIT_SHA = revision;
 
     spyOn(RavenConfig, 'init');
 
@@ -30,9 +31,9 @@ describe('RavenConfig options', () => {
       currentUserId,
       whitelistUrls: [gitlabUrl],
       isProduction,
-      release: headCommitSHA,
+      release: revision,
       tags: {
-        HEAD_COMMIT_SHA: headCommitSHA,
+        revision,
       },
     });
   });

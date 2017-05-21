@@ -6,9 +6,9 @@ const index = function index() {
     currentUserId: gon.current_user_id,
     whitelistUrls: [gon.gitlab_url],
     isProduction: process.env.NODE_ENV,
-    release: process.env.HEAD_COMMIT_SHA,
+    release: gon.revision,
     tags: {
-      HEAD_COMMIT_SHA: process.env.HEAD_COMMIT_SHA,
+      revision: gon.revision,
     },
   });
 

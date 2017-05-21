@@ -25,7 +25,9 @@ describe('RavenConfig', () => {
   });
 
   describe('init', () => {
-    const options = {};
+    const options = {
+      currentUserId: 1,
+    };
 
     beforeEach(() => {
       spyOn(RavenConfig, 'configure');
@@ -54,34 +56,28 @@ describe('RavenConfig', () => {
     it('should not call setUser if there is no current user ID', () => {
       RavenConfig.setUser.calls.reset();
 
-      RavenConfig.init({
-        sentryDsn: '//sentryDsn',
-        ravenAssetUrl: '//ravenAssetUrl',
-        currentUserId: undefined,
-        whitelistUrls: ['//gitlabUrl'],
-        isProduction: true,
-      });
+      options.currentUserId = undefined;
+
+      RavenConfig.init(options);
 
       expect(RavenConfig.setUser).not.toHaveBeenCalled();
     });
   });
 
   describe('configure', () => {
-    let options;
     let raven;
     let ravenConfig;
+    const options = {
+      sentryDsn: '//sentryDsn',
+      whitelistUrls: ['//gitlabUrl'],
+      isProduction: true,
+      release: 'revision',
+      tags: {
+        revision: 'revision',
+      },
+    };
 
     beforeEach(() => {
-      options = {
-        sentryDsn: '//sentryDsn',
-        whitelistUrls: ['//gitlabUrl'],
-        isProduction: true,
-        release: 'release',
-        tags: {
-          HEAD_COMMIT_SHA: 'headCommitSha',
-        },
-      };
-
       ravenConfig = jasmine.createSpyObj('ravenConfig', ['shouldSendSample']);
       raven = jasmine.createSpyObj('raven', ['install']);
 
@@ -116,6 +112,8 @@ describe('RavenConfig', () => {
       RavenConfig.configure.call(ravenConfig);
 
       expect(Raven.config).toHaveBeenCalledWith(options.sentryDsn, {
+        release: options.release,
+        tags: options.tags,
         whitelistUrls: options.whitelistUrls,
         environment: 'development',
         ignoreErrors: ravenConfig.IGNORE_ERRORS,
