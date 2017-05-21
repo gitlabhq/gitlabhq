@@ -162,7 +162,11 @@ which can be set in GitLab's UI.
 
 ### cache
 
-> Introduced in GitLab Runner v0.7.0.
+>
+**Notes:**
+- Introduced in GitLab Runner v0.7.0.
+- Prior to GitLab 9.2, caches were restored after artifacts.
+- From GitLab 9.2, caches are restored before artifacts.
 
 `cache` is used to specify a list of files and directories which should be
 cached between jobs. You can only use paths that are within the project
@@ -769,6 +773,8 @@ as Review Apps. You can see a simple example using Review Apps at
 **Notes:**
 - Introduced in GitLab Runner v0.7.0 for non-Windows platforms.
 - Windows support was added in GitLab Runner v.1.0.0.
+- Prior to GitLab 9.2, caches were restored after artifacts.
+- From GitLab 9.2, caches are restored before artifacts.
 - Currently not all executors are supported.
 - Job artifacts are only collected for successful jobs by default.
 
