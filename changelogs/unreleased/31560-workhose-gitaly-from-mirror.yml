@@ -1,4 +1,0 @@
----
-title: rickettm Add repo parameter to gitaly:install and workhorse:install rake tasks
-merge_request: 10979
-author: M. Ricketts
