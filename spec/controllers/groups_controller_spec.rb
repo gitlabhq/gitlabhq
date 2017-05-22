@@ -84,7 +84,6 @@ describe GroupsController do
         expect(assigns(:issues)).to eq [issue_2, issue_1]
       end
     end
-<<<<<<< HEAD
 
     context 'when requesting the canonical path with different casing' do
       it 'redirects to the correct casing' do
@@ -105,8 +104,6 @@ describe GroupsController do
         expect(controller).to set_flash[:notice].to(group_moved_message(redirect_route, group))
       end
     end
-=======
->>>>>>> origin/master
   end
 
   describe 'GET #merge_requests' do
@@ -132,7 +129,6 @@ describe GroupsController do
         expect(assigns(:merge_requests)).to eq [merge_request_2, merge_request_1]
       end
     end
-<<<<<<< HEAD
 
     context 'when requesting the canonical path with different casing' do
       it 'redirects to the correct casing' do
@@ -153,8 +149,6 @@ describe GroupsController do
         expect(controller).to set_flash[:notice].to(group_moved_message(redirect_route, group))
       end
     end
-=======
->>>>>>> origin/master
   end
 
   describe 'DELETE #destroy' do
@@ -252,8 +246,6 @@ describe GroupsController do
     end
   end
 
-<<<<<<< HEAD
-=======
   describe '#ensure_canonical_path' do
     before do
       sign_in(user)
@@ -447,7 +439,6 @@ describe GroupsController do
     end
   end
 
->>>>>>> origin/master
   def group_moved_message(redirect_route, group)
     "Group '#{redirect_route.path}' was moved to '#{group.full_path}'. Please update any links and bookmarks that may still have the old path."
   end

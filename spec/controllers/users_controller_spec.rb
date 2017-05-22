@@ -53,7 +53,6 @@ describe UsersController do
       end
     end
 
-<<<<<<< HEAD
     context 'when requesting the canonical path' do
       let(:user) { create(:user, username: 'CamelCaseUser') }
 
@@ -88,8 +87,6 @@ describe UsersController do
       end
     end
 
-=======
->>>>>>> origin/master
     context 'when a user by that username does not exist' do
       context 'when logged out' do
         it 'redirects to login page' do
@@ -134,7 +131,6 @@ describe UsersController do
         expect(assigns(:contributions_calendar).projects.count).to eq(2)
       end
     end
-<<<<<<< HEAD
 
     context 'when requesting the canonical path' do
       let(:user) { create(:user, username: 'CamelCaseUser') }
@@ -169,8 +165,6 @@ describe UsersController do
         expect(controller).to set_flash[:notice].to(user_moved_message(redirect_route, user))
       end
     end
-=======
->>>>>>> origin/master
   end
 
   describe 'GET #calendar_activities' do
@@ -193,7 +187,6 @@ describe UsersController do
       get :calendar_activities, username: user.username
       expect(response).to render_template('calendar_activities')
     end
-<<<<<<< HEAD
 
     context 'when requesting the canonical path' do
       let(:user) { create(:user, username: 'CamelCaseUser') }
@@ -226,8 +219,6 @@ describe UsersController do
         expect(controller).to set_flash[:notice].to(user_moved_message(redirect_route, user))
       end
     end
-=======
->>>>>>> origin/master
   end
 
   describe 'GET #snippets' do
@@ -250,7 +241,6 @@ describe UsersController do
         expect(JSON.parse(response.body)).to have_key('html')
       end
     end
-<<<<<<< HEAD
 
     context 'when requesting the canonical path' do
       let(:user) { create(:user, username: 'CamelCaseUser') }
@@ -283,8 +273,6 @@ describe UsersController do
         expect(controller).to set_flash[:notice].to(user_moved_message(redirect_route, user))
       end
     end
-=======
->>>>>>> origin/master
   end
 
   describe 'GET #exists' do
@@ -333,8 +321,6 @@ describe UsersController do
     end
   end
 
-<<<<<<< HEAD
-=======
   describe '#ensure_canonical_path' do
     before do
       sign_in(user)
@@ -456,7 +442,6 @@ describe UsersController do
     end
   end
 
->>>>>>> origin/master
   def user_moved_message(redirect_route, user)
     "User '#{redirect_route.path}' was moved to '#{user.full_path}'. Please update any links and bookmarks that may still have the old path."
   end

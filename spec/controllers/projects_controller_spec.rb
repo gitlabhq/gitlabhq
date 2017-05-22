@@ -219,7 +219,6 @@ describe ProjectsController do
         expect(response).to redirect_to(namespace_project_path)
       end
     end
-<<<<<<< HEAD
 
     context 'when requesting a redirected path' do
       let!(:redirect_route) { public_project.redirect_routes.create!(path: "foo/bar") }
@@ -231,8 +230,6 @@ describe ProjectsController do
         expect(controller).to set_flash[:notice].to(project_moved_message(redirect_route, public_project))
       end
     end
-=======
->>>>>>> origin/master
   end
 
   describe "#update" do
@@ -415,7 +412,6 @@ describe ProjectsController do
       expect(parsed_body["Tags"]).to include("v1.0.0")
       expect(parsed_body["Commits"]).to include("123456")
     end
-<<<<<<< HEAD
 
     context 'when requesting a redirected path' do
       let!(:redirect_route) { public_project.redirect_routes.create!(path: "foo/bar") }
@@ -427,8 +423,6 @@ describe ProjectsController do
         expect(controller).to set_flash[:notice].to(project_moved_message(redirect_route, public_project))
       end
     end
-=======
->>>>>>> origin/master
   end
 
   describe 'GET edit' do
@@ -463,8 +457,6 @@ describe ProjectsController do
     end
   end
 
-<<<<<<< HEAD
-=======
   describe '#ensure_canonical_path' do
     before do
       sign_in(user)
@@ -568,7 +560,6 @@ describe ProjectsController do
     end
   end
 
->>>>>>> origin/master
   def project_moved_message(redirect_route, project)
     "Project '#{redirect_route.path}' was moved to '#{project.full_path}'. Please update any links and bookmarks that may still have the old path."
   end

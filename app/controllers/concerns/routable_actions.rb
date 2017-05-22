@@ -28,15 +28,9 @@ module RoutableActions
     return unless request.get?
 
     canonical_path = routable.full_path
-<<<<<<< HEAD
-    if canonical_path != requested_path
-      if canonical_path.casecmp(requested_path) != 0
-        flash[:notice] = "#{routable.class.to_s.titleize} '#{requested_path}' was moved to '#{canonical_path}'. Please update any links and bookmarks that may still have the old path."
-=======
     if canonical_path != requested_full_path
       if canonical_path.casecmp(requested_full_path) != 0
         flash[:notice] = "#{routable.class.to_s.titleize} '#{requested_full_path}' was moved to '#{canonical_path}'. Please update any links and bookmarks that may still have the old path."
->>>>>>> origin/master
       end
       redirect_to build_canonical_path(routable)
     end
