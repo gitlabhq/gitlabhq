@@ -41,11 +41,13 @@ export default {
     },
 
     hasNoneIssues() {
-      return !this.mr.codeclimateMetrics.newIssues.length && !this.mr.codeclimateMetrics.resolvedIssues.length;
+      return !this.mr.codeclimateMetrics.newIssues.length &&
+        !this.mr.codeclimateMetrics.resolvedIssues.length;
     },
 
     hasIssues() {
-      return this.mr.codeclimateMetrics.newIssues.length || this.mr.codeclimateMetrics.resolvedIssues.length;
+      return this.mr.codeclimateMetrics.newIssues.length ||
+        this.mr.codeclimateMetrics.resolvedIssues.length;
     },
 
     codeText() {
