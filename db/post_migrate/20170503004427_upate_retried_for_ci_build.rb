@@ -8,6 +8,32 @@ class UpateRetriedForCiBuild < ActiveRecord::Migration
   def up
     disable_statement_timeout
 
+    if Gitlab::Database.mysql?
+      up_mysql
+    else
+      up_postgres
+    end
+  end
+
+  def down
+  end
+
+  private
+
+  def up_mysql
+    # This is a trick to overcome MySQL limitation: 
+    # Mysql2::Error: Table 'ci_builds' is specified twice, both as a target for 'UPDATE' and as a separate source for data
+    # However, this leads to create a temporary table from `max(ci_builds.id)` which is slow and do full database update
+    execute <<-SQL.strip_heredoc
+      UPDATE ci_builds SET retried=
+        (id NOT IN (
+          SELECT * FROM (SELECT MAX(ci_builds.id) FROM ci_builds GROUP BY commit_id, name) AS latest_jobs
+        ))
+      WHERE retried IS NULL
+    SQL
+  end
+
+  def up_postgres
     with_temporary_partial_index do
       latest_id = <<-SQL.strip_heredoc
         SELECT MAX(ci_builds2.id)
@@ -24,9 +50,6 @@ class UpateRetriedForCiBuild < ActiveRecord::Migration
         query.where(table[:retried].eq(nil))
       end
     end
-  end
-
-  def down
   end
 
   def with_temporary_partial_index
