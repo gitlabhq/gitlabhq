@@ -170,7 +170,7 @@ import './visibility_select';
 import './wikis';
 import './zen_mode';
 
-// eslint-disable-next-line global-require
+// eslint-disable-next-line global-require, import/no-commonjs
 if (process.env.NODE_ENV !== 'production') require('./test_utils/');
 
 document.addEventListener('beforeunload', function () {

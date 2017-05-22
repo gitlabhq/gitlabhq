@@ -1,4 +1,4 @@
-require('../../lib/utils/text_utility');
+import '../../lib/utils/text_utility';
 
 export default {
   name: 'MRWidgetHeader',
