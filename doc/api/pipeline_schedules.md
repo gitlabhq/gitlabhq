@@ -1,6 +1,6 @@
 # Pipeline schedules
 
-You can read more about [pipeline schedules](../ci/pipeline_schedules.md).
+You can read more about [pipeline schedules](../user/project/pipelines/schedules.md).
 
 ## List Pipeline schedules
 
