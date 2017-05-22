@@ -1,4 +1,5 @@
 <script>
+  import lockedWarning from './locked_warning.vue';
   import titleField from './fields/title.vue';
   import descriptionField from './fields/description.vue';
   import editActions from './edit_actions.vue';
@@ -33,6 +34,7 @@
       },
     },
     components: {
+      lockedWarning,
       titleField,
       descriptionField,
       editActions,
@@ -44,6 +46,7 @@
 
 <template>
   <form>
+    <locked-warning v-if="formState.lockedWarningVisible" />
     <title-field
       :form-state="formState" />
     <confidential-checkbox
