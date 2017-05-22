@@ -26,6 +26,15 @@ describe SearchService, services: true do
 
         expect(project).to eq accessible_project
       end
+
+      it 'returns the project for guests' do
+        search_project = create :empty_project
+        search_project.team << [user, :guest]
+
+        project = SearchService.new(user, project_id: search_project.id).project
+
+        expect(project).to eq search_project
+      end
     end
 
     context 'when the project is not accessible' do
