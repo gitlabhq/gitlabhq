@@ -7,17 +7,21 @@ export default {
     <section class="mr-widget-help">
       <template
         v-if="missingBranch">
-        If the {{missingBranch}} branch exists in your local repository, you
+        If the {{missingBranch}} branch exists in your local repository,
+          <a
+            data-toggle="modal"
+            href="#modal_merge_info">
+            merge locally instead
+          </a>
+        .
       </template>
       <template v-else>
-        You
+        <a
+          data-toggle="modal"
+          href="#modal_merge_info">
+          Merge locally instead
+        </a>
       </template>
-      can merge this merge request manually using the
-      <a
-        data-toggle="modal"
-        href="#modal_merge_info">
-        command line.
-      </a>
     </section>
   `,
 };
