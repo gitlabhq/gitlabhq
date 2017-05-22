@@ -12,7 +12,7 @@ class SearchService
     @project =
       if params[:project_id].present?
         the_project = Project.find_by(id: params[:project_id])
-        can?(current_user, :download_code, the_project) ? the_project : nil
+        can?(current_user, :read_project, the_project) ? the_project : nil
       else
         nil
       end
