@@ -66,7 +66,7 @@ When serving repositories over HTTP/HTTPS GitLab utilizes the GitLab API to reso
 
 The add-on component gitlab-shell serves repositories over SSH. It manages the SSH keys within `/home/git/.ssh/authorized_keys` which should not be manually edited. gitlab-shell accesses the bare repositories through Gitaly to serve git objects and communicates with redis to submit jobs to Sidekiq for GitLab to process. gitlab-shell queries the GitLab API to determine authorization and access.
 
-Gitaly executes git operations from gitlab-shell and Workhorse, and provides an API to the GitLab web app to get attributes from git (e.g. title, branches, tags, other meta data), and to get blobs (e.g. diffs, commits, files).
+Gitaly executes git operations from gitlab-shell and the GitLab web app, and provides an API to the GitLab web app to get attributes from git (e.g. title, branches, tags, other meta data), and to get blobs (e.g. diffs, commits, files).
 
 You may also be interested in the [production architecture of GitLab.com](https://about.gitlab.com/handbook/infrastructure/production-architecture/).
 
