@@ -33,14 +33,18 @@ describe Gitlab::Database::Migratable do
   # TODO, these tests should be changed, PoC mode only.
   #
   context 'when there are not migrated records' do
-    before { create(:ci_empty_pipeline) }
+    let!(:pipeline) { create(:ci_empty_pipeline) }
+
+    before do
+      pipeline.update_column(:schema_version, 0)
+    end
 
     it 'exposes a method that checks if migrations are done' do
       expect(subject.migrated?).to eq false
     end
 
     it 'should raise an error when instantiated' do
-      expect { subject.new }
+      expect { Ci::Pipeline.find(pipeline.id) } # PoC workaround
         .to raise_error Gitlab::Database::Migratable::NotMigratedError
     end
   end

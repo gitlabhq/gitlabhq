@@ -5,6 +5,9 @@ module Ci
     include Importable
     include AfterCommitQueue
     include Presentable
+    include Gitlab::Database::Migratable
+
+    migrate 2014052201, Migration::PipelineExample
 
     belongs_to :project
     belongs_to :user

@@ -2,20 +2,22 @@ require 'spec_helper'
 
 describe ResourceBackgroundMigrationWorker do
   describe '#perform' do
-    let(:resource_class) { double('class') }
+    let(:resource) { spy('class') }
     let(:migration) { double('migration') }
     let(:records) { [[1, 1234], [2, 2345]] }
 
     before do
-      allow(resource_class).to receive(:migrations)
-        .and_return([migration, migration])
+      allow(resource).to receive(:migrations)
+        .and_return({ 2222 => migration, 2233 => migration })
     end
 
     it 'executes migrations for given records' do
-      expect(migration).to receive(:perform).with(1).twice
-      expect(migration).to receive(:perform).with(2).twice
+      expect(migration).to receive(:perform).with(1, 2222, resource).once
+      expect(migration).to receive(:perform).with(1, 2233, resource).once
+      expect(migration).to receive(:perform).with(2, 2222, resource).once
+      expect(migration).to receive(:perform).with(2, 2233, resource).once
 
-      subject.perform(resource_class, records)
+      described_class.new.perform(resource, records)
     end
   end
 end

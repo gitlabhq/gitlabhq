@@ -6,7 +6,11 @@ module Gitlab
       NotMigratedError = Class.new(StandardError)
 
       included do
-        after_initialize do
+        after_initialize do |record|
+          if record.new_record?
+            self.schema_version = self.class.latest_schema_version
+          end
+
           if self.schema_version.to_i < self.class.latest_schema_version
             raise Migratable::NotMigratedError
           end
@@ -44,7 +48,7 @@ module Gitlab
         def migrate!
           all.in_batches(of: 1000) do |relation|
             ResourceBackgroundMigrationWorker
-              .perform_async(self, relation.pluck(:id, :schema_version))
+              .perform_async(self.name, relation.pluck(:id, :schema_version))
           end
         end
 

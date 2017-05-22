@@ -12,6 +12,11 @@ class PipelineSerializer < BaseSerializer
   end
 
   def represent(resource, opts = {})
+    unless resource.migrated?
+      resource.migrate!
+      return { status: 'background migration' }
+    end
+
     if resource.is_a?(ActiveRecord::Relation)
       resource = resource.preload([
         :retryable_builds,

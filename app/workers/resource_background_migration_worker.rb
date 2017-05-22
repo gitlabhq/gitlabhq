@@ -2,11 +2,13 @@ class ResourceBackgroundMigrationWorker
   include Sidekiq::Worker
   # include MigrationsQueue TODO
 
-  def perform(resource_class, records)
-    Array(records).each do |id, version|
+  def perform(resource, records)
+    Array(records).each do |id, record_version|
       ActiveRecord::Base.transaction do
-        resource_class.migrations(version).each do |migration|
-          migration.perform(id, version, resource_class)
+        resource.constantize.tap do |model|
+          model.migrations(record_version).each do |version, migration|
+            migration.perform(id, version, model)
+          end
         end
       end
     end
