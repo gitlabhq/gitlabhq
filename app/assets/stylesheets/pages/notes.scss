@@ -43,7 +43,11 @@ ul.notes {
   }
 
   .discussion-body {
-    padding-top: 15px;
+    padding-top: 8px;
+
+    .panel {
+      margin-bottom: 0;
+    }
   }
 
   .discussion {
@@ -53,6 +57,7 @@ ul.notes {
   }
 
   .note {
+    padding: $gl-padding $gl-btn-padding 0;
     display: block;
     position: relative;
     border-bottom: 1px solid $white-normal;
@@ -78,7 +83,7 @@ ul.notes {
 
     &.note-discussion {
       &.timeline-entry {
-        padding: 14px 10px;
+        padding: $gl-padding 10px;
       }
 
       .system-note {
@@ -167,7 +172,7 @@ ul.notes {
       margin-left: 65px;
     }
 
-    .note-header {
+    .note-header-info {
       padding-bottom: 0;
     }
 
@@ -377,7 +382,7 @@ ul.notes {
 
 .note-header-info {
   min-width: 0;
-  padding-bottom: 5px;
+  padding-bottom: 8px;
 }
 
 .note-headline-light {
