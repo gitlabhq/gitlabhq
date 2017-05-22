@@ -12,7 +12,7 @@ Both EE and CE require some add-on components called gitlab-shell and Gitaly. Th
 
 You can imagine GitLab as a physical office.
 
-**The repositories** are the goods GitLab handling.
+**The repositories** are the goods GitLab handles.
 They can be stored in a warehouse.
 This can be either a hard disk, or something more complex, such as a NFS filesystem;
 
@@ -54,7 +54,7 @@ To serve repositories over SSH there's an add-on application called gitlab-shell
 
 ### Components
 
-![GitLab Diagram Overview](gitlab_architecture_diagram.png)
+<img src="https://docs.google.com/drawings/d/1fBzAyklyveF-i-2q-OHUIqDkYfjjxC4mq5shwKSZHLs/pub?w=987&amp;h=797">
 
 _[edit diagram (for GitLab team members only)](https://docs.google.com/drawings/d/1fBzAyklyveF-i-2q-OHUIqDkYfjjxC4mq5shwKSZHLs/edit)_
 
@@ -66,7 +66,9 @@ When serving repositories over HTTP/HTTPS GitLab utilizes the GitLab API to reso
 
 The add-on component gitlab-shell serves repositories over SSH. It manages the SSH keys within `/home/git/.ssh/authorized_keys` which should not be manually edited. gitlab-shell accesses the bare repositories through Gitaly to serve git objects and communicates with redis to submit jobs to Sidekiq for GitLab to process. gitlab-shell queries the GitLab API to determine authorization and access.
 
-Gitaly executes git operations from gitlab-shell and Workhorse, and provides an API to the GitLab web app to get attributes from git (e.g. title, branches, tags, other meta data), and to get blobs (e.g. diffs, commits, files)
+Gitaly executes git operations from gitlab-shell and Workhorse, and provides an API to the GitLab web app to get attributes from git (e.g. title, branches, tags, other meta data), and to get blobs (e.g. diffs, commits, files).
+
+You may also be interested in the [production architecture of GitLab.com](https://about.gitlab.com/handbook/infrastructure/production-architecture/).
 
 ### Installation Folder Summary
 
