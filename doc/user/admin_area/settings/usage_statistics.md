@@ -9,7 +9,7 @@ All statistics are opt-out, you can disable them from the admin panel.
 
 GitLab can inform you when an update is available and the importance of it.
 
-No information other than the GitLab version and the instance's domain name
+No information other than the GitLab version and the instance's hostname (through the HTTP referer)
 are collected.
 
 In the **Overview** tab you can see if your GitLab version is up to date. There
