@@ -55,10 +55,7 @@
 
 .issue-details.issuable-details
   .detail-page-description.content-block
-    - issuable_app_data = { "endpoint" => realtime_changes_namespace_project_issue_path(@project.namespace, @project, @issue), "can-update" => can?(current_user, :update_issue, @issue).to_s, "issuable-ref" => @issue.to_reference }
-    - updated_at_by = updated_at_by(@issue)
-    - issuable_app_data.merge(updated_at_by) if updated_at_by.present?
-    #js-issuable-app{ data: issuable_app_data }
+    #js-issuable-app{ data: issuable_app_data(@project, @issue) }
       %h2.title= markdown_field(@issue, :title)
       - if @issue.description.present?
         .description{ class: can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : '' }

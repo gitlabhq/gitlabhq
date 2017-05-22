@@ -1,5 +1,6 @@
 module IssuablesHelper
   include GitlabRoutingHelper
+  include EditableHelper
 
   def sidebar_gutter_toggle_icon
     sidebar_gutter_collapsed? ? icon('angle-double-left', { 'aria-hidden': 'true' }) : icon('angle-double-right', { 'aria-hidden': 'true' })
@@ -272,5 +273,12 @@ module IssuablesHelper
       placement: (is_collapsed ? 'left' : nil),
       container: (is_collapsed ? 'body' : nil)
     }
+  end
+
+  def issuable_app_data(project, issue)
+    data = { "endpoint" => realtime_changes_namespace_project_issue_path(project.namespace, project, issue), "can-update" => can?(current_user, :update_issue, issue).to_s, "issuable-ref" => issue.to_reference }
+    updated_at_by = updated_at_by(issue)
+
+    data.merge(updated_at_by) if updated_at_by.present?
   end
 end
