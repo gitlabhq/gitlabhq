@@ -858,11 +858,12 @@ const normalizeNewlines = function(str) {
 
     Notes.prototype.onAddDiffNote = function(e) {
       e.preventDefault();
-      const $link = $(e.currentTarget || e.target);
+      const link = e.currentTarget || e.target;
+      const $link = $(link);
       const showReplyInput = !$link.hasClass('js-diff-comment-avatar');
       this.toggleDiffNote({
         target: $link,
-        lineType: $link.data('lineType'),
+        lineType: link.dataset.lineType,
         showReplyInput
       });
     };
