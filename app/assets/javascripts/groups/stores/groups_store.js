@@ -2,6 +2,7 @@ export default class GroupsStore {
   constructor() {
     this.state = {};
     this.state.groups = [];
+    this.state.pageInfo = {};
 
     return this;
   }
@@ -16,6 +17,19 @@ export default class GroupsStore {
     }
 
     return rawGroups;
+  }
+
+  storePagination(pagination = {}) {
+    let paginationInfo;
+
+    if (Object.keys(pagination).length) {
+      const normalizedHeaders = gl.utils.normalizeHeaders(pagination);
+      paginationInfo = gl.utils.parseIntPagination(normalizedHeaders);
+    } else {
+      paginationInfo = pagination;
+    }
+
+    this.state.pageInfo = paginationInfo;
   }
 
   decorateGroups(rawGroups) {

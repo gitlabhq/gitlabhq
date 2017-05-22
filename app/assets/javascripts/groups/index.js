@@ -38,9 +38,12 @@ $(() => {
           parentId = parentGroup.id;
         }
 
-        service.getGroups(parentId)
+        const page = gl.utils.getParameterByName('page');
+
+        service.getGroups(parentId, page)
           .then((response) => {
             store.setGroups(response.json(), parentGroup);
+            store.storePagination(response.headers);
           })
           .catch(() => {
             // TODO: Handler error

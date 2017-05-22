@@ -8,13 +8,15 @@ export default class GroupsService {
     this.groups = Vue.resource(endpoint);
   }
 
-  getGroups(parentId) {
-    let data = {};
+  getGroups(parentId, page = 1) {
+    const data = {};
 
     if (parentId) {
-      data = {
-        parent_id: parentId,
-      };
+      data.parent_id = parentId;
+    }
+
+    if (page) {
+      data.page = page;
     }
 
     return this.groups.get(data);
