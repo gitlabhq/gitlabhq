@@ -14,7 +14,7 @@ if defined?(Unicorn)
     use Unicorn::WorkerKiller::Oom, min, max
   end
 end
-# set default for multiproces metrics gathering
+# set default directory for multiproces metrics gathering
 ENV['prometheus_multiproc_dir'] ||= 'tmp/prometheus_data_dir'
 
 require ::File.expand_path('../config/environment',  __FILE__)
