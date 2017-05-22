@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170518231126) do
+ActiveRecord::Schema.define(version: 20170522100721) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -283,6 +283,7 @@ ActiveRecord::Schema.define(version: 20170518231126) do
     t.integer "lock_version"
     t.integer "auto_canceled_by_id"
     t.integer "pipeline_schedule_id"
+    t.integer "schema_version"
   end
 
   add_index "ci_pipelines", ["auto_canceled_by_id"], name: "index_ci_pipelines_on_auto_canceled_by_id", using: :btree
