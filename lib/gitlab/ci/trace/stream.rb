@@ -74,7 +74,7 @@ module Gitlab
           match = ""
 
           reverse_line do |line|
-            matches = line.force_encoding(regex.encoding).scan(regex)
+            matches = line.scan(regex)
             next unless matches.is_a?(Array)
             next if matches.empty?
 
@@ -108,11 +108,11 @@ module Gitlab
             buf = stream.read(read_size) + debris
             debris, *lines = buf.each_line.to_a
             lines.reverse_each do |line|
-              yield(line)
+              yield(line.force_encoding('UTF-8'))
             end
           end
 
-          yield(debris)
+          yield(debris.force_encoding('UTF-8'))
         end
 
         def calc_read_size(pos, max)
