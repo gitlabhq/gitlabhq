@@ -210,7 +210,7 @@ export default {
           v-if="shouldShowMergeOptionsDropdown"
           :disabled="isMergeButtonDisabled"
           type="button"
-          class="btn btn-info dropdown-toggle"
+          class="btn btn-small btn-info dropdown-toggle"
           data-toggle="dropdown">
           <i
             class="fa fa-caret-down"

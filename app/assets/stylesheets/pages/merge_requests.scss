@@ -209,8 +209,7 @@
     }
   }
 
-  .mr-widget-heading,
-  .mr-widget-body {
+  .mr-widget-heading {
     .btn-default.btn-xs {
       margin-left: 5px;
     }
@@ -223,13 +222,17 @@
 
     .btn-group .btn {
       padding: 5px 10px;
+
+      &.dropdown-toggle {
+        padding: 5px 7px;
+      }
     }
   }
 
   .mr-widget-body {
     h4 {
-      font-weight: 600;
-      font-size: 16px;
+      font-weight: bold;
+      font-size: 15px;
       margin: 5px 0;
       color: $gl-text-color;
 
@@ -256,7 +259,6 @@
     }
 
     .bold {
-      margin-left: 5px;
       font-weight: bold;
       font-size: 15px;
       color: $gl-gray-light;
@@ -405,6 +407,12 @@
   }
 }
 
+.mr-state-widget .mr-widget-body {
+  .approve-btn {
+    margin-right: 5px;
+  }
+}
+
 .mr_source_commit,
 .mr_target_commit {
   margin-bottom: 0;
@@ -547,7 +555,7 @@
 
   p {
     float: left;
-    padding-left: 20px;
+    padding-left: 21px;
 
     &::before {
       top: 13px;
