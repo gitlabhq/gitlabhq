@@ -14,20 +14,38 @@ module Gitlab
       end
 
       class_methods do
-        def migrations
-          Hash[@migrations.to_h.sort.reverse]
+        def migrations(min_version = nil)
+          Hash[@migrations.to_h.sort].tap do |migrations|
+            if min_version.present?
+              return migrations.select { |key| key > min_version }
+            end
+          end
         end
 
         def latest_schema_version
-          @latest_schema ||= migrations.keys.first
+          @latest_schema ||= migrations.keys.last
         end
 
         ##
-        # This can be moved to the ActiveRecord::Relation if needed.
+        # This is designed to operate on an ActiveRecord::Relation scope extension.
         #
-        def migrated?(relation)
-          relation.where('COALESCE(schema_version, 0) < ?',
-                         latest_schema_version).count.zero?
+        def migrated?
+          all.where('COALESCE(schema_version, 0) < ?',
+                    latest_schema_version).count.zero?
+        end
+
+        ##
+        # PoC, needs some performance improvements.
+        #
+        # Behaves like an ActiveRecord::Relation scope extension.
+        #
+        # Batch size can be configurable.
+        #
+        def migrate!
+          all.in_batches(of: 1000) do |relation|
+            ResourceBackgroundMigrationWorker
+              .perform_async(self, relation.pluck(:id, :schema_version))
+          end
         end
 
         private

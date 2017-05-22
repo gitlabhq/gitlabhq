@@ -12,13 +12,21 @@ describe Gitlab::Database::Migratable do
     end
   end
 
-  it 'exposes migrations method that returns all migrations' do
-    expect(subject.migrations).to eq({ 234567 => 'migration 2',
-                                       123456 => 'migration 1' })
+  describe '.migrations' do
+    it 'exposes migrations method that returns all migrations' do
+      expect(subject.migrations).to eq({ 123456 => 'migration 1',
+                                         234567 => 'migration 2' })
+    end
+
+    it 'returns pending migrations when min version specified' do
+      expect(subject.migrations(123456)). to eq({ 234567 => 'migration 2' })
+    end
   end
 
-  it 'exposes a method that returns a latest schema version number' do
-    expect(subject.latest_schema_version).to eq 234567
+  describe '.latest_schema_version' do
+    it 'returns a latest schema version number' do
+      expect(subject.latest_schema_version).to eq 234567
+    end
   end
 
   ##
@@ -28,7 +36,7 @@ describe Gitlab::Database::Migratable do
     before { create(:ci_empty_pipeline) }
 
     it 'exposes a method that checks if migrations are done' do
-      expect(subject.migrated?(Ci::Pipeline.all)).to eq false
+      expect(subject.migrated?).to eq false
     end
 
     it 'should raise an error when instantiated' do
