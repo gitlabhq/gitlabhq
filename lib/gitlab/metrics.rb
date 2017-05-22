@@ -54,23 +54,25 @@ module Gitlab
     end
 
     def self.counter(name, docstring, base_labels = {})
-      dummy_metric || registry.get(name) || registry.counter(name, docstring, base_labels)
+      provide_metric(name) || registry.counter(name, docstring, base_labels)
     end
 
     def self.summary(name, docstring, base_labels = {})
-      dummy_metric || registry.get(name) || registry.summary(name, docstring, base_labels)
+      provide_metric(name) || registry.summary(name, docstring, base_labels)
     end
 
     def self.gauge(name, docstring, base_labels = {})
-      dummy_metric || registry.get(name) || registry.gauge(name, docstring, base_labels)
+      provide_metric(name) || registry.gauge(name, docstring, base_labels)
     end
 
-    def self.histogram(name, docstring, base_labels = {}, buckets = Histogram::DEFAULT_BUCKETS)
-      dummy_metric || registry.get(name) || registry.histogram(name, docstring, base_labels, buckets)
+    def self.histogram(name, docstring, base_labels = {}, buckets = ::Prometheus::Client::Histogram::DEFAULT_BUCKETS)
+      provide_metric(name) || registry.histogram(name, docstring, base_labels, buckets)
     end
 
-    def self.dummy_metric
-      unless prometheus_metrics_enabled?
+    def self.provide_metric(name)
+      if prometheus_metrics_enabled?
+        registry.get(name)
+      else
         DummyMetric.new
       end
     end
