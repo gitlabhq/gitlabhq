@@ -13,6 +13,7 @@ const Api = {
   dockerfilePath: '/api/:version/templates/dockerfiles/:key',
   issuableTemplatePath: '/:namespace_path/:project_path/templates/:type/:key',
   usersPath: '/api/:version/users.json',
+  currentUserPath: '/api/:version/user.json',
 
   group(groupId, callback) {
     const url = Api.buildUrl(Api.groupPath)
@@ -145,6 +146,14 @@ const Api = {
         search: query,
         per_page: 20,
       }, options),
+      dataType: 'json',
+    });
+  },
+
+  currentUser() {
+    const url = Api.buildUrl(this.currentUserPath);
+    return Api.wrapAjaxCall({
+      url,
       dataType: 'json',
     });
   },

@@ -278,4 +278,43 @@ describe('Api', () => {
         .catch(done.fail);
     });
   });
+
+  describe('currentUser', () => {
+    it('fetches current user', (done) => {
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/user.json`;
+      spyOn(jQuery, 'ajax').and.callFake((request) => {
+        expect(request.url).toEqual(expectedUrl);
+        expect(request.dataType).toEqual('json');
+        return sendDummyResponse();
+      });
+
+      Api.currentUser()
+        .then((response) => {
+          expect(response).toBe(dummyResponse);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('throws if fetching current user fails', (done) => {
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/user.json`;
+      const expectedError = 'current user hides behind a bush';
+      spyOn(jQuery, 'ajax').and.callFake((request) => {
+        expect(request.url).toEqual(expectedUrl);
+        expect(request.dataType).toEqual('json');
+
+        const deferred = $.Deferred();
+        deferred.reject(null, null, expectedError);
+        return deferred.promise();
+      });
+
+      Api.currentUser()
+        .then(done.fail)
+        .catch((error) => {
+          expect(error.message).toBe(`${expectedUrl}: ${expectedError}`);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
 });
