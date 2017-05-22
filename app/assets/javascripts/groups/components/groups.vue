@@ -27,7 +27,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="groups-list-tree-container">
     <group-folder :groups="groups" />
     <gl-pagination
       :change="change"

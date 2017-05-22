@@ -16,6 +16,6 @@ export default {
 
 <template>
   <ul class="content-list group-list-tree" v-show="hasGroups">
-    <group-item v-for="group in groups" :group="group" />
+    <group-item v-for="(group, index) in groups" :key="index" :group="group" />
   </ul>
 </template>

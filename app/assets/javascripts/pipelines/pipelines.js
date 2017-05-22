@@ -277,9 +277,7 @@ export default {
 
         <gl-pagination
           v-if="shouldRenderPagination"
-          :pagenum="pagenum"
           :change="change"
-          :count="state.count.all"
           :pageInfo="state.pageInfo"/>
       </div>
     </div>
