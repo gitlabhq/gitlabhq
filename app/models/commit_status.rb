@@ -89,7 +89,7 @@ class CommitStatus < ActiveRecord::Base
           else
             PipelineUpdateWorker.perform_async(pipeline.id)
           end
-          ExpireJobCacheWorker.perform_async(pipeline.id, commit_status.id)
+          ExpireJobCacheWorker.perform_async(commit_status.id)
         end
       end
     end
