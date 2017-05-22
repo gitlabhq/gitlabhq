@@ -8,12 +8,17 @@ import Store from '../stores';
 import titleComponent from './title.vue';
 import descriptionComponent from './description.vue';
 import formComponent from './form.vue';
+import '../../lib/utils/url_utility';
 
 export default {
   props: {
     endpoint: {
       required: true,
       type: String,
+    },
+    canMove: {
+      required: true,
+      type: Boolean,
     },
     canUpdate: {
       required: true,
@@ -53,6 +58,10 @@ export default {
       type: String,
       required: true,
     },
+    projectsAutocompleteUrl: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     const store = new Store({
@@ -85,6 +94,7 @@ export default {
           title: this.state.titleText,
           confidential: this.isConfidential,
           description: this.state.descriptionText,
+          move_to_project_id: 0,
         });
       }
     },
@@ -93,11 +103,12 @@ export default {
     },
     updateIssuable() {
       this.service.updateIssuable(this.store.formState)
-        .then((res) => {
-          const data = res.json();
-
-          if (data.confidential !== this.isConfidential) {
-            location.reload();
+        .then(res => res.json())
+        .then((data) => {
+          if (location.pathname !== data.path) {
+            gl.utils.visitUrl(data.path);
+          } else if (data.confidential !== this.isConfidential) {
+            gl.utils.visitUrl(location.pathname);
           }
 
           eventHub.$emit('close.form');
@@ -173,9 +184,11 @@ export default {
     <form-component
       v-if="canUpdate && showForm"
       :form-state="formState"
+      :can-move="canMove"
       :can-destroy="canDestroy"
       :markdown-docs="markdownDocs"
-      :markdown-preview-url="markdownPreviewUrl" />
+      :markdown-preview-url="markdownPreviewUrl"
+      :projects-autocomplete-url="projectsAutocompleteUrl" />
     <div v-else>
       <title-component
         :issuable-ref="issuableRef"

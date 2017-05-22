@@ -23,16 +23,19 @@ document.addEventListener('DOMContentLoaded', () => {
       const {
         canUpdate,
         canDestroy,
+        canMove,
         endpoint,
         issuableRef,
         isConfidential,
         markdownPreviewUrl,
         markdownDocs,
+        projectsAutocompleteUrl,
       } = issuableElement.dataset;
 
       return {
         canUpdate: gl.utils.convertPermissionToBoolean(canUpdate),
         canDestroy: gl.utils.convertPermissionToBoolean(canDestroy),
+        canMove: gl.utils.convertPermissionToBoolean(canMove),
         endpoint,
         issuableRef,
         initialTitle: issuableTitleElement.innerHTML,
@@ -41,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         isConfidential: gl.utils.convertPermissionToBoolean(isConfidential),
         markdownPreviewUrl,
         markdownDocs,
+        projectsAutocompleteUrl,
       };
     },
     render(createElement) {
@@ -48,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
         props: {
           canUpdate: this.canUpdate,
           canDestroy: this.canDestroy,
+          canMove: this.canMove,
           endpoint: this.endpoint,
           issuableRef: this.issuableRef,
           initialTitle: this.initialTitle,
@@ -56,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
           isConfidential: this.isConfidential,
           markdownPreviewUrl: this.markdownPreviewUrl,
           markdownDocs: this.markdownDocs,
+          projectsAutocompleteUrl: this.projectsAutocompleteUrl,
         },
       });
     },

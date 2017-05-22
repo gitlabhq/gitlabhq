@@ -3,10 +3,15 @@
   import titleField from './fields/title.vue';
   import descriptionField from './fields/description.vue';
   import editActions from './edit_actions.vue';
+  import projectMove from './fields/project_move.vue';
   import confidentialCheckbox from './fields/confidential_checkbox.vue';
 
   export default {
     props: {
+      canMove: {
+        type: Boolean,
+        required: true,
+      },
       canDestroy: {
         type: Boolean,
         required: true,
@@ -23,12 +28,17 @@
         type: String,
         required: true,
       },
+      projectsAutocompleteUrl: {
+        type: String,
+        required: true,
+      },
     },
     components: {
       lockedWarning,
       titleField,
       descriptionField,
       editActions,
+      projectMove,
       confidentialCheckbox,
     },
   };
@@ -45,6 +55,10 @@
       :form-state="formState"
       :markdown-preview-url="markdownPreviewUrl"
       :markdown-docs="markdownDocs" />
+    <project-move
+      v-if="canMove"
+      :form-state="formState"
+      :projects-autocomplete-url="projectsAutocompleteUrl" />
     <edit-actions
       :form-state="formState"
       :can-destroy="canDestroy" />
