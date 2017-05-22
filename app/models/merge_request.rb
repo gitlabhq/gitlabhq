@@ -490,6 +490,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def mergeable?(skip_ci_check: false)
+    return false unless approved?
     return false unless mergeable_state?(skip_ci_check: skip_ci_check)
 
     check_if_can_be_merged
@@ -967,7 +968,6 @@ class MergeRequest < ActiveRecord::Base
 
   def mergeable_with_slash_command?(current_user, autocomplete_precheck: false, last_diff_sha: nil)
     return false unless can_be_merged_by?(current_user)
-    return false unless approved?
 
     return true if autocomplete_precheck
 

@@ -1187,6 +1187,26 @@ describe MergeRequest, models: true do
 
       expect(subject.mergeable?).to be_truthy
     end
+
+    context 'when using approvals' do
+      let(:user) { create(:user) }
+      before do
+        allow(subject).to receive(:mergeable_state?).and_return(true)
+
+        subject.target_project.update_attributes(approvals_before_merge: 1)
+        project.team << [user, :developer]
+      end
+
+      it 'return false if not approved' do
+        expect(subject.mergeable?).to be_falsey
+      end
+
+      it 'return true if approved' do
+        subject.approvals.create(user: user)
+
+        expect(subject.mergeable?).to be_truthy
+      end
+    end
   end
 
   describe '#mergeable_state?' do
