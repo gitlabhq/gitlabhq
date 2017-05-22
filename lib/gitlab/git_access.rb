@@ -29,7 +29,11 @@ module Gitlab
       @project  = project
       @protocol = protocol
       @authentication_abilities = authentication_abilities
-      @user_access = UserAccess.new(user, project: project)
+      @user_access = if ci?
+                       CiAccess.new
+                     else
+                       UserAccess.new(user, project: project)
+                     end
     end
 
     def check(cmd, changes)
@@ -60,11 +64,6 @@ module Gitlab
 
     def build_can_download_code?
       authentication_abilities.include?(:build_download_code) && user_access.can_do_action?(:build_download_code)
-    end
-
-    # Allow generic CI (build without a user) for backwards compatibility
-    def ci_can_download_code?
-      authentication_abilities.include?(:build_download_code) && ci?
     end
 
     def protocol_allowed?
@@ -129,7 +128,6 @@ module Gitlab
       return if deploy_key?
 
       passed = user_can_download_code? ||
-        ci_can_download_code? ||
         build_can_download_code? ||
         guest_can_download_code?
 
