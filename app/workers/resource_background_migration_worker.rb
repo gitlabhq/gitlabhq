@@ -6,7 +6,7 @@ class ResourceBackgroundMigrationWorker
     Array(records).each do |id, version|
       ActiveRecord::Base.transaction do
         resource_class.migrations(version).each do |migration|
-          migration.perform(id)
+          migration.perform(id, version, resource_class)
         end
       end
     end
