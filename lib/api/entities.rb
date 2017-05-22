@@ -474,6 +474,7 @@ module API
     end
 
     class Namespace < Grape::Entity
+      expose :plan, if: lambda { |_, options| options[:current_user] && options[:current_user].admin? }
       expose :id, :name, :path, :kind, :full_path
     end
 

@@ -4,6 +4,9 @@
 
   = render 'groups/repository_size_limit_setting', f: f
 
+  - if current_application_settings.should_check_namespace_plan?
+    = render 'admin/namespace_plan', f: f
+
   .form-group.group-description-holder
     = f.label :avatar, "Group avatar", class: 'control-label'
     .col-sm-10

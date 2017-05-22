@@ -95,6 +95,16 @@
             = f.check_box :user_default_external
             Newly registered users will by default be external
 
+    - if Gitlab.com? || Rails.env.development?
+      .form-group
+        = f.label :check_namespace_plan, 'Check feature availability on namespace plan', class: 'control-label col-sm-2'
+        .col-sm-10
+          .checkbox
+            = f.label :check_namespace_plan do
+              = f.check_box :check_namespace_plan
+              Enabling this will only make licensed EE features available to projects if the project namespace's plan
+              includes the feature or if the project is public.
+
   %fieldset
     %legend Sign-up Restrictions
     .form-group

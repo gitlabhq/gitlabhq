@@ -9,7 +9,7 @@ describe Projects::EnvironmentsController do
   end
 
   before do
-    allow_any_instance_of(License).to receive(:add_on?).and_return(false)
+    allow_any_instance_of(License).to receive(:feature_available?).and_return(false)
 
     project.team << [user, :master]
 
@@ -46,7 +46,7 @@ describe Projects::EnvironmentsController do
 
       context 'when requesting available environments scope' do
         before do
-          allow_any_instance_of(License).to receive(:add_on?).with('GitLab_DeployBoard').and_return(true)
+          allow_any_instance_of(License).to receive(:feature_available?).with(:deploy_board).and_return(true)
 
           get :index, environment_params(format: :json, scope: :available)
         end
@@ -87,7 +87,7 @@ describe Projects::EnvironmentsController do
 
       context 'when license does not has the GitLab_DeployBoard add-on' do
         before do
-          allow_any_instance_of(License).to receive(:add_on?).with('GitLab_DeployBoard').and_return(false)
+          allow_any_instance_of(License).to receive(:feature_available?).with(:deploy_board).and_return(false)
 
           get :index, environment_params(format: :json)
         end
@@ -294,7 +294,7 @@ describe Projects::EnvironmentsController do
       let(:project) { create(:kubernetes_project) }
 
       before do
-        allow_any_instance_of(License).to receive(:add_on?).with('GitLab_DeployBoard').and_return(true)
+        allow_any_instance_of(License).to receive(:feature_available?).with(:deploy_board).and_return(true)
         allow_any_instance_of(Environment).to receive(:deployment_service_ready?).and_return(true)
       end
 
@@ -322,7 +322,7 @@ describe Projects::EnvironmentsController do
 
     context 'when license does not has the GitLab_DeployBoard add-on' do
       before do
-        allow_any_instance_of(License).to receive(:add_on?).with('GitLab_DeployBoard').and_return(false)
+        allow_any_instance_of(License).to receive(:feature_available?).with(:deploy_board).and_return(false)
       end
 
       it 'does not return any data' do
