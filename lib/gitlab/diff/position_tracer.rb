@@ -168,7 +168,6 @@ module Gitlab
 
         bd_diff = bd_diffs.diff_file_with_old_path(b_path)
 
-        d_path = bd_diff&.new_path || b_path
         d_line = LineMapper.new(bd_diff).old_to_new(b_line)
 
         cd_diff = cd_diffs.diff_file_with_old_path(c_path)

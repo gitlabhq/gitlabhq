@@ -92,7 +92,13 @@ describe NotesHelper do
             )
           end
 
-          let(:discussion) { create(:diff_note_on_merge_request, noteable: merge_request, project: project, position: position).to_discussion }
+          let(:diff_note) { create(:diff_note_on_merge_request, noteable: merge_request, project: project, position: position) }
+          let(:discussion) { diff_note.to_discussion }
+
+          before do
+            diff_note.position = diff_note.original_position
+            diff_note.save!
+          end
 
           it 'returns the diff version comparison path with the line code' do
             expect(helper.discussion_path(discussion)).to eq(diffs_namespace_project_merge_request_path(project.namespace, project, merge_request, diff_id: merge_request_diff3, start_sha: merge_request_diff1.head_commit_sha, anchor: discussion.line_code))

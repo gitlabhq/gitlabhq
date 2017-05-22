@@ -121,7 +121,7 @@ class Note < ActiveRecord::Base
     end
 
     def grouped_diff_discussions(diff_refs = nil)
-      groups = Hash.new { |h, k| h[k] = [] }
+      groups = {}
 
       diff_notes.fresh.discussions.each do |discussion|
         line_code =
@@ -131,7 +131,10 @@ class Note < ActiveRecord::Base
             discussion.original_line_code
           end
 
-        groups[line_code] << discussion if line_code
+        if line_code
+          discussions = groups[line_code] ||= []
+          discussions << discussion
+        end
       end
 
       groups
