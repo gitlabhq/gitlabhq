@@ -53,7 +53,8 @@ class PipelinesEmailService < Service
     [
       { type: 'textarea',
         name: 'recipients',
-        placeholder: 'Emails separated by comma' },
+        placeholder: 'Emails separated by comma',
+        required: true },
       { type: 'checkbox',
         name: 'notify_only_broken_pipelines' }
     ]

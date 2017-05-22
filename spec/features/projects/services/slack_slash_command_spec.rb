@@ -21,13 +21,21 @@ feature 'Slack slash commands', feature: true do
     expect(page).to have_content('This service allows users to perform common')
   end
 
-  it 'shows the token after saving' do
+  it 'redirects to the integrations page after saving but not activating' do
     fill_in 'service_token', with: 'token'
     click_on 'Save'
 
-    value = find_field('service_token').value
+    expect(current_path).to eq(namespace_project_settings_integrations_path(project.namespace, project))
+    expect(page).to have_content('Slack slash commands settings saved, but not activated.')
+  end
 
-    expect(value).to eq('token')
+  it 'redirects to the integrations page after activating' do
+    fill_in 'service_token', with: 'token'
+    check 'service_active'
+    click_on 'Save'
+
+    expect(current_path).to eq(namespace_project_settings_integrations_path(project.namespace, project))
+    expect(page).to have_content('Slack slash commands activated.')
   end
 
   it 'shows the correct trigger url' do

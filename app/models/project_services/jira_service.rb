@@ -86,12 +86,12 @@ class JiraService < IssueTrackerService
 
   def fields
     [
-      { type: 'text', name: 'url', title: 'Web URL', placeholder: 'https://jira.example.com' },
+      { type: 'text', name: 'url', title: 'Web URL', placeholder: 'https://jira.example.com', required: true },
       { type: 'text', name: 'api_url', title: 'JIRA API URL', placeholder: 'If different from Web URL' },
-      { type: 'text', name: 'project_key', placeholder: 'Project Key' },
-      { type: 'text', name: 'username', placeholder: '' },
-      { type: 'password', name: 'password', placeholder: '' },
-      { type: 'text', name: 'jira_issue_transition_id', placeholder: '' }
+      { type: 'text', name: 'project_key', placeholder: 'Project Key', required: true },
+      { type: 'text', name: 'username', placeholder: '', required: true },
+      { type: 'password', name: 'password', placeholder: '', required: true },
+      { type: 'text', name: 'jira_issue_transition_id', placeholder: '', required: true }
     ]
   end
 
