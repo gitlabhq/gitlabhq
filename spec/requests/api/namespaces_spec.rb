@@ -56,4 +56,48 @@ describe API::Namespaces do
       end
     end
   end
+
+  describe 'PUT /namespaces/:id' do
+    context 'when authenticated as admin' do
+      it 'updates plan using full_path' do
+        put api("/namespaces/#{group1.full_path}", admin), plan: 'silver'
+
+        expect(response).to have_http_status(200)
+        expect(json_response['plan']).to eq('silver')
+      end
+
+      it 'updates plan using id' do
+        put api("/namespaces/#{group1.id}", admin), plan: 'silver'
+
+        expect(response).to have_http_status(200)
+        expect(json_response['plan']).to eq('silver')
+      end
+    end
+
+    context 'when not authenticated as admin' do
+      it 'retuns 403' do
+        put api("/namespaces/#{group1.id}", user), plan: 'silver'
+
+        expect(response).to have_http_status(403)
+      end
+    end
+
+    context 'when namespace not found' do
+      it 'returns 404' do
+        put api("/namespaces/12345", admin), plan: 'silver'
+
+        expect(response).to have_http_status(404)
+        expect(json_response).to eq('message' => '404 Namespace Not Found')
+      end
+    end
+
+    context 'when invalid params' do
+      it 'returns validation error' do
+        put api("/namespaces/#{group1.id}", admin), plan: 'unknown'
+
+        expect(response).to have_http_status(400)
+        expect(json_response['message']).to eq('plan' => ['is not included in the list'])
+      end
+    end
+  end
 end

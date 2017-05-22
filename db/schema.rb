@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170511101000) do
+ActiveRecord::Schema.define(version: 20170512173638) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -137,6 +137,7 @@ ActiveRecord::Schema.define(version: 20170511101000) do
     t.integer "cached_markdown_version"
     t.boolean "clientside_sentry_enabled", default: false, null: false
     t.string "clientside_sentry_dsn"
+    t.boolean "check_namespace_plan", default: false, null: false
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -880,6 +881,7 @@ ActiveRecord::Schema.define(version: 20170511101000) do
     t.boolean "require_two_factor_authentication", default: false, null: false
     t.integer "two_factor_grace_period", default: 48, null: false
     t.integer "cached_markdown_version"
+    t.string "plan"
   end
 
   add_index "namespaces", ["created_at"], name: "index_namespaces_on_created_at", using: :btree
