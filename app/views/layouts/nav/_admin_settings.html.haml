@@ -5,27 +5,27 @@
       = icon('caret-down')
     %ul.dropdown-menu.dropdown-menu-align-right
       = nav_link(controller: :deploy_keys) do
-        = link_to admin_deploy_keys_path, title: 'Deploy Keys' do
+        = link_to admin_deploy_keys_path do
           %span
             Deploy Keys
 
       = nav_link(controller: :services) do
-        = link_to admin_application_settings_services_path, title: 'Service Templates' do
+        = link_to admin_application_settings_services_path do
           %span
             Service Templates
 
       = nav_link(controller: :labels) do
-        = link_to admin_labels_path, title: 'Labels' do
+        = link_to admin_labels_path do
           %span
             Labels
 
       = nav_link(controller: :appearances) do
-        = link_to admin_appearances_path, title: 'Appearances' do
+        = link_to admin_appearances_path do
           %span
             Appearance
 
       %li.divider
       = nav_link(controller: :application_settings) do
-        = link_to admin_application_settings_path, title: 'Settings' do
+        = link_to admin_application_settings_path do
           %span
             Settings
