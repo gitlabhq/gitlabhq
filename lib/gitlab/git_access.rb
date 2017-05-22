@@ -243,9 +243,7 @@ module Gitlab
         when User
           actor
         when Key
-          actor.user
-        when DeployKey
-          nil
+          actor.user unless actor.is_a?(DeployKey)
         when :ci
           nil
         end
