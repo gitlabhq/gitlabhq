@@ -110,7 +110,8 @@ class FilteredSearchDropdownManager {
 
     if (!mappingKey.reference) {
       const dl = this.droplab;
-      const defaultArguments = [null, dl, element, this.filteredSearchInput, this.filteredSearchTokenKeys, key];
+      const defaultArguments =
+        [null, dl, element, this.filteredSearchInput, this.filteredSearchTokenKeys, key];
       const glArguments = defaultArguments.concat(mappingKey.extraArguments || []);
 
       // Passing glArguments to `new gl[glClass](<arguments>)`
@@ -153,7 +154,8 @@ class FilteredSearchDropdownManager {
 
   setDropdown() {
     const query = gl.DropdownUtils.getSearchQuery(true);
-    const { lastToken, searchToken } = this.tokenizer.processTokens(query, this.filteredSearchTokenKeys.getKeys());
+    const { lastToken, searchToken } =
+      this.tokenizer.processTokens(query, this.filteredSearchTokenKeys.getKeys());
 
     if (this.currentDropdown) {
       this.updateCurrentDropdownOffset();
