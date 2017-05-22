@@ -254,7 +254,7 @@ describe 'Git HTTP requests', lib: true do
               it 'rejects pushes with 403 Forbidden' do
                 upload(path, env) do |response|
                   expect(response).to have_http_status(:forbidden)
-                  expect(response.body).to eq(git_access_error(:receive_pack_disabled_in_config))
+                  expect(response.body).to eq(git_access_error(:receive_pack_disabled_over_http))
                 end
               end
             end
@@ -265,7 +265,7 @@ describe 'Git HTTP requests', lib: true do
 
                 download(path, env) do |response|
                   expect(response).to have_http_status(:forbidden)
-                  expect(response.body).to eq(git_access_error(:upload_pack_disabled_in_config))
+                  expect(response.body).to eq(git_access_error(:upload_pack_disabled_over_http))
                 end
               end
             end
@@ -541,7 +541,7 @@ describe 'Git HTTP requests', lib: true do
 
               context 'when the repo does not exist' do
                 let(:project) { create(:empty_project) }
-                
+
                 it 'rejects pulls with 403 Forbidden' do
                   clone_get path, env
 

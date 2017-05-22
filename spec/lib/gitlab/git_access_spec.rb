@@ -170,7 +170,7 @@ describe Gitlab::GitAccess, lib: true do
         end
 
         context 'when calling git-upload-pack' do
-          it { expect { pull_access_check }.to raise_unauthorized('The command "git-upload-pack" is not allowed.') }
+          it { expect { pull_access_check }.to raise_unauthorized('Pulling over HTTP is not allowed.') }
         end
 
         context 'when calling git-receive-pack' do
@@ -184,7 +184,7 @@ describe Gitlab::GitAccess, lib: true do
         end
 
         context 'when calling git-receive-pack' do
-          it { expect { push_access_check }.to raise_unauthorized('The command "git-receive-pack" is not allowed.') }
+          it { expect { push_access_check }.to raise_unauthorized('Pushing over HTTP is not allowed.') }
         end
 
         context 'when calling git-upload-pack' do

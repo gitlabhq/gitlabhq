@@ -14,8 +14,8 @@ module Gitlab
       project_not_found: 'The project you were looking for could not be found.',
       account_blocked: 'Your account has been blocked.',
       command_not_allowed: "The command you're trying to execute is not allowed.",
-      upload_pack_disabled_in_config: 'The command "git-upload-pack" is not allowed.',
-      receive_pack_disabled_in_config: 'The command "git-receive-pack" is not allowed.'
+      upload_pack_disabled_over_http: 'Pulling over HTTP is not allowed.',
+      receive_pack_disabled_over_http: 'Pushing over HTTP is not allowed.'
     }.freeze
 
     DOWNLOAD_COMMANDS = %w{ git-upload-pack git-upload-archive }.freeze
@@ -94,12 +94,22 @@ module Gitlab
     end
 
     def check_command_disabled!(cmd)
-      if http?
-        if upload_pack?(cmd) && !Gitlab.config.gitlab_shell.upload_pack
-          raise UnauthorizedError, ERROR_MESSAGES[:upload_pack_disabled_in_config]
-        elsif receive_pack?(cmd) && !Gitlab.config.gitlab_shell.receive_pack
-          raise UnauthorizedError, ERROR_MESSAGES[:receive_pack_disabled_in_config]
-        end
+      if upload_pack?(cmd)
+        check_upload_pack_disabled!
+      elsif receive_pack?(cmd)
+        check_receive_pack_disabled!
+      end
+    end
+
+    def check_upload_pack_disabled!
+      if http? && upload_pack_disabled_over_http?
+        raise UnauthorizedError, ERROR_MESSAGES[:upload_pack_disabled_over_http]
+      end
+    end
+
+    def check_receive_pack_disabled!
+      if http? && receive_pack_disabled_over_http?
+        raise UnauthorizedError, ERROR_MESSAGES[:receive_pack_disabled_over_http]
       end
     end
 
@@ -213,6 +223,14 @@ module Gitlab
 
     def receive_pack?(command)
       command == 'git-receive-pack'
+    end
+
+    def upload_pack_disabled_over_http?
+      !Gitlab.config.gitlab_shell.upload_pack
+    end
+
+    def receive_pack_disabled_over_http?
+      !Gitlab.config.gitlab_shell.receive_pack
     end
 
     protected
