@@ -66,9 +66,9 @@
       <div class="dropdown-title">
         Choose a template
         <button
-        class="dropdown-title-button dropdown-menu-close"
-        aria-label="Close"
-        type="button">
+          class="dropdown-title-button dropdown-menu-close"
+          aria-label="Close"
+          type="button">
           <i
             aria-hidden="true"
             class="fa fa-times dropdown-menu-close-icon">
@@ -87,7 +87,7 @@
         </i>
         <i
           role="button"
-          aria-hidden="true"
+          aria-label="Clear templates search input"
           class="fa fa-times dropdown-input-clear js-dropdown-input-clear">
         </i>
       </div>
