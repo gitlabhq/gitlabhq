@@ -68,16 +68,17 @@ module API
         end
 
         def present_projects(options = {})
-          options = options.reverse_merge(
-            with: current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails,
-            current_user: current_user
-          )
-
           projects = ProjectsFinder.new(current_user: current_user).execute
           projects = filter_projects(projects)
           projects = projects.with_statistics if params[:statistics]
           projects = projects.with_issues_enabled if params[:with_issues_enabled]
           projects = projects.with_merge_requests_enabled if params[:with_merge_requests_enabled]
+
+          options = options.reverse_merge(
+            with: current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails,
+            statistics: params[:statistics],
+            current_user: current_user
+          )
           options[:with] = Entities::BasicProjectDetails if params[:simple]
 
           present paginate(projects), options
