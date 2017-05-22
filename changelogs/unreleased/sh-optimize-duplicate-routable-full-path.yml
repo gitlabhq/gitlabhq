@@ -1,4 +1,0 @@
----
-title: Cache Routable#full_path in RequestStore to reduce duplicate route loads
-merge_request:
-author:
