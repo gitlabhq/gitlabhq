@@ -253,7 +253,6 @@ describe 'gitlab:app namespace rake task' do
 
         # We unstub the storages to be able to reconfigure the actual Gitaly channels
         allow(Gitlab.config.repositories).to receive(:storages).and_call_original
-        Gitlab::GitalyClient.configure_channels
       end
 
       it 'includes repositories in all repository storages' do
