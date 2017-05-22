@@ -12,12 +12,17 @@ describe('Inline edit form component', () => {
     vm = new Component({
       propsData: {
         canDestroy: true,
+        canMove: true,
         formState: {
           title: 'b',
           description: 'a',
+          lockedWarningVisible: false,
         },
         markdownPreviewUrl: '/',
         markdownDocs: '/',
+        projectsAutocompleteUrl: '/',
+        projectPath: '/',
+        projectNamespace: '/',
       },
     }).$mount();
 
@@ -37,6 +42,24 @@ describe('Inline edit form component', () => {
     Vue.nextTick(() => {
       expect(
         vm.$el.querySelector('.js-issuable-selector-wrap'),
+      ).not.toBeNull();
+
+      done();
+    });
+  });
+
+  it('hides locked warning by default', () => {
+    expect(
+      vm.$el.querySelector('.alert'),
+    ).toBeNull();
+  });
+
+  it('shows locked warning if formState is different', (done) => {
+    vm.formState.lockedWarningVisible = true;
+
+    Vue.nextTick(() => {
+      expect(
+        vm.$el.querySelector('.alert'),
       ).not.toBeNull();
 
       done();

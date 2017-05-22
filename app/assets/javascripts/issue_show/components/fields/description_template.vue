@@ -26,7 +26,7 @@
     },
     mounted() {
       // Create the editor for the template
-      const editor = document.querySelector('.detail-page-description .note-textarea');
+      const editor = document.querySelector('.detail-page-description .note-textarea') || {};
       editor.setValue = (val) => {
         this.formState.description = val;
       };

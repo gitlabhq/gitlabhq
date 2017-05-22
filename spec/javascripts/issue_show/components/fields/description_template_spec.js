@@ -17,6 +17,8 @@ describe('Issue description template component', () => {
       propsData: {
         formState,
         issuableTemplates: [{ name: 'test' }],
+        projectPath: '/',
+        projectNamespace: '/',
       },
     }).$mount();
 

@@ -285,4 +285,36 @@ describe('Issuable output', () => {
       });
     });
   });
+
+  describe('open form', () => {
+    it('shows locked warning if form is open & data is different', (done) => {
+      Vue.http.interceptors.push(issueShowInterceptor(issueShowData.initialRequest));
+
+      Vue.nextTick()
+        .then(() => new Promise((resolve) => {
+          setTimeout(resolve);
+        }))
+        .then(() => {
+          vm.openForm();
+
+          Vue.http.interceptors.push(issueShowInterceptor(issueShowData.secondRequest));
+
+          return new Promise((resolve) => {
+            setTimeout(resolve);
+          });
+        })
+        .then(() => {
+          expect(
+            vm.formState.lockedWarningVisible,
+          ).toBeTruthy();
+
+          expect(
+            vm.$el.querySelector('.alert'),
+          ).not.toBeNull();
+
+          done();
+        })
+        .catch(done.fail);
+    });
+  });
 });
