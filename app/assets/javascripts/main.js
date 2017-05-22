@@ -178,7 +178,7 @@ import './ldap_groups_select';
 import './path_locks';
 import './weight_select';
 
-// eslint-disable-next-line global-require
+// eslint-disable-next-line global-require, import/no-commonjs
 if (process.env.NODE_ENV !== 'production') require('./test_utils/');
 
 document.addEventListener('beforeunload', function () {

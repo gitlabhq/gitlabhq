@@ -28,6 +28,7 @@ describe MergeRequest, elastic: true do
     options = { project_ids: [project.id] }
 
     expect(described_class.elastic_search('term1 | term2 | term3', options: options).total_count).to eq(2)
+    expect(described_class.elastic_search(MergeRequest.last.to_reference, options: options).total_count).to eq(1)
   end
 
   it "returns json with all needed elements" do

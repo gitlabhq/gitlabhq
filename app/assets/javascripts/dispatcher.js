@@ -36,14 +36,12 @@
 /* global ShortcutsWiki */
 
 import Issue from './issue';
-
 import BindInOut from './behaviors/bind_in_out';
 import DeleteModal from './branches/branches_delete_modal';
 import Group from './group';
 import GroupName from './group_name';
 import GroupsList from './groups_list';
 import ProjectsList from './projects_list';
-import ApproversSelect from './approvers_select';
 import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
 import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
 import Landing from './landing';
@@ -59,8 +57,10 @@ import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
 import UsersSelect from './users_select';
 import RefSelectDropdown from './ref_select_dropdown';
 import GfmAutoComplete from './gfm_auto_complete';
+import ShortcutsBlob from './shortcuts_blob';
 
-const ShortcutsBlob = require('./shortcuts_blob');
+// EE-only
+import ApproversSelect from './approvers_select';
 
 (function() {
   var Dispatcher;

@@ -1,6 +1,6 @@
 import AccessorUtilities from '~/lib/utils/accessor';
 
-require('~/signin_tabs_memoizer');
+import '~/signin_tabs_memoizer';
 
 ((global) => {
   describe('SigninTabsMemoizer', () => {

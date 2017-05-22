@@ -28,6 +28,7 @@ describe Issue, elastic: true do
     options = { project_ids: [project.id] }
 
     expect(described_class.elastic_search('(term1 | term2 | term3) +bla-bla', options: options).total_count).to eq(2)
+    expect(described_class.elastic_search(Issue.last.to_reference, options: options).total_count).to eq(1)
   end
 
   it "returns json with all needed elements" do

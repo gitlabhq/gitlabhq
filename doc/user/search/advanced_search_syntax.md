@@ -1,7 +1,7 @@
 # Advanced search syntax
 
 >**Notes:**
-- Introduced in [GitLab Enterprise Premium][ee] 9.2
+- Introduced in [GitLab Enterprise Starter][ee] 9.2
 - The [Elasticsearch integration](../../integration/elasticsearch.md) needs to
   be enabled
 

@@ -2,12 +2,19 @@
 
 import Vue from 'vue';
 import queryData from '../../utils/query_data';
+<<<<<<< HEAD
 import loadingIcon from '../../../vue_shared/components/loading_icon.vue';
 
 require('./header');
 require('./list');
 require('./footer');
 require('./empty_state');
+=======
+import './header';
+import './list';
+import './footer';
+import './empty_state';
+>>>>>>> origin/master
 
 const ModalStore = gl.issueBoards.ModalStore;
 

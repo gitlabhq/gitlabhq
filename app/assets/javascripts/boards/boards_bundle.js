@@ -6,26 +6,26 @@ import Vue from 'vue';
 import VueResource from 'vue-resource';
 import FilteredSearchBoards from './filtered_search_boards';
 import eventHub from './eventhub';
+import './models/issue';
+import './models/label';
+import './models/list';
+import './models/milestone';
+import './models/assignee';
+import './stores/boards_store';
+import './stores/modal_store';
+import './services/board_service';
+import './mixins/modal_mixins';
+import './mixins/sortable_default_options';
+import './filters/due_date_filters';
+import './components/board';
+import './components/board_sidebar';
+import './components/new_list_dropdown';
+import './components/modal/index';
+import '../vue_shared/vue_resource_interceptor';
+
+import './components/boards_selector';
 import collapseIcon from './icons/fullscreen_collapse.svg';
 import expandIcon from './icons/fullscreen_expand.svg';
-
-require('./models/issue');
-require('./models/label');
-require('./models/list');
-require('./models/milestone');
-require('./models/assignee');
-require('./stores/boards_store');
-require('./stores/modal_store');
-require('./services/board_service');
-require('./mixins/modal_mixins');
-require('./mixins/sortable_default_options');
-require('./filters/due_date_filters');
-require('./components/board');
-require('./components/boards_selector');
-require('./components/board_sidebar');
-require('./components/new_list_dropdown');
-require('./components/modal/index');
-require('../vue_shared/vue_resource_interceptor');
 
 Vue.use(VueResource);
 

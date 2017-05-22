@@ -1,9 +1,9 @@
-/* global autosize */
+import autosize from 'vendor/autosize';
+import '~/gl_form';
+import '~/lib/utils/text_utility';
+import '~/lib/utils/common_utils';
 
-window.autosize = require('vendor/autosize');
-require('~/gl_form');
-require('~/lib/utils/text_utility');
-require('~/lib/utils/common_utils');
+window.autosize = autosize;
 
 describe('GLForm', () => {
   const global = window.gl || (window.gl = {});
@@ -27,7 +27,7 @@ describe('GLForm', () => {
         $.prototype.off.calls.reset();
         $.prototype.on.calls.reset();
         $.prototype.css.calls.reset();
-        autosize.calls.reset();
+        window.autosize.calls.reset();
         done();
       });
     });
@@ -51,7 +51,7 @@ describe('GLForm', () => {
       });
 
       it('should autosize the textarea', () => {
-        expect(autosize).toHaveBeenCalledWith(jasmine.any(Object));
+        expect(window.autosize).toHaveBeenCalledWith(jasmine.any(Object));
       });
 
       it('should set the resize css property to vertical', () => {
@@ -81,7 +81,7 @@ describe('GLForm', () => {
           spyOn($.prototype, 'data');
           spyOn($.prototype, 'outerHeight').and.returnValue(200);
           spyOn(window, 'outerHeight').and.returnValue(400);
-          spyOn(autosize, 'destroy');
+          spyOn(window.autosize, 'destroy');
 
           this.glForm.destroyAutosize();
         });
@@ -95,7 +95,7 @@ describe('GLForm', () => {
         });
 
         it('should call autosize destroy', () => {
-          expect(autosize.destroy).toHaveBeenCalledWith(this.textarea);
+          expect(window.autosize.destroy).toHaveBeenCalledWith(this.textarea);
         });
 
         it('should set the data-height attribute', () => {
@@ -114,9 +114,9 @@ describe('GLForm', () => {
       it('should return undefined if the data-height equals the outerHeight', () => {
         spyOn($.prototype, 'outerHeight').and.returnValue(200);
         spyOn($.prototype, 'data').and.returnValue(200);
-        spyOn(autosize, 'destroy');
+        spyOn(window.autosize, 'destroy');
         expect(this.glForm.destroyAutosize()).toBeUndefined();
-        expect(autosize.destroy).not.toHaveBeenCalled();
+        expect(window.autosize.destroy).not.toHaveBeenCalled();
       });
     });
   });

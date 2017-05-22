@@ -1,5 +1,5 @@
-require('./protected_branch_access_dropdown');
-require('./protected_branch_create');
-require('./protected_branch_dropdown');
-require('./protected_branch_edit');
-require('./protected_branch_edit_list');
+import './protected_branch_access_dropdown';
+import './protected_branch_create';
+import './protected_branch_dropdown';
+import './protected_branch_edit';
+import './protected_branch_edit_list';
