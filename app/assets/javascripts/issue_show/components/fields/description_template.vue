@@ -19,9 +19,14 @@
         required: true,
       },
     },
+    computed: {
+      issuableTemplatesJson() {
+        return JSON.stringify(this.issuableTemplates);
+      },
+    },
     mounted() {
       // Create the editor for the template
-      const editor = $('.detail-page-description .note-textarea');
+      const editor = document.querySelector('.detail-page-description .note-textarea');
       editor.setValue = (val) => {
         this.formState.description = val;
       };
@@ -48,7 +53,7 @@
       data-toggle="dropdown"
       :data-namespace-path="projectNamespace"
       :data-project-path="projectPath"
-      :data-data="JSON.stringify(issuableTemplates)">
+      :data-data="issuableTemplatesJson">
       <span class="dropdown-toggle-text">
         Choose a template
       </span>

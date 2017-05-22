@@ -2,11 +2,8 @@
   import titleField from './fields/title.vue';
   import descriptionField from './fields/description.vue';
   import editActions from './edit_actions.vue';
-<<<<<<< HEAD
   import descriptionTemplate from './fields/description_template.vue';
-=======
   import projectMove from './fields/project_move.vue';
->>>>>>> issue-edit-inline
   import confidentialCheckbox from './fields/confidential_checkbox.vue';
 
   export default {
@@ -59,7 +56,7 @@
     },
     computed: {
       hasIssuableTemplates() {
-        return this.issuableTemplates.length !== 0;
+        return this.issuableTemplates.length;
       },
     },
   };

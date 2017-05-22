@@ -49,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
         projectPath: initialData.project_path,
         projectNamespace: initialData.namespace_path,
         projectsAutocompleteUrl,
+        issuableTemplates: initialData.templates,
       };
     },
     render(createElement) {
