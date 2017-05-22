@@ -106,7 +106,7 @@
                     %span.label-title.js-data-value
                       {{title}}
 
-            - if type == :issues || type == :boards
+            - if type == :issues || type == :boards || type == :boards_modal
               #js-dropdown-weight.filtered-search-input-dropdown-menu.dropdown-menu
                 %ul{ 'data-dropdown' => true }
                   %li.filter-dropdown-item{ 'data-value' => 'none' }

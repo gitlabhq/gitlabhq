@@ -45,7 +45,7 @@ class DropdownUser extends gl.FilteredSearchDropdown {
 
   getSearchInput() {
     const query = gl.DropdownUtils.getSearchInput(this.input);
-    const { lastToken } = gl.FilteredSearchTokenizer.processTokens(query, this.tokenKeys);
+    const { lastToken } = gl.FilteredSearchTokenizer.processTokens(query, this.tokenKeys.get());
 
     let value = lastToken || '';
 

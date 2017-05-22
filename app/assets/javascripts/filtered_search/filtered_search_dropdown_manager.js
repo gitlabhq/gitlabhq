@@ -66,7 +66,7 @@ class FilteredSearchDropdownManager {
       this.mapping.weight = {
         reference: null,
         gl: 'DropdownNonUser',
-        element: document.querySelector('#js-dropdown-weight'),
+        element: this.container.querySelector('#js-dropdown-weight'),
       };
     }
   }
