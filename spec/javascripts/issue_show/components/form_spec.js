@@ -1,5 +1,7 @@
 import Vue from 'vue';
 import formComponent from '~/issue_show/components/form.vue';
+import '~/templates/issuable_template_selector';
+import '~/templates/issuable_template_selectors';
 
 describe('Inline edit form component', () => {
   let vm;
@@ -19,10 +21,31 @@ describe('Inline edit form component', () => {
         markdownPreviewUrl: '/',
         markdownDocs: '/',
         projectsAutocompleteUrl: '/',
+        projectPath: '/',
+        projectNamespace: '/',
       },
     }).$mount();
 
     Vue.nextTick(done);
+  });
+
+  it('does not render template selector if no templates exist', () => {
+    expect(
+      vm.$el.querySelector('.js-issuable-selector-wrap'),
+    ).toBeNull();
+  });
+
+  it('renders template selector when templates exists', (done) => {
+    spyOn(gl, 'IssuableTemplateSelectors');
+    vm.issuableTemplates = ['test'];
+
+    Vue.nextTick(() => {
+      expect(
+        vm.$el.querySelector('.js-issuable-selector-wrap'),
+      ).not.toBeNull();
+
+      done();
+    });
   });
 
   it('hides locked warning by default', () => {

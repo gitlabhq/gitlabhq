@@ -199,6 +199,14 @@ module IssuablesHelper
     issuable_filter_params.any? { |k| params.key?(k) }
   end
 
+  def issuable_initial_data(issuable)
+    {
+      templates: issuable_templates(issuable),
+      project_path: ref_project.path,
+      namespace_path: ref_project.namespace.full_path
+    }.to_json
+  end
+
   private
 
   def sidebar_gutter_collapsed?

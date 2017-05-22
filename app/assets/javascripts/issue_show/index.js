@@ -4,6 +4,8 @@ import issuableApp from './components/app.vue';
 import '../vue_shared/vue_resource_interceptor';
 
 document.addEventListener('DOMContentLoaded', () => {
+  const initialDataEl = document.getElementById('js-issuable-app-initial-data');
+  const initialData = JSON.parse(initialDataEl.innerHTML.replace(/&quot;/g, '"'));
   $('.issuable-edit').on('click', (e) => {
     e.preventDefault();
 
@@ -44,7 +46,10 @@ document.addEventListener('DOMContentLoaded', () => {
         isConfidential: gl.utils.convertPermissionToBoolean(isConfidential),
         markdownPreviewUrl,
         markdownDocs,
+        projectPath: initialData.project_path,
+        projectNamespace: initialData.namespace_path,
         projectsAutocompleteUrl,
+        issuableTemplates: initialData.templates,
       };
     },
     render(createElement) {
@@ -58,9 +63,12 @@ document.addEventListener('DOMContentLoaded', () => {
           initialTitle: this.initialTitle,
           initialDescriptionHtml: this.initialDescriptionHtml,
           initialDescriptionText: this.initialDescriptionText,
+          issuableTemplates: this.issuableTemplates,
           isConfidential: this.isConfidential,
           markdownPreviewUrl: this.markdownPreviewUrl,
           markdownDocs: this.markdownDocs,
+          projectPath: this.projectPath,
+          projectNamespace: this.projectNamespace,
           projectsAutocompleteUrl: this.projectsAutocompleteUrl,
         },
       });

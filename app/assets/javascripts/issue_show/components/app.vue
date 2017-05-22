@@ -46,6 +46,11 @@ export default {
       required: false,
       default: '',
     },
+    issuableTemplates: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
     isConfidential: {
       type: Boolean,
       required: true,
@@ -55,6 +60,14 @@ export default {
       required: true,
     },
     markdownDocs: {
+      type: String,
+      required: true,
+    },
+    projectPath: {
+      type: String,
+      required: true,
+    },
+    projectNamespace: {
       type: String,
       required: true,
     },
@@ -186,9 +199,13 @@ export default {
       :form-state="formState"
       :can-move="canMove"
       :can-destroy="canDestroy"
+      :issuable-templates="issuableTemplates"
       :markdown-docs="markdownDocs"
       :markdown-preview-url="markdownPreviewUrl"
-      :projects-autocomplete-url="projectsAutocompleteUrl" />
+      :project-path="projectPath"
+      :project-namespace="projectNamespace"
+      :projects-autocomplete-url="projectsAutocompleteUrl"
+    />
     <div v-else>
       <title-component
         :issuable-ref="issuableRef"
