@@ -1,6 +1,6 @@
 module EditableHelper
   def updated_at_by(editable)
-    return nil unless editable.is_edited?
+    return {} unless editable.is_edited?
 
     {
       updated_at: editable.updated_at,

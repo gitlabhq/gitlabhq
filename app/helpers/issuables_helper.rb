@@ -276,9 +276,13 @@ module IssuablesHelper
   end
 
   def issuable_app_data(project, issue)
-    data = { "endpoint" => realtime_changes_namespace_project_issue_path(project.namespace, project, issue), "can-update" => can?(current_user, :update_issue, issue).to_s, "issuable-ref" => issue.to_reference }
+    data = {
+      endpoint: realtime_changes_namespace_project_issue_path(project.namespace, project, issue),
+      'can-update' => can?(current_user, :update_issue, issue).to_s,
+      'issuable-ref' => issue.to_reference || ''
+    }
     updated_at_by = updated_at_by(issue)
 
-    data.merge(updated_at_by) if updated_at_by.present?
+    data.merge(updated_at_by)
   end
 end
