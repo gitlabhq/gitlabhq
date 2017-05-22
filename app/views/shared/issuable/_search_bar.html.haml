@@ -177,7 +177,8 @@
 
     $(document).off('page:restore').on('page:restore', function (event) {
       if (gl.FilteredSearchManager) {
-        new gl.FilteredSearchManager();
+        const filteredSearchManager = new gl.FilteredSearchManager();
+        filteredSearchManager.setup();
       }
       Issuable.init();
       new gl.IssuableBulkActions({
