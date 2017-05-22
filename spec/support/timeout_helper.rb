@@ -6,10 +6,6 @@ module TimeoutHelper
     false
   end
 
-  def any_timeout_command_exists?
-    command_exists?('timeout') || command_exists?('gtimeout')
-  end
-
   def timeout_command
     @timeout_command ||=
       if command_exists?('timeout')

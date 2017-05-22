@@ -109,9 +109,7 @@ describe Gitlab::HealthChecks::FsShardsCheck do
     let(:timeout_seconds) { 1.to_s }
 
     before do
-      skip 'timeout or gtimeout not available' unless any_timeout_command_exists?
-
-      allow(described_class).to receive(:with_timeout) { [timeout_command, timeout_seconds].concat(%w{ sleep 2 }) }
+      allow(described_class).to receive(:with_timeout) { [timeout_command, timeout_seconds, 'sleep', 2] }
       FileUtils.chmod_R(0755, tmp_dir)
     end
 
@@ -137,8 +135,6 @@ describe Gitlab::HealthChecks::FsShardsCheck do
   context 'when popen always finds required binaries' do
     let(:timeout_seconds) { 30.to_s }
     before do
-      skip 'timeout or gtimeout not available' unless any_timeout_command_exists?
-
       allow(described_class).to receive(:exec_with_timeout).and_wrap_original do |method, *args, &block|
         begin
           method.call(*args, &block)
