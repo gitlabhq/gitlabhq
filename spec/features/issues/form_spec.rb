@@ -184,8 +184,13 @@ describe 'New/edit issue', :feature, :js do
         click_link user2.name
       end
 
-      expect(find('input[name="issue[assignee_ids][]"]', visible: false).value).to match(user2.id.to_s)
-      expect(find('.dropdown-menu-user a.is-active').first(:xpath, '..')['data-user-id']).to eq(user2.id.to_s)
+      expect(page.all('input[name="issue[assignee_ids][]"]', visible: false)[0].value).to match(user.id.to_s)
+      expect(page.all('input[name="issue[assignee_ids][]"]', visible: false)[1].value).to match(user2.id.to_s)
+
+      expect(page.all('.dropdown-menu-user a.is-active').length).to eq(2)
+
+      expect(page.all('.dropdown-menu-user a.is-active')[0].first(:xpath, '..')['data-user-id']).to eq(user.id.to_s)
+      expect(page.all('.dropdown-menu-user a.is-active')[1].first(:xpath, '..')['data-user-id']).to eq(user2.id.to_s)
     end
   end
 
