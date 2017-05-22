@@ -288,7 +288,11 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
           if (anchor) {
             const notesContent = anchor.closest('.notes_content');
             const lineType = notesContent.hasClass('new') ? 'new' : 'old';
-            notes.addDiffNote(anchor, lineType, false);
+            notes.toggleDiffNote({
+              target: anchor,
+              lineType,
+              forceShow: true,
+            });
             anchor[0].scrollIntoView();
             // We have multiple elements on the page with `#note_xxx`
             // (discussion and diff tabs) and `:target` only applies to the first

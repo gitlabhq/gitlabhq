@@ -7,7 +7,7 @@ class Projects::PipelinesSettingsController < Projects::ApplicationController
 
   def update
     if @project.update_attributes(update_params)
-      flash[:notice] = "CI/CD Pipelines settings for '#{@project.name}' were successfully updated."
+      flash[:notice] = "Pipelines settings for '#{@project.name}' were successfully updated."
       redirect_to namespace_project_settings_ci_cd_path(@project.namespace, @project)
     else
       render 'show'

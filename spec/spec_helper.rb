@@ -10,7 +10,7 @@ require 'shoulda/matchers'
 require 'rspec/retry'
 
 rspec_profiling_is_configured =
-  ENV['RSPEC_PROFILING_POSTGRES_URL'] ||
+  ENV['RSPEC_PROFILING_POSTGRES_URL'].present? ||
   ENV['RSPEC_PROFILING']
 branch_can_be_profiled =
   ENV['GITLAB_DATABASE'] == 'postgresql' &&

@@ -1,8 +1,8 @@
 /* global CommitsList */
 
-require('vendor/jquery.endless-scroll');
-require('~/pager');
-require('~/commits');
+import 'vendor/jquery.endless-scroll';
+import '~/pager';
+import '~/commits';
 
 (() => {
   // TODO: remove this hack!

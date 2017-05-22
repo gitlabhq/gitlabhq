@@ -1,7 +1,7 @@
 /* eslint-disable space-before-function-paren, no-var */
 
-require('~/header');
-require('~/lib/utils/text_utility');
+import '~/header';
+import '~/lib/utils/text_utility';
 
 (function() {
   describe('Header', function() {

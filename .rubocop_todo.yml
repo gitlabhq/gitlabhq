@@ -10,21 +10,12 @@
 RSpec/BeforeAfterAll:
   Enabled: false
 
-# Offense count: 15
-# Configuration parameters: CustomIncludeMethods.
-RSpec/EmptyExampleGroup:
-  Enabled: false
-
 # Offense count: 233
 RSpec/EmptyLineAfterFinalLet:
   Enabled: false
 
 # Offense count: 167
 RSpec/EmptyLineAfterSubject:
-  Enabled: false
-
-# Offense count: 3
-RSpec/ExpectOutput:
   Enabled: false
 
 # Offense count: 72

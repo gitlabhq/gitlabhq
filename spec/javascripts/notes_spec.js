@@ -79,6 +79,47 @@ import '~/notes';
       });
     });
 
+    describe('updateNote', () => {
+      let sampleComment;
+      let noteEntity;
+      let $form;
+      let $notesContainer;
+
+      beforeEach(() => {
+        this.notes = new Notes('', []);
+        window.gon.current_username = 'root';
+        window.gon.current_user_fullname = 'Administrator';
+        sampleComment = 'foo';
+        noteEntity = {
+          id: 1234,
+          html: `<li class="note note-row-1234 timeline-entry" id="note_1234">
+                  <div class="note-text">${sampleComment}</div>
+                 </li>`,
+          note: sampleComment,
+          valid: true
+        };
+        $form = $('form.js-main-target-form');
+        $notesContainer = $('ul.main-notes-list');
+        $form.find('textarea.js-note-text').val(sampleComment);
+      });
+
+      it('updates note and resets edit form', () => {
+        const deferred = $.Deferred();
+        spyOn($, 'ajax').and.returnValue(deferred.promise());
+        spyOn(this.notes, 'revertNoteEditForm');
+
+        $('.js-comment-button').click();
+        deferred.resolve(noteEntity);
+
+        const $targetNote = $notesContainer.find(`#note_${noteEntity.id}`);
+        const updatedNote = Object.assign({}, noteEntity);
+        updatedNote.note = 'bar';
+        this.notes.updateNote(updatedNote, $targetNote);
+
+        expect(this.notes.revertNoteEditForm).toHaveBeenCalledWith($targetNote);
+      });
+    });
+
     describe('renderNote', () => {
       let notes;
       let note;
@@ -98,6 +139,7 @@ import '~/notes';
         ]);
 
         notes = jasmine.createSpyObj('notes', [
+          'setupNewNote',
           'refresh',
           'collapseLongCommitList',
           'updateNotesCount',

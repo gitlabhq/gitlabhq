@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this */
 
-require('./lib/utils/url_utility');
+import './lib/utils/url_utility';
 
 const UNFOLD_COUNT = 20;
 let isBound = false;

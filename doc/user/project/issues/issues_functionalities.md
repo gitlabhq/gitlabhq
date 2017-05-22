@@ -6,7 +6,7 @@ Please read through the [GitLab Issue Documentation](index.md) for an overview o
 
 The image bellow illustrates how an issue looks like:
 
-![Issue view](img/issues_main_view_numbered.png)
+![Issue view](img/issues_main_view_numbered.jpg)
 
 You can find all the information on that issue on one screen.
 
@@ -15,6 +15,9 @@ You can find all the information on that issue on one screen.
 An issue starts with its status (open or closed), followed by its author,
 and includes many other functionalities, numbered on the image above to
 explain what they mean, one by one.
+
+Many of the elements of the issue screen refresh automatically, such as the title and description, when they are changed by another user.
+Comments and system notes also appear automatically in response to various actions and content updates.
 
 #### 1. New Issue, close issue, edit
 
@@ -37,6 +40,21 @@ it's reassigned to someone else to take it from there.
 > **Tip:**
 if a user is not member of that project, it can only be
 assigned to them if they created the issue themselves.
+
+##### 3.1. Multiple Assignees (EES/EEP)
+
+Issue Weights are only available in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/).
+
+Often multiple people likely work on the same issue together,
+which can especially be difficult to track in large teams
+where there is shared ownership of an issue.
+
+In GitLab Enterprise Edition, you can also select multiple assignees
+to an issue.
+
+> **Note:**
+Multiple Assignees was [introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/1904)
+in [GitLab Enterprise Edition 9.2](https://about.gitlab.com/2017/05/22/gitlab-9-2-released/#multiple-assignees-for-issues).
 
 #### 4. Milestone
 
@@ -150,14 +168,9 @@ Once you wrote your comment, you can either:
 - Click "Start discussion": start a thread within that issue's thread to discuss specific points.
 - Click "Comment and close issue": post your comment and close that issue in one click.
 
-#### 18. New branch
+#### 18. New Merge Request
 
-- [New branch](../repository/web_editor.md#create-a-new-branch-from-an-issue):
-create a new branch, followed by a new merge request which will automatically close that
-issue as soon as that merge request is merged.
-
-#### 19. New merge request
-
-- Create a new merge request (with source branch) in one action. Optionally just create a new branch, as explained above.
-
-![Create new merge request](img/create_new_merge_request.png)
+- Create a new merge request (with a new source branch named after the issue) in one action.
+The merge request will automatically close that issue as soon as merged.
+- Optionally, you can just create a [new branch](../repository/web_editor.md#create-a-new-branch-from-an-issue)
+named after that issue.

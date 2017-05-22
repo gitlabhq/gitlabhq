@@ -1,4 +1,4 @@
-/* global Api */
+import Api from '../../api';
 
 import FileTemplateSelector from '../file_template_selector';
 

@@ -1,6 +1,6 @@
 /* eslint-disable promise/catch-or-return */
 
-require('~/lib/utils/common_utils');
+import '~/lib/utils/common_utils';
 
 (() => {
   describe('common_utils', () => {
