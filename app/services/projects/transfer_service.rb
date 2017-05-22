@@ -12,17 +12,13 @@ module Projects
     TransferError = Class.new(StandardError)
 
     def execute(new_namespace)
-      if !new_namespace.blank? && allowed_transfer?(current_user, project, new_namespace)
-        transfer(project, new_namespace)
-      else
-        error_message = if new_namespace.blank? 
-                          'Please select a new namespace for your project.'
-                        else
-                          'Transfer failed, please contact an admin.'
-                        end
-        project.errors.add(:new_namespace, error_message)
-        false
+      if new_namespace.blank?
+        raise TransferError, 'Please select a new namespace for your project.'
       end
+      unless allowed_transfer?(current_user, project, new_namespace)
+        raise TransferError, 'Transfer failed, please contact an admin.'
+      end
+      transfer(project, new_namespace)
     rescue Projects::TransferService::TransferError => ex
       project.reload
       project.errors.add(:new_namespace, ex.message)
