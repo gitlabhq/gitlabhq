@@ -23,7 +23,7 @@ feature 'Group merge requests page', feature: true do
     end
 
     it 'ignores archived merge request count badges in navbar' do
-      expect( page.find('[title="Merge Requests"] span.badge.count').text).to eq("1")
+      expect( page.find('#merge-requests-nav span.badge.count').text).to eq("1")
     end
 
     it 'ignores archived merge request count badges in state-filters' do
