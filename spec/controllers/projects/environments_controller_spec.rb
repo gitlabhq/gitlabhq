@@ -1,25 +1,25 @@
 require 'spec_helper'
 
 describe Projects::EnvironmentsController do
-  let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  set(:user) { create(:user) }
+  set(:project) { create(:empty_project) }
 
-  let(:environment) do
+  set(:environment) do
     create(:environment, name: 'production', project: project)
   end
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
 
     sign_in(user)
   end
 
   describe 'GET index' do
-    context 'when standardrequest has been made' do
+    context 'when a request for the HTML is made' do
       it 'responds with status code 200' do
         get :index, environment_params
 
-        expect(response).to be_ok
+        expect(response).to have_http_status(:ok)
       end
     end
 
@@ -101,7 +101,7 @@ describe Projects::EnvironmentsController do
     end
 
     context 'when using JSON format' do
-      it 'responds with with a sorted JSON' do
+      it 'sorts the subfolders lexicographically' do
         get :folder, namespace_id: project.namespace,
                      project_id: project,
                      id: 'staging-1.0',
