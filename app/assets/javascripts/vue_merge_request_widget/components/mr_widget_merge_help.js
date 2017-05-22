@@ -11,9 +11,7 @@ export default {
           <a
             data-toggle="modal"
             href="#modal_merge_info">
-            merge locally instead
-          </a>
-        .
+            merge locally instead</a>.
       </template>
       <template v-else>
         <a
