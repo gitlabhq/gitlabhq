@@ -6,8 +6,9 @@ require('~/filtered_search/filtered_search_token_keys_with_weights');
     const weightTokenKey = {
       key: 'weight',
       type: 'string',
-      param: '',
+      param: 'weight',
       symbol: '',
+      icon: 'balance-scale',
     };
 
     describe('get', () => {

@@ -50,8 +50,8 @@ class DropdownUtils {
     return updatedItem;
   }
 
-  static filterHint(options, item) {
-    const { input, allowedKeys } = options;
+  static filterHint(config, item) {
+    const { input, allowedKeys } = config;
     const updatedItem = item;
     const searchInput = gl.DropdownUtils.getSearchQuery(input);
     const { lastToken, tokens } =
