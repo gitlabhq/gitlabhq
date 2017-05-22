@@ -211,7 +211,7 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
   end
 
   step 'I should see empty field Change Password' do
-    expect(find_field('Change Password').value).to be_nil
+    expect(find_field('Enter new password').value).to be_nil
   end
 
   step 'I click JetBrains TeamCity CI service link' do
