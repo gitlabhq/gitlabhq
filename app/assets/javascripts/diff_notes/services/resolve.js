@@ -3,11 +3,7 @@
 /* global CommentsStore */
 
 import Vue from 'vue';
-import VueResource from 'vue-resource';
-
-require('../../vue_shared/vue_resource_interceptor');
-
-Vue.use(VueResource);
+import '../../vue_shared/vue_resource_interceptor';
 
 window.gl = window.gl || {};
 

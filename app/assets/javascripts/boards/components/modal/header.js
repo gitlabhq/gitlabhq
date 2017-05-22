@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import modalFilters from './filters';
-
-require('./tabs');
+import './tabs';
 
 const ModalStore = gl.issueBoards.ModalStore;
 

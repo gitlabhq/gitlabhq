@@ -1,9 +1,8 @@
 /* eslint no-param-reassign: "off" */
 
 import GfmAutoComplete from '~/gfm_auto_complete';
-
-require('vendor/jquery.caret');
-require('vendor/jquery.atwho');
+import 'vendor/jquery.caret';
+import 'vendor/jquery.atwho';
 
 describe('GfmAutoComplete', function () {
   const gfmAutoCompleteCallbacks = GfmAutoComplete.prototype.getDefaultCallbacks.call({
