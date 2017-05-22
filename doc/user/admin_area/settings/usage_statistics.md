@@ -38,7 +38,7 @@ You can view the exact JSON payload in the administration panel.
 
 ### Deactivate the usage ping
 
-By default, usage ping is opt-out. If you want to deactivate this feature, go to
+The usage ping is opt-out. If you want to deactivate this feature, go to
 the Settings page of your administration panel and uncheck the Usage ping
 checkbox.
 
