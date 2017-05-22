@@ -19,7 +19,7 @@ describe "Admin Runners" do
       end
 
       it 'has all necessary texts' do
-        expect(page).to have_text "To register a new Runner"
+        expect(page).to have_text "How to setup"
         expect(page).to have_text "Runners with last contact more than a minute ago: 1"
       end
 
@@ -163,12 +163,11 @@ describe "Admin Runners" do
     end
 
     it 'has a registration token' do
-      expect(page).to have_content("Registration token is #{token}")
-      expect(page).to have_selector('#runners-token', text: token)
+      expect(page.find('.help-callout li:nth-of-type(3)')).to have_content(token)
     end
 
     describe 'reload registration token' do
-      let(:page_token) { find('#runners-token').text }
+      let(:page_token) { find('.help-callout li:nth-of-type(3) code').text }
 
       before do
         click_button 'Reset runners registration token'

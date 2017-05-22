@@ -1,0 +1,15 @@
+.bs-callout.help-callout
+  %h4 How to setup a #{type} Runner for a new project
+
+  %ol
+    %li
+      Install a Runner compatible with GitLab CI
+      (checkout the #{link_to 'GitLab Runner section', 'https://about.gitlab.com/gitlab-ci/#gitlab-runner', target: '_blank'} for information on how to install it).
+    %li
+      Specify the following URL during the Runner setup:
+      %code= root_url(only_path: false)
+    %li
+      Use the following registration token during setup:
+      %code= registration_token
+    %li
+      Start the Runner!
