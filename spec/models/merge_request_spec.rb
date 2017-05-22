@@ -1956,6 +1956,22 @@ describe MergeRequest, models: true do
           expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: mr_sha)).to be_truthy
         end
       end
+
+      context 'with approvals' do
+        before do
+          merge_request.target_project.update_attributes(approvals_before_merge: 1)
+        end
+
+        it 'is not mergeable when not approved' do
+          expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: mr_sha)).to be_falsey
+        end
+
+        it 'is mergeable when approved' do
+          merge_request.approvals.create(user: user)
+
+          expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: mr_sha)).to be_truthy
+        end
+      end
     end
   end
 
