@@ -269,9 +269,9 @@ group :metrics do
   gem 'method_source', '~> 0.8', require: false
   gem 'influxdb', '~> 0.2', require: false
 
-# Prometheus
+  # Prometheus
   gem 'mmap2', '~> 2.2.6'
-  gem 'prometheus-client-mmap'
+  gem 'prometheus-client-mmap', '~>0.7.0.beta3'
 end
 
 group :development do

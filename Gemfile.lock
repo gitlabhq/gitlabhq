@@ -1000,7 +1000,7 @@ DEPENDENCIES
   pg (~> 0.18.2)
   poltergeist (~> 1.9.0)
   premailer-rails (~> 1.9.0)
-  prometheus-client-mmap
+  prometheus-client-mmap (~> 0.7.0.beta3)
   pry-byebug (~> 3.4.1)
   pry-rails (~> 0.3.4)
   rack-attack (~> 4.4.1)

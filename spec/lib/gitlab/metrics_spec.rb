@@ -243,7 +243,6 @@ describe Gitlab::Metrics do
       subject { described_class.counter(:counter, 'doc') }
 
       it { is_expected.to be_a(Gitlab::Metrics::DummyMetric) }
-
     end
 
     describe '#summary' do

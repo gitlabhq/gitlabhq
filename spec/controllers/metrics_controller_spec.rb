@@ -6,8 +6,17 @@ describe MetricsController do
   let(:token) { current_application_settings.health_check_access_token }
   let(:json_response) { JSON.parse(response.body) }
 
+  around do |examples|
+    Dir.mktmpdir do |tmp_dir|
+      @metrics_multiproc_dir = tmp_dir
+      examples.run
+    end
+  end
+
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
+    stub_env('prometheus_multiproc_dir', @metrics_multiproc_dir)
+    allow(Gitlab::Metrics).to receive(:prometheus_metrics_enabled?).and_return(true)
   end
 
   describe '#metrics' do

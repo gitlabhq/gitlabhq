@@ -7,7 +7,7 @@ class MetricsController < ActionController::Base
   CHECKS = [
     Gitlab::HealthChecks::DbCheck,
     Gitlab::HealthChecks::RedisCheck,
-    Gitlab::HealthChecks::FsShardsCheck,
+    Gitlab::HealthChecks::FsShardsCheck
   ].freeze
 
   def metrics
