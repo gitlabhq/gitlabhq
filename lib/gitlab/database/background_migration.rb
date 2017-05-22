@@ -4,8 +4,10 @@ module Gitlab
     # Abstract base class for background migrations.
     #
     class BackgroundMigration
-      def self.perform(id, version, resource)
-        new(id, version, resource).tap do |migration|
+      include ActiveRecord::ConnectionAdapters::DatabaseStatements
+
+      def self.perform(id, version, model)
+        new(id, version, model).tap do |migration|
           break if migration.done?
 
           migration.perform!
@@ -13,19 +15,19 @@ module Gitlab
         end
       end
 
-      def initialize(id, version, resource)
+      def initialize(id, version, model)
         @id = id
         @version = version
-        @resource = resource
+        @model = model
       end
 
       def done?
-        resource.where('id = ? AND COALESCE(schema_version, 0) < ?',
+        @model.where('id = ? AND COALESCE(schema_version, 0) < ?',
                        @id, @version).count.zero?
       end
 
       def bump!
-        resource.where(id: 1).update_all(schema_version: @version)
+        @model.where(id: @id).update_all(schema_version: @version)
       end
 
       def perform!
