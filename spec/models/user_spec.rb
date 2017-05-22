@@ -1013,14 +1013,22 @@ describe User, models: true do
       end
 
       context 'when in a geo secondary node' do
-        let(:geo_url) { 'http://geo.example.com' }
+        let(:geo_host) { 'http://geo.example.com' }
+        let(:geo_avatar_url) { [geo_host, avatar_path].join }
 
         before do
           allow(Gitlab::Geo).to receive(:secondary?) { true }
-          allow(Gitlab::Geo).to receive_message_chain(:primary_node, :url) { geo_url }
+          allow(Gitlab::Geo).to receive_message_chain(:primary_node, :url) { geo_host }
         end
 
-        it { should eq "#{geo_url}#{avatar_path}" }
+        it 'shows correct avatar url' do
+          expect(user.avatar_url).to eq(geo_avatar_url)
+          expect(user.avatar_url(only_path: false)).to eq(geo_avatar_url)
+
+          allow(ActionController::Base).to receive(:asset_host).and_return(geo_host)
+
+          expect(user.avatar_url).to eq(geo_avatar_url)
+        end
       end
     end
   end
