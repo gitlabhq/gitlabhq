@@ -1,7 +1,9 @@
-## Advanced search syntax
+# Advanced search syntax
 
-If your site administrator has enabled [Elasticsearch integration](../../integration/elasticsearch.md)
-then some advanced search functionality is available.
+>**Notes:**
+- Introduced in [GitLab Enterprise Premium][ee] 9.2
+- The [Elasticsearch integration](../../integration/elasticsearch.md) needs to
+  be enabled
 
 Full details can be found in the
 [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html#_simple_query_string_syntax)
@@ -16,3 +18,4 @@ but here's a quick guide:
 * To match a partial word, use `*`: `bug find_by_*`
 * To find a term containing one of these symbols, use `\`: `argument \-last`
 
+[ee]: https://about.gitlab.com/gitlab-ee/

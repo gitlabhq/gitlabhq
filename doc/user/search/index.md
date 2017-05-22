@@ -98,3 +98,14 @@ you'll be able to, besides filtering them by **Name**, **Author**, **Assignee**,
 and **Labels**, select multiple issues to add to a list of your choice:
 
 ![search and select issues to add to board](img/search_issues_board.png)
+
+## Advanced search syntax
+
+> Available in [GitLab Enterprise Edition Premium][ee].
+
+If the [Elasticsearch integration](../../integration/elasticsearch.md) is
+enabled, then some advanced search functionality is available.
+
+[Learn how to use the advanced search syntax.](advanced_search_syntax.md)
+
+[ee]: https://about.gitlab.com/gitlab-ee/
