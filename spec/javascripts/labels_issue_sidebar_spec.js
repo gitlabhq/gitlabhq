@@ -2,16 +2,6 @@
 /* global IssuableContext */
 /* global LabelsSelect */
 
-<<<<<<< HEAD
-require('~/gl_dropdown');
-require('select2');
-require('vendor/jquery.nicescroll');
-require('~/api');
-require('~/create_label');
-require('~/issuable_context');
-require('~/users_select');
-require('~/labels_select');
-=======
 import '~/lib/utils/type_utility';
 import '~/gl_dropdown';
 import 'select2';
@@ -21,7 +11,6 @@ import '~/create_label';
 import '~/issuable_context';
 import '~/users_select';
 import '~/labels_select';
->>>>>>> origin/master
 
 (() => {
   let saveLabelCount = 0;

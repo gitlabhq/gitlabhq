@@ -1,17 +1,10 @@
 /* eslint-disable space-before-function-paren, max-len, no-var, one-var, one-var-declaration-per-line, no-unused-expressions, consistent-return, no-param-reassign, default-case, no-return-assign, comma-dangle, object-shorthand, prefer-template, quotes, new-parens, vars-on-top, new-cap, max-len */
 
-<<<<<<< HEAD
-require('~/gl_dropdown');
-require('~/search_autocomplete');
-require('~/lib/utils/common_utils');
-require('vendor/fuzzaldrin-plus');
-=======
 import '~/gl_dropdown';
 import '~/search_autocomplete';
 import '~/lib/utils/common_utils';
 import '~/lib/utils/type_utility';
 import 'vendor/fuzzaldrin-plus';
->>>>>>> origin/master
 
 (function() {
   var addBodyAttributes, assertLinks, dashboardIssuesPath, dashboardMRsPath, groupIssuesPath, groupMRsPath, groupName, mockDashboardOptions, mockGroupOptions, mockProjectOptions, projectIssuesPath, projectMRsPath, projectName, userId, widget;
