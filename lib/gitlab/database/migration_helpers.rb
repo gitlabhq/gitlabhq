@@ -184,7 +184,6 @@ module Gitlab
 
           update_arel = Arel::UpdateManager.new(ActiveRecord::Base).
             table(table).
-            set([[table[column], value]]).
             where(table[:id].gteq(start_id))
 
           if stop_row
@@ -194,6 +193,13 @@ module Gitlab
           end
 
           update_arel = yield table, update_arel if block_given?
+
+          update_arel = 
+            if value.is_a?(Proc)
+              value.call(table, update_arel, start_id, stop_id)
+            else
+              update_arel.set([[table[column], value]])
+            end
 
           execute(update_arel.to_sql)
 
