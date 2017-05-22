@@ -10,6 +10,7 @@ describe('Inline edit form component', () => {
     vm = new Component({
       propsData: {
         canDestroy: true,
+        canMove: true,
         formState: {
           title: 'b',
           description: 'a',
@@ -17,10 +18,17 @@ describe('Inline edit form component', () => {
         },
         markdownPreviewUrl: '/',
         markdownDocs: '/',
+        projectsAutocompleteUrl: '/',
       },
     }).$mount();
 
     Vue.nextTick(done);
+  });
+
+  it('hides locked warning by default', () => {
+    expect(
+      vm.$el.querySelector('.alert'),
+    ).toBeNull();
   });
 
   it('shows locked warning if formState is different', (done) => {
