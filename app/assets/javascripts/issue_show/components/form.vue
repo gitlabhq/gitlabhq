@@ -2,11 +2,19 @@
   import titleField from './fields/title.vue';
   import descriptionField from './fields/description.vue';
   import editActions from './edit_actions.vue';
+<<<<<<< HEAD
   import descriptionTemplate from './fields/description_template.vue';
+=======
+  import projectMove from './fields/project_move.vue';
+>>>>>>> issue-edit-inline
   import confidentialCheckbox from './fields/confidential_checkbox.vue';
 
   export default {
     props: {
+      canMove: {
+        type: Boolean,
+        required: true,
+      },
       canDestroy: {
         type: Boolean,
         required: true,
@@ -36,12 +44,17 @@
         type: String,
         required: true,
       },
+      projectsAutocompleteUrl: {
+        type: String,
+        required: true,
+      },
     },
     components: {
       titleField,
       descriptionField,
       descriptionTemplate,
       editActions,
+      projectMove,
       confidentialCheckbox,
     },
     computed: {
@@ -80,6 +93,10 @@
       :markdown-docs="markdownDocs" />
     <confidential-checkbox
       :form-state="formState" />
+    <project-move
+      v-if="canMove"
+      :form-state="formState"
+      :projects-autocomplete-url="projectsAutocompleteUrl" />
     <edit-actions
       :form-state="formState"
       :can-destroy="canDestroy" />

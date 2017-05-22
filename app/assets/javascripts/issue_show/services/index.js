@@ -7,7 +7,7 @@ export default class Service {
   constructor(endpoint) {
     this.endpoint = endpoint;
 
-    this.resource = Vue.resource(this.endpoint, {}, {
+    this.resource = Vue.resource(`${this.endpoint}.json`, {}, {
       realtimeChanges: {
         method: 'GET',
         url: `${this.endpoint}/realtime_changes`,

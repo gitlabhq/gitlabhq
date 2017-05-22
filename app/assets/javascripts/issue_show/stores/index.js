@@ -16,6 +16,7 @@ export default class Store {
       title: '',
       confidential: false,
       description: '',
+      move_to_project_id: 0,
     };
   }
 

@@ -55,10 +55,12 @@
     #js-issuable-app{ "data" => { "endpoint" => namespace_project_issue_path(@project.namespace, @project, @issue),
       "can-update" => can?(current_user, :update_issue, @issue).to_s,
       "can-destroy" => can?(current_user, :destroy_issue, @issue).to_s,
+      "can-move" => @issue.can_move?(current_user).to_s,
       "issuable-ref" => @issue.to_reference,
       "is-confidential" => @issue.confidential.to_s,
       "markdown-preview-url" => preview_markdown_path(@project),
       "markdown-docs" => help_page_path('user/markdown'),
+      "projects-autocomplete-url" => autocomplete_projects_path(project_id: @project.id),
     } }
       %h2.title= markdown_field(@issue, :title)
       - if @issue.description.present?
