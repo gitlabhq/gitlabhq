@@ -16,6 +16,14 @@ describe Deployment, models: true do
   it { is_expected.to validate_presence_of(:ref) }
   it { is_expected.to validate_presence_of(:sha) }
 
+  describe 'after_create callbacks' do
+    it 'invalidates the cache for the environment' do
+      expect(subject).to receive(:invalidate_cache)
+
+      subject.save!
+    end
+  end
+
   describe '#includes_commit?' do
     let(:project)     { create(:project, :repository) }
     let(:environment) { create(:environment, project: project) }

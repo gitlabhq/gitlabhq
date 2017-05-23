@@ -84,7 +84,8 @@ describe Gitlab::EtagCaching::Router do
 
     result = described_class.match(env)
 
-    expect(result).to be_blank
+    expect(result).to be_present
+    expect(result.name).to eq 'environments'
   end
 
   def build_env(path)

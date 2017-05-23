@@ -1,15 +1,15 @@
 require 'spec_helper'
 
 describe Projects::EnvironmentsController do
-  let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  set(:user) { create(:user) }
+  set(:project) { create(:empty_project) }
 
-  let(:environment) do
+  set(:environment) do
     create(:environment, name: 'production', project: project)
   end
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
 
     sign_in(user)
   end
@@ -56,6 +56,11 @@ describe Projects::EnvironmentsController do
         it 'contains values describing environment scopes sizes' do
           expect(json_response['available_count']).to eq 3
           expect(json_response['stopped_count']).to eq 1
+        end
+
+        it 'sets the polling interval header' do
+          expect(response).to have_http_status(:ok)
+          expect(response.headers['Poll-Interval']).to eq("3000")
         end
       end
 
