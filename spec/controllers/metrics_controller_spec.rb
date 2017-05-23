@@ -50,7 +50,9 @@ describe MetricsController do
       end
 
       context 'prometheus metrics are disabled' do
-        allow(Gitlab::Metrics).to receive(:prometheus_metrics_enabled?).and_return(false)
+        before do
+          allow(Gitlab::Metrics).to receive(:prometheus_metrics_enabled?).and_return(false)
+        end
 
         it 'returns proper response' do
           get :metrics
@@ -65,6 +67,5 @@ describe MetricsController do
         expect(response.status).to eq(404)
       end
     end
-
   end
 end
