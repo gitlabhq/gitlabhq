@@ -8,7 +8,7 @@
             = link_to namespace_project_commits_path(event.project.namespace, event.project, event.ref_name, class: 'commit-sha') do
               %strong= event.ref_name
             - if @project && event.project != @project
-              %span= s_('PushToProject|at') }
+              %span= s_('PushToProject|at')
               %strong= link_to_project event.project
             = clipboard_button(text: event.ref_name, class: 'btn-clipboard btn-transparent', title: _('Copy branch to clipboard'))
             #{time_ago_with_tooltip(event.created_at)}
