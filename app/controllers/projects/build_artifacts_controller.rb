@@ -2,7 +2,9 @@ class Projects::BuildArtifactsController < Projects::ApplicationController
   include ExtractsPath
   include RendersBlob
 
+  before_action :authorize_read_build!
   before_action :extract_ref_name_and_path
+  before_action :validate_artifacts!
 
   def download
     redirect_to download_namespace_project_job_artifacts_path(project.namespace, project, job)
@@ -25,6 +27,10 @@ class Projects::BuildArtifactsController < Projects::ApplicationController
   end
 
   private
+
+  def validate_artifacts!
+    render_404 unless job && job.artifacts?
+  end
 
   def extract_ref_name_and_path
     return unless params[:ref_name_and_path]

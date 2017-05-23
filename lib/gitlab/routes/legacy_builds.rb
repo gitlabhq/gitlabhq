@@ -22,8 +22,6 @@ module Gitlab
             end
 
             member do
-              get :status
-              get :trace, defaults: { format: 'json' }
               get :raw
             end
 
