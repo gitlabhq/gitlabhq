@@ -6,7 +6,7 @@ module Gitlab
       'en' => 'English',
       'es' => 'Español',
       'de' => 'Deutsch',
-	  'zh' => '简体中文'
+      'zh' => '简体中文'
     }.freeze
 
     def available_locales
