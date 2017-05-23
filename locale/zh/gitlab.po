@@ -1,0 +1,207 @@
+# Simplified Chinese translations for gitlab package.
+# Copyright (C) 2017 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the gitlab package.
+# htve <htve@outlook.com>, 2017.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gitlab 1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2017-05-23 15:35-0800\n"
+"Last-Translator: htve <htve@outlook.com>\n"
+"Language-Team: Simplified Chinese\n"
+"Language: zh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"\n"
+
+msgid "ByAuthor|by"
+msgstr "作者:"
+
+msgid "Commit"
+msgid_plural "Commits"
+msgstr[0] "提交"
+msgstr[1] "提交"
+
+msgid "Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project."
+msgstr "周期分析概述了您的项目中从创意到生产所需的时间。"
+
+msgid "CycleAnalyticsStage|Code"
+msgstr "代码"
+
+msgid "CycleAnalyticsStage|Issue"
+msgstr "问题"
+
+msgid "CycleAnalyticsStage|Plan"
+msgstr "计划"
+
+msgid "CycleAnalyticsStage|Production"
+msgstr "生产"
+
+msgid "CycleAnalyticsStage|Review"
+msgstr "评审"
+
+msgid "CycleAnalyticsStage|Staging"
+msgstr "排期"
+
+msgid "CycleAnalyticsStage|Test"
+msgstr "测试"
+
+msgid "Deploy"
+msgid_plural "Deploys"
+msgstr[0] "部署"
+msgstr[1] "部署"
+
+msgid "FirstPushedBy|First"
+msgstr "首个推送"
+
+msgid "FirstPushedBy|pushed by"
+msgstr "作者:"
+
+msgid "From issue creation until deploy to production"
+msgstr "从问题创建到部署到生产"
+
+msgid "From merge request merge until deploy to production"
+msgstr "从合并请求的合并到部署至生产环境"
+
+msgid "Introducing Cycle Analytics"
+msgstr "引入周期分析"
+
+msgid "Last %d day"
+msgid_plural "Last %d days"
+msgstr[0] "最后%d天"
+msgstr[1] "最后%d天"
+
+msgid "Limited to showing %d event at most"
+msgid_plural "Limited to showing %d events at most"
+msgstr[0] "最多显示%d个事件"
+msgstr[1] "最多显示%d个事件"
+
+msgid "Median"
+msgstr "平均数"
+
+msgid "New Issue"
+msgid_plural "New Issues"
+msgstr[0] "新问题"
+msgstr[1] "新问题"
+
+msgid "Not available"
+msgstr "不可用"
+
+msgid "Not enough data"
+msgstr "数据不足"
+
+msgid "OpenedNDaysAgo|Opened"
+msgstr "开始于"
+
+msgid "Pipeline Health"
+msgstr "流水线健康"
+
+msgid "ProjectLifecycle|Stage"
+msgstr "项目生命周期"
+
+msgid "Read more"
+msgstr "阅读更多"
+
+msgid "Related Commits"
+msgstr "相关的提交"
+
+msgid "Related Deployed Jobs"
+msgstr "相关的部署作业"
+
+msgid "Related Issues"
+msgstr "相关的问题"
+
+msgid "Related Jobs"
+msgstr "相关的作业"
+
+msgid "Related Merge Requests"
+msgstr "相关的合并请求"
+
+msgid "Related Merged Requests"
+msgstr "相关已合并的合并请求"
+
+msgid "Showing %d event"
+msgid_plural "Showing %d events"
+msgstr[0] "显示%d个事件"
+msgstr[1] "显示%d个事件"
+
+msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
+msgstr "编码阶段显示从第一次提交到创建合并请求的时间。创建第一个合并请求后，数据将自动添加到此处。"
+
+msgid "The collection of events added to the data gathered for that stage."
+msgstr "将收集的事件添加到为该阶段收集的数据中。"
+
+msgid "The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage."
+msgstr "问题阶段显示了从创建问题到将问题分配给里程碑所需的时间，或将问题添加到问题委员会的列表中。开始创建问题以查看此阶段的数据"
+
+msgid "The phase of the development lifecycle."
+msgstr "开发生命周期中的各个阶段。"
+
+msgid "The planning stage shows the time from the previous step to pushing your first commit. This time will be added automatically once you push your first commit."
+msgstr "规划阶段显示了从上一步到推送第一次提交的时间。一旦你推出第一次提交，这个时候就会自动添加。"
+
+msgid "The production stage shows the total time it takes between creating an issue and deploying the code to production. The data will be automatically added once you have completed the full idea to production cycle."
+msgstr "生产阶段显示创建问题和将代码部署到生产之间的总时间。一旦完成完整的想法到生产周期，数据就会自动添加。"
+
+msgid "The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request."
+msgstr "审查阶段显示从合并请求到合并的时间。合并您的第一个合并请求后，数据将自动添加。"
+
+msgid "The staging stage shows the time between merging the MR and deploying code to the production environment. The data will be automatically added once you deploy to production for the first time."
+msgstr "分期阶段显示合并MR和部署代码到生产环境之间的时间。首次部署到生产时，数据将自动添加。"
+
+msgid "The testing stage shows the time GitLab CI takes to run every pipeline for the related merge request. The data will automatically be added after your first pipeline finishes running."
+msgstr "测试阶段显示GitLab CI为相关合并请求运行每个流水线所需的时间。数据将在您的第一个管道完成运行后自动添加。"
+
+msgid "The time taken by each data entry gathered by that stage."
+msgstr "由该阶段收集的每个数据条目所用的时间。"
+
+msgid "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."
+msgstr "该值位于一系列观察值的平均值。例如，在3，5，9之间，平均值是5。在3，5，7，8之间，平均值是（5 + 7）/ 2 = 6。"
+
+msgid "Time before an issue gets scheduled"
+msgstr "发布问题之前的时间"
+
+msgid "Time before an issue starts implementation"
+msgstr "问题开始实施之前的时间"
+
+msgid "Time between merge request creation and merge/close"
+msgstr "合并请求创建到合并或关闭之间的时间"
+
+msgid "Time until first merge request"
+msgstr "时间到第一个合并请求"
+
+msgid "Time|hr"
+msgid_plural "Time|hrs"
+msgstr[0] "小时"
+msgstr[1] "小时"
+
+msgid "Time|min"
+msgid_plural "Time|mins"
+msgstr[0] "分钟"
+msgstr[1] "分钟"
+
+msgid "Time|s"
+msgstr "秒"
+
+msgid "Total Time"
+msgstr "总时间"
+
+msgid "Total test time for all commits/merges"
+msgstr "所有提交和合并的总测试时间"
+
+msgid "Want to see the data? Please ask an administrator for access."
+msgstr "想查看数据？请向管理员查询。"
+
+msgid "We don't have enough data to show this stage."
+msgstr "我们没有足够的数据显示这个阶段。"
+
+msgid "You need permission."
+msgstr "您需要相关的权限。"
+
+msgid "day"
+msgid_plural "days"
+msgstr[0] "天"
+msgstr[1] "天"

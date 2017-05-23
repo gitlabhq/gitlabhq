@@ -5,7 +5,8 @@ module Gitlab
     AVAILABLE_LANGUAGES = {
       'en' => 'English',
       'es' => 'Español',
-      'de' => 'Deutsch'
+      'de' => 'Deutsch',
+	  'zh' => '简体中文'
     }.freeze
 
     def available_locales
