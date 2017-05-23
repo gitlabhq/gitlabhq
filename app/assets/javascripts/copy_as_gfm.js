@@ -273,12 +273,12 @@ const gfmRules = {
 
 class CopyAsGFM {
   constructor() {
-    $(document).on('copy', '.md, .wiki', (e) => { this.copyAsGFM(e, CopyAsGFM.transformGFMSelection); });
-    $(document).on('copy', 'pre.code.highlight, .diff-content .line_content', (e) => { this.copyAsGFM(e, CopyAsGFM.transformCodeSelection); });
-    $(document).on('paste', '.js-gfm-input', this.pasteGFM.bind(this));
+    $(document).on('copy', '.md, .wiki', (e) => { CopyAsGFM.copyAsGFM(e, CopyAsGFM.transformGFMSelection); });
+    $(document).on('copy', 'pre.code.highlight, .diff-content .line_content', (e) => { CopyAsGFM.copyAsGFM(e, CopyAsGFM.transformCodeSelection); });
+    $(document).on('paste', '.js-gfm-input', CopyAsGFM.pasteGFM);
   }
 
-  copyAsGFM(e, transformer) {
+  static copyAsGFM(e, transformer) {
     const clipboardData = e.originalEvent.clipboardData;
     if (!clipboardData) return;
 
@@ -292,10 +292,10 @@ class CopyAsGFM {
     e.stopPropagation();
 
     clipboardData.setData('text/plain', el.textContent);
-    clipboardData.setData('text/x-gfm', CopyAsGFM.nodeToGFM(el));
+    clipboardData.setData('text/x-gfm', this.nodeToGFM(el));
   }
 
-  pasteGFM(e) {
+  static pasteGFM(e) {
     const clipboardData = e.originalEvent.clipboardData;
     if (!clipboardData) return;
 
