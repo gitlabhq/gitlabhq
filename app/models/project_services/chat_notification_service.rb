@@ -86,6 +86,13 @@ class ChatNotificationService < Service
     raise NotImplementedError
   end
 
+  def test(data)
+    result = execute(data)
+    { success: true, result: result }
+  rescue HTTParty::Error, Timeout::Error, SocketError, Errno::ECONNRESET, Errno::ECONNREFUSED, OpenSSL::SSL::SSLError => error
+    { success: false, result: error.message }
+  end
+
   private
 
   def notify(message, opts)
