@@ -25,8 +25,6 @@ class ProcessCommitWorker
 
     commit = build_commit(project, commit_hash)
 
-    return unless commit.matches_cross_reference_regex?
-
     author = commit.author || user
 
     process_commit_message(project, commit, user, author, default)
@@ -80,7 +78,7 @@ class ProcessCommitWorker
 
   private
 
-  # Avoid to re-process commits messages that already exists in the upstream
+  # Avoid reprocessing commits that already exist in the upstream
   # when project is forked. This will also prevent duplicated system notes.
   def commit_exists_in_upstream?(project, commit_hash)
     return false unless project.forked?
