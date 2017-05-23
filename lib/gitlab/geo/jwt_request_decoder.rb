@@ -42,6 +42,7 @@ module Gitlab
           data
         rescue JWT::DecodeError => e
           Rails.logger.error("Error decoding Geo request: #{e}")
+          return
         end
       end
 
