@@ -36,6 +36,16 @@ describe CommitStatus, :models do
     it { is_expected.to eq(commit_status.user) }
   end
 
+  describe 'status state machine' do
+    let!(:commit_status) { create(:commit_status, :running, project: project) }
+
+    it 'invalidates the cache after a transition' do
+      expect(ExpireJobCacheWorker).to receive(:perform_async).with(commit_status.id)
+
+      commit_status.success!
+    end
+  end
+
   describe '#started?' do
     subject { commit_status.started? }
 
