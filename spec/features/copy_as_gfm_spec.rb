@@ -78,6 +78,25 @@ describe 'Copy as GFM', feature: true, js: true do
         expect(output_gfm.strip).to eq(gfm.strip)
       end
 
+      aggregate_failures('an accidentally selected other element') do
+        gfm = 'Test comment with **Markdown!**'
+
+        html = <<-HTML.strip_heredoc
+          <li class="note">
+            <div class="md">
+              <p>
+                Test comment with <strong>Markdown!</strong>
+              </p>
+            </div>
+          </li>
+
+          <li class="note"></li>
+        HTML
+
+        output_gfm = html_to_gfm(html)
+        expect(output_gfm.strip).to eq(gfm.strip)
+      end
+
       verify(
         'InlineDiffFilter',
 
