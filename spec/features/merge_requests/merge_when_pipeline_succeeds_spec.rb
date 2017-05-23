@@ -7,7 +7,8 @@ feature 'Merge When Pipeline Succeeds', :feature, :js do
   let(:merge_request) do
     create(:merge_request_with_diffs, source_project: project,
                                       author: user,
-                                      title: 'Bug NS-04')
+                                      title: 'Bug NS-04',
+                                      merge_params: { force_remove_source_branch: '1' })
   end
 
   let(:pipeline) do
@@ -82,7 +83,8 @@ feature 'Merge When Pipeline Succeeds', :feature, :js do
                    source_project: project,
                    title: 'Bug NS-04',
                    author: user,
-                   merge_user: user)
+                   merge_user: user,
+                   merge_params: { force_remove_source_branch: '1' })
         end
 
         before do
