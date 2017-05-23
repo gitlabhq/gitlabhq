@@ -204,14 +204,17 @@ module Ci
     end
 
     def merge_request
-      merge_requests = MergeRequest.includes(:merge_request_diff)
-                                   .where(source_branch: ref,
-                                          source_project: pipeline.project)
-                                   .reorder(iid: :asc)
+      @merge_request ||=
+        begin
+          merge_requests = MergeRequest.includes(:merge_request_diff)
+            .where(source_branch: ref,
+                   source_project: pipeline.project)
+            .reorder(iid: :asc)
 
-      merge_requests.find do |merge_request|
-        merge_request.commits_sha.include?(pipeline.sha)
-      end
+          merge_requests.find do |merge_request|
+            merge_request.commits_sha.include?(pipeline.sha)
+          end
+        end
     end
 
     def repo_url

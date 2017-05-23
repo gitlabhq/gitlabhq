@@ -45,6 +45,17 @@ class Projects::JobsController < Projects::ApplicationController
     @builds = @project.pipelines.find_by_sha(@build.sha).builds.order('id DESC')
     @builds = @builds.where("id not in (?)", @build.id)
     @pipeline = @build.pipeline
+
+    respond_to do |format|
+      format.html
+      format.json do
+        Gitlab::PollingInterval.set_header(response, interval: 10_000)
+
+        render json: BuildSerializer
+          .new(project: @project, current_user: @current_user)
+          .represent_status(@build, {}, BuildDetailsEntity)
+      end
+    end
   end
 
   def trace
