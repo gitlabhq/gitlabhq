@@ -29,7 +29,7 @@ export default {
       };
     },
     isExpandable() {
-      return this.group.subGroups.length > 0;
+      return Object.keys(this.group.subGroups).length > 0;
     },
   },
 };
@@ -92,7 +92,7 @@ export default {
     </div>
 
     <div class="title">
-      <a :href="group.webUrl">{{group.fullName}}</a>
+      <a :href="group.webUrl">{{group.isOrphan ? group.fullName : group.name}}</a>
     </div>
 
     <div class="description">

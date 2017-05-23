@@ -2,13 +2,13 @@
 export default {
   props: {
     groups: {
-      type: Array,
+      type: Object,
       required: true,
     },
   },
   computed: {
     hasGroups() {
-      return this.groups.length > 0;
+      return Object.keys(this.groups).length > 0;
     },
   },
 };
