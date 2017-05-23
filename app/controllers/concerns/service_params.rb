@@ -59,7 +59,8 @@ module ServiceParams
     :url,
     :user_key,
     :username,
-    :webhook
+    :webhook,
+    :use_kubernetes
   ].freeze
 
   # Parameters to ignore if no value is specified

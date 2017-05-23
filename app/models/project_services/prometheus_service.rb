@@ -7,9 +7,10 @@ class PrometheusService < MonitoringService
 
   #  Access to prometheus is directly through the API
   prop_accessor :api_url
+  boolean_accessor :use_kubernetes
 
   with_options presence: true, if: :activated? do
-    validates :api_url, url: true
+    validates :api_url, url: true, unless: :use_kubernetes?
   end
 
   after_save :clear_reactive_cache!
@@ -45,6 +46,11 @@ class PrometheusService < MonitoringService
 
   def fields
     [
+      {
+        type: 'checkbox',
+        name: 'use_kubernetes',
+        title: 'Use Kubernetes Service'
+      },
       {
         type: 'text',
         name: 'api_url',
@@ -88,6 +94,14 @@ class PrometheusService < MonitoringService
   end
 
   def client
-    @prometheus ||= Gitlab::PrometheusClient.new(api_url: api_url)
+    rest_client, headers = kubernetes_prometheus
+
+    @prometheus ||= Gitlab::PrometheusClient.new(api_url: api_url, rest_client: rest_client, headers: headers)
+  end
+
+  def kubernetes_prometheus
+    return unless use_kubernetes?
+
+    project.kubernetes_service&.rest_client_for('service', 'prometheus', 9090, 'prometheus')
   end
 end

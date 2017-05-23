@@ -3,10 +3,12 @@ module Gitlab
 
   # Helper methods to interact with Prometheus network services & resources
   class PrometheusClient
-    attr_reader :api_url
+    attr_reader :api_url, :rest_client, :headers
 
-    def initialize(api_url:)
+    def initialize(api_url:, rest_client: nil, headers: nil)
       @api_url = api_url
+      @rest_client = rest_client || RestClient::Resource.new(api_url)
+      @headers = headers || {}
     end
 
     def ping
@@ -32,24 +34,15 @@ module Gitlab
     private
 
     def json_api_get(type, args = {})
-      get(join_api_url(type, args))
+      path = ['api', 'v1', type].join('/')
+      get(path, args)
     rescue Errno::ECONNREFUSED
       raise PrometheusError, 'Connection refused'
     end
 
-    def join_api_url(type, args = {})
-      url = URI.parse(api_url)
-    rescue URI::Error
-      raise PrometheusError, "Invalid API URL: #{api_url}"
-    else
-      url.path = [url.path.sub(%r{/+\z}, ''), 'api', 'v1', type].join('/')
-      url.query = args.to_query
-
-      url.to_s
-    end
-
-    def get(url)
-      handle_response(HTTParty.get(url))
+    def get(path, args)
+      response = rest_client[path].get(headers.merge(params: args))
+      handle_response(response)
     rescue SocketError
       raise PrometheusError, "Can't connect to #{url}"
     rescue OpenSSL::SSL::SSLError
@@ -59,13 +52,18 @@ module Gitlab
     end
 
     def handle_response(response)
-      if response.code == 200 && response['status'] == 'success'
-        response['data'] || {}
+      json_data = json_response(response)
+      if response.code == 200 && json_data['status'] == 'success'
+        json_data['data'] || {}
       elsif response.code == 400
-        raise PrometheusError, response['error'] || 'Bad data received'
+        raise PrometheusError, json_data['error'] || 'Bad data received'
       else
         raise PrometheusError, "#{response.code} - #{response.body}"
       end
+    end
+
+    def json_response(response)
+      JSON.parse(response.body)
     end
 
     def get_result(expected_type)

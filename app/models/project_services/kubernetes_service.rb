@@ -134,6 +134,14 @@ class KubernetesService < DeploymentService
     { pods: pods }
   end
 
+  def rest_client_for(kind, name, port, namespace = '')
+    kube_client = build_kubeclient!
+    rest_client = kube_client.rest_client
+    base_url = rest_client.url
+    proxy_url = kube_client.proxy_url(kind, name, port, namespace)
+    [rest_client[proxy_url.sub(base_url, '')], kube_client.headers]
+  end
+
   TEMPLATE_PLACEHOLDER = 'Kubernetes namespace'.freeze
 
   private
