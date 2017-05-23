@@ -13,7 +13,7 @@ feature 'Create Snippet', :js, feature: true do
     end
 
     click_button 'Create snippet'
-    wait_for_ajax
+    wait_for_requests
 
     expect(page).to have_content('My Snippet Title')
     expect(page).to have_content('Hello World!')
@@ -27,7 +27,7 @@ feature 'Create Snippet', :js, feature: true do
     end
 
     click_button 'Create snippet'
-    wait_for_ajax
+    wait_for_requests
 
     expect(page).to have_content('My Snippet Title')
     expect(page).to have_content('snippet+file+name')

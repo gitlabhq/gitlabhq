@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe 'Dashboard > milestone filter', :feature, :js do
-  include WaitForAjax
-
   let(:user) { create(:user) }
   let(:project) { create(:project, name: 'test', namespace: user.namespace) }
   let(:milestone) { create(:milestone, title: "v1.0", project: project) }
@@ -28,14 +26,14 @@ describe 'Dashboard > milestone filter', :feature, :js do
 
     before do
       find(milestone_select).click
-      wait_for_ajax
+      wait_for_requests
 
       page.within('.dropdown-content') do
         click_link 'v1.0'
       end
 
       find(milestone_select).click
-      wait_for_ajax
+      wait_for_requests
     end
 
     it 'shows issues with Milestone v1.0' do
@@ -48,9 +46,9 @@ describe 'Dashboard > milestone filter', :feature, :js do
 
       # open & close dropdown
       find('.dropdown-menu-close').click
-      
+
       expect(find('.milestone-filter')).not_to have_selector('.dropdown.open')
-      
+
       find(milestone_select).click
 
       expect(find('.dropdown-content')).to have_selector('a.is-active', count: 1)

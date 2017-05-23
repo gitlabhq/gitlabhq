@@ -4,8 +4,7 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   include SharedNote
   include SharedPaths
   include Select2Helper
-  include WaitForVueResource
-  include WaitForAjax
+  include WaitForRequests
 
   step 'I am a member of project "Shop"' do
     @project = ::Project.find_by(name: "Shop")
@@ -34,7 +33,7 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
     expect(page).to have_content @merge_request.source_branch
     expect(page).to have_content @merge_request.target_branch
 
-    wait_for_vue_resource
+    wait_for_requests
   end
 
   step 'I fill out a "Merge Request On Forked Project" merge request' do
@@ -48,7 +47,7 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
     first('.dropdown-target-project a', text: @project.path_with_namespace)
 
     first('.js-source-branch').click
-    wait_for_ajax
+    wait_for_requests
     first('.dropdown-source-branch .dropdown-content a', text: 'fix').click
 
     click_button "Compare branches and continue"

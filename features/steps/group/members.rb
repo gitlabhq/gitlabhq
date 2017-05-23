@@ -1,5 +1,5 @@
 class Spinach::Features::GroupMembers < Spinach::FeatureSteps
-  include WaitForAjax
+  include WaitForRequests
   include SharedAuthentication
   include SharedPaths
   include SharedGroup
@@ -58,7 +58,7 @@ class Spinach::Features::GroupMembers < Spinach::FeatureSteps
         click_link 'Developer'
       end
 
-      wait_for_ajax
+      wait_for_requests
     end
   end
 

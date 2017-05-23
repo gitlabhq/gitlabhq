@@ -108,11 +108,11 @@ feature 'Multiple issue updating from issues#index', feature: true do
 
   def click_update_assignee_button
     find('.js-update-assignee').click
-    wait_for_ajax
+    wait_for_requests
   end
 
   def click_update_issues_button
     find('.update_selected_issues').click
-    wait_for_ajax
+    wait_for_requests
   end
 end

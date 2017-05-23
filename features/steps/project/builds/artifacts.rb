@@ -3,7 +3,7 @@ class Spinach::Features::ProjectBuildsArtifacts < Spinach::FeatureSteps
   include SharedProject
   include SharedBuilds
   include RepoHelpers
-  include WaitForAjax
+  include WaitForRequests
 
   step 'I click artifacts download button' do
     click_link 'Download'
@@ -79,7 +79,7 @@ class Spinach::Features::ProjectBuildsArtifacts < Spinach::FeatureSteps
 
   step 'I click a link to file within build artifacts' do
     page.within('.tree-table') { find_link('ci_artifacts.txt').click }
-    wait_for_ajax
+    wait_for_requests
   end
 
   step 'I see a download link' do

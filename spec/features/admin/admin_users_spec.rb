@@ -339,7 +339,7 @@ describe "Admin::Users", feature: true do
       page.within(first('.group_member')) do
         find('.btn-remove').click
       end
-      wait_for_ajax
+      wait_for_requests
 
       expect(page).not_to have_selector('.group_member')
     end

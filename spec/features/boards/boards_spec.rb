@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe 'Issue Boards', feature: true, js: true do
-  include WaitForVueResource
   include DragTo
 
   let(:project) { create(:empty_project, :public) }
@@ -19,7 +18,7 @@ describe 'Issue Boards', feature: true, js: true do
   context 'no lists' do
     before do
       visit namespace_project_boards_path(project.namespace, project)
-      wait_for_vue_resource
+      wait_for_requests
       expect(page).to have_selector('.board', count: 2)
     end
 
@@ -46,7 +45,7 @@ describe 'Issue Boards', feature: true, js: true do
       page.within(find('.board-blank-state')) do
         click_button('Add default lists')
       end
-      wait_for_vue_resource
+      wait_for_requests
 
       expect(page).to have_selector('.board', count: 3)
 
@@ -84,7 +83,7 @@ describe 'Issue Boards', feature: true, js: true do
     before do
       visit namespace_project_boards_path(project.namespace, project)
 
-      wait_for_vue_resource
+      wait_for_requests
 
       expect(page).to have_selector('.board', count: 3)
       expect(find('.board:nth-child(1)')).to have_selector('.card')
@@ -117,7 +116,7 @@ describe 'Issue Boards', feature: true, js: true do
       find('.filtered-search').set(issue8.title)
       find('.filtered-search').native.send_keys(:enter)
 
-      wait_for_vue_resource
+      wait_for_requests
 
       expect(find('.board:nth-child(1)')).to have_selector('.card', count: 0)
       expect(find('.board:nth-child(2)')).to have_selector('.card', count: 0)
@@ -128,7 +127,7 @@ describe 'Issue Boards', feature: true, js: true do
       find('.filtered-search').set(issue5.title)
       find('.filtered-search').native.send_keys(:enter)
 
-      wait_for_vue_resource
+      wait_for_requests
 
       expect(find('.board:nth-child(1)')).to have_selector('.card', count: 1)
       expect(find('.board:nth-child(2)')).to have_selector('.card', count: 0)
@@ -140,20 +139,20 @@ describe 'Issue Boards', feature: true, js: true do
         find('.board-delete').click
       end
 
-      wait_for_vue_resource
+      wait_for_requests
 
       expect(page).to have_selector('.board', count: 2)
     end
 
     it 'removes checkmark in new list dropdown after deleting' do
       click_button 'Add list'
-      wait_for_ajax
+      wait_for_requests
 
       page.within(find('.board:nth-child(1)')) do
         find('.board-delete').click
       end
 
-      wait_for_vue_resource
+      wait_for_requests
 
       expect(page).to have_selector('.board', count: 2)
     end
@@ -164,7 +163,7 @@ describe 'Issue Boards', feature: true, js: true do
       end
 
       visit namespace_project_boards_path(project.namespace, project)
-      wait_for_vue_resource
+      wait_for_requests
 
       page.within(find('.board', match: :first)) do
         expect(page.find('.board-header')).to have_content('58')
@@ -172,13 +171,13 @@ describe 'Issue Boards', feature: true, js: true do
         expect(page).to have_content('Showing 20 of 58 issues')
 
         evaluate_script("document.querySelectorAll('.board .board-list')[0].scrollTop = document.querySelectorAll('.board .board-list')[0].scrollHeight")
-        wait_for_vue_resource
+        wait_for_requests
 
         expect(page).to have_selector('.card', count: 40)
         expect(page).to have_content('Showing 40 of 58 issues')
 
         evaluate_script("document.querySelectorAll('.board .board-list')[0].scrollTop = document.querySelectorAll('.board .board-list')[0].scrollHeight")
-        wait_for_vue_resource
+        wait_for_requests
 
         expect(page).to have_selector('.card', count: 58)
         expect(page).to have_content('Showing all issues')
@@ -188,7 +187,7 @@ describe 'Issue Boards', feature: true, js: true do
     context 'closed' do
       it 'shows list of closed issues' do
         wait_for_board_cards(3, 1)
-        wait_for_ajax
+        wait_for_requests
       end
 
       it 'moves issue to closed' do
@@ -272,7 +271,7 @@ describe 'Issue Boards', feature: true, js: true do
       context 'new list' do
         it 'shows all labels in new list dropdown' do
           click_button 'Add list'
-          wait_for_ajax
+          wait_for_requests
 
           page.within('.dropdown-menu-issues-board-new') do
             expect(page).to have_content(planning.title)
@@ -283,52 +282,52 @@ describe 'Issue Boards', feature: true, js: true do
 
         it 'creates new list for label' do
           click_button 'Add list'
-          wait_for_ajax
+          wait_for_requests
 
           page.within('.dropdown-menu-issues-board-new') do
             click_link testing.title
           end
 
-          wait_for_vue_resource
+          wait_for_requests
 
           expect(page).to have_selector('.board', count: 4)
         end
 
         it 'creates new list for Backlog label' do
           click_button 'Add list'
-          wait_for_ajax
+          wait_for_requests
 
           page.within('.dropdown-menu-issues-board-new') do
             click_link backlog.title
           end
 
-          wait_for_vue_resource
+          wait_for_requests
 
           expect(page).to have_selector('.board', count: 4)
         end
 
         it 'creates new list for Closed label' do
           click_button 'Add list'
-          wait_for_ajax
+          wait_for_requests
 
           page.within('.dropdown-menu-issues-board-new') do
             click_link closed.title
           end
 
-          wait_for_vue_resource
+          wait_for_requests
 
           expect(page).to have_selector('.board', count: 4)
         end
 
         it 'keeps dropdown open after adding new list' do
           click_button 'Add list'
-          wait_for_ajax
+          wait_for_requests
 
           page.within('.dropdown-menu-issues-board-new') do
             click_link closed.title
           end
 
-          wait_for_vue_resource
+          wait_for_requests
 
           expect(page).to have_css('#js-add-list.open')
         end
@@ -336,7 +335,7 @@ describe 'Issue Boards', feature: true, js: true do
         it 'creates new list from a new label' do
           click_button 'Add list'
 
-          wait_for_ajax
+          wait_for_requests
 
           click_link 'Create new label'
 
@@ -346,8 +345,8 @@ describe 'Issue Boards', feature: true, js: true do
 
           click_button 'Create'
 
-          wait_for_ajax
-          wait_for_vue_resource
+          wait_for_requests
+          wait_for_requests
 
           expect(page).to have_selector('.board', count: 4)
         end
@@ -360,7 +359,7 @@ describe 'Issue Boards', feature: true, js: true do
         click_filter_link(user2.username)
         submit_filter
 
-        wait_for_vue_resource
+        wait_for_requests
         wait_for_board_cards(1, 1)
         wait_for_empty_boards((2..3))
       end
@@ -370,7 +369,7 @@ describe 'Issue Boards', feature: true, js: true do
         click_filter_link(user.username)
         submit_filter
 
-        wait_for_vue_resource
+        wait_for_requests
 
         wait_for_board_cards(1, 1)
         wait_for_empty_boards((2..3))
@@ -381,7 +380,7 @@ describe 'Issue Boards', feature: true, js: true do
         click_filter_link(milestone.title)
         submit_filter
 
-        wait_for_vue_resource
+        wait_for_requests
         wait_for_board_cards(1, 1)
         wait_for_board_cards(2, 0)
         wait_for_board_cards(3, 0)
@@ -392,7 +391,7 @@ describe 'Issue Boards', feature: true, js: true do
         click_filter_link(testing.title)
         submit_filter
 
-        wait_for_vue_resource
+        wait_for_requests
         wait_for_board_cards(1, 1)
         wait_for_empty_boards((2..3))
       end
@@ -407,7 +406,7 @@ describe 'Issue Boards', feature: true, js: true do
         wait_for_board_cards(1, 1)
         wait_for_empty_boards((2..3))
 
-        wait_for_vue_resource
+        wait_for_requests
 
         page.within(find('.board', match: :first)) do
           expect(page.find('.board-header')).to have_content('1')
@@ -442,7 +441,7 @@ describe 'Issue Boards', feature: true, js: true do
         click_filter_link(testing.title)
         submit_filter
 
-        wait_for_vue_resource
+        wait_for_requests
 
         page.within(find('.board', match: :first)) do
           expect(page.find('.board-header')).to have_content('51')
@@ -470,7 +469,7 @@ describe 'Issue Boards', feature: true, js: true do
 
         submit_filter
 
-        wait_for_vue_resource
+        wait_for_requests
 
         wait_for_board_cards(1, 1)
         wait_for_empty_boards((2..3))
@@ -481,14 +480,14 @@ describe 'Issue Boards', feature: true, js: true do
           expect(page).to have_selector('.card', count: 8)
           expect(find('.card', match: :first)).to have_content(bug.title)
           click_button(bug.title)
-          wait_for_vue_resource
+          wait_for_requests
         end
 
         page.within('.tokens-container') do
           expect(page).to have_content(bug.title)
         end
 
-        wait_for_vue_resource
+        wait_for_requests
 
         wait_for_board_cards(1, 1)
         wait_for_empty_boards((2..3))
@@ -500,12 +499,12 @@ describe 'Issue Boards', feature: true, js: true do
             click_button(bug.title)
           end
 
-          wait_for_vue_resource
+          wait_for_requests
 
           expect(page).to have_selector('.card', count: 1)
         end
 
-        wait_for_vue_resource
+        wait_for_requests
       end
     end
   end
@@ -513,7 +512,7 @@ describe 'Issue Boards', feature: true, js: true do
   context 'keyboard shortcuts' do
     before do
       visit namespace_project_boards_path(project.namespace, project)
-      wait_for_vue_resource
+      wait_for_requests
     end
 
     it 'allows user to use keyboard shortcuts' do
@@ -526,7 +525,7 @@ describe 'Issue Boards', feature: true, js: true do
     before do
       logout
       visit namespace_project_boards_path(project.namespace, project)
-      wait_for_vue_resource
+      wait_for_requests
     end
 
     it 'displays lists' do
@@ -550,7 +549,7 @@ describe 'Issue Boards', feature: true, js: true do
       logout
       login_as(user_guest)
       visit namespace_project_boards_path(project.namespace, project)
-      wait_for_vue_resource
+      wait_for_requests
     end
 
     it 'does not show create new list' do

@@ -16,7 +16,7 @@ describe 'Projects tab on a user profile', :feature, :js do
       click_link('Personal projects')
     end
 
-    wait_for_ajax
+    wait_for_requests
   end
 
   it 'paginates results' do

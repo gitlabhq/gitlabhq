@@ -3,7 +3,6 @@ require 'rails_helper'
 describe 'New/edit issue', :feature, :js do
   include GitlabRoutingHelper
   include ActionView::Helpers::JavaScriptHelper
-  include WaitForAjax
 
   let!(:project)   { create(:project) }
   let!(:user)      { create(:user)}
@@ -28,7 +27,7 @@ describe 'New/edit issue', :feature, :js do
       before do
         click_button 'Unassigned'
 
-        wait_for_ajax
+        wait_for_requests
       end
 
       it 'unselects other assignees when unassigned is selected' do
@@ -69,7 +68,7 @@ describe 'New/edit issue', :feature, :js do
       expect(find('a', text: 'Assign to me')).to be_visible
       click_button 'Unassigned'
 
-      wait_for_ajax
+      wait_for_requests
 
       page.within '.dropdown-menu-user' do
         click_link user2.name
@@ -168,7 +167,7 @@ describe 'New/edit issue', :feature, :js do
     it 'correctly updates the selected user when changing assignee' do
       click_button 'Unassigned'
 
-      wait_for_ajax
+      wait_for_requests
 
       page.within '.dropdown-menu-user' do
         click_link user.name
