@@ -83,4 +83,8 @@
     position: fixed;
     top: $header-height;
   }
+
+  &:not(.affix-top) {
+    min-height: 100%;
+  }
 }
