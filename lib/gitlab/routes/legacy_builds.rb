@@ -1,9 +1,6 @@
 module Gitlab
   module Routes
     class LegacyBuilds
-      include Gitlab::Routing.url_helpers
-      include GitlabRoutingHelper
-
       def initialize(map)
         @map = map
       end
