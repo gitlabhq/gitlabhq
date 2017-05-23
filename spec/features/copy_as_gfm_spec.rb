@@ -65,6 +65,19 @@ describe 'Copy as GFM', feature: true, js: true do
         GFM
       )
 
+      aggregate_failures('an accidentally selected empty element') do
+        gfm = '# Heading1'
+
+        html = <<-HTML.strip_heredoc
+          <h1>Heading1</h1>
+
+          <h2></h2>
+        HTML
+
+        output_gfm = html_to_gfm(html)
+        expect(output_gfm.strip).to eq(gfm.strip)
+      end
+
       verify(
         'InlineDiffFilter',
 
