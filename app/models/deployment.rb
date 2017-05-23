@@ -99,6 +99,16 @@ class Deployment < ActiveRecord::Base
     created_at.to_time.in_time_zone.to_s(:medium)
   end
 
+  def has_metrics?
+    project.monitoring_service.present?
+  end
+
+  def metrics
+    return {} unless has_metrics?
+
+    project.monitoring_service.deployment_metrics(self)
+  end
+
   private
 
   def ref_path

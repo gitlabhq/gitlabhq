@@ -80,28 +80,28 @@ describe 'gitlab:gitaly namespace rake task' do
     it 'prints storage configuration in a TOML format' do
       config = {
         'default' => { 'path' => '/path/to/default' },
-        'nfs_01' => { 'path' => '/path/to/nfs_01' },
+        'nfs_01' => { 'path' => '/path/to/nfs_01' }
       }
       allow(Gitlab.config.repositories).to receive(:storages).and_return(config)
 
-      orig_stdout = $stdout
-      $stdout = StringIO.new
-
-      header = ''
+      expected_output = ''
       Timecop.freeze do
-        header = <<~TOML
+        expected_output = <<~TOML
           # Gitaly storage configuration generated from #{Gitlab.config.source} on #{Time.current.to_s(:long)}
           # This is in TOML format suitable for use in Gitaly's config.toml file.
+          [[storage]]
+          name = "default"
+          path = "/path/to/default"
+          [[storage]]
+          name = "nfs_01"
+          path = "/path/to/nfs_01"
         TOML
-        run_rake_task('gitlab:gitaly:storage_config')
       end
 
-      output = $stdout.string
-      $stdout = orig_stdout
+      expect { run_rake_task('gitlab:gitaly:storage_config')}.
+        to output(expected_output).to_stdout
 
-      expect(output).to include(header)
-
-      parsed_output = TOML.parse(output)
+      parsed_output = TOML.parse(expected_output)
       config.each do |name, params|
         expect(parsed_output['storage']).to include({ 'name' => name, 'path' => params['path'] })
       end

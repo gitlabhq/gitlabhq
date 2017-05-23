@@ -128,15 +128,18 @@ class UsersController < ApplicationController
   end
 
   def load_snippets
-    @snippets = SnippetsFinder.new.execute(
+    @snippets = SnippetsFinder.new(
       current_user,
-      filter: :by_user,
-      user: user,
+      author: user,
       scope: params[:scope]
-    ).page(params[:page])
+    ).execute.page(params[:page])
   end
 
   def projects_for_current_user
     ProjectsFinder.new(current_user: current_user).execute
+  end
+
+  def build_canonical_path(user)
+    url_for(params.merge(username: user.to_param))
   end
 end

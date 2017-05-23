@@ -7,4 +7,4 @@
 = render 'projects/last_push'
 
 %div{ class: container_class }
-  = render 'projects/files'
+  = render 'projects/files', commit: @last_commit, project: @project, ref: @ref

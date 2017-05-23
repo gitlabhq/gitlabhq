@@ -3,6 +3,8 @@ class PipelineEntity < Grape::Entity
 
   expose :id
   expose :user, using: UserEntity
+  expose :active?, as: :active
+  expose :coverage
 
   expose :path do |pipeline|
     namespace_project_pipeline_path(
@@ -36,10 +38,7 @@ class PipelineEntity < Grape::Entity
 
     expose :path do |pipeline|
       if pipeline.ref
-        namespace_project_tree_path(
-          pipeline.project.namespace,
-          pipeline.project,
-          id: pipeline.ref)
+        project_ref_path(pipeline.project, pipeline.ref)
       end
     end
 
@@ -69,16 +68,16 @@ class PipelineEntity < Grape::Entity
   alias_method :pipeline, :object
 
   def can_retry?
-    can?(request.user, :update_pipeline, pipeline) &&
+    can?(request.current_user, :update_pipeline, pipeline) &&
       pipeline.retryable?
   end
 
   def can_cancel?
-    can?(request.user, :update_pipeline, pipeline) &&
+    can?(request.current_user, :update_pipeline, pipeline) &&
       pipeline.cancelable?
   end
 
   def detailed_status
-    pipeline.detailed_status(request.user)
+    pipeline.detailed_status(request.current_user)
   end
 end

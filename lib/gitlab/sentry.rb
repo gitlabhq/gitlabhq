@@ -11,7 +11,7 @@ module Gitlab
         Raven.user_context(
           id: current_user.id,
           email: current_user.email,
-          username: current_user.username,
+          username: current_user.username
         )
       end
     end

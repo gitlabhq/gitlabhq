@@ -30,6 +30,7 @@ describe 'Merge request', :feature, :js do
       wait_for_ajax
 
       expect(page).to have_selector('.accept-merge-request')
+      expect(find('.accept-merge-request')['disabled']).not_to be(true)
     end
   end
 
@@ -51,14 +52,15 @@ describe 'Merge request', :feature, :js do
 
       page.within('.mr-widget-heading') do
         expect(page).to have_content("Deployed to #{environment.name}")
-        expect(find('.js-environment-link')[:href]).to include(environment.formatted_external_url)
+        expect(find('.js-deploy-url')[:href]).to include(environment.formatted_external_url)
       end
     end
 
     it 'shows green accept merge request button' do
       # Wait for the `ci_status` and `merge_check` requests
       wait_for_ajax
-      expect(page).to have_selector('.accept-merge-request.btn-create')
+      expect(page).to have_selector('.accept-merge-request')
+      expect(find('.accept-merge-request')['disabled']).not_to be(true)
     end
   end
 
@@ -89,6 +91,8 @@ describe 'Merge request', :feature, :js do
                                       statuses: [commit_status])
       create(:ci_build, :pending, pipeline: pipeline)
 
+      merge_request.update(head_pipeline: pipeline)
+
       visit namespace_project_merge_request_path(project.namespace, project, merge_request)
     end
 
@@ -101,10 +105,15 @@ describe 'Merge request', :feature, :js do
 
   context 'when merge request is in the blocked pipeline state' do
     before do
-      create(:ci_pipeline, project: project,
-                           sha: merge_request.diff_head_sha,
-                           ref: merge_request.source_branch,
-                           status: :manual)
+      pipeline = create(
+        :ci_pipeline,
+        project: project,
+        sha: merge_request.diff_head_sha,
+        ref: merge_request.source_branch,
+        status: :manual
+      )
+
+      merge_request.update(head_pipeline: pipeline)
 
       visit namespace_project_merge_request_path(project.namespace,
                                                  project,
@@ -129,13 +138,36 @@ describe 'Merge request', :feature, :js do
                                       statuses: [commit_status])
       create(:ci_build, :pending, pipeline: pipeline)
 
+      merge_request.update(head_pipeline: pipeline)
+
       visit namespace_project_merge_request_path(project.namespace, project, merge_request)
     end
 
     it 'has info button when MWBS button' do
       # Wait for the `ci_status` and `merge_check` requests
       wait_for_ajax
-      expect(page).to have_selector('.merge-when-pipeline-succeeds.btn-info')
+      expect(page).to have_selector('.accept-merge-request.btn-info')
+    end
+  end
+
+  context 'view merge request with MWPS enabled but automatically merge fails' do
+    before do
+      merge_request.update(
+        merge_when_pipeline_succeeds: true,
+        merge_user: merge_request.author,
+        merge_error: 'Something went wrong'
+      )
+
+      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+    end
+
+    it 'shows information about the merge error' do
+      # Wait for the `ci_status` and `merge_check` requests
+      wait_for_ajax
+
+      page.within('.mr-widget-body') do
+        expect(page).to have_content('Something went wrong')
+      end
     end
   end
 
@@ -164,11 +196,11 @@ describe 'Merge request', :feature, :js do
     before do
       allow_any_instance_of(Repository).to receive(:merge).and_return(false)
       visit namespace_project_merge_request_path(project.namespace, project, merge_request)
-      click_button 'Accept merge request'
-      wait_for_ajax
     end
 
     it 'updates the MR widget' do
+      click_button 'Merge'
+
       page.within('.mr-widget-body') do
         expect(page).to have_content('Conflicts detected during merge')
       end

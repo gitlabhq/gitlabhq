@@ -344,6 +344,35 @@ describe User, models: true do
     end
   end
 
+  describe '#update_tracked_fields!', :redis do
+    let(:request) { OpenStruct.new(remote_ip: "127.0.0.1") }
+    let(:user) { create(:user) }
+
+    it 'writes trackable attributes' do
+      expect do
+        user.update_tracked_fields!(request)
+      end.to change { user.reload.current_sign_in_at }
+    end
+
+    it 'does not write trackable attributes when called a second time within the hour' do
+      user.update_tracked_fields!(request)
+
+      expect do
+        user.update_tracked_fields!(request)
+      end.not_to change { user.reload.current_sign_in_at }
+    end
+
+    it 'writes trackable attributes for a different user' do
+      user2 = create(:user)
+
+      user.update_tracked_fields!(request)
+
+      expect do
+        user2.update_tracked_fields!(request)
+      end.to change { user2.reload.current_sign_in_at }
+    end
+  end
+
   shared_context 'user keys' do
     let(:user) { create(:user) }
     let!(:key) { create(:key, user: user) }
@@ -647,7 +676,7 @@ describe User, models: true do
       protocol_and_expectation = {
         'http' => false,
         'ssh' => true,
-        '' => true,
+        '' => true
       }
 
       protocol_and_expectation.each do |protocol, expected|
@@ -900,10 +929,20 @@ describe User, models: true do
     end
 
     context 'with a group route matching the given path' do
-      let!(:group) { create(:group, path: 'group_path') }
+      context 'when the group namespace has an owner_id (legacy data)' do
+        let!(:group) { create(:group, path: 'group_path', owner: user) }
 
-      it 'returns nil' do
-        expect(User.find_by_full_path('group_path')).to eq(nil)
+        it 'returns nil' do
+          expect(User.find_by_full_path('group_path')).to eq(nil)
+        end
+      end
+
+      context 'when the group namespace does not have an owner_id' do
+        let!(:group) { create(:group, path: 'group_path') }
+
+        it 'returns nil' do
+          expect(User.find_by_full_path('group_path')).to eq(nil)
+        end
       end
     end
   end
@@ -935,12 +974,19 @@ describe User, models: true do
 
   describe '#avatar_url' do
     let(:user) { create(:user, :with_avatar) }
-    subject { user.avatar_url }
 
     context 'when avatar file is uploaded' do
+      let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
       let(:avatar_path) { "/uploads/user/avatar/#{user.id}/dk.png" }
 
-      it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
+      it 'shows correct avatar url' do
+        expect(user.avatar_url).to eq(avatar_path)
+        expect(user.avatar_url(only_path: false)).to eq([gitlab_host, avatar_path].join)
+
+        allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
+
+        expect(user.avatar_url).to eq([gitlab_host, avatar_path].join)
+      end
     end
   end
 
@@ -1739,6 +1785,34 @@ describe User, models: true do
       user = create(:user)
 
       expect(user.preferred_language).to eq('en')
+    end
+  end
+
+  context '#invalidate_issue_cache_counts' do
+    let(:user) { build_stubbed(:user) }
+
+    it 'invalidates cache for issue counter' do
+      cache_mock = double
+
+      expect(cache_mock).to receive(:delete).with(['users', user.id, 'assigned_open_issues_count'])
+
+      allow(Rails).to receive(:cache).and_return(cache_mock)
+
+      user.invalidate_issue_cache_counts
+    end
+  end
+
+  context '#invalidate_merge_request_cache_counts' do
+    let(:user) { build_stubbed(:user) }
+
+    it 'invalidates cache for Merge Request counter' do
+      cache_mock = double
+
+      expect(cache_mock).to receive(:delete).with(['users', user.id, 'assigned_open_merge_requests_count'])
+
+      allow(Rails).to receive(:cache).and_return(cache_mock)
+
+      user.invalidate_merge_request_cache_counts
     end
   end
 end

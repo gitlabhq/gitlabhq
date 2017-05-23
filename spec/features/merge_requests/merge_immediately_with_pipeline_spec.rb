@@ -4,16 +4,18 @@ feature 'Merge immediately', :feature, :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
 
-  let(:merge_request) do
+  let!(:merge_request) do
     create(:merge_request_with_diffs, source_project: project,
                                       author: user,
-                                      title: 'Bug NS-04')
+                                      title: 'Bug NS-04',
+                                      head_pipeline: pipeline,
+                                      source_branch: pipeline.ref)
   end
 
   let(:pipeline) do
     create(:ci_pipeline, project: project,
-                         sha: merge_request.diff_head_sha,
-                         ref: merge_request.source_branch)
+                         ref: 'master',
+                         sha: project.repository.commit('master').id)
   end
 
   before { project.team << [user, :master] }
@@ -32,11 +34,13 @@ feature 'Merge immediately', :feature, :js do
       page.within '.mr-widget-body' do
         find('.dropdown-toggle').click
 
-        click_link 'Merge immediately'
+        Sidekiq::Testing.fake! do
+          click_link 'Merge immediately'
 
-        expect(find('.js-merge-when-pipeline-succeeds-button')).to have_content('Merge in progress')
+          expect(find('.accept-merge-request.btn-info')).to have_content('Merge in progress')
 
-        wait_for_ajax
+          wait_for_vue_resource
+        end
       end
     end
   end

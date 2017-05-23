@@ -18,7 +18,7 @@ module BlobHelper
     blob = options.delete(:blob)
     blob ||= project.repository.blob_at(ref, path) rescue nil
 
-    return unless blob
+    return unless blob && blob.readable_text?
 
     common_classes = "btn js-edit-blob #{options[:extra_class]}"
 
@@ -226,7 +226,7 @@ module BlobHelper
 
   def open_raw_blob_button(blob)
     return if blob.empty?
-    
+
     if blob.raw_binary? || blob.stored_externally?
       icon = icon('download')
       title = 'Download'
@@ -242,9 +242,9 @@ module BlobHelper
     case viewer.render_error
     when :too_large
       max_size =
-        if viewer.absolutely_too_large?
-          viewer.absolute_max_size
-        elsif viewer.too_large?
+        if viewer.can_override_max_size?
+          viewer.overridable_max_size
+        else
           viewer.max_size
         end
       "it is larger than #{number_to_human_size(max_size)}"
@@ -275,6 +275,21 @@ module BlobHelper
     end
 
     options << link_to('download it', blob_raw_url, target: '_blank', rel: 'noopener noreferrer')
+
+    options
+  end
+
+  def contribution_options(project)
+    options = []
+
+    if can?(current_user, :create_issue, project)
+      options << link_to("submit an issue", new_namespace_project_issue_path(project.namespace, project))
+    end
+
+    merge_project = can?(current_user, :create_merge_request, project) ? project : (current_user && current_user.fork_of(project))
+    if merge_project
+      options << link_to("create a merge request", new_namespace_project_merge_request_path(project.namespace, project))
+    end
 
     options
   end

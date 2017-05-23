@@ -118,6 +118,22 @@ describe Issues::CreateService, services: true do
         end
       end
 
+      context 'when assignee is set' do
+        let(:opts) do
+          { title: 'Title',
+            description: 'Description',
+            assignees: [assignee] }
+        end
+
+        it 'invalidates open issues counter for assignees when issue is assigned' do
+          project.team << [assignee, :master]
+
+          described_class.new(project, user, opts).execute
+
+          expect(assignee.assigned_open_issues_count).to eq 1
+        end
+      end
+
       it 'executes issue hooks when issue is not confidential' do
         opts = { title: 'Title', description: 'Description', confidential: false }
 

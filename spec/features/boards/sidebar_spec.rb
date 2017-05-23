@@ -115,7 +115,6 @@ describe 'Issue Boards', feature: true, js: true do
           click_link 'Unassigned'
         end
 
-        find('.dropdown-menu-toggle').click
         wait_for_vue_resource
 
         expect(page).to have_content('No assignee')
@@ -158,13 +157,13 @@ describe 'Issue Boards', feature: true, js: true do
       end
 
       page.within(first('.board')) do
-        find('.card:nth-child(2)').click
+        find('.card:nth-child(2)').trigger('click')
       end
 
       page.within('.assignee') do
         click_link 'Edit'
-
-        expect(page).to have_selector('.is-active')
+    
+        expect(find('.dropdown-menu')).to have_selector('.is-active')
       end
     end
   end

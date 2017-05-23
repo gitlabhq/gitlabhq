@@ -48,6 +48,14 @@ module Gitlab
             def self.name
               'Namespace'
             end
+
+            def kind
+              type == 'Group' ? 'group' : 'user'
+            end
+          end
+
+          class User < ActiveRecord::Base
+            self.table_name = 'users'
           end
 
           class Route < ActiveRecord::Base

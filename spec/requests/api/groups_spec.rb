@@ -73,7 +73,7 @@ describe API::Groups do
           storage_size: 702,
           repository_size: 123,
           lfs_objects_size: 234,
-          build_artifacts_size: 345,
+          build_artifacts_size: 345
         }.stringify_keys
         exposed_attributes = attributes.dup
         exposed_attributes['job_artifacts_size'] = exposed_attributes.delete('build_artifacts_size')
@@ -178,7 +178,7 @@ describe API::Groups do
         expect(json_response['path']).to eq(group1.path)
         expect(json_response['description']).to eq(group1.description)
         expect(json_response['visibility']).to eq(Gitlab::VisibilityLevel.string_level(group1.visibility_level))
-        expect(json_response['avatar_url']).to eq(group1.avatar_url)
+        expect(json_response['avatar_url']).to eq(group1.avatar_url(only_path: false))
         expect(json_response['web_url']).to eq(group1.web_url)
         expect(json_response['request_access_enabled']).to eq(group1.request_access_enabled)
         expect(json_response['full_name']).to eq(group1.full_name)

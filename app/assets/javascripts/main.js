@@ -59,7 +59,6 @@ import './lib/utils/datetime_utility';
 import './lib/utils/notify';
 import './lib/utils/pretty_time';
 import './lib/utils/text_utility';
-import './lib/utils/type_utility';
 import './lib/utils/url_utility';
 
 // u2f
@@ -97,7 +96,6 @@ import './dropzone_input';
 import './due_date_select';
 import './files_comment_button';
 import './flash';
-import './gfm_auto_complete';
 import './gl_dropdown';
 import './gl_field_error';
 import './gl_field_errors';
@@ -123,8 +121,6 @@ import './member_expiration_date';
 import './members';
 import './merge_request';
 import './merge_request_tabs';
-import './merge_request_widget';
-import './merged_buttons';
 import './milestone';
 import './milestone_select';
 import './mini_pipeline_graph_dropdown';
@@ -174,7 +170,7 @@ import './visibility_select';
 import './wikis';
 import './zen_mode';
 
-// eslint-disable-next-line global-require
+// eslint-disable-next-line global-require, import/no-commonjs
 if (process.env.NODE_ENV !== 'production') require('./test_utils/');
 
 document.addEventListener('beforeunload', function () {

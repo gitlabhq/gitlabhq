@@ -1,12 +1,10 @@
 /* eslint-disable space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-unused-expressions, no-return-assign, no-param-reassign, max-len */
 
 (function() {
-  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
-
   this.MockU2FDevice = (function() {
     function MockU2FDevice() {
-      this.respondToAuthenticateRequest = bind(this.respondToAuthenticateRequest, this);
-      this.respondToRegisterRequest = bind(this.respondToRegisterRequest, this);
+      this.respondToAuthenticateRequest = this.respondToAuthenticateRequest.bind(this);
+      this.respondToRegisterRequest = this.respondToRegisterRequest.bind(this);
       window.u2f || (window.u2f = {});
       window.u2f.register = (function(_this) {
         return function(appId, registerRequests, signRequests, callback) {

@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import eventHub from '../eventhub';
 
 const Store = gl.issueBoards.BoardsStore;
@@ -37,6 +38,9 @@ gl.issueBoards.IssueCardInner = Vue.extend({
       maxRender: 4,
       maxCounter: 99,
     };
+  },
+  components: {
+    userAvatarLink,
   },
   computed: {
     numberOverLimit() {
@@ -146,23 +150,16 @@ gl.issueBoards.IssueCardInner = Vue.extend({
           </span>
         </h4>
         <div class="card-assignee">
-          <a
-            class="has-tooltip js-no-trigger"
-            :href="assigneeUrl(assignee)"
-            :title="assigneeUrlTitle(assignee)"
+          <user-avatar-link
             v-for="(assignee, index) in issue.assignees"
             v-if="shouldRenderAssignee(index)"
-            data-container="body"
-            data-placement="bottom"
-          >
-            <img
-              class="avatar avatar-inline s20"
-              :src="assignee.avatar"
-              width="20"
-              height="20"
-              :alt="avatarUrlTitle(assignee)"
-            />
-          </a>
+            class="js-no-trigger"
+            :link-href="assigneeUrl(assignee)"
+            :img-alt="avatarUrlTitle(assignee)"
+            :img-src="assignee.avatar"
+            :tooltip-text="assigneeUrlTitle(assignee)"
+            tooltip-placement="bottom"
+          />
           <span
             class="avatar-counter has-tooltip"
             :title="assigneeCounterTooltip"

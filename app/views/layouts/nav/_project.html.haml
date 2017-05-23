@@ -35,7 +35,7 @@
         = link_to namespace_project_merge_requests_path(@project.namespace, @project), title: 'Merge Requests', class: 'shortcuts-merge_requests' do
           %span
             Merge Requests
-            %span.badge.count.merge_counter= number_with_delimiter(MergeRequestsFinder.new(current_user, project_id: @project.id).execute.opened.count)
+            %span.badge.count.merge_counter.js-merge-counter= number_with_delimiter(MergeRequestsFinder.new(current_user, project_id: @project.id).execute.opened.count)
 
     - if project_nav_tab? :pipelines
       = nav_link(controller: [:pipelines, :builds, :environments, :artifacts]) do

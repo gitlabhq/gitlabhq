@@ -23,4 +23,4 @@
           to post a comment
 
 :javascript
-  var notes = new Notes("#{notes_url}", #{@notes.map(&:id).to_json}, #{Time.now.to_i}, "#{diff_view}")
+  var notes = new Notes("#{notes_url}", #{@notes.map(&:id).to_json}, #{Time.now.to_i}, "#{diff_view}", false)

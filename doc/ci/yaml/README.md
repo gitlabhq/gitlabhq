@@ -147,6 +147,10 @@ variables:
   DATABASE_URL: "postgres://postgres@postgres/my_database"
 ```
 
+>**Note:**
+Integers (as well as strings) are legal both for variable's name and value.
+Floats are not legal and cannot be used.
+
 These variables can be later used in all executed commands and scripts.
 The YAML-defined variables are also set to all created service containers,
 thus allowing to fine tune them. Variables can be also defined on a
@@ -162,7 +166,11 @@ which can be set in GitLab's UI.
 
 ### cache
 
-> Introduced in GitLab Runner v0.7.0.
+>
+**Notes:**
+- Introduced in GitLab Runner v0.7.0.
+- Prior to GitLab 9.2, caches were restored after artifacts.
+- From GitLab 9.2, caches are restored before artifacts.
 
 `cache` is used to specify a list of files and directories which should be
 cached between jobs. You can only use paths that are within the project
@@ -769,6 +777,8 @@ as Review Apps. You can see a simple example using Review Apps at
 **Notes:**
 - Introduced in GitLab Runner v0.7.0 for non-Windows platforms.
 - Windows support was added in GitLab Runner v.1.0.0.
+- Prior to GitLab 9.2, caches were restored after artifacts.
+- From GitLab 9.2, caches are restored before artifacts.
 - Currently not all executors are supported.
 - Job artifacts are only collected for successful jobs by default.
 
@@ -1152,7 +1162,7 @@ Example:
 
 ```yaml
 variables:
-  GET_SOURCES_ATTEMPTS: "3"
+  GET_SOURCES_ATTEMPTS: 3
 ```
 
 You can set them in the global [`variables`](#variables) section or the

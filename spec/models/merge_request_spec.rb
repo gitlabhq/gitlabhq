@@ -87,48 +87,6 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe "before_save" do
-    describe "#update_cache_counts when a merge request is reassigned" do
-      let(:project) { create :project }
-      let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
-      let(:assignee) { create :user }
-
-      context "when previous assignee exists" do
-        before do
-          project.team << [assignee, :developer]
-          merge_request.update(assignee: assignee)
-        end
-
-        it "updates cache counts for new assignee" do
-          user = create(:user)
-
-          expect(user).to receive(:update_cache_counts)
-
-          merge_request.update(assignee: user)
-        end
-
-        it "updates cache counts for previous assignee" do
-          old_assignee = merge_request.assignee
-          allow(User).to receive(:find_by_id).with(old_assignee.id).and_return(old_assignee)
-
-          expect(old_assignee).to receive(:update_cache_counts)
-
-          merge_request.update(assignee: nil)
-        end
-      end
-
-      context "when previous assignee does not exist" do
-        it "updates cache count for the new assignee" do
-          merge_request.update(assignee: nil)
-
-          expect_any_instance_of(User).to receive(:update_cache_counts)
-
-          merge_request.update(assignee: assignee)
-        end
-      end
-    end
-  end
-
   describe '#card_attributes' do
     it 'includes the author name' do
       allow(subject).to receive(:author).and_return(double(name: 'Robert'))
@@ -760,13 +718,8 @@ describe MergeRequest, models: true do
   describe '#head_pipeline' do
     describe 'when the source project exists' do
       it 'returns the latest pipeline' do
-        pipeline = double(:ci_pipeline, ref: 'master')
-
-        allow(subject).to receive(:diff_head_sha).and_return('123abc')
-
-        expect(subject.source_project).to receive(:pipeline_for).
-          with('master', '123abc').
-          and_return(pipeline)
+        pipeline = create(:ci_empty_pipeline, project: subject.source_project, ref: 'master', status: 'running', sha: "123abc")
+        subject.update(head_pipeline: pipeline)
 
         expect(subject.head_pipeline).to eq(pipeline)
       end
@@ -1315,71 +1268,6 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe '#conflicts_can_be_resolved_in_ui?' do
-    def create_merge_request(source_branch)
-      create(:merge_request, source_branch: source_branch, target_branch: 'conflict-start') do |mr|
-        mr.mark_as_unmergeable
-      end
-    end
-
-    it 'returns a falsey value when the MR can be merged without conflicts' do
-      merge_request = create_merge_request('master')
-      merge_request.mark_as_mergeable
-
-      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
-    end
-
-    it 'returns a falsey value when the MR is marked as having conflicts, but has none' do
-      merge_request = create_merge_request('master')
-
-      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
-    end
-
-    it 'returns a falsey value when the MR has a missing ref after a force push' do
-      merge_request = create_merge_request('conflict-resolvable')
-      allow(merge_request.conflicts).to receive(:merge_index).and_raise(Rugged::OdbError)
-
-      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
-    end
-
-    it 'returns a falsey value when the MR does not support new diff notes' do
-      merge_request = create_merge_request('conflict-resolvable')
-      merge_request.merge_request_diff.update_attributes(start_commit_sha: nil)
-
-      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
-    end
-
-    it 'returns a falsey value when the conflicts contain a large file' do
-      merge_request = create_merge_request('conflict-too-large')
-
-      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
-    end
-
-    it 'returns a falsey value when the conflicts contain a binary file' do
-      merge_request = create_merge_request('conflict-binary-file')
-
-      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
-    end
-
-    it 'returns a falsey value when the conflicts contain a file edited in one branch and deleted in another' do
-      merge_request = create_merge_request('conflict-missing-side')
-
-      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
-    end
-
-    it 'returns a truthy value when the conflicts are resolvable in the UI' do
-      merge_request = create_merge_request('conflict-resolvable')
-
-      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_truthy
-    end
-
-    it 'returns a truthy value when the conflicts have to be resolved in an editor' do
-      merge_request = create_merge_request('conflict-contains-conflict-markers')
-
-      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_truthy
-    end
-  end
-
   describe "#source_project_missing?" do
     let(:project)      { create(:empty_project) }
     let(:fork_project) { create(:empty_project, forked_from_project: project) }
@@ -1504,11 +1392,15 @@ describe MergeRequest, models: true do
 
   describe '#mergeable_with_slash_command?' do
     def create_pipeline(status)
-      create(:ci_pipeline_with_one_job,
+      pipeline = create(:ci_pipeline_with_one_job,
         project: project,
         ref:     merge_request.source_branch,
         sha:     merge_request.diff_head_sha,
         status:  status)
+
+      merge_request.update(head_pipeline: pipeline)
+
+      pipeline
     end
 
     let(:project)       { create(:project, :public, :repository, only_allow_merge_if_pipeline_succeeds: true) }

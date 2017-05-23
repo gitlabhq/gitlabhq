@@ -116,10 +116,11 @@ describe BlobHelper do
 
     let(:viewer_class) do
       Class.new(BlobViewer::Base) do
-        self.max_size = 1.megabyte
-        self.absolute_max_size = 5.megabytes
+        include BlobViewer::ServerSide
+
+        self.overridable_max_size = 1.megabyte
+        self.max_size = 5.megabytes
         self.type = :rich
-        self.client_side = false
       end
     end
 

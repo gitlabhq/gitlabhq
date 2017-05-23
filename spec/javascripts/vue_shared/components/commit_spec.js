@@ -61,16 +61,16 @@ describe('Commit component', () => {
     });
 
     it('should render a link to the ref url', () => {
-      expect(component.$el.querySelector('.branch-name').getAttribute('href')).toEqual(props.commitRef.ref_url);
+      expect(component.$el.querySelector('.ref-name').getAttribute('href')).toEqual(props.commitRef.ref_url);
     });
 
     it('should render the ref name', () => {
-      expect(component.$el.querySelector('.branch-name').textContent).toContain(props.commitRef.name);
+      expect(component.$el.querySelector('.ref-name').textContent).toContain(props.commitRef.name);
     });
 
     it('should render the commit short sha with a link to the commit url', () => {
-      expect(component.$el.querySelector('.commit-id').getAttribute('href')).toEqual(props.commitUrl);
-      expect(component.$el.querySelector('.commit-id').textContent).toContain(props.shortSha);
+      expect(component.$el.querySelector('.commit-sha').getAttribute('href')).toEqual(props.commitUrl);
+      expect(component.$el.querySelector('.commit-sha').textContent).toContain(props.shortSha);
     });
 
     it('should render the given commitIconSvg', () => {
@@ -86,7 +86,7 @@ describe('Commit component', () => {
 
       it('Should render the author avatar with title and alt attributes', () => {
         expect(
-          component.$el.querySelector('.commit-title .avatar-image-container img').getAttribute('title'),
+          component.$el.querySelector('.commit-title .avatar-image-container img').getAttribute('data-original-title'),
         ).toContain(props.author.username);
         expect(
           component.$el.querySelector('.commit-title .avatar-image-container img').getAttribute('alt'),

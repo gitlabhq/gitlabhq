@@ -19,8 +19,8 @@ feature 'Check if mergeable with unresolved discussions', js: true, feature: tru
       it 'does not allow to merge' do
         visit_merge_request(merge_request)
 
-        expect(page).not_to have_button 'Accept merge request'
-        expect(page).to have_content('This merge request has unresolved discussions')
+        expect(page).not_to have_button 'Merge'
+        expect(page).to have_content('There are unresolved discussions.')
       end
     end
 
@@ -32,7 +32,7 @@ feature 'Check if mergeable with unresolved discussions', js: true, feature: tru
       it 'allows MR to be merged' do
         visit_merge_request(merge_request)
 
-        expect(page).to have_button 'Accept merge request'
+        expect(page).to have_button 'Merge'
       end
     end
   end
@@ -46,7 +46,7 @@ feature 'Check if mergeable with unresolved discussions', js: true, feature: tru
       it 'does not allow to merge' do
         visit_merge_request(merge_request)
 
-        expect(page).to have_button 'Accept merge request'
+        expect(page).to have_button 'Merge'
       end
     end
 
@@ -58,7 +58,7 @@ feature 'Check if mergeable with unresolved discussions', js: true, feature: tru
       it 'allows MR to be merged' do
         visit_merge_request(merge_request)
 
-        expect(page).to have_button 'Accept merge request'
+        expect(page).to have_button 'Merge'
       end
     end
   end

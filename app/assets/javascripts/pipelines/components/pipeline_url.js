@@ -1,3 +1,5 @@
+import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
+
 export default {
   props: [
     'pipeline',
@@ -7,6 +9,9 @@ export default {
       return !!this.pipeline.user;
     },
   },
+  components: {
+    userAvatarLink,
+  },
   template: `
     <td>
       <a
@@ -15,21 +20,16 @@ export default {
         <span class="pipeline-id">#{{pipeline.id}}</span>
       </a>
       <span>by</span>
-      <a
-        class="js-pipeline-url-user"
+      <user-avatar-link
         v-if="user"
-        :href="pipeline.user.web_url">
-        <img
-          v-if="user"
-          class="avatar has-tooltip s20 "
-          :title="pipeline.user.name"
-          data-container="body"
-          :src="pipeline.user.avatar_url"
-        >
-      </a>
+        class="js-pipeline-url-user"
+        :link-href="pipeline.user.web_url"
+        :img-src="pipeline.user.avatar_url"
+        :tooltip-text="pipeline.user.name"
+      />
       <span
         v-if="!user"
-        class="js-pipeline-url-api api monospace">
+        class="js-pipeline-url-api api">
         API
       </span>
       <span

@@ -14,7 +14,8 @@
  */
 
 /* global Flash */
-import StatusIconEntityMap from '../../ci_status_icons';
+import { borderlessStatusIconEntityMap } from '../../vue_shared/ci_status_icons';
+import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
 export default {
   props: {
@@ -36,6 +37,10 @@ export default {
       dropdownContent: '',
       endpoint: this.stage.dropdown_path,
     };
+  },
+
+  components: {
+    loadingIcon,
   },
 
   updated() {
@@ -113,7 +118,7 @@ export default {
     },
 
     svgIcon() {
-      return StatusIconEntityMap[this.stage.status.icon];
+      return borderlessStatusIconEntityMap[this.stage.status.icon];
     },
   },
 };
@@ -153,15 +158,7 @@ export default {
         :class="dropdownClass"
         class="js-builds-dropdown-list scrollable-menu">
 
-        <div
-          class="text-center"
-          v-if="isLoading">
-          <i
-            class="fa fa-spin fa-spinner"
-            aria-hidden="true"
-            aria-label="Loading">
-          </i>
-        </div>
+        <loading-icon v-if="isLoading"/>
 
         <ul
           v-else

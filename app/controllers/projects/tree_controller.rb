@@ -24,6 +24,8 @@ class Projects::TreeController < Projects::ApplicationController
       end
     end
 
+    @last_commit = @repository.last_commit_for_path(@commit.id, @tree.path) || @commit
+
     respond_to do |format|
       format.html
       # Disable cache so browser history works
@@ -48,7 +50,7 @@ class Projects::TreeController < Projects::ApplicationController
     @dir_name = File.join(@path, params[:dir_name])
     @commit_params = {
       file_path: @dir_name,
-      commit_message: params[:commit_message],
+      commit_message: params[:commit_message]
     }
   end
 end

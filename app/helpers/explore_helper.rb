@@ -10,7 +10,7 @@ module ExploreHelper
       personal: params[:personal],
       archived: params[:archived],
       shared: params[:shared],
-      namespace_id: params[:namespace_id],
+      namespace_id: params[:namespace_id]
     }
 
     options = exist_opts.merge(options).delete_if { |key, value| value.blank? }

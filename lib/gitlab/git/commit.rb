@@ -19,13 +19,7 @@ module Gitlab
       def ==(other)
         return false unless other.is_a?(Gitlab::Git::Commit)
 
-        methods = [:message, :parent_ids, :authored_date, :author_name,
-                   :author_email, :committed_date, :committer_name,
-                   :committer_email]
-
-        methods.all? do |method|
-          send(method) == other.send(method)
-        end
+        id && id == other.id
       end
 
       class << self
@@ -55,6 +49,7 @@ module Gitlab
         #   Commit.find(repo, 'master')
         #
         def find(repo, commit_id = "HEAD")
+          return commit_id if commit_id.is_a?(Gitlab::Git::Commit)
           return decorate(commit_id) if commit_id.is_a?(Rugged::Commit)
 
           obj = if commit_id.is_a?(String)
@@ -190,6 +185,10 @@ module Gitlab
       # hash.
       def diff_from_parent(options = {})
         Commit.diff_from_parent(raw_commit, options)
+      end
+
+      def deltas
+        @deltas ||= diff_from_parent.each_delta.map { |d| Gitlab::Git::Diff.new(d) }
       end
 
       def has_zero_stats?

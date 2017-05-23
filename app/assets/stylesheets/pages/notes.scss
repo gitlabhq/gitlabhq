@@ -238,11 +238,6 @@ ul.notes {
 
           ul {
             margin: 3px 0 3px 16px !important;
-
-            .gfm-commit {
-              font-family: $monospace_font;
-              font-size: 12px;
-            }
           }
 
           p:first-child {
@@ -282,10 +277,6 @@ ul.notes {
     &:hover {
       background-color: $gray-light;
     }
-  }
-
-  .diff-header > span {
-    margin-right: 10px;
   }
 
   .line_content {
@@ -618,6 +609,15 @@ ul.notes {
 }
 
 .line-resolve-all-container {
+  @media (min-width: $screen-sm-min) {
+    margin-right: 0;
+    padding-left: $gl-padding;
+  }
+
+  > div {
+    white-space: nowrap;
+  }
+
   .btn-group {
     margin-left: -4px;
   }
@@ -669,7 +669,7 @@ ul.notes {
 
 .line-resolve-btn {
   position: relative;
-  top: 2px;
+  top: 0;
   padding: 0;
   background-color: transparent;
   border: none;
@@ -690,8 +690,8 @@ ul.notes {
 
   svg {
     fill: $gray-darkest;
-    height: 15px;
-    width: 15px;
+    height: 16px;
+    width: 16px;
   }
 
   .loading {

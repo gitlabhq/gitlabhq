@@ -40,6 +40,7 @@ logs, and code as it's very hard to read otherwise.)
 #### Results of GitLab environment info
 
 <details>
+<summary>Expand for output related to GitLab environment info</summary>
 <pre>
 
 (For installations with omnibus-gitlab package run and paste the output of:
@@ -54,6 +55,7 @@ logs, and code as it's very hard to read otherwise.)
 #### Results of GitLab application Check
 
 <details>
+<summary>Expand for output related to the GitLab application check</summary>
 <pre>
 
 (For installations with omnibus-gitlab package run and paste the output of:

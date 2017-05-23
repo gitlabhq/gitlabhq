@@ -27,6 +27,7 @@
 
   = stylesheet_link_tag "application", media: "all"
   = stylesheet_link_tag "print",       media: "print"
+  = stylesheet_link_tag "test",        media: "all" if Rails.env.test?
 
   = Gon::Base.render_data
 
@@ -34,6 +35,7 @@
   = webpack_bundle_tag "common"
   = webpack_bundle_tag "main"
   = webpack_bundle_tag "raven" if current_application_settings.clientside_sentry_enabled
+  = webpack_bundle_tag "test" if Rails.env.test?
 
   - if content_for?(:page_specific_javascripts)
     = yield :page_specific_javascripts

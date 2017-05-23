@@ -202,7 +202,7 @@ describe Gitlab::Workhorse, lib: true do
     context 'when Gitaly is enabled' do
       let(:gitaly_params) do
         {
-          GitalyAddress: Gitlab::GitalyClient.get_address('default'),
+          GitalyAddress: Gitlab::GitalyClient.address('default')
         }
       end
 
@@ -214,7 +214,7 @@ describe Gitlab::Workhorse, lib: true do
         repo_param = { Repository: {
           path: repo_path,
           storage_name: 'default',
-          relative_path: project.full_path + '.git',
+          relative_path: project.full_path + '.git'
         } }
 
         expect(subject).to include(repo_param)

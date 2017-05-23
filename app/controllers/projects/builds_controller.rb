@@ -91,7 +91,7 @@ class Projects::BuildsController < Projects::ApplicationController
 
   def status
     render json: BuildSerializer
-      .new(project: @project, user: @current_user)
+      .new(project: @project, current_user: @current_user)
       .represent_status(@build)
   end
 

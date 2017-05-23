@@ -26,6 +26,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     context 'with gitaly enabled' do
       before { stub_gitaly }
+      after { Gitlab::GitalyClient.clear_stubs! }
 
       it 'gets the branch name from GitalyClient' do
         expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:default_branch_name)
@@ -120,6 +121,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     context 'with gitaly enabled' do
       before { stub_gitaly }
+      after { Gitlab::GitalyClient.clear_stubs! }
 
       it 'gets the branch names from GitalyClient' do
         expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:branch_names)
@@ -157,6 +159,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     context 'with gitaly enabled' do
       before { stub_gitaly }
+      after { Gitlab::GitalyClient.clear_stubs! }
 
       it 'gets the tag names from GitalyClient' do
         expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:tag_names)
@@ -1046,6 +1049,28 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
+  describe '#ref_name_for_sha' do
+    let(:ref_path) { 'refs/heads' }
+    let(:sha) { repository.find_branch('master').dereferenced_target.id }
+    let(:ref_name) { 'refs/heads/master' }
+
+    it 'returns the ref name for the given sha' do
+      expect(repository.ref_name_for_sha(ref_path, sha)).to eq(ref_name)
+    end
+
+    it "returns an empty name if the ref doesn't exist" do
+      expect(repository.ref_name_for_sha(ref_path, "000000")).to eq("")
+    end
+
+    it "raise an exception if the ref is empty" do
+      expect { repository.ref_name_for_sha(ref_path, "") }.to raise_error(ArgumentError)
+    end
+
+    it "raise an exception if the ref is nil" do
+      expect { repository.ref_name_for_sha(ref_path, nil) }.to raise_error(ArgumentError)
+    end
+  end
+
   describe '#find_commits' do
     it 'should return a return a collection of commits' do
       commits = repository.find_commits
@@ -1080,7 +1105,9 @@ describe Gitlab::Git::Repository, seed_helper: true do
       ref = double()
       allow(ref).to receive(:name) { 'bad-branch' }
       allow(ref).to receive(:target) { raise Rugged::ReferenceError }
-      allow(repository.rugged).to receive(:branches) { [ref] }
+      branches = double()
+      allow(branches).to receive(:each) { [ref].each }
+      allow(repository.rugged).to receive(:branches) { branches }
     end
 
     it 'should return empty branches' do
@@ -1264,7 +1291,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe '#local_branches' do
     before(:all) do
-      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH)
+      @repo = Gitlab::Git::Repository.new('default', File.join(TEST_MUTABLE_REPO_PATH, '.git'))
     end
 
     after(:all) do
@@ -1278,6 +1305,29 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
       expect(@repo.local_branches.any? { |branch| branch.name == 'remote_branch' }).to eq(false)
       expect(@repo.local_branches.any? { |branch| branch.name == 'local_branch' }).to eq(true)
+    end
+
+    context 'with gitaly enabled' do
+      before { stub_gitaly }
+      after { Gitlab::GitalyClient.clear_stubs! }
+
+      it 'gets the branches from GitalyClient' do
+        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:local_branches).
+          and_return([])
+        @repo.local_branches
+      end
+
+      it 'wraps GRPC not found' do
+        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:local_branches).
+          and_raise(GRPC::NotFound)
+        expect { @repo.local_branches }.to raise_error(Gitlab::Git::Repository::NoRepository)
+      end
+
+      it 'wraps GRPC exceptions' do
+        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:local_branches).
+          and_raise(GRPC::Unknown)
+        expect { @repo.local_branches }.to raise_error(Gitlab::Git::CommandError)
+      end
     end
   end
 

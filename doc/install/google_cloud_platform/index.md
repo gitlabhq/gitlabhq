@@ -2,6 +2,10 @@
 
 ![GCP landing page](img/gcp_landing.png)
 
+>**Important note:**
+GitLab has no official images in Google Cloud Platform yet. This guide serves
+as a template for when the GitLab VM will be available.
+
 The fastest way to get started on [Google Cloud Platform (GCP)][gcp] is through
 the [Google Cloud Launcher][launcher] program.
 

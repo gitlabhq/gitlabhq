@@ -3,7 +3,7 @@
                   prefer-arrow-callback, comma-dangle, consistent-return, yoda,
                   prefer-rest-params, prefer-spread, no-unused-vars, prefer-template,
                   promise/catch-or-return */
-/* global Api */
+import Api from './api';
 
 var slice = [].slice;
 

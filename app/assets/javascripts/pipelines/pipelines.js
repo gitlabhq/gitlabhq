@@ -1,12 +1,13 @@
 import Visibility from 'visibilityjs';
 import PipelinesService from './services/pipelines_service';
 import eventHub from './event_hub';
-import PipelinesTableComponent from '../vue_shared/components/pipelines_table';
-import TablePaginationComponent from '../vue_shared/components/table_pagination';
-import EmptyState from './components/empty_state.vue';
-import ErrorState from './components/error_state.vue';
-import NavigationTabs from './components/navigation_tabs';
-import NavigationControls from './components/nav_controls';
+import pipelinesTableComponent from '../vue_shared/components/pipelines_table';
+import tablePagination from '../vue_shared/components/table_pagination.vue';
+import emptyState from './components/empty_state.vue';
+import errorState from './components/error_state.vue';
+import navigationTabs from './components/navigation_tabs';
+import navigationControls from './components/nav_controls';
+import loadingIcon from '../vue_shared/components/loading_icon.vue';
 import Poll from '../lib/utils/poll';
 
 export default {
@@ -18,12 +19,13 @@ export default {
   },
 
   components: {
-    'gl-pagination': TablePaginationComponent,
-    'pipelines-table-component': PipelinesTableComponent,
-    'empty-state': EmptyState,
-    'error-state': ErrorState,
-    'navigation-tabs': NavigationTabs,
-    'navigation-controls': NavigationControls,
+    tablePagination,
+    pipelinesTableComponent,
+    emptyState,
+    errorState,
+    navigationTabs,
+    navigationControls,
+    loadingIcon,
   },
 
   data() {
@@ -50,6 +52,7 @@ export default {
       hasError: false,
       isMakingRequest: false,
       updateGraphDropdown: false,
+      hasMadeRequest: false,
     };
   },
 
@@ -76,6 +79,7 @@ export default {
     shouldRenderEmptyState() {
       return !this.isLoading &&
         !this.hasError &&
+        this.hasMadeRequest &&
         !this.state.pipelines.length &&
         (this.scope === 'all' || this.scope === null);
     },
@@ -148,6 +152,10 @@ export default {
     if (!Visibility.hidden()) {
       this.isLoading = true;
       poll.makeRequest();
+    } else {
+      // If tab is not visible we need to make the first request so we don't show the empty
+      // state without knowing if there are any pipelines
+      this.fetchPipelines();
     }
 
     Visibility.change(() => {
@@ -200,6 +208,7 @@ export default {
 
       this.isLoading = false;
       this.updateGraphDropdown = true;
+      this.hasMadeRequest = true;
     },
 
     errorCallback() {
@@ -244,13 +253,11 @@ export default {
 
       <div class="content-list pipelines">
 
-        <div
-          class="realtime-loading"
-          v-if="isLoading">
-          <i
-            class="fa fa-spinner fa-spin"
-            aria-hidden="true" />
-        </div>
+        <loading-icon
+          label="Loading Pipelines"
+          size="3"
+          v-if="isLoading"
+          />
 
         <empty-state
           v-if="shouldRenderEmptyState"
@@ -275,12 +282,13 @@ export default {
             />
         </div>
 
-        <gl-pagination
+        <table-pagination
           v-if="shouldRenderPagination"
           :pagenum="pagenum"
           :change="change"
           :count="state.count.all"
-          :pageInfo="state.pageInfo"/>
+          :pageInfo="state.pageInfo"
+          />
       </div>
     </div>
   `,

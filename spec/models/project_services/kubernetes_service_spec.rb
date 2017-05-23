@@ -54,7 +54,7 @@ describe KubernetesService, models: true, caching: true do
           'a' * 63 => true,
           'a' * 64 => false,
           'a.b' => false,
-          'a*b' => false,
+          'a*b' => false
         }.each do |namespace, validity|
           it "validates #{namespace} as #{validity ? 'valid' : 'invalid'}" do
             subject.namespace = namespace
@@ -168,7 +168,7 @@ describe KubernetesService, models: true, caching: true do
           { key: 'KUBE_TOKEN', value: 'token', public: false },
           { key: 'KUBE_NAMESPACE', value: 'my-project', public: true },
           { key: 'KUBE_CA_PEM', value: 'CA PEM DATA', public: true },
-          { key: 'KUBE_CA_PEM_FILE', value: 'CA PEM DATA', public: true, file: true },
+          { key: 'KUBE_CA_PEM_FILE', value: 'CA PEM DATA', public: true, file: true }
         )
       end
     end
@@ -179,7 +179,7 @@ describe KubernetesService, models: true, caching: true do
           { key: 'KUBE_URL', value: 'https://kube.domain.com', public: true },
           { key: 'KUBE_TOKEN', value: 'token', public: false },
           { key: 'KUBE_CA_PEM', value: 'CA PEM DATA', public: true },
-          { key: 'KUBE_CA_PEM_FILE', value: 'CA PEM DATA', public: true, file: true },
+          { key: 'KUBE_CA_PEM_FILE', value: 'CA PEM DATA', public: true, file: true }
         )
       end
 

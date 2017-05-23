@@ -27,13 +27,15 @@ module Gitlab
       # Rugged repo object
       attr_reader :rugged
 
+      attr_reader :storage
+
       # 'path' must be the path to a _bare_ git repository, e.g.
       # /path/to/my-repo.git
-      def initialize(repository_storage, relative_path)
-        @repository_storage = repository_storage
+      def initialize(storage, relative_path)
+        @storage = storage
         @relative_path = relative_path
 
-        storage_path = Gitlab.config.repositories.storages[@repository_storage]['path']
+        storage_path = Gitlab.config.repositories.storages[@storage]['path']
         @path = File.join(storage_path, @relative_path)
         @name = @relative_path.split("/").last
         @attributes = Gitlab::Git::Attributes.new(path)
@@ -78,14 +80,16 @@ module Gitlab
       end
 
       # Returns an Array of Branches
-      def branches
-        rugged.branches.map do |rugged_ref|
+      def branches(filter: nil, sort_by: nil)
+        branches = rugged.branches.each(filter).map do |rugged_ref|
           begin
             Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target)
           rescue Rugged::ReferenceError
             # Omit invalid branch
           end
-        end.compact.sort_by(&:name)
+        end.compact
+
+        sort_branches(branches, sort_by)
       end
 
       def reload_rugged
@@ -106,15 +110,21 @@ module Gitlab
         Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target) if rugged_ref
       end
 
-      def local_branches
-        rugged.branches.each(:local).map do |branch|
-          Gitlab::Git::Branch.new(self, branch.name, branch.target)
+      def local_branches(sort_by: nil)
+        gitaly_migrate(:local_branches) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.local_branches(sort_by: sort_by).map do |gitaly_branch|
+              Gitlab::Git::Branch.new(self, gitaly_branch.name, gitaly_branch)
+            end
+          else
+            branches(filter: :local, sort_by: sort_by)
+          end
         end
       end
 
       # Returns the number of valid branches
       def branch_count
-        Gitlab::GitalyClient.migrate(:branch_names) do |is_enabled|
+        gitaly_migrate(:branch_names) do |is_enabled|
           if is_enabled
             gitaly_ref_client.count_branch_names
           else
@@ -133,7 +143,7 @@ module Gitlab
 
       # Returns the number of valid tags
       def tag_count
-        Gitlab::GitalyClient.migrate(:tag_names) do |is_enabled|
+        gitaly_migrate(:tag_names) do |is_enabled|
           if is_enabled
             gitaly_ref_client.count_tag_names
           else
@@ -258,7 +268,7 @@ module Gitlab
           'RepoPath' => path,
           'ArchivePrefix' => prefix,
           'ArchivePath' => archive_file_path(prefix, storage_path, format),
-          'CommitId' => commit.id,
+          'CommitId' => commit.id
         }
       end
 
@@ -469,19 +479,19 @@ module Gitlab
 
       # Returns a RefName for a given SHA
       def ref_name_for_sha(ref_path, sha)
-        # NOTE: This feature is intentionally disabled until
-        # https://gitlab.com/gitlab-org/gitaly/issues/180 is resolved
-        # Gitlab::GitalyClient.migrate(:find_ref_name) do |is_enabled|
-        #   if is_enabled
-        #     gitaly_ref_client.find_ref_name(sha, ref_path)
-        #   else
-        args = %W(#{Gitlab.config.git.bin_path} for-each-ref --count=1 #{ref_path} --contains #{sha})
+        raise ArgumentError, "sha can't be empty" unless sha.present?
 
-        # Not found -> ["", 0]
-        # Found -> ["b8d95eb4969eefacb0a58f6a28f6803f8070e7b9 commit\trefs/environments/production/77\n", 0]
-        Gitlab::Popen.popen(args, @path).first.split.last
-        #   end
-        # end
+        gitaly_migrate(:find_ref_name) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.find_ref_name(sha, ref_path)
+          else
+            args = %W(#{Gitlab.config.git.bin_path} for-each-ref --count=1 #{ref_path} --contains #{sha})
+
+            # Not found -> ["", 0]
+            # Found -> ["b8d95eb4969eefacb0a58f6a28f6803f8070e7b9 commit\trefs/environments/production/77\n", 0]
+            Gitlab::Popen.popen(args, @path).first.split.last
+          end
+        end
       end
 
       # Returns commits collection
@@ -965,11 +975,7 @@ module Gitlab
       end
 
       def gitaly_repository
-        Gitlab::GitalyClient::Util.repository(@repository_storage, @relative_path)
-      end
-
-      def gitaly_channel
-        Gitlab::GitalyClient.get_channel(@repository_storage)
+        Gitlab::GitalyClient::Util.repository(@storage, @relative_path)
       end
 
       private
@@ -1112,56 +1118,6 @@ module Gitlab
         end
       end
 
-      def archive_to_file(treeish = 'master', filename = 'archive.tar.gz', format = nil, compress_cmd = %w(gzip -n))
-        git_archive_cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{path} archive)
-
-        # Put files into a directory before archiving
-        prefix = "#{archive_name(treeish)}/"
-        git_archive_cmd << "--prefix=#{prefix}"
-
-        # Format defaults to tar
-        git_archive_cmd << "--format=#{format}" if format
-
-        git_archive_cmd += %W(-- #{treeish})
-
-        open(filename, 'w') do |file|
-          # Create a pipe to act as the '|' in 'git archive ... | gzip'
-          pipe_rd, pipe_wr = IO.pipe
-
-          # Get the compression process ready to accept data from the read end
-          # of the pipe
-          compress_pid = spawn(*nice(compress_cmd), in: pipe_rd, out: file)
-          # The read end belongs to the compression process now; we should
-          # close our file descriptor for it.
-          pipe_rd.close
-
-          # Start 'git archive' and tell it to write into the write end of the
-          # pipe.
-          git_archive_pid = spawn(*nice(git_archive_cmd), out: pipe_wr)
-          # The write end belongs to 'git archive' now; close it.
-          pipe_wr.close
-
-          # When 'git archive' and the compression process are finished, we are
-          # done.
-          Process.waitpid(git_archive_pid)
-          raise "#{git_archive_cmd.join(' ')} failed" unless $?.success?
-          Process.waitpid(compress_pid)
-          raise "#{compress_cmd.join(' ')} failed" unless $?.success?
-        end
-      end
-
-      def nice(cmd)
-        nice_cmd = %w(nice -n 20)
-        unless unsupported_platform?
-          nice_cmd += %w(ionice -c 2 -n 7)
-        end
-        nice_cmd + cmd
-      end
-
-      def unsupported_platform?
-        %w[darwin freebsd solaris].map { |platform| RUBY_PLATFORM.include?(platform) }.any?
-      end
-
       # Returns true if the index entry has the special file mode that denotes
       # a submodule.
       def submodule?(index_entry)
@@ -1252,6 +1208,23 @@ module Gitlab
         diff = rugged.diff(from, to, actual_options)
         diff.find_similar!(break_rewrites: break_rewrites)
         diff.each_patch
+      end
+
+      def sort_branches(branches, sort_by)
+        case sort_by
+        when 'name'
+          branches.sort_by(&:name)
+        when 'updated_desc'
+          branches.sort do |a, b|
+            b.dereferenced_target.committed_date <=> a.dereferenced_target.committed_date
+          end
+        when 'updated_asc'
+          branches.sort do |a, b|
+            a.dereferenced_target.committed_date <=> b.dereferenced_target.committed_date
+          end
+        else
+          branches
+        end
       end
 
       def gitaly_ref_client

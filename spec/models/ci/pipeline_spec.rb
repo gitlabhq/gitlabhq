@@ -13,6 +13,7 @@ describe Ci::Pipeline, models: true do
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:auto_canceled_by) }
+  it { is_expected.to belong_to(:pipeline_schedule) }
 
   it { is_expected.to have_many(:statuses) }
   it { is_expected.to have_many(:trigger_requests) }
@@ -59,8 +60,8 @@ describe Ci::Pipeline, models: true do
     subject { pipeline.retried }
 
     before do
-      @build1 = FactoryGirl.create :ci_build, pipeline: pipeline, name: 'deploy'
-      @build2 = FactoryGirl.create :ci_build, pipeline: pipeline, name: 'deploy'
+      @build1 = create(:ci_build, pipeline: pipeline, name: 'deploy', retried: true)
+      @build2 = create(:ci_build, pipeline: pipeline, name: 'deploy')
     end
 
     it 'returns old builds' do
@@ -69,31 +70,31 @@ describe Ci::Pipeline, models: true do
   end
 
   describe "coverage" do
-    let(:project) { FactoryGirl.create :empty_project, build_coverage_regex: "/.*/" }
-    let(:pipeline) { FactoryGirl.create :ci_empty_pipeline, project: project }
+    let(:project) { create(:empty_project, build_coverage_regex: "/.*/") }
+    let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
     it "calculates average when there are two builds with coverage" do
-      FactoryGirl.create :ci_build, name: "rspec", coverage: 30, pipeline: pipeline
-      FactoryGirl.create :ci_build, name: "rubocop", coverage: 40, pipeline: pipeline
+      create(:ci_build, name: "rspec", coverage: 30, pipeline: pipeline)
+      create(:ci_build, name: "rubocop", coverage: 40, pipeline: pipeline)
       expect(pipeline.coverage).to eq("35.00")
     end
 
     it "calculates average when there are two builds with coverage and one with nil" do
-      FactoryGirl.create :ci_build, name: "rspec", coverage: 30, pipeline: pipeline
-      FactoryGirl.create :ci_build, name: "rubocop", coverage: 40, pipeline: pipeline
-      FactoryGirl.create :ci_build, pipeline: pipeline
+      create(:ci_build, name: "rspec", coverage: 30, pipeline: pipeline)
+      create(:ci_build, name: "rubocop", coverage: 40, pipeline: pipeline)
+      create(:ci_build, pipeline: pipeline)
       expect(pipeline.coverage).to eq("35.00")
     end
 
     it "calculates average when there are two builds with coverage and one is retried" do
-      FactoryGirl.create :ci_build, name: "rspec", coverage: 30, pipeline: pipeline
-      FactoryGirl.create :ci_build, name: "rubocop", coverage: 30, pipeline: pipeline
-      FactoryGirl.create :ci_build, name: "rubocop", coverage: 40, pipeline: pipeline
+      create(:ci_build, name: "rspec", coverage: 30, pipeline: pipeline)
+      create(:ci_build, name: "rubocop", coverage: 30, pipeline: pipeline, retried: true)
+      create(:ci_build, name: "rubocop", coverage: 40, pipeline: pipeline)
       expect(pipeline.coverage).to eq("35.00")
     end
 
     it "calculates average when there is one build without coverage" do
-      FactoryGirl.create :ci_build, pipeline: pipeline
+      FactoryGirl.create(:ci_build, pipeline: pipeline)
       expect(pipeline.coverage).to be_nil
     end
   end
@@ -221,13 +222,15 @@ describe Ci::Pipeline, models: true do
                                   %w(deploy running)])
         end
 
-        context 'when commit status  is retried' do
+        context 'when commit status is retried' do
           before do
             create(:commit_status, pipeline: pipeline,
                                    stage: 'build',
                                    name: 'mac',
                                    stage_idx: 0,
                                    status: 'success')
+
+            pipeline.process!
           end
 
           it 'ignores the previous state' do
@@ -487,6 +490,10 @@ describe Ci::Pipeline, models: true do
 
       context 'there are multiple of the same name' do
         let!(:manual2) { create(:ci_build, :manual, pipeline: pipeline, name: 'deploy') }
+
+        before do
+          manual.update(retried: true)
+        end
 
         it 'returns latest one' do
           is_expected.to contain_exactly(manual2)
@@ -847,6 +854,16 @@ describe Ci::Pipeline, models: true do
         end
       end
     end
+
+    context 'when there is a manual action present in the pipeline' do
+      before do
+        create(:ci_build, :manual, pipeline: pipeline)
+      end
+
+      it 'is not cancelable' do
+        expect(pipeline).not_to be_cancelable
+      end
+    end
   end
 
   describe '#cancel_running' do
@@ -1043,8 +1060,8 @@ describe Ci::Pipeline, models: true do
     let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: 'a288a022a53a5a944fae87bcec6efc87b7061808') }
 
     it "returns merge requests whose `diff_head_sha` matches the pipeline's SHA" do
-      merge_request = create(:merge_request, source_project: project, source_branch: pipeline.ref)
       allow_any_instance_of(MergeRequest).to receive(:diff_head_sha) { 'a288a022a53a5a944fae87bcec6efc87b7061808' }
+      merge_request = create(:merge_request, source_project: project, head_pipeline: pipeline, source_branch: pipeline.ref)
 
       expect(pipeline.merge_requests).to eq([merge_request])
     end

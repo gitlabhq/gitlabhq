@@ -393,7 +393,7 @@ describe Environment, models: true do
 
       it 'returns the metrics from the deployment service' do
         expect(project.monitoring_service)
-          .to receive(:metrics).with(environment)
+          .to receive(:environment_metrics).with(environment)
           .and_return(:fake_metrics)
 
         is_expected.to eq(:fake_metrics)
@@ -438,7 +438,7 @@ describe Environment, models: true do
       "foo**bar"                  => "foo-bar" + SUFFIX,
       "*-foo"                     => "env-foo" + SUFFIX,
       "staging-12345678-"         => "staging-12345678" + SUFFIX,
-      "staging-12345678-01234567" => "staging-12345678" + SUFFIX,
+      "staging-12345678-01234567" => "staging-12345678" + SUFFIX
     }.each do |name, matcher|
       it "returns a slug matching #{matcher}, given #{name}" do
         slug = described_class.new(name: name).generate_slug

@@ -1,6 +1,6 @@
 - @content_class = "limit-container-width" unless fluid_layout
-- page_title           "#{@merge_request.title} (#{@merge_request.to_reference})", "Merge Requests"
-- page_description     @merge_request.description
+- page_title "#{@merge_request.title} (#{@merge_request.to_reference})", "Merge Requests"
+- page_description @merge_request.description
 - page_card_attributes @merge_request.card_attributes
 - content_for :page_specific_javascripts do
   = page_specific_javascript_bundle_tag('common_vue')
@@ -11,81 +11,59 @@
 
   .merge-request-details.issuable-details{ data: { id: @merge_request.project.id } }
     = render "projects/merge_requests/show/mr_box"
-    .append-bottom-default.mr-source-target.prepend-top-default
-      - if @merge_request.open?
-        .pull-right
-          - if @merge_request.source_branch_exists?
-            - if koding_enabled? && @repository.koding_yml
-              = link_to koding_project_url(@merge_request.source_project, @merge_request.source_branch, @merge_request.commits.first.short_id), class: "btn inline btn-grouped btn-sm", target: '_blank', rel: 'noopener noreferrer' do
-                Run in IDE (Koding)
-            = link_to "#modal_merge_info", class: "btn inline btn-grouped btn-sm", "data-toggle" => "modal" do
-              Check out branch
-
-          %span.dropdown.inline.prepend-left-5
-            %a.btn.btn-sm.dropdown-toggle{ data: {toggle: :dropdown} }
-              Download as
-              = icon('caret-down')
-            %ul.dropdown-menu.dropdown-menu-align-right
-              %li= link_to "Email Patches", merge_request_path(@merge_request, format: :patch)
-              %li= link_to "Plain Diff",    merge_request_path(@merge_request, format: :diff)
-      .normal
-        %span <b>Request to merge</b>
-        %span.label-branch= source_branch_with_namespace(@merge_request)
-        %span <b>into</b>
-        %span.label-branch
-          = link_to_if @merge_request.target_branch_exists?, @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch)
-        - if @merge_request.open? && @merge_request.diverged_from_target_branch?
-          %span (#{pluralize(@merge_request.diverged_commits_count, 'commit')} behind)
 
     - if @merge_request.source_branch_exists?
       = render "projects/merge_requests/show/how_to_merge"
 
-    = render "projects/merge_requests/widget/show.html.haml"
+    :javascript
+      window.gl.mrWidgetData = #{serialize_issuable(@merge_request)}
 
-    - if @merge_request.source_branch_exists? && @merge_request.mergeable? && @merge_request.can_be_merged_by?(current_user)
-      .merge-manually.light.prepend-top-default
-        You can also accept this merge request manually using the
-        = succeed '.' do
-          = link_to "command line", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
+    #js-vue-mr-widget.mr-widget
+
+    - content_for :page_specific_javascripts do
+      = webpack_bundle_tag 'common_vue'
+      = webpack_bundle_tag 'vue_merge_request_widget'
 
     .content-block.content-block-small.emoji-list-container
       = render 'award_emoji/awards_block', awardable: @merge_request, inline: true
 
     .merge-request-tabs-holder{ class: ("js-tabs-affix" unless ENV['RAILS_ENV'] == 'test') }
-      .merge-request-tabs-container.scrolling-tabs-container.inner-page-scroll-tabs
-        .fade-left= icon('angle-left')
-        .fade-right= icon('angle-right')
-        %ul.merge-request-tabs.nav-links.scrolling-tabs
-          %li.notes-tab
-            = link_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: 'div#notes', action: 'notes', toggle: 'tab' } do
-              Discussion
-              %span.badge= @merge_request.related_notes.user.count
-          - if @merge_request.source_project
-            %li.commits-tab
-              = link_to commits_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: 'div#commits', action: 'commits', toggle: 'tab' } do
-                Commits
-                %span.badge= @commits_count
-          - if @pipelines.any?
-            %li.pipelines-tab
-              = link_to pipelines_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: '#pipelines', action: 'pipelines', toggle: 'tab' } do
-                Pipelines
-                %span.badge= @pipelines.size
-          %li.diffs-tab
-            = link_to diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: 'div#diffs', action: 'diffs', toggle: 'tab' } do
-              Changes
-              %span.badge= @merge_request.diff_size
-          %li#resolve-count-app.line-resolve-all-container.pull-right.prepend-top-10.hidden-xs{ "v-cloak" => true }
-            %resolve-count{ "inline-template" => true, ":logged-out" => "#{current_user.nil?}" }
-              %div
-                .line-resolve-all{ "v-show" => "discussionCount > 0",
-                  ":class" => "{ 'has-next-btn': !loggedOut && resolvedDiscussionCount !== discussionCount }" }
-                  %span.line-resolve-btn.is-disabled{ type: "button",
-                      ":class" => "{ 'is-active': resolvedDiscussionCount === discussionCount }" }
-                    = render "shared/icons/icon_status_success.svg"
-                  %span.line-resolve-text
-                    {{ resolvedDiscussionCount }}/{{ discussionCount }} {{ resolvedCountText }} resolved
-                = render "discussions/new_issue_for_all_discussions", merge_request: @merge_request
-                = render "discussions/jump_to_next"
+      .merge-request-tabs-container
+        .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller
+          .fade-left= icon('angle-left')
+          .fade-right= icon('angle-right')
+          .nav-links.scrolling-tabs
+            %ul.merge-request-tabs
+              %li.notes-tab
+                = link_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: 'div#notes', action: 'notes', toggle: 'tab' } do
+                  Discussion
+                  %span.badge= @merge_request.related_notes.user.count
+              - if @merge_request.source_project
+                %li.commits-tab
+                  = link_to commits_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: 'div#commits', action: 'commits', toggle: 'tab' } do
+                    Commits
+                    %span.badge= @commits_count
+              - if @pipelines.any?
+                %li.pipelines-tab
+                  = link_to pipelines_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: '#pipelines', action: 'pipelines', toggle: 'tab' } do
+                    Pipelines
+                    %span.badge= @pipelines.size
+              %li.diffs-tab
+                = link_to diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: 'div#diffs', action: 'diffs', toggle: 'tab' } do
+                  Changes
+                  %span.badge= @merge_request.diff_size
+        #resolve-count-app.line-resolve-all-container.prepend-top-10{ "v-cloak" => true }
+          %resolve-count{ "inline-template" => true, ":logged-out" => "#{current_user.nil?}" }
+            %div
+              .line-resolve-all{ "v-show" => "discussionCount > 0",
+                ":class" => "{ 'has-next-btn': !loggedOut && resolvedDiscussionCount !== discussionCount }" }
+                %span.line-resolve-btn.is-disabled{ type: "button",
+                    ":class" => "{ 'is-active': resolvedDiscussionCount === discussionCount }" }
+                  = render "shared/icons/icon_status_success.svg"
+                %span.line-resolve-text
+                  {{ resolvedDiscussionCount }}/{{ discussionCount }} {{ resolvedCountText }} resolved
+              = render "discussions/new_issue_for_all_discussions", merge_request: @merge_request
+              = render "discussions/jump_to_next"
 
     .tab-content#diff-notes-app
       #notes.notes.tab-pane.voting_notes
@@ -113,9 +91,7 @@
 
 :javascript
   $(function () {
-    new MergeRequest({
+    window.mergeRequest = new MergeRequest({
       action: "#{controller.action_name}"
     });
   });
-
-  var mrRefreshWidgetUrl = "#{mr_widget_refresh_url(@merge_request)}";

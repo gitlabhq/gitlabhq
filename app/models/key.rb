@@ -74,7 +74,7 @@ class Key < ActiveRecord::Base
     GitlabShellWorker.perform_async(
       :remove_key,
       shell_id,
-      key,
+      key
     )
   end
 

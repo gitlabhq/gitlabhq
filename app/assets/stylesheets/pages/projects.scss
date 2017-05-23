@@ -639,59 +639,6 @@ pre.light-well {
   }
 }
 
-.project-last-commit {
-  background-color: $gray-light;
-  border: 1px solid $border-color;
-  border-radius: $border-radius-base;
-  padding: 12px;
-
-  @media (min-width: $screen-sm-min) {
-    margin-top: $gl-padding;
-  }
-
-  .ci-status {
-    margin-right: $gl-padding;
-  }
-
-  .commit-row-message {
-    color: $gl-text-color;
-  }
-
-  .commit_short_id {
-    margin-right: 5px;
-    color: $gl-link-color;
-    font-weight: 600;
-  }
-
-  .commit-author-link {
-    .commit-author-name {
-      font-weight: 600;
-    }
-  }
-}
-
-.project-show-readme {
-  .row-content-block {
-    background-color: inherit;
-    border: none;
-  }
-
-  .readme-holder {
-    padding: $gl-padding 0;
-    border-top: 0;
-
-    .edit-project-readme {
-      z-index: 2;
-      position: relative;
-    }
-
-    .wiki h1 {
-      border-bottom: none;
-      padding: 0;
-    }
-  }
-}
-
 .git-clone-holder {
   width: 380px;
 
@@ -825,7 +772,8 @@ pre.light-well {
 }
 
 .compare-form-group {
-  .dropdown-menu {
+  .dropdown-menu,
+  .inline-input-group {
     width: 100%;
 
     @media (min-width: $screen-sm-min) {
@@ -842,14 +790,6 @@ pre.light-well {
     @media (min-width: $screen-sm-min) {
       margin-top: 0;
       width: auto;
-    }
-  }
-
-  .inline-input-group {
-    width: 100%;
-
-    @media (min-width: $screen-sm-min) {
-      width: 250px;
     }
   }
 }

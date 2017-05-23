@@ -175,7 +175,7 @@ describe Gitlab::Auth, lib: true do
         user = create(
           :user,
           username: 'normal_user',
-          password: 'my-secret',
+          password: 'my-secret'
         )
 
         expect(gl_auth.find_for_git_client(user.username, user.password, project: nil, ip: 'ip'))
@@ -186,7 +186,7 @@ describe Gitlab::Auth, lib: true do
         user = create(
           :user,
           username: 'oauth2',
-          password: 'my-secret',
+          password: 'my-secret'
         )
 
         expect(gl_auth.find_for_git_client(user.username, user.password, project: nil, ip: 'ip'))

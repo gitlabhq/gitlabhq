@@ -1,5 +1,4 @@
-# Projects
-
+# Projects API
 
 ### Project visibility level
 
@@ -16,8 +15,6 @@ Constants for project visibility levels are next:
 
 * `public`:
   The project can be cloned without any authentication.
-
-
 
 ## List projects
 

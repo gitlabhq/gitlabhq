@@ -1,0 +1,5 @@
+---
+title: Display extra info about files on .gitlab-ci.yml, .gitlab/route-map.yml and
+  LICENSE blob pages
+merge_request:
+author:

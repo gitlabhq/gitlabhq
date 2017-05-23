@@ -1,4 +1,4 @@
-# Session
+# Session API
 
 ## Deprecation Notice
 

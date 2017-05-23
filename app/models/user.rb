@@ -5,6 +5,7 @@ class User < ActiveRecord::Base
 
   include Gitlab::ConfigHelper
   include Gitlab::CurrentSettings
+  include Avatarable
   include Referable
   include Sortable
   include CaseSensitivity
@@ -39,6 +40,17 @@ class User < ActiveRecord::Base
 
   devise :lockable, :recoverable, :rememberable, :trackable,
     :validatable, :omniauthable, :confirmable, :registerable
+
+  # Override Devise::Models::Trackable#update_tracked_fields!
+  # to limit database writes to at most once every hour
+  def update_tracked_fields!(request)
+    update_tracked_fields(request)
+
+    lease = Gitlab::ExclusiveLease.new("user_update_tracked_fields:#{id}", timeout: 1.hour.to_i)
+    return unless lease.try_obtain
+
+    save(validate: false)
+  end
 
   attr_accessor :force_random_password
 
@@ -154,8 +166,13 @@ class User < ActiveRecord::Base
   enum dashboard: [:projects, :stars, :project_activity, :starred_project_activity, :groups, :todos]
 
   # User's Project preference
-  # Note: When adding an option, it MUST go on the end of the array.
-  enum project_view: [:readme, :activity, :files]
+  #
+  # Note: When adding an option, it MUST go on the end of the hash with a
+  # number higher than the current max. We cannot move options and/or change
+  # their numbers.
+  #
+  # We skip 0 because this was used by an option that has since been removed.
+  enum project_view: { activity: 1, files: 2 }
 
   alias_attribute :private_token, :authentication_token
 
@@ -338,7 +355,7 @@ class User < ActiveRecord::Base
     end
 
     def find_by_full_path(path, follow_redirects: false)
-      namespace = Namespace.find_by_full_path(path, follow_redirects: follow_redirects)
+      namespace = Namespace.for_user.find_by_full_path(path, follow_redirects: follow_redirects)
       namespace&.owner
     end
 
@@ -773,12 +790,10 @@ class User < ActiveRecord::Base
     email.start_with?('temp-email-for-oauth')
   end
 
-  def avatar_url(size = nil, scale = 2)
-    if self[:avatar].present?
-      [gitlab_config.url, avatar.url].join
-    else
-      GravatarService.new.execute(email, size, scale)
-    end
+  def avatar_url(size: nil, scale: 2, **args)
+    # We use avatar_path instead of overriding avatar_url because of carrierwave.
+    # See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11001/diffs#note_28659864
+    avatar_path(args) || GravatarService.new.execute(email, size, scale)
   end
 
   def all_emails
@@ -919,6 +934,19 @@ class User < ActiveRecord::Base
     assigned_open_issues_count(force: true)
   end
 
+  def invalidate_cache_counts
+    invalidate_issue_cache_counts
+    invalidate_merge_request_cache_counts
+  end
+
+  def invalidate_issue_cache_counts
+    Rails.cache.delete(['users', id, 'assigned_open_issues_count'])
+  end
+
+  def invalidate_merge_request_cache_counts
+    Rails.cache.delete(['users', id, 'assigned_open_merge_requests_count'])
+  end
+
   def todos_done_count(force: false)
     Rails.cache.fetch(['users', id, 'todos_done_count'], force: force) do
       TodosFinder.new(self, state: :done).execute.count
@@ -998,6 +1026,15 @@ class User < ActiveRecord::Base
   # Added according to https://github.com/plataformatec/devise/blob/7df57d5081f9884849ca15e4fde179ef164a575f/README.md#activejob-integration
   def send_devise_notification(notification, *args)
     devise_mailer.send(notification, self, *args).deliver_later
+  end
+
+  # This works around a bug in Devise 4.2.0 that erroneously causes a user to
+  # be considered active in MySQL specs due to a sub-second comparison
+  # issue. For more details, see: https://gitlab.com/gitlab-org/gitlab-ee/issues/2362#note_29004709
+  def confirmation_period_valid?
+    return false if self.class.allow_unconfirmed_access_for == 0.days
+
+    super
   end
 
   def ensure_external_user_rights

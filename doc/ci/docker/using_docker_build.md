@@ -37,7 +37,7 @@ GitLab Runner then executes job scripts as the `gitlab-runner` user.
 
     ```bash
     sudo gitlab-ci-multi-runner register -n \
-      --url https://gitlab.com/ci \
+      --url https://gitlab.com/ \
       --registration-token REGISTRATION_TOKEN \
       --executor shell \
       --description "My Runner"
@@ -94,7 +94,7 @@ In order to do that, follow the steps:
 
     ```bash
     sudo gitlab-ci-multi-runner register -n \
-      --url https://gitlab.com/ci \
+      --url https://gitlab.com/ \
       --registration-token REGISTRATION_TOKEN \
       --executor docker \
       --description "My Docker Runner" \
@@ -112,7 +112,7 @@ In order to do that, follow the steps:
 
     ```
     [[runners]]
-      url = "https://gitlab.com/ci"
+      url = "https://gitlab.com/"
       token = TOKEN
       executor = "docker"
       [runners.docker]
@@ -179,7 +179,7 @@ In order to do that, follow the steps:
 
     ```bash
     sudo gitlab-ci-multi-runner register -n \
-      --url https://gitlab.com/ci \
+      --url https://gitlab.com/ \
       --registration-token REGISTRATION_TOKEN \
       --executor docker \
       --description "My Docker Runner" \
@@ -197,7 +197,7 @@ In order to do that, follow the steps:
 
     ```
     [[runners]]
-      url = "https://gitlab.com/ci"
+      url = "https://gitlab.com/"
       token = REGISTRATION_TOKEN
       executor = "docker"
       [runners.docker]

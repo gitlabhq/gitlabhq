@@ -13,7 +13,7 @@ class ProjectSnippetPolicy < BasePolicy
       can! :read_project_snippet
     end
 
-    if @subject.private? && @subject.project.team.member?(@user)
+    if @subject.project.team.member?(@user)
       can! :read_project_snippet
     end
   end

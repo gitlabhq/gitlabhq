@@ -4,7 +4,7 @@ module RoutableActions
   def find_routable!(routable_klass, requested_full_path, extra_authorization_proc: nil)
     routable = routable_klass.find_by_full_path(requested_full_path, follow_redirects: request.get?)
 
-    if routable_authorized?(routable_klass, routable, extra_authorization_proc)
+    if routable_authorized?(routable, extra_authorization_proc)
       ensure_canonical_path(routable, requested_full_path)
       routable
     else
@@ -13,8 +13,8 @@ module RoutableActions
     end
   end
 
-  def routable_authorized?(routable_klass, routable, extra_authorization_proc)
-    action = :"read_#{routable_klass.to_s.underscore}"
+  def routable_authorized?(routable, extra_authorization_proc)
+    action = :"read_#{routable.class.to_s.underscore}"
     return false unless can?(current_user, action, routable)
 
     if extra_authorization_proc
@@ -24,15 +24,15 @@ module RoutableActions
     end
   end
 
-  def ensure_canonical_path(routable, requested_path)
+  def ensure_canonical_path(routable, requested_full_path)
     return unless request.get?
 
     canonical_path = routable.full_path
-    if canonical_path != requested_path
-      if canonical_path.casecmp(requested_path) != 0
-        flash[:notice] = "Project '#{requested_path}' was moved to '#{canonical_path}'. Please update any links and bookmarks that may still have the old path."
+    if canonical_path != requested_full_path
+      if canonical_path.casecmp(requested_full_path) != 0
+        flash[:notice] = "#{routable.class.to_s.titleize} '#{requested_full_path}' was moved to '#{canonical_path}'. Please update any links and bookmarks that may still have the old path."
       end
-      redirect_to request.original_url.sub(requested_path, canonical_path)
+      redirect_to build_canonical_path(routable)
     end
   end
 end

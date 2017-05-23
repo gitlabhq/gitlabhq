@@ -49,6 +49,34 @@ describe Deployment, models: true do
     end
   end
 
+  describe '#metrics' do
+    let(:deployment) { create(:deployment) }
+
+    subject { deployment.metrics }
+
+    context 'metrics are disabled' do
+      it { is_expected.to eq({}) }
+    end
+
+    context 'metrics are enabled' do
+      let(:simple_metrics) do
+        {
+          success: true,
+          metrics: {},
+          last_update: 42,
+          deployment_time: 1494408956
+        }
+      end
+
+      before do
+        allow(deployment.project).to receive_message_chain(:monitoring_service, :deployment_metrics)
+                                       .with(any_args).and_return(simple_metrics)
+      end
+
+      it { is_expected.to eq(simple_metrics) }
+    end
+  end
+
   describe '#stop_action' do
     let(:build) { create(:ci_build) }
 

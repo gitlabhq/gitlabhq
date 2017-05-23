@@ -23,6 +23,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces do
 
         found_ids = subject.namespaces_for_paths(type: :child).
                       map(&:id)
+
         expect(found_ids).to contain_exactly(child.id)
       end
     end
@@ -39,6 +40,22 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces do
 
         found_ids = subject.namespaces_for_paths(type: :child).
                       map(&:id)
+
+        expect(found_ids).to contain_exactly(namespace.id)
+      end
+
+      it 'has no namespaces that look the same' do
+        _root_namespace = create(:namespace, path: 'THE-path')
+        _similar_path = create(:namespace,
+                             path: 'not-really-the-path',
+                             parent: create(:namespace))
+        namespace = create(:namespace,
+                           path: 'the-path',
+                           parent: create(:namespace))
+
+        found_ids = subject.namespaces_for_paths(type: :child).
+                      map(&:id)
+
         expect(found_ids).to contain_exactly(namespace.id)
       end
     end
@@ -53,6 +70,20 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces do
 
         found_ids = subject.namespaces_for_paths(type: :top_level).
                       map(&:id)
+
+        expect(found_ids).to contain_exactly(root_namespace.id)
+      end
+
+      it 'has no namespaces that just look the same' do
+        root_namespace = create(:namespace, path: 'the-path')
+        _similar_path = create(:namespace, path: 'not-really-the-path')
+        _child_namespace = create(:namespace,
+                                  path: 'the-path',
+                                  parent: create(:namespace))
+
+        found_ids = subject.namespaces_for_paths(type: :top_level).
+                      map(&:id)
+
         expect(found_ids).to contain_exactly(root_namespace.id)
       end
     end
@@ -106,7 +137,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces do
   end
 
   describe "#rename_namespace" do
-    let(:namespace) { create(:namespace, path: 'the-path') }
+    let(:namespace) { create(:group, name: 'the-path') }
 
     it 'renames paths & routes for the namespace' do
       expect(subject).to receive(:rename_path_for_routable).
@@ -145,6 +176,31 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces do
       expect(subject).to receive(:remove_cached_html_for_projects).with([project.id])
 
       subject.rename_namespace(namespace)
+    end
+
+    it "doesn't rename users for other namespaces" do
+      expect(subject).not_to receive(:rename_user)
+
+      subject.rename_namespace(namespace)
+    end
+
+    it 'renames the username of a namespace for a user' do
+      user = create(:user, username: 'the-path')
+
+      expect(subject).to receive(:rename_user).with('the-path', 'the-path0')
+
+      subject.rename_namespace(user.namespace)
+    end
+  end
+
+  describe '#rename_user' do
+    it 'renames a username' do
+      subject = described_class.new([], migration)
+      user = create(:user, username: 'broken')
+
+      subject.rename_user('broken', 'broken0')
+
+      expect(user.reload.username).to eq('broken0')
     end
   end
 

@@ -1,6 +1,19 @@
 require "spec_helper"
 
 describe SystemHook, models: true do
+  context 'default attributes' do
+    let(:system_hook) { build(:system_hook) }
+
+    it 'sets defined default parameters' do
+      attrs = {
+        push_events: false,
+        repository_update_events: true,
+        enable_ssl_verification: true
+      }
+      expect(system_hook).to have_attributes(attrs)
+    end
+  end
+
   describe "execute" do
     let(:system_hook) { create(:system_hook) }
     let(:user)        { create(:user) }
@@ -103,6 +116,14 @@ describe SystemHook, models: true do
         body: /user_remove_from_group/,
         headers: { 'Content-Type' => 'application/json', 'X-Gitlab-Event' => 'System Hook' }
       ).once
+    end
+  end
+
+  describe '.repository_update_hooks' do
+    it 'returns hooks for repository update events only' do
+      hook = create(:system_hook, repository_update_events: true)
+      create(:system_hook, repository_update_events: false)
+      expect(SystemHook.repository_update_hooks).to eq([hook])
     end
   end
 end

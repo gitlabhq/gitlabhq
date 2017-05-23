@@ -312,7 +312,7 @@
 }
 
 .empty-state {
-  margin: 100px 0 0;
+  margin: 5% auto 0;
 
   .text-content {
     max-width: 460px;
@@ -335,25 +335,10 @@
   }
 
   .btn {
-    margin: $btn-side-margin $btn-side-margin 0 0;
-  }
+    margin: $btn-side-margin 5px;
 
-  @media(max-width: $screen-xs-max) {
-    margin-top: 50px;
-    text-align: center;
-
-    .btn {
+    @media(max-width: $screen-xs-max) {
       width: 100%;
-    }
-  }
-
-  @media(min-width: $screen-xs-max) {
-    &.merge-requests .text-content {
-      margin-top: 40px;
-    }
-
-    &.labels .text-content {
-      margin-top: 70px;
     }
   }
 }

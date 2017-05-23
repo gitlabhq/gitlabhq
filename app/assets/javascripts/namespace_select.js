@@ -1,12 +1,10 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, one-var, vars-on-top, one-var-declaration-per-line, comma-dangle, object-shorthand, no-else-return, prefer-template, quotes, prefer-arrow-callback, no-param-reassign, no-cond-assign, max-len */
-/* global Api */
+import Api from './api';
 
 (function() {
-  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
-
   window.NamespaceSelect = (function() {
     function NamespaceSelect(opts) {
-      this.onSelectItem = bind(this.onSelectItem, this);
+      this.onSelectItem = this.onSelectItem.bind(this);
       var fieldName, showAny;
       this.dropdown = opts.dropdown;
       showAny = true;

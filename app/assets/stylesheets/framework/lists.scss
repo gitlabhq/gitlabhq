@@ -152,6 +152,7 @@ ul.content-list {
         margin-top: 3px;
         margin-bottom: 4px;
 
+        &.has-tooltip,
         &:last-child {
           margin-right: 0;
 

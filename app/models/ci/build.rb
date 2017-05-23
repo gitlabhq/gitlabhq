@@ -124,8 +124,8 @@ module Ci
       success? || failed? || canceled?
     end
 
-    def retried?
-      !self.pipeline.statuses.latest.include?(self)
+    def latest?
+      !retried?
     end
 
     def expanded_environment_name
@@ -300,8 +300,8 @@ module Ci
     def execute_hooks
       return unless project
       build_data = Gitlab::DataBuilder::Build.build(self)
-      project.execute_hooks(build_data.dup, :build_hooks)
-      project.execute_services(build_data.dup, :build_hooks)
+      project.execute_hooks(build_data.dup, :job_hooks)
+      project.execute_services(build_data.dup, :job_hooks)
       PagesService.new(build_data).execute
       project.running_or_pending_build_count(force: true)
     end

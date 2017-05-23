@@ -1,13 +1,13 @@
 /* eslint-disable no-var, comma-dangle, object-shorthand */
 
-require('~/merge_request_tabs');
-require('~/commit/pipelines/pipelines_bundle.js');
-require('~/breakpoints');
-require('~/lib/utils/common_utils');
-require('~/diff');
-require('~/single_file_diff');
-require('~/files_comment_button');
-require('vendor/jquery.scrollTo');
+import '~/merge_request_tabs';
+import '~/commit/pipelines/pipelines_bundle';
+import '~/breakpoints';
+import '~/lib/utils/common_utils';
+import '~/diff';
+import '~/single_file_diff';
+import '~/files_comment_button';
+import 'vendor/jquery.scrollTo';
 
 (function () {
   // TODO: remove this hack!
@@ -47,7 +47,7 @@ require('vendor/jquery.scrollTo');
       this.class.destroyPipelinesView();
     });
 
-    describe('#activateTab', function () {
+    describe('activateTab', function () {
       beforeEach(function () {
         spyOn($, 'ajax').and.callFake(function () {});
         loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
@@ -71,7 +71,7 @@ require('vendor/jquery.scrollTo');
       });
     });
 
-    describe('#opensInNewTab', function () {
+    describe('opensInNewTab', function () {
       var tabUrl;
       var windowTarget = '_blank';
 
@@ -152,7 +152,7 @@ require('vendor/jquery.scrollTo');
       });
     });
 
-    describe('#setCurrentAction', function () {
+    describe('setCurrentAction', function () {
       beforeEach(function () {
         spyOn($, 'ajax').and.callFake(function () {});
         this.subject = this.class.setCurrentAction;
@@ -221,7 +221,7 @@ require('vendor/jquery.scrollTo');
       });
     });
 
-    describe('#tabShown', () => {
+    describe('tabShown', () => {
       beforeEach(function () {
         spyOn($, 'ajax').and.callFake(function (options) {
           options.success({ html: '' });
@@ -281,7 +281,7 @@ require('vendor/jquery.scrollTo');
       });
     });
 
-    describe('#loadDiff', function () {
+    describe('loadDiff', function () {
       it('requires an absolute pathname', function () {
         spyOn($, 'ajax').and.callFake(function (options) {
           expect(options.url).toEqual('/foo/bar/merge_requests/1/diffs.json');

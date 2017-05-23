@@ -53,7 +53,7 @@ describe ChatMessage::WikiPageMessage, models: true do
           expect(subject.attachments).to eq([
             {
               text: "Wiki page description",
-              color: color,
+              color: color
             }
           ])
         end
@@ -66,7 +66,7 @@ describe ChatMessage::WikiPageMessage, models: true do
           expect(subject.attachments).to eq([
             {
               text: "Wiki page description",
-              color: color,
+              color: color
             }
           ])
         end

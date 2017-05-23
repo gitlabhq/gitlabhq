@@ -152,7 +152,7 @@ available in the build environment. It's the recommended method to use for
 storing things like passwords, secret keys and credentials.
 
 Secret variables can be added by going to your project's
-**Settings ➔ CI/CD Pipelines**, then finding the section called
+**Settings ➔ Pipelines**, then finding the section called
 **Secret Variables**.
 
 Once you set them, they will be available for all subsequent jobs.
@@ -333,7 +333,7 @@ prefix the variable name with the dollar sign (`$`):
 ```
 job_name:
   script:
-    - echo $CI_job_ID
+    - echo $CI_JOB_ID
 ```
 
 You can also list all environment variables with the `export` command,

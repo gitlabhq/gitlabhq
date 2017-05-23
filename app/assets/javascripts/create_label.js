@@ -1,5 +1,5 @@
 /* eslint-disable func-names, space-before-function-paren, prefer-arrow-callback, comma-dangle, prefer-template, quotes, no-param-reassign, wrap-iife, max-len */
-/* global Api */
+import Api from './api';
 
 class CreateLabelDropdown {
   constructor ($el, namespacePath, projectPath) {

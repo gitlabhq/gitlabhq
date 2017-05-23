@@ -3,10 +3,10 @@
 - has_button = button_path || project_select_button
 
 .row.empty-state.merge-requests
-  .col-xs-12{ class: "#{'col-sm-6 pull-right' if has_button}" }
+  .col-xs-12
     .svg-content
       = render 'shared/empty_states/icons/merge_requests.svg'
-  .col-xs-12{ class: "#{'col-sm-6' if has_button}" }
+  .col-xs-12.text-center
     .text-content
       - if has_button
         %h4

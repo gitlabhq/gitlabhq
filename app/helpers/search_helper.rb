@@ -42,7 +42,7 @@ module SearchHelper
       { category: "Settings", label: "User settings",    url: profile_path },
       { category: "Settings", label: "SSH Keys",         url: profile_keys_path },
       { category: "Settings", label: "Dashboard",        url: root_path },
-      { category: "Settings", label: "Admin Section",    url: admin_root_path },
+      { category: "Settings", label: "Admin Section",    url: admin_root_path }
     ]
   end
 
@@ -57,7 +57,7 @@ module SearchHelper
       { category: "Help", label: "SSH Keys Help",      url: help_page_path("ssh/README") },
       { category: "Help", label: "System Hooks Help",  url: help_page_path("system_hooks/system_hooks") },
       { category: "Help", label: "Webhooks Help",      url: help_page_path("user/project/integrations/webhooks") },
-      { category: "Help", label: "Workflow Help",      url: help_page_path("workflow/README") },
+      { category: "Help", label: "Workflow Help",      url: help_page_path("workflow/README") }
     ]
   end
 
@@ -76,7 +76,7 @@ module SearchHelper
         { category: "Current Project", label: "Milestones",     url: namespace_project_milestones_path(@project.namespace, @project) },
         { category: "Current Project", label: "Snippets",       url: namespace_project_snippets_path(@project.namespace, @project) },
         { category: "Current Project", label: "Members",        url: namespace_project_settings_members_path(@project.namespace, @project) },
-        { category: "Current Project", label: "Wiki",           url: namespace_project_wikis_path(@project.namespace, @project) },
+        { category: "Current Project", label: "Wiki",           url: namespace_project_wikis_path(@project.namespace, @project) }
       ]
     else
       []

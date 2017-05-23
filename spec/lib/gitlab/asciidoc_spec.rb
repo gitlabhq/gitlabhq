@@ -22,7 +22,22 @@ module Gitlab
         expect(Asciidoctor).to receive(:convert)
           .with(input, expected_asciidoc_opts).and_return(html)
 
-        expect(render(input)).to eq(html)
+        expect(render(input, context)).to eq(html)
+      end
+
+      context "with asciidoc_opts" do
+        it "merges the options with default ones" do
+          expected_asciidoc_opts = {
+              safe: :secure,
+              backend: :gitlab_html5,
+              attributes: described_class::DEFAULT_ADOC_ATTRS
+          }
+
+          expect(Asciidoctor).to receive(:convert)
+            .with(input, expected_asciidoc_opts).and_return(html)
+
+          render(input, context)
+        end
       end
 
       context "XSS" do
@@ -33,7 +48,7 @@ module Gitlab
           },
           'images' => {
             input: 'image:https://localhost.com/image.png[Alt text" onerror="alert(7)]',
-            output: "<div>\n<p><span><img src=\"https://localhost.com/image.png\" alt=\"Alt text\"></span></p>\n</div>"
+            output: "<img src=\"https://localhost.com/image.png\" alt=\"Alt text\">"
           },
           'pre' => {
             input: '```mypre"><script>alert(3)</script>',
@@ -43,8 +58,16 @@ module Gitlab
 
         links.each do |name, data|
           it "does not convert dangerous #{name} into HTML" do
-            expect(render(data[:input])).to eq(data[:output])
+            expect(render(data[:input], context)).to include(data[:output])
           end
+        end
+      end
+
+      context 'external links' do
+        it 'adds the `rel` attribute to the link' do
+          output = render('link:https://google.com[Google]', context)
+
+          expect(output).to include('rel="nofollow noreferrer noopener"')
         end
       end
     end

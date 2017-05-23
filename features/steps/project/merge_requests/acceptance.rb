@@ -1,7 +1,7 @@
 class Spinach::Features::ProjectMergeRequestsAcceptance < Spinach::FeatureSteps
   include LoginHelpers
   include GitlabRoutingHelper
-  include WaitForAjax
+  include WaitForVueResource
 
   step 'I am on the Merge Request detail page' do
     visit merge_request_path(@merge_request)
@@ -12,27 +12,27 @@ class Spinach::Features::ProjectMergeRequestsAcceptance < Spinach::FeatureSteps
   end
 
   step 'I click on "Remove source branch" option' do
-    check('Remove source branch')
+    uncheck('Remove source branch')
   end
 
   step 'I click on Accept Merge Request' do
-    click_button('Accept merge request')
+    click_button('Merge')
   end
 
   step 'I should see the Remove Source Branch button' do
-    expect(page).to have_link('Remove source branch')
+    expect(page).to have_selector('.js-remove-branch-button')
 
-    # Wait for AJAX requests to complete so they don't blow up if they are
+    # Wait for View Resource requests to complete so they don't blow up if they are
     # only handled after `DatabaseCleaner` has already run
-    wait_for_ajax
+    wait_for_vue_resource
   end
 
   step 'I should not see the Remove Source Branch button' do
-    expect(page).not_to have_link('Remove source branch')
+    expect(page).not_to have_selector('.js-remove-branch-button')
 
-    # Wait for AJAX requests to complete so they don't blow up if they are
+    # Wait for View Resource requests to complete so they don't blow up if they are
     # only handled after `DatabaseCleaner` has already run
-    wait_for_ajax
+    wait_for_vue_resource
   end
 
   step 'There is an open Merge Request' do

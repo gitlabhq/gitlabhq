@@ -1,0 +1,4 @@
+---
+title: Enable cancelling non-HEAD pending pipelines by default for all projects
+merge_request: 11023
+author:

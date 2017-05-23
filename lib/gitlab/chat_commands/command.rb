@@ -5,7 +5,7 @@ module Gitlab
         Gitlab::ChatCommands::IssueShow,
         Gitlab::ChatCommands::IssueNew,
         Gitlab::ChatCommands::IssueSearch,
-        Gitlab::ChatCommands::Deploy,
+        Gitlab::ChatCommands::Deploy
       ].freeze
 
       def execute

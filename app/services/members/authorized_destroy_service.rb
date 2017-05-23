@@ -10,7 +10,7 @@ module Members
       return false if member.is_a?(GroupMember) && member.source.last_owner?(member.user)
 
       Member.transaction do
-        unassign_issues_and_merge_requests(member)
+        unassign_issues_and_merge_requests(member) unless member.invite?
 
         member.destroy
       end
@@ -26,10 +26,14 @@ module Members
 
     def unassign_issues_and_merge_requests(member)
       if member.is_a?(GroupMember)
-        issue_ids = IssuesFinder.new(user, group_id: member.source_id, assignee_id: member.user_id).
-          execute.pluck(:id)
+        issues = Issue.unscoped.select(1).
+                 joins(:project).
+                 where('issues.id = issue_assignees.issue_id AND projects.namespace_id = ?', member.source_id)
 
-        IssueAssignee.destroy_all(issue_id: issue_ids, user_id: member.user_id)
+        # DELETE FROM issue_assignees WHERE user_id = X AND EXISTS (...)
+        IssueAssignee.unscoped.
+          where('user_id = :user_id AND EXISTS (:sub)', user_id: member.user_id, sub: issues).
+          delete_all
 
         MergeRequestsFinder.new(user, group_id: member.source_id, assignee_id: member.user_id).
           execute.
@@ -37,14 +41,20 @@ module Members
       else
         project = member.source
 
-        IssueAssignee.destroy_all(
-          user_id: member.user_id,
-          issue_id: project.issues.opened.assigned_to(member.user).select(:id)
-        )
+        # SELECT 1 FROM issues WHERE issues.id = issue_assignees.issue_id AND issues.project_id = X
+        issues = Issue.unscoped.select(1).
+                 where('issues.id = issue_assignees.issue_id').
+                 where(project_id: project.id)
+
+        # DELETE FROM issue_assignees WHERE user_id = X AND EXISTS (...)
+        IssueAssignee.unscoped.
+          where('user_id = :user_id AND EXISTS (:sub)', user_id: member.user_id, sub: issues).
+          delete_all
 
         project.merge_requests.opened.assigned_to(member.user).update_all(assignee_id: nil)
-        member.user.update_cache_counts
       end
+
+      member.user.invalidate_cache_counts
     end
   end
 end

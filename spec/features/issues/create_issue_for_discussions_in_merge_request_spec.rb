@@ -14,7 +14,7 @@ feature 'Resolving all open discussions in a merge request from an issue', featu
     end
 
     it 'shows a button to resolve all discussions by creating a new issue' do
-      within('li#resolve-count-app') do
+      within('#resolve-count-app') do
         expect(page).to have_link "Resolve all discussions in new issue", href: new_namespace_project_issue_path(project.namespace, project, merge_request_to_resolve_discussions_of: merge_request.iid)
       end
     end
@@ -49,7 +49,7 @@ feature 'Resolving all open discussions in a merge request from an issue', featu
         end
 
         it 'does not show a link to create a new issue' do
-          expect(page).not_to have_link 'open an issue to resolve them later'
+          expect(page).not_to have_link 'Create an issue to resolve them later'
         end
       end
 
@@ -59,18 +59,18 @@ feature 'Resolving all open discussions in a merge request from an issue', featu
         end
 
         it 'shows a warning that the merge request contains unresolved discussions' do
-          expect(page).to have_content 'This merge request has unresolved discussions'
+          expect(page).to have_content 'There are unresolved discussions.'
         end
 
         it 'has a link to resolve all discussions by creating an issue' do
           page.within '.mr-widget-body' do
-            expect(page).to have_link 'open an issue to resolve them later', href: new_namespace_project_issue_path(project.namespace, project, merge_request_to_resolve_discussions_of: merge_request.iid)
+            expect(page).to have_link 'Create an issue to resolve them later', href: new_namespace_project_issue_path(project.namespace, project, merge_request_to_resolve_discussions_of: merge_request.iid)
           end
         end
 
         context 'creating an issue for discussions' do
           before do
-            page.click_link 'open an issue to resolve them later', href: new_namespace_project_issue_path(project.namespace, project, merge_request_to_resolve_discussions_of: merge_request.iid)
+            page.click_link 'Create an issue to resolve them later', href: new_namespace_project_issue_path(project.namespace, project, merge_request_to_resolve_discussions_of: merge_request.iid)
           end
 
           it_behaves_like 'creating an issue for a discussion'

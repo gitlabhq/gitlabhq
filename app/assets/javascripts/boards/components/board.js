@@ -3,9 +3,7 @@
 import Vue from 'vue';
 import boardList from './board_list';
 import boardBlankState from './board_blank_state';
-
-require('./board_delete');
-require('./board_list');
+import './board_delete';
 
 const Store = gl.issueBoards.BoardsStore;
 
@@ -35,7 +33,10 @@ gl.issueBoards.Board = Vue.extend({
     filter: {
       handler() {
         this.list.page = 1;
-        this.list.getIssues(true);
+        this.list.getIssues(true)
+          .catch(() => {
+            // TODO: handle request error
+          });
       },
       deep: true,
     },
