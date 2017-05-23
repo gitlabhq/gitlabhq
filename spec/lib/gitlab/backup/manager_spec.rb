@@ -24,6 +24,8 @@ describe Backup::Manager, lib: true do
   describe '#remove_old' do
     let(:files) do
       [
+        '1495528448_2017_05_23_9.3.0-pre_gitlab_backup.tar',
+        '1495528448_2017_05_23_9.3.0_gitlab_backup.tar',
         '1451606400_2016_01_01_gitlab_backup.tar',
         '1451520000_2015_12_31_gitlab_backup.tar',
         '1450742400_2015_12_22_gitlab_backup.tar',
@@ -37,7 +39,7 @@ describe Backup::Manager, lib: true do
       allow(Dir).to receive(:chdir).and_yield
       allow(Dir).to receive(:glob).and_return(files)
       allow(FileUtils).to receive(:rm)
-      allow(Time).to receive(:now).and_return(Time.utc(2016))
+      allow(Time).to receive(:now).and_return(Time.utc(2017))
     end
 
     context 'when keep_time is zero' do
@@ -79,14 +81,19 @@ describe Backup::Manager, lib: true do
         subject.remove_old
       end
 
-      it 'removes matching files with a human-readable timestamp' do
+      it 'removes matching files with a human-readable versioned timestamp' do
+        expect(FileUtils).to have_received(:rm).with(files[0])
         expect(FileUtils).to have_received(:rm).with(files[1])
-        expect(FileUtils).to have_received(:rm).with(files[2])
+      end
+
+      it 'removes matching files with a human-readable non-versioned timestamp' do
+        expect(FileUtils).to have_received(:rm).with(files[3])
+        expect(FileUtils).to have_received(:rm).with(files[4])
       end
 
       it 'removes matching files without a human-readable timestamp' do
-        expect(FileUtils).to have_received(:rm).with(files[3])
-        expect(FileUtils).to have_received(:rm).with(files[4])
+        expect(FileUtils).to have_received(:rm).with(files[5])
+        expect(FileUtils).to have_received(:rm).with(files[6])
       end
 
       it 'does not remove files that are not old enough' do
@@ -94,11 +101,11 @@ describe Backup::Manager, lib: true do
       end
 
       it 'does not remove non-matching files' do
-        expect(FileUtils).not_to have_received(:rm).with(files[5])
+        expect(FileUtils).not_to have_received(:rm).with(files[7])
       end
 
       it 'prints a done message' do
-        expect(progress).to have_received(:puts).with('done. (4 removed)')
+        expect(progress).to have_received(:puts).with('done. (5 removed)')
       end
     end
 
