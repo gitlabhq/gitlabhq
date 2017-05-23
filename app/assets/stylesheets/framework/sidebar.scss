@@ -83,4 +83,8 @@
     position: fixed;
     top: 0;
   }
+
+  &:not(.affix-top) {
+    min-height: 100%;
+  }
 }
