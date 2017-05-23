@@ -1,6 +1,6 @@
 /* global Flash */
 
-require('deckar01-task_list');
+import 'deckar01-task_list';
 
 class TaskList {
   constructor(options = {}) {
