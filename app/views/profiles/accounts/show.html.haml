@@ -16,18 +16,13 @@
   .col-lg-9.private-tokens-reset
     .reset-action
       %p.cgray
-        - if current_user.private_token
-          = label_tag "private-token", "Private token", class: "label-light"
-          = text_field_tag "private-token", current_user.private_token, class: "form-control", readonly: true, onclick: "this.select()"
-        - else
-          %span You don't have one yet. Click generate to fix it.
+        = label_tag "private-token", "Private token", class: "label-light"
+        = text_field_tag "private-token", current_user.private_token, class: "form-control", readonly: true, onclick: "this.select()"
         %p.help-block
           Your private token is used to access the API and Atom feeds without username/password authentication.
       .prepend-top-default
-        - if current_user.private_token
-          = link_to 'Reset private token', reset_private_token_profile_path, method: :put, data: { confirm: "Are you sure?" }, class: "btn btn-default private-token"
-        - else
-          = f.submit 'Generate', class: "btn btn-default"
+        = link_to 'Reset private token', reset_private_token_profile_path, method: :put, data: { confirm: "Are you sure?" }, class: "btn btn-default private-token"
+
     - if incoming_email_token_enabled?
       .reset-action
         %p.cgray
