@@ -370,3 +370,5 @@ gem 'sys-filesystem', '~> 1.1.6'
 gem 'gitaly', '~> 0.7.0'
 
 gem 'toml-rb', '~> 0.3.15', require: false
+
+gem 'work_queue', '~> 2.5.4'
