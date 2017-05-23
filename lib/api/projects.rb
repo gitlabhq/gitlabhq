@@ -68,7 +68,10 @@ module API
         end
 
         def present_projects(options = {})
-          projects = ProjectsFinder.new(current_user: current_user).execute
+          finder_params = {}
+          finder_params[:non_public] = true if params[:membership].present?
+
+          projects = ProjectsFinder.new(current_user: current_user, params: finder_params).execute
           projects = filter_projects(projects)
           projects = projects.with_statistics if params[:statistics]
           projects = projects.with_issues_enabled if params[:with_issues_enabled]
