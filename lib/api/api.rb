@@ -45,6 +45,7 @@ module API
     end
 
     before { allow_access_with_scope :api }
+    before { header['X-Frame-Options'] = 'SAMEORIGIN' }
     before { Gitlab::I18n.set_locale(current_user) }
 
     after { Gitlab::I18n.reset_locale }
