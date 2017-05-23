@@ -177,7 +177,7 @@ describe('MRWidgetReadyToMerge', () => {
         });
 
         it('should be disabled in the rendered output', () => {
-          const checkboxElement = vm.$el.getElementById('remove-source-branch-input');
+          const checkboxElement = vm.$el.querySelector('#remove-source-branch-input');
           expect(checkboxElement.getAttribute('disabled')).toBe('disabled');
         });
       });
@@ -194,7 +194,7 @@ describe('MRWidgetReadyToMerge', () => {
         });
 
         it('should be enabled in rendered output', () => {
-          const checkboxElement = this.customVm.$el.getElementById('remove-source-branch-input');
+          const checkboxElement = this.customVm.$el.querySelector('#remove-source-branch-input');
           expect(checkboxElement.getAttribute('disabled')).toBeNull();
         });
       });
