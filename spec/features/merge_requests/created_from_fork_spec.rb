@@ -63,6 +63,21 @@ feature 'Merge request created from fork' do
     end
   end
 
+  context 'user can merge into source project but cannot push to fork' do
+    given(:user2) { create(:user) }
+
+    background do
+      project.team << [user2, :master]
+      logout
+      login_as user2
+      visit_merge_request(merge_request)
+    end
+
+    scenario 'user cannot remove source branch', js: true do
+      expect(page).to have_field('remove-source-branch-input', disabled: true)
+    end
+  end
+
   def visit_merge_request(mr)
     visit namespace_project_merge_request_path(project.namespace,
                                                project, mr)
