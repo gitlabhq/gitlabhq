@@ -174,7 +174,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :shared_runners_minutes,
       :minimum_mirror_sync_time,
       :geo_status_timeout,
-      :elasticsearch_experimental_indexer
+      :elasticsearch_experimental_indexer,
+      :check_namespace_plan
     ]
   end
 end

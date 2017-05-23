@@ -1,22 +1,65 @@
 class License < ActiveRecord::Base
   include ActionView::Helpers::NumberHelper
 
+  DEPLOY_BOARD_FEATURE = 'GitLab_DeployBoard'.freeze
+  FILE_LOCK_FEATURE = 'GitLab_FileLocks'.freeze
+  GEO_FEATURE = 'GitLab_Geo'.freeze
+  AUDITOR_USER_FEATURE = 'GitLab_Auditor_User'.freeze
+  SERVICE_DESK_FEATURE = 'GitLab_ServiceDesk'.freeze
+
+  FEATURE_CODES = {
+    geo: GEO_FEATURE,
+    auditor_user: AUDITOR_USER_FEATURE,
+    service_desk: SERVICE_DESK_FEATURE,
+    # Features that make sense to Namespace:
+    deploy_board: DEPLOY_BOARD_FEATURE,
+    file_lock: FILE_LOCK_FEATURE
+  }.freeze
+
+  STARTER_PLAN = 'starter'.freeze
+  PREMIUM_PLAN = 'premium'.freeze
+  ULTIMATE_PLAN = 'ultimate'.freeze
+  EARLY_ADOPTER_PLAN = 'early_adopter'.freeze
+
   EES_FEATURES = [
     # ..
   ].freeze
 
   EEP_FEATURES = [
     *EES_FEATURES,
-    { 'GitLab_DeployBoard' => 1 },
-    { 'GitLab_FileLocks' => 1 },
-    { 'GitLab_Geo' => 1 },
-    { 'GitLab_Auditor_User' => 1 },
-    { 'GitLab_ServiceDesk' => 1 }
+    { DEPLOY_BOARD_FEATURE => 1 },
+    { FILE_LOCK_FEATURE => 1 },
+    { GEO_FEATURE => 1 },
+    { AUDITOR_USER_FEATURE => 1 },
+    { SERVICE_DESK_FEATURE => 1 }
+  ].freeze
+
+  EEU_FEATURES = [
+    *EEP_FEATURES
+    # ..
+  ].freeze
+
+  # List all features available for early adopters,
+  # i.e. users that started using GitLab.com before
+  # the introduction of Bronze, Silver, Gold plans.
+  # Obs.: Do not extend from other feature constants.
+  # Early adopters should not earn new features as they're
+  # introduced.
+  EARLY_ADOPTER_FEATURES = [
+    # TODO: Add EES features
+    # https://gitlab.com/gitlab-org/gitlab-ee/issues/2335)
+    { DEPLOY_BOARD_FEATURE => 1 },
+    { FILE_LOCK_FEATURE => 1 },
+    { GEO_FEATURE => 1 },
+    { AUDITOR_USER_FEATURE => 1 },
+    { SERVICE_DESK_FEATURE => 1 }
   ].freeze
 
   FEATURES_BY_PLAN = {
-    'starter'  => EES_FEATURES,
-    'premium'  => EEP_FEATURES
+    STARTER_PLAN       => EES_FEATURES,
+    PREMIUM_PLAN       => EEP_FEATURES,
+    ULTIMATE_PLAN      => EEU_FEATURES,
+    EARLY_ADOPTER_PLAN => EARLY_ADOPTER_FEATURES
   }.freeze
 
   validate :valid_license
@@ -46,6 +89,13 @@ class License < ActiveRecord::Base
 
     def reset_current
       RequestStore.delete(:current_license)
+    end
+
+    def plan_includes_feature?(plan, code)
+      features = features_for_plan(plan)
+      feature = FEATURE_CODES.fetch(code)
+
+      features[feature].to_i > 0
     end
 
     def block_changes?
@@ -115,8 +165,9 @@ class License < ActiveRecord::Base
     explicit_add_ons.merge(plan_features)
   end
 
-  def add_on?(code)
-    add_ons[code].to_i > 0
+  def feature_available?(code)
+    feature = FEATURE_CODES.fetch(code)
+    add_ons[feature].to_i > 0
   end
 
   def restricted_user_count

@@ -8,6 +8,41 @@ describe Namespace, models: true do
   it { is_expected.to delegate_method(:shared_runners_minutes).to(:namespace_statistics) }
   it { is_expected.to delegate_method(:shared_runners_seconds).to(:namespace_statistics) }
   it { is_expected.to delegate_method(:shared_runners_seconds_last_reset).to(:namespace_statistics) }
+  it { is_expected.to validate_inclusion_of(:plan).in_array(Namespace::EE_PLANS.keys).allow_nil }
+
+  describe '#feature_available?' do
+    let(:group) { create(:group, plan: plan_license) }
+
+    subject { group.feature_available?(feature) }
+
+    context 'when feature available' do
+      let(:feature) { :deploy_board }
+      let(:plan_license) { Namespace::GOLD_PLAN }
+
+      context 'when feature available for current group' do
+        it 'returns false' do
+          is_expected.to eq(true)
+        end
+      end
+
+      context 'when license is applied to parent group' do
+        let(:child_group) { create :group, parent: group }
+
+        it 'child group has feature available' do
+          expect(child_group.feature_available?(feature)).to eq(true)
+        end
+      end
+    end
+
+    context 'when feature not available' do
+      let(:feature) { :deploy_board }
+      let(:plan_license) { Namespace::BRONZE_PLAN }
+
+      it 'returns false' do
+        is_expected.to eq(false)
+      end
+    end
+  end
 
   describe '#shared_runners_enabled?' do
     subject { namespace.shared_runners_enabled? }

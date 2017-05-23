@@ -1,12 +1,14 @@
 require_dependency 'gitlab/git'
 
 module Gitlab
+  SUBDOMAIN_REGEX = %r{\Ahttps://[a-z0-9]+\.gitlab\.com\z}
+
   def self.com?
-    # Check `staging?` as well to keep parity with gitlab.com
-    Gitlab.config.gitlab.url == 'https://gitlab.com' || staging?
+    # Check `gl_subdomain?` as well to keep parity with gitlab.com
+    Gitlab.config.gitlab.url == 'https://gitlab.com' || gl_subdomain?
   end
 
-  def self.staging?
-    Gitlab.config.gitlab.url == 'https://staging.gitlab.com'
+  def self.gl_subdomain?
+    SUBDOMAIN_REGEX === Gitlab.config.gitlab.url
   end
 end

@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe EE::Gitlab::ServiceDesk, lib: true do
   before do
-    allow_any_instance_of(License).to receive(:add_on?).and_call_original
-    allow_any_instance_of(License).to receive(:add_on?).with('GitLab_ServiceDesk') { true }
+    allow_any_instance_of(License).to receive(:feature_available?).and_call_original
+    allow_any_instance_of(License).to receive(:feature_available?).with(:service_desk) { true }
     allow(::Gitlab::IncomingEmail).to receive(:enabled?) { true }
     allow(::Gitlab::IncomingEmail).to receive(:supports_wildcard?) { true }
   end
@@ -14,7 +14,7 @@ describe EE::Gitlab::ServiceDesk, lib: true do
 
   context 'when license does not support service desk' do
     before do
-      allow_any_instance_of(License).to receive(:add_on?).with('GitLab_ServiceDesk') { false }
+      allow_any_instance_of(License).to receive(:feature_available?).with(:service_desk) { false }
     end
 
     it { is_expected.to be_falsy }
