@@ -9,7 +9,7 @@ feature 'User RSS' do
       visit path
     end
 
-    it_behaves_like "it has an RSS button with current_user's private token"
+    it_behaves_like "it has an RSS button with current_user's rss token"
   end
 
   context 'when signed out' do
@@ -17,6 +17,6 @@ feature 'User RSS' do
       visit path
     end
 
-    it_behaves_like "it has an RSS button without a private token"
+    it_behaves_like "it has an RSS button without an rss token"
   end
 end

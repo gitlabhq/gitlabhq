@@ -99,6 +99,42 @@ describe ApplicationController do
     end
   end
 
+  describe '#authenticate_user_from_rss_token' do
+    describe "authenticating a user from an rss token" do
+      controller(described_class) do
+        def index
+          render text: 'authenticated'
+        end
+      end
+
+      context "when the 'rss_token' param is populated with the rss token" do
+        context 'when the request format is atom' do
+          it "logs the user in" do
+            get :index, rss_token: user.rss_token, format: :atom
+            expect(response).to have_http_status 200
+            expect(response.body).to eq 'authenticated'
+          end
+        end
+
+        context 'when the request format is not atom' do
+          it "doesn't log the user in" do
+            get :index, rss_token: user.rss_token
+            expect(response.status).not_to have_http_status 200
+            expect(response.body).not_to eq 'authenticated'
+          end
+        end
+      end
+
+      context "when the 'rss_token' param is populated with an invalid rss token" do
+        it "doesn't log the user" do
+          get :index, rss_token: "token"
+          expect(response.status).not_to eq 200
+          expect(response.body).not_to eq 'authenticated'
+        end
+      end
+    end
+  end
+
   describe '#route_not_found' do
     it 'renders 404 if authenticated' do
       allow(controller).to receive(:current_user).and_return(user)
