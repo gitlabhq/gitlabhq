@@ -17,7 +17,7 @@ This chart includes the following:
 
 ## Prerequisites
 
-- _At least_ 3 GB of RAM available on your cluster, in chunks of 1 GB
+- _At least_ 3 GB of RAM available on your cluster, in chunks of 1 GB. 41GB of storage and 2 CPU are also required.
 - Kubernetes 1.4+ with Beta APIs enabled
 - [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) provisioner support in the underlying infrastructure
 - The ability to point a DNS entry or URL at your GitLab install
@@ -390,7 +390,7 @@ ingress:
 ```
 
 ## Installing GitLab using the Helm Chart
-> You may see a temporary error message `SchedulerPredicates failed due to PersistentVolumeClaim is not bound` while storage provisions. Once the storage provisions, the pods will automatically restart. This may take a couple minutes depending on your cloud provider.
+> You may see a temporary error message `SchedulerPredicates failed due to PersistentVolumeClaim is not bound` while storage provisions. Once the storage provisions, the pods will automatically restart. This may take a couple minutes depending on your cloud provider. If the error persists, please review the [prerequisites](#prerequisites) to ensure you have enough RAM, CPU, and storage.
 
 Once you [have configured](#configuration) GitLab in your `values.yml` file,
 run the following:
