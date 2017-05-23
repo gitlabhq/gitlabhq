@@ -46,6 +46,11 @@ Shortcuts to GitLab's most visited docs:
   - [Create a group](gitlab-basics/create-group.md)
   - [GitLab Subgroups](user/group/subgroups/index.md)
 - [Search through GitLab](user/search/index.md): Search for issues, merge requests, projects, groups, todos, and issues in Issue Boards.
+- [Snippets](user/snippets.md): Snippets allow you to create little bits of code.
+- [Wikis](user/project/wiki/index.md): Enhance your repository documentation with built-in wikis.
+- [GitLab Pages](user/project/pages/index.md): Build, test, and deploy your static website with GitLab Pages.
+- **(EEP)** [GitLab Service Desk](user/project/service_desk.md): A simple way to allow people to create issues in your GitLab instance without needing their own user account.
+- **(EES/EEP)** [Contribution Analytics](analytics/contribution_analytics.md): See detailed statistics of projects' contributors.
 
 ### Repository
 
@@ -63,6 +68,7 @@ Manage files and branches from the UI (user interface):
   - [Protected branches](user/project/protected_branches.md#protected-branches)
 - **(EES/EEP)** [Repository Mirroring](workflow/repository_mirroring.md)
 - **(EES/EEP)** [Push rules](push_rules/push_rules.md): Additional control over pushes to your project.
+- **(EEP)** [File Locking](user/project/file_lock.md): Lock a file to avoid merge conflicts.
 
 ### Issues and Merge Requests (MRs)
 
@@ -91,17 +97,6 @@ Manage files and branches from the UI (user interface):
 
 - [Importing to GitLab](workflow/importing/README.md): Import your projects from GitHub, Bitbucket, GitLab.com, FogBugz and SVN into GitLab.
 - [Migrating from SVN](workflow/importing/migrating_from_svn.md): Convert a SVN repository to Git and GitLab.
-
-## GitLab's superpowers
-
-Take a step ahead and dive into GitLab's advanced features.
-
-- **(EEP)** [GitLab Service Desk](user/project/service_desk.md): A simple way to allow people to create issues in your GitLab instance without needing their own user account.
-- **(EEP)** [File Locking](user/project/file_lock.md): Lock a file to avoid merge conflicts.
-- **(EES/EEP)** [Contribution Analytics](analytics/contribution_analytics.md): See detailed statistics of projects' contributors.
-- [GitLab Pages](user/project/pages/index.md): Build, test, and deploy your static website with GitLab Pages.
-- [Snippets](user/snippets.md): Snippets allow you to create little bits of code.
-- [Wikis](user/project/wiki/index.md): Enhance your repository documentation with built-in wikis.
 
 ### Continuous Integration, Delivery, and Deployment
 
