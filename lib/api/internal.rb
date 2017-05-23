@@ -37,26 +37,18 @@ module API
           .new(actor, project, protocol, authentication_abilities: ssh_authentication_abilities)
 
         begin
-          access_status = access_checker.check(params[:action], params[:changes])
-          response = { status: access_status.status, message: access_status.message }
+          access_checker.check(params[:action], params[:changes])
         rescue Gitlab::GitAccess::UnauthorizedError, Gitlab::GitAccess::NotFoundError => e
           return { status: false, message: e.message }
         end
 
         log_user_activity(actor)
 
-        # Project id to pass between components that don't share/don't have
-        # access to the same filesystem mounts
-        response[:gl_repository] = Gitlab::GlRepository.gl_repository(project, wiki?)
-
-        # Return the repository full path so that gitlab-shell has it when
-        # handling ssh commands
-        response[:repository_path] =
-          if wiki?
-            project.wiki.repository.path_to_repo
-          else
-            project.repository.path_to_repo
-          end
+        response = {
+          status: true,
+          gl_repository: gl_repository,
+          repository_path: repository_path
+        }
 
         response
       end
