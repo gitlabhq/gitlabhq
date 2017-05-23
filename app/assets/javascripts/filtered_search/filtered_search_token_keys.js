@@ -60,6 +60,10 @@ class FilteredSearchTokenKeys {
     return tokenKeys;
   }
 
+  static getKeys() {
+    return tokenKeys.map(i => i.key);
+  }
+
   static getAlternatives() {
     return alternativeTokenKeys;
   }

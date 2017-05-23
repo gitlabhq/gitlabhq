@@ -1,10 +1,11 @@
 import _ from 'underscore';
 
 class RecentSearchesStore {
-  constructor(initialState = {}) {
+  constructor(initialState = {}, allowedKeys) {
     this.state = Object.assign({
       isLocalStorageAvailable: true,
       recentSearches: [],
+      allowedKeys,
     }, initialState);
   }
 
