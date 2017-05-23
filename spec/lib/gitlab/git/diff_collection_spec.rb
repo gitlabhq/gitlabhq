@@ -10,7 +10,7 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
       no_collapse: no_collapse
     )
   end
-  let(:iterator) { Array.new(file_count, fake_diff(line_length, line_count)) }
+  let(:iterator) { MutatingConstantIterator.new(file_count, fake_diff(line_length, line_count)) }
   let(:file_count) { 0 }
   let(:line_length) { 1 }
   let(:line_count) { 1 }
@@ -64,7 +64,15 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
           subject { super().real_size }
           it { is_expected.to eq('3') }
         end
-        it { expect(subject.size).to eq(3) }
+
+        describe '#size' do
+          it { expect(subject.size).to eq(3) }
+
+          it 'does not change after peeking' do
+            subject.any?
+            expect(subject.size).to eq(3)
+          end
+        end
 
         context 'when limiting is disabled' do
           let(:all_diffs) { true }
@@ -83,7 +91,15 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
             subject { super().real_size }
             it { is_expected.to eq('3') }
           end
-          it { expect(subject.size).to eq(3) }
+
+          describe '#size' do
+            it { expect(subject.size).to eq(3) }
+  
+            it 'does not change after peeking' do
+              subject.any?
+              expect(subject.size).to eq(3)
+            end
+          end
         end
       end
 
@@ -456,5 +472,23 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
 
   def fake_diff(line_length, line_count)
     { 'diff' => "#{'a' * line_length}\n" * line_count }
+  end
+
+  class MutatingConstantIterator
+    include Enumerable
+
+    def initialize(count, value)
+      @count = count
+      @value = value
+    end
+
+    def each
+      loop do
+        break if @count.zero?
+        # It is critical to decrement before yielding. We may never reach the lines after 'yield'.
+        @count -= 1
+        yield @value
+      end
+    end
   end
 end
