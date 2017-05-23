@@ -124,8 +124,8 @@ describe Gitlab::ProjectSearchResults, lib: true do
     context 'when wiki is internal' do
       let(:project) { create(:project, :public, :wiki_private) }
 
-      it 'finds wiki blobs for members' do
-        project.add_reporter(user)
+      it 'finds wiki blobs for guest' do
+        project.add_guest(user)
 
         is_expected.not_to be_empty
       end
