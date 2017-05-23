@@ -140,8 +140,6 @@ module API
         optional :name, type: String, desc: 'The name of the user'
         optional :username, type: String, desc: 'The username of the user'
         use :optional_attributes
-
-        at_least_one_of(*@declared_params.flatten - [:id])
       end
       put ":id" do
         authenticated_as_admin!

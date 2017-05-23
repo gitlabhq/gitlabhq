@@ -431,7 +431,7 @@ describe API::Users do
       expect(response).to have_http_status(200)
       expect(json_response['shared_runners_minutes_limit'])
         .to eq(133)
-      expect(user.reload.namespace.shared_runners_minutes_limit).to eq(133)
+      expect(user.reload.shared_runners_minutes_limit).to eq(133)
     end
 
     it "does not update admin status" do

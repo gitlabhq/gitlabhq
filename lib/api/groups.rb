@@ -119,8 +119,6 @@ module API
         optional :name, type: String, desc: 'The name of the group'
         optional :path, type: String, desc: 'The path of the group'
         use :optional_params
-
-        at_least_one_of(*@declared_params.flatten - [:id])
       end
       put ':id' do
         group = find_group!(params[:id])
