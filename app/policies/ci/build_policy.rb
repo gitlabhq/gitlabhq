@@ -23,7 +23,7 @@ module Ci
 
       !::Gitlab::UserAccess
         .new(user, project: build.project)
-        .can_push_to_branch?(build.ref)
+        .can_merge_to_branch?(build.ref)
     end
   end
 end
