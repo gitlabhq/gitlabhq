@@ -9,19 +9,19 @@ describe Gitlab::Metrics do
 
   describe '.enabled?' do
     it 'returns a boolean' do
-      expect([true, false].include?(described_class.enabled?)).to eq(true)
+      expect(described_class.enabled?).to be_in([true, false])
     end
   end
 
   describe '.prometheus_metrics_enabled?' do
     it 'returns a boolean' do
-      expect([true, false].include?(described_class.prometheus_metrics_enabled?)).to eq(true)
+      expect(described_class.prometheus_metrics_enabled?).to be_in([true, false])
     end
   end
 
   describe '.influx_metrics_enabled?' do
     it 'returns a boolean' do
-      expect([true, false].include?(described_class.influx_metrics_enabled?)).to eq(true)
+      expect(described_class.influx_metrics_enabled?).to be_in([true, false])
     end
   end
 
@@ -195,9 +195,17 @@ describe Gitlab::Metrics do
       subject { described_class.counter(:couter, 'doc') }
 
       describe '#increment' do
-        it { expect { subject.increment }.not_to raise_exception }
-        it { expect { subject.increment({}) }.not_to raise_exception }
-        it { expect { subject.increment({}, 1) }.not_to raise_exception }
+        it 'successfully calls #increment without arguments' do
+          expect { subject.increment }.not_to raise_exception
+        end
+
+        it 'successfully calls #increment with 1 argument' do
+          expect { subject.increment({}) }.not_to raise_exception
+        end
+
+        it 'successfully calls #increment with 2 arguments' do
+          expect { subject.increment({}, 1) }.not_to raise_exception
+        end
       end
     end
 
@@ -205,15 +213,19 @@ describe Gitlab::Metrics do
       subject { described_class.summary(:summary, 'doc') }
 
       describe '#observe' do
-        it { expect { subject.observe({}, 2) }.not_to raise_exception }
+        it 'successfully calls #observe with 2 arguments' do
+          expect { subject.observe({}, 2) }.not_to raise_exception
+        end
       end
     end
 
     describe '#gauge' do
       subject { described_class.gauge(:gauge, 'doc') }
 
-      describe '#observe' do
-        it { expect { subject.set({}, 1) }.not_to raise_exception }
+      describe '#set' do
+        it 'successfully calls #set with 2 arguments' do
+          expect { subject.set({}, 1) }.not_to raise_exception
+        end
       end
     end
 
@@ -221,7 +233,9 @@ describe Gitlab::Metrics do
       subject { described_class.histogram(:histogram, 'doc') }
 
       describe '#observe' do
-        it { expect { subject.observe({}, 2) }.not_to raise_exception }
+        it 'successfully calls #observe with 2 arguments' do
+          expect { subject.observe({}, 2) }.not_to raise_exception
+        end
       end
     end
   end
