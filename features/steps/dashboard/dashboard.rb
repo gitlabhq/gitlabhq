@@ -22,7 +22,7 @@ class Spinach::Features::Dashboard < Spinach::FeatureSteps
   end
 
   step 'I click "Create merge request" link' do
-    click_link "Create merge request"
+    find_link("Create merge request", visible: false).trigger('click')
   end
 
   step 'I see prefilled new Merge Request page' do

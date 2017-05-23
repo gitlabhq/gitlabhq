@@ -22,7 +22,7 @@ describe Gitlab::Diff::Position, lib: true do
       it "returns the correct diff file" do
         diff_file = subject.diff_file(project.repository)
 
-        expect(diff_file.new_file).to be true
+        expect(diff_file.new_file?).to be true
         expect(diff_file.new_path).to eq(subject.new_path)
         expect(diff_file.diff_refs).to eq(subject.diff_refs)
       end
@@ -314,7 +314,7 @@ describe Gitlab::Diff::Position, lib: true do
       it "returns the correct diff file" do
         diff_file = subject.diff_file(project.repository)
 
-        expect(diff_file.deleted_file).to be true
+        expect(diff_file.deleted_file?).to be true
         expect(diff_file.old_path).to eq(subject.old_path)
         expect(diff_file.diff_refs).to eq(subject.diff_refs)
       end
@@ -356,7 +356,7 @@ describe Gitlab::Diff::Position, lib: true do
       it "returns the correct diff file" do
         diff_file = subject.diff_file(project.repository)
 
-        expect(diff_file.new_file).to be true
+        expect(diff_file.new_file?).to be true
         expect(diff_file.new_path).to eq(subject.new_path)
         expect(diff_file.diff_refs).to eq(subject.diff_refs)
       end

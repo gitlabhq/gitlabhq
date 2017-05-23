@@ -39,7 +39,7 @@ RSpec.shared_examples "protected tags > access control > CE" do
         end
       end
 
-      wait_for_ajax
+      wait_for_requests
 
       expect(ProtectedTag.last.create_access_levels.map(&:access_level)).to include(access_type_id)
     end

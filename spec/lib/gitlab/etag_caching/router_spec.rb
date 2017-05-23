@@ -67,6 +67,17 @@ describe Gitlab::EtagCaching::Router do
     expect(result.name).to eq 'merge_request_pipelines'
   end
 
+  it 'matches build endpoint' do
+    env = build_env(
+      '/my-group/my-project/builds/234.json'
+    )
+
+    result = described_class.match(env)
+
+    expect(result).to be_present
+    expect(result.name).to eq 'project_build'
+  end
+
   it 'does not match blob with confusing name' do
     env = build_env(
       '/my-group/my-project/blob/master/pipelines.json'
@@ -75,6 +86,32 @@ describe Gitlab::EtagCaching::Router do
     result = described_class.match(env)
 
     expect(result).to be_blank
+  end
+
+<<<<<<< HEAD
+  it 'matches pipeline#show endpoint' do
+    env = build_env(
+      '/my-group/my-project/pipelines/2.json'
+=======
+  it 'matches the environments path' do
+    env = build_env(
+      '/my-group/my-project/environments.json'
+>>>>>>> ebede2b... Use etag caching for environments JSON
+    )
+
+    result = described_class.match(env)
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+    expect(result).to be_present
+    expect(result.name).to eq 'project_pipeline'
+=======
+    expect(result).to be_blank
+>>>>>>> ebede2b... Use etag caching for environments JSON
+=======
+    expect(result).to be_present
+    expect(result.name).to eq 'environments'
+>>>>>>> 3be9820... Test etag caching router and incorporate review
   end
 
   def build_env(path)

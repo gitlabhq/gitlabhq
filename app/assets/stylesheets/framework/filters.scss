@@ -90,6 +90,7 @@
 .filtered-search-term {
   display: -webkit-flex;
   display: flex;
+  flex-shrink: 0;
   margin-top: 5px;
   margin-bottom: 5px;
 
@@ -104,6 +105,22 @@
     padding: 2px 7px;
   }
 
+  .name {
+    background-color: $filter-name-resting-color;
+    color: $filter-name-text-color;
+    border-radius: 2px 0 0 2px;
+    margin-right: 1px;
+    text-transform: capitalize;
+  }
+
+  .value-container {
+    background-color: $white-normal;
+    color: $filter-value-text-color;
+    border-radius: 0 2px 2px 0;
+    margin-right: 5px;
+    padding-right: 8px;
+  }
+
   .value {
     padding-right: 0;
   }
@@ -111,7 +128,7 @@
   .remove-token {
     display: inline-block;
     padding-left: 4px;
-    padding-right: 8px;
+    padding-right: 0;
 
     .fa-close {
       color: $gl-text-color-secondary;
@@ -131,6 +148,9 @@
       }
     }
   }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
 
   .name {
     background-color: $filter-name-resting-color;
@@ -146,15 +166,20 @@
     border-radius: 0 2px 2px 0;
     margin-right: 5px;
   }
+>>>>>>> 5487289... Remove bad conflict merge
+=======
+>>>>>>> 1c97b92... Remove duplicate css
+}
 
-  .selected {
-    .name {
-      background-color: $filter-name-selected-color;
-    }
+.filtered-search-token:hover,
+.filtered-search-token .selected,
+.filtered-search-term .selected {
+  .name {
+    background-color: $filter-name-selected-color;
+  }
 
-    .value-container {
-      background-color: $filter-value-selected-color;
-    }
+  .value-container {
+    background-color: $filter-value-selected-color;
   }
 }
 
@@ -238,7 +263,7 @@
     width: 35px;
     background-color: $white-light;
     border: none;
-    position: absolute;
+    position: static;
     right: 0;
     height: 100%;
     outline: none;
@@ -474,4 +499,5 @@
 
 .filter-dropdown-loading {
   padding: 8px 16px;
+  text-align: center;
 }

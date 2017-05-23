@@ -38,8 +38,10 @@ feature 'issue move to another project' do
     end
 
     scenario 'moving issue to another project', js: true do
-      find('#move_to_project_id', visible: false).set(new_project.id)
+      find('#issuable-move', visible: false).set(new_project.id)
       click_button('Save changes')
+
+      wait_for_requests
 
       expect(current_url).to include project_path(new_project)
 
@@ -51,7 +53,7 @@ feature 'issue move to another project' do
     scenario 'searching project dropdown', js: true do
       new_project_search.team << [user, :reporter]
 
-      page.within '.js-move-dropdown' do
+      page.within '.detail-page-description' do
         first('.select2-choice').click
       end
 
@@ -69,7 +71,7 @@ feature 'issue move to another project' do
       background { another_project.team << [user, :guest] }
 
       scenario 'browsing projects in projects select' do
-        click_link 'Select project'
+        click_link 'Move to a different project'
 
         page.within '.select2-results' do
           expect(page).to have_content 'No project'

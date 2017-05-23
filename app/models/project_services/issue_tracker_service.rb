@@ -32,9 +32,9 @@ class IssueTrackerService < Service
   def fields
     [
       { type: 'text', name: 'description', placeholder: description },
-      { type: 'text', name: 'project_url', placeholder: 'Project url' },
-      { type: 'text', name: 'issues_url', placeholder: 'Issue url' },
-      { type: 'text', name: 'new_issue_url', placeholder: 'New Issue url' }
+      { type: 'text', name: 'project_url', placeholder: 'Project url', required: true },
+      { type: 'text', name: 'issues_url', placeholder: 'Issue url', required: true },
+      { type: 'text', name: 'new_issue_url', placeholder: 'New Issue url', required: true }
     ]
   end
 
@@ -76,7 +76,7 @@ class IssueTrackerService < Service
         message = "#{self.type} received response #{response.code} when attempting to connect to #{self.project_url}"
         result = true
       end
-    rescue HTTParty::Error, Timeout::Error, SocketError, Errno::ECONNRESET, Errno::ECONNREFUSED => error
+    rescue HTTParty::Error, Timeout::Error, SocketError, Errno::ECONNRESET, Errno::ECONNREFUSED, OpenSSL::SSL::SSLError => error
       message = "#{self.type} had an error when trying to connect to #{self.project_url}: #{error.message}"
     end
     Rails.logger.info(message)

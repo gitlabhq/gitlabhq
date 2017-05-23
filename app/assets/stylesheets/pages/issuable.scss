@@ -431,7 +431,7 @@
 }
 
 .detail-page-description {
-  padding: 16px 0 0;
+  padding: 16px 0;
 
   small {
     color: $gray-darkest;
@@ -441,7 +441,7 @@
 .edited-text {
   color: $gray-darkest;
   display: block;
-  margin: 0 0 16px;
+  margin: 16px 0 0;
 
   .author_link {
     color: $gray-darkest;

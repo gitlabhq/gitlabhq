@@ -38,7 +38,7 @@ import './shortcuts_navigation';
     }
 
     ShortcutsIssuable.prototype.replyWithSelectedText = function() {
-      var quote, documentFragment, selected, separator;
+      var quote, documentFragment, el, selected, separator;
       var replyField = $('.js-main-target-form #note_note');
 
       documentFragment = window.gl.utils.getSelectedFragment();
@@ -47,10 +47,8 @@ import './shortcuts_navigation';
         return;
       }
 
-      // If the documentFragment contains more than just Markdown, don't copy as GFM.
-      if (documentFragment.querySelector('.md, .wiki')) return;
-
-      selected = window.gl.CopyAsGFM.nodeToGFM(documentFragment);
+      el = window.gl.CopyAsGFM.transformGFMSelection(documentFragment.cloneNode(true));
+      selected = window.gl.CopyAsGFM.nodeToGFM(el);
 
       if (selected.trim() === "") {
         return;
@@ -79,7 +77,9 @@ import './shortcuts_navigation';
     ShortcutsIssuable.prototype.editIssue = function() {
       var $editBtn;
       $editBtn = $('.issuable-edit');
-      return gl.utils.visitUrl($editBtn.attr('href'));
+      // Need to click the element as on issues, editing is inline
+      // on merge request, editing is on a different page
+      $editBtn.get(0).click();
     };
 
     ShortcutsIssuable.prototype.openSidebarDropdown = function(name) {

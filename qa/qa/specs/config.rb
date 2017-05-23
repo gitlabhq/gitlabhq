@@ -1,7 +1,7 @@
 require 'rspec/core'
 require 'capybara/rspec'
-require 'capybara-webkit'
 require 'capybara-screenshot/rspec'
+require 'selenium-webdriver'
 
 # rubocop:disable Metrics/MethodLength
 # rubocop:disable Metrics/LineLength
@@ -20,7 +20,6 @@ module QA
 
         configure_rspec!
         configure_capybara!
-        configure_webkit!
       end
 
       def configure_rspec!
@@ -43,9 +42,9 @@ module QA
           config.order = :random
           Kernel.srand config.seed
 
-          config.before(:all) do
-            page.current_window.resize_to(1200, 1800)
-          end
+          # config.before(:all) do
+          #   page.current_window.resize_to(1200, 1800)
+          # end
 
           config.formatter = :documentation
           config.color = true
@@ -53,25 +52,27 @@ module QA
       end
 
       def configure_capybara!
+        Capybara.register_driver :chrome do |app|
+          capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
+            'chromeOptions' => {
+              'binary' => '/opt/google/chrome-beta/google-chrome-beta',
+              'args' => %w[headless no-sandbox disable-gpu]
+            }
+          )
+
+          Capybara::Selenium::Driver
+            .new(app, browser: :chrome, desired_capabilities: capabilities)
+        end
+
         Capybara.configure do |config|
           config.app_host = @address
-          config.default_driver = :webkit
-          config.javascript_driver = :webkit
+          config.default_driver = :chrome
+          config.javascript_driver = :chrome
           config.default_max_wait_time = 4
 
           # https://github.com/mattheworiordan/capybara-screenshot/issues/164
           config.save_path = 'tmp'
         end
-      end
-
-      def configure_webkit!
-        Capybara::Webkit.configure do |config|
-          config.allow_url(@address)
-          config.block_unknown_urls
-        end
-      rescue RuntimeError # rubocop:disable Lint/HandleExceptions
-        # TODO, Webkit is already configured, this make this
-        # configuration step idempotent, should be improved.
       end
     end
   end

@@ -150,6 +150,7 @@ stages:
 # Trigger a package build on omnibus-gitlab repository
 
 build-package:
+  image: ruby:2.3-alpine
   before_script: []
   services: []
   variables:
@@ -429,6 +430,7 @@ gitlab:assets:compile:
     USE_DB: "false"
     SKIP_STORAGE_VALIDATION: "true"
     WEBPACK_REPORT: "true"
+    NO_COMPRESSION: "true"
   script:
     - yarn install --pure-lockfile --production --cache-folder .yarn-cache
     - bundle exec rake gitlab:assets:compile
@@ -485,25 +487,6 @@ lint:javascript:report:
     expire_in: 31d
     paths:
     - eslint-report.html
-
-# Trigger docs build
-# https://gitlab.com/gitlab-com/doc-gitlab-com/blob/master/README.md#deployment-process
-trigger_docs:
-  stage: post-test
-  image: "alpine"
-  <<: *dedicated-runner
-  before_script:
-    - apk update && apk add curl
-  variables:
-    GIT_STRATEGY: "none"
-  cache: {}
-  artifacts: {}
-  script:
-    - "HTTP_STATUS=$(curl -X POST -F token=${DOCS_TRIGGER_TOKEN} -F ref=master -F variables[PROJECT]=${CI_PROJECT_NAME} --silent --output curl.log --write-out '%{http_code}' https://gitlab.com/api/v3/projects/1794617/trigger/builds)"
-    - if [ "${HTTP_STATUS}" -ne "201" ]; then echo "Error ${HTTP_STATUS}"; cat curl.log; echo; exit 1; fi
-  only:
-    - master@gitlab-org/gitlab-ce
-    - master@gitlab-org/gitlab-ee
 
 pages:
   before_script: []

@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import Store from '~/issue_show/stores';
 import titleComponent from '~/issue_show/components/title.vue';
 
 describe('Title component', () => {
@@ -11,6 +12,12 @@ describe('Title component', () => {
         issuableRef: '#1',
         titleHtml: 'Testing <img />',
         titleText: 'Testing',
+        showForm: false,
+        store: new Store({
+          titleHtml: '',
+          descriptionHtml: '',
+          issuableRef: '',
+        }),
       },
     }).$mount();
   });

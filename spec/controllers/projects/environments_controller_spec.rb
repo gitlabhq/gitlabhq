@@ -57,6 +57,11 @@ describe Projects::EnvironmentsController do
           expect(json_response['available_count']).to eq 3
           expect(json_response['stopped_count']).to eq 1
         end
+
+        it 'sets the polling interval header' do
+          expect(response).to have_http_status(:ok)
+          expect(response.headers['Poll-Interval']).to eq("3000")
+        end
       end
 
       context 'when requesting stopped environments scope' do
@@ -74,6 +79,26 @@ describe Projects::EnvironmentsController do
         it 'contains values describing environment scopes sizes' do
           expect(json_response['available_count']).to eq 3
           expect(json_response['stopped_count']).to eq 1
+        end
+      end
+
+      context "when using etag caching" do
+        before do
+          RequestStore.begin!
+        end
+
+        after do
+          RequestStore.end!
+          RequestStore.clear!
+        end
+
+        it "limits the queries being executed" do
+          control_count = ActiveRecord::QueryRecorder.new { get :index, environment_params }.count
+
+          expect do
+            get :index, environment_params
+            get :index, environment_params
+          end.not_to exceed_query_limit(control_count)
         end
       end
     end
@@ -177,7 +202,7 @@ describe Projects::EnvironmentsController do
         expect(response).to have_http_status(200)
         expect(json_response).to eq(
           { 'redirect_url' =>
-              "http://test.host/#{project.path_with_namespace}/builds/#{action.id}" })
+              namespace_project_job_url(project.namespace, project, action) })
       end
     end
 
@@ -191,7 +216,7 @@ describe Projects::EnvironmentsController do
         expect(response).to have_http_status(200)
         expect(json_response).to eq(
           { 'redirect_url' =>
-              "http://test.host/#{project.path_with_namespace}/environments/#{environment.id}" })
+              namespace_project_environment_url(project.namespace, project, environment) })
       end
     end
   end

@@ -28,7 +28,7 @@
 .note-edit-form {
   .note-form-actions {
     position: relative;
-    margin: $gl-padding 0;
+    margin: $gl-padding 0 0;
   }
 
   .note-preview-holder {
@@ -111,21 +111,44 @@
   margin-top: 0;
   text-align: center;
   font-size: 12px;
+  align-items: center;
 
-  @media (max-width: $screen-sm-max) {
+  @media (max-width: $screen-md-max) {
     // On smaller devices the warning becomes the fourth item in the list,
     // rather than centering, and grows to span the full width of the
     // comment area.
     order: 4;
-    -webkit-order: 4;
+    margin: 6px auto;
+    width: 100%;
+  }
+
+  .fa {
+    margin-right: 8px;
+  }
+}
+
+.right-sidebar-expanded {
+  .confidential-issue-warning {
+    // When the sidebar is open the warning becomes the fourth item in the list,
+    // rather than centering, and grows to span the full width of the
+    // comment area.
+    order: 4;
     margin: 6px auto;
     width: 100%;
   }
 }
 
 .discussion-form {
-  padding: $gl-padding-top $gl-padding;
+  padding: $gl-padding-top $gl-padding $gl-padding;
   background-color: $white-light;
+}
+
+.discussion-notes .disabled-comment {
+  padding: 6px 0;
+}
+
+.notes-form > li {
+  border: 0;
 }
 
 .note-edit-form {
@@ -164,10 +187,6 @@
 
 .discussion-body,
 .diff-file {
-  .notes .note {
-    padding: 10px 15px;
-  }
-
   .discussion-reply-holder {
     background-color: $white-light;
     padding: 10px 16px;

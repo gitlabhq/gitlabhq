@@ -17,7 +17,7 @@ feature 'Project snippet', :js, feature: true do
     before do
       visit namespace_project_snippet_path(project.namespace, project, snippet)
 
-      wait_for_ajax
+      wait_for_requests
     end
 
     it 'displays the blob' do
@@ -48,7 +48,7 @@ feature 'Project snippet', :js, feature: true do
       before do
         visit namespace_project_snippet_path(project.namespace, project, snippet)
 
-        wait_for_ajax
+        wait_for_requests
       end
 
       it 'displays the blob using the rich viewer' do
@@ -78,7 +78,7 @@ feature 'Project snippet', :js, feature: true do
         before do
           find('.js-blob-viewer-switch-btn[data-viewer=simple]').click
 
-          wait_for_ajax
+          wait_for_requests
         end
 
         it 'displays the blob using the simple viewer' do
@@ -99,7 +99,7 @@ feature 'Project snippet', :js, feature: true do
           before do
             find('.js-blob-viewer-switch-btn[data-viewer=rich]').click
 
-            wait_for_ajax
+            wait_for_requests
           end
 
           it 'displays the blob using the rich viewer' do
@@ -120,7 +120,7 @@ feature 'Project snippet', :js, feature: true do
       before do
         visit namespace_project_snippet_path(project.namespace, project, snippet, anchor: 'L1')
 
-        wait_for_ajax
+        wait_for_requests
       end
 
       it 'displays the blob using the simple viewer' do

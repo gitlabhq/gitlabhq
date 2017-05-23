@@ -1,10 +1,18 @@
 <script>
+/* global Flash */
 import Visibility from 'visibilityjs';
 import Poll from '../../lib/utils/poll';
+import eventHub from '../event_hub';
 import Service from '../services/index';
 import Store from '../stores';
 import titleComponent from './title.vue';
 import descriptionComponent from './description.vue';
+import editedComponent from './edited.vue';
+<<<<<<< HEAD
+import formComponent from './form.vue';
+import '../../lib/utils/url_utility';
+=======
+>>>>>>> 07c984d... Port fix-realtime-edited-text-for-issues 9-2-stable fix to master.
 
 export default {
   props: {
@@ -12,7 +20,15 @@ export default {
       required: true,
       type: String,
     },
+    canMove: {
+      required: true,
+      type: Boolean,
+    },
     canUpdate: {
+      required: true,
+      type: Boolean,
+    },
+    canDestroy: {
       required: true,
       type: Boolean,
     },
@@ -20,7 +36,11 @@ export default {
       type: String,
       required: true,
     },
-    initialTitle: {
+    initialTitleHtml: {
+      type: String,
+      required: true,
+    },
+    initialTitleText: {
       type: String,
       required: true,
     },
@@ -34,30 +54,208 @@ export default {
       required: false,
       default: '',
     },
+    updatedAt: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    updatedByName: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    updatedByPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+<<<<<<< HEAD
+    issuableTemplates: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    isConfidential: {
+      type: Boolean,
+      required: true,
+    },
+    markdownPreviewUrl: {
+      type: String,
+      required: true,
+    },
+    markdownDocs: {
+      type: String,
+      required: true,
+    },
+    projectPath: {
+      type: String,
+      required: true,
+    },
+    projectNamespace: {
+      type: String,
+      required: true,
+    },
+    projectsAutocompleteUrl: {
+      type: String,
+      required: true,
+    },
+=======
+>>>>>>> 07c984d... Port fix-realtime-edited-text-for-issues 9-2-stable fix to master.
   },
   data() {
     const store = new Store({
-      titleHtml: this.initialTitle,
+      titleHtml: this.initialTitleHtml,
+      titleText: this.initialTitleText,
       descriptionHtml: this.initialDescriptionHtml,
       descriptionText: this.initialDescriptionText,
+      updatedAt: this.updatedAt,
+      updatedByName: this.updatedByName,
+      updatedByPath: this.updatedByPath,
     });
 
     return {
       store,
       state: store.state,
+      showForm: false,
     };
+  },
+  computed: {
+    formState() {
+      return this.store.formState;
+    },
+    hasUpdated() {
+      return !!this.state.updatedAt;
+    },
   },
   components: {
     descriptionComponent,
     titleComponent,
+    editedComponent,
+<<<<<<< HEAD
+    formComponent,
+  },
+  methods: {
+    openForm() {
+      if (!this.showForm) {
+        this.showForm = true;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> df7c901... fixed issuable shortcuts not working
+        this.store.setFormState({
+          title: this.state.titleText,
+          confidential: this.isConfidential,
+          description: this.state.descriptionText,
+          lockedWarningVisible: false,
+          move_to_project_id: 0,
+          updateLoading: false,
+<<<<<<< HEAD
+=======
+        this.store.formState = Object.assign(this.store.formState, {
+          title: this.state.titleText,
+          confidential: this.isConfidential,
+          description: this.state.descriptionText,
+>>>>>>> 6a14a51... Show warning if realtime data has changed since the form has opened
+=======
+>>>>>>> 6becf28... use formState to update loading of save button
+        });
+      }
+    },
+    closeForm() {
+      this.showForm = false;
+    },
+    updateIssuable() {
+      const canPostUpdate = this.store.formState.move_to_project_id !== 0 ?
+        confirm('Are you sure you want to move this issue to another project?') : true; // eslint-disable-line no-alert
+
+      if (!canPostUpdate) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+        this.store.setFormState({
+          updateLoading: false,
+        });
+=======
+        eventHub.$emit('enable.submit.btn');
+>>>>>>> 3ce6658... Warn before moving issue in inline edit form
+=======
+        this.store.formState.updateLoading = false;
+>>>>>>> 6becf28... use formState to update loading of save button
+=======
+        this.store.setFormState({
+          updateLoading: false,
+        });
+>>>>>>> df7c901... fixed issuable shortcuts not working
+        return;
+      }
+
+      this.service.updateIssuable(this.store.formState)
+        .then(res => res.json())
+        .then((data) => {
+<<<<<<< HEAD
+<<<<<<< HEAD
+          if (location.pathname !== data.web_url) {
+            gl.utils.visitUrl(data.web_url);
+=======
+          if (location.pathname !== data.path) {
+            gl.utils.visitUrl(data.path);
+>>>>>>> 1c46358... Removed un-used CSS
+=======
+          if (location.pathname !== data.web_url) {
+            gl.utils.visitUrl(data.web_url);
+>>>>>>> 625d344... renamed path to web_url in endpoint
+          } else if (data.confidential !== this.isConfidential) {
+            gl.utils.visitUrl(location.pathname);
+          }
+
+          return this.service.getData();
+        })
+        .then(res => res.json())
+        .then((data) => {
+          this.store.updateState(data);
+          eventHub.$emit('close.form');
+        })
+        .catch(() => {
+          eventHub.$emit('close.form');
+          return new Flash('Error updating issue');
+        });
+    },
+    deleteIssuable() {
+      this.service.deleteIssuable()
+        .then(res => res.json())
+        .then((data) => {
+          // Stop the poll so we don't get 404's with the issue not existing
+          this.poll.stop();
+
+          gl.utils.visitUrl(data.web_url);
+        })
+        .catch(() => {
+          eventHub.$emit('close.form');
+          return new Flash('Error deleting issue');
+        });
+    },
+=======
+>>>>>>> 07c984d... Port fix-realtime-edited-text-for-issues 9-2-stable fix to master.
+  },
+  computed: {
+    hasUpdated() {
+      return !!this.state.updatedAt;
+    },
   },
   created() {
-    const resource = new Service(this.endpoint);
-    const poll = new Poll({
-      resource,
+    this.service = new Service(this.endpoint);
+    this.poll = new Poll({
+      resource: this.service,
       method: 'getData',
       successCallback: (res) => {
-        this.store.updateState(res.json());
+        const data = res.json();
+        const shouldUpdate = this.store.stateShouldUpdate(data);
+
+        this.store.updateState(data);
+
+        if (this.showForm && (shouldUpdate.title || shouldUpdate.description)) {
+          this.store.formState.lockedWarningVisible = true;
+        }
       },
       errorCallback(err) {
         throw new Error(err);
@@ -65,22 +263,65 @@ export default {
     });
 
     if (!Visibility.hidden()) {
-      poll.makeRequest();
+      this.poll.makeRequest();
     }
 
     Visibility.change(() => {
       if (!Visibility.hidden()) {
-        poll.restart();
+        this.poll.restart();
       } else {
-        poll.stop();
+        this.poll.stop();
       }
     });
+
+    eventHub.$on('delete.issuable', this.deleteIssuable);
+    eventHub.$on('update.issuable', this.updateIssuable);
+    eventHub.$on('close.form', this.closeForm);
+    eventHub.$on('open.form', this.openForm);
+  },
+  beforeDestroy() {
+    eventHub.$off('delete.issuable', this.deleteIssuable);
+    eventHub.$off('update.issuable', this.updateIssuable);
+    eventHub.$off('close.form', this.closeForm);
+    eventHub.$off('open.form', this.openForm);
   },
 };
 </script>
 
 <template>
   <div>
+<<<<<<< HEAD
+    <form-component
+      v-if="canUpdate && showForm"
+      :form-state="formState"
+      :can-move="canMove"
+      :can-destroy="canDestroy"
+      :issuable-templates="issuableTemplates"
+      :markdown-docs="markdownDocs"
+      :markdown-preview-url="markdownPreviewUrl"
+      :project-path="projectPath"
+      :project-namespace="projectNamespace"
+      :projects-autocomplete-url="projectsAutocompleteUrl"
+    />
+    <div v-else>
+      <title-component
+        :issuable-ref="issuableRef"
+        :title-html="state.titleHtml"
+        :title-text="state.titleText" />
+      <description-component
+        v-if="state.descriptionHtml"
+        :can-update="canUpdate"
+        :description-html="state.descriptionHtml"
+        :description-text="state.descriptionText"
+        :updated-at="state.updatedAt"
+        :task-status="state.taskStatus" />
+      <edited-component
+        v-if="hasUpdated"
+        :updated-at="state.updatedAt"
+        :updated-by-name="state.updatedByName"
+        :updated-by-path="state.updatedByPath" />
+    </div>
+=======
     <title-component
       :issuable-ref="issuableRef"
       :title-html="state.titleHtml"
@@ -90,7 +331,13 @@ export default {
       :can-update="canUpdate"
       :description-html="state.descriptionHtml"
       :description-text="state.descriptionText"
-      :updated-at="state.updatedAt"
       :task-status="state.taskStatus" />
+    <edited-component
+      v-if="hasUpdated"
+      :updated-at="state.updatedAt"
+      :updated-by-name="state.updatedByName"
+      :updated-by-path="state.updatedByPath"
+    />
+>>>>>>> 07c984d... Port fix-realtime-edited-text-for-issues 9-2-stable fix to master.
   </div>
 </template>

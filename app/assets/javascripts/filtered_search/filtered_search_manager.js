@@ -6,6 +6,7 @@ import eventHub from './event_hub';
 
 class FilteredSearchManager {
   constructor(page) {
+    this.page = page;
     this.container = FilteredSearchContainer.container;
     this.filteredSearchInput = this.container.querySelector('.filtered-search');
     this.filteredSearchInputForm = this.filteredSearchInput.form;
@@ -15,17 +16,20 @@ class FilteredSearchManager {
 
     this.recentSearchesStore = new RecentSearchesStore({
       isLocalStorageAvailable: RecentSearchesService.isAvailable(),
+      allowedKeys: this.filteredSearchTokenKeys.getKeys(),
     });
-    const searchHistoryDropdownElement = document.querySelector('.js-filtered-search-history-dropdown');
-    const projectPath = searchHistoryDropdownElement ?
-      searchHistoryDropdownElement.dataset.projectFullPath : 'project';
+    this.searchHistoryDropdownElement = document.querySelector('.js-filtered-search-history-dropdown');
+    const projectPath = this.searchHistoryDropdownElement ?
+      this.searchHistoryDropdownElement.dataset.projectFullPath : 'project';
     let recentSearchesPagePrefix = 'issue-recent-searches';
-    if (page === 'merge_requests') {
+    if (this.page === 'merge_requests') {
       recentSearchesPagePrefix = 'merge-request-recent-searches';
     }
     const recentSearchesKey = `${projectPath}-${recentSearchesPagePrefix}`;
     this.recentSearchesService = new RecentSearchesService(recentSearchesKey);
+  }
 
+  setup() {
     // Fetch recent searches from localStorage
     this.fetchingRecentSearchesPromise = this.recentSearchesService.fetch()
       .catch((error) => {
@@ -46,12 +50,12 @@ class FilteredSearchManager {
 
     if (this.filteredSearchInput) {
       this.tokenizer = gl.FilteredSearchTokenizer;
-      this.dropdownManager = new gl.FilteredSearchDropdownManager(this.filteredSearchInput.getAttribute('data-base-endpoint') || '', page);
+      this.dropdownManager = new gl.FilteredSearchDropdownManager(this.filteredSearchInput.getAttribute('data-base-endpoint') || '', this.tokenizer, this.page);
 
       this.recentSearchesRoot = new RecentSearchesRoot(
         this.recentSearchesStore,
         this.recentSearchesService,
-        searchHistoryDropdownElement,
+        this.searchHistoryDropdownElement,
       );
       this.recentSearchesRoot.init();
 
@@ -101,11 +105,9 @@ class FilteredSearchManager {
     this.filteredSearchInput.addEventListener('click', this.tokenChange);
     this.filteredSearchInput.addEventListener('keyup', this.tokenChange);
     this.filteredSearchInput.addEventListener('focus', this.addInputContainerFocusWrapper);
-    this.tokensContainer.addEventListener('click', FilteredSearchManager.selectToken);
     this.tokensContainer.addEventListener('click', this.removeTokenWrapper);
-    this.tokensContainer.addEventListener('dblclick', this.editTokenWrapper);
+    this.tokensContainer.addEventListener('click', this.editTokenWrapper);
     this.clearSearchButton.addEventListener('click', this.onClearSearchWrapper);
-    document.addEventListener('click', gl.FilteredSearchVisualTokens.unselectTokens);
     document.addEventListener('click', this.unselectEditTokensWrapper);
     document.addEventListener('click', this.removeInputContainerFocusWrapper);
     document.addEventListener('keydown', this.removeSelectedTokenKeydownWrapper);
@@ -123,11 +125,9 @@ class FilteredSearchManager {
     this.filteredSearchInput.removeEventListener('click', this.tokenChange);
     this.filteredSearchInput.removeEventListener('keyup', this.tokenChange);
     this.filteredSearchInput.removeEventListener('focus', this.addInputContainerFocusWrapper);
-    this.tokensContainer.removeEventListener('click', FilteredSearchManager.selectToken);
     this.tokensContainer.removeEventListener('click', this.removeTokenWrapper);
-    this.tokensContainer.removeEventListener('dblclick', this.editTokenWrapper);
+    this.tokensContainer.removeEventListener('click', this.editTokenWrapper);
     this.clearSearchButton.removeEventListener('click', this.onClearSearchWrapper);
-    document.removeEventListener('click', gl.FilteredSearchVisualTokens.unselectTokens);
     document.removeEventListener('click', this.unselectEditTokensWrapper);
     document.removeEventListener('click', this.removeInputContainerFocusWrapper);
     document.removeEventListener('keydown', this.removeSelectedTokenKeydownWrapper);
@@ -140,7 +140,9 @@ class FilteredSearchManager {
     if (e.keyCode === 8 || e.keyCode === 46) {
       const { lastVisualToken } = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
 
-      if (this.filteredSearchInput.value === '' && lastVisualToken) {
+      const sanitizedTokenName = lastVisualToken && lastVisualToken.querySelector('.name').textContent.trim();
+      const canEdit = sanitizedTokenName && this.canEdit && this.canEdit(sanitizedTokenName);
+      if (this.filteredSearchInput.value === '' && lastVisualToken && canEdit) {
         this.filteredSearchInput.value = gl.FilteredSearchVisualTokens.getLastTokenPartial();
         gl.FilteredSearchVisualTokens.removeLastTokenPartial();
       }
@@ -201,23 +203,13 @@ class FilteredSearchManager {
     }
   }
 
-  static selectToken(e) {
-    const button = e.target.closest('.selectable');
-    const removeButtonSelected = e.target.closest('.remove-token');
-
-    if (!removeButtonSelected && button) {
-      e.preventDefault();
-      e.stopPropagation();
-      gl.FilteredSearchVisualTokens.selectToken(button);
-    }
-  }
-
   removeToken(e) {
     const removeButtonSelected = e.target.closest('.remove-token');
 
     if (removeButtonSelected) {
       e.preventDefault();
-      e.stopPropagation();
+      // Prevent editToken from being triggered after token is removed
+      e.stopImmediatePropagation();
 
       const button = e.target.closest('.selectable');
       gl.FilteredSearchVisualTokens.selectToken(button, true);
@@ -239,8 +231,12 @@ class FilteredSearchManager {
 
   editToken(e) {
     const token = e.target.closest('.js-visual-token');
+    const sanitizedTokenName = token && token.querySelector('.name').textContent.trim();
+    const canEdit = this.canEdit && this.canEdit(sanitizedTokenName);
 
-    if (token) {
+    if (token && canEdit) {
+      e.preventDefault();
+      e.stopPropagation();
       gl.FilteredSearchVisualTokens.editToken(token);
       this.tokenChange();
     }
@@ -318,7 +314,7 @@ class FilteredSearchManager {
   handleInputVisualToken() {
     const input = this.filteredSearchInput;
     const { tokens, searchToken }
-      = gl.FilteredSearchTokenizer.processTokens(input.value);
+      = this.tokenizer.processTokens(input.value, this.filteredSearchTokenKeys.getKeys());
     const { isLastVisualTokenValid }
       = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
 
@@ -390,7 +386,12 @@ class FilteredSearchManager {
 
       if (condition) {
         hasFilteredSearch = true;
-        gl.FilteredSearchVisualTokens.addFilterVisualToken(condition.tokenKey, condition.value);
+        const canEdit = this.canEdit && this.canEdit(condition.tokenKey);
+        gl.FilteredSearchVisualTokens.addFilterVisualToken(
+          condition.tokenKey,
+          condition.value,
+          canEdit,
+        );
       } else {
         // Sanitize value since URL converts spaces into +
         // Replace before decode so that we know what was originally + versus the encoded +
@@ -409,18 +410,27 @@ class FilteredSearchManager {
           }
 
           hasFilteredSearch = true;
-          gl.FilteredSearchVisualTokens.addFilterVisualToken(sanitizedKey, `${symbol}${quotationsToUse}${sanitizedValue}${quotationsToUse}`);
+          const canEdit = this.canEdit && this.canEdit(sanitizedKey);
+          gl.FilteredSearchVisualTokens.addFilterVisualToken(
+            sanitizedKey,
+            `${symbol}${quotationsToUse}${sanitizedValue}${quotationsToUse}`,
+            canEdit,
+          );
         } else if (!match && keyParam === 'assignee_id') {
           const id = parseInt(value, 10);
           if (usernameParams[id]) {
             hasFilteredSearch = true;
-            gl.FilteredSearchVisualTokens.addFilterVisualToken('assignee', `@${usernameParams[id]}`);
+            const tokenName = 'assignee';
+            const canEdit = this.canEdit && this.canEdit(tokenName);
+            gl.FilteredSearchVisualTokens.addFilterVisualToken(tokenName, `@${usernameParams[id]}`, canEdit);
           }
         } else if (!match && keyParam === 'author_id') {
           const id = parseInt(value, 10);
           if (usernameParams[id]) {
             hasFilteredSearch = true;
-            gl.FilteredSearchVisualTokens.addFilterVisualToken('author', `@${usernameParams[id]}`);
+            const tokenName = 'author';
+            const canEdit = this.canEdit && this.canEdit(tokenName);
+            gl.FilteredSearchVisualTokens.addFilterVisualToken(tokenName, `@${usernameParams[id]}`, canEdit);
           }
         } else if (!match && keyParam === 'search') {
           hasFilteredSearch = true;
@@ -444,7 +454,7 @@ class FilteredSearchManager {
     this.saveCurrentSearchQuery();
 
     const { tokens, searchToken }
-      = this.tokenizer.processTokens(searchQuery);
+      = this.tokenizer.processTokens(searchQuery, this.filteredSearchTokenKeys.getKeys());
     const currentState = gl.utils.getParameterByName('state') || 'opened';
     paths.push(`state=${currentState}`);
 
@@ -514,6 +524,11 @@ class FilteredSearchManager {
     this.filteredSearchInput.value = text;
     this.filteredSearchInput.dispatchEvent(new CustomEvent('input'));
     this.search();
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  canEdit() {
+    return true;
   }
 }
 

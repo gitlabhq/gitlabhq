@@ -466,86 +466,87 @@ describe API::Internal do
     end
   end
 
-  describe 'POST /notify_post_receive' do
-    let(:valid_params) do
-      { project: project.repository.path, secret_token: secret_token }
-    end
-
-    let(:valid_wiki_params) do
-      { project: project.wiki.repository.path, secret_token: secret_token }
-    end
-
-    before do
-      allow(Gitlab.config.gitaly).to receive(:enabled).and_return(true)
-    end
-
-    it "calls the Gitaly client with the project's repository" do
-      expect(Gitlab::GitalyClient::Notifications).
-        to receive(:new).with(gitlab_git_repository_with(path: project.repository.path)).
-        and_call_original
-      expect_any_instance_of(Gitlab::GitalyClient::Notifications).
-        to receive(:post_receive)
-
-      post api("/internal/notify_post_receive"), valid_params
-
-      expect(response).to have_http_status(200)
-    end
-
-    it "calls the Gitaly client with the wiki's repository if it's a wiki" do
-      expect(Gitlab::GitalyClient::Notifications).
-        to receive(:new).with(gitlab_git_repository_with(path: project.wiki.repository.path)).
-        and_call_original
-      expect_any_instance_of(Gitlab::GitalyClient::Notifications).
-        to receive(:post_receive)
-
-      post api("/internal/notify_post_receive"), valid_wiki_params
-
-      expect(response).to have_http_status(200)
-    end
-
-    it "returns 500 if the gitaly call fails" do
-      expect_any_instance_of(Gitlab::GitalyClient::Notifications).
-        to receive(:post_receive).and_raise(GRPC::Unavailable)
-
-      post api("/internal/notify_post_receive"), valid_params
-
-      expect(response).to have_http_status(500)
-    end
-
-    context 'with a gl_repository parameter' do
-      let(:valid_params) do
-        { gl_repository: "project-#{project.id}", secret_token: secret_token }
-      end
-
-      let(:valid_wiki_params) do
-        { gl_repository: "wiki-#{project.id}", secret_token: secret_token }
-      end
-
-      it "calls the Gitaly client with the project's repository" do
-        expect(Gitlab::GitalyClient::Notifications).
-          to receive(:new).with(gitlab_git_repository_with(path: project.repository.path)).
-          and_call_original
-        expect_any_instance_of(Gitlab::GitalyClient::Notifications).
-          to receive(:post_receive)
-
-        post api("/internal/notify_post_receive"), valid_params
-
-        expect(response).to have_http_status(200)
-      end
-
-      it "calls the Gitaly client with the wiki's repository if it's a wiki" do
-        expect(Gitlab::GitalyClient::Notifications).
-          to receive(:new).with(gitlab_git_repository_with(path: project.wiki.repository.path)).
-          and_call_original
-        expect_any_instance_of(Gitlab::GitalyClient::Notifications).
-          to receive(:post_receive)
-
-        post api("/internal/notify_post_receive"), valid_wiki_params
-
-        expect(response).to have_http_status(200)
-      end
-    end
-  end
+  # TODO: Uncomment when the end-point is reenabled
+  # describe 'POST /notify_post_receive' do
+  #   let(:valid_params) do
+  #     { project: project.repository.path, secret_token: secret_token }
+  #   end
+  #
+  #   let(:valid_wiki_params) do
+  #     { project: project.wiki.repository.path, secret_token: secret_token }
+  #   end
+  #
+  #   before do
+  #     allow(Gitlab.config.gitaly).to receive(:enabled).and_return(true)
+  #   end
+  #
+  #   it "calls the Gitaly client with the project's repository" do
+  #     expect(Gitlab::GitalyClient::Notifications).
+  #       to receive(:new).with(gitlab_git_repository_with(path: project.repository.path)).
+  #       and_call_original
+  #     expect_any_instance_of(Gitlab::GitalyClient::Notifications).
+  #       to receive(:post_receive)
+  #
+  #     post api("/internal/notify_post_receive"), valid_params
+  #
+  #     expect(response).to have_http_status(200)
+  #   end
+  #
+  #   it "calls the Gitaly client with the wiki's repository if it's a wiki" do
+  #     expect(Gitlab::GitalyClient::Notifications).
+  #       to receive(:new).with(gitlab_git_repository_with(path: project.wiki.repository.path)).
+  #       and_call_original
+  #     expect_any_instance_of(Gitlab::GitalyClient::Notifications).
+  #       to receive(:post_receive)
+  #
+  #     post api("/internal/notify_post_receive"), valid_wiki_params
+  #
+  #     expect(response).to have_http_status(200)
+  #   end
+  #
+  #   it "returns 500 if the gitaly call fails" do
+  #     expect_any_instance_of(Gitlab::GitalyClient::Notifications).
+  #       to receive(:post_receive).and_raise(GRPC::Unavailable)
+  #
+  #     post api("/internal/notify_post_receive"), valid_params
+  #
+  #     expect(response).to have_http_status(500)
+  #   end
+  #
+  #   context 'with a gl_repository parameter' do
+  #     let(:valid_params) do
+  #       { gl_repository: "project-#{project.id}", secret_token: secret_token }
+  #     end
+  #
+  #     let(:valid_wiki_params) do
+  #       { gl_repository: "wiki-#{project.id}", secret_token: secret_token }
+  #     end
+  #
+  #     it "calls the Gitaly client with the project's repository" do
+  #       expect(Gitlab::GitalyClient::Notifications).
+  #         to receive(:new).with(gitlab_git_repository_with(path: project.repository.path)).
+  #         and_call_original
+  #       expect_any_instance_of(Gitlab::GitalyClient::Notifications).
+  #         to receive(:post_receive)
+  #
+  #       post api("/internal/notify_post_receive"), valid_params
+  #
+  #       expect(response).to have_http_status(200)
+  #     end
+  #
+  #     it "calls the Gitaly client with the wiki's repository if it's a wiki" do
+  #       expect(Gitlab::GitalyClient::Notifications).
+  #         to receive(:new).with(gitlab_git_repository_with(path: project.wiki.repository.path)).
+  #         and_call_original
+  #       expect_any_instance_of(Gitlab::GitalyClient::Notifications).
+  #         to receive(:post_receive)
+  #
+  #       post api("/internal/notify_post_receive"), valid_wiki_params
+  #
+  #       expect(response).to have_http_status(200)
+  #     end
+  #   end
+  # end
 
   def project_with_repo_path(path)
     double().tap do |fake_project|

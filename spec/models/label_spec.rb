@@ -49,6 +49,23 @@ describe Label, models: true do
 
       expect(label.color).to eq('#abcdef')
     end
+
+    it 'uses default color if color is missing' do
+      label = described_class.new(color: nil)
+
+      expect(label.color).to be(Label::DEFAULT_COLOR)
+    end
+  end
+
+  describe '#text_color' do
+    it 'uses default color if color is missing' do
+      expect(LabelsHelper).to receive(:text_color_for_bg).with(Label::DEFAULT_COLOR).
+        and_return(spy)
+
+      label = described_class.new(color: nil)
+
+      label.text_color
+    end
   end
 
   describe '#title' do

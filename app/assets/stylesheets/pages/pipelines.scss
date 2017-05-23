@@ -88,6 +88,10 @@
         }
       }
 
+      .btn .text-center {
+        display: inline;
+      }
+
       .tooltip {
         white-space: nowrap;
       }
@@ -978,5 +982,13 @@
     margin-right: 5px;
     height: 13px;
     width: 12px;
+  }
+}
+
+.pipeline-header-container {
+  min-height: 55px;
+
+  .text-center {
+    padding-top: 12px;
   }
 }

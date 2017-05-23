@@ -13,6 +13,8 @@ if (webpackConfig.plugins) {
   });
 }
 
+webpackConfig.devtool = 'cheap-inline-source-map';
+
 // Karma configuration
 module.exports = function(config) {
   var progressReporter = process.env.CI ? 'mocha' : 'progress';

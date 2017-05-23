@@ -40,7 +40,7 @@ module TestEnv
     'wip'                                => 'b9238ee',
     'csv'                                => '3dd0896',
     'v1.1.0'                             => 'b83d6e3',
-    'add-ipython-files'                  => '6d85bb6',
+    'add-ipython-files'                  => '93ee732',
     'add-pdf-file'                       => 'e774ebd'
   }.freeze
 
@@ -123,7 +123,7 @@ module TestEnv
     socket_path = Gitlab::GitalyClient.address('default').sub(/\Aunix:/, '')
     gitaly_dir = File.dirname(socket_path)
 
-    unless File.directory?(gitaly_dir) || system('rake', "gitlab:gitaly:install[#{gitaly_dir}]")
+    unless !gitaly_needs_update?(gitaly_dir) || system('rake', "gitlab:gitaly:install[#{gitaly_dir}]")
       raise "Can't clone gitaly"
     end
 
@@ -251,5 +251,16 @@ module TestEnv
       # with missing refs, clearing them and retrying should fix the issue.
       cleanup && init unless reset.call
     end
+  end
+
+  def gitaly_needs_update?(gitaly_dir)
+    gitaly_version = File.read(File.join(gitaly_dir, 'VERSION')).strip
+
+    # Notice that this will always yield true when using branch versions
+    # (`=branch_name`), but that actually makes sure the server is always based
+    # on the latest branch revision.
+    gitaly_version != Gitlab::GitalyClient.expected_server_version
+  rescue Errno::ENOENT
+    true
   end
 end

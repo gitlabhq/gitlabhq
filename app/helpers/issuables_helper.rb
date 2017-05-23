@@ -199,6 +199,57 @@ module IssuablesHelper
     issuable_filter_params.any? { |k| params.key?(k) }
   end
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+  def issuable_initial_data(issuable)
+    {
+      endpoint: namespace_project_issue_path(@project.namespace, @project, issuable),
+      canUpdate: can?(current_user, :update_issue, issuable),
+      canDestroy: can?(current_user, :destroy_issue, issuable),
+      canMove: current_user ? issuable.can_move?(current_user) : false,
+      issuableRef: issuable.to_reference,
+      isConfidential: issuable.confidential,
+      markdownPreviewUrl: preview_markdown_path(@project),
+      markdownDocs: help_page_path('user/markdown'),
+      projectsAutocompleteUrl: autocomplete_projects_path(project_id: @project.id),
+      issuableTemplates: issuable_templates(issuable),
+      projectPath: ref_project.path,
+      projectNamespace: ref_project.namespace.full_path,
+      initialTitleHtml: markdown_field(issuable, :title),
+      initialTitleText: issuable.title,
+      initialDescriptionHtml: markdown_field(issuable, :description),
+      initialDescriptionText: issuable.description
+    }.to_json
+  end
+
+>>>>>>> 3301ca1... Fixed up the template dropdown to correctly work
+=======
+  def issuable_app_data(project, issue)
+    data = {
+      endpoint: realtime_changes_namespace_project_issue_path(project.namespace, project, issue),
+      'can-update' => can?(current_user, :update_issue, issue).to_s,
+      'issuable-ref' => issue.to_reference || ''
+    }
+
+    data.merge!(updated_at_by(issuable))
+
+    data.to_json
+  end
+
+  def updated_at_by(issuable)
+    return {} unless issuable.is_edited?
+
+    {
+      updated_at: issuable.updated_at.to_time.iso8601,
+      updated_by: {
+        name: issuable.last_edited_by.name,
+        path: user_path(issuable.last_edited_by)
+      }
+    }
+  end
+
+>>>>>>> b888ed5... Fixed issuables_helper_spec and added a test for issuable_app_data
   private
 
   def sidebar_gutter_collapsed?

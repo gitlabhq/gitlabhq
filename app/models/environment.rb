@@ -57,6 +57,14 @@ class Environment < ActiveRecord::Base
 
     state :available
     state :stopped
+
+<<<<<<< HEAD
+    after_transition do |environment|
+=======
+    after_transition do |environment, _|
+>>>>>>> 4535d52... Use etag caching for environments JSON
+      environment.expire_etag_cache
+    end
   end
 
   def predefined_variables
@@ -196,6 +204,18 @@ class Environment < ActiveRecord::Base
     [external_url, public_path].join('/')
   end
 
+  def expire_etag_cache
+    Gitlab::EtagCaching::Store.new.tap do |store|
+      store.touch(etag_cache_key)
+    end
+  end
+
+  def etag_cache_key
+    Gitlab::Routing.url_helpers.namespace_project_environments_path(
+      project.namespace,
+      project)
+  end
+
   private
 
   # Slugifying a name may remove the uniqueness guarantee afforded by it being
@@ -204,5 +224,13 @@ class Environment < ActiveRecord::Base
   # but the chance of collisions is vanishingly small
   def random_suffix
     (0..5).map { SUFFIX_CHARS.sample }.join
+  end
+
+  def expire_etag_cache
+    Gitlab::EtagCaching::Store.new.tap do |store|
+      store.touch(
+        Gitlab::Routing.url_helpers.namespace_project_environments_path(project)
+      )
+    end
   end
 end

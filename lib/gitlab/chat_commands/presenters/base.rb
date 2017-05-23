@@ -45,9 +45,9 @@ module Gitlab
         end
 
         def format_response(response)
-          response[:text] = format(response[:text]) if response.has_key?(:text)
+          response[:text] = format(response[:text]) if response.key?(:text)
 
-          if response.has_key?(:attachments)
+          if response.key?(:attachments)
             response[:attachments].each do |attachment|
               attachment[:pretext] = format(attachment[:pretext]) if attachment[:pretext]
               attachment[:text] = format(attachment[:text]) if attachment[:text]

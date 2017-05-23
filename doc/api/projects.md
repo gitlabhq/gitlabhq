@@ -38,6 +38,8 @@ Parameters:
 | `membership` | boolean | no | Limit by projects that the current user is a member of |
 | `starred` | boolean | no | Limit by projects starred by the current user |
 | `statistics` | boolean | no | Include project statistics |
+| `with_issues_enabled` | boolean | no | Limit by enabled issues feature |
+| `with_merge_requests_enabled` | boolean | no | Limit by enabled merge requests feature |
 
 ```json
 [
@@ -79,6 +81,7 @@ Parameters:
       "kind": "group",
       "full_path": "diaspora"
     },
+    "import_status": "none",
     "archived": false,
     "avatar_url": "http://example.com/uploads/project/avatar/4/uploads/avatar.png",
     "shared_runners_enabled": true,
@@ -136,6 +139,8 @@ Parameters:
       "kind": "group",
       "full_path": "brightbox"
     },
+    "import_status": "none",
+    "import_error": null,
     "permissions": {
       "project_access": {
         "access_level": 10,
@@ -223,6 +228,8 @@ Parameters:
     "kind": "group",
     "full_path": "diaspora"
   },
+  "import_status": "none",
+  "import_error": null,
   "permissions": {
     "project_access": {
       "access_level": 10,
@@ -471,6 +478,7 @@ Parameters:
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
+| `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
 
 ### Create project for user
 
@@ -504,6 +512,7 @@ Parameters:
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
+| `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
 
 ### Edit project
 
@@ -536,6 +545,7 @@ Parameters:
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
+| `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
 
 ### Fork project
 
@@ -606,6 +616,7 @@ Example response:
     "kind": "group",
     "full_path": "diaspora"
   },
+  "import_status": "none",
   "archived": true,
   "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
   "shared_runners_enabled": true,
@@ -671,6 +682,7 @@ Example response:
     "kind": "group",
     "full_path": "diaspora"
   },
+  "import_status": "none",
   "archived": true,
   "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
   "shared_runners_enabled": true,
@@ -742,6 +754,8 @@ Example response:
     "kind": "group",
     "full_path": "diaspora"
   },
+  "import_status": "none",
+  "import_error": null,
   "permissions": {
     "project_access": {
       "access_level": 10,
@@ -824,6 +838,8 @@ Example response:
     "kind": "group",
     "full_path": "diaspora"
   },
+  "import_status": "none",
+  "import_error": null,
   "permissions": {
     "project_access": {
       "access_level": 10,

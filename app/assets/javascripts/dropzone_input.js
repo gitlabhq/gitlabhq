@@ -194,7 +194,12 @@ window.DropzoneInput = (function() {
       $(child).val(beforeSelection + formattedText + afterSelection);
       textarea.setSelectionRange(caretStart + formattedText.length, caretEnd + formattedText.length);
       textarea.style.height = `${textarea.scrollHeight}px`;
+<<<<<<< HEAD
       return formTextarea.trigger('input');
+=======
+      form_textarea.trigger("input");
+      form_textarea.get(0).dispatchEvent(new Event('input'));
+>>>>>>> b5b5b4a... Added description field to inline edit form
     };
 
     getFilename = function(e) {

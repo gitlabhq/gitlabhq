@@ -118,13 +118,14 @@ import ShortcutsBlob from './shortcuts_blob';
           shortcut_handler = new ShortcutsNavigation();
           new UsersSelect();
           break;
-        case 'projects:builds:show':
+        case 'projects:jobs:show':
           new Build();
           break;
         case 'projects:merge_requests:index':
         case 'projects:issues:index':
-          if (gl.FilteredSearchManager) {
-            new gl.FilteredSearchManager(page === 'projects:issues:index' ? 'issues' : 'merge_requests');
+          if (gl.FilteredSearchManager && document.querySelector('.filtered-search')) {
+            const filteredSearchManager = new gl.FilteredSearchManager(page === 'projects:issues:index' ? 'issues' : 'merge_requests');
+            filteredSearchManager.setup();
           }
           Issuable.init();
           new gl.IssuableBulkActions({
@@ -390,6 +391,9 @@ import ShortcutsBlob from './shortcuts_blob';
           new gl.CILintEditor();
           break;
         case 'users:show':
+          new UserCallout();
+          break;
+        case 'admin:conversational_development_index:show':
           new UserCallout();
           break;
         case 'snippets:show':

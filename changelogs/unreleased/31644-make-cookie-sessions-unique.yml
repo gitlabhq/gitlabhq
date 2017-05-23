@@ -1,0 +1,4 @@
+---
+title: Update session cookie key name to be unique to instance in development
+merge_request:
+author:

@@ -5,6 +5,9 @@ class PipelineEntity < Grape::Entity
   expose :user, using: UserEntity
   expose :active?, as: :active
   expose :coverage
+  expose :source
+
+  expose :created_at, :updated_at
 
   expose :path do |pipeline|
     namespace_project_pipeline_path(
@@ -13,6 +16,8 @@ class PipelineEntity < Grape::Entity
       pipeline)
   end
 
+<<<<<<< HEAD
+<<<<<<< HEAD
   expose :details do
     expose :detailed_status, as: :status, with: StatusEntity
     expose :duration
@@ -24,13 +29,28 @@ class PipelineEntity < Grape::Entity
 
   expose :flags do
     expose :latest?, as: :latest
+=======
+  expose :flags do
+    expose :latest?, as: :latest
     expose :triggered?, as: :triggered
+>>>>>>> 8a9a62e... Incorporate review
     expose :stuck?, as: :stuck
     expose :has_yaml_errors?, as: :yaml_errors
     expose :can_retry?, as: :retryable
     expose :can_cancel?, as: :cancelable
   end
 
+<<<<<<< HEAD
+=======
+>>>>>>> 6856958... Create PipelineDetailsEntity
+=======
+  expose :details do
+    expose :detailed_status, as: :status, with: StatusEntity
+    expose :duration
+    expose :finished_at
+  end
+
+>>>>>>> 8a9a62e... Incorporate review
   expose :ref do
     expose :name do |pipeline|
       pipeline.ref
@@ -47,7 +67,6 @@ class PipelineEntity < Grape::Entity
   end
 
   expose :commit, using: CommitEntity
-  expose :yaml_errors, if: -> (pipeline, _) { pipeline.has_yaml_errors? }
 
   expose :retry_path, if: -> (*) { can_retry? }  do |pipeline|
     retry_namespace_project_pipeline_path(pipeline.project.namespace,
@@ -61,7 +80,7 @@ class PipelineEntity < Grape::Entity
                                            pipeline.id)
   end
 
-  expose :created_at, :updated_at
+  expose :yaml_errors, if: -> (pipeline, _) { pipeline.has_yaml_errors? }
 
   private
 

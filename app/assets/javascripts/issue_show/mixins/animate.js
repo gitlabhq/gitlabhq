@@ -4,7 +4,7 @@ export default {
       this.preAnimation = true;
       this.pulseAnimation = false;
 
-      this.$nextTick(() => {
+      setTimeout(() => {
         this.preAnimation = false;
         this.pulseAnimation = true;
       });

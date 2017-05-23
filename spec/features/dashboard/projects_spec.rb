@@ -3,15 +3,27 @@ require 'spec_helper'
 RSpec.describe 'Dashboard Projects', feature: true do
   let(:user) { create(:user) }
   let(:project) { create(:project, name: "awesome stuff") }
+  let(:project2) { create(:project, :public, name: 'Community project') }
 
   before do
     project.team << [user, :developer]
-    login_as user
+    login_as(user)
   end
 
   it 'shows the project the user in a member of in the list' do
     visit dashboard_projects_path
     expect(page).to have_content('awesome stuff')
+  end
+
+  context 'when on Starred projects tab' do
+    it 'shows only starred projects' do
+      user.toggle_star(project2)
+
+      visit(starred_dashboard_projects_path)
+
+      expect(page).not_to have_content(project.name)
+      expect(page).to have_content(project2.name)
+    end
   end
 
   describe "with a pipeline", redis: true do
@@ -31,5 +43,5 @@ RSpec.describe 'Dashboard Projects', feature: true do
     end
   end
 
-  it_behaves_like "an autodiscoverable RSS feed with current_user's private token"
+  it_behaves_like "an autodiscoverable RSS feed with current_user's RSS token"
 end

@@ -70,7 +70,7 @@ describe Projects::DestroyService, services: true do
         end
       end
 
-      expect(project.team.members.count).to eq 1
+      expect(project.team.members.count).to eq 2
     end
   end
 

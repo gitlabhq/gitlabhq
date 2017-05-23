@@ -2,14 +2,18 @@ import Filter from '~/droplab/plugins/filter';
 import './filtered_search_dropdown';
 
 class DropdownHint extends gl.FilteredSearchDropdown {
-  constructor(droplab, dropdown, input, filter) {
+  constructor(droplab, dropdown, input, tokenKeys, filter) {
     super(droplab, dropdown, input, filter);
     this.config = {
       Filter: {
         template: 'hint',
-        filterFunction: gl.DropdownUtils.filterHint.bind(null, input),
+        filterFunction: gl.DropdownUtils.filterHint.bind(null, {
+          input,
+          allowedKeys: tokenKeys.getKeys(),
+        }),
       },
     };
+    this.tokenKeys = tokenKeys;
   }
 
   itemClicked(e) {
@@ -52,20 +56,13 @@ class DropdownHint extends gl.FilteredSearchDropdown {
   }
 
   renderContent() {
-    const dropdownData = [];
-
-    [].forEach.call(this.input.closest('.filtered-search-box-input-container').querySelectorAll('.dropdown-menu'), (dropdownMenu) => {
-      const { icon, hint, tag, type } = dropdownMenu.dataset;
-      if (icon && hint && tag) {
-        dropdownData.push(
-          Object.assign({
-            icon: `fa-${icon}`,
-            hint,
-            tag: `<${tag}>`,
-          }, type && { type }),
-        );
-      }
-    });
+    const dropdownData = gl.FilteredSearchTokenKeys.get()
+      .map(tokenKey => ({
+        icon: `fa-${tokenKey.icon}`,
+        hint: tokenKey.key,
+        tag: `<${tokenKey.symbol}${tokenKey.key}>`,
+        type: tokenKey.type,
+      }));
 
     this.droplab.changeHookList(this.hookId, this.dropdown, [Filter], this.config);
     this.droplab.setData(this.hookId, dropdownData);

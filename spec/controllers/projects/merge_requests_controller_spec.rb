@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Projects::MergeRequestsController do
   let(:project) { create(:project) }
-  let(:user)    { create(:user) }
+  let(:user)    { project.owner }
   let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
   let(:merge_request_with_conflicts) do
     create(:merge_request, source_branch: 'conflict-resolvable', target_branch: 'conflict-start', source_project: project) do |mr|
@@ -12,7 +12,6 @@ describe Projects::MergeRequestsController do
 
   before do
     sign_in(user)
-    project.team << [user, :master]
   end
 
   describe 'GET new' do
@@ -127,7 +126,7 @@ describe Projects::MergeRequestsController do
 
           recorded = ActiveRecord::QueryRecorder.new { go(format: :json) }
 
-          expect(recorded.count).to be_within(5).of(50)
+          expect(recorded.count).to be_within(5).of(59)
           expect(recorded.cached_count).to eq(0)
         end
       end
@@ -304,6 +303,8 @@ describe Projects::MergeRequestsController do
     end
 
     context 'when user cannot access' do
+      let(:user) { create(:user) }
+
       before do
         project.add_reporter(user)
         xhr :post, :merge, base_params
@@ -357,8 +358,7 @@ describe Projects::MergeRequestsController do
         end
 
         before do
-          pipeline = create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch)
-          merge_request.update(head_pipeline: pipeline)
+          create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch, head_pipeline_of: merge_request)
         end
 
         it 'returns :merge_when_pipeline_succeeds' do
@@ -460,6 +460,8 @@ describe Projects::MergeRequestsController do
   end
 
   describe "DELETE destroy" do
+    let(:user) { create(:user) }
+
     it "denies access to users unless they're admin or project owner" do
       delete :destroy, namespace_id: project.namespace, project_id: project, id: merge_request.iid
 
@@ -1173,13 +1175,13 @@ describe Projects::MergeRequestsController do
       let!(:pipeline) do
         create(:ci_pipeline, project: merge_request.source_project,
                              ref: merge_request.source_branch,
-                             sha: merge_request.diff_head_sha)
+                             sha: merge_request.diff_head_sha,
+                             head_pipeline_of: merge_request)
       end
 
       let(:status) { pipeline.detailed_status(double('user')) }
 
       before do
-        merge_request.update(head_pipeline: pipeline)
         get_pipeline_status
       end
 

@@ -24,7 +24,7 @@ feature 'Prioritize labels', feature: true do
 
       page.within('.other-labels') do
         all('.js-toggle-priority')[1].click
-        wait_for_ajax
+        wait_for_requests
         expect(page).not_to have_content('feature')
       end
 
@@ -43,7 +43,7 @@ feature 'Prioritize labels', feature: true do
         expect(page).to have_content('feature')
 
         first('.js-toggle-priority').click
-        wait_for_ajax
+        wait_for_requests
         expect(page).not_to have_content('bug')
       end
 
@@ -59,7 +59,7 @@ feature 'Prioritize labels', feature: true do
 
       page.within('.other-labels') do
         first('.js-toggle-priority').click
-        wait_for_ajax
+        wait_for_requests
         expect(page).not_to have_content('bug')
       end
 
@@ -78,7 +78,7 @@ feature 'Prioritize labels', feature: true do
         expect(page).to have_content('bug')
 
         first('.js-toggle-priority').click
-        wait_for_ajax
+        wait_for_requests
         expect(page).not_to have_content('bug')
       end
 
@@ -107,7 +107,7 @@ feature 'Prioritize labels', feature: true do
       end
 
       refresh
-      wait_for_ajax
+      wait_for_requests
 
       page.within('.prioritized-labels') do
         expect(first('li')).to have_content('feature')
