@@ -13,10 +13,11 @@ export default class GroupsService {
 
     if (parentId) {
       data.parent_id = parentId;
-    }
-
-    if (page) {
-      data.page = page;
+    } else {
+      // Do not send this param for sub groups
+      if (page) {
+        data.page = page;
+      }
     }
 
     return this.groups.get(data);
