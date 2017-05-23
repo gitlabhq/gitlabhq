@@ -13,33 +13,12 @@
       Keep these tokens secret, anyone with access to them can interact with
       GitLab as if they were you.
   .col-lg-9.private-tokens-reset
-    .reset-action
-      %p.cgray
-        = label_tag "private-token", "Private token", class: "label-light"
-        = text_field_tag "private-token", current_user.private_token, class: "form-control", readonly: true, onclick: "this.select()"
-        %p.help-block
-          Your private token is used to access the API and Atom feeds without username/password authentication.
-      .prepend-top-default
-        = link_to 'Reset private token', reset_private_token_profile_path, method: :put, data: { confirm: "Are you sure?" }, class: "btn btn-default private-token"
+    = render partial: 'reset_token', locals: { label: 'Private token', button_label: 'Reset private token', help_text: 'Your private token is used to access the API and Atom feeds without username/password authentication.' }
 
-    .reset-action
-      %p.cgray
-        = label_tag "rss-token", "RSS Token", class: 'label-light'
-        = text_field_tag "rss-token", current_user.rss_token, class: "form-control", readonly: true, onclick: "this.select()"
-      %p.help-block
-        Your RSS token is used to create urls for personalized RSS feeds.
-      .prepend-top-default
-        = link_to 'Reset RSS token', reset_rss_token_profile_path, method: :put, data: { confirm: "Are you sure? This action will invalidate all your existing rss links." }, class: "btn btn-default rss-token"
+    = render partial: 'reset_token', locals: { label: 'RSS token', button_label: 'Reset RSS token', help_text: 'Your RSS token is used to create urls for personalized RSS feeds.' }
 
     - if incoming_email_token_enabled?
-      .reset-action
-        %p.cgray
-          = label_tag "incoming-email-token", "Incoming Email Token", class: 'label-light'
-          = text_field_tag "incoming-email-token", current_user.incoming_email_token, class: "form-control", readonly: true, onclick: "this.select()"
-        %p.help-block
-          Your incoming email token is used to create new issues by email, and is included in your project-specific email addresses.
-        .prepend-top-default
-          = link_to 'Reset incoming email token', reset_incoming_email_token_profile_path, method: :put, data: { confirm: "Are you sure?" }, class: "btn btn-default incoming-email-token"
+      = render partial: 'reset_token', locals: { label: 'Incoming email token', button_label: 'Reset incoming email token', help_text: 'Your incoming email token is used to create new issues by email, and is included in your project-specific email addresses.' }
 
 %hr
 .row.prepend-top-default
