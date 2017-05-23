@@ -8,11 +8,10 @@
 .row.prepend-top-default
   .col-lg-3.profile-settings-sidebar
     %h4.prepend-top-0
-      = incoming_email_token_enabled? ? "Private Tokens" : "Private Token"
+      Private Tokens
     %p
-      Keep
-      = incoming_email_token_enabled? ? "these tokens" : "this token"
-      secret, anyone with access to them can interact with GitLab as if they were you.
+      Keep these tokens secret, anyone with access to them can interact with
+      GitLab as if they were you.
   .col-lg-9.private-tokens-reset
     .reset-action
       %p.cgray
@@ -22,6 +21,15 @@
           Your private token is used to access the API and Atom feeds without username/password authentication.
       .prepend-top-default
         = link_to 'Reset private token', reset_private_token_profile_path, method: :put, data: { confirm: "Are you sure?" }, class: "btn btn-default private-token"
+
+    .reset-action
+      %p.cgray
+        = label_tag "rss-token", "RSS Token", class: 'label-light'
+        = text_field_tag "rss-token", current_user.rss_token, class: "form-control", readonly: true, onclick: "this.select()"
+      %p.help-block
+        Your RSS token is used to create urls for personalized RSS feeds.
+      .prepend-top-default
+        = link_to 'Reset RSS token', reset_rss_token_profile_path, method: :put, data: { confirm: "Are you sure? This action will invalidate all your existing rss links." }, class: "btn btn-default rss-token"
 
     - if incoming_email_token_enabled?
       .reset-action
