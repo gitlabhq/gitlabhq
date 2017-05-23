@@ -14,6 +14,7 @@ if defined?(Unicorn)
     use Unicorn::WorkerKiller::Oom, min, max
   end
 end
+
 # set default directory for multiproces metrics gathering
 ENV['prometheus_multiproc_dir'] ||= 'tmp/prometheus_data_dir'
 
