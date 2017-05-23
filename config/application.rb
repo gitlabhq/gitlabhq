@@ -65,6 +65,7 @@ module Gitlab
       hook
       import_url
       incoming_email_token
+      rss_token
       key
       otp_attempt
       password

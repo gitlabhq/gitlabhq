@@ -440,6 +440,13 @@ describe User, models: true do
     end
   end
 
+  describe 'rss token' do
+    it 'has rss token' do
+      user = create(:user)
+      expect(user.rss_token).not_to be_blank
+    end
+  end
+
   describe '#recently_sent_password_reset?' do
     it 'is false when reset_password_sent_at is nil' do
       user = build_stubbed(:user, reset_password_sent_at: nil)
