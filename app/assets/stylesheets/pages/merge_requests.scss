@@ -209,17 +209,30 @@
     }
   }
 
-  .mr-widget-heading,
-  .mr-widget-body {
+  .mr-widget-heading {
     .btn-default.btn-xs {
       margin-left: 5px;
     }
   }
 
   .mr-widget-body {
+    .btn {
+      font-size: 15px;
+    }
+
+    .btn-group .btn {
+      padding: 5px 10px;
+
+      &.dropdown-toggle {
+        padding: 5px 7px;
+      }
+    }
+  }
+
+  .mr-widget-body {
     h4 {
-      font-weight: 600;
-      font-size: 16px;
+      font-weight: bold;
+      font-size: 15px;
       margin: 5px 0;
       color: $gl-text-color;
 
@@ -246,8 +259,8 @@
     }
 
     .bold {
-      margin-left: 5px;
       font-weight: bold;
+      font-size: 15px;
       color: $gl-gray-light;
     }
 
@@ -269,6 +282,11 @@
       position: relative;
       top: 6px;
       margin-bottom: 24px;
+    }
+
+    .spacing,
+    .bold {
+      vertical-align: middle;
     }
 
     .dropdown-menu {
@@ -353,6 +371,22 @@
       margin-top: 10px;
       margin-left: 12px;
     }
+
+    &.empty-state {
+      .artwork {
+        margin-bottom: $gl-padding;
+      }
+
+      .text {
+        span {
+          font-weight: bold;
+        }
+
+        p {
+          margin-top: $gl-padding;
+        }
+      }
+    }
   }
 
   .mr-widget-footer {
@@ -370,6 +404,12 @@
     a {
       color: $gl-text-color;
     }
+  }
+}
+
+.mr-state-widget .mr-widget-body {
+  .approve-btn {
+    margin-right: 5px;
   }
 }
 
@@ -515,7 +555,7 @@
 
   p {
     float: left;
-    padding-left: 20px;
+    padding-left: 21px;
 
     &::before {
       top: 13px;

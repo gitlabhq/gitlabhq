@@ -443,8 +443,8 @@
   }
 }
 
-.activities {
-  .nav-block {
+.nav-block {
+  &.activities {
     border-bottom: 1px solid $border-color;
 
     .nav-links {

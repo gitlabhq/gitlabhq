@@ -278,4 +278,19 @@ module BlobHelper
 
     options
   end
+
+  def contribution_options(project)
+    options = []
+
+    if can?(current_user, :create_issue, project)
+      options << link_to("submit an issue", new_namespace_project_issue_path(project.namespace, project))
+    end
+
+    merge_project = can?(current_user, :create_merge_request, project) ? project : (current_user && current_user.fork_of(project))
+    if merge_project
+      options << link_to("create a merge request", new_namespace_project_merge_request_path(project.namespace, project))
+    end
+
+    options
+  end
 end

@@ -15,6 +15,7 @@ module MergeRequests
 
         return @conflicts_can_be_resolved_in_ui = false unless merge_request.cannot_be_merged?
         return @conflicts_can_be_resolved_in_ui = false unless merge_request.has_complete_diff_refs?
+        return @conflicts_can_be_resolved_in_ui = false if merge_request.branch_missing?
 
         begin
           # Try to parse each conflict. If the MR's mergeable status hasn't been

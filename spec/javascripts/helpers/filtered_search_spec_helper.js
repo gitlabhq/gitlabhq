@@ -1,4 +1,4 @@
-class FilteredSearchSpecHelper {
+export default class FilteredSearchSpecHelper {
   static createFilterVisualTokenHTML(name, value, isSelected) {
     return FilteredSearchSpecHelper.createFilterVisualToken(name, value, isSelected).outerHTML;
   }
@@ -53,5 +53,3 @@ class FilteredSearchSpecHelper {
     `;
   }
 }
-
-module.exports = FilteredSearchSpecHelper;

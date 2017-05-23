@@ -34,17 +34,21 @@ a project's **Issues** tab, and click on the field **Search or filter results...
 display a dropdown menu, from which you can add filters per author, assignee, milestone, label,
 and weight. When done, press **Enter** on your keyboard to filter the issues.
 
-![filter issues in a project](img/filter_issues_project.gif)
+![filter issues in a project](img/issue_search_filter.png)
 
 The same process is valid for merge requests. Navigate to your project's **Merge Requests** tab,
 and click **Search or filter results...**. Merge requests can be filtered by author, assignee,
 milestone, and label.
 
-## Search History
+## Search history
 
 You can view recent searches by clicking on the little arrow-clock icon, which is to the left of the search input. Click the search entry to run that search again. This feature is available for issues and merge requests. Searches are stored locally in your browser.
 
 ![search history](img/search_history.gif)
+
+## Removing search filters
+
+Individual filters can be removed by clicking on the filter's (x) button or backspacing. The entire search filter can be cleared by clicking on the search box's (x) button.
 
 ### Shortcut
 

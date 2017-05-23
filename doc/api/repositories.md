@@ -1,4 +1,4 @@
-# Repositories
+# Repositories API
 
 ## List repository tree
 

@@ -17,6 +17,7 @@ module Gitlab
         gon.current_user_id = current_user.id
         gon.current_username = current_user.username
         gon.current_user_fullname = current_user.name
+        gon.current_user_avatar_url = current_user.avatar_url
       end
     end
   end

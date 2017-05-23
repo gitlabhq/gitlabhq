@@ -1,5 +1,5 @@
-require('~/lib/utils/text_utility');
-require('~/abuse_reports');
+import '~/lib/utils/text_utility';
+import '~/abuse_reports';
 
 ((global) => {
   describe('Abuse Reports', () => {

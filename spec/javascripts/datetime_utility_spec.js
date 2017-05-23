@@ -1,4 +1,4 @@
-require('~/lib/utils/datetime_utility');
+import '~/lib/utils/datetime_utility';
 
 (() => {
   describe('Date time utils', () => {

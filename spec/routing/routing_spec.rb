@@ -249,17 +249,34 @@ describe RootController, 'routing' do
   end
 end
 
-#        new_user_session GET    /users/sign_in(.:format)               devise/sessions#new
-#            user_session POST   /users/sign_in(.:format)               devise/sessions#create
-#    destroy_user_session DELETE /users/sign_out(.:format)              devise/sessions#destroy
-# user_omniauth_authorize        /users/auth/:provider(.:format)        omniauth_callbacks#passthru
-#  user_omniauth_callback        /users/auth/:action/callback(.:format) omniauth_callbacks#(?-mix:(?!))
-#           user_password POST   /users/password(.:format)              devise/passwords#create
-#       new_user_password GET    /users/password/new(.:format)          devise/passwords#new
-#      edit_user_password GET    /users/password/edit(.:format)         devise/passwords#edit
-#                         PUT    /users/password(.:format)              devise/passwords#update
 describe "Authentication", "routing" do
-  # pending
+  it "GET /users/sign_in" do
+    expect(get("/users/sign_in")).to route_to('sessions#new')
+  end
+
+  it "POST /users/sign_in" do
+    expect(post("/users/sign_in")).to route_to('sessions#create')
+  end
+
+  it "DELETE /users/sign_out" do
+    expect(delete("/users/sign_out")).to route_to('sessions#destroy')
+  end
+
+  it "POST /users/password" do
+    expect(post("/users/password")).to route_to('passwords#create')
+  end
+
+  it "GET /users/password/new" do
+    expect(get("/users/password/new")).to route_to('passwords#new')
+  end
+
+  it "GET /users/password/edit" do
+    expect(get("/users/password/edit")).to route_to('passwords#edit')
+  end
+
+  it "PUT /users/password" do
+    expect(put("/users/password")).to route_to('passwords#update')
+  end
 end
 
 describe "Groups", "routing" do

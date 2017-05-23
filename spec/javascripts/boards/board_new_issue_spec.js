@@ -6,8 +6,8 @@
 import Vue from 'vue';
 import boardNewIssue from '~/boards/components/board_new_issue';
 
-require('~/boards/models/list');
-require('./mock_data');
+import '~/boards/models/list';
+import './mock_data';
 
 describe('Issue boards new issue form', () => {
   let vm;

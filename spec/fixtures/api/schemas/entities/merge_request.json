@@ -3,7 +3,6 @@
   "properties" : {
     "id": { "type": "integer" },
     "iid": { "type": "integer" },
-    "assignee_id": { "type": ["integer", "null"] },
     "author_id": { "type": "integer" },
     "description": { "type": ["string", "null"] },
     "lock_version": { "type": ["string", "null"] },
@@ -86,6 +85,7 @@
     "email_patches_path": { "type": "string" },
     "plain_diff_path": { "type": "string" },
     "status_path": { "type": "string" },
+    "new_blob_path": { "type": "string" },
     "merge_check_path": { "type": "string" },
     "ci_environments_status_path": { "type": "string" },
     "merge_commit_message_with_description": { "type": "string" },

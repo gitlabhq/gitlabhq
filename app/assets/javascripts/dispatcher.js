@@ -34,13 +34,13 @@
 /* global ShortcutsWiki */
 
 import Issue from './issue';
-
 import BindInOut from './behaviors/bind_in_out';
 import DeleteModal from './branches/branches_delete_modal';
 import Group from './group';
 import GroupName from './group_name';
 import GroupsList from './groups_list';
 import ProjectsList from './projects_list';
+import setupProjectEdit from './project_edit';
 import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
 import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
 import Landing from './landing';
@@ -54,8 +54,7 @@ import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
 import UsersSelect from './users_select';
 import RefSelectDropdown from './ref_select_dropdown';
 import GfmAutoComplete from './gfm_auto_complete';
-
-const ShortcutsBlob = require('./shortcuts_blob');
+import ShortcutsBlob from './shortcuts_blob';
 
 (function() {
   var Dispatcher;
@@ -261,8 +260,13 @@ const ShortcutsBlob = require('./shortcuts_blob');
           new NotificationsForm();
           if ($('#tree-slider').length) {
             new TreeView();
+          }
+          if ($('.blob-viewer').length) {
             new BlobViewer();
           }
+          break;
+        case 'projects:edit':
+          setupProjectEdit();
           break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:failures':

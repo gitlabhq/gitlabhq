@@ -1,0 +1,4 @@
+---
+title: Exclude manual actions when checking if pipeline can be canceled
+merge_request: 11562
+author:

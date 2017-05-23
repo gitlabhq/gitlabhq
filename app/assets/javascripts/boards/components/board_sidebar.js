@@ -7,11 +7,9 @@
 
 import Vue from 'vue';
 import eventHub from '../../sidebar/event_hub';
-
 import AssigneeTitle from '../../sidebar/components/assignees/assignee_title';
 import Assignees from '../../sidebar/components/assignees/assignees';
-
-require('./sidebar/remove_issue');
+import './sidebar/remove_issue';
 
 const Store = gl.issueBoards.BoardsStore;
 
@@ -45,6 +43,12 @@ gl.issueBoards.BoardSidebar = Vue.extend({
     detail: {
       handler () {
         if (this.issue.id !== this.detail.issue.id) {
+          $('.block.assignee')
+            .find('input:not(.js-vue)[name="issue[assignee_ids][]"]')
+            .each((i, el) => {
+              $(el).remove();
+            });
+
           $('.js-issue-board-sidebar', this.$el).each((i, el) => {
             $(el).data('glDropdown').clearMenu();
           });

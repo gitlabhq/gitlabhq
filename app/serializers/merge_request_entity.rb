@@ -1,7 +1,6 @@
 class MergeRequestEntity < IssuableEntity
   include RequestAwareEntity
 
-  expose :assignee_id
   expose :in_progress_merge_commit_sha
   expose :locked_at
   expose :merge_commit_sha
@@ -97,6 +96,14 @@ class MergeRequestEntity < IssuableEntity
     presenter(merge_request).target_branch_commits_path
   end
 
+  expose :new_blob_path do |merge_request|
+    if can?(current_user, :push_code, merge_request.project)
+      namespace_project_new_blob_path(merge_request.project.namespace,
+                                      merge_request.project,
+                                      merge_request.source_branch)
+    end
+  end
+
   expose :conflict_resolution_path do |merge_request|
     presenter(merge_request).conflict_resolution_path
   end
@@ -144,12 +151,6 @@ class MergeRequestEntity < IssuableEntity
                                          merge_request.target_project,
                                          merge_request,
                                          format: :json)
-  end
-
-  expose :merge_check_path do |merge_request|
-    merge_check_namespace_project_merge_request_path(merge_request.project.namespace,
-                                                     merge_request.project,
-                                                     merge_request)
   end
 
   expose :ci_environments_status_path do |merge_request|

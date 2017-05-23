@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-12 14:00+0100\n"
-"PO-Revision-Date: 2017-05-12 14:00+0100\n"
+"POT-Creation-Date: 2017-05-23 16:00+0200\n"
+"PO-Revision-Date: 2017-05-23 16:00+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -18,13 +18,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
+msgid "\"NotificationLevel|#{level.to_s.humanize}\""
+msgstr ""
+
 msgid "About auto deploy"
 msgstr ""
 
 msgid "Activity"
-msgstr ""
-
-msgid "Add %{file_name}"
 msgstr ""
 
 msgid "Add Changelog"
@@ -66,10 +66,49 @@ msgstr ""
 msgid "Charts"
 msgstr ""
 
+msgid "CiStatus|blocked"
+msgstr ""
+
+msgid "CiStatus|canceled"
+msgstr ""
+
+msgid "CiStatus|created"
+msgstr ""
+
+msgid "CiStatus|failed"
+msgstr ""
+
+msgid "CiStatus|manual"
+msgstr ""
+
+msgid "CiStatus|manual action"
+msgstr ""
+
+msgid "CiStatus|passed"
+msgstr ""
+
+msgid "CiStatus|passed with warnings"
+msgstr ""
+
+msgid "CiStatus|pending"
+msgstr ""
+
+msgid "CiStatus|running"
+msgstr ""
+
+msgid "CiStatus|skipped"
+msgstr ""
+
+msgid "CiStatus|waiting for manual action"
+msgstr ""
+
 msgid "Commit"
 msgid_plural "Commits"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "CommitMessage|Add %{file_name}"
+msgstr ""
 
 msgid "Commits"
 msgstr ""
@@ -280,13 +319,58 @@ msgstr ""
 msgid "Notification events"
 msgstr ""
 
-msgid "On mention"
+msgid "NotificationEvent|Close issue"
+msgstr ""
+
+msgid "NotificationEvent|Close merge request"
+msgstr ""
+
+msgid "NotificationEvent|Failed pipeline"
+msgstr ""
+
+msgid "NotificationEvent|Merge merge request"
+msgstr ""
+
+msgid "NotificationEvent|New issue"
+msgstr ""
+
+msgid "NotificationEvent|New merge request"
+msgstr ""
+
+msgid "NotificationEvent|New note"
+msgstr ""
+
+msgid "NotificationEvent|Reassign issue"
+msgstr ""
+
+msgid "NotificationEvent|Reassign merge request"
+msgstr ""
+
+msgid "NotificationEvent|Reopen issue"
+msgstr ""
+
+msgid "NotificationEvent|Successful pipeline"
+msgstr ""
+
+msgid "NotificationLevel|Custom"
+msgstr ""
+
+msgid "NotificationLevel|Disabled"
+msgstr ""
+
+msgid "NotificationLevel|Global"
+msgstr ""
+
+msgid "NotificationLevel|On mention"
+msgstr ""
+
+msgid "NotificationLevel|Participate"
+msgstr ""
+
+msgid "NotificationLevel|Watch"
 msgstr ""
 
 msgid "OpenedNDaysAgo|Opened"
-msgstr ""
-
-msgid "Participate"
 msgstr ""
 
 msgid "Pipeline Health"
@@ -346,10 +430,19 @@ msgstr ""
 msgid "Public"
 msgstr ""
 
+msgid "PushToProject|at"
+msgstr ""
+
 msgid "Read more"
 msgstr ""
 
 msgid "Readme"
+msgstr ""
+
+msgid "RefSwitcher|Branches"
+msgstr ""
+
+msgid "RefSwitcher|Tags"
 msgstr ""
 
 msgid "Related Commits"
@@ -406,9 +499,6 @@ msgid "Source code"
 msgstr ""
 
 msgid "Star"
-msgstr ""
-
-msgid "Successful pipeline"
 msgstr ""
 
 msgid "Switch branch/tag"
@@ -643,7 +733,10 @@ msgstr ""
 msgid "Withdraw Access Request"
 msgstr ""
 
-msgid "You are going to remove %{project_name_with_namespace}. Removed project CANNOT be restored! Are you ABSOLUTELY sure?"
+msgid ""
+"You are going to remove %{project_name_with_namespace}.\n"
+"Removed project CANNOT be restored!\n"
+"Are you ABSOLUTELY sure?"
 msgstr ""
 
 msgid "You are going to remove the fork relationship to source project %{forked_from_project}.  Are you ABSOLUTELY sure?"
@@ -691,16 +784,7 @@ msgstr ""
 msgid "add an SSH key"
 msgstr ""
 
-msgid "at|PushToProject"
-msgstr ""
-
 msgid "blocked"
-msgstr ""
-
-msgid "canceled"
-msgstr ""
-
-msgid "created"
 msgstr ""
 
 msgid "day"
@@ -708,35 +792,11 @@ msgid_plural "days"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "failed"
-msgstr ""
-
-msgid "manual"
-msgstr ""
-
-msgid "manual action"
-msgstr ""
-
 msgid "notification emails"
 msgstr ""
 
 msgid "passed"
 msgstr ""
 
-msgid "passed with warnings"
-msgstr ""
-
-msgid "pending"
-msgstr ""
-
-msgid "running"
-msgstr ""
-
 msgid "set a password"
-msgstr ""
-
-msgid "skipped"
-msgstr ""
-
-msgid "waiting for manual action"
 msgstr ""

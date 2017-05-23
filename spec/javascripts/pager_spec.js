@@ -1,6 +1,6 @@
 /* global fixture */
 
-require('~/pager');
+import '~/pager';
 
 describe('pager', () => {
   const Pager = window.Pager;

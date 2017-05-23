@@ -969,6 +969,12 @@ RSpec/DescribeSymbol:
 RSpec/DescribedClass:
   Enabled: true
 
+# Checks if an example group does not include any tests.
+RSpec/EmptyExampleGroup:
+  Enabled: true
+  CustomIncludeMethods:
+    - run_permission_checks
+
 # Checks for long example.
 RSpec/ExampleLength:
   Enabled: false
@@ -985,6 +991,10 @@ RSpec/ExampleWording:
 
 # Checks for `expect(...)` calls containing literal values.
 RSpec/ExpectActual:
+  Enabled: true
+
+# Checks for opportunities to use `expect { … }.to output`.
+RSpec/ExpectOutput:
   Enabled: true
 
 # Checks the file and folder naming of the spec file.

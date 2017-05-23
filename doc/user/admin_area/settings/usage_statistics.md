@@ -9,7 +9,7 @@ All statistics are opt-out, you can disable them from the admin panel.
 
 GitLab can inform you when an update is available and the importance of it.
 
-No information other than the GitLab version and the instance's domain name
+No information other than the GitLab version and the instance's hostname (through the HTTP referer)
 are collected.
 
 In the **Overview** tab you can see if your GitLab version is up to date. There
@@ -38,7 +38,7 @@ You can view the exact JSON payload in the administration panel.
 
 ### Deactivate the usage ping
 
-By default, usage ping is opt-out. If you want to deactivate this feature, go to
+The usage ping is opt-out. If you want to deactivate this feature, go to
 the Settings page of your administration panel and uncheck the Usage ping
 checkbox.
 

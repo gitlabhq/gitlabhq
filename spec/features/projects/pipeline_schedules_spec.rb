@@ -38,7 +38,7 @@ feature 'Pipeline Schedules', :feature do
       end
 
       it 'creates a new scheduled pipeline' do
-        click_link 'New Schedule'
+        click_link 'New schedule'
 
         expect(page).to have_content('Schedule a new pipeline')
       end

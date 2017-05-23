@@ -26,12 +26,12 @@ class AddConstraintsToIssueAssigneesTable < ActiveRecord::Migration
   # disable_ddl_transaction!
 
   def up
-    change_column :issue_assignees, :issue_id, :integer, null: false
-    change_column :issue_assignees, :user_id, :integer, null: false
+    change_column_null :issue_assignees, :issue_id, false
+    change_column_null :issue_assignees, :user_id, false
   end
 
   def down
-    change_column :issue_assignees, :issue_id, :integer
-    change_column :issue_assignees, :user_id, :integer
+    change_column_null :issue_assignees, :issue_id, true
+    change_column_null :issue_assignees, :user_id, true
   end
 end

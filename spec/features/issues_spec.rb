@@ -30,13 +30,6 @@ describe 'Issues', feature: true do
     it 'opens new issue popup' do
       expect(page).to have_content("Issue ##{issue.iid}")
     end
-
-    describe 'fill in' do
-      before do
-        fill_in 'issue_title', with: 'bug 345'
-        fill_in 'issue_description', with: 'bug description'
-      end
-    end
   end
 
   describe 'Editing issue assignee' do
@@ -465,16 +458,12 @@ describe 'Issues', feature: true do
           click_link 'Edit'
           click_link @user.name
 
-          find('.dropdown-menu-toggle').click
-
           page.within '.value .author' do
             expect(page).to have_content @user.name
           end
 
           click_link 'Edit'
           click_link @user.name
-
-          find('.dropdown-menu-toggle').click
 
           page.within '.value .assign-yourself' do
             expect(page).to have_content "No assignee"
@@ -559,15 +548,6 @@ describe 'Issues', feature: true do
 
         visit namespace_project_issue_path(project.namespace, project, issue)
         expect(page).to have_content milestone.title
-      end
-    end
-
-    describe 'removing assignee' do
-      let(:user2) { create(:user) }
-
-      before do
-        issue.assignees << user2
-        issue.save
       end
     end
   end
