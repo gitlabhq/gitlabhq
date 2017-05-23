@@ -58,7 +58,7 @@ describe Ci::CreatePipelineService, services: true do
         end
 
         context 'when merge request target project is different from source project' do
-          let!(:target_project) { create(:empty_project) }
+          let!(:target_project) { create(:project) }
           let!(:forked_project_link) { create(:forked_project_link, forked_to_project: project, forked_from_project: target_project) }
 
           it 'updates head pipeline for merge request' do
@@ -68,6 +68,17 @@ describe Ci::CreatePipelineService, services: true do
             head_pipeline = pipeline
 
             expect(merge_request.reload.head_pipeline).to eq(head_pipeline)
+          end
+        end
+
+        context 'when merge request head commit sha does not match pipeline sha' do
+          it 'does not update merge request head pipeline' do
+            merge_request = create(:merge_request, source_branch: 'master', target_branch: "branch_1", source_project: project)
+            allow_any_instance_of(MergeRequestDiff).to receive(:head_commit).and_return(double(id: 1234))
+
+            pipeline
+
+            expect(merge_request.reload.head_pipeline).to be_nil
           end
         end
       end
