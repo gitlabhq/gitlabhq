@@ -29,7 +29,6 @@ feature 'Edit Merge Request', feature: true do
       expect(page).to have_content 'Someone edited the merge request the same time you did'
     end
 
-
     it 'allows to unselect "Remove source branch"', js: true do
       merge_request.update(merge_params: { 'force_remove_source_branch' => '1' })
       expect(merge_request.merge_params['force_remove_source_branch']).to be_truthy
