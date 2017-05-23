@@ -238,8 +238,8 @@ describe Namespace, models: true do
     end
 
     context 'in sub-groups' do
-      let(:parent) { create(:group, path: 'parent') }
-      let(:child) { create(:group, parent: parent, path: 'child') }
+      let(:parent) { create(:namespace, path: 'parent') }
+      let(:child) { create(:namespace, parent: parent, path: 'child') }
       let!(:project) { create(:project_empty_repo, namespace: child) }
       let(:path_in_dir) { File.join(repository_storage_path, 'parent', 'child') }
       let(:deleted_path) { File.join('parent', "child+#{child.id}+deleted") }

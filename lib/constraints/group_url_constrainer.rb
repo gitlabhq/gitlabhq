@@ -1,9 +1,9 @@
 class GroupUrlConstrainer
   def matches?(request)
-    full_path = request.params[:group_id] || request.params[:id]
+    id = request.params[:group_id] || request.params[:id]
 
-    return false unless DynamicPathValidator.valid_group_path?(full_path)
+    return false unless DynamicPathValidator.valid_namespace_path?(id)
 
-    Group.find_by_full_path(full_path, follow_redirects: request.get?).present?
+    Group.find_by_full_path(id, follow_redirects: request.get?).present?
   end
 end

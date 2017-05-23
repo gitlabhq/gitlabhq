@@ -209,12 +209,8 @@ shared_examples 'a GitHub-ish import controller: POST create' do
     end
 
     context 'user has chosen a namespace and name for the project' do
-      let(:test_namespace) { create(:group, name: 'test_namespace') }
+      let(:test_namespace) { create(:namespace, name: 'test_namespace', owner: user) }
       let(:test_name) { 'test_name' }
-
-      before do
-        test_namespace.add_owner(user)
-      end
 
       it 'takes the selected namespace and name' do
         expect(Gitlab::GithubImport::ProjectCreator).
@@ -234,13 +230,9 @@ shared_examples 'a GitHub-ish import controller: POST create' do
     end
 
     context 'user has chosen an existing nested namespace and name for the project' do
-      let(:parent_namespace) { create(:group, name: 'foo', owner: user) }
-      let(:nested_namespace) { create(:group, name: 'bar', parent: parent_namespace) }
+      let(:parent_namespace) { create(:namespace, name: 'foo', owner: user) }
+      let(:nested_namespace) { create(:namespace, name: 'bar', parent: parent_namespace, owner: user) }
       let(:test_name) { 'test_name' }
-
-      before do
-        nested_namespace.add_owner(user)
-      end
 
       it 'takes the selected namespace and name' do
         expect(Gitlab::GithubImport::ProjectCreator).
@@ -284,7 +276,7 @@ shared_examples 'a GitHub-ish import controller: POST create' do
 
     context 'user has chosen existent and non-existent nested namespaces and name for the project' do
       let(:test_name) { 'test_name' }
-      let!(:parent_namespace) { create(:group, name: 'foo', owner: user) }
+      let!(:parent_namespace) { create(:namespace, name: 'foo', owner: user) }
 
       it 'takes the selected namespace and name' do
         expect(Gitlab::GithubImport::ProjectCreator).

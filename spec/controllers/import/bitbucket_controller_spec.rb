@@ -133,13 +133,9 @@ describe Import::BitbucketController do
       end
 
       context "when a namespace with the Bitbucket user's username already exists" do
-        let!(:existing_namespace) { create(:group, name: other_username) }
+        let!(:existing_namespace) { create(:namespace, name: other_username, owner: user) }
 
         context "when the namespace is owned by the GitLab user" do
-          before do
-            existing_namespace.add_owner(user)
-          end
-
           it "takes the existing namespace" do
             expect(Gitlab::BitbucketImport::ProjectCreator).
               to receive(:new).with(bitbucket_repo, bitbucket_repo.name, existing_namespace, user, access_params).
@@ -150,6 +146,11 @@ describe Import::BitbucketController do
         end
 
         context "when the namespace is not owned by the GitLab user" do
+          before do
+            existing_namespace.owner = create(:user)
+            existing_namespace.save
+          end
+
           it "doesn't create a project" do
             expect(Gitlab::BitbucketImport::ProjectCreator).
               not_to receive(:new)
@@ -201,13 +202,9 @@ describe Import::BitbucketController do
     end
 
     context 'user has chosen an existing nested namespace and name for the project' do
-      let(:parent_namespace) { create(:group, name: 'foo', owner: user) }
-      let(:nested_namespace) { create(:group, name: 'bar', parent: parent_namespace) }
+      let(:parent_namespace) { create(:namespace, name: 'foo', owner: user) }
+      let(:nested_namespace) { create(:namespace, name: 'bar', parent: parent_namespace, owner: user) }
       let(:test_name) { 'test_name' }
-
-      before do
-        nested_namespace.add_owner(user)
-      end
 
       it 'takes the selected namespace and name' do
         expect(Gitlab::BitbucketImport::ProjectCreator).
@@ -251,7 +248,7 @@ describe Import::BitbucketController do
 
     context 'user has chosen existent and non-existent nested namespaces and name for the project' do
       let(:test_name) { 'test_name' }
-      let!(:parent_namespace) { create(:group, name: 'foo', owner: user) }
+      let!(:parent_namespace) { create(:namespace, name: 'foo', owner: user) }
 
       it 'takes the selected namespace and name' do
         expect(Gitlab::BitbucketImport::ProjectCreator).

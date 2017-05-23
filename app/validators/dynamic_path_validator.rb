@@ -3,20 +3,16 @@
 # Custom validator for GitLab path values.
 # These paths are assigned to `Namespace` (& `Group` as a subclass) & `Project`
 #
-# Values are checked for formatting and exclusion from a list of illegal path
+# Values are checked for formatting and exclusion from a list of reserved path
 # names.
 class DynamicPathValidator < ActiveModel::EachValidator
   class << self
-    def valid_user_path?(path)
-      "#{path}/" =~ Gitlab::PathRegex.root_namespace_path_regex
-    end
-
-    def valid_group_path?(path)
-      "#{path}/" =~ Gitlab::PathRegex.full_namespace_path_regex
+    def valid_namespace_path?(path)
+      "#{path}/" =~ Gitlab::Regex.full_namespace_path_regex
     end
 
     def valid_project_path?(path)
-      "#{path}/" =~ Gitlab::PathRegex.full_project_path_regex
+      "#{path}/" =~ Gitlab::Regex.full_project_path_regex
     end
   end
 
@@ -28,16 +24,14 @@ class DynamicPathValidator < ActiveModel::EachValidator
     case record
     when Project
       self.class.valid_project_path?(full_path)
-    when Group
-      self.class.valid_group_path?(full_path)
-    else # User or non-Group Namespace
-      self.class.valid_user_path?(full_path)
+    else
+      self.class.valid_namespace_path?(full_path)
     end
   end
 
   def validate_each(record, attribute, value)
-    unless value =~ Gitlab::PathRegex.namespace_format_regex
-      record.errors.add(attribute, Gitlab::PathRegex.namespace_format_message)
+    unless value =~ Gitlab::Regex.namespace_regex
+      record.errors.add(attribute, Gitlab::Regex.namespace_regex_message)
       return
     end
 

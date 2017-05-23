@@ -205,8 +205,8 @@ class Project < ActiveRecord::Base
     presence: true,
     dynamic_path: true,
     length: { maximum: 255 },
-    format: { with: Gitlab::PathRegex.project_path_format_regex,
-              message: Gitlab::PathRegex.project_path_format_message },
+    format: { with: Gitlab::Regex.project_path_format_regex,
+              message: Gitlab::Regex.project_path_regex_message },
     uniqueness: { scope: :namespace_id }
 
   validates :namespace, presence: true
@@ -380,9 +380,11 @@ class Project < ActiveRecord::Base
     end
 
     def reference_pattern
+      name_pattern = Gitlab::Regex::FULL_NAMESPACE_REGEX_STR
+
       %r{
-        ((?<namespace>#{Gitlab::PathRegex::FULL_NAMESPACE_FORMAT_REGEX})\/)?
-        (?<project>#{Gitlab::PathRegex::PROJECT_PATH_FORMAT_REGEX})
+        ((?<namespace>#{name_pattern})\/)?
+        (?<project>#{name_pattern})
       }x
     end
 
