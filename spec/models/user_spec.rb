@@ -440,6 +440,13 @@ describe User, models: true do
     end
   end
 
+  describe 'ensure incoming email token' do
+    it 'has incoming email token' do
+      user = create(:user)
+      expect(user.incoming_email_token).not_to be_blank
+    end
+  end
+
   describe 'rss token' do
     it 'has rss token' do
       user = create(:user)
