@@ -1,7 +1,9 @@
 class MetricsController < ActionController::Base
-  protect_from_forgery with: :exception
-  before_action :validate_prometheus_metrics
   include RequiresHealthToken
+
+  protect_from_forgery with: :exception
+
+  before_action :validate_prometheus_metrics
 
   def metrics
     response = "#{metrics_service.health_metrics_text}\n#{metrics_service.prometheus_metrics_text}"

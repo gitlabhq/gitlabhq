@@ -47,7 +47,7 @@ class SessionsController < Devise::SessionsController
 
   private
 
-  def self.login_counter
+  def login_counter
     @login_counter ||= Gitlab::Metrics.counter(:user_session_logins, 'User logins count')
   end
 
@@ -129,7 +129,7 @@ class SessionsController < Devise::SessionsController
   end
 
   def log_user_activity(user)
-    SessionsController.login_counter.increment
+    login_counter.increment
     Users::ActivityService.new(user, 'login').execute
   end
 
