@@ -63,7 +63,7 @@ class User < ActiveRecord::Base
   #
 
   # Namespace for personal projects
-  has_one :namespace, -> { where type: nil }, dependent: :destroy, foreign_key: :owner_id
+  has_one :namespace, -> { where type: nil }, dependent: :destroy, foreign_key: :owner_id, autosave: true
 
   # Profile
   has_many :keys, -> do
@@ -182,6 +182,8 @@ class User < ActiveRecord::Base
   alias_attribute :private_token, :authentication_token
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
+  delegate :shared_runners_minutes_limit, :shared_runners_minutes_limit=,
+           to: :namespace
 
   accepts_nested_attributes_for :namespace
 

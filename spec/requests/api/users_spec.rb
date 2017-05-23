@@ -426,10 +426,10 @@ describe API::Users do
     end
 
     it "updates shared_runners_minutes_limit" do
-      put api("/users/#{user.id}", admin), { namespace_attributes: { shared_runners_minutes_limit: 133 } }
+      put api("/users/#{user.id}", admin), { shared_runners_minutes_limit: 133 }
 
       expect(response).to have_http_status(200)
-      expect(json_response.dig('namespace', 'shared_runners_minutes_limit'))
+      expect(json_response['shared_runners_minutes_limit'])
         .to eq(133)
       expect(user.reload.namespace.shared_runners_minutes_limit).to eq(133)
     end

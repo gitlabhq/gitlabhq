@@ -40,11 +40,6 @@ module API
       expose :external
 
       # EE-only
-      expose :namespace, using: 'API::Entities::UserNamespace'
-    end
-
-    # EE-only
-    class UserNamespace < Grape::Entity
       expose :shared_runners_minutes_limit
     end
 

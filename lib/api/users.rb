@@ -32,9 +32,7 @@ module API
           all_or_none_of :extern_uid, :provider
 
           # EE
-          optional :namespace_attributes, type: Hash do
-            optional :shared_runners_minutes_limit, type: Integer, desc: 'Pipeline minutes quota for this user'
-          end
+          optional :shared_runners_minutes_limit, type: Integer, desc: 'Pipeline minutes quota for this user'
         end
       end
 
@@ -174,10 +172,6 @@ module API
         end
 
         user_params[:password_expires_at] = Time.now if user_params[:password].present?
-
-        # EE
-        namespace_attributes = user_params[:namespace_attributes]
-        namespace_attributes[:id] = user.namespace_id if namespace_attributes
 
         if user.update_attributes(user_params.except(:extern_uid, :provider))
           present user, with: Entities::UserPublic
