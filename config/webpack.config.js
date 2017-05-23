@@ -63,6 +63,7 @@ var config = {
     users:                './users/users_bundle.js',
     raven:                './raven/index.js',
     vue_merge_request_widget: './vue_merge_request_widget/index.js',
+    teamdashboard:        './teamdashboard/teamdashboard_bundle.js',
     test:                 './test.js',
   },
 
