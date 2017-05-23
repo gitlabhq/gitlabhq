@@ -2,6 +2,11 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.2.1 (2017-05-23)
+
+- Fix placement of note emoji on hover.
+- Fix migration for older PostgreSQL versions.
+
 ## 9.2.0 (2017-05-22)
 
 - API: Filter merge requests by milestone and labels. (10924)
