@@ -11,7 +11,7 @@ describe "User Feed", feature: true  do
       end
     end
 
-    context 'user atom feed via rss token' do
+    context 'user atom feed via RSS token' do
       it "renders user atom feed" do
         visit user_path(user, :atom, rss_token: user.rss_token)
         expect(body).to have_selector('feed title')

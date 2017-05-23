@@ -11,7 +11,7 @@ describe "Dashboard Feed", feature: true  do
       end
     end
 
-    context "projects atom feed via rss token" do
+    context "projects atom feed via RSS token" do
       it "renders projects atom feed" do
         visit dashboard_projects_path(:atom, rss_token: user.rss_token)
         expect(body).to have_selector('feed title')

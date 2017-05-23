@@ -16,8 +16,8 @@ feature 'Project Issues RSS' do
       visit path
     end
 
-    it_behaves_like "it has an RSS button with current_user's rss token"
-    it_behaves_like "an autodiscoverable RSS feed with current_user's rss token"
+    it_behaves_like "it has an RSS button with current_user's RSS token"
+    it_behaves_like "an autodiscoverable RSS feed with current_user's RSS token"
   end
 
   context 'when signed out' do
@@ -25,7 +25,7 @@ feature 'Project Issues RSS' do
       visit path
     end
 
-    it_behaves_like "it has an RSS button without an rss token"
-    it_behaves_like "an autodiscoverable RSS feed without an rss token"
+    it_behaves_like "it has an RSS button without an RSS token"
+    it_behaves_like "an autodiscoverable RSS feed without an RSS token"
   end
 end

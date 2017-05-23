@@ -11,7 +11,7 @@ namespace :tokens do
     reset_all_users_token(:reset_incoming_email_token!)
   end
 
-  desc "Reset all GitLab rss tokens"
+  desc "Reset all GitLab RSS tokens"
   task reset_all_rss: :environment do
     reset_all_users_token(:reset_rss_token!)
   end

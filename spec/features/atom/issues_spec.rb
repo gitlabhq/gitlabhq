@@ -43,7 +43,7 @@ describe 'Issues Feed', feature: true  do
       end
     end
 
-    context 'when authenticated via rss token' do
+    context 'when authenticated via RSS token' do
       it 'renders atom feed' do
         visit namespace_project_issues_path(project.namespace, project, :atom,
                                             rss_token: user.rss_token)

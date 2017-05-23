@@ -20,7 +20,7 @@ describe "Dashboard Issues Feed", feature: true  do
         expect(body).to have_selector('title', text: "#{user.name} issues")
       end
 
-      it "renders atom feed via rss token" do
+      it "renders atom feed via RSS token" do
         visit issues_dashboard_path(:atom, rss_token: user.rss_token)
 
         expect(response_headers['Content-Type']).to have_content('application/atom+xml')

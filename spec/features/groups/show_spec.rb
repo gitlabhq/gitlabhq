@@ -11,7 +11,7 @@ feature 'Group show page', feature: true do
       visit path
     end
 
-    it_behaves_like "an autodiscoverable RSS feed with current_user's rss token"
+    it_behaves_like "an autodiscoverable RSS feed with current_user's RSS token"
   end
 
   context 'when signed out' do
@@ -19,6 +19,6 @@ feature 'Group show page', feature: true do
       visit path
     end
 
-    it_behaves_like "an autodiscoverable RSS feed without an rss token"
+    it_behaves_like "an autodiscoverable RSS feed without an RSS token"
   end
 end

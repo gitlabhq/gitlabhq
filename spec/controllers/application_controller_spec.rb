@@ -100,14 +100,14 @@ describe ApplicationController do
   end
 
   describe '#authenticate_user_from_rss_token' do
-    describe "authenticating a user from an rss token" do
+    describe "authenticating a user from an RSS token" do
       controller(described_class) do
         def index
           render text: 'authenticated'
         end
       end
 
-      context "when the 'rss_token' param is populated with the rss token" do
+      context "when the 'rss_token' param is populated with the RSS token" do
         context 'when the request format is atom' do
           it "logs the user in" do
             get :index, rss_token: user.rss_token, format: :atom
@@ -125,7 +125,7 @@ describe ApplicationController do
         end
       end
 
-      context "when the 'rss_token' param is populated with an invalid rss token" do
+      context "when the 'rss_token' param is populated with an invalid RSS token" do
         it "doesn't log the user" do
           get :index, rss_token: "token"
           expect(response.status).not_to eq 200
