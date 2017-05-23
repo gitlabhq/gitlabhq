@@ -80,27 +80,30 @@ describe Gitlab::HealthChecks::FsShardsCheck do
           }.with_indifferent_access
         end
 
-        it { is_expected.to include(metric_class.new(:filesystem_accessible, 0, shard: :default)) }
-        it { is_expected.to include(metric_class.new(:filesystem_readable, 0, shard: :default)) }
-        it { is_expected.to include(metric_class.new(:filesystem_writable, 0, shard: :default)) }
+        it { is_expected.to all(have_attributes(labels: { shard: :default })) }
 
-        it { is_expected.to include(have_attributes(name: :filesystem_access_latency, value: be >= 0, labels: { shard: :default })) }
-        it { is_expected.to include(have_attributes(name: :filesystem_read_latency, value: be >= 0, labels: { shard: :default })) }
-        it { is_expected.to include(have_attributes(name: :filesystem_write_latency, value: be >= 0, labels: { shard: :default })) }
+        it { is_expected.to include(an_object_having_attributes(name: :filesystem_accessible, value: 0)) }
+        it { is_expected.to include(an_object_having_attributes(name: :filesystem_readable, value: 0)) }
+        it { is_expected.to include(an_object_having_attributes(name: :filesystem_writable, value: 0)) }
+
+        it { is_expected.to include(an_object_having_attributes(name: :filesystem_access_latency, value: be >= 0)) }
+        it { is_expected.to include(an_object_having_attributes(name: :filesystem_read_latency, value: be >= 0)) }
+        it { is_expected.to include(an_object_having_attributes(name: :filesystem_write_latency, value: be >= 0)) }
       end
 
       context 'storage points to directory that has both read and write rights' do
         before do
           FileUtils.chmod_R(0755, tmp_dir)
         end
+        it { is_expected.to all(have_attributes(labels: { shard: :default })) }
 
-        it { is_expected.to include(metric_class.new(:filesystem_accessible, 1, shard: :default)) }
-        it { is_expected.to include(metric_class.new(:filesystem_readable, 1, shard: :default)) }
-        it { is_expected.to include(metric_class.new(:filesystem_writable, 1, shard: :default)) }
+        it { is_expected.to include(an_object_having_attributes(name: :filesystem_accessible, value: 1)) }
+        it { is_expected.to include(an_object_having_attributes(name: :filesystem_readable, value: 1)) }
+        it { is_expected.to include(an_object_having_attributes(name: :filesystem_writable, value: 1)) }
 
-        it { is_expected.to include(have_attributes(name: :filesystem_access_latency, value: be >= 0, labels: { shard: :default })) }
-        it { is_expected.to include(have_attributes(name: :filesystem_read_latency, value: be >= 0, labels: { shard: :default })) }
-        it { is_expected.to include(have_attributes(name: :filesystem_write_latency, value: be >= 0, labels: { shard: :default })) }
+        it { is_expected.to include(an_object_having_attributes(name: :filesystem_access_latency, value: be >= 0)) }
+        it { is_expected.to include(an_object_having_attributes(name: :filesystem_read_latency, value: be >= 0)) }
+        it { is_expected.to include(an_object_having_attributes(name: :filesystem_write_latency, value: be >= 0)) }
       end
     end
   end
@@ -109,7 +112,7 @@ describe Gitlab::HealthChecks::FsShardsCheck do
     let(:timeout_seconds) { 1.to_s }
 
     before do
-      allow(described_class).to receive(:with_timeout) { [timeout_command, timeout_seconds, 'sleep', 2] }
+      allow(described_class).to receive(:with_timeout) { [timeout_command, timeout_seconds, 'sleep', '20'] }
       FileUtils.chmod_R(0755, tmp_dir)
     end
 
@@ -122,13 +125,17 @@ describe Gitlab::HealthChecks::FsShardsCheck do
     describe '#metrics' do
       subject { described_class.metrics }
 
-      it { is_expected.to include(metric_class.new(:filesystem_accessible, 0, shard: :default)) }
-      it { is_expected.to include(metric_class.new(:filesystem_readable, 0, shard: :default)) }
-      it { is_expected.to include(metric_class.new(:filesystem_writable, 0, shard: :default)) }
+      it 'provides metrics' do
+        expect(subject).to all(have_attributes(labels: { shard: :default }))
 
-      it { is_expected.to include(have_attributes(name: :filesystem_access_latency, value: be >= 0, labels: { shard: :default })) }
-      it { is_expected.to include(have_attributes(name: :filesystem_read_latency, value: be >= 0, labels: { shard: :default })) }
-      it { is_expected.to include(have_attributes(name: :filesystem_write_latency, value: be >= 0, labels: { shard: :default })) }
+        expect(subject).to include(an_object_having_attributes(name: :filesystem_accessible, value: 0))
+        expect(subject).to include(an_object_having_attributes(name: :filesystem_readable, value: 0))
+        expect(subject).to include(an_object_having_attributes(name: :filesystem_writable, value: 0))
+
+        expect(subject).to include(an_object_having_attributes(name: :filesystem_access_latency, value: be >= 0))
+        expect(subject).to include(an_object_having_attributes(name: :filesystem_read_latency, value: be >= 0))
+        expect(subject).to include(an_object_having_attributes(name: :filesystem_write_latency, value: be >= 0))
+      end
     end
   end
 
