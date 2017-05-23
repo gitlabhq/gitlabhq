@@ -28,10 +28,8 @@ feature 'Only allow merge requests to be merged if the pipeline succeeds', featu
       project: project,
       sha: merge_request.diff_head_sha,
       ref: merge_request.source_branch,
-      status: status)
+      status: status, head_pipeline_of: merge_request)
     end
-
-    before { merge_request.update(head_pipeline: pipeline) }
 
     context 'when merge requests can only be merged if the pipeline succeeds' do
       before do

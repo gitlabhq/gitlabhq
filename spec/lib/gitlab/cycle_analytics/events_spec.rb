@@ -126,12 +126,11 @@ describe 'cycle analytics events' do
       create(:ci_pipeline,
              ref: merge_request.source_branch,
              sha: merge_request.diff_head_sha,
-             project: context.project)
+             project: context.project,
+             head_pipeline_of: merge_request)
     end
 
     before do
-      merge_request.update(head_pipeline: pipeline)
-
       create(:ci_build, pipeline: pipeline, status: :success, author: user)
       create(:ci_build, pipeline: pipeline, status: :success, author: user)
 
@@ -224,12 +223,11 @@ describe 'cycle analytics events' do
       create(:ci_pipeline,
              ref: merge_request.source_branch,
              sha: merge_request.diff_head_sha,
-             project: context.project)
+             project: context.project,
+             head_pipeline_of: merge_request)
     end
 
     before do
-      merge_request.update(head_pipeline: pipeline)
-
       create(:ci_build, pipeline: pipeline, status: :success, author: user)
       create(:ci_build, pipeline: pipeline, status: :success, author: user)
 
