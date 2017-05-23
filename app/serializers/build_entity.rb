@@ -1,8 +1,9 @@
 class BuildEntity < Grape::Entity
   include RequestAwareEntity
 
-  expose :id
-  expose :name
+  expose :id, :name
+  expose :created_at, :updated_at
+  expose :queued_at, :started_at, :finished_at
 
   expose :build_path do |build|
     path_to(:namespace_project_build, build)
@@ -17,9 +18,9 @@ class BuildEntity < Grape::Entity
   end
 
   expose :playable?, as: :playable
-  expose :created_at
-  expose :updated_at
   expose :detailed_status, as: :status, with: StatusEntity
+  expose :tag_list, as: :tags
+  expose :artifacts, using: BuildArtifactEntity
 
   private
 

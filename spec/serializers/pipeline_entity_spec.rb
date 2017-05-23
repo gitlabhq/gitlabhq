@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe PipelineEntity do
-  let(:user) { create(:user) }
+  set(:user) { create(:user) }
   let(:request) { double('request') }
 
   before do
@@ -20,7 +20,7 @@ describe PipelineEntity do
 
       it 'contains required fields' do
         expect(subject).to include :id, :user, :path, :coverage
-        expect(subject).to include :ref, :commit
+        expect(subject).to include :ref, :commit, :queued_duration
         expect(subject).to include :updated_at, :created_at
       end
 

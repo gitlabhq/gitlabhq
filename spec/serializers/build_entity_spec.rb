@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe BuildEntity do
   let(:user) { create(:user) }
-  let(:build) { create(:ci_build) }
+  let(:build) { create(:ci_build, :tags) }
   let(:request) { double('request') }
 
   before do
@@ -29,12 +29,18 @@ describe BuildEntity do
   end
 
   it 'contains timestamps' do
-    expect(subject).to include(:created_at, :updated_at)
+    expect(subject).to include(:created_at, :updated_at, :queued_at, :started_at, :finished_at)
   end
 
   it 'contains details' do
     expect(subject).to include :status
     expect(subject[:status]).to include :icon, :favicon, :text, :label
+  end
+
+  it 'exposes the tags list' do
+    expect(subject).to include :tags
+    expect(subject[:tags]).not_to be_empty
+    expect(subject[:tags]).to include('docker', 'ruby')
   end
 
   context 'when build is a regular job' do
