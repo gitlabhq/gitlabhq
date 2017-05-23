@@ -3,7 +3,7 @@ require('./filtered_search_token_keys');
 const weightTokenKey = {
   key: 'weight',
   type: 'string',
-  param: 'weight',
+  param: '',
   symbol: '',
   icon: 'balance-scale',
 };
@@ -57,7 +57,7 @@ class FilteredSearchTokenKeysWithWeights extends gl.FilteredSearchTokenKeys {
     return tokenKeysWithAlternative.find((tokenKey) => {
       let tokenKeyParam = tokenKey.key;
 
-      if (tokenKey.param !== 'weight') {
+      if (tokenKey.param) {
         tokenKeyParam += `_${tokenKey.param}`;
       }
 
