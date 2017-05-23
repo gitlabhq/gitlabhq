@@ -69,8 +69,8 @@ describe('Merge Request Code Quality Issues', () => {
         });
       });
 
-      it('should render red minus icon', () => {
-        expect(vm.$el.querySelector('li').classList.contains('red')).toEqual(true);
+      it('should render failed minus icon', () => {
+        expect(vm.$el.querySelector('li').classList.contains('failed')).toEqual(true);
         expect(vm.$el.querySelector('li i').classList.contains('fa-minus')).toEqual(true);
       });
     });
@@ -90,8 +90,8 @@ describe('Merge Request Code Quality Issues', () => {
         });
       });
 
-      it('should render green plus icon', () => {
-        expect(vm.$el.querySelector('li').classList.contains('green')).toEqual(true);
+      it('should render success plus icon', () => {
+        expect(vm.$el.querySelector('li').classList.contains('success')).toEqual(true);
         expect(vm.$el.querySelector('li i').classList.contains('fa-plus')).toEqual(true);
       });
     });

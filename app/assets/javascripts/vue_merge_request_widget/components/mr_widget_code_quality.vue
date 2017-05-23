@@ -41,13 +41,13 @@ export default {
     },
 
     hasNoneIssues() {
-      return !this.mr.codeclimateMetrics.newIssues.length &&
-        !this.mr.codeclimateMetrics.resolvedIssues.length;
+      const { newIssues, resolvedIssues } = this.mr.codeclimateMetrics;
+      return !newIssues.length && !resolvedIssues.length;
     },
 
     hasIssues() {
-      return this.mr.codeclimateMetrics.newIssues.length ||
-        this.mr.codeclimateMetrics.resolvedIssues.length;
+      const { newIssues, resolvedIssues } = this.mr.codeclimateMetrics;
+      return newIssues.length || resolvedIssues.length;
     },
 
     codeText() {
@@ -58,8 +58,7 @@ export default {
 
       if (this.hasNoneIssues) {
         text = 'No changes to code quality so far.';
-      }
-      if (this.hasIssues) {
+      } else if (this.hasIssues) {
         if (newIssues.length) {
           newIssuesText = `degraded on ${newIssues.length} ${this.pointsText(newIssues)}`;
         }
