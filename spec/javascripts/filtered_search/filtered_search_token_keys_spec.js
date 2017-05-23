@@ -18,6 +18,17 @@ describe('Filtered Search Token Keys', () => {
     });
   });
 
+  describe('getKeys', () => {
+    it('should return keys', () => {
+      const getKeys = gl.FilteredSearchTokenKeys.getKeys();
+      const keys = gl.FilteredSearchTokenKeys.get().map(i => i.key);
+
+      keys.forEach((key, i) => {
+        expect(key).toEqual(getKeys[i]);
+      });
+    });
+  });
+
   describe('getConditions', () => {
     let conditions;
 
