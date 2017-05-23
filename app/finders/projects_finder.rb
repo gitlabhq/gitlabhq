@@ -31,6 +31,7 @@ class ProjectsFinder < UnionFinder
     items = by_ids(items)
     items = union(items)
     items = by_personal(items)
+    items = by_starred(items)
     items = by_visibilty_level(items)
     items = by_tags(items)
     items = by_search(items)
@@ -45,8 +46,6 @@ class ProjectsFinder < UnionFinder
 
     if params[:trending].present?
       projects << Project.trending
-    elsif params[:starred].present? && current_user
-      projects << current_user.viewable_starred_projects
     else
       projects << current_user.authorized_projects if current_user
       projects << Project.unscoped.public_to_user(current_user) unless params[:non_public].present?
@@ -65,6 +64,10 @@ class ProjectsFinder < UnionFinder
 
   def by_personal(items)
     (params[:personal].present? && current_user) ? items.personal(current_user) : items
+  end
+
+  def by_starred(items)
+    (params[:starred].present? && current_user) ? items.starred_by(current_user) : items
   end
 
   def by_visibilty_level(items)
