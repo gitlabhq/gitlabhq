@@ -11,6 +11,11 @@ namespace :tokens do
     reset_all_users_token(:reset_incoming_email_token!)
   end
 
+  desc "Reset all GitLab rss tokens"
+  task reset_all_rss: :environment do
+    reset_all_users_token(:reset_rss_token!)
+  end
+
   def reset_all_users_token(reset_token_method)
     TmpUser.find_in_batches do |batch|
       puts "Processing batch starting with user ID: #{batch.first.id}"
@@ -33,6 +38,11 @@ class TmpUser < ActiveRecord::Base
 
   def reset_incoming_email_token!
     write_new_token(:incoming_email_token)
+    save!(validate: false)
+  end
+
+  def reset_rss_token!
+    write_new_token(:rss_token)
     save!(validate: false)
   end
 end
