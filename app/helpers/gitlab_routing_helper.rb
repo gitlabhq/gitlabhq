@@ -182,6 +182,10 @@ module GitlabRoutingHelper
 
   # Groups
 
+  def team_dashboard_url(group, *args)
+    group_team_dashboard_url(group, *args)
+  end
+
   ## Members
   def group_members_url(group, *args)
     group_group_members_url(group, *args)

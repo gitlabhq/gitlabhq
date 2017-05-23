@@ -9,6 +9,9 @@ scope(path: 'groups/*group_id',
     delete :leave, on: :collection
   end
 
+  resources :team_dashboard, only: [:index], concerns: :access_requestable do
+    
+  end
   resource :avatar, only: [:destroy]
   resources :milestones, constraints: { id: /[^\/]+/ }, only: [:index, :show, :update, :new, :create] do
     member do

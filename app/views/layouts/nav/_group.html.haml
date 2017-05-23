@@ -8,6 +8,10 @@
       = link_to group_path(@group), title: 'Home' do
         %span
           Group
+    = nav_link(path: 'groups#team_dashboard') do
+      = link_to group_path(@group), title: 'Dashboard' do
+        %span
+          Dashboard       
     = nav_link(path: ['groups#issues', 'labels#index', 'milestones#index']) do
       = link_to issues_group_path(@group), title: 'Issues' do
         %span
