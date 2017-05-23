@@ -141,7 +141,7 @@ describe('Dropdown Utils', () => {
       return {
         input,
         allowedKeys,
-      }
+      };
     }
 
     it('should filter', () => {

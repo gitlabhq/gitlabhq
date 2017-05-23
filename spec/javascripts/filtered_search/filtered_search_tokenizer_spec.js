@@ -3,7 +3,7 @@ require('~/filtered_search/filtered_search_token_keys');
 require('~/filtered_search/filtered_search_tokenizer');
 
 describe('Filtered Search Tokenizer', () => {
-  let allowedKeys = gl.FilteredSearchTokenKeys.getKeys();
+  const allowedKeys = gl.FilteredSearchTokenKeys.getKeys();
 
   describe('processTokens', () => {
     it('returns for input containing only search value', () => {

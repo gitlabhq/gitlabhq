@@ -54,8 +54,6 @@ class FilteredSearchTokenKeysWithWeights extends gl.FilteredSearchTokenKeys {
     const alternativeTokenKeys = FilteredSearchTokenKeysWithWeights.getAlternatives();
     const tokenKeysWithAlternative = tokenKeys.concat(alternativeTokenKeys);
 
-    console.log(tokenKeysWithAlternative)
-
     return tokenKeysWithAlternative.find((tokenKey) => {
       let tokenKeyParam = tokenKey.key;
 
