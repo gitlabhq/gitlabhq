@@ -51,7 +51,7 @@ module Gitlab
         check_push_access!(changes)
       end
 
-      build_status_object(true)
+      true
     end
 
     def guest_can_download_code?
@@ -167,11 +167,9 @@ module Gitlab
 
       # Iterate over all changes to find if user allowed all of them to be applied
       changes_list.each do |change|
-        status = check_single_change_access(change)
-        unless status.allowed?
-          # If user does not have access to make at least one change - cancel all push
-          raise UnauthorizedError, status.message
-        end
+        # If user does not have access to make at least one change, cancel all
+        # push by allowing the exception to bubble up
+        check_single_change_access(change)
       end
     end
 
@@ -245,10 +243,6 @@ module Gitlab
         when :ci
           nil
         end
-    end
-
-    def build_status_object(status)
-      Gitlab::GitAccessStatus.new(status)
     end
   end
 end

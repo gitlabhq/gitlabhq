@@ -31,13 +31,13 @@ module Gitlab
       end
 
       def exec
-        return GitAccessStatus.new(true) if skip_authorization
+        return true if skip_authorization
 
         push_checks
         branch_checks
         tag_checks
 
-        GitAccessStatus.new(true)
+        true
       end
 
       protected

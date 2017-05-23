@@ -13,11 +13,11 @@ module Gitlab
     end
 
     def check_single_change_access(change)
-      if user_access.can_do_action?(:create_wiki)
-        build_status_object(true)
-      else
+      unless user_access.can_do_action?(:create_wiki)
         raise UnauthorizedError, ERROR_MESSAGES[:write_to_wiki]
       end
+
+      true
     end
   end
 end
