@@ -3,8 +3,7 @@
     %table.table#tree-slider{ class: "table_#{@hex_path} tree-table" }
       %thead
         %tr
-          %th
-            #{ s_('ProjectFileTree|Name') }
+          %th= s_('ProjectFileTree|Name')
           %th.hidden-xs
             .pull-left= _('Last commit')
           %th.text-right= _('Last Update')
