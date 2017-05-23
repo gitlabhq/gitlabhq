@@ -1,4 +1,7 @@
 # GitLab Helm Chart
+> Officially supported cloud providers are Google Container Service and Azure Container Service.
+
+> Officially supported schedulers are Kubernetes and Terraform.
 
 The `gitlab` Helm chart deploys GitLab into your Kubernetes cluster.
 
@@ -387,6 +390,7 @@ ingress:
 ```
 
 ## Installing GitLab using the Helm Chart
+> You may see a temporary error message `SchedulerPredicates failed due to PersistentVolumeClaim is not bound` while storage provisions. Once the storage provisions, the pods will automatically restart. This may take a couple minutes depending on your cloud provider.
 
 Once you [have configured](#configuration) GitLab in your `values.yml` file,
 run the following:
