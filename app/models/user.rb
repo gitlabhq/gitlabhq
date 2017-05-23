@@ -153,7 +153,7 @@ class User < ActiveRecord::Base
   before_validation :set_public_email, if: ->(user) { user.public_email_changed? }
 
   after_update :update_emails_with_primary_email, if: ->(user) { user.email_changed? }
-  before_save :ensure_authentication_token, :ensure_incoming_email_token, :ensure_rss_token
+  before_save :ensure_authentication_token, :ensure_incoming_email_token
   before_save :ensure_external_user_rights
   after_save :ensure_namespace_correct
   after_initialize :set_projects_limit
@@ -1003,6 +1003,13 @@ class User < ActiveRecord::Base
     self.two_factor_grace_period = periods.min || User.column_defaults['two_factor_grace_period']
 
     save
+  end
+
+  # each existing user needs to have an `rss_token`.
+  # we do this on read since migrating all existing users is not a feasible
+  # solution.
+  def rss_token
+    ensure_rss_token!
   end
 
   protected

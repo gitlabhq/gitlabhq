@@ -448,9 +448,11 @@ describe User, models: true do
   end
 
   describe 'rss token' do
-    it 'has rss token' do
-      user = create(:user)
-      expect(user.rss_token).not_to be_blank
+    it 'ensures an rss token on read' do
+      user = create(:user, rss_token: nil)
+      rss_token = user.rss_token
+      expect(rss_token).not_to be_blank
+      expect(user.reload.rss_token).to eq rss_token
     end
   end
 
