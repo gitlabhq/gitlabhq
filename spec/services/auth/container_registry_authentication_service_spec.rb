@@ -163,7 +163,9 @@ describe Auth::ContainerRegistryAuthenticationService do
       end
 
       context 'disallow reporter to delete images' do
-        before { project.team << [current_user, :reporter] }
+        before do
+          project.add_reporter(current_user)
+        end
 
         let(:current_params) do
           { scope: "repository:#{project.path_with_namespace}:*" }
@@ -230,6 +232,14 @@ describe Auth::ContainerRegistryAuthenticationService do
         it_behaves_like 'not a container repository factory'
       end
 
+      context 'disallow anyone to delete images' do
+        let(:current_params) do
+          { scope: "repository:#{project.path_with_namespace}:*" }
+        end
+
+        it_behaves_like 'an inaccessible'
+      end
+
       context 'when repository name is invalid' do
         let(:current_params) do
           { scope: 'repository:invalid:push' }
@@ -280,13 +290,25 @@ describe Auth::ContainerRegistryAuthenticationService do
       end
 
       context 'for external user' do
-        let(:current_user) { create(:user, external: true) }
-        let(:current_params) do
-          { scope: "repository:#{project.full_path}:pull,push,*" }
+        context 'disallow anyone to pull or push images' do
+          let(:current_user) { create(:user, external: true) }
+          let(:current_params) do
+            { scope: "repository:#{project.path_with_namespace}:pull,push" }
+          end
+
+          it_behaves_like 'an inaccessible'
+          it_behaves_like 'not a container repository factory'
         end
 
-        it_behaves_like 'an inaccessible'
-        it_behaves_like 'not a container repository factory'
+        context 'disallow anyone to delete images' do
+          let(:current_user) { create(:user, external: true) }
+          let(:current_params) do
+            { scope: "repository:#{project.path_with_namespace}:*" }
+          end
+
+          it_behaves_like 'an inaccessible'
+          it_behaves_like 'not a container repository factory'
+        end
       end
     end
   end
