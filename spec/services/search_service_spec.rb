@@ -29,7 +29,7 @@ describe SearchService, services: true do
 
       it 'returns the project for guests' do
         search_project = create :empty_project
-        search_project.team << [user, :guest]
+        search_project.add_guest(user)
 
         project = SearchService.new(user, project_id: search_project.id).project
 
