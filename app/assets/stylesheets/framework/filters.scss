@@ -146,15 +146,17 @@
     border-radius: 0 2px 2px 0;
     margin-right: 5px;
   }
+}
 
-  .selected {
-    .name {
-      background-color: $filter-name-selected-color;
-    }
+.filtered-search-token:hover,
+.filtered-search-token .selected,
+.filtered-search-term .selected {
+  .name {
+    background-color: $filter-name-selected-color;
+  }
 
-    .value-container {
-      background-color: $filter-value-selected-color;
-    }
+  .value-container {
+    background-color: $filter-value-selected-color;
   }
 }
 
