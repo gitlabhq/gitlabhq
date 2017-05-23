@@ -61,11 +61,28 @@ describe Gitlab::Elastic::ProjectSearchResults, lib: true do
       result1 = Gitlab::Elastic::ProjectSearchResults.new(user, 'initial', project.id)
       expect(result1.commits_count).to eq(1)
     end
+
+    context 'visibility checks' do
+      it 'shows wiki for guests' do
+        project = create :empty_project, :public
+        guest = create :user
+        project.team << [guest, :guest]
+
+        # Wiki
+        project.wiki.create_page('index_page', 'term')
+        project.wiki.index_blobs
+
+        Gitlab::Elastic::Helper.refresh_index
+
+        result = Gitlab::Elastic::ProjectSearchResults.new(guest, 'term', project.id)
+        expect(result.wiki_blobs_count).to eq(1)
+      end
+    end
   end
 
   describe "search for commits in non-default branch" do
     let(:project) { create(:project, :public, visibility) }
-    let(:visibility) { :repository_enabled } 
+    let(:visibility) { :repository_enabled }
     let(:result) { described_class.new(user, 'initial', project.id, 'test') }
 
     subject(:commits) { result.objects('commits') }
