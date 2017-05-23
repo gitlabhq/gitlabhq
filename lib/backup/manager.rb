@@ -84,7 +84,6 @@ module Backup
 
         Dir.chdir(backup_path) do
           backup_file_list.each do |file|
-
             # For backward compatibility, there are 3 names the backups can have:
             # - 1495527122_gitlab_backup.tar
             # - 1495527068_2017_05_23_gitlab_backup.tar
