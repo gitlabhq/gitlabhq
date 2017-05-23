@@ -167,19 +167,7 @@ Once you wrote your comment, you can either:
 
 #### 18. New Merge Request
 
-<<<<<<< HEAD
-- [New branch](../repository/web_editor.md#create-a-new-branch-from-an-issue):
-create a new branch, followed by a new merge request which will automatically close that
-issue as soon as that merge request is merged.
-
-#### 19. New merge request
-
-- Create a new merge request (with source branch) in one action. Optionally just create a new branch, as explained above.
-
-![Create new merge request](img/create_new_merge_request.png)
-=======
 - Create a new merge request (with a new source branch named after the issue) in one action.
 The merge request will automatically close that issue as soon as merged.
 - Optionally, you can just create a [new branch](../repository/web_editor.md#create-a-new-branch-from-an-issue)
 named after that issue.
->>>>>>> origin/master
