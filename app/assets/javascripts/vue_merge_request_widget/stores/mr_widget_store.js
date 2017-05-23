@@ -53,7 +53,7 @@ export default class MergeRequestStore {
     this.removeWIPPath = data.remove_wip_path;
     this.sourceBranchRemoved = !data.source_branch_exists;
     this.shouldRemoveSourceBranch = mergeParams.should_remove_source_branch ||
-      mergeParams.force_remove_source_branch === "1" || false;
+      mergeParams.force_remove_source_branch === '1' || false;
     this.onlyAllowMergeIfPipelineSucceeds = data.only_allow_merge_if_pipeline_succeeds || false;
     this.mergeWhenPipelineSucceeds = data.merge_when_pipeline_succeeds || false;
     this.mergePath = data.merge_path;
