@@ -7,11 +7,11 @@ module Gitlab
       #
       class SuccessWarning < Status::Extended
         def text
-          _('passed')
+          s_('CiStatus|passed')
         end
 
         def label
-          _('passed with warnings')
+          s_('CiStatus|passed with warnings')
         end
 
         def icon

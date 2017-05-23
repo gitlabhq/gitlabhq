@@ -3,11 +3,11 @@ module Gitlab
     module Status
       class Created < Status::Core
         def text
-          _('created')
+          s_('CiStatus|created')
         end
 
         def label
-          _('created')
+          s_('CiStatus|created')
         end
 
         def icon

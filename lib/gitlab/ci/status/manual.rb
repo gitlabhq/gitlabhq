@@ -3,11 +3,11 @@ module Gitlab
     module Status
       class Manual < Status::Core
         def text
-          _('manual')
+          s_('CiStatus|manual')
         end
 
         def label
-          _('manual action')
+          s_('CiStatus|manual action')
         end
 
         def icon
