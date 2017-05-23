@@ -22,18 +22,13 @@ module Gitlab
     PUSH_COMMANDS = %w{ git-receive-pack }.freeze
     ALL_COMMANDS = DOWNLOAD_COMMANDS + PUSH_COMMANDS
 
-    attr_reader :actor, :project, :protocol, :user_access, :authentication_abilities
+    attr_reader :actor, :project, :protocol, :authentication_abilities
 
     def initialize(actor, project, protocol, authentication_abilities:)
       @actor    = actor
       @project  = project
       @protocol = protocol
       @authentication_abilities = authentication_abilities
-      @user_access = if ci?
-                       CiAccess.new
-                     else
-                       UserAccess.new(user, project: project)
-                     end
     end
 
     def check(cmd, changes)
@@ -243,6 +238,14 @@ module Gitlab
         when :ci
           nil
         end
+    end
+
+    def user_access
+      @user_access ||= if ci?
+                         CiAccess.new
+                       else
+                         UserAccess.new(user, project: project)
+                       end
     end
   end
 end
