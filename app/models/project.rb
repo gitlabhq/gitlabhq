@@ -242,6 +242,7 @@ class Project < ActiveRecord::Base
   scope :in_namespace, ->(namespace_ids) { where(namespace_id: namespace_ids) }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
   scope :joined, ->(user) { where('namespace_id != ?', user.namespace_id) }
+  scope :starred_by, ->(user) { joins(:users_star_projects).where('users_star_projects.user_id': user.id) }
   scope :visible_to_user, ->(user) { where(id: user.authorized_projects.select(:id).reorder(nil)) }
   scope :non_archived, -> { where(archived: false) }
   scope :for_milestones, ->(ids) { joins(:milestones).where('milestones.id' => ids).distinct }
@@ -350,7 +351,7 @@ class Project < ActiveRecord::Base
       where("projects.id IN (#{union.to_sql})")
     end
 
-    def search_by_visibility(level)
+    def search_by_visibility(level) # DEPRECATED: remove with API V3
       where(visibility_level: Gitlab::VisibilityLevel.string_options[level])
     end
 

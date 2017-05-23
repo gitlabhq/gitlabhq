@@ -557,7 +557,7 @@ class User < ActiveRecord::Base
     authorized_projects(Gitlab::Access::REPORTER).where(id: projects)
   end
 
-  def viewable_starred_projects
+  def viewable_starred_projects # DEPRECATED: Use ProjectFinder instead. Remove together with API V3
     starred_projects.where("projects.visibility_level IN (?) OR projects.id IN (?)",
                            [Project::PUBLIC, Project::INTERNAL],
                            authorized_projects.select(:project_id))
