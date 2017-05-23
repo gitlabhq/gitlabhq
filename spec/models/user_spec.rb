@@ -998,22 +998,37 @@ describe User, models: true do
 
   describe '#avatar_url' do
     let(:user) { create(:user, :with_avatar) }
-    subject { user.avatar_url }
 
     context 'when avatar file is uploaded' do
+      let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
       let(:avatar_path) { "/uploads/user/avatar/#{user.id}/dk.png" }
 
-      it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
+      it 'shows correct avatar url' do
+        expect(user.avatar_url).to eq(avatar_path)
+        expect(user.avatar_url(only_path: false)).to eq([gitlab_host, avatar_path].join)
+
+        allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
+
+        expect(user.avatar_url).to eq([gitlab_host, avatar_path].join)
+      end
 
       context 'when in a geo secondary node' do
-        let(:geo_url) { 'http://geo.example.com' }
+        let(:geo_host) { 'http://geo.example.com' }
+        let(:geo_avatar_url) { [geo_host, avatar_path].join }
 
         before do
           allow(Gitlab::Geo).to receive(:secondary?) { true }
-          allow(Gitlab::Geo).to receive_message_chain(:primary_node, :url) { geo_url }
+          allow(Gitlab::Geo).to receive_message_chain(:primary_node, :url) { geo_host }
         end
 
-        it { should eq "#{geo_url}#{avatar_path}" }
+        it 'shows correct avatar url' do
+          expect(user.avatar_url).to eq(geo_avatar_url)
+          expect(user.avatar_url(only_path: false)).to eq(geo_avatar_url)
+
+          allow(ActionController::Base).to receive(:asset_host).and_return(geo_host)
+
+          expect(user.avatar_url).to eq(geo_avatar_url)
+        end
       end
     end
   end
@@ -1975,6 +1990,34 @@ describe User, models: true do
       user = create(:user)
 
       expect(user.preferred_language).to eq('en')
+    end
+  end
+
+  context '#invalidate_issue_cache_counts' do
+    let(:user) { build_stubbed(:user) }
+
+    it 'invalidates cache for issue counter' do
+      cache_mock = double
+
+      expect(cache_mock).to receive(:delete).with(['users', user.id, 'assigned_open_issues_count'])
+
+      allow(Rails).to receive(:cache).and_return(cache_mock)
+
+      user.invalidate_issue_cache_counts
+    end
+  end
+
+  context '#invalidate_merge_request_cache_counts' do
+    let(:user) { build_stubbed(:user) }
+
+    it 'invalidates cache for Merge Request counter' do
+      cache_mock = double
+
+      expect(cache_mock).to receive(:delete).with(['users', user.id, 'assigned_open_merge_requests_count'])
+
+      allow(Rails).to receive(:cache).and_return(cache_mock)
+
+      user.invalidate_merge_request_cache_counts
     end
   end
 

@@ -17,14 +17,14 @@ feature 'Projects > Wiki > User previews markdown changes', feature: true, js: t
     login_as(user)
 
     visit namespace_project_path(project.namespace, project)
-    click_link 'Wiki'
+    find('.shortcuts-wiki').trigger('click')
     WikiPages::CreateService.new(project, user, title: 'home', content: 'Home page').execute
   end
 
   context "while creating a new wiki page" do
     context "when there are no spaces or hyphens in the page name" do
       it "rewrites relative links as expected" do
-        click_link 'New page'
+        find('.add-new-wiki').trigger('click')
         page.within '#modal-new-wiki' do
           fill_in :new_wiki_path, with: 'a/b/c/d'
           click_button 'Create page'
@@ -73,7 +73,7 @@ feature 'Projects > Wiki > User previews markdown changes', feature: true, js: t
           fill_in :new_wiki_path, with: 'a-page/b-page/c-page/d-page'
           click_button 'Create page'
         end
-        
+
         page.within '.wiki-form' do
           fill_in :wiki_content, with: wiki_content
           click_on "Preview"
@@ -91,7 +91,7 @@ feature 'Projects > Wiki > User previews markdown changes', feature: true, js: t
 
   context "while editing a wiki page" do
     def create_wiki_page(path)
-      click_link 'New page'
+      find('.add-new-wiki').trigger('click')
 
       page.within '#modal-new-wiki' do
         fill_in :new_wiki_path, with: path

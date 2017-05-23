@@ -27,7 +27,7 @@ describe 'New/edit issue', :feature, :js do
     describe 'multiple assignees' do
       before do
         click_button 'Unassigned'
-        
+
         wait_for_ajax
       end
 
@@ -68,7 +68,7 @@ describe 'New/edit issue', :feature, :js do
 
       expect(find('a', text: 'Assign to me')).to be_visible
       click_button 'Unassigned'
-      
+
       wait_for_ajax
 
       page.within '.dropdown-menu-user' do

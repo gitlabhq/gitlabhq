@@ -1,12 +1,14 @@
 /* eslint-disable class-methods-use-this */
 
+const defaultTimezone = 'UTC';
+
 export default class TimezoneDropdown {
   constructor() {
     this.$dropdown = $('.js-timezone-dropdown');
     this.$dropdownToggle = this.$dropdown.find('.dropdown-toggle-text');
     this.$input = $('#schedule_cron_timezone');
     this.timezoneData = this.$dropdown.data('data');
-    this.initialValue = this.$input.val();
+    this.initDefaultTimezone();
     this.initDropdown();
   }
 
@@ -42,10 +44,18 @@ export default class TimezoneDropdown {
     return `[UTC ${this.formatUtcOffset(item.offset)}] ${item.name}`;
   }
 
-  setDropdownToggle() {
-    if (this.initialValue) {
-      this.$dropdownToggle.text(this.initialValue);
+  initDefaultTimezone() {
+    const initialValue = this.$input.val();
+
+    if (!initialValue) {
+      this.$input.val(defaultTimezone);
     }
+  }
+
+  setDropdownToggle() {
+    const initialValue = this.$input.val();
+
+    this.$dropdownToggle.text(initialValue);
   }
 
   updateInputValue({ selectedObj, e }) {

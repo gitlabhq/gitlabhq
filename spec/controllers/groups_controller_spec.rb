@@ -84,6 +84,26 @@ describe GroupsController do
         expect(assigns(:issues)).to eq [issue_2, issue_1]
       end
     end
+
+    context 'when requesting the canonical path with different casing' do
+      it 'redirects to the correct casing' do
+        get :issues, id: group.to_param.upcase
+
+        expect(response).to redirect_to(issues_group_path(group.to_param))
+        expect(controller).not_to set_flash[:notice]
+      end
+    end
+
+    context 'when requesting a redirected path' do
+      let(:redirect_route) { group.redirect_routes.create(path: 'old-path') }
+
+      it 'redirects to the canonical path' do
+        get :issues, id: redirect_route.path
+
+        expect(response).to redirect_to(issues_group_path(group.to_param))
+        expect(controller).to set_flash[:notice].to(group_moved_message(redirect_route, group))
+      end
+    end
   end
 
   describe 'GET #merge_requests' do
@@ -107,6 +127,26 @@ describe GroupsController do
       it 'sorts least popular merge requests' do
         get :merge_requests, id: group.to_param, sort: 'downvotes_desc'
         expect(assigns(:merge_requests)).to eq [merge_request_2, merge_request_1]
+      end
+    end
+
+    context 'when requesting the canonical path with different casing' do
+      it 'redirects to the correct casing' do
+        get :merge_requests, id: group.to_param.upcase
+
+        expect(response).to redirect_to(merge_requests_group_path(group.to_param))
+        expect(controller).not_to set_flash[:notice]
+      end
+    end
+
+    context 'when requesting a redirected path' do
+      let(:redirect_route) { group.redirect_routes.create(path: 'old-path') }
+
+      it 'redirects to the canonical path' do
+        get :merge_requests, id: redirect_route.path
+
+        expect(response).to redirect_to(merge_requests_group_path(group.to_param))
+        expect(controller).to set_flash[:notice].to(group_moved_message(redirect_route, group))
       end
     end
   end

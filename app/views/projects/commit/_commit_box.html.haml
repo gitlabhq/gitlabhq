@@ -1,6 +1,8 @@
 .page-content-header
   .header-main-content
-    %strong Commit #{@commit.short_id}
+    %strong
+      Commit
+      %span.commit-sha= @commit.short_id
     = clipboard_button(text: @commit.id, title: "Copy commit SHA to clipboard")
     %span.hidden-xs authored
     #{time_ago_with_tooltip(@commit.authored_date)}
@@ -57,7 +59,7 @@
       = custom_icon("icon_commit")
     %span.cgray= pluralize(@commit.parents.count, "parent")
     - @commit.parents.each do |parent|
-      = link_to parent.short_id, namespace_project_commit_path(@project.namespace, @project, parent), class: "monospace"
+      = link_to parent.short_id, namespace_project_commit_path(@project.namespace, @project, parent), class: "commit-sha"
     %span.commit-info.branches
       %i.fa.fa-spinner.fa-spin
 
@@ -68,9 +70,10 @@
         = link_to namespace_project_pipeline_path(@project.namespace, @project, last_pipeline.id) do
           = ci_icon_for_status(last_pipeline.status)
       Pipeline
-      = link_to "##{last_pipeline.id}", namespace_project_pipeline_path(@project.namespace, @project, last_pipeline.id), class: "monospace"
+      = link_to "##{last_pipeline.id}", namespace_project_pipeline_path(@project.namespace, @project, last_pipeline.id)
       = ci_label_for_status(last_pipeline.status)
       - if last_pipeline.stages.any?
+        with #{"stage".pluralize(last_pipeline.stages.count)}
         .mr-widget-pipeline-graph
           = render 'shared/mini_pipeline_graph', pipeline: last_pipeline, klass: 'js-commit-pipeline-graph'
       in

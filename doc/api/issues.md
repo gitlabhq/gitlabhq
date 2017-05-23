@@ -101,7 +101,7 @@ Example response:
 ]
 ```
 
-**Note**: `assignee` column is deprecated, it shows the first assignee only.
+**Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 ## List group issues
 
@@ -194,7 +194,7 @@ Example response:
 ]
 ```
 
-**Note**: `assignee` column is deprecated, it shows the first assignee only.
+**Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 ## List project issues
 
@@ -287,7 +287,7 @@ Example response:
 ]
 ```
 
-**Note**: `assignee` column is deprecated, it shows the first assignee only.
+**Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 ## Single issue
 
@@ -363,7 +363,7 @@ Example response:
 }
 ```
 
-**Note**: `assignee` column is deprecated, it shows the first assignee only.
+**Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 ## New issue
 
@@ -427,7 +427,7 @@ Example response:
 }
 ```
 
-**Note**: `assignee` column is deprecated, it shows the first assignee only.
+**Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 ## Edit issue
 
@@ -445,7 +445,7 @@ PUT /projects/:id/issues/:issue_iid
 | `title`        | string  | no       | The title of an issue                                                                                      |
 | `description`  | string  | no       | The description of an issue                                                                                |
 | `confidential` | boolean | no       | Updates an issue to be confidential                                                                        |
-| `assignee_ids`  | Array[integer] | no       | The ID of a user to assign the issue to                                                                    |
+| `assignee_ids`  | Array[integer] | no       | The ID of the users to assign the issue to                                                                    |
 | `milestone_id` | integer | no       | The ID of a milestone to assign the issue to                                                               |
 | `labels`       | string  | no       | Comma-separated label names for an issue                                                                   |
 | `state_event`  | string  | no       | The state event of an issue. Set `close` to close the issue and `reopen` to reopen it                      |
@@ -492,7 +492,7 @@ Example response:
 }
 ```
 
-**Note**: `assignee` column is deprecated, it shows the first assignee only.
+**Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 ## Delete an issue
 
@@ -579,7 +579,7 @@ Example response:
 }
 ```
 
-**Note**: `assignee` column is deprecated, it shows the first assignee only.
+**Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 ## Subscribe to an issue
 
@@ -645,7 +645,7 @@ Example response:
 }
 ```
 
-**Note**: `assignee` column is deprecated, it shows the first assignee only.
+**Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 ## Unsubscribe from an issue
 
@@ -768,7 +768,7 @@ Example response:
 }
 ```
 
-**Note**: `assignee` column is deprecated, it shows the first assignee only.
+**Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 ## Set a time estimate for an issue
 

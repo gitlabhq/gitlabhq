@@ -3,8 +3,14 @@ class PipelineScheduleWorker
   include CronjobQueue
 
   def perform
-    Ci::PipelineSchedule.active.where("next_run_at < ?", Time.now).find_each do |schedule|
+    Ci::PipelineSchedule.active.where("next_run_at < ?", Time.now)
+      .preload(:owner, :project).find_each do |schedule|
       begin
+        unless schedule.runnable_by_owner?
+          schedule.deactivate!
+          next
+        end
+
         Ci::CreatePipelineService.new(schedule.project,
                                       schedule.owner,
                                       ref: schedule.ref)

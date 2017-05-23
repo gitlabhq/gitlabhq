@@ -154,12 +154,12 @@ gem 'acts-as-taggable-on', '~> 4.0'
 
 # Background jobs
 gem 'sidekiq', '~> 5.0'
-gem 'sidekiq-cron', '~> 0.4.4'
+gem 'sidekiq-cron', '~> 0.6.0'
 gem 'redis-namespace', '~> 1.5.2'
 gem 'sidekiq-limit_fetch', '~> 3.4'
 
 # Cron Parser
-gem 'rufus-scheduler', '~> 3.1.10'
+gem 'rufus-scheduler', '~> 3.4'
 
 # HTTP requests
 gem 'httparty', '~> 0.13.3'
@@ -377,6 +377,6 @@ gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'
 
 # Gitaly GRPC client
-gem 'gitaly', '~> 0.6.0'
+gem 'gitaly', '~> 0.7.0'
 
 gem 'toml-rb', '~> 0.3.15', require: false

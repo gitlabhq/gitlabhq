@@ -110,11 +110,8 @@ module ProjectsHelper
   end
 
   def license_short_name(project)
-    return 'LICENSE' if project.repository.license_key.nil?
-
-    license = Licensee::License.new(project.repository.license_key)
-
-    license.nickname || license.name
+    license = project.repository.license
+    license&.nickname || license&.name || 'LICENSE'
   end
 
   def last_push_event
@@ -160,7 +157,15 @@ module ProjectsHelper
   end
 
   def project_list_cache_key(project)
-    key = [project.namespace.cache_key, project.cache_key, controller.controller_name, controller.action_name, current_application_settings.cache_key, 'v2.4']
+    key = [
+      project.route.cache_key,
+      project.cache_key,
+      controller.controller_name,
+      controller.action_name,
+      current_application_settings.cache_key,
+      'v2.4'
+    ]
+
     key << pipeline_status_cache_key(project.pipeline_status) if project.pipeline_status.has_status?
 
     key

@@ -2,6 +2,8 @@
 
 import Vue from 'vue';
 import queryData from '../../utils/query_data';
+import loadingIcon from '../../../vue_shared/components/loading_icon.vue';
+
 import './header';
 import './list';
 import './footer';
@@ -136,6 +138,7 @@ gl.issueBoards.IssuesModal = Vue.extend({
     'modal-list': gl.issueBoards.ModalList,
     'modal-footer': gl.issueBoards.ModalFooter,
     'empty-state': gl.issueBoards.ModalEmptyState,
+    loadingIcon,
   },
   template: `
     <div
@@ -160,7 +163,7 @@ gl.issueBoards.IssuesModal = Vue.extend({
           class="add-issues-list text-center"
           v-if="loading || filterLoading">
           <div class="add-issues-list-loading">
-            <i class="fa fa-spinner fa-spin"></i>
+            <loading-icon />
           </div>
         </section>
         <modal-footer></modal-footer>

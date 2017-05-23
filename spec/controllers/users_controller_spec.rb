@@ -53,6 +53,40 @@ describe UsersController do
       end
     end
 
+    context 'when requesting the canonical path' do
+      let(:user) { create(:user, username: 'CamelCaseUser') }
+
+      before { sign_in(user) }
+
+      context 'with exactly matching casing' do
+        it 'responds with success' do
+          get :show, username: user.username
+
+          expect(response).to be_success
+        end
+      end
+
+      context 'with different casing' do
+        it 'redirects to the correct casing' do
+          get :show, username: user.username.downcase
+
+          expect(response).to redirect_to(user)
+          expect(controller).not_to set_flash[:notice]
+        end
+      end
+    end
+
+    context 'when requesting a redirected path' do
+      let(:redirect_route) { user.namespace.redirect_routes.create(path: 'old-username') }
+
+      it 'redirects to the canonical path' do
+        get :show, username: redirect_route.path
+
+        expect(response).to redirect_to(user)
+        expect(controller).to set_flash[:notice].to(user_moved_message(redirect_route, user))
+      end
+    end
+
     context 'when a user by that username does not exist' do
       context 'when logged out' do
         it 'redirects to login page' do
@@ -97,6 +131,40 @@ describe UsersController do
         expect(assigns(:contributions_calendar).projects.count).to eq(2)
       end
     end
+
+    context 'when requesting the canonical path' do
+      let(:user) { create(:user, username: 'CamelCaseUser') }
+
+      before { sign_in(user) }
+
+      context 'with exactly matching casing' do
+        it 'responds with success' do
+          get :calendar, username: user.username
+
+          expect(response).to be_success
+        end
+      end
+
+      context 'with different casing' do
+        it 'redirects to the correct casing' do
+          get :calendar, username: user.username.downcase
+
+          expect(response).to redirect_to(user_calendar_path(user))
+          expect(controller).not_to set_flash[:notice]
+        end
+      end
+    end
+
+    context 'when requesting a redirected path' do
+      let(:redirect_route) { user.namespace.redirect_routes.create(path: 'old-username') }
+
+      it 'redirects to the canonical path' do
+        get :calendar, username: redirect_route.path
+
+        expect(response).to redirect_to(user_calendar_path(user))
+        expect(controller).to set_flash[:notice].to(user_moved_message(redirect_route, user))
+      end
+    end
   end
 
   describe 'GET #calendar_activities' do
@@ -119,6 +187,38 @@ describe UsersController do
       get :calendar_activities, username: user.username
       expect(response).to render_template('calendar_activities')
     end
+
+    context 'when requesting the canonical path' do
+      let(:user) { create(:user, username: 'CamelCaseUser') }
+
+      context 'with exactly matching casing' do
+        it 'responds with success' do
+          get :calendar_activities, username: user.username
+
+          expect(response).to be_success
+        end
+      end
+
+      context 'with different casing' do
+        it 'redirects to the correct casing' do
+          get :calendar_activities, username: user.username.downcase
+
+          expect(response).to redirect_to(user_calendar_activities_path(user))
+          expect(controller).not_to set_flash[:notice]
+        end
+      end
+    end
+
+    context 'when requesting a redirected path' do
+      let(:redirect_route) { user.namespace.redirect_routes.create(path: 'old-username') }
+
+      it 'redirects to the canonical path' do
+        get :calendar_activities, username: redirect_route.path
+
+        expect(response).to redirect_to(user_calendar_activities_path(user))
+        expect(controller).to set_flash[:notice].to(user_moved_message(redirect_route, user))
+      end
+    end
   end
 
   describe 'GET #snippets' do
@@ -139,6 +239,38 @@ describe UsersController do
         get :snippets, username: user.username, format: :json
         expect(response).to have_http_status(200)
         expect(JSON.parse(response.body)).to have_key('html')
+      end
+    end
+
+    context 'when requesting the canonical path' do
+      let(:user) { create(:user, username: 'CamelCaseUser') }
+
+      context 'with exactly matching casing' do
+        it 'responds with success' do
+          get :snippets, username: user.username
+
+          expect(response).to be_success
+        end
+      end
+
+      context 'with different casing' do
+        it 'redirects to the correct casing' do
+          get :snippets, username: user.username.downcase
+
+          expect(response).to redirect_to(user_snippets_path(user))
+          expect(controller).not_to set_flash[:notice]
+        end
+      end
+    end
+
+    context 'when requesting a redirected path' do
+      let(:redirect_route) { user.namespace.redirect_routes.create(path: 'old-username') }
+
+      it 'redirects to the canonical path' do
+        get :snippets, username: redirect_route.path
+
+        expect(response).to redirect_to(user_snippets_path(user))
+        expect(controller).to set_flash[:notice].to(user_moved_message(redirect_route, user))
       end
     end
   end

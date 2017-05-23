@@ -49,6 +49,9 @@ module Gitlab
           end
         end
       end
+    rescue Errno::EADDRNOTAVAIL, SocketError => ex
+      Gitlab::EnvironmentLogger.error('Cannot resolve InfluxDB address. GitLab Performance Monitoring will not work.')
+      Gitlab::EnvironmentLogger.error(ex)
     end
 
     def self.prepare_metrics(metrics)

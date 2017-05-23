@@ -35,7 +35,7 @@ module ChatMessage
 
     def activity
       {
-        title: "Pipeline #{pipeline_link} of #{branch_link} #{ref_type} by #{user_name} #{humanized_status}",
+        title: "Pipeline #{pipeline_link} of #{ref_type} #{branch_link} by #{user_name} #{humanized_status}",
         subtitle: "in #{project_link}",
         text: "in #{pretty_duration(duration)}",
         image: user_avatar || ''
@@ -45,7 +45,7 @@ module ChatMessage
     private
 
     def message
-      "#{project_link}: Pipeline #{pipeline_link} of #{branch_link} #{ref_type} by #{user_name} #{humanized_status} in #{pretty_duration(duration)}"
+      "#{project_link}: Pipeline #{pipeline_link} of #{ref_type} #{branch_link} by #{user_name} #{humanized_status} in #{pretty_duration(duration)}"
     end
 
     def humanized_status
@@ -70,7 +70,7 @@ module ChatMessage
     end
 
     def branch_link
-      "[#{ref}](#{branch_url})"
+      "`[#{ref}](#{branch_url})`"
     end
 
     def project_link

@@ -251,7 +251,7 @@ describe 'Dashboard Todos', feature: true do
       describe 'mark all as done', js: true do
         before do
           visit dashboard_todos_path
-          click_link 'Mark all as done'
+          find('.js-todos-mark-all').trigger('click')
         end
 
         it 'shows "All done" message!' do
@@ -308,9 +308,9 @@ describe 'Dashboard Todos', feature: true do
         end
 
         def mark_all_and_undo
-          click_link 'Mark all as done'
+          find('.js-todos-mark-all').trigger('click')
           wait_for_ajax
-          click_link 'Undo mark all as done'
+          find('.js-todos-undo-all').trigger('click')
           wait_for_ajax
         end
       end

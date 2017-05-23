@@ -2,6 +2,7 @@
 import boardNewIssue from './board_new_issue';
 import boardCard from './board_card';
 import eventHub from '../eventhub';
+import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
 const Store = gl.issueBoards.BoardsStore;
 
@@ -44,6 +45,7 @@ export default {
   components: {
     boardCard,
     boardNewIssue,
+    loadingIcon,
   },
   methods: {
     listHeight() {
@@ -156,10 +158,7 @@ export default {
         class="board-list-loading text-center"
         aria-label="Loading issues"
         v-if="loading">
-        <i
-          class="fa fa-spinner fa-spin"
-          aria-hidden="true">
-        </i>
+        <loading-icon />
       </div>
       <board-new-issue
         :list="list"
@@ -184,12 +183,12 @@ export default {
           class="board-list-count text-center"
           v-if="showCount"
           data-id="-1">
-          <i
-            class="fa fa-spinner fa-spin"
-            aria-label="Loading more issues"
-            aria-hidden="true"
-            v-show="list.loadingMore">
-          </i>
+
+          <loading-icon
+            v-show="list.loadingMore"
+            label="Loading more issues"
+            />
+
           <span v-if="list.issues.length === list.issuesSize">
             Showing all issues
           </span>

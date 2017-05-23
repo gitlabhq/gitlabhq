@@ -65,4 +65,6 @@ $(() => {
       'resolve-count': ResolveCount
     },
   });
+
+  $(window).trigger('resize.nav');
 });

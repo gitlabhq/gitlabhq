@@ -34,6 +34,9 @@ gl.issueBoards.BoardSidebar = Vue.extend({
     },
     assigneeId() {
       return this.issue.assignee ? this.issue.assignee.id : 0;
+    },
+    milestoneTitle() {
+      return this.issue.milestone ? this.issue.milestone.title : 'No Milestone';
     }
   },
   watch: {
@@ -60,18 +63,6 @@ gl.issueBoards.BoardSidebar = Vue.extend({
       },
       deep: true
     },
-    issue () {
-      if (this.showSidebar) {
-        this.$nextTick(() => {
-          $('.right-sidebar').getNiceScroll(0).doScrollTop(0, 0);
-          $('.right-sidebar').getNiceScroll().resize();
-        });
-      }
-
-      this.issue = this.detail.issue;
-      this.list = this.detail.list;
-    },
-    deep: true
   },
   methods: {
     closeSidebar () {

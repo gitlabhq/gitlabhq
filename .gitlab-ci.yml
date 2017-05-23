@@ -1,9 +1,10 @@
 image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.7-phantomjs-2.1-node-7.1-postgresql-9.6"
 
 cache:
-  key: "ruby-233"
+  key: "ruby-233-with-yarn"
   paths:
   - vendor/ruby
+  - .yarn-cache/
 
 variables:
   MYSQL_ALLOW_EMPTY_PASSWORD: "1"
@@ -194,7 +195,7 @@ setup-test-env:
   stage: prepare
   script:
     - node --version
-    - yarn install --pure-lockfile
+    - yarn install --pure-lockfile --cache-folder .yarn-cache
     - bundle exec rake gitlab:assets:compile
     - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
   artifacts:
@@ -413,7 +414,8 @@ gitlab:assets:compile:
     SKIP_STORAGE_VALIDATION: "true"
     WEBPACK_REPORT: "true"
   script:
-    - bundle exec rake yarn:install gitlab:assets:compile
+    - yarn install --pure-lockfile --production --cache-folder .yarn-cache
+    - bundle exec rake gitlab:assets:compile
   artifacts:
     name: webpack-report
     expire_in: 31d
@@ -421,9 +423,6 @@ gitlab:assets:compile:
     - webpack-report/
 
 karma:
-  cache:
-    paths:
-      - vendor/ruby
   stage: test
   <<: *use-pg
   <<: *dedicated-runner

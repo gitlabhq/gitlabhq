@@ -1,9 +1,10 @@
-Reassigned Merge Request #{ @merge_request.iid }
-
-= url_for([@merge_request.project.namespace.becomes(Namespace), @merge_request.project, @merge_request, { only_path: false }])
-
-Assignee changed
-- if @previous_assignee
-  from #{@previous_assignee.name}
-to
-= @merge_request.assignee_id ? @merge_request.assignee_name : 'Unassigned'
+%p
+  Assignee changed
+  - if @previous_assignee
+    from
+    %strong= @previous_assignee.name
+  to
+  - if @merge_request.assignee_id
+    %strong= @merge_request.assignee_name
+  - else
+    %strong Unassigned

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Projects > Wiki > User creates wiki page', feature: true do
+feature 'Projects > Wiki > User creates wiki page', js: true, feature: true do
   let(:user) { create(:user) }
 
   background do
@@ -8,7 +8,7 @@ feature 'Projects > Wiki > User creates wiki page', feature: true do
     login_as(user)
 
     visit namespace_project_path(project.namespace, project)
-    click_link 'Wiki'
+    find('.shortcuts-wiki').trigger('click')
   end
 
   context 'in the user namespace' do

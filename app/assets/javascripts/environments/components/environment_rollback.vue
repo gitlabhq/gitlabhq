@@ -6,6 +6,7 @@
  * Makes a post request when the button is clicked.
  */
 import eventHub from '../event_hub';
+import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
 export default {
   props: {
@@ -18,6 +19,10 @@ export default {
       type: Boolean,
       default: true,
     },
+  },
+
+  components: {
+    loadingIcon,
   },
 
   data() {
@@ -49,9 +54,6 @@ export default {
       Rollback
     </span>
 
-    <i
-      v-if="isLoading"
-      class="fa fa-spinner fa-spin"
-      aria-hidden="true" />
+    <loading-icon v-if="isLoading" />
   </button>
 </template>
