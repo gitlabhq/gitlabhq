@@ -498,20 +498,6 @@ feature 'Jobs', :feature do
 
       it { expect(page.status_code).to eq(404) }
     end
-
-    context "when visiting old URL" do
-      let(:trace_job_url) do
-        trace_namespace_project_job_path(project.namespace, project, build, format: :json)
-      end
-
-      before do
-        visit trace_job_url.sub('jobs', 'builds')
-      end
-
-      it "redirects to new URL" do
-        expect(page.current_path).to eq(trace_job_url)
-      end
-    end
   end
 
   describe "GET /:project/jobs/:id/status" do
@@ -529,20 +515,6 @@ feature 'Jobs', :feature do
       end
 
       it { expect(page.status_code).to eq(404) }
-    end
-
-    context "when visiting old URL" do
-      let(:status_job_url) do
-        status_namespace_project_job_path(project.namespace, project, build)
-      end
-
-      before do
-        visit status_job_url.sub('jobs', 'builds')
-      end
-
-      it "redirects to new URL" do
-        expect(page.current_path).to eq(status_job_url)
-      end
     end
   end
 end
