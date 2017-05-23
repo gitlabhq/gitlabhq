@@ -25,6 +25,12 @@ describe('getStateKey', () => {
     context.canBeMerged = true;
     expect(bound()).toEqual('readyToMerge');
 
+    context.canMerge = false;
+    expect(bound()).toEqual('notAllowedToMerge');
+
+    context.mergeWhenPipelineSucceeds = true;
+    expect(bound()).toEqual('mergeWhenPipelineSucceeds');
+
     context.hasSHAChanged = true;
     expect(bound()).toEqual('shaMismatch');
 
@@ -37,12 +43,6 @@ describe('getStateKey', () => {
     context.onlyAllowMergeIfPipelineSucceeds = true;
     context.isPipelineFailed = true;
     expect(bound()).toEqual('pipelineFailed');
-
-    context.canMerge = false;
-    expect(bound()).toEqual('notAllowedToMerge');
-
-    context.mergeWhenPipelineSucceeds = true;
-    expect(bound()).toEqual('mergeWhenPipelineSucceeds');
 
     data.work_in_progress = true;
     expect(bound()).toEqual('workInProgress');
