@@ -3,6 +3,7 @@ require 'prometheus/client/formats/text'
 class MetricsController < ActionController::Base
   protect_from_forgery with: :exception
   include RequiresHealthToken
+  before_action :ensure_prometheus_metrics_are_enabled
 
   CHECKS = [
     Gitlab::HealthChecks::DbCheck,
@@ -10,9 +11,8 @@ class MetricsController < ActionController::Base
     Gitlab::HealthChecks::FsShardsCheck
   ].freeze
 
-  def metrics
-    return render_404 unless Gitlab::Metrics.prometheus_metrics_enabled?
 
+  def metrics
     metrics_text = Prometheus::Client::Formats::Text.marshal_multiprocess(multiprocess_metrics_path)
     response = health_metrics_text + "\n" + metrics_text
 
@@ -20,6 +20,10 @@ class MetricsController < ActionController::Base
   end
 
   private
+
+  def ensure_prometheus_metrics_are_enabled
+    return render_404 unless Gitlab::Metrics.prometheus_metrics_enabled?
+  end
 
   def multiprocess_metrics_path
     Rails.root.join(ENV['prometheus_multiproc_dir'])

@@ -48,6 +48,15 @@ describe MetricsController do
         expect(response.body).to match(/^filesystem_read_latency{shard="default"} [0-9\.]+$/)
         expect(response.body).to match(/^filesystem_readable{shard="default"} 1$/)
       end
+
+      context 'prometheus metrics are disabled' do
+        allow(Gitlab::Metrics).to receive(:prometheus_metrics_enabled?).and_return(false)
+
+        it 'returns proper response' do
+          get :metrics
+          expect(response.status).to eq(404)
+        end
+      end
     end
 
     context 'without authorization token' do
@@ -56,5 +65,6 @@ describe MetricsController do
         expect(response.status).to eq(404)
       end
     end
+
   end
 end
