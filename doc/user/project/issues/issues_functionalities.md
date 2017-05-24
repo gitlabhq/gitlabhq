@@ -4,7 +4,7 @@ Please read through the [GitLab Issue Documentation](index.md) for an overview o
 
 ## Issues Functionalities
 
-The image bellow illustrates how an issue looks like:
+The image below illustrates how an issue looks like:
 
 ![Issue view](img/issues_main_view_numbered.jpg)
 
