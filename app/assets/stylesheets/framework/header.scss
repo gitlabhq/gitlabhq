@@ -40,7 +40,17 @@ header {
     }
 
     &.with-horizontal-nav {
-      border-color: transparent;
+      border-bottom: 0;
+
+      .navbar-border {
+        height: 1px;
+        position: absolute;
+        right: 0;
+        left: 0;
+        bottom: -1px;
+        background-color: $border-color;
+        opacity: 0;
+      }
     }
 
     .container-fluid {
@@ -112,16 +122,6 @@ header {
         }
       }
     }
-  }
-
-  .navbar-border {
-    height: 1px;
-    position: absolute;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    background-color: $border-color;
-    opacity: 0;
   }
 
   .global-dropdown {
