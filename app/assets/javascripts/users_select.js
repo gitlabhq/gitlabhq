@@ -233,7 +233,7 @@ function UsersSelect(currentUser, els) {
               })
               .map((input) => {
                 const userId = parseInt(input.value, 10);
-                const { avatarUrl, avatar_url, id, name, username } = input.dataset;
+                const { avatarUrl, avatar_url, name, username } = input.dataset;
                 return {
                   avatar_url: avatarUrl || avatar_url,
                   id: userId,
