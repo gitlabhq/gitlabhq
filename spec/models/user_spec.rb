@@ -440,6 +440,22 @@ describe User, models: true do
     end
   end
 
+  describe 'ensure incoming email token' do
+    it 'has incoming email token' do
+      user = create(:user)
+      expect(user.incoming_email_token).not_to be_blank
+    end
+  end
+
+  describe 'rss token' do
+    it 'ensures an rss token on read' do
+      user = create(:user, rss_token: nil)
+      rss_token = user.rss_token
+      expect(rss_token).not_to be_blank
+      expect(user.reload.rss_token).to eq rss_token
+    end
+  end
+
   describe '#recently_sent_password_reset?' do
     it 'is false when reset_password_sent_at is nil' do
       user = build_stubbed(:user, reset_password_sent_at: nil)
