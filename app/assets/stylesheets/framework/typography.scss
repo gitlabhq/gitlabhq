@@ -289,11 +289,6 @@ pre {
   }
 }
 
-.monospace {
-  font-family: $monospace_font;
-  font-size: 90%;
-}
-
 code {
   &.key-fingerprint {
     background: $body-bg;
@@ -303,6 +298,24 @@ code {
 
 a > code {
   color: $link-color;
+}
+
+.monospace {
+  font-family: $monospace_font;
+}
+
+.commit-sha,
+.ref-name {
+  @extend .monospace;
+  font-size: 95%;
+}
+
+.git-revision-dropdown-toggle {
+  @extend .monospace;
+}
+
+.git-revision-dropdown .dropdown-content ul li a {
+  @extend .ref-name;
 }
 
 /**

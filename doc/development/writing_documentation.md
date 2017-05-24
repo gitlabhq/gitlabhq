@@ -52,11 +52,13 @@ Every **Technical Article** contains, in the very beginning, a blockquote with t
 - A reference to the **type of article** (user guide, admin guide, tech overview, tutorial)
 - A reference to the **knowledge level** expected from the reader to be able to follow through (beginner, intermediate, advanced)
 - A reference to the **author's name** and **GitLab.com handle**
+- A reference of the **publication date**
 
 ```md
-> **Type:** tutorial ||
+> **Article [Type](../../development/writing_documentation.html#types-of-technical-articles):** tutorial ||
 > **Level:** intermediary ||
-> **Author:** [Name Surname](https://gitlab.com/username)
+> **Author:** [Name Surname](https://gitlab.com/username) ||
+> **Publication date:** AAAA/MM/DD
 ```
 
 #### Technical Articles - Writing Method

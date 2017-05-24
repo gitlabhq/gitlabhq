@@ -125,8 +125,8 @@ module Ci
       success? || failed? || canceled?
     end
 
-    def retried?
-      !self.pipeline.statuses.latest.include?(self)
+    def latest?
+      !retried?
     end
 
     def expanded_environment_name

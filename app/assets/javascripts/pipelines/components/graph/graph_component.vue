@@ -5,11 +5,13 @@
   import PipelineService from '../../services/pipeline_service';
   import PipelineStore from '../../stores/pipeline_store';
   import stageColumnComponent from './stage_column_component.vue';
+  import loadingIcon from '../../../vue_shared/components/loading_icon.vue';
   import '../../../flash';
 
   export default {
     components: {
       stageColumnComponent,
+      loadingIcon,
     },
 
     data() {
@@ -89,11 +91,10 @@
   <div class="build-content middle-block js-pipeline-graph">
     <div class="pipeline-visualization pipeline-graph">
       <div class="text-center">
-        <i
+        <loading-icon
           v-if="isLoading"
-          class="loading-icon fa fa-spin fa-spinner fa-3x"
-          aria-label="Loading"
-          aria-hidden="true" />
+          size="3"
+          />
       </div>
 
       <ul

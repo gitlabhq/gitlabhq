@@ -12,8 +12,10 @@ module Gitlab
       version: 'version',
       gitignore: '.gitignore',
       koding: '.koding.yml',
+      gemfile: /\A(Gemfile|gems\.rb)\z/,
       gitlab_ci: '.gitlab-ci.yml',
-      avatar: /\Alogo\.(png|jpg|gif)\z/
+      avatar: /\Alogo\.(png|jpg|gif)\z/,
+      route_map: 'route-map.yml'
     }.freeze
 
     # Returns an Array of file types based on the given paths.

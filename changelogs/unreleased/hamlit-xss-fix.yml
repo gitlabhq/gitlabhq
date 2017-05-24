@@ -1,4 +1,0 @@
----
-title: Fix for XSS in project import view caused by Hamlit filter usage.
-merge_request:
-author:

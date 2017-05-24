@@ -2,11 +2,11 @@
 /* global MockU2FDevice */
 /* global U2FAuthenticate */
 
-require('~/u2f/authenticate');
-require('~/u2f/util');
-require('~/u2f/error');
-require('vendor/u2f');
-require('./mock_u2f_device');
+import '~/u2f/authenticate';
+import '~/u2f/util';
+import '~/u2f/error';
+import 'vendor/u2f';
+import './mock_u2f_device';
 
 (function() {
   describe('U2FAuthenticate', function() {

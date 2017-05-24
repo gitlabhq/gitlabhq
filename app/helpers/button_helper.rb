@@ -42,7 +42,10 @@ module ButtonHelper
       class: "btn #{css_class}",
       data: data,
       type: :button,
-      title: title
+      title: title,
+      aria: {
+        label: title
+      }
   end
 
   def http_clone_button(project, placement = 'right', append_link: true)

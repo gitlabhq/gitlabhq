@@ -15,12 +15,12 @@ feature 'User wants to add a .gitignore file', feature: true do
 
   scenario 'user can pick a .gitignore file from the dropdown', js: true do
     find('.js-gitignore-selector').click
-    wait_for_ajax
+    wait_for_requests
     within '.gitignore-selector' do
       find('.dropdown-input-field').set('rails')
       find('.dropdown-content li', text: 'Rails').click
     end
-    wait_for_ajax
+    wait_for_requests
 
     expect(page).to have_css('.gitignore-selector .dropdown-toggle-text', text: 'Rails')
     expect(page).to have_content('/.bundle')

@@ -10,5 +10,9 @@ module EE
       validates :shared_runners_minutes,
                 numericality: { greater_than_or_equal_to: 0 }
     end
+
+    def should_check_namespace_plan?
+      check_namespace_plan? && (::Gitlab.com? || Rails.env.development?)
+    end
   end
 end

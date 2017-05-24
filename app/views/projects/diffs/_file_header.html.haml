@@ -1,4 +1,8 @@
-%i.fa.diff-toggle-caret.fa-fw
+- show_toggle = local_assigns.fetch(:show_toggle, true)
+
+- if show_toggle
+  %i.fa.diff-toggle-caret.fa-fw
+
 - if defined?(blob) && blob && diff_file.submodule?
   %span
     = icon('archive fw')

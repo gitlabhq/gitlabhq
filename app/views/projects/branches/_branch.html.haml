@@ -6,7 +6,8 @@
 - merge_project = can?(current_user, :create_merge_request, @project) ? @project : (current_user && current_user.fork_of(@project))
 %li{ class: "js-branch-#{branch.name}" }
   %div
-    = link_to namespace_project_tree_path(@project.namespace, @project, branch.name), class: 'item-title str-truncated' do
+    = link_to namespace_project_tree_path(@project.namespace, @project, branch.name), class: 'item-title str-truncated ref-name' do
+      = icon('code-fork')
       = branch.name
     &nbsp;
     - if branch.name == @repository.root_ref

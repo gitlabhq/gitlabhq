@@ -390,4 +390,11 @@ class ProjectsController < Projects::ApplicationController
   def project_view_files_allowed?
     !project.empty_repo? && can?(current_user, :download_code, project)
   end
+
+  def build_canonical_path(project)
+    params[:namespace_id] = project.namespace.to_param
+    params[:id] = project.to_param
+
+    url_for(params)
+  end
 end

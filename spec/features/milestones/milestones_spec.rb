@@ -78,7 +78,7 @@ describe 'Milestone draggable', feature: true, js: true do
     scroll_into_view('.milestone-content')
     drag_to(selector: '.issues-sortable-list', list_to_index: 1)
 
-    wait_for_ajax
+    wait_for_requests
   end
 
   def create_and_drag_merge_request(params = {})
@@ -87,12 +87,12 @@ describe 'Milestone draggable', feature: true, js: true do
     visit namespace_project_milestone_path(project.namespace, project, milestone)
     page.find("a[href='#tab-merge-requests']").click
 
-    wait_for_ajax
+    wait_for_requests
 
     scroll_into_view('.milestone-content')
     drag_to(selector: '.merge_requests-sortable-list', list_to_index: 1)
 
-    wait_for_ajax
+    wait_for_requests
   end
 
   def scroll_into_view(selector)

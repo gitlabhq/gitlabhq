@@ -26,7 +26,7 @@ module Gitlab
         }
 
         if Gitlab.config.gitaly.enabled
-          address = Gitlab::GitalyClient.get_address(project.repository_storage)
+          address = Gitlab::GitalyClient.address(project.repository_storage)
           params[:Repository] = repository.gitaly_repository.to_h
 
           feature_enabled = case action.to_s

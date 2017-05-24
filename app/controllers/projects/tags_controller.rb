@@ -38,6 +38,8 @@ class Projects::TagsController < Projects::ApplicationController
       redirect_to namespace_project_tag_path(@project.namespace, @project, @tag.name)
     else
       @error = result[:message]
+      @message = params[:message]
+      @release_description = params[:release_description]
       render action: 'new'
     end
   end

@@ -26,5 +26,11 @@ describe Gitlab::Geo::JwtRequestDecoder do
       primary_node.save
       expect(described_class.new(data).decode).to be_nil
     end
+
+    it 'returns nil when clocks are not in sync' do
+      allow(JWT).to receive(:decode).and_raise(JWT::InvalidIatError)
+
+      expect(subject.decode).to be_nil
+    end
   end
 end

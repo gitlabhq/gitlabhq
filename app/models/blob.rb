@@ -34,10 +34,15 @@ class Blob < SimpleDelegator
 
     BlobViewer::BinarySTL,
     BlobViewer::TextSTL
-  ].freeze
+  ].sort_by { |v| v.binary? ? 0 : 1 }.freeze
 
-  BINARY_VIEWERS = RICH_VIEWERS.select(&:binary?).freeze
-  TEXT_VIEWERS = RICH_VIEWERS.select(&:text?).freeze
+  AUXILIARY_VIEWERS = [
+    BlobViewer::GitlabCiYml,
+    BlobViewer::RouteMap,
+
+    BlobViewer::License,
+    BlobViewer::Contributing
+  ].freeze
 
   attr_reader :project
 
@@ -154,6 +159,12 @@ class Blob < SimpleDelegator
     @rich_viewer = rich_viewer_class&.new(self)
   end
 
+  def auxiliary_viewer
+    return @auxiliary_viewer if defined?(@auxiliary_viewer)
+
+    @auxiliary_viewer = auxiliary_viewer_class&.new(self)
+  end
+
   def rendered_as_text?(ignore_errors: true)
     simple_viewer.text? && (ignore_errors || simple_viewer.render_error.nil?)
   end
@@ -180,17 +191,18 @@ class Blob < SimpleDelegator
   end
 
   def rich_viewer_class
+    viewer_class_from(RICH_VIEWERS)
+  end
+
+  def auxiliary_viewer_class
+    viewer_class_from(AUXILIARY_VIEWERS)
+  end
+
+  def viewer_class_from(classes)
     return if empty? || external_storage_error?
 
-    classes =
-      if stored_externally?
-        BINARY_VIEWERS + TEXT_VIEWERS
-      elsif binary?
-        BINARY_VIEWERS
-      else # text
-        TEXT_VIEWERS
-      end
+    verify_binary = !stored_externally?
 
-    classes.find { |viewer_class| viewer_class.can_render?(self) }
+    classes.find { |viewer_class| viewer_class.can_render?(self, verify_binary: verify_binary) }
   end
 end

@@ -10,6 +10,7 @@ describe('Sidebar service', () => {
 
   afterEach(() => {
     SidebarService.singleton = null;
+    Vue.http.interceptors = _.without(Vue.http.interceptors, Mock.sidebarMockInterceptor);
   });
 
   it('gets the data', (done) => {

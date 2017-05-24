@@ -1,6 +1,6 @@
 module SharedIssuable
   include Spinach::DSL
-  include WaitForVueResource
+  include WaitForRequests
 
   def edit_issuable
     find('.issuable-edit', visible: true).click
@@ -58,7 +58,7 @@ module SharedIssuable
   step 'I visit merge request page "Enterprise fix"' do
     mr = MergeRequest.find_by(title: 'Enterprise fix')
     visit namespace_project_merge_request_path(mr.target_project.namespace, mr.target_project, mr)
-    wait_for_vue_resource
+    wait_for_requests
   end
 
   step 'I visit issue page "Community issue"' do
@@ -93,7 +93,7 @@ module SharedIssuable
       from_project_name: 'Community',
       user_name: 'Mary Jane'
     )
-    wait_for_vue_resource
+    wait_for_requests
   end
 
   step 'I should see a note linking to "Enterprise issue" issue' do

@@ -1,9 +1,9 @@
 module SharedActiveTab
   include Spinach::DSL
-  include WaitForAjax
+  include WaitForRequests
 
   after do
-    wait_for_ajax if javascript_test?
+    wait_for_requests if javascript_test?
   end
 
   def ensure_active_main_tab(content)

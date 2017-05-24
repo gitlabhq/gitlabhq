@@ -6,7 +6,7 @@ module Gitlab
       # 'repository' is a Gitlab::Git::Repository
       def initialize(repository)
         @gitaly_repo = repository.gitaly_repository
-        @stub = Gitaly::Notifications::Stub.new(nil, nil, channel_override: repository.gitaly_channel)
+        @stub = GitalyClient.stub(:notifications, repository.storage)
       end
 
       def post_receive

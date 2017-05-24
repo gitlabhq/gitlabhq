@@ -3,7 +3,7 @@ class Spinach::Features::Snippets < Spinach::FeatureSteps
   include SharedPaths
   include SharedProject
   include SharedSnippet
-  include WaitForAjax
+  include WaitForRequests
 
   step 'I click link "Personal snippet one"' do
     click_link "Personal snippet one"
@@ -30,7 +30,7 @@ class Spinach::Features::Snippets < Spinach::FeatureSteps
       find('.ace_editor').native.send_keys 'Content of snippet three'
     end
     click_button "Create snippet"
-    wait_for_ajax
+    wait_for_requests
   end
 
   step 'I submit new internal snippet' do

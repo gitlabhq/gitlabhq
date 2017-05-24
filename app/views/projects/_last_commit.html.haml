@@ -5,7 +5,7 @@
     = ci_icon_for_status(status)
     = ci_text_for_status(status)
 
-= link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit), class: "commit_short_id"
+= link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit), class: "commit-sha"
 = link_to_gfm commit.title, namespace_project_commit_path(project.namespace, project, commit), class: "commit-row-message"
 &middot;
 #{time_ago_with_tooltip(commit.committed_date)} by

@@ -21,6 +21,8 @@ export default function deviseState(data) {
     return 'unresolvedDiscussions';
   } else if (this.isPipelineBlocked) {
     return 'pipelineBlocked';
+  } else if (this.hasSHAChanged) {
+    return 'shaMismatch';
   } else if (this.canBeMerged) {
     return 'readyToMerge';
   }

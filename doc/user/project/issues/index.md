@@ -49,6 +49,10 @@ Read through the [documentation on creating issues](create_new_issue.md).
 
 Read through the distinct ways to [close issues](closing_issues.md) on GitLab.
 
+## Create a merge request from an issue
+
+Learn more about it on the [GitLab Issues Functionalities documentation](issues_functionalities.md#18-new-merge-request).
+
 ## Search for an issue
 
 Learn how to [find an issue](../../search/index.md) by searching for and filtering them.

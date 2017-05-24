@@ -52,7 +52,7 @@ class Projects::RefsController < Projects::ApplicationController
     contents.push(*tree.blobs)
     contents.push(*tree.submodules)
 
-    show_path_locks = license_allows_file_locks? && @project.path_locks.any?
+    show_path_locks = @project.feature_available?(:file_lock) && @project.path_locks.any?
 
     @logs = contents[@offset, @limit].to_a.map do |content|
       file = @path ? File.join(@path, content.name) : content.name

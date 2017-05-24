@@ -1,8 +1,7 @@
 import Vue from 'vue';
 import DeployBoard from '~/environments/components/deploy_board_component.vue';
 import Service from '~/environments/services/environments_service';
-
-const { deployBoardMockData, invalidDeployBoardMockData } = require('./mock_data');
+import { deployBoardMockData, invalidDeployBoardMockData } from './mock_data';
 
 describe('Deploy Board', () => {
   let DeployBoardComponent;

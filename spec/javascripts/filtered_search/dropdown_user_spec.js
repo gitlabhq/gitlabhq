@@ -1,7 +1,7 @@
-require('~/filtered_search/dropdown_utils');
-require('~/filtered_search/filtered_search_tokenizer');
-require('~/filtered_search/filtered_search_dropdown');
-require('~/filtered_search/dropdown_user');
+import '~/filtered_search/dropdown_utils';
+import '~/filtered_search/filtered_search_tokenizer';
+import '~/filtered_search/filtered_search_dropdown';
+import '~/filtered_search/dropdown_user';
 
 describe('Dropdown User', () => {
   describe('getSearchInput', () => {

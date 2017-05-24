@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 feature 'Squashing merge requests', js: true, feature: true do
-  include WaitForAjax
-
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:source_branch) { 'csv' }
@@ -67,7 +65,7 @@ feature 'Squashing merge requests', js: true, feature: true do
       visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { target_branch: 'master', source_branch: source_branch })
       check 'merge_request[squash]'
       click_on 'Submit merge request'
-      wait_for_ajax
+      wait_for_requests
     end
 
     it 'shows the squash checkbox as checked' do
@@ -96,7 +94,7 @@ feature 'Squashing merge requests', js: true, feature: true do
     before do
       visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { target_branch: 'master', source_branch: source_branch })
       click_on 'Submit merge request'
-      wait_for_ajax
+      wait_for_requests
     end
 
     it 'shows the squash checkbox as unchecked' do

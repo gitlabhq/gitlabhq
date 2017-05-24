@@ -26,6 +26,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     context 'with gitaly enabled' do
       before { stub_gitaly }
+      after { Gitlab::GitalyClient.clear_stubs! }
 
       it 'gets the branch name from GitalyClient' do
         expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:default_branch_name)
@@ -120,6 +121,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     context 'with gitaly enabled' do
       before { stub_gitaly }
+      after { Gitlab::GitalyClient.clear_stubs! }
 
       it 'gets the branch names from GitalyClient' do
         expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:branch_names)
@@ -157,6 +159,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     context 'with gitaly enabled' do
       before { stub_gitaly }
+      after { Gitlab::GitalyClient.clear_stubs! }
 
       it 'gets the tag names from GitalyClient' do
         expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:tag_names)
@@ -1043,6 +1046,28 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
       expect(branch).to be_a_kind_of(Gitlab::Git::Branch)
       expect(branch.name).to eq('master')
+    end
+  end
+
+  describe '#ref_name_for_sha' do
+    let(:ref_path) { 'refs/heads' }
+    let(:sha) { repository.find_branch('master').dereferenced_target.id }
+    let(:ref_name) { 'refs/heads/master' }
+
+    it 'returns the ref name for the given sha' do
+      expect(repository.ref_name_for_sha(ref_path, sha)).to eq(ref_name)
+    end
+
+    it "returns an empty name if the ref doesn't exist" do
+      expect(repository.ref_name_for_sha(ref_path, "000000")).to eq("")
+    end
+
+    it "raise an exception if the ref is empty" do
+      expect { repository.ref_name_for_sha(ref_path, "") }.to raise_error(ArgumentError)
+    end
+
+    it "raise an exception if the ref is nil" do
+      expect { repository.ref_name_for_sha(ref_path, nil) }.to raise_error(ArgumentError)
     end
   end
 

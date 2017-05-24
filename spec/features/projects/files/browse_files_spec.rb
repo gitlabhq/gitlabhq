@@ -24,7 +24,7 @@ feature 'user browses project', feature: true, js: true do
     click_link 'files'
     click_link 'lfs'
     click_link 'lfs_object.iso'
-    wait_for_ajax
+    wait_for_requests
 
     expect(page).not_to have_content 'Download (1.5 MB)'
     expect(page).to have_content 'version https://git-lfs.github.com/spec/v1'

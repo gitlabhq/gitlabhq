@@ -25,17 +25,11 @@ describe('RavenConfig', () => {
   });
 
   describe('init', () => {
-    let options;
+    const options = {
+      currentUserId: 1,
+    };
 
     beforeEach(() => {
-      options = {
-        sentryDsn: '//sentryDsn',
-        ravenAssetUrl: '//ravenAssetUrl',
-        currentUserId: 1,
-        whitelistUrls: ['//gitlabUrl'],
-        isProduction: true,
-      };
-
       spyOn(RavenConfig, 'configure');
       spyOn(RavenConfig, 'bindRavenErrors');
       spyOn(RavenConfig, 'setUser');
@@ -62,30 +56,28 @@ describe('RavenConfig', () => {
     it('should not call setUser if there is no current user ID', () => {
       RavenConfig.setUser.calls.reset();
 
-      RavenConfig.init({
-        sentryDsn: '//sentryDsn',
-        ravenAssetUrl: '//ravenAssetUrl',
-        currentUserId: undefined,
-        whitelistUrls: ['//gitlabUrl'],
-        isProduction: true,
-      });
+      options.currentUserId = undefined;
+
+      RavenConfig.init(options);
 
       expect(RavenConfig.setUser).not.toHaveBeenCalled();
     });
   });
 
   describe('configure', () => {
-    let options;
     let raven;
     let ravenConfig;
+    const options = {
+      sentryDsn: '//sentryDsn',
+      whitelistUrls: ['//gitlabUrl'],
+      isProduction: true,
+      release: 'revision',
+      tags: {
+        revision: 'revision',
+      },
+    };
 
     beforeEach(() => {
-      options = {
-        sentryDsn: '//sentryDsn',
-        whitelistUrls: ['//gitlabUrl'],
-        isProduction: true,
-      };
-
       ravenConfig = jasmine.createSpyObj('ravenConfig', ['shouldSendSample']);
       raven = jasmine.createSpyObj('raven', ['install']);
 
@@ -100,6 +92,8 @@ describe('RavenConfig', () => {
 
     it('should call Raven.config', () => {
       expect(Raven.config).toHaveBeenCalledWith(options.sentryDsn, {
+        release: options.release,
+        tags: options.tags,
         whitelistUrls: options.whitelistUrls,
         environment: 'production',
         ignoreErrors: ravenConfig.IGNORE_ERRORS,
@@ -118,6 +112,8 @@ describe('RavenConfig', () => {
       RavenConfig.configure.call(ravenConfig);
 
       expect(Raven.config).toHaveBeenCalledWith(options.sentryDsn, {
+        release: options.release,
+        tags: options.tags,
         whitelistUrls: options.whitelistUrls,
         environment: 'development',
         ignoreErrors: ravenConfig.IGNORE_ERRORS,

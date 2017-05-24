@@ -4,6 +4,7 @@ import { getStateKey } from '../dependencies';
 export default class MergeRequestStore {
 
   constructor(data) {
+    this.startingSha = data.diff_head_sha;
     this.setData(data);
   }
 
@@ -60,6 +61,7 @@ export default class MergeRequestStore {
     this.statusPath = data.status_path;
     this.emailPatchesPath = data.email_patches_path;
     this.plainDiffPath = data.plain_diff_path;
+    this.newBlobPath = data.new_blob_path;
     this.createIssueToResolveDiscussionsPath = data.create_issue_to_resolve_discussions_path;
     this.mergeCheckPath = data.merge_check_path;
     this.mergeActionsContentPath = data.commit_change_content_path;
@@ -70,6 +72,7 @@ export default class MergeRequestStore {
     this.canMerge = !!data.merge_path;
     this.canCreateIssue = currentUser.can_create_issue || false;
     this.canCancelAutomaticMerge = !!data.cancel_merge_when_pipeline_succeeds_path;
+    this.hasSHAChanged = this.sha !== this.startingSha;
     this.canBeMerged = data.can_be_merged || false;
 
     // Cherry-pick and Revert actions related

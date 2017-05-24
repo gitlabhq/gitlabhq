@@ -6,6 +6,11 @@
       - blob_commit = @repository.last_commit_for_path(@commit.id, blob.path)
       = render blob_commit, project: @project, ref: @ref
 
+  - auxiliary_viewer = blob.auxiliary_viewer
+  - if auxiliary_viewer && !auxiliary_viewer.render_error
+    .well-segment.blob-auxiliary-viewer
+      = render 'projects/blob/viewer', viewer: auxiliary_viewer
+
 #blob-content-holder.blob-content-holder
   %article.file-holder
     = render "projects/blob/header", blob: blob

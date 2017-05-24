@@ -22,7 +22,7 @@
                     %strong
                       = link_to_gfm truncate(commit.title, length: 35), namespace_project_commit_path(@project.namespace, @project, commit.id), class: "cdark"
                     .pull-right
-                      = link_to commit.short_id, namespace_project_commit_path(@project.namespace, @project, commit), class: "monospace"
+                      = link_to commit.short_id, namespace_project_commit_path(@project.namespace, @project, commit), class: "commit-sha"
                     &nbsp;
                   .light
                     = commit_author_link(commit, avatar: false)

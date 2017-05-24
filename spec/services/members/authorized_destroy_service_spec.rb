@@ -24,7 +24,7 @@ describe Members::AuthorizedDestroyService, services: true do
       expect { described_class.new(member, member_user).execute }
         .to change { number_of_assigned_issuables(member_user) }.from(4).to(2)
 
-      expect(issue.reload.assignee_id).to be_nil
+      expect(issue.reload.assignee_ids).to be_empty
       expect(merge_request.reload.assignee_id).to be_nil
     end
   end

@@ -333,7 +333,7 @@ prefix the variable name with the dollar sign (`$`):
 ```
 job_name:
   script:
-    - echo $CI_job_ID
+    - echo $CI_JOB_ID
 ```
 
 You can also list all environment variables with the `export` command,

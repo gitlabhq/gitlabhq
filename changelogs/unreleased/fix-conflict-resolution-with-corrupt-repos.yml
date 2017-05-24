@@ -1,0 +1,5 @@
+---
+title: Prevent further repository corruption when resolving conflicts from a fork
+  where both the fork and upstream projects require housekeeping
+merge_request:
+author:

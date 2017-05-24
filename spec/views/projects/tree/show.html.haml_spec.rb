@@ -31,7 +31,7 @@ describe 'projects/tree/show' do
     it 'displays correctly' do
       render
       expect(rendered).to have_css('.js-project-refs-dropdown .dropdown-toggle-text', text: ref)
-      expect(rendered).to have_css('.readme-holder .file-content', text: ref)
+      expect(rendered).to have_css('.readme-holder')
     end
   end
 end

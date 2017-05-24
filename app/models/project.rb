@@ -6,6 +6,7 @@ class Project < ActiveRecord::Base
   include Gitlab::VisibilityLevel
   include Gitlab::CurrentSettings
   include AccessRequestable
+  include Avatarable
   include CacheMarkdownField
   include Referable
   include Sortable
@@ -179,7 +180,7 @@ class Project < ActiveRecord::Base
   has_many :builds, class_name: 'Ci::Build' # the builds are created from the commit_statuses
   has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject'
   has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
-  has_many :variables, dependent: :destroy, class_name: 'Ci::Variable'
+  has_many :variables, class_name: 'Ci::Variable'
   has_many :triggers, dependent: :destroy, class_name: 'Ci::Trigger'
   has_many :remote_mirrors, inverse_of: :project, dependent: :destroy
   has_many :environments, dependent: :destroy
@@ -915,12 +916,10 @@ class Project < ActiveRecord::Base
     repository.avatar
   end
 
-  def avatar_url(size = nil, scale = nil)
-    if self[:avatar].present?
-      [gitlab_config.url, avatar.url].join
-    elsif avatar_in_git
-      Gitlab::Routing.url_helpers.namespace_project_avatar_url(namespace, self)
-    end
+  def avatar_url(**args)
+    # We use avatar_path instead of overriding avatar_url because of carrierwave.
+    # See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11001/diffs#note_28659864
+    avatar_path(args) || (Gitlab::Routing.url_helpers.namespace_project_avatar_url(namespace, self) if avatar_in_git)
   end
 
   # For compatibility with old code

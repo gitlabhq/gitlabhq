@@ -233,7 +233,7 @@ module Gitlab
       end
 
       def validate_path_locks?
-        @validate_path_locks ||= license_allows_file_locks? &&
+        @validate_path_locks ||= @project.feature_available?(:file_lock) &&
           project.path_locks.any? && @newrev && @oldrev &&
           project.default_branch == @branch_name # locks protect default branch only
       end

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'Awards Emoji', feature: true do
-  include WaitForVueResource
+  include WaitForRequests
 
   let!(:project)   { create(:project, :public) }
   let!(:user)      { create(:user) }
@@ -22,7 +22,7 @@ describe 'Awards Emoji', feature: true do
         # The `heart_tip` emoji is not valid anymore so we need to skip validation
         issue.award_emoji.build(user: user, name: 'heart_tip').save!(validate: false)
         visit namespace_project_issue_path(project.namespace, project, issue)
-        wait_for_vue_resource
+        wait_for_requests
       end
 
       # Regression test: https://gitlab.com/gitlab-org/gitlab-ce/issues/29529
@@ -36,19 +36,19 @@ describe 'Awards Emoji', feature: true do
 
       before do
         visit namespace_project_issue_path(project.namespace, project, issue)
-        wait_for_vue_resource
+        wait_for_requests
       end
 
       it 'increments the thumbsdown emoji', js: true do
         find('[data-name="thumbsdown"]').click
-        wait_for_ajax
+        wait_for_requests
         expect(thumbsdown_emoji).to have_text("1")
       end
 
       context 'click the thumbsup emoji' do
         it 'increments the thumbsup emoji', js: true do
           find('[data-name="thumbsup"]').click
-          wait_for_ajax
+          wait_for_requests
           expect(thumbsup_emoji).to have_text("1")
         end
 
@@ -60,7 +60,7 @@ describe 'Awards Emoji', feature: true do
       context 'click the thumbsdown emoji' do
         it 'increments the thumbsdown emoji', js: true do
           find('[data-name="thumbsdown"]').click
-          wait_for_ajax
+          wait_for_requests
           expect(thumbsdown_emoji).to have_text("1")
         end
 
@@ -113,7 +113,7 @@ describe 'Awards Emoji', feature: true do
       click_button 'Comment'
     end
 
-    wait_for_ajax
+    wait_for_requests
   end
 
   def thumbsup_emoji
@@ -143,6 +143,6 @@ describe 'Awards Emoji', feature: true do
       find('[data-name="smiley"]').click
     end
 
-    wait_for_ajax
+    wait_for_requests
   end
 end

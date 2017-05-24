@@ -25,6 +25,9 @@ describe('getStateKey', () => {
     context.canBeMerged = true;
     expect(bound()).toEqual('readyToMerge');
 
+    context.hasSHAChanged = true;
+    expect(bound()).toEqual('shaMismatch');
+
     context.isPipelineBlocked = true;
     expect(bound()).toEqual('pipelineBlocked');
 

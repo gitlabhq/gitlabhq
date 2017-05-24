@@ -29,7 +29,7 @@ export default {
       </a>
       <span
         v-if="!user"
-        class="js-pipeline-url-api api monospace">
+        class="js-pipeline-url-api api">
         API
       </span>
       <span

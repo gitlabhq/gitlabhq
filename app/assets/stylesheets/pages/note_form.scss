@@ -277,6 +277,7 @@
 .toolbar-text {
   font-size: 14px;
   line-height: 16px;
+  margin-top: 2px;
 
   @media (min-width: $screen-md-min) {
     float: left;
@@ -401,4 +402,46 @@
       width: auto;
     }
   }
+}
+
+.uploading-container {
+  float: right;
+
+  @media (max-width: $screen-xs-max) {
+    float: left;
+    margin-top: 5px;
+  }
+}
+
+.uploading-error-icon,
+.uploading-error-message {
+  color: $gl-text-red;
+}
+
+.uploading-error-message {
+  @media (max-width: $screen-xs-max) {
+    &::after {
+      content: "\a";
+      white-space: pre;
+    }
+  }
+}
+
+.uploading-progress {
+  margin-right: 5px;
+}
+
+.attach-new-file,
+.button-attach-file,
+.retry-uploading-link {
+  color: $gl-link-color;
+  padding: 0;
+  background: none;
+  border: 0;
+  font-size: 14px;
+  line-height: 16px;
+}
+
+.markdown-selector {
+  color: $gl-link-color;
 }

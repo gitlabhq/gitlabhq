@@ -2,8 +2,7 @@
 /* global Flash */
 
 import Vue from 'vue';
-
-require('./lists_dropdown');
+import './lists_dropdown';
 
 const ModalStore = gl.issueBoards.ModalStore;
 

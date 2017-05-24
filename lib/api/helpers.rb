@@ -69,6 +69,14 @@ module API
       end
     end
 
+    def find_namespace(id)
+      if id =~ /^\d+$/
+        Namespace.find_by(id: id)
+      else
+        Namespace.find_by_full_path(id)
+      end
+    end
+
     def find_group!(id)
       group = find_group(id)
 

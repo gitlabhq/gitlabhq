@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe 'Pipelines', :feature, :js do
-  include WaitForVueResource
-
   let(:project) { create(:empty_project) }
 
   context 'when user is logged in' do
@@ -54,7 +52,7 @@ describe 'Pipelines', :feature, :js do
       context 'header tabs' do
         before do
           visit namespace_project_pipelines_path(project.namespace, project)
-          wait_for_vue_resource
+          wait_for_requests
         end
 
         it 'shows a tab for All pipelines and count' do
@@ -106,7 +104,7 @@ describe 'Pipelines', :feature, :js do
         context 'when canceling' do
           before do
             find('.js-pipelines-cancel-button').click
-            wait_for_vue_resource
+            wait_for_requests
           end
 
           it 'indicated that pipelines was canceled' do
@@ -136,7 +134,7 @@ describe 'Pipelines', :feature, :js do
         context 'when retrying' do
           before do
             find('.js-pipelines-retry-button').click
-            wait_for_vue_resource
+            wait_for_requests
           end
 
           it 'shows running pipeline that is not retryable' do
@@ -356,14 +354,14 @@ describe 'Pipelines', :feature, :js do
 
         it 'should render pagination' do
           visit namespace_project_pipelines_path(project.namespace, project)
-          wait_for_vue_resource
+          wait_for_requests
 
           expect(page).to have_selector('.gl-pagination')
         end
 
         it 'should render second page of pipelines' do
           visit namespace_project_pipelines_path(project.namespace, project, page: '2')
-          wait_for_vue_resource
+          wait_for_requests
 
           expect(page).to have_selector('.gl-pagination .page', count: 2)
         end
@@ -392,7 +390,7 @@ describe 'Pipelines', :feature, :js do
         create(:generic_commit_status, pipeline: pipeline, stage: 'external', name: 'jenkins', stage_idx: 3)
 
         visit namespace_project_pipeline_path(project.namespace, project, pipeline)
-        wait_for_vue_resource
+        wait_for_requests
       end
 
       it 'shows a graph with grouped stages' do
@@ -507,6 +505,6 @@ describe 'Pipelines', :feature, :js do
 
   def visit_project_pipelines(**query)
     visit namespace_project_pipelines_path(project.namespace, project, query)
-    wait_for_vue_resource
+    wait_for_requests
   end
 end

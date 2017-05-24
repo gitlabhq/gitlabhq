@@ -227,13 +227,11 @@ describe('mrWidgetOptions', () => {
 
     describe('handleMounted', () => {
       it('should call required methods to do the initial kick-off', () => {
-        spyOn(vm, 'checkStatus');
         spyOn(vm, 'initDeploymentsPolling');
         spyOn(vm, 'setFavicon');
 
         vm.handleMounted();
 
-        expect(vm.checkStatus).toHaveBeenCalled();
         expect(vm.setFavicon).toHaveBeenCalled();
         expect(vm.initDeploymentsPolling).toHaveBeenCalled();
       });

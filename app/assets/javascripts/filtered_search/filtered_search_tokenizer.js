@@ -1,4 +1,4 @@
-require('./filtered_search_token_keys');
+import './filtered_search_token_keys';
 
 class FilteredSearchTokenizer {
   static processTokens(input) {

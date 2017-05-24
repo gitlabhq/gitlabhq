@@ -1,5 +1,5 @@
-require('~/extensions/array');
-require('~/filtered_search/filtered_search_token_keys_with_weights');
+import '~/extensions/array';
+import '~/filtered_search/filtered_search_token_keys_with_weights';
 
 (() => {
   describe('Filtered Search Token Keys With Weights', () => {

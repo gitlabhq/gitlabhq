@@ -5,11 +5,6 @@
   }
 }
 
-.environments-list-loading {
-  width: 100%;
-  font-size: 34px;
-}
-
 .environments-folder-name {
   font-weight: normal;
   padding-top: 20px;
@@ -95,7 +90,7 @@
     }
 
     .build-link,
-    .branch-name {
+    .ref-name {
       color: $gl-text-color;
     }
 
@@ -140,7 +135,7 @@
     }
 
     .branch-commit {
-      .commit-id {
+      .commit-sha {
         margin-right: 0;
       }
     }

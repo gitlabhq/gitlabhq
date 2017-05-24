@@ -51,7 +51,6 @@ describe MergeRequestEntity do
                                ## EE
                                :can_push_to_source_branch, :approvals_before_merge,
                                :squash, :rebase_commit_sha, :rebase_in_progress,
-                               :approved, :should_be_rebased, :rebase_path,
                                :approvals_path, :ff_only_enabled)
   end
 
@@ -68,6 +67,23 @@ describe MergeRequestEntity do
   it 'has merge_commit_message_with_description' do
     expect(subject[:merge_commit_message_with_description])
       .to eq(resource.merge_commit_message(include_description: true))
+  end
+
+  describe 'new_blob_path' do
+    context 'when user can push to project' do
+      it 'returns path' do
+        project.add_developer(user)
+
+        expect(subject[:new_blob_path])
+          .to eq("/#{resource.project.full_path}/new/#{resource.source_branch}")
+      end
+    end
+
+    context 'when user cannot push to project' do
+      it 'returns nil' do
+        expect(subject[:new_blob_path]).to be_nil
+      end
+    end
   end
 
   describe 'diff_head_sha' do

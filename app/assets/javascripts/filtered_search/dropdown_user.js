@@ -1,8 +1,7 @@
 /* global Flash */
 
 import AjaxFilter from '~/droplab/plugins/ajax_filter';
-
-require('./filtered_search_dropdown');
+import './filtered_search_dropdown';
 
 class DropdownUser extends gl.FilteredSearchDropdown {
   constructor(droplab, dropdown, input, filter) {

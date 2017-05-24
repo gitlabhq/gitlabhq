@@ -79,7 +79,7 @@ module SystemNoteService
 
         text_parts.join(' and ')
       elsif old_assignees.any?
-        "removed all assignees"
+        "removed assignee"
       elsif issue.assignees.any?
         "assigned to #{issue.assignees.map(&:to_reference).to_sentence}"
       end
@@ -291,8 +291,8 @@ module SystemNoteService
 
     old_diffs, new_diffs = Gitlab::Diff::InlineDiff.new(old_title, new_title).inline_diffs
 
-    marked_old_title = Gitlab::Diff::InlineDiffMarker.new(old_title).mark(old_diffs, mode: :deletion, markdown: true)
-    marked_new_title = Gitlab::Diff::InlineDiffMarker.new(new_title).mark(new_diffs, mode: :addition, markdown: true)
+    marked_old_title = Gitlab::Diff::InlineDiffMarkdownMarker.new(old_title).mark(old_diffs, mode: :deletion)
+    marked_new_title = Gitlab::Diff::InlineDiffMarkdownMarker.new(new_title).mark(new_diffs, mode: :addition)
 
     body = "changed title from **#{marked_old_title}** to **#{marked_new_title}**"
 

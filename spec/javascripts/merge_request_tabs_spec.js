@@ -1,13 +1,13 @@
 /* eslint-disable no-var, comma-dangle, object-shorthand */
 
-require('~/merge_request_tabs');
-require('~/commit/pipelines/pipelines_bundle.js');
-require('~/breakpoints');
-require('~/lib/utils/common_utils');
-require('~/diff');
-require('~/single_file_diff');
-require('~/files_comment_button');
-require('vendor/jquery.scrollTo');
+import '~/merge_request_tabs';
+import '~/commit/pipelines/pipelines_bundle';
+import '~/breakpoints';
+import '~/lib/utils/common_utils';
+import '~/diff';
+import '~/single_file_diff';
+import '~/files_comment_button';
+import 'vendor/jquery.scrollTo';
 
 (function () {
   // TODO: remove this hack!

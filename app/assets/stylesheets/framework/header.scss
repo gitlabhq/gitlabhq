@@ -24,19 +24,24 @@ header {
 
   &.navbar-gitlab {
     padding: 0 16px;
-    z-index: 100;
+    z-index: 400;
     margin-bottom: 0;
     min-height: $header-height;
     background-color: $gray-light;
     border: none;
     border-bottom: 1px solid $border-color;
+    position: fixed;
+    z-index: 300;
+    top: 0;
+    left: 0;
+    right: 0;
 
     @media (max-width: $screen-xs-min) {
       padding: 0 16px;
     }
 
     &.with-horizontal-nav {
-      border-bottom: none;
+      border-color: transparent;
     }
 
     .container-fluid {
@@ -108,6 +113,16 @@ header {
         }
       }
     }
+  }
+
+  .navbar-border {
+    height: 1px;
+    position: absolute;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background-color: $border-color;
+    opacity: 0;
   }
 
   .global-dropdown {

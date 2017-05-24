@@ -1,0 +1,5 @@
+---
+title: Removed the target=_blank from the monitoring component to prevent opening
+  a new tab
+merge_request:
+author:

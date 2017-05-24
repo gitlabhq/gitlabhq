@@ -56,7 +56,7 @@ feature 'Mini Pipeline Graph', :js, :feature do
 
     before do
       toggle.click
-      wait_for_ajax
+      wait_for_requests
     end
 
     it 'should open when toggle is clicked' do

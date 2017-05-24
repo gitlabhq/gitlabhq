@@ -12,12 +12,12 @@ feature 'Ref switcher', feature: true, js: true do
 
   it 'allow user to change ref by enter key' do
     click_button 'master'
-    wait_for_ajax
+    wait_for_requests
 
     page.within '.project-refs-form' do
       input = find('input[type="search"]')
       input.set 'binary'
-      wait_for_ajax
+      wait_for_requests
 
       expect(find('.dropdown-content ul')).to have_selector('li', count: 6)
 
@@ -31,7 +31,7 @@ feature 'Ref switcher', feature: true, js: true do
 
   it "user selects ref with special characters" do
     click_button 'master'
-    wait_for_ajax
+    wait_for_requests
 
     page.within '.project-refs-form' do
       page.fill_in 'Search branches and tags', with: "'test'"

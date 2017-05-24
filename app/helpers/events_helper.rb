@@ -164,9 +164,14 @@ module EventsHelper
 
   def event_note_title_html(event)
     if event.note_target
-      link_to(event_note_target_path(event), title: event.target_title, class: 'has-tooltip') do
-        "#{event.note_target_type} #{event.note_target_reference}"
-      end
+      text = raw("#{event.note_target_type} ") +
+        if event.commit_note?
+          content_tag(:span, event.note_target_reference, class: 'commit-sha')
+        else
+          event.note_target_reference
+        end
+
+      link_to(text, event_note_target_path(event), title: event.target_title, class: 'has-tooltip')
     else
       content_tag(:strong, '(deleted)')
     end

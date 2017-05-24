@@ -178,7 +178,7 @@ class IssuableBaseService < BaseService
       after_create(issuable)
       issuable.create_cross_references!(current_user)
       execute_hooks(issuable)
-      issuable.assignees.each(&:invalidate_cache_counts)
+      invalidate_cache_counts(issuable.assignees, issuable)
     end
 
     issuable
@@ -236,9 +236,11 @@ class IssuableBaseService < BaseService
         )
 
         if old_assignees != issuable.assignees
+          ## EE-specific
           new_assignees = issuable.assignees.to_a
           affected_assignees = (old_assignees + new_assignees) - (old_assignees & new_assignees)
-          affected_assignees.compact.each(&:invalidate_cache_counts)
+          invalidate_cache_counts(affected_assignees.compact, issuable)
+          ## EE-specific
         end
 
         after_update(issuable)
@@ -330,5 +332,11 @@ class IssuableBaseService < BaseService
     end
 
     create_labels_note(issuable, old_labels) if issuable.labels != old_labels
+  end
+
+  def invalidate_cache_counts(users, issuable)
+    users.each do |user|
+      user.public_send("invalidate_#{issuable.model_name.singular}_cache_counts")
+    end
   end
 end

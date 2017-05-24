@@ -19,6 +19,26 @@ module API
 
         present paginate(namespaces), with: Entities::Namespace
       end
+
+      desc 'Update a namespace' do
+        success Entities::Namespace
+      end
+      params do
+        optional :plan, type: String, desc: "Namespace or Group plan"
+      end
+      put ':id' do
+        authenticated_as_admin!
+
+        namespace = find_namespace(params[:id])
+
+        return not_found!('Namespace') unless namespace
+
+        if namespace.update(declared_params)
+          present namespace, with: Entities::Namespace, current_user: current_user
+        else
+          render_validation_error!(namespace)
+        end
+      end
     end
   end
 end

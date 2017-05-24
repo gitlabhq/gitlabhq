@@ -75,7 +75,7 @@ feature 'Merge Request versions', js: true, feature: true do
           find(".js-comment-button").click
         end
 
-        wait_for_ajax
+        wait_for_requests
 
         expect(page).to have_content("Typo, please fix")
       end
@@ -126,7 +126,7 @@ feature 'Merge Request versions', js: true, feature: true do
       outdated_diff_note = create(:diff_note_on_merge_request, project: project, noteable: merge_request, position: position)
 
       visit current_url
-      wait_for_ajax
+      wait_for_requests
 
       expect(page).to have_css(".diffs .notes[data-discussion-id='#{outdated_diff_note.discussion_id}']")
     end
@@ -144,7 +144,7 @@ feature 'Merge Request versions', js: true, feature: true do
           find(".js-comment-button").click
         end
 
-        wait_for_ajax
+        wait_for_requests
 
         expect(page).to have_content("Typo, please fix")
       end

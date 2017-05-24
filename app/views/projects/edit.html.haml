@@ -51,7 +51,7 @@
             .row.js-visibility-select
               .col-md-9
                 %label.label-light
-                  = label_tag :project_visibility, 'Project Visibility', class: 'label-light'
+                  = label_tag :project_visibility, 'Project Visibility', class: 'label-light', for: :project_visibility_level
                   = link_to icon('question-circle'), help_page_path("public_access/public_access")
                 %span.help-block
               .col-md-3.visibility-select-container

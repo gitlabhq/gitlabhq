@@ -89,7 +89,7 @@ to steal the tokens of other jobs.
 
 ## Pipeline triggers
 
-Since 9.0 [pipelnie triggers][triggers] do support the new permission model.
+Since 9.0 [pipeline triggers][triggers] do support the new permission model.
 The new triggers do impersonate their associated user including their access
 to projects and their project permissions. To migrate trigger to use new permisison
 model use **Take ownership**.

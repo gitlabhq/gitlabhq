@@ -15,7 +15,7 @@ feature 'Tooltips on .timeago dates', feature: true, js: true do
 
       login_as user
       visit user_path(user)
-      wait_for_ajax()
+      wait_for_requests()
 
       page.find('.js-timeago').hover
     end
@@ -32,7 +32,7 @@ feature 'Tooltips on .timeago dates', feature: true, js: true do
 
       login_as user
       visit user_snippets_path(user)
-      wait_for_ajax()
+      wait_for_requests()
 
       page.find('.js-timeago.snippet-created-ago').hover
     end

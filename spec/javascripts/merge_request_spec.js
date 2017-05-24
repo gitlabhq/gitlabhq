@@ -1,7 +1,7 @@
 /* eslint-disable space-before-function-paren, no-return-assign */
 /* global MergeRequest */
 
-require('~/merge_request');
+import '~/merge_request';
 
 (function() {
   describe('MergeRequest', function() {

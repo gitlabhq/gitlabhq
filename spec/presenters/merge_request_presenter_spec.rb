@@ -73,12 +73,12 @@ describe MergeRequestPresenter do
   describe '#conflict_resolution_path' do
     let(:project) { create :empty_project }
     let(:user) { create :user }
-    let(:path) { described_class.new(resource, current_user: user).conflict_resolution_path }
+    let(:presenter) { described_class.new(resource, current_user: user) }
+    let(:path) { presenter.conflict_resolution_path }
 
     context 'when MR cannot be resolved in UI' do
       it 'does not return conflict resolution path' do
-        allow(resource).to receive(:conflicts_can_be_resolved_in_ui?) { true }
-        allow(resource).to receive(:conflicts_can_be_resolved_by?).with(user) { false }
+        allow(presenter).to receive_message_chain(:conflicts, :can_be_resolved_in_ui?) { false }
 
         expect(path).to be_nil
       end
@@ -86,8 +86,8 @@ describe MergeRequestPresenter do
 
     context 'when conflicts cannot be resolved by user' do
       it 'does not return conflict resolution path' do
-        allow(resource).to receive(:conflicts_can_be_resolved_in_ui?) { false }
-        allow(resource).to receive(:conflicts_can_be_resolved_by?).with(user) { true }
+        allow(presenter).to receive_message_chain(:conflicts, :can_be_resolved_in_ui?) { true }
+        allow(presenter).to receive_message_chain(:conflicts, :can_be_resolved_by?).with(user) { false }
 
         expect(path).to be_nil
       end
@@ -95,8 +95,8 @@ describe MergeRequestPresenter do
 
     context 'when able to access conflict resolution UI' do
       it 'does return conflict resolution path' do
-        allow(resource).to receive(:conflicts_can_be_resolved_in_ui?) { true }
-        allow(resource).to receive(:conflicts_can_be_resolved_by?).with(user) { true }
+        allow(presenter).to receive_message_chain(:conflicts, :can_be_resolved_in_ui?) { true }
+        allow(presenter).to receive_message_chain(:conflicts, :can_be_resolved_by?).with(user) { true }
 
         expect(path)
           .to eq("/#{project.full_path}/merge_requests/#{resource.iid}/conflicts")
