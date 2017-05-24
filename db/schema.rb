@@ -370,6 +370,31 @@ ActiveRecord::Schema.define(version: 20170525174156) do
   add_index "container_repositories", ["project_id", "name"], name: "index_container_repositories_on_project_id_and_name", unique: true, using: :btree
   add_index "container_repositories", ["project_id"], name: "index_container_repositories_on_project_id", using: :btree
 
+  create_table "conversational_development_index_metrics", force: :cascade do |t|
+    t.float "leader_issues", null: false
+    t.float "instance_issues", null: false
+    t.float "leader_notes", null: false
+    t.float "instance_notes", null: false
+    t.float "leader_milestones", null: false
+    t.float "instance_milestones", null: false
+    t.float "leader_boards", null: false
+    t.float "instance_boards", null: false
+    t.float "leader_merge_requests", null: false
+    t.float "instance_merge_requests", null: false
+    t.float "leader_ci_pipelines", null: false
+    t.float "instance_ci_pipelines", null: false
+    t.float "leader_environments", null: false
+    t.float "instance_environments", null: false
+    t.float "leader_deployments", null: false
+    t.float "instance_deployments", null: false
+    t.float "leader_projects_prometheus_active", null: false
+    t.float "instance_projects_prometheus_active", null: false
+    t.float "leader_service_desk_issues", null: false
+    t.float "instance_service_desk_issues", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "deploy_keys_projects", force: :cascade do |t|
     t.integer "deploy_key_id", null: false
     t.integer "project_id", null: false
