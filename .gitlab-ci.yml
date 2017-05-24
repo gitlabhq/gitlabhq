@@ -149,6 +149,7 @@ stages:
 # Trigger a package build on omnibus-gitlab repository
 
 build-package:
+  image: ruby:2.3-alpine
   before_script: []
   services: []
   variables:
