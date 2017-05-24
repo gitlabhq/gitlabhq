@@ -94,8 +94,8 @@
     "remove_wip_path": { "type": "string" },
     "commits_count": { "type": "integer" },
     "codeclimate": {
-      "head": { "type": "string" },
-      "base": { "type": "string" }
+      "head_path": { "type": "string" },
+      "base_path": { "type": "string" }
     }
   },
   "additionalProperties": false

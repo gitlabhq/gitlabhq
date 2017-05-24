@@ -61,7 +61,7 @@ export default {
     },
     shouldRenderCodeQuality() {
       const { codeclimate } = this.mr;
-      return codeclimate && codeclimate.head && codeclimate.base;
+      return codeclimate && codeclimate.head_path && codeclimate.base_path;
     },
   },
   methods: {

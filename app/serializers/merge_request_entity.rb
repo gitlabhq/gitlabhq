@@ -178,14 +178,14 @@ class MergeRequestEntity < IssuableEntity
   end
 
   expose :codeclimate, if: lambda { |mr, _| mr.has_codeclimate_data? } do
-    expose :head do |merge_request|
+    expose :head_path do |merge_request|
       raw_namespace_project_build_artifacts_url(merge_request.project.namespace,
                                                 merge_request.project,
                                                 merge_request.codeclimate_artifact,
                                                 path: 'codeclimate.json')
     end
 
-    expose :base do |merge_request|
+    expose :base_path do |merge_request|
       raw_namespace_project_build_artifacts_url(merge_request.project.namespace,
                                                 merge_request.project,
                                                 merge_request.base_codeclimate_artifact,

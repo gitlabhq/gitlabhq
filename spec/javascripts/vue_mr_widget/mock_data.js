@@ -212,8 +212,8 @@ export default {
   "only_allow_merge_if_pipeline_succeeds": false,
   "commit_change_content_path": "/root/acets-app/merge_requests/22/commit_change_content",
   "codeclimate": {
-    "head": "head.json",
-    "base": "base.json"
+    "head_path": "head.json",
+    "base_path": "base.json"
   }
 }
 
