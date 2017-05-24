@@ -7,7 +7,7 @@ module Gitlab
       #   - Don't contain a reserved word (expect for the words used in the
       #     regex itself)
       #   - Ending in `noteable/issue/<id>/notes` for the `issue_notes` route
-      #   - Ending in `issues/id`/rendered_title` for the `issue_title` route
+      #   - Ending in `issues/id`/realtime_changes` for the `issue_title` route
       USED_IN_ROUTES = %w[noteable issue notes issues realtime_changes
                           commit pipelines merge_requests new
                           environments].freeze
