@@ -349,8 +349,6 @@ class CopyAsGFM {
   }
 
   static nodeToGFM(node, respectWhitespaceParam = false) {
-    let respectWhitespace = respectWhitespaceParam;
-
     if (node.nodeType === Node.COMMENT_NODE) {
       return '';
     }
@@ -359,7 +357,7 @@ class CopyAsGFM {
       return node.textContent;
     }
 
-    respectWhitespace = respectWhitespace || (node.nodeName === 'PRE' || node.nodeName === 'CODE');
+    const respectWhitespace = respectWhitespaceParam || (node.nodeName === 'PRE' || node.nodeName === 'CODE');
 
     const text = this.innerGFM(node, respectWhitespace);
 
