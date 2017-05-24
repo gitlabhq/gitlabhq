@@ -28,14 +28,16 @@ class ProjectsFinder < UnionFinder
 
   def execute
     items = init_collection
-    items = by_ids(items)
+    items = items.map do |item|
+      item = by_ids(item)
+      item = by_personal(item)
+      item = by_starred(item)
+      item = by_visibilty_level(item)
+      item = by_tags(item)
+      item = by_search(item)
+      by_archived(item)
+    end
     items = union(items)
-    items = by_personal(items)
-    items = by_starred(items)
-    items = by_visibilty_level(items)
-    items = by_tags(items)
-    items = by_search(items)
-    items = by_archived(items)
     sort(items)
   end
 
@@ -55,7 +57,7 @@ class ProjectsFinder < UnionFinder
   end
 
   def by_ids(items)
-    project_ids_relation ? items.map { |item| item.where(id: project_ids_relation) } : items
+    project_ids_relation ? items.where(id: project_ids_relation) : items
   end
 
   def union(items)
