@@ -8,13 +8,18 @@
         required: true,
         default: () => [],
       },
+      updateAspectRatio: {
+        type: Boolean,
+        required: true,
+        default: false,
+      },
     },
     components: {
       'monitoring-column': MonitoringColumn,
     },
     methods: {
       bootstrapClass() {
-        return this.rowData.length > 3 ? 'col-md-6' : 'col-md-12';
+        return this.rowData.length >= 3 ? 'col-md-6' : 'col-md-12';
       },
     },
   };
@@ -25,7 +30,8 @@
       v-for="(column, index) in rowData" 
       :columnData="column"
       :classType="bootstrapClass()"
-      :key="index" 
+      :key="index"
+      :updateAspectRatio="updateAspectRatio"
     />
   </div>
 </template>

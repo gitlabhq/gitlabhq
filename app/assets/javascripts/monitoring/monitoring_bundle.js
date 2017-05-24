@@ -7,8 +7,9 @@ import VueResource from 'vue-resource';
 import d3 from 'd3';
 import MonitoringService from './services/monitoring_service';
 import MonitoringState from './components/monitoring_state.vue';
-import MonitoringPanel from './components/monitoring_panel.vue';
+import MonitoringRow from './components/monitoring_row.vue';
 import MonitoringStore from './stores/monitoring_store';
+import eventHub from './event_hub';
 import MonitoringNewAPIResponse from './monitoring_mock';
 
 Vue.use(VueResource);
@@ -37,12 +38,14 @@ document.addEventListener('DOMContentLoaded', function onLoad() {
         backOffRequestCounter: 0,
         bisectDate: d3.bisector(d => d.time).left,
         service: {},
+        updateAspectRatio: false,
+        updatedAspectRatios: 0,
       };
     },
 
     components: {
       'monitoring-state': MonitoringState,
-      'monitoring-panel': MonitoringPanel,
+      'monitoring-row': MonitoringRow,
     },
 
     methods: {
@@ -89,13 +92,31 @@ document.addEventListener('DOMContentLoaded', function onLoad() {
         this.showEmptyState = false;
         this.store.storeMetrics(MonitoringNewAPIResponse);
       },
-      increaseValue() {
-        this.testValue = this.testValue += 1;
+      resizeThrottler() {
+        // ignore resize events as long as an actualResizeHandler execution is in the queue
+        if (!this.resizeTimeout) {
+          this.resizeTimeout = setTimeout(() => {
+            this.resizeTimeout = null;
+            this.updateAspectRatio = true;
+          }, 600);
+        }
+      },
+      toggleAspectRatio() {
+        this.updatedAspectRatios = this.updatedAspectRatios += 1;
+        if (this.store.getMetricsCount() === this.updatedAspectRatios) {
+          this.updateAspectRatio = !this.updateAspectRatio;
+          this.updatedAspectRatios = 0;
+        }
       },
     },
 
     created() {
       this.service = new MonitoringService();
+      eventHub.$on('toggleAspectRatio', this.toggleAspectRatio);
+    },
+
+    beforeDestroyed() {
+      eventHub.$off('toggleAspectRatio');
     },
 
     mounted() {
@@ -106,19 +127,31 @@ document.addEventListener('DOMContentLoaded', function onLoad() {
       } else {
         // this.getGraphsData();
         this.getGraphsDataNewApiMock();
+        window.addEventListener('resize', this.resizeThrottler, false);
       }
     },
 
     template: `
       <div class="prometheus-graphs" v-if="!showEmptyState">
-        <button class="btn btn-primary" @click=increaseValue>
-          Increase test value
-        </button>
-        <monitoring-panel
-          v-for="(group, index) in store.groups" 
-          :groupData="group"
-          :key="index" 
-        />
+        <div class="row"
+          v-for="(groupData, index) in store.groups"
+        >
+          <div class="col-md-12">
+            <div class="panel panel-default prometheus-panel">
+              <div class="panel-heading">
+                <h4>{{groupData.group}}</h4>
+              </div>
+              <div class="panel-body">
+                <monitoring-row
+                  v-for="(row, index) in groupData.metrics"
+                  :rowData="row"
+                  :key="index"
+                  :updateAspectRatio="updateAspectRatio"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <monitoring-state 
       :isLoading=isLoading 
@@ -128,4 +161,3 @@ document.addEventListener('DOMContentLoaded', function onLoad() {
     `,
   });
 }, false);
-
