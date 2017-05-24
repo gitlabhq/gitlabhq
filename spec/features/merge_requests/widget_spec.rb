@@ -209,22 +209,14 @@ describe 'Merge request', :feature, :js do
 
   context 'user can merge into source project but cannot push to fork', js: true do
     let(:fork_project) { create(:project, :public) }
-
-    let!(:merge_request_from_fork) do
-      create(:forked_project_link, forked_to_project: fork_project,
-                                   forked_from_project: project)
-
-      create(:merge_request_with_diffs, source_project: fork_project,
-                                        target_project: project)
-    end
-
     let(:user2) { create(:user) }
 
     before do
       project.team << [user2, :master]
       logout
       login_as user2
-      visit namespace_project_merge_request_path(project.namespace, project, merge_request_from_fork)
+      merge_request.update(target_project: fork_project)
+      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
     end
 
     it 'user can merge into the source project' do
