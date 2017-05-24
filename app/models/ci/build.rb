@@ -26,6 +26,10 @@ module Ci
 
     validates :coverage, numericality: true, allow_blank: true
     validates :ref, presence: true
+    validates :environment_url,
+              length: { maximum: 255 },
+              allow_nil: true,
+              addressable_url: true
 
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
@@ -132,6 +136,11 @@ module Ci
       ExpandVariables.expand(environment, simple_variables) if environment
     end
 
+    def expanded_environment_url
+      ExpandVariables.expand(environment_url, simple_variables) if
+        environment_url
+    end
+
     def has_environment?
       environment.present?
     end
@@ -178,22 +187,23 @@ module Ci
     # Variables whose value does not depend on other variables
     def simple_variables
       variables = predefined_variables
-      variables += project.predefined_variables
-      variables += pipeline.predefined_variables
-      variables += runner.predefined_variables if runner
-      variables += project.container_registry_variables
-      variables += project.deployment_variables if has_environment?
-      variables += yaml_variables
-      variables += user_variables
-      variables += project.secret_variables
-      variables += trigger_request.user_variables if trigger_request
+      variables.concat(project.predefined_variables)
+      variables.concat(pipeline.predefined_variables)
+      variables.concat(runner.predefined_variables) if runner
+      variables.concat(project.container_registry_variables)
+      variables.concat(project.deployment_variables) if has_environment?
+      variables.concat(yaml_variables)
+      variables.concat(user_variables)
+      variables.concat(project.secret_variables)
+      variables.concat(trigger_request.user_variables) if trigger_request
       variables
     end
 
     # All variables, including those dependent on other variables
     def variables
       variables = simple_variables
-      variables += persisted_environment.predefined_variables if persisted_environment.present?
+      variables.concat(persisted_environment_variables) if
+        persisted_environment
       variables
     end
 
@@ -486,6 +496,13 @@ module Ci
       variables << { key: "CI_PIPELINE_TRIGGERED", value: 'true', public: true } if trigger_request
       variables << { key: "CI_JOB_MANUAL", value: 'true', public: true } if action?
       variables.concat(legacy_variables)
+    end
+
+    def persisted_environment_variables
+      persisted_environment.predefined_variables <<
+        { key: 'CI_ENVIRONMENT_URL',
+          value: expanded_environment_url,
+          public: true }
     end
 
     def legacy_variables

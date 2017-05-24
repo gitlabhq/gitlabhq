@@ -141,6 +141,7 @@ module Gitlab
               variables: variables_defined? ? variables_value : nil,
               environment: environment_defined? ? environment_value : nil,
               environment_name: environment_defined? ? environment_value[:name] : nil,
+              environment_url: environment_defined? ? environment_value[:url] : nil,
               coverage: coverage_defined? ? coverage_value : nil,
               artifacts: artifacts_value,
               after_script: after_script_value,
