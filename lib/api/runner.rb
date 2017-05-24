@@ -29,12 +29,10 @@ module API
 
         return forbidden! unless runner
 
-        if runner.id
-          runner.update(get_runner_version_from_params)
-          present runner, with: Entities::RunnerRegistrationDetails
-        else
-          not_found!
-        end
+        return render_validation_error!(runner) if runner.errors.any?
+
+        runner.update(get_runner_version_from_params)
+        present runner, with: Entities::RunnerRegistrationDetails
       end
 
       desc 'Deletes a registered Runner' do

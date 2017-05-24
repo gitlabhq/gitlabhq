@@ -89,11 +89,12 @@ describe API::Runner do
         end
 
         context 'when tags are not provided' do
-          it 'returns 404 error' do
+          it 'returns 400 error' do
             post api('/runners'), token: registration_token,
                                   run_untagged: false
 
-            expect(response).to have_http_status 404
+            expect(response).to have_http_status 400
+            expect(JSON.parse(response.body)).to eq({ 'message' => { 'tags_list' => ['can not be empty when runner is not allowed to pick untagged jobs'] } })
           end
         end
       end
