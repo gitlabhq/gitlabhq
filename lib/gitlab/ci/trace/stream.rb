@@ -99,7 +99,7 @@ module Gitlab
           stream.seek(0, IO::SEEK_END)
           debris = ''
 
-          while !(buf = read_backward(BUFFER_SIZE)).empty?
+          until (buf = read_backward(BUFFER_SIZE)).empty?
             buf += debris
             debris, *lines = buf.each_line.to_a
             lines.reverse_each do |line|
@@ -107,7 +107,7 @@ module Gitlab
             end
           end
 
-          yield(debris.force_encoding('UTF-8')) if !(debris).empty?
+          yield(debris.force_encoding('UTF-8')) unless debris.empty?
         end
 
         def read_backward(length)
