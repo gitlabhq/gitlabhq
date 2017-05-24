@@ -56,7 +56,7 @@ module QA
           capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
             'chromeOptions' => {
               'binary' => '/opt/google/chrome-beta/google-chrome-beta',
-              'args' => %w[headless disable-gpu]
+              'args' => %w[headless no-sandbox disable-gpu]
             }
           )
 
