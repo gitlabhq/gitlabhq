@@ -55,4 +55,8 @@ module DiscussionOnDiff
       original_line_code
     end
   end
+
+  def to_partial_path
+    'discussions/diff_discussion'
+  end
 end

@@ -1,6 +1,45 @@
-- expanded = local_assigns.fetch(:expanded, true)
-%tr.notes_holder{ class: ('hide' unless expanded) }
-  %td.notes_line{ colspan: 2 }
-  %td.notes_content
-    .content{ class: ('hide' unless expanded) }
-      = render partial: "discussions/notes", collection: discussions, as: :discussion
+- expanded = discussion.expanded?
+%li.note.note-discussion.timeline-entry
+  .timeline-entry-inner
+    .timeline-icon
+      = link_to user_path(discussion.author) do
+        = image_tag avatar_icon(discussion.author), class: "avatar s40"
+    .timeline-content
+      .discussion.js-toggle-container{ data: { discussion_id: discussion.id } }
+        .discussion-header
+          .discussion-actions
+            %button.note-action-button.discussion-toggle-button.js-toggle-button{ type: "button" }
+              - if expanded
+                = icon("chevron-up")
+              - else
+                = icon("chevron-down")
+              Toggle discussion
+          = link_to_member(@project, discussion.author, avatar: false)
+
+          .inline.discussion-headline-light
+            = discussion.author.to_reference
+            started a discussion
+
+            - url = discussion_path(discussion)
+            -# This is a commit diff discusion rendered in the context of a merge request
+            - if discussion.for_commit? && @noteable != discussion.noteable
+              on
+              - commit = discussion.noteable
+              - if commit
+                commit
+                = link_to commit.short_id, url, class: 'commit-sha'
+              - else
+                a deleted commit
+            - else
+              on
+              = conditional_link_to url.present?, url do
+                - unless discussion.active?
+                  an old version of
+                the diff
+
+            = time_ago_with_tooltip(discussion.created_at, placement: "bottom", html_class: "note-created-ago")
+
+          = render "discussions/headline", discussion: discussion
+
+        .discussion-body.js-toggle-content{ class: ("hide" unless expanded) }
+          = render "discussions/diff_with_notes", discussion: discussion if discussion.diff_file

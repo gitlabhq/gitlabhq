@@ -113,4 +113,8 @@ class Discussion
   def reply_attributes
     first_note.slice(:type, :noteable_type, :noteable_id, :commit_id, :discussion_id)
   end
+
+  def to_partial_path
+    'discussions/discussion'
+  end
 end

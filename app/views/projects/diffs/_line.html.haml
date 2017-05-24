@@ -37,4 +37,4 @@
 
 - if line_discussions&.any?
   - discussion_expanded = local_assigns.fetch(:discussion_expanded, line_discussions.any?(&:expanded?))
-  = render "discussions/diff_discussion", discussions: line_discussions, expanded: discussion_expanded
+  = render "projects/diffs/discussion", discussions: line_discussions, expanded: discussion_expanded

@@ -111,7 +111,7 @@ module NotesActions
     return unless discussion.diff_discussion?
 
     if params[:view] == 'parallel'
-      template = "discussions/_parallel_diff_discussion"
+      template = "projects/diffs/_parallel_discussion"
       locals =
         if params[:line_type] == 'old'
           { discussions_left: [discussion], discussions_right: nil }
@@ -119,7 +119,7 @@ module NotesActions
           { discussions_left: nil, discussions_right: [discussion] }
         end
     else
-      template = "discussions/_diff_discussion"
+      template = "projects/diffs/_discussion"
       locals = { discussions: [discussion] }
     end
 
@@ -134,8 +134,9 @@ module NotesActions
   def discussion_html(discussion)
     return if discussion.individual_note?
 
+    template = discussion.to_partial_path.sub(%r{/([^/]+)\z}, '/_\\1')
     render_to_string(
-      "discussions/_discussion",
+      template,
       layout: false,
       formats: [:html],
       locals: { discussion: discussion }

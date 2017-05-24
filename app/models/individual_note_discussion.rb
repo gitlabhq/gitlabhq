@@ -14,4 +14,8 @@ class IndividualNoteDiscussion < Discussion
   def reply_attributes
     super.tap { |attrs| attrs.delete(:discussion_id) }
   end
+
+  def to_partial_path
+    'discussions/individual_note_discussion'
+  end
 end

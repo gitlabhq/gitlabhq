@@ -20,28 +20,20 @@
             = discussion.author.to_reference
             started a discussion
 
-            - url = discussion_path(discussion)
+            -# This is a commit discussion rendered in the context of a merge request
             - if discussion.for_commit? && @noteable != discussion.noteable
               on
               - commit = discussion.noteable
               - if commit
                 commit
-                = link_to commit.short_id, url, class: 'commit-sha'
+                = link_to commit.short_id, discussion_path(discussion), class: 'commit-sha'
               - else
                 a deleted commit
-            - elsif discussion.diff_discussion?
-              on
-              = conditional_link_to url.present?, url do
-                - unless discussion.active?
-                  an old version of
-                the diff
 
             = time_ago_with_tooltip(discussion.created_at, placement: "bottom", html_class: "note-created-ago")
+
           = render "discussions/headline", discussion: discussion
 
         .discussion-body.js-toggle-content{ class: ("hide" unless expanded) }
-          - if discussion.diff_discussion? && discussion.diff_file
-            = render "discussions/diff_with_notes", discussion: discussion
-          - else
-            .panel.panel-default
-              = render "discussions/notes", discussion: discussion
+          .panel.panel-default
+            = render "discussions/notes", discussion: discussion
