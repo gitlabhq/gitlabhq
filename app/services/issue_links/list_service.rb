@@ -1,4 +1,4 @@
-module RelatedIssues
+module IssueLinks
   class ListService
     include Gitlab::Routing
 
@@ -29,14 +29,14 @@ module RelatedIssues
       # TODO: Simplify query using AR
       @issues = Issue.find_by_sql(
         <<-SQL.strip_heredoc
-          SELECT issues.*, related_issues.id as related_issues_id FROM issues
-          INNER JOIN related_issues ON related_issues.related_issue_id = issues.id
-          WHERE related_issues.issue_id = #{@issue.id} AND issues.deleted_at IS NULL
+          SELECT issues.*, issue_links.id as issue_links_id FROM issues
+          INNER JOIN issue_links ON issue_links.target_id = issues.id
+          WHERE issue_links.source_id = #{@issue.id} AND issues.deleted_at IS NULL
           UNION ALL
-          SELECT issues.*, related_issues.id as related_issues_id FROM issues
-          INNER JOIN related_issues ON related_issues.issue_id = issues.id
-          WHERE related_issues.related_issue_id = #{@issue.id} AND issues.deleted_at IS NULL
-          ORDER BY related_issues_id
+          SELECT issues.*, issue_links.id as issue_links_id FROM issues
+          INNER JOIN issue_links ON issue_links.source_id = issues.id
+          WHERE issue_links.target_id = #{@issue.id} AND issues.deleted_at IS NULL
+          ORDER BY issue_links_id
         SQL
       )
 
@@ -45,12 +45,12 @@ module RelatedIssues
     end
 
     def destroy_relation_path(issue)
-      return unless Ability.allowed?(@current_user, :admin_related_issue, issue.project)
+      return unless Ability.allowed?(@current_user, :admin_issue_link, issue.project)
 
-      namespace_project_issue_related_issue_path(issue.project.namespace,
-                                                 issue.project,
-                                                 issue.iid,
-                                                 issue.related_issues_id)
+      namespace_project_issue_link_path(issue.project.namespace,
+                                        issue.project,
+                                        issue.iid,
+                                        issue.issue_links_id)
     end
   end
 end

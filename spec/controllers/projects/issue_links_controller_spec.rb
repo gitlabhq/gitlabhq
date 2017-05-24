@@ -1,19 +1,19 @@
 require 'rails_helper'
 
-describe Projects::RelatedIssuesController, type: :controller do
+describe Projects::IssueLinksController, type: :controller do
   let(:user) { create :user }
   let(:project) { create(:project_empty_repo) }
   let(:issue) { create :issue, project: project }
 
   describe 'GET #index' do
-    let(:service) { double(RelatedIssues::ListService, execute: service_response) }
+    let(:service) { double(IssueLinks::ListService, execute: service_response) }
     let(:service_response) { [{ 'foo' => 'bar' }] }
 
     before do
       project.team << [user, :guest]
       sign_in user
 
-      allow(RelatedIssues::ListService).to receive(:new)
+      allow(IssueLinks::ListService).to receive(:new)
         .with(issue, user)
         .and_return(service)
     end
@@ -32,8 +32,8 @@ describe Projects::RelatedIssuesController, type: :controller do
   end
 
   describe 'POST #create' do
-    let(:service) { double(RelatedIssues::CreateService, execute: service_response) }
-    let(:list_service) { double(RelatedIssues::ListService, execute: list_service_response) }
+    let(:service) { double(IssueLinks::CreateService, execute: service_response) }
+    let(:list_service) { double(IssueLinks::ListService, execute: list_service_response) }
     let(:service_response) { { message: 'yay', status: :success } }
     let(:list_service_response) { [{ 'foo' => 'bar' }] }
     let(:issue_references) { double }
@@ -43,11 +43,11 @@ describe Projects::RelatedIssuesController, type: :controller do
       project.team << [user, user_role]
       sign_in user
 
-      allow(RelatedIssues::ListService).to receive(:new)
+      allow(IssueLinks::ListService).to receive(:new)
         .with(issue, user)
         .and_return(list_service)
 
-      allow(RelatedIssues::CreateService).to receive(:new)
+      allow(IssueLinks::CreateService).to receive(:new)
         .with(issue, user, { issue_references: issue_references })
         .and_return(service)
     end
@@ -90,9 +90,9 @@ describe Projects::RelatedIssuesController, type: :controller do
 
   describe 'DELETE #destroy' do
     let(:referenced_issue) { create :issue, project: project }
-    let(:related_issue) { create :related_issue, related_issue: referenced_issue }
-    let(:service) { double(RelatedIssues::DestroyService, execute: service_response) }
-    let(:list_service) { double(RelatedIssues::ListService, execute: list_service_response) }
+    let(:issue_link) { create :issue_link, target: referenced_issue }
+    let(:service) { double(IssueLinks::DestroyService, execute: service_response) }
+    let(:list_service) { double(IssueLinks::ListService, execute: list_service_response) }
     let(:service_response) { { 'message' => 'yay' } }
     let(:list_service_response) { [{ 'foo' => 'bar' }] }
     let(:current_project_user_role) { :developer }
@@ -101,7 +101,7 @@ describe Projects::RelatedIssuesController, type: :controller do
       delete :destroy, namespace_id: issue.project.namespace,
                        project_id: issue.project,
                        issue_id: issue,
-                       id: related_issue,
+                       id: issue_link,
                        format: :json
     end
 
@@ -109,12 +109,12 @@ describe Projects::RelatedIssuesController, type: :controller do
       project.team << [user, current_project_user_role]
       sign_in user
 
-      allow(RelatedIssues::ListService).to receive(:new)
+      allow(IssueLinks::ListService).to receive(:new)
         .with(issue, user)
         .and_return(list_service)
 
-      allow(RelatedIssues::DestroyService).to receive(:new)
-        .with(related_issue, user)
+      allow(IssueLinks::DestroyService).to receive(:new)
+        .with(issue_link, user)
         .and_return(service)
     end
 

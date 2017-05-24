@@ -1,4 +1,4 @@
-module RelatedIssues
+module IssueLinks
   class CreateService < BaseService
     def initialize(issue, user, params)
       @issue, @current_user, @params = issue, user, params.dup
@@ -9,7 +9,7 @@ module RelatedIssues
         return error('No Issue found for given reference', 401)
       end
 
-      create_related_issues
+      create_issue_link
 
       success_message
     rescue => exception
@@ -18,8 +18,8 @@ module RelatedIssues
 
     private
 
-    def create_related_issues
-      RelatedIssue.transaction do
+    def create_issue_link
+      IssueLink.transaction do
         referenced_issues.each do |referenced_issue|
           relate_issues(referenced_issue)
           create_notes(referenced_issue)
@@ -28,7 +28,7 @@ module RelatedIssues
     end
 
     def relate_issues(referenced_issue)
-      RelatedIssue.create!(issue: @issue, related_issue: referenced_issue)
+      IssueLink.create!(source: @issue, target: referenced_issue)
     end
 
     def create_notes(referenced_issue)

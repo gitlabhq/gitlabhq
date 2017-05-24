@@ -1,10 +1,10 @@
-module RelatedIssues
+module IssueLinks
   class DestroyService < BaseService
-    def initialize(related_issue, user)
-      @related_issue = related_issue
+    def initialize(issue_link, user)
+      @issue_link = issue_link
       @current_user = user
-      @issue = related_issue.issue
-      @referenced_issue = related_issue.related_issue
+      @issue = issue_link.source
+      @referenced_issue = issue_link.target
     end
 
     def execute
@@ -17,7 +17,7 @@ module RelatedIssues
     private
 
     def remove_relation!
-      @related_issue.destroy!
+      @issue_link.destroy!
     end
 
     def create_notes!

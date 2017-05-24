@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe RelatedIssues::CreateService, service: true do
+describe IssueLinks::CreateService, service: true do
   describe '#execute' do
     let(:namespace) { create :namespace }
     let(:project) { create :empty_project, namespace: namespace }
@@ -36,7 +36,7 @@ describe RelatedIssues::CreateService, service: true do
       end
 
       it 'no relationship is created' do
-        expect { subject }.not_to change(RelatedIssue, :count)
+        expect { subject }.not_to change(IssueLink, :count)
       end
     end
 
@@ -52,7 +52,7 @@ describe RelatedIssues::CreateService, service: true do
       end
 
       it 'no relationship is created' do
-        expect { subject }.not_to change(RelatedIssue, :count)
+        expect { subject }.not_to change(IssueLink, :count)
       end
     end
 
@@ -73,10 +73,10 @@ describe RelatedIssues::CreateService, service: true do
       end
 
       it 'creates relationships' do
-        expect { subject }.to change(RelatedIssue, :count).from(0).to(2)
+        expect { subject }.to change(IssueLink, :count).from(0).to(2)
 
-        expect(RelatedIssue.first).to have_attributes(issue: issue, related_issue: issue_a)
-        expect(RelatedIssue.last).to have_attributes(issue: issue, related_issue: another_project_issue)
+        expect(IssueLink.first).to have_attributes(source: issue, target: issue_a)
+        expect(IssueLink.last).to have_attributes(source: issue, target: another_project_issue)
       end
 
       it 'returns success message with Issue reference' do
@@ -138,7 +138,7 @@ describe RelatedIssues::CreateService, service: true do
       let(:issue_b) { create :issue, project: project }
 
       before do
-        create :related_issue, issue: issue, related_issue: issue_a
+        create :issue_link, source: issue, target: issue_a
       end
 
       let(:params) do
@@ -146,11 +146,11 @@ describe RelatedIssues::CreateService, service: true do
       end
 
       it 'returns error' do
-        is_expected.to eq(message: "Validation failed: Issue is already related", status: :error, http_status: 401)
+        is_expected.to eq(message: "Validation failed: Source issue is already related", status: :error, http_status: 401)
       end
 
       it 'no relation is created' do
-        expect { subject }.not_to change(RelatedIssue, :count)
+        expect { subject }.not_to change(IssueLink, :count)
       end
     end
   end

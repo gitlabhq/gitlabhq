@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe RelatedIssues::ListService, service: true do
+describe IssueLinks::ListService, service: true do
   let(:user) { create :user }
   let(:project) { create(:project_empty_repo) }
   let(:issue) { create :issue, project: project }
@@ -17,22 +17,22 @@ describe RelatedIssues::ListService, service: true do
       let(:issue_c) { create :issue, project: project }
       let(:issue_d) { create :issue, project: project }
 
-      let!(:related_issue_c) do
-        create(:related_issue, id: 999,
-                               issue: issue_d,
-                               related_issue: issue)
+      let!(:issue_link_c) do
+        create(:issue_link, id: 999,
+                            source: issue_d,
+                            target: issue)
       end
 
-      let!(:related_issue_b) do
-        create(:related_issue, id: 998,
-                               issue: issue,
-                               related_issue: issue_c)
+      let!(:issue_link_b) do
+        create(:issue_link, id: 998,
+                            source: issue,
+                            target: issue_c)
       end
 
-      let!(:related_issue_a) do
-        create(:related_issue, id: 997,
-                               issue: issue,
-                               related_issue: issue_b)
+      let!(:issue_link_a) do
+        create(:issue_link, id: 997,
+                            source: issue,
+                            target: issue_b)
       end
 
       it 'verifies number of queries' do
@@ -52,7 +52,7 @@ describe RelatedIssues::ListService, service: true do
             path: "/#{project.full_path}/issues/#{issue_b.iid}",
             project_path: issue_b.project.path,
             namespace_full_path: issue_b.project.namespace.full_path,
-            destroy_relation_path: "/#{project.full_path}/issues/#{issue_b.iid}/related_issues/#{related_issue_a.id}"
+            destroy_relation_path: "/#{project.full_path}/issues/#{issue_b.iid}/links/#{issue_link_a.id}"
           }
         )
 
@@ -65,7 +65,7 @@ describe RelatedIssues::ListService, service: true do
             path: "/#{project.full_path}/issues/#{issue_c.iid}",
             project_path: issue_c.project.path,
             namespace_full_path: issue_c.project.namespace.full_path,
-            destroy_relation_path: "/#{project.full_path}/issues/#{issue_c.iid}/related_issues/#{related_issue_b.id}"
+            destroy_relation_path: "/#{project.full_path}/issues/#{issue_c.iid}/links/#{issue_link_b.id}"
           }
         )
 
@@ -78,7 +78,7 @@ describe RelatedIssues::ListService, service: true do
             path: "/#{project.full_path}/issues/#{issue_d.iid}",
             project_path: issue_d.project.path,
             namespace_full_path: issue_d.project.namespace.full_path,
-            destroy_relation_path: "/#{project.full_path}/issues/#{issue_d.iid}/related_issues/#{related_issue_c.id}"
+            destroy_relation_path: "/#{project.full_path}/issues/#{issue_d.iid}/links/#{issue_link_c.id}"
           }
         )
       end
@@ -87,8 +87,8 @@ describe RelatedIssues::ListService, service: true do
     context 'referencing issue with removed relationships' do
       context 'when referenced a deleted issue' do
         let(:issue_b) { create :issue, project: project }
-        let!(:related_issue) do
-          create(:related_issue, issue: issue, related_issue: issue_b)
+        let!(:issue_link) do
+          create(:issue_link, source: issue, target: issue_b)
         end
 
         it 'ignores issue' do
@@ -100,8 +100,8 @@ describe RelatedIssues::ListService, service: true do
 
       context 'when referenced an issue with deleted project' do
         let(:issue_b) { create :issue, project: project }
-        let!(:related_issue) do
-          create(:related_issue, issue: issue, related_issue: issue_b)
+        let!(:issue_link) do
+          create(:issue_link, source: issue, target: issue_b)
         end
 
         it 'ignores issue' do
@@ -113,8 +113,8 @@ describe RelatedIssues::ListService, service: true do
 
       context 'when referenced an issue with deleted namespace' do
         let(:issue_b) { create :issue, project: project }
-        let!(:related_issue) do
-          create(:related_issue, issue: issue, related_issue: issue_b)
+        let!(:issue_link) do
+          create(:issue_link, source: issue, target: issue_b)
         end
 
         it 'ignores issue' do
@@ -127,8 +127,8 @@ describe RelatedIssues::ListService, service: true do
 
     context 'user cannot see relations' do
       context 'when user cannot see the referenced issue' do
-        let!(:related_issue) do
-          create(:related_issue, issue: issue)
+        let!(:issue_link) do
+          create(:issue_link, source: issue)
         end
 
         it 'returns an empty list' do
@@ -137,8 +137,8 @@ describe RelatedIssues::ListService, service: true do
       end
 
       context 'when user cannot see the issue that referenced' do
-        let!(:related_issue) do
-          create(:related_issue, related_issue: issue)
+        let!(:issue_link) do
+          create(:issue_link, target: issue)
         end
 
         it 'returns an empty list' do
@@ -148,8 +148,8 @@ describe RelatedIssues::ListService, service: true do
     end
 
     context 'remove relations' do
-      let!(:related_issue) do
-        create(:related_issue, issue: issue, related_issue: referenced_issue)
+      let!(:issue_link) do
+        create(:issue_link, source: issue, target: referenced_issue)
       end
 
       context 'when user can admin related issues on one project' do
@@ -171,7 +171,7 @@ describe RelatedIssues::ListService, service: true do
 
         it 'returns related issue destroy relation path' do
           expect(subject.first[:destroy_relation_path])
-            .to eq("/#{project.full_path}/issues/#{referenced_issue.iid}/related_issues/#{related_issue.id}")
+            .to eq("/#{project.full_path}/issues/#{referenced_issue.iid}/links/#{issue_link.id}")
         end
       end
     end

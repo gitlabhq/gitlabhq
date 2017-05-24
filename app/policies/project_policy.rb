@@ -57,7 +57,7 @@ class ProjectPolicy < BasePolicy
     end
 
     # EE-only
-    can! :read_related_issue
+    can! :read_issue_link
   end
 
   def reporter_access!
@@ -84,7 +84,7 @@ class ProjectPolicy < BasePolicy
     end
 
     # EE-only
-    can! :admin_related_issue
+    can! :admin_issue_link
   end
 
   # Permissions given when an user is team member of a project
@@ -329,6 +329,6 @@ class ProjectPolicy < BasePolicy
     can! :read_issue
 
     # EE-only
-    can! :read_related_issue
+    can! :read_issue_link
   end
 end
