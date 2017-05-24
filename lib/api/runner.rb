@@ -18,16 +18,15 @@ module API
       post '/' do
         attributes = attributes_for_keys [:description, :locked, :run_untagged, :tag_list]
 
-        runner =
-          if runner_registration_token_valid?
-            # Create shared runner. Requires admin access
-            Ci::Runner.create(attributes.merge(is_shared: true))
-          elsif project = Project.find_by(runners_token: params[:token])
-            # Create a specific runner for project.
-            project.runners.create(attributes)
-          end
-
-        return forbidden! unless runner
+        if runner_registration_token_valid?
+          # Create shared runner. Requires admin access
+          runner = Ci::Runner.create(attributes.merge(is_shared: true))
+        elsif project = Project.find_by(runners_token: params[:token])
+          # Create a specific runner for project.
+          runner = project.runners.create(attributes)
+        else
+          return forbidden!
+        end
 
         return render_validation_error!(runner) if runner.errors.any?
 
