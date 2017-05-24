@@ -1,4 +1,4 @@
 ---
-title: Move uploads from to 'public' to 'public/uploads'
+title: Move uploads from 'public/uploads' to 'public/uploads/system'
 merge_request:
 author:
