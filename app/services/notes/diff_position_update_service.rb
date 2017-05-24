@@ -1,26 +1,29 @@
 module Notes
   class DiffPositionUpdateService < BaseService
     def execute(note)
-      new_position = tracer.trace(note.position)
+      results = tracer.trace(note.position)
+      return unless results
 
-      # Don't update the position if the type doesn't match, since that means
-      # the diff line commented on was changed, and the comment is now outdated
-      old_position = note.position
-      if new_position &&
-          new_position != old_position &&
-          new_position.type == old_position.type
+      position = results[:position]
+      outdated = results[:outdated]
 
-        note.position = new_position
+      if outdated
+        note.change_position = position
+
+        if note.persisted? && current_user
+          SystemNoteService.diff_discussion_outdated(note.to_discussion, project, current_user, position)
+        end
+      else
+        note.position = position
+        note.change_position = nil
       end
-
-      note
     end
 
     private
 
     def tracer
       @tracer ||= Gitlab::Diff::PositionTracer.new(
-        repository: project.repository,
+        project: project,
         old_diff_refs: params[:old_diff_refs],
         new_diff_refs: params[:new_diff_refs],
         paths: params[:paths]

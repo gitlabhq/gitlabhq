@@ -3,21 +3,21 @@
 module Gitlab
   module Diff
     class PositionTracer
-      attr_accessor :repository
+      attr_accessor :project
       attr_accessor :old_diff_refs
       attr_accessor :new_diff_refs
       attr_accessor :paths
 
-      def initialize(repository:, old_diff_refs:, new_diff_refs:, paths: nil)
-        @repository = repository
+      def initialize(project:, old_diff_refs:, new_diff_refs:, paths: nil)
+        @project = project
         @old_diff_refs = old_diff_refs
         @new_diff_refs = new_diff_refs
         @paths = paths
       end
 
-      def trace(old_position)
+      def trace(ab_position)
         return unless old_diff_refs&.complete? && new_diff_refs&.complete?
-        return unless old_position.diff_refs == old_diff_refs
+        return unless ab_position.diff_refs == old_diff_refs
 
         # Suppose we have an MR with source branch `feature` and target branch `master`.
         # When the MR was created, the head of `master` was commit A, and the
@@ -44,14 +44,16 @@ module Gitlab
         #
         # For diff notes for diff A->B, the position looks like this:
         # Position
-        #   base_sha - ID of commit A
+        #   start_sha - ID of commit A
         #   head_sha - ID of commit B
+        #   base_sha - ID of base commit of A and B
         #   old_path - path as of A (nil if file was newly created)
         #   new_path - path as of B (nil if file was deleted)
         #   old_line - line number as of A (nil if file was newly created)
         #   new_line - line number as of B (nil if file was deleted)
         #
-        # We can easily update `base_sha` and `head_sha` to hold the IDs of commits C and D,
+        # We can easily update `start_sha` and `head_sha` to hold the IDs of
+        # commits C and D, and can trivially determine `base_sha` based on those,
         # but need to find the paths and line numbers as of C and D.
         #
         # If the file was unchanged or newly created in A->B, the path as of D can be found
@@ -68,107 +70,161 @@ module Gitlab
         # by generating diff A->C ("base to base"), finding the diff file with
         # `diff_file.old_path == position.old_path`, and taking `diff_file.new_path`.
         # The path as of D can be found by taking diff C->D, finding the diff file
-        # with that same `old_path` and taking `diff_file.new_path`.
+        # with `old_path` set to that `diff_file.new_path` and taking `diff_file.new_path`.
         # The line number as of C can be found by using the LineMapper on diff A->C
         # and providing the line number as of A.
         # The line number as of D can be found by using the LineMapper on diff C->D
         # and providing the line number as of C.
 
-        results = nil
-        results ||= trace_added_line(old_position)   if old_position.added?   || old_position.unchanged?
-        results ||= trace_removed_line(old_position) if old_position.removed? || old_position.unchanged?
-
-        return unless results
-
-        file_diff, old_line, new_line = results
-
-        new_position = Position.new(
-          old_path: file_diff.old_path,
-          new_path: file_diff.new_path,
-          head_sha: new_diff_refs.head_sha,
-          start_sha: new_diff_refs.start_sha,
-          base_sha: new_diff_refs.base_sha,
-          old_line: old_line,
-          new_line: new_line
-        )
-
-        # If a position is found, but is not actually contained in the diff, for example
-        # because it was an unchanged line in the context of a change that was undone,
-        # we cannot return this as a successful trace.
-        return unless new_position.diff_line(repository)
-
-        new_position
+        if ab_position.added?
+          trace_added_line(ab_position)
+        elsif ab_position.removed?
+          trace_removed_line(ab_position)
+        else # unchanged
+          trace_unchanged_line(ab_position)
+        end
       end
 
       private
 
-      def trace_added_line(old_position)
-        file_path = old_position.new_path
+      def trace_added_line(ab_position)
+        b_path = ab_position.new_path
+        b_line = ab_position.new_line
 
-        return unless diff_head_to_head
+        bd_diff = bd_diffs.diff_file_with_old_path(b_path)
 
-        file_head_to_head = diff_head_to_head.find { |diff_file| diff_file.old_path == file_path }
+        d_path = bd_diff&.new_path || b_path
+        d_line = LineMapper.new(bd_diff).old_to_new(b_line)
 
-        file_path = file_head_to_head.new_path if file_head_to_head
+        if d_line
+          cd_diff = cd_diffs.diff_file_with_new_path(d_path)
 
-        new_line = LineMapper.new(file_head_to_head).old_to_new(old_position.new_line)
+          c_path = cd_diff&.old_path || d_path
+          c_line = LineMapper.new(cd_diff).new_to_old(d_line)
 
-        return unless new_line
+          if c_line
+            # If the line is still in D but also in C, it has turned from an
+            # added line into an unchanged one.
+            new_position = position(cd_diff, c_line, d_line)
+            if valid_position?(new_position)
+              # If the line is still in the MR, we don't treat this as outdated.
+              { position: new_position, outdated: false }
+            else
+              # If the line is no longer in the MR, we unfortunately cannot show
+              # the current state on the CD diff, so we treat it as outdated.
+              ac_diff = ac_diffs.diff_file_with_new_path(c_path)
 
-        file_diff = new_diffs.find { |diff_file| diff_file.new_path == file_path }
-        return unless file_diff
-
-        old_line = LineMapper.new(file_diff).new_to_old(new_line)
-
-        [file_diff, old_line, new_line]
-      end
-
-      def trace_removed_line(old_position)
-        file_path = old_position.old_path
-
-        return unless diff_base_to_base
-
-        file_base_to_base = diff_base_to_base.find { |diff_file| diff_file.old_path == file_path }
-
-        file_path = file_base_to_base.old_path if file_base_to_base
-
-        old_line = LineMapper.new(file_base_to_base).old_to_new(old_position.old_line)
-
-        return unless old_line
-
-        file_diff = new_diffs.find { |diff_file| diff_file.old_path == file_path }
-        return unless file_diff
-
-        new_line = LineMapper.new(file_diff).old_to_new(old_line)
-
-        [file_diff, old_line, new_line]
-      end
-
-      def diff_base_to_base
-        @diff_base_to_base ||= diff_files(old_diff_refs.base_sha || old_diff_refs.start_sha, new_diff_refs.base_sha || new_diff_refs.start_sha)
-      end
-
-      def diff_head_to_head
-        @diff_head_to_head ||= diff_files(old_diff_refs.head_sha, new_diff_refs.head_sha)
-      end
-
-      def new_diffs
-        @new_diffs ||= diff_files(new_diff_refs.start_sha, new_diff_refs.head_sha, use_base: true)
-      end
-
-      def diff_files(start_sha, head_sha, use_base: false)
-        base_sha = self.repository.merge_base(start_sha, head_sha) || start_sha
-
-        diffs = self.repository.raw_repository.diff(
-          use_base ? base_sha : start_sha,
-          head_sha,
-          {},
-          *paths
-        )
-
-        diffs.decorate! do |diff|
-          Gitlab::Diff::File.new(diff, repository: self.repository)
+              { position: position(ac_diff, nil, c_line), outdated: true }
+            end
+          else
+            # If the line is still in D and not in C, it is still added.
+            { position: position(cd_diff, nil, d_line), outdated: false }
+          end
+        else
+          # If the line is no longer in D, it has been removed from the MR.
+          { position: position(bd_diff, b_line, nil), outdated: true }
         end
+      end
+
+      def trace_removed_line(ab_position)
+        a_path = ab_position.old_path
+        a_line = ab_position.old_line
+
+        ac_diff = ac_diffs.diff_file_with_old_path(a_path)
+
+        c_path = ac_diff&.new_path || a_path
+        c_line = LineMapper.new(ac_diff).old_to_new(a_line)
+
+        if c_line
+          cd_diff = cd_diffs.diff_file_with_old_path(c_path)
+
+          d_path = cd_diff&.new_path || c_path
+          d_line = LineMapper.new(cd_diff).old_to_new(c_line)
+
+          if d_line
+            # If the line is still in C but also in D, it has turned from a
+            # removed line into an unchanged one.
+            bd_diff = bd_diffs.diff_file_with_new_path(d_path)
+
+            { position: position(bd_diff, nil, d_line), outdated: true }
+          else
+            # If the line is still in C and not in D, it is still removed.
+            { position: position(cd_diff, c_line, nil), outdated: false }
+          end
+        else
+          # If the line is no longer in C, it has been removed outside of the MR.
+          { position: position(ac_diff, a_line, nil), outdated: true }
+        end
+      end
+
+      def trace_unchanged_line(ab_position)
+        a_path = ab_position.old_path
+        a_line = ab_position.old_line
+        b_path = ab_position.new_path
+        b_line = ab_position.new_line
+
+        ac_diff = ac_diffs.diff_file_with_old_path(a_path)
+
+        c_path = ac_diff&.new_path || a_path
+        c_line = LineMapper.new(ac_diff).old_to_new(a_line)
+
+        bd_diff = bd_diffs.diff_file_with_old_path(b_path)
+
+        d_line = LineMapper.new(bd_diff).old_to_new(b_line)
+
+        cd_diff = cd_diffs.diff_file_with_old_path(c_path)
+
+        if c_line && d_line
+          # If the line is still in C and D, it is still unchanged.
+          new_position = position(cd_diff, c_line, d_line)
+          if valid_position?(new_position)
+            # If the line is still in the MR, we don't treat this as outdated.
+            { position: new_position, outdated: false }
+          else
+            # If the line is no longer in the MR, we unfortunately cannot show
+            # the current state on the CD diff or any change on the BD diff,
+            # so we treat it as outdated.
+            { position: nil, outdated: true }
+          end
+        elsif d_line # && !c_line
+          # If the line is still in D but no longer in C, it has turned from
+          # an unchanged line into an added one.
+          # We don't treat this as outdated since the line is still in the MR.
+          { position: position(cd_diff, nil, d_line), outdated: false }
+        else # !d_line && (c_line || !c_line)
+          # If the line is no longer in D, it has turned from an unchanged line
+          # into a removed one.
+          { position: position(bd_diff, b_line, nil), outdated: true }
+        end
+      end
+
+      def ac_diffs
+        @ac_diffs ||= compare(
+          old_diff_refs.base_sha || old_diff_refs.start_sha,
+          new_diff_refs.base_sha || new_diff_refs.start_sha,
+          straight: true
+        )
+      end
+
+      def bd_diffs
+        @bd_diffs ||= compare(old_diff_refs.head_sha, new_diff_refs.head_sha, straight: true)
+      end
+
+      def cd_diffs
+        @cd_diffs ||= compare(new_diff_refs.start_sha, new_diff_refs.head_sha)
+      end
+
+      def compare(start_sha, head_sha, straight: false)
+        compare = CompareService.new(project, head_sha).execute(project, start_sha, straight: straight)
+        compare.diffs(paths: paths)
+      end
+
+      def position(diff_file, old_line, new_line)
+        Position.new(diff_file: diff_file, old_line: old_line, new_line: new_line)
+      end
+
+      def valid_position?(position)
+        !!position.diff_line(project.repository)
       end
     end
   end

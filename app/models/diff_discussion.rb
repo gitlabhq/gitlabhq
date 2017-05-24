@@ -19,21 +19,9 @@ class DiffDiscussion < Discussion
 
   def merge_request_version_params
     return unless for_merge_request?
+    return {} if active?
 
-    if active?
-      {}
-    else
-      diff_refs = position.diff_refs
-
-      if diff = noteable.merge_request_diff_for(diff_refs)
-        { diff_id: diff.id }
-      elsif diff = noteable.merge_request_diff_for(diff_refs.head_sha)
-        {
-          diff_id: diff.id,
-          start_sha: diff_refs.start_sha
-        }
-      end
-    end
+    noteable.version_params_for(position.diff_refs)
   end
 
   def reply_attributes

@@ -17,7 +17,8 @@ module SystemNoteHelper
     'visible' => 'icon_eye',
     'milestone' => 'icon_clock_o',
     'discussion' => 'icon_comment_o',
-    'moved' => 'icon_arrow_circle_o_right'
+    'moved' => 'icon_arrow_circle_o_right',
+    'outdated' => 'icon_edit'
   }.freeze
 
   def icon_for_system_note(note)

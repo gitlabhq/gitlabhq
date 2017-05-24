@@ -47,4 +47,12 @@ module DiscussionOnDiff
 
     prev_lines
   end
+
+  def line_code_in_diffs(diff_refs)
+    if active?(diff_refs)
+      line_code
+    elsif diff_refs && created_at_diff?(diff_refs)
+      original_line_code
+    end
+  end
 end

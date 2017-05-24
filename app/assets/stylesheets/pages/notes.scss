@@ -80,10 +80,6 @@ ul.notes {
       &.timeline-entry {
         padding: 14px 10px;
       }
-
-      .system-note {
-        padding: 0;
-      }
     }
 
     &.is-editing {
@@ -380,6 +376,10 @@ ul.notes {
   padding-bottom: 5px;
 }
 
+.system-note .note-header-info {
+  padding-bottom: 0;
+}
+
 .note-headline-light {
   display: inline;
 
@@ -579,6 +579,17 @@ ul.notes {
 
   &:active {
     outline: 0;
+  }
+}
+
+.discussion-body,
+.diff-file {
+  .notes .note {
+    padding: 10px 15px;
+
+    &.system-note {
+      padding: 0;
+    }
   }
 }
 

@@ -43,7 +43,7 @@ feature 'Merge Request Discussions', feature: true do
       it 'shows a link to the outdated diff' do
         within(".discussion[data-discussion-id='#{outdated_discussion.id}']") do
           path = diffs_namespace_project_merge_request_path(project.namespace, project, merge_request, diff_id: old_merge_request_diff.id, anchor: outdated_discussion.line_code)
-          expect(page).to have_link('an outdated diff', href: path)
+          expect(page).to have_link('an old version of the diff', href: path)
         end
       end
     end
