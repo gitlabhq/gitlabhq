@@ -74,7 +74,7 @@ feature 'Contributions Calendar', :feature, :js do
   describe 'calendar day selection' do
     before do
       visit user.username
-      wait_for_ajax
+      wait_for_requests
     end
 
     it 'displays calendar' do
@@ -86,7 +86,7 @@ feature 'Contributions Calendar', :feature, :js do
 
       before do
         cells[0].click
-        wait_for_ajax
+        wait_for_requests
         @first_day_activities = selected_day_activities
       end
 
@@ -97,7 +97,7 @@ feature 'Contributions Calendar', :feature, :js do
       describe 'select another calendar day' do
         before do
           cells[1].click
-          wait_for_ajax
+          wait_for_requests
         end
 
         it 'displays different calendar day activities' do
@@ -108,7 +108,7 @@ feature 'Contributions Calendar', :feature, :js do
       describe 'deselect calendar day' do
         before do
           cells[0].click
-          wait_for_ajax
+          wait_for_requests
         end
 
         it 'hides calendar day activities' do
@@ -122,7 +122,7 @@ feature 'Contributions Calendar', :feature, :js do
     shared_context 'visit user page' do
       before do
         visit user.username
-        wait_for_ajax
+        wait_for_requests
       end
     end
 

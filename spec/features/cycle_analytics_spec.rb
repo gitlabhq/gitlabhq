@@ -17,7 +17,7 @@ feature 'Cycle Analytics', feature: true, js: true do
         login_as(user)
 
         visit namespace_project_cycle_analytics_path(project.namespace, project)
-        wait_for_ajax
+        wait_for_requests
       end
 
       it 'shows introductory message' do
@@ -72,7 +72,7 @@ feature 'Cycle Analytics', feature: true, js: true do
         project.team << [user, :master]
         login_as(user)
         visit namespace_project_cycle_analytics_path(project.namespace, project)
-        wait_for_ajax
+        wait_for_requests
       end
 
       it 'shows the content in Spanish' do
@@ -95,7 +95,7 @@ feature 'Cycle Analytics', feature: true, js: true do
 
       login_as(guest)
       visit namespace_project_cycle_analytics_path(project.namespace, project)
-      wait_for_ajax
+      wait_for_requests
     end
 
     it 'needs permissions to see restricted stages' do
@@ -139,6 +139,6 @@ feature 'Cycle Analytics', feature: true, js: true do
 
   def click_stage(stage_name)
     find('.stage-nav li', text: stage_name).click
-    wait_for_ajax
+    wait_for_requests
   end
 end

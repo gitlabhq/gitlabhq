@@ -60,7 +60,7 @@ feature 'Diff note avatars', feature: true, js: true do
 
         click_button 'Comment'
 
-        wait_for_ajax
+        wait_for_requests
       end
 
       visit namespace_project_merge_request_path(project.namespace, project, merge_request)
@@ -76,7 +76,7 @@ feature 'Diff note avatars', feature: true, js: true do
       before do
         visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request, view: view)
 
-        wait_for_ajax
+        wait_for_requests
       end
 
       it 'shows note avatar' do
@@ -114,7 +114,7 @@ feature 'Diff note avatars', feature: true, js: true do
           find('.js-note-delete').click
         end
 
-        wait_for_ajax
+        wait_for_requests
 
         page.within find("[id='#{position.line_code(project.repository)}']") do
           expect(page).not_to have_selector('img.js-diff-comment-avatar')
@@ -129,7 +129,7 @@ feature 'Diff note avatars', feature: true, js: true do
 
           click_button 'Comment'
 
-          wait_for_ajax
+          wait_for_requests
         end
 
         page.within find("[id='#{position.line_code(project.repository)}']") do
@@ -148,7 +148,7 @@ feature 'Diff note avatars', feature: true, js: true do
 
             find('.js-comment-button').trigger 'click'
 
-            wait_for_ajax
+            wait_for_requests
           end
         end
 
@@ -166,7 +166,7 @@ feature 'Diff note avatars', feature: true, js: true do
 
           visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request, view: view)
 
-          wait_for_ajax
+          wait_for_requests
         end
 
         it 'shows extra comment count' do

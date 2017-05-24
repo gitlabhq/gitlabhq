@@ -1,9 +1,9 @@
 module SharedNote
   include Spinach::DSL
-  include WaitForAjax
+  include WaitForRequests
 
   after do
-    wait_for_ajax if javascript_test?
+    wait_for_requests if javascript_test?
   end
 
   step 'I delete a comment' do
@@ -25,7 +25,7 @@ module SharedNote
       click_button "Comment"
     end
 
-    wait_for_ajax
+    wait_for_requests
   end
 
   step 'I preview a comment text like "Bug fixed :smile:"' do
@@ -40,7 +40,7 @@ module SharedNote
       click_button "Comment"
     end
 
-    wait_for_ajax
+    wait_for_requests
   end
 
   step 'I write a comment like ":+1: Nice"' do
@@ -127,7 +127,7 @@ module SharedNote
       click_button "Comment"
     end
 
-    wait_for_ajax
+    wait_for_requests
   end
 
   step 'The comment with the header should not have an ID' do

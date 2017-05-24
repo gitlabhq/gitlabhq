@@ -4,7 +4,7 @@ import VueResource from 'vue-resource';
 Vue.use(VueResource);
 
 // Maintain a global counter for active requests
-// see: spec/support/wait_for_vue_resource.rb
+// see: spec/support/wait_for_requests.rb
 Vue.http.interceptors.push((request, next) => {
   window.activeVueResources = window.activeVueResources || 0;
   window.activeVueResources += 1;
