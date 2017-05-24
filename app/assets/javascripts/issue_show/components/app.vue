@@ -124,6 +124,11 @@ export default {
             gl.utils.visitUrl(location.pathname);
           }
 
+          return this.service.getData();
+        })
+        .then(res => res.json())
+        .then((data) => {
+          this.store.updateState(data);
           eventHub.$emit('close.form');
         })
         .catch(() => {
