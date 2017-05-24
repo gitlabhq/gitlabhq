@@ -68,7 +68,14 @@ module API
 
         name = params[:name] || params[:context] || 'default'
 
-        pipeline = @project.ensure_pipeline(ref, commit.sha, current_user)
+        pipeline = @project.pipeline_for(ref, commit.sha)
+        unless pipeline
+          pipeline = @project.pipelines.create!(
+            source: :external,
+            sha: commit.sha,
+            ref: ref,
+            user: current_user)
+        end
 
         status = GenericCommitStatus.running_or_pending.find_or_initialize_by(
           project: @project,

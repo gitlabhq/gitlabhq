@@ -485,7 +485,7 @@ describe API::Commits do
       end
 
       it "returns status for CI" do
-        pipeline = project.ensure_pipeline('master', project.repository.commit.sha)
+        pipeline = project.pipelines.create(source: :push, ref: 'master', sha: project.repository.commit.sha)
         pipeline.update(status: 'success')
 
         get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
@@ -495,7 +495,7 @@ describe API::Commits do
       end
 
       it "returns status for CI when pipeline is created" do
-        project.ensure_pipeline('master', project.repository.commit.sha)
+        project.pipelines.create(source: :push, ref: 'master', sha: project.repository.commit.sha)
 
         get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
 
