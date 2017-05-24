@@ -217,14 +217,13 @@ function UsersSelect(currentUser, els) {
         processData: function(term, data, callback) {
           let users = data;
 
+          // Only show assigned user list when there is no search term
           if ($dropdown.hasClass('js-multiselect') && term.length === 0) {
-            let selectedInputs = getSelectedUserInputs();
+            const selectedInputs = getSelectedUserInputs();
 
             // Potential duplicate entries when dealing with issue board
             // because issue board is also managed by vue
-            selectedInputs = _.uniq(selectedInputs, false, a => a.value);
-
-            const selectedUsers = selectedInputs
+            const selectedUsers = _.uniq(selectedInputs, false, a => a.value)
               .filter((input) => {
                 const userId = parseInt(input.value, 10);
                 const inUsersArray = users.find(u => u.id === userId);
