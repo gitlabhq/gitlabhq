@@ -24,6 +24,7 @@ Feature: Project
     When I enable project issues
     Then I should see the issues settings
 
+  @javascript
   Scenario: I should have readme on page
     And I visit project "Shop" page
     Then I should see project "Shop" README

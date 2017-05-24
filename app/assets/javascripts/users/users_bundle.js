@@ -1,1 +1,1 @@
-require('./calendar');
+import './calendar';

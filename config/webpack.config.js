@@ -97,7 +97,7 @@ var config = {
         query: { mimetype: 'image/gif' },
       },
       {
-        test: /\.(worker\.js|pdf)$/,
+        test: /\.(worker\.js|pdf|bmpr)$/,
         exclude: /node_modules/,
         loader: 'file-loader',
       },
@@ -150,9 +150,6 @@ var config = {
         'notebook_viewer',
         'pdf_viewer',
         'pipelines',
-        'mr_widget_ee',
-        'issue_show',
-        'balsamiq_viewer',
         'pipelines_graph',
         'schedule_form',
         'schedules_index',

@@ -24,6 +24,17 @@ module EE
       !public? && shared_runners_enabled? && namespace.shared_runners_minutes_limit_enabled?
     end
 
+    # Checks licensed feature availability if `feature` matches any
+    # key on License::FEATURE_CODES. Otherwise, check feature availability
+    # through ProjectFeature.
+    def feature_available?(feature, user = nil)
+      if License::FEATURE_CODES.key?(feature)
+        licensed_feature_available?(feature)
+      else
+        super
+      end
+    end
+
     def service_desk_address
       return nil unless service_desk_available?
 
@@ -34,6 +45,17 @@ module EE
     end
 
     private
+
+    def licensed_feature_available?(feature)
+      globally_available = License.current&.feature_available?(feature)
+
+      if current_application_settings.should_check_namespace_plan?
+        globally_available &&
+          (public? && namespace.public? || namespace.feature_available?(feature))
+      else
+        globally_available
+      end
+    end
 
     def service_desk_available?
       return @service_desk_available if defined?(@service_desk_available)

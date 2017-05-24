@@ -3,7 +3,7 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
   include SharedPaths
   include SharedProject
   include SharedUser
-  include WaitForAjax
+  include WaitForRequests
 
   step '"John Doe" is a developer of project "Shop"' do
     project.team << [john_doe, :developer]
@@ -55,7 +55,7 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
     merge_request_reference = merge_request.to_reference(full: true)
     issue_reference = issue.to_reference(full: true)
 
-    click_link 'Mark all as done'
+    find('.js-todos-mark-all').trigger('click')
 
     page.within('.todos-count') { expect(page).to have_content '0' }
     expect(page).to have_content 'To do 0'
@@ -69,7 +69,7 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
   end
 
   step 'I should see the todo marked as done' do
-    click_link 'Done 1'
+    find('.todos-done a').trigger('click')
 
     expect(page).to have_link project.name_with_namespace
     should_see_todo(1, "John Doe assigned you merge request #{merge_request.to_reference(full: true)}", merge_request.title, state: :done_irreversible)
@@ -79,7 +79,7 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
     merge_request_reference = merge_request.to_reference(full: true)
     issue_reference = issue.to_reference(full: true)
 
-    click_link 'Done 4'
+    find('.todos-done a').trigger('click')
 
     expect(page).to have_link project.name_with_namespace
     should_see_todo(1, "John Doe assigned you merge request #{merge_request_reference}", merge_request.title, state: :done_irreversible)
@@ -140,7 +140,7 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
   step 'I should be directed to the corresponding page' do
     page.should have_css('.identifier', text: 'Merge Request !1')
     # Merge request page loads and issues a number of Ajax requests
-    wait_for_ajax
+    wait_for_requests
   end
 
   def should_see_todo(position, title, body, state: :pending)

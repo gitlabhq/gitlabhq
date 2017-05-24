@@ -1,12 +1,12 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-use-before-define, no-useless-escape, no-new, quotes, object-shorthand, no-unused-vars, comma-dangle, no-alert, consistent-return, no-else-return, prefer-template, one-var, one-var-declaration-per-line, curly, max-len */
 /* global GitLab */
-/* global UsersSelect */
 /* global ZenMode */
 /* global Autosave */
 /* global GroupsSelect */
 /* global dateFormat */
 /* global Pikaday */
 
+import UsersSelect from './users_select';
 import GfmAutoComplete from './gfm_auto_complete';
 
 (function() {

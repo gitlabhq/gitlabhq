@@ -282,6 +282,18 @@ describe Projects::MergeRequestsController do
           expect(response).to match_response_schema('entities/merge_request')
         end
       end
+
+      context 'number of queries' do
+        it 'verifies number of queries' do
+          # pre-create objects
+          merge_request
+
+          recorded = ActiveRecord::QueryRecorder.new { go(format: :json) }
+
+          expect(recorded.count).to be_within(5).of(95)
+          expect(recorded.cached_count).to eq(0)
+        end
+      end
     end
 
     describe "as diff" do
@@ -1205,7 +1217,9 @@ describe Projects::MergeRequestsController do
       end
 
       it 'returns the file in JSON format' do
-        content = merge_request_with_conflicts.conflicts.file_for_path(path, path).content
+        content = MergeRequests::Conflicts::ListService.new(merge_request_with_conflicts).
+                    file_for_path(path, path).
+                    content
 
         expect(json_response).to include('old_path' => path,
                                          'new_path' => path,
@@ -1329,11 +1343,15 @@ describe Projects::MergeRequestsController do
 
     context 'when a file has identical content to the conflict' do
       before do
+        content = MergeRequests::Conflicts::ListService.new(merge_request_with_conflicts).
+                    file_for_path('files/ruby/popen.rb', 'files/ruby/popen.rb').
+                    content
+
         resolved_files = [
           {
             'new_path' => 'files/ruby/popen.rb',
             'old_path' => 'files/ruby/popen.rb',
-            'content' => merge_request_with_conflicts.conflicts.file_for_path('files/ruby/popen.rb', 'files/ruby/popen.rb').content
+            'content' => content
           }, {
             'new_path' => 'files/ruby/regex.rb',
             'old_path' => 'files/ruby/regex.rb',

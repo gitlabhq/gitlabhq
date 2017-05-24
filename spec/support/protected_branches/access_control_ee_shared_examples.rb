@@ -42,7 +42,7 @@ RSpec.shared_examples "protected branches > access control > EE" do
       set_allowed_to(git_operation, groups.map(&:name), form: ".js-protected-branch-edit-form")
       set_allowed_to(git_operation, roles.values, form: ".js-protected-branch-edit-form")
 
-      wait_for_ajax
+      wait_for_requests
 
       expect(ProtectedBranch.count).to eq(1)
       roles.each { |(access_type_id, _)| expect(ProtectedBranch.last.send("#{git_operation}_access_levels".to_sym).map(&:access_level)).to include(access_type_id) }
@@ -65,7 +65,7 @@ RSpec.shared_examples "protected branches > access control > EE" do
       groups.each { |group| set_allowed_to(git_operation, group.name, form: ".js-protected-branch-edit-form") }
       roles.each { |(_, access_type_name)| set_allowed_to(git_operation, access_type_name, form: ".js-protected-branch-edit-form") }
 
-      wait_for_ajax
+      wait_for_requests
 
       expect(ProtectedBranch.count).to eq(1)
       expect(ProtectedBranch.last.send("#{git_operation}_access_levels".to_sym)).to be_empty
@@ -95,11 +95,11 @@ RSpec.shared_examples "protected branches > access control > EE" do
           expect(all('.dropdown-header')[index]).to have_content(header)
         end
 
-        wait_for_ajax
+        wait_for_requests
         click_on users.last.name
         find(".js-allowed-to-#{git_operation}").click # close
       end
-      wait_for_ajax
+      wait_for_requests
 
       # Verify the user is appended in the dropdown
       find(".protected-branches-list .js-allowed-to-#{git_operation}").click
@@ -119,7 +119,7 @@ RSpec.shared_examples "protected branches > access control > EE" do
       set_allowed_to('merge')
       set_allowed_to('push', roles.values)
       click_on "Protect"
-      wait_for_ajax
+      wait_for_requests
 
       roles.each do |(access_type_id, _)|
         expect(ProtectedBranch.last.push_access_levels.map(&:access_level)).to include(access_type_id)
@@ -128,7 +128,7 @@ RSpec.shared_examples "protected branches > access control > EE" do
 
       set_allowed_to('push', 'No one', form: '.js-protected-branch-edit-form')
 
-      wait_for_ajax
+      wait_for_requests
 
       roles.each do |(access_type_id, _)|
         expect(ProtectedBranch.last.push_access_levels.map(&:access_level)).not_to include(access_type_id)
@@ -145,7 +145,7 @@ RSpec.shared_examples "protected branches > access control > EE" do
       set_allowed_to('merge')
       set_allowed_to('push', ProtectedBranch::PushAccessLevel.human_access_levels.values) # Last item (No one) should deselect the other ones
       click_on "Protect"
-      wait_for_ajax
+      wait_for_requests
 
       roles.each do |(access_type_id, _)|
         expect(ProtectedBranch.last.push_access_levels.map(&:access_level)).not_to include(access_type_id)

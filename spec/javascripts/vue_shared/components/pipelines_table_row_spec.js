@@ -1,27 +1,47 @@
 import Vue from 'vue';
 import tableRowComp from '~/vue_shared/components/pipelines_table_row';
-import pipeline from '../../commit/pipelines/mock_data';
 
 describe('Pipelines Table Row', () => {
-  let component;
-
-  beforeEach(() => {
+  const jsonFixtureName = 'pipelines/pipelines.json';
+  const buildComponent = (pipeline) => {
     const PipelinesTableRowComponent = Vue.extend(tableRowComp);
-
-    component = new PipelinesTableRowComponent({
+    return new PipelinesTableRowComponent({
       el: document.querySelector('.test-dom-element'),
       propsData: {
         pipeline,
         service: {},
       },
     }).$mount();
+  };
+
+  let component;
+  let pipeline;
+  let pipelineWithoutAuthor;
+  let pipelineWithoutCommit;
+
+  preloadFixtures(jsonFixtureName);
+
+  beforeEach(() => {
+    const pipelines = getJSONFixture(jsonFixtureName).pipelines;
+    pipeline = pipelines.find(p => p.id === 1);
+    pipelineWithoutAuthor = pipelines.find(p => p.id === 2);
+    pipelineWithoutCommit = pipelines.find(p => p.id === 3);
+  });
+
+  afterEach(() => {
+    component.$destroy();
   });
 
   it('should render a table row', () => {
+    component = buildComponent(pipeline);
     expect(component.$el).toEqual('TR');
   });
 
   describe('status column', () => {
+    beforeEach(() => {
+      component = buildComponent(pipeline);
+    });
+
     it('should render a pipeline link', () => {
       expect(
         component.$el.querySelector('td.commit-link a').getAttribute('href'),
@@ -36,6 +56,10 @@ describe('Pipelines Table Row', () => {
   });
 
   describe('information column', () => {
+    beforeEach(() => {
+      component = buildComponent(pipeline);
+    });
+
     it('should render a pipeline link', () => {
       expect(
         component.$el.querySelector('td:nth-child(2) a').getAttribute('href'),
@@ -63,13 +87,59 @@ describe('Pipelines Table Row', () => {
 
   describe('commit column', () => {
     it('should render link to commit', () => {
-      expect(
-        component.$el.querySelector('td:nth-child(3) .commit-id').getAttribute('href'),
-      ).toEqual(pipeline.commit.commit_path);
+      component = buildComponent(pipeline);
+
+      const commitLink = component.$el.querySelector('.branch-commit .commit-sha');
+      expect(commitLink.getAttribute('href')).toEqual(pipeline.commit.commit_path);
+    });
+
+    const findElements = () => {
+      const commitTitleElement = component.$el.querySelector('.branch-commit .commit-title');
+      const commitAuthorElement = commitTitleElement.querySelector('a.avatar-image-container');
+
+      if (!commitAuthorElement) {
+        return { commitAuthorElement };
+      }
+
+      const commitAuthorLink = commitAuthorElement.getAttribute('href');
+      const commitAuthorName = commitAuthorElement.querySelector('img.avatar').getAttribute('title');
+
+      return { commitAuthorElement, commitAuthorLink, commitAuthorName };
+    };
+
+    it('renders nothing without commit', () => {
+      expect(pipelineWithoutCommit.commit).toBe(null);
+      component = buildComponent(pipelineWithoutCommit);
+
+      const { commitAuthorElement } = findElements();
+
+      expect(commitAuthorElement).toBe(null);
+    });
+
+    it('renders commit author', () => {
+      component = buildComponent(pipeline);
+      const { commitAuthorLink, commitAuthorName } = findElements();
+
+      expect(commitAuthorLink).toEqual(pipeline.commit.author.web_url);
+      expect(commitAuthorName).toEqual(pipeline.commit.author.username);
+    });
+
+    it('renders commit with unregistered author', () => {
+      expect(pipelineWithoutAuthor.commit.author).toBe(null);
+      component = buildComponent(pipelineWithoutAuthor);
+
+      const { commitAuthorLink, commitAuthorName } = findElements();
+
+      expect(commitAuthorLink).toEqual(`mailto:${pipelineWithoutAuthor.commit.author_email}`);
+      expect(commitAuthorName).toEqual(pipelineWithoutAuthor.commit.author_name);
     });
   });
 
   describe('stages column', () => {
+    beforeEach(() => {
+      component = buildComponent(pipeline);
+    });
+
     it('should render an icon for each stage', () => {
       expect(
         component.$el.querySelectorAll('td:nth-child(4) .js-builds-dropdown-button').length,
@@ -78,6 +148,10 @@ describe('Pipelines Table Row', () => {
   });
 
   describe('actions column', () => {
+    beforeEach(() => {
+      component = buildComponent(pipeline);
+    });
+
     it('should render the provided actions', () => {
       expect(
         component.$el.querySelectorAll('td:nth-child(6) ul li').length,

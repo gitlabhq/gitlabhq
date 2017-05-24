@@ -5,7 +5,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
   include SharedMarkdown
-  include WaitForAjax
+  include WaitForRequests
 
   step 'I own project "Delta"' do
     @project = ::Project.find_by(name: "Delta")
@@ -35,7 +35,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
 
   step 'I should see correct document rendered' do
     expect(current_path).to eq namespace_project_blob_path(@project.namespace, @project, "markdown/doc/api/README.md")
-    wait_for_ajax
+    wait_for_requests
     expect(page).to have_content "All API requests require authentication"
   end
 
@@ -65,7 +65,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
 
   step 'I should see correct maintenance file rendered' do
     expect(current_path).to eq namespace_project_blob_path(@project.namespace, @project, "markdown/doc/raketasks/maintenance.md")
-    wait_for_ajax
+    wait_for_requests
     expect(page).to have_content "bundle exec rake gitlab:env:info RAILS_ENV=production"
   end
 
@@ -97,7 +97,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
 
   step 'I see correct file rendered' do
     expect(current_path).to eq namespace_project_blob_path(@project.namespace, @project, "markdown/doc/api/README.md")
-    wait_for_ajax
+    wait_for_requests
     expect(page).to have_content "Contents"
     expect(page).to have_link "Users"
     expect(page).to have_link "Rake tasks"
@@ -120,6 +120,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
 
   When 'I visit markdown branch' do
     visit namespace_project_tree_path(@project.namespace, @project, "markdown")
+    wait_for_requests
   end
 
   When 'I visit markdown branch "README.md" blob' do
@@ -142,7 +143,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
 
   step 'I see correct file rendered in markdown branch' do
     expect(current_path).to eq namespace_project_blob_path(@project.namespace, @project, "markdown/doc/api/README.md")
-    wait_for_ajax
+    wait_for_requests
     expect(page).to have_content "Contents"
     expect(page).to have_link "Users"
     expect(page).to have_link "Rake tasks"
@@ -150,7 +151,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
 
   step 'I should see correct document rendered for markdown branch' do
     expect(current_path).to eq namespace_project_blob_path(@project.namespace, @project, "markdown/doc/api/README.md")
-    wait_for_ajax
+    wait_for_requests
     expect(page).to have_content "All API requests require authentication"
   end
 
@@ -168,7 +169,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   # Expected link contents
 
   step 'The link with text "empty" should have url "tree/markdown"' do
-    wait_for_ajax
+    wait_for_requests
     find('a', text: /^empty$/)['href'] == current_host + namespace_project_tree_path(@project.namespace, @project, "markdown")
   end
 
@@ -204,7 +205,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   end
 
   step 'The link with text "ID" should have url "blob/markdown/README.mdID"' do
-    wait_for_ajax
+    wait_for_requests
     find('a', text: /^#id$/)['href'] == current_host + namespace_project_blob_path(@project.namespace, @project, "markdown/README.md") + '#id'
   end
 
@@ -299,12 +300,12 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
 
   step 'I should see the correct markdown' do
     expect(current_path).to eq namespace_project_blob_path(@project.namespace, @project, "markdown/doc/api/users.md")
-    wait_for_ajax
+    wait_for_requests
     expect(page).to have_content "List users"
   end
 
   step 'Header "Application details" should have correct id and link' do
-    wait_for_ajax
+    wait_for_requests
     header_should_have_correct_id_and_link(2, 'Application details', 'application-details')
   end
 

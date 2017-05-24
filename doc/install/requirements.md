@@ -122,15 +122,25 @@ To change the Unicorn workers when you have the Omnibus package please see [the 
 
 We currently support the following databases:
 
-- PostgreSQL (recommended)
+- PostgreSQL
 - MySQL/MariaDB
 
-If you want to run the database separately, expect a size of about 1 MB per user.
+We _highly_ recommend the use of PostgreSQL instead of MySQL/MariaDB as not all
+features of GitLab may work with MySQL/MariaDB. For example, MySQL does not have
+the right features to support nested groups in an efficient manner; see
+<https://gitlab.com/gitlab-org/gitlab-ce/issues/30472> for more information
+about this. Existing users using GitLab with MySQL/MariaDB are advised to
+migrate to PostgreSQL instead.
+
+The server running the database should have _at least_ 5-10 GB of storage
+available, though the exact requirements depend on the size of the GitLab
+installation (e.g. the number of users, projects, etc).
 
 ### PostgreSQL Requirements
 
-As of GitLab 9.0, PostgreSQL 9.6 is recommended. Lower versions of PostgreSQL
-may work but primary testing and developement takes place using PostgreSQL 9.6.
+As of GitLab 9.0, PostgreSQL 9.2 or newer is required, and earlier versions are
+not supported. We highly recommend users to use at least PostgreSQL 9.6 as this
+is the PostgreSQL version used for development and testing.
 
 Users using PostgreSQL must ensure the `pg_trgm` extension is loaded into every
 GitLab database. This extension can be enabled (using a PostgreSQL super user)

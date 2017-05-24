@@ -33,7 +33,7 @@ feature 'Group issues page', feature: true do
     it 'filters by only group users' do
       click_button('Assignee')
 
-      wait_for_ajax
+      wait_for_requests
 
       expect(find('.dropdown-menu-assignee')).to have_link(user.name)
       expect(find('.dropdown-menu-assignee')).not_to have_link(user2.name)

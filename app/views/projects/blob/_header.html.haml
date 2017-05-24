@@ -20,7 +20,7 @@
 
 = render 'projects/fork_suggestion'
 
-- if license_allows_file_locks?
+- if @project.feature_available?(:file_lock)
   :javascript
     PathLocks.init(
       '#{toggle_namespace_project_path_locks_path(@project.namespace, @project)}',

@@ -1,9 +1,6 @@
 require 'rails_helper'
 
 describe 'Board with milestone', :feature, :js do
-  include WaitForAjax
-  include WaitForVueResource
-
   let(:user) { create(:user) }
   let(:project) { create(:empty_project, :public) }
   let!(:milestone) { create(:milestone, project: project) }
@@ -25,7 +22,7 @@ describe 'Board with milestone', :feature, :js do
       create_board_with_milestone
 
       expect(find('.tokens-container')).to have_content(milestone.title)
-      wait_for_vue_resource
+      wait_for_requests
 
       find('.card', match: :first)
 
@@ -45,7 +42,7 @@ describe 'Board with milestone', :feature, :js do
       page.within '#js-multiple-boards-switcher' do
         find('.dropdown-menu-toggle').click
 
-        wait_for_vue_resource
+        wait_for_requests
 
         click_link board.name
       end
@@ -107,7 +104,7 @@ describe 'Board with milestone', :feature, :js do
     end
 
     it 'removes issues milestone when removing from the board' do
-      wait_for_vue_resource
+      wait_for_requests
 
       first('.card .card-number').click
 
@@ -134,7 +131,7 @@ describe 'Board with milestone', :feature, :js do
     end
 
     it 'creates new issue with boards milestone' do
-      wait_for_vue_resource
+      wait_for_requests
 
       page.within(first('.board')) do
         find('.btn-default').click
@@ -143,7 +140,7 @@ describe 'Board with milestone', :feature, :js do
 
         click_button('Submit issue')
 
-        wait_for_vue_resource
+        wait_for_requests
 
         click_link('testing new issue with milestone')
       end
@@ -152,7 +149,7 @@ describe 'Board with milestone', :feature, :js do
     end
 
     it 'updates issue with milestone from add issues modal' do
-      wait_for_vue_resource
+      wait_for_requests
 
       click_button 'Add issues'
 

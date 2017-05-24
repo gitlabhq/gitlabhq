@@ -3,9 +3,9 @@ module BlobViewer
     extend ActiveSupport::Concern
 
     included do
-      self.client_side = true
-      self.max_size = 10.megabytes
-      self.absolute_max_size = 50.megabytes
+      self.load_async = false
+      self.overridable_max_size = 10.megabytes
+      self.max_size = 50.megabytes
     end
   end
 end

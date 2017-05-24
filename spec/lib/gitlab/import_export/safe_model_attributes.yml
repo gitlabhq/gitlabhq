@@ -235,6 +235,7 @@ CommitStatus:
 - lock_version
 - coverage_regex
 - auto_canceled_by_id
+- retried
 Ci::Variable:
 - id
 - project_id

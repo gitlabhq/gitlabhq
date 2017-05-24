@@ -1,4 +1,4 @@
-require('~/smart_interval');
+import '~/smart_interval';
 
 (() => {
   const DEFAULT_MAX_INTERVAL = 100;

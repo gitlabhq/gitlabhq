@@ -6,15 +6,17 @@
 
 import $ from 'jquery';
 import Cookies from 'js-cookie';
+import autosize from 'vendor/autosize';
+import Dropzone from 'dropzone';
+import 'vendor/jquery.caret'; // required by jquery.atwho
+import 'vendor/jquery.atwho';
 import CommentTypeToggle from './comment_type_toggle';
+import './autosave';
+import './dropzone_input';
+import './task_list';
 
-require('./autosave');
-window.autosize = require('vendor/autosize');
-window.Dropzone = require('dropzone');
-require('./dropzone_input');
-require('vendor/jquery.caret'); // required by jquery.atwho
-require('vendor/jquery.atwho');
-require('./task_list');
+window.autosize = autosize;
+window.Dropzone = Dropzone;
 
 const normalizeNewlines = function(str) {
   return str.replace(/\r\n/g, '\n');
@@ -46,6 +48,7 @@ const normalizeNewlines = function(str) {
       this.keydownNoteText = this.keydownNoteText.bind(this);
       this.toggleCommitList = this.toggleCommitList.bind(this);
       this.postComment = this.postComment.bind(this);
+      this.clearFlashWrapper = this.clearFlash.bind(this);
 
       this.notes_url = notes_url;
       this.note_ids = note_ids;
@@ -56,6 +59,7 @@ const normalizeNewlines = function(str) {
       this.notesCountBadge || (this.notesCountBadge = $(".issuable-details").find(".notes-tab .badge"));
       this.basePollingInterval = 15000;
       this.maxPollingSteps = 4;
+      this.flashErrors = [];
 
       this.cleanBinding();
       this.addBinding();
@@ -297,7 +301,7 @@ const normalizeNewlines = function(str) {
 
       if (!noteEntity.valid) {
         if (noteEntity.errors.commands_only) {
-          new Flash(noteEntity.errors.commands_only, 'notice', this.parentTimeline);
+          this.addFlash(noteEntity.errors.commands_only, 'notice', this.parentTimeline);
           this.refresh();
         }
         return;
@@ -550,14 +554,14 @@ const normalizeNewlines = function(str) {
       return this.renderNote(note);
     };
 
-    Notes.prototype.addNoteError = ($form) => {
+    Notes.prototype.addNoteError = function($form) {
       let formParentTimeline;
       if ($form.hasClass('js-main-target-form')) {
         formParentTimeline = $form.parents('.timeline');
       } else if ($form.hasClass('js-discussion-note-form')) {
         formParentTimeline = $form.closest('.discussion-notes').find('.notes');
       }
-      return new Flash('Your comment could not be submitted! Please check your network connection and try again.', 'alert', formParentTimeline);
+      return this.addFlash('Your comment could not be submitted! Please check your network connection and try again.', 'alert', formParentTimeline);
     };
 
     Notes.prototype.updateNoteError = $parentTimeline => new Flash('Your comment could not be updated! Please check your network connection and try again.');
@@ -1112,6 +1116,15 @@ const normalizeNewlines = function(str) {
       });
     };
 
+    Notes.prototype.addFlash = function(...flashParams) {
+      this.flashErrors.push(new Flash(...flashParams));
+    };
+
+    Notes.prototype.clearFlash = function() {
+      this.flashErrors.forEach(flash => flash.flashContainer.remove());
+      this.flashErrors = [];
+    };
+
     Notes.prototype.cleanForm = function($form) {
       // Remove JS classes that are not needed here
       $form
@@ -1195,9 +1208,6 @@ const normalizeNewlines = function(str) {
                          <span class="hidden-xs">${currentUserFullname}</span>
                          <span class="note-headline-light">@${currentUsername}</span>
                        </a>
-                       <span class="note-headline-light">
-                          <i class="fa fa-spinner fa-spin" aria-label="Comment is being posted" aria-hidden="true"></i>
-                       </span>
                     </div>
                  </div>
                  <div class="note-body">
@@ -1293,6 +1303,8 @@ const normalizeNewlines = function(str) {
         .then((note) => {
           // Submission successful! remove placeholder
           $notesContainer.find(`#${uniqueId}`).remove();
+          // Clear previous form errors
+          this.clearFlashWrapper();
 
           // Check if this was discussion comment
           if (isDiscussionForm) {

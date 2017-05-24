@@ -38,7 +38,7 @@ shared_examples "protected branches > access control > CE" do
         end
       end
 
-      wait_for_ajax
+      wait_for_requests
 
       expect(ProtectedBranch.last.push_access_levels.map(&:access_level)).to include(access_type_id)
     end
@@ -83,7 +83,7 @@ shared_examples "protected branches > access control > CE" do
         end
       end
 
-      wait_for_ajax
+      wait_for_requests
 
       expect(ProtectedBranch.last.merge_access_levels.map(&:access_level)).to include(access_type_id)
     end

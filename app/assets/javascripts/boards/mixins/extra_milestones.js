@@ -1,4 +1,4 @@
-module.exports = [
+export default [
   {
     id: null,
     title: 'Any Milestone',

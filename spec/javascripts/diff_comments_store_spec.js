@@ -1,9 +1,9 @@
 /* eslint-disable jasmine/no-global-setup, dot-notation, jasmine/no-expect-in-setup-teardown, max-len */
 /* global CommentsStore */
 
-require('~/diff_notes/models/discussion');
-require('~/diff_notes/models/note');
-require('~/diff_notes/stores/comments');
+import '~/diff_notes/models/discussion';
+import '~/diff_notes/models/note';
+import '~/diff_notes/stores/comments';
 
 function createDiscussion(noteId = 1, resolved = true) {
   CommentsStore.create({

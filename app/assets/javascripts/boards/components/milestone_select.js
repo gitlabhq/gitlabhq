@@ -1,8 +1,8 @@
 /* global BoardService */
 
-const extraMilestones = require('../mixins/extra_milestones');
+import extraMilestones from '../mixins/extra_milestones';
 
-module.exports = {
+export default {
   props: {
     board: {
       type: Object,

@@ -83,7 +83,7 @@ describe UsersController do
         get :show, username: redirect_route.path
 
         expect(response).to redirect_to(user)
-        expect(controller).to set_flash[:notice].to(/moved/)
+        expect(controller).to set_flash[:notice].to(user_moved_message(redirect_route, user))
       end
     end
 
@@ -162,7 +162,7 @@ describe UsersController do
         get :calendar, username: redirect_route.path
 
         expect(response).to redirect_to(user_calendar_path(user))
-        expect(controller).to set_flash[:notice].to(/moved/)
+        expect(controller).to set_flash[:notice].to(user_moved_message(redirect_route, user))
       end
     end
   end
@@ -216,7 +216,7 @@ describe UsersController do
         get :calendar_activities, username: redirect_route.path
 
         expect(response).to redirect_to(user_calendar_activities_path(user))
-        expect(controller).to set_flash[:notice].to(/moved/)
+        expect(controller).to set_flash[:notice].to(user_moved_message(redirect_route, user))
       end
     end
   end
@@ -270,7 +270,7 @@ describe UsersController do
         get :snippets, username: redirect_route.path
 
         expect(response).to redirect_to(user_snippets_path(user))
-        expect(controller).to set_flash[:notice].to(/moved/)
+        expect(controller).to set_flash[:notice].to(user_moved_message(redirect_route, user))
       end
     end
   end
@@ -319,5 +319,130 @@ describe UsersController do
         end
       end
     end
+  end
+
+  describe '#ensure_canonical_path' do
+    before do
+      sign_in(user)
+    end
+
+    context 'for a GET request' do
+      context 'when requesting users at the root path' do
+        context 'when requesting the canonical path' do
+          let(:user) { create(:user, username: 'CamelCaseUser') }
+
+          context 'with exactly matching casing' do
+            it 'responds with success' do
+              get :show, username: user.username
+
+              expect(response).to be_success
+            end
+          end
+
+          context 'with different casing' do
+            it 'redirects to the correct casing' do
+              get :show, username: user.username.downcase
+
+              expect(response).to redirect_to(user)
+              expect(controller).not_to set_flash[:notice]
+            end
+          end
+        end
+
+        context 'when requesting a redirected path' do
+          let(:redirect_route) { user.namespace.redirect_routes.create(path: 'old-path') }
+
+          it 'redirects to the canonical path' do
+            get :show, username: redirect_route.path
+
+            expect(response).to redirect_to(user)
+            expect(controller).to set_flash[:notice].to(user_moved_message(redirect_route, user))
+          end
+
+          context 'when the old path is a substring of the scheme or host' do
+            let(:redirect_route) { user.namespace.redirect_routes.create(path: 'http') }
+
+            it 'does not modify the requested host' do
+              get :show, username: redirect_route.path
+
+              expect(response).to redirect_to(user)
+              expect(controller).to set_flash[:notice].to(user_moved_message(redirect_route, user))
+            end
+          end
+
+          context 'when the old path is substring of users' do
+            let(:redirect_route) { user.namespace.redirect_routes.create(path: 'ser') }
+
+            it 'redirects to the canonical path' do
+              get :show, username: redirect_route.path
+
+              expect(response).to redirect_to(user)
+              expect(controller).to set_flash[:notice].to(user_moved_message(redirect_route, user))
+            end
+          end
+        end
+      end
+
+      context 'when requesting users under the /users path' do
+        context 'when requesting the canonical path' do
+          let(:user) { create(:user, username: 'CamelCaseUser') }
+
+          context 'with exactly matching casing' do
+            it 'responds with success' do
+              get :projects, username: user.username
+
+              expect(response).to be_success
+            end
+          end
+
+          context 'with different casing' do
+            it 'redirects to the correct casing' do
+              get :projects, username: user.username.downcase
+
+              expect(response).to redirect_to(user_projects_path(user))
+              expect(controller).not_to set_flash[:notice]
+            end
+          end
+        end
+
+        context 'when requesting a redirected path' do
+          let(:redirect_route) { user.namespace.redirect_routes.create(path: 'old-path') }
+
+          it 'redirects to the canonical path' do
+            get :projects, username: redirect_route.path
+
+            expect(response).to redirect_to(user_projects_path(user))
+            expect(controller).to set_flash[:notice].to(user_moved_message(redirect_route, user))
+          end
+
+          context 'when the old path is a substring of the scheme or host' do
+            let(:redirect_route) { user.namespace.redirect_routes.create(path: 'http') }
+
+            it 'does not modify the requested host' do
+              get :projects, username: redirect_route.path
+
+              expect(response).to redirect_to(user_projects_path(user))
+              expect(controller).to set_flash[:notice].to(user_moved_message(redirect_route, user))
+            end
+          end
+
+          context 'when the old path is substring of users' do
+            let(:redirect_route) { user.namespace.redirect_routes.create(path: 'ser') }
+
+            # I.e. /users/ser should not become /ufoos/ser
+            it 'does not modify the /users part of the path' do
+              get :projects, username: redirect_route.path
+
+              expect(response).to redirect_to(user_projects_path(user))
+              expect(controller).to set_flash[:notice].to(user_moved_message(redirect_route, user))
+            end
+          end
+        end
+      end
+    end
+  end
+
+  def user_moved_message(redirect_route, user)
+    "User '#{redirect_route.path}' was moved to '#{user.full_path}'. Please update any links and bookmarks that may still have the old path."
   end
 end

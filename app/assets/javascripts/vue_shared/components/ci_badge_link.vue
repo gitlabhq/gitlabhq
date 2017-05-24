@@ -13,7 +13,7 @@ import ciIcon from './ci_icon.vue';
  *   text:"running" // text rendered
  * }
  *
- * Shared between:
+ * Used in:
  * - Pipelines table - first column
  * - Jobs table - first column
  * - Pipeline show view - header

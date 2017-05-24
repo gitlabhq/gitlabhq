@@ -9,17 +9,18 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   before_action :module_enabled
   before_action :merge_request, only: [
-    :edit, :update, :show, :diffs, :commits, :conflicts, :conflict_for_path, :pipelines, :merge, :merge_check,
+    :edit, :update, :show, :diffs, :commits, :conflicts, :conflict_for_path, :pipelines, :merge,
     :pipeline_status, :ci_environments_status, :toggle_subscription, :cancel_merge_when_pipeline_succeeds,
     :remove_wip, :resolve_conflicts, :assign_related_issues, :commit_change_content,
     # EE
     :approve, :approvals, :unapprove, :rebase
   ]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :pipelines]
-  before_action :define_show_vars, only: [:show, :diffs, :commits, :conflicts, :conflict_for_path, :builds, :pipelines]
+  before_action :define_show_vars, only: [:diffs, :commits, :conflicts, :conflict_for_path, :builds, :pipelines]
   before_action :define_commit_vars, only: [:diffs]
   before_action :ensure_ref_fetched, only: [:show, :diffs, :commits, :builds, :conflicts, :conflict_for_path, :pipelines]
   before_action :close_merge_request_without_source_project, only: [:show, :diffs, :commits, :builds, :pipelines]
+  before_action :check_if_can_be_merged, only: :show
   before_action :apply_diff_view_cookie!, only: [:new_diffs]
   before_action :build_merge_request, only: [:new, :new_diffs]
   before_action :set_suggested_approvers, only: [:new, :new_diffs, :edit]
@@ -79,9 +80,12 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     respond_to do |format|
       format.html do
         define_discussion_vars
+        define_show_vars
       end
 
       format.json do
+        Gitlab::PollingInterval.set_header(response, interval: 10_000)
+
         render json: serializer.represent(@merge_request, basic: params[:basic])
       end
 
@@ -159,8 +163,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       format.html { define_discussion_vars }
 
       format.json do
-        if @merge_request.conflicts_can_be_resolved_in_ui?
-          render json: @merge_request.conflicts
+        if @conflicts_list.can_be_resolved_in_ui?
+          render json: @conflicts_list
         elsif @merge_request.can_be_merged?
           render json: {
             message: 'The merge conflicts for this merge request have already been resolved. Please return to the merge request.',
@@ -177,9 +181,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def conflict_for_path
-    return render_404 unless @merge_request.conflicts_can_be_resolved_in_ui?
+    return render_404 unless @conflicts_list.can_be_resolved_in_ui?
 
-    file = @merge_request.conflicts.file_for_path(params[:old_path], params[:new_path])
+    file = @conflicts_list.file_for_path(params[:old_path], params[:new_path])
 
     return render_404 unless file
 
@@ -187,7 +191,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def resolve_conflicts
-    return render_404 unless @merge_request.conflicts_can_be_resolved_in_ui?
+    return render_404 unless @conflicts_list.can_be_resolved_in_ui?
 
     if @merge_request.can_be_merged?
       render status: :bad_request, json: { message: 'The merge conflicts for this merge request have already been resolved.' }
@@ -195,7 +199,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
 
     begin
-      MergeRequests::ResolveService.new(@merge_request.source_project, current_user, params).execute(@merge_request)
+      MergeRequests::Conflicts::ResolveService.
+        new(merge_request).
+        execute(current_user, params)
 
       flash[:notice] = 'All merge conflicts were resolved. The merge request can now be merged.'
 
@@ -315,12 +321,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_request = MergeRequests::UpdateService
       .new(project, current_user, wip_event: 'unwip')
       .execute(@merge_request)
-
-    render json: serializer.represent(@merge_request)
-  end
-
-  def merge_check
-    @merge_request.check_if_can_be_merged
 
     render json: serializer.represent(@merge_request)
   end
@@ -516,7 +516,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def authorize_can_resolve_conflicts!
-    return render_404 unless @merge_request.conflicts_can_be_resolved_by?(current_user)
+    @conflicts_list = MergeRequests::Conflicts::ListService.new(@merge_request)
+
+    return render_404 unless @conflicts_list.can_be_resolved_by?(current_user)
   end
 
   def module_enabled
@@ -726,6 +728,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   private
+
+  def check_if_can_be_merged
+    @merge_request.check_if_can_be_merged
+  end
 
   def merge!
     # Disable the CI check if merge_when_pipeline_succeeds is enabled since we have

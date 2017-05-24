@@ -154,7 +154,7 @@ class Environment < ActiveRecord::Base
   end
 
   def metrics
-    project.monitoring_service.metrics(self) if has_metrics?
+    project.monitoring_service.environment_metrics(self) if has_metrics?
   end
 
   # An environment name is not necessarily suitable for use in URLs, DNS

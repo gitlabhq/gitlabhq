@@ -35,7 +35,7 @@
           = link_to charts_namespace_project_graph_path(@project.namespace, @project, current_ref) do
             Charts
 
-        - if license_allows_file_locks?
+        - if @project.feature_available?(:file_lock)
           = nav_link(controller: [:path_locks]) do
             = link_to namespace_project_path_locks_path(@project.namespace, @project) do
               Locked Files

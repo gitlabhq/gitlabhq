@@ -40,7 +40,7 @@ feature 'project owner sees a link to create a license file in empty project', f
     page.within('.js-license-selector-wrap') do
       click_button 'Apply a license template'
       click_link template
-      wait_for_ajax
+      wait_for_requests
     end
   end
 end

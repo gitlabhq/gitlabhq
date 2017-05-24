@@ -81,7 +81,7 @@ module TreeHelper
       part_path = ""
       parts = @path.split('/')
 
-      yield('..', nil) if parts.count > max_links
+      yield('..', File.join(*parts.first(parts.count - 2))) if parts.count > max_links
 
       parts.each do |part|
         part_path = File.join(part_path, part) unless part_path.empty?
@@ -109,7 +109,7 @@ module TreeHelper
   end
 
   def lock_file_link(project = @project, path = @path, html_options: {})
-    return unless license_allows_file_locks? && current_user
+    return unless project.feature_available?(:file_lock) && current_user
     return if path.blank?
 
     path_lock = project.find_path_lock(path, downstream: true)
@@ -169,7 +169,7 @@ module TreeHelper
   end
 
   def render_lock_icon(path)
-    return unless license_allows_file_locks?
+    return unless @project.feature_available?(:file_lock)
     return unless @project.root_ref?(@ref)
 
     if file_lock = @project.find_path_lock(path, exact_match: true)

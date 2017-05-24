@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 feature 'Groups > Members > Master/Owner can override LDAP access levels', feature: true do
-  include WaitForAjax
+  include WaitForRequests
 
   let(:johndoe)  { create(:user, name: 'John Doe') }
   let(:maryjane) { create(:user, name: 'Mary Jane') }
@@ -56,7 +56,7 @@ feature 'Groups > Members > Master/Owner can override LDAP access levels', featu
         click_link 'Revert to LDAP group sync settings'
       end
 
-      wait_for_ajax
+      wait_for_requests
 
       expect(page).to have_button 'Guest', disabled: true
       expect(page).to have_button 'Edit permissions'

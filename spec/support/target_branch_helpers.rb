@@ -1,7 +1,7 @@
 module TargetBranchHelpers
   def select_branch(name)
     first('button.js-target-branch').click
-    wait_for_ajax
+    wait_for_requests
     all('a[data-group="Branches"]').find do |el|
       el.text == name
     end.click

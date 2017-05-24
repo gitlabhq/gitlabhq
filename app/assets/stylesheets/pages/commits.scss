@@ -206,11 +206,11 @@
       margin-left: $gl-padding;
     }
   }
-}
 
-.commit-short-id {
-  font-family: $monospace_font;
-  font-weight: 600;
+  .commit-sha {
+    font-size: 14px;
+    font-weight: 600;
+  }
 }
 
 .commit,
@@ -271,7 +271,7 @@
     }
   }
 
-  .commit-id {
+  .commit-sha {
     color: $gl-link-color;
   }
 

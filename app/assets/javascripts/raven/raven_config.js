@@ -57,6 +57,8 @@ const RavenConfig = {
 
   configure() {
     Raven.config(this.options.sentryDsn, {
+      release: this.options.release,
+      tags: this.options.tags,
       whitelistUrls: this.options.whitelistUrls,
       environment: this.options.isProduction ? 'production' : 'development',
       ignoreErrors: this.IGNORE_ERRORS,

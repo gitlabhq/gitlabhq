@@ -4,7 +4,7 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   include SharedNote
   include SharedPaths
   include Select2Helper
-  include WaitForVueResource
+  include WaitForRequests
 
   step 'I am a member of project "Shop"' do
     @project = ::Project.find_by(name: "Shop")
@@ -33,7 +33,7 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
     expect(page).to have_content @merge_request.source_branch
     expect(page).to have_content @merge_request.target_branch
 
-    wait_for_vue_resource
+    wait_for_requests
   end
 
   step 'I fill out a "Merge Request On Forked Project" merge request' do
@@ -47,6 +47,7 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
     first('.dropdown-target-project a', text: @project.path_with_namespace)
 
     first('.js-source-branch').click
+    wait_for_requests
     first('.dropdown-source-branch .dropdown-content a', text: 'fix').click
 
     click_button "Compare branches and continue"
@@ -60,31 +61,6 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
 
   step 'I submit the merge request' do
     click_button "Submit merge request"
-  end
-
-  step 'I follow the target commit link' do
-    commit = @project.repository.commit
-    click_link commit.short_id(8)
-  end
-
-  step 'I should see the commit under the forked from project' do
-    commit = @project.repository.commit
-    expect(page).to have_content(commit.message)
-  end
-
-  step 'I click "Create Merge Request on fork" link' do
-    click_link "Create Merge Request on fork"
-  end
-
-  step 'I see prefilled new Merge Request page for the forked project' do
-    expect(current_path).to eq new_namespace_project_merge_request_path(@forked_project.namespace, @forked_project)
-    expect(find("#merge_request_source_project_id").value).to eq @forked_project.id.to_s
-    expect(find("#merge_request_target_project_id").value).to eq @project.id.to_s
-    expect(find("#merge_request_source_branch").value).to have_content "new_design"
-    expect(find("#merge_request_target_branch").value).to have_content "master"
-    expect(find("#merge_request_title").value).to eq "New Design"
-    verify_commit_link(".mr_target_commit", @project)
-    verify_commit_link(".mr_source_commit", @forked_project)
   end
 
   step 'I update the merge request title' do
@@ -154,11 +130,5 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
       expect(page).to have_content current_user.name
       expect(page).to have_content @project.users.first.name
     end
-  end
-
-  # Verify a link is generated against the correct project
-  def verify_commit_link(container_div, container_project)
-    # This should force a wait for the javascript to execute
-    expect(find(:div, container_div).find(".commit_short_id")['href']).to have_content "#{container_project.path_with_namespace}/commit"
   end
 end

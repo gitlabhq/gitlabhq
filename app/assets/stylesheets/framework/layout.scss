@@ -25,6 +25,10 @@ body {
 
 .content-wrapper {
   padding-bottom: 100px;
+
+  &:not(.page-with-layout-nav) {
+    margin-top: $header-height;
+  }
 }
 
 .container {
