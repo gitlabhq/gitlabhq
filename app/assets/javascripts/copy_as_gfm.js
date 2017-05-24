@@ -273,12 +273,12 @@ const gfmRules = {
 
 class CopyAsGFM {
   constructor() {
-    $(document).on('copy', '.md, .wiki', (e) => { this.copyAsGFM(e, CopyAsGFM.transformGFMSelection); });
-    $(document).on('copy', 'pre.code.highlight, .diff-content .line_content', (e) => { this.copyAsGFM(e, CopyAsGFM.transformCodeSelection); });
-    $(document).on('paste', '.js-gfm-input', this.pasteGFM.bind(this));
+    $(document).on('copy', '.md, .wiki', (e) => { CopyAsGFM.copyAsGFM(e, CopyAsGFM.transformGFMSelection); });
+    $(document).on('copy', 'pre.code.highlight, .diff-content .line_content', (e) => { CopyAsGFM.copyAsGFM(e, CopyAsGFM.transformCodeSelection); });
+    $(document).on('paste', '.js-gfm-input', CopyAsGFM.pasteGFM);
   }
 
-  copyAsGFM(e, transformer) {
+  static copyAsGFM(e, transformer) {
     const clipboardData = e.originalEvent.clipboardData;
     if (!clipboardData) return;
 
@@ -292,19 +292,36 @@ class CopyAsGFM {
     e.stopPropagation();
 
     clipboardData.setData('text/plain', el.textContent);
-    clipboardData.setData('text/x-gfm', CopyAsGFM.nodeToGFM(el));
+    clipboardData.setData('text/x-gfm', this.nodeToGFM(el));
   }
 
-  pasteGFM(e) {
+  static pasteGFM(e) {
     const clipboardData = e.originalEvent.clipboardData;
     if (!clipboardData) return;
 
+    const text = clipboardData.getData('text/plain');
     const gfm = clipboardData.getData('text/x-gfm');
     if (!gfm) return;
 
     e.preventDefault();
 
-    window.gl.utils.insertText(e.target, gfm);
+    window.gl.utils.insertText(e.target, (textBefore, textAfter) => {
+      // If the text before the cursor contains an odd number of backticks,
+      // we are either inside an inline code span that starts with 1 backtick
+      // or a code block that starts with 3 backticks.
+      // This logic still holds when there are one or more _closed_ code spans
+      // or blocks that will have 2 or 6 backticks.
+      // This will break down when the actual code block contains an uneven
+      // number of backticks, but this is a rare edge case.
+      const backtickMatch = textBefore.match(/`/g);
+      const insideCodeBlock = backtickMatch && (backtickMatch.length % 2) === 1;
+
+      if (insideCodeBlock) {
+        return text;
+      }
+
+      return gfm;
+    });
   }
 
   static transformGFMSelection(documentFragment) {
