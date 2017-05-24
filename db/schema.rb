@@ -520,6 +520,15 @@ ActiveRecord::Schema.define(version: 20170602003304) do
   add_index "geo_nodes", ["host"], name: "index_geo_nodes_on_host", using: :btree
   add_index "geo_nodes", ["primary"], name: "index_geo_nodes_on_primary", using: :btree
 
+  create_table "geo_push_events", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "event_type", null: false
+    t.datetime "created_at", null: false
+  end
+
+  add_index "geo_push_events", ["event_type"], name: "index_geo_push_events_on_event_type", using: :btree
+  add_index "geo_push_events", ["project_id"], name: "index_geo_push_events_on_project_id", using: :btree
+
   create_table "historical_data", force: :cascade do |t|
     t.date "date", null: false
     t.integer "active_user_count"
@@ -1666,6 +1675,7 @@ ActiveRecord::Schema.define(version: 20170602003304) do
   add_foreign_key "ci_triggers", "users", column: "owner_id", name: "fk_e8e10d1964", on_delete: :cascade
   add_foreign_key "ci_variables", "projects", name: "fk_ada5eb64b3", on_delete: :cascade
   add_foreign_key "container_repositories", "projects"
+  add_foreign_key "geo_push_events", "projects", on_delete: :cascade
   add_foreign_key "issue_assignees", "issues", name: "fk_b7d881734a", on_delete: :cascade
   add_foreign_key "issue_assignees", "users", name: "fk_5e0c8d9154", on_delete: :cascade
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
