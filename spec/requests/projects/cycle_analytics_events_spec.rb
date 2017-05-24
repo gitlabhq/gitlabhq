@@ -121,8 +121,7 @@ describe 'cycle analytics events', api: true do
     issue.update(milestone: milestone)
     mr = create_merge_request_closing_issue(issue, commit_message: "References #{issue.to_reference}")
 
-    pipeline = create(:ci_empty_pipeline, status: 'created', project: project, ref: mr.source_branch, sha: mr.source_branch_sha)
-    mr.update(head_pipeline_id: pipeline.id)
+    pipeline = create(:ci_empty_pipeline, status: 'created', project: project, ref: mr.source_branch, sha: mr.source_branch_sha, head_pipeline_of: mr)
     pipeline.run
 
     create(:ci_build, pipeline: pipeline, status: :success, author: user)

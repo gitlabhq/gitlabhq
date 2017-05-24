@@ -13,17 +13,17 @@ end
 
 constraints(UserUrlConstrainer.new) do
   # Get all keys of user
-  get ':username.keys' => 'profiles/keys#get_keys', constraints: { username: Gitlab::Regex.namespace_route_regex }
+  get ':username.keys' => 'profiles/keys#get_keys', constraints: { username: Gitlab::Regex.root_namespace_route_regex }
 
   scope(path: ':username',
         as: :user,
-        constraints: { username: Gitlab::Regex.namespace_route_regex },
+        constraints: { username: Gitlab::Regex.root_namespace_route_regex },
         controller: :users) do
     get '/', action: :show
   end
 end
 
-scope(constraints: { username: Gitlab::Regex.namespace_route_regex }) do
+scope(constraints: { username: Gitlab::Regex.root_namespace_route_regex }) do
   scope(path: 'users/:username',
         as: :user,
         controller: :users) do

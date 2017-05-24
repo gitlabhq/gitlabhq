@@ -761,7 +761,7 @@ describe 'Filter issues', js: true, feature: true do
         sort_toggle.click
 
         find('.filtered-search-wrapper .dropdown-menu li a', text: 'Oldest updated').click
-        wait_for_ajax
+        wait_for_requests
 
         expect(find('.issues-list .issue:first-of-type .issue-title-text a')).to have_content(old_issue.title)
       end
@@ -778,17 +778,17 @@ describe 'Filter issues', js: true, feature: true do
 
     it 'open state' do
       find('.issues-state-filters a', text: 'Closed').click
-      wait_for_ajax
+      wait_for_requests
 
       find('.issues-state-filters a', text: 'Open').click
-      wait_for_ajax
+      wait_for_requests
 
       expect(page).to have_selector('.issues-list .issue', count: 4)
     end
 
     it 'closed state' do
       find('.issues-state-filters a', text: 'Closed').click
-      wait_for_ajax
+      wait_for_requests
 
       expect(page).to have_selector('.issues-list .issue', count: 1)
       expect(find('.issues-list .issue:first-of-type .issue-title-text a')).to have_content(closed_issue.title)
@@ -796,7 +796,7 @@ describe 'Filter issues', js: true, feature: true do
 
     it 'all state' do
       find('.issues-state-filters a', text: 'All').click
-      wait_for_ajax
+      wait_for_requests
 
       expect(page).to have_selector('.issues-list .issue', count: 5)
     end

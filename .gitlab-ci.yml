@@ -52,7 +52,7 @@ stages:
 
 .use-pg: &use-pg
   services:
-    - postgres:latest
+    - postgres:9.2
     - redis:alpine
 
 .use-mysql: &use-mysql
@@ -63,6 +63,7 @@ stages:
 .only-master-and-ee-or-mysql: &only-master-and-ee-or-mysql
   only:
     - /mysql/
+    - /-stable$/
     - master@gitlab-org/gitlab-ce
     - master@gitlab/gitlabhq
     - tags@gitlab-org/gitlab-ce

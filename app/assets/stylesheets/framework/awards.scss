@@ -108,7 +108,7 @@
 }
 
 .award-control {
-  margin-right: 5px;
+  margin: 0 5px 6px 0;
   outline: 0;
 
   &.disabled {
@@ -236,8 +236,4 @@
   .award-control-text {
     vertical-align: middle;
   }
-}
-
-.note-awards .award-control-icon-positive {
-  left: 6px;
 }

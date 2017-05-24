@@ -54,7 +54,7 @@ describe 'View on environment', js: true do
 
           visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)
 
-          wait_for_ajax
+          wait_for_requests
         end
 
         it 'has a "View on env" button' do
@@ -70,7 +70,7 @@ describe 'View on environment', js: true do
 
           visit namespace_project_compare_path(project.namespace, project, from: 'master', to: branch_name)
 
-          wait_for_ajax
+          wait_for_requests
         end
 
         it 'has a "View on env" button' do
@@ -84,7 +84,7 @@ describe 'View on environment', js: true do
 
           visit namespace_project_compare_path(project.namespace, project, from: 'master', to: sha)
 
-          wait_for_ajax
+          wait_for_requests
         end
 
         it 'has a "View on env" button' do
@@ -98,7 +98,7 @@ describe 'View on environment', js: true do
 
           visit namespace_project_blob_path(project.namespace, project, File.join(branch_name, file_path))
 
-          wait_for_ajax
+          wait_for_requests
         end
 
         it 'has a "View on env" button' do
@@ -112,7 +112,7 @@ describe 'View on environment', js: true do
 
           visit namespace_project_blob_path(project.namespace, project, File.join(sha, file_path))
 
-          wait_for_ajax
+          wait_for_requests
         end
 
         it 'has a "View on env" button' do
@@ -126,7 +126,7 @@ describe 'View on environment', js: true do
 
           visit namespace_project_commit_path(project.namespace, project, sha)
 
-          wait_for_ajax
+          wait_for_requests
         end
 
         it 'has a "View on env" button' do

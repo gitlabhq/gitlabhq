@@ -1,10 +1,10 @@
 module SharedDiffNote
   include Spinach::DSL
   include RepoHelpers
-  include WaitForAjax
+  include WaitForRequests
 
   after do
-    wait_for_ajax if javascript_test?
+    wait_for_requests if javascript_test?
   end
 
   step 'I cancel the diff comment' do

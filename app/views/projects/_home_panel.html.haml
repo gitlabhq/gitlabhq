@@ -24,7 +24,7 @@
         = render 'projects/buttons/fork'
 
       %span.hidden-xs
-        - if @project.feature_available?(:repository, current_user)
+        - if can?(current_user, :download_code, @project)
           .project-clone-holder
             = render "shared/clone_panel"
 

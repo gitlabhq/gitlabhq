@@ -718,8 +718,7 @@ describe MergeRequest, models: true do
   describe '#head_pipeline' do
     describe 'when the source project exists' do
       it 'returns the latest pipeline' do
-        pipeline = create(:ci_empty_pipeline, project: subject.source_project, ref: 'master', status: 'running', sha: "123abc")
-        subject.update(head_pipeline: pipeline)
+        pipeline = create(:ci_empty_pipeline, project: subject.source_project, ref: 'master', status: 'running', sha: "123abc", head_pipeline_of: subject)
 
         expect(subject.head_pipeline).to eq(pipeline)
       end
@@ -1396,9 +1395,8 @@ describe MergeRequest, models: true do
         project: project,
         ref:     merge_request.source_branch,
         sha:     merge_request.diff_head_sha,
-        status:  status)
-
-      merge_request.update(head_pipeline: pipeline)
+        status:  status,
+        head_pipeline_of: merge_request)
 
       pipeline
     end

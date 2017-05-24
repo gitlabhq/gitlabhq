@@ -57,7 +57,7 @@ end
 def select_file_template(template_selector_selector, template_name)
   find(template_selector_selector).click
   find('.dropdown-content li', text: template_name).click
-  wait_for_ajax
+  wait_for_requests
 end
 
 def select_file_template_type(template_type)

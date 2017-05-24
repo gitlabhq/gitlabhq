@@ -31,6 +31,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   def folder
     folder_environments = project.environments.where(environment_type: params[:id])
     @environments = folder_environments.with_state(params[:scope] || :available)
+      .order(:name)
 
     respond_to do |format|
       format.html

@@ -64,13 +64,11 @@ feature 'Task Lists', feature: true do
 
   describe 'for Issues', feature: true do
     describe 'multiple tasks', js: true do
-      include WaitForVueResource
-
       let!(:issue) { create(:issue, description: markdown, author: user, project: project) }
 
       it 'renders' do
         visit_issue(project, issue)
-        wait_for_vue_resource
+        wait_for_requests
 
         expect(page).to have_selector('ul.task-list',      count: 1)
         expect(page).to have_selector('li.task-list-item', count: 6)
@@ -79,7 +77,7 @@ feature 'Task Lists', feature: true do
 
       it 'contains the required selectors' do
         visit_issue(project, issue)
-        wait_for_vue_resource
+        wait_for_requests
 
         expect(page).to have_selector(".wiki .task-list .task-list-item .task-list-item-checkbox")
         expect(page).to have_selector('a.btn-close')
@@ -87,14 +85,14 @@ feature 'Task Lists', feature: true do
 
       it 'is only editable by author' do
         visit_issue(project, issue)
-        wait_for_vue_resource
+        wait_for_requests
 
         expect(page).to have_selector(".wiki .task-list .task-list-item .task-list-item-checkbox")
 
         logout(:user)
         login_as(user2)
         visit current_path
-        wait_for_vue_resource
+        wait_for_requests
 
         expect(page).to have_selector(".wiki .task-list .task-list-item .task-list-item-checkbox")
       end
@@ -106,13 +104,11 @@ feature 'Task Lists', feature: true do
     end
 
     describe 'single incomplete task', js: true do
-      include WaitForVueResource
-
       let!(:issue) { create(:issue, description: singleIncompleteMarkdown, author: user, project: project) }
 
       it 'renders' do
         visit_issue(project, issue)
-        wait_for_vue_resource
+        wait_for_requests
 
         expect(page).to have_selector('ul.task-list',      count: 1)
         expect(page).to have_selector('li.task-list-item', count: 1)
@@ -127,12 +123,11 @@ feature 'Task Lists', feature: true do
     end
 
     describe 'single complete task', js: true do
-      include WaitForVueResource
       let!(:issue) { create(:issue, description: singleCompleteMarkdown, author: user, project: project) }
 
       it 'renders' do
         visit_issue(project, issue)
-        wait_for_vue_resource
+        wait_for_requests
 
         expect(page).to have_selector('ul.task-list',      count: 1)
         expect(page).to have_selector('li.task-list-item', count: 1)

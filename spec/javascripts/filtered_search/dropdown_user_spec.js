@@ -12,7 +12,7 @@ describe('Dropdown User', () => {
       spyOn(gl.DropdownUser.prototype, 'getProjectId').and.callFake(() => {});
       spyOn(gl.DropdownUtils, 'getSearchInput').and.callFake(() => {});
 
-      dropdownUser = new gl.DropdownUser();
+      dropdownUser = new gl.DropdownUser(null, null, null, gl.FilteredSearchTokenKeys);
     });
 
     it('should not return the double quote found in value', () => {

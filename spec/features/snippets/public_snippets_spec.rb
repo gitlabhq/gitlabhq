@@ -5,7 +5,7 @@ feature 'Public Snippets', :js, feature: true do
     public_snippet = create(:personal_snippet, :public)
 
     visit snippet_path(public_snippet)
-    wait_for_ajax
+    wait_for_requests
 
     expect(page).to have_content(public_snippet.content)
   end

@@ -1,8 +1,7 @@
 import './filtered_search_token_keys';
 
 class FilteredSearchTokenizer {
-  static processTokens(input) {
-    const allowedKeys = gl.FilteredSearchTokenKeys.get().map(i => i.key);
+  static processTokens(input, allowedKeys) {
     // Regex extracts `(token):(symbol)(value)`
     // Values that start with a double quote must end in a double quote (same for single)
     const tokenRegex = new RegExp(`(${allowedKeys.join('|')}):([~%@]?)(?:('[^']*'{0,1})|("[^"]*"{0,1})|(\\S+))`, 'g');

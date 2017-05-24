@@ -7,7 +7,7 @@ feature 'Cycle Analytics', feature: true, js: true do
   let(:issue) { create(:issue, project: project, created_at: 2.days.ago) }
   let(:milestone) { create(:milestone, project: project) }
   let(:mr) { create_merge_request_closing_issue(issue, commit_message: "References #{issue.to_reference}") }
-  let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: project, ref: mr.source_branch, sha: mr.source_branch_sha) }
+  let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: project, ref: mr.source_branch, sha: mr.source_branch_sha, head_pipeline_of: mr) }
 
   context 'as an allowed user' do
     context 'when project is new' do
@@ -17,7 +17,7 @@ feature 'Cycle Analytics', feature: true, js: true do
         login_as(user)
 
         visit namespace_project_cycle_analytics_path(project.namespace, project)
-        wait_for_ajax
+        wait_for_requests
       end
 
       it 'shows introductory message' do
@@ -33,7 +33,6 @@ feature 'Cycle Analytics', feature: true, js: true do
     context "when there's cycle analytics data" do
       before do
         allow_any_instance_of(Gitlab::ReferenceExtractor).to receive(:issues).and_return([issue])
-        mr.update(head_pipeline: pipeline)
         project.add_master(user)
 
         create_cycle
@@ -73,7 +72,7 @@ feature 'Cycle Analytics', feature: true, js: true do
         project.team << [user, :master]
         login_as(user)
         visit namespace_project_cycle_analytics_path(project.namespace, project)
-        wait_for_ajax
+        wait_for_requests
       end
 
       it 'shows the content in Spanish' do
@@ -96,7 +95,7 @@ feature 'Cycle Analytics', feature: true, js: true do
 
       login_as(guest)
       visit namespace_project_cycle_analytics_path(project.namespace, project)
-      wait_for_ajax
+      wait_for_requests
     end
 
     it 'needs permissions to see restricted stages' do
@@ -140,6 +139,6 @@ feature 'Cycle Analytics', feature: true, js: true do
 
   def click_stage(stage_name)
     find('.stage-nav li', text: stage_name).click
-    wait_for_ajax
+    wait_for_requests
   end
 end

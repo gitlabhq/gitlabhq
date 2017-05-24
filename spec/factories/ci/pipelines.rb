@@ -20,6 +20,15 @@ FactoryGirl.define do
       end
     end
 
+    # Persist merge request head_pipeline_id
+    # on pipeline factories to avoid circular references
+    transient { head_pipeline_of nil }
+
+    after(:create) do |pipeline, evaluator|
+      merge_request = evaluator.head_pipeline_of
+      merge_request&.update(head_pipeline: pipeline)
+    end
+
     factory :ci_pipeline do
       transient { config nil }
 

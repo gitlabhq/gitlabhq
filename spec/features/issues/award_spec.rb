@@ -6,12 +6,10 @@ feature 'Issue awards', js: true, feature: true do
   let(:issue)     { create(:issue, project: project) }
 
   describe 'logged in' do
-    include WaitForVueResource
-
     before do
       login_as(user)
       visit namespace_project_issue_path(project.namespace, project, issue)
-      wait_for_vue_resource
+      wait_for_requests
     end
 
     it 'adds award to issue' do
@@ -41,11 +39,9 @@ feature 'Issue awards', js: true, feature: true do
   end
 
   describe 'logged out' do
-    include WaitForVueResource
-    
     before do
       visit namespace_project_issue_path(project.namespace, project, issue)
-      wait_for_vue_resource
+      wait_for_requests
     end
 
     it 'does not see award menu button' do
