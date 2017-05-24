@@ -36,6 +36,14 @@ describe 'Issue Boards add issue modal', :feature, :js do
     end
   end
 
+  it 'shows weight filter' do
+    click_button('Add issues')
+    wait_for_vue_resource
+    find('.add-issues-search .filtered-search').click
+
+    expect(page.find('.filter-dropdown')).to have_content 'weight'
+  end
+
   context 'modal interaction' do
     it 'opens modal' do
       click_button('Add issues')
