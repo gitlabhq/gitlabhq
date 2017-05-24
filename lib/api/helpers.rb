@@ -264,6 +264,16 @@ module API
       projects.reorder(params[:order_by] => params[:sort])
     end
 
+    def project_finder_params
+      finder_params = {}
+      finder_params[:non_public] = true if params[:membership].present?
+      finder_params[:starred] = true if params[:starred].present?
+      finder_params[:visibility_level] = Gitlab::VisibilityLevel.level_value(params[:visibility]) if params[:visibility]
+      finder_params[:archived] = params[:archived]
+      finder_params[:search] = params[:search] if params[:search]
+      finder_params
+    end
+
     # file helpers
 
     def uploaded_file(field, uploads_path)

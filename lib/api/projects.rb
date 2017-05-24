@@ -68,14 +68,7 @@ module API
         end
 
         def present_projects(options = {})
-          finder_params = {}
-          finder_params[:non_public] = true if params[:membership].present?
-          finder_params[:starred] = true if params[:starred].present?
-          finder_params[:visibility_level] = Gitlab::VisibilityLevel.level_value(params[:visibility]) if params[:visibility]
-          finder_params[:archived] = params[:archived]
-          finder_params[:search] = params[:search] if params[:search]
-
-          projects = ProjectsFinder.new(current_user: current_user, params: finder_params).execute
+          projects = ProjectsFinder.new(current_user: current_user, params: project_finder_params).execute
           projects = filter_projects(projects)
           projects = projects.with_statistics if params[:statistics]
           projects = projects.with_issues_enabled if params[:with_issues_enabled]
