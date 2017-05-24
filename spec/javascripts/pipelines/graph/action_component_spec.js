@@ -4,7 +4,7 @@ import actionComponent from '~/pipelines/components/graph/action_component.vue';
 describe('pipeline graph action component', () => {
   let component;
 
-  beforeEach(() => {
+  beforeEach((done) => {
     const ActionComponent = Vue.extend(actionComponent);
     component = new ActionComponent({
       propsData: {
@@ -14,6 +14,8 @@ describe('pipeline graph action component', () => {
         actionIcon: 'icon_action_cancel',
       },
     }).$mount();
+
+    Vue.nextTick(done);
   });
 
   it('should render a link', () => {
@@ -27,7 +29,7 @@ describe('pipeline graph action component', () => {
   it('should update bootstrap tooltip when title changes', (done) => {
     component.tooltipText = 'changed';
 
-    Vue.nextTick(() => {
+    setTimeout(() => {
       expect(component.$el.getAttribute('data-original-title')).toBe('changed');
       done();
     });

@@ -27,26 +27,30 @@ describe('pipeline graph job component', () => {
   });
 
   describe('name with link', () => {
-    it('should render the job name and status with a link', () => {
+    it('should render the job name and status with a link', (done) => {
       const component = new JobComponent({
         propsData: {
           job: mockJob,
         },
       }).$mount();
 
-      const link = component.$el.querySelector('a');
+      Vue.nextTick(() => {
+        const link = component.$el.querySelector('a');
 
-      expect(link.getAttribute('href')).toEqual(mockJob.status.details_path);
+        expect(link.getAttribute('href')).toEqual(mockJob.status.details_path);
 
-      expect(
-        link.getAttribute('data-original-title'),
-      ).toEqual(`${mockJob.name} - ${mockJob.status.label}`);
+        expect(
+          link.getAttribute('data-original-title'),
+        ).toEqual(`${mockJob.name} - ${mockJob.status.label}`);
 
-      expect(component.$el.querySelector('.js-status-icon-success')).toBeDefined();
+        expect(component.$el.querySelector('.js-status-icon-success')).toBeDefined();
 
-      expect(
-        component.$el.querySelector('.ci-status-text').textContent.trim(),
-      ).toEqual(mockJob.name);
+        expect(
+          component.$el.querySelector('.ci-status-text').textContent.trim(),
+        ).toEqual(mockJob.name);
+
+        done();
+      });
     });
   });
 
