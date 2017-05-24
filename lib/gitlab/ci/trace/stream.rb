@@ -96,28 +96,29 @@ module Gitlab
         end
 
         def reverse_line
-          return if stream.size <= 0
-
-          pos = 0
-          max = stream.size
+          stream.seek(0, IO::SEEK_END)
           debris = ''
 
-          while (read_size = calc_read_size(pos, max)) > 0
-            pos += read_size
-            stream.seek(-pos, IO::SEEK_END)
-            buf = stream.read(read_size) + debris
+          while !(buf = read_backward(BUFFER_SIZE)).empty?
+            buf += debris
             debris, *lines = buf.each_line.to_a
             lines.reverse_each do |line|
               yield(line.force_encoding('UTF-8'))
             end
           end
 
-          yield(debris.force_encoding('UTF-8'))
+          yield(debris.force_encoding('UTF-8')) if !(debris).empty?
         end
 
-        def calc_read_size(pos, max)
-          remain = max - pos
-          (remain > BUFFER_SIZE) ? BUFFER_SIZE : remain
+        def read_backward(length)
+          cur_offset = stream.tell
+          start = cur_offset - length
+          start = 0 if start < 0
+
+          stream.seek(start, IO::SEEK_SET)
+          stream.read(cur_offset - start).tap do
+            stream.seek(start, IO::SEEK_SET)
+          end
         end
       end
     end
