@@ -1,111 +1,33 @@
-/* eslint-disable func-names, space-before-function-paren, no-template-curly-in-string, comma-dangle, object-shorthand, quotes, dot-notation, no-else-return, one-var, no-var, no-underscore-dangle, one-var-declaration-per-line, no-param-reassign, no-useless-escape, prefer-template, consistent-return, wrap-iife, prefer-arrow-callback, camelcase, no-unused-vars, no-useless-return, vars-on-top, max-len */
-
 import emojiMap from 'emojis/digests.json';
 import emojiAliases from 'emojis/aliases.json';
 import { glEmojiTag } from '~/behaviors/gl_emoji';
 import glRegexp from '~/lib/utils/regexp';
 
-// Creates the variables for setting up GFM auto-completion
-window.gl = window.gl || {};
-
 function sanitize(str) {
   return str.replace(/<(?:.|\n)*?>/gm, '');
 }
 
-window.gl.GfmAutoComplete = {
-  dataSources: {},
-  defaultLoadingData: ['loading'],
-  cachedData: {},
-  isLoadingData: {},
-  atTypeMap: {
-    ':': 'emojis',
-    '@': 'members',
-    '#': 'issues',
-    '!': 'mergeRequests',
-    '~': 'labels',
-    '%': 'milestones',
-    '/': 'commands'
-  },
-  // Emoji
-  Emoji: {
-    templateFunction: function(name) {
-      return `<li>
-        ${name} ${glEmojiTag(name)}
-      </li>
-      `;
-    }
-  },
-  // Team Members
-  Members: {
-    template: '<li>${avatarTag} ${username} <small>${title}</small></li>'
-  },
-  Labels: {
-    template: '<li><span class="dropdown-label-box" style="background: ${color}"></span> ${title}</li>'
-  },
-  // Issues and MergeRequests
-  Issues: {
-    template: '<li><small>${id}</small> ${title}</li>'
-  },
-  // Milestones
-  Milestones: {
-    template: '<li>${title}</li>'
-  },
-  Loading: {
-    template: '<li style="pointer-events: none;"><i class="fa fa-spinner fa-spin"></i> Loading...</li>'
-  },
-  DefaultOptions: {
-    sorter: function(query, items, searchKey) {
-      this.setting.highlightFirst = this.setting.alwaysHighlightFirst || query.length > 0;
-      if (gl.GfmAutoComplete.isLoading(items)) {
-        this.setting.highlightFirst = false;
-        return items;
-      }
-      return $.fn.atwho["default"].callbacks.sorter(query, items, searchKey);
-    },
-    filter: function(query, data, searchKey) {
-      if (gl.GfmAutoComplete.isLoading(data)) {
-        gl.GfmAutoComplete.fetchData(this.$inputor, this.at);
-        return data;
-      } else {
-        return $.fn.atwho["default"].callbacks.filter(query, data, searchKey);
-      }
-    },
-    beforeInsert: function(value) {
-      if (value && !this.setting.skipSpecialCharacterTest) {
-        var withoutAt = value.substring(1);
-        if (withoutAt && /[^\w\d]/.test(withoutAt)) value = value.charAt() + '"' + withoutAt + '"';
-      }
-      return value;
-    },
-    matcher: function (flag, subtext) {
-      // The below is taken from At.js source
-      // Tweaked to commands to start without a space only if char before is a non-word character
-      // https://github.com/ichord/At.js
-      var _a, _y, regexp, match, atSymbolsWithBar, atSymbolsWithoutBar;
-      atSymbolsWithBar = Object.keys(this.app.controllers).join('|');
-      atSymbolsWithoutBar = Object.keys(this.app.controllers).join('');
-      subtext = subtext.split(/\s+/g).pop();
-      flag = flag.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+class GfmAutoComplete {
+  constructor(dataSources) {
+    this.dataSources = dataSources || {};
+    this.cachedData = {};
+    this.isLoadingData = {};
+  }
 
-      _a = decodeURI("%C3%80");
-      _y = decodeURI("%C3%BF");
-
-      regexp = new RegExp("^(?:\\B|[^a-zA-Z0-9_" + atSymbolsWithoutBar + "]|\\s)" + flag + "(?!" + atSymbolsWithBar + ")((?:[A-Za-z" + _a + "-" + _y + "0-9_\'\.\+\-]|[^\\x00-\\x7a])*)$", 'gi');
-
-      match = regexp.exec(subtext);
-
-      if (match) {
-        return match[1];
-      } else {
-        return null;
-      }
-    }
-  },
-  setup: function(input) {
+  setup(input, enableMap = {
+    emojis: true,
+    members: true,
+    issues: true,
+    milestones: true,
+    mergeRequests: true,
+    labels: true,
+  }) {
     // Add GFM auto-completion to all input fields, that accept GFM input.
     this.input = input || $('.js-gfm-input');
+    this.enableMap = enableMap;
     this.setupLifecycle();
-  },
+  }
+
   setupLifecycle() {
     this.input.each((i, input) => {
       const $input = $(input);
@@ -114,200 +36,27 @@ window.gl.GfmAutoComplete = {
       // Needed for slash commands with suffixes (ex: /label ~)
       $input.on('inserted-commands.atwho', $input.trigger.bind($input, 'keyup'));
     });
-  },
-  setupAtWho: function($input) {
-    // Emoji
-    $input.atwho({
-      at: ':',
-      displayTpl: function(value) {
-        return value && value.name ? this.Emoji.templateFunction(value.name) : this.Loading.template;
-      }.bind(this),
-      insertTpl: ':${name}:',
-      skipSpecialCharacterTest: true,
-      data: this.defaultLoadingData,
-      callbacks: {
-        sorter: this.DefaultOptions.sorter,
-        beforeInsert: this.DefaultOptions.beforeInsert,
-        filter: this.DefaultOptions.filter,
+  }
 
-        matcher: (flag, subtext) => {
-          const relevantText = subtext.trim().split(/\s/).pop();
-          const regexp = new RegExp(`(?:[^${glRegexp.unicodeLetters}0-9:]|\n|^):([^:]*)$`, 'gi');
-          const match = regexp.exec(relevantText);
+  setupAtWho($input) {
+    if (this.enableMap.emojis) this.setupEmoji($input);
+    if (this.enableMap.members) this.setupMembers($input);
+    if (this.enableMap.issues) this.setupIssues($input);
+    if (this.enableMap.milestones) this.setupMilestones($input);
+    if (this.enableMap.mergeRequests) this.setupMergeRequests($input);
+    if (this.enableMap.labels) this.setupLabels($input);
 
-          return match && match.length ? match[1] : null;
-        }
-      }
-    });
-    // Team Members
-    $input.atwho({
-      at: '@',
-      displayTpl: function(value) {
-        return value.username != null ? this.Members.template : this.Loading.template;
-      }.bind(this),
-      insertTpl: '${atwho-at}${username}',
-      searchKey: 'search',
-      alwaysHighlightFirst: true,
-      skipSpecialCharacterTest: true,
-      data: this.defaultLoadingData,
-      callbacks: {
-        sorter: this.DefaultOptions.sorter,
-        filter: this.DefaultOptions.filter,
-        beforeInsert: this.DefaultOptions.beforeInsert,
-        matcher: this.DefaultOptions.matcher,
-        beforeSave: function(members) {
-          return $.map(members, function(m) {
-            let title = '';
-            if (m.username == null) {
-              return m;
-            }
-            title = m.name;
-            if (m.count) {
-              title += " (" + m.count + ")";
-            }
-
-            const autoCompleteAvatar = m.avatar_url || m.username.charAt(0).toUpperCase();
-            const imgAvatar = `<img src="${m.avatar_url}" alt="${m.username}" class="avatar avatar-inline center s26"/>`;
-            const txtAvatar = `<div class="avatar center avatar-inline s26">${autoCompleteAvatar}</div>`;
-
-            return {
-              username: m.username,
-              avatarTag: autoCompleteAvatar.length === 1 ? txtAvatar : imgAvatar,
-              title: sanitize(title),
-              search: sanitize(m.username + " " + m.name)
-            };
-          });
-        }
-      }
-    });
-    $input.atwho({
-      at: '#',
-      alias: 'issues',
-      searchKey: 'search',
-      displayTpl: function(value) {
-        return value.title != null ? this.Issues.template : this.Loading.template;
-      }.bind(this),
-      data: this.defaultLoadingData,
-      insertTpl: '${atwho-at}${id}',
-      callbacks: {
-        sorter: this.DefaultOptions.sorter,
-        filter: this.DefaultOptions.filter,
-        beforeInsert: this.DefaultOptions.beforeInsert,
-        matcher: this.DefaultOptions.matcher,
-        beforeSave: function(issues) {
-          return $.map(issues, function(i) {
-            if (i.title == null) {
-              return i;
-            }
-            return {
-              id: i.iid,
-              title: sanitize(i.title),
-              search: i.iid + " " + i.title
-            };
-          });
-        }
-      }
-    });
-    $input.atwho({
-      at: '%',
-      alias: 'milestones',
-      searchKey: 'search',
-      insertTpl: '${atwho-at}${title}',
-      displayTpl: function(value) {
-        return value.title != null ? this.Milestones.template : this.Loading.template;
-      }.bind(this),
-      data: this.defaultLoadingData,
-      callbacks: {
-        matcher: this.DefaultOptions.matcher,
-        sorter: this.DefaultOptions.sorter,
-        beforeInsert: this.DefaultOptions.beforeInsert,
-        filter: this.DefaultOptions.filter,
-        beforeSave: function(milestones) {
-          return $.map(milestones, function(m) {
-            if (m.title == null) {
-              return m;
-            }
-            return {
-              id: m.iid,
-              title: sanitize(m.title),
-              search: "" + m.title
-            };
-          });
-        }
-      }
-    });
-    $input.atwho({
-      at: '!',
-      alias: 'mergerequests',
-      searchKey: 'search',
-      displayTpl: function(value) {
-        return value.title != null ? this.Issues.template : this.Loading.template;
-      }.bind(this),
-      data: this.defaultLoadingData,
-      insertTpl: '${atwho-at}${id}',
-      callbacks: {
-        sorter: this.DefaultOptions.sorter,
-        filter: this.DefaultOptions.filter,
-        beforeInsert: this.DefaultOptions.beforeInsert,
-        matcher: this.DefaultOptions.matcher,
-        beforeSave: function(merges) {
-          return $.map(merges, function(m) {
-            if (m.title == null) {
-              return m;
-            }
-            return {
-              id: m.iid,
-              title: sanitize(m.title),
-              search: m.iid + " " + m.title
-            };
-          });
-        }
-      }
-    });
-    $input.atwho({
-      at: '~',
-      alias: 'labels',
-      searchKey: 'search',
-      data: this.defaultLoadingData,
-      displayTpl: function(value) {
-        return this.isLoading(value) ? this.Loading.template : this.Labels.template;
-      }.bind(this),
-      insertTpl: '${atwho-at}${title}',
-      callbacks: {
-        matcher: this.DefaultOptions.matcher,
-        beforeInsert: this.DefaultOptions.beforeInsert,
-        filter: this.DefaultOptions.filter,
-        sorter: this.DefaultOptions.sorter,
-        beforeSave: function(merges) {
-          if (gl.GfmAutoComplete.isLoading(merges)) return merges;
-          var sanitizeLabelTitle;
-          sanitizeLabelTitle = function(title) {
-            if (/[\w\?&]+\s+[\w\?&]+/g.test(title)) {
-              return "\"" + (sanitize(title)) + "\"";
-            } else {
-              return sanitize(title);
-            }
-          };
-          return $.map(merges, function(m) {
-            return {
-              title: sanitize(m.title),
-              color: m.color,
-              search: "" + m.title
-            };
-          });
-        }
-      }
-    });
     // We don't instantiate the slash commands autocomplete for note and issue/MR edit forms
     $input.filter('[data-supports-slash-commands="true"]').atwho({
       at: '/',
       alias: 'commands',
       searchKey: 'search',
       skipSpecialCharacterTest: true,
-      data: this.defaultLoadingData,
-      displayTpl: function(value) {
-        if (this.isLoading(value)) return this.Loading.template;
-        var tpl = '<li>/${name}';
+      data: GfmAutoComplete.defaultLoadingData,
+      displayTpl(value) {
+        if (GfmAutoComplete.isLoading(value)) return GfmAutoComplete.Loading.template;
+        // eslint-disable-next-line no-template-curly-in-string
+        let tpl = '<li>/${name}';
         if (value.aliases.length > 0) {
           tpl += ' <small>(or /<%- aliases.join(", /") %>)</small>';
         }
@@ -319,81 +68,381 @@ window.gl.GfmAutoComplete = {
         }
         tpl += '</li>';
         return _.template(tpl)(value);
-      }.bind(this),
-      insertTpl: function(value) {
-        var tpl = "/${name} ";
-        var reference_prefix = null;
+      },
+      insertTpl(value) {
+        // eslint-disable-next-line no-template-curly-in-string
+        let tpl = '/${name} ';
+        let referencePrefix = null;
         if (value.params.length > 0) {
-          reference_prefix = value.params[0][0];
-          if (/^[@%~]/.test(reference_prefix)) {
-            tpl += '<%- reference_prefix %>';
+          referencePrefix = value.params[0][0];
+          if (/^[@%~]/.test(referencePrefix)) {
+            tpl += '<%- referencePrefix %>';
           }
         }
-        return _.template(tpl)({ reference_prefix: reference_prefix });
+        return _.template(tpl)({ referencePrefix });
       },
       suffix: '',
       callbacks: {
-        sorter: this.DefaultOptions.sorter,
-        filter: this.DefaultOptions.filter,
-        beforeInsert: this.DefaultOptions.beforeInsert,
-        beforeSave: function(commands) {
-          if (gl.GfmAutoComplete.isLoading(commands)) return commands;
-          return $.map(commands, function(c) {
-            var search = c.name;
+        ...this.getDefaultCallbacks(),
+        beforeSave(commands) {
+          if (GfmAutoComplete.isLoading(commands)) return commands;
+          return $.map(commands, (c) => {
+            let search = c.name;
             if (c.aliases.length > 0) {
-              search = search + " " + c.aliases.join(" ");
+              search = `${search} ${c.aliases.join(' ')}`;
             }
             return {
               name: c.name,
               aliases: c.aliases,
               params: c.params,
               description: c.description,
-              search: search
+              search,
             };
           });
         },
-        matcher: function(flag, subtext, should_startWithSpace, acceptSpaceBar) {
-          var regexp = /(?:^|\n)\/([A-Za-z_]*)$/gi;
-          var match = regexp.exec(subtext);
+        matcher(flag, subtext) {
+          const regexp = /(?:^|\n)\/([A-Za-z_]*)$/gi;
+          const match = regexp.exec(subtext);
           if (match) {
             return match[1];
-          } else {
-            return null;
+          }
+          return null;
+        },
+      },
+    });
+  }
+
+  setupEmoji($input) {
+    // Emoji
+    $input.atwho({
+      at: ':',
+      displayTpl(value) {
+        let tmpl = GfmAutoComplete.Loading.template;
+        if (value && value.name) {
+          tmpl = GfmAutoComplete.Emoji.templateFunction(value.name);
+        }
+        return tmpl;
+      },
+      // eslint-disable-next-line no-template-curly-in-string
+      insertTpl: ':${name}:',
+      skipSpecialCharacterTest: true,
+      data: GfmAutoComplete.defaultLoadingData,
+      callbacks: {
+        ...this.getDefaultCallbacks(),
+        matcher(flag, subtext) {
+          const relevantText = subtext.trim().split(/\s/).pop();
+          const regexp = new RegExp(`(?:[^${glRegexp.unicodeLetters}0-9:]|\n|^):([^:]*)$`, 'gi');
+          const match = regexp.exec(relevantText);
+
+          return match && match.length ? match[1] : null;
+        },
+      },
+    });
+  }
+
+  setupMembers($input) {
+    // Team Members
+    $input.atwho({
+      at: '@',
+      displayTpl(value) {
+        let tmpl = GfmAutoComplete.Loading.template;
+        if (value.username != null) {
+          tmpl = GfmAutoComplete.Members.template;
+        }
+        return tmpl;
+      },
+      // eslint-disable-next-line no-template-curly-in-string
+      insertTpl: '${atwho-at}${username}',
+      searchKey: 'search',
+      alwaysHighlightFirst: true,
+      skipSpecialCharacterTest: true,
+      data: GfmAutoComplete.defaultLoadingData,
+      callbacks: {
+        ...this.getDefaultCallbacks(),
+        beforeSave(members) {
+          return $.map(members, (m) => {
+            let title = '';
+            if (m.username == null) {
+              return m;
+            }
+            title = m.name;
+            if (m.count) {
+              title += ` (${m.count})`;
+            }
+
+            const autoCompleteAvatar = m.avatar_url || m.username.charAt(0).toUpperCase();
+            const imgAvatar = `<img src="${m.avatar_url}" alt="${m.username}" class="avatar avatar-inline center s26"/>`;
+            const txtAvatar = `<div class="avatar center avatar-inline s26">${autoCompleteAvatar}</div>`;
+
+            return {
+              username: m.username,
+              avatarTag: autoCompleteAvatar.length === 1 ? txtAvatar : imgAvatar,
+              title: sanitize(title),
+              search: sanitize(`${m.username} ${m.name}`),
+            };
+          });
+        },
+      },
+    });
+  }
+
+  setupIssues($input) {
+    $input.atwho({
+      at: '#',
+      alias: 'issues',
+      searchKey: 'search',
+      displayTpl(value) {
+        let tmpl = GfmAutoComplete.Loading.template;
+        if (value.title != null) {
+          tmpl = GfmAutoComplete.Issues.template;
+        }
+        return tmpl;
+      },
+      data: GfmAutoComplete.defaultLoadingData,
+      // eslint-disable-next-line no-template-curly-in-string
+      insertTpl: '${atwho-at}${id}',
+      callbacks: {
+        ...this.getDefaultCallbacks(),
+        beforeSave(issues) {
+          return $.map(issues, (i) => {
+            if (i.title == null) {
+              return i;
+            }
+            return {
+              id: i.iid,
+              title: sanitize(i.title),
+              search: `${i.iid} ${i.title}`,
+            };
+          });
+        },
+      },
+    });
+  }
+
+  setupMilestones($input) {
+    $input.atwho({
+      at: '%',
+      alias: 'milestones',
+      searchKey: 'search',
+      // eslint-disable-next-line no-template-curly-in-string
+      insertTpl: '${atwho-at}${title}',
+      displayTpl(value) {
+        let tmpl = GfmAutoComplete.Loading.template;
+        if (value.title != null) {
+          tmpl = GfmAutoComplete.Milestones.template;
+        }
+        return tmpl;
+      },
+      data: GfmAutoComplete.defaultLoadingData,
+      callbacks: {
+        ...this.getDefaultCallbacks(),
+        beforeSave(milestones) {
+          return $.map(milestones, (m) => {
+            if (m.title == null) {
+              return m;
+            }
+            return {
+              id: m.iid,
+              title: sanitize(m.title),
+              search: m.title,
+            };
+          });
+        },
+      },
+    });
+  }
+
+  setupMergeRequests($input) {
+    $input.atwho({
+      at: '!',
+      alias: 'mergerequests',
+      searchKey: 'search',
+      displayTpl(value) {
+        let tmpl = GfmAutoComplete.Loading.template;
+        if (value.title != null) {
+          tmpl = GfmAutoComplete.Issues.template;
+        }
+        return tmpl;
+      },
+      data: GfmAutoComplete.defaultLoadingData,
+      // eslint-disable-next-line no-template-curly-in-string
+      insertTpl: '${atwho-at}${id}',
+      callbacks: {
+        ...this.getDefaultCallbacks(),
+        beforeSave(merges) {
+          return $.map(merges, (m) => {
+            if (m.title == null) {
+              return m;
+            }
+            return {
+              id: m.iid,
+              title: sanitize(m.title),
+              search: `${m.iid} ${m.title}`,
+            };
+          });
+        },
+      },
+    });
+  }
+
+  setupLabels($input) {
+    $input.atwho({
+      at: '~',
+      alias: 'labels',
+      searchKey: 'search',
+      data: GfmAutoComplete.defaultLoadingData,
+      displayTpl(value) {
+        let tmpl = GfmAutoComplete.Labels.template;
+        if (GfmAutoComplete.isLoading(value)) {
+          tmpl = GfmAutoComplete.Loading.template;
+        }
+        return tmpl;
+      },
+      // eslint-disable-next-line no-template-curly-in-string
+      insertTpl: '${atwho-at}${title}',
+      callbacks: {
+        ...this.getDefaultCallbacks(),
+        beforeSave(merges) {
+          if (GfmAutoComplete.isLoading(merges)) return merges;
+          return $.map(merges, m => ({
+            title: sanitize(m.title),
+            color: m.color,
+            search: m.title,
+          }));
+        },
+      },
+    });
+  }
+
+  getDefaultCallbacks() {
+    const fetchData = this.fetchData.bind(this);
+
+    return {
+      sorter(query, items, searchKey) {
+        this.setting.highlightFirst = this.setting.alwaysHighlightFirst || query.length > 0;
+        if (GfmAutoComplete.isLoading(items)) {
+          this.setting.highlightFirst = false;
+          return items;
+        }
+        return $.fn.atwho.default.callbacks.sorter(query, items, searchKey);
+      },
+      filter(query, data, searchKey) {
+        if (GfmAutoComplete.isLoading(data)) {
+          fetchData(this.$inputor, this.at);
+          return data;
+        }
+        return $.fn.atwho.default.callbacks.filter(query, data, searchKey);
+      },
+      beforeInsert(value) {
+        let resultantValue = value;
+        if (value && !this.setting.skipSpecialCharacterTest) {
+          const withoutAt = value.substring(1);
+          if (withoutAt && /[^\w\d]/.test(withoutAt)) {
+            resultantValue = `${value.charAt()}"${withoutAt}"`;
           }
         }
-      }
-    });
-    return;
-  },
-  fetchData: function($input, at) {
+        return resultantValue;
+      },
+      matcher(flag, subtext) {
+        // The below is taken from At.js source
+        // Tweaked to commands to start without a space only if char before is a non-word character
+        // https://github.com/ichord/At.js
+        const atSymbolsWithBar = Object.keys(this.app.controllers).join('|');
+        const atSymbolsWithoutBar = Object.keys(this.app.controllers).join('');
+        const targetSubtext = subtext.split(/\s+/g).pop();
+        const resultantFlag = flag.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
+
+        const accentAChar = decodeURI('%C3%80');
+        const accentYChar = decodeURI('%C3%BF');
+
+        const regexp = new RegExp(`^(?:\\B|[^a-zA-Z0-9_${atSymbolsWithoutBar}]|\\s)${resultantFlag}(?!${atSymbolsWithBar})((?:[A-Za-z${accentAChar}-${accentYChar}0-9_'.+-]|[^\\x00-\\x7a])*)$`, 'gi');
+
+        const match = regexp.exec(targetSubtext);
+
+        if (match) {
+          return match[1];
+        }
+        return null;
+      },
+    };
+  }
+
+  fetchData($input, at) {
     if (this.isLoadingData[at]) return;
     this.isLoadingData[at] = true;
     if (this.cachedData[at]) {
       this.loadData($input, at, this.cachedData[at]);
-    } else if (this.atTypeMap[at] === 'emojis') {
+    } else if (GfmAutoComplete.atTypeMap[at] === 'emojis') {
       this.loadData($input, at, Object.keys(emojiMap).concat(Object.keys(emojiAliases)));
     } else {
-      $.getJSON(this.dataSources[this.atTypeMap[at]], (data) => {
+      $.getJSON(this.dataSources[GfmAutoComplete.atTypeMap[at]], (data) => {
         this.loadData($input, at, data);
       }).fail(() => { this.isLoadingData[at] = false; });
     }
-  },
-  loadData: function($input, at, data) {
+  }
+  loadData($input, at, data) {
     this.isLoadingData[at] = false;
     this.cachedData[at] = data;
     $input.atwho('load', at, data);
     // This trigger at.js again
     // otherwise we would be stuck with loading until the user types
     return $input.trigger('keyup');
-  },
-  isLoading(data) {
-    var dataToInspect = data;
+  }
+
+  static isLoading(data) {
+    let dataToInspect = data;
     if (data && data.length > 0) {
       dataToInspect = data[0];
     }
 
-    var loadingState = this.defaultLoadingData[0];
+    const loadingState = GfmAutoComplete.defaultLoadingData[0];
     return dataToInspect &&
       (dataToInspect === loadingState || dataToInspect.name === loadingState);
   }
+}
+
+GfmAutoComplete.defaultLoadingData = ['loading'];
+
+GfmAutoComplete.atTypeMap = {
+  ':': 'emojis',
+  '@': 'members',
+  '#': 'issues',
+  '!': 'mergeRequests',
+  '~': 'labels',
+  '%': 'milestones',
+  '/': 'commands',
 };
+
+// Emoji
+GfmAutoComplete.Emoji = {
+  templateFunction(name) {
+    return `<li>
+      ${name} ${glEmojiTag(name)}
+    </li>
+    `;
+  },
+};
+// Team Members
+GfmAutoComplete.Members = {
+  // eslint-disable-next-line no-template-curly-in-string
+  template: '<li>${avatarTag} ${username} <small>${title}</small></li>',
+};
+GfmAutoComplete.Labels = {
+  // eslint-disable-next-line no-template-curly-in-string
+  template: '<li><span class="dropdown-label-box" style="background: ${color}"></span> ${title}</li>',
+};
+// Issues and MergeRequests
+GfmAutoComplete.Issues = {
+  // eslint-disable-next-line no-template-curly-in-string
+  template: '<li><small>${id}</small> ${title}</li>',
+};
+// Milestones
+GfmAutoComplete.Milestones = {
+  // eslint-disable-next-line no-template-curly-in-string
+  template: '<li>${title}</li>',
+};
+GfmAutoComplete.Loading = {
+  template: '<li style="pointer-events: none;"><i class="fa fa-spinner fa-spin"></i> Loading...</li>',
+};
+
+export default GfmAutoComplete;

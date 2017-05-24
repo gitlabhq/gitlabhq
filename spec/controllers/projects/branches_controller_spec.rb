@@ -14,7 +14,7 @@ describe Projects::BranchesController do
     controller.instance_variable_set(:@project, project)
   end
 
-  describe "POST create" do
+  describe "POST create with HTML format" do
     render_views
 
     context "on creation of a new branch" do
@@ -152,6 +152,42 @@ describe Projects::BranchesController do
     end
   end
 
+  describe 'POST create with JSON format' do
+    before do
+      sign_in(user)
+    end
+
+    context 'with valid params' do
+      it 'returns a successful 200 response' do
+        create_branch name: 'my-branch', ref: 'master'
+
+        expect(response).to have_http_status(200)
+      end
+
+      it 'returns the created branch' do
+        create_branch name: 'my-branch', ref: 'master'
+
+        expect(response).to match_response_schema('branch')
+      end
+    end
+
+    context 'with invalid params' do
+      it 'returns an unprocessable entity 422 response' do
+        create_branch name: "<script>alert('merge');</script>", ref: "<script>alert('ref');</script>"
+
+        expect(response).to have_http_status(422)
+      end
+    end
+
+    def create_branch(name:, ref:)
+      post :create, namespace_id: project.namespace.to_param,
+                    project_id: project.to_param,
+                    branch_name: name,
+                    ref: ref,
+                    format: :json
+    end
+  end
+
   describe "POST destroy with HTML format" do
     render_views
 
@@ -177,33 +213,98 @@ describe Projects::BranchesController do
       sign_in(user)
 
       post :destroy,
-           format: :js,
-           id: branch,
-           namespace_id: project.namespace,
-           project_id: project
+        format: format,
+        id: branch,
+        namespace_id: project.namespace,
+        project_id: project
     end
 
-    context "valid branch name, valid source" do
+    context 'as JS' do
       let(:branch) { "feature" }
+      let(:format) { :js }
 
-      it { expect(response).to have_http_status(200) }
+      context "valid branch name, valid source" do
+        let(:branch) { "feature" }
+
+        it { expect(response).to have_http_status(200) }
+        it { expect(response.body).to be_blank }
+      end
+
+      context "valid branch name with unencoded slashes" do
+        let(:branch) { "improve/awesome" }
+
+        it { expect(response).to have_http_status(200) }
+        it { expect(response.body).to be_blank }
+      end
+
+      context "valid branch name with encoded slashes" do
+        let(:branch) { "improve%2Fawesome" }
+
+        it { expect(response).to have_http_status(200) }
+        it { expect(response.body).to be_blank }
+      end
+
+      context "invalid branch name, valid ref" do
+        let(:branch) { "no-branch" }
+
+        it { expect(response).to have_http_status(404) }
+        it { expect(response.body).to be_blank }
+      end
     end
 
-    context "valid branch name with unencoded slashes" do
-      let(:branch) { "improve/awesome" }
+    context 'as JSON' do
+      let(:branch) { "feature" }
+      let(:format) { :json }
 
-      it { expect(response).to have_http_status(200) }
+      context 'valid branch name, valid source' do
+        let(:branch) { "feature" }
+
+        it 'returns JSON response with message' do
+          expect(json_response).to eql("message" => 'Branch was removed')
+        end
+
+        it { expect(response).to have_http_status(200) }
+      end
+
+      context 'valid branch name with unencoded slashes' do
+        let(:branch) { "improve/awesome" }
+
+        it 'returns JSON response with message' do
+          expect(json_response).to eql('message' => 'Branch was removed')
+        end
+
+        it { expect(response).to have_http_status(200) }
+      end
+
+      context "valid branch name with encoded slashes" do
+        let(:branch) { 'improve%2Fawesome' }
+
+        it 'returns JSON response with message' do
+          expect(json_response).to eql('message' => 'Branch was removed')
+        end
+
+        it { expect(response).to have_http_status(200) }
+      end
+
+      context 'invalid branch name, valid ref' do
+        let(:branch) { 'no-branch' }
+
+        it 'returns JSON response with message' do
+          expect(json_response).to eql('message' => 'No such branch')
+        end
+
+        it { expect(response).to have_http_status(404) }
+      end
     end
 
-    context "valid branch name with encoded slashes" do
-      let(:branch) { "improve%2Fawesome" }
+    context 'as HTML' do
+      let(:branch) { "feature" }
+      let(:format) { :html }
 
-      it { expect(response).to have_http_status(200) }
-    end
-    context "invalid branch name, valid ref" do
-      let(:branch) { "no-branch" }
-
-      it { expect(response).to have_http_status(404) }
+      it 'redirects to branches path' do
+        expect(response)
+          .to redirect_to(namespace_project_branches_path(project.namespace, project))
+      end
     end
   end
 

@@ -12,8 +12,8 @@ class GroupsController < Groups::ApplicationController
   before_action :authorize_admin_group!, only: [:edit, :update, :destroy, :projects]
   before_action :authorize_create_group!, only: [:new, :create]
 
-  # Load group projects
   before_action :group_projects, only: [:projects, :activity, :issues, :merge_requests]
+  before_action :group_merge_requests, only: [:merge_requests]
   before_action :event_filter, only: [:activity]
 
   before_action :user_actions, only: [:show, :subgroups]
@@ -64,7 +64,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def subgroups
-    @nested_groups = group.children
+    @nested_groups = GroupsFinder.new(current_user, parent: group).execute
     @nested_groups = @nested_groups.search(params[:filter_groups]) if params[:filter_groups].present?
   end
 
@@ -175,5 +175,13 @@ class GroupsController < Groups::ApplicationController
       @last_push = current_user.recent_push
       @notification_setting = current_user.notification_settings_for(group)
     end
+  end
+
+  def build_canonical_path(group)
+    return group_path(group) if action_name == 'show' # root group path
+
+    params[:id] = group.to_param
+
+    url_for(params)
   end
 end

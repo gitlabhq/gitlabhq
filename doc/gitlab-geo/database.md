@@ -171,6 +171,7 @@ The following guide assumes that:
 
     ```ruby
     geo_secondary_role['enable'] = true
+    geo_postgresql['enable'] = true
     ```
 
 1. [Reconfigure GitLab][] for the changes to take effect.

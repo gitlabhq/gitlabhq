@@ -61,7 +61,7 @@ describe 'OpenID Connect requests' do
           email: private_email.email,
           public_email: public_email.email,
           website_url: 'https://example.com',
-          avatar: fixture_file_upload(Rails.root + "spec/fixtures/dk.png"),
+          avatar: fixture_file_upload(Rails.root + "spec/fixtures/dk.png")
         )
       end
 
@@ -79,7 +79,7 @@ describe 'OpenID Connect requests' do
           'email_verified' => true,
           'website'        => 'https://example.com',
           'profile'        => 'http://localhost/alice',
-          'picture'        => "http://localhost/uploads/user/avatar/#{user.id}/dk.png",
+          'picture'        => "http://localhost/uploads/user/avatar/#{user.id}/dk.png"
         })
       end
     end
@@ -98,7 +98,7 @@ describe 'OpenID Connect requests' do
         expect(@payload['sub']).to eq hashed_subject
       end
 
-      it 'includes the time of the last authentication' do
+      it 'includes the time of the last authentication', :redis do
         expect(@payload['auth_time']).to eq user.current_sign_in_at.to_i
       end
 

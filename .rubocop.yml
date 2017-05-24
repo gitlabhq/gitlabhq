@@ -496,7 +496,13 @@ Style/TrailingBlankLines:
 
 # This cop checks for trailing comma in array and hash literals.
 Style/TrailingCommaInLiteral:
-  Enabled: false
+  Enabled: true
+  EnforcedStyleForMultiline: no_comma
+
+# This cop checks for trailing comma in argument lists.
+Style/TrailingCommaInArguments:
+  Enabled: true
+  EnforcedStyleForMultiline: no_comma
 
 # Checks for %W when interpolation is not needed.
 Style/UnneededCapitalW:
@@ -964,6 +970,15 @@ RSpec/DescribeSymbol:
 # name.
 RSpec/DescribedClass:
   Enabled: true
+
+# Configuration parameters: CustomIncludeMethods.
+RSpec/EmptyExampleGroup:
+  Enabled: true
+  CustomIncludeMethods:
+    - run_permission_checks
+    - run_group_permission_checks
+    - it_should_email!
+    - it_should_not_email!
 
 # Checks for long example.
 RSpec/ExampleLength:

@@ -1,12 +1,12 @@
 /* eslint-disable no-unused-vars, space-before-function-paren, arrow-body-style, arrow-parens, comma-dangle, max-len */
 /* global ListLabel */
 /* global ListMilestone */
-/* global ListUser */
+/* global ListAssignee */
 
 import Vue from 'vue';
 
 class ListIssue {
-  constructor (obj) {
+  constructor (obj, defaultAvatar) {
     this.globalId = obj.id;
     this.id = obj.iid;
     this.title = obj.title;
@@ -14,14 +14,10 @@ class ListIssue {
     this.dueDate = obj.due_date;
     this.subscribed = obj.subscribed;
     this.labels = [];
+    this.assignees = [];
     this.selected = false;
-    this.assignee = false;
     this.position = obj.relative_position || Infinity;
     this.milestone_id = obj.milestone_id;
-
-    if (obj.assignee) {
-      this.assignee = new ListUser(obj.assignee);
-    }
 
     if (obj.milestone) {
       this.milestone = new ListMilestone(obj.milestone);
@@ -30,6 +26,8 @@ class ListIssue {
     obj.labels.forEach((label) => {
       this.labels.push(new ListLabel(label));
     });
+
+    this.assignees = obj.assignees.map(a => new ListAssignee(a, defaultAvatar));
   }
 
   addLabel (label) {
@@ -52,6 +50,26 @@ class ListIssue {
     labels.forEach(this.removeLabel.bind(this));
   }
 
+  addAssignee (assignee) {
+    if (!this.findAssignee(assignee)) {
+      this.assignees.push(new ListAssignee(assignee));
+    }
+  }
+
+  findAssignee (findAssignee) {
+    return this.assignees.filter(assignee => assignee.id === findAssignee.id)[0];
+  }
+
+  removeAssignee (removeAssignee) {
+    if (removeAssignee) {
+      this.assignees = this.assignees.filter(assignee => assignee.id !== removeAssignee.id);
+    }
+  }
+
+  removeAllAssignees () {
+    this.assignees = [];
+  }
+
   getLists () {
     return gl.issueBoards.BoardsStore.state.lists.filter(list => list.findIssue(this.id));
   }
@@ -61,7 +79,7 @@ class ListIssue {
       issue: {
         milestone_id: this.milestone ? this.milestone.id : null,
         due_date: this.dueDate,
-        assignee_id: this.assignee ? this.assignee.id : null,
+        assignee_ids: this.assignees.length > 0 ? this.assignees.map((u) => u.id) : [0],
         label_ids: this.labels.map((label) => label.id)
       }
     };

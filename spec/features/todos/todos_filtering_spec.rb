@@ -45,8 +45,8 @@ describe 'Dashboard > User filters todos', feature: true, js: true do
 
       wait_for_ajax
 
-      expect(find('.todos-list')).to     have_content user_1.name
-      expect(find('.todos-list')).not_to have_content user_2.name
+      expect(find('.todos-list')).to     have_content 'merge request'
+      expect(find('.todos-list')).not_to have_content 'issue'
     end
 
     it "shows only authors of existing todos" do

@@ -6,7 +6,7 @@ describe 'Unsubscribe links', feature: true do
   let(:recipient) { create(:user) }
   let(:author) { create(:user) }
   let(:project) { create(:empty_project, :public) }
-  let(:params) { { title: 'A bug!', description: 'Fix it!', assignee: recipient } }
+  let(:params) { { title: 'A bug!', description: 'Fix it!', assignees: [recipient] } }
   let(:issue) { Issues::CreateService.new(project, author, params).execute }
 
   let(:mail) { ActionMailer::Base.deliveries.last }

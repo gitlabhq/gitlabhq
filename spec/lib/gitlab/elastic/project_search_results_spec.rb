@@ -34,8 +34,8 @@ describe Gitlab::Elastic::ProjectSearchResults, lib: true do
 
   describe "search" do
     it "returns correct amounts" do
-      project = create :project
-      project1 = create :project
+      project = create :project, :public
+      project1 = create :project, :public
 
       project.repository.index_blobs
       project.repository.index_commits
@@ -64,30 +64,67 @@ describe Gitlab::Elastic::ProjectSearchResults, lib: true do
   end
 
   describe "search for commits in non-default branch" do
-    it 'finds needed commit' do
-      project = create :project
+    let(:project) { create(:project, :public, visibility) }
+    let(:visibility) { :repository_enabled } 
+    let(:result) { described_class.new(user, 'initial', project.id, 'test') }
 
-      result = Gitlab::Elastic::ProjectSearchResults.new(user, 'initial', project.id, 'test')
+    subject(:commits) { result.objects('commits') }
+
+    it 'finds needed commit' do
       expect(result.commits_count).to eq(1)
     end
 
     it 'responds to total_pages method' do
-      project = create :project
+      expect(commits.total_pages).to eq(1)
+    end
 
-      result = Gitlab::Elastic::ProjectSearchResults.new(user, 'initial', project.id, 'test')
-      expect(result.objects('commits').total_pages).to eq(1)
+    context 'disabled repository' do
+      let(:visibility) { :repository_disabled }
+
+      it 'hides commits from members' do
+        project.add_reporter(user)
+
+        is_expected.to be_empty
+      end
+
+      it 'hides commits from non-members' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'private repository' do
+      let(:visibility) { :repository_private }
+
+      it 'shows commits to members' do
+        project.add_reporter(user)
+
+        is_expected.not_to be_empty
+      end
+
+      it 'hides commits from non-members' do
+        is_expected.to be_empty
+      end
     end
   end
 
   describe 'search for blobs in non-default branch' do
-    it 'users FileFinder instead of ES search' do
-      project = create :project
+    let(:project) { create(:project, :public, :repository_private) }
+    let(:result) { Gitlab::Elastic::ProjectSearchResults.new(user, 'initial', project.id, 'test') }
+
+    subject(:blobs) { result.objects('blobs') }
+
+    it 'uses FileFinder instead of ES search' do
+      project.add_reporter(user)
 
       expect_any_instance_of(Gitlab::FileFinder).to receive(:find).with('initial').and_return([])
 
-      result = Gitlab::Elastic::ProjectSearchResults.new(user, 'initial', project.id, 'test')
+      _ = blobs
+    end
 
-      result.blobs_count
+    it 'respects project visibility' do
+      expect_any_instance_of(Gitlab::FileFinder).to receive(:find).never
+
+      is_expected.to be_empty
     end
   end
 
@@ -100,7 +137,7 @@ describe Gitlab::Elastic::ProjectSearchResults, lib: true do
     let(:admin) { create(:admin) }
     let!(:issue) { create(:issue, project: project, title: 'Issue 1') }
     let!(:security_issue_1) { create(:issue, :confidential, project: project, title: 'Security issue 1', author: author) }
-    let!(:security_issue_2) { create(:issue, :confidential, title: 'Security issue 2', project: project, assignee: assignee) }
+    let!(:security_issue_2) { create(:issue, :confidential, title: 'Security issue 2', project: project, assignees: [assignee]) }
 
     before do
       Gitlab::Elastic::Helper.refresh_index

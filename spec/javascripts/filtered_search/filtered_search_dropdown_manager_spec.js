@@ -1,7 +1,7 @@
-require('~/extensions/array');
-require('~/filtered_search/filtered_search_visual_tokens');
-require('~/filtered_search/filtered_search_tokenizer');
-require('~/filtered_search/filtered_search_dropdown_manager');
+import '~/extensions/array';
+import '~/filtered_search/filtered_search_visual_tokens';
+import '~/filtered_search/filtered_search_tokenizer';
+import '~/filtered_search/filtered_search_dropdown_manager';
 
 describe('Filtered Search Dropdown Manager', () => {
   describe('addWordToInput', () => {

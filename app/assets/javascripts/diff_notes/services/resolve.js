@@ -3,11 +3,7 @@
 /* global CommentsStore */
 
 import Vue from 'vue';
-import VueResource from 'vue-resource';
-
-require('../../vue_shared/vue_resource_interceptor');
-
-Vue.use(VueResource);
+import '../../vue_shared/vue_resource_interceptor';
 
 window.gl = window.gl || {};
 
@@ -49,6 +45,7 @@ class ResolveServiceClass {
           discussion.resolveAllNotes(resolved_by);
         }
 
+        gl.mrWidget.checkStatus();
         discussion.updateHeadline(data);
       } else {
         throw new Error('An error occurred when trying to resolve discussion.');

@@ -6,7 +6,7 @@ module Gitlab
       # 'repository' is a Gitlab::Git::Repository
       def initialize(repository)
         @gitaly_repo = repository.gitaly_repository
-        @stub = Gitaly::Ref::Stub.new(nil, nil, channel_override: repository.gitaly_channel)
+        @stub = GitalyClient.stub(:ref, repository.storage)
       end
 
       def default_branch_name
@@ -28,12 +28,26 @@ module Gitlab
 
       def find_ref_name(commit_id, ref_prefix)
         request = Gitaly::FindRefNameRequest.new(
-          repository: @repository,
+          repository: @gitaly_repo,
           commit_id: commit_id,
           prefix: ref_prefix
         )
 
         stub.find_ref_name(request).name
+      end
+
+      def count_tag_names
+        tag_names.count
+      end
+
+      def count_branch_names
+        branch_names.count
+      end
+
+      def local_branches(sort_by: nil)
+        request = Gitaly::FindLocalBranchesRequest.new(repository: @gitaly_repo)
+        request.sort_by = sort_by_param(sort_by) if sort_by
+        consume_branches_response(stub.find_local_branches(request))
       end
 
       private
@@ -42,6 +56,16 @@ module Gitlab
         response.flat_map do |r|
           r.names.map { |name| name.sub(/\A#{Regexp.escape(prefix)}/, '') }
         end
+      end
+
+      def sort_by_param(sort_by)
+        enum_value = Gitaly::FindLocalBranchesRequest::SortBy.resolve(sort_by.upcase.to_sym)
+        raise ArgumentError, "Invalid sort_by key `#{sort_by}`" unless enum_value
+        enum_value
+      end
+
+      def consume_branches_response(response)
+        response.flat_map { |r| r.branches }
       end
     end
   end

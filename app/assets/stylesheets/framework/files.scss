@@ -4,13 +4,14 @@
  */
 .file-holder {
   border: 1px solid $border-color;
+  border-radius: $border-radius-default;
 
   &.file-holder-no-border {
     border: 0;
   }
 
   &.readme-holder {
-    margin: $gl-padding-top 0;
+    margin: $gl-padding 0;
   }
 
   table {
@@ -25,7 +26,7 @@
     text-align: left;
     padding: 10px $gl-padding;
     word-wrap: break-word;
-    border-radius: 3px 3px 0 0;
+    border-radius: $border-radius-default $border-radius-default 0 0;
 
     &.file-title-clear {
       padding-left: 0;
@@ -61,11 +62,13 @@
   .file-content {
     background: $white-light;
 
-    &.image_file {
+    &.image_file,
+    &.video {
       background: $file-image-bg;
       text-align: center;
 
-      img {
+      img,
+      video {
         padding: 20px;
         max-width: 80%;
       }
@@ -92,9 +95,16 @@
 
       tr {
         border-bottom: 1px solid $blame-border;
+
+        &:last-child {
+          border-bottom: none;
+        }
       }
 
       td {
+        border-top: none;
+        border-bottom: none;
+
         &:first-child {
           border-left: none;
         }
@@ -105,7 +115,7 @@
       }
 
       td.blame-commit {
-        padding: 0 10px;
+        padding: 5px 10px;
         min-width: 400px;
         background: $gray-light;
       }
@@ -159,6 +169,18 @@
      */
     &.code {
       padding: 0;
+    }
+
+    .list-inline.previews {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-content: flex-start;
+      align-items: baseline;
+
+      .preview {
+        padding: $gl-padding;
+      }
     }
   }
 }
@@ -232,7 +254,7 @@ span.idiff {
   border-bottom: 1px solid $border-color;
   padding: 5px $gl-padding;
   margin: 0;
-  border-radius: 3px 3px 0 0;
+  border-radius: $border-radius-default $border-radius-default 0 0;
 
   .file-header-content {
     white-space: nowrap;

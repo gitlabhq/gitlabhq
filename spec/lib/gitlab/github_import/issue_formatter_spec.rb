@@ -43,7 +43,7 @@ describe Gitlab::GithubImport::IssueFormatter, lib: true do
           description: "*Created by: octocat*\n\nI'm having a problem with this.",
           state: 'opened',
           author_id: project.creator_id,
-          assignee_id: nil,
+          assignee_ids: [],
           created_at: created_at,
           updated_at: updated_at
         }
@@ -64,7 +64,7 @@ describe Gitlab::GithubImport::IssueFormatter, lib: true do
           description: "*Created by: octocat*\n\nI'm having a problem with this.",
           state: 'closed',
           author_id: project.creator_id,
-          assignee_id: nil,
+          assignee_ids: [],
           created_at: created_at,
           updated_at: updated_at
         }
@@ -77,19 +77,19 @@ describe Gitlab::GithubImport::IssueFormatter, lib: true do
       let(:raw_data) { double(base_data.merge(assignee: octocat)) }
 
       it 'returns nil as assignee_id when is not a GitLab user' do
-        expect(issue.attributes.fetch(:assignee_id)).to be_nil
+        expect(issue.attributes.fetch(:assignee_ids)).to be_empty
       end
 
       it 'returns GitLab user id associated with GitHub id as assignee_id' do
         gl_user = create(:omniauth_user, extern_uid: octocat.id, provider: 'github')
 
-        expect(issue.attributes.fetch(:assignee_id)).to eq gl_user.id
+        expect(issue.attributes.fetch(:assignee_ids)).to eq [gl_user.id]
       end
 
       it 'returns GitLab user id associated with GitHub email as assignee_id' do
         gl_user = create(:user, email: octocat.email)
 
-        expect(issue.attributes.fetch(:assignee_id)).to eq gl_user.id
+        expect(issue.attributes.fetch(:assignee_ids)).to eq [gl_user.id]
       end
     end
 

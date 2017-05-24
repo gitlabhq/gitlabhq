@@ -89,8 +89,9 @@ describe GeoNode, type: :model do
         expect(node.system_hook.url).to be_present
         expect(node.system_hook.url).to eq(node.geo_events_url)
         expect(node.system_hook.token).to be_present
-        expect(node.system_hook.push_events).to be_truthy
-        expect(node.system_hook.tag_push_events).to be_truthy
+        expect(node.system_hook.push_events).to be_falsey
+        expect(node.system_hook.tag_push_events).to be_falsey
+        expect(node.system_hook.repository_update_events).to be_truthy
       end
     end
   end
@@ -108,6 +109,22 @@ describe GeoNode, type: :model do
       expect(node).to receive(:expire_cache!) # 1 for creation 1 for deletion
 
       node.destroy
+    end
+  end
+
+  describe '#current?' do
+    subject { described_class.new }
+
+    it 'returns true when node is the current node' do
+      allow(Gitlab::Geo).to receive(:current_node) { subject }
+
+      expect(subject.current?).to eq true
+    end
+
+    it 'returns false when node is not the current node' do
+      allow(Gitlab::Geo).to receive(:current_node) { double }
+
+      expect(subject.current?).to eq false
     end
   end
 

@@ -272,9 +272,9 @@ describe Note, models: true do
       Gitlab::Diff::Position.new(
         old_path: "files/ruby/popen.rb",
         new_path: "files/ruby/popen.rb",
-        old_line: 16,
-        new_line: 22,
-        diff_refs: merge_request.diff_refs
+        old_line: nil,
+        new_line: 13,
+        diff_refs: project.commit(sample_commit.id).diff_refs
       )
     end
 
@@ -288,26 +288,78 @@ describe Note, models: true do
       )
     end
 
-    subject { merge_request.notes.grouped_diff_discussions }
+    context 'active diff discussions' do
+      subject { merge_request.notes.grouped_diff_discussions }
 
-    it "includes active discussions" do
-      discussions = subject.values.flatten
+      it "includes active discussions" do
+        discussions = subject.values.flatten
 
-      expect(discussions.count).to eq(2)
-      expect(discussions.map(&:id)).to eq([active_diff_note1.discussion_id, active_diff_note3.discussion_id])
-      expect(discussions.all?(&:active?)).to be true
+        expect(discussions.count).to eq(2)
+        expect(discussions.map(&:id)).to eq([active_diff_note1.discussion_id, active_diff_note3.discussion_id])
+        expect(discussions.all?(&:active?)).to be true
 
-      expect(discussions.first.notes).to eq([active_diff_note1, active_diff_note2])
-      expect(discussions.last.notes).to eq([active_diff_note3])
+        expect(discussions.first.notes).to eq([active_diff_note1, active_diff_note2])
+        expect(discussions.last.notes).to eq([active_diff_note3])
+      end
+
+      it "doesn't include outdated discussions" do
+        expect(subject.values.flatten.map(&:id)).not_to include(outdated_diff_note1.discussion_id)
+      end
+
+      it "groups the discussions by line code" do
+        expect(subject[active_diff_note1.line_code].first.id).to eq(active_diff_note1.discussion_id)
+        expect(subject[active_diff_note3.line_code].first.id).to eq(active_diff_note3.discussion_id)
+      end
     end
 
-    it "doesn't include outdated discussions" do
-      expect(subject.values.flatten.map(&:id)).not_to include(outdated_diff_note1.discussion_id)
-    end
+    context 'diff discussions for older diff refs' do
+      subject { merge_request.notes.grouped_diff_discussions(diff_refs) }
 
-    it "groups the discussions by line code" do
-      expect(subject[active_diff_note1.line_code].first.id).to eq(active_diff_note1.discussion_id)
-      expect(subject[active_diff_note3.line_code].first.id).to eq(active_diff_note3.discussion_id)
+      context 'for diff refs a discussion was created at' do
+        let(:diff_refs) { active_position2.diff_refs }
+
+        it "includes discussions that were created then" do
+          discussions = subject.values.flatten
+
+          expect(discussions.count).to eq(1)
+
+          discussion = discussions.first
+
+          expect(discussion.id).to eq(active_diff_note3.discussion_id)
+          expect(discussion.active?).to be true
+          expect(discussion.active?(diff_refs)).to be false
+          expect(discussion.created_at_diff?(diff_refs)).to be true
+
+          expect(discussion.notes).to eq([active_diff_note3])
+        end
+
+        it "groups the discussions by original line code" do
+          expect(subject[active_diff_note3.original_line_code].first.id).to eq(active_diff_note3.discussion_id)
+        end
+      end
+
+      context 'for diff refs a discussion was last active at' do
+        let(:diff_refs) { outdated_position.diff_refs }
+
+        it "includes discussions that were last active" do
+          discussions = subject.values.flatten
+
+          expect(discussions.count).to eq(1)
+
+          discussion = discussions.first
+
+          expect(discussion.id).to eq(outdated_diff_note1.discussion_id)
+          expect(discussion.active?).to be false
+          expect(discussion.active?(diff_refs)).to be true
+          expect(discussion.created_at_diff?(diff_refs)).to be true
+
+          expect(discussion.notes).to eq([outdated_diff_note1, outdated_diff_note2])
+        end
+
+        it "groups the discussions by line code" do
+          expect(subject[outdated_diff_note1.line_code].first.id).to eq(outdated_diff_note1.discussion_id)
+        end
+      end
     end
   end
 

@@ -92,6 +92,10 @@ describe RemoteMirror do
       Timecop.freeze(Time.now)
     end
 
+    after do
+      Timecop.return
+    end
+
     context 'with remote mirroring enabled' do
       it 'schedules a RepositoryUpdateRemoteMirrorWorker to run within a certain backoff delay' do
         expect(RepositoryUpdateRemoteMirrorWorker).to receive(:perform_in).with(RemoteMirror::BACKOFF_DELAY, remote_mirror.id, Time.now)
@@ -115,6 +119,14 @@ describe RemoteMirror do
         expect(remote_mirror.sync).to be_nil
       end
     end
+
+    context 'as a Geo secondary' do
+      it 'returns nil' do
+        allow(Gitlab::Geo).to receive(:secondary?).and_return(true)
+
+        expect(remote_mirror.sync).to be_nil
+      end
+    end
   end
 
   context '#updated_since?' do
@@ -124,6 +136,10 @@ describe RemoteMirror do
     before do
       Timecop.freeze(Time.now)
       remote_mirror.update_attributes(last_update_started_at: Time.now)
+    end
+
+    after do
+      Timecop.return
     end
 
     context 'when remote mirror does not have status failed' do

@@ -114,11 +114,21 @@
     padding-right: 8px;
 
     .fa-close {
-      color: $gl-text-color-disabled;
+      color: $gl-text-color-secondary;
     }
 
     &:hover .fa-close {
-      color: $gl-text-color-secondary;
+      color: $gl-text-color;
+    }
+
+    &.inverted {
+      .fa-close {
+        color: $gl-text-color-secondary-inverted;
+      }
+
+      &:hover .fa-close {
+        color: $gl-text-color-inverted;
+      }
     }
   }
 
@@ -273,17 +283,10 @@
 .filtered-search-history-dropdown-toggle-button {
   flex: 1;
   width: auto;
-  padding-right: 10px;
-
   border-radius: 0;
-  border-top: 0;
-  border-left: 0;
-  border-bottom: 0;
+  border: 0;
   border-right: 1px solid $border-color;
-
   color: $gl-text-color-secondary;
-  line-height: 1;
-
   transition: color 0.1s linear;
 
   &:hover,
@@ -291,6 +294,17 @@
     color: $gl-text-color;
     border-color: $dropdown-input-focus-border;
     outline: none;
+
+    svg {
+      fill: $gl-text-color;
+    }
+  }
+
+  svg {
+    height: 14px;
+    width: 14px;
+    fill: $gl-text-color-secondary;
+    vertical-align: middle;
   }
 
   .dropdown-toggle-text {
@@ -302,11 +316,6 @@
       color: inherit;
     }
   }
-
-  .fa {
-    position: static;
-  }
-
 }
 
 .filtered-search-history-dropdown {

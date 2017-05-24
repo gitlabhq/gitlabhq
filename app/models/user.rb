@@ -5,6 +5,7 @@ class User < ActiveRecord::Base
 
   include Gitlab::ConfigHelper
   include Gitlab::CurrentSettings
+  include Avatarable
   include Referable
   include Sortable
   include CaseSensitivity
@@ -25,6 +26,7 @@ class User < ActiveRecord::Base
   default_value_for :hide_no_password, false
   default_value_for :project_view, :files
   default_value_for :notified_of_own_activity, false
+  default_value_for :preferred_language, I18n.default_locale
 
   attr_encrypted :otp_secret,
     key:       Gitlab::Application.secrets.otp_key_base,
@@ -40,6 +42,17 @@ class User < ActiveRecord::Base
 
   devise :lockable, :recoverable, :rememberable, :trackable,
     :validatable, :omniauthable, :confirmable, :registerable
+
+  # Override Devise::Models::Trackable#update_tracked_fields!
+  # to limit database writes to at most once every hour
+  def update_tracked_fields!(request)
+    update_tracked_fields(request)
+
+    lease = Gitlab::ExclusiveLease.new("user_update_tracked_fields:#{id}", timeout: 1.hour.to_i)
+    return unless lease.try_obtain
+
+    save(validate: false)
+  end
 
   attr_accessor :force_random_password
 
@@ -89,7 +102,8 @@ class User < ActiveRecord::Base
   has_many :merge_requests,           dependent: :destroy, foreign_key: :author_id
   has_many :events,                   dependent: :destroy, foreign_key: :author_id
   has_many :subscriptions,            dependent: :destroy
-  has_many :recent_events, -> { order "id DESC" }, foreign_key: :author_id,   class_name: "Event"
+  has_many :recent_events, -> { order "id DESC" }, foreign_key: :author_id, class_name: "Event"
+
   has_many :oauth_applications,       class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy
   has_one  :abuse_report,             dependent: :destroy, foreign_key: :user_id
   has_many :reported_abuse_reports,   dependent: :destroy, foreign_key: :reporter_id, class_name: "AbuseReport"
@@ -108,6 +122,10 @@ class User < ActiveRecord::Base
   has_many :protected_branch_merge_access_levels, dependent: :destroy, class_name: ProtectedBranch::MergeAccessLevel
   has_many :protected_branch_push_access_levels, dependent: :destroy, class_name: ProtectedBranch::PushAccessLevel
   has_many :triggers,                 dependent: :destroy, class_name: 'Ci::Trigger', foreign_key: :owner_id
+
+  has_many :issue_assignees
+  has_many :assigned_issues, class_name: "Issue", through: :issue_assignees, source: :issue
+  has_many :assigned_merge_requests,  dependent: :nullify, foreign_key: :assignee_id, class_name: "MergeRequest"
 
   # Issues that a user owns are expected to be moved to the "ghost" user before
   # the user is destroyed. If the user owns any issues during deletion, this
@@ -353,6 +371,11 @@ class User < ActiveRecord::Base
       find_by(id: Key.unscoped.select(:user_id).where(id: key_id))
     end
 
+    def find_by_full_path(path, follow_redirects: false)
+      namespace = Namespace.for_user.find_by_full_path(path, follow_redirects: follow_redirects)
+      namespace&.owner
+    end
+
     def non_ldap
       joins('LEFT JOIN identities ON identities.user_id = users.id')
         .where('identities.provider IS NULL OR identities.provider NOT LIKE ?', 'ldap%')
@@ -378,6 +401,10 @@ class User < ActiveRecord::Base
         u.name = 'Ghost User'
       end
     end
+  end
+
+  def full_path
+    username
   end
 
   def self.internal_attributes
@@ -785,12 +812,10 @@ class User < ActiveRecord::Base
     email.start_with?('temp-email-for-oauth')
   end
 
-  def avatar_url(size = nil, scale = 2)
-    if self[:avatar].present?
-      [gitlab_config.url, avatar.url].join
-    else
-      GravatarService.new.execute(email, size, scale)
-    end
+  def avatar_url(size: nil, scale: 2, **args)
+    # We use avatar_path instead of overriding avatar_url because of carrierwave.
+    # See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11001/diffs#note_28659864
+    avatar_path(args) || GravatarService.new.execute(email, size, scale)
   end
 
   def all_emails
@@ -935,6 +960,19 @@ class User < ActiveRecord::Base
     assigned_open_issues_count(force: true)
   end
 
+  def invalidate_cache_counts
+    invalidate_issue_cache_counts
+    invalidate_merge_request_cache_counts
+  end
+
+  def invalidate_issue_cache_counts
+    Rails.cache.delete(['users', id, 'assigned_open_issues_count'])
+  end
+
+  def invalidate_merge_request_cache_counts
+    Rails.cache.delete(['users', id, 'assigned_open_merge_requests_count'])
+  end
+
   def todos_done_count(force: false)
     Rails.cache.fetch(['users', id, 'todos_done_count'], force: force) do
       TodosFinder.new(self, state: :done).execute.count
@@ -1019,6 +1057,15 @@ class User < ActiveRecord::Base
     devise_mailer.send(notification, self, *args).deliver_later
   end
 
+  # This works around a bug in Devise 4.2.0 that erroneously causes a user to
+  # be considered active in MySQL specs due to a sub-second comparison
+  # issue. For more details, see: https://gitlab.com/gitlab-org/gitlab-ee/issues/2362#note_29004709
+  def confirmation_period_valid?
+    return false if self.class.allow_unconfirmed_access_for == 0.days
+
+    super
+  end
+
   def ensure_external_user_rights
     return unless external?
 
@@ -1101,11 +1148,13 @@ class User < ActiveRecord::Base
       User.find_by_email(s)
     end
 
-    scope.create(
+    user = scope.build(
       username: username,
       email: email,
       &creation_block
     )
+    user.save(validate: false)
+    user
   ensure
     Gitlab::ExclusiveLease.cancel(lease_key, uuid)
   end

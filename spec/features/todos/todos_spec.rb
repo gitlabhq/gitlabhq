@@ -99,6 +99,83 @@ describe 'Dashboard Todos', feature: true do
       end
     end
 
+    context 'User created todos for themself' do
+      before do
+        login_as(user)
+      end
+
+      context 'issue assigned todo' do
+        before do
+          create(:todo, :assigned, user: user, project: project, target: issue, author: user)
+          visit dashboard_todos_path
+        end
+
+        it 'shows issue assigned to yourself message' do
+          page.within('.js-todos-all')  do
+            expect(page).to have_content("You assigned issue #{issue.to_reference(full: true)} to yourself")
+          end
+        end
+      end
+
+      context 'marked todo' do
+        before do
+          create(:todo, :marked, user: user, project: project, target: issue, author: user)
+          visit dashboard_todos_path
+        end
+
+        it 'shows you added a todo message' do
+          page.within('.js-todos-all')  do
+            expect(page).to have_content("You added a todo for issue #{issue.to_reference(full: true)}")
+            expect(page).not_to have_content('to yourself')
+          end
+        end
+      end
+
+      context 'mentioned todo' do
+        before do
+          create(:todo, :mentioned, user: user, project: project, target: issue, author: user)
+          visit dashboard_todos_path
+        end
+
+        it 'shows you mentioned yourself message' do
+          page.within('.js-todos-all')  do
+            expect(page).to have_content("You mentioned yourself on issue #{issue.to_reference(full: true)}")
+            expect(page).not_to have_content('to yourself')
+          end
+        end
+      end
+
+      context 'directly_addressed todo' do
+        before do
+          create(:todo, :directly_addressed, user: user, project: project, target: issue, author: user)
+          visit dashboard_todos_path
+        end
+
+        it 'shows you directly addressed yourself message' do
+          page.within('.js-todos-all')  do
+            expect(page).to have_content("You directly addressed yourself on issue #{issue.to_reference(full: true)}")
+            expect(page).not_to have_content('to yourself')
+          end
+        end
+      end
+
+      context 'approval todo' do
+        let(:merge_request) { create(:merge_request) }
+
+        before do
+          create(:todo, :approval_required, user: user, project: project, target: merge_request, author: user)
+          visit dashboard_todos_path
+        end
+
+        it 'shows you set yourself as an approver message' do
+          page.within('.js-todos-all')  do
+            expect(page).to have_content("You set yourself as an approver for merge request #{merge_request.to_reference(full: true)}")
+            expect(page).not_to have_content('to yourself')
+          end
+        end
+      end
+    end
+
     context 'User has done todos', js: true do
       before do
         create(:todo, :mentioned, :done, user: user, project: project, target: issue, author: author)
@@ -174,7 +251,7 @@ describe 'Dashboard Todos', feature: true do
       describe 'mark all as done', js: true do
         before do
           visit dashboard_todos_path
-          click_link 'Mark all as done'
+          find('.js-todos-mark-all').trigger('click')
         end
 
         it 'shows "All done" message!' do
@@ -231,9 +308,9 @@ describe 'Dashboard Todos', feature: true do
         end
 
         def mark_all_and_undo
-          click_link 'Mark all as done'
+          find('.js-todos-mark-all').trigger('click')
           wait_for_ajax
-          click_link 'Undo mark all as done'
+          find('.js-todos-undo-all').trigger('click')
           wait_for_ajax
         end
       end

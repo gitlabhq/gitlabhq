@@ -1,9 +1,29 @@
 - if can?(current_user, :push_code, @project)
-  .pull-right
-    #new-branch.new-branch{ 'data-path' => can_create_branch_namespace_project_issue_path(@project.namespace, @project, @issue) }
-      = link_to namespace_project_branches_path(@project.namespace, @project, branch_name: @issue.to_branch_name, issue_iid: @issue.iid),
-        method: :post, class: 'btn btn-new btn-inverted btn-grouped has-tooltip available hide', title: @issue.to_branch_name do
-        New branch
-      = link_to '#', class: 'unavailable btn btn-grouped hide', disabled: 'disabled' do
-        = icon('exclamation-triangle')
-        New branch unavailable
+  .create-mr-dropdown-wrap{ data: { can_create_path: can_create_branch_namespace_project_issue_path(@project.namespace, @project, @issue), create_mr_path: create_merge_request_namespace_project_issue_path(@project.namespace, @project, @issue), create_branch_path: namespace_project_branches_path(@project.namespace, @project, branch_name: @issue.to_branch_name, issue_iid: @issue.iid) } }
+    .btn-group.unavailable
+      %button.btn.btn-grouped{ type: 'button', disabled: 'disabled' }
+        = icon('spinner', class: 'fa-spin')
+        %span.text
+          Checking branch availability…
+    .btn-group.available.hide
+      %input.btn.js-create-merge-request.btn-inverted.btn-success{ type: 'button', value: 'Create a merge request', data: { action: 'create-mr' } }
+      %button.btn.btn-inverted.dropdown-toggle.btn-inverted.btn-success.js-dropdown-toggle{ type: 'button', data: { 'dropdown-trigger' => '#create-merge-request-dropdown' } }
+        = icon('caret-down')
+      %ul#create-merge-request-dropdown.dropdown-menu.dropdown-menu-align-right{ data: { dropdown: true } }
+        %li.droplab-item-selected{ role: 'button', data: { value: 'create-mr', 'text' => 'Create a merge request' } }
+          .menu-item
+            .icon-container
+              = icon('check')
+            .description
+              %strong Create a merge request
+              %span
+                Creates a merge request named after this issue, with source branch created from '#{@project.default_branch}'.
+        %li.divider.droplab-item-ignore
+        %li{ role: 'button', data: {  value: 'create-branch', 'text' => 'Create a branch' } }
+          .menu-item
+            .icon-container
+              = icon('check')
+            .description
+              %strong Create a branch
+              %span
+                Creates a branch named after this issue, from '#{@project.default_branch}'.

@@ -76,19 +76,19 @@ module TreeHelper
     "A new branch will be created in your fork and a new merge request will be started."
   end
 
-  def tree_breadcrumbs(tree, max_links = 2)
+  def path_breadcrumbs(max_links = 6)
     if @path.present?
       part_path = ""
       parts = @path.split('/')
 
-      yield('..', nil) if parts.count > max_links
+      yield('..', File.join(*parts.first(parts.count - 2))) if parts.count > max_links
 
       parts.each do |part|
         part_path = File.join(part_path, part) unless part_path.empty?
         part_path = part if part_path.empty?
 
         next if parts.count > max_links && !parts.last(2).include?(part)
-        yield(part, tree_join(@ref, part_path), part_path)
+        yield(part, part_path)
       end
     end
   end
@@ -109,7 +109,7 @@ module TreeHelper
   end
 
   def lock_file_link(project = @project, path = @path, html_options: {})
-    return unless license_allows_file_locks?
+    return unless project.feature_available?(:file_lock) && current_user
     return if path.blank?
 
     path_lock = project.find_path_lock(path, downstream: true)
@@ -139,12 +139,16 @@ module TreeHelper
         end
       end
     else
-      if can?(current_user, :push_code, project)
-        html_options[:data] = { state: :lock }
-        enabled_lock_link("Lock", '', html_options)
-      else
-        disabled_lock_link("Lock", "You do not have permission to lock this", html_options)
-      end
+      _lock_link(current_user, project, html_options: html_options)
+    end
+  end
+
+  def _lock_link(user, project, html_options: {})
+    if can?(current_user, :push_code, project)
+      html_options[:data] = { state: :lock }
+      enabled_lock_link("Lock", '', html_options)
+    else
+      disabled_lock_link("Lock", "You do not have permission to lock this", html_options)
     end
   end
 
@@ -165,7 +169,7 @@ module TreeHelper
   end
 
   def render_lock_icon(path)
-    return unless license_allows_file_locks?
+    return unless @project.feature_available?(:file_lock)
     return unless @project.root_ref?(@ref)
 
     if file_lock = @project.find_path_lock(path, exact_match: true)

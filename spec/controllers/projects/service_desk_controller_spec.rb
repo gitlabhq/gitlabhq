@@ -5,8 +5,8 @@ describe Projects::ServiceDeskController do
   let(:user)    { create(:user) }
 
   before do
-    allow_any_instance_of(License).to receive(:add_on?).and_call_original
-    allow_any_instance_of(License).to receive(:add_on?).with('GitLab_ServiceDesk') { true }
+    allow_any_instance_of(License).to receive(:feature_available?).and_call_original
+    allow_any_instance_of(License).to receive(:feature_available?).with(:service_desk) { true }
     allow(Gitlab::IncomingEmail).to receive(:enabled?) { true }
     allow(Gitlab::IncomingEmail).to receive(:supports_wildcard?) { true }
     project.update(service_desk_enabled: true)

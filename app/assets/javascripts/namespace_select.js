@@ -2,11 +2,9 @@
 /* global Api */
 
 (function() {
-  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
-
   window.NamespaceSelect = (function() {
     function NamespaceSelect(opts) {
-      this.onSelectItem = bind(this.onSelectItem, this);
+      this.onSelectItem = this.onSelectItem.bind(this);
       var fieldName, showAny;
       this.dropdown = opts.dropdown;
       showAny = true;
@@ -58,7 +56,8 @@
       });
     }
 
-    NamespaceSelect.prototype.onSelectItem = function(item, el, e) {
+    NamespaceSelect.prototype.onSelectItem = function(options) {
+      const { e } = options;
       return e.preventDefault();
     };
 

@@ -35,6 +35,7 @@ describe Gitlab::DataBuilder::Push, lib: true do
     it { expect(data[:ref]).to eq('refs/tags/v1.1.0') }
     it { expect(data[:user_id]).to eq(user.id) }
     it { expect(data[:user_name]).to eq(user.name) }
+    it { expect(data[:user_username]).to eq(user.username) }
     it { expect(data[:user_email]).to eq(user.email) }
     it { expect(data[:user_avatar]).to eq(user.avatar_url) }
     it { expect(data[:project_id]).to eq(project.id) }

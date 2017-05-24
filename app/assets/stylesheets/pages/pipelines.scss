@@ -1,10 +1,4 @@
 .pipelines {
-  .realtime-loading {
-    font-size: 40px;
-    text-align: center;
-    margin: 0 auto;
-  }
-
   .stage {
     max-width: 90px;
     width: 90px;
@@ -12,10 +6,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-  }
-
-  .empty-state {
-    margin: 5% auto 0;
   }
 
   .table-holder {
@@ -172,9 +162,13 @@
     float: none;
   }
 
+  .api {
+    @extend .monospace;
+  }
+
   .branch-commit {
 
-    .branch-name {
+    .ref-name {
       font-weight: bold;
       max-width: 120px;
       overflow: hidden;
@@ -196,12 +190,11 @@
       color: $gl-text-color;
     }
 
-    .commit-id {
+    .commit-sha {
       color: $gl-link-color;
     }
 
     .commit-title {
-      margin-top: 4px;
       max-width: 225px;
       overflow: hidden;
       white-space: nowrap;
@@ -234,7 +227,7 @@
   .duration,
   .finished-at {
     color: $gl-text-color-secondary;
-    margin: 4px 0;
+    margin: 0;
     white-space: nowrap;
 
     .fa {
@@ -261,7 +254,7 @@
 
 .stage-cell {
   font-size: 0;
-  padding: 10px 4px;
+  padding: 0 4px;
 
   > .stage-container > div > button > span > svg,
   > .stage-container > button > svg {
@@ -277,6 +270,7 @@
   .stage-container {
     display: inline-block;
     position: relative;
+    vertical-align: middle;
     height: 22px;
     margin: 3px 6px 3px 0;
 
@@ -317,6 +311,32 @@
 .tab-pane {
   &.builds .ci-table tr {
     height: 71px;
+  }
+}
+
+.build-failures {
+  .build-state {
+    padding: 20px 2px;
+
+    .build-name {
+      float: right;
+      font-weight: 500;
+    }
+
+    .ci-status-icon-failed svg {
+      vertical-align: middle;
+    }
+
+    .stage {
+      color: $gl-text-color-secondary;
+      font-weight: 500;
+      vertical-align: middle;
+    }
+  }
+
+  .build-log {
+    border: none;
+    line-height: initial;
   }
 }
 
@@ -361,9 +381,9 @@
             content: '';
             position: absolute;
             top: 48%;
-            left: -48px;
+            left: -44px;
             border-top: 2px solid $border-color;
-            width: 48px;
+            width: 44px;
             height: 1px;
           }
         }
@@ -463,7 +483,7 @@
     color: $gl-text-color-secondary;
 
     // Action Icons in big pipeline-graph nodes
-    > .ci-action-icon-container .ci-action-icon-wrapper {
+    .ci-action-icon-container .ci-action-icon-wrapper {
       height: 30px;
       width: 30px;
       background: $white-light;
@@ -488,7 +508,7 @@
       }
     }
 
-    > .ci-action-icon-container {
+    .ci-action-icon-container {
       position: absolute;
       right: 5px;
       top: 5px;
@@ -518,7 +538,7 @@
       }
     }
 
-    > .build-content {
+    .build-content {
       display: inline-block;
       padding: 8px 10px 9px;
       width: 100%;
@@ -533,34 +553,6 @@
       }
     }
 
-
-    .arrow {
-      &::before,
-      &::after {
-        content: '';
-        display: inline-block;
-        position: absolute;
-        width: 0;
-        height: 0;
-        border-color: transparent;
-        border-style: solid;
-        top: 18px;
-      }
-
-      &::before {
-        left: -5px;
-        margin-top: -6px;
-        border-width: 7px 5px 7px 0;
-        border-right-color: $border-color;
-      }
-
-      &::after {
-        left: -4px;
-        margin-top: -9px;
-        border-width: 10px 7px 10px 0;
-        border-right-color: $white-light;
-      }
-    }
 
     // Connect first build in each stage with right horizontal line
     &:first-child {
@@ -785,14 +777,9 @@
   }
 
   .scrollable-menu {
+    padding: 0;
     max-height: 245px;
     overflow: auto;
-  }
-
-  // Loading icon
-  .builds-dropdown-loading {
-    margin: 0 auto;
-    width: 20px;
   }
 
   // Action icon on the right
@@ -841,7 +828,8 @@
     border-radius: 3px;
 
     // build name
-    .ci-build-text {
+    .ci-build-text,
+    .ci-status-text {
       font-weight: 200;
       overflow: hidden;
       white-space: nowrap;
@@ -894,33 +882,64 @@
 }
 
 /**
+ * Top arrow in the dropdown in the big pipeline graph
+ */
+.big-pipeline-graph-dropdown-menu {
+
+  &::before,
+  &::after {
+    content: '';
+    display: inline-block;
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+    top: 18px;
+  }
+
+  &::before {
+    left: -5px;
+    margin-top: -6px;
+    border-width: 7px 5px 7px 0;
+    border-right-color: $border-color;
+  }
+
+  &::after {
+    left: -4px;
+    margin-top: -9px;
+    border-width: 10px 7px 10px 0;
+    border-right-color: $white-light;
+  }
+}
+
+/**
  * Top arrow in the dropdown in the mini pipeline graph
  */
 .mini-pipeline-graph-dropdown-menu {
-  .arrow-up {
-    &::before,
-    &::after {
-      content: '';
-      display: inline-block;
-      position: absolute;
-      width: 0;
-      height: 0;
-      border-color: transparent;
-      border-style: solid;
-      top: -6px;
-      left: 2px;
-      border-width: 0 5px 6px;
-    }
 
-    &::before {
-      border-width: 0 5px 5px;
-      border-bottom-color: $border-color;
-    }
+  &::before,
+  &::after {
+    content: '';
+    display: inline-block;
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+    top: -6px;
+    left: 2px;
+    border-width: 0 5px 6px;
+  }
 
-    &::after {
-      margin-top: 1px;
-      border-bottom-color: $white-light;
-    }
+  &::before {
+    border-width: 0 5px 5px;
+    border-bottom-color: $border-color;
+  }
+
+  &::after {
+    margin-top: 1px;
+    border-bottom-color: $white-light;
   }
 }
 

@@ -21,6 +21,8 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :require_email, unless: :devise_controller?
 
+  around_action :set_locale
+
   protect_from_forgery with: :exception
 
   helper_method :can?, :current_application_settings
@@ -56,7 +58,7 @@ class ApplicationController < ActionController::Base
     if current_user
       not_found
     else
-      redirect_to new_user_session_path
+      authenticate_user!
     end
   end
 
@@ -102,7 +104,10 @@ class ApplicationController < ActionController::Base
   end
 
   def access_denied!
-    render "errors/access_denied", layout: "errors", status: 404
+    respond_to do |format|
+      format.json { head :not_found }
+      format.any { render "errors/access_denied", layout: "errors", status: 404 }
+    end
   end
 
   def git_not_found!
@@ -120,6 +125,10 @@ class ApplicationController < ActionController::Base
       end
       format.any { head :not_found }
     end
+  end
+
+  def respond_422
+    head :unprocessable_entity
   end
 
   def no_cache_headers
@@ -268,5 +277,13 @@ class ApplicationController < ActionController::Base
   # https://developers.yubico.com/U2F/App_ID.html
   def u2f_app_id
     request.base_url
+  end
+
+  def set_locale
+    Gitlab::I18n.set_locale(current_user)
+
+    yield
+  ensure
+    Gitlab::I18n.reset_locale
   end
 end

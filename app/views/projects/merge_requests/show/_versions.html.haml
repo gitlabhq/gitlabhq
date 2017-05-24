@@ -20,25 +20,27 @@
               - @merge_request_diffs.each do |merge_request_diff|
                 %li
                   = link_to merge_request_version_path(@project, @merge_request, merge_request_diff, @start_sha), class: ('is-active' if merge_request_diff == @merge_request_diff) do
-                    %strong
-                      - if merge_request_diff.latest?
-                        latest version
-                      - else
-                        version #{version_index(merge_request_diff)}
-                    .monospace= short_sha(merge_request_diff.head_commit_sha)
-                    %small
-                      #{number_with_delimiter(merge_request_diff.commits_count)} #{'commit'.pluralize(merge_request_diff.commits_count)},
-                      = time_ago_with_tooltip(merge_request_diff.created_at)
+                    %div
+                      %strong
+                        - if merge_request_diff.latest?
+                          latest version
+                        - else
+                          version #{version_index(merge_request_diff)}
+                    %div
+                      %small.commit-sha= short_sha(merge_request_diff.head_commit_sha)
+                    %div
+                      %small
+                        #{number_with_delimiter(merge_request_diff.commits_count)} #{'commit'.pluralize(merge_request_diff.commits_count)},
+                        = time_ago_with_tooltip(merge_request_diff.created_at)
 
       - if @merge_request_diff.base_commit_sha
         and
         %span.dropdown.inline.mr-version-compare-dropdown
           %a.btn.btn-default.dropdown-toggle{ data: {toggle: :dropdown} }
-            %span
-              - if @start_sha
-                version #{version_index(@start_version)}
-              - else
-                #{@merge_request.target_branch}
+            - if @start_version
+              version #{version_index(@start_version)}
+            - else
+              %span.ref-name= @merge_request.target_branch
             = icon('caret-down')
           .dropdown-menu.dropdown-select.dropdown-menu-selectable
             .dropdown-title
@@ -50,19 +52,25 @@
                 - @comparable_diffs.each do |merge_request_diff|
                   %li
                     = link_to merge_request_version_path(@project, @merge_request, @merge_request_diff, merge_request_diff.head_commit_sha), class: ('is-active' if merge_request_diff == @start_version) do
-                      %strong
-                        - if merge_request_diff.latest?
-                          latest version
-                        - else
-                          version #{version_index(merge_request_diff)}
-                      .monospace= short_sha(merge_request_diff.head_commit_sha)
-                      %small
-                        = time_ago_with_tooltip(merge_request_diff.created_at)
+                      %div
+                        %strong
+                          - if merge_request_diff.latest?
+                            latest version
+                          - else
+                            version #{version_index(merge_request_diff)}
+                      %div
+                        %small.commit-sha= short_sha(merge_request_diff.head_commit_sha)
+                      %div
+                        %small
+                          = time_ago_with_tooltip(merge_request_diff.created_at)
                 %li
-                  = link_to merge_request_version_path(@project, @merge_request, @merge_request_diff), class: ('is-active' unless @start_sha) do
-                    %strong
-                      #{@merge_request.target_branch} (base)
-                    .monospace= short_sha(@merge_request_diff.base_commit_sha)
+                  = link_to merge_request_version_path(@project, @merge_request, @merge_request_diff), class: ('is-active' unless @start_version) do
+                    %div
+                      %strong
+                        %span.ref-name= @merge_request.target_branch
+                        (base)
+                    %div
+                      %strong.commit-sha= short_sha(@merge_request_diff.base_commit_sha)
 
     - if different_base?(@start_version, @merge_request_diff)
       .content-block
@@ -75,13 +83,15 @@
         = succeed '.' do
           %code= @merge_request.target_branch
 
-    - if @diff_notes_disabled
+    - if @start_version || !@merge_request_diff.latest?
       .comments-disabled-notif.content-block
         = icon('info-circle')
-        - if @start_sha
-          Comments are disabled because you're comparing two versions of this merge request.
+        Not all comments are displayed because you're
+        - if @start_version
+          comparing two versions
         - else
-          Discussions on this version of the merge request are displayed but comment creation is disabled.
+          viewing an old version
+        of this merge request.
 
         .pull-right
           = link_to 'Show latest version', diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: 'btn btn-sm'

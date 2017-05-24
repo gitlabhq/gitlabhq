@@ -75,6 +75,7 @@ describe Project, models: true do
     it { is_expected.to have_many(:forks).through(:forked_project_links) }
     it { is_expected.to have_many(:approver_groups).dependent(:destroy) }
     it { is_expected.to have_many(:uploads).dependent(:destroy) }
+    it { is_expected.to have_many(:pipeline_schedules).dependent(:destroy) }
 
     context 'after initialized' do
       it "has a project_feature" do
@@ -963,39 +964,24 @@ describe Project, models: true do
     end
   end
 
-  describe '#execute_hooks' do
-    it "triggers project and group hooks" do
-      group = create :group, name: 'gitlab'
-      project = create(:project, name: 'gitlabhq', namespace: group)
-      project_hook = create(:project_hook, push_events: true, project: project)
-      group_hook = create(:group_hook, push_events: true, group: group)
-
-      stub_request(:post, project_hook.url)
-      stub_request(:post, group_hook.url)
-
-      expect_any_instance_of(GroupHook).to receive(:async_execute).and_return(true)
-      expect_any_instance_of(ProjectHook).to receive(:async_execute).and_return(true)
-
-      project.execute_hooks({}, :push_hooks)
-    end
-  end
-
   describe '#avatar_url' do
     subject { project.avatar_url }
 
     let(:project) { create(:empty_project) }
 
-    context 'When avatar file is uploaded' do
-      before do
-        project.update_columns(avatar: 'uploads/avatar.png')
-        allow(project.avatar).to receive(:present?) { true }
-      end
+    context 'when avatar file is uploaded' do
+      let(:project) { create(:empty_project, :with_avatar) }
+      let(:avatar_path) { "/uploads/project/avatar/#{project.id}/dk.png" }
+      let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
 
-      let(:avatar_path) do
-        "/uploads/project/avatar/#{project.id}/uploads/avatar.png"
-      end
+      it 'shows correct url' do
+        expect(project.avatar_url).to eq(avatar_path)
+        expect(project.avatar_url(only_path: false)).to eq([gitlab_host, avatar_path].join)
 
-      it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
+        allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
+
+        expect(project.avatar_url).to eq([gitlab_host, avatar_path].join)
+      end
 
       context 'When in a geo secondary node' do
         let(:geo_url) { 'http://geo.example.com' }
@@ -1014,9 +1000,7 @@ describe Project, models: true do
         allow(project).to receive(:avatar_in_git) { true }
       end
 
-      let(:avatar_path) do
-        "/#{project.full_path}/avatar"
-      end
+      let(:avatar_path) { "/#{project.full_path}/avatar" }
 
       it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
     end
@@ -1025,6 +1009,23 @@ describe Project, models: true do
       let(:project) { create(:empty_project) }
 
       it { should eq nil }
+    end
+  end
+
+  describe '#execute_hooks' do
+    it "triggers project and group hooks" do
+      group = create :group, name: 'gitlab'
+      project = create(:project, name: 'gitlabhq', namespace: group)
+      project_hook = create(:project_hook, push_events: true, project: project)
+      group_hook = create(:group_hook, push_events: true, group: group)
+
+      stub_request(:post, project_hook.url)
+      stub_request(:post, group_hook.url)
+
+      expect_any_instance_of(GroupHook).to receive(:async_execute).and_return(true)
+      expect_any_instance_of(ProjectHook).to receive(:async_execute).and_return(true)
+
+      project.execute_hooks({}, :push_hooks)
     end
   end
 
@@ -1039,13 +1040,6 @@ describe Project, models: true do
       project.namespace.update(share_with_group_lock: true)
       expect(project.allowed_to_share_with_group?).to be_falsey
     end
-  end
-
-  describe '#pipeline' do
-    let(:project) { create :project }
-    let(:pipeline) { create :ci_pipeline, project: project, ref: 'master' }
-
-    subject { project.pipeline(pipeline.sha, 'master') }
   end
 
   describe '#pipeline_for' do
@@ -1179,7 +1173,7 @@ describe Project, models: true do
     before do
       storages = {
         'default' => { 'path' => 'tmp/tests/repositories' },
-        'picked'  => { 'path' => 'tmp/tests/repositories' },
+        'picked'  => { 'path' => 'tmp/tests/repositories' }
       }
       allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
     end
@@ -2346,6 +2340,14 @@ describe Project, models: true do
 
       expect { project.append_or_update_attribute(:merge_requests, [merge_request]) }.
         not_to raise_error
+    end
+  end
+
+  describe '#last_repository_updated_at' do
+    it 'sets to created_at upon creation' do
+      project = create(:empty_project, created_at: 2.hours.ago)
+
+      expect(project.last_repository_updated_at.to_i).to eq(project.created_at.to_i)
     end
   end
 end

@@ -1,7 +1,7 @@
 -# @project is present when viewing Project's milestone
 - project = @project || issuable.project
 - namespace = @project_namespace || project.namespace.becomes(Namespace)
-- assignee = issuable.assignee
+- assignees = issuable.assignees
 - issuable_type = issuable.class.table_name
 - base_url_args = [namespace, project]
 - issuable_type_args = base_url_args + [issuable_type]
@@ -26,7 +26,7 @@
         - render_colored_label(label)
 
     %span.assignee-icon
-      - if assignee
-        = link_to polymorphic_path(issuable_type_args, { milestone_title: @milestone.title, assignee_id: issuable.assignee_id, state: 'all' }),
+      - assignees.each do |assignee|
+        = link_to polymorphic_path(base_url_args, { milestone_title: @milestone.title, assignee_id: assignee.id, state: 'all' }),
                   class: 'has-tooltip', title: "Assigned to #{assignee.name}", data: { container: 'body' } do
-          - image_tag(avatar_icon(issuable.assignee, 16), class: "avatar s16", alt: '')
+          - image_tag(avatar_icon(assignee, 16), class: "avatar s16", alt: '')

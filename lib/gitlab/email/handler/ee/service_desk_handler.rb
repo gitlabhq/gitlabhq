@@ -17,7 +17,7 @@ module Gitlab
           end
 
           def metrics_params
-            super.merge(project: project)
+            super.merge(project: project&.full_path)
           end
 
           private
@@ -46,7 +46,7 @@ module Gitlab
               title: issue_title,
               description: message,
               confidential: true,
-              service_desk_reply_to: from_address,
+              service_desk_reply_to: from_address
             ).execute
 
             raise InvalidIssueError unless @issue.persisted?

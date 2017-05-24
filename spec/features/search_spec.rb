@@ -5,7 +5,7 @@ describe "Search", feature: true  do
 
   let(:user) { create(:user) }
   let(:project) { create(:empty_project, namespace: user.namespace) }
-  let!(:issue) { create(:issue, project: project, assignee: user) }
+  let!(:issue) { create(:issue, project: project, assignees: [user]) }
   let!(:issue2) { create(:issue, project: project, author: user) }
 
   before do
@@ -20,13 +20,14 @@ describe "Search", feature: true  do
 
   context 'search filters', js: true do
     let(:group) { create(:group) }
+    let!(:group_project) { create(:empty_project, group: group) }
 
     before do
       group.add_owner(user)
     end
 
     it 'shows group name after filtering' do
-      find('.js-search-group-dropdown').click
+      find('.js-search-group-dropdown').trigger('click')
       wait_for_ajax
 
       page.within '.search-holder' do
@@ -36,9 +37,27 @@ describe "Search", feature: true  do
       expect(find('.js-search-group-dropdown')).to have_content(group.name)
     end
 
+    it 'filters by group projects after filtering by group' do
+      find('.js-search-group-dropdown').trigger('click')
+      wait_for_ajax
+
+      page.within '.search-holder' do
+        click_link group.name
+      end
+
+      expect(find('.js-search-group-dropdown')).to have_content(group.name)
+
+      page.within('.project-filter') do
+        find('.js-search-project-dropdown').trigger('click')
+        wait_for_ajax
+
+        expect(page).to have_link(group_project.name_with_namespace)
+      end
+    end
+
     it 'shows project name after filtering' do
       page.within('.project-filter') do
-        find('.js-search-project-dropdown').click
+        find('.js-search-project-dropdown').trigger('click')
         wait_for_ajax
 
         click_link project.name_with_namespace

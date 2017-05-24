@@ -1,6 +1,6 @@
 - builds = @build.pipeline.builds.to_a
 
-%aside.right-sidebar.right-sidebar-expanded.build-sidebar.js-build-sidebar.js-right-sidebar{ data: { "offset-top" => "153", "spy" => "affix" } }
+%aside.right-sidebar.right-sidebar-expanded.build-sidebar.js-build-sidebar.js-right-sidebar{ data: { "offset-top" => "101", "spy" => "affix" } }
   .block.build-sidebar-header.visible-xs-block.visible-sm-block.append-bottom-default
     Job
     %strong ##{@build.id}
@@ -48,7 +48,7 @@
       - if @build.merge_request
         %p.build-detail-row
           %span.build-light-text Merge Request:
-          = link_to "#{@build.merge_request.to_reference}", merge_request_path(@build.merge_request)
+          = link_to "#{@build.merge_request.to_reference}", merge_request_path(@build.merge_request), class: 'bold'
       - if @build.duration
         %p.build-detail-row
           %span.build-light-text Duration:
@@ -136,7 +136,7 @@
               - else
                 = build.id
             - if build.retried?
-              %i.fa.fa-spinner.has-tooltip{ data: { container: 'body', placement: 'bottom' }, title: 'Job was retried' }
+              %i.fa.fa-refresh.has-tooltip{ data: { container: 'body', placement: 'bottom' }, title: 'Job was retried' }
 
 :javascript
   new Sidebar();

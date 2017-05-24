@@ -1,19 +1,19 @@
 <script>
-
-/* eslint-disable no-new */
 /* global Flash */
 import EnvironmentsService from '../services/environments_service';
-import EnvironmentTable from './environments_table.vue';
+import environmentTable from './environments_table.vue';
 import EnvironmentsStore from '../stores/environments_store';
-import TablePaginationComponent from '../../vue_shared/components/table_pagination';
+import loadingIcon from '../../vue_shared/components/loading_icon.vue';
+import tablePagination from '../../vue_shared/components/table_pagination.vue';
 import '../../lib/utils/common_utils';
 import eventHub from '../event_hub';
 
 export default {
 
   components: {
-    'environment-table': EnvironmentTable,
-    'table-pagination': TablePaginationComponent,
+    environmentTable,
+    tablePagination,
+    loadingIcon,
   },
 
   data() {
@@ -82,11 +82,13 @@ export default {
 
     eventHub.$on('refreshEnvironments', this.fetchEnvironments);
     eventHub.$on('toggleFolder', this.toggleFolder);
+    eventHub.$on('postAction', this.postAction);
   },
 
   beforeDestroyed() {
     eventHub.$off('refreshEnvironments');
     eventHub.$off('toggleFolder');
+    eventHub.$off('postAction');
   },
 
   methods: {
@@ -144,6 +146,7 @@ export default {
         })
         .catch(() => {
           this.isLoading = false;
+          // eslint-disable-next-line no-new
           new Flash('An error occurred while fetching the environments.');
         });
     },
@@ -159,8 +162,15 @@ export default {
         })
         .catch(() => {
           this.isLoadingFolderContent = false;
+          // eslint-disable-next-line no-new
           new Flash('An error occurred while fetching the environments.');
         });
+    },
+
+    postAction(endpoint) {
+      this.service.postAction(endpoint)
+        .then(() => this.fetchEnvironments())
+        .catch(() => new Flash('An error occured while making the request.'));
     },
   },
 };
@@ -200,14 +210,11 @@ export default {
     </div>
 
     <div class="content-list environments-container">
-      <div
-          class="environments-list-loading text-center"
-          v-if="isLoading">
-
-        <i
-          class="fa fa-spinner fa-spin"
-          aria-hidden="true" />
-      </div>
+      <loading-icon
+        label="Loading environments"
+        size="3"
+        v-if="isLoading"
+        />
 
       <div
         class="blank-state blank-state-no-icon"

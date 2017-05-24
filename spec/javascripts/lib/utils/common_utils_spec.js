@@ -1,6 +1,6 @@
 /* eslint-disable promise/catch-or-return */
 
-require('~/lib/utils/common_utils');
+import '~/lib/utils/common_utils';
 
 (() => {
   describe('common_utils', () => {
@@ -40,6 +40,16 @@ require('~/lib/utils/common_utils');
       it('should remove the question mark from the search params', () => {
         const paramsArray = gl.utils.getUrlParamsArray();
         expect(paramsArray[0][0] !== '?').toBe(true);
+      });
+
+      it('should decode params', () => {
+        history.pushState('', '', '?label_name%5B%5D=test');
+
+        expect(
+          gl.utils.getUrlParamsArray()[0],
+        ).toBe('label_name[]=test');
+
+        history.pushState('', '', '?');
       });
     });
 
@@ -360,6 +370,17 @@ require('~/lib/utils/common_utils');
         });
 
         gl.utils.setCiStatusFavicon(BUILD_URL);
+      });
+    });
+
+    describe('gl.utils.ajaxPost', () => {
+      it('should perform `$.ajax` call and do `POST` request', () => {
+        const requestURL = '/some/random/api';
+        const data = { keyname: 'value' };
+        const ajaxSpy = spyOn($, 'ajax').and.callFake(() => {});
+
+        gl.utils.ajaxPost(requestURL, data);
+        expect(ajaxSpy.calls.allArgs()[0][0].type).toEqual('POST');
       });
     });
   });

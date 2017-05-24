@@ -9,6 +9,7 @@ describe MergeRequest, models: true do
     it { is_expected.to belong_to(:target_project).class_name('Project') }
     it { is_expected.to belong_to(:source_project).class_name('Project') }
     it { is_expected.to belong_to(:merge_user).class_name("User") }
+    it { is_expected.to belong_to(:assignee) }
     it { is_expected.to have_many(:merge_request_diffs).dependent(:destroy) }
     it { is_expected.to have_many(:approver_groups).dependent(:destroy) }
   end
@@ -84,6 +85,44 @@ describe MergeRequest, models: true do
       subject.target_branch_sha = '8ffb3c15a5475e59ae909384297fede4badcb4c7'
 
       expect(subject.target_branch_sha).to eq '8ffb3c15a5475e59ae909384297fede4badcb4c7'
+    end
+  end
+
+  describe '#card_attributes' do
+    it 'includes the author name' do
+      allow(subject).to receive(:author).and_return(double(name: 'Robert'))
+      allow(subject).to receive(:assignee).and_return(nil)
+
+      expect(subject.card_attributes).
+        to eq({ 'Author' => 'Robert', 'Assignee' => nil })
+    end
+
+    it 'includes the assignee name' do
+      allow(subject).to receive(:author).and_return(double(name: 'Robert'))
+      allow(subject).to receive(:assignee).and_return(double(name: 'Douwe'))
+
+      expect(subject.card_attributes).
+        to eq({ 'Author' => 'Robert', 'Assignee' => 'Douwe' })
+    end
+  end
+
+  describe '#assignee_or_author?' do
+    let(:user) { create(:user) }
+
+    it 'returns true for a user that is assigned to a merge request' do
+      subject.assignee = user
+
+      expect(subject.assignee_or_author?(user)).to eq(true)
+    end
+
+    it 'returns true for a user that is the author of a merge request' do
+      subject.author = user
+
+      expect(subject.assignee_or_author?(user)).to eq(true)
+    end
+
+    it 'returns false for a user that is not the assignee or author' do
+      expect(subject.assignee_or_author?(user)).to eq(false)
     end
   end
 
@@ -293,16 +332,6 @@ describe MergeRequest, models: true do
 
       expect(merge_request.commits).not_to be_empty
       expect(merge_request.related_notes.count).to eq(3)
-    end
-  end
-
-  describe '#is_being_reassigned?' do
-    it 'returns true if the merge_request assignee has changed' do
-      subject.assignee = create(:user)
-      expect(subject.is_being_reassigned?).to be_truthy
-    end
-    it 'returns false if the merge request assignee has not changed' do
-      expect(subject.is_being_reassigned?).to be_falsey
     end
   end
 
@@ -946,13 +975,8 @@ describe MergeRequest, models: true do
   describe '#head_pipeline' do
     describe 'when the source project exists' do
       it 'returns the latest pipeline' do
-        pipeline = double(:ci_pipeline, ref: 'master')
-
-        allow(subject).to receive(:diff_head_sha).and_return('123abc')
-
-        expect(subject.source_project).to receive(:pipeline_for).
-          with('master', '123abc').
-          and_return(pipeline)
+        pipeline = create(:ci_empty_pipeline, project: subject.source_project, ref: 'master', status: 'running', sha: "123abc")
+        subject.update(head_pipeline: pipeline)
 
         expect(subject.head_pipeline).to eq(pipeline)
       end
@@ -1707,71 +1731,6 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe '#conflicts_can_be_resolved_in_ui?' do
-    def create_merge_request(source_branch)
-      create(:merge_request, source_branch: source_branch, target_branch: 'conflict-start') do |mr|
-        mr.mark_as_unmergeable
-      end
-    end
-
-    it 'returns a falsey value when the MR can be merged without conflicts' do
-      merge_request = create_merge_request('master')
-      merge_request.mark_as_mergeable
-
-      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
-    end
-
-    it 'returns a falsey value when the MR is marked as having conflicts, but has none' do
-      merge_request = create_merge_request('master')
-
-      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
-    end
-
-    it 'returns a falsey value when the MR has a missing ref after a force push' do
-      merge_request = create_merge_request('conflict-resolvable')
-      allow(merge_request.conflicts).to receive(:merge_index).and_raise(Rugged::OdbError)
-
-      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
-    end
-
-    it 'returns a falsey value when the MR does not support new diff notes' do
-      merge_request = create_merge_request('conflict-resolvable')
-      merge_request.merge_request_diff.update_attributes(start_commit_sha: nil)
-
-      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
-    end
-
-    it 'returns a falsey value when the conflicts contain a large file' do
-      merge_request = create_merge_request('conflict-too-large')
-
-      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
-    end
-
-    it 'returns a falsey value when the conflicts contain a binary file' do
-      merge_request = create_merge_request('conflict-binary-file')
-
-      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
-    end
-
-    it 'returns a falsey value when the conflicts contain a file edited in one branch and deleted in another' do
-      merge_request = create_merge_request('conflict-missing-side')
-
-      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
-    end
-
-    it 'returns a truthy value when the conflicts are resolvable in the UI' do
-      merge_request = create_merge_request('conflict-resolvable')
-
-      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_truthy
-    end
-
-    it 'returns a truthy value when the conflicts have to be resolved in an editor' do
-      merge_request = create_merge_request('conflict-contains-conflict-markers')
-
-      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_truthy
-    end
-  end
-
   describe "#source_project_missing?" do
     let(:project)      { create(:empty_project) }
     let(:fork_project) { create(:empty_project, forked_from_project: project) }
@@ -1896,11 +1855,15 @@ describe MergeRequest, models: true do
 
   describe '#mergeable_with_slash_command?' do
     def create_pipeline(status)
-      create(:ci_pipeline_with_one_job,
+      pipeline = create(:ci_pipeline_with_one_job,
         project: project,
         ref:     merge_request.source_branch,
         sha:     merge_request.diff_head_sha,
         status:  status)
+
+      merge_request.update(head_pipeline: pipeline)
+
+      pipeline
     end
 
     let(:project)       { create(:project, :public, :repository, only_allow_merge_if_pipeline_succeeds: true) }
@@ -2015,6 +1978,25 @@ describe MergeRequest, models: true do
 
     it 'returns true when merge request diff has 0 commits' do
       expect(subject.has_no_commits?).to be_truthy
+    end
+  end
+
+  describe '#merge_request_diff_for' do
+    subject { create(:merge_request, importing: true) }
+    let!(:merge_request_diff1) { subject.merge_request_diffs.create(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
+    let!(:merge_request_diff2) { subject.merge_request_diffs.create(head_commit_sha: nil) }
+    let!(:merge_request_diff3) { subject.merge_request_diffs.create(head_commit_sha: '5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
+
+    context 'with diff refs' do
+      it 'returns the diffs' do
+        expect(subject.merge_request_diff_for(merge_request_diff1.diff_refs)).to eq(merge_request_diff1)
+      end
+    end
+
+    context 'with a commit SHA' do
+      it 'returns the diffs' do
+        expect(subject.merge_request_diff_for(merge_request_diff3.head_commit_sha)).to eq(merge_request_diff3)
+      end
     end
   end
 end

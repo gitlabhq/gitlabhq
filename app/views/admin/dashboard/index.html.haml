@@ -86,6 +86,12 @@
           = container_reg
           %span.light.pull-right
             = boolean_to_icon Gitlab.config.registry.enabled
+        - gitlab_pages = 'GitLab Pages'
+        - gitlab_pages_enabled = Gitlab.config.pages.enabled
+        %p{ "aria-label" => "#{gitlab_pages}: status " + (gitlab_pages_enabled ? "on" : "off") }
+          = gitlab_pages
+          %span.light.pull-right
+            = boolean_to_icon gitlab_pages_enabled
 
       .col-md-4
         %h4

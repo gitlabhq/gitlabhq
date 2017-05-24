@@ -14,7 +14,7 @@ feature 'Groups > Contribution Analytics', js: true, feature: true do
     it 'displays Contribution Analytics' do
       visit group_path(group)
 
-      click_link 'Contribution Analytics'
+      find('a', text: 'Contribution Analytics').trigger('click')
 
       expect(page).to have_content "Contribution analytics for issues, merge requests and push"
     end

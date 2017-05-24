@@ -32,7 +32,7 @@ module MarkupHelper
     context = {
       project: @project,
       current_user: (current_user if defined?(current_user)),
-      pipeline: :single_line,
+      pipeline: :single_line
     }
     gfm_body = Banzai.render(body, context)
 
@@ -74,7 +74,7 @@ module MarkupHelper
 
     context[:project] ||= @project
     html = markdown_unsafe(text, context)
-    banzai_postprocess(html, context)
+    prepare_for_rendering(html, context)
   end
 
   def markdown_field(object, field)
@@ -82,13 +82,13 @@ module MarkupHelper
     return '' unless object.present?
 
     html = Banzai.render_field(object, field)
-    banzai_postprocess(html, object.banzai_render_context(field))
+    prepare_for_rendering(html, object.banzai_render_context(field))
   end
 
   def markup(file_name, text, context = {})
     context[:project] ||= @project
     html = context.delete(:rendered) || markup_unsafe(file_name, text, context)
-    banzai_postprocess(html, context)
+    prepare_for_rendering(html, context)
   end
 
   def render_wiki_content(wiki_page)
@@ -107,22 +107,22 @@ module MarkupHelper
         wiki_page.formatted_content.html_safe
       end
 
-    banzai_postprocess(html, context)
+    prepare_for_rendering(html, context)
   end
 
   def markup_unsafe(file_name, text, context = {})
     return '' unless text.present?
 
     if gitlab_markdown?(file_name)
-      Hamlit::RailsHelpers.preserve(markdown_unsafe(text, context))
+      markdown_unsafe(text, context)
     elsif asciidoc?(file_name)
-      asciidoc_unsafe(text)
+      asciidoc_unsafe(text, context)
     elsif plain?(file_name)
       content_tag :pre, class: 'plain-readme' do
         text
       end
     else
-      other_markup_unsafe(file_name, text)
+      other_markup_unsafe(file_name, text, context)
     end
   rescue RuntimeError
     simple_format(text)
@@ -217,16 +217,15 @@ module MarkupHelper
     Banzai.render(text, context)
   end
 
-  def asciidoc_unsafe(text)
-    Gitlab::Asciidoc.render(text)
+  def asciidoc_unsafe(text, context = {})
+    Gitlab::Asciidoc.render(text, context)
   end
 
-  def other_markup_unsafe(file_name, text)
-    Gitlab::OtherMarkup.render(file_name, text)
+  def other_markup_unsafe(file_name, text, context = {})
+    Gitlab::OtherMarkup.render(file_name, text, context)
   end
 
-  # Calls Banzai.post_process with some common context options
-  def banzai_postprocess(html, context = {})
+  def prepare_for_rendering(html, context = {})
     return '' unless html.present?
 
     context.merge!(
@@ -239,7 +238,9 @@ module MarkupHelper
       requested_path: @path
     )
 
-    Banzai.post_process(html, context)
+    html = Banzai.post_process(html, context)
+
+    Hamlit::RailsHelpers.preserve(html)
   end
 
   extend self

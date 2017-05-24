@@ -236,7 +236,7 @@ class IssuableFinder
     when 'created-by-me', 'authored'
       items.where(author_id: current_user.id)
     when 'assigned-to-me'
-      items.where(assignee_id: current_user.id)
+      items.assigned_to(current_user)
     else
       items
     end

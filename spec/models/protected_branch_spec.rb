@@ -106,9 +106,6 @@ describe ProtectedBranch, models: true do
     end
   end
 
-  describe "Mass assignment" do
-  end
-
   describe 'Validation' do
     it { is_expected.to validate_presence_of(:project) }
     it { is_expected.to validate_presence_of(:name) }

@@ -92,7 +92,7 @@ module API
             options = options.reverse_merge(
               with: ::API::V3::Entities::Project,
               current_user: current_user,
-              simple: params[:simple],
+              simple: params[:simple]
             )
 
             projects = filter_projects(projects)
@@ -458,7 +458,7 @@ module API
           requires :file, type: File, desc: 'The file to be uploaded'
         end
         post ":id/uploads" do
-          ::Projects::UploadService.new(user_project, params[:file]).execute
+          UploadService.new(user_project, params[:file]).execute
         end
 
         desc 'Get the users list of a project' do

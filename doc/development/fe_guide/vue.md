@@ -387,6 +387,10 @@ describe('Todos App', () => {
   });
 });
 ```
+#### Test the component's output
+The main return value of a Vue component is the rendered output. In order to test the component we
+need to test the rendered output. [Vue][vue-test] guide's to unit test show us exactly that:
+
 
 ### Stubbing API responses
 [Vue Resource Interceptors][vue-resource-interceptor] allow us to add a interceptor with
@@ -419,6 +423,17 @@ the response we need:
   });
 ```
 
+1. Use `$.mount()` to mount the component
+
+```javascript
+  // bad
+  new Component({
+    el: document.createElement('div')
+  });
+
+  // good
+  new Component().$mount();
+```
 
 [vue-docs]: http://vuejs.org/guide/index.html
 [issue-boards]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/app/assets/javascripts/boards
@@ -429,5 +444,6 @@ the response we need:
 [one-way-data-flow]: https://vuejs.org/v2/guide/components.html#One-Way-Data-Flow
 [vue-resource-repo]: https://github.com/pagekit/vue-resource
 [vue-resource-interceptor]: https://github.com/pagekit/vue-resource/blob/develop/docs/http.md#interceptors
+[vue-test]: https://vuejs.org/v2/guide/unit-testing.html
 [issue-boards-service]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/boards/services/board_service.js.es6
 [flux]: https://facebook.github.io/flux

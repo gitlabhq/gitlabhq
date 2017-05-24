@@ -18,8 +18,10 @@ class DeploymentEntity < Grape::Entity
     end
   end
 
+  expose :created_at
   expose :tag
   expose :last?
+
   expose :user, using: UserEntity
   expose :commit, using: CommitEntity
   expose :deployable, using: BuildEntity

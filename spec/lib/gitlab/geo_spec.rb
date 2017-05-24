@@ -88,12 +88,12 @@ describe Gitlab::Geo, lib: true do
 
   describe 'license_allows?' do
     it 'returns true if license has Geo addon' do
-      allow_any_instance_of(License).to receive(:add_on?).with('GitLab_Geo') { true }
+      allow_any_instance_of(License).to receive(:feature_available?).with(:geo) { true }
       expect(described_class.license_allows?).to be_truthy
     end
 
     it 'returns false if license doesnt have Geo addon' do
-      allow_any_instance_of(License).to receive(:add_on?).with('GitLab_Geo') { false }
+      allow_any_instance_of(License).to receive(:feature_available?).with(:geo) { false }
       expect(described_class.license_allows?).to be_falsey
     end
 
@@ -122,11 +122,8 @@ describe Gitlab::Geo, lib: true do
     end
 
     before(:all) do
-      jobs = %w(geo_bulk_notify_worker geo_backfill_worker)
-
+      jobs = %w(geo_bulk_notify_worker geo_repository_sync_worker geo_file_download_dispatch_worker)
       jobs.each { |job| init_cron_job(job, job.camelize) }
-      # TODO: Make this name consistent
-      init_cron_job('geo_download_dispatch_worker', 'GeoFileDownloadDispatchWorker')
     end
 
     it 'activates cron jobs for primary' do
@@ -134,7 +131,7 @@ describe Gitlab::Geo, lib: true do
       described_class.configure_cron_jobs!
 
       expect(described_class.bulk_notify_job).to be_enabled
-      expect(described_class.backfill_job).not_to be_enabled
+      expect(described_class.repository_sync_job).not_to be_enabled
       expect(described_class.file_download_job).not_to be_enabled
     end
 
@@ -143,7 +140,7 @@ describe Gitlab::Geo, lib: true do
       described_class.configure_cron_jobs!
 
       expect(described_class.bulk_notify_job).not_to be_enabled
-      expect(described_class.backfill_job).to be_enabled
+      expect(described_class.repository_sync_job).to be_enabled
       expect(described_class.file_download_job).to be_enabled
     end
 
@@ -151,7 +148,7 @@ describe Gitlab::Geo, lib: true do
       described_class.configure_cron_jobs!
 
       expect(described_class.bulk_notify_job).not_to be_enabled
-      expect(described_class.backfill_job).not_to be_enabled
+      expect(described_class.repository_sync_job).not_to be_enabled
       expect(described_class.file_download_job).not_to be_enabled
     end
   end

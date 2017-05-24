@@ -109,14 +109,19 @@ Then select 'Internet Site' and press enter to confirm the hostname.
 
 ## 2. Ruby
 
-**Note:** The current supported Ruby version is 2.3.x. GitLab 9.0 dropped support
-for Ruby 2.1.x.
+The Ruby interpreter is required to run GitLab.
+
+**Note:** The current supported Ruby (MRI) version is 2.3.x. GitLab 9.0 dropped
+support for Ruby 2.1.x.
 
 The use of Ruby version managers such as [RVM], [rbenv] or [chruby] with GitLab
 in production, frequently leads to hard to diagnose problems. For example,
 GitLab Shell is called from OpenSSH, and having a version manager can prevent
 pushing and pulling over SSH. Version managers are not supported and we strongly
-advise everyone to follow the instructions below to use a system Ruby.
+advise everyone to follow the instructions below to use a system Ruby.  
+
+Linux distributions generally have older versions of Ruby available, so these
+instructions are designed to install Ruby from the official source code.
 
 Remove the old Ruby 1.8 if present:
 
@@ -132,7 +137,7 @@ Download Ruby and compile it:
     make
     sudo make install
 
-Install the Bundler Gem:
+Then install the Bundler Gem:
 
     sudo gem install bundler --no-ri --no-rdoc
 
@@ -289,9 +294,9 @@ sudo usermod -aG redis git
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 9-1-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 9-2-stable gitlab
 
-**Note:** You can change `9-1-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `9-2-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
@@ -423,6 +428,11 @@ which is the recommended location.
 
     sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" RAILS_ENV=production
 
+You can specify a different Git repository by providing it as an extra paramter:
+
+    sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse,https://example.com/gitlab-workhorse.git]" RAILS_ENV=production
+
+
 ### Initialize Database and Activate Advanced Features
 
     sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production
@@ -465,6 +475,12 @@ with setting up Gitaly until you upgrade to GitLab 9.2 or later.
 
     # Fetch Gitaly source with Git and compile with Go
     sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly]" RAILS_ENV=production
+
+You can specify a different Git repository by providing it as an extra paramter:
+
+    sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly,https://example.com/gitaly.git]" RAILS_ENV=production
+
+Next, make sure gitaly configured:
 
     # Restrict Gitaly socket access
     sudo chmod 0700 /home/git/gitlab/tmp/sockets/private

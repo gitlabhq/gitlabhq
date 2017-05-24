@@ -190,26 +190,6 @@ describe ProjectsController do
       end
     end
 
-    context "when requested with case sensitive namespace and project path" do
-      context "when there is a match with the same casing" do
-        it "loads the project" do
-          get :show, namespace_id: public_project.namespace, id: public_project
-
-          expect(assigns(:project)).to eq(public_project)
-          expect(response).to have_http_status(200)
-        end
-      end
-
-      context "when there is a match with different casing" do
-        it "redirects to the normalized path" do
-          get :show, namespace_id: public_project.namespace, id: public_project.path.upcase
-
-          expect(assigns(:project)).to eq(public_project)
-          expect(response).to redirect_to("/#{public_project.full_path}")
-        end
-      end
-    end
-
     context "when the url contains .atom" do
       let(:public_project_with_dot_atom) { build(:empty_project, :public, name: 'my.atom', path: 'my.atom') }
 
@@ -239,19 +219,33 @@ describe ProjectsController do
         expect(response).to redirect_to(namespace_project_path)
       end
     end
+
+    context 'when requesting a redirected path' do
+      let!(:redirect_route) { public_project.redirect_routes.create!(path: "foo/bar") }
+
+      it 'redirects to the canonical path' do
+        get :show, namespace_id: 'foo', id: 'bar'
+
+        expect(response).to redirect_to(public_project)
+        expect(controller).to set_flash[:notice].to(project_moved_message(redirect_route, public_project))
+      end
+    end
   end
 
   describe "#update" do
     render_views
 
     let(:admin) { create(:admin) }
+    let(:project) { create(:project, :repository) }
+    let(:new_path) { 'renamed_path' }
+    let(:project_params) { { path: new_path } }
+
+    before do
+      sign_in(admin)
+    end
 
     it "sets the repository to the right path after a rename" do
-      project = create(:project, :repository)
-      new_path = 'renamed_path'
-      project_params = { path: new_path }
       controller.instance_variable_set(:@project, project)
-      sign_in(admin)
 
       put :update,
           namespace_id: project.namespace,
@@ -418,6 +412,17 @@ describe ProjectsController do
       expect(parsed_body["Tags"]).to include("v1.0.0")
       expect(parsed_body["Commits"]).to include("123456")
     end
+
+    context 'when requesting a redirected path' do
+      let!(:redirect_route) { public_project.redirect_routes.create!(path: "foo/bar") }
+
+      it 'redirects to the canonical path' do
+        get :refs, namespace_id: 'foo', id: 'bar'
+
+        expect(response).to redirect_to(refs_namespace_project_path(namespace_id: public_project.namespace, id: public_project))
+        expect(controller).to set_flash[:notice].to(project_moved_message(redirect_route, public_project))
+      end
+    end
   end
 
   describe 'GET edit' do
@@ -450,5 +455,112 @@ describe ProjectsController do
 
       expect(JSON.parse(response.body).keys).to match_array(%w(body references))
     end
+  end
+
+  describe '#ensure_canonical_path' do
+    before do
+      sign_in(user)
+    end
+
+    context 'for a GET request' do
+      context 'when requesting the canonical path' do
+        context "with exactly matching casing" do
+          it "loads the project" do
+            get :show, namespace_id: public_project.namespace, id: public_project
+
+            expect(assigns(:project)).to eq(public_project)
+            expect(response).to have_http_status(200)
+          end
+        end
+
+        context "with different casing" do
+          it "redirects to the normalized path" do
+            get :show, namespace_id: public_project.namespace, id: public_project.path.upcase
+
+            expect(assigns(:project)).to eq(public_project)
+            expect(response).to redirect_to("/#{public_project.full_path}")
+            expect(controller).not_to set_flash[:notice]
+          end
+        end
+      end
+
+      context 'when requesting a redirected path' do
+        let!(:redirect_route) { public_project.redirect_routes.create!(path: "foo/bar") }
+
+        it 'redirects to the canonical path' do
+          get :show, namespace_id: 'foo', id: 'bar'
+
+          expect(response).to redirect_to(public_project)
+          expect(controller).to set_flash[:notice].to(project_moved_message(redirect_route, public_project))
+        end
+
+        it 'redirects to the canonical path (testing non-show action)' do
+          get :refs, namespace_id: 'foo', id: 'bar'
+
+          expect(response).to redirect_to(refs_namespace_project_path(namespace_id: public_project.namespace, id: public_project))
+          expect(controller).to set_flash[:notice].to(project_moved_message(redirect_route, public_project))
+        end
+      end
+    end
+
+    context 'for a POST request' do
+      context 'when requesting the canonical path with different casing' do
+        it 'does not 404' do
+          post :toggle_star, namespace_id: public_project.namespace, id: public_project.path.upcase
+
+          expect(response).not_to have_http_status(404)
+        end
+
+        it 'does not redirect to the correct casing' do
+          post :toggle_star, namespace_id: public_project.namespace, id: public_project.path.upcase
+
+          expect(response).not_to have_http_status(301)
+        end
+      end
+
+      context 'when requesting a redirected path' do
+        let!(:redirect_route) { public_project.redirect_routes.create!(path: "foo/bar") }
+
+        it 'returns not found' do
+          post :toggle_star, namespace_id: 'foo', id: 'bar'
+
+          expect(response).to have_http_status(404)
+        end
+      end
+    end
+
+    context 'for a DELETE request' do
+      before do
+        sign_in(create(:admin))
+      end
+
+      context 'when requesting the canonical path with different casing' do
+        it 'does not 404' do
+          delete :destroy, namespace_id: project.namespace, id: project.path.upcase
+
+          expect(response).not_to have_http_status(404)
+        end
+
+        it 'does not redirect to the correct casing' do
+          delete :destroy, namespace_id: project.namespace, id: project.path.upcase
+
+          expect(response).not_to have_http_status(301)
+        end
+      end
+
+      context 'when requesting a redirected path' do
+        let!(:redirect_route) { project.redirect_routes.create!(path: "foo/bar") }
+
+        it 'returns not found' do
+          delete :destroy, namespace_id: 'foo', id: 'bar'
+
+          expect(response).to have_http_status(404)
+        end
+      end
+    end
+  end
+
+  def project_moved_message(redirect_route, project)
+    "Project '#{redirect_route.path}' was moved to '#{project.full_path}'. Please update any links and bookmarks that may still have the old path."
   end
 end

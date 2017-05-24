@@ -147,7 +147,7 @@ module Elastic
         query_hash
       end
 
-      def iid_query_hash(query_hash, iid)
+      def iid_query_hash(iid)
         {
           query: {
             bool: {

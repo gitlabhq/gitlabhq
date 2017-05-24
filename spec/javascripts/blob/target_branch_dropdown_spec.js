@@ -1,7 +1,7 @@
-require('~/gl_dropdown');
-require('~/lib/utils/type_utility');
-require('~/blob/create_branch_dropdown');
-require('~/blob/target_branch_dropdown');
+import '~/gl_dropdown';
+import '~/lib/utils/type_utility';
+import '~/blob/create_branch_dropdown';
+import '~/blob/target_branch_dropdown';
 
 describe('TargetBranchDropdown', () => {
   const fixtureTemplate = 'static/target_branch_dropdown.html.raw';
@@ -63,7 +63,7 @@ describe('TargetBranchDropdown', () => {
     expect('change.branch').toHaveBeenTriggeredOn(dropdown.$dropdown);
   });
 
-  describe('#dropdownData', () => {
+  describe('dropdownData', () => {
     it('cache the refs', () => {
       const refs = dropdown.cachedRefs;
       dropdown.cachedRefs = null;
@@ -88,7 +88,7 @@ describe('TargetBranchDropdown', () => {
     });
   });
 
-  describe('#setNewBranch', () => {
+  describe('setNewBranch', () => {
     it('adds the new branch and select it', () => {
       const branchName = 'new_branch';
 

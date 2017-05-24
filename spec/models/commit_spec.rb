@@ -212,7 +212,7 @@ eos
     end
   end
 
-  describe '#latest_pipeline' do
+  describe '#last_pipeline' do
     let!(:first_pipeline) do
       create(:ci_empty_pipeline,
         project: project,
@@ -226,8 +226,8 @@ eos
         status: 'success')
     end
 
-    it 'returns latest pipeline' do
-      expect(commit.latest_pipeline).to eq second_pipeline
+    it 'returns last pipeline' do
+      expect(commit.last_pipeline).to eq second_pipeline
     end
   end
 
@@ -388,33 +388,4 @@ eos
       expect(described_class.valid_hash?('a' * 41)).to be false
     end
   end
-
-  # describe '#raw_diffs' do
-  # TODO: Uncomment when feature is reenabled
-  #   context 'Gitaly commit_raw_diffs feature enabled' do
-  #     before do
-  #       allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:commit_raw_diffs).and_return(true)
-  #     end
-  #
-  #     context 'when a truthy deltas_only is not passed to args' do
-  #       it 'fetches diffs from Gitaly server' do
-  #         expect(Gitlab::GitalyClient::Commit).to receive(:diff_from_parent).
-  #           with(commit)
-  #
-  #         commit.raw_diffs
-  #       end
-  #     end
-  #
-  #     context 'when a truthy deltas_only is passed to args' do
-  #       it 'fetches diffs using Rugged' do
-  #         opts = { deltas_only: true }
-  #
-  #         expect(Gitlab::GitalyClient::Commit).not_to receive(:diff_from_parent)
-  #         expect(commit.raw).to receive(:diffs).with(opts)
-  #
-  #         commit.raw_diffs(opts)
-  #       end
-  #     end
-  #   end
-  # end
 end

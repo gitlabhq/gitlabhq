@@ -1,10 +1,11 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, one-var, no-underscore-dangle, one-var-declaration-per-line, object-shorthand, no-unused-vars, no-new, comma-dangle, consistent-return, quotes, dot-notation, quote-props, prefer-arrow-callback, max-len */
 /* global Flash */
 
-require('./flash');
-require('~/lib/utils/text_utility');
-require('vendor/jquery.waitforimages');
-require('./task_list');
+import 'vendor/jquery.waitforimages';
+import '~/lib/utils/text_utility';
+import './flash';
+import './task_list';
+import CreateMergeRequestDropdown from './create_merge_request_dropdown';
 
 class Issue {
   constructor() {
@@ -18,48 +19,49 @@ class Issue {
           document.querySelector('#task_status_short').innerText = result.task_status_short;
         }
       });
-      Issue.initIssueBtnEventListeners();
+      this.initIssueBtnEventListeners();
     }
 
     Issue.$btnNewBranch = $('#new-branch');
+    Issue.createMrDropdownWrap = document.querySelector('.create-mr-dropdown-wrap');
 
     Issue.initMergeRequests();
     Issue.initRelatedBranches();
-    Issue.initCanCreateBranch();
+
+    if (Issue.createMrDropdownWrap) {
+      this.createMergeRequestDropdown = new CreateMergeRequestDropdown(Issue.createMrDropdownWrap);
+    }
   }
 
-  static initIssueBtnEventListeners() {
+  initIssueBtnEventListeners() {
     const issueFailMessage = 'Unable to update this issue at this time.';
-
     const closeButtons = $('a.btn-close');
     const isClosedBadge = $('div.status-box-closed');
     const isOpenBadge = $('div.status-box-open');
     const projectIssuesCounter = $('.issue_counter');
     const reopenButtons = $('a.btn-reopen');
 
-    return closeButtons.add(reopenButtons).on('click', function(e) {
-      var $this, shouldSubmit, url;
+    return closeButtons.add(reopenButtons).on('click', (e) => {
+      var $button, shouldSubmit, url;
       e.preventDefault();
       e.stopImmediatePropagation();
-      $this = $(this);
-      shouldSubmit = $this.hasClass('btn-comment');
+      $button = $(e.currentTarget);
+      shouldSubmit = $button.hasClass('btn-comment');
       if (shouldSubmit) {
-        Issue.submitNoteForm($this.closest('form'));
+        Issue.submitNoteForm($button.closest('form'));
       }
-      $this.prop('disabled', true);
-      Issue.setNewBranchButtonState(true, null);
-      url = $this.attr('href');
+      $button.prop('disabled', true);
+      url = $button.attr('href');
       return $.ajax({
         type: 'PUT',
         url: url
-      }).fail(function(jqXHR, textStatus, errorThrown) {
-        new Flash(issueFailMessage);
-        Issue.initCanCreateBranch();
-      }).done(function(data, textStatus, jqXHR) {
+      })
+      .fail(() => new Flash(issueFailMessage))
+      .done((data) => {
         if ('id' in data) {
           $(document).trigger('issuable:change');
 
-          const isClosed = $this.hasClass('btn-close');
+          const isClosed = $button.hasClass('btn-close');
           closeButtons.toggleClass('hidden', isClosed);
           reopenButtons.toggleClass('hidden', !isClosed);
           isClosedBadge.toggleClass('hidden', !isClosed);
@@ -68,12 +70,21 @@ class Issue {
           let numProjectIssues = Number(projectIssuesCounter.text().replace(/[^\d]/, ''));
           numProjectIssues = isClosed ? numProjectIssues - 1 : numProjectIssues + 1;
           projectIssuesCounter.text(gl.text.addDelimiter(numProjectIssues));
+
+          if (this.createMergeRequestDropdown) {
+            if (isClosed) {
+              this.createMergeRequestDropdown.unavailable();
+              this.createMergeRequestDropdown.disable();
+            } else {
+              // We should check in case a branch was created in another tab
+              this.createMergeRequestDropdown.checkAbilityToCreateBranch();
+            }
+          }
         } else {
           new Flash(issueFailMessage);
         }
 
-        $this.prop('disabled', false);
-        Issue.initCanCreateBranch();
+        $button.prop('disabled', false);
       });
     });
   }
@@ -108,29 +119,6 @@ class Issue {
         return $container.html(data.html);
       }
     });
-  }
-
-  static initCanCreateBranch() {
-    // If the user doesn't have the required permissions the container isn't
-    // rendered at all.
-    if (Issue.$btnNewBranch.length === 0) {
-      return;
-    }
-    return $.getJSON(Issue.$btnNewBranch.data('path')).fail(function() {
-      Issue.setNewBranchButtonState(false, false);
-      new Flash('Failed to check if a new branch can be created.');
-    }).done(function(data) {
-      Issue.setNewBranchButtonState(false, data.can_create_branch);
-    });
-  }
-
-  static setNewBranchButtonState(isPending, canCreate) {
-    if (Issue.$btnNewBranch.length === 0) {
-      return;
-    }
-
-    Issue.$btnNewBranch.find('.available').toggle(!isPending && canCreate);
-    Issue.$btnNewBranch.find('.unavailable').toggle(!isPending && !canCreate);
   }
 }
 

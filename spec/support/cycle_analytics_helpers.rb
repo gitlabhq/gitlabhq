@@ -20,7 +20,7 @@ module CycleAnalyticsHelpers
                        ref: 'refs/heads/master').execute
   end
 
-  def create_merge_request_closing_issue(issue, message: nil, source_branch: nil)
+  def create_merge_request_closing_issue(issue, message: nil, source_branch: nil, commit_message: 'commit message')
     if !source_branch || project.repository.commit(source_branch).blank?
       source_branch = generate(:branch)
       project.repository.add_branch(user, source_branch, 'master')
@@ -30,7 +30,7 @@ module CycleAnalyticsHelpers
       user,
       generate(:branch),
       'content',
-      message: 'commit message',
+      message: commit_message,
       branch_name: source_branch)
     project.repository.commit(sha)
 

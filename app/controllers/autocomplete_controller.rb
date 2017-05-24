@@ -45,7 +45,7 @@ class AutocompleteController < ApplicationController
 
     no_project = {
       id: 0,
-      name_with_namespace: 'No project',
+      name_with_namespace: 'No project'
     }
     projects.unshift(no_project) unless params[:offset_id].present?
 

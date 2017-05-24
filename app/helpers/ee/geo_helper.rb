@@ -1,29 +1,35 @@
 module EE
   module GeoHelper
     def node_status_icon(node)
-      if node.primary?
-        icon 'star fw', class: 'has-tooltip', title: 'Primary node'
-      else
+      unless node.primary?
         status = node.enabled? ? 'healthy' : 'disabled'
+        icon = status == 'healthy' ? 'check' : 'times'
 
-        icon 'globe fw',
-             class: "js-geo-node-icon geo-node-icon-#{status} has-tooltip",
+        icon "#{icon} fw",
+             class: "js-geo-node-icon geo-node-#{status}",
              title: status.capitalize
       end
+    end
+
+    def node_class(node)
+      klass = []
+      klass << 'js-geo-secondary-node' if node.secondary?
+      klass << 'node-disabled' unless node.enabled?
+      klass
     end
 
     def toggle_node_button(node)
       btn_class, title, data =
         if node.enabled?
-          ['warning', 'Disable node', { confirm: 'Disabling a node stops the sync process. Are you sure?' }]
+          ['warning', 'Disable', { confirm: 'Disabling a node stops the sync process. Are you sure?' }]
         else
-          ['success', 'Enable node']
+          %w[success Enable]
         end
 
-      link_to icon('power-off fw', text: title),
+      link_to title,
               toggle_admin_geo_node_path(node),
               method: :post,
-              class: "btn btn-sm btn-#{btn_class} prepend-left-10 has-tooltip",
+              class: "btn btn-sm btn-#{btn_class}",
               title: title,
               data: data
     end

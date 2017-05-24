@@ -1,11 +1,35 @@
 require 'spec_helper'
 
 describe ::Gitlab::RepoPath do
+  describe '.parse' do
+    set(:project) { create(:project) }
+
+    it 'parses a full repository path' do
+      expect(described_class.parse(project.repository.path)).to eq([project, false])
+    end
+
+    it 'parses a full wiki path' do
+      expect(described_class.parse(project.wiki.repository.path)).to eq([project, true])
+    end
+
+    it 'parses a relative repository path' do
+      expect(described_class.parse(project.full_path + '.git')).to eq([project, false])
+    end
+
+    it 'parses a relative wiki path' do
+      expect(described_class.parse(project.full_path + '.wiki.git')).to eq([project, true])
+    end
+
+    it 'parses a relative path starting with /' do
+      expect(described_class.parse('/' + project.full_path + '.git')).to eq([project, false])
+    end
+  end
+
   describe '.strip_storage_path' do
     before do
       allow(Gitlab.config.repositories).to receive(:storages).and_return({
         'storage1' => { 'path' => '/foo' },
-        'storage2' => { 'path' => '/bar' },
+        'storage2' => { 'path' => '/bar' }
       })
     end
 

@@ -3,11 +3,10 @@
 /* global BoardService */
 
 import Vue from 'vue';
-
-const milestoneSelect = require('~/boards/components/milestone_select');
-require('~/boards/services/board_service');
-require('~/boards/stores/boards_store');
-require('./mock_data');
+import milestoneSelect from '~/boards/components/milestone_select';
+import '~/boards/services/board_service';
+import '~/boards/stores/boards_store';
+import './mock_data';
 
 describe('Milestone select component', () => {
   let selectMilestoneSpy;

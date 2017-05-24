@@ -1,6 +1,6 @@
 module FakeBlobHelpers
   class FakeBlob
-    include Linguist::BlobHelper
+    include BlobLike
 
     attr_reader :path, :size, :data, :lfs_oid, :lfs_size
 
@@ -19,10 +19,6 @@ module FakeBlobHelpers
 
     alias_method :name, :path
 
-    def mode
-      nil
-    end
-
     def id
       0
     end
@@ -31,17 +27,11 @@ module FakeBlobHelpers
       @binary
     end
 
-    def load_all_data!(repository)
-      # No-op
+    def external_storage
+      :lfs if @lfs_pointer
     end
 
-    def lfs_pointer?
-      @lfs_pointer
-    end
-
-    def truncated?
-      false
-    end
+    alias_method :external_size, :lfs_size
   end
 
   def fake_blob(**kwargs)

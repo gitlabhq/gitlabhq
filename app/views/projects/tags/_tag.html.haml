@@ -2,10 +2,9 @@
 - release = @releases.find { |release| release.tag == tag.name }
 %li.flex-row
   .row-main-content.str-truncated
-    = link_to namespace_project_tag_path(@project.namespace, @project, tag.name) do
-      %span.item-title
-        = icon('tag')
-        = tag.name
+    = link_to namespace_project_tag_path(@project.namespace, @project, tag.name), class: 'item-title ref-name' do
+      = icon('tag')
+      = tag.name
 
     - if protected_tag?(@project, tag)
       %span.label.label-success
@@ -24,8 +23,7 @@
     - if release && release.description.present?
       .description.prepend-top-default
         .wiki
-          = preserve do
-            = markdown_field(release, :description)
+          = markdown_field(release, :description)
 
   .row-fixed-content.controls
     = render 'projects/buttons/download', project: @project, ref: tag.name, pipeline: @tags_pipelines[tag.name]

@@ -268,6 +268,24 @@ describe Ci::ProcessPipelineService, '#execute', :services do
     end
   end
 
+  context 'when there are only manual actions in stages' do
+    before do
+      create_build('image', stage_idx: 0, when: 'manual', allow_failure: true)
+      create_build('build', stage_idx: 1, when: 'manual', allow_failure: true)
+      create_build('deploy', stage_idx: 2, when: 'manual')
+      create_build('check', stage_idx: 3)
+
+      process_pipeline
+    end
+
+    it 'processes all jobs until blocking actions encountered' do
+      expect(all_builds_statuses).to eq(%w[manual manual manual created])
+      expect(all_builds_names).to eq(%w[image build deploy check])
+
+      expect(pipeline.reload).to be_blocked
+    end
+  end
+
   context 'when blocking manual actions are defined' do
     before do
       create_build('code:test', stage_idx: 0)
@@ -314,6 +332,13 @@ describe Ci::ProcessPipelineService, '#execute', :services do
     end
 
     context 'when pipeline is promoted sequentially up to the end' do
+      before do
+        # We are using create(:empty_project), and users has to be master in
+        # order to execute manual action when repository does not exist.
+        #
+        project.add_master(user)
+      end
+
       it 'properly processes entire pipeline' do
         process_pipeline
 
@@ -418,6 +443,21 @@ describe Ci::ProcessPipelineService, '#execute', :services do
     end
   end
 
+  context 'updates a list of retried builds' do
+    subject { described_class.retried.order(:id) }
+
+    let!(:build_retried) { create_build('build') }
+    let!(:build) { create_build('build') }
+    let!(:test) { create_build('test') }
+
+    it 'returns unique statuses' do
+      process_pipeline
+
+      expect(all_builds.latest).to contain_exactly(build, test)
+      expect(all_builds.retried).to contain_exactly(build_retried)
+    end
+  end
+
   def process_pipeline
     described_class.new(pipeline.project, user).execute(pipeline)
   end
@@ -432,6 +472,10 @@ describe Ci::ProcessPipelineService, '#execute', :services do
 
   def builds_names
     builds.pluck(:name)
+  end
+
+  def all_builds_names
+    all_builds.pluck(:name)
   end
 
   def builds_statuses

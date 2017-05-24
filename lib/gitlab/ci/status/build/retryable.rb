@@ -2,9 +2,7 @@ module Gitlab
   module Ci
     module Status
       module Build
-        class Retryable < SimpleDelegator
-          include Status::Extended
-
+        class Retryable < Status::Extended
           def has_action?
             can?(user, :update_build, subject)
           end

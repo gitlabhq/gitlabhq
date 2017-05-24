@@ -6,13 +6,19 @@
       %p
         Add a new member to
         %strong= @project.name
+    - else
+      %p
+        Members can be added by project
+        %i Masters
+        or
+        %i Owners
   .col-lg-9
     .light.prepend-top-default
       - if can?(current_user, :admin_project_member, @project) && !membership_locked?
         = render "projects/project_members/new_project_member"
 
         = render 'shared/members/requests', membership_source: @project, requesters: @requesters
-        .append-bottom-default.clearfix
+        .clearfix
           %h5.member.existing-title
             Existing members and groups
         - if @group_links.any?

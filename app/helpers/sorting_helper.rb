@@ -60,11 +60,19 @@ module SortingHelper
       sort_value_due_date_soon => sort_title_due_date_soon,
       sort_value_due_date_later => sort_title_due_date_later,
       sort_value_start_date_soon => sort_title_start_date_soon,
-      sort_value_start_date_later => sort_title_start_date_later,
+      sort_value_start_date_later => sort_title_start_date_later
     }
   end
 
   def branches_sort_options_hash
+    {
+      sort_value_name => sort_title_name,
+      sort_value_recently_updated => sort_title_recently_updated,
+      sort_value_oldest_updated => sort_title_oldest_updated
+    }
+  end
+
+  def tags_sort_options_hash
     {
       sort_value_name => sort_title_name,
       sort_value_recently_updated => sort_title_recently_updated,

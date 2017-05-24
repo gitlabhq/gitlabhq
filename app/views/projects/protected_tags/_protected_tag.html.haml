@@ -1,6 +1,7 @@
 %tr.js-protected-tag-edit-form{ data: { url: namespace_project_protected_tag_path(@project.namespace, @project, protected_tag) } }
   %td
-    = protected_tag.name
+    %span.ref-name= protected_tag.name
+
     - if @project.root_ref?(protected_tag.name)
       %span.label.label-info.prepend-left-5 default
   %td
@@ -9,7 +10,7 @@
       = link_to pluralize(matching_tags.count, "matching tag"), namespace_project_protected_tag_path(@project.namespace, @project, protected_tag)
     - else
       - if commit = protected_tag.commit
-        = link_to(commit.short_id, namespace_project_commit_path(@project.namespace, @project, commit.id), class: 'commit_short_id')
+        = link_to(commit.short_id, namespace_project_commit_path(@project.namespace, @project, commit.id), class: 'commit-sha')
         = time_ago_with_tooltip(commit.committed_date)
       - else
         (tag was removed from repository)

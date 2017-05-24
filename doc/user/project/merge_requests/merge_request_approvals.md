@@ -11,7 +11,7 @@ merge request in a project.
 ## Configuring Approvals
 
 You can configure the approvals in the project settings, under merge requests.
-To enable it, set **Approvals required** to 1 or higher and search for the
+To enable it, turn on **Activate merge request approvals** and search for the
 users you want to be approvers.
 
 ![Merge Request Approvals in Project Settings](img/approvals_settings.png)
@@ -19,8 +19,6 @@ users you want to be approvers.
 ### Approvals Required
 
 This sets the amount of approvals required before being able to merge a merge request.
-At 0, this disables the feature. Any value above 0 requires that amount of different
-users to approve the merge request.
 
 The number of approvers can be higher than the required approvals.
 
@@ -39,7 +37,7 @@ merge request, they automatically get excluded from the approvers list.
 
 ### Approvers
 
-At the approvers area you can define the default set of users that need to
+At the approvers area you can select the default set of users that need to
 approve a merge request.
 
 Depending on the number of required approvals and the number of approvers set,
@@ -58,7 +56,14 @@ creating or editing a merge request.
 When someone is marked as a required approver for a merge request, an email is
 sent to them and a todo is added to their list of todos.
 
-### Approver groups
+### Selecting individual approvers
+
+GitLab restricts the users that can be selected to be individual approvers. Only these can be selected and appear in the search box:
+- Members of the current project
+- Members of the parent group of the current project
+- Members of a group that have access to the current project [via a share](../../../workflow/share_projects_with_other_groups.md)
+
+### Selecting group approvers
 
 > [Introduced][ee-743] in GitLab Enterprise Edition 8.13.
 

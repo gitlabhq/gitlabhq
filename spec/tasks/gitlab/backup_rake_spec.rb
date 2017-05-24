@@ -230,9 +230,10 @@ describe 'gitlab:app namespace rake task' do
       before do
         FileUtils.mkdir('tmp/tests/default_storage')
         FileUtils.mkdir('tmp/tests/custom_storage')
+        gitaly_address = Gitlab.config.repositories.storages.default.gitaly_address
         storages = {
-          'default' => { 'path' => Settings.absolute('tmp/tests/default_storage') },
-          'custom' => { 'path' => Settings.absolute('tmp/tests/custom_storage') }
+          'default' => { 'path' => Settings.absolute('tmp/tests/default_storage'), 'gitaly_address' => gitaly_address  },
+          'custom' => { 'path' => Settings.absolute('tmp/tests/custom_storage'), 'gitaly_address' => gitaly_address }
         }
         allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
 
@@ -249,6 +250,9 @@ describe 'gitlab:app namespace rake task' do
         FileUtils.rm_rf('tmp/tests/default_storage')
         FileUtils.rm_rf('tmp/tests/custom_storage')
         FileUtils.rm(@backup_tar)
+
+        # We unstub the storages to be able to reconfigure the actual Gitaly channels
+        allow(Gitlab.config.repositories).to receive(:storages).and_call_original
       end
 
       it 'includes repositories in all repository storages' do
@@ -350,7 +354,7 @@ describe 'gitlab:app namespace rake task' do
     end
 
     it 'name has human readable time' do
-      expect(@backup_tar).to match(/\d+_\d{4}_\d{2}_\d{2}_\d+\.\d+\.\d+(-pre)?_gitlab_backup.tar$/)
+      expect(@backup_tar).to match(/\d+_\d{4}_\d{2}_\d{2}_\d+\.\d+\.\d+.*_gitlab_backup.tar$/)
     end
   end
 end # gitlab:app namespace

@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'project routing' do
   before do
     allow(Project).to receive(:find_by_full_path).and_return(false)
-    allow(Project).to receive(:find_by_full_path).with('gitlab/gitlabhq').and_return(true)
+    allow(Project).to receive(:find_by_full_path).with('gitlab/gitlabhq', any_args).and_return(true)
   end
 
   # Shared examples for a resource inside a Project
@@ -93,13 +93,13 @@ describe 'project routing' do
       end
 
       context 'name with dot' do
-        before { allow(Project).to receive(:find_by_full_path).with('gitlab/gitlabhq.keys').and_return(true) }
+        before { allow(Project).to receive(:find_by_full_path).with('gitlab/gitlabhq.keys', any_args).and_return(true) }
 
         it { expect(get('/gitlab/gitlabhq.keys')).to route_to('projects#show', namespace_id: 'gitlab', id: 'gitlabhq.keys') }
       end
 
       context 'with nested group' do
-        before { allow(Project).to receive(:find_by_full_path).with('gitlab/subgroup/gitlabhq').and_return(true) }
+        before { allow(Project).to receive(:find_by_full_path).with('gitlab/subgroup/gitlabhq', any_args).and_return(true) }
 
         it { expect(get('/gitlab/subgroup/gitlabhq')).to route_to('projects#show', namespace_id: 'gitlab/subgroup', id: 'gitlabhq') }
       end
@@ -243,7 +243,6 @@ describe 'project routing' do
   #               diffs_namespace_project_merge_request GET      /:namespace_id/:project_id/merge_requests/:id/diffs(.:format)               projects/merge_requests#diffs
   #             commits_namespace_project_merge_request GET      /:namespace_id/:project_id/merge_requests/:id/commits(.:format)             projects/merge_requests#commits
   #           merge_namespace_project_merge_request POST     /:namespace_id/:project_id/merge_requests/:id/merge(.:format)           projects/merge_requests#merge
-  #     merge_check_namespace_project_merge_request GET      /:namespace_id/:project_id/merge_requests/:id/merge_check(.:format)     projects/merge_requests#merge_check
   #           ci_status_namespace_project_merge_request GET      /:namespace_id/:project_id/merge_requests/:id/ci_status(.:format)           projects/merge_requests#ci_status
   # toggle_subscription_namespace_project_merge_request POST     /:namespace_id/:project_id/merge_requests/:id/toggle_subscription(.:format) projects/merge_requests#toggle_subscription
   #        branch_from_namespace_project_merge_requests GET      /:namespace_id/:project_id/merge_requests/branch_from(.:format)             projects/merge_requests#branch_from
@@ -270,10 +269,6 @@ describe 'project routing' do
         'projects/merge_requests#merge',
         namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1'
       )
-    end
-
-    it 'to #merge_check' do
-      expect(get('/gitlab/gitlabhq/merge_requests/1/merge_check')).to route_to('projects/merge_requests#merge_check', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1')
     end
 
     it 'to #branch_from' do
@@ -340,14 +335,16 @@ describe 'project routing' do
   # test_project_hook GET    /:project_id/hooks/:id/test(.:format) hooks#test
   #     project_hooks GET    /:project_id/hooks(.:format)          hooks#index
   #                   POST   /:project_id/hooks(.:format)          hooks#create
-  #      project_hook DELETE /:project_id/hooks/:id(.:format)      hooks#destroy
+  # edit_project_hook GET    /:project_id/hooks/:id/edit(.:format) hooks#edit
+  #      project_hook PUT    /:project_id/hooks/:id(.:format)      hooks#update
+  #                   DELETE /:project_id/hooks/:id(.:format)      hooks#destroy
   describe Projects::HooksController, 'routing' do
     it 'to #test' do
       expect(get('/gitlab/gitlabhq/hooks/1/test')).to route_to('projects/hooks#test', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1')
     end
 
     it_behaves_like 'RESTful project resources' do
-      let(:actions)    { [:index, :create, :destroy] }
+      let(:actions)    { [:index, :create, :destroy, :edit, :update] }
       let(:controller) { 'hooks' }
     end
   end

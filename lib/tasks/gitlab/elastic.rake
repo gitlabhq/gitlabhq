@@ -64,7 +64,7 @@ namespace :gitlab do
       "MergeRequest" => "index_merge_requests",
       "Snippet"      => "index_snippets",
       "Note"         => "index_notes",
-      "Milestone"    => "index_milestones",
+      "Milestone"    => "index_milestones"
     }.freeze
 
     INDEXABLE_CLASSES.each do |klass_name, task_name|

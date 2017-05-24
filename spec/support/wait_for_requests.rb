@@ -1,5 +1,10 @@
+require_relative './wait_for_ajax'
+require_relative './wait_for_vue_resource'
+
 module WaitForRequests
   extend self
+  include WaitForAjax
+  include WaitForVueResource
 
   # This is inspired by http://www.salsify.com/blog/engineering/tearing-capybara-ajax-tests
   def wait_for_requests_complete

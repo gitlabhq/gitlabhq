@@ -28,7 +28,7 @@ describe IssueCollection do
       end
 
       it 'returns the issues the user is assigned to' do
-        issue1.assignee = user
+        issue1.assignees << user
 
         expect(collection.updatable_by_user(user)).to eq([issue1])
       end

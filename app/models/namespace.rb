@@ -47,7 +47,7 @@ class Namespace < ActiveRecord::Base
   before_destroy(prepend: true) { prepare_for_destroy }
   after_destroy :rm_dir
 
-  scope :root, -> { where('type IS NULL') }
+  scope :for_user, -> { where('type IS NULL') }
 
   scope :with_statistics, -> do
     joins('LEFT JOIN project_statistics ps ON ps.namespace_id = namespaces.id')
@@ -57,7 +57,7 @@ class Namespace < ActiveRecord::Base
         'COALESCE(SUM(ps.storage_size), 0) AS storage_size',
         'COALESCE(SUM(ps.repository_size), 0) AS repository_size',
         'COALESCE(SUM(ps.lfs_objects_size), 0) AS lfs_objects_size',
-        'COALESCE(SUM(ps.build_artifacts_size), 0) AS build_artifacts_size',
+        'COALESCE(SUM(ps.build_artifacts_size), 0) AS build_artifacts_size'
       )
   end
 

@@ -9,7 +9,7 @@ describe Projects::EnvironmentsController do
   end
 
   before do
-    allow_any_instance_of(License).to receive(:add_on?).and_return(false)
+    allow_any_instance_of(License).to receive(:feature_available?).and_return(false)
 
     project.team << [user, :master]
 
@@ -46,7 +46,7 @@ describe Projects::EnvironmentsController do
 
       context 'when requesting available environments scope' do
         before do
-          allow_any_instance_of(License).to receive(:add_on?).with('GitLab_DeployBoard').and_return(true)
+          allow_any_instance_of(License).to receive(:feature_available?).with(:deploy_board).and_return(true)
 
           get :index, environment_params(format: :json, scope: :available)
         end
@@ -87,7 +87,7 @@ describe Projects::EnvironmentsController do
 
       context 'when license does not has the GitLab_DeployBoard add-on' do
         before do
-          allow_any_instance_of(License).to receive(:add_on?).with('GitLab_DeployBoard').and_return(false)
+          allow_any_instance_of(License).to receive(:feature_available?).with(:deploy_board).and_return(false)
 
           get :index, environment_params(format: :json)
         end
@@ -167,6 +167,48 @@ describe Projects::EnvironmentsController do
       patch :update, patch_params
 
       expect(response).to have_http_status(302)
+    end
+  end
+
+  describe 'PATCH #stop' do
+    context 'when env not available' do
+      it 'returns 404' do
+        allow_any_instance_of(Environment).to receive(:available?) { false }
+
+        patch :stop, environment_params(format: :json)
+
+        expect(response).to have_http_status(404)
+      end
+    end
+
+    context 'when stop action' do
+      it 'returns action url' do
+        action = create(:ci_build, :manual)
+
+        allow_any_instance_of(Environment)
+          .to receive_messages(available?: true, stop_with_action!: action)
+
+        patch :stop, environment_params(format: :json)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to eq(
+          { 'redirect_url' =>
+              "http://test.host/#{project.path_with_namespace}/builds/#{action.id}" })
+      end
+    end
+
+    context 'when no stop action' do
+      it 'returns env url' do
+        allow_any_instance_of(Environment)
+          .to receive_messages(available?: true, stop_with_action!: nil)
+
+        patch :stop, environment_params(format: :json)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to eq(
+          { 'redirect_url' =>
+              "http://test.host/#{project.path_with_namespace}/environments/#{environment.id}" })
+      end
     end
   end
 
@@ -252,7 +294,7 @@ describe Projects::EnvironmentsController do
       let(:project) { create(:kubernetes_project) }
 
       before do
-        allow_any_instance_of(License).to receive(:add_on?).with('GitLab_DeployBoard').and_return(true)
+        allow_any_instance_of(License).to receive(:feature_available?).with(:deploy_board).and_return(true)
         allow_any_instance_of(Environment).to receive(:deployment_service_ready?).and_return(true)
       end
 
@@ -280,7 +322,7 @@ describe Projects::EnvironmentsController do
 
     context 'when license does not has the GitLab_DeployBoard add-on' do
       before do
-        allow_any_instance_of(License).to receive(:add_on?).with('GitLab_DeployBoard').and_return(false)
+        allow_any_instance_of(License).to receive(:feature_available?).with(:deploy_board).and_return(false)
       end
 
       it 'does not return any data' do

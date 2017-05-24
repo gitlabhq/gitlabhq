@@ -37,7 +37,7 @@ class Repository
   METHOD_CACHES_FOR_FILE_TYPES = {
     readme: :rendered_readme,
     changelog: :changelog,
-    license: %i(license_blob license_key),
+    license: %i(license_blob license_key license),
     contributing: :contribution_guide,
     gitignore: :gitignore,
     koding: :koding_yml,
@@ -49,13 +49,13 @@ class Repository
   # variable.
   #
   # This only works for methods that do not take any arguments.
-  def self.cache_method(name, fallback: nil)
+  def self.cache_method(name, fallback: nil, memoize_only: false)
     original = :"_uncached_#{name}"
 
     alias_method(original, name)
 
     define_method(name) do
-      cache_method_output(name, fallback: fallback) { __send__(original) }
+      cache_method_output(name, fallback: fallback, memoize_only: memoize_only) { __send__(original) }
     end
   end
 
@@ -512,14 +512,8 @@ class Repository
   delegate :tag_names, to: :raw_repository
   cache_method :tag_names, fallback: []
 
-  def branch_count
-    branches.size
-  end
+  delegate :branch_count, :tag_count, to: :raw_repository
   cache_method :branch_count, fallback: 0
-
-  def tag_count
-    raw_repository.rugged.tags.count
-  end
   cache_method :tag_count, fallback: 0
 
   def avatar
@@ -530,8 +524,8 @@ class Repository
   cache_method :avatar
 
   def readme
-    if head = tree(:head)
-      head.readme
+    if readme = tree(:head)&.readme
+      ReadmeBlob.new(readme, self)
     end
   end
 
@@ -561,6 +555,13 @@ class Repository
     Licensee.license(path).try(:key)
   end
   cache_method :license_key
+
+  def license
+    return unless license_key
+
+    Licensee::License.new(license_key)
+  end
+  cache_method :license, memoize_only: true
 
   def gitignore
     file_on_head(:gitignore)
@@ -655,22 +656,8 @@ class Repository
     "#{name}-#{highest_branch_id + 1}"
   end
 
-  # Remove archives older than 2 hours
   def branches_sorted_by(value)
-    case value
-    when 'name'
-      branches.sort_by(&:name)
-    when 'updated_desc'
-      branches.sort do |a, b|
-        commit(b.dereferenced_target).committed_date <=> commit(a.dereferenced_target).committed_date
-      end
-    when 'updated_asc'
-      branches.sort do |a, b|
-        commit(a.dereferenced_target).committed_date <=> commit(b.dereferenced_target).committed_date
-      end
-    else
-      branches
-    end
+    raw_repository.local_branches(sort_by: value)
   end
 
   def tags_sorted_by(value)
@@ -802,7 +789,7 @@ class Repository
       }
       options.merge!(get_committer_and_author(user, email: author_email, name: author_name))
 
-      Rugged::Commit.create(rugged, options)
+      create_commit(options)
     end
   end
   # rubocop:enable Metrics/ParameterLists
@@ -865,10 +852,10 @@ class Repository
 
       actual_options = options.merge(
         parents: [our_commit, their_commit],
-        tree: merge_index.write_tree(rugged),
+        tree: merge_index.write_tree(rugged)
       )
 
-      commit_id = Rugged::Commit.create(rugged, actual_options)
+      commit_id = create_commit(actual_options)
       merge_request.update(in_progress_merge_commit_sha: commit_id)
       commit_id
     end
@@ -891,12 +878,11 @@ class Repository
 
       committer = user_to_committer(user)
 
-      Rugged::Commit.create(rugged,
-        message: commit.revert_message(user),
-        author: committer,
-        committer: committer,
-        tree: revert_tree_id,
-        parents: [start_commit.sha])
+      create_commit(message: commit.revert_message(user),
+                    author: committer,
+                    committer: committer,
+                    tree: revert_tree_id,
+                    parents: [start_commit.sha])
     end
   end
 
@@ -915,16 +901,15 @@ class Repository
 
       committer = user_to_committer(user)
 
-      Rugged::Commit.create(rugged,
-        message: commit.message,
-        author: {
-          email: commit.author_email,
-          name: commit.author_name,
-          time: commit.authored_date
-        },
-        committer: committer,
-        tree: cherry_pick_tree_id,
-        parents: [start_commit.sha])
+      create_commit(message: commit.message,
+                    author: {
+                        email: commit.author_email,
+                        name: commit.author_name,
+                        time: commit.authored_date
+                    },
+                    committer: committer,
+                    tree: cherry_pick_tree_id,
+                    parents: [start_commit.sha])
     end
   end
 
@@ -932,7 +917,7 @@ class Repository
     GitOperationService.new(user, self).with_branch(branch_name) do
       committer = user_to_committer(user)
 
-      Rugged::Commit.create(rugged, params.merge(author: committer, committer: committer))
+      create_commit(params.merge(author: committer, committer: committer))
     end
   end
 
@@ -1035,15 +1020,13 @@ class Repository
   end
 
   def is_ancestor?(ancestor_id, descendant_id)
-    # NOTE: This feature is intentionally disabled until
-    # https://gitlab.com/gitlab-org/gitlab-ce/issues/30586 is resolved
-    # Gitlab::GitalyClient.migrate(:is_ancestor) do |is_enabled|
-    #   if is_enabled
-    #     raw_repository.is_ancestor?(ancestor_id, descendant_id)
-    #   else
-    merge_base_commit(ancestor_id, descendant_id) == ancestor_id
-    #   end
-    # end
+    Gitlab::GitalyClient.migrate(:is_ancestor) do |is_enabled|
+      if is_enabled
+        raw_repository.is_ancestor?(ancestor_id, descendant_id)
+      else
+        merge_base_commit(ancestor_id, descendant_id) == ancestor_id
+      end
+    end
   end
 
   def empty_repo?
@@ -1151,14 +1134,20 @@ class Repository
   #
   # key - The name of the key to cache the data in.
   # fallback - A value to fall back to in the event of a Git error.
-  def cache_method_output(key, fallback: nil, &block)
+  def cache_method_output(key, fallback: nil, memoize_only: false, &block)
     ivar = cache_instance_variable_name(key)
 
     if instance_variable_defined?(ivar)
       instance_variable_get(ivar)
     else
       begin
-        instance_variable_set(ivar, cache.fetch(key, &block))
+        value =
+          if memoize_only
+            yield
+          else
+            cache.fetch(key, &block)
+          end
+        instance_variable_set(ivar, value)
       rescue Rugged::ReferenceError, Gitlab::Git::Repository::NoRepository
         # if e.g. HEAD or the entire repository doesn't exist we want to
         # gracefully handle this and not cache anything.
@@ -1173,8 +1162,8 @@ class Repository
 
   def file_on_head(type)
     if head = tree(:head)
-      head.blobs.find do |file|
-        Gitlab::FileDetector.type_of(file.name) == type
+      head.blobs.find do |blob|
+        Gitlab::FileDetector.type_of(blob.path) == type
       end
     end
   end
@@ -1230,11 +1219,15 @@ class Repository
     Gitlab::Metrics.add_event(event, { path: path_with_namespace }.merge(tags))
   end
 
+  def create_commit(params = {})
+    params[:message].delete!("\r")
+
+    Rugged::Commit.create(rugged, params)
+  end
+
   def repository_storage_path
     @project.repository_storage_path
   end
-
-  delegate :gitaly_channel, :gitaly_repository, to: :raw_repository
 
   def initialize_raw_repository
     Gitlab::Git::Repository.new(project.repository_storage, path_with_namespace + '.git')

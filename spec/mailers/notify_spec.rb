@@ -36,11 +36,11 @@ describe Notify do
       end
 
       context 'for issues' do
-        let(:issue) { create(:issue, author: current_user, assignee: assignee, project: project) }
-        let(:issue_with_description) { create(:issue, author: current_user, assignee: assignee, project: project, description: 'My awesome description') }
+        let(:issue) { create(:issue, author: current_user, assignees: [assignee], project: project) }
+        let(:issue_with_description) { create(:issue, author: current_user, assignees: [assignee], project: project, description: 'My awesome description') }
 
         describe 'that are new' do
-          subject { described_class.new_issue_email(issue.assignee_id, issue.id) }
+          subject { described_class.new_issue_email(issue.assignees.first.id, issue.id) }
 
           it_behaves_like 'an assignee email'
           it_behaves_like 'an email starting a new thread with reply-by-email enabled' do
@@ -69,7 +69,7 @@ describe Notify do
         end
 
         describe 'that are new with a description' do
-          subject { described_class.new_issue_email(issue_with_description.assignee_id, issue_with_description.id) }
+          subject { described_class.new_issue_email(issue_with_description.assignees.first.id, issue_with_description.id) }
 
           it_behaves_like 'it should show Gmail Actions View Issue link'
 
@@ -79,7 +79,7 @@ describe Notify do
         end
 
         describe 'that have been reassigned' do
-          subject { described_class.reassigned_issue_email(recipient.id, issue.id, previous_assignee.id, current_user.id) }
+          subject { described_class.reassigned_issue_email(recipient.id, issue.id, [previous_assignee.id], current_user.id) }
 
           it_behaves_like 'a multiple recipients email'
           it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
@@ -235,12 +235,7 @@ describe Notify do
         end
 
         describe 'that are new with a description' do
-          subject do
-            described_class.new_merge_request_email(
-              merge_request_with_description.assignee_id,
-              merge_request_with_description.id
-            )
-          end
+          subject { described_class.new_merge_request_email(merge_request_with_description.assignee_id, merge_request_with_description.id) }
 
           it_behaves_like 'it should show Gmail Actions View Merge request link'
           it_behaves_like "an unsubscribeable thread"

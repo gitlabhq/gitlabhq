@@ -128,10 +128,11 @@ describe 'GlobalSearch' do
 
   def create_items(project, feature_settings = nil)
     Sidekiq::Testing.inline! do
-      project.project_feature.update!(feature_settings) if feature_settings
-
       create :issue, title: 'term', project: project
       create :merge_request, title: 'term', target_project: project, source_project: project
+
+      project.project_feature.update!(feature_settings) if feature_settings
+
       project.repository.index_blobs
       project.repository.index_commits
 

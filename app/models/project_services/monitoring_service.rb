@@ -9,8 +9,11 @@ class MonitoringService < Service
     %w()
   end
 
-  # Environments have a number of metrics
-  def metrics(environment)
+  def environment_metrics(environment)
+    raise NotImplementedError
+  end
+
+  def deployment_metrics(deployment)
     raise NotImplementedError
   end
 end

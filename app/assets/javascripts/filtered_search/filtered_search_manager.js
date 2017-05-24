@@ -1,5 +1,3 @@
-/* global Flash */
-
 import FilteredSearchContainer from './container';
 import RecentSearchesRoot from './recent_searches_root';
 import RecentSearchesStore from './stores/recent_searches_store';
@@ -19,18 +17,25 @@ class FilteredSearchManager {
       this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeysWithWeights;
     }
 
-    this.recentSearchesStore = new RecentSearchesStore();
-    let recentSearchesKey = 'issue-recent-searches';
+    this.recentSearchesStore = new RecentSearchesStore({
+      isLocalStorageAvailable: RecentSearchesService.isAvailable(),
+    });
+    const searchHistoryDropdownElement = document.querySelector('.js-filtered-search-history-dropdown');
+    const projectPath = searchHistoryDropdownElement ?
+      searchHistoryDropdownElement.dataset.projectFullPath : 'project';
+    let recentSearchesPagePrefix = 'issue-recent-searches';
     if (page === 'merge_requests') {
-      recentSearchesKey = 'merge-request-recent-searches';
+      recentSearchesPagePrefix = 'merge-request-recent-searches';
     }
+    const recentSearchesKey = `${projectPath}-${recentSearchesPagePrefix}`;
     this.recentSearchesService = new RecentSearchesService(recentSearchesKey);
 
     // Fetch recent searches from localStorage
     this.fetchingRecentSearchesPromise = this.recentSearchesService.fetch()
-      .catch(() => {
+      .catch((error) => {
+        if (error.name === 'RecentSearchesServiceError') return undefined;
         // eslint-disable-next-line no-new
-        new Flash('An error occured while parsing recent searches');
+        new window.Flash('An error occured while parsing recent searches');
         // Gracefully fail to empty array
         return [];
       })
@@ -50,7 +55,7 @@ class FilteredSearchManager {
       this.recentSearchesRoot = new RecentSearchesRoot(
         this.recentSearchesStore,
         this.recentSearchesService,
-        document.querySelector('.js-filtered-search-history-dropdown'),
+        searchHistoryDropdownElement,
       );
       this.recentSearchesRoot.init();
 

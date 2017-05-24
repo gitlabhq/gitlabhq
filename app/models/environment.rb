@@ -62,7 +62,7 @@ class Environment < ActiveRecord::Base
   def predefined_variables
     [
       { key: 'CI_ENVIRONMENT_NAME', value: name, public: true },
-      { key: 'CI_ENVIRONMENT_SLUG', value: slug, public: true },
+      { key: 'CI_ENVIRONMENT_SLUG', value: slug, public: true }
     ]
   end
 
@@ -154,7 +154,7 @@ class Environment < ActiveRecord::Base
   end
 
   def metrics
-    project.monitoring_service.metrics(self) if has_metrics?
+    project.monitoring_service.environment_metrics(self) if has_metrics?
   end
 
   # An environment name is not necessarily suitable for use in URLs, DNS

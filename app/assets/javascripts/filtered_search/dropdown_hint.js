@@ -1,6 +1,5 @@
 import Filter from '~/droplab/plugins/filter';
-
-require('./filtered_search_dropdown');
+import './filtered_search_dropdown';
 
 class DropdownHint extends gl.FilteredSearchDropdown {
   constructor(droplab, dropdown, input, filter) {
@@ -62,7 +61,7 @@ class DropdownHint extends gl.FilteredSearchDropdown {
           Object.assign({
             icon: `fa-${icon}`,
             hint,
-            tag: `&lt;${tag}&gt;`,
+            tag: `<${tag}>`,
           }, type && { type }),
         );
       }

@@ -3,6 +3,7 @@ class Spinach::Features::ProjectBuildsArtifacts < Spinach::FeatureSteps
   include SharedProject
   include SharedBuilds
   include RepoHelpers
+  include WaitForAjax
 
   step 'I click artifacts download button' do
     click_link 'Download'
@@ -22,6 +23,12 @@ class Spinach::Features::ProjectBuildsArtifacts < Spinach::FeatureSteps
     end
   end
 
+  step 'I should see the build header' do
+    page.within('.build-header') do
+      expect(page).to have_content "Job ##{@build.id} in pipeline ##{@pipeline.id} for #{@pipeline.short_sha}"
+    end
+  end
+
   step 'I click link to subdirectory within build artifacts' do
     page.within('.tree-table') { click_link 'other_artifacts_0.1.2' }
   end
@@ -31,6 +38,12 @@ class Spinach::Features::ProjectBuildsArtifacts < Spinach::FeatureSteps
       expect(page).to have_content '..'
       expect(page).to have_content 'another-subdirectory'
       expect(page).to have_content 'doc_sample.txt'
+    end
+  end
+
+  step 'I should see the directory name in the breadcrumb' do
+    page.within('.repo-breadcrumb') do
+      expect(page).to have_content 'other_artifacts_0.1.2'
     end
   end
 
@@ -66,19 +79,11 @@ class Spinach::Features::ProjectBuildsArtifacts < Spinach::FeatureSteps
 
   step 'I click a link to file within build artifacts' do
     page.within('.tree-table') { find_link('ci_artifacts.txt').click }
+    wait_for_ajax
   end
 
-  step 'download of a file extracted from build artifacts should start' do
-    send_data = response_headers[Gitlab::Workhorse::SEND_DATA_HEADER]
-
-    expect(send_data).to start_with('artifacts-entry:')
-
-    base64_params = send_data.sub(/\Aartifacts\-entry:/, '')
-    params = JSON.parse(Base64.urlsafe_decode64(base64_params))
-
-    expect(params.keys).to eq(%w(Archive Entry))
-    expect(params['Archive']).to end_with('build_artifacts.zip')
-    expect(params['Entry']).to eq(Base64.encode64('ci_artifacts.txt'))
+  step 'I see a download link' do
+    expect(page).to have_link 'download it'
   end
 
   step 'I click a first row within build artifacts table' do

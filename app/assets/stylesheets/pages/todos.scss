@@ -54,8 +54,9 @@
     background-color: $white-light;
 
     &:hover {
-      border-color: $white-dark;
+      border-color: $white-normal;
       background-color: $gray-light;
+      border-top: 1px solid transparent;
 
       .todo-avatar,
       .todo-item {

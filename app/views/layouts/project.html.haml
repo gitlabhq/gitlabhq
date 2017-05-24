@@ -5,14 +5,10 @@
 
 - content_for :project_javascripts do
   - project = @target_project || @project
-  - if @project_wiki && @page
-    - preview_markdown_path = namespace_project_wiki_preview_markdown_path(project.namespace, project, @page.slug)
-  - else
-    - preview_markdown_path = preview_markdown_namespace_project_path(project.namespace, project)
   - if current_user
     :javascript
-      window.project_uploads_path = "#{namespace_project_uploads_path project.namespace,project}";
-      window.preview_markdown_path = "#{preview_markdown_path}";
+      window.uploads_path = "#{namespace_project_uploads_path project.namespace,project}";
+      window.preview_markdown_path = "#{preview_markdown_path(project)}";
 
 - content_for :header_content do
   .js-dropdown-menu-projects

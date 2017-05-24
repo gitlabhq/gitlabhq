@@ -1,6 +1,7 @@
 .discussion-notes
   %ul.notes{ data: { discussion_id: discussion.id } }
     = render partial: "shared/notes/note", collection: discussion.notes, as: :note
+    .flash-container
 
   - if current_user
     .discussion-reply-holder

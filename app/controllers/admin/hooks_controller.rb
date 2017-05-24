@@ -1,4 +1,6 @@
 class Admin::HooksController < Admin::ApplicationController
+  before_action :hook, only: :edit
+
   def index
     @hooks = SystemHook.all
     @hook = SystemHook.new
@@ -15,15 +17,25 @@ class Admin::HooksController < Admin::ApplicationController
     end
   end
 
+  def edit
+  end
+
+  def update
+    if hook.update_attributes(hook_params)
+      flash[:notice] = 'System hook was successfully updated.'
+      redirect_to admin_hooks_path
+    else
+      render 'edit'
+    end
+  end
+
   def destroy
-    @hook = SystemHook.find(params[:id])
-    @hook.destroy
+    hook.destroy
 
     redirect_to admin_hooks_path
   end
 
   def test
-    @hook = SystemHook.find(params[:hook_id])
     data = {
       event_name: "project_create",
       name: "Ruby",
@@ -32,9 +44,15 @@ class Admin::HooksController < Admin::ApplicationController
       owner_name: "Someone",
       owner_email: "example@gitlabhq.com"
     }
-    @hook.execute(data, 'system_hooks')
+    hook.execute(data, 'system_hooks')
 
     redirect_back_or_default
+  end
+
+  private
+
+  def hook
+    @hook ||= SystemHook.find(params[:id])
   end
 
   def hook_params
@@ -42,6 +60,7 @@ class Admin::HooksController < Admin::ApplicationController
       :enable_ssl_verification,
       :push_events,
       :tag_push_events,
+      :repository_update_events,
       :token,
       :url
     )

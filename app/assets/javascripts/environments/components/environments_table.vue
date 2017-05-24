@@ -4,11 +4,13 @@
  */
 import EnvironmentTableRowComponent from './environment_item.vue';
 import DeployBoard from './deploy_board_component.vue';
+import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
 export default {
   components: {
     'environment-item': EnvironmentTableRowComponent,
     DeployBoard,
+    loadingIcon,
   },
 
   props: {
@@ -28,11 +30,6 @@ export default {
       type: Boolean,
       required: false,
       default: false,
-    },
-
-    service: {
-      type: Object,
-      required: true,
     },
 
     isLoadingFolderContent: {
@@ -92,7 +89,6 @@ export default {
           :model="model"
           :can-create-deployment="canCreateDeployment"
           :can-read-environment="canReadEnvironment"
-          :service="service"
           :toggleDeployBoard="toggleDeployBoard"
           />
 
@@ -110,10 +106,8 @@ export default {
 
         <template v-if="model.isFolder && model.isOpen && model.children && model.children.length > 0">
           <tr v-if="isLoadingFolderContent">
-            <td colspan="6" class="text-center">
-              <i
-                class="fa fa-spin fa-spinner fa-2x"
-                aria-hidden="true" />
+            <td colspan="6">
+              <loading-icon size="2" />
             </td>
           </tr>
 
@@ -124,7 +118,8 @@ export default {
               :model="children"
               :can-create-deployment="canCreateDeployment"
               :can-read-environment="canReadEnvironment"
-              :service="service" />
+              />
+
 
             <tr>
               <td

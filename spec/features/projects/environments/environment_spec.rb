@@ -62,6 +62,8 @@ feature 'Environment', :feature do
                                        name: 'deploy to production')
           end
 
+          given(:role) { :master }
+
           scenario 'does show a play button' do
             expect(page).to have_link(action.name.humanize)
           end
@@ -132,6 +134,8 @@ feature 'Environment', :feature do
                                     on_stop: 'close_app')
               end
 
+              given(:role) { :master }
+
               scenario 'does allow to stop environment' do
                 click_link('Stop')
 
@@ -200,7 +204,7 @@ feature 'Environment', :feature do
     end
 
     scenario 'user deletes the branch with running environment' do
-      visit namespace_project_branches_path(project.namespace, project)
+      visit namespace_project_branches_path(project.namespace, project, search: 'feature')
 
       remove_branch_with_hooks(project, user, 'feature') do
         page.within('.js-branch-feature') { find('a.btn-remove').click }

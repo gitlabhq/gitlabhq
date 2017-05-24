@@ -206,25 +206,52 @@ describe Environment, models: true do
     end
 
     context 'when matching action is defined' do
-      let(:build) { create(:ci_build) }
-      let!(:deployment) { create(:deployment, environment: environment, deployable: build, on_stop: 'close_app') }
+      let(:pipeline) { create(:ci_pipeline, project: project) }
+      let(:build) { create(:ci_build, pipeline: pipeline) }
 
-      context 'when action did not yet finish' do
-        let!(:close_action) { create(:ci_build, :manual, pipeline: build.pipeline, name: 'close_app') }
+      let!(:deployment) do
+        create(:deployment, environment: environment,
+                            deployable: build,
+                            on_stop: 'close_app')
+      end
 
-        it 'returns the same action' do
-          expect(subject).to eq(close_action)
-          expect(subject.user).to eq(user)
+      context 'when user is not allowed to stop environment' do
+        let!(:close_action) do
+          create(:ci_build, :manual, pipeline: pipeline, name: 'close_app')
+        end
+
+        it 'raises an exception' do
+          expect { subject }.to raise_error(Gitlab::Access::AccessDeniedError)
         end
       end
 
-      context 'if action did finish' do
-        let!(:close_action) { create(:ci_build, :manual, :success, pipeline: build.pipeline, name: 'close_app') }
+      context 'when user is allowed to stop environment' do
+        before do
+          project.add_master(user)
+        end
 
-        it 'returns a new action of the same type' do
-          is_expected.to be_persisted
-          expect(subject.name).to eq(close_action.name)
-          expect(subject.user).to eq(user)
+        context 'when action did not yet finish' do
+          let!(:close_action) do
+            create(:ci_build, :manual, pipeline: pipeline, name: 'close_app')
+          end
+
+          it 'returns the same action' do
+            expect(subject).to eq(close_action)
+            expect(subject.user).to eq(user)
+          end
+        end
+
+        context 'if action did finish' do
+          let!(:close_action) do
+            create(:ci_build, :manual, :success,
+                   pipeline: pipeline, name: 'close_app')
+          end
+
+          it 'returns a new action of the same type' do
+            expect(subject).to be_persisted
+            expect(subject.name).to eq(close_action.name)
+            expect(subject.user).to eq(user)
+          end
         end
       end
     end
@@ -388,7 +415,7 @@ describe Environment, models: true do
 
       it 'returns the metrics from the deployment service' do
         expect(project.monitoring_service)
-          .to receive(:metrics).with(environment)
+          .to receive(:environment_metrics).with(environment)
           .and_return(:fake_metrics)
 
         is_expected.to eq(:fake_metrics)
@@ -448,7 +475,7 @@ describe Environment, models: true do
 
       it 'returns the metrics from the deployment service' do
         expect(project.monitoring_service)
-          .to receive(:metrics).with(environment)
+          .to receive(:environment_metrics).with(environment)
           .and_return(:fake_metrics)
 
         is_expected.to eq(:fake_metrics)
@@ -493,7 +520,7 @@ describe Environment, models: true do
       "foo**bar"                  => "foo-bar" + SUFFIX,
       "*-foo"                     => "env-foo" + SUFFIX,
       "staging-12345678-"         => "staging-12345678" + SUFFIX,
-      "staging-12345678-01234567" => "staging-12345678" + SUFFIX,
+      "staging-12345678-01234567" => "staging-12345678" + SUFFIX
     }.each do |name, matcher|
       it "returns a slug matching #{matcher}, given #{name}" do
         slug = described_class.new(name: name).generate_slug

@@ -43,7 +43,9 @@
 
             return $el.text();
           },
-          clicked: (selected, $link) => {
+          clicked: (options) => {
+            const $link = options.$el;
+
             if (!$link.data('revert')) {
               this.formSubmit(null, $link);
             } else {

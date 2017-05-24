@@ -1,11 +1,12 @@
 import Vue from 'vue';
 import Visibility from 'visibilityjs';
-import PipelinesTableComponent from '../../vue_shared/components/pipelines_table';
+import pipelinesTableComponent from '../../vue_shared/components/pipelines_table';
 import PipelinesService from '../../pipelines/services/pipelines_service';
 import PipelineStore from '../../pipelines/stores/pipelines_store';
 import eventHub from '../../pipelines/event_hub';
-import EmptyState from '../../pipelines/components/empty_state.vue';
-import ErrorState from '../../pipelines/components/error_state.vue';
+import emptyState from '../../pipelines/components/empty_state.vue';
+import errorState from '../../pipelines/components/error_state.vue';
+import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 import '../../lib/utils/common_utils';
 import '../../vue_shared/vue_resource_interceptor';
 import Poll from '../../lib/utils/poll';
@@ -17,16 +18,15 @@ import Poll from '../../lib/utils/poll';
  * We need a store to store the received environemnts.
  * We need a service to communicate with the server.
  *
- * Necessary SVG in the table are provided as props. This should be refactored
- * as soon as we have Webpack and can load them directly into JS files.
  */
 
 export default Vue.component('pipelines-table', {
 
   components: {
-    'pipelines-table-component': PipelinesTableComponent,
-    'error-state': ErrorState,
-    'empty-state': EmptyState,
+    pipelinesTableComponent,
+    errorState,
+    emptyState,
+    loadingIcon,
   },
 
   /**
@@ -46,6 +46,8 @@ export default Vue.component('pipelines-table', {
       isLoading: false,
       hasError: false,
       isMakingRequest: false,
+      updateGraphDropdown: false,
+      hasMadeRequest: false,
     };
   },
 
@@ -54,9 +56,15 @@ export default Vue.component('pipelines-table', {
       return this.hasError && !this.isLoading;
     },
 
+    /**
+     * Empty state is only rendered if after the first request we receive no pipelines.
+     *
+     * @return {Boolean}
+     */
     shouldRenderEmptyState() {
       return !this.state.pipelines.length &&
         !this.isLoading &&
+        this.hasMadeRequest &&
         !this.hasError;
     },
 
@@ -93,6 +101,10 @@ export default Vue.component('pipelines-table', {
     if (!Visibility.hidden()) {
       this.isLoading = true;
       this.poll.makeRequest();
+    } else {
+      // If tab is not visible we need to make the first request so we don't show the empty
+      // state without knowing if there are any pipelines
+      this.fetchPipelines();
     }
 
     Visibility.change(() => {
@@ -126,31 +138,38 @@ export default Vue.component('pipelines-table', {
     successCallback(resp) {
       const response = resp.json();
 
+      this.hasMadeRequest = true;
+
       // depending of the endpoint the response can either bring a `pipelines` key or not.
       const pipelines = response.pipelines || response;
       this.store.storePipelines(pipelines);
       this.isLoading = false;
+      this.updateGraphDropdown = true;
     },
 
     errorCallback() {
       this.hasError = true;
       this.isLoading = false;
+      this.updateGraphDropdown = false;
     },
 
     setIsMakingRequest(isMakingRequest) {
       this.isMakingRequest = isMakingRequest;
+
+      if (isMakingRequest) {
+        this.updateGraphDropdown = false;
+      }
     },
   },
 
   template: `
     <div class="content-list pipelines">
-      <div
-        class="realtime-loading"
-        v-if="isLoading">
-        <i
-          class="fa fa-spinner fa-spin"
-          aria-hidden="true" />
-      </div>
+
+      <loading-icon
+        label="Loading pipelines"
+        size="3"
+        v-if="isLoading"
+        />
 
       <empty-state
         v-if="shouldRenderEmptyState"
@@ -163,7 +182,9 @@ export default Vue.component('pipelines-table', {
         v-if="shouldRenderTable">
         <pipelines-table-component
           :pipelines="state.pipelines"
-          :service="service" />
+          :service="service"
+          :update-graph-dropdown="updateGraphDropdown"
+          />
       </div>
     </div>
   `,

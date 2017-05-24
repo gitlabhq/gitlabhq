@@ -20,7 +20,9 @@ module Gitlab
       end
 
       def exec
-        error = push_checks || tag_checks || protected_branch_checks || push_rule_check
+        return GitAccessStatus.new(true) if skip_authorization
+
+        error = push_checks || branch_checks || tag_checks || push_rule_check
 
         if error
           GitAccessStatus.new(false, error)
@@ -31,35 +33,59 @@ module Gitlab
 
       protected
 
-      def protected_branch_checks
-        return if skip_authorization
+      def push_checks
+        if user_access.cannot_do_action?(:push_code)
+          "You are not allowed to push code to this project."
+        end
+      end
+
+      def branch_checks
         return unless @branch_name
+
+        if deletion? && @branch_name == project.default_branch
+          return "The default branch of a project cannot be deleted."
+        end
+
+        protected_branch_checks
+      end
+
+      def protected_branch_checks
         return unless ProtectedBranch.protected?(project, @branch_name)
 
         if forced_push?
           return "You are not allowed to force push code to a protected branch on this project."
-        elsif deletion?
-          return "You are not allowed to delete protected branches from this project."
         end
 
+        if deletion?
+          protected_branch_deletion_checks
+        else
+          protected_branch_push_checks
+        end
+      end
+
+      def protected_branch_deletion_checks
+        unless user_access.can_delete_branch?(@branch_name)
+          return 'You are not allowed to delete protected branches from this project. Only a project master or owner can delete a protected branch.'
+        end
+
+        unless protocol == 'web'
+          'You can only delete protected branches using the web interface.'
+        end
+      end
+
+      def protected_branch_push_checks
         if matching_merge_request?
-          if user_access.can_merge_to_branch?(@branch_name) || user_access.can_push_to_branch?(@branch_name)
-            return
-          else
+          unless user_access.can_merge_to_branch?(@branch_name) || user_access.can_push_to_branch?(@branch_name)
             "You are not allowed to merge code into protected branches on this project."
           end
         else
-          if user_access.can_push_to_branch?(@branch_name)
-            return
-          else
+          unless user_access.can_push_to_branch?(@branch_name)
             "You are not allowed to push code to protected branches on this project."
           end
         end
       end
 
       def tag_checks
-        return if skip_authorization
-
         return unless @tag_name
 
         if tag_exists? && user_access.cannot_do_action?(:admin_project)
@@ -70,24 +96,13 @@ module Gitlab
       end
 
       def protected_tag_checks
-        return unless tag_protected?
+        return unless ProtectedTag.protected?(project, @tag_name)
+
         return "Protected tags cannot be updated." if update?
         return "Protected tags cannot be deleted." if deletion?
 
         unless user_access.can_create_tag?(@tag_name)
           return "You are not allowed to create this tag as it is protected."
-        end
-      end
-
-      def tag_protected?
-        ProtectedTag.protected?(project, @tag_name)
-      end
-
-      def push_checks
-        return if skip_authorization
-
-        if user_access.cannot_do_action?(:push_code)
-          "You are not allowed to push code to this project."
         end
       end
 
@@ -188,7 +203,7 @@ module Gitlab
 
         return if validations.empty?
 
-        commit.raw_diffs(deltas_only: true).each do |diff|
+        commit.raw_deltas.each do |diff|
           validations.each do |validation|
             if error = validation.call(diff)
               return error
@@ -218,7 +233,7 @@ module Gitlab
       end
 
       def validate_path_locks?
-        @validate_path_locks ||= license_allows_file_locks? &&
+        @validate_path_locks ||= @project.feature_available?(:file_lock) &&
           project.path_locks.any? && @newrev && @oldrev &&
           project.default_branch == @branch_name # locks protect default branch only
       end

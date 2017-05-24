@@ -2,9 +2,7 @@ module Gitlab
   module Ci
     module Status
       module Pipeline
-        class Blocked < SimpleDelegator
-          include Status::Extended
-
+        class Blocked < Status::Extended
           def text
             'blocked'
           end

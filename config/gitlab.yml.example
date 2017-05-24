@@ -181,7 +181,7 @@ production: &base
     stuck_ci_jobs_worker:
       cron: "0 * * * *"
     # Execute scheduled triggers
-    trigger_schedule_worker:
+    pipeline_schedule_worker:
       cron: "0 */12 * * *"
     # Remove expired build artifacts
     expire_build_artifacts_worker:
@@ -216,14 +216,14 @@ production: &base
     geo_bulk_notify_worker:
       cron: "*/10 * * * * *"
 
-    # GitLab Geo backfill worker
+    # GitLab Geo repository sync worker
     # NOTE: This will only take effect if Geo is enabled
-    geo_backfill_worker:
+    geo_repository_sync_worker:
       cron: "*/5 * * * *"
 
-    # GitLab Geo file download worker
+    # GitLab Geo file download dispatch worker
     # NOTE: This will only take effect if Geo is enabled
-    geo_download_dispatch_worker:
+    geo_file_download_dispatch_worker:
       cron: "*/10 * * * *"
 
   registry:
@@ -588,6 +588,9 @@ production: &base
     # Git over HTTP
     upload_pack: true
     receive_pack: true
+
+    # Git import/fetch timeout
+    # git_timeout: 800
 
     # If you use non-standard ssh port you need to specify it
     # ssh_port: 22

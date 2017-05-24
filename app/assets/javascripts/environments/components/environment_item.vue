@@ -1,5 +1,6 @@
 <script>
 import Timeago from 'timeago.js';
+import _ from 'underscore';
 import '../../lib/utils/text_utility';
 import ActionsComponent from './environment_actions.vue';
 import ExternalUrlComponent from './environment_external_url.vue';
@@ -47,11 +48,6 @@ export default {
       required: false,
     },
 
-    service: {
-      type: Object,
-      required: true,
-      default: () => ({}),
-    },
   },
 
   computed: {
@@ -65,7 +61,7 @@ export default {
     hasLastDeploymentKey() {
       if (this.model &&
         this.model.last_deployment &&
-        !this.$options.isObjectEmpty(this.model.last_deployment)) {
+        !_.isEmpty(this.model.last_deployment)) {
         return true;
       }
       return false;
@@ -316,8 +312,8 @@ export default {
      */
     deploymentHasUser() {
       return this.model &&
-        !this.$options.isObjectEmpty(this.model.last_deployment) &&
-        !this.$options.isObjectEmpty(this.model.last_deployment.user);
+        !_.isEmpty(this.model.last_deployment) &&
+        !_.isEmpty(this.model.last_deployment.user);
     },
 
     /**
@@ -328,8 +324,8 @@ export default {
      */
     deploymentUser() {
       if (this.model &&
-        !this.$options.isObjectEmpty(this.model.last_deployment) &&
-        !this.$options.isObjectEmpty(this.model.last_deployment.user)) {
+        !_.isEmpty(this.model.last_deployment) &&
+        !_.isEmpty(this.model.last_deployment.user)) {
         return this.model.last_deployment.user;
       }
       return {};
@@ -344,8 +340,8 @@ export default {
      */
     shouldRenderBuildName() {
       return !this.model.isFolder &&
-        !this.$options.isObjectEmpty(this.model.last_deployment) &&
-        !this.$options.isObjectEmpty(this.model.last_deployment.deployable);
+        !_.isEmpty(this.model.last_deployment) &&
+        !_.isEmpty(this.model.last_deployment.deployable);
     },
 
     /**
@@ -386,7 +382,7 @@ export default {
      */
     shouldRenderDeploymentID() {
       return !this.model.isFolder &&
-        !this.$options.isObjectEmpty(this.model.last_deployment) &&
+        !_.isEmpty(this.model.last_deployment) &&
         this.model.last_deployment.iid !== undefined;
     },
 
@@ -414,21 +410,6 @@ export default {
     folderUrl() {
       return `${window.location.pathname}/folders/${this.model.folderName}`;
     },
-  },
-
-  /**
-   * Helper to verify if certain given object are empty.
-   * Should be replaced by lodash _.isEmpty - https://lodash.com/docs/4.17.2#isEmpty
-   * @param  {Object} object
-   * @returns {Bollean}
-   */
-  isObjectEmpty(object) {
-    for (const key in object) { // eslint-disable-line
-      if (hasOwnProperty.call(object, key)) {
-        return false;
-      }
-    }
-    return true;
   },
 
   methods: {
@@ -560,31 +541,34 @@ export default {
 
         <actions-component
           v-if="hasManualActions && canCreateDeployment"
-          :service="service"
-          :actions="manualActions"/>
+          :actions="manualActions"
+          />
 
         <external-url-component
           v-if="externalURL && canReadEnvironment"
-          :external-url="externalURL"/>
+          :external-url="externalURL"
+          />
 
         <monitoring-button-component
           v-if="monitoringUrl && canReadEnvironment"
-          :monitoring-url="monitoringUrl"/>
+          :monitoring-url="monitoringUrl"
+          />
 
         <terminal-button-component
           v-if="model && model.terminal_path"
-          :terminal-path="model.terminal_path"/>
+          :terminal-path="model.terminal_path"
+          />
 
         <stop-component
           v-if="hasStopAction && canCreateDeployment"
           :stop-url="model.stop_path"
-          :service="service"/>
+          />
 
         <rollback-component
           v-if="canRetry && canCreateDeployment"
           :is-last-deployment="isLastDeployment"
           :retry-url="retryUrl"
-          :service="service"/>
+          />
       </div>
     </td>
   </tr>

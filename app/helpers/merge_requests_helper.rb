@@ -1,6 +1,6 @@
 module MergeRequestsHelper
   def new_mr_path_from_push_event(event)
-    target_project = event.project.forked_from_project || event.project
+    target_project = event.project.default_merge_request_target
     new_namespace_project_merge_request_path(
       event.project.namespace,
       event.project,
@@ -17,14 +17,6 @@ module MergeRequestsHelper
         target_branch: target_project.repository.root_ref
       }
     }
-  end
-
-  def mr_widget_refresh_url(mr)
-    if mr && mr.target_project
-      merge_widget_refresh_namespace_project_merge_request_url(mr.target_project.namespace, mr.target_project, mr)
-    else
-      ''
-    end
   end
 
   def mr_css_classes(mr)
@@ -55,23 +47,6 @@ module MergeRequestsHelper
     end
   end
 
-  def issues_sentence(issues)
-    # Issuable sorter will sort local issues, then issues from the same
-    # namespace, then all other issues.
-    issues = Gitlab::IssuableSorter.sort(@project, issues).map do |issue|
-      issue.to_reference(@project)
-    end
-    issues.to_sentence
-  end
-
-  def mr_closes_issues
-    @mr_closes_issues ||= @merge_request.closes_issues(current_user)
-  end
-
-  def mr_issues_mentioned_but_not_closing
-    @mr_issues_mentioned_but_not_closing ||= @merge_request.issues_mentioned_but_not_closing(current_user)
-  end
-
   def mr_change_branches_path(merge_request)
     new_namespace_project_merge_request_path(
       @project.namespace, @project,
@@ -79,7 +54,7 @@ module MergeRequestsHelper
         source_project_id: merge_request.source_project_id,
         target_project_id: merge_request.target_project_id,
         source_branch: merge_request.source_branch,
-        target_branch: merge_request.target_branch,
+        target_branch: merge_request.target_branch
       },
       change_branches: true
     )
@@ -99,33 +74,29 @@ module MergeRequestsHelper
     end
   end
 
-  def mr_assign_issues_link
-    issues = MergeRequests::AssignIssuesService.new(@project,
-                                                    current_user,
-                                                    merge_request: @merge_request,
-                                                    closes_issues: mr_closes_issues
-                                                   ).assignable_issues
-    path = assign_related_issues_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
-    if issues.present?
-      pluralize_this_issue = issues.count > 1 ? "these issues" : "this issue"
-      link_to "Assign yourself to #{pluralize_this_issue}", path, method: :post
-    end
-  end
+  # This may be able to be removed with associated specs
+  def render_require_section(merge_request)
+    str = if merge_request.approvals_left == 1
+            "Requires one more approval"
+          else
+            "Requires #{merge_request.approvals_left} more approvals"
+          end
 
-  def source_branch_with_namespace(merge_request)
-    namespace = merge_request.source_project_namespace
-    branch = merge_request.source_branch
+    if merge_request.approvers_left.any?
+      more_approvals = merge_request.approvals_left - merge_request.approvers_left.count
+      approvers_names = merge_request.approvers_left.map(&:name)
 
-    if merge_request.source_branch_exists?
-      namespace = link_to(namespace, project_path(merge_request.source_project))
-      branch = link_to(branch, namespace_project_commits_path(merge_request.source_project.namespace, merge_request.source_project, merge_request.source_branch))
+      str <<
+        if more_approvals > 0
+          " (from #{render_items_list(approvers_names + ["#{more_approvals} more"])})"
+        elsif more_approvals < 0
+          " (from #{render_items_list(approvers_names, "or")})"
+        else
+          " (from #{render_items_list(approvers_names)})"
+        end
     end
 
-    if merge_request.for_fork?
-      namespace + ":" + branch
-    else
-      branch
-    end
+    str
   end
 
   def format_mr_branch_names(merge_request)
@@ -139,6 +110,10 @@ module MergeRequestsHelper
     else
       ["#{source_path}:#{source_branch}", "#{target_path}:#{target_branch}"]
     end
+  end
+
+  def target_projects(project)
+    [project, project.default_merge_request_target].uniq
   end
 
   def merge_request_button_visibility(merge_request, closed)

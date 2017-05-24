@@ -24,6 +24,8 @@ Issue:
 - time_estimate
 - relative_position
 - service_desk_reply_to
+- last_edited_at
+- last_edited_by_id
 Event:
 - id
 - target_type
@@ -158,6 +160,9 @@ MergeRequest:
 - rebase_commit_sha
 - time_estimate
 - squash
+- last_edited_at
+- last_edited_by_id
+- head_pipeline_id
 MergeRequestDiff:
 - id
 - state
@@ -188,6 +193,7 @@ Ci::Pipeline:
 - user_id
 - lock_version
 - auto_canceled_by_id
+- pipeline_schedule_id
 CommitStatus:
 - id
 - project_id
@@ -229,6 +235,7 @@ CommitStatus:
 - lock_version
 - coverage_regex
 - auto_canceled_by_id
+- retried
 Ci::Variable:
 - id
 - project_id
@@ -247,18 +254,19 @@ Ci::Trigger:
 - owner_id
 - description
 - ref
-Ci::TriggerSchedule:
+Ci::PipelineSchedule:
 - id
-- project_id
-- trigger_id
-- deleted_at
-- created_at
-- updated_at
+- description
+- ref
 - cron
 - cron_timezone
 - next_run_at
-- ref
+- project_id
+- owner_id
 - active
+- deleted_at
+- created_at
+- updated_at
 DeployKey:
 - id
 - user_id
@@ -288,7 +296,7 @@ Service:
 - tag_push_events
 - note_events
 - pipeline_events
-- build_events
+- job_events
 - category
 - default
 - wiki_page_events
@@ -308,11 +316,12 @@ ProjectHook:
 - note_events
 - pipeline_events
 - enable_ssl_verification
-- build_events
+- job_events
 - wiki_page_events
 - token
 - group_id
 - confidential_issues_events
+- repository_update_events
 ProtectedBranch:
 - id
 - project_id
@@ -364,6 +373,7 @@ Project:
 - repository_size_limit
 - sync_time
 - service_desk_enabled
+- last_repository_updated_at
 Author:
 - name
 ProjectFeature:

@@ -49,6 +49,44 @@ module SystemNoteService
     create_note(NoteSummary.new(noteable, project, author, body, action: 'assignee'))
   end
 
+  # Called when the assignees of an Issue is changed or removed
+  #
+  # issue - Issue object
+  # project  - Project owning noteable
+  # author   - User performing the change
+  # assignees - Users being assigned, or nil
+  #
+  # Example Note text:
+  #
+  #   "removed all assignees"
+  #
+  #   "assigned to @user1 additionally to @user2"
+  #
+  #   "assigned to @user1, @user2 and @user3 and unassigned from @user4 and @user5"
+  #
+  #   "assigned to @user1 and @user2"
+  #
+  # Returns the created Note object
+  def change_issue_assignees(issue, project, author, old_assignees)
+    body =
+      if issue.assignees.any? && old_assignees.any?
+        unassigned_users = old_assignees - issue.assignees
+        added_users = issue.assignees.to_a - old_assignees
+
+        text_parts = []
+        text_parts << "assigned to #{added_users.map(&:to_reference).to_sentence}" if added_users.any?
+        text_parts << "unassigned #{unassigned_users.map(&:to_reference).to_sentence}" if unassigned_users.any?
+
+        text_parts.join(' and ')
+      elsif old_assignees.any?
+        "removed assignee"
+      elsif issue.assignees.any?
+        "assigned to #{issue.assignees.map(&:to_reference).to_sentence}"
+      end
+
+    create_note(NoteSummary.new(issue, project, author, body, action: 'assignee'))
+  end
+
   # Called when one or more labels on a Noteable are added and/or removed
   #
   # noteable       - Noteable object
@@ -253,12 +291,29 @@ module SystemNoteService
 
     old_diffs, new_diffs = Gitlab::Diff::InlineDiff.new(old_title, new_title).inline_diffs
 
-    marked_old_title = Gitlab::Diff::InlineDiffMarker.new(old_title).mark(old_diffs, mode: :deletion, markdown: true)
-    marked_new_title = Gitlab::Diff::InlineDiffMarker.new(new_title).mark(new_diffs, mode: :addition, markdown: true)
+    marked_old_title = Gitlab::Diff::InlineDiffMarkdownMarker.new(old_title).mark(old_diffs, mode: :deletion)
+    marked_new_title = Gitlab::Diff::InlineDiffMarkdownMarker.new(new_title).mark(new_diffs, mode: :addition)
 
     body = "changed title from **#{marked_old_title}** to **#{marked_new_title}**"
 
     create_note(NoteSummary.new(noteable, project, author, body, action: 'title'))
+  end
+
+  # Called when the description of a Noteable is changed
+  #
+  # noteable  - Noteable object that responds to `description`
+  # project   - Project owning noteable
+  # author    - User performing the change
+  #
+  # Example Note text:
+  #
+  #   "changed the description"
+  #
+  # Returns the created Note object
+  def change_description(noteable, project, author)
+    body = 'changed the description'
+
+    create_note(NoteSummary.new(noteable, project, author, body, action: 'description'))
   end
 
   # Called when the confidentiality changes

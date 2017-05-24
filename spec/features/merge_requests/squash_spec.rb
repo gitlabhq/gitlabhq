@@ -11,6 +11,8 @@ feature 'Squashing merge requests', js: true, feature: true do
 
   shared_examples 'squash' do
     it 'squashes the commits into a single commit, and adds a merge commit' do
+      expect(page).to have_content('Merged')
+
       latest_master_commits = project.repository.commits_between(original_head.sha, 'master').map(&:raw)
 
       squash_commit = an_object_having_attributes(sha: a_string_matching(/\h{40}/),
@@ -30,13 +32,16 @@ feature 'Squashing merge requests', js: true, feature: true do
 
   shared_examples 'no squash' do
     it 'accepts the merge request without squashing' do
+      expect(page).to have_content('Merged')
       expect(project.repository).to be_merged_to_root_ref(source_branch)
     end
   end
 
   def accept_mr
-    click_on 'Accept merge request'
-    wait_for_ajax
+    expect(page).to have_button('Merge')
+
+    uncheck 'Remove source branch'
+    click_on 'Merge'
   end
 
   before do

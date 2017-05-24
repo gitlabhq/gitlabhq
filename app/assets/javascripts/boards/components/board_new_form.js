@@ -1,9 +1,8 @@
 /* global BoardService */
 
 import Vue from 'vue';
-
-const boardMilestoneSelect = require('./milestone_select');
-const extraMilestones = require('../mixins/extra_milestones');
+import boardMilestoneSelect from './milestone_select';
+import extraMilestones from '../mixins/extra_milestones';
 
 (() => {
   window.gl = window.gl || {};

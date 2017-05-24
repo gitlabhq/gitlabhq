@@ -9,6 +9,7 @@ module Ci
     belongs_to :project
     belongs_to :user
     belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
+    belongs_to :pipeline_schedule, class_name: 'Ci::PipelineSchedule'
 
     has_many :auto_canceled_pipelines, class_name: 'Ci::Pipeline', foreign_key: 'auto_canceled_by_id'
     has_many :auto_canceled_jobs, class_name: 'CommitStatus', foreign_key: 'auto_canceled_by_id'
@@ -16,6 +17,10 @@ module Ci
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id
     has_many :builds, foreign_key: :commit_id
     has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id
+
+    # Merge requests for which the current pipeline is running against
+    # the merge request's latest commit.
+    has_many :merge_requests, foreign_key: "head_pipeline_id"
 
     has_many :pending_builds, -> { pending }, foreign_key: :commit_id, class_name: 'Ci::Build'
     has_many :retryable_builds, -> { latest.failed_or_canceled }, foreign_key: :commit_id, class_name: 'Ci::Build'
@@ -378,14 +383,6 @@ module Ci
       data = pipeline_data
       project.execute_hooks(data, :pipeline_hooks)
       project.execute_services(data, :pipeline_hooks)
-    end
-
-    # Merge requests for which the current pipeline is running against
-    # the merge request's latest commit.
-    def merge_requests
-      @merge_requests ||= project.merge_requests
-        .where(source_branch: self.ref)
-        .select { |merge_request| merge_request.head_pipeline.try(:id) == self.id }
     end
 
     # All the merge requests for which the current pipeline runs/ran against

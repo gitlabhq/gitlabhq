@@ -87,14 +87,14 @@ gem 'kaminari', '~> 0.17.0'
 gem 'hamlit', '~> 2.6.1'
 
 # Files attachments
-gem 'carrierwave', '~> 0.11.0'
+gem 'carrierwave', '~> 1.0'
 
 # Drag and Drop UI
 gem 'dropzonejs-rails', '~> 0.7.1'
 
 # for backups
 gem 'fog-aws', '~> 0.9'
-gem 'fog-core', '~> 1.40'
+gem 'fog-core', '~> 1.44'
 gem 'fog-google', '~> 0.5'
 gem 'fog-local', '~> 0.3'
 gem 'fog-openstack', '~> 0.1'
@@ -154,12 +154,12 @@ gem 'acts-as-taggable-on', '~> 4.0'
 
 # Background jobs
 gem 'sidekiq', '~> 5.0'
-gem 'sidekiq-cron', '~> 0.4.4'
+gem 'sidekiq-cron', '~> 0.6.0'
 gem 'redis-namespace', '~> 1.5.2'
 gem 'sidekiq-limit_fetch', '~> 3.4'
 
 # Cron Parser
-gem 'rufus-scheduler', '~> 3.1.10'
+gem 'rufus-scheduler', '~> 3.4'
 
 # HTTP requests
 gem 'httparty', '~> 0.13.3'
@@ -266,6 +266,12 @@ gem 'sentry-raven', '~> 2.4.0'
 
 gem 'premailer-rails', '~> 1.9.0'
 
+# I18n
+gem 'ruby_parser', '~> 3.8.4', require: false
+gem 'gettext_i18n_rails', '~> 1.8.0'
+gem 'gettext_i18n_rails_js', '~> 1.2.0'
+gem 'gettext', '~> 3.2.2', require: false, group: :development
+
 # Metrics
 group :metrics do
   gem 'allocations', '~> 1.0', require: false, platform: :mri
@@ -371,6 +377,6 @@ gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'
 
 # Gitaly GRPC client
-gem 'gitaly', '~> 0.5.0'
+gem 'gitaly', '~> 0.7.0'
 
 gem 'toml-rb', '~> 0.3.15', require: false

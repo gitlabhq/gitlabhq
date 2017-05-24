@@ -10,7 +10,7 @@ module ExportFileHelper
 
     create(:release, project: project)
 
-    issue = create(:issue, assignee: user, project: project)
+    issue = create(:issue, assignees: [user], project: project)
     snippet = create(:project_snippet, project: project)
     label = create(:label, project: project)
     milestone = create(:milestone, project: project)

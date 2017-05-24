@@ -2,8 +2,8 @@
 import AsyncButtonComponent from '../../pipelines/components/async_button.vue';
 import PipelinesActionsComponent from '../../pipelines/components/pipelines_actions';
 import PipelinesArtifactsComponent from '../../pipelines/components/pipelines_artifacts';
-import PipelinesStatusComponent from '../../pipelines/components/status';
-import PipelinesStageComponent from '../../pipelines/components/stage';
+import ciBadge from './ci_badge_link.vue';
+import PipelinesStageComponent from '../../pipelines/components/stage.vue';
 import PipelinesUrlComponent from '../../pipelines/components/pipeline_url';
 import PipelinesTimeagoComponent from '../../pipelines/components/time_ago';
 import CommitComponent from './commit';
@@ -24,6 +24,12 @@ export default {
       type: Object,
       required: true,
     },
+
+    updateGraphDropdown: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 
   components: {
@@ -33,7 +39,7 @@ export default {
     'commit-component': CommitComponent,
     'dropdown-stage': PipelinesStageComponent,
     'pipeline-url': PipelinesUrlComponent,
-    'status-scope': PipelinesStatusComponent,
+    ciBadge,
     'time-ago': PipelinesTimeagoComponent,
   },
 
@@ -56,10 +62,12 @@ export default {
     commitAuthor() {
       let commitAuthorInformation;
 
+      if (!this.pipeline || !this.pipeline.commit) {
+        return null;
+      }
+
       // 1. person who is an author of a commit might be a GitLab user
-      if (this.pipeline &&
-        this.pipeline.commit &&
-        this.pipeline.commit.author) {
+      if (this.pipeline.commit.author) {
         // 2. if person who is an author of a commit is a GitLab user
         // he/she can have a GitLab avatar
         if (this.pipeline.commit.author.avatar_url) {
@@ -71,11 +79,8 @@ export default {
             avatar_url: this.pipeline.commit.author_gravatar_url,
           });
         }
-      }
-
-      // 4. If committer is not a GitLab User he/she can have a Gravatar
-      if (this.pipeline &&
-        this.pipeline.commit) {
+        // 4. If committer is not a GitLab User he/she can have a Gravatar
+      } else {
         commitAuthorInformation = {
           avatar_url: this.pipeline.commit.author_gravatar_url,
           web_url: `mailto:${this.pipeline.commit.author_email}`,
@@ -191,11 +196,20 @@ export default {
 
       return '';
     },
+
+    pipelineStatus() {
+      if (this.pipeline.details && this.pipeline.details.status) {
+        return this.pipeline.details.status;
+      }
+      return {};
+    },
   },
 
   template: `
     <tr class="commit">
-      <status-scope :pipeline="pipeline"/>
+      <td class="commit-link">
+        <ci-badge :status="pipelineStatus"/>
+      </td>
 
       <pipeline-url :pipeline="pipeline"></pipeline-url>
 
@@ -213,7 +227,10 @@ export default {
         <div class="stage-container dropdown js-mini-pipeline-graph"
           v-if="pipeline.details.stages.length > 0"
           v-for="stage in pipeline.details.stages">
-          <dropdown-stage :stage="stage"/>
+
+          <dropdown-stage
+            :stage="stage"
+            :update-dropdown="updateGraphDropdown"/>
         </div>
       </td>
 

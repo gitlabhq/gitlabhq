@@ -309,6 +309,17 @@ module Gitlab
             U lib/gitlab/ee_compat_check.rb
 
           Resolve them, stage the changes and commit them.
+          
+          If the patch couldn't be applied cleanly, use the following command:
+          
+          # In the EE repo
+          $ git apply --reject path/to/#{ce_branch}.patch
+          
+          This option makes git apply the parts of the patch that are applicable,
+          and leave the rejected hunks in corresponding `.rej` files.
+          You can then resolve the conflicts highlighted in `.rej` by
+          manually applying the correct diff from the `.rej` file to the file with conflicts.
+          When finished, you can delete the `.rej` files and commit your changes.
 
         ⚠️ Don't forget to push your branch to gitlab-ee:
 

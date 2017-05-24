@@ -1,30 +1,17 @@
-.nav-block
-  .tree-ref-holder
-    = render 'shared/ref_switcher', destination: 'blob', path: @path
+= render "projects/blob/breadcrumb", blob: blob
 
-  %ul.breadcrumb.repo-breadcrumb
-    %li
-      = link_to namespace_project_tree_path(@project.namespace, @project, @ref) do
-        = @project.path
-    - tree_breadcrumbs(@tree, 6) do |title, path, part_path|
-      %li
-        - if path
-          - if path.end_with?(@path)
-            = link_to namespace_project_blob_path(@project.namespace, @project, path) do
-              %strong
-                = truncate(title, length: 40)
-          - else
-            = link_to truncate(title, length: 40), namespace_project_tree_path(@project.namespace, @project, path)
-        - else
-          = link_to title, '#'
-        = render_lock_icon(part_path)
+.info-well.hidden-xs
+  .well-segment
+    %ul.blob-commit-info
+      - blob_commit = @repository.last_commit_for_path(@commit.id, blob.path)
+      = render blob_commit, project: @project, ref: @ref
 
-%ul.blob-commit-info.hidden-xs
-  - blob_commit = @repository.last_commit_for_path(@commit.id, blob.path)
-  = render blob_commit, project: @project, ref: @ref
+  - auxiliary_viewer = blob.auxiliary_viewer
+  - if auxiliary_viewer && !auxiliary_viewer.render_error
+    .well-segment.blob-auxiliary-viewer
+      = render 'projects/blob/viewer', viewer: auxiliary_viewer
 
 #blob-content-holder.blob-content-holder
   %article.file-holder
     = render "projects/blob/header", blob: blob
-
     = render 'projects/blob/content', blob: blob

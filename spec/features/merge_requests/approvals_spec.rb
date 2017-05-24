@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 feature 'Merge request approvals', js: true, feature: true do
-  include WaitForAjax
+  include WaitForVueResource
 
   let(:user) { create(:user) }
   let(:project) { create(:project, approvals_before_merge: 1) }
@@ -31,6 +31,7 @@ feature 'Merge request approvals', js: true, feature: true do
 
   context 'when creating an MR' do
     let(:other_user) { create(:user) }
+    let(:non_member) { create(:user) }
 
     before do
       project.team << [user, :developer]
@@ -48,6 +49,10 @@ feature 'Merge request approvals', js: true, feature: true do
 
     it 'does not allow setting the current user as an approver' do
       expect(find('.select2-results')).not_to have_content(user.name)
+    end
+
+    it 'filters non members from approvers list' do
+      expect(find('.select2-results')).not_to have_content(non_member.name)
     end
   end
 
@@ -69,7 +74,7 @@ feature 'Merge request approvals', js: true, feature: true do
         visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { target_branch: 'master', source_branch: 'feature' })
         find('#s2id_merge_request_approver_group_ids .select2-input').click
 
-        wait_for_ajax
+        wait_for_vue_resource
 
         expect(find('.select2-results')).to have_content(group.name)
 
@@ -77,7 +82,8 @@ feature 'Merge request approvals', js: true, feature: true do
         click_on("Submit merge request")
 
         find('.approvals-components')
-        expect(page).to have_content("Requires 1 more approval (from #{other_user.name})")
+        expect(page).to have_content("Requires 1 more approval")
+        expect(page).to have_selector(".approvals-required-text a[title='#{other_user.name}']")
       end
 
       it 'allows delete approvers group when it is set in project' do
@@ -97,9 +103,11 @@ feature 'Merge request approvals', js: true, feature: true do
 
         click_on("Submit merge request")
 
-        wait_for_ajax
-        find('.approvals-components')
-        expect(page).not_to have_content("Requires 1 more approval (from #{other_user.name})")
+        wait_for_vue_resource
+
+        expect(page).not_to have_selector(".approvals-required-text a[title='#{other_user.name}']")
+        expect(page).to have_selector(".approvals-required-text a[title='#{approver.name}']")
+        expect(page).to have_content("Requires 1 more approval")
       end
     end
 
@@ -121,14 +129,14 @@ feature 'Merge request approvals', js: true, feature: true do
         visit edit_namespace_project_merge_request_path(project.namespace, project, merge_request)
         find('#s2id_merge_request_approver_group_ids .select2-input').click
 
-        wait_for_ajax
+        wait_for_vue_resource
 
         expect(find('.select2-results')).to have_content(group.name)
 
         find('.select2-results').click
         click_on("Save changes")
 
-        wait_for_ajax
+        wait_for_vue_resource
         find('.approvals-components')
         expect(page).to have_content("Requires 1 more approval")
       end
@@ -151,7 +159,8 @@ feature 'Merge request approvals', js: true, feature: true do
         click_on("Save changes")
 
         find('.approvals-components')
-        expect(page).to have_content("Requires 1 more approval (from #{approver.name})")
+        expect(page).to have_content("Requires 1 more approval")
+        expect(page).to have_selector(".approvals-required-text a[title='#{approver.name}']")
       end
 
       it 'allows changing approvals number' do
@@ -227,7 +236,7 @@ feature 'Merge request approvals', js: true, feature: true do
 
       it 'I am able to approve' do
         approve_merge_request
-        wait_for_ajax
+        wait_for_vue_resource
         expect(page).to have_content('Approved by')
         expect(page).to have_css('.approver-avatar')
       end
@@ -242,7 +251,8 @@ feature 'Merge request approvals', js: true, feature: true do
     context 'when CI is running but no approval given', js: true do
       before do
         create :approver_group, group: group, target: merge_request
-        create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch)
+        pipeline = create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch)
+        merge_request.update(head_pipeline: pipeline)
         visit namespace_project_merge_request_path(project.namespace, project, merge_request)
       end
 
@@ -250,7 +260,7 @@ feature 'Merge request approvals', js: true, feature: true do
         # before approval status is loaded
         expect(page).to have_button('Merge when pipeline succeeds', disabled: true)
 
-        wait_for_ajax
+        wait_for_vue_resource
 
         # after approval status is loaded
         expect(page).to have_button('Merge when pipeline succeeds', disabled: true)
@@ -274,12 +284,12 @@ feature 'Merge request approvals', js: true, feature: true do
 
       it 'I am unable to rebase the merge request' do
         # before approval status is loaded
-        expect(page).to have_button("Rebase onto #{merge_request.target_branch}", disabled: true)
+        expect(page).to have_button("Rebase", disabled: true)
 
-        wait_for_ajax
+        wait_for_vue_resource
 
         # after approval status is loaded
-        expect(page).to have_button("Rebase onto #{merge_request.target_branch}", disabled: true)
+        expect(page).to have_button("Rebase", disabled: true)
       end
     end
   end
@@ -301,22 +311,22 @@ feature 'Merge request approvals', js: true, feature: true do
     end
 
     it 'does not show checking ability text' do
-      expect(find('.mr-widget-body')).not_to have_text('Checking ability to merge automatically')
-      expect(find('.mr-widget-body')).to have_selector('.accept-action')
+      expect(find('.mr-widget-approvals-container')).not_to have_text('Checking ability to merge automatically')
+      expect(find('.mr-widget-approvals-container')).to have_selector('.approvals-body')
     end
   end
 end
 
 def approve_merge_request
   page.within '.mr-state-widget' do
-    click_button 'Approve merge request'
+    find('.approve-btn').click
   end
-  wait_for_ajax
+  wait_for_vue_resource
 end
 
 def unapprove_merge_request
   page.within '.mr-state-widget' do
     find('.unapprove-btn-wrap').click
   end
-  wait_for_ajax
+  wait_for_vue_resource
 end

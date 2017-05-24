@@ -16,15 +16,17 @@ module Gitlab
     SECRET_LENGTH = 32
 
     class << self
-      def git_http_ok(repository, user, action)
+      def git_http_ok(repository, is_wiki, user, action)
+        project = repository.project
         repo_path = repository.path_to_repo
         params = {
           GL_ID: Gitlab::GlId.gl_id(user),
-          RepoPath: repo_path,
+          GL_REPOSITORY: Gitlab::GlRepository.gl_repository(project, is_wiki),
+          RepoPath: repo_path
         }
 
         if Gitlab.config.gitaly.enabled
-          address = Gitlab::GitalyClient.get_address(repository.project.repository_storage)
+          address = Gitlab::GitalyClient.address(project.repository_storage)
           params[:Repository] = repository.gitaly_repository.to_h
 
           feature_enabled = case action.to_s
@@ -49,7 +51,7 @@ module Gitlab
         {
           StoreLFSPath: "#{Gitlab.config.lfs.storage_path}/tmp/upload",
           LfsOid: oid,
-          LfsSize: size,
+          LfsSize: size
         }
       end
 
@@ -60,7 +62,7 @@ module Gitlab
       def send_git_blob(repository, blob)
         params = {
           'RepoPath' => repository.path_to_repo,
-          'BlobId' => blob.id,
+          'BlobId' => blob.id
         }
 
         [
@@ -125,7 +127,7 @@ module Gitlab
             'Subprotocols' => terminal[:subprotocols],
             'Url' => terminal[:url],
             'Header' => terminal[:headers],
-            'MaxSessionTime' => terminal[:max_session_time],
+            'MaxSessionTime' => terminal[:max_session_time]
           }
         }
         details['Terminal']['CAPem'] = terminal[:ca_pem] if terminal.has_key?(:ca_pem)
@@ -163,7 +165,7 @@ module Gitlab
           encoded_message,
           secret,
           true,
-          { iss: 'gitlab-workhorse', verify_iss: true, algorithm: 'HS256' },
+          { iss: 'gitlab-workhorse', verify_iss: true, algorithm: 'HS256' }
         )
       end
 

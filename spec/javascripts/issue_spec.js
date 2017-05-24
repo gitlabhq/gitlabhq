@@ -1,7 +1,7 @@
 /* eslint-disable space-before-function-paren, one-var, one-var-declaration-per-line, no-use-before-define, comma-dangle, max-len */
 import Issue from '~/issue';
 
-require('~/lib/utils/text_utility');
+import '~/lib/utils/text_utility';
 
 describe('Issue', function() {
   let $boxClosed, $boxOpen, $btnClose, $btnReopen;
@@ -81,12 +81,6 @@ describe('Issue', function() {
       this.issue = new Issue();
     });
 
-    it('modifies the Markdown field', function() {
-      spyOn(jQuery, 'ajax').and.stub();
-      $('input[type=checkbox]').attr('checked', true).trigger('change');
-      expect($('.js-task-list-field').val()).toBe('- [x] Task List Item');
-    });
-
     it('submits an ajax request on tasklist:changed', function() {
       spyOn(jQuery, 'ajax').and.callFake(function(req) {
         expect(req.type).toBe('PATCH');
@@ -108,8 +102,8 @@ describe('Issue', function() {
           expect(this.$triggeredButton).toHaveProp('disabled', true);
           expectNewBranchButtonState(true, false);
           return this.issueStateDeferred;
-        } else if (req.url === Issue.$btnNewBranch.data('path')) {
-          expect(req.type).toBe('get');
+        } else if (req.url === Issue.createMrDropdownWrap.dataset.canCreatePath) {
+          expect(req.type).toBe('GET');
           expectNewBranchButtonState(true, false);
           return this.canCreateBranchDeferred;
         }

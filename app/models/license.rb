@@ -1,6 +1,67 @@
 class License < ActiveRecord::Base
   include ActionView::Helpers::NumberHelper
 
+  DEPLOY_BOARD_FEATURE = 'GitLab_DeployBoard'.freeze
+  FILE_LOCK_FEATURE = 'GitLab_FileLocks'.freeze
+  GEO_FEATURE = 'GitLab_Geo'.freeze
+  AUDITOR_USER_FEATURE = 'GitLab_Auditor_User'.freeze
+  SERVICE_DESK_FEATURE = 'GitLab_ServiceDesk'.freeze
+
+  FEATURE_CODES = {
+    geo: GEO_FEATURE,
+    auditor_user: AUDITOR_USER_FEATURE,
+    service_desk: SERVICE_DESK_FEATURE,
+    # Features that make sense to Namespace:
+    deploy_board: DEPLOY_BOARD_FEATURE,
+    file_lock: FILE_LOCK_FEATURE
+  }.freeze
+
+  STARTER_PLAN = 'starter'.freeze
+  PREMIUM_PLAN = 'premium'.freeze
+  ULTIMATE_PLAN = 'ultimate'.freeze
+  EARLY_ADOPTER_PLAN = 'early_adopter'.freeze
+
+  EES_FEATURES = [
+    # ..
+  ].freeze
+
+  EEP_FEATURES = [
+    *EES_FEATURES,
+    { DEPLOY_BOARD_FEATURE => 1 },
+    { FILE_LOCK_FEATURE => 1 },
+    { GEO_FEATURE => 1 },
+    { AUDITOR_USER_FEATURE => 1 },
+    { SERVICE_DESK_FEATURE => 1 }
+  ].freeze
+
+  EEU_FEATURES = [
+    *EEP_FEATURES
+    # ..
+  ].freeze
+
+  # List all features available for early adopters,
+  # i.e. users that started using GitLab.com before
+  # the introduction of Bronze, Silver, Gold plans.
+  # Obs.: Do not extend from other feature constants.
+  # Early adopters should not earn new features as they're
+  # introduced.
+  EARLY_ADOPTER_FEATURES = [
+    # TODO: Add EES features
+    # https://gitlab.com/gitlab-org/gitlab-ee/issues/2335)
+    { DEPLOY_BOARD_FEATURE => 1 },
+    { FILE_LOCK_FEATURE => 1 },
+    { GEO_FEATURE => 1 },
+    { AUDITOR_USER_FEATURE => 1 },
+    { SERVICE_DESK_FEATURE => 1 }
+  ].freeze
+
+  FEATURES_BY_PLAN = {
+    STARTER_PLAN       => EES_FEATURES,
+    PREMIUM_PLAN       => EEP_FEATURES,
+    ULTIMATE_PLAN      => EEU_FEATURES,
+    EARLY_ADOPTER_PLAN => EARLY_ADOPTER_FEATURES
+  }.freeze
+
   validate :valid_license
   validate :check_users_limit, if: :new_record?, unless: :validate_with_trueup?
   validate :check_trueup, unless: :persisted?, if: :validate_with_trueup?
@@ -14,6 +75,10 @@ class License < ActiveRecord::Base
   scope :previous, -> { order(created_at: :desc).offset(1) }
 
   class << self
+    def features_for_plan(plan)
+      FEATURES_BY_PLAN.fetch(plan, []).reduce({}, :merge)
+    end
+
     def current
       if RequestStore.active?
         RequestStore.fetch(:current_license) { load_license }
@@ -24,6 +89,13 @@ class License < ActiveRecord::Base
 
     def reset_current
       RequestStore.delete(:current_license)
+    end
+
+    def plan_includes_feature?(plan, code)
+      features = features_for_plan(plan)
+      feature = FEATURE_CODES.fetch(code)
+
+      features[feature].to_i > 0
     end
 
     def block_changes?
@@ -83,12 +155,19 @@ class License < ActiveRecord::Base
     end
   end
 
+  # New licenses persists only the `plan` (premium, starter, ..). But, old licenses
+  # keep `add_ons`, therefore this method needs to be backward-compatible in that sense.
+  # See https://gitlab.com/gitlab-org/gitlab-ee/issues/2019
   def add_ons
-    restricted_attr(:add_ons, {})
+    explicit_add_ons = restricted_attr(:add_ons, {})
+    plan_features = self.class.features_for_plan(plan)
+
+    explicit_add_ons.merge(plan_features)
   end
 
-  def add_on?(code)
-    add_ons[code].to_i > 0
+  def feature_available?(code)
+    feature = FEATURE_CODES.fetch(code)
+    add_ons[feature].to_i > 0
   end
 
   def restricted_user_count

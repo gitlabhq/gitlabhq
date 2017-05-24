@@ -38,7 +38,7 @@ module Boards
           attrs.merge!(
             add_label_ids: add_label_ids,
             remove_label_ids: remove_label_ids,
-            state_event: issue_state,
+            state_event: issue_state
           )
         end
 
@@ -61,7 +61,7 @@ module Boards
           if moving_to_list.movable?
             moving_from_list.label_id
           else
-            project.boards.joins(:lists).merge(List.movable).pluck(:label_id)
+            Label.on_project_boards(project.id).pluck(:label_id)
           end
 
         Array(label_ids).compact

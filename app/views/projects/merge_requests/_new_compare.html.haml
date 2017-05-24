@@ -21,8 +21,8 @@
                   selected: f.object.source_project_id
           .merge-request-select.dropdown
             = f.hidden_field :source_branch
-            = dropdown_toggle f.object.source_branch || "Select source branch", { toggle: "dropdown", field_name: "#{f.object_name}[source_branch]" }, { toggle_class: "js-compare-dropdown js-source-branch" }
-            .dropdown-menu.dropdown-menu-selectable.dropdown-source-branch
+            = dropdown_toggle f.object.source_branch || "Select source branch", { toggle: "dropdown", field_name: "#{f.object_name}[source_branch]" }, { toggle_class: "js-compare-dropdown js-source-branch git-revision-dropdown-toggle" }
+            .dropdown-menu.dropdown-menu-selectable.dropdown-source-branch.git-revision-dropdown
               = dropdown_title("Select source branch")
               = dropdown_filter("Search branches")
               = dropdown_content do
@@ -38,7 +38,7 @@
         .panel-heading
           Target branch
         .panel-body.clearfix
-          - projects =  @project.forked_from_project.nil? ? [@project] : [@project, @project.forked_from_project]
+          - projects = target_projects(@project)
           .merge-request-select.dropdown
             = f.hidden_field :target_project_id
             = dropdown_toggle f.object.target_project.path_with_namespace, { toggle: "dropdown", field_name: "#{f.object_name}[target_project_id]", disabled: @merge_request.persisted? }, { toggle_class: "js-compare-dropdown js-target-project" }
@@ -51,8 +51,8 @@
                   selected: f.object.target_project_id
           .merge-request-select.dropdown
             = f.hidden_field :target_branch
-            = dropdown_toggle f.object.target_branch, { toggle: "dropdown", field_name: "#{f.object_name}[target_branch]" }, { toggle_class: "js-compare-dropdown js-target-branch" }
-            .dropdown-menu.dropdown-menu-selectable.dropdown-target-branch.js-target-branch-dropdown
+            = dropdown_toggle f.object.target_branch, { toggle: "dropdown", field_name: "#{f.object_name}[target_branch]" }, { toggle_class: "js-compare-dropdown js-target-branch git-revision-dropdown-toggle" }
+            .dropdown-menu.dropdown-menu-selectable.dropdown-target-branch.js-target-branch-dropdown.git-revision-dropdown
               = dropdown_title("Select target branch")
               = dropdown_filter("Search branches")
               = dropdown_content do

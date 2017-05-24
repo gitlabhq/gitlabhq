@@ -5,7 +5,7 @@ class GeoNodeStatusEntity < Grape::Entity
 
   expose :healthy?, as: :healthy
   expose :health do |node|
-    node.healthy? ? 'No Health Problems Detected' : node.health
+    node.healthy? ? 'Healthy' : node.health
   end
 
   expose :attachments_count

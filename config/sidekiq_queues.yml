@@ -40,6 +40,7 @@
   - [expire_build_instance_artifacts, 1]
   - [group_destroy, 1]
   - [irker, 1]
+  - [namespaceless_project_destroy, 1]
   - [project_cache, 1]
   - [project_destroy, 1]
   - [project_export, 1]
@@ -53,7 +54,9 @@
   - [pages, 1]
   - [system_hook_push, 1]
   - [update_user_activity, 1]
+  - [propagate_service_template, 1]
   # EE specific queues
+  - [ldap_group_sync, 2]
   - [geo, 1]
   - [project_mirror, 1]
   - [project_update_repository_storage, 1]
@@ -63,4 +66,3 @@
   - [elastic_indexer, 1]
   - [elastic_commit_indexer, 1]
   - [export_csv, 1]
-

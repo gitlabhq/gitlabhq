@@ -1,6 +1,7 @@
 import Vue from 'vue';
 
-require('~/merge_request_widget/approvals/components/approvals_footer');
+import pendingAvatarSvg from 'icons/_icon_dotted_circle.svg';
+import ApprovalsFooter from '~/vue_merge_request_widget/ee/components/approvals/approvals_footer';
 
 (() => {
   gl.ApprovalsStore = {
@@ -20,15 +21,18 @@ require('~/merge_request_widget/approvals/components/approvals_footer');
     `);
 
     this.initialData = {
+      mr: {
+        state: 'readyToMerge',
+      },
+      service: {},
       userCanApprove: false,
       userHasApproved: true,
       approvedBy: [],
       approvalsLeft: 1,
-      pendingAvatarSvg: '<svg></svg>',
-      checkmarkSvg: '<svg></svg>',
+      pendingAvatarSvg,
     };
 
-    const ApprovalsFooterComponent = Vue.component('approvals-footer');
+    const ApprovalsFooterComponent = Vue.extend(ApprovalsFooter);
 
     this.approvalsFooter = new ApprovalsFooterComponent({
       el: '#mock-container',
@@ -53,7 +57,9 @@ require('~/merge_request_widget/approvals/components/approvals_footer');
 
     describe('Computed properties', function () {
       it('should correctly set showUnapproveButton when the user can unapprove', function () {
-        expect(this.approvalsFooter.showUnapproveButton).toBe(true);
+        expect(this.approvalsFooter.showUnapproveButton).toBeTruthy();
+        this.approvalsFooter.mr.state = 'merged';
+        expect(this.approvalsFooter.showUnapproveButton).toBeFalsy();
       });
 
       it('should correctly set showUnapproveButton when the user can not unapprove', function (done) {

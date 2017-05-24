@@ -6,7 +6,9 @@
   .top-area.multi-line
     .nav-text
       .title
-        %span.item-title= @tag.name
+        %span.item-title.ref-name
+          = icon('tag')
+          = @tag.name
         - if protected_tag?(@project, @tag)
           %span.label.label-success
             protected
@@ -38,7 +40,6 @@
     - if @release.description.present?
       .description
         .wiki
-          = preserve do
-            = markdown_field(@release, :description)
+          = markdown_field(@release, :description)
     - else
       This tag has no release notes.

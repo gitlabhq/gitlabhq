@@ -44,7 +44,7 @@ constraints(ProjectUrlConstrainer.new) do
 
       resources :snippets, concerns: :awardable, constraints: { id: /\d+/ } do
         member do
-          get 'raw'
+          get :raw
           post :mark_as_spam
         end
       end
@@ -74,11 +74,9 @@ constraints(ProjectUrlConstrainer.new) do
           get :conflicts
           get :conflict_for_path
           get :pipelines
-          get :merge_check
+          get :commit_change_content
           post :merge
-          get :merge_widget_refresh
           post :cancel_merge_when_pipeline_succeeds
-          get :ci_status
           get :pipeline_status
           get :ci_environments_status
           post :toggle_subscription
@@ -157,7 +155,14 @@ constraints(ProjectUrlConstrainer.new) do
           post :cancel
           post :retry
           get :builds
+          get :failures
           get :status
+        end
+      end
+
+      resources :pipeline_schedules, except: [:show] do
+        member do
+          post :take_ownership
         end
       end
 
@@ -172,6 +177,12 @@ constraints(ProjectUrlConstrainer.new) do
 
         collection do
           get :folder, path: 'folders/*id', constraints: { format: /(html|json)/ }
+        end
+
+        resources :deployments, only: [:index] do
+          member do
+            get :metrics
+          end
         end
       end
 
@@ -208,7 +219,7 @@ constraints(ProjectUrlConstrainer.new) do
           post :retry
           post :play
           post :erase
-          get :trace
+          get :trace, defaults: { format: 'json' }
           get :raw
         end
 
@@ -216,11 +227,12 @@ constraints(ProjectUrlConstrainer.new) do
           get :download
           get :browse, path: 'browse(/*path)', format: false
           get :file, path: 'file/*path', format: false
+          get :raw, path: 'raw/*path', format: false
           post :keep
         end
       end
 
-      resources :hooks, only: [:index, :create, :destroy], constraints: { id: /\d+/ } do
+      resources :hooks, only: [:index, :create, :edit, :update, :destroy], constraints: { id: /\d+/ } do
         member do
           get :test
         end
@@ -240,6 +252,9 @@ constraints(ProjectUrlConstrainer.new) do
         member do
           put :sort_issues
           put :sort_merge_requests
+          get :merge_requests
+          get :participants
+          get :labels
         end
       end
 
@@ -263,7 +278,8 @@ constraints(ProjectUrlConstrainer.new) do
           get :referenced_merge_requests
           get :related_branches
           get :can_create_branch
-          get :rendered_title
+          get :realtime_changes
+          post :create_merge_request
         end
         collection do
           post :bulk_update

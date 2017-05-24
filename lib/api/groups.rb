@@ -32,7 +32,7 @@ module API
       def present_groups(groups, options = {})
         options = options.reverse_merge(
           with: Entities::Group,
-          current_user: current_user,
+          current_user: current_user
         )
 
         groups = groups.with_statistics if options[:statistics]
@@ -60,7 +60,7 @@ module API
                  elsif current_user.admin
                    Group.all
                  elsif params[:all_available]
-                   GroupsFinder.new.execute(current_user)
+                   GroupsFinder.new(current_user).execute
                  else
                    current_user.groups
                  end

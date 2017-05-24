@@ -48,6 +48,17 @@ module Projects
         available_public_keys.any?
       end
 
+      def as_json
+        serializer = DeployKeySerializer.new
+        opts = { user: current_user }
+
+        {
+          enabled_keys: serializer.represent(enabled_keys, opts),
+          available_project_keys: serializer.represent(available_project_keys, opts),
+          public_keys: serializer.represent(available_public_keys, opts)
+        }
+      end
+
       def to_partial_path
         'projects/deploy_keys/index'
       end

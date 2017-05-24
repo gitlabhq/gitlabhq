@@ -1,11 +1,10 @@
 <script>
-/* global Flash */
-/* eslint-disable no-new, no-alert */
 /**
  * Renders the stop "button" that allows stop an environment.
  * Used in environments table.
  */
 import eventHub from '../event_hub';
+import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
 export default {
   props: {
@@ -13,18 +12,16 @@ export default {
       type: String,
       default: '',
     },
-
-    service: {
-      type: Object,
-      required: true,
-      default: () => ({}),
-    },
   },
 
   data() {
     return {
       isLoading: false,
     };
+  },
+
+  components: {
+    loadingIcon,
   },
 
   computed: {
@@ -35,20 +32,13 @@ export default {
 
   methods: {
     onClick() {
+      // eslint-disable-next-line no-alert
       if (confirm('Are you sure you want to stop this environment?')) {
         this.isLoading = true;
 
         $(this.$el).tooltip('destroy');
 
-        this.service.postAction(this.retryUrl)
-        .then(() => {
-          this.isLoading = false;
-          eventHub.$emit('refreshEnvironments');
-        })
-        .catch(() => {
-          this.isLoading = false;
-          new Flash('An error occured while making the request.', 'alert');
-        });
+        eventHub.$emit('postAction', this.stopUrl);
       }
     },
   },
@@ -66,9 +56,6 @@ export default {
     <i
       class="fa fa-stop stop-env-icon"
       aria-hidden="true" />
-    <i
-      v-if="isLoading"
-      class="fa fa-spinner fa-spin"
-      aria-hidden="true" />
+    <loading-icon v-if="isLoading" />
   </button>
 </template>

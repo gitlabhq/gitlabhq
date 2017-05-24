@@ -44,14 +44,15 @@ module Mentionable
   end
 
   def all_references(current_user = nil, extractor: nil)
+    @extractors ||= {}
+
     # Use custom extractor if it's passed in the function parameters.
     if extractor
-      @extractor = extractor
+      @extractors[current_user] = extractor
     else
-      @extractor ||= Gitlab::ReferenceExtractor.
-        new(project, current_user)
+      extractor = @extractors[current_user] ||= Gitlab::ReferenceExtractor.new(project, current_user)
 
-      @extractor.reset_memoized_values
+      extractor.reset_memoized_values
     end
 
     self.class.mentionable_attrs.each do |attr, options|
@@ -62,10 +63,10 @@ module Mentionable
         skip_project_check: skip_project_check?
       )
 
-      @extractor.analyze(text, options)
+      extractor.analyze(text, options)
     end
 
-    @extractor
+    extractor
   end
 
   def mentioned_users(current_user = nil)
@@ -78,6 +79,8 @@ module Mentionable
 
   # Extract GFM references to other Mentionables from this Mentionable. Always excludes its #local_reference.
   def referenced_mentionables(current_user = self.author)
+    return [] unless matches_cross_reference_regex?
+
     refs = all_references(current_user)
     refs = (refs.issues + refs.merge_requests + refs.commits)
 
@@ -85,6 +88,20 @@ module Mentionable
     # both of the object's `hash` values to be the same, which may not be the
     # case for otherwise identical Commit objects.
     refs.reject { |ref| ref == local_reference }
+  end
+
+  # Uses regex to quickly determine if mentionables might be referenced
+  # Allows heavy processing to be skipped
+  def matches_cross_reference_regex?
+    reference_pattern = if !project || project.default_issues_tracker?
+                          ReferenceRegexes::DEFAULT_PATTERN
+                        else
+                          ReferenceRegexes::EXTERNAL_PATTERN
+                        end
+
+    self.class.mentionable_attrs.any? do |attr, _|
+      __send__(attr) =~ reference_pattern
+    end
   end
 
   # Create a cross-reference Note for each GFM reference to another Mentionable found in the +mentionable_attrs+.

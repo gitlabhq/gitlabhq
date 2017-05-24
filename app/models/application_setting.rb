@@ -63,6 +63,10 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             if: :sentry_enabled
 
+  validates :clientside_sentry_dsn,
+            presence: true,
+            if: :clientside_sentry_enabled
+
   validates :akismet_api_key,
             presence: true,
             if: :akismet_enabled
@@ -261,7 +265,7 @@ class ApplicationSetting < ActiveRecord::Base
       two_factor_grace_period: 48,
       user_default_external: false,
       polling_interval_multiplier: 1,
-      usage_ping_enabled: true
+      usage_ping_enabled: Settings.gitlab['usage_ping_enabled']
     }
   end
 
@@ -314,7 +318,7 @@ class ApplicationSetting < ActiveRecord::Base
       aws:                   elasticsearch_aws,
       aws_access_key:        elasticsearch_aws_access_key,
       aws_secret_access_key: elasticsearch_aws_secret_access_key,
-      aws_region:            elasticsearch_aws_region,
+      aws_region:            elasticsearch_aws_region
     }
   end
 
@@ -399,6 +403,14 @@ class ApplicationSetting < ActiveRecord::Base
     return false unless sidekiq_throttling_column_exists?
 
     sidekiq_throttling_enabled
+  end
+
+  def usage_ping_can_be_configured?
+    Settings.gitlab.usage_ping_enabled
+  end
+
+  def usage_ping_enabled
+    usage_ping_can_be_configured? && super
   end
 
   private

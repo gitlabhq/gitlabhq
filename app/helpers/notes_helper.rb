@@ -19,7 +19,7 @@ module NotesHelper
       id: noteable.id,
       class: noteable.class.name,
       resources: noteable.class.table_name,
-      project_id: noteable.project.id,
+      project_id: noteable.project.id
     }.to_json
   end
 
@@ -34,7 +34,7 @@ module NotesHelper
 
     data = {
       line_code: line_code,
-      line_type: line_type,
+      line_type: line_type
     }
 
     if @use_legacy_diff_notes
@@ -60,24 +60,63 @@ module NotesHelper
     note.project.team.human_max_access(note.author_id)
   end
 
-  def discussion_diff_path(discussion)
-    if discussion.for_merge_request? && discussion.diff_discussion?
-      if discussion.active?
-        # Without a diff ID, the link always points to the latest diff version
-        diff_id = nil
-      elsif merge_request_diff = discussion.latest_merge_request_diff
-        diff_id = merge_request_diff.id
-      else
-        # If the discussion is not active, and we cannot find the latest
-        # merge request diff for this discussion, we return no path at all.
-        return
-      end
+  def discussion_path(discussion)
+    if discussion.for_merge_request?
+      return unless discussion.diff_discussion?
 
-      diffs_namespace_project_merge_request_path(discussion.project.namespace, discussion.project, discussion.noteable, diff_id: diff_id, anchor: discussion.line_code)
+      version_params = discussion.merge_request_version_params
+      return unless version_params
+
+      path_params = version_params.merge(anchor: discussion.line_code)
+
+      diffs_namespace_project_merge_request_path(discussion.project.namespace, discussion.project, discussion.noteable, path_params)
     elsif discussion.for_commit?
       anchor = discussion.line_code if discussion.diff_discussion?
 
       namespace_project_commit_path(discussion.project.namespace, discussion.project, discussion.noteable, anchor: anchor)
+    end
+  end
+
+  def notes_url
+    if @snippet.is_a?(PersonalSnippet)
+      snippet_notes_path(@snippet)
+    else
+      namespace_project_noteable_notes_path(
+        namespace_id: @project.namespace,
+        project_id: @project,
+        target_id: @noteable.id,
+        target_type: @noteable.class.name.underscore
+      )
+    end
+  end
+
+  def note_url(note)
+    if note.noteable.is_a?(PersonalSnippet)
+      snippet_note_path(note.noteable, note)
+    else
+      namespace_project_note_path(@project.namespace, @project, note)
+    end
+  end
+
+  def form_resources
+    if @snippet.is_a?(PersonalSnippet)
+      [@note]
+    else
+      [@project.namespace.becomes(Namespace), @project, @note]
+    end
+  end
+
+  def new_form_url
+    return nil unless @snippet.is_a?(PersonalSnippet)
+
+    snippet_notes_path(@snippet)
+  end
+
+  def can_create_note?
+    if @snippet.is_a?(PersonalSnippet)
+      can?(current_user, :comment_personal_snippet, @snippet)
+    else
+      can?(current_user, :create_note, @project)
     end
   end
 end

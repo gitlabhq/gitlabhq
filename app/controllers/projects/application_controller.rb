@@ -1,5 +1,8 @@
 class Projects::ApplicationController < ApplicationController
+  include RoutableActions
+
   skip_before_action :authenticate_user!
+  before_action :redirect_git_extension
   before_action :project
   before_action :repository
   layout 'project'
@@ -8,40 +11,29 @@ class Projects::ApplicationController < ApplicationController
 
   private
 
+  def redirect_git_extension
+    # Redirect from
+    #   localhost/group/project.git
+    # to
+    #   localhost/group/project
+    #
+    redirect_to url_for(params.merge(format: nil)) if params[:format] == 'git'
+  end
+
   def project
-    unless @project
-      namespace = params[:namespace_id]
-      id = params[:project_id] || params[:id]
+    return @project if @project
 
-      # Redirect from
-      #   localhost/group/project.git
-      # to
-      #   localhost/group/project
-      #
-      if params[:format] == 'git'
-        redirect_to request.original_url.gsub(/\.git\/?\Z/, '')
-        return
-      end
+    path = File.join(params[:namespace_id], params[:project_id] || params[:id])
+    auth_proc = ->(project) { !project.pending_delete? }
 
-      project_path = "#{namespace}/#{id}"
-      @project = Project.find_by_full_path(project_path)
+    @project = find_routable!(Project, path, extra_authorization_proc: auth_proc)
+  end
 
-      if can?(current_user, :read_project, @project) && !@project.pending_delete?
-        if @project.path_with_namespace != project_path
-          redirect_to request.original_url.gsub(project_path, @project.path_with_namespace)
-        end
-      else
-        @project = nil
+  def build_canonical_path(project)
+    params[:namespace_id] = project.namespace.to_param
+    params[:project_id] = project.to_param
 
-        if current_user.nil?
-          authenticate_user!
-        else
-          render_404
-        end
-      end
-    end
-
-    @project
+    url_for(params)
   end
 
   def repository
@@ -55,13 +47,15 @@ class Projects::ApplicationController < ApplicationController
       (current_user && current_user.already_forked?(project))
   end
 
-  def authorize_project!(action)
-    return access_denied! unless can?(current_user, action, project)
+  def authorize_action!(action)
+    unless can?(current_user, action, project)
+      return access_denied!
+    end
   end
 
   def method_missing(method_sym, *arguments, &block)
     if method_sym.to_s =~ /\Aauthorize_(.*)!\z/
-      authorize_project!($1.to_sym)
+      authorize_action!($1.to_sym)
     else
       super
     end
@@ -88,5 +82,9 @@ class Projects::ApplicationController < ApplicationController
 
   def builds_enabled
     return render_404 unless @project.feature_available?(:builds, current_user)
+  end
+
+  def require_pages_enabled!
+    not_found unless Gitlab.config.pages.enabled
   end
 end

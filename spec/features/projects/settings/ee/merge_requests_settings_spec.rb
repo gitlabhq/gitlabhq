@@ -7,13 +7,14 @@ describe 'Project settings > [EE] Merge Requests', feature: true, js: true do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project, approvals_before_merge: 1) }
   let(:group) { create(:group) }
-  let(:approver) { create(:user) }
+  let(:group_member) { create(:user) }
+  let(:non_member) { create(:user) }
 
   before do
     login_as(user)
     project.team << [user, :master]
-    group.add_developer(approver)
     group.add_developer(user)
+    group.add_developer(group_member)
   end
 
   scenario 'adds approver' do
@@ -28,6 +29,18 @@ describe 'Project settings > [EE] Merge Requests', feature: true, js: true do
     click_button 'Add'
 
     expect(find('.js-current-approvers')).to have_content(user.name)
+
+    find('.js-select-user-and-group').click
+
+    expect(find('.select2-results')).not_to have_content(user.name)
+  end
+
+  scenario 'filter approvers' do
+    visit edit_project_path(project)
+    find('.js-select-user-and-group').click
+
+    expect(find('.select2-results')).to have_content(user.name)
+    expect(find('.select2-results')).not_to have_content(non_member.name)
   end
 
   scenario 'adds approver group' do

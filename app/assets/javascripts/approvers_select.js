@@ -23,28 +23,29 @@ export default class ApproversSelect {
     $(document).on('click', '.js-approver-remove', e => ApproversSelect.removeApprover(e));
   }
 
-  static getApprovers(fieldName, selector, key) {
+  static getApprovers(fieldName, approverList) {
     const input = $(`[name="${fieldName}"]`);
-
-    const existingApprovers = $(selector).map((i, el) =>
+    const existingApprovers = $(approverList).map((i, el) =>
       parseInt($(el).data('id'), 10),
     );
     const selectedApprovers = input.val()
       .split(',')
       .filter(val => val !== '');
-    const approvers = {
-      [key]: [...existingApprovers, ...selectedApprovers],
-    };
-    return approvers;
+    return [...existingApprovers, ...selectedApprovers];
   }
 
   fetchGroups(term) {
-    const options = ApproversSelect.getApprovers(this.fieldNames[1], '.js-approver-group', 'skip_groups');
+    const options = {
+      skip_groups: ApproversSelect.getApprovers(this.fieldNames[1], '.js-approver-group'),
+    };
     return Api.groups(term, options);
   }
 
   fetchUsers(term) {
-    const options = ApproversSelect.getApprovers(this.fieldNames[0], '.js-approver', 'skip_users');
+    const options = {
+      skip_users: ApproversSelect.getApprovers(this.fieldNames[0], '.js-approver'),
+      project_id: $('#project_id').val(),
+    };
     return Api.users(term, options);
   }
 
@@ -146,7 +147,7 @@ export default class ApproversSelect {
   }
 
   static saveApprovers(fieldName) {
-    const $input = $(`[name="${fieldName}"]`);
+    const $input = window.$(`[name="${fieldName}"]`);
     const newValue = $input.val();
     const $loadWrapper = $('.load-wrapper');
     const $approverSelect = $('.js-select-user-and-group');
@@ -157,7 +158,7 @@ export default class ApproversSelect {
 
     const $form = $('.js-add-approvers').closest('form');
     $loadWrapper.removeClass('hidden');
-    $.ajax({
+    window.$.ajax({
       url: $form.attr('action'),
       type: 'POST',
       data: {
@@ -166,7 +167,7 @@ export default class ApproversSelect {
       },
       success: ApproversSelect.updateApproverList,
       complete() {
-        $input.val('val', '');
+        $input.val('');
         $approverSelect.select2('val', '');
         $loadWrapper.addClass('hidden');
       },

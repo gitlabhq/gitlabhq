@@ -38,7 +38,7 @@ module Gitlab
           url:          container_exec_url(api_url, namespace, pod_name, container["name"]),
           subprotocols: ['channel.k8s.io'],
           headers:      Hash.new { |h, k| h[k] = [] },
-          created_at:   created_at,
+          created_at:   created_at
         }
       end
     end
@@ -64,7 +64,7 @@ module Gitlab
         tty: true,
         stdin: true,
         stdout: true,
-        stderr: true,
+        stderr: true
       }.to_query + '&' + EXEC_COMMAND
 
       case url.scheme

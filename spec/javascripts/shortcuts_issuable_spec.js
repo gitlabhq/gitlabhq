@@ -1,8 +1,8 @@
 /* eslint-disable space-before-function-paren, no-return-assign, no-var, quotes */
 /* global ShortcutsIssuable */
 
-require('~/copy_as_gfm');
-require('~/shortcuts_issuable');
+import '~/copy_as_gfm';
+import '~/shortcuts_issuable';
 
 (function() {
   describe('ShortcutsIssuable', function() {
@@ -13,7 +13,7 @@ require('~/shortcuts_issuable');
       document.querySelector('.js-new-note-form').classList.add('js-main-target-form');
       this.shortcut = new ShortcutsIssuable();
     });
-    describe('#replyWithSelectedText', function() {
+    describe('replyWithSelectedText', function() {
       var stubSelection;
       // Stub window.gl.utils.getSelectedFragment to return a node with the provided HTML.
       stubSelection = function(html) {

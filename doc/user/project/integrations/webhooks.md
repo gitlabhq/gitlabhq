@@ -74,6 +74,7 @@ X-Gitlab-Event: Push Hook
   "checkout_sha": "da1560886d4f094c3e6c9ef40349f7d38b5d27d7",
   "user_id": 4,
   "user_name": "John Smith",
+  "user_username": "jsmith",
   "user_email": "john@example.com",
   "user_avatar": "https://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=8://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=80",
   "project_id": 15,
@@ -232,6 +233,7 @@ X-Gitlab-Event: Issue Hook
   "object_attributes": {
     "id": 301,
     "title": "New API: create/update/delete file",
+    "assignee_ids": [51],
     "assignee_id": 51,
     "author_id": 51,
     "project_id": 14,
@@ -246,6 +248,11 @@ X-Gitlab-Event: Issue Hook
     "url": "http://example.com/diaspora/issues/23",
     "action": "open"
   },
+  "assignees": [{
+    "name": "User1",
+    "username": "user1",
+    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon"
+  }],
   "assignee": {
     "name": "User1",
     "username": "user1",
@@ -265,6 +272,9 @@ X-Gitlab-Event: Issue Hook
   }]
 }
 ```
+
+**Note**: `assignee` and `assignee_id` keys are deprecated and now show the first assignee only.
+
 ### Comment events
 
 Triggered when a new comment is made on commits, merge requests, issues, and code snippets.
@@ -544,6 +554,7 @@ X-Gitlab-Event: Note Hook
   "issue": {
     "id": 92,
     "title": "test",
+    "assignee_ids": [],
     "assignee_id": null,
     "author_id": 1,
     "project_id": 5,
@@ -558,6 +569,8 @@ X-Gitlab-Event: Note Hook
   }
 }
 ```
+
+**Note**: `assignee_id` field is deprecated and now shows the first assignee only.
 
 #### Comment on code snippet
 

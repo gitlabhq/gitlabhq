@@ -26,13 +26,13 @@ global.cycleAnalytics.StageStagingComponent = Vue.extend({
             <h5 class="item-title">
               <a :href="build.url" class="pipeline-id">#{{ build.id }}</a>
               <i class="fa fa-code-fork"></i>
-              <a :href="build.branch.url" class="branch-name monospace">{{ build.branch.name }}</a>
+              <a :href="build.branch.url" class="ref-name">{{ build.branch.name }}</a>
               <span class="icon-branch">${iconBranch}</span>
-              <a :href="build.commitUrl" class="short-sha monospace">{{ build.shortSha }}</a>
+              <a :href="build.commitUrl" class="commit-sha">{{ build.shortSha }}</a>
             </h5>
             <span>
               <a :href="build.url" class="build-date">{{ build.date }}</a>
-              by
+              {{ __('ByAuthor|by') }}
               <a :href="build.author.webUrl" class="issue-author-link">
                 {{ build.author.name }}
               </a>

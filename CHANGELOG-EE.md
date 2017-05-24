@@ -1,5 +1,42 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 9.2.1 (2017-05-23)
+
+- No changes.
+
+## 9.2.0 (2017-05-22)
+
+- Stop using sidekiq cron for push mirrors. !1616
+- Inline RSS button with Export Issues button for mobile. !1637
+- Highlight Contribution Analytics tab under groups when active, remove sub-nav items. !1677
+- Uses etag polling for deployboards. !1713
+- Support more elasticsearch versions. !1716
+- Support advanced search queries using elasticsearch. !1770
+- Remove superfluous wording on push rules. !1811
+- Geo - Fix signing out from secondary node when "Remember me" option is checked. !1903
+- Add global wiki search using Elasticsearch.
+- Remove warning about protecting Service Desk email from form.
+- Geo: Resync repositories that have been updated recently.
+- Respect project features when searching alternative branches with elasticsearch enabled.
+- Backfill projects where the last attempt to backfill failed.
+- Fix MR approvals sentence when all approvers need to approve the MR.
+- Fix for XSS in project mirror errors caused by Hamlit filter usage.
+- Feature availability check using feature list AND license addons.
+- Disable mirror workers for Geo secondaries.
+
+## 9.1.4 (2017-05-12)
+
+- Remove warning about protecting Service Desk email from form.
+- Backfill projects where the last attempt to backfill failed.
+
+## 9.1.3 (2017-05-05)
+
+- No changes.
+- No changes.
+- No changes.
+- Respect project features when searching alternative branches with elasticsearch enabled.
+- Fix for XSS in project mirror errors caused by Hamlit filter usage.
+
 ## 9.1.2 (2017-05-01)
 
 - No changes.
@@ -53,6 +90,11 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Remove N+1 queries for Groups::AnalyticsController.
 - Show user cohorts data when usage ping is enabled.
 - Visualise Canary Deployments.
+
+## 9.0.7 (2017-05-05)
+
+- Respect project features when searching alternative branches with elasticsearch enabled.
+- Fix for XSS in project mirror errors caused by Hamlit filter usage.
 
 ## 9.0.6 (2017-04-21)
 
@@ -128,6 +170,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Update Elasticsearch to 5.1.
 - [Elasticsearch] More efficient search.
 - Get Geo secondaries nodes statuses over AJAX.
+
+## 8.17.6 (2017-05-05)
+
+- Respect project features when searching alternative branches with elasticsearch enabled.
 
 ## 8.17.5 (2017-04-05)
 

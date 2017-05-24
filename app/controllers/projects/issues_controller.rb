@@ -11,16 +11,19 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :redirect_to_external_issue_tracker, only: [:index, :new]
   before_action :module_enabled
   before_action :issue, only: [:edit, :update, :show, :referenced_merge_requests,
-                               :related_branches, :can_create_branch, :rendered_title]
+                               :related_branches, :can_create_branch, :realtime_changes, :create_merge_request]
 
   # Allow read any issue
-  before_action :authorize_read_issue!, only: [:show, :rendered_title]
+  before_action :authorize_read_issue!, only: [:show, :realtime_changes]
 
   # Allow write(create) issue
   before_action :authorize_create_issue!, only: [:new, :create]
 
   # Allow modify issue
   before_action :authorize_update_issue!, only: [:edit, :update]
+
+  # Allow create a new branch and empty WIP merge request from current issue
+  before_action :authorize_create_merge_request!, only: [:create_merge_request]
 
   respond_to :html
 
@@ -65,7 +68,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def new
     params[:issue] ||= ActionController::Parameters.new(
-      assignee_id: ""
+      assignee_ids: ""
     )
     build_params = issue_params.merge(
       merge_request_to_resolve_discussions_of: params[:merge_request_to_resolve_discussions_of],
@@ -148,7 +151,7 @@ class Projects::IssuesController < Projects::ApplicationController
         if @issue.valid?
           render json: @issue.to_json(methods: [:task_status, :task_status_short],
                                       include: { milestone: {},
-                                                 assignee: { only: [:name, :username], methods: [:avatar_url] },
+                                                 assignees: { only: [:id, :name, :username], methods: [:avatar_url] },
                                                  labels: { methods: :text_color } })
         else
           render json: { errors: @issue.errors.full_messages }, status: :unprocessable_entity
@@ -199,21 +202,39 @@ class Projects::IssuesController < Projects::ApplicationController
 
     respond_to do |format|
       format.json do
-        render json: { can_create_branch: can_create }
+        render json: { can_create_branch: can_create, has_related_branch: @issue.has_related_branch? }
       end
     end
   end
 
-  def rendered_title
+  def realtime_changes
     Gitlab::PollingInterval.set_header(response, interval: 3_000)
-    render json: { title: view_context.markdown_field(@issue, :title) }
+
+    render json: {
+      title: view_context.markdown_field(@issue, :title),
+      title_text: @issue.title,
+      description: view_context.markdown_field(@issue, :description),
+      description_text: @issue.description,
+      task_status: @issue.task_status,
+      updated_at: @issue.updated_at
+    }
+  end
+
+  def create_merge_request
+    result = MergeRequests::CreateFromIssueService.new(project, current_user, issue_iid: issue.iid).execute
+
+    if result[:status] == :success
+      render json: MergeRequestCreateSerializer.new.represent(result[:merge_request])
+    else
+      render json: result[:messsage], status: :unprocessable_entity
+    end
   end
 
   protected
 
   def issue
     # The Sortable default scope causes performance issues when used with find_by
-    @noteable = @issue ||= @project.issues.where(iid: params[:id]).reorder(nil).take || redirect_old
+    @noteable = @issue ||= @project.issues.where(iid: params[:id]).reorder(nil).take!
   end
   alias_method :subscribable_resource, :issue
   alias_method :issuable, :issue
@@ -232,6 +253,10 @@ class Projects::IssuesController < Projects::ApplicationController
     return render_404 unless can?(current_user, :admin_issue, @project)
   end
 
+  def authorize_create_merge_request!
+    return render_404 unless can?(current_user, :push_code, @project) && @issue.can_be_worked_on?(current_user)
+  end
+
   def module_enabled
     return render_404 unless @project.feature_available?(:issues, current_user) && @project.default_issues_tracker?
   end
@@ -248,25 +273,10 @@ class Projects::IssuesController < Projects::ApplicationController
     end
   end
 
-  # Since iids are implemented only in 6.1
-  # user may navigate to issue page using old global ids.
-  #
-  # To prevent 404 errors we provide a redirect to correct iids until 7.0 release
-  #
-  def redirect_old
-    issue = @project.issues.find_by(id: params[:id])
-
-    if issue
-      redirect_to issue_path(issue)
-    else
-      raise ActiveRecord::RecordNotFound.new
-    end
-  end
-
   def issue_params
     params.require(:issue).permit(
       :title, :assignee_id, :position, :description, :confidential, :weight,
-      :milestone_id, :due_date, :state_event, :task_num, :lock_version, label_ids: []
+      :milestone_id, :due_date, :state_event, :task_num, :lock_version, label_ids: [], assignee_ids: []
     )
   end
 

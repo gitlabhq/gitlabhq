@@ -134,6 +134,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :signup_enabled,
       :sentry_dsn,
       :sentry_enabled,
+      :clientside_sentry_dsn,
+      :clientside_sentry_enabled,
       :send_user_confirmation_email,
       :shared_runners_enabled,
       :shared_runners_text,
@@ -173,6 +175,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :minimum_mirror_sync_time,
       :geo_status_timeout,
       :elasticsearch_experimental_indexer,
+      :check_namespace_plan
     ]
   end
 end

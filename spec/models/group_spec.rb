@@ -176,31 +176,40 @@ describe Group, models: true do
   end
 
   describe '#avatar_url' do
+    let!(:group) { create(:group, :access_requestable, :with_avatar) }
     let(:user) { create(:user) }
-    subject { group.avatar_url }
+    let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
+    let(:avatar_path) { "/uploads/group/avatar/#{group.id}/dk.png" }
 
     context 'when avatar file is uploaded' do
-      before do
-        group.add_user(user, GroupMember::MASTER)
-        group.update_columns(avatar: 'avatar.png')
-        allow(group.avatar).to receive(:present?) { true }
-      end
+      before { group.add_master(user) }
 
-      let(:avatar_path) do
-        "/uploads/group/avatar/#{group.id}/avatar.png"
-      end
+      it 'shows correct avatar url' do
+        expect(group.avatar_url).to eq(avatar_path)
+        expect(group.avatar_url(only_path: false)).to eq([gitlab_host, avatar_path].join)
 
-      it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
+        allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
+
+        expect(group.avatar_url).to eq([gitlab_host, avatar_path].join)
+      end
 
       context 'when in a geo secondary node' do
-        let(:geo_url) { 'http://geo.example.com' }
+        let(:geo_host) { 'http://geo.example.com' }
+        let(:geo_avatar_url) { [geo_host, avatar_path].join }
 
         before do
           allow(Gitlab::Geo).to receive(:secondary?) { true }
-          allow(Gitlab::Geo).to receive_message_chain(:primary_node, :url) { geo_url }
+          allow(Gitlab::Geo).to receive_message_chain(:primary_node, :url) { geo_host }
         end
 
-        it { should eq "#{geo_url}#{avatar_path}" }
+        it 'shows correct avatar url' do
+          expect(group.avatar_url).to eq(geo_avatar_url)
+          expect(group.avatar_url(only_path: false)).to eq(geo_avatar_url)
+
+          allow(ActionController::Base).to receive(:asset_host).and_return(geo_host)
+
+          expect(group.avatar_url).to eq(geo_avatar_url)
+        end
       end
     end
   end

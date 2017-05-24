@@ -6,7 +6,7 @@ feature 'Path Locks', feature: true, js: true do
   let(:project_tree_path) { namespace_project_tree_path(project.namespace, project, project.repository.root_ref) }
 
   before do
-    allow_any_instance_of(PathLocksHelper).to receive(:license_allows_file_locks?).and_return(true)
+    allow(project).to receive(:feature_available?).with(:file_lock) { true }
 
     project.team << [user, :master]
     login_with(user)
@@ -17,12 +17,11 @@ feature 'Path Locks', feature: true, js: true do
   scenario 'Locking folders' do
     within '.tree-content-holder' do
       click_link "encoding"
-      click_link "Lock"
-
-      visit project_tree_path
-
-      expect(page).to have_selector('.fa-lock')
     end
+    click_link "Lock"
+    visit project_tree_path
+
+    expect(page).to have_selector('.fa-lock')
   end
 
   scenario 'Locking files' do

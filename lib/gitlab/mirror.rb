@@ -17,7 +17,7 @@ module Gitlab
       THREE   => "0 */3 * * *",
       SIX     => "0 */6 * * *",
       TWELVE  => "0 */12 * * *",
-      DAILY   => "0 0 * * *",
+      DAILY   => "0 0 * * *"
     }.freeze
 
     SYNC_TIME_OPTIONS = {
@@ -26,7 +26,7 @@ module Gitlab
       "Update every three hours"  => THREE,
       "Update every six hours"    => SIX,
       "Update every twelve hours" => TWELVE,
-      "Update every day"          => DAILY,
+      "Update every day"          => DAILY
     }.freeze
 
     class << self
@@ -41,11 +41,23 @@ module Gitlab
         sync_times
       end
 
+      def update_all_mirrors_cron_job
+        Sidekiq::Cron::Job.find("update_all_mirrors_worker")
+      end
+
+      def destroy_cron_job!
+        update_all_mirrors_cron_job&.destroy
+      end
+
       def configure_cron_job!
+        if Gitlab::Geo.secondary?
+          destroy_cron_job!
+          return
+        end
+
         minimum_mirror_sync_time = current_application_settings.minimum_mirror_sync_time rescue FIFTEEN
         sync_time = SYNC_TIME_TO_CRON[minimum_mirror_sync_time]
-
-        Sidekiq::Cron::Job.find("update_all_mirrors_worker")&.destroy
+        destroy_cron_job!
 
         Sidekiq::Cron::Job.create(
           name: 'update_all_mirrors_worker',

@@ -6,7 +6,7 @@ class ElasticIndexerWorker
 
   sidekiq_options retry: 2
 
-  ISSUE_TRACKED_FIELDS = %w(assignee_id author_id confidential).freeze
+  ISSUE_TRACKED_FIELDS = %w(assignee_ids author_id confidential).freeze
 
   def perform(operation, class_name, record_id, options = {})
     return true unless current_application_settings.elasticsearch_indexing?

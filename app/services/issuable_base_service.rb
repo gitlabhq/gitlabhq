@@ -1,11 +1,6 @@
 class IssuableBaseService < BaseService
   private
 
-  def create_assignee_note(issuable)
-    SystemNoteService.change_assignee(
-      issuable, issuable.project, current_user, issuable.assignee)
-  end
-
   def create_milestone_note(issuable)
     SystemNoteService.change_milestone(
       issuable, issuable.project, current_user, issuable.milestone)
@@ -22,6 +17,10 @@ class IssuableBaseService < BaseService
   def create_title_change_note(issuable, old_title)
     SystemNoteService.change_title(
       issuable, issuable.project, current_user, old_title)
+  end
+
+  def create_description_change_note(issuable)
+    SystemNoteService.change_description(issuable, issuable.project, current_user)
   end
 
   def create_branch_change_note(issuable, branch_type, old_branch, new_branch)
@@ -53,6 +52,7 @@ class IssuableBaseService < BaseService
       params.delete(:add_label_ids)
       params.delete(:remove_label_ids)
       params.delete(:label_ids)
+      params.delete(:assignee_ids)
       params.delete(:assignee_id)
       params.delete(:due_date)
     end
@@ -77,7 +77,7 @@ class IssuableBaseService < BaseService
   def assignee_can_read?(issuable, assignee_id)
     new_assignee = User.find_by_id(assignee_id)
 
-    return false unless new_assignee.present?
+    return false unless new_assignee
 
     ability_name = :"read_#{issuable.to_ability_name}"
     resource     = issuable.persisted? ? issuable : project
@@ -178,6 +178,7 @@ class IssuableBaseService < BaseService
       after_create(issuable)
       issuable.create_cross_references!(current_user)
       execute_hooks(issuable)
+      invalidate_cache_counts(issuable.assignees, issuable)
     end
 
     issuable
@@ -207,12 +208,17 @@ class IssuableBaseService < BaseService
     filter_params(issuable)
     old_labels = issuable.labels.to_a
     old_mentioned_users = issuable.mentioned_users.to_a
+    old_assignees = issuable.assignees.to_a
 
     label_ids = process_label_ids(params, existing_label_ids: issuable.label_ids)
     params[:label_ids] = label_ids if labels_changing?(issuable.label_ids, label_ids)
 
     if issuable.changed? || params.present?
       issuable.assign_attributes(params.merge(updated_by: current_user))
+
+      if has_title_or_description_changed?(issuable)
+        issuable.assign_attributes(last_edited_at: Time.now, last_edited_by: current_user)
+      end
 
       before_update(issuable)
 
@@ -222,7 +228,21 @@ class IssuableBaseService < BaseService
           handle_common_system_notes(issuable, old_labels: old_labels)
         end
 
-        handle_changes(issuable, old_labels: old_labels, old_mentioned_users: old_mentioned_users)
+        handle_changes(
+          issuable,
+          old_labels: old_labels,
+          old_mentioned_users: old_mentioned_users,
+          old_assignees: old_assignees
+        )
+
+        if old_assignees != issuable.assignees
+          ## EE-specific
+          new_assignees = issuable.assignees.to_a
+          affected_assignees = (old_assignees + new_assignees) - (old_assignees & new_assignees)
+          invalidate_cache_counts(affected_assignees.compact, issuable)
+          ## EE-specific
+        end
+
         after_update(issuable)
         issuable.create_new_cross_references!(current_user)
         execute_hooks(issuable, 'update')
@@ -234,6 +254,10 @@ class IssuableBaseService < BaseService
 
   def labels_changing?(old_label_ids, new_label_ids)
     old_label_ids.sort != new_label_ids.sort
+  end
+
+  def has_title_or_description_changed?(issuable)
+    issuable.title_changed? || issuable.description_changed?
   end
 
   def change_state(issuable)
@@ -272,7 +296,7 @@ class IssuableBaseService < BaseService
     end
   end
 
-  def has_changes?(issuable, old_labels: [])
+  def has_changes?(issuable, old_labels: [], old_assignees: [])
     valid_attrs = [:title, :description, :assignee_id, :milestone_id, :target_branch]
 
     attrs_changed = valid_attrs.any? do |attr|
@@ -281,12 +305,18 @@ class IssuableBaseService < BaseService
 
     labels_changed = issuable.labels != old_labels
 
-    attrs_changed || labels_changed
+    assignees_changed = issuable.assignees != old_assignees
+
+    attrs_changed || labels_changed || assignees_changed
   end
 
   def handle_common_system_notes(issuable, old_labels: [])
     if issuable.previous_changes.include?('title')
       create_title_change_note(issuable, issuable.previous_changes['title'].first)
+    end
+
+    if issuable.previous_changes.include?('description')
+      create_description_change_note(issuable)
     end
 
     if issuable.previous_changes.include?('description') && issuable.tasks?
@@ -302,5 +332,11 @@ class IssuableBaseService < BaseService
     end
 
     create_labels_note(issuable, old_labels) if issuable.labels != old_labels
+  end
+
+  def invalidate_cache_counts(users, issuable)
+    users.each do |user|
+      user.public_send("invalidate_#{issuable.model_name.singular}_cache_counts")
+    end
   end
 end

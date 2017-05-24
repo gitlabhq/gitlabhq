@@ -26,15 +26,23 @@ class Blob < SimpleDelegator
 
     BlobViewer::Image,
     BlobViewer::Sketch,
+    BlobViewer::Balsamiq,
+
+    BlobViewer::Video,
 
     BlobViewer::PDF,
 
     BlobViewer::BinarySTL,
-    BlobViewer::TextSTL,
-  ].freeze
+    BlobViewer::TextSTL
+  ].sort_by { |v| v.binary? ? 0 : 1 }.freeze
 
-  BINARY_VIEWERS = RICH_VIEWERS.select(&:binary?).freeze
-  TEXT_VIEWERS = RICH_VIEWERS.select(&:text?).freeze
+  AUXILIARY_VIEWERS = [
+    BlobViewer::GitlabCiYml,
+    BlobViewer::RouteMap,
+
+    BlobViewer::License,
+    BlobViewer::Contributing
+  ].freeze
 
   attr_reader :project
 
@@ -73,19 +81,37 @@ class Blob < SimpleDelegator
   end
 
   def no_highlighting?
-    size && size > MAXIMUM_TEXT_HIGHLIGHT_SIZE
+    raw_size && raw_size > MAXIMUM_TEXT_HIGHLIGHT_SIZE
+  end
+
+  def empty?
+    raw_size == 0
   end
 
   def too_large?
     size && truncated?
   end
 
+  def external_storage_error?
+    if external_storage == :lfs
+      !project&.lfs_enabled?
+    else
+      false
+    end
+  end
+
+  def stored_externally?
+    return @stored_externally if defined?(@stored_externally)
+
+    @stored_externally = external_storage && !external_storage_error?
+  end
+
   # Returns the size of the file that this blob represents. If this blob is an
   # LFS pointer, this is the size of the file stored in LFS. Otherwise, this is
   # the size of the blob itself.
   def raw_size
-    if valid_lfs_pointer?
-      lfs_size
+    if stored_externally?
+      external_size
     else
       size
     end
@@ -96,9 +122,13 @@ class Blob < SimpleDelegator
   # text-based rich blob viewer matched on the file's extension. Otherwise, this
   # depends on the type of the blob itself.
   def raw_binary?
-    if valid_lfs_pointer?
+    if stored_externally?
       if rich_viewer
         rich_viewer.binary?
+      elsif Linguist::Language.find_by_filename(name).any?
+        false
+      elsif _mime_type
+        _mime_type.binary?
       else
         true
       end
@@ -116,15 +146,7 @@ class Blob < SimpleDelegator
   end
 
   def readable_text?
-    text? && !valid_lfs_pointer? && !too_large?
-  end
-
-  def valid_lfs_pointer?
-    lfs_pointer? && project&.lfs_enabled?
-  end
-
-  def invalid_lfs_pointer?
-    lfs_pointer? && !project&.lfs_enabled?
+    text? && !stored_externally? && !too_large?
   end
 
   def simple_viewer
@@ -135,6 +157,12 @@ class Blob < SimpleDelegator
     return @rich_viewer if defined?(@rich_viewer)
 
     @rich_viewer = rich_viewer_class&.new(self)
+  end
+
+  def auxiliary_viewer
+    return @auxiliary_viewer if defined?(@auxiliary_viewer)
+
+    @auxiliary_viewer = auxiliary_viewer_class&.new(self)
   end
 
   def rendered_as_text?(ignore_errors: true)
@@ -163,17 +191,18 @@ class Blob < SimpleDelegator
   end
 
   def rich_viewer_class
-    return if invalid_lfs_pointer? || empty?
+    viewer_class_from(RICH_VIEWERS)
+  end
 
-    classes =
-      if valid_lfs_pointer?
-        BINARY_VIEWERS + TEXT_VIEWERS
-      elsif binary?
-        BINARY_VIEWERS
-      else # text
-        TEXT_VIEWERS
-      end
+  def auxiliary_viewer_class
+    viewer_class_from(AUXILIARY_VIEWERS)
+  end
 
-    classes.find { |viewer_class| viewer_class.can_render?(self) }
+  def viewer_class_from(classes)
+    return if empty? || external_storage_error?
+
+    verify_binary = !stored_externally?
+
+    classes.find { |viewer_class| viewer_class.can_render?(self, verify_binary: verify_binary) }
   end
 end

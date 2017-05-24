@@ -330,7 +330,10 @@
           },
           multiSelect: $dropdown.hasClass('js-multiselect'),
           vue: $dropdown.hasClass('js-issue-board-sidebar'),
-          clicked: function(label, $el, e, isMarking) {
+          clicked: function(options) {
+            const { $el, e, isMarking } = options;
+            const label = options.selectedObj;
+
             var isIssueIndex, isMRIndex, page, boardsModel;
             var fadeOutLoader = () => {
               $loading.fadeOut();
@@ -352,7 +355,7 @@
 
             if ($dropdown.hasClass('js-filter-bulk-update')) {
               _this.enableBulkLabelDropdown();
-              _this.setDropdownData($dropdown, isMarking, this.id(label));
+              _this.setDropdownData($dropdown, isMarking, label.id);
               return;
             }
 

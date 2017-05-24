@@ -1,7 +1,6 @@
 class ProjectsController < Projects::ApplicationController
   include IssuableCollections
   include ExtractsPath
-  include MarkdownPreview
 
   before_action :authenticate_user!, except: [:index, :show, :activity, :refs]
   before_action :project, except: [:index, :new, :create]
@@ -222,7 +221,7 @@ class ProjectsController < Projects::ApplicationController
     branches = BranchesFinder.new(@repository, params).execute.map(&:name)
 
     options = {
-      'Branches' => branches.take(100),
+      'Branches' => branches.take(100)
     }
 
     unless @repository.tag_count.zero?
@@ -241,7 +240,15 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def preview_markdown
-    render_markdown_preview(params[:text])
+    result = PreviewMarkdownService.new(@project, current_user, params).execute
+
+    render json: {
+      body: view_context.markdown(result[:text]),
+      references: {
+        users: result[:users],
+        commands: view_context.markdown(result[:commands])
+      }
+    }
   end
 
   private
@@ -382,5 +389,12 @@ class ProjectsController < Projects::ApplicationController
 
   def project_view_files_allowed?
     !project.empty_repo? && can?(current_user, :download_code, project)
+  end
+
+  def build_canonical_path(project)
+    params[:namespace_id] = project.namespace.to_param
+    params[:id] = project.to_param
+
+    url_for(params)
   end
 end

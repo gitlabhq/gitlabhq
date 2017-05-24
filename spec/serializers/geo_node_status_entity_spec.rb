@@ -61,7 +61,7 @@ describe GeoNodeStatusEntity do
   describe '#health' do
     context 'when node is healthy' do
       it 'exposes the health message' do
-        expect(subject[:health]).to eq 'No Health Problems Detected'
+        expect(subject[:health]).to eq 'Healthy'
       end
     end
 

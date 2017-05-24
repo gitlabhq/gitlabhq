@@ -5,13 +5,13 @@ describe EnvironmentEntity do
   let(:environment) { create(:environment) }
 
   let(:entity) do
-    described_class.new(environment, request: double(user: user))
+    described_class.new(environment, request: double(current_user: user))
   end
 
   subject { entity.as_json }
 
   before do
-    allow_any_instance_of(License).to receive(:add_on?).and_return(false)
+    allow_any_instance_of(License).to receive(:feature_available?).and_return(false)
 
     environment.project.team << [user, :master]
   end
@@ -46,7 +46,7 @@ describe EnvironmentEntity do
 
   context 'with deployment service ready' do
     before do
-      allow_any_instance_of(License).to receive(:add_on?).with('GitLab_DeployBoard').and_return(true)
+      allow_any_instance_of(License).to receive(:feature_available?).with(:deploy_board).and_return(true)
       allow(environment).to receive(:deployment_service_ready?).and_return(true)
     end
 
@@ -59,7 +59,7 @@ describe EnvironmentEntity do
 
   context 'when license does not has the GitLab_DeployBoard add-on' do
     before do
-      allow_any_instance_of(License).to receive(:add_on?).with('GitLab_DeployBoard').and_return(false)
+      allow_any_instance_of(License).to receive(:feature_available?).with(:deploy_board).and_return(false)
       allow(environment).to receive(:deployment_service_ready?).and_return(true)
     end
 

@@ -3,7 +3,8 @@ require 'rails_helper'
 feature 'Issue Sidebar', feature: true do
   include MobileHelpers
 
-  let(:project) { create(:project, :public) }
+  let(:group) { create(:group, :nested) }
+  let(:project) { create(:project, :public, namespace: group) }
   let(:issue) { create(:issue, project: project) }
   let!(:user) { create(:user)}
   let!(:label) { create(:label, project: project, title: 'bug') }
@@ -39,6 +40,21 @@ feature 'Issue Sidebar', feature: true do
         wait_for_ajax
 
         expect(page).to have_content(user2.name)
+      end
+    end
+
+    it 'assigns yourself' do
+      find('.block.assignee .dropdown-menu-toggle').click
+
+      click_button 'assign yourself'
+
+      wait_for_ajax
+
+      find('.block.assignee .edit-link').click
+
+      page.within '.dropdown-menu-user' do
+        expect(page.find('.dropdown-header')).to be_visible
+        expect(page.find('.dropdown-menu-user-link.is-active')).to have_content(user.name)
       end
     end
   end
@@ -180,9 +196,7 @@ feature 'Issue Sidebar', feature: true do
   end
 
   def open_issue_sidebar
-    page.within('aside.right-sidebar.right-sidebar-collapsed') do
-      find('.js-sidebar-toggle').click
-      sleep 1
-    end
+    find('aside.right-sidebar.right-sidebar-collapsed .js-sidebar-toggle').trigger('click')
+    find('aside.right-sidebar.right-sidebar-expanded')
   end
 end

@@ -42,12 +42,18 @@
 - [Shell commands](shell_commands.md) in the GitLab codebase
 - [Sidekiq debugging](sidekiq_debugging.md)
 - [Object state models](object_state_models.md)
+- [Building a package for testing purposes](build_test_package.md)
 
 ## Databases
 
 - [What requires downtime?](what_requires_downtime.md)
 - [Adding database indexes](adding_database_indexes.md)
 - [Post Deployment Migrations](post_deployment_migrations.md)
+- [Foreign Keys & Associations](foreign_keys.md)
+
+## i18n
+
+- [Internationalization for GitLab](i18n_guide.md)
 
 ## Compliance
 

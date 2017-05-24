@@ -5,7 +5,7 @@ describe Gitlab::UserAccess, lib: true do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 
-  describe 'can_push_to_branch?' do
+  describe '#can_push_to_branch?' do
     describe 'push to none protected branch' do
       it 'returns true if user is a master' do
         project.team << [user, :master]
@@ -87,10 +87,10 @@ describe Gitlab::UserAccess, lib: true do
         expect(access.can_push_to_branch?(branch.name)).to be_falsey
       end
 
-      it 'returns true if branch does not exist and user has permission to merge' do
+      it 'returns false if branch does not exist' do
         project.team << [user, :developer]
 
-        expect(access.can_push_to_branch?(not_existing_branch.name)).to be_truthy
+        expect(access.can_push_to_branch?(not_existing_branch.name)).to be_falsey
       end
     end
 
@@ -143,7 +143,7 @@ describe Gitlab::UserAccess, lib: true do
     end
   end
 
-  describe 'can_create_tag?' do
+  describe '#can_create_tag?' do
     describe 'push to none protected tag' do
       it 'returns true if user is a master' do
         project.add_user(user, :master)
@@ -208,6 +208,50 @@ describe Gitlab::UserAccess, lib: true do
         project.add_user(user, :reporter)
 
         expect(access.can_create_tag?(@tag.name)).to be_falsey
+      end
+    end
+  end
+
+  describe '#can_delete_branch?' do
+    describe 'delete unprotected branch' do
+      it 'returns true if user is a master' do
+        project.add_user(user, :master)
+
+        expect(access.can_delete_branch?('random_branch')).to be_truthy
+      end
+
+      it 'returns true if user is a developer' do
+        project.add_user(user, :developer)
+
+        expect(access.can_delete_branch?('random_branch')).to be_truthy
+      end
+
+      it 'returns false if user is a reporter' do
+        project.add_user(user, :reporter)
+
+        expect(access.can_delete_branch?('random_branch')).to be_falsey
+      end
+    end
+
+    describe 'delete protected branch' do
+      let(:branch) { create(:protected_branch, project: project, name: "test") }
+
+      it 'returns true if user is a master' do
+        project.add_user(user, :master)
+
+        expect(access.can_delete_branch?(branch.name)).to be_truthy
+      end
+
+      it 'returns false if user is a developer' do
+        project.add_user(user, :developer)
+
+        expect(access.can_delete_branch?(branch.name)).to be_falsey
+      end
+
+      it 'returns false if user is a reporter' do
+        project.add_user(user, :reporter)
+
+        expect(access.can_delete_branch?(branch.name)).to be_falsey
       end
     end
   end

@@ -1,6 +1,8 @@
 .page-content-header
   .header-main-content
-    %strong Commit #{@commit.short_id}
+    %strong
+      Commit
+      %span.commit-sha= @commit.short_id
     = clipboard_button(text: @commit.id, title: "Copy commit SHA to clipboard")
     %span.hidden-xs authored
     #{time_ago_with_tooltip(@commit.authored_date)}
@@ -57,23 +59,25 @@
       = custom_icon("icon_commit")
     %span.cgray= pluralize(@commit.parents.count, "parent")
     - @commit.parents.each do |parent|
-      = link_to parent.short_id, namespace_project_commit_path(@project.namespace, @project, parent), class: "monospace"
+      = link_to parent.short_id, namespace_project_commit_path(@project.namespace, @project, parent), class: "commit-sha"
     %span.commit-info.branches
       %i.fa.fa-spinner.fa-spin
 
-  - if @commit.status
+  - if @commit.last_pipeline
+    - last_pipeline = @commit.last_pipeline
     .well-segment.pipeline-info
       .status-icon-container{ class: "ci-status-icon-#{@commit.status}" }
-        = link_to namespace_project_pipeline_path(@project.namespace, @project, @commit.latest_pipeline.id) do
-          = ci_icon_for_status(@commit.status)
+        = link_to namespace_project_pipeline_path(@project.namespace, @project, last_pipeline.id) do
+          = ci_icon_for_status(last_pipeline.status)
       Pipeline
-      = link_to "##{@commit.latest_pipeline.id}", namespace_project_pipeline_path(@project.namespace, @project, @commit.latest_pipeline.id), class: "monospace"
-      = ci_label_for_status(@commit.status)
-      - if @commit.latest_pipeline.stages.any?
+      = link_to "##{last_pipeline.id}", namespace_project_pipeline_path(@project.namespace, @project, last_pipeline.id)
+      = ci_label_for_status(last_pipeline.status)
+      - if last_pipeline.stages.any?
+        with #{"stage".pluralize(last_pipeline.stages.count)}
         .mr-widget-pipeline-graph
-          = render 'shared/mini_pipeline_graph', pipeline: @commit.latest_pipeline, klass: 'js-commit-pipeline-graph'
+          = render 'shared/mini_pipeline_graph', pipeline: last_pipeline, klass: 'js-commit-pipeline-graph'
       in
-      = time_interval_in_words @commit.pipelines.total_duration
+      = time_interval_in_words last_pipeline.duration
 
 :javascript
   $(".commit-info.branches").load("#{branches_namespace_project_commit_path(@project.namespace, @project, @commit.id)}");

@@ -275,6 +275,7 @@ Settings.gitlab['domain_whitelist'] ||= []
 Settings.gitlab['import_sources'] ||= %w[github bitbucket gitlab google_code fogbugz git gitlab_project gitea]
 Settings.gitlab['trusted_proxies'] ||= []
 Settings.gitlab['no_todos_messages'] ||= YAML.load_file(Rails.root.join('config', 'no_todos_messages.yml'))
+Settings.gitlab['usage_ping_enabled'] = true if Settings.gitlab['usage_ping_enabled'].nil?
 
 #
 # Elasticseacrh
@@ -369,9 +370,9 @@ Settings['cron_jobs'] ||= Settingslogic.new({})
 Settings.cron_jobs['stuck_ci_jobs_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['stuck_ci_jobs_worker']['cron'] ||= '0 * * * *'
 Settings.cron_jobs['stuck_ci_jobs_worker']['job_class'] = 'StuckCiJobsWorker'
-Settings.cron_jobs['trigger_schedule_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['trigger_schedule_worker']['cron'] ||= '0 */12 * * *'
-Settings.cron_jobs['trigger_schedule_worker']['job_class'] = 'TriggerScheduleWorker'
+Settings.cron_jobs['pipeline_schedule_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['pipeline_schedule_worker']['cron'] ||= '0 */12 * * *'
+Settings.cron_jobs['pipeline_schedule_worker']['job_class'] = 'PipelineScheduleWorker'
 Settings.cron_jobs['expire_build_artifacts_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['expire_build_artifacts_worker']['cron'] ||= '50 * * * *'
 Settings.cron_jobs['expire_build_artifacts_worker']['job_class'] = 'ExpireBuildArtifactsWorker'
@@ -392,16 +393,16 @@ Settings.cron_jobs['ldap_sync_worker']['cron'] ||= '30 1 * * *'
 Settings.cron_jobs['ldap_sync_worker']['job_class'] = 'LdapSyncWorker'
 Settings.cron_jobs['ldap_group_sync_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['ldap_group_sync_worker']['cron'] ||= '0 * * * *'
-Settings.cron_jobs['ldap_group_sync_worker']['job_class'] = 'LdapGroupSyncWorker'
+Settings.cron_jobs['ldap_group_sync_worker']['job_class'] = 'LdapAllGroupsSyncWorker'
 Settings.cron_jobs['geo_bulk_notify_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['geo_bulk_notify_worker']['cron'] ||= '*/10 * * * * *'
 Settings.cron_jobs['geo_bulk_notify_worker']['job_class'] ||= 'GeoBulkNotifyWorker'
-Settings.cron_jobs['geo_backfill_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['geo_backfill_worker']['cron'] ||= '*/5 * * * *'
-Settings.cron_jobs['geo_backfill_worker']['job_class'] ||= 'GeoBackfillWorker'
-Settings.cron_jobs['geo_download_dispatch_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['geo_download_dispatch_worker']['cron'] ||= '5 * * * *'
-Settings.cron_jobs['geo_download_dispatch_worker']['job_class'] ||= 'GeoFileDownloadDispatchWorker'
+Settings.cron_jobs['geo_repository_sync_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['geo_repository_sync_worker']['cron'] ||= '*/5 * * * *'
+Settings.cron_jobs['geo_repository_sync_worker']['job_class'] ||= 'GeoRepositorySyncWorker'
+Settings.cron_jobs['geo_file_download_dispatch_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['geo_file_download_dispatch_worker']['cron'] ||= '5 * * * *'
+Settings.cron_jobs['geo_file_download_dispatch_worker']['job_class'] ||= 'GeoFileDownloadDispatchWorker'
 Settings.cron_jobs['gitlab_usage_ping_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['gitlab_usage_ping_worker']['cron'] ||= Settings.send(:cron_random_weekly_time)
 Settings.cron_jobs['gitlab_usage_ping_worker']['job_class'] = 'GitlabUsagePingWorker'
@@ -462,6 +463,7 @@ Settings.gitlab_shell['ssh_port']     ||= 22
 Settings.gitlab_shell['ssh_user']     ||= Settings.gitlab.user
 Settings.gitlab_shell['owner_group']  ||= Settings.gitlab.user
 Settings.gitlab_shell['ssh_path_prefix'] ||= Settings.__send__(:build_gitlab_shell_ssh_path_prefix)
+Settings.gitlab_shell['git_timeout'] ||= 800
 
 #
 # Workhorse

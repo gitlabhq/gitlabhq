@@ -1,6 +1,5 @@
 module Search
   class SnippetService
-    include Gitlab::CurrentSettings
     attr_accessor :current_user, :params
 
     def initialize(user, params)
@@ -8,13 +7,9 @@ module Search
     end
 
     def execute
-      if current_application_settings.elasticsearch_search?
-        Gitlab::Elastic::SnippetSearchResults.new(current_user,
-                                                  params[:search])
-      else
-        snippets = Snippet.accessible_to(current_user)
-        Gitlab::SnippetSearchResults.new(snippets, params[:search])
-      end
+      snippets = SnippetsFinder.new(current_user).execute
+
+      Gitlab::SnippetSearchResults.new(snippets, params[:search])
     end
 
     def scope

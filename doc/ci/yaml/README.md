@@ -147,6 +147,10 @@ variables:
   DATABASE_URL: "postgres://postgres@postgres/my_database"
 ```
 
+>**Note:**
+Integers (as well as strings) are legal both for variable's name and value.
+Floats are not legal and cannot be used.
+
 These variables can be later used in all executed commands and scripts.
 The YAML-defined variables are also set to all created service containers,
 thus allowing to fine tune them. Variables can be also defined on a
@@ -553,6 +557,8 @@ The above script will:
 #### Manual actions
 
 > Introduced in GitLab 8.10.
+> Blocking manual actions were introduced in GitLab 9.0
+> Protected actions were introduced in GitLab 9.2
 
 Manual actions are a special type of job that are not executed automatically;
 they need to be explicitly started by a user. Manual actions can be started
@@ -578,7 +584,10 @@ Optional manual actions have `allow_failure: true` set by default.
 
 **Statuses of optional actions do not contribute to overall pipeline status.**
 
-> Blocking manual actions were introduced in GitLab 9.0
+**Manual actions are considered to be write actions, so permissions for
+protected branches are used when user wants to trigger an action. In other
+words, in order to trigger a manual action assigned to a branch that the
+pipeline is running for, user needs to have ability to push to this branch.**
 
 ### environment
 
@@ -1147,7 +1156,7 @@ Example:
 
 ```yaml
 variables:
-  GET_SOURCES_ATTEMPTS: "3"
+  GET_SOURCES_ATTEMPTS: 3
 ```
 
 You can set them in the global [`variables`](#variables) section or the

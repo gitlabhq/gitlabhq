@@ -15,13 +15,39 @@ describe Event, models: true do
   end
 
   describe 'Callbacks' do
-    describe 'after_create :reset_project_activity' do
-      let(:project) { create(:empty_project) }
+    let(:project) { create(:empty_project) }
 
+    describe 'after_create :reset_project_activity' do
       it 'calls the reset_project_activity method' do
         expect_any_instance_of(described_class).to receive(:reset_project_activity)
 
-        create_event(project, project.owner)
+        create_push_event(project, project.owner)
+      end
+    end
+
+    describe 'after_create :set_last_repository_updated_at' do
+      context 'with a push event' do
+        it 'updates the project last_repository_updated_at' do
+          project.update(last_repository_updated_at: 1.year.ago)
+
+          create_push_event(project, project.owner)
+
+          project.reload
+
+          expect(project.last_repository_updated_at).to be_within(1.minute).of(Time.now)
+        end
+      end
+
+      context 'without a push event' do
+        it 'does not update the project last_repository_updated_at' do
+          project.update(last_repository_updated_at: 1.year.ago)
+
+          create(:closed_issue_event, project: project, author: project.owner)
+
+          project.reload
+
+          expect(project.last_repository_updated_at).to be_within(1.minute).of(1.year.ago)
+        end
       end
     end
   end
@@ -29,7 +55,7 @@ describe Event, models: true do
   describe "Push event" do
     let(:project) { create(:empty_project, :private) }
     let(:user) { project.owner }
-    let(:event) { create_event(project, user) }
+    let(:event) { create_push_event(project, user) }
 
     it do
       expect(event.push?).to be_truthy
@@ -92,8 +118,8 @@ describe Event, models: true do
     let(:author) { create(:author) }
     let(:assignee) { create(:user) }
     let(:admin) { create(:admin) }
-    let(:issue) { create(:issue, project: project, author: author, assignee: assignee) }
-    let(:confidential_issue) { create(:issue, :confidential, project: project, author: author, assignee: assignee) }
+    let(:issue) { create(:issue, project: project, author: author, assignees: [assignee]) }
+    let(:confidential_issue) { create(:issue, :confidential, project: project, author: author, assignees: [assignee]) }
     let(:note_on_commit) { create(:note_on_commit, project: project) }
     let(:note_on_issue) { create(:note_on_issue, noteable: issue, project: project) }
     let(:note_on_confidential_issue) { create(:note_on_issue, noteable: confidential_issue, project: project) }
@@ -243,7 +269,7 @@ describe Event, models: true do
         expect(project).not_to receive(:update_column).
           with(:last_activity_at, a_kind_of(Time))
 
-        create_event(project, project.owner)
+        create_push_event(project, project.owner)
       end
     end
 
@@ -251,11 +277,11 @@ describe Event, models: true do
       it 'updates the project' do
         project.update(last_activity_at: 1.year.ago)
 
-        create_event(project, project.owner)
+        create_push_event(project, project.owner)
 
         project.reload
 
-        project.last_activity_at <= 1.minute.ago
+        expect(project.last_activity_at).to be_within(1.minute).of(Time.now)
       end
     end
   end
@@ -278,7 +304,7 @@ describe Event, models: true do
     end
   end
 
-  def create_event(project, user, attrs = {})
+  def create_push_event(project, user, attrs = {})
     data = {
       before: Gitlab::Git::BLANK_SHA,
       after: "0220c11b9a3e6c69dc8fd35321254ca9a7b98f7e",

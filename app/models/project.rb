@@ -6,6 +6,7 @@ class Project < ActiveRecord::Base
   include Gitlab::VisibilityLevel
   include Gitlab::CurrentSettings
   include AccessRequestable
+  include Avatarable
   include CacheMarkdownField
   include Referable
   include Sortable
@@ -54,6 +55,11 @@ class Project < ActiveRecord::Base
   after_create :set_last_activity_at
   def set_last_activity_at
     update_column(:last_activity_at, self.created_at)
+  end
+
+  after_create :set_last_repository_updated_at
+  def set_last_repository_updated_at
+    update_column(:last_repository_updated_at, self.created_at)
   end
 
   after_destroy :remove_pages
@@ -174,11 +180,13 @@ class Project < ActiveRecord::Base
   has_many :builds, class_name: 'Ci::Build' # the builds are created from the commit_statuses
   has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject'
   has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
-  has_many :variables, dependent: :destroy, class_name: 'Ci::Variable'
+  has_many :variables, class_name: 'Ci::Variable'
   has_many :triggers, dependent: :destroy, class_name: 'Ci::Trigger'
   has_many :remote_mirrors, inverse_of: :project, dependent: :destroy
   has_many :environments, dependent: :destroy
   has_many :deployments, dependent: :destroy
+  has_many :pipeline_schedules, dependent: :destroy, class_name: 'Ci::PipelineSchedule'
+
   has_many :path_locks, dependent: :destroy
 
   has_many :active_runners, -> { active }, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
@@ -908,12 +916,10 @@ class Project < ActiveRecord::Base
     repository.avatar
   end
 
-  def avatar_url(size = nil, scale = nil)
-    if self[:avatar].present?
-      [gitlab_config.url, avatar.url].join
-    elsif avatar_in_git
-      Gitlab::Routing.url_helpers.namespace_project_avatar_url(namespace, self)
-    end
+  def avatar_url(**args)
+    # We use avatar_path instead of overriding avatar_url because of carrierwave.
+    # See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11001/diffs#note_28659864
+    avatar_path(args) || (Gitlab::Routing.url_helpers.namespace_project_avatar_url(namespace, self) if avatar_in_git)
   end
 
   # For compatibility with old code
@@ -1088,7 +1094,7 @@ class Project < ActiveRecord::Base
       namespace: namespace.name,
       visibility_level: visibility_level,
       path_with_namespace: path_with_namespace,
-      default_branch: default_branch,
+      default_branch: default_branch
     }
 
     # Backward compatibility
@@ -1569,6 +1575,14 @@ class Project < ActiveRecord::Base
 
   def parent_changed?
     namespace_id_changed?
+  end
+
+  def default_merge_request_target
+    if forked_from_project&.merge_requests_enabled?
+      forked_from_project
+    else
+      self
+    end
   end
 
   alias_method :name_with_namespace, :full_name

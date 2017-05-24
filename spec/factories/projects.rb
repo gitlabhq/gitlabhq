@@ -49,6 +49,10 @@ FactoryGirl.define do
       request_access_enabled true
     end
 
+    trait :with_avatar do
+      avatar { File.open(Rails.root.join('spec/fixtures/dk.png')) }
+    end
+
     trait :repository do
       # no-op... for now!
     end
@@ -88,7 +92,9 @@ FactoryGirl.define do
 
     trait :test_repo do
       after :create do |project|
-        TestEnv.copy_repo(project)
+        TestEnv.copy_repo(project,
+          bare_repo: TestEnv.factory_repo_path_bare,
+          refs: TestEnv::BRANCH_SHA)
       end
     end
 
@@ -167,7 +173,9 @@ FactoryGirl.define do
     end
 
     after :create do |project, evaluator|
-      TestEnv.copy_repo(project)
+      TestEnv.copy_repo(project,
+        bare_repo: TestEnv.factory_repo_path_bare,
+        refs: TestEnv::BRANCH_SHA)
 
       if evaluator.create_template
         args = evaluator.create_template
@@ -200,7 +208,9 @@ FactoryGirl.define do
     path { 'forked-gitlabhq' }
 
     after :create do |project|
-      TestEnv.copy_forked_repo_with_submodules(project)
+      TestEnv.copy_repo(project,
+        bare_repo: TestEnv.forked_repo_path_bare,
+        refs: TestEnv::FORKED_BRANCH_SHA)
     end
   end
 

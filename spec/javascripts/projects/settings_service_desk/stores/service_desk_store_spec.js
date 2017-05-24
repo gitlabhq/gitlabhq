@@ -44,10 +44,10 @@ describe('ServiceDeskStore', () => {
     });
 
     it('set true', () => {
-      const err = new Error('some-fake-failure');
-      store.setFetchError(err);
+      const errMsg = 'some-fake-failure';
+      store.setFetchError(errMsg);
 
-      expect(store.state.fetchError).toEqual(err);
+      expect(store.state.fetchError).toEqual(new Error(errMsg));
     });
   });
 });

@@ -96,40 +96,77 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
       end
     end
 
-    context 'protected branches check' do
-      before do
-        allow(ProtectedBranch).to receive(:protected?).with(project, 'master').and_return(true)
-      end
-
-      it 'returns an error if the user is not allowed to do forced pushes to protected branches' do
-        expect(Gitlab::Checks::ForcePush).to receive(:force_push?).and_return(true)
-
-        expect(subject.status).to be(false)
-        expect(subject.message).to eq('You are not allowed to force push code to a protected branch on this project.')
-      end
-
-      it 'returns an error if the user is not allowed to merge to protected branches' do
-        expect_any_instance_of(Gitlab::Checks::MatchingMergeRequest).to receive(:match?).and_return(true)
-        expect(user_access).to receive(:can_merge_to_branch?).and_return(false)
-        expect(user_access).to receive(:can_push_to_branch?).and_return(false)
-
-        expect(subject.status).to be(false)
-        expect(subject.message).to eq('You are not allowed to merge code into protected branches on this project.')
-      end
-
-      it 'returns an error if the user is not allowed to push to protected branches' do
-        expect(user_access).to receive(:can_push_to_branch?).and_return(false)
-
-        expect(subject.status).to be(false)
-        expect(subject.message).to eq('You are not allowed to push code to protected branches on this project.')
-      end
-
-      context 'branch deletion' do
+    context 'branches check' do
+      context 'trying to delete the default branch' do
         let(:newrev) { '0000000000000000000000000000000000000000' }
+        let(:ref) { 'refs/heads/master' }
 
-        it 'returns an error if the user is not allowed to delete protected branches' do
+        it 'returns an error' do
           expect(subject.status).to be(false)
-          expect(subject.message).to eq('You are not allowed to delete protected branches from this project.')
+          expect(subject.message).to eq('The default branch of a project cannot be deleted.')
+        end
+      end
+
+      context 'protected branches check' do
+        before do
+          allow(ProtectedBranch).to receive(:protected?).with(project, 'master').and_return(true)
+          allow(ProtectedBranch).to receive(:protected?).with(project, 'feature').and_return(true)
+        end
+
+        it 'returns an error if the user is not allowed to do forced pushes to protected branches' do
+          expect(Gitlab::Checks::ForcePush).to receive(:force_push?).and_return(true)
+
+          expect(subject.status).to be(false)
+          expect(subject.message).to eq('You are not allowed to force push code to a protected branch on this project.')
+        end
+
+        it 'returns an error if the user is not allowed to merge to protected branches' do
+          expect_any_instance_of(Gitlab::Checks::MatchingMergeRequest).to receive(:match?).and_return(true)
+          expect(user_access).to receive(:can_merge_to_branch?).and_return(false)
+          expect(user_access).to receive(:can_push_to_branch?).and_return(false)
+
+          expect(subject.status).to be(false)
+          expect(subject.message).to eq('You are not allowed to merge code into protected branches on this project.')
+        end
+
+        it 'returns an error if the user is not allowed to push to protected branches' do
+          expect(user_access).to receive(:can_push_to_branch?).and_return(false)
+
+          expect(subject.status).to be(false)
+          expect(subject.message).to eq('You are not allowed to push code to protected branches on this project.')
+        end
+
+        context 'branch deletion' do
+          let(:newrev) { '0000000000000000000000000000000000000000' }
+          let(:ref) { 'refs/heads/feature' }
+
+          context 'if the user is not allowed to delete protected branches' do
+            it 'returns an error' do
+              expect(subject.status).to be(false)
+              expect(subject.message).to eq('You are not allowed to delete protected branches from this project. Only a project master or owner can delete a protected branch.')
+            end
+          end
+
+          context 'if the user is allowed to delete protected branches' do
+            before do
+              project.add_master(user)
+            end
+
+            context 'through the web interface' do
+              let(:protocol) { 'web' }
+
+              it 'allows branch deletion' do
+                expect(subject.status).to be(true)
+              end
+            end
+
+            context 'over SSH or HTTP' do
+              it 'returns an error' do
+                expect(subject.status).to be(false)
+                expect(subject.message).to eq('You can only delete protected branches using the web interface.')
+              end
+            end
+          end
         end
       end
     end
@@ -299,12 +336,11 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
       let!(:path_lock) { create(:path_lock, path: 'README', project: project) }
 
       before do
-        allow_any_instance_of(PathLocksHelper).to receive(:license_allows_file_locks?).and_return(true)
-
         allow(project.repository).to receive(:new_commits).and_return(
           project.repository.commits_between('be93687618e4b132087f430a4d8fc3a609c9b77c', '54fcc214b94e78d7a41a9a8fe6d87a5e59500e51')
         )
       end
+
       it 'returns an error if the changes update a path locked by another user' do
         expect(subject.status).to be(false)
         expect(subject.message).to eq("The path 'README' is locked by #{path_lock.user.name}")

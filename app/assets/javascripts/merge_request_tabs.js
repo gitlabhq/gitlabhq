@@ -1,6 +1,7 @@
 /* eslint-disable no-new, class-methods-use-this */
 /* global Breakpoints */
 /* global Flash */
+/* global notes */
 
 import Cookies from 'js-cookie';
 import './breakpoints';
@@ -251,7 +252,8 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
       this.ajaxGet({
         url: `${urlPathname}.json${location.search}`,
         success: (data) => {
-          $('#diffs').html(data.html);
+          const $container = $('#diffs');
+          $container.html(data.html);
 
           if (typeof gl.diffNotesCompileComponents !== 'undefined') {
             gl.diffNotesCompileComponents();
@@ -278,6 +280,20 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
             })
               .init();
           });
+
+          // Scroll any linked note into view
+          // Similar to `toggler_behavior` in the discussion tab
+          const hash = window.gl.utils.getLocationHash();
+          const anchor = hash && $container.find(`[id="${hash}"]`);
+          if (anchor) {
+            const notesContent = anchor.closest('.notes_content');
+            const lineType = notesContent.hasClass('new') ? 'new' : 'old';
+            notes.addDiffNote(anchor, lineType, false);
+            anchor[0].scrollIntoView();
+            // We have multiple elements on the page with `#note_xxx`
+            // (discussion and diff tabs) and `:target` only applies to the first
+            anchor.addClass('target');
+          }
         },
       });
     }
@@ -353,10 +369,18 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
 
     initAffix() {
       const $tabs = $('.js-tabs-affix');
+      const $fixedNav = $('.navbar-gitlab');
 
       // Screen space on small screens is usually very sparse
       // So we dont affix the tabs on these
       if (Breakpoints.get().getBreakpointSize() === 'xs' || !$tabs.length) return;
+
+      /**
+        If the browser does not support position sticky, it returns the position as static.
+        If the browser does support sticky, then we allow the browser to handle it, if not
+        then we default back to Bootstraps affix
+      **/
+      if ($tabs.css('position') !== 'static') return;
 
       const $diffTabs = $('#diff-notes-app');
 
@@ -364,7 +388,7 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
         .affix({
           offset: {
             top: () => (
-              $diffTabs.offset().top - $tabs.height()
+              $diffTabs.offset().top - $tabs.height() - $fixedNav.height()
             ),
           },
         })

@@ -1,0 +1,26 @@
+%ul#notes-list.notes.main-notes-list.timeline
+  = render "shared/notes/notes"
+
+= render 'shared/notes/edit_form', project: @project
+
+%ul.notes.notes-form.timeline
+  %li.timeline-entry
+    .flash-container.timeline-content
+
+    - if  can_create_note?
+      .timeline-icon.hidden-xs.hidden-sm
+        %a.author_link{ href: user_path(current_user) }
+          = image_tag avatar_icon(current_user), alt: current_user.to_reference, class: 'avatar s40'
+      .timeline-content.timeline-content-form
+        = render "shared/notes/form", view: diff_view
+    - elsif !current_user
+      .disabled-comment.text-center
+        .disabled-comment-text.inline
+          Please
+          = link_to "register", new_session_path(:user, redirect_to_referer: 'yes')
+          or
+          = link_to "sign in", new_session_path(:user, redirect_to_referer: 'yes')
+          to post a comment
+
+:javascript
+  var notes = new Notes("#{notes_url}", #{@notes.map(&:id).to_json}, #{Time.now.to_i}, "#{diff_view}")

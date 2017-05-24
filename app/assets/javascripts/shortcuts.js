@@ -4,11 +4,9 @@
 import findAndFollowLink from './shortcuts_dashboard_navigation';
 
 (function() {
-  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
-
   this.Shortcuts = (function() {
     function Shortcuts(skipResetBindings) {
-      this.onToggleHelp = bind(this.onToggleHelp, this);
+      this.onToggleHelp = this.onToggleHelp.bind(this);
       this.enabledHelp = [];
       if (!skipResetBindings) {
         Mousetrap.reset();

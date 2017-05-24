@@ -16,42 +16,46 @@
       Geo nodes (#{@nodes.count})
     %ul.well-list.geo-nodes
       - @nodes.each do |node|
-        %li{ id: dom_id(node), class: ('js-geo-secondary-node' if node.secondary?), data: { status_url: status_admin_geo_node_path(node) } }
-          .list-item-name
-            %span
-              = node_status_icon(node)
+        %li{ id: dom_id(node), class: node_class(node), data: { status_url: status_admin_geo_node_path(node) } }
+          .node-block
+            = node_status_icon(node)
             %strong= node.url
+            - if node.current?
+              .node-badge.current-node Current node
             - if node.primary?
+              .node-badge.primary-node Primary
               %span.help-block Primary node
             - else
               .js-geo-node-status{ style: 'display: none' }
+                - if node.enabled?
+                  %p
+                    %span.help-block
+                      Health Status:
+                      %span.js-health-status
                 %p
                   %span.help-block
                     Repositories synced:
-                    %span.js-repositories-synced
+                    %strong.node-info.js-repositories-synced
                 %p
                   %span.help-block
                     Repositories failed:
-                    %span.js-repositories-failed
+                    %strong.node-info.js-repositories-failed
                 %p
                   %span.help-block
                     LFS objects synced:
-                    %span.js-lfs-objects-synced
+                    %strong.node-info.js-lfs-objects-synced
                 %p
                   %span.help-block
                     Attachments synced:
-                    %span.js-attachments-synced
+                    %strong.node-info.js-attachments-synced
                 %p
-                  %span.help-block.js-health
+                  .js-health
 
-          .pull-right
-            - if Gitlab::Geo.license_allows?
-              - if node.missing_oauth_application?
-                = link_to repair_admin_geo_node_path(node), method: :post, title: 'OAuth application is missing', class: 'btn btn-default btn-sm prepend-left-10' do
-                  = icon('exclamation-triangle fw')
-                  Repair authentication
-              - if node.secondary?
-                = toggle_node_button(node)
-            = link_to admin_geo_node_path(node), data: { confirm: 'Are you sure?' }, method: :delete, class: 'btn btn-remove btn-sm prepend-left-10' do
-              = icon 'trash'
-              Remove
+          - if Gitlab::Geo.primary?
+            .node-actions
+              - if Gitlab::Geo.license_allows?
+                - if node.missing_oauth_application?
+                  = link_to "Repair authentication", repair_admin_geo_node_path(node), method: :post, title: 'OAuth application is missing', class: 'btn btn-default btn-sm'
+                - if node.secondary?
+                  = toggle_node_button(node)
+              = link_to "Remove", admin_geo_node_path(node), data: { confirm: 'Are you sure?' }, method: :delete, class: 'btn btn-remove btn-sm'

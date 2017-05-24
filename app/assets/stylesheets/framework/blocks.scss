@@ -254,8 +254,65 @@
   padding: 10px 0;
 }
 
+.landing {
+  margin-bottom: $gl-padding;
+  overflow: hidden;
+  display: flex;
+  position: relative;
+  border: 1px solid $blue-300;
+  border-radius: $border-radius-default;
+  background-color: $blue-25;
+  justify-content: center;
+
+  .dismiss-button {
+    position: absolute;
+    right: 6px;
+    top: 6px;
+    cursor: pointer;
+    color: $blue-300;
+    z-index: 1;
+    border: none;
+    background-color: transparent;
+
+    &:hover,
+    &:focus {
+      border: none;
+      color: $blue-400;
+    }
+  }
+
+  .svg-container {
+    align-self: center;
+  }
+
+  .inner-content {
+    text-align: left;
+    white-space: nowrap;
+
+    h4 {
+      color: $gl-text-color;
+      font-size: 17px;
+    }
+
+    p {
+      color: $gl-text-color;
+      margin-bottom: $gl-padding;
+    }
+  }
+
+  @media (max-width: $screen-sm-min) {
+    flex-direction: column;
+
+    .inner-content {
+      white-space: normal;
+      padding: 0 28px;
+      text-align: center;
+    }
+  }
+}
+
 .empty-state {
-  margin: 100px 0 0;
+  margin: 5% auto 0;
 
   .text-content {
     max-width: 460px;
@@ -278,25 +335,10 @@
   }
 
   .btn {
-    margin: $btn-side-margin $btn-side-margin 0 0;
-  }
+    margin: $btn-side-margin 5px;
 
-  @media(max-width: $screen-xs-max) {
-    margin-top: 50px;
-    text-align: center;
-
-    .btn {
+    @media(max-width: $screen-xs-max) {
       width: 100%;
-    }
-  }
-
-  @media(min-width: $screen-xs-max) {
-    &.merge-requests .text-content {
-      margin-top: 40px;
-    }
-
-    &.labels .text-content {
-      margin-top: 70px;
     }
   }
 }
