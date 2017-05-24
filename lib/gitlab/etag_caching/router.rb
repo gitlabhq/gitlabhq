@@ -10,7 +10,7 @@ module Gitlab
       #   - Ending in `issues/id`/realtime_changes` for the `issue_title` route
       USED_IN_ROUTES = %w[noteable issue notes issues realtime_changes
                           commit pipelines merge_requests new].freeze
-      RESERVED_WORDS = DynamicPathValidator::WILDCARD_ROUTES - USED_IN_ROUTES
+      RESERVED_WORDS = Gitlab::Regex::ILLEGAL_PROJECT_PATH_WORDS - USED_IN_ROUTES
       RESERVED_WORDS_REGEX = Regexp.union(*RESERVED_WORDS)
       ROUTES = [
         Gitlab::EtagCaching::Router::Route.new(

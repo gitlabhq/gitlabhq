@@ -1,4 +1,6 @@
-scope(path: '*namespace_id/:project_id', constraints: { format: nil }) do
+scope(path: '*namespace_id/:project_id',
+      format: nil,
+      constraints: { namespace_id: Gitlab::Regex.namespace_route_regex }) do
   scope(constraints: { project_id: Gitlab::Regex.project_git_route_regex }, module: :projects) do
     # Git HTTP clients ('git clone' etc.)
     scope(controller: :git_http) do

@@ -2,6 +2,136 @@ module Gitlab
   module Regex
     extend self
 
+    # All routes that appear on the top level must be listed here.
+    # This will make sure that groups cannot be created with these names
+    # as these routes would be masked by the paths already in place.
+    #
+    # Example:
+    #   /api/api-project
+    #
+    #  the path `api` shouldn't be allowed because it would be masked by `api/*`
+    #
+    TOP_LEVEL_ROUTES = %w[
+      -
+      .well-known
+      abuse_reports
+      admin
+      all
+      api
+      assets
+      autocomplete
+      ci
+      dashboard
+      explore
+      files
+      groups
+      health_check
+      help
+      hooks
+      import
+      invites
+      issues
+      jwt
+      koding
+      member
+      merge_requests
+      new
+      notes
+      notification_settings
+      oauth
+      profile
+      projects
+      public
+      repository
+      robots.txt
+      s
+      search
+      sent_notifications
+      services
+      snippets
+      teams
+      u
+      unicorn_test
+      unsubscribes
+      uploads
+      users
+    ].freeze
+
+    # This list should contain all words following `/*namespace_id/:project_id` in
+    # routes that contain a second wildcard.
+    #
+    # Example:
+    #   /*namespace_id/:project_id/badges/*ref/build
+    #
+    # If `badges` was allowed as a project/group name, we would not be able to access the
+    # `badges` route for those projects:
+    #
+    # Consider a namespace with path `foo/bar` and a project called `badges`.
+    # The route to the build badge would then be `/foo/bar/badges/badges/master/build.svg`
+    #
+    # When accessing this path the route would be matched to the `badges` path
+    # with the following params:
+    #   - namespace_id: `foo`
+    #   - project_id: `bar`
+    #   - ref: `badges/master`
+    #
+    # Failing to find the project, this would result in a 404.
+    #
+    # By rejecting `badges` the router can _count_ on the fact that `badges` will
+    # be preceded by the `namespace/project`.
+    PROJECT_WILDCARD_ROUTES = %w[
+      badges
+      blame
+      blob
+      builds
+      commits
+      create
+      create_dir
+      edit
+      environments/folders
+      files
+      find_file
+      gitlab-lfs/objects
+      info/lfs/objects
+      new
+      preview
+      raw
+      refs
+      tree
+      update
+      wikis
+    ].freeze
+
+    # These are all the paths that follow `/groups/*id/ or `/groups/*group_id`
+    # We need to reject these because we have a `/groups/*id` page that is the same
+    # as the `/*id`.
+    #
+    # If we would allow a subgroup to be created with the name `activity` then
+    # this group would not be accessible through `/groups/parent/activity` since
+    # this would map to the activity-page of its parent.
+    GROUP_ROUTES = %w[
+      activity
+      analytics
+      audit_events
+      avatar
+      edit
+      group_members
+      hooks
+      issues
+      labels
+      ldap
+      ldap_group_links
+      merge_requests
+      milestones
+      notification_setting
+      pipeline_quota
+      projects
+      subgroups
+    ].freeze
+
+    ILLEGAL_PROJECT_PATH_WORDS = PROJECT_WILDCARD_ROUTES
+    ILLEGAL_GROUP_PATH_WORDS = (PROJECT_WILDCARD_ROUTES | GROUP_ROUTES).freeze
+
     # The namespace regex is used in Javascript to validate usernames in the "Register" form. However, Javascript
     # does not support the negative lookbehind assertion (?<!) that disallows usernames ending in `.git` and `.atom`.
     # Since this is a non-trivial problem to solve in Javascript (heavily complicate the regex, modify view code to
@@ -18,6 +148,29 @@ module Gitlab
     # So `group/subgroup` will match this regex but not NAMESPACE_REGEX_STR
     FULL_NAMESPACE_REGEX_STR = "(?:#{NAMESPACE_REGEX_STR}/)*#{NAMESPACE_REGEX_STR}".freeze
 
+    def root_namespace_route_regex
+      @root_namespace_route_regex ||= begin
+        illegal_words = Regexp.new(Regexp.union(TOP_LEVEL_ROUTES).source, Regexp::IGNORECASE)
+
+        single_line_regexp %r{
+          (?!(#{illegal_words})/)
+          #{NAMESPACE_REGEX_STR}
+        }x
+      end
+    end
+
+    def root_namespace_path_regex
+      @root_namespace_path_regex ||= %r{\A#{root_namespace_route_regex}/\z}
+    end
+
+    def full_namespace_path_regex
+      @full_namespace_path_regex ||= %r{\A#{namespace_route_regex}/\z}
+    end
+
+    def full_project_path_regex
+      @full_project_path_regex ||= %r{\A#{namespace_route_regex}/#{project_route_regex}/\z}
+    end
+
     def namespace_regex
       @namespace_regex ||= /\A#{NAMESPACE_REGEX_STR}\z/.freeze
     end
@@ -27,7 +180,18 @@ module Gitlab
     end
 
     def namespace_route_regex
-      @namespace_route_regex ||= /#{NAMESPACE_REGEX_STR}/.freeze
+      @namespace_route_regex ||= begin
+        illegal_words = Regexp.new(Regexp.union(ILLEGAL_GROUP_PATH_WORDS).source, Regexp::IGNORECASE)
+
+        single_line_regexp %r{
+          #{root_namespace_route_regex}
+          (?:
+            /
+            (?!#{illegal_words}/)
+            #{NAMESPACE_REGEX_STR}
+          )*
+        }x
+      end
     end
 
     def namespace_regex_message
@@ -53,15 +217,26 @@ module Gitlab
     end
 
     def project_path_regex
-      @project_path_regex ||= /\A#{PROJECT_REGEX_STR}\z/.freeze
+      @project_path_regex ||= %r{\A#{project_route_regex}/\z}
     end
 
     def project_route_regex
-      @project_route_regex ||= /#{PROJECT_REGEX_STR}/.freeze
+      @project_route_regex ||= begin
+        illegal_words = Regexp.new(Regexp.union(ILLEGAL_PROJECT_PATH_WORDS).source, Regexp::IGNORECASE)
+
+        single_line_regexp %r{
+          (?!(#{illegal_words})/)
+          #{PROJECT_REGEX_STR}
+        }x
+      end
     end
 
     def project_git_route_regex
-      @project_route_git_regex ||= /#{PATH_REGEX_STR}\.git/.freeze
+      @project_git_route_regex ||= /#{project_route_regex}\.git/.freeze
+    end
+
+    def project_path_format_regex
+      @project_path_format_regex ||= /\A#{PROJECT_REGEX_STR}\z/.freeze
     end
 
     def project_path_regex_message
@@ -86,7 +261,7 @@ module Gitlab
       # Valid git ref regex, see:
       # https://www.kernel.org/pub/software/scm/git/docs/git-check-ref-format.html
 
-      @git_reference_regex ||= %r{
+      @git_reference_regex ||= single_line_regexp %r{
         (?!
            (?# doesn't begins with)
            \/|                    (?# rule #6)
@@ -102,7 +277,7 @@ module Gitlab
         (?# doesn't end with)
         (?<!\.lock)               (?# rule #1)
         (?<![\/.])                (?# rule #6-7)
-      }x.freeze
+      }x
     end
 
     def container_registry_reference_regex
@@ -139,6 +314,14 @@ module Gitlab
     def environment_slug_regex_message
       "can contain only lowercase letters, digits, and '-'. " \
       "Must start with a letter, and cannot end with '-'"
+    end
+
+    private
+
+    def single_line_regexp(regex)
+      # Turns a multiline extended regexp into a single line one,
+      # beacuse `rake routes` breaks on multiline regexes.
+      Regexp.new(regex.source.gsub(/\(\?#.+?\)/, '').gsub(/\s*/, ''), regex.options ^ Regexp::EXTENDED).freeze
     end
   end
 end

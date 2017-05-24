@@ -37,7 +37,7 @@ describe Namespace, models: true do
 
         it 'rejects nested paths' do
           parent = create(:group, :nested, path: 'environments')
-          namespace = build(:project, path: 'folders', namespace: parent)
+          namespace = build(:group, path: 'folders', parent: parent)
 
           expect(namespace).not_to be_valid
         end
