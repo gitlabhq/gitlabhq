@@ -8,7 +8,7 @@ module API
       requires :id, type: String, desc: 'The ID of a project'
     end
     resource :projects, requirements: { id: %r{[^/]+} } do
-      desc 'Get a list of pipeline schedules' do
+      desc 'Get all pipeline schedules' do
         success Entities::PipelineSchedule
       end
       params do
@@ -34,7 +34,7 @@ module API
         present pipeline_schedule, with: Entities::PipelineSchedule, type: :full
       end
 
-      desc 'Creates a new pipeline schedule' do
+      desc 'Create a new pipeline schedule' do
         success Entities::PipelineSchedule
       end
       params do
@@ -58,7 +58,7 @@ module API
         end
       end
 
-      desc 'Updates an existing pipeline schedule' do
+      desc 'Edit a pipeline schedule' do
         success Entities::PipelineSchedule
       end
       params do
@@ -81,7 +81,7 @@ module API
         end
       end
 
-      desc 'Update an owner of a pipeline schedule' do
+      desc 'Take ownership of a pipeline schedule' do
         success Entities::PipelineSchedule
       end
       params do

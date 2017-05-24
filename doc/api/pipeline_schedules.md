@@ -2,9 +2,9 @@
 
 You can read more about [pipeline schedules](../user/project/pipelines/schedules.md).
 
-## List Pipeline schedules
+## Get all pipeline schedules
 
-Get a list of pipeline schedules.
+Get a list of the pipeline schedules of a project.
 
 ```
 GET /projects/:id/pipeline_schedules
@@ -14,8 +14,8 @@ GET /projects/:id/pipeline_schedules
 |-----------|---------|----------|---------------------|
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 
-```
-curl --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "http://192.168.10.5:3000/api/v4/projects/29/pipeline_schedules"
+```sh
+curl --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules"
 ```
 
 ```json
@@ -36,15 +36,15 @@ curl --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "http://192.168.10.5:3000/ap
             "id": 1,
             "state": "active",
             "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-            "web_url": "http://192.168.10.5:3000/root"
+            "web_url": "https://gitlab.example.com/root"
         }
     }
 ]
 ```
 
-## Single pipeline schedule
+## Get a single pipeline schedule
 
-Get a single pipeline schedule.
+Get the pipeline schedule of a project.
 
 ```
 GET /projects/:id/pipeline_schedules/:pipeline_schedule_id
@@ -55,8 +55,8 @@ GET /projects/:id/pipeline_schedules/:pipeline_schedule_id
 | `id`         | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
 | `pipeline_schedule_id` | integer | yes      | The pipeline schedule id           |
 
-```
-curl --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "http://192.168.10.5:3000/api/v4/projects/29/pipeline_schedules/13"
+```sh
+curl --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13"
 ```
 
 ```json
@@ -82,14 +82,14 @@ curl --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "http://192.168.10.5:3000/ap
         "id": 1,
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-        "web_url": "http://192.168.10.5:3000/root"
+        "web_url": "https://gitlab.example.com/root"
     }
 }
 ```
 
-## New pipeline schedule
+## Create a new pipeline schedule
 
-Creates a new pipeline schedule.
+Create a new pipeline schedule of a project.
 
 ```
 POST /projects/:id/pipeline_schedules
@@ -104,8 +104,8 @@ POST /projects/:id/pipeline_schedules
 | `cron_timezone ` | string  | yes      | The timezone supproted by `ActiveSupport::TimeZone` (e.g. `Pacific Time (US & Canada)`) or `TZInfo::Timezone` (e.g. `America/Los_Angeles`)      |
 | `active ` | boolean  | yes      | The activation of pipeline schedule. If false is set, the pipeline schedule will deactivated initially. |
 
-```
-curl --request POST --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" --form description="Build packages" --form ref="master" --form cron="0 1 * * 5" --form cron_timezone="UTC" --form active="true" "http://192.168.10.5:3000/api/v4/projects/29/pipeline_schedules"
+```sh
+curl --request POST --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" --form description="Build packages" --form ref="master" --form cron="0 1 * * 5" --form cron_timezone="UTC" --form active="true" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules"
 ```
 
 ```json
@@ -126,14 +126,14 @@ curl --request POST --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" --form descri
         "id": 1,
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-        "web_url": "http://192.168.10.5:3000/root"
+        "web_url": "https://gitlab.example.com/root"
     }
 }
 ```
 
-## Edit pipeline schedule
+## Edit a pipeline schedule
 
-Updates an existing pipeline schedule. Once the update is done, it will be rescheduled automatically.
+Updates the pipeline schedule  of a project. Once the update is done, it will be rescheduled automatically.
 
 ```
 PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id
@@ -149,8 +149,8 @@ PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id
 | `cron_timezone ` | string  | no      | The timezone supproted by `ActiveSupport::TimeZone` (e.g. `Pacific Time (US & Canada)`) or `TZInfo::Timezone` (e.g. `America/Los_Angeles`)      |
 | `active ` | boolean  | no      | The activation of pipeline schedule. If false is set, the pipeline schedule will deactivated initially. |
 
-```
-curl --request PUT --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" --form cron="0 2 * * *" "http://192.168.10.5:3000/api/v4/projects/29/pipeline_schedules/13"
+```sh
+curl --request PUT --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" --form cron="0 2 * * *" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13"
 ```
 
 ```json
@@ -176,14 +176,14 @@ curl --request PUT --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" --form cron="0
         "id": 1,
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-        "web_url": "http://192.168.10.5:3000/root"
+        "web_url": "https://gitlab.example.com/root"
     }
 }
 ```
 
 ## Take ownership of a pipeline schedule
 
-Update an owner of a pipeline schedule.
+Update the owner of the pipeline schedule of a project.
 
 ```
 POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/take_ownership
@@ -194,8 +194,8 @@ POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/take_ownership
 | `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
 | `pipeline_schedule_id`  | integer | yes      | The pipeline schedule id           |
 
-```
-curl --request POST --header "PRIVATE-TOKEN: hf2CvZXB9w8Uc5pZKpSB" "http://192.168.10.5:3000/api/v4/projects/29/pipeline_schedules/13/take_ownership"
+```sh
+curl --request POST --header "PRIVATE-TOKEN: hf2CvZXB9w8Uc5pZKpSB" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13/take_ownership"
 ```
 
 ```json
@@ -221,14 +221,14 @@ curl --request POST --header "PRIVATE-TOKEN: hf2CvZXB9w8Uc5pZKpSB" "http://192.1
         "id": 50,
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/8ca0a796a679c292e3a11da50f99e801?s=80&d=identicon",
-        "web_url": "http://192.168.10.5:3000/maeda"
+        "web_url": "https://gitlab.example.com/maeda"
     }
 }
 ```
 
 ## Delete a pipeline schedule
 
-Delete a pipeline schedule.
+Delete the pipeline schedule of a project.
 
 ```
 DELETE /projects/:id/pipeline_schedules/:pipeline_schedule_id
@@ -239,8 +239,8 @@ DELETE /projects/:id/pipeline_schedules/:pipeline_schedule_id
 | `id`           | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
 | `pipeline_schedule_id`   | integer | yes      | The pipeline schedule id           |
 
-```
-curl --request DELETE --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "http://192.168.10.5:3000/api/v4/projects/29/pipeline_schedules/13"
+```sh
+curl --request DELETE --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13"
 ```
 
 ```json
@@ -266,7 +266,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "http://192
         "id": 50,
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/8ca0a796a679c292e3a11da50f99e801?s=80&d=identicon",
-        "web_url": "http://192.168.10.5:3000/maeda"
+        "web_url": "https://gitlab.example.com/maeda"
     }
 }
 ```
