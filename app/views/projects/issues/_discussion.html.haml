@@ -4,4 +4,4 @@
     = link_to 'Close issue', issue_path(@issue, issue: {state_event: :close}, format: 'json'), data: {no_turbolink: true, original_text: "Close issue", alternative_text: "Comment & close issue"}, class: "btn btn-nr btn-close btn-comment js-note-target-close #{issue_button_visibility(@issue, true)}", title: 'Close issue'
 
 #notes
-  = render 'shared/notes/notes_with_form'
+  = render 'shared/notes/notes_with_form', :autocomplete => true
