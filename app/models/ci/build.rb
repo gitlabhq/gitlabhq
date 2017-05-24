@@ -186,6 +186,7 @@ module Ci
       variables += yaml_variables
       variables += user_variables
       variables += project.secret_variables
+      variables += project.protected_variables if ProtectedBranch.protected?(project, ref)
       variables += trigger_request.user_variables if trigger_request
       variables
     end

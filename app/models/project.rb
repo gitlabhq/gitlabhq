@@ -1257,9 +1257,15 @@ class Project < ActiveRecord::Base
   end
 
   def secret_variables
-    variables.map do |variable|
-      { key: variable.key, value: variable.value, public: false }
-    end
+    filtered_variables = variables.to_a.reject(&:protected?)
+
+    build_variables(filtered_variables)
+  end
+
+  def protected_variables
+    filtered_variables = variables.to_a.select(&:protected?)
+
+    build_variables(filtered_variables)
   end
 
   def deployment_variables
@@ -1411,5 +1417,11 @@ class Project < ActiveRecord::Base
     end
 
     raise ex
+  end
+
+  def build_variables(filtered_variables)
+    filtered_variables.map do |variable|
+      { key: variable.key, value: variable.value, public: false }
+    end
   end
 end
