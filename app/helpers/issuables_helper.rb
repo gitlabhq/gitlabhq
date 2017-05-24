@@ -204,7 +204,7 @@ module IssuablesHelper
       endpoint: namespace_project_issue_path(@project.namespace, @project, issuable),
       canUpdate: can?(current_user, :update_issue, issuable),
       canDestroy: can?(current_user, :destroy_issue, issuable),
-      canMove: issuable.can_move?(current_user),
+      canMove: current_user ? issuable.can_move?(current_user) : false,
       issuableRef: issuable.to_reference,
       isConfidential: issuable.confidential,
       markdownPreviewUrl: preview_markdown_path(@project),
