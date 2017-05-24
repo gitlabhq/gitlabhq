@@ -18,6 +18,8 @@ class PipelineSerializer < BaseSerializer
         :cancelable_statuses,
         :trigger_requests,
         :project,
+        { triggered_by_pipeline: [:project, :user] },
+        { triggered_pipelines: [:project, :user] },
         { pending_builds: :project },
         { manual_actions: :project },
         { artifacts: :project }

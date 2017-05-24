@@ -9,6 +9,8 @@ module Ci
     belongs_to :trigger_request
     belongs_to :erased_by, class_name: 'User'
 
+    has_many :sourced_pipelines, class_name: Ci::Sources::Pipeline, foreign_key: :source_job_id
+
     has_many :deployments, as: :deployable
     has_one :last_deployment, -> { order('deployments.id DESC') }, as: :deployable, class_name: 'Deployment'
 

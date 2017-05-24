@@ -187,6 +187,10 @@ class Project < ActiveRecord::Base
   has_many :deployments, dependent: :destroy
   has_many :pipeline_schedules, dependent: :destroy, class_name: 'Ci::PipelineSchedule'
 
+  has_many :sourced_pipelines, class_name: Ci::Sources::Pipeline, foreign_key: :source_project_id
+
+  has_many :source_pipelines, class_name: Ci::Sources::Pipeline, foreign_key: :project_id
+
   has_many :path_locks, dependent: :destroy
 
   has_many :active_runners, -> { active }, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
