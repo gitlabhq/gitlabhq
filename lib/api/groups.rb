@@ -90,6 +90,9 @@ module API
           group_access: params.delete(:ldap_access)
         }
 
+        # EE
+        authenticated_as_admin! if params[:shared_runners_minutes_limit]
+
         group = ::Groups::CreateService.new(current_user, declared_params(include_missing: false)).execute
 
         if group.persisted?

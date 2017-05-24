@@ -494,23 +494,31 @@ describe API::Groups do
         group_attributes = attributes_for(:group, ldap_cn: 'ldap-group', ldap_access: Gitlab::Access::DEVELOPER)
         expect { post api("/groups", admin), group_attributes }.to change{ LdapGroupLink.count }.by(1)
       end
-    end
-  end
 
-  describe "PUT /groups" do
-    context "when authenticated as user without group permissions" do
-      it "does not create group" do
-        put api("/groups/#{group2.id}", user1), attributes_for(:group)
-        expect(response.status).to eq(404)
-      end
-    end
+      # EE
+      context 'when shared_runners_minutes_limit is given' do
+        context 'when the current user is not an admin' do
+          it "does not create a group with shared_runners_minutes_limit" do
+            group = attributes_for(:group, { shared_runners_minutes_limit: 133 })
 
-    context "when authenticated as user with group permissions" do
-      it "updates group" do
-        group2.update(owner: user2)
-        put api("/groups/#{group2.id}", user2), { name: 'Renamed' }
-        expect(response.status).to eq(200)
-        expect(group2.reload.name).to eq('Renamed')
+            post api("/groups", user3), group
+
+            expect(response).to have_http_status(403)
+          end
+        end
+
+        context 'when the current user is an admin' do
+          it "creates a group with shared_runners_minutes_limit" do
+            group = attributes_for(:group, { shared_runners_minutes_limit: 133 })
+
+            post api("/groups", admin), group
+
+            created_group = Group.find(json_response['id'])
+
+            expect(response).to have_http_status(201)
+            expect(created_group.shared_runners_minutes_limit).to eq(133)
+          end
+        end
       end
     end
   end
