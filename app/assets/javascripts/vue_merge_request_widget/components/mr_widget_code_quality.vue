@@ -26,8 +26,6 @@ export default {
 
   data() {
     return {
-      successIcon,
-      errorIcon,
       collapseText: 'Expand',
       isCollapsed: true,
       isLoading: false,
