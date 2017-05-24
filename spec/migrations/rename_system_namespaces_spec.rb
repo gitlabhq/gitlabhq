@@ -60,6 +60,16 @@ describe RenameSystemNamespaces, truncate: true do
       expect(project.route.reload.path).to eq("system0/project-path")
     end
 
+    it "doesn't touch routes of namespaces that look like system" do
+      namespace = create(:group, path: 'systemlookalike')
+      project = create(:project, namespace: namespace, path: 'the-project')
+
+      migration.up
+
+      expect(project.route.reload.path).to eq('systemlookalike/the-project')
+      expect(namespace.route.reload.path).to eq('systemlookalike')
+    end
+
     it "moves the the repository for a project in the namespace" do
       create(:project, namespace: system_namespace, path: "system-project")
       expected_repo = File.join(TestEnv.repos_path, "system0", "system-project.git")

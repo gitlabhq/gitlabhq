@@ -93,9 +93,10 @@ class RenameSystemNamespaces < ActiveRecord::Migration
     Namespace.where(id: system_namespace).update_all(path: new_path) # skips callbacks & validations
 
     replace_statement = replace_sql(Route.arel_table[:path], old_full_path, new_full_path)
+    route_matches = [old_full_path, "#{old_full_path}/%"]
 
     update_column_in_batches(:routes, :path, replace_statement) do |table, query|
-      query.where(Route.arel_table[:path].matches("#{old_full_path}%"))
+      query.where(Route.arel_table[:path].matches_any(route_matches))
     end
 
     clear_cache_for_namespace(system_namespace)
