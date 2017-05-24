@@ -214,7 +214,37 @@ function UsersSelect(currentUser, els) {
             glDropdown.options.processData(term, users, callback);
           }.bind(this));
         },
-        processData: function(term, users, callback) {
+        processData: function(term, data, callback) {
+          let users = data;
+
+          if ($dropdown.hasClass('js-multiselect') && term.length === 0) {
+            let selectedInputs = getSelectedUserInputs();
+
+            // Potential duplicate entries when dealing with issue board
+            // because issue board is also managed by vue
+            selectedInputs = _.uniq(selectedInputs, false, a => a.value);
+
+            const selectedUsers = selectedInputs
+              .filter((input) => {
+                const userId = parseInt(input.value, 10);
+                const inUsersArray = users.find(u => u.id === userId);
+
+                return !inUsersArray && userId !== 0;
+              })
+              .map((input) => {
+                const userId = parseInt(input.value, 10);
+                const { avatarUrl, avatar_url, id, name, username } = input.dataset;
+                return {
+                  avatar_url: avatarUrl || avatar_url,
+                  id: userId,
+                  name,
+                  username,
+                };
+              });
+
+            users = data.concat(selectedUsers);
+          }
+
           let anyUser;
           let index;
           let j;
