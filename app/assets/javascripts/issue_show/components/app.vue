@@ -32,7 +32,11 @@ export default {
       type: String,
       required: true,
     },
-    initialTitle: {
+    initialTitleHtml: {
+      type: String,
+      required: true,
+    },
+    initialTitleText: {
       type: String,
       required: true,
     },
@@ -78,7 +82,8 @@ export default {
   },
   data() {
     const store = new Store({
-      titleHtml: this.initialTitle,
+      titleHtml: this.initialTitleHtml,
+      titleText: this.initialTitleText,
       descriptionHtml: this.initialDescriptionHtml,
       descriptionText: this.initialDescriptionText,
     });
@@ -107,6 +112,7 @@ export default {
           title: this.state.titleText,
           confidential: this.isConfidential,
           description: this.state.descriptionText,
+          lockedWarningVisible: false,
           move_to_project_id: 0,
         });
       }

@@ -1,12 +1,13 @@
 export default class Store {
   constructor({
     titleHtml,
+    titleText,
     descriptionHtml,
     descriptionText,
   }) {
     this.state = {
       titleHtml,
-      titleText: '',
+      titleText,
       descriptionHtml,
       descriptionText,
       taskStatus: '',
