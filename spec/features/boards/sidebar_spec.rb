@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe 'Issue Boards', feature: true, js: true do
-  include WaitForVueResource
-
   let(:user)         { create(:user) }
   let(:user2)        { create(:user) }
   let(:project)      { create(:empty_project, :public) }
@@ -26,7 +24,7 @@ describe 'Issue Boards', feature: true, js: true do
     login_as(user)
 
     visit namespace_project_board_path(project.namespace, project, board)
-    wait_for_vue_resource
+    wait_for_requests
   end
 
   after do
@@ -75,7 +73,7 @@ describe 'Issue Boards', feature: true, js: true do
       click_button 'Remove from board'
     end
 
-    wait_for_vue_resource
+    wait_for_requests
 
     page.within(first('.board')) do
       expect(page).to have_selector('.card', count: 1)
@@ -89,12 +87,12 @@ describe 'Issue Boards', feature: true, js: true do
       page.within('.assignee') do
         click_link 'Edit'
 
-        wait_for_ajax
+        wait_for_requests
 
         page.within('.dropdown-menu-user') do
           click_link user.name
 
-          wait_for_vue_resource
+          wait_for_requests
         end
 
         expect(page).to have_content(user.name)
@@ -109,7 +107,7 @@ describe 'Issue Boards', feature: true, js: true do
       page.within('.assignee') do
         click_link 'Edit'
 
-        wait_for_ajax
+        wait_for_requests
 
         page.within('.dropdown-menu-user') do
           click_link user.name
@@ -130,14 +128,14 @@ describe 'Issue Boards', feature: true, js: true do
       page.within('.assignee') do
         click_link 'Edit'
 
-        wait_for_ajax
+        wait_for_requests
 
         page.within('.dropdown-menu-user') do
           click_link 'Unassigned'
         end
 
         find('.dropdown-menu-toggle').click
-        wait_for_vue_resource
+        wait_for_requests
 
         expect(page).to have_content('No assignee')
       end
@@ -153,7 +151,7 @@ describe 'Issue Boards', feature: true, js: true do
 
         click_button 'assign yourself'
 
-        wait_for_vue_resource
+        wait_for_requests
 
         expect(page).to have_content(user.name)
       end
@@ -167,12 +165,12 @@ describe 'Issue Boards', feature: true, js: true do
       page.within('.assignee') do
         click_link 'Edit'
 
-        wait_for_ajax
+        wait_for_requests
 
         page.within('.dropdown-menu-user') do
           click_link user.name
 
-          wait_for_vue_resource
+          wait_for_requests
         end
 
         expect(page).to have_content(user.name)
@@ -197,11 +195,11 @@ describe 'Issue Boards', feature: true, js: true do
       page.within('.milestone') do
         click_link 'Edit'
 
-        wait_for_ajax
+        wait_for_requests
 
         click_link milestone.title
 
-        wait_for_vue_resource
+        wait_for_requests
 
         page.within('.value') do
           expect(page).to have_content(milestone.title)
@@ -215,11 +213,11 @@ describe 'Issue Boards', feature: true, js: true do
       page.within('.milestone') do
         click_link 'Edit'
 
-        wait_for_ajax
+        wait_for_requests
 
         click_link "No Milestone"
 
-        wait_for_vue_resource
+        wait_for_requests
 
         page.within('.value') do
           expect(page).not_to have_content(milestone.title)
@@ -237,7 +235,7 @@ describe 'Issue Boards', feature: true, js: true do
 
         click_button Date.today.day
 
-        wait_for_vue_resource
+        wait_for_requests
 
         expect(page).to have_content(Date.today.to_s(:medium))
       end
@@ -251,11 +249,11 @@ describe 'Issue Boards', feature: true, js: true do
       page.within('.labels') do
         click_link 'Edit'
 
-        wait_for_ajax
+        wait_for_requests
 
         click_link bug.title
 
-        wait_for_vue_resource
+        wait_for_requests
 
         find('.dropdown-menu-close-icon').click
 
@@ -275,12 +273,12 @@ describe 'Issue Boards', feature: true, js: true do
       page.within('.labels') do
         click_link 'Edit'
 
-        wait_for_ajax
+        wait_for_requests
 
         click_link bug.title
         click_link regression.title
 
-        wait_for_vue_resource
+        wait_for_requests
 
         find('.dropdown-menu-close-icon').click
 
@@ -302,11 +300,11 @@ describe 'Issue Boards', feature: true, js: true do
       page.within('.labels') do
         click_link 'Edit'
 
-        wait_for_ajax
+        wait_for_requests
 
         click_link stretch.title
 
-        wait_for_vue_resource
+        wait_for_requests
 
         find('.dropdown-menu-close-icon').click
 
@@ -327,7 +325,7 @@ describe 'Issue Boards', feature: true, js: true do
 
       page.within('.subscription') do
         click_button 'Subscribe'
-        wait_for_ajax
+        wait_for_requests
         expect(page).to have_content("Unsubscribe")
       end
     end

@@ -2,7 +2,6 @@ require 'rails_helper'
 
 describe 'Dropdown weight', js: true, feature: true do
   include FilteredSearchHelpers
-  include WaitForAjax
 
   let!(:project) { create(:empty_project) }
   let!(:user) { create(:user) }
@@ -13,7 +12,7 @@ describe 'Dropdown weight', js: true, feature: true do
     input.split("").each do |i|
       filtered_search.send_keys(i)
       sleep 3
-      wait_for_ajax
+      wait_for_requests
     end
   end
 

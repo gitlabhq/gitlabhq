@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe "Admin::Emails", feature: true, js: true do
-  include WaitForAjax
-
   let!(:current_user) { login_as :admin }
   let!(:group) { create(:group) }
   let!(:project) { create(:project, namespace: group) }
@@ -15,7 +13,7 @@ describe "Admin::Emails", feature: true, js: true do
     describe 'Recipient group select' do
       it "includes groups and projects" do
         find('.ajax-admin-email-select').click
-        wait_for_ajax
+        wait_for_requests
 
         expect(page).to have_selector('.ajax-admin-email-dropdown li', count: 3)
         group_names = page.all('.ajax-admin-email-dropdown li .group-name')

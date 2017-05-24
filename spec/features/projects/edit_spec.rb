@@ -21,7 +21,7 @@ feature 'Project edit', feature: true, js: true do
     find('#project_request_access_enabled').set(true)
 
     click_button 'Save changes'
-    wait_for_ajax
+    wait_for_requests
 
     expect(find('#project_request_access_enabled')).to be_checked
   end

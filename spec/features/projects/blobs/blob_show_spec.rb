@@ -6,12 +6,14 @@ feature 'File blob', :js, feature: true do
   def visit_blob(path, fragment = nil)
     visit namespace_project_blob_path(project.namespace, project, File.join('master', path), anchor: fragment)
 
-    wait_for_ajax
+    wait_for_requests
   end
 
   context 'Ruby file' do
     before do
       visit_blob('files/ruby/popen.rb')
+
+      wait_for_requests
     end
 
     it 'displays the blob' do
@@ -35,6 +37,8 @@ feature 'File blob', :js, feature: true do
     context 'visiting directly' do
       before do
         visit_blob('files/markdown/ruby-style-guide.md')
+
+        wait_for_requests
       end
 
       it 'displays the blob using the rich viewer' do
@@ -61,7 +65,7 @@ feature 'File blob', :js, feature: true do
         before do
           find('.js-blob-viewer-switch-btn[data-viewer=simple]').click
 
-          wait_for_ajax
+          wait_for_requests
         end
 
         it 'displays the blob using the simple viewer' do
@@ -82,7 +86,7 @@ feature 'File blob', :js, feature: true do
           before do
             find('.js-blob-viewer-switch-btn[data-viewer=rich]').click
 
-            wait_for_ajax
+            wait_for_requests
           end
 
           it 'displays the blob using the rich viewer' do
@@ -102,6 +106,8 @@ feature 'File blob', :js, feature: true do
     context 'visiting with a line number anchor' do
       before do
         visit_blob('files/markdown/ruby-style-guide.md', 'L1')
+
+        wait_for_requests
       end
 
       it 'displays the blob using the simple viewer' do
@@ -144,6 +150,8 @@ feature 'File blob', :js, feature: true do
         project.update_attribute(:lfs_enabled, true)
 
         visit_blob('files/lfs/file.md')
+
+        wait_for_requests
       end
 
       it 'displays an error' do
@@ -170,7 +178,7 @@ feature 'File blob', :js, feature: true do
         before do
           find('.js-blob-viewer-switcher .js-blob-viewer-switch-btn[data-viewer=simple]').click
 
-          wait_for_ajax
+          wait_for_requests
         end
 
         it 'displays an error' do
@@ -192,6 +200,8 @@ feature 'File blob', :js, feature: true do
     context 'when LFS is disabled on the project' do
       before do
         visit_blob('files/lfs/file.md')
+
+        wait_for_requests
       end
 
       it 'displays the blob' do
@@ -227,6 +237,8 @@ feature 'File blob', :js, feature: true do
       ).execute
 
       visit_blob('files/test.pdf')
+
+      wait_for_requests
     end
 
     it 'displays the blob' do
@@ -253,6 +265,8 @@ feature 'File blob', :js, feature: true do
         project.update_attribute(:lfs_enabled, true)
 
         visit_blob('files/lfs/lfs_object.iso')
+
+        wait_for_requests
       end
 
       it 'displays the blob' do
@@ -275,6 +289,8 @@ feature 'File blob', :js, feature: true do
     context 'when LFS is disabled on the project' do
       before do
         visit_blob('files/lfs/lfs_object.iso')
+
+        wait_for_requests
       end
 
       it 'displays the blob' do
@@ -298,6 +314,8 @@ feature 'File blob', :js, feature: true do
   context 'ZIP file' do
     before do
       visit_blob('Gemfile.zip')
+
+      wait_for_requests
     end
 
     it 'displays the blob' do
@@ -332,6 +350,8 @@ feature 'File blob', :js, feature: true do
       ).execute
 
       visit_blob('files/empty.md')
+
+      wait_for_requests
     end
 
     it 'displays an error' do

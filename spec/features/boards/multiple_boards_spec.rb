@@ -1,9 +1,6 @@
 require 'rails_helper'
 
 describe 'Multiple Issue Boards', feature: true, js: true do
-  include WaitForAjax
-  include WaitForVueResource
-
   let(:user)      { create(:user) }
   let(:project)   { create(:empty_project, :public) }
   let!(:planning) { create(:label, project: project, name: 'Planning') }
@@ -17,7 +14,7 @@ describe 'Multiple Issue Boards', feature: true, js: true do
       login_as(user)
 
       visit namespace_project_boards_path(project.namespace, project)
-      wait_for_vue_resource
+      wait_for_requests
     end
 
     it 'shows current board name' do
@@ -42,7 +39,7 @@ describe 'Multiple Issue Boards', feature: true, js: true do
         click_link board2.name
       end
 
-      wait_for_vue_resource
+      wait_for_requests
 
       page.within('.boards-switcher') do
         expect(page).to have_content(board2.name)
@@ -60,7 +57,7 @@ describe 'Multiple Issue Boards', feature: true, js: true do
         click_button 'Save'
       end
 
-      wait_for_vue_resource
+      wait_for_requests
 
       page.within('.dropdown-menu') do
         expect(page).to have_content('Testing')
@@ -78,7 +75,7 @@ describe 'Multiple Issue Boards', feature: true, js: true do
         click_button 'Save'
       end
 
-      wait_for_vue_resource
+      wait_for_requests
 
       page.within('.dropdown-menu') do
         expect(page).to have_content('Testing')
@@ -88,7 +85,7 @@ describe 'Multiple Issue Boards', feature: true, js: true do
     it 'deletes board' do
       click_button board.name
 
-      wait_for_vue_resource
+      wait_for_requests
 
       page.within('.dropdown-menu') do
         click_link 'Delete board'
@@ -115,7 +112,7 @@ describe 'Multiple Issue Boards', feature: true, js: true do
         click_link board2.name
       end
 
-      wait_for_vue_resource
+      wait_for_requests
 
       page.within('.boards-switcher') do
         expect(page).to have_content(board2.name)
@@ -123,13 +120,13 @@ describe 'Multiple Issue Boards', feature: true, js: true do
 
       click_button 'Add list'
 
-      wait_for_ajax
+      wait_for_requests
 
       page.within '.dropdown-menu-issues-board-new' do
         click_link planning.title
       end
 
-      wait_for_vue_resource
+      wait_for_requests
 
       expect(page).to have_selector('.board', count: 2)
 
@@ -139,7 +136,7 @@ describe 'Multiple Issue Boards', feature: true, js: true do
         click_link board.name
       end
 
-      wait_for_vue_resource
+      wait_for_requests
 
       expect(page).to have_selector('.board', count: 1)
     end
@@ -148,7 +145,7 @@ describe 'Multiple Issue Boards', feature: true, js: true do
   context 'unauthorized user' do
     before do
       visit namespace_project_boards_path(project.namespace, project)
-      wait_for_vue_resource
+      wait_for_requests
     end
 
     it 'does not show action links' do

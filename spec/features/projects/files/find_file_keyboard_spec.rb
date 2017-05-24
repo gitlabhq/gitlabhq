@@ -10,7 +10,7 @@ feature 'Find file keyboard shortcuts', feature: true, js: true do
 
     visit namespace_project_find_file_path(project.namespace, project, project.repository.root_ref)
 
-    wait_for_ajax
+    wait_for_requests
   end
 
   it 'opens file when pressing enter key' do

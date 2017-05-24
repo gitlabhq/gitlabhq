@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe 'Project settings > [EE] Merge Requests', feature: true, js: true do
   include GitlabRoutingHelper
-  include WaitForAjax
 
   let(:user) { create(:user) }
   let(:project) { create(:empty_project, approvals_before_merge: 1) }
@@ -22,7 +21,7 @@ describe 'Project settings > [EE] Merge Requests', feature: true, js: true do
 
     find('#s2id_approver_user_and_group_ids .select2-input').click
 
-    wait_for_ajax
+    wait_for_requests
 
     expect(find('.select2-results')).to have_content(user.name)
     find('.user-result', text: user.name).click
@@ -48,7 +47,7 @@ describe 'Project settings > [EE] Merge Requests', feature: true, js: true do
 
     find('#s2id_approver_user_and_group_ids .select2-input').click
 
-    wait_for_ajax
+    wait_for_requests
 
     within('.js-current-approvers') do
       expect(find('.panel-heading .badge')).to have_content('0')

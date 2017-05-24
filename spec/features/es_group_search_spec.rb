@@ -7,7 +7,7 @@ feature 'Group elastic search', js: true, feature: true do
 
   def choose_group(group)
     find('.js-search-group-dropdown').trigger('click')
-    wait_for_ajax
+    wait_for_requests
 
     page.within '.search-holder' do
       click_link group.name

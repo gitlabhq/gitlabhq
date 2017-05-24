@@ -37,9 +37,9 @@ feature 'Merge immediately', :feature, :js do
         Sidekiq::Testing.fake! do
           click_link 'Merge immediately'
 
-          expect(find('.accept-merge-request.btn-info')).to have_content('Merge in progress')
+          wait_for_requests
 
-          wait_for_vue_resource
+          expect(find('.accept-merge-request.btn-info')).to have_content('Merge in progress')
         end
       end
     end

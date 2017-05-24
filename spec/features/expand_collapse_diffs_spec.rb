@@ -36,7 +36,7 @@ feature 'Expand and collapse diffs', js: true, feature: true do
     visit namespace_project_commit_path(project.namespace, project, project.commit(branch), anchor: "#{large_diff[:id]}_0_1")
     execute_script('window.location.reload()')
 
-    wait_for_ajax
+    wait_for_requests
 
     expect(large_diff).to have_selector('.code')
     expect(large_diff).not_to have_selector('.nothing-here-block')
@@ -50,7 +50,7 @@ feature 'Expand and collapse diffs', js: true, feature: true do
     visit namespace_project_commit_path(project.namespace, project, project.commit(branch), anchor: large_diff[:id])
     execute_script('window.location.reload()')
 
-    wait_for_ajax
+    wait_for_requests
 
     expect(large_diff).to have_selector('.code')
     expect(large_diff).not_to have_selector('.nothing-here-block')
@@ -94,7 +94,7 @@ feature 'Expand and collapse diffs', js: true, feature: true do
     context 'expanding a diff for a renamed file' do
       before do
         large_diff_renamed.find('.click-to-expand').click
-        wait_for_ajax
+        wait_for_requests
       end
 
       it 'shows the old content' do
@@ -116,7 +116,7 @@ feature 'Expand and collapse diffs', js: true, feature: true do
         find('.js-file-title', match: :first)
         # Click `large_diff.md` title
         all('.diff-toggle-caret')[1].click
-        wait_for_ajax
+        wait_for_requests
       end
 
       it 'makes a request to get the content' do
@@ -139,7 +139,7 @@ feature 'Expand and collapse diffs', js: true, feature: true do
           large_diff.find('.add-diff-note').click
           large_diff.find('.note-textarea').send_keys comment_text
           large_diff.find_button('Comment').click
-          wait_for_ajax
+          wait_for_requests
         end
 
         it 'adds the comment' do
@@ -160,7 +160,7 @@ feature 'Expand and collapse diffs', js: true, feature: true do
               find('.js-file-title', match: :first)
               # Click `large_diff.md` title
               all('.diff-toggle-caret')[1].click
-              wait_for_ajax
+              wait_for_requests
             end
 
             it 'shows the diff content' do
@@ -216,7 +216,7 @@ feature 'Expand and collapse diffs', js: true, feature: true do
         expect(page).to have_no_content('No longer a symlink')
 
         find('.click-to-expand').click
-        wait_for_ajax
+        wait_for_requests
 
         expect(page).to have_content('No longer a symlink')
       end
@@ -273,7 +273,7 @@ feature 'Expand and collapse diffs', js: true, feature: true do
       expect(page).to have_content('too_large_image.jpg')
       find('.note-textarea')
 
-      wait_for_ajax
+      wait_for_requests
       execute_script('window.ajaxUris = []; $(document).ajaxSend(function(event, xhr, settings) { ajaxUris.push(settings.url) });')
     end
 

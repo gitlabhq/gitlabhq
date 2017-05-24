@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe 'Service Desk Setting', js: true, feature: true do
-  include WaitForAjax
-
   let(:project) { create(:project_empty_repo, :private) }
   let(:user) { create(:user) }
 
@@ -23,7 +21,7 @@ describe 'Service Desk Setting', js: true, feature: true do
 
   it 'shows incoming email after activating' do
     find("#service-desk-enabled-checkbox").click
-    wait_for_ajax
+    wait_for_requests
     expect(find('.js-service-desk-setting-wrapper .panel-body')).to have_content(project.service_desk_address)
   end
 end
