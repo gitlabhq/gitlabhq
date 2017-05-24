@@ -52,9 +52,11 @@ describe "Compare", js: true do
   def select_using_dropdown(dropdown_type, selection)
     dropdown = find(".js-compare-#{dropdown_type}-dropdown")
     dropdown.find(".compare-dropdown-toggle").click
+    # find input before using to wait for the inputs visiblity
     dropdown.find('.dropdown-menu')
     dropdown.fill_in("Filter by Git revision", with: selection)
     wait_for_requests
+    # find before all to wait for the items visiblity
     dropdown.find("a[data-ref=\"#{selection}\"]", match: :first)
     dropdown.all("a[data-ref=\"#{selection}\"]").last.click
   end
