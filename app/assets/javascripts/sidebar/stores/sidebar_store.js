@@ -10,6 +10,9 @@ export default class SidebarStore {
       this.humanTimeEstimate = '';
       this.humanTimeSpent = '';
       this.assignees = [];
+      this.isFetching = {
+        assignees: true,
+      };
 
       SidebarStore.singleton = this;
     }
@@ -18,6 +21,7 @@ export default class SidebarStore {
   }
 
   setAssigneeData(data) {
+    this.isFetching.assignees = false;
     if (data.assignees) {
       this.assignees = data.assignees;
     }
