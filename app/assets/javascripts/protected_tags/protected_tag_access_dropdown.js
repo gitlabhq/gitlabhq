@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign, no-underscore-dangle, class-methods-use-this */
 /* global Flash */
 
-import { ACCESS_LEVELS, LEVEL_TYPES } from './';
+import { ACCESS_LEVELS, LEVEL_TYPES, ACCESS_LEVEL_NONE } from './';
 
 export default class ProtectedTagAccessDropdown {
   constructor(options) {
@@ -26,7 +26,7 @@ export default class ProtectedTagAccessDropdown {
 
     if (ACCESS_LEVELS.CREATE === this.accessLevel) {
       this.isAllowedToCreateDropdown = true;
-      this.noOneObj = this.accessLevelsData[2];
+      this.noOneObj = this.accessLevelsData.find(level => level.id === ACCESS_LEVEL_NONE);
     }
 
     this.initDropdown();

@@ -10,3 +10,5 @@ export const LEVEL_TYPES = {
   USER: 'user',
   GROUP: 'group',
 };
+
+export const ACCESS_LEVEL_NONE = 0;
