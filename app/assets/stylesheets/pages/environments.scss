@@ -236,27 +236,23 @@
 }
 
 .prometheus-svg-container {
-  @media(max-width: $screen-sm-max) {
-    display: inline-block;
-    position: relative;
-    width: 100%;
-    padding-bottom: 60%;
-    vertical-align: top;
-    overflow: hidden;
-  }
+  position: relative;
+  height: 0;
+  width: 100%;
+  padding: 0;
+  padding-bottom: 100%;
 
   .text-metric-bold {
     font-weight: 600;
   }
 }
 
-.svg-content {
-  @media(max-width: $screen-sm-max) {
-    display: inline-block;
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
+.prometheus-svg-container > svg {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
 
   text {
     fill: $gl-text-color;
@@ -267,9 +263,26 @@
   .text-metric-usage {
     fill: $black;
     font-weight: 500;
+    font-size: 14px;
   }
 
   .legend-axis-text {
     fill: $black;
+  }
+
+  .tick > text {
+    font-size: 14px;
+  }
+
+  @media (max-width: $screen-sm-max) {
+    .label-axis-text,
+    .text-metric-usage,
+    .legend-axis-text {
+      font-size: 8px;
+    }
+
+    .tick > text {
+      font-size: 8px;
+    }
   }
 }

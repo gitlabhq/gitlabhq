@@ -2,9 +2,11 @@ import _ from 'underscore';
 
 class MonitoringStore {
   constructor() {
-    this.groups = [];
-    this.enoughMetrics = true;
-    return this;
+    if (!MonitoringStore.singleton) {
+      this.groups = [];
+      this.enoughMetrics = true;
+    }
+    return MonitoringStore.singleton;
   }
 
   // TODO: Probably move this to an utility class
@@ -27,13 +29,23 @@ class MonitoringStore {
   }
 
   storeMetrics(groups = []) {
-    // we're going to have to sort the groups depending on the weight of each of the graphs
+    // TODO: Sorted by weight add the name as another modifier
     this.groups = groups.map((group) => {
       const currentGroup = group;
       currentGroup.metrics = _.sortBy(group.metrics, 'weight');
       currentGroup.metrics = MonitoringStore.createArrayRows(currentGroup.metrics);
       return currentGroup;
     });
+  }
+
+  getMetricsCount() {
+    let metricsCount = 0;
+    this.groups.forEach((group) => {
+      group.metrics.forEach((metric) => {
+        metricsCount = metricsCount += metric.length;
+      });
+    });
+    return metricsCount;
   }
 }
 
