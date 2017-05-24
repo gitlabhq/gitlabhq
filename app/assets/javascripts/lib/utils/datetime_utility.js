@@ -1,12 +1,12 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-param-reassign, no-cond-assign, comma-dangle, no-unused-expressions, prefer-template, max-len */
 
+import timeago from 'timeago.js';
+import dateFormat from 'vendor/date.format';
+
 import {
   lang,
   s__,
 } from '../../locale';
-
-import timeago from 'timeago.js';
-import dateFormat from 'vendor/date.format';
 
 window.timeago = timeago;
 window.dateFormat = dateFormat;
