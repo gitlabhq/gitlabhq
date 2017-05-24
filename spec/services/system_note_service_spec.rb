@@ -1049,7 +1049,7 @@ describe SystemNoteService, services: true do
 
     it_behaves_like 'a system note' do
       let(:expected_noteable) { discussion.first_note.noteable }
-      let(:action)              { 'outdated' }
+      let(:action)            { 'outdated' }
     end
 
     it 'creates a new note in the discussion' do

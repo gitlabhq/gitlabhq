@@ -46,12 +46,14 @@ module Gitlab
         # Position
         #   start_sha - ID of commit A
         #   head_sha - ID of commit B
+        #   base_sha - ID of base commit of A and B
         #   old_path - path as of A (nil if file was newly created)
         #   new_path - path as of B (nil if file was deleted)
         #   old_line - line number as of A (nil if file was newly created)
         #   new_line - line number as of B (nil if file was deleted)
         #
-        # We can easily update `start_sha` and `head_sha` to hold the IDs of commits C and D,
+        # We can easily update `start_sha` and `head_sha` to hold the IDs of
+        # commits C and D, and can trivially determine `base_sha` based on those,
         # but need to find the paths and line numbers as of C and D.
         #
         # If the file was unchanged or newly created in A->B, the path as of D can be found
