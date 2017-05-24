@@ -17,7 +17,7 @@ module API
         optional :membership_lock, type: Boolean, desc: 'Prevent adding new members to project membership within this group'
         optional :ldap_cn, type: String, desc: 'LDAP Common Name'
         optional :ldap_access, type: Integer, desc: 'A valid access level'
-        optional :shared_runners_minutes_limit, type: Integer, desc: 'Pipeline minutes quota for this group'
+        optional :shared_runners_minutes_limit, type: Integer, desc: '(admin-only) Pipeline minutes quota for this group'
         all_or_none_of :ldap_cn, :ldap_access
       end
 

@@ -140,6 +140,7 @@ Example response:
   "full_name": "Twitter",
   "full_path": "twitter",
   "parent_id": null,
+  "shared_runners_minutes_limit": 133,
   "projects": [
     {
       "id": 7,
@@ -290,6 +291,7 @@ Parameters:
 - `lfs_enabled` (optional)      - Enable/disable Large File Storage (LFS) for the projects in this group
 - `request_access_enabled` (optional) - Allow users to request member access.
 - `parent_id` (optional) - The parent group id for creating nested group.
+- `shared_runners_minutes_limit` (optional) - (admin-only) Pipeline minutes quota for this group
 
 ## Transfer project to group
 
@@ -323,6 +325,7 @@ PUT /groups/:id
 | `visibility` | string | no | The visibility level of the group. Can be `private`, `internal`, or `public`. |
 | `lfs_enabled` (optional) | boolean | no | Enable/disable Large File Storage (LFS) for the projects in this group |
 | `request_access_enabled` | boolean | no | Allow users to request member access. |
+| `shared_runners_minutes_limit` | integer | no | (admin-only) Pipeline minutes quota for this group |
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/groups/5?name=Experimental"
