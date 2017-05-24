@@ -51,7 +51,6 @@ describe 'Copy as GFM', feature: true, js: true do
 
           To see how GitLab looks please see the [features page on our website](https://about.gitlab.com/features/).
 
-
           - Manage Git repositories with fine grained access controls that keep your code secure
 
           - Perform code reviews and enhance collaboration with merge requests
@@ -65,6 +64,19 @@ describe 'Copy as GFM', feature: true, js: true do
           - Completely free and open source (MIT Expat license)
         GFM
       )
+
+      aggregate_failures('an accidentally selected empty element') do
+        gfm = '# Heading1'
+
+        html = <<-HTML.strip_heredoc
+          <h1>Heading1</h1>
+
+          <h2></h2>
+        HTML
+
+        output_gfm = html_to_gfm(html)
+        expect(output_gfm.strip).to eq(gfm.strip)
+      end
 
       verify(
         'InlineDiffFilter',
@@ -352,7 +364,6 @@ describe 'Copy as GFM', feature: true, js: true do
         <<-GFM.strip_heredoc,
           - Nested
 
-
               - Lists
         GFM
 
@@ -374,7 +385,6 @@ describe 'Copy as GFM', feature: true, js: true do
         # nested numbered list
         <<-GFM.strip_heredoc,
           1. Nested
-
 
               1. Numbered lists
         GFM
