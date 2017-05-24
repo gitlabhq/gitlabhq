@@ -2,6 +2,8 @@
 - page_title           "#{@issue.title} (#{@issue.to_reference})", "Issues"
 - page_description     @issue.description
 - page_card_attributes @issue.card_attributes
+- can_update_issue = can?(current_user, :update_issue, @issue)
+- can_report_spam = @issue.submittable_as_spam_by?(current_user)
 
 .clearfix.detail-page-header
   .issuable-header
@@ -27,27 +29,29 @@
         = icon('caret-down')
       .dropdown-menu.dropdown-menu-align-right.hidden-lg
         %ul
-          %li
-            = link_to 'New issue', new_namespace_project_issue_path(@project.namespace, @project), title: 'New issue', id: 'new_issue_link'
-          - if can?(current_user, :update_issue, @issue)
+          - if can_update_issue
             %li
-              = link_to 'Reopen issue', issue_path(@issue, issue: { state_event: :reopen }, format: 'json'), data: {no_turbolink: true}, class: "btn-reopen #{issue_button_visibility(@issue, false)}", title: 'Reopen issue'
+              = link_to 'Edit', edit_namespace_project_issue_path(@project.namespace, @project, @issue)
             %li
               = link_to 'Close issue', issue_path(@issue, issue: { state_event: :close }, format: 'json'), data: {no_turbolink: true}, class: "btn-close #{issue_button_visibility(@issue, true)}", title: 'Close issue'
             %li
-              = link_to 'Edit', edit_namespace_project_issue_path(@project.namespace, @project, @issue)
-          - if @issue.submittable_as_spam_by?(current_user)
+              = link_to 'Reopen issue', issue_path(@issue, issue: { state_event: :reopen }, format: 'json'), data: {no_turbolink: true}, class: "btn-reopen #{issue_button_visibility(@issue, false)}", title: 'Reopen issue'
+          - if can_report_spam
             %li
               = link_to 'Submit as spam', mark_as_spam_namespace_project_issue_path(@project.namespace, @project, @issue), method: :post, class: 'btn-spam', title: 'Submit as spam'
+          - if can_update_issue || can_report_spam
+            %li.divider
+          %li
+            = link_to 'New issue', new_namespace_project_issue_path(@project.namespace, @project), title: 'New issue', id: 'new_issue_link'
 
+    - if can_update_issue
+      = link_to 'Edit', edit_namespace_project_issue_path(@project.namespace, @project, @issue), class: 'hidden-xs hidden-sm btn btn-grouped issuable-edit'
+      = link_to 'Close issue', issue_path(@issue, issue: { state_event: :close }, format: 'json'), data: {no_turbolink: true}, class: "hidden-xs hidden-sm btn btn-grouped btn-close #{issue_button_visibility(@issue, true)}", title: 'Close issue'
+      = link_to 'Reopen issue', issue_path(@issue, issue: { state_event: :reopen }, format: 'json'), data: {no_turbolink: true}, class: "hidden-xs hidden-sm btn btn-grouped btn-reopen #{issue_button_visibility(@issue, false)}", title: 'Reopen issue'
+    - if can_report_spam
+      = link_to 'Submit as spam', mark_as_spam_namespace_project_issue_path(@project.namespace, @project, @issue), method: :post, class: 'hidden-xs hidden-sm btn btn-grouped btn-spam', title: 'Submit as spam'
     = link_to new_namespace_project_issue_path(@project.namespace, @project), class: 'hidden-xs hidden-sm btn btn-grouped new-issue-link btn-new btn-inverted', title: 'New issue', id: 'new_issue_link' do
       New issue
-    - if can?(current_user, :update_issue, @issue)
-      = link_to 'Reopen issue', issue_path(@issue, issue: { state_event: :reopen }, format: 'json'), data: {no_turbolink: true}, class: "hidden-xs hidden-sm btn btn-grouped btn-reopen #{issue_button_visibility(@issue, false)}", title: 'Reopen issue'
-      = link_to 'Close issue', issue_path(@issue, issue: { state_event: :close }, format: 'json'), data: {no_turbolink: true}, class: "hidden-xs hidden-sm btn btn-grouped btn-close #{issue_button_visibility(@issue, true)}", title: 'Close issue'
-      - if @issue.submittable_as_spam_by?(current_user)
-        = link_to 'Submit as spam', mark_as_spam_namespace_project_issue_path(@project.namespace, @project, @issue), method: :post, class: 'hidden-xs hidden-sm btn btn-grouped btn-spam', title: 'Submit as spam'
-      = link_to 'Edit', edit_namespace_project_issue_path(@project.namespace, @project, @issue), class: 'hidden-xs hidden-sm btn btn-grouped issuable-edit'
 
 .issue-details.issuable-details
   .detail-page-description.content-block
