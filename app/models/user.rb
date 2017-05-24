@@ -182,6 +182,8 @@ class User < ActiveRecord::Base
   alias_attribute :private_token, :authentication_token
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
+
+  # EE-only
   delegate :shared_runners_minutes_limit, :shared_runners_minutes_limit=,
            to: :namespace
 

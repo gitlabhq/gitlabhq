@@ -274,11 +274,10 @@ describe API::Groups do
       end
 
       # EE
-      it 'updates the group for shared_runners_minutes_limit' do
+      it 'returns 403 for updating shared_runners_minutes_limit' do
         put api("/groups/#{group1.id}", user1), shared_runners_minutes_limit: 133
 
-        expect(response).to have_http_status(200)
-        expect(json_response['shared_runners_minutes_limit']).to eq(133)
+        expect(response).to have_http_status(403)
       end
     end
 
@@ -288,6 +287,14 @@ describe API::Groups do
 
         expect(response).to have_http_status(200)
         expect(json_response['name']).to eq(new_group_name)
+      end
+
+      # EE
+      it 'updates the group for shared_runners_minutes_limit' do
+        put api("/groups/#{group1.id}", admin), shared_runners_minutes_limit: 133
+
+        expect(response).to have_http_status(200)
+        expect(json_response['shared_runners_minutes_limit']).to eq(133)
       end
     end
 

@@ -447,9 +447,16 @@ describe API::Users do
       expect(user.reload.email).not_to eq('invalid email')
     end
 
-    it "is not available for non admin users" do
-      put api("/users/#{user.id}", user), attributes_for(:user)
-      expect(response).to have_http_status(403)
+    context 'when the current user is not an admin' do
+      it "is not available" do
+        put api("/users/#{user.id}", user), attributes_for(:user)
+        expect(response).to have_http_status(403)
+      end
+
+      it "cannot update their own shared_runners_minutes_limit" do
+        put api("/users/#{user.id}", user), { shared_runners_minutes_limit: 133 }
+        expect(response).to have_http_status(403)
+      end
     end
 
     it "returns 404 for non-existing user" do
