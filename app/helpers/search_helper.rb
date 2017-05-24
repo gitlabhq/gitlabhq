@@ -41,6 +41,12 @@ module SearchHelper
   def find_project_for_blob(blob)
     Project.find(blob['_parent'])
   end
+  
+  def show_notes_tab?
+    [:read_merge_request, :download_code, :read_issue, :read_project_snippet].any? do |ability|
+      can?(current_user, :read_merge_request, @project)
+    end
+  end
 
   private
 

@@ -66,7 +66,7 @@ describe Gitlab::Elastic::ProjectSearchResults, lib: true do
       it 'shows wiki for guests' do
         project = create :empty_project, :public
         guest = create :user
-        project.team << [guest, :guest]
+        project.add_guest(guest)
 
         # Wiki
         project.wiki.create_page('index_page', 'term')

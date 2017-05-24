@@ -27,7 +27,7 @@
             Milestones
             %span.badge
               = @search_results.milestones_count
-      - if can?(current_user, :read_merge_request, @project) || can?(current_user, :read_issue, @project)
+      - if show_notes_tab?
         %li{ class: active_when(@scope == 'notes') }
           = link_to search_filter_path(scope: 'notes') do
             Comments
