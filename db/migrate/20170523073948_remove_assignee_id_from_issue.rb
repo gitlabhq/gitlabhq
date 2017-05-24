@@ -32,5 +32,7 @@ class RemoveAssigneeIdFromIssue < ActiveRecord::Migration
   def down
     add_column :issues, :assignee_id, :integer
     add_concurrent_index :issues, :assignee_id
+
+    execute('UPDATE issues SET assignee_id = (SELECT user_id FROM issue_assignees WHERE issue_assignees.issue_id = issues.id LIMIT 1)')
   end
 end
