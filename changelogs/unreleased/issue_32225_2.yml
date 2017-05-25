@@ -1,4 +1,4 @@
 ---
-title: Sanity check for pipeline sha before saving merge request pipeline id
+title: Handle head pipeline when creating merge requests
 merge_request:
 author:

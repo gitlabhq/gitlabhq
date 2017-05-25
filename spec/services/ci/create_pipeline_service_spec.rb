@@ -36,7 +36,7 @@ describe Ci::CreatePipelineService, services: true do
         expect(pipeline.builds.first).to be_kind_of(Ci::Build)
       end
 
-      context '#update_merge_requests_head_pipeline' do
+      context 'when merge requests already exist for this source branch' do
         it 'updates head pipeline of each merge request' do
           merge_request_1 = create(:merge_request, source_branch: 'master', target_branch: "branch_1", source_project: project)
           merge_request_2 = create(:merge_request, source_branch: 'master', target_branch: "branch_2", source_project: project)
