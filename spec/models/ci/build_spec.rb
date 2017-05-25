@@ -20,6 +20,7 @@ describe Ci::Build, :models do
   it { is_expected.to validate_presence_of(:ref) }
   it { is_expected.to respond_to(:has_trace?) }
   it { is_expected.to respond_to(:trace) }
+  it { is_expected.to validate_length_of(:external_url).is_at_most(255) }
 
   describe '#actionize' do
     context 'when build is a created' do
@@ -424,6 +425,30 @@ describe Ci::Build, :models do
         end
 
         it { is_expected.to eq('review/host') }
+      end
+    end
+
+    describe '#expanded_environment_url' do
+      subject { build.expanded_environment_url }
+
+      context 'when environment uses $CI_COMMIT_REF_NAME' do
+        let(:build) do
+          create(:ci_build,
+                 ref: 'master',
+                 environment_url: 'http://review/$CI_COMMIT_REF_NAME')
+        end
+
+        it { is_expected.to eq('http://review/master') }
+      end
+
+      context 'when environment uses yaml_variables containing symbol keys' do
+        let(:build) do
+          create(:ci_build,
+                 yaml_variables: [{ key: :APP_HOST, value: 'host' }],
+                 environment_url: 'http://review/$APP_HOST')
+        end
+
+        it { is_expected.to eq('http://review/host') }
       end
     end
 
@@ -1176,11 +1201,6 @@ describe Ci::Build, :models do
     end
 
     context 'when build has an environment' do
-      before do
-        build.update(environment: 'production')
-        create(:environment, project: build.project, name: 'production', slug: 'prod-slug')
-      end
-
       let(:environment_variables) do
         [
           { key: 'CI_ENVIRONMENT_NAME', value: 'production', public: true },
@@ -1188,7 +1208,34 @@ describe Ci::Build, :models do
         ]
       end
 
-      it { environment_variables.each { |v| is_expected.to include(v) } }
+      before do
+        build.update(environment: 'production')
+        create(:environment, project: build.project, name: 'production', slug: 'prod-slug')
+      end
+
+      context 'when no URL was set' do
+        it { environment_variables.each { |v| is_expected.to include(v) } }
+
+        it 'does not have CI_ENVIRONMENT_URL' do
+          keys = subject.map { |var| var[:key] }
+
+          expect(keys).to include('CI_ENVIRONMENT_NAME', 'CI_ENVIRONMENT_SLUG')
+          expect(keys).not_to include('CI_ENVIRONMENT_URL')
+        end
+      end
+
+      context 'when an URL was set' do
+        before do
+          build.update(environment_url: 'http://host/$CI_JOB_NAME')
+
+          environment_variables <<
+            { key: 'CI_ENVIRONMENT_URL',
+              value: 'http://host/test',
+              public: true }
+        end
+
+        it { environment_variables.each { |v| is_expected.to include(v) } }
+      end
     end
 
     context 'when build started manually' do

@@ -499,10 +499,13 @@ module Ci
     end
 
     def persisted_environment_variables
-      persisted_environment.predefined_variables <<
-        { key: 'CI_ENVIRONMENT_URL',
-          value: expanded_environment_url,
-          public: true }
+      variables = persisted_environment.predefined_variables
+
+      variables << { key: 'CI_ENVIRONMENT_URL',
+                     value: expanded_environment_url,
+                     public: true } if environment_url
+
+      variables
     end
 
     def legacy_variables
