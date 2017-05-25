@@ -948,7 +948,7 @@ describe User, models: true do
     subject { user.avatar_url }
 
     context 'when avatar file is uploaded' do
-      let(:avatar_path) { "/uploads/user/avatar/#{user.id}/dk.png" }
+      let(:avatar_path) { "/uploads/system/user/avatar/#{user.id}/dk.png" }
 
       it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
     end

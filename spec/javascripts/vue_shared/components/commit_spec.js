@@ -22,7 +22,7 @@ describe('Commit component', () => {
         shortSha: 'b7836edd',
         title: 'Commit message',
         author: {
-          avatar_url: 'https://gitlab.com/uploads/user/avatar/300478/avatar.png',
+          avatar_url: 'https://gitlab.com/uploads/system/user/avatar/300478/avatar.png',
           web_url: 'https://gitlab.com/jschatz1',
           username: 'jschatz1',
         },
@@ -44,7 +44,7 @@ describe('Commit component', () => {
         shortSha: 'b7836edd',
         title: 'Commit message',
         author: {
-          avatar_url: 'https://gitlab.com/uploads/user/avatar/300478/avatar.png',
+          avatar_url: 'https://gitlab.com/uploads/system/user/avatar/300478/avatar.png',
           web_url: 'https://gitlab.com/jschatz1',
           username: 'jschatz1',
         },

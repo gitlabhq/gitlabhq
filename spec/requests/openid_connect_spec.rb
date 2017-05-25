@@ -79,7 +79,7 @@ describe 'OpenID Connect requests' do
           'email_verified' => true,
           'website'        => 'https://example.com',
           'profile'        => 'http://localhost/alice',
-          'picture'        => "http://localhost/uploads/user/avatar/#{user.id}/dk.png",
+          'picture'        => "http://localhost/uploads/system/user/avatar/#{user.id}/dk.png",
         })
       end
     end

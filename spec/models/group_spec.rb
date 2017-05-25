@@ -185,7 +185,7 @@ describe Group, models: true do
         group.add_master(user)
       end
 
-      let(:avatar_path) { "/uploads/group/avatar/#{group.id}/dk.png" }
+      let(:avatar_path) { "/uploads/system/group/avatar/#{group.id}/dk.png" }
 
       it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
     end
