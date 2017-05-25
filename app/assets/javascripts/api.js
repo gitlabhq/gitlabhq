@@ -24,18 +24,6 @@ const Api = {
       .done(group => callback(group));
   },
 
-  users: function(search, options, callback = $.noop) {
-    var url = Api.buildUrl('/autocomplete/users.json');
-    return $.ajax({
-      url,
-      data: $.extend({
-        search,
-        per_page: 20
-      }, options),
-      dataType: 'json'
-    }).done(callback);
-  },
-
   // Return groups list. Filtered by query
   groups(query, options, callback) {
     const url = Api.buildUrl(Api.groupsPath);
@@ -161,27 +149,27 @@ const Api = {
     });
   },
 
+  ldap_groups(query, provider, callback) {
+    const url = Api.buildUrl(this.ldapGroupsPath).replace(':provider', provider);
+    return Api.wrapAjaxCall({
+      url,
+      data: Object.assign({
+        private_token: gon.api_token,
+        search: query,
+        per_page: 20,
+        active: true,
+      }),
+      dataType: 'json',
+    })
+      .done(groups => callback(groups));
+  },
+
   buildUrl(url) {
     let urlRoot = '';
     if (gon.relative_url_root != null) {
       urlRoot = gon.relative_url_root;
     }
     return urlRoot + url.replace(':version', gon.api_version);
-  },
-
-  ldap_groups(query, provider, callback) {
-    const url = Api.buildUrl(this.ldapGroupsPath).replace(':provider', provider);
-    return Api.wrapAjaxCall({
-      url: url,
-      data: Object.assign({
-        private_token: gon.api_token,
-        search: query,
-        per_page: 20,
-        active: true
-      }),
-      dataType: 'json'
-    })
-      .done(groups => callback(groups));
   },
 
   wrapAjaxCall(options) {
