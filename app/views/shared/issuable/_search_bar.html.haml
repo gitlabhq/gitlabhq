@@ -74,27 +74,6 @@
                         {{name}}
                       %span.dropdown-light-content
                         @{{username}}
-<<<<<<< HEAD
-
-            - unless board && board.milestone_id
-              #js-dropdown-milestone.filtered-search-input-dropdown-menu.dropdown-menu
-                %ul{ data: { dropdown: true } }
-                  %li.filter-dropdown-item{ data: { value: 'none' } }
-                    %button.btn.btn-link
-                      No Milestone
-                  %li.filter-dropdown-item{ data: { value: 'upcoming' } }
-                    %button.btn.btn-link
-                      Upcoming
-                  %li.filter-dropdown-item{ 'data-value' => 'started' }
-                    %button.btn.btn-link
-                      Started
-                  %li.divider
-                %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
-                  %li.filter-dropdown-item
-                    %button.btn.btn-link.js-data-value
-                      {{title}}
-
-=======
             #js-dropdown-milestone.filtered-search-input-dropdown-menu.dropdown-menu
               %ul{ data: { dropdown: true } }
                 %li.filter-dropdown-item{ data: { value: 'none' } }
@@ -111,7 +90,6 @@
                 %li.filter-dropdown-item
                   %button.btn.btn-link.js-data-value
                     {{title}}
->>>>>>> ce/master
             #js-dropdown-label.filtered-search-input-dropdown-menu.dropdown-menu
               %ul{ data: { dropdown: true } }
                 %li.filter-dropdown-item{ data: { value: 'none' } }
