@@ -170,8 +170,7 @@ const Api = {
   },
 
   ldap_groups(query, provider, callback) {
-    const url = Api.buildUrl(this.ldapGroupsPath);
-    url = url.replace(':provider', provider);
+    const url = Api.buildUrl(this.ldapGroupsPath).replace(':provider', provider);
     return Api.wrapAjaxCall({
       url: url,
       data: Object.assign({
@@ -183,7 +182,7 @@ const Api = {
       dataType: 'json'
     })
       .done(groups => callback(groups));
-  }
+  },
 
   wrapAjaxCall(options) {
     return new Promise((resolve, reject) => {
