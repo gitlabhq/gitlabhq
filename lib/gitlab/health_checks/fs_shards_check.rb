@@ -2,6 +2,9 @@ module Gitlab
   module HealthChecks
     class FsShardsCheck
       extend BaseAbstractCheck
+      RANDOM_STRING = SecureRandom.hex(1000).freeze
+      COMMAND_TIMEOUT = '1'.freeze
+      TIMEOUT_EXECUTABLE = 'timeout'.freeze
 
       class << self
         def readiness
@@ -41,9 +44,6 @@ module Gitlab
 
         private
 
-        RANDOM_STRING = SecureRandom.hex(1000).freeze
-        COMMAND_TIMEOUT = 1.second
-
         def operation_metrics(ok_metric, latency_metric, operation, **labels)
           with_timing operation do |result, elapsed|
             [
@@ -64,12 +64,8 @@ module Gitlab
           @storage_paths ||= Gitlab.config.repositories.storages
         end
 
-        def with_timeout(args)
-          %W{timeout #{COMMAND_TIMEOUT.to_i}}.concat(args)
-        end
-
         def exec_with_timeout(cmd_args, *args, &block)
-          Gitlab::Popen.popen(with_timeout(cmd_args), *args, &block)
+          Gitlab::Popen.popen([TIMEOUT_EXECUTABLE, COMMAND_TIMEOUT].concat(cmd_args), *args, &block)
         end
 
         def tmp_file_path(storage_name)

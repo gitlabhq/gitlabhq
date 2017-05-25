@@ -1,7 +1,23 @@
 require 'spec_helper'
 
 describe Gitlab::HealthChecks::FsShardsCheck do
-  include TimeoutHelper
+  def command_exists?(command)
+    _, status = Gitlab::Popen.popen(%W{ #{command} 1 echo })
+    status == 0
+  rescue Errno::ENOENT
+    false
+  end
+
+  def timeout_command
+    @timeout_command ||=
+      if command_exists?('timeout')
+        'timeout'
+      elsif command_exists?('gtimeout')
+        'gtimeout'
+      else
+        ''
+      end
+  end
 
   let(:metric_class) { Gitlab::HealthChecks::Metric }
   let(:result_class) { Gitlab::HealthChecks::Result }
@@ -17,6 +33,7 @@ describe Gitlab::HealthChecks::FsShardsCheck do
   before do
     allow(described_class).to receive(:repository_storages) { repository_storages }
     allow(described_class).to receive(:storages_paths) { storages_paths }
+    stub_const('Gitlab::HealthChecks::FsShardsCheck::TIMEOUT_EXECUTABLE', timeout_command)
   end
 
   after do
@@ -109,10 +126,10 @@ describe Gitlab::HealthChecks::FsShardsCheck do
   end
 
   context 'when timeout kills fs checks' do
-    let(:timeout_seconds) { 1.to_s }
-
     before do
-      allow(described_class).to receive(:with_timeout) { [timeout_command, timeout_seconds, 'sleep', '20'] }
+      stub_const('Gitlab::HealthChecks::FsShardsCheck::COMMAND_TIMEOUT', '1')
+
+      allow(described_class).to receive(:exec_with_timeout).and_wrap_original { |m| m.call(%w(sleep 60)) }
       FileUtils.chmod_R(0755, tmp_dir)
     end
 
@@ -140,7 +157,6 @@ describe Gitlab::HealthChecks::FsShardsCheck do
   end
 
   context 'when popen always finds required binaries' do
-    let(:timeout_seconds) { 30.to_s }
     before do
       allow(described_class).to receive(:exec_with_timeout).and_wrap_original do |method, *args, &block|
         begin
@@ -150,9 +166,7 @@ describe Gitlab::HealthChecks::FsShardsCheck do
         end
       end
 
-      allow(described_class).to receive(:with_timeout) do |args, &block|
-        [timeout_command, timeout_seconds].concat(args)
-      end
+      stub_const('Gitlab::HealthChecks::FsShardsCheck::COMMAND_TIMEOUT', '10')
     end
 
     it_behaves_like 'filesystem checks'
