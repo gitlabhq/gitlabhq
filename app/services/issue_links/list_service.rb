@@ -3,7 +3,7 @@ module IssueLinks
     include Gitlab::Routing
 
     def initialize(issue, user)
-      @issue, @current_user = issue, user
+      @issue, @current_user, @project = issue, user, issue.project
     end
 
     def execute
@@ -45,12 +45,16 @@ module IssueLinks
     end
 
     def destroy_relation_path(issue)
-      return unless Ability.allowed?(@current_user, :admin_issue_link, issue.project)
+      return unless can_destroy_issue_link?(@project) && can_destroy_issue_link?(issue.project)
 
       namespace_project_issue_link_path(issue.project.namespace,
                                         issue.project,
                                         issue.iid,
                                         issue.issue_links_id)
+    end
+
+    def can_destroy_issue_link?(project)
+      Ability.allowed?(@current_user, :admin_issue_link, project)
     end
   end
 end

@@ -4,9 +4,10 @@ describe IssueLinks::ListService, service: true do
   let(:user) { create :user }
   let(:project) { create(:project_empty_repo) }
   let(:issue) { create :issue, project: project }
+  let(:user_role) { :developer }
 
   before do
-    project.team << [user, :developer]
+    project.team << [user, user_role]
   end
 
   describe '#execute' do
@@ -152,16 +153,26 @@ describe IssueLinks::ListService, service: true do
         create(:issue_link, source: issue, target: referenced_issue)
       end
 
-      context 'when user can admin related issues on one project' do
-        let(:unauthorized_project) { create :empty_project }
-        let(:referenced_issue) { create :issue, project: unauthorized_project }
-
-        before do
-          # User can just see related issues
-          unauthorized_project.team << [user, :guest]
-        end
+      context 'user can admin related issues just on target project' do
+        let(:user_role) { :guest }
+        let(:target_project) { create :empty_project }
+        let(:referenced_issue) { create :issue, project: target_project }
 
         it 'returns no destroy relation path' do
+          target_project.add_developer(user)
+
+          expect(subject.first[:destroy_relation_path]).to be_nil
+        end
+      end
+
+      context 'user can admin related issues just on source project' do
+        let(:user_role) { :developer }
+        let(:target_project) { create :empty_project }
+        let(:referenced_issue) { create :issue, project: target_project }
+
+        it 'returns no destroy relation path' do
+          target_project.add_guest(user)
+
           expect(subject.first[:destroy_relation_path]).to be_nil
         end
       end
