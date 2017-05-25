@@ -82,7 +82,8 @@ describe Projects::IssueLinksController, type: :controller do
 
         it 'returns failure JSON' do
           is_expected.to have_http_status(401)
-          expect(json_response).to eq('result' => { 'http_status' => 401, 'status' => 'error' })
+          expect(json_response).to eq('result' => { 'http_status' => 401, 'status' => 'error' },
+                                      'issues' => list_service_response)
         end
       end
     end

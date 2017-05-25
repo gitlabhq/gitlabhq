@@ -11,11 +11,7 @@ module Projects
       opts = params.slice(:issue_references)
       result = IssueLinks::CreateService.new(issue, current_user, opts).execute
 
-      if result[:status] == :success
-        render json: { result: result, issues: issues }, status: result[:http_status]
-      else
-        render json: { result: result }, status: result[:http_status]
-      end
+      render json: { result: result, issues: issues }, status: result[:http_status]
     end
 
     def destroy
