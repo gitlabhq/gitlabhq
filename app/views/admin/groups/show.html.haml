@@ -38,6 +38,8 @@
           %strong
             = @group.created_at.to_s(:medium)
 
+        = render 'admin/namespace_plan_info', namespace: @group
+
         %li
           %span.light Storage:
           %strong= storage_counter(@group.storage_size)

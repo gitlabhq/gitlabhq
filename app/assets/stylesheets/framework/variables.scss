@@ -573,3 +573,12 @@ $filter-value-selected-color: #d7d7d7;
 Animation Functions
 */
 $dropdown-animation-timing: cubic-bezier(0.23, 1, 0.32, 1);
+
+/*
+GitLab Plans
+*/
+
+$gl-gold-plan: #d4af37;
+$gl-silver-plan: #91a1ab;
+$gl-bronze-plan: #cd7f32;
+$gl-no-plan: $gl-gray-light;
