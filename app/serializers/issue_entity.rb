@@ -10,7 +10,7 @@ class IssueEntity < IssuableEntity
   expose :milestone, using: API::Entities::Milestone
   expose :labels, using: LabelEntity
 
-  expose :path do |issue|
+  expose :web_url do |issue|
     namespace_project_issue_path(issue.project.namespace, issue.project, issue)
   end
 end

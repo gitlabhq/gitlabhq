@@ -124,8 +124,8 @@ export default {
       this.service.updateIssuable(this.store.formState)
         .then(res => res.json())
         .then((data) => {
-          if (location.pathname !== data.path) {
-            gl.utils.visitUrl(data.path);
+          if (location.pathname !== data.web_url) {
+            gl.utils.visitUrl(data.web_url);
           } else if (data.confidential !== this.isConfidential) {
             gl.utils.visitUrl(location.pathname);
           }

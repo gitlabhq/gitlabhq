@@ -116,7 +116,7 @@ describe('Issuable output', () => {
           json() {
             return {
               confidential: false,
-              path: location.pathname,
+              web_url: location.pathname,
             };
           },
         });
@@ -140,7 +140,7 @@ describe('Issuable output', () => {
           json() {
             return {
               confidential: true,
-              path: location.pathname,
+              web_url: location.pathname,
             };
           },
         });
@@ -182,7 +182,7 @@ describe('Issuable output', () => {
         resolve({
           json() {
             return {
-              path: location.pathname,
+              web_url: location.pathname,
               confidential: vm.isConfidential,
             };
           },
@@ -206,7 +206,7 @@ describe('Issuable output', () => {
         resolve({
           json() {
             return {
-              path: '/testing-issue-move',
+              web_url: '/testing-issue-move',
               confidential: vm.isConfidential,
             };
           },
@@ -251,7 +251,7 @@ describe('Issuable output', () => {
       spyOn(vm.service, 'deleteIssuable').and.callFake(() => new Promise((resolve) => {
         resolve({
           json() {
-            return { path: '/test' };
+            return { web_url: '/test' };
           },
         });
       }));
@@ -273,7 +273,7 @@ describe('Issuable output', () => {
       spyOn(vm.service, 'deleteIssuable').and.callFake(() => new Promise((resolve) => {
         resolve({
           json() {
-            return { path: '/test' };
+            return { web_url: '/test' };
           },
         });
       }));
