@@ -62,7 +62,7 @@
       /*
         GLForm class handles all the toolbar buttons
       */
-      return new gl.GLForm($(this.$refs['gl-form']));
+      return new gl.GLForm($(this.$refs['gl-form']), true);
     },
   };
 </script>
