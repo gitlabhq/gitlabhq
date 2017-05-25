@@ -32,11 +32,11 @@ namespace :gitlab do
         SystemCheck::App::ProjectsHaveNamespaceCheck,
         SystemCheck::App::RedisVersionCheck,
         SystemCheck::App::RubyVersionCheck,
-        SystemCheck::App::GitVersionCheck
+        SystemCheck::App::GitVersionCheck,
+        SystemCheck::App::ActiveUsersCheck
       ]
 
       SystemCheck.run('GitLab', checks)
-      check_active_users
       check_elasticsearch if current_application_settings.elasticsearch_indexing?
     end
   end
@@ -606,36 +606,6 @@ namespace :gitlab do
   # Helper methods
   ##########################
 
-  # @deprecated Please use SystemChecks
-  def fix_and_rerun
-    puts "  Please fix the error above and rerun the checks.".color(:red)
-  end
-
-  # @deprecated Please use SystemChecks
-  def for_more_information(*sources)
-    sources = sources.shift if sources.first.is_a?(Array)
-
-    puts "  For more information see:".color(:blue)
-    sources.each do |source|
-      puts "  #{source}"
-    end
-  end
-
-  # @deprecated Please use SystemChecks
-  def finished_checking(component)
-    puts ""
-    puts "Checking #{component.color(:yellow)} ... #{"Finished".color(:green)}"
-    puts ""
-  end
-
-  def see_database_guide
-    "doc/install/databases.md"
-  end
-
-  def see_installation_guide_section(section)
-    "doc/install/installation.md in section \"#{section}\""
-  end
-
   def see_geo_features_page
     'https://about.gitlab.com/features/gitlab-geo/'
   end
@@ -648,30 +618,6 @@ namespace :gitlab do
     'https://docs.gitlab.com/omnibus/common_installation_problems/README.html#using-self-signed-certificate-or-custom-certificate-authorities'
   end
 
-  def sudo_gitlab(command)
-    "sudo -u #{gitlab_user} -H #{command}"
-  end
-
-  def gitlab_user
-    Gitlab.config.gitlab.user
-  end
-
-  # @deprecated Please use SystemChecks
-  def start_checking(component)
-    puts "Checking #{component.color(:yellow)} ..."
-    puts ""
-  end
-
-  # @deprecated Please use SystemChecks
-  def try_fixing_it(*steps)
-    steps = steps.shift if steps.first.is_a?(Array)
-
-    puts "  Try fixing it:".color(:blue)
-    steps.each do |step|
-      puts "  #{step}"
-    end
-  end
-
   def check_gitlab_shell
     required_version = Gitlab::VersionInfo.new(gitlab_shell_major_version, gitlab_shell_minor_version, gitlab_shell_patch_version)
     current_version = Gitlab::VersionInfo.parse(gitlab_shell_version)
@@ -682,10 +628,6 @@ namespace :gitlab do
     else
       puts "FAIL. Please update gitlab-shell to #{required_version} from #{current_version}".color(:red)
     end
-  end
-
-  def check_active_users
-    puts "Active users: #{User.active.count}"
   end
 
   def check_repo_integrity(repo_dir)
