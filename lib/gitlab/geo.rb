@@ -46,6 +46,10 @@ module Gitlab
       Rails.configuration.respond_to?(:geo_database)
     end
 
+    def self.primary_role_enabled?
+      Gitlab.config.geo_primary_role['enable']
+    end
+
     def self.secondary_role_enabled?
       Gitlab.config.geo_secondary_role['enable']
     end
@@ -98,9 +102,9 @@ module Gitlab
     end
 
     def self.configure_cron_jobs!
-      if self.primary?
+      if self.primary_role_enabled?
         self.configure_primary_jobs!
-      elsif self.secondary?
+      elsif self.secondary_role_enabled?
         self.configure_secondary_jobs!
       else
         self.disable_all_jobs!

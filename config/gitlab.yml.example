@@ -623,6 +623,8 @@ production: &base
     #   port: 3808
 
   ## GitLab Geo settings (EE-only)
+  geo_primary_role:
+    enable: false
   geo_secondary_role:
     enable: false
 
@@ -709,6 +711,8 @@ test:
         user_filter: ''
         group_base: 'ou=groups,dc=example,dc=com'
         admin_group: ''
+  geo_primary_role:
+    enable: true
   geo_secondary_role:
     enable: true
 
