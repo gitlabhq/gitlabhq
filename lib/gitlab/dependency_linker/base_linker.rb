@@ -68,6 +68,19 @@ module Gitlab
       def highlighted_lines
         @highlighted_lines ||= highlighted_text.lines
       end
+
+      def regexp_for_value(value, default: /[^'"]+/)
+        case value
+        when Array
+          Regexp.union(value.map { |v| regexp_for_value(v, default: default) })
+        when String
+          Regexp.escape(value)
+        when Regexp
+          value
+        else
+          default
+        end
+      end
     end
   end
 end
