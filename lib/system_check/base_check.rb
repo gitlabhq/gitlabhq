@@ -1,9 +1,11 @@
+require 'tasks/gitlab/task_helpers'
+
 module SystemCheck
   # Base class for Checks. You must inherit from here
   # and implement the methods below when necessary
   class BaseCheck
     include ::Gitlab::TaskHelpers
-    include Helpers
+    include ::SystemCheck::Helpers
 
     # Define a custom term for when check passed
     #
