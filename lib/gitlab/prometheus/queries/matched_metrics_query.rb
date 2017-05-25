@@ -2,10 +2,6 @@ module Gitlab::Prometheus::Queries
   class MatchedMetricsQuery < BaseQuery
     MAX_QUERY_ITEMS = 40.freeze
 
-    def self.metrics
-      @metrics ||= YAML.load_file(Rails.root.join('config/additional_metrics.yml')).map(&:deep_symbolize_keys)
-    end
-
     def query
       groups_data.map do |group, data|
         {
@@ -16,6 +12,8 @@ module Gitlab::Prometheus::Queries
         }
       end
     end
+
+    private
 
     def groups_data
       metrics_series = metrics_with_series(Gitlab::Prometheus::MetricGroup.all)

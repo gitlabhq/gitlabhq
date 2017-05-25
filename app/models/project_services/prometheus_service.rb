@@ -73,7 +73,7 @@ class PrometheusService < MonitoringService
   end
 
   def reactive_query(query_class, *args, &block)
-    calculate_reactive_cache(query_class, *args, &block)
+    with_reactive_cache(query_class, *args, &block)
   end
 
   # Cache metrics for specific environment
