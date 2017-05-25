@@ -3,6 +3,12 @@
   margin: 0;
   padding: 0;
 
+  &::before {
+    @include notes-media('max', $screen-xs-max) {
+      background: none;
+    }
+  }
+
   .system-note {
     .note-text {
       color: $gl-text-color !important;
@@ -23,6 +29,16 @@
 
   .timeline-entry-inner {
     position: relative;
+
+    @include notes-media('max', $screen-xs-max) {
+      .timeline-icon {
+        display: none;
+      }
+
+      .timeline-content {
+        margin-left: 0;
+      }
+    }
   }
 
   &:target,
@@ -37,24 +53,6 @@
   .controls {
     padding-top: 10px;
     float: right;
-  }
-}
-
-@media (max-width: $screen-xs-max) {
-  .timeline {
-    &::before {
-      background: none;
-    }
-  }
-
-  .timeline-entry .timeline-entry-inner {
-    .timeline-icon {
-      display: none;
-    }
-
-    .timeline-content {
-      margin-left: 0;
-    }
   }
 }
 
