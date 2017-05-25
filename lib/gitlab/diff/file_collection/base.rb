@@ -2,7 +2,7 @@ module Gitlab
   module Diff
     module FileCollection
       class Base
-        attr_reader :project, :diff_options, :diff_view, :diff_refs, :fallback_diff_refs
+        attr_reader :project, :diff_options, :diff_refs, :fallback_diff_refs
 
         delegate :count, :size, :real_size, to: :diff_files
 
