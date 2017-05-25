@@ -11,7 +11,7 @@ class FilteredSearchDropdownManager {
     this.page = page;
 
     if (this.page === 'issues' || this.page === 'boards') {
-      this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeysWithWeights;
+      this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeysIssuesEE;
     }
 
     this.setupMapping();

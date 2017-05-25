@@ -14,7 +14,7 @@ class FilteredSearchManager {
     this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeys;
 
     if (page === 'issues' || page === 'boards') {
-      this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeysWithWeights;
+      this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeysIssuesEE;
     }
 
     this.recentSearchesStore = new RecentSearchesStore({
