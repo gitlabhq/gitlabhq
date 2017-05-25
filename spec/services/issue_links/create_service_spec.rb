@@ -40,14 +40,16 @@ describe IssueLinks::CreateService, service: true do
       end
     end
 
-    context 'when user has no permission to reference an Issue' do
-      let(:issue_a) { create :issue, iid: 999 }
+    context 'when user has no permission to target project Issue' do
+      let(:target_issue) { create :issue }
 
       let(:params) do
-        { issue_references: [issue_a.to_reference] }
+        { issue_references: [target_issue.to_reference(project)] }
       end
 
       it 'returns error' do
+        target_issue.project.add_guest(user)
+
         is_expected.to eq(message: "No Issue found for given reference", status: :error, http_status: 401)
       end
 

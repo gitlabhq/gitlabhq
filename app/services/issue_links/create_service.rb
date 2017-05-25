@@ -44,7 +44,9 @@ module IssueLinks
         extractor = Gitlab::ReferenceExtractor.new(@issue.project, @current_user)
         extractor.analyze(text)
 
-        extractor.issues
+        extractor.issues.select do |issue|
+          can?(current_user, :admin_issue_link, issue.project)
+        end
       end
     end
 
