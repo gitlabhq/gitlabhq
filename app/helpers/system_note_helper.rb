@@ -20,7 +20,7 @@ module SystemNoteHelper
     'moved' => 'icon_arrow_circle_o_right',
     'outdated' => 'icon_edit',
     'approved' => 'icon_check',
-    'unapproved' => 'icon_fa_close',
+    'unapproved' => 'icon_fa_close'
   }.freeze
 
   def icon_for_system_note(note)
