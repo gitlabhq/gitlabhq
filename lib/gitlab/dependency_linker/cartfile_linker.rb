@@ -6,14 +6,8 @@ module Gitlab
       private
 
       def link_dependencies
-        link_method_call(%w[github git binary]) do |value|
-          case value
-          when %r{\A#{REPO_REGEX}\z}
-            github_url(value)
-          when /\A#{URL_REGEX}\z/
-            value
-          end
-        end
+        link_method_call('github', REPO_REGEX, &method(:github_url))
+        link_method_call(%w[github git binary], URL_REGEX, &:itself)
       end
     end
   end
