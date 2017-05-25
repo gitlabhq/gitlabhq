@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170518231126) do
+ActiveRecord::Schema.define(version: 20170523091700) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -794,6 +794,7 @@ ActiveRecord::Schema.define(version: 20170518231126) do
     t.string "discussion_id"
     t.text "note_html"
     t.integer "cached_markdown_version"
+    t.text "change_position"
   end
 
   add_index "notes", ["author_id"], name: "index_notes_on_author_id", using: :btree
@@ -1361,6 +1362,7 @@ ActiveRecord::Schema.define(version: 20170518231126) do
     t.date "last_activity_on"
     t.boolean "notified_of_own_activity"
     t.string "preferred_language"
+    t.string "rss_token"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
@@ -1374,6 +1376,7 @@ ActiveRecord::Schema.define(version: 20170518231126) do
   add_index "users", ["name"], name: "index_users_on_name", using: :btree
   add_index "users", ["name"], name: "index_users_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+  add_index "users", ["rss_token"], name: "index_users_on_rss_token", using: :btree
   add_index "users", ["state"], name: "index_users_on_state", using: :btree
   add_index "users", ["username"], name: "index_users_on_username", using: :btree
   add_index "users", ["username"], name: "index_users_on_username_trigram", using: :gin, opclasses: {"username"=>"gin_trgm_ops"}
@@ -1387,6 +1390,23 @@ ActiveRecord::Schema.define(version: 20170518231126) do
 
   add_index "users_star_projects", ["project_id"], name: "index_users_star_projects_on_project_id", using: :btree
   add_index "users_star_projects", ["user_id", "project_id"], name: "index_users_star_projects_on_user_id_and_project_id", unique: true, using: :btree
+
+  create_table "web_hook_logs", force: :cascade do |t|
+    t.integer "web_hook_id", null: false
+    t.string "trigger"
+    t.string "url"
+    t.text "request_headers"
+    t.text "request_data"
+    t.text "response_headers"
+    t.text "response_body"
+    t.string "response_status"
+    t.float "execution_duration"
+    t.string "internal_error_message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "web_hook_logs", ["web_hook_id"], name: "index_web_hook_logs_on_web_hook_id", using: :btree
 
   create_table "web_hooks", force: :cascade do |t|
     t.string "url", limit: 2000
@@ -1451,4 +1471,5 @@ ActiveRecord::Schema.define(version: 20170518231126) do
   add_foreign_key "timelogs", "merge_requests", name: "fk_timelogs_merge_requests_merge_request_id", on_delete: :cascade
   add_foreign_key "trending_projects", "projects", on_delete: :cascade
   add_foreign_key "u2f_registrations", "users"
+  add_foreign_key "web_hook_logs", "web_hooks", on_delete: :cascade
 end

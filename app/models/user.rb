@@ -15,6 +15,7 @@ class User < ActiveRecord::Base
 
   add_authentication_token_field :authentication_token
   add_authentication_token_field :incoming_email_token
+  add_authentication_token_field :rss_token
 
   default_value_for :admin, false
   default_value_for(:external) { current_application_settings.user_default_external }
@@ -367,7 +368,7 @@ class User < ActiveRecord::Base
     def reference_pattern
       %r{
         #{Regexp.escape(reference_prefix)}
-        (?<user>#{Gitlab::Regex::FULL_NAMESPACE_REGEX_STR})
+        (?<user>#{Gitlab::PathRegex::FULL_NAMESPACE_FORMAT_REGEX})
       }x
     end
 
@@ -1002,6 +1003,13 @@ class User < ActiveRecord::Base
     self.two_factor_grace_period = periods.min || User.column_defaults['two_factor_grace_period']
 
     save
+  end
+
+  # each existing user needs to have an `rss_token`.
+  # we do this on read since migrating all existing users is not a feasible
+  # solution.
+  def rss_token
+    ensure_rss_token!
   end
 
   protected

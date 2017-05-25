@@ -1,4 +1,4 @@
-require('~/copy_as_gfm');
+import '~/copy_as_gfm';
 
 (() => {
   describe('gl.CopyAsGFM', () => {

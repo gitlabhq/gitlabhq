@@ -3,12 +3,6 @@
   margin: 0;
   padding: 0;
 
-  .note-text {
-    p:last-child {
-      margin-bottom: 0;
-    }
-  }
-
   .system-note {
     .note-text {
       color: $gl-text-color !important;
@@ -23,7 +17,6 @@
 }
 
 .timeline-entry {
-  padding: $gl-padding $gl-btn-padding 0;
   border-color: $white-normal;
   color: $gl-text-color;
   border-bottom: 1px solid $border-white-light;
