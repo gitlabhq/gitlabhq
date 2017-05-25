@@ -103,7 +103,11 @@
     "rebase_path": { "type": ["string", "null"] },
     "approved": { "type": "boolean" },
     "approvals_path": { "type": ["string", "null"] },
-    "ff_only_enabled": { "type": "boolean" }
+    "ff_only_enabled": { "type": "boolean" },
+    "codeclimate": {
+      "head_path": { "type": "string" },
+      "base_path": { "type": "string" }
+    }
   },
   "additionalProperties": false
 }

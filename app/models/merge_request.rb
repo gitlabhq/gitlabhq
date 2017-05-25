@@ -991,4 +991,21 @@ class MergeRequest < ActiveRecord::Base
 
     true
   end
+
+  def base_pipeline
+    @base_pipeline ||= project.pipelines.find_by(sha: merge_request_diff&.base_commit_sha)
+  end
+
+  def codeclimate_artifact
+    @codeclimate_artifact ||= head_pipeline&.codeclimate_artifact
+  end
+
+  def base_codeclimate_artifact
+    @base_codeclimate_artifact ||= base_pipeline&.codeclimate_artifact
+  end
+
+  def has_codeclimate_data?
+    codeclimate_artifact&.success? &&
+      base_codeclimate_artifact&.success?
+  end
 end

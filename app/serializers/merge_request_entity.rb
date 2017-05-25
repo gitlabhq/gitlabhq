@@ -196,6 +196,23 @@ class MergeRequestEntity < IssuableEntity
                                                                merge_request)
   end
 
+  # EE-specific
+  expose :codeclimate, if: lambda { |mr, _| mr.has_codeclimate_data? && can?(current_user, :read_build, mr.project) } do
+    expose :head_path do |merge_request|
+      raw_namespace_project_build_artifacts_url(merge_request.project.namespace,
+                                                merge_request.project,
+                                                merge_request.codeclimate_artifact,
+                                                path: 'codeclimate.json')
+    end
+
+    expose :base_path do |merge_request|
+      raw_namespace_project_build_artifacts_url(merge_request.project.namespace,
+                                                merge_request.project,
+                                                merge_request.base_codeclimate_artifact,
+                                                path: 'codeclimate.json')
+    end
+  end
+
   private
 
   delegate :current_user, to: :request

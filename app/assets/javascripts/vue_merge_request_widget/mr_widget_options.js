@@ -6,6 +6,7 @@ import {
   WidgetPipeline,
   WidgetDeployment,
   WidgetRelatedLinks,
+  WidgetCodeQuality,
   MergedState,
   ClosedState,
   LockedState,
@@ -58,6 +59,10 @@ export default {
     shouldRenderDeployments() {
       return this.mr.deployments.length;
     },
+    shouldRenderCodeQuality() {
+      const { codeclimate } = this.mr;
+      return codeclimate && codeclimate.head_path && codeclimate.base_path;
+    },
   },
   methods: {
     createService(store) {
@@ -81,13 +86,12 @@ export default {
         .then((res) => {
           this.mr.setData(res);
           this.setFavicon();
+
           if (cb) {
             cb.call(null, res);
           }
         })
-        .catch(() => {
-          new Flash('Something went wrong. Please try again.'); // eslint-disable-line
-        });
+        .catch(() => new Flash('Something went wrong. Please try again.'));
     },
     initPolling() {
       this.pollingInterval = new gl.SmartInterval({
@@ -134,9 +138,7 @@ export default {
             document.body.appendChild(el);
           }
         })
-        .catch(() => {
-          new Flash('Something went wrong. Please try again.'); // eslint-disable-line
-        });
+        .catch(() => new Flash('Something went wrong. Please try again.'));
     },
     resumePolling() {
       this.pollingInterval.resume();
@@ -213,6 +215,7 @@ export default {
     'mr-widget-pipeline-failed': PipelineFailedState,
     'mr-widget-merge-when-pipeline-succeeds': MergeWhenPipelineSucceedsState,
     'mr-widget-auto-merge-failed': AutoMergeFailed,
+    'mr-widget-code-quality': WidgetCodeQuality,
   },
   template: `
     <div class="mr-state-widget prepend-top-default">
@@ -224,6 +227,11 @@ export default {
         v-if="shouldRenderDeployments"
         :mr="mr"
         :service="service" />
+      <mr-widget-code-quality
+        v-if="shouldRenderCodeQuality"
+        :mr="mr"
+        :service="service"
+        />
       <component
         :is="componentName"
         :mr="mr"

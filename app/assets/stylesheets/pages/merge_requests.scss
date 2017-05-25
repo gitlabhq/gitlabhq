@@ -905,3 +905,42 @@
     }
   }
 }
+
+.mr-widget-code-quality {
+  padding-top: $gl-padding-top;
+
+  .padding-left {
+    padding-left: $gl-padding;
+  }
+
+  .ci-status-icon {
+    vertical-align: sub;
+
+    svg {
+      width: 22px;
+      height: 22px;
+      margin-right: 4px;
+    }
+  }
+
+  .code-quality-container {
+    border-top: 1px solid $gray-darker;
+    border-bottom: 1px solid $gray-darker;
+    padding: $gl-padding-top;
+    background-color: $gray-light;
+
+    .mr-widget-code-quality-list {
+      list-style: none;
+      padding: 0 36px;
+      margin: 0;
+
+      li.success {
+        color: $green-500;
+      }
+
+      li.failed {
+        color: $red-500;
+      }
+    }
+  }
+}

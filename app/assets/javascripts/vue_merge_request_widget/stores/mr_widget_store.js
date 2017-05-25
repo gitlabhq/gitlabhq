@@ -5,6 +5,14 @@ export default class MergeRequestStore {
 
   constructor(data) {
     this.sha = data.diff_head_sha;
+    this.codeclimate = data.codeclimate;
+    this.codeclimateMetrics = {
+      headIssues: [],
+      baseIssues: [],
+      newIssues: [],
+      resolvedIssues: [],
+    };
+
     this.setData(data);
   }
 
@@ -111,6 +119,25 @@ export default class MergeRequestStore {
           this.state = null;
       }
     }
+  }
+
+  setCodeclimateHeadMetrics(data) {
+    this.codeclimateMetrics.headIssues = data;
+  }
+
+  setCodeclimateBaseMetrics(data) {
+    this.codeclimateMetrics.baseIssues = data;
+  }
+
+  compareCodeclimateMetrics() {
+    const { headIssues, baseIssues } = this.codeclimateMetrics;
+
+    this.codeclimateMetrics.newIssues = this.filterByFingerprint(headIssues, baseIssues);
+    this.codeclimateMetrics.resolvedIssues = this.filterByFingerprint(baseIssues, headIssues);
+  }
+
+  filterByFingerprint(firstArray, secondArray) { // eslint-disable-line
+    return firstArray.filter(item => !secondArray.find(el => el.fingerprint === item.fingerprint));
   }
 
   static getAuthorObject(event) {
