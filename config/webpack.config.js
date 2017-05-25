@@ -5,6 +5,7 @@ var path = require('path');
 var webpack = require('webpack');
 var StatsPlugin = require('stats-webpack-plugin');
 var CompressionPlugin = require('compression-webpack-plugin');
+var NameAllModulesPlugin = require('name-all-modules-plugin');
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 var WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
 
@@ -126,8 +127,9 @@ var config = {
       jQuery: 'jquery',
     }),
 
-    // use deterministic module ids
+    // assign deterministic module ids
     new webpack.NamedModulesPlugin(),
+    new NameAllModulesPlugin(),
 
     // create cacheable common library bundle for all vue chunks
     new webpack.optimize.CommonsChunkPlugin({
