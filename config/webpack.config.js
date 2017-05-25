@@ -126,10 +126,8 @@ var config = {
       jQuery: 'jquery',
     }),
 
-    // use deterministic module ids in all environments
-    IS_PRODUCTION ?
-      new webpack.HashedModuleIdsPlugin() :
-      new webpack.NamedModulesPlugin(),
+    // use deterministic module ids
+    new webpack.NamedModulesPlugin(),
 
     // create cacheable common library bundle for all vue chunks
     new webpack.optimize.CommonsChunkPlugin({

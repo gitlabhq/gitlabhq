@@ -83,9 +83,20 @@ describe Gitlab::EtagCaching::Router do
     )
 
     result = described_class.match(env)
+    expect(result).to be_present
+
+    expect(result.name).to eq 'environments'
+  end
+
+  it 'matches pipeline#show endpoint' do
+    env = build_env(
+      '/my-group/my-project/pipelines/2.json'
+    )
+
+    result = described_class.match(env)
 
     expect(result).to be_present
-    expect(result.name).to eq 'environments'
+    expect(result.name).to eq 'project_pipeline'
   end
 
   def build_env(path)

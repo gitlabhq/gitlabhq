@@ -5,7 +5,22 @@ resources :projects, only: [:index, :new, :create]
 draw :git_http
 
 constraints(ProjectUrlConstrainer.new) do
-  scope(path: '*namespace_id', as: :namespace) do
+  # If the route has a wildcard segment, the segment has a regex constraint,
+  # the segment is potentially followed by _another_ wildcard segment, and
+  # the `format` option is not set to false, we need to specify that
+  # regex constraint _outside_ of `constraints: {}`.
+  #
+  # Otherwise, Rails will overwrite the constraint with `/.+?/`,
+  # which breaks some of our wildcard routes like `/blob/*id`
+  # and `/tree/*id` that depend on the negative lookahead inside
+  # `Gitlab::Regex.namespace_route_regex`, which helps the router
+  # determine whether a certain path segment is part of `*namespace_id`,
+  # `:project_id`, or `*id`.
+  #
+  # See https://github.com/rails/rails/blob/v4.2.8/actionpack/lib/action_dispatch/routing/mapper.rb#L155
+  scope(path: '*namespace_id',
+        as: :namespace,
+        namespace_id: Gitlab::Regex.namespace_route_regex) do
     scope(path: ':project_id',
           constraints: { project_id: Gitlab::Regex.project_route_regex },
           module: :projects,

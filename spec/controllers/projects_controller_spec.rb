@@ -226,6 +226,50 @@ describe ProjectsController do
     end
   end
 
+  describe '#transfer' do
+    render_views
+
+    let(:project) { create(:project) }
+    let(:admin) { create(:admin) }
+    let(:new_namespace) { create(:namespace) }
+
+    it 'updates namespace' do
+      sign_in(admin)
+
+      put :transfer,
+          namespace_id: project.namespace.path,
+          new_namespace_id: new_namespace.id,
+          id: project.path,
+          format: :js
+
+      project.reload
+
+      expect(project.namespace).to eq(new_namespace)
+      expect(response).to have_http_status(200)
+    end
+
+    context 'when new namespace is empty' do
+      it 'project namespace is not changed' do
+        controller.instance_variable_set(:@project, project)
+        sign_in(admin)
+
+        old_namespace = project.namespace
+
+        put :transfer,
+            namespace_id: old_namespace.path,
+            new_namespace_id: nil,
+            id: project.path,
+            format: :js
+
+        project.reload
+
+        expect(project.namespace).to eq(old_namespace)
+        expect(response).to have_http_status(200)
+        expect(flash[:alert]).to eq 'Please select a new namespace for your project.'
+      end
+    end
+  end
+
   describe "#destroy" do
     let(:admin) { create(:admin) }
 

@@ -1,4 +1,4 @@
-class UpateRetriedForCiBuild < ActiveRecord::Migration
+class UpdateRetriedForCiBuild < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
@@ -54,13 +54,15 @@ class UpateRetriedForCiBuild < ActiveRecord::Migration
 
   def with_temporary_partial_index
     if Gitlab::Database.postgresql?
-      execute 'CREATE INDEX CONCURRENTLY IF NOT EXISTS index_for_ci_builds_retried_migration ON ci_builds (id) WHERE retried IS NULL;'
+      unless index_exists?(:ci_builds, name: :index_for_ci_builds_retried_migration)
+        execute 'CREATE INDEX CONCURRENTLY index_for_ci_builds_retried_migration ON ci_builds (id) WHERE retried IS NULL;'
+      end
     end
 
     yield
 
-    if Gitlab::Database.postgresql?
-      execute 'DROP INDEX CONCURRENTLY IF EXISTS index_for_ci_builds_retried_migration'
+    if Gitlab::Database.postgresql? && index_exists?(:ci_builds, name: :index_for_ci_builds_retried_migration)
+      execute 'DROP INDEX CONCURRENTLY index_for_ci_builds_retried_migration'
     end
   end
 end

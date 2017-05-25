@@ -1,0 +1,4 @@
+---
+title: Fix issue where real time pipelines were not cached
+merge_request: 11615
+author:

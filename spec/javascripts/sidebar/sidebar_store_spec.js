@@ -35,6 +35,10 @@ describe('Sidebar store', () => {
     SidebarStore.singleton = null;
   });
 
+  it('has default isFetching values', () => {
+    expect(this.store.isFetching.assignees).toBe(true);
+  });
+
   it('adds a new assignee', () => {
     this.store.addAssignee(assignee);
     expect(this.store.assignees.length).toEqual(1);
@@ -67,6 +71,7 @@ describe('Sidebar store', () => {
     };
 
     this.store.setAssigneeData(users);
+    expect(this.store.isFetching.assignees).toBe(false);
     expect(this.store.assignees.length).toEqual(3);
   });
 

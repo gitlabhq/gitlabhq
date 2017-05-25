@@ -114,7 +114,8 @@ If everything goes well the user will be returned to GitLab and will be signed i
 
 If you are attempting to import projects from GitHub Enterprise with a self-signed
 certificate and the imports are failing, you will need to disable SSL verification.
-It should be disabled by adding `verify_ssl` to `false` to the provider configuration.
+It should be disabled by adding `verify_ssl` to `false` in the provider configuration
+and changing the global Git `sslVerify` option to `false` in the GitLab server.
 
 For omnibus package:
 
@@ -131,6 +132,12 @@ For omnibus package:
   ]
 ```
 
+You will also need to disable Git SSL verification on the server hosting GitLab.
+
+```ruby
+omnibus_gitconfig['system'] = { "http" => ["sslVerify = false"] }
+```
+
 For installation from source:
 
 ```
@@ -141,16 +148,14 @@ For installation from source:
     args: { scope: 'user:email' } }
 ```
 
-
-For the changes to take effect, [reconfigure Gitlab] if you installed
-via Omnibus, or [restart GitLab] if you installed from source.
-
-You will also need to disable Git SSL verification on the server hosting GitLab with the following command:
+You will also need to disable Git SSL verification on the server hosting GitLab.
 
 ```
 $ git config --global http.sslVerify false
 ```
+
+For the changes to take effect, [reconfigure Gitlab] if you installed
+via Omnibus, or [restart GitLab] if you installed from source.
+
 [reconfigure GitLab]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
 [restart GitLab]: ../administration/restart_gitlab.md#installations-from-source
-
-

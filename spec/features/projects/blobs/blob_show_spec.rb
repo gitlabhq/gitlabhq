@@ -6,7 +6,7 @@ feature 'File blob', :js, feature: true do
   def visit_blob(path, fragment = nil)
     visit namespace_project_blob_path(project.namespace, project, File.join('master', path), anchor: fragment)
 
-    wait_for_ajax
+    wait_for_requests
   end
 
   context 'Ruby file' do
@@ -61,7 +61,7 @@ feature 'File blob', :js, feature: true do
         before do
           find('.js-blob-viewer-switch-btn[data-viewer=simple]').click
 
-          wait_for_ajax
+          wait_for_requests
         end
 
         it 'displays the blob using the simple viewer' do
@@ -82,7 +82,7 @@ feature 'File blob', :js, feature: true do
           before do
             find('.js-blob-viewer-switch-btn[data-viewer=rich]').click
 
-            wait_for_ajax
+            wait_for_requests
           end
 
           it 'displays the blob using the rich viewer' do
@@ -170,7 +170,7 @@ feature 'File blob', :js, feature: true do
         before do
           find('.js-blob-viewer-switcher .js-blob-viewer-switch-btn[data-viewer=simple]').click
 
-          wait_for_ajax
+          wait_for_requests
         end
 
         it 'displays an error' do

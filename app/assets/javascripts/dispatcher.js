@@ -40,6 +40,7 @@ import Group from './group';
 import GroupName from './group_name';
 import GroupsList from './groups_list';
 import ProjectsList from './projects_list';
+import setupProjectEdit from './project_edit';
 import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
 import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
 import Landing from './landing';
@@ -263,6 +264,9 @@ import ShortcutsBlob from './shortcuts_blob';
           if ($('.blob-viewer').length) {
             new BlobViewer();
           }
+          break;
+        case 'projects:edit':
+          setupProjectEdit();
           break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:failures':

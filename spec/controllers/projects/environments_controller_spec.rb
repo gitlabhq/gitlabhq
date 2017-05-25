@@ -15,11 +15,11 @@ describe Projects::EnvironmentsController do
   end
 
   describe 'GET index' do
-    context 'when standardrequest has been made' do
+    context 'when a request for the HTML is made' do
       it 'responds with status code 200' do
         get :index, environment_params
 
-        expect(response).to be_ok
+        expect(response).to have_http_status(:ok)
       end
     end
 
@@ -89,6 +89,9 @@ describe Projects::EnvironmentsController do
       create(:environment, project: project,
                            name: 'staging-1.0/review',
                            state: :available)
+      create(:environment, project: project,
+                           name: 'staging-1.0/zzz',
+                           state: :available)
     end
 
     context 'when using default format' do
@@ -103,7 +106,7 @@ describe Projects::EnvironmentsController do
     end
 
     context 'when using JSON format' do
-      it 'responds with JSON' do
+      it 'sorts the subfolders lexicographically' do
         get :folder, namespace_id: project.namespace,
                      project_id: project,
                      id: 'staging-1.0',
@@ -113,6 +116,8 @@ describe Projects::EnvironmentsController do
         expect(response).not_to render_template 'folder'
         expect(json_response['environments'][0])
           .to include('name' => 'staging-1.0/review')
+        expect(json_response['environments'][1])
+          .to include('name' => 'staging-1.0/zzz')
       end
     end
   end

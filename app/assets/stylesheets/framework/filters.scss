@@ -263,7 +263,9 @@
 }
 
 .filtered-search-input-dropdown-menu {
+  max-height: 215px;
   max-width: 280px;
+  overflow: auto;
 
   @media (max-width: $screen-xs-min) {
     width: auto;
@@ -370,11 +372,6 @@
 
 .dropdown-menu .filter-dropdown-item {
   padding: 0;
-}
-
-.filter-dropdown {
-  max-height: 215px;
-  overflow: auto;
 }
 
 @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {

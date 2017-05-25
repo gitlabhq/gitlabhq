@@ -63,7 +63,7 @@ feature 'project owner creates a license file', feature: true, js: true do
     page.within('.js-license-selector-wrap') do
       click_button 'Apply a license template'
       click_link template
-      wait_for_ajax
+      wait_for_requests
     end
   end
 end

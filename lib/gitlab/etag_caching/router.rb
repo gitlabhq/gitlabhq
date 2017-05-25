@@ -11,7 +11,7 @@ module Gitlab
       USED_IN_ROUTES = %w[noteable issue notes issues realtime_changes
                           commit pipelines merge_requests new
                           environments].freeze
-      RESERVED_WORDS = DynamicPathValidator::WILDCARD_ROUTES - USED_IN_ROUTES
+      RESERVED_WORDS = Gitlab::Regex::ILLEGAL_PROJECT_PATH_WORDS - USED_IN_ROUTES
       RESERVED_WORDS_REGEX = Regexp.union(*RESERVED_WORDS)
       ROUTES = [
         Gitlab::EtagCaching::Router::Route.new(
@@ -39,7 +39,7 @@ module Gitlab
           'project_pipelines'
         ),
         Gitlab::EtagCaching::Router::Route.new(
-          %r(^(?!.*(#{RESERVED_WORDS})).*/pipelines/\d+\.json\z),
+          %r(^(?!.*(#{RESERVED_WORDS_REGEX})).*/pipelines/\d+\.json\z),
           'project_pipeline'
         ),
         Gitlab::EtagCaching::Router::Route.new(

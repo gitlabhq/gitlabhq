@@ -257,7 +257,7 @@ class ProjectsController < Projects::ApplicationController
   #
   # pages list order: repository readme, wiki home, issues list, customize workflow
   def render_landing_page
-    if @project.feature_available?(:repository, current_user)
+    if can?(current_user, :download_code, @project)
       return render 'projects/no_repo' unless @project.repository_exists?
       render 'projects/empty' if @project.empty_repo?
     else

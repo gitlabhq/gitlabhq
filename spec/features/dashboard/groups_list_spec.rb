@@ -23,7 +23,7 @@ describe 'Dashboard Groups page', js: true, feature: true do
 
   it 'filters groups' do
     fill_in 'filter_groups', with: group.name
-    wait_for_ajax
+    wait_for_requests
 
     expect(page).to have_content(group.full_name)
     expect(page).not_to have_content(nested_group.full_name)
@@ -32,10 +32,10 @@ describe 'Dashboard Groups page', js: true, feature: true do
 
   it 'resets search when user cleans the input' do
     fill_in 'filter_groups', with: group.name
-    wait_for_ajax
+    wait_for_requests
 
     fill_in 'filter_groups', with: ""
-    wait_for_ajax
+    wait_for_requests
 
     expect(page).to have_content(group.full_name)
     expect(page).to have_content(nested_group.full_name)

@@ -8,7 +8,7 @@ module MergeRequests
         create_note(merge_request)
         notification_service.reopen_mr(merge_request, current_user)
         execute_hooks(merge_request, 'reopen')
-        merge_request.reload_diff
+        merge_request.reload_diff(current_user)
         merge_request.mark_as_unchecked
       end
 
