@@ -1,4 +1,5 @@
 /* eslint-disable no-var, comma-dangle, object-shorthand */
+/* global Notes */
 
 import '~/merge_request_tabs';
 import '~/commit/pipelines/pipelines_bundle';
@@ -7,6 +8,7 @@ import '~/lib/utils/common_utils';
 import '~/diff';
 import '~/single_file_diff';
 import '~/files_comment_button';
+import '~/notes';
 import 'vendor/jquery.scrollTo';
 
 (function () {
@@ -29,7 +31,7 @@ import 'vendor/jquery.scrollTo';
       };
       $.extend(stubLocation, defaults, stubs || {});
     };
-    preloadFixtures('merge_requests/merge_request_with_task_list.html.raw');
+    preloadFixtures('merge_requests/merge_request_with_task_list.html.raw', 'merge_requests/diff_comment.html.raw');
 
     beforeEach(function () {
       this.class = new gl.MergeRequestTabs({ stubLocation: stubLocation });
@@ -286,7 +288,48 @@ import 'vendor/jquery.scrollTo';
         spyOn($, 'ajax').and.callFake(function (options) {
           expect(options.url).toEqual('/foo/bar/merge_requests/1/diffs.json');
         });
+
         this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
+      });
+
+      describe('with note fragment hash', () => {
+        beforeEach(() => {
+          loadFixtures('merge_requests/diff_comment.html.raw');
+          spyOn(window.gl.utils, 'getPagePath').and.returnValue('merge_requests');
+          window.notes = new Notes('', []);
+          spyOn(window.notes, 'toggleDiffNote').and.callThrough();
+        });
+
+        afterEach(() => {
+          delete window.notes;
+        });
+
+        it('should expand and scroll to linked fragment hash #note_xxx', function () {
+          const noteId = 'note_1';
+          spyOn(window.gl.utils, 'getLocationHash').and.returnValue(noteId);
+          spyOn($, 'ajax').and.callFake(function (options) {
+            options.success({ html: `<div id="${noteId}">foo</div>` });
+          });
+
+          this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
+
+          expect(window.notes.toggleDiffNote).toHaveBeenCalledWith({
+            target: jasmine.any(Object),
+            lineType: 'old',
+            forceShow: true,
+          });
+        });
+
+        it('should gracefully ignore non-existant fragment hash', function () {
+          spyOn(window.gl.utils, 'getLocationHash').and.returnValue('note_something-that-does-not-exist');
+          spyOn($, 'ajax').and.callFake(function (options) {
+            options.success({ html: '' });
+          });
+
+          this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
+
+          expect(window.notes.toggleDiffNote).not.toHaveBeenCalled();
+        });
       });
     });
   });
