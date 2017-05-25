@@ -7,6 +7,10 @@ export default {
       type: Object,
       required: true,
     },
+    baseGroup: {
+      type: Object,
+      required: false,
+    },
   },
   methods: {
     toggleSubGroups(e) {
@@ -30,6 +34,31 @@ export default {
     },
     isExpandable() {
       return Object.keys(this.group.subGroups).length > 0;
+    },
+    fullPath() {
+      let fullPath = '';
+
+      if (this.group.isOrphan) {
+        // check if current group is baseGroup
+        if (this.baseGroup) {
+          // Remove baseGroup prefix from our current group.fullName. e.g:
+          // baseGroup.fullName: `level1`
+          // group.fullName: `level1 / level2 / level3`
+          // Result: `level2 / level3`
+          const gfn = this.group.fullName;
+          const bfn = this.baseGroup.fullName;
+          const length = bfn.length;
+          const start = gfn.indexOf(bfn);
+
+          fullPath = gfn.substr(start + length + 2);
+        } else {
+          fullPath = this.group.fullName;
+        }
+      } else {
+        fullPath = this.group.name;
+      }
+
+      return fullPath;
     },
   },
 };
@@ -92,13 +121,13 @@ export default {
     </div>
 
     <div class="title">
-      <a :href="group.webUrl">{{group.isOrphan ? group.fullName : group.name}}</a>
+      <a :href="group.webUrl">{{fullPath}}</a>
     </div>
 
     <div class="description">
       {{group.description}}
     </div>
 
-    <group-folder v-if="group.isOpen" :groups="group.subGroups" />
+    <group-folder v-if="group.isOpen" :groups="group.subGroups" :baseGroup="group" />
   </li>
 </template>
