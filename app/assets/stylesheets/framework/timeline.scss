@@ -3,12 +3,6 @@
   margin: 0;
   padding: 0;
 
-  .note-text {
-    p:last-child {
-      margin-bottom: 0;
-    }
-  }
-
   .system-note {
     .note-text {
       color: $gl-text-color !important;
