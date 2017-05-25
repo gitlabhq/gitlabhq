@@ -337,6 +337,7 @@ class ProjectsController < Projects::ApplicationController
   def project_params_ee
     %i[
       approvals_before_merge
+      approvals_overwritable_mr
       approver_group_ids
       approver_ids
       issues_template
