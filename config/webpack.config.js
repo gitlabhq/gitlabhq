@@ -70,7 +70,8 @@ var config = {
   output: {
     path: path.join(ROOT_PATH, 'public/assets/webpack'),
     publicPath: '/assets/webpack/',
-    filename: IS_PRODUCTION ? '[name].[chunkhash].bundle.js' : '[name].bundle.js'
+    filename: IS_PRODUCTION ? '[name].[chunkhash].bundle.js' : '[name].bundle.js',
+    chunkFilename: IS_PRODUCTION ? '[name].[chunkhash].chunk.js' : '[name].chunk.js',
   },
 
   devtool: 'cheap-module-source-map',
@@ -130,6 +131,17 @@ var config = {
     // assign deterministic module ids
     new webpack.NamedModulesPlugin(),
     new NameAllModulesPlugin(),
+
+    // assign deterministic chunk ids
+    new webpack.NamedChunksPlugin((chunk) => {
+      if (chunk.name) {
+        return chunk.name;
+      }
+      return chunk.modules.map((m) => {
+        var chunkPath = m.request.split('!').pop();
+        return path.relative(m.context, chunkPath);
+      }).join('_');
+    }),
 
     // create cacheable common library bundle for all vue chunks
     new webpack.optimize.CommonsChunkPlugin({
