@@ -82,7 +82,8 @@ export default class IntegrationSettingsForm {
       if (res.error) {
         new Flash(`${res.message}.`, null, null, {
           title: 'Save anyway',
-          clickHandler: () => {
+          clickHandler: (e) => {
+            e.preventDefault();
             this.$form.submit();
           },
         });
