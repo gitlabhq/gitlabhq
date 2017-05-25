@@ -25,17 +25,13 @@ acorn-jsx@^3.0.0:
   dependencies:
     acorn "^3.0.4"
 
-acorn@4.0.4:
+acorn@4.0.4, acorn@^4.0.3:
   version "4.0.4"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-4.0.4.tgz#17a8d6a7a6c4ef538b814ec9abac2779293bf30a"
 
 acorn@^3.0.4:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-3.3.0.tgz#45e37fb39e8da3f25baee3ff5369e2bb5f22017a"
-
-acorn@^4.0.3:
-  version "4.0.11"
-  resolved "https://registry.yarnpkg.com/acorn/-/acorn-4.0.11.tgz#edcda3bd937e7556410d42ed5860f67399c794c0"
 
 acorn@^5.0.0, acorn@^5.0.3:
   version "5.0.3"
@@ -5839,9 +5835,9 @@ webpack-sources@^0.2.3:
     source-list-map "^1.1.1"
     source-map "~0.5.3"
 
-webpack@^2.6.0:
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/webpack/-/webpack-2.6.0.tgz#7e650a92816abff5db5f43316b0b8b19b13d76c1"
+webpack@^2.6.1:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/webpack/-/webpack-2.6.1.tgz#2e0457f0abb1ac5df3ab106c69c672f236785f07"
   dependencies:
     acorn "^5.0.0"
     acorn-dynamic-import "^2.0.0"
