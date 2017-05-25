@@ -307,14 +307,6 @@ describe API::Geo, api: true do
         expect(response).to have_http_status(200)
         expect(response).to match_response_schema('geo_node_status')
       end
-
-      it 'responds with a 404 when the secondary role is disabled' do
-        allow(Gitlab::Geo).to receive(:secondary_role_enabled?).and_return(false)
-
-        get api('/geo/status'), nil, request.headers
-
-        expect(response).to have_http_status(404)
-      end
     end
 
     context 'when requesting primary node with valid auth header' do

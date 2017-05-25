@@ -3,6 +3,7 @@ module Gitlab
     class HealthCheck
       def self.perform_checks
         return '' unless Gitlab::Geo.secondary?
+        return 'The Geo secondary role is disabled.' unless Gitlab::Geo.secondary_role_enabled?
         return 'The Geo database configuration file is missing.' unless self.geo_database_configured?
         return 'The Geo node has a database that is not configured for streaming replication with the primary node.' unless self.database_secondary?
 
