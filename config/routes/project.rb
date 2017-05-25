@@ -216,6 +216,12 @@ constraints(ProjectUrlConstrainer.new) do
         member do
           get :test
         end
+
+        resources :hook_logs, only: [:show] do
+          member do
+            get :retry
+          end
+        end
       end
 
       resources :container_registry, only: [:index, :destroy],
