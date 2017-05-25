@@ -2,16 +2,103 @@ module SystemCheck
   # Base class for Checks. You must inherit from here
   # and implement the methods below when necessary
   class BaseCheck
+    include ::Gitlab::TaskHelpers
+    include Helpers
+
+    # Define a custom term for when check passed
+    #
+    # @param [String] term used when check passed (default: 'yes')
+    def self.set_check_pass(term)
+      @check_pass = term
+    end
+
+    # Define a custom term for when check failed
+    #
+    # @param [String] term used when check failed (default: 'no')
+    def self.set_check_fail(term)
+      @check_fail = term
+    end
+
+    # Define the name of the SystemCheck that will be displayed during execution
+    #
+    # @param [String] name of the check
+    def self.set_name(name)
+      @name = name
+    end
+
+    # Define the reason why we skipped the SystemCheck
+    #
+    # This is only used if subclass implements `#skip?`
+    #
+    # @param [String] reason to be displayed
+    def self.set_skip_reason(reason)
+      @skip_reason = reason
+    end
+
+    # Term to be displayed when check passed
+    #
+    # @return [String] term when check passed ('yes' if not re-defined in a subclass)
+    def self.check_pass
+      call_or_return(@check_pass) || 'yes'
+    end
+
+    ## Term to be displayed when check failed
+    #
+    # @return [String] term when check failed ('no' if not re-defined in a subclass)
+    def self.check_fail
+      call_or_return(@check_fail) || 'no'
+    end
+
+    # Name of the SystemCheck defined by the subclass
+    #
+    # @return [String] the name
+    def self.display_name
+      call_or_return(@name) || self.name
+    end
+
+    # Skip reason defined by the subclass
+    #
+    # @return [String] the reason
+    def self.skip_reason
+      call_or_return(@skip_reason) || 'skipped'
+    end
+
+    # Does the check support automatically repair routine?
+    #
+    # @return [Boolean] whether check implemented `#repair!` method or not
+    def can_repair?
+      self.class.instance_methods(false).include?(:repair!)
+    end
+
+    def can_skip?
+      self.class.instance_methods(false).include?(:skip?)
+    end
+
+    def is_multi_check?
+      self.class.instance_methods(false).include?(:multi_check)
+    end
+
+    # Execute the check routine
+    #
     # This is where you should implement the main logic that will return
     # a boolean at the end
     #
     # You should not print any output to STDOUT here, use the specific methods instead
     #
-    # @return [Boolean] whether the check passed or not
+    # @return [Boolean] whether check passed or failed
     def check?
       raise NotImplementedError
     end
 
+    # Execute a custom check that cover multiple unities
+    #
+    # When using multi_check you have to provide the output yourself
+    def multi_check
+      raise NotImplementedError
+    end
+
+    # Prints troubleshooting instructions
+    #
     # This is where you should print detailed information for any error found during #check?
     #
     # You may use helper methods to help format the output:
@@ -23,50 +110,21 @@ module SystemCheck
       raise NotImplementedError
     end
 
-    # If skip returns true, than no other method on this check will be executed
+    # When implemented by a subclass, will attempt to fix the issue automatically
+    def repair!
+      raise NotImplementedError
+    end
+
+    # When implemented by a subclass, will evaluate whether check should be skipped or not
     #
     # @return [Boolean] whether or not this check should be skipped
     def skip?
-      false
+      raise NotImplementedError
     end
 
-    # If you enabled #skip? here is where you define a custom message explaining why
-    #
-    # Do not print anything to STDOUT, return a string.
-    #
-    # @return [String] message why this check was skipped
-    def skip_message
+    def self.call_or_return(input)
+      input.respond_to?(:call) ? input.call : input
     end
-
-    protected
-
-    # Display a formatted list of instructions on how to fix the issue identified by the #check?
-    #
-    # @param [Array<String>] steps one or short sentences with help how to fix the issue
-    def try_fixing_it(*steps)
-      steps = steps.shift if steps.first.is_a?(Array)
-
-      $stdout.puts '  Try fixing it:'.color(:blue)
-      steps.each do |step|
-        $stdout.puts "  #{step}"
-      end
-    end
-
-    # Display a message telling to fix and rerun the checks
-    def fix_and_rerun
-      $stdout.puts '  Please fix the error above and rerun the checks.'.color(:red)
-    end
-
-    # Display a formatted list of references (documentation or links) where to find more information
-    #
-    # @param [Array<String>] sources one or more references (documentation or links)
-    def for_more_information(*sources)
-      sources = sources.shift if sources.first.is_a?(Array)
-
-      $stdout.puts '  For more information see:'.color(:blue)
-      sources.each do |source|
-        $stdout.puts '  #{source}'
-      end
-    end
+    private_class_method :call_or_return
   end
 end

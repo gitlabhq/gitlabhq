@@ -10,18 +10,49 @@ module SystemCheck
       start_checking(component)
 
       @checks.each do |check|
-        $stdout.print "#{check.name}"
-        if check.skip?
-          $stdout.puts "skipped #{'(' + skip_message + ')' if skip_message}".color(:magenta)
-        elsif check.check?
-          $stdout.puts 'yes'.color(:green)
-        else
-          $stdout.puts 'no'.color(:red)
-          check.show_error
-        end
+        run_check(check)
       end
 
       finished_checking(component)
+    end
+
+    # Executes a single check
+    #
+    # @param [SystemCheck::BaseCheck] check
+    def run_check(check)
+      $stdout.print "#{check.display_name} ... "
+
+      c = check.new
+
+      # When implements a multi check, we don't control the output
+      if c.is_multi_check?
+        c.multi_check
+        return
+      end
+
+      # When implements skip method, we run it first, and if true, skip the check
+      if c.can_skip? && c.skip?
+        $stdout.puts check.skip_reason.color(:magenta)
+        return
+      end
+
+      if c.check?
+        $stdout.puts check.check_pass.color(:green)
+      else
+        $stdout.puts check.check_fail.color(:red)
+
+        if c.can_repair?
+          $stdout.print 'Trying to fix error automatically. ...'
+          if c.repair!
+            $stdout.puts 'Success'.color(:green)
+            return
+          else
+            $stdout.puts 'Failed'.color(:red)
+          end
+        end
+
+        c.show_error
+      end
     end
 
     private
