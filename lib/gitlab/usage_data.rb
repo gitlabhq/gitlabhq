@@ -44,11 +44,8 @@ module Gitlab
             projects_prometheus_active: PrometheusService.active.count,
             protected_branches: ProtectedBranch.count,
             releases: Release.count,
-<<<<<<< HEAD
             remote_mirrors: RemoteMirror.count,
             services: Service.where(active: true).count,
-=======
->>>>>>> ce/master
             snippets: Snippet.count,
             todos: Todo.count,
             uploads: Upload.count,
