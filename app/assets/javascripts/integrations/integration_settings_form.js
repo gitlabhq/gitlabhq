@@ -22,7 +22,7 @@ export default class IntegrationSettingsForm {
 
   init() {
     // Initialize View
-    this.toggleSubmitBtnLabel(this.$serviceToggle.is(':checked'));
+    this.toggleServiceState(this.$serviceToggle.is(':checked'));
 
     // Bind Event Listeners
     this.$serviceToggle.on('change', this.handleServiceToggle);
@@ -31,13 +31,24 @@ export default class IntegrationSettingsForm {
 
   handleSettingsSave(e) {
     if (this.$serviceToggle.is(':checked')) {
-      e.preventDefault();
-      this.testSettings(this.$form.serialize());
+      if (this.$form.get(0).checkValidity()) {
+        e.preventDefault();
+        this.testSettings(this.$form.serialize());
+      }
     }
   }
 
   handleServiceToggle(e) {
-    this.toggleSubmitBtnLabel($(e.currentTarget).is(':checked'));
+    this.toggleServiceState($(e.currentTarget).is(':checked'));
+  }
+
+  toggleServiceState(serviceActive) {
+    this.toggleSubmitBtnLabel(serviceActive);
+    if (serviceActive) {
+      this.$form.removeAttr('novalidate');
+    } else if (!this.$form.attr('novalidate')) {
+      this.$form.attr('novalidate', 'novalidate');
+    }
   }
 
   /**
