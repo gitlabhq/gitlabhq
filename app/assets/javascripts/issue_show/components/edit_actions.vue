@@ -50,7 +50,7 @@
       :class="{ disabled: updateLoading || !isSubmitEnabled }"
       type="submit"
       :disabled="updateLoading || !isSubmitEnabled"
-      @click="updateIssuable">
+      @click.prevent="updateIssuable">
       Save changes
       <i
         class="fa fa-spinner fa-spin"
