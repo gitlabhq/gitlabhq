@@ -558,7 +558,6 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     expect(page).to have_content 'Request to merge fix into feature'
     expect(page).to have_content 'changed target branch from merge-test to feature'
     wait_for_requests
-<<<<<<< HEAD
   end
 
   step 'project settings contain list of approvers' do
@@ -676,8 +675,6 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
       expect(page).to have_content("Requires 1 more approval")
       wait_for_requests
     end
-=======
->>>>>>> ce/master
   end
 
   step 'I click on "Email Patches"' do

@@ -11,14 +11,11 @@ if ENV['CI']
 end
 
 %w(select2_helper test_env repo_helpers wait_for_requests sidekiq).each do |f|
-<<<<<<< HEAD
   require Rails.root.join('spec', 'support', f)
 end
 
 # EE-only
 %w(license).each do |f|
-=======
->>>>>>> ce/master
   require Rails.root.join('spec', 'support', f)
 end
 
