@@ -20,7 +20,7 @@ describe Ci::Build, :models do
   it { is_expected.to validate_presence_of(:ref) }
   it { is_expected.to respond_to(:has_trace?) }
   it { is_expected.to respond_to(:trace) }
-  it { is_expected.to validate_length_of(:external_url).is_at_most(255) }
+  it { is_expected.to validate_length_of(:environment_url).is_at_most(255) }
 
   describe '#actionize' do
     context 'when build is a created' do
@@ -1208,33 +1208,55 @@ describe Ci::Build, :models do
         ]
       end
 
+      let!(:environment) do
+        create(:environment,
+          project: build.project,
+          name: 'production',
+          slug: 'prod-slug',
+          external_url: '')
+      end
+
       before do
         build.update(environment: 'production')
-        create(:environment, project: build.project, name: 'production', slug: 'prod-slug')
+      end
+
+      shared_examples 'containing environment variables' do
+        it { environment_variables.each { |v| is_expected.to include(v) } }
       end
 
       context 'when no URL was set' do
-        it { environment_variables.each { |v| is_expected.to include(v) } }
+        it_behaves_like 'containing environment variables'
 
         it 'does not have CI_ENVIRONMENT_URL' do
           keys = subject.map { |var| var[:key] }
 
-          expect(keys).to include('CI_ENVIRONMENT_NAME', 'CI_ENVIRONMENT_SLUG')
           expect(keys).not_to include('CI_ENVIRONMENT_URL')
         end
       end
 
       context 'when an URL was set' do
-        before do
-          build.update(environment_url: 'http://host/$CI_JOB_NAME')
+        let(:url) { 'http://host/test' }
 
+        before do
           environment_variables <<
-            { key: 'CI_ENVIRONMENT_URL',
-              value: 'http://host/test',
-              public: true }
+            { key: 'CI_ENVIRONMENT_URL', value: url, public: true }
         end
 
-        it { environment_variables.each { |v| is_expected.to include(v) } }
+        context 'when the URL was set from the job' do
+          before do
+            build.update(environment_url: 'http://host/$CI_JOB_NAME')
+          end
+
+          it_behaves_like 'containing environment variables'
+        end
+
+        context 'when the URL was not set from the job, but environment' do
+          before do
+            environment.update(external_url: url)
+          end
+
+          it_behaves_like 'containing environment variables'
+        end
       end
     end
 

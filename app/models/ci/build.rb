@@ -501,9 +501,15 @@ module Ci
     def persisted_environment_variables
       variables = persisted_environment.predefined_variables
 
-      variables << { key: 'CI_ENVIRONMENT_URL',
-                     value: expanded_environment_url,
-                     public: true } if environment_url
+      if environment_url
+        variables << { key: 'CI_ENVIRONMENT_URL',
+                       value: expanded_environment_url,
+                       public: true }
+      elsif persisted_environment.external_url.present?
+        variables << { key: 'CI_ENVIRONMENT_URL',
+                       value: persisted_environment.external_url,
+                       public: true }
+      end
 
       variables
     end

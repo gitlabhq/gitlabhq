@@ -43,6 +43,7 @@ future GitLab releases.**
 | **CI_DEBUG_TRACE**              | all    | 1.7    | Whether [debug tracing](#debug-tracing) is enabled |
 | **CI_ENVIRONMENT_NAME**         | 8.15   | all    | The name of the environment for this job |
 | **CI_ENVIRONMENT_SLUG**         | 8.15   | all    | A simplified version of the environment name, suitable for inclusion in DNS, URLs, Kubernetes labels, etc. |
+| **CI_ENVIRONMENT_URL**          | 9.3    | all    | The URL of the environment for this job |
 | **CI_JOB_ID**                   | 9.0    | all    | The unique id of the current job that GitLab CI uses internally |
 | **CI_JOB_MANUAL**               | 8.12   | all    | The flag to indicate that job was manually started |
 | **CI_JOB_NAME**                 | 9.0    | 0.5    | The name of the job as defined in `.gitlab-ci.yml` |
