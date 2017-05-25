@@ -32,11 +32,11 @@ namespace :gitlab do
         SystemCheck::App::ProjectsHaveNamespaceCheck,
         SystemCheck::App::RedisVersionCheck,
         SystemCheck::App::RubyVersionCheck,
-        SystemCheck::App::GitVersionCheck
+        SystemCheck::App::GitVersionCheck,
+        SystemCheck::App::ActiveUsersCheck
       ]
 
       SystemCheck.run('GitLab', checks)
-      check_active_users
     end
   end
 
@@ -552,10 +552,6 @@ namespace :gitlab do
     else
       puts "FAIL. Please update gitlab-shell to #{required_version} from #{current_version}".color(:red)
     end
-  end
-
-  def check_active_users
-    puts "Active users: #{User.active.count}"
   end
 
   def check_repo_integrity(repo_dir)
