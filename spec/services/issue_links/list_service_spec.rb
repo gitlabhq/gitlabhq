@@ -19,20 +19,17 @@ describe IssueLinks::ListService, service: true do
       let(:issue_d) { create :issue, project: project }
 
       let!(:issue_link_c) do
-        create(:issue_link, id: 999,
-                            source: issue_d,
+        create(:issue_link, source: issue_d,
                             target: issue)
       end
 
       let!(:issue_link_b) do
-        create(:issue_link, id: 998,
-                            source: issue,
+        create(:issue_link, source: issue,
                             target: issue_c)
       end
 
       let!(:issue_link_a) do
-        create(:issue_link, id: 997,
-                            source: issue,
+        create(:issue_link, source: issue,
                             target: issue_b)
       end
 
@@ -44,44 +41,32 @@ describe IssueLinks::ListService, service: true do
       it 'returns related issues JSON' do
         expect(subject.size).to eq(3)
 
-        expect(subject[0]).to eq(
-          {
-            id: issue_b.id,
-            iid: issue_b.iid,
-            title: issue_b.title,
-            state: issue_b.state,
-            path: "/#{project.full_path}/issues/#{issue_b.iid}",
-            project_path: issue_b.project.path,
-            namespace_full_path: issue_b.project.namespace.full_path,
-            destroy_relation_path: "/#{project.full_path}/issues/#{issue_b.iid}/links/#{issue_link_a.id}"
-          }
-        )
+        expect(subject).to include(include(id: issue_b.id,
+                                           iid: issue_b.iid,
+                                           title: issue_b.title,
+                                           state: issue_b.state,
+                                           path: "/#{project.full_path}/issues/#{issue_b.iid}",
+                                           project_path: issue_b.project.path,
+                                           namespace_full_path: issue_b.project.namespace.full_path,
+                                           destroy_relation_path: "/#{project.full_path}/issues/#{issue_b.iid}/links/#{issue_link_a.id}"))
 
-        expect(subject[1]).to eq(
-          {
-            id: issue_c.id,
-            iid: issue_c.iid,
-            title: issue_c.title,
-            state: issue_c.state,
-            path: "/#{project.full_path}/issues/#{issue_c.iid}",
-            project_path: issue_c.project.path,
-            namespace_full_path: issue_c.project.namespace.full_path,
-            destroy_relation_path: "/#{project.full_path}/issues/#{issue_c.iid}/links/#{issue_link_b.id}"
-          }
-        )
+        expect(subject).to include(include(id: issue_c.id,
+                                           iid: issue_c.iid,
+                                           title: issue_c.title,
+                                           state: issue_c.state,
+                                           path: "/#{project.full_path}/issues/#{issue_c.iid}",
+                                           project_path: issue_c.project.path,
+                                           namespace_full_path: issue_c.project.namespace.full_path,
+                                           destroy_relation_path: "/#{project.full_path}/issues/#{issue_c.iid}/links/#{issue_link_b.id}"))
 
-        expect(subject[2]).to eq(
-          {
-            id: issue_d.id,
-            iid: issue_d.iid,
-            title: issue_d.title,
-            state: issue_d.state,
-            path: "/#{project.full_path}/issues/#{issue_d.iid}",
-            project_path: issue_d.project.path,
-            namespace_full_path: issue_d.project.namespace.full_path,
-            destroy_relation_path: "/#{project.full_path}/issues/#{issue_d.iid}/links/#{issue_link_c.id}"
-          }
-        )
+        expect(subject).to include(include(id: issue_d.id,
+                                           iid: issue_d.iid,
+                                           title: issue_d.title,
+                                           state: issue_d.state,
+                                           path: "/#{project.full_path}/issues/#{issue_d.iid}",
+                                           project_path: issue_d.project.path,
+                                           namespace_full_path: issue_d.project.namespace.full_path,
+                                           destroy_relation_path: "/#{project.full_path}/issues/#{issue_d.iid}/links/#{issue_link_c.id}"))
       end
     end
 
