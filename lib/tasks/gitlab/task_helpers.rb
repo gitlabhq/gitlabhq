@@ -113,6 +113,7 @@ module Gitlab
       end
     end
 
+    # TODO: MIGRATED
     # Tries to configure git itself
     #
     # Returns true if all subcommands were successfull (according to their exit code)
