@@ -11,8 +11,7 @@
   = webpack_bundle_tag 'filtered_search'
 
 
-%div{ class: container_class }
-  = render 'projects/last_push'
+= render 'projects/last_push'
 
 - if @project.merge_requests.exists?
   %div{ class: container_class }

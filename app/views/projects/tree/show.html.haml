@@ -5,7 +5,7 @@
   = auto_discovery_link_tag(:atom, namespace_project_commits_url(@project.namespace, @project, @ref, rss_url_options), title: "#{@project.name}:#{@ref} commits")
 = render "projects/commits/head"
 
-%div{ class: container_class }
-  = render 'projects/last_push'
+= render 'projects/last_push'
 
+%div{ class: container_class }
   = render 'projects/files', commit: @last_commit, project: @project, ref: @ref
