@@ -4,10 +4,8 @@
     .event-last-push
       .event-last-push-text
         %span You pushed to
-        = link_to namespace_project_commits_path(event.project.namespace, event.project, event.ref_name), class: 'ref-name' do
-          %strong= event.ref_name
-
-        = clipboard_button(text: event.ref_name, gfm: "`#{event.ref_name}`", class: 'btn-clipboard btn-transparent', title: 'Copy branch name to clipboard')
+        %strong
+          = link_to event.ref_name, namespace_project_commits_path(event.project.namespace, event.project, event.ref_name), class: 'ref-name'
 
         - if event.project != @project
           %span at
