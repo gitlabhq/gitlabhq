@@ -1,6 +1,5 @@
 module Projects
   class IssueLinksController < ApplicationController
-    before_action :authorize_read_issue_link!
     before_action :authorize_admin_issue_link!, only: [:create, :destroy]
 
     def index
@@ -34,10 +33,6 @@ module Projects
 
     def authorize_admin_issue_link!
       render_404 unless can?(current_user, :admin_issue_link, @project)
-    end
-
-    def authorize_read_issue_link!
-      render_404 unless can?(current_user, :read_issue_link, @project)
     end
 
     def issue
