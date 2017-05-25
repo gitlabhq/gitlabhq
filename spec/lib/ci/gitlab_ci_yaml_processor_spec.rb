@@ -853,6 +853,7 @@ module Ci
         it 'does return production and URL' do
           expect(builds.size).to eq(1)
           expect(builds.first[:environment]).to eq(environment[:name])
+          expect(builds.first[:environment_url]).to eq(environment[:url])
           expect(builds.first[:options]).to include(environment: environment)
         end
 
@@ -865,6 +866,7 @@ module Ci
           it 'allows a variable for the port' do
             expect(builds.size).to eq(1)
             expect(builds.first[:environment]).to eq(environment[:name])
+            expect(builds.first[:environment_url]).to eq(environment[:url])
             expect(builds.first[:options]).to include(environment: environment)
           end
         end
