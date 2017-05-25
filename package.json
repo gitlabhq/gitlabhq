@@ -59,7 +59,7 @@
     "vue-resource": "^0.9.3",
     "vue-template-compiler": "^2.2.6",
     "webpack": "^2.6.0",
-    "webpack-bundle-analyzer": "^2.3.0"
+    "webpack-bundle-analyzer": "^2.8.2"
   },
   "devDependencies": {
     "babel-plugin-istanbul": "^4.0.0",
