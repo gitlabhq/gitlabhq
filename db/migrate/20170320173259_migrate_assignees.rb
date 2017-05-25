@@ -37,16 +37,8 @@ class MigrateAssignees < ActiveRecord::Migration
           users.project("true").where(users[:id].eq(table[:assignee_id])).exists.not
         ))
     end
-
-    execute <<-EOF
-      INSERT INTO issue_assignees(issue_id, user_id)
-      SELECT id, assignee_id FROM issues WHERE assignee_id IS NOT NULL
-    EOF
   end
 
   def down
-    execute <<-EOF
-      DELETE FROM issue_assignees
-    EOF
   end
 end

@@ -68,7 +68,9 @@ namespace :admin do
 
   resources :projects, only: [:index]
 
-  scope(path: 'projects/*namespace_id', as: :namespace) do
+  scope(path: 'projects/*namespace_id',
+        as: :namespace,
+        constraints: { namespace_id: Gitlab::Regex.namespace_route_regex }) do
     resources(:projects,
               path: '/',
               constraints: { id: Gitlab::Regex.project_route_regex },

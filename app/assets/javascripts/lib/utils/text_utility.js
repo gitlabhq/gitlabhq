@@ -1,5 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-param-reassign, no-cond-assign, quotes, one-var, one-var-declaration-per-line, operator-assignment, no-else-return, prefer-template, prefer-arrow-callback, no-empty, max-len, consistent-return, no-unused-vars, no-return-assign, max-len, vars-on-top */
-require('vendor/latinise');
+
+import 'vendor/latinise';
 
 var base;
 var w = window;

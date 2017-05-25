@@ -40,6 +40,14 @@ class ProfilesController < Profiles::ApplicationController
     redirect_to profile_account_path
   end
 
+  def reset_rss_token
+    if current_user.reset_rss_token!
+      flash[:notice] = "RSS token was successfully reset"
+    end
+
+    redirect_to profile_account_path
+  end
+
   def audit_log
     @events = AuditEvent.where(entity_type: "User", entity_id: current_user.id).
       order("created_at DESC").

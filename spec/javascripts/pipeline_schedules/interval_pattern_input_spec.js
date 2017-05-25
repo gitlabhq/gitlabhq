@@ -36,20 +36,6 @@ describe('Interval Pattern Input Component', function () {
         expect(this.intervalPatternComponent.initialCronInterval).toBe(this.initialCronInterval);
       });
 
-      it('sets showUnsetWarning to false', function (done) {
-        Vue.nextTick(() => {
-          expect(this.intervalPatternComponent.showUnsetWarning).toBe(false);
-          done();
-        });
-      });
-
-      it('does not render showUnsetWarning', function (done) {
-        Vue.nextTick(() => {
-          expect(this.intervalPatternComponent.$el.outerHTML).not.toContain('Schedule not yet set');
-          done();
-        });
-      });
-
       it('sets isEditable to true', function (done) {
         Vue.nextTick(() => {
           expect(this.intervalPatternComponent.isEditable).toBe(true);
@@ -70,20 +56,6 @@ describe('Interval Pattern Input Component', function () {
 
       it('is initialized as a Vue component', function () {
         expect(this.intervalPatternComponent).toBeDefined();
-      });
-
-      it('sets showUnsetWarning to false', function (done) {
-        Vue.nextTick(() => {
-          expect(this.intervalPatternComponent.showUnsetWarning).toBe(false);
-          done();
-        });
-      });
-
-      it('does not render showUnsetWarning', function (done) {
-        Vue.nextTick(() => {
-          expect(this.intervalPatternComponent.$el.outerHTML).not.toContain('Schedule not yet set');
-          done();
-        });
       });
 
       it('sets isEditable to false', function (done) {
@@ -111,20 +83,6 @@ describe('Interval Pattern Input Component', function () {
     it('prop initialCronInterval is set', function () {
       const defaultInitialCronInterval = '';
       expect(this.intervalPatternComponent.initialCronInterval).toBe(defaultInitialCronInterval);
-    });
-
-    it('sets showUnsetWarning to true', function (done) {
-      Vue.nextTick(() => {
-        expect(this.intervalPatternComponent.showUnsetWarning).toBe(true);
-        done();
-      });
-    });
-
-    it('renders showUnsetWarning to true', function (done) {
-      Vue.nextTick(() => {
-        expect(this.intervalPatternComponent.$el.outerHTML).toContain('Schedule not yet set');
-        done();
-      });
     });
 
     it('sets isEditable to true', function (done) {

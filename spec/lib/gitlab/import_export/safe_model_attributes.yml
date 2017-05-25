@@ -54,6 +54,7 @@ Note:
 - type
 - position
 - original_position
+- change_position
 - resolved_at
 - resolved_by_id
 - discussion_id
@@ -292,7 +293,7 @@ Service:
 - tag_push_events
 - note_events
 - pipeline_events
-- build_events
+- job_events
 - category
 - default
 - wiki_page_events
@@ -312,7 +313,7 @@ ProjectHook:
 - note_events
 - pipeline_events
 - enable_ssl_verification
-- build_events
+- job_events
 - wiki_page_events
 - token
 - group_id

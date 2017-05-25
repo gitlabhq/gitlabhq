@@ -1,6 +1,5 @@
 # Projects API
 
-
 ### Project visibility level
 
 Project in GitLab has be either private, internal or public.
@@ -16,8 +15,6 @@ Constants for project visibility levels are next:
 
 * `public`:
   The project can be cloned without any authentication.
-
-
 
 ## List projects
 

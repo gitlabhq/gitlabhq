@@ -440,6 +440,22 @@ describe User, models: true do
     end
   end
 
+  describe 'ensure incoming email token' do
+    it 'has incoming email token' do
+      user = create(:user)
+      expect(user.incoming_email_token).not_to be_blank
+    end
+  end
+
+  describe 'rss token' do
+    it 'ensures an rss token on read' do
+      user = create(:user, rss_token: nil)
+      rss_token = user.rss_token
+      expect(rss_token).not_to be_blank
+      expect(user.reload.rss_token).to eq rss_token
+    end
+  end
+
   describe '#recently_sent_password_reset?' do
     it 'is false when reset_password_sent_at is nil' do
       user = build_stubbed(:user, reset_password_sent_at: nil)
@@ -929,10 +945,20 @@ describe User, models: true do
     end
 
     context 'with a group route matching the given path' do
-      let!(:group) { create(:group, path: 'group_path') }
+      context 'when the group namespace has an owner_id (legacy data)' do
+        let!(:group) { create(:group, path: 'group_path', owner: user) }
 
-      it 'returns nil' do
-        expect(User.find_by_full_path('group_path')).to eq(nil)
+        it 'returns nil' do
+          expect(User.find_by_full_path('group_path')).to eq(nil)
+        end
+      end
+
+      context 'when the group namespace does not have an owner_id' do
+        let!(:group) { create(:group, path: 'group_path') }
+
+        it 'returns nil' do
+          expect(User.find_by_full_path('group_path')).to eq(nil)
+        end
       end
     end
   end
@@ -1775,6 +1801,34 @@ describe User, models: true do
       user = create(:user)
 
       expect(user.preferred_language).to eq('en')
+    end
+  end
+
+  context '#invalidate_issue_cache_counts' do
+    let(:user) { build_stubbed(:user) }
+
+    it 'invalidates cache for issue counter' do
+      cache_mock = double
+
+      expect(cache_mock).to receive(:delete).with(['users', user.id, 'assigned_open_issues_count'])
+
+      allow(Rails).to receive(:cache).and_return(cache_mock)
+
+      user.invalidate_issue_cache_counts
+    end
+  end
+
+  context '#invalidate_merge_request_cache_counts' do
+    let(:user) { build_stubbed(:user) }
+
+    it 'invalidates cache for Merge Request counter' do
+      cache_mock = double
+
+      expect(cache_mock).to receive(:delete).with(['users', user.id, 'assigned_open_merge_requests_count'])
+
+      allow(Rails).to receive(:cache).and_return(cache_mock)
+
+      user.invalidate_merge_request_cache_counts
     end
   end
 end

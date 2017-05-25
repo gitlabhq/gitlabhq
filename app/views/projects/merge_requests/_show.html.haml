@@ -21,7 +21,8 @@
     #js-vue-mr-widget.mr-widget
 
     - content_for :page_specific_javascripts do
-      = page_specific_javascript_bundle_tag('vue_merge_request_widget')
+      = webpack_bundle_tag 'common_vue'
+      = webpack_bundle_tag 'vue_merge_request_widget'
 
     .content-block.content-block-small.emoji-list-container
       = render 'award_emoji/awards_block', awardable: @merge_request, inline: true

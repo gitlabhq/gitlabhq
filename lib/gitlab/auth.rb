@@ -37,6 +37,9 @@ module Gitlab
       end
 
       def find_with_user_password(login, password)
+        # Avoid resource intensive login checks if password is not provided
+        return unless password.present?
+
         Gitlab::Auth::UniqueIpsLimiter.limit_user! do
           user = User.by_login(login)
 
@@ -44,7 +47,7 @@ module Gitlab
           #   LDAP users are only authenticated via LDAP
           if user.nil? || user.ldap_user?
             # Second chance - try LDAP authentication
-            return nil unless Gitlab::LDAP::Config.enabled?
+            return unless Gitlab::LDAP::Config.enabled?
 
             Gitlab::LDAP::Authentication.login(login, password)
           else

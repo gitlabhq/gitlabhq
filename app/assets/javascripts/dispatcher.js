@@ -34,13 +34,13 @@
 /* global ShortcutsWiki */
 
 import Issue from './issue';
-
 import BindInOut from './behaviors/bind_in_out';
 import DeleteModal from './branches/branches_delete_modal';
 import Group from './group';
 import GroupName from './group_name';
 import GroupsList from './groups_list';
 import ProjectsList from './projects_list';
+import setupProjectEdit from './project_edit';
 import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
 import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
 import Landing from './landing';
@@ -52,8 +52,9 @@ import Pipelines from './pipelines';
 import BlobViewer from './blob/viewer/index';
 import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
 import UsersSelect from './users_select';
-
-const ShortcutsBlob = require('./shortcuts_blob');
+import RefSelectDropdown from './ref_select_dropdown';
+import GfmAutoComplete from './gfm_auto_complete';
+import ShortcutsBlob from './shortcuts_blob';
 
 (function() {
   var Dispatcher;
@@ -77,6 +78,8 @@ const ShortcutsBlob = require('./shortcuts_blob');
       }
       path = page.split(':');
       shortcut_handler = null;
+
+      new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources).setup();
 
       function initBlob() {
         new LineHighlighter();
@@ -212,6 +215,7 @@ const ShortcutsBlob = require('./shortcuts_blob');
         case 'projects:tags:new':
           new ZenMode();
           new gl.GLForm($('.tag-form'));
+          new RefSelectDropdown($('.js-branch-select'), window.gl.availableRefs);
           break;
         case 'projects:releases:edit':
           new ZenMode();
@@ -256,8 +260,13 @@ const ShortcutsBlob = require('./shortcuts_blob');
           new NotificationsForm();
           if ($('#tree-slider').length) {
             new TreeView();
+          }
+          if ($('.blob-viewer').length) {
             new BlobViewer();
           }
+          break;
+        case 'projects:edit':
+          setupProjectEdit();
           break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:failures':

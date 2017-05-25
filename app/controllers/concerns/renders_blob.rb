@@ -14,7 +14,7 @@ module RendersBlob
     return render_404 unless viewer
 
     render json: {
-      html: view_to_html_string("projects/blob/_viewer", viewer: viewer, load_asynchronously: false)
+      html: view_to_html_string("projects/blob/_viewer", viewer: viewer, load_async: false)
     }
   end
 

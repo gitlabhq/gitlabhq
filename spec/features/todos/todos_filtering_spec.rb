@@ -28,7 +28,7 @@ describe 'Dashboard > User filters todos', feature: true, js: true do
       click_link project_1.name_with_namespace
     end
 
-    wait_for_ajax
+    wait_for_requests
 
     expect(page).to     have_content project_1.name_with_namespace
     expect(page).not_to have_content project_2.name_with_namespace
@@ -43,7 +43,7 @@ describe 'Dashboard > User filters todos', feature: true, js: true do
         click_link user_1.name
       end
 
-      wait_for_ajax
+      wait_for_requests
 
       expect(find('.todos-list')).to     have_content 'merge request'
       expect(find('.todos-list')).not_to have_content 'issue'
@@ -90,7 +90,7 @@ describe 'Dashboard > User filters todos', feature: true, js: true do
       click_link 'Issue'
     end
 
-    wait_for_ajax
+    wait_for_requests
 
     expect(find('.todos-list')).to     have_content issue.to_reference
     expect(find('.todos-list')).not_to have_content merge_request.to_reference
@@ -132,7 +132,7 @@ describe 'Dashboard > User filters todos', feature: true, js: true do
         click_link name
       end
 
-      wait_for_ajax
+      wait_for_requests
     end
 
     def expect_to_see_action(action_name)

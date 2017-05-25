@@ -124,13 +124,12 @@ class Note < ActiveRecord::Base
       groups = {}
 
       diff_notes.fresh.discussions.each do |discussion|
-        if discussion.active?(diff_refs)
-          discussions = groups[discussion.line_code] ||= []
-        elsif diff_refs && discussion.created_at_diff?(diff_refs)
-          discussions = groups[discussion.original_line_code] ||= []
-        end
+        line_code = discussion.line_code_in_diffs(diff_refs)
 
-        discussions << discussion if discussions
+        if line_code
+          discussions = groups[line_code] ||= []
+          discussions << discussion
+        end
       end
 
       groups

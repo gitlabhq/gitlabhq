@@ -1,6 +1,6 @@
-require('~/gl_dropdown');
-require('~/blob/create_branch_dropdown');
-require('~/blob/target_branch_dropdown');
+import '~/gl_dropdown';
+import '~/blob/create_branch_dropdown';
+import '~/blob/target_branch_dropdown';
 
 describe('CreateBranchDropdown', () => {
   const fixtureTemplate = 'static/target_branch_dropdown.html.raw';

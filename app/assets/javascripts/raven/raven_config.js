@@ -1,4 +1,5 @@
 import Raven from 'raven-js';
+import $ from 'jquery';
 
 const IGNORE_ERRORS = [
   // Random plugins/extensions
@@ -57,6 +58,8 @@ const RavenConfig = {
 
   configure() {
     Raven.config(this.options.sentryDsn, {
+      release: this.options.release,
+      tags: this.options.tags,
       whitelistUrls: this.options.whitelistUrls,
       environment: this.options.isProduction ? 'production' : 'development',
       ignoreErrors: this.IGNORE_ERRORS,
@@ -72,7 +75,7 @@ const RavenConfig = {
   },
 
   bindRavenErrors() {
-    window.$(document).on('ajaxError.raven', this.handleRavenErrors);
+    $(document).on('ajaxError.raven', this.handleRavenErrors);
   },
 
   handleRavenErrors(event, req, config, err) {

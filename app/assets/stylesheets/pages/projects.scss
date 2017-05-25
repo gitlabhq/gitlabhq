@@ -639,58 +639,6 @@ pre.light-well {
   }
 }
 
-.project-last-commit {
-  background-color: $gray-light;
-  border: 1px solid $border-color;
-  border-radius: $border-radius-base;
-  padding: 12px;
-
-  @media (min-width: $screen-sm-min) {
-    margin-top: $gl-padding;
-  }
-
-  .ci-status {
-    margin-right: $gl-padding;
-  }
-
-  .commit-row-message {
-    color: $gl-text-color;
-  }
-
-  .commit-sha {
-    margin-right: 5px;
-    font-weight: 600;
-  }
-
-  .commit-author-link {
-    .commit-author-name {
-      font-weight: 600;
-    }
-  }
-}
-
-.project-show-readme {
-  .row-content-block {
-    background-color: inherit;
-    border: none;
-  }
-
-  .readme-holder {
-    padding: $gl-padding 0;
-    border-top: 0;
-
-    .edit-project-readme {
-      z-index: 2;
-      position: relative;
-    }
-
-    .wiki h1 {
-      border-bottom: none;
-      padding: 0;
-    }
-  }
-}
-
 .git-clone-holder {
   width: 380px;
 

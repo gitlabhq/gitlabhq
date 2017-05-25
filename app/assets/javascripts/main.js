@@ -96,7 +96,6 @@ import './dropzone_input';
 import './due_date_select';
 import './files_comment_button';
 import './flash';
-import './gfm_auto_complete';
 import './gl_dropdown';
 import './gl_field_error';
 import './gl_field_errors';
@@ -171,7 +170,7 @@ import './visibility_select';
 import './wikis';
 import './zen_mode';
 
-// eslint-disable-next-line global-require
+// eslint-disable-next-line global-require, import/no-commonjs
 if (process.env.NODE_ENV !== 'production') require('./test_utils/');
 
 document.addEventListener('beforeunload', function () {

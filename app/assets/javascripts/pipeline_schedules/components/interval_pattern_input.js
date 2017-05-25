@@ -24,9 +24,6 @@ export default {
     };
   },
   computed: {
-    showUnsetWarning() {
-      return this.cronInterval === '';
-    },
     intervalIsPreset() {
       return _.contains(this.cronIntervalPresets, this.cronInterval);
     },
@@ -63,67 +60,75 @@ export default {
   },
   template: `
     <div class="interval-pattern-form-group">
-      <input
-        id="custom"
-        class="label-light"
-        type="radio"
-        :name="inputNameAttribute"
-        :value="cronInterval"
-        :checked="isEditable"
-        @click="toggleCustomInput(true)"
-      />
+      <div class="cron-preset-radio-input">
+        <input
+          id="custom"
+          class="label-light"
+          type="radio"
+          :name="inputNameAttribute"
+          :value="cronInterval"
+          :checked="isEditable"
+          @click="toggleCustomInput(true)"
+        />
 
-      <label for="custom">
-        Custom
-      </label>
+        <label for="custom">
+          Custom
+        </label>
 
-      <span class="cron-syntax-link-wrap">
-        (<a :href="cronSyntaxUrl" target="_blank">Cron syntax</a>)
-      </span>
+        <span class="cron-syntax-link-wrap">
+          (<a :href="cronSyntaxUrl" target="_blank">Cron syntax</a>)
+        </span>
+      </div>
 
-      <input
-        id="every-day"
-        class="label-light"
-        type="radio"
-        v-model="cronInterval"
-        :name="inputNameAttribute"
-        :value="cronIntervalPresets.everyDay"
-        @click="toggleCustomInput(false)"
-      />
+      <div class="cron-preset-radio-input">
+        <input
+          id="every-day"
+          class="label-light"
+          type="radio"
+          v-model="cronInterval"
+          :name="inputNameAttribute"
+          :value="cronIntervalPresets.everyDay"
+          @click="toggleCustomInput(false)"
+        />
 
-      <label class="label-light" for="every-day">
-        Every day (at 4:00am)
-      </label>
+        <label class="label-light" for="every-day">
+          Every day (at 4:00am)
+        </label>
+      </div>
 
-      <input
-        id="every-week"
-        class="label-light"
-        type="radio"
-        v-model="cronInterval"
-        :name="inputNameAttribute"
-        :value="cronIntervalPresets.everyWeek"
-        @click="toggleCustomInput(false)"
-      />
+      <div class="cron-preset-radio-input">
+        <input
+          id="every-week"
+          class="label-light"
+          type="radio"
+          v-model="cronInterval"
+          :name="inputNameAttribute"
+          :value="cronIntervalPresets.everyWeek"
+          @click="toggleCustomInput(false)"
+        />
 
-      <label class="label-light" for="every-week">
-        Every week (Sundays at 4:00am)
-      </label>
+        <label class="label-light" for="every-week">
+          Every week (Sundays at 4:00am)
+        </label>
+      </div>
 
-      <input
-        id="every-month"
-        class="label-light"
-        type="radio"
-        v-model="cronInterval"
-        :name="inputNameAttribute"
-        :value="cronIntervalPresets.everyMonth"
-        @click="toggleCustomInput(false)"
-      />
+      <div class="cron-preset-radio-input">
+        <input
+          id="every-month"
+          class="label-light"
+          type="radio"
+          v-model="cronInterval"
+          :name="inputNameAttribute"
+          :value="cronIntervalPresets.everyMonth"
+          @click="toggleCustomInput(false)"
+        />
 
-      <label class="label-light" for="every-month">
-        Every month (on the 1st at 4:00am)
-      </label>
+        <label class="label-light" for="every-month">
+          Every month (on the 1st at 4:00am)
+        </label>
+      </div>
 
-      <div class="cron-interval-input-wrapper col-md-6">
+      <div class="cron-interval-input-wrapper">
         <input
           id="schedule_cron"
           class="form-control inline cron-interval-input"
@@ -135,9 +140,6 @@ export default {
           :disabled="!isEditable"
         />
       </div>
-      <span class="cron-unset-status col-md-3" v-if="showUnsetWarning">
-        Schedule not yet set
-      </span>
     </div>
   `,
 };

@@ -27,10 +27,12 @@ describe MergeRequests::CreateService, services: true do
         @merge_request = service.execute
       end
 
-      it { expect(@merge_request).to be_valid }
-      it { expect(@merge_request.title).to eq('Awesome merge_request') }
-      it { expect(@merge_request.assignee).to be_nil }
-      it { expect(@merge_request.merge_params['force_remove_source_branch']).to eq('1') }
+      it 'creates an MR' do
+        expect(@merge_request).to be_valid
+        expect(@merge_request.title).to eq('Awesome merge_request')
+        expect(@merge_request.assignee).to be_nil
+        expect(@merge_request.merge_params['force_remove_source_branch']).to eq('1')
+      end
 
       it 'executes hooks with default action' do
         expect(service).to have_received(:execute_hooks).with(@merge_request)

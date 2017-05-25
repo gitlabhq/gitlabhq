@@ -191,7 +191,6 @@
     }
 
     .commit-title {
-      margin-top: 4px;
       max-width: 225px;
       overflow: hidden;
       white-space: nowrap;
@@ -224,7 +223,7 @@
   .duration,
   .finished-at {
     color: $gl-text-color-secondary;
-    margin: 4px 0;
+    margin: 0;
     white-space: nowrap;
 
     .fa {

@@ -51,8 +51,10 @@ describe Issues::CloseService, services: true do
         end
       end
 
-      it { expect(issue).to be_valid }
-      it { expect(issue).to be_closed }
+      it 'closes the issue' do
+        expect(issue).to be_valid
+        expect(issue).to be_closed
+      end
 
       it 'sends email to user2 about assign of new issue' do
         email = ActionMailer::Base.deliveries.last
@@ -96,9 +98,11 @@ describe Issues::CloseService, services: true do
         described_class.new(project, user).close_issue(issue)
       end
 
-      it { expect(issue).to be_valid }
-      it { expect(issue).to be_opened }
-      it { expect(todo.reload).to be_pending }
+      it 'closes the issue' do
+        expect(issue).to be_valid
+        expect(issue).to be_opened
+        expect(todo.reload).to be_pending
+      end
     end
   end
 end

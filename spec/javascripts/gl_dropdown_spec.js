@@ -1,8 +1,8 @@
 /* eslint-disable comma-dangle, no-param-reassign, no-unused-expressions, max-len */
 
-require('~/gl_dropdown');
-require('~/lib/utils/common_utils');
-require('~/lib/utils/url_utility');
+import '~/gl_dropdown';
+import '~/lib/utils/common_utils';
+import '~/lib/utils/url_utility';
 
 (() => {
   const NON_SELECTABLE_CLASSES = '.divider, .separator, .dropdown-header, .dropdown-menu-empty-link';

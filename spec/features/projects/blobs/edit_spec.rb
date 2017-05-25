@@ -18,7 +18,7 @@ feature 'Editing file blob', feature: true, js: true do
     end
 
     def edit_and_commit
-      wait_for_ajax
+      wait_for_requests
       find('.js-edit-blob').click
       execute_script('ace.edit("editor").setValue("class NextFeature\nend\n")')
       click_button 'Commit changes'

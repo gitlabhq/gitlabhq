@@ -6,6 +6,7 @@
 /* global Pikaday */
 
 import UsersSelect from './users_select';
+import GfmAutoComplete from './gfm_auto_complete';
 
 (function() {
   this.IssuableForm = (function() {
@@ -20,7 +21,7 @@ import UsersSelect from './users_select';
       this.renderWipExplanation = this.renderWipExplanation.bind(this);
       this.resetAutosave = this.resetAutosave.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
-      gl.GfmAutoComplete.setup();
+      new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources).setup();
       new UsersSelect();
       new ZenMode();
       this.titleField = this.form.find("input[name*='[title]']");

@@ -2,10 +2,9 @@ require 'spec_helper'
 
 feature 'Pipeline Schedules', :feature do
   include PipelineSchedulesHelper
-  include WaitForAjax
 
   let!(:project) { create(:project) }
-  let!(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
+  let!(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly, project: project ) }
   let!(:pipeline) { create(:ci_pipeline, pipeline_schedule: pipeline_schedule) }
   let(:scope) { nil }
   let!(:user) { create(:user) }
@@ -32,13 +31,14 @@ feature 'Pipeline Schedules', :feature do
       it 'displays the required information description' do
         page.within('.pipeline-schedule-table-row') do
           expect(page).to have_content('pipeline schedule')
+          expect(page).to have_content(pipeline_schedule.real_next_run.strftime('%b %d, %Y'))
           expect(page).to have_link('master')
           expect(page).to have_link("##{pipeline.id}")
         end
       end
 
       it 'creates a new scheduled pipeline' do
-        click_link 'New Schedule'
+        click_link 'New schedule'
 
         expect(page).to have_content('Schedule a new pipeline')
       end
@@ -69,6 +69,11 @@ feature 'Pipeline Schedules', :feature do
 
   describe 'POST /projects/pipeline_schedules/new', js: true do
     let(:visit_page) { visit_new_pipeline_schedule }
+
+    it 'sets defaults for timezone and target branch' do
+      expect(page).to have_button('master')
+      expect(page).to have_button('UTC')
+    end
 
     it 'it creates a new scheduled pipeline' do
       fill_in_schedule_form
@@ -118,12 +123,12 @@ feature 'Pipeline Schedules', :feature do
   end
 
   def select_timezone
-    click_button 'Select a timezone'
+    find('.js-timezone-dropdown').click
     click_link 'American Samoa'
   end
 
   def select_target_branch
-    click_button 'Select target branch'
+    find('.js-target-branch-dropdown').click
     click_link 'master'
   end
 

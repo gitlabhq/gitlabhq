@@ -27,12 +27,14 @@ describe Ci::CreatePipelineService, services: true do
         )
       end
 
-      it { expect(pipeline).to be_kind_of(Ci::Pipeline) }
-      it { expect(pipeline).to be_valid }
-      it { expect(pipeline).to eq(project.pipelines.last) }
-      it { expect(pipeline).to have_attributes(user: user) }
-      it { expect(pipeline).to have_attributes(status: 'pending') }
-      it { expect(pipeline.builds.first).to be_kind_of(Ci::Build) }
+      it 'creates a pipeline' do
+        expect(pipeline).to be_kind_of(Ci::Pipeline)
+        expect(pipeline).to be_valid
+        expect(pipeline).to eq(project.pipelines.last)
+        expect(pipeline).to have_attributes(user: user)
+        expect(pipeline).to have_attributes(status: 'pending')
+        expect(pipeline.builds.first).to be_kind_of(Ci::Build)
+      end
 
       context '#update_merge_requests_head_pipeline' do
         it 'updates head pipeline of each merge request' do

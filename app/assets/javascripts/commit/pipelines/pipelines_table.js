@@ -1,11 +1,11 @@
 import Vue from 'vue';
 import Visibility from 'visibilityjs';
-import PipelinesTableComponent from '../../vue_shared/components/pipelines_table';
+import pipelinesTableComponent from '../../vue_shared/components/pipelines_table';
 import PipelinesService from '../../pipelines/services/pipelines_service';
 import PipelineStore from '../../pipelines/stores/pipelines_store';
 import eventHub from '../../pipelines/event_hub';
-import EmptyState from '../../pipelines/components/empty_state.vue';
-import ErrorState from '../../pipelines/components/error_state.vue';
+import emptyState from '../../pipelines/components/empty_state.vue';
+import errorState from '../../pipelines/components/error_state.vue';
 import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 import '../../lib/utils/common_utils';
 import '../../vue_shared/vue_resource_interceptor';
@@ -23,9 +23,9 @@ import Poll from '../../lib/utils/poll';
 export default Vue.component('pipelines-table', {
 
   components: {
-    'pipelines-table-component': PipelinesTableComponent,
-    'error-state': ErrorState,
-    'empty-state': EmptyState,
+    pipelinesTableComponent,
+    errorState,
+    emptyState,
     loadingIcon,
   },
 
@@ -47,6 +47,7 @@ export default Vue.component('pipelines-table', {
       hasError: false,
       isMakingRequest: false,
       updateGraphDropdown: false,
+      hasMadeRequest: false,
     };
   },
 
@@ -55,9 +56,15 @@ export default Vue.component('pipelines-table', {
       return this.hasError && !this.isLoading;
     },
 
+    /**
+     * Empty state is only rendered if after the first request we receive no pipelines.
+     *
+     * @return {Boolean}
+     */
     shouldRenderEmptyState() {
       return !this.state.pipelines.length &&
         !this.isLoading &&
+        this.hasMadeRequest &&
         !this.hasError;
     },
 
@@ -94,6 +101,10 @@ export default Vue.component('pipelines-table', {
     if (!Visibility.hidden()) {
       this.isLoading = true;
       this.poll.makeRequest();
+    } else {
+      // If tab is not visible we need to make the first request so we don't show the empty
+      // state without knowing if there are any pipelines
+      this.fetchPipelines();
     }
 
     Visibility.change(() => {
@@ -126,6 +137,8 @@ export default Vue.component('pipelines-table', {
 
     successCallback(resp) {
       const response = resp.json();
+
+      this.hasMadeRequest = true;
 
       // depending of the endpoint the response can either bring a `pipelines` key or not.
       const pipelines = response.pipelines || response;

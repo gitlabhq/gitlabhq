@@ -16,7 +16,7 @@ feature 'Create Branch/Merge Request Dropdown on issue page', feature: true, js:
 
       select_dropdown_option('create-mr')
 
-      wait_for_ajax
+      wait_for_requests
 
       expect(page).to have_content("created branch 1-cherry-coloured-funk")
       expect(page).to have_content("mentioned in merge request !1")
@@ -32,7 +32,7 @@ feature 'Create Branch/Merge Request Dropdown on issue page', feature: true, js:
 
       select_dropdown_option('create-branch')
 
-      wait_for_ajax
+      wait_for_requests
 
       expect(page).to have_selector('.dropdown-toggle-text ', text: '1-cherry-coloured-funk')
       expect(current_path).to eq namespace_project_tree_path(project.namespace, project, '1-cherry-coloured-funk')

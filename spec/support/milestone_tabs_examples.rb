@@ -1,7 +1,7 @@
 shared_examples 'milestone tabs' do
   def go(path, extra_params = {})
     params = if milestone.is_a?(GlobalMilestone)
-               { group_id: group.id, id: milestone.safe_title, title: milestone.title }
+               { group_id: group.to_param, id: milestone.safe_title, title: milestone.title }
              else
                { namespace_id: project.namespace.to_param, project_id: project, id: milestone.iid }
              end

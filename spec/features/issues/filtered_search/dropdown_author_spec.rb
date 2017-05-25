@@ -16,7 +16,7 @@ describe 'Dropdown author', js: true, feature: true do
     end
 
     sleep 0.5
-    wait_for_ajax
+    wait_for_requests
   end
 
   def dropdown_author_size

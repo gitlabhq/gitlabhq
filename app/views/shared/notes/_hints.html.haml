@@ -9,6 +9,27 @@
     - else
       is
     supported
-  %button.toolbar-button.markdown-selector{ type: 'button', tabindex: '-1' }
-    = icon('file-image-o', class: 'toolbar-button-icon')
-    Attach a file
+
+  %span.uploading-container
+    %span.uploading-progress-container.hide
+      = icon('file-image-o', class: 'toolbar-button-icon')
+      %span.attaching-file-message
+        -# Populated by app/assets/javascripts/dropzone_input.js
+      %span.uploading-progress 0%
+      %span.uploading-spinner
+        = icon('spinner spin', class: 'toolbar-button-icon')
+
+    %span.uploading-error-container.hide
+      %span.uploading-error-icon
+        = icon('file-image-o', class: 'toolbar-button-icon')
+      %span.uploading-error-message
+        -# Populated by app/assets/javascripts/dropzone_input.js
+      %button.retry-uploading-link{ type: 'button' } Try again
+      or
+      %button.attach-new-file.markdown-selector{ type: 'button' } attach a new file
+
+    %button.markdown-selector.button-attach-file{ type: 'button', tabindex: '-1' }
+      = icon('file-image-o', class: 'toolbar-button-icon')
+      Attach a file
+
+    %button.btn.btn-default.btn-xs.hide.button-cancel-uploading-files{ type: 'button' } Cancel

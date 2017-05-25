@@ -5,6 +5,7 @@ module BlobViewer
 
     self.partial_name = 'markup'
     self.extensions = Gitlab::MarkupHelper::EXTENSIONS
+    self.file_types = %i(readme)
     self.binary = false
   end
 end

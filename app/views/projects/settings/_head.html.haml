@@ -24,9 +24,9 @@
                 Repository
           - if @project.feature_available?(:builds, current_user)
             = nav_link(controller: :ci_cd) do
-              = link_to namespace_project_settings_ci_cd_path(@project.namespace, @project), title: 'CI/CD Pipelines' do
+              = link_to namespace_project_settings_ci_cd_path(@project.namespace, @project), title: 'Pipelines' do
                 %span
-                  CI/CD Pipelines
+                  Pipelines
           - if Gitlab.config.pages.enabled
             = nav_link(controller: :pages) do
               = link_to namespace_project_pages_path(@project.namespace, @project), title: 'Pages' do

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170508190732) do
+ActiveRecord::Schema.define(version: 20170523091700) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -459,7 +459,7 @@ ActiveRecord::Schema.define(version: 20170508190732) do
 
   add_index "identities", ["user_id"], name: "index_identities_on_user_id", using: :btree
 
-  create_table "issue_assignees", force: :cascade do |t|
+  create_table "issue_assignees", id: false, force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "issue_id", null: false
   end
@@ -794,6 +794,7 @@ ActiveRecord::Schema.define(version: 20170508190732) do
     t.string "discussion_id"
     t.text "note_html"
     t.integer "cached_markdown_version"
+    t.text "change_position"
   end
 
   add_index "notes", ["author_id"], name: "index_notes_on_author_id", using: :btree
@@ -1125,13 +1126,13 @@ ActiveRecord::Schema.define(version: 20170508190732) do
     t.boolean "merge_requests_events", default: true
     t.boolean "tag_push_events", default: true
     t.boolean "note_events", default: true, null: false
-    t.boolean "build_events", default: false, null: false
     t.string "category", default: "common", null: false
     t.boolean "default", default: false
     t.boolean "wiki_page_events", default: true
     t.boolean "pipeline_events", default: false, null: false
     t.boolean "confidential_issues_events", default: true, null: false
     t.boolean "commit_events", default: true, null: false
+    t.boolean "job_events", default: false, null: false
   end
 
   add_index "services", ["project_id"], name: "index_services_on_project_id", using: :btree
@@ -1361,6 +1362,7 @@ ActiveRecord::Schema.define(version: 20170508190732) do
     t.date "last_activity_on"
     t.boolean "notified_of_own_activity"
     t.string "preferred_language"
+    t.string "rss_token"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
@@ -1374,6 +1376,7 @@ ActiveRecord::Schema.define(version: 20170508190732) do
   add_index "users", ["name"], name: "index_users_on_name", using: :btree
   add_index "users", ["name"], name: "index_users_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+  add_index "users", ["rss_token"], name: "index_users_on_rss_token", using: :btree
   add_index "users", ["state"], name: "index_users_on_state", using: :btree
   add_index "users", ["username"], name: "index_users_on_username", using: :btree
   add_index "users", ["username"], name: "index_users_on_username_trigram", using: :gin, opclasses: {"username"=>"gin_trgm_ops"}
@@ -1401,11 +1404,11 @@ ActiveRecord::Schema.define(version: 20170508190732) do
     t.boolean "tag_push_events", default: false
     t.boolean "note_events", default: false, null: false
     t.boolean "enable_ssl_verification", default: true
-    t.boolean "build_events", default: false, null: false
     t.boolean "wiki_page_events", default: false, null: false
     t.string "token"
     t.boolean "pipeline_events", default: false, null: false
     t.boolean "confidential_issues_events", default: false, null: false
+    t.boolean "job_events", default: false, null: false
     t.boolean "repository_update_events", default: false, null: false
   end
 
@@ -1416,14 +1419,15 @@ ActiveRecord::Schema.define(version: 20170508190732) do
   add_foreign_key "chat_teams", "namespaces", on_delete: :cascade
   add_foreign_key "ci_builds", "ci_pipelines", column: "auto_canceled_by_id", name: "fk_a2141b1522", on_delete: :nullify
   add_foreign_key "ci_pipeline_schedules", "projects", name: "fk_8ead60fcc4", on_delete: :cascade
+  add_foreign_key "ci_pipeline_schedules", "users", column: "owner_id", name: "fk_9ea99f58d2", on_delete: :nullify
   add_foreign_key "ci_pipelines", "ci_pipeline_schedules", column: "pipeline_schedule_id", name: "fk_3d34ab2e06", on_delete: :nullify
   add_foreign_key "ci_pipelines", "ci_pipelines", column: "auto_canceled_by_id", name: "fk_262d4c2d19", on_delete: :nullify
   add_foreign_key "ci_trigger_requests", "ci_triggers", column: "trigger_id", name: "fk_b8ec8b7245", on_delete: :cascade
   add_foreign_key "ci_triggers", "users", column: "owner_id", name: "fk_e8e10d1964", on_delete: :cascade
   add_foreign_key "ci_variables", "projects", name: "fk_ada5eb64b3", on_delete: :cascade
   add_foreign_key "container_repositories", "projects"
-  add_foreign_key "issue_assignees", "issues", on_delete: :cascade
-  add_foreign_key "issue_assignees", "users", on_delete: :cascade
+  add_foreign_key "issue_assignees", "issues", name: "fk_b7d881734a", on_delete: :cascade
+  add_foreign_key "issue_assignees", "users", name: "fk_5e0c8d9154", on_delete: :cascade
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
   add_foreign_key "label_priorities", "labels", on_delete: :cascade
   add_foreign_key "label_priorities", "projects", on_delete: :cascade

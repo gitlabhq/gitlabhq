@@ -54,7 +54,6 @@ module API
       end
       post ":id/hooks" do
         hook_params = declared_params(include_missing: false)
-        hook_params[:build_events] = hook_params.delete(:job_events) { false }
 
         hook = user_project.hooks.new(hook_params)
 
@@ -78,7 +77,6 @@ module API
         hook = user_project.hooks.find(params.delete(:hook_id))
 
         update_params = declared_params(include_missing: false)
-        update_params[:build_events] = update_params.delete(:job_events) if update_params[:job_events]
 
         if hook.update_attributes(update_params)
           present hook, with: Entities::ProjectHook

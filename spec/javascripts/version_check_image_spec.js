@@ -1,6 +1,5 @@
-const ClassSpecHelper = require('./helpers/class_spec_helper');
-const VersionCheckImage = require('~/version_check_image');
-require('jquery');
+import VersionCheckImage from '~/version_check_image';
+import ClassSpecHelper from './helpers/class_spec_helper';
 
 describe('VersionCheckImage', function () {
   describe('bindErrorEvent', function () {

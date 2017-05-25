@@ -33,7 +33,7 @@ describe Gitlab::ImportExport::RelationFactory, lib: true do
         'tag_push_events' => false,
         'note_events' => true,
         'enable_ssl_verification' => true,
-        'build_events' => false,
+        'job_events' => false,
         'wiki_page_events' => true,
         'token' => token
       }

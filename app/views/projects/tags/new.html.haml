@@ -1,4 +1,5 @@
 - page_title "New Tag"
+- default_ref = params[:ref] || @project.default_branch
 
 - if @error
   .alert.alert-danger
@@ -16,9 +17,13 @@
       = text_field_tag :tag_name, params[:tag_name], required: true, tabindex: 1, autofocus: true, class: 'form-control'
   .form-group
     = label_tag :ref, 'Create from', class: 'control-label'
-    .col-sm-10
-      = text_field_tag :ref, params[:ref] || @project.default_branch, required: true, tabindex: 2, class: 'form-control'
-      .help-block  Branch name or commit SHA
+    .col-sm-10.create-from
+      .dropdown
+        = hidden_field_tag :ref, default_ref
+        = button_tag type: 'button', title: default_ref, class: 'dropdown-menu-toggle wide form-control js-branch-select', required: true, data: { toggle: 'dropdown', selected: default_ref, field_name: 'ref' } do
+          .text-left.dropdown-toggle-text= default_ref
+        = render 'shared/ref_dropdown', dropdown_class: 'wide'
+      .help-block Existing branch name, tag, or commit SHA
   .form-group
     = label_tag :message, nil, class: 'control-label'
     .col-sm-10
@@ -37,9 +42,5 @@
     = link_to 'Cancel', namespace_project_tags_path(@project.namespace, @project), class: 'btn btn-cancel'
 
 :javascript
-  var availableRefs = #{@project.repository.ref_names.to_json};
-
-  $("#ref").autocomplete({
-    source: availableRefs,
-    minLength: 1
-  });
+  window.gl = window.gl || { };
+  window.gl.availableRefs = #{@project.repository.ref_names.to_json};

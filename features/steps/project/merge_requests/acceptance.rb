@@ -1,7 +1,7 @@
 class Spinach::Features::ProjectMergeRequestsAcceptance < Spinach::FeatureSteps
   include LoginHelpers
   include GitlabRoutingHelper
-  include WaitForVueResource
+  include WaitForRequests
 
   step 'I am on the Merge Request detail page' do
     visit merge_request_path(@merge_request)
@@ -24,7 +24,7 @@ class Spinach::Features::ProjectMergeRequestsAcceptance < Spinach::FeatureSteps
 
     # Wait for View Resource requests to complete so they don't blow up if they are
     # only handled after `DatabaseCleaner` has already run
-    wait_for_vue_resource
+    wait_for_requests
   end
 
   step 'I should not see the Remove Source Branch button' do
@@ -32,7 +32,7 @@ class Spinach::Features::ProjectMergeRequestsAcceptance < Spinach::FeatureSteps
 
     # Wait for View Resource requests to complete so they don't blow up if they are
     # only handled after `DatabaseCleaner` has already run
-    wait_for_vue_resource
+    wait_for_requests
   end
 
   step 'There is an open Merge Request' do

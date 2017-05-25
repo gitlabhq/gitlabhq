@@ -473,5 +473,45 @@ describe UploadsController do
         end
       end
     end
+
+    context 'Appearance' do
+      context 'when viewing a custom header logo' do
+        let!(:appearance) { create :appearance, header_logo: fixture_file_upload(Rails.root.join('spec/fixtures/dk.png'), 'image/png') }
+
+        context 'when not signed in' do
+          it 'responds with status 200' do
+            get :show, model: 'appearance', mounted_as: 'header_logo', id: appearance.id, filename: 'dk.png'
+
+            expect(response).to have_http_status(200)
+          end
+
+          it_behaves_like 'content not cached without revalidation' do
+            subject do
+              get :show, model: 'appearance', mounted_as: 'header_logo', id: appearance.id, filename: 'dk.png'
+              response
+            end
+          end
+        end
+      end
+
+      context 'when viewing a custom logo' do
+        let!(:appearance) { create :appearance, logo: fixture_file_upload(Rails.root.join('spec/fixtures/dk.png'), 'image/png') }
+
+        context 'when not signed in' do
+          it 'responds with status 200' do
+            get :show, model: 'appearance', mounted_as: 'logo', id: appearance.id, filename: 'dk.png'
+
+            expect(response).to have_http_status(200)
+          end
+
+          it_behaves_like 'content not cached without revalidation' do
+            subject do
+              get :show, model: 'appearance', mounted_as: 'logo', id: appearance.id, filename: 'dk.png'
+              response
+            end
+          end
+        end
+      end
+    end
   end
 end

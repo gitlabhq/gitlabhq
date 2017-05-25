@@ -2,9 +2,7 @@
  * exports HTTP status codes
  */
 
-const statusCodes = {
+export default {
   NO_CONTENT: 204,
   OK: 200,
 };
-
-module.exports = statusCodes;
