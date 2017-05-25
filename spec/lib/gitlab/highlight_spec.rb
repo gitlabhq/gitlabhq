@@ -59,8 +59,6 @@ describe Gitlab::Highlight, lib: true do
   end
 
   describe '#highlight' do
-    subject { described_class.highlight(file_name, file_content, nowrap: false) }
-
     it 'links dependencies via DependencyLinker' do
       expect(Gitlab::DependencyLinker).to receive(:link).
         with('file.name', 'Contents', anything).and_call_original
