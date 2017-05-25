@@ -136,10 +136,10 @@ describe 'Project variables', js: true do
     end
 
     expect(page).to have_content('Update variable')
-    check('Protected')
+    uncheck('Protected')
     click_button('Save variable')
 
     expect(page).to have_content('Variable was successfully updated.')
-    expect(project.variables.first).not_to be_protected
+    expect(project.reload.variables.first).not_to be_protected
   end
 end
