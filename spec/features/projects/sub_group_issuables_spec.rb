@@ -1,29 +1,32 @@
 require 'spec_helper'
 
 describe 'Subgroup Issuables', :feature, :js do
-  let!(:parent_group) { create(:group, name: 'parentgroup') }
-  let!(:subgroup) { create(:group, parent: parent_group, name: 'subgroup') }
-  let!(:project) { create(:empty_project, namespace: subgroup, name: 'project') }
-  let(:user) { create(:user) }
+  let!(:group)    { create(:group, name: 'group') }
+  let!(:subgroup) { create(:group, parent: group, name: 'subgroup') }
+  let!(:project)  { create(:empty_project, namespace: subgroup, name: 'project') }
+  let(:user)      { create(:user) }
 
   before do
     project.add_master(user)
     login_as user
   end
 
-  context 'empty issues index' do
-    before do
-      visit namespace_project_issues_path(project.namespace, project)
-    end
+  it 'shows the full subgroup title when issues index page is empty' do
+    visit namespace_project_issues_path(project.namespace.to_param, project.to_param)
 
-    it_behaves_like 'has subgroup title', 'parentgroup', 'subgroup', 'project'
+    expect_to_have_full_subgroup_title
   end
 
-  context 'empty merge request index' do
-    before do
-      visit namespace_project_merge_requests_path(project.namespace, project)
-    end
+  it 'shows the full subgroup title when merge requests index page is empty' do
+    visit namespace_project_merge_requests_path(project.namespace.to_param, project.to_param)
 
-    it_behaves_like 'has subgroup title', 'parentgroup', 'subgroup', 'project'
+    expect_to_have_full_subgroup_title
+  end
+
+  def expect_to_have_full_subgroup_title
+    title = find('.title-container')
+
+    expect(title).not_to have_selector '.initializing'
+    expect(title).to have_content 'group / subgroup / project'
   end
 end
