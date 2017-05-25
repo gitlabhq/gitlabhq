@@ -104,7 +104,7 @@ module API
             )
           end
 
-          present group, with: Entities::Group, current_user: current_user
+          present group, with: Entities::GroupDetail, current_user: current_user
         else
           render_api_error!("Failed to save group #{group.errors.messages}", 400)
         end

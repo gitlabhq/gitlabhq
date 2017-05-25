@@ -513,10 +513,8 @@ describe API::Groups do
 
             post api("/groups", admin), group
 
-            created_group = Group.find(json_response['id'])
-
             expect(response).to have_http_status(201)
-            expect(created_group.shared_runners_minutes_limit).to eq(133)
+            expect(json_response['shared_runners_minutes_limit']).to eq(133)
           end
         end
       end
