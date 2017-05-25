@@ -7,8 +7,8 @@ window.Flash = (function() {
     return $(this).fadeOut();
   };
 
-  function Flash(message, type, parent) {
-    var flash, textDiv;
+  function Flash(message, type, parent, actionConfig) {
+    var flash, textDiv, actionLink;
     if (type == null) {
       type = 'alert';
     }
@@ -30,6 +30,17 @@ window.Flash = (function() {
       text: message
     });
     textDiv.appendTo(flash);
+
+    if (actionConfig) {
+      actionLink = $('<a/>', {
+        "class": "flash-action",
+        "href": "#",
+        text: actionConfig.title
+      });
+
+      actionLink.appendTo(flash);
+      this.flashContainer.on('click', '.flash-action', actionConfig.clickHandler);
+    }
     if (this.flashContainer.parent().hasClass('content-wrapper')) {
       textDiv.addClass('container-fluid container-limited');
     }
