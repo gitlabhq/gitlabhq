@@ -1,47 +1,46 @@
 module Gitlab::Prometheus::Queries
   class AdditionalMetricsQuery < BaseQuery
-    def self.metrics
-      @metrics ||= YAML.load_file(Rails.root.join('config/custom_metrics.yml')).freeze
-    end
-
     def query(environment_id)
-      environment = Environment.find_by(id: environment_id)
-
-      context = {
-        environment_slug: environment.slug,
-        environment_filter: %{container_name!="POD",environment="#{environment.slug}"}
-      }
-
-      timeframe_start = 8.hours.ago.to_f
-      timeframe_end = Time.now.to_f
+      query_processor = method(:process_query).curry[query_context(environment_id)]
 
       matched_metrics.map do |group|
-        group[:metrics].map! do |metric|
-          metric[:queries].map! do |query|
-            query = query.symbolize_keys
-            query[:result] =
-              if query.has_key?(:query_range)
-                client_query_range(query[:query_range] % context, start: timeframe_start, stop: timeframe_end)
-              else
-                client_query(query[:query] % context, time: timeframe_end)
-              end
-            query
-          end
-          metric
+        metrics = group.metrics.map do |metric|
+          {
+            title: metric.title,
+            weight: metric.weight,
+            queries: metric.queries.map(&query_processor)
+          }
         end
-        group
+
+        {
+          group: group.name,
+          priority: group.priority,
+          metrics: metrics
+        }
       end
     end
 
-    def process_query(group, query)
-      result = if query.has_key?(:query_range)
-                 client_query_range(query[:query_range] % context, start: timeframe_start, stop: timeframe_end)
-               else
-                 client_query(query[:query] % context, time: timeframe_end)
-               end
-      contains_metrics = result.all? do |item|
-        item&.[](:values)&.any? || item&.[](:value)&.any?
-      end
+    private
+
+    def query_context(environment_id)
+      environment = Environment.find_by(id: environment_id)
+      {
+        environment_slug: environment.slug,
+        environment_filter: %{container_name!="POD",environment="#{environment.slug}"},
+        timeframe_start: 8.hours.ago.to_f,
+        timeframe_end: Time.now.to_f
+      }
+    end
+
+    def process_query(context, query)
+      query_with_result = query.dup
+      query_with_result[:result] =
+        if query.has_key?(:query_range)
+          client_query_range(query[:query_range] % context, start: context[:timeframe_start], stop: context[:timeframe_end])
+        else
+          client_query(query[:query] % context, time: context[:timeframe_end])
+        end
+      query_with_result
     end
 
     def process_result(query_result)
@@ -54,17 +53,17 @@ module Gitlab::Prometheus::Queries
 
     def matched_metrics
       label_values = client_label_values || []
+      Gitlab::Prometheus::MetricGroup.all
 
-      result = Gitlab::Prometheus::MetricsSources.additional_metrics.map do |group|
-        group[:metrics].map!(&:symbolize_keys)
-        group[:metrics].select! do |metric|
-          matcher = Regexp.compile(metric[:detect])
+      result = Gitlab::Prometheus::MetricGroup.all.map do |group|
+        group.metrics.select! do |metric|
+          matcher = Regexp.compile(metric.detect)
           label_values.any? &matcher.method(:match)
         end
         group
       end
 
-      result.select {|group| !group[:metrics].empty?}
+      result.select { |group| group.metrics.any? }
     end
   end
 end

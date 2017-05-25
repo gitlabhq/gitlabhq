@@ -13,6 +13,10 @@ module Gitlab::Prometheus
       load_groups_from_yaml
     end
 
+    def self.load_groups_from_yaml
+      additional_metrics_raw.map(&method(:group_from_entry))
+    end
+
     def self.group_from_entry(entry)
       missing_fields = [:group, :priority, :metrics].select { |key| !entry.has_key?(key) }
       raise ParsingError.new("entry missing required fields #{missing_fields}") unless missing_fields.empty?
@@ -20,10 +24,6 @@ module Gitlab::Prometheus
       group = MetricGroup.new(entry[:group], entry[:priority])
       group.metrics = Metric.metrics_from_list(group, entry[:metrics])
       group
-    end
-
-    def self.load_groups_from_yaml
-      additional_metrics_raw.map(&method(:group_from_entry))
     end
 
     def self.additional_metrics_raw
