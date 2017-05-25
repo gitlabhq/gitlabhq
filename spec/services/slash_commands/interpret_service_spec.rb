@@ -355,6 +355,29 @@ describe SlashCommands::InterpretService, services: true do
           let(:issuable) { build(:merge_request, source_project: project) }
         end
       end
+
+      context 'not approved merge request can not be merged' do
+        before do
+          merge_request.target_project.update_attributes(approvals_before_merge: 1)
+        end
+
+        it_behaves_like 'empty command' do
+          let(:content) { "/merge" }
+          let(:issuable) { build(:merge_request, source_project: project) }
+        end
+      end
+
+      context 'approved merge request can be merged' do
+        before do
+          merge_request.update_attributes(approvals_before_merge: 1)
+          merge_request.approvals.create(user: developer)
+        end
+
+        it_behaves_like 'empty command' do
+          let(:content) { "/merge" }
+          let(:issuable) { build(:merge_request, source_project: project) }
+        end
+      end
     end
 
     it_behaves_like 'title command' do
