@@ -29,5 +29,10 @@ describe Gitlab::Utils, lib: true do
       expect(to_boolean('')).to be_nil
       expect(to_boolean(nil)).to be_nil
     end
+
+    it 'converts booleans to Yes or No' do
+      expect(boolean_to_yes_no(true)).to eq('Yes')
+      expect(boolean_to_yes_no(false)).to eq('No')
+    end
   end
 end

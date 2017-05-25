@@ -1726,7 +1726,7 @@ describe Project, models: true do
         expect(project.secret_variables).to eq(
           [{ key: secret_variable.key,
              value: secret_variable.value,
-             public: false } ])
+             public: false }])
       end
     end
 
@@ -1735,7 +1735,7 @@ describe Project, models: true do
         expect(project.protected_variables).to eq(
           [{ key: protected_variable.key,
              value: protected_variable.value,
-             public: false } ])
+             public: false }])
       end
     end
   end
