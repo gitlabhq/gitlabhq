@@ -224,6 +224,7 @@ CommitStatus:
 - erased_at
 - artifacts_expire_at
 - environment
+- environment_url
 - artifacts_size
 - when
 - yaml_variables

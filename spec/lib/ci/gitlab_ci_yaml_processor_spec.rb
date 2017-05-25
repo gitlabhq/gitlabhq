@@ -105,6 +105,7 @@ module Ci
           allow_failure: false,
           when: "on_success",
           environment: nil,
+          environment_url: nil,
           yaml_variables: []
         })
       end
@@ -523,6 +524,7 @@ module Ci
           allow_failure: false,
           when: "on_success",
           environment: nil,
+          environment_url: nil,
           yaml_variables: []
         })
       end
@@ -552,6 +554,7 @@ module Ci
           allow_failure: false,
           when: "on_success",
           environment: nil,
+          environment_url: nil,
           yaml_variables: []
         })
       end
@@ -798,6 +801,7 @@ module Ci
           when: "on_success",
           allow_failure: false,
           environment: nil,
+          environment_url: nil,
           yaml_variables: []
         })
       end
@@ -1001,6 +1005,7 @@ module Ci
             when: "on_success",
             allow_failure: false,
             environment: nil,
+            environment_url: nil,
             yaml_variables: []
           })
         end
@@ -1047,6 +1052,7 @@ module Ci
             when: "on_success",
             allow_failure: false,
             environment: nil,
+            environment_url: nil,
             yaml_variables: []
           })
           expect(subject.second).to eq({
@@ -1060,6 +1066,7 @@ module Ci
             when: "on_success",
             allow_failure: false,
             environment: nil,
+            environment_url: nil,
             yaml_variables: []
           })
         end

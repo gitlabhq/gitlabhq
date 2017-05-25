@@ -63,8 +63,10 @@ FactoryGirl.define do
 
     trait :teardown_environment do
       environment 'staging'
+      environment_url 'http://staging.example.com/$CI_JOB_NAME'
       options environment: { name: 'staging',
-                             action: 'stop' }
+                             action: 'stop',
+                             url: 'http://staging.example.com/$CI_JOB_NAME' }
     end
 
     trait :allowed_to_fail do
