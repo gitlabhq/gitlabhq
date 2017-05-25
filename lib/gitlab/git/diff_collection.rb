@@ -64,6 +64,8 @@ module Gitlab
         collection
       end
 
+      alias_method :to_ary, :to_a
+
       private
 
       def populate!
