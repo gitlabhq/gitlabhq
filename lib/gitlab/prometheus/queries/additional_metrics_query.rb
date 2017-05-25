@@ -1,7 +1,21 @@
 module Gitlab::Prometheus::Queries
   class AdditionalMetricsQuery < BaseQuery
     def query(environment_id)
-      query_processor = method(:process_query).curry[query_context(environment_id)]
+      environment = Environment.find_by(id: environment_id)
+      query_context = {
+        environment_slug: environment.slug,
+        environment_filter: %{container_name!="POD",environment="#{environment.slug}"},
+        timeframe_start: 8.hours.ago.to_f,
+        timeframe_end: Time.now.to_f
+      }
+
+      query_metrics(query_context)
+    end
+
+    protected
+
+    def query_metrics(query_context)
+      query_processor = method(:process_query).curry[query_context]
 
       matched_metrics.map do |group|
         metrics = group.metrics.map do |metric|
@@ -21,16 +35,6 @@ module Gitlab::Prometheus::Queries
     end
 
     private
-
-    def query_context(environment_id)
-      environment = Environment.find_by(id: environment_id)
-      {
-        environment_slug: environment.slug,
-        environment_filter: %{container_name!="POD",environment="#{environment.slug}"},
-        timeframe_start: 8.hours.ago.to_f,
-        timeframe_end: Time.now.to_f
-      }
-    end
 
     def process_query(context, query)
       query_with_result = query.dup

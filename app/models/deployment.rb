@@ -103,10 +103,20 @@ class Deployment < ActiveRecord::Base
     project.monitoring_service.present?
   end
 
+  def has_additional_metrics?
+    has_metrics? && project.monitoring_service&.respond_to?(:reactive_query)
+  end
+
   def metrics
     return {} unless has_metrics?
 
     project.monitoring_service.deployment_metrics(self)
+  end
+
+  def additional_metrics
+    return {} unless has_additional_metrics?
+    metrics = project.monitoring_service.reactive_query(Gitlab::Prometheus::Queries::AdditionalMetricsDeploymentQuery.name, id, &:itself)
+    metrics&.merge(deployment_time: created_at.to_i) || {}
   end
 
   private

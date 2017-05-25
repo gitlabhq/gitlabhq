@@ -167,6 +167,7 @@ constraints(ProjectUrlConstrainer.new) do
         resources :deployments, only: [:index] do
           member do
             get :metrics
+            get :additional_metrics
           end
         end
       end

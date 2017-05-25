@@ -22,6 +22,17 @@ class Projects::DeploymentsController < Projects::ApplicationController
     render_404
   end
 
+  def additional_metrics
+    return render_404 unless deployment.has_additional_metrics?
+    metrics = deployment.additional_metrics
+
+    if metrics&.any?
+      render json: metrics, status: :ok
+    else
+      head :no_content
+    end
+  end
+
   private
 
   def deployment
