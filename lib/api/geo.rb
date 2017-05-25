@@ -112,7 +112,7 @@ module API
       end
 
       def require_node_to_have_tracking_db!
-        not_found! 'Geo node does not have its tracking database enabled.' unless Gitlab::Geo.configured?
+        not_found! 'Geo node does not have its tracking database enabled.' unless Gitlab::Geo.secondary_role_enabled?
       end
     end
   end

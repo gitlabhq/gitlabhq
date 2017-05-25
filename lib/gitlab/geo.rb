@@ -42,10 +42,6 @@ module Gitlab
       Gitlab::Geo.current_node.reload.enabled?
     end
 
-    def self.configured?
-      Rails.configuration.respond_to?(:geo_database)
-    end
-
     def self.primary_role_enabled?
       Gitlab.config.geo_primary_role['enable']
     end

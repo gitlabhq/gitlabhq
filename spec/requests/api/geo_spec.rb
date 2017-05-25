@@ -308,8 +308,8 @@ describe API::Geo, api: true do
         expect(response).to match_response_schema('geo_node_status')
       end
 
-      it 'responds with a 404 when the tracking database is disabled' do
-        allow(Gitlab::Geo).to receive(:configured?).and_return(false)
+      it 'responds with a 404 when the secondary role is disabled' do
+        allow(Gitlab::Geo).to receive(:secondary_role_enabled?).and_return(false)
 
         get api('/geo/status'), nil, request.headers
 
