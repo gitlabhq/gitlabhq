@@ -394,6 +394,19 @@ ul.notes {
   padding-bottom: 8px;
 }
 
+<<<<<<< HEAD
+=======
+.system-note .note-header-info {
+  padding-bottom: 0;
+}
+
+.note-header-author-name {
+  @media (max-width: $screen-xs-max) {
+    display: none;
+  }
+}
+
+>>>>>>> 4144144... Merge branch '32801-fix-discussion-header-wrapping-in-parallel-diff' into 'master'
 .note-headline-light {
   display: inline;
 
@@ -739,9 +752,8 @@ ul.notes {
 // Merge request notes in diffs
 .diff-file {
   // Diff is side by side
-  .notes_content.parallel .note-header .note-headline-light {
+  .notes_content.parallel .note-header .note-header-author-name {
     display: block;
-    position: relative;
   }
   // Diff is inline
   .notes_content .note-header .note-headline-light {
