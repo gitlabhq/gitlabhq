@@ -3,10 +3,6 @@
 import Vue from 'vue';
 import queryData from '../../utils/query_data';
 import loadingIcon from '../../../vue_shared/components/loading_icon.vue';
-<<<<<<< HEAD
-
-=======
->>>>>>> ce/master
 import './header';
 import './list';
 import './footer';

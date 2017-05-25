@@ -59,12 +59,9 @@ import UsersSelect from './users_select';
 import RefSelectDropdown from './ref_select_dropdown';
 import GfmAutoComplete from './gfm_auto_complete';
 import ShortcutsBlob from './shortcuts_blob';
-<<<<<<< HEAD
 
 // EE-only
 import ApproversSelect from './approvers_select';
-=======
->>>>>>> ce/master
 
 (function() {
   var Dispatcher;

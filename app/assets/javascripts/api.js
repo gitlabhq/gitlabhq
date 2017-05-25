@@ -1,12 +1,6 @@
-<<<<<<< HEAD
-/* eslint-disable func-names, space-before-function-paren, quotes, object-shorthand, camelcase, no-var, comma-dangle, prefer-arrow-callback, quote-props, no-param-reassign, max-len */
-
-var Api = {
-=======
 import $ from 'jquery';
 
 const Api = {
->>>>>>> ce/master
   groupsPath: '/api/:version/groups.json',
   groupPath: '/api/:version/groups/:id.json',
   namespacesPath: '/api/:version/namespaces.json',
@@ -16,20 +10,20 @@ const Api = {
   licensePath: '/api/:version/templates/licenses/:key',
   gitignorePath: '/api/:version/templates/gitignores/:key',
   gitlabCiYmlPath: '/api/:version/templates/gitlab_ci_ymls/:key',
-<<<<<<< HEAD
   ldapGroupsPath: '/api/:version/ldap/:provider/groups.json',
   dockerfilePath: '/api/:version/templates/dockerfiles/:key',
   issuableTemplatePath: '/:namespace_path/:project_path/templates/:type/:key',
-  group: function(group_id, callback) {
-    var url = Api.buildUrl(Api.groupPath)
-      .replace(':id', group_id);
+  usersPath: '/api/:version/users.json',
+  group(groupId, callback) {
+    const url = Api.buildUrl(Api.groupPath)
+      .replace(':id', groupId);
     return $.ajax({
-      url: url,
-      dataType: 'json'
-    }).done(function(group) {
-      return callback(group);
-    });
+      url,
+      dataType: 'json',
+    })
+      .done(group => callback(group));
   },
+
   users: function(search, options, callback = $.noop) {
     var url = Api.buildUrl('/autocomplete/users.json');
     return $.ajax({
@@ -41,44 +35,19 @@ const Api = {
       dataType: 'json'
     }).done(callback);
   },
-  // Return groups list. Filtered by query
-  groups: function(query, options, callback = $.noop) {
-    var url = Api.buildUrl(Api.groupsPath);
-=======
-  dockerfilePath: '/api/:version/templates/dockerfiles/:key',
-  issuableTemplatePath: '/:namespace_path/:project_path/templates/:type/:key',
-  usersPath: '/api/:version/users.json',
-
-  group(groupId, callback) {
-    const url = Api.buildUrl(Api.groupPath)
-      .replace(':id', groupId);
-    return $.ajax({
-      url,
-      dataType: 'json',
-    })
-      .done(group => callback(group));
-  },
 
   // Return groups list. Filtered by query
   groups(query, options, callback) {
     const url = Api.buildUrl(Api.groupsPath);
->>>>>>> ce/master
     return $.ajax({
       url,
       data: Object.assign({
         search: query,
         per_page: 20,
       }, options),
-<<<<<<< HEAD
-      dataType: 'json'
-    }).done(function(groups) {
-      return callback(groups);
-    });
-=======
       dataType: 'json',
     })
       .done(groups => callback(groups));
->>>>>>> ce/master
   },
 
   // Return namespaces list. Filtered by query
@@ -90,15 +59,8 @@ const Api = {
         search: query,
         per_page: 20,
       },
-<<<<<<< HEAD
-      dataType: 'json'
-    }).done(function(namespaces) {
-      return callback(namespaces);
-    });
-=======
       dataType: 'json',
     }).done(namespaces => callback(namespaces));
->>>>>>> ce/master
   },
 
   // Return projects list. Filtered by query
@@ -111,16 +73,9 @@ const Api = {
         per_page: 20,
         membership: true,
       }, options),
-<<<<<<< HEAD
-      dataType: 'json'
-    }).done(function(projects) {
-      return callback(projects);
-    });
-=======
       dataType: 'json',
     })
       .done(projects => callback(projects));
->>>>>>> ce/master
   },
 
   newLabel(namespacePath, projectPath, data, callback) {
@@ -128,17 +83,6 @@ const Api = {
       .replace(':namespace_path', namespacePath)
       .replace(':project_path', projectPath);
     return $.ajax({
-<<<<<<< HEAD
-      url: url,
-      type: 'POST',
-      data: { 'label': data },
-      dataType: 'json'
-    }).done(function(label) {
-      return callback(label);
-    }).error(function(message) {
-      return callback(message.responseJSON);
-    });
-=======
       url,
       type: 'POST',
       data: { label: data },
@@ -146,7 +90,6 @@ const Api = {
     })
       .done(label => callback(label))
       .error(message => callback(message.responseJSON));
->>>>>>> ce/master
   },
 
   // Return group projects list. Filtered by query
@@ -159,16 +102,9 @@ const Api = {
         search: query,
         per_page: 20,
       },
-<<<<<<< HEAD
-      dataType: 'json'
-    }).done(function(projects) {
-      return callback(projects);
-    });
-=======
       dataType: 'json',
     })
       .done(projects => callback(projects));
->>>>>>> ce/master
   },
 
   // Return text for a specific license
@@ -230,29 +166,24 @@ const Api = {
     if (gon.relative_url_root != null) {
       urlRoot = gon.relative_url_root;
     }
-<<<<<<< HEAD
-    return url.replace(':version', gon.api_version);
+    return urlRoot + url.replace(':version', gon.api_version);
   },
-  ldap_groups: function(query, provider, callback) {
-    var url;
-    url = Api.buildUrl(Api.ldapGroupsPath);
+
+  ldap_groups(query, provider, callback) {
+    const url = Api.buildUrl(this.ldapGroupsPath);
     url = url.replace(':provider', provider);
-    return $.ajax({
+    return Api.wrapAjaxCall({
       url: url,
-      data: {
+      data: Object.assign({
         private_token: gon.api_token,
         search: query,
         per_page: 20,
         active: true
-      },
+      }),
       dataType: 'json'
-    }).done(function(groups) {
-      return callback(groups);
-    });
+    })
+      .done(groups => callback(groups));
   }
-=======
-    return urlRoot + url.replace(':version', gon.api_version);
-  },
 
   wrapAjaxCall(options) {
     return new Promise((resolve, reject) => {
@@ -267,7 +198,6 @@ const Api = {
       );
     });
   },
->>>>>>> ce/master
 };
 
 export default Api;
