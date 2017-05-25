@@ -8,6 +8,8 @@
     %span.badge
       = storage_counter(group.storage_size)
 
+    = render 'admin/namespace_plan_badge', namespace: group
+
     %span
       = icon('bookmark')
       = number_with_delimiter(group.projects.count)
