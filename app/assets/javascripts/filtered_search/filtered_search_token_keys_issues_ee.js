@@ -18,15 +18,20 @@ const weightConditions = [{
   value: 'any',
 }];
 
-class FilteredSearchTokenKeysWithWeights extends gl.FilteredSearchTokenKeys {
+class FilteredSearchTokenKeysIssuesEE extends gl.FilteredSearchTokenKeys {
   static get() {
     const tokenKeys = Array.from(super.get());
+
+    // Enable multiple assignees
+    const assigneeTokenKey = tokenKeys.find(tk => tk.key === 'assignee');
+    assigneeTokenKey.type = 'array';
+
     tokenKeys.push(weightTokenKey);
     return tokenKeys;
   }
 
   static getKeys() {
-    const tokenKeys = FilteredSearchTokenKeysWithWeights.get();
+    const tokenKeys = FilteredSearchTokenKeysIssuesEE.get();
     return tokenKeys.map(i => i.key);
   }
 
@@ -40,18 +45,18 @@ class FilteredSearchTokenKeysWithWeights extends gl.FilteredSearchTokenKeys {
   }
 
   static searchByKey(key) {
-    const tokenKeys = FilteredSearchTokenKeysWithWeights.get();
+    const tokenKeys = FilteredSearchTokenKeysIssuesEE.get();
     return tokenKeys.find(tokenKey => tokenKey.key === key) || null;
   }
 
   static searchBySymbol(symbol) {
-    const tokenKeys = FilteredSearchTokenKeysWithWeights.get();
+    const tokenKeys = FilteredSearchTokenKeysIssuesEE.get();
     return tokenKeys.find(tokenKey => tokenKey.symbol === symbol) || null;
   }
 
   static searchByKeyParam(keyParam) {
-    const tokenKeys = FilteredSearchTokenKeysWithWeights.get();
-    const alternativeTokenKeys = FilteredSearchTokenKeysWithWeights.getAlternatives();
+    const tokenKeys = FilteredSearchTokenKeysIssuesEE.get();
+    const alternativeTokenKeys = FilteredSearchTokenKeysIssuesEE.getAlternatives();
     const tokenKeysWithAlternative = tokenKeys.concat(alternativeTokenKeys);
 
     return tokenKeysWithAlternative.find((tokenKey) => {
@@ -66,16 +71,16 @@ class FilteredSearchTokenKeysWithWeights extends gl.FilteredSearchTokenKeys {
   }
 
   static searchByConditionUrl(url) {
-    const conditions = FilteredSearchTokenKeysWithWeights.getConditions();
+    const conditions = FilteredSearchTokenKeysIssuesEE.getConditions();
     return conditions.find(condition => condition.url === url) || null;
   }
 
   static searchByConditionKeyValue(key, value) {
-    const conditions = FilteredSearchTokenKeysWithWeights.getConditions();
+    const conditions = FilteredSearchTokenKeysIssuesEE.getConditions();
     return conditions
       .find(condition => condition.tokenKey === key && condition.value === value) || null;
   }
 }
 
 window.gl = window.gl || {};
-gl.FilteredSearchTokenKeysWithWeights = FilteredSearchTokenKeysWithWeights;
+gl.FilteredSearchTokenKeysIssuesEE = FilteredSearchTokenKeysIssuesEE;
