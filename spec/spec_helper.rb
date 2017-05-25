@@ -76,6 +76,24 @@ RSpec.configure do |config|
     end
   end
 
+  def get_rss
+    output, status = Gitlab::Popen.popen(%W(ps -o rss= -p #{Process.pid}))
+    return 0 unless status.zero?
+
+    output.to_i
+  end
+
+  def get_phantomjs_rss
+    output, status = Gitlab::Popen.popen(%W(ps -o rss= -C phantomjs))
+    return 0 unless status.zero?
+
+    output.to_i
+  end
+
+  config.before(:all) do |group|
+    puts "Working on #{group}: RSS is #{get_rss} #{get_phantomjs_rss}"
+  end
+
   config.around(:each, :caching) do |example|
     caching_store = Rails.cache
     Rails.cache = ActiveSupport::Cache::MemoryStore.new if example.metadata[:caching]
