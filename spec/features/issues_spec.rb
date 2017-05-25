@@ -469,16 +469,12 @@ describe 'Issues', feature: true do
           click_link 'Edit'
           click_link @user.name
 
-          find('.dropdown-menu-toggle').click
-
           page.within '.value .author' do
             expect(page).to have_content @user.name
           end
 
           click_link 'Edit'
           click_link @user.name
-
-          find('.dropdown-menu-toggle').click
 
           page.within '.value .assign-yourself' do
             expect(page).to have_content "No assignee"
@@ -725,8 +721,11 @@ describe 'Issues', feature: true do
   end
 
   describe 'title issue#show', js: true do
+<<<<<<< HEAD
     include WaitForRequests
 
+=======
+>>>>>>> ce/master
     it 'updates the title', js: true do
       issue = create(:issue, author: @user, assignees: [@user], project: project, title: 'new title')
 

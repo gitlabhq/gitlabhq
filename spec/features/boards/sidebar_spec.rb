@@ -134,7 +134,10 @@ describe 'Issue Boards', feature: true, js: true do
           click_link 'Unassigned'
         end
 
+<<<<<<< HEAD
         find('.dropdown-menu-toggle').click
+=======
+>>>>>>> ce/master
         wait_for_requests
 
         expect(page).to have_content('No assignee')
@@ -182,7 +185,7 @@ describe 'Issue Boards', feature: true, js: true do
 
       page.within('.assignee') do
         click_link 'Edit'
-    
+
         expect(find('.dropdown-menu')).to have_selector('.is-active')
       end
     end

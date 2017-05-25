@@ -100,7 +100,7 @@ In versions before GitLab 8.12, all CI jobs would use the CI Runner's token
 to checkout project sources.
 
 The project's Runner's token was a token that you could find under the
-project's **Settings > CI/CD Pipelines** and was limited to access only that
+project's **Settings > Pipelines** and was limited to access only that
 project.
 It could be used for registering new specific Runners assigned to the project
 and to checkout project sources.

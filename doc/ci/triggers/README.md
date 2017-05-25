@@ -12,7 +12,7 @@ with an API call.
 ## Add a trigger
 
 You can add a new trigger by going to your project's
-**Settings ➔ CI/CD Pipelines ➔ Triggers**. The **Add trigger** button will
+**Settings ➔ Pipelines ➔ Triggers**. The **Add trigger** button will
 create a new token which you can then use to trigger a rerun of this
 particular project's pipeline.
 
@@ -60,7 +60,7 @@ POST /projects/:id/trigger/pipeline
 The required parameters are the trigger's `token` and the Git `ref` on which
 the trigger will be performed. Valid refs are the branch and the tag. The `:id`
 of a project can be found by [querying the API](../../api/projects.md)
-or by visiting the **CI/CD Pipelines** settings page which provides
+or by visiting the **Pipelines** settings page which provides
 self-explanatory examples.
 
 When a rerun of a pipeline is triggered, the information is exposed in GitLab's

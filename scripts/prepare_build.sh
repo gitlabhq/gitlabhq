@@ -41,11 +41,14 @@ else # Assume it's mysql
     sed -i 's/username:.*/username: root/g' config/database.yml
     sed -i 's/password:.*/password:/g' config/database.yml
     sed -i 's/# host:.*/host: mysql/g' config/database.yml
+<<<<<<< HEAD
 
     # EE-only
     sed -i 's/username:.*/username: root/g' config/database_geo.yml
     sed -i 's/password:.*/password:/g' config/database_geo.yml
     sed -i 's/# host:.*/host: mysql/g' config/database_geo.yml
+=======
+>>>>>>> ce/master
 fi
 
 if [ "$SETUP_DB" != "false" ]; then

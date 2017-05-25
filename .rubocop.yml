@@ -971,14 +971,21 @@ RSpec/DescribeSymbol:
 RSpec/DescribedClass:
   Enabled: true
 
+<<<<<<< HEAD
 # Configuration parameters: CustomIncludeMethods.
+=======
+# Checks if an example group does not include any tests.
+>>>>>>> ce/master
 RSpec/EmptyExampleGroup:
   Enabled: true
   CustomIncludeMethods:
     - run_permission_checks
+<<<<<<< HEAD
     - run_group_permission_checks
     - it_should_email!
     - it_should_not_email!
+=======
+>>>>>>> ce/master
 
 # Checks for long example.
 RSpec/ExampleLength:
@@ -996,6 +1003,10 @@ RSpec/ExampleWording:
 
 # Checks for `expect(...)` calls containing literal values.
 RSpec/ExpectActual:
+  Enabled: true
+
+# Checks for opportunities to use `expect { … }.to output`.
+RSpec/ExpectOutput:
   Enabled: true
 
 # Checks the file and folder naming of the spec file.

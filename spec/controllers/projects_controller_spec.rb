@@ -168,6 +168,7 @@ describe ProjectsController do
         expect(response).to render_template('_files')
       end
 
+<<<<<<< HEAD
       context 'project repo over limit' do
         before do
           allow_any_instance_of(Project).to receive(:above_size_limit?).and_return(true)
@@ -190,6 +191,8 @@ describe ProjectsController do
       end
     end
 
+=======
+>>>>>>> ce/master
     context "when the url contains .atom" do
       let(:public_project_with_dot_atom) { build(:empty_project, :public, name: 'my.atom', path: 'my.atom') }
 
@@ -219,17 +222,6 @@ describe ProjectsController do
         expect(response).to redirect_to(namespace_project_path)
       end
     end
-
-    context 'when requesting a redirected path' do
-      let!(:redirect_route) { public_project.redirect_routes.create!(path: "foo/bar") }
-
-      it 'redirects to the canonical path' do
-        get :show, namespace_id: 'foo', id: 'bar'
-
-        expect(response).to redirect_to(public_project)
-        expect(controller).to set_flash[:notice].to(project_moved_message(redirect_route, public_project))
-      end
-    end
   end
 
   describe "#update" do
@@ -256,6 +248,53 @@ describe ProjectsController do
       expect(assigns(:repository).path).to eq(project.repository.path)
       expect(response).to have_http_status(302)
     end
+<<<<<<< HEAD
+=======
+  end
+
+  describe '#transfer' do
+    render_views
+
+    let(:project) { create(:project) }
+    let(:admin) { create(:admin) }
+    let(:new_namespace) { create(:namespace) }
+
+    it 'updates namespace' do
+      sign_in(admin)
+
+      put :transfer,
+          namespace_id: project.namespace.path,
+          new_namespace_id: new_namespace.id,
+          id: project.path,
+          format: :js
+
+      project.reload
+
+      expect(project.namespace).to eq(new_namespace)
+      expect(response).to have_http_status(200)
+    end
+
+    context 'when new namespace is empty' do
+      it 'project namespace is not changed' do
+        controller.instance_variable_set(:@project, project)
+        sign_in(admin)
+
+        old_namespace = project.namespace
+
+        put :transfer,
+            namespace_id: old_namespace.path,
+            new_namespace_id: nil,
+            id: project.path,
+            format: :js
+
+        project.reload
+
+        expect(project.namespace).to eq(old_namespace)
+        expect(response).to have_http_status(200)
+        expect(flash[:alert]).to eq 'Please select a new namespace for your project.'
+      end
+    end
+>>>>>>> ce/master
   end
 
   describe "#destroy" do
@@ -411,17 +450,6 @@ describe ProjectsController do
       expect(parsed_body["Branches"]).to include("master")
       expect(parsed_body["Tags"]).to include("v1.0.0")
       expect(parsed_body["Commits"]).to include("123456")
-    end
-
-    context 'when requesting a redirected path' do
-      let!(:redirect_route) { public_project.redirect_routes.create!(path: "foo/bar") }
-
-      it 'redirects to the canonical path' do
-        get :refs, namespace_id: 'foo', id: 'bar'
-
-        expect(response).to redirect_to(refs_namespace_project_path(namespace_id: public_project.namespace, id: public_project))
-        expect(controller).to set_flash[:notice].to(project_moved_message(redirect_route, public_project))
-      end
     end
   end
 

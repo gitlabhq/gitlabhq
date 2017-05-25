@@ -1,8 +1,11 @@
 require 'rails_helper'
 
 describe 'Awards Emoji', feature: true do
+<<<<<<< HEAD
   include WaitForRequests
 
+=======
+>>>>>>> ce/master
   let!(:project)   { create(:project, :public) }
   let!(:user)      { create(:user) }
   let(:issue) do

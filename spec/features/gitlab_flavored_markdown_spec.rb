@@ -49,8 +49,11 @@ describe "GitLab Flavored Markdown", feature: true do
   end
 
   describe "for issues", feature: true, js: true do
+<<<<<<< HEAD
     include WaitForRequests
 
+=======
+>>>>>>> ce/master
     before do
       @other_issue = create(:issue,
                             author: @user,

@@ -18,8 +18,12 @@ module SystemNoteHelper
     'milestone' => 'icon_clock_o',
     'discussion' => 'icon_comment_o',
     'moved' => 'icon_arrow_circle_o_right',
+<<<<<<< HEAD
     'approved' => 'icon_check',
     'unapproved' => 'icon_fa_close'
+=======
+    'outdated' => 'icon_edit'
+>>>>>>> ce/master
   }.freeze
 
   def icon_for_system_note(note)

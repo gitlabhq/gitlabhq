@@ -2,7 +2,10 @@
 
 import '~/gl_dropdown';
 import '~/lib/utils/common_utils';
+<<<<<<< HEAD
 import '~/lib/utils/type_utility';
+=======
+>>>>>>> ce/master
 import '~/lib/utils/url_utility';
 
 (() => {

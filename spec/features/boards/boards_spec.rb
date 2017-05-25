@@ -17,7 +17,11 @@ describe 'Issue Boards', feature: true, js: true do
 
   context 'no lists' do
     before do
+<<<<<<< HEAD
       visit namespace_project_boards_path(project.namespace, project)
+=======
+      visit namespace_project_board_path(project.namespace, project, board)
+>>>>>>> ce/master
       wait_for_requests
       expect(page).to have_selector('.board', count: 2)
     end
@@ -162,7 +166,11 @@ describe 'Issue Boards', feature: true, js: true do
         create(:labeled_issue, project: project, labels: [planning])
       end
 
+<<<<<<< HEAD
       visit namespace_project_boards_path(project.namespace, project)
+=======
+      visit namespace_project_board_path(project.namespace, project, board)
+>>>>>>> ce/master
       wait_for_requests
 
       page.within(find('.board', match: :first)) do
@@ -511,7 +519,11 @@ describe 'Issue Boards', feature: true, js: true do
 
   context 'keyboard shortcuts' do
     before do
+<<<<<<< HEAD
       visit namespace_project_boards_path(project.namespace, project)
+=======
+      visit namespace_project_board_path(project.namespace, project, board)
+>>>>>>> ce/master
       wait_for_requests
     end
 
@@ -524,7 +536,11 @@ describe 'Issue Boards', feature: true, js: true do
   context 'signed out user' do
     before do
       logout
+<<<<<<< HEAD
       visit namespace_project_boards_path(project.namespace, project)
+=======
+      visit namespace_project_board_path(project.namespace, project, board)
+>>>>>>> ce/master
       wait_for_requests
     end
 
@@ -548,7 +564,11 @@ describe 'Issue Boards', feature: true, js: true do
       project.team << [user_guest, :guest]
       logout
       login_as(user_guest)
+<<<<<<< HEAD
       visit namespace_project_boards_path(project.namespace, project)
+=======
+      visit namespace_project_board_path(project.namespace, project, board)
+>>>>>>> ce/master
       wait_for_requests
     end
 

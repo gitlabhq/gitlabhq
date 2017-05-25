@@ -56,7 +56,7 @@ export default {
         <div class="ci-widget">
           <div class="ci-status-icon ci-status-icon-success">
             <span class="js-icon-link icon-link">
-              <span
+              <span class="ci-status-icon"
                 v-html="svg"
                 aria-hidden="true"></span>
             </span>

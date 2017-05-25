@@ -170,6 +170,7 @@ import './visibility_select';
 import './wikis';
 import './zen_mode';
 
+<<<<<<< HEAD
 // EE-only scripts
 import './admin_email_select';
 import './application_settings';
@@ -178,6 +179,8 @@ import './ldap_groups_select';
 import './path_locks';
 import './weight_select';
 
+=======
+>>>>>>> ce/master
 // eslint-disable-next-line global-require, import/no-commonjs
 if (process.env.NODE_ENV !== 'production') require('./test_utils/');
 

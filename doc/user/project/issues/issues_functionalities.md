@@ -16,6 +16,9 @@ An issue starts with its status (open or closed), followed by its author,
 and includes many other functionalities, numbered on the image above to
 explain what they mean, one by one.
 
+Many of the elements of the issue screen refresh automatically, such as the title and description, when they are changed by another user.
+Comments and system notes also appear automatically in response to various actions and content updates.
+
 #### 1. New Issue, close issue, edit
 
 - New issue: create a new issue in the same project

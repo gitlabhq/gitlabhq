@@ -1,5 +1,8 @@
 import '~/gl_dropdown';
+<<<<<<< HEAD
 import '~/lib/utils/type_utility';
+=======
+>>>>>>> ce/master
 import '~/blob/create_branch_dropdown';
 import '~/blob/target_branch_dropdown';
 

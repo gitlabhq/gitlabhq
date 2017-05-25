@@ -9,7 +9,10 @@
     "human_time_estimate": { "type": ["string", "null"] },
     "human_total_time_spent": { "type": ["string", "null"] },
     "merge_error": { "type": ["string", "null"] },
+<<<<<<< HEAD
     "rebase_in_progress": { "type": "boolean" },
+=======
+>>>>>>> ce/master
     "assignee_id": { "type": ["integer", "null"] }
   },
   "additionalProperties": false

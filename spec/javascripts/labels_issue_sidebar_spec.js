@@ -2,7 +2,10 @@
 /* global IssuableContext */
 /* global LabelsSelect */
 
+<<<<<<< HEAD
 import '~/lib/utils/type_utility';
+=======
+>>>>>>> ce/master
 import '~/gl_dropdown';
 import 'select2';
 import 'vendor/jquery.nicescroll';

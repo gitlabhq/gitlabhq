@@ -43,7 +43,11 @@ ul.notes {
   }
 
   .discussion-body {
-    padding-top: 15px;
+    padding-top: 8px;
+
+    .panel {
+      margin-bottom: 0;
+    }
   }
 
   .discussion {
@@ -53,6 +57,7 @@ ul.notes {
   }
 
   .note {
+    padding: $gl-padding $gl-btn-padding 0;
     display: block;
     position: relative;
     border-bottom: 1px solid $white-normal;
@@ -78,11 +83,7 @@ ul.notes {
 
     &.note-discussion {
       &.timeline-entry {
-        padding: 14px 10px;
-      }
-
-      .system-note {
-        padding: 0;
+        padding: $gl-padding 10px;
       }
     }
 
@@ -167,7 +168,7 @@ ul.notes {
       margin-left: 65px;
     }
 
-    .note-header {
+    .note-header-info {
       padding-bottom: 0;
     }
 
@@ -377,7 +378,11 @@ ul.notes {
 
 .note-header-info {
   min-width: 0;
-  padding-bottom: 5px;
+  padding-bottom: 8px;
+}
+
+.system-note .note-header-info {
+  padding-bottom: 0;
 }
 
 .note-headline-light {
@@ -582,6 +587,17 @@ ul.notes {
   }
 }
 
+.discussion-body,
+.diff-file {
+  .notes .note {
+    padding: 10px 15px;
+
+    &.system-note {
+      padding: 0;
+    }
+  }
+}
+
 .diff-file {
   .is-over {
     .add-diff-note {
@@ -669,7 +685,7 @@ ul.notes {
 
 .line-resolve-btn {
   position: relative;
-  top: 2px;
+  top: 0;
   padding: 0;
   background-color: transparent;
   border: none;
@@ -690,8 +706,8 @@ ul.notes {
 
   svg {
     fill: $gray-darkest;
-    height: 15px;
-    width: 15px;
+    height: 16px;
+    width: 16px;
   }
 
   .loading {

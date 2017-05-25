@@ -1309,6 +1309,10 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     context 'with gitaly enabled' do
       before { stub_gitaly }
+<<<<<<< HEAD
+=======
+      after { Gitlab::GitalyClient.clear_stubs! }
+>>>>>>> ce/master
 
       it 'gets the branches from GitalyClient' do
         expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:local_branches).

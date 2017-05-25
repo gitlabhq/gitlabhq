@@ -144,6 +144,8 @@ describe Projects::BuildsController do
 
       it 'returns a trace' do
         expect(response).to have_http_status(:ok)
+        expect(json_response['id']).to eq build.id
+        expect(json_response['status']).to eq build.status
         expect(json_response['html']).to eq('BUILD TRACE')
       end
     end
@@ -153,7 +155,20 @@ describe Projects::BuildsController do
 
       it 'returns no traces' do
         expect(response).to have_http_status(:ok)
+        expect(json_response['id']).to eq build.id
+        expect(json_response['status']).to eq build.status
         expect(json_response['html']).to be_nil
+      end
+    end
+
+    context 'when build has a trace with ANSI sequence and Unicode' do
+      let(:build) { create(:ci_build, :unicode_trace, pipeline: pipeline) }
+
+      it 'returns a trace with Unicode' do
+        expect(response).to have_http_status(:ok)
+        expect(json_response['id']).to eq build.id
+        expect(json_response['status']).to eq build.status
+        expect(json_response['html']).to include("ヾ(´༎ຶД༎ຶ`)ﾉ")
       end
     end
 
@@ -182,48 +197,6 @@ describe Projects::BuildsController do
       expect(json_response['label']).to eq status.label
       expect(json_response['icon']).to eq status.icon
       expect(json_response['favicon']).to eq "/assets/ci_favicons/#{status.favicon}.ico"
-    end
-  end
-
-  describe 'GET trace.json' do
-    let(:pipeline) { create(:ci_pipeline, project: project) }
-    let(:build) { create(:ci_build, pipeline: pipeline) }
-    let(:user) { create(:user) }
-
-    context 'when user is logged in as developer' do
-      before do
-        project.add_developer(user)
-        sign_in(user)
-
-        get_trace
-      end
-
-      it 'traces build log' do
-        expect(response).to have_http_status(:ok)
-        expect(json_response['id']).to eq build.id
-        expect(json_response['status']).to eq build.status
-      end
-    end
-
-    context 'when user is logged in as non member' do
-      before do
-        sign_in(user)
-
-        get_trace
-      end
-
-      it 'traces build log' do
-        expect(response).to have_http_status(:ok)
-        expect(json_response['id']).to eq build.id
-        expect(json_response['status']).to eq build.status
-      end
-    end
-
-    def get_trace
-      get :trace, namespace_id: project.namespace,
-                  project_id: project,
-                  id: build.id,
-                  format: :json
     end
   end
 

@@ -13,12 +13,12 @@ feature 'Merge When Pipeline Succeeds', :feature, :js do
   let(:pipeline) do
     create(:ci_pipeline, project: project,
                          sha: merge_request.diff_head_sha,
-                         ref: merge_request.source_branch)
+                         ref: merge_request.source_branch,
+                         head_pipeline_of: merge_request)
   end
 
   before do
     project.add_master(user)
-    merge_request.update(head_pipeline_id: pipeline.id)
   end
 
   context 'when there is active pipeline for merge request' do

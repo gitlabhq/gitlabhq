@@ -454,7 +454,10 @@ class FilteredSearchManager {
 
     const { tokens, searchToken }
       = this.tokenizer.processTokens(searchQuery, this.filteredSearchTokenKeys.getKeys());
+<<<<<<< HEAD
 
+=======
+>>>>>>> ce/master
     const currentState = gl.utils.getParameterByName('state') || 'opened';
     paths.push(`state=${currentState}`);
 

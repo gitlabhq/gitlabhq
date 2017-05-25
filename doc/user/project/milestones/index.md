@@ -48,6 +48,7 @@ special options available when filtering by milestone:
   date less than today. Note that this can return results from several
   milestones in the same project.
 
+<<<<<<< HEAD
 ## Burndown charts
 
 >**Notes:**
@@ -76,3 +77,12 @@ cumulative value.
 
 [ee-1540]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1540
 [ee]: https://about.gitlab.com/gitlab-ee
+=======
+## Milestone progress statistics
+
+Milestone statistics can be viewed in the milestone sidebar. The milestone percentage statistic
+is calculated as; closed and merged merge requests plus all closed issues divided by
+total merge requests and issues.
+
+![Milestone statistics](img/progress.png)
+>>>>>>> ce/master

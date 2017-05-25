@@ -22,10 +22,13 @@ import './components/board_sidebar';
 import './components/new_list_dropdown';
 import './components/modal/index';
 import '../vue_shared/vue_resource_interceptor';
+<<<<<<< HEAD
 
 import './components/boards_selector';
 import collapseIcon from './icons/fullscreen_collapse.svg';
 import expandIcon from './icons/fullscreen_expand.svg';
+=======
+>>>>>>> ce/master
 
 Vue.use(VueResource);
 

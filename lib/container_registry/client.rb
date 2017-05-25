@@ -75,10 +75,7 @@ module ContainerRegistry
     def redirect_response(location)
       return unless location
 
-      # We explicitly remove authorization token
-      faraday_blob.get(location) do |req|
-        req['Authorization'] = ''
-      end
+      faraday_redirect.get(location)
     end
 
     def faraday
@@ -91,6 +88,15 @@ module ContainerRegistry
     def faraday_blob
       @faraday_blob ||= Faraday.new(@base_uri) do |conn|
         initialize_connection(conn, @options)
+      end
+    end
+
+    # Create a new request to make sure the Authorization header is not inserted
+    # via the Faraday middleware
+    def faraday_redirect
+      @faraday_redirect ||= Faraday.new(@base_uri) do |conn|
+        conn.request :json
+        conn.adapter :net_http
       end
     end
   end

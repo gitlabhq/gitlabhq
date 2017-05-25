@@ -39,7 +39,11 @@ feature 'Merge immediately', :feature, :js do
 
           wait_for_requests
 
+<<<<<<< HEAD
           expect(find('.accept-merge-request.btn-info')).to have_content('Merge in progress')
+=======
+          wait_for_requests
+>>>>>>> ce/master
         end
       end
     end

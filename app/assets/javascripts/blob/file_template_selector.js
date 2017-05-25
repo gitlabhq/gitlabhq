@@ -1,5 +1,3 @@
-/* global Api */
-
 export default class FileTemplateSelector {
   constructor(mediator) {
     this.mediator = mediator;
@@ -65,4 +63,3 @@ export default class FileTemplateSelector {
     this.reportSelection(opts);
   }
 }
-

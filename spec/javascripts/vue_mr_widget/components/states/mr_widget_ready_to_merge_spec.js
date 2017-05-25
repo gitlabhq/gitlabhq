@@ -80,7 +80,7 @@ describe('MRWidgetReadyToMerge', () => {
     });
 
     describe('mergeButtonClass', () => {
-      const defaultClass = 'btn btn-success accept-merge-request';
+      const defaultClass = 'btn btn-small btn-success accept-merge-request';
       const failedClass = `${defaultClass} btn-danger`;
       const inActionClass = `${defaultClass} btn-info`;
 

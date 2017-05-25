@@ -42,6 +42,7 @@ import Group from './group';
 import GroupName from './group_name';
 import GroupsList from './groups_list';
 import ProjectsList from './projects_list';
+import setupProjectEdit from './project_edit';
 import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
 import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
 import Landing from './landing';
@@ -58,9 +59,12 @@ import UsersSelect from './users_select';
 import RefSelectDropdown from './ref_select_dropdown';
 import GfmAutoComplete from './gfm_auto_complete';
 import ShortcutsBlob from './shortcuts_blob';
+<<<<<<< HEAD
 
 // EE-only
 import ApproversSelect from './approvers_select';
+=======
+>>>>>>> ce/master
 
 (function() {
   var Dispatcher;
@@ -275,8 +279,13 @@ import ApproversSelect from './approvers_select';
           new NotificationsForm();
           if ($('#tree-slider').length) {
             new TreeView();
+          }
+          if ($('.blob-viewer').length) {
             new BlobViewer();
           }
+          break;
+        case 'projects:edit':
+          setupProjectEdit();
           break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:failures':

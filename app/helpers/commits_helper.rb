@@ -91,7 +91,7 @@ module CommitsHelper
   end
 
   def link_to_browse_code(project, commit)
-    return unless current_controller?(:projects, :commits)
+    return unless current_controller?(:commits)
 
     if @path.blank?
       return link_to(
