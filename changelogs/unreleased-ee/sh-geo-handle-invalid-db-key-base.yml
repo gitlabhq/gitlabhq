@@ -1,0 +1,4 @@
+---
+title: Gracefully handle case when Geo secondary does not have the right db_key_base
+merge_request:
+author:

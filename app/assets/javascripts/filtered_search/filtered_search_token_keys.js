@@ -3,21 +3,25 @@ const tokenKeys = [{
   type: 'string',
   param: 'username',
   symbol: '@',
+  icon: 'pencil',
 }, {
   key: 'assignee',
   type: 'string',
   param: 'username',
   symbol: '@',
+  icon: 'user',
 }, {
   key: 'milestone',
   type: 'string',
   param: 'title',
   symbol: '%',
+  icon: 'clock-o',
 }, {
   key: 'label',
   type: 'array',
   param: 'name[]',
   symbol: '~',
+  icon: 'tag',
 }];
 
 const alternativeTokenKeys = [{
@@ -54,6 +58,10 @@ const conditions = [{
 class FilteredSearchTokenKeys {
   static get() {
     return tokenKeys;
+  }
+
+  static getKeys() {
+    return tokenKeys.map(i => i.key);
   }
 
   static getAlternatives() {
