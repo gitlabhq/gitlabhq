@@ -8,6 +8,7 @@ import '~/filtered_search/filtered_search_token_keys_with_weights';
       type: 'string',
       param: '',
       symbol: '',
+      icon: 'balance-scale',
     };
 
     describe('get', () => {
@@ -28,6 +29,23 @@ import '~/filtered_search/filtered_search_token_keys_with_weights';
       it('should return weightTokenKey as part of tokenKeys', () => {
         const match = tokenKeys.find(tk => tk.key === weightTokenKey.key);
         expect(match).toEqual(weightTokenKey);
+      });
+
+      it('should always return the same array', () => {
+        const tokenKeys2 = gl.FilteredSearchTokenKeysWithWeights.get();
+
+        expect(tokenKeys).toEqual(tokenKeys2);
+      });
+    });
+
+    describe('getKeys', () => {
+      it('should return keys', () => {
+        const getKeys = gl.FilteredSearchTokenKeysWithWeights.getKeys();
+        const keys = gl.FilteredSearchTokenKeysWithWeights.get().map(i => i.key);
+
+        keys.forEach((key, i) => {
+          expect(key).toEqual(getKeys[i]);
+        });
       });
     });
 
