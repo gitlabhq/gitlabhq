@@ -428,11 +428,30 @@ describe SlashCommands::InterpretService, services: true do
       let(:content) { '/unassign' }
 
       context 'Issue' do
-        it 'populates assignee_ids: [] if content contains /unassign' do
-          issue.update(assignee_ids: [developer.id])
-          _, updates = service.execute(content, issue)
+        it 'unassigns user if content contains /unassign @user' do
+          issue.update(assignee_ids: [developer.id, developer2.id])
 
-          expect(updates).to eq(assignee_ids: [])
+          _, updates = service.execute("/unassign @#{developer2.username}", issue)
+
+          expect(updates).to eq(assignee_ids: [developer.id])
+        end
+
+        it 'unassigns both users if content contains /unassign @user @user1' do
+          user = create(:user)
+
+          issue.update(assignee_ids: [developer.id, developer2.id, user.id])
+
+          _, updates = service.execute("/unassign @#{developer2.username} @#{developer.username}", issue)
+
+          expect(updates).to eq(assignee_ids: [user.id])
+        end
+
+        it 'unassigns all the users if content contains /unassign' do
+          issue.update(assignee_ids: [developer.id, developer2.id])
+
+          _, updates = service.execute('/unassign', issue)
+
+          expect(updates[:assignee_ids]).to be_empty
         end
       end
 
@@ -906,7 +925,7 @@ describe SlashCommands::InterpretService, services: true do
       it 'includes current assignee reference' do
         _, explanations = service.explain(content, issue)
 
-        expect(explanations).to eq(["Removes assignee @#{developer.username}."])
+        expect(explanations).to eq(['Removes assignee(s)'])
       end
     end
 

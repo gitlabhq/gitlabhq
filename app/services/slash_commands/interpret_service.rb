@@ -99,13 +99,7 @@ module SlashCommands
       current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
     parse_params do |assignee_param|
-      users = extract_references(assignee_param, :user)
-
-      if users.empty?
-        users = User.where(username: assignee_param.split(' ').map(&:strip))
-      end
-
-      users
+      extract_users(assignee_param)
     end
     command :assign do |users|
       next if users.empty?
@@ -117,18 +111,31 @@ module SlashCommands
       end
     end
 
-    desc 'Remove assignee'
+    desc 'Remove all or specific assignee(s)'
     explanation do
-      "Removes assignee #{issuable.assignees.first.to_reference}."
+      'Removes assignee(s)'
+    end
+    params do
+      if issuable.is_a?(Issue)
+        ['@user1 @user2']
+      else
+        []
+      end
     end
     condition do
       issuable.persisted? &&
         issuable.assignees.any? &&
         current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
-    command :unassign do
+    command :unassign do |unassign_param = nil|
+      users = extract_users(unassign_param)
+
       if issuable.is_a?(Issue)
-        @updates[:assignee_ids] = []
+        if users.any?
+          @updates[:assignee_ids] = issuable.assignees.pluck(:id) - users.map(&:id)
+        else
+          @updates[:assignee_ids] = []
+        end
       else
         @updates[:assignee_id] = nil
       end
@@ -485,6 +492,18 @@ module SlashCommands
           issuable.labels.on_project_boards(issuable.project_id).where.not(id: label_id).pluck(:id)
         @updates[:add_label_ids] = [label_id]
       end
+    end
+
+    def extract_users(params)
+      return [] if params.nil?
+
+      users = extract_references(params, :user)
+
+      if users.empty?
+        users = User.where(username: params.split(' ').map(&:strip))
+      end
+
+      users
     end
 
     def find_labels(labels_param)

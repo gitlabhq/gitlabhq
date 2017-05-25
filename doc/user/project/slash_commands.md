@@ -17,7 +17,7 @@ do.
 | `/merge`                   | Merge (when pipeline succeeds) |
 | `/title <New title>`       | Change title |
 | `/assign @username`        | Assign |
-| `/unassign`                | Remove assignee |
+| `/unassign @user1 @user2`  | Remove all the assignees or specified ones |
 | `/milestone %milestone`    | Set milestone |
 | `/remove_milestone`        | Remove milestone |
 | `/label ~foo ~"bar baz"`   | Add label(s) |
