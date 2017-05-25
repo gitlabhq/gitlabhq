@@ -3,10 +3,6 @@
 import '~/gl_dropdown';
 import '~/search_autocomplete';
 import '~/lib/utils/common_utils';
-<<<<<<< HEAD
-import '~/lib/utils/type_utility';
-=======
->>>>>>> ce/master
 import 'vendor/fuzzaldrin-plus';
 
 (function() {
