@@ -24,15 +24,15 @@ module SystemCheck
 
       c = check.new
 
-      # When implements a multi check, we don't control the output
-      if c.is_multi_check?
-        c.multi_check
-        return
-      end
-
       # When implements skip method, we run it first, and if true, skip the check
       if c.can_skip? && c.skip?
         $stdout.puts check.skip_reason.color(:magenta)
+        return
+      end
+      
+      # When implements a multi check, we don't control the output
+      if c.is_multi_check?
+        c.multi_check
         return
       end
 

@@ -1,7 +1,12 @@
 require 'spec_helper'
+require 'rake_helper'
 
 describe SystemCheck, lib: true do
   subject { SystemCheck }
+
+  before do
+    silence_output
+  end
 
   describe '.run' do
     it 'requires custom executor to be a BasicExecutor' do
