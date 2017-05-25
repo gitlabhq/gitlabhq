@@ -36,4 +36,4 @@
 
         .discussion-body.js-toggle-content{ class: ("hide" unless expanded) }
           .panel.panel-default
-            = render "discussions/notes", discussion: discussion
+            = render "discussions/notes", discussion: discussion#, replies_only: true

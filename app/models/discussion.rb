@@ -98,6 +98,10 @@ class Discussion
     notes.length == 1
   end
 
+  def replies
+    @replies ||= notes[1..-1]
+  end
+
   def last_note
     @last_note ||= notes.last
   end
