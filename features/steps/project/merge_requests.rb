@@ -98,7 +98,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I click button "Unsubscribe"' do
     page.find('.issuable-subscribe-button').click
-    wait_for_ajax
+    wait_for_requests
   end
 
   step 'I click link "Close"' do

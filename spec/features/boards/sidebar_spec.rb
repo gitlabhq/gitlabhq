@@ -303,7 +303,7 @@ describe 'Issue Boards', feature: true, js: true do
 
       page.within('.subscription') do
         page.find('.issuable-subscribe-button').click
-        wait_for_ajax
+        wait_for_requests
         expect(page).to have_selector('.is-subscribed')
       end
     end
