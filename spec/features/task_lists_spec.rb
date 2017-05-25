@@ -64,11 +64,6 @@ feature 'Task Lists', feature: true do
 
   describe 'for Issues', feature: true do
     describe 'multiple tasks', js: true do
-<<<<<<< HEAD
-      include WaitForRequests
-
-=======
->>>>>>> ce/master
       let!(:issue) { create(:issue, description: markdown, author: user, project: project) }
 
       it 'renders' do
@@ -109,11 +104,6 @@ feature 'Task Lists', feature: true do
     end
 
     describe 'single incomplete task', js: true do
-<<<<<<< HEAD
-      include WaitForRequests
-
-=======
->>>>>>> ce/master
       let!(:issue) { create(:issue, description: singleIncompleteMarkdown, author: user, project: project) }
 
       it 'renders' do
@@ -133,10 +123,6 @@ feature 'Task Lists', feature: true do
     end
 
     describe 'single complete task', js: true do
-<<<<<<< HEAD
-      include WaitForRequests
-=======
->>>>>>> ce/master
       let!(:issue) { create(:issue, description: singleCompleteMarkdown, author: user, project: project) }
 
       it 'renders' do

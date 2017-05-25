@@ -46,7 +46,6 @@ describe ProjectCacheWorker do
         worker.perform(project.id, %w(readme))
       end
 
-<<<<<<< HEAD
       context 'when in Geo secondary node' do
         before do
           allow(Gitlab::Geo).to receive(:secondary?).and_return(true)
@@ -60,7 +59,9 @@ describe ProjectCacheWorker do
           expect_any_instance_of(Project).not_to receive(:update_commit_count)
 
           subject.perform(project.id)
-=======
+        end
+      end
+
       context 'with plain readme' do
         it 'refreshes the method caches' do
           allow(MarkupHelper).to receive(:gitlab_markdown?).and_return(false)
@@ -70,7 +71,6 @@ describe ProjectCacheWorker do
                                                   with(%i(readme)).
                                                   and_call_original
           worker.perform(project.id, %w(readme))
->>>>>>> ce/master
         end
       end
     end

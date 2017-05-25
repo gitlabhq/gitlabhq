@@ -7,7 +7,6 @@ describe ProtectedBranch, models: true do
     it { is_expected.to belong_to(:project) }
   end
 
-<<<<<<< HEAD
   describe "Uniqueness validations" do
     [ProtectedBranch::MergeAccessLevel, ProtectedBranch::PushAccessLevel].each do |access_level_class|
       let(:user) { create(:user) }
@@ -107,8 +106,6 @@ describe ProtectedBranch, models: true do
     end
   end
 
-=======
->>>>>>> ce/master
   describe 'Validation' do
     it { is_expected.to validate_presence_of(:project) }
     it { is_expected.to validate_presence_of(:name) }

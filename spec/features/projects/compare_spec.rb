@@ -56,12 +56,8 @@ describe "Compare", js: true do
     dropdown.find('.dropdown-menu')
     dropdown.fill_in("Filter by Git revision", with: selection)
     wait_for_requests
-<<<<<<< HEAD
-    dropdown.find_all("a[data-ref=\"#{selection}\"]", visible: true).last.click
-=======
     # find before all to wait for the items visiblity
     dropdown.find("a[data-ref=\"#{selection}\"]", match: :first)
     dropdown.all("a[data-ref=\"#{selection}\"]").last.click
->>>>>>> ce/master
   end
 end

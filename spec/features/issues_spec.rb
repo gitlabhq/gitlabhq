@@ -721,11 +721,6 @@ describe 'Issues', feature: true do
   end
 
   describe 'title issue#show', js: true do
-<<<<<<< HEAD
-    include WaitForRequests
-
-=======
->>>>>>> ce/master
     it 'updates the title', js: true do
       issue = create(:issue, author: @user, assignees: [@user], project: project, title: 'new title')
 

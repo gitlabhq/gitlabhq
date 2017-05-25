@@ -2,10 +2,6 @@ require 'spec_helper'
 
 feature 'Pipeline Schedules', :feature do
   include PipelineSchedulesHelper
-<<<<<<< HEAD
-  include WaitForRequests
-=======
->>>>>>> ce/master
 
   let!(:project) { create(:project) }
   let!(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly, project: project ) }

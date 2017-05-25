@@ -49,10 +49,6 @@ describe Projects::PipelinesController do
       expect(json_response['details']).to have_key 'stages'
     end
 
-<<<<<<< HEAD
-    context 'when the pipeline has multiple jobs' do
-      it 'does not perform N + 1 queries', :with_request_store do
-=======
     context 'when the pipeline has multiple stages and groups' do
       before do
         RequestStore.begin!
@@ -74,7 +70,6 @@ describe Projects::PipelinesController do
       end
 
       it 'does not perform N + 1 queries' do
->>>>>>> ce/master
         control_count = ActiveRecord::QueryRecorder.new { get_pipeline_json }.count
 
         create_build('test', 1, 'rspec 1')

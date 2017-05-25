@@ -168,7 +168,6 @@ describe ProjectsController do
         expect(response).to render_template('_files')
       end
 
-<<<<<<< HEAD
       context 'project repo over limit' do
         before do
           allow_any_instance_of(Project).to receive(:above_size_limit?).and_return(true)
@@ -191,8 +190,6 @@ describe ProjectsController do
       end
     end
 
-=======
->>>>>>> ce/master
     context "when the url contains .atom" do
       let(:public_project_with_dot_atom) { build(:empty_project, :public, name: 'my.atom', path: 'my.atom') }
 
@@ -248,8 +245,6 @@ describe ProjectsController do
       expect(assigns(:repository).path).to eq(project.repository.path)
       expect(response).to have_http_status(302)
     end
-<<<<<<< HEAD
-=======
   end
 
   describe '#transfer' do
@@ -294,7 +289,6 @@ describe ProjectsController do
         expect(flash[:alert]).to eq 'Please select a new namespace for your project.'
       end
     end
->>>>>>> ce/master
   end
 
   describe "#destroy" do

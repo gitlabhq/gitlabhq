@@ -9,13 +9,9 @@ describe Projects::EnvironmentsController do
   end
 
   before do
-<<<<<<< HEAD
     allow_any_instance_of(License).to receive(:feature_available?).and_return(false)
 
-    project.team << [user, :master]
-=======
     project.add_master(user)
->>>>>>> ce/master
 
     sign_in(user)
   end

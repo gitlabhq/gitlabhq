@@ -61,11 +61,8 @@ describe Gitlab::UsageData do
         pages_domains
         protected_branches
         releases
-<<<<<<< HEAD
         remote_mirrors
         services
-=======
->>>>>>> ce/master
         snippets
         todos
         uploads
