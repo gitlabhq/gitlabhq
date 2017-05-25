@@ -1,4 +1,5 @@
 import Raven from 'raven-js';
+import $ from 'jquery';
 
 const IGNORE_ERRORS = [
   // Random plugins/extensions
@@ -74,7 +75,7 @@ const RavenConfig = {
   },
 
   bindRavenErrors() {
-    window.$(document).on('ajaxError.raven', this.handleRavenErrors);
+    $(document).on('ajaxError.raven', this.handleRavenErrors);
   },
 
   handleRavenErrors(event, req, config, err) {
