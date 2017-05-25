@@ -121,6 +121,14 @@ export default {
       this.showForm = false;
     },
     updateIssuable() {
+      const canPostUpdate = this.store.formState.move_to_project_id !== 0 ?
+        confirm('Are you sure you want to move this issue to another project?') : true; // eslint-disable-line no-alert
+
+      if (!canPostUpdate) {
+        eventHub.$emit('enable.submit.btn');
+        return;
+      }
+
       this.service.updateIssuable(this.store.formState)
         .then(res => res.json())
         .then((data) => {
@@ -149,7 +157,7 @@ export default {
           // Stop the poll so we don't get 404's with the issue not existing
           this.poll.stop();
 
-          gl.utils.visitUrl(data.path);
+          gl.utils.visitUrl(data.web_url);
         })
         .catch(() => {
           eventHub.$emit('close.form');

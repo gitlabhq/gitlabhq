@@ -24,6 +24,9 @@
       },
     },
     methods: {
+      enableSubmit() {
+        this.updateLoading = false;
+      },
       updateIssuable() {
         this.updateLoading = true;
         eventHub.$emit('update.issuable');
@@ -40,6 +43,12 @@
         }
       },
     },
+    created() {
+      eventHub.$on('enable.submit.btn', this.enableSubmit);
+    },
+    beforeDestroy() {
+      eventHub.$off('enable.submit.btn', this.enableSubmit);
+    },
   };
 </script>
 
@@ -50,7 +59,7 @@
       :class="{ disabled: updateLoading || !isSubmitEnabled }"
       type="submit"
       :disabled="updateLoading || !isSubmitEnabled"
-      @click="updateIssuable">
+      @click.prevent="updateIssuable">
       Save changes
       <i
         class="fa fa-spinner fa-spin"

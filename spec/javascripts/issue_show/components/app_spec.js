@@ -32,13 +32,16 @@ describe('Issuable output', () => {
         canMove: true,
         endpoint: '/gitlab-org/gitlab-shell/issues/9/realtime_changes',
         issuableRef: '#1',
-        initialTitle: '',
+        initialTitleHtml: '',
+        initialTitleText: '',
         initialDescriptionHtml: '',
         initialDescriptionText: '',
         markdownPreviewUrl: '/',
         markdownDocs: '/',
         projectsAutocompleteUrl: '/',
         isConfidential: false,
+        projectNamespace: '/',
+        projectPath: '/',
       },
     }).$mount();
   });
@@ -219,6 +222,23 @@ describe('Issuable output', () => {
         expect(
           gl.utils.visitUrl,
         ).toHaveBeenCalledWith('/testing-issue-move');
+
+        done();
+      });
+    });
+
+    it('does not update issuable if project move confirm is false', (done) => {
+      spyOn(window, 'confirm').and.returnValue(false);
+      spyOn(vm.service, 'updateIssuable');
+
+      vm.store.formState.move_to_project_id = 1;
+
+      vm.updateIssuable();
+
+      setTimeout(() => {
+        expect(
+          vm.service.updateIssuable,
+        ).not.toHaveBeenCalled();
 
         done();
       });
