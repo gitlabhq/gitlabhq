@@ -45,12 +45,16 @@ module IssueLinks
     end
 
     def destroy_relation_path(issue)
-      return unless can_destroy_issue_link?(@project) && can_destroy_issue_link?(issue.project)
+      if can_destroy_issue_link_on_current_project? && can_destroy_issue_link?(issue.project)
+        namespace_project_issue_link_path(issue.project.namespace,
+                                          issue.project,
+                                          issue.iid,
+                                          issue.issue_links_id)
+      end
+    end
 
-      namespace_project_issue_link_path(issue.project.namespace,
-                                        issue.project,
-                                        issue.iid,
-                                        issue.issue_links_id)
+    def can_destroy_issue_link_on_current_project?
+      @can_destroy_on_current_project ||= can_destroy_issue_link?(@project)
     end
 
     def can_destroy_issue_link?(project)
