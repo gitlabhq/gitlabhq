@@ -52,7 +52,7 @@ stages:
 
 .use-pg: &use-pg
   services:
-    - postgres:9.2
+    - postgres:9.1
     - redis:alpine
 
 .use-mysql: &use-mysql
