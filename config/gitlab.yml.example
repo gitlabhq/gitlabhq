@@ -622,6 +622,10 @@ production: &base
     #   host: localhost
     #   port: 3808
 
+  ## GitLab Geo settings (EE-only)
+  geo_secondary_role:
+    enable: false
+
   #
   # 5. Extra customization
   # ==========================
@@ -705,6 +709,8 @@ test:
         user_filter: ''
         group_base: 'ou=groups,dc=example,dc=com'
         admin_group: ''
+  geo_secondary_role:
+    enable: true
 
 staging:
   <<: *base
