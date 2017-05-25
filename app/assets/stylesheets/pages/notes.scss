@@ -57,7 +57,7 @@ ul.notes {
   }
 
   .note {
-    padding: $gl-padding $gl-btn-padding 0;
+    padding: $gl-padding $gl-btn-padding;
     display: block;
     position: relative;
     border-bottom: 1px solid $white-normal;
@@ -124,10 +124,14 @@ ul.notes {
       }
     }
 
-    .note-awards {
-      .js-awards-block {
-        margin-bottom: 16px;
-      }
+    .note-awards .awards,
+    .edited-text {
+      margin-top: $gl-padding;
+      margin-bottom: 0;
+    }
+
+    .note-awards .awards {
+      margin-bottom: -6px;
     }
 
     .note-header {
