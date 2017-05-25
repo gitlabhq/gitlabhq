@@ -7,6 +7,7 @@
   } from '../constants';
   import eventHub from '../event_hub';
   import measurements from '../utils/measuments';
+  import { formatRelevantDigits } from '../../lib/utils/number_utils';
 
   const bisectDate = d3.bisector(d => d[0]).left;
 
@@ -39,6 +40,7 @@
         data: [],
         axisLabelContainer: {},
         breakpointHandler: Breakpoints.get(),
+        unitOfDisplay: '',
       };
     },
     methods: {
@@ -46,12 +48,15 @@
         const breakpointSize = this.breakpointHandler.getBreakpointSize();
         let height = 500;
         this.margin = measurements.large.margin;
+        this.measurements = measurements.large;
         if (breakpointSize === 'xs' || breakpointSize === 'sm') {
           height = 300;
           this.margin = measurements.small.margin;
+          this.measurements = measurements.small;
         }
         this.svgContainer = this.$el.querySelector('svg');
-        this.data = (this.columnData.queries[0].result[0])[0].values;
+        this.data = ((this.columnData.queries[0]).result[0]).values;
+        this.unitOfDisplay = (this.columnData.queries[0]).unit || 'N/A';
         this.width = this.svgContainer.clientWidth -
                      this.margin.left - this.margin.right;
         this.height = height - this.margin.top - this.margin.bottom;
@@ -95,7 +100,7 @@
           x2: currentTimeCoordinate,
           y2: maxMetricValue,
         })
-        .attr('transform', 'translate(-5,0)');
+        .attr('transform', 'translate(-5,20)');
 
         currentChart.append('circle')
           .attr('class', 'circle-metric')
@@ -103,7 +108,7 @@
           .attr('cx', currentTimeCoordinate || currentDeployXPos)
           .attr('cy', this.yScale(currentData[1]))
           .attr('r', 5)
-          .attr('transform', 'translate(-5,0)');
+          .attr('transform', 'translate(-5,20)');
 
         // The little box with text
         if (currentTimeCoordinate >= this.width - 70 - 120) {
@@ -125,7 +130,7 @@
             rx: 2,
             width: 90,
             height: 40,
-            transform: 'translate(-5,0)',
+            transform: 'translate(-5,20)',
           });
 
         rectTextMetric.append('text')
@@ -133,7 +138,7 @@
             class: 'text-metric text-metric-bold',
             x: 8,
             y: 35,
-            transform: 'translate(-5,0)',
+            transform: 'translate(-5,20)',
           })
           .text(timeFormat(new Date(currentData[0] * 1000)));
 
@@ -142,14 +147,17 @@
             class: 'text-metric-date',
             x: 8,
             y: 15,
-            transform: 'translate(-5,0)',
+            transform: 'translate(-5,20)',
           })
           .text(dateFormat(new Date(currentData[0] * 1000)));
+
+        d3.select(this.svgContainer).select('.text-metric-usage')
+          .text(`${formatRelevantDigits(currentData[1])} ${this.unitOfDisplay}`);
       },
       renderAxisAndContainer() {
         d3.select(this.$el.querySelector('.prometheus-svg-container'))
         .attr({
-          style: `padding-bottom: ${(Math.ceil(this.height * 100) / this.width)}%`,
+          style: `padding-bottom: ${(Math.ceil(this.height * 100) / this.width)}%`, // Get the aspect ratio
         });
 
         const chart = d3.select(this.svgContainer)
@@ -158,18 +166,18 @@
         this.xScale = d3.time.scale()
           .range([0, this.width]);
         this.yScale = d3.scale.linear()
-          .range([this.height - 100, 0]);
+          .range([this.height - 120, 0]);
         this.xScale.domain(d3.extent(this.data, d => d[0]));
         this.yScale.domain([0, d3.max(this.data.map(d => d[1]))]);
 
         const xAxis = d3.svg.axis()
           .scale(this.xScale)
-          .ticks(5)
+          .ticks(measurements.ticks)
           .orient('bottom');
 
         const yAxis = d3.svg.axis()
           .scale(this.yScale)
-          .ticks(3) // TODO: Number of Ticks move it to a constant
+          .ticks(measurements.ticks) // TODO: Number of Ticks move it to a constant
           .orient('left');
 
         chart.append('g')
@@ -180,7 +188,7 @@
         const width = this.width;
         chart.append('g')
           .attr('class', 'y-axis')
-          .attr('transform', 'translate(70,0)')
+          .attr('transform', 'translate(70,20)')
           .call(yAxis)
           .selectAll('.tick')
           .each(function createTickLines() {
@@ -198,7 +206,7 @@
 
         const area = d3.svg.area()
           .x(d => this.xScale2(d[0]))
-          .y0(this.height - 100)
+          .y0(this.height - 120)
           .y1(d => this.yScale(d[1]))
           .interpolate('linear');
 
@@ -211,7 +219,7 @@
           .attr('d', area)
           .attr('class', 'metric-area')
           .attr('fill', '#edf3fc')
-          .attr('transform', 'translate(-5,0)');
+          .attr('transform', 'translate(-5,20)');
 
         pathGroup.append('path')
           .datum(this.data)
@@ -220,14 +228,14 @@
           .attr('fill', 'none')
           .attr('stroke-width', 2)
           .attr('d', line)
-          .attr('transform', 'translate(-5, 0)');
+          .attr('transform', 'translate(-5, 20)');
 
         // Overlay area for mouseover events
         pathGroup.append('rect')
           .attr('class', 'prometheus-graph-overlay')
           .attr('width', this.width - 70)
           .attr('height', this.height - 100)
-          .attr('transform', 'translate(-5, 0)')
+          .attr('transform', 'translate(-5, 20)')
           .on('mousemove', this.handleMouseOverGraph);
       },
       renderLabelAxisContainer() {
@@ -241,9 +249,9 @@
           .attr('stroke-width', '1')
           .attr({
             x1: 10,
-            y1: (this.height - this.margin.top) + 20,
+            y1: (this.height - this.margin.top) + this.measurements.axisLabelLineOffset,
             x2: this.width + 20,
-            y2: (this.height - this.margin.top) + 20,
+            y2: (this.height - this.margin.top) + this.measurements.axisLabelLineOffset,
           });
 
         axisLabelContainer.append('line')
@@ -254,55 +262,54 @@
             x1: 10,
             y1: 0,
             x2: 10,
-            y2: (this.height - this.margin.top) + 20,
+            y2: (this.height - this.margin.top) + this.measurements.axisLabelLineOffset,
           });
 
         axisLabelContainer.append('rect')
           .attr('class', 'rect-axis-text')
           .attr('x', 0)
           .attr('y', 50)
-          .attr('width', 30)
-          .attr('height', 150);
+          .attr('width', this.measurements.backgroundLegend.width)
+          .attr('height', this.measurements.backgroundLegend.height);
 
         axisLabelContainer.append('text')
           .attr('class', 'label-axis-text')
           .attr('text-anchor', 'middle')
-          .attr('transform', `translate(15, ${((this.height - this.margin.top) + 20) / 2}) rotate(-90)`)
+          .attr('transform', `translate(15, ${((this.height - this.margin.top) + this.measurements.axisLabelLineOffset) / 2}) rotate(-90)`)
           .text('I.O.U Title'); // TODO: Put the appropiate title
 
         axisLabelContainer.append('rect')
           .attr('class', 'rect-axis-text')
-          .attr('x', ((this.width + 20) / 2) - this.margin.right)
+          .attr('x', ((this.width + this.measurements.axisLabelLineOffset) / 2) - this.margin.right)
           .attr('y', this.height - 80)
           .attr('width', 30)
           .attr('height', 50);
 
         axisLabelContainer.append('text')
           .attr('class', 'label-axis-text')
-          .attr('x', ((this.width + 20) / 2) - this.margin.right)
-          .attr('y', (this.height - this.margin.top) + 20)
+          .attr('x', ((this.width + this.measurements.axisLabelLineOffset) / 2) - this.margin.right)
+          .attr('y', (this.height - this.margin.top) + this.measurements.axisLabelLineOffset)
           .attr('dy', '.35em')
           .text('Time');
 
         // The legends
         axisLabelContainer.append('rect')
           .attr('x', 20)
-          .attr('y', this.height - 55)
+          .attr('y', this.height - this.measurements.legendOffset)
           .style('fill', '#edf3fc')
-          .attr('width', 20)
-          .attr('height', 35);
+          .attr('width', this.measurements.legends.width)
+          .attr('height', this.measurements.legends.height);
 
         axisLabelContainer.append('text')
           .attr('class', 'text-metric-title')
           .attr('x', 50)
           .attr('y', this.height - 40)
-          .text('Average');
+          .text('Average'); // TODO: This comes from backend
 
         axisLabelContainer.append('text')
           .attr('class', 'text-metric-usage')
           .attr('x', 50)
-          .attr('y', this.height - 25)
-          .text('N/A');
+          .attr('y', this.height - 25);
       },
       redraw() {
         // Remove event listeners and graphs, then redraw them
@@ -317,7 +324,7 @@
       updateAspectRatio: {
         handler() {
           if (this.updateAspectRatio) {
-            this.redraw(); 
+            this.redraw();
             eventHub.$emit('toggleAspectRatio');
           }
         },

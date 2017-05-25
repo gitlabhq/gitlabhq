@@ -9,7 +9,6 @@ class MonitoringStore {
     return MonitoringStore.singleton;
   }
 
-  // TODO: Probably move this to an utility class
   static createArrayRows(metrics = []) {
     const availableMetrics = [];
     let metricsRow = [];
@@ -30,9 +29,9 @@ class MonitoringStore {
 
   storeMetrics(groups = []) {
     // TODO: Sorted by weight add the name as another modifier
-    this.groups = groups.map((group) => {
+    this.groups = groups[0].data.map((group) => {
       const currentGroup = group;
-      currentGroup.metrics = _.sortBy(group.metrics, 'weight');
+      currentGroup.metrics = _.sortBy(group.metrics, 'priority');
       currentGroup.metrics = MonitoringStore.createArrayRows(currentGroup.metrics);
       return currentGroup;
     });
