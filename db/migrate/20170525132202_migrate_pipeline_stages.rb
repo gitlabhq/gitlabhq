@@ -8,7 +8,7 @@ class MigratePipelineStages < ActiveRecord::Migration
       t.integer :project_id
       t.integer :pipeline_id
       t.string :name
-      t.timestamps
+      t.timestamps null: true
     end
   end
 end

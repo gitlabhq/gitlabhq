@@ -92,6 +92,16 @@ RSpec.configure do |config|
     Gitlab::Redis.with(&:flushall)
     Sidekiq.redis(&:flushall)
   end
+
+  config.around(:example, migration: true) do |example|
+    schema_version = example.metadata[:schema]
+    migrations_paths = ActiveRecord::Migrator.migrations_paths
+    ActiveRecord::Migrator.migrate(migrations_paths, schema_version)
+
+    example.run
+
+    ActiveRecord::Migration.maintain_test_schema!
+  end
 end
 
 FactoryGirl::SyntaxRunner.class_eval do
