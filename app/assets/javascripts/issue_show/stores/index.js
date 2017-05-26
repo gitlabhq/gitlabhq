@@ -19,6 +19,7 @@ export default class Store {
       description: '',
       lockedWarningVisible: false,
       move_to_project_id: 0,
+      updateLoading: false,
     };
   }
 

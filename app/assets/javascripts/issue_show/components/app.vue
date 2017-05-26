@@ -114,6 +114,7 @@ export default {
           description: this.state.descriptionText,
           lockedWarningVisible: false,
           move_to_project_id: 0,
+          updateLoading: false,
         });
       }
     },
@@ -125,7 +126,7 @@ export default {
         confirm('Are you sure you want to move this issue to another project?') : true; // eslint-disable-line no-alert
 
       if (!canPostUpdate) {
-        eventHub.$emit('enable.submit.btn');
+        this.store.formState.updateLoading = false;
         return;
       }
 
