@@ -46,7 +46,7 @@ export default class ApproversSelect {
       skip_users: ApproversSelect.getApprovers(this.fieldNames[0], '.js-approver'),
       project_id: $('#project_id').val(),
     };
-    return Api.users(term, options);
+    return Api.approverUsers(term, options);
   }
 
   handleSelectChange(e) {

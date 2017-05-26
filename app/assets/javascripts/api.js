@@ -25,7 +25,7 @@ const Api = {
   },
 
   // Return groups list. Filtered by query
-  groups(query, options, callback) {
+  groups(query, options, callback = $.noop) {
     const url = Api.buildUrl(Api.groupsPath);
     return $.ajax({
       url,
@@ -147,6 +147,18 @@ const Api = {
       }, options),
       dataType: 'json',
     });
+  },
+
+  approverUsers(search, options, callback = $.noop) {
+    const url = Api.buildUrl('/autocomplete/users.json');
+    return $.ajax({
+      url,
+      data: $.extend({
+        search,
+        per_page: 20,
+      }, options),
+      dataType: 'json',
+    }).done(callback);
   },
 
   ldap_groups(query, provider, callback) {
