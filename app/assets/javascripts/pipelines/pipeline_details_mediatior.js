@@ -6,8 +6,8 @@ import PipelineStore from './stores/pipeline_store';
 import PipelineService from './services/pipeline_service';
 
 export default class pipelinesMediator {
-  constructor(options) {
-    this.options = options || {};
+  constructor(options = {}) {
+    this.options = options;
     this.store = new PipelineStore();
     this.service = new PipelineService(options.endpoint);
 
