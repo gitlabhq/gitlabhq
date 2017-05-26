@@ -104,6 +104,24 @@ feature 'Triggers', feature: true, js: true do
 
           expect(page).to have_content 'The form contains the following errors'
         end
+
+        context 'when GitLab time_zone is ActiveSupport::TimeZone format' do
+          before do
+            allow(Time).to receive(:zone)
+              .and_return(ActiveSupport::TimeZone['Eastern Time (US & Canada)'])
+          end
+
+          scenario 'do fill form with valid data and save' do
+            find('#trigger_trigger_schedule_attributes_active').click
+            fill_in 'trigger_trigger_schedule_attributes_cron', with: '1 * * * *'
+            fill_in 'trigger_trigger_schedule_attributes_cron_timezone', with: 'UTC'
+            fill_in 'trigger_trigger_schedule_attributes_ref', with: 'master'
+            click_button 'Save trigger'
+
+            expect(page.find('.flash-notice'))
+              .to have_content 'Trigger was successfully updated.'
+          end
+        end
       end
 
       context 'disabling schedule' do

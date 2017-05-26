@@ -15,7 +15,10 @@ module Gitlab
       # Outputs a hash in the format described here: http://api.rubyonrails.org/classes/ActiveModel/Serializers/JSON.html
       # for outputting a project in JSON format, including its relations and sub relations.
       def project_tree
-        @attributes_finder.find_included(:project).merge(include: build_hash(@tree))
+        attributes = @attributes_finder.find(:project)
+        project_attributes = attributes.is_a?(Hash) ? attributes[:project] : {}
+
+        project_attributes.merge(include: build_hash(@tree))
       rescue => e
         @shared.error(e)
         false

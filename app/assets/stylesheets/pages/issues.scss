@@ -42,6 +42,7 @@ ul.related-merge-requests > li {
   display: -ms-flexbox;
   display: -webkit-flex;
   display: flex;
+  align-items: center;
 
   .merge-request-id {
     flex-shrink: 0;
@@ -49,6 +50,14 @@ ul.related-merge-requests > li {
 
   .merge-request-info {
     margin-left: 5px;
+  }
+
+  .row_title {
+    vertical-align: bottom;
+  }
+
+  gl-emoji {
+    font-size: 1em;
   }
 }
 
@@ -101,7 +110,13 @@ ul.related-merge-requests > li {
   }
 }
 
-.merge-request-ci-status {
+.merge-request-ci-status,
+.related-merge-requests {
+  .ci-status-link {
+    display: block;
+    margin-right: 5px;
+  }
+
   svg {
     margin-right: 4px;
     position: relative;

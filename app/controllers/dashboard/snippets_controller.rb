@@ -1,11 +1,10 @@
 class Dashboard::SnippetsController < Dashboard::ApplicationController
   def index
-    @snippets = SnippetsFinder.new.execute(
+    @snippets = SnippetsFinder.new(
       current_user,
-      filter: :by_user,
-      user: current_user,
+      author: current_user,
       scope: params[:scope]
-    )
+    ).execute
     @snippets = @snippets.page(params[:page])
   end
 end

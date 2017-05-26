@@ -6,7 +6,7 @@
   = page_specific_javascript_bundle_tag('common_vue')
   = page_specific_javascript_bundle_tag('diff_notes')
 
-.merge-request{ 'data-url' => merge_request_path(@merge_request), 'data-project-path' => project_path(@merge_request.project) }
+.merge-request{ 'data-url' => merge_request_path(@merge_request, format: :json), 'data-project-path' => project_path(@merge_request.project) }
   = render "projects/merge_requests/show/mr_title"
 
   .merge-request-details.issuable-details{ data: { id: @merge_request.project.id } }

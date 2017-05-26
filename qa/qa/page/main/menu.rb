@@ -11,7 +11,7 @@ module QA
         end
 
         def go_to_admin_area
-          within_user_menu { click_link 'Admin Area' }
+          within_user_menu { click_link 'Admin area' }
         end
 
         def sign_out

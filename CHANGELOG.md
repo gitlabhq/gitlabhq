@@ -2,6 +2,44 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.1.4 (2017-05-12)
+
+- No changes.
+- No changes.
+- No changes.
+- Fix error on CI/CD Settings page related to invalid pipeline trigger. !10948 (dosuken123)
+- Sort the network graph both by commit date and topographically. !11057
+- Fix cross referencing for private and internal projects. !11243
+- Handle incoming emails from aliases correctly.
+- Gracefully handle failures for incoming emails which do not match on the To header, and have no References header.
+- Add missing project attributes to Import/Export.
+- Fixed search terms not correctly highlighting.
+- Fixed bug where merge request JSON would be displayed.
+
+## 9.1.3 (2017-05-05)
+
+- No changes.
+- Do not show private groups on subgroups page if user doesn't have access to.
+- Enforce project features when searching blobs and wikis.
+- Fixed branches dropdown rendering branch names as HTML.
+- Make Asciidoc & other markup go through pipeline to prevent XSS.
+- Validate URLs in markdown using URI to detect the host correctly.
+- Fix for XSS in project import view caused by Hamlit filter usage.
+- Sanitize submodule URLs before linking to them in the file tree view.
+- Refactor snippets finder & dont return internal snippets for external users.
+- Fix snippets visibility for show action - external users can not see internal snippets.
+
+## 9.1.2 (2017-05-01)
+
+- Add index on ci_runners.contacted_at. !10876 (blackst0ne)
+- Fix pipeline events description for Slack and Mattermost integration. !10908
+- Fixed milestone sidebar showing incorrect number of MRs when collapsed. !10933
+- Fix ordering of commits in the network graph. !10936
+- Ensure the chat notifications service properly saves the "Notify only default branch" setting. !10959
+- Lazily sets UUID in ApplicationSetting for new installations.
+- Skip validation when creating internal (ghost, service desk) users.
+- Use GitLab Pages v0.4.1.
+
 ## 9.1.1 (2017-04-26)
 
 - Add a transaction around move_issues_to_ghost_user. !10465

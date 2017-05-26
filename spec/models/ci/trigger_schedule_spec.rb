@@ -73,4 +73,36 @@ describe Ci::TriggerSchedule, models: true do
       end
     end
   end
+
+  describe '#real_next_run' do
+    subject do
+      Ci::TriggerSchedule.last.real_next_run(worker_cron: worker_cron,
+                                             worker_time_zone: worker_time_zone)
+    end
+
+    context 'when GitLab time_zone is UTC' do
+      before do
+        allow(Time).to receive(:zone)
+          .and_return(ActiveSupport::TimeZone[worker_time_zone])
+      end
+
+      let(:worker_time_zone) { 'UTC' }
+
+      context 'when cron_timezone is Eastern Time (US & Canada)' do
+        before do
+          create(:ci_trigger_schedule, :nightly,
+                  cron_timezone: 'Eastern Time (US & Canada)')
+        end
+
+        let(:worker_cron) { '0 1 2 3 *' }
+
+        it 'returns the next time worker executes' do
+          expect(subject.min).to eq(0)
+          expect(subject.hour).to eq(1)
+          expect(subject.day).to eq(2)
+          expect(subject.month).to eq(3)
+        end
+      end
+    end
+  end
 end

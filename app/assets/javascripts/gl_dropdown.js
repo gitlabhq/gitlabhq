@@ -584,7 +584,12 @@ GitLabDropdown = (function() {
       var link = document.createElement('a');
 
       link.href = url;
-      link.innerHTML = text;
+
+      if (this.highlight) {
+        link.innerHTML = text;
+      } else {
+        link.textContent = text;
+      }
 
       if (selected) {
         link.className = 'is-active';

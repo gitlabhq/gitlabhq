@@ -1044,7 +1044,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       end
 
       it "allows ordering by date" do
-        expect_any_instance_of(Rugged::Walker).to receive(:sorting).with(Rugged::SORT_DATE)
+        expect_any_instance_of(Rugged::Walker).to receive(:sorting).with(Rugged::SORT_DATE | Rugged::SORT_TOPO)
 
         repository.find_commits(order: :date)
       end

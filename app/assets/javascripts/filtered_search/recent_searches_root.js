@@ -29,12 +29,15 @@ class RecentSearchesRoot {
   }
 
   render() {
+    const state = this.store.state;
     this.vm = new Vue({
       el: this.wrapperElement,
-      data: this.store.state,
+      data() { return state; },
       template: `
         <recent-searches-dropdown-content
-          :items="recentSearches" />
+          :items="recentSearches"
+          :is-local-storage-available="isLocalStorageAvailable"
+          />
       `,
       components: {
         'recent-searches-dropdown-content': RecentSearchesDropdownContent,

@@ -63,7 +63,7 @@ require('./filtered_search_dropdown');
             Object.assign({
               icon: `fa-${icon}`,
               hint,
-              tag: `&lt;${tag}&gt;`,
+              tag: `<${tag}>`,
             }, type && { type }),
           );
         }

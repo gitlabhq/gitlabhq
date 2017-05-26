@@ -22,8 +22,37 @@ describe Gitlab::ProjectSearchResults, lib: true do
   end
 
   describe 'blob search' do
-    let(:project) { create(:project, :repository) }
-    let(:results) { described_class.new(user, project, 'files').objects('blobs') }
+    let(:project) { create(:project, :public, :repository) }
+
+    subject(:results) { described_class.new(user, project, 'files').objects('blobs') }
+
+    context 'when repository is disabled' do
+      let(:project) { create(:project, :public, :repository, :repository_disabled) }
+
+      it 'hides blobs from members' do
+        project.add_reporter(user)
+
+        is_expected.to be_empty
+      end
+
+      it 'hides blobs from non-members' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when repository is internal' do
+      let(:project) { create(:project, :public, :repository, :repository_private) }
+
+      it 'finds blobs for members' do
+        project.add_reporter(user)
+
+        is_expected.not_to be_empty
+      end
+
+      it 'hides blobs from non-members' do
+        is_expected.to be_empty
+      end
+    end
 
     it 'finds by name' do
       expect(results).to include(["files/images/wm.svg", nil])
@@ -70,6 +99,46 @@ describe Gitlab::ProjectSearchResults, lib: true do
     end
   end
 
+  describe 'wiki search' do
+    let(:project) { create(:project, :public) }
+    let(:wiki) { build(:project_wiki, project: project) }
+    let!(:wiki_page) { wiki.create_page('Title', 'Content') }
+
+    subject(:results) { described_class.new(user, project, 'Content').objects('wiki_blobs') }
+
+    context 'when wiki is disabled' do
+      let(:project) { create(:project, :public, :wiki_disabled) }
+
+      it 'hides wiki blobs from members' do
+        project.add_reporter(user)
+
+        is_expected.to be_empty
+      end
+
+      it 'hides wiki blobs from non-members' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when wiki is internal' do
+      let(:project) { create(:project, :public, :wiki_private) }
+
+      it 'finds wiki blobs for members' do
+        project.add_reporter(user)
+
+        is_expected.not_to be_empty
+      end
+
+      it 'hides wiki blobs from non-members' do
+        is_expected.to be_empty
+      end
+    end
+
+    it 'finds by content' do
+      expect(results).to include("master:Title.md:1:Content\n")
+    end
+  end
+
   it 'does not list issues on private projects' do
     issue = create(:issue, project: project)
 
@@ -79,7 +148,6 @@ describe Gitlab::ProjectSearchResults, lib: true do
   end
 
   describe 'confidential issues' do
-    let(:project) { create(:empty_project) }
     let(:query) { 'issue' }
     let(:author) { create(:user) }
     let(:assignee) { create(:user) }
@@ -277,6 +345,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
     context 'by commit hash' do
       let(:project) { create(:project, :public, :repository) }
       let(:commit) { project.repository.commit('0b4bc9a') }
+
       commit_hashes = { short: '0b4bc9a', full: '0b4bc9a49b562e85de7cc9e834518ea6828729b9' }
 
       commit_hashes.each do |type, commit_hash|
