@@ -128,7 +128,10 @@ module API
         authorize! :admin_group, group
 
         # EE
-        authenticated_as_admin! if params[:shared_runners_minutes_limit]
+        if params[:shared_runners_minutes_limit].to_i !=
+            group.shared_runners_minutes_limit.to_i
+          authenticated_as_admin!
+        end
 
         if ::Groups::UpdateService.new(group, current_user, declared_params(include_missing: false)).execute
           present group, with: Entities::GroupDetail, current_user: current_user
