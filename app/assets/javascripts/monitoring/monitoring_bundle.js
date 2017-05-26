@@ -32,9 +32,9 @@ document.addEventListener('DOMContentLoaded', function onLoad() {
         unableToConnect: false,
         gettingStarted: false,
         hasMetrics: gl.utils.convertPermissionToBoolean(metricsData.hasMetrics),
+        endpoint: metricsData.additionalMetrics,
         showEmptyState: false,
         testValue: 0,
-        endpoint: 'metrics.json',
         backOffRequestCounter: 0,
         bisectDate: d3.bisector(d => d.time).left,
         service: {},
@@ -77,9 +77,7 @@ document.addEventListener('DOMContentLoaded', function onLoad() {
         })
         .then((resp) => {
           this.store.storeMetrics(resp.metrics);
-          if (this.store.enoughMetrics) {
-            this.showEmptyState = false;
-          }
+          this.showEmptyState = false;
         })
         .catch(() => {
           this.isLoading = false;
@@ -111,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function onLoad() {
     },
 
     created() {
-      this.service = new MonitoringService();
+      this.service = new MonitoringService(this.endpoint);
       eventHub.$on('toggleAspectRatio', this.toggleAspectRatio);
     },
 

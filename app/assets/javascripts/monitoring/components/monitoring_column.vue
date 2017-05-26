@@ -8,6 +8,7 @@
   import eventHub from '../event_hub';
   import measurements from '../utils/measuments';
   import { formatRelevantDigits } from '../../lib/utils/number_utils';
+  import { hsvToRgb } from '../../lib/utils/color_utils';
 
   const bisectDate = d3.bisector(d => d[0]).left;
 
@@ -41,6 +42,14 @@
         axisLabelContainer: {},
         breakpointHandler: Breakpoints.get(),
         unitOfDisplay: '',
+        areaColor: [],
+        areaColorRgb: '',
+        lineColor: [],
+        lineColorRgb: '',
+        circleColor: [],
+        circleColorRgb: '',
+        yAxisLabel: '',
+        legendTitle: '',
       };
     },
     methods: {
@@ -57,6 +66,8 @@
         this.svgContainer = this.$el.querySelector('svg');
         this.data = ((this.columnData.queries[0]).result[0]).values;
         this.unitOfDisplay = (this.columnData.queries[0]).unit || 'N/A';
+        this.yAxisLabel = (this.columnData.queries[0]).y_axis || 'Values';
+        this.legendTitle = (this.columnData.queries[0]).legend || 'Average';
         this.width = this.svgContainer.clientWidth -
                      this.margin.left - this.margin.right;
         this.height = height - this.margin.top - this.margin.bottom;
@@ -104,7 +115,8 @@
 
         currentChart.append('circle')
           .attr('class', 'circle-metric')
-          .attr('fill', '#5b99f7')
+          .attr('fill', this.circleColorRgb)
+          .attr('stroke', '#000')
           .attr('cx', currentTimeCoordinate || currentDeployXPos)
           .attr('cy', this.yScale(currentData[1]))
           .attr('r', 5)
@@ -177,7 +189,7 @@
 
         const yAxis = d3.svg.axis()
           .scale(this.yScale)
-          .ticks(measurements.ticks) // TODO: Number of Ticks move it to a constant
+          .ticks(measurements.ticks)
           .orient('left');
 
         chart.append('g')
@@ -218,13 +230,13 @@
           .datum(this.data)
           .attr('d', area)
           .attr('class', 'metric-area')
-          .attr('fill', '#edf3fc')
+          .attr('fill', this.areaColorRgb)
           .attr('transform', 'translate(-5,20)');
 
         pathGroup.append('path')
           .datum(this.data)
           .attr('class', 'metric-line')
-          .attr('stroke', '#5b99f7')
+          .attr('stroke', this.lineColorRgb)
           .attr('fill', 'none')
           .attr('stroke-width', 2)
           .attr('d', line)
@@ -267,7 +279,7 @@
 
         axisLabelContainer.append('rect')
           .attr('class', 'rect-axis-text')
-          .attr('x', 0)
+          .attr('x', -10)
           .attr('y', 50)
           .attr('width', this.measurements.backgroundLegend.width)
           .attr('height', this.measurements.backgroundLegend.height);
@@ -276,7 +288,7 @@
           .attr('class', 'label-axis-text')
           .attr('text-anchor', 'middle')
           .attr('transform', `translate(15, ${((this.height - this.margin.top) + this.measurements.axisLabelLineOffset) / 2}) rotate(-90)`)
-          .text('I.O.U Title'); // TODO: Put the appropiate title
+          .text(this.yAxisLabel); 
 
         axisLabelContainer.append('rect')
           .attr('class', 'rect-axis-text')
@@ -296,7 +308,7 @@
         axisLabelContainer.append('rect')
           .attr('x', 20)
           .attr('y', this.height - this.measurements.legendOffset)
-          .style('fill', '#edf3fc')
+          .style('fill', this.areaColorRgb)
           .attr('width', this.measurements.legends.width)
           .attr('height', this.measurements.legends.height);
 
@@ -304,7 +316,7 @@
           .attr('class', 'text-metric-title')
           .attr('x', 50)
           .attr('y', this.height - 40)
-          .text('Average'); // TODO: This comes from backend
+          .text(this.legendTitle);
 
         axisLabelContainer.append('text')
           .attr('class', 'text-metric-usage')
@@ -332,6 +344,14 @@
     },
 
     mounted() {
+      const goldenRatioConjugate = 0.618033988749895;
+      const hue = (Math.random() + goldenRatioConjugate) % 1;
+      this.areaColor = hsvToRgb(hue, 0.4, 0.95);
+      this.lineColor = hsvToRgb(hue, 0.7, 0.95);
+      this.circleColor = hsvToRgb(hue, 0.9, 0.95);
+      this.areaColorRgb = `rgb(${this.areaColor[0]}, ${this.areaColor[1]}, ${this.areaColor[2]})`;
+      this.lineColorRgb = `rgb(${this.lineColor[0]}, ${this.lineColor[1]}, ${this.lineColor[2]})`;
+      this.circleColorRgb = `rgb(${this.circleColor[0]}, ${this.circleColor[1]}, ${this.circleColor[2]})`;
       this.draw();
     },
   };
