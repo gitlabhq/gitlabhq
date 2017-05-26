@@ -1,0 +1,21 @@
+.row.prepend-top-default.append-bottom-default.prometheus-metrics-monitoring
+  .col-lg-3
+    %h4.prepend-top-0
+      Metrics
+    %p
+      Metrics are automatically configured and monitored
+      based on a library of metrics from popular exporters.
+      More information
+
+  .col-lg-9
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title
+          Monitored
+          %span.badge-count.js-monitored-count 0
+      .panel-body
+        .empty-metrics
+          = custom_icon('icon_empty_metrics')
+          %p No metrics are being monitored. To start monitoring, deploy to an environment.
+          = link_to project_environments_path(@project), title: 'View environments', class: 'btn btn-success' do
+            View environments
