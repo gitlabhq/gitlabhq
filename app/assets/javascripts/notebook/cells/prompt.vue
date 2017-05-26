@@ -9,13 +9,18 @@
         type: Number,
         required: false,
       },
+      showOutput: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
     },
   };
 </script>
 
 <template>
   <div class="prompt">
-    <span v-if="type && count">
+    <span v-if="type && count && showOutput">
       {{ type }} [{{ count }}]:
     </span>
   </div>

@@ -15,8 +15,8 @@ export default {
       required: false,
       default: 0,
     },
-    output: {
-      type: Object,
+    outputs: {
+      type: Array,
       requred: true,
     },
   },
@@ -25,24 +25,28 @@ export default {
     'html-output': Html,
     'image-output': Image,
   },
-  data() {
-    return {
-      outputType: '',
-    };
-  },
-  computed: {
-    componentName() {
-      if (this.output.text) {
+  methods: {
+    dataForType(output, type) {
+      let data = output.data[type];
+
+      if (typeof data === 'object') {
+        data = data.join('');
+      }
+
+      return data;
+    },
+    componentName(output) {
+      if (output.text) {
         return 'code-cell';
-      } else if (this.output.data['image/png']) {
+      } else if (output.data['image/png']) {
         this.outputType = 'image/png';
 
         return 'image-output';
-      } else if (this.output.data['text/html']) {
+      } else if (output.data['text/html']) {
         this.outputType = 'text/html';
 
         return 'html-output';
-      } else if (this.output.data['image/svg+xml']) {
+      } else if (output.data['image/svg+xml']) {
         this.outputType = 'image/svg+xml';
 
         return 'html-output';
@@ -51,33 +55,29 @@ export default {
       this.outputType = 'text/plain';
       return 'code-cell';
     },
-    rawCode() {
-      if (this.output.text) {
-        return this.output.text.join('');
+    rawCode(output) {
+      if (output.text) {
+        return output.text.join('');
       }
 
-      return this.dataForType(this.outputType);
-    },
-  },
-  methods: {
-    dataForType(type) {
-      let data = this.output.data[type];
-
-      if (typeof data === 'object') {
-        data = data.join('');
-      }
-
-      return data;
+      return this.dataForType(output, this.outputType);
     },
   },
 };
 </script>
 
 <template>
-  <component :is="componentName"
-    type="output"
-    :outputType="outputType"
-    :count="count"
-    :raw-code="rawCode"
-    :code-css-class="codeCssClass" />
+  <div>
+    <component
+      v-for="(output, index) in outputs"
+      :is="componentName(output)"
+      type="output"
+      :outputType="outputType"
+      :count="count"
+      :index="index"
+      :raw-code="rawCode(output)"
+      :code-css-class="codeCssClass"
+      :key="index"
+    />
+  </div>
 </template>
