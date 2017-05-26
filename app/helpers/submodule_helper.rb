@@ -1,5 +1,5 @@
 module SubmoduleHelper
-  include Gitlab::ShellAdapter
+  extend self
 
   VALID_SUBMODULE_PROTOCOLS = %w[http https git ssh].freeze
 
@@ -59,7 +59,7 @@ module SubmoduleHelper
     return true if url_no_dotgit == [Gitlab.config.gitlab.url, '/', namespace, '/',
                                      project].join('')
     url_with_dotgit = url_no_dotgit + '.git'
-    url_with_dotgit == gitlab_shell.url_to_repo([namespace, '/', project].join(''))
+    url_with_dotgit == Gitlab::Shell.new.url_to_repo([namespace, '/', project].join(''))
   end
 
   def relative_self_url?(url)
