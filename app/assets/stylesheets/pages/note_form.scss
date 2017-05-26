@@ -28,7 +28,7 @@
 .note-edit-form {
   .note-form-actions {
     position: relative;
-    margin: $gl-padding 0;
+    margin: $gl-padding 0 0;
   }
 
   .note-preview-holder {
@@ -124,8 +124,16 @@
 }
 
 .discussion-form {
-  padding: $gl-padding-top $gl-padding;
+  padding: $gl-padding-top $gl-padding $gl-padding;
   background-color: $white-light;
+}
+
+.discussion-notes .disabled-comment {
+  padding: 6px 0;
+}
+
+.notes-form > li {
+  border: 0;
 }
 
 .note-edit-form {
