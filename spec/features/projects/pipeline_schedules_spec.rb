@@ -66,7 +66,7 @@ feature 'Pipeline Schedules', :feature do
       end
     end
 
-    context 'when ref is NULL' do
+    context 'when ref is nil' do
       before do
         pipeline_schedule.update_attribute(:ref, nil)
         visit_pipelines_schedules
@@ -120,7 +120,7 @@ feature 'Pipeline Schedules', :feature do
       expect(page).to have_content('my brand new description')
     end
 
-    context 'when ref is NULL' do
+    context 'when ref is nil' do
       before do
         pipeline_schedule.update_attribute(:ref, nil)
         edit_pipeline_schedule
