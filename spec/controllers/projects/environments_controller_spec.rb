@@ -297,6 +297,7 @@ describe Projects::EnvironmentsController do
 
     context 'with deployment service' do
       let(:project) { create(:kubernetes_project) }
+      let(:environment) { create(:environment, name: 'production', project: project) }
 
       before do
         allow_any_instance_of(License).to receive(:feature_available?).with(:deploy_board).and_return(true)
