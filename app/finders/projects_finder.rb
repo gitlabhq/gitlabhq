@@ -32,6 +32,7 @@ class ProjectsFinder < UnionFinder
       item = by_ids(item)
       item = by_personal(item)
       item = by_starred(item)
+      item = by_trending(item)
       item = by_visibilty_level(item)
       item = by_tags(item)
       item = by_search(item)
@@ -46,12 +47,8 @@ class ProjectsFinder < UnionFinder
   def init_collection
     projects = []
 
-    if params[:trending].present?
-      projects << Project.trending
-    else
-      projects << current_user.authorized_projects if current_user
-      projects << Project.unscoped.public_to_user(current_user) unless params[:non_public].present?
-    end
+    projects << current_user.authorized_projects if current_user
+    projects << Project.unscoped.public_to_user(current_user) unless params[:non_public].present?
 
     projects
   end
@@ -70,6 +67,10 @@ class ProjectsFinder < UnionFinder
 
   def by_starred(items)
     (params[:starred].present? && current_user) ? items.starred_by(current_user) : items
+  end
+
+  def by_trending(items)
+    params[:trending].present? ? items.trending : items
   end
 
   def by_visibilty_level(items)
