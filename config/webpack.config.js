@@ -102,7 +102,7 @@ var config = {
         loader: 'file-loader',
       },
       {
-        test: /locale\/[a-z]+\/(.*)\.js$/,
+        test: /locale\/\w+\/(.*)\.js$/,
         loader: 'exports-loader?locales',
       },
     ]
