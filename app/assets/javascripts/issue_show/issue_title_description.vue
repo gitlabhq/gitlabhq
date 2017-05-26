@@ -105,7 +105,7 @@ export default {
       this.title = title;
       this.description = description;
 
-      this.$nextTick(() => {
+      setTimeout(() => {
         this.updateFlag('titleFlag', false);
         this.updateFlag('descriptionFlag', false);
       });
