@@ -6,7 +6,7 @@ locales['zh'] = {
             "": {
                 "Project-Id-Version": "gitlab 1.0.0",
                 "Report-Msgid-Bugs-To": "",
-                "PO-Revision-Date": "2017-05-23 17:36-0800",
+                "PO-Revision-Date": "2017-05-26 13:08+0800",
                 "Last-Translator": "htve <htve@outlook.com>",
                 "Language-Team": "Simplified Chinese",
                 "Language": "zh",
@@ -26,13 +26,13 @@ locales['zh'] = {
                 "提交"
             ],
             "Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project.": [
-                "周期分析概述了您的项目中从创意到生产所需的时间。"
+                "周期分析概述了项目从想法到产品实现的各阶段所需的时间。"
             ],
             "CycleAnalyticsStage|Code": [
-                "代码"
+                "编码"
             ],
             "CycleAnalyticsStage|Issue": [
-                "问题"
+                "议题"
             ],
             "CycleAnalyticsStage|Plan": [
                 "计划"
@@ -44,7 +44,7 @@ locales['zh'] = {
                 "评审"
             ],
             "CycleAnalyticsStage|Staging": [
-                "排期"
+                "预发布"
             ],
             "CycleAnalyticsStage|Test": [
                 "测试"
@@ -57,16 +57,16 @@ locales['zh'] = {
                 "首个推送"
             ],
             "FirstPushedBy|pushed by": [
-                "作者:"
+                "推送者:"
             ],
             "From issue creation until deploy to production": [
-                "从问题创建到部署到生产"
+                "从创建议题到部署到生产环境"
             ],
             "From merge request merge until deploy to production": [
                 "从合并请求的合并到部署至生产环境"
             ],
             "Introducing Cycle Analytics": [
-                "引入周期分析"
+                "周期分析简介"
             ],
             "Last %d day": [
                 "最后%d天",
@@ -80,7 +80,7 @@ locales['zh'] = {
                 "平均数"
             ],
             "New Issue": [
-                "新问题",
+                "新议题",
                 "新问题"
             ],
             "Not available": [
@@ -93,13 +93,13 @@ locales['zh'] = {
                 "开始于"
             ],
             "Pipeline Health": [
-                "流水线健康"
+                "流水线健康指标"
             ],
             "ProjectLifecycle|Stage": [
                 "项目生命周期"
             ],
             "Read more": [
-                "阅读更多"
+                "了解更多"
             ],
             "Related Commits": [
                 "相关的提交"
@@ -108,7 +108,7 @@ locales['zh'] = {
                 "相关的部署作业"
             ],
             "Related Issues": [
-                "相关的问题"
+                "相关的议题"
             ],
             "Related Jobs": [
                 "相关的作业"
@@ -124,49 +124,49 @@ locales['zh'] = {
                 "显示%d个事件"
             ],
             "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request.": [
-                "编码阶段显示从第一次提交到创建合并请求的时间。创建第一个合并请求后，数据将自动添加到此处。"
+                "编码阶段概述了从第一次提交到创建合并请求的时间。创建第一个合并请求后，数据将自动添加到此处。"
             ],
             "The collection of events added to the data gathered for that stage.": [
-                "将收集的事件添加到为该阶段收集的数据中。"
+                "将收集的事件添加到该阶段的相关统计数据中。"
             ],
             "The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage.": [
-                "问题阶段显示了从创建问题到将问题分配给里程碑所需的时间，或将问题添加到问题委员会的列表中。开始创建问题以查看此阶段的数据"
+                "议题阶段概述了从创建议题到将议题分配给里程碑或将议题添加到议题看板列表中所需的时间。开始创建议题以查看此阶段的数据。"
             ],
             "The phase of the development lifecycle.": [
-                "开发生命周期中的各个阶段。"
+                "项目生命周期中的各个阶段。"
             ],
             "The planning stage shows the time from the previous step to pushing your first commit. This time will be added automatically once you push your first commit.": [
-                "规划阶段显示了从上一步到推送第一次提交的时间。一旦你推出第一次提交，这个时候就会自动添加。"
+                "计划阶段概述了从议题到推送第一次提交的时间。当你第一次推送提交，数据将自动添加到此处。"
             ],
             "The production stage shows the total time it takes between creating an issue and deploying the code to production. The data will be automatically added once you have completed the full idea to production cycle.": [
-                "生产阶段显示创建问题和将代码部署到生产之间的总时间。一旦完成完整的想法到生产周期，数据就会自动添加。"
+                "生产阶段概述了从创建议题到将代码部署到生产环境的时间。一旦完成完整的想法到部署生产，数据将自动添加到此处。"
             ],
             "The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request.": [
-                "审查阶段显示从合并请求到合并的时间。合并您的第一个合并请求后，数据将自动添加。"
+                "评审阶段概述了从创建合并请求到合并的时间。在您合并第一个合并请求后，数据将自动添加到此处。"
             ],
             "The staging stage shows the time between merging the MR and deploying code to the production environment. The data will be automatically added once you deploy to production for the first time.": [
-                "分期阶段显示合并MR和部署代码到生产环境之间的时间。首次部署到生产时，数据将自动添加。"
+                "预发布阶段概述了合并请求的合并到部署代码到生产环境的时间。首次部署到生产环境后，数据将自动添加到此处。"
             ],
             "The testing stage shows the time GitLab CI takes to run every pipeline for the related merge request. The data will automatically be added after your first pipeline finishes running.": [
-                "测试阶段显示GitLab CI为相关合并请求运行每个流水线所需的时间。数据将在您的第一个管道完成运行后自动添加。"
+                "测试阶段概述了GitLab CI为相关合并请求运行每个流水线所需的时间。在您的第一个流水线完成运行后，数据将自动添加到此处。"
             ],
             "The time taken by each data entry gathered by that stage.": [
-                "由该阶段收集的每个数据条目所用的时间。"
+                "由该阶段收集的每个数据条目所用的时间总和。"
             ],
             "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6.": [
-                "该值位于一系列观察值的平均值。例如，在3，5，9之间，平均值是5。在3，5，7，8之间，平均值是(5+7)/2 = 6。"
+                "该值概述了一系列观察值的平均值。例如，在3、5、9之间，平均值是5。在3、5、7、8之间，平均值是（5 + 7）/ 2 = 6。"
             ],
             "Time before an issue gets scheduled": [
-                "发布问题之前的时间"
+                "创建议题之前的时间"
             ],
             "Time before an issue starts implementation": [
-                "问题开始实施之前的时间"
+                "从创建议题到开始编码的时间"
             ],
             "Time between merge request creation and merge/close": [
-                "合并请求创建到合并或关闭之间的时间"
+                "从创建合并请求到合并或关闭合并请求的时间"
             ],
             "Time until first merge request": [
-                "时间到第一个合并请求"
+                "创建第一个合并请求之前的时间"
             ],
             "Time|hr": [
                 "小时",
@@ -186,7 +186,7 @@ locales['zh'] = {
                 "所有提交和合并的总测试时间"
             ],
             "Want to see the data? Please ask an administrator for access.": [
-                "想查看数据？请向管理员查询。"
+                "权限不足。如需查看相关数据，请向管理员申请权限。"
             ],
             "We don't have enough data to show this stage.": [
                 "我们没有足够的数据显示这个阶段。"
