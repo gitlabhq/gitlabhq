@@ -95,12 +95,14 @@ RSpec.configure do |config|
   end
 
   config.around(:example, migration: true) do |example|
-    schema_version = example.metadata.fetch(:schema)
-    ActiveRecord::Migrator.migrate(migrations_paths, schema_version)
+    begin
+      schema_version = example.metadata.fetch(:schema)
+      ActiveRecord::Migrator.migrate(migrations_paths, schema_version)
 
-    example.run
-
-    ActiveRecord::Migrator.migrate(migrations_paths)
+      example.run
+    ensure
+      ActiveRecord::Migrator.migrate(migrations_paths)
+    end
   end
 end
 

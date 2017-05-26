@@ -1,7 +1,7 @@
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20170526101042_migrate_pipeline_stages.rb')
+require Rails.root.join('db', 'post_migrate', '20170526185842_migrate_pipeline_stages.rb')
 
-describe MigratePipelineStages, :migration, schema: 20170525132202 do
+describe MigratePipelineStages, :migration, schema: 20170526185602 do
   ##
   # Create test data - pipeline and CI/CD jobs.
   #
