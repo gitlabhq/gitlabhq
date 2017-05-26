@@ -35,3 +35,28 @@
     margin-left: 5px;
   }
 }
+
+.prometheus-metrics-monitoring {
+  .panel {
+    .panel-heading .badge-count {
+      padding: 3px 8px;
+      color: $white-light;
+      background: $common-gray-dark;
+      border-radius: 40%;
+    }
+  }
+
+  .empty-metrics {
+    text-align: center;
+    padding: 20px 10px;
+
+    p,
+    .btn {
+      margin-top: 10px;
+    }
+
+    p {
+      color: $gl-gray-light;
+    }
+  }
+}
