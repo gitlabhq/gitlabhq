@@ -14,11 +14,9 @@ export default {
   },
   methods: {
     toggleSubGroups(e) {
-      if (e.target.tagName === 'A') {
+      if (e.target.tagName === 'A' || !this.isExpandable) {
         return false;
       }
-
-      // TODO: Do not trigger if group will not have subgroups
 
       return eventHub.$emit('toggleSubGroups', this.group);
     },
