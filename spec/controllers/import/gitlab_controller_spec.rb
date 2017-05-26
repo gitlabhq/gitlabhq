@@ -174,7 +174,7 @@ describe Import::GitlabController do
           end
         end
       end
-      
+
       context 'user has chosen an existing nested namespace for the project' do
         let(:parent_namespace) { create(:namespace, name: 'foo', owner: user) }
         let(:nested_namespace) { create(:namespace, name: 'bar', parent: parent_namespace, owner: user) }

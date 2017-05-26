@@ -854,6 +854,16 @@ describe Ci::Pipeline, models: true do
         end
       end
     end
+
+    context 'when there is a manual action present in the pipeline' do
+      before do
+        create(:ci_build, :manual, pipeline: pipeline)
+      end
+
+      it 'is not cancelable' do
+        expect(pipeline).not_to be_cancelable
+      end
+    end
   end
 
   describe '#cancel_running' do

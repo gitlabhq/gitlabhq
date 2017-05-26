@@ -1,6 +1,7 @@
 /* eslint no-param-reassign: "off" */
 
 import GfmAutoComplete from '~/gfm_auto_complete';
+
 import 'vendor/jquery.caret';
 import 'vendor/jquery.atwho';
 

@@ -2,7 +2,6 @@
 
 import '~/gl_dropdown';
 import '~/lib/utils/common_utils';
-import '~/lib/utils/type_utility';
 import '~/lib/utils/url_utility';
 
 (() => {

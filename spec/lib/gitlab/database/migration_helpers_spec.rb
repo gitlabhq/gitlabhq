@@ -247,6 +247,14 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
         expect(Project.where(archived: true).count).to eq(1)
       end
     end
+
+    context 'when the value is Arel.sql (Arel::Nodes::SqlLiteral)' do
+      it 'updates the value as a SQL expression' do
+        model.update_column_in_batches(:projects, :star_count, Arel.sql('1+1'))
+
+        expect(Project.sum(:star_count)).to eq(2 * Project.count)
+      end
+    end
   end
 
   describe '#add_column_with_default' do

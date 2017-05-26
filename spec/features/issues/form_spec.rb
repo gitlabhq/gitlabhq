@@ -23,7 +23,7 @@ describe 'New/edit issue', :feature, :js do
       visit new_namespace_project_issue_path(project.namespace, project)
     end
 
-    describe 'multiple assignees' do
+    describe 'single assignee' do
       before do
         click_button 'Unassigned'
 
@@ -39,10 +39,6 @@ describe 'New/edit issue', :feature, :js do
           click_link 'Unassigned'
         end
 
-        page.within '.js-assignee-search' do
-          expect(page).to have_content 'Unassigned'
-        end
-
         expect(find('input[name="issue[assignee_ids][]"]', visible: false).value).to match('0')
       end
 
@@ -53,7 +49,7 @@ describe 'New/edit issue', :feature, :js do
 
         expect(find('a', text: 'Assign to me', visible: false)).not_to be_visible
 
-        page.within '.dropdown-menu-user' do
+        page.within('.dropdown-menu-user') do
           click_link user.name
         end
 
@@ -173,11 +169,7 @@ describe 'New/edit issue', :feature, :js do
         click_link user.name
       end
 
-      expect(find('input[name="issue[assignee_ids][]"]', visible: false).value).to match(user.id.to_s)
-      expect(find('.dropdown-menu-user a.is-active').first(:xpath, '..')['data-user-id']).to eq(user.id.to_s)
-      # check the ::before pseudo element to ensure checkmark icon is present
-      expect(before_for_selector('.dropdown-menu-selectable a.is-active')).not_to eq('')
-      expect(before_for_selector('.dropdown-menu-selectable a:not(.is-active)')).to eq('')
+      expect(find('.js-assignee-search')).to have_content(user.name)
 
       page.within '.dropdown-menu-user' do
         click_link user2.name

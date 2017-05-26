@@ -9,6 +9,13 @@ describe Gitlab::GitalyClient::Ref do
     allow(Gitlab.config.gitaly).to receive(:enabled).and_return(true)
   end
 
+  after do
+    # When we say `expect_any_instance_of(Gitaly::Ref::Stub)` a double is created,
+    # and because GitalyClient shares stubs these will get passed from example to
+    # example, which will cause an error, so we clean the stubs after each example.
+    Gitlab::GitalyClient.clear_stubs!
+  end
+
   describe '#branch_names' do
     it 'sends a find_all_branch_names message' do
       expect_any_instance_of(Gitaly::Ref::Stub).

@@ -60,7 +60,7 @@ describe('Pipeline Url Component', () => {
     expect(
       component.$el.querySelector('.js-pipeline-url-user').getAttribute('href'),
     ).toEqual(mockData.pipeline.user.web_url);
-    expect(image.getAttribute('title')).toEqual(mockData.pipeline.user.name);
+    expect(image.getAttribute('data-original-title')).toEqual(mockData.pipeline.user.name);
     expect(image.getAttribute('src')).toEqual(mockData.pipeline.user.avatar_url);
   });
 

@@ -84,7 +84,11 @@ module Backup
 
         Dir.chdir(backup_path) do
           backup_file_list.each do |file|
-            next unless file =~ /(\d+)(?:_\d{4}_\d{2}_\d{2})?_gitlab_backup\.tar/
+            # For backward compatibility, there are 3 names the backups can have:
+            # - 1495527122_gitlab_backup.tar
+            # - 1495527068_2017_05_23_gitlab_backup.tar
+            # - 1495527097_2017_05_23_9.3.0-pre_gitlab_backup.tar
+            next unless file =~ /(\d+)(?:_\d{4}_\d{2}_\d{2}(_\d+\.\d+\.\d+.*)?)?_gitlab_backup\.tar$/
 
             timestamp = $1.to_i
 

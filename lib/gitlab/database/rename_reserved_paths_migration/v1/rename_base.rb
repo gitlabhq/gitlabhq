@@ -41,7 +41,8 @@ module Gitlab
                                             new_full_path)
 
             update_column_in_batches(:routes, :path, replace_statement)  do |table, query|
-              query.where(MigrationClasses::Route.arel_table[:path].matches("#{old_full_path}%"))
+              path_or_children = table[:path].matches_any([old_full_path, "#{old_full_path}/%"])
+              query.where(path_or_children)
             end
           end
 

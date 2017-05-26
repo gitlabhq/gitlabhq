@@ -9,20 +9,19 @@
 
 .form-group
   - if type == "password" && value.present?
-    = form.label name, "Change #{title}", class: "control-label"
+    = form.label name, "Enter new #{title.downcase}", class: "control-label"
   - else
     = form.label name, title, class: "control-label"
   .col-sm-10
-    - case type
-    - when 'text'
+    - if type == 'text'
       = form.text_field name, class: "form-control", placeholder: placeholder
-    - when 'textarea'
+    - elsif type == 'textarea'
       = form.text_area name, rows: 5, class: "form-control", placeholder: placeholder
-    - when 'checkbox'
+    - elsif type == 'checkbox'
       = form.check_box name
-    - when 'select'
+    - elsif type == 'select'
       = form.select name, options_for_select(choices, value ? value : default_choice), {}, { class: "form-control" }
-    - when 'password'
-      = form.password_field name, autocomplete: "new-password", class: 'form-control'
+    - elsif type == 'password'
+      = form.password_field name, autocomplete: "new-password", class: "form-control"
     - if help
       %span.help-block= help

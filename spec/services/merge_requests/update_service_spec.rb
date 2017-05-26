@@ -180,12 +180,13 @@ describe MergeRequests::UpdateService, services: true do
       context 'with active pipeline' do
         before do
           service_mock = double
-          pipeline = create(:ci_pipeline_with_one_job,
+          create(
+            :ci_pipeline_with_one_job,
             project: project,
-            ref:     merge_request.source_branch,
-            sha:     merge_request.diff_head_sha)
-
-          merge_request.update(head_pipeline: pipeline)
+            ref: merge_request.source_branch,
+            sha: merge_request.diff_head_sha,
+            head_pipeline_of: merge_request
+          )
 
           expect(MergeRequests::MergeWhenPipelineSucceedsService).to receive(:new).with(project, user).
             and_return(service_mock)
