@@ -1212,7 +1212,7 @@ const normalizeNewlines = function(str) {
         `<li id="${uniqueId}" class="note being-posted fade-in-half timeline-entry">
            <div class="timeline-entry-inner">
               <div class="timeline-icon">
-                 <a href="/${currentUsername}"><span class="dummy-avatar"></span></a>
+                 <a href="/${currentUsername}"><span class="avatar dummy-avatar"></span></a>
               </div>
               <div class="timeline-content ${discussionClass}">
                  <div class="note-header">
