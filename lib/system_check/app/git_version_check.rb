@@ -17,7 +17,7 @@ module SystemCheck
       end
 
       def show_error
-        puts "Your git bin path is \"#{Gitlab.config.git.bin_path}\""
+        $stdout.puts "Your git bin path is \"#{Gitlab.config.git.bin_path}\""
 
         try_fixing_it(
           "Update your git to a version >= #{self.class.required_version} from #{self.class.current_version}"

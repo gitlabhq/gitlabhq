@@ -14,7 +14,7 @@ module SystemCheck
         recipe_path = Rails.root.join('lib/support/init.d/', 'gitlab')
 
         unless File.exist?(SCRIPT_PATH)
-          puts "can't check because of previous errors".color(:magenta)
+          $stdout.puts "can't check because of previous errors".color(:magenta)
           return
         end
 
@@ -22,13 +22,12 @@ module SystemCheck
         script_content = File.read(SCRIPT_PATH)
 
         if recipe_content == script_content
-          puts 'yes'.color(:green)
+          $stdout.puts 'yes'.color(:green)
         else
-          puts 'no'.color(:red)
+          $stdout.puts 'no'.color(:red)
           show_error
         end
       end
-
 
       def show_error
         try_fixing_it(

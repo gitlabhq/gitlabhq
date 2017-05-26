@@ -9,15 +9,15 @@ module SystemCheck
       end
 
       def multi_check
-        puts ''
+        $stdout.puts ''
 
         Project.find_each(batch_size: 100) do |project|
-          print sanitized_message(project)
+          $stdout.print sanitized_message(project)
 
           if project.namespace
-            puts 'yes'.color(:green)
+            $stdout.puts 'yes'.color(:green)
           else
-            puts 'no'.color(:red)
+            $stdout.puts 'no'.color(:red)
             show_error
           end
         end
