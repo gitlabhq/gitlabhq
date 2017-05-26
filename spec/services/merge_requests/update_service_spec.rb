@@ -180,12 +180,13 @@ describe MergeRequests::UpdateService, services: true do
       context 'with active pipeline' do
         before do
           service_mock = double
-          pipeline = create(:ci_pipeline_with_one_job,
+          create(
+            :ci_pipeline_with_one_job,
             project: project,
-            ref:     merge_request.source_branch,
-            sha:     merge_request.diff_head_sha)
-
-          merge_request.update(head_pipeline: pipeline)
+            ref: merge_request.source_branch,
+            sha: merge_request.diff_head_sha,
+            head_pipeline_of: merge_request
+          )
 
           expect(MergeRequests::MergeWhenPipelineSucceedsService).to receive(:new).with(project, user).
             and_return(service_mock)
@@ -229,6 +230,35 @@ describe MergeRequests::UpdateService, services: true do
         end
 
         it { expect(@merge_request.state).to eq('opened') }
+      end
+
+      context 'when not approved' do
+        before do
+          merge_request.update_attributes(approvals_before_merge: 1)
+
+          perform_enqueued_jobs do
+            service.execute(merge_request)
+            @merge_request = MergeRequest.find(merge_request.id)
+          end
+        end
+
+        it { expect(@merge_request).to be_valid }
+        it { expect(@merge_request.state).to eq('opened') }
+      end
+
+      context 'when approved' do
+        before do
+          merge_request.update_attributes(approvals_before_merge: 1)
+          merge_request.approvals.create(user: user)
+
+          perform_enqueued_jobs do
+            service.execute(merge_request)
+            @merge_request = MergeRequest.find(merge_request.id)
+          end
+        end
+
+        it { expect(@merge_request).to be_valid }
+        it { expect(@merge_request.state).to eq('merged') }
       end
     end
 

@@ -55,7 +55,7 @@ stages:
 
 .use-pg: &use-pg
   services:
-    - postgres:latest
+    - postgres:9.2
     - redis:alpine
     - elasticsearch:5.3
 
@@ -68,6 +68,7 @@ stages:
 .only-master-and-ee-or-mysql: &only-master-and-ee-or-mysql
   only:
     - /mysql/
+    - /-stable$/
     - master@gitlab-org/gitlab-ce
     - master@gitlab/gitlabhq
     - tags@gitlab-org/gitlab-ce
@@ -89,7 +90,7 @@ stages:
     - JOB_NAME=( $CI_JOB_NAME )
     - export CI_NODE_INDEX=${JOB_NAME[-2]}
     - export CI_NODE_TOTAL=${JOB_NAME[-1]}
-    - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_${JOB_NAME[1]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
+    - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - export KNAPSACK_GENERATE_REPORT=true
     - export CACHE_CLASSES=true
     - cp ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} ${KNAPSACK_REPORT_PATH}
@@ -120,7 +121,7 @@ stages:
     - JOB_NAME=( $CI_JOB_NAME )
     - export CI_NODE_INDEX=${JOB_NAME[-2]}
     - export CI_NODE_TOTAL=${JOB_NAME[-1]}
-    - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_${JOB_NAME[1]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
+    - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - export KNAPSACK_GENERATE_REPORT=true
     - export CACHE_CLASSES=true
     - cp ${KNAPSACK_SPINACH_SUITE_REPORT_PATH} ${KNAPSACK_REPORT_PATH}
@@ -154,6 +155,7 @@ stages:
 # Trigger a package build on omnibus-gitlab repository
 
 build-package:
+  image: ruby:2.3-alpine
   before_script: []
   services: []
   variables:
@@ -183,8 +185,8 @@ update-knapsack:
   <<: *only-canonical-masters
   stage: post-test
   script:
-    - scripts/merge-reports ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/rspec_pg_node_*.json
-    - scripts/merge-reports ${KNAPSACK_SPINACH_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/spinach_pg_node_*.json
+    - scripts/merge-reports ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/rspec-pg_node_*.json
+    - scripts/merge-reports ${KNAPSACK_SPINACH_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/spinach-pg_node_*.json
     - '[[ -z ${KNAPSACK_S3_BUCKET} ]] || scripts/sync-reports put $KNAPSACK_S3_BUCKET $KNAPSACK_RSPEC_SUITE_REPORT_PATH $KNAPSACK_SPINACH_SUITE_REPORT_PATH'
     - rm -f knapsack/${CI_PROJECT_NAME}/*_node_*.json
 

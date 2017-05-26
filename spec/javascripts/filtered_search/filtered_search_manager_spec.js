@@ -80,6 +80,7 @@ describe('Filtered Search Manager', () => {
       expect(RecentSearchesService.isAvailable).toHaveBeenCalled();
       expect(recentSearchesStoreSrc.default).toHaveBeenCalledWith({
         isLocalStorageAvailable,
+        allowedKeys: gl.FilteredSearchTokenKeys.getKeys(),
       });
     });
 

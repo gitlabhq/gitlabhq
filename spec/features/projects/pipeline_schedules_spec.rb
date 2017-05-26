@@ -2,10 +2,9 @@ require 'spec_helper'
 
 feature 'Pipeline Schedules', :feature do
   include PipelineSchedulesHelper
-  include WaitForAjax
 
   let!(:project) { create(:project) }
-  let!(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
+  let!(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly, project: project ) }
   let!(:pipeline) { create(:ci_pipeline, pipeline_schedule: pipeline_schedule) }
   let(:scope) { nil }
   let!(:user) { create(:user) }
@@ -32,13 +31,14 @@ feature 'Pipeline Schedules', :feature do
       it 'displays the required information description' do
         page.within('.pipeline-schedule-table-row') do
           expect(page).to have_content('pipeline schedule')
+          expect(page).to have_content(pipeline_schedule.real_next_run.strftime('%b %d, %Y'))
           expect(page).to have_link('master')
           expect(page).to have_link("##{pipeline.id}")
         end
       end
 
       it 'creates a new scheduled pipeline' do
-        click_link 'New Schedule'
+        click_link 'New schedule'
 
         expect(page).to have_content('Schedule a new pipeline')
       end

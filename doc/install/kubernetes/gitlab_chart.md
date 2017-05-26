@@ -1,4 +1,7 @@
 # GitLab Helm Chart
+> Officially supported cloud providers are Google Container Service and Azure Container Service.
+
+> Officially supported schedulers are Kubernetes and Terraform.
 
 The `gitlab` Helm chart deploys GitLab into your Kubernetes cluster.
 
@@ -14,7 +17,7 @@ This chart includes the following:
 
 ## Prerequisites
 
-- _At least_ 3 GB of RAM available on your cluster, in chunks of 1 GB
+- _At least_ 3 GB of RAM available on your cluster, in chunks of 1 GB. 41GB of storage and 2 CPU are also required.
 - Kubernetes 1.4+ with Beta APIs enabled
 - [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) provisioner support in the underlying infrastructure
 - The ability to point a DNS entry or URL at your GitLab install
@@ -203,8 +206,42 @@ its class in an annotation.
 
 >**Note:**
 The Ingress alone doesn't expose GitLab externally. You need to have a Ingress controller setup to do that.
-Setting up an Ingress controller can be as simple as installing the `nginx-ingress` helm chart. But be sure
+Setting up an Ingress controller can be done by installing the `nginx-ingress` helm chart. But be sure
 to read the [documentation](https://github.com/kubernetes/charts/blob/master/stable/nginx-ingress/README.md)
+
+#### Preserving Source IPs
+
+If you are using the `LoadBalancer` serviceType you may run into issues where user IP addresses in the GitLab
+logs, and used in abuse throttling are not accurate. This is due to how Kubernetes uses source NATing on cluster nodes without endpoints.
+
+See the [Kubernetes documentation](https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typeloadbalancer) for more information.
+
+To fix this you can add the following service annotation to your `values.yaml`
+
+```yaml
+## For minikube, set this to NodePort, elsewhere use LoadBalancer
+## ref: http://kubernetes.io/docs/user-guide/services/#publishing-services---service-types
+##
+serviceType: LoadBalancer
+
+## Optional annotations for gitlab service.
+serviceAnnotations:
+  service.beta.kubernetes.io/external-traffic: "OnlyLocal"
+```
+
+>**Note:**
+If you are using the ingress routing, you will likely also need to specify the annotation on the service for the ingress
+controller. For `nginx-ingress` you can check the
+[configuration documentation](https://github.com/kubernetes/charts/blob/master/stable/nginx-ingress/README.md#configuration)
+on how to add the annotation to the  `controller.service.annotations` array.
+
+>**Note:**
+When using the `nginx-ingress` controller on Google Container Engine (GKE), and using the `external-traffic` annotation,
+you will need to additionally set the `controller.kind` to be DaemonSet. Otherwise only pods running on the same node
+as the nginx controller will be able to reach GitLab. This may result in pods within your cluster not being able to reach GitLab.
+See the [Kubernetes documentation](https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typeloadbalancer) and
+[nginx-ingress configuration documentation](https://github.com/kubernetes/charts/blob/master/stable/nginx-ingress/README.md#configuration)
+for more information.
 
 ### External database
 
@@ -387,6 +424,7 @@ ingress:
 ```
 
 ## Installing GitLab using the Helm Chart
+> You may see a temporary error message `SchedulerPredicates failed due to PersistentVolumeClaim is not bound` while storage provisions. Once the storage provisions, the pods will automatically restart. This may take a couple minutes depending on your cloud provider. If the error persists, please review the [prerequisites](#prerequisites) to ensure you have enough RAM, CPU, and storage.
 
 Once you [have configured](#configuration) GitLab in your `values.yml` file,
 run the following:

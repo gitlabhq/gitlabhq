@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 feature 'Merge request approvals', js: true, feature: true do
-  include WaitForVueResource
-
   let(:user) { create(:user) }
   let(:project) { create(:project, approvals_before_merge: 1) }
 
@@ -74,7 +72,7 @@ feature 'Merge request approvals', js: true, feature: true do
         visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { target_branch: 'master', source_branch: 'feature' })
         find('#s2id_merge_request_approver_group_ids .select2-input').click
 
-        wait_for_vue_resource
+        wait_for_requests
 
         expect(find('.select2-results')).to have_content(group.name)
 
@@ -103,7 +101,7 @@ feature 'Merge request approvals', js: true, feature: true do
 
         click_on("Submit merge request")
 
-        wait_for_vue_resource
+        wait_for_requests
 
         expect(page).not_to have_selector(".approvals-required-text a[title='#{other_user.name}']")
         expect(page).to have_selector(".approvals-required-text a[title='#{approver.name}']")
@@ -129,14 +127,14 @@ feature 'Merge request approvals', js: true, feature: true do
         visit edit_namespace_project_merge_request_path(project.namespace, project, merge_request)
         find('#s2id_merge_request_approver_group_ids .select2-input').click
 
-        wait_for_vue_resource
+        wait_for_requests
 
         expect(find('.select2-results')).to have_content(group.name)
 
         find('.select2-results').click
         click_on("Save changes")
 
-        wait_for_vue_resource
+        wait_for_requests
         find('.approvals-components')
         expect(page).to have_content("Requires 1 more approval")
       end
@@ -236,7 +234,7 @@ feature 'Merge request approvals', js: true, feature: true do
 
       it 'I am able to approve' do
         approve_merge_request
-        wait_for_vue_resource
+        wait_for_requests
         expect(page).to have_content('Approved by')
         expect(page).to have_css('.approver-avatar')
       end
@@ -260,7 +258,7 @@ feature 'Merge request approvals', js: true, feature: true do
         # before approval status is loaded
         expect(page).to have_button('Merge when pipeline succeeds', disabled: true)
 
-        wait_for_vue_resource
+        wait_for_requests
 
         # after approval status is loaded
         expect(page).to have_button('Merge when pipeline succeeds', disabled: true)
@@ -286,7 +284,7 @@ feature 'Merge request approvals', js: true, feature: true do
         # before approval status is loaded
         expect(page).to have_button("Rebase", disabled: true)
 
-        wait_for_vue_resource
+        wait_for_requests
 
         # after approval status is loaded
         expect(page).to have_button("Rebase", disabled: true)
@@ -321,12 +319,12 @@ def approve_merge_request
   page.within '.mr-state-widget' do
     find('.approve-btn').click
   end
-  wait_for_vue_resource
+  wait_for_requests
 end
 
 def unapprove_merge_request
   page.within '.mr-state-widget' do
     find('.unapprove-btn-wrap').click
   end
-  wait_for_vue_resource
+  wait_for_requests
 end

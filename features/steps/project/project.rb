@@ -3,7 +3,7 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   include SharedProject
   include SharedPaths
   include Select2Helper
-  include WaitForAjax
+  include WaitForRequests
 
   step 'change project settings' do
     fill_in 'project_name_edit', with: 'NewName'
@@ -110,7 +110,7 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   end
 
   step 'I should see project "Shop" README' do
-    wait_for_ajax
+    wait_for_requests
     page.within('.readme-holder') do
       expect(page).to have_content 'testme'
     end

@@ -34,14 +34,14 @@ feature 'issuable templates', feature: true, js: true do
 
     scenario 'user selects "bug" template' do
       select_template 'bug'
-      wait_for_ajax
+      wait_for_requests
       assert_template
       save_changes
     end
 
     scenario 'user selects "bug" template and then "no template"' do
       select_template 'bug'
-      wait_for_ajax
+      wait_for_requests
       select_option 'No template'
       assert_template('')
       save_changes('')
@@ -49,7 +49,7 @@ feature 'issuable templates', feature: true, js: true do
 
     scenario 'user selects "bug" template, edits description and then selects "reset template"' do
       select_template 'bug'
-      wait_for_ajax
+      wait_for_requests
       find_field('issue_description').send_keys(description_addition)
       assert_template(template_content + description_addition)
       select_option 'Reset template'
@@ -61,7 +61,7 @@ feature 'issuable templates', feature: true, js: true do
       start_height = page.evaluate_script('$(".markdown-area").outerHeight()')
 
       select_template 'test'
-      wait_for_ajax
+      wait_for_requests
 
       end_height = page.evaluate_script('$(".markdown-area").outerHeight()')
 
@@ -88,7 +88,7 @@ feature 'issuable templates', feature: true, js: true do
 
     scenario 'user selects "bug" template' do
       select_template 'bug'
-      wait_for_ajax
+      wait_for_requests
       assert_template("#{template_content}")
       save_changes
     end
@@ -111,7 +111,7 @@ feature 'issuable templates', feature: true, js: true do
 
     scenario 'user selects "feature-proposal" template' do
       select_template 'feature-proposal'
-      wait_for_ajax
+      wait_for_requests
       assert_template
       save_changes
     end
@@ -143,7 +143,7 @@ feature 'issuable templates', feature: true, js: true do
       context 'template exists in target project' do
         scenario 'user selects template' do
           select_template 'feature-proposal'
-          wait_for_ajax
+          wait_for_requests
           assert_template
           save_changes
         end

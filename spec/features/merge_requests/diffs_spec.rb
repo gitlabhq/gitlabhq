@@ -20,6 +20,34 @@ feature 'Diffs URL', js: true, feature: true do
     end
   end
 
+  context 'when linking to note' do
+    describe 'with unresolved note' do
+      let(:note) { create :diff_note_on_merge_request, project: project, noteable: merge_request }
+      let(:fragment) { "#note_#{note.id}" }
+
+      before do
+        visit "#{diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)}#{fragment}"
+      end
+
+      it 'shows expanded note' do
+        expect(page).to have_selector(fragment, visible: true)
+      end
+    end
+
+    describe 'with resolved note' do
+      let(:note) { create :diff_note_on_merge_request, :resolved, project: project, noteable: merge_request }
+      let(:fragment) { "#note_#{note.id}" }
+
+      before do
+        visit "#{diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)}#{fragment}"
+      end
+
+      it 'shows expanded note' do
+        expect(page).to have_selector(fragment, visible: true)
+      end
+    end
+  end
+
   context 'when merge request has overflow' do
     it 'displays warning' do
       allow(Commit).to receive(:max_diff_options).and_return(max_files: 3)

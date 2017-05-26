@@ -3,7 +3,6 @@ require 'rails_helper'
 describe 'New/edit issue', :feature, :js do
   include GitlabRoutingHelper
   include ActionView::Helpers::JavaScriptHelper
-  include WaitForAjax
   include FormHelper
 
   let!(:project)   { create(:project) }
@@ -66,7 +65,7 @@ describe 'New/edit issue', :feature, :js do
 
         click_button 'Unassigned'
 
-        wait_for_ajax
+        wait_for_requests
       end
 
       it 'should display selected users even if they are not part of the original API call' do
@@ -90,7 +89,7 @@ describe 'New/edit issue', :feature, :js do
       before do
         click_button 'Unassigned'
 
-        wait_for_ajax
+        wait_for_requests
       end
 
       it 'unselects other assignees when unassigned is selected' do
@@ -100,10 +99,6 @@ describe 'New/edit issue', :feature, :js do
 
         page.within '.dropdown-menu-user' do
           click_link 'Unassigned'
-        end
-
-        page.within '.js-assignee-search' do
-          expect(page).to have_content 'Unassigned'
         end
 
         expect(find('input[name="issue[assignee_ids][]"]', visible: false).value).to match('0')
@@ -116,7 +111,7 @@ describe 'New/edit issue', :feature, :js do
 
         expect(find('a', text: 'Assign to me', visible: false)).not_to be_visible
 
-        page.within '.dropdown-menu-user' do
+        page.within('.dropdown-menu-user') do
           click_link user.name
         end
 
@@ -131,7 +126,7 @@ describe 'New/edit issue', :feature, :js do
       expect(find('a', text: 'Assign to me')).to be_visible
       click_button 'Unassigned'
 
-      wait_for_ajax
+      wait_for_requests
 
       page.within '.dropdown-menu-user' do
         click_link user2.name
@@ -230,17 +225,13 @@ describe 'New/edit issue', :feature, :js do
     it 'correctly updates the selected user when changing assignee' do
       click_button 'Unassigned'
 
-      wait_for_ajax
+      wait_for_requests
 
       page.within '.dropdown-menu-user' do
         click_link user.name
       end
 
-      expect(find('input[name="issue[assignee_ids][]"]', visible: false).value).to match(user.id.to_s)
-      expect(find('.dropdown-menu-user a.is-active').first(:xpath, '..')['data-user-id']).to eq(user.id.to_s)
-      # check the ::before pseudo element to ensure checkmark icon is present
-      expect(before_for_selector('.dropdown-menu-selectable a.is-active')).not_to eq('')
-      expect(before_for_selector('.dropdown-menu-selectable a:not(.is-active)')).to eq('')
+      expect(find('.js-assignee-search')).to have_content(user.name)
 
       page.within '.dropdown-menu-user' do
         click_link user2.name

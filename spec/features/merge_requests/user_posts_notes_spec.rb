@@ -98,7 +98,7 @@ describe 'Merge requests > User posts notes', :js do
           find('.btn-save').click
         end
 
-        wait_for_ajax
+        wait_for_requests
         find('.note').hover
         find('.js-note-edit').click
 
@@ -139,7 +139,7 @@ describe 'Merge requests > User posts notes', :js do
         find('.js-note-attachment-delete').click
         is_expected.not_to have_css('.note-attachment')
         is_expected.not_to have_css('.current-note-edit-form')
-        wait_for_ajax
+        wait_for_requests
       end
     end
   end

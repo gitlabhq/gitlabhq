@@ -6,12 +6,14 @@ feature 'File blob', :js, feature: true do
   def visit_blob(path, fragment = nil)
     visit namespace_project_blob_path(project.namespace, project, File.join('master', path), anchor: fragment)
 
-    wait_for_ajax
+    wait_for_requests
   end
 
   context 'Ruby file' do
     before do
       visit_blob('files/ruby/popen.rb')
+
+      wait_for_requests
     end
 
     it 'displays the blob' do
@@ -35,6 +37,8 @@ feature 'File blob', :js, feature: true do
     context 'visiting directly' do
       before do
         visit_blob('files/markdown/ruby-style-guide.md')
+
+        wait_for_requests
       end
 
       it 'displays the blob using the rich viewer' do
@@ -61,7 +65,7 @@ feature 'File blob', :js, feature: true do
         before do
           find('.js-blob-viewer-switch-btn[data-viewer=simple]').click
 
-          wait_for_ajax
+          wait_for_requests
         end
 
         it 'displays the blob using the simple viewer' do
@@ -82,7 +86,7 @@ feature 'File blob', :js, feature: true do
           before do
             find('.js-blob-viewer-switch-btn[data-viewer=rich]').click
 
-            wait_for_ajax
+            wait_for_requests
           end
 
           it 'displays the blob using the rich viewer' do
@@ -102,6 +106,8 @@ feature 'File blob', :js, feature: true do
     context 'visiting with a line number anchor' do
       before do
         visit_blob('files/markdown/ruby-style-guide.md', 'L1')
+
+        wait_for_requests
       end
 
       it 'displays the blob using the simple viewer' do
@@ -144,6 +150,8 @@ feature 'File blob', :js, feature: true do
         project.update_attribute(:lfs_enabled, true)
 
         visit_blob('files/lfs/file.md')
+
+        wait_for_requests
       end
 
       it 'displays an error' do
@@ -170,7 +178,7 @@ feature 'File blob', :js, feature: true do
         before do
           find('.js-blob-viewer-switcher .js-blob-viewer-switch-btn[data-viewer=simple]').click
 
-          wait_for_ajax
+          wait_for_requests
         end
 
         it 'displays an error' do
@@ -192,6 +200,8 @@ feature 'File blob', :js, feature: true do
     context 'when LFS is disabled on the project' do
       before do
         visit_blob('files/lfs/file.md')
+
+        wait_for_requests
       end
 
       it 'displays the blob' do
@@ -227,6 +237,8 @@ feature 'File blob', :js, feature: true do
       ).execute
 
       visit_blob('files/test.pdf')
+
+      wait_for_requests
     end
 
     it 'displays the blob' do
@@ -253,6 +265,8 @@ feature 'File blob', :js, feature: true do
         project.update_attribute(:lfs_enabled, true)
 
         visit_blob('files/lfs/lfs_object.iso')
+
+        wait_for_requests
       end
 
       it 'displays the blob' do
@@ -275,6 +289,8 @@ feature 'File blob', :js, feature: true do
     context 'when LFS is disabled on the project' do
       before do
         visit_blob('files/lfs/lfs_object.iso')
+
+        wait_for_requests
       end
 
       it 'displays the blob' do
@@ -298,6 +314,8 @@ feature 'File blob', :js, feature: true do
   context 'ZIP file' do
     before do
       visit_blob('Gemfile.zip')
+
+      wait_for_requests
     end
 
     it 'displays the blob' do
@@ -332,6 +350,8 @@ feature 'File blob', :js, feature: true do
       ).execute
 
       visit_blob('files/empty.md')
+
+      wait_for_requests
     end
 
     it 'displays an error' do
@@ -423,7 +443,43 @@ feature 'File blob', :js, feature: true do
         expect(page).to have_content('This project is licensed under the MIT License.')
 
         # shows a learn more link
-        expect(page).to have_link('Learn more about this license', 'http://choosealicense.com/licenses/mit/')
+        expect(page).to have_link('Learn more', 'http://choosealicense.com/licenses/mit/')
+      end
+    end
+  end
+
+  context '*.gemspec' do
+    before do
+      project.add_master(project.creator)
+
+      Files::CreateService.new(
+        project,
+        project.creator,
+        start_branch: 'master',
+        branch_name: 'master',
+        commit_message: "Add activerecord.gemspec",
+        file_path: 'activerecord.gemspec',
+        file_content: <<-SPEC.strip_heredoc
+          Gem::Specification.new do |s|
+            s.platform    = Gem::Platform::RUBY
+            s.name        = "activerecord"
+          end
+        SPEC
+      ).execute
+
+      visit_blob('activerecord.gemspec')
+    end
+
+    it 'displays an auxiliary viewer' do
+      aggregate_failures do
+        # shows names of dependency manager and package
+        expect(page).to have_content('This project manages its dependencies using RubyGems and defines a gem named activerecord.')
+
+        # shows a link to the gem
+        expect(page).to have_link('activerecord', 'https://rubygems.org/gems/activerecord')
+
+        # shows a learn more link
+        expect(page).to have_link('Learn more', 'http://choosealicense.com/licenses/mit/')
       end
     end
   end

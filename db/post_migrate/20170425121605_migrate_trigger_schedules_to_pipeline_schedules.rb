@@ -4,6 +4,13 @@ class MigrateTriggerSchedulesToPipelineSchedules < ActiveRecord::Migration
   DOWNTIME = false
 
   def up
+    connection.execute <<~SQL
+      DELETE FROM ci_trigger_schedules WHERE NOT EXISTS
+        (SELECT true FROM projects
+        WHERE ci_trigger_schedules.project_id = projects.id
+        )
+    SQL
+
     connection.execute <<-SQL
       INSERT INTO ci_pipeline_schedules (
         project_id,

@@ -72,8 +72,6 @@ import extraMilestones from '../mixins/extra_milestones';
             const milestoneDropdown = this.$refs.milestoneDropdown;
             const rect = e.target.getBoundingClientRect();
 
-            milestoneDropdown.style.left = `${rect.left}px`;
-            milestoneDropdown.style.top = `${rect.bottom}px`;
             milestoneDropdown.style.width = `${rect.width}px`;
           });
         }

@@ -29,7 +29,13 @@ module Gitlab
             move_repositories(namespace, old_full_path, new_full_path)
             move_uploads(old_full_path, new_full_path)
             move_pages(old_full_path, new_full_path)
+            rename_user(old_full_path, new_full_path) if namespace.kind == 'user'
             remove_cached_html_for_projects(projects_for_namespace(namespace).map(&:id))
+          end
+
+          def rename_user(old_username, new_username)
+            MigrationClasses::User.where(username: old_username)
+              .update_all(username: new_username)
           end
 
           def move_repositories(namespace, old_full_path, new_full_path)

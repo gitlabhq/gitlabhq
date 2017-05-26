@@ -287,6 +287,14 @@ describe API::Geo, api: true do
       expect(response).to have_http_status(401)
     end
 
+    it 'responds with 401 when the db_key_base is wrong' do
+      allow_any_instance_of(Gitlab::Geo::JwtRequestDecoder).to receive(:decode).and_raise(Gitlab::Geo::InvalidDecryptionKeyError)
+
+      get api('/geo/status'), nil, request.headers
+
+      expect(response).to have_http_status(401)
+    end
+
     context 'when requesting secondary node with valid auth header' do
       before(:each) do
         allow(Gitlab::Geo).to receive(:current_node) { secondary_node }

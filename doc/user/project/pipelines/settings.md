@@ -1,4 +1,4 @@
-# CI/CD pipelines settings
+# Pipelines settings
 
 To reach the pipelines settings:
 
@@ -6,7 +6,7 @@ To reach the pipelines settings:
 
     ![Project settings menu](../img/project_settings_list.png)
 
-1. Select **CI/CD Pipelines** from the menu.
+1. Select **Pipelines** from the menu.
 
 The following settings can be configured per project.
 

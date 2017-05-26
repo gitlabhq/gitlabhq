@@ -2,7 +2,6 @@
 /* global Project */
 
 import 'select2/select2';
-import '~/lib/utils/type_utility';
 import '~/gl_dropdown';
 import '~/api';
 import '~/project_select';

@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 feature 'Merge Request closing issues message', feature: true, js: true do
-  include WaitForAjax
-
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
   let(:issue_1) { create(:issue, project: project)}
@@ -25,7 +23,7 @@ feature 'Merge Request closing issues message', feature: true, js: true do
     login_as user
 
     visit namespace_project_merge_request_path(project.namespace, project, merge_request)
-    wait_for_ajax
+    wait_for_requests
   end
 
   context 'not closing or mentioning any issue' do
@@ -93,7 +91,7 @@ feature 'Merge Request closing issues message', feature: true, js: true do
     let(:merge_request_description) { "Description\n\nclosing #{issue_1.to_reference}, #{issue_2.to_reference}" }
 
     it 'displays closing issue message exactly one time' do
-      wait_for_ajax
+      wait_for_requests
       expect(page).to have_content("Closes issues #{issue_1.to_reference} and #{issue_2.to_reference}", count: 1)
     end
   end

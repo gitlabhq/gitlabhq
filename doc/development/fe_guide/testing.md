@@ -39,7 +39,9 @@ browser and you will not have access to certain APIs, such as
 [`Notification`](https://developer.mozilla.org/en-US/docs/Web/API/notification),
 which will have to be stubbed.
 
-### Writing tests
+### Best practice
+
+#### Naming unit tests
 
 When writing describe test blocks to test specific functions/methods,
 please use the method name as the describe block name.
@@ -66,6 +68,77 @@ describe('.methodName', () => {
   });
 });
 ```
+#### Testing Promises
+
+When testing Promises you should always make sure that the test is asynchronous and rejections are handled.
+Your Promise chain should therefore end with a call of the `done` callback and `done.fail` in case an error occurred.
+
+```javascript
+// Good
+it('tests a promise', (done) => {
+  promise
+    .then((data) => {
+      expect(data).toBe(asExpected);
+    })
+    .then(done)
+    .catch(done.fail);
+});
+
+// Good
+it('tests a promise rejection', (done) => {
+  promise
+    .then(done.fail)
+    .catch((error) => {
+      expect(error).toBe(expectedError);
+    })
+    .then(done)
+    .catch(done.fail);
+});
+
+// Bad (missing done callback)
+it('tests a promise', () => {
+  promise
+    .then((data) => {
+      expect(data).toBe(asExpected);
+    })
+});
+
+// Bad (missing catch)
+it('tests a promise', (done) => {
+  promise
+    .then((data) => {
+      expect(data).toBe(asExpected);
+    })
+    .then(done)
+});
+
+// Bad (use done.fail in asynchronous tests)
+it('tests a promise', (done) => {
+  promise
+    .then((data) => {
+      expect(data).toBe(asExpected);
+    })
+    .then(done)
+    .catch(fail)
+});
+
+// Bad (missing catch)
+it('tests a promise rejection', (done) => {
+  promise
+    .catch((error) => {
+      expect(error).toBe(expectedError);
+    })
+    .then(done)
+});
+```
+
+#### Stubbing
+
+For unit tests, you should stub methods that are unrelated to the current unit you are testing.
+If you need to use a prototype method, instantiate an instance of the class and call it there instead of mocking the instance completely.
+
+For integration tests, you should stub methods that will effect the stability of the test if they
+execute their original behaviour. i.e. Network requests.
 
 ### Vue.js unit tests
 See this [section][vue-test].

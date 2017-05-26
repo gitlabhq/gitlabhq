@@ -294,7 +294,7 @@ class JiraService < IssueTrackerService
   def jira_request
     yield
 
-  rescue Timeout::Error, Errno::EINVAL, Errno::ECONNRESET, Errno::ECONNREFUSED, URI::InvalidURIError, JIRA::HTTPError => e
+  rescue Timeout::Error, Errno::EINVAL, Errno::ECONNRESET, Errno::ECONNREFUSED, URI::InvalidURIError, JIRA::HTTPError, OpenSSL::SSL::SSLError => e
     Rails.logger.info "#{self.class.name} Send message ERROR: #{url} - #{e.message}"
     nil
   end

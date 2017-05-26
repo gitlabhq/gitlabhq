@@ -93,7 +93,7 @@ describe 'Comments on personal snippets', :js, feature: true do
         click_on 'Remove comment'
       end
 
-      wait_for_ajax
+      wait_for_requests
 
       expect(page).not_to have_selector("#notes-list li#note_#{snippet_notes[0].id}")
     end

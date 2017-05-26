@@ -1,5 +1,4 @@
 import '~/gl_dropdown';
-import '~/lib/utils/type_utility';
 import '~/blob/create_branch_dropdown';
 import '~/blob/target_branch_dropdown';
 

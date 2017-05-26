@@ -48,6 +48,14 @@ special options available when filtering by milestone:
   date less than today. Note that this can return results from several
   milestones in the same project.
 
+## Milestone progress statistics
+
+Milestone statistics can be viewed in the milestone sidebar. The milestone percentage statistic
+is calculated as; closed and merged merge requests plus all closed issues divided by
+total merge requests and issues.
+
+![Milestone statistics](img/progress.png)
+
 ## Burndown charts
 
 >**Notes:**
@@ -67,6 +75,13 @@ only tracks when an issue was last closed (and not its full history), the chart
 assumes that issue was open on days prior to that date. Reopened issues are
 considered as open on one day after they were closed.
 
+Note that with this design, if you create a new issue in the middle of the milestone period 
+(and assign the milestone to the issue), the burndown chart will appear as if the 
+issue was already open at the beginning of the milestone. A workaround is to simply 
+close the issue (so that a closed timestamp is stored in the system), and reopen 
+it to ge the desired effect, with a rise in the chart appearing on the day after.
+This is what appears in the example below.
+
 The burndown chart can also be toggled to display the cumulative open issue
 weight for a given day. When using this feature, make sure your weights have
 been properly assigned, since an open issue with no weight adds zero to the
@@ -76,3 +91,4 @@ cumulative value.
 
 [ee-1540]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1540
 [ee]: https://about.gitlab.com/gitlab-ee
+

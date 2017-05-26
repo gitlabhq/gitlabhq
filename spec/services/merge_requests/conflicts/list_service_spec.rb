@@ -25,6 +25,13 @@ describe MergeRequests::Conflicts::ListService do
       expect(conflicts_service(merge_request).can_be_resolved_in_ui?).to be_falsey
     end
 
+    it 'returns a falsey value when one of the MR branches is missing' do
+      merge_request = create_merge_request('conflict-resolvable')
+      merge_request.project.repository.rm_branch(merge_request.author, 'conflict-resolvable')
+
+      expect(conflicts_service(merge_request).can_be_resolved_in_ui?).to be_falsey
+    end
+
     it 'returns a falsey value when the MR has a missing ref after a force push' do
       merge_request = create_merge_request('conflict-resolvable')
       service = conflicts_service(merge_request)

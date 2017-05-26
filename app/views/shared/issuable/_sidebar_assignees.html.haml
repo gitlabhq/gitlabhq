@@ -1,5 +1,8 @@
 - if issuable.is_a?(Issue)
   #js-vue-sidebar-assignees{ data: { field: "#{issuable.to_ability_name}[assignee_ids]" } }
+    .title.hide-collapsed
+      Assignee
+      = icon('spinner spin')
 - else
   .sidebar-collapsed-icon.sidebar-collapsed-user{ data: { toggle: "tooltip", placement: "left", container: "body" }, title: (issuable.assignee.name if issuable.assignee) }
     - if issuable.assignee
