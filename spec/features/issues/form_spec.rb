@@ -35,8 +35,6 @@ describe 'New/edit issue', :feature, :js do
           click_link user2.name
         end
 
-        click_button user2.name
-
         page.within '.dropdown-menu-user' do
           click_link 'Unassigned'
         end
@@ -51,13 +49,11 @@ describe 'New/edit issue', :feature, :js do
 
         expect(find('a', text: 'Assign to me', visible: false)).not_to be_visible
 
-        click_button user.name
-
         page.within('.dropdown-menu-user') do
           click_link user.name
         end
 
-        expect(page.find('.dropdown-menu-user', visible: false)).not_to be_visible
+        expect(find('a', text: 'Assign to me')).to be_visible
       end
     end
 
@@ -174,7 +170,6 @@ describe 'New/edit issue', :feature, :js do
       end
 
       expect(find('.js-assignee-search')).to have_content(user.name)
-      click_button user.name
 
       page.within '.dropdown-menu-user' do
         click_link user2.name
