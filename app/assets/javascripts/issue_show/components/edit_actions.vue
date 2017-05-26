@@ -15,7 +15,6 @@
     data() {
       return {
         deleteLoading: false,
-        updateLoading: false,
       };
     },
     computed: {
@@ -25,7 +24,7 @@
     },
     methods: {
       updateIssuable() {
-        this.updateLoading = true;
+        this.formState.updateLoading = true;
         eventHub.$emit('update.issuable');
       },
       closeForm() {
@@ -47,7 +46,7 @@
   <div class="prepend-top-default append-bottom-default clearfix">
     <button
       class="btn btn-save pull-left"
-      :class="{ disabled: updateLoading || !isSubmitEnabled }"
+      :class="{ disabled: formState.updateLoading || !isSubmitEnabled }"
       type="submit"
       :disabled="updateLoading || !isSubmitEnabled"
       @click.prevent="updateIssuable">
@@ -55,7 +54,7 @@
       <i
         class="fa fa-spinner fa-spin"
         aria-hidden="true"
-        v-if="updateLoading">
+        v-if="formState.updateLoading">
       </i>
     </button>
     <button

@@ -20,7 +20,7 @@ module IssuableActions
       format.html { redirect_to index_path }
       format.json do
         render json: {
-          path: index_path
+          web_url: index_path
         }
       end
     end
