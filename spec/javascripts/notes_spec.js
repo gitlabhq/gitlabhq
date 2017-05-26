@@ -442,6 +442,45 @@ import '~/notes';
       });
     });
 
+    describe('update comment with script tags', () => {
+      const sampleComment = '<script></script>';
+      const updatedComment = '<script></script>';
+      const note = {
+        id: 1234,
+        html: `<li class="note note-row-1234 timeline-entry" id="note_1234">
+                <div class="note-text">${sampleComment}</div>
+               </li>`,
+        note: sampleComment,
+        valid: true
+      };
+      let $form;
+      let $notesContainer;
+
+      beforeEach(() => {
+        this.notes = new Notes('', []);
+        window.gon.current_username = 'root';
+        window.gon.current_user_fullname = 'Administrator';
+        $form = $('form.js-main-target-form');
+        $notesContainer = $('ul.main-notes-list');
+        $form.find('textarea.js-note-text').html(sampleComment);
+      });
+
+      it('should not render a script tag', () => {
+        const deferred = $.Deferred();
+        spyOn($, 'ajax').and.returnValue(deferred.promise());
+        $('.js-comment-button').click();
+
+        deferred.resolve(note);
+        const $noteEl = $notesContainer.find(`#note_${note.id}`);
+        $noteEl.find('.js-note-edit').click();
+        $noteEl.find('textarea.js-note-text').html(updatedComment);
+        $noteEl.find('.js-comment-save-button').click();
+
+        const $updatedNoteEl = $notesContainer.find(`#note_${note.id}`).find('.js-task-list-container');
+        expect($updatedNoteEl.find('.note-text').text().trim()).toEqual('');
+      });
+    });
+
     describe('getFormData', () => {
       it('should return form metadata object from form reference', () => {
         this.notes = new Notes('', []);

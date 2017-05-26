@@ -1385,7 +1385,7 @@ const normalizeNewlines = function(str) {
       const cachedNoteBodyText = $noteBodyText.html();
 
       // Show updated comment content temporarily
-      $noteBodyText.html(formContent);
+      $noteBodyText.html(_.escape(formContent));
       $editingNote.removeClass('is-editing fade-in-full').addClass('being-posted fade-in-half');
       $editingNote.find('.note-headline-meta a').html('<i class="fa fa-spinner fa-spin" aria-label="Comment is being updated" aria-hidden="true"></i>');
 
@@ -1398,7 +1398,7 @@ const normalizeNewlines = function(str) {
         })
         .fail(() => {
           // Submission failed, revert back to original note
-          $noteBodyText.html(cachedNoteBodyText);
+          $noteBodyText.html(_.escape(cachedNoteBodyText));
           $editingNote.removeClass('being-posted fade-in');
           $editingNote.find('.fa.fa-spinner').remove();
 
