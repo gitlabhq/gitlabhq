@@ -1,4 +1,4 @@
-export default function flash(message, type = 'alert', parent = null) {
+export default function showFlash(message, type = 'alert', parent = null) {
   const $flashContainer = parent ?
     parent.find('.flash-container') : $('.flash-container-page');
 
@@ -17,4 +17,4 @@ export default function flash(message, type = 'alert', parent = null) {
 }
 
 // global name capitalized for legacy reasons
-window.Flash = flash;
+window.Flash = showFlash;
