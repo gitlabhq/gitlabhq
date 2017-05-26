@@ -1,4 +1,4 @@
-/* global Api */
+import Api from './api';
 
 export default class ApproversSelect {
   constructor() {
