@@ -137,6 +137,13 @@ describe ProjectsFinder do
       it { is_expected.to eq([public_project]) }
     end
 
+    describe 'filter by owned' do
+      let(:params) { { owned: true } }
+      let!(:owned_project) { create(:empty_project, :private, namespace: current_user.namespace) }
+
+      it { is_expected.to eq([owned_project]) }
+    end
+
     describe 'filter by non_public' do
       let(:params) { { non_public: true } }
       before do

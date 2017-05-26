@@ -69,7 +69,7 @@ module API
 
         def present_projects(options = {})
           projects = ProjectsFinder.new(current_user: current_user, params: project_finder_params).execute
-          projects = filter_projects(projects)
+          projects = reorder_projects(projects)
           projects = projects.with_statistics if params[:statistics]
           projects = projects.with_issues_enabled if params[:with_issues_enabled]
           projects = projects.with_merge_requests_enabled if params[:with_merge_requests_enabled]

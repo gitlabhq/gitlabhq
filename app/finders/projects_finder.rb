@@ -7,6 +7,7 @@
 #   project_ids_relation: int[] - project ids to use
 #   params:
 #     trending: boolean
+#     owned: boolean
 #     non_public: boolean
 #     starred: boolean
 #     sort: string
@@ -47,8 +48,12 @@ class ProjectsFinder < UnionFinder
   def init_collection
     projects = []
 
-    projects << current_user.authorized_projects if current_user
-    projects << Project.unscoped.public_to_user(current_user) unless params[:non_public].present?
+    if params[:owned].present?
+      projects << current_user.owned_projects if current_user
+    else
+      projects << current_user.authorized_projects if current_user
+      projects << Project.unscoped.public_to_user(current_user) unless params[:non_public].present?
+    end
 
     projects
   end
