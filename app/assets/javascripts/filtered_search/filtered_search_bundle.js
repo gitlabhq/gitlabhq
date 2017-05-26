@@ -10,4 +10,4 @@ import './filtered_search_tokenizer';
 import './filtered_search_visual_tokens';
 
 // EE-only
-import './filtered_search_token_keys_with_weights';
+import './filtered_search_token_keys_issues_ee';

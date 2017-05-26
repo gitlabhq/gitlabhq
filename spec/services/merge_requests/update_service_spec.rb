@@ -230,6 +230,35 @@ describe MergeRequests::UpdateService, services: true do
 
         it { expect(@merge_request.state).to eq('opened') }
       end
+
+      context 'when not approved' do
+        before do
+          merge_request.update_attributes(approvals_before_merge: 1)
+
+          perform_enqueued_jobs do
+            service.execute(merge_request)
+            @merge_request = MergeRequest.find(merge_request.id)
+          end
+        end
+
+        it { expect(@merge_request).to be_valid }
+        it { expect(@merge_request.state).to eq('opened') }
+      end
+
+      context 'when approved' do
+        before do
+          merge_request.update_attributes(approvals_before_merge: 1)
+          merge_request.approvals.create(user: user)
+
+          perform_enqueued_jobs do
+            service.execute(merge_request)
+            @merge_request = MergeRequest.find(merge_request.id)
+          end
+        end
+
+        it { expect(@merge_request).to be_valid }
+        it { expect(@merge_request.state).to eq('merged') }
+      end
     end
 
     context 'todos' do
