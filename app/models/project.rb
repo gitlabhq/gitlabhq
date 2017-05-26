@@ -1257,12 +1257,13 @@ class Project < ActiveRecord::Base
   end
 
   def variables_for(ref)
-    vars = if ProtectedBranch.protected?(self, ref) ||
-               ProtectedTag.protected?(self, ref)
-             variables.to_a
-           else
-             variables.to_a.reject(&:protected?)
-           end
+    vars =
+      if ProtectedBranch.protected?(self, ref) ||
+          ProtectedTag.protected?(self, ref)
+        variables.to_a
+      else
+        variables.to_a.reject(&:protected?)
+      end
 
     vars.map(&:to_runner_variable)
   end
