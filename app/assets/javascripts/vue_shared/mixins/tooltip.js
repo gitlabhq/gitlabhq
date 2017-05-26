@@ -1,14 +1,10 @@
 export default {
   mounted() {
-    this.$nextTick(() => {
-      $(this.$refs.tooltip).tooltip();
-    });
+    $(this.$refs.tooltip).tooltip();
   },
 
   updated() {
-    this.$nextTick(() => {
-      $(this.$refs.tooltip).tooltip('fixTitle');
-    });
+    $(this.$refs.tooltip).tooltip('fixTitle');
   },
 
   beforeDestroy() {

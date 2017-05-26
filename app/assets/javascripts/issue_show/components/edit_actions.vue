@@ -48,7 +48,7 @@
       class="btn btn-save pull-left"
       :class="{ disabled: formState.updateLoading || !isSubmitEnabled }"
       type="submit"
-      :disabled="updateLoading || !isSubmitEnabled"
+      :disabled="formState.updateLoading || !isSubmitEnabled"
       @click.prevent="updateIssuable">
       Save changes
       <i
