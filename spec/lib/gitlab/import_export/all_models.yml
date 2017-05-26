@@ -18,6 +18,10 @@ issues:
 - metrics
 - timelogs
 - issue_assignees
+- referenced_issue_links
+- referred_by_issue_links
+- referenced_issues
+- referred_by_issues
 events:
 - author
 - project
