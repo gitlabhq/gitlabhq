@@ -6,29 +6,25 @@ class BuildDetailsEntity < BuildEntity
   expose :runner, using: RunnerEntity
   expose :pipeline, using: PipelineEntity
 
-  expose :merge_request_path do |build|
-    merge_request = build.merge_request
-    project = build.project
-
-    if merge_request.nil? || !can?(request.current_user, :read_merge_request, project)
-      nil
-    else
-      namespace_project_merge_request_path(project.namespace, project, merge_request)
-    end
+  expose :merge_request_path, if: -> (*) { can?(current_user, :read_merge_request, project) } do |build|
+    namespace_project_merge_request_path(project.namespace, project, build.merge_request)
   end
 
-  expose :new_issue_path do |build|
-    project = build.project
-
-    unless build.failed? && can?(request.current_user, :create_issue, project)
-      nil
-    else
-      new_namespace_project_issue_path(project.namespace, project)
-    end
+  expose :new_issue_path, if: -> (*) { can?(request.current_user, :create_issue, project) } do |build|
+    new_namespace_project_issue_path(project.namespace, project)
   end
 
   expose :raw_path do |build|
-    project = build.project
     raw_namespace_project_build_path(project.namespace, project, build)
+  end
+
+  private
+
+  def current_user
+    request.current_user
+  end
+
+  def project
+    build.project
   end
 end

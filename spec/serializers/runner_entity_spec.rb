@@ -1,14 +1,23 @@
 require 'spec_helper'
 
 describe RunnerEntity do
-  let(:runner) { build(:ci_runner) }
-  let(:entity) { described_class.represent(runner) }
+  let(:runner) { create(:ci_runner) }
+  let(:entity) { described_class.new(runner, request: request, current_user: user) }
+  let(:request) { double('request') }
+  let(:project) { create(:empty_project) }
+  let(:user) { create(:admin) }
+
+  before do
+    allow(request).to receive(:current_user).and_return(user)
+    allow(request).to receive(:project).and_return(project)
+  end
 
   describe '#as_json' do
     subject { entity.as_json }
 
     it 'contains required fields' do
-      expect(subject).to include(:id, :name, :description)
+      expect(subject).to include(:id, :description)
+      expect(subject).to include(:edit_runner_path)
     end
   end
 end

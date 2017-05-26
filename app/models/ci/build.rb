@@ -204,6 +204,8 @@ module Ci
     end
 
     def merge_request
+      return @merge_request if defined?(@merge_request)
+      
       @merge_request ||=
         begin
           merge_requests = MergeRequest.includes(:merge_request_diff)
