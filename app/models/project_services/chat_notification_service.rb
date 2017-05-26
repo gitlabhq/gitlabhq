@@ -21,10 +21,6 @@ class ChatNotificationService < Service
     end
   end
 
-  def can_test?
-    valid?
-  end
-
   def self.supported_events
     %w[push issue confidential_issue merge_request note tag_push
        pipeline wiki_page]

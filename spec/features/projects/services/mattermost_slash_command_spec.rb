@@ -28,7 +28,7 @@ feature 'Setup Mattermost slash commands', :feature, :js do
       token = ('a'..'z').to_a.join
 
       fill_in 'service_token', with: token
-      click_on 'Save'
+      click_on 'Save changes'
 
       expect(current_path).to eq(namespace_project_settings_integrations_path(project.namespace, project))
       expect(page).to have_content('Mattermost slash commands settings saved, but not activated.')
@@ -39,10 +39,10 @@ feature 'Setup Mattermost slash commands', :feature, :js do
 
       fill_in 'service_token', with: token
       check 'service_active'
-      click_on 'Save'
+      click_on 'Save changes'
 
       expect(current_path).to eq(namespace_project_settings_integrations_path(project.namespace, project))
-      expect(page).to have_content(' Mattermost slash commands activated.')
+      expect(page).to have_content('Mattermost slash commands activated.')
     end
 
     it 'shows the add to mattermost button' do

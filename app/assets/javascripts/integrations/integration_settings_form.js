@@ -93,7 +93,7 @@ export default class IntegrationSettingsForm {
     })
     .done((res) => {
       if (res.error) {
-        new Flash(`${res.message}.`, null, null, {
+        new Flash(`${res.message}`, null, null, {
           title: 'Save anyway',
           clickHandler: (e) => {
             e.preventDefault();

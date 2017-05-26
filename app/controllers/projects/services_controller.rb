@@ -22,17 +22,22 @@ class Projects::ServicesController < Projects::ApplicationController
   end
 
   def test
-    return render json: {}, status: :not_found unless @service.can_test?
-
-    data = @service.test_data(project, current_user)
-    outcome = @service.test(data)
-
     message = {}
-    unless outcome[:success]
-      message = { error: true, message: 'Test failed', service_response: outcome[:result].to_s }
+
+    if @service.can_test?
+      data = @service.test_data(project, current_user)
+      outcome = @service.test(data)
+
+      unless outcome[:success]
+        message = { error: true, message: 'Test failed.', service_response: outcome[:result].to_s }
+      end
+
+      status = :ok
+    else
+      status = :not_found
     end
 
-    render json: message, status: :ok
+    render json: message, status: status
   end
 
   private

@@ -175,10 +175,6 @@ class JiraService < IssueTrackerService
     { success: result.present?, result: result }
   end
 
-  def can_test?
-    username.present? && password.present?
-  end
-
   # JIRA does not need test data.
   # We are requesting the project that belongs to the project key.
   def test_data(user = nil, project = nil)
