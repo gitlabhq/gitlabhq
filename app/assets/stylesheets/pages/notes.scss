@@ -18,7 +18,7 @@ ul.notes {
     margin-left: 55px;
 
     &.timeline-content-form {
-      @media (max-width: $screen-sm-max) {
+      @include notes-media('max', $screen-sm-max) {
         margin-left: 0;
       }
     }
@@ -120,7 +120,7 @@ ul.notes {
 
     .note-header {
 
-      @media (max-width: $screen-xs-min) {
+      @include notes-media('max', $screen-xs-min) {
         .inline {
           display: block;
         }
@@ -152,7 +152,7 @@ ul.notes {
     padding-left: 0;
     clear: both;
 
-    @media (min-width: $screen-sm-min) {
+    @include notes-media('min', $screen-sm-min) {
       margin-left: 65px;
     }
 
@@ -200,7 +200,7 @@ ul.notes {
     }
 
     .timeline-content {
-      @media (min-width: $screen-sm-min) {
+      @include notes-media('min', $screen-sm-min) {
         margin-left: 30px;
       }
     }
@@ -370,7 +370,7 @@ ul.notes {
   display: flex;
   justify-content: space-between;
 
-  @media (max-width: $screen-xs-max) {
+  @include notes-media('max', $screen-xs-max) {
     flex-flow: row wrap;
   }
 }
@@ -385,7 +385,7 @@ ul.notes {
 }
 
 .note-header-author-name {
-  @media (max-width: $screen-xs-max) {
+  @include notes-media('max', $screen-xs-max) {
     display: none;
   }
 }
@@ -393,7 +393,7 @@ ul.notes {
 .note-headline-light {
   display: inline;
 
-  @media (max-width: $screen-xs-min) {
+  @include notes-media('max', $screen-xs-min) {
     display: block;
   }
 }
@@ -435,7 +435,7 @@ ul.notes {
   margin-left: 10px;
   color: $gray-darkest;
 
-  @media (max-width: $screen-xs-max) {
+  @include notes-media('max', $screen-xs-max) {
     float: none;
     margin-left: 0;
   }
@@ -446,7 +446,7 @@ ul.notes {
 }
 
 .discussion-actions {
-  @media (max-width: $screen-md-max) {
+  @include notes-media('max', $screen-md-max) {
     float: none;
     margin-left: 0;
 
@@ -460,7 +460,7 @@ ul.notes {
   display: inline;
   line-height: 20px;
 
-  @media (min-width: $screen-sm-min) {
+  @include notes-media('min', $screen-sm-min) {
     margin-left: 10px;
     line-height: 24px;
   }
@@ -629,7 +629,7 @@ ul.notes {
 }
 
 .line-resolve-all-container {
-  @media (min-width: $screen-sm-min) {
+  @include notes-media('min', $screen-sm-min) {
     margin-right: 0;
     padding-left: $gl-padding;
   }
@@ -744,10 +744,6 @@ ul.notes {
 
 // Merge request notes in diffs
 .diff-file {
-  // Diff is side by side
-  .notes_content.parallel .note-header .note-header-author-name {
-    display: block;
-  }
   // Diff is inline
   .notes_content .note-header .note-headline-light {
     display: inline-block;
