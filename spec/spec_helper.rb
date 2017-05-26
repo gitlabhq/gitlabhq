@@ -52,6 +52,7 @@ RSpec.configure do |config|
   config.include StubGitlabCalls
   config.include StubGitlabData
   config.include ApiHelpers, :api
+  config.include MigrationsHelpers, :migration
 
   config.infer_spec_type_from_file_location!
 
@@ -94,9 +95,8 @@ RSpec.configure do |config|
   end
 
   config.around(:example, migration: true) do |example|
-    schema_version = example.metadata[:schema]
-    migrations_paths = ActiveRecord::Migrator.migrations_paths
-    ActiveRecord::Migrator.migrate(migrations_paths, schema_version)
+    ActiveRecord::Migrator
+      .migrate(migrations_paths, example.metadata.fetch(:schema))
 
     example.run
 
