@@ -100,7 +100,7 @@ RSpec.configure do |config|
 
     example.run
 
-    ActiveRecord::Migration.maintain_test_schema!
+    ActiveRecord::Migrator.migrate(migrations_paths)
   end
 end
 
