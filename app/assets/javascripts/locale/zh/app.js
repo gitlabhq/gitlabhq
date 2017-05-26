@@ -6,23 +6,23 @@ locales['zh'] = {
             "": {
                 "Project-Id-Version": "gitlab 1.0.0",
                 "Report-Msgid-Bugs-To": "",
-                "PO-Revision-Date": "2017-05-26 13:08+0800",
-                "Last-Translator": "htve <htve@outlook.com>",
-                "Language-Team": "Simplified Chinese",
-                "Language": "zh",
+                "POT-Creation-Date": "2017-05-04 19:24-0500",
+                "PO-Revision-Date": "2017-05-04 19:24-0500",
+                "Last-Translator": "HuangTao <htve@outlook.com>, 2017",
+                "Language-Team": "Chinese (China) (https://www.transifex.com/gitlab-zh/teams/75177/zh_CN/)",
                 "MIME-Version": "1.0",
                 "Content-Type": "text/plain; charset=UTF-8",
                 "Content-Transfer-Encoding": "8bit",
-                "Plural-Forms": "nplurals=2; plural=n != 1;",
+                "Language": "zh_CN",
+                "Plural-Forms": "nplurals=1; plural=0;",
                 "lang": "zh",
                 "domain": "app",
-                "plural_forms": "nplurals=2; plural=n != 1;"
+                "plural_forms": "nplurals=1; plural=0;"
             },
             "ByAuthor|by": [
                 "作者:"
             ],
             "Commit": [
-                "提交",
                 "提交"
             ],
             "Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project.": [
@@ -50,7 +50,6 @@ locales['zh'] = {
                 "测试"
             ],
             "Deploy": [
-                "部署",
                 "部署"
             ],
             "FirstPushedBy|First": [
@@ -69,19 +68,16 @@ locales['zh'] = {
                 "周期分析简介"
             ],
             "Last %d day": [
-                "最后%d天",
                 "最后%d天"
             ],
             "Limited to showing %d event at most": [
-                "最多显示%d个事件",
                 "最多显示%d个事件"
             ],
             "Median": [
                 "平均数"
             ],
             "New Issue": [
-                "新议题",
-                "新问题"
+                "新议题"
             ],
             "Not available": [
                 "不可用"
@@ -120,7 +116,6 @@ locales['zh'] = {
                 "相关已合并的合并请求"
             ],
             "Showing %d event": [
-                "显示%d个事件",
                 "显示%d个事件"
             ],
             "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request.": [
@@ -169,11 +164,9 @@ locales['zh'] = {
                 "创建第一个合并请求之前的时间"
             ],
             "Time|hr": [
-                "小时",
                 "小时"
             ],
             "Time|min": [
-                "分钟",
                 "分钟"
             ],
             "Time|s": [
@@ -195,7 +188,6 @@ locales['zh'] = {
                 "您需要相关的权限。"
             ],
             "day": [
-                "天",
                 "天"
             ]
         }

@@ -1,21 +1,22 @@
-# Simplified Chinese translations for gitlab package.
-# Copyright (C) 2017 THE PACKAGE'S COPYRIGHT HOLDER
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the gitlab package.
-# htve <htve@outlook.com>, 2017.
-#
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2017-05-26 13:08+0800\n"
-"Last-Translator: htve <htve@outlook.com>\n"
-"Language-Team: Simplified Chinese\n"
-"Language: zh\n"
+"POT-Creation-Date: 2017-05-04 19:24-0500\n"
+"PO-Revision-Date: 2017-05-04 19:24-0500\n"
+"Last-Translator: HuangTao <htve@outlook.com>, 2017\n"
+"Language-Team: Chinese (China) (https://www.transifex.com/gitlab-zh/teams/75177/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgid "ByAuthor|by"
 msgstr "作者:"
@@ -23,15 +24,15 @@ msgstr "作者:"
 msgid "Commit"
 msgid_plural "Commits"
 msgstr[0] "提交"
-msgstr[1] "提交"
 
-msgid "Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project."
+msgid ""
+"Cycle Analytics gives an overview of how much time it takes to go from idea "
+"to production in your project."
 msgstr "周期分析概述了项目从想法到产品实现的各阶段所需的时间。"
 
 msgid "CycleAnalyticsStage|Code"
 msgstr "编码"
 
-# '议题' sounds good, but most of the software on the market will 'issue' translated into '问题'
 msgid "CycleAnalyticsStage|Issue"
 msgstr "议题"
 
@@ -53,7 +54,6 @@ msgstr "测试"
 msgid "Deploy"
 msgid_plural "Deploys"
 msgstr[0] "部署"
-msgstr[1] "部署"
 
 msgid "FirstPushedBy|First"
 msgstr "首个推送"
@@ -73,12 +73,10 @@ msgstr "周期分析简介"
 msgid "Last %d day"
 msgid_plural "Last %d days"
 msgstr[0] "最后%d天"
-msgstr[1] "最后%d天"
 
 msgid "Limited to showing %d event at most"
 msgid_plural "Limited to showing %d events at most"
 msgstr[0] "最多显示%d个事件"
-msgstr[1] "最多显示%d个事件"
 
 msgid "Median"
 msgstr "平均数"
@@ -86,7 +84,6 @@ msgstr "平均数"
 msgid "New Issue"
 msgid_plural "New Issues"
 msgstr[0] "新议题"
-msgstr[1] "新问题"
 
 msgid "Not available"
 msgstr "不可用"
@@ -127,39 +124,62 @@ msgstr "相关已合并的合并请求"
 msgid "Showing %d event"
 msgid_plural "Showing %d events"
 msgstr[0] "显示%d个事件"
-msgstr[1] "显示%d个事件"
 
-msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
+msgid ""
+"The coding stage shows the time from the first commit to creating the merge "
+"request. The data will automatically be added here once you create your "
+"first merge request."
 msgstr "编码阶段概述了从第一次提交到创建合并请求的时间。创建第一个合并请求后，数据将自动添加到此处。"
 
 msgid "The collection of events added to the data gathered for that stage."
 msgstr "将收集的事件添加到该阶段的相关统计数据中。"
 
-msgid "The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage."
+msgid ""
+"The issue stage shows the time it takes from creating an issue to assigning "
+"the issue to a milestone, or add the issue to a list on your Issue Board. "
+"Begin creating issues to see data for this stage."
 msgstr "议题阶段概述了从创建议题到将议题分配给里程碑或将议题添加到议题看板列表中所需的时间。开始创建议题以查看此阶段的数据。"
 
 msgid "The phase of the development lifecycle."
 msgstr "项目生命周期中的各个阶段。"
 
-msgid "The planning stage shows the time from the previous step to pushing your first commit. This time will be added automatically once you push your first commit."
+msgid ""
+"The planning stage shows the time from the previous step to pushing your "
+"first commit. This time will be added automatically once you push your first"
+" commit."
 msgstr "计划阶段概述了从议题到推送第一次提交的时间。当你第一次推送提交，数据将自动添加到此处。"
 
-msgid "The production stage shows the total time it takes between creating an issue and deploying the code to production. The data will be automatically added once you have completed the full idea to production cycle."
+msgid ""
+"The production stage shows the total time it takes between creating an issue"
+" and deploying the code to production. The data will be automatically added "
+"once you have completed the full idea to production cycle."
 msgstr "生产阶段概述了从创建议题到将代码部署到生产环境的时间。一旦完成完整的想法到部署生产，数据将自动添加到此处。"
 
-msgid "The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request."
+msgid ""
+"The review stage shows the time from creating the merge request to merging "
+"it. The data will automatically be added after you merge your first merge "
+"request."
 msgstr "评审阶段概述了从创建合并请求到合并的时间。在您合并第一个合并请求后，数据将自动添加到此处。"
 
-msgid "The staging stage shows the time between merging the MR and deploying code to the production environment. The data will be automatically added once you deploy to production for the first time."
+msgid ""
+"The staging stage shows the time between merging the MR and deploying code "
+"to the production environment. The data will be automatically added once you"
+" deploy to production for the first time."
 msgstr "预发布阶段概述了合并请求的合并到部署代码到生产环境的时间。首次部署到生产环境后，数据将自动添加到此处。"
 
-msgid "The testing stage shows the time GitLab CI takes to run every pipeline for the related merge request. The data will automatically be added after your first pipeline finishes running."
+msgid ""
+"The testing stage shows the time GitLab CI takes to run every pipeline for "
+"the related merge request. The data will automatically be added after your "
+"first pipeline finishes running."
 msgstr "测试阶段概述了GitLab CI为相关合并请求运行每个流水线所需的时间。在您的第一个流水线完成运行后，数据将自动添加到此处。"
 
 msgid "The time taken by each data entry gathered by that stage."
 msgstr "由该阶段收集的每个数据条目所用的时间总和。"
 
-msgid "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."
+msgid ""
+"The value lying at the midpoint of a series of observed values. E.g., "
+"between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 "
+"= 6."
 msgstr "该值概述了一系列观察值的平均值。例如，在3、5、9之间，平均值是5。在3、5、7、8之间，平均值是（5 + 7）/ 2 = 6。"
 
 msgid "Time before an issue gets scheduled"
@@ -177,12 +197,10 @@ msgstr "创建第一个合并请求之前的时间"
 msgid "Time|hr"
 msgid_plural "Time|hrs"
 msgstr[0] "小时"
-msgstr[1] "小时"
 
 msgid "Time|min"
 msgid_plural "Time|mins"
 msgstr[0] "分钟"
-msgstr[1] "分钟"
 
 msgid "Time|s"
 msgstr "秒"
@@ -205,4 +223,3 @@ msgstr "您需要相关的权限。"
 msgid "day"
 msgid_plural "days"
 msgstr[0] "天"
-msgstr[1] "天"
