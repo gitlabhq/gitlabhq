@@ -27,7 +27,6 @@ describe 'New/edit issue', :feature, :js do
     describe 'shorten users API pagination limit' do
       before do
         allow_any_instance_of(FormHelper).to receive(:issue_dropdown_options).and_wrap_original do |original, *args|
-          issuable = *args[0]
           has_multiple_assignees = *args[1]
 
           options = {
@@ -47,10 +46,9 @@ describe 'New/edit issue', :feature, :js do
               'dropdown-header': 'Assignee',
               multi_select: true,
               'input-meta': 'name',
-              'always-show-selectbox': true,
+              'always-show-selectbox': true
             }
           }
-
 
           if has_multiple_assignees
             options[:title] = 'Select assignee(s)'
