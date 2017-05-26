@@ -85,8 +85,8 @@ EOT
           # The patch total size is 200, with lines between 21 and 54.
           # This is a quick-and-dirty way to test this. Ideally, a new patch is
           # added to the test repo with a size that falls between the real limits.
-          stub_const("#{described_class}::DIFF_SIZE_LIMIT", 150)
-          stub_const("#{described_class}::DIFF_COLLAPSE_LIMIT", 100)
+          stub_const("#{described_class}::MAX_SIZE", 150)
+          stub_const("#{described_class}::OVERRIDABLE_MAX_SIZE", 100)
         end
 
         it 'prunes the diff as a large diff instead of as a collapsed diff' do
@@ -269,7 +269,7 @@ EOT
     it 'returns true for a diff that was explicitly marked as being too large' do
       diff = described_class.new(diff: 'a')
 
-      diff.prune_large_diff!
+      diff.too_large!
 
       expect(diff.too_large?).to eq(true)
     end
@@ -291,13 +291,13 @@ EOT
     it 'returns true for a diff that was explicitly marked as being collapsed' do
       diff = described_class.new(diff: 'a')
 
-      diff.prune_collapsed_diff!
+      diff.collapse!
 
       expect(diff).to be_collapsed
     end
   end
 
-  describe '#collapsible?' do
+  describe '#collapsed?' do
     it 'returns true for a diff that is quite large' do
       diff = described_class.new(diff: 'a' * 20480)
 
@@ -311,11 +311,11 @@ EOT
     end
   end
 
-  describe '#prune_collapsed_diff!' do
+  describe '#collapse!' do
     it 'prunes the diff' do
       diff = described_class.new(diff: "foo\nbar")
 
-      diff.prune_collapsed_diff!
+      diff.collapse!
 
       expect(diff.diff).to eq('')
       expect(diff.line_count).to eq(0)

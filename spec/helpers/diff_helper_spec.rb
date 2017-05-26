@@ -33,17 +33,17 @@ describe DiffHelper do
 
   describe 'diff_options' do
     it 'returns no collapse false' do
-      expect(diff_options).to include(no_collapse: false)
+      expect(diff_options).to include(expanded: false)
     end
 
-    it 'returns no collapse true if expand_all_diffs' do
-      allow(controller).to receive(:params) { { expand_all_diffs: true } }
-      expect(diff_options).to include(no_collapse: true)
+    it 'returns no collapse true if expanded' do
+      allow(controller).to receive(:params) { { expanded: true } }
+      expect(diff_options).to include(expanded: true)
     end
 
     it 'returns no collapse true if action name diff_for_path' do
       allow(controller).to receive(:action_name) { 'diff_for_path' }
-      expect(diff_options).to include(no_collapse: true)
+      expect(diff_options).to include(expanded: true)
     end
 
     it 'returns paths if action name diff_for_path and param old path' do

@@ -220,10 +220,10 @@ class MergeRequest < ActiveRecord::Base
 
   def diffs(diff_options = {})
     if compare
-      # When saving MR diffs, `no_collapse` is implicitly added (because we need
+      # When saving MR diffs, `expanded` is implicitly added (because we need
       # to save the entire contents to the DB), so add that here for
       # consistency.
-      compare.diffs(diff_options.merge(no_collapse: true))
+      compare.diffs(diff_options.merge(expanded: true))
     else
       merge_request_diff.diffs(diff_options)
     end

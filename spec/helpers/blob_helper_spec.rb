@@ -118,8 +118,8 @@ describe BlobHelper do
       Class.new(BlobViewer::Base) do
         include BlobViewer::ServerSide
 
-        self.overridable_max_size = 1.megabyte
-        self.max_size = 5.megabytes
+        self.collapse_limit = 1.megabyte
+        self.size_limit = 5.megabytes
         self.type = :rich
       end
     end
@@ -129,7 +129,7 @@ describe BlobHelper do
 
     describe '#blob_render_error_reason' do
       context 'for error :too_large' do
-        context 'when the blob size is larger than the absolute max size' do
+        context 'when the blob size is larger than the absolute size limit' do
           let(:blob) { fake_blob(size: 10.megabytes) }
 
           it 'returns an error message' do
@@ -137,7 +137,7 @@ describe BlobHelper do
           end
         end
 
-        context 'when the blob size is larger than the max size' do
+        context 'when the blob size is larger than the size limit' do
           let(:blob) { fake_blob(size: 2.megabytes) }
 
           it 'returns an error message' do
@@ -169,7 +169,7 @@ describe BlobHelper do
       end
 
       context 'for error :too_large' do
-        context 'when the max size can be overridden' do
+        context 'when the size limit can be overridden' do
           let(:blob) { fake_blob(size: 2.megabytes) }
 
           it 'includes a "load it anyway" link' do
@@ -177,7 +177,7 @@ describe BlobHelper do
           end
         end
 
-        context 'when the max size cannot be overridden' do
+        context 'when the size limit cannot be overridden' do
           let(:blob) { fake_blob(size: 10.megabytes) }
 
           it 'does not include a "load it anyway" link' do
