@@ -16,8 +16,6 @@ class MigratePipelineStages < ActiveRecord::Migration
           ORDER BY stage_idx
     SQL
 
-    add_column(:ci_builds, :stage_id, :integer)
-
     stage_id = Arel.sql('(SELECT id FROM ci_stages ' \
                          'WHERE ci_stages.pipeline_id = ci_builds.commit_id ' \
                          'AND ci_stages.name = ci_builds.stage)')
