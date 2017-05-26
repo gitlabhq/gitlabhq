@@ -43,7 +43,5 @@ describe MigratePipelineStages, :migration, schema: 20170525132202 do
       .to eq %w[test build deploy]
     expect(stages.where(pipeline_id: 2).order(:id).pluck(:name))
       .to eq %w[test:1 test:2 deploy]
-
-    expect(jobs.where(stage_id: nil)).to be_empty
   end
 end

@@ -15,14 +15,6 @@ class MigratePipelineStages < ActiveRecord::Migration
           GROUP BY project_id, commit_id, stage, stage_idx
           ORDER BY stage_idx
     SQL
-
-    stage_id = Arel.sql('(SELECT id FROM ci_stages ' \
-                         'WHERE ci_stages.pipeline_id = ci_builds.commit_id ' \
-                         'AND ci_stages.name = ci_builds.stage)')
-    update_column_in_batches(:ci_builds, :stage_id, stage_id)
-
-    # add_concurrent_foreign_key :ci_stages, :projects, column: :project_id, on_delete: :cascade
-    # add_concurrent_foreign_key :ci_builds, :ci_stages, column: :stage_id, on_delete: :cascade
   end
 
   def down
