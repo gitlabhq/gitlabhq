@@ -79,7 +79,7 @@ describe API::Variables do
         expect(response).to have_http_status(201)
         expect(json_response['key']).to eq('TEST_VARIABLE_2')
         expect(json_response['value']).to eq('VALUE_2')
-        expect(json_response['protected']).to eq(true)
+        expect(json_response['protected']).to be_truthy
       end
 
       it 'does not allow to duplicate variable key' do

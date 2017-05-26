@@ -399,6 +399,7 @@ export CI_REGISTRY_USER="gitlab-ci-token"
 export CI_REGISTRY_PASSWORD="longalfanumstring"
 ```
 
+[ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784
 [runner]: https://docs.gitlab.com/runner/
 [triggered]: ../triggers/README.md
 [triggers]: ../triggers/README.md#pass-job-variables-to-a-trigger
