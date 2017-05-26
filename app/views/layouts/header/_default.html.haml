@@ -36,48 +36,7 @@
               %li
                 = link_to admin_root_path, title: 'Admin area', aria: { label: "Admin area" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                   = icon('wrench fw')
-            %li.header-new.dropdown
-              = link_to new_project_path, class: "header-new-dropdown-toggle has-tooltip", title: "New...", ref: 'tooltip', aria: { label: "New..." }, data: { toggle: 'dropdown', placement: 'bottom', container: 'body' } do
-                = icon('plus fw')
-                = icon('caret-down')
-              .dropdown-menu-nav.dropdown-menu-align-right
-                %ul
-                  
-                  - if @group && (can?(current_user, :create_projects, @group) || can?(current_user, :create_subgroup, @group))
-                    %li
-                      .bold This group
-                    - if can?(current_user, :create_projects, @group)
-                      %li
-                        = link_to 'New project', new_project_path(namespace_id: @group.id), aria: { label: "New project" }
-                    - if can?(current_user, :create_subgroup, @group)
-                      %li
-                        = link_to 'New subgroup', new_group_path(parent_id: @group.id), aria: { label: "New subgroup" }
-                  - if @project
-                    %li
-                      .bold This project
-                    %li
-                      = link_to 'New issue', new_namespace_project_issue_path(@project.namespace, @project), aria: { label: "New issue" }
-                    - merge_project = can?(current_user, :create_merge_request, @project) ? @project : (current_user && current_user.fork_of(@project))
-                    - if merge_project
-                      %li
-                        = link_to 'New merge request', new_namespace_project_merge_request_path(merge_project.namespace, merge_project), aria: { label: "New merge request" }
-                    - if can?(current_user, :create_project_snippet, @project)
-                      %li
-                        = link_to 'New snippet', new_namespace_project_snippet_path(@project.namespace, @project), aria: { label: "New snippet" }
-                  - if @group || @project    
-                    %li.divider
-                    %li 
-                      .bold GitLab
-                  - if current_user.can_create_project?
-                    %li
-                      = link_to 'New project', new_project_path, aria: { label: "New project" }
-                  - if current_user.can_create_group?
-                    %li
-                      = link_to 'New group', new_group_path, aria: { label: "New group" }
-                  %li
-                    = link_to 'New snippet', new_snippet_path, aria: { label: "New snippet" }
-                  
-                  
+            = render 'layouts/header/new_dropdown'
             - if Gitlab::Sherlock.enabled?
               %li
                 = link_to sherlock_transactions_path, title: 'Sherlock Transactions',
@@ -112,12 +71,12 @@
                     @#{current_user.username}
                   %li.divider
                   %li
-                    = link_to "Profile", current_user, class: 'profile-link', aria: { label: "Profile" }, data: { user: current_user.username }
+                    = link_to "Profile", current_user, class: 'profile-link', data: { user: current_user.username }
                   %li
-                    = link_to "Settings", profile_path, aria: { label: "Settings" }
+                    = link_to "Settings", profile_path
                   %li.divider
                   %li
-                    = link_to "Sign out", destroy_user_session_path, method: :delete, class: "sign-out-link", aria: { label: "Sign out" }
+                    = link_to "Sign out", destroy_user_session_path, method: :delete, class: "sign-out-link"
           - else
             %li
               %div
