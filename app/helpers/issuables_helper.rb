@@ -210,7 +210,7 @@ module IssuablesHelper
       markdownPreviewUrl: preview_markdown_path(@project),
       markdownDocs: help_page_path('user/markdown'),
       projectsAutocompleteUrl: autocomplete_projects_path(project_id: @project.id),
-      templates: issuable_templates(issuable),
+      issuableTemplates: issuable_templates(issuable),
       projectPath: ref_project.path,
       projectNamespace: ref_project.namespace.full_path,
       initialTitleHtml: markdown_field(issuable, :title),

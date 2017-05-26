@@ -43,7 +43,8 @@
         aria-label="Description"
         v-model="formState.description"
         ref="textarea"
-        slot="textarea">
+        slot="textarea"
+        placeholder="Write a comment or drag your files here...">
       </textarea>
     </markdown-field>
   </div>
