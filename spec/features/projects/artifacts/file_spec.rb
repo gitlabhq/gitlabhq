@@ -67,7 +67,7 @@ feature 'Artifact file', :js, feature: true do
     end
 
     before do
-      visit file_url.sub('jobs', 'builds')
+      visit file_url.sub('/-/jobs', '/builds')
     end
 
     it "redirects to new URL" do

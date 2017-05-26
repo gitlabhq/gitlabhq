@@ -15,7 +15,7 @@ feature 'Raw artifact', :js, feature: true do
     end
 
     before do
-      visit raw_url.sub('jobs', 'builds')
+      visit raw_url.sub('/-/jobs', '/builds')
     end
 
     it "redirects to new URL" do

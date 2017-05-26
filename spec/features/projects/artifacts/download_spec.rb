@@ -39,7 +39,7 @@ feature 'Download artifact', :js, feature: true do
 
   context 'when visiting old URL' do
     before do
-      visit download_url.sub('jobs', 'builds')
+      visit download_url.sub('/-/jobs', '/builds')
     end
 
     context 'via job id' do
