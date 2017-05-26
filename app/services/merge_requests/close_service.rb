@@ -13,6 +13,7 @@ module MergeRequests
         notification_service.close_mr(merge_request, current_user)
         todo_service.close_merge_request(merge_request, current_user)
         execute_hooks(merge_request, 'close')
+        invalidate_cache_counts(merge_request.assignees, merge_request)
       end
 
       merge_request
