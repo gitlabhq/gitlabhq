@@ -24,6 +24,9 @@ export default {
     },
   },
   computed: {
+    groupDomId() {
+      return `group-${this.group.id}`;
+    },
     rowClass() {
       return {
         'group-row': true,
@@ -50,7 +53,7 @@ export default {
           const length = bfn.length;
           const start = gfn.indexOf(bfn);
 
-          fullPath = gfn.substr(start + length + 2);
+          fullPath = gfn.substr(start + length + 3);
         } else {
           fullPath = this.group.fullName;
         }
@@ -67,28 +70,28 @@ export default {
 <template>
   <li
     @click.stop="toggleSubGroups"
-    :id="group.id"
+    :id="groupDomId"
     :class="rowClass"
     >
     <div class="controls">
-      <a class="btn" href="#edit">
+      <a class="edit-group btn" href="#edit">
         <i aria-hidden="true" class="fa fa-cogs"></i>
       </a>
-      <a class="btn" title="Leave this group" href="#leave">
+      <a class="leave-group btn" title="Leave this group" href="#leave">
         <i aria-hidden="true" class="fa fa-sign-out"></i>
       </a>
     </div>
 
     <div class="stats">
-      <span >
+      <span class="number-projects">
         <i aria-hidden="true" class="fa fa-bookmark"></i>
         {{group.numberProjects}}
       </span>
-      <span>
+      <span class="number-members">
         <i aria-hidden="true" class="fa fa-users"></i>
         {{group.numberMembers}}
       </span>
-      <span>
+      <span class="group-visibility">
         <i aria-hidden="true" class="fa fa-globe"></i>
       </span>
     </div>

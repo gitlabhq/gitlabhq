@@ -9,14 +9,15 @@ export default class GroupsStore {
 
   setGroups(rawGroups, parent = null) {
     const parentGroup = parent;
+    const tree = this.buildTree(rawGroups);
 
     if (parentGroup) {
-      parentGroup.subGroups = this.buildTree(rawGroups);
+      parentGroup.subGroups = tree;
     } else {
-      this.state.groups = this.buildTree(rawGroups);
+      this.state.groups = tree;
     }
 
-    return rawGroups;
+    return tree;
   }
 
   storePagination(pagination = {}) {

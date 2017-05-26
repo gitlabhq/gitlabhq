@@ -1,22 +1,78 @@
-export default {
-  groups: [{
-    id: '12',
-    name: 'level1',
-    path: 'level1',
-    description: '',
-    visibility: 'public',
-    avatar_url: null,
-    web_url: 'http://localhost:3000/groups/level1',
-    full_name: 'level1',
-    full_path: 'level1',
-    parent_id: null,
-    created_at: '2017-05-15T19:01:23.670Z',
-    updated_at: '2017-05-15T19:01:23.670Z',
-    permissions: {
-      group_access: 50,
-    },
+const group1 = {
+  id: '12',
+  name: 'level1',
+  path: 'level1',
+  description: '',
+  visibility: 'public',
+  avatar_url: null,
+  web_url: 'http://localhost:3000/groups/level1',
+  full_name: 'level1',
+  full_path: 'level1',
+  parent_id: null,
+  created_at: '2017-05-15T19:01:23.670Z',
+  updated_at: '2017-05-15T19:01:23.670Z',
+  permissions: {
+    group_access: 50,
   },
-  ],
+};
+
+// This group has no direct parent, should be placed as subgroup of group1
+const group14 = {
+  id: 1128,
+  name: 'level4',
+  path: 'level4',
+  description: '',
+  visibility: 'public',
+  avatar_url: null,
+  web_url: 'http://localhost:3000/groups/level1/level2/level3/level4',
+  full_name: 'level1 / level2 / level3 / level4',
+  full_path: 'level1/level2/level3/level4',
+  parent_id: 1127,
+  created_at: '2017-05-15T19:02:01.645Z',
+  updated_at: '2017-05-15T19:02:01.645Z',
+  permissions: {
+    group_access: 30,
+  },
+};
+
+const group2 = {
+  id: 1119,
+  name: 'devops',
+  path: 'devops',
+  description: '',
+  visibility: 'public',
+  avatar_url: null,
+  web_url: 'http://localhost:3000/groups/devops',
+  full_name: 'devops',
+  full_path: 'devops',
+  parent_id: null,
+  created_at: '2017-05-11T19:35:09.635Z',
+  updated_at: '2017-05-11T19:35:09.635Z',
+  permissions: {
+    group_access: 50,
+  },
+};
+
+const group21 = {
+  id: 1120,
+  name: 'chef',
+  path: 'chef',
+  description: '',
+  visibility: 'public',
+  avatar_url: null,
+  web_url: 'http://localhost:3000/groups/devops/chef',
+  full_name: 'devops / chef',
+  full_path: 'devops/chef',
+  parent_id: 1119,
+  created_at: '2017-05-11T19:51:04.060Z',
+  updated_at: '2017-05-11T19:51:04.060Z',
+  permissions: {
+    group_access: 50,
+  },
+};
+
+const groupsData = {
+  groups: [group1, group14, group2, group21],
   pagination: {
     Date: 'Mon, 22 May 2017 22:31:52 GMT',
     'X-Prev-Page': '1',
@@ -38,3 +94,5 @@ export default {
     'X-Page': '2',
   },
 };
+
+export { groupsData, group1 };
