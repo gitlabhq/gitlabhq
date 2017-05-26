@@ -98,7 +98,7 @@ describe User, models: true do
         user = build(:user, username: 'dashboard')
 
         expect(user).not_to be_valid
-        expect(user.errors.values).to eq [['dashboard is a reserved name'], ['dashboard is a reserved name']]
+        expect(user.errors.values).to eq [['dashboard is a reserved name']]
       end
 
       it 'allows child names' do

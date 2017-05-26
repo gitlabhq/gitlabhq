@@ -35,8 +35,12 @@ class DynamicPathValidator < ActiveModel::EachValidator
       self.class.valid_project_path?(full_path)
     when Group
       self.class.valid_group_path?(full_path)
-    else # User or non-Group Namespace
+    when User
       self.class.valid_user_path?(full_path)
+    else
+      # Namespace associated with User
+      # Do not validate here because it should already be validated on User.
+      true
     end
   end
 
