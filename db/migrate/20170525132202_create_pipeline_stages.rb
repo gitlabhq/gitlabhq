@@ -1,4 +1,4 @@
-class MigratePipelineStages < ActiveRecord::Migration
+class CreatePipelineStages < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
