@@ -24,12 +24,19 @@ class Projects::TreeController < Projects::ApplicationController
       end
     end
 
-    @last_commit = @repository.last_commit_for_path(@commit.id, @tree.path) || @commit
-
     respond_to do |format|
-      format.html
-      # Disable cache so browser history works
-      format.js { no_cache_headers }
+      format.html do
+        @last_commit = @repository.last_commit_for_path(@commit.id, @tree.path) || @commit
+      end
+
+      format.js do
+        # Disable cache so browser history works
+        no_cache_headers
+      end
+
+      format.json do
+        render json: TreeSerializer.new(project: @project, repository: @repository, ref: @ref).represent(@tree)
+      end
     end
   end
 
