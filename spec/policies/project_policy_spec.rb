@@ -10,6 +10,10 @@ describe ProjectPolicy, models: true do
   let(:admin) { create(:admin) }
   let(:project) { create(:empty_project, :public, namespace: owner.namespace) }
 
+  before do
+    allow_any_instance_of(License).to receive(:feature_available?) { true }
+  end
+
   let(:guest_permissions) do
     %i[
       read_project read_board read_list read_wiki read_issue read_label
