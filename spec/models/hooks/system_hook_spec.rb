@@ -126,4 +126,26 @@ describe SystemHook, models: true do
       expect(SystemHook.repository_update_hooks).to eq([hook])
     end
   end
+
+  describe 'execute WebHookService' do
+    let(:hook) { build(:system_hook) }
+    let(:data) { { key: 'value' } }
+    let(:hook_name) { 'system_hook' }
+
+    before do
+      expect(WebHookService).to receive(:new).with(hook, data, hook_name).and_call_original
+    end
+
+    it '#execute' do
+      expect_any_instance_of(WebHookService).to receive(:execute)
+
+      hook.execute(data, hook_name)
+    end
+
+    it '#async_execute' do
+      expect_any_instance_of(WebHookService).to receive(:async_execute)
+
+      hook.async_execute(data, hook_name)
+    end
+  end
 end

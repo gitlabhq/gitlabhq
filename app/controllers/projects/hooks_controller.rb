@@ -1,7 +1,9 @@
 class Projects::HooksController < Projects::ApplicationController
+  include HooksExecution
+
   # Authorize
   before_action :authorize_admin_project!
-  before_action :hook, only: :edit
+  before_action :hook_logs, only: :edit
 
   respond_to :html
 
@@ -34,13 +36,7 @@ class Projects::HooksController < Projects::ApplicationController
     if !@project.empty_repo?
       status, message = TestHookService.new.execute(hook, current_user)
 
-      if status && status >= 200 && status < 400
-        flash[:notice] = "Hook executed successfully: HTTP #{status}"
-      elsif status
-        flash[:alert] = "Hook executed successfully but returned HTTP #{status} #{message}"
-      else
-        flash[:alert] = "Hook execution failed: #{message}"
-      end
+      set_hook_execution_notice(status, message)
     else
       flash[:alert] = 'Hook execution failed. Ensure the project has commits.'
     end
@@ -58,6 +54,11 @@ class Projects::HooksController < Projects::ApplicationController
 
   def hook
     @hook ||= @project.hooks.find(params[:id])
+  end
+
+  def hook_logs
+    @hook_logs ||=
+      Kaminari.paginate_array(hook.web_hook_logs.order(created_at: :desc)).page(params[:page])
   end
 
   def hook_params

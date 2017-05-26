@@ -206,8 +206,42 @@ its class in an annotation.
 
 >**Note:**
 The Ingress alone doesn't expose GitLab externally. You need to have a Ingress controller setup to do that.
-Setting up an Ingress controller can be as simple as installing the `nginx-ingress` helm chart. But be sure
+Setting up an Ingress controller can be done by installing the `nginx-ingress` helm chart. But be sure
 to read the [documentation](https://github.com/kubernetes/charts/blob/master/stable/nginx-ingress/README.md)
+
+#### Preserving Source IPs
+
+If you are using the `LoadBalancer` serviceType you may run into issues where user IP addresses in the GitLab
+logs, and used in abuse throttling are not accurate. This is due to how Kubernetes uses source NATing on cluster nodes without endpoints.
+
+See the [Kubernetes documentation](https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typeloadbalancer) for more information.
+
+To fix this you can add the following service annotation to your `values.yaml`
+
+```yaml
+## For minikube, set this to NodePort, elsewhere use LoadBalancer
+## ref: http://kubernetes.io/docs/user-guide/services/#publishing-services---service-types
+##
+serviceType: LoadBalancer
+
+## Optional annotations for gitlab service.
+serviceAnnotations:
+  service.beta.kubernetes.io/external-traffic: "OnlyLocal"
+```
+
+>**Note:**
+If you are using the ingress routing, you will likely also need to specify the annotation on the service for the ingress
+controller. For `nginx-ingress` you can check the
+[configuration documentation](https://github.com/kubernetes/charts/blob/master/stable/nginx-ingress/README.md#configuration)
+on how to add the annotation to the  `controller.service.annotations` array.
+
+>**Note:**
+When using the `nginx-ingress` controller on Google Container Engine (GKE), and using the `external-traffic` annotation,
+you will need to additionally set the `controller.kind` to be DaemonSet. Otherwise only pods running on the same node
+as the nginx controller will be able to reach GitLab. This may result in pods within your cluster not being able to reach GitLab.
+See the [Kubernetes documentation](https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typeloadbalancer) and
+[nginx-ingress configuration documentation](https://github.com/kubernetes/charts/blob/master/stable/nginx-ingress/README.md#configuration)
+for more information.
 
 ### External database
 

@@ -14,19 +14,6 @@ ul.notes {
   margin: 0;
   padding: 0;
 
-  .timeline-icon {
-    float: left;
-
-    svg {
-      width: 16px;
-      height: 16px;
-      fill: $gray-darkest;
-      position: absolute;
-      left: 0;
-      top: 16px;
-    }
-  }
-
   .timeline-content {
     margin-left: 55px;
 
@@ -56,21 +43,22 @@ ul.notes {
     position: relative;
   }
 
-  .note {
-    padding: $gl-padding $gl-btn-padding 0;
+  > li {
+    padding: $gl-padding $gl-btn-padding;
     display: block;
     position: relative;
     border-bottom: 1px solid $white-normal;
+
+    &:last-child {
+      // Override `.timeline > li:last-child { border-bottom: none; }`
+      border-bottom: 1px solid $white-normal;
+    }
 
     &.being-posted {
       pointer-events: none;
       opacity: 0.5;
 
       .dummy-avatar {
-        display: inline-block;
-        height: 40px;
-        width: 40px;
-        border-radius: 50%;
         background-color: $kdb-border;
         border: 1px solid darken($kdb-border, 25%);
       }
@@ -126,7 +114,7 @@ ul.notes {
 
     .note-awards {
       .js-awards-block {
-        margin-bottom: 16px;
+        margin-top: 16px;
       }
     }
 
@@ -161,7 +149,7 @@ ul.notes {
 
   .system-note {
     font-size: 14px;
-    padding: 0;
+    padding-left: 0;
     clear: both;
 
     @media (min-width: $screen-sm-min) {
@@ -198,11 +186,22 @@ ul.notes {
       }
     }
 
-    .timeline-content {
-      padding: 14px 10px;
+    .timeline-icon {
+      float: left;
 
+      svg {
+        width: 16px;
+        height: 16px;
+        fill: $gray-darkest;
+        position: absolute;
+        left: 0;
+        top: 2px;
+      }
+    }
+
+    .timeline-content {
       @media (min-width: $screen-sm-min) {
-        margin-left: 20px;
+        margin-left: 30px;
       }
     }
 
@@ -383,6 +382,12 @@ ul.notes {
 
 .system-note .note-header-info {
   padding-bottom: 0;
+}
+
+.note-header-author-name {
+  @media (max-width: $screen-xs-max) {
+    display: none;
+  }
 }
 
 .note-headline-light {
@@ -590,10 +595,15 @@ ul.notes {
 .discussion-body,
 .diff-file {
   .notes .note {
-    padding: 10px 15px;
+    padding-left: $gl-padding;
+    padding-right: $gl-padding;
 
     &.system-note {
-      padding: 0;
+      padding-left: 0;
+
+      @media (min-width: $screen-sm-min) {
+        margin-left: 70px;
+      }
     }
   }
 }
@@ -607,17 +617,11 @@ ul.notes {
 }
 
 .disabled-comment {
-  margin-left: -$gl-padding-top;
-  margin-right: -$gl-padding-top;
   background-color: $gray-light;
   border-radius: $border-radius-base;
   border: 1px solid $border-gray-normal;
   color: $note-disabled-comment-color;
-  line-height: 200px;
-
-  .disabled-comment-text {
-    line-height: normal;
-  }
+  padding: 90px 0;
 
   a {
     color: $gl-link-color;
@@ -667,7 +671,7 @@ ul.notes {
 .line-resolve-all {
   vertical-align: middle;
   display: inline-block;
-  padding: 6px 10px;
+  padding: 5px 10px 6px;
   background-color: $gray-light;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
@@ -680,6 +684,10 @@ ul.notes {
 
   .line-resolve-btn {
     margin-right: 5px;
+
+    svg {
+      vertical-align: middle;
+    }
   }
 }
 
@@ -716,6 +724,10 @@ ul.notes {
   }
 }
 
+.line-resolve-text {
+  vertical-align: middle;
+}
+
 .discussion-next-btn {
   svg {
     margin: 0;
@@ -733,9 +745,8 @@ ul.notes {
 // Merge request notes in diffs
 .diff-file {
   // Diff is side by side
-  .notes_content.parallel .note-header .note-headline-light {
+  .notes_content.parallel .note-header .note-header-author-name {
     display: block;
-    position: relative;
   }
   // Diff is inline
   .notes_content .note-header .note-headline-light {
