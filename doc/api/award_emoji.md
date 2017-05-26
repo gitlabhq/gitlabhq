@@ -1,4 +1,4 @@
-# Award Emoji
+# Award Emoji API
 
 > [Introduced][ce-4575] in GitLab 8.9, Snippet support in 8.12
 

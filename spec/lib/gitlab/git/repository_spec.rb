@@ -1105,7 +1105,9 @@ describe Gitlab::Git::Repository, seed_helper: true do
       ref = double()
       allow(ref).to receive(:name) { 'bad-branch' }
       allow(ref).to receive(:target) { raise Rugged::ReferenceError }
-      allow(repository.rugged).to receive(:branches) { [ref] }
+      branches = double()
+      allow(branches).to receive(:each) { [ref].each }
+      allow(repository.rugged).to receive(:branches) { branches }
     end
 
     it 'should return empty branches' do
@@ -1289,7 +1291,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe '#local_branches' do
     before(:all) do
-      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH)
+      @repo = Gitlab::Git::Repository.new('default', File.join(TEST_MUTABLE_REPO_PATH, '.git'))
     end
 
     after(:all) do
@@ -1303,6 +1305,29 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
       expect(@repo.local_branches.any? { |branch| branch.name == 'remote_branch' }).to eq(false)
       expect(@repo.local_branches.any? { |branch| branch.name == 'local_branch' }).to eq(true)
+    end
+
+    context 'with gitaly enabled' do
+      before { stub_gitaly }
+      after { Gitlab::GitalyClient.clear_stubs! }
+
+      it 'gets the branches from GitalyClient' do
+        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:local_branches).
+          and_return([])
+        @repo.local_branches
+      end
+
+      it 'wraps GRPC not found' do
+        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:local_branches).
+          and_raise(GRPC::NotFound)
+        expect { @repo.local_branches }.to raise_error(Gitlab::Git::Repository::NoRepository)
+      end
+
+      it 'wraps GRPC exceptions' do
+        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:local_branches).
+          and_raise(GRPC::Unknown)
+        expect { @repo.local_branches }.to raise_error(Gitlab::Git::CommandError)
+      end
     end
   end
 

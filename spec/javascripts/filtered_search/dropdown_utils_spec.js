@@ -1,7 +1,7 @@
-require('~/extensions/array');
-require('~/filtered_search/dropdown_utils');
-require('~/filtered_search/filtered_search_tokenizer');
-require('~/filtered_search/filtered_search_dropdown_manager');
+import '~/extensions/array';
+import '~/filtered_search/dropdown_utils';
+import '~/filtered_search/filtered_search_tokenizer';
+import '~/filtered_search/filtered_search_dropdown_manager';
 
 describe('Dropdown Utils', () => {
   describe('getEscapedText', () => {
@@ -122,6 +122,7 @@ describe('Dropdown Utils', () => {
 
   describe('filterHint', () => {
     let input;
+    let allowedKeys;
 
     beforeEach(() => {
       setFixtures(`
@@ -133,30 +134,38 @@ describe('Dropdown Utils', () => {
       `);
 
       input = document.getElementById('test');
+      allowedKeys = gl.FilteredSearchTokenKeys.getKeys();
     });
+
+    function config() {
+      return {
+        input,
+        allowedKeys,
+      };
+    }
 
     it('should filter', () => {
       input.value = 'l';
-      let updatedItem = gl.DropdownUtils.filterHint(input, {
+      let updatedItem = gl.DropdownUtils.filterHint(config(), {
         hint: 'label',
       });
       expect(updatedItem.droplab_hidden).toBe(false);
 
       input.value = 'o';
-      updatedItem = gl.DropdownUtils.filterHint(input, {
+      updatedItem = gl.DropdownUtils.filterHint(config(), {
         hint: 'label',
       });
       expect(updatedItem.droplab_hidden).toBe(true);
     });
 
     it('should return droplab_hidden false when item has no hint', () => {
-      const updatedItem = gl.DropdownUtils.filterHint(input, {}, '');
+      const updatedItem = gl.DropdownUtils.filterHint(config(), {}, '');
       expect(updatedItem.droplab_hidden).toBe(false);
     });
 
     it('should allow multiple if item.type is array', () => {
       input.value = 'label:~first la';
-      const updatedItem = gl.DropdownUtils.filterHint(input, {
+      const updatedItem = gl.DropdownUtils.filterHint(config(), {
         hint: 'label',
         type: 'array',
       });
@@ -165,12 +174,12 @@ describe('Dropdown Utils', () => {
 
     it('should prevent multiple if item.type is not array', () => {
       input.value = 'milestone:~first mile';
-      let updatedItem = gl.DropdownUtils.filterHint(input, {
+      let updatedItem = gl.DropdownUtils.filterHint(config(), {
         hint: 'milestone',
       });
       expect(updatedItem.droplab_hidden).toBe(true);
 
-      updatedItem = gl.DropdownUtils.filterHint(input, {
+      updatedItem = gl.DropdownUtils.filterHint(config(), {
         hint: 'milestone',
         type: 'string',
       });

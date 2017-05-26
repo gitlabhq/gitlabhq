@@ -37,7 +37,7 @@ describe Namespace, models: true do
 
         it 'rejects nested paths' do
           parent = create(:group, :nested, path: 'environments')
-          namespace = build(:project, path: 'folders', namespace: parent)
+          namespace = build(:group, path: 'folders', parent: parent)
 
           expect(namespace).not_to be_valid
         end
@@ -238,8 +238,8 @@ describe Namespace, models: true do
     end
 
     context 'in sub-groups' do
-      let(:parent) { create(:namespace, path: 'parent') }
-      let(:child) { create(:namespace, parent: parent, path: 'child') }
+      let(:parent) { create(:group, path: 'parent') }
+      let(:child) { create(:group, parent: parent, path: 'child') }
       let!(:project) { create(:project_empty_repo, namespace: child) }
       let(:path_in_dir) { File.join(repository_storage_path, 'parent', 'child') }
       let(:deleted_path) { File.join('parent', "child+#{child.id}+deleted") }

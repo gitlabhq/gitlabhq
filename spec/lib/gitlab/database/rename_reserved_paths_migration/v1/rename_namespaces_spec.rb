@@ -18,8 +18,8 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces do
       let(:subject) { described_class.new(['parent/the-Path'], migration) }
 
       it 'includes the namespace' do
-        parent = create(:namespace, path: 'parent')
-        child = create(:namespace, path: 'the-path', parent: parent)
+        parent = create(:group, path: 'parent')
+        child = create(:group, path: 'the-path', parent: parent)
 
         found_ids = subject.namespaces_for_paths(type: :child).
                       map(&:id)
@@ -30,13 +30,13 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces do
 
     context 'for child namespaces' do
       it 'only returns child namespaces with the correct path' do
-        _root_namespace = create(:namespace, path: 'THE-path')
-        _other_path = create(:namespace,
+        _root_namespace = create(:group, path: 'THE-path')
+        _other_path = create(:group,
                              path: 'other',
-                             parent: create(:namespace))
-        namespace = create(:namespace,
+                             parent: create(:group))
+        namespace = create(:group,
                            path: 'the-path',
-                           parent: create(:namespace))
+                           parent: create(:group))
 
         found_ids = subject.namespaces_for_paths(type: :child).
                       map(&:id)
@@ -45,13 +45,13 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces do
       end
 
       it 'has no namespaces that look the same' do
-        _root_namespace = create(:namespace, path: 'THE-path')
-        _similar_path = create(:namespace,
+        _root_namespace = create(:group, path: 'THE-path')
+        _similar_path = create(:group,
                              path: 'not-really-the-path',
-                             parent: create(:namespace))
-        namespace = create(:namespace,
+                             parent: create(:group))
+        namespace = create(:group,
                            path: 'the-path',
-                           parent: create(:namespace))
+                           parent: create(:group))
 
         found_ids = subject.namespaces_for_paths(type: :child).
                       map(&:id)
@@ -62,11 +62,11 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces do
 
     context 'for top levelnamespaces' do
       it 'only returns child namespaces with the correct path' do
-        root_namespace = create(:namespace, path: 'the-path')
-        _other_path = create(:namespace, path: 'other')
-        _child_namespace = create(:namespace,
+        root_namespace = create(:group, path: 'the-path')
+        _other_path = create(:group, path: 'other')
+        _child_namespace = create(:group,
                                   path: 'the-path',
-                                  parent: create(:namespace))
+                                  parent: create(:group))
 
         found_ids = subject.namespaces_for_paths(type: :top_level).
                       map(&:id)
@@ -75,11 +75,11 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces do
       end
 
       it 'has no namespaces that just look the same' do
-        root_namespace = create(:namespace, path: 'the-path')
-        _similar_path = create(:namespace, path: 'not-really-the-path')
-        _child_namespace = create(:namespace,
+        root_namespace = create(:group, path: 'the-path')
+        _similar_path = create(:group, path: 'not-really-the-path')
+        _child_namespace = create(:group,
                                   path: 'the-path',
-                                  parent: create(:namespace))
+                                  parent: create(:group))
 
         found_ids = subject.namespaces_for_paths(type: :top_level).
                       map(&:id)
@@ -124,10 +124,10 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces do
 
   describe "#child_ids_for_parent" do
     it "collects child ids for all levels" do
-      parent = create(:namespace)
-      first_child = create(:namespace, parent: parent)
-      second_child = create(:namespace, parent: parent)
-      third_child = create(:namespace, parent: second_child)
+      parent = create(:group)
+      first_child = create(:group, parent: parent)
+      second_child = create(:group, parent: parent)
+      third_child = create(:group, parent: second_child)
       all_ids = [parent.id, first_child.id, second_child.id, third_child.id]
 
       collected_ids = subject.child_ids_for_parent(parent, ids: [parent.id])
@@ -137,7 +137,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces do
   end
 
   describe "#rename_namespace" do
-    let(:namespace) { create(:namespace, path: 'the-path') }
+    let(:namespace) { create(:group, name: 'the-path') }
 
     it 'renames paths & routes for the namespace' do
       expect(subject).to receive(:rename_path_for_routable).
@@ -177,12 +177,37 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces do
 
       subject.rename_namespace(namespace)
     end
+
+    it "doesn't rename users for other namespaces" do
+      expect(subject).not_to receive(:rename_user)
+
+      subject.rename_namespace(namespace)
+    end
+
+    it 'renames the username of a namespace for a user' do
+      user = create(:user, username: 'the-path')
+
+      expect(subject).to receive(:rename_user).with('the-path', 'the-path0')
+
+      subject.rename_namespace(user.namespace)
+    end
+  end
+
+  describe '#rename_user' do
+    it 'renames a username' do
+      subject = described_class.new([], migration)
+      user = create(:user, username: 'broken')
+
+      subject.rename_user('broken', 'broken0')
+
+      expect(user.reload.username).to eq('broken0')
+    end
   end
 
   describe '#rename_namespaces' do
-    let!(:top_level_namespace) { create(:namespace, path: 'the-path') }
+    let!(:top_level_namespace) { create(:group, path: 'the-path') }
     let!(:child_namespace) do
-      create(:namespace, path: 'the-path', parent: create(:namespace))
+      create(:group, path: 'the-path', parent: create(:group))
     end
 
     it 'renames top level namespaces the namespace' do

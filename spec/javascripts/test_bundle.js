@@ -1,13 +1,15 @@
-// enable test fixtures
-require('jasmine-jquery');
+import $ from 'jquery';
+import _ from 'underscore';
+import 'jasmine-jquery';
+import '~/commons';
 
+// enable test fixtures
 jasmine.getFixtures().fixturesPath = '/base/spec/javascripts/fixtures';
 jasmine.getJSONFixtures().fixturesPath = '/base/spec/javascripts/fixtures';
 
-// include common libraries
-require('~/commons/index.js');
-window.$ = window.jQuery = require('jquery');
-window._ = require('underscore');
+// globalize common libraries
+window.$ = window.jQuery = $;
+window._ = _;
 
 // stub expected globals
 window.gl = window.gl || {};

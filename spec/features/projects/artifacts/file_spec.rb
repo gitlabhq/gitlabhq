@@ -17,7 +17,7 @@ feature 'Artifact file', :js, feature: true do
     before do
       visit_file('other_artifacts_0.1.2/doc_sample.txt')
 
-      wait_for_ajax
+      wait_for_requests
     end
 
     it 'displays an error' do
@@ -41,7 +41,7 @@ feature 'Artifact file', :js, feature: true do
     before do
       visit_file('rails_sample.jpg')
 
-      wait_for_ajax
+      wait_for_requests
     end
 
     it 'displays the blob' do

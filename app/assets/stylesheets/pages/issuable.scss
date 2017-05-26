@@ -10,7 +10,6 @@
   .page-content-header,
   .commit-box,
   .info-well,
-  .notes,
   .commit-ci-menu,
   .files-changed {
     @extend .fixed-width-container;
@@ -56,6 +55,10 @@
     border: 1px solid $white-normal;
     padding: 5px;
     max-height: calc(100vh - 100px);
+  }
+
+  .emoji-block {
+    padding: 10px 0 4px;
   }
 }
 

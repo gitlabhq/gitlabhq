@@ -61,9 +61,10 @@ describe Gitlab::Diff::PositionTracer, lib: true do
 
   let(:old_diff_refs) { raise NotImplementedError }
   let(:new_diff_refs) { raise NotImplementedError }
+  let(:change_diff_refs) { raise NotImplementedError }
   let(:old_position) { raise NotImplementedError }
 
-  let(:position_tracer) { described_class.new(repository: project.repository, old_diff_refs: old_diff_refs, new_diff_refs: new_diff_refs) }
+  let(:position_tracer) { described_class.new(project: project, old_diff_refs: old_diff_refs, new_diff_refs: new_diff_refs) }
   subject { position_tracer.trace(old_position) }
 
   def diff_refs(base_commit, head_commit)
@@ -77,16 +78,40 @@ describe Gitlab::Diff::PositionTracer, lib: true do
     Gitlab::Diff::Position.new(attrs)
   end
 
-  def expect_new_position(attrs, new_position = subject)
-    if attrs.nil?
-      expect(new_position).to be_nil
-    else
-      expect(new_position).not_to be_nil
+  def expect_new_position(attrs, result = subject)
+    aggregate_failures("expect new position #{attrs.inspect}") do
+      if attrs.nil?
+        expect(result[:outdated]).to be_truthy
+      else
+        expect(result[:outdated]).to be_falsey
 
-      expect(new_position.diff_refs).to eq(new_diff_refs)
+        new_position = result[:position]
+        expect(new_position).not_to be_nil
 
-      attrs.each do |attr, value|
-        expect(new_position.send(attr)).to eq(value)
+        expect(new_position.diff_refs).to eq(new_diff_refs)
+
+        attrs.each do |attr, value|
+          expect(new_position.send(attr)).to eq(value)
+        end
+      end
+    end
+  end
+
+  def expect_change_position(attrs, result = subject)
+    aggregate_failures("expect change position #{attrs.inspect}") do
+      expect(result[:outdated]).to be_truthy
+
+      change_position = result[:position]
+      if attrs.nil? || attrs.empty?
+        expect(change_position).to be_nil
+      else
+        expect(change_position).not_to be_nil
+
+        expect(change_position.diff_refs).to eq(change_diff_refs)
+
+        attrs.each do |attr, value|
+          expect(change_position.send(attr)).to eq(value)
+        end
       end
     end
   end
@@ -395,6 +420,7 @@ describe Gitlab::Diff::PositionTracer, lib: true do
               context "when that line was changed between the old and the new diff" do
                 let(:old_diff_refs) { diff_refs(initial_commit, create_file_commit) }
                 let(:new_diff_refs) { diff_refs(initial_commit, update_line_commit) }
+                let(:change_diff_refs) { diff_refs(create_file_commit, update_line_commit) }
                 let(:old_position) { position(new_path: file_name, new_line: 2) }
 
                 # old diff:
@@ -407,14 +433,20 @@ describe Gitlab::Diff::PositionTracer, lib: true do
                 #   2 + BB
                 #   3 + C
 
-                it "returns nil" do
-                  expect(subject).to be_nil
+                it "returns the position of the change" do
+                  expect_change_position(
+                    old_path: file_name,
+                    new_path: file_name,
+                    old_line: 2,
+                    new_line: nil
+                  )
                 end
               end
 
               context "when that line was deleted between the old and the new diff" do
                 let(:old_diff_refs) { diff_refs(initial_commit, update_line_commit) }
                 let(:new_diff_refs) { diff_refs(initial_commit, delete_line_commit) }
+                let(:change_diff_refs) { diff_refs(update_line_commit, delete_line_commit) }
                 let(:old_position) { position(new_path: file_name, new_line: 3) }
 
                 # old diff:
@@ -426,8 +458,13 @@ describe Gitlab::Diff::PositionTracer, lib: true do
                 #   1 + A
                 #   2 + BB
 
-                it "returns nil" do
-                  expect(subject).to be_nil
+                it "returns the position of the change" do
+                  expect_change_position(
+                    old_path: file_name,
+                    new_path: file_name,
+                    old_line: 3,
+                    new_line: nil
+                  )
                 end
               end
             end
@@ -512,6 +549,7 @@ describe Gitlab::Diff::PositionTracer, lib: true do
               context "when that line was changed between the old and the new diff" do
                 let(:old_diff_refs) { diff_refs(initial_commit, create_file_commit) }
                 let(:new_diff_refs) { diff_refs(create_file_commit, update_line_commit) }
+                let(:change_diff_refs) { diff_refs(create_file_commit, update_line_commit) }
                 let(:old_position) { position(new_path: file_name, new_line: 2) }
 
                 # old diff:
@@ -525,14 +563,20 @@ describe Gitlab::Diff::PositionTracer, lib: true do
                 #   2 + BB
                 # 3 3   C
 
-                it "returns nil" do
-                  expect(subject).to be_nil
+                it "returns the position of the change" do
+                  expect_change_position(
+                    old_path: file_name,
+                    new_path: file_name,
+                    old_line: 2,
+                    new_line: nil
+                  )
                 end
               end
 
               context "when that line was deleted between the old and the new diff" do
                 let(:old_diff_refs) { diff_refs(initial_commit, move_line_commit) }
                 let(:new_diff_refs) { diff_refs(move_line_commit, delete_line_commit) }
+                let(:change_diff_refs) { diff_refs(move_line_commit, delete_line_commit) }
                 let(:old_position) { position(new_path: file_name, new_line: 3) }
 
                 # old diff:
@@ -545,8 +589,13 @@ describe Gitlab::Diff::PositionTracer, lib: true do
                 # 2 2   A
                 # 3   - C
 
-                it "returns nil" do
-                  expect(subject).to be_nil
+                it "returns the position of the change" do
+                  expect_change_position(
+                    old_path: file_name,
+                    new_path: file_name,
+                    old_line: 3,
+                    new_line: nil
+                  )
                 end
               end
             end
@@ -558,6 +607,7 @@ describe Gitlab::Diff::PositionTracer, lib: true do
             context "when the file's content was unchanged between the old and the new diff" do
               let(:old_diff_refs) { diff_refs(initial_commit, delete_line_commit) }
               let(:new_diff_refs) { diff_refs(delete_line_commit, rename_file_commit) }
+              let(:change_diff_refs) { diff_refs(initial_commit, delete_line_commit) }
               let(:old_position) { position(new_path: file_name, new_line: 2) }
 
               # old diff:
@@ -569,8 +619,13 @@ describe Gitlab::Diff::PositionTracer, lib: true do
               # 1 1   BB
               # 2 2   A
 
-              it "returns nil since the line doesn't exist in the new diffs anymore" do
-                expect(subject).to be_nil
+              it "returns the position of the change" do
+                expect_change_position(
+                  old_path: file_name,
+                  new_path: file_name,
+                  old_line: nil,
+                  new_line: 2
+                )
               end
             end
 
@@ -628,6 +683,7 @@ describe Gitlab::Diff::PositionTracer, lib: true do
               context "when that line was changed between the old and the new diff" do
                 let(:old_diff_refs) { diff_refs(initial_commit, delete_line_commit) }
                 let(:new_diff_refs) { diff_refs(delete_line_commit, update_line_again_commit) }
+                let(:change_diff_refs) { diff_refs(delete_line_commit, update_line_again_commit) }
                 let(:old_position) { position(new_path: file_name, new_line: 2) }
 
                 # old diff:
@@ -640,28 +696,13 @@ describe Gitlab::Diff::PositionTracer, lib: true do
                 # 2   - A
                 #   2 + AA
 
-                it "returns nil" do
-                  expect(subject).to be_nil
-                end
-              end
-
-              context "when that line was deleted between the old and the new diff" do
-                let(:old_diff_refs) { diff_refs(initial_commit, delete_line_commit) }
-                let(:new_diff_refs) { diff_refs(delete_line_commit, delete_line_again_commit) }
-                let(:old_position) { position(new_path: file_name, new_line: 1) }
-
-                # old diff:
-                #   1 + BB
-                #   2 + A
-                #
-                # new diff:
-                # file_name -> new_file_name
-                # 1   - BB
-                # 2   - A
-                #   1 + AA
-
-                it "returns nil" do
-                  expect(subject).to be_nil
+                it "returns the position of the change" do
+                  expect_change_position(
+                    old_path: file_name,
+                    new_path: new_file_name,
+                    old_line: 2,
+                    new_line: nil
+                  )
                 end
               end
             end
@@ -673,6 +714,7 @@ describe Gitlab::Diff::PositionTracer, lib: true do
             context "when the file's content was unchanged between the old and the new diff" do
               let(:old_diff_refs) { diff_refs(initial_commit, delete_line_commit) }
               let(:new_diff_refs) { diff_refs(delete_line_commit, delete_file_commit) }
+              let(:change_diff_refs) { diff_refs(delete_line_commit, delete_file_commit) }
               let(:old_position) { position(new_path: file_name, new_line: 2) }
 
               # old diff:
@@ -683,8 +725,13 @@ describe Gitlab::Diff::PositionTracer, lib: true do
               # 1   - BB
               # 2   - A
 
-              it "returns nil" do
-                expect(subject).to be_nil
+              it "returns the position of the change" do
+                expect_change_position(
+                  old_path: file_name,
+                  new_path: file_name,
+                  old_line: 2,
+                  new_line: nil
+                )
               end
             end
 
@@ -692,6 +739,7 @@ describe Gitlab::Diff::PositionTracer, lib: true do
               context "when that line was unchanged between the old and the new diff" do
                 let(:old_diff_refs) { diff_refs(initial_commit, move_line_commit) }
                 let(:new_diff_refs) { diff_refs(delete_line_commit, delete_file_commit) }
+                let(:change_diff_refs) { diff_refs(move_line_commit, delete_file_commit) }
                 let(:old_position) { position(new_path: file_name, new_line: 2) }
 
                 # old diff:
@@ -703,14 +751,20 @@ describe Gitlab::Diff::PositionTracer, lib: true do
                 # 1   - BB
                 # 2   - A
 
-                it "returns nil" do
-                  expect(subject).to be_nil
+                it "returns the position of the change" do
+                  expect_change_position(
+                    old_path: file_name,
+                    new_path: file_name,
+                    old_line: 2,
+                    new_line: nil
+                  )
                 end
               end
 
               context "when that line was moved between the old and the new diff" do
                 let(:old_diff_refs) { diff_refs(initial_commit, update_line_commit) }
                 let(:new_diff_refs) { diff_refs(move_line_commit, delete_file_commit) }
+                let(:change_diff_refs) { diff_refs(update_line_commit, delete_file_commit) }
                 let(:old_position) { position(new_path: file_name, new_line: 2) }
 
                 # old diff:
@@ -723,14 +777,20 @@ describe Gitlab::Diff::PositionTracer, lib: true do
                 # 2   - A
                 # 3   - C
 
-                it "returns nil" do
-                  expect(subject).to be_nil
+                it "returns the position of the change" do
+                  expect_change_position(
+                    old_path: file_name,
+                    new_path: file_name,
+                    old_line: 2,
+                    new_line: nil
+                  )
                 end
               end
 
               context "when that line was changed between the old and the new diff" do
                 let(:old_diff_refs) { diff_refs(initial_commit, create_file_commit) }
                 let(:new_diff_refs) { diff_refs(update_line_commit, delete_file_commit) }
+                let(:change_diff_refs) { diff_refs(create_file_commit, delete_file_commit) }
                 let(:old_position) { position(new_path: file_name, new_line: 2) }
 
                 # old diff:
@@ -743,14 +803,20 @@ describe Gitlab::Diff::PositionTracer, lib: true do
                 # 2   - BB
                 # 3   - C
 
-                it "returns nil" do
-                  expect(subject).to be_nil
+                it "returns the position of the change" do
+                  expect_change_position(
+                    old_path: file_name,
+                    new_path: file_name,
+                    old_line: 2,
+                    new_line: nil
+                  )
                 end
               end
 
               context "when that line was deleted between the old and the new diff" do
                 let(:old_diff_refs) { diff_refs(initial_commit, move_line_commit) }
                 let(:new_diff_refs) { diff_refs(delete_line_commit, delete_file_commit) }
+                let(:change_diff_refs) { diff_refs(move_line_commit, delete_file_commit) }
                 let(:old_position) { position(new_path: file_name, new_line: 3) }
 
                 # old diff:
@@ -762,8 +828,13 @@ describe Gitlab::Diff::PositionTracer, lib: true do
                 # 1   - BB
                 # 2   - A
 
-                it "returns nil" do
-                  expect(subject).to be_nil
+                it "returns the position of the change" do
+                  expect_change_position(
+                    old_path: file_name,
+                    new_path: file_name,
+                    old_line: 3,
+                    new_line: nil
+                  )
                 end
               end
             end
@@ -775,6 +846,7 @@ describe Gitlab::Diff::PositionTracer, lib: true do
             context "when the file's content was unchanged between the old and the new diff" do
               let(:old_diff_refs) { diff_refs(initial_commit, create_file_commit) }
               let(:new_diff_refs) { diff_refs(create_file_commit, create_second_file_commit) }
+              let(:change_diff_refs) { diff_refs(initial_commit, create_file_commit) }
               let(:old_position) { position(new_path: file_name, new_line: 2) }
 
               # old diff:
@@ -787,8 +859,13 @@ describe Gitlab::Diff::PositionTracer, lib: true do
               # 2 2   B
               # 3 3   C
 
-              it "returns nil" do
-                expect(subject).to be_nil
+              it "returns the position of the change" do
+                expect_change_position(
+                  old_path: file_name,
+                  new_path: file_name,
+                  old_line: nil,
+                  new_line: 2
+                )
               end
             end
 
@@ -796,6 +873,7 @@ describe Gitlab::Diff::PositionTracer, lib: true do
               context "when that line was unchanged between the old and the new diff" do
                 let(:old_diff_refs) { diff_refs(initial_commit, create_file_commit) }
                 let(:new_diff_refs) { diff_refs(update_line_commit, update_second_file_line_commit) }
+                let(:change_diff_refs) { diff_refs(initial_commit, update_line_commit) }
                 let(:old_position) { position(new_path: file_name, new_line: 1) }
 
                 # old diff:
@@ -808,14 +886,20 @@ describe Gitlab::Diff::PositionTracer, lib: true do
                 # 2 2   BB
                 # 3 3   C
 
-                it "returns nil" do
-                  expect(subject).to be_nil
+                it "returns the position of the change" do
+                  expect_change_position(
+                    old_path: file_name,
+                    new_path: file_name,
+                    old_line: nil,
+                    new_line: 1
+                  )
                 end
               end
 
               context "when that line was moved between the old and the new diff" do
                 let(:old_diff_refs) { diff_refs(initial_commit, update_line_commit) }
                 let(:new_diff_refs) { diff_refs(move_line_commit, move_second_file_line_commit) }
+                let(:change_diff_refs) { diff_refs(initial_commit, move_line_commit) }
                 let(:old_position) { position(new_path: file_name, new_line: 2) }
 
                 # old diff:
@@ -828,14 +912,20 @@ describe Gitlab::Diff::PositionTracer, lib: true do
                 # 2 2   A
                 # 3 3   C
 
-                it "returns nil" do
-                  expect(subject).to be_nil
+                it "returns the position of the change" do
+                  expect_change_position(
+                    old_path: file_name,
+                    new_path: file_name,
+                    old_line: nil,
+                    new_line: 1
+                  )
                 end
               end
 
               context "when that line was changed between the old and the new diff" do
                 let(:old_diff_refs) { diff_refs(initial_commit, create_file_commit) }
                 let(:new_diff_refs) { diff_refs(update_line_commit, update_second_file_line_commit) }
+                let(:change_diff_refs) { diff_refs(create_file_commit, update_second_file_line_commit) }
                 let(:old_position) { position(new_path: file_name, new_line: 2) }
 
                 # old diff:
@@ -848,14 +938,20 @@ describe Gitlab::Diff::PositionTracer, lib: true do
                 # 2 2   BB
                 # 3 3   C
 
-                it "returns nil" do
-                  expect(subject).to be_nil
+                it "returns the position of the change" do
+                  expect_change_position(
+                    old_path: file_name,
+                    new_path: file_name,
+                    old_line: 2,
+                    new_line: nil
+                  )
                 end
               end
 
               context "when that line was deleted between the old and the new diff" do
                 let(:old_diff_refs) { diff_refs(initial_commit, move_line_commit) }
                 let(:new_diff_refs) { diff_refs(delete_line_commit, delete_second_file_line_commit) }
+                let(:change_diff_refs) { diff_refs(move_line_commit, delete_second_file_line_commit) }
                 let(:old_position) { position(new_path: file_name, new_line: 3) }
 
                 # old diff:
@@ -867,8 +963,13 @@ describe Gitlab::Diff::PositionTracer, lib: true do
                 # 1 1   BB
                 # 2 2   A
 
-                it "returns nil" do
-                  expect(subject).to be_nil
+                it "returns the position of the change" do
+                  expect_change_position(
+                    old_path: file_name,
+                    new_path: file_name,
+                    old_line: 3,
+                    new_line: nil
+                  )
                 end
               end
             end
@@ -957,6 +1058,7 @@ describe Gitlab::Diff::PositionTracer, lib: true do
               context "when that line was changed or deleted between the old and the new diff" do
                 let(:old_diff_refs) { diff_refs(create_file_commit, move_line_commit) }
                 let(:new_diff_refs) { diff_refs(initial_commit, create_file_commit) }
+                let(:change_diff_refs) { diff_refs(move_line_commit, create_file_commit) }
                 let(:old_position) { position(old_path: file_name, new_path: file_name, new_line: 1) }
 
                 # old diff:
@@ -970,8 +1072,13 @@ describe Gitlab::Diff::PositionTracer, lib: true do
                 #   2 + B
                 #   3 + C
 
-                it "returns nil" do
-                  expect(subject).to be_nil
+                it "returns the position of the change" do
+                  expect_change_position(
+                    old_path: file_name,
+                    new_path: file_name,
+                    old_line: 1,
+                    new_line: nil
+                  )
                 end
               end
             end
@@ -980,6 +1087,7 @@ describe Gitlab::Diff::PositionTracer, lib: true do
           context "when the position pointed at a deleted line in the old diff" do
             let(:old_diff_refs) { diff_refs(create_file_commit, update_line_commit) }
             let(:new_diff_refs) { diff_refs(initial_commit, update_line_commit) }
+            let(:change_diff_refs) { diff_refs(create_file_commit, initial_commit) }
             let(:old_position) { position(old_path: file_name, new_path: file_name, old_line: 2) }
 
             # old diff:
@@ -993,8 +1101,13 @@ describe Gitlab::Diff::PositionTracer, lib: true do
             #   2 + BB
             #   3 + C
 
-            it "returns nil" do
-              expect(subject).to be_nil
+            it "returns the position of the change" do
+              expect_change_position(
+                old_path: file_name,
+                new_path: file_name,
+                old_line: 2,
+                new_line: nil
+              )
             end
           end
 
@@ -1076,6 +1189,7 @@ describe Gitlab::Diff::PositionTracer, lib: true do
               context "when that line was changed or deleted between the old and the new diff" do
                 let(:old_diff_refs) { diff_refs(create_file_commit, move_line_commit) }
                 let(:new_diff_refs) { diff_refs(initial_commit, delete_line_commit) }
+                let(:change_diff_refs) { diff_refs(move_line_commit, delete_line_commit) }
                 let(:old_position) { position(old_path: file_name, new_path: file_name, old_line: 3, new_line: 3) }
 
                 # old diff:
@@ -1088,8 +1202,13 @@ describe Gitlab::Diff::PositionTracer, lib: true do
                 #   1 + A
                 #   2 + B
 
-                it "returns nil" do
-                  expect(subject).to be_nil
+                it "returns the position of the change" do
+                  expect_change_position(
+                    old_path: file_name,
+                    new_path: file_name,
+                    old_line: 3,
+                    new_line: nil
+                  )
                 end
               end
             end
@@ -1182,6 +1301,7 @@ describe Gitlab::Diff::PositionTracer, lib: true do
               context "when that line was changed or deleted between the old and the new diff" do
                 let(:old_diff_refs) { diff_refs(create_file_commit, move_line_commit) }
                 let(:new_diff_refs) { diff_refs(create_file_commit, update_line_commit) }
+                let(:change_diff_refs) { diff_refs(move_line_commit, update_line_commit) }
                 let(:old_position) { position(old_path: file_name, new_path: file_name, new_line: 1) }
 
                 # old diff:
@@ -1196,8 +1316,13 @@ describe Gitlab::Diff::PositionTracer, lib: true do
                 #   2 + BB
                 # 3 3   C
 
-                it "returns nil" do
-                  expect(subject).to be_nil
+                it "returns the position of the change" do
+                  expect_change_position(
+                    old_path: file_name,
+                    new_path: file_name,
+                    old_line: 1,
+                    new_line: nil
+                  )
                 end
               end
             end
@@ -1239,7 +1364,7 @@ describe Gitlab::Diff::PositionTracer, lib: true do
   describe "typical use scenarios" do
     let(:second_branch_name) { "#{branch_name}-2" }
 
-    def expect_positions(old_attrs, new_attrs)
+    def expect_new_positions(old_attrs, new_attrs)
       old_positions = old_attrs.map do |old_attrs|
         position(old_attrs)
       end
@@ -1248,8 +1373,14 @@ describe Gitlab::Diff::PositionTracer, lib: true do
         position_tracer.trace(old_position)
       end
 
-      new_positions.zip(new_attrs).each do |new_position, new_attrs|
-        expect_new_position(new_attrs, new_position)
+      aggregate_failures do
+        new_positions.zip(new_attrs).each do |new_position, new_attrs|
+          if new_attrs&.delete(:change)
+            expect_change_position(new_attrs, new_position)
+          else
+            expect_new_position(new_attrs, new_position)
+          end
+        end
       end
     end
 
@@ -1330,6 +1461,7 @@ describe Gitlab::Diff::PositionTracer, lib: true do
     describe "simple push of new commit" do
       let(:old_diff_refs) { diff_refs(create_file_commit, update_file_commit) }
       let(:new_diff_refs) { diff_refs(create_file_commit, update_file_again_commit) }
+      let(:change_diff_refs) { diff_refs(update_file_commit, update_file_again_commit) }
 
       # old diff:
       # 1 1   A
@@ -1368,14 +1500,14 @@ describe Gitlab::Diff::PositionTracer, lib: true do
           { old_path: file_name, new_path: file_name, old_line: 1, new_line: 1 },
           { old_path: file_name,                      old_line: 2              },
           { old_path: file_name, new_path: file_name, old_line: 3, new_line: 3 },
-          { old_path: file_name,                      old_line: 4, new_line: 4 },
-          nil,
+          {                      new_path: file_name,              new_line: 4,   change: true },
+          {                      new_path: file_name, old_line: 3,                change: true },
           { old_path: file_name, new_path: file_name, old_line: 5, new_line: 5 },
-          { old_path: file_name,                      old_line: 6              },
+          {                      new_path: file_name, old_line: 5,                change: true },
           {                      new_path: file_name,              new_line: 7 }
         ]
 
-        expect_positions(old_position_attrs, new_position_attrs)
+        expect_new_positions(old_position_attrs, new_position_attrs)
       end
     end
 
@@ -1402,6 +1534,7 @@ describe Gitlab::Diff::PositionTracer, lib: true do
 
       let(:old_diff_refs) { diff_refs(create_file_commit, update_file_commit) }
       let(:new_diff_refs) { diff_refs(create_file_commit, second_create_file_commit) }
+      let(:change_diff_refs) { diff_refs(update_file_commit, second_create_file_commit) }
 
       # old diff:
       # 1 1   A
@@ -1440,20 +1573,21 @@ describe Gitlab::Diff::PositionTracer, lib: true do
           { old_path: file_name, new_path: file_name, old_line: 1, new_line: 1 },
           { old_path: file_name,                      old_line: 2              },
           { old_path: file_name, new_path: file_name, old_line: 3, new_line: 3 },
-          { old_path: file_name,                      old_line: 4, new_line: 4 },
-          nil,
+          {                      new_path: file_name,              new_line: 4,   change: true },
+          { old_path: file_name,                      old_line: 3,                change: true },
           { old_path: file_name, new_path: file_name, old_line: 5, new_line: 5 },
-          { old_path: file_name,                      old_line: 6              },
+          { old_path: file_name,                      old_line: 5,                change: true },
           {                      new_path: file_name,              new_line: 7 }
         ]
 
-        expect_positions(old_position_attrs, new_position_attrs)
+        expect_new_positions(old_position_attrs, new_position_attrs)
       end
     end
 
     describe "force push to delete last commit" do
       let(:old_diff_refs) { diff_refs(create_file_commit, update_file_again_commit) }
       let(:new_diff_refs) { diff_refs(create_file_commit, update_file_commit) }
+      let(:change_diff_refs) { diff_refs(update_file_again_commit, update_file_commit) }
 
       # old diff:
       # 1 1   A
@@ -1492,16 +1626,16 @@ describe Gitlab::Diff::PositionTracer, lib: true do
         new_position_attrs = [
           { old_path: file_name, new_path: file_name, old_line: 1, new_line: 1 },
           { old_path: file_name,                      old_line: 2              },
-          nil,
+          { old_path: file_name,                      old_line: 2,                change: true },
           { old_path: file_name, new_path: file_name, old_line: 3, new_line: 2 },
-          { old_path: file_name,                      old_line: 4              },
+          { old_path: file_name,                      old_line: 4,                change: true },
           { old_path: file_name, new_path: file_name, old_line: 5, new_line: 4 },
-          { old_path: file_name, new_path: file_name, old_line: 6, new_line: 5 },
-          nil,
+          {                      new_path: file_name,              new_line: 5,   change: true },
+          { old_path: file_name,                      old_line: 6,                change: true },
           {                      new_path: file_name,              new_line: 6 }
         ]
 
-        expect_positions(old_position_attrs, new_position_attrs)
+        expect_new_positions(old_position_attrs, new_position_attrs)
       end
     end
 
@@ -1567,6 +1701,7 @@ describe Gitlab::Diff::PositionTracer, lib: true do
 
       let(:old_diff_refs) { diff_refs(create_file_commit, update_file_again_commit) }
       let(:new_diff_refs) { diff_refs(create_file_commit, overwrite_update_file_again_commit) }
+      let(:change_diff_refs) { diff_refs(update_file_again_commit, overwrite_update_file_again_commit) }
 
       # old diff:
       # 1 1   A
@@ -1618,7 +1753,7 @@ describe Gitlab::Diff::PositionTracer, lib: true do
           {                      new_path: file_name,              new_line: 10 }, # + G
         ]
 
-        expect_positions(old_position_attrs, new_position_attrs)
+        expect_new_positions(old_position_attrs, new_position_attrs)
       end
     end
 
@@ -1643,6 +1778,7 @@ describe Gitlab::Diff::PositionTracer, lib: true do
 
       let(:old_diff_refs) { diff_refs(create_file_commit, update_file_again_commit) }
       let(:new_diff_refs) { diff_refs(create_file_commit, merge_commit) }
+      let(:change_diff_refs) { diff_refs(update_file_again_commit, merge_commit) }
 
       # old diff:
       # 1 1   A
@@ -1694,13 +1830,14 @@ describe Gitlab::Diff::PositionTracer, lib: true do
           {                      new_path: file_name,              new_line: 10 }, # + G
         ]
 
-        expect_positions(old_position_attrs, new_position_attrs)
+        expect_new_positions(old_position_attrs, new_position_attrs)
       end
     end
 
     describe "changing target branch" do
       let(:old_diff_refs) { diff_refs(create_file_commit, update_file_again_commit) }
       let(:new_diff_refs) { diff_refs(update_file_commit, update_file_again_commit) }
+      let(:change_diff_refs) { diff_refs(create_file_commit, update_file_commit) }
 
       # old diff:
       # 1 1   A
@@ -1739,7 +1876,7 @@ describe Gitlab::Diff::PositionTracer, lib: true do
 
         new_position_attrs = [
           { old_path: file_name, new_path: file_name, old_line: 1, new_line: 1 },
-          nil,
+          { old_path: file_name,                      old_line: 2,                change: true },
           {                      new_path: file_name,              new_line: 2 },
           { old_path: file_name, new_path: file_name, old_line: 2, new_line: 3 },
           {                      new_path: file_name,              new_line: 4 },
@@ -1749,7 +1886,7 @@ describe Gitlab::Diff::PositionTracer, lib: true do
           {                      new_path: file_name,              new_line: 7 }
         ]
 
-        expect_positions(old_position_attrs, new_position_attrs)
+        expect_new_positions(old_position_attrs, new_position_attrs)
       end
     end
   end

@@ -107,7 +107,7 @@ feature 'Multiple merge requests updating from merge_requests#index', feature: t
   def change_assignee(text)
     find('#check_all_issues').click
     find('.js-update-assignee').click
-    wait_for_ajax
+    wait_for_requests
 
     page.within '.dropdown-menu-user' do
       click_link text
@@ -125,6 +125,6 @@ feature 'Multiple merge requests updating from merge_requests#index', feature: t
 
   def click_update_merge_requests_button
     find('.update_selected_issues').click
-    wait_for_ajax
+    wait_for_requests
   end
 end

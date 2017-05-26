@@ -29,6 +29,13 @@ class Projects::ApplicationController < ApplicationController
     @project = find_routable!(Project, path, extra_authorization_proc: auth_proc)
   end
 
+  def build_canonical_path(project)
+    params[:namespace_id] = project.namespace.to_param
+    params[:project_id] = project.to_param
+
+    url_for(params)
+  end
+
   def repository
     @repository ||= project.repository
   end

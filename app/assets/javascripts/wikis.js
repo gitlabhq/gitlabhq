@@ -1,8 +1,8 @@
 /* eslint-disable no-param-reassign */
 /* global Breakpoints */
 
-require('./breakpoints');
-require('vendor/jquery.nicescroll');
+import 'vendor/jquery.nicescroll';
+import './breakpoints';
 
 ((global) => {
   class Wikis {

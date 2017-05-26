@@ -1,7 +1,7 @@
-require('~/extensions/array');
-require('jquery');
-require('jquery-ujs');
-require('~/ajax_loading_spinner');
+import '~/extensions/array';
+import 'jquery';
+import 'jquery-ujs';
+import '~/ajax_loading_spinner';
 
 describe('Ajax Loading Spinner', () => {
   const fixtureTemplate = 'static/ajax_loading_spinner.html.raw';

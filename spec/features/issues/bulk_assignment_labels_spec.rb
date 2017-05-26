@@ -306,7 +306,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
 
         page.within('.issues_bulk_update') do
           click_button 'Labels'
-          wait_for_ajax
+          wait_for_requests
 
           expect(find('.dropdown-menu-labels li', text: 'bug')).to have_css('.is-active')
           expect(find('.dropdown-menu-labels li', text: 'feature')).to have_css('.is-indeterminate')
@@ -349,7 +349,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
   def open_milestone_dropdown(items = [])
     page.within('.issues_bulk_update') do
       click_button 'Milestone'
-      wait_for_ajax
+      wait_for_requests
       items.map do |item|
         click_link item
       end
@@ -359,7 +359,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
   def open_labels_dropdown(items = [], unmark = false)
     page.within('.issues_bulk_update') do
       click_button 'Labels'
-      wait_for_ajax
+      wait_for_requests
       items.map do |item|
         click_link item
       end
@@ -392,6 +392,6 @@ feature 'Issues > Labels bulk assignment', feature: true do
 
   def update_issues
     click_button 'Update issues'
-    wait_for_ajax
+    wait_for_requests
   end
 end

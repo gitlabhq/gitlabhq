@@ -1,4 +1,4 @@
-# Tags
+# Tags API
 
 ## List project repository tags
 

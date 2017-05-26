@@ -12,11 +12,13 @@ module Gitlab
       gon.katex_js_url           = ActionController::Base.helpers.asset_path('katex.js')
       gon.sentry_dsn             = current_application_settings.clientside_sentry_dsn if current_application_settings.clientside_sentry_enabled
       gon.gitlab_url             = Gitlab.config.gitlab.url
+      gon.revision               = Gitlab::REVISION
 
       if current_user
         gon.current_user_id = current_user.id
         gon.current_username = current_user.username
         gon.current_user_fullname = current_user.name
+        gon.current_user_avatar_url = current_user.avatar_url
       end
     end
   end

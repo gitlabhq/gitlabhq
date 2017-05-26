@@ -8,6 +8,10 @@ FactoryGirl.define do
     confirmation_token { nil }
     can_create_group true
 
+    before(:create) do |user|
+      user.ensure_rss_token
+    end
+
     trait :admin do
       admin true
     end

@@ -245,19 +245,6 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  # MRs created before 8.4 don't store a MergeRequestDiff#base_commit_sha,
-  # but we need to get a commit for the "View file @ ..." link by deleted files,
-  # so we find the likely one if we can't get the actual one.
-  # This will not be the actual base commit if the target branch was merged into
-  # the source branch after the merge request was created, but it is good enough
-  # for the specific purpose of linking to a commit.
-  # It is not good enough for use in `Gitlab::Git::DiffRefs`, which needs the
-  # true base commit, so we can't simply have `#diff_base_commit` fall back on
-  # this method.
-  def likely_diff_base_commit
-    first_commit.try(:parent) || first_commit
-  end
-
   def diff_start_commit
     if persisted?
       merge_request_diff.start_commit
@@ -293,6 +280,8 @@ class MergeRequest < ActiveRecord::Base
   attr_writer :target_branch_sha, :source_branch_sha
 
   def source_branch_head
+    return unless source_project
+
     source_branch_ref = @source_branch_sha || source_branch
     source_project.repository.commit(source_branch_ref) if source_branch_ref
   end
@@ -320,21 +309,14 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def diff_refs
-    return unless diff_start_commit || diff_base_commit
-
-    Gitlab::Diff::DiffRefs.new(
-      base_sha:  diff_base_sha,
-      start_sha: diff_start_sha,
-      head_sha:  diff_head_sha
-    )
-  end
-
-  # Return diff_refs instance trying to not touch the git repository
-  def diff_sha_refs
-    if merge_request_diff && merge_request_diff.diff_refs_by_sha?
+    if persisted?
       merge_request_diff.diff_refs
     else
-      diff_refs
+      Gitlab::Diff::DiffRefs.new(
+        base_sha:  diff_base_sha,
+        start_sha: diff_start_sha,
+        head_sha:  diff_head_sha
+      )
     end
   end
 
@@ -414,13 +396,24 @@ class MergeRequest < ActiveRecord::Base
     @merge_request_diffs_by_diff_refs_or_sha[diff_refs_or_sha]
   end
 
+  def version_params_for(diff_refs)
+    if diff = merge_request_diff_for(diff_refs)
+      { diff_id: diff.id }
+    elsif diff = merge_request_diff_for(diff_refs.head_sha)
+      {
+        diff_id: diff.id,
+        start_sha: diff_refs.start_sha
+      }
+    end
+  end
+
   def reload_diff_if_branch_changed
     if source_branch_changed? || target_branch_changed?
       reload_diff
     end
   end
 
-  def reload_diff
+  def reload_diff(current_user = nil)
     return unless open?
 
     old_diff_refs = self.diff_refs
@@ -430,7 +423,8 @@ class MergeRequest < ActiveRecord::Base
 
     update_diff_notes_positions(
       old_diff_refs: old_diff_refs,
-      new_diff_refs: new_diff_refs
+      new_diff_refs: new_diff_refs,
+      current_user: current_user
     )
   end
 
@@ -856,10 +850,10 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def has_complete_diff_refs?
-    diff_sha_refs && diff_sha_refs.complete?
+    diff_refs && diff_refs.complete?
   end
 
-  def update_diff_notes_positions(old_diff_refs:, new_diff_refs:)
+  def update_diff_notes_positions(old_diff_refs:, new_diff_refs:, current_user: nil)
     return unless has_complete_diff_refs?
     return if new_diff_refs == old_diff_refs
 
@@ -873,7 +867,7 @@ class MergeRequest < ActiveRecord::Base
 
     service = Notes::DiffPositionUpdateService.new(
       self.project,
-      nil,
+      current_user,
       old_diff_refs: old_diff_refs,
       new_diff_refs: new_diff_refs,
       paths: paths

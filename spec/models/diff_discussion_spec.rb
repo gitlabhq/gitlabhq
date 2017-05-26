@@ -48,7 +48,7 @@ describe DiffDiscussion, model: true do
       end
 
       it 'returns the diff ID for the version to show' do
-        expect(diff_id: merge_request_diff1.id)
+        expect(subject.merge_request_version_params).to eq(diff_id: merge_request_diff1.id)
       end
     end
 
@@ -64,6 +64,11 @@ describe DiffDiscussion, model: true do
       end
 
       let(:diff_note) { create(:diff_note_on_merge_request, noteable: merge_request, project: project, position: position) }
+
+      before do
+        diff_note.position = diff_note.original_position
+        diff_note.save!
+      end
 
       it 'returns the diff ID and start sha of the versions to compare' do
         expect(subject.merge_request_version_params).to eq(diff_id: merge_request_diff3.id, start_sha: merge_request_diff1.head_commit_sha)

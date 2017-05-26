@@ -289,7 +289,7 @@ describe 'Filter merge requests', feature: true do
       page.within '.dropdown-menu-sort' do
         click_link 'Oldest created'
       end
-      wait_for_ajax
+      wait_for_requests
 
       page.within '.mr-list' do
         expect(page).to have_content('Frontend')

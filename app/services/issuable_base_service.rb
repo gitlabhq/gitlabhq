@@ -178,7 +178,6 @@ class IssuableBaseService < BaseService
       after_create(issuable)
       issuable.create_cross_references!(current_user)
       execute_hooks(issuable)
-      issuable.assignees.each(&:invalidate_cache_counts)
       invalidate_cache_counts(issuable.assignees, issuable)
     end
 

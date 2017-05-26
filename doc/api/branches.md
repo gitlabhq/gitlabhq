@@ -1,4 +1,4 @@
-# Branches
+# Branches API
 
 ## List repository branches
 

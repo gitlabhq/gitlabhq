@@ -6,15 +6,17 @@
 
 import $ from 'jquery';
 import Cookies from 'js-cookie';
+import autosize from 'vendor/autosize';
+import Dropzone from 'dropzone';
+import 'vendor/jquery.caret'; // required by jquery.atwho
+import 'vendor/jquery.atwho';
 import CommentTypeToggle from './comment_type_toggle';
+import './autosave';
+import './dropzone_input';
+import './task_list';
 
-require('./autosave');
-window.autosize = require('vendor/autosize');
-window.Dropzone = require('dropzone');
-require('./dropzone_input');
-require('vendor/jquery.caret'); // required by jquery.atwho
-require('vendor/jquery.atwho');
-require('./task_list');
+window.autosize = autosize;
+window.Dropzone = Dropzone;
 
 const normalizeNewlines = function(str) {
   return str.replace(/\r\n/g, '\n');
@@ -27,7 +29,7 @@ const normalizeNewlines = function(str) {
 
     Notes.interval = null;
 
-    function Notes(notes_url, note_ids, last_fetched_at, view) {
+    function Notes(notes_url, note_ids, last_fetched_at, view, enableGFM = true) {
       this.updateTargetButtons = this.updateTargetButtons.bind(this);
       this.updateComment = this.updateComment.bind(this);
       this.visibilityChange = this.visibilityChange.bind(this);
@@ -50,6 +52,7 @@ const normalizeNewlines = function(str) {
 
       this.notes_url = notes_url;
       this.note_ids = note_ids;
+      this.enableGFM = enableGFM;
       // Used to keep track of updated notes while people are editing things
       this.updatedNotesTrackingMap = {};
       this.last_fetched_at = last_fetched_at;
@@ -286,6 +289,13 @@ const normalizeNewlines = function(str) {
       }
     };
 
+    Notes.prototype.setupNewNote = function($note) {
+      // Update datetime format on the recent note
+      gl.utils.localTimeAgo($note.find('.js-timeago'), false);
+      this.collapseLongCommitList();
+      this.taskList.init();
+    };
+
     /*
     Render note in main comments area.
 
@@ -306,20 +316,17 @@ const normalizeNewlines = function(str) {
       }
 
       const $note = $notesList.find(`#note_${noteEntity.id}`);
-      if (this.isNewNote(noteEntity)) {
+      if (Notes.isNewNote(noteEntity, this.note_ids)) {
         this.note_ids.push(noteEntity.id);
 
         const $newNote = Notes.animateAppendNote(noteEntity.html, $notesList);
 
-        // Update datetime format on the recent note
-        gl.utils.localTimeAgo($newNote.find('.js-timeago'), false);
-        this.collapseLongCommitList();
-        this.taskList.init();
+        this.setupNewNote($newNote);
         this.refresh();
         return this.updateNotesCount(1);
       }
       // The server can send the same update multiple times so we need to make sure to only update once per actual update.
-      else if (this.isUpdatedNote(noteEntity, $note)) {
+      else if (Notes.isUpdatedNote(noteEntity, $note)) {
         const isEditing = $note.hasClass('is-editing');
         const initialContent = normalizeNewlines(
           $note.find('.original-note-content').text().trim()
@@ -340,28 +347,9 @@ const normalizeNewlines = function(str) {
         }
         else {
           const $updatedNote = Notes.animateUpdateNote(noteEntity.html, $note);
-
-          // Update datetime format on the recent note
-          gl.utils.localTimeAgo($updatedNote.find('.js-timeago'), false);
+          this.setupNewNote($updatedNote);
         }
       }
-    };
-
-    /*
-    Check if note does not exists on page
-     */
-
-    Notes.prototype.isNewNote = function(noteEntity) {
-      return $.inArray(noteEntity.id, this.note_ids) === -1;
-    };
-
-    Notes.prototype.isUpdatedNote = function(noteEntity, $note) {
-      // There can be CRLF vs LF mismatches if we don't sanitize and compare the same way
-      const sanitizedNoteNote = normalizeNewlines(noteEntity.note);
-      const currentNoteText = normalizeNewlines(
-        $note.find('.original-note-content').text().trim()
-      );
-      return sanitizedNoteNote !== currentNoteText;
     };
 
     Notes.prototype.isParallelView = function() {
@@ -376,7 +364,7 @@ const normalizeNewlines = function(str) {
 
     Notes.prototype.renderDiscussionNote = function(noteEntity, $form) {
       var discussionContainer, form, row, lineType, diffAvatarContainer;
-      if (!this.isNewNote(noteEntity)) {
+      if (!Notes.isNewNote(noteEntity, this.note_ids)) {
         return;
       }
       this.note_ids.push(noteEntity.id);
@@ -523,7 +511,7 @@ const normalizeNewlines = function(str) {
 
     Notes.prototype.setupNoteForm = function(form) {
       var textarea, key;
-      new gl.GLForm(form);
+      new gl.GLForm(form, this.enableGFM);
       textarea = form.find(".js-note-text");
       key = [
         "Note",
@@ -594,12 +582,12 @@ const normalizeNewlines = function(str) {
     Updates the current note field.
      */
 
-    Notes.prototype.updateNote = function(_xhr, noteEntity, _status) {
+    Notes.prototype.updateNote = function(noteEntity, $targetNote) {
       var $noteEntityEl, $note_li;
       // Convert returned HTML to a jQuery object so we can modify it further
       $noteEntityEl = $(noteEntity.html);
       $noteEntityEl.addClass('fade-in-full');
-      this.revertNoteEditForm();
+      this.revertNoteEditForm($targetNote);
       gl.utils.localTimeAgo($('.js-timeago', $noteEntityEl));
       $noteEntityEl.renderGFM();
       $noteEntityEl.find('.js-task-list-container').taskList('enable');
@@ -681,10 +669,8 @@ const normalizeNewlines = function(str) {
       if (this.updatedNotesTrackingMap[noteId]) {
         const $newNote = $(this.updatedNotesTrackingMap[noteId].html);
         $note.replaceWith($newNote);
+        this.setupNewNote($newNote);
         this.updatedNotesTrackingMap[noteId] = null;
-
-        // Update datetime format on the recent note
-        gl.utils.localTimeAgo($newNote.find('.js-timeago'), false);
       }
       else {
         $note.find('.js-finish-edit-warning').hide();
@@ -874,12 +860,22 @@ const normalizeNewlines = function(str) {
 
     Notes.prototype.onAddDiffNote = function(e) {
       e.preventDefault();
-      const $link = $(e.currentTarget || e.target);
+      const link = e.currentTarget || e.target;
+      const $link = $(link);
       const showReplyInput = !$link.hasClass('js-diff-comment-avatar');
-      this.addDiffNote($link, $link.data('lineType'), showReplyInput);
+      this.toggleDiffNote({
+        target: $link,
+        lineType: link.dataset.lineType,
+        showReplyInput
+      });
     };
 
-    Notes.prototype.addDiffNote = function(target, lineType, showReplyInput) {
+    Notes.prototype.toggleDiffNote = function({
+      target,
+      lineType,
+      forceShow,
+      showReplyInput = false,
+    }) {
       var $link, addForm, hasNotes, newForm, noteForm, replyButton, row, rowCssToAdd, targetContent, isDiffCommentAvatar;
       $link = $(target);
       row = $link.closest("tr");
@@ -924,12 +920,12 @@ const normalizeNewlines = function(str) {
         notesContent = targetRow.find(notesContentSelector);
         addForm = true;
       } else {
-        targetRow.show();
-        notesContent.toggle(!notesContent.is(':visible'));
+        const isCurrentlyShown = targetRow.find('.content:not(:empty)').is(':visible');
+        const isForced = forceShow === true || forceShow === false;
+        const showNow = forceShow === true || (!isCurrentlyShown && !isForced);
 
-        if (!targetRow.find('.content:not(:empty)').is(':visible')) {
-          targetRow.hide();
-        }
+        targetRow.toggle(showNow);
+        notesContent.toggle(showNow);
       }
 
       if (addForm) {
@@ -1135,6 +1131,25 @@ const normalizeNewlines = function(str) {
         .remove();
 
       return $form;
+    };
+
+    /**
+     * Check if note does not exists on page
+     */
+    Notes.isNewNote = function(noteEntity, noteIds) {
+      return $.inArray(noteEntity.id, noteIds) === -1;
+    };
+
+    /**
+     * Check if $note already contains the `noteEntity` content
+     */
+    Notes.isUpdatedNote = function(noteEntity, $note) {
+      // There can be CRLF vs LF mismatches if we don't sanitize and compare the same way
+      const sanitizedNoteEntityText = normalizeNewlines(noteEntity.note.trim());
+      const currentNoteText = normalizeNewlines(
+        $note.find('.original-note-content').first().text().trim()
+      );
+      return sanitizedNoteEntityText !== currentNoteText;
     };
 
     Notes.checkMergeRequestStatus = function() {
@@ -1392,7 +1407,7 @@ const normalizeNewlines = function(str) {
       gl.utils.ajaxPost(formAction, formData)
         .then((note) => {
           // Submission successful! render final note element
-          this.updateNote(null, note, null);
+          this.updateNote(note, $editingNote);
         })
         .fail(() => {
           // Submission failed, revert back to original note

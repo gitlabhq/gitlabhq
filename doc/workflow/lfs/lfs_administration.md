@@ -50,7 +50,7 @@ and [projects APIs](../../api/projects.md).
 
 * Currently, storing GitLab Git LFS objects on a non-local storage (like S3 buckets)
   is not supported
-* Currently, removing LFS objects from GitLab Git LFS storage is not supported
+* Support for removing unreferenced LFS objects was added in 8.14 onwards.
 * LFS authentications via SSH was added with GitLab 8.12
 * Only compatible with the GitLFS client versions 1.1.0 and up, or 1.0.2.
 * The storage statistics currently count each LFS object multiple times for

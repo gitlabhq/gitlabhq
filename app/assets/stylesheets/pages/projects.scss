@@ -639,28 +639,6 @@ pre.light-well {
   }
 }
 
-.project-show-readme {
-  .row-content-block {
-    background-color: inherit;
-    border: none;
-  }
-
-  .readme-holder {
-    padding: $gl-padding 0;
-    border-top: 0;
-
-    .edit-project-readme {
-      z-index: 2;
-      position: relative;
-    }
-
-    .wiki h1 {
-      border-bottom: none;
-      padding: 0;
-    }
-  }
-}
-
 .git-clone-holder {
   width: 380px;
 

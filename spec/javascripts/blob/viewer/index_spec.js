@@ -83,16 +83,39 @@ describe('Blob viewer', () => {
   });
 
   describe('copy blob button', () => {
+    let copyButton;
+
+    beforeEach(() => {
+      copyButton = document.querySelector('.js-copy-blob-source-btn');
+    });
+
     it('disabled on load', () => {
       expect(
-        document.querySelector('.js-copy-blob-source-btn').classList.contains('disabled'),
+        copyButton.classList.contains('disabled'),
       ).toBeTruthy();
     });
 
     it('has tooltip when disabled', () => {
       expect(
-        document.querySelector('.js-copy-blob-source-btn').getAttribute('data-original-title'),
+        copyButton.getAttribute('data-original-title'),
       ).toBe('Switch to the source to copy it to the clipboard');
+    });
+
+    it('is blurred when clicked and disabled', () => {
+      spyOn(copyButton, 'blur');
+
+      copyButton.click();
+
+      expect(copyButton.blur).toHaveBeenCalled();
+    });
+
+    it('is not blurred when clicked and not disabled', () => {
+      spyOn(copyButton, 'blur');
+
+      copyButton.classList.remove('disabled');
+      copyButton.click();
+
+      expect(copyButton.blur).not.toHaveBeenCalled();
     });
 
     it('enables after switching to simple view', (done) => {
@@ -101,7 +124,7 @@ describe('Blob viewer', () => {
       setTimeout(() => {
         expect($.ajax).toHaveBeenCalled();
         expect(
-          document.querySelector('.js-copy-blob-source-btn').classList.contains('disabled'),
+          copyButton.classList.contains('disabled'),
         ).toBeFalsy();
 
         done();
@@ -115,7 +138,7 @@ describe('Blob viewer', () => {
         expect($.ajax).toHaveBeenCalled();
 
         expect(
-          document.querySelector('.js-copy-blob-source-btn').getAttribute('data-original-title'),
+          copyButton.getAttribute('data-original-title'),
         ).toBe('Copy source to clipboard');
 
         done();

@@ -7,11 +7,9 @@
 
 import Vue from 'vue';
 import eventHub from '../../sidebar/event_hub';
-
 import AssigneeTitle from '../../sidebar/components/assignees/assignee_title';
 import Assignees from '../../sidebar/components/assignees/assignees';
-
-require('./sidebar/remove_issue');
+import './sidebar/remove_issue';
 
 const Store = gl.issueBoards.BoardsStore;
 

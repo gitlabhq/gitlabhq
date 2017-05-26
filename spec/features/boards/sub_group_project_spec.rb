@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe 'Sub-group project issue boards', :feature, :js do
-  include WaitForVueResource
-
   let(:group) { create(:group) }
   let(:nested_group_1) { create(:group, parent: group) }
   let(:project) { create(:empty_project, group: nested_group_1) }
@@ -18,7 +16,7 @@ describe 'Sub-group project issue boards', :feature, :js do
     login_as(user)
 
     visit namespace_project_board_path(project.namespace, project, board)
-    wait_for_vue_resource
+    wait_for_requests
   end
 
   it 'creates new label from sidebar' do
@@ -35,7 +33,7 @@ describe 'Sub-group project issue boards', :feature, :js do
 
       click_button 'Create'
 
-      wait_for_ajax
+      wait_for_requests
     end
 
     page.within '.labels' do

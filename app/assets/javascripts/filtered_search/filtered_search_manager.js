@@ -15,6 +15,7 @@ class FilteredSearchManager {
 
     this.recentSearchesStore = new RecentSearchesStore({
       isLocalStorageAvailable: RecentSearchesService.isAvailable(),
+      allowedKeys: this.filteredSearchTokenKeys.getKeys(),
     });
     const searchHistoryDropdownElement = document.querySelector('.js-filtered-search-history-dropdown');
     const projectPath = searchHistoryDropdownElement ?
@@ -46,7 +47,7 @@ class FilteredSearchManager {
 
     if (this.filteredSearchInput) {
       this.tokenizer = gl.FilteredSearchTokenizer;
-      this.dropdownManager = new gl.FilteredSearchDropdownManager(this.filteredSearchInput.getAttribute('data-base-endpoint') || '', page);
+      this.dropdownManager = new gl.FilteredSearchDropdownManager(this.filteredSearchInput.getAttribute('data-base-endpoint') || '', this.tokenizer, page);
 
       this.recentSearchesRoot = new RecentSearchesRoot(
         this.recentSearchesStore,
@@ -318,7 +319,7 @@ class FilteredSearchManager {
   handleInputVisualToken() {
     const input = this.filteredSearchInput;
     const { tokens, searchToken }
-      = gl.FilteredSearchTokenizer.processTokens(input.value);
+      = this.tokenizer.processTokens(input.value, this.filteredSearchTokenKeys.getKeys());
     const { isLastVisualTokenValid }
       = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
 
@@ -444,7 +445,7 @@ class FilteredSearchManager {
     this.saveCurrentSearchQuery();
 
     const { tokens, searchToken }
-      = this.tokenizer.processTokens(searchQuery);
+      = this.tokenizer.processTokens(searchQuery, this.filteredSearchTokenKeys.getKeys());
     const currentState = gl.utils.getParameterByName('state') || 'opened';
     paths.push(`state=${currentState}`);
 

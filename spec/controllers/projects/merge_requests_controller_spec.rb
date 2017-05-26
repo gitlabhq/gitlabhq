@@ -119,6 +119,18 @@ describe Projects::MergeRequestsController do
           expect(response).to match_response_schema('entities/merge_request')
         end
       end
+
+      context 'number of queries' do
+        it 'verifies number of queries' do
+          # pre-create objects
+          merge_request
+
+          recorded = ActiveRecord::QueryRecorder.new { go(format: :json) }
+
+          expect(recorded.count).to be_within(5).of(50)
+          expect(recorded.cached_count).to eq(0)
+        end
+      end
     end
 
     describe "as diff" do
@@ -345,8 +357,7 @@ describe Projects::MergeRequestsController do
         end
 
         before do
-          pipeline = create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch)
-          merge_request.update(head_pipeline: pipeline)
+          create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch, head_pipeline_of: merge_request)
         end
 
         it 'returns :merge_when_pipeline_succeeds' do
@@ -1161,13 +1172,13 @@ describe Projects::MergeRequestsController do
       let!(:pipeline) do
         create(:ci_pipeline, project: merge_request.source_project,
                              ref: merge_request.source_branch,
-                             sha: merge_request.diff_head_sha)
+                             sha: merge_request.diff_head_sha,
+                             head_pipeline_of: merge_request)
       end
 
       let(:status) { pipeline.detailed_status(double('user')) }
 
       before do
-        merge_request.update(head_pipeline: pipeline)
         get_pipeline_status
       end
 

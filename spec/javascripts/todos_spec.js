@@ -1,5 +1,5 @@
-require('~/todos');
-require('~/lib/utils/common_utils');
+import '~/todos';
+import '~/lib/utils/common_utils';
 
 describe('Todos', () => {
   preloadFixtures('todos/todos.html.raw');
