@@ -26,21 +26,13 @@ module IssueLinks
     def issues
       return @issues if defined?(@issues)
 
-      # TODO: Simplify query using AR
-      @issues = Issue.find_by_sql(
-        <<-SQL.strip_heredoc
-          SELECT issues.*, issue_links.id as issue_links_id FROM issues
-          INNER JOIN issue_links ON issue_links.target_id = issues.id
-          WHERE issue_links.source_id = #{@issue.id} AND issues.deleted_at IS NULL
-          UNION ALL
-          SELECT issues.*, issue_links.id as issue_links_id FROM issues
-          INNER JOIN issue_links ON issue_links.source_id = issues.id
-          WHERE issue_links.target_id = #{@issue.id} AND issues.deleted_at IS NULL
-          ORDER BY issue_links_id
-        SQL
-      )
+      referenced_issues = @issue.referenced_issues.select('issues.*', 'issue_links.id AS issue_links_id')
+      referred_by_issues = @issue.referred_by_issues.select('issues.*', 'issue_links.id AS issue_links_id')
+      union = Gitlab::SQL::Union.new([referenced_issues, referred_by_issues])
 
-      # TODO: Try to use SQL instead Array#select
+      sql = "#{union.to_sql} ORDER BY issue_links_id"
+
+      @issues = Issue.find_by_sql(sql)
       @issues = Ability.issues_readable_by_user(@issues, @current_user)
     end
 

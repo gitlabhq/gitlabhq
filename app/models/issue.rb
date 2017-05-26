@@ -35,6 +35,12 @@ class Issue < ActiveRecord::Base
   has_many :issue_assignees
   has_many :assignees, class_name: "User", through: :issue_assignees
 
+  has_many :referenced_issue_links, class_name: 'IssueLink', foreign_key: :source_id
+  has_many :referred_by_issue_links, class_name: 'IssueLink', foreign_key: :target_id
+
+  has_many :referenced_issues, through: :referenced_issue_links, source: :target
+  has_many :referred_by_issues, through: :referred_by_issue_links, source: :source
+
   validates :project, presence: true
 
   scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
