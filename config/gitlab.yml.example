@@ -169,7 +169,7 @@ production: &base
   ## Gravatar
   ## For Libravatar see: http://doc.gitlab.com/ce/customization/libravatar.html
   gravatar:
-    # gravatar urls: possible placeholders: %{hash} %{size} %{email}
+    # gravatar urls: possible placeholders: %{hash} %{size} %{email} %{username}
     # plain_url: "http://..."     # default: http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
     # ssl_url:   "https://..."    # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
 
