@@ -23,12 +23,4 @@
   = render 'projects/diffs/warning', diff_files: diffs
 
 .files{ data: { can_create_note: can_create_note } }
-  - diff_files.each_with_index do |diff_file|
-    - diff_commit = commit_for_diff(diff_file)
-    - blob = diff_file.blob(diff_commit)
-    - next unless blob
-    - blob.load_all_data!(diffs.project.repository) unless blob.too_large?
-    - file_hash = hexdigest(diff_file.file_path)
-
-    = render 'projects/diffs/file', file_hash: file_hash, project: diffs.project,
-      diff_file: diff_file, diff_commit: diff_commit, blob: blob, environment: environment
+  = render partial: 'projects/diffs/file', collection: diff_files, as: :diff_file, locals: { project: diffs.project, environment: environment }

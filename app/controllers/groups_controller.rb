@@ -165,7 +165,6 @@ class GroupsController < Groups::ApplicationController
 
   def user_actions
     if current_user
-      @last_push = current_user.recent_push
       @notification_setting = current_user.notification_settings_for(group)
     end
   end

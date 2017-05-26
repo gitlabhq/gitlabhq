@@ -1,4 +1,5 @@
 /* eslint-disable */
+import AjaxCache from '../../lib/utils/ajax_cache';
 
 const AjaxFilter = {
   init: function(hook) {
@@ -58,50 +59,24 @@ const AjaxFilter = {
     this.loading = true;
     var params = config.params || {};
     params[config.searchKey] = searchValue;
-    var self = this;
-    self.cache = self.cache || {};
     var url = config.endpoint + this.buildParams(params);
-    var urlCachedData = self.cache[url];
-    if (urlCachedData) {
-      self._loadData(urlCachedData, config, self);
-    } else {
-      this._loadUrlData(url)
-        .then(function(data) {
-          self._loadData(data, config, self);
-        }, config.onError).catch(config.onError);
-    }
+    return AjaxCache.retrieve(url)
+      .then((data) => {
+        this._loadData(data, config);
+      })
+      .catch(config.onError);
   },
 
-  _loadUrlData: function _loadUrlData(url) {
-    var self = this;
-    return new Promise(function(resolve, reject) {
-      var xhr = new XMLHttpRequest;
-      xhr.open('GET', url, true);
-      xhr.onreadystatechange = function () {
-        if(xhr.readyState === XMLHttpRequest.DONE) {
-          if (xhr.status === 200) {
-            var data = JSON.parse(xhr.responseText);
-            self.cache[url] = data;
-            return resolve(data);
-          } else {
-            return reject([xhr.responseText, xhr.status]);
-          }
-        }
-      };
-      xhr.send();
-    });
-  },
-
-  _loadData: function _loadData(data, config, self) {
-    const list = self.hook.list;
+  _loadData(data, config) {
+    const list = this.hook.list;
     if (config.loadingTemplate && list.data === undefined ||
       list.data.length === 0) {
       const dataLoadingTemplate = list.list.querySelector('[data-loading-template]');
       if (dataLoadingTemplate) {
-        dataLoadingTemplate.outerHTML = self.listTemplate;
+        dataLoadingTemplate.outerHTML = this.listTemplate;
       }
     }
-    if (!self.destroyed) {
+    if (!this.destroyed) {
       var hookListChildren = list.list.children;
       var onlyDynamicList = hookListChildren.length === 1 && hookListChildren[0].hasAttribute('data-dynamic');
       if (onlyDynamicList && data.length === 0) {
@@ -109,7 +84,7 @@ const AjaxFilter = {
       }
       list.setData.call(list, data);
     }
-    self.notLoading();
+    this.notLoading();
     list.currentIndex = 0;
   },
 
