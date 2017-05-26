@@ -201,10 +201,7 @@ module Ci
 
     # All variables, including those dependent on other variables
     def variables
-      variables = simple_variables
-      variables.concat(persisted_environment_variables) if
-        persisted_environment
-      variables
+      simple_variables.concat(persisted_environment_variables)
     end
 
     def merge_request
@@ -499,6 +496,8 @@ module Ci
     end
 
     def persisted_environment_variables
+      return [] unless persisted_environment
+
       variables = persisted_environment.predefined_variables
 
       if environment_url
