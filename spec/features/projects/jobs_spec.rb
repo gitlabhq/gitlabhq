@@ -85,7 +85,7 @@ feature 'Jobs', :feature do
       end
 
       before do
-        visit jobs_url.sub('jobs', 'builds')
+        visit jobs_url.sub('/-/jobs', '/builds')
       end
 
       it "redirects to new URL" do
@@ -203,7 +203,7 @@ feature 'Jobs', :feature do
       end
 
       before do
-        visit job_url.sub('jobs', 'builds')
+        visit job_url.sub('/-/jobs', '/builds')
       end
 
       it "redirects to new URL" do
@@ -473,7 +473,7 @@ feature 'Jobs', :feature do
       end
 
       before do
-        visit raw_job_url.sub('jobs', 'builds')
+        visit raw_job_url.sub('/-/jobs', '/builds')
       end
 
       it "redirects to new URL" do

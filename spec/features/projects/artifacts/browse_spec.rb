@@ -15,7 +15,7 @@ feature 'Browse artifact', :js, feature: true do
     end
 
     before do
-      visit browse_url.sub('jobs', 'builds')
+      visit browse_url.sub('/-/jobs', '/builds')
     end
 
     it "redirects to new URL" do
