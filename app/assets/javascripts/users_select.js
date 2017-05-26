@@ -35,6 +35,7 @@ function UsersSelect(currentUser, els) {
       options.showCurrentUser = $dropdown.data('current-user');
       options.todoFilter = $dropdown.data('todo-filter');
       options.todoStateFilter = $dropdown.data('todo-state-filter');
+      options.perPage = $dropdown.data('per-page');
       showNullUser = $dropdown.data('null-user');
       defaultNullUser = $dropdown.data('null-user-default');
       showMenuAbove = $dropdown.data('showMenuAbove');
@@ -665,7 +666,7 @@ UsersSelect.prototype.users = function(query, options, callback) {
     url: url,
     data: {
       search: query,
-      per_page: 20,
+      per_page: options.perPage || 20,
       active: true,
       project_id: options.projectId || null,
       group_id: options.groupId || null,
