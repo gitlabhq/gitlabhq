@@ -75,6 +75,3 @@ module SystemCheck
     end
   end
 end
-
-
-
