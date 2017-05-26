@@ -1,5 +1,14 @@
 module EE
   module Issue
+    extend ActiveSupport::Concern
+
+    prepended do
+      has_many :referenced_issue_links, class_name: 'IssueLink', foreign_key: :source_id, dependent: :destroy
+      has_many :referred_by_issue_links, class_name: 'IssueLink', foreign_key: :target_id, dependent: :destroy
+      has_many :referenced_issues, through: :referenced_issue_links, source: :target
+      has_many :referred_by_issues, through: :referred_by_issue_links, source: :source
+    end
+
     # override
     def check_for_spam?
       author.support_bot? || super
