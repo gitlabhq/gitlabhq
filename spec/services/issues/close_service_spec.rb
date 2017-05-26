@@ -41,6 +41,12 @@ describe Issues::CloseService, services: true do
 
       service.execute(issue)
     end
+
+    it 'invalidates counter cache for assignees' do
+      expect_any_instance_of(User).to receive(:invalidate_issue_cache_counts)
+
+      service.execute(issue)
+    end
   end
 
   describe '#close_issue' do

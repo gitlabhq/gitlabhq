@@ -10,6 +10,7 @@ module MergeRequests
         execute_hooks(merge_request, 'reopen')
         merge_request.reload_diff
         merge_request.mark_as_unchecked
+        invalidate_cache_counts(merge_request.assignees, merge_request)
       end
 
       merge_request
