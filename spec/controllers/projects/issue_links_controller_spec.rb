@@ -5,6 +5,11 @@ describe Projects::IssueLinksController, type: :controller do
   let(:project) { create(:project_empty_repo) }
   let(:issue) { create :issue, project: project }
 
+  before do
+    allow_any_instance_of(License).to receive(:feature_available?) { false }
+    allow_any_instance_of(License).to receive(:feature_available?).with(:related_issues) { true }
+  end
+
   describe 'GET #index' do
     let(:service) { double(IssueLinks::ListService, execute: service_response) }
     let(:service_response) { [{ 'foo' => 'bar' }] }
