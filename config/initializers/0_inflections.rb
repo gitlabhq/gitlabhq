@@ -10,6 +10,6 @@
 # end
 #
 ActiveSupport::Inflector.inflections do |inflect|
-  inflect.uncountable %w(award_emoji project_statistics system_note_metadata geo_event_log project_registry file_registry)
+  inflect.uncountable %w(award_emoji project_statistics system_note_metadata event_log project_registry file_registry)
   inflect.acronym 'EE'
 end
