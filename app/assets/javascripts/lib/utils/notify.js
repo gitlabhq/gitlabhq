@@ -39,4 +39,10 @@ function notifyMe(message, body, icon, onclick) {
   }
 }
 
-export { notifyMe as default, notifyPermissions, notificationGranted };
+const notify = {
+  notificationGranted,
+  notifyPermissions,
+  notifyMe,
+};
+
+export default notify;

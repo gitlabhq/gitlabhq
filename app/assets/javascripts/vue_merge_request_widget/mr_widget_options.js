@@ -29,7 +29,7 @@ import {
   eventHub,
   stateMaps,
   SquashBeforeMerge,
-  notifyMe,
+  notify,
 } from './dependencies';
 
 export default {
@@ -146,7 +146,7 @@ export default {
       const title = `Pipeline ${label}`;
       const message = `Pipeline ${label} for "${data.title}"`;
 
-      notifyMe(title, message, this.mr.gitlabLogo);
+      notify.notifyMe(title, message, this.mr.gitlabLogo);
     },
     resumePolling() {
       this.pollingInterval.resume();
