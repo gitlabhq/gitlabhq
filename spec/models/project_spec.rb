@@ -321,10 +321,10 @@ describe Project, models: true do
   end
 
   describe '#to_reference' do
-    let(:owner)     { create(:user, name: 'Gitlab') }
-    let(:namespace) { create(:namespace, path: 'sample-namespace', owner: owner) }
+    let(:owner)     { create(:user, name: 'Gitlab', username: 'sample-namespace') }
+    let(:namespace) { owner.namespace }
     let(:project)   { create(:empty_project, path: 'sample-project', namespace: namespace) }
-    let(:group)     { create(:group, name: 'Group', path: 'sample-group', owner: owner) }
+    let(:group)     { create(:group, name: 'Group', path: 'sample-group') }
 
     context 'when nil argument' do
       it 'returns nil' do
@@ -363,7 +363,7 @@ describe Project, models: true do
     end
 
     context 'when different namespace / cross-project argument' do
-      let(:another_namespace) { create(:namespace, path: 'another-namespace', owner: owner) }
+      let(:another_namespace) { create(:group, path: 'another-namespace') }
       let(:another_project)   { create(:empty_project, path: 'another-project', namespace: another_namespace) }
 
       it 'returns full path to the project' do
@@ -388,7 +388,7 @@ describe Project, models: true do
 
   describe '#to_human_reference' do
     let(:owner) { create(:user, name: 'Gitlab') }
-    let(:namespace) { create(:namespace, name: 'Sample namespace', owner: owner) }
+    let(:namespace) { owner.namespace }
     let(:project) { create(:empty_project, name: 'Sample project', namespace: namespace) }
 
     context 'when nil argument' do
@@ -1862,9 +1862,9 @@ describe Project, models: true do
   end
 
   describe 'inside_path' do
-    let!(:project1) { create(:empty_project, namespace: create(:namespace, path: 'name_pace')) }
+    let!(:project1) { create(:empty_project, namespace: create(:group, path: 'name_pace')) }
     let!(:project2) { create(:empty_project) }
-    let!(:project3) { create(:empty_project, namespace: create(:namespace, path: 'namespace')) }
+    let!(:project3) { create(:empty_project, namespace: create(:group, path: 'namespace')) }
     let!(:path) { project1.namespace.full_path }
 
     it 'returns correct project' do

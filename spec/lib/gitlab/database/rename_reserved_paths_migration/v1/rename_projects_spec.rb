@@ -10,7 +10,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameProjects do
 
   describe '#projects_for_paths' do
     it 'searches using nested paths' do
-      namespace = create(:namespace, path: 'hello')
+      namespace = create(:group, path: 'hello')
       project = create(:empty_project, path: 'THE-path', namespace: namespace)
 
       result_ids = described_class.new(['Hello/the-path'], migration).
@@ -50,7 +50,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameProjects do
     let(:project) do
       create(:empty_project,
              path: 'the-path',
-             namespace: create(:namespace, path: 'known-parent' ))
+             namespace: create(:group, path: 'known-parent' ))
     end
 
     it 'renames path & route for the project' do
@@ -88,7 +88,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameProjects do
   end
 
   describe '#move_repository' do
-    let(:known_parent) { create(:namespace, path: 'known-parent') }
+    let(:known_parent) { create(:group, path: 'known-parent') }
     let(:project) { create(:project, path: 'the-path', namespace: known_parent) }
 
     it 'moves the repository for a project' do

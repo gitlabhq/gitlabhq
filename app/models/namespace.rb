@@ -37,6 +37,7 @@ class Namespace < ActiveRecord::Base
     dynamic_path: true
 
   validate :nesting_level_allowed
+  validate :synced_with_user
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
 
@@ -278,6 +279,17 @@ class Namespace < ActiveRecord::Base
   def nesting_level_allowed
     if ancestors.count > Group::NUMBER_OF_ANCESTORS_ALLOWED
       errors.add(:parent_id, "has too deep level of nesting")
+    end
+  end
+
+  def synced_with_user
+    if kind == 'user' && owner
+      if name != owner.username
+        errors.add(:name, "must match the owner's username")
+      end
+      if path != owner.username
+        errors.add(:path, "must match the owner's username")
+      end
     end
   end
 end

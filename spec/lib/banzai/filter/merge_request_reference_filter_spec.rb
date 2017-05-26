@@ -200,7 +200,7 @@ describe Banzai::Filter::MergeRequestReferenceFilter, lib: true do
   end
 
   context 'cross-project URL reference' do
-    let(:namespace) { create(:namespace, name: 'cross-reference') }
+    let(:namespace) { create(:group, name: 'cross-reference') }
     let(:project2)  { create(:empty_project, :public, namespace: namespace) }
     let(:merge)     { create(:merge_request, source_project: project2, target_project: project2) }
     let(:reference) { urls.namespace_project_merge_request_url(project2.namespace, project2, merge) + '/diffs#note_123' }

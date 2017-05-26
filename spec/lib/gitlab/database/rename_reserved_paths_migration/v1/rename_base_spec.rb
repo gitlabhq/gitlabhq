@@ -79,7 +79,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase do
 
   describe '#rename_path_for_routable' do
     context 'for namespaces' do
-      let(:namespace) { create(:namespace, path: 'the-path') }
+      let(:namespace) { create(:group, path: 'the-path') }
       it "renames namespaces called the-path" do
         subject.rename_path_for_routable(migration_namespace(namespace))
 
@@ -108,7 +108,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase do
       end
 
       it "doesn't rename routes that start with a similar name" do
-        other_namespace = create(:namespace, path: 'the-path-but-not-really')
+        other_namespace = create(:group, path: 'the-path-but-not-really')
         project = create(:empty_project, path: 'the-project', namespace: other_namespace)
 
         subject.rename_path_for_routable(migration_namespace(namespace))
@@ -129,7 +129,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase do
     end
 
     context 'for projects' do
-      let(:parent) { create(:namespace, path: 'the-parent') }
+      let(:parent) { create(:group, path: 'the-parent') }
       let(:project) { create(:empty_project, path: 'the-path', namespace: parent) }
 
       it 'renames the project called `the-path`' do

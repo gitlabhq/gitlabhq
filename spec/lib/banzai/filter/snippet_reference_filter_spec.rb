@@ -178,7 +178,7 @@ describe Banzai::Filter::SnippetReferenceFilter, lib: true do
   end
 
   context 'cross-project URL reference' do
-    let(:namespace) { create(:namespace, name: 'cross-reference') }
+    let(:namespace) { create(:group, name: 'cross-reference') }
     let(:project2)  { create(:empty_project, :public, namespace: namespace) }
     let(:snippet)   { create(:project_snippet, project: project2) }
     let(:reference) { urls.namespace_project_snippet_url(project2.namespace, project2, snippet) }

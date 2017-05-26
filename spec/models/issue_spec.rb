@@ -73,7 +73,7 @@ describe Issue, models: true do
   end
 
   describe '#to_reference' do
-    let(:namespace) { build(:namespace, path: 'sample-namespace') }
+    let(:namespace) { build(:group, path: 'sample-namespace') }
     let(:project)   { build(:empty_project, name: 'sample-project', namespace: namespace) }
     let(:issue)     { build(:issue, iid: 1, project: project) }
     let(:group)     { create(:group, name: 'Group', path: 'sample-group') }
@@ -120,7 +120,7 @@ describe Issue, models: true do
     end
 
     context 'when different namespace / cross-project argument' do
-      let(:another_namespace) { create(:namespace, path: 'another-namespace') }
+      let(:another_namespace) { create(:group, path: 'another-namespace') }
       let(:another_project)   { create(:empty_project, path: 'another-project', namespace: another_namespace) }
 
       it 'returns full path to the issue' do

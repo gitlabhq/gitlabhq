@@ -12,7 +12,7 @@ describe LabelsHelper do
     end
 
     context 'with a project as subject' do
-      let(:namespace) { build(:namespace, name: 'foo3') }
+      let(:namespace) { build(:group, name: 'foo3') }
       let(:another_project) { build(:empty_project, namespace: namespace, name: 'bar3') }
 
       it 'links to project issues page' do

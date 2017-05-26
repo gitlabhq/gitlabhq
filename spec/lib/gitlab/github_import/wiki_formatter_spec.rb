@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::GithubImport::WikiFormatter, lib: true do
   let(:project) do
     create(:project,
-           namespace: create(:namespace, path: 'gitlabhq'),
+           namespace: create(:group, path: 'gitlabhq'),
            import_url: 'https://xxx@github.com/gitlabhq/sample.gitlabhq.git')
   end
 

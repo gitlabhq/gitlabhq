@@ -15,8 +15,8 @@ feature 'Import/Export - project import integration test', feature: true, js: tr
   end
 
   context 'when selecting the namespace' do
-    let(:user) { create(:admin) }
-    let!(:namespace) { create(:namespace, name: "asd", owner: user) }
+    let(:user) { create(:admin, username: 'asd') }
+    let!(:namespace) { user.namespace }
 
     before do
       login_as(user)

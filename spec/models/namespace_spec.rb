@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe Namespace, models: true do
-  let!(:namespace) { create(:namespace) }
+  let(:user) { create(:user) }
+  let!(:namespace) { user.namespace }
 
   describe 'associations' do
     it { is_expected.to have_many :projects }
@@ -30,29 +31,43 @@ describe Namespace, models: true do
     end
 
     describe 'reserved path validation' do
-      context 'nested group' do
-        let(:group) { build(:group, :nested, path: 'tree') }
+      context 'when path is reserved' do
+        context 'when associated with a group' do
+          context 'nested group' do
+            let(:group) { build(:group, :nested, path: 'tree') }
 
-        it { expect(group).not_to be_valid }
+            it { expect(group).not_to be_valid }
 
-        it 'rejects nested paths' do
-          parent = create(:group, :nested, path: 'environments')
-          namespace = build(:group, path: 'folders', parent: parent)
+            it 'rejects nested paths' do
+              parent = create(:group, :nested, path: 'environments')
+              namespace = build(:group, path: 'folders', parent: parent)
 
-          expect(namespace).not_to be_valid
+              expect(namespace).not_to be_valid
+            end
+          end
+
+          context "is case insensitive" do
+            let(:group) { build(:group, path: "System") }
+
+            it { expect(group).not_to be_valid }
+          end
+
+          context 'top-level group' do
+            let(:group) { build(:group, path: 'tree') }
+
+            it { expect(group).to be_valid }
+          end
         end
-      end
 
-      context "is case insensitive" do
-        let(:group) { build(:group, path: "System") }
+        context 'when associated with a user' do
+          before do
+            user.username = 'tree'
+            user.namespace.name = 'tree'
+            user.namespace.path = 'tree'
+          end
 
-        it { expect(group).not_to be_valid }
-      end
-
-      context 'top-level group' do
-        let(:group) { build(:group, path: 'tree') }
-
-        it { expect(group).to be_valid }
+          it { expect(namespace).to be_valid }
+        end
       end
     end
   end
@@ -72,8 +87,6 @@ describe Namespace, models: true do
   end
 
   describe '.search' do
-    let(:namespace) { create(:namespace) }
-
     it 'returns namespaces with a matching name' do
       expect(described_class.search(namespace.name)).to eq([namespace])
     end
@@ -100,8 +113,6 @@ describe Namespace, models: true do
   end
 
   describe '.with_statistics' do
-    let(:namespace) { create :namespace }
-
     let(:project1) do
       create(:empty_project,
              namespace: namespace,
@@ -145,7 +156,7 @@ describe Namespace, models: true do
 
   describe '#move_dir', repository: true do
     before do
-      @namespace = create :namespace
+      @namespace = namespace
       @project = create(:project_empty_repo, namespace: @namespace)
       allow(@namespace).to receive(:path_changed?).and_return(true)
     end
@@ -275,17 +286,17 @@ describe Namespace, models: true do
 
   describe '.find_by_path_or_name' do
     before do
-      @namespace = create(:namespace, name: 'WoW', path: 'woW')
+      @group = create(:group, name: 'WoW', path: 'woW', type: 'Group')
     end
 
-    it { expect(Namespace.find_by_path_or_name('wow')).to eq(@namespace) }
-    it { expect(Namespace.find_by_path_or_name('WOW')).to eq(@namespace) }
-    it { expect(Namespace.find_by_path_or_name('unknown')).to eq(nil) }
+    it { expect(Group.find_by_path_or_name('wow')).to eq(@group) }
+    it { expect(Group.find_by_path_or_name('WOW')).to eq(@group) }
+    it { expect(Group.find_by_path_or_name('unknown')).to eq(nil) }
   end
 
   describe ".clean_path" do
-    let!(:user)       { create(:user, username: "johngitlab-etc") }
-    let!(:namespace)  { create(:namespace, path: "JohnGitLab-etc1") }
+    let!(:user)  { create(:user, username: "johngitlab-etc") }
+    let!(:user2) { create(:user, username: "JohnGitLab-etc1") }
 
     it "cleans the path and makes sure it's available" do
       expect(Namespace.clean_path("-john+gitlab-ETC%.git@gmail.com")).to eq("johngitlab-ETC2")

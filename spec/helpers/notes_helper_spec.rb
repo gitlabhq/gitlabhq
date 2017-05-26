@@ -190,20 +190,18 @@ describe NotesHelper do
     end
 
     it 'return project notes path for project snippet' do
-      namespace = create(:namespace, path: 'nm')
-      @project = create(:empty_project, path: 'test', namespace: namespace)
+      @project = create(:empty_project)
       @snippet = create(:project_snippet, project: @project)
       @noteable = @snippet
 
-      expect(helper.notes_url).to eq("/nm/test/noteable/project_snippet/#{@noteable.id}/notes")
+      expect(helper.notes_url).to eq("/#{@project.full_path}/noteable/project_snippet/#{@noteable.id}/notes")
     end
 
     it 'return project notes path for other noteables' do
-      namespace = create(:namespace, path: 'nm')
-      @project = create(:empty_project, path: 'test', namespace: namespace)
+      @project = create(:empty_project)
       @noteable = create(:issue, project: @project)
 
-      expect(helper.notes_url).to eq("/nm/test/noteable/issue/#{@noteable.id}/notes")
+      expect(helper.notes_url).to eq("/#{@project.full_path}/noteable/issue/#{@noteable.id}/notes")
     end
   end
 
@@ -215,23 +213,21 @@ describe NotesHelper do
     end
 
     it 'return project notes path for project snippet' do
-      namespace = create(:namespace, path: 'nm')
-      @project = create(:empty_project, path: 'test', namespace: namespace)
+      @project = create(:empty_project)
       note = create(:note_on_project_snippet, project: @project)
 
-      expect(helper.note_url(note)).to eq("/nm/test/notes/#{note.id}")
+      expect(helper.note_url(note)).to eq("/#{@project.full_path}/notes/#{note.id}")
     end
 
     it 'return project notes path for other noteables' do
-      namespace = create(:namespace, path: 'nm')
-      @project = create(:empty_project, path: 'test', namespace: namespace)
+      @project = create(:empty_project)
       note = create(:note_on_issue, project: @project)
 
-      expect(helper.note_url(note)).to eq("/nm/test/notes/#{note.id}")
+      expect(helper.note_url(note)).to eq("/#{@project.full_path}/notes/#{note.id}")
     end
   end
 
-  describe '#form_resurces' do
+  describe '#form_resources' do
     it 'returns note for personal snippet' do
       @snippet = create(:personal_snippet)
       @note = create(:note_on_personal_snippet)
@@ -240,8 +236,7 @@ describe NotesHelper do
     end
 
     it 'returns namespace, project and note for project snippet' do
-      namespace = create(:namespace, path: 'nm')
-      @project = create(:empty_project, path: 'test', namespace: namespace)
+      @project = create(:empty_project)
       @snippet = create(:project_snippet, project: @project)
       @note = create(:note_on_personal_snippet)
 
@@ -249,8 +244,7 @@ describe NotesHelper do
     end
 
     it 'returns namespace, project and note path for other noteables' do
-      namespace = create(:namespace, path: 'nm')
-      @project = create(:empty_project, path: 'test', namespace: namespace)
+      @project = create(:empty_project)
       @note = create(:note_on_issue, project: @project)
 
       expect(helper.form_resources).to eq([@project.namespace, @project, @note])

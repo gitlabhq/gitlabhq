@@ -52,7 +52,7 @@ describe Banzai::Pipeline::WikiPipeline do
   end
 
   describe "Links" do
-    let(:namespace) { create(:namespace, name: "wiki_link_ns") }
+    let(:namespace) { create(:group, name: "wiki_link_ns") }
     let(:project)   { create(:empty_project, :public, name: "wiki_link_project", namespace: namespace) }
     let(:project_wiki) { ProjectWiki.new(project, double(:user)) }
     let(:page) { build(:wiki_page, wiki: project_wiki, page: OpenStruct.new(url_path: 'nested/twice/start-page')) }

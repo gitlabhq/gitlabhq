@@ -11,7 +11,7 @@ describe Gitlab::Email::Handler::CreateIssueHandler, lib: true do
   end
 
   let(:email_raw) { fixture_file('emails/valid_new_issue.eml') }
-  let(:namespace) { create(:namespace, path: 'gitlabhq') }
+  let(:namespace) { create(:group, path: 'gitlabhq') }
 
   let!(:project)  { create(:project, :public, :repository, namespace: namespace) }
   let!(:user) do

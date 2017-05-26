@@ -6,7 +6,7 @@ describe RenameSystemNamespaces, truncate: true do
   let(:test_dir) { File.join(Rails.root, "tmp", "tests", "rename_namespaces_test") }
   let(:uploads_dir) { File.join(test_dir, "public", "uploads") }
   let(:system_namespace) do
-    namespace = build(:namespace, path: "system")
+    namespace = build(:group, path: "system")
     namespace.save(validate: false)
     namespace
   end
@@ -27,7 +27,7 @@ describe RenameSystemNamespaces, truncate: true do
   describe "#system_namespace" do
     it "only root namespaces called with path `system`" do
       system_namespace
-      system_namespace_with_parent = build(:namespace, path: 'system', parent: create(:namespace))
+      system_namespace_with_parent = build(:group, path: 'system', parent: create(:group))
       system_namespace_with_parent.save(validate: false)
 
       expect(migration.system_namespace.id).to eq(system_namespace.id)

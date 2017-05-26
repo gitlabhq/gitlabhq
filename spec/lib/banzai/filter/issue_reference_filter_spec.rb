@@ -262,7 +262,7 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
   context 'cross-project URL reference' do
     it_behaves_like 'a reference containing an element node'
 
-    let(:namespace) { create(:namespace, name: 'cross-reference') }
+    let(:namespace) { create(:group, name: 'cross-reference') }
     let(:project2)  { create(:empty_project, :public, namespace: namespace) }
     let(:issue)     { create(:issue, project: project2) }
     let(:reference) { helper.url_for_issue(issue.iid, project2) + "#note_123" }
@@ -283,7 +283,7 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
   context 'cross-project reference in link href' do
     it_behaves_like 'a reference containing an element node'
 
-    let(:namespace) { create(:namespace, name: 'cross-reference') }
+    let(:namespace) { create(:group, name: 'cross-reference') }
     let(:project2)  { create(:empty_project, :public, namespace: namespace) }
     let(:issue)     { create(:issue, project: project2) }
     let(:reference) { issue.to_reference(project) }
@@ -305,7 +305,7 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
   context 'cross-project URL in link href' do
     it_behaves_like 'a reference containing an element node'
 
-    let(:namespace) { create(:namespace, name: 'cross-reference') }
+    let(:namespace) { create(:group, name: 'cross-reference') }
     let(:project2)  { create(:empty_project, :public, namespace: namespace) }
     let(:issue)     { create(:issue, project: project2) }
     let(:reference) { "#{helper.url_for_issue(issue.iid, project2) + "#note_123"}" }
