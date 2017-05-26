@@ -1256,16 +1256,15 @@ class Project < ActiveRecord::Base
     variables
   end
 
-  def secret_variables
-    filtered_variables = variables.to_a.reject(&:protected?)
+  def variables_for(ref)
+    vars = if ProtectedBranch.protected?(self, ref) ||
+               ProtectedTag.protected?(self, ref)
+             variables.to_a
+           else
+             variables.to_a.reject(&:protected?)
+           end
 
-    build_variables(filtered_variables)
-  end
-
-  def protected_variables
-    filtered_variables = variables.to_a.select(&:protected?)
-
-    build_variables(filtered_variables)
+    vars.map(&:to_runner_variable)
   end
 
   def deployment_variables
@@ -1417,11 +1416,5 @@ class Project < ActiveRecord::Base
     end
 
     raise ex
-  end
-
-  def build_variables(filtered_variables)
-    filtered_variables.map do |variable|
-      { key: variable.key, value: variable.value, public: false }
-    end
   end
 end

@@ -1710,7 +1710,7 @@ describe Project, models: true do
     end
   end
 
-  describe 'variables' do
+  describe '#variables_for' do
     let(:project) { create(:empty_project) }
 
     let!(:secret_variable) do
@@ -1721,22 +1721,40 @@ describe Project, models: true do
       create(:ci_variable, :protected, value: 'protected', project: project)
     end
 
-    describe '#secret_variables' do
-      it 'contains only the secret variables' do
-        expect(project.secret_variables).to eq(
-          [{ key: secret_variable.key,
-             value: secret_variable.value,
-             public: false }])
+    subject { project.variables_for('ref') }
+
+    shared_examples 'ref is protected' do
+      it 'contains all the variables' do
+        is_expected.to contain_exactly(
+          *[secret_variable, protected_variable].map(&:to_runner_variable))
       end
     end
 
-    describe '#protected_variables' do
-      it 'contains only the protected variables' do
-        expect(project.protected_variables).to eq(
-          [{ key: protected_variable.key,
-             value: protected_variable.value,
-             public: false }])
+    context 'when the ref is not protected' do
+      before do
+        stub_application_setting(
+          default_branch_protection: Gitlab::Access::PROTECTION_NONE)
       end
+
+      it 'contains only the secret variables' do
+        is_expected.to contain_exactly(secret_variable.to_runner_variable)
+      end
+    end
+
+    context 'when the ref is a protected branch' do
+      before do
+        create(:protected_branch, name: 'ref', project: project)
+      end
+
+      it_behaves_like 'ref is protected'
+    end
+
+    context 'when the ref is a protected tag' do
+      before do
+        create(:protected_tag, name: 'ref', project: project)
+      end
+
+      it_behaves_like 'ref is protected'
     end
   end
 

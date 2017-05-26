@@ -36,4 +36,11 @@ describe Ci::Variable, models: true do
         to raise_error(OpenSSL::Cipher::CipherError, 'bad decrypt')
     end
   end
+
+  describe '#to_runner_variable' do
+    it 'returns a hash for the runner' do
+      expect(subject.to_runner_variable)
+        .to eq(key: subject.key, value: subject.value, public: false)
+    end
+  end
 end

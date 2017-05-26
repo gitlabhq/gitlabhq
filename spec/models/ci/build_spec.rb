@@ -1384,7 +1384,7 @@ describe Ci::Build, :models do
         allow(project).to receive(:predefined_variables) { ['project'] }
         allow(pipeline).to receive(:predefined_variables) { ['pipeline'] }
         allow(build).to receive(:yaml_variables) { ['yaml'] }
-        allow(project).to receive(:secret_variables) { ['secret'] }
+        allow(project).to receive(:variables_for).with(build.ref) { ['secret'] }
       end
 
       it { is_expected.to eq(%w[predefined project pipeline yaml secret]) }

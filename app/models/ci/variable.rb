@@ -18,5 +18,9 @@ module Ci
        insecure_mode: true,
        key: Gitlab::Application.secrets.db_key_base,
        algorithm: 'aes-256-cbc'
+
+    def to_runner_variable
+      { key: key, value: value, public: false }
+    end
   end
 end
