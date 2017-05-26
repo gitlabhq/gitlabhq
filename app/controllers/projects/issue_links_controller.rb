@@ -16,9 +16,7 @@ module Projects
     def destroy
       issue_link = IssueLink.find(params[:id])
 
-      # In order to remove a given relation, one must be allowed to admin_issue_link both the current
-      # project and on the related issue project.
-      return render_404 unless can?(current_user, :admin_issue_link, issue_link.target.project)
+      return render_403 unless can?(current_user, :admin_issue_link, issue_link.target.project)
 
       result = IssueLinks::DestroyService.new(issue_link, current_user).execute
 
@@ -32,7 +30,7 @@ module Projects
     end
 
     def authorize_admin_issue_link!
-      render_404 unless can?(current_user, :admin_issue_link, @project)
+      render_403 unless can?(current_user, :admin_issue_link, @project)
     end
 
     def issue

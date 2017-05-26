@@ -77,8 +77,8 @@ describe Projects::IssueLinksController, type: :controller do
       context 'when unauthorized' do
         let(:user_role) { :guest }
 
-        it 'returns 404' do
-          is_expected.to have_http_status(404)
+        it 'returns 403' do
+          is_expected.to have_http_status(403)
         end
       end
 
@@ -128,8 +128,8 @@ describe Projects::IssueLinksController, type: :controller do
       context 'when no authorization on current project' do
         let(:current_project_user_role) { :guest }
 
-        it 'returns 404' do
-          is_expected.to have_http_status(404)
+        it 'returns 403' do
+          is_expected.to have_http_status(403)
         end
       end
 
@@ -137,8 +137,8 @@ describe Projects::IssueLinksController, type: :controller do
         let(:referenced_issue) { create :issue }
         let(:current_project_user_role) { :developer }
 
-        it 'returns 404' do
-          is_expected.to have_http_status(404)
+        it 'returns 403' do
+          is_expected.to have_http_status(403)
         end
       end
     end
