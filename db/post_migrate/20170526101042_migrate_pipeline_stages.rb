@@ -16,8 +16,6 @@ class MigratePipelineStages < ActiveRecord::Migration
           ORDER BY stage_idx
     SQL
 
-    add_concurrent_index(:ci_stages, [:pipeline_id, :name])
-
     add_column(:ci_builds, :stage_id, :integer)
 
     stage_id = Arel.sql('(SELECT id FROM ci_stages ' \
@@ -31,13 +29,5 @@ class MigratePipelineStages < ActiveRecord::Migration
 
   def down
     execute('TRUNCATE TABLE ci_stages')
-
-    if column_exists?(:ci_builds, :stage_id)
-      remove_column(:ci_builds, :stage_id)
-    end
-
-    if index_exists?(:ci_stages, [:pipeline_id, :name])
-      remove_index(:ci_stages, [:pipeline_id, :name])
-    end
   end
 end
