@@ -91,7 +91,8 @@
     "diverged_commits_count": { "type": "integer" },
     "commit_change_content_path": { "type": "string" },
     "remove_wip_path": { "type": "string" },
-    "commits_count": { "type": "integer" }
+    "commits_count": { "type": "integer" },
+    "remove_source_branch": { "type": ["boolean", "null"] }
   },
   "additionalProperties": false
 }
