@@ -6,16 +6,18 @@
       = render "projects/diffs/file_header", diff_file: diff_file, url: "##{file_hash}"
 
     - unless diff_file.submodule?
-      - blob = diff_file.blob
       .file-actions.hidden-xs
-        - if blob.readable_text?
+        = render 'projects/diffs/viewer_switcher', diff_file: diff_file
+
+        - if diff_file.rendered_as_text?(ignore_errors: false)
           = link_to '#', class: 'js-toggle-diff-comments btn active has-tooltip', title: "Toggle comments for this file", disabled: @diff_notes_disabled do
             = icon('comment')
           \
-          - if editable_diff?(diff_file)
-            - link_opts = @merge_request.persisted? ? { from_merge_request_iid: @merge_request.iid } : {}
-            = edit_blob_link(@merge_request.source_project, @merge_request.source_branch, diff_file.new_path,
-                             blob: blob, link_opts: link_opts)
+
+        - if @merge_request && @merge_request.source_project && editable_diff?(diff_file)
+          - link_opts = @merge_request.persisted? ? { from_merge_request_iid: @merge_request.iid } : {}
+          = edit_blob_link(@merge_request.source_project, @merge_request.source_branch, diff_file.new_path,
+                           blob: blob, link_opts: link_opts)
 
         = view_file_button(diff_file.content_sha, diff_file.file_path, project)
         = view_on_environment_button(diff_file.content_sha, diff_file.file_path, environment) if environment

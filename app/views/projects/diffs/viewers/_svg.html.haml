@@ -1,0 +1,11 @@
+- diff_file = viewer.diff_file
+- blob = diff_file.blob
+- if blob
+  - data = sanitize_svg_data(blob.data)
+  - blob_raw_path = "data:#{blob.mime_type};base64,#{Base64.encode64(data)}"
+- old_blob = diff_file.old_blob
+- if old_blob
+  - old_data = sanitize_svg_data(old_blob.data)
+  - old_blob_raw_path = "data:#{old_blob.mime_type};base64,#{Base64.encode64(old_data)}"
+
+= render 'projects/diffs/viewers/image', viewer: viewer, blob_raw_path: blob_raw_path, old_blob_raw_path: old_blob_raw_path

@@ -1,8 +1,8 @@
 - diff_file = viewer.diff_file
 - blob = diff_file.blob
 - old_blob = diff_file.old_blob
-- blob_raw_path = diff_file_blob_raw_path(diff_file)
-- old_blob_raw_path = diff_file_old_blob_raw_path(diff_file)
+- blob_raw_path = local_assigns.fetch(:blob_raw_path) { diff_file_blob_raw_path(diff_file) }
+- old_blob_raw_path = local_assigns.fetch(:old_blob_raw_path) { diff_file_old_blob_raw_path(diff_file) }
 
 - if diff_file.new_file? || diff_file.deleted_file?
   .image
@@ -60,7 +60,6 @@
           .drag-track
             .dragger{ :style => "left: 0px;" }
           .opaque
-
 
   .view-modes.hide
     %ul.view-modes-menu

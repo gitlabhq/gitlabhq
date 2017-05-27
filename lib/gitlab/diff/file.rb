@@ -17,7 +17,8 @@ module Gitlab
       # large files referred to in "Large File Storage" are much more likely to be
       # binary than text.
       RICH_VIEWERS = [
-        DiffViewer::Image
+        DiffViewer::Image,
+        DiffViewer::SVG
       ].sort_by { |v| v.binary? ? 0 : 1 }.freeze
 
       def initialize(diff, repository:, diff_refs: nil, fallback_diff_refs: nil)
@@ -239,6 +240,10 @@ module Gitlab
 
       def rendered_as_text?(ignore_errors: true)
         simple_viewer.is_a?(DiffViewer::Text) && (ignore_errors || simple_viewer.render_error.nil?)
+      end
+
+      def show_viewer_switcher?
+        rendered_as_text? && rich_viewer
       end
 
       private

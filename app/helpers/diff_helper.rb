@@ -121,7 +121,7 @@ module DiffHelper
   end
 
   def editable_diff?(diff_file)
-    !diff_file.deleted_file? && @merge_request && @merge_request.source_project
+    !diff_file.deleted_file? && diff_file.blob.readable_text?
   end
 
   def diff_render_error_reason(viewer)
@@ -139,8 +139,15 @@ module DiffHelper
   end
 
   def diff_render_error_options(viewer)
+    error = viewer.render_error
     diff_file = viewer.diff_file
     options = []
+
+    # If the error is `:server_side_but_stored_externally`, the simple viewer will show the same error,
+    # so don't bother switching.
+    if viewer.rich? && diff_file.rendered_as_text? && error != :server_side_but_stored_externally
+      options << link_to('view the source diff', '#', class: 'js-diff-viewer-switch-btn', data: { viewer: 'simple' })
+    end
 
     blob_url = namespace_project_blob_path(@project.namespace, @project, tree_join(diff_file.content_sha, diff_file.file_path))
     options << link_to('view the blob', blob_url)

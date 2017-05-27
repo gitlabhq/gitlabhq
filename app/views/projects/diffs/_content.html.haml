@@ -1,2 +1,8 @@
+- simple_viewer = diff_file.simple_viewer
+- rich_viewer = diff_file.rich_viewer
+
 .diff-content
-  = render 'projects/diffs/viewer', viewer: diff_file.rich_viewer || diff_file.simple_viewer
+  = render 'projects/diffs/viewer', viewer: simple_viewer, hidden: !!rich_viewer
+
+  - if rich_viewer
+    = render 'projects/diffs/viewer', viewer: rich_viewer
