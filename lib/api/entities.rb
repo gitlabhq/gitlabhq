@@ -862,6 +862,7 @@ module API
       expose :active
       expose :is_shared
       expose :name
+      expose :online?, as: :online
     end
 
     class RunnerDetails < Runner
