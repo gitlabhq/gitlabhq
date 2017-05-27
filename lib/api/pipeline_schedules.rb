@@ -114,20 +114,16 @@ module API
 
         not_found!('PipelineSchedule') unless pipeline_schedule
 
+        status :accepted
         present pipeline_schedule.destroy, with: Entities::PipelineScheduleDetails
       end
     end
 
     helpers do
-      def pipeline_schedules
-        @pipeline_schedules ||=
-          user_project.pipeline_schedules.preload([:owner, :last_pipeline])
-      end
-
       def pipeline_schedule
         @pipeline_schedule ||=
           user_project.pipeline_schedules
-                      .preload([:owner, :last_pipeline])
+                      .preload(:owner, :last_pipeline)
                       .find_by(id: params.delete(:pipeline_schedule_id))
       end
     end

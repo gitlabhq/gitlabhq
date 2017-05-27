@@ -267,7 +267,7 @@ describe API::PipelineSchedules do
           delete api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", master)
         end.to change { project.pipeline_schedules.count }.by(-1)
 
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:accepted)
         expect(response).to match_response_schema('pipeline_schedule')
       end
 
