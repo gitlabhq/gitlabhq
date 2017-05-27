@@ -62,7 +62,7 @@ describe 'Unicorn' do
   end
 
   after(:all) do
-    WebMock.disable_net_connect!(allow_localhost: true)
+    webmock_setup_defaults
     Process.kill('TERM', @unicorn_master_pid)
   end
 
