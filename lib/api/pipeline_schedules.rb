@@ -13,11 +13,15 @@ module API
       end
       params do
         use :pagination
+        optional :scope,    type: String, values: %w[active inactive],
+                            desc: 'The scope of pipeline schedules'
       end
       get ':id/pipeline_schedules' do
         authorize! :read_pipeline_schedule, user_project
 
-        present paginate(pipeline_schedules), with: Entities::PipelineSchedule
+        schedules = PipelineSchedulesFinder.new(user_project).execute(scope: params[:scope])
+          .preload([:owner, :last_pipeline])
+        present paginate(schedules), with: Entities::PipelineSchedule
       end
 
       desc 'Get a single pipeline schedule' do
@@ -41,8 +45,8 @@ module API
         requires :description, type: String, desc: 'The description of pipeline schedule'
         requires :ref, type: String, desc: 'The branch/tag name will be triggered'
         requires :cron, type: String, desc: 'The cron'
-        requires :cron_timezone, type: String, desc: 'The timezone'
-        requires :active, type: Boolean, desc: 'The activation of pipeline schedule'
+        optional :cron_timezone, type: String, default: 'UTC', desc: 'The timezone'
+        optional :active, type: Boolean, default: true, desc: 'The activation of pipeline schedule'
       end
       post ':id/pipeline_schedules' do
         authorize! :create_pipeline_schedule, user_project

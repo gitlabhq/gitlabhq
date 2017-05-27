@@ -43,6 +43,24 @@ describe API::PipelineSchedules do
           get api("/projects/#{project.id}/pipeline_schedules", developer)
         end.not_to exceed_query_limit(control_count)
       end
+
+      %w[active inactive].each do |target|
+        context "when scope is #{target}" do
+          before do
+            create(:ci_pipeline_schedule, project: project, active: active?(target))
+          end
+
+          it 'returns matched pipeline schedules' do
+            get api("/projects/#{project.id}/pipeline_schedules", developer), scope: target
+
+            expect(json_response.map{ |r| r['active'] }).to all(eq(active?(target)))
+          end
+        end
+
+        def active?(str)
+          (str == 'active') ? true : false
+        end
+      end
     end
 
     context 'authenticated user with invalid permissions' do
