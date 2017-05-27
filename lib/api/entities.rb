@@ -690,8 +690,11 @@ module API
       expose :id
       expose :description, :ref, :cron, :cron_timezone, :next_run_at, :active
       expose :created_at, :updated_at
-      expose :last_pipeline, using: Entities::PipelineBasic, if: { type: :full }
       expose :owner, using: Entities::UserBasic
+    end
+
+    class PipelineScheduleDetails < PipelineSchedule
+      expose :last_pipeline, using: Entities::PipelineBasic
     end
 
     class EnvironmentBasic < Grape::Entity

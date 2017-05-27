@@ -21,7 +21,7 @@ module API
       end
 
       desc 'Get a single pipeline schedule' do
-        success Entities::PipelineSchedule
+        success Entities::PipelineScheduleDetails
       end
       params do
         requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline schedule id'
@@ -31,11 +31,11 @@ module API
 
         not_found!('PipelineSchedule') unless pipeline_schedule
 
-        present pipeline_schedule, with: Entities::PipelineSchedule, type: :full
+        present pipeline_schedule, with: Entities::PipelineScheduleDetails
       end
 
       desc 'Create a new pipeline schedule' do
-        success Entities::PipelineSchedule
+        success Entities::PipelineScheduleDetails
       end
       params do
         requires :description, type: String, desc: 'The description of pipeline schedule'
@@ -52,14 +52,14 @@ module API
           .execute
 
         if pipeline_schedule.persisted?
-          present pipeline_schedule, with: Entities::PipelineSchedule, type: :full
+          present pipeline_schedule, with: Entities::PipelineScheduleDetails
         else
           render_validation_error!(pipeline_schedule)
         end
       end
 
       desc 'Edit a pipeline schedule' do
-        success Entities::PipelineSchedule
+        success Entities::PipelineScheduleDetails
       end
       params do
         requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline schedule id'
@@ -75,14 +75,14 @@ module API
         not_found!('PipelineSchedule') unless pipeline_schedule
 
         if pipeline_schedule.update(declared_params(include_missing: false))
-          present pipeline_schedule, with: Entities::PipelineSchedule, type: :full
+          present pipeline_schedule, with: Entities::PipelineScheduleDetails
         else
           render_validation_error!(pipeline_schedule)
         end
       end
 
       desc 'Take ownership of a pipeline schedule' do
-        success Entities::PipelineSchedule
+        success Entities::PipelineScheduleDetails
       end
       params do
         requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline schedule id'
@@ -93,14 +93,14 @@ module API
         not_found!('PipelineSchedule') unless pipeline_schedule
 
         if pipeline_schedule.own!(current_user)
-          present pipeline_schedule, with: Entities::PipelineSchedule, type: :full
+          present pipeline_schedule, with: Entities::PipelineScheduleDetails
         else
           render_validation_error!(pipeline_schedule)
         end
       end
 
       desc 'Delete a pipeline schedule' do
-        success Entities::PipelineSchedule
+        success Entities::PipelineScheduleDetails
       end
       params do
         requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline schedule id'
@@ -110,7 +110,7 @@ module API
 
         not_found!('PipelineSchedule') unless pipeline_schedule
 
-        present pipeline_schedule.destroy, with: Entities::PipelineSchedule, type: :full
+        present pipeline_schedule.destroy, with: Entities::PipelineScheduleDetails
       end
     end
 
