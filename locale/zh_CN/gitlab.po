@@ -79,7 +79,7 @@ msgid_plural "Limited to showing %d events at most"
 msgstr[0] "最多显示%d个事件"
 
 msgid "Median"
-msgstr "平均数"
+msgstr "中位数"
 
 msgid "New Issue"
 msgid_plural "New Issues"
@@ -180,7 +180,7 @@ msgid ""
 "The value lying at the midpoint of a series of observed values. E.g., "
 "between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 "
 "= 6."
-msgstr "该值概述了一系列观察值的平均值。例如，在3、5、9之间，平均值是5。在3、5、7、8之间，平均值是（5 + 7）/ 2 = 6。"
+msgstr "该值概述了一系列观察值的中位数。例如，在3、5、9之间，中位数是5。在3、5、7、8之间，中位数是（5 + 7）/ 2 = 6。"
 
 msgid "Time before an issue gets scheduled"
 msgstr "创建议题之前的时间"
