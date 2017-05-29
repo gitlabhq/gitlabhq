@@ -30,14 +30,4 @@ class MetricsService
   def multiprocess_metrics_path
     @multiprocess_metrics_path ||= Rails.root.join(ENV['prometheus_multiproc_dir']).freeze
   end
-
-  def metric_to_prom_line(metric)
-    labels = metric.labels&.map { |key, value| "#{key}=\"#{value}\"" }&.join(',') || ''
-
-    if labels.empty?
-      "#{metric.name} #{metric.value}"
-    else
-      "#{metric.name}{#{labels}} #{metric.value}"
-    end
-  end
 end
