@@ -33,12 +33,6 @@ module SearchHelper
   def parse_search_result(result)
     Gitlab::ProjectSearchResults.parse_search_result(result)
   end
-  
-  def show_notes_tab?
-    [:read_merge_request, :download_code, :read_issue, :read_project_snippet].all? do |ability|
-      can?(current_user, :read_merge_request, @project)
-    end
-  end
 
   private
 

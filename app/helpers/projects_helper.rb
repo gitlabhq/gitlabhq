@@ -85,6 +85,12 @@ module ProjectsHelper
     @nav_tabs ||= get_project_nav_tabs(@project, current_user)
   end
 
+  def project_search_tabs?(tab)
+    abilities = Array(search_tab_ability_map[tab])
+
+    abilities.any? { |ability| can?(current_user, ability, @project) }
+  end
+
   def project_nav_tab?(name)
     project_nav_tabs.include? name
   end
@@ -203,7 +209,17 @@ module ProjectsHelper
       nav_tabs << :container_registry
     end
 
-    tab_ability_map = {
+    tab_ability_map.each do |tab, ability|
+      if can?(current_user, ability, project)
+        nav_tabs << tab
+      end
+    end
+
+    nav_tabs.flatten
+  end
+
+  def tab_ability_map
+    {
       environments: :read_environment,
       milestones:   :read_milestone,
       pipelines:    :read_pipeline,
@@ -215,14 +231,15 @@ module ProjectsHelper
       team:         :read_project_member,
       wiki:         :read_wiki
     }
+  end
 
-    tab_ability_map.each do |tab, ability|
-      if can?(current_user, ability, project)
-        nav_tabs << tab
-      end
-    end
-
-    nav_tabs.flatten
+  def search_tab_ability_map
+    @search_tab_ability_map ||= tab_ability_map.merge(
+      blobs:          :download_code,
+      commits:        :download_code,
+      merge_requests: :read_merge_request,
+      notes:          [:read_merge_request, :download_code, :read_issue, :read_project_snippet]
+    )
   end
 
   def project_lfs_status(project)
