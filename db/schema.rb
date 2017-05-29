@@ -530,8 +530,8 @@ ActiveRecord::Schema.define(version: 20170602003304) do
 
   create_table "geo_push_events", force: :cascade do |t|
     t.integer "project_id", null: false
-    t.integer "event_type", null: false
     t.datetime "created_at", null: false
+    t.integer "event_type", limit: 2, null: false
   end
 
   add_index "geo_push_events", ["event_type"], name: "index_geo_push_events_on_event_type", using: :btree
