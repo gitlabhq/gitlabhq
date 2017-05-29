@@ -26,14 +26,16 @@ module IssueLinks
     def issues
       return @issues if defined?(@issues)
 
+      authorized_issues = IssuesFinder.new(@current_user, project_id: @project.id).execute
       referenced_issues = @issue.referenced_issues.select('issues.*', 'issue_links.id AS issue_links_id')
       referred_by_issues = @issue.referred_by_issues.select('issues.*', 'issue_links.id AS issue_links_id')
+
       union = Gitlab::SQL::Union.new([referenced_issues, referred_by_issues])
 
-      sql = "#{union.to_sql} ORDER BY issue_links_id"
-
-      @issues = Issue.find_by_sql(sql)
-      @issues = Ability.issues_readable_by_user(@issues, @current_user)
+      @issues = Issue.from("(#{union.to_sql}) #{Issue.table_name}")
+                     .where(id: authorized_issues.select(:id))
+                     .preload(project: :namespace)
+                     .reorder('issue_links_id')
     end
 
     def destroy_relation_path(issue)

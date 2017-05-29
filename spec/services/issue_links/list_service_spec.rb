@@ -38,7 +38,7 @@ describe IssueLinks::ListService, service: true do
 
       it 'verifies number of queries' do
         recorded = ActiveRecord::QueryRecorder.new { subject }
-        expect(recorded.count).to be_within(1).of(42)
+        expect(recorded.count).to be_within(1).of(46)
       end
 
       it 'returns related issues JSON' do
