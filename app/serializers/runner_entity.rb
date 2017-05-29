@@ -3,12 +3,14 @@ class RunnerEntity < Grape::Entity
 
   expose :id, :description
 
-  expose :edit_runner_path,
-    if: -> (*) { can?(request.current_user, :admin_build, project)  } do |runner|
+  expose :edit_path,
+    if: -> (*) { can?(request.current_user, :admin_build, project) && runner.specific? } do |runner|
     edit_namespace_project_runner_path(project.namespace, project, runner)
   end
 
   private
+
+  alias_method :runner, :object
 
   def project
     request.project

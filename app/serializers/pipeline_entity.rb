@@ -15,6 +15,21 @@ class PipelineEntity < Grape::Entity
       pipeline)
   end
 
+  expose :flags do
+    expose :latest?, as: :latest
+    expose :triggered?, as: :triggered
+    expose :stuck?, as: :stuck
+    expose :has_yaml_errors?, as: :yaml_errors
+    expose :can_retry?, as: :retryable
+    expose :can_cancel?, as: :cancelable
+  end
+
+  expose :details do
+    expose :detailed_status, as: :status, with: StatusEntity
+    expose :duration
+    expose :finished_at
+  end
+
   expose :ref do
     expose :name do |pipeline|
       pipeline.ref
@@ -43,6 +58,8 @@ class PipelineEntity < Grape::Entity
                                            pipeline.project,
                                            pipeline.id)
   end
+
+  expose :yaml_errors, if: -> (pipeline, _) { pipeline.has_yaml_errors? }
 
   private
 

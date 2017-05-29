@@ -205,13 +205,13 @@ module Ci
 
     def merge_request
       return @merge_request if defined?(@merge_request)
-      
+
       @merge_request ||=
         begin
           merge_requests = MergeRequest.includes(:merge_request_diff)
             .where(source_branch: ref,
                    source_project: pipeline.project)
-            .reorder(iid: :asc)
+            .reorder(iid: :desc)
 
           merge_requests.find do |merge_request|
             merge_request.commits_sha.include?(pipeline.sha)
@@ -372,7 +372,7 @@ module Ci
     end
 
     def has_expiring_artifacts?
-      artifacts_expire_at.present?
+      artifacts_expire_at.present? && artifacts_expire_at > Time.now
     end
 
     def keep_artifacts!

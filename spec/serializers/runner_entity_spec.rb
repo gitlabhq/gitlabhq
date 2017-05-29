@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe RunnerEntity do
-  let(:runner) { create(:ci_runner) }
+  let(:runner) { create(:ci_runner, :specific) }
   let(:entity) { described_class.new(runner, request: request, current_user: user) }
   let(:request) { double('request') }
   let(:project) { create(:empty_project) }
@@ -17,7 +17,7 @@ describe RunnerEntity do
 
     it 'contains required fields' do
       expect(subject).to include(:id, :description)
-      expect(subject).to include(:edit_runner_path)
+      expect(subject).to include(:edit_path)
     end
   end
 end
