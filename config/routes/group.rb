@@ -5,8 +5,8 @@ resources :groups, only: [:index, :new, :create]
 scope(path: 'groups/*group_id',
       module: :groups,
       as: :group,
-<<<<<<< HEAD
-      constraints: { group_id: Gitlab::Regex.namespace_route_regex }) do
+      constraints: { group_id: Gitlab::PathRegex.full_namespace_route_regex }) do
+
   ## EE-specific
   resource :analytics, only: [:show]
   resource :ldap, only: [] do
@@ -18,9 +18,6 @@ scope(path: 'groups/*group_id',
   resources :ldap_group_links, only: [:index, :create, :destroy]
   ## EE-specific
 
-=======
-      constraints: { group_id: Gitlab::PathRegex.full_namespace_route_regex }) do
->>>>>>> ce-com/master
   resources :group_members, only: [:index, :create, :update, :destroy], concerns: :access_requestable do
     post :resend_invite, on: :member
     delete :leave, on: :collection
