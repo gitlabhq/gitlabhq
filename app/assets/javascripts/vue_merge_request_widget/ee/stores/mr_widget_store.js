@@ -1,12 +1,16 @@
 import CEMergeRequestStore from '../../stores/mr_widget_store';
 
 export default class MergeRequestStore extends CEMergeRequestStore {
+  constructor(data) {
+    super(data);
+    this.initCodeclimate(data);
+  }
+
   setData(data) {
     this.initGeo(data);
     this.initSquashBeforeMerge(data);
     this.initRebase(data);
     this.initApprovals(data);
-    this.initCodeclimate(data);
 
     super.setData(data);
   }
