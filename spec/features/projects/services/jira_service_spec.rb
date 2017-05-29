@@ -35,7 +35,7 @@ feature 'Setup Jira service', :feature, :js do
         click_link('JIRA')
         fill_form
         click_button('Test settings and save changes')
-        wait_for_ajax
+        wait_for_requests
 
         expect(page).to have_content('JIRA activated.')
         expect(current_path).to eq(namespace_project_settings_integrations_path(project.namespace, project))
@@ -51,12 +51,12 @@ feature 'Setup Jira service', :feature, :js do
         click_link('JIRA')
         fill_form
         click_button('Test settings and save changes')
-        wait_for_ajax
+        wait_for_requests
 
         expect(page).to have_content('Test failed.Save anyway')
 
-        click_on('Save anyway')
-        wait_for_ajax
+        find('.flash-alert .flash-action').trigger('click')
+        wait_for_requests
 
         expect(page).to have_content('JIRA activated.')
         expect(current_path).to eq(namespace_project_settings_integrations_path(project.namespace, project))

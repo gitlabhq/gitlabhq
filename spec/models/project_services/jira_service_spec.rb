@@ -69,41 +69,6 @@ describe JiraService, models: true do
     end
   end
 
-  describe '#can_test?' do
-    let(:jira_service) { described_class.new }
-
-    it 'returns false if username is blank' do
-      allow(jira_service).to receive_messages(
-        url: 'http://jira.example.com',
-        username: '',
-        password: '12345678'
-      )
-
-      expect(jira_service.can_test?).to be_falsy
-    end
-
-    it 'returns false if password is blank' do
-      allow(jira_service).to receive_messages(
-        url: 'http://jira.example.com',
-        username: 'tester',
-        password: ''
-      )
-
-      expect(jira_service.can_test?).to be_falsy
-    end
-
-    it 'returns true if password and username are present' do
-      jira_service = described_class.new
-      allow(jira_service).to receive_messages(
-        url: 'http://jira.example.com',
-        username: 'tester',
-        password: '12345678'
-      )
-
-      expect(jira_service.can_test?).to be_truthy
-    end
-  end
-
   describe '#close_issue' do
     let(:custom_base_url) { 'http://custom_url' }
     let(:user)    { create(:user) }

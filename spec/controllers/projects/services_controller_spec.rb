@@ -64,14 +64,14 @@ describe Projects::ServicesController do
     end
 
     context 'failure' do
-      it 'returns 500 status code and the error message' do
+      it 'returns success status code and the error message' do
         expect(HipChat::Client).to receive(:new).with('hipchat_token_p', anything).and_raise('Bad test')
 
         put :test, namespace_id: project.namespace.id, project_id: project.id, id: service.id, service: service_params
 
         expect(response.status).to eq(200)
         expect(JSON.parse(response.body)).
-          to eq('error' => true, 'message' => 'Test failed', 'service_response' => 'Bad test')
+          to eq('error' => true, 'message' => 'Test failed.', 'service_response' => 'Bad test')
       end
     end
   end
