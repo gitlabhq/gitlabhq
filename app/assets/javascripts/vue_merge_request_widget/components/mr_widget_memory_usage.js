@@ -1,4 +1,6 @@
 import statusCodes from '~/lib/utils/http_status';
+import { bytesToMiB } from '~/lib/utils/number_utils';
+
 import MemoryGraph from '../../vue_shared/components/memory_graph';
 import MRWidgetService from '../services/mr_widget_service';
 
@@ -36,9 +38,12 @@ export default {
       return !this.loadingMetrics && !this.hasMetrics && !this.loadFailed;
     },
     memoryChangeType() {
-      if (this.memoryTo > this.memoryFrom) {
+      const memoryTo = Number(this.memoryTo);
+      const memoryFrom = Number(this.memoryFrom);
+
+      if (memoryTo > memoryFrom) {
         return 'increased';
-      } else if (this.memoryTo < this.memoryFrom) {
+      } else if (memoryTo < memoryFrom) {
         return 'decreased';
       }
 
@@ -48,12 +53,15 @@ export default {
   methods: {
     getMegabytes(bytesString) {
       const valueInBytes = Number(bytesString).toFixed(2);
-      return (valueInBytes / (1024 * 1024)).toFixed(2);
+      return (bytesToMiB(valueInBytes)).toFixed(2);
     },
     computeGraphData(metrics, deploymentTime) {
       this.loadingMetrics = false;
       const { memory_before, memory_after, memory_values } = metrics;
 
+      // Both `memory_before` and `memory_after` objects
+      // have peculiar structure where accessing only a specific
+      // index yeilds correct value that we can use to show memory delta.
       if (memory_before.length > 0) {
         this.memoryFrom = this.getMegabytes(memory_before[0].value[1]);
       }
