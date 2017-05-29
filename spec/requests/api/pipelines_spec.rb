@@ -241,7 +241,7 @@ describe API::Pipelines do
               expect(response).to include_pagination_headers
               expect(json_response).not_to be_empty
 
-              pipeline_ids = Ci::Pipeline.all.sort_by { |p| p.user.id }.map(&:id)
+              pipeline_ids = Ci::Pipeline.all.order(:user_id).map(&:id)
               expect(json_response.map { |r| r['id'] }).to eq(pipeline_ids)
             end
 
