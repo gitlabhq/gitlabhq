@@ -128,7 +128,6 @@ import '~/notes';
       beforeEach(() => {
         note = {
           id: 1,
-          discussion_html: null,
           valid: true,
           note: 'heya',
           html: '<div>heya</div>',
