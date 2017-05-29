@@ -93,7 +93,7 @@
     "diverged_commits_count": { "type": "integer" },
     "commit_change_content_path": { "type": "string" },
     "remove_wip_path": { "type": "string" },
-<<<<<<< HEAD
+    "remove_source_branch": { "type": ["boolean", "null"] },
     // EE-specific
     "rebase_commit_sha": { "type": ["string", "null"] },
     "approvals_before_merge": { "type": ["integer", "null"] },
@@ -105,10 +105,6 @@
     "approved": { "type": "boolean" },
     "approvals_path": { "type": ["string", "null"] },
     "ff_only_enabled": { "type": "boolean" }
-=======
-    "commits_count": { "type": "integer" },
-    "remove_source_branch": { "type": ["boolean", "null"] }
->>>>>>> ce-com/master
   },
   "additionalProperties": false
 }
