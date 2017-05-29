@@ -501,8 +501,8 @@ ActiveRecord::Schema.define(version: 20170602003304) do
   add_index "forked_project_links", ["forked_to_project_id"], name: "index_forked_project_links_on_forked_to_project_id", unique: true, using: :btree
 
   create_table "geo_event_log", force: :cascade do |t|
-    t.integer "push_event_id"
     t.datetime "created_at", null: false
+    t.integer "push_event_id"
   end
 
   add_index "geo_event_log", ["created_at"], name: "index_geo_event_log_on_created_at", using: :btree
