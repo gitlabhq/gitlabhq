@@ -22,7 +22,7 @@
         - create_project_issue = can?(current_user, :create_issue, @project)
         - merge_project = can?(current_user, :create_merge_request, @project) ? @project : (current_user && current_user.fork_of(@project))
         - create_project_snippet = can?(current_user, :create_project_snippet, @project)
-        - if (create_project_issue || create_project_mr || create_project_snippet)
+        - if (create_project_issue || merge_project || create_project_snippet)
           %li.dropdown-bold-header This project
           - if create_project_issue  
             %li
