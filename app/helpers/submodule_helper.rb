@@ -9,6 +9,7 @@ module SubmoduleHelper
 
     if url =~ /([^\/:]+)\/([^\/]+(?:\.git)?)\Z/
       namespace, project = $1, $2
+      project.rstrip!
       project.sub!(/\.git\z/, '')
 
       if self_url?(url, namespace, project)

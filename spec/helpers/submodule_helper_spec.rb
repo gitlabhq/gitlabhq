@@ -102,6 +102,11 @@ describe SubmoduleHelper do
         expect(submodule_links(submodule_item)).to eq(['https://gitlab.com/gitlab-org/gitlab-ce', 'https://gitlab.com/gitlab-org/gitlab-ce/tree/hash'])
       end
 
+      it 'handles urls with trailing whitespace' do
+        stub_url('http://gitlab.com/gitlab-org/gitlab-ce.git  ')
+        expect(submodule_links(submodule_item)).to eq(['https://gitlab.com/gitlab-org/gitlab-ce', 'https://gitlab.com/gitlab-org/gitlab-ce/tree/hash'])
+      end
+
       it 'returns original with non-standard url' do
         stub_url('http://gitlab.com/another/gitlab-org/gitlab-ce.git')
         expect(submodule_links(submodule_item)).to eq([repo.submodule_url_for, nil])
