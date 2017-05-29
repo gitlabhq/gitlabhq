@@ -42,12 +42,6 @@ module SearchHelper
     Project.find(blob['_parent'])
   end
   
-  def show_notes_tab?
-    [:read_merge_request, :download_code, :read_issue, :read_project_snippet].any? do |ability|
-      can?(current_user, :read_merge_request, @project)
-    end
-  end
-
   private
 
   # Autocomplete results for various settings pages
