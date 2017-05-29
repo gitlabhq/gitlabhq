@@ -263,17 +263,6 @@ describe JiraService, models: true do
           }
         )
       end
-<<<<<<< HEAD
-  
-      it "reset password if url changed" do
-        @jira_service.url = 'http://jira_edited.example.com/rest/api/2'
-        @jira_service.save
-        expect(@jira_service.password).to be_nil
-      end
-  
-      it "does not reset password if username changed" do
-        @jira_service.username = "some_name"
-=======
 
       context 'when only web url present' do
         it 'reset password if url changed' do
@@ -322,7 +311,6 @@ describe JiraService, models: true do
 
       it 'does not reset password if username changed' do
         @jira_service.username = 'some_name'
->>>>>>> ce-com/master
         @jira_service.save
 
         expect(@jira_service.password).to eq('password')
@@ -344,13 +332,8 @@ describe JiraService, models: true do
         expect(@jira_service.password).to be_nil
       end
     end
-<<<<<<< HEAD
-    
-    context "when no password was previously set" do
-=======
 
     context 'when no password was previously set' do
->>>>>>> ce-com/master
       before do
         @jira_service = JiraService.create(
           project: project,
