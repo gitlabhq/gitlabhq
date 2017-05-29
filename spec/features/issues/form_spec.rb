@@ -26,35 +26,15 @@ describe 'New/edit issue', :feature, :js do
 
     describe 'shorten users API pagination limit' do
       before do
+        # Using `allow_any_instance_of`/`and_wrap_original`, `original` would
+        # somehow refer to the very block we defined to _wrap_ that method, instead of
+        # the original method, resulting in infinite recurison when called.
+        # This is likely a bug with helper modules included into dynamically generated view classes.
+        # To work around this, we have to hold on to and call to the original implementation manually.
+        original_issue_dropdown_options = FormHelper.instance_method(:issue_dropdown_options)
         allow_any_instance_of(FormHelper).to receive(:issue_dropdown_options).and_wrap_original do |original, *args|
-          has_multiple_assignees = *args[1]
-
-          options = {
-            toggle_class: 'js-user-search js-assignee-search js-multiselect js-save-user-data',
-            title: 'Select assignee',
-            filter: true,
-            dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-assignee',
-            placeholder: 'Search users',
-            data: {
-              per_page: 1,
-              null_user: true,
-              current_user: true,
-              project_id: project.try(:id),
-              field_name: "issue[assignee_ids][]",
-              default_label: 'Assignee',
-              'max-select': 1,
-              'dropdown-header': 'Assignee',
-              multi_select: true,
-              'input-meta': 'name',
-              'always-show-selectbox': true
-            }
-          }
-
-          if has_multiple_assignees
-            options[:title] = 'Select assignee(s)'
-            options[:data][:'dropdown-header'] = 'Assignee(s)'
-            options[:data].delete(:'max-select')
-          end
+          options = original_issue_dropdown_options.bind(original.receiver).call(*args)
+          options[:data][:per_page] = 2
 
           options
         end
