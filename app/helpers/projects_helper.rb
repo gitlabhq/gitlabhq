@@ -130,12 +130,6 @@ module ProjectsHelper
     # Don't show option "everyone with access" if project is private
     options = project_feature_options
 
-    if @project.private?
-      level = @project.project_feature.send(field)
-      options.delete('Everyone with access')
-      highest_available_option = options.values.max if level == ProjectFeature::ENABLED
-    end
-
     options = options_for_select(options, selected: highest_available_option || @project.project_feature.public_send(field))
 
     content_tag(
