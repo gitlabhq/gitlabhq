@@ -4,7 +4,7 @@ import VueResource from 'vue-resource';
 
 Vue.use(VueResource);
 
-$(() => {
+document.addEventListener('DOMContentLoaded', () => {
   window.gl = window.gl || {};
 
   const target = gl.utils.getParameterByName('privateToken') || 'local';
@@ -37,7 +37,13 @@ $(() => {
      }
   });
 
-
+  /*new Vue({
+    el: '#environments-list-view',
+    components: {
+      'environments-table-app': EnvironmentsComponent,
+    },
+    render: createElement => createElement('environments-table-app'),
+  });*/
 
 
 });
