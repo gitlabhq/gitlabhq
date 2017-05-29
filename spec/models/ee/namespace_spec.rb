@@ -10,6 +10,38 @@ describe Namespace, models: true do
   it { is_expected.to delegate_method(:shared_runners_seconds_last_reset).to(:namespace_statistics) }
   it { is_expected.to validate_inclusion_of(:plan).in_array(Namespace::EE_PLANS.keys).allow_blank }
 
+  context 'scopes' do
+    describe '.with_plan' do
+      let!(:namespace) { create :namespace, plan: namespace_plan }
+
+      context 'plan is set' do
+        let(:namespace_plan) { EE::Namespace::BRONZE_PLAN }
+
+        it 'returns namespaces with plan' do
+          expect(described_class.with_plan).to eq([namespace])
+        end
+      end
+
+      context 'plan is not set' do
+        context 'plan is empty string' do
+          let(:namespace_plan) { '' }
+
+          it 'returns no namespace' do
+            expect(described_class.with_plan).to be_empty
+          end
+        end
+
+        context 'plan is nil' do
+          let(:namespace_plan) { nil }
+
+          it 'returns no namespace' do
+            expect(described_class.with_plan).to be_empty
+          end
+        end
+      end
+    end
+  end
+
   describe '#feature_available?' do
     let(:group) { create(:group, plan: plan_license) }
 
