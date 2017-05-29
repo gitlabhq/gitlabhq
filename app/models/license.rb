@@ -18,6 +18,7 @@ class License < ActiveRecord::Base
   MERGE_REQUEST_APPROVERS_FEATURE = 'GitLab_MergeRequestApprovers'.freeze
   MERGE_REQUEST_REBASE_FEATURE = 'GitLab_MergeRequestRebase'.freeze
   MERGE_REQUEST_SQUASH_FEATURE = 'GitLab_MergeRequestSquash'.freeze
+  MULTIPLE_ISSUE_ASSIGNEES_FEATURE = 'GitLab_MultipleIssueAssignees'.freeze
   OBJECT_STORAGE_FEATURE = 'GitLab_ObjectStorage'.freeze
   PUSH_RULES_FEATURE = 'GitLab_PushRules'.freeze
   RELATED_ISSUES_FEATURE = 'RelatedIssues'.freeze
@@ -48,6 +49,7 @@ class License < ActiveRecord::Base
     merge_request_approvers: MERGE_REQUEST_APPROVERS_FEATURE,
     merge_request_rebase: MERGE_REQUEST_REBASE_FEATURE,
     merge_request_squash: MERGE_REQUEST_SQUASH_FEATURE,
+    multiple_issue_assignees: MULTIPLE_ISSUE_ASSIGNEES_FEATURE,
     push_rules: PUSH_RULES_FEATURE
   }.freeze
 
@@ -70,6 +72,7 @@ class License < ActiveRecord::Base
     { MERGE_REQUEST_APPROVERS_FEATURE => 1 },
     { MERGE_REQUEST_REBASE_FEATURE => 1 },
     { MERGE_REQUEST_SQUASH_FEATURE => 1 },
+    { MULTIPLE_ISSUE_ASSIGNEES_FEATURE => 1 },
     { PUSH_RULES_FEATURE => 1 },
     { RELATED_ISSUES_FEATURE => 1 }
   ].freeze
@@ -113,6 +116,7 @@ class License < ActiveRecord::Base
     { MERGE_REQUEST_APPROVERS_FEATURE => 1 },
     { MERGE_REQUEST_REBASE_FEATURE => 1 },
     { MERGE_REQUEST_SQUASH_FEATURE => 1 },
+    { MULTIPLE_ISSUE_ASSIGNEES_FEATURE => 1 },
     { OBJECT_STORAGE_FEATURE => 1 },
     { PUSH_RULES_FEATURE => 1 },
     { SERVICE_DESK_FEATURE => 1 }
