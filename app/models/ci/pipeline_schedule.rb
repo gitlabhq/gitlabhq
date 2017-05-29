@@ -10,9 +10,9 @@ module Ci
     has_one :last_pipeline, -> { order(id: :desc) }, class_name: 'Ci::Pipeline'
     has_many :pipelines
 
-    validates :cron, unless: :importing_or_inactive?, cron: true, presence: { unless: :importing_or_inactive? }
-    validates :cron_timezone, cron_timezone: true, presence: { unless: :importing_or_inactive? }
-    validates :ref, presence: { unless: :importing_or_inactive? }
+    validates :cron, unless: :importing?, cron: true, presence: { unless: :importing? }
+    validates :cron_timezone, cron_timezone: true, presence: { unless: :importing? }
+    validates :ref, presence: { unless: :importing? }
     validates :description, presence: true
 
     before_save :set_next_run_at
@@ -28,8 +28,17 @@ module Ci
       !active?
     end
 
+<<<<<<< HEAD
     def importing_or_inactive?
       importing? || inactive?
+=======
+    def deactivate!
+      update_attribute(:active, false)
+    end
+
+    def runnable_by_owner?
+      Ability.allowed?(owner, :create_pipeline, project)
+>>>>>>> 9dfecec... Merge branch '32790-pipeline_schedules-pages-throwing-error-500' into 'master'
     end
 
     def set_next_run_at

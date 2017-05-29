@@ -25,6 +25,14 @@ describe Ci::PipelineSchedule, models: true do
 
       expect(pipeline_schedule).not_to be_valid
     end
+
+    context 'when active is false' do
+      it 'does not allow nullified ref' do
+        pipeline_schedule = build(:ci_pipeline_schedule, :inactive, ref: nil)
+
+        expect(pipeline_schedule).not_to be_valid
+      end
+    end
   end
 
   describe '#set_next_run_at' do
