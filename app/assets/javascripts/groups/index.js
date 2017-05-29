@@ -33,6 +33,7 @@ $(() => {
     methods: {
       fetchGroups(parentGroup) {
         let parentId = null;
+        let getGroups = null;
 
         if (parentGroup) {
           parentId = parentGroup.id;
@@ -40,14 +41,15 @@ $(() => {
 
         const page = gl.utils.getParameterByName('page');
 
-        service.getGroups(parentId, page)
-          .then((response) => {
-            store.setGroups(response.json(), parentGroup);
-            store.storePagination(response.headers);
-          })
-          .catch(() => {
-            // TODO: Handler error
-          });
+        getGroups = service.getGroups(parentId, page);
+        getGroups.then((response) => {
+          store.setGroups(response.json(), parentGroup);
+        })
+        .catch(() => {
+          // TODO: Handler error
+        });
+
+        return getGroups;
       },
       toggleSubGroups(parentGroup = null) {
         if (!parentGroup.isOpen) {
@@ -57,10 +59,18 @@ $(() => {
       },
     },
     created() {
-      const groupFilterList = new GroupFilterableList(form, filter, holder, store);
+      let groupFilterList = null;
+
+      groupFilterList = new GroupFilterableList(form, filter, holder, store);
       groupFilterList.initSearch();
 
-      this.fetchGroups();
+      this.fetchGroups()
+        .then((response) => {
+          store.storePagination(response.headers);
+        })
+        .catch(() => {
+          // TODO: Handle error
+        });
 
       eventHub.$on('toggleSubGroups', this.toggleSubGroups);
     },
