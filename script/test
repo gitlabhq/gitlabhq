@@ -26,18 +26,18 @@ else
   export RAILS_ENV="test" RACK_ENV="test"
 fi
 
-echo "==> Running tests…"
+echo "==> Running tests..."
 
 if [ -n "$1" ]; then
-  if [[ $1 =~ ^spec/javascripts/.* ]]; then
+  if [ "$1" = spec/javascripts/* ]; then
     echo "Sorry, I don't know how to run the '$1' test file."
-    echo "I'm running all JavaScript tests with 'bin/rake karma'…"
+    echo "I'm running all JavaScript tests with 'bin/rake karma'..."
     bin/rake karma
   else
-    if [[ $1 =~ ^features/.* ]]; then
+    if [ "$1" = features/* ]; then
       bin/spinach "$1"
     else
-      if [[ $1 =~ ^spec/.* ]]; then
+      if [ "$1" = spec/* ]; then
         bin/rspec "$1"
       else
         echo "Sorry, I don't know how to run the '$1' test file."

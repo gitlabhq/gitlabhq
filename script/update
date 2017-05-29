@@ -5,41 +5,51 @@
 set -e
 
 # Returns true if the working tree is dirty
-function dirty_working_tree {
-  [[ $(git diff --shortstat 2> /dev/null | tail -n1) != "" ]]
+clean_working_tree() {
+  test -z "git diff --shortstat 2> /dev/null | tail -n1"
 }
+
+db_running()
+{
+  db_host=$(pwd | sed 's/gitlab/postgresql/')
+
+  if ! (pg_isready --host="$db_host"); then
+    echo "------------------------------------------------------------"
+    echo "Make sure Postgres is running for host '$db_host' otherwise db:migrate will fail"
+    echo "------------------------------------------------------------"
+    exit 1
+  fi
+}
+
 
 cd "$(dirname "$0")/.."
 
-PREVIOUS_HEAD=$(git rev-parse HEAD)
-CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-STASH_CREATED="false"
+previous_head=$(git rev-parse HEAD)
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+stash_created="false"
 
 git checkout -- Gemfile.lock db/schema.rb
 
-if [ $(dirty_working_tree) ]; then
-  echo "==> Stashing the following changes (retrieve them with `git stash pop` if needed)…"
-  git diff --shortstat
-  git stash
-  STASH_CREATED="true"
+if ! (clean_working_tree); then
+  echo "==> Stashing the following changes (retrieve them with 'git stash pop' if needed)..."
+  git diff --name-status
+  # git stash
+  stash_created="true"
 fi
 
-echo "==> Checking out and pulling ${CURRENT_BRANCH}…"
-git pull --ff-only origin $CURRENT_BRANCH
+echo "==> Checking out and pulling ${current_branch}..."
+git pull --ff-only origin "$current_branch"
 
 script/bootstrap
 
-if [ "$STASH_CREATED" = "true" ]; then
-  echo "==> Retrieving stashed changes…"
+if [ "$stash_created" = "true" ]; then
+  echo "==> Retrieving stashed changes..."
   git stash pop
 fi
 
-if [ "$(git diff ${PREVIOUS_HEAD}...HEAD -- db/schema.rb 2> /dev/null | tail -n1)" != "" ]; then
-  echo "==> Updating db…"
-  echo ""
-  echo "------------------------------------------------------------"
-  echo "Make sure Postgres is running otherwise db:migrate will fail"
-  echo "------------------------------------------------------------"
+if ! (test -z "$(git diff "$previous_head"...HEAD -- db/schema.rb 2> /dev/null | tail -n1)"); then
+  db_running
+  echo "==> Updating db..."
   echo ""
   # run all database migrations to ensure everything is up to date.
   bin/rake db:migrate db:test:prepare

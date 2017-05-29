@@ -9,26 +9,62 @@ cd "$(dirname "$0")/.."
 
 if [ "$(uname -s)" = "Darwin" ]; then
   if [ -f "Brewfile" ]; then
+    brew tap Homebrew/bundle
     brew bundle check >/dev/null 2>&1  || {
-      echo "==> Installing Homebrew dependencies…"
+      echo "==> Installing Homebrew dependencies..."
       brew bundle
     }
   fi
 fi
 
 if [ -f ".ruby-version" ]; then
-  if [ $(command -v "rbenv") ] && [ -z "$(rbenv version-name 2>/dev/null)" ]; then
-    echo "==> Installing Ruby…"
+  expected_ruby_version=$(cat .ruby-version)
+  echo "expected_ruby_version: ${expected_ruby_version}"
+  if test $(command -v rbenv >/dev/null 2>&1) && [ -z "$(rbenv version-name 2>/dev/null)" ]; then
+    echo "==> Installing Ruby $expected_ruby_version with rbenv..."
     rbenv install --skip-existing
     which bundle >/dev/null 2>&1 || {
       gem install bundler
       rbenv rehash
     }
+  else
+    current_ruby_version=$(ruby --version | cut -f2 -d' ' | sed 's/p[0-9]*//')
+    echo "current_ruby_version: $current_ruby_version"
+    if [ "$current_ruby_version" != "$expected_ruby_version" ]; then
+
+      # Initiate chruby
+      if [ -f /usr/local/share/chruby/chruby.sh ]; then
+        source /usr/local/share/chruby/chruby.sh
+      elif [ -f /usr/local/opt/chruby/share/chruby/chruby.sh ]; then
+        source /usr/local/share/chruby/chruby.sh
+      fi
+
+      if [ test $(command -v chruby >/dev/null 2>&1) ]; then
+        echo "==> Switching to Ruby ${expected_ruby_version} using 'chruby'..."
+        if ! test $(chruby "$expected_ruby_version" 2>&1); then
+          if test $(command -v ruby-install >/dev/null 2>&1); then
+            echo "==> Installing Ruby $expected_ruby_version with 'ruby-install'..."
+            ruby-install ruby "$expected_ruby_version"
+          fi
+          echo $(which chruby)
+          chruby -h
+          chruby "$expected_ruby_version"
+        fi
+      fi
+    fi
+  fi
+
+  which bundle >/dev/null 2>&1 || {
+    gem install bundler
+  }
+
+  if [ "$(command -v rbenv)" ]; then
+    rbenv rehash
   fi
 fi
 
 if [ -f "Gemfile" ]; then
-  echo "==> Installing gem dependencies…"
+  echo "==> Installing gem dependencies..."
   bundle check >/dev/null 2>&1 || {
     bundle config build.eventmachine --with-cppflags=-I/usr/local/opt/openssl/include
     bundle install --jobs 4 --quiet --without production
@@ -36,7 +72,7 @@ if [ -f "Gemfile" ]; then
 fi
 
 if [ -f "yarn.lock" ]; then
-  echo "==> Installing NPM packages…"
+  echo "==> Installing NPM packages..."
   yarn check --ignore-engines >/dev/null 2>&1 || {
     yarn install --pure-lockfile --ignore-engines
   }

@@ -9,7 +9,7 @@ cd "$(dirname "$0")/.."
 
 script/bootstrap
 
-echo "==> Setting up DB…"
+echo "==> Setting up DB..."
 # reset database to a fresh state.
 bin/rake db:create db:reset
 
