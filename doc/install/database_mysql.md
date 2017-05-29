@@ -281,5 +281,5 @@ GitLab database to `longtext` columns, which can persist values of up to 4GB
 Details can be found in the [PostgreSQL][postgres-text-type] and
 [MySQL][mysql-text-types] manuals.
 
-[postgres-text-type]: http://www.postgresql.org/docs/9.1/static/datatype-character.html
+[postgres-text-type]: http://www.postgresql.org/docs/9.2/static/datatype-character.html
 [mysql-text-types]: http://dev.mysql.com/doc/refman/5.7/en/string-type-overview.html

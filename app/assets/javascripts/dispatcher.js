@@ -129,7 +129,7 @@ import ApproversSelect from './approvers_select';
           break;
         case 'projects:merge_requests:index':
         case 'projects:issues:index':
-          if (gl.FilteredSearchManager) {
+          if (gl.FilteredSearchManager && document.querySelector('.filtered-search')) {
             new gl.FilteredSearchManager(page === 'projects:issues:index' ? 'issues' : 'merge_requests');
           }
           Issuable.init();

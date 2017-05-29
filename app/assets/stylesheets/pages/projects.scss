@@ -255,7 +255,6 @@
       font-size: 13px;
       font-weight: 600;
       line-height: 13px;
-      padding: $gl-vert-padding $gl-padding;
       letter-spacing: .4px;
       padding: 6px 14px;
       text-align: center;
@@ -390,10 +389,6 @@ a.deploy-project-label {
   .dropdown-menu {
     width: 240px;
   }
-}
-
-.last-push-widget {
-  margin-top: -1px;
 }
 
 .fork-namespaces {

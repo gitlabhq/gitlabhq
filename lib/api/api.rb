@@ -49,9 +49,9 @@ module API
     end
 
     before { allow_access_with_scope :api }
-    before { Gitlab::I18n.set_locale(current_user) }
+    before { Gitlab::I18n.locale = current_user&.preferred_language }
 
-    after { Gitlab::I18n.reset_locale }
+    after { Gitlab::I18n.use_default_locale }
 
     rescue_from Gitlab::Access::AccessDeniedError do
       rack_response({ 'message' => '403 Forbidden' }.to_json, 403)

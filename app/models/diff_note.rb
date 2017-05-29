@@ -68,7 +68,7 @@ class DiffNote < Note
     return false unless supported?
     return true if for_commit?
 
-    diff_refs ||= noteable_diff_refs
+    diff_refs ||= noteable.diff_refs
 
     self.position.diff_refs == diff_refs
   end
@@ -104,7 +104,7 @@ class DiffNote < Note
       self.project,
       nil,
       old_diff_refs: self.position.diff_refs,
-      new_diff_refs: noteable_diff_refs,
+      new_diff_refs: noteable.diff_refs,
       paths: self.position.paths
     ).execute(self)
   end

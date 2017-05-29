@@ -472,6 +472,7 @@ lint:javascript:report:
     paths:
     - eslint-report.html
 
+<<<<<<< HEAD
 # Trigger docs build
 # https://gitlab.com/gitlab-com/doc-gitlab-com/blob/master/README.md#deployment-process
 trigger_docs:
@@ -490,6 +491,8 @@ trigger_docs:
   only:
     - master@gitlab-org/gitlab-ee
 
+=======
+>>>>>>> ce-com/master
 pages:
   before_script: []
   stage: pages

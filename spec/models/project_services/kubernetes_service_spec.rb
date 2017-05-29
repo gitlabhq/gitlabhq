@@ -7,6 +7,27 @@ describe KubernetesService, models: true, caching: true do
   let(:project) { build_stubbed(:kubernetes_project) }
   let(:service) { project.kubernetes_service }
 
+<<<<<<< HEAD
+=======
+  # We use Kubeclient to interactive with the Kubernetes API. It will
+  # GET /api/v1 for a list of resources the API supports. This must be stubbed
+  # in addition to any other HTTP requests we expect it to perform.
+  let(:discovery_url) { service.api_url + '/api/v1' }
+  let(:discovery_response) { { body: kube_discovery_body.to_json } }
+
+  let(:pods_url) { service.api_url + "/api/v1/namespaces/#{service.actual_namespace}/pods" }
+  let(:pods_response) { { body: kube_pods_body(kube_pod).to_json } }
+
+  def stub_kubeclient_discover
+    WebMock.stub_request(:get, discovery_url).to_return(discovery_response)
+  end
+
+  def stub_kubeclient_pods
+    stub_kubeclient_discover
+    WebMock.stub_request(:get, pods_url).to_return(pods_response)
+  end
+
+>>>>>>> ce-com/master
   describe "Associations" do
     it { is_expected.to belong_to :project }
   end
@@ -82,7 +103,35 @@ describe KubernetesService, models: true, caching: true do
 
       it 'sets the namespace to the default' do
         expect(kube_namespace).not_to be_nil
-        expect(kube_namespace[:placeholder]).to match(/\A#{Gitlab::Regex::PATH_REGEX_STR}-\d+\z/)
+        expect(kube_namespace[:placeholder]).to match(/\A#{Gitlab::PathRegex::PATH_REGEX_STR}-\d+\z/)
+      end
+    end
+  end
+
+  describe '#actual_namespace' do
+    subject { service.actual_namespace }
+
+    it "returns the default namespace" do
+      is_expected.to eq(service.send(:default_namespace))
+    end
+    
+    context 'when namespace is specified' do
+      before do
+        service.namespace = 'my-namespace'
+      end
+
+      it "returns the user-namespace" do
+        is_expected.to eq('my-namespace')
+      end
+    end
+
+    context 'when service is not assigned to project' do
+      before do
+        service.project = nil
+      end
+
+      it "does not return namespace" do
+        is_expected.to be_nil
       end
     end
   end
@@ -172,13 +221,14 @@ describe KubernetesService, models: true, caching: true do
         kube_namespace = subject.predefined_variables.find { |h| h[:key] == 'KUBE_NAMESPACE' }
 
         expect(kube_namespace).not_to be_nil
-        expect(kube_namespace[:value]).to match(/\A#{Gitlab::Regex::PATH_REGEX_STR}-\d+\z/)
+        expect(kube_namespace[:value]).to match(/\A#{Gitlab::PathRegex::PATH_REGEX_STR}-\d+\z/)
       end
     end
   end
 
   describe '#terminals' do
     let(:environment) { build(:environment, project: project, name: "env", slug: "env-000000") }
+
     subject { service.terminals(environment) }
 
     context 'with invalid pods' do
