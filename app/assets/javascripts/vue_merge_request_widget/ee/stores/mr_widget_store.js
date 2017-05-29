@@ -6,6 +6,7 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     this.initSquashBeforeMerge(data);
     this.initRebase(data);
     this.initApprovals(data);
+    this.initCodeclimate(data);
 
     super.setData(data);
   }
@@ -42,5 +43,34 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     this.approvalsLeft = !!data.approvals_left;
     this.isApproved = !this.approvalsLeft || false;
     this.preventMerge = this.approvalsRequired && this.approvalsLeft;
+  }
+
+  initCodeclimate(data) {
+    this.codeclimate = data.codeclimate;
+    this.codeclimateMetrics = {
+      headIssues: [],
+      baseIssues: [],
+      newIssues: [],
+      resolvedIssues: [],
+    };
+  }
+
+  setCodeclimateHeadMetrics(data) {
+    this.codeclimateMetrics.headIssues = data;
+  }
+
+  setCodeclimateBaseMetrics(data) {
+    this.codeclimateMetrics.baseIssues = data;
+  }
+
+  compareCodeclimateMetrics() {
+    const { headIssues, baseIssues } = this.codeclimateMetrics;
+
+    this.codeclimateMetrics.newIssues = this.filterByFingerprint(headIssues, baseIssues);
+    this.codeclimateMetrics.resolvedIssues = this.filterByFingerprint(baseIssues, headIssues);
+  }
+
+  filterByFingerprint(firstArray, secondArray) { // eslint-disable-line
+    return firstArray.filter(item => !secondArray.find(el => el.fingerprint === item.fingerprint));
   }
 }

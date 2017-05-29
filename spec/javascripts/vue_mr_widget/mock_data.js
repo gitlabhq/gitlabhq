@@ -215,7 +215,7 @@ export default {
     "head_path": "head.json",
     "base_path": "base.json"
   }
-}
+};
 
 export const headIssues = [
   {
