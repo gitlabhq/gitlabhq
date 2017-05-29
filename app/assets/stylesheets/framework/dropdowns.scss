@@ -261,7 +261,13 @@
     text-transform: capitalize;
   }
 
-  .separator + .dropdown-header {
+  .dropdown-bold-header {
+    font-weight: 600;
+    line-height: 22px;
+    padding: 0 16px;
+  }
+
+  .separator + .dropdown-header, .separator + .dropdown-bold-header {
     padding-top: 2px;
   }
 
