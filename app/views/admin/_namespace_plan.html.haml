@@ -2,5 +2,5 @@
   = f.label :plan, class: 'control-label'
   .col-sm-10
     = f.select :plan, options_for_select(Namespace::EE_PLANS.keys.map { |plan| [plan.titleize, plan] }, f.object.plan),
-      { include_blank: 'No associated plan' },
+      { include_blank: 'No plan' },
       class: 'form-control'
