@@ -41,7 +41,7 @@ module SearchHelper
   def find_project_for_blob(blob)
     Project.find(blob['_parent'])
   end
-
+  
   private
 
   # Autocomplete results for various settings pages
