@@ -40,7 +40,7 @@ feature 'Project group links', :feature, :js do
       another_group.add_master(master)
     end
 
-    it 'does not show ancestors' do
+    it 'does not show ancestors', :nested_groups do
       visit namespace_project_settings_members_path(project.namespace, project)
 
       click_link 'Search for a group'

@@ -107,6 +107,18 @@ FactoryGirl.define do
           merge_requests_access_level: merge_requests_access_level,
           repository_access_level: evaluator.repository_access_level
         )
+
+      # Normally the class Projects::CreateService is used for creating
+      # projects, and this class takes care of making sure the owner and current
+      # user have access to the project. Our specs don't use said service class,
+      # thus we must manually refresh things here.
+      owner = project.owner
+
+      if owner && owner.is_a?(User) && !project.pending_delete
+        project.members.create!(user: owner, access_level: Gitlab::Access::MASTER)
+      end
+
+      project.group&.refresh_members_authorized_projects
     end
   end
 
