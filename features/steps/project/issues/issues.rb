@@ -62,7 +62,9 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I click link "New issue"' do
-    page.has_link?('New Issue') ? click_link('New Issue') : click_link('New issue')
+    page.within '#content-body' do
+      page.has_link?('New Issue') ? click_link('New Issue') : click_link('New issue')
+    end
   end
 
   step 'I click "author" dropdown' do
