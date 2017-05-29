@@ -9,7 +9,7 @@
 
     %p= @service.description
   .col-lg-9
-    = form_for(@service, as: :service, url: namespace_project_service_path(@project.namespace, @project, @service.to_param), method: :put, html: { class: 'gl-show-field-errors form-horizontal js-integration-settings-from' }) do |form|
+    = form_for(@service, as: :service, url: namespace_project_service_path(@project.namespace, @project, @service.to_param), method: :put, html: { class: 'gl-show-field-errors form-horizontal js-integration-settings-from', data: { "can-test" => "#{@service.can_test?}" } }) do |form|
       = render 'shared/service_settings', form: form, subject: @service
       .footer-block.row-content-block
         %button.btn.btn-save{ type: 'submit' }
