@@ -16,7 +16,7 @@ if defined?(Unicorn)
 end
 
 # set default directory for multiproces metrics gathering
-ENV['prometheus_multiproc_dir'] ||= 'tmp/prometheus_data_dir'
+ENV['prometheus_multiproc_dir'] ||= 'tmp/prometheus_multiproc_dir'
 
 require ::File.expand_path('../config/environment',  __FILE__)
 

@@ -270,8 +270,7 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'mmap2', '~> 2.2.6'
-  gem 'prometheus-client-mmap', '~>0.7.0.beta3'
+  gem 'prometheus-client-mmap', '~>0.7.0.beta5'
 end
 
 group :development do

@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Gitlab::Metrics do
+  include StubENV
+
   describe '.settings' do
     it 'returns a Hash' do
       expect(described_class.settings).to be_an_instance_of(Hash)
@@ -247,45 +249,53 @@ describe Gitlab::Metrics do
 
     it_behaves_like 'prometheus metrics API'
 
-    describe '#dummy_metric' do
+    describe '#null_metric' do
       subject { described_class.provide_metric(:test) }
 
-      it { is_expected.to be_a(Gitlab::Metrics::DummyMetric) }
+      it { is_expected.to be_a(Gitlab::Metrics::NullMetric) }
     end
 
     describe '#counter' do
       subject { described_class.counter(:counter, 'doc') }
 
-      it { is_expected.to be_a(Gitlab::Metrics::DummyMetric) }
+      it { is_expected.to be_a(Gitlab::Metrics::NullMetric) }
     end
 
     describe '#summary' do
       subject { described_class.summary(:summary, 'doc') }
 
-      it { is_expected.to be_a(Gitlab::Metrics::DummyMetric) }
+      it { is_expected.to be_a(Gitlab::Metrics::NullMetric) }
     end
 
     describe '#gauge' do
       subject { described_class.gauge(:gauge, 'doc') }
 
-      it { is_expected.to be_a(Gitlab::Metrics::DummyMetric) }
+      it { is_expected.to be_a(Gitlab::Metrics::NullMetric) }
     end
 
     describe '#histogram' do
       subject { described_class.histogram(:histogram, 'doc') }
 
-      it { is_expected.to be_a(Gitlab::Metrics::DummyMetric) }
+      it { is_expected.to be_a(Gitlab::Metrics::NullMetric) }
     end
   end
 
   context 'prometheus metrics enabled' do
+    around do |example|
+      Dir.mktmpdir do |tmp_dir|
+        @metrics_multiproc_dir = tmp_dir
+        example.run
+      end
+    end
+
     before do
+      stub_const('Prometheus::Client::Multiprocdir', @metrics_multiproc_dir)
       allow(described_class).to receive(:prometheus_metrics_enabled?).and_return(true)
     end
 
     it_behaves_like 'prometheus metrics API'
 
-    describe '#dummy_metric' do
+    describe '#null_metric' do
       subject { described_class.provide_metric(:test) }
 
       it { is_expected.to be_nil }
@@ -294,25 +304,25 @@ describe Gitlab::Metrics do
     describe '#counter' do
       subject { described_class.counter(:name, 'doc') }
 
-      it { is_expected.not_to be_a(Gitlab::Metrics::DummyMetric) }
+      it { is_expected.not_to be_a(Gitlab::Metrics::NullMetric) }
     end
 
     describe '#summary' do
       subject { described_class.summary(:name, 'doc') }
 
-      it { is_expected.not_to be_a(Gitlab::Metrics::DummyMetric) }
+      it { is_expected.not_to be_a(Gitlab::Metrics::NullMetric) }
     end
 
     describe '#gauge' do
       subject { described_class.gauge(:name, 'doc') }
 
-      it { is_expected.not_to be_a(Gitlab::Metrics::DummyMetric) }
+      it { is_expected.not_to be_a(Gitlab::Metrics::NullMetric) }
     end
 
     describe '#histogram' do
       subject { described_class.histogram(:name, 'doc') }
 
-      it { is_expected.not_to be_a(Gitlab::Metrics::DummyMetric) }
+      it { is_expected.not_to be_a(Gitlab::Metrics::NullMetric) }
     end
   end
 end

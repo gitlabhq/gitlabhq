@@ -73,7 +73,7 @@ module Gitlab
       if prometheus_metrics_enabled?
         registry.get(name)
       else
-        DummyMetric.new
+        NullMetric.new
       end
     end
 

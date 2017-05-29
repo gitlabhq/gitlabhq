@@ -12,18 +12,23 @@ class MetricsService
   end
 
   def health_metrics_text
-    results = CHECKS.flat_map(&:metrics)
+    metrics = CHECKS.flat_map(&:metrics)
 
-    types = results.map(&:name).uniq.map { |metric_name| "# TYPE #{metric_name} gauge" }
-    metrics = results.map(&method(:metric_to_prom_line))
+    formatter.marshal(metrics)
+  end
 
-    types.concat(metrics).join("\n")
+  def metrics_text
+    "#{health_metrics_text}\n#{prometheus_metrics_text}"
   end
 
   private
 
+  def formatter
+    @formatter ||= PrometheusText.new
+  end
+
   def multiprocess_metrics_path
-    Rails.root.join(ENV['prometheus_multiproc_dir'])
+    @multiprocess_metrics_path ||= Rails.root.join(ENV['prometheus_multiproc_dir'])
   end
 
   def metric_to_prom_line(metric)
