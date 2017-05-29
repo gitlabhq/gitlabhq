@@ -90,7 +90,7 @@ module MergeRequests
             target_project.reset_approvals_on_push &&
             merge_request.rebase_commit_sha != @newrev
 
-          merge_request.approvals.destroy_all
+          merge_request.approvals.delete_all
         end
       end
     end
