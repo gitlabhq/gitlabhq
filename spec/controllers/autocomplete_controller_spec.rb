@@ -97,6 +97,20 @@ describe AutocompleteController do
       it { expect(body.size).to eq User.count }
     end
 
+    context 'limited users per page' do
+      let(:per_page) { 2 }
+
+      before do
+        sign_in(user)
+        get(:users, per_page: per_page)
+      end
+
+      let(:body) { JSON.parse(response.body) }
+
+      it { expect(body).to be_kind_of(Array) }
+      it { expect(body.size).to eq per_page }
+    end
+
     context 'unauthenticated user' do
       let(:public_project) { create(:project, :public) }
       let(:body) { JSON.parse(response.body) }
