@@ -27,7 +27,7 @@ feature 'Create Snippet', :js, feature: true do
     it 'creates a new snippet' do
       fill_form
       click_button('Create snippet')
-      wait_for_ajax
+      wait_for_requests
 
       expect(page).to have_content('My Snippet Title')
       expect(page).to have_content('Hello World!')
@@ -44,7 +44,7 @@ feature 'Create Snippet', :js, feature: true do
       expect(page.find_field("project_snippet_description").value).to have_content('banana_sample')
 
       click_button('Create snippet')
-      wait_for_ajax
+      wait_for_requests
 
       link = find('a.no-attachment-icon img[alt="banana_sample"]')['src']
       expect(link).to match(%r{/#{Regexp.escape(project.full_path) }/uploads/\h{32}/banana_sample\.gif\z})
@@ -60,7 +60,7 @@ feature 'Create Snippet', :js, feature: true do
       dropzone_file Rails.root.join('spec', 'fixtures', 'banana_sample.gif')
 
       click_button('Create snippet')
-      wait_for_ajax
+      wait_for_requests
 
       expect(page).to have_content('My Snippet Title')
       expect(page).to have_content('Hello World!')

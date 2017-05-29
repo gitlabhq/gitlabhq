@@ -2,7 +2,7 @@
 - model = local_assigns.fetch(:model)
 
 - form = local_assigns.fetch(:form)
-- supports_slash_commands = !model.persisted?
+- supports_slash_commands = model.new_record?
 
 - if supports_slash_commands
   - preview_url = preview_markdown_path(project, slash_commands_target_type: model.class.name)

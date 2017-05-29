@@ -73,7 +73,7 @@ Parameters:
 - `file_name` (required) - The name of a snippet file
 - `description` (optional) - The description of a snippet
 - `code` (required) - The content of a snippet
-- `visibility` (optional) - The snippet's visibility
+- `visibility` (required) - The snippet's visibility
 
 ## Update snippet
 

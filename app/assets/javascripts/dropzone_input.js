@@ -199,7 +199,7 @@ window.DropzoneInput = (function() {
     };
 
     addFileToForm = function(path) {
-      $(form).append('<input type="hidden" name="files[]" value="' + path + '">');
+      $(form).append('<input type="hidden" name="files[]" value="' + _.escape(path) + '">');
     };
 
     getFilename = function(e) {

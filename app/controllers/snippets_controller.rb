@@ -45,7 +45,7 @@ class SnippetsController < ApplicationController
 
     @snippet = CreateSnippetService.new(nil, current_user, create_params).execute
 
-    move_temporary_files if params[:files]
+    move_temporary_files if @snippet.valid? && params[:files]
 
     recaptcha_check_with_fallback { render :new }
   end

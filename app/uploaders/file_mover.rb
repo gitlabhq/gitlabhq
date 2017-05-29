@@ -1,33 +1,42 @@
 class FileMover
-  attr_reader :secret, :file_name, :model
+  attr_reader :secret, :file_name, :model, :update_field
 
   def initialize(file_path, model, update_field = :description)
     @secret = File.split(File.dirname(file_path)).last
     @file_name = File.basename(file_path)
     @model = model
+    @update_field = update_field
   end
 
   def execute
     move
-    update_markdown
+    uploader.record_upload if update_markdown
   end
 
   private
 
   def move
-    FileUtils.mkdir_p(file_path)
+    FileUtils.mkdir_p(File.dirname(file_path))
     FileUtils.move(temp_file_path, file_path)
   end
 
-  def update_markdown(field = :description)
-    updated_text = model.send(field).sub(temp_file_uploader.to_markdown, uploader.to_markdown)
-    model.update_attribute(field, updated_text)
+  def update_markdown
+    updated_text = model.read_attribute(update_field).gsub(temp_file_uploader.to_markdown, uploader.to_markdown)
+    model.update_attribute(update_field, updated_text)
+
+    true
+  rescue
+    revert
+
+    false
   end
 
   def temp_file_path
+    return @temp_file_path if @temp_file_path
+
     temp_file_uploader.retrieve_from_store!(file_name)
 
-    temp_file_uploader.file.path
+    @temp_file_path = temp_file_uploader.file.path
   end
 
   def file_path
@@ -44,5 +53,11 @@ class FileMover
 
   def temp_file_uploader
     @temp_file_uploader ||= PersonalFileUploader.new(nil, secret)
+  end
+
+  def revert
+    Rails.logger.warn("Markdown not updated, file move reverted for #{model}")
+
+    FileUtils.move(file_path, temp_file_path)
   end
 end

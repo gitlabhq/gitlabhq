@@ -13,14 +13,14 @@ feature 'Edit Snippet', :js, feature: true do
     login_as(user)
 
     visit edit_snippet_path(snippet)
-    wait_for_ajax
+    wait_for_requests
   end
 
   it 'updates the snippet' do
     fill_in 'personal_snippet_title', with: 'New Snippet Title'
 
     click_button('Save changes')
-    wait_for_ajax
+    wait_for_requests
 
     expect(page).to have_content('New Snippet Title')
   end
@@ -30,7 +30,7 @@ feature 'Edit Snippet', :js, feature: true do
     expect(page.find_field("personal_snippet_description").value).to have_content('banana_sample')
 
     click_button('Save changes')
-    wait_for_ajax
+    wait_for_requests
 
     link = find('a.no-attachment-icon img[alt="banana_sample"]')['src']
     expect(link).to match(%r{/uploads/personal_snippet/#{snippet.id}/\h{32}/banana_sample\.gif\z})

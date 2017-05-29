@@ -9,6 +9,11 @@ scope path: :uploads do
     to: 'uploads#show',
     constraints: { model: /personal_snippet/, id: /\d+/, filename: /[^\/]+/ }
 
+  # show temporary uploads
+  get 'temp/:secret/:filename',
+    to: 'uploads#show',
+    constraints: { filename: /[^\/]+/ }
+
   # Appearance
   get ":model/:mounted_as/:id/:filename",
       to:           "uploads#show",

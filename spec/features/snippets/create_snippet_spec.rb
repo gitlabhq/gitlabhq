@@ -30,6 +30,22 @@ feature 'Create Snippet', :js, feature: true do
     expect(page).to have_content('Hello World!')
   end
 
+  scenario 'previews a snippet with file' do
+    fill_in 'personal_snippet_description', with: 'My Snippet'
+    dropzone_file Rails.root.join('spec', 'fixtures', 'banana_sample.gif')
+    find('.js-md-preview-button').click
+
+    page.within('#new_personal_snippet .md-preview') do
+      expect(page).to have_content('My Snippet')
+
+      link = find('a.no-attachment-icon img[alt="banana_sample"]')['src']
+      expect(link).to match(%r{/uploads/temp/\h{32}/banana_sample\.gif\z})
+
+      visit(link)
+      expect(page.status_code).to eq(200)
+    end
+  end
+
   scenario 'uploads a file when dragging into textarea' do
     fill_form
 
@@ -42,6 +58,9 @@ feature 'Create Snippet', :js, feature: true do
 
     link = find('a.no-attachment-icon img[alt="banana_sample"]')['src']
     expect(link).to match(%r{/uploads/personal_snippet/#{Snippet.last.id}/\h{32}/banana_sample\.gif\z})
+
+    visit(link)
+    expect(page.status_code).to eq(200)
   end
 
   scenario 'validation fails for the first time' do
@@ -64,6 +83,9 @@ feature 'Create Snippet', :js, feature: true do
     expect(page).to have_content('Hello World!')
     link = find('a.no-attachment-icon img[alt="banana_sample"]')['src']
     expect(link).to match(%r{/uploads/personal_snippet/#{Snippet.last.id}/\h{32}/banana_sample\.gif\z})
+
+    visit(link)
+    expect(page.status_code).to eq(200)
   end
 
   scenario 'Authenticated user creates a snippet with + in filename' do
