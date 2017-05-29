@@ -13,6 +13,7 @@ GET /projects/:id/pipeline_schedules
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `scope`   | string  | no       | The scope of pipeline schedules, one of: `active`, `inactive` |
 
 ```sh
 curl --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules"
@@ -101,8 +102,8 @@ POST /projects/:id/pipeline_schedules
 | `description` | string  | yes      | The description of pipeline schedule         |
 | `ref` | string  | yes      | The branch/tag name will be triggered         |
 | `cron ` | string  | yes      | The cron (e.g. `0 1 * * *`) ([Cron syntax](https://en.wikipedia.org/wiki/Cron))       |
-| `cron_timezone ` | string  | yes      | The timezone supproted by `ActiveSupport::TimeZone` (e.g. `Pacific Time (US & Canada)`) or `TZInfo::Timezone` (e.g. `America/Los_Angeles`)      |
-| `active ` | boolean  | yes      | The activation of pipeline schedule. If false is set, the pipeline schedule will deactivated initially. |
+| `cron_timezone ` | string  | no      | The timezone supproted by `ActiveSupport::TimeZone` (e.g. `Pacific Time (US & Canada)`) (default: `'UTC'`)     |
+| `active ` | boolean  | no      | The activation of pipeline schedule. If false is set, the pipeline schedule will deactivated initially (default: `true`) |
 
 ```sh
 curl --request POST --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" --form description="Build packages" --form ref="master" --form cron="0 1 * * 5" --form cron_timezone="UTC" --form active="true" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules"
