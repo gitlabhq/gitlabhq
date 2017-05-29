@@ -6,6 +6,7 @@ export default class IntegrationSettingsForm {
 
     // Form Metadata
     this.endPoint = this.$form.attr('action');
+    this.canTestService = this.$form.data('can-test');
 
     // Form Child Elements
     this.$serviceToggle = this.$form.find('#service_active');
@@ -31,7 +32,8 @@ export default class IntegrationSettingsForm {
 
   handleSettingsSave(e) {
     if (this.$serviceToggle.is(':checked')) {
-      if (this.$form.get(0).checkValidity()) {
+      if (this.$form.get(0).checkValidity() &&
+          this.canTestService) {
         e.preventDefault();
         this.testSettings(this.$form.serialize());
       }
@@ -43,7 +45,7 @@ export default class IntegrationSettingsForm {
   }
 
   toggleServiceState(serviceActive) {
-    this.toggleSubmitBtnLabel(serviceActive);
+    this.toggleSubmitBtnLabel(serviceActive, this.canTestService);
     if (serviceActive) {
       this.$form.removeAttr('novalidate');
     } else if (!this.$form.attr('novalidate')) {
@@ -54,9 +56,9 @@ export default class IntegrationSettingsForm {
   /**
    * Toggle Submit button label based on Integration status
    */
-  toggleSubmitBtnLabel(serviceActive) {
+  toggleSubmitBtnLabel(serviceActive, canTestService) {
     this.$submitBtnLabel.text(
-      serviceActive ?
+      serviceActive && canTestService ?
         'Test settings and save changes' :
         'Save changes');
   }
