@@ -41,7 +41,7 @@ Rails.application.routes.draw do
   scope path: '-' do
     get 'liveness' => 'health#liveness'
     get 'readiness' => 'health#readiness'
-    get 'metrics' => 'metrics#metrics'
+    resources :metrics, only: [:index]
   end
 
   # Koding route

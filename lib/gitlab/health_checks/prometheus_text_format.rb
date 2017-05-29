@@ -1,5 +1,5 @@
 module Gitlab::HealthChecks
-  class PrometheusText
+  class PrometheusTextFormat
     def marshal(metrics)
       metrics_with_type_declarations(metrics).join("\n")
     end

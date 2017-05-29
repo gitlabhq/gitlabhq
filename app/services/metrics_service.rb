@@ -24,11 +24,11 @@ class MetricsService
   private
 
   def formatter
-    @formatter ||= PrometheusText.new
+    @formatter ||= Gitlab::HealthChecks::PrometheusTextFormat.new
   end
 
   def multiprocess_metrics_path
-    @multiprocess_metrics_path ||= Rails.root.join(ENV['prometheus_multiproc_dir'])
+    @multiprocess_metrics_path ||= Rails.root.join(ENV['prometheus_multiproc_dir']).freeze
   end
 
   def metric_to_prom_line(metric)

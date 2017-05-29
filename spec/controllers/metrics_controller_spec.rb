@@ -19,14 +19,14 @@ describe MetricsController do
     allow(Gitlab::Metrics).to receive(:prometheus_metrics_enabled?).and_return(true)
   end
 
-  describe '#metrics' do
+  describe '#index' do
     context 'authorization token provided' do
       before do
         request.headers['TOKEN'] = token
       end
 
       it 'returns DB ping metrics' do
-        get :metrics
+        get :index
 
         expect(response.body).to match(/^db_ping_timeout 0$/)
         expect(response.body).to match(/^db_ping_success 1$/)
@@ -34,7 +34,7 @@ describe MetricsController do
       end
 
       it 'returns Redis ping metrics' do
-        get :metrics
+        get :index
 
         expect(response.body).to match(/^redis_ping_timeout 0$/)
         expect(response.body).to match(/^redis_ping_success 1$/)
@@ -42,7 +42,7 @@ describe MetricsController do
       end
 
       it 'returns file system check metrics' do
-        get :metrics
+        get :index
 
         expect(response.body).to match(/^filesystem_access_latency{shard="default"} [0-9\.]+$/)
         expect(response.body).to match(/^filesystem_accessible{shard="default"} 1$/)
@@ -58,7 +58,7 @@ describe MetricsController do
         end
 
         it 'returns proper response' do
-          get :metrics
+          get :index
 
           expect(response.status).to eq(404)
         end
@@ -67,7 +67,7 @@ describe MetricsController do
 
     context 'without authorization token' do
       it 'returns proper response' do
-        get :metrics
+        get :index
 
         expect(response.status).to eq(404)
       end
