@@ -108,7 +108,7 @@ export default {
     openForm() {
       if (!this.showForm) {
         this.showForm = true;
-        this.store.formState = Object.assign(this.store.formState, {
+        this.store.setFormState({
           title: this.state.titleText,
           confidential: this.isConfidential,
           description: this.state.descriptionText,
@@ -126,7 +126,9 @@ export default {
         confirm('Are you sure you want to move this issue to another project?') : true; // eslint-disable-line no-alert
 
       if (!canPostUpdate) {
-        this.store.formState.updateLoading = false;
+        this.store.setFormState({
+          updateLoading: false,
+        });
         return;
       }
 

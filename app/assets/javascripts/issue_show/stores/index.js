@@ -38,4 +38,8 @@ export default class Store {
       description: this.state.descriptionText !== data.description_text,
     };
   }
+
+  setFormState(state) {
+    this.formState = Object.assign(this.formState, state);
+  }
 }

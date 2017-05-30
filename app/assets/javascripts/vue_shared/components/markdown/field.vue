@@ -69,7 +69,7 @@
 
 <template>
   <div
-    class="md-area prepend-top-default append-bottom-default"
+    class="md-area prepend-top-default append-bottom-default js-vue-markdown-field"
     ref="gl-form">
     <markdown-header
       :preview-markdown="previewMarkdown"

@@ -287,7 +287,7 @@ describe('Issuable output', () => {
       });
     });
 
-    it('stops polling when deleteing', (done) => {
+    it('stops polling when deleting', (done) => {
       spyOn(gl.utils, 'visitUrl');
       spyOn(vm.poll, 'stop');
       spyOn(vm.service, 'deleteIssuable').and.callFake(() => new Promise((resolve) => {

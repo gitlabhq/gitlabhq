@@ -16,11 +16,23 @@
       toolbarButton,
     },
     methods: {
-      toggleMarkdownPreview(e) {
-        e.target.blur();
+      toggleMarkdownPreview(e, form) {
+        if (form && !form.find('.js-vue-markdown-field').length) {
+          return;
+        } else if (e.target.blur) {
+          e.target.blur();
+        }
 
         this.$emit('toggle-markdown');
       },
+    },
+    mounted() {
+      $(document).on('markdown-preview:show.vue', this.toggleMarkdownPreview);
+      $(document).on('markdown-preview:hide.vue', this.toggleMarkdownPreview);
+    },
+    beforeDestroy() {
+      $(document).on('markdown-preview:show.vue', this.toggleMarkdownPreview);
+      $(document).off('markdown-preview:hide.vue', this.toggleMarkdownPreview);
     },
   };
 </script>
