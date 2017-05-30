@@ -83,7 +83,10 @@ export default {
     :class="rowClass"
     >
     <div class="controls">
-      <a class="edit-group btn" :href="group.editPath">
+      <a
+        v-show="group.canEdit"
+        class="edit-group btn"
+        :href="group.editPath">
         <i aria-hidden="true" class="fa fa-cogs"></i>
       </a>
       <a @click="onLeaveGroup"
