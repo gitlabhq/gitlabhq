@@ -42,6 +42,18 @@ describe Environment, models: true do
     end
   end
 
+  describe '#expire_etag_cache' do
+    let(:store) { Gitlab::EtagCaching::Store.new }
+
+    it 'changes the cached value' do
+      old_value = store.get(environment.etag_cache_key)
+
+      environment.stop
+
+      expect(store.get(environment.etag_cache_key)).not_to eq(old_value)
+    end
+  end
+
   describe '#nullify_external_url' do
     it 'replaces a blank url with nil' do
       env = build(:environment, external_url: "")

@@ -202,9 +202,14 @@ class Environment < ActiveRecord::Base
 
   def expire_etag_cache
     Gitlab::EtagCaching::Store.new.tap do |store|
-      store.touch(Gitlab::Routing.url_helpers
-        .namespace_project_environments_path(project.namespace, project))
+      store.touch(etag_cache_key)
     end
+  end
+
+  def etag_cache_key
+    Gitlab::Routing.url_helpers.namespace_project_environments_path(
+      project.namespace,
+      project)
   end
 
   private
