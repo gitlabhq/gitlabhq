@@ -46,7 +46,9 @@ module IssueLinks
     end
 
     def can_destroy_issue_link_on_current_project?
-      @can_destroy_on_current_project ||= can_destroy_issue_link?(@project)
+      return @can_destroy_on_current_project if defined?(@can_destroy_on_current_project)
+
+      @can_destroy_on_current_project = can_destroy_issue_link?(@project)
     end
 
     def can_destroy_issue_link?(project)
