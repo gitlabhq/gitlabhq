@@ -449,5 +449,9 @@ module EE
     def destroy_mirror_data
       mirror_data.destroy
     end
+
+    def validate_board_limit(board)
+      # Board limits are disabled in EE, so this method is just a no-op.
+    end
   end
 end

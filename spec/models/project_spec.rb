@@ -7,50 +7,50 @@ describe Project, models: true do
     it { is_expected.to belong_to(:creator).class_name('User') }
     it { is_expected.to have_many(:users) }
     it { is_expected.to have_many(:services) }
-    it { is_expected.to have_many(:events).dependent(:destroy) }
-    it { is_expected.to have_many(:merge_requests).dependent(:destroy) }
-    it { is_expected.to have_many(:issues).dependent(:destroy) }
-    it { is_expected.to have_many(:milestones).dependent(:destroy) }
-    it { is_expected.to have_many(:project_members).dependent(:destroy) }
+    it { is_expected.to have_many(:events) }
+    it { is_expected.to have_many(:merge_requests) }
+    it { is_expected.to have_many(:issues) }
+    it { is_expected.to have_many(:milestones) }
+    it { is_expected.to have_many(:project_members).dependent(:delete_all) }
     it { is_expected.to have_many(:users).through(:project_members) }
-    it { is_expected.to have_many(:requesters).dependent(:destroy) }
-    it { is_expected.to have_many(:notes).dependent(:destroy) }
-    it { is_expected.to have_many(:snippets).class_name('ProjectSnippet').dependent(:destroy) }
-    it { is_expected.to have_many(:deploy_keys_projects).dependent(:destroy) }
+    it { is_expected.to have_many(:requesters).dependent(:delete_all) }
+    it { is_expected.to have_many(:notes) }
+    it { is_expected.to have_many(:snippets).class_name('ProjectSnippet') }
+    it { is_expected.to have_many(:deploy_keys_projects) }
     it { is_expected.to have_many(:deploy_keys) }
-    it { is_expected.to have_many(:hooks).dependent(:destroy) }
-    it { is_expected.to have_many(:protected_branches).dependent(:destroy) }
-    it { is_expected.to have_one(:forked_project_link).dependent(:destroy) }
-    it { is_expected.to have_one(:slack_service).dependent(:destroy) }
-    it { is_expected.to have_one(:microsoft_teams_service).dependent(:destroy) }
-    it { is_expected.to have_one(:mattermost_service).dependent(:destroy) }
-    it { is_expected.to have_one(:pushover_service).dependent(:destroy) }
-    it { is_expected.to have_one(:asana_service).dependent(:destroy) }
-    it { is_expected.to have_many(:boards).dependent(:destroy) }
-    it { is_expected.to have_one(:campfire_service).dependent(:destroy) }
-    it { is_expected.to have_one(:drone_ci_service).dependent(:destroy) }
-    it { is_expected.to have_one(:emails_on_push_service).dependent(:destroy) }
-    it { is_expected.to have_one(:pipelines_email_service).dependent(:destroy) }
-    it { is_expected.to have_one(:irker_service).dependent(:destroy) }
-    it { is_expected.to have_one(:pivotaltracker_service).dependent(:destroy) }
-    it { is_expected.to have_one(:hipchat_service).dependent(:destroy) }
-    it { is_expected.to have_one(:flowdock_service).dependent(:destroy) }
-    it { is_expected.to have_one(:assembla_service).dependent(:destroy) }
-    it { is_expected.to have_one(:slack_slash_commands_service).dependent(:destroy) }
-    it { is_expected.to have_one(:mattermost_slash_commands_service).dependent(:destroy) }
-    it { is_expected.to have_one(:gemnasium_service).dependent(:destroy) }
-    it { is_expected.to have_one(:buildkite_service).dependent(:destroy) }
-    it { is_expected.to have_one(:bamboo_service).dependent(:destroy) }
-    it { is_expected.to have_one(:teamcity_service).dependent(:destroy) }
-    it { is_expected.to have_one(:jira_service).dependent(:destroy) }
-    it { is_expected.to have_one(:redmine_service).dependent(:destroy) }
-    it { is_expected.to have_one(:custom_issue_tracker_service).dependent(:destroy) }
-    it { is_expected.to have_one(:bugzilla_service).dependent(:destroy) }
-    it { is_expected.to have_one(:gitlab_issue_tracker_service).dependent(:destroy) }
-    it { is_expected.to have_one(:external_wiki_service).dependent(:destroy) }
-    it { is_expected.to have_one(:project_feature).dependent(:destroy) }
-    it { is_expected.to have_one(:statistics).class_name('ProjectStatistics').dependent(:delete) }
-    it { is_expected.to have_one(:import_data).class_name('ProjectImportData').dependent(:delete) }
+    it { is_expected.to have_many(:hooks) }
+    it { is_expected.to have_many(:protected_branches) }
+    it { is_expected.to have_one(:forked_project_link) }
+    it { is_expected.to have_one(:slack_service) }
+    it { is_expected.to have_one(:microsoft_teams_service) }
+    it { is_expected.to have_one(:mattermost_service) }
+    it { is_expected.to have_one(:pushover_service) }
+    it { is_expected.to have_one(:asana_service) }
+    it { is_expected.to have_many(:boards) }
+    it { is_expected.to have_one(:campfire_service) }
+    it { is_expected.to have_one(:drone_ci_service) }
+    it { is_expected.to have_one(:emails_on_push_service) }
+    it { is_expected.to have_one(:pipelines_email_service) }
+    it { is_expected.to have_one(:irker_service) }
+    it { is_expected.to have_one(:pivotaltracker_service) }
+    it { is_expected.to have_one(:hipchat_service) }
+    it { is_expected.to have_one(:flowdock_service) }
+    it { is_expected.to have_one(:assembla_service) }
+    it { is_expected.to have_one(:slack_slash_commands_service) }
+    it { is_expected.to have_one(:mattermost_slash_commands_service) }
+    it { is_expected.to have_one(:gemnasium_service) }
+    it { is_expected.to have_one(:buildkite_service) }
+    it { is_expected.to have_one(:bamboo_service) }
+    it { is_expected.to have_one(:teamcity_service) }
+    it { is_expected.to have_one(:jira_service) }
+    it { is_expected.to have_one(:redmine_service) }
+    it { is_expected.to have_one(:custom_issue_tracker_service) }
+    it { is_expected.to have_one(:bugzilla_service) }
+    it { is_expected.to have_one(:gitlab_issue_tracker_service) }
+    it { is_expected.to have_one(:external_wiki_service) }
+    it { is_expected.to have_one(:project_feature) }
+    it { is_expected.to have_one(:statistics).class_name('ProjectStatistics') }
+    it { is_expected.to have_one(:import_data).class_name('ProjectImportData') }
     it { is_expected.to have_one(:mirror_data).class_name('ProjectMirrorData').dependent(:delete) }
     it { is_expected.to have_one(:last_event).class_name('Event') }
     it { is_expected.to have_one(:forked_from_project).through(:forked_project_link) }
@@ -64,19 +64,19 @@ describe Project, models: true do
     it { is_expected.to have_many(:triggers) }
     it { is_expected.to have_many(:pages_domains) }
     it { is_expected.to have_many(:path_locks).dependent(:destroy) }
-    it { is_expected.to have_many(:labels).class_name('ProjectLabel').dependent(:destroy) }
-    it { is_expected.to have_many(:users_star_projects).dependent(:destroy) }
-    it { is_expected.to have_many(:environments).dependent(:destroy) }
-    it { is_expected.to have_many(:deployments).dependent(:destroy) }
-    it { is_expected.to have_many(:todos).dependent(:destroy) }
-    it { is_expected.to have_many(:releases).dependent(:destroy) }
-    it { is_expected.to have_many(:lfs_objects_projects).dependent(:destroy) }
-    it { is_expected.to have_many(:project_group_links).dependent(:destroy) }
-    it { is_expected.to have_many(:notification_settings).dependent(:destroy) }
+    it { is_expected.to have_many(:labels).class_name('ProjectLabel') }
+    it { is_expected.to have_many(:users_star_projects) }
+    it { is_expected.to have_many(:environments) }
+    it { is_expected.to have_many(:deployments) }
+    it { is_expected.to have_many(:todos) }
+    it { is_expected.to have_many(:releases) }
+    it { is_expected.to have_many(:lfs_objects_projects) }
+    it { is_expected.to have_many(:project_group_links) }
+    it { is_expected.to have_many(:notification_settings).dependent(:delete_all) }
     it { is_expected.to have_many(:forks).through(:forked_project_links) }
     it { is_expected.to have_many(:approver_groups).dependent(:destroy) }
     it { is_expected.to have_many(:uploads).dependent(:destroy) }
-    it { is_expected.to have_many(:pipeline_schedules).dependent(:destroy) }
+    it { is_expected.to have_many(:pipeline_schedules) }
     it { is_expected.to have_many(:sourced_pipelines) }
     it { is_expected.to have_many(:source_pipelines) }
 
@@ -2658,6 +2658,23 @@ describe Project, models: true do
 
         expect(projects).to eq([public_project])
       end
+    end
+  end
+
+  describe '#remove_private_deploy_keys' do
+    it 'removes the private deploy keys of a project' do
+      project = create(:empty_project)
+
+      private_key = create(:deploy_key, public: false)
+      public_key = create(:deploy_key, public: true)
+
+      create(:deploy_keys_project, deploy_key: private_key, project: project)
+      create(:deploy_keys_project, deploy_key: public_key, project: project)
+
+      project.remove_private_deploy_keys
+
+      expect(project.deploy_keys.where(public: false).any?).to eq(false)
+      expect(project.deploy_keys.where(public: true).any?).to eq(true)
     end
   end
 end
