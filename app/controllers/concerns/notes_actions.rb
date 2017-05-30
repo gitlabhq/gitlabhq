@@ -82,13 +82,15 @@ module NotesActions
     if note.persisted?
       attrs.merge!(
         valid: true,
-        id: note.id,
-        discussion_id: note.discussion_id(noteable),
         html: note_html(note),
         note: note.note
       )
 
+      attrs.merge!(NoteSerializer.new.represent(note, basic: true))
+
       discussion = note.to_discussion(noteable)
+      attrs[:discussion_id] = discussion.id
+
       unless discussion.individual_note?
         attrs.merge!(
           discussion_resolvable: discussion.resolvable?,

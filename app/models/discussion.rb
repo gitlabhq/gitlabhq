@@ -121,4 +121,8 @@ class Discussion
   def to_partial_path
     'discussions/discussion'
   end
+
+  def notes_json
+    NoteSerializer.new.represent(self.notes, basic: true).to_json
+  end
 end
