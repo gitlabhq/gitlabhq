@@ -129,6 +129,32 @@ describe DiffHelper do
     end
   end
 
+  describe '#parallel_diff_discussions' do
+    it 'does not put comments on nonewline lines' do
+      discussion = {'abc_3_3' => 'comment'}
+      helper.instance_variable_set(:@grouped_diff_discussions, discussion)
+      diff_file = double(line_code: 'abc_3_3')
+      left = Gitlab::Diff::Line.new('\\nonewline', 'old-nonewline', 3, 3, 3)
+      right = Gitlab::Diff::Line.new('\\nonewline', 'new-nonewline', 3, 3, 3)
+
+      result = helper.parallel_diff_discussions(left, right, diff_file)
+
+      expect(result).to eq([nil, nil])
+    end
+
+    it 'puts comments on added lines' do
+      discussion = {'abc_3_3' => 'comment'}
+      helper.instance_variable_set(:@grouped_diff_discussions, discussion)
+      diff_file = double(line_code: 'abc_3_3')
+      left = Gitlab::Diff::Line.new('\\nonewline', 'old-nonewline', 3, 3, 3)
+      right = Gitlab::Diff::Line.new('new line', 'add', 3, 3, 3)
+
+      result = helper.parallel_diff_discussions(left, right, diff_file)
+
+      expect(result).to eq([nil, 'comment'])
+    end
+  end
+
   describe "#diff_match_line" do
     let(:old_pos) { 40 }
     let(:new_pos) { 50 }
