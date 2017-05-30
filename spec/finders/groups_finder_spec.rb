@@ -91,7 +91,7 @@ describe GroupsFinder do
               subsubproject = create(:empty_project, :private, namespace: private_subsubgroup)
               subsubproject.add_guest(user)
 
-              is_expected.to include(private_subsubgroup)
+              expect(described_class.new(user).execute).to include(private_subsubgroup, private_subgroup, parent_group)
             end
           end
         end

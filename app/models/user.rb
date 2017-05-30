@@ -493,15 +493,14 @@ class User < ActiveRecord::Base
   end
 
   def groups_through_project_authorizations
-    paths = Project.member_self_and_descendants(id).pluck('routes.path')
+    projects = Project.joins(:project_authorizations).
+                 where('project_authorizations.user_id = ?', id ).
+                 joins(:route).
+                 select('routes.path AS full_path')
 
-    return Group.none if paths.empty?
-
-    wheres = paths.map do |path|
-      "#{ActiveRecord::Base.connection.quote(path)} LIKE CONCAT(routes.path, '/%')"
-    end
-
-    Group.joins(:route).where(wheres.join(' OR '))
+    Group.joins(:route).
+      joins("INNER JOIN (#{projects.to_sql}) project_paths
+            ON project_paths.full_path LIKE CONCAT(routes_namespaces.path, '/%')")
   end
 
   def nested_groups
