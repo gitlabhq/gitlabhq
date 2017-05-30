@@ -351,10 +351,6 @@ class Project < ActiveRecord::Base
       where("projects.id IN (#{union.to_sql})")
     end
 
-    def search_by_visibility(level) # DEPRECATED: remove with API V3
-      where(visibility_level: Gitlab::VisibilityLevel.string_options[level])
-    end
-
     def search_by_title(query)
       pattern = "%#{query}%"
       table   = Project.arel_table

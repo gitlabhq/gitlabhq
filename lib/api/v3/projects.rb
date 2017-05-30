@@ -147,7 +147,7 @@ module API
         get '/starred' do
           authenticate!
 
-          present_projects current_user.viewable_starred_projects
+          present_projects ProjectsFinder.new(current_user: current_user, params: { starred: true }).execute
         end
 
         desc 'Get all projects for admin user' do

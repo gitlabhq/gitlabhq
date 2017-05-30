@@ -35,7 +35,7 @@ module API
         end
 
         if params[:visibility].present?
-          projects = projects.search_by_visibility(params[:visibility])
+          projects = projects.where(visibility_level: Gitlab::VisibilityLevel.level_value(params[:visibility]))
         end
 
         projects = projects.where(archived: params[:archived])
