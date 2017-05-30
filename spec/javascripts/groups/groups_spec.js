@@ -48,7 +48,7 @@ describe('Groups Component', () => {
       expect(lists.length).toBe(3); // one parent and two subgroups
 
       expect(lists[0].querySelector('#group-1119').classList.contains('is-open')).toBe(true);
-      expect(lists[0].querySelector('#group-1119').classList.contains('is-expandable')).toBe(true);
+      expect(lists[0].querySelector('#group-1119').classList.contains('has-subgroups')).toBe(true);
 
       expect(lists[2].querySelector('#group-1120').textContent).toContain(groups[1119].subGroups[1120].name);
     });

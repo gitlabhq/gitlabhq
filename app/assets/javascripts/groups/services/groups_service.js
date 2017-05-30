@@ -1,3 +1,5 @@
+/* eslint-disable class-methods-use-this */
+
 import Vue from 'vue';
 import VueResource from 'vue-resource';
 

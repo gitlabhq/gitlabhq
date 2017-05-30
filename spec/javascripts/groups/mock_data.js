@@ -11,6 +11,9 @@ const group1 = {
   parent_id: null,
   created_at: '2017-05-15T19:01:23.670Z',
   updated_at: '2017-05-15T19:01:23.670Z',
+  number_projects: '1',
+  number_users: '1',
+  has_subgroups: true,
   permissions: {
     group_access: 50,
   },
@@ -30,6 +33,9 @@ const group14 = {
   parent_id: 1127,
   created_at: '2017-05-15T19:02:01.645Z',
   updated_at: '2017-05-15T19:02:01.645Z',
+  number_projects: '1',
+  number_users: '1',
+  has_subgroups: true,
   permissions: {
     group_access: 30,
   },
@@ -48,6 +54,9 @@ const group2 = {
   parent_id: null,
   created_at: '2017-05-11T19:35:09.635Z',
   updated_at: '2017-05-11T19:35:09.635Z',
+  number_projects: '1',
+  number_users: '1',
+  has_subgroups: true,
   permissions: {
     group_access: 50,
   },
@@ -66,6 +75,9 @@ const group21 = {
   parent_id: 1119,
   created_at: '2017-05-11T19:51:04.060Z',
   updated_at: '2017-05-11T19:51:04.060Z',
+  number_projects: '1',
+  number_users: '1',
+  has_subgroups: true,
   permissions: {
     group_access: 50,
   },

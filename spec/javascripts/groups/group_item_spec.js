@@ -26,7 +26,7 @@ describe('Groups Component', () => {
   it('should render the group item', () => {
     expect(component.$el.classList.contains('group-row')).toBe(true);
     expect(component.$el.querySelector('.number-projects').textContent).toContain(group.numberProjects);
-    expect(component.$el.querySelector('.number-members').textContent).toContain(group.numberMembers);
+    expect(component.$el.querySelector('.number-users').textContent).toContain(group.numberUsers);
     expect(component.$el.querySelector('.group-visibility')).toBeDefined();
     expect(component.$el.querySelector('.avatar-container')).toBeDefined();
     expect(component.$el.querySelector('.title').textContent).toContain(group.name);
