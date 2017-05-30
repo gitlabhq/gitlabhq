@@ -36,7 +36,7 @@ describe Projects::IssueLinksController do
     end
   end
 
-  describe 'POST #create' do
+  describe 'POST /*namespace_id/:project_id/issues/:issue_id/links' do
     let(:issue_b) { create :issue, project: project }
     let(:user_role) { :developer }
 
@@ -94,7 +94,7 @@ describe Projects::IssueLinksController do
     end
   end
 
-  describe 'DELETE #destroy' do
+  describe 'DELETE /*namespace_id/:project_id/issues/:issue_id/link/:id' do
     let(:referenced_issue) { create :issue, project: project }
     let(:issue_link) { create :issue_link, target: referenced_issue }
     let(:current_project_user_role) { :developer }

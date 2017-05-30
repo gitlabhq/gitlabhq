@@ -35,7 +35,7 @@ module Projects
 
     def issue
       @issue ||=
-        IssuesFinder.new(current_user, project_id: project.id)
+        IssuesFinder.new(current_user, project_id: @project.id)
                     .execute
                     .find_by!(iid: params[:issue_id])
     end
