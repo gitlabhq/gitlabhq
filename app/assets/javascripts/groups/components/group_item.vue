@@ -56,6 +56,14 @@ export default {
         'no-description': !this.group.description,
       };
     },
+    visibilityIcon() {
+      return {
+        fa: true,
+        'fa-globe': this.group.visibility === 'public',
+        'fa-shield': this.group.visibility === 'internal',
+        'fa-lock': this.group.visibility === 'private',
+      };
+    },
     fullPath() {
       let fullPath = '';
 
@@ -116,7 +124,7 @@ export default {
         {{group.numberUsers}}
       </span>
       <span class="group-visibility">
-        <i aria-hidden="true" class="fa fa-globe"></i>
+        <i aria-hidden="true" :class="visibilityIcon"></i>
       </span>
     </div>
 
