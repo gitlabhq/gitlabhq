@@ -4,7 +4,7 @@ export default () => {
   const bannerClassList = banner.classList;
 
   const confidentialScroll = () => {
-    if (body.scrollTop > 60) {
+    if (body.scrollTop > 5) {
       bannerClassList.add('confidential-issue-scroll');
     } else {
       bannerClassList.remove('confidential-issue-scroll');
