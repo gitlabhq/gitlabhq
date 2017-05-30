@@ -438,14 +438,14 @@ module Gitlab
 
       # Removes the triggers used for renaming a PostgreSQL column concurrently.
       def remove_rename_triggers_for_postgresql(table, trigger)
-        execute("DROP TRIGGER #{trigger} ON #{table}")
-        execute("DROP FUNCTION #{trigger}()")
+        execute("DROP TRIGGER IF EXISTS #{trigger} ON #{table}")
+        execute("DROP FUNCTION IF EXISTS #{trigger}()")
       end
 
       # Removes the triggers used for renaming a MySQL column concurrently.
       def remove_rename_triggers_for_mysql(trigger)
-        execute("DROP TRIGGER #{trigger}_insert")
-        execute("DROP TRIGGER #{trigger}_update")
+        execute("DROP TRIGGER IF EXISTS #{trigger}_insert")
+        execute("DROP TRIGGER IF EXISTS #{trigger}_update")
       end
 
       # Returns the (base) name to use for triggers when renaming columns.
