@@ -81,8 +81,7 @@ module Ci
           dependencies: job[:dependencies],
           after_script: job[:after_script],
           environment: job[:environment]
-        }.compact
-      }
+        }.compact }
     end
 
     def self.validation_message(content)
