@@ -18,7 +18,7 @@ class GroupsFinder < UnionFinder
 
     if current_user
       groups << Group.member_self_and_descendants(current_user.id)
-      groups << Group.where(id: current_user.authorized_projects.select(:namespace_id))
+      groups << current_user.groups_through_project_authorizations
     end
     groups << Group.unscoped.public_to_user(current_user)
 

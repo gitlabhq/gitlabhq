@@ -85,6 +85,14 @@ describe GroupsFinder do
 
               is_expected.to include(private_subgroup)
             end
+
+            it 'returns all the parent groups if project is several levels deep' do
+              private_subsubgroup = create(:group, :private, parent: private_subgroup)
+              subsubproject = create(:empty_project, :private, namespace: private_subsubgroup)
+              subsubproject.add_guest(user)
+
+              is_expected.to include(private_subsubgroup)
+            end
           end
         end
       end

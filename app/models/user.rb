@@ -492,6 +492,18 @@ class User < ActiveRecord::Base
     Group.where("namespaces.id IN (#{union.to_sql})")
   end
 
+  def groups_through_project_authorizations
+    paths = Project.member_self_and_descendants(id).pluck('routes.path')
+
+    return Group.none if paths.empty?
+
+    wheres = paths.map do |path|
+      "#{ActiveRecord::Base.connection.quote(path)} LIKE CONCAT(routes.path, '/%')"
+    end
+
+    Group.joins(:route).where(wheres.join(' OR '))
+  end
+
   def nested_groups
     Group.member_descendants(id)
   end
