@@ -116,6 +116,45 @@ export default class BlobViewer {
 
     this.toggleCopyButtonState();
 
+<<<<<<< HEAD
     this.loadViewer(newViewer);
+=======
+    BlobViewer.loadViewer(newViewer)
+    .then((viewer) => {
+      $(viewer).renderGFM();
+
+      this.$fileHolder.trigger('highlight:line');
+      gl.utils.handleLocationHash();
+
+      this.toggleCopyButtonState();
+    })
+    .catch(() => new Flash('Error loading viewer'));
+  }
+
+  static loadViewer(viewerParam) {
+    const viewer = viewerParam;
+    const url = viewer.getAttribute('data-url');
+
+    return new Promise((resolve, reject) => {
+      if (!url || viewer.getAttribute('data-loaded') || viewer.getAttribute('data-loading')) {
+        resolve(viewer);
+        return;
+      }
+
+      viewer.setAttribute('data-loading', 'true');
+
+      $.ajax({
+        url,
+        dataType: 'JSON',
+      })
+      .fail(reject)
+      .done((data) => {
+        viewer.innerHTML = data.html;
+        viewer.setAttribute('data-loaded', 'true');
+
+        resolve(viewer);
+      });
+    });
+>>>>>>> 83550c0... Merge branch '33048-markdown-rendering-of-md-files-has-ceased-to-display-latex-equations' into 'master'
   }
 }
