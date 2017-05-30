@@ -74,7 +74,7 @@ module API
         optional :active, type: Boolean, desc: 'The activation of pipeline schedule'
       end
       put ':id/pipeline_schedules/:pipeline_schedule_id' do
-        authorize! :create_pipeline_schedule, user_project
+        authorize! :update_pipeline_schedule, user_project
 
         not_found!('PipelineSchedule') unless pipeline_schedule
 
@@ -92,7 +92,7 @@ module API
         requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline schedule id'
       end
       post ':id/pipeline_schedules/:pipeline_schedule_id/take_ownership' do
-        authorize! :create_pipeline_schedule, user_project
+        authorize! :update_pipeline_schedule, user_project
 
         not_found!('PipelineSchedule') unless pipeline_schedule
 
