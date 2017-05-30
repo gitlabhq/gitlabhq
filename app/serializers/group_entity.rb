@@ -26,4 +26,8 @@ class GroupEntity < Grape::Entity
   expose :can_edit do |group|
     can?(request.current_user, :admin_group, group)
   end
+
+  expose :has_subgroups do |group|
+    group.children.any?
+  end
 end
