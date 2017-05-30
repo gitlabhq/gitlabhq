@@ -1431,6 +1431,31 @@ describe Project, models: true do
     end
   end
 
+  describe 'Project import job' do
+    let(:project) { create(:empty_project) }
+    let(:mirror) { false }
+
+    before do
+      allow_any_instance_of(Gitlab::Shell).to receive(:import_repository)
+        .with(project.repository_storage_path, project.path_with_namespace, project.import_url)
+        .and_return(true)
+
+      allow(project).to receive(:repository_exists?).and_return(true)
+
+      expect_any_instance_of(Repository).to receive(:after_import)
+        .and_call_original
+    end
+
+    it 'imports a project' do
+      expect_any_instance_of(RepositoryImportWorker).to receive(:perform).and_call_original
+
+      project.import_start
+      project.add_import_job
+
+      expect(project.reload.import_status).to eq('finished')
+    end
+  end
+
   describe '#latest_successful_builds_for' do
     def create_pipeline(status = 'success')
       create(:ci_pipeline, project: project,

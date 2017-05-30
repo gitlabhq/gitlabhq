@@ -138,7 +138,7 @@ installation (e.g. the number of users, projects, etc).
 
 ### PostgreSQL Requirements
 
-As of GitLab 9.0, PostgreSQL 9.2 or newer is required, and earlier versions are
+As of GitLab 9.3, PostgreSQL 9.2 or newer is required, and earlier versions are
 not supported. We highly recommend users to use at least PostgreSQL 9.6 as this
 is the PostgreSQL version used for development and testing.
 

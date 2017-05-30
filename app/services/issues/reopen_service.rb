@@ -8,6 +8,7 @@ module Issues
         create_note(issue)
         notification_service.reopen_issue(issue, current_user)
         execute_hooks(issue, 'reopen')
+        invalidate_cache_counts(issue.assignees, issue)
       end
 
       issue

@@ -368,10 +368,13 @@ Settings.cron_jobs['gitlab_usage_ping_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['gitlab_usage_ping_worker']['cron'] ||= Settings.__send__(:cron_random_weekly_time)
 Settings.cron_jobs['gitlab_usage_ping_worker']['job_class'] = 'GitlabUsagePingWorker'
 
-# Every day at 00:30
 Settings.cron_jobs['schedule_update_user_activity_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['schedule_update_user_activity_worker']['cron'] ||= '30 0 * * *'
 Settings.cron_jobs['schedule_update_user_activity_worker']['job_class'] = 'ScheduleUpdateUserActivityWorker'
+
+Settings.cron_jobs['remove_old_web_hook_logs_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['remove_old_web_hook_logs_worker']['cron'] ||= '40 0 * * *'
+Settings.cron_jobs['remove_old_web_hook_logs_worker']['job_class'] = 'RemoveOldWebHookLogsWorker'
 
 #
 # GitLab Shell

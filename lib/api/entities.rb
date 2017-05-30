@@ -152,7 +152,10 @@ module API
       expose :web_url
       expose :request_access_enabled
       expose :full_name, :full_path
-      expose :parent_id
+
+      if ::Group.supports_nested_groups?
+        expose :parent_id
+      end
 
       expose :statistics, if: :statistics do
         with_options format_with: -> (value) { value.to_i } do
@@ -252,7 +255,9 @@ module API
 
     class RepoDiff < Grape::Entity
       expose :old_path, :new_path, :a_mode, :b_mode, :diff
-      expose :new_file, :renamed_file, :deleted_file
+      expose :new_file?, as: :new_file
+      expose :renamed_file?, as: :renamed_file
+      expose :deleted_file?, as: :deleted_file
     end
 
     class Milestone < ProjectEntity

@@ -83,7 +83,7 @@ feature 'Group', feature: true do
     end
   end
 
-  describe 'create a nested group', js: true do
+  describe 'create a nested group', :nested_groups, js: true do
     let(:group) { create(:group, path: 'foo') }
 
     context 'as admin' do
@@ -196,7 +196,7 @@ feature 'Group', feature: true do
     end
   end
 
-  describe 'group page with nested groups', js: true do
+  describe 'group page with nested groups', :nested_groups, js: true do
     let!(:group) { create(:group) }
     let!(:nested_group) { create(:group, parent: group) }
     let!(:path)  { group_path(group) }

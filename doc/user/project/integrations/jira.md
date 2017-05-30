@@ -97,7 +97,8 @@ in the table below.
 
 | Field | Description |
 | ----- | ----------- |
-| `URL` | The base URL to the JIRA project which is being linked to this GitLab project. E.g., `https://jira.example.com`. |
+| `Web URL` | The base URL to the JIRA instance web interface which is being linked to this GitLab project. E.g., `https://jira.example.com`. |
+| `JIRA API URL` | The base URL to the JIRA instance API. Web URL value will be used if not set. E.g., `https://jira-api.example.com`. |
 | `Project key` | The short identifier for your JIRA project, all uppercase, e.g., `PROJ`. |
 | `Username` | The user name created in [configuring JIRA step](#configuring-jira). |
 | `Password` |The password of the user created in [configuring JIRA step](#configuring-jira). |

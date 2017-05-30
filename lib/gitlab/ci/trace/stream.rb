@@ -73,7 +73,7 @@ module Gitlab
 
           match = ""
 
-          stream.each_line do |line|
+          reverse_line do |line|
             matches = line.scan(regex)
             next unless matches.is_a?(Array)
             next if matches.empty?
@@ -86,34 +86,39 @@ module Gitlab
           nil
         rescue
           # if bad regex or something goes wrong we dont want to interrupt transition
-          # so we just silentrly ignore error for now
+          # so we just silently ignore error for now
         end
 
         private
 
-        def read_last_lines(last_lines)
-          chunks = []
-          pos = lines = 0
-          max = stream.size
+        def read_last_lines(limit)
+          to_enum(:reverse_line).first(limit).reverse.join
+        end
 
-          # We want an extra line to make sure fist line has full contents
-          while lines <= last_lines && pos < max
-            pos += BUFFER_SIZE
+        def reverse_line
+          stream.seek(0, IO::SEEK_END)
+          debris = ''
 
-            buf =
-              if pos <= max
-                stream.seek(-pos, IO::SEEK_END)
-                stream.read(BUFFER_SIZE)
-              else # Reached the head, read only left
-                stream.seek(0)
-                stream.read(BUFFER_SIZE - (pos - max))
-              end
-
-            lines += buf.count("\n")
-            chunks.unshift(buf)
+          until (buf = read_backward(BUFFER_SIZE)).empty?
+            buf += debris
+            debris, *lines = buf.each_line.to_a
+            lines.reverse_each do |line|
+              yield(line.force_encoding('UTF-8'))
+            end
           end
 
-          chunks.join.lines.last(last_lines).join
+          yield(debris.force_encoding('UTF-8')) unless debris.empty?
+        end
+
+        def read_backward(length)
+          cur_offset = stream.tell
+          start = cur_offset - length
+          start = 0 if start < 0
+
+          stream.seek(start, IO::SEEK_SET)
+          stream.read(cur_offset - start).tap do
+            stream.seek(start, IO::SEEK_SET)
+          end
         end
       end
     end
