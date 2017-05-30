@@ -87,6 +87,7 @@ $(() => {
       Store.rootPath = this.endpoint;
 
       this.filterManager = new FilteredSearchBoards(Store.filter, true, [(this.milestoneTitle ? 'milestone' : null)]);
+      this.filterManager.setup();
 
       // Listen for updateTokens event
       eventHub.$on('updateTokens', this.updateTokens);
