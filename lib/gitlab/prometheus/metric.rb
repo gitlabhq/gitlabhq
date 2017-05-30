@@ -1,12 +1,13 @@
 module Gitlab::Prometheus
   class Metric
-    attr_reader :group, :title, :detect, :weight, :queries
+    attr_reader :group, :title, :detect, :weight, :y_label, :queries
 
-    def initialize(group, title, detect, weight, queries = [])
+    def initialize(group, title, detect, weight, y_label, queries = [])
       @group = group
       @title = title
       @detect = detect
       @weight = weight
+      @y_label = y_label || 'Values'
       @queries = queries
     end
 
@@ -14,7 +15,7 @@ module Gitlab::Prometheus
       missing_fields = [:title, :detect, :weight, :queries].select { |key| !entry.has_key?(key) }
       raise ParsingError.new("entry missing required fields #{missing_fields}") unless missing_fields.empty?
 
-      Metric.new(group, entry[:title], entry[:detect], entry[:weight], entry[:queries])
+      Metric.new(group, entry[:title], entry[:detect], entry[:weight], entry[:y_label],entry[:queries])
     end
 
     def self.metrics_from_list(group, list)

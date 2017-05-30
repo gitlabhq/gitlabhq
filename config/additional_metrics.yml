@@ -2,6 +2,7 @@
   priority: 1
   metrics:
   - title: "Memory usage"
+    y_label: "Values"
     detect: container_memory_usage_bytes
     weight: 1
     queries:

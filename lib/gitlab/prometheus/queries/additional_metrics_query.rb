@@ -22,6 +22,7 @@ module Gitlab::Prometheus::Queries
           {
             title: metric.title,
             weight: metric.weight,
+            y_label: metric.y_label,
             queries: metric.queries.map(&query_processor)
           }
         end
