@@ -56,7 +56,6 @@ import './lib/utils/animate';
 import './lib/utils/bootstrap_linked_tabs';
 import './lib/utils/common_utils';
 import './lib/utils/datetime_utility';
-import './lib/utils/notify';
 import './lib/utils/pretty_time';
 import './lib/utils/text_utility';
 import './lib/utils/type_utility';
