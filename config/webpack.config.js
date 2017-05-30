@@ -226,10 +226,12 @@ if (IS_PRODUCTION) {
     })
   );
 
+  // zopfli requires a lot of compute time and is disabled in CI
   if (!NO_COMPRESSION) {
     config.plugins.push(
       new CompressionPlugin({
         asset: '[path].gz[query]',
+        algorithm: 'zopfli',
       })
     );
   }
