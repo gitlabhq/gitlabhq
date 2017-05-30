@@ -5,6 +5,15 @@ describe ForkedProjectLink, "add link on fork" do
   let(:user) { create(:user) }
   let(:namespace) { user.namespace }
 
+  def fork_project(from_project, user)
+    shell = double('gitlab_shell', fork_repository: true)
+
+    service = Projects::ForkService.new(from_project, user)
+    allow(service).to receive(:gitlab_shell).and_return(shell)
+
+    service.execute
+  end
+
   before do
     create(:project_member, :reporter, user: user, project: project_from)
     @project_to = fork_project(project_from, user)
@@ -20,7 +29,7 @@ describe ForkedProjectLink, "add link on fork" do
 end
 
 describe '#forked?' do
-  let(:forked_project_link) { build(:forked_project_link) }
+  let(:forked_project_link) { create(:forked_project_link) }
   let(:project_from) { create(:project, :repository) }
   let(:project_to) { create(:project, forked_project_link: forked_project_link) }
 
@@ -39,16 +48,8 @@ describe '#forked?' do
   end
 
   it "project_to.destroy destroys fork_link" do
-    expect(forked_project_link).to receive(:destroy)
     project_to.destroy
+
+    expect(ForkedProjectLink.exists?(id: forked_project_link.id)).to eq(false)
   end
-end
-
-def fork_project(from_project, user)
-  shell = double('gitlab_shell', fork_repository: true)
-
-  service = Projects::ForkService.new(from_project, user)
-  allow(service).to receive(:gitlab_shell).and_return(shell)
-
-  service.execute
 end
