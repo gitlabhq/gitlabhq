@@ -470,10 +470,6 @@ Make GitLab start on boot:
 
 ### Install Gitaly
 
-As of GitLab 9.1 Gitaly is an **optional** component. Its
-configuration is still changing regularly. It is OK to wait
-with setting up Gitaly until you upgrade to GitLab 9.2 or later.
-
     # Fetch Gitaly source with Git and compile with Go
     sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly]" RAILS_ENV=production
 
@@ -490,16 +486,6 @@ Next, make sure gitaly configured:
     # If you are using non-default settings you need to update config.toml
     cd /home/git/gitaly
     sudo -u git -H editor config.toml
-
-    # Enable Gitaly in the init script
-    echo 'gitaly_enabled=true' | sudo tee -a /etc/default/gitlab
-
-Next, edit `/home/git/gitlab/config/gitlab.yml` and make sure `enabled: true` in
-the `gitaly:` section is uncommented.
-
-    # <- gitlab.yml indentation starts here
-      gitaly:
-        enabled: true
 
 For more information about configuring Gitaly see
 [doc/administration/gitaly](../administration/gitaly).
