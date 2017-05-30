@@ -105,6 +105,16 @@ creating merge commits, you can configure this on a per-project basis.
 
 [Read more about fast-forward merge requests.](fast_forward_merge.md)
 
+## Code quality diff
+
+> Included in [GitLab Enterprise Edition Starter][products].
+
+If you are using GitLab CI you can analyze your source code quality using
+Code Climate analyzer docker image. Then GitLab will show you how merge request
+changes source code quality right inside merge request widget.
+
+[Read more about code quality diff.](code_quality_diff.md)
+
 ## Ignore whitespace changes in Merge Request diff view
 
 If you click the **Hide whitespace changes** button, you can see the diff
