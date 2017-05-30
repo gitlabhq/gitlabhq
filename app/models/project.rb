@@ -874,10 +874,8 @@ class Project < ActiveRecord::Base
     url_to_repo
   end
 
-  def http_url_to_repo(user = nil)
-    credentials = Gitlab::UrlSanitizer.http_credentials_for_user(user)
-
-    Gitlab::UrlSanitizer.new("#{web_url}.git", credentials: credentials).full_url
+  def http_url_to_repo
+    "#{web_url}.git"
   end
 
   def user_can_push_to_empty_repo?(user)

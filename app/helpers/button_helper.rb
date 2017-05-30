@@ -56,7 +56,7 @@ module ButtonHelper
 
     content_tag (append_link ? :a : :span), protocol,
       class: klass,
-      href: (project.http_url_to_repo(current_user) if append_link),
+      href: (project.http_url_to_repo if append_link),
       data: {
         html: true,
         placement: placement,
