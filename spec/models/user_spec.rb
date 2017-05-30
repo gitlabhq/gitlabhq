@@ -1557,14 +1557,37 @@ describe User do
   describe '#authorized_groups' do
     let!(:user) { create(:user) }
     let!(:private_group) { create(:group) }
+    let!(:child_group) { create(:group, parent: private_group) }
+
+    let!(:project_group) { create(:group) }
+    let!(:project) { create(:project, group: project_group) }
 
     before do
       private_group.add_user(user, Gitlab::Access::MASTER)
+      project.add_master(user)
     end
 
     subject { user.authorized_groups }
 
-    it { is_expected.to eq([private_group]) }
+    it { is_expected.to contain_exactly private_group, project_group }
+  end
+
+  describe '#membership_groups' do
+    let!(:user) { create(:user) }
+    let!(:parent_group) { create(:group) }
+    let!(:child_group) { create(:group, parent: parent_group) }
+
+    before do
+      parent_group.add_user(user, Gitlab::Access::MASTER)
+    end
+
+    subject { user.membership_groups }
+
+    if Group.supports_nested_groups?
+      it { is_expected.to contain_exactly parent_group, child_group }
+    else
+      it { is_expected.to contain_exactly parent_group }
+    end
   end
 
   describe '#authorized_projects', :delete do

@@ -564,12 +564,17 @@ class User < ActiveRecord::Base
     gpg_keys.each(&:update_invalid_gpg_signatures)
   end
 
-  # Returns the groups a user has access to
+  # Returns the groups a user has access to, either through a membership or a project authorization
   def authorized_groups
     union = Gitlab::SQL::Union
       .new([groups.select(:id), authorized_projects.select(:namespace_id)])
 
     Group.where("namespaces.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
+  end
+
+  # Returns the groups a user is a member of, either directly or through a parent group
+  def membership_groups
+    Gitlab::GroupHierarchy.new(groups).base_and_descendants
   end
 
   # Returns a relation of groups the user has access to, including their parent
