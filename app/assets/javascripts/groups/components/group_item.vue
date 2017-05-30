@@ -15,12 +15,21 @@ export default {
     },
   },
   methods: {
-    toggleSubGroups(e) {
-      if (e.target.tagName === 'A' || !this.group.hasSubgroups) {
-        return false;
+    onClickRowGroup(e) {
+      // e.stopPropagation();
+
+      // Skip for buttons
+      if (e.target.tagName === 'A' ||
+        (e.target.tagName === 'I' && e.target.parentElement.tagName === 'A')) {
+      } else {
+        if (this.group.hasSubgroups) {
+          eventHub.$emit('toggleSubGroups', this.group);
+        } else {
+          window.location.href = this.group.webUrl;
+        }
       }
 
-      return eventHub.$emit('toggleSubGroups', this.group);
+      return false;
     },
     onLeaveGroup(e) {
       e.preventDefault();
@@ -28,6 +37,8 @@ export default {
       if (confirm(`Are you sure you want to leave the "${this.group.fullName}" group?`)) {
         this.leaveGroup();
       }
+
+      return false;
     },
     leaveGroup() {
       eventHub.$emit('leaveGroup', this.group.leavePath);
@@ -76,7 +87,7 @@ export default {
 
 <template>
   <li
-    @click.stop="toggleSubGroups"
+    @click.stop="onClickRowGroup"
     :id="groupDomId"
     :class="rowClass"
     >
