@@ -1,4 +1,3 @@
-# coding: utf-8
 require 'spec_helper'
 
 describe ApplicationHelper do
@@ -58,7 +57,7 @@ describe ApplicationHelper do
     it 'returns an url for the avatar' do
       project = create(:empty_project, avatar: File.open(uploaded_image_temp_path))
 
-      avatar_url = "http://#{Gitlab.config.gitlab.host}/uploads/system/project/avatar/#{project.id}/banana_sample.gif"
+      avatar_url = "http://#{Gitlab.config.gitlab.host}/uploads/project/avatar/#{project.id}/banana_sample.gif"
       expect(helper.project_icon(project.full_path).to_s).
         to eq "<img src=\"#{avatar_url}\" alt=\"Banana sample\" />"
     end
@@ -79,7 +78,7 @@ describe ApplicationHelper do
       user = create(:user, avatar: File.open(uploaded_image_temp_path))
 
       expect(helper.avatar_icon(user.email).to_s).
-        to match("/uploads/system/user/avatar/#{user.id}/banana_sample.gif")
+        to match("/uploads/user/avatar/#{user.id}/banana_sample.gif")
     end
 
     it 'returns an url for the avatar with relative url' do
@@ -90,7 +89,7 @@ describe ApplicationHelper do
       user = create(:user, avatar: File.open(uploaded_image_temp_path))
 
       expect(helper.avatar_icon(user.email).to_s).
-        to match("/gitlab/uploads/system/user/avatar/#{user.id}/banana_sample.gif")
+        to match("/gitlab/uploads/user/avatar/#{user.id}/banana_sample.gif")
     end
 
     it 'calls gravatar_icon when no User exists with the given email' do
@@ -104,7 +103,7 @@ describe ApplicationHelper do
         user = create(:user, avatar: File.open(uploaded_image_temp_path))
 
         expect(helper.avatar_icon(user).to_s).
-          to match("/uploads/system/user/avatar/#{user.id}/banana_sample.gif")
+          to match("/uploads/user/avatar/#{user.id}/banana_sample.gif")
       end
     end
   end

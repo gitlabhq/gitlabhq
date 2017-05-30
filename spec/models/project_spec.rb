@@ -805,7 +805,7 @@ describe Project, models: true do
       end
 
       let(:avatar_path) do
-        "/uploads/system/project/avatar/#{project.id}/uploads/avatar.png"
+        "/uploads/project/avatar/#{project.id}/uploads/avatar.png"
       end
 
       it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
