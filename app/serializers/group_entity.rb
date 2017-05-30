@@ -1,5 +1,6 @@
 class GroupEntity < Grape::Entity
   include RequestAwareEntity
+  include MembersHelper
 
   expose :id, :name, :path, :description, :visibility
   expose :avatar_url
@@ -12,5 +13,13 @@ class GroupEntity < Grape::Entity
     expose :group_access do |group, options|
       group.group_members.find_by(user_id: request.current_user)&.access_level
     end
+  end
+
+  expose :edit_path do |group|
+    edit_group_path(group)
+  end
+
+  expose :leave_path do |group|
+    leave_group_group_members_path(group)
   end
 end
