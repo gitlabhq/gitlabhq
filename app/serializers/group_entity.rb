@@ -22,4 +22,8 @@ class GroupEntity < Grape::Entity
   expose :leave_path do |group|
     leave_group_group_members_path(group)
   end
+
+  expose :can_edit do |group|
+    can?(request.current_user, :admin_group, group)
+  end
 end
