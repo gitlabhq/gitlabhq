@@ -1,5 +1,5 @@
 module Ci
-  class CreatePipelineBuildsService < BaseService
+  class CreatePipelineStagesService < BaseService
     attr_reader :pipeline
 
     def execute(pipeline)

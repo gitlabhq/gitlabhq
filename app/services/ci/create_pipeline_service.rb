@@ -49,7 +49,7 @@ module Ci
       Ci::Pipeline.transaction do
         update_merge_requests_head_pipeline if pipeline.save
 
-        Ci::CreatePipelineBuildsService
+        Ci::CreatePipelineStagesService
           .new(project, current_user)
           .execute(pipeline)
       end
