@@ -107,11 +107,11 @@ creating merge commits, you can configure this on a per-project basis.
 
 ## Code quality diff
 
-> Included in [GitLab Enterprise Edition Starter][products].
+> Introduced in [GitLab Enterprise Edition Starter][products] 9.3.
 
-If you are using GitLab CI you can analyze your source code quality using
-Code Climate analyzer docker image. Then GitLab will show you how merge request
-changes source code quality right inside merge request widget.
+If you are using [GitLab CI][ci], you can analyze your source code quality using
+the [Code Climate][cc] analyzer [Docker image][cd]. Going a step further, GitLab
+can show the Code Climate report right in the merge request widget area.
 
 [Read more about code quality diff.](code_quality_diff.md)
 
@@ -216,3 +216,6 @@ git checkout origin/merge-requests/1
 
 [protected branches]: ../protected_branches.md
 [products]: https://about.gitlab.com/products/ "GitLab products page"
+[ci]: ../../../ci/README.md
+[cc]: https://codeclimate.com/
+[cd]: https://hub.docker.com/r/codeclimate/codeclimate/
