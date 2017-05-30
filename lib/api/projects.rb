@@ -21,6 +21,7 @@ module API
         optional :request_access_enabled, type: Boolean, desc: 'Allow users to request member access'
         optional :only_allow_merge_if_pipeline_succeeds, type: Boolean, desc: 'Only allow to merge if builds succeed'
         optional :only_allow_merge_if_all_discussions_are_resolved, type: Boolean, desc: 'Only allow to merge if all discussions are resolved'
+        optional :tag_list, type: Array[String], desc: 'The list of tags for a project'
       end
 
       params :optional_params do
@@ -231,6 +232,7 @@ module API
             :request_access_enabled,
             :shared_runners_enabled,
             :snippets_enabled,
+            :tag_list,
             :visibility,
             :wiki_enabled
           ]
