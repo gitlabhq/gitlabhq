@@ -52,7 +52,7 @@ scope format: false do
       resource :release, only: [:edit, :update]
     end
 
-    resources :protected_branches, only: [:index, :show, :create, :update, :destroy, :patch], constraints: { id: Gitlab::Regex.git_reference_regex } do
+    resources :protected_branches, only: [:index, :show, :create, :update, :destroy, :patch], constraints: { id: Gitlab::PathRegex.git_reference_regex } do
       ## EE-specific
       scope module: :protected_branches do
         resources :merge_access_levels, only: [:destroy]
