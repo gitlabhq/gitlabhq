@@ -37,10 +37,12 @@ module IssueLinks
     end
 
     def destroy_relation_path(issue)
+      # Make sure the user can admin both the current issue AND the
+      # referenced issue projects in order to return the removal link.
       if can_destroy_issue_link_on_current_project? && can_destroy_issue_link?(issue.project)
-        namespace_project_issue_link_path(issue.project.namespace,
-                                          issue.project,
-                                          issue.iid,
+        namespace_project_issue_link_path(@project.namespace,
+                                          @issue.project,
+                                          @issue.iid,
                                           issue.issue_links_id)
       end
     end
