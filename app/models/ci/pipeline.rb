@@ -292,6 +292,16 @@ module Ci
         sort_by { |build| build[:stage_idx] }
     end
 
+    def config_stages_attributes
+      return [] unless config_processor
+
+      config_processor.stages_for_ref(ref, tag?, trigger_requests.first)
+    end
+
+    def has_stages?
+      config_stages_attributes.any?
+    end
+
     def has_warnings?
       builds.latest.failed_but_allowed.any?
     end

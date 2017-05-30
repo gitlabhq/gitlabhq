@@ -502,6 +502,20 @@ describe Ci::Pipeline, models: true do
     end
   end
 
+  describe '#has_stages?' do
+    context 'when pipeline has stages' do
+      subject { create(:ci_pipeline_with_one_job) }
+
+      it { is_expected.to have_stages }
+    end
+
+    context 'when pipeline does not have stages' do
+      subject { create(:ci_pipeline_without_jobs) }
+
+      it { is_expected.not_to have_stages }
+    end
+  end
+
   describe '#has_warnings?' do
     subject { pipeline.has_warnings? }
 

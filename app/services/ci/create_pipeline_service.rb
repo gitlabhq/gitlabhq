@@ -42,8 +42,8 @@ module Ci
         return pipeline
       end
 
-      unless pipeline.config_builds_attributes.present?
-        return error('No builds for this pipeline.')
+      unless pipeline.has_stages?
+        return error('No stages / jobs for this pipeline.')
       end
 
       Ci::Pipeline.transaction do
