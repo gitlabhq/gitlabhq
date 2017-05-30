@@ -1,8 +1,10 @@
 <script>
   /* global Flash */
+  import updateMixin from '../../mixins/update';
   import markdownField from '../../../vue_shared/components/markdown/field.vue';
 
   export default {
+    mixins: [updateMixin],
     props: {
       formState: {
         type: Object,
@@ -44,7 +46,8 @@
         v-model="formState.description"
         ref="textarea"
         slot="textarea"
-        placeholder="Write a comment or drag your files here...">
+        placeholder="Write a comment or drag your files here..."
+        @keydown.meta.enter="updateIssuable">
       </textarea>
     </markdown-field>
   </div>

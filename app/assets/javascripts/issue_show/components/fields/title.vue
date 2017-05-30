@@ -1,5 +1,8 @@
 <script>
+  import updateMixin from '../../mixins/update';
+
   export default {
+    mixins: [updateMixin],
     props: {
       formState: {
         type: Object,
@@ -22,6 +25,7 @@
       type="text"
       placeholder="Issue title"
       aria-label="Issue title"
-      v-model="formState.title" />
+      v-model="formState.title"
+      @keydown.meta.enter="updateIssuable" />
   </fieldset>
 </template>

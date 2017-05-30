@@ -1,7 +1,9 @@
 <script>
+  import updateMixin from '../mixins/update';
   import eventHub from '../event_hub';
 
   export default {
+    mixins: [updateMixin],
     props: {
       canDestroy: {
         type: Boolean,
@@ -23,10 +25,6 @@
       },
     },
     methods: {
-      updateIssuable() {
-        this.formState.updateLoading = true;
-        eventHub.$emit('update.issuable');
-      },
       closeForm() {
         eventHub.$emit('close.form');
       },
