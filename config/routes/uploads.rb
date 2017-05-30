@@ -1,11 +1,11 @@
 scope path: :uploads do
   # Note attachments and User/Group/Project avatars
-  get ":model/:mounted_as/:id/:filename",
+  get "system/:model/:mounted_as/:id/:filename",
       to:           "uploads#show",
       constraints:  { model: /note|user|group|project/, mounted_as: /avatar|attachment/, filename: /[^\/]+/ }
 
   # Appearance
-  get ":model/:mounted_as/:id/:filename",
+  get "system/:model/:mounted_as/:id/:filename",
       to:           "uploads#show",
       constraints:  { model: /appearance/, mounted_as: /logo|header_logo/, filename: /.+/ }
 
