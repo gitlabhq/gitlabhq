@@ -45,9 +45,8 @@
     let inline = false;
 
     if (typeof katex !== 'undefined') {
-      const katexString = text.replace(/&amp;/g, '&')
-        .replace(/&=&/g, '\\&=\\&')
-        .replace(/<(\/?)em>/g, '');
+      const katexString = text.replace(/&amp;/g, '')
+        .replace(/<(\/?)em>/g, '_');
       const regex = new RegExp(katexRegexString, 'gi');
       const numberOfMatches = katexString.match(regex);
 
