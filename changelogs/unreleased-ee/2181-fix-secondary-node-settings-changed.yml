@@ -1,4 +1,4 @@
 ---
-title: Geo - Use geo_secondary_role flag to configure the database connection and the Sidekiq cron jobs correctly.
+title: Geo - Properly set tracking database connection and cron jobs on secondary nodes
 merge_request:
 author:
