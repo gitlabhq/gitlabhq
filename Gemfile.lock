@@ -497,11 +497,10 @@ GEM
       omniauth (~> 1.0)
       omniauth-oauth2 (~> 1.0)
     omniauth-google-oauth2 (0.4.1)
-      addressable (~> 2.3)
-      jwt (~> 1.0)
+      jwt (~> 1.5.2)
       multi_json (~> 1.3)
       omniauth (>= 1.1.1)
-      omniauth-oauth2 (~> 1.3.1)
+      omniauth-oauth2 (>= 1.3.1)
     omniauth-kerberos (0.3.0)
       omniauth-multipassword
       timfel-krb5-auth (~> 0.8)
@@ -1058,4 +1057,4 @@ DEPENDENCIES
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
-   1.14.6
+   1.15.0
