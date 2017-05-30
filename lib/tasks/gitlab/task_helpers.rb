@@ -99,16 +99,17 @@ module Gitlab
     end
 
     def warn_user_is_not_gitlab
-      unless @warned_user_not_gitlab
-        gitlab_user = Gitlab.config.gitlab.user
+      return if @warned_user_not_gitlab
+
+      unless is_gitlab_user?
         current_user = run_command(%w(whoami)).chomp
-        unless current_user == gitlab_user
-          puts " Warning ".color(:black).background(:yellow)
-          puts "  You are running as user #{current_user.color(:magenta)}, we hope you know what you are doing."
-          puts "  Things may work\/fail for the wrong reasons."
-          puts "  For correct results you should run this as user #{gitlab_user.color(:magenta)}."
-          puts ""
-        end
+
+        puts " Warning ".color(:black).background(:yellow)
+        puts "  You are running as user #{current_user.color(:magenta)}, we hope you know what you are doing."
+        puts "  Things may work\/fail for the wrong reasons."
+        puts "  For correct results you should run this as user #{gitlab_user.color(:magenta)}."
+        puts ""
+
         @warned_user_not_gitlab = true
       end
     end
