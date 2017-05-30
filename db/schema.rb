@@ -140,6 +140,7 @@ ActiveRecord::Schema.define(version: 20170602003304) do
     t.integer "mirror_max_delay", default: 5, null: false
     t.integer "mirror_max_capacity", default: 100, null: false
     t.integer "mirror_capacity_threshold", default: 50, null: false
+    t.boolean "authorized_keys_enabled"
   end
 
   create_table "approvals", force: :cascade do |t|

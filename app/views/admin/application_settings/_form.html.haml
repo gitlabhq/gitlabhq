@@ -637,6 +637,20 @@
           installations. Set to 0 to completely disable polling.
           = link_to icon('question-circle'), help_page_path('administration/polling')
 
+  %fieldset
+    %legend Performance optimization
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :authorized_keys_enabled do
+            = f.check_box :authorized_keys_enabled
+            Write to "authorized_keys" file
+          .help-block
+            By default, we write to the "authorized_keys" file to support old
+            OpenSSH servers. If, and only if, you have configured the GitLab
+            instance to use the AuthorizedKeysCommand, uncheck this to improve
+            performance.
+
   - if Gitlab::Geo.license_allows?
     %fieldset
       %legend GitLab Geo
