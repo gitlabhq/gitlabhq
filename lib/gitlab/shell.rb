@@ -183,6 +183,8 @@ module Gitlab
     #   add_key("key-42", "sha-rsa ...")
     #
     def add_key(key_id, key_content)
+      return unless self.authorized_keys_enabled?
+
       gitlab_shell_fast_execute([gitlab_shell_keys_path,
                                  'add-key', key_id, self.class.strip_key(key_content)])
     end
@@ -192,6 +194,8 @@ module Gitlab
     # Ex.
     #   batch_add_keys { |adder| adder.add_key("key-42", "sha-rsa ...") }
     def batch_add_keys(&block)
+      return unless self.authorized_keys_enabled?
+
       IO.popen(%W(#{gitlab_shell_path}/bin/gitlab-keys batch-add-keys), 'w') do |io|
         yield(KeyAdder.new(io))
       end
@@ -203,6 +207,8 @@ module Gitlab
     #   remove_key("key-342", "sha-rsa ...")
     #
     def remove_key(key_id, key_content)
+      return unless self.authorized_keys_enabled?
+
       args = [gitlab_shell_keys_path, 'rm-key', key_id]
       args << key_content if key_content
 
@@ -215,6 +221,8 @@ module Gitlab
     #   remove_all_keys
     #
     def remove_all_keys
+      return unless self.authorized_keys_enabled?
+
       gitlab_shell_fast_execute([gitlab_shell_keys_path, 'clear'])
     end
 
@@ -409,6 +417,10 @@ module Gitlab
       # Old Popen code returns [Error, output] to the caller, so we
       # need to do the same here...
       raise Error, e
+    end
+
+    def authorized_keys_enabled?
+      current_application_settings.authorized_keys_enabled
     end
   end
 end

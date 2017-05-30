@@ -14,3 +14,4 @@ that to prioritize important jobs.
 - [Sidekiq MemoryKiller](sidekiq_memory_killer.md): Configure Sidekiq MemoryKiller
 to restart Sidekiq.
 - [Unicorn](unicorn.md): Understand Unicorn and unicorn-worker-killer.
+- [Speed up SSH operations](speed_up_ssh.md)

@@ -51,6 +51,105 @@ describe Gitlab::Shell do
     end
   end
 
+  describe '#add_key' do
+    context 'when authorized_keys_enabled is true' do
+      it 'removes trailing garbage' do
+        allow(gitlab_shell).to receive(:gitlab_shell_keys_path).and_return(:gitlab_shell_keys_path)
+        expect(Gitlab::Utils).to receive(:system_silent).with(
+          [:gitlab_shell_keys_path, 'add-key', 'key-123', 'ssh-rsa foobar']
+        )
+
+        gitlab_shell.add_key('key-123', 'ssh-rsa foobar trailing garbage')
+      end
+    end
+
+    context 'when authorized_keys_enabled is false' do
+      before do
+        stub_application_setting(authorized_keys_enabled: false)
+      end
+
+      it 'does nothing' do
+        expect(Gitlab::Utils).not_to receive(:system_silent)
+
+        gitlab_shell.add_key('key-123', 'ssh-rsa foobar trailing garbage')
+      end
+    end
+  end
+
+  describe '#batch_add_keys' do
+    context 'when authorized_keys_enabled is true' do
+      it 'instantiates KeyAdder' do
+        expect_any_instance_of(Gitlab::Shell::KeyAdder).to receive(:add_key).with('key-123', 'ssh-rsa foobar')
+
+        gitlab_shell.batch_add_keys do |adder|
+          adder.add_key('key-123', 'ssh-rsa foobar')
+        end
+      end
+    end
+
+    context 'when authorized_keys_enabled is false' do
+      before do
+        stub_application_setting(authorized_keys_enabled: false)
+      end
+
+      it 'does nothing' do
+        expect_any_instance_of(Gitlab::Shell::KeyAdder).not_to receive(:add_key)
+
+        gitlab_shell.batch_add_keys do |adder|
+          adder.add_key('key-123', 'ssh-rsa foobar')
+        end
+      end
+    end
+  end
+
+  describe '#remove_key' do
+    context 'when authorized_keys_enabled is true' do
+      it 'removes trailing garbage' do
+        allow(gitlab_shell).to receive(:gitlab_shell_keys_path).and_return(:gitlab_shell_keys_path)
+        expect(Gitlab::Utils).to receive(:system_silent).with(
+          [:gitlab_shell_keys_path, 'rm-key', 'key-123', 'ssh-rsa foobar']
+        )
+
+        gitlab_shell.remove_key('key-123', 'ssh-rsa foobar')
+      end
+    end
+
+    context 'when authorized_keys_enabled is false' do
+      before do
+        stub_application_setting(authorized_keys_enabled: false)
+      end
+
+      it 'does nothing' do
+        expect(Gitlab::Utils).not_to receive(:system_silent)
+
+        gitlab_shell.remove_key('key-123', 'ssh-rsa foobar')
+      end
+    end
+  end
+
+  describe '#remove_all_keys' do
+    context 'when authorized_keys_enabled is true' do
+      it 'removes trailing garbage' do
+        allow(gitlab_shell).to receive(:gitlab_shell_keys_path).and_return(:gitlab_shell_keys_path)
+        expect(Gitlab::Utils).to receive(:system_silent).with([:gitlab_shell_keys_path, 'clear'])
+
+        gitlab_shell.remove_all_keys
+      end
+    end
+
+    context 'when authorized_keys_enabled is false' do
+      before do
+        stub_application_setting(authorized_keys_enabled: false)
+      end
+
+      it 'does nothing' do
+        expect(Gitlab::Utils).not_to receive(:system_silent)
+
+        gitlab_shell.remove_all_keys
+      end
+    end
+  end
+
   describe Gitlab::Shell::KeyAdder do
     describe '#add_key' do
       it 'removes trailing garbage' do
@@ -94,17 +193,6 @@ describe Gitlab::Shell do
       allow(Gitlab.config.gitlab_shell).to receive(:path).and_return(gitlab_shell_path)
       allow(Gitlab.config.gitlab_shell).to receive(:hooks_path).and_return(gitlab_shell_hooks_path)
       allow(Gitlab.config.gitlab_shell).to receive(:git_timeout).and_return(800)
-    end
-
-    describe '#add_key' do
-      it 'removes trailing garbage' do
-        allow(gitlab_shell).to receive(:gitlab_shell_keys_path).and_return(:gitlab_shell_keys_path)
-        expect(gitlab_shell).to receive(:gitlab_shell_fast_execute).with(
-          [:gitlab_shell_keys_path, 'add-key', 'key-123', 'ssh-rsa foobar']
-        )
-
-        gitlab_shell.add_key('key-123', 'ssh-rsa foobar trailing garbage')
-      end
     end
 
     describe '#add_repository' do
