@@ -91,7 +91,7 @@ class JiraService < IssueTrackerService
       { type: 'text', name: 'project_key', placeholder: 'Project Key', required: true },
       { type: 'text', name: 'username', placeholder: '', required: true },
       { type: 'password', name: 'password', placeholder: '', required: true },
-      { type: 'text', name: 'jira_issue_transition_id', placeholder: '', required: true }
+      { type: 'text', name: 'jira_issue_transition_id', placeholder: '' }
     ]
   end
 

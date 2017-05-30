@@ -58,9 +58,6 @@ describe Projects::ServicesController do
 
         expect(response.status).to eq(200)
       end
-
-      def built_service
-      end
     end
 
     context 'failure' do

@@ -80,4 +80,8 @@ class MockCiService < CiService
       :error
     end
   end
+
+  def can_test?
+    false
+  end
 end

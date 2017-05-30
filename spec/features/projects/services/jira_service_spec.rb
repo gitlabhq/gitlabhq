@@ -47,6 +47,18 @@ feature 'Setup Jira service', :feature, :js do
         WebMock.stub_request(:get, project_url).to_return(status: 401)
       end
 
+      it 'shows errors when some required fields are not filled in' do
+        click_link('JIRA')
+
+        check 'Active'
+        fill_in 'service_password', with: 'password'
+        click_button('Test settings and save changes')
+
+        page.within('.service-settings') do
+          expect(page).to have_content('This field is required.')
+        end
+      end
+
       it 'activates the JIRA service' do
         click_link('JIRA')
         fill_form
