@@ -26,9 +26,9 @@ module IssueLinks
     def issues
       return @issues if defined?(@issues)
 
-      authorized_issues = IssuesFinder.new(@current_user, project_id: @project.id).execute
       referenced_issues = @issue.referenced_issues.select('issues.*', 'issue_links.id AS issue_links_id')
       referred_by_issues = @issue.referred_by_issues.select('issues.*', 'issue_links.id AS issue_links_id')
+      authorized_issues = IssuesFinder.new(@current_user).execute
 
       union = Gitlab::SQL::Union.new([referenced_issues, referred_by_issues])
 
