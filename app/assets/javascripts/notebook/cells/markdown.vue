@@ -49,10 +49,11 @@
         .replace(/&=&/g, '\\space=\\space')
         .replace(/<(\/?)em>/g, '_');
       const regex = new RegExp(katexRegexString, 'gi');
+      const matchLocation = katexString.search(regex);
       const numberOfMatches = katexString.match(regex);
 
       if (numberOfMatches && numberOfMatches.length !== 0) {
-        if (numberOfMatches.length > 1) {
+        if (matchLocation > 0) {
           let matches = regex.exec(katexString);
           inline = true;
 
