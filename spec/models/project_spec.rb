@@ -1703,7 +1703,6 @@ describe Project, models: true do
 
       expect(project.reload.import_status).to eq('finished')
     end
-<<<<<<< HEAD
 
     it 'imports a mirrored project' do
       allow_any_instance_of(RepositoryUpdateMirrorWorker).to receive(:perform)
@@ -1717,8 +1716,6 @@ describe Project, models: true do
 
       expect(project.reload.import_status).to eq('finished')
     end
-=======
->>>>>>> ce-com/master
   end
 
   describe '#latest_successful_builds_for' do
