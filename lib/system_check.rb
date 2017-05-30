@@ -9,22 +9,13 @@ module SystemCheck
   #
   # @param [String] component name of the component relative to the checks being executed
   # @param [Array<BaseCheck>] checks classes of corresponding checks to be executed in the same order
-  # @param [BaseExecutor] executor_klass optionally specifiy a different executor class
-  def self.run(component, checks = [], executor_klass = SimpleExecutor)
-    unless executor_klass < BaseExecutor
-      raise ArgumentError, 'Invalid executor'
-    end
+  def self.run(component, checks = [])
+    executor = SimpleExecutor.new(component)
 
-    prepare(component, checks, executor_klass).execute
-  end
-
-  def self.prepare(component, checks = [], executor_klass = SimpleExecutor)
-    executor = executor_klass.new(component)
     checks.each do |check|
       executor << check
     end
 
-    executor
+    executor.execute
   end
-  private_class_method :prepare
 end

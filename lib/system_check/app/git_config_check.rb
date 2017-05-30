@@ -5,7 +5,7 @@ module SystemCheck
         'core.autocrlf' => 'input'
       }.freeze
 
-      set_name 'Git configured with autocrlf=input?'
+      set_name 'Git configured correctly?'
 
       def check?
         correct_options = OPTIONS.map do |name, value|
@@ -15,8 +15,18 @@ module SystemCheck
         correct_options.all?
       end
 
+      # Tries to configure git itself
+      #
+      # Returns true if all subcommands were successful (according to their exit code)
+      # Returns false if any or all subcommands failed.
       def repair!
-        auto_fix_git_config(OPTIONS)
+        return false unless is_gitlab_user?
+
+        command_success = OPTIONS.map do |name, value|
+          system(*%W(#{Gitlab.config.git.bin_path} config --global #{name} #{value}))
+        end
+
+        command_success.all?
       end
 
       def show_error
@@ -26,24 +36,6 @@ module SystemCheck
         for_more_information(
           see_installation_guide_section 'GitLab'
         )
-      end
-
-      private
-
-      # Tries to configure git itself
-      #
-      # Returns true if all subcommands were successfull (according to their exit code)
-      # Returns false if any or all subcommands failed.
-      def auto_fix_git_config(options)
-        if !@warned_user_not_gitlab
-          command_success = options.map do |name, value|
-            system(*%W(#{Gitlab.config.git.bin_path} config --global #{name} #{value}))
-          end
-
-          command_success.all?
-        else
-          false
-        end
       end
     end
   end

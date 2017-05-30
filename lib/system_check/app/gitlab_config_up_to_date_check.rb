@@ -1,9 +1,7 @@
 module SystemCheck
   module App
-    class GitlabConfigNotOutdatedCheck < SystemCheck::BaseCheck
-      set_name 'GitLab config outdated?'
-      set_check_pass 'no'
-      set_check_fail 'yes'
+    class GitlabConfigUpToDateCheck < SystemCheck::BaseCheck
+      set_name 'GitLab config up to date?'
       set_skip_reason "can't check because of previous errors"
 
       def skip?
@@ -18,7 +16,7 @@ module SystemCheck
 
       def show_error
         try_fixing_it(
-          'Backup your config/gitlab.yml',
+          'Back-up your config/gitlab.yml',
           'Copy config/gitlab.yml.example to config/gitlab.yml',
           'Update config/gitlab.yml to match your setup'
         )

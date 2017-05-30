@@ -1,5 +1,9 @@
+require 'tasks/gitlab/task_helpers'
+
 module SystemCheck
   module Helpers
+    include ::Gitlab::TaskHelpers
+
     # Display a message telling to fix and rerun the checks
     def fix_and_rerun
       $stdout.puts '  Please fix the error above and rerun the checks.'.color(:red)
@@ -9,8 +13,6 @@ module SystemCheck
     #
     # @param [Array<String>] sources one or more references (documentation or links)
     def for_more_information(*sources)
-      sources = sources.shift if sources.first.is_a?(Array)
-
       $stdout.puts '  For more information see:'.color(:blue)
       sources.each do |source|
         $stdout.puts "  #{source}"
@@ -72,6 +74,13 @@ module SystemCheck
 
     def sudo_gitlab(command)
       "sudo -u #{gitlab_user} -H #{command}"
+    end
+
+    def is_gitlab_user?
+      return @is_gitlab_user unless @is_gitlab_user.nil?
+
+      current_user = run_command(%w(whoami)).chomp
+      @is_gitlab_user = current_user == gitlab_user
     end
   end
 end

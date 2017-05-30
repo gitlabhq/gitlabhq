@@ -15,16 +15,10 @@ module SystemCheck
           'Check that the information in config/database.yml is correct'
         )
         for_more_information(
-          see_database_guide,
+          'doc/install/databases.md',
           'http://guides.rubyonrails.org/getting_started.html#configuring-a-database'
         )
         fix_and_rerun
-      end
-
-      private
-
-      def see_database_guide
-        'doc/install/databases.md'
       end
     end
   end

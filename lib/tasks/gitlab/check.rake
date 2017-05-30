@@ -21,7 +21,7 @@ namespace :gitlab do
         SystemCheck::App::MigrationsAreUpCheck,
         SystemCheck::App::OrphanedGroupMembersCheck,
         SystemCheck::App::GitlabConfigExistsCheck,
-        SystemCheck::App::GitlabConfigNotOutdatedCheck,
+        SystemCheck::App::GitlabConfigUpToDateCheck,
         SystemCheck::App::LogWritableCheck,
         SystemCheck::App::TmpWritableCheck,
         SystemCheck::App::UploadsDirectoryExistsCheck,

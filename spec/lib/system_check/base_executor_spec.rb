@@ -26,7 +26,7 @@ describe SystemCheck::BaseExecutor, lib: true do
       subject << SimpleCheck
     end
 
-    it 'returns an array of classes' do
+    it 'returns a set of classes' do
       expect(subject.checks).to include(SimpleCheck)
     end
   end
@@ -39,12 +39,14 @@ describe SystemCheck::BaseExecutor, lib: true do
     it 'appends a new check to the Set' do
       subject << OtherCheck
       stored_checks = subject.checks.to_a
+
       expect(stored_checks.first).to eq(SimpleCheck)
       expect(stored_checks.last).to eq(OtherCheck)
     end
 
     it 'inserts unique itens only' do
       subject << SimpleCheck
+
       expect(subject.checks.size).to eq(1)
     end
   end

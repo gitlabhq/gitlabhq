@@ -18,32 +18,32 @@ module SystemCheck
 
     # Executes a single check
     #
-    # @param [SystemCheck::BaseCheck] check
-    def run_check(check)
-      $stdout.print "#{check.display_name} ... "
+    # @param [SystemCheck::BaseCheck] check_klass
+    def run_check(check_klass)
+      $stdout.print "#{check_klass.display_name} ... "
 
-      c = check.new
+      check = check_klass.new
 
       # When implements skip method, we run it first, and if true, skip the check
-      if c.can_skip? && c.skip?
-        $stdout.puts check.skip_reason.color(:magenta)
+      if check.can_skip? && check.skip?
+        $stdout.puts check_klass.skip_reason.color(:magenta)
         return
       end
-      
+
       # When implements a multi check, we don't control the output
-      if c.is_multi_check?
-        c.multi_check
+      if check.is_multi_check?
+        check.multi_check
         return
       end
 
-      if c.check?
-        $stdout.puts check.check_pass.color(:green)
+      if check.check?
+        $stdout.puts check_klass.check_pass.color(:green)
       else
-        $stdout.puts check.check_fail.color(:red)
+        $stdout.puts check_klass.check_fail.color(:red)
 
-        if c.can_repair?
+        if check.can_repair?
           $stdout.print 'Trying to fix error automatically. ...'
-          if c.repair!
+          if check.repair!
             $stdout.puts 'Success'.color(:green)
             return
           else
@@ -51,7 +51,7 @@ module SystemCheck
           end
         end
 
-        c.show_error
+        check.show_error
       end
     end
 

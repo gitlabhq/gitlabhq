@@ -1,7 +1,7 @@
 module SystemCheck
   module App
     class ProjectsHaveNamespaceCheck < SystemCheck::BaseCheck
-      set_name 'projects have namespace: '
+      set_name 'Projects have namespace:'
       set_skip_reason "can't check, you have no projects"
 
       def skip?
