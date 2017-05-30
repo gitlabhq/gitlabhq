@@ -23,7 +23,7 @@ describe IssueLink do
         issue_link = build :issue_link, source: issue, target: issue
 
         expect(issue_link).to be_invalid
-        expect(issue_link.errors[:source]).to include("cannot be related to itself")
+        expect(issue_link.errors[:source]).to include('cannot be related to itself')
       end
     end
   end

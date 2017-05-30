@@ -25,7 +25,7 @@ describe IssueLinks::CreateService, service: true do
       end
 
       it 'returns error' do
-        is_expected.to eq(message: "No Issue found for given reference", status: :error, http_status: 401)
+        is_expected.to eq(message: 'No Issue found for given reference', status: :error, http_status: 401)
       end
     end
 
@@ -35,7 +35,7 @@ describe IssueLinks::CreateService, service: true do
       end
 
       it 'returns error' do
-        is_expected.to eq(message: "No Issue found for given reference", status: :error, http_status: 401)
+        is_expected.to eq(message: 'No Issue found for given reference', status: :error, http_status: 401)
       end
 
       it 'no relationship is created' do
@@ -151,7 +151,7 @@ describe IssueLinks::CreateService, service: true do
       end
 
       it 'returns error' do
-        is_expected.to eq(message: "Validation failed: Source issue is already related", status: :error, http_status: 401)
+        is_expected.to eq(message: 'Validation failed: Source issue is already related', status: :error, http_status: 401)
       end
 
       it 'no relation is created' do
