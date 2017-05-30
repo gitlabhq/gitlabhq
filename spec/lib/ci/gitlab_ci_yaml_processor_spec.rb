@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 module Ci
-  describe GitlabCiYamlProcessor, lib: true do
+  describe GitlabCiYamlProcessor, :lib do
+    subject { described_class.new(config, path) }
     let(:path) { 'path' }
 
     describe 'our current .gitlab-ci.yml' do
@@ -78,6 +79,44 @@ module Ci
               expect(subject[:allow_failure]).to be false
             end
           end
+        end
+      end
+    end
+
+    describe '#stages_for_ref' do
+      context 'when no refs policy is specified' do
+        let(:config) do
+          YAML.dump(production: { stage: 'deploy', script: 'cap prod' },
+                    rspec: { stage: 'test', script: 'rspec' },
+                    spinach: { stage: 'test', script: 'spinach' })
+        end
+
+        it 'returns model attributes for stages with nested jobs' do
+          attributes = subject.stages_for_ref('master')
+
+          expect(attributes.size).to eq 2
+          expect(attributes.dig(0, :name)).to eq 'test'
+          expect(attributes.dig(1, :name)).to eq 'deploy'
+          expect(attributes.dig(0, :builds_attributes, 0, :name)).to eq 'rspec'
+          expect(attributes.dig(0, :builds_attributes, 1, :name)).to eq 'spinach'
+          expect(attributes.dig(1, :builds_attributes, 0, :name)).to eq 'production'
+        end
+      end
+
+      context 'when refs policy is specified' do
+        let(:config) do
+          YAML.dump(production: { stage: 'deploy', script: 'cap prod', only: ['master'] },
+                    spinach: { stage: 'test', script: 'spinach', only: ['tags'] })
+        end
+
+        it 'returns stage attributes except of jobs assigned to master' do
+          # true flag argument means matching jobs for tags
+          #
+          attributes = subject.stages_for_ref('feature', true)
+
+          expect(attributes.size).to eq 1
+          expect(attributes.dig(0, :name)).to eq 'test'
+          expect(attributes.dig(0, :builds_attributes, 0, :name)).to eq 'spinach'
         end
       end
     end

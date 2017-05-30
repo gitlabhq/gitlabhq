@@ -50,10 +50,20 @@ module Ci
       end
     end
 
+    def stages_for_ref(ref, tag = false, trigger_request = nil)
+      stages = @stages.map do |stage|
+        builds = builds_for_stage_and_ref(stage, ref, tag, trigger_request)
+
+        { name: stage, builds_attributes: builds.to_a } if builds.any?
+      end
+
+      stages.compact.sort_by { |stage| @stages.index(stage[:name]) }
+    end
+
     def build_attributes(name)
       job = @jobs[name.to_sym] || {}
-      {
-        stage_idx: @stages.index(job[:stage]),
+
+      { stage_idx: @stages.index(job[:stage]),
         stage: job[:stage],
         commands: job[:commands],
         tag_list: job[:tags] || [],

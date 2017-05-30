@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::CreatePipelineService, services: true do
+describe Ci::CreatePipelineService, :services do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:admin) }
 
