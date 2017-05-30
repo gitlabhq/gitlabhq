@@ -117,6 +117,7 @@ export default class GroupsStore {
       fullName: rawGroup.full_name,
       fullPath: rawGroup.full_path,
       name: rawGroup.name,
+      hasSubgroups: rawGroup.has_subgroups,
       canEdit: rawGroup.can_edit,
       description: rawGroup.description,
       webUrl: rawGroup.web_url,

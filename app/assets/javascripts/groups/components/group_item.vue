@@ -14,7 +14,7 @@ export default {
   },
   methods: {
     toggleSubGroups(e) {
-      if (e.target.tagName === 'A' || !this.hasSubgroups) {
+      if (e.target.tagName === 'A' || !this.group.hasSubgroups) {
         return false;
       }
 
@@ -39,13 +39,9 @@ export default {
       return {
         'group-row': true,
         'is-open': this.group.isOpen,
-        'has-subgroups': this.hasSubgroups,
+        'has-subgroups': this.group.hasSubgroups,
         'no-description': !this.group.description,
       };
-    },
-    hasSubgroups() {
-      // TODO: Server should send a flag to indicate group will have subgroups
-      return true;
     },
     fullPath() {
       let fullPath = '';
