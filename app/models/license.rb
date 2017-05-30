@@ -24,7 +24,7 @@ class License < ActiveRecord::Base
   EARLY_ADOPTER_PLAN = 'early_adopter'.freeze
 
   EES_FEATURES = [
-    { RELATED_ISSUES_FEATURE => 1 },
+    { RELATED_ISSUES_FEATURE => 1 }
   ].freeze
 
   EEP_FEATURES = [
