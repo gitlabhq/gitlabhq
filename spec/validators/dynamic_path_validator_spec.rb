@@ -3,6 +3,28 @@ require 'spec_helper'
 describe DynamicPathValidator do
   let(:validator) { described_class.new(attributes: [:path]) }
 
+  def expect_handles_invalid_utf8
+    expect { yield('\255invalid') }.to be_falsey
+  end
+
+  describe '.valid_user_path' do
+    it 'handles invalid utf8' do
+      expect(described_class.valid_user_path?("a\0weird\255path")).to be_falsey
+    end
+  end
+
+  describe '.valid_group_path' do
+    it 'handles invalid utf8' do
+      expect(described_class.valid_group_path?("a\0weird\255path")).to be_falsey
+    end
+  end
+
+  describe '.valid_project_path' do
+    it 'handles invalid utf8' do
+      expect(described_class.valid_project_path?("a\0weird\255path")).to be_falsey
+    end
+  end
+
   describe '#path_valid_for_record?' do
     context 'for project' do
       it 'calls valid_project_path?' do
