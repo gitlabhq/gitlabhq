@@ -37,8 +37,7 @@ module Projects
       @issue ||=
         IssuesFinder.new(current_user, project_id: project.id)
                     .execute
-                    .where(iid: params[:issue_id])
-                    .first!
+                    .find_by!(iid: params[:issue_id])
     end
   end
 end
