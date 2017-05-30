@@ -2,5 +2,5 @@
 import IntegrationSettingsForm from './integration_settings_form';
 
 $(() => {
-  new IntegrationSettingsForm('.js-integration-settings-from');
+  new IntegrationSettingsForm('.js-integration-settings-form');
 });
