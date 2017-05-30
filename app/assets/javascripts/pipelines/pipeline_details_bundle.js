@@ -11,8 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const pipelineGraphApp = new Vue({
     el: '#js-pipeline-graph-vue',
-    data: {
-      mediator,
+    data() {
+      return {
+        mediator,
+      };
     },
     components: {
       pipelineGraph,
