@@ -1,4 +1,5 @@
 class GroupEntity < Grape::Entity
+  include ActionView::Helpers::NumberHelper
   include RequestAwareEntity
   include MembersHelper
 
@@ -29,5 +30,13 @@ class GroupEntity < Grape::Entity
 
   expose :has_subgroups do |group|
     group.children.any?
+  end
+
+  expose :number_projects do |group|
+    number_with_delimiter(group.projects.non_archived.count)
+  end
+
+  expose :number_users do |group|
+    number_with_delimiter(group.users.count)
   end
 end
