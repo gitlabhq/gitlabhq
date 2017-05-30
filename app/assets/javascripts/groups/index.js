@@ -52,7 +52,7 @@ $(() => {
           store.setGroups(response.json(), parentGroup);
         })
         .catch(() => {
-          // TODO: Handler error
+          // TODO: Handle error
         });
 
         return getGroups;
@@ -64,6 +64,15 @@ $(() => {
         }
 
         GroupsStore.toggleSubGroups(parentGroup);
+      },
+      leaveGroup(endpoint) {
+        service.leaveGroup(endpoint)
+          .then(() => {
+            // TODO: Refresh?
+          })
+          .catch(() => {
+            // TODO: Handle error
+          });
       },
     },
     created() {
@@ -81,6 +90,7 @@ $(() => {
         });
 
       eventHub.$on('toggleSubGroups', this.toggleSubGroups);
+      eventHub.$on('leaveGroup', this.leaveGroup);
     },
   });
 });

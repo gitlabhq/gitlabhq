@@ -20,6 +20,16 @@ export default {
 
       return eventHub.$emit('toggleSubGroups', this.group);
     },
+    onLeaveGroup(e) {
+      e.preventDefault();
+
+      if (confirm(`Are you sure you want to leave the "${this.group.fullName}" group?`)) {
+        this.leaveGroup();
+      }
+    },
+    leaveGroup() {
+      eventHub.$emit('leaveGroup', this.group.leavePath);
+    }
   },
   computed: {
     groupDomId() {
@@ -73,10 +83,13 @@ export default {
     :class="rowClass"
     >
     <div class="controls">
-      <a class="edit-group btn" href="#edit">
+      <a class="edit-group btn" :href="group.editPath">
         <i aria-hidden="true" class="fa fa-cogs"></i>
       </a>
-      <a class="leave-group btn" title="Leave this group" href="#leave">
+      <a @click="onLeaveGroup"
+        :href="group.leavePath"
+        class="leave-group btn"
+        title="Leave this group">
         <i aria-hidden="true" class="fa fa-sign-out"></i>
       </a>
     </div>

@@ -121,6 +121,8 @@ export default class GroupsStore {
       webUrl: rawGroup.web_url,
       parentId: rawGroup.parent_id,
       visibility: rawGroup.visibility,
+      leavePath: rawGroup.leave_path,
+      editPath: rawGroup.edit_path,
       isOpen: false,
       isOrphan: false,
       numberProjects: 10,

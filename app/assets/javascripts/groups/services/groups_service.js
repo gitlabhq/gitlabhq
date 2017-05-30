@@ -6,6 +6,7 @@ Vue.use(VueResource);
 export default class GroupsService {
   constructor(endpoint) {
     this.groups = Vue.resource(endpoint);
+    this.groups = Vue.resource(endpoint);
   }
 
   getGroups(parentId, page) {
@@ -19,5 +20,9 @@ export default class GroupsService {
     }
 
     return this.groups.get(data);
+  }
+
+  leaveGroup(endpoint) {
+    return Vue.http.delete(endpoint);
   }
 }
