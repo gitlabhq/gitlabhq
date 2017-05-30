@@ -55,6 +55,7 @@ import UsersSelect from './users_select';
 import RefSelectDropdown from './ref_select_dropdown';
 import GfmAutoComplete from './gfm_auto_complete';
 import ShortcutsBlob from './shortcuts_blob';
+import confidentialScroll from './confidential_issue';
 
 (function() {
   var Dispatcher;
@@ -138,6 +139,7 @@ import ShortcutsBlob from './shortcuts_blob';
           new Issue();
           shortcut_handler = new ShortcutsIssuable();
           new ZenMode();
+          confidentialScroll();
           break;
         case 'projects:milestones:show':
         case 'groups:milestones:show':
