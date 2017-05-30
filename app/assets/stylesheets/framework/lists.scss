@@ -290,7 +290,7 @@ ul.indent-list {
     width: 20px;
   }
 
-  > .group-row:not(.is-expandable) {
+  > .group-row:not(.has-subgroups) {
     .folder-caret .fa {
       opacity: 0;
     }
