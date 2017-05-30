@@ -98,9 +98,9 @@ class RenameAllReservedPathsAgain < ActiveRecord::Migration
   ].freeze
 
   def up
-    rename_root_paths(TOP_LEVEL_ROUTES)
-    rename_wildcard_paths(PROJECT_WILDCARD_ROUTES)
-    rename_child_paths(GROUP_ROUTES)
+    TOP_LEVEL_ROUTES.each { |route| rename_root_paths(route) }
+    PROJECT_WILDCARD_ROUTES.each { |route| rename_wildcard_paths(route) }
+    GROUP_ROUTES.each { |route| rename_child_paths(route) }
   end
 
   def down
