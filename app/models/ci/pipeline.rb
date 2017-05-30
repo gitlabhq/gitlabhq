@@ -284,6 +284,9 @@ module Ci
       end
     end
 
+    ##
+    # TODO, phase this method out
+    #
     def config_builds_attributes
       return [] unless config_processor
 
