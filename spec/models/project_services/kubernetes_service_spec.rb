@@ -7,8 +7,6 @@ describe KubernetesService, models: true, caching: true do
   let(:project) { build_stubbed(:kubernetes_project) }
   let(:service) { project.kubernetes_service }
 
-<<<<<<< HEAD
-=======
   # We use Kubeclient to interactive with the Kubernetes API. It will
   # GET /api/v1 for a list of resources the API supports. This must be stubbed
   # in addition to any other HTTP requests we expect it to perform.
@@ -27,7 +25,6 @@ describe KubernetesService, models: true, caching: true do
     WebMock.stub_request(:get, pods_url).to_return(pods_response)
   end
 
->>>>>>> ce-com/master
   describe "Associations" do
     it { is_expected.to belong_to :project }
   end

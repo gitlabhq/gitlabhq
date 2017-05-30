@@ -116,16 +116,10 @@ class KubernetesService < DeploymentService
   # short time later
   def terminals(environment)
     with_reactive_cache do |data|
-<<<<<<< HEAD
-      pods = filter_by_label(data[:pods], app: environment.slug)
-      terminals = pods.flat_map { |pod| terminals_for_pod(api_url, namespace, pod) }
-      terminals.each { |terminal| add_terminal_auth(terminal, terminal_auth) }
-=======
       pods = data.fetch(:pods, nil)
       filter_pods(pods, app: environment.slug).
         flat_map { |pod| terminals_for_pod(api_url, actual_namespace, pod) }.
         each { |terminal| add_terminal_auth(terminal, terminal_auth) }
->>>>>>> ce-com/master
     end
   end
 
@@ -133,16 +127,7 @@ class KubernetesService < DeploymentService
     with_reactive_cache do |data|
       specs = filter_by_label(data[:deployments], app: environment.slug)
 
-<<<<<<< HEAD
       ::Gitlab::Kubernetes::RolloutStatus.from_specs(*specs)
-=======
-    # Store as hashes, rather than as third-party types
-    pods = begin
-      kubeclient.get_pods(namespace: actual_namespace).as_json
-    rescue KubeException => err
-      raise err unless err.error_code == 404
-      []
->>>>>>> ce-com/master
     end
   end
 
