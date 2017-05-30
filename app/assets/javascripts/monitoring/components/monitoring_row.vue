@@ -19,7 +19,7 @@
     },
     methods: {
       bootstrapClass() {
-        return this.rowData.length >= 3 ? 'col-md-6' : 'col-md-12';
+        return this.rowData.length >= 2 ? 'col-md-6' : 'col-md-12';
       },
     },
   };

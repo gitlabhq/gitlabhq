@@ -6,7 +6,7 @@
     timeFormat,
   } from '../constants';
   import eventHub from '../event_hub';
-  import measurements from '../utils/measuments';
+  import measurements from '../utils/measurements';
   import { formatRelevantDigits } from '../../lib/utils/number_utils';
   import { hsvToRgb } from '../../lib/utils/color_utils';
 
@@ -288,7 +288,7 @@
           .attr('class', 'label-axis-text')
           .attr('text-anchor', 'middle')
           .attr('transform', `translate(15, ${((this.height - this.margin.top) + this.measurements.axisLabelLineOffset) / 2}) rotate(-90)`)
-          .text(this.yAxisLabel); 
+          .text(this.yAxisLabel);
 
         axisLabelContainer.append('rect')
           .attr('class', 'rect-axis-text')
