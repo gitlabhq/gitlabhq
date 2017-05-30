@@ -44,6 +44,9 @@ export default class IntegrationSettingsForm {
     this.toggleServiceState($(e.currentTarget).is(':checked'));
   }
 
+  /**
+   * Change Form's validation enforcement based on service status (active/inactive)
+   */
   toggleServiceState(serviceActive) {
     this.toggleSubmitBtnLabel(serviceActive, this.canTestService);
     if (serviceActive) {
@@ -54,7 +57,7 @@ export default class IntegrationSettingsForm {
   }
 
   /**
-   * Toggle Submit button label based on Integration status
+   * Toggle Submit button label based on Integration status and ability to test service
    */
   toggleSubmitBtnLabel(serviceActive, canTestService) {
     this.$submitBtnLabel.text(
@@ -76,7 +79,9 @@ export default class IntegrationSettingsForm {
       this.$submitBtnLoader.removeClass('hidden');
     } else {
       this.$submitBtn.enable();
-      this.$submitBtnLoader.addClass('hidden');
+      if (!this.$submitBtnLoader.hasClass('hidden')) {
+        this.$submitBtnLoader.addClass('hidden');
+      }
     }
   }
 
