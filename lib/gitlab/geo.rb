@@ -43,11 +43,11 @@ module Gitlab
     end
 
     def self.primary_role_enabled?
-      Gitlab.config.geo_primary_role['enable']
+      Gitlab.config.geo_primary_role['enabled']
     end
 
     def self.secondary_role_enabled?
-      Gitlab.config.geo_secondary_role['enable']
+      Gitlab.config.geo_secondary_role['enabled']
     end
 
     def self.license_allows?

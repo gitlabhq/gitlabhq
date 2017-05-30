@@ -624,9 +624,9 @@ production: &base
 
   ## GitLab Geo settings (EE-only)
   geo_primary_role:
-    enable: false
+    enabled: false
   geo_secondary_role:
-    enable: false
+    enabled: false
 
   #
   # 5. Extra customization
@@ -712,9 +712,9 @@ test:
         group_base: 'ou=groups,dc=example,dc=com'
         admin_group: ''
   geo_primary_role:
-    enable: true
+    enabled: true
   geo_secondary_role:
-    enable: true
+    enabled: true
 
 staging:
   <<: *base
