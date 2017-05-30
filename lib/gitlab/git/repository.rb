@@ -1008,25 +1008,34 @@ module Gitlab
       def parse_gitmodules(commit, content)
         results = {}
 
-        current = ""
-        content.split("\n").each do |txt|
-          if txt =~ /^\s*\[/
-            current = txt.match(/(?<=").*(?=")/)[0]
-            results[current] = {}
-          else
-            next unless results[current]
-            match_data = txt.match(/(\w+)\s*=\s*(.*)/)
-            next unless match_data
-            target = match_data[2].chomp
-            results[current][match_data[1]] = target
+        name = nil
+        entry = nil
+        content.each_line do |line|
+          case line.strip
+          when /\A\[submodule "(?<name>[^"]+)"\]\z/ # Submodule header
+            name = $~[:name]
+            entry = results[name] = {}
+          when /\A(?<key>\w+)\s*=\s*(?<value>.*)\z/ # Key/value pair
+            key = $~[:key]
+            value = $~[:value].chomp
 
-            if match_data[1] == "path"
+            next unless name && entry
+
+            entry[key] = value
+
+            if key == 'path'
               begin
-                results[current]["id"] = blob_content(commit, target)
+                entry['id'] = blob_content(commit, value)
               rescue InvalidBlobName
-                results.delete(current)
+                # The current entry is invalid
+                results.delete(name)
+                name = entry = nil
               end
             end
+          when /\A#/ # Comment
+            next
+          else # Invalid line
+            name = entry = nil
           end
         end
 
@@ -1086,7 +1095,12 @@ module Gitlab
           elsif tmp_entry.nil?
             return nil
           else
-            tmp_entry = rugged.lookup(tmp_entry[:oid])
+            begin
+              tmp_entry = rugged.lookup(tmp_entry[:oid])
+            rescue Rugged::OdbError, Rugged::InvalidError, Rugged::ReferenceError
+              return nil
+            end
+
             return nil unless tmp_entry.type == :tree
             tmp_entry = tmp_entry[dir]
           end
