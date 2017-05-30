@@ -57,6 +57,9 @@ export default {
     scrollTop() {
       return this.$refs.list.scrollTop + this.listHeight();
     },
+    scrollToTop() {
+      this.$refs.list.scrollTop = 0;
+    },
     loadNextPage() {
       const getIssues = this.list.nextPage();
       const loadingDone = () => {
@@ -108,6 +111,7 @@ export default {
   },
   created() {
     eventHub.$on(`hide-issue-form-${this.list.id}`, this.toggleForm);
+    eventHub.$on(`scroll-board-list-${this.list.id}`, this.scrollToTop);
   },
   mounted() {
     const options = gl.issueBoards.getBoardSortableDefaultOptions({
@@ -150,6 +154,7 @@ export default {
   },
   beforeDestroy() {
     eventHub.$off(`hide-issue-form-${this.list.id}`, this.toggleForm);
+    eventHub.$off(`scroll-board-list-${this.list.id}`, this.scrollToTop);
     this.$refs.list.removeEventListener('scroll', this.onScroll);
   },
   template: `
@@ -160,9 +165,11 @@ export default {
         v-if="loading">
         <loading-icon />
       </div>
-      <board-new-issue
-        :list="list"
-        v-if="list.type !== 'closed' && showIssueForm"/>
+      <transition name="slide-down">
+        <board-new-issue
+          :list="list"
+          v-if="list.type !== 'closed' && showIssueForm"/>
+      </transition>
       <ul
         class="board-list"
         v-show="!loading"
