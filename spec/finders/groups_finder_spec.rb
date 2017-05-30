@@ -77,6 +77,15 @@ describe GroupsFinder do
               is_expected.to contain_exactly(public_subgroup, internal_subgroup, private_subgroup)
             end
           end
+
+          context 'authorized to private project' do
+            it 'returns the subgroup of the project' do
+              subproject = create(:empty_project, :private, namespace: private_subgroup)
+              subproject.add_guest(user)
+
+              is_expected.to include(private_subgroup)
+            end
+          end
         end
       end
     end

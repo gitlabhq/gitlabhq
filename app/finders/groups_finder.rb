@@ -16,7 +16,10 @@ class GroupsFinder < UnionFinder
   def all_groups
     groups = []
 
-    groups << Group.member_self_and_descendants(current_user.id) if current_user
+    if current_user
+      groups << Group.member_self_and_descendants(current_user.id)
+      groups << Group.where(id: current_user.authorized_projects.select(:namespace_id))
+    end
     groups << Group.unscoped.public_to_user(current_user)
 
     groups
