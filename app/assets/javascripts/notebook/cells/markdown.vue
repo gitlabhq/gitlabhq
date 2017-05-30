@@ -57,7 +57,8 @@
           inline = true;
 
           while (matches !== null) {
-            text = `${text.replace(matches[0], katex.renderToString(matches[0].replace(/\$/g, '')))}`;
+            const renderedKatex = katex.renderToString(matches[0].replace(/\$/g, ''));
+            text = `${text.replace(matches[0], ` ${renderedKatex}`)}`;
             matches = regex.exec(katexString);
           }
         } else {
