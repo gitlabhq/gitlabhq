@@ -1,4 +1,6 @@
 <script>
+/* eslint-disable no-alert */
+
 import eventHub from '../event_hub';
 
 export default {
@@ -29,7 +31,7 @@ export default {
     },
     leaveGroup() {
       eventHub.$emit('leaveGroup', this.group.leavePath);
-    }
+    },
   },
   computed: {
     groupDomId() {
@@ -98,9 +100,9 @@ export default {
         <i aria-hidden="true" class="fa fa-bookmark"></i>
         {{group.numberProjects}}
       </span>
-      <span class="number-members">
+      <span class="number-users">
         <i aria-hidden="true" class="fa fa-users"></i>
-        {{group.numberMembers}}
+        {{group.numberUsers}}
       </span>
       <span class="group-visibility">
         <i aria-hidden="true" class="fa fa-globe"></i>
