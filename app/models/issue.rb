@@ -25,7 +25,7 @@ class Issue < ActiveRecord::Base
 
   has_many :events, as: :target, dependent: :destroy
 
-  has_many :merge_requests_closing_issues, class_name: 'MergeRequestsClosingIssues', dependent: :delete_all
+  has_many :merge_requests_closing_issues, class_name: 'MergeRequestsClosingIssues'
 
   has_many :issue_assignees
   has_many :assignees, class_name: "User", through: :issue_assignees

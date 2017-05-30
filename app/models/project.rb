@@ -59,6 +59,7 @@ class Project < ActiveRecord::Base
     update_column(:last_repository_updated_at, self.created_at)
   end
 
+  before_destroy :remove_private_deploy_keys
   after_destroy :remove_pages
 
   # update visibility_level of forks
@@ -80,96 +81,108 @@ class Project < ActiveRecord::Base
   belongs_to :namespace
 
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event'
-  has_many :boards, before_add: :validate_board_limit, dependent: :destroy
+  has_many :boards, before_add: :validate_board_limit
 
   # Project services
-  has_one :campfire_service, dependent: :destroy
-  has_one :drone_ci_service, dependent: :destroy
-  has_one :emails_on_push_service, dependent: :destroy
-  has_one :pipelines_email_service, dependent: :destroy
-  has_one :irker_service, dependent: :destroy
-  has_one :pivotaltracker_service, dependent: :destroy
-  has_one :hipchat_service, dependent: :destroy
-  has_one :flowdock_service, dependent: :destroy
-  has_one :assembla_service, dependent: :destroy
-  has_one :asana_service, dependent: :destroy
-  has_one :gemnasium_service, dependent: :destroy
-  has_one :mattermost_slash_commands_service, dependent: :destroy
-  has_one :mattermost_service, dependent: :destroy
-  has_one :slack_slash_commands_service, dependent: :destroy
-  has_one :slack_service, dependent: :destroy
-  has_one :buildkite_service, dependent: :destroy
-  has_one :bamboo_service, dependent: :destroy
-  has_one :teamcity_service, dependent: :destroy
-  has_one :pushover_service, dependent: :destroy
-  has_one :jira_service, dependent: :destroy
-  has_one :redmine_service, dependent: :destroy
-  has_one :custom_issue_tracker_service, dependent: :destroy
-  has_one :bugzilla_service, dependent: :destroy
-  has_one :gitlab_issue_tracker_service, dependent: :destroy, inverse_of: :project
-  has_one :external_wiki_service, dependent: :destroy
-  has_one :kubernetes_service, dependent: :destroy, inverse_of: :project
-  has_one :prometheus_service, dependent: :destroy, inverse_of: :project
-  has_one :mock_ci_service, dependent: :destroy
-  has_one :mock_deployment_service, dependent: :destroy
-  has_one :mock_monitoring_service, dependent: :destroy
-  has_one :microsoft_teams_service, dependent: :destroy
+  has_one :campfire_service
+  has_one :drone_ci_service
+  has_one :emails_on_push_service
+  has_one :pipelines_email_service
+  has_one :irker_service
+  has_one :pivotaltracker_service
+  has_one :hipchat_service
+  has_one :flowdock_service
+  has_one :assembla_service
+  has_one :asana_service
+  has_one :gemnasium_service
+  has_one :mattermost_slash_commands_service
+  has_one :mattermost_service
+  has_one :slack_slash_commands_service
+  has_one :slack_service
+  has_one :buildkite_service
+  has_one :bamboo_service
+  has_one :teamcity_service
+  has_one :pushover_service
+  has_one :jira_service
+  has_one :redmine_service
+  has_one :custom_issue_tracker_service
+  has_one :bugzilla_service
+  has_one :gitlab_issue_tracker_service, inverse_of: :project
+  has_one :external_wiki_service
+  has_one :kubernetes_service, inverse_of: :project
+  has_one :prometheus_service, inverse_of: :project
+  has_one :mock_ci_service
+  has_one :mock_deployment_service
+  has_one :mock_monitoring_service
+  has_one :microsoft_teams_service
 
-  has_one  :forked_project_link,  dependent: :destroy, foreign_key: "forked_to_project_id"
+  has_one  :forked_project_link,  foreign_key: "forked_to_project_id"
   has_one  :forked_from_project,  through:   :forked_project_link
 
   has_many :forked_project_links, foreign_key: "forked_from_project_id"
   has_many :forks,                through:     :forked_project_links, source: :forked_to_project
 
   # Merge Requests for target project should be removed with it
-  has_many :merge_requests,     dependent: :destroy, foreign_key: 'target_project_id'
-  has_many :issues,             dependent: :destroy
-  has_many :labels,             dependent: :destroy, class_name: 'ProjectLabel'
-  has_many :services,           dependent: :destroy
-  has_many :events,             dependent: :destroy
-  has_many :milestones,         dependent: :destroy
-  has_many :notes,              dependent: :destroy
-  has_many :snippets,           dependent: :destroy, class_name: 'ProjectSnippet'
-  has_many :hooks,              dependent: :destroy, class_name: 'ProjectHook'
-  has_many :protected_branches, dependent: :destroy
-  has_many :protected_tags,     dependent: :destroy
+  has_many :merge_requests, foreign_key: 'target_project_id'
+  has_many :issues
+  has_many :labels, class_name: 'ProjectLabel'
+  has_many :services
+  has_many :events
+  has_many :milestones
+  has_many :notes
+  has_many :snippets, class_name: 'ProjectSnippet'
+  has_many :hooks, class_name: 'ProjectHook'
+  has_many :protected_branches
+  has_many :protected_tags
 
   has_many :project_authorizations
   has_many :authorized_users, through: :project_authorizations, source: :user, class_name: 'User'
-  has_many :project_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source
+  has_many :project_members, -> { where(requested_at: nil) },
+    as: :source, dependent: :delete_all
+
   alias_method :members, :project_members
   has_many :users, through: :project_members
 
-  has_many :requesters, -> { where.not(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'ProjectMember'
+  has_many :requesters, -> { where.not(requested_at: nil) },
+    as: :source, class_name: 'ProjectMember', dependent: :delete_all
 
-  has_many :deploy_keys_projects, dependent: :destroy
+  has_many :deploy_keys_projects
   has_many :deploy_keys, through: :deploy_keys_projects
-  has_many :users_star_projects, dependent: :destroy
+  has_many :users_star_projects
   has_many :starrers, through: :users_star_projects, source: :user
-  has_many :releases, dependent: :destroy
+  has_many :releases
   has_many :lfs_objects_projects, dependent: :destroy
   has_many :lfs_objects, through: :lfs_objects_projects
-  has_many :project_group_links, dependent: :destroy
+  has_many :project_group_links
   has_many :invited_groups, through: :project_group_links, source: :group
-  has_many :pages_domains, dependent: :destroy
-  has_many :todos, dependent: :destroy
-  has_many :notification_settings, dependent: :destroy, as: :source
+  has_many :pages_domains
+  has_many :todos
+  has_many :notification_settings, as: :source, dependent: :delete_all
 
-  has_one :import_data, dependent: :delete, class_name: 'ProjectImportData'
-  has_one :project_feature, dependent: :destroy
-  has_one :statistics, class_name: 'ProjectStatistics', dependent: :delete
+  has_one :import_data, class_name: 'ProjectImportData'
+  has_one :project_feature
+  has_one :statistics, class_name: 'ProjectStatistics'
+
+  # Container repositories need to remove data from the container registry,
+  # which is not managed by the DB. Hence we're still using dependent: :destroy
+  # here.
   has_many :container_repositories, dependent: :destroy
 
-  has_many :commit_statuses, dependent: :destroy
-  has_many :pipelines, dependent: :destroy, class_name: 'Ci::Pipeline'
-  has_many :builds, class_name: 'Ci::Build' # the builds are created from the commit_statuses
-  has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject'
+  has_many :commit_statuses
+  has_many :pipelines, class_name: 'Ci::Pipeline'
+
+  # Ci::Build objects store data on the file system such as artifact files and
+  # build traces. Currently there's no efficient way of removing this data in
+  # bulk that doesn't involve loading the rows into memory. As a result we're
+  # still using `dependent: :destroy` here.
+  has_many :builds, class_name: 'Ci::Build', dependent: :destroy
+  has_many :runner_projects, class_name: 'Ci::RunnerProject'
   has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
   has_many :variables, class_name: 'Ci::Variable'
-  has_many :triggers, dependent: :destroy, class_name: 'Ci::Trigger'
-  has_many :environments, dependent: :destroy
-  has_many :deployments, dependent: :destroy
-  has_many :pipeline_schedules, dependent: :destroy, class_name: 'Ci::PipelineSchedule'
+  has_many :triggers, class_name: 'Ci::Trigger'
+  has_many :environments
+  has_many :deployments
+  has_many :pipeline_schedules, class_name: 'Ci::PipelineSchedule'
 
   has_many :active_runners, -> { active }, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
 
@@ -1240,7 +1253,13 @@ class Project < ActiveRecord::Base
     File.join(pages_path, 'public')
   end
 
+  def remove_private_deploy_keys
+    deploy_keys.where(public: false).delete_all
+  end
+
   def remove_pages
+    ::Projects::UpdatePagesConfigurationService.new(self).execute
+
     # 1. We rename pages to temporary directory
     # 2. We wait 5 minutes, due to NFS caching
     # 3. We asynchronously remove pages with force

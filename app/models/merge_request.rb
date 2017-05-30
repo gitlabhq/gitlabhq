@@ -12,7 +12,7 @@ class MergeRequest < ActiveRecord::Base
   belongs_to :source_project, class_name: "Project"
   belongs_to :merge_user, class_name: "User"
 
-  has_many :merge_request_diffs, dependent: :destroy
+  has_many :merge_request_diffs
   has_one :merge_request_diff,
     -> { order('merge_request_diffs.id DESC') }
 
@@ -20,7 +20,7 @@ class MergeRequest < ActiveRecord::Base
 
   has_many :events, as: :target, dependent: :destroy
 
-  has_many :merge_requests_closing_issues, class_name: 'MergeRequestsClosingIssues', dependent: :delete_all
+  has_many :merge_requests_closing_issues, class_name: 'MergeRequestsClosingIssues'
 
   belongs_to :assignee, class_name: "User"
 
