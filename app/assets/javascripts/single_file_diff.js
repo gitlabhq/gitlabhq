@@ -4,7 +4,7 @@
   window.SingleFileDiff = (function() {
     var COLLAPSED_HTML, ERROR_HTML, LOADING_HTML, WRAPPER;
 
-    WRAPPER = '<div class="diff-content diff-wrap-lines"></div>';
+    WRAPPER = '<div class="diff-content"></div>';
 
     LOADING_HTML = '<i class="fa fa-spinner fa-spin"></i>';
 

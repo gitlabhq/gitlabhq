@@ -178,7 +178,8 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
   end
 
   step 'I fill jira settings' do
-    fill_in 'URL', with: 'http://jira.example'
+    fill_in 'Web URL', with: 'http://jira.example'
+    fill_in 'JIRA API URL', with: 'http://jira.example/api'
     fill_in 'Username', with: 'gitlab'
     fill_in 'Password', with: 'gitlab'
     fill_in 'Project Key', with: 'GITLAB'
@@ -186,7 +187,8 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
   end
 
   step 'I should see jira service settings saved' do
-    expect(find_field('URL').value).to eq 'http://jira.example'
+    expect(find_field('Web URL').value).to eq 'http://jira.example'
+    expect(find_field('JIRA API URL').value).to eq 'http://jira.example/api'
     expect(find_field('Username').value).to eq 'gitlab'
     expect(find_field('Project Key').value).to eq 'GITLAB'
   end

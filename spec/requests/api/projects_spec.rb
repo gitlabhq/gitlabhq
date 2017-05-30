@@ -11,8 +11,7 @@ describe API::Projects do
   let(:project) { create(:empty_project, creator_id: user.id, namespace: user.namespace) }
   let(:project2) { create(:empty_project, path: 'project2', creator_id: user.id, namespace: user.namespace) }
   let(:snippet) { create(:project_snippet, :public, author: user, project: project, title: 'example') }
-  let(:project_member) { create(:project_member, :master, user: user, project: project) }
-  let(:project_member2) { create(:project_member, :developer, user: user3, project: project) }
+  let(:project_member) { create(:project_member, :developer, user: user3, project: project) }
   let(:user4) { create(:user) }
   let(:project3) do
     create(:project,
@@ -27,7 +26,7 @@ describe API::Projects do
     builds_enabled: false,
     snippets_enabled: false)
   end
-  let(:project_member3) do
+  let(:project_member2) do
     create(:project_member,
     user: user4,
     project: project3,
@@ -210,7 +209,7 @@ describe API::Projects do
         let(:public_project) { create(:empty_project, :public) }
 
         before do
-          project_member2
+          project_member
           user3.update_attributes(starred_projects: [project, project2, project3, public_project])
         end
 
@@ -784,10 +783,9 @@ describe API::Projects do
   describe 'GET /projects/:id/users' do
     shared_examples_for 'project users response' do
       it 'returns the project users' do
-        member = create(:user)
-        create(:project_member, :developer, user: member, project: project)
-
         get api("/projects/#{project.id}/users", current_user)
+
+        user = project.namespace.owner
 
         expect(response).to have_http_status(200)
         expect(response).to include_pagination_headers
@@ -795,8 +793,8 @@ describe API::Projects do
         expect(json_response.size).to eq(1)
 
         first_user = json_response.first
-        expect(first_user['username']).to eq(member.username)
-        expect(first_user['name']).to eq(member.name)
+        expect(first_user['username']).to eq(user.username)
+        expect(first_user['name']).to eq(user.name)
         expect(first_user.keys).to contain_exactly(*%w[name username id state avatar_url web_url])
       end
     end
@@ -1091,8 +1089,8 @@ describe API::Projects do
     before { user4 }
     before { project3 }
     before { project4 }
-    before { project_member3 }
     before { project_member2 }
+    before { project_member }
 
     it 'returns 400 when nothing sent' do
       project_param = {}
@@ -1573,7 +1571,7 @@ describe API::Projects do
 
     context 'when authenticated as developer' do
       before do
-        project_member2
+        project_member
       end
 
       it 'returns forbidden error' do

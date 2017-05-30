@@ -36,6 +36,7 @@
     "jszip-utils": "^0.0.2",
     "marked": "^0.3.6",
     "mousetrap": "^1.4.6",
+    "name-all-modules-plugin": "^1.0.1",
     "pdfjs-dist": "^1.8.252",
     "pikaday": "^1.5.1",
     "prismjs": "^1.6.0",
@@ -57,8 +58,8 @@
     "vue-loader": "^11.3.4",
     "vue-resource": "^0.9.3",
     "vue-template-compiler": "^2.2.6",
-    "webpack": "^2.3.3",
-    "webpack-bundle-analyzer": "^2.3.0"
+    "webpack": "^2.6.1",
+    "webpack-bundle-analyzer": "^2.8.2"
   },
   "devDependencies": {
     "babel-plugin-istanbul": "^4.0.0",

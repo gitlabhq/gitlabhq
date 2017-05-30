@@ -1,14 +1,12 @@
 require 'spec_helper'
 
 describe Users::RefreshAuthorizedProjectsService do
-  let(:project) { create(:empty_project) }
+  # We're using let! here so that any expectations for the service class are not
+  # triggered twice.
+  let!(:project) { create(:empty_project) }
+
   let(:user) { project.namespace.owner }
   let(:service) { described_class.new(user) }
-
-  def create_authorization(project, user, access_level = Gitlab::Access::MASTER)
-    ProjectAuthorization.
-      create!(project: project, user: user, access_level: access_level)
-  end
 
   describe '#execute', :redis do
     it 'refreshes the authorizations using a lease' do
@@ -31,7 +29,8 @@ describe Users::RefreshAuthorizedProjectsService do
 
     it 'updates the authorized projects of the user' do
       project2 = create(:empty_project)
-      to_remove = create_authorization(project2, user)
+      to_remove = user.project_authorizations.
+        create!(project: project2, access_level: Gitlab::Access::MASTER)
 
       expect(service).to receive(:update_authorizations).
         with([to_remove.project_id], [[user.id, project.id, Gitlab::Access::MASTER]])
@@ -40,7 +39,10 @@ describe Users::RefreshAuthorizedProjectsService do
     end
 
     it 'sets the access level of a project to the highest available level' do
-      to_remove = create_authorization(project, user, Gitlab::Access::DEVELOPER)
+      user.project_authorizations.delete_all
+
+      to_remove = user.project_authorizations.
+        create!(project: project, access_level: Gitlab::Access::DEVELOPER)
 
       expect(service).to receive(:update_authorizations).
         with([to_remove.project_id], [[user.id, project.id, Gitlab::Access::MASTER]])
@@ -61,34 +63,10 @@ describe Users::RefreshAuthorizedProjectsService do
 
         service.update_authorizations([], [])
       end
-
-      context 'when the authorized projects column is not set' do
-        before do
-          user.update!(authorized_projects_populated: nil)
-        end
-
-        it 'populates the authorized projects column' do
-          service.update_authorizations([], [])
-
-          expect(user.authorized_projects_populated).to eq true
-        end
-      end
-
-      context 'when the authorized projects column is set' do
-        before do
-          user.update!(authorized_projects_populated: true)
-        end
-
-        it 'does nothing' do
-          expect(user).not_to receive(:set_authorized_projects_column)
-
-          service.update_authorizations([], [])
-        end
-      end
     end
 
     it 'removes authorizations that should be removed' do
-      authorization = create_authorization(project, user)
+      authorization = user.project_authorizations.find_by(project_id: project.id)
 
       service.update_authorizations([authorization.project_id])
 
@@ -96,6 +74,8 @@ describe Users::RefreshAuthorizedProjectsService do
     end
 
     it 'inserts authorizations that should be added' do
+      user.project_authorizations.delete_all
+
       service.update_authorizations([], [[user.id, project.id, Gitlab::Access::MASTER]])
 
       authorizations = user.project_authorizations
@@ -104,16 +84,6 @@ describe Users::RefreshAuthorizedProjectsService do
       expect(authorizations[0].user_id).to eq(user.id)
       expect(authorizations[0].project_id).to eq(project.id)
       expect(authorizations[0].access_level).to eq(Gitlab::Access::MASTER)
-    end
-
-    it 'populates the authorized projects column' do
-      # make sure we start with a nil value no matter what the default in the
-      # factory may be.
-      user.update!(authorized_projects_populated: nil)
-
-      service.update_authorizations([], [[user.id, project.id, Gitlab::Access::MASTER]])
-
-      expect(user.authorized_projects_populated).to eq(true)
     end
   end
 
@@ -163,7 +133,7 @@ describe Users::RefreshAuthorizedProjectsService do
       end
     end
 
-    context 'projects of subgroups of groups the user is a member of' do
+    context 'projects of subgroups of groups the user is a member of', :nested_groups do
       let(:group) { create(:group) }
       let(:nested_group) { create(:group, parent: group) }
       let!(:other_project) { create(:empty_project, group: nested_group) }
@@ -191,7 +161,7 @@ describe Users::RefreshAuthorizedProjectsService do
       end
     end
 
-    context 'projects shared with subgroups of groups the user is a member of' do
+    context 'projects shared with subgroups of groups the user is a member of', :nested_groups do
       let(:group) { create(:group) }
       let(:nested_group) { create(:group, parent: group) }
       let(:other_project) { create(:empty_project) }
@@ -208,8 +178,6 @@ describe Users::RefreshAuthorizedProjectsService do
   end
 
   describe '#current_authorizations_per_project' do
-    before { create_authorization(project, user) }
-
     let(:hash) { service.current_authorizations_per_project }
 
     it 'returns a Hash' do
@@ -233,13 +201,13 @@ describe Users::RefreshAuthorizedProjectsService do
   describe '#current_authorizations' do
     context 'without authorizations' do
       it 'returns an empty list' do
+        user.project_authorizations.delete_all
+
         expect(service.current_authorizations.empty?).to eq(true)
       end
     end
 
     context 'with an authorization' do
-      before { create_authorization(project, user) }
-
       let(:row) { service.current_authorizations.take }
 
       it 'returns the currently authorized projects' do
