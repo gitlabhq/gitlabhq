@@ -80,8 +80,8 @@ describe IssueLinks::CreateService, service: true do
       it 'creates relationships' do
         expect { subject }.to change(IssueLink, :count).from(0).to(2)
 
-        expect(IssueLink.find_by(target: issue_a)).to have_attributes(source: issue)
-        expect(IssueLink.find_by(target: another_project_issue)).to have_attributes(source: issue)
+        expect(IssueLink.find_by!(target: issue_a)).to have_attributes(source: issue)
+        expect(IssueLink.find_by!(target: another_project_issue)).to have_attributes(source: issue)
       end
 
       it 'returns success message with Issue reference' do
