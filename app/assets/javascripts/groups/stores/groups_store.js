@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 export default class GroupsStore {
   constructor() {
     this.state = {};
@@ -9,7 +10,7 @@ export default class GroupsStore {
 
   setGroups(rawGroups, parent = null) {
     const parentGroup = parent;
-    const tree = this.buildTree(rawGroups);
+    const tree = this.buildTree(rawGroups, parentGroup);
 
     if (parentGroup) {
       parentGroup.subGroups = tree;
@@ -18,6 +19,11 @@ export default class GroupsStore {
     }
 
     return tree;
+  }
+
+  resetGroups(parent) {
+    const parentGroup = parent;
+    parentGroup.subGroups = {};
   }
 
   storePagination(pagination = {}) {
@@ -33,7 +39,7 @@ export default class GroupsStore {
     this.state.pageInfo = paginationInfo;
   }
 
-  buildTree(rawGroups) {
+  buildTree(rawGroups, parentGroup) {
     const groups = this.decorateGroups(rawGroups);
     const tree = {};
     const mappedGroups = {};
@@ -49,11 +55,14 @@ export default class GroupsStore {
     Object.keys(mappedGroups).map((key) => {
       const currentGroup = mappedGroups[key];
       // If the group is not at the root level, add it to its parent array of subGroups.
-      const parentGroup = mappedGroups[currentGroup.parentId];
+      const findParentGroup = mappedGroups[currentGroup.parentId];
+
       if (currentGroup.parentId) {
-        if (parentGroup) {
+        if (findParentGroup) {
           mappedGroups[currentGroup.parentId].subGroups[currentGroup.id] = currentGroup;
           mappedGroups[currentGroup.parentId].isOpen = true; // Expand group if it has subgroups
+        } else if (parentGroup && parentGroup.id === currentGroup.parentId) {
+          tree[currentGroup.id] = currentGroup;
         } else {
           // Means the groups hast no direct parent.
           // Save for later processing, we will add them to its corresponding base group

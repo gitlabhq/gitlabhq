@@ -14,7 +14,7 @@ export default {
   },
   methods: {
     toggleSubGroups(e) {
-      if (e.target.tagName === 'A' || !this.hasSubgroups ) {
+      if (e.target.tagName === 'A' || !this.hasSubgroups) {
         return false;
       }
 

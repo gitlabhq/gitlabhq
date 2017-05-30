@@ -34,12 +34,18 @@ $(() => {
       fetchGroups(parentGroup) {
         let parentId = null;
         let getGroups = null;
+        let page = null;
+        let pageParam = null;
 
         if (parentGroup) {
           parentId = parentGroup.id;
         }
 
-        const page = gl.utils.getParameterByName('page');
+        pageParam = gl.utils.getParameterByName('page');
+
+        if (pageParam) {
+          page = pageParam;
+        }
 
         getGroups = service.getGroups(parentId, page);
         getGroups.then((response) => {
@@ -53,8 +59,10 @@ $(() => {
       },
       toggleSubGroups(parentGroup = null) {
         if (!parentGroup.isOpen) {
+          store.resetGroups(parentGroup);
           this.fetchGroups(parentGroup);
         }
+
         GroupsStore.toggleSubGroups(parentGroup);
       },
     },
