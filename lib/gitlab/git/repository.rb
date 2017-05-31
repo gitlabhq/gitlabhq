@@ -1006,40 +1006,39 @@ module Gitlab
       # Parses the contents of a .gitmodules file and returns a hash of
       # submodule information.
       def parse_gitmodules(commit, content)
-        results = {}
+        modules = {}
 
         name = nil
-        entry = nil
         content.each_line do |line|
           case line.strip
           when /\A\[submodule "(?<name>[^"]+)"\]\z/ # Submodule header
             name = $~[:name]
-            entry = results[name] = {}
+            modules[name] = {}
           when /\A(?<key>\w+)\s*=\s*(?<value>.*)\z/ # Key/value pair
             key = $~[:key]
             value = $~[:value].chomp
 
-            next unless name && entry
+            next unless name && modules[name]
 
-            entry[key] = value
+            modules[name][key] = value
 
             if key == 'path'
               begin
-                entry['id'] = blob_content(commit, value)
+                modules[name]['id'] = blob_content(commit, value)
               rescue InvalidBlobName
                 # The current entry is invalid
-                results.delete(name)
-                name = entry = nil
+                modules.delete(name)
+                name = nil
               end
             end
           when /\A#/ # Comment
             next
           else # Invalid line
-            name = entry = nil
+            name = nil
           end
         end
 
-        results
+        modules
       end
 
       # Returns true if +commit+ introduced changes to +path+, using commit
