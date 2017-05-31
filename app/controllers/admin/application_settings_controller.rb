@@ -53,7 +53,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   private
 
   def set_application_setting
-    @application_setting = ApplicationSetting.current
+    @application_setting = current_application_settings
   end
 
   def application_setting_params
