@@ -72,8 +72,6 @@ var config = {
     filename: IS_PRODUCTION ? '[name].[chunkhash].bundle.js' : '[name].bundle.js'
   },
 
-  devtool: 'cheap-module-source-map',
-
   module: {
     rules: [
       {
