@@ -105,6 +105,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Show user cohorts data when usage ping is enabled.
 - Visualise Canary Deployments.
 
+## 9.0.8 (2017-05-31)
+
+- Respect the external user setting in Elasticsearch.
+
 ## 9.0.7 (2017-05-05)
 
 - Respect project features when searching alternative branches with elasticsearch enabled.
