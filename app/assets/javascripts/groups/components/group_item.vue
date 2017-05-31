@@ -1,6 +1,4 @@
 <script>
-/* eslint-disable no-alert */
-
 import eventHub from '../event_hub';
 
 export default {
@@ -32,6 +30,7 @@ export default {
     onLeaveGroup(e) {
       e.preventDefault();
 
+      // eslint-disable-next-line no-alert
       if (confirm(`Are you sure you want to leave the "${this.group.fullName}" group?`)) {
         this.leaveGroup();
       }
