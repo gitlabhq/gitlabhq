@@ -1,7 +1,7 @@
 # Specifications for behavior common to all objects with executable attributes.
 # It can take a `default_params`.
 
-shared_examples 'new issuable record that supports slash commands' do
+shared_examples 'new issuable record that supports quick actions' do
   let!(:project) { create(:project, :repository) }
   let(:user) { create(:user).tap { |u| project.team << [u, :master] } }
   let(:assignee) { create(:user) }

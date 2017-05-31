@@ -108,7 +108,7 @@ describe MergeRequests::CreateService, services: true do
       end
     end
 
-    it_behaves_like 'new issuable record that supports slash commands' do
+    it_behaves_like 'new issuable record that supports quick actions' do
       let(:default_params) do
         {
           source_branch: 'feature',
@@ -117,7 +117,7 @@ describe MergeRequests::CreateService, services: true do
       end
     end
 
-    context 'Slash commands' do
+    context 'Quick actions' do
       context 'with assignee and milestone in params and command' do
         let(:merge_request) { described_class.new(project, user, opts).execute }
         let(:milestone) { create(:milestone, project: project) }

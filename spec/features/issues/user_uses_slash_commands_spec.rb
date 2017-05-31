@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-feature 'Issues > User uses slash commands', feature: true, js: true do
-  include SlashCommandsHelpers
+feature 'Issues > User uses quick actions', feature: true, js: true do
+  include QuickActionsHelpers
 
-  it_behaves_like 'issuable record that supports slash commands in its description and notes', :issue do
+  it_behaves_like 'issuable record that supports quick actions in its description and notes', :issue do
     let(:issuable) { create(:issue, project: project) }
   end
 

@@ -19,24 +19,24 @@ describe PreviewMarkdownService do
     end
   end
 
-  context 'new note with slash commands' do
+  context 'new note with quick actions' do
     let(:issue) { create(:issue, project: project) }
     let(:params) do
       {
         text: "Please do it\n/assign #{user.to_reference}",
-        slash_commands_target_type: 'Issue',
-        slash_commands_target_id: issue.id
+        quick_actions_target_type: 'Issue',
+        quick_actions_target_id: issue.id
       }
     end
     let(:service) { described_class.new(project, user, params) }
 
-    it 'removes slash commands from text' do
+    it 'removes quick actions from text' do
       result = service.execute
 
       expect(result[:text]).to eq 'Please do it'
     end
 
-    it 'explains slash commands effect' do
+    it 'explains quick actions effect' do
       result = service.execute
 
       expect(result[:commands]).to eq "Assigns #{user.to_reference}."
@@ -47,21 +47,21 @@ describe PreviewMarkdownService do
     let(:params) do
       {
         text: "My work\n/estimate 2y",
-        slash_commands_target_type: 'MergeRequest'
+        quick_actions_target_type: 'MergeRequest'
       }
     end
     let(:service) { described_class.new(project, user, params) }
 
-    it 'removes slash commands from text' do
+    it 'removes quick actions from text' do
       result = service.execute
 
       expect(result[:text]).to eq 'My work'
     end
 
-    it 'explains slash commands effect' do
+    it 'explains quick actions effect' do
       result = service.execute
 
       expect(result[:commands]).to eq 'Sets time estimate to 2y.'
-    end    
+    end
   end
 end

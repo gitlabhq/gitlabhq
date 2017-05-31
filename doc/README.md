@@ -28,7 +28,7 @@ Shortcuts to GitLab's most visited docs:
 - [GitLab Workflow](workflow/README.md): Enhance your workflow with the best of GitLab Workflow.
   - See also [GitLab Workflow - an overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/).
 - [GitLab Markdown](user/markdown.md): GitLab's advanced formatting system (GitLab Flavored Markdown).
-- [GitLab Slash Commands](user/project/slash_commands.md): Textual shortcuts for common actions on issues or merge requests that are usually done by clicking buttons or dropdowns in GitLab's UI.
+- [GitLab Quick Actions](user/project/quick_actions.md): Textual shortcuts for common actions on issues or merge requests that are usually done by clicking buttons or dropdowns in GitLab's UI.
 
 ### User account
 
