@@ -190,10 +190,6 @@ class User < ActiveRecord::Base
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
 
-  # EE-only
-  delegate :shared_runners_minutes_limit, :shared_runners_minutes_limit=,
-           to: :namespace
-
   accepts_nested_attributes_for :namespace
 
   state_machine :state, initial: :active do

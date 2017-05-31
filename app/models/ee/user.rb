@@ -15,6 +15,9 @@ module EE
       # column directly.
       validate :auditor_requires_license_add_on, if: :auditor
       validate :cannot_be_admin_and_auditor
+
+      delegate :shared_runners_minutes_limit, :shared_runners_minutes_limit=,
+               to: :namespace
     end
 
     module ClassMethods
