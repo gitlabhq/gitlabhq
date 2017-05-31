@@ -2,7 +2,7 @@ class CreateGeoPushEvents < ActiveRecord::Migration
   DOWNTIME = false
 
   def change
-    create_table :geo_push_events do |t|
+    create_table :geo_push_events, id: :bigserial do |t|
       t.references :project, index: true, foreign_key: { on_delete: :cascade }, null: false
       t.datetime :created_at, null: false
       t.string :ref

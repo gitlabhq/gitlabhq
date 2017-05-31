@@ -2,7 +2,7 @@ class CreateGeoEventLog < ActiveRecord::Migration
   DOWNTIME = false
 
   def change
-    create_table :geo_event_log do |t|
+    create_table :geo_event_log, id: :bigserial do |t|
       t.datetime :created_at, index: true, null: false
       t.integer :push_event_id, index: true
 

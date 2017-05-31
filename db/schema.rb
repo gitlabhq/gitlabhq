@@ -500,7 +500,7 @@ ActiveRecord::Schema.define(version: 20170602003304) do
 
   add_index "forked_project_links", ["forked_to_project_id"], name: "index_forked_project_links_on_forked_to_project_id", unique: true, using: :btree
 
-  create_table "geo_event_log", force: :cascade do |t|
+  create_table "geo_event_log", id: :bigserial, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "push_event_id"
   end
@@ -528,7 +528,7 @@ ActiveRecord::Schema.define(version: 20170602003304) do
   add_index "geo_nodes", ["host"], name: "index_geo_nodes_on_host", using: :btree
   add_index "geo_nodes", ["primary"], name: "index_geo_nodes_on_primary", using: :btree
 
-  create_table "geo_push_events", force: :cascade do |t|
+  create_table "geo_push_events", id: :bigserial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.datetime "created_at", null: false
     t.string "ref"
