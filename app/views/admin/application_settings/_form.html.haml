@@ -650,6 +650,7 @@
             OpenSSH servers. If, and only if, you have configured the GitLab
             instance to use the AuthorizedKeysCommand, uncheck this to improve
             performance.
+            = link_to icon('question-circle'), help_page_path('administration/operations/speed_up_ssh', anchor: 'tidying-up')
 
   - if Gitlab::Geo.license_allows?
     %fieldset
