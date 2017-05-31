@@ -30,7 +30,7 @@ module SharedMarkdown
   end
 
   step 'I should see the Markdown write tab' do
-    expect(find('.gfm-form')).to have_css('.js-md-write-button', visible: true)
+    expect(first('.gfm-form')).to have_link('Write', visible: true)
   end
 
   step 'I should see the Markdown preview' do
@@ -49,9 +49,9 @@ module SharedMarkdown
   end
 
   step 'I preview a description text like "Bug fixed :smile:"' do
-    page.within('.gfm-form') do
+    page.within(first('.gfm-form')) do
       fill_in 'Description', with: 'Bug fixed :smile:'
-      find('.js-md-preview-button').click
+      click_link 'Preview'
     end
   end
 
