@@ -38,14 +38,31 @@
 
 .prometheus-metrics-monitoring {
   .panel {
+    .panel-toggle {
+      width: 12px;
+
+      &.fa-caret-right {
+        padding-left: 4px;
+      }
+    }
+
     .panel-heading .badge-count {
-      padding: 3px 8px;
       color: $white-light;
       background: $common-gray-dark;
+    }
+
+    .panel-body {
+      padding: 0;
+    }
+
+    .badge-count {
+      margin-left: 3px;
+      padding: 3px 8px;
       border-radius: 40%;
     }
   }
 
+  .loading-metrics,
   .empty-metrics {
     text-align: center;
     padding: 20px 10px;
@@ -57,6 +74,25 @@
 
     p {
       color: $gl-gray-light;
+    }
+  }
+
+  .metrics-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+      padding: 15px 10px;
+
+      .badge-count {
+        background: $badge-bg;
+      }
+    }
+
+    /* Ensure we don't add border if there's only single li */
+    li + li {
+      border-top: 1px solid $border-color;
     }
   }
 }
