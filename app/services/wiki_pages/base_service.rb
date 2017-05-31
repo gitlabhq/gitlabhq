@@ -21,5 +21,15 @@ module WikiPages
       @project.execute_hooks(page_data, :wiki_page_hooks)
       @project.execute_services(page_data, :wiki_page_hooks)
     end
+
+    def process_wiki_changes
+      if Gitlab::Geo.primary?
+        # Create wiki update event on Geo event log
+        Geo::PushEventStore.new(project, source: Geo::PushEvent::WIKI).create
+
+        # Triggers repository update on secondary nodes
+        Gitlab::Geo.notify_wiki_update(project)
+      end
+    end
   end
 end

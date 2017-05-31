@@ -6,6 +6,7 @@ module WikiPages
 
       if page.create(@params)
         execute_hooks(page, 'create')
+        process_wiki_changes
       end
 
       page
