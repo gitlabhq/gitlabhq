@@ -154,24 +154,23 @@ storing things like passwords, secret keys and credentials.
 
 Secret variables can be added by going to your project's
 **Settings ➔ Pipelines**, then finding the section called
-**Secret and protected variables**.
+**Secret variables**.
 
 Once you set them, they will be available for all subsequent pipelines.
 
-## Protected variables
+## Protected secret variables
 
 >**Notes:**
-- This feature requires GitLab Runner 0.4.0 or higher.
-- A protected variable is a secret variable which is protected.
+- This feature requires GitLab 9.3 or higher, and GitLab Runner 0.4.0 or higher.
 
-All secret variables could be protected. Whenever a secret variable is
+Secret variables could be protected. Whenever a secret variable is
 protected, it would only be securely passed to pipelines running on the
-protected branches or protected tags. The other pipelines would not get any
+[protected branches] or [protected tags]. The other pipelines would not get any
 protected variables.
 
 Protected variables can be added by going to your project's
 **Settings ➔ Pipelines**, then finding the section called
-**Secret and protected variables**, and check *Protected*.
+**Secret variables**, and check *Protected*.
 
 Once you set them, they will be available for all subsequent pipelines.
 
@@ -403,3 +402,5 @@ export CI_REGISTRY_PASSWORD="longalfanumstring"
 [runner]: https://docs.gitlab.com/runner/
 [triggered]: ../triggers/README.md
 [triggers]: ../triggers/README.md#pass-job-variables-to-a-trigger
+[protected branches]: ../../user/project/protected_branches.md
+[protected tags]: ../../user/project/protected_tags.md

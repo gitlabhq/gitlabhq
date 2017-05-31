@@ -1379,15 +1379,30 @@ describe Ci::Build, :models do
     end
 
     context 'returns variables in valid order' do
+      let(:build_pre_var) { { key: 'build', value: 'value' } }
+      let(:project_pre_var) { { key: 'project', value: 'value' } }
+      let(:pipeline_pre_var) { { key: 'pipeline', value: 'value' } }
+      let(:build_yaml_var) { { key: 'yaml', value: 'value' } }
+
       before do
-        allow(build).to receive(:predefined_variables) { ['predefined'] }
-        allow(project).to receive(:predefined_variables) { ['project'] }
-        allow(pipeline).to receive(:predefined_variables) { ['pipeline'] }
-        allow(build).to receive(:yaml_variables) { ['yaml'] }
-        allow(project).to receive(:variables_for).with(build.ref) { ['secret'] }
+        allow(build).to receive(:predefined_variables) { [build_pre_var] }
+        allow(project).to receive(:predefined_variables) { [project_pre_var] }
+        allow(pipeline).to receive(:predefined_variables) { [pipeline_pre_var] }
+        allow(build).to receive(:yaml_variables) { [build_yaml_var] }
+
+        allow(project).to receive(:secret_variables_for).with(build.ref) do
+          [create(:ci_variable, key: 'secret', value: 'value')]
+        end
       end
 
-      it { is_expected.to eq(%w[predefined project pipeline yaml secret]) }
+      it do
+        is_expected.to eq(
+          [build_pre_var,
+           project_pre_var,
+           pipeline_pre_var,
+           build_yaml_var,
+           { key: 'secret', value: 'value', public: false }])
+      end
     end
   end
 

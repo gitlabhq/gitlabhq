@@ -185,7 +185,7 @@ module Ci
       variables += project.deployment_variables if has_environment?
       variables += yaml_variables
       variables += user_variables
-      variables += project.variables_for(ref)
+      variables += project.secret_variables_for(ref).map(&:to_runner_variable)
       variables += trigger_request.user_variables if trigger_request
       variables
     end

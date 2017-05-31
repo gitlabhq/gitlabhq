@@ -1735,7 +1735,7 @@ describe Project, models: true do
     end
   end
 
-  describe '#variables_for' do
+  describe '#secret_variables_for' do
     let(:project) { create(:empty_project) }
 
     let!(:secret_variable) do
@@ -1746,7 +1746,7 @@ describe Project, models: true do
       create(:ci_variable, :protected, value: 'protected', project: project)
     end
 
-    subject { project.variables_for('ref') }
+    subject { project.secret_variables_for('ref') }
 
     shared_examples 'ref is protected' do
       it 'contains all the variables' do
