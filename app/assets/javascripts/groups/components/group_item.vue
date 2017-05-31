@@ -10,6 +10,7 @@ export default {
     baseGroup: {
       type: Object,
       required: false,
+      default: () => ({}),
     },
   },
   methods: {
