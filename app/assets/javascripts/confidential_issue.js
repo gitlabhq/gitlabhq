@@ -1,3 +1,6 @@
+const CONFIDENTIAL_ISSUE_SCROLL_CLASS_NAME = 'confidential-issue-scroll';
+const CONFIDENTIAL_ISSUE_WARNING_SELECTOR = '.confidential-issue-warning';
+
 export default () => {
   /**
   * for IE11/Firefox/Edge :(
@@ -7,14 +10,18 @@ export default () => {
   * otherwise it will return a `truthy` value :)
   **/
 
-  const banner = document.querySelector('.confidential-issue-warning');
+  const banner = document.querySelector(CONFIDENTIAL_ISSUE_WARNING_SELECTOR);
   const bannerClassList = banner.classList;
 
   const confidentialScroll = () => {
-    if ((document.documentElement.scrollTop || document.body.scrollTop) > 5) {
-      bannerClassList.add('confidential-issue-scroll');
+    const scrollTop = (
+      document.documentElement.scrollTop || document.body.scrollTop
+    );
+
+    if (scrollTop > 5) {
+      bannerClassList.add(CONFIDENTIAL_ISSUE_SCROLL_CLASS_NAME);
     } else {
-      bannerClassList.remove('confidential-issue-scroll');
+      bannerClassList.remove(CONFIDENTIAL_ISSUE_SCROLL_CLASS_NAME);
     }
   };
 
