@@ -53,7 +53,7 @@ class Projects::JobsController < Projects::ApplicationController
 
         render json: BuildSerializer
           .new(project: @project, current_user: @current_user)
-          .represent_status(@build, {}, BuildDetailsEntity)
+          .represent(@build, {}, BuildDetailsEntity)
       end
     end
   end

@@ -23,10 +23,10 @@ describe BuildArtifactEntity do
         .to include "jobs/#{job.id}/artifacts/download"
 
       expect(subject[:keep_path])
-        .to include "jobs/#{build.id}/artifacts/keep"
+        .to include "jobs/#{job.id}/artifacts/keep"
 
       expect(subject[:browse_path])
-        .to include "jobs/#{build.id}/artifacts/browse"
+        .to include "jobs/#{job.id}/artifacts/browse"
     end
   end
 end

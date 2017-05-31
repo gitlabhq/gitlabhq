@@ -10,16 +10,16 @@ class BuildArtifactEntity < Grape::Entity
 
   expose :path do |job|
     download_namespace_project_job_artifacts_path(
-      build.project.namespace,
-      build.project,
-      build)
+      project.namespace,
+      project,
+      job)
   end
 
   expose :keep_path, if: -> (*) { job.has_expiring_artifacts? } do |job|
     keep_namespace_project_job_artifacts_path(
       project.namespace,
       project,
-      build)
+      job)
   end
 
   expose :browse_path do |job|

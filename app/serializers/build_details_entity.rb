@@ -4,7 +4,7 @@ class BuildDetailsEntity < BuildEntity
 
   expose :erased_by, if: -> (*) { build.erased? }, using: UserEntity
   expose :erase_path, if: -> (*) { build.erasable? && can?(current_user, :update_build, project) } do |build|
-    erase_namespace_project_build_path(project.namespace, project, build)
+    erase_namespace_project_job_path(project.namespace, project, build)
   end
 
   expose :artifacts, using: BuildArtifactEntity
