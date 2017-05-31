@@ -351,7 +351,7 @@ feature 'Jobs', :feature do
       end
     end
 
-    context "Build from other project" do
+    context "Job from other project" do
       before do
         build.run!
         visit namespace_project_job_path(project.namespace, project, build)
@@ -362,7 +362,7 @@ feature 'Jobs', :feature do
       it { expect(page).to have_http_status(404) }
     end
 
-    context "Build that current user is not allowed to retry" do
+    context "Job that current user is not allowed to retry" do
       before do
         build.run!
         build.cancel!
@@ -400,7 +400,7 @@ feature 'Jobs', :feature do
 
   describe 'GET /:project/jobs/:id/raw', :js do
     context 'access source' do
-      context 'build from project' do
+      context 'job from project' do
         before do
           Capybara.current_session.driver.headers = { 'X-Sendfile-Type' => 'X-Sendfile' }
           build.run!
@@ -458,7 +458,7 @@ feature 'Jobs', :feature do
         end
       end
 
-      context 'when build has trace in DB' do
+      context 'when job has trace in DB' do
         let(:paths) { [] }
 
         it 'sends the right headers' do
@@ -483,7 +483,7 @@ feature 'Jobs', :feature do
   end
 
   describe "GET /:project/jobs/:id/trace.json" do
-    context "Build from project" do
+    context "Job from project" do
       before do
         visit trace_namespace_project_job_path(project.namespace, project, build, format: :json)
       end
@@ -491,7 +491,7 @@ feature 'Jobs', :feature do
       it { expect(page.status_code).to eq(200) }
     end
 
-    context "Build from other project" do
+    context "Job from other project" do
       before do
         visit trace_namespace_project_job_path(project.namespace, project, build2, format: :json)
       end
@@ -501,7 +501,7 @@ feature 'Jobs', :feature do
   end
 
   describe "GET /:project/jobs/:id/status" do
-    context "Build from project" do
+    context "Job from project" do
       before do
         visit status_namespace_project_job_path(project.namespace, project, build)
       end
@@ -509,7 +509,7 @@ feature 'Jobs', :feature do
       it { expect(page.status_code).to eq(200) }
     end
 
-    context "Build from other project" do
+    context "Job from other project" do
       before do
         visit status_namespace_project_job_path(project.namespace, project, build2)
       end
