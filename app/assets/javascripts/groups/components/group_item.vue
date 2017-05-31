@@ -16,12 +16,10 @@ export default {
   },
   methods: {
     onClickRowGroup(e) {
-      // e.stopPropagation();
+      e.stopPropagation();
 
       // Skip for buttons
-      if (e.target.tagName === 'A' ||
-        (e.target.tagName === 'I' && e.target.parentElement.tagName === 'A')) {
-      } else {
+      if (!(e.target.tagName === 'A') && !(e.target.tagName === 'I' && e.target.parentElement.tagName === 'A')) {
         if (this.group.hasSubgroups) {
           eventHub.$emit('toggleSubGroups', this.group);
         } else {

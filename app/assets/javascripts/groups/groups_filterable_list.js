@@ -33,7 +33,13 @@ export default class GroupFilterableList extends FilterableList {
     this.filterResults(this.filterUrl);
   }
 
-  onFilterSuccess(data, textStatus, xhr) {
+  preOnFilterSuccess(comingFrom) {
+    if (comingFrom === 'filter-input') {
+      this.filterUrl = `${this.filterForm.getAttribute('action')}?${$(this.filterForm).serialize()}`;
+    }
+  }
+
+  onFilterSuccess(data, xhr) {
     super.onFilterSuccess(data);
 
     this.store.setGroups(data);

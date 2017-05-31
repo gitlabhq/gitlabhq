@@ -13,12 +13,16 @@ export default class FilterableList {
 
   initSearch() {
     // Wrap to prevent passing event arguments to .filterResults;
-    this.debounceFilter = _.debounce(() => {
-      this.filterResults();
-    }, 500);
+    this.debounceFilter = _.debounce(this.onFilterInput.bind(this), 500);
 
     this.unbindEvents();
     this.bindEvents();
+  }
+
+  onFilterInput() {
+    const url = this.filterForm.getAttribute('action');
+    const data = $(this.filterForm).serialize();
+    this.filterResults(url, data, 'filter-input');
   }
 
   bindEvents() {
@@ -29,7 +33,7 @@ export default class FilterableList {
     this.listFilterElement.removeEventListener('input', this.debounceFilter);
   }
 
-  filterResults(url, data) {
+  filterResults(url, data, comingFrom) {
     const endpoint = url || this.filterForm.getAttribute('action');
     const additionalData = data || $(this.filterForm).serialize();
 
@@ -42,7 +46,13 @@ export default class FilterableList {
       dataType: 'json',
       context: this,
       complete: this.onFilterComplete,
-      success: this.onFilterSuccess,
+      success: (response, textStatus, xhr) => {
+        if (this.preOnFilterSuccess) {
+          this.preOnFilterSuccess(comingFrom);
+        }
+
+        this.onFilterSuccess(response, xhr);
+      },
     });
   }
 
