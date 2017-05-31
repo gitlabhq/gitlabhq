@@ -1750,8 +1750,7 @@ describe Project, models: true do
 
     shared_examples 'ref is protected' do
       it 'contains all the variables' do
-        is_expected.to contain_exactly(
-          *[secret_variable, protected_variable].map(&:to_runner_variable))
+        is_expected.to contain_exactly(secret_variable, protected_variable)
       end
     end
 
@@ -1762,7 +1761,7 @@ describe Project, models: true do
       end
 
       it 'contains only the secret variables' do
-        is_expected.to contain_exactly(secret_variable.to_runner_variable)
+        is_expected.to contain_exactly(secret_variable)
       end
     end
 
