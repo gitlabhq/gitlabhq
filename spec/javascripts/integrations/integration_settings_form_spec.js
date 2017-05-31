@@ -29,7 +29,7 @@ describe('IntegrationSettingsForm', () => {
     });
 
     it('should initialize form metadata on class object', () => {
-      expect(integrationSettingsForm.endPoint).toBeDefined();
+      expect(integrationSettingsForm.testEndPoint).toBeDefined();
       expect(integrationSettingsForm.canTestService).toBeDefined();
     });
   });
@@ -62,22 +62,25 @@ describe('IntegrationSettingsForm', () => {
     });
 
     it('should set Save button label to "Test settings and save changes" when serviceActive & canTestService are `true`', () => {
-      integrationSettingsForm.toggleSubmitBtnLabel(true, true);
+      integrationSettingsForm.canTestService = true;
 
+      integrationSettingsForm.toggleSubmitBtnLabel(true);
       expect(integrationSettingsForm.$submitBtnLabel.text()).toEqual('Test settings and save changes');
     });
 
     it('should set Save button label to "Save changes" when either serviceActive or canTestService (or both) is `false`', () => {
-      integrationSettingsForm.toggleSubmitBtnLabel(false, false);
+      integrationSettingsForm.canTestService = false;
 
+      integrationSettingsForm.toggleSubmitBtnLabel(false);
       expect(integrationSettingsForm.$submitBtnLabel.text()).toEqual('Save changes');
 
-      integrationSettingsForm.toggleSubmitBtnLabel(false, true);
-
+      integrationSettingsForm.toggleSubmitBtnLabel(true);
       expect(integrationSettingsForm.$submitBtnLabel.text()).toEqual('Save changes');
 
-      integrationSettingsForm.toggleSubmitBtnLabel(true, false);
 
+      integrationSettingsForm.canTestService = true;
+
+      integrationSettingsForm.toggleSubmitBtnLabel(false);
       expect(integrationSettingsForm.$submitBtnLabel.text()).toEqual('Save changes');
     });
   });
@@ -121,7 +124,7 @@ describe('IntegrationSettingsForm', () => {
 
       expect($.ajax).toHaveBeenCalledWith({
         type: 'PUT',
-        url: `${integrationSettingsForm.endPoint}/test`,
+        url: integrationSettingsForm.testEndPoint,
         data: formData,
       });
     });
