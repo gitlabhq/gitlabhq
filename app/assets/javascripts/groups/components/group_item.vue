@@ -25,8 +25,6 @@ export default {
           window.location.href = this.group.webUrl;
         }
       }
-
-      return false;
     },
     onLeaveGroup(e) {
       e.preventDefault();
@@ -35,8 +33,6 @@ export default {
       if (confirm(`Are you sure you want to leave the "${this.group.fullName}" group?`)) {
         this.leaveGroup();
       }
-
-      return false;
     },
     leaveGroup() {
       eventHub.$emit('leaveGroup', this.group.leavePath);
