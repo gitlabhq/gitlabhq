@@ -6,6 +6,10 @@ describe Gitlab::Ci::Stage::Seeds do
     subject.append_stage('deploy', [{ name: 'prod', script: 'cap deploy' }])
   end
 
+  describe '#has_stages?' do
+    it { is_expected.to have_stages }
+  end
+
   describe '#stages' do
     it 'returns hashes of all stages' do
       expect(subject.stages.size).to eq 2

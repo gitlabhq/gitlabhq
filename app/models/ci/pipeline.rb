@@ -295,14 +295,16 @@ module Ci
         sort_by { |build| build[:stage_idx] }
     end
 
-    def config_stages_attributes
+    def stage_seeds
       return [] unless config_processor
 
-      config_processor.stages_for_ref(ref, tag?, trigger_requests.first)
+      config_processor.stage_seeds(ref: ref,
+                                   tag: tag?,
+                                   trigger: trigger_requests.first)
     end
 
     def has_stages?
-      config_stages_attributes.any?
+      stage_seeds.has_stages?
     end
 
     def has_warnings?

@@ -8,6 +8,10 @@ module Gitlab
           @stages = []
         end
 
+        def has_stages?
+          @stages.any?
+        end
+
         def stages
           @stages.map(&:stage)
         end
@@ -48,7 +52,7 @@ module Gitlab
         end
 
         def to_attributes
-          @stages.map.with_index do |seed|
+          @stages.map do |seed|
             seed.stage.merge(builds_attributes: seed.jobs)
           end
         end

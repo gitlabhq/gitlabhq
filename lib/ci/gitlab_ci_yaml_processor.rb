@@ -50,14 +50,14 @@ module Ci
       end
     end
 
-    def stages_for_ref(ref, tag = false, trigger_request = nil)
-      stages = @stages.uniq.map do |stage|
-        builds = builds_for_stage_and_ref(stage, ref, tag, trigger_request)
+    def stage_seeds(ref:, tag: false, trigger: nil)
+      Gitlab::Ci::Stage::Seeds.new.tap do |seeds|
+        @stages.uniq.each do |stage|
+          builds = builds_for_stage_and_ref(stage, ref, tag, trigger)
 
-        { name: stage, builds_attributes: builds.to_a } if builds.any?
+          seeds.append_stage(stage, builds) if builds.any?
+       end
       end
-
-      stages.compact.sort_by { |stage| @stages.index(stage[:name]) }
     end
 
     def build_attributes(name)

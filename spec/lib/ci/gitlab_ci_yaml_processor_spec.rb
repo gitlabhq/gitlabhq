@@ -83,7 +83,7 @@ module Ci
       end
     end
 
-    describe '#stages_for_ref' do
+    describe '#stage_seeds' do
       context 'when no refs policy is specified' do
         let(:config) do
           YAML.dump(production: { stage: 'deploy', script: 'cap prod' },
@@ -91,15 +91,15 @@ module Ci
                     spinach: { stage: 'test', script: 'spinach' })
         end
 
-        it 'returns model attributes for stages with nested jobs' do
-          attributes = subject.stages_for_ref('master')
+        it 'returns correctly fabricated stage seeds object' do
+          seeds = subject.stage_seeds(ref: 'master')
 
-          expect(attributes.size).to eq 2
-          expect(attributes.dig(0, :name)).to eq 'test'
-          expect(attributes.dig(1, :name)).to eq 'deploy'
-          expect(attributes.dig(0, :builds_attributes, 0, :name)).to eq 'rspec'
-          expect(attributes.dig(0, :builds_attributes, 1, :name)).to eq 'spinach'
-          expect(attributes.dig(1, :builds_attributes, 0, :name)).to eq 'production'
+          expect(seeds.stages.size).to eq 2
+          expect(seeds.stages.dig(0, :name)).to eq 'test'
+          expect(seeds.stages.dig(1, :name)).to eq 'deploy'
+          expect(seeds.jobs.dig(0, :name)).to eq 'rspec'
+          expect(seeds.jobs.dig(1, :name)).to eq 'spinach'
+          expect(seeds.jobs.dig(2, :name)).to eq 'production'
         end
       end
 
@@ -109,14 +109,12 @@ module Ci
                     spinach: { stage: 'test', script: 'spinach', only: ['tags'] })
         end
 
-        it 'returns stage attributes except of jobs assigned to master' do
-          # true flag argument means matching jobs for tags
-          #
-          attributes = subject.stages_for_ref('feature', true)
+        it 'returns stage seeds only assigned to master to master' do
+          seeds = subject.stage_seeds(ref: 'feature', tag: true)
 
-          expect(attributes.size).to eq 1
-          expect(attributes.dig(0, :name)).to eq 'test'
-          expect(attributes.dig(0, :builds_attributes, 0, :name)).to eq 'spinach'
+          expect(seeds.stages.size).to eq 1
+          expect(seeds.stages.dig(0, :name)).to eq 'test'
+          expect(seeds.jobs.dig(0, :name)).to eq 'spinach'
         end
       end
     end
