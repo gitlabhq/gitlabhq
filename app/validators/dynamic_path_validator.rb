@@ -6,16 +6,21 @@
 # Values are checked for formatting and exclusion from a list of illegal path
 # names.
 class DynamicPathValidator < ActiveModel::EachValidator
+  extend Gitlab::Git::EncodingHelper
+
   class << self
     def valid_user_path?(path)
+      encode!(path)
       "#{path}/" =~ Gitlab::PathRegex.root_namespace_path_regex
     end
 
     def valid_group_path?(path)
+      encode!(path)
       "#{path}/" =~ Gitlab::PathRegex.full_namespace_path_regex
     end
 
     def valid_project_path?(path)
+      encode!(path)
       "#{path}/" =~ Gitlab::PathRegex.full_project_path_regex
     end
   end

@@ -340,7 +340,7 @@ describe Group, models: true do
     it { expect(subject.parent).to be_kind_of(Group) }
   end
 
-  describe '#members_with_parents' do
+  describe '#members_with_parents', :nested_groups do
     let!(:group) { create(:group, :nested) }
     let!(:master) { group.parent.add_user(create(:user), GroupMember::MASTER) }
     let!(:developer) { group.add_user(create(:user), GroupMember::DEVELOPER) }

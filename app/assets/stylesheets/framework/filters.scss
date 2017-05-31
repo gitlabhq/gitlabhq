@@ -104,6 +104,22 @@
     padding: 2px 7px;
   }
 
+  .name {
+    background-color: $filter-name-resting-color;
+    color: $filter-name-text-color;
+    border-radius: 2px 0 0 2px;
+    margin-right: 1px;
+    text-transform: capitalize;
+  }
+
+  .value-container {
+    background-color: $white-normal;
+    color: $filter-value-text-color;
+    border-radius: 0 2px 2px 0;
+    margin-right: 5px;
+    padding-right: 8px;
+  }
+
   .value {
     padding-right: 0;
   }
@@ -111,7 +127,7 @@
   .remove-token {
     display: inline-block;
     padding-left: 4px;
-    padding-right: 8px;
+    padding-right: 0;
 
     .fa-close {
       color: $gl-text-color-secondary;
@@ -130,21 +146,6 @@
         color: $gl-text-color-inverted;
       }
     }
-  }
-
-  .name {
-    background-color: $filter-name-resting-color;
-    color: $filter-name-text-color;
-    border-radius: 2px 0 0 2px;
-    margin-right: 1px;
-    text-transform: capitalize;
-  }
-
-  .value-container {
-    background-color: $white-normal;
-    color: $filter-value-text-color;
-    border-radius: 0 2px 2px 0;
-    margin-right: 5px;
   }
 
   .selected {

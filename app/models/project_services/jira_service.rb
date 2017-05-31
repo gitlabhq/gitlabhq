@@ -239,15 +239,24 @@ class JiraService < IssueTrackerService
     return unless client_url.present?
 
     jira_request do
-      if issue.comments.build.save!(body: message)
-        remote_link = issue.remotelink.build
+      remote_link = find_remote_link(issue, remote_link_props[:object][:url])
+      if remote_link
         remote_link.save!(remote_link_props)
-        result_message = "#{self.class.name} SUCCESS: Successfully posted to #{client_url}."
+      elsif issue.comments.build.save!(body: message)
+        new_remote_link = issue.remotelink.build
+        new_remote_link.save!(remote_link_props)
       end
 
+      result_message = "#{self.class.name} SUCCESS: Successfully posted to #{client_url}."
       Rails.logger.info(result_message)
       result_message
     end
+  end
+
+  def find_remote_link(issue, url)
+    links = jira_request { issue.remotelink.all }
+
+    links.find { |link| link.object["url"] == url }
   end
 
   def build_remote_link_props(url:, title:, resolved: false)

@@ -271,6 +271,7 @@ class Project < ActiveRecord::Base
 
   scope :with_builds_enabled, -> { with_feature_enabled(:builds) }
   scope :with_issues_enabled, -> { with_feature_enabled(:issues) }
+  scope :with_merge_requests_enabled, -> { with_feature_enabled(:merge_requests) }
 
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
 
@@ -873,10 +874,8 @@ class Project < ActiveRecord::Base
     url_to_repo
   end
 
-  def http_url_to_repo(user = nil)
-    credentials = Gitlab::UrlSanitizer.http_credentials_for_user(user)
-
-    Gitlab::UrlSanitizer.new("#{web_url}.git", credentials: credentials).full_url
+  def http_url_to_repo
+    "#{web_url}.git"
   end
 
   def user_can_push_to_empty_repo?(user)

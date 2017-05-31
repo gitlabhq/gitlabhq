@@ -57,7 +57,7 @@ linters:
 
   # Reports when you define the same property twice in a single rule set.
   DuplicateProperty:
-    enabled: false
+    enabled: true
 
   # Separate rule, function, and mixin declarations with empty lines.
   EmptyLineBetweenBlocks:
