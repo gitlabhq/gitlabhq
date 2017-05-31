@@ -98,6 +98,17 @@ module Gitlab
       end
     end
 
+    def gitlab_user
+      Gitlab.config.gitlab.user
+    end
+
+    def is_gitlab_user?
+      return @is_gitlab_user unless @is_gitlab_user.nil?
+
+      current_user = run_command(%w(whoami)).chomp
+      @is_gitlab_user = current_user == gitlab_user
+    end
+
     def warn_user_is_not_gitlab
       return if @warned_user_not_gitlab
 
@@ -111,22 +122,6 @@ module Gitlab
         puts ""
 
         @warned_user_not_gitlab = true
-      end
-    end
-
-    # Tries to configure git itself
-    #
-    # Returns true if all subcommands were successfull (according to their exit code)
-    # Returns false if any or all subcommands failed.
-    def auto_fix_git_config(options)
-      if !@warned_user_not_gitlab
-        command_success = options.map do |name, value|
-          system(*%W(#{Gitlab.config.git.bin_path} config --global #{name} #{value}))
-        end
-
-        command_success.all?
-      else
-        false
       end
     end
 
