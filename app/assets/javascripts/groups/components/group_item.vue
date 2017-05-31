@@ -72,8 +72,9 @@ export default {
           const bfn = this.baseGroup.fullName;
           const length = bfn.length;
           const start = gfn.indexOf(bfn);
+          const extraPrefixChars = 3;
 
-          fullPath = gfn.substr(start + length + 3);
+          fullPath = gfn.substr(start + length + extraPrefixChars);
         } else {
           fullPath = this.group.fullName;
         }
