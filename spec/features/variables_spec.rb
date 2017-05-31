@@ -99,7 +99,7 @@ describe 'Project variables', js: true do
     click_button('Save variable')
 
     expect(page).to have_content('Variable was successfully updated.')
-    expect(project.variables.first.value).to eq('key value')
+    expect(project.variables(true).first.value).to eq('key value')
   end
 
   it 'edits variable with empty value' do
@@ -112,7 +112,7 @@ describe 'Project variables', js: true do
     click_button('Save variable')
 
     expect(page).to have_content('Variable was successfully updated.')
-    expect(project.variables.first.value).to eq('')
+    expect(project.variables(true).first.value).to eq('')
   end
 
   it 'edits variable to be protected' do
@@ -125,7 +125,7 @@ describe 'Project variables', js: true do
     click_button('Save variable')
 
     expect(page).to have_content('Variable was successfully updated.')
-    expect(project.variables.first).to be_protected
+    expect(project.variables(true).first).to be_protected
   end
 
   it 'edits variable to be unprotected' do
@@ -140,6 +140,6 @@ describe 'Project variables', js: true do
     click_button('Save variable')
 
     expect(page).to have_content('Variable was successfully updated.')
-    expect(project.reload.variables.first).not_to be_protected
+    expect(project.variables(true).first).not_to be_protected
   end
 end
