@@ -32,11 +32,11 @@ class GroupEntity < Grape::Entity
     group.children.any?
   end
 
-  expose :number_projects do |group|
+  expose :number_projects_with_delimiter do |group|
     number_with_delimiter(group.projects.non_archived.count)
   end
 
-  expose :number_users do |group|
+  expose :number_users_with_delimiter do |group|
     number_with_delimiter(group.users.count)
   end
 end

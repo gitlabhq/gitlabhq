@@ -127,8 +127,8 @@ export default class GroupsStore {
       editPath: rawGroup.edit_path,
       isOpen: false,
       isOrphan: false,
-      numberProjects: rawGroup.number_projects,
-      numberUsers: rawGroup.number_users,
+      numberProjects: rawGroup.number_projects_with_delimiter,
+      numberUsers: rawGroup.number_users_with_delimiter,
       subGroups: {},
     };
   }
