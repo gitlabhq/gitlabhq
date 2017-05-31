@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-
 import Vue from 'vue';
 import GroupFilterableList from './groups_filterable_list';
 import GroupsComponent from './components/groups.vue';
@@ -9,25 +7,22 @@ import GroupsStore from './stores/groups_store';
 import GroupsService from './services/groups_service';
 import eventHub from './event_hub';
 
-$(() => {
-  const appEl = document.querySelector('#dashboard-group-app');
-  const form = document.querySelector('form#group-filter-form');
-  const filter = document.querySelector('.js-groups-list-filter');
-  const holder = document.querySelector('.js-groups-list-holder');
-
-  const store = new GroupsStore();
-  const service = new GroupsService(appEl.dataset.endpoint);
+document.addEventListener('DOMContentLoaded', () => {
+  const el = document.querySelector('#dashboard-group-app');
 
   Vue.component('groups-component', GroupsComponent);
   Vue.component('group-folder', GroupFolder);
   Vue.component('group-item', GroupItem);
 
-  const GroupsApp = new Vue({
-    el: appEl,
+  return new Vue({
+    el,
     data() {
+      this.store = new GroupsStore();
+      this.service = new GroupsService(el.dataset.endpoint);
+
       return {
-        store,
-        state: store.state,
+        store: this.store,
+        state: this.store.state,
       };
     },
     methods: {
@@ -47,9 +42,9 @@ $(() => {
           page = pageParam;
         }
 
-        getGroups = service.getGroups(parentId, page);
+        getGroups = this.service.getGroups(parentId, page);
         getGroups.then((response) => {
-          store.setGroups(response.json(), parentGroup);
+          this.store.setGroups(response.json(), parentGroup);
         })
         .catch(() => {
           // TODO: Handle error
@@ -59,14 +54,14 @@ $(() => {
       },
       toggleSubGroups(parentGroup = null) {
         if (!parentGroup.isOpen) {
-          store.resetGroups(parentGroup);
+          this.store.resetGroups(parentGroup);
           this.fetchGroups(parentGroup);
         }
 
         GroupsStore.toggleSubGroups(parentGroup);
       },
       leaveGroup(endpoint) {
-        service.leaveGroup(endpoint)
+        this.service.leaveGroup(endpoint)
           .then(() => {
             // TODO: Refresh?
           })
@@ -75,22 +70,32 @@ $(() => {
           });
       },
     },
-    created() {
+    beforeMount() {
       let groupFilterList = null;
+      const form = document.querySelector('form#group-filter-form');
+      const filter = document.querySelector('.js-groups-list-filter');
+      const holder = document.querySelector('.js-groups-list-holder');
 
-      groupFilterList = new GroupFilterableList({ form, filter, holder, store });
+      const options = {
+        form,
+        filter,
+        holder,
+        store: this.store,
+      };
+      groupFilterList = new GroupFilterableList(options);
       groupFilterList.initSearch();
 
+      eventHub.$on('toggleSubGroups', this.toggleSubGroups);
+      eventHub.$on('leaveGroup', this.leaveGroup);
+    },
+    mounted() {
       this.fetchGroups()
         .then((response) => {
-          store.storePagination(response.headers);
+          this.store.storePagination(response.headers);
         })
         .catch(() => {
           // TODO: Handle error
         });
-
-      eventHub.$on('toggleSubGroups', this.toggleSubGroups);
-      eventHub.$on('leaveGroup', this.leaveGroup);
     },
   });
 });
