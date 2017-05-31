@@ -114,13 +114,12 @@
 
 .confidential-issue-warning {
   color: $white-normal;
-  background-color: #4c4c4c;
+  background-color: $black-transparent-dark;
   opacity: 0.8;
   overflow-y:scroll;
   border-radius: 3px;
   padding: 10px;
   margin: auto;
-  text-align: center;
   font-size: 14px;
   word-wrap: break-word;
 
