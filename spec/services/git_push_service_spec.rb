@@ -436,6 +436,7 @@ describe GitPushService, services: true do
                                                     author_name: commit_author.name,
                                                     author_email: commit_author.email
                                                   })
+        allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
 
         allow(project.repository).to receive_messages(commits_between: [closing_commit])
       end

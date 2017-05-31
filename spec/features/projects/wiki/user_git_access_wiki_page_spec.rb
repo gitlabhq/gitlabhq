@@ -21,6 +21,6 @@ describe 'Projects > Wiki > User views Git access wiki page', :feature do
 
     click_link 'Clone repository'
     expect(page).to have_text("Clone repository #{project.wiki.path_with_namespace}")
-    expect(page).to have_text(project.wiki.http_url_to_repo(user))
+    expect(page).to have_text(project.wiki.http_url_to_repo)
   end
 end

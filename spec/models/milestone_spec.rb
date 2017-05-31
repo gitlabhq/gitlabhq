@@ -249,4 +249,17 @@ describe Milestone, models: true do
       expect(milestone.to_reference(another_project)).to eq "sample-project%1"
     end
   end
+
+  describe '#participants' do
+    let(:project) { build(:empty_project, name: 'sample-project') }
+    let(:milestone) { build(:milestone, iid: 1, project: project) }
+
+    it 'returns participants without duplicates' do
+      user = create :user
+      create :issue, project: project, milestone: milestone, assignees: [user]
+      create :issue, project: project, milestone: milestone, assignees: [user]
+
+      expect(milestone.participants).to eq [user]
+    end
+  end
 end

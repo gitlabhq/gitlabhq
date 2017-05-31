@@ -38,6 +38,8 @@ Parameters:
 | `membership` | boolean | no | Limit by projects that the current user is a member of |
 | `starred` | boolean | no | Limit by projects starred by the current user |
 | `statistics` | boolean | no | Include project statistics |
+| `with_issues_enabled` | boolean | no | Limit by enabled issues feature |
+| `with_merge_requests_enabled` | boolean | no | Limit by enabled merge requests feature |
 
 ```json
 [

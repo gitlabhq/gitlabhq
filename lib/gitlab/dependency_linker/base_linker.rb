@@ -1,8 +1,8 @@
 module Gitlab
   module DependencyLinker
     class BaseLinker
-      URL_REGEX = %r{https?://[^'"]+}.freeze
-      REPO_REGEX = %r{[^/'"]+/[^/'"]+}.freeze
+      URL_REGEX = %r{https?://[^'" ]+}.freeze
+      REPO_REGEX = %r{[^/'" ]+/[^/'" ]+}.freeze
 
       class_attribute :file_type
 
@@ -69,7 +69,7 @@ module Gitlab
         @highlighted_lines ||= highlighted_text.lines
       end
 
-      def regexp_for_value(value, default: /[^'"]+/)
+      def regexp_for_value(value, default: /[^'" ]+/)
         case value
         when Array
           Regexp.union(value.map { |v| regexp_for_value(v, default: default) })

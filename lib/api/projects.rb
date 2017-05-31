@@ -58,6 +58,8 @@ module API
           optional :owned, type: Boolean, default: false, desc: 'Limit by owned by authenticated user'
           optional :starred, type: Boolean, default: false, desc: 'Limit by starred status'
           optional :membership, type: Boolean, default: false, desc: 'Limit by projects that the current user is a member of'
+          optional :with_issues_enabled, type: Boolean, default: false, desc: 'Limit by enabled issues feature'
+          optional :with_merge_requests_enabled, type: Boolean, default: false, desc: 'Limit by enabled merge requests feature'
         end
 
         params :create_params do
@@ -69,11 +71,15 @@ module API
           options = options.reverse_merge(
             with: Entities::Project,
             current_user: current_user,
-            simple: params[:simple]
+            simple: params[:simple],
+            with_issues_enabled: params[:with_issues_enabled],
+            with_merge_requests_enabled: params[:with_merge_requests_enabled]
           )
 
           projects = filter_projects(projects)
           projects = projects.with_statistics if options[:statistics]
+          projects = projects.with_issues_enabled if options[:with_issues_enabled]
+          projects = projects.with_merge_requests_enabled if options[:with_merge_requests_enabled]
           options[:with] = Entities::BasicProjectDetails if options[:simple]
 
           present paginate(projects), options

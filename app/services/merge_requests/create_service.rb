@@ -11,7 +11,9 @@ module MergeRequests
 
       merge_request = MergeRequest.new
       merge_request.source_project = source_project
+      merge_request.source_branch = params[:source_branch]
       merge_request.merge_params['force_remove_source_branch'] = params.delete(:force_remove_source_branch)
+      merge_request.head_pipeline = head_pipeline_for(merge_request)
 
       create(merge_request)
     end
@@ -21,6 +23,22 @@ module MergeRequests
       notification_service.new_merge_request(issuable, current_user)
       todo_service.new_merge_request(issuable, current_user)
       issuable.cache_merge_request_closes_issues!(current_user)
+    end
+
+    private
+
+    def head_pipeline_for(merge_request)
+      return unless merge_request.source_project
+
+      sha = merge_request.source_branch_head&.id
+
+      return unless sha
+
+      pipelines =
+        Ci::Pipeline.where(ref: merge_request.source_branch, project_id: merge_request.source_project.id, sha: sha).
+        order(id: :desc)
+
+      pipelines.first
     end
   end
 end

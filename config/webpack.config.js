@@ -24,6 +24,7 @@ var config = {
   },
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
   entry: {
+    balsamiq_viewer:      './blob/balsamiq_viewer.js',
     blob:                 './blob_edit/blob_bundle.js',
     boards:               './boards/boards_bundle.js',
     common:               './commons/index.js',
@@ -48,8 +49,7 @@ var config = {
     notebook_viewer:      './blob/notebook_viewer.js',
     pdf_viewer:           './blob/pdf_viewer.js',
     pipelines:            './pipelines/index.js',
-    balsamiq_viewer:      './blob/balsamiq_viewer.js',
-    pipelines_graph:      './pipelines/graph_bundle.js',
+    pipelines_details:     './pipelines/pipeline_details_bundle.js',
     profile:              './profile/profile_bundle.js',
     protected_branches:   './protected_branches/protected_branches_bundle.js',
     protected_tags:       './protected_tags',
@@ -102,7 +102,7 @@ var config = {
         loader: 'file-loader',
       },
       {
-        test: /locale\/[a-z]+\/(.*)\.js$/,
+        test: /locale\/\w+\/(.*)\.js$/,
         loader: 'exports-loader?locales',
       },
     ]
@@ -160,7 +160,7 @@ var config = {
         'notebook_viewer',
         'pdf_viewer',
         'pipelines',
-        'pipelines_graph',
+        'pipelines_details',
         'schedule_form',
         'schedules_index',
         'sidebar',

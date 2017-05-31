@@ -70,6 +70,7 @@ $(() => {
       gl.boardService = new BoardService(this.endpoint, this.bulkUpdatePath, this.boardId);
 
       this.filterManager = new FilteredSearchBoards(Store.filter, true);
+      this.filterManager.setup();
 
       // Listen for updateTokens event
       eventHub.$on('updateTokens', this.updateTokens);

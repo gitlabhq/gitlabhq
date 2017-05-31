@@ -14,7 +14,10 @@
         name: "issue[assignee_ids][]",
         ":value" => "assignee.id",
         "v-if" => "issue.assignees",
-        "v-for" => "assignee in issue.assignees" }
+        "v-for" => "assignee in issue.assignees",
+        ":data-avatar_url" => "assignee.avatar",
+        ":data-name" => "assignee.name",
+        ":data-username" => "assignee.username" }
       .dropdown
         %button.dropdown-menu-toggle.js-user-search.js-author-search.js-multiselect.js-save-user-data.js-issue-board-sidebar{ type: "button", ref: "assigneeDropdown", data: { toggle: "dropdown", field_name: "issue[assignee_ids][]", first_user: (current_user.username if current_user), current_user: "true", project_id: @project.id, null_user: "true", multi_select: "true", 'max-select' => 1, dropdown: { header: 'Assignee' } },
           ":data-issuable-id" => "issue.id",

@@ -81,7 +81,7 @@ describe ProjectTeam, models: true do
         user = create(:user)
         project.add_guest(user)
 
-        expect(project.team.members).to contain_exactly(user)
+        expect(project.team.members).to contain_exactly(user, project.owner)
       end
 
       it 'returns project members of a specified level' do
@@ -100,7 +100,8 @@ describe ProjectTeam, models: true do
           group_access: Gitlab::Access::GUEST
         )
 
-        expect(project.team.members).to contain_exactly(group_member.user)
+        expect(project.team.members).
+          to contain_exactly(group_member.user, project.owner)
       end
 
       it 'returns invited members of a group of a specified level' do
@@ -137,7 +138,10 @@ describe ProjectTeam, models: true do
 
   describe '#find_member' do
     context 'personal project' do
-      let(:project) { create(:empty_project, :public, :access_requestable) }
+      let(:project) do
+        create(:empty_project, :public, :access_requestable)
+      end
+
       let(:requester) { create(:user) }
 
       before do
@@ -200,7 +204,9 @@ describe ProjectTeam, models: true do
     let(:requester) { create(:user) }
 
     context 'personal project' do
-      let(:project) { create(:empty_project, :public, :access_requestable) }
+      let(:project) do
+        create(:empty_project, :public, :access_requestable)
+      end
 
       context 'when project is not shared with group' do
         before do
@@ -244,7 +250,9 @@ describe ProjectTeam, models: true do
 
     context 'group project' do
       let(:group) { create(:group, :access_requestable) }
-      let!(:project) { create(:empty_project, group: group) }
+      let!(:project) do
+        create(:empty_project, group: group)
+      end
 
       before do
         group.add_master(master)
@@ -265,8 +273,15 @@ describe ProjectTeam, models: true do
     let(:group) { create(:group) }
     let(:developer) { create(:user) }
     let(:master) { create(:user) }
-    let(:personal_project) { create(:empty_project, namespace: developer.namespace) }
-    let(:group_project) { create(:empty_project, namespace: group) }
+
+    let(:personal_project) do
+      create(:empty_project, namespace: developer.namespace)
+    end
+
+    let(:group_project) do
+      create(:empty_project, namespace: group)
+    end
+
     let(:members_project) { create(:empty_project) }
     let(:shared_project) { create(:empty_project) }
 
