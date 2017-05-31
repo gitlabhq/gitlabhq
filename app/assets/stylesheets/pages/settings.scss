@@ -60,6 +60,14 @@
       padding: 3px 8px;
       border-radius: 40%;
     }
+
+    .flash-container {
+      margin-bottom: 0;
+
+      .flash-notice {
+        border-radius: 0;
+      }
+    }
   }
 
   .loading-metrics,
