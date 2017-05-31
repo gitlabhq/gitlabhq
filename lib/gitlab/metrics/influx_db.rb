@@ -1,7 +1,11 @@
 module Gitlab
   module Metrics
     module InfluxDb
-      include Gitlab::CurrentSettings
+      extend Gitlab::CurrentSettings
+      extend self
+
+      MUTEX = Mutex.new
+      private_constant :MUTEX
 
       def influx_metrics_enabled?
         settings[:enabled] || false
@@ -33,10 +37,6 @@ module Gitlab
         # method. Loading data from an external cache on every method call slows
         # things down too much.
         @method_call_threshold ||= settings[:method_call_threshold]
-      end
-
-      def pool
-        @pool
       end
 
       def submit_metrics(metrics)
@@ -143,19 +143,26 @@ module Gitlab
       end
 
       # Allow access from other metrics related middlewares
-      def current_transaction 
+      def current_transaction
         Transaction.current
       end
 
       # When enabled this should be set before being used as the usual pattern
       # "@foo ||= bar" is _not_ thread-safe.
-      if influx_metrics_enabled?
-        @pool = ConnectionPool.new(size: settings[:pool_size], timeout: settings[:timeout]) do
-          host = settings[:host]
-          port = settings[:port]
+      def pool
+        if influx_metrics_enabled?
+          if @pool.nil?
+            MUTEX.synchronize do
+              @pool ||= ConnectionPool.new(size: settings[:pool_size], timeout: settings[:timeout]) do
+                host = settings[:host]
+                port = settings[:port]
 
-          InfluxDB::Client.
-            new(udp: { host: host, port: port })
+                InfluxDB::Client.
+                  new(udp: { host: host, port: port })
+              end
+            end
+          end
+          @pool
         end
       end
     end
