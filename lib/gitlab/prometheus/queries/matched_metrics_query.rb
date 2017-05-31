@@ -16,31 +16,28 @@ module Gitlab::Prometheus::Queries
     private
 
     def groups_data
-      metrics_series = metrics_with_series(Gitlab::Prometheus::MetricGroup.all)
-      lookup = active_series_lookup(metrics_series)
+      metrics_groups = groups_with_active_metrics(Gitlab::Prometheus::MetricGroup.all)
+      lookup = active_series_lookup(metrics_groups)
 
       groups = {}
 
-      metrics_series.each do |metrics, series|
-        groups[metrics.group] ||= { active_metrics: 0, metrics_missing_requirements: 0 }
-        group = groups[metrics.group]
+      metrics_groups.each do |group|
+        groups[group] ||= { active_metrics: 0, metrics_missing_requirements: 0 }
+        metrics = group.metrics.flat_map(&:required_metrics)
+        active_metrics = metrics.count(&lookup.method(:has_key?))
 
-        if series.all?(&lookup.method(:has_key?))
-          group[:active_metrics] += 1
-        else
-          group[:metrics_missing_requirements] += 1
-        end
-        group
+        groups[group][:active_metrics] += active_metrics
+        groups[group][:metrics_missing_requirements] += metrics.count - active_metrics
       end
 
       groups
     end
 
-    def active_series_lookup(metrics)
+    def active_series_lookup(metric_groups)
       timeframe_start = 8.hours.ago
       timeframe_end = Time.now
 
-      series = metrics.flat_map { |metrics, series| series }.uniq
+      series = metric_groups.flat_map(&:metrics).flat_map(&:required_metrics).uniq
 
       lookup = series.each_slice(MAX_QUERY_ITEMS).flat_map do |batched_series|
         client_series(*batched_series, start: timeframe_start, stop: timeframe_end)
@@ -54,17 +51,27 @@ module Gitlab::Prometheus::Queries
       series_info.has_key?('environment')
     end
 
-    def metrics_with_series(metric_groups)
-      label_values = client_label_values || []
+    def available_metrics
+      @available_metrics ||= client_label_values || []
+    end
 
-      metrics = metric_groups.flat_map do |group|
-        group.metrics.map do |metric|
-          matcher = Regexp.compile(metric.detect)
-          [metric, label_values.select(&matcher.method(:match))]
+    def filter_active_metrics(metric_group)
+      metric_group.metrics.select! do |metric|
+        metric.required_metrics.all?(&available_metrics.method(:include?))
+      end
+      metric_group
+    end
+
+    def groups_with_active_metrics(metric_groups)
+      metric_groups.map(&method(:filter_active_metrics)).select { |group| group.metrics.any? }
+    end
+
+    def metrics_with_required_series(metric_groups)
+      metric_groups.flat_map do |group|
+        group.metrics.select do |metric|
+          metric.required_metrics.all?(&available_metrics.method(:include?))
         end
       end
-
-      metrics.select { |metric, labels| labels&.any? }
     end
   end
 end

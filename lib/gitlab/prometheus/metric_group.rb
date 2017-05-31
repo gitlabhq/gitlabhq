@@ -22,7 +22,7 @@ module Gitlab::Prometheus
       raise ParsingError.new("entry missing required fields #{missing_fields}") unless missing_fields.empty?
 
       group = MetricGroup.new(entry[:group], entry[:priority])
-      group.metrics = Metric.metrics_from_list(group, entry[:metrics])
+      group.metrics = Metric.metrics_from_list(entry[:metrics])
       group
     end
 
