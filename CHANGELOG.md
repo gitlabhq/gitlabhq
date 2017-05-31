@@ -5,6 +5,7 @@ entry.
 ## 9.2.3 (2017-05-31)
 
 - No changes.
+- No changes.
 - Move uploads from 'public/uploads' to 'public/uploads/system'.
 - Escapes html content before appending it to the DOM.
 - Restrict API X-Frame-Options to same origin.
