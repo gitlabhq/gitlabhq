@@ -51,7 +51,7 @@ module Ci
     end
 
     def stages_for_ref(ref, tag = false, trigger_request = nil)
-      stages = @stages.map do |stage|
+      stages = @stages.uniq.map do |stage|
         builds = builds_for_stage_and_ref(stage, ref, tag, trigger_request)
 
         { name: stage, builds_attributes: builds.to_a } if builds.any?
