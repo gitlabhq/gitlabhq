@@ -35,7 +35,7 @@ export default {
         <a
           href="#modal_merge_info"
           data-toggle="modal"
-          class="btn inline btn-grouped btn-sm">
+          class="btn inline btn-grouped btn-small">
           Check out branch
         </a>
         <span class="dropdown inline prepend-left-5">

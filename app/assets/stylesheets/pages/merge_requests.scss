@@ -82,6 +82,19 @@
     }
   }
 
+  .btn {
+    &.btn-small {
+      font-size: 15px;
+      line-height: 18px;
+      padding: 5px 10px;
+    }
+
+    &.btn-xs {
+      line-height: 19px;
+      padding: 2px 7px;
+    }
+  }
+
   .ci-widget {
     color: $gl-text-color;
     display: -webkit-flex;
@@ -221,8 +234,6 @@
     }
 
     .btn-group .btn {
-      padding: 5px 10px;
-
       &.dropdown-toggle {
         padding: 5px 7px;
       }

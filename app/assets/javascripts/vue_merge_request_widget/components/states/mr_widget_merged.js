@@ -92,7 +92,7 @@ export default {
         class="merged-buttons clearfix">
         <a
           v-if="mr.canRevertInCurrentMR"
-          class="btn btn-close btn-sm has-tooltip"
+          class="btn btn-close btn-small has-tooltip"
           href="#modal-revert-commit"
           data-toggle="modal"
           data-container="body"
@@ -101,7 +101,7 @@ export default {
         </a>
         <a
           v-else-if="mr.revertInForkPath"
-          class="btn btn-close btn-sm has-tooltip"
+          class="btn btn-close btn-small has-tooltip"
           data-method="post"
           :href="mr.revertInForkPath"
           title="Revert this merge request in a new merge request">
@@ -109,7 +109,7 @@ export default {
         </a>
         <a
           v-if="mr.canCherryPickInCurrentMR"
-          class="btn btn-default btn-sm has-tooltip"
+          class="btn btn-default btn-small has-tooltip"
           href="#modal-cherry-pick-commit"
           data-toggle="modal"
           data-container="body"
@@ -118,7 +118,7 @@ export default {
         </a>
         <a
           v-else-if="mr.cherryPickInForkPath"
-          class="btn btn-default btn-sm has-tooltip"
+          class="btn btn-default btn-small has-tooltip"
           data-method="post"
           :href="mr.cherryPickInForkPath"
           title="Cherry-pick this merge request in a new merge request">
