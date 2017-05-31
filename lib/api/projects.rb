@@ -68,20 +68,19 @@ module API
           optional :import_url, type: String, desc: 'URL from which the project is imported'
         end
 
-        def present_projects(projects, options = {})
-          options = options.reverse_merge(
-            with: Entities::Project,
-            current_user: current_user,
-            simple: params[:simple],
-            with_issues_enabled: params[:with_issues_enabled],
-            with_merge_requests_enabled: params[:with_merge_requests_enabled]
-          )
+        def present_projects(options = {})
+          projects = ProjectsFinder.new(current_user: current_user, params: project_finder_params).execute
+          projects = reorder_projects(projects)
+          projects = projects.with_statistics if params[:statistics]
+          projects = projects.with_issues_enabled if params[:with_issues_enabled]
+          projects = projects.with_merge_requests_enabled if params[:with_merge_requests_enabled]
 
-          projects = filter_projects(projects)
-          projects = projects.with_statistics if options[:statistics]
-          projects = projects.with_issues_enabled if options[:with_issues_enabled]
-          projects = projects.with_merge_requests_enabled if options[:with_merge_requests_enabled]
-          options[:with] = Entities::BasicProjectDetails if options[:simple]
+          options = options.reverse_merge(
+            with: current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails,
+            statistics: params[:statistics],
+            current_user: current_user
+          )
+          options[:with] = Entities::BasicProjectDetails if params[:simple]
 
           present paginate(projects), options
         end
@@ -95,8 +94,7 @@ module API
         use :statistics_params
       end
       get do
-        entity = current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails
-        present_projects ProjectsFinder.new(current_user: current_user).execute, with: entity, statistics: params[:statistics]
+        present_projects
       end
 
       desc 'Create new project' do
