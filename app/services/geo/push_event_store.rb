@@ -1,5 +1,5 @@
 module Geo
-  class PushService
+  class PushEventStore
     attr_reader :project, :source, :refs, :changes
 
     def initialize(project, refs: [], changes: [], source: Geo::PushEvent::REPOSITORY)
@@ -9,7 +9,7 @@ module Geo
       @source  = source
     end
 
-    def execute
+    def create
       return unless Gitlab::Geo.primary?
 
       Geo::EventLog.transaction do

@@ -110,8 +110,8 @@ describe PostReceive do
       allow(subject).to receive(:process_project_changes).and_return(true)
     end
 
-    it 'calls Geo::PushService' do
-      expect_any_instance_of(Geo::PushService).to receive(:execute)
+    it 'calls Geo::PushEventStore' do
+      expect_any_instance_of(Geo::PushEventStore).to receive(:create)
 
       subject.perform(pwd(project), key_id, base64_changes)
     end
@@ -124,11 +124,11 @@ describe PostReceive do
   end
 
   describe '#process_wiki_update' do
-    it 'triggers Geo::PushService when Geo is enabled' do
+    it 'triggers Geo::PushEventStore when Geo is enabled' do
       allow(Gitlab::Geo).to receive(:enabled?) { true }
 
-      expect(Geo::PushService).to receive(:new).with(instance_of(Project), source: Geo::PushEvent::WIKI).and_call_original
-      expect_any_instance_of(Geo::PushService).to receive(:execute)
+      expect(Geo::PushEventStore).to receive(:new).with(instance_of(Project), source: Geo::PushEvent::WIKI).and_call_original
+      expect_any_instance_of(Geo::PushEventStore).to receive(:create)
 
       described_class.new.perform("#{pwd(project)}.wiki", key_id, base64_changes)
     end
