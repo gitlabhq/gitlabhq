@@ -223,6 +223,12 @@ entry.
 - Fix preemptive scroll bar on user activity calendar.
 - Pipeline chat notifications convert seconds to minutes and hours.
 
+## 9.1.5 (2017-05-31)
+
+- Move uploads from 'public/uploads' to 'public/uploads/system'.
+- Restrict API X-Frame-Options to same origin.
+- Allow users autocomplete by author_id only for authenticated users.
+
 ## 9.1.4 (2017-05-12)
 
 - Fix error on CI/CD Settings page related to invalid pipeline trigger. !10948 (dosuken123)
