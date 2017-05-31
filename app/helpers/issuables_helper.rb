@@ -199,6 +199,29 @@ module IssuablesHelper
     issuable_filter_params.any? { |k| params.key?(k) }
   end
 
+  def issuable_app_data(project, issue)
+    data = {
+      endpoint: realtime_changes_namespace_project_issue_path(project.namespace, project, issue),
+      'can-update' => can?(current_user, :update_issue, issue).to_s,
+      'issuable-ref' => issue.to_reference || ''
+    }
+    updated_at_by = updated_at_by(issue)
+
+    data.merge(updated_at_by)
+  end
+
+  def updated_at_by(issuable)
+    return {} unless issuable.is_edited?
+
+    {
+      updated_at: issuable.updated_at.to_time.iso8601,
+      updated_by: {
+        name: issuable.last_edited_by.name,
+        path: user_path(issuable.last_edited_by)
+      }
+    }
+  end
+
   private
 
   def sidebar_gutter_collapsed?
@@ -271,29 +294,6 @@ module IssuablesHelper
       delete_path: (dashboard_todo_path(todo) if todo),
       placement: (is_collapsed ? 'left' : nil),
       container: (is_collapsed ? 'body' : nil)
-    }
-  end
-
-  def issuable_app_data(project, issue)
-    data = {
-      endpoint: realtime_changes_namespace_project_issue_path(project.namespace, project, issue),
-      'can-update' => can?(current_user, :update_issue, issue).to_s,
-      'issuable-ref' => issue.to_reference || ''
-    }
-    updated_at_by = updated_at_by(issue)
-
-    data.merge(updated_at_by)
-  end
-
-  def updated_at_by(issuable)
-    return {} unless issuable.is_edited?
-
-    {
-      updated_at: issuable.updated_at.to_time.iso8601,
-      updated_by: {
-        name: issuable.last_edited_by.name,
-        path: user_path(issuable.last_edited_by)
-      }
     }
   end
 end
