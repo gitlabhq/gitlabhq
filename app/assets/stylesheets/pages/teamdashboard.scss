@@ -1,0 +1,57 @@
+
+.issue-state {
+  border-left:solid 4px $white-normal;
+}
+
+.issue-state-closed {
+  border-left-color: $green-500;
+}
+
+.issue-state-opened, .issue-state-reopened {
+  border-left-color: $blue-500;
+}
+
+.release-late {
+  .issue-state-opened, .issue-state-reopened {
+    border-left-color: $red-500;
+  }
+}
+
+.teamdashboard {
+  .panel-heading {
+    h1,h2,h3,h4,h5 {
+      margin: 0;
+    }
+
+    .text-muted {
+      font-weight:300;
+      color: $gl-gray-light;
+    }
+  }
+
+  .issuable-detail {
+    display:none;
+  }
+
+  .left-col {
+    clear:both;
+  }
+
+}
+
+.simulationpanel {
+    position: fixed;
+    top: 110px;
+    left: 20px;
+    z-index: 1000;
+    width: 200px;
+
+    .panel-heading {
+      padding: 4px;
+    }
+
+    .panel-content {
+      padding: 4px;
+      
+    }
+}
