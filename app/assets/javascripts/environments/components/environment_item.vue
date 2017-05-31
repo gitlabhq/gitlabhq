@@ -421,11 +421,16 @@ export default {
 };
 </script>
 <template>
-  <div :class="{ 'js-child-row': model.isChildren }" class="gl-responsive-table-row">
-    <div class="table-section section-15">
+  <div
+    :class="{ 'js-child-row': model.isChildren, 'folder-row' : model.isFolder }" class="gl-responsive-table-row">
+    <div class="table-section section-10">
+      <div
+        v-if="!model.isFolder"
+        class="responsive-mobile-header">Environment
+      </div>
       <a
         v-if="!model.isFolder"
-        class="environment-name flex-truncate-parent"
+        class="environment-name flex-truncate-parent mobile-content"
         :class="{ 'prepend-left-default': model.isChildren }"
         :href="environmentPath">
         <span class="flex-truncate-child">{{model.name}}</span>
@@ -463,7 +468,7 @@ export default {
       </span>
     </div>
 
-    <div class="table-section section-5 deployment-column">
+    <div class="table-section section-10 deployment-column hidden-xs hidden-sm">
       <span v-if="shouldRenderDeploymentID">
         {{deploymentInternalId}}
       </span>
@@ -480,7 +485,7 @@ export default {
       </span>
     </div>
 
-    <div class="table-section section-15">
+    <div class="table-section section-15 hidden-xs hidden-sm">
       <a
         v-if="shouldRenderBuildName"
         class="build-link"
@@ -491,8 +496,12 @@ export default {
 
     <div class="table-section section-flex-full">
       <div
+        v-if="!model.isFolder"
+        class="responsive-mobile-header">Commit
+      </div>
+      <div
         v-if="!model.isFolder && hasLastDeploymentKey"
-        class="js-commit-component">
+        class="js-commit-component mobile-content">
         <commit-component
           :tag="commitTag"
           :commit-ref="commitRef"
@@ -509,9 +518,13 @@ export default {
     </div>
 
     <div class="table-section section-10">
+      <div
+        v-if="!model.isFolder"
+        class="responsive-mobile-header">Updated
+      </div>
       <span
         v-if="!model.isFolder && canShowDate"
-        class="environment-created-date-timeago">
+        class="environment-created-date-timeago mobile-content">
         {{createdDate}}
       </span>
     </div>
@@ -519,7 +532,7 @@ export default {
     <div class="table-section section-flex-full environments-actions">
       <div
         v-if="!model.isFolder"
-        class="btn-group pull-right"
+        class="btn-group environment-action-buttons"
         role="group">
 
         <actions-component
@@ -534,21 +547,25 @@ export default {
 
         <monitoring-button-component
           v-if="monitoringUrl && canReadEnvironment"
+          class="hidden-xs hidden-sm"
           :monitoring-url="monitoringUrl"
           />
 
         <terminal-button-component
           v-if="model && model.terminal_path"
+          class="hidden-xs hidden-sm"
           :terminal-path="model.terminal_path"
           />
 
         <stop-component
           v-if="hasStopAction && canCreateDeployment"
+          class="hidden-xs hidden-sm"
           :stop-url="model.stop_path"
           />
 
         <rollback-component
           v-if="canRetry && canCreateDeployment"
+          class="hidden-xs hidden-sm"
           :is-last-deployment="isLastDeployment"
           :retry-url="retryUrl"
           />

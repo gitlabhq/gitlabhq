@@ -45,25 +45,25 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-responsive-table">
-    <!-- <div class="gl-responsive-table-row">
-      <div class="table-section environments-name">
+  <div class="gl-responsive-table ci-table">
+    <div class="gl-responsive-table-row table-row-header">
+      <div class="table-section section-10 environments-name">
         Environment
       </div>
-      <div class="table-section environments-deploy">
-        Last deployment
+      <div class="table-section section-10 environments-deploy">
+        Deployment
       </div>
-      <div class="table-section environments-build">
+      <div class="table-section section-15 environments-build">
         Job
       </div>
-      <div class="table-section environments-commit">
+      <div class="table-section section-flex-full environments-commit">
         Commit
       </div>
-      <div class="table-section environments-date">
+      <div class="table-section section-10 environments-date">
         Updated
       </div>
-      <div class="table-section environments-actions"></div>
-    </div> -->
+      <div class="table-section section-flex-full environments-actions"></div>
+    </div>
     <template
       v-for="model in environments"
       v-bind:model="model">

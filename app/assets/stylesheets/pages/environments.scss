@@ -11,7 +11,7 @@
 }
 
 .environments-container {
-  .table.ci-table {
+  .ci-table {
     .deployment-column {
       > span {
         word-break: break-all;
@@ -119,6 +119,37 @@
       outline: none;
       width: 100%;
       text-align: left;
+    }
+  }
+}
+
+.environments-actions {
+  @media (min-width: $screen-md-min) {
+    text-align: right;
+  }
+
+  @media (max-width: $screen-sm-max) {
+    background-color: $gray-normal;
+    align-self: stretch;
+    border-top: 1px solid $border-color;
+
+    .environment-action-buttons {
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+
+      .btn {
+        border-radius: 3px;
+      }
+
+      > .btn-group,
+      .external-url {
+        flex: 0 0 48%;
+      }
+
+      .dropdown-new {
+        width: 100%;
+      }
     }
   }
 }
