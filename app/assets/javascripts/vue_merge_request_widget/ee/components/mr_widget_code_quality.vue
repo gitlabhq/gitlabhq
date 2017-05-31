@@ -152,17 +152,17 @@ export default {
         v-if="hasIssues"
         v-show="!isCollapsed">
         <issues-block
-          class="js-mr-code-new-issues"
-          v-if="mr.codeclimateMetrics.newIssues.length"
-          type="failed"
-          :issues="mr.codeclimateMetrics.newIssues"
-          />
-
-        <issues-block
           class="js-mr-code-resolved-issues"
           v-if="mr.codeclimateMetrics.resolvedIssues.length"
           type="success"
           :issues="mr.codeclimateMetrics.resolvedIssues"
+          />
+
+        <issues-block
+          class="js-mr-code-new-issues"
+          v-if="mr.codeclimateMetrics.newIssues.length"
+          type="failed"
+          :issues="mr.codeclimateMetrics.newIssues"
           />
       </div>
     </div>

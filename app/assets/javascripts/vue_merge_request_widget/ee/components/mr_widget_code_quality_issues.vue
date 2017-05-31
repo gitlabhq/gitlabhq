@@ -31,6 +31,7 @@ export default {
         aria-hidden="true">
       </i>
       <span>
+        <span v-if="type === 'success'">Fixed:</span>
         {{issue.check_name}}
         {{issue.location.path}}
         {{issue.location.positions}}

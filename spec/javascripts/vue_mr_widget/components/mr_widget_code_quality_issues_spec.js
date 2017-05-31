@@ -30,7 +30,7 @@ describe('Merge Request Code Quality Issues', () => {
       it('should render issue', () => {
         expect(
           vm.$el.querySelector('li span').textContent.trim().replace(/\s+/g, ''),
-        ).toEqual('foobar8121');
+        ).toEqual('Fixed:foobar8121');
       });
     });
 
@@ -50,7 +50,7 @@ describe('Merge Request Code Quality Issues', () => {
       it('should render issue without position and lines', () => {
         expect(
           vm.$el.querySelector('li span').textContent.trim().replace(/\s+/g, ''),
-        ).toEqual('foobar');
+        ).toEqual('Fixed:foobar');
       });
     });
 
