@@ -141,6 +141,21 @@ module SlashCommands
       end
     end
 
+    desc 'Change assignee(s)'
+    explanation do
+      'Change assignee(s)'
+    end
+    params '@user1 @user2'
+    condition do
+      issuable.is_a?(Issue) &&
+        issuable.persisted? &&
+        issuable.assignees.any? &&
+        current_user.can?(:"admin_#{issuable.to_ability_name}", project)
+    end
+    command :reassign do |unassign_param|
+      @updates[:assignee_ids] = extract_users(unassign_param).map(&:id)
+    end
+
     desc 'Set milestone'
     explanation do |milestone|
       "Sets the milestone to #{milestone.to_reference}." if milestone

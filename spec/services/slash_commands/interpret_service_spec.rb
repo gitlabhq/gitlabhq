@@ -455,6 +455,22 @@ describe SlashCommands::InterpretService, services: true do
         end
       end
 
+      context 'reassign command' do
+        let(:content) { '/reassign' }
+
+        context 'Issue' do
+          it 'reassigns user if content contains /reassign @user' do
+            user = create(:user)
+
+            issue.update(assignee_ids: [developer.id, developer2.id])
+
+            _, updates = service.execute("/reassign @#{user.username}", issue)
+
+            expect(updates).to eq(assignee_ids: [user.id])
+          end
+        end
+      end
+
       context 'Merge Request' do
         it 'populates assignee_id: nil if content contains /unassign' do
           merge_request.update(assignee_id: developer.id)
