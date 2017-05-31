@@ -79,11 +79,8 @@ describe MergeRequests::MergeWhenPipelineSucceedsService do
     context 'when triggered by pipeline with valid ref and sha' do
       let(:triggering_pipeline) do
         create(:ci_pipeline, project: project, ref: merge_request_ref,
-                             sha: merge_request_head, status: 'success')
-      end
-
-      before do
-        mr_merge_if_green_enabled.update(head_pipeline: triggering_pipeline)
+                             sha: merge_request_head, status: 'success',
+                             head_pipeline_of: mr_merge_if_green_enabled)
       end
 
       it "merges all merge requests with merge when the pipeline succeeds enabled" do
@@ -125,10 +122,9 @@ describe MergeRequests::MergeWhenPipelineSucceedsService do
 
       let(:conflict_pipeline) do
         create(:ci_pipeline, project: project, ref: mr_conflict.source_branch,
-                             sha: mr_conflict.diff_head_sha, status: 'success')
+                             sha: mr_conflict.diff_head_sha, status: 'success',
+                             head_pipeline_of: mr_conflict)
       end
-
-      before { mr_conflict.update(head_pipeline: conflict_pipeline) }
 
       it 'does not merge the merge request' do
         expect(MergeWorker).not_to receive(:perform_async)

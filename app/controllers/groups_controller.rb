@@ -179,7 +179,7 @@ class GroupsController < Groups::ApplicationController
 
   def build_canonical_path(group)
     return group_path(group) if action_name == 'show' # root group path
-
+    
     params[:id] = group.to_param
 
     url_for(params)

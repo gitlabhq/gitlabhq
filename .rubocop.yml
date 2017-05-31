@@ -971,7 +971,7 @@ RSpec/DescribeSymbol:
 RSpec/DescribedClass:
   Enabled: true
 
-# Configuration parameters: CustomIncludeMethods.
+# Checks if an example group does not include any tests.
 RSpec/EmptyExampleGroup:
   Enabled: true
   CustomIncludeMethods:
@@ -996,6 +996,10 @@ RSpec/ExampleWording:
 
 # Checks for `expect(...)` calls containing literal values.
 RSpec/ExpectActual:
+  Enabled: true
+
+# Checks for opportunities to use `expect { … }.to output`.
+RSpec/ExpectOutput:
   Enabled: true
 
 # Checks the file and folder naming of the spec file.

@@ -1,5 +1,5 @@
 /* eslint-disable no-var, wrap-iife, func-names, space-before-function-paren, camelcase, no-unused-vars, quotes, object-shorthand, one-var, one-var-declaration-per-line, prefer-arrow-callback, comma-dangle, prefer-template, no-else-return, yoda, prefer-rest-params, prefer-spread, max-len */
-/* global Api */
+import Api from './api';
 
 var slice = [].slice;
 

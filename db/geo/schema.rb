@@ -11,14 +11,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170302005747) do
+ActiveRecord::Schema.define(version: 20170526214010) do
+
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "file_registry", force: :cascade do |t|
     t.string "file_type", null: false
     t.integer "file_id", null: false
-    t.integer "bytes"
+    t.integer "bytes", limit: 8
     t.string "sha256"
     t.datetime "created_at", null: false
   end

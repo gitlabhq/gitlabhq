@@ -40,8 +40,22 @@ class Blob < SimpleDelegator
     BlobViewer::GitlabCiYml,
     BlobViewer::RouteMap,
 
+    BlobViewer::Readme,
     BlobViewer::License,
-    BlobViewer::Contributing
+    BlobViewer::Contributing,
+    BlobViewer::Changelog,
+
+    BlobViewer::Cartfile,
+    BlobViewer::ComposerJson,
+    BlobViewer::Gemfile,
+    BlobViewer::Gemspec,
+    BlobViewer::GodepsJson,
+    BlobViewer::PackageJson,
+    BlobViewer::Podfile,
+    BlobViewer::Podspec,
+    BlobViewer::PodspecJson,
+    BlobViewer::RequirementsTxt,
+    BlobViewer::YarnLock
   ].freeze
 
   attr_reader :project

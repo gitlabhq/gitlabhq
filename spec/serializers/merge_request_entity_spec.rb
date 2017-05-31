@@ -146,4 +146,20 @@ describe MergeRequestEntity do
       end
     end
   end
+
+  describe 'when source project is deleted' do
+    let(:project) { create(:project, :repository) }
+    let(:fork_project) { create(:project, :repository, forked_from_project: project) }
+    let(:merge_request) { create(:merge_request, source_project: fork_project, target_project: project) }
+
+    it 'returns a blank rebase_path' do
+      allow(merge_request).to receive(:should_be_rebased?).and_return(true)
+      fork_project.destroy
+      merge_request.reload
+
+      entity = described_class.new(merge_request, request: request).as_json
+
+      expect(entity[:rebase_path]).to be_nil
+    end
+  end
 end

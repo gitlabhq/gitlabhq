@@ -18,6 +18,7 @@ module SystemNoteHelper
     'milestone' => 'icon_clock_o',
     'discussion' => 'icon_comment_o',
     'moved' => 'icon_arrow_circle_o_right',
+    'outdated' => 'icon_edit',
     'approved' => 'icon_check',
     'unapproved' => 'icon_fa_close'
   }.freeze

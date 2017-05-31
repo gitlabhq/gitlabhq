@@ -23,6 +23,7 @@ var config = {
   },
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
   entry: {
+    balsamiq_viewer:      './blob/balsamiq_viewer.js',
     blob:                 './blob_edit/blob_bundle.js',
     boards:               './boards/boards_bundle.js',
     burndown_chart:       './burndown_chart/index.js',
@@ -49,11 +50,11 @@ var config = {
     notebook_viewer:      './blob/notebook_viewer.js',
     pdf_viewer:           './blob/pdf_viewer.js',
     pipelines:            './pipelines/index.js',
-    balsamiq_viewer:      './blob/balsamiq_viewer.js',
-    pipelines_graph:      './pipelines/graph_bundle.js',
+    pipelines_details:     './pipelines/pipeline_details_bundle.js',
     profile:              './profile/profile_bundle.js',
     protected_branches:   './protected_branches/protected_branches_bundle.js',
     protected_tags:       './protected_tags',
+    service_desk:         './projects/settings_service_desk/service_desk_bundle.js',
     sidebar:              './sidebar/sidebar_bundle.js',
     schedule_form:        './pipeline_schedules/pipeline_schedule_form_bundle.js',
     schedules_index:      './pipeline_schedules/pipeline_schedules_index_bundle.js',
@@ -92,9 +93,9 @@ var config = {
         loader: 'raw-loader',
       },
       {
-        test: /\.gif$/,
+        test: /\.(gif|png)$/,
         loader: 'url-loader',
-        query: { mimetype: 'image/gif' },
+        options: { limit: 2048 },
       },
       {
         test: /\.(worker\.js|pdf|bmpr)$/,
@@ -128,10 +129,8 @@ var config = {
       jQuery: 'jquery',
     }),
 
-    // use deterministic module ids in all environments
-    IS_PRODUCTION ?
-      new webpack.HashedModuleIdsPlugin() :
-      new webpack.NamedModulesPlugin(),
+    // use deterministic module ids
+    new webpack.NamedModulesPlugin(),
 
     // create cacheable common library bundle for all vue chunks
     new webpack.optimize.CommonsChunkPlugin({
@@ -150,9 +149,10 @@ var config = {
         'notebook_viewer',
         'pdf_viewer',
         'pipelines',
-        'pipelines_graph',
+        'pipelines_details',
         'schedule_form',
         'schedules_index',
+        'service_desk',
         'sidebar',
         'vue_merge_request_widget',
       ],
@@ -193,6 +193,7 @@ var config = {
       'emojis':         path.join(ROOT_PATH, 'fixtures/emojis'),
       'empty_states':   path.join(ROOT_PATH, 'app/views/shared/empty_states'),
       'icons':          path.join(ROOT_PATH, 'app/views/shared/icons'),
+      'images':         path.join(ROOT_PATH, 'app/assets/images'),
       'vendor':         path.join(ROOT_PATH, 'vendor/assets/javascripts'),
       'vue$':           'vue/dist/vue.esm.js',
     }

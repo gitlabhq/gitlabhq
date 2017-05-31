@@ -443,6 +443,10 @@ describe MergeRequestPresenter do
       let(:can_push_to_branch) { true }
       let(:should_be_rebased) { true }
 
+      before do
+        allow(resource).to receive(:source_branch_exists?) { true }
+      end
+
       it 'returns path' do
         is_expected
           .to eq("/#{project.full_path}/merge_requests/#{resource.iid}/rebase")

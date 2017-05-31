@@ -47,7 +47,7 @@ class MigrateAssigneeToSeparateTable < ActiveRecord::Migration
             RETURNS trigger AS
             $BODY$
             BEGIN
-              if OLD.assignee_id IS NOT NULL THEN
+              if OLD IS NOT NULL AND OLD.assignee_id IS NOT NULL THEN
                   DELETE FROM issue_assignees WHERE issue_id = OLD.id;
               END IF;
 

@@ -21,10 +21,12 @@ module EE
     prepended do
       has_one :namespace_statistics, dependent: :destroy
 
+      scope :with_plan, -> { where.not(plan: [nil, '']) }
+
       delegate :shared_runners_minutes, :shared_runners_seconds, :shared_runners_seconds_last_reset,
         to: :namespace_statistics, allow_nil: true
 
-      validates :plan, inclusion: { in: EE_PLANS.keys }, allow_nil: true
+      validates :plan, inclusion: { in: EE_PLANS.keys }, allow_blank: true
     end
 
     # Checks features (i.e. https://about.gitlab.com/products/) availabily
@@ -58,7 +60,7 @@ module EE
     def plans
       @ancestors_plans ||=
         if parent_id
-          ancestors.where.not(plan: nil).reorder(nil).pluck('DISTINCT plan') + [plan]
+          ancestors.with_plan.reorder(nil).pluck('DISTINCT plan') + [plan]
         else
           [plan]
         end

@@ -10,7 +10,7 @@ module Members
       return false if member.is_a?(GroupMember) && member.source.last_owner?(member.user)
 
       Member.transaction do
-        unassign_issues_and_merge_requests(member)
+        unassign_issues_and_merge_requests(member) unless member.invite?
 
         member.destroy
       end

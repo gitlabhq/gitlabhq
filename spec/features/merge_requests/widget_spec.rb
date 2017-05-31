@@ -88,10 +88,9 @@ describe 'Merge request', :feature, :js do
                                       sha: merge_request.diff_head_sha,
                                       ref: merge_request.source_branch,
                                       status: 'failed',
-                                      statuses: [commit_status])
+                                      statuses: [commit_status],
+                                      head_pipeline_of: merge_request)
       create(:ci_build, :pending, pipeline: pipeline)
-
-      merge_request.update(head_pipeline: pipeline)
 
       visit namespace_project_merge_request_path(project.namespace, project, merge_request)
     end
@@ -105,15 +104,13 @@ describe 'Merge request', :feature, :js do
 
   context 'when merge request is in the blocked pipeline state' do
     before do
-      pipeline = create(
+      create(
         :ci_pipeline,
         project: project,
         sha: merge_request.diff_head_sha,
         ref: merge_request.source_branch,
-        status: :manual
-      )
-
-      merge_request.update(head_pipeline: pipeline)
+        status: :manual,
+        head_pipeline_of: merge_request)
 
       visit namespace_project_merge_request_path(project.namespace,
                                                  project,
@@ -135,10 +132,9 @@ describe 'Merge request', :feature, :js do
                                       sha: merge_request.diff_head_sha,
                                       ref: merge_request.source_branch,
                                       status: 'pending',
-                                      statuses: [commit_status])
+                                      statuses: [commit_status],
+                                      head_pipeline_of: merge_request)
       create(:ci_build, :pending, pipeline: pipeline)
-
-      merge_request.update(head_pipeline: pipeline)
 
       visit namespace_project_merge_request_path(project.namespace, project, merge_request)
     end

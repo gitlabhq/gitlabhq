@@ -42,6 +42,7 @@ import Group from './group';
 import GroupName from './group_name';
 import GroupsList from './groups_list';
 import ProjectsList from './projects_list';
+import setupProjectEdit from './project_edit';
 import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
 import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
 import Landing from './landing';
@@ -52,7 +53,6 @@ import ShortcutsWiki from './shortcuts_wiki';
 import Pipelines from './pipelines';
 import BlobViewer from './blob/viewer/index';
 import GeoNodes from './geo_nodes';
-import ServiceDeskRoot from './projects/settings_service_desk/service_desk_root';
 import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
 import UsersSelect from './users_select';
 import RefSelectDropdown from './ref_select_dropdown';
@@ -130,7 +130,10 @@ import ApproversSelect from './approvers_select';
         case 'projects:merge_requests:index':
         case 'projects:issues:index':
           if (gl.FilteredSearchManager) {
-            new gl.FilteredSearchManager(page === 'projects:issues:index' ? 'issues' : 'merge_requests');
+            const filteredSearchManager = new gl.FilteredSearchManager(
+              page === 'projects:issues:index' ? 'issues' : 'merge_requests',
+            );
+            filteredSearchManager.setup();
           }
           Issuable.init();
           new gl.IssuableBulkActions({
@@ -264,19 +267,19 @@ import ApproversSelect from './approvers_select';
           break;
         case 'projects:edit':
           new UsersSelect();
-          const el = document.querySelector('.js-service-desk-setting-root');
-          if (el) {
-            const serviceDeskRoot = new ServiceDeskRoot(el);
-            serviceDeskRoot.init();
-          }
           break;
         case 'projects:show':
           shortcut_handler = new ShortcutsNavigation();
           new NotificationsForm();
           if ($('#tree-slider').length) {
             new TreeView();
+          }
+          if ($('.blob-viewer').length) {
             new BlobViewer();
           }
+          break;
+        case 'projects:edit':
+          setupProjectEdit();
           break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:failures':

@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 import Vue from 'vue';
+import userAvatarImage from '../../vue_shared/components/user_avatar/user_avatar_image.vue';
 import iconBranch from '../svg/icon_branch.svg';
 
 const global = window.gl || (window.gl = {});
@@ -13,6 +14,9 @@ global.cycleAnalytics.StageStagingComponent = Vue.extend({
   data() {
     return { iconBranch };
   },
+  components: {
+    userAvatarImage,
+  },
   template: `
     <div>
       <div class="events-description">
@@ -22,7 +26,8 @@ global.cycleAnalytics.StageStagingComponent = Vue.extend({
       <ul class="stage-event-list">
         <li v-for="build in items" class="stage-event-item item-build-component">
           <div class="item-details">
-            <img class="avatar" :src="build.author.avatarUrl">
+            <!-- FIXME: Pass an alt attribute here for accessibility -->
+            <user-avatar-image :img-src="build.author.avatarUrl"/>
             <h5 class="item-title">
               <a :href="build.url" class="pipeline-id">#{{ build.id }}</a>
               <i class="fa fa-code-fork"></i>
@@ -32,7 +37,7 @@ global.cycleAnalytics.StageStagingComponent = Vue.extend({
             </h5>
             <span>
               <a :href="build.url" class="build-date">{{ build.date }}</a>
-              {{ __('ByAuthor|by') }}
+              {{ s__('ByAuthor|by') }}
               <a :href="build.author.webUrl" class="issue-author-link">
                 {{ build.author.name }}
               </a>

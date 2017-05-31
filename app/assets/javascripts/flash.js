@@ -16,7 +16,8 @@ window.Flash = (function() {
       parent = null;
     }
     if (parent) {
-      this.flashContainer = parent.find('.flash-container');
+      const $parent = $(parent);
+      this.flashContainer = $parent.find('.flash-container');
     } else {
       this.flashContainer = $('.flash-container-page');
     }
@@ -36,6 +37,10 @@ window.Flash = (function() {
     flash.appendTo(this.flashContainer);
     this.flashContainer.show();
   }
+
+  Flash.prototype.destroy = function() {
+    this.flashContainer.html('');
+  };
 
   return Flash;
 })();

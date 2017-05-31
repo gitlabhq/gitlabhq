@@ -419,6 +419,14 @@ describe Gitlab::Elastic::SearchResults, lib: true do
       expect(results.wiki_blobs_count).to eq 1
     end
 
+    it 'finds wiki blobs for guest' do
+      project_1.add_guest(user)
+      blobs = results.objects('wiki_blobs')
+
+      expect(blobs.first["_source"]["blob"]["content"]).to include("term")
+      expect(results.wiki_blobs_count).to eq 1
+    end
+
     it 'finds wiki blobs from public projects only' do
       project_2 = create :project, :private
       project_2.wiki.create_page('index_page', 'term')

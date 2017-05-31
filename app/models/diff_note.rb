@@ -13,6 +13,7 @@ class DiffNote < Note
 
   serialize :original_position, Gitlab::Diff::Position
   serialize :position, Gitlab::Diff::Position
+  serialize :change_position, Gitlab::Diff::Position
 
   validates :original_position, presence: true
   validates :position, presence: true
@@ -30,7 +31,7 @@ class DiffNote < Note
     DiffDiscussion
   end
 
-  %i(original_position position).each do |meth|
+  %i(original_position position change_position).each do |meth|
     define_method "#{meth}=" do |new_position|
       if new_position.is_a?(String)
         new_position = JSON.parse(new_position) rescue nil
@@ -41,6 +42,8 @@ class DiffNote < Note
         new_position = Gitlab::Diff::Position.new(new_position)
       end
 
+      return if new_position == read_attribute(meth)
+
       super(new_position)
     end
   end
@@ -50,7 +53,7 @@ class DiffNote < Note
   end
 
   def diff_line
-    @diff_line ||= diff_file.line_for_position(self.original_position) if diff_file
+    @diff_line ||= diff_file&.line_for_position(self.original_position)
   end
 
   def for_line?(line)

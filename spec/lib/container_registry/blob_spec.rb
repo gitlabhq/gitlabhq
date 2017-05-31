@@ -98,7 +98,7 @@ describe ContainerRegistry::Blob do
       context 'for a valid address' do
         before do
           stub_request(:get, location).
-            with(headers: { 'Authorization' => nil }).
+            with { |request| !request.headers.include?('Authorization') }.
             to_return(
               status: 200,
               headers: { 'Content-Type' => 'application/json' },
