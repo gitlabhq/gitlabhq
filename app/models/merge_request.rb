@@ -34,6 +34,9 @@ class MergeRequest < ActiveRecord::Base
   delegate :commits, :real_size, :commits_sha, :commits_count,
     to: :merge_request_diff, prefix: nil
 
+  delegate :codeclimate_artifact, to: :head_pipeline, prefix: :head, allow_nil: true
+  delegate :codeclimate_artifact, to: :base_pipeline, prefix: :base, allow_nil: true
+
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
   attr_accessor :allow_broken
@@ -996,16 +999,8 @@ class MergeRequest < ActiveRecord::Base
     @base_pipeline ||= project.pipelines.find_by(sha: merge_request_diff&.base_commit_sha)
   end
 
-  def codeclimate_artifact
-    @codeclimate_artifact ||= head_pipeline&.codeclimate_artifact
-  end
-
-  def base_codeclimate_artifact
-    @base_codeclimate_artifact ||= base_pipeline&.codeclimate_artifact
-  end
-
   def has_codeclimate_data?
-    codeclimate_artifact&.success? &&
+    head_codeclimate_artifact&.success? &&
       base_codeclimate_artifact&.success?
   end
 end
