@@ -38,6 +38,7 @@ describe Projects::IssueLinksController do
 
   describe 'POST /*namespace_id/:project_id/issues/:issue_id/links' do
     let(:issue_b) { create :issue, project: project }
+    let(:issue_references) { [issue_b.to_reference] }
     let(:user_role) { :developer }
 
     before do
@@ -49,7 +50,7 @@ describe Projects::IssueLinksController do
       post namespace_project_issue_links_path(namespace_id: issue.project.namespace,
                                               project_id: issue.project,
                                               issue_id: issue,
-                                              issue_references: [issue_b.to_reference],
+                                              issue_references: issue_references,
                                               format: :json)
     end
 
@@ -60,7 +61,7 @@ describe Projects::IssueLinksController do
         list_service_response = IssueLinks::ListService.new(issue, user).execute
 
         expect(response).to have_http_status(200)
-        expect(json_response['result']).to eq('message' => "#{issue_b.to_reference} was successfully related", 'status' => 'success')
+        expect(json_response['result']).to eq('status' => 'success')
         expect(json_response['issues']).to eq(list_service_response.as_json)
       end
     end
@@ -77,7 +78,7 @@ describe Projects::IssueLinksController do
       end
 
       context 'when failing service result' do
-        let(:issue_b) { issue }
+        let(:issue_references) { ['#999'] }
 
         it 'returns failure JSON' do
           subject
@@ -85,7 +86,7 @@ describe Projects::IssueLinksController do
           list_service_response = IssueLinks::ListService.new(issue, user).execute
 
           expect(response).to have_http_status(401)
-          expect(json_response['result']).to eq('message' => "Validation failed: Source issue cannot be related to itself",
+          expect(json_response['result']).to eq('message' => 'No Issue found for given reference',
                                                 'status' => 'error',
                                                 'http_status' => 401)
           expect(json_response['issues']).to eq(list_service_response.as_json)

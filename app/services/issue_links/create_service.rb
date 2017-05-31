@@ -10,25 +10,19 @@ module IssueLinks
       end
 
       create_issue_link
-
-      success_message
-    rescue => exception
-      error(exception.message, 401)
+      success
     end
 
     private
 
     def create_issue_link
-      IssueLink.transaction do
-        referenced_issues.each do |referenced_issue|
-          relate_issues(referenced_issue)
-          create_notes(referenced_issue)
-        end
+      referenced_issues.each do |referenced_issue|
+        create_notes(referenced_issue) if relate_issues(referenced_issue)
       end
     end
 
     def relate_issues(referenced_issue)
-      IssueLink.create!(source: @issue, target: referenced_issue)
+      IssueLink.create(source: @issue, target: referenced_issue)
     end
 
     def create_notes(referenced_issue)
@@ -48,16 +42,6 @@ module IssueLinks
           can?(current_user, :admin_issue_link, issue.project)
         end
       end
-    end
-
-    def success_message
-      verb = referenced_issues.size > 1 ? 'were' : 'was'
-
-      success(message: "#{issues_sentence(referenced_issues)} #{verb} successfully related")
-    end
-
-    def issues_sentence(issues)
-      issues.map { |issue| issue.to_reference(@issue.project) }.sort.to_sentence
     end
   end
 end

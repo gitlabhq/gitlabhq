@@ -85,7 +85,7 @@ describe IssueLinks::CreateService, service: true do
       end
 
       it 'returns success message with Issue reference' do
-        is_expected.to eq(message: "#{issue_a_ref} and #{another_project_issue_ref} were successfully related", status: :success)
+        is_expected.to eq(status: :success)
       end
 
       it 'creates notes' do
@@ -105,40 +105,7 @@ describe IssueLinks::CreateService, service: true do
       end
     end
 
-    context 'success message' do
-      let(:issue_a) { create :issue, project: project }
-      let(:another_project) { create :empty_project, namespace: project.namespace }
-      let(:another_project_issue) { create :issue, project: another_project }
-
-      let(:issue_a_ref) { issue_a.to_reference }
-      let(:another_project_issue_ref) { another_project_issue.to_reference(project) }
-
-      before do
-        another_project.team << [user, :developer]
-      end
-
-      context 'multiple Issues relation' do
-        let(:params) do
-          { issue_references: [issue_a_ref, another_project_issue_ref] }
-        end
-
-        it 'returns success message with Issue reference' do
-          is_expected.to eq(message: "#{issue_a_ref} and #{another_project_issue_ref} were successfully related", status: :success)
-        end
-      end
-
-      context 'single Issue relation' do
-        let(:params) do
-          { issue_references: [issue_a_ref] }
-        end
-
-        it 'returns success message with Issue reference' do
-          is_expected.to eq(message: "#{issue_a_ref} was successfully related", status: :success)
-        end
-      end
-    end
-
-    context 'when relation already exists' do
+    context 'when reference of any already related issue is present' do
       let(:issue_a) { create :issue, project: project }
       let(:issue_b) { create :issue, project: project }
 
@@ -150,12 +117,14 @@ describe IssueLinks::CreateService, service: true do
         { issue_references: [issue_b.to_reference, issue_a.to_reference] }
       end
 
-      it 'returns error' do
-        is_expected.to eq(message: 'Validation failed: Source issue is already related', status: :error, http_status: 401)
+      it 'returns success' do
+        is_expected.to eq(status: :success)
       end
 
-      it 'no relation is created' do
-        expect { subject }.not_to change(IssueLink, :count)
+      it 'valid relations are created' do
+        expect { subject }.to change(IssueLink, :count).from(1).to(2)
+
+        expect(IssueLink.find_by!(target: issue_b)).to have_attributes(source: issue)
       end
     end
   end
