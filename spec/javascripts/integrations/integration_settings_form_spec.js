@@ -77,7 +77,6 @@ describe('IntegrationSettingsForm', () => {
       integrationSettingsForm.toggleSubmitBtnLabel(true);
       expect(integrationSettingsForm.$submitBtnLabel.text()).toEqual('Save changes');
 
-
       integrationSettingsForm.canTestService = true;
 
       integrationSettingsForm.toggleSubmitBtnLabel(false);

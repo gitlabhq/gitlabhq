@@ -13,7 +13,7 @@
       = render 'shared/service_settings', form: form, subject: @service
       .footer-block.row-content-block
         %button.btn.btn-save{ type: 'submit' }
-          %i.fa.fa-spinner.fa-spin.hidden.js-btn-spinner{ "aria-hidden" => true }
+          = icon('spinner spin', class: 'hidden js-btn-spinner')
           %span.js-btn-label
             Save changes
         &nbsp;
