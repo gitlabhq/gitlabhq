@@ -331,7 +331,7 @@ module API
 
     class MergeRequestChanges < MergeRequest
       expose :diffs, as: :changes, using: Entities::RepoDiff do |compare, _|
-        compare.raw_diffs(no_limits: true).to_a
+        compare.raw_diffs(limits: false).to_a
       end
     end
 
@@ -344,7 +344,7 @@ module API
       expose :commits, using: Entities::RepoCommit
 
       expose :diffs, using: Entities::RepoDiff do |compare, _|
-        compare.raw_diffs(no_limits: true).to_a
+        compare.raw_diffs(limits: false).to_a
       end
     end
 
@@ -548,7 +548,7 @@ module API
       end
 
       expose :diffs, using: Entities::RepoDiff do |compare, options|
-        compare.diffs(no_limits: true).to_a
+        compare.diffs(limits: false).to_a
       end
 
       expose :compare_timeout do |compare, options|

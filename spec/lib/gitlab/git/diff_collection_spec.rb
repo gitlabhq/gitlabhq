@@ -6,7 +6,7 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
       iterator,
       max_files: max_files,
       max_lines: max_lines,
-      no_limits: no_limits,
+      limits: limits,
       expanded: expanded
     )
   end
@@ -16,7 +16,7 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
   let(:line_count) { 1 }
   let(:max_files) { 10 }
   let(:max_lines) { 100 }
-  let(:no_limits) { false }
+  let(:limits) { true }
   let(:expanded) { true }
 
   describe '#to_a' do
@@ -75,7 +75,7 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
         end
 
         context 'when limiting is disabled' do
-          let(:no_limits) { true }
+          let(:limits) { false }
 
           describe '#overflow?' do
             subject { super().overflow? }
@@ -94,7 +94,7 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
 
           describe '#size' do
             it { expect(subject.size).to eq(3) }
-  
+
             it 'does not change after peeking' do
               subject.any?
               expect(subject.size).to eq(3)
@@ -123,7 +123,7 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
         it { expect(subject.size).to eq(0) }
 
         context 'when limiting is disabled' do
-          let(:no_limits) { true }
+          let(:limits) { false }
 
           describe '#overflow?' do
             subject { super().overflow? }
@@ -167,7 +167,7 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
         it { expect(subject.size).to eq(10) }
 
         context 'when limiting is disabled' do
-          let(:no_limits) { true }
+          let(:limits) { false }
 
           describe '#overflow?' do
             subject { super().overflow? }
@@ -207,7 +207,7 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
         it { expect(subject.size).to eq(3) }
 
         context 'when limiting is disabled' do
-          let(:no_limits) { true }
+          let(:limits) { false }
 
           describe '#overflow?' do
             subject { super().overflow? }
@@ -273,7 +273,7 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
       it { expect(subject.size).to eq(9) }
 
       context 'when limiting is disabled' do
-        let(:no_limits) { true }
+        let(:limits) { false }
 
         describe '#overflow?' do
           subject { super().overflow? }
@@ -450,7 +450,7 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
       end
 
       context 'when limiting is disabled' do
-        let(:no_limits) { true }
+        let(:limits) { false }
 
         it 'yields Diff instances even when they are quite big' do
           expect { |b| subject.each(&b) }.

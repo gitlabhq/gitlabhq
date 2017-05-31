@@ -155,7 +155,7 @@ module Gitlab
                              :include_untracked_content, :skip_binary_check,
                              :include_typechange, :include_typechange_trees,
                              :ignore_filemode, :recurse_ignored_dirs, :paths,
-                             :max_files, :max_lines, :no_limits, :expanded]
+                             :max_files, :max_lines, :limits, :expanded]
 
           if default_options
             actual_defaults = default_options.dup
