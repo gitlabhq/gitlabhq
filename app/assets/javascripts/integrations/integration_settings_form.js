@@ -5,20 +5,14 @@ export default class IntegrationSettingsForm {
     this.$form = $(formSelector);
 
     // Form Metadata
-    this.endPoint = this.$form.attr('action');
     this.canTestService = this.$form.data('can-test');
+    this.testEndPoint = this.$form.data('test-url');
 
     // Form Child Elements
     this.$serviceToggle = this.$form.find('#service_active');
     this.$submitBtn = this.$form.find('button[type="submit"]');
     this.$submitBtnLoader = this.$submitBtn.find('.js-btn-spinner');
     this.$submitBtnLabel = this.$submitBtn.find('.js-btn-label');
-
-    // Class Member methods
-    this.handleServiceToggle = this.handleServiceToggle.bind(this);
-    this.handleSettingsSave = this.handleSettingsSave.bind(this);
-
-    this.init();
   }
 
   init() {
@@ -26,17 +20,26 @@ export default class IntegrationSettingsForm {
     this.toggleServiceState(this.$serviceToggle.is(':checked'));
 
     // Bind Event Listeners
-    this.$serviceToggle.on('change', this.handleServiceToggle);
-    this.$submitBtn.on('click', this.handleSettingsSave);
+    this.$serviceToggle.on('change', e => this.handleServiceToggle(e));
+    this.$submitBtn.on('click', e => this.handleSettingsSave(e));
   }
 
   handleSettingsSave(e) {
-    if (this.$serviceToggle.is(':checked')) {
-      if (this.$form.get(0).checkValidity() &&
-          this.canTestService) {
-        e.preventDefault();
-        this.testSettings(this.$form.serialize());
-      }
+    // Check if Service is marked active, as if not marked active,
+    // We can skip testing it and directly go ahead to allow form to
+    // be submitted
+    if (!this.$serviceToggle.is(':checked')) {
+      return;
+    }
+
+    // Service was marked active so now we check;
+    // 1) If form contents are valid
+    // 2) If this service can be tested
+    // If both conditions are true, we override form submission
+    // and test the service using provided configuration.
+    if (this.$form.get(0).checkValidity() && this.canTestService) {
+      e.preventDefault();
+      this.testSettings(this.$form.serialize());
     }
   }
 
@@ -48,7 +51,7 @@ export default class IntegrationSettingsForm {
    * Change Form's validation enforcement based on service status (active/inactive)
    */
   toggleServiceState(serviceActive) {
-    this.toggleSubmitBtnLabel(serviceActive, this.canTestService);
+    this.toggleSubmitBtnLabel(serviceActive);
     if (serviceActive) {
       this.$form.removeAttr('novalidate');
     } else if (!this.$form.attr('novalidate')) {
@@ -59,11 +62,14 @@ export default class IntegrationSettingsForm {
   /**
    * Toggle Submit button label based on Integration status and ability to test service
    */
-  toggleSubmitBtnLabel(serviceActive, canTestService) {
-    this.$submitBtnLabel.text(
-      serviceActive && canTestService ?
-        'Test settings and save changes' :
-        'Save changes');
+  toggleSubmitBtnLabel(serviceActive) {
+    let btnLabel = 'Save changes';
+
+    if (serviceActive && this.canTestService) {
+      btnLabel = 'Test settings and save changes';
+    }
+
+    this.$submitBtnLabel.text(btnLabel);
   }
 
   /**
@@ -79,9 +85,7 @@ export default class IntegrationSettingsForm {
       this.$submitBtnLoader.removeClass('hidden');
     } else {
       this.$submitBtn.enable();
-      if (!this.$submitBtnLoader.hasClass('hidden')) {
-        this.$submitBtnLoader.addClass('hidden');
-      }
+      this.$submitBtnLoader.addClass('hidden');
     }
   }
 
@@ -93,12 +97,12 @@ export default class IntegrationSettingsForm {
     this.toggleSubmitBtnState(true);
     $.ajax({
       type: 'PUT',
-      url: `${this.endPoint}/test`,
+      url: this.testEndPoint,
       data: formData,
     })
     .done((res) => {
       if (res.error) {
-        new Flash(`${res.message}`, null, null, {
+        new Flash(res.message, null, null, {
           title: 'Save anyway',
           clickHandler: (e) => {
             e.preventDefault();
