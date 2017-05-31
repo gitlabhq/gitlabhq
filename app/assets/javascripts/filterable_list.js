@@ -56,7 +56,7 @@ export default class FilterableList {
     });
   }
 
-  onFilterSuccess(data) {
+  onFilterSuccess(data, xhr) {
     if (data.html) {
       this.listHolderElement.innerHTML = data.html;
     }
