@@ -216,8 +216,6 @@ so we need to set some guidelines for their use going forward:
 - `let` variables are preferable to instance variables. Local variables are
   preferable to `let` variables.
 - Use `let` to reduce duplication throughout an entire spec file.
-- Don't use `let` to define variables used by a single test; define them as
-  local variables inside the test's `it` block.
 - Don't define a `let` variable inside the top-level `describe` block that's
   only used in a more deeply-nested `context` or `describe` block. Keep the
   definition as close as possible to where it's used.
