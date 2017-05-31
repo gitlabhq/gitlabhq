@@ -56,27 +56,27 @@ msgid_plural "Deploys"
 msgstr[0] "部署"
 
 msgid "FirstPushedBy|First"
-msgstr "首个推送"
+msgstr "首次推送"
 
 msgid "FirstPushedBy|pushed by"
 msgstr "推送者:"
 
 msgid "From issue creation until deploy to production"
-msgstr "从创建议题到部署到生产环境"
+msgstr "从创建议题到部署至生产环境"
 
 msgid "From merge request merge until deploy to production"
-msgstr "从合并请求的合并到部署至生产环境"
+msgstr "从合并请求被合并后到部署至生产环境"
 
 msgid "Introducing Cycle Analytics"
 msgstr "周期分析简介"
 
 msgid "Last %d day"
 msgid_plural "Last %d days"
-msgstr[0] "最后%d天"
+msgstr[0] "最后 %d 天"
 
 msgid "Limited to showing %d event at most"
 msgid_plural "Limited to showing %d events at most"
-msgstr[0] "最多显示%d个事件"
+msgstr[0] "最多显示 %d 个事件"
 
 msgid "Median"
 msgstr "中位数"
@@ -86,7 +86,7 @@ msgid_plural "New Issues"
 msgstr[0] "新议题"
 
 msgid "Not available"
-msgstr "不可用"
+msgstr "数据不足"
 
 msgid "Not enough data"
 msgstr "数据不足"
@@ -123,7 +123,7 @@ msgstr "相关已合并的合并请求"
 
 msgid "Showing %d event"
 msgid_plural "Showing %d events"
-msgstr[0] "显示%d个事件"
+msgstr[0] "显示 %d 个事件"
 
 msgid ""
 "The coding stage shows the time from the first commit to creating the merge "
@@ -132,13 +132,13 @@ msgid ""
 msgstr "编码阶段概述了从第一次提交到创建合并请求的时间。创建第一个合并请求后，数据将自动添加到此处。"
 
 msgid "The collection of events added to the data gathered for that stage."
-msgstr "将收集的事件添加到该阶段的相关统计数据中。"
+msgstr "与该阶段相关的事件。"
 
 msgid ""
 "The issue stage shows the time it takes from creating an issue to assigning "
 "the issue to a milestone, or add the issue to a list on your Issue Board. "
 "Begin creating issues to see data for this stage."
-msgstr "议题阶段概述了从创建议题到将议题分配给里程碑或将议题添加到议题看板列表中所需的时间。开始创建议题以查看此阶段的数据。"
+msgstr "议题阶段概述了从创建议题到将议题设置里程碑或将议题添加到议题看板的时间。开始创建议题以查看此阶段的数据。"
 
 msgid "The phase of the development lifecycle."
 msgstr "项目生命周期中的各个阶段。"
@@ -147,49 +147,49 @@ msgid ""
 "The planning stage shows the time from the previous step to pushing your "
 "first commit. This time will be added automatically once you push your first"
 " commit."
-msgstr "计划阶段概述了从议题到推送第一次提交的时间。当你第一次推送提交，数据将自动添加到此处。"
+msgstr "计划阶段概述了从议题添加到日程后到推送首次提交的时间。当首次推送提交后，数据将自动添加到此处。"
 
 msgid ""
 "The production stage shows the total time it takes between creating an issue"
 " and deploying the code to production. The data will be automatically added "
 "once you have completed the full idea to production cycle."
-msgstr "生产阶段概述了从创建议题到将代码部署到生产环境的时间。一旦完成完整的想法到部署生产，数据将自动添加到此处。"
+msgstr "生产阶段概述了从创建一个议题到将代码部署到生产环境的总时间。当完成想法到部署生产的循环，数据将自动添加到此处。"
 
 msgid ""
 "The review stage shows the time from creating the merge request to merging "
 "it. The data will automatically be added after you merge your first merge "
 "request."
-msgstr "评审阶段概述了从创建合并请求到合并的时间。在您合并第一个合并请求后，数据将自动添加到此处。"
+msgstr "评审阶段概述了从创建合并请求到被合并的时间。当创建第一个合并请求后，数据将自动添加到此处。"
 
 msgid ""
 "The staging stage shows the time between merging the MR and deploying code "
 "to the production environment. The data will be automatically added once you"
 " deploy to production for the first time."
-msgstr "预发布阶段概述了合并请求的合并到部署代码到生产环境的时间。首次部署到生产环境后，数据将自动添加到此处。"
+msgstr "预发布阶段概述了从合并请求被合并到部署至生产环境的总时间。首次部署到生产环境后，数据将自动添加到此处。"
 
 msgid ""
 "The testing stage shows the time GitLab CI takes to run every pipeline for "
 "the related merge request. The data will automatically be added after your "
 "first pipeline finishes running."
-msgstr "测试阶段概述了GitLab CI为相关合并请求运行每个流水线所需的时间。在您的第一个流水线完成运行后，数据将自动添加到此处。"
+msgstr "测试阶段概述了GitLab CI为相关合并请求运行每个流水线所需的时间。当第一个流水线运行完成后，数据将自动添加到此处。"
 
 msgid "The time taken by each data entry gathered by that stage."
-msgstr "由该阶段收集的每个数据条目所用的时间总和。"
+msgstr "该阶段每条数据所花的时间"
 
 msgid ""
 "The value lying at the midpoint of a series of observed values. E.g., "
 "between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 "
 "= 6."
-msgstr "该值概述了一系列观察值的中位数。例如，在3、5、9之间，中位数是5。在3、5、7、8之间，中位数是（5 + 7）/ 2 = 6。"
+msgstr "中位数是一个数列中最中间的值。例如在 3、5、9 之间，中位数是 5。在 3、5、7、8 之间，中位数是 （5 + 7）/ 2 = 6。"
 
 msgid "Time before an issue gets scheduled"
-msgstr "创建议题之前的时间"
+msgstr "议题被列入日程表的时间"
 
 msgid "Time before an issue starts implementation"
-msgstr "从创建议题到开始编码的时间"
+msgstr "开始进行编码前的时间"
 
 msgid "Time between merge request creation and merge/close"
-msgstr "从创建合并请求到合并或关闭合并请求的时间"
+msgstr "从创建合并请求到被合并或关闭的时间"
 
 msgid "Time until first merge request"
 msgstr "创建第一个合并请求之前的时间"
@@ -215,7 +215,7 @@ msgid "Want to see the data? Please ask an administrator for access."
 msgstr "权限不足。如需查看相关数据，请向管理员申请权限。"
 
 msgid "We don't have enough data to show this stage."
-msgstr "我们没有足够的数据显示这个阶段。"
+msgstr "该阶段的数据不足，无法显示。"
 
 msgid "You need permission."
 msgstr "您需要相关的权限。"
