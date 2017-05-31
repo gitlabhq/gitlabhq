@@ -413,7 +413,7 @@ feature 'Jobs', :feature do
     context 'access source' do
       context 'job from project' do
         before do
-          Capybara.current_session.driver.header('X-Sendfile-Type', 'X-Sendfile')
+          Capybara.current_session.driver.headers = { 'X-Sendfile-Type' => 'X-Sendfile' }
           build.run!
           visit namespace_project_job_path(project.namespace, project, build)
           page.within('.js-build-sidebar') { click_link 'Raw' }
@@ -428,7 +428,7 @@ feature 'Jobs', :feature do
 
       context 'job from other project' do
         before do
-          Capybara.current_session.driver.header('X-Sendfile-Type', 'X-Sendfile')
+          Capybara.current_session.driver.headers = { 'X-Sendfile-Type' => 'X-Sendfile' }
           build2.run!
           visit raw_namespace_project_job_path(project.namespace, project, build2)
         end
@@ -443,7 +443,7 @@ feature 'Jobs', :feature do
       let(:existing_file) { Tempfile.new('existing-trace-file').path }
 
       before do
-        Capybara.current_session.driver.header('X-Sendfile-Type', 'X-Sendfile')
+        Capybara.current_session.driver.headers = { 'X-Sendfile-Type' => 'X-Sendfile' }
 
         build.run!
 
