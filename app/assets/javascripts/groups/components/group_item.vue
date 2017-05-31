@@ -140,10 +140,10 @@ export default {
         <i
           v-show="group.isOpen"
           class="fa fa-folder-open"
-          aria-hidden="true" />
+          aria-hidden="true"></i>
         <i
           v-show="!group.isOpen"
-          class="fa fa-folder" />
+          class="fa fa-folder"></i>
       </span>
     </div>
 
