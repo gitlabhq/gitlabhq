@@ -25,6 +25,14 @@ FactoryGirl.define do
     })
   end
 
+  factory :prometheus_service do
+    project factory: :empty_project
+    active true
+    properties({
+      api_url: 'https://prometheus.example.com/'
+    })
+  end
+
   factory :jira_service do
     project factory: :empty_project
     active true
