@@ -230,9 +230,11 @@ module Gitlab
       end
 
       def too_large?
-        return @too_large if defined?(@too_large)
-
-        @too_large = @diff.bytesize >= SIZE_LIMIT
+        if @too_large.nil?
+          @too_large = @diff.bytesize >= SIZE_LIMIT
+        else
+          @too_large
+        end
       end
 
       def too_large!

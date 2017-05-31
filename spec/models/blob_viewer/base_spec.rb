@@ -105,36 +105,8 @@ describe BlobViewer::Base, model: true do
     end
   end
 
-  describe '#can_expanded?' do
-    context 'when the blob size is larger than the collapse limit' do
-      context 'when the blob size is larger than the size limit' do
-        let(:blob) { fake_blob(path: 'file.pdf', size: 10.megabytes) }
-
-        it 'returns false' do
-          expect(viewer.can_expanded?).to be_falsey
-        end
-      end
-
-      context 'when the blob size is smaller than the size limit' do
-        let(:blob) { fake_blob(path: 'file.pdf', size: 2.megabytes) }
-
-        it 'returns true' do
-          expect(viewer.can_expanded?).to be_truthy
-        end
-      end
-    end
-
-    context 'when the blob size is smaller than the collapse limit' do
-      let(:blob) { fake_blob(path: 'file.pdf', size: 10.kilobytes) }
-
-      it 'returns false' do
-        expect(viewer.can_expanded?).to be_falsey
-      end
-    end
-  end
-
   describe '#render_error' do
-    context 'when the size limit is overridden' do
+    context 'when expanded' do
       before do
         viewer.expanded = true
       end
@@ -156,12 +128,12 @@ describe BlobViewer::Base, model: true do
       end
     end
 
-    context 'when the size limit is not overridden' do
+    context 'when not expanded' do
       context 'when the blob size is larger than the collapse limit' do
         let(:blob) { fake_blob(path: 'file.pdf', size: 2.megabytes) }
 
-        it 'returns :too_large' do
-          expect(viewer.render_error).to eq(:too_large)
+        it 'returns :collapsed' do
+          expect(viewer.render_error).to eq(:collapsed)
         end
       end
 

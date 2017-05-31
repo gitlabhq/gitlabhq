@@ -168,21 +168,19 @@ describe BlobHelper do
         controller.params[:id] = File.join('master', blob.path)
       end
 
-      context 'for error :too_large' do
-        context 'when the size limit can be overridden' do
-          let(:blob) { fake_blob(size: 2.megabytes) }
+      context 'for error :collapsed' do
+        let(:blob) { fake_blob(size: 2.megabytes) }
 
-          it 'includes a "load it anyway" link' do
-            expect(helper.blob_render_error_options(viewer)).to include(/load it anyway/)
-          end
+        it 'includes a "load it anyway" link' do
+          expect(helper.blob_render_error_options(viewer)).to include(/load it anyway/)
         end
+      end
 
-        context 'when the size limit cannot be overridden' do
-          let(:blob) { fake_blob(size: 10.megabytes) }
+      context 'for error :too_large' do
+        let(:blob) { fake_blob(size: 10.megabytes) }
 
-          it 'does not include a "load it anyway" link' do
-            expect(helper.blob_render_error_options(viewer)).not_to include(/load it anyway/)
-          end
+        it 'does not include a "load it anyway" link' do
+          expect(helper.blob_render_error_options(viewer)).not_to include(/load it anyway/)
         end
 
         context 'when the viewer is rich' do
