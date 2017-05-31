@@ -1,5 +1,6 @@
 FactoryGirl.define do
   factory :ci_empty_pipeline, class: Ci::Pipeline do
+    source :push
     ref 'master'
     sha '97de212e80737a608d939f648d959671fb0a0142'
     status 'pending'
