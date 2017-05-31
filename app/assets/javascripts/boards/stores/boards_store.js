@@ -51,7 +51,7 @@ gl.issueBoards.BoardsStore = {
   },
   shouldAddBlankState () {
     // Decide whether to add the blank state
-    return !(this.state.lists.filter(list => list.type !== 'backlog' && list.type !== 'done')[0]);
+    return !(this.state.lists.filter(list => list.type !== 'backlog' && list.type !== 'closed')[0]);
   },
   addBlankState () {
     if (!this.shouldAddBlankState() || this.welcomeIsHidden() || this.disabled) return;
