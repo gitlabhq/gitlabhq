@@ -24,23 +24,26 @@ feature 'Merge Request Discussions', feature: true do
       )
     end
 
-    let(:outdated_diff_refs) { project.commit("874797c3a73b60d2187ed6e2fcabd289ff75171e").diff_refs }
-
-    before(:each) do
+    def visit_merge_request
       visit namespace_project_merge_request_path(project.namespace, project, merge_request)
     end
 
-    context 'active discussions' do
-      it 'shows a link to the diff' do
-        within(".discussion[data-discussion-id='#{active_discussion.id}']") do
-          path = diffs_namespace_project_merge_request_path(project.namespace, project, merge_request, anchor: active_discussion.line_code)
-          expect(page).to have_link('the diff', href: path)
-        end
+    let(:outdated_diff_refs) { project.commit("874797c3a73b60d2187ed6e2fcabd289ff75171e").diff_refs }
+
+    it "avoids repeated database queries" do
+      control_count = ActiveRecord::QueryRecorder.new { visit_merge_request }.count
+
+      5.times do
+        create(:diff_note_on_merge_request, noteable: merge_request, project: project).to_discussion
       end
+
+      expect { visit_merge_request }.not_to exceed_query_limit(control_count)
     end
 
     context 'outdated discussions' do
       it 'shows a link to the outdated diff' do
+        visit_merge_request
+
         within(".discussion[data-discussion-id='#{outdated_discussion.id}']") do
           path = diffs_namespace_project_merge_request_path(project.namespace, project, merge_request, diff_id: old_merge_request_diff.id, anchor: outdated_discussion.line_code)
           expect(page).to have_link('an old version of the diff', href: path)

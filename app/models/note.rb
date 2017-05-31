@@ -249,7 +249,7 @@ class Note < ActiveRecord::Base
     # When commit notes are rendered on an MR's Discussion page, they are
     # displayed in one discussion instead of individually.
     # See also `#discussion_id` and `Discussion.override_discussion_id`.
-    if noteable && noteable != self.noteable
+    if different_context?(noteable)
       OutOfContextDiscussion
     else
       IndividualNoteDiscussion
@@ -299,6 +299,12 @@ class Note < ActiveRecord::Base
   end
 
   private
+
+  def different_context?(noteable)
+    return false unless noteable
+
+    noteable.id != noteable_id && noteable.class.name != noteable_type
+  end
 
   def keep_around_commit
     project.repository.keep_around(self.commit_id)
