@@ -5,6 +5,8 @@ module Projects
       before_action :authorize_read_list!, only: [:index]
 
       def index
+        board.lists.create(list_type: :backlog) unless board.lists.backlog.any?
+
         render json: serialize_as_json(board.lists)
       end
 

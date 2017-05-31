@@ -12,7 +12,9 @@ class List {
     this.position = obj.position;
     this.title = obj.title;
     this.type = obj.list_type;
-    this.preset = ['closed', 'blank'].indexOf(this.type) > -1;
+    this.preset = ['backlog', 'closed', 'blank'].indexOf(this.type) > -1;
+    this.isExpandable = ['backlog', 'closed'].indexOf(this.type) > -1;
+    this.isExpanded = true;
     this.page = 1;
     this.loading = true;
     this.loadingMore = false;
