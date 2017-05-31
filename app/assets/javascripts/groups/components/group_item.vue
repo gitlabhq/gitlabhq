@@ -84,9 +84,6 @@ export default {
 
       return fullPath;
     },
-    hasGroups() {
-      return Object.keys(this.group.subGroups).length > 0;
-    },
   },
 };
 </script>
@@ -99,7 +96,7 @@ export default {
     >
     <div class="controls">
       <a
-        v-show="group.canEdit"
+        v-if="group.canEdit"
         class="edit-group btn"
         :href="group.editPath">
         <i aria-hidden="true" class="fa fa-cogs"></i>
@@ -127,22 +124,22 @@ export default {
     </div>
 
     <div class="folder-toggle-wrap">
-      <span class="folder-caret">
+      <span class="folder-caret" v-if="group.hasSubgroups">
         <i
-          v-show="group.isOpen"
+          v-if="group.isOpen"
           class="fa fa-caret-down" />
         <i
-          v-show="!group.isOpen"
+          v-if="!group.isOpen"
           class="fa fa-caret-right" />
       </span>
 
       <span class="folder-icon">
         <i
-          v-show="group.isOpen"
+          v-if="group.isOpen"
           class="fa fa-folder-open"
           aria-hidden="true"></i>
         <i
-          v-show="!group.isOpen"
+          v-if="!group.isOpen"
           class="fa fa-folder"></i>
       </span>
     </div>
@@ -161,6 +158,6 @@ export default {
       {{group.description}}
     </div>
 
-    <group-folder v-if="group.isOpen && hasGroups" :groups="group.subGroups" :baseGroup="group" />
+    <group-folder v-if="group.isOpen && group.hasSubgroups" :groups="group.subGroups" :baseGroup="group" />
   </li>
 </template>
