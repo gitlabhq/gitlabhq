@@ -889,7 +889,7 @@ class MergeRequest < ActiveRecord::Base
     !has_commits?
   end
 
-  def mergeable_with_slash_command?(current_user, autocomplete_precheck: false, last_diff_sha: nil)
+  def mergeable_with_quick_action?(current_user, autocomplete_precheck: false, last_diff_sha: nil)
     return false unless can_be_merged_by?(current_user)
 
     return true if autocomplete_precheck

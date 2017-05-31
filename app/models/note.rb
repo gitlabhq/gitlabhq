@@ -32,7 +32,7 @@ class Note < ActiveRecord::Base
   # Banzai::ObjectRenderer
   attr_accessor :user_visible_reference_count
 
-  # Attribute used to store the attributes that have ben changed by slash commands.
+  # Attribute used to store the attributes that have ben changed by quick actions.
   attr_accessor :commands_changes
 
   default_value_for :system, false

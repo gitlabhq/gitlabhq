@@ -1,14 +1,14 @@
 require 'rails_helper'
 
-feature 'Merge Requests > User uses slash commands', feature: true, js: true do
-  include SlashCommandsHelpers
+feature 'Merge Requests > User uses quick actions', feature: true, js: true do
+  include QuickActionsHelpers
 
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
   let(:merge_request) { create(:merge_request, source_project: project) }
   let!(:milestone) { create(:milestone, project: project, title: 'ASAP') }
 
-  it_behaves_like 'issuable record that supports slash commands in its description and notes', :merge_request do
+  it_behaves_like 'issuable record that supports quick actions in its description and notes', :merge_request do
     let(:issuable) { create(:merge_request, source_project: project) }
     let(:new_url_opts) { { merge_request: { source_branch: 'feature', target_branch: 'master' } } }
   end

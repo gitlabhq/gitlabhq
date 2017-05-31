@@ -702,7 +702,7 @@ describe Projects::IssuesController do
       end
     end
 
-    context 'when description has slash commands' do
+    context 'when description has quick actions' do
       before do
         sign_in(user)
       end

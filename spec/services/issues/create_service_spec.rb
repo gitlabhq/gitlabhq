@@ -206,9 +206,9 @@ describe Issues::CreateService, services: true do
       end
     end
 
-    it_behaves_like 'new issuable record that supports slash commands'
+    it_behaves_like 'new issuable record that supports quick actions'
 
-    context 'Slash commands' do
+    context 'Quick actions' do
       context 'with assignee and milestone in params and command' do
         let(:opts) do
           {
