@@ -587,7 +587,7 @@ Optional manual actions have `allow_failure: true` set by default.
 **Manual actions are considered to be write actions, so permissions for
 protected branches are used when user wants to trigger an action. In other
 words, in order to trigger a manual action assigned to a branch that the
-pipeline is running for, user needs to have ability to push to this branch.**
+pipeline is running for, user needs to have ability to merge to this branch.**
 
 ### environment
 

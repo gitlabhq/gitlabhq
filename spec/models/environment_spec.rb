@@ -227,7 +227,10 @@ describe Environment, models: true do
 
       context 'when user is allowed to stop environment' do
         before do
-          project.add_master(user)
+          project.add_developer(user)
+
+          create(:protected_branch, :developers_can_merge,
+                 name: 'master', project: project)
         end
 
         context 'when action did not yet finish' do
