@@ -12,7 +12,10 @@ export default class PrometheusMetrics {
     this.$monitoredMetricsEmpty = this.$monitoredMetricsPanel.find('.js-empty-metrics');
     this.$monitoredMetricsList = this.$monitoredMetricsPanel.find('.js-metrics-list');
 
-    this.$panelToggle = this.$wrapper.find('.js-panel-toggle');
+    this.$missingEnvVarPanel = this.$wrapper.find('.js-panel-missing-env-vars');
+    this.$panelToggle = this.$missingEnvVarPanel.find('.js-panel-toggle');
+    this.$missingEnvVarMetricCount = this.$missingEnvVarPanel.find('.js-env-var-count');
+    this.$missingEnvVarMetricsList = this.$missingEnvVarPanel.find('.js-missing-var-metrics-list');
 
     this.activeMetricsEndpoint = this.$monitoredMetricsPanel.data('active-metrics');
   }
@@ -35,14 +38,25 @@ export default class PrometheusMetrics {
 
   populateActiveMetrics(metrics) {
     let totalMonitoredMetrics = 0;
+    let totalMissingEnvVarMetrics = 0;
+
     metrics.forEach((metric) => {
       this.$monitoredMetricsList.append(`<li>${metric.group}<span class="badge-count">${metric.active_metrics}</span></li>`);
       totalMonitoredMetrics += metric.active_metrics;
+      if (metric.metrics_missing_requirements > 0) {
+        this.$missingEnvVarMetricsList.append(`<li>${metric.group}</li>`);
+        totalMissingEnvVarMetrics += 1;
+      }
     });
 
     this.$monitoredMetricsCount.text(totalMonitoredMetrics);
     this.$monitoredMetricsLoading.addClass('hidden');
     this.$monitoredMetricsList.removeClass('hidden');
+
+    if (totalMissingEnvVarMetrics > 0) {
+      this.$missingEnvVarPanel.removeClass('hidden');
+      this.$missingEnvVarMetricCount.text(totalMissingEnvVarMetrics);
+    }
   }
 
   loadActiveMetrics() {

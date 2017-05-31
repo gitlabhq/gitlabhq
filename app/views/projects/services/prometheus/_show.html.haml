@@ -8,7 +8,7 @@
     %p
       Metrics are automatically configured and monitored
       based on a library of metrics from popular exporters.
-      More information
+      = link_to 'More information', '#'
 
   .col-lg-9
     .panel.panel-default.js-panel-monitored-metrics{ data: { "active-metrics" => "#{namespace_project_prometheus_active_metrics_path(@project.namespace, @project)}.json" } }
@@ -27,12 +27,19 @@
             View environments
         %ul.metrics-list.hidden.js-metrics-list
 
-    .panel.panel-default.js-panel-missing-env-vars
+    .panel.panel-default.hidden.js-panel-missing-env-vars
       .panel-heading
         %h3.panel-title
           = icon('caret-right lg', class: 'panel-toggle js-panel-toggle', 'aria-label' => 'Toggle panel')
           Missing environment variable(s)
           %span.badge-count.js-env-var-count 0
       .panel-body.hidden
-        .empty-metrics
-          %p Nothing to show here at the moment
+        .flash-container
+          .flash-notice
+            .flash-text
+              To set up automatic monitoring, add the environment variable
+              %code
+                $CI_ENVIRONMENT_SLUG
+              to exporter's queries.
+              = link_to 'More information', '#'
+        %ul.metrics-list.js-missing-var-metrics-list
