@@ -2,6 +2,8 @@ module Gitlab
   module Auth
     MissingPersonalTokenError = Class.new(StandardError)
 
+    REGISTRY_SCOPES = [:read_registry].freeze
+
     # Scopes used for GitLab API access
     API_SCOPES = [:api, :read_user].freeze
 
@@ -11,8 +13,10 @@ module Gitlab
     # Default scopes for OAuth applications that don't define their own
     DEFAULT_SCOPES = [:api].freeze
 
+    AVAILABLE_SCOPES = (API_SCOPES + REGISTRY_SCOPES).freeze
+
     # Other available scopes
-    OPTIONAL_SCOPES = (API_SCOPES + OPENID_SCOPES - DEFAULT_SCOPES).freeze
+    OPTIONAL_SCOPES = (AVAILABLE_SCOPES + OPENID_SCOPES - DEFAULT_SCOPES).freeze
 
     class << self
       def find_for_git_client(login, password, project:, ip:)
@@ -26,8 +30,8 @@ module Gitlab
           build_access_token_check(login, password) ||
           lfs_token_check(login, password) ||
           oauth_access_token_check(login, password) ||
-          user_with_password_for_git(login, password) ||
           personal_access_token_check(password) ||
+          user_with_password_for_git(login, password) ||
           Gitlab::Auth::Result.new
 
         rate_limit!(ip, success: result.success?, login: login)
@@ -103,15 +107,16 @@ module Gitlab
 
         raise Gitlab::Auth::MissingPersonalTokenError if user.two_factor_enabled?
 
-        Gitlab::Auth::Result.new(user, nil, :gitlab_or_ldap, full_authentication_abilities)
+        Gitlab::Auth::Result.new(user, nil, :gitlab_or_ldap, full_api_abilities)
       end
 
       def oauth_access_token_check(login, password)
         if login == "oauth2" && password.present?
           token = Doorkeeper::AccessToken.by_token(password)
+
           if valid_oauth_token?(token)
             user = User.find_by(id: token.resource_owner_id)
-            Gitlab::Auth::Result.new(user, nil, :oauth, full_authentication_abilities)
+            Gitlab::Auth::Result.new(user, nil, :oauth, full_api_abilities)
           end
         end
       end
@@ -121,17 +126,26 @@ module Gitlab
 
         token = PersonalAccessTokensFinder.new(state: 'active').find_by(token: password)
 
-        if token && valid_api_token?(token)
-          Gitlab::Auth::Result.new(token.user, nil, :personal_token, full_authentication_abilities)
+        if token && valid_scoped_token?(token, scopes: AVAILABLE_SCOPES.map(&:to_s))
+          Gitlab::Auth::Result.new(token.user, nil, :personal_token, abilities_for_scope(token.scopes))
         end
       end
 
       def valid_oauth_token?(token)
-        token && token.accessible? && valid_api_token?(token)
+        token && token.accessible? && valid_scoped_token?(token)
       end
 
-      def valid_api_token?(token)
-        AccessTokenValidationService.new(token).include_any_scope?(['api'])
+      def valid_scoped_token?(token, scopes: %w[api])
+        AccessTokenValidationService.new(token).include_any_scope?(scopes)
+      end
+
+      def abilities_for_scope(scopes)
+        abilities = Set.new
+
+        abilities.merge(full_api_abilities) if scopes.include?("api")
+        abilities << :read_container_image if scopes.include?("read_registry")
+
+        abilities.to_a
       end
 
       def lfs_token_check(login, password)
@@ -150,9 +164,9 @@ module Gitlab
 
         authentication_abilities =
           if token_handler.user?
-            full_authentication_abilities
+            full_api_abilities
           else
-            read_authentication_abilities
+            read_api_abilities
           end
 
         if Devise.secure_compare(token_handler.token, password)
@@ -188,7 +202,7 @@ module Gitlab
         ]
       end
 
-      def read_authentication_abilities
+      def read_api_abilities
         [
           :read_project,
           :download_code,
@@ -196,8 +210,8 @@ module Gitlab
         ]
       end
 
-      def full_authentication_abilities
-        read_authentication_abilities + [
+      def full_api_abilities
+        read_api_abilities + [
           :push_code,
           :create_container_image
         ]

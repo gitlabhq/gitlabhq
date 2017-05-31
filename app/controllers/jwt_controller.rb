@@ -20,13 +20,15 @@ class JwtController < ApplicationController
   private
 
   def authenticate_project_or_user
-    @authentication_result = Gitlab::Auth::Result.new(nil, nil, :none, Gitlab::Auth.read_authentication_abilities)
+    @authentication_result = Gitlab::Auth::Result.new(nil, nil, :none, Gitlab::Auth.read_api_abilities)
 
     authenticate_with_http_basic do |login, password|
       @authentication_result = Gitlab::Auth.find_for_git_client(login, password, project: nil, ip: request.ip)
 
-      render_unauthorized unless @authentication_result.success? &&
-          (@authentication_result.actor.nil? || @authentication_result.actor.is_a?(User))
+      if @authentication_result.failed? ||
+          (@authentication_result.actor.present? && !@authentication_result.actor.is_a?(User))
+        render_unauthorized
+      end
     end
   rescue Gitlab::Auth::MissingPersonalTokenError
     render_missing_personal_token
