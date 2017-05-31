@@ -33,9 +33,17 @@ export default class GroupFilterableList extends FilterableList {
     this.filterResults(this.filterUrl);
   }
 
-  onFilterSuccess(data) {
+  onFilterSuccess(data, textStatus, xhr) {
     super.onFilterSuccess(data);
 
     this.store.setGroups(data);
+    this.store.storePagination({
+      'X-Per-Page': xhr.getResponseHeader('X-Per-Page'),
+      'X-Page': xhr.getResponseHeader('X-Page'),
+      'X-Total': xhr.getResponseHeader('X-Total'),
+      'X-Total-Pages': xhr.getResponseHeader('X-Total-Pages'),
+      'X-Next-Page': xhr.getResponseHeader('X-Next-Page'),
+      'X-Prev-Page': xhr.getResponseHeader('X-Prev-Page'),
+    });
   }
 }
