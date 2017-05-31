@@ -1251,6 +1251,19 @@ describe User, models: true do
     it { is_expected.to eq([private_group]) }
   end
 
+  describe '#groups_through_project_authorizations' do
+    it 'returns all groups being ancestor of the authorized project' do
+      user = create(:user)
+      group = create(:group, :private)
+      subgroup = create(:group, :private, parent: group)
+      subsubgroup = create(:group, :private, parent: subgroup)
+      project = create(:empty_project, :private, namespace: subsubgroup)
+      project.add_guest(user)
+
+      expect(user.groups_through_project_authorizations).to contain_exactly(group, subgroup, subsubgroup)
+    end
+  end
+
   describe '#authorized_projects', truncate: true do
     context 'with a minimum access level' do
       it 'includes projects for which the user is an owner' do

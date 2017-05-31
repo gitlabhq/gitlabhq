@@ -492,6 +492,17 @@ class User < ActiveRecord::Base
     Group.where("namespaces.id IN (#{union.to_sql})")
   end
 
+  def groups_through_project_authorizations
+    projects = Project.joins(:project_authorizations).
+                 where('project_authorizations.user_id = ?', id ).
+                 joins(:route).
+                 select('routes.path AS full_path')
+
+    Group.joins(:route).
+      joins("INNER JOIN (#{projects.to_sql}) project_paths
+            ON project_paths.full_path LIKE CONCAT(routes_namespaces.path, '/%')")
+  end
+
   def nested_groups
     Group.member_descendants(id)
   end
