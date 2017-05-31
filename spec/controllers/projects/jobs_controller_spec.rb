@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::BuildsController do
+describe Projects::JobsController do
   include ApiHelpers
 
   let(:project) { create(:empty_project, :public) }
@@ -213,7 +213,7 @@ describe Projects::BuildsController do
 
       it 'redirects to the retried build page' do
         expect(response).to have_http_status(:found)
-        expect(response).to redirect_to(namespace_project_build_path(id: Ci::Build.last.id))
+        expect(response).to redirect_to(namespace_project_job_path(id: Ci::Build.last.id))
       end
     end
 
@@ -249,7 +249,7 @@ describe Projects::BuildsController do
 
       it 'redirects to the played build page' do
         expect(response).to have_http_status(:found)
-        expect(response).to redirect_to(namespace_project_build_path(id: build.id))
+        expect(response).to redirect_to(namespace_project_job_path(id: build.id))
       end
 
       it 'transits to pending' do
@@ -285,7 +285,7 @@ describe Projects::BuildsController do
 
       it 'redirects to the canceled build page' do
         expect(response).to have_http_status(:found)
-        expect(response).to redirect_to(namespace_project_build_path(id: build.id))
+        expect(response).to redirect_to(namespace_project_job_path(id: build.id))
       end
 
       it 'transits to canceled' do
@@ -323,7 +323,7 @@ describe Projects::BuildsController do
 
       it 'redirects to a index page' do
         expect(response).to have_http_status(:found)
-        expect(response).to redirect_to(namespace_project_builds_path)
+        expect(response).to redirect_to(namespace_project_jobs_path)
       end
 
       it 'transits to canceled' do
@@ -340,7 +340,7 @@ describe Projects::BuildsController do
 
       it 'redirects to a index page' do
         expect(response).to have_http_status(:found)
-        expect(response).to redirect_to(namespace_project_builds_path)
+        expect(response).to redirect_to(namespace_project_jobs_path)
       end
     end
 
@@ -363,7 +363,7 @@ describe Projects::BuildsController do
 
       it 'redirects to the erased build page' do
         expect(response).to have_http_status(:found)
-        expect(response).to redirect_to(namespace_project_build_path(id: build.id))
+        expect(response).to redirect_to(namespace_project_job_path(id: build.id))
       end
 
       it 'erases artifacts' do

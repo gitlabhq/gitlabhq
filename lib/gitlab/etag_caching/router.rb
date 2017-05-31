@@ -11,7 +11,7 @@ module Gitlab
       USED_IN_ROUTES = %w[noteable issue notes issues realtime_changes
                           commit pipelines merge_requests new].freeze
       RESERVED_WORDS = Gitlab::PathRegex::ILLEGAL_PROJECT_PATH_WORDS - USED_IN_ROUTES
-      RESERVED_WORDS_REGEX = Regexp.union(*RESERVED_WORDS)
+      RESERVED_WORDS_REGEX = Regexp.union(*RESERVED_WORDS.map(&Regexp.method(:escape)))
       ROUTES = [
         Gitlab::EtagCaching::Router::Route.new(
           %r(^(?!.*(#{RESERVED_WORDS_REGEX})).*/noteable/issue/\d+/notes\z),
