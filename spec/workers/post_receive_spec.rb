@@ -123,21 +123,31 @@ describe PostReceive do
     end
   end
 
+  describe '#process_wiki_update' do
+    it 'triggers Geo::PushService when Geo is enabled' do
+      allow(Gitlab::Geo).to receive(:enabled?) { true }
+
+      expect(Geo::PushService).to receive(:new).with(instance_of(Project), source: Geo::PushEvent::WIKI).and_call_original
+      expect_any_instance_of(Geo::PushService).to receive(:execute)
+
+      described_class.new.perform("#{pwd(project)}.wiki", key_id, base64_changes)
+    end
+
+    it 'triggers wiki index update when ElasticSearch is enabled' do
+      expect(Project).to receive(:find_by_full_path).with("#{project.full_path}.wiki").and_return(nil)
+      expect(Project).to receive(:find_by_full_path).with(project.full_path).and_return(project)
+      stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
+
+      expect_any_instance_of(ProjectWiki).to receive(:index_blobs)
+
+      described_class.new.perform("#{pwd(project)}.wiki", key_id, base64_changes)
+    end
+  end
+
   context "webhook" do
     it "fetches the correct project" do
       expect(Project).to receive(:find_by).with(id: project.id.to_s)
       described_class.new.perform(project_identifier, key_id, base64_changes)
-    end
-
-    it "triggers wiki index update" do
-      expect(Project).to receive(:find_by_full_path).with("#{project.full_path}.wiki").and_return(nil)
-      expect(Project).to receive(:find_by_full_path).with(project.full_path).and_return(project)
-      stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
-      expect_any_instance_of(ProjectWiki).to receive(:index_blobs)
-
-      repo_path = "#{pwd(project)}.wiki"
-
-      described_class.new.perform(repo_path, key_id, base64_changes)
     end
 
     it "does not run if the author is not in the project" do

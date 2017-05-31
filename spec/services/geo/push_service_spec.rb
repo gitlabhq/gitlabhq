@@ -16,7 +16,7 @@ describe Geo::PushService, services: true do
     it 'does not create a push event when not running on a primary node' do
       allow(Gitlab::Geo).to receive(:primary?) { false }
 
-      subject = described_class.new(project, refs, changes)
+      subject = described_class.new(project, refs: refs, changes: changes)
 
       expect { subject.execute }.not_to change(Geo::PushEvent, :count)
     end
@@ -27,70 +27,88 @@ describe Geo::PushService, services: true do
       end
 
       it 'creates a push event' do
-        subject = described_class.new(project, refs, changes)
+        subject = described_class.new(project, refs: refs, changes: changes)
 
         expect { subject.execute }.to change(Geo::PushEvent, :count).by(1)
       end
 
-      it 'does not track ref name when post-receive event affect multiple refs' do
-        subject = described_class.new(project, refs, changes)
+      context 'when repository is beign udpated' do
+        it 'does not track ref name when post-receive event affect multiple refs' do
+          subject = described_class.new(project, refs: refs, changes: changes)
 
-        subject.execute
+          subject.execute
 
-        expect(Geo::PushEvent.last.ref).to be_nil
+          expect(Geo::PushEvent.last.ref).to be_nil
+        end
+
+        it 'tracks ref name when post-receive event affect single ref' do
+          refs    = ['refs/heads/tést']
+          changes = [{ before: '123456', after: blankrev, ref: 'refs/heads/tést' }]
+          subject = described_class.new(project, refs: refs, changes: changes)
+
+          subject.execute
+
+          expect(Geo::PushEvent.last.ref).to eq 'refs/heads/tést'
+        end
+
+        it 'tracks number of branches post-receive event affects' do
+          subject = described_class.new(project, refs: refs, changes: changes)
+
+          subject.execute
+
+          expect(Geo::PushEvent.last.branches_affected).to eq 1
+        end
+
+        it 'tracks number of tags post-receive event affects' do
+          subject = described_class.new(project, refs: refs, changes: changes)
+
+          subject.execute
+
+          expect(Geo::PushEvent.last.tags_affected).to eq 1
+        end
+
+        it 'tracks when post-receive event create new branches' do
+          refs    = ['refs/heads/tést', 'refs/heads/feature']
+          changes = [
+            { before: '123456', after: '789012', ref: 'refs/heads/tést' },
+            { before: blankrev, after: '210987', ref: 'refs/heads/feature' }
+          ]
+
+          subject = described_class.new(project, refs: refs, changes: changes)
+
+          subject.execute
+
+          expect(Geo::PushEvent.last.new_branch).to eq true
+        end
+
+        it 'tracks when post-receive event remove branches' do
+          refs    = ['refs/heads/tést', 'refs/heads/feature']
+          changes = [
+            { before: '123456', after: '789012', ref: 'refs/heads/tést' },
+            { before: '654321', after: blankrev, ref: 'refs/heads/feature' }
+          ]
+          subject = described_class.new(project, refs: refs, changes: changes)
+
+          subject.execute
+
+          expect(Geo::PushEvent.last.remove_branch).to eq true
+        end
       end
 
-      it 'tracks ref name when post-receive event affect single ref' do
-        refs    = ['refs/heads/tést']
-        changes = [{ before: '123456', after: blankrev, ref: 'refs/heads/tést' }]
-        subject = described_class.new(project, refs, changes)
+      context 'when wiki is beign udpated' do
+        it 'does not track any information' do
+          subject = described_class.new(project, source: Geo::PushEvent::WIKI)
 
-        subject.execute
+          subject.execute
 
-        expect(Geo::PushEvent.last.ref).to eq 'refs/heads/tést'
-      end
+          push_event = Geo::PushEvent.last
 
-      it 'tracks number of branches post-receive event affects' do
-        subject = described_class.new(project, refs, changes)
-
-        subject.execute
-
-        expect(Geo::PushEvent.last.branches_affected).to eq 1
-      end
-
-      it 'tracks number of tags post-receive event affects' do
-        subject = described_class.new(project, refs, changes)
-
-        subject.execute
-
-        expect(Geo::PushEvent.last.tags_affected).to eq 1
-      end
-
-      it 'tracks when post-receive event create new branches' do
-        refs    = ['refs/heads/tést', 'refs/heads/feature']
-        changes = [
-          { before: '123456', after: '789012', ref: 'refs/heads/tést' },
-          { before: blankrev, after: '210987', ref: 'refs/heads/feature' }
-        ]
-
-        subject = described_class.new(project, refs, changes)
-
-        subject.execute
-
-        expect(Geo::PushEvent.last.new_branch).to eq true
-      end
-
-      it 'tracks when post-receive event remove branches' do
-        refs    = ['refs/heads/tést', 'refs/heads/feature']
-        changes = [
-          { before: '123456', after: '789012', ref: 'refs/heads/tést' },
-          { before: '654321', after: blankrev, ref: 'refs/heads/feature' }
-        ]
-        subject = described_class.new(project, refs, changes)
-
-        subject.execute
-
-        expect(Geo::PushEvent.last.remove_branch).to eq true
+          expect(push_event.ref).to be_nil
+          expect(push_event.branches_affected).to be_zero
+          expect(push_event.tags_affected).to be_zero
+          expect(push_event.new_branch).to eq false
+          expect(push_event.remove_branch).to eq false
+        end
       end
     end
   end

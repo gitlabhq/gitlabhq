@@ -1,11 +1,12 @@
 module Geo
   class PushService
-    attr_reader :project, :refs, :changes
+    attr_reader :project, :source, :refs, :changes
 
-    def initialize(project, refs, changes)
+    def initialize(project, refs: [], changes: [], source: Geo::PushEvent::REPOSITORY)
       @project = project
       @refs    = refs
       @changes = changes
+      @source  = source
     end
 
     def execute
@@ -17,7 +18,7 @@ module Geo
         event_log.save!
       end
     rescue ActiveRecord::RecordInvalid
-      log('Push event could not created')
+      log("#{Geo::PushEvent.sources.key(source).humanize} updated event could not created")
     end
 
     private
@@ -25,6 +26,7 @@ module Geo
     def build_push_event
       Geo::PushEvent.new(
         project: project,
+        source: source,
         ref: ref,
         branches_affected: branches_affected,
         tags_affected: tags_affected,

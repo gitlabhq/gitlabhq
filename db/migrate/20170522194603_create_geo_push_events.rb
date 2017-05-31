@@ -10,6 +10,7 @@ class CreateGeoPushEvents < ActiveRecord::Migration
       t.integer :tags_affected, null: false
       t.boolean :new_branch, default: false, null: false
       t.boolean :remove_branch, default: false, null: false
+      t.integer :source, limit: 2, index: true, null: false
     end
   end
 end

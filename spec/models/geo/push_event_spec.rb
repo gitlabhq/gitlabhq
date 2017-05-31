@@ -9,7 +9,7 @@ RSpec.describe Geo::PushEvent, type: :model do
     it { is_expected.to validate_presence_of(:project) }
   end
 
-  describe '#event_type' do
-    it { is_expected.to define_enum_for(:event_type).with([:repository_updated, :wiki_updated]) }
+  describe '#source' do
+    it { is_expected.to define_enum_for(:source).with([:repository, :wiki]) }
   end
 end

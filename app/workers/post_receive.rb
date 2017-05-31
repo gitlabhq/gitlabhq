@@ -18,10 +18,7 @@ class PostReceive
     post_received = Gitlab::GitPostReceive.new(project, identifier, changes)
 
     if is_wiki
-      update_wiki_es_indexes(post_received)
-
-      # Triggers repository update on secondary nodes when Geo is enabled
-      Gitlab::Geo.notify_wiki_update(post_received.project) if Gitlab::Geo.enabled?
+      process_wiki_update(post_received)
     else
       process_project_changes(post_received)
       process_repository_update(post_received)
@@ -44,10 +41,23 @@ class PostReceive
       refs << ref
     end
 
-    Geo::PushService.new(post_received.project, changes, refs.to_a).execute
+    # Generate repository update event on Geo event log when Geo is enabled
+    Geo::PushService.new(post_received.project, refs: refs.to_a, changes: changes).execute
 
     hook_data = Gitlab::DataBuilder::Repository.update(post_received.project, @user, changes, refs.to_a)
     SystemHooksService.new.execute_hooks(hook_data, :repository_update_hooks)
+  end
+
+  def process_wiki_update(post_received)
+    update_wiki_es_indexes(post_received)
+
+    if Gitlab::Geo.enabled?
+      # Generate wiki update event on Geo event log
+      Geo::PushService.new(post_received.project, source: Geo::PushEvent::WIKI).execute
+
+      # Triggers repository update on secondary nodes
+      Gitlab::Geo.notify_wiki_update(post_received.project)
+    end
   end
 
   def process_project_changes(post_received)
