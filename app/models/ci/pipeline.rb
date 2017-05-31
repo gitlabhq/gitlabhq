@@ -296,11 +296,13 @@ module Ci
     end
 
     def stage_seeds
-      return [] unless config_processor
+      return unless config_processor
 
-      config_processor.stage_seeds(ref: ref,
-                                   tag: tag?,
-                                   trigger: trigger_requests.first)
+      seeds_scope = { ref: ref, tag: tag?, trigger: trigger_requests.first }
+
+      config_processor.stage_seeds(seeds_scope).tap do |seeds|
+        seeds.pipeline = self
+      end
     end
 
     def has_stages?
@@ -312,7 +314,7 @@ module Ci
     end
 
     def config_processor
-      return nil unless ci_yaml_file
+      return unless ci_yaml_file
       return @config_processor if defined?(@config_processor)
 
       @config_processor ||= begin

@@ -202,6 +202,17 @@ describe Ci::Pipeline, models: true do
                              status: 'success')
     end
 
+    describe '#stage_seeds' do
+      let(:pipeline) do
+        create(:ci_pipeline, config: { rspec: { script: 'rake' } })
+      end
+
+      it 'returns preseeded stage seeds object' do
+        expect(pipeline.stage_seeds).to be_a Gitlab::Ci::Stage::Seeds
+        expect(pipeline.stage_seeds.stages).to all(include(pipeline: pipeline))
+      end
+    end
+
     describe '#stages' do
       subject { pipeline.stages }
 
