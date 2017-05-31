@@ -75,6 +75,42 @@ describe SystemCheck::SimpleExecutor, lib: true do
     end
   end
 
+  describe '#component' do
+    it 'returns stored component name' do
+      expect(subject.component).to eq('Test')
+    end
+  end
+
+  describe '#checks' do
+    before do
+      subject << SimpleCheck
+    end
+
+    it 'returns a set of classes' do
+      expect(subject.checks).to include(SimpleCheck)
+    end
+  end
+
+  describe '#<<' do
+    before do
+      subject << SimpleCheck
+    end
+
+    it 'appends a new check to the Set' do
+      subject << OtherCheck
+      stored_checks = subject.checks.to_a
+
+      expect(stored_checks.first).to eq(SimpleCheck)
+      expect(stored_checks.last).to eq(OtherCheck)
+    end
+
+    it 'inserts unique itens only' do
+      subject << SimpleCheck
+
+      expect(subject.checks.size).to eq(1)
+    end
+  end
+
   subject { described_class.new('Test') }
 
   describe '#execute' do
@@ -120,6 +156,7 @@ describe SystemCheck::SimpleExecutor, lib: true do
       context 'when check implements #repair!' do
         it 'executes #repair!' do
           expect_any_instance_of(RepairCheck).to receive(:repair!)
+
           subject.run_check(RepairCheck)
         end
 
@@ -127,6 +164,7 @@ describe SystemCheck::SimpleExecutor, lib: true do
           it 'does not execute #show_error' do
             expect_any_instance_of(RepairCheck).to receive(:repair!).and_call_original
             expect_any_instance_of(RepairCheck).not_to receive(:show_error)
+
             subject.run_check(RepairCheck)
           end
         end
@@ -135,6 +173,7 @@ describe SystemCheck::SimpleExecutor, lib: true do
           it 'does not execute #show_error' do
             expect_any_instance_of(RepairCheck).to receive(:repair!) { false }
             expect_any_instance_of(RepairCheck).to receive(:show_error)
+
             subject.run_check(RepairCheck)
           end
         end
@@ -144,6 +183,7 @@ describe SystemCheck::SimpleExecutor, lib: true do
     context 'when check implements skip?' do
       it 'executes #skip? method' do
         expect_any_instance_of(SkipCheck).to receive(:skip?).and_call_original
+
         subject.run_check(SkipCheck)
       end
 
@@ -153,6 +193,7 @@ describe SystemCheck::SimpleExecutor, lib: true do
 
       it 'does not execute #check when #skip? is true' do
         expect_any_instance_of(SkipCheck).not_to receive(:check?)
+
         subject.run_check(SkipCheck)
       end
     end
@@ -160,17 +201,20 @@ describe SystemCheck::SimpleExecutor, lib: true do
     context 'when implements a #multi_check' do
       it 'executes #multi_check method' do
         expect_any_instance_of(MultiCheck).to receive(:multi_check)
+
         subject.run_check(MultiCheck)
       end
 
       it 'does not execute #check method' do
         expect_any_instance_of(MultiCheck).not_to receive(:check)
+
         subject.run_check(MultiCheck)
       end
 
       context 'when check implements #skip?' do
         it 'executes #skip? method' do
           expect_any_instance_of(SkipMultiCheck).to receive(:skip?).and_call_original
+
           subject.run_check(SkipMultiCheck)
         end
       end

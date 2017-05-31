@@ -4,7 +4,29 @@ module SystemCheck
   #
   # There is no concurrency level and the output is progressively
   # printed into the STDOUT
-  class SimpleExecutor < BaseExecutor
+  #
+  # @attr_reader [Array<BaseCheck>] checks classes of corresponding checks to be executed in the same order
+  # @attr_reader [String] component name of the component relative to the checks being executed
+  class SimpleExecutor
+    attr_reader :checks
+    attr_reader :component
+
+    # @param [String] component name of the component relative to the checks being executed
+    def initialize(component)
+      raise ArgumentError unless component.is_a? String
+
+      @component = component
+      @checks = Set.new
+    end
+
+    # Add a check to be executed
+    #
+    # @param [BaseCheck] check class
+    def <<(check)
+      raise ArgumentError unless check < BaseCheck
+      @checks << check
+    end
+
     # Executes defined checks in the specified order and outputs confirmation or error information
     def execute
       start_checking(component)

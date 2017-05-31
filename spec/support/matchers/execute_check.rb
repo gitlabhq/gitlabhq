@@ -14,6 +14,10 @@ RSpec::Matchers.define :execute_check do |expected|
   end
 
   failure_message do |actual|
-    return 'This matcher must be used with SystemCheck' unless actual == SystemCheck
+    'This matcher must be used with SystemCheck' unless actual == SystemCheck
+  end
+
+  failure_message_when_negated do |actual|
+    'This matcher must be used with SystemCheck' unless actual == SystemCheck
   end
 end
