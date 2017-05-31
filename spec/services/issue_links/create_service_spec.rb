@@ -19,7 +19,7 @@ describe IssueLinks::CreateService, service: true do
 
     subject { described_class.new(issue, user, params).execute }
 
-    context 'when empty reference list' do
+    context 'when the reference list is empty' do
       let(:params) do
         { issue_references: [] }
       end
@@ -61,7 +61,7 @@ describe IssueLinks::CreateService, service: true do
       end
     end
 
-    context 'when any Issue to relate' do
+    context 'when there is an issue to relate' do
       let(:issue_a) { create :issue, project: project }
       let(:another_project) { create :empty_project, namespace: project.namespace }
       let(:another_project_issue) { create :issue, project: another_project }
@@ -84,7 +84,7 @@ describe IssueLinks::CreateService, service: true do
         expect(IssueLink.find_by!(target: another_project_issue)).to have_attributes(source: issue)
       end
 
-      it 'returns success message with Issue reference' do
+      it 'returns success status' do
         is_expected.to eq(status: :success)
       end
 
@@ -117,7 +117,7 @@ describe IssueLinks::CreateService, service: true do
         { issue_references: [issue_b.to_reference, issue_a.to_reference] }
       end
 
-      it 'returns success' do
+      it 'returns success status' do
         is_expected.to eq(status: :success)
       end
 

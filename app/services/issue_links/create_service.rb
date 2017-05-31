@@ -9,13 +9,13 @@ module IssueLinks
         return error('No Issue found for given reference', 401)
       end
 
-      create_issue_link
+      create_issue_links
       success
     end
 
     private
 
-    def create_issue_link
+    def create_issue_links
       referenced_issues.each do |referenced_issue|
         create_notes(referenced_issue) if relate_issues(referenced_issue)
       end

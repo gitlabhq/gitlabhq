@@ -10,7 +10,7 @@ class IssueLink < ActiveRecord::Base
   private
 
   def check_self_relation
-    return unless source || target
+    return unless source && target
 
     if source == target
       errors.add(:source, 'cannot be related to itself')

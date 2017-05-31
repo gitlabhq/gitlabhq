@@ -19,17 +19,10 @@ describe Projects::IssueLinksController do
       login_as user
     end
 
-    subject do
-      get namespace_project_issue_links_path(namespace_id: issue.project.namespace,
-                                             project_id: issue.project,
-                                             issue_id: issue,
-                                             format: :json)
-    end
-
     it 'returns JSON response' do
       list_service_response = IssueLinks::ListService.new(issue, user).execute
 
-      subject
+      get namespace_project_issue_links_path(issue_links_params)
 
       expect(response).to have_http_status(200)
       expect(json_response).to eq(list_service_response.as_json)
@@ -38,87 +31,70 @@ describe Projects::IssueLinksController do
 
   describe 'POST /*namespace_id/:project_id/issues/:issue_id/links' do
     let(:issue_b) { create :issue, project: project }
-    let(:issue_references) { [issue_b.to_reference] }
-    let(:user_role) { :developer }
 
     before do
       project.team << [user, user_role]
       login_as user
     end
 
-    subject do
-      post namespace_project_issue_links_path(namespace_id: issue.project.namespace,
-                                              project_id: issue.project,
-                                              issue_id: issue,
-                                              issue_references: issue_references,
-                                              format: :json)
-    end
-
     context 'with success' do
+      let(:user_role) { :developer }
+      let(:issue_references) { [issue_b.to_reference] }
+
       it 'returns success JSON' do
-        subject
+        post namespace_project_issue_links_path(issue_links_params(issue_references: issue_references))
 
         list_service_response = IssueLinks::ListService.new(issue, user).execute
 
         expect(response).to have_http_status(200)
-        expect(json_response['result']).to eq('status' => 'success')
-        expect(json_response['issues']).to eq(list_service_response.as_json)
+        expect(json_response).to eq('message' => nil,
+                                    'issues' => list_service_response.as_json)
       end
     end
 
     context 'with failure' do
       context 'when unauthorized' do
         let(:user_role) { :guest }
+        let(:issue_references) { [issue_b.to_reference] }
 
         it 'returns 403' do
-          subject
+          post namespace_project_issue_links_path(issue_links_params(issue_references: issue_references))
 
           expect(response).to have_http_status(403)
         end
       end
 
       context 'when failing service result' do
+        let(:user_role) { :developer }
         let(:issue_references) { ['#999'] }
 
         it 'returns failure JSON' do
-          subject
+          post namespace_project_issue_links_path(issue_links_params(issue_references: issue_references))
 
           list_service_response = IssueLinks::ListService.new(issue, user).execute
 
           expect(response).to have_http_status(401)
-          expect(json_response['result']).to eq('message' => 'No Issue found for given reference',
-                                                'status' => 'error',
-                                                'http_status' => 401)
-          expect(json_response['issues']).to eq(list_service_response.as_json)
+          expect(json_response).to eq('message' => 'No Issue found for given reference', 'issues' => list_service_response.as_json)
         end
       end
     end
   end
 
   describe 'DELETE /*namespace_id/:project_id/issues/:issue_id/link/:id' do
-    let(:referenced_issue) { create :issue, project: project }
     let(:issue_link) { create :issue_link, target: referenced_issue }
-    let(:current_project_user_role) { :developer }
-
-    subject do
-      delete namespace_project_issue_link_path(namespace_id: issue.project.namespace,
-                                               project_id: issue.project,
-                                               issue_id: issue,
-                                               id: issue_link.id,
-                                               format: :json)
-    end
 
     before do
-      project.team << [user, current_project_user_role]
+      project.team << [user, user_role]
       login_as user
     end
 
     context 'when unauthorized' do
       context 'when no authorization on current project' do
-        let(:current_project_user_role) { :guest }
+        let(:referenced_issue) { create :issue, project: project }
+        let(:user_role) { :guest }
 
         it 'returns 403' do
-          subject
+          delete namespace_project_issue_link_path(issue_links_params(id: issue_link.id))
 
           expect(response).to have_http_status(403)
         end
@@ -127,10 +103,10 @@ describe Projects::IssueLinksController do
       context 'when no authorization on the related issue project' do
         # unauthorized project issue
         let(:referenced_issue) { create :issue }
-        let(:current_project_user_role) { :developer }
+        let(:user_role) { :developer }
 
         it 'returns 403' do
-          subject
+          delete namespace_project_issue_link_path(issue_links_params(id: issue_link.id))
 
           expect(response).to have_http_status(403)
         end
@@ -138,16 +114,23 @@ describe Projects::IssueLinksController do
     end
 
     context 'when authorized' do
-      let(:current_project_user_role) { :developer }
+      let(:referenced_issue) { create :issue, project: project }
+      let(:user_role) { :developer }
 
       it 'returns success JSON' do
-        subject
+        delete namespace_project_issue_link_path(issue_links_params(id: issue_link.id))
 
         list_service_response = IssueLinks::ListService.new(issue, user).execute
 
-        expect(json_response['result']).to eq('message' => 'Relation was removed', 'status' => 'success')
-        expect(json_response['issues']).to eq(list_service_response.as_json)
+        expect(json_response).to eq('issues' => list_service_response.as_json)
       end
     end
+  end
+
+  def issue_links_params(opts = {})
+    opts.reverse_merge(namespace_id: issue.project.namespace,
+                       project_id: issue.project,
+                       issue_id: issue,
+                       format: :json)
   end
 end

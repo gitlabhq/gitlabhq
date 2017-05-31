@@ -8,19 +8,19 @@ module IssueLinks
     end
 
     def execute
-      remove_relation!
-      create_notes!
+      remove_relation
+      create_notes
 
       success(message: 'Relation was removed')
     end
 
     private
 
-    def remove_relation!
+    def remove_relation
       @issue_link.destroy!
     end
 
-    def create_notes!
+    def create_notes
       SystemNoteService.unrelate_issue(@issue, @referenced_issue, current_user)
       SystemNoteService.unrelate_issue(@referenced_issue, @issue, current_user)
     end

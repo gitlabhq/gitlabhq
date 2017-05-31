@@ -7,10 +7,10 @@ module Projects
     end
 
     def create
-      opts = params.slice(:issue_references)
-      result = IssueLinks::CreateService.new(issue, current_user, opts).execute
+      create_params = params.slice(:issue_references)
+      result = IssueLinks::CreateService.new(issue, current_user, create_params).execute
 
-      render json: { result: result, issues: issues }, status: result[:http_status]
+      render json: { message: result[:message], issues: issues }, status: result[:http_status]
     end
 
     def destroy
@@ -18,9 +18,9 @@ module Projects
 
       return render_403 unless can?(current_user, :admin_issue_link, issue_link.target.project)
 
-      result = IssueLinks::DestroyService.new(issue_link, current_user).execute
+      IssueLinks::DestroyService.new(issue_link, current_user).execute
 
-      render json: { result: result, issues: issues }
+      render json: { issues: issues }
     end
 
     private

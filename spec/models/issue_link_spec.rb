@@ -18,12 +18,25 @@ describe IssueLink do
     end
 
     context 'self relation' do
-      it 'invalidates object' do
-        issue = create :issue
-        issue_link = build :issue_link, source: issue, target: issue
+      let(:issue) { create :issue }
 
-        expect(issue_link).to be_invalid
-        expect(issue_link.errors[:source]).to include('cannot be related to itself')
+      context 'cannot be validated' do
+        it 'does not invalidate object with self relation error' do
+          issue_link = build :issue_link, source: issue, target: nil
+
+          issue_link.valid?
+
+          expect(issue_link.errors[:source]).to be_empty
+        end
+      end
+
+      context 'can be invalidated' do
+        it 'invalidates object' do
+          issue_link = build :issue_link, source: issue, target: issue
+
+          expect(issue_link).to be_invalid
+          expect(issue_link.errors[:source]).to include('cannot be related to itself')
+        end
       end
     end
   end
