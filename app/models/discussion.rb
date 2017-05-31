@@ -21,7 +21,7 @@ class Discussion
   end
 
   def self.build_collection(notes, context_noteable = nil)
-    grouped_notes = notes.includes(:noteable).group_by { |n| n.discussion_id(context_noteable) }
+    grouped_notes = notes.group_by { |n| n.discussion_id(context_noteable) }
     grouped_notes.values.map { |notes| build(notes, context_noteable) }
   end
 
