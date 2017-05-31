@@ -376,15 +376,21 @@ describe SlashCommands::InterpretService, services: true do
       let(:content) { "/assign @#{developer.username}" }
 
       context 'Issue' do
-        it 'fetches assignee and populates assignee_id if content contains /assign' do
+        it 'fetches assignees and populates them if content contains /assign' do
+          user = create(:user)
+          issue.assignees << user
+
           _, updates = service.execute(content, issue)
 
-          expect(updates).to eq(assignee_ids: [developer.id])
+          expect(updates[:assignee_ids]).to match_array([developer.id, user.id])
         end
       end
 
       context 'Merge Request' do
         it 'fetches assignee and populates assignee_id if content contains /assign' do
+          user = create(:user)
+          merge_request.update(assignee: user)
+
           _, updates = service.execute(content, merge_request)
 
           expect(updates).to eq(assignee_id: developer.id)
