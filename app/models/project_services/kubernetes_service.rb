@@ -116,10 +116,9 @@ class KubernetesService < DeploymentService
   # short time later
   def terminals(environment)
     with_reactive_cache do |data|
-      pods = data.fetch(:pods, nil)
-      filter_pods(pods, app: environment.slug).
-        flat_map { |pod| terminals_for_pod(api_url, actual_namespace, pod) }.
-        each { |terminal| add_terminal_auth(terminal, terminal_auth) }
+      pods = filter_by_label(data[:pods], app: environment.slug)
+      terminals = pods.flat_map { |pod| terminals_for_pod(api_url, actual_namespace, pod) }
+      terminals.each { |terminal| add_terminal_auth(terminal, terminal_auth) }
     end
   end
 
@@ -168,7 +167,7 @@ class KubernetesService < DeploymentService
   def read_pods
     kubeclient = build_kubeclient!
 
-    kubeclient.get_pods(namespace: namespace).as_json
+    kubeclient.get_pods(namespace: actual_namespace).as_json
   rescue KubeException => err
     raise err unless err.error_code == 404
     []
@@ -177,7 +176,7 @@ class KubernetesService < DeploymentService
   def read_deployments
     kubeclient = build_kubeclient!(api_path: 'apis/extensions', api_version: 'v1beta1')
 
-    kubeclient.get_deployments(namespace: namespace).as_json
+    kubeclient.get_deployments(namespace: actual_namespace).as_json
   rescue KubeException => err
     raise err unless err.error_code == 404
     []
