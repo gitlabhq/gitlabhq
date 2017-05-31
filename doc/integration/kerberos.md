@@ -217,10 +217,11 @@ as extensions to the Kerberos protocol may result in HTTP authentication headers
 larger than the default size of 8kB. Configure `large_client_header_buffers`
 to a larger value in [the NGINX configuration][nginx].
 
-## Helpful links to setup development Kerberos environment.
+## Helpful links
 
 - <https://help.ubuntu.com/community/Kerberos>
 - <http://blog.manula.org/2012/04/setting-up-kerberos-server-with-debian.html>
+- <http://www.roguelynn.com/words/explain-like-im-5-kerberos/>
 
 [gitlab.yml]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/gitlab.yml.example
 [restart gitlab]: ../administration/restart_gitlab.md#installations-from-source
