@@ -19,8 +19,8 @@ module Ci
       )
     end
 
-    serialize :options
-    serialize :yaml_variables, Gitlab::Serializer::Ci::Variables
+    serialize :options # rubocop:disable Cop/ActiverecordSerialize
+    serialize :yaml_variables, Gitlab::Serializer::Ci::Variables # rubocop:disable Cop/ActiverecordSerialize
 
     delegate :name, to: :project, prefix: true
 

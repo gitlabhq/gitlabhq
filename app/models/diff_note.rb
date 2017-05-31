@@ -6,9 +6,9 @@ class DiffNote < Note
 
   NOTEABLE_TYPES = %w(MergeRequest Commit).freeze
 
-  serialize :original_position, Gitlab::Diff::Position
-  serialize :position, Gitlab::Diff::Position
-  serialize :change_position, Gitlab::Diff::Position
+  serialize :original_position, Gitlab::Diff::Position # rubocop:disable Cop/ActiverecordSerialize
+  serialize :position, Gitlab::Diff::Position # rubocop:disable Cop/ActiverecordSerialize
+  serialize :change_position, Gitlab::Diff::Position # rubocop:disable Cop/ActiverecordSerialize
 
   validates :original_position, presence: true
   validates :position, presence: true
