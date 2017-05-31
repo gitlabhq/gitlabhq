@@ -219,7 +219,7 @@ feature 'Jobs', :feature do
       end
 
       it do
-        expect(page).to have_link 'Raw'
+        expect(page).to have_css('.js-raw-link')
       end
     end
 
@@ -282,7 +282,7 @@ feature 'Jobs', :feature do
         end
       end
 
-      context 'job is complete and not successfull' do
+      context 'job is complete and not successful' do
         let(:build) { create(:ci_build, :failed, environment: environment.name, pipeline: pipeline) }
 
         it 'shows a link for the job' do
@@ -305,7 +305,7 @@ feature 'Jobs', :feature do
     end
   end
 
-  describe "POST /:project/builds/:id/cancel" do
+  describe "POST /:project/jobs/:id/cancel" do
     context "Job from project" do
       before do
         build.run!
@@ -331,7 +331,7 @@ feature 'Jobs', :feature do
     end
   end
 
-  describe "POST /:project/builds/:id/retry" do
+  describe "POST /:project/jobs/:id/retry" do
     context "Job from project" do
       before do
         build.run!
@@ -381,7 +381,7 @@ feature 'Jobs', :feature do
     end
   end
 
-  describe "GET /:project/builds/:id/download" do
+  describe "GET /:project/jobs/:id/download" do
     before do
       build.update_attributes(artifacts_file: artifacts_file)
       visit namespace_project_job_path(project.namespace, project, build)
@@ -398,14 +398,14 @@ feature 'Jobs', :feature do
     end
   end
 
-  describe 'GET /:project/builds/:id/raw' do
+  describe 'GET /:project/jobs/:id/raw', :js do
     context 'access source' do
       context 'build from project' do
         before do
-          Capybara.current_session.driver.header('X-Sendfile-Type', 'X-Sendfile')
+          Capybara.current_session.driver.headers = { 'X-Sendfile-Type' => 'X-Sendfile' }
           build.run!
           visit namespace_project_job_path(project.namespace, project, build)
-          page.within('.js-build-sidebar') { click_link 'Raw' }
+          find('.js-raw-link-controller').click()
         end
 
         it 'sends the right headers' do
@@ -415,9 +415,9 @@ feature 'Jobs', :feature do
         end
       end
 
-      context 'build from other project' do
+      context 'job from other project' do
         before do
-          Capybara.current_session.driver.header('X-Sendfile-Type', 'X-Sendfile')
+          Capybara.current_session.driver.headers = { 'X-Sendfile-Type' => 'X-Sendfile' }
           build2.run!
           visit raw_namespace_project_job_path(project.namespace, project, build2)
         end
@@ -432,7 +432,7 @@ feature 'Jobs', :feature do
       let(:existing_file) { Tempfile.new('existing-trace-file').path }
 
       before do
-        Capybara.current_session.driver.header('X-Sendfile-Type', 'X-Sendfile')
+        Capybara.current_session.driver.headers = { 'X-Sendfile-Type' => 'X-Sendfile' }
 
         build.run!
 
@@ -442,13 +442,13 @@ feature 'Jobs', :feature do
         visit namespace_project_job_path(project.namespace, project, build)
       end
 
-      context 'when build has trace in file' do
+      context 'when build has trace in file', :js do
         let(:paths) do
           [existing_file]
         end
 
         before do
-          page.within('.js-build-sidebar') { click_link 'Raw' }
+          find('.js-raw-link-controller').click()
         end
 
         it 'sends the right headers' do
@@ -462,7 +462,7 @@ feature 'Jobs', :feature do
         let(:paths) { [] }
 
         it 'sends the right headers' do
-          expect(page.status_code).not_to have_link('Raw')
+          expect(page.status_code).not_to have_selector('.js-raw-link-controller')
         end
       end
     end
@@ -483,7 +483,7 @@ feature 'Jobs', :feature do
   end
 
   describe "GET /:project/jobs/:id/trace.json" do
-    context "Job from project" do
+    context "Build from project" do
       before do
         visit trace_namespace_project_job_path(project.namespace, project, build, format: :json)
       end
@@ -491,7 +491,7 @@ feature 'Jobs', :feature do
       it { expect(page.status_code).to eq(200) }
     end
 
-    context "Job from other project" do
+    context "Build from other project" do
       before do
         visit trace_namespace_project_job_path(project.namespace, project, build2, format: :json)
       end
@@ -501,7 +501,7 @@ feature 'Jobs', :feature do
   end
 
   describe "GET /:project/jobs/:id/status" do
-    context "Job from project" do
+    context "Build from project" do
       before do
         visit status_namespace_project_job_path(project.namespace, project, build)
       end
@@ -509,7 +509,7 @@ feature 'Jobs', :feature do
       it { expect(page.status_code).to eq(200) }
     end
 
-    context "Job from other project" do
+    context "Build from other project" do
       before do
         visit status_namespace_project_job_path(project.namespace, project, build2)
       end
