@@ -34,6 +34,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Feature availability check using feature list AND license addons.
 - Disable mirror workers for Geo secondaries.
 
+## 9.1.5 (2017-05-31)
+
+- Respect the external user setting in Elasticsearch.
+
 ## 9.1.4 (2017-05-12)
 
 - Remove warning about protecting Service Desk email from form.
