@@ -53,7 +53,7 @@ describe IssueLinks::CreateService, service: true do
       it 'returns error' do
         target_issue.project.add_guest(user)
 
-        is_expected.to eq(message: "No Issue found for given reference", status: :error, http_status: 401)
+        is_expected.to eq(message: 'No Issue found for given reference', status: :error, http_status: 401)
       end
 
       it 'no relationship is created' do
