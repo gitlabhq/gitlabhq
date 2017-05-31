@@ -45,11 +45,17 @@ window.Flash = (function() {
     textDiv.appendTo(flash);
 
     if (actionConfig) {
-      actionLink = $('<a/>', {
+      const actionLinkConfig = {
         class: 'flash-action',
         href: actionConfig.href || '#',
         text: actionConfig.title
-      });
+      };
+
+      if (!actionConfig.href) {
+        actionLinkConfig.role = 'button';
+      }
+
+      actionLink = $('<a/>', actionLinkConfig);
 
       actionLink.appendTo(flash);
       this.flashContainer.on('click', '.flash-action', actionConfig.clickHandler);
