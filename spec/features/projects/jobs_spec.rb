@@ -219,7 +219,7 @@ feature 'Jobs', :feature do
       end
 
       it do
-        expect(page).to have_css('.js-raw-link')
+        expect(page).to have_link 'Raw'
       end
     end
 
@@ -301,6 +301,17 @@ feature 'Jobs', :feature do
 
           expect(page).to have_link('latest deployment')
         end
+      end
+    end
+
+    context 'build project is over shared runners limit' do
+      let(:group) { create(:group, :with_used_build_minutes_limit) }
+      let(:project) { create(:project, namespace: group, shared_runners_enabled: true) }
+
+      it 'displays a warning message' do
+        visit namespace_project_build_path(project.namespace, project, build)
+
+        expect(page).to have_content('You have used all your shared Runners pipeline minutes.')
       end
     end
   end
@@ -402,10 +413,10 @@ feature 'Jobs', :feature do
     context 'access source' do
       context 'job from project' do
         before do
-          Capybara.current_session.driver.headers = { 'X-Sendfile-Type' => 'X-Sendfile' }
+          Capybara.current_session.driver.header('X-Sendfile-Type', 'X-Sendfile')
           build.run!
           visit namespace_project_job_path(project.namespace, project, build)
-          find('.js-raw-link-controller').click()
+          page.within('.js-build-sidebar') { click_link 'Raw' }
         end
 
         it 'sends the right headers' do
@@ -417,7 +428,7 @@ feature 'Jobs', :feature do
 
       context 'job from other project' do
         before do
-          Capybara.current_session.driver.headers = { 'X-Sendfile-Type' => 'X-Sendfile' }
+          Capybara.current_session.driver.header('X-Sendfile-Type', 'X-Sendfile')
           build2.run!
           visit raw_namespace_project_job_path(project.namespace, project, build2)
         end
@@ -432,7 +443,7 @@ feature 'Jobs', :feature do
       let(:existing_file) { Tempfile.new('existing-trace-file').path }
 
       before do
-        Capybara.current_session.driver.headers = { 'X-Sendfile-Type' => 'X-Sendfile' }
+        Capybara.current_session.driver.header('X-Sendfile-Type', 'X-Sendfile')
 
         build.run!
 
@@ -448,7 +459,7 @@ feature 'Jobs', :feature do
         end
 
         before do
-          find('.js-raw-link-controller').click()
+          page.within('.js-build-sidebar') { click_link 'Raw' }
         end
 
         it 'sends the right headers' do
@@ -462,7 +473,7 @@ feature 'Jobs', :feature do
         let(:paths) { [] }
 
         it 'sends the right headers' do
-          expect(page.status_code).not_to have_selector('.js-raw-link-controller')
+          expect(page.status_code).not_to have_link('Raw')
         end
       end
     end
