@@ -1,6 +1,5 @@
 module IssuablesHelper
   include GitlabRoutingHelper
-  include EditableHelper
 
   def sidebar_gutter_toggle_icon
     sidebar_gutter_collapsed? ? icon('angle-double-left', { 'aria-hidden': 'true' }) : icon('angle-double-right', { 'aria-hidden': 'true' })
@@ -284,5 +283,17 @@ module IssuablesHelper
     updated_at_by = updated_at_by(issue)
 
     data.merge(updated_at_by)
+  end
+
+  def updated_at_by(issuable)
+    return {} unless issuable.is_edited?
+
+    {
+      updated_at: issuable.updated_at.to_time.iso8601,
+      updated_by: {
+        name: issuable.last_edited_by.name,
+        path: user_path(issuable.last_edited_by)
+      }
+    }
   end
 end
