@@ -161,6 +161,7 @@ build-package:
   variables:
     SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "false"
+    EE_PACKAGE: "true"
   stage: build
   when: manual
   script:

@@ -182,6 +182,8 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def user_can_push_to_source_branch?
+    return false unless source_branch_exists?
+
     ::Gitlab::UserAccess
       .new(current_user, project: source_project)
       .can_push_to_branch?(source_branch)

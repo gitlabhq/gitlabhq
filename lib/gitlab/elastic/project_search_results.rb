@@ -69,6 +69,8 @@ module Gitlab
       end
 
       def wiki_blobs
+        return Kaminari.paginate_array([]) unless Ability.allowed?(@current_user, :read_wiki, project)
+
         if project.wiki_enabled? && !project.wiki.empty? && query.present?
           project.wiki.search(
             query,
