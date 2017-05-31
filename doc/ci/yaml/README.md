@@ -1105,6 +1105,36 @@ variables:
   GIT_STRATEGY: none
 ```
 
+## Git Checkout
+
+> Introduced in GitLab Runner 9.3
+
+The `GIT_CHECKOUT` variable can be used when the `GIT_STRATEGY` is set to either
+`clone` or `fetch` to specify whether a `git checkout` should be run. If not
+specified, it defaults to true. Like `GIT_STRATEGY`, it can be set in either the
+global [`variables`](#variables) section or the [`variables`](#job-variables)
+section for individual jobs.
+
+If set to `false`, the Runner will:
+
+- when doing `fetch` - update the repository and leave working copy on
+  the current revision,
+- when doing `clone` - clone the repository and leave working copy on the
+  default branch.
+
+Having this setting set to `true` will mean that for both `clone` and `fetch`
+strategies the Runner will checkout the working copy to a revision related
+to the CI pipeline:
+
+```yaml
+variables:
+  GIT_STRATEGY: clone
+  GIT_CHECKOUT: false
+script:
+  - git checkout master
+  - git merge $CI_BUILD_REF_NAME
+```
+
 ## Git Submodule Strategy
 
 > Requires GitLab Runner v1.10+.
