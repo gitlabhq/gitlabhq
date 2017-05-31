@@ -66,14 +66,16 @@ describe Key, models: true do
     end
 
     it "does not accept the exact same key twice" do
-      create(:key, user: user)
-      expect(build(:key, user: user)).not_to be_valid
+      first_key = create(:key, user: user)
+
+      expect(build(:key, user: user, key: first_key.key)).not_to be_valid
     end
 
     it "does not accept a duplicate key with a different comment" do
-      create(:key, user: user)
-      duplicate = build(:key, user: user)
+      first_key = create(:key, user: user)
+      duplicate = build(:key, user: user, key: first_key.key)
       duplicate.key << ' extra comment'
+
       expect(duplicate).not_to be_valid
     end
   end

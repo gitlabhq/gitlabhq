@@ -49,7 +49,7 @@ describe Profiles::KeysController do
         expect(response.body).to eq(user.all_ssh_keys.join("\n"))
 
         expect(response.body).to include(key.key.sub(' dummy@gitlab.com', ''))
-        expect(response.body).to include(another_key.key)
+        expect(response.body).to include(another_key.key.sub(' dummy@gitlab.com', ''))
 
         expect(response.body).not_to include(deploy_key.key)
       end

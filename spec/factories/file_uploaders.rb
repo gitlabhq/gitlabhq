@@ -1,5 +1,7 @@
 FactoryGirl.define do
   factory :file_uploader do
+    skip_create
+
     project factory: :empty_project
     secret nil
 
