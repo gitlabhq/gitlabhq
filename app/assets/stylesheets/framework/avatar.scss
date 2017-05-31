@@ -57,6 +57,10 @@
     border: none;
   }
 
+  &.avatar-placeholder {
+    border: none;
+  }
+
   &:not([href]):hover {
     border-color: rgba($avatar-border, .2);
   }
