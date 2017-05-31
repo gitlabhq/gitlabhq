@@ -110,6 +110,12 @@ describe PostReceive do
       allow(subject).to receive(:process_project_changes).and_return(true)
     end
 
+    it 'calls Geo::PushService' do
+      expect_any_instance_of(Geo::PushService).to receive(:execute)
+
+      subject.perform(pwd(project), key_id, base64_changes)
+    end
+
     it 'calls SystemHooksService' do
       expect_any_instance_of(SystemHooksService).to receive(:execute_hooks).with(fake_hook_data, :repository_update_hooks).and_return(true)
 

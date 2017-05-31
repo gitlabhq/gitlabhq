@@ -531,10 +531,13 @@ ActiveRecord::Schema.define(version: 20170602003304) do
   create_table "geo_push_events", force: :cascade do |t|
     t.integer "project_id", null: false
     t.datetime "created_at", null: false
-    t.integer "event_type", limit: 2, null: false
+    t.string "ref"
+    t.integer "branches_affected", null: false
+    t.integer "tags_affected", null: false
+    t.boolean "new_branch", default: false, null: false
+    t.boolean "remove_branch", default: false, null: false
   end
 
-  add_index "geo_push_events", ["event_type"], name: "index_geo_push_events_on_event_type", using: :btree
   add_index "geo_push_events", ["project_id"], name: "index_geo_push_events_on_project_id", using: :btree
 
   create_table "historical_data", force: :cascade do |t|

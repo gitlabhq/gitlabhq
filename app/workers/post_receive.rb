@@ -44,6 +44,8 @@ class PostReceive
       refs << ref
     end
 
+    Geo::PushService.new(post_received.project, changes, refs.to_a).execute
+
     hook_data = Gitlab::DataBuilder::Repository.update(post_received.project, @user, changes, refs.to_a)
     SystemHooksService.new.execute_hooks(hook_data, :repository_update_hooks)
   end
