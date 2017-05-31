@@ -62,17 +62,17 @@
             Showing last
             %span.js-truncated-info-size.truncated-info-size><
             KiB of log -
-            %a.js-raw-link.raw-link{ href: raw_namespace_project_build_path(@project.namespace, @project, @build) }>< Complete Raw
+            %a.js-raw-link.raw-link{ href: raw_namespace_project_job_path(@project.namespace, @project, @build) }>< Complete Raw
           .controllers
             - if @build.has_trace?
-              = link_to raw_namespace_project_build_path(@project.namespace, @project, @build),
+              = link_to raw_namespace_project_job_path(@project.namespace, @project, @build),
                       title: 'Open raw trace',
                       data: { placement: 'top', container: 'body' },
                       class: 'js-raw-link-controller has-tooltip' do
                 = icon('download')
 
             - if can?(current_user, :update_build, @project) && @build.erasable?
-              = link_to erase_namespace_project_build_path(@project.namespace, @project, @build),
+              = link_to erase_namespace_project_job_path(@project.namespace, @project, @build),
                         method: :post,
                         data: { confirm: 'Are you sure you want to erase this build?', placement: 'top', container: 'body' },
                         title: 'Erase Build',

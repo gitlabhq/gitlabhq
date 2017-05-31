@@ -473,6 +473,7 @@ Parameters:
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
+| `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
 
 ### Create project for user
 
@@ -506,6 +507,7 @@ Parameters:
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
+| `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
 
 ### Edit project
 
@@ -538,6 +540,7 @@ Parameters:
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
+| `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
 
 ### Fork project
 

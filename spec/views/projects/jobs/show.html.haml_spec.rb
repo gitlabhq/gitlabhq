@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'projects/builds/show', :view do
+describe 'projects/jobs/show', :view do
   let(:project) { create(:project, :repository) }
   let(:build) { create(:ci_build, pipeline: pipeline) }
 
@@ -278,7 +278,7 @@ describe 'projects/builds/show', :view do
 
     it 'links to issues/new with the title and description filled in' do
       title = "Build Failed ##{build.id}"
-      build_url = namespace_project_build_url(project.namespace, project, build)
+      build_url = namespace_project_job_url(project.namespace, project, build)
       href = new_namespace_project_issue_path(
         project.namespace,
         project,

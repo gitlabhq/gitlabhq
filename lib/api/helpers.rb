@@ -256,29 +256,19 @@ module API
 
     # project helpers
 
-    def filter_projects(projects)
-      if params[:membership]
-        projects = projects.merge(current_user.authorized_projects)
-      end
-
-      if params[:owned]
-        projects = projects.merge(current_user.owned_projects)
-      end
-
-      if params[:starred]
-        projects = projects.merge(current_user.starred_projects)
-      end
-
-      if params[:search].present?
-        projects = projects.search(params[:search])
-      end
-
-      if params[:visibility].present?
-        projects = projects.search_by_visibility(params[:visibility])
-      end
-
-      projects = projects.where(archived: params[:archived])
+    def reorder_projects(projects)
       projects.reorder(params[:order_by] => params[:sort])
+    end
+
+    def project_finder_params
+      finder_params = {}
+      finder_params[:owned] = true if params[:owned].present?
+      finder_params[:non_public] = true if params[:membership].present?
+      finder_params[:starred] = true if params[:starred].present?
+      finder_params[:visibility_level] = Gitlab::VisibilityLevel.level_value(params[:visibility]) if params[:visibility]
+      finder_params[:archived] = params[:archived]
+      finder_params[:search] = params[:search] if params[:search]
+      finder_params
     end
 
     # file helpers
