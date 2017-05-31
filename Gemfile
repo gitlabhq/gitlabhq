@@ -370,3 +370,7 @@ gem 'sys-filesystem', '~> 1.1.6'
 gem 'gitaly', '~> 0.7.0'
 
 gem 'toml-rb', '~> 0.3.15', require: false
+
+# Feature toggles
+gem 'flipper', '~> 0.10.2'
+gem 'flipper-active_record', '~> 0.10.2'
