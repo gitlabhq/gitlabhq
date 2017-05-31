@@ -9,10 +9,6 @@ describe SystemCheck, lib: true do
   end
 
   describe '.run' do
-    it 'requires custom executor to be a BasicExecutor' do
-      expect { subject.run('Component', [], SystemCheck::SimpleExecutor) }.not_to raise_error
-    end
-
     context 'custom matcher' do
       class SimpleCheck < SystemCheck::BaseCheck
         def check?

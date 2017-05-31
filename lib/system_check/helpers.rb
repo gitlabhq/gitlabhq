@@ -68,19 +68,8 @@ module SystemCheck
       Dir.pwd == '/opt/gitlab/embedded/service/gitlab-rails'
     end
 
-    def gitlab_user
-      Gitlab.config.gitlab.user
-    end
-
     def sudo_gitlab(command)
       "sudo -u #{gitlab_user} -H #{command}"
-    end
-
-    def is_gitlab_user?
-      return @is_gitlab_user unless @is_gitlab_user.nil?
-
-      current_user = run_command(%w(whoami)).chomp
-      @is_gitlab_user = current_user == gitlab_user
     end
   end
 end
