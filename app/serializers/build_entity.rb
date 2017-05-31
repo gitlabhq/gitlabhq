@@ -5,15 +5,15 @@ class BuildEntity < Grape::Entity
   expose :name
 
   expose :build_path do |build|
-    path_to(:namespace_project_build, build)
+    path_to(:namespace_project_job, build)
   end
 
   expose :retry_path do |build|
-    path_to(:retry_namespace_project_build, build)
+    path_to(:retry_namespace_project_job, build)
   end
 
   expose :play_path, if: -> (*) { playable? } do |build|
-    path_to(:play_namespace_project_build, build)
+    path_to(:play_namespace_project_job, build)
   end
 
   expose :playable?, as: :playable

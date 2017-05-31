@@ -7,6 +7,7 @@
 #   project_ids_relation: int[] - project ids to use
 #   params:
 #     trending: boolean
+#     owned: boolean
 #     non_public: boolean
 #     starred: boolean
 #     sort: string
@@ -28,13 +29,17 @@ class ProjectsFinder < UnionFinder
 
   def execute
     items = init_collection
-    items = by_ids(items)
+    items = items.map do |item|
+      item = by_ids(item)
+      item = by_personal(item)
+      item = by_starred(item)
+      item = by_trending(item)
+      item = by_visibilty_level(item)
+      item = by_tags(item)
+      item = by_search(item)
+      by_archived(item)
+    end
     items = union(items)
-    items = by_personal(items)
-    items = by_visibilty_level(items)
-    items = by_tags(items)
-    items = by_search(items)
-    items = by_archived(items)
     sort(items)
   end
 
@@ -43,10 +48,8 @@ class ProjectsFinder < UnionFinder
   def init_collection
     projects = []
 
-    if params[:trending].present?
-      projects << Project.trending
-    elsif params[:starred].present? && current_user
-      projects << current_user.viewable_starred_projects
+    if params[:owned].present?
+      projects << current_user.owned_projects if current_user
     else
       projects << current_user.authorized_projects if current_user
       projects << Project.unscoped.public_to_user(current_user) unless params[:non_public].present?
@@ -56,7 +59,7 @@ class ProjectsFinder < UnionFinder
   end
 
   def by_ids(items)
-    project_ids_relation ? items.map { |item| item.where(id: project_ids_relation) } : items
+    project_ids_relation ? items.where(id: project_ids_relation) : items
   end
 
   def union(items)
@@ -65,6 +68,14 @@ class ProjectsFinder < UnionFinder
 
   def by_personal(items)
     (params[:personal].present? && current_user) ? items.personal(current_user) : items
+  end
+
+  def by_starred(items)
+    (params[:starred].present? && current_user) ? items.starred_by(current_user) : items
+  end
+
+  def by_trending(items)
+    params[:trending].present? ? items.trending : items
   end
 
   def by_visibilty_level(items)

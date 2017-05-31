@@ -58,9 +58,12 @@ describe Gitlab::ChatCommands::Command, service: true do
         end
       end
 
-      context 'and user does have deployment permission' do
+      context 'and user has deployment permission' do
         before do
-          build.project.add_master(user)
+          build.project.add_developer(user)
+
+          create(:protected_branch, :developers_can_merge,
+                 name: build.ref, project: project)
         end
 
         it 'returns action' do

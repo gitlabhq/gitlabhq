@@ -34,7 +34,9 @@ import '~/notes';
       });
 
       it('modifies the Markdown field', function() {
-        $('input[type=checkbox]').attr('checked', true).trigger('change');
+        const changeEvent = document.createEvent('HTMLEvents');
+        changeEvent.initEvent('change', true, true);
+        $('input[type=checkbox]').attr('checked', true)[0].dispatchEvent(changeEvent);
         expect($('.js-task-list-field').val()).toBe('- [x] Task List Item');
       });
 

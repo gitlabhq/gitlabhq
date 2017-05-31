@@ -31,7 +31,7 @@ describe Gitlab::Ci::Status::Build::Common do
 
   describe '#details_path' do
     it 'links to the build details page' do
-      expect(subject.details_path).to include "builds/#{build.id}"
+      expect(subject.details_path).to include "jobs/#{build.id}"
     end
   end
 end

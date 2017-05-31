@@ -20,6 +20,12 @@ Please remove this notice if you're confident your issue isn't a duplicate.
 
 (How one can reproduce the issue - this is very important)
 
+### Example Project
+
+(If possible, please create an example project here on GitLab.com that exhibits the problematic behaviour, and link to it here in the bug report)
+
+(If you are using an older version of GitLab, this will also determine whether the bug has been fixed in a more recent version)
+
 ### What is the current *bug* behavior?
 
 (What actually happens)
