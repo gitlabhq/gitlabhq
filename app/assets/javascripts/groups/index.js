@@ -78,7 +78,7 @@ $(() => {
     created() {
       let groupFilterList = null;
 
-      groupFilterList = new GroupFilterableList(form, filter, holder, store);
+      groupFilterList = new GroupFilterableList({ form, filter, holder, store });
       groupFilterList.initSearch();
 
       this.fetchGroups()
