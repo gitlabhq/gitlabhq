@@ -193,15 +193,15 @@ module Ci
     # Variables whose value does not depend on other variables
     def simple_variables
       variables = predefined_variables
-      variables.concat(project.predefined_variables)
-      variables.concat(pipeline.predefined_variables)
-      variables.concat(runner.predefined_variables) if runner
-      variables.concat(project.container_registry_variables)
-      variables.concat(project.deployment_variables) if has_environment?
-      variables.concat(yaml_variables)
-      variables.concat(user_variables)
-      variables.concat(project.secret_variables)
-      variables.concat(trigger_request.user_variables) if trigger_request
+      variables += project.predefined_variables
+      variables += pipeline.predefined_variables
+      variables += runner.predefined_variables if runner
+      variables += project.container_registry_variables
+      variables += project.deployment_variables if has_environment?
+      variables += yaml_variables
+      variables += user_variables
+      variables += project.secret_variables
+      variables += trigger_request.user_variables if trigger_request
       variables
     end
 
