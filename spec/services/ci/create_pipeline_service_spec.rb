@@ -72,10 +72,11 @@ describe Ci::CreatePipelineService, services: true do
           end
         end
 
-        context 'when merge request head commit sha does not match pipeline sha' do
+        context 'when the pipeline is not the latest for the branch' do
           it 'does not update merge request head pipeline' do
             merge_request = create(:merge_request, source_branch: 'master', target_branch: "branch_1", source_project: project)
-            allow_any_instance_of(MergeRequestDiff).to receive(:head_commit).and_return(double(id: 1234))
+
+            allow_any_instance_of(Ci::Pipeline).to receive(:latest?).and_return(false)
 
             pipeline
 
