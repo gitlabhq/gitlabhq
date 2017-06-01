@@ -1220,22 +1220,28 @@ describe Ci::Pipeline, models: true do
   end
 
   describe '#codeclimate_artifact' do
-    let!(:build) do
-      create(
-        :ci_build,
-        :artifacts,
-        name: 'codeclimate',
-        pipeline: pipeline,
-        options: {
-          artifacts: {
-            paths: ['codeclimate.json']
+    context 'has codeclimate build' do
+      let!(:build) do
+        create(
+          :ci_build,
+          :artifacts,
+          name: 'codeclimate',
+          pipeline: pipeline,
+          options: {
+            artifacts: {
+              paths: ['codeclimate.json']
+            }
           }
-        }
-      )
+        )
+      end
+
+      it { expect(pipeline.codeclimate_artifact).to eq(build) }
     end
 
-    it do
-      expect(pipeline.codeclimate_artifact).to eq(build)
+    context 'no codeclimate build' do
+      before { create(:ci_build, pipeline: pipeline) }
+
+      it { expect(pipeline.codeclimate_artifact).to be_nil }
     end
   end
 end

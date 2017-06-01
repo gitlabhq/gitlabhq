@@ -397,10 +397,7 @@ module Ci
     end
 
     def codeclimate_artifact
-      artifacts.codeclimate.find do |artifact|
-        artifact.options[:artifacts][:paths] == ['codeclimate.json'] &&
-          artifact.artifacts_metadata?
-      end
+      artifacts.codeclimate.find(&:has_codeclimate_json?)
     end
 
     private

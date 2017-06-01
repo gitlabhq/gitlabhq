@@ -441,6 +441,11 @@ module Ci
       trace
     end
 
+    def has_codeclimate_json?
+      options.dig(:artifacts, :paths) == ['codeclimate.json'] &&
+        artifacts_metadata?
+    end
+
     private
 
     def update_artifacts_size
