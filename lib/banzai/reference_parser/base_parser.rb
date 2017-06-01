@@ -62,7 +62,7 @@ module Banzai
 
         nodes.select do |node|
           if node.has_attribute?(project_attr)
-            can_read_reference?(user, projects[node])
+            can_read_reference?(user, projects[node], node)
           else
             true
           end
@@ -230,7 +230,7 @@ module Banzai
       # see reference comments.
       # Override this method on subclasses
       # to check if user can read resource
-      def can_read_reference?(user, ref_project)
+      def can_read_reference?(user, ref_project, node)
         raise NotImplementedError
       end
 
