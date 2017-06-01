@@ -81,6 +81,7 @@ Parameters:
       "kind": "group",
       "full_path": "diaspora"
     },
+    "import_status": "none",
     "archived": false,
     "avatar_url": "http://example.com/uploads/project/avatar/4/uploads/avatar.png",
     "shared_runners_enabled": true,
@@ -138,6 +139,8 @@ Parameters:
       "kind": "group",
       "full_path": "brightbox"
     },
+    "import_status": "none",
+    "import_error": null,
     "permissions": {
       "project_access": {
         "access_level": 10,
@@ -225,6 +228,8 @@ Parameters:
     "kind": "group",
     "full_path": "diaspora"
   },
+  "import_status": "none",
+  "import_error": null,
   "permissions": {
     "project_access": {
       "access_level": 10,
@@ -611,6 +616,7 @@ Example response:
     "kind": "group",
     "full_path": "diaspora"
   },
+  "import_status": "none",
   "archived": true,
   "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
   "shared_runners_enabled": true,
@@ -676,6 +682,7 @@ Example response:
     "kind": "group",
     "full_path": "diaspora"
   },
+  "import_status": "none",
   "archived": true,
   "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
   "shared_runners_enabled": true,
@@ -747,6 +754,8 @@ Example response:
     "kind": "group",
     "full_path": "diaspora"
   },
+  "import_status": "none",
+  "import_error": null,
   "permissions": {
     "project_access": {
       "access_level": 10,
@@ -829,6 +838,8 @@ Example response:
     "kind": "group",
     "full_path": "diaspora"
   },
+  "import_status": "none",
+  "import_error": null,
   "permissions": {
     "project_access": {
       "access_level": 10,
