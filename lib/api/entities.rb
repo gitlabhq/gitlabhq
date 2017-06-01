@@ -754,6 +754,28 @@ module API
       expose :impersonation
     end
 
+    class FeatureGate < Grape::Entity
+      expose :key
+      expose :value
+    end
+
+    class Feature < Grape::Entity
+      expose :name
+      expose :state
+      expose :gates, using: FeatureGate do |model|
+        model.gates.map do |gate|
+          value = model.gate_values[gate.key]
+
+          # By default all gate values are populated. Only show relevant ones.
+          if (value.is_a?(Integer) && value.zero?) || (value.is_a?(Set) && value.empty?)
+            next
+          end
+
+          { key: gate.key, value: value }
+        end.compact
+      end
+    end
+
     module JobRequest
       class JobInfo < Grape::Entity
         expose :name, :stage

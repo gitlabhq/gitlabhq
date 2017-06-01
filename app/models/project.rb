@@ -1061,11 +1061,6 @@ class Project < ActiveRecord::Base
     pipelines.order(id: :desc).find_by(sha: sha, ref: ref)
   end
 
-  def ensure_pipeline(ref, sha, current_user = nil)
-    pipeline_for(ref, sha) ||
-      pipelines.create(sha: sha, ref: ref, user: current_user)
-  end
-
   def enable_ci
     project_feature.update_attribute(:builds_access_level, ProjectFeature::ENABLED)
   end

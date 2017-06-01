@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170524161101) do
+ActiveRecord::Schema.define(version: 20170525174156) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -283,6 +283,7 @@ ActiveRecord::Schema.define(version: 20170524161101) do
     t.integer "lock_version"
     t.integer "auto_canceled_by_id"
     t.integer "pipeline_schedule_id"
+    t.integer "source"
   end
 
   add_index "ci_pipelines", ["auto_canceled_by_id"], name: "index_ci_pipelines_on_auto_canceled_by_id", using: :btree
@@ -440,6 +441,24 @@ ActiveRecord::Schema.define(version: 20170524161101) do
   add_index "events", ["project_id"], name: "index_events_on_project_id", using: :btree
   add_index "events", ["target_id"], name: "index_events_on_target_id", using: :btree
   add_index "events", ["target_type"], name: "index_events_on_target_type", using: :btree
+
+  create_table "feature_gates", force: :cascade do |t|
+    t.string "feature_key", null: false
+    t.string "key", null: false
+    t.string "value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "feature_gates", ["feature_key", "key", "value"], name: "index_feature_gates_on_feature_key_and_key_and_value", unique: true, using: :btree
+
+  create_table "features", force: :cascade do |t|
+    t.string "key", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "features", ["key"], name: "index_features_on_key", unique: true, using: :btree
 
   create_table "forked_project_links", force: :cascade do |t|
     t.integer "forked_to_project_id", null: false
