@@ -1,7 +1,7 @@
 class PostReceive
   include Sidekiq::Worker
   include DedicatedSidekiqQueue
-  extend Gitlab::CurrentSettings
+  prepend EE::PostReceive
 
   def perform(project_identifier, identifier, changes)
     project, is_wiki = parse_project_identifier(project_identifier)
@@ -18,49 +18,18 @@ class PostReceive
     post_received = Gitlab::GitPostReceive.new(project, identifier, changes)
 
     if is_wiki
-      process_wiki_repository_update(post_received)
+      process_wiki_changes(post_received)
     else
       process_project_changes(post_received)
-      process_repository_update(post_received)
     end
   end
 
-  def process_repository_update(post_received)
+  private
+
+  def process_project_changes(post_received)
     changes = []
     refs = Set.new
 
-    post_received.changes_refs do |oldrev, newrev, ref|
-      @user ||= post_received.identify(newrev)
-
-      unless @user
-        log("Triggered hook for non-existing user \"#{post_received.identifier}\"")
-        return false
-      end
-
-      changes << Gitlab::DataBuilder::Repository.single_change(oldrev, newrev, ref)
-      refs << ref
-    end
-
-    # Generate repository update event on Geo event log when Geo is enabled
-    Geo::PushEventStore.new(post_received.project, refs: refs.to_a, changes: changes).create
-
-    hook_data = Gitlab::DataBuilder::Repository.update(post_received.project, @user, changes, refs.to_a)
-    SystemHooksService.new.execute_hooks(hook_data, :repository_update_hooks)
-  end
-
-  def process_wiki_repository_update(post_received)
-    update_wiki_es_indexes(post_received)
-
-    if Gitlab::Geo.enabled?
-      # Generate wiki update event on Geo event log
-      Geo::PushEventStore.new(post_received.project, source: Geo::PushEvent::WIKI).create
-
-      # Triggers repository update on secondary nodes
-      Gitlab::Geo.notify_wiki_update(post_received.project)
-    end
-  end
-
-  def process_project_changes(post_received)
     post_received.changes_refs do |oldrev, newrev, ref|
       @user ||= post_received.identify(newrev)
 
@@ -74,16 +43,22 @@ class PostReceive
       elsif Gitlab::Git.branch_ref?(ref)
         GitPushService.new(post_received.project, @user, oldrev: oldrev, newrev: newrev, ref: ref).execute
       end
+
+      changes << Gitlab::DataBuilder::Repository.single_change(oldrev, newrev, ref)
+      refs << ref
     end
+
+    after_project_changes_hooks(post_received, @user, refs.to_a, changes)
   end
 
-  def update_wiki_es_indexes(post_received)
-    return unless current_application_settings.elasticsearch_indexing?
-
-    post_received.project.wiki.index_blobs
+  def after_project_changes_hooks(post_received, user, refs, changes)
+    hook_data = Gitlab::DataBuilder::Repository.update(post_received.project, user, changes, refs)
+    SystemHooksService.new.execute_hooks(hook_data, :repository_update_hooks)
   end
 
-  private
+  def process_wiki_changes(post_received)
+    # Nothing defined here yet.
+  end
 
   # To maintain backwards compatibility, we accept both gl_repository or
   # repository paths as project identifiers. Our plan is to migrate to
