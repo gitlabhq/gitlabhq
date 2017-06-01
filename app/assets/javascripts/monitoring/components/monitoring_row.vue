@@ -13,6 +13,11 @@
         required: true,
         default: false,
       },
+      deploymentData: {
+        type: Array,
+        required: true,
+        default: () => [],
+      },
     },
     components: {
       'monitoring-column': MonitoringColumn,
@@ -32,6 +37,7 @@
       :classType="bootstrapClass()"
       :key="index"
       :updateAspectRatio="updateAspectRatio"
+      :deploymentData="deploymentData"
     />
   </div>
 </template>

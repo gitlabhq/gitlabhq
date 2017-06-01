@@ -8,9 +8,8 @@
   import eventHub from '../event_hub';
   import measurements from '../utils/measurements';
   import { formatRelevantDigits } from '../../lib/utils/number_utils';
-  import { hsvToRgb } from '../../lib/utils/color_utils';
 
-  const bisectDate = d3.bisector(d => d[0]).left;
+  const bisectDate = d3.bisector(d => d.time).left;
 
   export default {
     props: {
@@ -29,6 +28,11 @@
         required: true,
         default: false,
       },
+      deploymentData: {
+        type: Array,
+        required: true,
+        default: () => [],
+      },
     },
     data() {
       return {
@@ -42,17 +46,126 @@
         axisLabelContainer: {},
         breakpointHandler: Breakpoints.get(),
         unitOfDisplay: '',
-        areaColor: [],
-        areaColorRgb: '',
-        lineColor: [],
-        lineColorRgb: '',
-        circleColor: [],
-        circleColorRgb: '',
+        areaColorRgb: '#8fbce8',
+        lineColorRgb: '#1f78d1',
+        circleColorRgb: '#8fbce8',
         yAxisLabel: '',
         legendTitle: '',
+        reducedDeploymentData: [],
       };
     },
     methods: {
+      createGradientDef() {
+        const defs = d3.select('body')
+          .append('svg')
+          .attr({
+            height: 0,
+            width: 0,
+          })
+          .append('defs');
+
+        defs.append('linearGradient')
+          .attr({
+            id: 'shadow-gradient',
+          })
+          .append('stop')
+          .attr({
+            offset: '0%',
+            'stop-color': '#000',
+            'stop-opacity': 0.4,
+          })
+          .select(this.selectParentNode)
+          .append('stop')
+          .attr({
+            offset: '100%',
+            'stop-color': '#000',
+            'stop-opacity': 0,
+          });
+      },
+
+      createDeploymentLine() {
+        d3.select(this.svgContainer).select('.graph-data')
+        .append('g')
+        .attr('class', 'deploy-info')
+        .selectAll('.deploy-info')
+        .data(this.reducedDeploymentData)
+        .enter()
+        .append('g')
+        .attr({
+          class: d => `deploy-info-${d.id}`,
+          transform: d => `translate(${Math.floor(d.xPos) + 1}, 20)`,
+        })
+        .append('rect')
+        .attr({
+          x: 1,
+          y: 0,
+          height: this.height - 120,
+          width: 2,
+          fill: 'url(#shadow-gradient)',
+        })
+        .select(this.parentNode)
+        .append('line')
+        .attr({
+          class: 'deployment-line',
+          x1: 0,
+          x2: 0,
+          y1: 0,
+          y2: this.height - 120,
+        });
+      },
+
+      createDeployInfoBox() {
+        this.reducedDeploymentData.forEach((deployment) => {
+          const parent = d3.select(this.svgContainer)
+                          .select(`.deploy-info-${deployment.id}`)
+                          .append('svg')
+                          .attr({
+                            class: 'js-deploy-info-box hidden',
+                            x: 3,
+                            y: 0,
+                            width: 92,
+                            height: 60,
+                          });
+
+          parent.append('rect')
+            .attr({
+              class: 'rect-text-metric deploy-info-rect rect-metric',
+              x: 1,
+              y: 1,
+              rx: 2,
+              width: 90,
+              height: 58,
+            });
+
+          parent
+            .append('g')
+            .attr({
+              transform: 'translate(5, 2)',
+            })
+            .append('text')
+            .attr({
+              class: 'deploy-info-text text-metric-bold',
+            })
+            .text(this.refText(deployment));
+
+          parent
+            .append('text')
+            .attr({
+              class: 'deploy-info-text',
+              y: 18,
+            })
+            .text(dateFormat(deployment.time));
+
+          parent
+            .append('text')
+            .attr({
+              class: 'deploy-info-text text-metric-bold',
+              y: 38,
+            })
+            .text(timeFormat(deployment.time));
+        });
+      },
+
       draw() {
         const breakpointSize = this.breakpointHandler.getBreakpointSize();
         let height = 500;
@@ -66,7 +179,7 @@
         this.svgContainer = this.$el.querySelector('svg');
         this.data = ((this.columnData.queries[0]).result[0]).values;
         this.unitOfDisplay = (this.columnData.queries[0]).unit || 'N/A';
-        this.yAxisLabel = (this.columnData.queries[0]).y_axis || 'Values';
+        this.yAxisLabel = this.columnData.y_axis || 'Values';
         this.legendTitle = (this.columnData.queries[0]).legend || 'Average';
         this.width = this.svgContainer.clientWidth -
                      this.margin.left - this.margin.right;
@@ -76,6 +189,29 @@
           this.renderLabelAxisContainer();
         }
       },
+
+      formatDeployments() {
+        this.reducedDeploymentData = this.deploymentData.reduce((deploymentDataArray, deployment) => {
+          const time = new Date(deployment.created_at);
+          const xPos = Math.floor(this.xScale2(time));
+
+          time.setSeconds(this.data[0].time.getSeconds());
+
+          if (xPos >= 0) {
+            deploymentDataArray.push({
+              id: deployment.id,
+              time,
+              sha: deployment.sha,
+              tag: deployment.tag,
+              ref: deployment.ref.name,
+              xPos,
+            });
+          }
+
+          return deploymentDataArray;
+        }, []);
+      },
+
       handleMouseOverGraph() {
         const rectOverlay = this.$el.querySelector('.prometheus-graph-overlay');
         const currentXCoordinate = d3.mouse(rectOverlay)[0];
@@ -86,10 +222,9 @@
         if (d0 === undefined || d1 === undefined) return;
         const evalTime = timeValueOverlay - d0[0] > d1[0] - timeValueOverlay;
         const currentData = evalTime ? d1 : d0;
-        const currentDeployXPos = {};
-        let currentTimeCoordinate = Math.floor(this.xScale2(currentData[0]));
-        // const currentDeployXPos = this.deployments.mouseOverDeployInfo(currentXCoordinate, key);
-        const maxValueFromData = d3.max(this.data.map(d => d[1]));
+        let currentTimeCoordinate = Math.floor(this.xScale2(currentData.time));
+        const currentDeployXPos = this.mouseOverDeployInfo(currentXCoordinate);
+        const maxValueFromData = d3.max(this.data.map(d => d.value));
         const maxMetricValue = this.yScale(maxValueFromData);
         // Clear up all the pieces of the flag
         const graphContainer = d3.select(this.svgContainer);
@@ -97,8 +232,6 @@
         graphContainer.selectAll('.circle-metric').remove();
         graphContainer.selectAll('.rect-text-metric:not(.deploy-info-rect)').remove();
         graphContainer.select('.mouse-over-flag').remove();
-
-        // if (currentDeployXPos) return;
 
         const currentChart = graphContainer.select('.graph-data')
         .append('g').attr('class', 'mouse-over-flag');
@@ -117,10 +250,12 @@
           .attr('class', 'circle-metric')
           .attr('fill', this.circleColorRgb)
           .attr('stroke', '#000')
-          .attr('cx', currentTimeCoordinate || currentDeployXPos)
-          .attr('cy', this.yScale(currentData[1]))
+          .attr('cx', (currentTimeCoordinate || currentDeployXPos) || -1)
+          .attr('cy', this.yScale(currentData.value))
           .attr('r', 5)
           .attr('transform', 'translate(-5,20)');
+
+        if (currentDeployXPos) return;
 
         // The little box with text
         if (currentTimeCoordinate >= this.width - 70 - 120) {
@@ -152,7 +287,7 @@
             y: 35,
             transform: 'translate(-5,20)',
           })
-          .text(timeFormat(new Date(currentData[0] * 1000)));
+          .text(timeFormat(currentData.time));
 
         rectTextMetric.append('text')
           .attr({
@@ -161,11 +296,29 @@
             y: 15,
             transform: 'translate(-5,20)',
           })
-          .text(dateFormat(new Date(currentData[0] * 1000)));
+          .text(dateFormat(currentData.time));
 
         d3.select(this.svgContainer).select('.text-metric-usage')
-          .text(`${formatRelevantDigits(currentData[1])} ${this.unitOfDisplay}`);
+          .text(`${formatRelevantDigits(currentData.value)} ${this.unitOfDisplay}`);
       },
+
+      mouseOverDeployInfo(mouseXPos) {
+        if (!this.reducedDeploymentData) return false;
+
+        let dataFound = false;
+        this.reducedDeploymentData.forEach((d) => {
+          if (d.xPos >= mouseXPos - 10 && d.xPos <= mouseXPos + 10 && !dataFound) {
+            dataFound = d.xPos + 1;
+
+            this.toggleDeployTextBox(d, true);
+          } else {
+            this.toggleDeployTextBox(d, false);
+          }
+        });
+
+        return dataFound;
+      },
+
       renderAxisAndContainer() {
         d3.select(this.$el.querySelector('.prometheus-svg-container'))
         .attr({
@@ -179,8 +332,8 @@
           .range([0, this.width]);
         this.yScale = d3.scale.linear()
           .range([this.height - 120, 0]);
-        this.xScale.domain(d3.extent(this.data, d => d[0]));
-        this.yScale.domain([0, d3.max(this.data.map(d => d[1]))]);
+        this.xScale.domain(d3.extent(this.data, d => d.time));
+        this.yScale.domain([0, d3.max(this.data.map(d => d.value))]);
 
         const xAxis = d3.svg.axis()
           .scale(this.xScale)
@@ -214,17 +367,17 @@
         this.xScale2 = d3.time.scale()
           .range([0, this.width - 70]);
 
-        this.xScale2.domain(d3.extent(this.data, d => d[0]));
+        this.xScale2.domain(d3.extent(this.data, d => d.time));
 
         const area = d3.svg.area()
-          .x(d => this.xScale2(d[0]))
+          .x(d => this.xScale2(d.time))
           .y0(this.height - 120)
-          .y1(d => this.yScale(d[1]))
+          .y1(d => this.yScale(d.value))
           .interpolate('linear');
 
         const line = d3.svg.line()
-          .x(d => this.xScale2(d[0]))
-          .y(d => this.yScale(d[1]));
+          .x(d => this.xScale2(d.time))
+          .y(d => this.yScale(d.value));
 
         pathGroup.append('path')
           .datum(this.data)
@@ -323,12 +476,27 @@
           .attr('x', 50)
           .attr('y', this.height - 25);
       },
+
       redraw() {
         // Remove event listeners and graphs, then redraw them
         d3.select(this.svgContainer).select('.prometheus-graph-overlay').on('mousemove', null);
         d3.select(this.svgContainer).remove();
         d3.select(this.$el).select('.prometheus-svg-container').append('svg');
         this.draw();
+      },
+
+      refText(d) {
+        return d.tag ? d.ref : d.sha.slice(0, 6);
+      },
+
+      /* `this` is bound to the D3 node */
+      selectParentNode() {
+        return this.parentNode;
+      },
+
+      toggleDeployTextBox(deploy, showInfoBox) {
+        d3.select(this.svgContainer).selectAll(`.deploy-info-${deploy.id} .js-deploy-info-box`)
+        .classed('hidden', !showInfoBox);
       },
     },
 
@@ -344,15 +512,11 @@
     },
 
     mounted() {
-      const goldenRatioConjugate = 0.618033988749895;
-      const hue = (Math.random() + goldenRatioConjugate) % 1;
-      this.areaColor = hsvToRgb(hue, 0.4, 0.95);
-      this.lineColor = hsvToRgb(hue, 0.7, 0.95);
-      this.circleColor = hsvToRgb(hue, 0.9, 0.95);
-      this.areaColorRgb = `rgb(${this.areaColor[0]}, ${this.areaColor[1]}, ${this.areaColor[2]})`;
-      this.lineColorRgb = `rgb(${this.lineColor[0]}, ${this.lineColor[1]}, ${this.lineColor[2]})`;
-      this.circleColorRgb = `rgb(${this.circleColor[0]}, ${this.circleColor[1]}, ${this.circleColor[2]})`;
       this.draw();
+      this.formatDeployments();
+      this.createGradientDef();
+      this.createDeploymentLine();
+      this.createDeployInfoBox();
     },
   };
 </script>

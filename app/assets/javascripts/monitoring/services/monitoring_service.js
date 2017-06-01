@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 import Vue from 'vue';
 import VueResource from 'vue-resource';
 
@@ -10,5 +11,9 @@ export default class MonitoringService {
 
   get() {
     return this.graphs.get();
+  }
+
+  getDeploymentData(endpoint) {
+    return Vue.http.get(endpoint);
   }
 }

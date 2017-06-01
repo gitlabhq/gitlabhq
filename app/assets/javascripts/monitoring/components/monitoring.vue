@@ -1,4 +1,5 @@
 <script>
+  /* global Flash */
   import statusCodes from '~/lib/utils/http_status';
   import MonitoringService from '../services/monitoring_service';
   import MonitoringRow from './monitoring_row.vue';
@@ -17,8 +18,10 @@
         isLoading: true,
         unableToConnect: false,
         gettingStarted: false,
+        state: '',
         hasMetrics: gl.utils.convertPermissionToBoolean(metricsData.hasMetrics),
         endpoint: metricsData.additionalMetrics,
+        deploymentEndpoint: metricsData.deploymentEndpoint,
         showEmptyState: true,
         backOffRequestCounter: 0,
         service: {},
@@ -33,25 +36,20 @@
     },
 
     methods: {
-      displayState() {
-        let state;
-        if (this.gettingStarted) {
-          state = this.prometheusStateContainer.querySelector('.js-getting-started');
-        } else if (this.unableToConnect) {
-          state = this.prometheusStateContainer.querySelector('.js-unable-to-connect');
-        } else if (this.isLoading) {
-          state = this.prometheusStateContainer.querySelector('.js-loading');
+      updateState(prevState) {
+        this.prometheusStateContainer.classList.add('hidden');
+        if (prevState) {
+          this.prometheusStateContainer.querySelector(prevState).classList.add('hidden');
         }
-
-        if (!this.showEmptyState) {
-          state.classList.add('hidden');
-        } else {
-          state.classList.remove('hidden');
+        this.prometheusStateContainer.querySelector(this.state).classList.remove('hidden');
+        if (this.showEmptyState) {
+          this.prometheusStateContainer.classList.remove('hidden');
         }
       },
       getGraphsData() {
         const maxNumberOfRequests = 3;
-        this.displayState();
+        this.state = '.js-loading';
+        this.updateState();
         gl.utils.backOff((next, stop) => {
           this.service.get().then((resp) => {
             if (resp.status === statusCodes.NO_CONTENT) {
@@ -68,8 +66,9 @@
         })
         .then((resp) => {
           if (resp.status === statusCodes.NO_CONTENT) {
-            this.isLoading = false;
-            this.unableToConnect = true;
+            const prevState = this.state;
+            this.state = '.js-unable-to-connect';
+            this.updateState(prevState);
             return {};
           }
           return resp.json();
@@ -77,16 +76,31 @@
         .then((resp) => {
           if (resp !== {}) {
             this.store.storeMetrics(resp.data);
-            this.showEmptyState = false;
-            this.displayState();
+            return this.getDeploymentData();
           }
+          return {};
+        })
+        .then((deploymentData) => {
+          if (deploymentData !== {}) {
+            this.store.storeDeploymentData(deploymentData);
+            this.showEmptyState = false;
+            this.updateState();
+          }
+          return {};
         })
         .catch(() => {
-          this.isLoading = false;
-          this.unableToConnect = true;
-          this.displayState();
+          const prevState = this.state;
+          this.state = '.js-unable-to-connect';
+          this.updateState(prevState);
         });
       },
+
+      getDeploymentData() {
+        return this.service.getDeploymentData(this.deploymentEndpoint)
+          .then(resp => resp.json().deployments)
+          .catch(() => new Flash('Error getting deployment information.'));
+      },
+
       resizeThrottler() {
         // ignore resize events as long as an actualResizeHandler execution is in the queue
         if (!this.resizeTimeout) {
@@ -96,6 +110,7 @@
           }, 600);
         }
       },
+
       toggleAspectRatio() {
         this.updatedAspectRatios = this.updatedAspectRatios += 1;
         if (this.store.getMetricsCount() === this.updatedAspectRatios) {
@@ -103,6 +118,7 @@
           this.updatedAspectRatios = 0;
         }
       },
+
     },
 
     created() {
@@ -116,9 +132,9 @@
 
     mounted() {
       if (!this.hasMetrics) {
-        this.isLoading = false;
-        this.gettingStarted = true;
-        this.displayState();
+        const prevState = this.state;
+        this.state = '.js-getting-started';
+        this.updateState(prevState);
       } else {
         this.getGraphsData();
         window.addEventListener('resize', this.resizeThrottler, false);
@@ -127,7 +143,7 @@
   };
 </script>
 <template>
-  <div class="prometheus-graphs" v-show="!showEmptyState">
+  <div class="prometheus-graphs" v-if="!showEmptyState">
     <div class="row"
       v-for="(groupData, index) in store.groups"
     >
@@ -142,6 +158,7 @@
               :rowData="row"
               :key="index"
               :updateAspectRatio="updateAspectRatio"
+              :deploymentData="store.deploymentData"
             />
           </div>
         </div>
