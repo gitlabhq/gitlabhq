@@ -39,11 +39,11 @@
 .prometheus-metrics-monitoring {
   .panel {
     .panel-toggle {
-      width: 12px;
+      width: 14px;
+    }
 
-      &.fa-caret-right {
-        padding-left: 4px;
-      }
+    .badge {
+      font-size: inherit;
     }
 
     .panel-heading .badge-count {
@@ -55,14 +55,9 @@
       padding: 0;
     }
 
-    .badge-count {
-      margin-left: 3px;
-      padding: 3px 8px;
-      border-radius: 40%;
-    }
-
     .flash-container {
       margin-bottom: 0;
+      cursor: default;
 
       .flash-notice {
         border-radius: 0;
@@ -80,25 +75,20 @@
       margin-top: 10px;
       margin-bottom: 0;
     }
-
-    p {
-      color: $gl-gray-light;
-    }
   }
 
-  .loading-metrics .fa-spin {
+  .loading-metrics .metrics-load-spinner {
     color: $loading-color;
   }
 
   .metrics-list {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
+    margin-bottom: 0;
 
     li {
-      padding: 16px;
+      padding: $gl-padding;
 
-      .badge-count {
+      .badge {
+        margin-left: 5px;
         background: $badge-bg;
       }
     }

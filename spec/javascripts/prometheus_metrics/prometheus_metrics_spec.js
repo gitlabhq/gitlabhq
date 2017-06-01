@@ -1,4 +1,5 @@
 import PrometheusMetrics from '~/prometheus_metrics/prometheus_metrics';
+import PANEL_STATE from '~/prometheus_metrics/constants';
 import { metrics, missingVarMetrics } from './mock_data';
 
 describe('PrometheusMetrics', () => {
@@ -35,6 +36,38 @@ describe('PrometheusMetrics', () => {
     });
   });
 
+  describe('showMonitoringMetricsPanelState', () => {
+    let prometheusMetrics;
+
+    beforeEach(() => {
+      prometheusMetrics = new PrometheusMetrics('.js-prometheus-metrics-monitoring');
+    });
+
+    it('should show loading state when called with `loading`', () => {
+      prometheusMetrics.showMonitoringMetricsPanelState(PANEL_STATE.LOADING);
+
+      expect(prometheusMetrics.$monitoredMetricsLoading.hasClass('hidden')).toBeFalsy();
+      expect(prometheusMetrics.$monitoredMetricsEmpty.hasClass('hidden')).toBeTruthy();
+      expect(prometheusMetrics.$monitoredMetricsList.hasClass('hidden')).toBeTruthy();
+    });
+
+    it('should show metrics list when called with `list`', () => {
+      prometheusMetrics.showMonitoringMetricsPanelState(PANEL_STATE.LIST);
+
+      expect(prometheusMetrics.$monitoredMetricsLoading.hasClass('hidden')).toBeTruthy();
+      expect(prometheusMetrics.$monitoredMetricsEmpty.hasClass('hidden')).toBeTruthy();
+      expect(prometheusMetrics.$monitoredMetricsList.hasClass('hidden')).toBeFalsy();
+    });
+
+    it('should show empty state when called with `empty`', () => {
+      prometheusMetrics.showMonitoringMetricsPanelState(PANEL_STATE.EMPTY);
+
+      expect(prometheusMetrics.$monitoredMetricsLoading.hasClass('hidden')).toBeTruthy();
+      expect(prometheusMetrics.$monitoredMetricsEmpty.hasClass('hidden')).toBeFalsy();
+      expect(prometheusMetrics.$monitoredMetricsList.hasClass('hidden')).toBeTruthy();
+    });
+  });
+
   describe('populateActiveMetrics', () => {
     let prometheusMetrics;
 
@@ -52,7 +85,7 @@ describe('PrometheusMetrics', () => {
 
       expect(prometheusMetrics.$monitoredMetricsCount.text()).toEqual('12');
       expect($metricsListLi.length).toEqual(metrics.length);
-      expect($metricsListLi.first().find('.badge-count').text()).toEqual(`${metrics[0].active_metrics}`);
+      expect($metricsListLi.first().find('.badge').text()).toEqual(`${metrics[0].active_metrics}`);
     });
 
     it('should show missing environment variables list', () => {
