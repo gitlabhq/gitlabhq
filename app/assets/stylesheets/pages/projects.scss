@@ -740,18 +740,18 @@ pre.light-well {
   }
 }
 
-.new_protected_branch,
+a.allowed-to-merge,
+a.allowed-to-push {
+  cursor: pointer;
+  cursor: hand;
+}
+
+.new-protected-branch,
 .new-protected-tag {
   label {
     margin-top: 6px;
     font-weight: normal;
   }
-}
-
-a.allowed-to-merge,
-a.allowed-to-push {
-  cursor: pointer;
-  cursor: hand;
 }
 
 .protected-branch-push-access-list,
