@@ -1,3 +1,6 @@
+require 'fog/aws'
+require 'carrierwave/storage/fog'
+
 class ObjectStoreUploader < GitlabUploader
   before :store, :set_default_local_store
 
@@ -38,30 +41,35 @@ class ObjectStoreUploader < GitlabUploader
     end
   end
 
+  def filename
+    super || file&.filename
+  end
+
   def migrate!(new_store)
     raise 'Undefined new store' unless new_store
 
     return unless object_store != new_store
+    return unless file
 
-    # retrive file from current storage
-    current_file = file
+    old_file = file
+    old_store = object_store
 
     # change storage
     self.object_store = new_store
 
     # store file on a new storage
-    new_file = storage.store!(current_file)
+    new_file = storage.store!(old_file)
 
     # since we change storage store the new storage
     # in case of failure delete new file
     begin
       subject.save!
     rescue
+      self.object_store = old_store
       new_file.delete
     end
 
-    # since we migrated file we can delete it now
-    current_file.delete
+    old_file.delete
   end
 
   def move_to_store
