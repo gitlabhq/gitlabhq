@@ -1228,6 +1228,7 @@ ActiveRecord::Schema.define(version: 20170523091700) do
     t.string "force_push_regex"
     t.string "delete_branch_regex"
     t.string "commit_message_regex"
+    t.string "branch_name_regex"
     t.boolean "deny_delete_tag"
     t.integer "project_id"
     t.datetime "created_at"

@@ -36,6 +36,15 @@
     For example you can require that an issue number is always mentioned in the commit message.
 
 .form-group
+  = f.label :branch_name_regex, "Branch name", class: 'label-light'
+  = f.text_field :branch_name_regex, class: "form-control", placeholder: 'Example: (feature|hotfix)\/*'
+  .help-block
+    All branch names must match this
+    = link_to 'Ruby regular expression', 'http://www.ruby-doc.org/core-2.1.1/Regexp.html'
+    to be pushed.
+    If this field is empty it allows any branch name.
+
+.form-group
   = f.label :author_email_regex, "Commit author's email", class: 'label-light'
   = f.text_field :author_email_regex, class: "form-control", placeholder: 'Example: @my-company.com$'
   .help-block
