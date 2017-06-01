@@ -138,6 +138,11 @@ module Ci
       ExpandVariables.expand(environment, simple_variables) if environment
     end
 
+    def expanded_environment_url
+      ExpandVariables.expand(environment_url, simple_variables) if
+        environment_url
+    end
+
     def ci_environment_url
       expanded_environment_url || persisted_environment&.external_url
     end
@@ -524,11 +529,6 @@ module Ci
       variables << { key: "CI_BUILD_TRIGGERED", value: 'true', public: true } if trigger_request
       variables << { key: "CI_BUILD_MANUAL", value: 'true', public: true } if action?
       variables
-    end
-
-    def expanded_environment_url
-      ExpandVariables.expand(environment_url, simple_variables) if
-        environment_url
     end
 
     def environment_url

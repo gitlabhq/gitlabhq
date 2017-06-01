@@ -1,22 +1,22 @@
 require 'spec_helper'
 
 describe CreateDeploymentService, services: true do
-  let(:project) { create(:empty_project) }
   let(:user) { create(:user) }
+  let(:options) { nil }
 
-  let(:service) { described_class.new(project, user, params) }
+  let(:job) do
+    create(:ci_build,
+      ref: 'master',
+      tag: false,
+      environment: 'production',
+      options: { environment: options })
+  end
+
+  let(:project) { job.project }
+
+  let(:service) { described_class.new(job) }
 
   describe '#execute' do
-    let(:options) { nil }
-    let(:params) do
-      {
-        environment: 'production',
-        ref: 'master',
-        tag: false,
-        sha: '97de212e80737a608d939f648d959671fb0a0142',
-        options: options
-      }
-    end
 
     subject { service.execute }
 
@@ -83,13 +83,8 @@ describe CreateDeploymentService, services: true do
     end
 
     context 'for environment with invalid name' do
-      let(:params) do
-        {
-          environment: 'name,with,commas',
-          ref: 'master',
-          tag: false,
-          sha: '97de212e80737a608d939f648d959671fb0a0142'
-        }
+      before do
+        job.update(environment: 'name,with,commas')
       end
 
       it 'does not create a new environment' do
@@ -102,27 +97,20 @@ describe CreateDeploymentService, services: true do
     end
 
     context 'when variables are used' do
-      let(:params) do
-        {
-          environment: 'review-apps/$CI_COMMIT_REF_NAME',
-          ref: 'master',
-          tag: false,
-          sha: '97de212e80737a608d939f648d959671fb0a0142',
-          options: {
-            name: 'review-apps/$CI_COMMIT_REF_NAME',
-            url: 'http://$CI_COMMIT_REF_NAME.review-apps.gitlab.com'
-          },
-          variables: [
-            { key: 'CI_COMMIT_REF_NAME', value: 'feature-review-apps' }
-          ]
-        }
+      let(:options) do
+        { name: 'review-apps/$CI_COMMIT_REF_NAME',
+          url: 'http://$CI_COMMIT_REF_NAME.review-apps.gitlab.com' }
+      end
+
+      before do
+        job.update(environment: 'review-apps/$CI_COMMIT_REF_NAME')
       end
 
       it 'does create a new environment' do
         expect { subject }.to change { Environment.count }.by(1)
 
-        expect(subject.environment.name).to eq('review-apps/feature-review-apps')
-        expect(subject.environment.external_url).to eq('http://feature-review-apps.review-apps.gitlab.com')
+        expect(subject.environment.name).to eq('review-apps/master')
+        expect(subject.environment.external_url).to eq('http://master.review-apps.gitlab.com')
       end
 
       it 'does create a new deployment' do
@@ -130,7 +118,7 @@ describe CreateDeploymentService, services: true do
       end
 
       context 'and environment exist' do
-        let!(:environment) { create(:environment, project: project, name: 'review-apps/feature-review-apps') }
+        let!(:environment) { create(:environment, project: project, name: 'review-apps/master') }
 
         it 'does not create a new environment' do
           expect { subject }.not_to change { Environment.count }
@@ -139,8 +127,8 @@ describe CreateDeploymentService, services: true do
         it 'updates external url' do
           subject
 
-          expect(subject.environment.name).to eq('review-apps/feature-review-apps')
-          expect(subject.environment.external_url).to eq('http://feature-review-apps.review-apps.gitlab.com')
+          expect(subject.environment.name).to eq('review-apps/master')
+          expect(subject.environment.external_url).to eq('http://master.review-apps.gitlab.com')
         end
 
         it 'does create a new deployment' do
@@ -150,7 +138,9 @@ describe CreateDeploymentService, services: true do
     end
 
     context 'when project was removed' do
-      let(:project) { nil }
+      before do
+        job.update(project: nil)
+      end
 
       it 'does not create deployment or environment' do
         expect { subject }.not_to raise_error
@@ -250,15 +240,6 @@ describe CreateDeploymentService, services: true do
   end
 
   describe "merge request metrics" do
-    let(:params) do
-      {
-        environment: 'production',
-        ref: 'master',
-        tag: false,
-        sha: '97de212e80737a608d939f648d959671fb0a0142b'
-      }
-    end
-
     let(:merge_request) { create(:merge_request, target_branch: 'master', source_branch: 'feature', source_project: project) }
 
     context "while updating the 'first_deployed_to_production_at' time" do
@@ -273,8 +254,8 @@ describe CreateDeploymentService, services: true do
         end
 
         it "doesn't set the time if the deploy's environment is not 'production'" do
-          staging_params = params.merge(environment: 'staging')
-          service = described_class.new(project, user, staging_params)
+          job.update(environment: 'staging')
+          service = described_class.new(job)
           service.execute
 
           expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_nil
@@ -298,7 +279,7 @@ describe CreateDeploymentService, services: true do
             expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_like_time(time)
 
             # Current deploy
-            service = described_class.new(project, user, params)
+            service = described_class.new(job)
             Timecop.freeze(time + 12.hours) { service.execute }
 
             expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_like_time(time)
@@ -318,7 +299,7 @@ describe CreateDeploymentService, services: true do
             expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_nil
 
             # Current deploy
-            service = described_class.new(project, user, params)
+            service = described_class.new(job)
             Timecop.freeze(time + 12.hours) { service.execute }
 
             expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_nil
