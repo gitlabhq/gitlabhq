@@ -17,10 +17,15 @@ describe Deployment, models: true do
   it { is_expected.to validate_presence_of(:sha) }
 
   describe 'after_create callbacks' do
-    it 'invalidates the cache for the environment' do
-      expect(subject).to receive(:invalidate_cache)
+    let(:environment) { create(:environment) }
+    let(:store) { Gitlab::EtagCaching::Store.new }
 
-      subject.save!
+    it 'invalidates the environment etag cache' do
+      old_value = store.get(environment.etag_cache_key)
+
+      create(:deployment, environment: environment)
+
+      expect(store.get(environment.etag_cache_key)).not_to eq(old_value)
     end
   end
 
