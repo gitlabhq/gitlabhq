@@ -92,18 +92,11 @@ module SlashCommands
 
     desc 'Assign'
     explanation do |users|
-      if issuable.is_a?(Issue)
-        "Assigns #{users.map(&:to_reference).to_sentence}." if users.any?
-      else
-        "Assigns #{users.last.to_reference}." if users.any?
-      end
+      users = issuable.is_a?(Issue) ? users : users.take(1)
+      "Assigns #{users.map(&:to_reference).to_sentence}."
     end
     params do
-      if issuable.is_a?(Issue)
-        ['@user1 @user2']
-      else
-        ['@user']
-      end
+      issuable.is_a?(Issue) ? '@user1 @user2' : '@user'
     end
     condition do
       current_user.can?(:"admin_#{issuable.to_ability_name}", project)
@@ -122,16 +115,18 @@ module SlashCommands
       end
     end
 
-    desc 'Remove all or specific assignee(s)'
+    desc do
+      if issuable.is_a?(Issue)
+        'Remove all or specific assignee(s)'
+      else
+        'Remove assignee'
+      end
+    end
     explanation do
-      'Removes assignee(s)'
+      "Removes #{'assignee'.pluralize(issuable.assignees.size)} #{issuable.assignees.map(&:to_reference).to_sentence}"
     end
     params do
-      if issuable.is_a?(Issue)
-        ['@user1 @user2']
-      else
-        []
-      end
+      issuable.is_a?(Issue) ? '@user1 @user2' : ''
     end
     condition do
       issuable.persisted? &&
@@ -142,11 +137,12 @@ module SlashCommands
       users = extract_users(unassign_param)
 
       if issuable.is_a?(Issue)
-        if users.any?
-          @updates[:assignee_ids] = issuable.assignees.pluck(:id) - users.map(&:id)
-        else
-          @updates[:assignee_ids] = []
-        end
+        @updates[:assignee_ids] =
+          if users.any?
+            issuable.assignees.pluck(:id) - users.map(&:id)
+          else
+            []
+          end
       else
         @updates[:assignee_id] = nil
       end

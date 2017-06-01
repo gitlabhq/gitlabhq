@@ -947,7 +947,7 @@ describe SlashCommands::InterpretService, services: true do
       it 'includes current assignee reference' do
         _, explanations = service.explain(content, issue)
 
-        expect(explanations).to eq(['Removes assignee(s)'])
+        expect(explanations).to eq(["Removes assignee #{developer.to_reference}"])
       end
     end
 

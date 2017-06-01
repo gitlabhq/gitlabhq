@@ -57,7 +57,7 @@ module Gitlab
 
         prms = params
         if prms.respond_to?(:call)
-          prms = context.instance_exec(&prms) rescue ''
+          prms = Array(context.instance_exec(&prms)) rescue params
         end
 
         {
