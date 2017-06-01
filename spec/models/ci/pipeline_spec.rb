@@ -213,8 +213,8 @@ describe Ci::Pipeline, models: true do
       end
     end
 
-    describe '#stages' do
-      subject { pipeline.stages }
+    describe '#legacy_stages' do
+      subject { pipeline.legacy_stages }
 
       context 'stages list' do
         it 'returns ordered list of stages' do
@@ -263,7 +263,7 @@ describe Ci::Pipeline, models: true do
         end
 
         it 'populates stage with correct number of warnings' do
-          deploy_stage = pipeline.stages.third
+          deploy_stage = pipeline.legacy_stages.third
 
           expect(deploy_stage).not_to receive(:statuses)
           expect(deploy_stage).to have_warnings
@@ -277,15 +277,15 @@ describe Ci::Pipeline, models: true do
       end
     end
 
-    describe '#stages_name' do
+    describe '#stages_names' do
       it 'returns a valid names of stages' do
-        expect(pipeline.stages_name).to eq(%w(build test deploy))
+        expect(pipeline.stages_names).to eq(%w(build test deploy))
       end
     end
   end
 
-  describe '#stage' do
-    subject { pipeline.stage('test') }
+  describe '#legacy_stage' do
+    subject { pipeline.legacy_stage('test') }
 
     context 'with status in stage' do
       before do

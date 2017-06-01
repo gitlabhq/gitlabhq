@@ -151,21 +151,21 @@ module Ci
       where.not(duration: nil).sum(:duration)
     end
 
-    def stage(name)
-      stage = Ci::Stage.new(self, name: name)
-      stage unless stage.statuses_count.zero?
-    end
-
     def stages_count
       statuses.select(:stage).distinct.count
     end
 
-    def stages_name
+    def stages_names
       statuses.order(:stage_idx).distinct.
         pluck(:stage, :stage_idx).map(&:first)
     end
 
-    def stages
+    def legacy_stage(name)
+      stage = Ci::Stage.new(self, name: name)
+      stage unless stage.statuses_count.zero?
+    end
+
+    def legacy_stages
       # TODO, this needs refactoring, see gitlab-ce#26481.
 
       stages_query = statuses
@@ -300,13 +300,13 @@ module Ci
 
       seeds_scope = { ref: ref, tag: tag?, trigger: trigger_requests.first }
 
-      config_processor.stage_seeds(seeds_scope).tap do |seeds|
+      @seeds ||= config_processor.stage_seeds(seeds_scope).tap do |seeds|
         seeds.pipeline = self
       end
     end
 
     def has_stages?
-      stage_seeds.has_stages?
+      stage_seeds&.has_stages?
     end
 
     def has_warnings?
