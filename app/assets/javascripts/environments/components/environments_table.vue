@@ -56,13 +56,12 @@ export default {
       <div class="table-section section-15 environments-build">
         Job
       </div>
-      <div class="table-section section-flex-full environments-commit">
+      <div class="table-section section-25 environments-commit">
         Commit
       </div>
       <div class="table-section section-10 environments-date">
         Updated
       </div>
-      <div class="table-section section-flex-full environments-actions"></div>
     </div>
     <template
       v-for="model in environments"

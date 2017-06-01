@@ -6,10 +6,6 @@
       padding: 15px 0;
       display: flex;
       align-items: center;
-
-      .btn-group {
-        display: inline-flex;
-      }
     }
 
     @media (max-width: $screen-sm-max) {
@@ -20,16 +16,36 @@
     .table-section {
       white-space: nowrap;
 
-      &.section-flex-full {
-        flex: 1;
-      }
-
       &.section-10 {
         flex: 0 0 10%;
+
+        @media (min-width: $screen-md-min) {
+          max-width: 10%;
+        }
       }
 
       &.section-15 {
         flex: 0 0 15%;
+
+        @media (min-width: $screen-md-min) {
+          max-width: 15%;
+        }
+      }
+
+      &.section-25 {
+        flex: 0 0 25%;
+
+        @media (min-width: $screen-md-min) {
+          max-width: 25%;
+        }
+      }
+
+      &.section-30 {
+        flex: 0 0 30%;
+
+        @media (min-width: $screen-md-min) {
+          max-width: 30%;
+        }
       }
 
       &:not(.environments-actions) {
@@ -49,6 +65,8 @@
   }
 
   .table-row-header {
+    font-size: 13px;
+
     @media (max-width: $screen-sm-max) {
       display: none;
     }

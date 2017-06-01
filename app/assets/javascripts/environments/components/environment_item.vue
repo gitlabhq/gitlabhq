@@ -422,7 +422,7 @@ export default {
 </script>
 <template>
   <div
-    :class="{ 'js-child-row environment-child-row': model.isChildren, 'folder-row' : model.isFolder }" class="gl-responsive-table-row">
+    :class="{ 'js-child-row environment-child-row': model.isChildren, 'folder-row': model.isFolder, 'gl-responsive-table-row': !model.isFolder }">
     <div class="table-section section-10">
       <div
         v-if="!model.isFolder"
@@ -493,7 +493,7 @@ export default {
       </a>
     </div>
 
-    <div class="table-section section-flex-full">
+    <div class="table-section section-25">
       <div
         v-if="!model.isFolder"
         class="responsive-mobile-header">Commit
@@ -528,7 +528,7 @@ export default {
       </span>
     </div>
 
-    <div class="table-section section-flex-full environments-actions">
+    <div class="table-section section-30 environments-actions">
       <div
         v-if="!model.isFolder"
         class="btn-group environment-action-buttons"
