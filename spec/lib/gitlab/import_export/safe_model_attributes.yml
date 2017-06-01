@@ -212,6 +212,7 @@ CommitStatus:
 - stage
 - trigger_request_id
 - stage_idx
+- stage_id
 - tag
 - ref
 - user_id

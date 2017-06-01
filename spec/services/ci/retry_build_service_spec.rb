@@ -18,11 +18,12 @@ describe Ci::RetryBuildService, :services do
        updated_at started_at finished_at queued_at erased_by
        erased_at auto_canceled_by].freeze
 
+  # TODO, move stage_id accessor to CLONE_ACCESSOR in a follow-up MR.
   IGNORE_ACCESSORS =
     %i[type lock_version target_url base_tags
        commit_id deployments erased_by_id last_deployment project_id
        runner_id tag_taggings taggings tags trigger_request_id
-       user_id auto_canceled_by_id retried].freeze
+       user_id auto_canceled_by_id retried stage_id].freeze
 
   shared_examples 'build duplication' do
     let(:build) do
