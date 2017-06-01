@@ -2093,4 +2093,21 @@ describe MergeRequest, models: true do
       expect(subject.head_codeclimate_artifact).to eq(1)
     end
   end
+
+  describe '#has_codeclimate_data?' do
+    context 'with codeclimate artifact' do
+      before do
+        artifact = double()
+        allow(artifact).to receive(:success?).and_return(true)
+        allow(subject.head_pipeline).to receive(:codeclimate_artifact).and_return(artifact)
+        allow(subject.base_pipeline).to receive(:codeclimate_artifact).and_return(artifact)
+      end
+
+      it { expect(subject.has_codeclimate_data?).to be_truthy }
+    end
+
+    context 'without codeclimate artifact' do
+      it { expect(subject.has_codeclimate_data?).to be_falsey }
+    end
+  end
 end

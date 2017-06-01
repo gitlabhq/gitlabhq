@@ -1000,7 +1000,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def has_codeclimate_data?
-    head_codeclimate_artifact&.success? &&
-      base_codeclimate_artifact&.success?
+    !!(head_codeclimate_artifact&.success? &&
+       base_codeclimate_artifact&.success?)
   end
 end
