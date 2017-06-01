@@ -1,7 +1,7 @@
-/* eslint-disable no-param-reassign, no-underscore-dangle, class-methods-use-this */
+/* eslint-disable no-underscore-dangle, class-methods-use-this */
 /* global Flash */
 
-import { ACCESS_LEVELS, LEVEL_TYPES, ACCESS_LEVEL_NONE } from './';
+import { ACCESS_LEVELS, LEVEL_TYPES, ACCESS_LEVEL_NONE } from './constants';
 
 export default class ProtectedTagAccessDropdown {
   constructor(options) {
@@ -33,6 +33,7 @@ export default class ProtectedTagAccessDropdown {
   }
 
   initDropdown() {
+    const self = this;
     const { onSelect, onHide } = this.options;
     this.$dropdown.glDropdown({
       data: this.getData.bind(this),
@@ -54,29 +55,29 @@ export default class ProtectedTagAccessDropdown {
         e.preventDefault();
 
         if ($el.is('.is-active')) {
-          if (this.isAllowedToCreateDropdown) {
-            if (item.id === this.noOneObj.id) {
-              this.accessLevelsData.forEach((level) => {
+          if (self.isAllowedToCreateDropdown) {
+            if (item.id === self.noOneObj.id) {
+              self.accessLevelsData.forEach((level) => {
                 if (level.id !== item.id) {
-                  this.removeSelectedItem(level);
+                  self.removeSelectedItem(level);
                 }
               });
 
-              this.$wrap.find(`.item-${item.type}`).removeClass('is-active');
+              self.$wrap.find(`.item-${item.type}`).removeClass('is-active');
             } else {
-              const $noOne = this.$wrap.find(`.is-active-item-${item.type}:contains('No one')`);
+              const $noOne = self.$wrap.find(`.is-active.item-${item.type}[data-role-name="No one"]`);
               if ($noOne.length) {
                 $noOne.removeClass('is-active');
-                this.removeSelectedItem(this.noOneObj);
+                self.removeSelectedItem(self.noOneObj);
               }
             }
 
             $el.addClass(`is-active item-${item.type}`);
           }
 
-          this.addSelectedItem(item);
+          self.addSelectedItem(item);
         } else {
-          this.removeSelectedItem(item);
+          self.removeSelectedItem(item);
         }
 
         if (onSelect) {
@@ -93,15 +94,17 @@ export default class ProtectedTagAccessDropdown {
       return;
     }
 
-    itemsToPreselect.forEach((item) => {
-      item.persisted = true;
+    const persistedItems = itemsToPreselect.map((item) => {
+      const persistedItem = Object.assign({}, item);
+      persistedItem.persisted = true;
+      return persistedItem;
     });
 
-    this.setSelectedItems(itemsToPreselect);
+    this.setSelectedItems(persistedItems);
   }
 
-  setSelectedItems(items) {
-    this.items = items.length ? items : [];
+  setSelectedItems(items = []) {
+    this.items = items;
   }
 
   getSelectedItems() {
@@ -113,10 +116,9 @@ export default class ProtectedTagAccessDropdown {
   }
 
   getInputData() {
-    const accessLevels = [];
     const selectedItems = this.getAllSelectedItems();
 
-    selectedItems.forEach((item) => {
+    const accessLevels = selectedItems.map((item) => {
       const obj = {};
 
       if (typeof item.id !== 'undefined') {
@@ -135,7 +137,7 @@ export default class ProtectedTagAccessDropdown {
         obj.group_id = item.group_id;
       }
 
-      accessLevels.push(obj);
+      return obj;
     });
 
     return accessLevels;
@@ -205,7 +207,8 @@ export default class ProtectedTagAccessDropdown {
         index = i;
       }
 
-      return index < 0; // Break once we have index set
+      // Break once we have index set
+      return !(index > -1);
     });
 
     // if ItemToDelete is not really selected do nothing
@@ -228,15 +231,15 @@ export default class ProtectedTagAccessDropdown {
   toggleLabel() {
     const currentItems = this.getSelectedItems();
     const types = _.groupBy(currentItems, item => item.type);
-    const label = [];
+    let label = [];
 
     if (currentItems.length) {
-      Object.keys(LEVEL_TYPES).forEach((levelType) => {
+      label = Object.keys(LEVEL_TYPES).map((levelType) => {
         const typeName = LEVEL_TYPES[levelType];
         const numberOfTypes = types[typeName] ? types[typeName].length : 0;
         const text = numberOfTypes === 1 ? typeName : `${typeName}s`;
 
-        label.push(`${numberOfTypes} ${text}`);
+        return `${numberOfTypes} ${text}`;
       });
     } else {
       label.push(this.defaultLabel);
@@ -248,23 +251,26 @@ export default class ProtectedTagAccessDropdown {
   }
 
   getData(query, callback) {
-    this.getUsers(query).done((usersResponse) => {
-      if (this.groups.length) {
-        callback(this.consolidateData(usersResponse, this.groups));
-      } else {
-        this.getGroups(query).done((groupsResponse) => {
-          // Cache groups to avoid multiple requests
-          this.groups = groupsResponse;
-          callback(this.consolidateData(usersResponse, groupsResponse));
-        }).error(() => new Flash('Failed to load groups.'));
-      }
-    }).error(() => new Flash('Failed to load users.'));
+    this.getUsers(query)
+      .done((usersResponse) => {
+        if (this.groups.length) {
+          callback(this.consolidateData(usersResponse, this.groups));
+        } else {
+          this.getGroups(query)
+            .done((groupsResponse) => {
+              // Cache groups to avoid multiple requests
+              this.groups = groupsResponse;
+              callback(this.consolidateData(usersResponse, groupsResponse));
+            })
+            .error(() => new Flash('Failed to load groups.'));
+        }
+      })
+      .error(() => new Flash('Failed to load users.'));
   }
 
   consolidateData(usersResponse, groupsResponse) {
     let consolidatedData = [];
     const map = [];
-    const users = [];
     const selectedItems = this.getSelectedItems();
 
     // ID property is handled differently locally from the server
@@ -284,15 +290,18 @@ export default class ProtectedTagAccessDropdown {
     /*
      * Build groups
      */
-    const groups = groupsResponse.map((group) => {
-      group.type = LEVEL_TYPES.GROUP;
-      return group;
-    });
+    const groups = groupsResponse.map(group => ({ ...group, type: LEVEL_TYPES.GROUP }));
 
     /*
      * Build roles
      */
     const roles = this.accessLevelsData.map((level) => {
+      /* eslint-disable no-param-reassign */
+      // This re-assignment is intentional as
+      // level.type property is being used in removeSelectedItem()
+      // for comparision, and accessLevelsData is provided by
+      // gon.create_access_levels which doesn't have `type` included.
+      // See this discussion https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1629#note_31285823
       level.type = LEVEL_TYPES.ROLE;
       return level;
     });
@@ -300,31 +309,32 @@ export default class ProtectedTagAccessDropdown {
     /*
      * Build users
      */
-    selectedItems.forEach((item) => {
-      if (item.type !== LEVEL_TYPES.USER) {
-        return;
+    const users = selectedItems.map((item) => {
+      let user = null;
+      if (item.type === LEVEL_TYPES.USER) {
+        user = {
+          id: item.user_id,
+          name: item.name,
+          username: item.username,
+          avatar_url: item.avatar_url,
+          type: LEVEL_TYPES.USER,
+        };
+
+        // Save identifiers for easy-checking more later
+        map.push(LEVEL_TYPES.USER + item.user_id);
       }
 
-      // Collect selected users
-      users.push({
-        id: item.user_id,
-        name: item.name,
-        username: item.username,
-        avatar_url: item.avatar_url,
-        type: LEVEL_TYPES.USER,
-      });
-
-      // Save identifiers for easy-checking more later
-      map.push(LEVEL_TYPES.USER + item.user_id);
-    });
+      return user;
+    }).filter(item => item !== null);
 
     // Has to be checked against server response
     // because the selected item can be in filter results
     usersResponse.forEach((response) => {
       // Add is it has not been added
       if (map.indexOf(LEVEL_TYPES.USER + response.id) === -1) {
-        response.type = LEVEL_TYPES.USER;
-        users.push(response);
+        const user = Object.assign({}, response);
+        user.type = LEVEL_TYPES.USER;
+        users.push(user);
       }
     });
 
@@ -350,7 +360,7 @@ export default class ProtectedTagAccessDropdown {
   getUsers(query) {
     return $.ajax({
       dataType: 'json',
-      url: this.buildUrl(this.usersPath),
+      url: this.buildUrl(gon.relative_url_root, this.usersPath),
       data: {
         search: query,
         per_page: 20,
@@ -364,18 +374,19 @@ export default class ProtectedTagAccessDropdown {
   getGroups() {
     return $.ajax({
       dataType: 'json',
-      url: this.buildUrl(this.groupsPath),
+      url: this.buildUrl(gon.relative_url_root, this.groupsPath),
       data: {
         project_id: gon.current_project_id,
       },
     });
   }
 
-  buildUrl(url) {
-    if (gon.relative_url_root !== null) {
-      url = gon.relative_url_root.replace(/\/$/, '') + url;
+  buildUrl(urlRoot, url) {
+    let newUrl;
+    if (urlRoot !== null) {
+      newUrl = urlRoot.replace(/\/$/, '') + url;
     }
-    return url;
+    return newUrl;
   }
 
   renderRow(item) {
@@ -419,19 +430,42 @@ export default class ProtectedTagAccessDropdown {
   }
 
   userRowHtml(user, isActive) {
-    const avatarHtml = `<img src='${user.avatar_url}' class='avatar avatar-inline' width='30'>`;
-    const nameHtml = `<strong class='dropdown-menu-user-full-name'>${user.name}</strong>`;
-    const usernameHtml = `<span class='dropdown-menu-user-username'>${user.username}</span>`;
-    return `<li><a href='#' class='${isActive ? 'is-active' : ''}'>${avatarHtml} ${nameHtml} ${usernameHtml}</a></li>`;
+    const isActiveClass = isActive ? 'isActive' : '';
+
+    return `
+      <li>
+        <a href='#' class='${isActiveClass}'>
+          <img src='${user.avatar_url}' class='avatar avatar-inline' width='30'>
+          <strong class='dropdown-menu-user-full-name'>${user.name}</strong>
+          <span class='dropdown-menu-user-username'>${user.username}</span>
+        </a>
+      </li>
+    `;
   }
 
   groupRowHtml(group, isActive) {
-    const avatarHtml = group.avatar_url ? `<img src='${group.avatar_url}' class='avatar avatar-inline' width='30'>` : '';
-    const groupnameHtml = `<span class='dropdown-menu-group-groupname'>${group.name}</span>`;
-    return `<li><a href='#' class='${isActive ? 'is-active' : ''}'>${avatarHtml} ${groupnameHtml}</a></li>`;
+    const isActiveClass = isActive ? 'isActive' : '';
+    const avatarEl = group.avatar_url ? `<img src='${group.avatar_url}' class='avatar avatar-inline' width='30'>` : '';
+
+    return `
+      <li>
+        <a href='#' class='${isActiveClass}'>
+          ${avatarEl}
+          <span class='dropdown-menu-group-groupname'>${group.name}</span>
+        </a>
+      </li>
+    `;
   }
 
   roleRowHtml(role, isActive) {
-    return `<li><a href='#' class='${isActive ? 'is-active' : ''} item-${role.type}'>${role.text}</a></li>`;
+    const isActiveClass = isActive ? 'isActive' : '';
+
+    return `
+      <li>
+        <a href='#' class='${isActiveClass}' item-${role.type}' data-role-name="${role.text}">
+          ${role.text}
+        </a>
+      </li>
+    `;
   }
 }
