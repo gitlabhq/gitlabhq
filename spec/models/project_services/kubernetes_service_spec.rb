@@ -87,6 +87,34 @@ describe KubernetesService, models: true, caching: true do
     end
   end
 
+  describe '#actual_namespace' do
+    subject { service.actual_namespace }
+
+    it "returns the default namespace" do
+      is_expected.to eq(service.send(:default_namespace))
+    end
+    
+    context 'when namespace is specified' do
+      before do
+        service.namespace = 'my-namespace'
+      end
+
+      it "returns the user-namespace" do
+        is_expected.to eq('my-namespace')
+      end
+    end
+
+    context 'when service is not assigned to project' do
+      before do
+        service.project = nil
+      end
+
+      it "does not return namespace" do
+        is_expected.to be_nil
+      end
+    end
+  end
+
   describe '#test' do
     let(:discovery_url) { 'https://kubernetes.example.com/api/v1' }
 
@@ -179,6 +207,7 @@ describe KubernetesService, models: true, caching: true do
 
   describe '#terminals' do
     let(:environment) { build(:environment, project: project, name: "env", slug: "env-000000") }
+
     subject { service.terminals(environment) }
 
     context 'with invalid pods' do

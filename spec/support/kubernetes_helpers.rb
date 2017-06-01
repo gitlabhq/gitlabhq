@@ -20,14 +20,14 @@ module KubernetesHelpers
 
   def stub_kubeclient_pods(response = nil)
     stub_kubeclient_discover
-    pods_url = service.api_url + "/api/v1/namespaces/#{service.namespace}/pods"
+    pods_url = service.api_url + "/api/v1/namespaces/#{service.actual_namespace}/pods"
 
     WebMock.stub_request(:get, pods_url).to_return(response || kube_pods_response)
   end
 
   def stub_kubeclient_deployments(response = nil)
     stub_kubeclient_discover
-    deployments_url = service.api_url + "/apis/extensions/v1beta1/namespaces/#{service.namespace}/deployments"
+    deployments_url = service.api_url + "/apis/extensions/v1beta1/namespaces/#{service.actual_namespace}/deployments"
 
     WebMock.stub_request(:get, deployments_url).to_return(response || kube_deployments_response)
   end
@@ -112,7 +112,7 @@ module KubernetesHelpers
     containers.map do |container|
       terminal = {
         selectors: { pod: pod_name, container: container['name'] },
-        url:  container_exec_url(service.api_url, service.namespace, pod_name, container['name']),
+        url:  container_exec_url(service.api_url, service.actual_namespace, pod_name, container['name']),
         subprotocols: ['channel.k8s.io'],
         headers: { 'Authorization' => ["Bearer #{service.token}"] },
         created_at: DateTime.parse(pod['metadata']['creationTimestamp']),
