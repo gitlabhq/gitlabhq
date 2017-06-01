@@ -84,6 +84,9 @@ export default {
 
       return fullPath;
     },
+    hasGroups() {
+      return Object.keys(this.group.subGroups).length > 0;
+    },
   },
 };
 </script>
@@ -158,6 +161,6 @@ export default {
       {{group.description}}
     </div>
 
-    <group-folder v-if="group.isOpen && group.hasSubgroups" :groups="group.subGroups" :baseGroup="group" />
+    <group-folder v-if="group.isOpen && hasGroups" :groups="group.subGroups" :baseGroup="group" />
   </li>
 </template>
