@@ -427,8 +427,8 @@ describe Ci::Build, :models do
       end
     end
 
-    describe '#ci_environment_url' do
-      subject { job.ci_environment_url }
+    describe '#expanded_environment_url' do
+      subject { job.expanded_environment_url }
 
       context 'when yaml environment uses $CI_COMMIT_REF_NAME' do
         let(:job) do
@@ -453,9 +453,30 @@ describe Ci::Build, :models do
       context 'when yaml environment does not have url' do
         let(:job) { create(:ci_build, environment: 'staging') }
 
-        let!(:environment) do
-          create(:environment, project: job.project, name: job.environment)
+        it { is_expected.to be_nil }
+      end
+    end
+
+    describe '#ci_environment_url' do
+      subject { job.ci_environment_url }
+
+      let!(:environment) do
+        create(:environment, project: job.project, name: job.environment)
+      end
+
+      context 'when yaml environment has url' do
+        let(:job) do
+          create(:ci_build,
+                 ref: 'master',
+                 environment: 'staging',
+                 options: { environment: { url: 'http://review/$CI_COMMIT_REF_NAME' } })
         end
+
+        it { is_expected.to eq('http://review/master') }
+      end
+
+      context 'when yaml environment does not have url' do
+        let(:job) { create(:ci_build, environment: 'staging') }
 
         it 'returns the external_url from persisted environment' do
           is_expected.to eq(environment.external_url)
