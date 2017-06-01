@@ -24,16 +24,18 @@ module IssueLinks
     private
 
     def issues
-      referenced_issues = @issue.referenced_issues.select('issues.*', 'issue_links.id AS issue_links_id')
-      referred_by_issues = @issue.referred_by_issues.select('issues.*', 'issue_links.id AS issue_links_id')
-      authorized_issues = IssuesFinder.new(@current_user).execute
+      authorized_issues = Issue
+                            .not_restricted_by_confidentiality(@current_user)
+                            .where(project_id: @current_user.authorized_projects.select(:id))
+                            .reorder(nil)
 
-      union = Gitlab::SQL::Union.new([referenced_issues, referred_by_issues])
-
-      Issue.from("(#{union.to_sql}) #{Issue.table_name}")
-           .where(id: authorized_issues.select(:id))
-           .preload(project: :namespace)
-           .reorder('issue_links_id')
+      Issue.from("(SELECT issues.*, issue_links.id AS issue_links_id
+                   FROM issue_links, issues
+                   WHERE (issue_links.source_id = issues.id AND issue_links.target_id = #{@issue.id})
+                   OR (issue_links.target_id = issues.id AND issue_links.source_id = #{@issue.id})) #{Issue.table_name}")
+        .where(id: authorized_issues.select(:id))
+        .preload(project: :namespace)
+        .reorder(:issue_links_id)
     end
 
     def destroy_relation_path(issue)
