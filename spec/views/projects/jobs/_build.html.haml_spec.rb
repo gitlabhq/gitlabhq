@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'projects/ci/builds/_build' do
+describe 'projects/ci/jobs/_build' do
   include Devise::Test::ControllerHelpers
 
   let(:project) { create(:project, :repository) }

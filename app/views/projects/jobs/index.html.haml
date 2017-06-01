@@ -4,13 +4,13 @@
 
 %div{ class: container_class }
   .top-area
-    - build_path_proc = ->(scope) { project_builds_path(@project, scope: scope) }
+    - build_path_proc = ->(scope) { project_jobs_path(@project, scope: scope) }
     = render "shared/builds/tabs", build_path_proc: build_path_proc, all_builds: @all_builds, scope: @scope
 
     .nav-controls
       - if can?(current_user, :update_build, @project)
         - if @all_builds.running_or_pending.any?
-          = link_to 'Cancel running', cancel_all_namespace_project_builds_path(@project.namespace, @project),
+          = link_to 'Cancel running', cancel_all_namespace_project_jobs_path(@project.namespace, @project),
             data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', method: :post
 
         - unless @repository.gitlab_ci_yml

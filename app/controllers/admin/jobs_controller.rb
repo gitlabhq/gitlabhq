@@ -1,4 +1,4 @@
-class Admin::BuildsController < Admin::ApplicationController
+class Admin::JobsController < Admin::ApplicationController
   def index
     @scope = params[:scope]
     @all_builds = Ci::Build
@@ -20,6 +20,6 @@ class Admin::BuildsController < Admin::ApplicationController
   def cancel_all
     Ci::Build.running_or_pending.each(&:cancel)
 
-    redirect_to admin_builds_path
+    redirect_to admin_jobs_path
   end
 end

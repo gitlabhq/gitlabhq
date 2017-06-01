@@ -204,7 +204,7 @@ describe Projects::IssuesController do
         body = JSON.parse(response.body)
 
         expect(body['assignees'].first.keys)
-          .to match_array(%w(id name username avatar_url))
+          .to match_array(%w(id name username avatar_url state web_url))
       end
     end
 

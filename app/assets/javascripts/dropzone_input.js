@@ -194,6 +194,7 @@ window.DropzoneInput = (function() {
       $(child).val(beforeSelection + formattedText + afterSelection);
       textarea.setSelectionRange(caretStart + formattedText.length, caretEnd + formattedText.length);
       textarea.style.height = `${textarea.scrollHeight}px`;
+      formTextarea.get(0).dispatchEvent(new Event('input'));
       return formTextarea.trigger('input');
     };
 
