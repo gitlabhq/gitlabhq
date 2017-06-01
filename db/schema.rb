@@ -502,7 +502,7 @@ ActiveRecord::Schema.define(version: 20170602003304) do
 
   create_table "geo_event_log", id: :bigserial, force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.integer "push_event_id"
+    t.integer "push_event_id", limit: 8
   end
 
   add_index "geo_event_log", ["created_at"], name: "index_geo_event_log_on_created_at", using: :btree
