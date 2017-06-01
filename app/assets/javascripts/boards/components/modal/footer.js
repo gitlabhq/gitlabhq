@@ -26,7 +26,7 @@ gl.issueBoards.ModalFooter = Vue.extend({
   },
   methods: {
     addIssues() {
-      const list = this.modal.selectedList || this.state.lists[0];
+      const list = this.modal.selectedList || this.state.lists[1];
       const selectedIssues = ModalStore.getSelectedIssues();
       const issueIds = selectedIssues.map(issue => issue.globalId);
 
