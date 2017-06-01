@@ -1226,6 +1226,7 @@ class Project < ActiveRecord::Base
       { key: 'CI_PROJECT_ID', value: id.to_s, public: true },
       { key: 'CI_PROJECT_NAME', value: path, public: true },
       { key: 'CI_PROJECT_PATH', value: path_with_namespace, public: true },
+      { key: 'CI_PROJECT_PATH_SLUG', value: path_with_namespace.parameterize, public: true },
       { key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path, public: true },
       { key: 'CI_PROJECT_URL', value: web_url, public: true }
     ]
