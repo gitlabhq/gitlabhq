@@ -7,11 +7,9 @@ module Projects
     DELETED_FLAG = '+deleted'.freeze
 
     def async_execute
-      project.transaction do
-        project.update_attribute(:pending_delete, true)
-        job_id = ProjectDestroyWorker.perform_async(project.id, current_user.id, params)
-        Rails.logger.info("User #{current_user.id} scheduled destruction of project #{project.path_with_namespace} with job ID #{job_id}")
-      end
+      project.update_attribute(:pending_delete, true)
+      job_id = ProjectDestroyWorker.perform_async(project.id, current_user.id, params)
+      Rails.logger.info("User #{current_user.id} scheduled destruction of project #{project.path_with_namespace} with job ID #{job_id}")
     end
 
     def execute
@@ -95,7 +93,11 @@ module Projects
 
       if gitlab_shell.mv_repository(project.repository_storage_path, path, new_path)
         log_info("Repository \"#{path}\" moved to \"#{new_path}\"")
-        GitlabShellWorker.perform_in(5.minutes, :remove_repository, project.repository_storage_path, new_path)
+
+        project.run_after_commit do
+          # self is now project
+          GitlabShellWorker.perform_in(5.minutes, :remove_repository, self.repository_storage_path, new_path)
+        end
       else
         false
       end
