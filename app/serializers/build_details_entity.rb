@@ -2,6 +2,8 @@ class BuildDetailsEntity < BuildEntity
   expose :coverage, :erased_at, :duration
   expose :tag_list, as: :tags
 
+  expose :user, using: UserEntity
+
   expose :erased_by, if: -> (*) { build.erased? }, using: UserEntity
   expose :erase_path, if: -> (*) { build.erasable? && can?(current_user, :update_build, project) } do |build|
     erase_namespace_project_job_path(project.namespace, project, build)
@@ -11,7 +13,7 @@ class BuildDetailsEntity < BuildEntity
   expose :runner, using: RunnerEntity
   expose :pipeline, using: PipelineEntity
 
-  expose :merge_request, if: -> (*) { can?(current_user, :read_merge_request, project) } do
+  expose :merge_request, if: -> (*) { can?(current_user, :read_merge_request, build.merge_request) } do
     expose :iid do |build|
       build.merge_request.iid
     end
@@ -21,8 +23,10 @@ class BuildDetailsEntity < BuildEntity
     end
   end
 
-  expose :new_issue_path, if: -> (*) { can?(request.current_user, :create_issue, project) } do |build|
-    new_namespace_project_issue_path(project.namespace, project)
+  expose :build_failed_options do
+    expose :new_issue_path, if: -> (*) { can?(request.current_user, :create_issue, project) } do |build|
+      new_namespace_project_issue_path(project.namespace, project)
+    end
   end
 
   expose :raw_path do |build|

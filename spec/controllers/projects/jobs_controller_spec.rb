@@ -140,9 +140,10 @@ describe Projects::JobsController do
 
       it 'exposes needed information' do
         expect(response).to have_http_status(:ok)
-        expect(json_response['new_issue_path']).to end_with('/issues/new')
         expect(json_response['raw_path']).to match(/builds\/\d+\/raw\z/)
         expect(json_response.dig('merge_request', 'path')).to match(/merge_requests\/\d+\z/)
+        expect(json_response['build_failed_options']['new_issue_path'])
+          .to end_with('/issues/new')
       end
     end
 
