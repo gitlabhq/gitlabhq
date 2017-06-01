@@ -505,6 +505,10 @@ Check if GitLab and its environment are configured correctly:
     sudo -u git -H yarn install --production --pure-lockfile
     sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production NODE_ENV=production
 
+### Compile GetText PO files
+
+    sudo -u git -H bundle exec rake gettext:compile RAILS_ENV=production
+
 ### Start Your GitLab Instance
 
     sudo service gitlab start
