@@ -1,7 +1,7 @@
 - content_for :page_specific_javascripts do
   = page_specific_javascript_bundle_tag('protected_tags')
 
-.row.prepend-top-default.append-bottom-default
+.row.prepend-top-default.append-bottom-default.js-protected-tags-container{ data: { "groups-autocomplete" => "#{autocomplete_project_groups_path(format: :json)}", "users-autocomplete" => "#{autocomplete_users_path(format: :json)}" } }
   .col-lg-3
     %h4.prepend-top-0
       Protected Tags
