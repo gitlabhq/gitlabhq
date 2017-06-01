@@ -25,7 +25,7 @@ class AnalyticsBuildEntity < Grape::Entity
   end
 
   expose :url do |build|
-    url_to(:namespace_project_build, build)
+    url_to(:namespace_project_job, build)
   end
 
   expose :commit_url do |build|

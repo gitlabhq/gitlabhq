@@ -40,7 +40,7 @@ module TestEnv
     'wip'                                => 'b9238ee',
     'csv'                                => '3dd0896',
     'v1.1.0'                             => 'b83d6e3',
-    'add-ipython-files'                  => '6d85bb6',
+    'add-ipython-files'                  => '93ee732',
     'add-pdf-file'                       => 'e774ebd'
   }.freeze
 

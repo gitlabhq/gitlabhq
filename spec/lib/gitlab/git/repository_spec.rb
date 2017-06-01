@@ -381,6 +381,19 @@ describe Gitlab::Git::Repository, seed_helper: true do
           }
         ])
       end
+
+      it 'should not break on invalid syntax' do
+        allow(repository).to receive(:blob_content).and_return(<<-GITMODULES.strip_heredoc)
+          [submodule "six"]
+          path = six
+          url = git://github.com/randx/six.git
+
+          [submodule]
+          foo = bar
+        GITMODULES
+
+        expect(submodules).to have_key('six')
+      end
     end
 
     context 'where repo doesn\'t have submodules' do

@@ -5,7 +5,7 @@ import * as simplePoll from '~/lib/utils/simple_poll';
 
 const commitMessage = 'This is the commit message';
 const commitMessageWithDescription = 'This is the commit message description';
-const createComponent = () => {
+const createComponent = (customConfig = {}) => {
   const Component = Vue.extend(readyToMergeComponent);
   const mr = {
     isPipelineActive: false,
@@ -17,7 +17,11 @@ const createComponent = () => {
     sha: '12345678',
     commitMessage,
     commitMessageWithDescription,
+    shouldRemoveSourceBranch: true,
+    canRemoveSourceBranch: false,
   };
+
+  Object.assign(mr, customConfig.mr);
 
   const service = {
     merge() {},
@@ -51,7 +55,6 @@ describe('MRWidgetReadyToMerge', () => {
 
   describe('data', () => {
     it('should have default data', () => {
-      expect(vm.removeSourceBranch).toBeTruthy(true);
       expect(vm.mergeWhenBuildSucceeds).toBeFalsy();
       expect(vm.useCommitMessageWithDescription).toBeFalsy();
       expect(vm.setToMergeWhenPipelineSucceeds).toBeFalsy();
@@ -164,6 +167,36 @@ describe('MRWidgetReadyToMerge', () => {
       it('should return true when there vm instance is making request', () => {
         vm.isMakingRequest = true;
         expect(vm.isMergeButtonDisabled).toBeTruthy();
+      });
+    });
+
+    describe('Remove source branch checkbox', () => {
+      describe('when user can merge but cannot delete branch', () => {
+        it('isRemoveSourceBranchButtonDisabled should be true', () => {
+          expect(vm.isRemoveSourceBranchButtonDisabled).toBe(true);
+        });
+
+        it('should be disabled in the rendered output', () => {
+          const checkboxElement = vm.$el.querySelector('#remove-source-branch-input');
+          expect(checkboxElement.getAttribute('disabled')).toBe('disabled');
+        });
+      });
+
+      describe('when user can merge and can delete branch', () => {
+        beforeEach(() => {
+          this.customVm = createComponent({
+            mr: { canRemoveSourceBranch: true },
+          });
+        });
+
+        it('isRemoveSourceBranchButtonDisabled should be false', () => {
+          expect(this.customVm.isRemoveSourceBranchButtonDisabled).toBe(false);
+        });
+
+        it('should be enabled in rendered output', () => {
+          const checkboxElement = this.customVm.$el.querySelector('#remove-source-branch-input');
+          expect(checkboxElement.getAttribute('disabled')).toBeNull();
+        });
       });
     });
   });

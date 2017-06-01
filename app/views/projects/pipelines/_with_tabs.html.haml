@@ -1,9 +1,5 @@
 - failed_builds = @pipeline.statuses.latest.failed
 
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('common_vue')
-  = page_specific_javascript_bundle_tag('pipelines_graph')
-
 .tabs-holder
   %ul.pipelines-tabs.nav-links.no-top.no-bottom
     %li.js-pipeline-tab-link
@@ -21,7 +17,7 @@
 
 .tab-content
   #js-tab-pipeline.tab-pane
-    #js-pipeline-graph-vue{ data: { endpoint: namespace_project_pipeline_path(@project.namespace, @project, @pipeline, format: :json) } }
+    #js-pipeline-graph-vue
 
   #js-tab-builds.tab-pane
     - if pipeline.yaml_errors.present?
@@ -55,5 +51,5 @@
           %span.stage
             = build.stage.titleize
           %span.build-name
-            = link_to build.name, pipeline_build_url(pipeline, build)
+            = link_to build.name, pipeline_job_url(pipeline, build)
         %pre.build-log= build_summary(build, skip: index >= 10)

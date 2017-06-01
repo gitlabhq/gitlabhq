@@ -42,6 +42,7 @@
 - [Sidekiq debugging](sidekiq_debugging.md)
 - [Object state models](object_state_models.md)
 - [Building a package for testing purposes](build_test_package.md)
+- [Manage feature flags](feature_flags.md)
 
 ## Databases
 

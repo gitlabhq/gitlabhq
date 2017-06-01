@@ -58,7 +58,7 @@ describe 'Dropdown assignee', :feature, :js do
     it 'should load all the assignees when opened' do
       filtered_search.set('assignee:')
 
-      expect(dropdown_assignee_size).to eq(3)
+      expect(dropdown_assignee_size).to eq(4)
     end
 
     it 'shows current user at top of dropdown' do

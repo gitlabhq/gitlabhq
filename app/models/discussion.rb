@@ -21,7 +21,8 @@ class Discussion
   end
 
   def self.build_collection(notes, context_noteable = nil)
-    notes.group_by { |n| n.discussion_id(context_noteable) }.values.map { |notes| build(notes, context_noteable) }
+    grouped_notes = notes.group_by { |n| n.discussion_id(context_noteable) }
+    grouped_notes.values.map { |notes| build(notes, context_noteable) }
   end
 
   # Returns an alphanumeric discussion ID based on `build_discussion_id`
