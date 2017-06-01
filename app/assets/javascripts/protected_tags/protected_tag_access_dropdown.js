@@ -309,23 +309,18 @@ export default class ProtectedTagAccessDropdown {
     /*
      * Build users
      */
-    const users = selectedItems.map((item) => {
-      let user = null;
-      if (item.type === LEVEL_TYPES.USER) {
-        user = {
-          id: item.user_id,
-          name: item.name,
-          username: item.username,
-          avatar_url: item.avatar_url,
-          type: LEVEL_TYPES.USER,
-        };
+    const users = selectedItems.filter(item => item.type === LEVEL_TYPES.USER).map((item) => {
+      // Save identifiers for easy-checking more later
+      map.push(LEVEL_TYPES.USER + item.user_id);
 
-        // Save identifiers for easy-checking more later
-        map.push(LEVEL_TYPES.USER + item.user_id);
-      }
-
-      return user;
-    }).filter(item => item !== null);
+      return {
+        id: item.user_id,
+        name: item.name,
+        username: item.username,
+        avatar_url: item.avatar_url,
+        type: LEVEL_TYPES.USER,
+      };
+    });
 
     // Has to be checked against server response
     // because the selected item can be in filter results
@@ -430,7 +425,7 @@ export default class ProtectedTagAccessDropdown {
   }
 
   userRowHtml(user, isActive) {
-    const isActiveClass = isActive ? 'isActive' : '';
+    const isActiveClass = isActive || '';
 
     return `
       <li>
@@ -444,7 +439,7 @@ export default class ProtectedTagAccessDropdown {
   }
 
   groupRowHtml(group, isActive) {
-    const isActiveClass = isActive ? 'isActive' : '';
+    const isActiveClass = isActive || '';
     const avatarEl = group.avatar_url ? `<img src='${group.avatar_url}' class='avatar avatar-inline' width='30'>` : '';
 
     return `
@@ -458,7 +453,7 @@ export default class ProtectedTagAccessDropdown {
   }
 
   roleRowHtml(role, isActive) {
-    const isActiveClass = isActive ? 'isActive' : '';
+    const isActiveClass = isActive || '';
 
     return `
       <li>
