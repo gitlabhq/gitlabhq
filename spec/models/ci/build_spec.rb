@@ -955,7 +955,7 @@ describe Ci::Build, :models do
       it { is_expected.to eq(environment) }
     end
 
-    context 'when there is not environment' do
+    context 'when there is no environment' do
       it { is_expected.to be_nil }
     end
   end
