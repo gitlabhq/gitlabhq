@@ -4,8 +4,6 @@ export default class GroupsStore {
     this.state = {};
     this.state.groups = {};
     this.state.pageInfo = {};
-
-    return this;
   }
 
   setGroups(rawGroups, parent = null) {
