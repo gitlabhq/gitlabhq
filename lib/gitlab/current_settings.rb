@@ -19,7 +19,7 @@ module Gitlab
           settings = ::ApplicationSetting.last
         end
 
-        settings ||= ::ApplicationSetting.create_from_defaults unless ActiveRecord::Migrator.needs_migration?
+        settings ||= ::ApplicationSetting.create_from_defaults
       end
 
       settings || in_memory_application_settings
@@ -46,7 +46,8 @@ module Gitlab
       active_db_connection = ActiveRecord::Base.connection.active? rescue false
 
       active_db_connection &&
-        ActiveRecord::Base.connection.table_exists?('application_settings')
+        ActiveRecord::Base.connection.table_exists?('application_settings') &&
+        !ActiveRecord::Migrator.needs_migration?
     rescue ActiveRecord::NoDatabaseError
       false
     end
