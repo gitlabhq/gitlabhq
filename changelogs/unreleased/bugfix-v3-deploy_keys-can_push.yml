@@ -1,0 +1,4 @@
+---
+title: "Fixed handling of the `can_push` attribute in the v3 deploy_keys api"
+merge_request: 11607
+author: Richard Clamp

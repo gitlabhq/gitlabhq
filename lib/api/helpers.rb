@@ -311,6 +311,16 @@ module API
       end
     end
 
+    def present_artifacts!(artifacts_file)
+      return not_found! unless artifacts_file.exists?
+  
+      if artifacts_file.file_storage?
+        present_file!(artifacts_file.path, artifacts_file.filename)
+      else
+        redirect_to(artifacts_file.url)
+      end
+    end
+
     private
 
     def private_token

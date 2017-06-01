@@ -2,7 +2,7 @@
 # and implement a set of methods
 class Service < ActiveRecord::Base
   include Sortable
-  serialize :properties, JSON
+  serialize :properties, JSON # rubocop:disable Cop/ActiverecordSerialize
 
   default_value_for :active, false
   default_value_for :push_events, true

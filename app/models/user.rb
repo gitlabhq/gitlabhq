@@ -40,7 +40,7 @@ class User < ActiveRecord::Base
          otp_secret_encryption_key: Gitlab::Application.secrets.otp_key_base
 
   devise :two_factor_backupable, otp_number_of_backup_codes: 10
-  serialize :otp_backup_codes, JSON
+  serialize :otp_backup_codes, JSON # rubocop:disable Cop/ActiverecordSerialize
 
   devise :lockable, :recoverable, :rememberable, :trackable,
     :validatable, :omniauthable, :confirmable, :registerable
@@ -781,7 +781,7 @@ class User < ActiveRecord::Base
   def avatar_url(size: nil, scale: 2, **args)
     # We use avatar_path instead of overriding avatar_url because of carrierwave.
     # See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11001/diffs#note_28659864
-    avatar_path(args) || GravatarService.new.execute(email, size, scale)
+    avatar_path(args) || GravatarService.new.execute(email, size, scale, username: username)
   end
 
   def all_emails
