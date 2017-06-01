@@ -95,13 +95,21 @@ class DiffNote < Note
 
     return if active?
 
-    Notes::DiffPositionUpdateService.new(
-      self.project,
-      nil,
+    tracer = Gitlab::Diff::PositionTracer.new(
+      project: self.project,
       old_diff_refs: self.position.diff_refs,
-      new_diff_refs: noteable.diff_refs,
+      new_diff_refs: self.noteable.diff_refs,
       paths: self.position.paths
-    ).execute(self)
+    )
+
+    result = tracer.trace(self.position)
+    return unless result
+
+    if result[:outdated]
+      self.change_position = result[:position]
+    else
+      self.position = result[:position]
+    end
   end
 
   def verify_supported
