@@ -23,7 +23,7 @@ module EE
         cannot! :read_project
       end
 
-      unless License.current&.feature_available?(:related_issues)
+      unless project.feature_available?(:related_issues)
         cannot! :read_issue_link
         cannot! :admin_issue_link
       end
