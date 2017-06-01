@@ -3,10 +3,10 @@
 
 ### Project visibility level
 
-Project in GitLab has be either private, internal or public.
-You can determine it by `visibility` field in project.
+Project in GitLab can be either private, internal or public.
+This is determined by the `visibility` field in the project.
 
-Constants for project visibility levels are next:
+Values for the project visibility level are:
 
 * `private`:
   Project access must be granted explicitly for each user.
@@ -21,7 +21,7 @@ Constants for project visibility levels are next:
 
 ## List projects
 
-Get a list of visible projects for authenticated user. When being accessed without authentication, all public projects are returned.
+Get a list of visible projects for authenticated user. When accessed without authentication, only public projects are returned.
 
 ```
 GET /projects
