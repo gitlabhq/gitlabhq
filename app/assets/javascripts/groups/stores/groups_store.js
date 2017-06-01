@@ -6,7 +6,7 @@ export default class GroupsStore {
     this.state.pageInfo = {};
   }
 
-  setGroups(rawGroups, parent = null) {
+  setGroups(rawGroups, parent) {
     const parentGroup = parent;
     const tree = this.buildTree(rawGroups, parentGroup);
 
