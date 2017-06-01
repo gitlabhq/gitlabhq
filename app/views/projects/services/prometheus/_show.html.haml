@@ -31,7 +31,7 @@
       .panel-heading
         %h3.panel-title
           = icon('caret-right lg', class: 'panel-toggle js-panel-toggle', 'aria-label' => 'Toggle panel')
-          Missing environment variable(s)
+          Missing environment variable
           %span.badge-count.js-env-var-count 0
       .panel-body.hidden
         .flash-container
@@ -40,6 +40,6 @@
               To set up automatic monitoring, add the environment variable
               %code
                 $CI_ENVIRONMENT_SLUG
-              to exporter's queries.
+              to exporter&rsquo;s queries.
               = link_to 'More information', '#'
         %ul.metrics-list.js-missing-var-metrics-list

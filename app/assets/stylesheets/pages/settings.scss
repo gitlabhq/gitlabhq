@@ -73,16 +73,21 @@
   .loading-metrics,
   .empty-metrics {
     text-align: center;
-    padding: 20px 10px;
+    padding: 30px 10px;
 
     p,
     .btn {
       margin-top: 10px;
+      margin-bottom: 0;
     }
 
     p {
       color: $gl-gray-light;
     }
+  }
+
+  .loading-metrics .fa-spin {
+    color: $loading-color;
   }
 
   .metrics-list {
@@ -91,7 +96,7 @@
     padding: 0;
 
     li {
-      padding: 15px 10px;
+      padding: 16px;
 
       .badge-count {
         background: $badge-bg;
