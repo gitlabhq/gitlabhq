@@ -240,14 +240,10 @@ module BlobHelper
 
   def blob_render_error_reason(viewer)
     case viewer.render_error
+    when :collapsed
+      "it is larger than #{number_to_human_size(viewer.collapse_limit)}"
     when :too_large
-      max_size =
-        if viewer.can_override_max_size?
-          viewer.overridable_max_size
-        else
-          viewer.max_size
-        end
-      "it is larger than #{number_to_human_size(max_size)}"
+      "it is larger than #{number_to_human_size(viewer.size_limit)}"
     when :server_side_but_stored_externally
       case viewer.blob.external_storage
       when :lfs
@@ -264,8 +260,8 @@ module BlobHelper
     error = viewer.render_error
     options = []
 
-    if error == :too_large && viewer.can_override_max_size?
-      options << link_to('load it anyway', url_for(params.merge(viewer: viewer.type, override_max_size: true, format: nil)))
+    if error == :collapsed
+      options << link_to('load it anyway', url_for(params.merge(viewer: viewer.type, expanded: true, format: nil)))
     end
 
     # If the error is `:server_side_but_stored_externally`, the simple viewer will show the same error,

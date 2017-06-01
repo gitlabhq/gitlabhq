@@ -88,6 +88,7 @@ module Gitlab
           new(
             id: blob_entry[:oid],
             name: blob_entry[:name],
+            size: 0,
             data: '',
             path: path,
             commit_id: sha

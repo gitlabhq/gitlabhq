@@ -7,7 +7,7 @@ module Gitlab
         delegate :count, :size, :real_size, to: :diff_files
 
         def self.default_options
-          ::Commit.max_diff_options.merge(ignore_whitespace_change: false, no_collapse: false)
+          ::Commit.max_diff_options.merge(ignore_whitespace_change: false, expanded: false)
         end
 
         def initialize(diffable, project:, diff_options: nil, diff_refs: nil, fallback_diff_refs: nil)
