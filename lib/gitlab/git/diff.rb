@@ -3,7 +3,7 @@ module Gitlab
   module Git
     class Diff
       TimeoutError = Class.new(StandardError)
-      include Gitlab::Git::EncodingHelper
+      include Gitlab::EncodingHelper
 
       # Diff properties
       attr_accessor :old_path, :new_path, :a_mode, :b_mode, :diff

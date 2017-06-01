@@ -1,7 +1,7 @@
 class MergeRequestDiff < ActiveRecord::Base
   include Sortable
   include Importable
-  include Gitlab::Git::EncodingHelper
+  include Gitlab::EncodingHelper
 
   # Prevent store of diff if commits amount more then 500
   COMMITS_SAFE_SIZE = 100
