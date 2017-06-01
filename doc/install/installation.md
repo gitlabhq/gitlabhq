@@ -185,7 +185,8 @@ Create a `git` user for GitLab:
 We recommend using a PostgreSQL database. For MySQL check the
 [MySQL setup guide](database_mysql.md).
 
-> **Note**: because we need to make use of extensions you need at least pgsql 9.1.
+> **Note**: because we need to make use of extensions and concurrent index removal,
+you need at least PostgreSQL 9.2.
 
 1. Install the database packages:
 

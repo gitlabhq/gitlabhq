@@ -12,19 +12,19 @@
       - diff_files.each do |diff_file|
         - file_hash = hexdigest(diff_file.file_path)
         %li
-          - if diff_file.deleted_file
+          - if diff_file.deleted_file?
             %span.deleted-file
               %a{ href: "##{file_hash}" }
                 %i.fa.fa-minus
                 = diff_file.old_path
-          - elsif diff_file.renamed_file
+          - elsif diff_file.renamed_file?
             %span.renamed-file
               %a{ href: "##{file_hash}" }
                 %i.fa.fa-minus
                 = diff_file.old_path
                 &rarr;
                 = diff_file.new_path
-          - elsif diff_file.new_file
+          - elsif diff_file.new_file?
             %span.new-file
               %a{ href: "##{file_hash}" }
                 %i.fa.fa-plus

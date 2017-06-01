@@ -81,6 +81,6 @@ class Projects::RefsController < Projects::ApplicationController
   private
 
   def validate_ref_id
-    return not_found! if params[:id].present? && params[:id] !~ Gitlab::Regex.git_reference_regex
+    return not_found! if params[:id].present? && params[:id] !~ Gitlab::PathRegex.git_reference_regex
   end
 end

@@ -43,6 +43,9 @@ feature 'Squashing merge requests', js: true, feature: true do
   end
 
   before do
+    # Prevent source branch from being removed so we can use be_merged_to_root_ref
+    # method to check if squash was performed or not
+    allow_any_instance_of(MergeRequest).to receive(:force_remove_source_branch?).and_return(false)
     project.team << [user, :master]
 
     login_as user

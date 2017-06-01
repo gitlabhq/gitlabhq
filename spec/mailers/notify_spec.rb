@@ -128,6 +128,15 @@ describe Notify do
               is_expected.to have_body_text(namespace_project_issue_path(project.namespace, project, issue))
             end
           end
+
+          context 'with a preferred language' do
+            before { Gitlab::I18n.locale = :es }
+            after { Gitlab::I18n.use_default_locale }
+
+            it 'always generates the email using the default language' do
+              is_expected.to have_body_text('foo, bar, and baz')
+            end
+          end
         end
 
         describe 'status changed' do

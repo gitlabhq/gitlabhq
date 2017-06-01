@@ -1726,7 +1726,7 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe "#diff_sha_refs" do
+  describe "#diff_refs" do
     context "with diffs" do
       subject { create(:merge_request, :with_diffs) }
 
@@ -1735,7 +1735,7 @@ describe MergeRequest, models: true do
 
         expect_any_instance_of(Repository).not_to receive(:commit)
 
-        subject.diff_sha_refs
+        subject.diff_refs
       end
 
       it "returns expected diff_refs" do
@@ -1745,7 +1745,7 @@ describe MergeRequest, models: true do
           head_sha:  subject.merge_request_diff.head_commit_sha
         )
 
-        expect(subject.diff_sha_refs).to eq(expected_diff_refs)
+        expect(subject.diff_refs).to eq(expected_diff_refs)
       end
     end
   end

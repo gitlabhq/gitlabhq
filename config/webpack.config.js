@@ -5,6 +5,7 @@ var path = require('path');
 var webpack = require('webpack');
 var StatsPlugin = require('stats-webpack-plugin');
 var CompressionPlugin = require('compression-webpack-plugin');
+var NameAllModulesPlugin = require('name-all-modules-plugin');
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 var WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
 
@@ -72,7 +73,8 @@ var config = {
   output: {
     path: path.join(ROOT_PATH, 'public/assets/webpack'),
     publicPath: '/assets/webpack/',
-    filename: IS_PRODUCTION ? '[name].[chunkhash].bundle.js' : '[name].bundle.js'
+    filename: IS_PRODUCTION ? '[name].[chunkhash].bundle.js' : '[name].bundle.js',
+    chunkFilename: IS_PRODUCTION ? '[name].[chunkhash].chunk.js' : '[name].chunk.js',
   },
 
   devtool: 'cheap-module-source-map',
@@ -103,7 +105,7 @@ var config = {
         loader: 'file-loader',
       },
       {
-        test: /locale\/[a-z]+\/(.*)\.js$/,
+        test: /locale\/\w+\/(.*)\.js$/,
         loader: 'exports-loader?locales',
       },
     ]
@@ -129,8 +131,20 @@ var config = {
       jQuery: 'jquery',
     }),
 
-    // use deterministic module ids
+    // assign deterministic module ids
     new webpack.NamedModulesPlugin(),
+    new NameAllModulesPlugin(),
+
+    // assign deterministic chunk ids
+    new webpack.NamedChunksPlugin((chunk) => {
+      if (chunk.name) {
+        return chunk.name;
+      }
+      return chunk.modules.map((m) => {
+        var chunkPath = m.request.split('!').pop();
+        return path.relative(m.context, chunkPath);
+      }).join('_');
+    }),
 
     // create cacheable common library bundle for all vue chunks
     new webpack.optimize.CommonsChunkPlugin({
