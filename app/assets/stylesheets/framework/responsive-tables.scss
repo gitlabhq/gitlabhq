@@ -6,6 +6,10 @@
       padding: 15px 0;
       display: flex;
       align-items: center;
+
+      .btn-group {
+        display: inline-flex;
+      }
     }
 
     @media (max-width: $screen-sm-max) {
@@ -15,7 +19,6 @@
 
     .table-section {
       white-space: nowrap;
-      overflow: hidden;
 
       &.section-flex-full {
         flex: 1;
