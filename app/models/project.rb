@@ -1245,10 +1245,17 @@ class Project < ActiveRecord::Base
     variables
   end
 
-  def secret_variables
-    variables.map do |variable|
-      { key: variable.key, value: variable.value, public: false }
+  def secret_variables_for(ref)
+    if protected_for?(ref)
+      variables
+    else
+      variables.unprotected
     end
+  end
+
+  def protected_for?(ref)
+    ProtectedBranch.protected?(self, ref) ||
+      ProtectedTag.protected?(self, ref)
   end
 
   def deployment_variables
