@@ -30,15 +30,12 @@ module MergeRequests
     def head_pipeline_for(merge_request)
       return unless merge_request.source_project
 
-      sha = merge_request.source_branch_head&.id
-
+      sha = merge_request.source_branch_sha
       return unless sha
 
-      pipelines =
-        Ci::Pipeline.where(ref: merge_request.source_branch, project_id: merge_request.source_project.id, sha: sha).
-        order(id: :desc)
+      pipelines = merge_request.source_project.pipelines.where(ref: merge_request.source_branch, sha: sha)
 
-      pipelines.first
+      pipelines.order(id: :desc).first
     end
   end
 end
