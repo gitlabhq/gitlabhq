@@ -148,7 +148,7 @@ module Ci
       return @environment_url if defined?(@environment_url)
 
       @environment_url =
-        if unexpanded_url = options.dig(:environment, :url)
+        if unexpanded_url = options&.dig(:environment, :url)
           ExpandVariables.expand(unexpanded_url, simple_variables)
         else
           persisted_environment&.external_url

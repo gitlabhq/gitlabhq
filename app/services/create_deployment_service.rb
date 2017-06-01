@@ -46,7 +46,7 @@ class CreateDeploymentService
   end
 
   def environment_options
-    @environment_options ||= job.options[:environment] || {}
+    @environment_options ||= job.options&.dig(:environment) || {}
   end
 
   def on_stop

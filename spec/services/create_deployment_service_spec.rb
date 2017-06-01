@@ -17,7 +17,6 @@ describe CreateDeploymentService, services: true do
   let(:service) { described_class.new(job) }
 
   describe '#execute' do
-
     subject { service.execute }
 
     context 'when no environments exist' do
