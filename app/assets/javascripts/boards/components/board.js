@@ -87,7 +87,10 @@ gl.issueBoards.Board = Vue.extend({
     toggleExpanded(e) {
       if (this.list.isExpandable && !e.target.classList.contains('js-no-trigger-collapse')) {
         this.list.isExpanded = !this.list.isExpanded;
-        localStorage.setItem(`boards.${this.boardId}.${this.list.type}.expanded`, this.list.isExpanded);
+
+        if (AccessorUtilities.isLocalStorageAccessSafe()) {
+          localStorage.setItem(`boards.${this.boardId}.${this.list.type}.expanded`, this.list.isExpanded);
+        }
       }
     },
   },
