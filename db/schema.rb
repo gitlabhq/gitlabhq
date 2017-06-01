@@ -529,14 +529,14 @@ ActiveRecord::Schema.define(version: 20170602003304) do
   add_index "geo_nodes", ["primary"], name: "index_geo_nodes_on_primary", using: :btree
 
   create_table "geo_push_events", id: :bigserial, force: :cascade do |t|
-    t.integer "project_id", null: false
     t.datetime "created_at", null: false
-    t.string "ref"
     t.integer "branches_affected", null: false
     t.integer "tags_affected", null: false
+    t.integer "source", limit: 2, null: false
+    t.integer "project_id", null: false
     t.boolean "new_branch", default: false, null: false
     t.boolean "remove_branch", default: false, null: false
-    t.integer "source", limit: 2, null: false
+    t.text "ref"
   end
 
   add_index "geo_push_events", ["project_id"], name: "index_geo_push_events_on_project_id", using: :btree
