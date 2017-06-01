@@ -1,5 +1,3 @@
-/* eslint-disable class-methods-use-this */
-
 import Vue from 'vue';
 import VueResource from 'vue-resource';
 
@@ -23,6 +21,7 @@ export default class GroupsService {
     return this.groups.get(data);
   }
 
+  // eslint-disable-next-line class-methods-use-this
   leaveGroup(endpoint) {
     return Vue.http.delete(endpoint);
   }
