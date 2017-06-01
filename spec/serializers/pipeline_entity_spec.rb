@@ -19,9 +19,23 @@ describe PipelineEntity do
       let(:pipeline) { create(:ci_empty_pipeline) }
 
       it 'contains required fields' do
-        expect(subject).to include :id, :user, :path, :coverage
+        expect(subject).to include :id, :user, :path, :coverage, :source
         expect(subject).to include :ref, :commit
         expect(subject).to include :updated_at, :created_at
+      end
+
+      it 'contains details' do
+        expect(subject).to include :details
+        expect(subject[:details])
+          .to include :duration, :finished_at
+        expect(subject[:details][:status]).to include :icon, :favicon, :text, :label
+      end
+
+      it 'contains flags' do
+        expect(subject).to include :flags
+        expect(subject[:flags])
+          .to include :latest, :stuck,
+                      :yaml_errors, :retryable, :cancelable
       end
     end
 

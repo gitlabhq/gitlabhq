@@ -5,6 +5,7 @@ class PipelineEntity < Grape::Entity
   expose :user, using: UserEntity
   expose :active?, as: :active
   expose :coverage
+  expose :source
 
   expose :created_at, :updated_at
 
@@ -17,7 +18,6 @@ class PipelineEntity < Grape::Entity
 
   expose :flags do
     expose :latest?, as: :latest
-    expose :triggered?, as: :triggered
     expose :stuck?, as: :stuck
     expose :has_yaml_errors?, as: :yaml_errors
     expose :can_retry?, as: :retryable
