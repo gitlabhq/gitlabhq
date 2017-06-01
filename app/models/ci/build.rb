@@ -26,10 +26,6 @@ module Ci
 
     validates :coverage, numericality: true, allow_blank: true
     validates :ref, presence: true
-    validates :environment_url,
-              length: { maximum: 255 },
-              allow_nil: true,
-              addressable_url: true
 
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
@@ -145,6 +141,10 @@ module Ci
     def expanded_environment_url
       ExpandVariables.expand(environment_url, simple_variables) if
         environment_url
+    end
+
+    def environment_url
+      options.dig(:environment, :url)
     end
 
     def has_environment?

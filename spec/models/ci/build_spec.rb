@@ -20,7 +20,6 @@ describe Ci::Build, :models do
   it { is_expected.to validate_presence_of(:ref) }
   it { is_expected.to respond_to(:has_trace?) }
   it { is_expected.to respond_to(:trace) }
-  it { is_expected.to validate_length_of(:environment_url).is_at_most(255) }
 
   describe '#actionize' do
     context 'when build is a created' do
@@ -435,7 +434,7 @@ describe Ci::Build, :models do
         let(:build) do
           create(:ci_build,
                  ref: 'master',
-                 environment_url: 'http://review/$CI_COMMIT_REF_NAME')
+                 options: { environment: { url: 'http://review/$CI_COMMIT_REF_NAME' } })
         end
 
         it { is_expected.to eq('http://review/master') }
@@ -445,7 +444,7 @@ describe Ci::Build, :models do
         let(:build) do
           create(:ci_build,
                  yaml_variables: [{ key: :APP_HOST, value: 'host' }],
-                 environment_url: 'http://review/$APP_HOST')
+                 options: { environment: { url: 'http://review/$APP_HOST' } })
         end
 
         it { is_expected.to eq('http://review/host') }
@@ -1244,7 +1243,7 @@ describe Ci::Build, :models do
 
         context 'when the URL was set from the job' do
           before do
-            build.update(environment_url: 'http://host/$CI_JOB_NAME')
+            build.update(options: { environment: { url: 'http://host/$CI_JOB_NAME' } })
           end
 
           it_behaves_like 'containing environment variables'

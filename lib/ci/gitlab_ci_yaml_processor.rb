@@ -61,7 +61,6 @@ module Ci
         allow_failure: job[:ignore],
         when: job[:when] || 'on_success',
         environment: job[:environment_name],
-        environment_url: job[:environment_url],
         coverage_regex: job[:coverage],
         yaml_variables: yaml_variables(name),
         options: {
