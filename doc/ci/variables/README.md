@@ -160,7 +160,7 @@ Once you set them, they will be available for all subsequent pipelines.
 ## Protected secret variables
 
 >**Notes:**
-- This feature requires GitLab 9.3 or higher, and GitLab Runner 0.4.0 or higher.
+This feature requires GitLab 9.3 or higher.
 
 Secret variables could be protected. Whenever a secret variable is
 protected, it would only be securely passed to pipelines running on the
