@@ -411,7 +411,7 @@ job:
 ```
 
 In this example, `job` will run only for refs that are tagged, or if a build is
-explicitly requested via an API trigger or a Pipeline Schedule.
+explicitly requested via an API trigger or a [Pipeline Schedule](../../user/project/pipelines/schedules.md).
 
 ```yaml
 job:
