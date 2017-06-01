@@ -65,9 +65,9 @@ module Projects
     end
 
     def extract_archive!(temp_path)
-      if artifacts.ends_with?('.tar.gz') || artifacts.ends_with?('.tgz')
+      if artifacts_filename.ends_with?('.tar.gz') || artifacts_filename.ends_with?('.tgz')
         extract_tar_archive!(temp_path)
-      elsif artifacts.ends_with?('.zip')
+      elsif artifacts_filename.ends_with?('.zip')
         extract_zip_archive!(temp_path)
       else
         raise 'unsupported artifacts format'
@@ -75,11 +75,13 @@ module Projects
     end
 
     def extract_tar_archive!(temp_path)
-      results = Open3.pipeline(%W(gunzip -c #{artifacts}),
-                               %W(dd bs=#{BLOCK_SIZE} count=#{blocks}),
-                               %W(tar -x -C #{temp_path} #{SITE_PATH}),
-                               err: '/dev/null')
-      raise 'pages failed to extract' unless results.compact.all?(&:success?)
+      build.artifacts_file.use_file do |artifacts_path|
+        results = Open3.pipeline(%W(gunzip -c #{artifacts_path}),
+                                %W(dd bs=#{BLOCK_SIZE} count=#{blocks}),
+                                %W(tar -x -C #{temp_path} #{SITE_PATH}),
+                                err: '/dev/null')
+        raise 'pages failed to extract' unless results.compact.all?(&:success?)
+      end
     end
 
     def extract_zip_archive!(temp_path)
@@ -128,6 +130,10 @@ module Projects
     def blocks
       # Calculate dd parameters: we limit the size of pages
       1 + max_size / BLOCK_SIZE
+    end
+
+    def artifacts_filename
+      build.artifacts_file.filename
     end
 
     def max_size

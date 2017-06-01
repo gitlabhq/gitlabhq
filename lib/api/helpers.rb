@@ -334,7 +334,7 @@ module API
       if artifacts_file.file_storage?
         present_file!(artifacts_file.path, artifacts_file.filename)
       else
-        redirect_to(artifacts_file.url)
+        redirect(artifacts_file.url)
       end
     end
 

@@ -7,6 +7,27 @@ class ObjectStoreUploader < GitlabUploader
   LOCAL_STORE = 1
   REMOTE_STORE = 2
 
+  class << self
+    def storage_options(options)
+      @storage_options = options
+    end
+
+    def object_store_options
+      @storage_options&.object_store
+    end
+
+    def object_store_enabled?
+      object_store_options&.enabled
+    end
+  end
+
+  attr_reader :subject, :field
+
+  def initialize(subject, field)
+    @subject = subject
+    @field = field
+  end
+
   def object_store
     subject.public_send(:"#{field}_store")
   end
@@ -16,20 +37,8 @@ class ObjectStoreUploader < GitlabUploader
     subject.public_send(:"#{field}_store=", value)
   end
 
-  def self.storage_options(options)
-    @storage_options = options
-  end
-
-  def self.object_store_options
-    @storage_options&.object_store
-  end
-
-  def self.object_store_enabled?
-    object_store_options&.enabled
-  end
-
   def use_file
-    unless object_store == REMOTE_STORE
+    if file_storage?
       return yield path
     end
 
@@ -54,56 +63,51 @@ class ObjectStoreUploader < GitlabUploader
     old_file = file
     old_store = object_store
 
+    # for moving remote file we need to first store it locally
+    cache_stored_file! unless file_storage?
+
     # change storage
     self.object_store = new_store
 
-    # store file on a new storage
-    new_file = storage.store!(old_file)
+    storage.store!(file).tap do |new_file|
+      # since we change storage store the new storage
+      # in case of failure delete new file
+      begin
+        subject.save!
+      rescue => e
+        new_file.delete
+        self.object_store = old_store
+        raise e
+      end
 
-    # since we change storage store the new storage
-    # in case of failure delete new file
-    begin
-      subject.save!
-    rescue
-      self.object_store = old_store
-      new_file.delete
+      old_file.delete
     end
-
-    old_file.delete
-  end
-
-  def move_to_store
-    object_store != REMOTE_STORE
-  end
-
-  def move_to_cache
-    false
   end
 
   def fog_directory
-    self.class.object_store_options.bucket
+    self.class.object_store_options.remote_directory
   end
 
   def fog_credentials
-    object_store_options = self.class.object_store_options
-    {
-      provider:              object_store_options.provider,
-      aws_access_key_id:     object_store_options.access_key_id,
-      aws_secret_access_key: object_store_options.secret_access_key,
-      region:                object_store_options.region,
-      endpoint:              object_store_options.endpoint,
-      path_style:            true
-    }
+    self.class.object_store_options.connection
   end
 
   def fog_public
     false
   end
 
+  def move_to_store
+    file.try(:storage) == storage
+  end
+
+  def move_to_cache
+    file.try(:storage) == cache_storage
+  end
+
   private
 
   def set_default_local_store(new_file)
-    object_store ||= LOCAL_STORE
+    self.object_store = LOCAL_STORE unless self.object_store
   end
 
   def storage

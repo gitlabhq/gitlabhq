@@ -187,22 +187,33 @@ describe API::V3::Builds do
 
   describe 'GET /projects/:id/builds/:build_id/artifacts' do
     before do
+      stub_artifacts_object_storage
       get v3_api("/projects/#{project.id}/builds/#{build.id}/artifacts", api_user)
     end
 
     context 'job with artifacts' do
-      let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
+      context 'when artifacts are stored locally' do
+        let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
-      context 'authorized user' do
-        let(:download_headers) do
-          { 'Content-Transfer-Encoding' => 'binary',
-            'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
+        context 'authorized user' do
+          let(:download_headers) do
+            { 'Content-Transfer-Encoding' => 'binary',
+              'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
+          end
+
+          it 'returns specific job artifacts' do
+            expect(response).to have_http_status(200)
+            expect(response.headers).to include(download_headers)
+            expect(response.body).to match_file(build.artifacts_file.file.file)
+          end
         end
+      end
 
-        it 'returns specific job artifacts' do
-          expect(response).to have_http_status(200)
-          expect(response.headers).to include(download_headers)
-          expect(response.body).to match_file(build.artifacts_file.file.file)
+      context 'when artifacts are stored remotely' do
+        let(:build) { create(:ci_build, :artifacts, :remote_store, pipeline: pipeline) }
+
+        it 'returns location redirect' do
+          expect(response).to have_http_status(302)
         end
       end
 
@@ -225,6 +236,7 @@ describe API::V3::Builds do
     let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
     before do
+      stub_artifacts_object_storage
       build.success
     end
 
@@ -280,14 +292,24 @@ describe API::V3::Builds do
 
     context 'find proper job' do
       shared_examples 'a valid file' do
-        let(:download_headers) do
-          { 'Content-Transfer-Encoding' => 'binary',
-            'Content-Disposition' =>
-              "attachment; filename=#{build.artifacts_file.filename}" }
+        context 'when artifacts are stored locally' do
+          let(:download_headers) do
+            { 'Content-Transfer-Encoding' => 'binary',
+              'Content-Disposition' =>
+                "attachment; filename=#{build.artifacts_file.filename}" }
+          end
+
+          it { expect(response).to have_http_status(200) }
+          it { expect(response.headers).to include(download_headers) }
         end
 
-        it { expect(response).to have_http_status(200) }
-        it { expect(response.headers).to include(download_headers) }
+        context 'when artifacts are stored remotely' do
+          let(:build) { create(:ci_build, :artifacts, :remote_store, pipeline: pipeline) }
+
+          it 'returns location redirect' do
+            expect(response).to have_http_status(302)
+          end
+        end
       end
 
       context 'with regular branch' do

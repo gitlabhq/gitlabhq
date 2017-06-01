@@ -767,7 +767,10 @@ describe API::Runner do
       let(:file_upload) { fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
       let(:file_upload2) { fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/gif') }
 
-      before { job.run! }
+      before do
+        stub_artifacts_object_storage
+        job.run!
+      end
 
       describe 'POST /api/v4/jobs/:id/artifacts/authorize' do
         context 'when using token as parameter' do
@@ -1059,15 +1062,26 @@ describe API::Runner do
 
         context 'when job has artifacts' do
           let(:job) { create(:ci_build, :artifacts) }
-          let(:download_headers) do
-            { 'Content-Transfer-Encoding' => 'binary',
-              'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
-          end
 
           context 'when using job token' do
-            it 'download artifacts' do
-              expect(response).to have_http_status(200)
-              expect(response.headers).to include download_headers
+            context 'when artifacts are stored locally' do
+              let(:download_headers) do
+                { 'Content-Transfer-Encoding' => 'binary',
+                  'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
+              end
+              
+              it 'download artifacts' do
+                expect(response).to have_http_status(200)
+                expect(response.headers).to include download_headers
+              end
+            end
+
+            context 'when artifacts are stored remotely' do
+              let(:job) { create(:ci_build, :artifacts, :remote_store) }
+              
+              it 'download artifacts' do
+                expect(response).to have_http_status(302)
+              end
             end
           end
 

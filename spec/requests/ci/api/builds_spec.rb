@@ -455,7 +455,10 @@ describe Ci::API::Builds do
       let(:token) { build.token }
       let(:headers_with_token) { headers.merge(Ci::API::Helpers::BUILD_TOKEN_HEADER => token) }
 
-      before { build.run! }
+      before do
+        stub_artifacts_object_storage
+        build.run!
+      end
 
       describe "POST /builds/:id/artifacts/authorize" do
         context "authorizes posting artifact to running build" do
@@ -789,16 +792,26 @@ describe Ci::API::Builds do
         end
 
         context 'build has artifacts' do
-          let(:build) { create(:ci_build, :artifacts) }
-          let(:download_headers) do
-            { 'Content-Transfer-Encoding' => 'binary',
-              'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
-          end
-
           shared_examples 'having downloadable artifacts' do
-            it 'download artifacts' do
-              expect(response).to have_http_status(200)
-              expect(response.headers).to include download_headers
+            context 'when stored locally' do
+              let(:build) { create(:ci_build, :artifacts) }
+              let(:download_headers) do
+                { 'Content-Transfer-Encoding' => 'binary',
+                  'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
+              end
+
+              it 'download artifacts' do
+                expect(response).to have_http_status(200)
+                expect(response.headers).to include download_headers
+              end
+            end
+
+            context 'when stored remotely' do
+              let(:build) { create(:ci_build, :artifacts, :remote_store) }
+
+              it 'redirect to artifacts file' do
+                expect(response).to have_http_status(302)
+              end
             end
           end
 

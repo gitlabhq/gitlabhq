@@ -291,7 +291,7 @@ module Ci
     end
 
     def downloadable_single_artifacts_file?
-      artifacts_metadata? && artifacts_file.local_file?
+      artifacts_metadata? && artifacts_file.file_storage?
     end
 
     def artifacts_metadata?
