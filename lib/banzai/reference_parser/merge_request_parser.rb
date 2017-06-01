@@ -17,7 +17,7 @@ module Banzai
 
       private
 
-      def can_read_reference?(user, ref_project)
+      def can_read_reference?(user, ref_project, node)
         can?(user, :read_merge_request, ref_project)
       end
     end
