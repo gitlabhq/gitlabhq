@@ -7,7 +7,7 @@ module Geo
 
     belongs_to :project
 
-    enum source: { repository: 0, wiki: 1 }
+    enum source: { repository: REPOSITORY, wiki: WIKI }
 
     validates :project, presence: true
   end
