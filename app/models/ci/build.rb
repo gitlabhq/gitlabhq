@@ -19,6 +19,12 @@ module Ci
       )
     end
 
+    def ensure_persisted_environment
+      persisted_environment ||
+        @persisted_environment =
+          project.environments.create(name: expanded_environment_name)
+    end
+
     serialize :options
     serialize :yaml_variables, Gitlab::Serializer::Ci::Variables
 
@@ -138,13 +144,15 @@ module Ci
       ExpandVariables.expand(environment, simple_variables) if environment
     end
 
-    def expanded_environment_url
-      ExpandVariables.expand(environment_url, simple_variables) if
-        environment_url
-    end
+    def environment_url
+      return @environment_url if defined?(@environment_url)
 
-    def ci_environment_url
-      expanded_environment_url || persisted_environment&.external_url
+      @environment_url =
+        if unexpanded_url = options.dig(:environment, :url)
+          ExpandVariables.expand(unexpanded_url, simple_variables)
+        else
+          persisted_environment&.external_url
+        end
     end
 
     def has_environment?
@@ -506,7 +514,7 @@ module Ci
 
       variables = persisted_environment.predefined_variables
 
-      if url = ci_environment_url
+      if url = environment_url
         variables << { key: 'CI_ENVIRONMENT_URL', value: url, public: true }
       end
 
@@ -529,10 +537,6 @@ module Ci
       variables << { key: "CI_BUILD_TRIGGERED", value: 'true', public: true } if trigger_request
       variables << { key: "CI_BUILD_MANUAL", value: 'true', public: true } if action?
       variables
-    end
-
-    def environment_url
-      options.dig(:environment, :url)
     end
 
     def build_attributes_from_config

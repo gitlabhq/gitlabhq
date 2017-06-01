@@ -427,8 +427,8 @@ describe Ci::Build, :models do
       end
     end
 
-    describe '#expanded_environment_url' do
-      subject { job.expanded_environment_url }
+    describe '#environment_url' do
+      subject { job.environment_url }
 
       context 'when yaml environment uses $CI_COMMIT_REF_NAME' do
         let(:job) do
@@ -453,30 +453,9 @@ describe Ci::Build, :models do
       context 'when yaml environment does not have url' do
         let(:job) { create(:ci_build, environment: 'staging') }
 
-        it { is_expected.to be_nil }
-      end
-    end
-
-    describe '#ci_environment_url' do
-      subject { job.ci_environment_url }
-
-      let!(:environment) do
-        create(:environment, project: job.project, name: job.environment)
-      end
-
-      context 'when yaml environment has url' do
-        let(:job) do
-          create(:ci_build,
-                 ref: 'master',
-                 environment: 'staging',
-                 options: { environment: { url: 'http://review/$CI_COMMIT_REF_NAME' } })
+        let!(:environment) do
+          create(:environment, project: job.project, name: job.environment)
         end
-
-        it { is_expected.to eq('http://review/master') }
-      end
-
-      context 'when yaml environment does not have url' do
-        let(:job) { create(:ci_build, environment: 'staging') }
 
         it 'returns the external_url from persisted environment' do
           is_expected.to eq(environment.external_url)
@@ -974,6 +953,40 @@ describe Ci::Build, :models do
       end
 
       it { is_expected.to eq(environment) }
+    end
+
+    context 'when there is not environment' do
+      it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#ensure_persisted_environment' do
+    subject { job.ensure_persisted_environment }
+
+    let(:job) do
+      create(:ci_build,
+        ref: 'master',
+        environment: 'staging/$CI_COMMIT_REF_NAME')
+    end
+
+    context 'when there is no environment' do
+      it 'creates one by the expanded name' do
+        expect do
+          expect(subject.name).to eq('staging/master')
+        end.to change { Environment.count }.by(1)
+      end
+    end
+
+    context 'when there is already an environment' do
+      let!(:environment) do
+        create(:environment, project: job.project, name: 'staging/master')
+      end
+
+      it 'returns the existing environment' do
+        expect do
+          expect(subject).to eq(environment)
+        end.to change { Environment.count }.by(0)
+      end
     end
   end
 
