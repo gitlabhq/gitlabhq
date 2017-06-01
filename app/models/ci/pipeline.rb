@@ -161,7 +161,7 @@ module Ci
     end
 
     def legacy_stage(name)
-      stage = Ci::Stage.new(self, name: name)
+      stage = Ci::LegacyStage.new(self, name: name)
       stage unless stage.statuses_count.zero?
     end
 
@@ -180,7 +180,7 @@ module Ci
         .pluck('sg.stage', status_sql, "(#{warnings_sql})")
 
       stages_with_statuses.map do |stage|
-        Ci::Stage.new(self, Hash[%i[name status warnings].zip(stage)])
+        Ci::LegacyStage.new(self, Hash[%i[name status warnings].zip(stage)])
       end
     end
 
