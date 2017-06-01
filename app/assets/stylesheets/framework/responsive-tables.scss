@@ -1,19 +1,16 @@
 .gl-responsive-table {
   .gl-responsive-table-row {
-    display: flex;
-    justify-content: space-between;
-    flex-flow: row nowrap;
-    align-items: center;
-    padding: 15px 0;
     border-bottom: 1px solid $white-normal;
 
+    @media (min-width: $screen-md-min) {
+      padding: 15px 0;
+      display: flex;
+      align-items: center;
+    }
+
     @media (max-width: $screen-sm-max) {
-      flex-direction: column;
-      flex-wrap: nowrap;
-      align-items: baseline;
       margin-top: 10px;
       border: 1px solid $border-color;
-      padding: 0;
     }
 
     .table-section {
@@ -36,7 +33,9 @@
         @media (max-width: $screen-sm-max) {
           display: flex;
           align-self: stretch;
-          padding: 15px;
+          padding: 10px;
+          align-items: center;
+          height: 62px;
 
           &:not(:first-of-type) {
             border-top: 1px solid $white-normal;
@@ -53,6 +52,7 @@
   }
 
   .responsive-mobile-header {
+    color: $gl-text-color-secondary;
     flex: 0 0 120px;
 
     @media (min-width: $screen-md-min) {
@@ -69,7 +69,6 @@
 
   .flex-truncate-parent {
     display: flex;
-    flex-flow: row wrap;
   }
 
   .flex-truncate-child {

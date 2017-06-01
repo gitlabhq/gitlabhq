@@ -422,7 +422,7 @@ export default {
 </script>
 <template>
   <div
-    :class="{ 'js-child-row': model.isChildren, 'folder-row' : model.isFolder }" class="gl-responsive-table-row">
+    :class="{ 'js-child-row environment-child-row': model.isChildren, 'folder-row' : model.isFolder }" class="gl-responsive-table-row">
     <div class="table-section section-10">
       <div
         v-if="!model.isFolder"
@@ -431,7 +431,6 @@ export default {
       <a
         v-if="!model.isFolder"
         class="environment-name flex-truncate-parent mobile-content"
-        :class="{ 'prepend-left-default': model.isChildren }"
         :href="environmentPath">
         <span class="flex-truncate-child">{{model.name}}</span>
       </a>

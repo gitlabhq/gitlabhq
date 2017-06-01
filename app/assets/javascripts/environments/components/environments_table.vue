@@ -93,7 +93,7 @@ export default {
           <div>
             <div
               colspan="6"
-              class="text-center">
+              class="text-center prepend-top-10">
               <a
                 :href="folderUrl(model)"
                 class="btn btn-default">

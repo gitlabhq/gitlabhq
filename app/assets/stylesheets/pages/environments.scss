@@ -136,7 +136,6 @@
     .environment-action-buttons {
       padding: 10px;
       display: flex;
-      justify-content: space-between;
 
       .btn {
         border-radius: 3px;
@@ -144,7 +143,8 @@
 
       > .btn-group,
       .external-url {
-        flex: 0 0 48%;
+        flex: 1;
+        flex-basis: 28px;
       }
 
       .dropdown-new {
