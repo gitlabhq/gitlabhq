@@ -6,11 +6,13 @@ import { group1 } from './mock_data';
 describe('Groups Component', () => {
   let GroupItemComponent;
   let component;
+  let store;
   let group;
 
   beforeEach((done) => {
     GroupItemComponent = Vue.extend(groupItemComponent);
-    group = GroupsStore.decorateGroup(group1);
+    store = new GroupsStore();
+    group = store.decorateGroup(group1);
 
     component = new GroupItemComponent({
       propsData: {

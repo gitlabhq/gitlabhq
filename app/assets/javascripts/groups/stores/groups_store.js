@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 export default class GroupsStore {
   constructor() {
     this.state = {};
@@ -104,11 +103,11 @@ export default class GroupsStore {
   }
 
   decorateGroups(rawGroups) {
-    this.groups = rawGroups.map(GroupsStore.decorateGroup);
+    this.groups = rawGroups.map(this.decorateGroup);
     return this.groups;
   }
 
-  static decorateGroup(rawGroup) {
+  decorateGroup(rawGroup) {
     return {
       id: rawGroup.id,
       fullName: rawGroup.full_name,
@@ -130,6 +129,7 @@ export default class GroupsStore {
     };
   }
 
+  // eslint-disable-next-line class-methods-use-this
   static toggleSubGroups(toggleGroup) {
     const group = toggleGroup;
     group.isOpen = !group.isOpen;
