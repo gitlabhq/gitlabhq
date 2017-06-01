@@ -85,6 +85,12 @@ class Discussion
     first_note.discussion_id(context_noteable)
   end
 
+  def reply_id
+    # To reply to this discussion, we need the actual discussion_id from the database,
+    # not the potentially overwritten one based on the noteable.
+    first_note.discussion_id
+  end
+
   alias_method :to_param, :id
 
   def diff_discussion?
