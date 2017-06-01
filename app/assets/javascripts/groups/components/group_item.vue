@@ -63,7 +63,7 @@ export default {
 
       if (this.group.isOrphan) {
         // check if current group is baseGroup
-        if (this.baseGroup) {
+        if (Object.keys(this.baseGroup).length > 0) {
           // Remove baseGroup prefix from our current group.fullName. e.g:
           // baseGroup.fullName: `level1`
           // group.fullName: `level1 / level2 / level3`
