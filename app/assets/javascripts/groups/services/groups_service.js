@@ -8,14 +8,20 @@ export default class GroupsService {
     this.groups = Vue.resource(endpoint);
   }
 
-  getGroups(parentId, page) {
+  getGroups(parentId, page, filterGroups) {
     const data = {};
 
     if (parentId) {
       data.parent_id = parentId;
-      // Do not send this param for sub groups
-    } else if (page) {
-      data.page = page;
+    } else {
+      // Do not send the following param for sub groups
+      if (page) {
+        data.page = page;
+      }
+
+      if (filterGroups) {
+        data.filter_groups = filterGroups;
+      }
     }
 
     return this.groups.get(data);

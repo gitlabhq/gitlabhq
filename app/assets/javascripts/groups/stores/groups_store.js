@@ -18,6 +18,7 @@ export default class GroupsStore {
     return tree;
   }
 
+  // eslint-disable-next-line class-methods-use-this
   resetGroups(parent) {
     const parentGroup = parent;
     parentGroup.subGroups = {};
@@ -107,6 +108,7 @@ export default class GroupsStore {
     return this.groups;
   }
 
+  // eslint-disable-next-line class-methods-use-this
   decorateGroup(rawGroup) {
     return {
       id: rawGroup.id,

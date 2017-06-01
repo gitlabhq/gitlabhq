@@ -1,10 +1,10 @@
 import FilterableList from '~/filterable_list';
+import eventHub from './event_hub';
 
 export default class GroupFilterableList extends FilterableList {
-  constructor({ form, filter, holder, store }) {
+  constructor(form, filter, holder) {
     super(form, filter, holder);
 
-    this.store = store;
     this.$dropdown = $('.js-group-filter-dropdown-wrap');
   }
 
@@ -41,15 +41,16 @@ export default class GroupFilterableList extends FilterableList {
 
   onFilterSuccess(data, xhr) {
     super.onFilterSuccess(data);
-
-    this.store.setGroups(data);
-    this.store.storePagination({
+    const paginationData = {
       'X-Per-Page': xhr.getResponseHeader('X-Per-Page'),
       'X-Page': xhr.getResponseHeader('X-Page'),
       'X-Total': xhr.getResponseHeader('X-Total'),
       'X-Total-Pages': xhr.getResponseHeader('X-Total-Pages'),
       'X-Next-Page': xhr.getResponseHeader('X-Next-Page'),
       'X-Prev-Page': xhr.getResponseHeader('X-Prev-Page'),
-    });
+    };
+
+    eventHub.$emit('updateGroups', data);
+    eventHub.$emit('updatePagination', paginationData);
   }
 }

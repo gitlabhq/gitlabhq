@@ -10,11 +10,18 @@ import eventHub from './event_hub';
 document.addEventListener('DOMContentLoaded', () => {
   const el = document.querySelector('#dashboard-group-app');
 
+  // Don't do anything if element doesn't exist (No groups)
+  // This is for when the user enters directly to the page via URL
+  if (!el) {
+    return;
+  }
+
   Vue.component('groups-component', GroupsComponent);
   Vue.component('group-folder', GroupFolder);
   Vue.component('group-item', GroupItem);
 
-  return new Vue({
+  // eslint-disable-next-line no-new
+  new Vue({
     el,
     data() {
       this.store = new GroupsStore();
@@ -31,20 +38,26 @@ document.addEventListener('DOMContentLoaded', () => {
         let getGroups = null;
         let page = null;
         let pageParam = null;
+        let filterGroups = null;
+        let filterGroupsParam = null;
 
         if (parentGroup) {
           parentId = parentGroup.id;
         }
 
         pageParam = gl.utils.getParameterByName('page');
-
         if (pageParam) {
           page = pageParam;
         }
 
-        getGroups = this.service.getGroups(parentId, page);
+        filterGroupsParam = gl.utils.getParameterByName('filter_groups');
+        if (filterGroupsParam) {
+          filterGroups = filterGroupsParam;
+        }
+
+        getGroups = this.service.getGroups(parentId, page, filterGroups);
         getGroups.then((response) => {
-          this.store.setGroups(response.json(), parentGroup);
+          eventHub.$emit('updateGroups', response.json(), parentGroup);
         })
         .catch(() => {
           // TODO: Handle error
@@ -69,6 +82,12 @@ document.addEventListener('DOMContentLoaded', () => {
             // TODO: Handle error
           });
       },
+      updateGroups(groups, parentGroup) {
+        this.store.setGroups(groups, parentGroup);
+      },
+      updatePagination(headers) {
+        this.store.storePagination(headers);
+      },
     },
     beforeMount() {
       let groupFilterList = null;
@@ -76,22 +95,18 @@ document.addEventListener('DOMContentLoaded', () => {
       const filter = document.querySelector('.js-groups-list-filter');
       const holder = document.querySelector('.js-groups-list-holder');
 
-      const options = {
-        form,
-        filter,
-        holder,
-        store: this.store,
-      };
-      groupFilterList = new GroupFilterableList(options);
+      groupFilterList = new GroupFilterableList(form, filter, holder);
       groupFilterList.initSearch();
 
       eventHub.$on('toggleSubGroups', this.toggleSubGroups);
       eventHub.$on('leaveGroup', this.leaveGroup);
+      eventHub.$on('updateGroups', this.updateGroups);
+      eventHub.$on('updatePagination', this.updatePagination);
     },
     mounted() {
       this.fetchGroups()
         .then((response) => {
-          this.store.storePagination(response.headers);
+          eventHub.$emit('updatePagination', response.headers);
         })
         .catch(() => {
           // TODO: Handle error
