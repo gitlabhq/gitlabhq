@@ -285,7 +285,7 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
           // Similar to `toggler_behavior` in the discussion tab
           const hash = window.gl.utils.getLocationHash();
           const anchor = hash && $container.find(`[id="${hash}"]`);
-          if (anchor) {
+          if (anchor && anchor.length > 0) {
             const notesContent = anchor.closest('.notes_content');
             const lineType = notesContent.hasClass('new') ? 'new' : 'old';
             notes.toggleDiffNote({

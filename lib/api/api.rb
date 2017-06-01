@@ -45,9 +45,9 @@ module API
     end
 
     before { allow_access_with_scope :api }
-    before { Gitlab::I18n.set_locale(current_user) }
+    before { Gitlab::I18n.locale = current_user&.preferred_language }
 
-    after { Gitlab::I18n.reset_locale }
+    after { Gitlab::I18n.use_default_locale }
 
     rescue_from Gitlab::Access::AccessDeniedError do
       rack_response({ 'message' => '403 Forbidden' }.to_json, 403)
@@ -94,6 +94,7 @@ module API
     mount ::API::DeployKeys
     mount ::API::Deployments
     mount ::API::Environments
+    mount ::API::Features
     mount ::API::Files
     mount ::API::Groups
     mount ::API::Internal
@@ -110,6 +111,7 @@ module API
     mount ::API::Notes
     mount ::API::NotificationSettings
     mount ::API::Pipelines
+    mount ::API::PipelineSchedules
     mount ::API::ProjectHooks
     mount ::API::Projects
     mount ::API::ProjectSnippets

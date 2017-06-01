@@ -5,6 +5,7 @@ resource :profile, only: [:show, :update] do
 
     put :reset_private_token
     put :reset_incoming_email_token
+    put :reset_rss_token
     put :update_username
   end
 

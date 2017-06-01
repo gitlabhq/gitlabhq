@@ -1,0 +1,6 @@
+---
+title: >
+  Project authorizations are calculated much faster when using PostgreSQL, and
+  nested groups support for MySQL has been removed
+merge_request: 10885
+author:

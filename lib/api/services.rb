@@ -304,7 +304,13 @@ module API
           required: true,
           name: :url,
           type: String,
-          desc: 'The URL to the JIRA project which is being linked to this GitLab project, e.g., https://jira.example.com'
+          desc: 'The base URL to the JIRA instance web interface which is being linked to this GitLab project. E.g., https://jira.example.com'
+        },
+        {
+          required: false,
+          name: :api_url,
+          type: String,
+          desc: 'The base URL to the JIRA instance API. Web URL value will be used if not set. E.g., https://jira-api.example.com'
         },
         {
           required: true,

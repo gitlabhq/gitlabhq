@@ -10,11 +10,15 @@ class User < ActiveRecord::Base
   include Sortable
   include CaseSensitivity
   include TokenAuthenticatable
+  include IgnorableColumn
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
+  ignore_column :authorized_projects_populated
+
   add_authentication_token_field :authentication_token
   add_authentication_token_field :incoming_email_token
+  add_authentication_token_field :rss_token
 
   default_value_for :admin, false
   default_value_for(:external) { current_application_settings.user_default_external }
@@ -217,7 +221,6 @@ class User < ActiveRecord::Base
   scope :blocked, -> { with_states(:blocked, :ldap_blocked) }
   scope :external, -> { where(external: true) }
   scope :active, -> { with_state(:active).non_internal }
-  scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members WHERE user_id IS NOT NULL AND requested_at IS NULL)') }
   scope :todo_authors, ->(user_id, state) { where(id: Todo.where(user_id: user_id, state: state).select(:author_id)) }
   scope :order_recent_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('last_sign_in_at', 'DESC')) }
@@ -367,7 +370,7 @@ class User < ActiveRecord::Base
     def reference_pattern
       %r{
         #{Regexp.escape(reference_prefix)}
-        (?<user>#{Gitlab::Regex::FULL_NAMESPACE_REGEX_STR})
+        (?<user>#{Gitlab::PathRegex::FULL_NAMESPACE_FORMAT_REGEX})
       }x
     end
 
@@ -509,21 +512,14 @@ class User < ActiveRecord::Base
     Group.where("namespaces.id IN (#{union.to_sql})")
   end
 
-  def nested_groups
-    Group.member_descendants(id)
-  end
-
+  # Returns a relation of groups the user has access to, including their parent
+  # and child groups (recursively).
   def all_expanded_groups
-    Group.member_hierarchy(id)
+    Gitlab::GroupHierarchy.new(groups).all_groups
   end
 
   def expanded_groups_requiring_two_factor_authentication
     all_expanded_groups.where(require_two_factor_authentication: true)
-  end
-
-  def nested_groups_projects
-    Project.joins(:namespace).where('namespaces.parent_id IS NOT NULL').
-      member_descendants(id)
   end
 
   def refresh_authorized_projects
@@ -534,18 +530,15 @@ class User < ActiveRecord::Base
     project_authorizations.where(project_id: project_ids).delete_all
   end
 
-  def set_authorized_projects_column
-    unless authorized_projects_populated
-      update_column(:authorized_projects_populated, true)
-    end
-  end
-
   def authorized_projects(min_access_level = nil)
-    refresh_authorized_projects unless authorized_projects_populated
-
-    # We're overriding an association, so explicitly call super with no arguments or it would be passed as `force_reload` to the association
+    # We're overriding an association, so explicitly call super with no
+    # arguments or it would be passed as `force_reload` to the association
     projects = super()
-    projects = projects.where('project_authorizations.access_level >= ?', min_access_level) if min_access_level
+
+    if min_access_level
+      projects = projects.
+        where('project_authorizations.access_level >= ?', min_access_level)
+    end
 
     projects
   end
@@ -562,12 +555,6 @@ class User < ActiveRecord::Base
   # access.
   def projects_with_reporter_access_limited_to(projects)
     authorized_projects(Gitlab::Access::REPORTER).where(id: projects)
-  end
-
-  def viewable_starred_projects
-    starred_projects.where("projects.visibility_level IN (?) OR projects.id IN (?)",
-                           [Project::PUBLIC, Project::INTERNAL],
-                           authorized_projects.select(:project_id))
   end
 
   def owned_projects
@@ -918,13 +905,13 @@ class User < ActiveRecord::Base
   end
 
   def assigned_open_merge_requests_count(force: false)
-    Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count'], force: force) do
+    Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count'], force: force, expires_in: 20.minutes) do
       MergeRequestsFinder.new(self, assignee_id: self.id, state: 'opened').execute.count
     end
   end
 
   def assigned_open_issues_count(force: false)
-    Rails.cache.fetch(['users', id, 'assigned_open_issues_count'], force: force) do
+    Rails.cache.fetch(['users', id, 'assigned_open_issues_count'], force: force, expires_in: 20.minutes) do
       IssuesFinder.new(self, assignee_id: self.id, state: 'opened').execute.count
     end
   end
@@ -1002,6 +989,13 @@ class User < ActiveRecord::Base
     self.two_factor_grace_period = periods.min || User.column_defaults['two_factor_grace_period']
 
     save
+  end
+
+  # each existing user needs to have an `rss_token`.
+  # we do this on read since migrating all existing users is not a feasible
+  # solution.
+  def rss_token
+    ensure_rss_token!
   end
 
   protected
