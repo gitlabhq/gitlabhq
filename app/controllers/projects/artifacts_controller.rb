@@ -10,7 +10,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
   before_action :set_path_and_entry, only: [:file, :raw]
 
   def download
-    if artifacts_file.local_file?
+    if artifacts_file.file_storage?
       send_file artifacts_file.path, disposition: 'attachment'
     else
       redirect_to artifacts_file.url

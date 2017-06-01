@@ -9,15 +9,11 @@ class GitlabUploader < CarrierWave::Uploader::Base
 
   delegate :base_dir, to: :class
 
-  def local_file?
-    local_storage? && file&.is_a?(CarrierWave::SanitizedFile)
-  end
-
-  def local_storage?
+  def file_storage?
     storage.is_a?(CarrierWave::Storage::File)
   end
 
-  def local_cache_storage?
+  def file_cache_storage?
     cache_storage.is_a?(CarrierWave::Storage::File)
   end
 

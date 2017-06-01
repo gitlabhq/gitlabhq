@@ -241,16 +241,7 @@ module API
       get '/:id/artifacts' do
         job = authenticate_job!
 
-        artifacts_file = job.artifacts_file
-        unless artifacts_file.local_file?
-          return redirect_to job.artifacts_file.url
-        end
-
-        unless artifacts_file.exists?
-          not_found!
-        end
-
-        present_file!(artifacts_file.path, artifacts_file.filename)
+        present_artifacts!(job.artifacts_file)
       end
     end
   end

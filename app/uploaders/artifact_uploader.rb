@@ -7,6 +7,10 @@ class ArtifactUploader < GitlabUploader
     Gitlab.config.artifacts.path
   end
 
+  def self.artifacts_upload_path
+    File.join(self.local_artifacts_store, 'tmp/uploads/')
+  end
+
   def initialize(job, field)
     @job, @field = job, field
   end

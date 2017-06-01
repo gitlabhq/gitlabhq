@@ -93,17 +93,17 @@ describe MigrateOldArtifacts do
       FileUtils.mkdir_p(legacy_path(build))
 
       FileUtils.copy(
-          Rails.root.join('spec/fixtures/ci_build_artifacts.zip'),
-          File.join(legacy_path(build), "ci_build_artifacts.zip")
-      )
+        Rails.root.join('spec/fixtures/ci_build_artifacts.zip'),
+        File.join(legacy_path(build), "ci_build_artifacts.zip"))
+  
       FileUtils.copy(
-          Rails.root.join('spec/fixtures/ci_build_artifacts_metadata.gz'),
-          File.join(legacy_path(build), "ci_build_artifacts_metadata.gz")
-      )
+        Rails.root.join('spec/fixtures/ci_build_artifacts_metadata.gz'),
+        File.join(legacy_path(build), "ci_build_artifacts_metadata.gz"))
+
       build.update_columns(
         artifacts_file: 'ci_build_artifacts.zip',
-        artifacts_metadata: 'ci_build_artifacts_metadata.gz',
-      )
+        artifacts_metadata: 'ci_build_artifacts_metadata.gz')
+
       build.reload
     end
 

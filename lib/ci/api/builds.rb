@@ -187,12 +187,12 @@ module Ci
           build = authenticate_build!
           artifacts_file = build.artifacts_file
 
-          unless artifacts_file.local_file?
-            return redirect_to build.artifacts_file.url
-          end
-
           unless artifacts_file.exists?
             not_found!
+          end
+
+          unless artifacts_file.file_storage?
+            return redirect_to build.artifacts_file.url
           end
 
           present_file!(artifacts_file.path, artifacts_file.filename)

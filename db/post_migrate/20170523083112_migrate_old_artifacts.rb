@@ -22,7 +22,7 @@ class MigrateOldArtifacts < ActiveRecord::Migration
   def builds_with_artifacts
     Build.with_artifacts
       .joins('JOIN projects ON projects.id = ci_builds.project_id')
-      .where('ci_builds.id < ?', min_id || 0)
+      .where('ci_builds.id < ?', min_id)
       .where('projects.ci_id IS NOT NULL')
       .select('id', 'created_at', 'project_id', 'projects.ci_id AS ci_id')
   end
@@ -30,18 +30,18 @@ class MigrateOldArtifacts < ActiveRecord::Migration
   def min_id
     Build.joins('JOIN projects ON projects.id = ci_builds.project_id')
       .where('projects.ci_id IS NULL')
-      .pluck('min(ci_builds.id)')
+      .pluck('coalesce(min(ci_builds.id), 0)')
       .first
   end
 
   class Build < ActiveRecord::Base
     self.table_name = 'ci_builds'
 
-    scope :with_artifacts, ->() { where.not(artifacts_file: [nil, '']) }
+    scope :with_artifacts, -> { where.not(artifacts_file: [nil, '']) }
 
     def migrate_artifacts!
-      return unless File.exists?(source_artifacts_path)
-      return if File.exists?(target_artifacts_path)
+      return unless File.exist?(source_artifacts_path)
+      return if File.exist?(target_artifacts_path)
 
       ensure_target_path
 
