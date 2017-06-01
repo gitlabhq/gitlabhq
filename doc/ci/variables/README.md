@@ -10,8 +10,7 @@ The variables can be overwritten and they take precedence over each other in
 this order:
 
 1. [Trigger variables][triggers] (take precedence over all)
-1. [Secret variables](#secret-variables)
-1. [Protected secret variables](#protected-secret-variables)
+1. [Secret variables](#secret-variables) or [protected secret variables](#protected-secret-variables)
 1. YAML-defined [job-level variables](../yaml/README.md#job-variables)
 1. YAML-defined [global variables](../yaml/README.md#variables)
 1. [Deployment variables](#deployment-variables)
