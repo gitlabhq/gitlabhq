@@ -1,5 +1,7 @@
 module WikiPages
   class BaseService < ::BaseService
+    prepend EE::WikiPages::BaseService
+
     def hook_data(page, action)
       hook_data = {
         object_kind: page.class.name.underscore,
@@ -20,16 +22,6 @@ module WikiPages
       page_data = hook_data(page, action)
       @project.execute_hooks(page_data, :wiki_page_hooks)
       @project.execute_services(page_data, :wiki_page_hooks)
-    end
-
-    def process_wiki_changes
-      if Gitlab::Geo.primary?
-        # Create wiki update event on Geo event log
-        Geo::PushEventStore.new(project, source: Geo::PushEvent::WIKI).create
-
-        # Triggers repository update on secondary nodes
-        Gitlab::Geo.notify_wiki_update(project)
-      end
     end
   end
 end

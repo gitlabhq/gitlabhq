@@ -17,24 +17,5 @@ describe WikiPages::DestroyService, services: true do
 
       service.execute(page)
     end
-
-    context 'when running on a Geo primary node' do
-      before do
-        allow(Gitlab::Geo).to receive(:primary?) { true }
-      end
-
-      it 'triggers Geo::PushEventStore when Geo is enabled' do
-        expect(Geo::PushEventStore).to receive(:new).with(instance_of(Project), source: Geo::PushEvent::WIKI).and_call_original
-        expect_any_instance_of(Geo::PushEventStore).to receive(:create)
-
-        service.execute(page)
-      end
-
-      it 'triggers wiki update on secondary nodes' do
-        expect(Gitlab::Geo).to receive(:notify_wiki_update).with(instance_of(Project))
-
-        service.execute(page)
-      end
-    end
   end
 end

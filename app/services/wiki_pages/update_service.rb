@@ -3,7 +3,6 @@ module WikiPages
     def execute(page)
       if page.update(@params[:content], @params[:format], @params[:message])
         execute_hooks(page, 'update')
-        process_wiki_changes
       end
 
       page
