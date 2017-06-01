@@ -51,6 +51,12 @@ module Ci
     after_destroy :update_project_statistics
 
     class << self
+      # This is needed for url_for to work,
+      # as the controller is JobsController
+      def model_name
+        ActiveModel::Name.new(self, nil, 'job')
+      end
+
       def first_pending
         pending.unstarted.order('created_at ASC').first
       end

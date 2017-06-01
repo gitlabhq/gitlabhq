@@ -244,7 +244,7 @@ describe Gitlab::Workhorse, lib: true do
       context "when git_receive_pack action is passed" do
         let(:action) { 'git_receive_pack' }
 
-        it { expect(subject).not_to include(gitaly_params) }
+        it { expect(subject).to include(gitaly_params) }
       end
 
       context "when info_refs action is passed" do

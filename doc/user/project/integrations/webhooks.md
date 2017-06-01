@@ -1017,6 +1017,22 @@ X-Gitlab-Event: Build Hook
 }
 ```
 
+## Troubleshoot webhooks
+
+Gitlab stores each perform of the webhook.
+You can find records for last 2 days in "Recent Deliveries" section on the edit page of each webhook.
+
+![Recent deliveries](img/webhook_logs.png)
+
+In this section you can see HTTP status code (green for 200-299 codes, red for the others, `internal error` for failed deliveries ), triggered event, a time when the event was called, elapsed time of the request.
+
+If you need more information about execution, you can click `View details` link.
+On this page, you can see data that GitLab sends (request headers and body) and data that it received (response headers and body).
+
+From this page, you can repeat delivery with the same data by clicking `Resend Request` button.
+
+>**Note:** If URL or secret token of the webhook were updated, data will be delivered to the new address.
+
 ## Example webhook receiver
 
 If you want to see GitLab's webhooks in action for testing purposes you can use

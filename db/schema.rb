@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170523091700) do
+ActiveRecord::Schema.define(version: 20170525174156) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -283,6 +283,7 @@ ActiveRecord::Schema.define(version: 20170523091700) do
     t.integer "lock_version"
     t.integer "auto_canceled_by_id"
     t.integer "pipeline_schedule_id"
+    t.integer "source"
   end
 
   add_index "ci_pipelines", ["auto_canceled_by_id"], name: "index_ci_pipelines_on_auto_canceled_by_id", using: :btree
@@ -439,6 +440,24 @@ ActiveRecord::Schema.define(version: 20170523091700) do
   add_index "events", ["project_id"], name: "index_events_on_project_id", using: :btree
   add_index "events", ["target_id"], name: "index_events_on_target_id", using: :btree
   add_index "events", ["target_type"], name: "index_events_on_target_type", using: :btree
+
+  create_table "feature_gates", force: :cascade do |t|
+    t.string "feature_key", null: false
+    t.string "key", null: false
+    t.string "value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "feature_gates", ["feature_key", "key", "value"], name: "index_feature_gates_on_feature_key_and_key_and_value", unique: true, using: :btree
+
+  create_table "features", force: :cascade do |t|
+    t.string "key", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "features", ["key"], name: "index_features_on_key", unique: true, using: :btree
 
   create_table "forked_project_links", force: :cascade do |t|
     t.integer "forked_to_project_id", null: false
@@ -928,6 +947,8 @@ ActiveRecord::Schema.define(version: 20170523091700) do
     t.date "expires_at"
   end
 
+  add_index "project_group_links", ["group_id"], name: "index_project_group_links_on_group_id", using: :btree
+
   create_table "project_import_data", force: :cascade do |t|
     t.integer "project_id"
     t.text "data"
@@ -1355,7 +1376,6 @@ ActiveRecord::Schema.define(version: 20170523091700) do
     t.boolean "external", default: false
     t.string "incoming_email_token"
     t.string "organization"
-    t.boolean "authorized_projects_populated"
     t.boolean "require_two_factor_authentication_from_group", default: false, null: false
     t.integer "two_factor_grace_period", default: 48, null: false
     t.boolean "ghost"
@@ -1390,6 +1410,23 @@ ActiveRecord::Schema.define(version: 20170523091700) do
 
   add_index "users_star_projects", ["project_id"], name: "index_users_star_projects_on_project_id", using: :btree
   add_index "users_star_projects", ["user_id", "project_id"], name: "index_users_star_projects_on_user_id_and_project_id", unique: true, using: :btree
+
+  create_table "web_hook_logs", force: :cascade do |t|
+    t.integer "web_hook_id", null: false
+    t.string "trigger"
+    t.string "url"
+    t.text "request_headers"
+    t.text "request_data"
+    t.text "response_headers"
+    t.text "response_body"
+    t.string "response_status"
+    t.float "execution_duration"
+    t.string "internal_error_message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "web_hook_logs", ["web_hook_id"], name: "index_web_hook_logs_on_web_hook_id", using: :btree
 
   create_table "web_hooks", force: :cascade do |t|
     t.string "url", limit: 2000
@@ -1454,4 +1491,5 @@ ActiveRecord::Schema.define(version: 20170523091700) do
   add_foreign_key "timelogs", "merge_requests", name: "fk_timelogs_merge_requests_merge_request_id", on_delete: :cascade
   add_foreign_key "trending_projects", "projects", on_delete: :cascade
   add_foreign_key "u2f_registrations", "users"
+  add_foreign_key "web_hook_logs", "web_hooks", on_delete: :cascade
 end

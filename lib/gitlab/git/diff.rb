@@ -11,6 +11,10 @@ module Gitlab
       # Stats properties
       attr_accessor :new_file, :renamed_file, :deleted_file
 
+      alias_method :new_file?, :new_file
+      alias_method :deleted_file?, :deleted_file
+      alias_method :renamed_file?, :renamed_file
+
       attr_accessor :too_large
 
       # The maximum size of a diff to display.
@@ -206,6 +210,10 @@ module Gitlab
         end
 
         hash
+      end
+
+      def mode_changed?
+        a_mode && b_mode && a_mode != b_mode
       end
 
       def submodule?

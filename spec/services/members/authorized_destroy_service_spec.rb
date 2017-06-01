@@ -18,7 +18,7 @@ describe Members::AuthorizedDestroyService, services: true do
       member = create :project_member, :invited, project: project
 
       expect { described_class.new(member, member_user).execute }
-        .to change { Member.count }.from(2).to(1)
+        .to change { Member.count }.from(3).to(2)
     end
 
     it 'destroys invited group member' do

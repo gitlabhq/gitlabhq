@@ -199,6 +199,27 @@ module IssuablesHelper
     issuable_filter_params.any? { |k| params.key?(k) }
   end
 
+  def issuable_initial_data(issuable)
+    {
+      endpoint: namespace_project_issue_path(@project.namespace, @project, issuable),
+      canUpdate: can?(current_user, :update_issue, issuable),
+      canDestroy: can?(current_user, :destroy_issue, issuable),
+      canMove: current_user ? issuable.can_move?(current_user) : false,
+      issuableRef: issuable.to_reference,
+      isConfidential: issuable.confidential,
+      markdownPreviewUrl: preview_markdown_path(@project),
+      markdownDocs: help_page_path('user/markdown'),
+      projectsAutocompleteUrl: autocomplete_projects_path(project_id: @project.id),
+      issuableTemplates: issuable_templates(issuable),
+      projectPath: ref_project.path,
+      projectNamespace: ref_project.namespace.full_path,
+      initialTitleHtml: markdown_field(issuable, :title),
+      initialTitleText: issuable.title,
+      initialDescriptionHtml: markdown_field(issuable, :description),
+      initialDescriptionText: issuable.description
+    }.to_json
+  end
+
   private
 
   def sidebar_gutter_collapsed?

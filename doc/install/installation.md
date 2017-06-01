@@ -166,7 +166,7 @@ In many distros the versions provided by the official package  repositories
 are out of date, so we'll need to install through the following commands:
 
     # install node v7.x
-    curl --location https://deb.nodesource.com/setup_7.x | bash -
+    curl --location https://deb.nodesource.com/setup_7.x | sudo bash -
     sudo apt-get install -y nodejs
 
     # install yarn
@@ -185,7 +185,8 @@ Create a `git` user for GitLab:
 We recommend using a PostgreSQL database. For MySQL check the
 [MySQL setup guide](database_mysql.md).
 
-> **Note**: because we need to make use of extensions you need at least pgsql 9.1.
+> **Note**: because we need to make use of extensions and concurrent index removal,
+you need at least PostgreSQL 9.2.
 
 1. Install the database packages:
 
@@ -469,10 +470,6 @@ Make GitLab start on boot:
 
 ### Install Gitaly
 
-As of GitLab 9.1 Gitaly is an **optional** component. Its
-configuration is still changing regularly. It is OK to wait
-with setting up Gitaly until you upgrade to GitLab 9.2 or later.
-
     # Fetch Gitaly source with Git and compile with Go
     sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly]" RAILS_ENV=production
 
@@ -489,16 +486,6 @@ Next, make sure gitaly configured:
     # If you are using non-default settings you need to update config.toml
     cd /home/git/gitaly
     sudo -u git -H editor config.toml
-
-    # Enable Gitaly in the init script
-    echo 'gitaly_enabled=true' | sudo tee -a /etc/default/gitlab
-
-Next, edit `/home/git/gitlab/config/gitlab.yml` and make sure `enabled: true` in
-the `gitaly:` section is uncommented.
-
-    # <- gitlab.yml indentation starts here
-      gitaly:
-        enabled: true
 
 For more information about configuring Gitaly see
 [doc/administration/gitaly](../administration/gitaly).

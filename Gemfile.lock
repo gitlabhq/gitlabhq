@@ -141,10 +141,8 @@ GEM
     database_cleaner (1.5.3)
     debug_inspector (0.0.2)
     debugger-ruby_core_source (1.3.8)
-    deckar01-task_list (1.0.6)
-      activesupport (~> 4.0)
+    deckar01-task_list (2.0.0)
       html-pipeline
-      rack (~> 1.0)
     default_value_for (3.0.2)
       activerecord (>= 3.2.0, < 5.1)
     descendants_tracker (0.0.4)
@@ -208,6 +206,10 @@ GEM
       path_expander (~> 1.0)
       ruby_parser (~> 3.0)
       sexp_processor (~> 4.0)
+    flipper (0.10.2)
+    flipper-active_record (0.10.2)
+      activerecord (>= 3.2, < 6)
+      flipper (~> 0.10.2)
     flowdock (0.7.1)
       httparty (~> 0.7)
       multi_json
@@ -499,11 +501,10 @@ GEM
       omniauth (~> 1.0)
       omniauth-oauth2 (~> 1.0)
     omniauth-google-oauth2 (0.4.1)
-      addressable (~> 2.3)
-      jwt (~> 1.0)
+      jwt (~> 1.5.2)
       multi_json (~> 1.3)
       omniauth (>= 1.1.1)
-      omniauth-oauth2 (~> 1.3.1)
+      omniauth-oauth2 (>= 1.3.1)
     omniauth-kerberos (0.3.0)
       omniauth-multipassword
       timfel-krb5-auth (~> 0.8)
@@ -896,7 +897,7 @@ DEPENDENCIES
   creole (~> 0.5.0)
   d3_rails (~> 3.5.0)
   database_cleaner (~> 1.5.0)
-  deckar01-task_list (= 1.0.6)
+  deckar01-task_list (= 2.0.0)
   default_value_for (~> 3.0.0)
   devise (~> 4.2)
   devise-two-factor (~> 3.0.0)
@@ -910,6 +911,8 @@ DEPENDENCIES
   faraday (~> 0.11.0)
   ffaker (~> 2.4)
   flay (~> 2.8.0)
+  flipper (~> 0.10.2)
+  flipper-active_record (~> 0.10.2)
   fog-aws (~> 0.9)
   fog-core (~> 1.44)
   fog-google (~> 0.5)
@@ -1060,4 +1063,4 @@ DEPENDENCIES
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
-   1.14.6
+   1.15.0

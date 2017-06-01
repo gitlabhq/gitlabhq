@@ -21,6 +21,7 @@ module API
         optional :request_access_enabled, type: Boolean, desc: 'Allow users to request member access'
         optional :only_allow_merge_if_pipeline_succeeds, type: Boolean, desc: 'Only allow to merge if builds succeed'
         optional :only_allow_merge_if_all_discussions_are_resolved, type: Boolean, desc: 'Only allow to merge if all discussions are resolved'
+        optional :tag_list, type: Array[String], desc: 'The list of tags for a project'
       end
 
       params :optional_params do
@@ -58,6 +59,8 @@ module API
           optional :owned, type: Boolean, default: false, desc: 'Limit by owned by authenticated user'
           optional :starred, type: Boolean, default: false, desc: 'Limit by starred status'
           optional :membership, type: Boolean, default: false, desc: 'Limit by projects that the current user is a member of'
+          optional :with_issues_enabled, type: Boolean, default: false, desc: 'Limit by enabled issues feature'
+          optional :with_merge_requests_enabled, type: Boolean, default: false, desc: 'Limit by enabled merge requests feature'
         end
 
         params :create_params do
@@ -65,16 +68,19 @@ module API
           optional :import_url, type: String, desc: 'URL from which the project is imported'
         end
 
-        def present_projects(projects, options = {})
-          options = options.reverse_merge(
-            with: Entities::Project,
-            current_user: current_user,
-            simple: params[:simple]
-          )
+        def present_projects(options = {})
+          projects = ProjectsFinder.new(current_user: current_user, params: project_finder_params).execute
+          projects = reorder_projects(projects)
+          projects = projects.with_statistics if params[:statistics]
+          projects = projects.with_issues_enabled if params[:with_issues_enabled]
+          projects = projects.with_merge_requests_enabled if params[:with_merge_requests_enabled]
 
-          projects = filter_projects(projects)
-          projects = projects.with_statistics if options[:statistics]
-          options[:with] = Entities::BasicProjectDetails if options[:simple]
+          options = options.reverse_merge(
+            with: current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails,
+            statistics: params[:statistics],
+            current_user: current_user
+          )
+          options[:with] = Entities::BasicProjectDetails if params[:simple]
 
           present paginate(projects), options
         end
@@ -88,8 +94,7 @@ module API
         use :statistics_params
       end
       get do
-        entity = current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails
-        present_projects ProjectsFinder.new(current_user: current_user).execute, with: entity, statistics: params[:statistics]
+        present_projects
       end
 
       desc 'Create new project' do
@@ -225,6 +230,7 @@ module API
             :request_access_enabled,
             :shared_runners_enabled,
             :snippets_enabled,
+            :tag_list,
             :visibility,
             :wiki_enabled
           ]

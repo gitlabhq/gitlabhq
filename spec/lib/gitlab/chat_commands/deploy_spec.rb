@@ -7,7 +7,12 @@ describe Gitlab::ChatCommands::Deploy, service: true do
     let(:regex_match) { described_class.match('deploy staging to production') }
 
     before do
-      project.add_master(user)
+      # Make it possible to trigger protected manual actions for developers.
+      #
+      project.add_developer(user)
+
+      create(:protected_branch, :developers_can_merge,
+             name: 'master', project: project)
     end
 
     subject do

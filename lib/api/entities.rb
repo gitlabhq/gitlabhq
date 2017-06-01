@@ -152,7 +152,10 @@ module API
       expose :web_url
       expose :request_access_enabled
       expose :full_name, :full_path
-      expose :parent_id
+
+      if ::Group.supports_nested_groups?
+        expose :parent_id
+      end
 
       expose :statistics, if: :statistics do
         with_options format_with: -> (value) { value.to_i } do
@@ -252,7 +255,9 @@ module API
 
     class RepoDiff < Grape::Entity
       expose :old_path, :new_path, :a_mode, :b_mode, :diff
-      expose :new_file, :renamed_file, :deleted_file
+      expose :new_file?, as: :new_file
+      expose :renamed_file?, as: :renamed_file
+      expose :deleted_file?, as: :deleted_file
     end
 
     class Milestone < ProjectEntity
@@ -681,6 +686,17 @@ module API
       expose :coverage
     end
 
+    class PipelineSchedule < Grape::Entity
+      expose :id
+      expose :description, :ref, :cron, :cron_timezone, :next_run_at, :active
+      expose :created_at, :updated_at
+      expose :owner, using: Entities::UserBasic
+    end
+
+    class PipelineScheduleDetails < PipelineSchedule
+      expose :last_pipeline, using: Entities::PipelineBasic
+    end
+
     class EnvironmentBasic < Grape::Entity
       expose :id, :name, :slug, :external_url
     end
@@ -735,6 +751,28 @@ module API
 
     class ImpersonationToken < PersonalAccessTokenWithToken
       expose :impersonation
+    end
+
+    class FeatureGate < Grape::Entity
+      expose :key
+      expose :value
+    end
+
+    class Feature < Grape::Entity
+      expose :name
+      expose :state
+      expose :gates, using: FeatureGate do |model|
+        model.gates.map do |gate|
+          value = model.gate_values[gate.key]
+
+          # By default all gate values are populated. Only show relevant ones.
+          if (value.is_a?(Integer) && value.zero?) || (value.is_a?(Set) && value.empty?)
+            next
+          end
+
+          { key: gate.key, value: value }
+        end.compact
+      end
     end
 
     module JobRequest
