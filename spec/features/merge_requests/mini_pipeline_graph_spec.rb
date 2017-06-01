@@ -85,7 +85,7 @@ feature 'Mini Pipeline Graph', :js, :feature do
         build_item.click
         find('.build-page')
 
-        expect(current_path).to eql(namespace_project_build_path(project.namespace, project, build))
+        expect(current_path).to eql(namespace_project_job_path(project.namespace, project, build))
       end
 
       it 'should show tooltip when hovered' do

@@ -1,4 +1,5 @@
 require 'constraints/project_url_constrainer'
+require 'gitlab/routes/legacy_builds'
 
 resources :projects, only: [:index, :new, :create]
 
@@ -215,37 +216,41 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :builds, only: [:index, :show], constraints: { id: /\d+/ } do
-        collection do
-          post :cancel_all
+      scope '-' do
+        resources :jobs, only: [:index, :show], constraints: { id: /\d+/ } do
+          collection do
+            post :cancel_all
 
-          resources :artifacts, only: [] do
-            collection do
-              get :latest_succeeded,
-                path: '*ref_name_and_path',
-                format: false
+            resources :artifacts, only: [] do
+              collection do
+                get :latest_succeeded,
+                  path: '*ref_name_and_path',
+                  format: false
+              end
             end
           end
-        end
 
-        member do
-          get :status
-          post :cancel
-          post :retry
-          post :play
-          post :erase
-          get :trace, defaults: { format: 'json' }
-          get :raw
-        end
+          member do
+            get :status
+            post :cancel
+            post :retry
+            post :play
+            post :erase
+            get :trace, defaults: { format: 'json' }
+            get :raw
+          end
 
-        resource :artifacts, only: [] do
-          get :download
-          get :browse, path: 'browse(/*path)', format: false
-          get :file, path: 'file/*path', format: false
-          get :raw, path: 'raw/*path', format: false
-          post :keep
+          resource :artifacts, only: [] do
+            get :download
+            get :browse, path: 'browse(/*path)', format: false
+            get :file, path: 'file/*path', format: false
+            get :raw, path: 'raw/*path', format: false
+            post :keep
+          end
         end
       end
+
+      Gitlab::Routes::LegacyBuilds.new(self).draw
 
       resources :hooks, only: [:index, :create, :edit, :update, :destroy], constraints: { id: /\d+/ } do
         member do
