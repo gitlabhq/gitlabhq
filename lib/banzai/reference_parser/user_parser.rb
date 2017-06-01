@@ -103,7 +103,7 @@ module Banzai
           flat_map { |p| p.team.members.to_a }
       end
 
-      def can_read_reference?(user, ref_project)
+      def can_read_reference?(user, ref_project, node)
         can?(user, :read_project, ref_project)
       end
     end

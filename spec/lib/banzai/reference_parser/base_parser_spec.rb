@@ -30,7 +30,7 @@ describe Banzai::ReferenceParser::BaseParser, lib: true do
       it 'checks if user can read the resource' do
         link['data-project'] = project.id.to_s
 
-        expect(subject).to receive(:can_read_reference?).with(user, project)
+        expect(subject).to receive(:can_read_reference?).with(user, project, link)
 
         subject.nodes_visible_to_user(user, [link])
       end
