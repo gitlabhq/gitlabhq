@@ -24,6 +24,22 @@ FactoryGirl.define do
       visibility_level Gitlab::VisibilityLevel::PRIVATE
     end
 
+    trait :import_scheduled do
+      import_status :scheduled
+    end
+
+    trait :import_started do
+      import_status :started
+    end
+
+    trait :import_finished do
+      import_status :finished
+    end
+
+    trait :import_failed do
+      import_status :failed
+    end
+
     trait :archived do
       archived true
     end
