@@ -1,5 +1,3 @@
-/* eslint-disable class-methods-use-this, promise/catch-or-return */
-
 export default class PrometheusMetrics {
   constructor(wrapperSelector) {
     this.backOffRequestCounter = 0;
@@ -24,6 +22,7 @@ export default class PrometheusMetrics {
     this.$panelToggle.on('click', e => this.handlePanelToggle(e));
   }
 
+  /* eslint-disable class-methods-use-this */
   handlePanelToggle(e) {
     const $toggleBtn = $(e.currentTarget);
     const $currentPanelBody = $toggleBtn.parents('.panel').find('.panel-body');
@@ -84,6 +83,10 @@ export default class PrometheusMetrics {
         this.$monitoredMetricsLoading.addClass('hidden');
         this.$monitoredMetricsEmpty.removeClass('hidden');
       }
+    })
+    .catch(() => {
+      this.$monitoredMetricsLoading.addClass('hidden');
+      this.$monitoredMetricsEmpty.removeClass('hidden');
     });
   }
 }
