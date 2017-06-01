@@ -369,6 +369,7 @@ class User < ActiveRecord::Base
     # Pattern used to extract `@user` user references from text
     def reference_pattern
       %r{
+        (?<!\w)
         #{Regexp.escape(reference_prefix)}
         (?<user>#{Gitlab::PathRegex::FULL_NAMESPACE_FORMAT_REGEX})
       }x

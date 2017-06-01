@@ -1,0 +1,4 @@
+---
+title: Don't match email addresses or foo@bar as user references
+merge_request:
+author:
