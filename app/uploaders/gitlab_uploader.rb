@@ -38,10 +38,6 @@ class GitlabUploader < CarrierWave::Uploader::Base
     self.file.path.sub("#{root}/", '')
   end
 
-  def use_file
-    yield path
-  end
-
   def exists?
     file.try(:exists?)
   end

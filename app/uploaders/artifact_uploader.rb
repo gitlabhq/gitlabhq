@@ -1,7 +1,7 @@
-class ArtifactUploader < GitlabUploader
-  include ObjectStoreable
+class ArtifactUploader < ObjectStoreUploader
+  attr_reader :subject, :field
 
-  attr_reader :job, :field
+  storage_options Gitlab.config.artifacts
 
   def self.local_artifacts_store
     Gitlab.config.artifacts.path
@@ -11,8 +11,9 @@ class ArtifactUploader < GitlabUploader
     File.join(self.local_artifacts_store, 'tmp/uploads/')
   end
 
-  def initialize(job, field)
-    @job, @field = job, field
+  def initialize(subject, field)
+    @subject = subject
+    @field = field
   end
 
   def store_dir
@@ -25,14 +26,10 @@ class ArtifactUploader < GitlabUploader
 
   def cache_dir
     if file_cache_storage?
-      File.join(self.local_artifacts_store, 'tmp/cache')
+      File.join(self.class.local_artifacts_store, 'tmp/cache')
     else
       'tmp/cache'
     end
-  end
-
-  def migrate!
-    # TODO
   end
 
   private
@@ -42,6 +39,6 @@ class ArtifactUploader < GitlabUploader
   end
 
   def default_path
-    File.join(job.created_at.utc.strftime('%Y_%m'), job.project_id.to_s, job.id.to_s)
+    File.join(subject.created_at.utc.strftime('%Y_%m'), subject.project_id.to_s, subject.id.to_s)
   end
 end
