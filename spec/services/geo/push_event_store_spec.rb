@@ -32,7 +32,7 @@ describe Geo::PushEventStore, services: true do
         expect { subject.create }.to change(Geo::PushEvent, :count).by(1)
       end
 
-      context 'when repository is beign udpated' do
+      context 'when repository is being updated' do
         it 'does not track ref name when post-receive event affect multiple refs' do
           subject = described_class.new(project, refs: refs, changes: changes)
 
@@ -95,7 +95,7 @@ describe Geo::PushEventStore, services: true do
         end
       end
 
-      context 'when wiki is beign udpated' do
+      context 'when wiki is being updated' do
         it 'does not track any information' do
           subject = described_class.new(project, source: Geo::PushEvent::WIKI)
 
