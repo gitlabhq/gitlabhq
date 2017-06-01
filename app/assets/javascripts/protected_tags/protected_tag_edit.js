@@ -1,12 +1,11 @@
 /* eslint-disable no-new */
 /* global Flash */
 
-import { ACCESS_LEVELS, LEVEL_TYPES } from './';
+import { ACCESS_LEVELS, LEVEL_TYPES } from './constants';
 import ProtectedTagAccessDropdown from './protected_tag_access_dropdown';
 
 export default class ProtectedTagEdit {
   constructor(options) {
-    this.$wrap = {};
     this.hasChanges = false;
     this.$wrap = options.$wrap;
     this.$allowedToCreateDropdownButton = this.$wrap.find('.js-allowed-to-create');
