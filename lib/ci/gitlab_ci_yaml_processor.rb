@@ -20,26 +20,26 @@ module Ci
       raise ValidationError, e.message
     end
 
-    def jobs_for_ref(ref, tag = false, trigger_request = nil)
+    def jobs_for_ref(ref, tag = false, trigger_request = nil, pipeline_schedule = nil)
       @jobs.select do |_, job|
-        process?(job[:only], job[:except], ref, tag, trigger_request)
+        process?(job[:only], job[:except], ref, tag, trigger_request, pipeline_schedule)
       end
     end
 
-    def jobs_for_stage_and_ref(stage, ref, tag = false, trigger_request = nil)
-      jobs_for_ref(ref, tag, trigger_request).select do |_, job|
+    def jobs_for_stage_and_ref(stage, ref, tag = false, trigger_request = nil, pipeline_schedule = nil)
+      jobs_for_ref(ref, tag, trigger_request, pipeline_schedule).select do |_, job|
         job[:stage] == stage
       end
     end
 
-    def builds_for_ref(ref, tag = false, trigger_request = nil)
-      jobs_for_ref(ref, tag, trigger_request).map do |name, _|
+    def builds_for_ref(ref, tag = false, trigger_request = nil, pipeline_schedule = nil)
+      jobs_for_ref(ref, tag, trigger_request, pipeline_schedule).map do |name, _|
         build_attributes(name)
       end
     end
 
-    def builds_for_stage_and_ref(stage, ref, tag = false, trigger_request = nil)
-      jobs_for_stage_and_ref(stage, ref, tag, trigger_request).map do |name, _|
+    def builds_for_stage_and_ref(stage, ref, tag = false, trigger_request = nil, pipeline_schedule = nil)
+      jobs_for_stage_and_ref(stage, ref, tag, trigger_request, pipeline_schedule).map do |name, _|
         build_attributes(name)
       end
     end
@@ -193,30 +193,31 @@ module Ci
       end
     end
 
-    def process?(only_params, except_params, ref, tag, trigger_request)
+    def process?(only_params, except_params, ref, tag, trigger_request, pipeline_schedule)
       if only_params.present?
-        return false unless matching?(only_params, ref, tag, trigger_request)
+        return false unless matching?(only_params, ref, tag, trigger_request, pipeline_schedule)
       end
 
       if except_params.present?
-        return false if matching?(except_params, ref, tag, trigger_request)
+        return false if matching?(except_params, ref, tag, trigger_request, pipeline_schedule)
       end
 
       true
     end
 
-    def matching?(patterns, ref, tag, trigger_request)
+    def matching?(patterns, ref, tag, trigger_request, pipeline_schedule)
       patterns.any? do |pattern|
-        match_ref?(pattern, ref, tag, trigger_request)
+        match_ref?(pattern, ref, tag, trigger_request, pipeline_schedule)
       end
     end
 
-    def match_ref?(pattern, ref, tag, trigger_request)
+    def match_ref?(pattern, ref, tag, trigger_request, pipeline_schedule)
       pattern, path = pattern.split('@', 2)
       return false if path && path != self.path
       return true if tag && pattern == 'tags'
       return true if !tag && pattern == 'branches'
       return true if trigger_request.present? && pattern == 'triggers'
+      return true if pipeline_schedule.present? && pattern == 'schedules'
 
       if pattern.first == "/" && pattern.last == "/"
         Regexp.new(pattern[1...-1]) =~ ref

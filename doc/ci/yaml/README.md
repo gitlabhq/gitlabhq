@@ -393,7 +393,7 @@ There are a few rules that apply to the usage of refs policy:
 * `only` and `except` are inclusive. If both `only` and `except` are defined
    in a job specification, the ref is filtered by `only` and `except`.
 * `only` and `except` allow the use of regular expressions.
-* `only` and `except` allow the use of special keywords: `branches`, `tags`, and `triggers`.
+* `only` and `except` allow the use of special keywords: `branches`, `tags`,  `triggers` and `schedules`.
 * `only` and `except` allow to specify a repository path to filter jobs for
    forks.
 
@@ -411,7 +411,7 @@ job:
 ```
 
 In this example, `job` will run only for refs that are tagged, or if a build is
-explicitly requested via an API trigger.
+explicitly requested via an API trigger or a Pipeline Schedule.
 
 ```yaml
 job:
@@ -419,6 +419,7 @@ job:
   only:
     - tags
     - triggers
+    - schedules
 ```
 
 The repository path can be used to have jobs executed only for the parent
