@@ -44,11 +44,11 @@ export default class GroupsStore {
     const orphans = [];
 
     // Map groups to an object
-    for (let i = 0, len = groups.length; i < len; i += 1) {
-      const group = groups[i];
+    groups.map((group) => {
       mappedGroups[group.id] = group;
       mappedGroups[group.id].subGroups = {};
-    }
+      return group;
+    });
 
     Object.keys(mappedGroups).map((key) => {
       const currentGroup = mappedGroups[key];
