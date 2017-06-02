@@ -13,7 +13,7 @@ When a user account is deleted, not all associated records are deleted with it. 
 - Merge requests that the user created
 - Notes that the user created
 - Abuse reports that the user reported
-- Award emoji that the user craeted
+- Award emoji that the user created
 
 
 Instead of being deleted, these records will be moved to a system-wide "Ghost User", whose sole purpose is to act as a container for such records.
