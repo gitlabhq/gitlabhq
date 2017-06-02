@@ -21,10 +21,9 @@ describe Gitlab::Ci::Stage::Seed do
   describe '#builds' do
     it 'returns hash attributes of all builds' do
       expect(subject.builds.size).to eq 2
-      expect(subject.builds).to all(include(pipeline: pipeline))
-      expect(subject.builds).to all(include(project: pipeline.project))
       expect(subject.builds).to all(include(ref: 'master'))
       expect(subject.builds).to all(include(tag: false))
+      expect(subject.builds).to all(include(project: pipeline.project))
       expect(subject.builds)
         .to all(include(trigger_request: pipeline.trigger_requests.first))
     end

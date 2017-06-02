@@ -9,10 +9,10 @@ describe Ci::CreatePipelineService, :services do
   end
 
   describe '#execute' do
-    def execute_service(after: project.commit.id, message: 'Message', ref: 'refs/heads/master')
+    def execute_service(after_sha: project.commit.id, message: 'Message', ref: 'refs/heads/master')
       params = { ref: ref,
                  before: '00000000',
-                 after: after,
+                 after: after_sha,
                  commits: [{ message: message }] }
 
       described_class.new(project, user, params).execute
@@ -30,6 +30,7 @@ describe Ci::CreatePipelineService, :services do
       it 'creates a pipeline' do
         expect(pipeline).to be_kind_of(Ci::Pipeline)
         expect(pipeline).to be_valid
+        expect(pipeline).to be_persisted
         expect(pipeline).to eq(project.pipelines.last)
         expect(pipeline).to have_attributes(user: user)
         expect(pipeline).to have_attributes(status: 'pending')
