@@ -41,6 +41,15 @@ describe API::Events, api: true  do
     end
 
     context "as a user that can see the event's project" do
+      it 'accepts a username' do
+        get api("/users/#{user.username}/events", user)
+
+        expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.size).to eq(1)
+      end
+
       it 'returns the events' do
         get api("/users/#{user.id}/events", user)
 

@@ -129,7 +129,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of the user |
+| `id` | integer | yes | The ID or Username of the user |
 | `action` | string | no | Include only events of a particular [action type][action-types] |
 | `target_type` | string | no | Include only events of a particular [target type][target-types] |
 | `before` | date | no |  Include only events created before a particular date. Please see [here for the supported format][date-formatting] |

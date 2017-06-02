@@ -42,7 +42,7 @@ module API
     end
 
     params do
-      requires :id, type: Integer, desc: 'The ID of the user'
+      requires :id, type: String, desc: 'The ID or Username of the user'
     end
     resource :users do
       desc 'Get the contribution events of a specified user' do
@@ -55,7 +55,7 @@ module API
         use :sort_params
       end
       get ':id/events' do
-        user = User.find_by(id: params[:id])
+        user = find_user(params[:id])
         not_found!('User') unless user
 
         events = EventsFinder.new(params.merge(source: user, current_user: current_user)).execute.preload(:author, :target)
