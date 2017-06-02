@@ -1,7 +1,7 @@
 /* eslint-disable quote-props, quotes, comma-dangle */
 
 export default {
-  "triggerer": [
+  "triggered_by": [
     {
       "id": 129,
       "active": true,
