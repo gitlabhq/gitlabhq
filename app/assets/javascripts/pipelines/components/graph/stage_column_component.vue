@@ -22,6 +22,10 @@ export default {
       required: false,
       default: '',
     },
+    hasTriggeredBy: {
+      type: Boolean,
+      required: true,
+    },
   },
   components: {
     jobComponent,
@@ -51,7 +55,7 @@ export default {
           :key="job.id"
           class="build"
           :class="{
-            'left-connector': index === 0 && !isFirstColumn
+            'left-connector': index === 0 && (!isFirstColumn || hasTriggeredBy)
           }"
           :id="jobId(job)">
 
