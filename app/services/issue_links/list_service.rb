@@ -24,10 +24,9 @@ module IssueLinks
     private
 
     def issues
-      authorized_issues = Issue
-                            .not_restricted_by_confidentiality(@current_user)
-                            .merge(@current_user.authorized_projects)
-                            .join_project
+      authorized_issues = IssuesFinder
+                            .new(@current_user, authorized_only: true, feature_availability_check: false)
+                            .execute
                             .reorder(nil)
 
       Issue.from("(SELECT issues.*, issue_links.id AS issue_links_id
