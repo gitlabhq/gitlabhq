@@ -9,7 +9,7 @@ can show the Code Climate report right in the merge request widget area.
 ![Code Quality Widget][quality-widget]
 
 In order for the report to show in the merge request, you need to specify a
-`codeclimate` job that will analyze the code and upload the resulting
+`codeclimate` job (exact name) that will analyze the code and upload the resulting
 `codeclimate.json` as an artifact. GitLab will then check this file and show
 the information inside the merge request.
 

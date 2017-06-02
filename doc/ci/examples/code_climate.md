@@ -5,7 +5,7 @@ GitLab CI and Docker.
 
 First, you need GitLab Runner with [docker-in-docker executor][dind].
 
-Once you setup the Runner, add a new job to `.gitlab-ci.yml`, called `codeclimate`:
+Once you set up the Runner, add a new job to `.gitlab-ci.yml`, called `codeclimate`:
 
 ```yaml
 codeclimate:
