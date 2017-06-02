@@ -23,11 +23,10 @@ module Gitlab::Prometheus::Queries
 
       metrics_groups.each do |group|
         groups[group] ||= { active_metrics: 0, metrics_missing_requirements: 0 }
-        metrics = group.metrics.flat_map(&:required_metrics)
-        active_metrics = metrics.count(&lookup.method(:has_key?))
+        active_metrics = group.metrics.count { |metric| metric.required_metrics.all?(&lookup.method(:has_key?)) }
 
         groups[group][:active_metrics] += active_metrics
-        groups[group][:metrics_missing_requirements] += metrics.count - active_metrics
+        groups[group][:metrics_missing_requirements] += group.metrics.count - active_metrics
       end
 
       groups
@@ -48,7 +47,7 @@ module Gitlab::Prometheus::Queries
     end
 
     def has_matching_label(series_info)
-      series_info.has_key?('environment')
+      series_info.key?('environment')
     end
 
     def available_metrics

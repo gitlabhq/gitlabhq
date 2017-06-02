@@ -1,50 +1,113 @@
 require 'spec_helper'
 
 describe Gitlab::Prometheus::Queries::MatchedMetricsQuery, lib: true do
-  let(:environment) { create(:environment, slug: 'environment-slug') }
-  let(:deployment) { create(:deployment, environment: environment) }
-
-  let(:client) { double('prometheus_client') }
-  subject { described_class.new(client) }
-
-  around do |example|
-    time_without_subsecond_values = Time.local(2008, 9, 1, 12, 0, 0)
-    Timecop.freeze(time_without_subsecond_values) { example.run }
-  end
+  include Prometheus::MatchedMetricsQueryHelper
 
   let(:metric_group_class) { Gitlab::Prometheus::MetricGroup }
   let(:metric_class) { Gitlab::Prometheus::Metric }
 
-  let(:simple_metrics) do
-    [
-      metric_class.new('title', ['metrica', 'metricb'], '1', 'y_label', [{ :query_range => 'avg' }])
-    ]
+  let(:client) { double('prometheus_client') }
+
+  subject { described_class.new(client) }
+
+  context 'with one group where two metrics are found' do
+    before do
+      allow(metric_group_class).to receive(:all).and_return([simple_metric_group])
+      allow(client).to receive(:label_values).and_return(metric_names)
+    end
+
+    context 'both metrics in the group pass requirements' do
+      before do
+        allow(client).to receive(:series).and_return(series_info_with_environment)
+      end
+
+      it 'responds with both metrics as actve' do
+        expect(subject.query).to eq([{ group: 'name', priority: 1, active_metrics: 2, metrics_missing_requirements: 0 }])
+      end
+    end
+
+    context 'none of the metrics pass requirements' do
+      before do
+        allow(client).to receive(:series).and_return(series_info_without_environment)
+      end
+
+      it 'responds with both metrics missing requirements' do
+        expect(subject.query).to eq([{ group: 'name', priority: 1, active_metrics: 0, metrics_missing_requirements: 2 }])
+      end
+    end
+
+    context 'no series information found about the metrics' do
+      before do
+        allow(client).to receive(:series).and_return(empty_series_info)
+      end
+
+      it 'responds with both metrics missing requirements' do
+        expect(subject.query).to eq([{ group: 'name', priority: 1, active_metrics: 0, metrics_missing_requirements: 2 }])
+      end
+    end
+
+    context 'one of the series info was not found' do
+      before do
+        allow(client).to receive(:series).and_return(partialy_empty_series_info)
+      end
+      it 'responds with one active and one missing metric' do
+        expect(subject.query).to eq([{ group: 'name', priority: 1, active_metrics: 1, metrics_missing_requirements: 1 }])
+      end
+    end
   end
 
-  let(:simple_metric_group) do
-    metric_group_class.new('name', 1, simple_metrics)
+  context 'with one group where only one metric is found' do
+    before do
+      allow(metric_group_class).to receive(:all).and_return([simple_metric_group])
+      allow(client).to receive(:label_values).and_return('metric_a')
+    end
+
+    context 'both metrics in the group pass requirements' do
+      before do
+        allow(client).to receive(:series).and_return(series_info_with_environment)
+      end
+
+      it 'responds with one metrics as active and no missing requiremens' do
+        expect(subject.query).to eq([{ group: 'name', priority: 1, active_metrics: 1, metrics_missing_requirements: 0 }])
+      end
+    end
+
+    context 'no metrics in group pass requirements' do
+      before do
+        allow(client).to receive(:series).and_return(series_info_without_environment)
+      end
+
+      it 'responds with one metrics as active and no missing requiremens' do
+        expect(subject.query).to eq([{ group: 'name', priority: 1, active_metrics: 0, metrics_missing_requirements: 1 }])
+      end
+    end
   end
 
-  let(:xx) do
-    [{
-       '__name__': 'metrica',
-       'environment': 'mattermost'
-     },
-     {
-       '__name__': 'metricb',
-       'environment': 'mattermost'
-     }]
-  end
+  context 'with two groups where only one metric is found' do
+    before do
+      allow(metric_group_class).to receive(:all).and_return([simple_metric_group,
+                                                             simple_metric_group('nameb', simple_metrics('metric_c'))])
+      allow(client).to receive(:label_values).and_return('metric_c')
+    end
 
-  before do
-    allow(metric_group_class).to receive(:all).and_return([simple_metric_group])
+    context 'both metrics in the group pass requirements' do
+      before do
+        allow(client).to receive(:series).and_return(series_info_with_environment('metric_c'))
+      end
 
-    allow(client).to receive(:label_values).and_return(['metrica', 'metricb'])
-    allow(client).to receive(:series).and_return(xx)
-  end
+      it 'responds with one metrics as active and no missing requiremens' do
+        expect(subject.query).to eq([{ group: 'nameb', priority: 1, active_metrics: 1, metrics_missing_requirements: 0 }])
+      end
+    end
 
-  it "something something" do
+    context 'no metris in group pass requirements' do
+      before do
+        allow(client).to receive(:series).and_return(series_info_without_environment)
+      end
 
-    expect(subject.query).to eq("asf")
+      it 'responds with one metrics as active and no missing requiremens' do
+        expect(subject.query).to eq([{ group: 'nameb', priority: 1, active_metrics: 0, metrics_missing_requirements: 1 }])
+      end
+    end
   end
 end
