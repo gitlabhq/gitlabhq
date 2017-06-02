@@ -2,7 +2,7 @@ module Gitlab
   module HealthChecks
     class PrometheusTextFormat
       def marshal(metrics)
-        metrics_with_type_declarations(metrics).join("\n")
+        "#{metrics_with_type_declarations(metrics).join("\n")}\n"
       end
 
       private

@@ -16,7 +16,7 @@ describe Gitlab::HealthChecks::PrometheusTextFormat do
         metric2 2
       EXPECTED
 
-      expect(subject.marshal(sample_metrics)).to eq(expected.chomp)
+      expect(subject.marshal(sample_metrics)).to eq(expected)
     end
 
     context 'metrics where name repeats' do
@@ -34,7 +34,7 @@ describe Gitlab::HealthChecks::PrometheusTextFormat do
           # TYPE metric2 gauge
           metric2 3
         EXPECTED
-        expect(subject.marshal(sample_metrics)).to eq(expected.chomp)
+        expect(subject.marshal(sample_metrics)).to eq(expected)
       end
     end
   end
