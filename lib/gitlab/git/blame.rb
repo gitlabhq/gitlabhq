@@ -1,7 +1,7 @@
 module Gitlab
   module Git
     class Blame
-      include Gitlab::Git::EncodingHelper
+      include Gitlab::EncodingHelper
 
       attr_reader :lines, :blames
 

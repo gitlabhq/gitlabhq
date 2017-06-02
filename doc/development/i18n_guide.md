@@ -233,8 +233,7 @@ Let's suppose you want to add translations for a new language, let's say French.
    containing the translations:
 
     ```sh
-    bundle exec rake gettext:pack
-    bundle exec rake gettext:po_to_json
+    bundle exec rake gettext:compile
     ```
 
 1. In order to see the translated content we need to change our preferred language

@@ -57,6 +57,11 @@ describe Projects::EnvironmentsController do
           expect(json_response['available_count']).to eq 3
           expect(json_response['stopped_count']).to eq 1
         end
+
+        it 'sets the polling interval header' do
+          expect(response).to have_http_status(:ok)
+          expect(response.headers['Poll-Interval']).to eq("3000")
+        end
       end
 
       context 'when requesting stopped environments scope' do

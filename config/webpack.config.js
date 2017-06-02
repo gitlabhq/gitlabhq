@@ -41,6 +41,7 @@ var config = {
     group:                './group.js',
     groups_list:          './groups_list.js',
     issue_show:           './issue_show/index.js',
+    integrations:         './integrations',
     locale:               './locale/index.js',
     main:                 './main.js',
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
@@ -73,8 +74,6 @@ var config = {
     filename: IS_PRODUCTION ? '[name].[chunkhash].bundle.js' : '[name].bundle.js',
     chunkFilename: IS_PRODUCTION ? '[name].[chunkhash].chunk.js' : '[name].chunk.js',
   },
-
-  devtool: 'cheap-module-source-map',
 
   module: {
     rules: [

@@ -83,7 +83,7 @@ export default {
       } else {
         commitAuthorInformation = {
           avatar_url: this.pipeline.commit.author_gravatar_url,
-          web_url: `mailto:${this.pipeline.commit.author_email}`,
+          path: `mailto:${this.pipeline.commit.author_email}`,
           username: this.pipeline.commit.author_name,
         };
       }

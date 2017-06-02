@@ -63,13 +63,10 @@ module Ci
     private
 
     def update_merge_requests_head_pipeline
-      merge_requests = MergeRequest.where(source_branch: @pipeline.ref, source_project: @pipeline.project)
+      return unless pipeline.latest?
 
-      merge_requests = merge_requests.select do |mr|
-        mr.diff_head_sha == @pipeline.sha
-      end
-
-      MergeRequest.where(id: merge_requests).update_all(head_pipeline_id: @pipeline.id)
+      MergeRequest.where(source_project: @pipeline.project, source_branch: @pipeline.ref).
+        update_all(head_pipeline_id: @pipeline.id)
     end
 
     def skip_ci?

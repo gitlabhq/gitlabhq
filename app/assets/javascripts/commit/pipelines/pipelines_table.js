@@ -118,7 +118,7 @@ export default Vue.component('pipelines-table', {
     eventHub.$on('refreshPipelines', this.fetchPipelines);
   },
 
-  beforeDestroyed() {
+  beforeDestroy() {
     eventHub.$off('refreshPipelines');
   },
 

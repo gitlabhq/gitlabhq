@@ -1,7 +1,7 @@
 module Gitlab
   module Git
     class Tree
-      include Gitlab::Git::EncodingHelper
+      include Gitlab::EncodingHelper
 
       attr_accessor :id, :root_id, :name, :path, :type,
         :mode, :commit_id, :submodule_url

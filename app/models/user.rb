@@ -40,7 +40,7 @@ class User < ActiveRecord::Base
          otp_secret_encryption_key: Gitlab::Application.secrets.otp_key_base
 
   devise :two_factor_backupable, otp_number_of_backup_codes: 10
-  serialize :otp_backup_codes, JSON
+  serialize :otp_backup_codes, JSON # rubocop:disable Cop/ActiverecordSerialize
 
   devise :lockable, :recoverable, :rememberable, :trackable,
     :validatable, :omniauthable, :confirmable, :registerable
@@ -101,6 +101,7 @@ class User < ActiveRecord::Base
 
   has_many :snippets,                 dependent: :destroy, foreign_key: :author_id
   has_many :notes,                    dependent: :destroy, foreign_key: :author_id
+  has_many :issues,                   dependent: :destroy, foreign_key: :author_id
   has_many :merge_requests,           dependent: :destroy, foreign_key: :author_id
   has_many :events,                   dependent: :destroy, foreign_key: :author_id
   has_many :subscriptions,            dependent: :destroy
@@ -119,11 +120,6 @@ class User < ActiveRecord::Base
   has_many :issue_assignees
   has_many :assigned_issues, class_name: "Issue", through: :issue_assignees, source: :issue
   has_many :assigned_merge_requests,  dependent: :nullify, foreign_key: :assignee_id, class_name: "MergeRequest"
-
-  # Issues that a user owns are expected to be moved to the "ghost" user before
-  # the user is destroyed. If the user owns any issues during deletion, this
-  # should be treated as an exceptional condition.
-  has_many :issues,                   dependent: :restrict_with_exception, foreign_key: :author_id
 
   #
   # Validations
@@ -369,6 +365,7 @@ class User < ActiveRecord::Base
     # Pattern used to extract `@user` user references from text
     def reference_pattern
       %r{
+        (?<!\w)
         #{Regexp.escape(reference_prefix)}
         (?<user>#{Gitlab::PathRegex::FULL_NAMESPACE_FORMAT_REGEX})
       }x
@@ -780,7 +777,7 @@ class User < ActiveRecord::Base
   def avatar_url(size: nil, scale: 2, **args)
     # We use avatar_path instead of overriding avatar_url because of carrierwave.
     # See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11001/diffs#note_28659864
-    avatar_path(args) || GravatarService.new.execute(email, size, scale)
+    avatar_path(args) || GravatarService.new.execute(email, size, scale, username: username)
   end
 
   def all_emails

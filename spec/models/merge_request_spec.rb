@@ -238,10 +238,10 @@ describe MergeRequest, models: true do
     end
 
     context 'when there are no MR diffs' do
-      it 'delegates to the compare object, setting no_collapse: true' do
+      it 'delegates to the compare object, setting expanded: true' do
         merge_request.compare = double(:compare)
 
-        expect(merge_request.compare).to receive(:diffs).with(options.merge(no_collapse: true))
+        expect(merge_request.compare).to receive(:diffs).with(options.merge(expanded: true))
 
         merge_request.diffs(options)
       end
@@ -1178,7 +1178,7 @@ describe MergeRequest, models: true do
   end
 
   describe "#reload_diff" do
-    let(:note) { create(:diff_note_on_merge_request, project: subject.project, noteable: subject) }
+    let(:discussion) { create(:diff_note_on_merge_request, project: subject.project, noteable: subject).to_discussion }
 
     let(:commit) { subject.project.commit(sample_commit.id) }
 
@@ -1197,7 +1197,7 @@ describe MergeRequest, models: true do
       subject.reload_diff
     end
 
-    it "updates diff note positions" do
+    it "updates diff discussion positions" do
       old_diff_refs = subject.diff_refs
 
       # Update merge_request_diff so that #diff_refs will return commit.diff_refs
@@ -1211,15 +1211,15 @@ describe MergeRequest, models: true do
         subject.merge_request_diff(true)
       end
 
-      expect(Notes::DiffPositionUpdateService).to receive(:new).with(
+      expect(Discussions::UpdateDiffPositionService).to receive(:new).with(
         subject.project,
         subject.author,
         old_diff_refs: old_diff_refs,
         new_diff_refs: commit.diff_refs,
-        paths: note.position.paths
+        paths: discussion.position.paths
       ).and_call_original
 
-      expect_any_instance_of(Notes::DiffPositionUpdateService).to receive(:execute).with(note)
+      expect_any_instance_of(Discussions::UpdateDiffPositionService).to receive(:execute).with(discussion).and_call_original
       expect_any_instance_of(DiffNote).to receive(:save).once
 
       subject.reload_diff(subject.author)
