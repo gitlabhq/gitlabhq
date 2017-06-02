@@ -1,5 +1,7 @@
 FactoryGirl.define do
   factory :ci_stage, class: Ci::Stage do
+    skip_create
+
     transient do
       name 'test'
       status nil

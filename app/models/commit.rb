@@ -14,7 +14,7 @@ class Commit
   participant :committer
   participant :notes_with_associations
 
-  attr_accessor :project
+  attr_accessor :project, :author
 
   DIFF_SAFE_LINES = Gitlab::Git::DiffCollection::DEFAULT_LIMITS[:max_lines]
 
