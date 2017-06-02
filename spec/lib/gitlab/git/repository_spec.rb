@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe Gitlab::Git::Repository, seed_helper: true do
-  include Gitlab::Git::EncodingHelper
+  include Gitlab::EncodingHelper
 
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
 
@@ -380,6 +380,19 @@ describe Gitlab::Git::Repository, seed_helper: true do
             "url" => "git://github.com/randx/six.git"
           }
         ])
+      end
+
+      it 'should not break on invalid syntax' do
+        allow(repository).to receive(:blob_content).and_return(<<-GITMODULES.strip_heredoc)
+          [submodule "six"]
+          path = six
+          url = git://github.com/randx/six.git
+
+          [submodule]
+          foo = bar
+        GITMODULES
+
+        expect(submodules).to have_key('six')
       end
     end
 

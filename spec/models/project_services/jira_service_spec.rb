@@ -133,6 +133,7 @@ describe JiraService, models: true do
       allow(JIRA::Resource::Issue).to receive(:find).and_return(open_issue, closed_issue)
 
       allow_any_instance_of(JIRA::Resource::Issue).to receive(:key).and_return("JIRA-123")
+      allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
 
       @jira_service.save
 

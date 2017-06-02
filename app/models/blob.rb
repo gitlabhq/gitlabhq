@@ -102,10 +102,6 @@ class Blob < SimpleDelegator
     raw_size == 0
   end
 
-  def too_large?
-    size && truncated?
-  end
-
   def external_storage_error?
     if external_storage == :lfs
       !project&.lfs_enabled?
@@ -160,7 +156,7 @@ class Blob < SimpleDelegator
   end
 
   def readable_text?
-    text? && !stored_externally? && !too_large?
+    text? && !stored_externally? && !truncated?
   end
 
   def simple_viewer
@@ -187,9 +183,9 @@ class Blob < SimpleDelegator
     rendered_as_text? && rich_viewer
   end
 
-  def override_max_size!
-    simple_viewer&.override_max_size = true
-    rich_viewer&.override_max_size = true
+  def expand!
+    simple_viewer&.expanded = true
+    rich_viewer&.expanded = true
   end
 
   private

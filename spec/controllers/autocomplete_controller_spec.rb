@@ -24,7 +24,11 @@ describe AutocompleteController do
 
         it { expect(body).to be_kind_of(Array) }
         it { expect(body.size).to eq 2 }
+<<<<<<< HEAD
         it { expect(body.map { |u| u["username"] }).to match_array([user.username, user2.username]) }
+=======
+        it { expect(body.map { |u| u["username"] }).to include(user.username) }
+>>>>>>> upstream/master
       end
 
       describe 'GET #users with unknown project' do
@@ -120,8 +124,8 @@ describe AutocompleteController do
         end
 
         it { expect(body).to be_kind_of(Array) }
-        it { expect(body.size).to eq 2 }
-        it { expect(body.map { |u| u['username'] }).to match_array([user.username, non_member.username]) }
+        it { expect(body.size).to eq 3 }
+        it { expect(body.map { |u| u['username'] }).to include(user.username, non_member.username) }
       end
     end
 
@@ -162,7 +166,7 @@ describe AutocompleteController do
         end
 
         it { expect(body).to be_kind_of(Array) }
-        it { expect(body.size).to eq 1 }
+        it { expect(body.size).to eq 2 }
       end
 
       describe 'GET #users with project' do

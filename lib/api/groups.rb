@@ -78,7 +78,11 @@ module API
       params do
         requires :name, type: String, desc: 'The name of the group'
         requires :path, type: String, desc: 'The path of the group'
-        optional :parent_id, type: Integer, desc: 'The parent group id for creating nested group'
+
+        if ::Group.supports_nested_groups?
+          optional :parent_id, type: Integer, desc: 'The parent group id for creating nested group'
+        end
+
         use :optional_params
       end
       post do
@@ -168,8 +172,8 @@ module API
       end
       get ":id/projects" do
         group = find_group!(params[:id])
-        projects = GroupProjectsFinder.new(group: group, current_user: current_user).execute
-        projects = filter_projects(projects)
+        projects = GroupProjectsFinder.new(group: group, current_user: current_user, params: project_finder_params).execute
+        projects = reorder_projects(projects)
         entity = params[:simple] ? Entities::BasicProjectDetails : Entities::Project
         present paginate(projects), with: entity, current_user: current_user
       end

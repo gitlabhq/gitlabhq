@@ -145,7 +145,24 @@ describe GitPushService, services: true do
     end
   end
 
+<<<<<<< HEAD
   describe "ES indexing" do
+=======
+  describe "Pipelines" do
+    subject { execute_service(project, user, @oldrev, @newrev, @ref) }
+
+    before do
+      stub_ci_pipeline_to_return_yaml_file
+    end
+
+    it "creates a new pipeline" do
+      expect{ subject }.to change{ Ci::Pipeline.count }
+      expect(Ci::Pipeline.last).to be_push
+    end
+  end
+
+  describe "Push Event" do
+>>>>>>> upstream/master
     before do
       stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
     end
@@ -466,11 +483,20 @@ describe GitPushService, services: true do
         stub_jira_urls("JIRA-1")
 
         allow(closing_commit).to receive_messages({
+<<<<<<< HEAD
           issue_closing_regex: Regexp.new(Gitlab.config.gitlab.issue_closing_pattern),
           safe_message: message,
           author_name: commit_author.name,
           author_email: commit_author.email
         })
+=======
+                                                    issue_closing_regex: Regexp.new(Gitlab.config.gitlab.issue_closing_pattern),
+                                                    safe_message: message,
+                                                    author_name: commit_author.name,
+                                                    author_email: commit_author.email
+                                                  })
+        allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
+>>>>>>> upstream/master
 
         allow(project.repository).to receive_messages(commits_between: [closing_commit])
       end

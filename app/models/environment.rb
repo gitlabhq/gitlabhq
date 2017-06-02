@@ -57,6 +57,10 @@ class Environment < ActiveRecord::Base
 
     state :available
     state :stopped
+
+    after_transition do |environment|
+      environment.expire_etag_cache
+    end
   end
 
   def predefined_variables
@@ -198,6 +202,18 @@ class Environment < ActiveRecord::Base
     return unless public_path
 
     [external_url, public_path].join('/')
+  end
+
+  def expire_etag_cache
+    Gitlab::EtagCaching::Store.new.tap do |store|
+      store.touch(etag_cache_key)
+    end
+  end
+
+  def etag_cache_key
+    Gitlab::Routing.url_helpers.namespace_project_environments_path(
+      project.namespace,
+      project)
   end
 
   private

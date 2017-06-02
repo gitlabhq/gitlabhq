@@ -3,7 +3,7 @@ module Gitlab
   module Git
     class Diff
       TimeoutError = Class.new(StandardError)
-      include Gitlab::Git::EncodingHelper
+      include Gitlab::EncodingHelper
 
       # Diff properties
       attr_accessor :old_path, :new_path, :a_mode, :b_mode, :diff
@@ -15,13 +15,16 @@ module Gitlab
       alias_method :deleted_file?, :deleted_file
       alias_method :renamed_file?, :renamed_file
 
+      attr_accessor :expanded
+
+      # We need this accessor because of `to_hash` and `init_from_hash`
       attr_accessor :too_large
 
       # The maximum size of a diff to display.
-      DIFF_SIZE_LIMIT = 102400 # 100 KB
+      SIZE_LIMIT = 100.kilobytes
 
       # The maximum size before a diff is collapsed.
-      DIFF_COLLAPSE_LIMIT = 10240 # 10 KB
+      COLLAPSE_LIMIT = 10.kilobytes
 
       class << self
         def between(repo, head, base, options = {}, *paths)
@@ -152,7 +155,7 @@ module Gitlab
                              :include_untracked_content, :skip_binary_check,
                              :include_typechange, :include_typechange_trees,
                              :ignore_filemode, :recurse_ignored_dirs, :paths,
-                             :max_files, :max_lines, :all_diffs, :no_collapse]
+                             :max_files, :max_lines, :limits, :expanded]
 
           if default_options
             actual_defaults = default_options.dup
@@ -177,16 +180,18 @@ module Gitlab
         end
       end
 
-      def initialize(raw_diff, collapse: false)
+      def initialize(raw_diff, expanded: true)
+        @expanded = expanded
+
         case raw_diff
         when Hash
           init_from_hash(raw_diff)
-          prune_diff_if_eligible(collapse)
+          prune_diff_if_eligible
         when Rugged::Patch, Rugged::Diff::Delta
-          init_from_rugged(raw_diff, collapse: collapse)
+          init_from_rugged(raw_diff)
         when Gitaly::CommitDiffResponse
           init_from_gitaly(raw_diff)
-          prune_diff_if_eligible(collapse)
+          prune_diff_if_eligible
         when Gitaly::CommitDelta
           init_from_gitaly(raw_diff)
         when nil
@@ -226,17 +231,13 @@ module Gitlab
 
       def too_large?
         if @too_large.nil?
-          @too_large = @diff.bytesize >= DIFF_SIZE_LIMIT
+          @too_large = @diff.bytesize >= SIZE_LIMIT
         else
           @too_large
         end
       end
 
-      def collapsible?
-        @diff.bytesize >= DIFF_COLLAPSE_LIMIT
-      end
-
-      def prune_large_diff!
+      def too_large!
         @diff = ''
         @line_count = 0
         @too_large = true
@@ -244,10 +245,11 @@ module Gitlab
 
       def collapsed?
         return @collapsed if defined?(@collapsed)
-        false
+
+        @collapsed = !expanded && @diff.bytesize >= COLLAPSE_LIMIT
       end
 
-      def prune_collapsed_diff!
+      def collapse!
         @diff = ''
         @line_count = 0
         @collapsed = true
@@ -255,9 +257,9 @@ module Gitlab
 
       private
 
-      def init_from_rugged(rugged, collapse: false)
+      def init_from_rugged(rugged)
         if rugged.is_a?(Rugged::Patch)
-          init_from_rugged_patch(rugged, collapse: collapse)
+          init_from_rugged_patch(rugged)
           d = rugged.delta
         else
           d = rugged
@@ -272,10 +274,10 @@ module Gitlab
         @deleted_file = d.deleted?
       end
 
-      def init_from_rugged_patch(patch, collapse: false)
+      def init_from_rugged_patch(patch)
         # Don't bother initializing diffs that are too large. If a diff is
         # binary we're not going to display anything so we skip the size check.
-        return if !patch.delta.binary? && prune_large_patch(patch, collapse)
+        return if !patch.delta.binary? && prune_large_patch(patch)
 
         @diff = encode!(strip_diff_headers(patch.to_s))
       end
@@ -299,29 +301,32 @@ module Gitlab
         @deleted_file = msg.to_id == BLANK_SHA
       end
 
-      def prune_diff_if_eligible(collapse = false)
-        prune_large_diff! if too_large?
-        prune_collapsed_diff! if collapse && collapsible?
+      def prune_diff_if_eligible
+        if too_large?
+          too_large!
+        elsif collapsed?
+          collapse!
+        end
       end
 
       # If the patch surpasses any of the diff limits it calls the appropiate
       # prune method and returns true. Otherwise returns false.
-      def prune_large_patch(patch, collapse)
+      def prune_large_patch(patch)
         size = 0
 
         patch.each_hunk do |hunk|
           hunk.each_line do |line|
             size += line.content.bytesize
 
-            if size >= DIFF_SIZE_LIMIT
-              prune_large_diff!
+            if size >= SIZE_LIMIT
+              too_large!
               return true
             end
           end
         end
 
-        if collapse && size >= DIFF_COLLAPSE_LIMIT
-          prune_collapsed_diff!
+        if !expanded && size >= COLLAPSE_LIMIT
+          collapse!
           return true
         end
 

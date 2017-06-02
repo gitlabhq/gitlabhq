@@ -1,8 +1,8 @@
 require "spec_helper"
 
-describe Gitlab::Git::EncodingHelper do
-  let(:ext_class) { Class.new { extend Gitlab::Git::EncodingHelper } }
-  let(:binary_string) { File.join(SEED_STORAGE_PATH, 'gitlab_logo.png') }
+describe Gitlab::EncodingHelper do
+  let(:ext_class) { Class.new { extend Gitlab::EncodingHelper } }
+  let(:binary_string) { File.read(Rails.root + "spec/fixtures/dk.png") }
 
   describe '#encode!' do
     [

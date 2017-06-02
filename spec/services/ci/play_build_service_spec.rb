@@ -13,8 +13,11 @@ describe Ci::PlayBuildService, '#execute', :services do
   context 'when project does not have repository yet' do
     let(:project) { create(:empty_project) }
 
-    it 'allows user with master role to play build' do
-      project.add_master(user)
+    it 'allows user to play build if protected branch rules are met' do
+      project.add_developer(user)
+
+      create(:protected_branch, :developers_can_merge,
+             name: build.ref, project: project)
 
       service.execute(build)
 
@@ -45,7 +48,10 @@ describe Ci::PlayBuildService, '#execute', :services do
     let(:build) { create(:ci_build, :manual, pipeline: pipeline) }
 
     before do
-      project.add_master(user)
+      project.add_developer(user)
+
+      create(:protected_branch, :developers_can_merge,
+             name: build.ref, project: project)
     end
 
     it 'enqueues the build' do
@@ -64,7 +70,10 @@ describe Ci::PlayBuildService, '#execute', :services do
     let(:build) { create(:ci_build, when: :manual, pipeline: pipeline) }
 
     before do
-      project.add_master(user)
+      project.add_developer(user)
+
+      create(:protected_branch, :developers_can_merge,
+             name: build.ref, project: project)
     end
 
     it 'duplicates the build' do

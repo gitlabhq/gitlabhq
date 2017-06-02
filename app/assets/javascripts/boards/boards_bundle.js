@@ -86,7 +86,11 @@ $(() => {
       gl.boardService = new BoardService(this.endpoint, this.bulkUpdatePath, this.boardId);
       Store.rootPath = this.endpoint;
 
+<<<<<<< HEAD
       this.filterManager = new FilteredSearchBoards(Store.filter, true, [(this.milestoneTitle ? 'milestone' : null)]);
+=======
+      this.filterManager = new FilteredSearchBoards(Store.filter, true);
+>>>>>>> upstream/master
       this.filterManager.setup();
 
       // Listen for updateTokens event

@@ -223,4 +223,14 @@ export default class EnvironmentsStore {
 
     return updatedEnvironments;
   }
+<<<<<<< HEAD
+=======
+
+  getOpenFolders() {
+    const environments = this.state.environments;
+
+    return environments.filter(env => env.isFolder && env.isOpen);
+  }
+
+>>>>>>> upstream/master
 }

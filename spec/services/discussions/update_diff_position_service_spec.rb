@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Notes::DiffPositionUpdateService, services: true do
+describe Discussions::UpdateDiffPositionService, services: true do
   let(:project) { create(:project, :repository) }
   let(:current_user) { project.owner }
   let(:create_commit) { project.commit("913c66a37b4a45b9769037c55c2d238bd0942d2e") }
@@ -138,7 +138,7 @@ describe Notes::DiffPositionUpdateService, services: true do
   # .. ..
 
   describe "#execute" do
-    let(:note) { create(:diff_note_on_merge_request, project: project, position: old_position) }
+    let(:discussion) { create(:diff_note_on_merge_request, project: project, position: old_position).to_discussion }
 
     let(:old_position) do
       Gitlab::Diff::Position.new(
@@ -154,11 +154,11 @@ describe Notes::DiffPositionUpdateService, services: true do
       let(:line) { 16 }
 
       it "updates the position" do
-        subject.execute(note)
+        subject.execute(discussion)
 
-        expect(note.original_position).to eq(old_position)
-        expect(note.position).not_to eq(old_position)
-        expect(note.position.new_line).to eq(22)
+        expect(discussion.original_position).to eq(old_position)
+        expect(discussion.position).not_to eq(old_position)
+        expect(discussion.position.new_line).to eq(22)
       end
     end
 
@@ -166,27 +166,27 @@ describe Notes::DiffPositionUpdateService, services: true do
       let(:line) { 9 }
 
       it "doesn't update the position" do
-        subject.execute(note)
+        subject.execute(discussion)
 
-        expect(note.original_position).to eq(old_position)
-        expect(note.position).to eq(old_position)
+        expect(discussion.original_position).to eq(old_position)
+        expect(discussion.position).to eq(old_position)
       end
 
       it 'sets the change position' do
-        subject.execute(note)
+        subject.execute(discussion)
 
-        change_position = note.change_position
+        change_position = discussion.change_position
         expect(change_position.start_sha).to eq(old_diff_refs.head_sha)
         expect(change_position.head_sha).to eq(new_diff_refs.head_sha)
         expect(change_position.old_line).to eq(9)
         expect(change_position.new_line).to be_nil
       end
 
-      it 'creates a system note' do
+      it 'creates a system discussion' do
         expect(SystemNoteService).to receive(:diff_discussion_outdated).with(
-          note.to_discussion, project, current_user, instance_of(Gitlab::Diff::Position))
+          discussion, project, current_user, instance_of(Gitlab::Diff::Position))
 
-        subject.execute(note)
+        subject.execute(discussion)
       end
     end
   end

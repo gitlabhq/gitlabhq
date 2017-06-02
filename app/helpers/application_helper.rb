@@ -280,7 +280,7 @@ module ApplicationHelper
   end
 
   def show_user_callout?
-    cookies[:user_callout_dismissed] == 'true'
+    cookies[:user_callout_dismissed].nil?
   end
 
   def linkedin_url(user)

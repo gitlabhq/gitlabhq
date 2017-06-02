@@ -14,7 +14,7 @@ class PipelineScheduleWorker
         Ci::CreatePipelineService.new(schedule.project,
                                       schedule.owner,
                                       ref: schedule.ref)
-          .execute(save_on_errors: false, schedule: schedule)
+          .execute(:schedule, save_on_errors: false, schedule: schedule)
       rescue => e
         Rails.logger.error "#{schedule.id}: Failed to create a scheduled pipeline: #{e.message}"
       ensure

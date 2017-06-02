@@ -27,7 +27,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
 
   def file
     blob = @entry.blob
-    override_max_blob_size(blob)
+    conditionally_expand_blob(blob)
 
     respond_to do |format|
       format.html do

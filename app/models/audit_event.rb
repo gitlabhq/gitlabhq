@@ -1,5 +1,5 @@
 class AuditEvent < ActiveRecord::Base
-  serialize :details, Hash
+  serialize :details, Hash # rubocop:disable Cop/ActiverecordSerialize
 
   belongs_to :user, foreign_key: :author_id
 

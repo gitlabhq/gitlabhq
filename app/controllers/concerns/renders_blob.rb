@@ -18,7 +18,7 @@ module RendersBlob
     }
   end
 
-  def override_max_blob_size(blob)
-    blob.override_max_size! if params[:override_max_size] == 'true'
+  def conditionally_expand_blob(blob)
+    blob.expand! if params[:expanded] == 'true'
   end
 end

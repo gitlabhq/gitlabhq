@@ -37,21 +37,11 @@ describe ProjectWiki, models: true do
   describe "#http_url_to_repo" do
     let(:project) { create :empty_project }
 
-    context 'when no user is given' do
-      it 'returns the url to the repo without a username' do
-        expected_url = "#{Gitlab.config.gitlab.url}/#{subject.path_with_namespace}.git"
+    it 'returns the full http url to the repo' do
+      expected_url = "#{Gitlab.config.gitlab.url}/#{subject.path_with_namespace}.git"
 
-        expect(project_wiki.http_url_to_repo).to eq(expected_url)
-        expect(project_wiki.http_url_to_repo).not_to include('@')
-      end
-    end
-
-    context 'when user is given' do
-      it 'returns the url to the repo with the username' do
-        user = build_stubbed(:user)
-
-        expect(project_wiki.http_url_to_repo(user)).to start_with("http://#{user.username}@")
-      end
+      expect(project_wiki.http_url_to_repo).to eq(expected_url)
+      expect(project_wiki.http_url_to_repo).not_to include('@')
     end
   end
 

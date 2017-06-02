@@ -44,11 +44,8 @@ class ProjectWiki
     url_to_repo
   end
 
-  def http_url_to_repo(user = nil)
-    url = "#{Gitlab.config.gitlab.url}/#{path_with_namespace}.git"
-    credentials = Gitlab::UrlSanitizer.http_credentials_for_user(user)
-
-    Gitlab::UrlSanitizer.new(url, credentials: credentials).full_url
+  def http_url_to_repo
+    "#{Gitlab.config.gitlab.url}/#{path_with_namespace}.git"
   end
 
   # No need to have a Kerberos Web url. Kerberos URL will be used only to clone

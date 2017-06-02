@@ -22,6 +22,7 @@ module Gitlab
       nil
     end
 
+<<<<<<< HEAD
     def try_megabytes_to_bytes(size)
       Integer(size).megabytes
     rescue ArgumentError
@@ -43,6 +44,14 @@ module Gitlab
       end
 
       nil
+=======
+    def boolean_to_yes_no(bool)
+      if bool
+        'Yes'
+      else
+        'No'
+      end
+>>>>>>> upstream/master
     end
   end
 end

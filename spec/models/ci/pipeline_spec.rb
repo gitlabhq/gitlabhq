@@ -21,12 +21,34 @@ describe Ci::Pipeline, models: true do
   it { is_expected.to have_many(:auto_canceled_pipelines) }
   it { is_expected.to have_many(:auto_canceled_jobs) }
 
-  it { is_expected.to validate_presence_of :sha }
-  it { is_expected.to validate_presence_of :status }
+  it { is_expected.to validate_presence_of(:sha) }
+  it { is_expected.to validate_presence_of(:status) }
 
   it { is_expected.to respond_to :git_author_name }
   it { is_expected.to respond_to :git_author_email }
   it { is_expected.to respond_to :short_sha }
+
+  describe '#source' do
+    context 'when creating new pipeline' do
+      let(:pipeline) do
+        build(:ci_empty_pipeline, status: :created, project: project, source: nil)
+      end
+
+      it "prevents from creating an object" do
+        expect(pipeline).not_to be_valid
+      end
+    end
+
+    context 'when updating existing pipeline' do
+      before do
+        pipeline.update_attribute(:source, nil)
+      end
+
+      it "object is valid" do
+        expect(pipeline).to be_valid
+      end
+    end
+  end
 
   describe '#block' do
     it 'changes pipeline status to manual' do
