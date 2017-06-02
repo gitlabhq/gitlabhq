@@ -24,11 +24,7 @@ describe AutocompleteController do
 
         it { expect(body).to be_kind_of(Array) }
         it { expect(body.size).to eq 2 }
-<<<<<<< HEAD
         it { expect(body.map { |u| u["username"] }).to match_array([user.username, user2.username]) }
-=======
-        it { expect(body.map { |u| u["username"] }).to include(user.username) }
->>>>>>> upstream/master
       end
 
       describe 'GET #users with unknown project' do
