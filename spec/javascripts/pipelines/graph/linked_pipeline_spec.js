@@ -68,4 +68,15 @@ describe('Linked pipeline', () => {
     const pipelineIdElement = this.linkedPipeline.$el.querySelector('.linked-pipeline-id');
     expect(pipelineIdElement.innerText).toContain(`#${this.propsData.pipelineId}`);
   });
+
+  it('should correctly compute the tooltip text', () => {
+    expect(this.linkedPipeline.tooltipText).toContain(mockPipeline.projectName);
+    expect(this.linkedPipeline.tooltipText).toContain(mockPipeline.pipelineState.label);
+  });
+
+  it('should set the tooltip text as the title attribute', () => {
+    const titleAttr = this.linkedPipeline.$el.querySelector('.linked-pipeline-content').getAttribute('title');
+    expect(titleAttr).toContain(mockPipeline.projectName);
+    expect(titleAttr).toContain(mockPipeline.pipelineState.label);
+  });
 });
