@@ -7,4 +7,9 @@ module RakeHelpers
   def stub_warn_user_is_not_gitlab
     allow_any_instance_of(Object).to receive(:warn_user_is_not_gitlab)
   end
+
+  def silence_output
+    allow($stdout).to receive(:puts)
+    allow($stdout).to receive(:print)
+  end
 end
