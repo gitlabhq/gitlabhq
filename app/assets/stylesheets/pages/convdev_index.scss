@@ -39,10 +39,7 @@ $space-between-cards: 8px;
 .convdev-cards {
   display: flex;
   justify-content: center;
-
-  @media (max-width: $screen-lg-min) {
-    flex-wrap: wrap;
-  }
+  flex-wrap: wrap;
 }
 
 .convdev-card-wrapper {
@@ -50,35 +47,26 @@ $space-between-cards: 8px;
   flex-direction: column;
   align-items: stretch;
   text-align: center;
-  width: 10%;
+  width: 50%;
   border-color: $border-color;
   margin: 0 0 32px;
   padding: $space-between-cards / 2;
   position: relative;
 
-  @media (max-width: $screen-lg-min) {
-    width: 16.667%;
-
-    .convdev-card-title {
-      max-width: 100px;
-      margin: $gl-padding auto auto;
-    }
-
-    .card-scores {
-      margin: $gl-padding 24px;
-    }
+  @media (min-width: $screen-xs-min) {
+    width: percentage(1 / 4);
   }
 
-  @media (max-width: $screen-md-min) {
-    width: 20%;
+  @media (min-width: $screen-sm-min) {
+    width: percentage(1 / 5);
   }
 
-  @media (max-width: $screen-sm-min) {
-    width: 25%;
+  @media (min-width: $screen-md-min) {
+    width: percentage(1 / 6);
   }
 
-  @media (max-width: $screen-xs-min) {
-    width: 50%;
+  @media (min-width: $screen-lg-min) {
+    width: percentage(1 / 10);
   }
 }
 
@@ -86,8 +74,6 @@ $space-between-cards: 8px;
   border: solid 1px $border-color;
   border-radius: 3px;
   border-top-width: 3px;
-  border-top-left-radius: 3px;
-  border-top-right-radius: 3px;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
@@ -118,8 +104,8 @@ $space-between-cards: 8px;
 }
 
 .convdev-card-title {
-  margin-top: $gl-padding;
-  margin-bottom: auto;
+  margin: $gl-padding auto auto;
+  max-width: 100px;
 
   h3 {
     font-size: 14px;
@@ -166,7 +152,6 @@ $space-between-cards: 8px;
 
 .card-buttons {
   display: flex;
-  justify-content: stretch;
 
   > * {
     font-size: 16px;
@@ -192,10 +177,6 @@ $space-between-cards: 8px;
   justify-content: space-around;
   position: relative;
   background: $border-color;
-
-  @media (max-width: $screen-lg-min) {
-    display: none;
-  }
 }
 
 .convdev-step {
@@ -247,6 +228,8 @@ $space-between-cards: 8px;
     transition: transform 0.1s;
     width: 30px;
     height: 30px;
+    min-height: 30px;
+    min-width: 30px;
   }
 }
 

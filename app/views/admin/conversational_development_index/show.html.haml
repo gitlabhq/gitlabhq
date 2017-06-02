@@ -27,10 +27,9 @@
         - @metric.cards.each do |card|
           = render 'card', card: card
 
-      .convdev-steps.row
+      .convdev-steps.visible-lg
         - @metric.idea_to_production_steps.each_with_index do |step, index|
           .convdev-step{ class: "convdev-#{score_level(step.percentage_score)}-score" }
-            .as
-              = custom_icon("i2p_step_#{index + 1}")
+            = custom_icon("i2p_step_#{index + 1}")
             %h4.convdev-step-title
               = step.title
