@@ -49,6 +49,7 @@ describe('Linked pipeline', () => {
 
   it('should render the pipeline status icon svg', () => {
     const pipelineStatusElement = this.linkedPipeline.$el.querySelector('.linked-pipeline-status');
+    expect(pipelineStatusElement.querySelector('.ci-status-icon-running')).not.toBeNull();
     expect(pipelineStatusElement.innerHTML).toContain('<svg');
   });
 
