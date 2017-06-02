@@ -12,7 +12,7 @@ export default class PipelineStore {
   constructor() {
     this.state = {};
 
-    this.state.pipeline = [];
+    this.state.pipeline = {};
     this.state.triggered = [];
     this.state.triggered_by = [];
   }

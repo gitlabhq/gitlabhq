@@ -24,6 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
         props: {
           isLoading: this.mediator.state.isLoading,
           pipeline: this.mediator.store.state.pipeline,
+          triggeredBy: this.mediator.store.state.triggered_by,
+          triggered: this.mediator.store.state.triggered,
         },
       });
     },

@@ -18,16 +18,24 @@
         type: Object,
         required: true,
       },
+      triggered: {
+        type: Array,
+        required: true,
+      },
+      triggeredBy: {
+        type: Array,
+        required: true,
+      },
     },
     computed: {
       graph() {
         return this.pipeline.details && this.pipeline.details.stages;
       },
       hasTriggered() {
-        return !!this.pipeline.triggered.length;
+        return !!this.triggered.length;
       },
       hasTriggeredBy() {
-        return !!this.pipeline.triggered_by.length;
+        return !!this.triggeredBy.length;
       },
       linkedPipelinesClass() {
         return this.hasTriggered || this.hasTriggeredBy ? 'has-linked-pipelines' : '';
@@ -85,7 +93,7 @@
 
       <linked-pipelines-column
         v-if="hasTriggeredBy"
-        :linked-pipelines="pipeline.triggered_by"
+        :linked-pipelines="triggeredBy"
         column-title="Upstream"
         graph-position="left"
       />
@@ -108,7 +116,7 @@
 
       <linked-pipelines-column
         v-if="hasTriggered"
-        :linked-pipelines="pipeline.triggered"
+        :linked-pipelines="triggered"
         column-title="Downstream"
         graph-position="right"
       />

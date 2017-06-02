@@ -21,6 +21,7 @@
    * - Jobs table
    * - Jobs show view header
    * - Jobs show view sidebar
+   * - Linked pipelines
    */
   export default {
     props: {
