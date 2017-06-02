@@ -42,7 +42,7 @@ class CreateDeploymentService
   end
 
   def environment
-    @environment ||= job.ensure_persisted_environment
+    @environment ||= job.persisted_environment
   end
 
   def environment_options

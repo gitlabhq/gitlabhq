@@ -19,12 +19,6 @@ module Ci
       )
     end
 
-    def ensure_persisted_environment
-      persisted_environment ||
-        @persisted_environment =
-          project.environments.create(name: expanded_environment_name)
-    end
-
     serialize :options # rubocop:disable Cop/ActiverecordSerialize
     serialize :yaml_variables, Gitlab::Serializer::Ci::Variables # rubocop:disable Cop/ActiverecordSerialize
 

@@ -960,36 +960,6 @@ describe Ci::Build, :models do
     end
   end
 
-  describe '#ensure_persisted_environment' do
-    subject { job.ensure_persisted_environment }
-
-    let(:job) do
-      create(:ci_build,
-        ref: 'master',
-        environment: 'staging/$CI_COMMIT_REF_NAME')
-    end
-
-    context 'when there is no environment' do
-      it 'creates one by the expanded name' do
-        expect do
-          expect(subject.name).to eq('staging/master')
-        end.to change { Environment.count }.by(1)
-      end
-    end
-
-    context 'when there is already an environment' do
-      let!(:environment) do
-        create(:environment, project: job.project, name: 'staging/master')
-      end
-
-      it 'returns the existing environment' do
-        expect do
-          expect(subject).to eq(environment)
-        end.to change { Environment.count }.by(0)
-      end
-    end
-  end
-
   describe '#play' do
     let(:build) { create(:ci_build, :manual, pipeline: pipeline) }
 
