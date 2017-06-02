@@ -28,17 +28,6 @@ class PrometheusService < MonitoringService
     'Prometheus monitoring'
   end
 
-  def help
-    <<-MD.strip_heredoc
-      Retrieves the Kubernetes node metrics `container_cpu_usage_seconds_total`
-      and `container_memory_usage_bytes` from the configured Prometheus server.
-
-      If you are not using [Auto-Deploy](https://docs.gitlab.com/ee/ci/autodeploy/index.html)
-      or have set up your own Prometheus server, an `environment` label is required on each metric to
-      [identify the Environment](https://docs.gitlab.com/ce/user/project/integrations/prometheus.html#metrics-and-labels).
-    MD
-  end
-
   def self.to_param
     'prometheus'
   end
@@ -49,7 +38,8 @@ class PrometheusService < MonitoringService
         type: 'text',
         name: 'api_url',
         title: 'API URL',
-        placeholder: 'Prometheus API Base URL, like http://prometheus.example.com/'
+        placeholder: 'Prometheus API Base URL, like http://prometheus.example.com/',
+        help: 'By default, Prometheus listens on ‘http://localhost:9090’. It’s not recommended to change the default address and port as this might affect or conflict with other services running on the GitLab server.'
       }
     ]
   end
