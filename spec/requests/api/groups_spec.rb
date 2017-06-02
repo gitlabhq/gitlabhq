@@ -275,7 +275,9 @@ describe API::Groups do
 
       # EE
       it 'returns 403 for updating shared_runners_minutes_limit' do
-        put api("/groups/#{group1.id}", user1), shared_runners_minutes_limit: 133
+        expect do
+          put api("/groups/#{group1.id}", user1), shared_runners_minutes_limit: 133
+        end.not_to change { group1.shared_runners_minutes_limit }
 
         expect(response).to have_http_status(403)
       end
@@ -283,7 +285,9 @@ describe API::Groups do
       it 'returns 200 if shared_runners_minutes_limit is not changing' do
         group1.update(shared_runners_minutes_limit: 133)
 
-        put api("/groups/#{group1.id}", user1), shared_runners_minutes_limit: 133
+        expect do
+          put api("/groups/#{group1.id}", user1), shared_runners_minutes_limit: 133
+        end.not_to change { group1.shared_runners_minutes_limit }
 
         expect(response).to have_http_status(200)
       end
@@ -299,7 +303,10 @@ describe API::Groups do
 
       # EE
       it 'updates the group for shared_runners_minutes_limit' do
-        put api("/groups/#{group1.id}", admin), shared_runners_minutes_limit: 133
+        expect do
+          put api("/groups/#{group1.id}", admin), shared_runners_minutes_limit: 133
+        end.to change { group1.reload.shared_runners_minutes_limit }
+          .from(nil).to(133)
 
         expect(response).to have_http_status(200)
         expect(json_response['shared_runners_minutes_limit']).to eq(133)
@@ -509,7 +516,9 @@ describe API::Groups do
           it "does not create a group with shared_runners_minutes_limit" do
             group = attributes_for(:group, { shared_runners_minutes_limit: 133 })
 
-            post api("/groups", user3), group
+            expect do
+              post api("/groups", user3), group
+            end.not_to change { Group.count }
 
             expect(response).to have_http_status(403)
           end
@@ -519,8 +528,13 @@ describe API::Groups do
           it "creates a group with shared_runners_minutes_limit" do
             group = attributes_for(:group, { shared_runners_minutes_limit: 133 })
 
-            post api("/groups", admin), group
+            expect do
+              post api("/groups", admin), group
+            end.to change { Group.count }.by(1)
 
+            created_group = Group.find(json_response['id'])
+
+            expect(created_group.shared_runners_minutes_limit).to eq(133)
             expect(response).to have_http_status(201)
             expect(json_response['shared_runners_minutes_limit']).to eq(133)
           end

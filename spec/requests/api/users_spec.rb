@@ -425,13 +425,15 @@ describe API::Users do
       expect(user.reload.external?).to be_truthy
     end
 
+    # EE
     it "updates shared_runners_minutes_limit" do
-      put api("/users/#{user.id}", admin), { shared_runners_minutes_limit: 133 }
+      expect do
+        put api("/users/#{user.id}", admin), { shared_runners_minutes_limit: 133 }
+      end.to change { user.reload.shared_runners_minutes_limit }
+        .from(nil).to(133)
 
       expect(response).to have_http_status(200)
-      expect(json_response['shared_runners_minutes_limit'])
-        .to eq(133)
-      expect(user.reload.shared_runners_minutes_limit).to eq(133)
+      expect(json_response['shared_runners_minutes_limit']).to eq(133)
     end
 
     it "does not update admin status" do
@@ -449,12 +451,18 @@ describe API::Users do
 
     context 'when the current user is not an admin' do
       it "is not available" do
-        put api("/users/#{user.id}", user), attributes_for(:user)
+        expect do
+          put api("/users/#{user.id}", user), attributes_for(:user)
+        end.not_to change { user.reload.attributes }
+
         expect(response).to have_http_status(403)
       end
 
       it "cannot update their own shared_runners_minutes_limit" do
-        put api("/users/#{user.id}", user), { shared_runners_minutes_limit: 133 }
+        expect do
+          put api("/users/#{user.id}", user), { shared_runners_minutes_limit: 133 }
+        end.not_to change { user.reload.shared_runners_minutes_limit }
+
         expect(response).to have_http_status(403)
       end
     end
