@@ -1,13 +1,15 @@
+import $ from 'jquery';
+import _ from 'underscore';
+import 'jasmine-jquery';
+import '~/commons';
+
 // enable test fixtures
-require('jasmine-jquery');
+jasmine.getFixtures().fixturesPath = '/base/spec/javascripts/fixtures';
+jasmine.getJSONFixtures().fixturesPath = '/base/spec/javascripts/fixtures';
 
-jasmine.getFixtures().fixturesPath = 'base/spec/javascripts/fixtures';
-jasmine.getJSONFixtures().fixturesPath = 'base/spec/javascripts/fixtures';
-
-// include common libraries
-require('~/commons/index.js');
-window.$ = window.jQuery = require('jquery');
-window._ = require('underscore');
+// globalize common libraries
+window.$ = window.jQuery = $;
+window._ = _;
 
 // stub expected globals
 window.gl = window.gl || {};
@@ -55,7 +57,6 @@ if (process.env.BABEL_ENV === 'coverage') {
     './merge_conflicts/merge_conflicts_bundle.js',
     './merge_conflicts/components/inline_conflict_lines.js',
     './merge_conflicts/components/parallel_conflict_lines.js',
-    './merge_request_widget/ci_bundle.js',
     './monitoring/monitoring_bundle.js',
     './network/network_bundle.js',
     './network/branch_graph.js',

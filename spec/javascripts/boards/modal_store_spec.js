@@ -1,10 +1,10 @@
 /* global ListIssue */
 
-require('~/boards/models/issue');
-require('~/boards/models/label');
-require('~/boards/models/list');
-require('~/boards/models/user');
-require('~/boards/stores/modal_store');
+import '~/boards/models/issue';
+import '~/boards/models/label';
+import '~/boards/models/list';
+import '~/boards/models/assignee';
+import '~/boards/stores/modal_store';
 
 describe('Modal store', () => {
   let issue;
@@ -21,12 +21,14 @@ describe('Modal store', () => {
       iid: 1,
       confidential: false,
       labels: [],
+      assignees: [],
     });
     issue2 = new ListIssue({
       title: 'Testing',
       iid: 2,
       confidential: false,
       labels: [],
+      assignees: [],
     });
     Store.store.issues.push(issue);
     Store.store.issues.push(issue2);

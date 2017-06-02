@@ -7,7 +7,6 @@ describe Ci::Trigger, models: true do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:owner) }
     it { is_expected.to have_many(:trigger_requests) }
-    it { is_expected.to have_one(:trigger_schedule) }
   end
 
   describe 'before_validation' do

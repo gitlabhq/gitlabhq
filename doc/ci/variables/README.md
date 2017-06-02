@@ -10,7 +10,7 @@ The variables can be overwritten and they take precedence over each other in
 this order:
 
 1. [Trigger variables][triggers] (take precedence over all)
-1. [Secret variables](#secret-variables)
+1. [Secret variables](#secret-variables) or [protected secret variables](#protected-secret-variables)
 1. YAML-defined [job-level variables](../yaml/README.md#job-variables)
 1. YAML-defined [global variables](../yaml/README.md#variables)
 1. [Deployment variables](#deployment-variables)
@@ -152,10 +152,26 @@ available in the build environment. It's the recommended method to use for
 storing things like passwords, secret keys and credentials.
 
 Secret variables can be added by going to your project's
-**Settings ➔ CI/CD Pipelines**, then finding the section called
-**Secret Variables**.
+**Settings ➔ Pipelines**, then finding the section called
+**Secret variables**.
 
-Once you set them, they will be available for all subsequent jobs.
+Once you set them, they will be available for all subsequent pipelines.
+
+## Protected secret variables
+
+>**Notes:**
+This feature requires GitLab 9.3 or higher.
+
+Secret variables could be protected. Whenever a secret variable is
+protected, it would only be securely passed to pipelines running on the
+[protected branches] or [protected tags]. The other pipelines would not get any
+protected variables.
+
+Protected variables can be added by going to your project's
+**Settings ➔ Pipelines**, then finding the section called
+**Secret variables**, and check *Protected*.
+
+Once you set them, they will be available for all subsequent pipelines.
 
 ## Deployment variables
 
@@ -333,7 +349,7 @@ prefix the variable name with the dollar sign (`$`):
 ```
 job_name:
   script:
-    - echo $CI_job_ID
+    - echo $CI_JOB_ID
 ```
 
 You can also list all environment variables with the `export` command,
@@ -385,3 +401,5 @@ export CI_REGISTRY_PASSWORD="longalfanumstring"
 [runner]: https://docs.gitlab.com/runner/
 [triggered]: ../triggers/README.md
 [triggers]: ../triggers/README.md#pass-job-variables-to-a-trigger
+[protected branches]: ../../user/project/protected_branches.md
+[protected tags]: ../../user/project/protected_tags.md

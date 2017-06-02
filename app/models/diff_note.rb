@@ -6,8 +6,9 @@ class DiffNote < Note
 
   NOTEABLE_TYPES = %w(MergeRequest Commit).freeze
 
-  serialize :original_position, Gitlab::Diff::Position
-  serialize :position, Gitlab::Diff::Position
+  serialize :original_position, Gitlab::Diff::Position # rubocop:disable Cop/ActiverecordSerialize
+  serialize :position, Gitlab::Diff::Position # rubocop:disable Cop/ActiverecordSerialize
+  serialize :change_position, Gitlab::Diff::Position # rubocop:disable Cop/ActiverecordSerialize
 
   validates :original_position, presence: true
   validates :position, presence: true
@@ -25,7 +26,7 @@ class DiffNote < Note
     DiffDiscussion
   end
 
-  %i(original_position position).each do |meth|
+  %i(original_position position change_position).each do |meth|
     define_method "#{meth}=" do |new_position|
       if new_position.is_a?(String)
         new_position = JSON.parse(new_position) rescue nil
@@ -36,6 +37,8 @@ class DiffNote < Note
         new_position = Gitlab::Diff::Position.new(new_position)
       end
 
+      return if new_position == read_attribute(meth)
+
       super(new_position)
     end
   end
@@ -45,7 +48,7 @@ class DiffNote < Note
   end
 
   def diff_line
-    @diff_line ||= diff_file.line_for_position(self.original_position) if diff_file
+    @diff_line ||= diff_file&.line_for_position(self.original_position)
   end
 
   def for_line?(line)
@@ -60,7 +63,7 @@ class DiffNote < Note
     return false unless supported?
     return true if for_commit?
 
-    diff_refs ||= noteable_diff_refs
+    diff_refs ||= noteable.diff_refs
 
     self.position.diff_refs == diff_refs
   end
@@ -92,13 +95,21 @@ class DiffNote < Note
 
     return if active?
 
-    Notes::DiffPositionUpdateService.new(
-      self.project,
-      nil,
+    tracer = Gitlab::Diff::PositionTracer.new(
+      project: self.project,
       old_diff_refs: self.position.diff_refs,
-      new_diff_refs: noteable_diff_refs,
+      new_diff_refs: self.noteable.diff_refs,
       paths: self.position.paths
-    ).execute(self)
+    )
+
+    result = tracer.trace(self.position)
+    return unless result
+
+    if result[:outdated]
+      self.change_position = result[:position]
+    else
+      self.position = result[:position]
+    end
   end
 
   def verify_supported

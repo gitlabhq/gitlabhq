@@ -1,7 +1,7 @@
 /* eslint-disable space-before-function-paren, one-var, one-var-declaration-per-line, no-use-before-define, comma-dangle, max-len */
 import Issue from '~/issue';
 
-require('~/lib/utils/text_utility');
+import '~/lib/utils/text_utility';
 
 describe('Issue', function() {
   let $boxClosed, $boxOpen, $btnClose, $btnReopen;
@@ -79,12 +79,6 @@ describe('Issue', function() {
     beforeEach(function() {
       loadFixtures('issues/issue-with-task-list.html.raw');
       this.issue = new Issue();
-    });
-
-    it('modifies the Markdown field', function() {
-      spyOn(jQuery, 'ajax').and.stub();
-      $('input[type=checkbox]').attr('checked', true).trigger('change');
-      expect($('.js-task-list-field').val()).toBe('- [x] Task List Item');
     });
 
     it('submits an ajax request on tasklist:changed', function() {

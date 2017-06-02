@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "Private Project Access", feature: true  do
   include AccessMatchers
 
-  let(:project) { create(:project, :private, public_builds: false) }
+  set(:project) { create(:project, :private, public_builds: false) }
 
   describe "Project should be private" do
     describe '#private?' do
@@ -330,7 +330,7 @@ describe "Private Project Access", feature: true  do
   end
 
   describe "GET /:project_path/builds" do
-    subject { namespace_project_builds_path(project.namespace, project) }
+    subject { namespace_project_jobs_path(project.namespace, project) }
 
     it { is_expected.to be_allowed_for(:admin) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
@@ -358,7 +358,7 @@ describe "Private Project Access", feature: true  do
   describe "GET /:project_path/builds/:id" do
     let(:pipeline) { create(:ci_pipeline, project: project) }
     let(:build) { create(:ci_build, pipeline: pipeline) }
-    subject { namespace_project_build_path(project.namespace, project, build.id) }
+    subject { namespace_project_job_path(project.namespace, project, build.id) }
 
     it { is_expected.to be_allowed_for(:admin) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
@@ -391,7 +391,7 @@ describe "Private Project Access", feature: true  do
   describe 'GET /:project_path/builds/:id/trace' do
     let(:pipeline) { create(:ci_pipeline, project: project) }
     let(:build) { create(:ci_build, pipeline: pipeline) }
-    subject { trace_namespace_project_build_path(project.namespace, project, build.id) }
+    subject { trace_namespace_project_job_path(project.namespace, project, build.id) }
 
     it { is_expected.to be_allowed_for(:admin) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
@@ -466,6 +466,48 @@ describe "Private Project Access", feature: true  do
 
   describe "GET /:project_path/environments/new" do
     subject { new_namespace_project_environment_path(project.namespace, project) }
+
+    it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_allowed_for(:owner).of(project) }
+    it { is_expected.to be_allowed_for(:master).of(project) }
+    it { is_expected.to be_allowed_for(:developer).of(project) }
+    it { is_expected.to be_denied_for(:reporter).of(project) }
+    it { is_expected.to be_denied_for(:guest).of(project) }
+    it { is_expected.to be_denied_for(:user) }
+    it { is_expected.to be_denied_for(:external) }
+    it { is_expected.to be_denied_for(:visitor) }
+  end
+
+  describe "GET /:project_path/pipeline_schedules" do
+    subject { namespace_project_pipeline_schedules_path(project.namespace, project) }
+
+    it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_allowed_for(:owner).of(project) }
+    it { is_expected.to be_allowed_for(:master).of(project) }
+    it { is_expected.to be_allowed_for(:developer).of(project) }
+    it { is_expected.to be_allowed_for(:reporter).of(project) }
+    it { is_expected.to be_denied_for(:guest).of(project) }
+    it { is_expected.to be_denied_for(:user) }
+    it { is_expected.to be_denied_for(:external) }
+    it { is_expected.to be_denied_for(:visitor) }
+  end
+
+  describe "GET /:project_path/pipeline_schedules/new" do
+    subject { new_namespace_project_pipeline_schedule_path(project.namespace, project) }
+
+    it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_allowed_for(:owner).of(project) }
+    it { is_expected.to be_allowed_for(:master).of(project) }
+    it { is_expected.to be_allowed_for(:developer).of(project) }
+    it { is_expected.to be_denied_for(:reporter).of(project) }
+    it { is_expected.to be_denied_for(:guest).of(project) }
+    it { is_expected.to be_denied_for(:user) }
+    it { is_expected.to be_denied_for(:external) }
+    it { is_expected.to be_denied_for(:visitor) }
+  end
+
+  describe "GET /:project_path/environments/new" do
+    subject { new_namespace_project_pipeline_schedule_path(project.namespace, project) }
 
     it { is_expected.to be_allowed_for(:admin) }
     it { is_expected.to be_allowed_for(:owner).of(project) }

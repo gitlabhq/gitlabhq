@@ -36,7 +36,7 @@ class GlobalMilestone
     closed = count_by_state(milestones_by_state_and_title, 'closed')
     all = milestones_by_state_and_title.map { |(_, title), _| title }.uniq.count
 
-    { 
+    {
       opened: opened,
       closed: closed,
       all: all
@@ -86,7 +86,7 @@ class GlobalMilestone
   end
 
   def issues
-    @issues ||= Issue.of_milestones(milestoneish_ids).includes(:project, :assignee, :labels)
+    @issues ||= Issue.of_milestones(milestoneish_ids).includes(:project, :assignees, :labels)
   end
 
   def merge_requests
@@ -94,7 +94,7 @@ class GlobalMilestone
   end
 
   def participants
-    @participants ||= milestones.includes(:participants).map(&:participants).flatten.compact.uniq
+    @participants ||= milestones.map(&:participants).flatten.uniq
   end
 
   def labels

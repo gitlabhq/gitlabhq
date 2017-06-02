@@ -1,5 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-param-reassign, no-cond-assign, quotes, one-var, one-var-declaration-per-line, operator-assignment, no-else-return, prefer-template, prefer-arrow-callback, no-empty, max-len, consistent-return, no-unused-vars, no-return-assign, max-len, vars-on-top */
-require('vendor/latinise');
+
+import 'vendor/latinise';
 
 var base;
 var w = window;
@@ -169,7 +170,7 @@ gl.text.init = function(form) {
   });
 };
 gl.text.removeListeners = function(form) {
-  return $('.js-md', form).off();
+  return $('.js-md', form).off('click');
 };
 gl.text.humanize = function(string) {
   return string.charAt(0).toUpperCase() + string.replace(/_/g, ' ').slice(1);

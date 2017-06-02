@@ -41,7 +41,7 @@ class HipchatService < Service
         placeholder: 'Leave blank for default (v2)' },
       { type: 'text', name: 'server',
         placeholder: 'Leave blank for default. https://hipchat.example.com' },
-      { type: 'checkbox', name: 'notify_only_broken_pipelines' },
+      { type: 'checkbox', name: 'notify_only_broken_pipelines' }
     ]
   end
 

@@ -12,6 +12,7 @@ class Deployment < ActiveRecord::Base
   delegate :name, to: :environment, prefix: true
 
   after_create :create_ref
+  after_create :invalidate_cache
 
   def commit
     project.commit(sha)
@@ -31,6 +32,10 @@ class Deployment < ActiveRecord::Base
 
   def create_ref
     project.repository.create_ref(ref, ref_path)
+  end
+
+  def invalidate_cache
+    environment.expire_etag_cache
   end
 
   def manual_actions
@@ -85,8 +90,8 @@ class Deployment < ActiveRecord::Base
   end
 
   def stop_action
-    return nil unless on_stop.present?
-    return nil unless manual_actions
+    return unless on_stop.present?
+    return unless manual_actions
 
     @stop_action ||= manual_actions.find_by(name: on_stop)
   end
@@ -97,6 +102,16 @@ class Deployment < ActiveRecord::Base
 
   def formatted_deployment_time
     created_at.to_time.in_time_zone.to_s(:medium)
+  end
+
+  def has_metrics?
+    project.monitoring_service.present?
+  end
+
+  def metrics
+    return {} unless has_metrics?
+
+    project.monitoring_service.deployment_metrics(self)
   end
 
   private

@@ -51,15 +51,15 @@ describe 'Filter issues', js: true, feature: true do
     create(:issue, project: project, title: "issue with 'single quotes'")
     create(:issue, project: project, title: "issue with \"double quotes\"")
     create(:issue, project: project, title: "issue with !@\#{$%^&*()-+")
-    create(:issue, project: project, title: "issue by assignee", milestone: milestone, author: user, assignee: user)
-    create(:issue, project: project, title: "issue by assignee with searchTerm", milestone: milestone, author: user, assignee: user)
+    create(:issue, project: project, title: "issue by assignee", milestone: milestone, author: user, assignees: [user])
+    create(:issue, project: project, title: "issue by assignee with searchTerm", milestone: milestone, author: user, assignees: [user])
 
     issue = create(:issue,
       title: "Bug 2",
       project: project,
       milestone: milestone,
       author: user,
-      assignee: user)
+      assignees: [user])
     issue.labels << bug_label
 
     issue_with_caps_label = create(:issue,
@@ -67,7 +67,7 @@ describe 'Filter issues', js: true, feature: true do
       project: project,
       milestone: milestone,
       author: user,
-      assignee: user)
+      assignees: [user])
     issue_with_caps_label.labels << caps_sensitive_label
 
     issue_with_everything = create(:issue,
@@ -75,7 +75,7 @@ describe 'Filter issues', js: true, feature: true do
       project: project,
       milestone: milestone,
       author: user,
-      assignee: user)
+      assignees: [user])
     issue_with_everything.labels << bug_label
     issue_with_everything.labels << caps_sensitive_label
 
@@ -761,7 +761,7 @@ describe 'Filter issues', js: true, feature: true do
         sort_toggle.click
 
         find('.filtered-search-wrapper .dropdown-menu li a', text: 'Oldest updated').click
-        wait_for_ajax
+        wait_for_requests
 
         expect(find('.issues-list .issue:first-of-type .issue-title-text a')).to have_content(old_issue.title)
       end
@@ -778,17 +778,17 @@ describe 'Filter issues', js: true, feature: true do
 
     it 'open state' do
       find('.issues-state-filters a', text: 'Closed').click
-      wait_for_ajax
+      wait_for_requests
 
       find('.issues-state-filters a', text: 'Open').click
-      wait_for_ajax
+      wait_for_requests
 
       expect(page).to have_selector('.issues-list .issue', count: 4)
     end
 
     it 'closed state' do
       find('.issues-state-filters a', text: 'Closed').click
-      wait_for_ajax
+      wait_for_requests
 
       expect(page).to have_selector('.issues-list .issue', count: 1)
       expect(find('.issues-list .issue:first-of-type .issue-title-text a')).to have_content(closed_issue.title)
@@ -796,7 +796,7 @@ describe 'Filter issues', js: true, feature: true do
 
     it 'all state' do
       find('.issues-state-filters a', text: 'All').click
-      wait_for_ajax
+      wait_for_requests
 
       expect(page).to have_selector('.issues-list .issue', count: 5)
     end
@@ -810,10 +810,10 @@ describe 'Filter issues', js: true, feature: true do
       auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
       auto_discovery_params = CGI.parse(URI.parse(auto_discovery_link[:href]).query)
 
-      expect(params).to include('private_token' => [user.private_token])
+      expect(params).to include('rss_token' => [user.rss_token])
       expect(params).to include('milestone_title' => [milestone.title])
       expect(params).to include('assignee_id' => [user.id.to_s])
-      expect(auto_discovery_params).to include('private_token' => [user.private_token])
+      expect(auto_discovery_params).to include('rss_token' => [user.rss_token])
       expect(auto_discovery_params).to include('milestone_title' => [milestone.title])
       expect(auto_discovery_params).to include('assignee_id' => [user.id.to_s])
     end
@@ -825,10 +825,10 @@ describe 'Filter issues', js: true, feature: true do
       auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
       auto_discovery_params = CGI.parse(URI.parse(auto_discovery_link[:href]).query)
 
-      expect(params).to include('private_token' => [user.private_token])
+      expect(params).to include('rss_token' => [user.rss_token])
       expect(params).to include('milestone_title' => [milestone.title])
       expect(params).to include('assignee_id' => [user.id.to_s])
-      expect(auto_discovery_params).to include('private_token' => [user.private_token])
+      expect(auto_discovery_params).to include('rss_token' => [user.rss_token])
       expect(auto_discovery_params).to include('milestone_title' => [milestone.title])
       expect(auto_discovery_params).to include('assignee_id' => [user.id.to_s])
     end

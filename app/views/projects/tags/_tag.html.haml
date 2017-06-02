@@ -2,10 +2,9 @@
 - release = @releases.find { |release| release.tag == tag.name }
 %li.flex-row
   .row-main-content.str-truncated
-    = link_to namespace_project_tag_path(@project.namespace, @project, tag.name) do
-      %span.item-title
-        = icon('tag')
-        = tag.name
+    = link_to namespace_project_tag_path(@project.namespace, @project, tag.name), class: 'item-title ref-name' do
+      = icon('tag')
+      = tag.name
 
     - if protected_tag?(@project, tag)
       %span.label.label-success

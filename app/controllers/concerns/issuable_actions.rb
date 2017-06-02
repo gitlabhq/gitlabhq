@@ -14,7 +14,16 @@ module IssuableActions
 
     name = issuable.human_class_name
     flash[:notice] = "The #{name} was successfully deleted."
-    redirect_to polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable.class])
+    index_path = polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable.class])
+
+    respond_to do |format|
+      format.html { redirect_to index_path }
+      format.json do
+        render json: {
+          web_url: index_path
+        }
+      end
+    end
   end
 
   def bulk_update
@@ -60,7 +69,7 @@ module IssuableActions
   end
 
   def bulk_update_params
-    params.require(:update).permit(
+    permitted_keys = [
       :issuable_ids,
       :assignee_id,
       :milestone_id,
@@ -69,7 +78,15 @@ module IssuableActions
       label_ids: [],
       add_label_ids: [],
       remove_label_ids: []
-    )
+    ]
+
+    if resource_name == 'issue'
+      permitted_keys << { assignee_ids: [] }
+    else
+      permitted_keys.unshift(:assignee_id)
+    end
+
+    params.require(:update).permit(permitted_keys)
   end
 
   def resource_name

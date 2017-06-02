@@ -42,12 +42,19 @@
 - [Sidekiq debugging](sidekiq_debugging.md)
 - [Object state models](object_state_models.md)
 - [Building a package for testing purposes](build_test_package.md)
+- [Manage feature flags](feature_flags.md)
 
 ## Databases
 
 - [What requires downtime?](what_requires_downtime.md)
 - [Adding database indexes](adding_database_indexes.md)
 - [Post Deployment Migrations](post_deployment_migrations.md)
+- [Foreign Keys & Associations](foreign_keys.md)
+- [Serializing Data](serializing_data.md)
+
+## i18n
+
+- [Internationalization for GitLab](i18n_guide.md)
 
 ## Compliance
 

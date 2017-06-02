@@ -12,7 +12,6 @@ RSpec.configure do |config|
   config.shared_context_metadata_behavior = :apply_to_host_groups
   config.disable_monkey_patching!
   config.expose_dsl_globally = true
-  config.warnings = true
   config.profile_examples = 10
   config.order = :random
   Kernel.srand config.seed

@@ -12,6 +12,11 @@ class Snippet < ActiveRecord::Base
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :content
 
+  # Aliases to make application_helper#edited_time_ago_with_tooltip helper work properly with snippets.
+  # See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/10392/diffs#note_28719102
+  alias_attribute :last_edited_at, :updated_at
+  alias_attribute :last_edited_by, :updated_by
+
   # If file_name changes, it invalidates content
   alias_method :default_content_html_invalidator, :content_html_invalidated?
   def content_html_invalidated?
@@ -146,19 +151,6 @@ class Snippet < ActiveRecord::Base
       pattern = "%#{query}%"
 
       where(table[:content].matches(pattern))
-    end
-
-    def accessible_to(user)
-      return are_public unless user.present?
-      return all if user.admin?
-
-      where(
-        'visibility_level IN (:visibility_levels)
-         OR author_id = :author_id
-         OR project_id IN (:project_ids)',
-         visibility_levels: [Snippet::PUBLIC, Snippet::INTERNAL],
-         author_id: user.id,
-         project_ids: user.authorized_projects.select(:id))
     end
   end
 end

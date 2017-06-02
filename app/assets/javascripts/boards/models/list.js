@@ -25,7 +25,9 @@ class List {
     }
 
     if (this.type !== 'blank' && this.id) {
-      this.getIssues();
+      this.getIssues().catch(() => {
+        // TODO: handle request error
+      });
     }
   }
 
@@ -52,11 +54,17 @@ class List {
     gl.issueBoards.BoardsStore.state.lists.splice(index, 1);
     gl.issueBoards.BoardsStore.updateNewListDropdown(this.id);
 
-    gl.boardService.destroyList(this.id);
+    gl.boardService.destroyList(this.id)
+      .catch(() => {
+        // TODO: handle request error
+      });
   }
 
   update () {
-    gl.boardService.updateList(this.id, this.position);
+    gl.boardService.updateList(this.id, this.position)
+      .catch(() => {
+        // TODO: handle request error
+      });
   }
 
   nextPage () {
@@ -146,11 +154,17 @@ class List {
     this.issues.splice(oldIndex, 1);
     this.issues.splice(newIndex, 0, issue);
 
-    gl.boardService.moveIssue(issue.id, null, null, moveBeforeIid, moveAfterIid);
+    gl.boardService.moveIssue(issue.id, null, null, moveBeforeIid, moveAfterIid)
+      .catch(() => {
+        // TODO: handle request error
+      });
   }
 
   updateIssueLabel(issue, listFrom, moveBeforeIid, moveAfterIid) {
-    gl.boardService.moveIssue(issue.id, listFrom.id, this.id, moveBeforeIid, moveAfterIid);
+    gl.boardService.moveIssue(issue.id, listFrom.id, this.id, moveBeforeIid, moveAfterIid)
+      .catch(() => {
+        // TODO: handle request error
+      });
   }
 
   findIssue (id) {

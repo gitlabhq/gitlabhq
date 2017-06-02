@@ -15,6 +15,10 @@ When you push a commit to either the gitlab-ce or gitlab-ee project, the
 pipeline for that commit will have a `build-package` manual action you can
 trigger.
 
+![Manual actions](img/trigger_ss1.png)
+
+![Build package manual action](img/trigger_ss2.png)
+
 ## Specifying versions of components
 
 If you want to create a package from a specific branch, commit or tag of any of

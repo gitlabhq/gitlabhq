@@ -1,4 +1,5 @@
 import commitIconSvg from 'icons/_icon_commit.svg';
+import userAvatarLink from './user_avatar/user_avatar_link.vue';
 
 export default {
   props: {
@@ -110,6 +111,9 @@ export default {
     return { commitIconSvg };
   },
 
+  components: {
+    userAvatarLink,
+  },
   template: `
     <div class="branch-commit">
 
@@ -119,30 +123,28 @@ export default {
       </div>
 
       <a v-if="hasCommitRef"
-        class="monospace branch-name"
+        class="ref-name"
         :href="commitRef.ref_url">
         {{commitRef.name}}
       </a>
 
       <div v-html="commitIconSvg" class="commit-icon js-commit-icon"></div>
 
-      <a class="commit-id monospace"
+      <a class="commit-sha"
         :href="commitUrl">
         {{shortSha}}
       </a>
 
       <p class="commit-title">
         <span v-if="title">
-          <a v-if="hasAuthor"
+          <user-avatar-link
+            v-if="hasAuthor"
             class="avatar-image-container"
-            :href="author.web_url">
-            <img
-              class="avatar has-tooltip s20"
-              :src="author.avatar_url"
-              :alt="userImageAltDescription"
-              :title="author.username" />
-          </a>
-
+            :link-href="author.web_url"
+            :img-src="author.avatar_url"
+            :img-alt="userImageAltDescription"
+            :tooltip-text="author.username"
+          />
           <a class="commit-row-message"
             :href="commitUrl">
             {{title}}

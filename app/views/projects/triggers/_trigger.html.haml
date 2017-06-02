@@ -29,12 +29,6 @@
     - else
       Never
 
-  %td
-    - if trigger.trigger_schedule&.active?
-      = trigger.trigger_schedule.real_next_run
-    - else
-      Never
-
   %td.text-right.trigger-actions
     - take_ownership_confirmation = "By taking ownership you will bind this trigger to your user account. With this the trigger will have access to all your projects as if it was you. Are you sure?"
     - revoke_trigger_confirmation = "By revoking a trigger you will break any processes making use of it. Are you sure?"

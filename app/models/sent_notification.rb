@@ -1,5 +1,5 @@
 class SentNotification < ActiveRecord::Base
-  serialize :position, Gitlab::Diff::Position
+  serialize :position, Gitlab::Diff::Position # rubocop:disable Cop/ActiverecordSerialize
 
   belongs_to :project
   belongs_to :noteable, polymorphic: true
@@ -39,7 +39,7 @@ class SentNotification < ActiveRecord::Base
 
         noteable_type: noteable.class.name,
         noteable_id: noteable_id,
-        commit_id: commit_id,
+        commit_id: commit_id
       )
 
       create(attrs)

@@ -168,7 +168,6 @@
 
 .avatar-cell {
   width: 46px;
-  padding-left: 10px;
 
   img {
     margin-right: 0;
@@ -180,7 +179,6 @@
   justify-content: space-between;
   align-items: flex-start;
   flex-grow: 1;
-  padding-left: 10px;
 
   .merge-request-branches & {
     flex-direction: column;
@@ -213,14 +211,13 @@
       margin-left: $gl-padding;
     }
   }
-}
 
-.commit-short-id {
-  @include gl-link-hover-focus-state;
-  font-family: $monospace_font;
-  font-weight: 600;
-  font-size: $gl-font-size;
-  margin-left: $gl-padding;
+  .commit-sha {
+    @include gl-link-hover-focus-state;
+    font-weight: 600;
+    font-size: $gl-font-size;
+    margin-left: $gl-padding;
+  }
 }
 
 .commit,
@@ -281,7 +278,7 @@
     }
   }
 
-  .commit-id {
+  .commit-sha {
     color: $gl-link-color;
     @include gl-link-hover-focus-state;
   }

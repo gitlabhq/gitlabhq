@@ -1,9 +1,10 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-param-reassign, no-cond-assign, comma-dangle, no-unused-expressions, prefer-template, max-len */
-/* global timeago */
-/* global dateFormat */
 
-window.timeago = require('timeago.js');
-window.dateFormat = require('vendor/date.format');
+import timeago from 'timeago.js';
+import dateFormat from 'vendor/date.format';
+
+window.timeago = timeago;
+window.dateFormat = dateFormat;
 
 (function() {
   (function(w) {
@@ -101,8 +102,7 @@ window.dateFormat = require('vendor/date.format');
     };
 
     w.gl.utils.updateTimeagoText = function(el) {
-      const timeago = gl.utils.getTimeago();
-      const formattedDate = timeago.format(el.getAttribute('datetime'), 'gl_en');
+      const formattedDate = gl.utils.getTimeago().format(el.getAttribute('datetime'), 'gl_en');
 
       if (el.textContent !== formattedDate) {
         el.textContent = formattedDate;

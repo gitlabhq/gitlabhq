@@ -157,4 +157,74 @@ describe Projects::LabelsController do
       end
     end
   end
+
+  describe '#ensure_canonical_path' do
+    before do
+      sign_in(user)
+    end
+
+    context 'for a GET request' do
+      context 'when requesting the canonical path' do
+        context 'non-show path' do
+          context 'with exactly matching casing' do
+            it 'does not redirect' do
+              get :index, namespace_id: project.namespace, project_id: project.to_param
+
+              expect(response).not_to have_http_status(301)
+            end
+          end
+
+          context 'with different casing' do
+            it 'redirects to the correct casing' do
+              get :index, namespace_id: project.namespace, project_id: project.to_param.upcase
+
+              expect(response).to redirect_to(namespace_project_labels_path(project.namespace, project))
+              expect(controller).not_to set_flash[:notice]
+            end
+          end
+        end
+      end
+
+      context 'when requesting a redirected path' do
+        let!(:redirect_route) { project.redirect_routes.create(path: project.full_path + 'old') }
+
+        it 'redirects to the canonical path' do
+          get :index, namespace_id: project.namespace, project_id: project.to_param + 'old'
+
+          expect(response).to redirect_to(namespace_project_labels_path(project.namespace, project))
+          expect(controller).to set_flash[:notice].to(project_moved_message(redirect_route, project))
+        end
+      end
+    end
+  end
+
+  context 'for a non-GET request' do
+    context 'when requesting the canonical path with different casing' do
+      it 'does not 404' do
+        post :generate, namespace_id: project.namespace, project_id: project
+
+        expect(response).not_to have_http_status(404)
+      end
+
+      it 'does not redirect to the correct casing' do
+        post :generate, namespace_id: project.namespace, project_id: project
+
+        expect(response).not_to have_http_status(301)
+      end
+    end
+
+    context 'when requesting a redirected path' do
+      let!(:redirect_route) { project.redirect_routes.create(path: project.full_path + 'old') }
+
+      it 'returns not found' do
+        post :generate, namespace_id: project.namespace, project_id: project.to_param + 'old'
+
+        expect(response).to have_http_status(404)
+      end
+    end
+  end
+
+  def project_moved_message(redirect_route, project)
+    "Project '#{redirect_route.path}' was moved to '#{project.full_path}'. Please update any links and bookmarks that may still have the old path."
+  end
 end

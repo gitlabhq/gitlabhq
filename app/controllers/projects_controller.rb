@@ -220,7 +220,7 @@ class ProjectsController < Projects::ApplicationController
     branches = BranchesFinder.new(@repository, params).execute.map(&:name)
 
     options = {
-      'Branches' => branches.take(100),
+      'Branches' => branches.take(100)
     }
 
     unless @repository.tag_count.zero?
@@ -257,7 +257,7 @@ class ProjectsController < Projects::ApplicationController
   #
   # pages list order: repository readme, wiki home, issues list, customize workflow
   def render_landing_page
-    if @project.feature_available?(:repository, current_user)
+    if can?(current_user, :download_code, @project)
       return render 'projects/no_repo' unless @project.repository_exists?
       render 'projects/empty' if @project.empty_repo?
     else
@@ -364,5 +364,12 @@ class ProjectsController < Projects::ApplicationController
 
   def project_view_files_allowed?
     !project.empty_repo? && can?(current_user, :download_code, project)
+  end
+
+  def build_canonical_path(project)
+    params[:namespace_id] = project.namespace.to_param
+    params[:id] = project.to_param
+
+    url_for(params)
   end
 end

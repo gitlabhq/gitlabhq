@@ -10,21 +10,12 @@
 RSpec/BeforeAfterAll:
   Enabled: false
 
-# Offense count: 15
-# Configuration parameters: CustomIncludeMethods.
-RSpec/EmptyExampleGroup:
-  Enabled: false
-
 # Offense count: 233
 RSpec/EmptyLineAfterFinalLet:
   Enabled: false
 
 # Offense count: 167
 RSpec/EmptyLineAfterSubject:
-  Enabled: false
-
-# Offense count: 3
-RSpec/ExpectOutput:
   Enabled: false
 
 # Offense count: 72
@@ -367,13 +358,6 @@ Style/SymbolProc:
 # Configuration parameters: EnforcedStyle, SupportedStyles, AllowSafeAssignment.
 # SupportedStyles: require_parentheses, require_no_parentheses, require_parentheses_when_complex
 Style/TernaryParentheses:
-  Enabled: false
-
-# Offense count: 53
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyleForMultiline, SupportedStylesForMultiline.
-# SupportedStylesForMultiline: comma, consistent_comma, no_comma
-Style/TrailingCommaInArguments:
   Enabled: false
 
 # Offense count: 18

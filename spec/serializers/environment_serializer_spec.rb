@@ -6,7 +6,7 @@ describe EnvironmentSerializer do
 
   let(:json) do
     described_class
-      .new(user: user, project: project)
+      .new(current_user: user, project: project)
       .represent(resource)
   end
 

@@ -3,6 +3,7 @@ require 'spec_helper'
 describe SlashCommands::InterpretService, services: true do
   let(:project) { create(:empty_project, :public) }
   let(:developer) { create(:user) }
+  let(:developer2) { create(:user) }
   let(:issue) { create(:issue, project: project) }
   let(:milestone) { create(:milestone, project: project, title: '9.10') }
   let(:inprogress) { create(:label, project: project, title: 'In Progress') }
@@ -39,23 +40,6 @@ describe SlashCommands::InterpretService, services: true do
         _, updates = service.execute(content, issuable)
 
         expect(updates).to eq(title: 'A brand new title')
-      end
-    end
-
-    shared_examples 'assign command' do
-      it 'fetches assignee and populates assignee_id if content contains /assign' do
-        _, updates = service.execute(content, issuable)
-
-        expect(updates).to eq(assignee_id: developer.id)
-      end
-    end
-
-    shared_examples 'unassign command' do
-      it 'populates assignee_id: nil if content contains /unassign' do
-        issuable.update!(assignee_id: developer.id)
-        _, updates = service.execute(content, issuable)
-
-        expect(updates).to eq(assignee_id: nil)
       end
     end
 
@@ -371,14 +355,46 @@ describe SlashCommands::InterpretService, services: true do
       let(:issuable) { issue }
     end
 
-    it_behaves_like 'assign command' do
+    context 'assign command' do
       let(:content) { "/assign @#{developer.username}" }
-      let(:issuable) { issue }
+
+      context 'Issue' do
+        it 'fetches assignee and populates assignee_id if content contains /assign' do
+          _, updates = service.execute(content, issue)
+
+          expect(updates).to eq(assignee_ids: [developer.id])
+        end
+      end
+
+      context 'Merge Request' do
+        it 'fetches assignee and populates assignee_id if content contains /assign' do
+          _, updates = service.execute(content, merge_request)
+
+          expect(updates).to eq(assignee_id: developer.id)
+        end
+      end
     end
 
-    it_behaves_like 'assign command' do
-      let(:content) { "/assign @#{developer.username}" }
-      let(:issuable) { merge_request }
+    context 'assign command with multiple assignees' do
+      let(:content) { "/assign @#{developer.username} @#{developer2.username}" }
+
+      before{ project.team << [developer2, :developer] }
+
+      context 'Issue' do
+        it 'fetches assignee and populates assignee_id if content contains /assign' do
+          _, updates = service.execute(content, issue)
+
+          expect(updates[:assignee_ids]).to match_array([developer.id, developer2.id])
+        end
+      end
+
+      context 'Merge Request' do
+        it 'fetches assignee and populates assignee_id if content contains /assign' do
+          _, updates = service.execute(content, merge_request)
+
+          expect(updates).to eq(assignee_id: developer.id)
+        end
+      end
     end
 
     it_behaves_like 'empty command' do
@@ -391,14 +407,26 @@ describe SlashCommands::InterpretService, services: true do
       let(:issuable) { issue }
     end
 
-    it_behaves_like 'unassign command' do
+    context 'unassign command' do
       let(:content) { '/unassign' }
-      let(:issuable) { issue }
-    end
 
-    it_behaves_like 'unassign command' do
-      let(:content) { '/unassign' }
-      let(:issuable) { merge_request }
+      context 'Issue' do
+        it 'populates assignee_ids: [] if content contains /unassign' do
+          issue.update(assignee_ids: [developer.id])
+          _, updates = service.execute(content, issue)
+
+          expect(updates).to eq(assignee_ids: [])
+        end
+      end
+
+      context 'Merge Request' do
+        it 'populates assignee_id: nil if content contains /unassign' do
+          merge_request.update(assignee_id: developer.id)
+          _, updates = service.execute(content, merge_request)
+
+          expect(updates).to eq(assignee_id: nil)
+        end
+      end
     end
 
     it_behaves_like 'milestone command' do
@@ -846,7 +874,7 @@ describe SlashCommands::InterpretService, services: true do
 
     describe 'unassign command' do
       let(:content) { '/unassign' }
-      let(:issue) { create(:issue, project: project, assignee: developer) }
+      let(:issue) { create(:issue, project: project, assignees: [developer]) }
 
       it 'includes current assignee reference' do
         _, explanations = service.explain(content, issue)

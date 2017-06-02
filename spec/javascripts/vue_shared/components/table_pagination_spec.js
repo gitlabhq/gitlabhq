@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import paginationComp from '~/vue_shared/components/table_pagination';
+import paginationComp from '~/vue_shared/components/table_pagination.vue';
 import '~/lib/utils/common_utils';
 
 describe('Pagination component', () => {

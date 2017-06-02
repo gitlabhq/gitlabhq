@@ -22,8 +22,6 @@
                 %th
                   %strong Last used
                 %th
-                  %strong Next run at
-                %th
               = render partial: 'projects/triggers/trigger', collection: @triggers, as: :trigger
         - else
           %p.settings-message.text-center.append-bottom-default

@@ -12,9 +12,9 @@
   - if current_user
     .award-menu-holder.js-award-holder
       %button.btn.award-control.has-tooltip.js-add-award{ type: 'button',
-        'aria-label': 'Add emoji',
+        'aria-label': 'Add reaction',
         class: ("js-user-authored" if user_authored),
-        data: { title: 'Add emoji', placement: "bottom" } }
+        data: { title: 'Add reaction', placement: "bottom" } }
         %span{ class: "award-control-icon award-control-icon-neutral" }= custom_icon('emoji_slightly_smiling_face')
         %span{ class: "award-control-icon award-control-icon-positive" }= custom_icon('emoji_smiley')
         %span{ class: "award-control-icon award-control-icon-super-positive" }= custom_icon('emoji_smile')

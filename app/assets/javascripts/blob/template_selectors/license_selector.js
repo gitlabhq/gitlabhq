@@ -1,4 +1,4 @@
-/* global Api */
+import Api from '../../api';
 
 import FileTemplateSelector from '../file_template_selector';
 
@@ -24,13 +24,22 @@ export default class BlobLicenseSelector extends FileTemplateSelector {
       search: {
         fields: ['name'],
       },
-      clicked: (query, el, e) => {
+      clicked: (options) => {
+        const { e } = options;
+        const el = options.$el;
+        const query = options.selectedObj;
+
         const data = {
           project: this.$dropdown.data('project'),
           fullname: this.$dropdown.data('fullname'),
         };
 
-        this.reportSelection(query.id, el, e, data);
+        this.reportSelection({
+          query: query.id,
+          el,
+          e,
+          data,
+        });
       },
       text: item => item.name,
     });

@@ -4,12 +4,8 @@
   color: $gl-text-color;
   line-height: 34px;
 
-  .author {
-    color: $gl-text-color;
+  a {
     @include gl-link-hover-focus-state;
-  }
-
-  .identifier {
     color: $gl-text-color;
   }
 

@@ -1,4 +1,4 @@
-# Users
+# Users API
 
 ## List users
 

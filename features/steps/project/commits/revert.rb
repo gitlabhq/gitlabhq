@@ -10,6 +10,7 @@ class Spinach::Features::RevertCommits < Spinach::FeatureSteps
   end
 
   step 'I click on the revert button' do
+    find(".header-action-buttons .dropdown").click
     find("a[href='#modal-revert-commit']").click
   end
 

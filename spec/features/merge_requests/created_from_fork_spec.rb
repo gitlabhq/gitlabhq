@@ -31,7 +31,7 @@ feature 'Merge request created from fork' do
       fork_project.destroy!
     end
 
-    scenario 'user can access merge request' do
+    scenario 'user can access merge request', js: true do
       visit_merge_request(merge_request)
 
       expect(page).to have_content 'Test merge request'

@@ -35,7 +35,8 @@ class ProtectedBranchDropdown {
         return _.escape(protectedBranch.id);
       },
       onFilter: this.toggleCreateNewButton.bind(this),
-      clicked: (item, $el, e) => {
+      clicked: (options) => {
+        const { $el, e } = options;
         e.preventDefault();
         this.onSelect();
       }

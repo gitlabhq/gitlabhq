@@ -8,13 +8,22 @@ export default {
       type: Array,
       required: true,
     },
+    isLocalStorageAvailable: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    allowedKeys: {
+      type: Array,
+      required: true,
+    },
   },
 
   computed: {
     processedItems() {
       return this.items.map((item) => {
         const { tokens, searchToken }
-          = gl.FilteredSearchTokenizer.processTokens(item);
+          = gl.FilteredSearchTokenizer.processTokens(item, this.allowedKeys);
 
         const resultantTokens = tokens.map(token => ({
           prefix: `${token.key}:`,
@@ -47,7 +56,12 @@ export default {
 
   template: `
     <div>
-      <ul v-if="hasItems">
+      <div
+        v-if="!isLocalStorageAvailable"
+        class="dropdown-info-note">
+        This feature requires local storage to be enabled
+      </div>
+      <ul v-else-if="hasItems">
         <li
           v-for="(item, index) in processedItems"
           :key="index">

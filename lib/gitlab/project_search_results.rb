@@ -82,26 +82,14 @@ module Gitlab
     private
 
     def blobs
-      @blobs ||= begin
-        blobs = project.repository.search_files_by_content(query, repository_ref).first(100)
-        found_file_names = Set.new
+      return [] unless Ability.allowed?(@current_user, :download_code, @project)
 
-        results = blobs.map do |blob|
-          blob = self.class.parse_search_result(blob)
-          found_file_names << blob.filename
-
-          [blob.filename, blob]
-        end
-
-        project.repository.search_files_by_name(query, repository_ref).first(100).each do |filename|
-          results << [filename, nil] unless found_file_names.include?(filename)
-        end
-
-        results.sort_by(&:first)
-      end
+      @blobs ||= Gitlab::FileFinder.new(project, repository_ref).find(query)
     end
 
     def wiki_blobs
+      return [] unless Ability.allowed?(@current_user, :read_wiki, @project)
+
       @wiki_blobs ||= begin
         if project.wiki_enabled? && query.present?
           project_wiki = ProjectWiki.new(project)

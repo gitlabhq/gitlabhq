@@ -1,20 +1,49 @@
 import Vue from 'vue';
-import IssueTitle from './issue_title.vue';
+import eventHub from './event_hub';
+import issuableApp from './components/app.vue';
 import '../vue_shared/vue_resource_interceptor';
 
-(() => {
-  const issueTitleData = document.querySelector('.issue-title-data').dataset;
-  const { initialTitle, endpoint } = issueTitleData;
+document.addEventListener('DOMContentLoaded', () => {
+  const initialDataEl = document.getElementById('js-issuable-app-initial-data');
+  const initialData = JSON.parse(initialDataEl.innerHTML.replace(/&quot;/g, '"'));
 
-  const vm = new Vue({
-    el: '.issue-title-entrypoint',
-    render: createElement => createElement(IssueTitle, {
-      props: {
-        initialTitle,
-        endpoint,
-      },
-    }),
+  $('.issuable-edit').on('click', (e) => {
+    e.preventDefault();
+
+    eventHub.$emit('open.form');
   });
 
-  return vm;
-})();
+  return new Vue({
+    el: document.getElementById('js-issuable-app'),
+    components: {
+      issuableApp,
+    },
+    data() {
+      return {
+        ...initialData,
+      };
+    },
+    render(createElement) {
+      return createElement('issuable-app', {
+        props: {
+          canUpdate: this.canUpdate,
+          canDestroy: this.canDestroy,
+          canMove: this.canMove,
+          endpoint: this.endpoint,
+          issuableRef: this.issuableRef,
+          initialTitleHtml: this.initialTitleHtml,
+          initialTitleText: this.initialTitleText,
+          initialDescriptionHtml: this.initialDescriptionHtml,
+          initialDescriptionText: this.initialDescriptionText,
+          issuableTemplates: this.issuableTemplates,
+          isConfidential: this.isConfidential,
+          markdownPreviewUrl: this.markdownPreviewUrl,
+          markdownDocs: this.markdownDocs,
+          projectPath: this.projectPath,
+          projectNamespace: this.projectNamespace,
+          projectsAutocompleteUrl: this.projectsAutocompleteUrl,
+        },
+      });
+    },
+  });
+});

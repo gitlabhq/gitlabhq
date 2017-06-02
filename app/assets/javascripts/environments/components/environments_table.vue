@@ -3,10 +3,12 @@
  * Render environments table.
  */
 import EnvironmentTableRowComponent from './environment_item.vue';
+import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
 export default {
   components: {
     'environment-item': EnvironmentTableRowComponent,
+    loadingIcon,
   },
 
   props: {
@@ -77,10 +79,8 @@ export default {
 
         <template v-if="model.isFolder && model.isOpen && model.children && model.children.length > 0">
           <tr v-if="isLoadingFolderContent">
-            <td colspan="6" class="text-center">
-              <i
-                class="fa fa-spin fa-spinner fa-2x"
-                aria-hidden="true" />
+            <td colspan="6">
+              <loading-icon size="2" />
             </td>
           </tr>
 

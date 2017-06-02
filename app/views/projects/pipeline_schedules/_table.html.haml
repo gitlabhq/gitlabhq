@@ -1,0 +1,12 @@
+.table-holder
+  %table.table.ci-table
+    %thead
+      %tr
+        %th Description
+        %th Target
+        %th Last Pipeline
+        %th Next Run
+        %th Owner
+        %th
+
+    = render partial: "pipeline_schedule", collection: @schedules

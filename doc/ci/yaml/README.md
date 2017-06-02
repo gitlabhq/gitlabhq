@@ -147,6 +147,10 @@ variables:
   DATABASE_URL: "postgres://postgres@postgres/my_database"
 ```
 
+>**Note:**
+Integers (as well as strings) are legal both for variable's name and value.
+Floats are not legal and cannot be used.
+
 These variables can be later used in all executed commands and scripts.
 The YAML-defined variables are also set to all created service containers,
 thus allowing to fine tune them. Variables can be also defined on a
@@ -162,7 +166,11 @@ which can be set in GitLab's UI.
 
 ### cache
 
-> Introduced in GitLab Runner v0.7.0.
+>
+**Notes:**
+- Introduced in GitLab Runner v0.7.0.
+- Prior to GitLab 9.2, caches were restored after artifacts.
+- From GitLab 9.2, caches are restored before artifacts.
 
 `cache` is used to specify a list of files and directories which should be
 cached between jobs. You can only use paths that are within the project
@@ -553,6 +561,8 @@ The above script will:
 #### Manual actions
 
 > Introduced in GitLab 8.10.
+> Blocking manual actions were introduced in GitLab 9.0
+> Protected actions were introduced in GitLab 9.2
 
 Manual actions are a special type of job that are not executed automatically;
 they need to be explicitly started by a user. Manual actions can be started
@@ -578,7 +588,10 @@ Optional manual actions have `allow_failure: true` set by default.
 
 **Statuses of optional actions do not contribute to overall pipeline status.**
 
-> Blocking manual actions were introduced in GitLab 9.0
+**Manual actions are considered to be write actions, so permissions for
+protected branches are used when user wants to trigger an action. In other
+words, in order to trigger a manual action assigned to a branch that the
+pipeline is running for, user needs to have ability to merge to this branch.**
 
 ### environment
 
@@ -764,6 +777,8 @@ as Review Apps. You can see a simple example using Review Apps at
 **Notes:**
 - Introduced in GitLab Runner v0.7.0 for non-Windows platforms.
 - Windows support was added in GitLab Runner v.1.0.0.
+- Prior to GitLab 9.2, caches were restored after artifacts.
+- From GitLab 9.2, caches are restored before artifacts.
 - Currently not all executors are supported.
 - Job artifacts are only collected for successful jobs by default.
 
@@ -1090,6 +1105,36 @@ variables:
   GIT_STRATEGY: none
 ```
 
+## Git Checkout
+
+> Introduced in GitLab Runner 9.3
+
+The `GIT_CHECKOUT` variable can be used when the `GIT_STRATEGY` is set to either
+`clone` or `fetch` to specify whether a `git checkout` should be run. If not
+specified, it defaults to true. Like `GIT_STRATEGY`, it can be set in either the
+global [`variables`](#variables) section or the [`variables`](#job-variables)
+section for individual jobs.
+
+If set to `false`, the Runner will:
+
+- when doing `fetch` - update the repository and leave working copy on
+  the current revision,
+- when doing `clone` - clone the repository and leave working copy on the
+  default branch.
+
+Having this setting set to `true` will mean that for both `clone` and `fetch`
+strategies the Runner will checkout the working copy to a revision related
+to the CI pipeline:
+
+```yaml
+variables:
+  GIT_STRATEGY: clone
+  GIT_CHECKOUT: false
+script:
+  - git checkout master
+  - git merge $CI_BUILD_REF_NAME
+```
+
 ## Git Submodule Strategy
 
 > Requires GitLab Runner v1.10+.
@@ -1147,7 +1192,7 @@ Example:
 
 ```yaml
 variables:
-  GET_SOURCES_ATTEMPTS: "3"
+  GET_SOURCES_ATTEMPTS: 3
 ```
 
 You can set them in the global [`variables`](#variables) section or the

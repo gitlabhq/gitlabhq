@@ -107,6 +107,15 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase do
         expect(new_path).to eq('the-path0')
       end
 
+      it "doesn't rename routes that start with a similar name" do
+        other_namespace = create(:namespace, path: 'the-path-but-not-really')
+        project = create(:empty_project, path: 'the-project', namespace: other_namespace)
+
+        subject.rename_path_for_routable(migration_namespace(namespace))
+
+        expect(project.route.reload.path).to eq('the-path-but-not-really/the-project')
+      end
+
       context "the-path namespace -> subgroup -> the-path0 project" do
         it "updates the route of the project correctly" do
           subgroup = create(:group, path: "subgroup", parent: namespace)

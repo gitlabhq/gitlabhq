@@ -7,7 +7,7 @@ module Gitlab
         test: :read_build,
         review: :read_merge_request,
         staging: :read_build,
-        production: :read_issue,
+        production: :read_issue
       }.freeze
 
       def self.get(*args)

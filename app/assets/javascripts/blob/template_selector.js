@@ -24,7 +24,7 @@ export default class TemplateSelector {
       search: {
         fields: ['name'],
       },
-      clicked: (item, el, e) => this.fetchFileTemplate(item, el, e),
+      clicked: options => this.fetchFileTemplate(options),
       text: item => item.name,
     });
   }
@@ -51,7 +51,10 @@ export default class TemplateSelector {
     return this.$dropdownContainer.removeClass('hidden');
   }
 
-  fetchFileTemplate(item, el, e) {
+  fetchFileTemplate(options) {
+    const { e } = options;
+    const item = options.selectedObj;
+
     e.preventDefault();
     return this.requestFile(item);
   }

@@ -146,7 +146,7 @@ private registries that could also require authentication.
 All you have to do is be explicit on the image definition in `.gitlab-ci.yml`.
 
 ```yaml
-image: my.registry.tld:5000/namepace/image:tag
+image: my.registry.tld:5000/namespace/image:tag
 ```
 
 In the example above, GitLab Runner will look at `my.registry.tld:5000` for the

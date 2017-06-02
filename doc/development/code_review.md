@@ -6,17 +6,19 @@ There are a few rules to get your merge request accepted:
 
 1. Your merge request should only be **merged by a [maintainer][team]**.
   1. If your merge request includes only backend changes [^1], it must be
-    **approved by a [backend maintainer][team]**.
+    **approved by a [backend maintainer][projects]**.
   1. If your merge request includes only frontend changes [^1], it must be
-    **approved by a [frontend maintainer][team]**.
+    **approved by a [frontend maintainer][projects]**.
   1. If your merge request includes frontend and backend changes [^1], it must
-    be **approved by a [frontend and a backend maintainer][team]**.
+    be **approved by a [frontend and a backend maintainer][projects]**.
 1. To lower the amount of merge requests maintainers need to review, you can
-  ask or assign any [reviewers][team] for a first review.
+  ask or assign any [reviewers][projects] for a first review.
   1. If you need some guidance (e.g. it's your first merge request), feel free
     to ask one of the [Merge request coaches][team].
   1. The reviewer will assign the merge request to a maintainer once the
     reviewer is satisfied with the state of the merge request.
+
+For more guidance, see [CONTRIBUTING.md](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md).
 
 ## Best practices
 
@@ -30,7 +32,7 @@ code is effective, understandable, and maintainable.
 Any developer can, and is encouraged to, perform code review on merge requests
 of colleagues and contributors. However, the final decision to accept a merge
 request is up to one the project's maintainers, denoted on the
-[team page](https://about.gitlab.com/team).
+[engineering projects][projects].
 
 ### Everyone
 
@@ -140,3 +142,6 @@ Largely based on the [thoughtbot code review guide].
 ---
 
 [Return to Development documentation](README.md)
+
+[projects]: https://about.gitlab.com/handbook/engineering/projects/
+[team]: https://about.gitlab.com/team/

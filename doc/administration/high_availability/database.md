@@ -27,7 +27,7 @@ If you use a cloud-managed service, or provide your own PostgreSQL:
    steps on the download page.
 1. Create/edit `/etc/gitlab/gitlab.rb` and use the following configuration.
    Be sure to change the `external_url` to match your eventual GitLab front-end
-   URL.
+   URL. If there is a directive listed below that you do not see in the configuration, be sure to add it.
 
     ```ruby
     external_url 'https://gitlab.example.com'
@@ -39,6 +39,8 @@ If you use a cloud-managed service, or provide your own PostgreSQL:
     unicorn['enable'] = false
     sidekiq['enable'] = false
     redis['enable'] = false
+    prometheus['enable'] = false
+    gitaly['enable'] = false
     gitlab_workhorse['enable'] = false
     mailroom['enable'] = false
 

@@ -8,8 +8,10 @@ module Ci
       end
 
       pipeline.retryable_builds.find_each do |build|
+        next unless can?(current_user, :update_build, build)
+
         Ci::RetryBuildService.new(project, current_user)
-          .reprocess(build)
+          .reprocess!(build)
       end
 
       pipeline.builds.latest.skipped.find_each do |skipped|

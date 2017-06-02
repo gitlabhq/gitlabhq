@@ -73,11 +73,11 @@ module FilteredSearchHelpers
   end
 
   def remove_recent_searches
-    execute_script('window.localStorage.removeItem(\'issue-recent-searches\');')
+    execute_script('window.localStorage.clear();')
   end
 
-  def set_recent_searches(input)
-    execute_script("window.localStorage.setItem('issue-recent-searches', '#{input}');")
+  def set_recent_searches(key, input)
+    execute_script("window.localStorage.setItem('#{key}', '#{input}');")
   end
 
   def wait_for_filtered_search(text)

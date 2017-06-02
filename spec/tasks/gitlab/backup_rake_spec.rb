@@ -236,7 +236,6 @@ describe 'gitlab:app namespace rake task' do
           'custom' => { 'path' => Settings.absolute('tmp/tests/custom_storage'), 'gitaly_address' => gitaly_address }
         }
         allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
-        Gitlab::GitalyClient.configure_channels
 
         # Create the projects now, after mocking the settings but before doing the backup
         project_a
@@ -352,7 +351,7 @@ describe 'gitlab:app namespace rake task' do
     end
 
     it 'name has human readable time' do
-      expect(@backup_tar).to match(/\d+_\d{4}_\d{2}_\d{2}_\d+\.\d+\.\d+(-pre)?_gitlab_backup.tar$/)
+      expect(@backup_tar).to match(/\d+_\d{4}_\d{2}_\d{2}_\d+\.\d+\.\d+.*_gitlab_backup.tar$/)
     end
   end
 end # gitlab:app namespace

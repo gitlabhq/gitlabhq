@@ -5,9 +5,7 @@ module Gitlab
       # Extended status used when pipeline or stage passed conditionally.
       # This means that failed jobs that are allowed to fail were present.
       #
-      class SuccessWarning < SimpleDelegator
-        include Status::Extended
-
+      class SuccessWarning < Status::Extended
         def text
           'passed'
         end

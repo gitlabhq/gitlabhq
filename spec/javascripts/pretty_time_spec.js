@@ -1,4 +1,4 @@
-require('~/lib/utils/pretty_time');
+import '~/lib/utils/pretty_time';
 
 (() => {
   const prettyTime = gl.utils.prettyTime;

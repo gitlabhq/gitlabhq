@@ -11,13 +11,13 @@ describe Milestone, 'Milestoneish' do
   let(:milestone) { create(:milestone, project: project) }
   let!(:issue) { create(:issue, project: project, milestone: milestone) }
   let!(:security_issue_1) { create(:issue, :confidential, project: project, author: author, milestone: milestone) }
-  let!(:security_issue_2) { create(:issue, :confidential, project: project, assignee: assignee, milestone: milestone) }
+  let!(:security_issue_2) { create(:issue, :confidential, project: project, assignees: [assignee], milestone: milestone) }
   let!(:closed_issue_1) { create(:issue, :closed, project: project, milestone: milestone) }
   let!(:closed_issue_2) { create(:issue, :closed, project: project, milestone: milestone) }
   let!(:closed_security_issue_1) { create(:issue, :confidential, :closed, project: project, author: author, milestone: milestone) }
-  let!(:closed_security_issue_2) { create(:issue, :confidential, :closed, project: project, assignee: assignee, milestone: milestone) }
+  let!(:closed_security_issue_2) { create(:issue, :confidential, :closed, project: project, assignees: [assignee], milestone: milestone) }
   let!(:closed_security_issue_3) { create(:issue, :confidential, :closed, project: project, author: author, milestone: milestone) }
-  let!(:closed_security_issue_4) { create(:issue, :confidential, :closed, project: project, assignee: assignee, milestone: milestone) }
+  let!(:closed_security_issue_4) { create(:issue, :confidential, :closed, project: project, assignees: [assignee], milestone: milestone) }
   let!(:merge_request) { create(:merge_request, source_project: project, target_project: project, milestone: milestone) }
 
   before do

@@ -1,3 +1,5 @@
+import AjaxCache from '~/lib/utils/ajax_cache';
+import '~/flash'; /* global Flash */
 import FilteredSearchContainer from './container';
 
 class FilteredSearchVisualTokens {
@@ -34,28 +36,69 @@ class FilteredSearchVisualTokens {
     }
   }
 
-  static createVisualTokenElementHTML() {
+  static createVisualTokenElementHTML(canEdit = true) {
+    let removeTokenMarkup = '';
+    if (canEdit) {
+      removeTokenMarkup = `
+        <div class="remove-token" role="button">
+          <i class="fa fa-close"></i>
+        </div>
+      `;
+    }
+
     return `
       <div class="selectable" role="button">
         <div class="name"></div>
         <div class="value-container">
           <div class="value"></div>
-          <div class="remove-token" role="button">
-            <i class="fa fa-close"></i>
-          </div>
+          ${removeTokenMarkup}
         </div>
       </div>
     `;
   }
 
-  static addVisualTokenElement(name, value, isSearchTerm) {
+  static updateLabelTokenColor(tokenValueContainer, tokenValue) {
+    const filteredSearchInput = FilteredSearchContainer.container.querySelector('.filtered-search');
+    const baseEndpoint = filteredSearchInput.dataset.baseEndpoint;
+    const labelsEndpoint = `${baseEndpoint}/labels.json`;
+
+    return AjaxCache.retrieve(labelsEndpoint)
+    .then((labels) => {
+      const matchingLabel = (labels || []).find(label => `~${gl.DropdownUtils.getEscapedText(label.title)}` === tokenValue);
+
+      if (!matchingLabel) {
+        return;
+      }
+
+      const tokenValueStyle = tokenValueContainer.style;
+      tokenValueStyle.backgroundColor = matchingLabel.color;
+      tokenValueStyle.color = matchingLabel.text_color;
+
+      if (matchingLabel.text_color === '#FFFFFF') {
+        const removeToken = tokenValueContainer.querySelector('.remove-token');
+        removeToken.classList.add('inverted');
+      }
+    })
+    .catch(() => new Flash('An error occurred while fetching label colors.'));
+  }
+
+  static renderVisualTokenValue(parentElement, tokenName, tokenValue) {
+    const tokenValueContainer = parentElement.querySelector('.value-container');
+    tokenValueContainer.querySelector('.value').innerText = tokenValue;
+
+    if (tokenName.toLowerCase() === 'label') {
+      FilteredSearchVisualTokens.updateLabelTokenColor(tokenValueContainer, tokenValue);
+    }
+  }
+
+  static addVisualTokenElement(name, value, isSearchTerm, canEdit) {
     const li = document.createElement('li');
     li.classList.add('js-visual-token');
     li.classList.add(isSearchTerm ? 'filtered-search-term' : 'filtered-search-token');
 
     if (value) {
-      li.innerHTML = FilteredSearchVisualTokens.createVisualTokenElementHTML();
-      li.querySelector('.value').innerText = value;
+      li.innerHTML = FilteredSearchVisualTokens.createVisualTokenElementHTML(canEdit);
+      FilteredSearchVisualTokens.renderVisualTokenValue(li, name, value);
     } else {
       li.innerHTML = '<div class="name"></div>';
     }
@@ -74,24 +117,24 @@ class FilteredSearchVisualTokens {
       const name = FilteredSearchVisualTokens.getLastTokenPartial();
       lastVisualToken.innerHTML = FilteredSearchVisualTokens.createVisualTokenElementHTML();
       lastVisualToken.querySelector('.name').innerText = name;
-      lastVisualToken.querySelector('.value').innerText = value;
+      FilteredSearchVisualTokens.renderVisualTokenValue(lastVisualToken, name, value);
     }
   }
 
-  static addFilterVisualToken(tokenName, tokenValue) {
+  static addFilterVisualToken(tokenName, tokenValue, canEdit) {
     const { lastVisualToken, isLastVisualTokenValid }
       = FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
     const addVisualTokenElement = FilteredSearchVisualTokens.addVisualTokenElement;
 
     if (isLastVisualTokenValid) {
-      addVisualTokenElement(tokenName, tokenValue, false);
+      addVisualTokenElement(tokenName, tokenValue, false, canEdit);
     } else {
       const previousTokenName = lastVisualToken.querySelector('.name').innerText;
       const tokensContainer = FilteredSearchContainer.container.querySelector('.tokens-container');
       tokensContainer.removeChild(lastVisualToken);
 
       const value = tokenValue || tokenName;
-      addVisualTokenElement(previousTokenName, value, false);
+      addVisualTokenElement(previousTokenName, value, false, canEdit);
     }
   }
 
@@ -183,6 +226,9 @@ class FilteredSearchVisualTokens {
 
   static moveInputToTheRight() {
     const input = FilteredSearchContainer.container.querySelector('.filtered-search');
+
+    if (!input) return;
+
     const inputLi = input.parentElement;
     const tokenContainer = FilteredSearchContainer.container.querySelector('.tokens-container');
 

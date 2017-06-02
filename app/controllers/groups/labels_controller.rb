@@ -15,7 +15,7 @@ class Groups::LabelsController < Groups::ApplicationController
 
       format.json do
         available_labels = LabelsFinder.new(current_user, group_id: @group.id).execute
-        render json: available_labels.as_json(only: [:id, :title, :color])
+        render json: LabelSerializer.new.represent_appearance(available_labels)
       end
     end
   end

@@ -14,7 +14,7 @@ describe Dashboard::TodosController do
   describe 'GET #index' do
     context 'when using pagination' do
       let(:last_page) { user.todos.page.total_pages }
-      let!(:issues) { create_list(:issue, 2, project: project, assignee: user) }
+      let!(:issues) { create_list(:issue, 2, project: project, assignees: [user]) }
 
       before do
         issues.each { |issue| todo_service.new_issue(issue, user) }

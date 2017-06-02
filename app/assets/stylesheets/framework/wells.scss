@@ -12,7 +12,7 @@
     }
 
     &.branch-info {
-      .monospace,
+      .commit-sha,
       .commit-info {
         margin-left: 4px;
 
@@ -24,6 +24,10 @@
             @include gl-link-hover-focus-state;
           }
         }
+      }
+
+      .ref-name {
+        font-size: 12px;
       }
     }
   }

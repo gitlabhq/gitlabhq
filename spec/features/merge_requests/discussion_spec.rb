@@ -5,7 +5,7 @@ feature 'Merge Request Discussions', feature: true do
     login_as :admin
   end
 
-  context "Diff discussions" do
+  describe "Diff discussions" do
     let(:merge_request) { create(:merge_request, importing: true) }
     let(:project) { merge_request.source_project }
     let!(:old_merge_request_diff) { merge_request.merge_request_diffs.create(diff_refs: outdated_diff_refs) }
@@ -43,9 +43,48 @@ feature 'Merge Request Discussions', feature: true do
       it 'shows a link to the outdated diff' do
         within(".discussion[data-discussion-id='#{outdated_discussion.id}']") do
           path = diffs_namespace_project_merge_request_path(project.namespace, project, merge_request, diff_id: old_merge_request_diff.id, anchor: outdated_discussion.line_code)
-          expect(page).to have_link('an outdated diff', href: path)
+          expect(page).to have_link('an old version of the diff', href: path)
         end
       end
+    end
+  end
+
+  describe 'Commit comments displayed in MR context', :js do
+    let(:merge_request) { create(:merge_request) }
+    let(:project) { merge_request.project }
+
+    shared_examples 'a functional discussion' do
+      let(:discussion_id) { note.discussion_id(merge_request) }
+
+      it 'is displayed' do
+        expect(page).to have_css(".discussion[data-discussion-id='#{discussion_id}']")
+      end
+
+      it 'can be replied to' do
+        within(".discussion[data-discussion-id='#{discussion_id}']") do
+          click_button 'Reply...'
+          fill_in 'note[note]', with: 'Test!'
+          click_button 'Comment'
+
+          expect(page).to have_css('.note', count: 2)
+        end
+      end
+    end
+
+    before(:each) do
+      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+    end
+
+    context 'a regular commit comment' do
+      let(:note) { create(:note_on_commit, project: project) }
+
+      it_behaves_like 'a functional discussion'
+    end
+
+    context 'a commit diff comment' do
+      let(:note) { create(:diff_note_on_commit, project: project) }
+
+      it_behaves_like 'a functional discussion'
     end
   end
 end

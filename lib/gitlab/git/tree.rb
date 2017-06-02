@@ -1,7 +1,7 @@
 module Gitlab
   module Git
     class Tree
-      include Gitlab::Git::EncodingHelper
+      include Gitlab::EncodingHelper
 
       attr_accessor :id, :root_id, :name, :path, :type,
         :mode, :commit_id, :submodule_url
@@ -35,7 +35,7 @@ module Gitlab
               type: entry[:type],
               mode: entry[:filemode].to_s(8),
               path: path ? File.join(path, entry[:name]) : entry[:name],
-              commit_id: sha,
+              commit_id: sha
             )
           end
         end

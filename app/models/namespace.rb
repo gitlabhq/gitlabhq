@@ -46,7 +46,7 @@ class Namespace < ActiveRecord::Base
   before_destroy(prepend: true) { prepare_for_destroy }
   after_destroy :rm_dir
 
-  scope :root, -> { where('type IS NULL') }
+  scope :for_user, -> { where('type IS NULL') }
 
   scope :with_statistics, -> do
     joins('LEFT JOIN project_statistics ps ON ps.namespace_id = namespaces.id')
@@ -56,7 +56,7 @@ class Namespace < ActiveRecord::Base
         'COALESCE(SUM(ps.storage_size), 0) AS storage_size',
         'COALESCE(SUM(ps.repository_size), 0) AS repository_size',
         'COALESCE(SUM(ps.lfs_objects_size), 0) AS lfs_objects_size',
-        'COALESCE(SUM(ps.build_artifacts_size), 0) AS build_artifacts_size',
+        'COALESCE(SUM(ps.build_artifacts_size), 0) AS build_artifacts_size'
       )
   end
 
@@ -176,26 +176,20 @@ class Namespace < ActiveRecord::Base
     projects.with_shared_runners.any?
   end
 
-  # Scopes the model on ancestors of the record
+  # Returns all the ancestors of the current namespaces.
   def ancestors
-    if parent_id
-      path = route ? route.path : full_path
-      paths = []
+    return self.class.none unless parent_id
 
-      until path.blank?
-        path = path.rpartition('/').first
-        paths << path
-      end
-
-      self.class.joins(:route).where('routes.path IN (?)', paths).reorder('routes.path ASC')
-    else
-      self.class.none
-    end
+    Gitlab::GroupHierarchy.
+      new(self.class.where(id: parent_id)).
+      base_and_ancestors
   end
 
-  # Scopes the model on direct and indirect children of the record
+  # Returns all the descendants of the current namespace.
   def descendants
-    self.class.joins(:route).merge(Route.inside_path(route.path)).reorder('routes.path ASC')
+    Gitlab::GroupHierarchy.
+      new(self.class.where(parent_id: id)).
+      base_and_descendants
   end
 
   def user_ids_for_project_authorizations

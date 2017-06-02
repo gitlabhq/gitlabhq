@@ -89,5 +89,58 @@ describe Ci::BuildPolicy, :models do
         end
       end
     end
+
+    describe 'rules for manual actions' do
+      let(:project) { create(:project) }
+
+      before do
+        project.add_developer(user)
+      end
+
+      context 'when branch build is assigned to is protected' do
+        before do
+          create(:protected_branch, :no_one_can_push,
+                 name: 'some-ref', project: project)
+        end
+
+        context 'when build is a manual action' do
+          let(:build) do
+            create(:ci_build, :manual, ref: 'some-ref', pipeline: pipeline)
+          end
+
+          it 'does not include ability to update build' do
+            expect(policies).not_to include :update_build
+          end
+        end
+
+        context 'when build is not a manual action' do
+          let(:build) do
+            create(:ci_build, ref: 'some-ref', pipeline: pipeline)
+          end
+
+          it 'includes ability to update build' do
+            expect(policies).to include :update_build
+          end
+        end
+      end
+
+      context 'when branch build is assigned to is not protected' do
+        context 'when build is a manual action' do
+          let(:build) { create(:ci_build, :manual, pipeline: pipeline) }
+
+          it 'includes ability to update build' do
+            expect(policies).to include :update_build
+          end
+        end
+
+        context 'when build is not a manual action' do
+          let(:build) { create(:ci_build, pipeline: pipeline) }
+
+          it 'includes ability to update build' do
+            expect(policies).to include :update_build
+          end
+        end
+      end
+    end
   end
 end

@@ -1,6 +1,6 @@
 /* eslint-disable comma-dangle, class-methods-use-this, max-len, space-before-function-paren, arrow-parens, no-param-reassign */
 
-require('./gl_field_error');
+import './gl_field_error';
 
 const customValidationFlag = 'gl-field-error-ignore';
 
@@ -35,6 +35,15 @@ class GlFieldErrors {
       event.preventDefault();
       event.stopPropagation();
     }
+  }
+
+  /* Public method for triggering validity updates manually  */
+  updateFormValidityState() {
+    this.state.inputs.forEach((field) => {
+      if (field.state.submitted) {
+        field.updateValidity();
+      }
+    });
   }
 
   focusOnFirstInvalid () {

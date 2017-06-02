@@ -1,6 +1,6 @@
 /* eslint-disable space-before-function-paren, no-var */
 
-require('~/extensions/array');
+import '~/extensions/array';
 
 (function() {
   describe('Array extensions', function() {
