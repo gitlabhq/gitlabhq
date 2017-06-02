@@ -2097,8 +2097,7 @@ describe MergeRequest, models: true do
   describe '#has_codeclimate_data?' do
     context 'with codeclimate artifact' do
       before do
-        artifact = double()
-        allow(artifact).to receive(:success?).and_return(true)
+        artifact = double(success?: true)
         allow(subject.head_pipeline).to receive(:codeclimate_artifact).and_return(artifact)
         allow(subject.base_pipeline).to receive(:codeclimate_artifact).and_return(artifact)
       end
