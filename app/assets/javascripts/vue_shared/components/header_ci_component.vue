@@ -1,8 +1,9 @@
 <script>
 import ciIconBadge from './ci_badge_link.vue';
+import loadingIcon from './loading_icon.vue';
 import timeagoTooltip from './time_ago_tooltip.vue';
 import tooltipMixin from '../mixins/tooltip';
-import userAvatarLink from './user_avatar/user_avatar_link.vue';
+import userAvatarImage from './user_avatar/user_avatar_image.vue';
 
 /**
  * Renders header component for job and pipeline page based on UI mockups
@@ -31,7 +32,8 @@ export default {
     },
     user: {
       type: Object,
-      required: true,
+      required: false,
+      default: () => ({}),
     },
     actions: {
       type: Array,
@@ -46,8 +48,9 @@ export default {
 
   components: {
     ciIconBadge,
+    loadingIcon,
     timeagoTooltip,
-    userAvatarLink,
+    userAvatarImage,
   },
 
   computed: {
@@ -58,13 +61,13 @@ export default {
 
   methods: {
     onClickAction(action) {
-      this.$emit('postAction', action);
+      this.$emit('actionClicked', action);
     },
   },
 };
 </script>
 <template>
-  <header class="page-content-header top-area">
+  <header class="page-content-header">
     <section class="header-main-content">
 
       <ci-icon-badge :status="status" />
@@ -79,21 +82,23 @@ export default {
 
       by
 
-      <user-avatar-link
-        :link-href="user.web_url"
-        :img-src="user.avatar_url"
-        :img-alt="userAvatarAltText"
-        :tooltip-text="user.name"
-        :img-size="24"
-        />
+      <template v-if="user">
+        <a
+          :href="user.path"
+          :title="user.email"
+          class="js-user-link commit-committer-link"
+          ref="tooltip">
 
-      <a
-        :href="user.web_url"
-        :title="user.email"
-        class="js-user-link commit-committer-link"
-        ref="tooltip">
-        {{user.name}}
-      </a>
+          <user-avatar-image
+            :img-src="user.avatar_url"
+            :img-alt="userAvatarAltText"
+            :tooltip-text="user.name"
+            :img-size="24"
+            />
+
+          {{user.name}}
+        </a>
+      </template>
     </section>
 
     <section
@@ -111,11 +116,17 @@ export default {
         <button
           v-else="action.type === 'button'"
           @click="onClickAction(action)"
+          :disabled="action.isLoading"
           :class="action.cssClass"
           type="button">
           {{action.label}}
-        </button>
 
+          <i
+            v-show="action.isLoading"
+            class="fa fa-spin fa-spinner"
+            aria-hidden="true">
+          </i>
+        </button>
       </template>
     </section>
   </header>

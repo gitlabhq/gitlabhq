@@ -109,7 +109,7 @@ export default {
     eventHub.$on('postAction', this.postAction);
   },
 
-  beforeDestroyed() {
+  beforeDestroy() {
     eventHub.$off('toggleFolder');
     eventHub.$off('postAction');
   },

@@ -24,6 +24,7 @@ describe('Commit component', () => {
         author: {
           avatar_url: 'https://gitlab.com/uploads/user/avatar/300478/avatar.png',
           web_url: 'https://gitlab.com/jschatz1',
+          path: '/jschatz1',
           username: 'jschatz1',
         },
       },
@@ -46,6 +47,7 @@ describe('Commit component', () => {
         author: {
           avatar_url: 'https://gitlab.com/uploads/user/avatar/300478/avatar.png',
           web_url: 'https://gitlab.com/jschatz1',
+          path: '/jschatz1',
           username: 'jschatz1',
         },
         commitIconSvg: '<svg></svg>',
@@ -81,7 +83,7 @@ describe('Commit component', () => {
       it('should render a link to the author profile', () => {
         expect(
           component.$el.querySelector('.commit-title .avatar-image-container').getAttribute('href'),
-        ).toEqual(props.author.web_url);
+        ).toEqual(props.author.path);
       });
 
       it('Should render the author avatar with title and alt attributes', () => {
