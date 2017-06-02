@@ -65,7 +65,8 @@ feature 'Setup Jira service', :feature, :js do
         click_button('Test settings and save changes')
         wait_for_requests
 
-        expect(page).to have_content('Test failed.Save anyway')
+        expect(find('.flash-container-page')).to have_content 'Test failed.'
+        expect(find('.flash-container-page')).to have_content 'Save anyway'
 
         find('.flash-alert .flash-action').trigger('click')
         wait_for_requests
