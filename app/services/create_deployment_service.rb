@@ -27,7 +27,7 @@ class CreateDeploymentService
   private
 
   def executable?
-    project && job.environment.present?
+    project && job.environment.present? && environment
   end
 
   def deploy

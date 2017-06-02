@@ -14,84 +14,68 @@ describe CreateDeploymentService, services: true do
 
   let(:project) { job.project }
 
+  let!(:environment) do
+    create(:environment, project: project, name: 'production')
+  end
+
   let(:service) { described_class.new(job) }
 
   describe '#execute' do
     subject { service.execute }
 
-    context 'when no environments exist' do
-      it 'does create a new environment' do
-        expect { subject }.to change { Environment.count }.by(1)
-      end
-
-      it 'does create a deployment' do
+    context 'when environment exists' do
+      it 'creates a deployment' do
         expect(subject).to be_persisted
       end
     end
 
-    context 'when environment exist' do
-      let!(:environment) { create(:environment, project: project, name: 'production') }
-
-      it 'does not create a new environment' do
-        expect { subject }.not_to change { Environment.count }
-      end
-
-      it 'does create a deployment' do
-        expect(subject).to be_persisted
-      end
-
-      context 'and start action is defined' do
-        let(:options) { { action: 'start' } }
-
-        context 'and environment is stopped' do
-          before do
-            environment.stop
-          end
-
-          it 'makes environment available' do
-            subject
-
-            expect(environment.reload).to be_available
-          end
-
-          it 'does create a deployment' do
-            expect(subject).to be_persisted
-          end
-        end
-      end
-
-      context 'and stop action is defined' do
-        let(:options) { { action: 'stop' } }
-
-        context 'and environment is available' do
-          before do
-            environment.start
-          end
-
-          it 'makes environment stopped' do
-            subject
-
-            expect(environment.reload).to be_stopped
-          end
-
-          it 'does not create a deployment' do
-            expect(subject).to be_nil
-          end
-        end
-      end
-    end
-
-    context 'for environment with invalid name' do
-      before do
-        job.update(environment: 'name,with,commas')
-      end
-
-      it 'does not create a new environment' do
-        expect { subject }.not_to change { Environment.count }
-      end
+    context 'when environment does not exist' do
+      let(:environment) {}
 
       it 'does not create a deployment' do
-        expect(subject).to be_nil
+        expect do
+          expect(subject).to be_nil
+        end.not_to change { Deployment.count }
+      end
+    end
+
+    context 'when start action is defined' do
+      let(:options) { { action: 'start' } }
+
+      context 'and environment is stopped' do
+        before do
+          environment.stop
+        end
+
+        it 'makes environment available' do
+          subject
+
+          expect(environment.reload).to be_available
+        end
+
+        it 'creates a deployment' do
+          expect(subject).to be_persisted
+        end
+      end
+    end
+
+    context 'when stop action is defined' do
+      let(:options) { { action: 'stop' } }
+
+      context 'and environment is available' do
+        before do
+          environment.start
+        end
+
+        it 'makes environment stopped' do
+          subject
+
+          expect(environment.reload).to be_stopped
+        end
+
+        it 'does not create a deployment' do
+          expect(subject).to be_nil
+        end
       end
     end
 
@@ -102,41 +86,29 @@ describe CreateDeploymentService, services: true do
       end
 
       before do
+        environment.update(name: 'review-apps/master')
         job.update(environment: 'review-apps/$CI_COMMIT_REF_NAME')
       end
 
-      it 'does create a new environment' do
-        expect { subject }.to change { Environment.count }.by(1)
+      it 'creates a new deployment' do
+        expect(subject).to be_persisted
+      end
+
+      it 'does not create a new environment' do
+        expect { subject }.not_to change { Environment.count }
+      end
+
+      it 'updates external url' do
+        subject
 
         expect(subject.environment.name).to eq('review-apps/master')
         expect(subject.environment.external_url).to eq('http://master.review-apps.gitlab.com')
       end
-
-      it 'does create a new deployment' do
-        expect(subject).to be_persisted
-      end
-
-      context 'and environment exist' do
-        let!(:environment) { create(:environment, project: project, name: 'review-apps/master') }
-
-        it 'does not create a new environment' do
-          expect { subject }.not_to change { Environment.count }
-        end
-
-        it 'updates external url' do
-          subject
-
-          expect(subject.environment.name).to eq('review-apps/master')
-          expect(subject.environment.external_url).to eq('http://master.review-apps.gitlab.com')
-        end
-
-        it 'does create a new deployment' do
-          expect(subject).to be_persisted
-        end
-      end
     end
 
     context 'when project was removed' do
+      let(:environment) {}
+
       before do
         job.update(project: nil)
       end
@@ -151,34 +123,26 @@ describe CreateDeploymentService, services: true do
   end
 
   describe 'processing of builds' do
-    let(:environment) { nil }
-
-    shared_examples 'does not create environment and deployment' do
-      it 'does not create a new environment' do
-        expect { subject }.not_to change { Environment.count }
-      end
-
+    shared_examples 'does not create deployment' do
       it 'does not create a new deployment' do
         expect { subject }.not_to change { Deployment.count }
       end
 
       it 'does not call a service' do
         expect_any_instance_of(described_class).not_to receive(:execute)
+
         subject
       end
     end
 
-    shared_examples 'does create environment and deployment' do
-      it 'does create a new environment' do
-        expect { subject }.to change { Environment.count }.by(1)
-      end
-
-      it 'does create a new deployment' do
+    shared_examples 'creates deployment' do
+      it 'creates a new deployment' do
         expect { subject }.to change { Deployment.count }.by(1)
       end
 
-      it 'does call a service' do
+      it 'calls a service' do
         expect_any_instance_of(described_class).to receive(:execute)
+
         subject
       end
 
@@ -188,7 +152,7 @@ describe CreateDeploymentService, services: true do
         expect(Deployment.last.deployable).to eq(deployable)
       end
 
-      it 'create environment has URL set' do
+      it 'updates environment URL' do
         subject
 
         expect(Deployment.last.environment.external_url).not_to be_nil
@@ -196,41 +160,39 @@ describe CreateDeploymentService, services: true do
     end
 
     context 'without environment specified' do
-      let(:build) { create(:ci_build, project: project) }
+      let(:job) { create(:ci_build) }
 
-      it_behaves_like 'does not create environment and deployment' do
-        subject { build.success }
+      it_behaves_like 'does not create deployment' do
+        subject { job.success }
       end
     end
 
     context 'when environment is specified' do
-      let(:pipeline) { create(:ci_pipeline, project: project) }
-      let(:build) { create(:ci_build, pipeline: pipeline, environment: 'production', options: options) }
+      let(:deployable) { job }
+
       let(:options) do
         { environment: { name: 'production', url: 'http://gitlab.com' } }
       end
 
-      context 'when build succeeds' do
-        it_behaves_like 'does create environment and deployment' do
-          let(:deployable) { build }
-
-          subject { build.success }
+      context 'when job succeeds' do
+        it_behaves_like 'creates deployment' do
+          subject { job.success }
         end
       end
 
-      context 'when build fails' do
-        it_behaves_like 'does not create environment and deployment' do
-          subject { build.drop }
+      context 'when job fails' do
+        it_behaves_like 'does not create deployment' do
+          subject { job.drop }
         end
       end
 
-      context 'when build is retried' do
-        it_behaves_like 'does create environment and deployment' do
+      context 'when job is retried' do
+        it_behaves_like 'creates deployment' do
           before do
             project.add_developer(user)
           end
 
-          let(:deployable) { Ci::Build.retry(build, user) }
+          let(:deployable) { Ci::Build.retry(job, user) }
 
           subject { deployable.success }
         end
