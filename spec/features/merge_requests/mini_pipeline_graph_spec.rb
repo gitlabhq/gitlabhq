@@ -12,11 +12,37 @@ feature 'Mini Pipeline Graph', :js, :feature do
     build.run
 
     login_as(user)
-    visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+    visit_merge_request
+  end
+
+  def visit_merge_request(format = :html)
+    visit namespace_project_merge_request_path(project.namespace, project, merge_request, format: format)
   end
 
   it 'should display a mini pipeline graph' do
     expect(page).to have_selector('.mr-widget-pipeline-graph')
+  end
+
+  context 'as json' do
+    let(:artifacts_file1) { fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
+    let(:artifacts_file2) { fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png') }
+
+    before do
+      create(:ci_build, pipeline: pipeline, artifacts_file: artifacts_file1)
+      create(:ci_build, pipeline: pipeline, when: 'manual')
+    end
+
+    it 'avoids repeated database queries' do
+      before = ActiveRecord::QueryRecorder.new { visit_merge_request(:json) }
+
+      create(:ci_build, pipeline: pipeline, artifacts_file: artifacts_file2)
+      create(:ci_build, pipeline: pipeline, when: 'manual')
+
+      after = ActiveRecord::QueryRecorder.new { visit_merge_request(:json) }
+
+      expect(before.count).to eq(after.count)
+      expect(before.cached_count).to eq(after.cached_count)
+    end
   end
 
   describe 'build list toggle' do
