@@ -4,6 +4,7 @@ entry.
 
 ## 9.2.4 (2017-06-02)
 
+- No changes.
 - Fix visibility when referencing snippets.
 
 ## 9.2.3 (2017-05-31)
