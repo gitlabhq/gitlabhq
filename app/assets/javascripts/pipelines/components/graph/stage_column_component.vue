@@ -8,41 +8,31 @@ export default {
       type: String,
       required: true,
     },
-
     jobs: {
       type: Array,
       required: true,
     },
-
     isFirstColumn: {
       type: Boolean,
       required: false,
       default: false,
     },
-
     stageConnectorClass: {
       type: String,
       required: false,
       default: '',
     },
   },
-
   components: {
     jobComponent,
     dropdownJobComponent,
   },
-
   methods: {
     firstJob(list) {
       return list[0];
     },
-
     jobId(job) {
       return `ci-badge-${job.name}`;
-    },
-
-    buildConnnectorClass(index) {
-      return index === 0 && !this.isFirstColumn ? 'left-connector' : '';
     },
   },
 };
@@ -60,7 +50,9 @@ export default {
           v-for="(job, index) in jobs"
           :key="job.id"
           class="build"
-          :class="buildConnnectorClass(index)"
+          :class="{
+            'left-connector': index === 0 && !isFirstColumn
+          }"
           :id="jobId(job)">
 
           <div class="curve"></div>
