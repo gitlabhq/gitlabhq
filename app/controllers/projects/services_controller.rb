@@ -4,7 +4,7 @@ class Projects::ServicesController < Projects::ApplicationController
   # Authorize
   before_action :authorize_admin_project!
   before_action :service, only: [:edit, :update, :test]
-  before_action :build_service, only: [:update, :test]
+  before_action :update_service, only: [:update, :test]
 
   respond_to :html
 
@@ -50,7 +50,7 @@ class Projects::ServicesController < Projects::ApplicationController
     end
   end
 
-  def build_service
+  def update_service
     @service.assign_attributes(service_params[:service])
   end
 

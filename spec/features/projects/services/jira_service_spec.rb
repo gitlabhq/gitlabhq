@@ -76,7 +76,7 @@ feature 'Setup Jira service', :feature, :js do
     end
   end
 
-  describe 'user sets Jira Service but keeps it non active' do
+  describe 'user sets Jira Service but keeps it disabled' do
     context 'when Jira connection test succeeds' do
       it 'activates the JIRA service' do
         click_link('JIRA')
