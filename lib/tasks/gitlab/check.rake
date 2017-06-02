@@ -33,11 +33,11 @@ namespace :gitlab do
         SystemCheck::App::RedisVersionCheck,
         SystemCheck::App::RubyVersionCheck,
         SystemCheck::App::GitVersionCheck,
-        SystemCheck::App::ActiveUsersCheck
+        SystemCheck::App::ActiveUsersCheck,
+        SystemCheck::App::ElasticsearchCheck
       ]
 
       SystemCheck.run('GitLab', checks)
-      check_elasticsearch if current_application_settings.elasticsearch_indexing?
     end
   end
 
@@ -658,20 +658,6 @@ namespace :gitlab do
       end
     else
       puts "No ref lock files exist".color(:green)
-    end
-  end
-
-  def check_elasticsearch
-    client = Gitlab::Elastic::Client.build(current_application_settings.elasticsearch_config)
-
-    print "Elasticsearch version 5.1 - 5.3? ... "
-
-    version = Gitlab::VersionInfo.parse(client.info["version"]["number"])
-
-    if version.major == 5 && (1..3).cover?(version.minor)
-      puts "yes (#{version})".color(:green)
-    else
-      puts "no, you have #{version}".color(:red)
     end
   end
 
