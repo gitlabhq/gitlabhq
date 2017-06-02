@@ -157,6 +157,7 @@ var config = {
         'filtered_search',
         'issue_show',
         'merge_conflicts',
+        'monitoring',
         'notebook_viewer',
         'pdf_viewer',
         'pipelines',

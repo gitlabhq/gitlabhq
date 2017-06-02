@@ -16,22 +16,18 @@
       columnData: {
         type: Object,
         required: true,
-        default: () => ({}),
       },
       classType: {
         type: String,
         required: true,
-        default: 'col-md-6',
       },
       updateAspectRatio: {
         type: Boolean,
         required: true,
-        default: false,
       },
       deploymentData: {
         type: Array,
         required: true,
-        default: () => [],
       },
     },
     data() {
@@ -501,13 +497,11 @@
     },
 
     watch: {
-      updateAspectRatio: {
-        handler() {
-          if (this.updateAspectRatio) {
-            this.redraw();
-            eventHub.$emit('toggleAspectRatio');
-          }
-        },
+      updateAspectRatio() {
+        if (this.updateAspectRatio) {
+          this.redraw();
+          eventHub.$emit('toggleAspectRatio');
+        }
       },
     },
 
@@ -521,9 +515,14 @@
   };
 </script>
 <template>
-  <div :class="classType">
-    <h5 class="text-center">{{columnData.title}}</h5>
-    <div class="prometheus-svg-container">
+  <div 
+    :class="classType">
+    <h5 
+      class="text-center">
+        {{columnData.title}}
+    </h5>
+    <div 
+      class="prometheus-svg-container">
       <svg>
       </svg>
     </div>

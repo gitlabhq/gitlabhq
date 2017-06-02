@@ -1,8 +1,9 @@
 <script>
   /* global Flash */
+  import _ from 'underscore';
   import statusCodes from '~/lib/utils/http_status';
   import MonitoringService from '../services/monitoring_service';
-  import MonitoringRow from './monitoring_row.vue';
+  import monitoringRow from './monitoring_row.vue';
   import MonitoringStore from '../stores/monitoring_store';
   import eventHub from '../event_hub';
 
@@ -24,7 +25,6 @@
         deploymentEndpoint: metricsData.deploymentEndpoint,
         showEmptyState: true,
         backOffRequestCounter: 0,
-        service: {},
         updateAspectRatio: false,
         updatedAspectRatios: 0,
         prometheusStateContainer: $prometheusStateContainer,
@@ -32,7 +32,7 @@
     },
 
     components: {
-      'monitoring-row': MonitoringRow,
+      monitoringRow,
     },
 
     methods: {
@@ -69,20 +69,20 @@
             const prevState = this.state;
             this.state = '.js-unable-to-connect';
             this.updateState(prevState);
-            return {};
+            return false;
           }
           return resp.json();
         })
-        .then((resp) => {
-          if (resp !== {}) {
-            this.store.storeMetrics(resp.data);
+        .then((metricGroupsData) => {
+          if (metricGroupsData !== false) {
+            this.store.storeMetrics(metricGroupsData.data);
             return this.getDeploymentData();
           }
-          return {};
+          return false;
         })
         .then((deploymentData) => {
-          if (deploymentData !== {}) {
-            this.store.storeDeploymentData(deploymentData);
+          if (deploymentData !== false) {
+            this.store.storeDeploymentData(deploymentData.deployments);
             this.showEmptyState = false;
             this.updateState();
           }
@@ -97,18 +97,13 @@
 
       getDeploymentData() {
         return this.service.getDeploymentData(this.deploymentEndpoint)
-          .then(resp => resp.json().deployments)
+          .then(resp => resp.json())
           .catch(() => new Flash('Error getting deployment information.'));
       },
 
-      resizeThrottler() {
+      resize() {
         // ignore resize events as long as an actualResizeHandler execution is in the queue
-        if (!this.resizeTimeout) {
-          this.resizeTimeout = setTimeout(() => {
-            this.resizeTimeout = null;
-            this.updateAspectRatio = true;
-          }, 600);
-        }
+        this.updateAspectRatio = true;
       },
 
       toggleAspectRatio() {
@@ -126,39 +121,45 @@
       eventHub.$on('toggleAspectRatio', this.toggleAspectRatio);
     },
 
-    beforeDestroyed() {
+    beforeDestroy() {
       eventHub.$off('toggleAspectRatio');
     },
 
     mounted() {
+      const resizeThrottled = _.throttle(this.resize, 600);
       if (!this.hasMetrics) {
         const prevState = this.state;
         this.state = '.js-getting-started';
         this.updateState(prevState);
       } else {
         this.getGraphsData();
-        window.addEventListener('resize', this.resizeThrottler, false);
+        window.addEventListener('resize', resizeThrottled, false);
       }
     },
   };
 </script>
 <template>
-  <div class="prometheus-graphs" v-if="!showEmptyState">
-    <div class="row"
-      v-for="(groupData, index) in store.groups"
-    >
-      <div class="col-md-12">
-        <div class="panel panel-default prometheus-panel">
-          <div class="panel-heading">
+  <div 
+    class="prometheus-graphs" 
+    v-if="!showEmptyState">
+    <div 
+      class="row"
+      v-for="(groupData, index) in store.groups">
+      <div 
+        class="col-md-12">
+        <div 
+          class="panel panel-default prometheus-panel">
+          <div 
+            class="panel-heading">
             <h4>{{groupData.group}}</h4>
           </div>
-          <div class="panel-body">
+          <div 
+            class="panel-body">
             <monitoring-row
-              v-for="(row, index) in groupData.metrics"
-              :rowData="row"
-              :key="index"
-              :updateAspectRatio="updateAspectRatio"
-              :deploymentData="store.deploymentData"
+              v-for="(row, index) in groupData.metrics" :key="index"
+              :row-data="row"
+              :update-aspect-ratio="updateAspectRatio"
+              :deployment-data="store.deploymentData"
             />
           </div>
         </div>

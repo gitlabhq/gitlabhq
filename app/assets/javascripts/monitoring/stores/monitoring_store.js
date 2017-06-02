@@ -2,11 +2,8 @@ import _ from 'underscore';
 
 class MonitoringStore {
   constructor() {
-    if (!MonitoringStore.singleton) {
-      this.groups = [];
-      this.deploymentData = [];
-    }
-    return MonitoringStore.singleton;
+    this.groups = [];
+    this.deploymentData = [];
   }
 
   static createArrayRows(metrics = []) {
@@ -15,8 +12,9 @@ class MonitoringStore {
     let metricsRow = [];
     let index = 1;
     Object.keys(currentMetrics).forEach((key) => {
-      if (typeof currentMetrics[key].queries[0].result[0].values !== 'undefined') {
-        const literalMetrics = currentMetrics[key].queries[0].result[0].values.map(metric => ({
+      const metricValues = currentMetrics[key].queries[0].result[0].values;
+      if (metricValues != null) {
+        const literalMetrics = metricValues.map(metric => ({
           time: new Date(metric[0] * 1000),
           value: metric[1],
         }));
