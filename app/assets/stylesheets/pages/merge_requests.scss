@@ -817,32 +817,11 @@
     top: 10px;
   }
 
-  // vertically centers all children
-  > span {
-    align-self: center;
-  }
-
-  .hide-asset {
-    img {
-      display: none;
-    }
-
-    svg {
-      margin-bottom: -7px; // makes up for border removed
-      border: none;
-    }
-  }
-
   .approvers-prefix,
   .approvers-list {
+    display: flex;
+    align-items: center;
     margin-right: 5px;
-    float: left;
-  }
-
-  .approvers-list img {
-    width: 18px;
-    height: 18px;
-    margin-top: 3px;
   }
 
   .unapprove-btn {
@@ -860,18 +839,8 @@
     }
   }
 
-  // styles for approver avatar checkmark
   .approver-avatar {
     position: relative;
-    display: inline-block;
-
-    svg.avatar {
-      position: absolute;
-      top: 12%;
-      right: 4%;
-      height: 45%;
-      width: 45%;
-    }
   }
 }
 
@@ -882,8 +851,9 @@
   }
 
   .avatar {
-    margin-bottom: -2px;
-    margin-right: 3px;
+    margin-bottom: 0;
+    margin-left: 7px;
+    display: block;
   }
 }
 
@@ -902,6 +872,45 @@
   @media (max-width: $screen-md-min) {
     .mr-info-list.mr-memory-usage .legend {
       height: 80%;
+    }
+  }
+}
+
+.mr-widget-code-quality {
+  padding-top: $gl-padding-top;
+
+  .padding-left {
+    padding-left: $gl-padding;
+  }
+
+  .ci-status-icon {
+    vertical-align: sub;
+
+    svg {
+      width: 22px;
+      height: 22px;
+      margin-right: 4px;
+    }
+  }
+
+  .code-quality-container {
+    border-top: 1px solid $gray-darker;
+    border-bottom: 1px solid $gray-darker;
+    padding: $gl-padding-top;
+    background-color: $gray-light;
+
+    .mr-widget-code-quality-list {
+      list-style: none;
+      padding: 0 36px;
+      margin: 0;
+
+      li.success {
+        color: $green-500;
+      }
+
+      li.failed {
+        color: $red-500;
+      }
     }
   }
 }

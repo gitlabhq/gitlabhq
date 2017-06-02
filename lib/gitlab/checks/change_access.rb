@@ -174,6 +174,10 @@ module Gitlab
           return "Commit message does not follow the pattern '#{push_rule.commit_message_regex}'"
         end
 
+        if @branch_name && !push_rule.branch_name_allowed?(@branch_name)
+          return "Branch name does not follow the pattern '#{push_rule.branch_name_regex}'"
+        end
+
         unless push_rule.author_email_allowed?(commit.committer_email)
           return "Committer's email '#{commit.committer_email}' does not follow the pattern '#{push_rule.author_email_regex}'"
         end

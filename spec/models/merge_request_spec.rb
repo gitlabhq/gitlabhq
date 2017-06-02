@@ -1726,7 +1726,7 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe "#diff_sha_refs" do
+  describe "#diff_refs" do
     context "with diffs" do
       subject { create(:merge_request, :with_diffs) }
 
@@ -1735,7 +1735,7 @@ describe MergeRequest, models: true do
 
         expect_any_instance_of(Repository).not_to receive(:commit)
 
-        subject.diff_sha_refs
+        subject.diff_refs
       end
 
       it "returns expected diff_refs" do
@@ -1745,7 +1745,7 @@ describe MergeRequest, models: true do
           head_sha:  subject.merge_request_diff.head_commit_sha
         )
 
-        expect(subject.diff_sha_refs).to eq(expected_diff_refs)
+        expect(subject.diff_refs).to eq(expected_diff_refs)
       end
     end
   end
@@ -2063,6 +2063,50 @@ describe MergeRequest, models: true do
       it 'returns nil' do
         expect(subject.version_params_for(diff_refs)).to be_nil
       end
+    end
+  end
+
+  describe '#base_pipeline' do
+    let!(:pipeline) { create(:ci_empty_pipeline, project: subject.project, sha: subject.diff_base_sha) }
+
+    it { expect(subject.base_pipeline).to eq(pipeline) }
+  end
+
+  describe '#base_codeclimate_artifact' do
+    before do
+      allow(subject.base_pipeline).to receive(:codeclimate_artifact).
+        and_return(1)
+    end
+
+    it 'delegates to merge request diff' do
+      expect(subject.base_codeclimate_artifact).to eq(1)
+    end
+  end
+
+  describe '#head_codeclimate_artifact' do
+    before do
+      allow(subject.head_pipeline).to receive(:codeclimate_artifact).
+        and_return(1)
+    end
+
+    it 'delegates to merge request diff' do
+      expect(subject.head_codeclimate_artifact).to eq(1)
+    end
+  end
+
+  describe '#has_codeclimate_data?' do
+    context 'with codeclimate artifact' do
+      before do
+        artifact = double(success?: true)
+        allow(subject.head_pipeline).to receive(:codeclimate_artifact).and_return(artifact)
+        allow(subject.base_pipeline).to receive(:codeclimate_artifact).and_return(artifact)
+      end
+
+      it { expect(subject.has_codeclimate_data?).to be_truthy }
+    end
+
+    context 'without codeclimate artifact' do
+      it { expect(subject.has_codeclimate_data?).to be_falsey }
     end
   end
 end

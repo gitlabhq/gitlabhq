@@ -68,7 +68,7 @@ module API
 
     class ProjectPushRule < Grape::Entity
       expose :id, :project_id, :created_at
-      expose :commit_message_regex, :deny_delete_tag
+      expose :commit_message_regex, :branch_name_regex, :deny_delete_tag
       expose :member_check, :prevent_secrets, :author_email_regex
       expose :file_name_regex, :max_file_size
     end
@@ -279,7 +279,9 @@ module API
 
     class RepoDiff < Grape::Entity
       expose :old_path, :new_path, :a_mode, :b_mode, :diff
-      expose :new_file, :renamed_file, :deleted_file
+      expose :new_file?, as: :new_file
+      expose :renamed_file?, as: :renamed_file
+      expose :deleted_file?, as: :deleted_file
     end
 
     class Milestone < ProjectEntity

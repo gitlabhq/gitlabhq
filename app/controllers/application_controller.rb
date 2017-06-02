@@ -287,12 +287,8 @@ class ApplicationController < ActionController::Base
     request.base_url
   end
 
-  def set_locale
-    Gitlab::I18n.set_locale(current_user)
-
-    yield
-  ensure
-    Gitlab::I18n.reset_locale
+  def set_locale(&block)
+    Gitlab::I18n.with_user_locale(current_user, &block)
   end
 
   def sessionless_sign_in(user)

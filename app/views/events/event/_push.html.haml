@@ -7,7 +7,7 @@
   %span.pushed #{event.action_name} #{event.ref_type}
   %strong
     - commits_link = namespace_project_commits_path(project.namespace, project, event.ref_name)
-    = link_to_if project.repository.branch_exists?(event.ref_name), event.ref_name, commits_link
+    = link_to_if project.repository.branch_exists?(event.ref_name), event.ref_name, commits_link, class: 'ref-name'
 
   = render "events/event_scope", event: event
 

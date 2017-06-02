@@ -1,3 +1,4 @@
+- page_title 'Integrations'
 = render 'projects/settings/head'
 
 .row.prepend-top-default
@@ -10,4 +11,12 @@
   .col-lg-9.append-bottom-default
     = form_for [@project.namespace.becomes(Namespace), @project, @hook], as: :hook, url: namespace_project_hook_path do |f|
       = render partial: 'shared/web_hooks/form', locals: { form: f, hook: @hook }
+
       = f.submit 'Save changes', class: 'btn btn-create'
+      = link_to 'Test hook', test_namespace_project_hook_path(@project.namespace, @project, @hook), class: 'btn btn-default'
+      = link_to 'Remove', namespace_project_hook_path(@project.namespace, @project, @hook), method: :delete, class: 'btn btn-remove pull-right', data: { confirm: 'Are you sure?' }
+
+%hr
+
+= render partial: 'projects/hook_logs/index', locals: { hook: @hook, hook_logs: @hook_logs, project: @project }
+

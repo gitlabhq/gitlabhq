@@ -2,7 +2,7 @@
 
 resource :repository, only: [:create] do
   member do
-    get 'archive', constraints: { format: Gitlab::Regex.archive_formats_regex }
+    get 'archive', constraints: { format: Gitlab::PathRegex.archive_formats_regex }
   end
 end
 
@@ -24,7 +24,7 @@ scope format: false do
 
     member do
       # tree viewer logs
-      get 'logs_tree', constraints: { id: Gitlab::Regex.git_reference_regex }
+      get 'logs_tree', constraints: { id: Gitlab::PathRegex.git_reference_regex }
       # Directories with leading dots erroneously get rejected if git
       # ref regex used in constraints. Regex verification now done in controller.
       get 'logs_tree/*path', action: :logs_tree, as: :logs_file, format: false, constraints: {
@@ -34,7 +34,7 @@ scope format: false do
     end
   end
 
-  scope constraints: { id: Gitlab::Regex.git_reference_regex } do
+  scope constraints: { id: Gitlab::PathRegex.git_reference_regex } do
     resources :network, only: [:show]
 
     resources :graphs, only: [:show] do
@@ -52,7 +52,7 @@ scope format: false do
       resource :release, only: [:edit, :update]
     end
 
-    resources :protected_branches, only: [:index, :show, :create, :update, :destroy, :patch], constraints: { id: Gitlab::Regex.git_reference_regex } do
+    resources :protected_branches, only: [:index, :show, :create, :update, :destroy, :patch], constraints: { id: Gitlab::PathRegex.git_reference_regex } do
       ## EE-specific
       scope module: :protected_branches do
         resources :merge_access_levels, only: [:destroy]

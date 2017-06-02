@@ -40,7 +40,7 @@ namespace :admin do
 
   scope(path: 'groups/*id',
         controller: :groups,
-        constraints: { id: Gitlab::Regex.namespace_route_regex, format: /(html|json|atom)/ }) do
+        constraints: { id: Gitlab::PathRegex.full_namespace_route_regex, format: /(html|json|atom)/ }) do
 
     scope(as: :group) do
       put :members_update
@@ -57,6 +57,12 @@ namespace :admin do
   resources :hooks, only: [:index, :create, :edit, :update, :destroy] do
     member do
       get :test
+    end
+
+    resources :hook_logs, only: [:show] do
+      member do
+        get :retry
+      end
     end
   end
 
@@ -79,10 +85,10 @@ namespace :admin do
 
   scope(path: 'projects/*namespace_id',
         as: :namespace,
-        constraints: { namespace_id: Gitlab::Regex.namespace_route_regex }) do
+        constraints: { namespace_id: Gitlab::PathRegex.full_namespace_route_regex }) do
     resources(:projects,
               path: '/',
-              constraints: { id: Gitlab::Regex.project_route_regex },
+              constraints: { id: Gitlab::PathRegex.project_route_regex },
               only: [:show]) do
 
       member do
@@ -136,7 +142,7 @@ namespace :admin do
 
   resources :cohorts, only: :index
 
-  resources :builds, only: :index do
+  resources :jobs, only: :index do
     collection do
       post :cancel_all
     end

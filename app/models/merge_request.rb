@@ -34,6 +34,9 @@ class MergeRequest < ActiveRecord::Base
   delegate :commits, :real_size, :commits_sha, :commits_count,
     to: :merge_request_diff, prefix: nil
 
+  delegate :codeclimate_artifact, to: :head_pipeline, prefix: :head, allow_nil: true
+  delegate :codeclimate_artifact, to: :base_pipeline, prefix: :base, allow_nil: true
+
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
   attr_accessor :allow_broken
@@ -251,19 +254,6 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  # MRs created before 8.4 don't store a MergeRequestDiff#base_commit_sha,
-  # but we need to get a commit for the "View file @ ..." link by deleted files,
-  # so we find the likely one if we can't get the actual one.
-  # This will not be the actual base commit if the target branch was merged into
-  # the source branch after the merge request was created, but it is good enough
-  # for the specific purpose of linking to a commit.
-  # It is not good enough for use in `Gitlab::Git::DiffRefs`, which needs the
-  # true base commit, so we can't simply have `#diff_base_commit` fall back on
-  # this method.
-  def likely_diff_base_commit
-    first_commit.try(:parent) || first_commit
-  end
-
   def diff_start_commit
     if persisted?
       merge_request_diff.start_commit
@@ -328,21 +318,14 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def diff_refs
-    return unless diff_start_commit || diff_base_commit
-
-    Gitlab::Diff::DiffRefs.new(
-      base_sha:  diff_base_sha,
-      start_sha: diff_start_sha,
-      head_sha:  diff_head_sha
-    )
-  end
-
-  # Return diff_refs instance trying to not touch the git repository
-  def diff_sha_refs
-    if merge_request_diff && merge_request_diff.diff_refs_by_sha?
+    if persisted?
       merge_request_diff.diff_refs
     else
-      diff_refs
+      Gitlab::Diff::DiffRefs.new(
+        base_sha:  diff_base_sha,
+        start_sha: diff_start_sha,
+        head_sha:  diff_head_sha
+      )
     end
   end
 
@@ -937,7 +920,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def has_complete_diff_refs?
-    diff_sha_refs && diff_sha_refs.complete?
+    diff_refs && diff_refs.complete?
   end
 
   def update_diff_notes_positions(old_diff_refs:, new_diff_refs:, current_user: nil)
@@ -990,5 +973,14 @@ class MergeRequest < ActiveRecord::Base
     return false if last_diff_sha != diff_head_sha
 
     true
+  end
+
+  def base_pipeline
+    @base_pipeline ||= project.pipelines.find_by(sha: merge_request_diff&.base_commit_sha)
+  end
+
+  def has_codeclimate_data?
+    !!(head_codeclimate_artifact&.success? &&
+       base_codeclimate_artifact&.success?)
   end
 end

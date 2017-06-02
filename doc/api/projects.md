@@ -1263,6 +1263,7 @@ Parameters:
   "id": 1,
   "project_id": 3,
   "commit_message_regex": "Fixes \d +\",
+  "branch_name_regex": "",
   "deny_delete_tag": false,
   "created_at": "2012-10-12T17:04:47Z",
   "member_check": false,
@@ -1290,6 +1291,7 @@ Parameters:
 | `member_check` | boolean | no | Restrict commits by author (email) to existing GitLab users |
 | `prevent_secrets` | boolean | no | GitLab will reject any files that are likely to contain secrets |
 | `commit_message_regex` | string | no | All commit messages must match this, e.g. `Fixed \d+\..*` |
+| `branch_name_regex` | string | no | All branch names must match this, e.g. `(feature|hotfix)\/*` |
 | `author_email_regex` | string | no | All commit author emails must match this, e.g. `@my-company.com$` |
 | `file_name_regex` | string | no | All commited filenames must **not** match this, e.g. `(jar|exe)$` |
 | `max_file_size` | integer | no | Maximum file size (MB) |
@@ -1311,6 +1313,7 @@ Parameters:
 | `member_check` | boolean | no | Restrict commits by author (email) to existing GitLab users |
 | `prevent_secrets` | boolean | no | GitLab will reject any files that are likely to contain secrets |
 | `commit_message_regex` | string | no | All commit messages must match this, e.g. `Fixed \d+\..*` |
+| `branch_name_regex` | string | no | All branch names must match this, e.g. `(feature|hotfix)\/*` |
 | `author_email_regex` | string | no | All commit author emails must match this, e.g. `@my-company.com$` |
 | `file_name_regex` | string | no | All commited filenames must **not** match this, e.g. `(jar|exe)$` |
 | `max_file_size` | integer | no | Maximum file size (MB) |

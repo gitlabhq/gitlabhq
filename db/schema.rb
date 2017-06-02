@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170523091700) do
+ActiveRecord::Schema.define(version: 20170602003304) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -511,6 +511,7 @@ ActiveRecord::Schema.define(version: 20170523091700) do
     t.string "access_key"
     t.string "encrypted_secret_access_key"
     t.string "encrypted_secret_access_key_iv"
+    t.string "clone_url_prefix"
   end
 
   add_index "geo_nodes", ["access_key"], name: "index_geo_nodes_on_access_key", using: :btree
@@ -1228,6 +1229,7 @@ ActiveRecord::Schema.define(version: 20170523091700) do
     t.string "force_push_regex"
     t.string "delete_branch_regex"
     t.string "commit_message_regex"
+    t.string "branch_name_regex"
     t.boolean "deny_delete_tag"
     t.integer "project_id"
     t.datetime "created_at"
@@ -1598,6 +1600,23 @@ ActiveRecord::Schema.define(version: 20170523091700) do
   add_index "users_star_projects", ["project_id"], name: "index_users_star_projects_on_project_id", using: :btree
   add_index "users_star_projects", ["user_id", "project_id"], name: "index_users_star_projects_on_user_id_and_project_id", unique: true, using: :btree
 
+  create_table "web_hook_logs", force: :cascade do |t|
+    t.integer "web_hook_id", null: false
+    t.string "trigger"
+    t.string "url"
+    t.text "request_headers"
+    t.text "request_data"
+    t.text "response_headers"
+    t.text "response_body"
+    t.string "response_status"
+    t.float "execution_duration"
+    t.string "internal_error_message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "web_hook_logs", ["web_hook_id"], name: "index_web_hook_logs_on_web_hook_id", using: :btree
+
   create_table "web_hooks", force: :cascade do |t|
     t.string "url", limit: 2000
     t.integer "project_id"
@@ -1671,4 +1690,5 @@ ActiveRecord::Schema.define(version: 20170523091700) do
   add_foreign_key "timelogs", "merge_requests", name: "fk_timelogs_merge_requests_merge_request_id", on_delete: :cascade
   add_foreign_key "trending_projects", "projects", on_delete: :cascade
   add_foreign_key "u2f_registrations", "users"
+  add_foreign_key "web_hook_logs", "web_hooks", on_delete: :cascade
 end

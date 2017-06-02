@@ -22,6 +22,42 @@ describe JiraService, models: true do
 
       it { is_expected.not_to validate_presence_of(:url) }
     end
+
+    context 'validating urls' do
+      let(:service) do
+        described_class.new(
+          project: create(:empty_project),
+          active: true,
+          username: 'username',
+          password: 'test',
+          project_key: 'TEST',
+          jira_issue_transition_id: 24,
+          url: 'http://jira.test.com'
+        )
+      end
+
+      it 'is valid when all fields have required values' do
+        expect(service).to be_valid
+      end
+
+      it 'is not valid when url is not a valid url' do
+        service.url = 'not valid'
+
+        expect(service).not_to be_valid
+      end
+
+      it 'is not valid when api url is not a valid url' do
+        service.api_url = 'not valid'
+
+        expect(service).not_to be_valid
+      end
+
+      it 'is valid when api url is a valid url' do
+        service.api_url = 'http://jira.test.com/api'
+
+        expect(service).to be_valid
+      end
+    end
   end
 
   describe '#reference_pattern' do
@@ -187,22 +223,29 @@ describe JiraService, models: true do
   describe '#test_settings' do
     let(:jira_service) do
       described_class.new(
+        project: create(:project),
         url: 'http://jira.example.com',
-        username: 'gitlab_jira_username',
-        password: 'gitlab_jira_password',
+        username: 'jira_username',
+        password: 'jira_password',
         project_key: 'GitLabProject'
       )
     end
-    let(:project_url) { 'http://gitlab_jira_username:gitlab_jira_password@jira.example.com/rest/api/2/project/GitLabProject' }
 
-    before do
+    def test_settings(api_url)
+      project_url = "http://jira_username:jira_password@#{api_url}/rest/api/2/project/GitLabProject"
+
       WebMock.stub_request(:get, project_url)
+
+      jira_service.test_settings
     end
 
-    it 'tries to get JIRA project' do
-      jira_service.test_settings
+    it 'tries to get JIRA project with URL when API URL not set' do
+      test_settings('jira.example.com')
+    end
 
-      expect(WebMock).to have_requested(:get, project_url)
+    it 'tries to get JIRA project with API URL if set' do
+      jira_service.update(api_url: 'http://jira.api.com')
+      test_settings('jira.api.com')
     end
   end
 
@@ -214,42 +257,83 @@ describe JiraService, models: true do
         @jira_service = JiraService.create!(
           project: project,
           properties: {
-            url: 'http://jira.example.com/rest/api/2',
+            url: 'http://jira.example.com/web',
             username: 'mic',
             password: "password"
           }
         )
       end
-  
-      it "reset password if url changed" do
-        @jira_service.url = 'http://jira_edited.example.com/rest/api/2'
-        @jira_service.save
-        expect(@jira_service.password).to be_nil
-      end
-  
-      it "does not reset password if username changed" do
-        @jira_service.username = "some_name"
-        @jira_service.save
-        expect(@jira_service.password).to eq("password")
+
+      context 'when only web url present' do
+        it 'reset password if url changed' do
+          @jira_service.url = 'http://jira_edited.example.com/rest/api/2'
+          @jira_service.save
+
+          expect(@jira_service.password).to be_nil
+        end
+
+        it 'reset password if url not changed but api url added' do
+          @jira_service.api_url = 'http://jira_edited.example.com/rest/api/2'
+          @jira_service.save
+
+          expect(@jira_service.password).to be_nil
+        end
       end
 
-      it "does not reset password if new url is set together with password, even if it's the same password" do
+      context 'when both web and api url present' do
+        before do
+          @jira_service.api_url = 'http://jira.example.com/rest/api/2'
+          @jira_service.password = 'password'
+
+          @jira_service.save
+        end
+        it 'reset password if api url changed' do
+          @jira_service.api_url = 'http://jira_edited.example.com/rest/api/2'
+          @jira_service.save
+
+          expect(@jira_service.password).to be_nil
+        end
+
+        it 'does not reset password if url changed' do
+          @jira_service.url = 'http://jira_edited.example.com/rweb'
+          @jira_service.save
+
+          expect(@jira_service.password).to eq("password")
+        end
+
+        it 'reset password if api url set to ""' do
+          @jira_service.api_url = ''
+          @jira_service.save
+
+          expect(@jira_service.password).to be_nil
+        end
+      end
+
+      it 'does not reset password if username changed' do
+        @jira_service.username = 'some_name'
+        @jira_service.save
+
+        expect(@jira_service.password).to eq('password')
+      end
+
+      it 'does not reset password if new url is set together with password, even if it\'s the same password' do
         @jira_service.url = 'http://jira_edited.example.com/rest/api/2'
         @jira_service.password = 'password'
         @jira_service.save
-        expect(@jira_service.password).to eq("password")
-        expect(@jira_service.url).to eq("http://jira_edited.example.com/rest/api/2")
+
+        expect(@jira_service.password).to eq('password')
+        expect(@jira_service.url).to eq('http://jira_edited.example.com/rest/api/2')
       end
 
-      it "resets password if url changed, even if setter called multiple times" do
+      it 'resets password if url changed, even if setter called multiple times' do
         @jira_service.url = 'http://jira1.example.com/rest/api/2'
         @jira_service.url = 'http://jira1.example.com/rest/api/2'
         @jira_service.save
         expect(@jira_service.password).to be_nil
       end
     end
-    
-    context "when no password was previously set" do
+
+    context 'when no password was previously set' do
       before do
         @jira_service = JiraService.create(
           project: project,
@@ -260,23 +344,13 @@ describe JiraService, models: true do
         )
       end
 
-      it "saves password if new url is set together with password" do
+      it 'saves password if new url is set together with password' do
         @jira_service.url = 'http://jira_edited.example.com/rest/api/2'
         @jira_service.password = 'password'
         @jira_service.save
-        expect(@jira_service.password).to eq("password")
-        expect(@jira_service.url).to eq("http://jira_edited.example.com/rest/api/2")
+        expect(@jira_service.password).to eq('password')
+        expect(@jira_service.url).to eq('http://jira_edited.example.com/rest/api/2')
       end
-    end
-  end
-
-  describe "Validations" do
-    context "active" do
-      before do
-        subject.active = true
-      end
-
-      it { is_expected.to validate_presence_of :url }
     end
   end
 
@@ -321,9 +395,10 @@ describe JiraService, models: true do
     context 'when gitlab.yml was initialized' do
       before do
         settings = {
-          "jira" => {
-            "title" => "Jira",
-            "url" => "http://jira.sample/projects/project_a"
+          'jira' => {
+            'title' => 'Jira',
+            'url' => 'http://jira.sample/projects/project_a',
+            'api_url' => 'http://jira.sample/api'
           }
         }
         allow(Gitlab.config).to receive(:issues_tracker).and_return(settings)
@@ -335,8 +410,9 @@ describe JiraService, models: true do
       end
 
       it 'is prepopulated with the settings' do
-        expect(@service.properties["title"]).to eq('Jira')
-        expect(@service.properties["url"]).to eq('http://jira.sample/projects/project_a')
+        expect(@service.properties['title']).to eq('Jira')
+        expect(@service.properties['url']).to eq('http://jira.sample/projects/project_a')
+        expect(@service.properties['api_url']).to eq('http://jira.sample/api')
       end
     end
   end

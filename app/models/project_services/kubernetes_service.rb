@@ -77,6 +77,14 @@ class KubernetesService < DeploymentService
     ]
   end
 
+  def actual_namespace
+    if namespace.present?
+      namespace
+    else
+      default_namespace
+    end
+  end
+
   # Check we can connect to the Kubernetes API
   def test(*args)
     kubeclient = build_kubeclient!
@@ -91,7 +99,7 @@ class KubernetesService < DeploymentService
     variables = [
       { key: 'KUBE_URL', value: api_url, public: true },
       { key: 'KUBE_TOKEN', value: token, public: false },
-      { key: 'KUBE_NAMESPACE', value: namespace_variable, public: true }
+      { key: 'KUBE_NAMESPACE', value: actual_namespace, public: true }
     ]
 
     if ca_pem.present?
@@ -109,7 +117,7 @@ class KubernetesService < DeploymentService
   def terminals(environment)
     with_reactive_cache do |data|
       pods = filter_by_label(data[:pods], app: environment.slug)
-      terminals = pods.flat_map { |pod| terminals_for_pod(api_url, namespace, pod) }
+      terminals = pods.flat_map { |pod| terminals_for_pod(api_url, actual_namespace, pod) }
       terminals.each { |terminal| add_terminal_auth(terminal, terminal_auth) }
     end
   end
@@ -139,20 +147,12 @@ class KubernetesService < DeploymentService
     default_namespace || TEMPLATE_PLACEHOLDER
   end
 
-  def namespace_variable
-    if namespace.present?
-      namespace
-    else
-      default_namespace
-    end
-  end
-
   def default_namespace
     "#{project.path}-#{project.id}" if project.present?
   end
 
   def build_kubeclient!(api_path: 'api', api_version: 'v1')
-    raise "Incomplete settings" unless api_url && namespace && token
+    raise "Incomplete settings" unless api_url && actual_namespace && token
 
     ::Kubeclient::Client.new(
       join_api_url(api_path),
@@ -167,7 +167,7 @@ class KubernetesService < DeploymentService
   def read_pods
     kubeclient = build_kubeclient!
 
-    kubeclient.get_pods(namespace: namespace).as_json
+    kubeclient.get_pods(namespace: actual_namespace).as_json
   rescue KubeException => err
     raise err unless err.error_code == 404
     []
@@ -176,7 +176,7 @@ class KubernetesService < DeploymentService
   def read_deployments
     kubeclient = build_kubeclient!(api_path: 'apis/extensions', api_version: 'v1beta1')
 
-    kubeclient.get_deployments(namespace: namespace).as_json
+    kubeclient.get_deployments(namespace: actual_namespace).as_json
   rescue KubeException => err
     raise err unless err.error_code == 404
     []

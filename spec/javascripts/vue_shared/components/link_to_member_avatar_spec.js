@@ -20,6 +20,7 @@ import linkToMemberAvatar from '~/vue_shared/components/link_to_member_avatar';
 
     this.$document = $(document);
   }
+
   describe('Link To Members Components', function () {
     describe('Initialization', function () {
       beforeEach(function () {
@@ -41,19 +42,19 @@ import linkToMemberAvatar from '~/vue_shared/components/link_to_member_avatar';
         expect(this.component.$data).toBeDefined();
       });
 
-      it('should have <a> and <img> children', function () {
+      it('should have <a> and <svg> children', function () {
         const componentLink = this.component.$el.querySelector('a');
-        const componentImg = componentLink.querySelector('img');
+        const componentPlaceholder = componentLink.querySelector('svg');
 
         expect(componentLink).not.toBeNull();
-        expect(componentImg).not.toBeNull();
+        expect(componentPlaceholder).not.toBeNull();
       });
 
       it('should correctly compute computed values', function (done) {
         const correctVals = {
           disabledClass: '',
           avatarSizeClass: 's32',
-          avatarHtmlClass: 's32 avatar avatar-inline',
+          avatarHtmlClass: 's32 avatar avatar-inline avatar-placeholder',
           avatarClass: 'avatar avatar-inline s32 ',
           tooltipClass: 'has-tooltip',
           linkClass: 'author_link has-tooltip  ',

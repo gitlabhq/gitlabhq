@@ -9,8 +9,6 @@ class DashboardController < Dashboard::ApplicationController
   respond_to :html
 
   def activity
-    @last_push = current_user.recent_push
-
     respond_to do |format|
       format.html
 
