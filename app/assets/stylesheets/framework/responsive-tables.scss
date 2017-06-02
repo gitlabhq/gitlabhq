@@ -1,105 +1,103 @@
-.gl-responsive-table {
-  .gl-responsive-table-row {
-    border-bottom: 1px solid $white-normal;
+.gl-responsive-table-row {
+  border-bottom: 1px solid $white-normal;
 
-    @media (min-width: $screen-md-min) {
-      padding: 15px 0;
-      display: flex;
-      align-items: center;
-    }
-
-    @media (max-width: $screen-sm-max) {
-      margin-top: 10px;
-      border: 1px solid $border-color;
-    }
-
-    .table-section {
-      white-space: nowrap;
-
-      &.section-10 {
-        flex: 0 0 10%;
-
-        @media (min-width: $screen-md-min) {
-          max-width: 10%;
-        }
-      }
-
-      &.section-15 {
-        flex: 0 0 15%;
-
-        @media (min-width: $screen-md-min) {
-          max-width: 15%;
-        }
-      }
-
-      &.section-25 {
-        flex: 0 0 25%;
-
-        @media (min-width: $screen-md-min) {
-          max-width: 25%;
-        }
-      }
-
-      &.section-30 {
-        flex: 0 0 30%;
-
-        @media (min-width: $screen-md-min) {
-          max-width: 30%;
-        }
-      }
-
-      &:not(.environments-actions) {
-        @media (max-width: $screen-sm-max) {
-          display: flex;
-          align-self: stretch;
-          padding: 10px;
-          align-items: center;
-          height: 62px;
-
-          &:not(:first-of-type) {
-            border-top: 1px solid $white-normal;
-          }
-        }
-      }
-    }
-  }
-
-  .table-row-header {
-    font-size: 13px;
-
-    @media (max-width: $screen-sm-max) {
-      display: none;
-    }
-  }
-
-  .responsive-mobile-header {
-    color: $gl-text-color-secondary;
-    flex: 0 0 120px;
-
-    @media (min-width: $screen-md-min) {
-      display: none;
-    }
-  }
-
-  .mobile-content {
-    @media (max-width: $screen-sm-max) {
-      flex: 1;
-      text-align: right;
-    }
-  }
-
-  .flex-truncate-parent {
+  @media (min-width: $screen-md-min) {
+    padding: 15px 0;
     display: flex;
+    align-items: center;
   }
 
-  .flex-truncate-child {
-    flex: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  @media (max-width: $screen-sm-max) {
+    margin-top: 10px;
+    border: 1px solid $border-color;
+  }
 
-    @media (min-width: $screen-md-min) {
-      flex: 0 0 90%;
+  .table-section {
+    white-space: nowrap;
+
+    &.section-10 {
+      flex: 0 0 10%;
+
+      @media (min-width: $screen-md-min) {
+        max-width: 10%;
+      }
     }
+
+    &.section-15 {
+      flex: 0 0 15%;
+
+      @media (min-width: $screen-md-min) {
+        max-width: 15%;
+      }
+    }
+
+    &.section-25 {
+      flex: 0 0 25%;
+
+      @media (min-width: $screen-md-min) {
+        max-width: 25%;
+      }
+    }
+
+    &.section-30 {
+      flex: 0 0 30%;
+
+      @media (min-width: $screen-md-min) {
+        max-width: 30%;
+      }
+    }
+
+    &:not(.environments-actions) {
+      @media (max-width: $screen-sm-max) {
+        display: flex;
+        align-self: stretch;
+        padding: 10px;
+        align-items: center;
+        height: 62px;
+
+        &:not(:first-of-type) {
+          border-top: 1px solid $white-normal;
+        }
+      }
+    }
+  }
+}
+
+.table-row-header {
+  font-size: 13px;
+
+  @media (max-width: $screen-sm-max) {
+    display: none;
+  }
+}
+
+.responsive-mobile-header {
+  color: $gl-text-color-secondary;
+  flex: 0 0 120px;
+
+  @media (min-width: $screen-md-min) {
+    display: none;
+  }
+}
+
+.mobile-content {
+  @media (max-width: $screen-sm-max) {
+    flex: 1;
+    text-align: right;
+  }
+}
+
+.flex-truncate-parent {
+  display: flex;
+}
+
+.flex-truncate-child {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  @media (min-width: $screen-md-min) {
+    flex: 0 0 90%;
   }
 }

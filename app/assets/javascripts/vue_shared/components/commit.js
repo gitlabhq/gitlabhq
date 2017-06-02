@@ -128,14 +128,12 @@ export default {
         {{commitRef.name}}
       </a>
 
-      <div>
-        <div v-html="commitIconSvg" class="commit-icon js-commit-icon"></div>
+      <div v-html="commitIconSvg" class="commit-icon js-commit-icon"></div>
 
-        <a class="commit-sha"
-          :href="commitUrl">
-          {{shortSha}}
-        </a>
-      </div>
+      <a class="commit-sha"
+        :href="commitUrl">
+        {{shortSha}}
+      </a>
 
       <div class="commit-title flex-truncate-parent">
         <span v-if="title" class="flex-truncate-child">

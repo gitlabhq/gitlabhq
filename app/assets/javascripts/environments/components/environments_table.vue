@@ -45,7 +45,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-responsive-table ci-table">
+  <div class="ci-table">
     <div class="gl-responsive-table-row table-row-header">
       <div class="table-section section-10 environments-name">
         Environment
@@ -75,9 +75,7 @@ export default {
 
       <template v-if="model.isFolder && model.isOpen && model.children && model.children.length > 0">
         <div v-if="isLoadingFolderContent">
-          <div colspan="6">
-            <loading-icon size="2" />
-          </div>
+          <loading-icon size="2" />
         </div>
 
         <template v-else>
@@ -90,9 +88,7 @@ export default {
             />
 
           <div>
-            <div
-              colspan="6"
-              class="text-center prepend-top-10">
+            <div class="text-center prepend-top-10">
               <a
                 :href="folderUrl(model)"
                 class="btn btn-default">

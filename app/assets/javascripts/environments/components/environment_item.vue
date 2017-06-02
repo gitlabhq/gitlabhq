@@ -426,7 +426,8 @@ export default {
     <div class="table-section section-10">
       <div
         v-if="!model.isFolder"
-        class="responsive-mobile-header">Environment
+        class="responsive-mobile-header">
+        Environment
       </div>
       <a
         v-if="!model.isFolder"
@@ -496,7 +497,8 @@ export default {
     <div class="table-section section-25">
       <div
         v-if="!model.isFolder"
-        class="responsive-mobile-header">Commit
+        class="responsive-mobile-header">
+        Commit
       </div>
       <div
         v-if="!model.isFolder && hasLastDeploymentKey"
@@ -519,7 +521,8 @@ export default {
     <div class="table-section section-10">
       <div
         v-if="!model.isFolder"
-        class="responsive-mobile-header">Updated
+        class="responsive-mobile-header">
+        Updated
       </div>
       <span
         v-if="!model.isFolder && canShowDate"
@@ -546,25 +549,21 @@ export default {
 
         <monitoring-button-component
           v-if="monitoringUrl && canReadEnvironment"
-          class="hidden-xs hidden-sm"
           :monitoring-url="monitoringUrl"
           />
 
         <terminal-button-component
           v-if="model && model.terminal_path"
-          class="hidden-xs hidden-sm"
           :terminal-path="model.terminal_path"
           />
 
         <stop-component
           v-if="hasStopAction && canCreateDeployment"
-          class="hidden-xs hidden-sm"
           :stop-url="model.stop_path"
           />
 
         <rollback-component
           v-if="canRetry && canCreateDeployment"
-          class="hidden-xs hidden-sm"
           :is-last-deployment="isLastDeployment"
           :retry-url="retryUrl"
           />
