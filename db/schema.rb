@@ -1446,8 +1446,8 @@ ActiveRecord::Schema.define(version: 20170525174156) do
     t.string "token"
     t.boolean "pipeline_events", default: false, null: false
     t.boolean "confidential_issues_events", default: false, null: false
-    t.boolean "job_events", default: false, null: false
     t.boolean "repository_update_events", default: false, null: false
+    t.boolean "job_events", default: false, null: false
   end
 
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree

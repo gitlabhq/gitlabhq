@@ -117,6 +117,9 @@ export default {
     formState() {
       return this.store.formState;
     },
+    hasUpdated() {
+      return !!this.state.updatedAt;
+    },
   },
   components: {
     descriptionComponent,

@@ -219,7 +219,9 @@ module IssuablesHelper
       initialDescriptionText: issuable.description
     }
 
-    data.merge(updated_at_by(issue))
+    data.merge!(updated_at_by(issuable))
+
+    data.to_json
   end
 
   def updated_at_by(issuable)
