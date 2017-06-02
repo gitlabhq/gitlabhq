@@ -24,14 +24,15 @@ export default {
     ciStatus,
   },
 };
-
 </script>
 
 <template>
   <li class="linked-pipeline build">
     <div class="curve"></div>
     <div>
-      <a :href="pipelinePath" class="linked-pipeline-content">
+      <a
+         :href="pipelinePath"
+        class="linked-pipeline-content">
         <span class="linked-pipeline-status ci-status-text">
           <ci-status :status="pipelineStatus"/>
         </span>
