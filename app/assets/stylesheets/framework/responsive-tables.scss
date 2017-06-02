@@ -1,3 +1,8 @@
+@mixin flex-max-width($max) {
+  flex: 0 0 #{$max + '%'};
+  max-width: #{$max + '%'};
+}
+
 .gl-responsive-table-row {
   margin-top: 10px;
   border: 1px solid $border-color;
@@ -49,18 +54,18 @@
   }
 }
 
-.responsive-mobile-header {
+.table-mobile-header {
   color: $gl-text-color-secondary;
-  flex: 0 0 120px;
+  @include flex-max-width(40);
 
   @media (min-width: $screen-md-min) {
     display: none;
   }
 }
 
-.mobile-content {
+.table-mobile-content {
   @media (max-width: $screen-sm-max) {
-    flex: 1;
+    @include flex-max-width(60);
     text-align: right;
   }
 }

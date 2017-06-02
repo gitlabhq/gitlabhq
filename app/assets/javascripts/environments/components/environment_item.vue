@@ -426,12 +426,12 @@ export default {
     <div class="table-section section-10">
       <div
         v-if="!model.isFolder"
-        class="responsive-mobile-header">
+        class="table-mobile-header">
         Environment
       </div>
       <a
         v-if="!model.isFolder"
-        class="environment-name flex-truncate-parent mobile-content"
+        class="environment-name flex-truncate-parent table-mobile-content"
         :href="environmentPath">
         <span class="flex-truncate-child">{{model.name}}</span>
       </a>
@@ -497,12 +497,12 @@ export default {
     <div class="table-section section-25">
       <div
         v-if="!model.isFolder"
-        class="responsive-mobile-header">
+        class="table-mobile-header">
         Commit
       </div>
       <div
         v-if="!model.isFolder && hasLastDeploymentKey"
-        class="js-commit-component mobile-content">
+        class="js-commit-component table-mobile-content">
         <commit-component
           :tag="commitTag"
           :commit-ref="commitRef"
@@ -521,12 +521,12 @@ export default {
     <div class="table-section section-10">
       <div
         v-if="!model.isFolder"
-        class="responsive-mobile-header">
+        class="table-mobile-header">
         Updated
       </div>
       <span
         v-if="!model.isFolder && canShowDate"
-        class="environment-created-date-timeago mobile-content">
+        class="environment-created-date-timeago table-mobile-content">
         {{createdDate}}
       </span>
     </div>
