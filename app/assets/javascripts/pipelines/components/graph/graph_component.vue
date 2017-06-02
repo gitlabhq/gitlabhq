@@ -65,19 +65,6 @@
 
         return className;
       },
-      linkedPipelineClass(index) {
-        let className = '';
-        const isFirstStage = index === 0;
-        const isLastStage = index === this.graph.length - 1;
-
-        if (isFirstStage && this.hasTriggeredBy) {
-          className += 'has-upstream';
-        } else if (isLastStage && this.hasTriggered) {
-          className += 'has-downstream';
-        }
-
-        return className;
-      },
     },
   };
 </script>
@@ -100,11 +87,13 @@
 
       <ul
         v-if="!isLoading"
-        class="stage-column-list"
-        :class="linkedPipelinesClass">
+        class="stage-column-list">
         <stage-column-component
           v-for="(stage, index) in graph"
-          :class="linkedPipelineClass(index)"
+          :class="{
+            'has-upstream': index === 0 && hasTriggeredBy,
+            'has-downstream': index === graph.length - 1 && hasTriggered
+          }"
           :title="capitalizeStageName(stage.name)"
           :jobs="stage.groups"
           :key="stage.name"
