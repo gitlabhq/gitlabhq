@@ -1,11 +1,11 @@
 const mockTriggerers = [
-  { id: 111, path: 'hello/world/tho', project: { name: 'GitLab Shell' }, details: { status: { icon: 'icon_status_pending', group: 'pending' } } },
+  { id: 111, path: 'hello/world/tho', project: { name: 'GitLab Shell' }, details: { status: { icon: 'icon_status_pending', group: 'pending', label: 'pending' } } },
 ];
 
 const mockTriggereds = [
-  { id: 111, path: 'hello/world/tho', project: { name: 'GitLab EE' }, details: { status: { icon: 'icon_status_failed', group: 'failed' } } },
-  { id: 111, path: 'hello/world/tho', project: { name: 'Gitaly' }, details: { status: { icon: 'icon_status_pending', group: 'pending' } } },
-  { id: 111, path: 'hello/world/tho', project: { name: 'GitHub' }, details: { status: { icon: 'icon_status_success', group: 'success' } } },
+  { id: 111, path: 'hello/world/tho', project: { name: 'GitLab EE' }, details: { status: { icon: 'icon_status_failed', group: 'failed', label: 'failed' } } },
+  { id: 111, path: 'hello/world/tho', project: { name: 'Gitaly' }, details: { status: { icon: 'icon_status_pending', group: 'pending', label: 'pending' } } },
+  { id: 111, path: 'hello/world/tho', project: { name: 'GitHub' }, details: { status: { icon: 'icon_status_success', group: 'success', label: 'success' } } },
 ];
 
 export default class PipelineStore {
