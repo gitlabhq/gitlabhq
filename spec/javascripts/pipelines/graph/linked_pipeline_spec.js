@@ -70,13 +70,15 @@ describe('Linked pipeline', () => {
   });
 
   it('should correctly compute the tooltip text', () => {
-    expect(this.linkedPipeline.tooltipText).toContain(mockPipeline.projectName);
-    expect(this.linkedPipeline.tooltipText).toContain(mockPipeline.pipelineState.label);
+    expect(this.linkedPipeline.tooltipText).toContain(mockPipeline.project.name);
+    expect(this.linkedPipeline.tooltipText).toContain(mockPipeline.details.status.label);
   });
 
-  it('should set the tooltip text as the title attribute', () => {
-    const titleAttr = this.linkedPipeline.$el.querySelector('.linked-pipeline-content').getAttribute('title');
-    expect(titleAttr).toContain(mockPipeline.projectName);
-    expect(titleAttr).toContain(mockPipeline.pipelineState.label);
+  it('should render the tooltip text as the title attribute', () => {
+    const tooltipRef = this.linkedPipeline.$el.querySelector('.linked-pipeline-content');
+    const titleAttr = tooltipRef.getAttribute('data-original-title');
+
+    expect(titleAttr).toContain(mockPipeline.project.name);
+    expect(titleAttr).toContain(mockPipeline.details.status.label);
   });
 });
