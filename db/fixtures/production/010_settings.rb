@@ -1,16 +1,29 @@
-if ENV['GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN'].present?
-  settings = ApplicationSetting.current || ApplicationSetting.create_from_defaults
-  settings.set_runners_registration_token(ENV['GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN'])
-
+def save(settings, topic)
   if settings.save
-    puts "Saved Runner Registration Token".color(:green)
+    puts "Saved #{topic}".color(:green)
   else
-    puts "Could not save Runner Registration Token".color(:red)
+    puts "Could not save #{topic}".color(:red)
     puts
     settings.errors.full_messages.map do |message|
       puts "--> #{message}".color(:red)
     end
     puts
-    exit 1
+    exit(1)
+  end
+end
+
+envs = %w{ GITLAB_PROMETHEUS_METRICS_ENABLED GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN }
+
+if envs.any? {|env_name| ENV[env_name].present? }
+  settings = ApplicationSetting.current || ApplicationSetting.create_from_defaults
+  if ENV['GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN'].present?
+    settings.set_runners_registration_token(ENV['GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN'])
+    save(settings, 'Runner Registration Token')
+  end
+
+  if ENV['GITLAB_PROMETHEUS_METRICS_ENABLED'].present?
+    value = Gitlab::Utils.to_boolean(ENV['GITLAB_PROMETHEUS_METRICS_ENABLED'])
+    settings.prometheus_metrics_enabled = value
+    save(settings, 'GITLAB_PROMETHEUS_METRICS_ENABLED')
   end
 end
