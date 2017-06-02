@@ -24,6 +24,6 @@ if envs.any? {|env_name| ENV[env_name].present? }
   if ENV['GITLAB_PROMETHEUS_METRICS_ENABLED'].present?
     value = Gitlab::Utils.to_boolean(ENV['GITLAB_PROMETHEUS_METRICS_ENABLED'])
     settings.prometheus_metrics_enabled = value
-    save(settings, 'GITLAB_PROMETHEUS_METRICS_ENABLED')
+    save(settings, 'Prometheus metrics enabled flag')
   end
 end

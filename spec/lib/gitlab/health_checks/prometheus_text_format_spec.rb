@@ -11,12 +11,13 @@ describe Gitlab::HealthChecks::PrometheusTextFormat do
     end
 
     it 'marshal to text with non repeating type definition' do
-      expected = <<-EXPECTED
-# TYPE metric1 gauge
-metric1 1
-# TYPE metric2 gauge
-metric2 2
-EXPECTED
+      expected = <<-EXPECTED.strip_heredoc
+        # TYPE metric1 gauge
+        metric1 1
+        # TYPE metric2 gauge
+        metric2 2
+      EXPECTED
+
       expect(subject.marshal(sample_metrics)).to eq(expected.chomp)
     end
 
@@ -30,12 +31,12 @@ EXPECTED
       end
 
       it 'marshal to text with non repeating type definition' do
-        expected = <<-EXPECTED
-# TYPE metric1 gauge
-metric1 1
-metric1 2
-# TYPE metric2 gauge
-metric2 3
+        expected = <<-EXPECTED.strip_heredoc
+          # TYPE metric1 gauge
+          metric1 1
+          metric1 2
+          # TYPE metric2 gauge
+          metric2 3
         EXPECTED
         expect(subject.marshal(sample_metrics)).to eq(expected.chomp)
       end
