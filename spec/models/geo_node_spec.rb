@@ -54,7 +54,7 @@ describe GeoNode, type: :model do
     end
   end
 
-  context 'dependent models for GeoNode' do
+  context 'dependent models and attributes for GeoNode' do
     let(:geo_node_key_attributes) { FactoryGirl.build(:geo_node_key).attributes }
 
     context 'on initialize' do
@@ -77,10 +77,6 @@ describe GeoNode, type: :model do
         expect(node.oauth_application).to be_persisted
       end
 
-      it 'has no oauth_application if it is a primary node' do
-        expect(primary_node.oauth_application).not_to be_present
-      end
-
       it 'has a system_hook if it is a secondary node' do
         expect(node.system_hook).to be_present
       end
@@ -92,6 +88,16 @@ describe GeoNode, type: :model do
         expect(node.system_hook.push_events).to be_falsey
         expect(node.system_hook.tag_push_events).to be_falsey
         expect(node.system_hook.repository_update_events).to be_truthy
+      end
+
+      context 'when is a primary node' do
+        it 'has no oauth_application' do
+          expect(primary_node.oauth_application).not_to be_present
+        end
+
+        it 'persists current clone_url_prefix' do
+          expect(primary_node.clone_url_prefix).to be_present
+        end
       end
     end
   end
