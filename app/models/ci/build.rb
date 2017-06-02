@@ -35,6 +35,7 @@ module Ci
     scope :with_expired_artifacts, ->() { with_artifacts.where('artifacts_expire_at < ?', Time.now) }
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
     scope :manual_actions, ->() { where(when: :manual).relevant }
+    scope :codeclimate, ->() { where(name: 'codeclimate') }
 
     mount_uploader :artifacts_file, ArtifactUploader
     mount_uploader :artifacts_metadata, ArtifactUploader
@@ -444,6 +445,11 @@ module Ci
       Ci::MaskSecret.mask!(trace, project.runners_token) if project
       Ci::MaskSecret.mask!(trace, token)
       trace
+    end
+
+    def has_codeclimate_json?
+      options.dig(:artifacts, :paths) == ['codeclimate.json'] &&
+        artifacts_metadata?
     end
 
     private

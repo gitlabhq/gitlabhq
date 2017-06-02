@@ -396,6 +396,10 @@ module Ci
         .fabricate!
     end
 
+    def codeclimate_artifact
+      artifacts.codeclimate.find(&:has_codeclimate_json?)
+    end
+
     private
 
     def pipeline_data
