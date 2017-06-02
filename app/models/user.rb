@@ -10,12 +10,9 @@ class User < ActiveRecord::Base
   include Sortable
   include CaseSensitivity
   include TokenAuthenticatable
-<<<<<<< HEAD
+  include IgnorableColumn
   prepend EE::GeoAwareAvatar
   prepend EE::User
-=======
-  include IgnorableColumn
->>>>>>> upstream/master
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 

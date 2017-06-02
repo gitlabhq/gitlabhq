@@ -2,11 +2,7 @@ module Ci
   class CreatePipelineService < BaseService
     attr_reader :pipeline
 
-<<<<<<< HEAD
-    def execute(ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, mirror_update: false)
-=======
-    def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil)
->>>>>>> upstream/master
+    def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, mirror_update: false)
       @pipeline = Ci::Pipeline.new(
         source: source,
         project: project,
@@ -74,10 +70,6 @@ module Ci
       pipeline.tap(&:process!)
     end
 
-<<<<<<< HEAD
-=======
-    private
-
     def update_merge_requests_head_pipeline
       return unless pipeline.latest?
 
@@ -85,7 +77,6 @@ module Ci
         update_all(head_pipeline_id: @pipeline.id)
     end
 
->>>>>>> upstream/master
     def skip_ci?
       return false unless pipeline.git_commit_message
       pipeline.git_commit_message =~ /\[(ci[ _-]skip|skip[ _-]ci)\]/i
