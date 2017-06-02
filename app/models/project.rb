@@ -298,11 +298,10 @@ class Project < ActiveRecord::Base
 
   scope :with_builds_enabled, -> { with_feature_enabled(:builds) }
   scope :with_issues_enabled, -> { with_feature_enabled(:issues) }
-<<<<<<< HEAD
-  scope :with_wiki_enabled, -> { with_feature_enabled(:wiki) }
-=======
   scope :with_merge_requests_enabled, -> { with_feature_enabled(:merge_requests) }
->>>>>>> upstream/master
+
+  # EE
+  scope :with_wiki_enabled, -> { with_feature_enabled(:wiki) }
 
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
 
