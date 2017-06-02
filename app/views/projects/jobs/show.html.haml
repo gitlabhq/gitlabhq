@@ -64,11 +64,6 @@
             Showing last
             %span.js-truncated-info-size.truncated-info-size><
             KiB of log -
-<<<<<<< HEAD:app/views/projects/jobs/show.html.haml
-            %a.js-raw-link.raw-link{ :href => raw_namespace_project_job_path(@project.namespace, @project, @build) }>< Complete Raw
-          %code.bash.js-build-output
-          .build-loader-animation.js-build-refresh
-=======
             %a.js-raw-link.raw-link{ href: raw_namespace_project_job_path(@project.namespace, @project, @build) }>< Complete Raw
           .controllers
             - if @build.has_trace?
@@ -85,7 +80,6 @@
                         title: 'Erase Build',
                         class: 'has-tooltip js-erase-link' do
                 = icon('trash')
->>>>>>> upstream/master:app/views/projects/jobs/show.html.haml
 
             %button.js-scroll-up.btn-scroll.btn-transparent.btn-blank.has-tooltip{ type: 'button',
                     disabled: true,

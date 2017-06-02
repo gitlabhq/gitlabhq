@@ -416,11 +416,7 @@ feature 'Jobs', :feature do
           Capybara.current_session.driver.headers = { 'X-Sendfile-Type' => 'X-Sendfile' }
           build.run!
           visit namespace_project_job_path(project.namespace, project, build)
-<<<<<<< HEAD:spec/features/projects/jobs_spec.rb
-          page.within('.js-build-sidebar') { click_link 'Raw' }
-=======
           find('.js-raw-link-controller').click()
->>>>>>> upstream/master:spec/features/projects/jobs_spec.rb
         end
 
         it 'sends the right headers' do
