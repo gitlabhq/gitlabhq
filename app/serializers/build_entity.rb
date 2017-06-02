@@ -8,10 +8,8 @@ class BuildEntity < Grape::Entity
     path_to(:namespace_project_job, build)
   end
 
-  expose :build_failed_options, if: -> (*) { build.retryable? } do
-    expose :retry_path do |build|
-      path_to(:retry_namespace_project_job, build)
-    end
+  expose :retry_path, if: -> (*) { build&.retryable? } do |build|
+    path_to(:retry_namespace_project_job, build)
   end
 
   expose :play_path, if: -> (*) { playable? } do |build|
