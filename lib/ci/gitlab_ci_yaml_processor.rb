@@ -207,23 +207,30 @@ module Ci
 
     def matching?(patterns, ref, tag, source)
       patterns.any? do |pattern|
-        match_ref?(pattern, ref, tag, source)
+        match_ref?(pattern, ref, tag) || match_source?(pattern, source)
       end
     end
 
-    def match_ref?(pattern, ref, tag, source)
+    def match_ref?(pattern, ref, tag)
       pattern, path = pattern.split('@', 2)
       return false if path && path != self.path
       return true if tag && pattern == 'tags'
       return true if !tag && pattern == 'branches'
-      return true if source == 'trigger' && pattern == 'triggers'
-      return true if source == 'schedule' && pattern == 'schedules'
 
       if pattern.first == "/" && pattern.last == "/"
         Regexp.new(pattern[1...-1]) =~ ref
       else
         pattern == ref
       end
+    end
+
+    def match_source?(pattern, source)
+      return source_to_pattern(source) == pattern
+    end
+
+    def source_to_pattern(source)
+      return source if ['api', 'external', 'web'].include? source
+      return source.pluralize
     end
   end
 end

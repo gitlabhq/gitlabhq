@@ -219,48 +219,44 @@ module Ci
           expect(config_processor.builds_for_stage_and_ref(type, "deploy").size).to eq(0)
         end
 
-        it "returns builds if only has a triggers keyword specified and a trigger is provided" do
-          config = YAML.dump({
-                               before_script: ["pwd"],
-                               rspec: { script: "rspec", type: type, only: ["triggers"] }
-                             })
+        it "returns builds if only has special keywords specified and source matches" do
+          possibilities = [{keyword: 'pushes', source: 'push'},
+                           {keyword: 'web', source: 'web'},
+                           {keyword: 'triggers', source: 'trigger'},
+                           {keyword: 'schedules', source: 'schedule'},
+                           {keyword: 'api', source: 'api'},
+                           {keyword: 'external', source: 'external'}]
 
-          config_processor = GitlabCiYamlProcessor.new(config, path)
+          possibilities.each do |possibility|
+            config = YAML.dump({
+                                 before_script: ["pwd"],
+                                 rspec: { script: "rspec", type: type, only: [possibility[:keyword]] }
+                               })
 
-          expect(config_processor.builds_for_stage_and_ref(type, "deploy", false, 'trigger').size).to eq(1)
+            config_processor = GitlabCiYamlProcessor.new(config, path)
+
+            expect(config_processor.builds_for_stage_and_ref(type, "deploy", false, possibility[:source]).size).to eq(1)
+          end
         end
 
-        it "returns builds if only has a schedules keyword specified and a schedule is provided" do
-          config = YAML.dump({
-                               before_script: ["pwd"],
-                               rspec: { script: "rspec", type: type, only: ["schedules"] }
-                             })
+        it "does not return builds if only has special keywords specified and source doesn't match" do
+          possibilities = [{keyword: 'pushes', source: 'web'},
+                           {keyword: 'web', source: 'push'},
+                           {keyword: 'triggers', source: 'schedule'},
+                           {keyword: 'schedules', source: 'external'},
+                           {keyword: 'api', source: 'trigger'},
+                           {keyword: 'external', source: 'api'}]
 
-          config_processor = GitlabCiYamlProcessor.new(config, path)
+          possibilities.each do |possibility|
+            config = YAML.dump({
+                                 before_script: ["pwd"],
+                                 rspec: { script: "rspec", type: type, only: [possibility[:keyword]] }
+                               })
 
-          expect(config_processor.builds_for_stage_and_ref(type, "deploy", false, 'schedule').size).to eq(1)
-        end
+            config_processor = GitlabCiYamlProcessor.new(config, path)
 
-        it "does not return builds if only has a triggers keyword specified and no trigger is provided" do
-          config = YAML.dump({
-                               before_script: ["pwd"],
-                               rspec: { script: "rspec", type: type, only: ["triggers"] }
-                             })
-
-          config_processor = GitlabCiYamlProcessor.new(config, path)
-
-          expect(config_processor.builds_for_stage_and_ref(type, "deploy").size).to eq(0)
-        end
-
-        it "does not return builds if only has a schedules keyword specified and no schedule is provided" do
-          config = YAML.dump({
-                               before_script: ["pwd"],
-                               rspec: { script: "rspec", type: type, only: ["schedules"] }
-                             })
-
-          config_processor = GitlabCiYamlProcessor.new(config, path)
-
-          expect(config_processor.builds_for_stage_and_ref(type, "deploy").size).to eq(0)
+            expect(config_processor.builds_for_stage_and_ref(type, "deploy", false, possibility[:source]).size).to eq(0)
+          end
         end
 
         it "returns builds if only has current repository path" do
@@ -397,48 +393,44 @@ module Ci
           expect(config_processor.builds_for_stage_and_ref(type, "deploy").size).to eq(1)
         end
 
-        it "does not return builds if except has a triggers keyword specified and a trigger is provided" do
-          config = YAML.dump({
-                               before_script: ["pwd"],
-                               rspec: { script: "rspec", type: type, except: ["triggers"] }
-                             })
+        it "does not return builds if except has special keywords specified and source matches" do
+          possibilities = [{keyword: 'pushes', source: 'push'},
+                           {keyword: 'web', source: 'web'},
+                           {keyword: 'triggers', source: 'trigger'},
+                           {keyword: 'schedules', source: 'schedule'},
+                           {keyword: 'api', source: 'api'},
+                           {keyword: 'external', source: 'external'}]
 
-          config_processor = GitlabCiYamlProcessor.new(config, path)
+          possibilities.each do |possibility|
+            config = YAML.dump({
+                                 before_script: ["pwd"],
+                                 rspec: { script: "rspec", type: type, except: [possibility[:keyword]] }
+                               })
 
-          expect(config_processor.builds_for_stage_and_ref(type, "deploy", false, 'trigger').size).to eq(0)
+            config_processor = GitlabCiYamlProcessor.new(config, path)
+
+            expect(config_processor.builds_for_stage_and_ref(type, "deploy", false, possibility[:source]).size).to eq(0)
+          end
         end
 
-        it "does not return builds if except has a schedules keyword specified and a schedule is provided" do
-          config = YAML.dump({
-                               before_script: ["pwd"],
-                               rspec: { script: "rspec", type: type, except: ["schedules"] }
-                             })
+        it "returns builds if except has special keywords specified and source doesn't match" do
+          possibilities = [{keyword: 'pushes', source: 'web'},
+                           {keyword: 'web', source: 'push'},
+                           {keyword: 'triggers', source: 'schedule'},
+                           {keyword: 'schedules', source: 'external'},
+                           {keyword: 'api', source: 'trigger'},
+                           {keyword: 'external', source: 'api'}]
 
-          config_processor = GitlabCiYamlProcessor.new(config, path)
+          possibilities.each do |possibility|
+            config = YAML.dump({
+                                 before_script: ["pwd"],
+                                 rspec: { script: "rspec", type: type, only: [possibility[:keyword]] }
+                               })
 
-          expect(config_processor.builds_for_stage_and_ref(type, "deploy", false, 'schedule').size).to eq(0)
-        end
+            config_processor = GitlabCiYamlProcessor.new(config, path)
 
-        it "returns builds if except has a triggers keyword specified and no trigger is provided" do
-          config = YAML.dump({
-                               before_script: ["pwd"],
-                               rspec: { script: "rspec", type: type, except: ["triggers"] }
-                             })
-
-          config_processor = GitlabCiYamlProcessor.new(config, path)
-
-          expect(config_processor.builds_for_stage_and_ref(type, "deploy").size).to eq(1)
-        end
-
-        it "returns builds if except has a schedules keyword specified and no schedule is provided" do
-          config = YAML.dump({
-                               before_script: ["pwd"],
-                               rspec: { script: "rspec", type: type, except: ["schedules"] }
-                             })
-
-          config_processor = GitlabCiYamlProcessor.new(config, path)
-
-          expect(config_processor.builds_for_stage_and_ref(type, "deploy").size).to eq(1)
+            expect(config_processor.builds_for_stage_and_ref(type, "deploy", false, possibility[:source]).size).to eq(1)
+          end
         end
 
         it "does not return builds if except has current repository path" do

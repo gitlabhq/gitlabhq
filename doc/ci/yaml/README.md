@@ -393,7 +393,8 @@ There are a few rules that apply to the usage of refs policy:
 * `only` and `except` are inclusive. If both `only` and `except` are defined
    in a job specification, the ref is filtered by `only` and `except`.
 * `only` and `except` allow the use of regular expressions.
-* `only` and `except` allow the use of special keywords: `branches`, `tags`,  `triggers` and `schedules`.
+* `only` and `except` allow the use of special keywords:
+`api`, `branches`, `external`, `tags`, `pushes`, `schedules`, `triggers`, and `web`
 * `only` and `except` allow to specify a repository path to filter jobs for
    forks.
 
