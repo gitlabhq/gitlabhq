@@ -87,7 +87,11 @@
 
       <ul
         v-if="!isLoading"
-        class="stage-column-list">
+        class="stage-column-list"
+        :class="{
+          'has-linked-pipelines': hasTriggered || hasTriggeredBy
+        }"
+        >
         <stage-column-component
           v-for="(stage, index) in graph"
           :class="{
