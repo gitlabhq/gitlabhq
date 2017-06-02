@@ -1,31 +1,31 @@
 module DropdownsHelper
   def dropdown_tag(toggle_text, options: {}, &block)
-    content_tag :div, class: "dropdown #{options[:wrapper_class] if options.has_key?(:wrapper_class)}" do
+    content_tag :div, class: "dropdown #{options[:wrapper_class] if options.key?(:wrapper_class)}" do
       data_attr = { toggle: "dropdown" }
 
-      if options.has_key?(:data)
+      if options.key?(:data)
         data_attr = options[:data].merge(data_attr)
       end
 
       dropdown_output = dropdown_toggle(toggle_text, data_attr, options)
 
-      if options.has_key?(:toggle_link)
+      if options.key?(:toggle_link)
         dropdown_output = dropdown_toggle_link(toggle_text, data_attr, options)
       end
 
-      dropdown_output << content_tag(:div, class: "dropdown-menu dropdown-select #{options[:dropdown_class] if options.has_key?(:dropdown_class)}") do
+      dropdown_output << content_tag(:div, class: "dropdown-menu dropdown-select #{options[:dropdown_class] if options.key?(:dropdown_class)}") do
         output = ""
 
-        if options.has_key?(:title)
+        if options.key?(:title)
           output << dropdown_title(options[:title])
         end
 
-        if options.has_key?(:filter)
+        if options.key?(:filter)
           output << dropdown_filter(options[:placeholder])
         end
 
-        output << content_tag(:div, class: "dropdown-content #{options[:content_class] if options.has_key?(:content_class)}") do
-          capture(&block) if block && !options.has_key?(:footer_content)
+        output << content_tag(:div, class: "dropdown-content #{options[:content_class] if options.key?(:content_class)}") do
+          capture(&block) if block && !options.key?(:footer_content)
         end
 
         if block && options[:footer_content]
@@ -45,7 +45,7 @@ module DropdownsHelper
 
   def dropdown_toggle(toggle_text, data_attr, options = {})
     default_label = data_attr[:default_label]
-    content_tag(:button, class: "dropdown-menu-toggle #{options[:toggle_class] if options.has_key?(:toggle_class)}", id: (options[:id] if options.has_key?(:id)), type: "button", data: data_attr) do
+    content_tag(:button, class: "dropdown-menu-toggle #{options[:toggle_class] if options.key?(:toggle_class)}", id: (options[:id] if options.key?(:id)), type: "button", data: data_attr) do
       output = content_tag(:span, toggle_text, class: "dropdown-toggle-text #{'is-default' if toggle_text == default_label}")
       output << icon('chevron-down')
       output.html_safe
@@ -53,7 +53,7 @@ module DropdownsHelper
   end
 
   def dropdown_toggle_link(toggle_text, data_attr, options = {})
-    output = content_tag(:a, toggle_text, class: "dropdown-toggle-text #{options[:toggle_class] if options.has_key?(:toggle_class)}", id: (options[:id] if options.has_key?(:id)), data: data_attr)
+    output = content_tag(:a, toggle_text, class: "dropdown-toggle-text #{options[:toggle_class] if options.key?(:toggle_class)}", id: (options[:id] if options.key?(:id)), data: data_attr)
     output.html_safe
   end
 

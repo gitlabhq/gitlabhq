@@ -83,7 +83,7 @@ module Gitlab
       end
 
       def valid_level?(level)
-        options.has_value?(level)
+        options.value?(level)
       end
 
       def level_name(level)
