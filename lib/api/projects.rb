@@ -129,6 +129,7 @@ module API
       params do
         requires :name, type: String, desc: 'The name of the project'
         requires :user_id, type: Integer, desc: 'The ID of a user'
+        optional :path, type: String, desc: 'The path of the repository'
         optional :default_branch, type: String, desc: 'The default branch of the project'
         use :optional_params
         use :create_params
