@@ -316,15 +316,15 @@ describe API::Projects do
       expect(project.path).to eq('foo_project')
     end
 
-    it 'creates new project name and path and returns 201' do
-      expect { post api('/projects', user), path: 'foo-Project', name: 'Foo Project' }.
+    it 'creates new project with name and path and returns 201' do
+      expect { post api('/projects', user), path: 'path-project-Foo', name: 'Foo Project' }.
         to change { Project.count }.by(1)
       expect(response).to have_http_status(201)
 
       project = Project.first
 
       expect(project.name).to eq('Foo Project')
-      expect(project.path).to eq('foo-Project')
+      expect(project.path).to eq('path-project-Foo')
     end
 
     it 'creates last project before reaching project limit' do
@@ -470,9 +470,25 @@ describe API::Projects do
     before { project }
     before { admin }
 
-    it 'creates new project without path and return 201' do
-      expect { post api("/projects/user/#{user.id}", admin), name: 'foo' }.to change {Project.count}.by(1)
+    it 'creates new project without path but with name and return 201' do
+      expect { post api("/projects/user/#{user.id}", admin), name: 'Foo Project' }.to change {Project.count}.by(1)
       expect(response).to have_http_status(201)
+
+      project = Project.first
+
+      expect(project.name).to eq('Foo Project')
+      expect(project.path).to eq('foo-project')
+    end
+
+    it 'creates new project with name and path and returns 201' do
+      expect { post api("/projects/user/#{user.id}", admin), path: 'path-project-Foo', name: 'Foo Project' }.
+        to change { Project.count }.by(1)
+      expect(response).to have_http_status(201)
+
+      project = Project.first
+
+      expect(project.name).to eq('Foo Project')
+      expect(project.path).to eq('path-project-Foo')
     end
 
     it 'responds with 400 on failure and not project' do
