@@ -1,7 +1,7 @@
 class Subscription < ActiveRecord::Base
   belongs_to :user
   belongs_to :project
-  belongs_to :subscribable, polymorphic: true
+  belongs_to :subscribable, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
 
   validates :user, :subscribable, presence: true
 
