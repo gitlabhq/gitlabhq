@@ -26,7 +26,8 @@ module IssueLinks
     def issues
       authorized_issues = Issue
                             .not_restricted_by_confidentiality(@current_user)
-                            .where(project_id: @current_user.authorized_projects.select(:id))
+                            .merge(@current_user.authorized_projects)
+                            .join_project
                             .reorder(nil)
 
       Issue.from("(SELECT issues.*, issue_links.id AS issue_links_id
