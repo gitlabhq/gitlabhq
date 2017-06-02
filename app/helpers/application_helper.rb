@@ -89,7 +89,7 @@ module ApplicationHelper
   end
 
   def default_avatar
-    'no_avatar.png'
+    URI::join(Gitlab.config.gitlab.url, ActionController::Base.helpers.image_path('no_avatar.png')).to_s
   end
 
   def last_commit(project)
