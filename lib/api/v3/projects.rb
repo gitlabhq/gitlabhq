@@ -44,7 +44,7 @@ module API
         end
 
         def set_only_allow_merge_if_pipeline_succeeds!
-          if params.has_key?(:only_allow_merge_if_build_succeeds)
+          if params.key?(:only_allow_merge_if_build_succeeds)
             params[:only_allow_merge_if_pipeline_succeeds] = params.delete(:only_allow_merge_if_build_succeeds)
           end
         end
