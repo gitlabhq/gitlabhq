@@ -208,8 +208,8 @@ describe Ci::Pipeline, models: true do
       end
 
       it 'returns preseeded stage seeds object' do
-        expect(pipeline.stage_seeds).to be_a Gitlab::Ci::Stage::Seeds
-        expect(pipeline.stage_seeds.stages).to all(include(pipeline: pipeline))
+        expect(pipeline.stage_seeds).to all(be_a Gitlab::Ci::Stage::Seed)
+        expect(pipeline.stage_seeds.count).to eq 1
       end
     end
 
@@ -513,17 +513,17 @@ describe Ci::Pipeline, models: true do
     end
   end
 
-  describe '#has_stages?' do
-    context 'when pipeline has stages' do
+  describe '#has_stage_seedss?' do
+    context 'when pipeline has stage seeds' do
       subject { create(:ci_pipeline_with_one_job) }
 
-      it { is_expected.to have_stages }
+      it { is_expected.to have_stage_seeds }
     end
 
-    context 'when pipeline does not have stages' do
+    context 'when pipeline does not have stage seeds' do
       subject { create(:ci_pipeline_without_jobs) }
 
-      it { is_expected.not_to have_stages }
+      it { is_expected.not_to have_stage_seeds }
     end
   end
 

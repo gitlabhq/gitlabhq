@@ -50,14 +50,17 @@ module Ci
       end
     end
 
-    def stage_seeds(ref:, tag: false, trigger: nil)
-      Gitlab::Ci::Stage::Seeds.new.tap do |seeds|
-        @stages.uniq.each do |stage|
-          builds = builds_for_stage_and_ref(stage, ref, tag, trigger)
+    def stage_seeds(pipeline)
+      trigger_request = pipeline.trigger_requests.first
 
-          seeds.append_stage(stage, builds) if builds.any?
-       end
+      seeds = @stages.uniq.map do |stage|
+        builds = builds_for_stage_and_ref(
+          stage, pipeline.ref, pipeline.tag?, trigger_request)
+
+        Gitlab::Ci::Stage::Seed.new(pipeline, stage, builds) if builds.any?
       end
+
+      seeds.compact
     end
 
     def build_attributes(name)

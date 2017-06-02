@@ -91,15 +91,17 @@ module Ci
                     spinach: { stage: 'test', script: 'spinach' })
         end
 
-        it 'returns correctly fabricated stage seeds object' do
-          seeds = subject.stage_seeds(ref: 'master')
+        let(:pipeline) { create(:ci_empty_pipeline) }
 
-          expect(seeds.stages.size).to eq 2
-          expect(seeds.stages.dig(0, :name)).to eq 'test'
-          expect(seeds.stages.dig(1, :name)).to eq 'deploy'
-          expect(seeds.jobs.dig(0, :name)).to eq 'rspec'
-          expect(seeds.jobs.dig(1, :name)).to eq 'spinach'
-          expect(seeds.jobs.dig(2, :name)).to eq 'production'
+        it 'correctly fabricates a stage seeds object' do
+          seeds = subject.stage_seeds(pipeline)
+
+          expect(seeds.size).to eq 2
+          expect(seeds.first.stage[:name]).to eq 'test'
+          expect(seeds.second.stage[:name]).to eq 'deploy'
+          expect(seeds.first.builds.dig(0, :name)).to eq 'rspec'
+          expect(seeds.first.builds.dig(1, :name)).to eq 'spinach'
+          expect(seeds.second.builds.dig(0, :name)).to eq 'production'
         end
       end
 
@@ -109,12 +111,16 @@ module Ci
                     spinach: { stage: 'test', script: 'spinach', only: ['tags'] })
         end
 
-        it 'returns stage seeds only assigned to master to master' do
-          seeds = subject.stage_seeds(ref: 'feature', tag: true)
+        let(:pipeline) do
+          create(:ci_empty_pipeline, ref: 'feature', tag: true)
+        end
 
-          expect(seeds.stages.size).to eq 1
-          expect(seeds.stages.dig(0, :name)).to eq 'test'
-          expect(seeds.jobs.dig(0, :name)).to eq 'spinach'
+        it 'returns stage seeds only assigned to master to master' do
+          seeds = subject.stage_seeds(pipeline)
+
+          expect(seeds.size).to eq 1
+          expect(seeds.first.stage[:name]).to eq 'test'
+          expect(seeds.first.builds.dig(0, :name)).to eq 'spinach'
         end
       end
     end

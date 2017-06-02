@@ -5,10 +5,10 @@ class CommitStatus < ActiveRecord::Base
 
   self.table_name = 'ci_builds'
 
+  belongs_to :user
   belongs_to :project
   belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :commit_id
   belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
-  belongs_to :user
 
   delegate :commit, to: :pipeline
   delegate :sha, :short_sha, to: :pipeline
@@ -18,7 +18,7 @@ class CommitStatus < ActiveRecord::Base
   validates :name, presence: true
 
   alias_attribute :author, :user
-  
+
   scope :failed_but_allowed, -> do
     where(allow_failure: true, status: [:failed, :canceled])
   end

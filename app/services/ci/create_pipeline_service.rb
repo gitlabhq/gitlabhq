@@ -42,7 +42,7 @@ module Ci
         return pipeline
       end
 
-      unless pipeline.has_stages?
+      if pipeline.has_stage_seeds?
         return error('No stages / jobs for this pipeline.')
       end
 

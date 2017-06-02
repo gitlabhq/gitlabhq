@@ -11,9 +11,7 @@ module Ci
     belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
     belongs_to :pipeline_schedule, class_name: 'Ci::PipelineSchedule'
 
-    has_many :auto_canceled_pipelines, class_name: 'Ci::Pipeline', foreign_key: 'auto_canceled_by_id'
-    has_many :auto_canceled_jobs, class_name: 'CommitStatus', foreign_key: 'auto_canceled_by_id'
-
+    has_many :stages
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id
     has_many :builds, foreign_key: :commit_id
     has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id
@@ -27,6 +25,9 @@ module Ci
     has_many :cancelable_statuses, -> { cancelable }, foreign_key: :commit_id, class_name: 'CommitStatus'
     has_many :manual_actions, -> { latest.manual_actions }, foreign_key: :commit_id, class_name: 'Ci::Build'
     has_many :artifacts, -> { latest.with_artifacts_not_expired }, foreign_key: :commit_id, class_name: 'Ci::Build'
+
+    has_many :auto_canceled_pipelines, class_name: 'Ci::Pipeline', foreign_key: 'auto_canceled_by_id'
+    has_many :auto_canceled_jobs, class_name: 'CommitStatus', foreign_key: 'auto_canceled_by_id'
 
     delegate :id, to: :project, prefix: true
 
@@ -296,17 +297,13 @@ module Ci
     end
 
     def stage_seeds
-      return unless config_processor
+      return [] unless config_processor
 
-      seeds_scope = { ref: ref, tag: tag?, trigger: trigger_requests.first }
-
-      @seeds ||= config_processor.stage_seeds(seeds_scope).tap do |seeds|
-        seeds.pipeline = self
-      end
+      @stage_seeds ||= config_processor.stage_seeds(self)
     end
 
-    def has_stages?
-      stage_seeds&.has_stages?
+    def has_stage_seeds?
+      stage_seeds.any?
     end
 
     def has_warnings?
