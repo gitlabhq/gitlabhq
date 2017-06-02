@@ -1,7 +1,15 @@
 module Sidekiq
   module Worker
-    mattr_accessor :inside_after_commit
-    self.inside_after_commit = false
+    mattr_accessor :skip_transaction_check
+    self.skip_transaction_check = false
+
+    def self.skipping_transaction_check(&block)
+      skip_transaction_check = self.skip_transaction_check
+      self.skip_transaction_check = true
+      yield
+    ensure
+      self.skip_transaction_check = skip_transaction_check
+    end
 
     module ClassMethods
       module NoSchedulingFromTransactions
@@ -9,7 +17,7 @@ module Sidekiq
 
         %i(perform_async perform_at perform_in).each do |name|
           define_method(name) do |*args|
-            return super(*args) if Sidekiq::Worker.inside_after_commit
+            return super(*args) if Sidekiq::Worker.skip_transaction_check
             return super(*args) unless ActiveRecord::Base.connection.open_transactions > NESTING
 
             raise <<-MSG.strip_heredoc
@@ -30,16 +38,12 @@ end
 
 module ActiveRecord
   class Base
-    module InsideAfterCommit
+    module SkipTransactionCheckAfterCommit
       def committed!(*)
-        inside_after_commit = Sidekiq::Worker.inside_after_commit
-        Sidekiq::Worker.inside_after_commit = true
-        super
-      ensure
-        Sidekiq::Worker.inside_after_commit = inside_after_commit
+        Sidekiq::Worker.skipping_transaction_check { super }
       end
     end
 
-    prepend InsideAfterCommit
+    prepend SkipTransactionCheckAfterCommit
   end
 end
