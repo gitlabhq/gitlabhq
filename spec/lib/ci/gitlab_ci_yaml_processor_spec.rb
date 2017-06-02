@@ -220,12 +220,12 @@ module Ci
         end
 
         it "returns builds if only has special keywords specified and source matches" do
-          possibilities = [{keyword: 'pushes', source: 'push'},
-                           {keyword: 'web', source: 'web'},
-                           {keyword: 'triggers', source: 'trigger'},
-                           {keyword: 'schedules', source: 'schedule'},
-                           {keyword: 'api', source: 'api'},
-                           {keyword: 'external', source: 'external'}]
+          possibilities = [{ keyword: 'pushes', source: 'push' },
+                           { keyword: 'web', source: 'web' },
+                           { keyword: 'triggers', source: 'trigger' },
+                           { keyword: 'schedules', source: 'schedule' },
+                           { keyword: 'api', source: 'api' },
+                           { keyword: 'external', source: 'external' }]
 
           possibilities.each do |possibility|
             config = YAML.dump({
@@ -240,12 +240,12 @@ module Ci
         end
 
         it "does not return builds if only has special keywords specified and source doesn't match" do
-          possibilities = [{keyword: 'pushes', source: 'web'},
-                           {keyword: 'web', source: 'push'},
-                           {keyword: 'triggers', source: 'schedule'},
-                           {keyword: 'schedules', source: 'external'},
-                           {keyword: 'api', source: 'trigger'},
-                           {keyword: 'external', source: 'api'}]
+          possibilities = [{ keyword: 'pushes', source: 'web' },
+                           { keyword: 'web', source: 'push' },
+                           { keyword: 'triggers', source: 'schedule' },
+                           { keyword: 'schedules', source: 'external' },
+                           { keyword: 'api', source: 'trigger' },
+                           { keyword: 'external', source: 'api' }]
 
           possibilities.each do |possibility|
             config = YAML.dump({
@@ -414,12 +414,12 @@ module Ci
         end
 
         it "returns builds if except has special keywords specified and source doesn't match" do
-          possibilities = [{keyword: 'pushes', source: 'web'},
-                           {keyword: 'web', source: 'push'},
-                           {keyword: 'triggers', source: 'schedule'},
-                           {keyword: 'schedules', source: 'external'},
-                           {keyword: 'api', source: 'trigger'},
-                           {keyword: 'external', source: 'api'}]
+          possibilities = [{ keyword: 'pushes', source: 'web' },
+                           { keyword: 'web', source: 'push' },
+                           { keyword: 'triggers', source: 'schedule' },
+                           { keyword: 'schedules', source: 'external' },
+                           { keyword: 'api', source: 'trigger' },
+                           { keyword: 'external', source: 'api' }]
 
           possibilities.each do |possibility|
             config = YAML.dump({
