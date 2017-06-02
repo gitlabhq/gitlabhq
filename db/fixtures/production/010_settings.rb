@@ -12,18 +12,15 @@ def save(settings, topic)
   end
 end
 
-envs = %w{ GITLAB_PROMETHEUS_METRICS_ENABLED GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN }
+if ENV['GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN'].present?
+  settings = Gitlab::CurrentSettings.current_application_settings
+  settings.set_runners_registration_token(ENV['GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN'])
+  save(settings, 'Runner Registration Token')
+end
 
-if envs.any? {|env_name| ENV[env_name].present? }
-  settings = ApplicationSetting.current || ApplicationSetting.create_from_defaults
-  if ENV['GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN'].present?
-    settings.set_runners_registration_token(ENV['GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN'])
-    save(settings, 'Runner Registration Token')
-  end
-
-  if ENV['GITLAB_PROMETHEUS_METRICS_ENABLED'].present?
-    value = Gitlab::Utils.to_boolean(ENV['GITLAB_PROMETHEUS_METRICS_ENABLED'])
-    settings.prometheus_metrics_enabled = value
-    save(settings, 'Prometheus metrics enabled flag')
-  end
+if ENV['GITLAB_PROMETHEUS_METRICS_ENABLED'].present?
+  settings = Gitlab::CurrentSettings.current_application_settings
+  value = Gitlab::Utils.to_boolean(ENV['GITLAB_PROMETHEUS_METRICS_ENABLED'])
+  settings.prometheus_metrics_enabled = value
+  save(settings, 'Prometheus metrics enabled flag')
 end

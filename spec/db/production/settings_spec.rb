@@ -3,8 +3,8 @@ require 'rainbow/ext/string'
 
 describe 'seed production settings', lib: true do
   include StubENV
-  let(:settings_file) { File.join(__dir__, '../../../db/fixtures/production/010_settings.rb') }
-  let(:settings) { ApplicationSetting.current || ApplicationSetting.create_from_defaults }
+  let(:settings_file) { Rails.root.join('db/fixtures/production/010_settings.rb') }
+  let(:settings) { Gitlab::CurrentSettings.current_application_settings }
 
   context 'GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN is set in the environment' do
     before do
