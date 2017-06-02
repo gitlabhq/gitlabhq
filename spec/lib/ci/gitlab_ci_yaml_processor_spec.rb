@@ -424,7 +424,7 @@ module Ci
           possibilities.each do |possibility|
             config = YAML.dump({
                                  before_script: ["pwd"],
-                                 rspec: { script: "rspec", type: type, only: [possibility[:keyword]] }
+                                 rspec: { script: "rspec", type: type, except: [possibility[:keyword]] }
                                })
 
             config_processor = GitlabCiYamlProcessor.new(config, path)
