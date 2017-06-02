@@ -23,10 +23,8 @@ class BuildDetailsEntity < BuildEntity
     end
   end
 
-  expose :build_failed_options do
-    expose :new_issue_path, if: -> (*) { can?(request.current_user, :create_issue, project) } do |build|
-      new_namespace_project_issue_path(project.namespace, project)
-    end
+  expose :new_issue_path, if: -> (*) { can?(request.current_user, :create_issue, project) && build.failed? } do |build|
+    new_namespace_project_issue_path(project.namespace, project, issue: build_failed_issue_options)
   end
 
   expose :raw_path do |build|
@@ -34,6 +32,13 @@ class BuildDetailsEntity < BuildEntity
   end
 
   private
+
+  def build_failed_issue_options
+    {
+      title: "Build Failed ##{build.id}",
+      description: namespace_project_job_url(project.namespace, project, build)
+    }
+  end
 
   def current_user
     request.current_user

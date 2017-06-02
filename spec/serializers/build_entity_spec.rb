@@ -17,8 +17,8 @@ describe BuildEntity do
   subject { entity.as_json }
 
   it 'contains paths to build page and retry action' do
-    expect(subject).to include(:build_path, :build_failed_options)
-    expect(subject.dig(:build_failed_options, :retry_path)).not_to be_nil
+    expect(subject).to include(:build_path, :retry_path)
+    expect(subject[:retry_path]).not_to be_nil
   end
 
   it 'does not contain sensitive information' do

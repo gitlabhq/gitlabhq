@@ -31,7 +31,7 @@ describe BuildDetailsEntity do
         expect(subject).to include(:coverage, :erased_at, :duration)
         expect(subject).to include(:artifacts, :runner, :pipeline)
         expect(subject).to include(:raw_path, :merge_request)
-        expect(subject[:build_failed_options]).to include(:new_issue_path)
+        expect(subject).to include(:new_issue_path)
       end
 
       it 'exposes details of the merge request' do
