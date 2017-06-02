@@ -50,7 +50,8 @@ export default {
           <ci-status :status="pipelineStatus"/>
         </span>
         <span class="linked-pipeline-project-name"> {{ projectName }}</span>
-        <span class="linked-pipeline-id"> &#8226; #{{ pipelineId }}</span>
+        <span class="project-name-pipeline-id-separator">&#8226;</span>
+        <span class="linked-pipeline-id"> #{{ pipelineId }}</span>
       </a>
     </div>
   </li>
