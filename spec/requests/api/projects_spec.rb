@@ -635,6 +635,8 @@ describe API::Projects do
         expect(json_response['shared_runners_enabled']).to be_present
         expect(json_response['creator_id']).to be_present
         expect(json_response['namespace']).to be_present
+        expect(json_response['import_status']).to be_present
+        expect(json_response).to include("import_error")
         expect(json_response['avatar_url']).to be_nil
         expect(json_response['star_count']).to be_present
         expect(json_response['forks_count']).to be_present
@@ -700,6 +702,20 @@ describe API::Projects do
 
         expect(response).to have_http_status(200)
         expect(json_response).to include 'statistics'
+      end
+
+      it "includes import_error if user can admin project" do
+        get api("/projects/#{project.id}", user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to include("import_error")
+      end
+
+      it "does not include import_error if user cannot admin project" do
+        get api("/projects/#{project.id}", user3)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).not_to include("import_error")
       end
 
       describe 'permissions' do
@@ -1464,6 +1480,8 @@ describe API::Projects do
         expect(json_response['owner']['id']).to eq(user2.id)
         expect(json_response['namespace']['id']).to eq(user2.namespace.id)
         expect(json_response['forked_from_project']['id']).to eq(project.id)
+        expect(json_response['import_status']).to eq('started')
+        expect(json_response).to include("import_error")
       end
 
       it 'forks if user is admin' do
@@ -1475,6 +1493,8 @@ describe API::Projects do
         expect(json_response['owner']['id']).to eq(admin.id)
         expect(json_response['namespace']['id']).to eq(admin.namespace.id)
         expect(json_response['forked_from_project']['id']).to eq(project.id)
+        expect(json_response['import_status']).to eq('started')
+        expect(json_response).to include("import_error")
       end
 
       it 'fails on missing project access for the project to fork' do
