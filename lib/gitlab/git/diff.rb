@@ -189,7 +189,7 @@ module Gitlab
           prune_diff_if_eligible
         when Rugged::Patch, Rugged::Diff::Delta
           init_from_rugged(raw_diff)
-        when Gitaly::CommitDiffResponse
+        when Gitlab::GitalyClient::Diff
           init_from_gitaly(raw_diff)
           prune_diff_if_eligible
         when Gitaly::CommitDelta
@@ -290,15 +290,15 @@ module Gitlab
         end
       end
 
-      def init_from_gitaly(msg)
-        @diff = msg.raw_chunks.join if msg.respond_to?(:raw_chunks)
-        @new_path = encode!(msg.to_path.dup)
-        @old_path = encode!(msg.from_path.dup)
-        @a_mode = msg.old_mode.to_s(8)
-        @b_mode = msg.new_mode.to_s(8)
-        @new_file = msg.from_id == BLANK_SHA
-        @renamed_file = msg.from_path != msg.to_path
-        @deleted_file = msg.to_id == BLANK_SHA
+      def init_from_gitaly(diff)
+        @diff = diff.patch if diff.respond_to?(:patch)
+        @new_path = encode!(diff.to_path.dup)
+        @old_path = encode!(diff.from_path.dup)
+        @a_mode = diff.old_mode.to_s(8)
+        @b_mode = diff.new_mode.to_s(8)
+        @new_file = diff.from_id == BLANK_SHA
+        @renamed_file = diff.from_path != diff.to_path
+        @deleted_file = diff.to_id == BLANK_SHA
       end
 
       def prune_diff_if_eligible

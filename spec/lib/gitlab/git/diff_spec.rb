@@ -110,23 +110,23 @@ EOT
       end
     end
 
-    context 'using a Gitaly::CommitDiffResponse' do
+    context 'using a GitalyClient::Diff' do
       let(:diff) do
         described_class.new(
-          Gitaly::CommitDiffResponse.new(
+          Gitlab::GitalyClient::Diff.new(
             to_path: ".gitmodules",
             from_path: ".gitmodules",
             old_mode: 0100644,
             new_mode: 0100644,
             from_id: '357406f3075a57708d0163752905cc1576fceacc',
             to_id: '8e5177d718c561d36efde08bad36b43687ee6bf0',
-            raw_chunks: raw_chunks
+            patch: raw_patch
           )
         )
       end
 
       context 'with a small diff' do
-        let(:raw_chunks) { [@raw_diff_hash[:diff]] }
+        let(:raw_patch) { @raw_diff_hash[:diff] }
 
         it 'initializes the diff' do
           expect(diff.to_hash).to eq(@raw_diff_hash)
@@ -138,7 +138,7 @@ EOT
       end
 
       context 'using a diff that is too large' do
-        let(:raw_chunks) { ['a' * 204800] }
+        let(:raw_patch) { 'a' * 204800 }
 
         it 'prunes the diff' do
           expect(diff.diff).to be_empty
