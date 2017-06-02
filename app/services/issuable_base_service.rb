@@ -148,7 +148,7 @@ class IssuableBaseService < BaseService
         execute(params[:description], issuable)
 
     # Avoid a description already set on an issuable to be overwritten by a nil
-    params[:description] = description if params.has_key?(:description)
+    params[:description] = description if params.key?(:description)
 
     params.merge!(command_params)
   end

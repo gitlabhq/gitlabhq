@@ -143,7 +143,7 @@ class ApplicationSetting < ActiveRecord::Base
 
   validates_each :restricted_visibility_levels do |record, attr, value|
     value&.each do |level|
-      unless Gitlab::VisibilityLevel.options.has_value?(level)
+      unless Gitlab::VisibilityLevel.options.value?(level)
         record.errors.add(attr, "'#{level}' is not a valid visibility level")
       end
     end
@@ -151,7 +151,7 @@ class ApplicationSetting < ActiveRecord::Base
 
   validates_each :import_sources do |record, attr, value|
     value&.each do |source|
-      unless Gitlab::ImportSources.options.has_value?(source)
+      unless Gitlab::ImportSources.options.value?(source)
         record.errors.add(attr, "'#{source}' is not a import source")
       end
     end
