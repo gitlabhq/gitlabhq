@@ -478,12 +478,9 @@ Parameters:
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
-<<<<<<< HEAD
+| `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
-=======
-| `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
->>>>>>> upstream/master
 
 ### Create project for user
 
@@ -516,12 +513,9 @@ Parameters:
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
-<<<<<<< HEAD
+| `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
-=======
-| `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
->>>>>>> upstream/master
 
 ### Edit project
 
@@ -554,12 +548,9 @@ Parameters:
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
-<<<<<<< HEAD
+| `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
-=======
-| `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
->>>>>>> upstream/master
 
 ### Fork project
 
