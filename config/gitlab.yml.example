@@ -169,7 +169,7 @@ production: &base
   ## Gravatar
   ## For Libravatar see: http://doc.gitlab.com/ce/customization/libravatar.html
   gravatar:
-    # gravatar urls: possible placeholders: %{hash} %{size} %{email}
+    # gravatar urls: possible placeholders: %{hash} %{size} %{email} %{username}
     # plain_url: "http://..."     # default: http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
     # ssl_url:   "https://..."    # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
 
@@ -181,8 +181,8 @@ production: &base
     stuck_ci_jobs_worker:
       cron: "0 * * * *"
     # Execute scheduled triggers
-    trigger_schedule_worker:
-      cron: "0 */12 * * *"
+    pipeline_schedule_worker:
+      cron: "19 * * * *"
     # Remove expired build artifacts
     expire_build_artifacts_worker:
       cron: "50 * * * *"
@@ -449,7 +449,7 @@ production: &base
     # This setting controls whether GitLab uses Gitaly (new component
     # introduced in 9.0). Eventually Gitaly use will become mandatory and
     # this option will disappear.
-    enabled: false
+    enabled: true
 
   #
   # 4. Advanced settings
@@ -501,6 +501,9 @@ production: &base
     # Git over HTTP
     upload_pack: true
     receive_pack: true
+
+    # Git import/fetch timeout
+    # git_timeout: 800
 
     # If you use non-standard ssh port you need to specify it
     # ssh_port: 22

@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe 'Issue Boards', :feature, :js do
-  include WaitForVueResource
   include DragTo
 
   let(:project) { create(:empty_project, :public) }
@@ -24,7 +23,7 @@ describe 'Issue Boards', :feature, :js do
 
     before do
       visit namespace_project_board_path(project.namespace, project, board)
-      wait_for_vue_resource
+      wait_for_requests
 
       expect(page).to have_selector('.board', count: 2)
     end
@@ -38,6 +37,8 @@ describe 'Issue Boards', :feature, :js do
     it 'moves un-ordered issue to top of list' do
       drag(from_index: 3, to_index: 0)
 
+      wait_for_requests
+
       page.within(first('.board')) do
         expect(first('.card')).to have_content(issue4.title)
       end
@@ -47,7 +48,7 @@ describe 'Issue Boards', :feature, :js do
   context 'ordering in list' do
     before do
       visit namespace_project_board_path(project.namespace, project, board)
-      wait_for_vue_resource
+      wait_for_requests
 
       expect(page).to have_selector('.board', count: 2)
     end
@@ -55,7 +56,7 @@ describe 'Issue Boards', :feature, :js do
     it 'moves from middle to top' do
       drag(from_index: 1, to_index: 0)
 
-      wait_for_vue_resource
+      wait_for_requests
 
       expect(first('.card')).to have_content(issue2.title)
     end
@@ -63,7 +64,7 @@ describe 'Issue Boards', :feature, :js do
     it 'moves from middle to bottom' do
       drag(from_index: 1, to_index: 2)
 
-      wait_for_vue_resource
+      wait_for_requests
 
       expect(all('.card').last).to have_content(issue2.title)
     end
@@ -71,7 +72,7 @@ describe 'Issue Boards', :feature, :js do
     it 'moves from top to bottom' do
       drag(from_index: 0, to_index: 2)
 
-      wait_for_vue_resource
+      wait_for_requests
 
       expect(all('.card').last).to have_content(issue3.title)
     end
@@ -79,7 +80,7 @@ describe 'Issue Boards', :feature, :js do
     it 'moves from bottom to top' do
       drag(from_index: 2, to_index: 0)
 
-      wait_for_vue_resource
+      wait_for_requests
 
       expect(first('.card')).to have_content(issue1.title)
     end
@@ -87,7 +88,7 @@ describe 'Issue Boards', :feature, :js do
     it 'moves from top to middle' do
       drag(from_index: 0, to_index: 1)
 
-      wait_for_vue_resource
+      wait_for_requests
 
       expect(first('.card')).to have_content(issue2.title)
     end
@@ -95,7 +96,7 @@ describe 'Issue Boards', :feature, :js do
     it 'moves from bottom to middle' do
       drag(from_index: 2, to_index: 1)
 
-      wait_for_vue_resource
+      wait_for_requests
 
       expect(all('.card').last).to have_content(issue2.title)
     end
@@ -110,7 +111,7 @@ describe 'Issue Boards', :feature, :js do
 
     before do
       visit namespace_project_board_path(project.namespace, project, board)
-      wait_for_vue_resource
+      wait_for_requests
 
       expect(page).to have_selector('.board', count: 3)
     end
@@ -118,7 +119,7 @@ describe 'Issue Boards', :feature, :js do
     it 'moves to top of another list' do
       drag(list_from_index: 0, list_to_index: 1)
 
-      wait_for_vue_resource
+      wait_for_requests
 
       expect(first('.board')).to have_selector('.card', count: 2)
       expect(all('.board')[1]).to have_selector('.card', count: 4)
@@ -131,7 +132,7 @@ describe 'Issue Boards', :feature, :js do
     it 'moves to bottom of another list' do
       drag(list_from_index: 0, list_to_index: 1, to_index: 2)
 
-      wait_for_vue_resource
+      wait_for_requests
 
       expect(first('.board')).to have_selector('.card', count: 2)
       expect(all('.board')[1]).to have_selector('.card', count: 4)
@@ -144,7 +145,7 @@ describe 'Issue Boards', :feature, :js do
     it 'moves to index of another list' do
       drag(list_from_index: 0, list_to_index: 1, to_index: 1)
 
-      wait_for_vue_resource
+      wait_for_requests
 
       expect(first('.board')).to have_selector('.card', count: 2)
       expect(all('.board')[1]).to have_selector('.card', count: 4)

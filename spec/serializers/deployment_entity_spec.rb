@@ -8,7 +8,7 @@ describe DeploymentEntity do
   subject { entity.as_json }
 
   before do
-    allow(request).to receive(:user).and_return(user)
+    allow(request).to receive(:current_user).and_return(user)
   end
 
   it 'exposes internal deployment id'  do

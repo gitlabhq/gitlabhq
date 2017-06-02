@@ -97,6 +97,7 @@ gem 'fog-google', '~> 0.5'
 gem 'fog-local', '~> 0.3'
 gem 'fog-openstack', '~> 0.1'
 gem 'fog-rackspace', '~> 0.1.1'
+gem 'fog-aliyun', '~> 0.1.0'
 
 # for Google storage
 gem 'google-api-client', '~> 0.8.6'
@@ -109,7 +110,7 @@ gem 'seed-fu', '~> 2.3.5'
 
 # Markdown and HTML processing
 gem 'html-pipeline', '~> 1.11.0'
-gem 'deckar01-task_list', '1.0.6', require: 'task_list/railtie'
+gem 'deckar01-task_list', '2.0.0'
 gem 'gitlab-markup', '~> 1.5.1'
 gem 'redcarpet', '~> 3.4'
 gem 'RedCloth', '~> 4.3.2'
@@ -145,12 +146,12 @@ gem 'acts-as-taggable-on', '~> 4.0'
 
 # Background jobs
 gem 'sidekiq', '~> 5.0'
-gem 'sidekiq-cron', '~> 0.4.4'
+gem 'sidekiq-cron', '~> 0.6.0'
 gem 'redis-namespace', '~> 1.5.2'
 gem 'sidekiq-limit_fetch', '~> 3.4'
 
 # Cron Parser
-gem 'rufus-scheduler', '~> 3.1.10'
+gem 'rufus-scheduler', '~> 3.4'
 
 # HTTP requests
 gem 'httparty', '~> 0.13.3'
@@ -255,6 +256,12 @@ gem 'base32', '~> 0.3.0'
 gem 'sentry-raven', '~> 2.4.0'
 
 gem 'premailer-rails', '~> 1.9.0'
+
+# I18n
+gem 'ruby_parser', '~> 3.8.4', require: false
+gem 'gettext_i18n_rails', '~> 1.8.0'
+gem 'gettext_i18n_rails_js', '~> 1.2.0'
+gem 'gettext', '~> 3.2.2', require: false, group: :development
 
 # Metrics
 group :metrics do
@@ -361,6 +368,10 @@ gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'
 
 # Gitaly GRPC client
-gem 'gitaly', '~> 0.5.0'
+gem 'gitaly', '~> 0.7.0'
 
 gem 'toml-rb', '~> 0.3.15', require: false
+
+# Feature toggles
+gem 'flipper', '~> 0.10.2'
+gem 'flipper-active_record', '~> 0.10.2'

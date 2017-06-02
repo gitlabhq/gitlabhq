@@ -6,6 +6,7 @@ describe SystemNoteService, services: true do
   let(:project)  { create(:empty_project) }
   let(:author)   { create(:user) }
   let(:noteable) { create(:issue, project: project) }
+  let(:issue)    { noteable }
 
   shared_examples_for 'a system note' do
     let(:expected_noteable) { noteable }
@@ -155,6 +156,52 @@ describe SystemNoteService, services: true do
     end
   end
 
+  describe '.change_issue_assignees' do
+    subject { described_class.change_issue_assignees(noteable, project, author, [assignee]) }
+
+    let(:assignee) { create(:user) }
+    let(:assignee1) { create(:user) }
+    let(:assignee2) { create(:user) }
+    let(:assignee3) { create(:user) }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'assignee' }
+    end
+
+    def build_note(old_assignees, new_assignees)
+      issue.assignees = new_assignees
+      described_class.change_issue_assignees(issue, project, author, old_assignees).note
+    end
+
+    it 'builds a correct phrase when an assignee is added to a non-assigned issue' do
+      expect(build_note([], [assignee1])).to eq "assigned to @#{assignee1.username}"
+    end
+
+    it 'builds a correct phrase when assignee removed' do
+      expect(build_note([assignee1], [])).to eq 'removed assignee'
+    end
+
+    it 'builds a correct phrase when assignees changed' do
+      expect(build_note([assignee1], [assignee2])).to eq \
+        "assigned to @#{assignee2.username} and unassigned @#{assignee1.username}"
+    end
+
+    it 'builds a correct phrase when three assignees removed and one added' do
+      expect(build_note([assignee, assignee1, assignee2], [assignee3])).to eq \
+        "assigned to @#{assignee3.username} and unassigned @#{assignee.username}, @#{assignee1.username}, and @#{assignee2.username}"
+    end
+
+    it 'builds a correct phrase when one assignee changed from a set' do
+      expect(build_note([assignee, assignee1], [assignee, assignee2])).to eq \
+        "assigned to @#{assignee2.username} and unassigned @#{assignee1.username}"
+    end
+
+    it 'builds a correct phrase when one assignee removed from a set' do
+      expect(build_note([assignee, assignee1, assignee2], [assignee, assignee1])).to eq \
+        "unassigned @#{assignee2.username}"
+    end
+  end
+
   describe '.change_label' do
     subject { described_class.change_label(noteable, project, author, added, removed) }
 
@@ -288,6 +335,20 @@ describe SystemNoteService, services: true do
       it 'sets the note text' do
         expect(subject.note).
           to eq "changed title from **{-Old title-}** to **{+Lorem ipsum+}**"
+      end
+    end
+  end
+
+  describe '.change_description' do
+    subject { described_class.change_description(noteable, project, author) }
+
+    context 'when noteable responds to `description`' do
+      it_behaves_like 'a system note' do
+        let(:action) { 'description' }
+      end
+
+      it 'sets the note text' do
+        expect(subject.note).to eq('changed the description')
       end
     end
   end
@@ -672,6 +733,26 @@ describe SystemNoteService, services: true do
       jira_service_settings
     end
 
+    def cross_reference(type, link_exists = false)
+      noteable = type == 'commit' ? commit : merge_request
+
+      links = []
+      if link_exists
+        url = if type == 'commit'
+                "#{Settings.gitlab.base_url}/#{project.namespace.path}/#{project.path}/commit/#{commit.id}"
+              else
+                "#{Settings.gitlab.base_url}/#{project.namespace.path}/#{project.path}/merge_requests/#{merge_request.iid}"
+              end
+        link = double(object: { 'url' => url })
+        links << link
+        expect(link).to receive(:save!)
+      end
+
+      allow(JIRA::Resource::Remotelink).to receive(:all).and_return(links)
+
+      described_class.cross_reference(jira_issue, noteable, author)
+    end
+
     noteable_types = %w(merge_requests commit)
 
     noteable_types.each do |type|
@@ -679,24 +760,39 @@ describe SystemNoteService, services: true do
         it "blocks cross reference when #{type.underscore}_events is false" do
           jira_tracker.update("#{type}_events" => false)
 
-          noteable = type == "commit" ? commit : merge_request
-          result = described_class.cross_reference(jira_issue, noteable, author)
-
-          expect(result).to eq("Events for #{noteable.class.to_s.underscore.humanize.pluralize.downcase} are disabled.")
+          expect(cross_reference(type)).to eq("Events for #{type.pluralize.humanize.downcase} are disabled.")
         end
 
         it "blocks cross reference when #{type.underscore}_events is true" do
           jira_tracker.update("#{type}_events" => true)
 
-          noteable = type == "commit" ? commit : merge_request
-          result = described_class.cross_reference(jira_issue, noteable, author)
+          expect(cross_reference(type)).to eq(success_message)
+        end
+      end
 
-          expect(result).to eq(success_message)
+      context 'when a new cross reference is created' do
+        it 'creates a new comment and remote link' do
+          cross_reference(type)
+
+          expect(WebMock).to have_requested(:post, jira_api_comment_url(jira_issue))
+          expect(WebMock).to have_requested(:post, jira_api_remote_link_url(jira_issue))
+        end
+      end
+
+      context 'when a link exists' do
+        it 'updates a link but does not create a new comment' do
+          expect(WebMock).not_to have_requested(:post, jira_api_comment_url(jira_issue))
+
+          cross_reference(type, true)
         end
       end
     end
 
     describe "new reference" do
+      before do
+        allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
+      end
+
       context 'for commits' do
         it "creates comment" do
           result = described_class.cross_reference(jira_issue, commit, author)
@@ -776,6 +872,7 @@ describe SystemNoteService, services: true do
 
     describe "existing reference" do
       before do
+        allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
         message = "[#{author.name}|http://localhost/#{author.username}] mentioned this issue in [a commit of #{project.path_with_namespace}|http://localhost/#{project.path_with_namespace}/commit/#{commit.id}]:\n'#{commit.title.chomp}'"
         allow_any_instance_of(JIRA::Resource::Issue).to receive(:comments).and_return([OpenStruct.new(body: message)])
       end
@@ -971,6 +1068,37 @@ describe SystemNoteService, services: true do
 
     it 'sets the note text' do
       expect(subject.note).to eq 'resolved all discussions'
+    end
+  end
+
+  describe '.diff_discussion_outdated' do
+    let(:discussion) { create(:diff_note_on_merge_request).to_discussion }
+    let(:merge_request) { discussion.noteable }
+    let(:project) { merge_request.source_project }
+    let(:change_position) { discussion.position }
+
+    def reloaded_merge_request
+      MergeRequest.find(merge_request.id)
+    end
+
+    subject { described_class.diff_discussion_outdated(discussion, project, author, change_position) }
+
+    it_behaves_like 'a system note' do
+      let(:expected_noteable) { discussion.first_note.noteable }
+      let(:action)            { 'outdated' }
+    end
+
+    it 'creates a new note in the discussion' do
+      # we need to completely rebuild the merge request object, or the `@discussions` on the merge request are not reloaded.
+      expect { subject }.to change { reloaded_merge_request.discussions.first.notes.size }.by(1)
+    end
+
+    it 'links to the diff in the system note' do
+      expect(subject.note).to include('version 1')
+
+      diff_id = merge_request.merge_request_diff.id
+      line_code = change_position.line_code(project.repository)
+      expect(subject.note).to include(diffs_namespace_project_merge_request_url(project.namespace, project, merge_request, diff_id: diff_id, anchor: line_code))
     end
   end
 end

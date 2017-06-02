@@ -59,7 +59,7 @@ class Projects::GitHttpController < Projects::GitHttpClientController
 
   def render_ok
     set_workhorse_internal_api_content_type
-    render json: Gitlab::Workhorse.git_http_ok(repository, user, action_name)
+    render json: Gitlab::Workhorse.git_http_ok(repository, wiki?, user, action_name)
   end
 
   def render_http_not_allowed

@@ -22,7 +22,6 @@ module Gitlab
     # This is a nice reference article on autoloading/eager loading:
     # http://blog.arkency.com/2014/11/dont-forget-about-eager-load-when-extending-autoload
     config.eager_load_paths.push(*%W(#{config.root}/lib
-                                     #{config.root}/app/models/ci
                                      #{config.root}/app/models/hooks
                                      #{config.root}/app/models/members
                                      #{config.root}/app/models/project_services
@@ -39,6 +38,9 @@ module Gitlab
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
     config.i18n.enforce_available_locales = false
+
+    # Translation for AR attrs is not working well for POROs like WikiPage
+    config.gettext_i18n_rails.use_for_active_record_attributes = false
 
     # Configure the default encoding used in templates for Ruby 1.9.
     config.encoding = "utf-8"
@@ -63,6 +65,7 @@ module Gitlab
       hook
       import_url
       incoming_email_token
+      rss_token
       key
       otp_attempt
       password
@@ -104,6 +107,7 @@ module Gitlab
     config.assets.precompile << "xterm/xterm.css"
     config.assets.precompile << "lib/ace.js"
     config.assets.precompile << "vendor/assets/fonts/*"
+    config.assets.precompile << "test.css"
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'

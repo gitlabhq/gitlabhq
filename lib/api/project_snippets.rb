@@ -17,8 +17,7 @@ module API
         end
 
         def snippets_for_current_user
-          finder_params = { filter: :by_project, project: user_project }
-          SnippetsFinder.new.execute(current_user, finder_params)
+          SnippetsFinder.new(current_user, project: user_project).execute
         end
       end
 

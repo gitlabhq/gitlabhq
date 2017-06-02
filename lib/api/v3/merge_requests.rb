@@ -34,7 +34,7 @@ module API
             if project.has_external_issue_tracker?
               ::API::Entities::ExternalIssue
             else
-              ::API::Entities::Issue
+              ::API::V3::Entities::Issue
             end
           end
 

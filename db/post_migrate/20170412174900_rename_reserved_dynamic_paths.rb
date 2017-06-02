@@ -36,10 +36,17 @@ class RenameReservedDynamicPaths < ActiveRecord::Migration
 
   DISSALLOWED_GROUP_PATHS = %w[
     activity
+    analytics
+    audit_events
     avatar
     group_members
+    hooks
     labels
+    ldap
+    ldap_group_links
     milestones
+    notification_setting
+    pipeline_quota
     subgroups
   ]
 

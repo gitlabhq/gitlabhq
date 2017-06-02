@@ -37,8 +37,8 @@ class TargetBranchDropDown {
         }
         return SELECT_ITEM_MSG;
       },
-      clicked(item, el, e) {
-        e.preventDefault();
+      clicked(options) {
+        options.e.preventDefault();
         self.onClick.call(self);
       },
       fieldName: self.fieldName,

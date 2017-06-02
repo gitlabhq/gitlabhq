@@ -1,12 +1,17 @@
 import Vue from 'vue';
 import PipelinesTable from '~/commit/pipelines/pipelines_table';
-import pipeline from './mock_data';
 
 describe('Pipelines table in Commits and Merge requests', () => {
+  const jsonFixtureName = 'pipelines/pipelines.json';
+  let pipeline;
+
   preloadFixtures('static/pipelines_table.html.raw');
+  preloadFixtures(jsonFixtureName);
 
   beforeEach(() => {
     loadFixtures('static/pipelines_table.html.raw');
+    const pipelines = getJSONFixture(jsonFixtureName).pipelines;
+    pipeline = pipelines.find(p => p.id === 1);
   });
 
   describe('successful request', () => {

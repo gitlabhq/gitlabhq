@@ -43,8 +43,8 @@ $(document).on('keydown.quick_submit', '.js-quick-submit', (e) => {
   const $submitButton = $form.find('input[type=submit], button[type=submit]');
 
   if (!$submitButton.attr('disabled')) {
+    $submitButton.trigger('click', [e]);
     $submitButton.disable();
-    $form.submit();
   }
 });
 

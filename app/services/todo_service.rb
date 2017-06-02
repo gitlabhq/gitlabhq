@@ -251,9 +251,9 @@ class TodoService
   end
 
   def create_assignment_todo(issuable, author)
-    if issuable.assignee
+    if issuable.assignees.any?
       attributes = attributes_for_todo(issuable.project, issuable, author, Todo::ASSIGNED)
-      create_todos(issuable.assignee, attributes)
+      create_todos(issuable.assignees, attributes)
     end
   end
 

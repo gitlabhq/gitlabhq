@@ -14,24 +14,11 @@ ul.notes {
   margin: 0;
   padding: 0;
 
-  .timeline-icon {
-    float: left;
-
-    svg {
-      width: 16px;
-      height: 16px;
-      fill: $gray-darkest;
-      position: absolute;
-      left: 0;
-      top: 16px;
-    }
-  }
-
   .timeline-content {
     margin-left: 55px;
 
     &.timeline-content-form {
-      @media (max-width: $screen-sm-max) {
+      @include notes-media('max', $screen-sm-max) {
         margin-left: 0;
       }
     }
@@ -43,7 +30,11 @@ ul.notes {
   }
 
   .discussion-body {
-    padding-top: 15px;
+    padding-top: 8px;
+
+    .panel {
+      margin-bottom: 0;
+    }
   }
 
   .discussion {
@@ -52,18 +43,35 @@ ul.notes {
     position: relative;
   }
 
-  .note {
+  > li {
+    padding: $gl-padding $gl-btn-padding;
     display: block;
     position: relative;
     border-bottom: 1px solid $white-normal;
 
-    &.note-discussion {
-      &.timeline-entry {
-        padding: 14px 10px;
+    &:last-child {
+      // Override `.timeline > li:last-child { border-bottom: none; }`
+      border-bottom: 1px solid $white-normal;
+    }
+
+    &.being-posted {
+      pointer-events: none;
+      opacity: 0.5;
+
+      .dummy-avatar {
+        background-color: $kdb-border;
+        border: 1px solid darken($kdb-border, 25%);
       }
 
-      .system-note {
-        padding: 0;
+      .note-headline-light,
+      .fa-spinner {
+        margin-left: 3px;
+      }
+    }
+
+    &.note-discussion {
+      &.timeline-entry {
+        padding: $gl-padding 10px;
       }
     }
 
@@ -106,19 +114,13 @@ ul.notes {
 
     .note-awards {
       .js-awards-block {
-        margin-bottom: 16px;
+        margin-top: 16px;
       }
     }
 
     .note-header {
-      padding-bottom: 8px;
-      padding-right: 20px;
 
-      @media (min-width: $screen-sm-min) {
-        padding-right: 0;
-      }
-
-      @media (max-width: $screen-xs-min) {
+      @include notes-media('max', $screen-xs-min) {
         .inline {
           display: block;
         }
@@ -147,14 +149,14 @@ ul.notes {
 
   .system-note {
     font-size: 14px;
-    padding: 0;
+    padding-left: 0;
     clear: both;
 
-    @media (min-width: $screen-sm-min) {
+    @include notes-media('min', $screen-sm-min) {
       margin-left: 65px;
     }
 
-    .note-header {
+    .note-header-info {
       padding-bottom: 0;
     }
 
@@ -184,11 +186,22 @@ ul.notes {
       }
     }
 
-    .timeline-content {
-      padding: 14px 10px;
+    .timeline-icon {
+      float: left;
 
-      @media (min-width: $screen-sm-min) {
-        margin-left: 20px;
+      svg {
+        width: 16px;
+        height: 16px;
+        fill: $gray-darkest;
+        position: absolute;
+        left: 0;
+        top: 2px;
+      }
+    }
+
+    .timeline-content {
+      @include notes-media('min', $screen-sm-min) {
+        margin-left: 30px;
       }
     }
 
@@ -225,11 +238,6 @@ ul.notes {
 
           ul {
             margin: 3px 0 3px 16px !important;
-
-            .gfm-commit {
-              font-family: $monospace_font;
-              font-size: 12px;
-            }
           }
 
           p:first-child {
@@ -269,10 +277,6 @@ ul.notes {
     &:hover {
       background-color: $gray-light;
     }
-  }
-
-  .diff-header > span {
-    margin-right: 10px;
   }
 
   .line_content {
@@ -365,16 +369,31 @@ ul.notes {
 .note-header {
   display: flex;
   justify-content: space-between;
+
+  @include notes-media('max', $screen-xs-max) {
+    flex-flow: row wrap;
+  }
 }
 
 .note-header-info {
   min-width: 0;
+  padding-bottom: 8px;
+}
+
+.system-note .note-header-info {
+  padding-bottom: 0;
+}
+
+.note-header-author-name {
+  @include notes-media('max', $screen-xs-max) {
+    display: none;
+  }
 }
 
 .note-headline-light {
   display: inline;
 
-  @media (max-width: $screen-xs-min) {
+  @include notes-media('max', $screen-xs-min) {
     display: block;
   }
 }
@@ -416,13 +435,18 @@ ul.notes {
   margin-left: 10px;
   color: $gray-darkest;
 
+  @include notes-media('max', $screen-xs-max) {
+    float: none;
+    margin-left: 0;
+  }
+
   .note-action-button {
     margin-left: 8px;
   }
 }
 
 .discussion-actions {
-  @media (max-width: $screen-md-max) {
+  @include notes-media('max', $screen-md-max) {
     float: none;
     margin-left: 0;
 
@@ -436,7 +460,7 @@ ul.notes {
   display: inline;
   line-height: 20px;
 
-  @media (min-width: $screen-sm-min) {
+  @include notes-media('min', $screen-sm-min) {
     margin-left: 10px;
     line-height: 24px;
   }
@@ -526,13 +550,13 @@ ul.notes {
   position: relative;
   top: -2px;
   display: inline-block;
-  padding-left: 4px;
-  padding-right: 4px;
+  padding-left: 7px;
+  padding-right: 7px;
   color: $notes-role-color;
   font-size: 12px;
   line-height: 20px;
   border: 1px solid $border-color;
-  border-radius: $border-radius-base;
+  border-radius: $label-border-radius;
 }
 
 
@@ -568,6 +592,22 @@ ul.notes {
   }
 }
 
+.discussion-body,
+.diff-file {
+  .notes .note {
+    padding-left: $gl-padding;
+    padding-right: $gl-padding;
+
+    &.system-note {
+      padding-left: 0;
+
+      @media (min-width: $screen-sm-min) {
+        margin-left: 70px;
+      }
+    }
+  }
+}
+
 .diff-file {
   .is-over {
     .add-diff-note {
@@ -577,17 +617,11 @@ ul.notes {
 }
 
 .disabled-comment {
-  margin-left: -$gl-padding-top;
-  margin-right: -$gl-padding-top;
   background-color: $gray-light;
   border-radius: $border-radius-base;
   border: 1px solid $border-gray-normal;
   color: $note-disabled-comment-color;
-  line-height: 200px;
-
-  .disabled-comment-text {
-    line-height: normal;
-  }
+  padding: 90px 0;
 
   a {
     color: $gl-link-color;
@@ -595,6 +629,15 @@ ul.notes {
 }
 
 .line-resolve-all-container {
+  @include notes-media('min', $screen-sm-min) {
+    margin-right: 0;
+    padding-left: $gl-padding;
+  }
+
+  > div {
+    white-space: nowrap;
+  }
+
   .btn-group {
     margin-left: -4px;
   }
@@ -628,7 +671,7 @@ ul.notes {
 .line-resolve-all {
   vertical-align: middle;
   display: inline-block;
-  padding: 6px 10px;
+  padding: 5px 10px 6px;
   background-color: $gray-light;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
@@ -641,12 +684,16 @@ ul.notes {
 
   .line-resolve-btn {
     margin-right: 5px;
+
+    svg {
+      vertical-align: middle;
+    }
   }
 }
 
 .line-resolve-btn {
   position: relative;
-  top: 2px;
+  top: 0;
   padding: 0;
   background-color: transparent;
   border: none;
@@ -667,14 +714,18 @@ ul.notes {
 
   svg {
     fill: $gray-darkest;
-    height: 15px;
-    width: 15px;
+    height: 16px;
+    width: 16px;
   }
 
   .loading {
     margin: 0;
     height: auto;
   }
+}
+
+.line-resolve-text {
+  vertical-align: middle;
 }
 
 .discussion-next-btn {
@@ -687,13 +738,12 @@ ul.notes {
   }
 }
 
+.discussion-notes .flash-container {
+  margin-bottom: 0;
+}
+
 // Merge request notes in diffs
 .diff-file {
-  // Diff is side by side
-  .notes_content.parallel .note-header .note-headline-light {
-    display: block;
-    position: relative;
-  }
   // Diff is inline
   .notes_content .note-header .note-headline-light {
     display: inline-block;

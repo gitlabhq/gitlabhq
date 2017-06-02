@@ -1,23 +1,11 @@
-.nav-block
-  .tree-ref-holder
-    = render 'shared/ref_switcher', destination: 'blob', path: @path
+= render "projects/blob/breadcrumb", blob: blob
 
-  %ul.breadcrumb.repo-breadcrumb
-    %li
-      = link_to namespace_project_tree_path(@project.namespace, @project, @ref) do
-        = @project.path
-    - path_breadcrumbs do |title, path|
-      - title = truncate(title, length: 40)
-      %li
-        - if path == @path
-          = link_to namespace_project_blob_path(@project.namespace, @project, tree_join(@ref, path)) do
-            %strong= title
-        - else
-          = link_to title, namespace_project_tree_path(@project.namespace, @project, tree_join(@ref, path))
+.info-well.hidden-xs
+  .well-segment
+    %ul.blob-commit-info
+      = render 'projects/commits/commit', commit: @last_commit, project: @project, ref: @ref
 
-%ul.blob-commit-info.hidden-xs
-  - blob_commit = @repository.last_commit_for_path(@commit.id, blob.path)
-  = render blob_commit, project: @project, ref: @ref
+  = render "projects/blob/auxiliary_viewer", blob: blob
 
 #blob-content-holder.blob-content-holder
   %article.file-holder

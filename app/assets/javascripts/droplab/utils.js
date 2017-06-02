@@ -1,19 +1,19 @@
 /* eslint-disable */
 
-import { DATA_TRIGGER, DATA_DROPDOWN } from './constants';
+import { template as _template } from 'underscore';
+import { DATA_TRIGGER, DATA_DROPDOWN, TEMPLATE_REGEX } from './constants';
 
 const utils = {
   toCamelCase(attr) {
     return this.camelize(attr.split('-').slice(1).join(' '));
   },
 
-  t(s, d) {
-    for (const p in d) {
-      if (Object.prototype.hasOwnProperty.call(d, p)) {
-        s = s.replace(new RegExp(`{{${p}}}`, 'g'), d[p]);
-      }
-    }
-    return s;
+  template(templateString, data) {
+    const template = _template(templateString, {
+      escape: TEMPLATE_REGEX,
+    });
+
+    return template(data);
   },
 
   camelize(str) {

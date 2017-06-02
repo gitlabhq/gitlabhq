@@ -42,7 +42,10 @@ module ButtonHelper
       class: "btn #{css_class}",
       data: data,
       type: :button,
-      title: title
+      title: title,
+      aria: {
+        label: title
+      }
   end
 
   def http_clone_button(project, placement = 'right', append_link: true)
@@ -53,7 +56,7 @@ module ButtonHelper
 
     content_tag (append_link ? :a : :span), protocol,
       class: klass,
-      href: (project.http_url_to_repo(current_user) if append_link),
+      href: (project.http_url_to_repo if append_link),
       data: {
         html: true,
         placement: placement,

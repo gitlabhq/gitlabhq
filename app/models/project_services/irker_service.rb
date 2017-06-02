@@ -58,7 +58,7 @@ class IrkerService < Service
         ' want to use a password, you have to omit the "#" on the channel). If you ' \
         ' specify a default IRC URI to prepend before each recipient, you can just ' \
         ' give a channel name.'  },
-      { type: 'checkbox', name: 'colorize_messages' },
+      { type: 'checkbox', name: 'colorize_messages' }
     ]
   end
 

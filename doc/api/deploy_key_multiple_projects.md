@@ -1,4 +1,4 @@
-# Adding deploy keys to multiple projects
+# Adding deploy keys to multiple projects via API
 
 If you want to easily add the same deploy key to multiple projects in the same
 group, this can be achieved quite easily with the API.

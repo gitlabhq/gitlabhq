@@ -108,13 +108,13 @@ module Gitlab
           end
 
           issue = Issue.create!(
-            iid:         raw_issue['id'],
-            project_id:  project.id,
-            title:       raw_issue['title'],
-            description: body,
-            author_id:   project.creator_id,
-            assignee_id: assignee_id,
-            state:       raw_issue['state'] == 'closed' ? 'closed' : 'opened'
+            iid:          raw_issue['id'],
+            project_id:   project.id,
+            title:        raw_issue['title'],
+            description:  body,
+            author_id:    project.creator_id,
+            assignee_ids: [assignee_id],
+            state:        raw_issue['state'] == 'closed' ? 'closed' : 'opened'
           )
 
           issue_labels = ::LabelsFinder.new(nil, project_id: project.id, title: labels).execute(skip_authorization: true)

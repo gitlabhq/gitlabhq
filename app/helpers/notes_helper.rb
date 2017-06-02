@@ -19,7 +19,7 @@ module NotesHelper
       id: noteable.id,
       class: noteable.class.name,
       resources: noteable.class.table_name,
-      project_id: noteable.project.id,
+      project_id: noteable.project.id
     }.to_json
   end
 
@@ -34,7 +34,7 @@ module NotesHelper
 
     data = {
       line_code: line_code,
-      line_type: line_type,
+      line_type: line_type
     }
 
     if @use_legacy_diff_notes
@@ -50,7 +50,7 @@ module NotesHelper
   def link_to_reply_discussion(discussion, line_type = nil)
     return unless current_user
 
-    data = { discussion_id: discussion.id, line_type: line_type }
+    data = { discussion_id: discussion.reply_id, line_type: line_type }
 
     button_tag 'Reply...', class: 'btn btn-text-field js-discussion-reply-button',
                            data: data, title: 'Add a reply'
@@ -74,6 +74,49 @@ module NotesHelper
       anchor = discussion.line_code if discussion.diff_discussion?
 
       namespace_project_commit_path(discussion.project.namespace, discussion.project, discussion.noteable, anchor: anchor)
+    end
+  end
+
+  def notes_url
+    if @snippet.is_a?(PersonalSnippet)
+      snippet_notes_path(@snippet)
+    else
+      namespace_project_noteable_notes_path(
+        namespace_id: @project.namespace,
+        project_id: @project,
+        target_id: @noteable.id,
+        target_type: @noteable.class.name.underscore
+      )
+    end
+  end
+
+  def note_url(note)
+    if note.noteable.is_a?(PersonalSnippet)
+      snippet_note_path(note.noteable, note)
+    else
+      namespace_project_note_path(@project.namespace, @project, note)
+    end
+  end
+
+  def form_resources
+    if @snippet.is_a?(PersonalSnippet)
+      [@note]
+    else
+      [@project.namespace.becomes(Namespace), @project, @note]
+    end
+  end
+
+  def new_form_url
+    return nil unless @snippet.is_a?(PersonalSnippet)
+
+    snippet_notes_path(@snippet)
+  end
+
+  def can_create_note?
+    if @snippet.is_a?(PersonalSnippet)
+      can?(current_user, :comment_personal_snippet, @snippet)
+    else
+      can?(current_user, :create_note, @project)
     end
   end
 end

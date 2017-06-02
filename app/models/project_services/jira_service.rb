@@ -2,9 +2,10 @@ class JiraService < IssueTrackerService
   include Gitlab::Routing.url_helpers
 
   validates :url, url: true, presence: true, if: :activated?
+  validates :api_url, url: true, allow_blank: true
   validates :project_key, presence: true, if: :activated?
 
-  prop_accessor :username, :password, :url, :project_key,
+  prop_accessor :username, :password, :url, :api_url, :project_key,
                 :jira_issue_transition_id, :title, :description
 
   before_update :reset_password
@@ -25,20 +26,18 @@ class JiraService < IssueTrackerService
     super do
       self.properties = {
         title: issues_tracker['title'],
-        url: issues_tracker['url']
+        url: issues_tracker['url'],
+        api_url: issues_tracker['api_url']
       }
     end
   end
 
   def reset_password
-    # don't reset the password if a new one is provided
-    if url_changed? && !password_touched?
-      self.password = nil
-    end
+    self.password = nil if reset_password?
   end
 
   def options
-    url = URI.parse(self.url)
+    url = URI.parse(client_url)
 
     {
       username: self.username,
@@ -87,7 +86,8 @@ class JiraService < IssueTrackerService
 
   def fields
     [
-      { type: 'text', name: 'url', title: 'URL', placeholder: 'https://jira.example.com' },
+      { type: 'text', name: 'url', title: 'Web URL', placeholder: 'https://jira.example.com' },
+      { type: 'text', name: 'api_url', title: 'JIRA API URL', placeholder: 'If different from Web URL' },
       { type: 'text', name: 'project_key', placeholder: 'Project Key' },
       { type: 'text', name: 'username', placeholder: '' },
       { type: 'password', name: 'password', placeholder: '' },
@@ -149,7 +149,7 @@ class JiraService < IssueTrackerService
     data = {
       user: {
         name: author.name,
-        url: resource_url(user_path(author)),
+        url: resource_url(user_path(author))
       },
       project: {
         name: self.project.path_with_namespace,
@@ -186,7 +186,7 @@ class JiraService < IssueTrackerService
   end
 
   def test_settings
-    return unless url.present?
+    return unless client_url.present?
     # Test settings by getting the project
     jira_request { jira_project.present? }
   end
@@ -236,18 +236,27 @@ class JiraService < IssueTrackerService
   end
 
   def send_message(issue, message, remote_link_props)
-    return unless url.present?
+    return unless client_url.present?
 
     jira_request do
-      if issue.comments.build.save!(body: message)
-        remote_link = issue.remotelink.build
+      remote_link = find_remote_link(issue, remote_link_props[:object][:url])
+      if remote_link
         remote_link.save!(remote_link_props)
-        result_message = "#{self.class.name} SUCCESS: Successfully posted to #{url}."
+      elsif issue.comments.build.save!(body: message)
+        new_remote_link = issue.remotelink.build
+        new_remote_link.save!(remote_link_props)
       end
 
+      result_message = "#{self.class.name} SUCCESS: Successfully posted to #{client_url}."
       Rails.logger.info(result_message)
       result_message
     end
+  end
+
+  def find_remote_link(issue, url)
+    links = jira_request { issue.remotelink.all }
+
+    links.find { |link| link.object["url"] == url }
   end
 
   def build_remote_link_props(url:, title:, resolved: false)
@@ -294,8 +303,21 @@ class JiraService < IssueTrackerService
   def jira_request
     yield
 
-  rescue Timeout::Error, Errno::EINVAL, Errno::ECONNRESET, Errno::ECONNREFUSED, URI::InvalidURIError, JIRA::HTTPError => e
-    Rails.logger.info "#{self.class.name} Send message ERROR: #{url} - #{e.message}"
+  rescue Timeout::Error, Errno::EINVAL, Errno::ECONNRESET, Errno::ECONNREFUSED, URI::InvalidURIError, JIRA::HTTPError, OpenSSL::SSL::SSLError => e
+    Rails.logger.info "#{self.class.name} Send message ERROR: #{client_url} - #{e.message}"
     nil
+  end
+
+  def client_url
+    api_url.present? ? api_url : url
+  end
+
+  def reset_password?
+    # don't reset the password if a new one is provided
+    return false if password_touched?
+    return true if api_url_changed?
+    return false if api_url.present?
+
+    url_changed?
   end
 end

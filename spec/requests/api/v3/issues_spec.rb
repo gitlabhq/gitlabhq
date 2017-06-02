@@ -14,7 +14,7 @@ describe API::V3::Issues do
   let!(:closed_issue) do
     create :closed_issue,
            author: user,
-           assignee: user,
+           assignees: [user],
            project: project,
            state: :closed,
            milestone: milestone,
@@ -26,14 +26,14 @@ describe API::V3::Issues do
            :confidential,
            project: project,
            author: author,
-           assignee: assignee,
+           assignees: [assignee],
            created_at: generate(:past_time),
            updated_at: 2.hours.ago
   end
   let!(:issue) do
     create :issue,
            author: user,
-           assignee: user,
+           assignees: [user],
            project: project,
            milestone: milestone,
            created_at: generate(:past_time),
@@ -247,7 +247,7 @@ describe API::V3::Issues do
     let!(:group_closed_issue) do
       create :closed_issue,
              author: user,
-             assignee: user,
+             assignees: [user],
              project: group_project,
              state: :closed,
              milestone: group_milestone,
@@ -258,13 +258,13 @@ describe API::V3::Issues do
              :confidential,
              project: group_project,
              author: author,
-             assignee: assignee,
+             assignees: [assignee],
              updated_at: 2.hours.ago
     end
     let!(:group_issue) do
       create :issue,
              author: user,
-             assignee: user,
+             assignees: [user],
              project: group_project,
              milestone: group_milestone,
              updated_at: 1.hour.ago
@@ -737,13 +737,14 @@ describe API::V3::Issues do
   describe "POST /projects/:id/issues" do
     it 'creates a new project issue' do
       post v3_api("/projects/#{project.id}/issues", user),
-        title: 'new issue', labels: 'label, label2'
+        title: 'new issue', labels: 'label, label2', assignee_id: assignee.id
 
       expect(response).to have_http_status(201)
       expect(json_response['title']).to eq('new issue')
       expect(json_response['description']).to be_nil
       expect(json_response['labels']).to eq(%w(label label2))
       expect(json_response['confidential']).to be_falsy
+      expect(json_response['assignee']['name']).to eq(assignee.name)
     end
 
     it 'creates a new confidential project issue' do
@@ -1137,6 +1138,22 @@ describe API::V3::Issues do
 
       expect(response).to have_http_status(200)
       expect(json_response['due_date']).to eq(due_date)
+    end
+  end
+
+  describe 'PUT /projects/:id/issues/:issue_id to update assignee' do
+    it 'updates an issue with no assignee' do
+      put v3_api("/projects/#{project.id}/issues/#{issue.id}", user), assignee_id: 0
+
+      expect(response).to have_http_status(200)
+      expect(json_response['assignee']).to eq(nil)
+    end
+
+    it 'updates an issue with assignee' do
+      put v3_api("/projects/#{project.id}/issues/#{issue.id}", user), assignee_id: user2.id
+
+      expect(response).to have_http_status(200)
+      expect(json_response['assignee']['name']).to eq(user2.name)
     end
   end
 

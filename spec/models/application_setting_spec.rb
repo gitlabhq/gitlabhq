@@ -89,7 +89,7 @@ describe ApplicationSetting, models: true do
         storages = {
           'custom1' => 'tmp/tests/custom_repositories_1',
           'custom2' => 'tmp/tests/custom_repositories_2',
-          'custom3' => 'tmp/tests/custom_repositories_3',
+          'custom3' => 'tmp/tests/custom_repositories_3'
 
         }
         allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
@@ -209,6 +209,68 @@ describe ApplicationSetting, models: true do
     it 'sets multiple domain with file' do
       setting.domain_blacklist_file = File.open(Rails.root.join('spec/fixtures/', 'domain_blacklist.txt'))
       expect(setting.domain_blacklist).to contain_exactly('example.com', 'test.com', 'foo.bar')
+    end
+  end
+
+  describe 'usage ping settings' do
+    context 'when the usage ping is disabled in gitlab.yml' do
+      before do
+        allow(Settings.gitlab).to receive(:usage_ping_enabled).and_return(false)
+      end
+
+      it 'does not allow the usage ping to be configured' do
+        expect(setting.usage_ping_can_be_configured?).to be_falsey
+      end
+
+      context 'when the usage ping is disabled in the DB' do
+        before do
+          setting.usage_ping_enabled = false
+        end
+
+        it 'returns false for usage_ping_enabled' do
+          expect(setting.usage_ping_enabled).to be_falsey
+        end
+      end
+
+      context 'when the usage ping is enabled in the DB' do
+        before do
+          setting.usage_ping_enabled = true
+        end
+
+        it 'returns false for usage_ping_enabled' do
+          expect(setting.usage_ping_enabled).to be_falsey
+        end
+      end
+    end
+
+    context 'when the usage ping is enabled in gitlab.yml' do
+      before do
+        allow(Settings.gitlab).to receive(:usage_ping_enabled).and_return(true)
+      end
+
+      it 'allows the usage ping to be configured' do
+        expect(setting.usage_ping_can_be_configured?).to be_truthy
+      end
+
+      context 'when the usage ping is disabled in the DB' do
+        before do
+          setting.usage_ping_enabled = false
+        end
+
+        it 'returns false for usage_ping_enabled' do
+          expect(setting.usage_ping_enabled).to be_falsey
+        end
+      end
+
+      context 'when the usage ping is enabled in the DB' do
+        before do
+          setting.usage_ping_enabled = true
+        end
+
+        it 'returns true for usage_ping_enabled' do
+          expect(setting.usage_ping_enabled).to be_truthy
+        end
+      end
     end
   end
 end

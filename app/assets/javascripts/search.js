@@ -1,5 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, one-var, one-var-declaration-per-line, object-shorthand, prefer-arrow-callback, comma-dangle, prefer-template, quotes, no-else-return, max-len */
-/* global Api */
+/* global Flash */
+import Api from './api';
 
 (function() {
   this.Search = (function() {
@@ -7,6 +8,7 @@
       var $groupDropdown, $projectDropdown;
       $groupDropdown = $('.js-search-group-dropdown');
       $projectDropdown = $('.js-search-project-dropdown');
+      this.groupId = $groupDropdown.data('group-id');
       this.eventListeners();
       $groupDropdown.glDropdown({
         selectable: true,
@@ -46,14 +48,18 @@
         search: {
           fields: ['name']
         },
-        data: function(term, callback) {
-          return Api.projects(term, { order_by: 'id' }, function(data) {
-            data.unshift({
-              name_with_namespace: 'Any'
-            });
-            data.splice(1, 0, 'divider');
-            return callback(data);
-          });
+        data: (term, callback) => {
+          this.getProjectsData(term)
+            .then((data) => {
+              data.unshift({
+                name_with_namespace: 'Any'
+              });
+              data.splice(1, 0, 'divider');
+
+              return data;
+            })
+            .then(data => callback(data))
+            .catch(() => new Flash('Error fetching projects'));
         },
         id: function(obj) {
           return obj.id;
@@ -93,6 +99,18 @@
 
     Search.prototype.clearSearchField = function() {
       return $('.js-search-input').val('').trigger('keyup').focus();
+    };
+
+    Search.prototype.getProjectsData = function(term) {
+      return new Promise((resolve) => {
+        if (this.groupId) {
+          Api.groupProjects(this.groupId, term, resolve);
+        } else {
+          Api.projects(term, {
+            order_by: 'id',
+          }, resolve);
+        }
+      });
     };
 
     return Search;

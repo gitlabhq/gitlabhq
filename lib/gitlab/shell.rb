@@ -83,7 +83,7 @@ module Gitlab
       # Timeout should be less than 900 ideally, to prevent the memory killer
       # to silently kill the process without knowing we are timing out here.
       output, status = Popen.popen([gitlab_shell_projects_path, 'import-project',
-                                    storage, "#{name}.git", url, '800'])
+                                    storage, "#{name}.git", url, "#{Gitlab.config.gitlab_shell.git_timeout}"])
       raise Error, output unless status.zero?
       true
     end
@@ -99,7 +99,7 @@ module Gitlab
     #   fetch_remote("gitlab/gitlab-ci", "upstream")
     #
     def fetch_remote(storage, name, remote, forced: false, no_tags: false)
-      args = [gitlab_shell_projects_path, 'fetch-remote', storage, "#{name}.git", remote, '800']
+      args = [gitlab_shell_projects_path, 'fetch-remote', storage, "#{name}.git", remote, "#{Gitlab.config.gitlab_shell.git_timeout}"]
       args << '--force' if forced
       args << '--no-tags' if no_tags
 

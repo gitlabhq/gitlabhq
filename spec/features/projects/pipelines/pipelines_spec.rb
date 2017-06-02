@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe 'Pipelines', :feature, :js do
-  include WaitForVueResource
-
   let(:project) { create(:empty_project) }
 
   context 'when user is logged in' do
@@ -22,7 +20,7 @@ describe 'Pipelines', :feature, :js do
           project: project,
           ref: 'master',
           status: 'running',
-          sha: project.commit.id,
+          sha: project.commit.id
         )
       end
 
@@ -54,7 +52,7 @@ describe 'Pipelines', :feature, :js do
       context 'header tabs' do
         before do
           visit namespace_project_pipelines_path(project.namespace, project)
-          wait_for_vue_resource
+          wait_for_requests
         end
 
         it 'shows a tab for All pipelines and count' do
@@ -106,7 +104,7 @@ describe 'Pipelines', :feature, :js do
         context 'when canceling' do
           before do
             find('.js-pipelines-cancel-button').click
-            wait_for_vue_resource
+            wait_for_requests
           end
 
           it 'indicated that pipelines was canceled' do
@@ -136,7 +134,7 @@ describe 'Pipelines', :feature, :js do
         context 'when retrying' do
           before do
             find('.js-pipelines-retry-button').click
-            wait_for_vue_resource
+            wait_for_requests
           end
 
           it 'shows running pipeline that is not retryable' do
@@ -356,17 +354,69 @@ describe 'Pipelines', :feature, :js do
 
         it 'should render pagination' do
           visit namespace_project_pipelines_path(project.namespace, project)
-          wait_for_vue_resource
+          wait_for_requests
 
           expect(page).to have_selector('.gl-pagination')
         end
 
         it 'should render second page of pipelines' do
           visit namespace_project_pipelines_path(project.namespace, project, page: '2')
-          wait_for_vue_resource
+          wait_for_requests
 
           expect(page).to have_selector('.gl-pagination .page', count: 2)
         end
+      end
+    end
+
+    describe 'GET /:project/pipelines/show' do
+      let(:project) { create(:project) }
+
+      let(:pipeline) do
+        create(:ci_empty_pipeline,
+              project: project,
+              sha: project.commit.id,
+              user: user)
+      end
+
+      before do
+        create_build('build', 0, 'build', :success)
+        create_build('test', 1, 'rspec 0:2', :pending)
+        create_build('test', 1, 'rspec 1:2', :running)
+        create_build('test', 1, 'spinach 0:2', :created)
+        create_build('test', 1, 'spinach 1:2', :created)
+        create_build('test', 1, 'audit', :created)
+        create_build('deploy', 2, 'production', :created)
+
+        create(:generic_commit_status, pipeline: pipeline, stage: 'external', name: 'jenkins', stage_idx: 3)
+
+        visit namespace_project_pipeline_path(project.namespace, project, pipeline)
+        wait_for_requests
+      end
+
+      it 'shows a graph with grouped stages' do
+        expect(page).to have_css('.js-pipeline-graph')
+
+        # header
+        expect(page).to have_text("##{pipeline.id}")
+        expect(page).to have_selector(%Q(img[alt$="#{pipeline.user.name}'s avatar"]))
+        expect(page).to have_link(pipeline.user.name, href: user_path(pipeline.user))
+
+        # stages
+        expect(page).to have_text('Build')
+        expect(page).to have_text('Test')
+        expect(page).to have_text('Deploy')
+        expect(page).to have_text('External')
+
+        # builds
+        expect(page).to have_text('rspec')
+        expect(page).to have_text('spinach')
+        expect(page).to have_text('rspec')
+        expect(page).to have_text('production')
+        expect(page).to have_text('jenkins')
+      end
+
+      def create_build(stage, stage_idx, name, status)
+        create(:ci_build, pipeline: pipeline, stage: stage, stage_idx: stage_idx, name: name, status: status)
       end
     end
 
@@ -392,6 +442,8 @@ describe 'Pipelines', :feature, :js do
           it 'creates a new pipeline' do
             expect { click_on 'Create pipeline' }
               .to change { Ci::Pipeline.count }.by(1)
+
+            expect(Ci::Pipeline.last).to be_web
           end
         end
 
@@ -455,6 +507,6 @@ describe 'Pipelines', :feature, :js do
 
   def visit_project_pipelines(**query)
     visit namespace_project_pipelines_path(project.namespace, project, query)
-    wait_for_vue_resource
+    wait_for_requests
   end
 end

@@ -23,8 +23,8 @@ gl.issueBoards.BoardsStore = {
     this.state.lists = [];
     this.filter.path = gl.utils.getUrlParamsArray().join('&');
   },
-  addList (listObj) {
-    const list = new List(listObj);
+  addList (listObj, defaultAvatar) {
+    const list = new List(listObj, defaultAvatar);
     this.state.lists.push(list);
 
     return list;

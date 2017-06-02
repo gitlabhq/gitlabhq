@@ -1,10 +1,14 @@
 class Projects::PipelinesController < Projects::ApplicationController
   before_action :pipeline, except: [:index, :new, :create, :charts]
-  before_action :commit, only: [:show, :builds]
+  before_action :commit, only: [:show, :builds, :failures]
   before_action :authorize_read_pipeline!
   before_action :authorize_create_pipeline!, only: [:new, :create]
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
   before_action :builds_enabled, only: :charts
+
+  wrap_parameters Ci::Pipeline
+
+  POLLING_INTERVAL = 10_000
 
   def index
     @scope = params[:scope]
@@ -29,18 +33,18 @@ class Projects::PipelinesController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        Gitlab::PollingInterval.set_header(response, interval: 10_000)
+        Gitlab::PollingInterval.set_header(response, interval: POLLING_INTERVAL)
 
         render json: {
           pipelines: PipelineSerializer
-            .new(project: @project, user: @current_user)
+            .new(project: @project, current_user: @current_user)
             .with_pagination(request, response)
             .represent(@pipelines),
           count: {
             all: @pipelines_count,
             running: @running_count,
             pending: @pending_count,
-            finished: @finished_count,
+            finished: @finished_count
           }
         }
       end
@@ -54,29 +58,43 @@ class Projects::PipelinesController < Projects::ApplicationController
   def create
     @pipeline = Ci::CreatePipelineService
       .new(project, current_user, create_params)
-      .execute(ignore_skip_ci: true, save_on_errors: false)
-    unless @pipeline.persisted?
-      render 'new'
-      return
-    end
+      .execute(:web, ignore_skip_ci: true, save_on_errors: false)
 
-    redirect_to namespace_project_pipeline_path(project.namespace, project, @pipeline)
+    if @pipeline.persisted?
+      redirect_to namespace_project_pipeline_path(project.namespace, project, @pipeline)
+    else
+      render 'new'
+    end
   end
 
   def show
+    respond_to do |format|
+      format.html
+      format.json do
+        Gitlab::PollingInterval.set_header(response, interval: POLLING_INTERVAL)
+
+        render json: PipelineSerializer
+          .new(project: @project, current_user: @current_user)
+          .represent(@pipeline, grouped: true)
+      end
+    end
   end
 
   def builds
-    respond_to do |format|
-      format.html do
-        render 'show'
-      end
+    render_show
+  end
+
+  def failures
+    if @pipeline.statuses.latest.failed.present?
+      render_show
+    else
+      redirect_to pipeline_path(@pipeline)
     end
   end
 
   def status
     render json: PipelineSerializer
-      .new(project: @project, user: @current_user)
+      .new(project: @project, current_user: @current_user)
       .represent_status(@pipeline)
   end
 
@@ -92,13 +110,25 @@ class Projects::PipelinesController < Projects::ApplicationController
   def retry
     pipeline.retry_failed(current_user)
 
-    redirect_back_or_default default: namespace_project_pipelines_path(project.namespace, project)
+    respond_to do |format|
+      format.html do
+        redirect_back_or_default default: namespace_project_pipelines_path(project.namespace, project)
+      end
+
+      format.json { head :no_content }
+    end
   end
 
   def cancel
     pipeline.cancel_running
 
-    redirect_back_or_default default: namespace_project_pipelines_path(project.namespace, project)
+    respond_to do |format|
+      format.html do
+        redirect_back_or_default default: namespace_project_pipelines_path(project.namespace, project)
+      end
+
+      format.json { head :no_content }
+    end
   end
 
   def charts
@@ -110,6 +140,14 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   private
+
+  def render_show
+    respond_to do |format|
+      format.html do
+        render 'show'
+      end
+    end
+  end
 
   def create_params
     params.require(:pipeline).permit(:ref)

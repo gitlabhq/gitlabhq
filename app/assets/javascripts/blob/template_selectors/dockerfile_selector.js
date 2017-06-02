@@ -1,4 +1,4 @@
-/* global Api */
+import Api from '../../api';
 
 import FileTemplateSelector from '../file_template_selector';
 
@@ -25,7 +25,7 @@ export default class DockerfileSelector extends FileTemplateSelector {
       search: {
         fields: ['name'],
       },
-      clicked: (query, el, e) => this.reportSelection(query.name, el, e),
+      clicked: options => this.reportSelectionName(options),
       text: item => item.name,
     });
   }

@@ -81,6 +81,19 @@ describe SubmoduleHelper do
       end
     end
 
+    context 'in-repository submodule' do
+      let(:group) { create(:group, name: "Master Project", path: "master-project") }
+      let(:project) { create(:empty_project, group: group) }
+      before do
+        self.instance_variable_set(:@project, project)
+      end
+
+      it 'in-repository' do
+        stub_url('./')
+        expect(submodule_links(submodule_item)).to eq(["/master-project/#{project.path}", "/master-project/#{project.path}/tree/hash"])
+      end
+    end
+
     context 'submodule on gitlab.com' do
       it 'detects ssh' do
         stub_url('git@gitlab.com:gitlab-org/gitlab-ce.git')
@@ -102,6 +115,11 @@ describe SubmoduleHelper do
         expect(submodule_links(submodule_item)).to eq(['https://gitlab.com/gitlab-org/gitlab-ce', 'https://gitlab.com/gitlab-org/gitlab-ce/tree/hash'])
       end
 
+      it 'handles urls with trailing whitespace' do
+        stub_url('http://gitlab.com/gitlab-org/gitlab-ce.git  ')
+        expect(submodule_links(submodule_item)).to eq(['https://gitlab.com/gitlab-org/gitlab-ce', 'https://gitlab.com/gitlab-org/gitlab-ce/tree/hash'])
+      end
+
       it 'returns original with non-standard url' do
         stub_url('http://gitlab.com/another/gitlab-org/gitlab-ce.git')
         expect(submodule_links(submodule_item)).to eq([repo.submodule_url_for, nil])
@@ -109,6 +127,18 @@ describe SubmoduleHelper do
     end
 
     context 'submodule on unsupported' do
+      it 'sanitizes unsupported protocols' do
+        stub_url('javascript:alert("XSS");')
+
+        expect(helper.submodule_links(submodule_item)).to eq([nil, nil])
+      end
+
+      it 'sanitizes unsupported protocols disguised as a repository URL' do
+        stub_url('javascript:alert("XSS");foo/bar.git')
+
+        expect(helper.submodule_links(submodule_item)).to eq([nil, nil])
+      end
+
       it 'returns original' do
         stub_url('http://mygitserver.com/gitlab-org/gitlab-ce')
         expect(submodule_links(submodule_item)).to eq([repo.submodule_url_for, nil])

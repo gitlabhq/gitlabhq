@@ -55,8 +55,22 @@ describe Ci::StopEnvironmentsService, services: true do
       end
 
       context 'when user does not have permission to stop environment' do
+        context 'when user has no access to manage deployments' do
+          before do
+            project.team << [user, :guest]
+          end
+
+          it 'does not stop environment' do
+            expect_environment_not_stopped_on('master')
+          end
+        end
+      end
+
+      context 'when branch for stop action is protected' do
         before do
-          project.team << [user, :guest]
+          project.add_developer(user)
+          create(:protected_branch, :no_one_can_push,
+                 name: 'master', project: project)
         end
 
         it 'does not stop environment' do

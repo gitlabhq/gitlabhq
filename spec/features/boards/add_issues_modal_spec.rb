@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe 'Issue Boards add issue modal', :feature, :js do
-  include WaitForVueResource
-
   let(:project) { create(:empty_project, :public) }
   let(:board) { create(:board, project: project) }
   let(:user) { create(:user) }
@@ -19,13 +17,13 @@ describe 'Issue Boards add issue modal', :feature, :js do
     login_as(user)
 
     visit namespace_project_board_path(project.namespace, project, board)
-    wait_for_vue_resource
+    wait_for_requests
   end
 
   it 'resets filtered search state' do
     visit namespace_project_board_path(project.namespace, project, board, search: 'testing')
 
-    wait_for_vue_resource
+    wait_for_requests
 
     click_button('Add issues')
 
@@ -74,7 +72,7 @@ describe 'Issue Boards add issue modal', :feature, :js do
     before do
       click_button('Add issues')
 
-      wait_for_vue_resource
+      wait_for_requests
     end
 
     it 'loads issues' do
@@ -107,7 +105,7 @@ describe 'Issue Boards add issue modal', :feature, :js do
 
         click_button('Add issues')
 
-        wait_for_vue_resource
+        wait_for_requests
 
         page.within('.add-issues-modal') do
           expect(find('.add-issues-footer')).not_to have_button(planning.title)
@@ -122,7 +120,7 @@ describe 'Issue Boards add issue modal', :feature, :js do
           find('.form-control').native.send_keys(issue.title)
           find('.form-control').native.send_keys(:enter)
 
-          wait_for_vue_resource
+          wait_for_requests
 
           expect(page).to have_selector('.card', count: 1)
         end
@@ -133,7 +131,7 @@ describe 'Issue Boards add issue modal', :feature, :js do
           find('.form-control').native.send_keys('testing search')
           find('.form-control').native.send_keys(:enter)
 
-          wait_for_vue_resource
+          wait_for_requests
 
           expect(page).not_to have_selector('.card')
           expect(page).not_to have_content("You haven't added any issues to your project yet")

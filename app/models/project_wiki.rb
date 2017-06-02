@@ -42,11 +42,8 @@ class ProjectWiki
     url_to_repo
   end
 
-  def http_url_to_repo(user = nil)
-    url = "#{Gitlab.config.gitlab.url}/#{path_with_namespace}.git"
-    credentials = Gitlab::UrlSanitizer.http_credentials_for_user(user)
-
-    Gitlab::UrlSanitizer.new(url, credentials: credentials).full_url
+  def http_url_to_repo
+    "#{Gitlab.config.gitlab.url}/#{path_with_namespace}.git"
   end
 
   def wiki_base_path
@@ -183,6 +180,6 @@ class ProjectWiki
   end
 
   def update_project_activity
-    @project.touch(:last_activity_at)
+    @project.touch(:last_activity_at, :last_repository_updated_at)
   end
 end

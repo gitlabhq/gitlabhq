@@ -13,13 +13,13 @@ class ApplicationSetting < ActiveRecord::Base
                             [\r\n]          # any number of newline characters
                           }x
 
-  serialize :restricted_visibility_levels
-  serialize :import_sources
-  serialize :disabled_oauth_sign_in_sources, Array
-  serialize :domain_whitelist, Array
-  serialize :domain_blacklist, Array
-  serialize :repository_storages
-  serialize :sidekiq_throttling_queues, Array
+  serialize :restricted_visibility_levels # rubocop:disable Cop/ActiverecordSerialize
+  serialize :import_sources # rubocop:disable Cop/ActiverecordSerialize
+  serialize :disabled_oauth_sign_in_sources, Array # rubocop:disable Cop/ActiverecordSerialize
+  serialize :domain_whitelist, Array # rubocop:disable Cop/ActiverecordSerialize
+  serialize :domain_blacklist, Array # rubocop:disable Cop/ActiverecordSerialize
+  serialize :repository_storages # rubocop:disable Cop/ActiverecordSerialize
+  serialize :sidekiq_throttling_queues, Array # rubocop:disable Cop/ActiverecordSerialize
 
   cache_markdown_field :sign_in_text
   cache_markdown_field :help_page_text
@@ -61,6 +61,10 @@ class ApplicationSetting < ActiveRecord::Base
   validates :sentry_dsn,
             presence: true,
             if: :sentry_enabled
+
+  validates :clientside_sentry_dsn,
+            presence: true,
+            if: :clientside_sentry_enabled
 
   validates :akismet_api_key,
             presence: true,
@@ -242,7 +246,7 @@ class ApplicationSetting < ActiveRecord::Base
       two_factor_grace_period: 48,
       user_default_external: false,
       polling_interval_multiplier: 1,
-      usage_ping_enabled: true
+      usage_ping_enabled: Settings.gitlab['usage_ping_enabled']
     }
   end
 
@@ -343,6 +347,14 @@ class ApplicationSetting < ActiveRecord::Base
     return false unless sidekiq_throttling_column_exists?
 
     sidekiq_throttling_enabled
+  end
+
+  def usage_ping_can_be_configured?
+    Settings.gitlab.usage_ping_enabled
+  end
+
+  def usage_ping_enabled
+    usage_ping_can_be_configured? && super
   end
 
   private

@@ -15,7 +15,7 @@ describe IssuePolicy, models: true do
   context 'a private project' do
     let(:non_member) { create(:user) }
     let(:project) { create(:empty_project, :private) }
-    let(:issue) { create(:issue, project: project, assignee: assignee, author: author) }
+    let(:issue) { create(:issue, project: project, assignees: [assignee], author: author) }
     let(:issue_no_assignee) { create(:issue, project: project) }
 
     before do
@@ -69,7 +69,7 @@ describe IssuePolicy, models: true do
     end
 
     context 'with confidential issues' do
-      let(:confidential_issue) { create(:issue, :confidential, project: project, assignee: assignee, author: author) }
+      let(:confidential_issue) { create(:issue, :confidential, project: project, assignees: [assignee], author: author) }
       let(:confidential_issue_no_assignee) { create(:issue, :confidential, project: project) }
 
       it 'does not allow non-members to read confidential issues' do
@@ -110,7 +110,7 @@ describe IssuePolicy, models: true do
 
   context 'a public project' do
     let(:project) { create(:empty_project, :public) }
-    let(:issue) { create(:issue, project: project, assignee: assignee, author: author) }
+    let(:issue) { create(:issue, project: project, assignees: [assignee], author: author) }
     let(:issue_no_assignee) { create(:issue, project: project) }
 
     before do
@@ -157,7 +157,7 @@ describe IssuePolicy, models: true do
     end
 
     context 'with confidential issues' do
-      let(:confidential_issue) { create(:issue, :confidential, project: project, assignee: assignee, author: author) }
+      let(:confidential_issue) { create(:issue, :confidential, project: project, assignees: [assignee], author: author) }
       let(:confidential_issue_no_assignee) { create(:issue, :confidential, project: project) }
 
       it 'does not allow guests to read confidential issues' do

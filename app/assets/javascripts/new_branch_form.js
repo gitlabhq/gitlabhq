@@ -1,15 +1,14 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, one-var, prefer-rest-params, max-len, vars-on-top, wrap-iife, consistent-return, comma-dangle, one-var-declaration-per-line, quotes, no-return-assign, prefer-arrow-callback, prefer-template, no-shadow, no-else-return, max-len, object-shorthand */
-(function() {
-  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; },
-    indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i += 1) { if (i in this && this[i] === item) return i; } return -1; };
+import RefSelectDropdown from '~/ref_select_dropdown';
 
+(function() {
   this.NewBranchForm = (function() {
     function NewBranchForm(form, availableRefs) {
-      this.validate = bind(this.validate, this);
+      this.validate = this.validate.bind(this);
       this.branchNameError = form.find('.js-branch-name-error');
       this.name = form.find('.js-branch-name');
       this.ref = form.find('#ref');
-      this.setupAvailableRefs(availableRefs);
+      new RefSelectDropdown($('.js-branch-select'), availableRefs); // eslint-disable-line no-new
       this.setupRestrictions();
       this.addBinding();
       this.init();
@@ -23,33 +22,6 @@
       if (this.name.length && this.name.val().length > 0) {
         return this.name.trigger('blur');
       }
-    };
-
-    NewBranchForm.prototype.setupAvailableRefs = function(availableRefs) {
-      var $branchSelect = $('.js-branch-select');
-
-      $branchSelect.glDropdown({
-        data: availableRefs,
-        filterable: true,
-        filterByText: true,
-        remote: false,
-        fieldName: $branchSelect.data('field-name'),
-        selectable: true,
-        isSelectable: function(branch, $el) {
-          return !$el.hasClass('is-active');
-        },
-        text: function(branch) {
-          return branch;
-        },
-        id: function(branch) {
-          return branch;
-        },
-        toggleLabel: function(branch) {
-          if (branch) {
-            return branch;
-          }
-        }
-      });
     };
 
     NewBranchForm.prototype.setupRestrictions = function() {
@@ -79,6 +51,8 @@
 
     NewBranchForm.prototype.validate = function() {
       var errorMessage, errors, formatter, unique, validator;
+      const indexOf = [].indexOf;
+
       this.branchNameError.empty();
       unique = function(values, value) {
         if (indexOf.call(values, value) === -1) {

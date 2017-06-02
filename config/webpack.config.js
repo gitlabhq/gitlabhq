@@ -5,6 +5,7 @@ var path = require('path');
 var webpack = require('webpack');
 var StatsPlugin = require('stats-webpack-plugin');
 var CompressionPlugin = require('compression-webpack-plugin');
+var NameAllModulesPlugin = require('name-all-modules-plugin');
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 var WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
 
@@ -17,8 +18,13 @@ var DEV_SERVER_LIVERELOAD = process.env.DEV_SERVER_LIVERELOAD !== 'false';
 var WEBPACK_REPORT = process.env.WEBPACK_REPORT;
 
 var config = {
+  // because sqljs requires fs.
+  node: {
+    fs: "empty"
+  },
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
   entry: {
+    balsamiq_viewer:      './blob/balsamiq_viewer.js',
     blob:                 './blob_edit/blob_bundle.js',
     boards:               './boards/boards_bundle.js',
     common:               './commons/index.js',
@@ -26,6 +32,7 @@ var config = {
     common_d3:            ['d3'],
     cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',
     commit_pipelines:     './commit/pipelines/pipelines_bundle.js',
+    deploy_keys:          './deploy_keys/index.js',
     diff_notes:           './diff_notes/diff_notes_bundle.js',
     environments:         './environments/environments_bundle.js',
     environments_folder:  './environments/folder/environments_folder_bundle.js',
@@ -35,29 +42,37 @@ var config = {
     groups:               './groups/index.js',
     issuable:             './issuable/issuable_bundle.js',
     issue_show:           './issue_show/index.js',
+    locale:               './locale/index.js',
     main:                 './main.js',
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
-    merge_request_widget: './merge_request_widget/ci_bundle.js',
     monitoring:           './monitoring/monitoring_bundle.js',
     network:              './network/network_bundle.js',
     notebook_viewer:      './blob/notebook_viewer.js',
     pdf_viewer:           './blob/pdf_viewer.js',
     pipelines:            './pipelines/index.js',
+    pipelines_details:     './pipelines/pipeline_details_bundle.js',
     profile:              './profile/profile_bundle.js',
     protected_branches:   './protected_branches/protected_branches_bundle.js',
     protected_tags:       './protected_tags',
+    sidebar:              './sidebar/sidebar_bundle.js',
+    schedule_form:        './pipeline_schedules/pipeline_schedule_form_bundle.js',
+    schedules_index:      './pipeline_schedules/pipeline_schedules_index_bundle.js',
     snippet:              './snippet/snippet_bundle.js',
     sketch_viewer:        './blob/sketch_viewer.js',
     stl_viewer:           './blob/stl_viewer.js',
     terminal:             './terminal/terminal_bundle.js',
     u2f:                  ['vendor/u2f'],
     users:                './users/users_bundle.js',
+    raven:                './raven/index.js',
+    vue_merge_request_widget: './vue_merge_request_widget/index.js',
+    test:                 './test.js',
   },
 
   output: {
     path: path.join(ROOT_PATH, 'public/assets/webpack'),
     publicPath: '/assets/webpack/',
-    filename: IS_PRODUCTION ? '[name].[chunkhash].bundle.js' : '[name].bundle.js'
+    filename: IS_PRODUCTION ? '[name].[chunkhash].bundle.js' : '[name].bundle.js',
+    chunkFilename: IS_PRODUCTION ? '[name].[chunkhash].chunk.js' : '[name].chunk.js',
   },
 
   devtool: 'cheap-module-source-map',
@@ -78,14 +93,18 @@ var config = {
         loader: 'raw-loader',
       },
       {
-        test: /\.gif$/,
+        test: /\.(gif|png)$/,
         loader: 'url-loader',
-        query: { mimetype: 'image/gif' },
+        options: { limit: 2048 },
       },
       {
-        test: /\.(worker\.js|pdf)$/,
+        test: /\.(worker\.js|pdf|bmpr)$/,
         exclude: /node_modules/,
         loader: 'file-loader',
+      },
+      {
+        test: /locale\/\w+\/(.*)\.js$/,
+        loader: 'exports-loader?locales',
       },
     ]
   },
@@ -110,10 +129,20 @@ var config = {
       jQuery: 'jquery',
     }),
 
-    // use deterministic module ids in all environments
-    IS_PRODUCTION ?
-      new webpack.HashedModuleIdsPlugin() :
-      new webpack.NamedModulesPlugin(),
+    // assign deterministic module ids
+    new webpack.NamedModulesPlugin(),
+    new NameAllModulesPlugin(),
+
+    // assign deterministic chunk ids
+    new webpack.NamedChunksPlugin((chunk) => {
+      if (chunk.name) {
+        return chunk.name;
+      }
+      return chunk.modules.map((m) => {
+        var chunkPath = m.request.split('!').pop();
+        return path.relative(m.context, chunkPath);
+      }).join('_');
+    }),
 
     // create cacheable common library bundle for all vue chunks
     new webpack.optimize.CommonsChunkPlugin({
@@ -122,15 +151,21 @@ var config = {
         'boards',
         'commit_pipelines',
         'cycle_analytics',
+        'deploy_keys',
         'diff_notes',
         'environments',
         'environments_folder',
-        'issuable',
+        'filtered_search',
         'issue_show',
         'merge_conflicts',
         'notebook_viewer',
         'pdf_viewer',
         'pipelines',
+        'pipelines_details',
+        'schedule_form',
+        'schedules_index',
+        'sidebar',
+        'vue_merge_request_widget',
       ],
       minChunks: function(module, count) {
         return module.resource && (/vue_shared/).test(module.resource);
@@ -151,6 +186,14 @@ var config = {
     new webpack.optimize.CommonsChunkPlugin({
       names: ['main', 'common', 'runtime'],
     }),
+
+    // locale common library
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'locale',
+      chunks: [
+        'cycle_analytics',
+      ],
+    }),
   ],
 
   resolve: {
@@ -160,6 +203,7 @@ var config = {
       'emojis':         path.join(ROOT_PATH, 'fixtures/emojis'),
       'empty_states':   path.join(ROOT_PATH, 'app/views/shared/empty_states'),
       'icons':          path.join(ROOT_PATH, 'app/views/shared/icons'),
+      'images':         path.join(ROOT_PATH, 'app/assets/images'),
       'vendor':         path.join(ROOT_PATH, 'vendor/assets/javascripts'),
       'vue$':           'vue/dist/vue.esm.js',
     }

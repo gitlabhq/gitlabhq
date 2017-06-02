@@ -49,7 +49,7 @@ class Commit
     def max_diff_options
       {
         max_files: DIFF_HARD_LIMIT_FILES,
-        max_lines: DIFF_HARD_LIMIT_LINES,
+        max_lines: DIFF_HARD_LIMIT_LINES
       }
     end
 
@@ -326,13 +326,21 @@ class Commit
   end
 
   def raw_diffs(*args)
-    # NOTE: This feature is intentionally disabled until
-    # https://gitlab.com/gitlab-org/gitaly/issues/178 is resolved
-    # if Gitlab::GitalyClient.feature_enabled?(:commit_raw_diffs)
-    #   Gitlab::GitalyClient::Commit.diff_from_parent(self, *args)
-    # else
-    raw.diffs(*args)
-    # end
+    if Gitlab::GitalyClient.feature_enabled?(:commit_raw_diffs)
+      Gitlab::GitalyClient::Commit.new(project.repository).diff_from_parent(self, *args)
+    else
+      raw.diffs(*args)
+    end
+  end
+
+  def raw_deltas
+    @deltas ||= Gitlab::GitalyClient.migrate(:commit_deltas) do |is_enabled|
+      if is_enabled
+        Gitlab::GitalyClient::Commit.new(project.repository).commit_deltas(self)
+      else
+        raw.deltas
+      end
+    end
   end
 
   def diffs(diff_options = nil)
@@ -372,7 +380,7 @@ class Commit
   def repo_changes
     changes = { added: [], modified: [], removed: [] }
 
-    raw_diffs(deltas_only: true).each do |diff|
+    raw_deltas.each do |diff|
       if diff.deleted_file
         changes[:removed] << diff.old_path
       elsif diff.renamed_file || diff.new_file

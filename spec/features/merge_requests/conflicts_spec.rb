@@ -23,13 +23,13 @@ feature 'Merge request conflict resolution', js: true, feature: true do
       end
 
       click_button 'Commit conflict resolution'
-      wait_for_ajax
+      wait_for_requests
 
       expect(page).to have_content('All merge conflicts were resolved')
       merge_request.reload_diff
 
       click_on 'Changes'
-      wait_for_ajax
+      wait_for_requests
 
       within find('.diff-file', text: 'files/ruby/popen.rb') do
         expect(page).to have_selector('.line_content.new', text: "vars = { 'PWD' => path }")
@@ -53,23 +53,23 @@ feature 'Merge request conflict resolution', js: true, feature: true do
 
       within find('.files-wrapper .diff-file', text: 'files/ruby/popen.rb') do
         click_button 'Edit inline'
-        wait_for_ajax
+        wait_for_requests
         execute_script('ace.edit($(".files-wrapper .diff-file pre")[0]).setValue("One morning");')
       end
 
       within find('.files-wrapper .diff-file', text: 'files/ruby/regex.rb') do
         click_button 'Edit inline'
-        wait_for_ajax
+        wait_for_requests
         execute_script('ace.edit($(".files-wrapper .diff-file pre")[1]).setValue("Gregor Samsa woke from troubled dreams");')
       end
 
       click_button 'Commit conflict resolution'
-      wait_for_ajax
+      wait_for_requests
       expect(page).to have_content('All merge conflicts were resolved')
       merge_request.reload_diff
 
       click_on 'Changes'
-      wait_for_ajax
+      wait_for_requests
 
       expect(page).to have_content('One morning')
       expect(page).to have_content('Gregor Samsa woke from troubled dreams')
@@ -126,21 +126,21 @@ feature 'Merge request conflict resolution', js: true, feature: true do
 
       it 'conflicts are resolved in Edit inline mode' do
         within find('.files-wrapper .diff-file', text: 'files/markdown/ruby-style-guide.md') do
-          wait_for_ajax
+          wait_for_requests
           execute_script('ace.edit($(".files-wrapper .diff-file pre")[0]).setValue("Gregor Samsa woke from troubled dreams");')
         end
 
         click_button 'Commit conflict resolution'
-        wait_for_ajax
+        wait_for_requests
 
         expect(page).to have_content('All merge conflicts were resolved')
 
         merge_request.reload_diff
 
         click_on 'Changes'
-        wait_for_ajax
+        wait_for_requests
         click_link 'Expand all'
-        wait_for_ajax
+        wait_for_requests
 
         expect(page).to have_content('Gregor Samsa woke from troubled dreams')
       end
@@ -151,7 +151,7 @@ feature 'Merge request conflict resolution', js: true, feature: true do
     'conflict-too-large' => 'when the conflicts contain a large file',
     'conflict-binary-file' => 'when the conflicts contain a binary file',
     'conflict-missing-side' => 'when the conflicts contain a file edited in one branch and deleted in another',
-    'conflict-non-utf8' => 'when the conflicts contain a non-UTF-8 file',
+    'conflict-non-utf8' => 'when the conflicts contain a non-UTF-8 file'
   }.freeze
 
   UNRESOLVABLE_CONFLICTS.each do |source_branch, description|
@@ -171,7 +171,7 @@ feature 'Merge request conflict resolution', js: true, feature: true do
 
       it 'shows an error if the conflicts page is visited directly' do
         visit current_url + '/conflicts'
-        wait_for_ajax
+        wait_for_requests
 
         expect(find('#conflicts')).to have_content('Please try to resolve them locally.')
       end

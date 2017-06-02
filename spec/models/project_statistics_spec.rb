@@ -35,7 +35,7 @@ describe ProjectStatistics, models: true do
         commit_count: 8.exabytes - 1,
         repository_size: 2.exabytes,
         lfs_objects_size: 2.exabytes,
-        build_artifacts_size: 4.exabytes - 1,
+        build_artifacts_size: 4.exabytes - 1
       )
 
       statistics.reload
@@ -149,7 +149,7 @@ describe ProjectStatistics, models: true do
     it "sums all storage counters" do
       statistics.update!(
         repository_size: 2,
-        lfs_objects_size: 3,
+        lfs_objects_size: 3
       )
 
       statistics.reload

@@ -31,8 +31,9 @@ describe API::V3::SystemHooks do
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.first['url']).to eq(hook.url)
-        expect(json_response.first['push_events']).to be true
+        expect(json_response.first['push_events']).to be false
         expect(json_response.first['tag_push_events']).to be false
+        expect(json_response.first['repository_update_events']).to be true
       end
     end
   end

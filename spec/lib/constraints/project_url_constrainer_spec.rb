@@ -24,9 +24,26 @@ describe ProjectUrlConstrainer, lib: true do
         it { expect(subject.matches?(request)).to be_falsey }
       end
     end
+
+    context 'when the request matches a redirect route' do
+      let(:old_project_path) { 'old_project_path' }
+      let!(:redirect_route) { project.redirect_routes.create!(path: "#{namespace.full_path}/#{old_project_path}") }
+
+      context 'and is a GET request' do
+        let(:request) { build_request(namespace.full_path, old_project_path) }
+        it { expect(subject.matches?(request)).to be_truthy }
+      end
+
+      context 'and is NOT a GET request' do
+        let(:request) { build_request(namespace.full_path, old_project_path, 'POST') }
+        it { expect(subject.matches?(request)).to be_falsey }
+      end
+    end
   end
 
-  def build_request(namespace, project)
-    double(:request, params: { namespace_id: namespace, id: project })
+  def build_request(namespace, project, method = 'GET')
+    double(:request,
+      'get?': (method == 'GET'),
+      params: { namespace_id: namespace, id: project })
   end
 end

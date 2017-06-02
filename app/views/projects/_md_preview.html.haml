@@ -1,3 +1,5 @@
+- referenced_users = local_assigns.fetch(:referenced_users, nil)
+
 .md-area
   .md-header
     %ul.nav-links.clearfix
@@ -28,9 +30,10 @@
 
   .md-write-holder
     = yield
-  .md.md-preview-holder.js-md-preview.hide{ class: (preview_class if defined?(preview_class)) }
+  .md.md-preview-holder.js-md-preview.hide.md-preview{ data: { url: url } }
+  .referenced-commands.hide
 
-  - if defined?(referenced_users) && referenced_users
+  - if referenced_users
     .referenced-users.hide
       %span
         = icon("exclamation-triangle")

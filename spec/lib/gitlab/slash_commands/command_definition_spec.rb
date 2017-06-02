@@ -167,6 +167,58 @@ describe Gitlab::SlashCommands::CommandDefinition do
             end
           end
         end
+
+        context 'when the command defines parse_params block' do
+          before do
+            subject.parse_params_block = ->(raw) { raw.strip }
+            subject.action_block = ->(parsed) { self.received_arg = parsed }
+          end
+
+          it 'executes the command passing the parsed param' do
+            subject.execute(context, {}, 'something   ')
+
+            expect(context.received_arg).to eq('something')
+          end
+        end
+      end
+    end
+  end
+
+  describe '#explain' do
+    context 'when the command is not available' do
+      before do
+        subject.condition_block = proc { false }
+        subject.explanation = 'Explanation'
+      end
+
+      it 'returns nil' do
+        result = subject.explain({}, {}, nil)
+
+        expect(result).to be_nil
+      end
+    end
+
+    context 'when the explanation is a static string' do
+      before do
+        subject.explanation = 'Explanation'
+      end
+
+      it 'returns this static string' do
+        result = subject.explain({}, {}, nil)
+
+        expect(result).to eq 'Explanation'
+      end
+    end
+
+    context 'when the explanation is dynamic' do
+      before do
+        subject.explanation = proc { |arg| "Dynamic #{arg}" }
+      end
+
+      it 'invokes the proc' do
+        result = subject.explain({}, {}, 'explanation')
+
+        expect(result).to eq 'Dynamic explanation'
       end
     end
   end

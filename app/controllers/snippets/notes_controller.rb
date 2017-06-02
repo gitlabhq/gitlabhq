@@ -13,15 +13,6 @@ class Snippets::NotesController < ApplicationController
   end
   alias_method :awardable, :note
 
-  def note_html(note)
-    render_to_string(
-      "shared/notes/_note",
-      layout: false,
-      formats: [:html],
-      locals: { note: note }
-    )
-  end
-
   def project
     nil
   end

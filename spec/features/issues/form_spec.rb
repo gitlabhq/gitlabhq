@@ -1,8 +1,9 @@
 require 'rails_helper'
 
-describe 'New/edit issue', feature: true, js: true do
+describe 'New/edit issue', :feature, :js do
   include GitlabRoutingHelper
   include ActionView::Helpers::JavaScriptHelper
+  include FormHelper
 
   let!(:project)   { create(:project) }
   let!(:user)      { create(:user)}
@@ -10,7 +11,7 @@ describe 'New/edit issue', feature: true, js: true do
   let!(:milestone) { create(:milestone, project: project) }
   let!(:label)     { create(:label, project: project) }
   let!(:label2)    { create(:label, project: project) }
-  let!(:issue)     { create(:issue, project: project, assignee: user, milestone: milestone) }
+  let!(:issue)     { create(:issue, project: project, assignees: [user], milestone: milestone) }
 
   before do
     project.team << [user, :master]
@@ -23,23 +24,126 @@ describe 'New/edit issue', feature: true, js: true do
       visit new_namespace_project_issue_path(project.namespace, project)
     end
 
+    describe 'shorten users API pagination limit' do
+      before do
+        allow_any_instance_of(FormHelper).to receive(:issue_dropdown_options).and_wrap_original do |original, *args|
+          has_multiple_assignees = *args[1]
+
+          options = {
+            toggle_class: 'js-user-search js-assignee-search js-multiselect js-save-user-data',
+            title: 'Select assignee',
+            filter: true,
+            dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-assignee',
+            placeholder: 'Search users',
+            data: {
+              per_page: 1,
+              null_user: true,
+              current_user: true,
+              project_id: project.try(:id),
+              field_name: "issue[assignee_ids][]",
+              default_label: 'Assignee',
+              'max-select': 1,
+              'dropdown-header': 'Assignee',
+              multi_select: true,
+              'input-meta': 'name',
+              'always-show-selectbox': true
+            }
+          }
+
+          if has_multiple_assignees
+            options[:title] = 'Select assignee(s)'
+            options[:data][:'dropdown-header'] = 'Assignee(s)'
+            options[:data].delete(:'max-select')
+          end
+
+          options
+        end
+
+        visit new_namespace_project_issue_path(project.namespace, project)
+
+        click_button 'Unassigned'
+
+        wait_for_requests
+      end
+
+      it 'should display selected users even if they are not part of the original API call' do
+        find('.dropdown-input-field').native.send_keys user2.name
+
+        page.within '.dropdown-menu-user' do
+          expect(page).to have_content user2.name
+          click_link user2.name
+        end
+
+        find('.js-dropdown-input-clear').click
+
+        page.within '.dropdown-menu-user' do
+          expect(page).to have_content user.name
+          expect(find('.dropdown-menu-user a.is-active').first(:xpath, '..')['data-user-id']).to eq(user2.id.to_s)
+        end
+      end
+    end
+
+    describe 'single assignee' do
+      before do
+        click_button 'Unassigned'
+
+        wait_for_requests
+      end
+
+      it 'unselects other assignees when unassigned is selected' do
+        page.within '.dropdown-menu-user' do
+          click_link user2.name
+        end
+
+        click_button user2.name
+
+        page.within '.dropdown-menu-user' do
+          click_link 'Unassigned'
+        end
+
+        expect(find('input[name="issue[assignee_ids][]"]', visible: false).value).to match('0')
+      end
+
+      it 'toggles assign to me when current user is selected and unselected' do
+        page.within '.dropdown-menu-user' do
+          click_link user.name
+        end
+
+        expect(find('a', text: 'Assign to me', visible: false)).not_to be_visible
+
+        click_button user.name
+
+        page.within('.dropdown-menu-user') do
+          click_link user.name
+        end
+
+        expect(page.find('.dropdown-menu-user', visible: false)).not_to be_visible
+      end
+    end
+
     it 'allows user to create new issue' do
       fill_in 'issue_title', with: 'title'
       fill_in 'issue_description', with: 'title'
 
       expect(find('a', text: 'Assign to me')).to be_visible
-      click_button 'Assignee'
+      click_button 'Unassigned'
+
+      wait_for_requests
+
       page.within '.dropdown-menu-user' do
         click_link user2.name
       end
-      expect(find('input[name="issue[assignee_id]"]', visible: false).value).to match(user2.id.to_s)
+      expect(find('input[name="issue[assignee_ids][]"]', visible: false).value).to match(user2.id.to_s)
       page.within '.js-assignee-search' do
         expect(page).to have_content user2.name
       end
       expect(find('a', text: 'Assign to me')).to be_visible
 
       click_link 'Assign to me'
-      expect(find('input[name="issue[assignee_id]"]', visible: false).value).to match(user.id.to_s)
+      assignee_ids = page.all('input[name="issue[assignee_ids][]"]', visible: false)
+
+      expect(assignee_ids[0].value).to match(user.id.to_s)
+
       page.within '.js-assignee-search' do
         expect(page).to have_content user.name
       end
@@ -69,7 +173,7 @@ describe 'New/edit issue', feature: true, js: true do
 
       page.within '.issuable-sidebar' do
         page.within '.assignee' do
-          expect(page).to have_content user.name
+          expect(page).to have_content "Assignee"
         end
 
         page.within '.milestone' do
@@ -108,30 +212,22 @@ describe 'New/edit issue', feature: true, js: true do
     end
 
     it 'correctly updates the selected user when changing assignee' do
-      click_button 'Assignee'
+      click_button 'Unassigned'
+
+      wait_for_requests
+
       page.within '.dropdown-menu-user' do
         click_link user.name
       end
 
-      expect(find('input[name="issue[assignee_id]"]', visible: false).value).to match(user.id.to_s)
-
+      expect(find('.js-assignee-search')).to have_content(user.name)
       click_button user.name
-
-      expect(find('.dropdown-menu-user a.is-active').first(:xpath, '..')['data-user-id']).to eq(user.id.to_s)
-
-      # check the ::before pseudo element to ensure checkmark icon is present
-      expect(before_for_selector('.dropdown-menu-selectable a.is-active')).not_to eq('')
-      expect(before_for_selector('.dropdown-menu-selectable a:not(.is-active)')).to eq('')
 
       page.within '.dropdown-menu-user' do
         click_link user2.name
       end
 
-      expect(find('input[name="issue[assignee_id]"]', visible: false).value).to match(user2.id.to_s)
-
-      click_button user2.name
-
-      expect(find('.dropdown-menu-user a.is-active').first(:xpath, '..')['data-user-id']).to eq(user2.id.to_s)
+      expect(find('.js-assignee-search')).to have_content(user2.name)
     end
   end
 
@@ -141,7 +237,7 @@ describe 'New/edit issue', feature: true, js: true do
     end
 
     it 'allows user to update issue' do
-      expect(find('input[name="issue[assignee_id]"]', visible: false).value).to match(user.id.to_s)
+      expect(find('input[name="issue[assignee_ids][]"]', visible: false).value).to match(user.id.to_s)
       expect(find('input[name="issue[milestone_id]"]', visible: false).value).to match(milestone.id.to_s)
       expect(find('a', text: 'Assign to me', visible: false)).not_to be_visible
 
@@ -179,6 +275,37 @@ describe 'New/edit issue', feature: true, js: true do
           expect(page).to have_content label.title
           expect(page).to have_content label2.title
         end
+      end
+    end
+  end
+
+  describe 'sub-group project' do
+    let(:group) { create(:group) }
+    let(:nested_group_1) { create(:group, parent: group) }
+    let(:sub_group_project) { create(:empty_project, group: nested_group_1) }
+
+    before do
+      sub_group_project.add_master(user)
+
+      visit new_namespace_project_issue_path(sub_group_project.namespace, sub_group_project)
+    end
+
+    it 'creates new label from dropdown' do
+      click_button 'Labels'
+
+      click_link 'Create new label'
+
+      page.within '.dropdown-new-label' do
+        fill_in 'new_label_name', with: 'test label'
+        first('.suggest-colors-dropdown a').click
+
+        click_button 'Create'
+
+        wait_for_requests
+      end
+
+      page.within '.dropdown-menu-labels' do
+        expect(page).to have_link 'test label'
       end
     end
   end

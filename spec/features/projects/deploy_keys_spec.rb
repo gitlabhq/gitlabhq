@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Project deploy keys', feature: true do
+describe 'Project deploy keys', :js, :feature do
   let(:user) { create(:user) }
   let(:project) { create(:project_empty_repo) }
 
@@ -17,9 +17,13 @@ describe 'Project deploy keys', feature: true do
     it 'removes association between project and deploy key' do
       visit namespace_project_settings_repository_path(project.namespace, project)
 
-      page.within '.deploy-keys' do
-        expect { click_on 'Remove' }
-          .to change { project.deploy_keys.count }.by(-1)
+      page.within(find('.deploy-keys')) do
+        expect(page).to have_selector('.deploy-keys li', count: 1)
+
+        click_on 'Remove'
+
+        expect(page).not_to have_selector('.fa-spinner', count: 0)
+        expect(page).to have_selector('.deploy-keys li', count: 0)
       end
     end
   end

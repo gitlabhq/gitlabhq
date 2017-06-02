@@ -52,7 +52,7 @@ class BambooService < CiService
           placeholder: 'Bamboo build plan key like KEY' },
         { type: 'text', name: 'username',
           placeholder: 'A user with API access, if applicable' },
-        { type: 'password', name: 'password' },
+        { type: 'password', name: 'password' }
     ]
   end
 

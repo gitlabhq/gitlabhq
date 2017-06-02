@@ -7,16 +7,20 @@ feature 'Merge When Pipeline Succeeds', :feature, :js do
   let(:merge_request) do
     create(:merge_request_with_diffs, source_project: project,
                                       author: user,
-                                      title: 'Bug NS-04')
+                                      title: 'Bug NS-04',
+                                      merge_params: { force_remove_source_branch: '1' })
   end
 
   let(:pipeline) do
     create(:ci_pipeline, project: project,
                          sha: merge_request.diff_head_sha,
-                         ref: merge_request.source_branch)
+                         ref: merge_request.source_branch,
+                         head_pipeline_of: merge_request)
   end
 
-  before { project.team << [user, :master] }
+  before do
+    project.add_master(user)
+  end
 
   context 'when there is active pipeline for merge request' do
     background do
@@ -39,7 +43,7 @@ feature 'Merge When Pipeline Succeeds', :feature, :js do
 
           expect(page).to have_content "Set by #{user.name} to be merged automatically when the pipeline succeeds."
           expect(page).to have_content "The source branch will not be removed."
-          expect(page).to have_link "Cancel automatic merge"
+          expect(page).to have_selector ".js-cancel-auto-merge"
           visit_merge_request(merge_request) # Needed to refresh the page
           expect(page).to have_content /enabled an automatic merge when the pipeline for \h{8} succeeds/i
         end
@@ -79,7 +83,8 @@ feature 'Merge When Pipeline Succeeds', :feature, :js do
                    source_project: project,
                    title: 'Bug NS-04',
                    author: user,
-                   merge_user: user)
+                   merge_user: user,
+                   merge_params: { force_remove_source_branch: '1' })
         end
 
         before do
@@ -93,9 +98,7 @@ feature 'Merge When Pipeline Succeeds', :feature, :js do
     describe 'enabling Merge when pipeline succeeds via dropdown' do
       it 'activates the Merge when pipeline succeeds feature' do
         click_button 'Select merge moment'
-        within('.js-merge-dropdown') do
-          click_link 'Merge when pipeline succeeds'
-        end
+        click_link 'Merge when pipeline succeeds'
 
         expect(page).to have_content "Set by #{user.name} to be merged automatically when the pipeline succeeds."
         expect(page).to have_content "The source branch will not be removed."
@@ -129,13 +132,6 @@ feature 'Merge When Pipeline Succeeds', :feature, :js do
 
       visit_merge_request(merge_request) # refresh the page
       expect(page).to have_content "canceled the automatic merge"
-    end
-
-    it "allows the user to remove the source branch" do
-      expect(page).to have_link "Remove source branch when merged"
-
-      click_link "Remove source branch when merged"
-      expect(page).to have_content "The source branch will be removed"
     end
 
     context 'when pipeline succeeds' do

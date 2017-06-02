@@ -1,11 +1,9 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-unused-vars, one-var, no-underscore-dangle, prefer-template, no-else-return, prefer-arrow-callback, max-len */
 
 (function() {
-  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
-
   this.ProjectNew = (function() {
     function ProjectNew() {
-      this.toggleSettings = bind(this.toggleSettings, this);
+      this.toggleSettings = this.toggleSettings.bind(this);
       this.$selects = $('.features select');
       this.$repoSelects = this.$selects.filter('.js-repo-select');
 

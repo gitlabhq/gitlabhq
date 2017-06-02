@@ -17,7 +17,7 @@
             .description
               %strong Create a merge request
               %span
-                Creates a branch named after this issue and a merge request. The source branch is '#{@project.default_branch}' by default.
+                Creates a merge request named after this issue, with source branch created from '#{@project.default_branch}'.
         %li.divider.droplab-item-ignore
         %li{ role: 'button', data: {  value: 'create-branch', 'text' => 'Create a branch' } }
           .menu-item
@@ -26,4 +26,4 @@
             .description
               %strong Create a branch
               %span
-                Creates a branch named after this issue. The source branch is '#{@project.default_branch}' by default.
+                Creates a branch named after this issue, from '#{@project.default_branch}'.

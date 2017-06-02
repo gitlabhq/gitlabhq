@@ -1,4 +1,5 @@
 require_relative 'error'
+
 module Github
   class Import
     include Gitlab::ShellAdapter
@@ -6,6 +7,7 @@ module Github
     class MergeRequest < ::MergeRequest
       self.table_name = 'merge_requests'
 
+      self.reset_callbacks :create
       self.reset_callbacks :save
       self.reset_callbacks :commit
       self.reset_callbacks :update
@@ -16,6 +18,7 @@ module Github
       self.table_name = 'issues'
 
       self.reset_callbacks :save
+      self.reset_callbacks :create
       self.reset_callbacks :commit
       self.reset_callbacks :update
       self.reset_callbacks :validate
@@ -79,7 +82,7 @@ module Github
     def fetch_repository
       begin
         project.create_repository unless project.repository.exists?
-        project.repository.add_remote('github', "https://{options.fetch(:token)}@github.com/#{repo}.git")
+        project.repository.add_remote('github', "https://#{options.fetch(:token)}@github.com/#{repo}.git")
         project.repository.set_remote_as_mirror('github')
         project.repository.fetch_remote('github', forced: true)
       rescue Gitlab::Shell::Error => e
@@ -245,7 +248,7 @@ module Github
               issue.label_ids    = label_ids(representation.labels)
               issue.milestone_id = milestone_id(representation.milestone)
               issue.author_id    = author_id
-              issue.assignee_id  = user_id(representation.assignee)
+              issue.assignee_ids = [user_id(representation.assignee)]
               issue.created_at   = representation.created_at
               issue.updated_at   = representation.updated_at
               issue.save!(validate: false)

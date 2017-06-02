@@ -1,6 +1,7 @@
 module SystemNoteHelper
   ICON_NAMES_BY_ACTION = {
     'commit' => 'icon_commit',
+    'description' => 'icon_edit',
     'merge' => 'icon_merge',
     'merged' => 'icon_merged',
     'opened' => 'icon_status_open',
@@ -16,7 +17,8 @@ module SystemNoteHelper
     'visible' => 'icon_eye',
     'milestone' => 'icon_clock_o',
     'discussion' => 'icon_comment_o',
-    'moved' => 'icon_arrow_circle_o_right'
+    'moved' => 'icon_arrow_circle_o_right',
+    'outdated' => 'icon_edit'
   }.freeze
 
   def icon_for_system_note(note)

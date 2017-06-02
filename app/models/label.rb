@@ -133,6 +133,10 @@ class Label < ActiveRecord::Base
     template
   end
 
+  def color
+    super || DEFAULT_COLOR
+  end
+
   def text_color
     LabelsHelper.text_color_for_bg(self.color)
   end

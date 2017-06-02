@@ -16,6 +16,11 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
     expect(reference_filter(act).to_html).to eq(exp)
   end
 
+  it 'ignores references with text before the @ sign' do
+    exp = act = "Hey foo#{reference}"
+    expect(reference_filter(act).to_html).to eq(exp)
+  end
+
   %w(pre code a style).each do |elem|
     it "ignores valid references contained inside '#{elem}' element" do
       exp = act = "<#{elem}>Hey #{reference}</#{elem}>"

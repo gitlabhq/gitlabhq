@@ -1,4 +1,4 @@
-# Milestones
+# Milestones API
 
 ## List project milestones
 

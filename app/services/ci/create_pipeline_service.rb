@@ -2,15 +2,17 @@ module Ci
   class CreatePipelineService < BaseService
     attr_reader :pipeline
 
-    def execute(ignore_skip_ci: false, save_on_errors: true, trigger_request: nil)
+    def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil)
       @pipeline = Ci::Pipeline.new(
+        source: source,
         project: project,
         ref: ref,
         sha: sha,
         before_sha: before_sha,
         tag: tag?,
         trigger_requests: Array(trigger_request),
-        user: current_user
+        user: current_user,
+        pipeline_schedule: schedule
       )
 
       unless project.builds_enabled?
@@ -46,7 +48,7 @@ module Ci
       end
 
       Ci::Pipeline.transaction do
-        pipeline.save
+        update_merge_requests_head_pipeline if pipeline.save
 
         Ci::CreatePipelineBuildsService
           .new(project, current_user)
@@ -59,6 +61,13 @@ module Ci
     end
 
     private
+
+    def update_merge_requests_head_pipeline
+      return unless pipeline.latest?
+
+      MergeRequest.where(source_project: @pipeline.project, source_branch: @pipeline.ref).
+        update_all(head_pipeline_id: @pipeline.id)
+    end
 
     def skip_ci?
       return false unless pipeline.git_commit_message

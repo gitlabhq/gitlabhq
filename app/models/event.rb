@@ -26,10 +26,11 @@ class Event < ActiveRecord::Base
   belongs_to :target, polymorphic: true
 
   # For Hash only
-  serialize :data
+  serialize :data # rubocop:disable Cop/ActiverecordSerialize
 
   # Callbacks
   after_create :reset_project_activity
+  after_create :set_last_repository_updated_at, if: :push?
 
   # Scopes
   scope :recent, -> { reorder(id: :desc) }
@@ -356,5 +357,10 @@ class Event < ActiveRecord::Base
 
   def recent_update?
     project.last_activity_at > RESET_PROJECT_ACTIVITY_INTERVAL.ago
+  end
+
+  def set_last_repository_updated_at
+    Project.unscoped.where(id: project_id).
+      update_all(last_repository_updated_at: created_at)
   end
 end

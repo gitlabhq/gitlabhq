@@ -92,7 +92,13 @@ describe NotesHelper do
             )
           end
 
-          let(:discussion) { create(:diff_note_on_merge_request, noteable: merge_request, project: project, position: position).to_discussion }
+          let(:diff_note) { create(:diff_note_on_merge_request, noteable: merge_request, project: project, position: position) }
+          let(:discussion) { diff_note.to_discussion }
+
+          before do
+            diff_note.position = diff_note.original_position
+            diff_note.save!
+          end
 
           it 'returns the diff version comparison path with the line code' do
             expect(helper.discussion_path(discussion)).to eq(diffs_namespace_project_merge_request_path(project.namespace, project, merge_request, diff_id: merge_request_diff3, start_sha: merge_request_diff1.head_commit_sha, anchor: discussion.line_code))
@@ -173,6 +179,81 @@ describe NotesHelper do
           expect(helper.discussion_path(discussion)).to eq(namespace_project_commit_path(project.namespace, project, commit))
         end
       end
+    end
+  end
+
+  describe '#notes_url' do
+    it 'return snippet notes path for personal snippet' do
+      @snippet = create(:personal_snippet)
+
+      expect(helper.notes_url).to eq("/snippets/#{@snippet.id}/notes")
+    end
+
+    it 'return project notes path for project snippet' do
+      namespace = create(:namespace, path: 'nm')
+      @project = create(:empty_project, path: 'test', namespace: namespace)
+      @snippet = create(:project_snippet, project: @project)
+      @noteable = @snippet
+
+      expect(helper.notes_url).to eq("/nm/test/noteable/project_snippet/#{@noteable.id}/notes")
+    end
+
+    it 'return project notes path for other noteables' do
+      namespace = create(:namespace, path: 'nm')
+      @project = create(:empty_project, path: 'test', namespace: namespace)
+      @noteable = create(:issue, project: @project)
+
+      expect(helper.notes_url).to eq("/nm/test/noteable/issue/#{@noteable.id}/notes")
+    end
+  end
+
+  describe '#note_url' do
+    it 'return snippet notes path for personal snippet' do
+      note = create(:note_on_personal_snippet)
+
+      expect(helper.note_url(note)).to eq("/snippets/#{note.noteable.id}/notes/#{note.id}")
+    end
+
+    it 'return project notes path for project snippet' do
+      namespace = create(:namespace, path: 'nm')
+      @project = create(:empty_project, path: 'test', namespace: namespace)
+      note = create(:note_on_project_snippet, project: @project)
+
+      expect(helper.note_url(note)).to eq("/nm/test/notes/#{note.id}")
+    end
+
+    it 'return project notes path for other noteables' do
+      namespace = create(:namespace, path: 'nm')
+      @project = create(:empty_project, path: 'test', namespace: namespace)
+      note = create(:note_on_issue, project: @project)
+
+      expect(helper.note_url(note)).to eq("/nm/test/notes/#{note.id}")
+    end
+  end
+
+  describe '#form_resurces' do
+    it 'returns note for personal snippet' do
+      @snippet = create(:personal_snippet)
+      @note = create(:note_on_personal_snippet)
+
+      expect(helper.form_resources).to eq([@note])
+    end
+
+    it 'returns namespace, project and note for project snippet' do
+      namespace = create(:namespace, path: 'nm')
+      @project = create(:empty_project, path: 'test', namespace: namespace)
+      @snippet = create(:project_snippet, project: @project)
+      @note = create(:note_on_personal_snippet)
+
+      expect(helper.form_resources).to eq([@project.namespace, @project, @note])
+    end
+
+    it 'returns namespace, project and note path for other noteables' do
+      namespace = create(:namespace, path: 'nm')
+      @project = create(:empty_project, path: 'test', namespace: namespace)
+      @note = create(:note_on_issue, project: @project)
+
+      expect(helper.form_resources).to eq([@project.namespace, @project, @note])
     end
   end
 end

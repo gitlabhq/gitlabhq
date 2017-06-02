@@ -1,5 +1,6 @@
 FactoryGirl.define do
   factory :ci_empty_pipeline, class: Ci::Pipeline do
+    source :push
     ref 'master'
     sha '97de212e80737a608d939f648d959671fb0a0142'
     status 'pending'
@@ -18,6 +19,15 @@ FactoryGirl.define do
           YAML.dump({ rspec: { script: "ls" } })
         end
       end
+    end
+
+    # Persist merge request head_pipeline_id
+    # on pipeline factories to avoid circular references
+    transient { head_pipeline_of nil }
+
+    after(:create) do |pipeline, evaluator|
+      merge_request = evaluator.head_pipeline_of
+      merge_request&.update(head_pipeline: pipeline)
     end
 
     factory :ci_pipeline do

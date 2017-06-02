@@ -3,7 +3,6 @@ class SnippetsController < ApplicationController
   include ToggleAwardEmoji
   include SpammableActions
   include SnippetsActions
-  include MarkdownPreview
   include RendersBlob
 
   before_action :snippet, only: [:show, :edit, :destroy, :update, :raw]
@@ -28,12 +27,8 @@ class SnippetsController < ApplicationController
 
       return render_404 unless @user
 
-      @snippets = SnippetsFinder.new.execute(current_user, {
-        filter: :by_user,
-        user: @user,
-        scope: params[:scope]
-      })
-      .page(params[:page])
+      @snippets = SnippetsFinder.new(current_user, author: @user, scope: params[:scope])
+        .execute.page(params[:page])
 
       render 'index'
     else
@@ -63,8 +58,9 @@ class SnippetsController < ApplicationController
 
   def show
     blob = @snippet.blob
-    override_max_blob_size(blob)
+    conditionally_expand_blob(blob)
 
+    @note = Note.new(noteable: @snippet)
     @noteable = @snippet
 
     @discussions = @snippet.discussions
@@ -90,26 +86,33 @@ class SnippetsController < ApplicationController
   end
 
   def preview_markdown
-    render_markdown_preview(params[:text], skip_project_check: true)
+    result = PreviewMarkdownService.new(@project, current_user, params).execute
+
+    render json: {
+      body: view_context.markdown(result[:text], skip_project_check: true),
+      references: {
+        users: result[:users]
+      }
+    }
   end
 
   protected
 
   def snippet
-    @snippet ||= if current_user
-                   PersonalSnippet.where("author_id = ? OR visibility_level IN (?)",
-                     current_user.id,
-                     [Snippet::PUBLIC, Snippet::INTERNAL]).
-                     find(params[:id])
-                 else
-                   PersonalSnippet.find(params[:id])
-                 end
+    @snippet ||= PersonalSnippet.find_by(id: params[:id])
   end
+
   alias_method :awardable, :snippet
   alias_method :spammable, :snippet
 
   def authorize_read_snippet!
-    authenticate_user! unless can?(current_user, :read_personal_snippet, @snippet)
+    return if can?(current_user, :read_personal_snippet, @snippet)
+
+    if current_user
+      render_404
+    else
+      authenticate_user!
+    end
   end
 
   def authorize_update_snippet!

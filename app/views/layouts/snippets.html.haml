@@ -1,3 +1,9 @@
 - header_title  "Snippets", snippets_path
 
+- content_for :page_specific_javascripts do
+  - if @snippet&.persisted? && current_user
+    :javascript
+      window.uploads_path = "#{upload_path('personal_snippet', @snippet)}";
+      window.preview_markdown_path = "#{preview_markdown_snippet_path(@snippet)}";
+
 = render template: "layouts/application"

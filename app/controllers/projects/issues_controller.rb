@@ -11,10 +11,10 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :redirect_to_external_issue_tracker, only: [:index, :new]
   before_action :module_enabled
   before_action :issue, only: [:edit, :update, :show, :referenced_merge_requests,
-                               :related_branches, :can_create_branch, :rendered_title, :create_merge_request]
+                               :related_branches, :can_create_branch, :realtime_changes, :create_merge_request]
 
   # Allow read any issue
-  before_action :authorize_read_issue!, only: [:show, :rendered_title]
+  before_action :authorize_read_issue!, only: [:show, :realtime_changes]
 
   # Allow write(create) issue
   before_action :authorize_create_issue!, only: [:new, :create]
@@ -67,7 +67,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def new
     params[:issue] ||= ActionController::Parameters.new(
-      assignee_id: ""
+      assignee_ids: ""
     )
     build_params = issue_params.merge(
       merge_request_to_resolve_discussions_of: params[:merge_request_to_resolve_discussions_of],
@@ -148,10 +148,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
       format.json do
         if @issue.valid?
-          render json: @issue.to_json(methods: [:task_status, :task_status_short],
-                                      include: { milestone: {},
-                                                 assignee: { only: [:name, :username], methods: [:avatar_url] },
-                                                 labels: { methods: :text_color } })
+          render json: IssueSerializer.new.represent(@issue)
         else
           render json: { errors: @issue.errors.full_messages }, status: :unprocessable_entity
         end
@@ -199,9 +196,17 @@ class Projects::IssuesController < Projects::ApplicationController
     end
   end
 
-  def rendered_title
+  def realtime_changes
     Gitlab::PollingInterval.set_header(response, interval: 3_000)
-    render json: { title: view_context.markdown_field(@issue, :title) }
+
+    render json: {
+      title: view_context.markdown_field(@issue, :title),
+      title_text: @issue.title,
+      description: view_context.markdown_field(@issue, :description),
+      description_text: @issue.description,
+      task_status: @issue.task_status,
+      updated_at: @issue.updated_at
+    }
   end
 
   def create_merge_request
@@ -218,7 +223,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def issue
     # The Sortable default scope causes performance issues when used with find_by
-    @noteable = @issue ||= @project.issues.where(iid: params[:id]).reorder(nil).take || redirect_old
+    @noteable = @issue ||= @project.issues.where(iid: params[:id]).reorder(nil).take!
   end
   alias_method :subscribable_resource, :issue
   alias_method :issuable, :issue
@@ -257,25 +262,10 @@ class Projects::IssuesController < Projects::ApplicationController
     end
   end
 
-  # Since iids are implemented only in 6.1
-  # user may navigate to issue page using old global ids.
-  #
-  # To prevent 404 errors we provide a redirect to correct iids until 7.0 release
-  #
-  def redirect_old
-    issue = @project.issues.find_by(id: params[:id])
-
-    if issue
-      redirect_to issue_path(issue)
-    else
-      raise ActiveRecord::RecordNotFound.new
-    end
-  end
-
   def issue_params
     params.require(:issue).permit(
       :title, :assignee_id, :position, :description, :confidential,
-      :milestone_id, :due_date, :state_event, :task_num, :lock_version, label_ids: []
+      :milestone_id, :due_date, :state_event, :task_num, :lock_version, label_ids: [], assignee_ids: []
     )
   end
 
@@ -284,7 +274,10 @@ class Projects::IssuesController < Projects::ApplicationController
 
     notice = "Please sign in to create the new issue."
 
-    store_location_for :user, request.fullpath
+    if request.get? && !request.xhr?
+      store_location_for :user, request.fullpath
+    end
+
     redirect_to new_user_session_path, notice: notice
   end
 end

@@ -8,7 +8,8 @@ module Gitlab
               Status::Build::Retryable],
              [Status::Build::FailedAllowed,
               Status::Build::Play,
-              Status::Build::Stop]]
+              Status::Build::Stop],
+             [Status::Build::Action]]
           end
 
           def self.common_helpers

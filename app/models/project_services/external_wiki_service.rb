@@ -19,7 +19,7 @@ class ExternalWikiService < Service
 
   def fields
     [
-      { type: 'text', name: 'external_wiki_url', placeholder: 'The URL of the external Wiki' },
+      { type: 'text', name: 'external_wiki_url', placeholder: 'The URL of the external Wiki' }
     ]
   end
 

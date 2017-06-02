@@ -67,7 +67,7 @@ class NotesFinder
     when "merge_request"
       MergeRequestsFinder.new(@current_user, project_id: @project.id).execute
     when "snippet", "project_snippet"
-      SnippetsFinder.new.execute(@current_user, filter: :by_project, project: @project)
+      SnippetsFinder.new(@current_user, project: @project).execute
     when "personal_snippet"
       PersonalSnippet.all
     else

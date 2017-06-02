@@ -156,6 +156,32 @@ describe Projects::IssuesController do
     end
   end
 
+  describe 'Redirect after sign in' do
+    context 'with an AJAX request' do
+      it 'does not store the visited URL' do
+        xhr :get,
+          :show,
+          format: :json,
+          namespace_id: project.namespace,
+          project_id: project,
+          id: issue.iid
+
+        expect(session['user_return_to']).to be_blank
+      end
+    end
+
+    context 'without an AJAX request' do
+      it 'stores the visited URL' do
+        get :show,
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: issue.iid
+
+        expect(session['user_return_to']).to eq("/#{project.namespace.to_param}/#{project.to_param}/issues/#{issue.iid}")
+      end
+    end
+  end
+
   describe 'PUT #update' do
     before do
       sign_in(user)
@@ -173,12 +199,12 @@ describe Projects::IssuesController do
           namespace_id: project.namespace.to_param,
           project_id: project,
           id: issue.iid,
-          issue: { assignee_id: assignee.id },
+          issue: { assignee_ids: [assignee.id] },
           format: :json
         body = JSON.parse(response.body)
 
-        expect(body['assignee'].keys)
-          .to match_array(%w(name username avatar_url))
+        expect(body['assignees'].first.keys)
+          .to match_array(%w(id name username avatar_url state web_url))
       end
     end
 
@@ -348,7 +374,7 @@ describe Projects::IssuesController do
     let(:admin) { create(:admin) }
     let!(:issue) { create(:issue, project: project) }
     let!(:unescaped_parameter_value) { create(:issue, :confidential, project: project, author: author) }
-    let!(:request_forgery_timing_attack) { create(:issue, :confidential, project: project, assignee: assignee) }
+    let!(:request_forgery_timing_attack) { create(:issue, :confidential, project: project, assignees: [assignee]) }
 
     describe 'GET #index' do
       it 'does not list confidential issues for guests' do

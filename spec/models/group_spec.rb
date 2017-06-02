@@ -175,6 +175,26 @@ describe Group, models: true do
     end
   end
 
+  describe '#avatar_url' do
+    let!(:group) { create(:group, :access_requestable, :with_avatar) }
+    let(:user) { create(:user) }
+    let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
+    let(:avatar_path) { "/uploads/group/avatar/#{group.id}/dk.png" }
+
+    context 'when avatar file is uploaded' do
+      before { group.add_master(user) }
+
+      it 'shows correct avatar url' do
+        expect(group.avatar_url).to eq(avatar_path)
+        expect(group.avatar_url(only_path: false)).to eq([gitlab_host, avatar_path].join)
+
+        allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
+
+        expect(group.avatar_url).to eq([gitlab_host, avatar_path].join)
+      end
+    end
+  end
+
   describe '.search' do
     it 'returns groups with a matching name' do
       expect(described_class.search(group.name)).to eq([group])
@@ -320,7 +340,7 @@ describe Group, models: true do
     it { expect(subject.parent).to be_kind_of(Group) }
   end
 
-  describe '#members_with_parents' do
+  describe '#members_with_parents', :nested_groups do
     let!(:group) { create(:group, :nested) }
     let!(:master) { group.parent.add_user(create(:user), GroupMember::MASTER) }
     let!(:developer) { group.add_user(create(:user), GroupMember::DEVELOPER) }

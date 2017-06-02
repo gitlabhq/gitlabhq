@@ -8,7 +8,8 @@ module Gitlab
           super(merge_request_diff,
             project: merge_request_diff.project,
             diff_options: diff_options,
-            diff_refs: merge_request_diff.diff_refs)
+            diff_refs: merge_request_diff.diff_refs,
+            fallback_diff_refs: merge_request_diff.fallback_diff_refs)
         end
 
         def diff_files

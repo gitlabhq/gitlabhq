@@ -55,7 +55,7 @@ class TeamcityService < CiService
         placeholder: 'Build configuration ID' },
       { type: 'text', name: 'username',
         placeholder: 'A user with permissions to trigger a manual build' },
-      { type: 'password', name: 'password' },
+      { type: 'password', name: 'password' }
     ]
   end
 
@@ -78,7 +78,7 @@ class TeamcityService < CiService
 
     auth = {
       username: username,
-      password: password,
+      password: password
     }
 
     branch = Gitlab::Git.ref_name(data[:ref])

@@ -37,7 +37,10 @@ module IssuablesHelper
     when Issue
       IssueSerializer.new.represent(issuable).to_json
     when MergeRequest
-      MergeRequestSerializer.new.represent(issuable).to_json
+      MergeRequestSerializer
+        .new(current_user: current_user, project: issuable.project)
+        .represent(issuable)
+        .to_json
     end
   end
 
@@ -60,6 +63,17 @@ module IssuablesHelper
 
     dropdown_tag(title, options: options) do
       capture(&block)
+    end
+  end
+
+  def users_dropdown_label(selected_users)
+    case selected_users.length
+    when 0
+      "Unassigned"
+    when 1
+      selected_users[0].name
+    else
+      "#{selected_users[0].name} + #{selected_users.length - 1} more"
     end
   end
 
@@ -123,11 +137,9 @@ module IssuablesHelper
       author_output << link_to_member(project, issuable.author, size: 24, by_username: true, avatar: false, mobile_classes: "hidden-sm hidden-md hidden-lg")
     end
 
-    if issuable.tasks?
-      output << "&ensp;".html_safe
-      output << content_tag(:span, issuable.task_status, id: "task_status", class: "hidden-xs hidden-sm")
-      output << content_tag(:span, issuable.task_status_short, id: "task_status_short", class: "hidden-md hidden-lg")
-    end
+    output << "&ensp;".html_safe
+    output << content_tag(:span, issuable.task_status, id: "task_status", class: "hidden-xs hidden-sm")
+    output << content_tag(:span, issuable.task_status_short, id: "task_status_short", class: "hidden-md hidden-lg")
 
     output
   end
@@ -185,6 +197,27 @@ module IssuablesHelper
 
   def issuable_filter_present?
     issuable_filter_params.any? { |k| params.key?(k) }
+  end
+
+  def issuable_initial_data(issuable)
+    {
+      endpoint: namespace_project_issue_path(@project.namespace, @project, issuable),
+      canUpdate: can?(current_user, :update_issue, issuable),
+      canDestroy: can?(current_user, :destroy_issue, issuable),
+      canMove: current_user ? issuable.can_move?(current_user) : false,
+      issuableRef: issuable.to_reference,
+      isConfidential: issuable.confidential,
+      markdownPreviewUrl: preview_markdown_path(@project),
+      markdownDocs: help_page_path('user/markdown'),
+      projectsAutocompleteUrl: autocomplete_projects_path(project_id: @project.id),
+      issuableTemplates: issuable_templates(issuable),
+      projectPath: ref_project.path,
+      projectNamespace: ref_project.namespace.full_path,
+      initialTitleHtml: markdown_field(issuable, :title),
+      initialTitleText: issuable.title,
+      initialDescriptionHtml: markdown_field(issuable, :description),
+      initialDescriptionText: issuable.description
+    }.to_json
   end
 
   private

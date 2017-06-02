@@ -2,6 +2,10 @@ module Gitlab
   module CycleAnalytics
     module Summary
       class Commit < Base
+        def title
+          n_('Commit', 'Commits', value)
+        end
+
         def value
           @value ||= count_commits
         end

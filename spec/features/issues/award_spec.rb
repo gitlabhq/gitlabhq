@@ -9,6 +9,7 @@ feature 'Issue awards', js: true, feature: true do
     before do
       login_as(user)
       visit namespace_project_issue_path(project.namespace, project, issue)
+      wait_for_requests
     end
 
     it 'adds award to issue' do
@@ -40,6 +41,7 @@ feature 'Issue awards', js: true, feature: true do
   describe 'logged out' do
     before do
       visit namespace_project_issue_path(project.namespace, project, issue)
+      wait_for_requests
     end
 
     it 'does not see award menu button' do

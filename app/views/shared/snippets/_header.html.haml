@@ -21,4 +21,4 @@
     = markdown_field(@snippet, :title)
 
   - if @snippet.updated_at != @snippet.created_at
-    = edited_time_ago_with_tooltip(@snippet, placement: 'bottom', html_class: 'snippet-edited-ago')
+    = edited_time_ago_with_tooltip(@snippet, placement: 'bottom', html_class: 'snippet-edited-ago', exclude_author: true)

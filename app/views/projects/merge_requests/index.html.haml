@@ -5,10 +5,13 @@
 - unless @project.default_issues_tracker?
   = content_for :sub_nav do
     = render "projects/merge_requests/head"
-= render 'projects/last_push'
 
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('filtered_search')
+  = webpack_bundle_tag 'common_vue'
+  = webpack_bundle_tag 'filtered_search'
+
+
+= render 'projects/last_push'
 
 - if @project.merge_requests.exists?
   %div{ class: container_class }

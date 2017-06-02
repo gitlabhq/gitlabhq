@@ -10,7 +10,7 @@ require 'shoulda/matchers'
 require 'rspec/retry'
 
 rspec_profiling_is_configured =
-  ENV['RSPEC_PROFILING_POSTGRES_URL'] ||
+  ENV['RSPEC_PROFILING_POSTGRES_URL'].present? ||
   ENV['RSPEC_PROFILING']
 branch_can_be_profiled =
   ENV['GITLAB_DATABASE'] == 'postgresql' &&
@@ -44,7 +44,6 @@ RSpec.configure do |config|
   config.include LoginHelpers, type: :feature
   config.include SearchHelpers, type: :feature
   config.include WaitForRequests, :js
-  config.include WaitForAjax, :js
   config.include StubConfiguration
   config.include EmailHelpers, type: :mailer
   config.include TestEnv
@@ -92,6 +91,14 @@ RSpec.configure do |config|
 
     Gitlab::Redis.with(&:flushall)
     Sidekiq.redis(&:flushall)
+  end
+
+  config.around(:each, :nested_groups) do |example|
+    example.run if Group.supports_nested_groups?
+  end
+
+  config.around(:each, :postgresql) do |example|
+    example.run if Gitlab::Database.postgresql?
   end
 end
 

@@ -241,6 +241,7 @@ Settings.gitlab['domain_whitelist'] ||= []
 Settings.gitlab['import_sources'] ||= %w[github bitbucket gitlab google_code fogbugz git gitlab_project gitea]
 Settings.gitlab['trusted_proxies'] ||= []
 Settings.gitlab['no_todos_messages'] ||= YAML.load_file(Rails.root.join('config', 'no_todos_messages.yml'))
+Settings.gitlab['usage_ping_enabled'] = true if Settings.gitlab['usage_ping_enabled'].nil?
 
 #
 # CI
@@ -323,9 +324,9 @@ Settings['cron_jobs'] ||= Settingslogic.new({})
 Settings.cron_jobs['stuck_ci_jobs_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['stuck_ci_jobs_worker']['cron'] ||= '0 * * * *'
 Settings.cron_jobs['stuck_ci_jobs_worker']['job_class'] = 'StuckCiJobsWorker'
-Settings.cron_jobs['trigger_schedule_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['trigger_schedule_worker']['cron'] ||= '0 */12 * * *'
-Settings.cron_jobs['trigger_schedule_worker']['job_class'] = 'TriggerScheduleWorker'
+Settings.cron_jobs['pipeline_schedule_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['pipeline_schedule_worker']['cron'] ||= '19 * * * *'
+Settings.cron_jobs['pipeline_schedule_worker']['job_class'] = 'PipelineScheduleWorker'
 Settings.cron_jobs['expire_build_artifacts_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['expire_build_artifacts_worker']['cron'] ||= '50 * * * *'
 Settings.cron_jobs['expire_build_artifacts_worker']['job_class'] = 'ExpireBuildArtifactsWorker'
@@ -367,10 +368,13 @@ Settings.cron_jobs['gitlab_usage_ping_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['gitlab_usage_ping_worker']['cron'] ||= Settings.__send__(:cron_random_weekly_time)
 Settings.cron_jobs['gitlab_usage_ping_worker']['job_class'] = 'GitlabUsagePingWorker'
 
-# Every day at 00:30
 Settings.cron_jobs['schedule_update_user_activity_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['schedule_update_user_activity_worker']['cron'] ||= '30 0 * * *'
 Settings.cron_jobs['schedule_update_user_activity_worker']['job_class'] = 'ScheduleUpdateUserActivityWorker'
+
+Settings.cron_jobs['remove_old_web_hook_logs_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['remove_old_web_hook_logs_worker']['cron'] ||= '40 0 * * *'
+Settings.cron_jobs['remove_old_web_hook_logs_worker']['job_class'] = 'RemoveOldWebHookLogsWorker'
 
 #
 # GitLab Shell
@@ -386,6 +390,7 @@ Settings.gitlab_shell['ssh_port']     ||= 22
 Settings.gitlab_shell['ssh_user']     ||= Settings.gitlab.user
 Settings.gitlab_shell['owner_group']  ||= Settings.gitlab.user
 Settings.gitlab_shell['ssh_path_prefix'] ||= Settings.__send__(:build_gitlab_shell_ssh_path_prefix)
+Settings.gitlab_shell['git_timeout'] ||= 800
 
 #
 # Workhorse
@@ -477,7 +482,7 @@ Settings.rack_attack.git_basic_auth['bantime'] ||= 1.hour
 # Gitaly
 #
 Settings['gitaly'] ||= Settingslogic.new({})
-Settings.gitaly['enabled'] ||= false
+Settings.gitaly['enabled'] = true if Settings.gitaly['enabled'].nil?
 
 #
 # Webpack settings

@@ -1,5 +1,5 @@
-require('~/lib/utils/common_utils');
-require('~/lib/utils/url_utility');
+import '~/lib/utils/common_utils';
+import '~/lib/utils/url_utility';
 
 (() => {
   const ENDLESS_SCROLL_BOTTOM_PX = 400;

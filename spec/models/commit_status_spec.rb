@@ -36,6 +36,16 @@ describe CommitStatus, :models do
     it { is_expected.to eq(commit_status.user) }
   end
 
+  describe 'status state machine' do
+    let!(:commit_status) { create(:commit_status, :running, project: project) }
+
+    it 'invalidates the cache after a transition' do
+      expect(ExpireJobCacheWorker).to receive(:perform_async).with(commit_status.id)
+
+      commit_status.success!
+    end
+  end
+
   describe '#started?' do
     subject { commit_status.started? }
 
@@ -157,15 +167,31 @@ describe CommitStatus, :models do
     subject { described_class.latest.order(:id) }
 
     let(:statuses) do
-      [create_status(name: 'aa', ref: 'bb', status: 'running'),
-       create_status(name: 'cc', ref: 'cc', status: 'pending'),
-       create_status(name: 'aa', ref: 'cc', status: 'success'),
+      [create_status(name: 'aa', ref: 'bb', status: 'running', retried: true),
+       create_status(name: 'cc', ref: 'cc', status: 'pending', retried: true),
+       create_status(name: 'aa', ref: 'cc', status: 'success', retried: true),
        create_status(name: 'cc', ref: 'bb', status: 'success'),
        create_status(name: 'aa', ref: 'bb', status: 'success')]
     end
 
     it 'returns unique statuses' do
       is_expected.to eq(statuses.values_at(3, 4))
+    end
+  end
+
+  describe '.retried' do
+    subject { described_class.retried.order(:id) }
+
+    let(:statuses) do
+      [create_status(name: 'aa', ref: 'bb', status: 'running', retried: true),
+       create_status(name: 'cc', ref: 'cc', status: 'pending', retried: true),
+       create_status(name: 'aa', ref: 'cc', status: 'success', retried: true),
+       create_status(name: 'cc', ref: 'bb', status: 'success'),
+       create_status(name: 'aa', ref: 'bb', status: 'success')]
+    end
+
+    it 'returns unique statuses' do
+      is_expected.to contain_exactly(*statuses.values_at(0, 1, 2))
     end
   end
 
@@ -181,7 +207,7 @@ describe CommitStatus, :models do
     end
 
     it 'returns statuses that are running or pending' do
-      is_expected.to eq(statuses.values_at(0, 1))
+      is_expected.to contain_exactly(*statuses.values_at(0, 1))
     end
   end
 

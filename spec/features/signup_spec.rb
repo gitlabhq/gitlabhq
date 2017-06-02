@@ -3,7 +3,7 @@ require 'spec_helper'
 feature 'Signup', feature: true do
   describe 'signup with no errors' do
     context "when sending confirmation email" do
-      before { allow_any_instance_of(ApplicationSetting).to receive(:send_user_confirmation_email).and_return(true) }
+      before { stub_application_setting(send_user_confirmation_email: true) }
 
       it 'creates the user account and sends a confirmation email' do
         user = build(:user)
@@ -23,7 +23,7 @@ feature 'Signup', feature: true do
     end
 
     context "when not sending confirmation email" do
-      before { allow_any_instance_of(ApplicationSetting).to receive(:send_user_confirmation_email).and_return(false) }
+      before { stub_application_setting(send_user_confirmation_email: false) }
 
       it 'creates the user account and goes to dashboard' do
         user = build(:user)

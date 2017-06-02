@@ -42,6 +42,10 @@ module API
         if access_status.status
           log_user_activity(actor)
 
+          # Project id to pass between components that don't share/don't have
+          # access to the same filesystem mounts
+          response[:gl_repository] = Gitlab::GlRepository.gl_repository(project, wiki?)
+
           # Return the repository full path so that gitlab-shell has it when
           # handling ssh commands
           response[:repository_path] =
@@ -86,7 +90,7 @@ module API
         {
           api_version: API.version,
           gitlab_version: Gitlab::VERSION,
-          gitlab_rev: Gitlab::REVISION,
+          gitlab_rev: Gitlab::REVISION
         }
       end
 
@@ -132,16 +136,15 @@ module API
       post "/notify_post_receive" do
         status 200
 
-        return unless Gitlab::GitalyClient.enabled?
-
-        relative_path = Gitlab::RepoPath.strip_storage_path(params[:repo_path])
-        project = Project.find_by_full_path(relative_path.sub(/\.(git|wiki)\z/, ''))
-
-        begin
-          Gitlab::GitalyClient::Notifications.new(project.repository).post_receive
-        rescue GRPC::Unavailable => e
-          render_api_error!(e, 500)
-        end
+        # TODO: Re-enable when Gitaly is processing the post-receive notification
+        # return unless Gitlab::GitalyClient.enabled?
+        #
+        # begin
+        #   repository = wiki? ? project.wiki.repository : project.repository
+        #   Gitlab::GitalyClient::Notifications.new(repository.raw_repository).post_receive
+        # rescue GRPC::Unavailable => e
+        #   render_api_error!(e, 500)
+        # end
       end
     end
   end

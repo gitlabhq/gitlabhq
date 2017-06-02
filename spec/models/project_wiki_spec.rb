@@ -37,21 +37,11 @@ describe ProjectWiki, models: true do
   describe "#http_url_to_repo" do
     let(:project) { create :empty_project }
 
-    context 'when no user is given' do
-      it 'returns the url to the repo without a username' do
-        expected_url = "#{Gitlab.config.gitlab.url}/#{subject.path_with_namespace}.git"
+    it 'returns the full http url to the repo' do
+      expected_url = "#{Gitlab.config.gitlab.url}/#{subject.path_with_namespace}.git"
 
-        expect(project_wiki.http_url_to_repo).to eq(expected_url)
-        expect(project_wiki.http_url_to_repo).not_to include('@')
-      end
-    end
-
-    context 'when user is given' do
-      it 'returns the url to the repo with the username' do
-        user = build_stubbed(:user)
-
-        expect(project_wiki.http_url_to_repo(user)).to start_with("http://#{user.username}@")
-      end
+      expect(project_wiki.http_url_to_repo).to eq(expected_url)
+      expect(project_wiki.http_url_to_repo).not_to include('@')
     end
   end
 
@@ -213,9 +203,12 @@ describe ProjectWiki, models: true do
     end
 
     it 'updates project activity' do
-      expect(subject).to receive(:update_project_activity)
-
       subject.create_page('Test Page', 'This is content')
+
+      project.reload
+
+      expect(project.last_activity_at).to be_within(1.minute).of(Time.now)
+      expect(project.last_repository_updated_at).to be_within(1.minute).of(Time.now)
     end
   end
 
@@ -240,9 +233,12 @@ describe ProjectWiki, models: true do
     end
 
     it 'updates project activity' do
-      expect(subject).to receive(:update_project_activity)
-
       subject.update_page(@gollum_page, 'Yet more content', :markdown, 'Updated page again')
+
+      project.reload
+
+      expect(project.last_activity_at).to be_within(1.minute).of(Time.now)
+      expect(project.last_repository_updated_at).to be_within(1.minute).of(Time.now)
     end
   end
 
@@ -258,9 +254,12 @@ describe ProjectWiki, models: true do
     end
 
     it 'updates project activity' do
-      expect(subject).to receive(:update_project_activity)
-
       subject.delete_page(@page)
+
+      project.reload
+
+      expect(project.last_activity_at).to be_within(1.minute).of(Time.now)
+      expect(project.last_repository_updated_at).to be_within(1.minute).of(Time.now)
     end
   end
 

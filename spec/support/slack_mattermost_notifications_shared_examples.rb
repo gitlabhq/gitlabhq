@@ -328,7 +328,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
     context 'only notify for the default branch' do
       context 'when enabled' do
         let(:pipeline) do
-          create(:ci_pipeline, project: project, status: 'failed', ref: 'not-the-default-branch')
+          create(:ci_pipeline, :failed, project: project, ref: 'not-the-default-branch')
         end
 
         before do
@@ -341,6 +341,18 @@ RSpec.shared_examples 'slack or mattermost notifications' do
 
           expect(result).to be_falsy
         end
+      end
+
+      context 'when disabled' do
+        let(:pipeline) do
+          create(:ci_pipeline, :failed, project: project, ref: 'not-the-default-branch')
+        end
+
+        before do
+          chat_service.notify_only_default_branch = false
+        end
+
+        it_behaves_like 'call Slack/Mattermost API'
       end
     end
   end

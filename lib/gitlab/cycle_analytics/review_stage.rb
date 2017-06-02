@@ -13,12 +13,16 @@ module Gitlab
         :review
       end
 
+      def title
+        s_('CycleAnalyticsStage|Review')
+      end
+
       def legend
-        "Relative Merged Requests"
+        _("Related Merged Requests")
       end
 
       def description
-        "Time between merge request creation and merge/close"
+        _("Time between merge request creation and merge/close")
       end
     end
   end

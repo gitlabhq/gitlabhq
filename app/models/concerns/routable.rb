@@ -5,6 +5,7 @@ module Routable
 
   included do
     has_one :route, as: :source, autosave: true, dependent: :destroy
+    has_many :redirect_routes, as: :source, autosave: true, dependent: :destroy
 
     validates_associated :route
     validates :route, presence: true
@@ -26,16 +27,31 @@ module Routable
     #     Klass.find_by_full_path('gitlab-org/gitlab-ce')
     #
     # Returns a single object, or nil.
-    def find_by_full_path(path)
+    def find_by_full_path(path, follow_redirects: false)
       # On MySQL we want to ensure the ORDER BY uses a case-sensitive match so
       # any literal matches come first, for this we have to use "BINARY".
       # Without this there's still no guarantee in what order MySQL will return
       # rows.
+      #
+      # Why do we do this?
+      #
+      # Even though we have Rails validation on Route for unique paths
+      # (case-insensitive), there are old projects in our DB (and possibly
+      # clients' DBs) that have the same path with different cases.
+      # See https://gitlab.com/gitlab-org/gitlab-ce/issues/18603. Also note that
+      # our unique index is case-sensitive in Postgres.
       binary = Gitlab::Database.mysql? ? 'BINARY' : ''
-
       order_sql = "(CASE WHEN #{binary} routes.path = #{connection.quote(path)} THEN 0 ELSE 1 END)"
+      found = where_full_path_in([path]).reorder(order_sql).take
+      return found if found
 
-      where_full_path_in([path]).reorder(order_sql).take
+      if follow_redirects
+        if Gitlab::Database.postgresql?
+          joins(:redirect_routes).find_by("LOWER(redirect_routes.path) = LOWER(?)", path)
+        else
+          joins(:redirect_routes).find_by(redirect_routes: { path: path })
+        end
+      end
     end
 
     # Builds a relation to find multiple objects by their full paths.
@@ -67,89 +83,6 @@ module Routable
       else
         joins(:route).where(wheres.join(' OR '))
       end
-    end
-
-    # Builds a relation to find multiple objects that are nested under user membership
-    #
-    # Usage:
-    #
-    #     Klass.member_descendants(1)
-    #
-    # Returns an ActiveRecord::Relation.
-    def member_descendants(user_id)
-      joins(:route).
-        joins("INNER JOIN routes r2 ON routes.path LIKE CONCAT(r2.path, '/%')
-               INNER JOIN members ON members.source_id = r2.source_id
-               AND members.source_type = r2.source_type").
-        where('members.user_id = ?', user_id)
-    end
-
-    # Builds a relation to find multiple objects that are nested under user
-    # membership. Includes the parent, as opposed to `#member_descendants`
-    # which only includes the descendants.
-    #
-    # Usage:
-    #
-    #     Klass.member_self_and_descendants(1)
-    #
-    # Returns an ActiveRecord::Relation.
-    def member_self_and_descendants(user_id)
-      joins(:route).
-        joins("INNER JOIN routes r2 ON routes.path LIKE CONCAT(r2.path, '/%')
-               OR routes.path = r2.path
-               INNER JOIN members ON members.source_id = r2.source_id
-               AND members.source_type = r2.source_type").
-        where('members.user_id = ?', user_id)
-    end
-
-    # Returns all objects in a hierarchy, where any node in the hierarchy is
-    # under the user membership.
-    #
-    # Usage:
-    #
-    #     Klass.member_hierarchy(1)
-    #
-    # Examples:
-    #
-    #     Given the following group tree...
-    #
-    #            _______group_1_______
-    #           |                     |
-    #           |                     |
-    #     nested_group_1        nested_group_2
-    #           |                     |
-    #           |                     |
-    #     nested_group_1_1      nested_group_2_1
-    #
-    #
-    #     ... the following results are returned:
-    #
-    #     * the user is a member of group 1
-    #       => 'group_1',
-    #          'nested_group_1', nested_group_1_1',
-    #          'nested_group_2', 'nested_group_2_1'
-    #
-    #     * the user is a member of nested_group_2
-    #       => 'group1',
-    #          'nested_group_2', 'nested_group_2_1'
-    #
-    #     * the user is a member of nested_group_2_1
-    #       => 'group1',
-    #          'nested_group_2', 'nested_group_2_1'
-    #
-    # Returns an ActiveRecord::Relation.
-    def member_hierarchy(user_id)
-      paths = member_self_and_descendants(user_id).pluck('routes.path')
-
-      return none if paths.empty?
-
-      wheres = paths.map do |path|
-        "#{connection.quote(path)} = routes.path
-         OR
-         #{connection.quote(path)} LIKE CONCAT(routes.path, '/%')"
-      end
-
-      joins(:route).where(wheres.join(' OR '))
     end
   end
 

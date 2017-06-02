@@ -8,14 +8,14 @@
 
 import Vue from 'vue';
 
-require('~/lib/utils/url_utility');
-require('~/boards/models/issue');
-require('~/boards/models/label');
-require('~/boards/models/list');
-require('~/boards/models/user');
-require('~/boards/services/board_service');
-require('~/boards/stores/boards_store');
-require('./mock_data');
+import '~/lib/utils/url_utility';
+import '~/boards/models/issue';
+import '~/boards/models/label';
+import '~/boards/models/list';
+import '~/boards/models/assignee';
+import '~/boards/services/board_service';
+import '~/boards/stores/boards_store';
+import './mock_data';
 
 describe('List model', () => {
   let list;
@@ -94,7 +94,8 @@ describe('List model', () => {
       title: 'Testing',
       iid: _.random(10000),
       confidential: false,
-      labels: [list.label, listDup.label]
+      labels: [list.label, listDup.label],
+      assignees: [],
     });
 
     list.issues.push(issue);
@@ -119,7 +120,8 @@ describe('List model', () => {
           title: 'Testing',
           iid: _.random(10000) + i,
           confidential: false,
-          labels: [list.label]
+          labels: [list.label],
+          assignees: [],
         }));
       }
       list.issuesSize = 50;
@@ -137,7 +139,8 @@ describe('List model', () => {
         title: 'Testing',
         iid: _.random(10000),
         confidential: false,
-        labels: [list.label]
+        labels: [list.label],
+        assignees: [],
       }));
       list.issuesSize = 2;
 

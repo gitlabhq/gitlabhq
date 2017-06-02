@@ -40,6 +40,6 @@ export default class PipelinesService {
    * @return {Promise}
    */
   postAction(endpoint) {
-    return Vue.http.post(endpoint, {}, { emulateJSON: true });
+    return Vue.http.post(`${endpoint}.json`);
   }
 }

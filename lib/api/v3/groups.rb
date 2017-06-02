@@ -20,7 +20,7 @@ module API
         def present_groups(groups, options = {})
           options = options.reverse_merge(
             with: Entities::Group,
-            current_user: current_user,
+            current_user: current_user
           )
 
           groups = groups.with_statistics if options[:statistics]
@@ -45,7 +45,7 @@ module API
           groups = if current_user.admin
                      Group.all
                    elsif params[:all_available]
-                     GroupsFinder.new.execute(current_user)
+                     GroupsFinder.new(current_user).execute
                    else
                      current_user.groups
                    end
@@ -74,7 +74,11 @@ module API
         params do
           requires :name, type: String, desc: 'The name of the group'
           requires :path, type: String, desc: 'The path of the group'
-          optional :parent_id, type: Integer, desc: 'The parent group id for creating nested group'
+
+          if ::Group.supports_nested_groups?
+            optional :parent_id, type: Integer, desc: 'The parent group id for creating nested group'
+          end
+
           use :optional_params
         end
         post do

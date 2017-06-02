@@ -1,0 +1,4 @@
+---
+title: Remove redundant data-turbolink attributes from links
+merge_request: 11672
+author: blackst0ne

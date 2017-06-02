@@ -17,7 +17,7 @@ module Gitlab
       end
 
       def title
-        name.to_s.capitalize
+        raise NotImplementedError.new("Expected #{self.name} to implement title")
       end
 
       def median

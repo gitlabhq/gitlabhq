@@ -42,10 +42,10 @@ instances run in different machines. If you fail to provision the machines in
 that specific way, any issue with the shared environment can bring your entire
 setup down.
 
-It is OK to run a Sentinel along with a master or slave Redis instance.
-No more than one Sentinel in the same machine though.
+It is OK to run a Sentinel alongside of a master or slave Redis instance.
+There should be no more than one Sentinel on the same machine though.
 
-You also need to take in consideration the underlying network topology,
+You also need to take into consideration the underlying network topology,
 making sure you have redundant connectivity between Redis / Sentinel and
 GitLab instances, otherwise the networks will become a single point of
 failure.
@@ -113,7 +113,7 @@ the Omnibus GitLab package in `5` **independent** machines, both with
 ### Redis setup overview
 
 You must have at least `3` Redis servers: `1` Master, `2` Slaves, and they
-need to be each in a independent machine (see explanation above).
+need to each be on independent machines (see explanation above).
 
 You can have additional Redis nodes, that will help survive a situation
 where more nodes goes down. Whenever there is only `2` nodes online, a failover
@@ -232,7 +232,7 @@ Pick the one that suits your needs.
 This is the section where we install and setup the new Redis instances.
 
 >**Notes:**
-- We assume that you install GitLab and all HA components from scratch. If you
+- We assume that you have installed GitLab and all HA components from scratch. If you
   already have it installed and running, read how to
   [switch from a single-machine installation to Redis HA](#switching-from-an-existing-single-machine-installation-to-redis-ha).
 - Redis nodes (both master and slaves) will need the same password defined in
@@ -245,10 +245,9 @@ The prerequisites for a HA Redis setup are the following:
 
 1. Provision the minimum required number of instances as specified in the
    [recommended setup](#recommended-setup) section.
-1. **Do NOT** install Redis or Redis Sentinel in the same machines your
-   GitLab application is running on. You can however opt in to install Redis
-   and Sentinel in the same machine (each in independent ones is recommended
-   though).
+1. We **Do not** recommend installing Redis or Redis Sentinel in the same machines your
+   GitLab application is running on as this weakens your HA configuration. You can however opt in to install Redis
+   and Sentinel in the same machine.
 1. All Redis nodes must be able to talk to each other and accept incoming
    connections over Redis (`6379`) and Sentinel (`26379`) ports (unless you
    change the default ones).

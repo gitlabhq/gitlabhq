@@ -14,7 +14,7 @@ describe StageEntity do
   end
 
   before do
-    allow(request).to receive(:user).and_return(user)
+    allow(request).to receive(:current_user).and_return(user)
     create(:ci_build, :success, pipeline: pipeline)
   end
 
@@ -46,6 +46,14 @@ describe StageEntity do
 
     it 'contains stage title' do
       expect(subject[:title]).to eq 'test: passed'
+    end
+
+    context 'when the jobs should be grouped' do
+      let(:entity) { described_class.new(stage, request: request, grouped: true) }
+
+      it 'exposes the group key' do
+        expect(subject).to include :groups
+      end
     end
   end
 end

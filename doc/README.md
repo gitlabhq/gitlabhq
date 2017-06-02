@@ -42,6 +42,9 @@ Shortcuts to GitLab's most visited docs:
   - [Create a group](gitlab-basics/create-group.md)
   - [GitLab Subgroups](user/group/subgroups/index.md)
 - [Search through GitLab](user/search/index.md): Search for issues, merge requests, projects, groups, todos, and issues in Issue Boards.
+- [Snippets](user/snippets.md): Snippets allow you to create little bits of code.
+- [Wikis](user/project/wiki/index.md): Enhance your repository documentation with built-in wikis.
+- [GitLab Pages](user/project/pages/index.md): Build, test, and deploy your static website with GitLab Pages.
 
 ### Repository
 
@@ -60,11 +63,8 @@ Manage files and branches from the UI (user interface):
 ### Issues and Merge Requests (MRs)
 
 - [Discussions](user/discussions/index.md) Threads, comments, and resolvable discussions in issues, commits, and  merge requests.
-- Issues
-  - [Create an issue](gitlab-basics/create-issue.md#how-to-create-an-issue-in-gitlab)
-  - [Confidential Issues](user/project/issues/confidential_issues.md)
-  - [Automatic issue closing](user/project/issues/automatic_issue_closing.md)
-  - [Issue Boards](user/project/issue_board.md)
+- [Issues](user/project/issues/index.md)
+- [Issue Board](user/project/issue_board.md)
 - [Issues and merge requests templates](user/project/description_templates.md): Create templates for submitting new issues and merge requests.
 - [Labels](user/project/labels.md): Categorize your issues or merge requests based on descriptive titles.
 - [Merge Requests](user/project/merge_requests/index.md)
@@ -85,14 +85,6 @@ Manage files and branches from the UI (user interface):
 
 - [Importing to GitLab](workflow/importing/README.md): Import your projects from GitHub, Bitbucket, GitLab.com, FogBugz and SVN into GitLab.
 - [Migrating from SVN](workflow/importing/migrating_from_svn.md): Convert a SVN repository to Git and GitLab.
-
-## GitLab's superpowers
-
-Take a step ahead and dive into GitLab's advanced features.
-
-- [GitLab Pages](user/project/pages/index.md): Build, test, and deploy your static website with GitLab Pages.
-- [Snippets](user/snippets.md): Snippets allow you to create little bits of code.
-- [Wikis](user/project/wiki/index.md): Enhance your repository documentation with built-in wikis.
 
 ### Continuous Integration, Delivery, and Deployment
 

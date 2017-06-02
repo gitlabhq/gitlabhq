@@ -5,7 +5,7 @@ class HealthController < ActionController::Base
   CHECKS = [
     Gitlab::HealthChecks::DbCheck,
     Gitlab::HealthChecks::RedisCheck,
-    Gitlab::HealthChecks::FsShardsCheck,
+    Gitlab::HealthChecks::FsShardsCheck
   ].freeze
 
   def readiness

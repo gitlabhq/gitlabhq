@@ -47,7 +47,7 @@ describe Gitlab::ContributionsCalendar do
       action: Event::CREATED,
       target: @targets[project],
       author: contributor,
-      created_at: day,
+      created_at: day
     )
   end
 

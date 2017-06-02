@@ -18,10 +18,10 @@ feature 'Widget Deployments Header', feature: true, js: true do
     end
 
     scenario 'displays that the environment is deployed' do
-      wait_for_ajax
+      wait_for_requests
 
       expect(page).to have_content("Deployed to #{environment.name}")
-      expect(find('.ci_widget > span > span')['data-title']).to eq(deployment.created_at.to_time.in_time_zone.to_s(:medium))
+      expect(find('.js-deploy-time')['data-title']).to eq(deployment.created_at.to_time.in_time_zone.to_s(:medium))
     end
 
     context 'with stop action' do
@@ -34,15 +34,15 @@ feature 'Widget Deployments Header', feature: true, js: true do
       end
 
       background do
-        wait_for_ajax
+        wait_for_requests
       end
 
       scenario 'does show stop button' do
-        expect(page).to have_link('Stop environment')
+        expect(page).to have_button('Stop environment')
       end
 
       scenario 'does start build when stop button clicked' do
-        click_link('Stop environment')
+        click_button('Stop environment')
 
         expect(page).to have_content('close_app')
       end
@@ -51,7 +51,7 @@ feature 'Widget Deployments Header', feature: true, js: true do
         given(:role) { :reporter }
 
         scenario 'does not show stop button' do
-          expect(page).not_to have_link('Stop environment')
+          expect(page).not_to have_button('Stop environment')
         end
       end
     end
