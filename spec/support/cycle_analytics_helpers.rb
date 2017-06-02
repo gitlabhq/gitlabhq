@@ -78,6 +78,8 @@ module CycleAnalyticsHelpers
   end
 
   def new_dummy_job(environment)
+    project.environments.find_or_create_by(name: environment)
+
     Ci::Build.new(
       project: project,
       user: user,
