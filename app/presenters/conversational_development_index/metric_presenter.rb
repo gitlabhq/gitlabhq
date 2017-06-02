@@ -138,7 +138,7 @@ module ConversationalDevelopmentIndex
     end
 
     def average_percentage_score
-      cards.map(&:percentage_score).inject(:+) / cards.size.to_f
+      cards.sum(&:percentage_score) / cards.size.to_f
     end
   end
 end
