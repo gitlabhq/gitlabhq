@@ -527,6 +527,10 @@ entry.
 - Only send chat notifications for the default branch.
 - Don't fill in the default kubernetes namespace.
 
+## 9.0.9 (2017-06-02)
+
+- Fix visibility when referencing snippets.
+
 ## 9.0.8 (2017-05-31)
 
 - Move uploads from 'public/uploads' to 'public/uploads/system'.
