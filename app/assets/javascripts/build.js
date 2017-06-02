@@ -64,7 +64,7 @@ window.Build = (function () {
 
     $(window)
       .off('resize.build')
-      .on('resize.build', this.sidebarOnResize.bind(this));
+      .on('resize.build', _.throttle(this.sidebarOnResize.bind(this), 100));
 
     this.updateArtifactRemoveDate();
 
@@ -250,6 +250,7 @@ window.Build = (function () {
 
   Build.prototype.sidebarOnResize = function () {
     this.toggleSidebar(this.shouldHideSidebarForViewport());
+
     this.verifyTopPosition();
 
     if (this.$scrollContainer.getNiceScroll(0)) {
