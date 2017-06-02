@@ -229,7 +229,7 @@ module Ci
     end
 
     def source_to_pattern(source)
-      return source if ['api', 'external', 'web'].include? source
+      return source if %w(api external web).include? source
       return source.pluralize
     end
   end
