@@ -39,7 +39,7 @@ module IssueLinks
         extractor.analyze(text)
 
         extractor.issues.select do |issue|
-          can?(current_user, :admin_issue_link, issue.project)
+          can?(current_user, :admin_issue_link, issue)
         end
       end
     end
