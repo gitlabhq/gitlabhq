@@ -47,6 +47,7 @@ describe('Pipeline Url Component', () => {
           web_url: '/',
           name: 'foo',
           avatar_url: '/',
+          path: '/',
         },
       },
     };

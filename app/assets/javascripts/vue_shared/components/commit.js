@@ -91,7 +91,7 @@ export default {
     hasAuthor() {
       return this.author &&
         this.author.avatar_url &&
-        this.author.web_url &&
+        this.author.path &&
         this.author.username;
     },
 
@@ -140,7 +140,7 @@ export default {
           <user-avatar-link
             v-if="hasAuthor"
             class="avatar-image-container"
-            :link-href="author.web_url"
+            :link-href="author.path"
             :img-src="author.avatar_url"
             :img-alt="userImageAltDescription"
             :tooltip-text="author.username"
