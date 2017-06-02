@@ -9,9 +9,9 @@ module ConversationalDevelopmentIndex
     end
 
     def percentage_score
-      sum = features.map do |feature|
+      sum = features.sum do |feature|
         metric.percentage_score(feature)
-      end.inject(:+)
+      end
 
       sum / features.size.to_f
     end
