@@ -110,6 +110,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Show user cohorts data when usage ping is enabled.
 - Visualise Canary Deployments.
 
+## 9.0.9 (2017-06-02)
+
+- No changes.
+
 ## 9.0.8 (2017-05-31)
 
 - Respect the external user setting in Elasticsearch.
