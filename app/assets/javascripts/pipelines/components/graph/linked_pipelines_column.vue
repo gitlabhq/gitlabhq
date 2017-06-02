@@ -24,11 +24,6 @@ export default {
       return `graph-position-${this.graphPosition}`;
     },
   },
-  methods: {
-    flatConnectorClass(index) {
-      return (index === 0 && this.graphPosition === 'right') ? 'flat-connector-before' : '';
-    },
-  },
 };
 </script>
 
@@ -42,7 +37,9 @@ export default {
     <ul>
       <linked-pipeline
         v-for="(pipeline, index) in linkedPipelines"
-        :class="flatConnectorClass(index)"
+        :class="{
+          'flat-connector-before': index === 0 && graphPosition === 'right'
+        }"
         :key="pipeline.id"
         :pipeline-id="pipeline.id"
         :project-name="pipeline.project.name"
