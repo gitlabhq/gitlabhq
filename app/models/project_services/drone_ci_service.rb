@@ -93,8 +93,8 @@ class DroneCiService < CiService
 
   def fields
     [
-      { type: 'text', name: 'token', placeholder: 'Drone CI project specific token' },
-      { type: 'text', name: 'drone_url', placeholder: 'http://drone.example.com' },
+      { type: 'text', name: 'token', placeholder: 'Drone CI project specific token', required: true },
+      { type: 'text', name: 'drone_url', placeholder: 'http://drone.example.com', required: true },
       { type: 'checkbox', name: 'enable_ssl_verification', title: "Enable SSL verification" }
     ]
   end

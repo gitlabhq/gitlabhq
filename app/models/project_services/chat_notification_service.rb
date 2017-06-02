@@ -21,10 +21,6 @@ class ChatNotificationService < Service
     end
   end
 
-  def can_test?
-    valid?
-  end
-
   def self.supported_events
     %w[push issue confidential_issue merge_request note tag_push
        pipeline wiki_page]
@@ -36,7 +32,7 @@ class ChatNotificationService < Service
 
   def default_fields
     [
-      { type: 'text', name: 'webhook', placeholder: "e.g. #{webhook_placeholder}" },
+      { type: 'text', name: 'webhook', placeholder: "e.g. #{webhook_placeholder}", required: true },
       { type: 'text', name: 'username', placeholder: 'e.g. GitLab' },
       { type: 'checkbox', name: 'notify_only_broken_pipelines' },
       { type: 'checkbox', name: 'notify_only_default_branch' }
