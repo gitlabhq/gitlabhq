@@ -1,4 +1,5 @@
 // Analogue of link_to_member_avatar in app/helpers/projects_helper.rb
+import pendingAvatarSvg from 'icons/_icon_dotted_circle.svg';
 
 export default {
   props: {
@@ -52,6 +53,7 @@ export default {
   data() {
     return {
       avatarBaseClass: 'avatar avatar-inline',
+      pendingAvatarSvg,
     };
   },
   computed: {
@@ -59,7 +61,7 @@ export default {
       return `s${this.avatarSize}`;
     },
     avatarHtmlClass() {
-      return `${this.avatarSizeClass} ${this.avatarBaseClass}`;
+      return `${this.avatarSizeClass} ${this.avatarBaseClass} avatar-placeholder`;
     },
     tooltipClass() {
       return this.showTooltip ? 'has-tooltip' : '';
@@ -84,21 +86,23 @@ export default {
         :class="linkClass"
         :title="displayName"
         :data-container="tooltipContainerAttr">
+        <img
+          v-if="avatarUrl"
+          :class="avatarClass"
+          :src="avatarUrl"
+          :width="avatarSize"
+          :height="avatarSize"
+          :alt="displayName"/>
         <svg
-          v-if="avatarHtml"
-          v-html="avatarHtml"
+          v-else
+          v-html="pendingAvatarSvg"
           :class="avatarHtmlClass"
           :width="avatarSize"
           :height="avatarSize"
           :alt="displayName">
         </svg>
 
-        <img
-          :class="avatarClass"
-          :src="avatarUrl"
-          :width="avatarSize"
-          :height="avatarSize"
-          :alt="displayName"/>
+
       </a>
     </div>
   `,
