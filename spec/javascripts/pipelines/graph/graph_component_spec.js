@@ -5,8 +5,8 @@ import linkedPipelineJSON from './linked_pipelines_mock_data';
 
 const GraphComponent = Vue.extend(graphComponent);
 
-const state = {
-  graph: graphJSON.details.stages,
+const defaultPropsData = {
+  pipeline: graphJSON.details.stages,
   triggered: linkedPipelineJSON.triggered,
   triggerer: linkedPipelineJSON.triggerer,
 };
@@ -15,7 +15,7 @@ describe('graph component', function () {
   describe('while is loading', function () {
     beforeEach(function () {
       this.component = new GraphComponent({
-        propsData: { state },
+        propsData: defaultPropsData,
       }).$mount();
     });
 
@@ -27,7 +27,7 @@ describe('graph component', function () {
   describe('when linked pipelines are present', function () {
     beforeEach(function () {
       this.component = new GraphComponent({
-        propsData: { state },
+        propsData: defaultPropsData,
       }).$mount();
     });
 
@@ -108,7 +108,7 @@ describe('graph component', function () {
   describe('when linked pipelines are not present', function () {
     beforeEach(function () {
       this.component = new GraphComponent({
-        propsData: { state: Object.assign(state, { triggered: [], triggerer: [] }) },
+        propsData: { pipeline: graphJSON, triggered: [], triggerer: [] },
       }).$mount();
     });
 
