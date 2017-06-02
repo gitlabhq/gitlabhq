@@ -1,53 +1,31 @@
 .gl-responsive-table-row {
-  border-bottom: 1px solid $white-normal;
+  margin-top: 10px;
+  border: 1px solid $border-color;
 
   @media (min-width: $screen-md-min) {
     padding: 15px 0;
+    margin: 0;
     display: flex;
     align-items: center;
-  }
-
-  @media (max-width: $screen-sm-max) {
-    margin-top: 10px;
-    border: 1px solid $border-color;
+    border: none;
+    border-bottom: 1px solid $white-normal;
   }
 
   .table-section {
     white-space: nowrap;
 
-    &.section-10 {
-      flex: 0 0 10%;
+    $section-widths: 10 15 25 30;
+    @each $width in $section-widths {
+      &.section-#{$width} {
+        flex: 0 0 #{$width + '%'};
 
-      @media (min-width: $screen-md-min) {
-        max-width: 10%;
+        @media (min-width: $screen-md-min) {
+          max-width: #{$width + '%'};
+        }
       }
     }
 
-    &.section-15 {
-      flex: 0 0 15%;
-
-      @media (min-width: $screen-md-min) {
-        max-width: 15%;
-      }
-    }
-
-    &.section-25 {
-      flex: 0 0 25%;
-
-      @media (min-width: $screen-md-min) {
-        max-width: 25%;
-      }
-    }
-
-    &.section-30 {
-      flex: 0 0 30%;
-
-      @media (min-width: $screen-md-min) {
-        max-width: 30%;
-      }
-    }
-
-    &:not(.environments-actions) {
+    &:not(.table-button-footer) {
       @media (max-width: $screen-sm-max) {
         display: flex;
         align-self: stretch;

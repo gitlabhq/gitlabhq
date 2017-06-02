@@ -531,7 +531,7 @@ export default {
       </span>
     </div>
 
-    <div class="table-section section-30 environments-actions">
+    <div class="table-section section-30 environments-actions table-button-footer">
       <div
         v-if="!model.isFolder"
         class="btn-group environment-action-buttons"
