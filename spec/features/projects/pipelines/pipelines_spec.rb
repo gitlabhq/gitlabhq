@@ -442,6 +442,8 @@ describe 'Pipelines', :feature, :js do
           it 'creates a new pipeline' do
             expect { click_on 'Create pipeline' }
               .to change { Ci::Pipeline.count }.by(1)
+
+            expect(Ci::Pipeline.last).to be_web
           end
         end
 

@@ -550,13 +550,13 @@ ul.notes {
   position: relative;
   top: -2px;
   display: inline-block;
-  padding-left: 4px;
-  padding-right: 4px;
+  padding-left: 7px;
+  padding-right: 7px;
   color: $notes-role-color;
   font-size: 12px;
   line-height: 20px;
   border: 1px solid $border-color;
-  border-radius: $border-radius-base;
+  border-radius: $label-border-radius;
 }
 
 

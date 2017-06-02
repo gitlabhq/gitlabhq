@@ -2,6 +2,12 @@ require 'gitaly'
 
 module Gitlab
   module GitalyClient
+    module MigrationStatus
+      DISABLED = 1
+      OPT_IN = 2
+      OPT_OUT = 3
+    end
+
     SERVER_VERSION_FILE = 'GITALY_SERVER_VERSION'.freeze
 
     MUTEX = Mutex.new
@@ -46,8 +52,20 @@ module Gitlab
       Gitlab.config.gitaly.enabled
     end
 
-    def self.feature_enabled?(feature)
-      enabled? && ENV["GITALY_#{feature.upcase}"] == '1'
+    def self.feature_enabled?(feature, status: MigrationStatus::OPT_IN)
+      return false if !enabled? || status == MigrationStatus::DISABLED
+
+      feature = Feature.get("gitaly_#{feature}")
+
+      # If the feature hasn't been set, turn it on if it's opt-out
+      return status == MigrationStatus::OPT_OUT unless Feature.persisted?(feature)
+
+      if feature.percentage_of_time_value > 0
+        # Probabilistically enable this feature
+        return Random.rand() * 100 < feature.percentage_of_time_value
+      end
+
+      feature.enabled?
     end
 
     def self.migrate(feature)

@@ -199,11 +199,24 @@ module IssuablesHelper
     issuable_filter_params.any? { |k| params.key?(k) }
   end
 
-  def issuable_app_data(project, issue)
+  def issuable_initial_data(issuable)
     data = {
-      endpoint: realtime_changes_namespace_project_issue_path(project.namespace, project, issue),
-      'can-update' => can?(current_user, :update_issue, issue).to_s,
-      'issuable-ref' => issue.to_reference || ''
+      endpoint: namespace_project_issue_path(@project.namespace, @project, issuable),
+      canUpdate: can?(current_user, :update_issue, issuable),
+      canDestroy: can?(current_user, :destroy_issue, issuable),
+      canMove: current_user ? issuable.can_move?(current_user) : false,
+      issuableRef: issuable.to_reference,
+      isConfidential: issuable.confidential,
+      markdownPreviewUrl: preview_markdown_path(@project),
+      markdownDocs: help_page_path('user/markdown'),
+      projectsAutocompleteUrl: autocomplete_projects_path(project_id: @project.id),
+      issuableTemplates: issuable_templates(issuable),
+      projectPath: ref_project.path,
+      projectNamespace: ref_project.namespace.full_path,
+      initialTitleHtml: markdown_field(issuable, :title),
+      initialTitleText: issuable.title,
+      initialDescriptionHtml: markdown_field(issuable, :description),
+      initialDescriptionText: issuable.description
     }
 
     data.merge(updated_at_by(issue))
@@ -213,8 +226,8 @@ module IssuablesHelper
     return {} unless issuable.is_edited?
 
     {
-      updated_at: issuable.updated_at.to_time.iso8601,
-      updated_by: {
+      updatedAt: issuable.updated_at.to_time.iso8601,
+      updatedBy: {
         name: issuable.last_edited_by.name,
         path: user_path(issuable.last_edited_by)
       }

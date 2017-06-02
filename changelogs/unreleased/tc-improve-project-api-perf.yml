@@ -1,0 +1,4 @@
+---
+title: Improve performance of ProjectFinder used in /projects API endpoint
+merge_request: 11666
+author:

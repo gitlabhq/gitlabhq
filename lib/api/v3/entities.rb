@@ -226,7 +226,7 @@ module API
 
       class MergeRequestChanges < MergeRequest
         expose :diffs, as: :changes, using: ::API::Entities::RepoDiff do |compare, _|
-          compare.raw_diffs(all_diffs: true).to_a
+          compare.raw_diffs(limits: false).to_a
         end
       end
 

@@ -1,26 +1,60 @@
 - page_title "Container Registry"
 
-%hr
-
-%ul.content-list
-  %li.light.prepend-top-default
+.row.prepend-top-default.append-bottom-default
+  .col-lg-3
+    %h4.prepend-top-0
+      = page_title
     %p
-      A 'container image' is a snapshot of a container.
-      You can host your container images with GitLab.
-      %br
-      To start using container images hosted on GitLab you first need to login:
-      %pre
-        %code
+      With the Docker Container Registry integrated into GitLab, every project
+      can have its own space to store its Docker images.
+    %p.append-bottom-0
+      = succeed '.' do
+        Learn more about
+        = link_to 'Container Registry', help_page_path('user/project/container_registry'), target: '_blank'
+
+  .col-lg-9
+    .panel.panel-default
+      .panel-heading
+        %h4.panel-title
+          How to use the Container Registry
+      .panel-body
+        %p
+          First log in to GitLab&rsquo;s Container Registry using your GitLab username
+          and password. If you have
+          = link_to '2FA enabled', help_page_path('user/profile/account/two_factor_authentication'), target: '_blank'
+          you need to use a
+          = succeed ':' do
+            = link_to 'personal access token', help_page_path('user/profile/account/two_factor_authentication', anchor: 'personal-access-tokens'), target: '_blank'
+        %pre
           docker login #{Gitlab.config.registry.host_port}
-      %br
-      Then you are free to create and upload a container image with build and push commands:
-      %pre
-        docker build -t #{escape_once(@project.container_registry_url)}/image .
         %br
-        docker push #{escape_once(@project.container_registry_url)}/image
+        %p
+          Once you log in, you&rsquo;re free to create and upload a container image
+          using the common
+          %code build
+          and
+          %code push
+          commands:
+        %pre
+          :plain
+            docker build -t #{escape_once(@project.container_registry_url)} .
+            docker push #{escape_once(@project.container_registry_url)}
 
-  - if @images.blank?
-    .nothing-here-block No container image repositories in Container Registry for this project.
+        %hr
+        %h5.prepend-top-default
+          Use different image names
+        %p.light
+          GitLab supports up to 3 levels of image names. The following
+          examples of images are valid for your project:
+        %pre
+          :plain
+            #{escape_once(@project.container_registry_url)}:tag
+            #{escape_once(@project.container_registry_url)}/optional-image-name:tag
+            #{escape_once(@project.container_registry_url)}/optional-name/optional-image-name:tag
 
-  - else
-    = render partial: 'image', collection: @images
+    - if @images.blank?
+      %p.settings-message.text-center.append-bottom-default
+        No container images stored for this project. Add one by following the
+        instructions above.
+    - else
+      = render partial: 'image', collection: @images

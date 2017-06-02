@@ -42,6 +42,7 @@ class Projects::VariablesController < Projects::ApplicationController
   private
 
   def project_params
-    params.require(:variable).permit([:id, :key, :value, :_destroy])
+    params.require(:variable)
+      .permit([:id, :key, :value, :protected, :_destroy])
   end
 end

@@ -1215,16 +1215,49 @@ describe Ci::Build, :models do
       it { is_expected.to include(tag_variable) }
     end
 
-    context 'when secure variable is defined' do
-      let(:secure_variable) do
+    context 'when secret variable is defined' do
+      let(:secret_variable) do
         { key: 'SECRET_KEY', value: 'secret_value', public: false }
       end
 
       before do
-        build.project.variables << Ci::Variable.new(key: 'SECRET_KEY', value: 'secret_value')
+        create(:ci_variable,
+               secret_variable.slice(:key, :value).merge(project: project))
       end
 
-      it { is_expected.to include(secure_variable) }
+      it { is_expected.to include(secret_variable) }
+    end
+
+    context 'when protected variable is defined' do
+      let(:protected_variable) do
+        { key: 'PROTECTED_KEY', value: 'protected_value', public: false }
+      end
+
+      before do
+        create(:ci_variable,
+               :protected,
+               protected_variable.slice(:key, :value).merge(project: project))
+      end
+
+      context 'when the branch is protected' do
+        before do
+          create(:protected_branch, project: build.project, name: build.ref)
+        end
+
+        it { is_expected.to include(protected_variable) }
+      end
+
+      context 'when the tag is protected' do
+        before do
+          create(:protected_tag, project: build.project, name: build.ref)
+        end
+
+        it { is_expected.to include(protected_variable) }
+      end
+
+      context 'when the ref is not protected' do
+        it { is_expected.not_to include(protected_variable) }
+      end
     end
 
     context 'when build is for triggers' do
@@ -1346,15 +1379,30 @@ describe Ci::Build, :models do
     end
 
     context 'returns variables in valid order' do
+      let(:build_pre_var) { { key: 'build', value: 'value' } }
+      let(:project_pre_var) { { key: 'project', value: 'value' } }
+      let(:pipeline_pre_var) { { key: 'pipeline', value: 'value' } }
+      let(:build_yaml_var) { { key: 'yaml', value: 'value' } }
+
       before do
-        allow(build).to receive(:predefined_variables) { ['predefined'] }
-        allow(project).to receive(:predefined_variables) { ['project'] }
-        allow(pipeline).to receive(:predefined_variables) { ['pipeline'] }
-        allow(build).to receive(:yaml_variables) { ['yaml'] }
-        allow(project).to receive(:secret_variables) { ['secret'] }
+        allow(build).to receive(:predefined_variables) { [build_pre_var] }
+        allow(project).to receive(:predefined_variables) { [project_pre_var] }
+        allow(pipeline).to receive(:predefined_variables) { [pipeline_pre_var] }
+        allow(build).to receive(:yaml_variables) { [build_yaml_var] }
+
+        allow(project).to receive(:secret_variables_for).with(build.ref) do
+          [create(:ci_variable, key: 'secret', value: 'value')]
+        end
       end
 
-      it { is_expected.to eq(%w[predefined project pipeline yaml secret]) }
+      it do
+        is_expected.to eq(
+          [build_pre_var,
+           project_pre_var,
+           pipeline_pre_var,
+           build_yaml_var,
+           { key: 'secret', value: 'value', public: false }])
+      end
     end
   end
 

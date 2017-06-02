@@ -21,6 +21,8 @@ describe "Admin::Users", feature: true do
       expect(page).to have_content(current_user.name)
       expect(page).to have_content(user.email)
       expect(page).to have_content(user.name)
+      expect(page).to have_link('Block', href: block_admin_user_path(user))
+      expect(page).to have_link('Delete', href: admin_user_path(user))
     end
 
     describe 'Two-factor Authentication filters' do

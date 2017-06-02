@@ -193,39 +193,14 @@ describe IssuablesHelper do
     end
   end
 
-  describe '#issuable_app_data' do
-    let(:user) { create(:user) }
-    let(:project) { create(:project) }
-    let(:issue) { create(:issue, project: project, last_edited_by: user, created_at: 3.days.ago, updated_at: 2.days.ago, last_edited_at: 2.days.ago) }
-    let(:issue_app_data) do
-      {
-        endpoint: realtime_changes_namespace_project_issue_path(project.namespace, project, issue),
-        'can-update' => "true",
-        'issuable-ref' => issue.to_reference || '',
-        updated_at: issue.updated_at.to_time.iso8601,
-        updated_by: {
-          name: user.name,
-          path: user_path(user)
-        }
-      }
-    end
-
-    before do
-      allow(helper).to receive(:current_user).and_return(nil)
-      allow(helper).to receive(:can?).with(nil, :update_issue, issue).and_return(true)
-    end
-
-    it { expect(helper.issuable_app_data(issue.project, issue)).to eq(issue_app_data) }
-  end
-
   describe '#updated_at_by' do
     let(:user) { create(:user) }
     let(:unedited_issuable) { create(:issue) }
     let(:edited_issuable) { create(:issue, last_edited_by: user, created_at: 3.days.ago, updated_at: 2.days.ago, last_edited_at: 2.days.ago) }
     let(:edited_updated_at_by) do
       {
-        updated_at: edited_issuable.updated_at.to_time.iso8601,
-        updated_by: {
+        updatedAt: edited_issuable.updated_at.to_time.iso8601,
+        updatedBy: {
           name: user.name,
           path: user_path(user)
         }

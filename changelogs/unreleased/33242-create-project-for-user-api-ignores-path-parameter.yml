@@ -1,0 +1,4 @@
+---
+title: Fix missing optional path parameter in "Create project for user" API
+merge_request: 11868
+author:

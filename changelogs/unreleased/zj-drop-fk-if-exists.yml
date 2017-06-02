@@ -1,0 +1,4 @@
+---
+title: Remove foreigh key on ci_trigger_schedules only if it exists
+merge_request:
+author:

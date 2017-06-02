@@ -148,10 +148,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
       format.json do
         if @issue.valid?
-          render json: @issue.to_json(methods: [:task_status, :task_status_short],
-                                      include: { milestone: {},
-                                                 assignees: { only: [:id, :name, :username], methods: [:avatar_url] },
-                                                 labels: { methods: :text_color } })
+          render json: IssueSerializer.new.represent(@issue)
         else
           render json: { errors: @issue.errors.full_messages }, status: :unprocessable_entity
         end

@@ -22,7 +22,7 @@ describe User, models: true do
     it { is_expected.to have_many(:deploy_keys).dependent(:destroy) }
     it { is_expected.to have_many(:events).dependent(:destroy) }
     it { is_expected.to have_many(:recent_events).class_name('Event') }
-    it { is_expected.to have_many(:issues).dependent(:restrict_with_exception) }
+    it { is_expected.to have_many(:issues).dependent(:destroy) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
     it { is_expected.to have_many(:merge_requests).dependent(:destroy) }
     it { is_expected.to have_many(:identities).dependent(:destroy) }
@@ -1493,25 +1493,6 @@ describe User, models: true do
       end
 
       it_behaves_like :member
-    end
-  end
-
-  describe '#viewable_starred_projects' do
-    let(:user) { create(:user) }
-    let(:public_project) { create(:empty_project, :public) }
-    let(:private_project) { create(:empty_project, :private) }
-    let(:private_viewable_project) { create(:empty_project, :private) }
-
-    before do
-      private_viewable_project.team << [user, Gitlab::Access::MASTER]
-
-      [public_project, private_project, private_viewable_project].each do |project|
-        user.toggle_star(project)
-      end
-    end
-
-    it 'returns only starred projects the user can view' do
-      expect(user.viewable_starred_projects).not_to include(private_project)
     end
   end
 

@@ -7,8 +7,21 @@ window.Flash = (function() {
     return $(this).fadeOut();
   };
 
-  function Flash(message, type, parent) {
-    var flash, textDiv;
+  /**
+   * Flash banner supports different types of Flash configurations
+   * along with ability to provide actionConfig which can be used to show
+   * additional action or link on banner next to message
+   *
+   * @param {String} message Flash message
+   * @param {String} type Type of Flash, it can be `notice` or `alert` (default)
+   * @param {Object} parent Reference to Parent element under which Flash needs to appear
+   * @param {Object} actionConfig Map of config to show action on banner
+   *    @param {String} href URL to which action link should point (default '#')
+   *    @param {String} title Title of action
+   *    @param {Function} clickHandler Method to call when action is clicked on
+   */
+  function Flash(message, type, parent, actionConfig) {
+    var flash, textDiv, actionLink;
     if (type == null) {
       type = 'alert';
     }
@@ -30,6 +43,23 @@ window.Flash = (function() {
       text: message
     });
     textDiv.appendTo(flash);
+
+    if (actionConfig) {
+      const actionLinkConfig = {
+        class: 'flash-action',
+        href: actionConfig.href || '#',
+        text: actionConfig.title
+      };
+
+      if (!actionConfig.href) {
+        actionLinkConfig.role = 'button';
+      }
+
+      actionLink = $('<a/>', actionLinkConfig);
+
+      actionLink.appendTo(flash);
+      this.flashContainer.on('click', '.flash-action', actionConfig.clickHandler);
+    }
     if (this.flashContainer.parent().hasClass('content-wrapper')) {
       textDiv.addClass('container-fluid container-limited');
     }

@@ -242,6 +242,7 @@ class Project < ActiveRecord::Base
   scope :in_namespace, ->(namespace_ids) { where(namespace_id: namespace_ids) }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
   scope :joined, ->(user) { where('namespace_id != ?', user.namespace_id) }
+  scope :starred_by, ->(user) { joins(:users_star_projects).where('users_star_projects.user_id': user.id) }
   scope :visible_to_user, ->(user) { where(id: user.authorized_projects.select(:id).reorder(nil)) }
   scope :non_archived, -> { where(archived: false) }
   scope :for_milestones, ->(ids) { joins(:milestones).where('milestones.id' => ids).distinct }
@@ -348,10 +349,6 @@ class Project < ActiveRecord::Base
       union = Gitlab::SQL::Union.new([projects, namespaces])
 
       where("projects.id IN (#{union.to_sql})")
-    end
-
-    def search_by_visibility(level)
-      where(visibility_level: Gitlab::VisibilityLevel.string_options[level])
     end
 
     def search_by_title(query)
@@ -1064,11 +1061,6 @@ class Project < ActiveRecord::Base
     pipelines.order(id: :desc).find_by(sha: sha, ref: ref)
   end
 
-  def ensure_pipeline(ref, sha, current_user = nil)
-    pipeline_for(ref, sha) ||
-      pipelines.create(sha: sha, ref: ref, user: current_user)
-  end
-
   def enable_ci
     project_feature.update_attribute(:builds_access_level, ProjectFeature::ENABLED)
   end
@@ -1253,10 +1245,17 @@ class Project < ActiveRecord::Base
     variables
   end
 
-  def secret_variables
-    variables.map do |variable|
-      { key: variable.key, value: variable.value, public: false }
+  def secret_variables_for(ref)
+    if protected_for?(ref)
+      variables
+    else
+      variables.unprotected
     end
+  end
+
+  def protected_for?(ref)
+    ProtectedBranch.protected?(self, ref) ||
+      ProtectedTag.protected?(self, ref)
   end
 
   def deployment_variables

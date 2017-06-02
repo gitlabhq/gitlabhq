@@ -9,13 +9,13 @@ describe Ci::CreatePipelineService, services: true do
   end
 
   describe '#execute' do
-    def execute_service(after: project.commit.id, message: 'Message', ref: 'refs/heads/master')
+    def execute_service(source: :push, after: project.commit.id, message: 'Message', ref: 'refs/heads/master')
       params = { ref: ref,
                  before: '00000000',
                  after: after,
                  commits: [{ message: message }] }
 
-      described_class.new(project, user, params).execute
+      described_class.new(project, user, params).execute(source)
     end
 
     context 'valid params' do
@@ -30,6 +30,7 @@ describe Ci::CreatePipelineService, services: true do
       it 'creates a pipeline' do
         expect(pipeline).to be_kind_of(Ci::Pipeline)
         expect(pipeline).to be_valid
+        expect(pipeline).to be_push
         expect(pipeline).to eq(project.pipelines.last)
         expect(pipeline).to have_attributes(user: user)
         expect(pipeline).to have_attributes(status: 'pending')
@@ -71,10 +72,11 @@ describe Ci::CreatePipelineService, services: true do
           end
         end
 
-        context 'when merge request head commit sha does not match pipeline sha' do
+        context 'when the pipeline is not the latest for the branch' do
           it 'does not update merge request head pipeline' do
             merge_request = create(:merge_request, source_branch: 'master', target_branch: "branch_1", source_project: project)
-            allow_any_instance_of(MergeRequestDiff).to receive(:head_commit).and_return(double(id: 1234))
+
+            allow_any_instance_of(Ci::Pipeline).to receive(:latest?).and_return(false)
 
             pipeline
 

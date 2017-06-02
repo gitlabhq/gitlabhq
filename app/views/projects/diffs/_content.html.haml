@@ -3,7 +3,7 @@
 .diff-content
   - if diff_file.too_large?
     .nothing-here-block This diff could not be displayed because it is too large.
-  - elsif blob.too_large?
+  - elsif blob.truncated?
     .nothing-here-block The file could not be displayed because it is too large.
   - elsif blob.readable_text?
     - if !diff_file.repository.diffable?(blob)

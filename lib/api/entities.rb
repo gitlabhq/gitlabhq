@@ -331,7 +331,7 @@ module API
 
     class MergeRequestChanges < MergeRequest
       expose :diffs, as: :changes, using: Entities::RepoDiff do |compare, _|
-        compare.raw_diffs(all_diffs: true).to_a
+        compare.raw_diffs(limits: false).to_a
       end
     end
 
@@ -344,7 +344,7 @@ module API
       expose :commits, using: Entities::RepoCommit
 
       expose :diffs, using: Entities::RepoDiff do |compare, _|
-        compare.raw_diffs(all_diffs: true).to_a
+        compare.raw_diffs(limits: false).to_a
       end
     end
 
@@ -548,7 +548,7 @@ module API
       end
 
       expose :diffs, using: Entities::RepoDiff do |compare, options|
-        compare.diffs(all_diffs: true).to_a
+        compare.diffs(limits: false).to_a
       end
 
       expose :compare_timeout do |compare, options|
@@ -675,6 +675,7 @@ module API
 
     class Variable < Grape::Entity
       expose :key, :value
+      expose :protected?, as: :protected
     end
 
     class Pipeline < PipelineBasic
@@ -684,6 +685,17 @@ module API
       expose :created_at, :updated_at, :started_at, :finished_at, :committed_at
       expose :duration
       expose :coverage
+    end
+
+    class PipelineSchedule < Grape::Entity
+      expose :id
+      expose :description, :ref, :cron, :cron_timezone, :next_run_at, :active
+      expose :created_at, :updated_at
+      expose :owner, using: Entities::UserBasic
+    end
+
+    class PipelineScheduleDetails < PipelineSchedule
+      expose :last_pipeline, using: Entities::PipelineBasic
     end
 
     class EnvironmentBasic < Grape::Entity
@@ -740,6 +752,28 @@ module API
 
     class ImpersonationToken < PersonalAccessTokenWithToken
       expose :impersonation
+    end
+
+    class FeatureGate < Grape::Entity
+      expose :key
+      expose :value
+    end
+
+    class Feature < Grape::Entity
+      expose :name
+      expose :state
+      expose :gates, using: FeatureGate do |model|
+        model.gates.map do |gate|
+          value = model.gate_values[gate.key]
+
+          # By default all gate values are populated. Only show relevant ones.
+          if (value.is_a?(Integer) && value.zero?) || (value.is_a?(Set) && value.empty?)
+            next
+          end
+
+          { key: gate.key, value: value }
+        end.compact
+      end
     end
 
     module JobRequest
