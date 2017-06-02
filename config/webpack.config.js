@@ -74,8 +74,6 @@ var config = {
     chunkFilename: IS_PRODUCTION ? '[name].[chunkhash].chunk.js' : '[name].chunk.js',
   },
 
-  devtool: 'cheap-module-source-map',
-
   module: {
     rules: [
       {
