@@ -809,6 +809,11 @@ class User < ActiveRecord::Base
     system_hook_service.execute_hooks_for(self, :destroy)
   end
 
+  def delete_async(deleted_by:, params: {})
+    block if params[:hard_delete]
+    DeleteUserWorker.perform_async(deleted_by.id, id, params)
+  end
+
   def notification_service
     NotificationService.new
   end

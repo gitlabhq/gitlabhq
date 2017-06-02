@@ -293,7 +293,7 @@ module API
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
 
-        DeleteUserWorker.perform_async(current_user.id, user.id, hard_delete: params[:hard_delete])
+        user.delete_async(deleted_by: current_user, params: params)
       end
 
       desc 'Block a user. Available only for admins.'

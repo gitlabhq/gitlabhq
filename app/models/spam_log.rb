@@ -4,8 +4,7 @@ class SpamLog < ActiveRecord::Base
   validates :user, presence: true
 
   def remove_user(deleted_by:)
-    user.block
-    DeleteUserWorker.perform_async(deleted_by.id, user.id, delete_solo_owned_groups: true, hard_delete: true)
+    user.delete_async(deleted_by: deleted_by, params: { hard_delete: true })
   end
 
   def text
