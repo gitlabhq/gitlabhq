@@ -197,7 +197,6 @@ describe IssuablesHelper do
     let(:user) { create(:user) }
     let(:project) { create(:project) }
     let(:issue) { create(:issue, project: project, last_edited_by: user, created_at: 3.days.ago, updated_at: 2.days.ago, last_edited_at: 2.days.ago) }
-
     let(:issue_app_data) do
       {
         endpoint: realtime_changes_namespace_project_issue_path(project.namespace, project, issue),

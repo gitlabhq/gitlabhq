@@ -205,9 +205,8 @@ module IssuablesHelper
       'can-update' => can?(current_user, :update_issue, issue).to_s,
       'issuable-ref' => issue.to_reference || ''
     }
-    updated_at_by = updated_at_by(issue)
 
-    data.merge(updated_at_by)
+    data.merge(updated_at_by(issue))
   end
 
   def updated_at_by(issuable)
