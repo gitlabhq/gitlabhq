@@ -1003,16 +1003,13 @@
 }
 
 .linked-pipelines-column {
-  @extend .stage-column;
-
   position: relative;
 
   & > ul {
     padding: 0;
   }
 
-  // IDs used to override specificity in stage-column
-  &#graph-position-left {
+  &.graph-position-left {
     margin-right: $linked-project-column-margin;
 
     .cross-project-triangle {
@@ -1020,7 +1017,7 @@
     }
   }
 
-  &#graph-position-right {
+  &.graph-position-right {
     margin-left: $linked-project-column-margin;
 
     .cross-project-triangle {
