@@ -34,6 +34,11 @@ class Note < ActiveRecord::Base
   # Attribute used to store the attributes that have ben changed by slash commands.
   attr_accessor :commands_changes
 
+  # Discussion being replied to. May need to be saved if the discussion
+  # represents an individual note that will be turned into a discussion by
+  # this new note being created as a reply to it.
+  attr_accessor :in_reply_to_discussion
+
   default_value_for :system, false
 
   attr_mentionable :note, pipeline: :note
@@ -100,6 +105,7 @@ class Note < ActiveRecord::Base
   after_initialize :ensure_discussion_id
   before_validation :nullify_blank_type, :nullify_blank_line_code
   before_validation :set_discussion_id, on: :create
+  after_create :save_in_reply_to_discussion, if: :in_reply_to_discussion
   after_save :keep_around_commit, unless: :for_personal_snippet?
   after_save :expire_etag_cache
   after_destroy :expire_etag_cache
@@ -324,6 +330,10 @@ class Note < ActiveRecord::Base
 
   def set_discussion_id
     self.discussion_id ||= discussion_class.discussion_id(self)
+  end
+
+  def save_in_reply_to_discussion
+    in_reply_to_discussion.save
   end
 
   def expire_etag_cache

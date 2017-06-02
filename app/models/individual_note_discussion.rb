@@ -11,6 +11,14 @@ class IndividualNoteDiscussion < Discussion
     true
   end
 
+  def can_become_discussion?
+    noteable.supports_discussions?
+  end
+
+  def becomes_discussion!
+    first_note.becomes!(Discussion.note_class).to_discussion
+  end
+
   def reply_attributes
     super.tap { |attrs| attrs.delete(:discussion_id) }
   end

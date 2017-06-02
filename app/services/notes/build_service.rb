@@ -1,25 +1,41 @@
 module Notes
   class BuildService < ::BaseService
+    DiscussionNotFound = Class.new(StandardError)
+
     def execute
-      in_reply_to_discussion_id = params.delete(:in_reply_to_discussion_id)
-
-      if in_reply_to_discussion_id.present?
-        discussion = find_discussion(in_reply_to_discussion_id)
-
-        unless discussion
-          note = Note.new
-          note.errors.add(:base, 'Discussion to reply to cannot be found')
-          return note
-        end
-
-        params.merge!(discussion.reply_attributes)
+      begin
+        reply_attributes = discussion_reply_attributes
+      rescue DiscussionNotFound
+        note = Note.new
+        note.errors.add(:base, 'Discussion to reply to cannot be found')
+        return note
       end
+
+      params.merge!(reply_attributes) if reply_attributes
 
       note = Note.new(params)
       note.project = project
       note.author = current_user
 
       note
+    end
+
+    private
+
+    def discussion_reply_attributes
+      new_discussion = params.delete(:new_discussion)
+      in_reply_to_discussion_id = params.delete(:in_reply_to_discussion_id)
+
+      return if in_reply_to_discussion_id.blank?
+
+      discussion = find_discussion(in_reply_to_discussion_id)
+      raise DiscussionNotFound unless discussion
+
+      if new_discussion.present? && discussion.can_become_discussion?
+        discussion = discussion.becomes_discussion!
+      end
+
+      discussion.reply_attributes
     end
 
     def find_discussion(discussion_id)

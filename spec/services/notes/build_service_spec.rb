@@ -7,19 +7,57 @@ describe Notes::BuildService, services: true do
 
   describe '#execute' do
     context 'when in_reply_to_discussion_id is specified' do
-      context 'when a note with that original discussion ID exists' do
+      context 'when a discussion note with that original discussion ID exists' do
         it 'sets the note up to be in reply to that note' do
           new_note = described_class.new(project, author, note: 'Test', in_reply_to_discussion_id: note.discussion_id).execute
           expect(new_note).to be_valid
+          expect(new_note).to be_a(DiscussionNote)
+          expect(new_note.discussion_id).to eq(note.discussion_id)
           expect(new_note.in_reply_to?(note)).to be_truthy
         end
       end
 
-      context 'when a note with that discussion ID exists' do
+      context 'when a discussion note with that discussion ID exists' do
         it 'sets the note up to be in reply to that note' do
           new_note = described_class.new(project, author, note: 'Test', in_reply_to_discussion_id: note.discussion_id).execute
           expect(new_note).to be_valid
+          expect(new_note).to be_a(DiscussionNote)
+          expect(new_note.discussion_id).to eq(note.discussion_id)
           expect(new_note.in_reply_to?(note)).to be_truthy
+        end
+      end
+
+      context 'when a regular note with that discussion ID exists' do
+        let(:note) { create(:note_on_issue) }
+
+        context 'when new_discussion is set' do
+          it 'sets the note up to be a reply to that note' do
+            new_note = described_class.new(project, author, note: 'Test', in_reply_to_discussion_id: note.discussion_id, new_discussion: true).execute
+            expect(new_note).to be_valid
+            expect(new_note).to be_a(DiscussionNote)
+            expect(new_note.discussion_id).to eq(note.discussion_id)
+            expect(new_note.in_reply_to?(note)).to be_truthy
+          end
+
+          it 'transforms the original note into a discussion note when saved' do
+            new_note = described_class.new(project, author, note: 'Test', in_reply_to_discussion_id: note.discussion_id, new_discussion: true).execute
+
+            new_note.save
+
+            # We can't use reload because we want a new instance
+            original_note = Note.find(note.id)
+            expect(original_note).to be_a(DiscussionNote)
+            expect(original_note.discussion_id).to eq(new_note.discussion_id)
+          end
+        end
+
+        context 'when new_discussion is not set' do
+          it 'sets the note up to be a regular comment on the noteable' do
+            new_note = described_class.new(project, author, note: 'Test', in_reply_to_discussion_id: note.discussion_id).execute
+            expect(new_note).to be_valid
+            expect(new_note.discussion_id).not_to eq(note.discussion_id)
+            expect(new_note.in_reply_to?(note)).to be_truthy
+          end
         end
       end
 

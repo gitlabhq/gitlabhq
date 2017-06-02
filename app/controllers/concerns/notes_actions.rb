@@ -26,7 +26,8 @@ module NotesActions
   def create
     create_params = note_params.merge(
       merge_request_diff_head_sha: params[:merge_request_diff_head_sha],
-      in_reply_to_discussion_id: params[:in_reply_to_discussion_id]
+      in_reply_to_discussion_id: params[:in_reply_to_discussion_id],
+      new_discussion: params[:new_discussion]
     )
     @note = Notes::CreateService.new(project, current_user, create_params).execute
 
@@ -88,7 +89,7 @@ module NotesActions
 
       attrs.merge!(NoteSerializer.new.represent(note, basic: true))
 
-      discussion = note.to_discussion(noteable)
+      discussion = note.discussion(noteable)
       attrs[:discussion_id] = discussion.id
 
       unless discussion.individual_note?

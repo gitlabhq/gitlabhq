@@ -14,6 +14,8 @@ class Discussion
             :for_commit?,
             :for_merge_request?,
 
+            :save,
+
             to: :first_note
 
   def self.build(notes, context_noteable = nil)
@@ -94,6 +96,10 @@ class Discussion
     false
   end
 
+  def can_be_promoted_to_discussion?
+    false
+  end
+
   def new_discussion?
     notes.length == 1
   end
@@ -115,7 +121,7 @@ class Discussion
   end
 
   def reply_attributes
-    first_note.slice(:type, :noteable_type, :noteable_id, :commit_id, :discussion_id)
+    first_note.slice(:type, :noteable_type, :noteable_id, :commit_id, :discussion_id).merge(in_reply_to_discussion: self)
   end
 
   def to_partial_path
