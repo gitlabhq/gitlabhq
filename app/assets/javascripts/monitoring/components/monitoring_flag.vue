@@ -34,7 +34,7 @@
       };
     },
 
-    methods: {
+    computed: {
       formatTime() {
         return timeFormat(this.currentData.time);
       },
@@ -42,7 +42,7 @@
       formatDate() {
         return dateFormat(this.currentData.time);
       },
-    },
+    }
   };
 </script>
 <template>
@@ -82,14 +82,14 @@
         x="8"
         y="35"
         transform="translate(-5, 20)">
-        {{formatTime()}}
+        {{formatTime}}
       </text>
       <text
         class="text-metric-date"
         x="8"
         y="15"
         transform="translate(-5, 20)">
-        {{formatDate()}}
+        {{formatDate}}
       </text>
     </svg>
   </g>

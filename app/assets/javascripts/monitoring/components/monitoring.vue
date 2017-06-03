@@ -4,6 +4,7 @@
   import statusCodes from '~/lib/utils/http_status';
   import MonitoringService from '../services/monitoring_service';
   import monitoringRow from './monitoring_row.vue';
+  import monitoringState from './monitoring_state.vue';
   import MonitoringStore from '../stores/monitoring_store';
   import eventHub from '../event_hub';
 
@@ -11,45 +12,32 @@
 
     data() {
       const metricsData = document.querySelector('.prometheus-graphs').dataset;
-      const $prometheusStateContainer = document.querySelector('.prometheus-state');
       const store = new MonitoringStore();
 
       return {
         store,
-        isLoading: true,
-        unableToConnect: false,
-        gettingStarted: false,
-        state: '',
+        state: 'gettingStarted',
         hasMetrics: gl.utils.convertPermissionToBoolean(metricsData.hasMetrics),
+        documentationPath: metricsData.documentationPath,
+        settingsPath: metricsData.settingsPath,
         endpoint: metricsData.additionalMetrics,
         deploymentEndpoint: metricsData.deploymentEndpoint,
         showEmptyState: true,
         backOffRequestCounter: 0,
         updateAspectRatio: false,
         updatedAspectRatios: 0,
-        prometheusStateContainer: $prometheusStateContainer,
       };
     },
 
     components: {
       monitoringRow,
+      monitoringState,
     },
 
     methods: {
-      updateState(prevState) {
-        this.prometheusStateContainer.classList.add('hidden');
-        if (prevState) {
-          this.prometheusStateContainer.querySelector(prevState).classList.add('hidden');
-        }
-        this.prometheusStateContainer.querySelector(this.state).classList.remove('hidden');
-        if (this.showEmptyState) {
-          this.prometheusStateContainer.classList.remove('hidden');
-        }
-      },
       getGraphsData() {
         const maxNumberOfRequests = 3;
-        this.state = '.js-loading';
-        this.updateState();
+        this.state = 'loading';
         gl.utils.backOff((next, stop) => {
           this.service.get().then((resp) => {
             if (resp.status === statusCodes.NO_CONTENT) {
@@ -66,9 +54,7 @@
         })
         .then((resp) => {
           if (resp.status === statusCodes.NO_CONTENT) {
-            const prevState = this.state;
-            this.state = '.js-unable-to-connect';
-            this.updateState(prevState);
+            this.state = 'unableToConnect';
             return false;
           }
           return resp.json();
@@ -84,14 +70,11 @@
           if (deploymentData !== false) {
             this.store.storeDeploymentData(deploymentData.deployments);
             this.showEmptyState = false;
-            this.updateState();
           }
           return {};
         })
         .catch(() => {
-          const prevState = this.state;
-          this.state = '.js-unable-to-connect';
-          this.updateState(prevState);
+          this.state = 'unableToConnect';
         });
       },
 
@@ -102,7 +85,6 @@
       },
 
       resize() {
-        // ignore resize events as long as an actualResizeHandler execution is in the queue
         this.updateAspectRatio = true;
       },
 
@@ -128,9 +110,7 @@
     mounted() {
       const resizeThrottled = _.throttle(this.resize, 600);
       if (!this.hasMetrics) {
-        const prevState = this.state;
-        this.state = '.js-getting-started';
-        this.updateState(prevState);
+        this.state = 'gettingStarted';
       } else {
         this.getGraphsData();
         window.addEventListener('resize', resizeThrottled, false);
@@ -166,4 +146,10 @@
       </div>
     </div>
   </div>
+  <monitoring-state 
+    :selected-state="state"
+    :documentation-path="documentationPath"
+    :settings-path="settingsPath"
+    v-else
+  />
 </template>

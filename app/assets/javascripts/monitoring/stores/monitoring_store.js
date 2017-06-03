@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this*/
 import _ from 'underscore';
 
 class MonitoringStore {
@@ -6,7 +7,7 @@ class MonitoringStore {
     this.deploymentData = [];
   }
 
-  static createArrayRows(metrics = []) {
+  createArrayRows(metrics = []) {
     const currentMetrics = metrics;
     const availableMetrics = [];
     let metricsRow = [];
@@ -37,7 +38,7 @@ class MonitoringStore {
     this.groups = groups.map((group) => {
       const currentGroup = group;
       currentGroup.metrics = _.chain(group.metrics).sortBy('weight').sortBy('title').value();
-      currentGroup.metrics = MonitoringStore.createArrayRows(currentGroup.metrics);
+      currentGroup.metrics = this.createArrayRows(currentGroup.metrics);
       return currentGroup;
     });
   }
