@@ -4,6 +4,10 @@ module EE
       File.join(::Gitlab::Geo.primary_node.url, ::Gitlab::Routing.url_helpers.namespace_project_path(project.namespace, project))
     end
 
+    def geo_primary_ssh_url_to_repo(project)
+      "#{::Gitlab::Geo.primary_node.clone_url_prefix}#{project.path_with_namespace}"
+    end
+
     def geo_primary_http_url_to_repo(project)
       "#{geo_primary_web_url(project)}.git"
     end
@@ -12,6 +16,8 @@ module EE
       case default_clone_protocol
       when 'http'
         geo_primary_http_url_to_repo(project)
+      when 'ssh'
+        geo_primary_ssh_url_to_repo(project)
       end
     end
   end
