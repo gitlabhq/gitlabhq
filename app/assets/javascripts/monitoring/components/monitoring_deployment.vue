@@ -1,0 +1,103 @@
+<script>
+  import {
+      dateFormat,
+      timeFormat,
+    } from '../constants';
+
+  export default {
+    props: {
+      showDeployInfo: {
+        type: Boolean,
+        required: true,
+      },
+      deploymentData: {
+        type: Array,
+        required: true,
+      },
+      height: {
+        type: Number,
+        required: true,
+      },
+    },
+    methods: {
+      refText(d) {
+        return d.tag ? d.ref : d.sha.slice(0, 6);
+      },
+
+      formatTime(deploymentTime) {
+        return timeFormat(deploymentTime);
+      },
+
+      formatDate(deploymentTime) {
+        return dateFormat(deploymentTime);
+      },
+
+      nameDeploymentClass(deployment) {
+        return `deploy-info-${deployment.id}`;
+      },
+
+      transformDeploymentGroup(deployment) {
+        return `translate(${Math.floor(deployment.xPos) + 1}, 20)`;
+      },
+    },
+  };
+</script>
+<template>
+  <g
+    class="deploy-info"
+    v-show="showDeployInfo">
+    <g
+      v-for="(deployment, index) in deploymentData" :key="index"
+      :class="nameDeploymentClass(deployment)"
+      :transform="transformDeploymentGroup(deployment)">
+      <rect
+        x="1"
+        y="0"
+        :height="height - 120"
+        width="2"
+        fill="url(#shadow-gradient)">
+      </rect>
+      <line
+        class="deployment-line"
+        x1="0"
+        y1="0"
+        x2="0"
+        :y2="height - 120"
+        stroke="#000">
+      </line>
+      <svg
+        v-show="deployment.showDeploymentFlag"
+        class="js-deploy-info-box"
+        x="3"
+        y="0"
+        width="92"
+        height="60">
+        <rect
+          class="rect-text-metric deploy-info-rect rect-metric"
+          x="1"
+          y="1"
+          rx="2"
+          width="90"
+          height="58">
+        </rect>
+        <g 
+          transform="translate(5, 2)">
+          <text
+            class="deploy-info-text text-metric-bold">
+            {{refText(deployment)}}
+          </text>
+        </g>
+        <text
+          class="deploy-info-text"
+          y="18">
+          {{formatDate(deployment.time)}}
+        </text>
+        <text
+          class="deploy-info-text text-metric-bold"
+          y="38">
+          {{formatTime(deployment.time)}}
+        </text>
+      </svg>
+    </g>
+  </g>
+</template>

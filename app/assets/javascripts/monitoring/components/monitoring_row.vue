@@ -19,7 +19,7 @@
     components: {
       monitoringColumn,
     },
-    methods: {
+    computed: {
       bootstrapClass() {
         return this.rowData.length >= 2 ? 'col-md-6' : 'col-md-12';
       },
@@ -32,7 +32,7 @@
     <monitoring-column
       v-for="(column, index) in rowData" 
       :column-data="column"
-      :class-type="bootstrapClass()"
+      :class-type="bootstrapClass"
       :key="index"
       :update-aspect-ratio="updateAspectRatio"
       :deployment-data="deploymentData"

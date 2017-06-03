@@ -1,10 +1,10 @@
 <script>
+  /* eslint-disable no-param-reassign */
   /* global Breakpoints */
   import d3 from 'd3';
-  import {
-    dateFormat,
-    timeFormat,
-  } from '../constants';
+  import monitoringLegends from './monitoring_legends.vue';
+  import monitoringFlag from './monitoring_flag.vue';
+  import monitoringDeployment from './monitoring_deployment.vue';
   import eventHub from '../event_hub';
   import measurements from '../utils/measurements';
   import { formatRelevantDigits } from '../../lib/utils/number_utils';
@@ -32,143 +32,65 @@
     },
     data() {
       return {
-        height: 0,
-        width: 0,
+        height: 500,
+        width: 600,
         xScale: {},
         yScale: {},
         margin: {},
         svgContainer: {},
         data: [],
-        axisLabelContainer: {},
         breakpointHandler: Breakpoints.get(),
         unitOfDisplay: '',
         areaColorRgb: '#8fbce8',
         lineColorRgb: '#1f78d1',
-        circleColorRgb: '#8fbce8',
         yAxisLabel: '',
         legendTitle: '',
         reducedDeploymentData: [],
+        area: '',
+        line: '',
+        measurements: measurements.large,
+        currentData: {
+          time: new Date(),
+          value: 0,
+        },
+        currentYCoordinate: 0,
+        currentXCoordinate: 0,
+        currentFlagPosition: 0,
+        metricUsage: '',
+        showFlag: false,
+        showDeployInfo: true,
       };
     },
+
+    components: {
+      monitoringLegends,
+      monitoringFlag,
+      monitoringDeployment,
+    },
+
+    computed: {
+      calculateViewBox() {
+        return `0 0 ${this.width} ${this.height}`;
+      },
+
+      calculateInnerViewBox() {
+        if ((this.width - 150) > 0) {
+          return `0 0 ${this.width - 150} ${this.height}`;
+        }
+        return '0 0 0 0';
+      },
+
+      calculateAxisTransform() {
+        return `translate(70, ${this.height - 100})`;
+      },
+    },
+
     methods: {
-      createGradientDef() {
-        const defs = d3.select('body')
-          .append('svg')
-          .attr({
-            height: 0,
-            width: 0,
-          })
-          .append('defs');
-
-        defs.append('linearGradient')
-          .attr({
-            id: 'shadow-gradient',
-          })
-          .append('stop')
-          .attr({
-            offset: '0%',
-            'stop-color': '#000',
-            'stop-opacity': 0.4,
-          })
-          .select(this.selectParentNode)
-          .append('stop')
-          .attr({
-            offset: '100%',
-            'stop-color': '#000',
-            'stop-opacity': 0,
-          });
-      },
-
-      createDeploymentLine() {
-        d3.select(this.svgContainer).select('.graph-data')
-        .append('g')
-        .attr('class', 'deploy-info')
-        .selectAll('.deploy-info')
-        .data(this.reducedDeploymentData)
-        .enter()
-        .append('g')
-        .attr({
-          class: d => `deploy-info-${d.id}`,
-          transform: d => `translate(${Math.floor(d.xPos) + 1}, 20)`,
-        })
-        .append('rect')
-        .attr({
-          x: 1,
-          y: 0,
-          height: this.height - 120,
-          width: 2,
-          fill: 'url(#shadow-gradient)',
-        })
-        .select(this.parentNode)
-        .append('line')
-        .attr({
-          class: 'deployment-line',
-          x1: 0,
-          x2: 0,
-          y1: 0,
-          y2: this.height - 120,
-        });
-      },
-
-      createDeployInfoBox() {
-        this.reducedDeploymentData.forEach((deployment) => {
-          const parent = d3.select(this.svgContainer)
-                          .select(`.deploy-info-${deployment.id}`)
-                          .append('svg')
-                          .attr({
-                            class: 'js-deploy-info-box hidden',
-                            x: 3,
-                            y: 0,
-                            width: 92,
-                            height: 60,
-                          });
-
-          parent.append('rect')
-            .attr({
-              class: 'rect-text-metric deploy-info-rect rect-metric',
-              x: 1,
-              y: 1,
-              rx: 2,
-              width: 90,
-              height: 58,
-            });
-
-          parent
-            .append('g')
-            .attr({
-              transform: 'translate(5, 2)',
-            })
-            .append('text')
-            .attr({
-              class: 'deploy-info-text text-metric-bold',
-            })
-            .text(this.refText(deployment));
-
-          parent
-            .append('text')
-            .attr({
-              class: 'deploy-info-text',
-              y: 18,
-            })
-            .text(dateFormat(deployment.time));
-
-          parent
-            .append('text')
-            .attr({
-              class: 'deploy-info-text text-metric-bold',
-              y: 38,
-            })
-            .text(timeFormat(deployment.time));
-        });
-      },
-
       draw() {
         const breakpointSize = this.breakpointHandler.getBreakpointSize();
-        let height = 500;
         this.margin = measurements.large.margin;
-        this.measurements = measurements.large;
         if (breakpointSize === 'xs' || breakpointSize === 'sm') {
-          height = 300;
+          this.height = 300;
           this.margin = measurements.small.margin;
           this.measurements = measurements.small;
         }
@@ -179,17 +101,16 @@
         this.legendTitle = (this.columnData.queries[0]).legend || 'Average';
         this.width = this.svgContainer.clientWidth -
                      this.margin.left - this.margin.right;
-        this.height = height - this.margin.top - this.margin.bottom;
+        this.height = this.height - this.margin.top - this.margin.bottom;
         if (this.data !== undefined) {
           this.renderAxisAndContainer();
-          this.renderLabelAxisContainer();
         }
       },
 
       formatDeployments() {
         this.reducedDeploymentData = this.deploymentData.reduce((deploymentDataArray, deployment) => {
           const time = new Date(deployment.created_at);
-          const xPos = Math.floor(this.xScale2(time));
+          const xPos = Math.floor(this.xScale(time));
 
           time.setSeconds(this.data[0].time.getSeconds());
 
@@ -201,6 +122,7 @@
               tag: deployment.tag,
               ref: deployment.ref.name,
               xPos,
+              showDeploymentFlag: false,
             });
           }
 
@@ -210,92 +132,31 @@
 
       handleMouseOverGraph() {
         const rectOverlay = this.$el.querySelector('.prometheus-graph-overlay');
-        const currentXCoordinate = d3.mouse(rectOverlay)[0];
-        const timeValueOverlay = this.xScale2.invert(currentXCoordinate);
+        const currentMouseXCoordinate = d3.mouse(rectOverlay)[0];
+        const timeValueOverlay = this.xScale.invert(currentMouseXCoordinate);
         const overlayIndex = bisectDate(this.data, timeValueOverlay, 1);
         const d0 = this.data[overlayIndex - 1];
         const d1 = this.data[overlayIndex];
         if (d0 === undefined || d1 === undefined) return;
         const evalTime = timeValueOverlay - d0[0] > d1[0] - timeValueOverlay;
-        const currentData = evalTime ? d1 : d0;
-        let currentTimeCoordinate = Math.floor(this.xScale2(currentData.time));
-        const currentDeployXPos = this.mouseOverDeployInfo(currentXCoordinate);
-        const maxValueFromData = d3.max(this.data.map(d => d.value));
-        const maxMetricValue = this.yScale(maxValueFromData);
-        // Clear up all the pieces of the flag
-        const graphContainer = d3.select(this.svgContainer);
-        graphContainer.selectAll('.selected-metric-line').remove();
-        graphContainer.selectAll('.circle-metric').remove();
-        graphContainer.selectAll('.rect-text-metric:not(.deploy-info-rect)').remove();
-        graphContainer.select('.mouse-over-flag').remove();
+        this.currentData = evalTime ? d1 : d0;
+        this.currentXCoordinate = Math.floor(this.xScale(this.currentData.time));
+        const currentDeployXPos = this.mouseOverDeployInfo(currentMouseXCoordinate);
+        this.currentYCoordinate = this.yScale(this.currentData.value);
 
-        const currentChart = graphContainer.select('.graph-data')
-        .append('g').attr('class', 'mouse-over-flag');
-
-        currentChart.append('line')
-        .attr({
-          class: 'selected-metric-line',
-          x1: currentTimeCoordinate,
-          y1: this.yScale(0),
-          x2: currentTimeCoordinate,
-          y2: maxMetricValue,
-        })
-        .attr('transform', 'translate(-5,20)');
-
-        currentChart.append('circle')
-          .attr('class', 'circle-metric')
-          .attr('fill', this.circleColorRgb)
-          .attr('stroke', '#000')
-          .attr('cx', (currentTimeCoordinate || currentDeployXPos) || -1)
-          .attr('cy', this.yScale(currentData.value))
-          .attr('r', 5)
-          .attr('transform', 'translate(-5,20)');
-
-        if (currentDeployXPos) return;
-
-        // The little box with text
-        if (currentTimeCoordinate >= this.width - 70 - 120) {
-          currentTimeCoordinate = currentTimeCoordinate -= 100;
+        if (this.currentXCoordinate > (this.width - 200)) {
+          this.currentFlagPosition = this.currentXCoordinate - 100;
+        } else {
+          this.currentFlagPosition = this.currentXCoordinate;
         }
 
-        const rectTextMetric = currentChart.append('svg')
-          .attr({
-            class: 'rect-text-metric',
-            x: currentTimeCoordinate,
-            y: 0,
-          });
+        if (currentDeployXPos) {
+          this.showFlag = false;
+        } else {
+          this.showFlag = true;
+        }
 
-        rectTextMetric.append('rect')
-          .attr({
-            class: 'rect-metric',
-            x: 4,
-            y: 1,
-            rx: 2,
-            width: 90,
-            height: 40,
-            transform: 'translate(-5,20)',
-          });
-
-        rectTextMetric.append('text')
-          .attr({
-            class: 'text-metric text-metric-bold',
-            x: 8,
-            y: 35,
-            transform: 'translate(-5,20)',
-          })
-          .text(timeFormat(currentData.time));
-
-        rectTextMetric.append('text')
-          .attr({
-            class: 'text-metric-date',
-            x: 8,
-            y: 15,
-            transform: 'translate(-5,20)',
-          })
-          .text(dateFormat(currentData.time));
-
-        d3.select(this.svgContainer).select('.text-metric-usage')
-          .text(`${formatRelevantDigits(currentData.value)} ${this.unitOfDisplay}`);
+        this.metricUsage = `${formatRelevantDigits(this.currentData.value)} ${this.unitOfDisplay}`;
       },
 
       mouseOverDeployInfo(mouseXPos) {
@@ -306,9 +167,9 @@
           if (d.xPos >= mouseXPos - 10 && d.xPos <= mouseXPos + 10 && !dataFound) {
             dataFound = d.xPos + 1;
 
-            this.toggleDeployTextBox(d, true);
+            d.showDeploymentFlag = true;
           } else {
-            this.toggleDeployTextBox(d, false);
+            d.showDeploymentFlag = false;
           }
         });
 
@@ -321,18 +182,15 @@
           style: `padding-bottom: ${(Math.ceil(this.height * 100) / this.width)}%`, // Get the aspect ratio
         });
 
-        const chart = d3.select(this.svgContainer)
-          .attr('viewBox', `0 0 ${this.width} ${this.height}`);
-
-        this.xScale = d3.time.scale()
+        const axisXScale = d3.time.scale()
           .range([0, this.width]);
         this.yScale = d3.scale.linear()
           .range([this.height - 120, 0]);
-        this.xScale.domain(d3.extent(this.data, d => d.time));
+        axisXScale.domain(d3.extent(this.data, d => d.time));
         this.yScale.domain([0, d3.max(this.data.map(d => d.value))]);
 
         const xAxis = d3.svg.axis()
-          .scale(this.xScale)
+          .scale(axisXScale)
           .ticks(measurements.ticks)
           .orient('bottom');
 
@@ -341,165 +199,46 @@
           .ticks(measurements.ticks)
           .orient('left');
 
-        chart.append('g')
-          .attr('class', 'x-axis')
-          .attr('transform', `translate(70,${this.height - 100})`)
-          .call(xAxis);
+        d3.select(this.svgContainer).select('.x-axis').call(xAxis);
 
         const width = this.width;
-        chart.append('g')
-          .attr('class', 'y-axis')
-          .attr('transform', 'translate(70,20)')
-          .call(yAxis)
+        d3.select(this.svgContainer).select('.y-axis').call(yAxis)
           .selectAll('.tick')
           .each(function createTickLines() {
             d3.select(this).select('line').attr('x2', width);
           }); // This will select all of the ticks once they're rendered
 
-        const pathGroup = chart.append('svg')
-          .attr('class', 'graph-data')
-          .attr('viewBox', `0 0 ${this.width - 150} ${this.height}`);
-
-        this.xScale2 = d3.time.scale()
+        this.xScale = d3.time.scale()
           .range([0, this.width - 70]);
 
-        this.xScale2.domain(d3.extent(this.data, d => d.time));
+        this.xScale.domain(d3.extent(this.data, d => d.time));
 
-        const area = d3.svg.area()
-          .x(d => this.xScale2(d.time))
+        const areaFunction = d3.svg.area()
+          .x(d => this.xScale(d.time))
           .y0(this.height - 120)
           .y1(d => this.yScale(d.value))
           .interpolate('linear');
 
-        const line = d3.svg.line()
-          .x(d => this.xScale2(d.time))
+        const lineFunction = d3.svg.line()
+          .x(d => this.xScale(d.time))
           .y(d => this.yScale(d.value));
 
-        pathGroup.append('path')
-          .datum(this.data)
-          .attr('d', area)
-          .attr('class', 'metric-area')
-          .attr('fill', this.areaColorRgb)
-          .attr('transform', 'translate(-5,20)');
+        this.line = lineFunction(this.data);
 
-        pathGroup.append('path')
-          .datum(this.data)
-          .attr('class', 'metric-line')
-          .attr('stroke', this.lineColorRgb)
-          .attr('fill', 'none')
-          .attr('stroke-width', 2)
-          .attr('d', line)
-          .attr('transform', 'translate(-5, 20)');
+        this.area = areaFunction(this.data);
 
-        // Overlay area for mouseover events
-        pathGroup.append('rect')
-          .attr('class', 'prometheus-graph-overlay')
-          .attr('width', this.width - 70)
-          .attr('height', this.height - 100)
-          .attr('transform', 'translate(-5, 20)')
-          .on('mousemove', this.handleMouseOverGraph);
-      },
-      renderLabelAxisContainer() {
-        const axisLabelContainer = d3.select(this.svgContainer)
-          .append('g')
-            .attr('class', 'axis-label-container');
-
-        axisLabelContainer.append('line')
-          .attr('class', 'label-x-axis-line')
-          .attr('stroke', '#000000')
-          .attr('stroke-width', '1')
-          .attr({
-            x1: 10,
-            y1: (this.height - this.margin.top) + this.measurements.axisLabelLineOffset,
-            x2: this.width + 20,
-            y2: (this.height - this.margin.top) + this.measurements.axisLabelLineOffset,
-          });
-
-        axisLabelContainer.append('line')
-          .attr('class', 'label-y-axis-line')
-          .attr('stroke', '#000000')
-          .attr('stroke-width', '1')
-          .attr({
-            x1: 10,
-            y1: 0,
-            x2: 10,
-            y2: (this.height - this.margin.top) + this.measurements.axisLabelLineOffset,
-          });
-
-        axisLabelContainer.append('rect')
-          .attr('class', 'rect-axis-text')
-          .attr('x', -10)
-          .attr('y', 50)
-          .attr('width', this.measurements.backgroundLegend.width)
-          .attr('height', this.measurements.backgroundLegend.height);
-
-        axisLabelContainer.append('text')
-          .attr('class', 'label-axis-text')
-          .attr('text-anchor', 'middle')
-          .attr('transform', `translate(15, ${((this.height - this.margin.top) + this.measurements.axisLabelLineOffset) / 2}) rotate(-90)`)
-          .text(this.yAxisLabel);
-
-        axisLabelContainer.append('rect')
-          .attr('class', 'rect-axis-text')
-          .attr('x', ((this.width + this.measurements.axisLabelLineOffset) / 2) - this.margin.right)
-          .attr('y', this.height - 80)
-          .attr('width', 30)
-          .attr('height', 50);
-
-        axisLabelContainer.append('text')
-          .attr('class', 'label-axis-text')
-          .attr('x', ((this.width + this.measurements.axisLabelLineOffset) / 2) - this.margin.right)
-          .attr('y', (this.height - this.margin.top) + this.measurements.axisLabelLineOffset)
-          .attr('dy', '.35em')
-          .text('Time');
-
-        // The legends
-        axisLabelContainer.append('rect')
-          .attr('x', 20)
-          .attr('y', this.height - this.measurements.legendOffset)
-          .style('fill', this.areaColorRgb)
-          .attr('width', this.measurements.legends.width)
-          .attr('height', this.measurements.legends.height);
-
-        axisLabelContainer.append('text')
-          .attr('class', 'text-metric-title')
-          .attr('x', 50)
-          .attr('y', this.height - 40)
-          .text(this.legendTitle);
-
-        axisLabelContainer.append('text')
-          .attr('class', 'text-metric-usage')
-          .attr('x', 50)
-          .attr('y', this.height - 25);
-      },
-
-      redraw() {
-        // Remove event listeners and graphs, then redraw them
-        d3.select(this.svgContainer).select('.prometheus-graph-overlay').on('mousemove', null);
-        d3.select(this.svgContainer).remove();
-        d3.select(this.$el).select('.prometheus-svg-container').append('svg');
-        this.draw();
-      },
-
-      refText(d) {
-        return d.tag ? d.ref : d.sha.slice(0, 6);
-      },
-
-      /* `this` is bound to the D3 node */
-      selectParentNode() {
-        return this.parentNode;
-      },
-
-      toggleDeployTextBox(deploy, showInfoBox) {
-        d3.select(this.svgContainer).selectAll(`.deploy-info-${deploy.id} .js-deploy-info-box`)
-        .classed('hidden', !showInfoBox);
+        d3.select(this.svgContainer).select('.prometheus-graph-overlay')
+        .on('mousemove', this.handleMouseOverGraph);
       },
     },
 
     watch: {
       updateAspectRatio() {
         if (this.updateAspectRatio) {
-          this.redraw();
+          this.height = 500;
+          this.width = 600;
+          this.measurements = measurements.large;
+          this.draw();
           eventHub.$emit('toggleAspectRatio');
         }
       },
@@ -508,9 +247,6 @@
     mounted() {
       this.draw();
       this.formatDeployments();
-      this.createGradientDef();
-      this.createDeploymentLine();
-      this.createDeployInfoBox();
     },
   };
 </script>
@@ -523,7 +259,83 @@
     </h5>
     <div 
       class="prometheus-svg-container">
-      <svg>
+      <svg :viewBox="calculateViewBox">
+        <g
+          class="x-axis"
+          :transform="calculateAxisTransform">
+        </g>
+        <g
+          class="y-axis"
+          transform="translate(70, 20)">
+        </g>
+        <monitoring-legends 
+          :width="width"
+          :height="height"
+          :margin="margin"
+          :measurements="measurements"
+          :area-color-rgb="areaColorRgb"
+          :legend-title="legendTitle"
+          :y-axis-label="yAxisLabel"
+          :metric-usage="metricUsage"
+        />
+        <svg 
+          class="graph-data"
+          :viewBox="calculateInnerViewBox">
+            <path
+              class="metric-area"
+              :d="area"
+              :fill="areaColorRgb"
+              transform="translate(-5, 20)">
+            </path>
+            <path
+              class="metric-line"
+              :d="line"
+              :stroke="lineColorRgb"
+              fill="none"
+              stroke-width="2"
+              transform="translate(-5, 20)">
+            </path>
+            <rect 
+              class="prometheus-graph-overlay"
+              :width="(width - 70)"
+              :height="(height - 100)"
+              transform="translate(-5, 20)">
+            </rect>
+            <monitoring-flag 
+              v-show="showFlag"
+              :current-x-coordinate="currentXCoordinate"
+              :current-y-coordinate="currentYCoordinate"
+              :current-data="currentData"
+              :current-flag-position="currentFlagPosition"
+              :height="height"
+            />
+            <monitoring-deployment
+              :show-deploy-info="showDeployInfo"
+              :deployment-data="reducedDeploymentData"
+              :height="height"
+            />
+        </svg>
+      </svg>
+      <!--The gradient-->
+      <svg
+        class="hidden"
+        height="0"
+        width="0">
+        <defs>
+          <linearGradient
+            id="shadow-gradient">
+            <stop
+              offset="0%"
+              stop-color="#000"
+              stop-opacity="0.4">
+            </stop>
+            <stop
+              offset="100%"
+              stop-color="#000"
+              stop-opacity="0">
+            </stop>
+          </linearGradient>
+        </defs>
       </svg>
     </div>
   </div>
