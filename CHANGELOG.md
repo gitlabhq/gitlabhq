@@ -2,6 +2,10 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.1.6 (2017-06-02)
+
+- Fix visibility when referencing snippets.
+
 ## 9.1.5 (2017-05-31)
 
 - Move uploads from 'public/uploads' to 'public/uploads/system'.
