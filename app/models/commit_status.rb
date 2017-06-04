@@ -18,7 +18,7 @@ class CommitStatus < ActiveRecord::Base
   validates :name, presence: true
 
   alias_attribute :author, :user
-  
+
   scope :failed_but_allowed, -> do
     where(allow_failure: true, status: [:failed, :canceled])
   end
@@ -123,6 +123,11 @@ class CommitStatus < ActiveRecord::Base
   end
 
   def playable?
+    false
+  end
+
+  # To be overriden when inherrited from
+  def retryable?
     false
   end
 
