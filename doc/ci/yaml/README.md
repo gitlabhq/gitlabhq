@@ -438,7 +438,7 @@ in your job, define an empty array:
 
 ```yaml
 job_name:
-  variables: []
+  variables: {}
 ```
 
 Job variables priority is defined in the [variables documentation][variables].
