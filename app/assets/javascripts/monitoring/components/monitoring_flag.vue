@@ -42,7 +42,7 @@
       formatDate() {
         return dateFormat(this.currentData.time);
       },
-    }
+    },
   };
 </script>
 <template>
