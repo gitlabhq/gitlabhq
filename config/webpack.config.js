@@ -16,6 +16,7 @@ var DEV_SERVER_HOST = process.env.DEV_SERVER_HOST || 'localhost';
 var DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10) || 3808;
 var DEV_SERVER_LIVERELOAD = process.env.DEV_SERVER_LIVERELOAD !== 'false';
 var WEBPACK_REPORT = process.env.WEBPACK_REPORT;
+var NO_COMPRESSION = process.env.NO_COMPRESSION;
 
 var config = {
   // because sqljs requires fs.
@@ -221,11 +222,18 @@ if (IS_PRODUCTION) {
     }),
     new webpack.DefinePlugin({
       'process.env': { NODE_ENV: JSON.stringify('production') }
-    }),
-    new CompressionPlugin({
-      asset: '[path].gz[query]',
     })
   );
+
+  // zopfli requires a lot of compute time and is disabled in CI
+  if (!NO_COMPRESSION) {
+    config.plugins.push(
+      new CompressionPlugin({
+        asset: '[path].gz[query]',
+        algorithm: 'zopfli',
+      })
+    );
+  }
 }
 
 if (IS_DEV_SERVER) {
