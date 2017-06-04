@@ -122,7 +122,7 @@ global defined variables in your job, define an empty array:
 
 ```yaml
 job_name:
-  variables: []
+  variables: {}
 ```
 
 You are able to use other variables inside your variable definition (or escape them with `$$`):
