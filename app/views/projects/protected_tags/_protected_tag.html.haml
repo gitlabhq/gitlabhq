@@ -19,4 +19,4 @@
 
   - if can_admin_project
     %td
-      = link_to 'Unprotect', [@project.namespace.becomes(Namespace), @project, protected_tag], data: { confirm: 'tag will be writable for developers. Are you sure?' }, method: :delete, class: 'btn btn-warning'
+      = link_to 'Unprotect', [@project.namespace.becomes(Namespace), @project, protected_tag], data: { confirm: 'Tag will be writable for developers. Are you sure?' }, method: :delete, class: 'btn btn-warning'

@@ -675,14 +675,16 @@ pre.light-well {
   }
 }
 
-.new_protected_branch {
+.new_protected_branch,
+.new-protected-tag {
   label {
     margin-top: 6px;
     font-weight: normal;
   }
 }
 
-.create-new-protected-branch-button {
+.create-new-protected-branch-button,
+.create-new-protected-tag-button {
   @include dropdown-link;
 
   width: 100%;
