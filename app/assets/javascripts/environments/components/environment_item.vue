@@ -423,7 +423,7 @@ export default {
 <template>
   <div
     :class="{ 'js-child-row environment-child-row': model.isChildren, 'folder-row': model.isFolder, 'gl-responsive-table-row': !model.isFolder }">
-    <div class="table-section section-10">
+    <div class="table-section section-10" role="gridcell">
       <div
         v-if="!model.isFolder"
         class="table-mobile-header">
@@ -468,7 +468,7 @@ export default {
       </span>
     </div>
 
-    <div class="table-section section-10 deployment-column hidden-xs hidden-sm">
+    <div class="table-section section-10 deployment-column hidden-xs hidden-sm" role="gridcell">
       <span v-if="shouldRenderDeploymentID">
         {{deploymentInternalId}}
       </span>
@@ -485,7 +485,7 @@ export default {
       </span>
     </div>
 
-    <div class="table-section section-15 hidden-xs hidden-sm">
+    <div class="table-section section-15 hidden-xs hidden-sm" role="gridcell">
       <a
         v-if="shouldRenderBuildName"
         class="build-link"
@@ -494,7 +494,7 @@ export default {
       </a>
     </div>
 
-    <div class="table-section section-25">
+    <div class="table-section section-25" role="gridcell">
       <div
         v-if="!model.isFolder"
         class="table-mobile-header">
@@ -518,7 +518,7 @@ export default {
       </div>
     </div>
 
-    <div class="table-section section-10">
+    <div class="table-section section-10" role="gridcell">
       <div
         v-if="!model.isFolder"
         class="table-mobile-header">
@@ -531,7 +531,7 @@ export default {
       </span>
     </div>
 
-    <div class="table-section section-30 environments-actions table-button-footer">
+    <div class="table-section section-30 environments-actions table-button-footer" role="gridcell">
       <div
         v-if="!model.isFolder"
         class="btn-group environment-action-buttons"

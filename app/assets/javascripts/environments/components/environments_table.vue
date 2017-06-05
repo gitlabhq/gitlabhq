@@ -45,21 +45,21 @@ export default {
 };
 </script>
 <template>
-  <div class="ci-table">
-    <div class="gl-responsive-table-row table-row-header">
-      <div class="table-section section-10 environments-name">
+  <div class="ci-table" role="grid">
+    <div class="gl-responsive-table-row table-row-header" role="row">
+      <div class="table-section section-10 environments-name" role="rowheader">
         Environment
       </div>
-      <div class="table-section section-10 environments-deploy">
+      <div class="table-section section-10 environments-deploy" role="rowheader">
         Deployment
       </div>
-      <div class="table-section section-15 environments-build">
+      <div class="table-section section-15 environments-build" role="rowheader">
         Job
       </div>
-      <div class="table-section section-25 environments-commit">
+      <div class="table-section section-25 environments-commit" role="rowheader">
         Commit
       </div>
-      <div class="table-section section-10 environments-date">
+      <div class="table-section section-10 environments-date" role="rowheader">
         Updated
       </div>
     </div>
