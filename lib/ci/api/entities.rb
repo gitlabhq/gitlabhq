@@ -45,7 +45,25 @@ module Ci
         expose :artifacts_expire_at, if: ->(build, _) { build.artifacts? }
 
         expose :options do |model|
-          model.options
+          options = model.options
+
+          # This part ensures that output of old API is still the same after adding support
+          # for extended docker configuration options, used by new API
+          #
+          # I'm leaving this here, not in the model, because it should be removed at the same time
+          # when old API will be removed (planned for August 2017).
+          options[:image] = options[:image][:name] if options[:image].present? && options[:image].is_a?(Hash)
+          if options[:services].present?
+            options[:services].map! do |service|
+              if service.is_a?(Hash)
+                service[:name]
+              else
+                service
+              end
+            end
+          end
+
+          options
         end
 
         expose :timeout do |model|
