@@ -523,7 +523,7 @@ describe MergeRequest, models: true do
     it "includes approvers set on the MR" do
       expect do
         create(:approver, user: create(:user), target: merge_request)
-      end.to change { merge_request.number_of_potential_approvers }.by(1)
+      end.to change { merge_request.reload.number_of_potential_approvers }.by(1)
     end
 
     it "includes approvers from group" do
@@ -531,16 +531,16 @@ describe MergeRequest, models: true do
 
       expect do
         create(:approver_group, group: group, target: merge_request)
-      end.to change { merge_request.number_of_potential_approvers }.by(1)
+      end.to change { merge_request.reload.number_of_potential_approvers }.by(1)
     end
 
     it "includes project members with developer access and up" do
       expect do
-        project.team << [create(:user), :guest]
-        project.team << [create(:user), :reporter]
-        project.team << [create(:user), :developer]
-        project.team << [create(:user), :master]
-      end.to change { merge_request.number_of_potential_approvers }.by(2)
+        project.add_guest(create(:user))
+        project.add_reporter(create(:user))
+        project.add_developer(create(:user))
+        project.add_master(create(:user))
+      end.to change { merge_request.reload.number_of_potential_approvers }.by(2)
     end
 
     it "excludes users who have already approved the MR" do
@@ -548,14 +548,14 @@ describe MergeRequest, models: true do
         approver = create(:user)
         create(:approver, user: approver, target: merge_request)
         create(:approval, user: approver, merge_request: merge_request)
-      end.not_to change { merge_request.number_of_potential_approvers }
+      end.not_to change { merge_request.reload.number_of_potential_approvers }
     end
 
     it "excludes the MR author" do
       expect do
         create(:approver, user: create(:user), target: merge_request)
         create(:approver, user: author, target: merge_request)
-      end.to change { merge_request.number_of_potential_approvers }.by(1)
+      end.to change { merge_request.reload.number_of_potential_approvers }.by(1)
     end
 
     it "excludes blocked users" do
@@ -564,7 +564,7 @@ describe MergeRequest, models: true do
       project.team << [developer, :developer]
       project.team << [blocked_developer, :developer]
 
-      expect(merge_request.number_of_potential_approvers).to eq(1)
+      expect(merge_request.reload.number_of_potential_approvers).to eq(1)
     end
 
     context "when the project is part of a group" do
@@ -579,7 +579,7 @@ describe MergeRequest, models: true do
           group.add_master(create(:user))
           blocked_developer = create(:user).tap { |u| u.block! }
           group.add_developer(blocked_developer)
-        end.to change { merge_request.number_of_potential_approvers }.by(2)
+        end.to change { merge_request.reload.number_of_potential_approvers }.by(2)
       end
     end
   end
