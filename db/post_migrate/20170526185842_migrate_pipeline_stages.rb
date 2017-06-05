@@ -11,9 +11,9 @@ class MigratePipelineStages < ActiveRecord::Migration
     execute <<-SQL.strip_heredoc
       INSERT INTO ci_stages (project_id, pipeline_id, name)
         SELECT project_id, commit_id, stage FROM ci_builds
-          WHERE stage IS NOT NULL
-          GROUP BY project_id, commit_id, stage, stage_idx
-          ORDER BY stage_idx
+          WHERE stage IS NOT NULL AND stage_id IS NULL
+          GROUP BY project_id, commit_id, stage
+          ORDER BY MAX(stage_idx)
     SQL
   end
 
