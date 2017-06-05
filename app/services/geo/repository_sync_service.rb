@@ -93,7 +93,7 @@ module Geo
     end
 
     def primary_ssh_path_prefix
-      Gitlab::Geo.primary_ssh_path_prefix
+      Gitlab::Geo.primary_node.clone_url_prefix
     end
 
     def ssh_url_to_repo
