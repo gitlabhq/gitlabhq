@@ -19,11 +19,6 @@ export default {
       isMakingRequest: false,
     };
   },
-  computed: {
-    isApprovalsLeft() {
-      return this.mr.approvals && this.mr.approvalsLeft;
-    },
-  },
   methods: {
     rebase() {
       this.isMakingRequest = true;
@@ -87,7 +82,7 @@ export default {
           <div class="accept-merge-holder clearfix js-toggle-container accept-action">
             <button
               class="btn btn-small btn-reopen btn-success"
-              :disabled="isApprovalsLeft || isMakingRequest"
+              :disabled="isMakingRequest"
               @click="rebase">
               <i
                 v-if="isMakingRequest"
@@ -100,12 +95,6 @@ export default {
               Rebase the source branch onto the target branch or merge target
               branch into source branch to allow this merge request to be merged.
             </span>
-          </div>
-          <div class="mr-info-list">
-            <div class="legend"></div>
-            <p v-if="isApprovalsLeft">
-              Rebasing is disabled until merge request has been approved.
-            </p>
           </div>
         </template>
       </div>
