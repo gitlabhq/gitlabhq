@@ -130,7 +130,7 @@ module API
         # EE
         if params[:shared_runners_minutes_limit].present? &&
             group.shared_runners_minutes_limit.to_i !=
-              params[:shared_runners_minutes_limit].to_i
+                params[:shared_runners_minutes_limit].to_i
           authenticated_as_admin!
         end
 
