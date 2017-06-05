@@ -127,6 +127,11 @@ class CommitStatus < ActiveRecord::Base
     false
   end
 
+  # To be overriden when inherrited from
+  def retryable?
+    false
+  end
+
   def stuck?
     false
   end

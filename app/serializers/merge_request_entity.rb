@@ -48,7 +48,7 @@ class MergeRequestEntity < IssuableEntity
 
   expose :merge_commit_sha
   expose :merge_commit_message
-  expose :head_pipeline, with: PipelineEntity, as: :pipeline
+  expose :head_pipeline, with: PipelineDetailsEntity, as: :pipeline
 
   # Booleans
   expose :work_in_progress?, as: :work_in_progress
