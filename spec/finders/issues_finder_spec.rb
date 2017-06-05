@@ -302,4 +302,33 @@ describe IssuesFinder do
       end
     end
   end
+
+  describe '.not_restricted_by_confidentiality' do
+    let(:authorized_user) { create(:user) }
+    let(:admin_user) { create(:admin) }
+    let(:auditor_user) { create(:user, :auditor) }
+    let(:project) { create(:empty_project, namespace: authorized_user.namespace) }
+    let!(:public_issue) { create(:issue, project: project) }
+    let!(:confidential_issue) { create(:issue, project: project, confidential: true) }
+
+    it 'returns non confidential issues for nil user' do
+      expect(described_class.send(:not_restricted_by_confidentiality, nil)).to include(public_issue)
+    end
+
+    it 'returns non confidential issues for user not authorized for the issues projects' do
+      expect(described_class.send(:not_restricted_by_confidentiality, user)).to include(public_issue)
+    end
+
+    it 'returns all issues for user authorized for the issues projects' do
+      expect(described_class.send(:not_restricted_by_confidentiality, authorized_user)).to include(public_issue, confidential_issue)
+    end
+
+    it 'returns all issues for an admin user' do
+      expect(described_class.send(:not_restricted_by_confidentiality, admin_user)).to include(public_issue, confidential_issue)
+    end
+
+    it 'returns all issues for an auditor user' do
+      expect(described_class.send(:not_restricted_by_confidentiality, auditor_user)).to include(public_issue, confidential_issue)
+    end
+  end
 end

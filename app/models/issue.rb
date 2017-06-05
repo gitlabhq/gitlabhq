@@ -99,21 +99,6 @@ class Issue < ActiveRecord::Base
     '#'
   end
 
-  def self.not_restricted_by_confidentiality(user)
-    return where('issues.confidential IS NOT TRUE') if user.blank?
-
-    return all if user.admin_or_auditor?
-
-    where('
-      issues.confidential IS NOT TRUE
-      OR (issues.confidential = TRUE
-        AND (issues.author_id = :user_id
-          OR EXISTS (SELECT TRUE FROM issue_assignees WHERE user_id = :user_id AND issue_id = issues.id)
-          OR issues.project_id IN(:project_ids)))',
-                user_id: user.id,
-                project_ids: user.authorized_projects(Gitlab::Access::REPORTER).select(:id))
-  end
-
   # Pattern used to extract `#123` issue references from text
   #
   # This pattern supports cross-project references.
