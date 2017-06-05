@@ -85,12 +85,12 @@ EOT
           # The patch total size is 200, with lines between 21 and 54.
           # This is a quick-and-dirty way to test this. Ideally, a new patch is
           # added to the test repo with a size that falls between the real limits.
-          stub_const("#{described_class}::DIFF_SIZE_LIMIT", 150)
-          stub_const("#{described_class}::DIFF_COLLAPSE_LIMIT", 100)
+          stub_const("#{described_class}::SIZE_LIMIT", 150)
+          stub_const("#{described_class}::COLLAPSE_LIMIT", 100)
         end
 
         it 'prunes the diff as a large diff instead of as a collapsed diff' do
-          diff = described_class.new(@rugged_diff, collapse: true)
+          diff = described_class.new(@rugged_diff, expanded: false)
 
           expect(diff.diff).to be_empty
           expect(diff).to be_too_large
@@ -110,23 +110,23 @@ EOT
       end
     end
 
-    context 'using a Gitaly::CommitDiffResponse' do
+    context 'using a GitalyClient::Diff' do
       let(:diff) do
         described_class.new(
-          Gitaly::CommitDiffResponse.new(
+          Gitlab::GitalyClient::Diff.new(
             to_path: ".gitmodules",
             from_path: ".gitmodules",
             old_mode: 0100644,
             new_mode: 0100644,
             from_id: '357406f3075a57708d0163752905cc1576fceacc',
             to_id: '8e5177d718c561d36efde08bad36b43687ee6bf0',
-            raw_chunks: raw_chunks
+            patch: raw_patch
           )
         )
       end
 
       context 'with a small diff' do
-        let(:raw_chunks) { [@raw_diff_hash[:diff]] }
+        let(:raw_patch) { @raw_diff_hash[:diff] }
 
         it 'initializes the diff' do
           expect(diff.to_hash).to eq(@raw_diff_hash)
@@ -138,7 +138,7 @@ EOT
       end
 
       context 'using a diff that is too large' do
-        let(:raw_chunks) { ['a' * 204800] }
+        let(:raw_patch) { 'a' * 204800 }
 
         it 'prunes the diff' do
           expect(diff.diff).to be_empty
@@ -269,7 +269,7 @@ EOT
     it 'returns true for a diff that was explicitly marked as being too large' do
       diff = described_class.new(diff: 'a')
 
-      diff.prune_large_diff!
+      diff.too_large!
 
       expect(diff.too_large?).to eq(true)
     end
@@ -291,31 +291,31 @@ EOT
     it 'returns true for a diff that was explicitly marked as being collapsed' do
       diff = described_class.new(diff: 'a')
 
-      diff.prune_collapsed_diff!
+      diff.collapse!
 
       expect(diff).to be_collapsed
     end
   end
 
-  describe '#collapsible?' do
+  describe '#collapsed?' do
     it 'returns true for a diff that is quite large' do
-      diff = described_class.new(diff: 'a' * 20480)
+      diff = described_class.new({ diff: 'a' * 20480 }, expanded: false)
 
-      expect(diff).to be_collapsible
+      expect(diff).to be_collapsed
     end
 
     it 'returns false for a diff that is small enough' do
-      diff = described_class.new(diff: 'a')
+      diff = described_class.new({ diff: 'a' }, expanded: false)
 
-      expect(diff).not_to be_collapsible
+      expect(diff).not_to be_collapsed
     end
   end
 
-  describe '#prune_collapsed_diff!' do
+  describe '#collapse!' do
     it 'prunes the diff' do
       diff = described_class.new(diff: "foo\nbar")
 
-      diff.prune_collapsed_diff!
+      diff.collapse!
 
       expect(diff.diff).to eq('')
       expect(diff.line_count).to eq(0)

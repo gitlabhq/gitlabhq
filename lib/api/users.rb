@@ -286,13 +286,14 @@ module API
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
+        optional :hard_delete, type: Boolean, desc: "Whether to remove a user's contributions"
       end
       delete ":id" do
         authenticated_as_admin!
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
 
-        DeleteUserWorker.perform_async(current_user.id, user.id)
+        DeleteUserWorker.perform_async(current_user.id, user.id, hard_delete: params[:hard_delete])
       end
 
       desc 'Block a user. Available only for admins.'

@@ -41,7 +41,7 @@ describe('Environment', () => {
         setTimeout(() => {
           expect(
             component.$el.querySelector('.js-new-environment-button').textContent,
-          ).toContain('New Environment');
+          ).toContain('New environment');
 
           expect(
             component.$el.querySelector('.js-blank-state-title').textContent,

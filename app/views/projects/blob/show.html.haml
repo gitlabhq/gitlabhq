@@ -1,13 +1,14 @@
 - @no_container = true
+
 - page_title @blob.path, @ref
 = render "projects/commits/head"
 
 - content_for :page_specific_javascripts do
   = page_specific_javascript_bundle_tag('blob')
 
-%div{ class: container_class }
-  = render 'projects/last_push'
+= render 'projects/last_push'
 
+%div{ class: container_class }
   #tree-holder.tree-holder
     = render 'blob', blob: @blob
 

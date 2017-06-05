@@ -12,6 +12,7 @@ feature 'Environment', :feature do
 
   feature 'environment details page' do
     given!(:environment) { create(:environment, project: project) }
+    given!(:permissions) { }
     given!(:deployment) { }
     given!(:action) { }
 
@@ -62,20 +63,31 @@ feature 'Environment', :feature do
                                        name: 'deploy to production')
           end
 
-          given(:role) { :master }
+          context 'when user has ability to trigger deployment' do
+            given(:permissions) do
+              create(:protected_branch, :developers_can_merge,
+                     name: action.ref, project: project)
+            end
 
-          scenario 'does show a play button' do
-            expect(page).to have_link(action.name.humanize)
+            it 'does show a play button' do
+              expect(page).to have_link(action.name.humanize)
+            end
+
+            it 'does allow to play manual action' do
+              expect(action).to be_manual
+
+              expect { click_link(action.name.humanize) }
+                .not_to change { Ci::Pipeline.count }
+
+              expect(page).to have_content(action.name)
+              expect(action.reload).to be_pending
+            end
           end
 
-          scenario 'does allow to play manual action' do
-            expect(action).to be_manual
-
-            expect { click_link(action.name.humanize) }
-              .not_to change { Ci::Pipeline.count }
-
-            expect(page).to have_content(action.name)
-            expect(action.reload).to be_pending
+          context 'when user has no ability to trigger a deployment' do
+            it 'does not show a play button' do
+              expect(page).not_to have_link(action.name.humanize)
+            end
           end
 
           context 'with external_url' do
@@ -134,12 +146,23 @@ feature 'Environment', :feature do
                                     on_stop: 'close_app')
               end
 
-              given(:role) { :master }
+              context 'when user has ability to stop environment' do
+                given(:permissions) do
+                  create(:protected_branch, :developers_can_merge,
+                         name: action.ref, project: project)
+                end
 
-              scenario 'does allow to stop environment' do
-                click_link('Stop')
+                it 'allows to stop environment' do
+                  click_link('Stop')
 
-                expect(page).to have_content('close_app')
+                  expect(page).to have_content('close_app')
+                end
+              end
+
+              context 'when user has no ability to stop environment' do
+                it 'does not allow to stop environment' do
+                  expect(page).to have_no_link('Stop')
+                end
               end
 
               context 'for reporter' do
@@ -148,12 +171,6 @@ feature 'Environment', :feature do
                 scenario 'does not show stop button' do
                   expect(page).not_to have_link('Stop')
                 end
-              end
-            end
-
-            context 'without stop action' do
-              scenario 'does allow to stop environment' do
-                click_link('Stop')
               end
             end
           end

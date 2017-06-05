@@ -35,6 +35,7 @@ function UsersSelect(currentUser, els) {
       options.showCurrentUser = $dropdown.data('current-user');
       options.todoFilter = $dropdown.data('todo-filter');
       options.todoStateFilter = $dropdown.data('todo-state-filter');
+      options.perPage = $dropdown.data('per-page');
       showNullUser = $dropdown.data('null-user');
       defaultNullUser = $dropdown.data('null-user-default');
       showMenuAbove = $dropdown.data('showMenuAbove');
@@ -214,7 +215,36 @@ function UsersSelect(currentUser, els) {
             glDropdown.options.processData(term, users, callback);
           }.bind(this));
         },
-        processData: function(term, users, callback) {
+        processData: function(term, data, callback) {
+          let users = data;
+
+          // Only show assigned user list when there is no search term
+          if ($dropdown.hasClass('js-multiselect') && term.length === 0) {
+            const selectedInputs = getSelectedUserInputs();
+
+            // Potential duplicate entries when dealing with issue board
+            // because issue board is also managed by vue
+            const selectedUsers = _.uniq(selectedInputs, false, a => a.value)
+              .filter((input) => {
+                const userId = parseInt(input.value, 10);
+                const inUsersArray = users.find(u => u.id === userId);
+
+                return !inUsersArray && userId !== 0;
+              })
+              .map((input) => {
+                const userId = parseInt(input.value, 10);
+                const { avatarUrl, avatar_url, name, username } = input.dataset;
+                return {
+                  avatar_url: avatarUrl || avatar_url,
+                  id: userId,
+                  name,
+                  username,
+                };
+              });
+
+            users = data.concat(selectedUsers);
+          }
+
           let anyUser;
           let index;
           let j;
@@ -645,7 +675,7 @@ UsersSelect.prototype.users = function(query, options, callback) {
     url: url,
     data: {
       search: query,
-      per_page: 20,
+      per_page: options.perPage || 20,
       active: true,
       project_id: options.projectId || null,
       group_id: options.groupId || null,

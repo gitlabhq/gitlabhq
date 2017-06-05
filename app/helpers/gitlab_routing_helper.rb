@@ -50,8 +50,8 @@ module GitlabRoutingHelper
     namespace_project_cycle_analytics_path(project.namespace, project, *args)
   end
 
-  def project_builds_path(project, *args)
-    namespace_project_builds_path(project.namespace, project, *args)
+  def project_jobs_path(project, *args)
+    namespace_project_jobs_path(project.namespace, project, *args)
   end
 
   def project_ref_path(project, ref_name, *args)
@@ -110,8 +110,8 @@ module GitlabRoutingHelper
     namespace_project_pipeline_url(pipeline.project.namespace, pipeline.project, pipeline.id, *args)
   end
 
-  def pipeline_build_url(pipeline, build, *args)
-    namespace_project_build_url(pipeline.project.namespace, pipeline.project, build.id, *args)
+  def pipeline_job_url(pipeline, build, *args)
+    namespace_project_job_url(pipeline.project.namespace, pipeline.project, build.id, *args)
   end
 
   def commits_url(entity, *args)
@@ -215,13 +215,13 @@ module GitlabRoutingHelper
 
     case action
     when 'download'
-      download_namespace_project_build_artifacts_path(*args)
+      download_namespace_project_job_artifacts_path(*args)
     when 'browse'
-      browse_namespace_project_build_artifacts_path(*args)
+      browse_namespace_project_job_artifacts_path(*args)
     when 'file'
-      file_namespace_project_build_artifacts_path(*args)
+      file_namespace_project_job_artifacts_path(*args)
     when 'raw'
-      raw_namespace_project_build_artifacts_path(*args)
+      raw_namespace_project_job_artifacts_path(*args)
     end
   end
 

@@ -23,7 +23,8 @@ describe PipelineScheduleWorker do
 
     context 'when there is a scheduled pipeline within next_run_at' do
       it 'creates a new pipeline' do
-        expect { subject }.to change { project.pipelines.count }.by(1)
+        expect{ subject }.to change { project.pipelines.count }.by(1)
+        expect(Ci::Pipeline.last).to be_schedule
       end
 
       it 'updates the next_run_at field' do

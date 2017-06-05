@@ -31,12 +31,23 @@ module Ci
 
     delegate :id, to: :project, prefix: true
 
+    validates :source, exclusion: { in: %w(unknown), unless: :importing? }, on: :create
     validates :sha, presence: { unless: :importing? }
     validates :ref, presence: { unless: :importing? }
     validates :status, presence: { unless: :importing? }
     validate :valid_commit_sha, unless: :importing?
 
     after_create :keep_around_commits, unless: :importing?
+
+    enum source: {
+      unknown: nil,
+      push: 1,
+      web: 2,
+      trigger: 3,
+      schedule: 4,
+      api: 5,
+      external: 6
+    }
 
     state_machine :status, initial: :created do
       event :enqueue do
@@ -268,10 +279,6 @@ module Ci
       commit = project.commit(ref)
       return false unless commit
       commit.sha == sha
-    end
-
-    def triggered?
-      trigger_requests.any?
     end
 
     def retried

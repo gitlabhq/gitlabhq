@@ -94,7 +94,6 @@
     .old_line,
     .new_line {
       margin: 0;
-      padding: 0;
       border: none;
       padding: 0 5px;
       border-right: 1px solid;
@@ -151,14 +150,10 @@
         }
       }
     }
-
-    .text-file.diff-wrap-lines table .line_holder td span {
-      white-space: pre-wrap;
-    }
   }
 
   .image {
-    background: $diff-image-bg;
+    background: $file-image-bg;
     text-align: center;
     padding: 30px;
 

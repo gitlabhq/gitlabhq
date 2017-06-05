@@ -287,7 +287,7 @@ describe API::Users do
       expect(json_response['message']['projects_limit']).
         to eq(['must be greater than or equal to 0'])
       expect(json_response['message']['username']).
-        to eq([Gitlab::Regex.namespace_regex_message])
+        to eq([Gitlab::PathRegex.namespace_format_message])
     end
 
     it "is not available for non admin users" do
@@ -459,7 +459,7 @@ describe API::Users do
       expect(json_response['message']['projects_limit']).
         to eq(['must be greater than or equal to 0'])
       expect(json_response['message']['username']).
-        to eq([Gitlab::Regex.namespace_regex_message])
+        to eq([Gitlab::PathRegex.namespace_format_message])
     end
 
     it 'returns 400 if provider is missing for identity update' do
@@ -702,6 +702,7 @@ describe API::Users do
 
   describe "DELETE /users/:id" do
     let!(:namespace) { user.namespace }
+    let!(:issue) { create(:issue, author: user) }
     before { admin }
 
     it "deletes user" do
@@ -732,6 +733,25 @@ describe API::Users do
       Sidekiq::Testing.inline! { delete api("/users/ASDF", admin) }
 
       expect(response).to have_http_status(404)
+    end
+
+    context "hard delete disabled" do
+      it "moves contributions to the ghost user" do
+        Sidekiq::Testing.inline! { delete api("/users/#{user.id}", admin) }
+
+        expect(response).to have_http_status(204)
+        expect(issue.reload).to be_persisted
+        expect(issue.author.ghost?).to be_truthy
+      end
+    end
+
+    context "hard delete enabled" do
+      it "removes contributions" do
+        Sidekiq::Testing.inline! { delete api("/users/#{user.id}?hard_delete=true", admin) }
+
+        expect(response).to have_http_status(204)
+        expect(Issue.exists?(issue.id)).to be_falsy
+      end
     end
   end
 

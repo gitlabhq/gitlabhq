@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe 'Visual tokens', js: true, feature: true do
   include FilteredSearchHelpers
+  include WaitForRequests
 
   let!(:project) { create(:empty_project) }
   let!(:user) { create(:user, name: 'administrator', username: 'root') }
@@ -70,7 +71,8 @@ describe 'Visual tokens', js: true, feature: true do
       end
 
       it 'changes value in visual token' do
-        expect(first('.tokens-container .filtered-search-token .value').text).to eq("@#{user_rock.username}")
+        wait_for_requests
+        expect(first('.tokens-container .filtered-search-token .value').text).to eq("#{user_rock.name}")
       end
 
       it 'moves input to the right' do

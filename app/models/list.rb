@@ -28,7 +28,7 @@ class List < ActiveRecord::Base
 
   def as_json(options = {})
     super(options).tap do |json|
-      if options.has_key?(:label)
+      if options.key?(:label)
         json[:label] = label.as_json(
           project: board.project,
           only: [:id, :title, :description, :color]
