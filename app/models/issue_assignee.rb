@@ -5,8 +5,7 @@ class IssueAssignee < ActiveRecord::Base
   belongs_to :assignee, class_name: "User", foreign_key: :user_id
 
   # EE-specific
-  after_create :update_elasticsearch_index
-  after_destroy :update_elasticsearch_index
+  after_commit :update_elasticsearch_index, on: [:create, :destroy]
   # EE-specific
 
   def update_elasticsearch_index

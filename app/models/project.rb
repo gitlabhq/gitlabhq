@@ -516,7 +516,9 @@ class Project < ActiveRecord::Base
   end
 
   def reset_cache_and_import_attrs
-    ProjectCacheWorker.perform_async(self.id)
+    run_after_commit do
+      ProjectCacheWorker.perform_async(self.id)
+    end
 
     self.import_data&.destroy unless mirror?
   end
