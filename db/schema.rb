@@ -123,7 +123,6 @@ ActiveRecord::Schema.define(version: 20170602003304) do
     t.integer "unique_ips_limit_per_user"
     t.integer "unique_ips_limit_time_window"
     t.boolean "unique_ips_limit_enabled", default: false, null: false
-    t.integer "minimum_mirror_sync_time", default: 15, null: false
     t.string "default_artifacts_expire_in", default: "0", null: false
     t.string "elasticsearch_url", default: "http://localhost:9200"
     t.boolean "elasticsearch_aws", default: false, null: false
@@ -1156,7 +1155,6 @@ ActiveRecord::Schema.define(version: 20170602003304) do
     t.text "description_html"
     t.boolean "only_allow_merge_if_all_discussions_are_resolved"
     t.integer "repository_size_limit", limit: 8
-    t.integer "sync_time", default: 60, null: false
     t.boolean "printing_merge_request_link_enabled", default: true, null: false
     t.integer "auto_cancel_pending_pipelines", default: 1, null: false
     t.boolean "service_desk_enabled"
@@ -1180,7 +1178,6 @@ ActiveRecord::Schema.define(version: 20170602003304) do
   add_index "projects", ["pending_delete"], name: "index_projects_on_pending_delete", using: :btree
   add_index "projects", ["runners_token"], name: "index_projects_on_runners_token", using: :btree
   add_index "projects", ["star_count"], name: "index_projects_on_star_count", using: :btree
-  add_index "projects", ["sync_time"], name: "index_projects_on_sync_time", using: :btree
   add_index "projects", ["visibility_level"], name: "index_projects_on_visibility_level", using: :btree
 
   create_table "protected_branch_merge_access_levels", force: :cascade do |t|
