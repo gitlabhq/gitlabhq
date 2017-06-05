@@ -53,11 +53,7 @@
 
         // If it's the first stage column and only has one job
         if (index === 0 && stage.groups.length === 1) {
-          if (!this.hasTriggeredBy) {
-            className = 'no-margin';
-          } else {
-            className = 'left-margin';
-          }
+          className = 'left-margin';
         } else if (index > 0) {
           // If it is not the first column
           className = 'left-margin';
