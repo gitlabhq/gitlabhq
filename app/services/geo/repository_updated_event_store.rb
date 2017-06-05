@@ -1,8 +1,8 @@
 module Geo
-  class PushEventStore
+  class RepositoryUpdatedEventStore
     attr_reader :project, :source, :refs, :changes
 
-    def initialize(project, refs: [], changes: [], source: Geo::PushEvent::REPOSITORY)
+    def initialize(project, refs: [], changes: [], source: Geo::RepositoryUpdatedEvent::REPOSITORY)
       @project = project
       @refs    = refs
       @changes = changes
@@ -14,7 +14,7 @@ module Geo
 
       Geo::EventLog.transaction do
         event_log = Geo::EventLog.new
-        event_log.push_event = build_push_event
+        event_log.repository_updated_event = build_event
         event_log.save!
       end
     rescue ActiveRecord::RecordInvalid
@@ -23,8 +23,8 @@ module Geo
 
     private
 
-    def build_push_event
-      Geo::PushEvent.new(
+    def build_event
+      Geo::RepositoryUpdatedEvent.new(
         project: project,
         source: source,
         ref: ref,

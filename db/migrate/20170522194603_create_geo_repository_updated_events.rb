@@ -1,8 +1,8 @@
-class CreateGeoPushEvents < ActiveRecord::Migration
+class CreateGeoRepositoryUpdatedEvents < ActiveRecord::Migration
   DOWNTIME = false
 
   def change
-    create_table :geo_push_events, id: :bigserial do |t|
+    create_table :geo_repository_updated_events, id: :bigserial do |t|
       t.datetime :created_at, null: false
       t.integer :branches_affected, null: false
       t.integer :tags_affected, null: false

@@ -13,7 +13,7 @@ module EE
       super
 
       # Generate repository updated event on Geo event log when Geo is enabled
-      ::Geo::PushEventStore.new(post_received.project, refs: refs, changes: changes).create
+      ::Geo::RepositoryUpdatedEventStore.new(post_received.project, refs: refs, changes: changes).create
     end
 
     def process_wiki_changes(post_received)
@@ -23,7 +23,7 @@ module EE
 
       if ::Gitlab::Geo.enabled?
         # Create wiki repository updated event on Geo event log
-        ::Geo::PushEventStore.new(post_received.project, source: Geo::PushEvent::WIKI).create
+        ::Geo::RepositoryUpdatedEventStore.new(post_received.project, source: Geo::RepositoryUpdatedEvent::WIKI).create
 
         # Triggers repository update on secondary nodes
         ::Gitlab::Geo.notify_wiki_update(post_received.project)

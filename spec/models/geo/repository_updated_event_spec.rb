@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Geo::PushEvent, type: :model do
+RSpec.describe Geo::RepositoryUpdatedEvent, type: :model do
   describe 'relationships' do
     it { is_expected.to belong_to(:project) }
   end

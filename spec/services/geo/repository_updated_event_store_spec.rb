@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Geo::PushEventStore, services: true do
+describe Geo::RepositoryUpdatedEventStore, services: true do
   let(:project)  { create(:project) }
   let(:blankrev) { Gitlab::Git::BLANK_SHA }
   let(:refs)     { ['refs/heads/tést', 'refs/tags/tag'] }
@@ -18,7 +18,7 @@ describe Geo::PushEventStore, services: true do
 
       subject = described_class.new(project, refs: refs, changes: changes)
 
-      expect { subject.create }.not_to change(Geo::PushEvent, :count)
+      expect { subject.create }.not_to change(Geo::RepositoryUpdatedEvent, :count)
     end
 
     context 'when running on a primary node' do
@@ -29,7 +29,7 @@ describe Geo::PushEventStore, services: true do
       it 'creates a push event' do
         subject = described_class.new(project, refs: refs, changes: changes)
 
-        expect { subject.create }.to change(Geo::PushEvent, :count).by(1)
+        expect { subject.create }.to change(Geo::RepositoryUpdatedEvent, :count).by(1)
       end
 
       context 'when repository is being updated' do
@@ -38,7 +38,7 @@ describe Geo::PushEventStore, services: true do
 
           subject.create
 
-          expect(Geo::PushEvent.last.ref).to be_nil
+          expect(Geo::RepositoryUpdatedEvent.last.ref).to be_nil
         end
 
         it 'tracks ref name when post-receive event affect single ref' do
@@ -48,7 +48,7 @@ describe Geo::PushEventStore, services: true do
 
           subject.create
 
-          expect(Geo::PushEvent.last.ref).to eq 'refs/heads/tést'
+          expect(Geo::RepositoryUpdatedEvent.last.ref).to eq 'refs/heads/tést'
         end
 
         it 'tracks number of branches post-receive event affects' do
@@ -56,7 +56,7 @@ describe Geo::PushEventStore, services: true do
 
           subject.create
 
-          expect(Geo::PushEvent.last.branches_affected).to eq 1
+          expect(Geo::RepositoryUpdatedEvent.last.branches_affected).to eq 1
         end
 
         it 'tracks number of tags post-receive event affects' do
@@ -64,7 +64,7 @@ describe Geo::PushEventStore, services: true do
 
           subject.create
 
-          expect(Geo::PushEvent.last.tags_affected).to eq 1
+          expect(Geo::RepositoryUpdatedEvent.last.tags_affected).to eq 1
         end
 
         it 'tracks when post-receive event create new branches' do
@@ -78,7 +78,7 @@ describe Geo::PushEventStore, services: true do
 
           subject.create
 
-          expect(Geo::PushEvent.last.new_branch).to eq true
+          expect(Geo::RepositoryUpdatedEvent.last.new_branch).to eq true
         end
 
         it 'tracks when post-receive event remove branches' do
@@ -91,17 +91,17 @@ describe Geo::PushEventStore, services: true do
 
           subject.create
 
-          expect(Geo::PushEvent.last.remove_branch).to eq true
+          expect(Geo::RepositoryUpdatedEvent.last.remove_branch).to eq true
         end
       end
 
       context 'when wiki is being updated' do
         it 'does not track any information' do
-          subject = described_class.new(project, source: Geo::PushEvent::WIKI)
+          subject = described_class.new(project, source: Geo::RepositoryUpdatedEvent::WIKI)
 
           subject.create
 
-          push_event = Geo::PushEvent.last
+          push_event = Geo::RepositoryUpdatedEvent.last
 
           expect(push_event.ref).to be_nil
           expect(push_event.branches_affected).to be_zero

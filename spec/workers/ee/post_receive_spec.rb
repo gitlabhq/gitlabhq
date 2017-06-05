@@ -25,8 +25,8 @@ describe PostReceive do
         allow_any_instance_of(GitPushService).to receive(:execute).and_return(true)
       end
 
-      it 'calls Geo::PushEventStore' do
-        expect_any_instance_of(Geo::PushEventStore).to receive(:create)
+      it 'calls Geo::RepositoryUpdatedEventStore' do
+        expect_any_instance_of(Geo::RepositoryUpdatedEventStore).to receive(:create)
 
         described_class.new.perform(project_identifier, key_id, base64_changes)
       end
@@ -36,11 +36,11 @@ describe PostReceive do
   describe '#process_wiki_changes' do
     let(:project_identifier) { "#{pwd(project)}.wiki" }
 
-    it 'triggers Geo::PushEventStore when Geo is enabled' do
+    it 'triggers Geo::RepositoryUpdatedEventStore when Geo is enabled' do
       allow(Gitlab::Geo).to receive(:enabled?) { true }
 
-      expect(Geo::PushEventStore).to receive(:new).with(instance_of(Project), source: Geo::PushEvent::WIKI).and_call_original
-      expect_any_instance_of(Geo::PushEventStore).to receive(:create)
+      expect(Geo::RepositoryUpdatedEventStore).to receive(:new).with(instance_of(Project), source: Geo::RepositoryUpdatedEvent::WIKI).and_call_original
+      expect_any_instance_of(Geo::RepositoryUpdatedEventStore).to receive(:create)
 
       described_class.new.perform(project_identifier, key_id, base64_changes)
     end

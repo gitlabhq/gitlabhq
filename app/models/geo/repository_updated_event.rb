@@ -1,5 +1,5 @@
 module Geo
-  class PushEvent < ActiveRecord::Base
+  class RepositoryUpdatedEvent < ActiveRecord::Base
     include Geo::Model
 
     REPOSITORY = 0

@@ -502,11 +502,11 @@ ActiveRecord::Schema.define(version: 20170602003304) do
 
   create_table "geo_event_log", id: :bigserial, force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.integer "push_event_id", limit: 8
+    t.integer "repository_updated_event_id", limit: 8
   end
 
   add_index "geo_event_log", ["created_at"], name: "index_geo_event_log_on_created_at", using: :btree
-  add_index "geo_event_log", ["push_event_id"], name: "index_geo_event_log_on_push_event_id", using: :btree
+  add_index "geo_event_log", ["repository_updated_event_id"], name: "index_geo_event_log_on_repository_updated_event_id", using: :btree
 
   create_table "geo_nodes", force: :cascade do |t|
     t.string "schema"
@@ -528,7 +528,7 @@ ActiveRecord::Schema.define(version: 20170602003304) do
   add_index "geo_nodes", ["host"], name: "index_geo_nodes_on_host", using: :btree
   add_index "geo_nodes", ["primary"], name: "index_geo_nodes_on_primary", using: :btree
 
-  create_table "geo_push_events", id: :bigserial, force: :cascade do |t|
+  create_table "geo_repository_updated_events", id: :bigserial, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "branches_affected", null: false
     t.integer "tags_affected", null: false
@@ -539,8 +539,8 @@ ActiveRecord::Schema.define(version: 20170602003304) do
     t.text "ref"
   end
 
-  add_index "geo_push_events", ["project_id"], name: "index_geo_push_events_on_project_id", using: :btree
-  add_index "geo_push_events", ["source"], name: "index_geo_push_events_on_source", using: :btree
+  add_index "geo_repository_updated_events", ["project_id"], name: "index_geo_repository_updated_events_on_project_id", using: :btree
+  add_index "geo_repository_updated_events", ["source"], name: "index_geo_repository_updated_events_on_source", using: :btree
 
   create_table "historical_data", force: :cascade do |t|
     t.date "date", null: false
@@ -1688,8 +1688,8 @@ ActiveRecord::Schema.define(version: 20170602003304) do
   add_foreign_key "ci_triggers", "users", column: "owner_id", name: "fk_e8e10d1964", on_delete: :cascade
   add_foreign_key "ci_variables", "projects", name: "fk_ada5eb64b3", on_delete: :cascade
   add_foreign_key "container_repositories", "projects"
-  add_foreign_key "geo_event_log", "geo_push_events", column: "push_event_id", on_delete: :cascade
-  add_foreign_key "geo_push_events", "projects", on_delete: :cascade
+  add_foreign_key "geo_event_log", "geo_repository_updated_events", column: "repository_updated_event_id", on_delete: :cascade
+  add_foreign_key "geo_repository_updated_events", "projects", on_delete: :cascade
   add_foreign_key "issue_assignees", "issues", name: "fk_b7d881734a", on_delete: :cascade
   add_foreign_key "issue_assignees", "users", name: "fk_5e0c8d9154", on_delete: :cascade
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
