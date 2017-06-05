@@ -264,7 +264,7 @@ describe 'Visual tokens', js: true, feature: true do
   describe 'add new token after editing existing token' do
     before do
       input_filtered_search('author:@root assignee:none', submit: false)
-      first('.tokens-container .filtered-search-token').double_click
+      first('.tokens-container .filtered-search-token').click
       filtered_search.send_keys(' ')
     end
 
@@ -331,7 +331,7 @@ describe 'Visual tokens', js: true, feature: true do
     it 'does not tokenize incomplete token' do
       filtered_search.send_keys('author:')
 
-      find('#content-body').click
+      find('body').click
       token = page.all('.tokens-container .js-visual-token')[1]
 
       expect_filtered_search_input_empty

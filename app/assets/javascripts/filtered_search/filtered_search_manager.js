@@ -87,6 +87,7 @@ class FilteredSearchManager {
     this.onClearSearchWrapper = this.onClearSearch.bind(this);
     this.checkForBackspaceWrapper = this.checkForBackspace.bind(this);
     this.removeSelectedTokenKeydownWrapper = this.removeSelectedTokenKeydown.bind(this);
+    this.unselectEditTokensWrapper = this.unselectEditTokens.bind(this);
     this.editTokenWrapper = this.editToken.bind(this);
     this.tokenChange = this.tokenChange.bind(this);
     this.addInputContainerFocusWrapper = this.addInputContainerFocus.bind(this);
@@ -107,6 +108,7 @@ class FilteredSearchManager {
     this.tokensContainer.addEventListener('click', this.removeTokenWrapper);
     this.tokensContainer.addEventListener('click', this.editTokenWrapper);
     this.clearSearchButton.addEventListener('click', this.onClearSearchWrapper);
+    document.addEventListener('click', this.unselectEditTokensWrapper);
     document.addEventListener('click', this.removeInputContainerFocusWrapper);
     document.addEventListener('keydown', this.removeSelectedTokenKeydownWrapper);
     eventHub.$on('recentSearchesItemSelected', this.onrecentSearchesItemSelectedWrapper);
@@ -126,6 +128,7 @@ class FilteredSearchManager {
     this.tokensContainer.removeEventListener('click', this.removeTokenWrapper);
     this.tokensContainer.removeEventListener('click', this.editTokenWrapper);
     this.clearSearchButton.removeEventListener('click', this.onClearSearchWrapper);
+    document.removeEventListener('click', this.unselectEditTokensWrapper);
     document.removeEventListener('click', this.removeInputContainerFocusWrapper);
     document.removeEventListener('keydown', this.removeSelectedTokenKeydownWrapper);
     eventHub.$off('recentSearchesItemSelected', this.onrecentSearchesItemSelectedWrapper);
@@ -211,6 +214,18 @@ class FilteredSearchManager {
       const button = e.target.closest('.selectable');
       gl.FilteredSearchVisualTokens.selectToken(button, true);
       this.removeSelectedToken();
+    }
+  }
+
+  unselectEditTokens(e) {
+    const inputContainer = this.container.querySelector('.filtered-search-box');
+    const isElementInFilteredSearch = inputContainer && inputContainer.contains(e.target);
+    const isElementInFilterDropdown = e.target.closest('.filter-dropdown') !== null;
+    const isElementTokensContainer = e.target.classList.contains('tokens-container');
+
+    if ((!isElementInFilteredSearch && !isElementInFilterDropdown) || isElementTokensContainer) {
+      gl.FilteredSearchVisualTokens.moveInputToTheRight();
+      this.dropdownManager.resetDropdowns();
     }
   }
 
