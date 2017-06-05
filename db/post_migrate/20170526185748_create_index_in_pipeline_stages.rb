@@ -10,6 +10,6 @@ class CreateIndexInPipelineStages < ActiveRecord::Migration
   end
 
   def down
-    remove_index(:ci_stages, [:pipeline_id, :name])
+    remove_concurrent_index(:ci_stages, [:pipeline_id, :name])
   end
 end

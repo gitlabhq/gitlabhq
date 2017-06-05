@@ -10,7 +10,9 @@ class MigrateBuildStageReference < ActiveRecord::Migration
                          'WHERE ci_stages.pipeline_id = ci_builds.commit_id ' \
                          'AND ci_stages.name = ci_builds.stage)')
 
-    update_column_in_batches(:ci_builds, :stage_id, stage_id)
+    update_column_in_batches(:ci_builds, :stage_id, stage_id) do |table, query|
+      query.where(table[:stage_id].eq(nil))
+    end
   end
 
   def down
