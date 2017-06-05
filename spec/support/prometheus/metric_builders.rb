@@ -12,10 +12,10 @@ module Prometheus
       Gitlab::Prometheus::Metric.new(title, required_metrics, nil, nil, queries)
     end
 
-    def simple_metrics
+    def simple_metrics(added_metric_name: 'metric_a')
       [
-        simple_metric(required_metrics: %w(metric_a metric_b), queries: simple_queries),
-        simple_metric(required_metrics: %w{metric_a}, queries: [simple_query('empty')]),
+        simple_metric(required_metrics: %W(#{added_metric_name} metric_b), queries: simple_queries),
+        simple_metric(required_metrics: [added_metric_name], queries: [simple_query('empty')]),
         simple_metric(required_metrics: %w{metric_c})
       ]
     end
