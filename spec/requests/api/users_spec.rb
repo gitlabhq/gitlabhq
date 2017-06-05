@@ -425,6 +425,17 @@ describe API::Users do
       expect(user.reload.external?).to be_truthy
     end
 
+    # EE
+    it "updates shared_runners_minutes_limit" do
+      expect do
+        put api("/users/#{user.id}", admin), { shared_runners_minutes_limit: 133 }
+      end.to change { user.reload.shared_runners_minutes_limit }
+        .from(nil).to(133)
+
+      expect(response).to have_http_status(200)
+      expect(json_response['shared_runners_minutes_limit']).to eq(133)
+    end
+
     it "does not update admin status" do
       put api("/users/#{admin_user.id}", admin), { can_create_group: false }
       expect(response).to have_http_status(200)
@@ -438,9 +449,22 @@ describe API::Users do
       expect(user.reload.email).not_to eq('invalid email')
     end
 
-    it "is not available for non admin users" do
-      put api("/users/#{user.id}", user), attributes_for(:user)
-      expect(response).to have_http_status(403)
+    context 'when the current user is not an admin' do
+      it "is not available" do
+        expect do
+          put api("/users/#{user.id}", user), attributes_for(:user)
+        end.not_to change { user.reload.attributes }
+
+        expect(response).to have_http_status(403)
+      end
+
+      it "cannot update their own shared_runners_minutes_limit" do
+        expect do
+          put api("/users/#{user.id}", user), { shared_runners_minutes_limit: 133 }
+        end.not_to change { user.reload.shared_runners_minutes_limit }
+
+        expect(response).to have_http_status(403)
+      end
     end
 
     it "returns 404 for non-existing user" do

@@ -65,7 +65,7 @@ class User < ActiveRecord::Base
   #
 
   # Namespace for personal projects
-  has_one :namespace, -> { where type: nil }, dependent: :destroy, foreign_key: :owner_id
+  has_one :namespace, -> { where type: nil }, dependent: :destroy, foreign_key: :owner_id, autosave: true
 
   # Profile
   has_many :keys, -> do
