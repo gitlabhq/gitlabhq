@@ -27,6 +27,12 @@ module Ci
         return error('Reference not found')
       end
 
+      if tag?
+        return error("#{ref} is protected") unless access.can_create_tag?(ref)
+      else
+        return error("#{ref} is protected") unless access.can_merge_to_branch?(ref)
+      end
+
       unless commit
         return error('Commit not found')
       end
@@ -92,6 +98,10 @@ module Ci
 
     def commit
       @commit ||= project.commit(origin_sha || origin_ref)
+    end
+
+    def access
+      @access ||= Gitlab::UserAccess.new(current_user, project: project)
     end
 
     def sha

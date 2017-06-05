@@ -3,13 +3,14 @@ require 'spec_helper'
 describe Ci::CreatePipelineService, services: true do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:admin) }
+  let(:ref_name) { 'refs/heads/master' }
 
   before do
     stub_ci_pipeline_to_return_yaml_file
   end
 
   describe '#execute' do
-    def execute_service(source: :push, after: project.commit.id, message: 'Message', ref: 'refs/heads/master')
+    def execute_service(source: :push, after: project.commit.id, message: 'Message', ref: ref_name)
       params = { ref: ref,
                  before: '00000000',
                  after: after,
@@ -310,6 +311,50 @@ describe Ci::CreatePipelineService, services: true do
           expect(result).to be_persisted
         end.not_to change { Environment.count }
       end
+    end
+
+    shared_examples 'when ref is protected' do
+      let(:user) { create(:user) }
+
+      context 'when user is developer' do
+        before do
+          project.add_developer(user)
+        end
+
+        it 'does not create a pipeline' do
+          expect(execute_service).not_to be_persisted
+          expect(Ci::Pipeline.count).to eq(0)
+        end
+      end
+
+      context 'when user is master' do
+        before do
+          project.add_master(user)
+        end
+
+        it 'creates a pipeline' do
+          expect(execute_service).to be_persisted
+          expect(Ci::Pipeline.count).to eq(1)
+        end
+      end
+    end
+
+    context 'when ref is a protected branch' do
+      before do
+        create(:protected_branch, project: project, name: 'master')
+      end
+
+      it_behaves_like 'when ref is protected'
+    end
+
+    context 'when ref is a protected tag' do
+      let(:ref_name) { 'refs/tags/v1.0.0' }
+
+      before do
+        create(:protected_tag, project: project, name: '*')
+      end
+
+      it_behaves_like 'when ref is protected'
     end
   end
 end
