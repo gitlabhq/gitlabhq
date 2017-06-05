@@ -1,0 +1,4 @@
+---
+title: Fix Git-over-HTTP error statuses and improve error messages
+merge_request: 11398
+author:
