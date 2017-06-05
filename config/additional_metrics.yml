@@ -9,7 +9,6 @@
     queries:
     - query_range: 'avg(container_memory_usage_bytes{%{environment_filter}}) / 2^20'
       label: Container memory
-      display_empty: true
       unit: MiB
   - title: "Current memory usage"
     required_metrics:

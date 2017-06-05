@@ -17,25 +17,41 @@ module Gitlab::Prometheus::Queries
     def query_metrics(query_context)
       query_processor = method(:process_query).curry[query_context]
 
-      matched_metrics.map do |group|
+      groups = matched_metrics.map do |group|
         metrics = group.metrics.map do |metric|
           {
             title: metric.title,
             weight: metric.weight,
             y_label: metric.y_label,
-            queries: metric.queries.map(&query_processor)
+            queries: metric.queries.map(&query_processor).select(&method(:query_with_result))
           }
         end
 
         {
           group: group.name,
           priority: group.priority,
-          metrics: metrics
+          metrics: metrics.select(&method(:metric_with_any_queries))
         }
       end
+
+      groups.select(&method(:group_with_any_metrics))
     end
 
     private
+
+    def metric_with_any_queries(metric)
+      metric[:queries]&.count > 0
+    end
+
+    def group_with_any_metrics(group)
+      group[:metrics]&.count > 0
+    end
+
+    def query_with_result(query)
+      query[:result]&.any? do |item|
+        item&.[](:values)&.any? || item&.[](:value)&.any?
+      end
+    end
 
     def process_query(context, query)
       query_with_result = query.dup
@@ -48,22 +64,15 @@ module Gitlab::Prometheus::Queries
       query_with_result
     end
 
-    def process_result(query_result)
-      contains_metrics = query_result.all? do |item|
-        item&.[](:values)&.any? || item&.[](:value)&.any?
-      end
 
-      contains_metrics
+    def available_metrics
+      @available_metrics ||= client_label_values || []
     end
 
     def matched_metrics
-      label_values = client_label_values || []
-      Gitlab::Prometheus::MetricGroup.all
-
       result = Gitlab::Prometheus::MetricGroup.all.map do |group|
         group.metrics.select! do |metric|
-          matcher = Regexp.compile(metric.detect)
-          label_values.any? &matcher.method(:match)
+          metric.required_metrics.all?(&available_metrics.method(:include?))
         end
         group
       end

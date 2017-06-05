@@ -10,7 +10,7 @@ describe Gitlab::Prometheus::Queries::MatchedMetricsQuery, lib: true do
 
   subject { described_class.new(client) }
 
-  context 'with one group where two metrics are found' do
+  context 'with one group where two metrics is found' do
     before do
       allow(metric_group_class).to receive(:all).and_return([simple_metric_group])
       allow(client).to receive(:label_values).and_return(metric_names)

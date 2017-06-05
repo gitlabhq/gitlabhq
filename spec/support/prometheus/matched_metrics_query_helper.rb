@@ -5,12 +5,12 @@ module Prometheus
     end
 
     def simple_metrics(metric_name = 'metric_a')
-      [metric_class.new('title', %W(#{metric_name} metric_b), nil, nil),
-       metric_class.new('title', [metric_name], nil, nil)]
+      [Gitlab::Prometheus::Metric.new('title', %W(#{metric_name} metric_b), nil, nil),
+       Gitlab::Prometheus::Metric.new('title', [metric_name], nil, nil)]
     end
 
     def simple_metric_group(name = 'name', metrics = simple_metrics)
-      metric_group_class.new(name, 1, metrics)
+      Gitlab::Prometheus::MetricGroup.new(name, 1, metrics)
     end
 
     def series_info_with_environment(*more_metrics)
