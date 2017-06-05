@@ -356,8 +356,11 @@ describe API::Runner do
             expect(json_response['token']).to eq(job.token)
             expect(json_response['job_info']).to eq(expected_job_info)
             expect(json_response['git_info']).to eq(expected_git_info)
-            expect(json_response['image']).to eq({ 'name' => 'ruby:2.1' })
-            expect(json_response['services']).to eq([{ 'name' => 'postgres' }])
+            expect(json_response['image']).to eq({ 'name' => 'ruby:2.1', 'entrypoint' => '/bin/sh' })
+            expect(json_response['services']).to eq([{ 'name' => 'postgres', 'entrypoint' => nil,
+                                                       'alias' => nil, 'command' => nil },
+                                                     { 'name' => 'docker:dind', 'entrypoint' => '/bin/sh',
+                                                       'alias' => 'docker', 'command' => 'sleep 30' }])
             expect(json_response['steps']).to eq(expected_steps)
             expect(json_response['artifacts']).to eq(expected_artifacts)
             expect(json_response['cache']).to eq(expected_cache)
