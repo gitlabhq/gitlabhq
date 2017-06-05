@@ -382,7 +382,7 @@ feature 'Jobs', :feature do
         project.update(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
 
         logout_direct
-        login_with(create(:user))
+        gitlab_sign_in(create(:user))
         visit namespace_project_job_path(project.namespace, project, job)
       end
 

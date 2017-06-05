@@ -14,7 +14,7 @@ module LoginHelpers
   #   # Provide an existing User record
   #   user = create(:user)
   #   gitlab_sign_in(user)
-  def gitlab_sign_in(user_or_role)
+  def gitlab_sign_in(user_or_role, **kwargs)
     @user =
       if user_or_role.is_a?(User)
         user_or_role
@@ -22,7 +22,7 @@ module LoginHelpers
         create(user_or_role)
       end
 
-    gitlab_sign_in_with(@user)
+    gitlab_sign_in_with(@user, **kwargs)
   end
 
   def gitlab_sign_in_via(provider, user, uid)

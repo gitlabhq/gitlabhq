@@ -17,7 +17,7 @@ shared_examples 'issuable record that supports quick actions in its description 
     project.team << [master, :master]
     project.team << [assignee, :developer]
     project.team << [guest, :guest]
-    login_with(master)
+    gitlab_sign_in(master)
   end
 
   after do
@@ -106,7 +106,7 @@ shared_examples 'issuable record that supports quick actions in its description 
       context "when current user cannot close #{issuable_type}" do
         before do
           logout
-          login_with(guest)
+          gitlab_sign_in(guest)
           visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
         end
 
@@ -141,7 +141,7 @@ shared_examples 'issuable record that supports quick actions in its description 
       context "when current user cannot reopen #{issuable_type}" do
         before do
           logout
-          login_with(guest)
+          gitlab_sign_in(guest)
           visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
         end
 
@@ -171,7 +171,7 @@ shared_examples 'issuable record that supports quick actions in its description 
       context "when current user cannot change title of #{issuable_type}" do
         before do
           logout
-          login_with(guest)
+          gitlab_sign_in(guest)
           visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
         end
 

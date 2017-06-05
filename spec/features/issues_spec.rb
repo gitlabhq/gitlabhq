@@ -499,7 +499,7 @@ describe 'Issues', feature: true do
 
       it 'shows assignee text', js: true do
         logout
-        login_with guest
+        gitlab_sign_in guest
 
         visit namespace_project_issue_path(project.namespace, project, issue)
         expect(page).to have_content issue.assignees.first.name
@@ -583,7 +583,7 @@ describe 'Issues', feature: true do
 
       it 'shows milestone text', js: true do
         logout
-        login_with guest
+        gitlab_sign_in guest
 
         visit namespace_project_issue_path(project.namespace, project, issue)
         expect(page).to have_content milestone.title

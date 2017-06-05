@@ -158,7 +158,7 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
     describe "when 2FA via OTP is disabled" do
       it "allows logging in with the U2F device" do
         user.update_attribute(:otp_required_for_login, false)
-        login_with(user)
+        gitlab_sign_in(user)
 
         @u2f_device.respond_to_u2f_authentication
 
@@ -170,7 +170,7 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
     describe "when 2FA via OTP is enabled" do
       it "allows logging in with the U2F device" do
         user.update_attribute(:otp_required_for_login, true)
-        login_with(user)
+        gitlab_sign_in(user)
 
         @u2f_device.respond_to_u2f_authentication
 
@@ -180,7 +180,7 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
     end
 
     it 'persists remember_me value via hidden field' do
-      login_with(user, remember: true)
+      gitlab_sign_in(user, remember: true)
 
       @u2f_device.respond_to_u2f_authentication
       expect(page).to have_content('We heard back from your U2F device')
@@ -308,7 +308,7 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
     describe 'when no u2f device is registered' do
       before do
         logout
-        login_with(user)
+        gitlab_sign_in(user)
       end
 
       it 'shows the fallback otp code UI' do
@@ -321,7 +321,7 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
         manage_two_factor_authentication
         @u2f_device = register_u2f_device
         logout
-        login_with(user)
+        gitlab_sign_in(user)
       end
 
       it 'provides a button that shows the fallback otp code UI' do
