@@ -27,7 +27,7 @@ module Ci
         return error('Reference not found')
       end
 
-      unless Ci::Pipeline.allowed_to_create?(current_user, project, ref)
+      unless triggering_user_allowed_for_ref?(trigger_request, ref)
         return error("Insufficient permissions for protected #{ref}")
       end
 
@@ -55,6 +55,14 @@ module Ci
     end
 
     private
+
+    def triggering_user_allowed_for_ref?(trigger_request, ref)
+      triggering_user = current_user || trigger_request.trigger.owner
+
+      (triggering_user &&
+        Ci::Pipeline.allowed_to_create?(triggering_user, project, ref)) ||
+        !project.protected_for?(ref)
+    end
 
     def process!
       Ci::Pipeline.transaction do
