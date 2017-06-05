@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe BuildEntity do
   let(:user) { create(:user) }
-  let(:build) { create(:ci_build) }
+  let(:build) { create(:ci_build, :failed) }
   let(:project) { build.project }
   let(:request) { double('request') }
 
@@ -18,6 +18,7 @@ describe BuildEntity do
 
   it 'contains paths to build page and retry action' do
     expect(subject).to include(:build_path, :retry_path)
+    expect(subject[:retry_path]).not_to be_nil
   end
 
   it 'does not contain sensitive information' do
