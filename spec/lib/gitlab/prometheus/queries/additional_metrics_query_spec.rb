@@ -24,12 +24,12 @@ describe Gitlab::Prometheus::Queries::AdditionalMetricsQuery, lib: true do
 
     context 'some queries return results' do
       before do
-        expect(client).to receive(:query_range).with('query_range_a', any_args).and_return(query_range_result)
-        expect(client).to receive(:query_range).with('query_range_b', any_args).and_return(query_range_result)
-        expect(client).to receive(:query_range).with('query_range_empty', any_args).and_return([])
+        allow(client).to receive(:query_range).with('query_range_a', any_args).and_return(query_range_result)
+        allow(client).to receive(:query_range).with('query_range_b', any_args).and_return(query_range_result)
+        allow(client).to receive(:query_range).with('query_range_empty', any_args).and_return([])
       end
 
-      it 'return results only for queries with results' do
+      it 'return group data only for queries with results' do
         expected = [
           {
             group: 'name',
@@ -61,14 +61,13 @@ describe Gitlab::Prometheus::Queries::AdditionalMetricsQuery, lib: true do
       allow(client).to receive(:label_values).and_return(metric_names)
     end
 
-    context 'some queries return results' do
+    context 'both queries return results' do
       before do
-        expect(client).to receive(:query_range).with('query_range_a', any_args).and_return(query_range_result)
-        expect(client).to receive(:query_range).with('query_range_b', any_args).and_return(query_range_result)
+        allow(client).to receive(:query_range).with('query_range_a', any_args).and_return(query_range_result)
+        allow(client).to receive(:query_range).with('query_range_b', any_args).and_return(query_range_result)
       end
 
-      it 'return results only for queries with results' do
-        puts query_result
+      it 'return group data both queries' do
         expected = [
           {
             group: 'group_a',
@@ -107,6 +106,43 @@ describe Gitlab::Prometheus::Queries::AdditionalMetricsQuery, lib: true do
                       values: [[1488758662.506, '0.00002996364761904785'], [1488758722.506, '0.00003090239047619091']]
                     }
                   ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+
+        expect(query_result).to eq(expected)
+      end
+    end
+
+    context 'one query returns result' do
+      before do
+        allow(client).to receive(:query_range).with('query_range_a', any_args).and_return(query_range_result)
+        allow(client).to receive(:query_range).with('query_range_b', any_args).and_return([])
+      end
+
+      it 'queries using specific time' do
+        expect(client).to receive(:query_range).with(anything, start: 8.hours.ago.to_f, stop: Time.now.to_f)
+
+        expect(query_result).not_to be_nil
+      end
+
+      it 'return group data only for query with results' do
+        expected = [
+          {
+            group: 'group_a',
+            priority: 1,
+            metrics: [
+              {
+                title: 'title',
+                weight: nil,
+                y_label: 'Values',
+                queries: [
+                  {
+                    query_range: 'query_range_a',
+                    result: query_range_result
                   }
                 ]
               }
