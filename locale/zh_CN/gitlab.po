@@ -1,0 +1,225 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the gitlab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: gitlab 1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-05-04 19:24-0500\n"
+"PO-Revision-Date: 2017-05-04 19:24-0500\n"
+"Last-Translator: HuangTao <htve@outlook.com>, 2017\n"
+"Language-Team: Chinese (China) (https://www.transifex.com/gitlab-zh/teams/75177/zh_CN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid "ByAuthor|by"
+msgstr "作者:"
+
+msgid "Commit"
+msgid_plural "Commits"
+msgstr[0] "提交"
+
+msgid ""
+"Cycle Analytics gives an overview of how much time it takes to go from idea "
+"to production in your project."
+msgstr "周期分析概述了项目从想法到产品实现的各阶段所需的时间。"
+
+msgid "CycleAnalyticsStage|Code"
+msgstr "编码"
+
+msgid "CycleAnalyticsStage|Issue"
+msgstr "议题"
+
+msgid "CycleAnalyticsStage|Plan"
+msgstr "计划"
+
+msgid "CycleAnalyticsStage|Production"
+msgstr "生产"
+
+msgid "CycleAnalyticsStage|Review"
+msgstr "评审"
+
+msgid "CycleAnalyticsStage|Staging"
+msgstr "预发布"
+
+msgid "CycleAnalyticsStage|Test"
+msgstr "测试"
+
+msgid "Deploy"
+msgid_plural "Deploys"
+msgstr[0] "部署"
+
+msgid "FirstPushedBy|First"
+msgstr "首次推送"
+
+msgid "FirstPushedBy|pushed by"
+msgstr "推送者:"
+
+msgid "From issue creation until deploy to production"
+msgstr "从创建议题到部署至生产环境"
+
+msgid "From merge request merge until deploy to production"
+msgstr "从合并请求被合并后到部署至生产环境"
+
+msgid "Introducing Cycle Analytics"
+msgstr "周期分析简介"
+
+msgid "Last %d day"
+msgid_plural "Last %d days"
+msgstr[0] "最后 %d 天"
+
+msgid "Limited to showing %d event at most"
+msgid_plural "Limited to showing %d events at most"
+msgstr[0] "最多显示 %d 个事件"
+
+msgid "Median"
+msgstr "中位数"
+
+msgid "New Issue"
+msgid_plural "New Issues"
+msgstr[0] "新议题"
+
+msgid "Not available"
+msgstr "数据不足"
+
+msgid "Not enough data"
+msgstr "数据不足"
+
+msgid "OpenedNDaysAgo|Opened"
+msgstr "开始于"
+
+msgid "Pipeline Health"
+msgstr "流水线健康指标"
+
+msgid "ProjectLifecycle|Stage"
+msgstr "项目生命周期"
+
+msgid "Read more"
+msgstr "了解更多"
+
+msgid "Related Commits"
+msgstr "相关的提交"
+
+msgid "Related Deployed Jobs"
+msgstr "相关的部署作业"
+
+msgid "Related Issues"
+msgstr "相关的议题"
+
+msgid "Related Jobs"
+msgstr "相关的作业"
+
+msgid "Related Merge Requests"
+msgstr "相关的合并请求"
+
+msgid "Related Merged Requests"
+msgstr "相关已合并的合并请求"
+
+msgid "Showing %d event"
+msgid_plural "Showing %d events"
+msgstr[0] "显示 %d 个事件"
+
+msgid ""
+"The coding stage shows the time from the first commit to creating the merge "
+"request. The data will automatically be added here once you create your "
+"first merge request."
+msgstr "编码阶段概述了从第一次提交到创建合并请求的时间。创建第一个合并请求后，数据将自动添加到此处。"
+
+msgid "The collection of events added to the data gathered for that stage."
+msgstr "与该阶段相关的事件。"
+
+msgid ""
+"The issue stage shows the time it takes from creating an issue to assigning "
+"the issue to a milestone, or add the issue to a list on your Issue Board. "
+"Begin creating issues to see data for this stage."
+msgstr "议题阶段概述了从创建议题到将议题设置里程碑或将议题添加到议题看板的时间。开始创建议题以查看此阶段的数据。"
+
+msgid "The phase of the development lifecycle."
+msgstr "项目生命周期中的各个阶段。"
+
+msgid ""
+"The planning stage shows the time from the previous step to pushing your "
+"first commit. This time will be added automatically once you push your first"
+" commit."
+msgstr "计划阶段概述了从议题添加到日程后到推送首次提交的时间。当首次推送提交后，数据将自动添加到此处。"
+
+msgid ""
+"The production stage shows the total time it takes between creating an issue"
+" and deploying the code to production. The data will be automatically added "
+"once you have completed the full idea to production cycle."
+msgstr "生产阶段概述了从创建一个议题到将代码部署到生产环境的总时间。当完成想法到部署生产的循环，数据将自动添加到此处。"
+
+msgid ""
+"The review stage shows the time from creating the merge request to merging "
+"it. The data will automatically be added after you merge your first merge "
+"request."
+msgstr "评审阶段概述了从创建合并请求到被合并的时间。当创建第一个合并请求后，数据将自动添加到此处。"
+
+msgid ""
+"The staging stage shows the time between merging the MR and deploying code "
+"to the production environment. The data will be automatically added once you"
+" deploy to production for the first time."
+msgstr "预发布阶段概述了从合并请求被合并到部署至生产环境的总时间。首次部署到生产环境后，数据将自动添加到此处。"
+
+msgid ""
+"The testing stage shows the time GitLab CI takes to run every pipeline for "
+"the related merge request. The data will automatically be added after your "
+"first pipeline finishes running."
+msgstr "测试阶段概述了GitLab CI为相关合并请求运行每个流水线所需的时间。当第一个流水线运行完成后，数据将自动添加到此处。"
+
+msgid "The time taken by each data entry gathered by that stage."
+msgstr "该阶段每条数据所花的时间"
+
+msgid ""
+"The value lying at the midpoint of a series of observed values. E.g., "
+"between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 "
+"= 6."
+msgstr "中位数是一个数列中最中间的值。例如在 3、5、9 之间，中位数是 5。在 3、5、7、8 之间，中位数是 （5 + 7）/ 2 = 6。"
+
+msgid "Time before an issue gets scheduled"
+msgstr "议题被列入日程表的时间"
+
+msgid "Time before an issue starts implementation"
+msgstr "开始进行编码前的时间"
+
+msgid "Time between merge request creation and merge/close"
+msgstr "从创建合并请求到被合并或关闭的时间"
+
+msgid "Time until first merge request"
+msgstr "创建第一个合并请求之前的时间"
+
+msgid "Time|hr"
+msgid_plural "Time|hrs"
+msgstr[0] "小时"
+
+msgid "Time|min"
+msgid_plural "Time|mins"
+msgstr[0] "分钟"
+
+msgid "Time|s"
+msgstr "秒"
+
+msgid "Total Time"
+msgstr "总时间"
+
+msgid "Total test time for all commits/merges"
+msgstr "所有提交和合并的总测试时间"
+
+msgid "Want to see the data? Please ask an administrator for access."
+msgstr "权限不足。如需查看相关数据，请向管理员申请权限。"
+
+msgid "We don't have enough data to show this stage."
+msgstr "该阶段的数据不足，无法显示。"
+
+msgid "You need permission."
+msgstr "您需要相关的权限。"
+
+msgid "day"
+msgid_plural "days"
+msgstr[0] "天"
