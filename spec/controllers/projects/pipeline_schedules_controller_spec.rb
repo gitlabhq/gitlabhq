@@ -84,4 +84,62 @@ describe Projects::PipelineSchedulesController do
       end
     end
   end
+
+  describe 'security' do
+    include AccessMatchersForController
+
+    describe 'GET edit' do
+      let(:action) do
+        Proc.new do |user|
+          get :edit, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
+        end
+      end
+
+      specify { expect(action).to be_allowed_for(:admin) }
+      specify { expect(action).to be_allowed_for(:owner).of(project) }
+      specify { expect(action).to be_allowed_for(:master).of(project) }
+      specify { expect(action).to be_allowed_for(:developer).of(project) }
+      specify { expect(action).to be_denied_for(:reporter).of(project) }
+      specify { expect(action).to be_denied_for(:guest).of(project) }
+      specify { expect(action).to be_denied_for(:user) }
+      specify { expect(action).to be_denied_for(:external) }
+      specify { expect(action).to be_denied_for(:visitor) }
+    end
+
+    describe 'GET take_ownership' do
+      let(:action) do
+        Proc.new do |user|
+          post :take_ownership, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
+        end
+      end
+
+      specify { expect(action).to be_allowed_for(:admin) }
+      specify { expect(action).to be_allowed_for(:owner).of(project) }
+      specify { expect(action).to be_allowed_for(:master).of(project) }
+      specify { expect(action).to be_allowed_for(:developer).of(project) }
+      specify { expect(action).to be_denied_for(:reporter).of(project) }
+      specify { expect(action).to be_denied_for(:guest).of(project) }
+      specify { expect(action).to be_denied_for(:user) }
+      specify { expect(action).to be_denied_for(:external) }
+      specify { expect(action).to be_denied_for(:visitor) }
+    end
+
+    describe 'PUT update' do
+      let(:action) do
+        Proc.new do |user|
+          put :update, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
+        end
+      end
+
+      specify { expect(action).to be_allowed_for(:admin) }
+      specify { expect(action).to be_allowed_for(:owner).of(project) }
+      specify { expect(action).to be_allowed_for(:master).of(project) }
+      specify { expect(action).to be_allowed_for(:developer).of(project) }
+      specify { expect(action).to be_denied_for(:reporter).of(project) }
+      specify { expect(action).to be_denied_for(:guest).of(project) }
+      specify { expect(action).to be_denied_for(:user) }
+      specify { expect(action).to be_denied_for(:external) }
+      specify { expect(action).to be_denied_for(:visitor) }
+    end
+  end
 end
