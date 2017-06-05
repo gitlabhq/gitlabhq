@@ -66,7 +66,7 @@ export default class ProtectedTagAccessDropdown {
 
               self.$wrap.find(`.item-${item.type}`).removeClass('is-active');
             } else {
-              const $noOne = self.$wrap.find(`.is-active.item-${item.type}[data-role-name="No one"]`);
+              const $noOne = self.$wrap.find(`.is-active.item-${item.type}[data-role-id="${self.noOneObj.id}"]`);
               if ($noOne.length) {
                 $noOne.removeClass('is-active');
                 self.removeSelectedItem(self.noOneObj);
@@ -430,10 +430,10 @@ export default class ProtectedTagAccessDropdown {
 
     return `
       <li>
-        <a href='#' class='${isActiveClass}'>
-          <img src='${user.avatar_url}' class='avatar avatar-inline' width='30'>
-          <strong class='dropdown-menu-user-full-name'>${user.name}</strong>
-          <span class='dropdown-menu-user-username'>${user.username}</span>
+        <a href="#" class="${isActiveClass}">
+          <img src="${user.avatar_url}" class="avatar avatar-inline" width="30">
+          <strong class="dropdown-menu-user-full-name">${user.name}</strong>
+          <span class="dropdown-menu-user-username">${user.username}</span>
         </a>
       </li>
     `;
@@ -441,13 +441,13 @@ export default class ProtectedTagAccessDropdown {
 
   groupRowHtml(group, isActive) {
     const isActiveClass = isActive || '';
-    const avatarEl = group.avatar_url ? `<img src='${group.avatar_url}' class='avatar avatar-inline' width='30'>` : '';
+    const avatarEl = group.avatar_url ? `<img src="${group.avatar_url}" class="avatar avatar-inline" width="30">` : '';
 
     return `
       <li>
-        <a href='#' class='${isActiveClass}'>
+        <a href="#" class="${isActiveClass}">
           ${avatarEl}
-          <span class='dropdown-menu-group-groupname'>${group.name}</span>
+          <span class="dropdown-menu-group-groupname">${group.name}</span>
         </a>
       </li>
     `;
@@ -458,7 +458,7 @@ export default class ProtectedTagAccessDropdown {
 
     return `
       <li>
-        <a href='#' class='${isActiveClass}' item-${role.type}' data-role-name="${role.text}">
+        <a href="#" class="${isActiveClass} item-${role.type}" data-role-id="${role.id}">
           ${role.text}
         </a>
       </li>
