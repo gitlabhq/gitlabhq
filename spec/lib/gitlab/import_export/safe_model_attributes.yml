@@ -191,6 +191,13 @@ Ci::Pipeline:
 - lock_version
 - auto_canceled_by_id
 - pipeline_schedule_id
+Ci::Stage:
+- id
+- name
+- project_id
+- pipeline_id
+- created_at
+- updated_at
 CommitStatus:
 - id
 - project_id
