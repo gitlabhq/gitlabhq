@@ -26,6 +26,12 @@ module Users
         ::Projects::DestroyService.new(project, current_user, skip_repo: true).execute
       end
 
+      Project.includes(group: :owners).where(mirror_user: user).find_each do |project|
+        if project.group.present?
+          project.update(mirror_user: project.group.owners.first)
+        end
+      end
+
       MigrateToGhostUserService.new(user).execute unless options[:hard_delete]
 
       # Destroy the namespace after destroying the user since certain methods may depend on the namespace existing
