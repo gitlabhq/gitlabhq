@@ -205,7 +205,8 @@ class FilteredSearchManager {
 
     if (removeButtonSelected) {
       e.preventDefault();
-      e.stopPropagation();
+      // Prevent editToken from being triggered after token is removed
+      e.stopImmediatePropagation();
 
       const button = e.target.closest('.selectable');
       gl.FilteredSearchVisualTokens.selectToken(button, true);
