@@ -44,13 +44,11 @@ module API
 
         log_user_activity(actor)
 
-        response = {
+        {
           status: true,
           gl_repository: gl_repository,
           repository_path: repository_path
         }
-
-        response
       end
 
       post "/lfs_authenticate" do
