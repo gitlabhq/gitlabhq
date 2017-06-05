@@ -337,7 +337,7 @@ class ProjectsController < Projects::ApplicationController
   def project_params_ee
     %i[
       approvals_before_merge
-      approvals_overwritable_mr
+      approvals
       approver_group_ids
       approver_ids
       issues_template
@@ -346,6 +346,7 @@ class ProjectsController < Projects::ApplicationController
       mirror
       mirror_trigger_builds
       mirror_user_id
+      project_wide_approvals
       repository_size_limit
       reset_approvals_on_push
       service_desk_enabled

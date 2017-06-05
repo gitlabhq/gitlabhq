@@ -106,10 +106,9 @@
       Set number of approvers required before any open merge request can be merged
 
   .form-group.mr-overwrite-approvals
-    - approvals_overwritable_mr = local_assigns
     .checkbox
-      = form.label :approvals_overwritable_mr do
-        = form.check_box :approvals_overwritable_mr
+      = form.label :project_wide_approvals do
+        = form.check_box(:project_wide_approvals, { checked: !project.project_wide_approvals }, false, true)
         %strong Can overwrite approvers and approvals required per merge request
 
   .form-group.reset-approvals-on-push

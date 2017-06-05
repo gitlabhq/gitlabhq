@@ -1,7 +1,7 @@
 # See http://doc.gitlab.com/ce/development/migration_style_guide.html
 # for more information on how to write migrations for GitLab.
 
-class AddApprovalsOverwritableMrToProject < ActiveRecord::Migration
+class AddProjectWideApprovalsToProject < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   # Set this constant to true if this migration requires downtime.
@@ -23,13 +23,9 @@ class AddApprovalsOverwritableMrToProject < ActiveRecord::Migration
   #
   # To disable transactions uncomment the following line and remove these
   # comments:
-  disable_ddl_transaction!
+  # disable_ddl_transaction!
 
-  def up
-    add_column_with_default :projects, :approvals_overwritable_mr, :boolean, default: true
-  end
-
-  def down
-    remove_column :projects, :approvals_overwritable_mr
+  def change
+    add_column :projects, :project_wide_approvals, :boolean
   end
 end
