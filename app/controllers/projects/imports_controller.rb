@@ -12,14 +12,7 @@ class Projects::ImportsController < Projects::ApplicationController
 
   def create
     if @project.update_attributes(import_params)
-      @project.reload
-
-      if @project.import_failed?
-        @project.import_retry
-      else
-        @project.import_start
-        @project.add_import_job
-      end
+      @project.reload.import_schedule
     end
 
     redirect_to namespace_project_import_path(@project.namespace, @project)

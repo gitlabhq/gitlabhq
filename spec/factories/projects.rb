@@ -24,20 +24,25 @@ FactoryGirl.define do
       visibility_level Gitlab::VisibilityLevel::PRIVATE
     end
 
+    trait :import_scheduled do
+      import_status :scheduled
+    end
+
     trait :import_started do
-      import_url { generate(:url) }
       import_status :started
     end
 
     trait :import_finished do
-      import_started
       import_status :finished
     end
 
-    trait :mirror do
-      import_started
+    trait :import_failed do
+      import_status :failed
+    end
 
+    trait :mirror do
       mirror true
+      import_url { generate(:url) }
       mirror_user_id { creator_id }
     end
 

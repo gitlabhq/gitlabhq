@@ -2,39 +2,38 @@ class UpdateAllMirrorsWorker
   include Sidekiq::Worker
   include CronjobQueue
 
-  LEASE_TIMEOUT = 840
+  LEASE_TIMEOUT = 5.minutes
+  LEASE_KEY = 'update_all_mirrors'.freeze
 
   def perform
     # This worker requires updating the database state, which we can't
     # do on a Geo secondary
     return if Gitlab::Geo.secondary?
-    return unless try_obtain_lease
+
+    lease_uuid = try_obtain_lease
+    return unless lease_uuid
 
     fail_stuck_mirrors!
 
-    mirrors_to_sync.find_each(batch_size: 200) do |project|
-      RepositoryUpdateMirrorDispatchWorker.perform_in(rand((project.sync_time / 2).minutes), project.id)
-    end
+    return if Gitlab::Mirror.max_mirror_capacity_reached?
+    Project.mirrors_to_sync.find_each(batch_size: 200, &:import_schedule)
+
+    cancel_lease(lease_uuid)
   end
 
   def fail_stuck_mirrors!
-    stuck = Project.mirror
-      .with_import_status(:started)
-      .where('mirror_last_update_at < ?', 2.hours.ago)
-
-    stuck.find_each(batch_size: 50) do |project|
+    Project.stuck_mirrors.find_each(batch_size: 50) do |project|
       project.mark_import_as_failed('The mirror update took too long to complete.')
     end
   end
 
   private
 
-  def mirrors_to_sync
-    Project.mirror.where("mirror_last_successful_update_at + #{Gitlab::Database.minute_interval('sync_time')} <= ? OR sync_time IN (?)", DateTime.now, Gitlab::Mirror.sync_times)
+  def try_obtain_lease
+    ::Gitlab::ExclusiveLease.new(LEASE_KEY, timeout: LEASE_TIMEOUT).try_obtain
   end
 
-  def try_obtain_lease
-    lease = ::Gitlab::ExclusiveLease.new("update_all_mirrors", timeout: LEASE_TIMEOUT)
-    lease.try_obtain
+  def cancel_lease(uuid)
+    ::Gitlab::ExclusiveLease.cancel(LEASE_KEY, uuid)
   end
 end

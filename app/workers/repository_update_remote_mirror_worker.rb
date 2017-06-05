@@ -23,15 +23,25 @@ class RepositoryUpdateRemoteMirrorWorker
     project = remote_mirror.project
     current_user = project.creator
     result = Projects::UpdateRemoteMirrorService.new(project, current_user).execute(remote_mirror)
-
     raise UpdateError, result[:message] if result[:status] == :error
+
     remote_mirror.update_finish
   rescue UpdateAlreadyInProgressError
     raise
   rescue UpdateError => ex
-    remote_mirror.mark_as_failed(Gitlab::UrlSanitizer.sanitize(ex.message))
+    fail_remote_mirror(remote_mirror, ex.message)
     raise
   rescue => ex
+    return unless remote_mirror
+
+    fail_remote_mirror(remote_mirror, ex.message)
     raise UpdateError, "#{ex.class}: #{ex.message}"
+  end
+
+  private
+
+  def fail_remote_mirror(remote_mirror, message)
+    Rails.logger.error(message)
+    remote_mirror.mark_as_failed(message)
   end
 end

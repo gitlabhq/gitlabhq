@@ -17,7 +17,7 @@ describe Gitlab::GithubImport::ProjectCreator, lib: true do
 
   before do
     namespace.add_owner(user)
-    allow_any_instance_of(Project).to receive(:add_import_job)
+    allow_any_instance_of(EE::Project).to receive(:add_import_job)
   end
 
   describe '#execute' do
