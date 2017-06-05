@@ -25,7 +25,7 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def destroy
-    DeleteUserWorker.perform_async(current_user.id, current_user.id)
+    current_user.delete_async(deleted_by: current_user)
 
     respond_to do |format|
       format.html do
