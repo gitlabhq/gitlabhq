@@ -9,10 +9,10 @@ describe Ci::CreatePipelineService, :services do
   end
 
   describe '#execute' do
-    def execute_service(after_sha: project.commit.id, message: 'Message', ref: 'refs/heads/master')
+    def execute_service(after: project.commit.id, message: 'Message', ref: 'refs/heads/master')
       params = { ref: ref,
                  before: '00000000',
-                 after: after_sha,
+                 after: after,
                  commits: [{ message: message }] }
 
       described_class.new(project, user, params).execute
