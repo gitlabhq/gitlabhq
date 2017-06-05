@@ -199,7 +199,7 @@ Ci::Stage:
 - pipeline_id
 - created_at
 - updated_at
-ommitStatus:
+CommitStatus:
 - id
 - project_id
 - status
