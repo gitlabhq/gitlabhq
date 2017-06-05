@@ -285,17 +285,6 @@ module Ci
       end
     end
 
-    ##
-    # TODO, phase this method out
-    #
-    def config_builds_attributes
-      return [] unless config_processor
-
-      config_processor.
-        builds_for_ref(ref, tag?, trigger_requests.first).
-        sort_by { |build| build[:stage_idx] }
-    end
-
     def stage_seeds
       return [] unless config_processor
 
