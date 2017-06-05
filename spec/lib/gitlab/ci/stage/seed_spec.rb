@@ -30,7 +30,7 @@ describe Gitlab::Ci::Stage::Seed do
   end
 
   describe '#user=' do
-    let(:user) { create(:user) }
+    let(:user) { build(:user) }
 
     it 'assignes relevant pipeline attributes' do
       subject.user = user

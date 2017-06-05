@@ -535,9 +535,9 @@ describe Ci::Pipeline, models: true do
     end
   end
 
-  describe '#has_stage_seedss?' do
+  describe '#has_stage_seeds?' do
     context 'when pipeline has stage seeds' do
-      subject { create(:ci_pipeline_with_one_job) }
+      subject { build(:ci_pipeline_with_one_job) }
 
       it { is_expected.to have_stage_seeds }
     end
