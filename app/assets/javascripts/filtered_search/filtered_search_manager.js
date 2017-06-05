@@ -216,7 +216,7 @@ class FilteredSearchManager {
 
   editToken(e) {
     const token = e.target.closest('.js-visual-token');
-    const sanitizedTokenName = token.querySelector('.name').textContent.trim();
+    const sanitizedTokenName = token && token.querySelector('.name').textContent.trim();
     const canEdit = this.canEdit && this.canEdit(sanitizedTokenName);
 
     if (token && canEdit) {
