@@ -296,5 +296,20 @@ describe Ci::CreatePipelineService, services: true do
         expect(Environment.find_by(name: "review/master")).not_to be_nil
       end
     end
+
+    context 'when environment with invalid name' do
+      before do
+        config = YAML.dump(deploy: { environment: { name: 'name,with,commas' }, script: 'ls' })
+        stub_ci_pipeline_yaml_file(config)
+      end
+
+      it 'does not create an environment' do
+        expect do
+          result = execute_service
+
+          expect(result).to be_persisted
+        end.not_to change { Environment.count }
+      end
+    end
   end
 end
