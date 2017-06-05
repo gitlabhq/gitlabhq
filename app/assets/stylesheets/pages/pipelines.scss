@@ -1057,6 +1057,7 @@
 
   &.has-only-one-job {
     margin-left: 30px;
+    margin-right: 0;
 
     .left-connector {
       @include flat-connector-before;
@@ -1067,6 +1068,14 @@
 .stage-column.has-downstream {
   margin-right: $linked-project-column-margin;
 
+  &.has-only-one-job:not(:first-child) {
+    margin-right: 60px;
+    margin-left: 0;
+
+    .left-connector {
+      @include flat-connector-before;
+    }
+  }
   .build {
     &:first-child {
       &::after {
