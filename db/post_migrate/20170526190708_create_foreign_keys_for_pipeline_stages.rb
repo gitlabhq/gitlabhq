@@ -6,6 +6,8 @@ class CreateForeignKeysForPipelineStages < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
+    disable_statement_timeout
+
     execute <<~SQL
       DELETE FROM ci_stages
         WHERE NOT EXISTS (
