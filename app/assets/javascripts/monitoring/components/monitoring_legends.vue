@@ -37,7 +37,7 @@
     computed: {
       calculateTextTransform() {
         const yPosition = (((this.height - this.margin.top)
-        + this.measurements.axisLabelLineOffset) / 2) || 0;
+                          + this.measurements.axisLabelLineOffset) / 2) || 0;
         return `translate(15, ${yPosition}) rotate(-90)`;
       },
 

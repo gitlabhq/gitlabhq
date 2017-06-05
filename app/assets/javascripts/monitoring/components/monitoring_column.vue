@@ -1,10 +1,10 @@
 <script>
-  /* eslint-disable no-param-reassign */
   /* global Breakpoints */
   import d3 from 'd3';
   import monitoringLegends from './monitoring_legends.vue';
   import monitoringFlag from './monitoring_flag.vue';
   import monitoringDeployment from './monitoring_deployment.vue';
+  import MonitoringMixin from '../mixins/monitoring_mixins';
   import eventHub from '../event_hub';
   import measurements from '../utils/measurements';
   import { formatRelevantDigits } from '../../lib/utils/number_utils';
@@ -30,6 +30,9 @@
         required: true,
       },
     },
+
+    mixins: [MonitoringMixin],
+
     data() {
       return {
         height: 500,
@@ -37,7 +40,6 @@
         xScale: {},
         yScale: {},
         margin: {},
-        svgContainer: {},
         data: [],
         breakpointHandler: Breakpoints.get(),
         unitOfDisplay: '',
@@ -83,56 +85,41 @@
       calculateAxisTransform() {
         return `translate(70, ${this.height - 100})`;
       },
+
+      calculatePaddingBottom() {
+        return (Math.ceil(this.height * 100) / this.width) || 0;
+      },
     },
 
     methods: {
       draw() {
         const breakpointSize = this.breakpointHandler.getBreakpointSize();
+        const query = this.columnData.queries[0];
         this.margin = measurements.large.margin;
         if (breakpointSize === 'xs' || breakpointSize === 'sm') {
           this.height = 300;
           this.margin = measurements.small.margin;
           this.measurements = measurements.small;
         }
-        this.svgContainer = this.$el.querySelector('svg');
-        this.data = ((this.columnData.queries[0]).result[0]).values;
-        this.unitOfDisplay = (this.columnData.queries[0]).unit || 'N/A';
+        this.data = query.result[0].values;
+        this.unitOfDisplay = query.unit || 'N/A';
         this.yAxisLabel = this.columnData.y_axis || 'Values';
-        this.legendTitle = (this.columnData.queries[0]).legend || 'Average';
-        this.width = this.svgContainer.clientWidth -
+        this.legendTitle = query.legend || 'Average';
+        this.width = this.$refs.baseSvg.clientWidth -
                      this.margin.left - this.margin.right;
         this.height = this.height - this.margin.top - this.margin.bottom;
         if (this.data !== undefined) {
-          this.renderAxisAndContainer();
+          this.renderAxesPaths();
+          this.formatDeployments();
         }
       },
 
       formatDeployments() {
-        this.reducedDeploymentData = this.deploymentData.reduce((deploymentDataArray, deployment) => {
-          const time = new Date(deployment.created_at);
-          const xPos = Math.floor(this.xScale(time));
-
-          time.setSeconds(this.data[0].time.getSeconds());
-
-          if (xPos >= 0) {
-            deploymentDataArray.push({
-              id: deployment.id,
-              time,
-              sha: deployment.sha,
-              tag: deployment.tag,
-              ref: deployment.ref.name,
-              xPos,
-              showDeploymentFlag: false,
-            });
-          }
-
-          return deploymentDataArray;
-        }, []);
+        // Empty method to prevent hook errors during the mounting of the component
       },
 
       handleMouseOverGraph() {
-        const rectOverlay = this.$el.querySelector('.prometheus-graph-overlay');
-        const currentMouseXCoordinate = d3.mouse(rectOverlay)[0];
+        const currentMouseXCoordinate = d3.mouse(this.$refs.graphOverlay)[0];
         const timeValueOverlay = this.xScale.invert(currentMouseXCoordinate);
         const overlayIndex = bisectDate(this.data, timeValueOverlay, 1);
         const d0 = this.data[overlayIndex - 1];
@@ -159,29 +146,7 @@
         this.metricUsage = `${formatRelevantDigits(this.currentData.value)} ${this.unitOfDisplay}`;
       },
 
-      mouseOverDeployInfo(mouseXPos) {
-        if (!this.reducedDeploymentData) return false;
-
-        let dataFound = false;
-        this.reducedDeploymentData.forEach((d) => {
-          if (d.xPos >= mouseXPos - 10 && d.xPos <= mouseXPos + 10 && !dataFound) {
-            dataFound = d.xPos + 1;
-
-            d.showDeploymentFlag = true;
-          } else {
-            d.showDeploymentFlag = false;
-          }
-        });
-
-        return dataFound;
-      },
-
-      renderAxisAndContainer() {
-        d3.select(this.$el.querySelector('.prometheus-svg-container'))
-        .attr({
-          style: `padding-bottom: ${(Math.ceil(this.height * 100) / this.width)}%`, // Get the aspect ratio
-        });
-
+      renderAxesPaths() {
         const axisXScale = d3.time.scale()
           .range([0, this.width]);
         this.yScale = d3.scale.linear()
@@ -199,10 +164,10 @@
           .ticks(measurements.ticks)
           .orient('left');
 
-        d3.select(this.svgContainer).select('.x-axis').call(xAxis);
+        d3.select(this.$refs.baseSvg).select('.x-axis').call(xAxis);
 
         const width = this.width;
-        d3.select(this.svgContainer).select('.y-axis').call(yAxis)
+        d3.select(this.$refs.baseSvg).select('.y-axis').call(yAxis)
           .selectAll('.tick')
           .each(function createTickLines() {
             d3.select(this).select('line').attr('x2', width);
@@ -227,7 +192,7 @@
 
         this.area = areaFunction(this.data);
 
-        d3.select(this.svgContainer).select('.prometheus-graph-overlay')
+        d3.select(this.$refs.graphOverlay)
         .on('mousemove', this.handleMouseOverGraph);
       },
     },
@@ -246,7 +211,6 @@
 
     mounted() {
       this.draw();
-      this.formatDeployments();
     },
   };
 </script>
@@ -259,7 +223,10 @@
     </h5>
     <div 
       class="prometheus-svg-container">
-      <svg :viewBox="calculateViewBox">
+      <svg 
+        :viewBox="calculateViewBox"
+        :style="{ 'padding-bottom': calculatePaddingBottom }"
+        ref="baseSvg">
         <g
           class="x-axis"
           :transform="calculateAxisTransform">
@@ -299,7 +266,8 @@
               class="prometheus-graph-overlay"
               :width="(width - 70)"
               :height="(height - 100)"
-              transform="translate(-5, 20)">
+              transform="translate(-5, 20)"
+              ref="graphOverlay">
             </rect>
             <monitoring-flag 
               v-show="showFlag"
@@ -315,27 +283,6 @@
               :height="height"
             />
         </svg>
-      </svg>
-      <!--The gradient-->
-      <svg
-        class="hidden"
-        height="0"
-        width="0">
-        <defs>
-          <linearGradient
-            id="shadow-gradient">
-            <stop
-              offset="0%"
-              stop-color="#000"
-              stop-opacity="0.4">
-            </stop>
-            <stop
-              offset="100%"
-              stop-color="#000"
-              stop-opacity="0">
-            </stop>
-          </linearGradient>
-        </defs>
       </svg>
     </div>
   </div>

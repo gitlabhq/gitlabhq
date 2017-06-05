@@ -45,9 +45,10 @@
 <template>
   <g
     class="deploy-info"
-    v-show="showDeployInfo">
+    v-if="showDeployInfo">
     <g
-      v-for="(deployment, index) in deploymentData" :key="index"
+      v-for="(deployment, index) in deploymentData" 
+      :key="index"
       :class="nameDeploymentClass(deployment)"
       :transform="transformDeploymentGroup(deployment)">
       <rect
@@ -66,7 +67,7 @@
         stroke="#000">
       </line>
       <svg
-        v-show="deployment.showDeploymentFlag"
+        v-if="deployment.showDeploymentFlag"
         class="js-deploy-info-box"
         x="3"
         y="0"
@@ -99,5 +100,26 @@
         </text>
       </svg>
     </g>
+    <svg
+      class="hidden"
+      height="0"
+      width="0">
+      <defs>
+        <linearGradient
+          id="shadow-gradient">
+          <stop
+            offset="0%"
+            stop-color="#000"
+            stop-opacity="0.4">
+          </stop>
+          <stop
+            offset="100%"
+            stop-color="#000"
+            stop-opacity="0">
+          </stop>
+        </linearGradient>
+      </defs>
+    </svg>
   </g>
+  <!--The gradient-->
 </template>

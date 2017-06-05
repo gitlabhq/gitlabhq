@@ -26,6 +26,7 @@
         backOffRequestCounter: 0,
         updateAspectRatio: false,
         updatedAspectRatios: 0,
+        resizeThrottled: {},
       };
     },
 
@@ -60,11 +61,9 @@
           return resp.json();
         })
         .then((metricGroupsData) => {
-          if (metricGroupsData !== false) {
-            this.store.storeMetrics(metricGroupsData.data);
-            return this.getDeploymentData();
-          }
-          return false;
+          if (!metricGroupsData) return false;
+          this.store.storeMetrics(metricGroupsData.data);
+          return this.getDeploymentData();
         })
         .then((deploymentData) => {
           if (deploymentData !== false) {
@@ -104,16 +103,17 @@
     },
 
     beforeDestroy() {
-      eventHub.$off('toggleAspectRatio');
+      eventHub.$off('', this.toggleAspectRatio);
+      window.removeEventListener('resize', this.resizeThrottled, false);
     },
 
     mounted() {
-      const resizeThrottled = _.throttle(this.resize, 600);
+      this.resizeThrottled = _.throttle(this.resize, 600);
       if (!this.hasMetrics) {
         this.state = 'gettingStarted';
       } else {
         this.getGraphsData();
-        window.addEventListener('resize', resizeThrottled, false);
+        window.addEventListener('resize', this.resizeThrottled, false);
       }
     },
   };

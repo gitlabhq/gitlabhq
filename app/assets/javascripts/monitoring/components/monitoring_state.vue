@@ -44,25 +44,20 @@
       };
     },
     computed: {
-      getCurrentState() {
+      currentState() {
         return this.states[this.selectedState];
       },
 
-      getButtonPath() {
+      buttonPath() {
         if (this.selectedState === 'gettingStarted') {
           return this.settingsPath;
         }
         return this.documentationPath;
       },
 
-      getDescriptionText() {
-        if (this.selectedState === 'unableToConnect') {
-          return `
-            ${this.getCurrentState.description}
-            <a href="${this.settingsPath}">Prometheus server</a>
-          `;
-        }
-        return this.getCurrentState.description;
+      showButtonDescription() {
+        if (this.selectedState === 'unableToConnect') return true;
+        return false;
       },
     },
   };
@@ -73,7 +68,7 @@
     <div 
       class="row">
       <div 
-        class="col-md-4 col-md-offset-4 state-svg" v-html="getCurrentState.svg">
+        class="col-md-4 col-md-offset-4 state-svg" v-html="currentState.svg">
       </div>
     </div>
     <div 
@@ -82,7 +77,7 @@
         class="col-md-6 col-md-offset-3">
         <h4 
           class="text-center state-title">
-          {{getCurrentState.title}}
+          {{currentState.title}}
         </h4>
       </div>
     </div>
@@ -91,8 +86,13 @@
       <div 
         class="col-md-6 col-md-offset-3">
         <div 
-          class="description-text text-center state-description" 
-          v-html="getDescriptionText">
+          class="description-text text-center state-description">
+            {{currentState.description}}
+            <a 
+              :href="settingsPath"
+              v-if="showButtonDescription">
+              Prometheus server
+            </a>
         </div>
       </div>
     </div>
@@ -102,8 +102,8 @@
         class="col-md-4 col-md-offset-4 text-center state-button">
         <a 
           class="btn btn-success" 
-          :href="getButtonPath">
-            {{getCurrentState.buttonText}}
+          :href="buttonPath">
+            {{currentState.buttonText}}
         </a>
       </div>
     </div>
