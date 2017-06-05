@@ -8,7 +8,7 @@ module Prometheus
       [simple_query, simple_query('b', label: 'label', unit: 'unit')]
     end
 
-    def simple_metric(title: 'title', required_metrics: [], queries: [])
+    def simple_metric(title: 'title', required_metrics: [], queries: [simple_query])
       Gitlab::Prometheus::Metric.new(title, required_metrics, nil, nil, queries)
     end
 
@@ -20,7 +20,7 @@ module Prometheus
       ]
     end
 
-    def simple_metric_group(name = 'name', metrics = simple_metrics)
+    def simple_metric_group(name: 'name', metrics: simple_metrics)
       Gitlab::Prometheus::MetricGroup.new(name, 1, metrics)
     end
   end
