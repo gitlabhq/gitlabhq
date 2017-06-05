@@ -96,7 +96,8 @@
           v-for="(stage, index) in graph"
           :class="{
             'has-upstream': index === 0 && hasTriggeredBy,
-            'has-downstream': index === graph.length - 1 && hasTriggered
+            'has-downstream': index === graph.length - 1 && hasTriggered,
+            'has-only-one-job': stage.groups.length === 1
           }"
           :title="capitalizeStageName(stage.name)"
           :jobs="stage.groups"

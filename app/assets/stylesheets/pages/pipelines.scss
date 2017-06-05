@@ -1002,7 +1002,7 @@
   display: inline-block;
 }
 
-.linked-pipelines-column {
+.linked-pipelines-column.stage-column {
   position: relative;
 
   & > ul {
@@ -1010,18 +1010,18 @@
   }
 
   &.graph-position-left {
-    margin-right: $linked-project-column-margin;
+    margin-right: 36px;
 
     .cross-project-triangle {
-      right: -64px;
+      right: -42px;
     }
   }
 
   &.graph-position-right {
-    margin-left: $linked-project-column-margin;
+    margin-left: 36px;
 
     .cross-project-triangle {
-      left: -64px;
+      left: -66px;
     }
   }
 
@@ -1049,10 +1049,18 @@
 }
 
 .stage-column.has-upstream {
-  margin-left: $linked-project-column-margin;
+  margin-left: 60px;
 
   .left-connector {
-    @include flat-connector-before($linked-project-column-margin);
+    @include flat-connector-before(60px)
+  }
+
+  &.has-only-one-job {
+    margin-left: 30px;
+
+    .left-connector {
+      @include flat-connector-before;
+    }
   }
 }
 
