@@ -51,7 +51,7 @@ feature 'Merge Requests > User uses quick actions', feature: true, js: true do
         let(:guest) { create(:user) }
         before do
           project.team << [guest, :guest]
-          logout
+          gitlab_sign_out
           gitlab_sign_in(guest)
           visit namespace_project_merge_request_path(project.namespace, project, merge_request)
         end
@@ -97,7 +97,7 @@ feature 'Merge Requests > User uses quick actions', feature: true, js: true do
         let(:guest) { create(:user) }
         before do
           project.team << [guest, :guest]
-          logout
+          gitlab_sign_out
           gitlab_sign_in(guest)
           visit namespace_project_merge_request_path(project.namespace, project, merge_request)
         end
@@ -125,7 +125,7 @@ feature 'Merge Requests > User uses quick actions', feature: true, js: true do
       let(:new_url_opts) { { merge_request: { source_branch: 'feature' } } }
 
       before do
-        logout
+        gitlab_sign_out
         another_project.team << [user, :master]
         gitlab_sign_in(user)
       end
@@ -181,7 +181,7 @@ feature 'Merge Requests > User uses quick actions', feature: true, js: true do
         let(:guest) { create(:user) }
         before do
           project.team << [guest, :guest]
-          logout
+          gitlab_sign_out
           gitlab_sign_in(guest)
           visit namespace_project_merge_request_path(project.namespace, project, merge_request)
         end

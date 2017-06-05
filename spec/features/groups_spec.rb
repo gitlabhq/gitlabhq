@@ -108,7 +108,7 @@ feature 'Group', feature: true do
 
       before do
         group.add_owner(user)
-        logout
+        gitlab_sign_out
         gitlab_sign_in(user)
 
         visit subgroups_group_path(group)
@@ -128,7 +128,7 @@ feature 'Group', feature: true do
   it 'checks permissions to avoid exposing groups by parent_id' do
     group = create(:group, :private, path: 'secret-group')
 
-    logout
+    gitlab_sign_out
     gitlab_sign_in(:user)
     visit new_group_path(parent_id: group.id)
 

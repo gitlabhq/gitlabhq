@@ -392,7 +392,7 @@ feature 'Jobs', :feature do
         job.cancel!
         project.update(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
 
-        logout_direct
+        gitlab_sign_out_direct
         gitlab_sign_in(create(:user))
         visit namespace_project_job_path(project.namespace, project, job)
       end
