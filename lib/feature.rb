@@ -27,6 +27,18 @@ class Feature
       all.map(&:name).include?(feature.name)
     end
 
+    def enabled?(key)
+      get(key).enabled?
+    end
+
+    def enable(key)
+      get(key).enable
+    end
+
+    def disable(key)
+      get(key).disable
+    end
+
     private
 
     def flipper

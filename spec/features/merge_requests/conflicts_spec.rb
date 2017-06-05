@@ -100,7 +100,7 @@ feature 'Merge request conflict resolution', js: true, feature: true do
 
       context 'in Parallel view mode' do
         before do
-          click_link('conflicts', href: /\/conflicts\Z/) 
+          click_link('conflicts', href: /\/conflicts\Z/)
           click_button 'Side-by-side'
         end
 
