@@ -11,6 +11,16 @@ module MigrationsHelpers
     ActiveRecord::Base.connection.table_exists?(name)
   end
 
+  def migrations
+    ActiveRecord::Migrator.migrations(migrations_paths)
+  end
+
+  def previous_migration
+    migrations.each_cons(2) do |previous, migration|
+      break previous if migration.name == described_class.name
+    end
+  end
+
   def migrate!
     ActiveRecord::Migrator.up(migrations_paths) do |migration|
       migration.name == described_class.name

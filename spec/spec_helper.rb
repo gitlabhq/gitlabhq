@@ -94,10 +94,10 @@ RSpec.configure do |config|
     Sidekiq.redis(&:flushall)
   end
 
-  config.around(:example, migration: true) do |example|
+  config.around(:example, :migration) do |example|
     begin
-      schema_version = example.metadata.fetch(:schema)
-      ActiveRecord::Migrator.migrate(migrations_paths, schema_version)
+      ActiveRecord::Migrator
+        .migrate(migrations_paths, previous_migration.version)
 
       example.run
     ensure
