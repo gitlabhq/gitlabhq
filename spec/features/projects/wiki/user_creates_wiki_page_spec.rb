@@ -5,7 +5,7 @@ feature 'Projects > Wiki > User creates wiki page', js: true, feature: true do
 
   background do
     project.team << [user, :master]
-    login_as(user)
+    gitlab_sign_in(user)
 
     visit namespace_project_path(project.namespace, project)
     find('.shortcuts-wiki').trigger('click')

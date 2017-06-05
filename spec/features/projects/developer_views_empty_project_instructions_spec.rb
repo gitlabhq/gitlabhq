@@ -7,7 +7,7 @@ feature 'Developer views empty project instructions', feature: true do
   background do
     project.team << [developer, :developer]
 
-    login_as(developer)
+    gitlab_sign_in(developer)
   end
 
   context 'without an SSH key' do

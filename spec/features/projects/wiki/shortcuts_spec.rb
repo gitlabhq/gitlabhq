@@ -8,7 +8,7 @@ feature 'Wiki shortcuts', :feature, :js do
   end
 
   before do
-    login_as(user)
+    gitlab_sign_in(user)
     visit namespace_project_wiki_path(project.namespace, project, wiki_page)
   end
 

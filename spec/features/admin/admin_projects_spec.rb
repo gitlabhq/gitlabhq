@@ -6,7 +6,7 @@ describe "Admin::Projects", feature: true  do
   let(:user) { create :user }
   let!(:project) { create(:project) }
   let!(:current_user) do
-    login_as :admin
+    gitlab_sign_in :admin
   end
 
   describe "GET /admin/projects" do

@@ -55,7 +55,7 @@ feature 'Task Lists', feature: true do
     project.team << [user, :master]
     project.team << [user2, :guest]
 
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   def visit_issue(project, issue)
@@ -90,7 +90,7 @@ feature 'Task Lists', feature: true do
         expect(page).to have_selector(".wiki .task-list .task-list-item .task-list-item-checkbox")
 
         logout(:user)
-        login_as(user2)
+        gitlab_sign_in(user2)
         visit current_path
         wait_for_requests
 
@@ -203,7 +203,7 @@ feature 'Task Lists', feature: true do
 
         logout(:user)
 
-        login_as(user2)
+        gitlab_sign_in(user2)
         visit current_path
         expect(page).not_to have_selector('.js-task-list-container')
       end
@@ -275,7 +275,7 @@ feature 'Task Lists', feature: true do
 
         logout(:user)
 
-        login_as(user2)
+        gitlab_sign_in(user2)
         visit current_path
         expect(page).not_to have_selector('.js-task-list-container')
       end

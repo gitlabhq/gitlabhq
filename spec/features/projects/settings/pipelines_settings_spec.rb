@@ -8,7 +8,7 @@ feature "Pipelines settings", feature: true do
   let(:role) { :developer }
 
   background do
-    login_as(user)
+    gitlab_sign_in(user)
     project.team << [user, role]
     visit namespace_project_pipelines_settings_path(project.namespace, project)
   end

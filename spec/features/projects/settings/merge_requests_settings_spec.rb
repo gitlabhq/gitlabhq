@@ -8,7 +8,7 @@ feature 'Project settings > Merge Requests', feature: true, js: true do
 
   background do
     project.team << [user, :master]
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   context 'when Merge Request and Pipelines are initially enabled' do

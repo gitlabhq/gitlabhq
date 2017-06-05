@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature 'Group', feature: true do
   before do
-    login_as(:admin)
+    gitlab_sign_in(:admin)
   end
 
   matcher :have_namespace_error_message do
@@ -109,7 +109,7 @@ feature 'Group', feature: true do
       before do
         group.add_owner(user)
         logout
-        login_as(user)
+        gitlab_sign_in(user)
 
         visit subgroups_group_path(group)
         click_link 'New Subgroup'
@@ -129,7 +129,7 @@ feature 'Group', feature: true do
     group = create(:group, :private, path: 'secret-group')
 
     logout
-    login_as(:user)
+    gitlab_sign_in(:user)
     visit new_group_path(parent_id: group.id)
 
     expect(page).not_to have_content('secret-group')

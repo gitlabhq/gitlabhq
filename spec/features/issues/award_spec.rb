@@ -7,7 +7,7 @@ feature 'Issue awards', js: true, feature: true do
 
   describe 'logged in' do
     before do
-      login_as(user)
+      gitlab_sign_in(user)
       visit namespace_project_issue_path(project.namespace, project, issue)
       wait_for_requests
     end

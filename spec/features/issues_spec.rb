@@ -8,7 +8,7 @@ describe 'Issues', feature: true do
   let(:project) { create(:empty_project, :public) }
 
   before do
-    login_as :user
+    gitlab_sign_in :user
     user2 = create(:user)
 
     project.team << [[@user, user2], :developer]
@@ -570,7 +570,7 @@ describe 'Issues', feature: true do
 
         expect(current_path).to eq new_user_session_path
 
-        login_as :user
+        gitlab_sign_in :user
 
         expect(current_path).to eq new_namespace_project_issue_path(project.namespace, project)
       end
