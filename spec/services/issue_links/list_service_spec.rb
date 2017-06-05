@@ -36,9 +36,18 @@ describe IssueLinks::ListService, service: true do
                             target: issue_b)
       end
 
-      it 'verifies number of queries' do
-        recorded = ActiveRecord::QueryRecorder.new { subject }
-        expect(recorded.count).to be_within(1).of(37)
+      it 'ensures no N+1 queries are made' do
+        control_count = ActiveRecord::QueryRecorder.new { subject }.count
+
+        project = create :empty_project, :public
+        issue_x = create :issue, project: project
+        issue_y = create :issue, project: project
+        issue_z = create :issue, project: project
+        create :issue_link, source: issue_x, target: issue_y
+        create :issue_link, source: issue_x, target: issue_z
+        create :issue_link, source: issue_y, target: issue_z
+
+        expect { subject }.not_to exceed_query_limit(control_count)
       end
 
       it 'returns related issues JSON' do
