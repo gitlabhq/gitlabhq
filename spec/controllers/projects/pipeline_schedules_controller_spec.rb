@@ -90,7 +90,7 @@ describe Projects::PipelineSchedulesController do
 
     describe 'GET edit' do
       let(:action) do
-        Proc.new do |user|
+        proc do |user|
           get :edit, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
         end
       end
@@ -108,7 +108,7 @@ describe Projects::PipelineSchedulesController do
 
     describe 'GET take_ownership' do
       let(:action) do
-        Proc.new do |user|
+        proc do |user|
           post :take_ownership, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
         end
       end
@@ -126,7 +126,7 @@ describe Projects::PipelineSchedulesController do
 
     describe 'PUT update' do
       let(:action) do
-        Proc.new do |user|
+        proc do |user|
           put :update, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
         end
       end

@@ -5,14 +5,22 @@ module AccessMatchersForController
   extend RSpec::Matchers::DSL
   include Warden::Test::Helpers
 
-  EXPECTED_STATUS_CODE_ALLOWED = [200, 302]
-  EXPECTED_STATUS_CODE_DENIED = [404]
+  EXPECTED_STATUS_CODE_ALLOWED = [200, 302].freeze
+  EXPECTED_STATUS_CODE_DENIED = [404].freeze
 
   def emulate_user(role, membership = nil)
     case role
     when :admin
       user = create(:admin)
       sign_in(user)
+    when :user
+      user = create(:user)
+      sign_in(user)
+    when :external
+      user = create(:user, external: true)
+      sign_in(user)
+    when :visitor # rubocop:disable Lint/EmptyWhen
+      # no-op
     when *Gitlab::Access.sym_options_with_owner.keys # owner, master, developer, reporter, guest
       raise ArgumentError, "cannot emulate #{role} without membership parent" unless membership
 
@@ -24,14 +32,6 @@ module AccessMatchersForController
       end
 
       sign_in(user)
-    when :user
-      user = create(:user)
-      sign_in(user)
-    when :external
-      user = create(:user, external: true)
-      sign_in(user)
-    when :visitor
-      # no-op
     else
       raise ArgumentError, "cannot emulate user #{role}"
     end
