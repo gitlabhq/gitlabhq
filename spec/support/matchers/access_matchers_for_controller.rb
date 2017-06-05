@@ -49,7 +49,7 @@ module AccessMatchersForController
       user = emulate_user(role, @membership)
       begin
         action.call(user)
-      rescue Exception => e
+      rescue
         # Ignore internal exceptions which will be caused in the controller
         # In such cases, response.status will be 200.
       end
@@ -70,7 +70,7 @@ module AccessMatchersForController
       user = emulate_user(role, @membership)
       begin
         action.call(user)
-      rescue Exception => e
+      rescue
         # Ignore internal exceptions which will be caused in the controller
         # In such cases, response.status will be 200.
       end
