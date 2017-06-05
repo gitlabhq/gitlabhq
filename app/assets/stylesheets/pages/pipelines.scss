@@ -1018,10 +1018,10 @@
   }
 
   &.graph-position-right {
-    margin-left: 36px;
+    margin-left: 60px;
 
     .cross-project-triangle {
-      left: -54px;
+      left: -64px;
     }
   }
 
@@ -1068,7 +1068,7 @@
   margin-right: $linked-project-column-margin;
 
   &.has-only-one-job:not(:first-child) {
-    margin-right: 44px;
+    margin-right: 36px;
     margin-left: 0;
 
     .left-connector {
