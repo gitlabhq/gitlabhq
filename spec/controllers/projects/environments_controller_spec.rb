@@ -311,6 +311,46 @@ describe Projects::EnvironmentsController do
     end
   end
 
+  describe 'GET #additional_metrics' do
+    before do
+      allow(controller).to receive(:environment).and_return(environment)
+    end
+
+    context 'when environment has no metrics' do
+      before do
+        expect(environment).to receive(:additional_metrics).and_return(nil)
+      end
+
+      context 'when requesting metrics as JSON' do
+        it 'returns a metrics JSON document' do
+          get :additional_metrics, environment_params(format: :json)
+
+          expect(response).to have_http_status(204)
+          expect(json_response).to eq({})
+        end
+      end
+    end
+
+    context 'when environment has some metrics' do
+      before do
+        expect(environment).to receive(:additional_metrics).and_return({
+                                                              success: true,
+                                                              data: {},
+                                                              last_update: 42
+                                                            })
+      end
+
+      it 'returns a metrics JSON document' do
+        get :additional_metrics, environment_params(format: :json)
+
+        expect(response).to be_ok
+        expect(json_response['success']).to be(true)
+        expect(json_response['data']).to eq({})
+        expect(json_response['last_update']).to eq(42)
+      end
+    end
+  end
+
   def environment_params(opts = {})
     opts.reverse_merge(namespace_id: project.namespace,
                        project_id: project,
