@@ -15,7 +15,7 @@ describe 'Issues Feed', feature: true  do
 
     context 'when authenticated' do
       it 'renders atom feed' do
-        login_with user
+        gitlab_sign_in user
         visit namespace_project_issues_path(project.namespace, project, :atom)
 
         expect(response_headers['Content-Type']).

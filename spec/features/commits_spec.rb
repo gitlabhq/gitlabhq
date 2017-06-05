@@ -191,7 +191,7 @@ describe 'Commits' do
 
     before do
       project.team << [user, :master]
-      login_with(user)
+      gitlab_sign_in(user)
       visit namespace_project_commits_path(project.namespace, project, branch_name)
     end
 

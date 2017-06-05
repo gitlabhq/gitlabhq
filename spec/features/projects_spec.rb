@@ -39,7 +39,7 @@ feature 'Project', feature: true do
     let(:project) { create(:empty_project, namespace: user.namespace) }
 
     before do
-      login_with user
+      gitlab_sign_in user
       create(:forked_project_link, forked_to_project: project)
       visit edit_namespace_project_path(project.namespace, project)
     end
@@ -60,7 +60,7 @@ feature 'Project', feature: true do
     let(:project) { create(:empty_project, namespace: user.namespace, name: 'project1') }
 
     before do
-      login_with(user)
+      gitlab_sign_in(user)
       project.team << [user, :master]
       visit edit_namespace_project_path(project.namespace, project)
     end
@@ -79,7 +79,7 @@ feature 'Project', feature: true do
     let(:project) { create(:empty_project, namespace: user.namespace) }
 
     before do
-      login_with(user)
+      gitlab_sign_in(user)
       project.add_user(user, Gitlab::Access::MASTER)
       visit namespace_project_path(project.namespace, project)
     end
@@ -98,7 +98,7 @@ feature 'Project', feature: true do
 
     context 'on issues page', js: true do
       before do
-        login_with(user)
+        gitlab_sign_in(user)
         project.add_user(user, Gitlab::Access::MASTER)
         project2.add_user(user, Gitlab::Access::MASTER)
         visit namespace_project_issue_path(project.namespace, project, issue)
