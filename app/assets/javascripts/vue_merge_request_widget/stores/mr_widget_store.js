@@ -5,6 +5,8 @@ export default class MergeRequestStore {
 
   constructor(data) {
     this.sha = data.diff_head_sha;
+    this.gitlabLogo = data.gitlabLogo;
+
     this.setData(data);
   }
 
@@ -50,7 +52,7 @@ export default class MergeRequestStore {
     this.cancelAutoMergePath = data.cancel_merge_when_pipeline_succeeds_path;
     this.removeWIPPath = data.remove_wip_path;
     this.sourceBranchRemoved = !data.source_branch_exists;
-    this.shouldRemoveSourceBranch = (data.merge_params || {}).should_remove_source_branch || false;
+    this.shouldRemoveSourceBranch = data.remove_source_branch || false;
     this.onlyAllowMergeIfPipelineSucceeds = data.only_allow_merge_if_pipeline_succeeds || false;
     this.mergeWhenPipelineSucceeds = data.merge_when_pipeline_succeeds || false;
     this.mergePath = data.merge_path;

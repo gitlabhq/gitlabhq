@@ -1,7 +1,7 @@
 class PipelineSerializer < BaseSerializer
   InvalidResourceError = Class.new(StandardError)
 
-  entity PipelineEntity
+  entity PipelineDetailsEntity
 
   def with_pagination(request, response)
     tap { @paginator = Gitlab::Serializer::Pagination.new(request, response) }

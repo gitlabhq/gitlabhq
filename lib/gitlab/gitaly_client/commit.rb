@@ -26,7 +26,7 @@ module Gitlab
         request_params[:ignore_whitespace_change] = options.fetch(:ignore_whitespace_change, false)
 
         response = diff_service_stub.commit_diff(Gitaly::CommitDiffRequest.new(request_params))
-        Gitlab::Git::DiffCollection.new(response, options)
+        Gitlab::Git::DiffCollection.new(GitalyClient::DiffStitcher.new(response), options)
       end
 
       def commit_deltas(commit)

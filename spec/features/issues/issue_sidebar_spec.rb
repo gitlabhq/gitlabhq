@@ -23,7 +23,7 @@ feature 'Issue Sidebar', feature: true do
 
       find('.block.assignee .edit-link').click
 
-      wait_for_ajax
+      wait_for_requests
     end
 
     it 'shows author in assignee dropdown' do
@@ -37,7 +37,7 @@ feature 'Issue Sidebar', feature: true do
         find('.dropdown-input-field').native.send_keys user2.name
         sleep 1 # Required to wait for end of input delay
 
-        wait_for_ajax
+        wait_for_requests
 
         expect(page).to have_content(user2.name)
       end
@@ -48,7 +48,7 @@ feature 'Issue Sidebar', feature: true do
 
       click_button 'assign yourself'
 
-      wait_for_ajax
+      wait_for_requests
 
       find('.block.assignee .edit-link').click
 
@@ -56,6 +56,23 @@ feature 'Issue Sidebar', feature: true do
         expect(page.find('.dropdown-header')).to be_visible
         expect(page.find('.dropdown-menu-user-link.is-active')).to have_content(user.name)
       end
+    end
+
+    it 'keeps your filtered term after filtering and dismissing the dropdown' do
+      find('.dropdown-input-field').native.send_keys user2.name
+
+      wait_for_requests
+
+      page.within '.dropdown-menu-user' do
+        expect(page).not_to have_content 'Unassigned'
+        click_link user2.name
+      end
+
+      find('.js-right-sidebar').click
+      find('.block.assignee .edit-link').click
+
+      expect(page.all('.dropdown-menu-user li').length).to eq(1)
+      expect(find('.dropdown-input-field').value).to eq(user2.name)
     end
   end
 

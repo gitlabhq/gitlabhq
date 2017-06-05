@@ -300,6 +300,9 @@ DELETE /users/:id
 Parameters:
 
 - `id` (required) - The ID of the user
+- `hard_delete` (optional) - If true, contributions that would usually be
+  [moved to the ghost user](../user/profile/account/delete_account.md#associated-records)
+  will be deleted instead, as well as groups owned solely by this user.
 
 ## User
 

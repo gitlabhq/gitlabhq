@@ -1,5 +1,8 @@
 - if issuable.is_a?(Issue)
   #js-vue-sidebar-assignees{ data: { field: "#{issuable.to_ability_name}[assignee_ids]" } }
+    .title.hide-collapsed
+      Assignee
+      = icon('spinner spin')
 - else
   .sidebar-collapsed-icon.sidebar-collapsed-user{ data: { toggle: "tooltip", placement: "left", container: "body" }, title: (issuable.assignee.name if issuable.assignee) }
     - if issuable.assignee
@@ -29,7 +32,7 @@
 
 .selectbox.hide-collapsed
   - issuable.assignees.each do |assignee|
-    = hidden_field_tag "#{issuable.to_ability_name}[assignee_ids][]", assignee.id, id: nil
+    = hidden_field_tag "#{issuable.to_ability_name}[assignee_ids][]", assignee.id, id: nil, data: { avatar_url: assignee.avatar_url, name: assignee.name, username: assignee.username }
 
   - options = { toggle_class: 'js-user-search js-author-search', title: 'Assign to', filter: true, dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author', placeholder: 'Search users', data: { first_user: (current_user.username if current_user), current_user: true, project_id: (@project.id if @project), author_id: issuable.author_id, field_name: "#{issuable.to_ability_name}[assignee_ids][]", issue_update: issuable_json_path(issuable), ability_name: issuable.to_ability_name, null_user: true } }
 

@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::Ci::Status::Build::Play do
   let(:user) { create(:user) }
+  let(:project) { build.project }
   let(:build) { create(:ci_build, :manual) }
   let(:status) { Gitlab::Ci::Status::Core.new(build, user) }
 
@@ -15,8 +16,13 @@ describe Gitlab::Ci::Status::Build::Play do
 
   describe '#has_action?' do
     context 'when user is allowed to update build' do
-      context 'when user can push to branch' do
-        before { build.project.add_master(user) }
+      context 'when user is allowed to trigger protected action' do
+        before do
+          project.add_developer(user)
+
+          create(:protected_branch, :developers_can_merge,
+                 name: build.ref, project: project)
+        end
 
         it { is_expected.to have_action }
       end

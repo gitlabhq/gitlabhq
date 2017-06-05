@@ -7,6 +7,18 @@ const url = '/root/acets-review-apps/environments/15/deployments/1/metrics';
 const metricsMockData = {
   success: true,
   metrics: {
+    memory_before: [
+      {
+        metric: {},
+        value: [1495785220.607, '9572875.906976745'],
+      },
+    ],
+    memory_after: [
+      {
+        metric: {},
+        value: [1495787020.607, '4485853.130206379'],
+      },
+    ],
     memory_values: [
       {
         metric: {},
@@ -39,7 +51,7 @@ const createComponent = () => {
 
 const messages = {
   loadingMetrics: 'Loading deployment statistics.',
-  hasMetrics: 'Deployment memory usage:',
+  hasMetrics: 'Memory usage unchanged from 0MB to 0MB',
   loadFailed: 'Failed to load deployment statistics.',
   metricsUnavailable: 'Deployment statistics are not available currently.',
 };
@@ -89,17 +101,52 @@ describe('MemoryUsage', () => {
     });
   });
 
+  describe('computed', () => {
+    describe('memoryChangeType', () => {
+      it('should return "increased" if memoryFrom value is less than memoryTo value', () => {
+        vm.memoryFrom = 4.28;
+        vm.memoryTo = 9.13;
+
+        expect(vm.memoryChangeType).toEqual('increased');
+      });
+
+      it('should return "decreased" if memoryFrom value is less than memoryTo value', () => {
+        vm.memoryFrom = 9.13;
+        vm.memoryTo = 4.28;
+
+        expect(vm.memoryChangeType).toEqual('decreased');
+      });
+
+      it('should return "unchanged" if memoryFrom value equal to memoryTo value', () => {
+        vm.memoryFrom = 1;
+        vm.memoryTo = 1;
+
+        expect(vm.memoryChangeType).toEqual('unchanged');
+      });
+    });
+  });
+
   describe('methods', () => {
     const { metrics, deployment_time } = metricsMockData;
+
+    describe('getMegabytes', () => {
+      it('should return Megabytes from provided Bytes value', () => {
+        const memoryInBytes = '9572875.906976745';
+
+        expect(vm.getMegabytes(memoryInBytes)).toEqual('9.13');
+      });
+    });
 
     describe('computeGraphData', () => {
       it('should populate sparkline graph', () => {
         vm.computeGraphData(metrics, deployment_time);
-        const { hasMetrics, memoryMetrics, deploymentTime } = vm;
+        const { hasMetrics, memoryMetrics, deploymentTime, memoryFrom, memoryTo } = vm;
 
         expect(hasMetrics).toBeTruthy();
         expect(memoryMetrics.length > 0).toBeTruthy();
         expect(deploymentTime).toEqual(deployment_time);
+        expect(memoryFrom).toEqual('9.13');
+        expect(memoryTo).toEqual('4.28');
       });
     });
 

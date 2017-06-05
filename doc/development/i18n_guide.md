@@ -7,6 +7,14 @@ For working with internationalization (i18n) we use
 tool for this task and we have a lot of applications that will help us to work
 with it.
 
+## Setting up GitLab Development Kit (GDK)
+
+In order to be able to work on the [GitLab Community Edition](https://gitlab.com/gitlab-org/gitlab-ce) project we must download and
+configure it through [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit), we can do it by following this [guide](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/set-up-gdk.md).
+
+Once we have the GitLab project ready we can start working on the
+translation of the project.
+
 ## Tools
 
 We use a couple of gems:
@@ -211,8 +219,10 @@ Let's suppose you want to add translations for a new language, let's say French.
     you just need to separate the region with an underscore (`_`). For example:
 
     ```sh
-    bundle exec rake gettext:add_language[en_gb]
+    bundle exec rake gettext:add_language[en_GB]
     ```
+
+    Please note that you need to specify the region part in capitals.
 
 1. Now that the language is added, a new directory has been created under the
    path: `locale/fr/`. You can now start using your PO editor to edit the PO file
@@ -223,8 +233,7 @@ Let's suppose you want to add translations for a new language, let's say French.
    containing the translations:
 
     ```sh
-    bundle exec rake gettext:pack
-    bundle exec rake gettext:po_to_json
+    bundle exec rake gettext:compile
     ```
 
 1. In order to see the translated content we need to change our preferred language

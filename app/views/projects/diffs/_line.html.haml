@@ -3,7 +3,7 @@
 - discussions = local_assigns.fetch(:discussions, nil)
 - type = line.type
 - line_code = diff_file.line_code(line)
-- if discussions && !line.meta?
+- if discussions && line.discussable?
   - line_discussions = discussions[line_code]
 %tr.line_holder{ class: type, id: (line_code unless plain) }
   - case type

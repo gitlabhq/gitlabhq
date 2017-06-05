@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import Store from '~/issue_show/stores';
 import titleComponent from '~/issue_show/components/title.vue';
 
 describe('Title component', () => {
@@ -6,11 +7,18 @@ describe('Title component', () => {
 
   beforeEach(() => {
     const Component = Vue.extend(titleComponent);
+    const store = new Store({
+      titleHtml: '',
+      descriptionHtml: '',
+      issuableRef: '',
+    });
     vm = new Component({
       propsData: {
         issuableRef: '#1',
         titleHtml: 'Testing <img />',
         titleText: 'Testing',
+        showForm: false,
+        formState: store.formState,
       },
     }).$mount();
   });

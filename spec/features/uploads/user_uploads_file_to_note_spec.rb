@@ -64,7 +64,7 @@ feature 'User uploads file to note', feature: true do
   context 'uploading is complete' do
     it 'shows "Attach a file" button on uploading complete', js: true do
       dropzone_file([Rails.root.join('spec', 'fixtures', 'dk.png')])
-      wait_for_ajax
+      wait_for_requests
 
       expect(page).to have_button('Attach a file')
       expect(page).not_to have_selector('.uploading-progress-container', visible: true)
@@ -73,7 +73,7 @@ feature 'User uploads file to note', feature: true do
     scenario 'they see the attached file', js: true do
       dropzone_file([Rails.root.join('spec', 'fixtures', 'dk.png')])
       click_button 'Comment'
-      wait_for_ajax
+      wait_for_requests
 
       expect(find('a.no-attachment-icon img[alt="dk"]')['src'])
         .to match(%r{/#{project.full_path}/uploads/\h{32}/dk\.png$})

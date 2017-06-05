@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Cache::Ci::ProjectPipelineStatus, :redis do
-  let(:project) { create(:project) }
+  let!(:project) { create(:project) }
   let(:pipeline_status) { described_class.new(project) }
   let(:cache_key) { "projects/#{project.id}/pipeline_status" }
 
@@ -18,7 +18,7 @@ describe Gitlab::Cache::Ci::ProjectPipelineStatus, :redis do
     let(:sha) { '424d1b73bc0d3cb726eb7dc4ce17a4d48552f8c6' }
     let(:ref) { 'master' }
     let(:pipeline_info) { { sha: sha, status: status, ref: ref } }
-    let(:project_without_status) { create(:project) }
+    let!(:project_without_status) { create(:project) }
 
     describe '.load_in_batch_for_projects' do
       it 'preloads pipeline_status on projects' do

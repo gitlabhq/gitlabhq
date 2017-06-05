@@ -2,8 +2,12 @@ import '~/extensions/array';
 import '~/filtered_search/dropdown_utils';
 import '~/filtered_search/filtered_search_tokenizer';
 import '~/filtered_search/filtered_search_dropdown_manager';
+import FilteredSearchSpecHelper from '../helpers/filtered_search_spec_helper';
 
 describe('Dropdown Utils', () => {
+  const issueListFixture = 'issues/issue_list.html.raw';
+  preloadFixtures(issueListFixture);
+
   describe('getEscapedText', () => {
     it('should return same word when it has no space', () => {
       const escaped = gl.DropdownUtils.getEscapedText('textWithoutSpace');
@@ -122,6 +126,7 @@ describe('Dropdown Utils', () => {
 
   describe('filterHint', () => {
     let input;
+    let allowedKeys;
 
     beforeEach(() => {
       setFixtures(`
@@ -133,30 +138,38 @@ describe('Dropdown Utils', () => {
       `);
 
       input = document.getElementById('test');
+      allowedKeys = gl.FilteredSearchTokenKeys.getKeys();
     });
+
+    function config() {
+      return {
+        input,
+        allowedKeys,
+      };
+    }
 
     it('should filter', () => {
       input.value = 'l';
-      let updatedItem = gl.DropdownUtils.filterHint(input, {
+      let updatedItem = gl.DropdownUtils.filterHint(config(), {
         hint: 'label',
       });
       expect(updatedItem.droplab_hidden).toBe(false);
 
       input.value = 'o';
-      updatedItem = gl.DropdownUtils.filterHint(input, {
+      updatedItem = gl.DropdownUtils.filterHint(config(), {
         hint: 'label',
       });
       expect(updatedItem.droplab_hidden).toBe(true);
     });
 
     it('should return droplab_hidden false when item has no hint', () => {
-      const updatedItem = gl.DropdownUtils.filterHint(input, {}, '');
+      const updatedItem = gl.DropdownUtils.filterHint(config(), {}, '');
       expect(updatedItem.droplab_hidden).toBe(false);
     });
 
     it('should allow multiple if item.type is array', () => {
       input.value = 'label:~first la';
-      const updatedItem = gl.DropdownUtils.filterHint(input, {
+      const updatedItem = gl.DropdownUtils.filterHint(config(), {
         hint: 'label',
         type: 'array',
       });
@@ -165,12 +178,12 @@ describe('Dropdown Utils', () => {
 
     it('should prevent multiple if item.type is not array', () => {
       input.value = 'milestone:~first mile';
-      let updatedItem = gl.DropdownUtils.filterHint(input, {
+      let updatedItem = gl.DropdownUtils.filterHint(config(), {
         hint: 'milestone',
       });
       expect(updatedItem.droplab_hidden).toBe(true);
 
-      updatedItem = gl.DropdownUtils.filterHint(input, {
+      updatedItem = gl.DropdownUtils.filterHint(config(), {
         hint: 'milestone',
         type: 'string',
       });
@@ -303,6 +316,31 @@ describe('Dropdown Utils', () => {
         expect(left).toBe(0);
         expect(right).toBe(30);
       });
+    });
+  });
+
+  describe('getSearchQuery', () => {
+    let authorToken;
+
+    beforeEach(() => {
+      loadFixtures(issueListFixture);
+
+      authorToken = FilteredSearchSpecHelper.createFilterVisualToken('author', '@user');
+      const searchTermToken = FilteredSearchSpecHelper.createSearchVisualToken('search term');
+
+      const tokensContainer = document.querySelector('.tokens-container');
+      tokensContainer.appendChild(searchTermToken);
+      tokensContainer.appendChild(authorToken);
+    });
+
+    it('uses original value if present', () => {
+      const originalValue = 'original dance';
+      const valueContainer = authorToken.querySelector('.value-container');
+      valueContainer.dataset.originalValue = originalValue;
+
+      const searchQuery = gl.DropdownUtils.getSearchQuery();
+
+      expect(searchQuery).toBe(' search term author:original dance');
     });
   });
 });

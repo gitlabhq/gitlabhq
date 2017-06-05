@@ -64,6 +64,8 @@ class GroupsController < Groups::ApplicationController
   end
 
   def subgroups
+    return not_found unless Group.supports_nested_groups?
+
     @nested_groups = GroupsFinder.new(current_user, parent: group).execute
     @nested_groups = @nested_groups.search(params[:filter_groups]) if params[:filter_groups].present?
   end
@@ -165,7 +167,6 @@ class GroupsController < Groups::ApplicationController
 
   def user_actions
     if current_user
-      @last_push = current_user.recent_push
       @notification_setting = current_user.notification_settings_for(group)
     end
   end

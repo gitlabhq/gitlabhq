@@ -37,6 +37,7 @@ class RecentSearchesRoot {
         <recent-searches-dropdown-content
           :items="recentSearches"
           :is-local-storage-available="isLocalStorageAvailable"
+          :allowed-keys="allowedKeys"
           />
       `,
       components: {

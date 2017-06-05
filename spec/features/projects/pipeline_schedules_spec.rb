@@ -2,10 +2,9 @@ require 'spec_helper'
 
 feature 'Pipeline Schedules', :feature do
   include PipelineSchedulesHelper
-  include WaitForAjax
 
   let!(:project) { create(:project) }
-  let!(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
+  let!(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly, project: project ) }
   let!(:pipeline) { create(:ci_pipeline, pipeline_schedule: pipeline_schedule) }
   let(:scope) { nil }
   let!(:user) { create(:user) }
@@ -32,6 +31,7 @@ feature 'Pipeline Schedules', :feature do
       it 'displays the required information description' do
         page.within('.pipeline-schedule-table-row') do
           expect(page).to have_content('pipeline schedule')
+          expect(page).to have_content(pipeline_schedule.real_next_run.strftime('%b %d, %Y'))
           expect(page).to have_link('master')
           expect(page).to have_link("##{pipeline.id}")
         end
@@ -63,6 +63,17 @@ feature 'Pipeline Schedules', :feature do
         click_link 'Delete'
 
         expect(page).not_to have_content('pipeline schedule')
+      end
+    end
+
+    context 'when ref is nil' do
+      before do
+        pipeline_schedule.update_attribute(:ref, nil)
+        visit_pipelines_schedules
+      end
+
+      it 'shows a list of the pipeline schedules with empty ref column' do
+        expect(first('.branch-name-cell').text).to eq('')
       end
     end
   end
@@ -107,6 +118,19 @@ feature 'Pipeline Schedules', :feature do
       save_pipeline_schedule
 
       expect(page).to have_content('my brand new description')
+    end
+
+    context 'when ref is nil' do
+      before do
+        pipeline_schedule.update_attribute(:ref, nil)
+        edit_pipeline_schedule
+      end
+
+      it 'shows the pipeline schedule with default ref' do
+        page.within('.git-revision-dropdown-toggle') do
+          expect(first('.dropdown-toggle-text').text).to eq('master')
+        end
+      end
     end
   end
 

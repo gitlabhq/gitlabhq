@@ -239,7 +239,9 @@ feature 'Environments page', :feature, :js do
 
     context 'when logged as developer' do
       before do
-        click_link 'New environment'
+        within(".top-area") do
+          click_link 'New environment'
+        end
       end
 
       context 'for valid name' do

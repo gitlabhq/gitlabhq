@@ -66,12 +66,12 @@ module MergeRequests
 
       filter_merge_requests(merge_requests).each do |merge_request|
         if merge_request.source_branch == @branch_name || force_push?
-          merge_request.reload_diff
+          merge_request.reload_diff(current_user)
         else
           mr_commit_ids = merge_request.commits_sha
           push_commit_ids = @commits.map(&:id)
           matches = mr_commit_ids & push_commit_ids
-          merge_request.reload_diff if matches.any?
+          merge_request.reload_diff(current_user) if matches.any?
         end
 
         merge_request.mark_as_unchecked

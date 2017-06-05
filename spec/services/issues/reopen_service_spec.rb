@@ -27,6 +27,13 @@ describe Issues::ReopenService, services: true do
         project.team << [user, :master]
       end
 
+      it 'invalidates counter cache for assignees' do
+        issue.assignees << user
+        expect_any_instance_of(User).to receive(:invalidate_issue_cache_counts)
+
+        described_class.new(project, user).execute(issue)
+      end
+
       context 'when issue is not confidential' do
         it 'executes issue hooks' do
           expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :issue_hooks)

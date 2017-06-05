@@ -148,10 +148,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
       format.json do
         if @issue.valid?
-          render json: @issue.to_json(methods: [:task_status, :task_status_short],
-                                      include: { milestone: {},
-                                                 assignees: { only: [:id, :name, :username], methods: [:avatar_url] },
-                                                 labels: { methods: :text_color } })
+          render json: IssueSerializer.new.represent(@issue)
         else
           render json: { errors: @issue.errors.full_messages }, status: :unprocessable_entity
         end
@@ -202,14 +199,21 @@ class Projects::IssuesController < Projects::ApplicationController
   def realtime_changes
     Gitlab::PollingInterval.set_header(response, interval: 3_000)
 
-    render json: {
+    response = {
       title: view_context.markdown_field(@issue, :title),
       title_text: @issue.title,
       description: view_context.markdown_field(@issue, :description),
       description_text: @issue.description,
-      task_status: @issue.task_status,
-      updated_at: @issue.updated_at
+      task_status: @issue.task_status
     }
+
+    if @issue.is_edited?
+      response[:updated_at] = @issue.updated_at
+      response[:updated_by_name] = @issue.last_edited_by.name
+      response[:updated_by_path] = user_path(@issue.last_edited_by)
+    end
+
+    render json: response
   end
 
   def create_merge_request

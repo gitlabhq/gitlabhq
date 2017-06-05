@@ -8,13 +8,12 @@ import '~/breakpoints';
 import 'vendor/jquery.nicescroll';
 
 describe('Build', () => {
-  const BUILD_URL = `${gl.TEST_HOST}/frontend-fixtures/builds-project/builds/1`;
+  const BUILD_URL = `${gl.TEST_HOST}/frontend-fixtures/builds-project/-/jobs/1`;
 
   preloadFixtures('builds/build-with-artifacts.html.raw');
 
   beforeEach(() => {
     loadFixtures('builds/build-with-artifacts.html.raw');
-    spyOn($, 'ajax');
   });
 
   describe('class constructor', () => {
@@ -33,7 +32,6 @@ describe('Build', () => {
 
       it('copies build options', function () {
         expect(this.build.pageUrl).toBe(BUILD_URL);
-        expect(this.build.buildUrl).toBe(`${BUILD_URL}.json`);
         expect(this.build.buildStatus).toBe('success');
         expect(this.build.buildStage).toBe('test');
         expect(this.build.state).toBe('');
@@ -65,27 +63,14 @@ describe('Build', () => {
     });
 
     describe('running build', () => {
-      beforeEach(function () {
-        this.build = new Build();
-      });
-
       it('updates the build trace on an interval', function () {
+        const deferred1 = $.Deferred();
+        const deferred2 = $.Deferred();
+        const deferred3 = $.Deferred();
+        spyOn($, 'ajax').and.returnValues(deferred1.promise(), deferred2.promise(), deferred3.promise());
         spyOn(gl.utils, 'visitUrl');
 
-        jasmine.clock().tick(4001);
-
-        expect($.ajax.calls.count()).toBe(1);
-
-        // We have to do it this way to prevent Webpack to fail to compile
-        // when destructuring assignments and reusing
-        // the same variables names inside the same scope
-        let args = $.ajax.calls.argsFor(0)[0];
-
-        expect(args.url).toBe(`${BUILD_URL}/trace.json`);
-        expect(args.dataType).toBe('json');
-        expect(args.success).toEqual(jasmine.any(Function));
-
-        args.success.call($, {
+        deferred1.resolve({
           html: '<span>Update<span>',
           status: 'running',
           state: 'newstate',
@@ -93,20 +78,9 @@ describe('Build', () => {
           complete: false,
         });
 
-        expect($('#build-trace .js-build-output').text()).toMatch(/Update/);
-        expect(this.build.state).toBe('newstate');
+        deferred2.resolve();
 
-        jasmine.clock().tick(4001);
-
-        expect($.ajax.calls.count()).toBe(3);
-
-        args = $.ajax.calls.argsFor(2)[0];
-        expect(args.url).toBe(`${BUILD_URL}/trace.json`);
-        expect(args.dataType).toBe('json');
-        expect(args.data.state).toBe('newstate');
-        expect(args.success).toEqual(jasmine.any(Function));
-
-        args.success.call($, {
+        deferred3.resolve({
           html: '<span>More</span>',
           status: 'running',
           state: 'finalstate',
@@ -114,31 +88,46 @@ describe('Build', () => {
           complete: true,
         });
 
+        this.build = new Build();
+
+        expect($('#build-trace .js-build-output').text()).toMatch(/Update/);
+        expect(this.build.state).toBe('newstate');
+
+        jasmine.clock().tick(4001);
+
         expect($('#build-trace .js-build-output').text()).toMatch(/UpdateMore/);
         expect(this.build.state).toBe('finalstate');
       });
 
       it('replaces the entire build trace', () => {
+        const deferred1 = $.Deferred();
+        const deferred2 = $.Deferred();
+        const deferred3 = $.Deferred();
+
+        spyOn($, 'ajax').and.returnValues(deferred1.promise(), deferred2.promise(), deferred3.promise());
+
         spyOn(gl.utils, 'visitUrl');
 
-        jasmine.clock().tick(4001);
-        let args = $.ajax.calls.argsFor(0)[0];
-        args.success.call($, {
-          html: '<span>Update</span>',
+        deferred1.resolve({
+          html: '<span>Update<span>',
           status: 'running',
           append: false,
           complete: false,
         });
 
-        expect($('#build-trace .js-build-output').text()).toMatch(/Update/);
+        deferred2.resolve();
 
-        jasmine.clock().tick(4001);
-        args = $.ajax.calls.argsFor(2)[0];
-        args.success.call($, {
+        deferred3.resolve({
           html: '<span>Different</span>',
           status: 'running',
           append: false,
         });
+
+        this.build = new Build();
+
+        expect($('#build-trace .js-build-output').text()).toMatch(/Update/);
+
+        jasmine.clock().tick(4001);
 
         expect($('#build-trace .js-build-output').text()).not.toMatch(/Update/);
         expect($('#build-trace .js-build-output').text()).toMatch(/Different/);
@@ -146,118 +135,175 @@ describe('Build', () => {
 
       it('reloads the page when the build is done', () => {
         spyOn(gl.utils, 'visitUrl');
+        const deferred = $.Deferred();
 
-        jasmine.clock().tick(4001);
-        const [{ success }] = $.ajax.calls.argsFor(0);
-        success.call($, {
+        spyOn($, 'ajax').and.returnValue(deferred.promise());
+        deferred.resolve({
           html: '<span>Final</span>',
           status: 'passed',
           append: true,
           complete: true,
         });
 
+        this.build = new Build();
+
         expect(gl.utils.visitUrl).toHaveBeenCalledWith(BUILD_URL);
       });
+    });
 
-      describe('truncated information', () => {
-        describe('when size is less than total', () => {
-          it('shows information about truncated log', () => {
-            jasmine.clock().tick(4001);
-            const [{ success }] = $.ajax.calls.argsFor(0);
+    describe('truncated information', () => {
+      describe('when size is less than total', () => {
+        it('shows information about truncated log', () => {
+          spyOn(gl.utils, 'visitUrl');
+          const deferred = $.Deferred();
+          spyOn($, 'ajax').and.returnValue(deferred.promise());
 
-            success.call($, {
-              html: '<span>Update</span>',
-              status: 'success',
-              append: false,
-              size: 50,
-              total: 100,
-            });
-
-            expect(document.querySelector('.js-truncated-info').classList).not.toContain('hidden');
+          deferred.resolve({
+            html: '<span>Update</span>',
+            status: 'success',
+            append: false,
+            size: 50,
+            total: 100,
           });
 
-          it('shows the size in KiB', () => {
-            jasmine.clock().tick(4001);
-            const [{ success }] = $.ajax.calls.argsFor(0);
-            const size = 50;
+          this.build = new Build();
 
-            success.call($, {
-              html: '<span>Update</span>',
-              status: 'success',
-              append: false,
-              size,
-              total: 100,
-            });
-
-            expect(
-              document.querySelector('.js-truncated-info-size').textContent.trim(),
-            ).toEqual(`${bytesToKiB(size)}`);
-          });
-
-          it('shows incremented size', () => {
-            jasmine.clock().tick(4001);
-            let args = $.ajax.calls.argsFor(0)[0];
-            args.success.call($, {
-              html: '<span>Update</span>',
-              status: 'success',
-              append: false,
-              size: 50,
-              total: 100,
-            });
-
-            expect(
-              document.querySelector('.js-truncated-info-size').textContent.trim(),
-            ).toEqual(`${bytesToKiB(50)}`);
-
-            jasmine.clock().tick(4001);
-            args = $.ajax.calls.argsFor(2)[0];
-            args.success.call($, {
-              html: '<span>Update</span>',
-              status: 'success',
-              append: true,
-              size: 10,
-              total: 100,
-            });
-
-            expect(
-              document.querySelector('.js-truncated-info-size').textContent.trim(),
-            ).toEqual(`${bytesToKiB(60)}`);
-          });
-
-          it('renders the raw link', () => {
-            jasmine.clock().tick(4001);
-            const [{ success }] = $.ajax.calls.argsFor(0);
-
-            success.call($, {
-              html: '<span>Update</span>',
-              status: 'success',
-              append: false,
-              size: 50,
-              total: 100,
-            });
-
-            expect(
-              document.querySelector('.js-raw-link').textContent.trim(),
-            ).toContain('Complete Raw');
-          });
+          expect(document.querySelector('.js-truncated-info').classList).not.toContain('hidden');
         });
 
-        describe('when size is equal than total', () => {
-          it('does not show the trunctated information', () => {
-            jasmine.clock().tick(4001);
-            const [{ success }] = $.ajax.calls.argsFor(0);
+        it('shows the size in KiB', () => {
+          const size = 50;
+          spyOn(gl.utils, 'visitUrl');
+          const deferred = $.Deferred();
 
-            success.call($, {
-              html: '<span>Update</span>',
-              status: 'success',
-              append: false,
-              size: 100,
-              total: 100,
-            });
-
-            expect(document.querySelector('.js-truncated-info').classList).toContain('hidden');
+          spyOn($, 'ajax').and.returnValue(deferred.promise());
+          deferred.resolve({
+            html: '<span>Update</span>',
+            status: 'success',
+            append: false,
+            size,
+            total: 100,
           });
+
+          this.build = new Build();
+
+          expect(
+            document.querySelector('.js-truncated-info-size').textContent.trim(),
+          ).toEqual(`${bytesToKiB(size)}`);
         });
+
+        it('shows incremented size', () => {
+          const deferred1 = $.Deferred();
+          const deferred2 = $.Deferred();
+          const deferred3 = $.Deferred();
+
+          spyOn($, 'ajax').and.returnValues(deferred1.promise(), deferred2.promise(), deferred3.promise());
+
+          spyOn(gl.utils, 'visitUrl');
+
+          deferred1.resolve({
+            html: '<span>Update</span>',
+            status: 'success',
+            append: false,
+            size: 50,
+            total: 100,
+          });
+
+          deferred2.resolve();
+
+          this.build = new Build();
+
+          expect(
+            document.querySelector('.js-truncated-info-size').textContent.trim(),
+          ).toEqual(`${bytesToKiB(50)}`);
+
+          jasmine.clock().tick(4001);
+
+          deferred3.resolve({
+            html: '<span>Update</span>',
+            status: 'success',
+            append: true,
+            size: 10,
+            total: 100,
+          });
+
+          expect(
+            document.querySelector('.js-truncated-info-size').textContent.trim(),
+          ).toEqual(`${bytesToKiB(60)}`);
+        });
+
+        it('renders the raw link', () => {
+          const deferred = $.Deferred();
+          spyOn(gl.utils, 'visitUrl');
+
+          spyOn($, 'ajax').and.returnValue(deferred.promise());
+          deferred.resolve({
+            html: '<span>Update</span>',
+            status: 'success',
+            append: false,
+            size: 50,
+            total: 100,
+          });
+
+          this.build = new Build();
+
+          expect(
+            document.querySelector('.js-raw-link').textContent.trim(),
+          ).toContain('Complete Raw');
+        });
+      });
+
+      describe('when size is equal than total', () => {
+        it('does not show the trunctated information', () => {
+          const deferred = $.Deferred();
+          spyOn(gl.utils, 'visitUrl');
+
+          spyOn($, 'ajax').and.returnValue(deferred.promise());
+          deferred.resolve({
+            html: '<span>Update</span>',
+            status: 'success',
+            append: false,
+            size: 100,
+            total: 100,
+          });
+
+          this.build = new Build();
+
+          expect(document.querySelector('.js-truncated-info').classList).toContain('hidden');
+        });
+      });
+    });
+
+    describe('output trace', () => {
+      beforeEach(() => {
+        const deferred = $.Deferred();
+        spyOn(gl.utils, 'visitUrl');
+
+        spyOn($, 'ajax').and.returnValue(deferred.promise());
+        deferred.resolve({
+          html: '<span>Update</span>',
+          status: 'success',
+          append: false,
+          size: 50,
+          total: 100,
+        });
+
+        this.build = new Build();
+      });
+
+      it('should render trace controls', () => {
+        const controllers = document.querySelector('.controllers');
+
+        expect(controllers.querySelector('.js-raw-link-controller')).toBeDefined();
+        expect(controllers.querySelector('.js-erase-link')).toBeDefined();
+        expect(controllers.querySelector('.js-scroll-up')).toBeDefined();
+        expect(controllers.querySelector('.js-scroll-down')).toBeDefined();
+      });
+
+      it('should render received output', () => {
+        expect(
+          document.querySelector('.js-build-output').innerHTML,
+        ).toEqual('<span>Update</span>');
       });
     });
   });

@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'rainbow/ext/string'
 
 describe 'seed production settings', lib: true do
   include StubENV
