@@ -37,7 +37,7 @@ module Ci
     end
 
     def runnable_by_owner?
-      Ability.allowed?(owner, :create_pipeline, project)
+      Ci::Pipeline.allowed_to_create?(owner, project, ref)
     end
 
     def set_next_run_at

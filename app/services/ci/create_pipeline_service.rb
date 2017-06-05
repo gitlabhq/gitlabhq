@@ -27,10 +27,8 @@ module Ci
         return error('Reference not found')
       end
 
-      if tag?
-        return error("#{ref} is protected") unless access.can_create_tag?(ref)
-      else
-        return error("#{ref} is protected") unless access.can_merge_to_branch?(ref)
+      unless Ci::Pipeline.allowed_to_create?(current_user, project, ref)
+        return error("Insufficient permissions for protected #{ref}")
       end
 
       unless commit
@@ -53,6 +51,12 @@ module Ci
         return error('No builds for this pipeline.')
       end
 
+      process!
+    end
+
+    private
+
+    def process!
       Ci::Pipeline.transaction do
         update_merge_requests_head_pipeline if pipeline.save
 
@@ -65,8 +69,6 @@ module Ci
 
       pipeline.tap(&:process!)
     end
-
-    private
 
     def update_merge_requests_head_pipeline
       return unless pipeline.latest?
@@ -100,10 +102,6 @@ module Ci
       @commit ||= project.commit(origin_sha || origin_ref)
     end
 
-    def access
-      @access ||= Gitlab::UserAccess.new(current_user, project: project)
-    end
-
     def sha
       commit.try(:id)
     end
@@ -121,11 +119,17 @@ module Ci
     end
 
     def branch?
-      project.repository.ref_exists?(Gitlab::Git::BRANCH_REF_PREFIX + ref)
+      return @is_branch if defined?(@is_branch)
+
+      @is_branch =
+        project.repository.ref_exists?(Gitlab::Git::BRANCH_REF_PREFIX + ref)
     end
 
     def tag?
-      project.repository.ref_exists?(Gitlab::Git::TAG_REF_PREFIX + ref)
+      return @is_tag if defined?(@is_tag)
+
+      @is_tag =
+        project.repository.ref_exists?(Gitlab::Git::TAG_REF_PREFIX + ref)
     end
 
     def ref
