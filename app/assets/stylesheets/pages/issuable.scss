@@ -597,6 +597,42 @@
         vertical-align: text-top;
       }
     }
+
+    .issue-title,
+    .issue-info {
+      margin-right: 150px;
+    }
+
+    .issue-milestone a,
+    .issue-info,
+    .task-status {
+      font-weight: normal;
+      font-size: 13px;
+      color: $gl-text-color-secondary;
+    }
+
+    .issuable-meta {
+      font-size: 13px;
+      position: absolute;
+      right: 15px;
+      top: 15px;
+      width: 150px;
+    }
+
+    @media(max-width: $screen-xs-max) {
+      .issue-authored,
+      .issue-milestone,
+      .issue-due-date,
+      .task-status,
+      .issue-updated-at {
+        display: none;
+      }
+
+      .issue-title,
+      .issue-info {
+        margin-right: 100px;
+      }
+    }
   }
 }
 
