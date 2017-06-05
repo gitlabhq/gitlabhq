@@ -177,7 +177,7 @@ class Commit
     if RequestStore.active?
       key = "commit_author:#{author_email.downcase}"
       # nil is a valid value since no author may exist in the system
-      if RequestStore.store.has_key?(key)
+      if RequestStore.store.key?(key)
         @author = RequestStore.store[key]
       else
         @author = find_author_by_any_email

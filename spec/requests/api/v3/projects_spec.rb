@@ -166,7 +166,7 @@ describe API::V3::Projects do
 
         expect(json_response).to satisfy do |response|
           response.one? do |entry|
-            entry.has_key?('permissions') &&
+            entry.key?('permissions') &&
               entry['name'] == project.name &&
               entry['owner']['username'] == user.username
           end

@@ -130,7 +130,7 @@ module Gitlab
             'MaxSessionTime' => terminal[:max_session_time]
           }
         }
-        details['Terminal']['CAPem'] = terminal[:ca_pem] if terminal.has_key?(:ca_pem)
+        details['Terminal']['CAPem'] = terminal[:ca_pem] if terminal.key?(:ca_pem)
 
         details
       end
