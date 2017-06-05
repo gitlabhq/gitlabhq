@@ -40,7 +40,7 @@ describe 'Help Pages', feature: true do
       allow(current_application_settings).to receive(:version_check_enabled) { true }
       allow_any_instance_of(VersionCheck).to receive(:url) { '/version-check-url' }
 
-      login_as :user
+      gitlab_sign_in :user
       visit help_path
     end
 

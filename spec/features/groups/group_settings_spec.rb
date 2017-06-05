@@ -6,7 +6,7 @@ feature 'Edit group settings', feature: true do
 
   background do
     group.add_owner(user)
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   describe 'when the group path is changed' do

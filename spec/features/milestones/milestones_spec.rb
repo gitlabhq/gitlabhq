@@ -18,21 +18,21 @@ describe 'Milestone draggable', feature: true, js: true do
     end
 
     it 'does not allow authorized user to drag issue' do
-      login_as(user)
+      gitlab_sign_in(user)
       create_and_drag_issue
 
       expect(issue_target).not_to have_selector('.issuable-row')
     end
 
     it 'allows author to drag issue' do
-      login_as(user)
+      gitlab_sign_in(user)
       create_and_drag_issue(author: user)
 
       expect(issue_target).to have_selector('.issuable-row')
     end
 
     it 'allows admin to drag issue' do
-      login_as(:admin)
+      gitlab_sign_in(:admin)
       create_and_drag_issue
 
       expect(issue_target).to have_selector('.issuable-row')
@@ -50,21 +50,21 @@ describe 'Milestone draggable', feature: true, js: true do
     end
 
     it 'does not allow authorized user to drag merge request' do
-      login_as(user)
+      gitlab_sign_in(user)
       create_and_drag_merge_request
 
       expect(merge_request_target).not_to have_selector('.issuable-row')
     end
 
     it 'allows author to drag merge request' do
-      login_as(user)
+      gitlab_sign_in(user)
       create_and_drag_merge_request(author: user)
 
       expect(merge_request_target).to have_selector('.issuable-row')
     end
 
     it 'allows admin to drag merge request' do
-      login_as(:admin)
+      gitlab_sign_in(:admin)
       create_and_drag_merge_request
 
       expect(merge_request_target).to have_selector('.issuable-row')

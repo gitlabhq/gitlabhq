@@ -13,7 +13,7 @@ feature 'Merge With Push Rules Validation', feature: true, js: true do
     let(:push_rule) { create(:push_rule, :commit_message) }
 
     before do
-      login_as user
+      gitlab_sign_in user
       visit_merge_request(merge_request)
     end
 
@@ -28,7 +28,7 @@ feature 'Merge With Push Rules Validation', feature: true, js: true do
     let(:push_rule) { create(:push_rule, :author_email) }
 
     before do
-      login_as user
+      gitlab_sign_in user
       visit_merge_request(merge_request)
     end
 

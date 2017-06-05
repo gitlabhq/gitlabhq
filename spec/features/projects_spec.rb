@@ -6,7 +6,7 @@ feature 'Project', feature: true do
     let(:path)    { namespace_project_path(project.namespace, project) }
 
     before do
-      login_as(:admin)
+      gitlab_sign_in(:admin)
     end
 
     it 'parses Markdown' do
@@ -123,7 +123,7 @@ feature 'Project', feature: true do
 
     before do
       project.team << [user, :master]
-      login_as user
+      gitlab_sign_in user
       visit namespace_project_path(project.namespace, project)
     end
 

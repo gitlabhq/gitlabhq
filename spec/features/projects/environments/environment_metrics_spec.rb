@@ -15,7 +15,7 @@ feature 'Environment > Metrics', :feature do
     create(:deployment, environment: environment, deployable: build)
     stub_all_prometheus_requests(environment.slug)
 
-    login_as(user)
+    gitlab_sign_in(user)
     visit_environment(environment)
   end
 

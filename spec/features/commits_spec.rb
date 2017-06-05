@@ -7,7 +7,7 @@ describe 'Commits' do
 
   describe 'CI' do
     before do
-      login_as :user
+      gitlab_sign_in :user
       stub_ci_pipeline_to_return_yaml_file
     end
 

@@ -7,7 +7,7 @@ feature 'Create New Merge Request', feature: true, js: true do
   before do
     project.team << [user, :master]
 
-    login_as user
+    gitlab_sign_in user
   end
 
   it 'selects the source branch sha when a tag with the same name exists' do

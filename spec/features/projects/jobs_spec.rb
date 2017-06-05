@@ -16,7 +16,7 @@ feature 'Jobs', :feature do
 
   before do
     project.team << [user, user_access_level]
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   describe "GET /:project/jobs" do

@@ -6,7 +6,7 @@ feature 'Todo target states', feature: true do
   let(:project) { create(:project, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
 
   before do
-    login_as user
+    gitlab_sign_in user
   end
 
   scenario 'on a closed issue todo has closed label' do
