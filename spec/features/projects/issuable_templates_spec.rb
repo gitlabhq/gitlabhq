@@ -124,7 +124,7 @@ feature 'issuable templates', feature: true, js: true do
     let(:merge_request) { create(:merge_request, :with_diffs, source_project: fork_project, target_project: project) }
 
     background do
-      logout
+      gitlab_sign_out
       project.team << [fork_user, :developer]
       fork_project.team << [fork_user, :master]
       create(:forked_project_link, forked_to_project: fork_project, forked_from_project: project)

@@ -498,7 +498,7 @@ describe 'Issues', feature: true do
       end
 
       it 'shows assignee text', js: true do
-        logout
+        gitlab_sign_out
         gitlab_sign_in guest
 
         visit namespace_project_issue_path(project.namespace, project, issue)
@@ -582,7 +582,7 @@ describe 'Issues', feature: true do
       end
 
       it 'shows milestone text', js: true do
-        logout
+        gitlab_sign_out
         gitlab_sign_in guest
 
         visit namespace_project_issue_path(project.namespace, project, issue)
@@ -596,7 +596,7 @@ describe 'Issues', feature: true do
 
     context 'by unauthenticated user' do
       before do
-        logout
+        gitlab_sign_out
       end
 
       it 'redirects to signin then back to new issue after signin' do
