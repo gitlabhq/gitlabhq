@@ -128,13 +128,10 @@ module API
         authorize! :admin_group, group
 
         # EE
-        if params[:shared_runners_minutes_limit]
-          group.shared_runners_minutes_limit =
-            params[:shared_runners_minutes_limit].to_i
-
-          if group.shared_runners_minutes_limit_changed?
-            authenticated_as_admin!
-          end
+        if params[:shared_runners_minutes_limit].present? &&
+            group.shared_runners_minutes_limit.to_i !=
+              params[:shared_runners_minutes_limit].to_i
+          authenticated_as_admin!
         end
 
         if ::Groups::UpdateService.new(group, current_user, declared_params(include_missing: false)).execute
