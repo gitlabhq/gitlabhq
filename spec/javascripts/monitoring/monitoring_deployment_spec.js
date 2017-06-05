@@ -7,7 +7,7 @@ const createComponent = (propsData) => {
 
   return new Component({
     propsData,
-  });
+  }).$mount();
 };
 
 describe('MonitoringDeployment', () => {
@@ -69,10 +69,8 @@ describe('MonitoringDeployment', () => {
         deploymentData: reducedDeploymentData,
         height: 300,
       });
-      component.$mount();
 
-      expect(component.$el.querySelector('.js-deploy-info-box').getAttribute('style'))
-      .toEqual('display: none;');
+      expect(component.$el.querySelector('.js-deploy-info-box')).toBe(null);
     });
 
     it('shows the deployment flag', () => {
@@ -82,7 +80,6 @@ describe('MonitoringDeployment', () => {
         deploymentData: reducedDeploymentData,
         height: 300,
       });
-      component.$mount();
 
       expect(component.$el.querySelector('.js-deploy-info-box').getAttribute('style'))
       .not.toEqual('display: none;');
@@ -95,10 +92,19 @@ describe('MonitoringDeployment', () => {
         deploymentData: reducedDeploymentData,
         height: 300,
       });
-      component.$mount();
 
       expect(component.$el.querySelector('.deploy-info-text').firstChild.nodeValue.trim())
       .toEqual(component.refText(reducedDeploymentData[0]));
+    });
+
+    it('should contain a hidden gradient', () => {
+      const component = createComponent({
+        showDeployInfo: true,
+        deploymentData: reducedDeploymentData,
+        height: 300,
+      });
+
+      expect(component.$el.querySelector('#shadow-gradient')).not.toBe(null);
     });
   });
 });

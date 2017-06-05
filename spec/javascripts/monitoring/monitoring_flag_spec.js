@@ -6,7 +6,7 @@ const createComponent = (propsData) => {
 
   return new Component({
     propsData,
-  });
+  }).$mount();
 };
 
 function getCoordinate(component, selector, coordinate) {
@@ -26,7 +26,6 @@ describe('MonitoringFlag', () => {
       },
       height: 300,
     });
-    component.$mount();
 
     expect(getCoordinate(component, '.selected-metric-line', 'x1'))
       .toEqual(component.currentXCoordinate);
@@ -49,7 +48,6 @@ describe('MonitoringFlag', () => {
       },
       height: 300,
     });
-    component.$mount();
 
     const svg = component.$el.querySelector('.rect-text-metric');
     expect(svg.tagName).toEqual('svg');

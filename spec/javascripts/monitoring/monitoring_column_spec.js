@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import _ from 'underscore';
 import MonitoringColumn from '~/monitoring/components/monitoring_column.vue';
+import MonitoringMixins from '~/monitoring/mixins/monitoring_mixins';
 import eventHub from '~/monitoring/event_hub';
 import { deploymentData, singleRowMetrics } from './mock_data';
 
@@ -9,12 +10,12 @@ const createComponent = (propsData) => {
 
   return new Component({
     propsData,
-  });
+  }).$mount();
 };
 
 describe('MonitoringColumn', () => {
   beforeEach(() => {
-    spyOn(MonitoringColumn.methods, 'formatDeployments').and.callFake(function fakeFormat() {
+    spyOn(MonitoringMixins.methods, 'formatDeployments').and.callFake(function fakeFormat() {
       return {};
     });
   });
@@ -26,7 +27,6 @@ describe('MonitoringColumn', () => {
       updateAspectRatio: false,
       deploymentData,
     });
-    component.$mount();
 
     expect(component.$el.querySelector('.text-center').innerText.trim()).toBe(component.columnData.title);
   });
@@ -38,7 +38,6 @@ describe('MonitoringColumn', () => {
       updateAspectRatio: false,
       deploymentData,
     });
-    component.$mount();
 
     Vue.nextTick(() => {
       expect(component.area).toBeDefined();
@@ -51,20 +50,8 @@ describe('MonitoringColumn', () => {
     });
   });
 
-  it('should contain a hidden gradient', () => {
-    const component = createComponent({
-      columnData: singleRowMetrics[0],
-      classType: 'col-md-6',
-      updateAspectRatio: false,
-      deploymentData,
-    });
-    component.$mount();
-
-    expect(component.$el.querySelector('#shadow-gradient')).not.toBe(null);
-  });
-
   describe('Computed props', () => {
-    it('calculateAxisTransform translates an element Y position depending of its height', () => {
+    it('axisTransform translates an element Y position depending of its height', () => {
       const component = createComponent({
         columnData: singleRowMetrics[0],
         classType: 'col-md-6',
@@ -73,11 +60,11 @@ describe('MonitoringColumn', () => {
       });
 
       const transformedHeight = `${component.height - 100}`;
-      expect(component.calculateAxisTransform.indexOf(transformedHeight))
+      expect(component.axisTransform.indexOf(transformedHeight))
         .not.toEqual(-1);
     });
 
-    it('calculateViewBox gets a width and height property based on the DOM size of the element', () => {
+    it('outterViewBox gets a width and height property based on the DOM size of the element', () => {
       const component = createComponent({
         columnData: singleRowMetrics[0],
         classType: 'col-md-6',
@@ -85,13 +72,13 @@ describe('MonitoringColumn', () => {
         deploymentData,
       });
 
-      const viewBoxArray = component.calculateViewBox.split(' ');
-      expect(typeof component.calculateViewBox).toEqual('string');
+      const viewBoxArray = component.outterViewBox.split(' ');
+      expect(typeof component.outterViewBox).toEqual('string');
       expect(viewBoxArray[2]).toEqual(component.width.toString());
       expect(viewBoxArray[3]).toEqual(component.height.toString());
     });
 
-    it('calculateInnerViewBox gets a width - 150 and height property based on the DOM size of the element', () => {
+    it('innerViewBox gets a width - 150 and height property based on the DOM size of the element', () => {
       const component = createComponent({
         columnData: singleRowMetrics[0],
         classType: 'col-md-6',
@@ -99,11 +86,11 @@ describe('MonitoringColumn', () => {
         deploymentData,
       });
 
-      const viewBoxArray = component.calculateInnerViewBox.split(' ');
-      const adjustedWidth = `${component.width - 150}`;
-      expect(typeof component.calculateInnerViewBox).toEqual('string');
-      expect(viewBoxArray[2]).toEqual(adjustedWidth);
-      expect(viewBoxArray[3]).toEqual(component.height.toString());
+      const viewBoxArray = component.innerViewBox.split(' ');
+      expect(typeof component.innerViewBox).toEqual('string');
+      // This is because the viewport doesn't exist on phantomjs
+      expect(viewBoxArray[2]).toEqual('0');
+      expect(viewBoxArray[3]).toEqual('0');
     });
   });
 
@@ -115,7 +102,6 @@ describe('MonitoringColumn', () => {
       deploymentData,
     });
     spyOn(eventHub, '$emit');
-    component.$mount();
 
     component.updateAspectRatio = true;
     Vue.nextTick(() => {

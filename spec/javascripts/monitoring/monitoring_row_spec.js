@@ -7,7 +7,7 @@ const createComponent = (propsData) => {
 
   return new Component({
     propsData,
-  });
+  }).$mount();
 };
 
 describe('MonitoringRow', () => {
@@ -33,25 +33,23 @@ describe('MonitoringRow', () => {
     });
   });
 
-  it('has one column in the DOM', () => {
+  it('has one column', () => {
     const component = createComponent({
       rowData: singleRowMetrics,
       updateAspectRatio: false,
       deploymentData,
     });
-    component.$mount();
 
     expect(component.$el.querySelectorAll('.prometheus-svg-container').length)
         .toEqual(component.rowData.length);
   });
 
-  it('has two columns in the DOM', () => {
+  it('has two columns', () => {
     const component = createComponent({
       rowData: singleRowMetrics,
       updateAspectRatio: false,
       deploymentData,
     });
-    component.$mount();
 
     expect(component.$el.querySelectorAll('.col-md-6').length)
         .toEqual(component.rowData.length);

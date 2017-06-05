@@ -7,7 +7,7 @@ const createComponent = (propsData) => {
 
   return new Component({
     propsData,
-  });
+  }).$mount();
 };
 
 function getTextFromNode(component, selector) {
@@ -16,59 +16,56 @@ function getTextFromNode(component, selector) {
 
 describe('MonitoringState', () => {
   describe('Computed props', () => {
-    it('getCurrentState', () => {
+    it('currentState', () => {
       const component = createComponent({
         selectedState: 'gettingStarted',
         settingsPath: statePaths.settingsPath,
         documentationPath: statePaths.documentationPath,
       });
 
-      expect(component.getCurrentState).toBe(component.states.gettingStarted);
+      expect(component.currentState).toBe(component.states.gettingStarted);
     });
 
-    it('getButtonPath returns settings path for the state "gettingStarted"', () => {
+    it('buttonPath returns settings path for the state "gettingStarted"', () => {
       const component = createComponent({
         selectedState: 'gettingStarted',
         settingsPath: statePaths.settingsPath,
         documentationPath: statePaths.documentationPath,
       });
 
-      expect(component.getButtonPath).toEqual(statePaths.settingsPath);
-      expect(component.getButtonPath).not.toEqual(statePaths.documentationPath);
+      expect(component.buttonPath).toEqual(statePaths.settingsPath);
+      expect(component.buttonPath).not.toEqual(statePaths.documentationPath);
     });
 
-    it('getButtonPath returns documentation path for any of the other states', () => {
+    it('buttonPath returns documentation path for any of the other states', () => {
       const component = createComponent({
         selectedState: 'loading',
         settingsPath: statePaths.settingsPath,
         documentationPath: statePaths.documentationPath,
       });
 
-      expect(component.getButtonPath).toEqual(statePaths.documentationPath);
-      expect(component.getButtonPath).not.toEqual(statePaths.settingsPath);
+      expect(component.buttonPath).toEqual(statePaths.documentationPath);
+      expect(component.buttonPath).not.toEqual(statePaths.settingsPath);
     });
 
-    it('getDescription returns a description with a link for the unableToConnect state', () => {
+    it('showButtonDescription returns a description with a link for the unableToConnect state', () => {
       const component = createComponent({
         selectedState: 'unableToConnect',
         settingsPath: statePaths.settingsPath,
         documentationPath: statePaths.documentationPath,
       });
 
-      expect(component.getDescriptionText.indexOf('<a')).not.toEqual(-1);
-      expect(component.getDescriptionText.indexOf(component.getCurrentState.description))
-            .not.toEqual(-1);
+      expect(component.showButtonDescription).toEqual(true);
     });
 
-    it('getDescription returns the description without a link for any other state', () => {
+    it('showButtonDescription returns the description without a link for any other state', () => {
       const component = createComponent({
         selectedState: 'loading',
         settingsPath: statePaths.settingsPath,
         documentationPath: statePaths.documentationPath,
       });
 
-      expect(component.getDescriptionText.indexOf('<a')).toEqual(-1);
-      expect(component.getDescriptionText).toEqual(component.getCurrentState.description);
+      expect(component.showButtonDescription).toEqual(false);
     });
   });
 
@@ -79,7 +76,6 @@ describe('MonitoringState', () => {
       documentationPath: statePaths.documentationPath,
     });
 
-    component.$mount();
     expect(component.$el.querySelector('svg')).toBeDefined();
     expect(getTextFromNode(component, '.state-title')).toEqual(component.states.gettingStarted.title);
     expect(getTextFromNode(component, '.state-description')).toEqual(component.states.gettingStarted.description);
@@ -93,7 +89,6 @@ describe('MonitoringState', () => {
       documentationPath: statePaths.documentationPath,
     });
 
-    component.$mount();
     expect(component.$el.querySelector('svg')).toBeDefined();
     expect(getTextFromNode(component, '.state-title')).toEqual(component.states.loading.title);
     expect(getTextFromNode(component, '.state-description')).toEqual(component.states.loading.description);
@@ -107,7 +102,6 @@ describe('MonitoringState', () => {
       documentationPath: statePaths.documentationPath,
     });
 
-    component.$mount();
     expect(component.$el.querySelector('svg')).toBeDefined();
     expect(getTextFromNode(component, '.state-title')).toEqual(component.states.unableToConnect.title);
     expect(component.$el.querySelector('.state-description a')).toBeDefined();

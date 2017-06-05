@@ -7,7 +7,7 @@ const createComponent = (propsData) => {
 
   return new Component({
     propsData,
-  });
+  }).$mount();
 };
 
 function getTextFromNode(component, selector) {
@@ -16,7 +16,7 @@ function getTextFromNode(component, selector) {
 
 describe('MonitoringLegends', () => {
   describe('Computed props', () => {
-    it('calculateTextTransform', () => {
+    it('textTransform', () => {
       const component = createComponent({
         width: 500,
         height: 300,
@@ -28,11 +28,11 @@ describe('MonitoringLegends', () => {
         metricUsage: 'Value',
       });
 
-      expect(typeof component.calculateTextTransform).toEqual('string');
-      expect(component.calculateTextTransform.indexOf(120)).not.toEqual(-1);
+      expect(typeof component.textTransform).toEqual('string');
+      expect(component.textTransform.indexOf(120)).not.toEqual(-1);
     });
 
-    it('calculateXPosition', () => {
+    it('xPosition', () => {
       const component = createComponent({
         width: 500,
         height: 300,
@@ -44,10 +44,10 @@ describe('MonitoringLegends', () => {
         metricUsage: 'Value',
       });
 
-      expect(component.calculateXPosition).toEqual(180);
+      expect(component.xPosition).toEqual(180);
     });
 
-    it('calculateYPosition', () => {
+    it('yPosition', () => {
       const component = createComponent({
         width: 500,
         height: 300,
@@ -59,7 +59,7 @@ describe('MonitoringLegends', () => {
         metricUsage: 'Value',
       });
 
-      expect(component.calculateYPosition).toEqual(240);
+      expect(component.yPosition).toEqual(240);
     });
   });
 
@@ -74,7 +74,6 @@ describe('MonitoringLegends', () => {
       yAxisLabel: 'Values',
       metricUsage: 'Value',
     });
-    component.$mount();
 
     expect(component.$el.querySelectorAll('.rect-axis-text').length).toEqual(2);
   });
@@ -90,7 +89,6 @@ describe('MonitoringLegends', () => {
       yAxisLabel: 'Values',
       metricUsage: 'Value',
     });
-    component.$mount();
 
     expect(getTextFromNode(component, '.text-metric-title')).toEqual(component.legendTitle);
     expect(getTextFromNode(component, '.text-metric-usage')).toEqual(component.metricUsage);
