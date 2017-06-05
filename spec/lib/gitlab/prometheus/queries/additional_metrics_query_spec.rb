@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Gitlab::Prometheus::Queries::AdditionalMetricsQuery, lib: true do
-  include Prometheus::AdditionalMetricsQueryHelper
   include Prometheus::MetricBuilders
 
   let(:client) { double('prometheus_client') }

@@ -1,13 +1,19 @@
 RSpec.shared_examples 'additional metrics query' do
   include Prometheus::MetricBuilders
 
+  let(:metric_group_class) { Gitlab::Prometheus::MetricGroup }
+  let(:metric_class) { Gitlab::Prometheus::Metric }
+
+  let(:metric_names) { %w{metric_a metric_b} }
+
+  let(:query_range_result) do
+    [{ 'metric': {}, 'values': [[1488758662.506, '0.00002996364761904785'], [1488758722.506, '0.00003090239047619091']] }]
+  end
+
   before do
     allow(client).to receive(:label_values).and_return(metric_names)
     allow(metric_group_class).to receive(:all).and_return([simple_metric_group(metrics: [simple_metric])])
   end
-
-  let(:metric_group_class) { Gitlab::Prometheus::MetricGroup }
-  let(:metric_class) { Gitlab::Prometheus::Metric }
 
   context 'with one group where two metrics is found' do
     before do

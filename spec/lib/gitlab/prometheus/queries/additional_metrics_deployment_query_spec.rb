@@ -1,21 +1,13 @@
 require 'spec_helper'
 
 describe Gitlab::Prometheus::Queries::AdditionalMetricsDeploymentQuery, lib: true do
-  include Prometheus::AdditionalMetricsQueryHelper
   include Prometheus::MetricBuilders
-
-  let(:metric_group_class) { Gitlab::Prometheus::MetricGroup }
-  let(:metric_class) { Gitlab::Prometheus::Metric }
 
   let(:client) { double('prometheus_client') }
   let(:environment) { create(:environment, slug: 'environment-slug') }
   let(:deployment) { create(:deployment, environment: environment) }
 
   subject(:query_result) { described_class.new(client).query(deployment.id) }
-
-  around do |example|
-    Timecop.freeze { example.run }
-  end
 
   include_examples 'additional metrics query' do
     it 'queries using specific time' do

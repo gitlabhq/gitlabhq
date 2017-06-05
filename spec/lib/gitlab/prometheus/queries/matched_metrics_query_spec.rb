@@ -1,11 +1,21 @@
 require 'spec_helper'
 
 describe Gitlab::Prometheus::Queries::MatchedMetricsQuery, lib: true do
-  include Prometheus::MatchedMetricsQueryHelper
   include Prometheus::MetricBuilders
 
   let(:metric_group_class) { Gitlab::Prometheus::MetricGroup }
   let(:metric_class) { Gitlab::Prometheus::Metric }
+
+  def series_info_with_environment(*more_metrics)
+    %w{metric_a metric_b}.concat(more_metrics).map { |metric_name| { '__name__' => metric_name, 'environment' => '' } }
+  end
+  let(:metric_names) { %w{metric_a metric_b} }
+  let(:series_info_without_environment) do
+    [{ '__name__' => 'metric_a' },
+     { '__name__' => 'metric_b' }]
+  end
+  let(:partialy_empty_series_info) { [{ '__name__' => 'metric_a', 'environment' => '' }] }
+  let(:empty_series_info) { [] }
 
   let(:client) { double('prometheus_client') }
 
