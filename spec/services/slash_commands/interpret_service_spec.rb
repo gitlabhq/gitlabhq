@@ -399,15 +399,21 @@ describe SlashCommands::InterpretService, services: true do
       let(:content) { "/assign @#{developer.username}" }
 
       context 'Issue' do
-        it 'fetches assignee and populates assignee_id if content contains /assign' do
+        it 'fetches assignees and populates them if content contains /assign' do
+          user = create(:user)
+          issue.assignees << user
+
           _, updates = service.execute(content, issue)
 
-          expect(updates).to eq(assignee_ids: [developer.id])
+          expect(updates[:assignee_ids]).to match_array([developer.id, user.id])
         end
       end
 
       context 'Merge Request' do
         it 'fetches assignee and populates assignee_id if content contains /assign' do
+          user = create(:user)
+          merge_request.update(assignee: user)
+
           _, updates = service.execute(content, merge_request)
 
           expect(updates).to eq(assignee_id: developer.id)
@@ -451,11 +457,46 @@ describe SlashCommands::InterpretService, services: true do
       let(:content) { '/unassign' }
 
       context 'Issue' do
-        it 'populates assignee_ids: [] if content contains /unassign' do
-          issue.update(assignee_ids: [developer.id])
-          _, updates = service.execute(content, issue)
+        it 'unassigns user if content contains /unassign @user' do
+          issue.update(assignee_ids: [developer.id, developer2.id])
 
-          expect(updates).to eq(assignee_ids: [])
+          _, updates = service.execute("/unassign @#{developer2.username}", issue)
+
+          expect(updates).to eq(assignee_ids: [developer.id])
+        end
+
+        it 'unassigns both users if content contains /unassign @user @user1' do
+          user = create(:user)
+
+          issue.update(assignee_ids: [developer.id, developer2.id, user.id])
+
+          _, updates = service.execute("/unassign @#{developer2.username} @#{developer.username}", issue)
+
+          expect(updates).to eq(assignee_ids: [user.id])
+        end
+
+        it 'unassigns all the users if content contains /unassign' do
+          issue.update(assignee_ids: [developer.id, developer2.id])
+
+          _, updates = service.execute('/unassign', issue)
+
+          expect(updates[:assignee_ids]).to be_empty
+        end
+      end
+
+      context 'reassign command' do
+        let(:content) { '/reassign' }
+
+        context 'Issue' do
+          it 'reassigns user if content contains /reassign @user' do
+            user = create(:user)
+
+            issue.update(assignee_ids: [developer.id, developer2.id])
+
+            _, updates = service.execute("/reassign @#{user.username}", issue)
+
+            expect(updates).to eq(assignee_ids: [user.id])
+          end
         end
       end
 
@@ -929,7 +970,7 @@ describe SlashCommands::InterpretService, services: true do
       it 'includes current assignee reference' do
         _, explanations = service.explain(content, issue)
 
-        expect(explanations).to eq(["Removes assignee @#{developer.username}."])
+        expect(explanations).to eq(["Removes assignee #{developer.to_reference}"])
       end
     end
 

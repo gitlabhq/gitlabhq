@@ -221,7 +221,7 @@ describe Notes::SlashCommandsService, services: true do
     end
   end
 
-  context 'CE restriction for issue assignees' do
+  context 'Issue assignees' do
     describe '/assign' do
       let(:project) { create(:empty_project) }
       let(:master) { create(:user).tap { |u| project.team << [u, :master] } }
