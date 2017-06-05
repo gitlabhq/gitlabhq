@@ -22,7 +22,7 @@ describe AutocompleteController do
         let(:body) { JSON.parse(response.body) }
 
         it { expect(body).to be_kind_of(Array) }
-        it { expect(body.size).to eq 1 }
+        it { expect(body.size).to eq 2 }
         it { expect(body.map { |u| u["username"] }).to include(user.username) }
       end
 
@@ -80,8 +80,8 @@ describe AutocompleteController do
         end
 
         it { expect(body).to be_kind_of(Array) }
-        it { expect(body.size).to eq 2 }
-        it { expect(body.map { |u| u['username'] }).to match_array([user.username, non_member.username]) }
+        it { expect(body.size).to eq 3 }
+        it { expect(body.map { |u| u['username'] }).to include(user.username, non_member.username) }
       end
     end
 
@@ -97,6 +97,20 @@ describe AutocompleteController do
       it { expect(body.size).to eq User.count }
     end
 
+    context 'limited users per page' do
+      let(:per_page) { 2 }
+
+      before do
+        sign_in(user)
+        get(:users, per_page: per_page)
+      end
+
+      let(:body) { JSON.parse(response.body) }
+
+      it { expect(body).to be_kind_of(Array) }
+      it { expect(body.size).to eq per_page }
+    end
+
     context 'unauthenticated user' do
       let(:public_project) { create(:project, :public) }
       let(:body) { JSON.parse(response.body) }
@@ -108,7 +122,7 @@ describe AutocompleteController do
         end
 
         it { expect(body).to be_kind_of(Array) }
-        it { expect(body.size).to eq 1 }
+        it { expect(body.size).to eq 2 }
       end
 
       describe 'GET #users with project' do

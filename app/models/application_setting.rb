@@ -13,13 +13,13 @@ class ApplicationSetting < ActiveRecord::Base
                             [\r\n]          # any number of newline characters
                           }x
 
-  serialize :restricted_visibility_levels
-  serialize :import_sources
-  serialize :disabled_oauth_sign_in_sources, Array
-  serialize :domain_whitelist, Array
-  serialize :domain_blacklist, Array
-  serialize :repository_storages
-  serialize :sidekiq_throttling_queues, Array
+  serialize :restricted_visibility_levels # rubocop:disable Cop/ActiverecordSerialize
+  serialize :import_sources # rubocop:disable Cop/ActiverecordSerialize
+  serialize :disabled_oauth_sign_in_sources, Array # rubocop:disable Cop/ActiverecordSerialize
+  serialize :domain_whitelist, Array # rubocop:disable Cop/ActiverecordSerialize
+  serialize :domain_blacklist, Array # rubocop:disable Cop/ActiverecordSerialize
+  serialize :repository_storages # rubocop:disable Cop/ActiverecordSerialize
+  serialize :sidekiq_throttling_queues, Array # rubocop:disable Cop/ActiverecordSerialize
 
   cache_markdown_field :sign_in_text
   cache_markdown_field :help_page_text
@@ -143,7 +143,7 @@ class ApplicationSetting < ActiveRecord::Base
 
   validates_each :restricted_visibility_levels do |record, attr, value|
     value&.each do |level|
-      unless Gitlab::VisibilityLevel.options.has_value?(level)
+      unless Gitlab::VisibilityLevel.options.value?(level)
         record.errors.add(attr, "'#{level}' is not a valid visibility level")
       end
     end
@@ -151,7 +151,7 @@ class ApplicationSetting < ActiveRecord::Base
 
   validates_each :import_sources do |record, attr, value|
     value&.each do |source|
-      unless Gitlab::ImportSources.options.has_value?(source)
+      unless Gitlab::ImportSources.options.value?(source)
         record.errors.add(attr, "'#{source}' is not a import source")
       end
     end

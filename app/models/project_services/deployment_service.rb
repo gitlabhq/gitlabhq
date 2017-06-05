@@ -30,4 +30,8 @@ class DeploymentService < Service
   def terminals(environment)
     raise NotImplementedError
   end
+
+  def can_test?
+    false
+  end
 end

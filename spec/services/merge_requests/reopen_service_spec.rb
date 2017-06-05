@@ -14,6 +14,8 @@ describe MergeRequests::ReopenService, services: true do
   end
 
   describe '#execute' do
+    it_behaves_like 'cache counters invalidator'
+
     context 'valid params' do
       let(:service) { described_class.new(project, user, {}) }
 

@@ -9,9 +9,11 @@ module Gitlab
       #   - Ending in `noteable/issue/<id>/notes` for the `issue_notes` route
       #   - Ending in `issues/id`/realtime_changes` for the `issue_title` route
       USED_IN_ROUTES = %w[noteable issue notes issues realtime_changes
-                          commit pipelines merge_requests new].freeze
-      RESERVED_WORDS = Gitlab::Regex::ILLEGAL_PROJECT_PATH_WORDS - USED_IN_ROUTES
-      RESERVED_WORDS_REGEX = Regexp.union(*RESERVED_WORDS)
+                          commit pipelines merge_requests builds
+                          new environments].freeze
+      RESERVED_WORDS = Gitlab::PathRegex::ILLEGAL_PROJECT_PATH_WORDS - USED_IN_ROUTES
+      RESERVED_WORDS_REGEX = Regexp.union(*RESERVED_WORDS.map(&Regexp.method(:escape)))
+
       ROUTES = [
         Gitlab::EtagCaching::Router::Route.new(
           %r(^(?!.*(#{RESERVED_WORDS_REGEX})).*/noteable/issue/\d+/notes\z),
@@ -40,6 +42,14 @@ module Gitlab
         Gitlab::EtagCaching::Router::Route.new(
           %r(^(?!.*(#{RESERVED_WORDS_REGEX})).*/pipelines/\d+\.json\z),
           'project_pipeline'
+        ),
+        Gitlab::EtagCaching::Router::Route.new(
+          %r(^(?!.*(#{RESERVED_WORDS_REGEX})).*/builds/\d+\.json\z),
+          'project_build'
+        ),
+        Gitlab::EtagCaching::Router::Route.new(
+          %r(^(?!.*(#{RESERVED_WORDS_REGEX})).*/environments\.json\z),
+          'environments'
         )
       ].freeze
 

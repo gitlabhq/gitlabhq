@@ -49,7 +49,8 @@ class PrometheusService < MonitoringService
         type: 'text',
         name: 'api_url',
         title: 'API URL',
-        placeholder: 'Prometheus API Base URL, like http://prometheus.example.com/'
+        placeholder: 'Prometheus API Base URL, like http://prometheus.example.com/',
+        required: true
       }
     ]
   end
