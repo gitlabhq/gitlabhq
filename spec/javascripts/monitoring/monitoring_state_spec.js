@@ -1,62 +1,116 @@
 import Vue from 'vue';
 import MonitoringState from '~/monitoring/components/monitoring_state.vue';
-import gettingStartedSvg from 'empty_states/monitoring/_getting_started.svg';
-import loadingSvg from 'empty_states/monitoring/_loading.svg';
-import unableToConnectSvg from 'empty_states/monitoring/_unable_to_connect.svg';
+import { statePaths } from './mock_data';
 
-describe('MonitoringState component', () => {
-  let component;
-  let MonitoringStateComponent;
+const createComponent = (propsData) => {
+  const Component = Vue.extend(MonitoringState);
 
-  beforeEach(() => {
-    MonitoringStateComponent = Vue.extend(MonitoringState);
+  return new Component({
+    propsData,
+  });
+};
+
+function getTextFromNode(component, selector) {
+  return component.$el.querySelector(selector).firstChild.nodeValue.trim();
+}
+
+describe('MonitoringState', () => {
+  describe('Computed props', () => {
+    it('getCurrentState', () => {
+      const component = createComponent({
+        selectedState: 'gettingStarted',
+        settingsPath: statePaths.settingsPath,
+        documentationPath: statePaths.documentationPath,
+      });
+
+      expect(component.getCurrentState).toBe(component.states.gettingStarted);
+    });
+
+    it('getButtonPath returns settings path for the state "gettingStarted"', () => {
+      const component = createComponent({
+        selectedState: 'gettingStarted',
+        settingsPath: statePaths.settingsPath,
+        documentationPath: statePaths.documentationPath,
+      });
+
+      expect(component.getButtonPath).toEqual(statePaths.settingsPath);
+      expect(component.getButtonPath).not.toEqual(statePaths.documentationPath);
+    });
+
+    it('getButtonPath returns documentation path for any of the other states', () => {
+      const component = createComponent({
+        selectedState: 'loading',
+        settingsPath: statePaths.settingsPath,
+        documentationPath: statePaths.documentationPath,
+      });
+
+      expect(component.getButtonPath).toEqual(statePaths.documentationPath);
+      expect(component.getButtonPath).not.toEqual(statePaths.settingsPath);
+    });
+
+    it('getDescription returns a description with a link for the unableToConnect state', () => {
+      const component = createComponent({
+        selectedState: 'unableToConnect',
+        settingsPath: statePaths.settingsPath,
+        documentationPath: statePaths.documentationPath,
+      });
+
+      expect(component.getDescriptionText.indexOf('<a')).not.toEqual(-1);
+      expect(component.getDescriptionText.indexOf(component.getCurrentState.description))
+            .not.toEqual(-1);
+    });
+
+    it('getDescription returns the description without a link for any other state', () => {
+      const component = createComponent({
+        selectedState: 'loading',
+        settingsPath: statePaths.settingsPath,
+        documentationPath: statePaths.documentationPath,
+      });
+
+      expect(component.getDescriptionText.indexOf('<a')).toEqual(-1);
+      expect(component.getDescriptionText).toEqual(component.getCurrentState.description);
+    });
   });
 
-  it('should show the getting started state', () => {
-    component = new MonitoringStateComponent({
-      propsData: {
-        gettingStarted: true,
-        unableToConnect: false,
-        isLoading: false,
-      },
-    }).$mount();
+  it('should show the gettingStarted state', () => {
+    const component = createComponent({
+      selectedState: 'gettingStarted',
+      settingsPath: statePaths.settingsPath,
+      documentationPath: statePaths.documentationPath,
+    });
 
-    expect(component.gettingStarted).toEqual(true);
-    expect(component.unableToConnect).toEqual(false);
-    expect(component.isLoading).toEqual(false);
-    expect(component.displayCorrespondentSvg).toBe(gettingStartedSvg);
-    // TODO: Add the expectations for the state-titles
+    component.$mount();
+    expect(component.$el.querySelector('svg')).toBeDefined();
+    expect(getTextFromNode(component, '.state-title')).toEqual(component.states.gettingStarted.title);
+    expect(getTextFromNode(component, '.state-description')).toEqual(component.states.gettingStarted.description);
+    expect(getTextFromNode(component, '.btn-success')).toEqual(component.states.gettingStarted.buttonText);
   });
 
-  it('should show the getting started state', () => {
-    component = new MonitoringStateComponent({
-      propsData: {
-        gettingStarted: false,
-        unableToConnect: true,
-        isLoading: false,
-      },
-    }).$mount();
+  it('should show the loading state', () => {
+    const component = createComponent({
+      selectedState: 'loading',
+      settingsPath: statePaths.settingsPath,
+      documentationPath: statePaths.documentationPath,
+    });
 
-    expect(component.gettingStarted).toEqual(false);
-    expect(component.unableToConnect).toEqual(true);
-    expect(component.isLoading).toEqual(false);
-    expect(component.displayCorrespondentSvg).toBe(unableToConnectSvg);
-    // TODO: Add the expectations for the state-titles
+    component.$mount();
+    expect(component.$el.querySelector('svg')).toBeDefined();
+    expect(getTextFromNode(component, '.state-title')).toEqual(component.states.loading.title);
+    expect(getTextFromNode(component, '.state-description')).toEqual(component.states.loading.description);
+    expect(getTextFromNode(component, '.btn-success')).toEqual(component.states.loading.buttonText);
   });
 
-  it('should show the getting started state', () => {
-    component = new MonitoringStateComponent({
-      propsData: {
-        gettingStarted: false,
-        unableToConnect: false,
-        isLoading: true,
-      },
-    }).$mount();
+  it('should show the unableToConnect state', () => {
+    const component = createComponent({
+      selectedState: 'unableToConnect',
+      settingsPath: statePaths.settingsPath,
+      documentationPath: statePaths.documentationPath,
+    });
 
-    expect(component.gettingStarted).toEqual(false);
-    expect(component.unableToConnect).toEqual(false);
-    expect(component.isLoading).toEqual(true);
-    expect(component.displayCorrespondentSvg).toBe(loadingSvg);
-    // TODO: Add the expectations for the state-titles
+    component.$mount();
+    expect(component.$el.querySelector('svg')).toBeDefined();
+    expect(getTextFromNode(component, '.state-title')).toEqual(component.states.unableToConnect.title);
+    expect(component.$el.querySelector('.state-description a')).toBeDefined();
+    expect(getTextFromNode(component, '.btn-success')).toEqual(component.states.unableToConnect.buttonText);
   });
 });

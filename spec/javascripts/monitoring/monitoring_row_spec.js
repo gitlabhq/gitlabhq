@@ -1,41 +1,59 @@
 import Vue from 'vue';
 import MonitoringRow from '~/monitoring/components/monitoring_row.vue';
-import MonitoringStore from '~/monitoring/stores/monitoring_store';
-import MonitoringMock from './mock_data';
+import { deploymentData, singleRowMetrics } from './mock_data';
 
-describe('MonitoringRow component', () => {
-  let component;
-  let MonitoringRowComponent;
+const createComponent = (propsData) => {
+  const Component = Vue.extend(MonitoringRow);
 
-  beforeEach(() => {
-    MonitoringRowComponent = Vue.extend(MonitoringRow);
-    this.store = new MonitoringStore();
-    this.store.storeMetrics(MonitoringMock);
+  return new Component({
+    propsData,
   });
+};
 
-  afterEach(() => {
-    MonitoringStore.singleton = null;
-  });
-
-  it('Sets the bootstrap class to col-md-6 when the rowData length is 2 or less', () => {
-    component = new MonitoringRowComponent({
-      propsData: {
-        rowData: this.store.groups[0].metrics[0],
+describe('MonitoringRow', () => {
+  describe('Computed props', () => {
+    it('bootstrapClass is set to col-md-6 when rowData is higher/equal to 2', () => {
+      const component = createComponent({
+        rowData: singleRowMetrics,
         updateAspectRatio: false,
-      },
-    }).$mount();
+        deploymentData,
+      });
 
-    expect(component.bootstrapClass()).toEqual('col-md-6');
+      expect(component.bootstrapClass).toEqual('col-md-6');
+    });
+
+    it('bootstrapClass is set to col-md-12 when rowData is lower than 2', () => {
+      const component = createComponent({
+        rowData: [singleRowMetrics[0]],
+        updateAspectRatio: false,
+        deploymentData,
+      });
+
+      expect(component.bootstrapClass).toEqual('col-md-12');
+    });
   });
 
-  it('has the rowData set to an array of a maximum length of 2', () => {
-    component = new MonitoringRowComponent({
-      propsData: {
-        rowData: this.store.groups[0].metrics[0],
-        updateAspectRatio: false,
-      },
-    }).$mount();
+  it('has one column in the DOM', () => {
+    const component = createComponent({
+      rowData: singleRowMetrics,
+      updateAspectRatio: false,
+      deploymentData,
+    });
+    component.$mount();
 
-    expect(component.rowData.length).toEqual(2);
+    expect(component.$el.querySelectorAll('.prometheus-svg-container').length)
+        .toEqual(component.rowData.length);
+  });
+
+  it('has two columns in the DOM', () => {
+    const component = createComponent({
+      rowData: singleRowMetrics,
+      updateAspectRatio: false,
+      deploymentData,
+    });
+    component.$mount();
+
+    expect(component.$el.querySelectorAll('.col-md-6').length)
+        .toEqual(component.rowData.length);
   });
 });

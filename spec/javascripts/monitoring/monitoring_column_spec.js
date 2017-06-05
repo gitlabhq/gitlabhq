@@ -1,93 +1,125 @@
 import Vue from 'vue';
+import _ from 'underscore';
 import MonitoringColumn from '~/monitoring/components/monitoring_column.vue';
-import MonitoringStore from '~/monitoring/stores/monitoring_store';
-import MonitoringMock from './mock_data';
+import eventHub from '~/monitoring/event_hub';
+import { deploymentData, singleRowMetrics } from './mock_data';
 
-describe('MonitoringColumn Component', () => {
-  let component;
-  let MonitoringColumnComponent;
-  const store = new MonitoringStore();
-  store.storeMetrics(MonitoringMock);
-  this.column = (store.groups[0].metrics[0])[0];
+const createComponent = (propsData) => {
+  const Component = Vue.extend(MonitoringColumn);
 
-  beforeEach(() => {
-    MonitoringColumnComponent = Vue.extend(MonitoringColumn);
+  return new Component({
+    propsData,
   });
+};
 
-  afterAll(() => {
-    MonitoringStore.singleton = null;
+describe('MonitoringColumn', () => {
+  beforeEach(() => {
+    spyOn(MonitoringColumn.methods, 'formatDeployments').and.callFake(function fakeFormat() {
+      return {};
+    });
   });
 
   it('has a title', () => {
-    component = new MonitoringColumnComponent({
-      propsData: {
-        updateAspectRatio: false,
-        classType: 'col-md-12',
-        columnData: this.column,
-      },
-    }).$mount();
+    const component = createComponent({
+      columnData: singleRowMetrics[0],
+      classType: 'col-md-6',
+      updateAspectRatio: false,
+      deploymentData,
+    });
+    component.$mount();
 
-    expect(component.$el.querySelector('.text-center').innerText).toBe(this.column.title);
+    expect(component.$el.querySelector('.text-center').innerText.trim()).toBe(component.columnData.title);
   });
 
-  it('has a axis container with labels', () => {
-    component = new MonitoringColumnComponent({
-      propsData: {
-        updateAspectRatio: false,
-        classType: 'col-md-12',
-        columnData: this.column,
-      },
-    }).$mount();
+  it('creates a path for the line and area of the graph', (done) => {
+    const component = createComponent({
+      columnData: singleRowMetrics[0],
+      classType: 'col-md-6',
+      updateAspectRatio: false,
+      deploymentData,
+    });
+    component.$mount();
 
-    const axisLabelContainer = component.$el.querySelector('.axis-label-container');
-    expect(axisLabelContainer.querySelectorAll('line').length).toEqual(2);
-    expect(axisLabelContainer.querySelectorAll('rect').length).toEqual(3);
-    expect(axisLabelContainer.querySelectorAll('text').length).toEqual(4);
+    Vue.nextTick(() => {
+      expect(component.area).toBeDefined();
+      expect(component.line).toBeDefined();
+      expect(typeof component.area).toEqual('string');
+      expect(typeof component.line).toEqual('string');
+      expect(_.isFunction(component.xScale)).toBe(true);
+      expect(_.isFunction(component.yScale)).toBe(true);
+      done();
+    });
   });
 
-  it('has a graph overlay to allow mouseover events', () => {
-    component = new MonitoringColumnComponent({
-      propsData: {
-        updateAspectRatio: false,
-        classType: 'col-md-12',
-        columnData: this.column,
-      },
-    }).$mount();
+  it('should contain a hidden gradient', () => {
+    const component = createComponent({
+      columnData: singleRowMetrics[0],
+      classType: 'col-md-6',
+      updateAspectRatio: false,
+      deploymentData,
+    });
+    component.$mount();
 
-    expect(component.$el.querySelector('.prometheus-graph-overlay')).toBeDefined();
+    expect(component.$el.querySelector('#shadow-gradient')).not.toBe(null);
   });
 
-  it('contains a path, axis and lines to represent the data', () => {
-    component = new MonitoringColumnComponent({
-      propsData: {
+  describe('Computed props', () => {
+    it('calculateAxisTransform translates an element Y position depending of its height', () => {
+      const component = createComponent({
+        columnData: singleRowMetrics[0],
+        classType: 'col-md-6',
         updateAspectRatio: false,
-        classType: 'col-md-12',
-        columnData: this.column,
-      },
-    }).$mount();
+        deploymentData,
+      });
 
-    expect(component.svgContainer.querySelector('.x-axis')).toBeDefined();
-    expect(component.svgContainer.querySelector('.y-axis')).toBeDefined();
-    expect(component.svgContainer.querySelector('.metric-area')).toBeDefined();
-    expect(component.svgContainer.querySelector('.metric-line')).toBeDefined();
-    const viewBoxMeasurements = component.svgContainer.getAttribute('viewBox').split(' ');
-    // expect(parseInt(viewBoxMeasurements[2], 10)).toBeGreaterThan(0);
-    expect(parseInt(viewBoxMeasurements[3], 10)).toBeGreaterThan(0);
+      const transformedHeight = `${component.height - 100}`;
+      expect(component.calculateAxisTransform.indexOf(transformedHeight))
+        .not.toEqual(-1);
+    });
+
+    it('calculateViewBox gets a width and height property based on the DOM size of the element', () => {
+      const component = createComponent({
+        columnData: singleRowMetrics[0],
+        classType: 'col-md-6',
+        updateAspectRatio: false,
+        deploymentData,
+      });
+
+      const viewBoxArray = component.calculateViewBox.split(' ');
+      expect(typeof component.calculateViewBox).toEqual('string');
+      expect(viewBoxArray[2]).toEqual(component.width.toString());
+      expect(viewBoxArray[3]).toEqual(component.height.toString());
+    });
+
+    it('calculateInnerViewBox gets a width - 150 and height property based on the DOM size of the element', () => {
+      const component = createComponent({
+        columnData: singleRowMetrics[0],
+        classType: 'col-md-6',
+        updateAspectRatio: false,
+        deploymentData,
+      });
+
+      const viewBoxArray = component.calculateInnerViewBox.split(' ');
+      const adjustedWidth = `${component.width - 150}`;
+      expect(typeof component.calculateInnerViewBox).toEqual('string');
+      expect(viewBoxArray[2]).toEqual(adjustedWidth);
+      expect(viewBoxArray[3]).toEqual(component.height.toString());
+    });
   });
 
-  it('redraws the graph when the screen is resized', (done) => {
-    component = new MonitoringColumnComponent({
-      propsData: {
-        updateAspectRatio: false,
-        classType: 'col-md-12',
-        columnData: this.column,
-      },
-    }).$mount();
-    spyOn(component, 'redraw');
+  it('sends an event to the eventhub when it has finished resizing', (done) => {
+    const component = createComponent({
+      columnData: singleRowMetrics[0],
+      classType: 'col-md-6',
+      updateAspectRatio: false,
+      deploymentData,
+    });
+    spyOn(eventHub, '$emit');
+    component.$mount();
 
     component.updateAspectRatio = true;
     Vue.nextTick(() => {
-      expect(component.redraw).toHaveBeenCalled();
+      expect(eventHub.$emit).toHaveBeenCalled();
       done();
     });
   });
