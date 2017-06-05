@@ -148,21 +148,6 @@
       }
     }
   }
-
-  .name {
-    background-color: $filter-name-resting-color;
-    color: $filter-name-text-color;
-    border-radius: 2px 0 0 2px;
-    margin-right: 1px;
-    text-transform: capitalize;
-  }
-
-  .value-container {
-    background-color: $white-normal;
-    color: $filter-value-text-color;
-    border-radius: 0 2px 2px 0;
-    margin-right: 5px;
-  }
 }
 
 .filtered-search-token:hover,
