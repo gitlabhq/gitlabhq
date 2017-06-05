@@ -393,6 +393,9 @@ import ShortcutsBlob from './shortcuts_blob';
         case 'users:show':
           new UserCallout();
           break;
+        case 'admin:conversational_development_index:show':
+          new UserCallout();
+          break;
         case 'snippets:show':
           new LineHighlighter();
           new BlobViewer();
