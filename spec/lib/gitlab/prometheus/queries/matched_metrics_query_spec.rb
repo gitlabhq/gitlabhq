@@ -9,6 +9,7 @@ describe Gitlab::Prometheus::Queries::MatchedMetricsQuery, lib: true do
   def series_info_with_environment(*more_metrics)
     %w{metric_a metric_b}.concat(more_metrics).map { |metric_name| { '__name__' => metric_name, 'environment' => '' } }
   end
+
   let(:metric_names) { %w{metric_a metric_b} }
   let(:series_info_without_environment) do
     [{ '__name__' => 'metric_a' },
@@ -110,7 +111,9 @@ describe Gitlab::Prometheus::Queries::MatchedMetricsQuery, lib: true do
       it 'responds with one metrics as active and no missing requiremens' do
         expect(subject.query).to eq([
                                       { group: 'name', priority: 1, active_metrics: 1, metrics_missing_requirements: 0 },
-                                      { group: 'nameb', priority: 1, active_metrics: 2, metrics_missing_requirements: 0 }])
+                                      { group: 'nameb', priority: 1, active_metrics: 2, metrics_missing_requirements: 0 }
+                                    ]
+                                   )
       end
     end
 
@@ -122,7 +125,9 @@ describe Gitlab::Prometheus::Queries::MatchedMetricsQuery, lib: true do
       it 'responds with one metrics as active and no missing requiremens' do
         expect(subject.query).to eq([
                                       { group: 'name', priority: 1, active_metrics: 0, metrics_missing_requirements: 1 },
-                                      { group: 'nameb', priority: 1, active_metrics: 0, metrics_missing_requirements: 2 }])
+                                      { group: 'nameb', priority: 1, active_metrics: 0, metrics_missing_requirements: 2 }
+                                    ]
+                                   )
       end
     end
   end

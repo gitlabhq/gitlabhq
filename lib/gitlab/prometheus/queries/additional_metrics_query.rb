@@ -40,11 +40,11 @@ module Gitlab::Prometheus::Queries
     private
 
     def metric_with_any_queries(metric)
-      metric[:queries]&.count > 0
+      metric[:queries]&.count&.> 0
     end
 
     def group_with_any_metrics(group)
-      group[:metrics]&.count > 0
+      group[:metrics]&.count&.> 0
     end
 
     def query_with_result(query)
@@ -63,7 +63,6 @@ module Gitlab::Prometheus::Queries
         end
       query_with_result
     end
-
 
     def available_metrics
       @available_metrics ||= client_label_values || []

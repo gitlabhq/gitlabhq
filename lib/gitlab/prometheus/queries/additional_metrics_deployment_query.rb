@@ -1,6 +1,5 @@
 module Gitlab::Prometheus::Queries
   class AdditionalMetricsDeploymentQuery < AdditionalMetricsQuery
-
     def query(deployment_id)
       deployment = Deployment.find_by(id: deployment_id)
       query_context = {
@@ -14,4 +13,3 @@ module Gitlab::Prometheus::Queries
     end
   end
 end
-
