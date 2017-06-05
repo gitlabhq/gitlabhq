@@ -1,4 +1,4 @@
-= form_for [@project.namespace.becomes(Namespace), @project, @protected_tag], html: { class: 'js-new-protected-tag' } do |f|
+= form_for [@project.namespace.becomes(Namespace), @project, @protected_tag], html: { class: 'new-protected-tag js-new-protected-tag' } do |f|
   .panel.panel-default
     .panel-heading
       %h3.panel-title
@@ -24,9 +24,13 @@
           .col-md-10
             .create_access_levels-container
               = dropdown_tag('Select',
-                             options: { toggle_class: 'js-allowed-to-create wide',
-                             dropdown_class: 'dropdown-menu-selectable',
-                             data: { field_name: 'protected_tag[create_access_levels_attributes][0][access_level]', input_id: 'create_access_levels_attributes' }})
+                             options: { toggle_class: 'js-allowed-to-create js-multiselect wide',
+                             dropdown_class: 'dropdown-menu-user dropdown-menu-selectable', filter: true,
+                             data: { input_id: 'create_access_levels_attributes', default_label: 'Select' } })
+            .help-block
+              Only groups that
+              = link_to 'have this project shared', help_page_path('workflow/share_projects_with_other_groups')
+              can be added here
 
     .panel-footer
       = f.submit 'Protect', class: 'btn-create btn', disabled: true
