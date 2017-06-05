@@ -137,6 +137,9 @@ ActiveRecord::Schema.define(version: 20170602003304) do
     t.boolean "clientside_sentry_enabled", default: false, null: false
     t.string "clientside_sentry_dsn"
     t.boolean "check_namespace_plan", default: false, null: false
+    t.integer "mirror_max_delay", default: 5, null: false
+    t.integer "mirror_max_capacity", default: 100, null: false
+    t.integer "mirror_capacity_threshold", default: 50, null: false
   end
 
   create_table "approvals", force: :cascade do |t|
