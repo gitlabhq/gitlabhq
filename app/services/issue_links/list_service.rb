@@ -25,7 +25,7 @@ module IssueLinks
 
     def issues
       authorized_issues = IssuesFinder
-                            .new(@current_user, authorized_only: true, feature_availability_check: false)
+                            .new(@current_user, feature_availability_check: false)
                             .execute
                             .reorder(nil)
 

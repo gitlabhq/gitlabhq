@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe IssueLinks::ListService, service: true do
   let(:user) { create :user }
-  let(:project) { create(:project_empty_repo) }
+  let(:project) { create(:project_empty_repo, :private) }
   let(:issue) { create :issue, project: project }
   let(:user_role) { :developer }
 
@@ -38,7 +38,7 @@ describe IssueLinks::ListService, service: true do
 
       it 'verifies number of queries' do
         recorded = ActiveRecord::QueryRecorder.new { subject }
-        expect(recorded.count).to be_within(1).of(35)
+        expect(recorded.count).to be_within(1).of(37)
       end
 
       it 'returns related issues JSON' do
@@ -70,6 +70,19 @@ describe IssueLinks::ListService, service: true do
                                            project_path: issue_d.project.path,
                                            namespace_full_path: issue_d.project.namespace.full_path,
                                            destroy_relation_path: "/#{project.full_path}/issues/#{issue.iid}/links/#{issue_link_c.id}"))
+      end
+    end
+
+    context 'referencing a public project issue' do
+      let(:public_project) { create :empty_project, :public }
+      let(:issue_b) { create :issue, project: public_project }
+
+      let!(:issue_link) do
+        create(:issue_link, source: issue, target: issue_b)
+      end
+
+      it 'presents issue' do
+        expect(subject.size).to eq(1)
       end
     end
 
