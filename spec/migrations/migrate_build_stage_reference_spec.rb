@@ -1,7 +1,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20170526185921_migrate_build_stage_reference.rb')
 
-describe MigrateBuildStageReference, :migration, schema: 20170526185602 do
+describe MigrateBuildStageReference, :migration do
   ##
   # Create test data - pipeline and CI/CD jobs.
   #
