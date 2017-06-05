@@ -48,6 +48,10 @@ describe Gitlab::Ci::Stage::Seed do
       expect(pipeline.builds).to all(satisfy { |job| job.stage_id.present? })
       expect(pipeline.builds).to all(satisfy { |job| job.pipeline.present? })
       expect(pipeline.builds).to all(satisfy { |job| job.project.present? })
+      expect(pipeline.stages)
+        .to all(satisfy { |stage| stage.pipeline.present? })
+      expect(pipeline.stages)
+        .to all(satisfy { |stage| stage.project.present? })
     end
   end
 end
