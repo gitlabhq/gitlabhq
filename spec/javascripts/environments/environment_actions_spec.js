@@ -32,9 +32,16 @@ describe('Actions Component', () => {
     }).$mount();
   });
 
+  describe('computed', () => {
+    it('title', () => {
+      expect(component.title).toEqual('Deploy to...');
+    });
+  });
+
   it('should render a dropdown button with icon and title attribute', () => {
     expect(component.$el.querySelector('.fa-caret-down')).toBeDefined();
-    expect(component.$el.querySelector('.dropdown-new').getAttribute('title')).toEqual('Deploy to...');
+    expect(component.$el.querySelector('.dropdown-new').getAttribute('data-original-title')).toEqual('Deploy to...');
+    expect(component.$el.querySelector('.dropdown-new').getAttribute('aria-label')).toEqual('Deploy to...');
   });
 
   it('should render a dropdown with the provided list of actions', () => {
