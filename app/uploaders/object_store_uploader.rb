@@ -3,6 +3,7 @@ require 'carrierwave/storage/fog'
 
 class ObjectStoreUploader < GitlabUploader
   before :store, :set_default_local_store
+  before :store, :verify_license!
 
   LOCAL_STORE = 1
   REMOTE_STORE = 2
@@ -102,6 +103,13 @@ class ObjectStoreUploader < GitlabUploader
 
   def move_to_cache
     file.try(:storage) == cache_storage
+  end
+
+  # We block storing artifacts on Object Storage, not receiving
+  def verify_license!(new_file)
+    return if file_storage?
+
+    raise 'Object Storage feature is missing' unless subject.project.feature_available?(:object_storage)
   end
 
   private

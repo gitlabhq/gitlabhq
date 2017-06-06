@@ -12,6 +12,8 @@ module StubConfiguration
       }
     )
 
+    allow_any_instance_of(ArtifactUploader).to receive(:verify_license!) { true }
+
     ::Fog::Storage.new(Gitlab.config.artifacts.object_store.connection).tap do |connection|
       begin
         connection.directories.create(key: 'artifacts')

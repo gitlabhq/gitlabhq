@@ -186,4 +186,49 @@ describe ObjectStoreUploader do
 
     it { is_expected.to eq(false) }
   end
+
+  describe '#verify_license!' do
+    subject { uploader.verify_license!(nil) }
+
+    context 'when using local storage' do
+      before do
+        expect(object).to receive(:artifacts_file_store) { described_class::LOCAL_STORE }
+      end
+
+      it "does not raise an error" do
+        expect { subject }.not_to raise_error
+      end
+    end
+
+    context 'when using remote storage' do
+      let(:project) { double }
+
+      before do
+        uploader_class.storage_options double(
+          object_store: double(enabled: true))
+        expect(object).to receive(:artifacts_file_store) { described_class::REMOTE_STORE }
+        expect(object).to receive(:project) { project }
+      end
+
+      context 'feature is not available' do
+        before do
+          expect(project).to receive(:feature_available?).with(:object_storage) { false }
+        end
+
+        it "does raise an error" do
+          expect { subject }.to raise_error(/Object Storage feature is missing/)
+        end
+      end
+
+      context 'feature is available' do
+        before do
+          expect(project).to receive(:feature_available?).with(:object_storage) { true }
+        end
+
+        it "does not raise an error" do
+          expect { subject }.not_to raise_error
+        end
+      end
+    end
+  end
 end
