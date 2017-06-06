@@ -1,4 +1,4 @@
-# GitLab Issues Documentation
+# Issues documentation
 
 The GitLab Issue Tracker is an advanced and complete tool
 for tracking the evolution of a new idea or the process
@@ -41,13 +41,13 @@ The image bellow illustrates how an issue looks like:
 
 Learn more about it on the [GitLab Issues Functionalities documentation](issues_functionalities.md).
 
-## New Issue
+## New issue
 
 Read through the [documentation on creating issues](create_new_issue.md).
 
 ## Closing issues
 
-Read through the distinct ways to [close issues](closing_issues.md) on GitLab.
+Learn distinct ways to [close issues](closing_issues.md) in GitLab.
 
 ## Create a merge request from an issue
 
@@ -84,7 +84,7 @@ Learn more about them on the [issue templates documentation](../../project/descr
 
 Learn more about [crosslinking](crosslinking_issues.md) issues and merge requests.
 
-### GitLab Issue Board
+### Issue Board
 
 The [GitLab Issue Board](https://about.gitlab.com/features/issueboard/) is a way to
 enhance your workflow by organizing and prioritizing issues in GitLab.
