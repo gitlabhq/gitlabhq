@@ -107,7 +107,7 @@ module Gitlab
 
         raise Gitlab::Auth::MissingPersonalTokenError if user.two_factor_enabled?
 
-        Gitlab::Auth::Result.new(user, nil, :gitlab_or_ldap, full_api_abilities)
+        Gitlab::Auth::Result.new(user, nil, :gitlab_or_ldap, full_authentication_abilities)
       end
 
       def oauth_access_token_check(login, password)
@@ -116,7 +116,7 @@ module Gitlab
 
           if valid_oauth_token?(token)
             user = User.find_by(id: token.resource_owner_id)
-            Gitlab::Auth::Result.new(user, nil, :oauth, full_api_abilities)
+            Gitlab::Auth::Result.new(user, nil, :oauth, full_authentication_abilities)
           end
         end
       end
@@ -126,26 +126,23 @@ module Gitlab
 
         token = PersonalAccessTokensFinder.new(state: 'active').find_by(token: password)
 
-        if token && valid_scoped_token?(token, scopes: AVAILABLE_SCOPES.map(&:to_s))
+        if token && valid_scoped_token?(token, AVAILABLE_SCOPES.map(&:to_s))
           Gitlab::Auth::Result.new(token.user, nil, :personal_token, abilities_for_scope(token.scopes))
         end
       end
 
       def valid_oauth_token?(token)
-        token && token.accessible? && valid_scoped_token?(token)
+        token && token.accessible? && valid_scoped_token?(token, ["api"])
       end
 
-      def valid_scoped_token?(token, scopes: %w[api])
+      def valid_scoped_token?(token, scopes)
         AccessTokenValidationService.new(token).include_any_scope?(scopes)
       end
 
       def abilities_for_scope(scopes)
-        abilities = Set.new
-
-        abilities.merge(full_api_abilities) if scopes.include?("api")
-        abilities << :read_container_image if scopes.include?("read_registry")
-
-        abilities.to_a
+        scopes.map do |scope|
+          self.public_send(:"#{scope}_scope_authentication_abilities")
+        end.flatten.uniq
       end
 
       def lfs_token_check(login, password)
@@ -164,9 +161,9 @@ module Gitlab
 
         authentication_abilities =
           if token_handler.user?
-            full_api_abilities
+            full_authentication_abilities
           else
-            read_api_abilities
+            read_authentication_abilities
           end
 
         if Devise.secure_compare(token_handler.token, password)
@@ -202,7 +199,7 @@ module Gitlab
         ]
       end
 
-      def read_api_abilities
+      def read_authentication_abilities
         [
           :read_project,
           :download_code,
@@ -210,11 +207,21 @@ module Gitlab
         ]
       end
 
-      def full_api_abilities
-        read_api_abilities + [
+      def full_authentication_abilities
+        read_authentication_abilities + [
           :push_code,
           :create_container_image
         ]
+      end
+      alias_method :api_scope_authentication_abilities, :full_authentication_abilities
+
+      def read_registry_scope_authentication_abilities
+        [:read_container_image]
+      end
+
+      # The currently used auth method doesn't allow any actions for this scope
+      def read_user_scope_authentication_abilities
+        []
       end
     end
   end

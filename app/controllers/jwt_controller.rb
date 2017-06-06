@@ -20,7 +20,7 @@ class JwtController < ApplicationController
   private
 
   def authenticate_project_or_user
-    @authentication_result = Gitlab::Auth::Result.new(nil, nil, :none, Gitlab::Auth.read_api_abilities)
+    @authentication_result = Gitlab::Auth::Result.new(nil, nil, :none, Gitlab::Auth.read_authentication_abilities)
 
     authenticate_with_http_basic do |login, password|
       @authentication_result = Gitlab::Auth.find_for_git_client(login, password, project: nil, ip: request.ip)
