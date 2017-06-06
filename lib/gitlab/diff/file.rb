@@ -5,7 +5,11 @@ module Gitlab
 
       delegate :new_file?, :deleted_file?, :renamed_file?,
         :old_path, :new_path, :a_mode, :b_mode, :mode_changed?,
-        :submodule?, :too_large?, :collapsed?, to: :diff, prefix: false
+        :submodule?, :expanded?, :too_large?, :collapsed?, :line_count, to: :diff, prefix: false
+
+      RICH_VIEWERS = [
+        DiffViewer::Image
+      ].sort_by { |v| v.binary? ? 0 : 1 }.freeze
 
       def initialize(diff, repository:, diff_refs: nil, fallback_diff_refs: nil)
         @diff = diff
@@ -176,6 +180,92 @@ module Gitlab
 
       def text?
         !binary?
+      end
+
+      def external_storage_error?
+        old_blob&.external_storage_error? || new_blob&.external_storage_error?
+      end
+
+      def stored_externally?
+        old_blob&.stored_externally? || new_blob&.stored_externally?
+      end
+
+      def external_storage
+        old_blob&.external_storage || new_blob&.external_storage
+      end
+
+      def content_changed?
+        if raw_binary?
+          old_blob && new_blob && old_blob.id != new_blob.id
+        else
+          collapsed? || too_large? || line_count > 0
+        end
+      end
+
+      def different_type?
+        old_blob && new_blob && old_blob.binary? != new_blob.binary?
+      end
+
+      def size
+        [old_blob&.size, new_blob&.size].compact.sum
+      end
+
+      def raw_size
+        [old_blob&.raw_size, new_blob&.raw_size].compact.sum
+      end
+
+      def raw_binary?
+        old_blob&.raw_binary? || new_blob&.raw_binary?
+      end
+
+      def simple_viewer
+        @simple_viewer ||= simple_viewer_class.new(self)
+      end
+
+      def rich_viewer
+        return @rich_viewer if defined?(@rich_viewer)
+
+        @rich_viewer = rich_viewer_class&.new(self)
+      end
+
+      def rendered_as_text?(ignore_errors: true)
+        simple_viewer.is_a?(DiffViewer::Text) && (ignore_errors || simple_viewer.render_error.nil?)
+      end
+
+      private
+
+      def simple_viewer_class
+        if content_changed?
+          if raw_binary? || different_type?
+            DiffViewer::NoPreview
+          elsif diffable?
+            DiffViewer::Text
+          else
+            DiffViewer::NotDiffable
+          end
+        elsif new_file?
+          DiffViewer::Added
+        elsif deleted_file?
+          DiffViewer::Deleted
+        elsif renamed_file?
+          DiffViewer::Renamed
+        elsif mode_changed?
+          DiffViewer::ModeChanged
+        end
+      end
+
+      def rich_viewer_class
+        viewer_class_from(RICH_VIEWERS)
+      end
+
+      def viewer_class_from(classes)
+        return unless new_file? || deleted_file? || content_changed?
+        return unless diffable?
+        return if different_type? || external_storage_error?
+
+        verify_binary = !stored_externally?
+
+        classes.find { |viewer_class| viewer_class.can_render?(self, verify_binary: verify_binary) }
       end
     end
   end

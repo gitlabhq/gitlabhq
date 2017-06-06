@@ -262,7 +262,7 @@ feature 'Expand and collapse diffs', js: true, feature: true do
 
       # Wait for elements to appear to ensure full page reload
       expect(page).to have_content('This diff was suppressed by a .gitattributes entry')
-      expect(page).to have_content('This diff could not be displayed because it is too large.')
+      expect(page).to have_content('This source diff could not be displayed because it is too large.')
       expect(page).to have_content('too_large_image.jpg')
       find('.note-textarea')
 
