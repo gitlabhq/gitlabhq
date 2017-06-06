@@ -564,11 +564,7 @@ describe MergeRequest, models: true do
       project.team << [developer, :developer]
       project.team << [blocked_developer, :developer]
 
-<<<<<<< HEAD
-      expect(merge_request.number_of_potential_approvers).to eq(2)
-=======
-      expect(merge_request.reload.number_of_potential_approvers).to eq(1)
->>>>>>> origin/master
+      expect(merge_request.reload.number_of_potential_approvers).to eq(2)
     end
 
     context "when the project is part of a group" do

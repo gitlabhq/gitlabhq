@@ -55,12 +55,9 @@ import Api from './api';
         this.includeGroups = $(select).data('include-groups');
         this.allProjects = $(select).data('allprojects') || false;
         this.orderBy = $(select).data('order-by') || 'id';
-<<<<<<< HEAD
         this.withIssuesEnabled = $(select).data('with-issues-enabled');
         this.withMergeRequestsEnabled = $(select).data('with-merge-requests-enabled');
-=======
         idAttribute = $(select).data('idattribute') || 'web_url';
->>>>>>> origin/master
 
         placeholder = "Search for project";
         if (this.includeGroups) {
@@ -97,12 +94,9 @@ import Api from './api';
               } else {
                 return Api.projects(query.term, {
                   order_by: _this.orderBy,
-<<<<<<< HEAD
                   with_issues_enabled: _this.withIssuesEnabled,
-                  with_merge_requests_enabled: _this.withMergeRequestsEnabled
-=======
+                  with_merge_requests_enabled: _this.withMergeRequestsEnabled,
                   membership: !_this.allProjects
->>>>>>> origin/master
                 }, projectsCallback);
               }
             };
