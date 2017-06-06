@@ -26,7 +26,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click link "All"' do
-    click_link "All"
+    find('.issues-state-filters .state-all span', text: 'All').click
     # Waits for load
     expect(find('.issues-state-filters > .active')).to have_content 'All'
   end
@@ -36,9 +36,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click link "Closed"' do
-    page.within('.issues-state-filters') do
-      click_link "Closed"
-    end
+    find('.issues-state-filters .state-closed span', text: 'Closed').click
   end
 
   step 'I should see merge request "Wiki Feature"' do

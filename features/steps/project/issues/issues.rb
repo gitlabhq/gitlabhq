@@ -28,7 +28,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I click link "Closed"' do
-    find('.issues-state-filters a', text: "Closed").click
+    find('.issues-state-filters .state-closed span', text: 'Closed').click
   end
 
   step 'I click button "Unsubscribe"' do
@@ -44,7 +44,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I click link "All"' do
-    click_link "All"
+    find('.issues-state-filters .state-all span', text: 'All').click
     # Waits for load
     expect(find('.issues-state-filters > .active')).to have_content 'All'
   end
