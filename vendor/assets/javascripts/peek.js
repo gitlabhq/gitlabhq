@@ -15,10 +15,29 @@ requestId = null;
     return $('#peek').length;
   };
   updatePerformanceBar = function(results) {
-    var key, label;
+    var key, label, data, table, html, tr, td;
     for (key in results.data) {
       for (label in results.data[key]) {
-        $("[data-defer-to=" + key + "-" + label + "]").text(results.data[key][label]);
+        data = results.data[key][label];
+        console.log(data);
+        if (Array.isArray(data)) {
+          table = document.createElement('table');
+
+          for (var i = 0; i < data.length; i += 1) {
+            tr = document.createElement('tr');
+            td = document.createElement('td');
+
+            td.appendChild(document.createTextNode(data[i]));
+            tr.appendChild(td);
+            table.appendChild(tr);
+          }
+
+          $table = $(table).addClass('table');
+          $("[data-defer-to=" + key + "-" + label + "]").html($table);
+        }
+        else {
+          $("[data-defer-to=" + key + "-" + label + "]").text(results.data[key][label]);
+        }
       }
     }
     return $(document).trigger('peek:render', [getRequestId(), results]);

@@ -7,7 +7,6 @@
   height: 35px;
   line-height: 35px;
   color: #999;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.75);
 
   .hidden {
     display: none;
@@ -86,33 +85,10 @@
   }
 }
 
-// .performance-bar {
-//   position: relative;
-//   top: 2px;
-//   display: inline-block;
-//   width: 75px;
-//   height: 10px;
-//   margin: 0 0 0 5px;
-//   list-style: none;
-//   background-color: rgba(0, 0, 0, .5);
-//   border: 1px solid rgba(0, 0, 0, .7);
-//   border-radius: 2px;
-//   box-shadow: 0 1px 0 rgba(255, 255, 255, .15);
-//
-//   li {
-//     position: absolute;
-//     top: 0;
-//     bottom: 0;
-//     overflow: hidden;
-//     opacity: .8;
-//     color: transparent;
-//
-//     &:hover {
-//       opacity: 1;
-//       cursor: default;
-//     }
-//   }
-// }
+#modal-peek-pg-queries-content {
+  // background: #999;
+  color: #000;
+}
 
 .tipsy { font-size: 10px; position: absolute; padding: 5px; z-index: 100000; }
   .tipsy-inner { background-color: #000; color: #FFF; max-width: 200px; padding: 5px 8px 4px 8px; text-align: center; }
