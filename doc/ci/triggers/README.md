@@ -168,7 +168,7 @@ Since GitLab 9.3 you can trigger a new pipeline using a CI_JOB_TOKEN.
 This method currently doesn't support Variables.
 The support for them will be included in 9.4 of GitLab.
 
-This way of triggering does create a dependent pipeline relation on Pipeline Graph page.
+This way of triggering creates a dependent pipeline relation visible on the Pipeline Graph.
 
 ```yaml
 build_docs:
@@ -179,7 +179,7 @@ build_docs:
   - tags
 ```
 
-Pipelines triggered that way do expose a special variable: `CI_PIPELINE_SOURCE=dependent_pipeline`.
+Pipelines triggered that way do expose a special variable: `CI_PIPELINE_SOURCE=pipeline`.
 
 ### Making use of trigger variables
 

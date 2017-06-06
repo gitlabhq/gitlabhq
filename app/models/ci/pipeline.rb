@@ -53,7 +53,7 @@ module Ci
       schedule: 4,
       api: 5,
       external: 6,
-      dependent_pipeline: 7
+      pipeline: 7
     }
 
     state_machine :status, initial: :created do

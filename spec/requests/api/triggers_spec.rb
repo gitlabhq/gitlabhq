@@ -145,12 +145,12 @@ describe API::Triggers do
       context 'for related user' do
         let(:other_user) { create(:user) }
 
-        context 'with reported permissions' do
+        context 'with reporter permissions' do
           before do
             project.add_reporter(other_user)
           end
 
-          it 'forbidds pipeline creation' do
+          it 'forbids to create a pipeline' do
             subject
 
             expect(response).to have_http_status(400)
@@ -167,7 +167,7 @@ describe API::Triggers do
             expect { subject }.to change(Ci::Pipeline, :count)
 
             expect(response).to have_http_status(201)
-            expect(Ci::Pipeline.last.source).to eq('dependent_pipeline')
+            expect(Ci::Pipeline.last.source).to eq('pipeline')
             expect(Ci::Pipeline.last.triggered_by_pipeline).not_to be_nil
           end
 
@@ -176,10 +176,11 @@ describe API::Triggers do
               other_job.success
             end
 
-            it 'creates a new pipeline' do
+            it 'does not create a pipeline' do
               subject
 
               expect(response).to have_http_status(400)
+              expect(json_response['message']).to eq('400 Job has to be running')
             end
           end
 
@@ -189,7 +190,7 @@ describe API::Triggers do
                 variables: { 'KEY' => 'VALUE' } }
             end
 
-            it 'forbidds pipeline creation' do
+            it 'forbids to create a pipeline' do
               subject
 
               expect(response).to have_http_status(400)
