@@ -119,11 +119,11 @@ class Note < ActiveRecord::Base
       Discussion.build_collection(fresh, context_noteable)
     end
 
-    def find_discussion(discussion_id)
+    def find_discussion(discussion_id, context_noteable = nil)
       notes = where(discussion_id: discussion_id).fresh.to_a
       return if notes.empty?
 
-      Discussion.build(notes)
+      Discussion.build(notes, context_noteable)
     end
 
     def grouped_diff_discussions(diff_refs = nil)
@@ -271,20 +271,20 @@ class Note < ActiveRecord::Base
   # This method exists as an alternative to `#discussion` to use when the methods
   # we intend to call on the Discussion object don't require it to have all of its notes,
   # and just depend on the first note or the type of discussion. This saves us a DB query.
-  def to_discussion(noteable = nil)
-    Discussion.build([self], noteable)
+  def to_discussion(context_noteable = nil)
+    Discussion.build([self], context_noteable)
   end
 
   # Returns the entire discussion this note is part of.
   # Consider using `#to_discussion` if we do not need to render the discussion
   # and all its notes and if we don't care about the discussion's resolvability status.
-  def discussion
-    full_discussion = self.noteable.notes.find_discussion(self.discussion_id) if part_of_discussion?
-    full_discussion || to_discussion
+  def discussion(context_noteable = nil)
+    full_discussion = self.noteable.notes.find_discussion(self.discussion_id, context_noteable) if part_of_discussion?(context_noteable)
+    full_discussion || to_discussion(context_noteable)
   end
 
-  def part_of_discussion?
-    !to_discussion.individual_note?
+  def part_of_discussion?(context_noteable = nil)
+    !to_discussion(context_noteable).individual_note?
   end
 
   def in_reply_to?(other)
