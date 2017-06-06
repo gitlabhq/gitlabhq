@@ -564,7 +564,7 @@ describe MergeRequest, models: true do
       project.team << [developer, :developer]
       project.team << [blocked_developer, :developer]
 
-      expect(merge_request.number_of_potential_approvers).to eq(1)
+      expect(merge_request.number_of_potential_approvers).to eq(2)
     end
 
     context "when the project is part of a group" do
@@ -1520,7 +1520,7 @@ describe MergeRequest, models: true do
           end
 
           it 'does not require approval for the merge request' do
-            expect(merge_request.approvals_left).to eq(0)
+            expect(merge_request.approvals_left).to eq(1)
           end
 
           it 'does not allow the approver to approve the MR' do
