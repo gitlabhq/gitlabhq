@@ -327,20 +327,45 @@ All variables are set as environment variables in the build environment, and
 they are accessible with normal methods that are used to access such variables.
 In most cases `bash` or `sh` is used to execute the job script.
 
-To access the variables (predefined and user-defined) in a `bash`/`sh` environment,
-prefix the variable name with the dollar sign (`$`):
+To access environment variables, use the syntax for your Runner's [shell][shellexecutors].
 
-```
+| Shell                | Usage           |
+|----------------------|-----------------|
+| bash/sh              | `$variable`     |
+| windows batch        | `%variable%`    |
+| PowerShell           | `$env:variable` |
+
+To access environment variables in bash, prefix the variable name with (`$`):
+
+```yaml
 job_name:
   script:
     - echo $CI_JOB_ID
+```
+
+To access environment variables in **Windows Batch**, surround the variable
+with (`%`):
+
+```yaml
+job_name:
+  script:
+    - echo %CI_JOB_ID%
+```
+
+To access environment variables in a **Windows PowerShell** environment, prefix
+the variable name with (`$env:`):
+
+```yaml
+job_name:
+  script:
+    - echo $env:CI_JOB_ID
 ```
 
 You can also list all environment variables with the `export` command,
 but be aware that this will also expose the values of all the secret variables
 you set, in the job log:
 
-```
+```yaml
 job_name:
   script:
     - export
@@ -385,3 +410,6 @@ export CI_REGISTRY_PASSWORD="longalfanumstring"
 [runner]: https://docs.gitlab.com/runner/
 [triggered]: ../triggers/README.md
 [triggers]: ../triggers/README.md#pass-job-variables-to-a-trigger
+[protected branches]: ../../user/project/protected_branches.md
+[protected tags]: ../../user/project/protected_tags.md
+[shellexecutors]: https://docs.gitlab.com/runner/executors/
