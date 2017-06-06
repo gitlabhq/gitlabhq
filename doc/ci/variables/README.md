@@ -120,7 +120,7 @@ The YAML-defined variables are also set to all created
 tune them.
 
 Variables can be defined at a global level, but also at a job level. To turn off
-global defined variables in your job, define an empty array:
+global defined variables in your job, define an empty hash:
 
 ```yaml
 job_name:

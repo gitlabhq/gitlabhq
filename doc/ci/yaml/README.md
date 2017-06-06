@@ -434,7 +434,7 @@ but allows you to define job-specific variables.
 
 When the `variables` keyword is used on a job level, it overrides the global YAML
 job variables and predefined ones. To turn off global defined variables
-in your job, define an empty array:
+in your job, define an empty hash:
 
 ```yaml
 job_name:
