@@ -13,7 +13,7 @@ export default {
     },
     graphPosition: {
       type: String,
-      required: false,
+      required: true,
     },
   },
   components: {
