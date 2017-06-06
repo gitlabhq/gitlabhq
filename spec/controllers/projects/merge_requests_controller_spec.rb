@@ -126,7 +126,7 @@ describe Projects::MergeRequestsController do
 
           recorded = ActiveRecord::QueryRecorder.new { go(format: :json) }
 
-          expect(recorded.count).to be_within(5).of(59)
+          expect(recorded.count).to be_within(5).of(50)
           expect(recorded.cached_count).to eq(0)
         end
       end
