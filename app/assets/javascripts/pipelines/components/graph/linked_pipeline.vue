@@ -31,7 +31,7 @@ export default {
     tooltipText() {
       return `${this.projectName} - ${this.pipelineStatus.label}`;
     },
-  }
+  },
 };
 </script>
 

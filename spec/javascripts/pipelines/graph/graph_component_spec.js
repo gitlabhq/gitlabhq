@@ -11,7 +11,7 @@ const pipelineJSON = Object.assign(graphJSON, {
 });
 
 const defaultPropsData = {
-  pipeline:  pipelineJSON,
+  pipeline: pipelineJSON,
   isLoading: false,
 };
 
