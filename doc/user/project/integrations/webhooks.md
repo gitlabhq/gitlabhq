@@ -14,11 +14,8 @@ to the webhook URL.
 Webhooks can be used to update an external issue tracker, trigger CI jobs,
 update a backup mirror, or even deploy to your production server.
 
-Navigate to the webhooks page by going to the **Integrations** page from your
-project's settings which can be found under the wheel icon in the upper right
-corner.
-
-![Accessing the integrations](img/accessing_integrations.png)
+Navigate to the webhooks page by going to your project's
+**Settings ➔ Integrations**.
 
 ## Webhook endpoint tips
 

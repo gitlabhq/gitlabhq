@@ -31,7 +31,7 @@ feature 'Environments page', :feature, :js do
         it 'should show one environment' do
           visit namespace_project_environments_path(project.namespace, project, scope: 'available')
           expect(page).to have_css('.environments-container')
-          expect(page.all('tbody > tr').length).to eq(1)
+          expect(page.all('.environment-name').length).to eq(1)
         end
       end
 
@@ -59,7 +59,7 @@ feature 'Environments page', :feature, :js do
         it 'should show one environment' do
           visit namespace_project_environments_path(project.namespace, project, scope: 'stopped')
           expect(page).to have_css('.environments-container')
-          expect(page.all('tbody > tr').length).to eq(1)
+          expect(page.all('.environment-name').length).to eq(1)
         end
       end
     end
