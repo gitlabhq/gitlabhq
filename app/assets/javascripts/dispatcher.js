@@ -61,6 +61,7 @@ import ShortcutsBlob from './shortcuts_blob';
 
 // EE-only
 import ApproversSelect from './approvers_select';
+import AuditLogs from './audit_logs';
 
 (function() {
   var Dispatcher;
@@ -391,6 +392,9 @@ import ApproversSelect from './approvers_select';
           break;
         case 'admin:emails:show':
           new AdminEmailSelect();
+          break;
+        case 'admin:audit_logs:index':
+          new AuditLogs();
           break;
         case 'projects:repository:show':
           // Initialize Protected Branch Settings

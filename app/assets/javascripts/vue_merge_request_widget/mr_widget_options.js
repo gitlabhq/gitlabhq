@@ -88,9 +88,7 @@ export default {
             cb.call(null, res);
           }
         })
-        .catch(() => {
-          new Flash('Something went wrong. Please try again.'); // eslint-disable-line
-        });
+        .catch(() => new Flash('Something went wrong. Please try again.'));
     },
     initPolling() {
       this.pollingInterval = new gl.SmartInterval({
@@ -137,9 +135,7 @@ export default {
             document.body.appendChild(el);
           }
         })
-        .catch(() => {
-          new Flash('Something went wrong. Please try again.'); // eslint-disable-line
-        });
+        .catch(() => new Flash('Something went wrong. Please try again.'));
     },
     handleNotification(data) {
       if (data.ci_status === this.mr.ciStatus) return;

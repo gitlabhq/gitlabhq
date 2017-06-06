@@ -30,11 +30,8 @@ See the [Changelog](#changelog) section for changes over time.
 To protect a branch, you need to have at least Master permission level. Note
 that the `master` branch is protected by default.
 
-1. Navigate to the main page of the project.
-1. In the upper right corner, click the settings wheel and select **Protected branches**.
-
-    ![Project settings list](img/project_settings_list.png)
-
+1. Navigate to your project's **Settings ➔ Repository**
+1. Scroll to find the **Protected branches** section.
 1. From the **Branch** dropdown menu, select the branch you want to protect and
    click **Protect**. In the screenshot below, we chose the `develop` branch.
 

@@ -28,3 +28,21 @@ To view the Audit Events user needs to have enough permissions to view the group
 Navigate to Group->Settings->Audit Events to view the Audit Events:
 
 ![audit events group](audit_events_group.png)
+
+# Audit Log (Admin only)
+
+> **Notes:**
+> [Introduced][ee-2336] in GitLab 9.3.
+
+Server-wide audit logging, available in GitLab Enterprise Edition Premium since 9.3, introduces
+the ability to observe user actions across the entire instance of your GitLab Server, making it
+easy to understand who changed what and when for audit purposes.
+
+To view the server-wide admin log, visit the Admin Area, select Monitoring and choose Audit Log.
+
+It is possible to filter particular actions by choosing an audit data type from the filter drop-down.
+You can further filter by specific group, project or user (for authentication events).
+
+![audit log](audit_log.png)
+
+[ce-23361]: https://gitlab.com/gitlab-org/gitlab-ee/issues/2336

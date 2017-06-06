@@ -58,10 +58,6 @@ module Gitlab
       self.cache_value(:geo_node_secondary) { self.enabled? && self.current_node && self.current_node.secondary? }
     end
 
-    def self.primary_ssh_path_prefix
-      self.cache_value(:geo_primary_ssh_path_prefix) { self.enabled? && self.primary_node && build_primary_ssh_path_prefix }
-    end
-
     def self.geo_node?(host:, port:)
       GeoNode.where(host: host, port: port).exists?
     end
@@ -144,20 +140,6 @@ module Gitlab
     def self.generate_random_string(size)
       # urlsafe_base64 may return a string of size * 4/3
       SecureRandom.urlsafe_base64(size)[0, size]
-    end
-
-    def self.build_primary_ssh_path_prefix
-      primary_host = "#{Gitlab.config.gitlab_shell.ssh_user}@#{self.primary_node.host}"
-
-      if Gitlab.config.gitlab_shell.ssh_port != 22
-        "ssh://#{primary_host}:#{Gitlab.config.gitlab_shell.ssh_port}/"
-      else
-        if self.primary_node.host.include? ':'
-          "[#{primary_host}]:"
-        else
-          "#{primary_host}:"
-        end
-      end
     end
   end
 end

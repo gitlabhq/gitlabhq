@@ -10,27 +10,39 @@ feature 'Project mirror', feature: true do
       login_as user
     end
 
-    describe 'pressing "Update now"' do
-      before { visit namespace_project_mirror_path(project.namespace, project) }
+    context 'with Update now button' do
+      let(:timestamp) { Time.now }
 
-      it 'returns with the project updating (job enqueued)' do
-        Sidekiq::Testing.fake! { click_link('Update Now') }
-
-        expect(page).to have_content('Updating')
+      before do
+        project.mirror_data.update_attributes(next_execution_timestamp: timestamp + 10.minutes)
       end
-    end
 
-    describe 'synchronization times' do
-      Gitlab::Mirror::SYNC_TIME_TO_CRON.keys.reverse.each_with_index do |sync_time, index|
-        describe "#{sync_time} minimum mirror sync time" do
-          before do
-            stub_application_setting(minimum_mirror_sync_time: sync_time)
+      context 'when able to force update' do
+        it 'forces import' do
+          project.update_attributes(mirror_last_update_at: timestamp - 8.minutes)
+
+          expect_any_instance_of(EE::Project).to receive(:force_import_job!)
+
+          Timecop.freeze(timestamp) do
             visit namespace_project_mirror_path(project.namespace, project)
           end
 
-          it 'shows the correct selector options' do
-            expect(page).to have_selector('.project-mirror-sync-time > option', count: index + 1)
+          Sidekiq::Testing.fake! { click_link('Update Now') }
+        end
+      end
+
+      context 'when unable to force update' do
+        it 'does not force import' do
+          project.update_attributes(mirror_last_update_at: timestamp - 3.minutes)
+
+          expect_any_instance_of(EE::Project).not_to receive(:force_import_job!)
+
+          Timecop.freeze(timestamp) do
+            visit namespace_project_mirror_path(project.namespace, project)
           end
+
+          expect(page).to have_content('Update Now')
+          expect(page).to have_selector('.btn.disabled')
         end
       end
     end

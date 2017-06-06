@@ -11,7 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20170525174156) do
+=======
+ActiveRecord::Schema.define(version: 20170602003304) do
+>>>>>>> origin/master
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -123,7 +127,6 @@ ActiveRecord::Schema.define(version: 20170525174156) do
     t.integer "unique_ips_limit_per_user"
     t.integer "unique_ips_limit_time_window"
     t.boolean "unique_ips_limit_enabled", default: false, null: false
-    t.integer "minimum_mirror_sync_time", default: 15, null: false
     t.string "default_artifacts_expire_in", default: "0", null: false
     t.string "elasticsearch_url", default: "http://localhost:9200"
     t.boolean "elasticsearch_aws", default: false, null: false
@@ -138,6 +141,9 @@ ActiveRecord::Schema.define(version: 20170525174156) do
     t.boolean "clientside_sentry_enabled", default: false, null: false
     t.string "clientside_sentry_dsn"
     t.boolean "check_namespace_plan", default: false, null: false
+    t.integer "mirror_max_delay", default: 5, null: false
+    t.integer "mirror_max_capacity", default: 100, null: false
+    t.integer "mirror_capacity_threshold", default: 50, null: false
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -531,6 +537,7 @@ ActiveRecord::Schema.define(version: 20170525174156) do
     t.string "access_key"
     t.string "encrypted_secret_access_key"
     t.string "encrypted_secret_access_key_iv"
+    t.string "clone_url_prefix"
   end
 
   add_index "geo_nodes", ["access_key"], name: "index_geo_nodes_on_access_key", using: :btree
@@ -1100,6 +1107,18 @@ ActiveRecord::Schema.define(version: 20170525174156) do
 
   add_index "project_import_data", ["project_id"], name: "index_project_import_data_on_project_id", using: :btree
 
+  create_table "project_mirror_data", force: :cascade do |t|
+    t.integer "project_id"
+    t.integer "retry_count", default: 0, null: false
+    t.datetime "last_update_started_at"
+    t.datetime "last_update_scheduled_at"
+    t.datetime "next_execution_timestamp"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "project_mirror_data", ["project_id"], name: "index_project_mirror_data_on_project_id", unique: true, using: :btree
+
   create_table "project_statistics", force: :cascade do |t|
     t.integer "project_id", null: false
     t.integer "namespace_id", null: false
@@ -1165,7 +1184,6 @@ ActiveRecord::Schema.define(version: 20170525174156) do
     t.text "description_html"
     t.boolean "only_allow_merge_if_all_discussions_are_resolved"
     t.integer "repository_size_limit", limit: 8
-    t.integer "sync_time", default: 60, null: false
     t.boolean "printing_merge_request_link_enabled", default: true, null: false
     t.integer "auto_cancel_pending_pipelines", default: 1, null: false
     t.boolean "service_desk_enabled"
@@ -1189,7 +1207,6 @@ ActiveRecord::Schema.define(version: 20170525174156) do
   add_index "projects", ["pending_delete"], name: "index_projects_on_pending_delete", using: :btree
   add_index "projects", ["runners_token"], name: "index_projects_on_runners_token", using: :btree
   add_index "projects", ["star_count"], name: "index_projects_on_star_count", using: :btree
-  add_index "projects", ["sync_time"], name: "index_projects_on_sync_time", using: :btree
   add_index "projects", ["visibility_level"], name: "index_projects_on_visibility_level", using: :btree
 
   create_table "protected_branch_merge_access_levels", force: :cascade do |t|
@@ -1693,6 +1710,7 @@ ActiveRecord::Schema.define(version: 20170525174156) do
   add_foreign_key "personal_access_tokens", "users"
   add_foreign_key "project_authorizations", "projects", on_delete: :cascade
   add_foreign_key "project_authorizations", "users", on_delete: :cascade
+  add_foreign_key "project_mirror_data", "projects", name: "fk_d1aad367d7", on_delete: :cascade
   add_foreign_key "project_statistics", "projects", on_delete: :cascade
   add_foreign_key "protected_branch_merge_access_levels", "namespaces", column: "group_id"
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches"

@@ -26,6 +26,9 @@ if ENV['CI'] && !ENV['NO_KNAPSACK']
   Knapsack::Adapters::RSpecAdapter.bind
 end
 
+# require rainbow gem String monkeypatch, so we can test SystemChecks
+require 'rainbow/ext/string'
+
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }

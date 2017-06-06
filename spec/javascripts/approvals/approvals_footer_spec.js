@@ -71,5 +71,21 @@ import ApprovalsFooter from '~/vue_merge_request_widget/ee/components/approvals/
         });
       });
     });
+
+    describe('approvers list', function () {
+      it('shows link to member avatar for for each approver', function (done) {
+        this.approvalsFooter.approvedBy.push({
+          user: {
+            avatar_url: '/dummy.jpg',
+          },
+        });
+
+        Vue.nextTick(() => {
+          const memberImage = document.querySelector('.approvers-list img');
+          expect(memberImage.src).toMatch(/dummy\.jpg$/);
+          done();
+        });
+      });
+    });
   });
 })(window.gl || (window.gl = {}));

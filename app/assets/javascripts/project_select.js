@@ -1,10 +1,10 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, prefer-arrow-callback, no-var, comma-dangle, object-shorthand, one-var, one-var-declaration-per-line, no-else-return, quotes, max-len */
 import Api from './api';
 
-(function() {
-  this.ProjectSelect = (function() {
+(function () {
+  this.ProjectSelect = (function () {
     function ProjectSelect() {
-      $('.js-projects-dropdown-toggle').each(function(i, dropdown) {
+      $('.js-projects-dropdown-toggle').each(function (i, dropdown) {
         var $dropdown;
         $dropdown = $(dropdown);
         return $dropdown.glDropdown({
@@ -13,16 +13,16 @@ import Api from './api';
           search: {
             fields: ['name_with_namespace']
           },
-          data: function(term, callback) {
+          data: function (term, callback) {
             var finalCallback, projectsCallback;
             var orderBy = $dropdown.data('order-by');
-            finalCallback = function(projects) {
+            finalCallback = function (projects) {
               return callback(projects);
             };
             if (this.includeGroups) {
-              projectsCallback = function(projects) {
+              projectsCallback = function (projects) {
                 var groupsCallback;
-                groupsCallback = function(groups) {
+                groupsCallback = function (groups) {
                   var data;
                   data = groups.concat(projects);
                   return finalCallback(data);
@@ -35,24 +35,32 @@ import Api from './api';
             if (this.groupId) {
               return Api.groupProjects(this.groupId, term, projectsCallback);
             } else {
-              return Api.projects(term, { order_by: orderBy }, projectsCallback);
+              return Api.projects(term, {
+                order_by: orderBy
+              }, projectsCallback);
             }
           },
-          url: function(project) {
+          url: function (project) {
             return project.web_url;
           },
-          text: function(project) {
+          text: function (project) {
             return project.name_with_namespace;
           }
         });
       });
-      $('.ajax-project-select').each(function(i, select) {
+      $('.ajax-project-select').each(function (i, select) {
         var placeholder;
+        var idAttribute;
         this.groupId = $(select).data('group-id');
         this.includeGroups = $(select).data('include-groups');
+        this.allProjects = $(select).data('allprojects') || false;
         this.orderBy = $(select).data('order-by') || 'id';
+<<<<<<< HEAD
         this.withIssuesEnabled = $(select).data('with-issues-enabled');
         this.withMergeRequestsEnabled = $(select).data('with-merge-requests-enabled');
+=======
+        idAttribute = $(select).data('idattribute') || 'web_url';
+>>>>>>> origin/master
 
         placeholder = "Search for project";
         if (this.includeGroups) {
@@ -61,10 +69,10 @@ import Api from './api';
         return $(select).select2({
           placeholder: placeholder,
           minimumInputLength: 0,
-          query: (function(_this) {
-            return function(query) {
+          query: (function (_this) {
+            return function (query) {
               var finalCallback, projectsCallback;
-              finalCallback = function(projects) {
+              finalCallback = function (projects) {
                 var data;
                 data = {
                   results: projects
@@ -72,9 +80,9 @@ import Api from './api';
                 return query.callback(data);
               };
               if (_this.includeGroups) {
-                projectsCallback = function(projects) {
+                projectsCallback = function (projects) {
                   var groupsCallback;
-                  groupsCallback = function(groups) {
+                  groupsCallback = function (groups) {
                     var data;
                     data = groups.concat(projects);
                     return finalCallback(data);
@@ -89,16 +97,20 @@ import Api from './api';
               } else {
                 return Api.projects(query.term, {
                   order_by: _this.orderBy,
+<<<<<<< HEAD
                   with_issues_enabled: _this.withIssuesEnabled,
                   with_merge_requests_enabled: _this.withMergeRequestsEnabled
+=======
+                  membership: !_this.allProjects
+>>>>>>> origin/master
                 }, projectsCallback);
               }
             };
           })(this),
-          id: function(project) {
-            return project.web_url;
+          id: function (project) {
+            return project[idAttribute];
           },
-          text: function(project) {
+          text: function (project) {
             return project.name_with_namespace || project.name;
           },
           dropdownCssClass: "ajax-project-dropdown"

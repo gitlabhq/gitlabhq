@@ -432,6 +432,12 @@ module ProjectsHelper
     end
   end
 
+  def can_force_update_mirror?(project)
+    return true unless project.mirror_last_update_at
+
+    Time.now - project.mirror_last_update_at >= 5.minutes
+  end
+
   def membership_locked?
     if @project.group && @project.group.membership_lock
       true

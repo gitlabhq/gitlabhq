@@ -30,6 +30,9 @@ module API
           optional :skip_confirmation, type: Boolean, default: false, desc: 'Flag indicating the account is confirmed'
           optional :external, type: Boolean, desc: 'Flag indicating the user is an external user'
           all_or_none_of :extern_uid, :provider
+
+          # EE
+          optional :shared_runners_minutes_limit, type: Integer, desc: 'Pipeline minutes quota for this user'
         end
       end
 
@@ -127,10 +130,6 @@ module API
         optional :name, type: String, desc: 'The name of the user'
         optional :username, type: String, desc: 'The username of the user'
         use :optional_attributes
-        at_least_one_of :email, :password, :name, :username, :skype, :linkedin,
-                        :twitter, :website_url, :organization, :projects_limit,
-                        :extern_uid, :provider, :bio, :location, :admin,
-                        :can_create_group, :confirm, :external
       end
       put ":id" do
         authenticated_as_admin!

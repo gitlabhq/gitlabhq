@@ -72,6 +72,7 @@ export default {
           <span v-for="approver in approvedBy">
             <link-to-member-avatar
               :avatarSize="20"
+              :avatar-url="approver.user.avatar_url"
               extra-link-class="approver-avatar"
               :display-name="approver.user.name"
               :profile-url="approver.user.web_url"

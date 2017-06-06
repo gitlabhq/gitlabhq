@@ -88,7 +88,7 @@ module Ci
         patch ":id/trace.txt" do
           build = authenticate_build!
 
-          error!('400 Missing header Content-Range', 400) unless request.headers.has_key?('Content-Range')
+          error!('400 Missing header Content-Range', 400) unless request.headers.key?('Content-Range')
           content_range = request.headers['Content-Range']
           content_range = content_range.split('-')
 

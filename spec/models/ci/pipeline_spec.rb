@@ -1240,4 +1240,30 @@ describe Ci::Pipeline, models: true do
       it_behaves_like 'not sending any notification'
     end
   end
+
+  describe '#codeclimate_artifact' do
+    context 'has codeclimate build' do
+      let!(:build) do
+        create(
+          :ci_build,
+          :artifacts,
+          name: 'codeclimate',
+          pipeline: pipeline,
+          options: {
+            artifacts: {
+              paths: ['codeclimate.json']
+            }
+          }
+        )
+      end
+
+      it { expect(pipeline.codeclimate_artifact).to eq(build) }
+    end
+
+    context 'no codeclimate build' do
+      before { create(:ci_build, pipeline: pipeline) }
+
+      it { expect(pipeline.codeclimate_artifact).to be_nil }
+    end
+  end
 end

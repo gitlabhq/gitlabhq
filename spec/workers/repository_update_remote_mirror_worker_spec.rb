@@ -47,6 +47,17 @@ describe RepositoryUpdateRemoteMirrorWorker do
       end
     end
 
+    context 'with unexpected error' do
+      it 'marks mirror as failed' do
+        allow_any_instance_of(Projects::UpdateRemoteMirrorService).to receive(:execute).with(remote_mirror).and_raise(RuntimeError)
+
+        expect do
+          subject.perform(remote_mirror.id, Time.now)
+        end.to raise_error(RepositoryUpdateRemoteMirrorWorker::UpdateError)
+        expect(remote_mirror.reload.update_status).to eq('failed')
+      end
+    end
+
     context 'with another worker already running' do
       before do
         remote_mirror.update_attributes(update_status: 'started')
