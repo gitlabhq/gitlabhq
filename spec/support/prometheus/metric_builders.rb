@@ -9,7 +9,7 @@ module Prometheus
     end
 
     def simple_metric(title: 'title', required_metrics: [], queries: [simple_query])
-      Gitlab::Prometheus::Metric.new(title, required_metrics, nil, nil, queries)
+      Gitlab::Prometheus::Metric.new(title, required_metrics, 1, nil, queries)
     end
 
     def simple_metrics(added_metric_name: 'metric_a')

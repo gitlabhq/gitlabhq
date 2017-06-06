@@ -34,7 +34,7 @@ RSpec.shared_examples 'additional metrics query' do
             priority: 1,
             metrics: [
               {
-                title: 'title', weight: nil, y_label: 'Values', queries: [
+                title: 'title', weight: 1, y_label: 'Values', queries: [
                 { query_range: 'query_range_a', result: query_range_result },
                 { query_range: 'query_range_b', label: 'label', unit: 'unit', result: query_range_result }
               ]
@@ -43,6 +43,7 @@ RSpec.shared_examples 'additional metrics query' do
           }
         ]
 
+        expect(query_result).to match_schema('prometheus/additional_metrics_query_result')
         expect(query_result).to eq(expected)
       end
     end
@@ -66,53 +67,16 @@ RSpec.shared_examples 'additional metrics query' do
       end
 
       it 'return group data both queries' do
-        expected = [
-          {
-            group: 'group_a',
-            priority: 1,
-            metrics: [
-              {
-                title: 'title',
-                weight: nil,
-                y_label: 'Values',
-                queries: [
-                  {
-                    query_range: 'query_range_a',
-                    result: [
-                      {
-                        metric: {},
-                        values: [[1488758662.506, '0.00002996364761904785'], [1488758722.506, '0.00003090239047619091']]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            group: 'group_b',
-            priority: 1,
-            metrics: [
-              {
-                title: 'title_b',
-                weight: nil,
-                y_label: 'Values',
-                queries: [
-                  {
-                    query_range: 'query_range_b', result: [
-                    {
-                      metric: {},
-                      values: [[1488758662.506, '0.00002996364761904785'], [1488758722.506, '0.00003090239047619091']]
-                    }
-                  ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
+        queries_with_result_a = { queries: [{ query_range: 'query_range_a', result: query_range_result }] }
+        queries_with_result_b = { queries: [{ query_range: 'query_range_b', result: query_range_result }] }
 
-        expect(query_result).to eq(expected)
+        expect(query_result).to match_schema('prometheus/additional_metrics_query_result')
+
+        expect(query_result.count).to eq(2)
+        expect(query_result).to all(satisfy { |r| r[:metrics].count == 1 })
+
+        expect(query_result[0][:metrics].first).to include(queries_with_result_a)
+        expect(query_result[1][:metrics].first).to include(queries_with_result_b)
       end
     end
 
@@ -123,27 +87,14 @@ RSpec.shared_examples 'additional metrics query' do
       end
 
       it 'return group data only for query with results' do
-        expected = [
-          {
-            group: 'group_a',
-            priority: 1,
-            metrics: [
-              {
-                title: 'title',
-                weight: nil,
-                y_label: 'Values',
-                queries: [
-                  {
-                    query_range: 'query_range_a',
-                    result: query_range_result
-                  }
-                ]
-              }
-            ]
-          }
-        ]
+        queries_with_result = { queries: [{ query_range: 'query_range_a', result: query_range_result }] }
 
-        expect(query_result).to eq(expected)
+        expect(query_result).to match_schema('prometheus/additional_metrics_query_result')
+
+        expect(query_result.count).to eq(1)
+        expect(query_result).to all(satisfy { |r| r[:metrics].count == 1 })
+
+        expect(query_result.first[:metrics].first).to include(queries_with_result)
       end
     end
   end
