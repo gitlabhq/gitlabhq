@@ -37,9 +37,6 @@
       hasTriggeredBy() {
         return this.triggeredBy.length;
       },
-      linkedPipelinesClass() {
-        return this.hasTriggered || this.hasTriggeredBy ? 'has-linked-pipelines' : '';
-      },
     },
     methods: {
       capitalizeStageName(name) {
