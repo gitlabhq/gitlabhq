@@ -17,7 +17,7 @@ class Projects::MirrorsController < Projects::ApplicationController
         @project.force_import_job!
 
         flash[:notice] = "Mirroring settings were successfully updated. The project is being updated."
-      elsif project.previous_changes.has_key?('mirror')
+      elsif project.previous_changes.key?('mirror')
         flash[:notice] = "Mirroring was successfully disabled."
       else
         flash[:notice] = "Mirroring settings were successfully updated."
