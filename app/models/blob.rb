@@ -176,7 +176,7 @@ class Blob < SimpleDelegator
   end
 
   def rendered_as_text?(ignore_errors: true)
-    simple_viewer.text? && (ignore_errors || simple_viewer.render_error.nil?)
+    simple_viewer.is_a?(BlobViewer::Text) && (ignore_errors || simple_viewer.render_error.nil?)
   end
 
   def show_viewer_switcher?
