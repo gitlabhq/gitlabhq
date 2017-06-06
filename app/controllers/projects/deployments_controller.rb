@@ -24,10 +24,11 @@ class Projects::DeploymentsController < Projects::ApplicationController
 
   def additional_metrics
     return render_404 unless deployment.has_additional_metrics?
+
     metrics = deployment.additional_metrics
 
-    if metrics&.any?
-      render json: metrics, status: :ok
+    if metrics.any?
+      render json: metrics
     else
       head :no_content
     end
