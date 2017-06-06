@@ -26,6 +26,8 @@ module Gitlab
           def rename_namespace(namespace)
             old_full_path, new_full_path = rename_path_for_routable(namespace)
 
+            track_rename('namespace', old_full_path, new_full_path)
+
             move_repositories(namespace, old_full_path, new_full_path)
             move_uploads(old_full_path, new_full_path)
             move_pages(old_full_path, new_full_path)

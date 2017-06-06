@@ -114,6 +114,11 @@ module Gitlab
             end
           end
 
+          def track_rename(type, old_path, new_path)
+            key = "rename:#{migration.version}:#{type}"
+            Gitlab::Redis.with { |redis| redis.lpush(key, [old_path, new_path].to_json) }
+          end
+
           def file_storage?
             CarrierWave::Uploader::Base.storage == CarrierWave::Storage::File
           end

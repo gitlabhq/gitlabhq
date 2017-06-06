@@ -16,6 +16,8 @@ module Gitlab
           def rename_project(project)
             old_full_path, new_full_path = rename_path_for_routable(project)
 
+            track_rename('project', old_full_path, new_full_path)
+
             move_repository(project, old_full_path, new_full_path)
             move_repository(project, "#{old_full_path}.wiki", "#{new_full_path}.wiki")
             move_uploads(old_full_path, new_full_path)

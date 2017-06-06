@@ -203,4 +203,21 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase, :trunca
       expect(File.exist?(expected_file)).to be(true)
     end
   end
+
+  describe '#track_rename', redis: true do
+    it 'tracks a rename in redis' do
+      key = 'rename:20170316163845:namespace'
+
+      subject.track_rename('namespace', 'path/to/namespace', 'path/to/renamed')
+
+      old_path, new_path = [nil, nil]
+      Gitlab::Redis.with do |redis|
+        rename_info = redis.lpop(key)
+        old_path, new_path = JSON.parse(rename_info)
+      end
+
+      expect(old_path).to eq('path/to/namespace')
+      expect(new_path).to eq('path/to/renamed')
+    end
+  end
 end

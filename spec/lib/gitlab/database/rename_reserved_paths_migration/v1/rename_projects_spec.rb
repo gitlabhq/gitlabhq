@@ -85,6 +85,13 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameProjects, :tr
 
       subject.rename_project(project)
     end
+
+    it 'tracks the rename' do
+      expect(subject).to receive(:track_rename)
+                           .with('project', 'known-parent/the-path', 'known-parent/the-path0')
+
+      subject.rename_project(project)
+    end
   end
 
   describe '#move_repository' do

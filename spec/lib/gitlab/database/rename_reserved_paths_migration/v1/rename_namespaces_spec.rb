@@ -191,6 +191,13 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces, :
 
       subject.rename_namespace(user.namespace)
     end
+
+    it 'tracks the rename' do
+      expect(subject).to receive(:track_rename)
+                           .with('namespace', 'the-path', 'the-path0')
+
+      subject.rename_namespace(namespace)
+    end
   end
 
   describe '#rename_user' do
