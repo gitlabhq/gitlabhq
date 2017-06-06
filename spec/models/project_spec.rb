@@ -50,7 +50,7 @@ describe Project, models: true do
     it { is_expected.to have_one(:external_wiki_service).dependent(:destroy) }
     it { is_expected.to have_one(:project_feature).dependent(:destroy) }
     it { is_expected.to have_one(:statistics).class_name('ProjectStatistics').dependent(:delete) }
-    it { is_expected.to have_one(:import_data).class_name('ProjectImportData').dependent(:destroy) }
+    it { is_expected.to have_one(:import_data).class_name('ProjectImportData').dependent(:delete) }
     it { is_expected.to have_one(:last_event).class_name('Event') }
     it { is_expected.to have_one(:forked_from_project).through(:forked_project_link) }
     it { is_expected.to have_many(:commit_statuses) }
@@ -1446,15 +1446,12 @@ describe Project, models: true do
   end
 
   describe 'Project import job' do
-    let(:project) { create(:empty_project) }
-    let(:mirror) { false }
+    let(:project) { create(:empty_project, import_url: generate(:url)) }
 
     before do
       allow_any_instance_of(Gitlab::Shell).to receive(:import_repository)
         .with(project.repository_storage_path, project.path_with_namespace, project.import_url)
         .and_return(true)
-
-      allow(project).to receive(:repository_exists?).and_return(true)
 
       expect_any_instance_of(Repository).to receive(:after_import)
         .and_call_original
@@ -1463,8 +1460,7 @@ describe Project, models: true do
     it 'imports a project' do
       expect_any_instance_of(RepositoryImportWorker).to receive(:perform).and_call_original
 
-      project.import_start
-      project.add_import_job
+      project.import_schedule
 
       expect(project.reload.import_status).to eq('finished')
     end
@@ -1551,7 +1547,7 @@ describe Project, models: true do
 
   describe '#add_import_job' do
     context 'forked' do
-      let(:forked_project_link) { create(:forked_project_link) }
+      let(:forked_project_link) { create(:forked_project_link, :forked_to_empty_project) }
       let(:forked_from_project) { forked_project_link.forked_from_project }
       let(:project) { forked_project_link.forked_to_project }
 
@@ -1565,9 +1561,9 @@ describe Project, models: true do
     end
 
     context 'not forked' do
-      let(:project) { create(:empty_project) }
-
       it 'schedules a RepositoryImportWorker job' do
+        project = create(:empty_project, import_url: generate(:url))
+
         expect(RepositoryImportWorker).to receive(:perform_async).with(project.id)
 
         project.add_import_job
