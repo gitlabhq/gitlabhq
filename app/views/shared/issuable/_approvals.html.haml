@@ -1,16 +1,16 @@
 - issuable = local_assigns.fetch(:issuable)
-- overwritable = !issuable.target_project.project_wide_approvals
 - form = local_assigns.fetch(:form)
-
 
 - return unless issuable.is_a?(MergeRequest)
 - return unless issuable.requires_approve?
+
+- overridable = !issuable.target_project.try(:disable_overriding_approvers_per_merge_request)
 
 .form-group
   = form.label :approver_ids, class: 'control-label' do
     Approvers
   .col-sm-10
-    - if overwritable
+    - if overridable
       - author = issuable.author || current_user
       - skip_users = issuable.all_approvers_including_groups + [author]
       = users_select_tag("merge_request[approver_ids]", multiple: true, class: 'input-large', email_user: true, skip_users: skip_users)
@@ -36,7 +36,7 @@
           - issuable.overall_approvers.each do |approver|
             %li{ id: dom_id(approver.user), class: item_classes + ['approver'] }
               = link_to approver.user.name, approver.user
-              - if overwritable
+              - if overridable
                 .pull-right
                   - if unsaved_approvers
                     = link_to "#", data: { confirm: "Are you sure you want to remove approver #{approver.user.name}"}, class: "btn-xs btn btn-remove", title: 'Remove approver' do
@@ -50,7 +50,7 @@
             %li{ id: dom_id(approver_group.group), class: item_classes + ['approver-group'] }
               Group:
               = link_to approver_group.group.name, approver_group.group
-              - if issuable.target_project.approvals_overwritable_mr
+              - if overridable
                 .pull-right
                   - if unsaved_approvers
                     = link_to "#", data: { confirm: "Are you sure you want to remove group #{approver_group.group.name}"}, class: "btn-xs btn btn-remove", title: 'Remove group' do
@@ -65,9 +65,9 @@
       .form-group
         = form.label :approvals_before_merge, class: 'label-light' do
           Approvals required
-        = form.number_field :approvals_before_merge, class: 'form-control', value: issuable.approvals_required, readonly: !overwritable
+        = form.number_field :approvals_before_merge, class: 'form-control', value: issuable.approvals_required, readonly: !overridable
 
-    - if overwritable
+    - if overridable
       .help-block.suggested-approvers
         - if @suggested_approvers.any?
           Suggested approvers:

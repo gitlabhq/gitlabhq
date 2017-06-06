@@ -1,7 +1,7 @@
 # See http://doc.gitlab.com/ce/development/migration_style_guide.html
 # for more information on how to write migrations for GitLab.
 
-class AddProjectWideApprovalsToProject < ActiveRecord::Migration
+class AddDisableOverridingApproversPerMergeRequestToProject < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   # Set this constant to true if this migration requires downtime.
@@ -26,6 +26,6 @@ class AddProjectWideApprovalsToProject < ActiveRecord::Migration
   # disable_ddl_transaction!
 
   def change
-    add_column :projects, :project_wide_approvals, :boolean
+    add_column :projects, :disable_overriding_approvers_per_merge_request, :boolean
   end
 end

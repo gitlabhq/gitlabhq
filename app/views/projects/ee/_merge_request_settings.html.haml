@@ -1,5 +1,6 @@
 - form = local_assigns.fetch(:form)
 - project = local_assigns.fetch(:project)
+- can_override_approvals = !project.try(:disable_overriding_approvers_per_merge_request)
 
 .form-group
   = label_tag :merge_method_merge, class: 'label-light' do
@@ -107,8 +108,8 @@
 
   .form-group.mr-overwrite-approvals
     .checkbox
-      = form.label :project_wide_approvals do
-        = form.check_box(:project_wide_approvals, { checked: !project.project_wide_approvals }, false, true)
+      = form.label :disable_overriding_approvers_per_merge_request do
+        = form.check_box(:disable_overriding_approvers_per_merge_request, { checked: can_override_approvals }, false, true)
         %strong Can overwrite approvers and approvals required per merge request
 
   .form-group.reset-approvals-on-push

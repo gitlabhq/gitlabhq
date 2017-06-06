@@ -346,7 +346,7 @@ class ProjectsController < Projects::ApplicationController
       mirror
       mirror_trigger_builds
       mirror_user_id
-      project_wide_approvals
+      disable_overriding_approvers_per_merge_request
       repository_size_limit
       reset_approvals_on_push
       service_desk_enabled

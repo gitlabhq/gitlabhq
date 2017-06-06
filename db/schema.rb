@@ -1144,7 +1144,7 @@ ActiveRecord::Schema.define(version: 20170605151307) do
     t.string "import_jid"
     t.integer "cached_markdown_version"
     t.datetime "last_repository_updated_at"
-    t.boolean "project_wide_approvals"
+    t.boolean "disable_overriding_approvers_per_merge_request"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
