@@ -199,7 +199,7 @@ class ApplicationSetting < ActiveRecord::Base
     ApplicationSetting.define_attribute_methods
   end
 
-  def self.defaults_ce
+  def self.defaults
     {
       after_sign_up_text: nil,
       akismet_enabled: false,
@@ -248,10 +248,6 @@ class ApplicationSetting < ActiveRecord::Base
       polling_interval_multiplier: 1,
       usage_ping_enabled: Settings.gitlab['usage_ping_enabled']
     }
-  end
-
-  def self.defaults
-    defaults_ce
   end
 
   def self.create_from_defaults

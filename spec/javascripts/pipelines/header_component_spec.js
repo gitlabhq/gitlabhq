@@ -10,6 +10,9 @@ describe('Pipeline details header', () => {
   beforeEach(() => {
     HeaderComponent = Vue.extend(headerComponent);
 
+    const threeWeeksAgo = new Date();
+    threeWeeksAgo.setDate(threeWeeksAgo.getDate() - 21);
+
     props = {
       pipeline: {
         details: {
@@ -22,7 +25,7 @@ describe('Pipeline details header', () => {
           },
         },
         id: 123,
-        created_at: '2017-05-08T14:57:39.781Z',
+        created_at: threeWeeksAgo.toISOString(),
         user: {
           web_url: 'path',
           name: 'Foo',
