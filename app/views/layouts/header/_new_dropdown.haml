@@ -7,7 +7,7 @@
       - if @group
         - create_group_project = can?(current_user, :create_projects, @group)
         - create_group_subgroup = can?(current_user, :create_subgroup, @group)
-        - if (create_group_project || create_group_subgroup)
+        - if create_group_project || create_group_subgroup
           %li.dropdown-bold-header This group
           - if create_group_project
             %li
@@ -18,11 +18,11 @@
           %li.divider
           %li.dropdown-bold-header GitLab
 
-      - if @project && @project.namespace && :project_id
+      - if @project && @project.persisted?
         - create_project_issue = can?(current_user, :create_issue, @project)
         - merge_project = can?(current_user, :create_merge_request, @project) ? @project : (current_user && current_user.fork_of(@project))
         - create_project_snippet = can?(current_user, :create_project_snippet, @project)
-        - if (create_project_issue || merge_project || create_project_snippet)
+        - if create_project_issue || merge_project || create_project_snippet
           %li.dropdown-bold-header This project
           - if create_project_issue
             %li
@@ -34,7 +34,7 @@
             %li
               = link_to 'New snippet', new_namespace_project_snippet_path(@project.namespace, @project)
           %li.divider
-            %li.dropdown-bold-header GitLab
+          %li.dropdown-bold-header GitLab
       - if current_user.can_create_project?
         %li
           = link_to 'New project', new_project_path
