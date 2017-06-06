@@ -41,10 +41,7 @@ class NotificationSetting < ActiveRecord::Base
     :success_pipeline
   ].freeze
 
-  store :events, accessors: EMAIL_EVENTS, coder: JSON
-
-  before_create :set_events
-  before_save :events_to_boolean
+  store :events, coder: JSON
 
   def self.find_or_create_for(source)
     setting = find_or_initialize_by(source: source)
@@ -56,20 +53,11 @@ class NotificationSetting < ActiveRecord::Base
     setting
   end
 
-  # Set all event attributes to false when level is not custom or being initialized for UX reasons
-  def set_events
-    return if custom?
+  EMAIL_EVENTS.each do |event|
+    define_method(event) do
+      bool = super()
 
-    self.events = {}
-  end
-
-  # Validates store accessors values as boolean
-  # It is a text field so it does not cast correct boolean values in JSON
-  def events_to_boolean
-    EMAIL_EVENTS.each do |event|
-      bool = ActiveRecord::ConnectionAdapters::Column::TRUE_VALUES.include?(public_send(event))
-
-      events[event] = bool
+      bool.nil? ? !!events[event] : bool
     end
   end
 
@@ -77,7 +65,8 @@ class NotificationSetting < ActiveRecord::Base
   # custom notifications enabled, as these are more like mentions than the other
   # custom settings.
   def failed_pipeline
-    bool = super
+    bool = read_attribute(:failed_pipeline)
+    bool = events[:failed_pipeline] if bool.nil?
 
     bool.nil? || bool
   end
