@@ -1582,7 +1582,6 @@ ActiveRecord::Schema.define(version: 20170525174156) do
     t.boolean "external", default: false
     t.string "incoming_email_token"
     t.string "organization"
-    t.boolean "authorized_projects_populated"
     t.boolean "auditor", default: false, null: false
     t.boolean "ghost"
     t.boolean "require_two_factor_authentication_from_group", default: false, null: false
