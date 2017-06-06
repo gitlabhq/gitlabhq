@@ -1,5 +1,5 @@
 .gl-responsive-table-row.deployment
-  .table-section.section-15{ role: 'gridcell' }
+  .table-section.section-10{ role: 'gridcell' }
     %strong ##{deployment.iid}
 
   .table-section.section-40{ role: 'gridcell' }
@@ -16,7 +16,7 @@
   .table-section.section-15{ role: 'gridcell' }
     #{time_ago_with_tooltip(deployment.created_at)}
 
-  .table-section.section-15.environments-actions.table-button-footer{ role: 'gridcell' }
+  .table-section.section-20.environments-actions.table-button-footer{ role: 'gridcell' }
     .btn-group.environment-action-buttons
       = render 'projects/deployments/actions', deployment: deployment
       = render 'projects/deployments/rollback', deployment: deployment
