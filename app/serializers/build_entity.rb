@@ -5,7 +5,7 @@ class BuildEntity < Grape::Entity
   expose :name
 
   expose :build_path do |build|
-    path_to(:namespace_project_job, build)
+    build.external_url || path_to(:namespace_project_job, build)
   end
 
   expose :retry_path, if: -> (*) { retryable? } do |build|
