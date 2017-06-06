@@ -54,7 +54,7 @@ RSpec.shared_examples "protected tags > access control > EE" do
     set_allowed_to('create', groups.map(&:name), form: ".js-protected-tag-edit-form")
     set_allowed_to('create', roles.values, form: ".js-protected-tag-edit-form")
 
-    wait_for_ajax
+    wait_for_requests
 
     expect(ProtectedTag.count).to eq(1)
 
@@ -78,7 +78,7 @@ RSpec.shared_examples "protected tags > access control > EE" do
     groups.each { |group| set_allowed_to('create', group.name, form: ".js-protected-tag-edit-form") }
     roles.each { |(_, access_type_name)| set_allowed_to('create', access_type_name, form: ".js-protected-tag-edit-form") }
 
-    wait_for_ajax
+    wait_for_requests
 
     expect(ProtectedTag.count).to eq(1)
     expect(access_type_ids).to be_empty
@@ -107,13 +107,13 @@ RSpec.shared_examples "protected tags > access control > EE" do
         expect(all('.dropdown-header')[index]).to have_content(header)
       end
 
-      wait_for_ajax
+      wait_for_requests
 
       click_on users.last.name
       find(".js-allowed-to-create").click # close
     end
 
-    wait_for_ajax
+    wait_for_requests
 
     # Verify the user is appended in the dropdown
     find(".protected-tags-list .js-allowed-to-create").click
@@ -133,7 +133,7 @@ RSpec.shared_examples "protected tags > access control > EE" do
 
       click_on "Protect"
 
-      wait_for_ajax
+      wait_for_requests
 
       roles.each do |(access_type_id, _)|
         expect(access_levels).to include(access_type_id)
@@ -143,7 +143,7 @@ RSpec.shared_examples "protected tags > access control > EE" do
 
       set_allowed_to('create', 'No one', form: '.js-protected-tag-edit-form')
 
-      wait_for_ajax
+      wait_for_requests
 
       roles.each do |(access_type_id, _)|
         expect(access_levels).not_to include(access_type_id)
@@ -162,7 +162,7 @@ RSpec.shared_examples "protected tags > access control > EE" do
 
       click_on "Protect"
 
-      wait_for_ajax
+      wait_for_requests
 
       roles.each do |(access_type_id, _)|
         expect(access_levels).not_to include(access_type_id)
