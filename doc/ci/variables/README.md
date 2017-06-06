@@ -428,7 +428,4 @@ export CI_REGISTRY_PASSWORD="longalfanumstring"
 [triggers]: ../triggers/README.md#pass-job-variables-to-a-trigger
 [protected branches]: ../../user/project/protected_branches.md
 [protected tags]: ../../user/project/protected_tags.md
-<<<<<<< HEAD
-=======
 [shellexecutors]: https://docs.gitlab.com/runner/executors/
->>>>>>> origin/master
