@@ -97,6 +97,49 @@ describe('Filtered Search Manager', () => {
     });
   });
 
+  describe('searchState', () => {
+    beforeEach(() => {
+      spyOn(gl.FilteredSearchManager.prototype, 'search').and.callFake(() => {});
+    });
+
+    it('should blur button', () => {
+      const e = {
+        currentTarget: {
+          blur: () => {},
+          classList: [],
+        },
+      };
+      spyOn(e.currentTarget, 'blur').and.callThrough();
+      manager.searchState(e);
+
+      expect(e.currentTarget.blur).toHaveBeenCalled();
+    });
+
+    it('should not call search if there is no state', () => {
+      const e = {
+        currentTarget: {
+          blur: () => {},
+          classList: [],
+        },
+      };
+
+      manager.searchState(e);
+      expect(gl.FilteredSearchManager.prototype.search).not.toHaveBeenCalled();
+    });
+
+    it('should call search when there is state', () => {
+      const e = {
+        currentTarget: {
+          blur: () => {},
+          classList: ['class-name', 'state-opened'],
+        },
+      };
+
+      manager.searchState(e);
+      expect(gl.FilteredSearchManager.prototype.search).toHaveBeenCalledWith('opened');
+    });
+  });
+
   describe('search', () => {
     const defaultParams = '?scope=all&utf8=%E2%9C%93&state=opened';
 

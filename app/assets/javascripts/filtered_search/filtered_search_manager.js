@@ -506,9 +506,11 @@ class FilteredSearchManager {
 
     // return class name that has a prefix of `state-`
     const stateClassName = [].find.call(target.classList, name => name.match(/(state-)(\w+)/g));
-    const state = stateClassName.replace('state-', '');
 
-    this.search(state);
+    if (stateClassName) {
+      const state = stateClassName.replace('state-', '');
+      this.search(state);
+    }
   }
 
   search(state = null) {
