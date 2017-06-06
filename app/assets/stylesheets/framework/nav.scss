@@ -45,7 +45,8 @@
   li {
     display: flex;
 
-    a {
+    a,
+    .div-btn {
       padding: $gl-btn-padding;
       padding-bottom: 11px;
       font-size: 14px;
@@ -67,7 +68,14 @@
       }
     }
 
-    &.active a {
+    .div-btn {
+      padding-top: 16px;
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+
+    &.active a,
+    &.active .div-btn {
       border-bottom: 2px solid $link-underline-blue;
       color: $black;
       font-weight: 600;

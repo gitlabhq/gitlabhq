@@ -77,6 +77,47 @@ class FilteredSearchManager {
     }
   }
 
+  bindStateEvents() {
+    const stateFilters = document.querySelector('.container-fluid .issues-state-filters');
+
+    if (stateFilters) {
+      this.searchStateOpened = this.search.bind(this, 'opened');
+      this.searchStateMerged = this.search.bind(this, 'merged');
+      this.searchStateClosed = this.search.bind(this, 'closed');
+      this.searchStateAll = this.search.bind(this, 'all');
+
+      stateFilters.querySelector('.state-opened')
+        .addEventListener('click', this.searchStateOpened);
+      stateFilters.querySelector('.state-closed')
+        .addEventListener('click', this.searchStateClosed);
+      stateFilters.querySelector('.state-all')
+        .addEventListener('click', this.searchStateAll);
+
+      const mergedState = stateFilters.querySelector('.state-merged');
+      if (mergedState) {
+        mergedState.addEventListener('click', this.searchStateMerged);
+      }
+    }
+  }
+
+  unbindStateEvents() {
+    const stateFilters = document.querySelector('.container-fluid .issues-state-filters');
+
+    if (stateFilters) {
+      stateFilters.querySelector('.state-opened')
+        .removeEventListener('click', this.searchStateOpened);
+      stateFilters.querySelector('.state-closed')
+        .removeEventListener('click', this.searchStateClosed);
+      stateFilters.querySelector('.state-all')
+        .removeEventListener('click', this.searchStateAll);
+
+      const mergedState = stateFilters.querySelector('.state-merged');
+      if (mergedState) {
+        mergedState.removeEventListener('click', this.searchStateMerged);
+      }
+    }
+  }
+
   bindEvents() {
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
     this.setDropdownWrapper = this.dropdownManager.setDropdown.bind(this.dropdownManager);
@@ -114,6 +155,8 @@ class FilteredSearchManager {
     document.addEventListener('click', this.removeInputContainerFocusWrapper);
     document.addEventListener('keydown', this.removeSelectedTokenKeydownWrapper);
     eventHub.$on('recentSearchesItemSelected', this.onrecentSearchesItemSelectedWrapper);
+
+    this.bindStateEvents();
   }
 
   unbindEvents() {
@@ -136,6 +179,8 @@ class FilteredSearchManager {
     document.removeEventListener('click', this.removeInputContainerFocusWrapper);
     document.removeEventListener('keydown', this.removeSelectedTokenKeydownWrapper);
     eventHub.$off('recentSearchesItemSelected', this.onrecentSearchesItemSelectedWrapper);
+
+    this.unbindStateEvents();
   }
 
   checkForBackspace(e) {
@@ -459,7 +504,7 @@ class FilteredSearchManager {
     }
   }
 
-  search() {
+  search(state = null) {
     const paths = [];
     const searchQuery = gl.DropdownUtils.getSearchQuery();
 
@@ -467,7 +512,7 @@ class FilteredSearchManager {
 
     const { tokens, searchToken }
       = this.tokenizer.processTokens(searchQuery, this.filteredSearchTokenKeys.getKeys());
-    const currentState = gl.utils.getParameterByName('state') || 'opened';
+    const currentState = state || gl.utils.getParameterByName('state') || 'opened';
     paths.push(`state=${currentState}`);
 
     tokens.forEach((token) => {
