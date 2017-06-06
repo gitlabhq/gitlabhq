@@ -40,9 +40,8 @@
 <template>
   <button
     type="button"
-    class="toolbar-btn js-md hidden-xs"
+    class="toolbar-btn js-md hidden-xs js-vue-tooltip"
     tabindex="-1"
-    ref="tooltip"
     data-container="body"
     :data-md-tag="tag"
     :data-md-block="tagBlock"

@@ -95,12 +95,11 @@
         <div class="toolbar-group">
           <button
             aria-label="Go full screen"
-            class="toolbar-btn js-zen-enter"
+            class="toolbar-btn js-zen-enter js-vue-tooltip"
             data-container="body"
             tabindex="-1"
             title="Go full screen"
-            type="button"
-            ref="tooltip">
+            type="button">
             <i
               aria-hidden="true"
               class="fa fa-arrows-alt fa-fw">

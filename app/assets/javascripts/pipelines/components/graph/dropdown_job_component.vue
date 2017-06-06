@@ -56,9 +56,8 @@
       type="button"
       data-toggle="dropdown"
       data-container="body"
-      class="dropdown-menu-toggle build-content"
-      :title="tooltipText"
-      ref="tooltip">
+      class="dropdown-menu-toggle build-content js-vue-tooltip"
+      :title="tooltipText">
 
       <job-name-component
         :name="job.name"

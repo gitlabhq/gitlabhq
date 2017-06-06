@@ -1,13 +1,20 @@
+function $filterFind(el, selector) {
+  return $(el)
+    .find('*')         // Take the current selection and find all descendants,
+    .addBack()         // add the original selection back to the set
+    .filter(selector); // and filter by the selector.
+}
+
 export default {
   mounted() {
-    $(this.$refs.tooltip).tooltip();
+    $filterFind(this.$el, '.js-vue-tooltip').tooltip();
   },
 
   updated() {
-    $(this.$refs.tooltip).tooltip('fixTitle');
+    $filterFind(this.$el, '.js-vue-tooltip').tooltip('fixTitle');
   },
 
   beforeDestroy() {
-    $(this.$refs.tooltip).tooltip('destroy');
+    $filterFind(this.$el, '.js-vue-tooltip').tooltip('destroy');
   },
 };

@@ -71,9 +71,9 @@
         data-placeholder="Move to a different project" />
     </div>
     <span
+      class="js-vue-tooltip"
       data-placement="auto top"
-      title="Moving an issue will copy the discussion to a different project and close it here. All participants will be notified of the new location."
-      ref="tooltip">
+      title="Moving an issue will copy the discussion to a different project and close it here. All participants will be notified of the new location.">
       <i
         class="fa fa-question-circle"
         aria-hidden="true">

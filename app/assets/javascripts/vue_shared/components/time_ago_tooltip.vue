@@ -48,11 +48,10 @@ export default {
 <template>
   <time
     :class="[timeagoCssClass, cssClass]"
-    class="js-timeago js-timeago-render"
+    class="js-timeago js-timeago-render js-vue-tooltip"
     :title="tooltipTitle(time)"
     :data-placement="tooltipPlacement"
-    data-container="body"
-    ref="tooltip">
+    data-container="body">
     {{timeFormated(time)}}
   </time>
 </template>

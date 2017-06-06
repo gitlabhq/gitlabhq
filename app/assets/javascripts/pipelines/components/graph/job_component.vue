@@ -80,8 +80,8 @@
       v-if="job.status.details_path"
       :href="job.status.details_path"
       :title="tooltipText"
+      class="js-vue-tooltip"
       :class="cssClassJobName"
-      ref="tooltip"
       data-toggle="tooltip"
       data-container="body">
 
@@ -94,8 +94,8 @@
     <div
       v-else
       :title="tooltipText"
+      class="js-vue-tooltip"
       :class="cssClassJobName"
-      ref="tooltip"
       data-toggle="tooltip"
       data-container="body">
 

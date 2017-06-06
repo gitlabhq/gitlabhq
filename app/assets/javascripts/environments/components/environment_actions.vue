@@ -54,10 +54,9 @@ export default {
     role="group">
     <button
       type="button"
-      class="dropdown btn btn-default dropdown-new js-dropdown-play-icon-container has-tooltip"
+      class="dropdown btn btn-default dropdown-new js-dropdown-play-icon-container js-vue-tooltip"
       data-container="body"
       data-toggle="dropdown"
-      ref="tooltip"
       :title="title"
       :aria-label="title"
       :disabled="isLoading">

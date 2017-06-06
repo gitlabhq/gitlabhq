@@ -85,7 +85,7 @@ export default {
           aria-hidden="true" />
 
         <time
-          ref="tooltip"
+          class="js-vue-tooltip"
           data-toggle="tooltip"
           data-placement="top"
           data-container="body"

@@ -44,16 +44,14 @@ export default {
     </span>
     <span
       v-if="pipeline.flags.latest"
-      class="js-pipeline-url-lastest label label-success"
-      title="Latest pipeline for this branch"
-      ref="tooltip">
+      class="js-pipeline-url-lastest js-vue-tooltip label label-success"
+      title="Latest pipeline for this branch">
       latest
     </span>
     <span
       v-if="pipeline.flags.yaml_errors"
-      class="js-pipeline-url-yaml label label-danger"
-      :title="pipeline.yaml_errors"
-      ref="tooltip">
+      class="js-pipeline-url-yaml js-vue-tooltip label label-danger"
+      :title="pipeline.yaml_errors">
       yaml invalid
     </span>
     <span

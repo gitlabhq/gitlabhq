@@ -59,12 +59,11 @@ export default {
     <div class="btn-group" v-if="actions">
       <button
         type="button"
-        class="dropdown-toggle btn btn-default has-tooltip js-pipeline-dropdown-manual-actions"
+        class="dropdown-toggle btn btn-default has-tooltip js-pipeline-dropdown-manual-actions js-vue-tooltip"
         title="Manual job"
         data-toggle="dropdown"
         data-placement="top"
         aria-label="Manual job"
-        ref="tooltip"
         :disabled="isLoading">
         ${playIconSvg}
         <i

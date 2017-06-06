@@ -49,8 +49,7 @@
     :data-method="actionMethod"
     :title="tooltipText"
     :href="link"
-    ref="tooltip"
-    class="ci-action-icon-container"
+    class="ci-action-icon-container js-vue-tooltip"
     data-toggle="tooltip"
     data-container="body">
 

@@ -86,8 +86,7 @@ export default {
         <a
           :href="user.path"
           :title="user.email"
-          class="js-user-link commit-committer-link"
-          ref="tooltip">
+          class="js-user-link js-vue-tooltip commit-committer-link">
 
           <user-avatar-image
             :img-src="user.avatar_url"
