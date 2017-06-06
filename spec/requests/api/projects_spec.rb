@@ -1480,7 +1480,7 @@ describe API::Projects do
         expect(json_response['owner']['id']).to eq(user2.id)
         expect(json_response['namespace']['id']).to eq(user2.namespace.id)
         expect(json_response['forked_from_project']['id']).to eq(project.id)
-        expect(json_response['import_status']).to eq('started')
+        expect(json_response['import_status']).to eq('scheduled')
         expect(json_response).to include("import_error")
       end
 
@@ -1493,7 +1493,7 @@ describe API::Projects do
         expect(json_response['owner']['id']).to eq(admin.id)
         expect(json_response['namespace']['id']).to eq(admin.namespace.id)
         expect(json_response['forked_from_project']['id']).to eq(project.id)
-        expect(json_response['import_status']).to eq('started')
+        expect(json_response['import_status']).to eq('scheduled')
         expect(json_response).to include("import_error")
       end
 
