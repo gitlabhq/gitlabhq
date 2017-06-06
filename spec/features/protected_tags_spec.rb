@@ -9,7 +9,7 @@ feature 'Projected Tags', feature: true, js: true do
   def set_allowed_to(operation, option = 'Masters', form: '.new-protected-tag')
     within form do
       find(".js-allowed-to-#{operation}").click
-      wait_for_ajax
+      wait_for_requests
 
       Array(option).each { |opt| click_on(opt) }
 
