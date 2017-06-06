@@ -24,18 +24,16 @@ module IssueLinks
     private
 
     def issues
-      authorized_issues = IssuesFinder
-                            .new(@current_user, feature_availability_check: false)
-                            .execute
-                            .reorder(nil)
+      related_issues = Issue
+                         .select(['issues.*', 'issue_links.id AS issue_links_id'])
+                         .joins("INNER JOIN issue_links ON
+                                 (issue_links.source_id = issues.id AND issue_links.target_id = #{@issue.id})
+                                 OR
+                                 (issue_links.target_id = issues.id AND issue_links.source_id = #{@issue.id})")
+                         .preload(project: :namespace)
+                         .reorder('issue_links_id')
 
-      Issue.from("(SELECT issues.*, issue_links.id AS issue_links_id
-                   FROM issue_links, issues
-                   WHERE (issue_links.source_id = issues.id AND issue_links.target_id = #{@issue.id})
-                   OR (issue_links.target_id = issues.id AND issue_links.source_id = #{@issue.id})) #{Issue.table_name}")
-        .where(id: authorized_issues.select(:id))
-        .preload(project: :namespace)
-        .reorder(:issue_links_id)
+      Ability.issues_readable_by_user(related_issues, @current_user)
     end
 
     def destroy_relation_path(issue)
