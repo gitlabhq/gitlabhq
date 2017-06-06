@@ -1066,7 +1066,7 @@ RSpec/RepeatedDescription:
 
 # Ensure RSpec hook blocks are always multi-line.
 RSpec/SingleLineHook:
-  Enabled: false
+  Enabled: true
   Exclude:
     - 'spec/factories/*'
     - 'spec/requests/api/v3/*'
