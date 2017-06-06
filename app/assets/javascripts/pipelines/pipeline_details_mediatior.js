@@ -39,7 +39,6 @@ export default class pipelinesMediator {
 
   successCallback(response) {
     const data = response.json();
-
     this.state.isLoading = false;
     this.store.storePipeline(data);
   }

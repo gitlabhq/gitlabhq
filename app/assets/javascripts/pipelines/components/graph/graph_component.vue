@@ -13,14 +13,6 @@
         type: Object,
         required: true,
       },
-      triggered: {
-        type: Array,
-        required: true,
-      },
-      triggeredBy: {
-        type: Array,
-        required: true,
-      },
     },
     components: {
       linkedPipelinesColumn,
@@ -31,11 +23,17 @@
       graph() {
         return this.pipeline.details && this.pipeline.details.stages;
       },
+      triggered() {
+        return this.pipeline.triggered || [];
+      },
+      triggeredBy() {
+        return this.pipeline.triggeredBy || [];
+      },
       hasTriggered() {
-        return this.triggered.length;
+        return !!this.triggered.length;
       },
       hasTriggeredBy() {
-        return this.triggeredBy.length;
+        return !!this.triggeredBy.length;
       },
     },
     methods: {
