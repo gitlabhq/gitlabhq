@@ -18,10 +18,29 @@ module Gitlab
 
             track_rename('project', old_full_path, new_full_path)
 
+            move_project_folders(project, old_full_path, new_full_path)
+          end
+
+          def move_project_folders(project, old_full_path, new_full_path)
             move_repository(project, old_full_path, new_full_path)
             move_repository(project, "#{old_full_path}.wiki", "#{new_full_path}.wiki")
             move_uploads(old_full_path, new_full_path)
             move_pages(old_full_path, new_full_path)
+          end
+
+          def revert_renames
+            reverts_for_type('project') do |path_before_rename, current_path|
+              matches_path = MigrationClasses::Route.arel_table[:path].matches(current_path)
+              project = MigrationClasses::Project.joins(:route)
+                          .where(matches_path).first
+              if project
+                perform_rename(project, current_path, path_before_rename)
+
+                move_project_folders(project, current_path, path_before_rename)
+              else
+                say "Couldn't rename project##{project.id} from #{current_path} back to #{path_before_rename}, project no longer exists"
+              end
+            end
           end
 
           def move_repository(project, old_path, new_path)

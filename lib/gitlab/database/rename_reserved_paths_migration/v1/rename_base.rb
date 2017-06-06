@@ -7,6 +7,7 @@ module Gitlab
 
           delegate :update_column_in_batches,
                    :replace_sql,
+                   :say,
                    to: :migration
 
           def initialize(paths, migration)
@@ -26,13 +27,18 @@ module Gitlab
             new_path = rename_path(namespace_path, old_path)
             new_full_path = join_routable_path(namespace_path, new_path)
 
-            # skips callbacks & validations
-            routable.class.where(id: routable)
-              .update_all(path: new_path)
-
-            rename_routes(old_full_path, new_full_path)
+            perform_rename(routable, old_full_path, new_full_path)
 
             [old_full_path, new_full_path]
+          end
+
+          def perform_rename(routable, old_full_path, new_full_path)
+            # skips callbacks & validations
+            new_path = new_full_path.split('/').last
+            routable.class.where(id: routable).
+              update_all(path: new_path)
+
+            rename_routes(old_full_path, new_full_path)
           end
 
           def rename_routes(old_full_path, new_full_path)
@@ -86,7 +92,10 @@ module Gitlab
 
           def move_folders(directory, old_relative_path, new_relative_path)
             old_path = File.join(directory, old_relative_path)
-            return unless File.directory?(old_path)
+            unless File.directory?(old_path)
+              say "#{old_path} doesn't exist, skipping"
+              return
+            end
 
             new_path = File.join(directory, new_relative_path)
             FileUtils.mv(old_path, new_path)
@@ -115,8 +124,23 @@ module Gitlab
           end
 
           def track_rename(type, old_path, new_path)
-            key = "rename:#{migration.version}:#{type}"
+            key = redis_key_for_type(type)
             Gitlab::Redis.with { |redis| redis.lpush(key, [old_path, new_path].to_json) }
+          end
+
+          def reverts_for_type(type)
+            key = redis_key_for_type(type)
+            Gitlab::Redis.with do |redis|
+              while rename_info = redis.lpop(key)
+                path_before_rename, path_after_rename = JSON.parse(rename_info)
+                say "renaming #{type} from #{path_after_rename} back to #{path_before_rename}"
+                yield(path_before_rename, path_after_rename)
+              end
+            end
+          end
+
+          def redis_key_for_type(type)
+            "rename:#{migration.version}:#{type}"
           end
 
           def file_storage?

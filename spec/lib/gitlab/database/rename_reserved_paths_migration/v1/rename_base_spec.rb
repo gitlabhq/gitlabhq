@@ -153,6 +153,30 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase, :trunca
     end
   end
 
+  describe '#perform_rename' do
+    describe 'for namespaces' do
+      let(:namespace) { create(:namespace, path: 'the-path') }
+      it 'renames the path' do
+        subject.perform_rename(migration_namespace(namespace), 'the-path', 'renamed')
+
+        expect(namespace.reload.path).to eq('renamed')
+      end
+
+      it 'renames all the routes for the namespace' do
+        child = create(:group, path: 'child', parent: namespace)
+        project = create(:project, namespace: child, path: 'the-project')
+        other_one = create(:namespace, path: 'the-path-is-similar')
+
+        subject.perform_rename(migration_namespace(namespace), 'the-path', 'renamed')
+
+        expect(namespace.reload.route.path).to eq('renamed')
+        expect(child.reload.route.path).to eq('renamed/child')
+        expect(project.reload.route.path).to eq('renamed/child/the-project')
+        expect(other_one.reload.route.path).to eq('the-path-is-similar')
+      end
+    end
+  end
+
   describe '#move_pages' do
     it 'moves the pages directory' do
       expect(subject).to receive(:move_folders)
@@ -218,6 +242,19 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase, :trunca
 
       expect(old_path).to eq('path/to/namespace')
       expect(new_path).to eq('path/to/renamed')
+    end
+  end
+
+  describe '#reverts_for_type', redis: true do
+    it 'yields for each tracked rename' do
+      subject.track_rename('project', 'old_path', 'new_path')
+      subject.track_rename('project', 'old_path2', 'new_path2')
+      subject.track_rename('namespace', 'namespace_path', 'new_namespace_path')
+
+      expect { |b| subject.reverts_for_type('project', &b) }
+        .to yield_successive_args(%w(old_path2 new_path2), %w(old_path new_path))
+      expect { |b| subject.reverts_for_type('namespace', &b) }
+        .to yield_with_args('namespace_path', 'new_namespace_path')
     end
   end
 end
