@@ -16,7 +16,6 @@ describe MigrateBuildStageReference, :migration do
     #
     projects.create!(id: 123, name: 'gitlab1', path: 'gitlab1')
     projects.create!(id: 456, name: 'gitlab2', path: 'gitlab2')
-    projects.create!(id: 798, name: 'gitlab3', path: 'gitlab3')
 
     # Create CI/CD pipelines
     #

@@ -13,8 +13,8 @@ class AddStageIdToCiBuilds < ActiveRecord::Migration
   end
 
   def down
-    remove_concurrent_index :ci_builds, :stage_id
     remove_foreign_key :ci_builds, column: :stage_id
+    remove_concurrent_index :ci_builds, :stage_id
 
     remove_column :ci_builds, :stage_id, :integer
   end
