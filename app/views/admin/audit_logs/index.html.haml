@@ -1,0 +1,49 @@
+- @no_container = true
+- page_title 'Audit Log'
+= render 'admin/background_jobs/head'
+
+%div{ class: container_class }
+  .todos-filters
+    .row-content-block.second-block
+      = form_tag admin_audit_logs_path, method: :get, class: 'filter-form' do
+        .filter-item.inline
+          - if params[:event_type].present?
+            = hidden_field_tag(:event_type, params[:event_type])
+          - event_type = params[:event_type].presence || 'All'
+          = dropdown_tag("#{event_type} Events", options: { toggle_class: 'js-type-search js-filter-submit js-type-filter', dropdown_class: 'dropdown-menu-type dropdown-menu-selectable dropdown-menu-action js-filter-submit',
+            placeholder: 'Search types', data: { field_name: 'event_type', data: event_type_options, default_label: 'All Events' } })
+        - if params[:event_type] == 'User'
+          .filter-item.inline
+            - if params[:user_id].present?
+              = hidden_field_tag(:user_id, params[:user_id], class:'hidden-filter-value')
+            = dropdown_tag(admin_user_dropdown_label('User'), options: { toggle_class: 'js-user-search js-filter-submit', filter: true, dropdown_class: 'dropdown-menu-user dropdown-menu-selectable',
+              placeholder: 'Search users', data: { first_user: (current_user.username if current_user), null_user: true, current_user: true, field_name: 'user_id' } })
+        - elsif params[:event_type] == 'Project'
+          .filter-item.inline
+            = project_select_tag(:project_id, { class: 'project-item-select hidden-filter-value', toggle_class: 'js-project-search js-project-filter js-filter-submit', dropdown_class: 'dropdown-menu-selectable dropdown-menu-project js-filter-submit',
+              placeholder: admin_project_dropdown_label('Search projects'), idAttribute: 'id', data: { order_by: 'last_activity_at', idattribute: 'id', allprojects: 'true'} })
+        - elsif params[:event_type] == 'Group'
+          .filter-item.inline
+            = groups_select_tag(:group_id, { required: true, class: 'group-item-select project-item-select hidden-filter-value', toggle_class: 'js-group-search js-group-filter js-filter-submit', dropdown_class: 'dropdown-menu-selectable dropdown-menu-group js-filter-submit',
+              placeholder: admin_namespace_dropdown_label('Search groups'), idAttribute: 'id', data: { order_by: 'last_activity_at', idattribute: 'id', all_available: true} })
+
+  - if @events.present?
+    %table.table
+      %thead
+        %tr
+          %th Author
+          %th Object
+          %th Action
+          %th Target
+          %th IP Address
+          %th Date
+      %tbody
+        - @events.map(&:present).each do |event|
+          %tr
+            %td= event.author_name
+            %td= event.object
+            %td= event.action
+            %td= event.target
+            %td= event.ip_address
+            %td= event.date
+    = paginate @events, theme: 'gitlab'

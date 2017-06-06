@@ -76,6 +76,7 @@ namespace :admin do
 
   ## EE-specific
   resource :email, only: [:show, :create]
+  resources :audit_logs, controller: 'audit_logs', only: [:index]
   ## EE-specific
 
   resource :system_info, controller: 'system_info', only: [:show]
