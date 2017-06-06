@@ -9,6 +9,10 @@ describe Gitlab::Prometheus::Queries::AdditionalMetricsDeploymentQuery, lib: tru
 
   subject(:query_result) { described_class.new(client).query(deployment.id) }
 
+  around do |example|
+    Timecop.freeze(Time.local(2008, 9, 1, 12, 0, 0)) { example.run }
+  end
+
   include_examples 'additional metrics query' do
     it 'queries using specific time' do
       expect(client).to receive(:query_range).with(anything,
