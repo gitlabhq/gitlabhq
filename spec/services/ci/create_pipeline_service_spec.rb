@@ -415,10 +415,10 @@ describe Ci::CreatePipelineService, services: true do
         let(:user) {}
         let(:trigger_request) { create(:ci_trigger_request) }
 
-        it 'does not create a pipeline' do
+        it 'creates a pipeline' do
           expect(execute_service(trigger_request: trigger_request))
-            .not_to be_persisted
-          expect(Ci::Pipeline.count).to eq(0)
+            .to be_persisted
+          expect(Ci::Pipeline.count).to eq(1)
         end
       end
     end
